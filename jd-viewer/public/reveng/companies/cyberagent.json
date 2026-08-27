@@ -254,6 +254,45 @@
       "features": [
         "env-split-migration"
       ]
+    },
+    {
+      "name": "보는 일에 드는 값을 어떻게 치를 것인가",
+      "why": "**보는 일 자체가 값이 든다** — 그리고 이 회사의 글 둘이 **서로 다른 화폐로** 그 값을 치른다(이 정리는 이 사이트의 것이다).\n\n**하나는 돈이다.** 관측 데이터를 관리형 서비스에 맡기면 *\"토털 코스트가 높아져 버릴 것 같습니다\"* — 취득에 **$0.095/GB**, 그 아래 로그에 **$0.10/GB** 가 또 붙는다. 그래서 **Vector 를 직접 굴린다.**\n\n**하나는 주의력이다.** 노드 업그레이드마다 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"* 이고, 회사가 그 결과를 이름 붙여 적는다 — ***\"알림의 형해화\"***. 값을 안 치르면 **진짜 장애가 묻힌다**.\n\n**앞의 세 도메인과 다른 층이다** — 페이싱은 언제 낼지, 캐시는 얼마나 빨리 읽을지, 이설은 어디서 돌릴지인데, **여기는 그 전부가 잘 돌고 있는지를 어떻게 아느냐**다.\n\n⚠️ **본문은 두 편을 읽었다.** 세 번째(Datadog APM Inferred Services, 2025-12-02)는 아직 안 열었다. **⚠️ 두 글은 서로를 언급하지 않는다** — 하나는 Datadog 계열, 하나는 Grafana 계열인데 같은 회사의 같은 GKE 위에 있다.",
+      "tech": [
+        {
+          "tech": "Vector 로 관측 데이터 파이프라인을 직접 굴린다",
+          "solves": "ABEMA 광고 배송(GKE)의 관측 데이터를 **Vector**(Rust 제)로 받아 변환하고 내보낸다. 설정은 **VRL 로 400줄 조금 못 미침**. 프로덕션에서 **초당 2만 이벤트**를 **Pod 당 0.5 vCPU · 메모리 500MB 전후로 4 Pod** 이 처리한다. 검증 환경에서는 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 감당했다. **명백히 불필요한 태그를 지워** Datadog Metrics 비용도 줄인다. **HAProxy** 로 커넥션을 L7 분산한다.",
+          "limits": "**버린 대안은 Datadog Observability Pipelines 하나인데 이유가 셋이다** — 비용이 이중으로 붙는다(*\"취득 요금이 $0.095/GB\"* + Datadog Logs **$0.10/GB**), IaC 가 미성숙(*\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*), 표현력이 부족하다. **남는 대가** — 리소스 소비가 예측하기 어렵다(*\"특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*), **vCPU 당 가격 체계**도 있다, 그리고 **직접 굴리니 크래시도 직접 만난다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(PR #23513·#23514 로 수정). ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+              "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+              "publisher": "CyberAgent Developers Blog",
+              "date": "2025-12-11",
+              "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.**"
+            }
+          ]
+        },
+        {
+          "tech": "업그레이드 동안에만 감시 규칙을 깨운다 — Grafana Alert",
+          "solves": "평소에는 재워 둔 규칙을 **GKE Cluster Notifications 의 UpgradeEvent** 로 깨우고 **UpgradeInfoEvent** 로 다시 재운다. Cloud Run 이 Grafana REST API 를 부르고, **Cloud Run 최대 1시간** 제약은 **Cloud Tasks** 로 넘긴다. 규모는 **300+ 마이크로서비스 · 수백 노드**. 알림은 pending **5분**(평가 간격 1분) · group wait **30초** · group interval **5분** · repeat **4시간** 으로 묶는다.",
+          "limits": "**정적 무음 구간을 버린 이유가 명시돼 있다** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **남는 대가** — *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없다), *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*, **pending 5분**이라 즉시 감지는 포기한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+              "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+              "publisher": "CyberAgent Developers Blog",
+              "date": "2025-12-03",
+              "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+            }
+          ]
+        }
+      ],
+      "features": [
+        "alert-context"
+      ]
     }
   ],
   "open_questions": [
@@ -264,7 +303,9 @@
     "**광고 배송과 ABEMA 본체가 같은 캐시 문제를 각각 풀었는데 서로를 언급하지 않는다.** 공통 기반이 있는지, 아니면 정말 따로 만든 것인지 확인되지 않는다.",
     "**광고 배송 글 셋이 서로를 전혀 언급하지 않는다.** 페이싱(2026-05) · 필터링 고속화(2026-07) · 플랫폼 이설(2025-12) 이 같은 시스템의 다른 층을 다루는데 **어느 글도 다른 글을 가리키지 않는다.** 캐시 글 둘(광고 배송 ↔ ABEMA 본체)도 마찬가지였다. **이 회사의 성격으로 보인다**(이 관찰은 이 사이트의 것이다).",
     "**이설 글에 롤백 서술이 한 줄도 없다.** 4단계 순서와 자원별 동기화 방식은 촘촘한데 **되돌리는 조건도 중단 기준도 없다.** 1단계의 신구 동기화가 사실상 돌아갈 자리를 남기는데도 회사가 그것을 롤백으로 부르지 않는다. **DNS WRR 의 비율과 단계별 기간도 없어서, 실제로 얼마나 조심스럽게 옮겼는지를 이 사이트는 알 수 없다.**",
-    "**임시 구성을 실제로 걷어냈는지 확인되지 않는다.** TCP 프록시와 Compute Engine 위의 MySQL 이 이행용으로 세워졌고 *\"이행 완료 후에는 신속히 구성을 표준화(TCP Proxy 철거)하는 계획도 세트로 관리했습니다\"* 라고 적혀 있지만, **'이행 완료' 의 판정 기준도 후속 보고도 없다.** 그리고 **이관을 위해 고른 Public IP 접속을 나중에 PSA 로 되돌리는지도 안 적혀 있다.**"
+    "**임시 구성을 실제로 걷어냈는지 확인되지 않는다.** TCP 프록시와 Compute Engine 위의 MySQL 이 이행용으로 세워졌고 *\"이행 완료 후에는 신속히 구성을 표준화(TCP Proxy 철거)하는 계획도 세트로 관리했습니다\"* 라고 적혀 있지만, **'이행 완료' 의 판정 기준도 후속 보고도 없다.** 그리고 **이관을 위해 고른 Public IP 접속을 나중에 PSA 로 되돌리는지도 안 적혀 있다.**",
+    "**Grafana 감시 글에 개선 후 수치가 없다.** 고치기 전은 *\"수십~수백 건의 'Pod 이상' 통지\"* 로 세는데 **고친 뒤 몇 건이 됐는지, 놓친 장애가 줄었는지가 없다.** **이 회사에서 네 번째로 확인되는 패턴이다** — 버린 대안과 대가는 잘 적는데 자기 개선 폭은 반만 적는다(캐시 65145 · 고속화 64498 은 적고, 페이싱 63908 · 이설 61355 · 이 글은 안 적는다).",
+    "**관측이 두 계열로 갈려 있다.** 광고 배송은 **Datadog**(Agent · Vector · APM)이고 워크로드 감시는 **Grafana Alert + PromQL** 인데, **두 글이 서로를 언급하지 않는다.** 같은 회사의 같은 GKE 위에서 도는데도 그렇다. **의도된 분업인지 팀이 달라서인지 확인되지 않는다.**"
   ],
   "sources": [
     {
@@ -308,6 +349,20 @@
       "publisher": "CyberAgent Developers Blog",
       "date": "2025-12-25",
       "summary": "광고 배송 시스템의 인프라를 **DEV/STG/PRD 가 섞여 있던 하나의 Google Cloud 프로젝트에서 환경별로 분리된 새 프로젝트로** 옮긴 글. **약 반년**이 걸렸다. 이유 셋 — *\"환경 혼재에 의한 보안 통제의 복잡화\"* · ABEMA 본체와 광고 시스템 사이의 운용 지식 분단 · 수동 Pod 스케일링이 관행이 되어 자동화가 불가능. **⭐ 버린 대안이 넷이고 이유가 각각 있다** — ① 기존 구성을 유지한 개수: *\"기존 구성을 유지한 채의 개수만으로는 해결할 수 없습니다\"* · ② DMS 를 위한 Private Service Access + VPN: *\"PSA 의 구성 변경에는 네트워크 기인의 다운타임이 발생하기 때문\"* 이라 Public IP + SSL/TLS 로 갔다 · ③ Cloud Run Domain Mapping 유지: *\"헤어핀 라우팅 등에 의한 레이턴시 증대나 Cloud Armor, Cloud CDN 을 이용할 수 없다\"* · ④ Routes 기반 GKE 의 VPN 직결: Pod CIDR 경로가 BGP 로 자동 전파되지 않아 TCP 프록시 우회로를 만들었다. **대가·실패도 다섯** — DMS 제약(*\"2025년 6월 시점에서는 DMS 의 사양으로 Source 와 Destination 양쪽을 Cloud SQL 인스턴스로 구성할 수 없는 제약이 있었습니다\"*) · *\"결과적으로 Pod 에서 새 환경의 Memorystore 로 직접 접속하는 것이 곤란했습니다\"* · *\"애플리케이션의 구현에 따라서는 쓰기 실패를 감지해 CrashLoopBackOff 나 Error 상태에 빠져 그 후의 재접속이나 새 환경으로의 전환이 매끄럽지 않게 될 가능성이 있습니다\"* · 구글 관리 인증서 발행이 *\"DNS 전파를 포함해 최대 72시간\"* · TCP 프록시는 *\"일시적인 워크어라운드\"* 라 HAProxy 감시가 따라붙는다. 스택 — **Terraform · Atlantis · PipeCD · Conftest · Gatekeeper · KEDA · DMS · HAProxy · Cloud VPN · GCLB · Serverless NEG · Certificate Manager · Private Service Connect · WRR**. ⚠️ **ABEMA 자신의 수치가 하나도 없다** — QPS·지연·비용 델타가 없고 기간(약 반년)만 있다. ⚠️ **페이싱·L1/L2 캐시를 언급하지 않는다.** **250 에서 원문을 다시 읽어 셋을 더 찾았다.** ① **전환이 4단계다** — 1단계 *\"새 환경의 액티베이션과 구환경과의 동기화\"*(Cloud SQL 은 복제 · Memorystore 는 이중 쓰기 · GKE 워크로드는 더미 도메인으로 QA), 2단계 **DNS WRR 로 점진 전환**(*\"WRR 에 의한 트래픽 비율을 신구 사이에서 단계적으로 전환함으로써 사용자 요청을 새 환경으로 서서히 흘립니다\"*), 3단계 Cloud Run 과 Functions 이설(배치 잡은 **저트래픽 시간대에 원샷 전환**), 4단계 구환경 폐기. ② **🔴 롤백 전략이 문서에 없다** — 되돌리는 조건도 중단 기준도 안 적혀 있다. ③ **TCP 프록시 철거 조건은 명시돼 있다** — *\"이러한 이레귤러한 대응은 절차서에 명기하고, 이행 완료 후에는 신속히 구성을 표준화(TCP Proxy 철거)하는 계획도 세트로 관리했습니다.\"* **PSA 를 버린 이유의 전문** — *\"당초에는 더 시큐어한 PSA(Private Service Access)와 Cloud VPN 을 이용한 프라이빗 접속도 검토했습니다만, PSA 의 구성 변경에는 네트워크 기인의 다운타임이 발생하기 때문에 유연성이 높은 Public IP 접속을 선택했습니다.\"* **⚠️ 수치는 글 전체에 셋뿐이다** — 약 반년 · 인증서 최대 72시간 · 문서 계층 최대 3단(*\"계층은 너무 깊어지면 전체상이 보이기 어려워지므로 … 이번 경우는 최대 3계층까지로 했다\"*). **WRR 의 비율도 단계별 기간도 없고, 옮긴 서비스 수도 없다.**"
+    },
+    {
+      "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+      "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+      "publisher": "CyberAgent Developers Blog",
+      "date": "2025-12-11",
+      "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.**"
+    },
+    {
+      "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+      "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+      "publisher": "CyberAgent Developers Blog",
+      "date": "2025-12-03",
+      "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
     }
   ],
   "features": [
@@ -2293,6 +2348,645 @@
           "publisher": "CyberAgent Developers Blog",
           "date": "2025-12-25",
           "summary": "광고 배송 시스템의 인프라를 **DEV/STG/PRD 가 섞여 있던 하나의 Google Cloud 프로젝트에서 환경별로 분리된 새 프로젝트로** 옮긴 글. **약 반년**이 걸렸다. 이유 셋 — *\"환경 혼재에 의한 보안 통제의 복잡화\"* · ABEMA 본체와 광고 시스템 사이의 운용 지식 분단 · 수동 Pod 스케일링이 관행이 되어 자동화가 불가능. **⭐ 버린 대안이 넷이고 이유가 각각 있다** — ① 기존 구성을 유지한 개수: *\"기존 구성을 유지한 채의 개수만으로는 해결할 수 없습니다\"* · ② DMS 를 위한 Private Service Access + VPN: *\"PSA 의 구성 변경에는 네트워크 기인의 다운타임이 발생하기 때문\"* 이라 Public IP + SSL/TLS 로 갔다 · ③ Cloud Run Domain Mapping 유지: *\"헤어핀 라우팅 등에 의한 레이턴시 증대나 Cloud Armor, Cloud CDN 을 이용할 수 없다\"* · ④ Routes 기반 GKE 의 VPN 직결: Pod CIDR 경로가 BGP 로 자동 전파되지 않아 TCP 프록시 우회로를 만들었다. **대가·실패도 다섯** — DMS 제약(*\"2025년 6월 시점에서는 DMS 의 사양으로 Source 와 Destination 양쪽을 Cloud SQL 인스턴스로 구성할 수 없는 제약이 있었습니다\"*) · *\"결과적으로 Pod 에서 새 환경의 Memorystore 로 직접 접속하는 것이 곤란했습니다\"* · *\"애플리케이션의 구현에 따라서는 쓰기 실패를 감지해 CrashLoopBackOff 나 Error 상태에 빠져 그 후의 재접속이나 새 환경으로의 전환이 매끄럽지 않게 될 가능성이 있습니다\"* · 구글 관리 인증서 발행이 *\"DNS 전파를 포함해 최대 72시간\"* · TCP 프록시는 *\"일시적인 워크어라운드\"* 라 HAProxy 감시가 따라붙는다. 스택 — **Terraform · Atlantis · PipeCD · Conftest · Gatekeeper · KEDA · DMS · HAProxy · Cloud VPN · GCLB · Serverless NEG · Certificate Manager · Private Service Connect · WRR**. ⚠️ **ABEMA 자신의 수치가 하나도 없다** — QPS·지연·비용 델타가 없고 기간(약 반년)만 있다. ⚠️ **페이싱·L1/L2 캐시를 언급하지 않는다.** **250 에서 원문을 다시 읽어 셋을 더 찾았다.** ① **전환이 4단계다** — 1단계 *\"새 환경의 액티베이션과 구환경과의 동기화\"*(Cloud SQL 은 복제 · Memorystore 는 이중 쓰기 · GKE 워크로드는 더미 도메인으로 QA), 2단계 **DNS WRR 로 점진 전환**(*\"WRR 에 의한 트래픽 비율을 신구 사이에서 단계적으로 전환함으로써 사용자 요청을 새 환경으로 서서히 흘립니다\"*), 3단계 Cloud Run 과 Functions 이설(배치 잡은 **저트래픽 시간대에 원샷 전환**), 4단계 구환경 폐기. ② **🔴 롤백 전략이 문서에 없다** — 되돌리는 조건도 중단 기준도 안 적혀 있다. ③ **TCP 프록시 철거 조건은 명시돼 있다** — *\"이러한 이레귤러한 대응은 절차서에 명기하고, 이행 완료 후에는 신속히 구성을 표준화(TCP Proxy 철거)하는 계획도 세트로 관리했습니다.\"* **PSA 를 버린 이유의 전문** — *\"당초에는 더 시큐어한 PSA(Private Service Access)와 Cloud VPN 을 이용한 프라이빗 접속도 검토했습니다만, PSA 의 구성 변경에는 네트워크 기인의 다운타임이 발생하기 때문에 유연성이 높은 Public IP 접속을 선택했습니다.\"* **⚠️ 수치는 글 전체에 셋뿐이다** — 약 반년 · 인증서 최대 72시간 · 문서 계층 최대 3단(*\"계층은 너무 깊어지면 전체상이 보이기 어려워지므로 … 이번 경우는 최대 3계층까지로 했다\"*). **WRR 의 비율도 단계별 기간도 없고, 옮긴 서비스 수도 없다.**"
+        }
+      ]
+    },
+    {
+      "key": "alert-context",
+      "name": "알림이 죽지 않게 한다",
+      "domain": "보는 일에 드는 값을 어떻게 치를 것인가",
+      "updated_at": "2026-08-27",
+      "ui": {
+        "title": "업그레이드 중의 알림 채널",
+        "question": "무시하기 시작한 알림을 어떻게 되살리는가?",
+        "kind": "web",
+        "note": "**알림 흐름을 도해로 그린 것입니다** — 실제 Slack 화면이나 Grafana 화면 캡처가 아니고, **실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 회사의 감시 글에 적힌 것만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "알림 채널"
+          },
+          {
+            "type": "card",
+            "text": "고치기 전",
+            "items": [
+              "수십에서 수백 건의 Pod 이상 통지",
+              "업그레이드 때문이겠지 하고 안 본다",
+              "진짜 장애가 묻힌다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "고친 뒤 — 평소"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "업그레이드용 규칙",
+                "sub": "재워 둔다",
+                "right": "멈춤"
+              },
+              {
+                "title": "평시 규칙",
+                "sub": "그대로",
+                "right": "켜짐"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "label",
+            "text": "업그레이드가 시작되면"
+          },
+          {
+            "type": "text",
+            "text": "클러스터가 보낸 이벤트를 받아 규칙을 깨웁니다",
+            "pin": 3
+          },
+          {
+            "type": "chips",
+            "items": [
+              "5분 지속되면 발화",
+              "30초 모아서 보냄",
+              "4시간마다 반복"
+            ],
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "card",
+            "text": "한 시간이 넘어가면",
+            "items": [
+              "실행 시간 상한에 걸립니다",
+              "작업을 큐에 넣어 이어 갑니다"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "text",
+            "text": "끝났다는 이벤트를 받으면 규칙을 다시 재웁니다",
+            "pin": 6
+          },
+          {
+            "type": "button",
+            "text": "알림 이력 보기",
+            "variant": "ghost"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "알림이 죽는 방식",
+            "what": "회사가 이름을 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 **'알림의 형해화'** 입니다.\"* 그리고 실제로 놓쳤다 — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "평소에는 재워 둔다",
+            "what": "업그레이드 상황용 규칙을 **일시정지 상태로 두고**, 그때만 깨운다. **정적 무음 구간(PagerDuty Maintenance Window · Alertmanager Silence)과 반대 방향이다** — 저쪽은 평소 켜 두고 정해진 시간에 끄는데, 여기는 평소 꺼 두고 이벤트가 오면 켠다(이 대비는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "클러스터가 스스로 알려 준다",
+            "what": "**GKE Cluster Notifications** 의 `UpgradeEvent` 가 Pub/Sub 으로 오면 Cloud Run 이 Grafana REST API 로 규칙의 일시정지를 푼다. **업그레이드 시각을 미리 알 수 없으니 이벤트로 안다**(회사가 그 이유를 적는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "묶어서 늦게 보낸다",
+            "what": "pending **5분**(평가 간격 1분) · group wait **30초** · group interval **5분** · repeat interval **4시간**. **즉시 감지를 포기하고 시끄러움을 줄인 것이다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "제어하는 쪽에도 상한이 있다",
+            "what": "**Cloud Run 최대 실행 1시간**이라 더 긴 업그레이드는 **Cloud Tasks** 로 이어 간다. **300+ 마이크로서비스 · 수백 노드** 규모라 업그레이드가 길어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "끝나면 다시 재운다",
+            "what": "`UpgradeInfoEvent` 로 완료를 알면 규칙을 다시 일시정지시킨다. **켜고 끄는 일 자체가 새 실패 지점이 된다**(이 지적은 이 사이트의 것이다) — 회사도 권한 문제를 적는다: *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**알림은 켜 두는 것으로 일이 끝나지 않는다.** GKE 노드 업그레이드는 정상적으로 Pod 을 쫓아내고 다시 띄우는데, 평범한 감시 규칙은 그것을 이상으로 본다. 결과가 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"* 이고, 사람이 그것을 배운다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다.\"*\n\n**회사가 그 상태에 이름을 붙였다 — '알림의 형해화'.** 그리고 **대가를 실제로 치렀다**: *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"*\n\n**규모가 그것을 밀어붙인다** — **300+ 마이크로서비스**와 **수백 노드**이고, 회사가 *\"관리하는 클러스터 수나 노드 수가 증가함에 따라 … 토일의 증대\"* 라고 적는다. 그리고 사람에게 맡기면 *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"*.\n\n**이 기능이 산 것은 정확도가 아니라 신뢰다**(이 정리는 이 사이트의 것이다) — 알림이 다시 읽히게 만드는 것.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "300+ 마이크로서비스 · 수백 노드",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "고치기 전 알림량",
+            "value": "업그레이드마다 Slack 에 수십~수백 건의 Pod 이상 통지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "발화 조건",
+            "value": "pending 5분 (평가 간격 1분)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "묶기",
+            "value": "group wait 30초 · group interval 5분 · repeat interval 4시간",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "제어 쪽 상한",
+            "value": "Cloud Run 최대 실행 1시간 — 넘으면 Cloud Tasks 로 이어 간다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "고친 뒤 알림이 몇 건으로 줄었는지, 놓친 장애가 줄었는지가 나오지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "문제의 이름을 볼 때",
+          "thought": "**회사가 고친 것은 감시가 아니라 사람의 습관이다.** *\"알림의 형해화\"* 라는 말이 그것을 정확히 가리킨다 — 규칙은 잘 돌고 있었고 알림도 잘 갔는데, **읽는 쪽이 읽기를 그만뒀다.** **관측의 실패가 기술이 아니라 신뢰의 문제로 나타난 자리다**(이 정리는 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무음 구간과 반대로 간 것을 볼 때",
+          "thought": "흔한 답은 **평소 켜 두고 정비 시간에 끄는 것**(PagerDuty Maintenance Window · Alertmanager Silence)인데, 회사가 그것을 못 쓰는 이유를 적는다 — *\"업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* 그래서 **평소 꺼 두고 이벤트가 오면 켜는 쪽**으로 뒤집었다. **모르는 것이 시각이지 사건이 아니라는 점을 이용한 셈이다**(이 표현은 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "제어 경로의 부품을 셀 때",
+          "thought": "규칙 하나를 켜고 끄는 데 **Pub/Sub · Eventarc · Cloud Run · Cloud Tasks · IAP · JWT · Grafana REST API** 가 줄줄이 붙는다. 그리고 회사가 걸린 자리를 둘 적는다 — 서비스 계정 토큰 경로가 없어 *\"IAP 인증과 별개로 Grafana 의 사용자 인증이 필요\"* 하고, *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **감시를 지키려고 만든 것이 새로 지켜야 할 것이 됐다**(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "결과를 찾다가",
+          "thought": "**고친 뒤 알림이 몇 건으로 줄었는지가 없다.** 문제 쪽은 *\"수십~수백 건\"* 이라고 세는데 **해결 쪽에 대응하는 숫자가 없다.** 이 회사에서 **네 번째로 확인되는 패턴이다** — 버린 대안과 대가는 잘 적는데 자기 개선 폭은 반만 적는다(캐시·고속화는 적고 페이싱·이설·여기는 안 적는다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "알림의 형해화",
+            "what": "회사가 붙인 이름. 알림이 잘 가는데 사람이 읽기를 그만둔 상태"
+          },
+          {
+            "name": "UpgradeEvent",
+            "what": "GKE Cluster Notifications 가 보내는 업그레이드 시작 신호. **규칙을 깨우는 방아쇠**"
+          },
+          {
+            "name": "UpgradeInfoEvent",
+            "what": "완료 신호. **규칙을 다시 재운다**"
+          },
+          {
+            "name": "일시정지 상태",
+            "what": "업그레이드용 규칙의 평소 상태. 켜 두는 게 아니라 꺼 둔다"
+          },
+          {
+            "name": "pending 5분",
+            "what": "이상이 5분간 지속돼야 발화한다. 평가 간격은 1분"
+          },
+          {
+            "name": "토일(toil)",
+            "what": "*\"관리하는 클러스터 수나 노드 수가 증가함에 따라\"* 늘어나는 수작업 부담"
+          }
+        ],
+        "invariants": [
+          "**업그레이드용 규칙은 평소 재워져 있다** — 이벤트가 와야 깨어난다",
+          "**깨우고 재우는 것은 클러스터가 보낸 이벤트가 정한다** — 사람이 시간을 정하지 않는다",
+          "**이상은 5분 지속돼야 발화한다** — 즉시 감지를 포기했다",
+          "⚠️ **제어 경로에 사람 계정 인증이 필요하다** — 서비스 계정 토큰 경로가 없다",
+          "⚠️ **일시정지 갱신용 폴더 권한이 영속화되지 않는다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "평소에는 업그레이드용 규칙을 재워 둔다",
+            "why": "켜 두면 정상적인 Pod 축출까지 이상으로 잡힌다"
+          },
+          {
+            "step": "GKE 가 업그레이드 시작 이벤트를 보낸다",
+            "why": "시각은 예측 못 해도 사건은 알려 준다"
+          },
+          {
+            "step": "Pub/Sub 과 Eventarc 를 거쳐 Cloud Run 이 받는다",
+            "why": "이벤트를 받아 처리할 자리가 필요하다"
+          },
+          {
+            "step": "Grafana REST API 로 규칙의 일시정지를 푼다",
+            "why": "IAP 인증과 별개로 Grafana 사용자 인증이 필요하다"
+          },
+          {
+            "step": "이상이 5분 지속되면 발화하고 30초 모아 보낸다",
+            "why": "업그레이드 중의 짧은 흔들림을 걸러 낸다"
+          },
+          {
+            "step": "한 시간이 넘어가면 Cloud Tasks 로 이어 간다",
+            "why": "Cloud Run 의 최대 실행 시간이 1시간이다"
+          },
+          {
+            "step": "완료 이벤트를 받으면 규칙을 다시 재운다",
+            "why": "평시 규칙만 남긴다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "정비 시간에 알림을 끄는 흔한 방법을 쓸 것인가?",
+            "chosen": "**아니다 — 평소 꺼 두고 이벤트로 켠다.** *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다\"*",
+            "alternatives": [
+              "PagerDuty Maintenance Window",
+              "Alertmanager Silence",
+              "사람이 그때그때 눈으로 감시하기 — 기존 방식이다"
+            ],
+            "tradeoff": "**시간을 못 믿으니 이벤트를 믿기로 한 것인데, 그러면 이벤트가 안 오거나 늦으면 규칙이 잘못된 상태로 남는다**(이 지적은 이 사이트의 것이다). ⚠️ **이벤트 유실 시의 처리는 글에 없다.** 얻는 것은 **업그레이드가 언제 시작할지 몰라도 된다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "업그레이드 중에도 감시를 유지할 것인가, 아예 끌 것인가?",
+            "chosen": "**유지하되 다른 규칙으로 본다.** 업그레이드 상황을 아는 규칙을 그때만 켠다",
+            "alternatives": [
+              "업그레이드 동안 알림을 전부 끄기",
+              "규칙을 안 바꾸고 사람이 걸러 읽기"
+            ],
+            "tradeoff": "**전부 끄면 그 시간대의 진짜 장애도 안 보인다** — 회사가 실제로 겪은 것이 그 반대 형태다: 안 끄고 뒀더니 *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **대신 규칙이 두 벌이 되어 유지할 것이 는다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "이상을 얼마나 빨리 알릴 것인가?",
+            "chosen": "**늦게 알린다** — pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat **4시간**",
+            "alternatives": [
+              "즉시 발화",
+              "반복 주기를 짧게 잡아 재촉하기"
+            ],
+            "tradeoff": "**즉시 감지를 포기했다** — 5분 안에 스스로 낫는 것은 안 알리기로 한 셈이고, 그만큼 **진짜 급한 것도 5분 늦게 안다**(이 지적은 이 사이트의 것이다). 얻는 것은 **채널이 다시 읽을 만해지는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "제어를 무엇으로 실행할 것인가?",
+            "chosen": "**Cloud Run 이 Grafana REST API 를 부른다.** 이벤트는 Pub/Sub 과 Eventarc 로 온다",
+            "alternatives": [
+              "클러스터 안의 컨트롤러로 두기",
+              "사람이 콘솔에서 켜고 끄기"
+            ],
+            "tradeoff": "**Cloud Run 의 최대 실행 시간이 1시간**이라 더 긴 업그레이드에는 **Cloud Tasks** 를 끼워야 한다 — **부품이 하나 더 는다.** 그리고 **감시를 지키려고 만든 것이 새로 지켜야 할 것이 됐다**(이 표현은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "Grafana 를 무엇으로 인증할 것인가?",
+            "chosen": "**사람 계정에 대응하는 JWT claim 매핑으로 간다.** *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*",
+            "alternatives": [
+              "서비스 계정 토큰으로 붙기 — 경로가 없다"
+            ],
+            "tradeoff": "**자동화가 사람 계정을 흉내 내야 한다** — 기계용 자격 증명 경로가 없어서다(이 정리는 이 사이트의 것이다). 그리고 회사가 걸린 자리를 하나 더 적는다: *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다.\"* ⚠️ **그것을 어떻게 다루기로 했는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "사람의 판단에 계속 맡길 것인가?",
+            "chosen": "**아니다 — 규칙으로 옮긴다.** 맡겨 두면 *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* 이고 *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* 하다",
+            "alternatives": [
+              "운용 담당자가 업그레이드 중에 눈으로 감시하기 — 기존 방식"
+            ],
+            "tradeoff": "**규모가 그 선택을 강제했다** — *\"관리하는 클러스터 수나 노드 수가 증가함에 따라 … 토일의 증대\"*, **300+ 마이크로서비스 · 수백 노드**. **대신 규칙이 모르는 종류의 이상은 이제 아무도 안 본다**(이 지적은 이 사이트의 것이다) — 사람은 눈으로 훑기라도 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Grafana Alert (REST API · Notification Policy · Alerting History)",
+            "role": "규칙을 재우고 깨우는 대상이자 알림을 묶어 보내는 곳",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "GKE Cluster Notifications",
+            "role": "UpgradeEvent 와 UpgradeInfoEvent 로 업그레이드의 시작과 끝을 알린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Pub/Sub + Eventarc",
+            "role": "클러스터의 이벤트를 제어 쪽으로 나른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Cloud Run",
+            "role": "이벤트를 받아 Grafana REST API 를 부른다. 최대 실행 1시간이라는 상한이 설계에 들어온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Cloud Tasks",
+            "role": "1시간을 넘는 감시를 이어 간다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "IAP + JWT",
+            "role": "제어 경로의 인증. 서비스 계정 토큰 경로가 없어 사람 계정에 claim 을 맞춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "PromQL",
+            "role": "Pod 상태를 질의하는 규칙을 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "알림이 잘 가는데 사람이 안 읽는다",
+            "why_hard": "기술적으로는 아무것도 고장 나지 않았다. 정상적인 Pod 축출이 이상으로 잡히고, 그것이 반복되면 사람이 **읽지 않는 법을 배운다** — *\"이른바 '알림의 형해화' 입니다.\"* **그리고 그 대가가 실제로 나타났다**: *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"*",
+            "current_best": "**정상 상황을 아는 규칙을 그때만 켠다.** 시각이 아니라 **사건**으로 켠다 — GKE 가 보내는 업그레이드 이벤트를 방아쇠로 쓴다. ⚠️ **고친 뒤 알림이 몇 건으로 줄었는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "problem": "관측을 지키는 장치도 지켜야 한다",
+            "why_hard": "규칙 하나를 켜고 끄는 데 **Pub/Sub · Eventarc · Cloud Run · Cloud Tasks · IAP · JWT · Grafana REST API** 가 붙는다. 그중 둘에서 실제로 걸렸다 — 서비스 계정 토큰 경로가 없고, *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*.",
+            "current_best": "**있는 부품으로 우회한다** — 1시간 상한은 Cloud Tasks 로, 인증은 JWT claim 매핑으로. ⚠️ **권한 영속화 문제를 어떻게 다루기로 했는지는 글에 없고**, **이벤트가 유실될 때의 처리도 없다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-03",
+                "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "업그레이드가 알림을 깨우고 재운다",
+          "question": "시각을 모르는데 어떻게 그때만 켜는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  IDLE[\"평소 — 업그레이드용 규칙은 재워 둔다\"]:::list\n  EV[\"GKE 가 업그레이드 시작을 알린다\"]:::list\n  PS[\"Pub/Sub 과 Eventarc 를 거친다\"]:::list\n  CR[\"Cloud Run 이 받아 Grafana API 를 부른다<br/>사람 계정 인증이 필요하다\"]:::list\n  ON[\"<b>규칙을 깨운다</b><br/>• 5분 지속돼야 발화<br/>• 30초 모아 보낸다<br/>• 4시간마다 반복\"]:::accent\n  LONG[\"한 시간이 넘으면 Cloud Tasks 로 이어 간다\"]:::list\n  END[\"완료 이벤트를 받으면 다시 재운다\"]:::list\n  X1[\"정비 시간에 끄는 방식<br/>버렸다 — 시작과 끝을 예측할 수 없다\"]:::quiet\n  X2[\"사람이 눈으로 훑기<br/>버렸다 — 판단이 담당자 경험에 달린다\"]:::quiet\n  IDLE --> EV --> PS --> CR --> ON\n  ON --> LONG --> END\n  ON --> END\n  END --> IDLE\n  IDLE -.-> X1\n  IDLE -.-> X2"
+        },
+        {
+          "title": "한 알림이 지나는 자리",
+          "question": "어떤 이상이 사람에게 닿고 어떤 것이 걸러지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 정상\n  정상 : <b>Pod 이 잘 돌고 있다</b><br/>규칙은 재워져 있거나 평시 규칙만 켜져 있다\n  정상 --> 흔들림 : Pod 이 이상 상태가 됐다\n  흔들림 : <b>아직 알리지 않는다</b><br/>5분 지속돼야 발화한다 · 평가는 1분마다\n  흔들림 --> 정상 : 5분 안에 스스로 돌아왔다\n  흔들림 --> 발화 : 5분 넘게 이어졌다\n  발화 : <b>모아서 보낸다</b><br/>첫 통지 전에 30초를 기다려 같은 것들을 묶는다\n  발화 --> 채널\n  채널 : <b>사람이 본다</b><br/>업그레이드 중이라면 그 상황을 아는 규칙이 낸 것이다\n  채널 --> 반복 : 안 고쳐졌다\n  반복 : <b>네 시간 뒤에 다시</b><br/>이 간격이 길수록 채널은 조용하지만 잊히기도 쉽다\n  반복 --> 채널\n  채널 --> 정상 : 고쳐졌다\n  정상 --> [*]"
+        },
+        {
+          "title": "이 설계가 못 보는 자리",
+          "question": "되살린 알림은 무엇을 여전히 놓치는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"이벤트로 규칙을 켠다\"]:::list\n  B[\"<b>이벤트가 안 오거나 늦으면</b><br/>규칙이 잘못된 상태로 남는다 — 처리가 글에 없다\"]:::accent\n  C[\"5분 지속돼야 발화한다\"]:::list\n  D[\"진짜 급한 것도 5분 늦게 안다\"]:::list\n  E[\"사람 눈 대신 규칙이 본다\"]:::list\n  F[\"규칙이 모르는 종류의 이상은 이제 아무도 안 본다\"]:::list\n  G[\"폴더 권한이 영속화되지 않는다\"]:::list\n  H[\"회사가 적었지만 어떻게 다루는지는 안 적혔다\"]:::list\n  I[\"고친 뒤 알림이 몇 건인지 없다\"]:::list\n  J[\"나아졌는지 이 글로는 알 수 없다\"]:::list\n  N[\"<i>권한 문제만 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+          "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+          "publisher": "CyberAgent Developers Blog",
+          "date": "2025-12-03",
+          "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
         }
       ]
     }
