@@ -471,6 +471,27 @@
         "repurchase-timing"
       ],
       "file": "which-way-it-leans.md"
+    },
+    {
+      "slug": "reversible-first",
+      "title": "되돌릴 수 있는 것을 먼저 한다 — 되돌릴 수 없는 지점을 어디까지 미뤘는가",
+      "question": "순서를 바꿔 되돌릴 길을 남긴 곳과, 그 길을 좁히고 앞으로만 간 곳은 무엇이 달랐는가?",
+      "companies": [
+        "figma",
+        "shopify",
+        "toss",
+        "yelp",
+        "planetscale"
+      ],
+      "features": [
+        "horizontal-sharding",
+        "webgpu-renderer",
+        "checkout-reservations",
+        "payment-approval",
+        "in-place-swap",
+        "parallel-backups"
+      ],
+      "file": "reversible-first.md"
     }
   ]
 }
