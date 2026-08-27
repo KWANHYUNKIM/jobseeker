@@ -8,39 +8,42 @@
 
 ## 지금 파는 중
 
-**(없다 — Target 을 사이클 224 에서 닫았다. 42번째 회사, 도메인 3개 · 기능 5개.)**
+**(없다 — 사이클 225 는 후보 조사였다. 큐를 1/3 에서 3/3 으로 채웠다.)**
 
-**🚨 다음 사이클은 후보 조사다. 큐 잔량 1/3 — bol.com 뿐이다.**
+**🚨 다음 사이클은 [신규] — `## 대기` 맨 위부터 판다. 순서는 bol.com → Grab → Spotify.**
 
-**224 에서 두 편을 열어 하나만 썼다.** `accessory-recommendations-with-llms`(GRAM, 2025-07)는
-**버린 대안이 하나도 없고 대가·지연·비용·환각 위험이 한 줄도 없어** 쓰지 않았다
-(222 의 TargetRun 과 같은 잣대). `buy-it-again-part-2`(2025-03)는 반대였다 —
-**버린 모델 둘이 수치와 함께** 있고(**PCIC 0.062/2h · SLRC 0.143/1300h · SLH-BIA 0.131/250h**),
-**회사가 대가를 직접 한 문장으로** 적었다(*"덜 팔리는 품목을 빼면 지연은 줄지만 잠재적
-반복구매를 의도치 않게 빠뜨릴 위험"*). **결정 6개가 나와서 `repurchase-timing` 으로 썼다.**
+**⚠️ bol.com 이 맨 위인데 위험이 있다 — 최신 글이 2024-11 이다.** 열자마자 **최신 글의 연도부터
+확인한다.** 2025 이후 글이 없으면 **`## 보류` 로 내리고 Grab 으로 넘어간다**(멈춘 블로그는
+도메인을 두 개 열 만큼의 재료가 안 나온다). 확인해 둔 재료는 모놀리스 데이터 분리 —
+**4TB 중 3TB**, 이관 잡 **19~23시간**, 전체 **2~3개월**, CPU **4% → 약 15%**, 버린 대안 셋.
 
-**Target 이 남긴 것 — 다섯 기능이 다 같은 모양이다**(이 정리는 이 사이트의 것). **정확한 답을
-포기하고 그 값을 숫자로 적는다**: 분할 **시간 8% 로 격차 91%** · 배치 **수조 변수 → 수백만** ·
-재구매 **0.143 대신 0.131 로 1300h → 250h** · 밴딧 **확실성 대신 탐색** · 쇼백 **강제력 대신 참여**.
-`business_model` 에 이 사이트의 정리라고 밝혀 한 문단으로 적었다.
+**225 에서 확인한 것 — 큐에 넣은 둘은 본문까지 봤다.**
+- **Grab**(SG, 모빌리티/슈퍼앱) — **동남아 0곳을 채운다.** 블로그가 크고 살아 있다
+  (최신 **2026-08-21**, **약 240편**, 분류별 목록이 열린다 — Engineering 84 · Database 20 등).
+  읽은 글에 **버린 대안 셋 + 되돌린 실험 + 스스로 적은 대가**가 다 있다.
+  *"인메모리 인덱스로 되돌렸다"* · *"동시 다중 AZ 장애는 이 워크로드에서 감수할 만했다."*
+- **Spotify**(SE, 스트리밍/음악) — **이 사이트의 스트리밍 둘이 다 영상이라 음악이 비어 있다.**
+  읽은 글(RAP)에 **대가가 다섯 줄** 명시돼 있다. ⚠️ **최근 글이 LLM·에이전트 쪽으로 기울어
+  있으니**, 도메인을 열 때 그 묶음만 보지 말고 Platform·Data 분류를 같이 본다.
 
-**⚠️ 후보 조사에서 채울 자리** — **라틴아메리카 0곳**(접었다, 새 단서 없으면 재시도 금지) ·
-**게임 1곳**(Roblox) · **아프리카 1곳**(Moniepoint) · **인도 소수**.
-**bol.com 은 최신 글이 2024-11 이라 멈췄을 수 있으니 열 때 최신 글부터 확인한다.**
+**넣지 않은 것과 그 이유** — 세 곳을 더 열어 봤다.
+- **Cloudflare** — 블로그는 아주 활발한데(최신 2026-08-24) **연 글이 제품 발표였다.**
+  ❌ 가 아니라 ⚠️ 다: 심층 글이 섞여 있으니(예: Spectre 재방문) **넣으려면 마케팅이 아닌
+  글을 먼저 찾아야 한다.** 지금은 넣지 않았다.
+- **Supercell** `supercell.com/en/blog/` — **404.**
+- **CRED** `blog.cred.build` — **`cred.club` 으로 301.** 엔지니어링 블로그가 없어진 것으로 보인다.
 
-**비교 문서 축 다섯이 재료가 찬 채 대기 중이고, Target 이 둘을 두껍게 만들었다.**
+**⚠️ 아직 비어 있는 자리** — **라틴아메리카 0곳**(접었다, 새 단서 없으면 재시도 금지) ·
+**게임 1곳**(Roblox — Supercell 404, Riot 소멸, Unreal 403 이라 후보가 마르고 있다) ·
+**아프리카 1곳**(Moniepoint) · **인도 소수**(CRED 도 사라졌다).
+
+**비교 문서 축 다섯이 재료가 찬 채 대기 중이다.**
 - **'재 보고 고른다'** — Careem `cost-leaks` · Zerodha `log-storage` · Yelp `partition-access` ·
-  Doximity `prod-profiling` · **Target `repurchase-timing`(세 모델을 NDCG 와 학습 시간으로
-  나란히 재고 가장 정확한 것을 안 골랐다)**. **재료가 다섯이다 — 가장 두껍다.**
+  Doximity `prod-profiling` · **Target `repurchase-timing`**. **재료 다섯 — 가장 두껍다.**
 - **'무엇을 잃기로 정했는가'** — Moniepoint `critical-path` · Doximity `cdc-overlap` ·
-  Yelp `partition-access` · **Target `split-shipments`(남은 9% 를 안 산다)** ·
-  **Target `repurchase-timing`(덜 팔리는 품목이 먼저 빠진다)**.
+  Yelp `partition-access` · **Target `split-shipments`** · **Target `repurchase-timing`**. 다섯.
 - 나머지 셋: '틀렸다는 것을 어떻게 알아차리는가' · '미루되 미룬 것이 안 보이게 한다' ·
   '되돌릴 수 있는 것을 먼저 한다'.
-
-**🚫 `tech.target.com` 분류별 목록** — `?category=` **404**, 분류 링크 href 가 JS 로 붙어 본문에
-없음, 페이지 URL 형식 모름. **전체 약 100편 중 첫 페이지 15편만 셌고 그중 9편을 읽었다.**
-새 단서 없이 다시 안 두드린다.
 
 
 ## 다음 선택지
@@ -111,6 +114,10 @@
 | `tech.target.com` · `techlab.bol.com/en` | ✅ 목록·본문 모두 열린다. Target 은 **한 페이지 15편 × 7페이지(약 100편)** 이고 분류 링크가 있다. bol.com 은 **최신 글이 2024-11** 이라 멈췄을 수 있다 |
 | `corporate.target.com` 보도자료·소개 | ✅ **WebFetch 로 실적 표까지 온다** — 브라우저가 필요 없었다(사이클 219). `investors.target.com` 은 **브라우저 권한이 막혀 있어** 시도하지 않는다 |
 | `www.backblaze.com/blog` | ⚠️ 열리지만 **데이터·홍보 성격** — Drive Stats 수치는 넘치는데 **의사결정과 대가가 없다** |
+| `engineering.grab.com` | ✅ **목록·본문·분류 모두 열린다**(사이클 225). **약 240편**(24페이지 × 10), 분류는 `/categories/<engineering\|data-science\|design\|product\|security>/` 로 편수까지 나온다 |
+| `engineering.atspotify.com` | ✅ **목록·본문 모두 열린다**(사이클 225). 글 주소는 `/YYYY/M/<slug>` 형식이고 목록은 '더 보기' 로 이어진다 |
+| `blog.cloudflare.com` | ⚠️ **열리지만 제품 발표가 섞여 있다** — 연 글(`task-based-oauth-consent`)이 마케팅이었다. **심층 글을 골라야 한다** |
+| `supercell.com/en/blog/` · `blog.cred.club` | ❌ 앞은 **404**, 뒤는 `cred.club` 으로 **301**(블로그가 없어진 듯) |
 | `tech.ocado.com` · `engineering.quintoandar.com.br` · `tech.mercadolibre.com` | ❌ DNS 자체가 없다 |
 | `blog.wildlifestudios.com` | ❌ DNS 자체가 없다 (주소를 잘못 알고 있었다) |
 | `www.cockroachlabs.com/blog` | ⚠️ 열리지만 **첫 페이지가 제품 마케팅 위주** — 심층 글을 따로 찾아야 한다 |
