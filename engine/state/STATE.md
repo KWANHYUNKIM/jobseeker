@@ -8,43 +8,47 @@
 
 ## 지금 파는 중
 
-**(없다. 사이클 226 은 사이클 225 가 저지른 실수를 고치는 데 썼다.)**
+**LinkedIn (US · 소셜/구인·구직) — 43번째. 회사 프로파일까지 썼다. 기능은 0개다.**
 
-**🚨 사이클 225 의 후보 조사가 통째로 틀렸다 — 넣은 둘이 다 이미 있는 회사였다.**
-`Grab` 도 `Spotify` 도 **이미 `done` 인 회사**다(Grab 은 2026-08-22 에 도메인 3개·기능 3개로
-닫혔다: `counter-service` · `iceberg-lake` · `dispatchgym`). **넣지 않은 Cloudflare 도 이미 있다.**
-226 이 Grab 프로파일을 새로 쓰다가 `index.json` 중복 검사에 걸려서야 알았고,
-**그때 이미 `grab.json` 을 덮어쓴 뒤였다.** `git checkout -- ` 로 복구했다(커밋 전이라 무사했다).
+**중복 검사를 먼저 했다**(226 의 교훈) — `index.json` 에도 `companies/` 에도 없었다.
 
-**🔴 다음 사이클이 반드시 지킬 것 — 큐에 회사를 넣기 전에 `index.json` 의 기존 목록과 대조한다.**
-```
-python3 -c "import json;print(sorted(e['name_en'] for e in json.load(open('jd-viewer/public/reveng/index.json'))['companies']))"
-```
-**블로그가 좋은지만 보고 '이 사이트에 없는 자리' 라고 단정하지 않는다.** 225 는 *"동남아 0곳"*
-이라고 적었는데 **Grab 이 바로 그 동남아였다.**
+**도메인 2개.**
+1. **`랭킹 모델을 얼마나 빨리 다시 만들 수 있는가`** — 본문 1편(증류 학습 인프라, 2026-08-06).
+   회사가 문제를 그대로 적는다: *"학습 인프라의 속도와 효율이 우리가 얼마나 빨리 랭킹
+   모델을 반복하고 개선할 수 있는지를 결정하는 1차 제약이다."* **2일 넘게 → 5시간 미만.**
+   대가도 스스로 적는다 — *"그 교환은 비용을 서빙에서 학습으로 밀어낸다."*
+2. **`자기 개발 과정에 AI 를 붙일 때 무엇을 통제하는가`** — 본문 1편(AI 코드 리뷰, 2026-08-13).
+   **기성 도구를 버린 이유가 셋, 각각 적혀 있다.** 가장 분명한 것 —
+   *"기성 리뷰 도구는 당신이 소비하는 제품이지 당신이 운영하는 인프라가 아니다.
+   벤더의 모델이나 프롬프트 변경을 카나리로 돌릴 수 없고, 한 제공자가 나빠졌을 때
+   두 번째 리뷰어로 페일오버할 수도 없다."* 주 **79,000+ 리뷰 · 7,500+ 저장소**, 채택률 **63.9%**.
+   **두 번째 글 `ai/qa-agent-reimagining-software-quality-with-ai-driven-autonomous-testing`
+   (2026-06-18)은 아직 안 읽었다 — 기능을 쓰기 전에 반드시 읽는다.**
 
-**🔴 그리고 파일을 새로 쓰기 전에 존재 여부를 먼저 본다** — `companies/<slug>.json` 이 이미
-있으면 그 회사는 이미 판 것이다. 덮어쓰기 전에 `ls` 한 줄이면 막을 수 있었다.
+**🔴 이번엔 절차 하나를 못 지켰고 그것을 데이터에 밝혀 뒀다.** `linkedin.com/blog/engineering` 의
+**분류 페이지가 WebFetch 로 글을 하나도 안 준다**(내비게이션만 온다 — `/infrastructure`,
+`/artificial-intelligence`, `/search` 전부). 유일하게 열린 `/talent` 은 12편인데 대부분 경력
+이야기였다. **그래서 '이 주제로 글이 몇 편인가' 를 못 센 채 도메인을 열었다.**
+`open_questions` 첫 줄에 그렇게 적었다. **다음 사이클에 브라우저 `get_page_text` 로 다시
+시도해 볼 만하다**(Netflix·카카오에서 그렇게 뚫었다).
 
-**큐 정리 결과 — 대기 1/3 이다.**
-- `Grab`·`Spotify` 를 **중복이라 뺐다.**
-- `bol.com` 을 **보류로 내렸다** — **블로그 글이 2024-11-07 에서 멈췄다**(16페이지의 1페이지가
-  최신인데 2025·2026 글이 없고, 2026 항목 둘은 경력 팟캐스트다). 새 글이 올라오면 다시 꺼낸다.
-- **`LinkedIn` 을 새로 넣었다**(본문까지 확인). 이 사이트에 **구인·구직 그래프가 없고**,
-  이 레포 자체가 채용 사이트라 결이 맞는다. 읽은 글이 대가를 한 문장으로 적는다 —
-  *"그 교환은 비용을 서빙에서 학습으로 밀어낸다."* **2일 → 5시간 미만**, 0.6B 학생 모델을
-  **GPU당 초당 약 22,000 요청**으로 서빙.
+**⚠️ 큐가 0 이다 — 이 회사를 완주하면 곧바로 후보 조사다.**
 
-**🚨 다음 사이클은 [신규] LinkedIn 을 열고, 그다음 사이클은 또 후보 조사다**(큐가 1 이므로).
-**이번엔 반드시 기존 42곳과 대조하면서 찾는다.**
+**실제로 비어 있는 자리(목록과 대조해 셌다)** — **라틴아메리카 0곳**(접었다) · **게임 1곳**(Roblox) ·
+**아프리카 1곳**(Moniepoint) · **인도 1곳**(Zerodha) · **여행 1곳**(trivago).
+**동남아는 Grab 이 있어 비어 있지 않다.**
 
-**⚠️ 실제로 비어 있는 자리(목록과 대조해 다시 셌다)** — **라틴아메리카 0곳**(접었다) ·
-**게임 1곳**(Roblox) · **아프리카 1곳**(Moniepoint) · **인도 1곳**(Zerodha) · **여행 1곳**(trivago).
-**동남아는 비어 있지 않다 — Grab 이 있다.**
+**후보 조사 때 쓸 것 — 이미 확인된 실패**: `etsy.com/codeascraft` 403 · `tech.groww.in` 403 ·
+`tech.olacabs.com` 연결 거부 · `blog.phonepe.com` → medium 302 · `about.gitlab.com/blog` ⚠️.
+**아직 안 열어 본 것**: Booking.com · Skyscanner · Wise · Revolut · Bolt · Adevinta(유럽) ·
+Cookpad · SmartNews · PayPay · DeNA · CyberAgent(일본) · Sea/Shopee · GoTo/Gojek ·
+Tokopedia · Traveloka(동남아) · Unity · Nexon · Krafton(게임) · Fastly · Vercel · Temporal ·
+Neon · Elastic · MongoDB · Confluent · Sentry · Honeycomb(인프라) · Reddit · Wayfair ·
+Zillow · Robinhood · Plaid · Ramp(미국). **반드시 기존 43곳과 대조하고 넣는다.**
 
 **비교 문서 축 다섯이 재료가 찬 채 대기 중이다.** 가장 두꺼운 것은 **'재 보고 고른다'**
-(Careem `cost-leaks` · Zerodha `log-storage` · Yelp `partition-access` · Doximity `prod-profiling` ·
-Target `repurchase-timing` — 다섯)과 **'무엇을 잃기로 정했는가'**(다섯)다.
+(Careem · Zerodha · Yelp · Doximity · Target `repurchase-timing` — 다섯)과
+**'무엇을 잃기로 정했는가'**(다섯)다.
 
 
 ## 다음 선택지
