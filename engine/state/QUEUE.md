@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Target** | US · 커머스(리테일 물류) | **기능 3개 · 도메인 3개**(220 `split-shipments` · 221 `infra-showback` · 222 `layout-bandits`). **세 도메인이 다 찼다.** 남은 재료는 `math-behind-inventory-delivery-optimization`(재고 배치)와 추천 묶음의 안 읽은 두 편. **다음 사이클에 닫을지 더 팔지 정한다** |
+| **Target** | US · 커머스(리테일 물류) | **기능 4개 · 도메인 3개**(220 `split-shipments` · 221 `infra-showback` · 222 `layout-bandits` · 223 `inventory-placement`). 남은 재료는 **추천 묶음의 안 읽은 두 편**(`accessory-recommendations-with-llms` · `buy-it-again-part-2`)뿐. **다음 사이클에 그 한 편을 열어 보고, 얕으면 닫는다** |
 
 ## 대기
 
