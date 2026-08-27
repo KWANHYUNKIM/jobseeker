@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Wayfair** | US · 커머스(대형 물품) | **기능 3개**(241 `damage-judgment` · 242 `beyond-taxonomy` · 243 `dimension-validation`). 열어 둔 도메인 2개가 다 찼고 손상 도메인은 기능 2개. **남은 재료는 Data Science 태그 90편**(아직 한 편도 안 봤다 — `?tag=Data%20Science`). **다음 사이클에 세 번째 도메인을 열지 닫을지 정한다** |
+| **Wayfair** | US · 커머스(대형 물품) | **기능 4개 · 도메인 3개**(241 `damage-judgment` · 242 `beyond-taxonomy` · 243 `dimension-validation` · 244 `resolution-choice`). 244 에서 **세 번째 도메인 `주문 뒤에 생긴 문제를 누가 어떻게 풀 것인가`** 를 열었다. **남은 재료는 Wilma(공급업체 이관 개입) 한 편** — 본문 수치를 아직 확인 못 했다. **다음 사이클에 그 기능을 쓰고 닫는다** |
 
 ## 대기
 
