@@ -23,6 +23,8 @@
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **Cookpad**(JP · 커머스/레시피) `techlife.cookpad.com` — ⚠️ **살아 있지만 얇다**(최신 **2026-05-12**). 홈에 보이는 세 편이 *iOS Liquid Glass 대응 · RubyKaigi 부스 소개 · RuboCop 캐시* 라 **두 편 이상 묶이는 주제가 안 보인다.** 전부 일본어라 본문 인용은 가능하다. **과거 글 목록을 더 열어 봐야 판단이 선다** — 이 회사는 Ruby·iOS 쪽 축적이 있는 것으로 알려져 있으나 이 사이트가 확인한 것은 홈 세 편뿐이다(사이클 238).
+
 - **iFood** (BR · 배달) — `engineering.ifood.com.br` 이 **WebFetch 403**(사이클 206). 라틴아메리카 0곳을 메울 후보였고
   브라질 최대 배달이라 배민·Careem 과 비교할 축이 좋은데 **직접 열리지 않는다.** 다른 경로가 보이면 다시 볼 것.
 - **Wildlife Studios** (BR · 게임) — `blog.wildlifestudios.com` **DNS 자체가 없다**(사이클 206).
