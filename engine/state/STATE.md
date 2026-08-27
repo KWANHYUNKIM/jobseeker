@@ -8,47 +8,56 @@
 
 ## 지금 파는 중
 
-**LinkedIn (US · 소셜/구인·구직) — 43번째. 회사 프로파일까지 썼다. 기능은 0개다.**
+**LinkedIn (US · 소셜/구인·구직) — 43번째. 기능 1개 · 도메인 2개.**
 
-**중복 검사를 먼저 했다**(226 의 교훈) — `index.json` 에도 `companies/` 에도 없었다.
+228 에서 **`ai-code-review`** 를 썼다. 결정 7 · 그림 3 · 생각 4 · 스택 4 · 난제 2 · ui 4핀.
 
-**도메인 2개.**
-1. **`랭킹 모델을 얼마나 빨리 다시 만들 수 있는가`** — 본문 1편(증류 학습 인프라, 2026-08-06).
-   회사가 문제를 그대로 적는다: *"학습 인프라의 속도와 효율이 우리가 얼마나 빨리 랭킹
-   모델을 반복하고 개선할 수 있는지를 결정하는 1차 제약이다."* **2일 넘게 → 5시간 미만.**
-   대가도 스스로 적는다 — *"그 교환은 비용을 서빙에서 학습으로 밀어낸다."*
-2. **`자기 개발 과정에 AI 를 붙일 때 무엇을 통제하는가`** — 본문 1편(AI 코드 리뷰, 2026-08-13).
-   **기성 도구를 버린 이유가 셋, 각각 적혀 있다.** 가장 분명한 것 —
-   *"기성 리뷰 도구는 당신이 소비하는 제품이지 당신이 운영하는 인프라가 아니다.
-   벤더의 모델이나 프롬프트 변경을 카나리로 돌릴 수 없고, 한 제공자가 나빠졌을 때
-   두 번째 리뷰어로 페일오버할 수도 없다."* 주 **79,000+ 리뷰 · 7,500+ 저장소**, 채택률 **63.9%**.
-   **두 번째 글 `ai/qa-agent-reimagining-software-quality-with-ai-driven-autonomous-testing`
-   (2026-06-18)은 아직 안 읽었다 — 기능을 쓰기 전에 반드시 읽는다.**
+**QA 에이전트 글을 먼저 읽은 것이 이 기능의 축을 정했다.** 두 글이 같은 묶음이 맞았고,
+**같은 축을 공유한다 — 신뢰가 통화다.** 그런데 두 글이 그 축을 다르게 다룬다.
+- **QA 에이전트는 정면으로 적는다** — *"환영 버그를 보고하는 자율 에이전트는 쓸모없는
+  것보다 나쁘다. 신뢰를 깎아먹는다."* 그래서 *"재현율보다 정밀도"* 를 택했다고 밝힌다.
+- **코드 리뷰에는 그 문장이 없다.** 오탐률도 환각률도 없고 **채택률(63.9%)만** 있다.
+**같은 회사가 두 시스템에서 다른 자를 쓰고 있다** — 이걸 난제와 생각에 적었다.
 
-**🔴 이번엔 절차 하나를 못 지켰고 그것을 데이터에 밝혀 뒀다.** `linkedin.com/blog/engineering` 의
-**분류 페이지가 WebFetch 로 글을 하나도 안 준다**(내비게이션만 온다 — `/infrastructure`,
-`/artificial-intelligence`, `/search` 전부). 유일하게 열린 `/talent` 은 12편인데 대부분 경력
-이야기였다. **그래서 '이 주제로 글이 몇 편인가' 를 못 센 채 도메인을 열었다.**
-`open_questions` 첫 줄에 그렇게 적었다. **다음 사이클에 브라우저 `get_page_text` 로 다시
-시도해 볼 만하다**(Netflix·카카오에서 그렇게 뚫었다).
+**기능의 핵심 결정은 '왜 사 오지 않았나' 다.** 이유 셋 중 앞의 둘(모델 편향·규칙 파일의
+표현력)은 더 나은 벤더가 나오면 사라지는데, **세 번째만 구조적이다** — *"벤더의 모델이나
+프롬프트 변경을 카나리로 돌릴 수 없고, 한 제공자가 나빠졌을 때 두 번째 리뷰어로
+페일오버할 수도 없다."* **AI 를 모델이 아니라 인프라로 다루겠다는 선언이다.**
 
-**⚠️ 큐가 0 이다 — 이 회사를 완주하면 곧바로 후보 조사다.**
+**⚠️ `--gaps` 는 다른 도메인을 가리켰는데 이쪽을 먼저 썼다.** 출력은 빈 도메인 둘 중
+`랭킹 모델을…` 을 이름 댔지만, **그쪽은 본문이 증류 글 한 편뿐**이고 이쪽은 두 편이
+확보됐다. **같은 등급(확장) 안에서 '기능은 두 편 이상' 규칙을 따랐다** — 사다리를
+어긴 것이 아니라 같은 칸 안에서 고른 것이다.
 
-**실제로 비어 있는 자리(목록과 대조해 셌다)** — **라틴아메리카 0곳**(접었다) · **게임 1곳**(Roblox) ·
-**아프리카 1곳**(Moniepoint) · **인도 1곳**(Zerodha) · **여행 1곳**(trivago).
-**동남아는 Grab 이 있어 비어 있지 않다.**
+**🔴 분류 페이지는 브라우저로도 못 열었다** — `claude-in-chrome` 이 **탭을 못 만든다**
+(No tab available). WebFetch 는 내비게이션만 준다. **이 회사의 글이 몇 편인지 여전히 모른다.**
+새 방법이 없으면 다시 두드리지 않는다.
 
-**후보 조사 때 쓸 것 — 이미 확인된 실패**: `etsy.com/codeascraft` 403 · `tech.groww.in` 403 ·
+**⚠️ 다음 사이클 — 남은 도메인 `랭킹 모델을 얼마나 빨리 다시 만들 수 있는가` 는 본문이
+한 편뿐이다.** 두 갈래다.
+- **QA 에이전트를 두 번째 기능으로 쓴다**(같은 도메인, 본문 이미 읽음). 재료가 충분하다 —
+  정밀도/재현율 선택, 골든 데이터셋(라이브에서 평가 못 한다), **350+ 테스트 · 30분 주기 ·
+  유효 버그 200+ · 36개 언어 · 회원 13억**. ⚠️ **버린 대안이 명시돼 있지 않으니
+  쓰기 전에 결정이 5개 나오는지 세어 본다**(223 처럼).
+- **또는 증류 도메인의 두 번째 글을 찾는다** — 다만 목록을 못 여는 상태라 어렵다.
+
+**⚠️ 큐가 0 이다. LinkedIn 을 완주하면 곧바로 후보 조사다.**
+
+**실제로 비어 있는 자리** — 라틴아메리카 0(접었다) · 게임 1(Roblox) · 아프리카 1(Moniepoint) ·
+인도 1(Zerodha) · 여행 1(trivago). **동남아는 Grab 이 있어 비어 있지 않다.**
+
+**후보 조사 때 — 이미 확인된 실패**: `etsy.com/codeascraft` 403 · `tech.groww.in` 403 ·
 `tech.olacabs.com` 연결 거부 · `blog.phonepe.com` → medium 302 · `about.gitlab.com/blog` ⚠️.
-**아직 안 열어 본 것**: Booking.com · Skyscanner · Wise · Revolut · Bolt · Adevinta(유럽) ·
-Cookpad · SmartNews · PayPay · DeNA · CyberAgent(일본) · Sea/Shopee · GoTo/Gojek ·
-Tokopedia · Traveloka(동남아) · Unity · Nexon · Krafton(게임) · Fastly · Vercel · Temporal ·
-Neon · Elastic · MongoDB · Confluent · Sentry · Honeycomb(인프라) · Reddit · Wayfair ·
-Zillow · Robinhood · Plaid · Ramp(미국). **반드시 기존 43곳과 대조하고 넣는다.**
+**아직 안 열어 본 것**: Booking.com · Skyscanner · Wise · Revolut · Bolt · Adevinta ·
+Cookpad · SmartNews · PayPay · DeNA · CyberAgent · Sea/Shopee · GoTo/Gojek · Tokopedia ·
+Traveloka · Unity · Nexon · Krafton · Fastly · Vercel · Temporal · Neon · Elastic ·
+MongoDB · Confluent · Sentry · Honeycomb · Reddit · Wayfair · Zillow · Robinhood ·
+Plaid · Ramp. **반드시 기존 43곳과 대조하고 넣는다.**
 
 **비교 문서 축 다섯이 재료가 찬 채 대기 중이다.** 가장 두꺼운 것은 **'재 보고 고른다'**
-(Careem · Zerodha · Yelp · Doximity · Target `repurchase-timing` — 다섯)과
-**'무엇을 잃기로 정했는가'**(다섯)다.
+(다섯)와 **'무엇을 잃기로 정했는가'**(다섯)다. **LinkedIn 이 새 축의 씨앗을 준다 —
+'자동이 낸 것을 무엇으로 믿는가'**(LinkedIn `ai-code-review` 채택률 vs QA 에이전트 정밀도 ·
+Doximity `clinical-ai-trust` · Moniepoint `traceable-truth`).
 
 
 ## 다음 선택지
@@ -123,7 +132,7 @@ Zillow · Robinhood · Plaid · Ramp(미국). **반드시 기존 43곳과 대조
 | `engineering.atspotify.com` | ✅ **목록·본문 모두 열린다**(사이클 225). 글 주소는 `/YYYY/M/<slug>` 형식이고 목록은 '더 보기' 로 이어진다 |
 | `blog.cloudflare.com` | ⚠️ **열리지만 제품 발표가 섞여 있다** — 연 글(`task-based-oauth-consent`)이 마케팅이었다. **심층 글을 골라야 한다** |
 | `supercell.com/en/blog/` · `blog.cred.club` | ❌ 앞은 **404**, 뒤는 `cred.club` 으로 **301**(블로그가 없어진 듯) |
-| `linkedin.com/blog/engineering` | ✅ **목록·본문 모두 열린다**(사이클 226). 자체 호스팅이고 최신 글 **2026-08-13** |
+| `linkedin.com/blog/engineering` | ⚠️ **글 본문은 URL 을 알면 열리는데 목록·분류 페이지는 안 열린다.** WebFetch 는 내비게이션만 주고(`/artificial-intelligence`·`/infrastructure`·`/search` 전부), **브라우저도 탭을 못 만들었다**(No tab available, 사이클 228). `/talent` 만 12편이 떴는데 대부분 경력 이야기다 — **글 편수를 셀 수 없다** |
 | `about.gitlab.com/blog/categories/engineering/` | ⚠️ **열리지만 날짜가 본문에 안 실리고 제품 홍보가 섞여 있다** — 넣으려면 심층 글을 먼저 확인해야 한다 |
 | `etsy.com/codeascraft` · `tech.groww.in` | ❌ 둘 다 **403** |
 | `tech.olacabs.com` | ❌ **연결 거부**(ECONNREFUSED) |
