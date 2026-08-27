@@ -20,11 +20,16 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Snap** | US · 소셜(카메라·AR) | `eng.snap.com` | ✅ WebFetch 로 목록·본문 다 열린다 | **265 에서 본문을 열어 확인했다** — `/codepal`(AI 코드 리뷰어, 2026-06-05)이 **벤더를 버린 이유를 둘 댄다**: **통합 깊이**(*"Snap's engineering infrastructure is extensive and deeply interconnected… A generic tool with only a few configuration knobs wasn't going to work"*)와 **속도**(*"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished"*). **대가도 다섯** — 다중 패스라 *"It costs more compute"* · 큰 저장소는 설정이 더 필요하다 · *"AI review doesn't yet replace human review, it reshapes it"* · 리뷰당 **약 $0.40**. **수치가 아주 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월간 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · PR 증가율 **연 60%**. 스택 — Tree-sitter · GitHub Enterprise API · `.codepal.yaml`. **⭐ 비교 축이 이미 있다** — LinkedIn `ai-code-review` 와 **같은 결정을 다른 이유로** 했다(LinkedIn 은 *"벤더의 모델을 카나리로 돌릴 수 없고 두 번째 리뷰어로 페일오버할 수도 없다"*, Snap 은 통합 깊이와 속도). **자리** — 이 사이트에 **카메라 중심 소셜도 AR 글라스도 없다**(인스타그램은 피드, Discord 는 음성, 하이퍼커넥트는 실시간 영상 매칭). ⚠️ **블로그 1쪽이 AI 개발 도구에 쏠려 있다**(Code Search · Casper · CodePal · Spatial Intelligence) — **8페이지이니 뒤쪽에 Snapchat 본체의 시스템 글이 있는지 확인하고 도메인을 연다** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
 - **253 에서 다섯 곳을 두드려 둘을 건졌다.** 확정으로 막힌 곳 — **Cygames** `tech.cygames.co.jp` 는 **WebFetch 로도 브라우저 `get_page_text` 로도 본문이 안 나온다**(*"No text content found"*, `/archives/` 는 404). **두 번 다른 방법으로 시도해 두 번 다 실패했다 — 게임 자리를 메울 후보였지만 접는다.** **Gojek** `www.gojek.io/blog` 는 **429 가 세 번째다**(246 에 두 번). 일시적 제한이 아닌 것으로 보인다 — 접는다. **Agoda** `careersatagoda.com/blog` **403**.
+
+- **265 에서 여덟 곳을 두드려 하나만 건졌다**(한국 밖에서만 찾았다). 확정으로 막힌 곳 — **Atlassian** `www.atlassian.com/engineering` 은 **엔지니어링 경로가 일반 블로그로 계속 리다이렉트된다**(`/engineering` → `/blog/atlassian-engineering/` → `/blog` 로 두 번 따라갔다. **전용 엔지니어링 블로그가 없어진 것으로 보인다**) · **N26** `tech.n26.com` **DNS 없음** · **Robinhood** 뉴스룸(`robinhood.com/newsroom/`)에 **엔지니어링 섹션이 없다**(분류가 Crypto·Design·Education·Ideas·News 뿐) · **Wolt** 은 기술 블로그를 `careers.wolt.com/en/blog` 로 옮겼는데 **채용·문화 중심이고 기술 글이 하나뿐**이다(2026-06-04 analytics engineering 소개 한 편) · **Twitch** `blog.twitch.tv/en/tags/engineering/` 는 **목록이 JS 로 그려져 안 온다** · **eBay** `innovation.ebayinc.com/tech/` 는 **60초 타임아웃**.
+
+- **📌 Grab 은 이미 `done` 인데 2026년 새 글이 많다 — 보강 후보다.** `engineering.grab.com` 최신이 **2026-08-21** 이고, **Palana 2부작**(AI 에이전트를 위한 격리·신원·감사 구조, 2026-06-19/21) · **Agent platform (Part 1)**(2026-07-24) · **Apache Iceberg 데이터 레이크 이전**(2026-07-10) · **Counter Service 저장소 이전**(2026-07-03) 이 있다. **이 사이트의 Grab 페이지는 `counter-service`·`iceberg-lake`·`dispatchgym` 셋인데 그 두 주제의 후속 글이 새로 나온 셈이다.** **2부작이 있어 파기 좋다**(262).
 
 - **246 에서 여덟 곳을 두드려 한 곳만 건졌다.** 확정으로 막힌 곳 — `shopee.engineering` **DNS 없음** · `developers.smartnews.com/blog` 는 `www.smartnews.com/blog` 로 301 되는데 그쪽이 **404** · `blog.paypay.ne.jp` **403** · `blog.revolut.com` **403** · `deliveroo.engineering` **403** · `engineering.ramp.com` 은 **200 인데 본문이 비어 온다**(JS 렌더링). **재시도 여지가 남은 둘** — `www.gojek.io/blog` 는 **429**(일시적일 수 있다, 시간을 두고 다시) · `tech.cygames.co.jp` 는 **헤더만 오고 목록이 JS 로 그려진다**(브라우저 `get_page_text` 로는 열릴 수 있다 — **게임 자리가 비어 있으니 값이 있다**, `/archives/` 는 404 였다).
 
