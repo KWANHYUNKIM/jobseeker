@@ -8,83 +8,83 @@
 
 ## 지금 파는 중
 
-**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 1개. 큐 잔량 0/3.**
+**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 2개. 큐 잔량 0/3.**
 
-**267 에서 도메인 ①`사람보다 코드가 빨리 늘어난다` 에 기능 하나를 썼다** —
-`code-review-agent`(사람보다 먼저 읽는다), **결정 8개** 전부 대가가 붙었다.
+**268 에서 도메인 ②`얼굴 앞에 컴퓨터를 놓는다` 에 기능을 썼다** —
+`mutual-gaze-align`(서로를 봐서 좌표를 맞춘다), **결정 8개** 전부 대가가 붙었다.
+**두 도메인이 다 찼다.**
 
-### 🔴 267 의 발견 — 이 회사는 글끼리 명시적으로 잇는다
+### 268 에 읽은 것 — 제목만 알던 도메인의 본문 두 편
 
-**이 사이트가 여러 회사에서 관찰해 온 것과 정반대다.** Casper 의 첫 문장이
-*"This is Part 3 of a three-part series… Part 1 introduced CodePal, our AI code reviewer.
-Part 2 covered Code Search."* 이고, **시스템도 실제로 이어진다** —
-*"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated
-review before the PR is presented for human review, closing the loop between writing and
-reviewing."* **CyberAgent · Wayfair · 컬리는 같은 문제를 다루는 글끼리도 서로를 언급하지
-않았다.** 회사 파일 `open_questions` 맨 앞에 적어 두었다.
+`--gaps` 가 도메인 ② 를 지목했고, **검색으로 실제 URL 을 찾아 두 편을 열었다**
+(`/specs_gnss`, `/eyeconnect`). **둘 다 버린 대안을 셋 넷씩 적고 대가를 길게 적는다** —
+"재료가 없을 수 있다" 던 예상이 또 틀렸다(운영 사실 ⑫ 가 **열네 번째**로 확인됐다).
 
-### 🔴 CodePal 재독이 열세 번째로 옳았다 — 여섯을 더 찾았다
+**EyeConnect** — 좌표계를 맞추는 일을 **서로를 쳐다보는 것**으로 대신한다. 버린 대안 셋
+(지도 재측위·피듀셜·공유 SLAM), 키포인트 **5개**(각도·가림 저항), **3ms**, 중력 정렬 +
+**QEP**, RANSAC, NTP+격자 탐색, **90% 가 2.6초 안에 정렬 · 시작 15cm → 5m 안 최종 2.2cm**,
+**동시 3대 상한**, **영상을 안 보내고 맞춘 뒤 즉시 삭제**.
 
-1. **오탐 0% 는 라이브가 아니다** — 회사가 스스로 범위를 밝힌다: *"the held-out golden
-   dataset, not on live traffic."* **265 요약에는 이 단서가 없었다.**
-2. **단일 패스를 실제로 해 보고 버렸다** — *"We tried that. It works, sort of. The model
-   finds real bugs, but it also makes things up, contradicts itself between runs, and
-   produces wildly different findings."* **셋 중 둘이 일관성 문제다.**
-3. **두 단계 파일 선별기의 각 단계** — 1단계 *"parses the repository with tree-sitter to
-   build a symbol-to-file index"*, 2단계 *"scores files by symbol overlap"*.
-4. **검증기가 무엇을 거르는지** — *"checks that every symbol cited in a finding is actually
-   present in the provided context"* (지어낸 심볼을 잡는다).
-5. **골든셋을 사람 피드백에서 만들었다** — Finding Lifecycle(좋아요·싫어요·병합·수정).
-6. **저장소를 클론하지 않는다**(의도적 제약). `.codepal.yaml` 은 경로별 지시·팀별 조정
-   (⚠️ 예시 없음). ⚠️ **모델을 끝내 명시하지 않는다** — *"the model"* · *"frontier models"*.
+**GNSS 실외 추적** — VIO·GNSS·자력계를 그래프 최적화로 융합. 네 센서가 각각 왜 혼자서는
+안 되는지 적고(자력계 **10~20도**), 대가가 길다(콜드 스타트 **30초+**, 보조 시 **10초**,
+저조도·차량 안에서 VIO 실패 → IMU 전용 모드).
 
-### ⚠️ Casper 는 대가를 한 줄도 안 적는다
+### 🔴 268 의 발견 — 같은 도메인의 두 글이 자를 정반대로 다룬다
 
-같은 연작인데 **CodePal 은 대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는데, Casper 는
-실패도 한계도 없이 이점만 적고 수치도 둘뿐**이다(*"thousands of mergeable PRs each week"* ·
-*"hundreds of custom Casper agents"*). 버린 대안은 있다 — 벤더 코딩 에이전트를 다섯 이유로
-거절(상호운용성·통합·에이전트 신원/보안/신뢰성 통제·**모델 비종속**·제품 UX 통제).
-도메인 `tech` 에 넣었고, `open_questions` 에도 적었다.
+**EyeConnect 는 숫자를 낸다**(2.6초 · 15cm · 2.2cm). **GNSS 는 못 낸다고 밝힌다** —
+*"Without a reliable, high-precision reference, we cannot provide definitive numerical
+accuracy metrics"* 라 평가가 *"qualitative observations… rather than absolute error
+statistics"* 다. **갈린 자리는 난이도가 아니라 정답을 어디서 구하느냐다** — EyeConnect 는
+**두 기기의 관측을 서로 대조**하면 되지만 GNSS 는 **지구 위 참값**을 따로 구해야 한다.
 
-### 이 회사에서 남은 것
+**이 회사는 못 재면 못 잰다고 적는다 — 이걸로 두 번째다.** 267 의 CodePal 도 오탐 0% 의
+범위를 *"the held-out golden dataset, not on live traffic"* 으로 밝혔다.
+**Wayfair 의 패턴(*'잴 자가 있느냐' 로 갈린다*)과 같은 축이다.**
 
-- **도메인 ②`얼굴 앞에 컴퓨터를 놓는다`(SPECS/AR) 는 여전히 본문을 한 편도 안 읽었다** —
-  `tech` 항목 둘이 `confidence: unknown` 이고 "제목만 근거로 한다" 고 밝혀 두었다.
-  **기능을 쓰려면 두 편 이상 읽는다**(스물세 번 확인된 규칙).
-- **⚠️ 3부작의 Part 2 `Code Search` 를 아직 안 읽었다.** 도메인 ① 의 두 번째 기능 재료가
-  될 수 있다.
+### ⚠️ 그리고 이 회사 안에서도 묶음마다 다르다
+
+**AI 개발 도구 쪽은 3부작 번호를 달고 서로를 부르는데**(Casper → CodePal → Code Search),
+**Specs/AR 쪽 두 글은 다른 Snap 글을 전혀 언급하지 않는다.** `open_questions` 에 적었다.
+
+### 이 회사에서 남은 것 — 닫을지 더 팔지 판단이 필요하다
+
+**두 도메인이 다 찼으므로 `--gaps` 는 다음 사이클에 [진행 중 확장]을 안 낼 것이다.**
+회사를 갈아타지 않는다는 규칙이 위이므로, **다음 사이클은 미독 4편 중 하나를 읽어 기능을
+더 쓸지, Snap 을 `done` 으로 닫을지 먼저 정한다.**
+
+- **⚠️ 미독 4편** — `/code_search`(**3부작 Part 2, 도메인 ① 의 두 번째 기능 재료**) ·
+  `/spatial_intelligence`(LLM 공간 지능 측정) · `/specs_experiences`(2026-08-20) ·
+  `/spectacles_supabase`(Snap Cloud, Supabase 기반 백엔드).
+- **닫는다면 `business_model` 에 패턴을 적을지 판단한다.** 서 있는 가설 —
+  **① 이 회사는 자기 지표의 범위를 밝힌다**(CodePal 오탐 0% 의 held-out 단서, GNSS 의
+  "못 잰다") · **② 묶음마다 글끼리 잇는 방식이 다르다**(AI 도구는 3부작, Specs 는 단절) ·
+  **③ 같은 연작 안에서도 대가의 밀도가 크게 다르다**(CodePal 다섯 줄 vs Casper 0줄).
 - **⚠️ 블로그 8쪽 중 1쪽만 봤다** — `?page=2` 는 1쪽과 같고 `/blog/2` 는 404(JS
-  페이지네이션). 브라우저로 시도해 볼 여지가 있다.
+  페이지네이션, 운영 사실 ⑬). **다만 268 에서 검색으로 목록 밖 글(`/eyeconnect`,
+  `/spectacles_supabase`, `/ar-enabled-catalogs` 등)을 찾아냈다 — 페이지네이션을 못 뚫어도
+  `WebSearch` 에 `allowed_domains: eng.snap.com` 을 걸면 글을 찾을 수 있다.**
 - **⚠️ 매출 실액·DAU 를 못 찾았다.** IR 홈에 MAU **971백만** · 총매출 **19% 성장**(Q2 2026)
-  만 있다. **다음엔 IR 보도자료 목록에서 링크를 눌러 들어간다** — URL 추측은 두 번 404 였다
-  (운영 사실 ⑰).
+  만 있다. **IR 보도자료 목록에서 링크를 눌러 들어간다** — URL 추측은 두 번 404(운영 사실 ⑰).
 
-### ⭐ 비교 축을 기능 안에 넣어 두었다
+### 다음 회사 — 큐가 0 이다
 
-**LinkedIn `ai-code-review` 와 같은 결정을 다른 이유로 했다** — LinkedIn 은 *"벤더의 모델을
-카나리로 돌릴 수 없고 두 번째 리뷰어로 페일오버할 수도 없다"*, Snap 은 **통합 깊이와 속도**.
-**재는 자도 다르다** — LinkedIn 은 **병합된 코드와 대조한 채택률 63.9%**, Snap 은 **골든셋
-오탐 0% + 재현율 30%→80%**. `connections` 는 같은 회사 안에서만 걸리므로 `business.why` 에
-이 사이트의 정리로 적었다.
-
-### 다음 사이클
-
-**큐가 0 이다.** Snap 을 완주하면 곧바로 후보 조사이고, **한국 밖에서** 찾는다(한국 회사가
-아홉이다). **📌 Grab 보강 후보** — 이미 `done` 이지만 `engineering.grab.com` 에 2026 새 글이
-있다: **Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
-**Counter Service 저장소 이전(07-03)** — 뒤 둘은 이 사이트의 기존 `iceberg-lake` ·
-`counter-service` 기능의 후속이다. **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) ·
-GoTo/Tokopedia · Traveloka · Plaid · Adevinta · Skyscanner · Carousell · VNG.
+Snap 을 닫으면 **곧바로 후보 조사이고 한국 밖에서** 찾는다(한국 회사가 아홉).
+**📌 Grab 보강 후보** — 이미 `done` 이지만 `engineering.grab.com` 에 2026 새 글:
+**Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
+**Counter Service 저장소 이전(07-03)** — 뒤 둘은 기존 `iceberg-lake` · `counter-service`
+기능의 후속이다. **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia ·
+Traveloka · Plaid · Adevinta · Skyscanner · Carousell · VNG.
 
 **빈 자리** — 라틴아메리카 0(접었다·재시도 금지) · **게임 1**(Roblox — Cygames 접어 실마리
 없음) · 아프리카 1 · 인도 1 · 여행 1. 동남아는 Grab.
 **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
 
 **비교 문서 재료(4~5축)** — `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로
-정하는가`(여섯) · **`기계가 그렇다는데` 보강**(Snap `code-review-agent` 가 세 번째 답이고,
-**골든셋 오탐 0% 의 범위를 회사가 스스로 밝힌 것**이 이 축의 새 재료다) ·
-`되돌릴 수 있는 것을 먼저 한다` 보강 · `무엇을 좋다고 부를 것인가`/`재 보고 나서`
-보강(하이퍼커넥트 반례).
+정하는가`(여섯) · **`기계가 그렇다는데` 보강**(Snap `code-review-agent` 가 세 번째 답) ·
+`되돌릴 수 있는 것을 먼저 한다` 보강 · **⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서` 에
+Snap 이 강한 재료를 준다** — **자를 못 구해 "못 잰다" 고 적은 사례(GNSS)는 이 사이트에
+처음이고**, 같은 회사가 **잴 수 있는 쪽(EyeConnect)에서는 세 자리 수치를 낸다.** 하이퍼커넥트
+반례와 Wayfair 의 *'잴 자가 있느냐'* 패턴이 같은 축에 선다.
 
 ## 다음 선택지
 

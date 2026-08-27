@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Snap** | US · 소셜(카메라·AR) | **267 기능 1개** (`code-review-agent` 사람보다 먼저 읽는다 — 결정 8개). 도메인 2개 · 기능 1개. **🔴 이 회사는 글끼리 명시적으로 잇는다** — Casper 가 *"This is Part 3 of a three-part series"* 로 CodePal(Part 1)·Code Search(Part 2)를 부르고 시스템도 이어진다. ② `얼굴 앞에 컴퓨터를 놓는다`(SPECS/AR — **여전히 본문 미독**, `tech` 둘이 `unknown`). **⚠️ 블로그 8쪽 중 1쪽만 봤다**(JS 페이지네이션). **⚠️ Part 2 `Code Search` 미독.** **⚠️ 매출 실액·DAU 미확인** |
+| **Snap** | US · 소셜(카메라·AR) | **268 기능 2개** — `code-review-agent`(사람보다 먼저 읽는다, 결정 8) · `mutual-gaze-align`(서로를 봐서 좌표를 맞춘다, 결정 8). **두 도메인이 다 찼다.** **🔴 268 의 발견 — 같은 도메인의 두 글이 자를 정반대로 다룬다**(EyeConnect 는 2.6초·2.2cm 를 내고 GNSS 는 *"cannot provide definitive numerical accuracy metrics"* 라고 밝힌다). **⚠️ 미독 4편** — `/code_search`(3부작 Part 2) · `/spatial_intelligence` · `/specs_experiences` · `/spectacles_supabase`. **⚠️ 블로그 8쪽 중 1쪽만 봤다**(JS 페이지네이션). **⚠️ 매출 실액·DAU 미확인** |
 
 ## 대기
 

@@ -209,20 +209,20 @@
     },
     {
       "name": "얼굴 앞에 컴퓨터를 놓는다",
-      "why": "**2026-06-16 에 SPECS 증강현실 안경을 출시했다** — 보도자료 제목이 *\"Snap Inc. Debuts SPECS Augmented Reality Glasses to Make Computing More Human\"* 이다.\n\n**안경을 팔면 문제가 화면 밖으로 나간다**(이 연결은 이 사이트의 해석이다). 블로그에 **실외 AR 추적(GNSS, 2026-07-10)** 과 **LLM 의 공간 지능 측정(2026-06-17)** 이 올라오고, **AR 경험을 더 빨리 만드는 도구(2026-08-20)** 도 나온다.\n\n**이 사이트의 다른 소셜은 전부 화면 안에서 끝난다** — 인스타그램은 피드, Discord 는 음성, 하이퍼커넥트는 실시간 영상 매칭이다. **바깥 세계의 좌표를 다루는 회사는 여기가 처음이다.**\n\n⚠️ **본문을 한 편도 안 읽었다** — 도메인은 제목과 출시 사실로 열었고, **기능을 쓰기 전에 두 편 이상 읽는다.**",
+      "why": "**2026-06-16 에 SPECS 증강현실 안경을 출시했다** — 보도자료 제목이 *\"Snap Inc. Debuts SPECS Augmented Reality Glasses to Make Computing More Human\"* 이다.\n\n**안경을 팔면 문제가 화면 밖으로 나간다**(이 연결은 이 사이트의 해석이다). 블로그에 **실외 AR 추적(GNSS, 2026-07-10)** 과 **LLM 의 공간 지능 측정(2026-06-17)** 이 올라오고, **AR 경험을 더 빨리 만드는 도구(2026-08-20)** 도 나온다.\n\n**이 사이트의 다른 소셜은 전부 화면 안에서 끝난다** — 인스타그램은 피드, Discord 는 음성, 하이퍼커넥트는 실시간 영상 매칭이다. **바깥 세계의 좌표를 다루는 회사는 여기가 처음이다.**\n\n**268 에서 본문 두 편을 읽었다**(GNSS 추적 · EyeConnect). **둘 다 버린 대안을 셋 넷씩 적고 대가를 길게 적는다.**\n\n**🔴 그런데 두 글이 자를 정반대로 다룬다**(이 대비는 이 사이트의 것이다). **EyeConnect 는 숫자를 낸다** — 90% 가 **2.6초** 안에 정렬되고 5m 안 최종 오차 중앙값이 **2.2cm** 다. **GNSS 는 숫자를 못 낸다고 밝힌다** — *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"* 라 평가가 *\"qualitative observations… rather than absolute error statistics\"* 다.\n\n**갈린 자리는 기술 난이도가 아니라 정답을 어디서 구하느냐다** — EyeConnect 는 **두 기기의 관측을 서로 대조**하면 되지만, GNSS 는 **지구 위 참값**을 따로 구해야 한다(이 설명은 이 사이트의 해석이다). 이 회사의 다른 도메인에서도 같은 축이 나온다 — CodePal 은 사람 피드백으로 골든셋을 만들어 재고, **그 자의 범위까지 밝힌다**.",
       "tech": [
         {
-          "tech": "실외에서 AR 을 붙잡아 둔다 — GNSS 기반 월드스케일 추적",
-          "solves": "⚠️ **본문을 아직 안 읽었다** — 제목(`World-scale Outdoor AR Tracking with GNSS`, 2026-07-10)이 알려 주는 것만 적는다. **위성 항법으로 실외의 넓은 공간에서 AR 을 추적**한다는 것이고, **실내용 방식으로는 안 되는 자리**로 보인다(이 추측은 이 사이트의 것이다).",
-          "limits": "⚠️ **이 항목은 제목만 근거로 한다.** 버린 대안도 대가도 수치도 확인하지 않았다. **기능을 쓰기 전에 본문을 읽는다.**",
-          "confidence": "unknown",
+          "tech": "실외에서 AR 을 붙잡아 둔다 — GNSS·VIO·자력계 그래프 융합",
+          "solves": "**지구 위 절대 위치와 진북 기준 자세를 늘 알아야 실외 AR 이 제자리에 선다.** 혼자서는 아무 센서도 안 된다 — VIO 는 표류하고 좌표계가 *\"inherently arbitrary\"*, GNSS 는 *\"too slow and inherently noisy\"* 이고 방향이 없으며, 자력계는 **10~20도** 오차로 필요치에서 *\"an order of magnitude\"* 떨어지고, VPS 는 *\"restricted to selected, pre-mapped locations\"* 다. **셋을 그래프 기반 최적화로 융합하고 국소 접평면(LTP)에 올린다** — VIO 가 고주파 상대 운동, GNSS 가 절대 앵커, 자력계가 시작 즉시 북향.",
+          "limits": "**대가를 길게 적는다** — 첫 해까지 **콜드 스타트 30초 이상**(인터넷 보조 시 **약 10초**) · **저조도에서 VIO 가 실패**하고 차량 안에서는 VIO 가 차 내부를 추적해 *\"rendering it useless\"* 라 **IMU 전용 모드**로 떨어지며 그때는 GNSS 잡음에 *\"slightly less robust\"* · 하늘이 트여야 하고 **충분한 변위나 속도**가 필요해 보행자 사용이 특히 어렵다. **🔴 그리고 정확도를 숫자로 못 낸다고 밝힌다** — 절대 참값을 구하기 어려워 *\"we cannot provide definitive numerical accuracy metrics\"* 다. **같은 도메인의 EyeConnect 가 2.6초·2.2cm 를 내는 것과 정반대다**(이 대비는 이 사이트의 것이다).",
+          "confidence": "confirmed",
           "sources": [
             {
-              "title": "Snap Engineering Blog",
-              "url": "https://eng.snap.com/blog",
-              "publisher": "Snap",
-              "date": "2026-08-27",
-              "summary": "**8페이지 목록이고 최신이 2026-08-20 이다.** 1쪽 6편 — `/specs_experiences`(SPECS 경험을 더 빨리 만들기, 2026-08-20) · `/casper`(Snap 의 AI 팀메이트 부대, 2026-07-28) · `/specs_gnss`(GNSS 로 실외 AR 추적, 2026-07-10) · `/code_search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01) · `/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17) · `/codepal`(AI 코드 리뷰어, 2026-06-05). **묶음이 둘로 뚜렷하다** — **AI 개발 도구 넷**(CodePal · Casper · Code Search · SPECS 경험 제작)과 **Specs/AR 둘**(GNSS 추적 · 공간 지능 측정). **⭐ CodePal 과 Casper 는 명시적으로 3부작의 일부다** — *\"how Snap is building toward end-to-end autonomous software delivery\"*. ⚠️ **1쪽에 Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.** ⚠️ **2쪽 이후를 못 봤다** — `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 404 다(페이지네이션이 JS 로 도는 것으로 보인다)."
+              "title": "World-scale Outdoor AR Tracking with GNSS",
+              "url": "https://eng.snap.com/specs_gnss",
+              "publisher": "Snap Engineering",
+              "date": "2026-07-10",
+              "summary": "**지구 위 어디인지와 어느 쪽을 보는지를 늘 알아야 실외 AR 이 선다** — *\"knowing two crucial things at all times: the device's absolute location on Earth (latitude, longitude, and altitude) and its precise orientation relative to true north and vertical.\"* **혼자서는 아무 센서도 안 된다** — **VIO** 는 *\"slowly accumulates drift over time\"* 이고 좌표계가 *\"inherently arbitrary\"*(켠 순간에 잡힌다) · **GNSS** 는 *\"too slow and inherently noisy for the demands of high-fidelity AR rendering\"* 이고 방향을 못 준다 · **자력계**는 *\"extremely susceptible to local magnetic field disturbances\"* 라 **10~20도** 오차가 나는데 이는 AR 요구에서 *\"an order of magnitude\"* 떨어진다 · **VPS** 는 *\"availability is inherently restricted to selected, pre-mapped locations\"* 이고 종종 클라우드 조회에 기댄다. **그래서 셋을 그래프 기반 최적화로 융합한다** — VIO 가 고주파 상대 운동, GNSS 가 절대 위치·속도 앵커, 자력계가 시작 즉시 북향을 준다. 좌표계는 **국소 접평면(LTP)**. **대가를 길게 적는다** — 첫 해까지 **콜드 스타트 30초 이상**, 인터넷 보조 성력을 받으면 **약 10초** · **저조도에서 VIO 가 실패**하고 차량 안 travel mode 에서는 VIO 가 차 내부를 추적해 *\"rendering it useless\"* 라 **IMU 전용 모드**로 떨어지는데 그때는 *\"slightly less robust to GNSS noise artifacts\"* · 소비자급 GNSS 수신기가 성능의 상한이고 **하늘이 트여야** 하며 **충분한 변위나 속도**가 있어야 해 보행자 사용에서 특히 문제다. **🔴 그리고 정확도를 숫자로 못 낸다고 밝힌다** — *\"Quantifying our system's performance precisely is challenging due to the difficulty of acquiring absolute ground truth data\"* 이고 *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"* 라 *\"performance assessments are based on qualitative observations… rather than absolute error statistics\"*. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
             }
           ]
         },
@@ -242,17 +242,21 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "mutual-gaze-align"
+      ]
     }
   ],
   "open_questions": [
     "**🔴 이 회사는 글끼리 서로를 명시적으로 잇는다 — 이 사이트가 다른 회사에서 관찰해 온 것과 정반대다.** Casper 의 첫 문장이 *\"This is Part 3 of a three-part series… Part 1 introduced CodePal, our AI code reviewer. Part 2 covered Code Search\"* 이고, **시스템도 실제로 이어진다**: *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **CyberAgent · Wayfair · 컬리는 같은 문제를 다루는 글끼리도 서로를 언급하지 않았다.**",
+    "**🔴 같은 도메인의 두 글이 자를 정반대로 다룬다.** **EyeConnect 는 숫자를 낸다** — 90% 가 **2.6초** 안에 정렬되고 5m 안 최종 오차 중앙값 **2.2cm** 다. **GNSS 실외 추적은 숫자를 못 낸다고 밝힌다** — *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"* 라 평가가 *\"qualitative observations… rather than absolute error statistics\"* 다. **갈린 자리는 난이도가 아니라 정답을 어디서 구하느냐다** — EyeConnect 는 두 기기의 관측을 서로 대조하면 되지만 GNSS 는 지구 위 참값을 따로 구해야 한다(이 설명은 이 사이트의 해석이다). **이 회사는 못 재면 못 잰다고 적는다** — CodePal 이 오탐 0% 의 범위를 *\"not on live traffic\"* 으로 밝힌 것과 같은 태도로, **이걸로 두 번째다.**",
     "**🔴 매출 실액과 DAU 를 못 찾았다.** IR 홈에서 받은 것은 **MAU 971백만 · 총매출 19% 성장 · 미국 Spotlight 게시자 115% 증가 · 기타 매출 85% 성장**(*\"Snap Inc. internal data Q2 2026\"*)뿐이다. `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다. **목록에 2026-08-03 자 `Snap Inc. Announces Second Quarter 2026 Financial Results` 가 있으니 경로만 찾으면 받을 수 있다** — 다음에 보도자료 목록에서 링크를 눌러 들어간다.",
     "**블로그 2쪽 이후를 못 봤다.** `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 **404** 다 — **페이지네이션이 JS 로 도는 것으로 보인다.** **8페이지 중 1쪽만 보고 도메인을 열었다.** 브라우저 `get_page_text` 로 다시 시도해 볼 여지가 있다.",
     "**🔴 1쪽에 Snapchat 본체의 시스템 글이 하나도 없다.** 피드·렌즈·메시징·미디어 저장·추천 같은 이야기가 없고 **여섯 편 중 넷이 사내 AI 개발 도구**다. **2쪽 이후에 있는지 확인하지 못했다** — 없다면 **이 회사의 기술블로그는 제품 시스템을 안 말하는 곳**이라는 뜻이 된다(이 판단은 아직 이르다).",
     "**Specs 도메인의 본문을 한 편도 안 읽었다.** `World-scale Outdoor AR Tracking with GNSS`(2026-07-10)와 `Measuring Spatial Intelligence in LLMs`(2026-06-17)를 **제목만 보고 도메인을 열었다.** 기능을 쓰기 전에 두 편 이상 읽는다.",
     "**SPECS 의 판매량·가격·매출 기여를 확인하지 못했다.** 출시 사실(2026-06-16)만 확인했다.",
-    "**같은 연작인데 글마다 대가의 밀도가 다르다.** CodePal 은 **대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는데**(*\"the held-out golden dataset, not on live traffic\"*), **Casper 는 대가를 한 줄도 안 적고 수치도 둘뿐이다**(*\"thousands of mergeable PRs each week\"* · *\"hundreds of custom Casper agents\"*). **PR 을 여는 쪽이 리뷰하는 쪽보다 자랑할 것이 많아서인지, 아직 겪은 게 적어서인지는 알 수 없다**(이 관찰은 이 사이트의 것이다). **Part 2 인 Code Search 는 아직 안 읽었다.**"
+    "**같은 연작인데 글마다 대가의 밀도가 다르다.** CodePal 은 **대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는데**(*\"the held-out golden dataset, not on live traffic\"*), **Casper 는 대가를 한 줄도 안 적고 수치도 둘뿐이다**(*\"thousands of mergeable PRs each week\"* · *\"hundreds of custom Casper agents\"*). **PR 을 여는 쪽이 리뷰하는 쪽보다 자랑할 것이 많아서인지, 아직 겪은 게 적어서인지는 알 수 없다**(이 관찰은 이 사이트의 것이다). **Part 2 인 Code Search 는 아직 안 읽었다.**",
+    "**⚠️ Specs/AR 쪽 두 글은 다른 Snap 글을 전혀 언급하지 않는다.** AI 개발 도구 쪽(CodePal·Casper·Code Search)이 3부작 번호를 달고 서로를 부르는 것과 대비된다 — **같은 회사 안에서도 묶음마다 다르다**(이 관찰은 이 사이트의 것이다). ⚠️ **`/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17)와 `/specs_experiences`(2026-08-20), `/spectacles_supabase`(Snap Cloud) 는 아직 안 읽었다.**"
   ],
   "sources": [
     {
@@ -282,6 +286,20 @@
       "publisher": "Snap Engineering",
       "date": "2026-07-28",
       "summary": "**작업을 받아 PR 까지 스스로 여는 에이전트 부대.** 첫 문장이 연작을 밝힌다 — *\"This is Part 3 of a three-part series on how Snap is building AI-assisted software development workflows. Part 1 introduced **CodePal**, our AI code reviewer. Part 2 covered **Code Search**.\"* 문제는 **엔지니어의 주의력**이다 — 깨진 테스트를 고치거나 의존성을 올리는 일도 *\"consume valuable cognitive bandwidth\"* 이고 *\"context-switching, environment setup, and review cycles\"* 를 요구한다. **흐름** — 격리된 샌드박스에서 뜨고 → Slack·Jira·문서에서 맥락을 모으고 → 계획하고 고치고 → 테스트·빌드·린터를 돌리고 → 실패하면 다시 하고 → *\"Produce a PR that is wired into existing workflows\"* → **CodePal 을 불러 자동 리뷰를 받고** → 사람 리뷰로 넘긴다. **🔴 두 시스템이 실제로 이어진다** — *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **버린 대안** — *\"We evaluated if we should build or buy a coding agent and ultimately decided that vendor solutions solved some, but not all of the things we needed\"* 이고 부족했던 것이 다섯이다: 내부 서비스 전반과의 상호운용성 · 내부 도구와의 긴밀한 통합 · 에이전트의 신원·보안·신뢰성에 대한 *\"full control\"* · **모델 비종속** · 제품 UX 통제. **수치는 둘뿐** — *\"thousands of mergeable PRs each week\"* 와 지난 분기 GA 이후 *\"hundreds of custom Casper agents\"*. 스택 — **Claude Code · Codex · MCP Gateway · Jira · Slack · CodePal · Code Search**. **⚠️ 대가를 하나도 적지 않는다** — 실패도 한계도 없이 이점만 적는다(이 관찰은 이 사이트의 것이다)."
+    },
+    {
+      "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+      "url": "https://eng.snap.com/eyeconnect",
+      "publisher": "Snap Engineering",
+      "date": "2026-08-27",
+      "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+    },
+    {
+      "title": "World-scale Outdoor AR Tracking with GNSS",
+      "url": "https://eng.snap.com/specs_gnss",
+      "publisher": "Snap Engineering",
+      "date": "2026-07-10",
+      "summary": "**지구 위 어디인지와 어느 쪽을 보는지를 늘 알아야 실외 AR 이 선다** — *\"knowing two crucial things at all times: the device's absolute location on Earth (latitude, longitude, and altitude) and its precise orientation relative to true north and vertical.\"* **혼자서는 아무 센서도 안 된다** — **VIO** 는 *\"slowly accumulates drift over time\"* 이고 좌표계가 *\"inherently arbitrary\"*(켠 순간에 잡힌다) · **GNSS** 는 *\"too slow and inherently noisy for the demands of high-fidelity AR rendering\"* 이고 방향을 못 준다 · **자력계**는 *\"extremely susceptible to local magnetic field disturbances\"* 라 **10~20도** 오차가 나는데 이는 AR 요구에서 *\"an order of magnitude\"* 떨어진다 · **VPS** 는 *\"availability is inherently restricted to selected, pre-mapped locations\"* 이고 종종 클라우드 조회에 기댄다. **그래서 셋을 그래프 기반 최적화로 융합한다** — VIO 가 고주파 상대 운동, GNSS 가 절대 위치·속도 앵커, 자력계가 시작 즉시 북향을 준다. 좌표계는 **국소 접평면(LTP)**. **대가를 길게 적는다** — 첫 해까지 **콜드 스타트 30초 이상**, 인터넷 보조 성력을 받으면 **약 10초** · **저조도에서 VIO 가 실패**하고 차량 안 travel mode 에서는 VIO 가 차 내부를 추적해 *\"rendering it useless\"* 라 **IMU 전용 모드**로 떨어지는데 그때는 *\"slightly less robust to GNSS noise artifacts\"* · 소비자급 GNSS 수신기가 성능의 상한이고 **하늘이 트여야** 하며 **충분한 변위나 속도**가 있어야 해 보행자 사용에서 특히 문제다. **🔴 그리고 정확도를 숫자로 못 낸다고 밝힌다** — *\"Quantifying our system's performance precisely is challenging due to the difficulty of acquiring absolute ground truth data\"* 이고 *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"* 라 *\"performance assessments are based on qualitative observations… rather than absolute error statistics\"*. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
     }
   ],
   "features": [
@@ -983,6 +1001,748 @@
           "publisher": "Snap Engineering",
           "date": "2026-07-28",
           "summary": "**작업을 받아 PR 까지 스스로 여는 에이전트 부대.** 첫 문장이 연작을 밝힌다 — *\"This is Part 3 of a three-part series on how Snap is building AI-assisted software development workflows. Part 1 introduced **CodePal**, our AI code reviewer. Part 2 covered **Code Search**.\"* 문제는 **엔지니어의 주의력**이다 — 깨진 테스트를 고치거나 의존성을 올리는 일도 *\"consume valuable cognitive bandwidth\"* 이고 *\"context-switching, environment setup, and review cycles\"* 를 요구한다. **흐름** — 격리된 샌드박스에서 뜨고 → Slack·Jira·문서에서 맥락을 모으고 → 계획하고 고치고 → 테스트·빌드·린터를 돌리고 → 실패하면 다시 하고 → *\"Produce a PR that is wired into existing workflows\"* → **CodePal 을 불러 자동 리뷰를 받고** → 사람 리뷰로 넘긴다. **🔴 두 시스템이 실제로 이어진다** — *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **버린 대안** — *\"We evaluated if we should build or buy a coding agent and ultimately decided that vendor solutions solved some, but not all of the things we needed\"* 이고 부족했던 것이 다섯이다: 내부 서비스 전반과의 상호운용성 · 내부 도구와의 긴밀한 통합 · 에이전트의 신원·보안·신뢰성에 대한 *\"full control\"* · **모델 비종속** · 제품 UX 통제. **수치는 둘뿐** — *\"thousands of mergeable PRs each week\"* 와 지난 분기 GA 이후 *\"hundreds of custom Casper agents\"*. 스택 — **Claude Code · Codex · MCP Gateway · Jira · Slack · CodePal · Code Search**. **⚠️ 대가를 하나도 적지 않는다** — 실패도 한계도 없이 이점만 적는다(이 관찰은 이 사이트의 것이다)."
+        }
+      ]
+    },
+    {
+      "key": "mutual-gaze-align",
+      "name": "서로를 봐서 좌표를 맞춘다",
+      "domain": "얼굴 앞에 컴퓨터를 놓는다",
+      "updated_at": "2026-08-27",
+      "ui": {
+        "title": "둘이 같은 AR 을 보기까지",
+        "question": "방을 스캔하지 않고 어떻게 좌표계를 맞추는가?",
+        "kind": "mobile",
+        "note": "**안경 착용자가 보는 흐름을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **SPECS 의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 회사의 EyeConnect 글에 적힌 것만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "같이 보기"
+          },
+          {
+            "type": "card",
+            "text": "방을 스캔하지 않습니다",
+            "items": [
+              "마커를 놓지 않습니다",
+              "서로를 쳐다보면 됩니다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "상대를 찾는다"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "안경 위의 점 다섯 개를 찾는다",
+                "sub": "각도가 틀어지거나 가려져도 버틴다",
+                "right": "3밀리초"
+              },
+              {
+                "title": "작게 줄인 창에서 먼저 찾는다",
+                "sub": "찾은 뒤엔 따라간다",
+                "right": "128칸"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "chips",
+            "items": [
+              "동시에 세 대까지"
+            ],
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "좌표를 맞춘다"
+          },
+          {
+            "type": "text",
+            "text": "위아래는 중력이 알려 주므로 좌우 방향과 거리만 계산합니다",
+            "pin": 4
+          },
+          {
+            "type": "card",
+            "text": "한쪽만으로는 답이 둘 나옵니다",
+            "items": [
+              "양쪽에서 서로를 확인한다",
+              "시계는 대충 맞추고 다시 다듬는다"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "text",
+            "text": "주변에 사람이 많아도 엉뚱한 사람과 짝지어지지 않습니다",
+            "pin": 6
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "몇 초 만에 대충 맞춘다",
+                "sub": "처음엔 십오 센티 정도 어긋난다",
+                "right": "먼저"
+              },
+              {
+                "title": "보는 동안 계속 다듬는다",
+                "sub": "오 미터 안에서 이 센티대로 좁혀진다",
+                "right": "그다음"
+              }
+            ],
+            "pin": 7
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "card",
+            "text": "사진은 오가지 않습니다",
+            "items": [
+              "위치와 점 좌표만 주고받는다",
+              "맞추고 나면 바로 지운다"
+            ],
+            "pin": 8
+          },
+          {
+            "type": "button",
+            "text": "같이 보기 시작",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "스캔도 마커도 없앴다",
+            "what": "기존 방식은 모두가 같은 환경을 스캔하거나 피듀셜을 놓아야 했다. **EyeConnect 는 서로를 쳐다보는 것으로 그것을 대신한다** — *\"doesn't require users to look at the same object or scene.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "안경 위의 점 다섯 개",
+            "what": "저파라미터 CNN(인코더 양자화)이 Spectacles 위 **키포인트 5개**를 찾는다. **다섯인 이유** — *\"Using five key points also makes the algorithm more resilient to angular changes and occlusion.\"* **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다. **현 Spectacles 에서 3ms.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "동시에 세 대까지",
+            "what": "회사가 이유를 적는다 — *\"to ensure sufficient computational resources remain available.\"* **여러 사람이 함께 쓰는 기능인데 상한이 셋이다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "중력이 절반을 알려 준다",
+            "what": "중력 정렬로 **피치와 롤을 고정**하고 **요와 이동만** 추정한다. 그래서 상대 자세 추정이 **2차 고유값 문제(QEP)** 로 풀린다. 필요한 것 — 30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "한쪽만으로는 답이 둘이다",
+            "what": "한 기기의 관측만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나온다. **양방향으로 데이터를 보내 합류하는 쪽이 양쪽 관측으로 검증한다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다** — NTP 만으로는 *\"insufficiently accurate\"*.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "군중 속에서 짝을 찾는다",
+            "what": "2D 관측을 어느 3D 궤적에 붙일지가 문제인데 **RANSAC 이** *\"effectively solves this association problem, even in environments with many bystanders\"*.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "먼저 대충, 그다음 계속",
+            "what": "몇 초 안에 **품질이 낮은 예비 정렬**을 받아들이고 그 뒤로 계속 다듬는다. **90% 의 시퀀스가 2.6초 안에** 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 오차 중앙값 2.2cm**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "사진을 안 보낸다",
+            "what": "*\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **정렬에 쓸 수 있었을 시각 맥락을 포기한 것**이다(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**안경을 둘이 쓰면 곧바로 좌표계 문제가 생긴다.** 같은 자리에 같은 것이 떠 보여야 하는데 두 기기의 좌표계는 각자 켜진 순간에 잡힌 임의의 것이다. 지금까지의 방법은 **모두가 같은 환경을 스캔하거나 마커를 놓는 것**이었고 둘 다 번거롭다.\n\n**어려운 이유를 회사가 한 문장으로 적는다** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"*\n\n**EyeConnect 는 맞출 대상을 바깥 세계에서 서로에게로 옮겼다**(이 표현은 이 사이트의 것이다). 방이 어떻게 생겼는지는 몰라도 되고, **상대가 어디 있는지만 서로 보면 된다.**\n\n**⭐ 그리고 프라이버시가 성능 제약으로 들어와 있다** — 영상을 주고받으면 정렬이 쉬워질 텐데 그것을 안 한다: *\"no visual information (no images)\"*, 그리고 맞추고 나면 *\"immediately deleted.\"* **버린 대안인 지도 재측위를 거절한 이유 셋 중 하나도 프라이버시였다** — 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다.\n\n**⭐ 같은 도메인의 다른 글과 재는 방식이 정반대다**(이 대비는 이 사이트의 것이다). **EyeConnect 는 2.6초·15cm·2.2cm 를 낸다.** 같은 안경의 **GNSS 실외 추적은 숫자를 못 낸다고 밝힌다** — *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics.\"* **갈린 자리는 난이도가 아니라 정답을 어디서 구하느냐다** — 여기서는 **두 기기의 관측을 서로 대조**하면 되지만, 실외 추적은 **지구 위 참값**을 따로 구해야 한다.",
+        "metrics": [
+          {
+            "label": "정렬까지 걸리는 시간",
+            "value": "90% 의 시퀀스가 2.6초 안에 해를 찾는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "시작 시 오차",
+            "value": "중앙값 15cm — 낮은 품질의 예비 정렬을 먼저 받아들인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "최종 정렬 오차",
+            "value": "5m 범위 안에서 중앙값 2.2cm",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "추적기 실행 시간",
+            "value": "현 Spectacles 에서 3ms",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "동시 추적 상한",
+            "value": "3대 — 계산 자원을 남겨 두기 위해",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "입력 요건",
+            "value": "머리 자세 30Hz 이상 · 최소 관측 4개 · 검출 창 128x128 · 키포인트 5개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "맞출 대상을 바꾼 대목에서",
+          "thought": "**세 대안이 전부 '바깥 세계에 공통 기준을 둔다' 는 같은 모양이었다** — 지도, 마커, 질감 있는 장면. **EyeConnect 는 기준을 사람에게 옮겼다**(이 정리는 이 사이트의 것이다). **그래서 환경 의존이 사라지는 대신 사람 의존이 생긴다** — 회사가 어려운 두 상황으로 든 **군중**과 **움직임 없음**이 정확히 그 자리다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "프라이버시가 제약으로 들어온 자리에서",
+          "thought": "**영상을 주고받으면 정렬이 쉬워질 것이다.** 그것을 안 하기로 한 것이고, 그래서 **위치와 2D 점만으로 푸는 방법**이 필요해졌다 — 중력 정렬, QEP, 양방향 검증이 전부 그 제약 아래서 나온 것으로 읽힌다(이 연결은 이 사이트의 해석이다). **제약이 설계를 만들었지 설계가 제약을 받아들인 게 아니다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "동시 세 대 상한을 볼 때",
+          "thought": "**여러 사람이 함께 쓰는 기능인데 상한이 셋이다**(이 지적은 이 사이트의 것이다). 이유는 적혀 있다 — *\"to ensure sufficient computational resources remain available.\"* ⚠️ **넷 이상이 모이면 어떻게 되는지는 글에 없다** — 못 붙는지, 셋만 붙는지, 번갈아 붙는지 알 수 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 도메인의 두 글을 나란히 볼 때",
+          "thought": "**EyeConnect 는 2.6초·2.2cm 를 내고 GNSS 는 못 낸다고 밝힌다.** **재는 자가 있느냐로 갈린다**(이 축은 이 사이트의 것이다) — 여기는 **두 기기가 서로를 대조**하면 되지만 실외 추적은 **지구 위 참값**을 따로 구해야 한다. **이 회사는 못 재면 못 잰다고 적는다** — CodePal 이 오탐 0% 의 범위를 *\"not on live traffic\"* 으로 밝힌 것과 같은 태도다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "키포인트 5개",
+            "what": "안경 위에서 찾는 점. **각도 변화와 가림에 견디게 하려고** 다섯이다"
+          },
+          {
+            "name": "Spectacles 추적기",
+            "what": "인코더를 양자화한 저파라미터 CNN. **3ms**. 128x128 창에서 검출하고 그 뒤엔 추적한다"
+          },
+          {
+            "name": "자기운동 정렬",
+            "what": "중력으로 피치·롤을 고정하고 **요와 이동만** 추정한다. 2차 고유값 문제로 푼다"
+          },
+          {
+            "name": "양방향 제약",
+            "what": "한 기기만으로는 해가 둘 나오므로 **양쪽 관측으로 검증**한다"
+          },
+          {
+            "name": "시계 동기",
+            "what": "NTP 로 첫 추정, **격자 탐색으로 다듬는다** — NTP 만으로는 부족하다"
+          },
+          {
+            "name": "공유되는 것",
+            "what": "**추적된 기기 위치와 2D 점뿐이다.** 영상은 오가지 않고 맞춘 뒤 바로 지운다"
+          }
+        ],
+        "invariants": [
+          "**영상을 주고받지 않는다** — 위치와 2D 점만이고 정렬이 끝나면 즉시 삭제한다",
+          "**미리 만든 지도가 없어도 된다** — 그것이 세 대안을 다 버린 이유다",
+          "**한 기기의 해만으로는 확정하지 않는다** — 양방향 관측으로 검증한다",
+          "**동시에 3대까지만 추적한다** — 계산 자원을 남겨 둔다",
+          "**정확도를 먼저 얻지 않는다** — 몇 초 안에 대충 맞추고 보는 동안 계속 다듬는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "두 사람이 서로를 쳐다본다",
+            "why": "방을 스캔하거나 마커를 놓는 대신 이것으로 대신한다"
+          },
+          {
+            "step": "128x128 로 줄인 창에서 안경을 검출한다",
+            "why": "찾은 뒤에는 추적기가 따라가므로 검출은 가끔만 돌면 된다"
+          },
+          {
+            "step": "안경 위 키포인트 5개를 낸다",
+            "why": "각도가 틀어지거나 일부가 가려져도 버틴다. 3ms"
+          },
+          {
+            "step": "머리 자세와 2D 점을 양쪽이 주고받는다",
+            "why": "영상은 보내지 않는다 — 프라이버시가 제약이다"
+          },
+          {
+            "step": "시계를 NTP 로 맞추고 격자 탐색으로 다듬는다",
+            "why": "NTP 만으로는 정렬에 쓸 만큼 정확하지 않다"
+          },
+          {
+            "step": "중력으로 피치와 롤을 고정하고 요와 이동만 푼다",
+            "why": "미지수가 줄어 2차 고유값 문제로 풀린다"
+          },
+          {
+            "step": "RANSAC 으로 어느 궤적이 누구인지 가른다",
+            "why": "주변에 사람이 많아도 엉뚱한 짝이 안 생긴다"
+          },
+          {
+            "step": "양쪽 관측으로 두 해 중 하나를 고른다",
+            "why": "한쪽만으로는 그럴듯한 해가 둘 나온다"
+          },
+          {
+            "step": "몇 초 안에 대충 맞추고 계속 다듬는다",
+            "why": "먼저 붙는 것이 낫다. 15cm 에서 2.2cm 로 좁혀진다"
+          },
+          {
+            "step": "맞추고 나면 쓰인 데이터를 지운다",
+            "why": "회사가 즉시 삭제한다고 적는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "두 기기의 좌표계를 무엇으로 맞출 것인가?",
+            "chosen": "**서로를 쳐다보게 한다.** 바깥 세계의 공통 기준 대신 상대 기기를 본다",
+            "alternatives": [
+              "지도 재측위 — *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"*",
+              "시각 피듀셜(AprilTag·ArUco) — *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다",
+              "공유 시각 콘텐츠·SLAM — 질감이 많고 정적인 장면이 필요하다"
+            ],
+            "tradeoff": "**세 대안이 전부 바깥 세계에 기준을 두는 방식이었다**(이 정리는 이 사이트의 것이다). 기준을 사람에게 옮겨 **환경 의존이 사라지는 대신 사람 의존이 생긴다** — 회사가 어려운 상황으로 **군중**과 **움직임 없음**을 든다. 움직임이 없으면 *\"users confined to stereo camera baseline\"* 이라 정확도가 떨어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "기기 사이에 무엇을 보낼 것인가?",
+            "chosen": "**위치와 2D 점만 보낸다.** *\"no visual information (no images)\"* 이고 맞춘 뒤 *\"immediately deleted\"*",
+            "alternatives": [
+              "영상이나 특징점 기술자를 주고받아 정렬에 쓰기"
+            ],
+            "tradeoff": "**정렬에 쓸 수 있었을 시각 맥락을 포기한 것이다**(이 정리는 이 사이트의 것이다). **그리고 그 제약이 나머지 설계를 만들었다** — 중력 정렬, QEP, 양방향 검증이 전부 '점 몇 개로 풀어야 한다' 는 조건 아래서 나온 것으로 읽힌다(이 연결도 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "안경 위에서 점을 몇 개나 찾을 것인가?",
+            "chosen": "**5개.** *\"Using five key points also makes the algorithm more resilient to angular changes and occlusion\"*",
+            "alternatives": [
+              "더 적은 점으로 계산을 줄이기"
+            ],
+            "tradeoff": "**각도 변화와 가림에 대한 여유를 사는 대신 다섯 자리를 다 잘 찾아야 한다**(이 지적은 이 사이트의 것이다). ⚠️ **몇 개까지 가려도 되는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "상대 자세를 어떻게 풀 것인가?",
+            "chosen": "**중력 정렬로 피치·롤을 고정하고 요와 이동만 추정해 2차 고유값 문제(QEP)로 푼다.** 최소 관측 4개",
+            "alternatives": [
+              "여섯 자유도를 다 추정하기"
+            ],
+            "tradeoff": "**미지수가 줄어 적은 관측으로 풀리는 대신 중력 방향이 정확해야 한다**(이 정리는 이 사이트의 것이다). **그리고 한 기기만으로 풀면** *\"two reasonable real solutions\"* **가 나온다** — 해가 하나로 안 떨어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "해가 둘 나오는 것을 어떻게 할 것인가?",
+            "chosen": "**양방향 제약을 건다.** 데이터를 양쪽으로 보내 합류하는 기기가 **양쪽 관측으로** 해를 검증한다",
+            "alternatives": [
+              "한쪽 관측만으로 더 그럴듯한 해를 고르기"
+            ],
+            "tradeoff": "**확실해지는 대신 왕복이 한 번 더 필요하다** — 지연이 붙는다(이 지적은 이 사이트의 것이다). **그리고 시계 정렬이 추가 조건이 된다** — NTP 만으로는 *\"insufficiently accurate\"* 라 격자 탐색으로 다듬어야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "주변에 사람이 많으면 어떻게 짝을 찾는가?",
+            "chosen": "**RANSAC 으로 연결 문제를 푼다** — *\"effectively solves this association problem, even in environments with many bystanders\"*",
+            "alternatives": [
+              "관측을 가장 가까운 궤적에 붙이기"
+            ],
+            "tradeoff": "**바깥값을 버리며 푸는 방식이라 관측이 충분해야 한다**(이 지적은 이 사이트의 것이다). ⚠️ **얼마나 붐벼야 실패하는지는 글에 없다** — *\"rarely be a problem in practice\"* 라고만 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "동시에 몇 대를 추적할 것인가?",
+            "chosen": "**최대 3대.** *\"to ensure sufficient computational resources remain available\"*",
+            "alternatives": [
+              "보이는 만큼 다 추적하기"
+            ],
+            "tradeoff": "**안경 위의 다른 일에 자원을 남겨 두는 대신 함께 쓰는 인원에 상한이 생긴다**(이 정리는 이 사이트의 것이다). **여러 사람이 같이 보자는 기능인데 상한이 셋이다.** ⚠️ **넷 이상이면 어떻게 되는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "정확해진 다음에 붙일 것인가, 붙이고 나서 정확해질 것인가?",
+            "chosen": "**먼저 붙인다.** 몇 초 안에 품질이 낮은 예비 정렬을 받아들이고 그 뒤로 계속 다듬는다",
+            "alternatives": [
+              "목표 정확도에 닿을 때까지 기다렸다 붙이기"
+            ],
+            "tradeoff": "**90% 가 2.6초 안에 붙는 대신 처음에는 15cm 어긋나 보인다** — 최종 **2.2cm**(5m 안)까지는 시간이 더 걸린다. **틀린 자리에 잠깐 뜨는 것을 감수하고 기다림을 없앤 것이다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "저파라미터 CNN (인코더 양자화)",
+            "role": "안경 위 키포인트 5개 검출. 현 Spectacles 에서 3ms",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "검출기와 추적기 이중 구조",
+            "role": "128x128 창에서 검출하고 그 뒤엔 추적기가 따라간다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "2차 고유값 문제 (QEP)",
+            "role": "중력 정렬로 줄인 상대 자세 추정. 최소 관측 4개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "RANSAC",
+            "role": "군중 속에서 2D 관측을 3D 궤적에 붙이는 연결 문제",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "NTP + 격자 탐색",
+            "role": "기기 간 시계 정렬 — NTP 만으로는 부족하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "머리 자세 스트림 (30Hz 이상)",
+            "role": "자기운동 정렬의 입력. 영상 대신 이것과 2D 점만 오간다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "여러 사람의 좌표계를 표류 없이 계속 붙여 두기",
+            "why_hard": "회사가 한 문장으로 적는다 — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **질감이 없으면 시각 정렬이 안 서고, 움직임이 많으면 관측이 흔들리고, 가려지면 관측이 끊긴다.**",
+            "current_best": "**바깥 세계 대신 서로를 본다.** 중력으로 미지수를 줄이고, 양방향으로 검증하고, RANSAC 으로 군중 속 짝을 가른다. **5m 안에서 최종 오차 중앙값 2.2cm.** ⚠️ 남은 어려운 상황 둘 — **군중**과 **움직임 없음**(스테레오 기선 안에 갇힌다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "problem": "실외 추적은 잘하는지 잴 방법이 없다",
+            "why_hard": "**같은 안경의 다른 글이 이것을 정면으로 적는다** — *\"Quantifying our system's performance precisely is challenging due to the difficulty of acquiring absolute ground truth data\"* 이고 *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"*. **EyeConnect 는 두 기기를 서로 대조하면 되지만, 지구 위 절대 위치는 참값을 따로 구해야 한다**(이 대비는 이 사이트의 것이다).",
+            "current_best": "**정성적 관찰로 대신하고 그렇다고 밝힌다** — *\"performance assessments are based on qualitative observations… rather than absolute error statistics.\"* **못 재면 못 잰다고 적는 태도가 이 회사에서 두 번째다** — CodePal 도 오탐 0% 의 범위를 *\"not on live traffic\"* 으로 밝혔다(이 관찰은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "World-scale Outdoor AR Tracking with GNSS",
+                "url": "https://eng.snap.com/specs_gnss",
+                "publisher": "Snap Engineering",
+                "date": "2026-07-10",
+                "summary": "**지구 위 어디인지와 어느 쪽을 보는지를 늘 알아야 실외 AR 이 선다** — *\"knowing two crucial things at all times: the device's absolute location on Earth (latitude, longitude, and altitude) and its precise orientation relative to true north and vertical.\"* **혼자서는 아무 센서도 안 된다** — **VIO** 는 *\"slowly accumulates drift over time\"* 이고 좌표계가 *\"inherently arbitrary\"*(켠 순간에 잡힌다) · **GNSS** 는 *\"too slow and inherently noisy for the demands of high-fidelity AR rendering\"* 이고 방향을 못 준다 · **자력계**는 *\"extremely susceptible to local magnetic field disturbances\"* 라 **10~20도** 오차가 나는데 이는 AR 요구에서 *\"an order of magnitude\"* 떨어진다 · **VPS** 는 *\"availability is inherently restricted to selected, pre-mapped locations\"* 이고 종종 클라우드 조회에 기댄다. **그래서 셋을 그래프 기반 최적화로 융합한다** — VIO 가 고주파 상대 운동, GNSS 가 절대 위치·속도 앵커, 자력계가 시작 즉시 북향을 준다. 좌표계는 **국소 접평면(LTP)**. **대가를 길게 적는다** — 첫 해까지 **콜드 스타트 30초 이상**, 인터넷 보조 성력을 받으면 **약 10초** · **저조도에서 VIO 가 실패**하고 차량 안 travel mode 에서는 VIO 가 차 내부를 추적해 *\"rendering it useless\"* 라 **IMU 전용 모드**로 떨어지는데 그때는 *\"slightly less robust to GNSS noise artifacts\"* · 소비자급 GNSS 수신기가 성능의 상한이고 **하늘이 트여야** 하며 **충분한 변위나 속도**가 있어야 해 보행자 사용에서 특히 문제다. **🔴 그리고 정확도를 숫자로 못 낸다고 밝힌다** — *\"Quantifying our system's performance precisely is challenging due to the difficulty of acquiring absolute ground truth data\"* 이고 *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"* 라 *\"performance assessments are based on qualitative observations… rather than absolute error statistics\"*. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              },
+              {
+                "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+                "url": "https://eng.snap.com/eyeconnect",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-27",
+                "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "둘이 같은 것을 보기까지",
+          "question": "영상을 안 보내고 어떻게 맞추는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  LOOK[\"서로를 쳐다본다\"]:::list\n  DET[\"작게 줄인 창에서 안경을 찾는다<br/>찾은 뒤엔 따라간다\"]:::list\n  KP[\"안경 위 점 다섯 개 — 삼 밀리초\"]:::list\n  SEND[\"<b>오가는 것은 이것뿐</b><br/>• 머리 자세와 점 좌표<br/>• 사진은 보내지 않는다<br/>• 맞추고 나면 지운다\"]:::accent\n  CLK[\"시계를 대충 맞추고 다시 다듬는다\"]:::list\n  SOLVE[\"중력이 위아래를 알려 주니<br/>좌우 방향과 거리만 계산한다\"]:::list\n  ASSOC[\"사람이 많아도 짝을 가른다\"]:::list\n  BOTH[\"양쪽 관측으로 두 답 중 하나를 고른다\"]:::list\n  ROUGH[\"몇 초 만에 대충 붙인다\"]:::list\n  FINE[\"보는 동안 계속 다듬는다\"]:::list\n  X1[\"지도를 미리 만들기<br/>버렸다 — 준비와 계산과 프라이버시\"]:::quiet\n  X2[\"마커를 놓기<br/>버렸다 — 태그를 먼저 만들어야 한다\"]:::quiet\n  LOOK --> DET --> KP --> SEND --> CLK --> SOLVE --> ASSOC --> BOTH --> ROUGH --> FINE\n  LOOK -.-> X1\n  LOOK -.-> X2"
+        },
+        {
+          "title": "정렬 하나가 지나는 자리",
+          "question": "언제부터 같이 보이기 시작하는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 탐색\n  탐색 : <b>상대 안경을 찾는다</b><br/>작게 줄인 창에서 검출한 뒤 추적으로 넘어간다\n  탐색 --> 수집 : 찾았다\n  수집 : <b>관측을 모은다</b><br/>머리 자세와 점 좌표. 최소 넷이 필요하다\n  수집 --> 후보 : 넷이 모였다\n  후보 : <b>답이 둘 나온다</b><br/>한쪽 관측만으로는 하나로 안 떨어진다\n  후보 --> 검증 : 양쪽으로 보낸다\n  검증 : <b>양쪽 관측으로 고른다</b><br/>왕복이 한 번 더 든다\n  검증 --> 예비 : 답이 정해졌다\n  예비 : <b>몇 초 만에 붙는다</b><br/>구할 중 아홉이 이 초 육 안에. 십오 센티쯤 어긋난다\n  예비 --> 정밀 : 보는 동안 계속\n  정밀 : <b>이 센티대로 좁혀진다</b><br/>오 미터 안에서 잰 값이다\n  정밀 --> 삭제 : 다 맞췄다\n  삭제 : <b>쓴 데이터를 지운다</b><br/>회사가 즉시 삭제한다고 적는다\n  삭제 --> [*]"
+        },
+        {
+          "title": "이 설계가 약한 자리",
+          "question": "무엇이 어긋나면 안 붙는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"기준을 바깥 세계에서 사람으로 옮겼다\"]:::list\n  B[\"<b>환경 의존이 사라진 대신 사람 의존이 생겼다</b><br/>회사가 어려운 상황으로 든 둘이 정확히 그 자리다\"]:::accent\n  C[\"움직임이 없으면\"]:::list\n  D[\"카메라 두 개 사이 거리 안에 갇혀 정확도가 떨어진다\"]:::list\n  E[\"사람이 붐비면\"]:::list\n  F[\"짝을 가르기 어려워진다 — 얼마나 붐벼야 실패하는지는 글에 없다\"]:::list\n  G[\"동시 추적이 세 대까지다\"]:::list\n  H[\"넷 이상 모이면 어떻게 되는지 글에 없다\"]:::list\n  I[\"사진을 안 보낸다\"]:::list\n  J[\"정렬에 쓸 수 있었을 시각 맥락이 없다\"]:::list\n  N[\"<i>어려운 상황 둘은 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "EyeConnect: Instant, Private Co-location for Shared AR on Spectacles",
+          "url": "https://eng.snap.com/eyeconnect",
+          "publisher": "Snap Engineering",
+          "date": "2026-08-27",
+          "summary": "**둘이 AR 을 같이 보려면 좌표계를 맞춰야 하는데, 그 맞추는 일을 서로를 쳐다보는 것으로 대신한다.** 지금까지는 같은 것을 스캔하거나 마커를 놓아야 했다. **버린 대안이 셋이고 이유가 각각 다르다** — **지도 재측위**는 *\"pre-built spatial maps\"* 가 미리 있어야 하고 *\"more computation and coordination\"* 을 요구하며 센서 데이터가 남으면 *\"privacy concerns\"* 가 생긴다 · **시각 피듀셜(AprilTag·ArUco)** 은 *\"lack widespread adoption\"* 이고 사용자가 태그를 먼저 만들어야 한다 · **공유 시각 콘텐츠/SLAM** 은 질감이 많고 정적인 장면이 필요하다. **어려운 이유** — *\"Ensuring persistent, drift-free co-location among multiple users remains challenging, especially in environments with little texture, high dynamics or occlusion.\"* **구조는 둘** — ① **Spectacles 추적기**: 안경 위 **키포인트 5개**를 찾는 저파라미터 CNN(인코더 양자화), **128x128 로 줄인 창**에서 검출하고 그 뒤엔 추적기가 따라간다, **현 Spectacles 에서 3ms** · ② **자기운동 정렬**: 중력 정렬로 피치·롤을 고정하고 **요와 이동만** 추정해 **2차 고유값 문제(QEP)** 로 푼다(30Hz 이상 머리 자세 · 2D 관측 · 카메라 파라미터 · **최소 관측 4개**). **군중 속 연결 문제는 RANSAC 이 푼다.** 시계는 **NTP 로 첫 추정을 잡고 격자 탐색으로 다듬는다**(NTP 만으로는 *\"insufficiently accurate\"*). **수치** — 90% 의 시퀀스가 **2.6초** 안에 해를 찾고, 시작 시 중앙값 오차 **15cm**, **5m 안에서 최종 정렬 오차 중앙값 2.2cm**. **⭐ 프라이버시가 설계 제약이다** — *\"It only shares tracked device positions and 2D points between devices, but no visual information (no images). All data used for EyeConnect is immediately deleted after the content is aligned.\"* **대가를 스스로 적는다** — 동시 추적은 **최대 3대**(*\"to ensure sufficient computational resources remain available\"*), 한 대만으로 QEP 를 풀면 *\"two reasonable real solutions\"* 가 나와 양방향 검증이 필요하다, 그리고 *\"we identified two scenarios that are specifically challenging for EyeConnect: crowded environments and lack of motion\"*(움직임이 없으면 스테레오 기선 안에 갇힌다). ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+        },
+        {
+          "title": "World-scale Outdoor AR Tracking with GNSS",
+          "url": "https://eng.snap.com/specs_gnss",
+          "publisher": "Snap Engineering",
+          "date": "2026-07-10",
+          "summary": "**지구 위 어디인지와 어느 쪽을 보는지를 늘 알아야 실외 AR 이 선다** — *\"knowing two crucial things at all times: the device's absolute location on Earth (latitude, longitude, and altitude) and its precise orientation relative to true north and vertical.\"* **혼자서는 아무 센서도 안 된다** — **VIO** 는 *\"slowly accumulates drift over time\"* 이고 좌표계가 *\"inherently arbitrary\"*(켠 순간에 잡힌다) · **GNSS** 는 *\"too slow and inherently noisy for the demands of high-fidelity AR rendering\"* 이고 방향을 못 준다 · **자력계**는 *\"extremely susceptible to local magnetic field disturbances\"* 라 **10~20도** 오차가 나는데 이는 AR 요구에서 *\"an order of magnitude\"* 떨어진다 · **VPS** 는 *\"availability is inherently restricted to selected, pre-mapped locations\"* 이고 종종 클라우드 조회에 기댄다. **그래서 셋을 그래프 기반 최적화로 융합한다** — VIO 가 고주파 상대 운동, GNSS 가 절대 위치·속도 앵커, 자력계가 시작 즉시 북향을 준다. 좌표계는 **국소 접평면(LTP)**. **대가를 길게 적는다** — 첫 해까지 **콜드 스타트 30초 이상**, 인터넷 보조 성력을 받으면 **약 10초** · **저조도에서 VIO 가 실패**하고 차량 안 travel mode 에서는 VIO 가 차 내부를 추적해 *\"rendering it useless\"* 라 **IMU 전용 모드**로 떨어지는데 그때는 *\"slightly less robust to GNSS noise artifacts\"* · 소비자급 GNSS 수신기가 성능의 상한이고 **하늘이 트여야** 하며 **충분한 변위나 속도**가 있어야 해 보행자 사용에서 특히 문제다. **🔴 그리고 정확도를 숫자로 못 낸다고 밝힌다** — *\"Quantifying our system's performance precisely is challenging due to the difficulty of acquiring absolute ground truth data\"* 이고 *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"* 라 *\"performance assessments are based on qualitative observations… rather than absolute error statistics\"*. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
         }
       ]
     }
