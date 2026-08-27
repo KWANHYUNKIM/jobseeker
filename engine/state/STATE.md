@@ -8,37 +8,38 @@
 
 ## 지금 파는 중
 
-*(덮어쓴다. 이어붙이지 않는다.)*
+**Target (US · 커머스/리테일 물류) — 42번째. 회사 프로파일까지 썼다. 기능은 0개다.**
 
-**아무도 안 판다 — Moniepoint(41번째)를 사이클 218 에서 done 으로 닫았다.** 도메인 2개가 다 찼다.
+`--gaps` 가 [신규]를 가리켰고 `## 대기` 맨 위가 Target 이었다. 사이클 218 에서 Moniepoint 를
+닫아 진행 중이 비어 있었다.
 
-> **`traceable-truth` 의 축 — 맞았다가 아니라 '어떻게 그렇게 판단했는가' 를 남긴다.**
-> 규모가 사람의 눈을 못 쓰게 만든다(*"매일 수백만 건"*, 누적 **1,000억 건 이상**). 그러면 자동이 판단해야 하는데,
-> **믿을 근거가 없으면 그 판단은 쓸 수 없다.** 그래서 *"매칭만이 아니라 어느 파이프라인이 그 판단을 했고
-> 누가 그 파이프라인을 만들었는지도 기록한다"* — 판단이 *"추적 가능하고 되돌릴 수 있다"*.
-> 반대편도 회사가 적는다 — *"추적 가능성을 없애면, 수십억 나이라를 처리하는 블랙박스가 남는다."*
+**도메인은 2개만 열었다.** 목록 첫 페이지 15편을 세고 두 편의 본문을 실제로 열어 본 뒤에 정했다.
 
-> **눈에 걸린 것 셋** — ① **거버넌스가 인터페이스보다 먼저다**(*"거버넌스가 없으면 대화형 AI 인터페이스는
-> 그냥 나쁜 SQL 을 더 빨리 쓰는 챗봇이다"*). ② **팔기 좋은 것을 지금 안 만든다** — *"대부분의 회사가 Phase 1 에
-> 살면서 Phase 3 를 판다 … 우리는 확고하게 Phase 2"*, 그 일이 *"멋있지 않고 어렵다"*.
-> ③ **너무 일찍 비교하면 가짜 불일치가 나온다** — 이관에서 **30~60초 버퍼**를 두었고,
-> *"이벤트 기반 시스템에서 지연을 없앨 수는 없다. 그것을 감안해 설계한다."*
+1. **`주문을 어디서 몇 개의 배송으로 쪼갤 것인가`** — 본문 2편 확인.
+   `balancing-speed-and-accuracy-digital-fulfillment`(2026-04)와
+   `math-behind-inventory-delivery-optimization`(2025-11). **다음 사이클의 기능은 여기서 시작한다.**
+2. **`비용을 청구하지 않고 보여준다`** — 본문 1편(`infra-showback`, 2025-04).
+   같은 묶음으로 보이는 `accelerating-developer-velocity-dbaas`(2025-10)는 **아직 안 읽었다.**
+   **기능을 쓰기 전에 반드시 그것을 읽는다**(도메인은 한 편이면 열지만 기능은 두 편이다).
 
-> **📌 다음 사이클은 [신규] — `## 대기` 맨 위인 Target(US · 리테일 물류, 42번째)을 연다.**
-> 1차 자료 확인 완료(215): `tech.target.com`, 읽은 글에 **버린 대안 둘**(브루트포스는 **2ⁿ−1** 로 폭증 —
-> 품목 10개면 조합 1,023가지 · 그리디는 *"동적 비용과 미묘한 요소를 놓쳐 비용이 더 든다"*)과
-> **혼합이 계산 시간 약 8% 로 비용 격차의 약 91% 를 메운다**는 수치가 있다.
-> *"하나는 시간에서 실패하고 다른 하나는 해의 질에서 실패한다."* **상장사(NYSE: TGT)라 IR 이 있고,
-> Q4 Inc 계열이면 브라우저 `get_page_text` 로 보도자료 전문을 받을 수 있다.**
-> ⚠️ **회사를 열 때 `ui_map` 을 함께 쓴다**(지금 토스·Yelp·Doximity·Moniepoint 넷).
+**추천·개인화 글이 첫 페이지에만 네 편 있는데 일부러 열지 않았다** — 자료가 없어서가 아니라
+이 사이트에 그 축이 이미 두꺼워서다. **세 번째 도메인을 연다면 여기가 1순위다**
+(`targetrun-shopping-offers` · `page-layout-optimization-bandits` ·
+`accessory-recommendations-with-llms` · `buy-it-again-part-2`).
 
-> **📌 Target 을 열면 큐가 1/3(bol.com 뿐)이 되므로 그다음에 후보 조사가 필요하다.**
-> bol.com 은 ⚠️ **최신 글이 2024-11 이라 멈췄을 수 있다 — 열 때 최신 글을 먼저 확인할 것.**
-> **라틴아메리카는 접었고**(새 단서 없으면 재시도 금지) **게임은 Roblox 하나**(Unreal 403).
+**자리 구분의 근거가 된 한 숫자** — **매출 출하의 97.6% 가 매장 발**(4분기 97.4%).
+쿠팡처럼 물류센터를 깐 것이 아니라 **이미 있던 매장 1,995곳이 배송 거점**이다. 그래서
+재고가 파는 곳과 보내는 곳에 동시에 있고, 주문마다 분할이 계산 문제가 된다.
+IR 은 `corporate.target.com` 보도자료가 **WebFetch 로 그냥 열렸다**(브라우저가 필요 없었다).
 
-**큐 2/3** — Target(US · 리테일 물류) · bol.com(EU/NL).
+**⚠️ 다음 사이클이 먼저 볼 것** — 목록을 **첫 페이지 15편만** 셌다. 전체는 **7페이지(약 100편)**
+이고 **분류별 목록(Artificial Intelligence · Cybersecurity · Data Sciences · Documentation ·
+Infrastructure · Open Source · Product Engineering)을 아직 안 봤다.**
 
-마지막 사이클: 218 (2026-08-27) — Moniepoint 맞았다가 아니라 어떻게 그렇게 판단했는가를 남긴다 + 회사 완주.
+**⚠️ Target 을 완주하면 큐가 1/3(bol.com 뿐)이라 후보 조사 사이클이 필요하다.**
+bol.com 은 **최신 글이 2024-11 이라 멈췄을 수 있으니 열 때 최신 글부터 확인한다.**
+**라틴아메리카는 접었고(새 단서 없으면 재시도 금지), 게임은 Roblox 하나뿐이다.**
+
 
 ## 다음 선택지
 
@@ -105,7 +106,8 @@
 | **IR 보도자료(Q4 Inc 계열)** | ✅ **브라우저 `get_page_text` 로 전문이 온다** — `investors.<회사>.com/news/news-details/<연도>/<제목>/default.aspx`. WebFetch 는 빈 껍데기만 준다. Doximity 에서 표까지 통째로 받았다(사이클 211) |
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
-| `tech.target.com` · `techlab.bol.com/en` | ✅ 목록·본문 모두 열린다 (사이클 215 에서 확인). bol.com 은 **최신 글이 2024-11** 이라 멈췄을 수 있다 |
+| `tech.target.com` · `techlab.bol.com/en` | ✅ 목록·본문 모두 열린다. Target 은 **한 페이지 15편 × 7페이지(약 100편)** 이고 분류 링크가 있다. bol.com 은 **최신 글이 2024-11** 이라 멈췄을 수 있다 |
+| `corporate.target.com` 보도자료·소개 | ✅ **WebFetch 로 실적 표까지 온다** — 브라우저가 필요 없었다(사이클 219). `investors.target.com` 은 **브라우저 권한이 막혀 있어** 시도하지 않는다 |
 | `www.backblaze.com/blog` | ⚠️ 열리지만 **데이터·홍보 성격** — Drive Stats 수치는 넘치는데 **의사결정과 대가가 없다** |
 | `tech.ocado.com` · `engineering.quintoandar.com.br` · `tech.mercadolibre.com` | ❌ DNS 자체가 없다 |
 | `blog.wildlifestudios.com` | ❌ DNS 자체가 없다 (주소를 잘못 알고 있었다) |
