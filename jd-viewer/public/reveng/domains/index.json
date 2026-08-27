@@ -452,6 +452,25 @@
         "repurchase-timing"
       ],
       "file": "after-you-measure.md"
+    },
+    {
+      "slug": "which-way-it-leans",
+      "title": "무엇을 잃기로 정했는가 — 오차를 어느 쪽으로 몰았는가",
+      "question": "완전성을 조금 내줄 때, 그 오차가 한쪽으로 기울게 만든 이유는 무엇인가?",
+      "companies": [
+        "moniepoint",
+        "doximity",
+        "yelp",
+        "target"
+      ],
+      "features": [
+        "critical-path",
+        "cdc-overlap",
+        "partition-access",
+        "split-shipments",
+        "repurchase-timing"
+      ],
+      "file": "which-way-it-leans.md"
     }
   ]
 }
