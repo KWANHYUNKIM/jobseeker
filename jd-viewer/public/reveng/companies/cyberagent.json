@@ -4,11 +4,11 @@
   "name_en": "CyberAgent",
   "country": "JP",
   "category": "광고",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-27",
   "domain": "인터넷 광고와 미디어(ABEMA)",
   "one_liner": "광고를 팔면서 그 광고가 실릴 미디어도 직접 굴린다 — 그래서 배송의 속도와 고르기가 같은 회사 안의 문제가 된다",
-  "business_model": "**일본 상장사(TSE: 4751).** **FY2025 연결 순매출 8,740.30억엔**(874,030백만엔)이고 5년간 **6,661.49억엔 → 8,740.30억엔**으로 늘었다.\n\n**영업이익은 U 자를 그린다** — **FY2021 1,040.70억엔 → FY2022 675.52억 → FY2023 223.51억(바닥) → FY2024 400.83억 → FY2025 717.02억엔.** ⚠️ **왜 그렇게 움직였는지는 이 자료에 없다** — 세그먼트별 수치가 이 페이지에 없어서 어느 사업이 그 바닥을 만들었는지 이 사이트는 확인하지 못했다.\n\n**이 사이트의 다른 회사와 자리가 다르다**(아래 비교는 이 사이트의 정리다).\n\n- **이 사이트에 광고를 파는 회사가 없었다.** 넷플릭스·유튜브·스포티파이는 미디어 쪽에서 들어왔고, 구글은 없다.\n- **이 회사는 광고를 팔면서 그 광고가 실릴 미디어(ABEMA)도 직접 굴린다.** 그래서 **광고를 언제 얼마나 뿌릴지**가 남의 지면 이야기가 아니라 자기 서비스의 응답 속도 문제와 한 몸이 된다(이 연결은 이 사이트의 해석이다).\n- **ABEMA 는 일본의 실시간 스트리밍이다** — 넷플릭스(주문형)·유튜브(UGC)와 축이 다르다. ⚠️ **다만 ABEMA 의 시청자 지표(WAU/MAU)를 이 사이트는 아직 못 찾았다.**\n- **그래서 기술 글 두 갈래가 서로를 닮는다** — 광고 배송과 ABEMA 본체가 **같은 캐시 문제**(Pod 이 늘면 캐시가 흩어진다)를 각각 겪고 각각 **Valkey 를 공유 중간층으로** 넣었다. **두 글은 서로를 언급하지 않는다.**",
+  "business_model": "**일본 상장사(TSE: 4751).** **FY2025 연결 순매출 8,740.30억엔**(874,030백만엔)이고 5년간 **6,661.49억엔 → 8,740.30억엔**으로 늘었다.\n\n**영업이익은 U 자를 그린다** — **FY2021 1,040.70억엔 → FY2022 675.52억 → FY2023 223.51억(바닥) → FY2024 400.83억 → FY2025 717.02억엔.** ⚠️ **왜 그렇게 움직였는지는 이 자료에 없다** — 세그먼트별 수치가 이 페이지에 없어서 어느 사업이 그 바닥을 만들었는지 이 사이트는 확인하지 못했다.\n\n**이 사이트의 다른 회사와 자리가 다르다**(아래 비교는 이 사이트의 정리다).\n\n- **이 사이트에 광고를 파는 회사가 없었다.** 넷플릭스·유튜브·스포티파이는 미디어 쪽에서 들어왔고, 구글은 없다.\n- **이 회사는 광고를 팔면서 그 광고가 실릴 미디어(ABEMA)도 직접 굴린다.** 그래서 **광고를 언제 얼마나 뿌릴지**가 남의 지면 이야기가 아니라 자기 서비스의 응답 속도 문제와 한 몸이 된다(이 연결은 이 사이트의 해석이다).\n- **ABEMA 는 일본의 실시간 스트리밍이다** — 넷플릭스(주문형)·유튜브(UGC)와 축이 다르다. ⚠️ **다만 ABEMA 의 시청자 지표(WAU/MAU)를 이 사이트는 아직 못 찾았다.**\n- **그래서 기술 글 두 갈래가 서로를 닮는다** — 광고 배송과 ABEMA 본체가 **같은 캐시 문제**(Pod 이 늘면 캐시가 흩어진다)를 각각 겪고 각각 **Valkey 를 공유 중간층으로** 넣었다. **두 글은 서로를 언급하지 않는다.**\n\n---\n\n**다섯 기능을 다 쓰고 나서 보이는 것**(이 정리는 이 사이트의 것이다 — 회사가 이렇게 묶어 말한 적은 없다).\n\n**① 버린 대안과 대가는 잘 적는데 자기 개선 폭은 반만 적는다.** 이 사이트가 읽은 여섯 편 중 **자기 수치를 낸 것은 셋**이다 — 광고 배송 캐시(Spanner p99 약 4배 · 릴리스 40분에서 15분 · TTL 1분과 4분), 필터링 고속화(2코어에서 약 700 RPS · Marshal CPU 32%에서 16%), Vector(초당 2만 이벤트 · Pod 당 0.5 vCPU 와 500MB). **안 낸 셋**은 페이싱(숫자가 **전부 타사 참고문헌**이다), 플랫폼 이설(**글 전체에 셋뿐**이고 그중 하나는 문서 계층 제한이다), 알림 감시(**고치기 전만 세고 고친 뒤를 안 센다**).\n\n**버린 대안의 수와 수치의 유무가 서로 상관이 없다.** 페이싱은 버린 대안이 셋인데 자기 수치가 0 이고, 이설은 넷인데 셋뿐이며, Vector 는 하나인데 촘촘하다. **글쓴이나 팀에 따라 관행이 다른 것으로 보인다**(추측이다).\n\n**② 같은 시스템의 다른 층을 다루는 글들이 서로를 전혀 언급하지 않는다.** 페이싱과 고속화와 이설이 모두 광고 배송인데 서로를 안 가리키고, **광고 배송 캐시와 ABEMA 본체 캐시는 같은 문제(Pod 이 늘면 캐시가 흩어진다)를 각각 겪고 같은 답(Valkey 공유층)에 이르렀는데도** 서로를 모른다. 이설이 *\"Pod 에서 새 환경의 Memorystore 로 직접 접속하는 것이 곤란했습니다\"* 를 적는데도 캐시 글과 이어지지 않고, **관측조차 두 계열로 갈려 있다** — 광고 배송은 Datadog, 워크로드 감시는 Grafana.\n\n**③ 그런데 다섯 기능의 답이 전부 '줄이기' 다.** 페이싱은 한꺼번에 나가는 것을 줄이고, 캐시는 원본을 읽는 횟수를 줄이고, 이설은 환경이 섞여 생기는 것을 줄이고, 알림은 보내는 건수를 줄이고, Vector 는 보내는 데이터를 줄인다. **광고를 팔면서 그 지면도 직접 굴리는 회사라 양쪽에서 동시에 값이 붙고**, 그래서 **무엇을 안 할지가 반복해서 설계의 중심에 온다**(이 해석은 이 사이트의 것이다).",
   "products": [
     "ABEMA — 일본의 인터넷 TV(실시간 편성 + 주문형)",
     "인터넷 광고 사업 — 광고 배송·운용",
@@ -291,7 +291,8 @@
         }
       ],
       "features": [
-        "alert-context"
+        "alert-context",
+        "observability-pipeline"
       ]
     }
   ],
@@ -305,7 +306,8 @@
     "**이설 글에 롤백 서술이 한 줄도 없다.** 4단계 순서와 자원별 동기화 방식은 촘촘한데 **되돌리는 조건도 중단 기준도 없다.** 1단계의 신구 동기화가 사실상 돌아갈 자리를 남기는데도 회사가 그것을 롤백으로 부르지 않는다. **DNS WRR 의 비율과 단계별 기간도 없어서, 실제로 얼마나 조심스럽게 옮겼는지를 이 사이트는 알 수 없다.**",
     "**임시 구성을 실제로 걷어냈는지 확인되지 않는다.** TCP 프록시와 Compute Engine 위의 MySQL 이 이행용으로 세워졌고 *\"이행 완료 후에는 신속히 구성을 표준화(TCP Proxy 철거)하는 계획도 세트로 관리했습니다\"* 라고 적혀 있지만, **'이행 완료' 의 판정 기준도 후속 보고도 없다.** 그리고 **이관을 위해 고른 Public IP 접속을 나중에 PSA 로 되돌리는지도 안 적혀 있다.**",
     "**Grafana 감시 글에 개선 후 수치가 없다.** 고치기 전은 *\"수십~수백 건의 'Pod 이상' 통지\"* 로 세는데 **고친 뒤 몇 건이 됐는지, 놓친 장애가 줄었는지가 없다.** **이 회사에서 네 번째로 확인되는 패턴이다** — 버린 대안과 대가는 잘 적는데 자기 개선 폭은 반만 적는다(캐시 65145 · 고속화 64498 은 적고, 페이싱 63908 · 이설 61355 · 이 글은 안 적는다).",
-    "**관측이 두 계열로 갈려 있다.** 광고 배송은 **Datadog**(Agent · Vector · APM)이고 워크로드 감시는 **Grafana Alert + PromQL** 인데, **두 글이 서로를 언급하지 않는다.** 같은 회사의 같은 GKE 위에서 도는데도 그렇다. **의도된 분업인지 팀이 달라서인지 확인되지 않는다.**"
+    "**관측이 두 계열로 갈려 있다.** 광고 배송은 **Datadog**(Agent · Vector · APM)이고 워크로드 감시는 **Grafana Alert + PromQL** 인데, **두 글이 서로를 언급하지 않는다.** 같은 회사의 같은 GKE 위에서 도는데도 그렇다. **의도된 분업인지 팀이 달라서인지 확인되지 않는다.**",
+    "**Vector 글이 버퍼링과 데이터 유실 처리를 통째로 다루지 않는다.** 싱크가 죽거나 버퍼가 찰 때 무엇이 일어나는지 안 적혀 있다. **같은 회사의 필터링 고속화 글은 그 문제를 정면으로 겪었다** — 논블로킹 큐가 *\"고부하 시에는 큐가 곧바로 상한에 도달해 예상 이상의 로그가 결손되어 버렸습니다\"*. **두 글은 서로를 언급하지 않는다.**"
   ],
   "sources": [
     {
@@ -355,7 +357,7 @@
       "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
       "publisher": "CyberAgent Developers Blog",
       "date": "2025-12-11",
-      "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.**"
+      "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
     },
     {
       "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
@@ -2987,6 +2989,678 @@
           "publisher": "CyberAgent Developers Blog",
           "date": "2025-12-03",
           "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+        }
+      ]
+    },
+    {
+      "key": "observability-pipeline",
+      "name": "보내기 전에 걸러 낸다",
+      "domain": "보는 일에 드는 값을 어떻게 치를 것인가",
+      "updated_at": "2026-08-27",
+      "ui": {
+        "title": "관측 데이터가 지나는 길",
+        "question": "보내기 전에 무엇을 버리는가?",
+        "kind": "web",
+        "note": "**파이프라인 구성을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **이런 화면이 존재하는지조차 이 사이트는 확인하지 못했습니다.** 회사의 Vector 도입 글에 적힌 것만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "관측 파이프라인"
+          },
+          {
+            "type": "label",
+            "text": "보내는 쪽"
+          },
+          {
+            "type": "card",
+            "text": "Datadog Agent 가 먼저 받는다",
+            "items": [
+              "컨테이너 로그를 모은다",
+              "쿠버네티스 메타데이터로 태그를 붙인다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "text",
+            "text": "커넥션이 Pod 마다 치우쳐서 앞에 L7 을 세웠습니다",
+            "pin": 2
+          },
+          {
+            "type": "label",
+            "text": "모으는 쪽"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "Vector 애그리게이터",
+                "sub": "4 Pod · 이중화",
+                "right": "초당 2만"
+              },
+              {
+                "title": "Pod 하나당",
+                "sub": "0.5 vCPU · 500MB",
+                "right": "실측"
+              }
+            ],
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "VRL 로 하는 일"
+          },
+          {
+            "type": "chips",
+            "items": [
+              "태그 문자열 구조화",
+              "시각 형식 정규화",
+              "불필요한 태그 삭제"
+            ],
+            "pin": 4
+          },
+          {
+            "type": "card",
+            "text": "아예 안 보내는 것",
+            "items": [
+              "Vector 자신의 출력",
+              "메타데이터 서버와 프록시 로그"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "text",
+            "text": "관리형에는 있는 것 — 흘리면서 결과를 보는 화면",
+            "pin": 6
+          },
+          {
+            "type": "button",
+            "text": "Datadog 으로 보낸다",
+            "variant": "ghost"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "에이전트를 먼저 통과시킨다",
+            "what": "*\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* **태그 붙이는 일은 이미 잘하는 것에 맡겼다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "재 보고 앞단을 바꿨다",
+            "what": "*\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, **Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로** haproxy(L7 LB)를 경유시키고 있습니다.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "직접 굴리니 값이 눈에 보인다",
+            "what": "프로덕션에서 **초당 약 2만 이벤트**를 **Pod 당 0.5 vCPU · 메모리 500MB 전후로 4 Pod** 이 처리한다 — *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성.\"* 검증 환경에서는 **워커 하나가 3000 req/s 를 0.1 vCPU · 30MB** 로 감당했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "보내기 전에 처리한다",
+            "what": "**VRL 400줄 조금 못 미침**이 ddtags 문자열을 구조화하고, 시각 형식을 맞추고, **불필요한 태그를 지워 Datadog Metrics 비용을 줄인다.** 이유 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "관측 도구 자신의 로그도 버린다",
+            "what": "제외 대상에 **Vector 자신의 출력**, image-package-extractor, gke-metadata-server, proxy-agent, **haproxy 의 info 로그**가 들어간다. **관측을 줄이려고 관측 도구를 관측에서 뺐다**(이 표현은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "버린 쪽의 좋은 점을 적는다",
+            "what": "관리형 Datadog Observability Pipelines 에는 있고 순정 Vector 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 든다. **이 회사 글에서 버린 대안의 장점을 적은 드문 자리다**(이 관찰은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**관측 데이터는 흘려보내는 만큼 돈이 된다.** 회사가 관리형 서비스를 계산해 보고 접었다 — 취득에 **$0.095/GB**, 그 아래 Datadog Logs 에 **$0.10/GB** 가 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*. 결론을 첫 문장으로 적는다: *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"*\n\n**그래서 이 기능이 하는 일은 결국 '덜 보내기' 다**(이 정리는 이 사이트의 것이다). **VRL 400줄**이 태그를 지우고 컨테이너를 걸러 내는데, 그 목록에 **Vector 자신의 출력과 haproxy 의 info 로그**가 들어 있다 — **관측 비용을 줄이려고 관측 도구를 관측 대상에서 뺐다.**\n\n**직접 굴리니 값이 숫자로 보인다** — **초당 약 2만 이벤트**를 **Pod 당 0.5 vCPU · 메모리 500MB 로 4 Pod**. **관리형이었다면 이 값이 청구서로 왔을 것이다**(이 대비는 이 사이트의 해석이다).\n\n**그리고 잃은 것을 회사가 적는다** — 관리형에는 있는 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 가 없다. **직접 굴리는 대가로 크래시도 직접 만난다**: *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다.\"*",
+        "metrics": [
+          {
+            "label": "프로덕션 처리량",
+            "value": "초당 약 2만 이벤트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "자원",
+            "value": "Pod 당 약 0.5 vCPU · 메모리 500MB 전후 · 4 Pod(이중화 겸)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "검증 환경",
+            "value": "워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB 로 처리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "설정 크기",
+            "value": "VRL 이 대부분인 400줄 조금 못 미침",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "버린 대안의 가격",
+            "value": "Observability Pipelines 취득 $0.095/GB + Datadog Logs $0.10/GB — 이중으로 붙는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "도입 전후의 비용 절감액도, 로그·메트릭이 얼마나 줄었는지도 나오지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 거르는지 목록을 볼 때",
+          "thought": "**제외 목록에 Vector 자신의 출력과 haproxy 의 info 로그가 들어 있다.** 관측 비용을 줄이려고 **관측 도구를 관측 대상에서 뺀 것**이다(이 표현은 이 사이트의 것이다). 합리적이지만 **파이프라인 자체가 이상할 때 그 흔적이 얇아진다** — 실제로 *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"* 라고 적는 시스템이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "L4 를 L7 로 바꾼 대목을 볼 때",
+          "thought": "**재 보고 고쳤다** — *\"Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로\"*. **관측 파이프라인을 관측해서 관측 파이프라인을 고친 셈이다**(이 정리는 이 사이트의 것이다). 이 회사 글 중 **실측이 설계를 바꾼 것을 가장 짧게 보여 주는 자리**이고, 같은 회사의 페이싱 글이 자기 수치를 하나도 안 내는 것과 대비된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "버린 쪽의 장점을 적은 것을 볼 때",
+          "thought": "**관리형에만 있는 것을 인정한다** — *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조.\"* **이 사이트가 읽은 이 회사 글 여섯 편 중 버린 대안의 좋은 점을 적은 것은 여기 하나다**(이 관찰은 이 사이트의 것이다). **VRL 400줄을 손으로 고치는 쪽을 골랐으니 그 확인 화면이 없는 값은 매번 치른다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "안 적힌 것을 셀 때",
+          "thought": "**버퍼링과 유실 처리가 통째로 없다.** 싱크가 죽거나 버퍼가 차면 어떻게 되는지 안 적혀 있고, **Vector 이전에 무엇을 썼는지도 끝내 안 나온다.** 그리고 **도입 전후의 비용 절감액이 없다** — 관리형을 가격으로 버린 글이 자기가 얼마를 아꼈는지는 안 센다(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Datadog Agent",
+            "what": "앞단. 컨테이너 로그를 모으고 **쿠버네티스 메타데이터로 태그를 붙여** Vector 에 넘긴다"
+          },
+          {
+            "name": "Vector 애그리게이터",
+            "what": "**DaemonSet 이 아니다.** 4 Pod 으로 상시 가동하며 받아서 처리하고 내보낸다"
+          },
+          {
+            "name": "VRL 설정",
+            "what": "**400줄 조금 못 미침.** 구조화·정규화·필터링·태그 삭제를 한다"
+          },
+          {
+            "name": "ddtags",
+            "what": "Datadog 의 콤마 구분 태그 문자열. VRL 이 키-값으로 푼다"
+          },
+          {
+            "name": "제외 목록",
+            "what": "**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info"
+          },
+          {
+            "name": "카디널리티",
+            "what": "태그 조합의 수. 줄이면 Datadog Metrics 요금이 준다"
+          }
+        ],
+        "invariants": [
+          "**애플리케이션 표준 출력은 Vector 에 직접 붙지 않는다** — 반드시 Datadog Agent 를 거친다",
+          "**Datadog 에 보내기 전에 처리할 수 있는 것은 처리한다**",
+          "**Vector 자신의 로그는 Datadog 으로 보내지 않는다**",
+          "⚠️ **커넥션 분산은 L7(HAProxy)이 맡는다** — L4 로는 Pod 마다 치우쳤다",
+          "⚠️ **버퍼링과 유실 처리는 글에 없다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Datadog Agent 가 컨테이너 로그를 모은다",
+            "why": "쿠버네티스 메타데이터에서 Datadog 태그를 만들어 붙인다"
+          },
+          {
+            "step": "HAProxy 가 Vector Pod 들에 나눠 준다",
+            "why": "L4 로는 Pod 별 커넥션이 치우쳤다 — 실측으로 확인했다"
+          },
+          {
+            "step": "Vector 애그리게이터가 받는다",
+            "why": "4 Pod, 이중화 겸. 초당 약 2만 이벤트"
+          },
+          {
+            "step": "VRL 이 ddtags 문자열을 키-값으로 푼다",
+            "why": "콤마로 이어진 문자열을 구조로 만든다"
+          },
+          {
+            "step": "제외 대상 네임스페이스와 컨테이너를 버린다",
+            "why": "Vector 자신의 출력과 haproxy info 로그도 여기 들어간다"
+          },
+          {
+            "step": "Argo Workflow 로그의 severity·timestamp 를 정규화하고 스택트레이스를 다룬다",
+            "why": "애플리케이션마다 형식이 달라서"
+          },
+          {
+            "step": "불필요한 태그를 지운다",
+            "why": "카디널리티를 줄여 Datadog Metrics 비용을 낮춘다"
+          },
+          {
+            "step": "Datadog 으로 보낸다",
+            "why": "*\"Datadog 쪽 설정이 심플해지는 것\"* 이 사전 처리의 이유다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "관측 파이프라인을 관리형으로 살 것인가?",
+            "chosen": "**아니다 — 순정 Vector 를 직접 굴린다.** *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다\"*",
+            "alternatives": [
+              "Datadog Observability Pipelines (관리형) — 검토하고 버렸다"
+            ],
+            "tradeoff": "버린 이유가 셋이다 — **이중 과금**(취득 **$0.095/GB** 에 Datadog Logs **$0.10/GB** 가 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*), **IaC 미성숙**(Terraform 프로바이더 버그 + *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*), **표현력**. **그리고 잃은 것을 회사가 적는다** — 관리형에만 있는 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"*. **직접 굴리니 크래시도 직접 만난다**: *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "애플리케이션 로그를 Vector 에 직접 붙일 것인가?",
+            "chosen": "**아니다 — Datadog Agent 를 먼저 거친다.** *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다\"*",
+            "alternatives": [
+              "Vector 가 컨테이너 표준 출력을 직접 수집하기"
+            ],
+            "tradeoff": "**홉이 하나 늘고 Agent 에 의존하게 된다** — 관리형을 버려 놓고 그 회사 에이전트는 앞단에 남긴 셈이다(이 지적은 이 사이트의 것이다). 얻는 것은 **쿠버네티스 메타데이터로 태그를 만드는 일을 다시 안 만들어도 된다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "Vector Pod 들에 트래픽을 어떻게 나눌 것인가?",
+            "chosen": "**L7(HAProxy)로 나눈다.** 처음에는 쿠버네티스 서비스(L4)였는데 바꿨다 — *\"Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다\"*",
+            "alternatives": [
+              "쿠버네티스 서비스(L4 LB) — 처음에 썼고 바꿨다"
+            ],
+            "tradeoff": "**부품이 하나 늘고 그것도 감시해야 한다** — 실제로 haproxy 의 info 로그가 제외 목록에 들어간다(이 연결은 이 사이트의 정리다). **재 보고 고친 것**이라 근거는 분명하다. ⚠️ **편향이 얼마였는지, 고친 뒤 얼마나 고르게 됐는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "노드마다 둘 것인가, 모아 둘 것인가?",
+            "chosen": "**애그리게이터로 모아 둔다.** *\"애그리게이터로서 가동시키고 있습니다\"* — DaemonSet 이 아니고, *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*",
+            "alternatives": [
+              "DaemonSet 으로 노드마다 하나씩 두기"
+            ],
+            "tradeoff": "**데이터가 네트워크를 한 번 더 탄다** — 노드 로컬에서 처리하는 이점을 버렸다(이 지적은 이 사이트의 것이다). 대신 **설정이 한 벌이고 자원 소비를 몇 개 Pod 으로 묶어 볼 수 있다.** ⚠️ **왜 하필 넷인지는 설명이 없다** — 이중화를 겸한다고만 적혀 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "변환을 어디서 할 것인가?",
+            "chosen": "**보내기 전에 VRL 로 한다.** *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것\"*",
+            "alternatives": [
+              "Datadog 쪽 파이프라인 설정으로 처리하기"
+            ],
+            "tradeoff": "**400줄이 우리 것이 된다** — 형식이 바뀌면 우리가 고쳐야 하고, **확인 화면이 없어** 관리형에 있는 *\"적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 못 쓴다(회사가 그 결핍을 적는다). 얻는 것은 **Datadog 쪽 설정이 단순해지고 처리가 프로그래머블해지는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "태그를 다 보낼 것인가?",
+            "chosen": "**아니다 — 명백히 불필요한 태그를 지운다.** 카디널리티를 줄여 Datadog Metrics 비용을 낮춘다",
+            "alternatives": [
+              "전부 보내고 Datadog 쪽에서 걸러 내기"
+            ],
+            "tradeoff": "**지운 태그는 나중에 못 본다** — 필요해질 때 과거 데이터에는 이미 없다(이 지적은 이 사이트의 것이다). **비용을 지금 줄이고 나중의 선택지를 줄인 셈이다.** ⚠️ **얼마나 줄었는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "관측 도구 자신의 로그는 보낼 것인가?",
+            "chosen": "**안 보낸다.** 제외 목록에 **Vector 자신의 출력**과 **haproxy 의 info 로그**, gke-metadata-server, proxy-agent, image-package-extractor 가 들어간다",
+            "alternatives": [
+              "전부 보내고 필요할 때 검색하기"
+            ],
+            "tradeoff": "**파이프라인 자체가 이상할 때 흔적이 얇아진다**(이 지적은 이 사이트의 것이다) — 그리고 이 시스템은 실제로 *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"* 라고 적는다. **관측 비용을 줄이려고 관측 도구를 관측 대상에서 뺀 자리다.** 얻는 것은 **양이 확실히 줄어든다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Vector (Rust)",
+            "role": "관측 데이터를 받아 변환하고 내보내는 애그리게이터. Datadog 이 2021년 Timber Technologies 에서 인수한 OSS",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "VRL (Vector Remap Language)",
+            "role": "400줄 조금 못 미치는 변환 규칙 — 구조화·정규화·필터링·태그 삭제",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Datadog Agent",
+            "role": "앞단 수집. 쿠버네티스 메타데이터로 태그를 만들어 붙인 뒤 Vector 에 넘긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "HAProxy",
+            "role": "Vector Pod 들에 커넥션을 L7 로 나눈다 — L4 로는 치우쳤다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "GKE + Helm",
+            "role": "Vector 를 애그리게이터로 배포한다 — 4 Pod, 이중화 겸",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Argo Workflows",
+            "role": "로그 형식이 달라 따로 파싱하는 애플리케이션의 예로 나온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "관측 데이터는 보낼수록 돈이 되는데 무엇을 버릴지는 나중에야 안다",
+            "why_hard": "관리형은 **취득 $0.095/GB 에 로그 $0.10/GB 가 겹쳐** *\"토털 코스트가 높아져 버릴 것 같습니다\"* 이고, 직접 굴려도 **vCPU 당 가격 체계**가 붙는다. **그리고 지운 태그는 나중에 필요해져도 과거 데이터에 없다**(이 지적은 이 사이트의 것이다).",
+            "current_best": "**보내기 전에 VRL 로 걸러 낸다** — 태그를 지워 카디널리티를 줄이고, 특정 네임스페이스와 컨테이너를 아예 제외한다. ⚠️ **얼마를 아꼈는지도, 얼마나 줄였는지도 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          },
+          {
+            "problem": "관측 파이프라인 자신은 무엇으로 관측하는가",
+            "why_hard": "제외 목록에 **Vector 자신의 출력과 haproxy 의 info 로그**가 들어 있다. **비용을 줄이려면 자기 로그부터 버리는 게 합리적인데, 그러면 파이프라인이 이상할 때 흔적이 얇아진다**(이 정리는 이 사이트의 것이다). 실제로 *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*.",
+            "current_best": "**메트릭으로 본다** — L4 에서 L7 로 바꾼 근거가 *\"Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로\"* 다. **로그는 버리되 메트릭은 남긴 셈이다**(이 해석은 이 사이트의 것이다). ⚠️ **버퍼링과 유실 처리는 글에 없다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+                "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+                "publisher": "CyberAgent Developers Blog",
+                "date": "2025-12-11",
+                "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "로그 한 줄이 Datadog 에 닿기까지",
+          "question": "보내기 전에 무엇이 떨어져 나가는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  APP[\"애플리케이션 컨테이너의 표준 출력\"]:::list\n  AG[\"Datadog Agent<br/>쿠버네티스 메타데이터로 태그를 붙인다\"]:::list\n  HA[\"HAProxy — L7 로 나눈다<br/>L4 로는 Pod 마다 치우쳤다\"]:::list\n  VEC[\"<b>Vector 애그리게이터</b><br/>• 4 Pod · 이중화 겸<br/>• 초당 약 2만 이벤트<br/>• Pod 당 0.5 vCPU 와 500MB\"]:::accent\n  VRL[\"VRL 400줄 — 구조화 · 정규화 · 필터링 · 태그 삭제\"]:::list\n  DROP[\"버리는 것<br/>Vector 자신의 출력 · haproxy info · 메타데이터 서버\"]:::list\n  DD[\"Datadog 으로 보낸다\"]:::list\n  X[\"관리형 Observability Pipelines<br/>버렸다 — 이중 과금 · IaC 미성숙 · 표현력\"]:::quiet\n  LOST[\"잃은 것 — 흘리면서 결과를 보는 화면\"]:::quiet\n  APP --> AG --> HA --> VEC --> VRL --> DD\n  VRL --> DROP\n  VEC -.-> X\n  X -.-> LOST"
+        },
+        {
+          "title": "이벤트 하나가 지나는 자리",
+          "question": "어디서 걸러지고 어디서 모양이 바뀌는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 표준출력\n  표준출력 : <b>컨테이너가 뱉는다</b><br/>아직 아무 태그도 없다\n  표준출력 --> 태그붙음 : 에이전트를 지난다\n  태그붙음 : <b>쿠버네티스 메타데이터가 붙는다</b><br/>콤마로 이어진 문자열 형태로\n  태그붙음 --> 도착 : L7 이 나눠 준다\n  도착 : <b>애그리게이터가 받는다</b><br/>Pod 넷 중 하나가 처리한다\n  도착 --> 폐기 : 제외 목록에 든 컨테이너다\n  폐기 : <b>여기서 끝난다</b><br/>Vector 자신의 로그도 여기로 간다\n  도착 --> 구조화 : 그 밖의 것\n  구조화 : <b>문자열이 키와 값이 된다</b><br/>시각 형식도 함께 맞춘다\n  구조화 --> 태그삭제\n  태그삭제 : <b>불필요한 태그를 뗀다</b><br/>여기서 뗀 것은 나중에 되찾을 수 없다\n  태그삭제 --> 전송\n  전송 : <b>Datadog 으로 간다</b><br/>여기서부터 요금이 붙는다\n  전송 --> [*]\n  폐기 --> [*]"
+        },
+        {
+          "title": "이 설계가 못 보는 자리",
+          "question": "직접 굴리기로 하고 무엇을 포기했는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"Vector 자신의 로그를 버린다\"]:::list\n  B[\"<b>파이프라인이 이상할 때 흔적이 얇다</b><br/>실제로 검증 중 몇 번 크래시시켰다\"]:::accent\n  C[\"태그를 미리 지운다\"]:::list\n  D[\"나중에 필요해져도 과거 데이터에 없다\"]:::list\n  E[\"확인 화면이 없다\"]:::list\n  F[\"400줄을 고칠 때마다 결과를 눈으로 못 본다\"]:::list\n  G[\"버퍼링과 유실 처리\"]:::list\n  H[\"글에 통째로 없다 — 싱크가 죽으면 어떻게 되는지 모른다\"]:::list\n  I[\"도입 전후 절감액\"]:::list\n  J[\"가격으로 관리형을 버린 글이 자기가 얼마 아꼈는지는 안 센다\"]:::list\n  N[\"<i>확인 화면과 크래시만 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "connections": [
+        {
+          "to": "alert-context",
+          "kind": "대비",
+          "contract": "**같은 도메인의 두 기능이 관측의 값을 서로 다른 화폐로 치른다**(이 대비는 이 사이트의 것이다). 이쪽은 **돈**이다 — 관리형의 이중 과금(**$0.095/GB + $0.10/GB**)을 피하려고 직접 굴리고, VRL 로 **덜 보낸다.** 저쪽은 **주의력**이다 — 알림이 너무 많아 사람이 읽기를 그만둔 *\"알림의 형해화\"* 를 고치려고 **덜 알린다.** **둘 다 답이 '줄이기' 인데 줄이는 대상이 다르다.** **⚠️ 두 글은 서로를 언급하지 않고, 애초에 계열이 다르다** — 이쪽은 Datadog(Agent · Vector · APM), 저쪽은 Grafana Alert 와 PromQL 이다. **같은 회사의 같은 GKE 위에서 도는데도 그렇다.**",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+              "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+              "publisher": "CyberAgent Developers Blog",
+              "date": "2025-12-11",
+              "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
+            },
+            {
+              "title": "Grafana Alert を活用した Context-Aware なワークロード監視",
+              "url": "https://developers.cyberagent.co.jp/blog/archives/61628/",
+              "publisher": "CyberAgent Developers Blog",
+              "date": "2025-12-03",
+              "summary": "GKE 노드 업그레이드 때마다 쏟아지는 Pod 재시작 알림이 **알림을 죽이고 있었다**. 회사가 그것을 이름 붙여 적는다 — *\"'업그레이드에 따른 일시적인 에러겠지' 라고 판단하고, 알림을 확인하지 않고 가볍게 여기기 시작합니다. 이른바 '알림의 형해화' 입니다.\"* 노드 업그레이드는 정상적인 Drain/Eviction 을 부르는데 *\"Slack 의 알림 채널은 수십~수백 건의 'Pod 이상' 통지로 가득 찹니다\"*, 그래서 **진짜 장애가 묻힌다** — *\"일부 중요하지 않은 배치 잡이 계속 실패하고 있다는 것을 알아채는 것이 늦어진 경우도 있었습니다.\"* **답은 규칙을 평소에 재워 두고 업그레이드 동안에만 깨우는 것**이다 — GKE Cluster Notifications 의 `UpgradeEvent` 를 받으면 Cloud Run 이 REST API 로 Grafana Alert 규칙의 일시정지를 풀고, `UpgradeInfoEvent` 로 끝을 알면 다시 재운다. **버린 대안** — *\"PagerDuty 의 Maintenance Window 나 Alertmanager 의 Silence 기능을 쓰는 것도 생각할 수 있습니다만, 업그레이드의 시작·종료 시각이 예측하기 어려운 GKE 의 사양상 이것들을 정적으로 설정하는 것은 곤란합니다.\"* **대가를 여럿 적는다** — 관리 클러스터·노드가 늘수록 *\"토일의 증대\"* · *\"'이 에러는 무시해도 좋은가' 의 판단이 담당자의 경험에 의존해 버린다\"* · *\"대량의 통지 속에서 정말로 중요한 에러를 육안으로 찾아내는 것은 곤란\"* · Cloud Run 이 **최대 1시간**이라 더 긴 감시에는 Cloud Tasks 가 필요하다 · *\"Cloud Run 에서 Grafana Alert 를 제어할 경우에는 IAP 인증과 별개로 Grafana 의 사용자 인증이 필요해집니다\"*(서비스 계정 토큰 경로가 없어 JWT claim 매핑) · *\"Alerting rule(Pause) 갱신을 위해 부여한 폴더 권한은 영속화되지 않는다\"*. **수치** — **300+ 마이크로서비스**, **수백 노드**, pending **5분**(평가 간격 1분), group wait **30초**, group interval **5분**, repeat interval **4시간**, Cloud Run 최대 실행 **1시간**. 스택 — **Grafana Alert(REST API · Notification Policy · Alerting History) · PromQL · Cloud Run · Pub/Sub · Cloud Tasks · Eventarc · IAP · Terraform · JWT · Slack**. ⚠️ **Vector·Datadog·광고 배송 시스템을 언급하지 않는다.**"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "title": "DatadogのRust製オブザーバビリティデータパイプラインVectorを本番導入した",
+          "url": "https://developers.cyberagent.co.jp/blog/archives/60707/",
+          "publisher": "CyberAgent Developers Blog",
+          "date": "2025-12-11",
+          "summary": "ABEMA 광고 배송 시스템(GKE)의 관측 데이터를 **Vector**(Rust 제, Datadog 이 2021년 Timber Technologies 에서 인수) 파이프라인으로 처리하게 만든 글. **버린 대안이 하나인데 이유가 셋이다** — **Datadog Observability Pipelines**(관리형)를 검토하고 버렸다: ① **비용이 이중으로 붙는다**(*\"Observability Pipelines 의 취득 요금이 $0.095/GB 발생하는 것 같습니다\"* + 그 아래 Datadog Logs 요금이 또 붙어 *\"토털 코스트가 높아져 버릴 것 같습니다\"*, Datadog Logs 는 **$0.10/GB**) · ② **IaC 가 미성숙**(Terraform 프로바이더에 표준 배포를 막는 버그가 있었고 *\"API 자체가 preview 인 것 같아 신청하지 않으면 쓸 수 없는 것 같았습니다\"*) · ③ **표현력** — OSS Vector 가 UI 기반보다 설정 표현이 자유롭다. **수치가 촘촘하다** — 프로덕션 **초당 2만 이벤트**, Pod 당 **0.5 vCPU · 메모리 500MB 전후**로 **4 Pod**, VRL 설정 **400줄 조금 못 미침**, 검증 환경에서 **워커 하나가 3000 req/s 를 0.1 vCPU · 메모리 30MB** 로 처리. **실패도 적는다** — *\"검증 과정에서 몇 번 Vector 를 크래시시켜 버렸습니다\"*(환경 변수 처리 버그, PR #23513·#23514 로 수정됨). **대가** — *\"이 리소스 소비량은 특히 Transforms 로 기술하는 처리의 부하나 복잡도, 버퍼링 양에 따라 상당히 변동이 있으므로\"*, 그리고 **vCPU 당 가격 체계**도 있다. 스택 — **Vector · VRL · Datadog Agent · GKE · HAProxy(L7 로 커넥션 분산) · DaemonSet/Helm · Argo Workflows**. ⚠️ **Vector 이전에 무엇을 썼는지는 명시되지 않는다.** **252 에서 원문을 다시 읽어 넷을 더 찾았다.** ① **L4 에서 L7 로 바꾼 이유가 실측이다** — *\"처음에는 kubernetes 의 서비스(L4 LB)로 클러스터 내에 엔드포인트를 제공하고 있었습니다만, Pod 별 메트릭을 보니 커넥션의 편향이 보였으므로 haproxy(L7 LB)를 경유시키고 있습니다.\"* ② **Datadog Agent 를 앞에 두는 이유** — *\"Vector 에 직접 애플리케이션 컨테이너의 표준 출력 등을 접속시키지 않고 datadog-agent 를 경유시킴으로써 kubernetes 의 메타데이터로부터 datadog 관련 태그가 생성되어 부가된 상태로 Vector 에 데이터가 전송됩니다.\"* ③ **VRL 400줄이 하는 일 다섯** — ddtags 의 콤마 구분 문자열을 구조화 · 특정 네임스페이스와 컨테이너 로그 제외(**Vector 자신의 출력** · image-package-extractor · gke-metadata-server · proxy-agent · haproxy info) · Argo Workflow 로그의 severity·timestamp 정규화와 스택트레이스 처리 · timestamp 정규화 · 불필요한 태그 삭제로 카디널리티 감소. 이유도 적는다 — *\"사전에 처리할 수 있는 것은 처리하고 나서 Datadog 에 보냄으로써 Datadog 쪽 설정이 심플해지는 것, VRL 쪽이 프로그래머블하게 처리하기 쉬운 것.\"* ④ **🔴 버린 쪽의 장점을 인정한다** — 관리형에는 있고 OSS 에는 없는 것으로 *\"실시간으로 로그를 흘리고 적용 결과를 확인하면서 운용할 수 있는 구조\"* 를 적는다. 배치는 **DaemonSet 이 아니라 애그리게이터**이고(*\"애그리게이터로서 가동시키고 있습니다\"*), *\"현재는 이중화의 의미도 겸해 4Pod 으로 구성\"*(⚠️ 왜 넷인지는 설명이 없다). 결론 문장 — *\"결론부터 말하면 이쪽은 채용하지 않고, 순정 Vector 를 우리 환경에 배포해 운용하기로 했습니다.\"* ⚠️ **버퍼링 설정과 데이터 유실 처리는 다루지 않는다.** ⚠️ **Vector 이전에 무엇을 썼는지도 끝내 명시되지 않는다.**"
         }
       ]
     }

@@ -535,10 +535,10 @@
       "name_en": "CyberAgent",
       "country": "JP",
       "category": "광고",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-27",
       "one_liner": "광고를 팔면서 그 광고가 실릴 미디어도 직접 굴린다 — 그래서 배송의 속도와 고르기가 같은 회사 안의 문제가 된다",
-      "features_done": 4,
+      "features_done": 5,
       "domain": "인터넷 광고와 미디어(ABEMA)"
     }
   ],
