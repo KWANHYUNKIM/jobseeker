@@ -8,42 +8,43 @@
 
 ## 지금 파는 중
 
-**(없다 — 사이클 225 는 후보 조사였다. 큐를 1/3 에서 3/3 으로 채웠다.)**
+**(없다. 사이클 226 은 사이클 225 가 저지른 실수를 고치는 데 썼다.)**
 
-**🚨 다음 사이클은 [신규] — `## 대기` 맨 위부터 판다. 순서는 bol.com → Grab → Spotify.**
+**🚨 사이클 225 의 후보 조사가 통째로 틀렸다 — 넣은 둘이 다 이미 있는 회사였다.**
+`Grab` 도 `Spotify` 도 **이미 `done` 인 회사**다(Grab 은 2026-08-22 에 도메인 3개·기능 3개로
+닫혔다: `counter-service` · `iceberg-lake` · `dispatchgym`). **넣지 않은 Cloudflare 도 이미 있다.**
+226 이 Grab 프로파일을 새로 쓰다가 `index.json` 중복 검사에 걸려서야 알았고,
+**그때 이미 `grab.json` 을 덮어쓴 뒤였다.** `git checkout -- ` 로 복구했다(커밋 전이라 무사했다).
 
-**⚠️ bol.com 이 맨 위인데 위험이 있다 — 최신 글이 2024-11 이다.** 열자마자 **최신 글의 연도부터
-확인한다.** 2025 이후 글이 없으면 **`## 보류` 로 내리고 Grab 으로 넘어간다**(멈춘 블로그는
-도메인을 두 개 열 만큼의 재료가 안 나온다). 확인해 둔 재료는 모놀리스 데이터 분리 —
-**4TB 중 3TB**, 이관 잡 **19~23시간**, 전체 **2~3개월**, CPU **4% → 약 15%**, 버린 대안 셋.
+**🔴 다음 사이클이 반드시 지킬 것 — 큐에 회사를 넣기 전에 `index.json` 의 기존 목록과 대조한다.**
+```
+python3 -c "import json;print(sorted(e['name_en'] for e in json.load(open('jd-viewer/public/reveng/index.json'))['companies']))"
+```
+**블로그가 좋은지만 보고 '이 사이트에 없는 자리' 라고 단정하지 않는다.** 225 는 *"동남아 0곳"*
+이라고 적었는데 **Grab 이 바로 그 동남아였다.**
 
-**225 에서 확인한 것 — 큐에 넣은 둘은 본문까지 봤다.**
-- **Grab**(SG, 모빌리티/슈퍼앱) — **동남아 0곳을 채운다.** 블로그가 크고 살아 있다
-  (최신 **2026-08-21**, **약 240편**, 분류별 목록이 열린다 — Engineering 84 · Database 20 등).
-  읽은 글에 **버린 대안 셋 + 되돌린 실험 + 스스로 적은 대가**가 다 있다.
-  *"인메모리 인덱스로 되돌렸다"* · *"동시 다중 AZ 장애는 이 워크로드에서 감수할 만했다."*
-- **Spotify**(SE, 스트리밍/음악) — **이 사이트의 스트리밍 둘이 다 영상이라 음악이 비어 있다.**
-  읽은 글(RAP)에 **대가가 다섯 줄** 명시돼 있다. ⚠️ **최근 글이 LLM·에이전트 쪽으로 기울어
-  있으니**, 도메인을 열 때 그 묶음만 보지 말고 Platform·Data 분류를 같이 본다.
+**🔴 그리고 파일을 새로 쓰기 전에 존재 여부를 먼저 본다** — `companies/<slug>.json` 이 이미
+있으면 그 회사는 이미 판 것이다. 덮어쓰기 전에 `ls` 한 줄이면 막을 수 있었다.
 
-**넣지 않은 것과 그 이유** — 세 곳을 더 열어 봤다.
-- **Cloudflare** — 블로그는 아주 활발한데(최신 2026-08-24) **연 글이 제품 발표였다.**
-  ❌ 가 아니라 ⚠️ 다: 심층 글이 섞여 있으니(예: Spectre 재방문) **넣으려면 마케팅이 아닌
-  글을 먼저 찾아야 한다.** 지금은 넣지 않았다.
-- **Supercell** `supercell.com/en/blog/` — **404.**
-- **CRED** `blog.cred.build` — **`cred.club` 으로 301.** 엔지니어링 블로그가 없어진 것으로 보인다.
+**큐 정리 결과 — 대기 1/3 이다.**
+- `Grab`·`Spotify` 를 **중복이라 뺐다.**
+- `bol.com` 을 **보류로 내렸다** — **블로그 글이 2024-11-07 에서 멈췄다**(16페이지의 1페이지가
+  최신인데 2025·2026 글이 없고, 2026 항목 둘은 경력 팟캐스트다). 새 글이 올라오면 다시 꺼낸다.
+- **`LinkedIn` 을 새로 넣었다**(본문까지 확인). 이 사이트에 **구인·구직 그래프가 없고**,
+  이 레포 자체가 채용 사이트라 결이 맞는다. 읽은 글이 대가를 한 문장으로 적는다 —
+  *"그 교환은 비용을 서빙에서 학습으로 밀어낸다."* **2일 → 5시간 미만**, 0.6B 학생 모델을
+  **GPU당 초당 약 22,000 요청**으로 서빙.
 
-**⚠️ 아직 비어 있는 자리** — **라틴아메리카 0곳**(접었다, 새 단서 없으면 재시도 금지) ·
-**게임 1곳**(Roblox — Supercell 404, Riot 소멸, Unreal 403 이라 후보가 마르고 있다) ·
-**아프리카 1곳**(Moniepoint) · **인도 소수**(CRED 도 사라졌다).
+**🚨 다음 사이클은 [신규] LinkedIn 을 열고, 그다음 사이클은 또 후보 조사다**(큐가 1 이므로).
+**이번엔 반드시 기존 42곳과 대조하면서 찾는다.**
 
-**비교 문서 축 다섯이 재료가 찬 채 대기 중이다.**
-- **'재 보고 고른다'** — Careem `cost-leaks` · Zerodha `log-storage` · Yelp `partition-access` ·
-  Doximity `prod-profiling` · **Target `repurchase-timing`**. **재료 다섯 — 가장 두껍다.**
-- **'무엇을 잃기로 정했는가'** — Moniepoint `critical-path` · Doximity `cdc-overlap` ·
-  Yelp `partition-access` · **Target `split-shipments`** · **Target `repurchase-timing`**. 다섯.
-- 나머지 셋: '틀렸다는 것을 어떻게 알아차리는가' · '미루되 미룬 것이 안 보이게 한다' ·
-  '되돌릴 수 있는 것을 먼저 한다'.
+**⚠️ 실제로 비어 있는 자리(목록과 대조해 다시 셌다)** — **라틴아메리카 0곳**(접었다) ·
+**게임 1곳**(Roblox) · **아프리카 1곳**(Moniepoint) · **인도 1곳**(Zerodha) · **여행 1곳**(trivago).
+**동남아는 비어 있지 않다 — Grab 이 있다.**
+
+**비교 문서 축 다섯이 재료가 찬 채 대기 중이다.** 가장 두꺼운 것은 **'재 보고 고른다'**
+(Careem `cost-leaks` · Zerodha `log-storage` · Yelp `partition-access` · Doximity `prod-profiling` ·
+Target `repurchase-timing` — 다섯)과 **'무엇을 잃기로 정했는가'**(다섯)다.
 
 
 ## 다음 선택지
@@ -118,6 +119,12 @@
 | `engineering.atspotify.com` | ✅ **목록·본문 모두 열린다**(사이클 225). 글 주소는 `/YYYY/M/<slug>` 형식이고 목록은 '더 보기' 로 이어진다 |
 | `blog.cloudflare.com` | ⚠️ **열리지만 제품 발표가 섞여 있다** — 연 글(`task-based-oauth-consent`)이 마케팅이었다. **심층 글을 골라야 한다** |
 | `supercell.com/en/blog/` · `blog.cred.club` | ❌ 앞은 **404**, 뒤는 `cred.club` 으로 **301**(블로그가 없어진 듯) |
+| `linkedin.com/blog/engineering` | ✅ **목록·본문 모두 열린다**(사이클 226). 자체 호스팅이고 최신 글 **2026-08-13** |
+| `about.gitlab.com/blog/categories/engineering/` | ⚠️ **열리지만 날짜가 본문에 안 실리고 제품 홍보가 섞여 있다** — 넣으려면 심층 글을 먼저 확인해야 한다 |
+| `etsy.com/codeascraft` · `tech.groww.in` | ❌ 둘 다 **403** |
+| `tech.olacabs.com` | ❌ **연결 거부**(ECONNREFUSED) |
+| `blog.phonepe.com` | ❌ `medium.com/phonepe` 로 **302** — Medium 은 막혀 있다 |
+| `techlab.bol.com/en/blog/` | ⏸️ 열리지만 **글이 2024-11-07 에서 멈췄다**(2026 항목은 경력 팟캐스트다) |
 | `tech.ocado.com` · `engineering.quintoandar.com.br` · `tech.mercadolibre.com` | ❌ DNS 자체가 없다 |
 | `blog.wildlifestudios.com` | ❌ DNS 자체가 없다 (주소를 잘못 알고 있었다) |
 | `www.cockroachlabs.com/blog` | ⚠️ 열리지만 **첫 페이지가 제품 마케팅 위주** — 심층 글을 따로 찾아야 한다 |
@@ -129,6 +136,19 @@
 | `technology.riotgames.com` | ❌ **뉴스 검색 페이지로 301** — 기술 블로그가 없어진 것으로 보인다 |
 | `engineering.leboncoin.fr` · `tech.showmax.com` | ❌ DNS 자체가 없다 (주소를 잘못 알고 있었다) |
 | **PDF (IR 자료 등)** | ✅ **읽을 수 있다.** WebFetch 가 *"decode 할 수 없다"* 고 답해도 **바이너리를 `tool-results/` 에 저장해 준다** — 그 파일을 아래 방법으로 직접 푼다 |
+
+### 큐에 넣기 전에 이미 판 회사인지 본다 — 사이클 226 에서 데였다
+
+사이클 225 가 후보 조사로 넣은 **두 곳이 다 이미 `done` 인 회사**였다(Grab · Spotify).
+넣지 않은 Cloudflare 도 이미 있었다. **블로그가 좋다는 것과 이 사이트에 없다는 것은 다른 문제다.**
+
+```
+python3 -c "import json;print(sorted(e['name_en'] for e in json.load(open('jd-viewer/public/reveng/index.json'))['companies']))"
+ls jd-viewer/public/reveng/companies/          # 파일을 쓰기 전에 한 번 더
+```
+
+**지리 공백도 목록으로 다시 센다.** 225 는 *"동남아 0곳"* 이라고 적었는데 **Grab 이 그 동남아였다.**
+기억으로 세면 틀린다.
 
 ### 되풀이되는 설계 축
 
