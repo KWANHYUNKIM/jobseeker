@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Wayfair** | US · 커머스(대형 물품) | **기능 1개**(`damage-judgment`, 사이클 241). `창고와 사진에서 물건의 상태를 판정한다` 착수(글 3편 중 2편 읽음). **`분류가 아니라 생김새로 찾게 한다` 는 아직 0개** — 두 번째 글 `smarter-shopping-starts-here-...`(2025-12-01)를 먼저 읽어야 한다. **Data Science 태그 90편은 아직 한 편도 안 봤다** |
+| **Wayfair** | US · 커머스(대형 물품) | **기능 2개**(`damage-judgment` 241 · `beyond-taxonomy` 242). **열어 둔 도메인 2개가 다 찼다.** 남은 재료 — `how-we-validate-product-dimensions-at-scale-with-multimodal-genai`(2026-01-15, 손상 도메인의 세 번째 글)와 **Data Science 태그 90편**(아직 한 편도 안 봤다). **다음 사이클에 셋째 기능을 쓸지 닫을지 정한다** |
 
 ## 대기
 
