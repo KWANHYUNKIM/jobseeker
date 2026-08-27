@@ -8,46 +8,48 @@
 
 ## 지금 파는 중
 
-**(없다 — LinkedIn 을 사이클 230 에서 닫았다. 43번째, 도메인 2개 · 기능 2개.)**
+**(회사는 없다. 사이클 231 은 비교 문서를 썼다 — `machine-says-so`, 23번째 비교 문서.)**
 
-**🚨 큐가 0 인데 후보 조사가 소득 없이 끝났다. 그래서 다음 사이클은 비교 문서다.**
+**축: 자동이 낸 것을 무엇으로 믿는가 — 네 가지 답.**
+**출력 앞에서 거른다**(LinkedIn `qa-agent`) · **출력 뒤에서 잰다**(LinkedIn `ai-code-review`) ·
+**판정 안에 사람을 넣는다**(Doximity `clinical-ai-trust`) · **판정 옆에 출처를 남긴다**
+(Moniepoint `traceable-truth`). **정확도를 올리자는 답은 하나도 없다.**
 
-**230 에서 여덟 곳을 두드려 한 곳도 못 넣었다.** 자리를 채우려고 얕은 곳을 넣지 않았다.
-- `unity.com/blog` **403** · `zillow.com/tech` **403**
-- `blog.wise.com` **DNS 없음** · `engineering.bolt.eu` → **채용 페이지로 301**(블로그가 아니다)
-- `blog.sentry.io/categories/engineering/` **404**
-- `temporal.io/blog` ⚠️ **제품 마케팅**(에이전트·파트너십 위주)
-- `blog.booking.com` ⚠️ **엔지니어링 블로그가 맞지만 최근 항목이 전부 유튜브 영상 링크다** —
-  이 엔진은 본문에서 축어를 인용해야 하는데 영상은 읽을 수 없다.
-- `engineering.fb.com` ✅ 살아 있다(최신 **2026-08-24**, MetaRoCE 등) **— 그런데 목록에
-  `Instagram (Meta)` 가 이미 있어 중복 위험이 있다.** 같은 회사를 둘로 세는 셈이라 넣지 않았다.
-  **이건 판단이지 사실이 아니다** — 나중에 'Meta 인프라' 를 별도 자리로 볼 근거가 생기면 다시 본다.
+**문서를 쓰면서 새로 보인 것 둘.**
+- **재는 사람 자신을 의심한 곳은 Doximity 하나다.** 채점 모델로 GPT-3.5-Turbo 를 쓰다가
+  *"연쇄 사고에 기대는 평가 지표에서 환각 사례를 여러 건 금방 발견"* 해 버렸다.
+  나머지 셋은 자기 판정기를 안 의심한다 — LinkedIn 코드리뷰의 *"고신뢰 평가 90.1%"* 는
+  평가기 자신에 대한 지표이고, QA 2단계는 같은 계열이 두 번 보는 구조이며,
+  Moniepoint 의 *"불확실 표시"* 도 자동이 한다.
+- **넷 다 '자동이 확신하며 틀린 것' 을 못 본다.** 정면으로 적은 곳은 Moniepoint 뿐이고
+  (난제 항목이 그대로 그 문장이다), **되짚을 구조를 갖춘 곳도 거기 하나다** —
+  다만 **실제로 되짚어 틀린 것을 찾았다는 기록은 없다.**
 
-**📌 이 실패가 신호다 — 접근 가능한 좋은 영어 기술 블로그가 소진되고 있다.**
-43곳을 팠고, 이번에 여덟 곳을 두드려 0곳을 얻었다. **후보 조사를 한 번 더 반복하는 것은
-같은 벽을 다시 치는 일에 가깝다.** 사다리를 내려가면 **비교 문서(8순위)** 이고,
-**재료가 찬 축이 셋이나 있다.** 다음 사이클은 거기다.
-
-**🚨 다음 사이클 — 비교 문서를 쓴다. 가장 두꺼운 축부터.**
-1. **'자동이 낸 것을 무엇으로 믿는가'** — **재료 넷이고 대비가 가장 선명하다.**
-   **LinkedIn 한 회사 안에 정반대 답 둘이 있다**: `qa-agent` 는 *"재현율보다 정밀도"* 로
-   **보내기 전에 2단계로 거르고**(둘 다 동의해야 보고), `ai-code-review` 는 다 보내고
-   **채택률 63.9% 로 사후에 잰다.** **두 글 어디에도 어느 쪽이 나은지 없고, 두 팀이 이
-   차이를 아는지도 안 나온다.** 여기에 **Doximity `clinical-ai-trust`**(의사 1.1만 명의
-   검토를 제품 안에)와 **Moniepoint `traceable-truth`**(판단의 출처를 남겨 되짚는다)를 더한다.
-2. **'재 보고 고른다'**(재료 다섯) — Careem `cost-leaks` · Zerodha `log-storage` ·
+**남은 비교 문서 축 둘 — 다음 두 사이클에 하나씩 쓴다.**
+1. **'재 보고 고른다'**(재료 다섯) — Careem `cost-leaks` · Zerodha `log-storage` ·
    Yelp `partition-access` · Doximity `prod-profiling` · Target `repurchase-timing`.
-3. **'무엇을 잃기로 정했는가'**(재료 다섯) — Moniepoint `critical-path` ·
-   Doximity `cdc-overlap` · Yelp `partition-access` · Target `split-shipments` ·
-   Target `repurchase-timing`.
+   ⚠️ **기존 문서 `wrong-yardstick`(잘못된 자를 어떻게 알아채는가)과 겹치지 않게** 축을
+   좁힌다 — 저쪽은 *자가 틀렸음을 알아채는 것*, 이쪽은 *재 보고 나서 무엇을 고르는가*다.
+   **Doximity `prod-profiling` 이 결이 다르다** — 재는 행위 자체가 답을 바꾸는 쪽이다.
+2. **'무엇을 잃기로 정했는가'**(재료 다섯) — Moniepoint `critical-path`(*"약간의 완전성을
+   훨씬 큰 신뢰와 맞바꿨다"*) · Doximity `cdc-overlap`(겹침은 받고 간극은 못 받는다) ·
+   Yelp `partition-access`(놓친 접근은 '안 쓰임' 쪽으로 기운다) · Target `split-shipments`
+   (남은 9% 를 안 산다) · Target `repurchase-timing`(덜 팔리는 품목이 먼저 빠진다).
+   **축은 '오차의 방향을 한쪽으로 몰아 놓았다' 는 것이다.**
 
-**비교 문서를 쓸 때** — 산출물은 `jd-viewer/public/reveng/domains/` 이고 `domains/index.json`
-에 등록한다. **기존 비교 문서의 형식을 먼저 읽고 따른다.** 커밋은 `docs(reveng): 비교 문서 <slug>`.
+**🔴 비교 문서를 쓸 때의 절차(231 에서 확인)** — `domains/index.json` 을 먼저 읽고
+**기존 문서 하나를 통째로 읽어 짜임을 그대로 따른다**(제목 → 인용 블록에 비교 대상·확인/추정
+규칙·교차 참조 → 도입 한 문단 + 증거 하나 → 표 → 갈래 해설 → 맺음 `## 이 사이트에 아직 없는 것`).
+**재료는 기억이 아니라 회사 파일에서 직접 읽는다.** `validate.py` 는 비교 문서를 검사하지
+않으므로 **`companies`/`features` 값이 실제 slug·key 와 맞는지 직접 검산한다**(231 에서 그렇게 했다).
 
-**실제로 비어 있는 자리** — 라틴아메리카 0(접었다) · 게임 1(Roblox — Unity 403, Supercell 404,
-Riot 소멸, Unreal 403 이라 후보가 말랐다) · 아프리카 1(Moniepoint) · 인도 1(Zerodha,
-CRED·Groww·Ola·PhonePe 다 실패) · 여행 1(trivago, Booking 은 영상뿐).
-**동남아는 Grab 이 있어 비어 있지 않다.**
+**⚠️ 큐는 여전히 0 이고 후보 조사가 막혀 있다.** 230 에서 여덟 곳을 두드려 0곳을 얻었다.
+**비교 문서 축 셋을 다 쓰고 나면** 그때 다시 후보를 찾거나 **보강(사다리 5순위)** 으로 내려간다.
+보강 후보는 **문자열 엔티티 14건 정규화**(discord 4 · figma 1 · netflix 1 · shopify 4 · youtube 4)와
+**kakao 의 빈 도메인 tech** 다 — 지금 경고 15건이 정확히 그것이다.
+
+**비어 있는 자리** — 라틴아메리카 0(접었다) · 게임 1(Roblox) · 아프리카 1(Moniepoint) ·
+인도 1(Zerodha) · 여행 1(trivago). **동남아는 Grab 이 있어 비어 있지 않다.**
 
 **🔴 회사를 새로 열 일이 생기면 반드시 중복 검사부터 한다**(226 에서 Grab 파일을 덮어썼다).
 

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-22",
+  "updated_at": "2026-08-27",
   "docs": [
     {
       "slug": "webtoon-distribution",
@@ -415,6 +415,23 @@
         "dc-network"
       ],
       "file": "who-has-to-change.md"
+    },
+    {
+      "slug": "machine-says-so",
+      "title": "기계가 그렇다는데 — 자동이 낸 것을 무엇으로 믿는가",
+      "question": "거르는가, 사후에 재는가, 사람을 안에 넣는가, 출처를 남기는가 — 그리고 넷 다 무엇을 못 보는가?",
+      "companies": [
+        "linkedin",
+        "doximity",
+        "moniepoint"
+      ],
+      "features": [
+        "qa-agent",
+        "ai-code-review",
+        "clinical-ai-trust",
+        "traceable-truth"
+      ],
+      "file": "machine-says-so.md"
     }
   ]
 }
