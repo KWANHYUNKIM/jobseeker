@@ -432,6 +432,26 @@
         "traceable-truth"
       ],
       "file": "machine-says-so.md"
+    },
+    {
+      "slug": "after-you-measure",
+      "title": "재 보고 나서 — 숫자가 그대로 답이 된 적이 없다",
+      "question": "잰 값이 예상과 달랐을 때 무엇을 고쳤는가 — 답인가, 자인가, 읽는 법인가?",
+      "companies": [
+        "careem",
+        "zerodha",
+        "yelp",
+        "doximity",
+        "target"
+      ],
+      "features": [
+        "cost-leaks",
+        "log-storage",
+        "partition-access",
+        "prod-profiling",
+        "repurchase-timing"
+      ],
+      "file": "after-you-measure.md"
     }
   ]
 }
