@@ -8,52 +8,48 @@
 
 ## 지금 파는 중
 
-**LinkedIn (US · 소셜/구인·구직) — 43번째. 기능 2개 · 도메인 2개(하나는 아직 비었다).**
+**(없다 — LinkedIn 을 사이클 230 에서 닫았다. 43번째, 도메인 2개 · 기능 2개.)**
 
-229 에서 **`qa-agent`** 를 썼다. 결정 8 · 그림 3 · 생각 4 · 스택 5 · 난제 2 · ui 5핀 · 연결 1.
+**🚨 큐가 0 인데 후보 조사가 소득 없이 끝났다. 그래서 다음 사이클은 비교 문서다.**
 
-**원문을 다시 연 것이 또 값을 했다**(223 과 같다). 요약본에는 *"버린 대안이 없다"* 뿐이었는데
-원문에 **결정이 8개** 있었다. 새로 나온 셋이 크다.
-- **오류 검증이 2단계이고 둘 다 동의해야만 사람에게 간다** — *"이 2단계 검증은 오탐을 크게
-  줄이는데, 이 리포트를 받는 엔지니어링 팀과의 신뢰를 유지하는 데 결정적이다."*
-  **말한 대가(*"환영 버그는 쓸모없는 것보다 나쁘다"*)가 구조로 나타난 자리다.**
-- **UI 가 바뀌지 않으면 LLM 을 안 부르고 성공했던 액션을 재생한다**(System 1).
-  **비용을 아끼는 자리와 놓치는 자리가 같다**(이 지적은 이 사이트의 것).
-- **모델을 셋으로 나눈 이유가 성능이 아니라 교체 가능성이다** — *"그라운딩 층을 건드리지
-  않고 더 나은 플래너로 갈아끼울 수 있고..."* **코드 리뷰가 벤더를 거절한 이유와 같은 모양**
-  (카나리·페일오버를 못 하는 것). **둘 다 'AI 를 갈아끼울 부품으로 두겠다' 는 한 생각이다.**
+**230 에서 여덟 곳을 두드려 한 곳도 못 넣었다.** 자리를 채우려고 얕은 곳을 넣지 않았다.
+- `unity.com/blog` **403** · `zillow.com/tech` **403**
+- `blog.wise.com` **DNS 없음** · `engineering.bolt.eu` → **채용 페이지로 301**(블로그가 아니다)
+- `blog.sentry.io/categories/engineering/` **404**
+- `temporal.io/blog` ⚠️ **제품 마케팅**(에이전트·파트너십 위주)
+- `blog.booking.com` ⚠️ **엔지니어링 블로그가 맞지만 최근 항목이 전부 유튜브 영상 링크다** —
+  이 엔진은 본문에서 축어를 인용해야 하는데 영상은 읽을 수 없다.
+- `engineering.fb.com` ✅ 살아 있다(최신 **2026-08-24**, MetaRoCE 등) **— 그런데 목록에
+  `Instagram (Meta)` 가 이미 있어 중복 위험이 있다.** 같은 회사를 둘로 세는 셈이라 넣지 않았다.
+  **이건 판단이지 사실이 아니다** — 나중에 'Meta 인프라' 를 별도 자리로 볼 근거가 생기면 다시 본다.
 
-**⚠️ `--gaps` 는 이번에도 `랭킹 모델을…` 을 이름 댔는데 이쪽을 썼다.** 228 과 같은 판단이다 —
-같은 등급(확장) 안에서 **'기능은 그 도메인의 글을 두 편 이상 읽고 쓴다'** 를 따랐다.
-그쪽은 본문이 증류 글 한 편뿐이고, 목록·분류 페이지를 못 열어 두 번째 글을 찾을 길이 없다.
+**📌 이 실패가 신호다 — 접근 가능한 좋은 영어 기술 블로그가 소진되고 있다.**
+43곳을 팠고, 이번에 여덟 곳을 두드려 0곳을 얻었다. **후보 조사를 한 번 더 반복하는 것은
+같은 벽을 다시 치는 일에 가깝다.** 사다리를 내려가면 **비교 문서(8순위)** 이고,
+**재료가 찬 축이 셋이나 있다.** 다음 사이클은 거기다.
 
-**🚨 다음 사이클의 결정 — `랭킹 모델을 얼마나 빨리 다시 만들 수 있는가` 를 어떻게 할 것인가.**
-두 갈래뿐이다.
-- **도메인 레벨 `hold_reason` 을 붙이고 LinkedIn 을 `done` 으로 닫는다.** 사유는 명확하다:
-  본문이 한 편뿐이고 **목록·분류 페이지가 WebFetch(내비게이션만)·브라우저(No tab available)
-  둘 다로 안 열려** 두 번째 글을 찾을 방법이 없다. **회사 레벨이 아니라 도메인 레벨에 붙인다.**
-- **또는 증류 글 하나로 기능을 쓴다** — 규칙을 어기는 것이므로 **권하지 않는다.**
+**🚨 다음 사이클 — 비교 문서를 쓴다. 가장 두꺼운 축부터.**
+1. **'자동이 낸 것을 무엇으로 믿는가'** — **재료 넷이고 대비가 가장 선명하다.**
+   **LinkedIn 한 회사 안에 정반대 답 둘이 있다**: `qa-agent` 는 *"재현율보다 정밀도"* 로
+   **보내기 전에 2단계로 거르고**(둘 다 동의해야 보고), `ai-code-review` 는 다 보내고
+   **채택률 63.9% 로 사후에 잰다.** **두 글 어디에도 어느 쪽이 나은지 없고, 두 팀이 이
+   차이를 아는지도 안 나온다.** 여기에 **Doximity `clinical-ai-trust`**(의사 1.1만 명의
+   검토를 제품 안에)와 **Moniepoint `traceable-truth`**(판단의 출처를 남겨 되짚는다)를 더한다.
+2. **'재 보고 고른다'**(재료 다섯) — Careem `cost-leaks` · Zerodha `log-storage` ·
+   Yelp `partition-access` · Doximity `prod-profiling` · Target `repurchase-timing`.
+3. **'무엇을 잃기로 정했는가'**(재료 다섯) — Moniepoint `critical-path` ·
+   Doximity `cdc-overlap` · Yelp `partition-access` · Target `split-shipments` ·
+   Target `repurchase-timing`.
 
-**⚠️ 큐가 0 이다. LinkedIn 을 닫으면 그다음은 곧바로 후보 조사다.**
+**비교 문서를 쓸 때** — 산출물은 `jd-viewer/public/reveng/domains/` 이고 `domains/index.json`
+에 등록한다. **기존 비교 문서의 형식을 먼저 읽고 따른다.** 커밋은 `docs(reveng): 비교 문서 <slug>`.
 
-**실제로 비어 있는 자리** — 라틴아메리카 0(접었다) · 게임 1(Roblox) · 아프리카 1(Moniepoint) ·
-인도 1(Zerodha) · 여행 1(trivago). **동남아는 Grab 이 있어 비어 있지 않다.**
+**실제로 비어 있는 자리** — 라틴아메리카 0(접었다) · 게임 1(Roblox — Unity 403, Supercell 404,
+Riot 소멸, Unreal 403 이라 후보가 말랐다) · 아프리카 1(Moniepoint) · 인도 1(Zerodha,
+CRED·Groww·Ola·PhonePe 다 실패) · 여행 1(trivago, Booking 은 영상뿐).
+**동남아는 Grab 이 있어 비어 있지 않다.**
 
-**후보 조사 때 — 이미 확인된 실패**: `etsy.com/codeascraft` 403 · `tech.groww.in` 403 ·
-`tech.olacabs.com` 연결 거부 · `blog.phonepe.com` → medium 302 · `about.gitlab.com/blog` ⚠️.
-**아직 안 열어 본 것**: Booking.com · Skyscanner · Wise · Revolut · Bolt · Adevinta ·
-Cookpad · SmartNews · PayPay · DeNA · CyberAgent · Sea/Shopee · GoTo/Gojek · Tokopedia ·
-Traveloka · Unity · Nexon · Krafton · Fastly · Vercel · Temporal · Neon · Elastic ·
-MongoDB · Confluent · Sentry · Honeycomb · Reddit · Wayfair · Zillow · Robinhood ·
-Plaid · Ramp. **반드시 기존 43곳과 대조하고 넣는다.**
-
-**비교 문서 축 — '자동이 낸 것을 무엇으로 믿는가' 가 이번 사이클에 크게 두꺼워졌다.**
-**같은 회사가 두 시스템에서 정반대 답을 쓴다** — QA 에이전트는 *"재현율보다 정밀도"* 로
-**보내기 전에 거르고**, 코드 리뷰는 다 보내고 **채택률 63.9% 로 사후에 잰다.** 두 글 어디에도
-어느 쪽이 나은지 없고 두 팀이 이 차이를 아는지도 안 나온다. 여기에 **Doximity
-`clinical-ai-trust`**(의사 1.1만 명의 검토를 제품 안에)와 **Moniepoint `traceable-truth`**
-(판단의 출처를 남겨 되짚는다)를 더하면 **재료가 넷이다.**
-기존 축 둘도 그대로 재료 다섯이다 — **'재 보고 고른다'** · **'무엇을 잃기로 정했는가'**.
+**🔴 회사를 새로 열 일이 생기면 반드시 중복 검사부터 한다**(226 에서 Grab 파일을 덮어썼다).
 
 
 ## 다음 선택지
@@ -130,7 +126,13 @@ Plaid · Ramp. **반드시 기존 43곳과 대조하고 넣는다.**
 | `supercell.com/en/blog/` · `blog.cred.club` | ❌ 앞은 **404**, 뒤는 `cred.club` 으로 **301**(블로그가 없어진 듯) |
 | `linkedin.com/blog/engineering` | ⚠️ **글 본문은 URL 을 알면 열리는데 목록·분류 페이지는 안 열린다.** WebFetch 는 내비게이션만 주고(`/artificial-intelligence`·`/infrastructure`·`/search` 전부), **브라우저도 탭을 못 만들었다**(No tab available, 사이클 228). `/talent` 만 12편이 떴는데 대부분 경력 이야기다 — **글 편수를 셀 수 없다** |
 | `about.gitlab.com/blog/categories/engineering/` | ⚠️ **열리지만 날짜가 본문에 안 실리고 제품 홍보가 섞여 있다** — 넣으려면 심층 글을 먼저 확인해야 한다 |
-| `etsy.com/codeascraft` · `tech.groww.in` | ❌ 둘 다 **403** |
+| `etsy.com/codeascraft` · `tech.groww.in` · `unity.com/blog` · `zillow.com/tech` | ❌ 전부 **403** |
+| `blog.wise.com` | ❌ **DNS 없음** |
+| `engineering.bolt.eu` | ❌ `bolt.eu/en/careers/...` 로 **301** — 블로그가 아니라 채용 페이지다 |
+| `blog.sentry.io/categories/engineering/` | ❌ **404**(다른 경로가 있을 수는 있다) |
+| `temporal.io/blog` | ⚠️ 열리지만 **제품 마케팅** — 에이전트·파트너십 위주 |
+| `blog.booking.com` | ⚠️ **엔지니어링 블로그가 맞는데 최근 항목이 전부 유튜브 영상 링크다** — 축어를 인용할 본문이 없다 |
+| `engineering.fb.com` | ✅ 열린다(최신 2026-08-24). **다만 목록에 `Instagram (Meta)` 가 이미 있어 중복 위험으로 넣지 않았다** |
 | `tech.olacabs.com` | ❌ **연결 거부**(ECONNREFUSED) |
 | `blog.phonepe.com` | ❌ `medium.com/phonepe` 로 **302** — Medium 은 막혀 있다 |
 | `techlab.bol.com/en/blog/` | ⏸️ 열리지만 **글이 2024-11-07 에서 멈췄다**(2026 항목은 경력 팟캐스트다) |
