@@ -542,6 +542,23 @@
         "same-node-rolling"
       ],
       "file": "swap-while-running.md"
+    },
+    {
+      "slug": "how-to-set-the-yardstick",
+      "title": "자를 어떻게 세우는가 — 재기 전에 만들어야 하는 것",
+      "question": "참값을 어디서 구하고, 못 구하면 어떻게 적고, 자가 무뎌지면 무엇을 하는가?",
+      "companies": [
+        "snap",
+        "meituan"
+      ],
+      "features": [
+        "code-review-agent",
+        "agentic-code-search",
+        "mutual-gaze-align",
+        "spatial-benchmark",
+        "binarize-the-rubric"
+      ],
+      "file": "how-to-set-the-yardstick.md"
     }
   ]
 }
