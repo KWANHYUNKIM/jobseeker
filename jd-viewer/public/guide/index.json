@@ -23,6 +23,18 @@
       "postings": 4,
       "study_items": 33,
       "updated_at": "2026-08-29"
+    },
+    {
+      "slug": "miridih",
+      "name": "미리디",
+      "aliases": [
+        "미리디",
+        "㈜미리디"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-08-29"
     }
   ]
 }

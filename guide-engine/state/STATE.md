@@ -4,23 +4,22 @@
 
 ## 지금 쓰는 중
 
-없음. **메가존클라우드를 `done` 으로 닫았다** — 공고 4건 · 학습 33개.
+**미리디 (`miridih`) — `in_progress`.** 회사 골격을 끝냈다: 수익원 2개(미리캔버스 구독 /
+비즈하우스 인쇄 커머스), 도메인 7개, 신호 5개, 연봉. **`people` 은 비어 있다**(아래 참조).
 
-| 채운 공고 | 잡은 직무 | 학습 |
-|---|---|---|
-| `Backend Developer / AI Research Engineer` (54570558) | Backend Developer | 9 |
-| `Full-Stack / Back-end Developer` (54177362) | Full-Stack Developer | 6 |
-| `Platform Engineer` (53565589) | 단일 직무 | 9 |
-| `Platform & Application Engineer` (54176206) | 단일 직무 (운영·기술지원) | 9 |
+**다음 사이클은 공고를 채운다.** 모집중 38건인데 잡코리아·사람인에 중복이 많다.
+**원티드 건을 집는다** — 이 회사는 원티드 공고에만 `main_tasks` 가 들어 있어
+`from: "task"` 학습 항목을 만들 수 있는 유일한 소스다. 3~6년 기준 순서:
 
-모집중 64건 중 나머지 60여 건은 보안 컨설팅·데이터 분석·영업·교육 운영·총무·세무라
-백엔드/풀스택 지원자의 자리가 아니다. 뺀 이유를 `open_questions` 에 남겼고, 같은 판단을
-다음 회사도 할 수 있게 **PROMPT.md 의 완주 기준을 고쳤다**(모집중 전부 → 지원 대상 전부).
+1. `[미리캔버스] 프론트엔드 개발자 (웹&에디터)` (wanted/337318, 경력 3년 이상)
+   — 이 회사에서 가장 특징적인 자리. 브라우저 API·렌더링을 묻는다.
+2. `[미리캔버스] AI Agent Engineer (Platform)` (wanted/347557, 경력 3-6년)
+   — 지금 가장 투자하는 곳. 에이전트를 만드는 게 아니라 만들 판을 짓는 자리다.
+3. `[미리캔버스] 프론트엔드 개발자 (프로덕트)` (wanted, 경력 3-6년)
+4. `[미리캔버스] DevOps Engineer` (wanted, 경력 3-6년)
+5. `[미리캔버스] Node.js 개발자 (AI Agent)` (wanted, 경력 5-7년)
 
-**다음 사이클은 신규다.** `--gaps` 가 QUEUE 맨 위 **미리디 (미리캔버스)** 를 지목한다.
-PROMPT.md 3단계(회사 골격)부터. 자료는 미리디 기술 블로그 — 프론트 모노레포 CI/CD 와
-Module Federation, SVG 필터 렌더링, 디자인 도메인 검색 모델 글이 있다.
-**회사명 표기가 `(주)미리디`·`㈜미리디`·`미리디` 셋이므로 aliases 를 전부 넣는다.**
+시니어(7년↑)·리드·인턴 자리는 뺀다. 다 채우면 이유를 `open_questions` 에 적고 닫는다.
 
 ## 자료 접근 지도
 
@@ -45,6 +44,18 @@ Module Federation, SVG 필터 렌더링, 디자인 도메인 검색 모델 글�
 - **공고 본문의 회사 소개는 홍보문이라 언론 수치와 어긋난다.** 글로우업리즈 공고는 2024년
   매출 188억·영업이익 37억, 기사는 184억·32억이었다. 어긋나면 지우지 말고 `open_questions` 에
   둘 다 적는다.
+- **⚠️ 인용하는 공고 URL 을 지어내지 않는다.** 이번 사이클에서 도메인 근거로 원티드
+  URL 두 개를 확인 없이 적었다가 대조해 고쳤다(`/wd/281148`·`/wd/354079` → 실재하지 않음).
+  링크 하나가 틀리면 `confirmed` 등급 전체를 못 믿게 된다. 커밋 전에 아래로 확인한다.
+  ```
+  python3 -c "
+  import json,re,pathlib
+  jobs={j['url'] for j in json.load(open('jd-viewer/public/all_jobs_enriched.json'))}
+  txt=pathlib.Path('jd-viewer/public/guide/companies/<slug>.json').read_text()
+  for u in sorted(set(re.findall(r'https://www\.wanted\.co\.kr/wd/\d+',txt))):
+      print('OK ' if u in jobs else '없음', u)"
+  ```
+  **`validate.py` 가 이걸 자동으로 잡아야 한다 — 별도 엔진 사이클로 넣는다.**
 - **공고가 이력서 쓰는 법을 직접 적어 두는 경우가 있다.** 메가존클라우드 Platform
   Engineer 공고는 우대사항 끝에 '이력서 및 실무 면접 준비 추천 사항' 네 줄을 붙여
   '문제 상황 → 기술적 해결책 → 성과' 형식과 'GitHub·데모·블로그 활용'을 명시했다.
@@ -92,5 +103,7 @@ Module Federation, SVG 필터 렌더링, 디자인 도메인 검색 모델 글�
 
 | 무엇 | 두 번 찾아 두 번 다 없었던 것 |
 |---|---|
+| 미리디 기술 블로그 본문 | `medium.com/miridih` 가 403. 글 제목·주제는 velopers.kr/blog/152 로만 확인된다 |
+| 미리디 개발자 인터뷰 페이지 | `miridih.com/ko/devinterview2` 가 403. `people` 을 못 채운 이유 |
 | 글로우업리즈 개발 직군 연봉 | 사람인 기업정보·검색 모두 전 직군 평균만. 개발 직군 밴드 없음 |
 | 글로우업리즈 엔지니어 공개 자료 | 기술 블로그·컨퍼런스 발표 없음. `people` 에 개발 인물을 못 넣는 이유 |
