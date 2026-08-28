@@ -8,60 +8,72 @@
 
 ## 지금 파는 중
 
-**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 2개 · 기능 2개. 큐 잔량 1/3.**
+**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 2개 · 기능 3개. 큐 잔량 1/3.**
 
-**276 에서 도메인 ②`나라마다 다른 장터를 한 벌의 규칙으로 돌린다` 의 첫 기능을 썼다** —
-`account-metadata-spine`(누가 쓰는지를 인프라로 둔다), **결정 8개** 전부 대가가 붙었다.
+**277 에서 도메인 ② 의 두 번째 기능을 썼다** — `policy-inventory-cost`(규칙이 보려면
+기억해야 한다), **결정 6개** 전부 대가가 붙었다.
 
-### 이 기능의 핵심 — 인프라를 고친 게 아니라 인프라에 대한 사실을 인프라로 승격시켰다
+**⚠️ `--gaps` 는 [신규]를 냈다**(빈 도메인이 없어서). **회사를 갈아타지 않는다는 규칙이
+위라 Adevinta 를 계속 팠고, 재독에서 실제 사고 기록이 나왔다.**
 
-계정이 **150개 미만·3명(2019)** 에서 **AWS 732개 · GCP 425개 · 12명(2024)** 이 됐다.
-Confluence 표로 담당자를 관리하다 *"this isn't a scalable solution when you have hundreds
-of accounts"* 에 부딪혔다. 답은 **소유 정보를 위키가 아니라 API 로 들고, 그 데이터가 낡지
-않도록 계정 생성 자체를 예산 담당자의 승인 흐름에 넣은 것**이다 — *"keeping the ownership
-information up to date."* 회사의 한 줄: *"having proper (meta)data is key to properly
-governing the cloud."* 철학은 *"You build it, you run it (and you pay for it)."*
+### 🔴 277 의 발견 — 이 회사 안에서 사고를 적는 글과 안 적는 글이 갈린다
 
-**권한은 통일하려다 두 번 막히고 팀에 넘겼다**(이 읽기는 이 사이트의 것) — 공용 집합은
-**소프트 쿼터 500개**에, ABAC 은 **역할 전환 부담·속성 제약·같은 팀 안 직무 구분 불가**에
-막혔고, 세 번째는 **빈 역할에 명시적 거부를 걸어 팀이 자기 계정에서 관리**하게 한다.
+**정책 엔진 편에는 사고가 있다** — *"OPA started experiencing performance degradation and
+sporadic OOMKills"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler
+로도 못 잡았다** — *"Although our VerticalPodAutoscaler helped adjust resource allocation
+dynamically, the alerts became noisy and disruptive."* 주범은 **개발 클러스터와 CronJob 이
+많은 클러스터**(*"The number of pods doubled in a short time"*).
 
-### ⚠️ 276 의 3회차 재독에서 나온 것 — 새 결정이 아니라 '안 적은 것' 이었다
+**반면 같은 도메인의 거버넌스 편은 계정을 732개까지 늘린 과정을 자세히 적으면서 사고도
+폐기 절차도 안 적는다.** **터진 이야기를 쓰는 글 쪽이 결정과 대가가 더 촘촘하다.**
+`open_questions` 에 적었다.
 
-**이 글은 이름만 대고 넘어가는 항목이 다섯이다** — **ROLFP**(보안 위험 평가)가 무엇인지 ·
-**FinOps 와 GovOps** 두 스쿼드의 분담 · **예산 배분과 초과 시 처리** · **보안 연락처의 용도**
-· **계정 폐기·정리 절차가 통째로 없다.** **그리고 사고나 실패 사례가 하나도 없다.**
-**계정이 732개까지 늘었다면 지운 계정도 있었을 텐데 만드는 이야기만 자세하다.**
-failure 그림과 `open_questions` 에 적었다. **재독이 새 결정을 안 낸 것은 이번이 처음이지만,
-대신 이 글의 성격을 드러냈다**(운영 사실 ⑫ 의 첫 예외 — 다만 판단이 틀린 것은 아니다).
+### 이 기능의 축 — 보려면 어딘가에 들고 있어야 한다
 
-### 다음 사이클 — 도메인 ② 의 두 번째 기능 재료가 남아 있다
+규칙이 옆을 봐야 하는데(*"real-world policies often require access to other objects in the
+cluster"*), **미리 담으면 메모리를 쓰고 그때그때 물으면 API 서버를 쓴다. 둘 다 안 쓰는
+방법은 없다**(이 정리는 이 사이트의 것). 고친 순서는 셋 — 대용량 객체를 참조하는 정책부터
+골라내고, **동기화에서 파드를 빼고**(**8GB→2.7GB**), 그 정책을 **동적 조회 + jmesPath** 로
+다시 썼다. **그리고 값을 옮겼다고 같은 문장에서 밝힌다** — *"reduces memory consumption but
+increases the load on the Kubernetes API server."* ⚠️ **다만 옮긴 값은 재지 않았다** —
+메모리는 잰 값을 내는데 API 서버 쪽은 관측 권고뿐이다.
+**버린 도구를 비난하지도 않는다** — *"does not aim to criticise Gatekeeper's inventory sync
+feature—which remains extremely useful."*
 
-**`opa-memory…kyverno`(2025-02-12)** 가 도메인 `tech` 에 이미 적혀 있다 — **30+ 클러스터 ×
-3+ 컨트롤러 파드**, 파드 변동이 심한 곳에서 메모리가 수 기가바이트씩 출렁였고 **동기화에서
-파드를 빼자 8GB→2.7GB**(약 65%). Kyverno 로 옮기며 대가를 한 문장으로 —
-*"This approach reduces memory consumption but increases the load on the Kubernetes API
-server."* ⚠️ **API 서버 부하 증가분의 수치는 없다.**
-**⚠️ 다만 이 한 편만으로 결정 5개가 서는지 먼저 센다.** 안 서면 **다른 편을 찾거나**
-(`WebSearch` + `allowed_domains: adevinta.com`, 운영 사실 ⑱) **Adevinta 를 닫는다.**
-목록에서 본 다른 편 — `make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28) ·
-`its-not-always-dns-unless-it-is` · `using-rasterization-to-make-document-sharing-safer` ·
-`deep-dive-in-paddleocr-inference` · `adevintas-machine-learning-golden-path` ·
-`beyond-code-measuring-developer-experience`(2024-03-26, **도메인 ① 세 번째 편 후보**).
+### 다음 사이클 — 닫는 쪽이 유력하다
 
-### 이 회사에서 아직 못 채운 것
+**두 도메인에 기능이 셋이고(① 1개 · ② 2개) 확보한 재료를 다 썼다.** `--gaps` 는 이번에도
+[신규]를 낼 것이다. **남은 미독 편에 재료가 서는지 한 번 보고, 얇으면 Adevinta 를 `done`
+으로 닫는다**(회사 `status` · `index.json` status · **QUEUE 진행 중 → 완료**, 완료 섹션은
+**불릿**, `'\n## 완료\n'` 로 줄 경계 매치).
 
-- **매출 실액 확인 불가** — 못 찾은 것이 아니라 **2024 상장폐지로 공개되지 않는다.**
-- **⚠️ 개별 장터의 시스템 글을 못 봤다** — 읽은 다섯이 전부 플랫폼·도구 쪽이다.
+**⚠️ 미독 편** — `make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28) ·
+`beyond-code-measuring-developer-experience`(2024-03-26, **도메인 ① 세 번째 편 후보**) ·
+`its-not-always-dns-unless-it-is` · `adevintas-machine-learning-golden-path` ·
+`deep-dive-in-paddleocr-inference` · `using-rasterization-to-make-document-sharing-safer` ·
+`from-lakehouse-architecture-to-data-mesh`(⚠️ **수치 0** 으로 확인됨, 273).
+
+**⭐ 닫는다면 `business_model` 에 적을 패턴 다섯이 서 있다:**
+① **남의 것을 재고 재는 방법의 한계를 함께 적는다**(오차 원인 다섯 · 주관과 객관의 불일치를
+판정 없이 남김 · **2년 전 자기 결론을 뒤집는 데이터**).
+② **인프라를 고치는 대신 인프라에 대한 사실을 인프라로 승격시킨다**(*"having proper
+(meta)data is key to properly governing the cloud"*, 계정 생성을 승인 흐름에).
+③ **통일을 시도하다 막히면 포기하고 위임한다**(공용 집합 쿼터 500 → ABAC 한계 넷 → 팀에).
+④ **값을 없애지 않고 옮기며 그렇다고 적는다**(메모리 → API 서버).
+⑤ **⚠️ 글마다 사고와 수치의 밀도가 극단적으로 다르다** — 정책 엔진 편에는 OOMKill 기록이
+있는데 거버넌스 편에는 **계정 폐기 절차도 사고도 없고**, data mesh 편은 **수치가 0** 이다.
+
+### 이 회사에서 못 채운 것
+
+- **매출 실액 확인 불가** — 못 찾은 것이 아니라 **2024-06-05 상장폐지로 공개되지 않는다.**
+- **⚠️ 개별 장터의 시스템 글을 못 봤다** — 읽은 여섯이 전부 플랫폼·도구 쪽이다.
   **leboncoin·Marktplaats·Kleinanzeigen 의 검색·추천·정산 이야기가 없다.**
-- 글마다 수치 밀도가 크게 다르다 — data mesh 편은 **수치가 0**(273 확인).
 
 ### 큐와 다음 회사
 
-**큐 잔량 1/3.** `--gaps` 의 안내 — **이 회사를 다 판 뒤 후보 조사 사이클을 한 번 끼워
-버퍼를 채운다.** **trivago**(독일 · 여행 메타서치, `tech.trivago.com` 자체 호스팅, 2026 글
-여섯 편)가 대기에 남아 있다.
-**📌 Grab 보강 후보** — Palana 2부작 · Agent platform Part 1 · **Iceberg(07-10)** ·
+**큐 잔량 1/3.** `--gaps` 의 안내 — **이 회사를 다 판 뒤 후보 조사 사이클을 한 번 끼운다.**
+**trivago**(독일 · 여행 메타서치, `tech.trivago.com` 자체 호스팅, 2026 글 여섯 편)만 대기에
+있다. **📌 Grab 보강 후보** — Palana 2부작 · Agent platform Part 1 · **Iceberg(07-10)** ·
 **Counter Service 저장소 이전(07-03)**, 뒤 둘은 기존 기능의 후속.
 **📌 Roblox 단서** — `about.roblox.com/newsroom/<연>/<월>/<슬러그>` 가 최종 주소. 본문은
 오는데 두 편 다 버린 대안이 없어 기준 미달로 접었다. **게임 자리가 급하면 다른 편을 연다.**
@@ -75,10 +87,13 @@ server."* ⚠️ **API 서버 부하 증가분의 수치는 없다.**
 - **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — Snap 다섯 + **Adevinta 가 축을
   완성한다**(남의 도구를 자기 백로그로 재고, 오차 원인을 부록에 다섯 개 적고, 주관과 객관의
   불일치를 판정 없이 남기고, **2년 전 자기 결론을 뒤집는 데이터를 낸다**).
-- **⭐ `기계가 그렇다는데`** — Snap 둘 + **Adevinta 하나**(유일하게 회의적이고 사는 쪽,
-  **재는 능력이 승자보다 값나간다**는 논거).
-- **⭐ 새 축 후보 — `만드는 이야기만 있고 치우는 이야기가 없다`.** Adevinta 의 계정 폐기
-  부재가 첫 재료다. 이 사이트의 다른 회사에서도 같은 빈칸이 있는지 확인할 값이 있다.
+- **⭐ `기계가 그렇다는데`** — Snap 둘 + **Adevinta 하나**(유일하게 회의적이고 사는 쪽).
+- **⭐ 새 축 후보 `만드는 이야기만 있고 치우는 이야기가 없다`** — Adevinta 의 **계정 폐기
+  부재**가 첫 재료이고, **같은 회사의 정책 엔진 편이 반례**다(사고를 적는다). 이 사이트의
+  다른 회사에도 같은 빈칸이 있는지 확인할 값이 있다.
+- **⭐ 새 축 후보 `아낀 값은 어디로 갔는가`** — Adevinta 의 **메모리 → API 서버** 가 명시적
+  재료다. Careem 의 **지운 것을 치우는 비용**, Zerodha 의 **색인 대신 압축**, Doximity 의
+  **미룬 병합** 이 같은 축에 선다(이 묶음은 이 사이트의 것).
 - `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯) ·
   `되돌릴 수 있는 것을 먼저 한다` 보강.
 

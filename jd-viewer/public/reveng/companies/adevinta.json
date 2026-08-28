@@ -234,7 +234,8 @@
         }
       ],
       "features": [
-        "account-metadata-spine"
+        "account-metadata-spine",
+        "policy-inventory-cost"
       ]
     }
   ],
@@ -244,7 +245,8 @@
     "**⚠️ 글마다 수치의 밀도가 크게 다르다.** `multi-cloud-governance-at-scale`(732 계정·425 프로젝트·7,000줄·쿼터 500)과 `opa-memory…kyverno`(8GB→2.7GB·30+ 클러스터)와 AI 도구 평가(77명·165건·43/24/1%·4.2/3.6/2.8)는 수치가 풍부한데, **`from-lakehouse-architecture-to-data-mesh`(2024-12-10)는 수치가 하나도 없다** — 273 에서 열어 확인했다.",
     "**⚠️ 브랜드가 열 개를 넘는데 개별 마켓플레이스의 시스템 글을 아직 못 봤다.** 읽은 세 편이 전부 **플랫폼·도구 쪽**이다(클라우드 거버넌스 · 정책 엔진 · AI 도구 평가). **leboncoin·Marktplaats·Kleinanzeigen 같은 실제 장터의 검색·추천·정산 이야기가 이 사이트에 아직 없다.**",
     "**⚠️ 비교한 것이 도구인지 요금제인지 섞여 있고, 같은 조건으로 다시 잰 기록이 없다.** 이긴 도구가 *\"selected the most powerful models 60 times more than the other tools\"* 였는데 **정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다.** 회사는 이 사실을 적으면서도 ROI 를 근거로 그 도구를 고른다. **요금제를 맞춰 다시 재 본 서술은 없다**(이 지적은 이 사이트의 것이다).",
-    "**⚠️ 클라우드 거버넌스 글이 이름만 대고 넘어가는 항목이 다섯이다**(276 의 3회차 재독에서 확인). **ROLFP** 보안 위험 평가를 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 없다** · **FinOps 와 GovOps** 두 스쿼드로 나뉘어 있다고만 하고 **분담이 없다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다.** **그리고 사고나 실패 사례가 하나도 없다** — **계정이 732개까지 늘었다면 지운 계정도 있었을 텐데 만드는 이야기만 자세하다**(이 관찰은 이 사이트의 것이다)."
+    "**⚠️ 클라우드 거버넌스 글이 이름만 대고 넘어가는 항목이 다섯이다**(276 의 3회차 재독에서 확인). **ROLFP** 보안 위험 평가를 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 없다** · **FinOps 와 GovOps** 두 스쿼드로 나뉘어 있다고만 하고 **분담이 없다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다.** **그리고 사고나 실패 사례가 하나도 없다** — **계정이 732개까지 늘었다면 지운 계정도 있었을 텐데 만드는 이야기만 자세하다**(이 관찰은 이 사이트의 것이다).",
+    "**⭐ 이 회사 안에서 사고를 적는 글과 안 적는 글이 갈린다.** 정책 엔진 편에는 **실제 사고가 있다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 OOMKill 이 배포와 파드 생성을 막았으며, **VerticalPodAutoscaler 로도 못 잡아** *\"the alerts became noisy and disruptive\"* 였다. **반면 같은 도메인의 클라우드 거버넌스 편은 계정을 732개까지 늘린 과정을 자세히 적으면서 사고도 폐기 절차도 안 적는다.** **터진 이야기를 쓰는 글 쪽이 결정과 대가가 더 촘촘하다**(이 대비는 이 사이트의 것이다)."
   ],
   "sources": [
     {
@@ -266,7 +268,7 @@
       "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
       "publisher": "Adevinta Tech Blog",
       "date": "2025-02-12",
-      "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다)."
+      "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
     },
     {
       "title": "Adevinta — About us",
@@ -1813,6 +1815,658 @@
           "publisher": "Adevinta Tech Blog",
           "date": "2025-02-12",
           "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다)."
+        }
+      ]
+    },
+    {
+      "key": "policy-inventory-cost",
+      "name": "규칙이 보려면 기억해야 한다",
+      "domain": "나라마다 다른 장터를 한 벌의 규칙으로 돌린다",
+      "updated_at": "2026-08-28",
+      "ui": {
+        "title": "규칙 하나가 판정을 내리기까지",
+        "question": "클러스터 전체를 봐야 하는 규칙은 그 상태를 어디에 두는가?",
+        "kind": "web",
+        "note": "**정책 판정의 두 방식을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내에 이런 화면이 있었는지조차 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 구조와 수치만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "클러스터 정책"
+          },
+          {
+            "type": "card",
+            "text": "규칙은 자기 앞의 것만 볼 수 없습니다",
+            "items": [
+              "같은 이름이 이미 있는지 봐야 한다",
+              "다른 네임스페이스의 설정을 봐야 한다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "예전 방식 — 미리 외워 둔다"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "네임스페이스와 파드와 인그레스를 담아 둔다",
+                "sub": "규칙이 언제든 꺼내 볼 수 있게",
+                "right": "동기화"
+              },
+              {
+                "title": "그 목록이 메모리에 그대로 있다",
+                "sub": "객체가 늘면 같이 늘어난다",
+                "right": "대가"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "card",
+            "text": "그러다 실제로 터졌습니다",
+            "items": [
+              "파드 수가 짧은 시간에 두 배가 되면",
+              "메모리가 기가바이트 단위로 출렁였다",
+              "메모리 초과로 배포가 막혔다"
+            ],
+            "pin": 3
+          },
+          {
+            "type": "text",
+            "text": "자원을 자동으로 늘려 봐도 알림만 시끄러웠습니다",
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "고친 순서"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "파드를 외우는 목록에서 뺀다",
+                "sub": "여덟 기가에서 이점칠 기가로",
+                "right": "먼저"
+              },
+              {
+                "title": "그 규칙들을 다른 엔진으로 옮긴다",
+                "sub": "파드를 봐야 하는 규칙이니까",
+                "right": "그다음"
+              }
+            ],
+            "pin": 5
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "새 방식 — 그때그때 물어본다"
+          },
+          {
+            "type": "text",
+            "text": "미리 담아 두지 않고 판정할 때 물어봅니다",
+            "pin": 6
+          },
+          {
+            "type": "card",
+            "text": "아낀 값을 다른 곳이 냅니다",
+            "items": [
+              "메모리는 줄어든다",
+              "대신 중앙 서버에 요청이 는다",
+              "부하를 보고 조건을 앞에 건다"
+            ],
+            "pin": 7
+          },
+          {
+            "type": "button",
+            "text": "예전 도구는 그대로 둡니다",
+            "variant": "ghost",
+            "pin": 8
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "규칙은 옆을 봐야 한다",
+            "what": "*\"real-world policies often require access to other objects in the cluster.\"* 클러스터 전체에서 이름이 겹치지 않는지 같은 검사를 하려면 자기 앞의 객체만으로는 판정할 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "보려면 담아 둬야 했다",
+            "what": "Gatekeeper 의 **Sync Configuration** 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다. **담은 것이 메모리에 그대로 남으므로 객체가 늘면 같이 는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "실제로 터졌다",
+            "what": "*\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** 주범은 **파드 변동이 심한 클러스터** — 개발 클러스터와 **CronJob 이 많은 클러스터**다. *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "자원을 늘려도 안 됐다",
+            "what": "*\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **자동으로 자원을 맞춰 주는 장치가 있어도 원인이 그대로면 알림만 늘어난다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "파드를 빼자 셋 중 둘이 사라졌다",
+            "what": "동기화 설정에서 파드를 빼자 한 클러스터의 메모리가 **8GB 에서 2.7GB** 로 떨어졌다. 원인을 한 문장으로 적는다 — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "미리 외우지 않고 물어본다",
+            "what": "*\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* 필요한 것만 **jmesPath 로 걸러** 받는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "아낀 값을 다른 곳이 낸다",
+            "what": "*\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* 완화책으로 **API 서버 부하를 관측하고 precondition 을 앞에 걸라**고 권한다. ⚠️ **부하가 얼마나 늘었는지의 수치는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "버린 도구를 비난하지 않는다",
+            "what": "*\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful.\"* **기능을 없앤 것이 아니라 무엇을 담을지를 바꾼 것**이고, 쓰려면 **주의해서 쓰라**고만 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**여러 팀이 함께 쓰는 클러스터에는 규칙이 필요하다.** 그런데 쓸 만한 규칙은 자기 앞의 객체만으로 판정할 수 없다 — *\"real-world policies often require access to other objects in the cluster.\"* 클러스터 전체에서 이름이 겹치지 않는지 같은 검사가 그렇다.\n\n**그래서 보이게 하려고 담아 뒀고, 담은 것이 값이 됐다**(이 정리는 이 사이트의 것이다). Gatekeeper 의 동기화로 네임스페이스·파드·인그레스·롤바인딩을 메모리에 들었는데, **파드는 변동이 심하다.** 개발 클러스터와 CronJob 이 많은 클러스터에서 *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였고, 결국 *\"performance degradation and sporadic OOMKills\"* 가 나서 **배포와 파드 생성이 막혔다.**\n\n**⭐ 이 사이트의 다른 회사들과 다른 점이 있다** — **이 회사의 다른 글들은 사고 기록이 없는데 이 편에는 있다**(이 대비는 이 사이트의 것이다). 같은 도메인의 클라우드 거버넌스 편은 **계정을 732개까지 늘린 이야기를 자세히 적으면서 사고도 폐기 절차도 안 적는다.** 여기는 **터진 것과 자동 조절 장치로도 못 잡은 것을 적는다.**\n\n**그리고 값을 옮겼다고 밝힌다.** Kyverno 는 미리 담지 않고 판정할 때 물어보는데, 회사가 그 대가를 그 자리에서 적는다 — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **문제를 없앤 것이 아니라 메모리에서 API 서버로 옮긴 것이고, 그렇다고 적는다**(이 표현은 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "메모리",
+            "value": "동기화에서 파드를 뺀 뒤 한 클러스터가 8GB → 2.7GB (약 65% 감소)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "규모",
+            "value": "클러스터 30개 이상, 각각 컨트롤러 파드 3개 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "변동",
+            "value": "파드 수가 짧은 시간에 두 배 — 메모리가 기가바이트 단위로 출렁였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "사고",
+            "value": "성능 저하와 산발적 OOMKill — 배포와 파드 생성이 막혔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "API 서버 부하 증가분 · 옮긴 정책 개수 · 다른 정책 엔진과의 비교",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "동기화를 켠 이유를 볼 때",
+          "thought": "**이건 실수가 아니라 필요한 선택이었다**(이 정리는 이 사이트의 것이다). 규칙이 옆을 보려면 옆이 보여야 하고, 미리 담아 두는 것이 가장 빠른 방법이다. **문제는 담는 대상에 파드가 들어간 것**이었다 — 파드는 클러스터에서 가장 자주 생기고 사라지는 것이다. **같은 장치가 대상에 따라 값이 전혀 달라진다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자동 조절로도 못 잡은 대목에서",
+          "thought": "*\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **자원을 맞춰 주는 장치가 있으면 원인을 미룰 수 있다고 믿기 쉬운데, 여기서는 미루니 알림이 늘었다**(이 해석은 이 사이트의 것이다). **자동 조절이 한 일은 시간을 번 것이지 문제를 없앤 것이 아니다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "값을 옮겼다고 적은 자리에서",
+          "thought": "*\"reduces memory consumption but increases the load on the Kubernetes API server.\"* **문제를 없앤 것이 아니라 다른 자원으로 옮긴 것이고, 그것을 같은 문장에서 밝힌다**(이 표현은 이 사이트의 것이다). ⚠️ **다만 옮긴 값이 얼마인지는 없다** — 메모리는 8GB에서 2.7GB로 잰 값을 내는데 **API 서버 쪽은 관측하라는 권고만 있다.** **잰 쪽과 안 잰 쪽이 갈린다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이 회사의 다른 글과 나란히 볼 때",
+          "thought": "**이 편에만 사고 기록이 있다**(이 대비는 이 사이트의 것이다). 같은 도메인의 클라우드 거버넌스 편은 계정을 732개까지 늘린 과정을 자세히 적으면서 **사고도 폐기 절차도 안 적는다.** **만든 이야기를 쓰는 글과 터진 이야기를 쓰는 글이 이 회사 안에서 갈린다** — 그리고 터진 이야기 쪽이 결정과 대가가 더 촘촘하다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "동기화 설정",
+            "what": "어떤 자원 종류를 캐시에 담을지 정한다. 네임스페이스·파드·인그레스·롤바인딩"
+          },
+          {
+            "name": "인벤토리",
+            "what": "담긴 것이 메모리에 남아 규칙에서 참조된다. **객체가 늘면 같이 는다**"
+          },
+          {
+            "name": "파드",
+            "what": "**클러스터에서 가장 변동이 심한 것.** 짧은 시간에 두 배가 되기도 한다"
+          },
+          {
+            "name": "OOMKill",
+            "what": "메모리를 넘겨 죽는 것. **배포와 파드 생성이 막혔다**"
+          },
+          {
+            "name": "동적 조회",
+            "what": "미리 담지 않고 판정할 때 API 로 물어본다. jmesPath 로 걸러 받는다"
+          },
+          {
+            "name": "precondition",
+            "what": "무거운 조회 앞에 거는 조건. API 서버 부하를 줄이는 완화책이다"
+          }
+        ],
+        "invariants": [
+          "**규칙이 옆을 보려면 옆을 어딘가에 들고 있어야 한다** — 메모리든 API 호출이든",
+          "**변동이 심한 것을 미리 담지 않는다** — 파드를 동기화에서 뺐다",
+          "**자원을 자동으로 늘려 버티지 않는다** — 원인이 그대로면 알림만 는다",
+          "**아낀 값이 어디로 갔는지 적는다** — 메모리에서 API 서버로",
+          "**버린 도구를 없애지 않는다** — 동기화 기능은 그대로 두고 담는 대상만 바꿨다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "여러 팀이 함께 쓰는 클러스터에 규칙을 건다",
+            "why": "멀티테넌트라 강제가 필요하다"
+          },
+          {
+            "step": "규칙이 클러스터의 다른 객체를 봐야 한다",
+            "why": "유일성 검사 같은 것은 옆을 봐야 판정된다"
+          },
+          {
+            "step": "자원 종류를 골라 캐시에 담는다",
+            "why": "미리 담아 두면 규칙이 언제든 꺼내 본다"
+          },
+          {
+            "step": "파드 수가 급증한다",
+            "why": "개발 클러스터와 CronJob 이 많은 곳에서 두 배가 되기도 한다"
+          },
+          {
+            "step": "인벤토리가 함께 부푼다",
+            "why": "담은 만큼 메모리에 남는다"
+          },
+          {
+            "step": "메모리 초과로 죽는다",
+            "why": "배포와 파드 생성이 막혔다"
+          },
+          {
+            "step": "자원을 자동으로 늘려 본다",
+            "why": "버티려 했지만 알림만 시끄러워졌다"
+          },
+          {
+            "step": "파드를 다루는 규칙부터 골라낸다",
+            "why": "대용량 객체를 참조하는 것이 원인이다"
+          },
+          {
+            "step": "동기화 대상에서 파드를 뺀다",
+            "why": "한 클러스터가 8GB에서 2.7GB로 떨어졌다"
+          },
+          {
+            "step": "그 규칙들을 동적 조회 방식으로 다시 쓴다",
+            "why": "미리 담지 않고 판정할 때 물어본다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "규칙이 클러스터의 다른 객체를 어떻게 볼 것인가?",
+            "chosen": "**미리 캐시에 담아 둔다.** 네임스페이스·파드·인그레스·롤바인딩을 동기화하고 규칙에서 참조한다",
+            "alternatives": [
+              "자기 앞의 객체만으로 판정하기 — *\"real-world policies often require access to other objects in the cluster\"* 라 안 된다"
+            ],
+            "tradeoff": "**규칙이 언제든 빠르게 옆을 볼 수 있게 된다.** **대가는 담은 것이 메모리에 그대로 남는다는 것**이고, **객체가 늘면 같이 는다**(이 정리는 이 사이트의 것이다). **이건 실수가 아니라 필요한 선택이었고, 문제는 담는 대상에 파드가 들어간 것이었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "메모리가 출렁일 때 자원을 늘려 버틸 것인가?",
+            "chosen": "**아니다 — 원인을 고친다.** 자동 조절로는 안 됐다",
+            "alternatives": [
+              "VerticalPodAutoscaler 로 자원을 동적으로 맞추기 — 실제로 썼고 부족했다"
+            ],
+            "tradeoff": "회사가 그대로 적는다 — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **자동 조절이 한 일은 시간을 번 것이지 문제를 없앤 것이 아니다**(이 해석은 이 사이트의 것이다). **대가는 근본을 고치는 작업이 필요해진다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "무엇부터 손댈 것인가?",
+            "chosen": "**인벤토리를 참조하는 정책 중 대용량 객체를 다루는 것부터.** *\"particularly those dealing with high-volume objects like pods\"*",
+            "alternatives": [
+              "모든 정책을 한꺼번에 옮기기"
+            ],
+            "tradeoff": "**원인에 가장 가까운 것부터 손대 효과가 빨리 난다**(이 정리는 이 사이트의 것이다) — 실제로 파드를 빼자 **8GB 에서 2.7GB** 가 됐다. ⚠️ **대가는 나머지 정책이 남는다는 것**이고, **옮긴 정책이 몇 개이고 남은 것이 몇 개인지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "파드를 동기화에서 뺀 뒤 그 규칙들은 어떻게 하는가?",
+            "chosen": "**미리 담지 않고 판정할 때 API 로 물어보는 방식으로 다시 쓴다.** jmesPath 로 걸러 받는다",
+            "alternatives": [
+              "파드를 보는 규칙을 포기하기"
+            ],
+            "tradeoff": "*\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **객체가 얼마나 출렁이든 정책 평가가 영향을 안 받게 된다**(이 정리는 이 사이트의 것이다). **대가는 판정마다 조회가 붙는다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "아낀 메모리의 값을 누가 낼 것인가?",
+            "chosen": "**API 서버가 낸다.** 그리고 그 사실을 같은 문장에 적는다",
+            "alternatives": [
+              "메모리를 계속 늘려 가며 미리 담기"
+            ],
+            "tradeoff": "*\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **문제를 없앤 것이 아니라 다른 자원으로 옮긴 것이다**(이 표현은 이 사이트의 것이다). 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. ⚠️ **옮긴 값이 얼마인지는 없다** — 메모리는 잰 값을 내는데 API 서버 쪽은 권고뿐이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "예전 도구를 없앨 것인가?",
+            "chosen": "**아니다 — 동기화 기능은 그대로 두고 담는 대상만 바꾼다**",
+            "alternatives": [
+              "Gatekeeper 를 걷어내기"
+            ],
+            "tradeoff": "회사가 명시한다 — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 이고 **주의해서 쓰라**고만 한다. **대가는 두 엔진을 함께 운영하게 된다는 것**이다(이 지적은 이 사이트의 것이다) — ⚠️ **그 운영 부담을 다룬 서술은 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OPA / Gatekeeper",
+            "role": "멀티테넌트 클러스터의 정책 강제. Sync Configuration 으로 자원을 캐시에 담고 규칙에서 참조한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Kyverno",
+            "role": "미리 담지 않고 판정할 때 API 로 조회한다. jmesPath 로 필요한 것만 거른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "VerticalPodAutoscaler",
+            "role": "자원을 동적으로 맞춰 줬지만 원인을 못 잡아 알림만 시끄러워졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "precondition",
+            "role": "무거운 조회 앞에 거는 조건. API 서버 부하 완화책으로 권한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "규칙이 옆을 보려면 어딘가에 옆을 들고 있어야 한다",
+            "why_hard": "*\"real-world policies often require access to other objects in the cluster\"* 인데, **미리 담으면 메모리를 쓰고 그때그때 물으면 API 서버를 쓴다**(이 정리는 이 사이트의 것이다). **둘 다 안 쓰는 방법은 없다.**",
+            "current_best": "**변동이 심한 것만 골라 담기를 그만둔다** — 파드를 빼서 **8GB 에서 2.7GB** 로 줄이고 그 규칙만 동적 조회로 옮겼다. ⚠️ **API 서버 쪽 값은 재지 않았다** — 관측하라는 권고만 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          },
+          {
+            "problem": "자동 조절 장치가 있으면 원인을 미룰 수 있는가",
+            "why_hard": "자원을 동적으로 맞춰 주는 장치가 있으면 버틸 수 있을 것 같지만, 여기서는 **미루니 알림이 늘었다** — *\"the alerts became noisy and disruptive.\"* **그리고 OOMKill 이 실제로 배포와 파드 생성을 막았다.**",
+            "current_best": "**버티기를 그만두고 원인을 고쳤다.** ⚠️ **다만 언제 버티기를 그만둘지에 대한 기준은 글에 없다**(이 지적은 이 사이트의 것이다) — 알림이 얼마나 시끄러워야 그만두는지는 판단으로 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+                "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-02-12",
+                "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "규칙이 옆을 보는 두 가지 방법",
+          "question": "미리 외울 것인가 그때 물을 것인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  NEED[\"규칙이 클러스터의 다른 것을 봐야 한다\"]:::list\n  OLD[\"미리 담아 둔다\"]:::list\n  MEM[\"<b>담은 것이 메모리에 남는다</b><br/>• 파드는 가장 자주 생기고 사라진다<br/>• 짧은 시간에 두 배가 되기도 한다<br/>• 메모리가 기가바이트 단위로 출렁였다\"]:::accent\n  BOOM[\"메모리를 넘겨 죽는다 — 배포가 막혔다\"]:::list\n  VPA[\"자원을 자동으로 늘려 본다 — 알림만 시끄러웠다\"]:::list\n  FIX[\"파드를 담는 목록에서 뺀다 — 여덟 기가에서 이점칠 기가로\"]:::list\n  NEW[\"판정할 때 물어보는 방식으로 옮긴다\"]:::list\n  COST[\"메모리는 줄고 중앙 서버 요청이 는다\"]:::list\n  X1[\"규칙이 자기 앞만 보게 하기<br/>안 된다 — 실제 규칙은 옆을 봐야 한다\"]:::quiet\n  X2[\"예전 도구를 걷어내기<br/>안 했다 — 기능은 여전히 쓸모 있다고 적는다\"]:::quiet\n  NEED --> OLD --> MEM --> BOOM --> VPA --> FIX --> NEW --> COST\n  NEED -.-> X1\n  FIX -.-> X2"
+        },
+        {
+          "title": "메모리가 부풀다 터지기까지",
+          "question": "어디서 버티고 어디서 포기했는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 평온\n  평온 : <b>담아 둔 목록이 작다</b><br/>규칙이 옆을 빠르게 본다\n  평온 --> 급증 : 파드가 늘어난다\n  급증 : <b>짧은 시간에 두 배</b><br/>개발 클러스터와 정기 작업이 많은 곳이 주범이다\n  급증 --> 팽창 : 담은 만큼 는다\n  팽창 : <b>메모리가 기가바이트 단위로 출렁인다</b><br/>성능이 떨어지기 시작한다\n  팽창 --> 버티기 : 자원을 자동으로 늘린다\n  버티기 : <b>시간을 벌 뿐이다</b><br/>알림이 시끄러워지고 원인은 그대로다\n  버티기 --> 사망 : 한계를 넘는다\n  사망 : <b>메모리 초과로 죽는다</b><br/>배포와 파드 생성이 막힌다\n  사망 --> 수리 : 담는 대상을 바꾼다\n  수리 : <b>파드를 목록에서 뺀다</b><br/>여덟 기가에서 이점칠 기가로\n  수리 --> 이전 : 그 규칙들을 옮긴다\n  이전 : <b>판정할 때 물어본다</b><br/>메모리 대신 중앙 서버가 값을 낸다\n  이전 --> [*]"
+        },
+        {
+          "title": "이 글이 잰 것과 안 잰 것",
+          "question": "옮긴 값은 얼마인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"메모리는 잰 값을 낸다\"]:::list\n  B[\"<b>옮겨 간 쪽은 재지 않았다</b><br/>중앙 서버 부하가 얼마나 늘었는지 관측하라는 권고만 있다\"]:::accent\n  C[\"파드를 다루는 규칙부터 옮겼다\"]:::list\n  D[\"옮긴 것이 몇 개이고 남은 것이 몇 개인지 없다\"]:::list\n  E[\"예전 도구를 그대로 둔다\"]:::list\n  F[\"두 엔진을 함께 운영하는 부담은 다루지 않는다\"]:::list\n  G[\"버티기를 그만두고 원인을 고쳤다\"]:::list\n  H[\"언제 그만둘지의 기준은 없다 — 판단으로 남는다\"]:::list\n  I[\"다른 정책 엔진도 있다\"]:::list\n  J[\"비교한 서술이 없다\"]:::list\n  N[\"<i>앞의 하나는 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+          "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+          "publisher": "Adevinta Tech Blog",
+          "date": "2025-02-12",
+          "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다). **277 에서 원문을 다시 읽어 사고 기록이 나왔다.** **왜 동기화를 켰는지** — *\"real-world policies often require access to other objects in the cluster\"* 라 Gatekeeper 의 Sync Configuration 으로 네임스페이스·파드·인그레스·롤바인딩을 클라이언트 캐시에 넣고 `data.inventory` 로 참조했다(예: 클러스터 전체의 유일성 검사). **그러자 실제로 터졌다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler 로도 못 잡았다** — *\"Although our VerticalPodAutoscaler helped adjust resource allocation dynamically, the alerts became noisy and disruptive.\"* **주범은 파드 변동이 심한 클러스터**였다 — 개발 클러스터와 **CronJob 이 많은 클러스터**이고, *\"The number of pods doubled in a short time\"* 이면 메모리가 기가바이트 단위로 출렁였다. **원인을 한 문장으로 적는다** — *\"We were syncing pod data into Gatekeeper's inventory, causing excessive memory consumption when pod counts surged.\"* **고친 순서는 셋** — ① `data.inventory` 를 쓰는 정책 중 **파드 같은 대용량 객체를 다루는 것부터** 골라내고 ② **Gatekeeper 동기화 설정에서 파드를 빼고**(**8GB → 2.7GB**) ③ 그 정책들을 **Kyverno 의 동적 API 호출 + jmesPath 필터링**으로 다시 썼다. **Kyverno 가 다른 점** — *\"Kyverno does not rely on a pre-synced inventory, it instead fetches data dynamically using API calls.\"* **대가를 그 자리에서 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server\"* 이고, 완화책으로 **API 서버 부하 관측과 precondition** 을 권한다. **🔴 그리고 버린 도구를 비난하지 않는다** — *\"This article does not aim to criticise Gatekeeper's inventory sync feature—which remains extremely useful\"* 라 **주의해서 쓰라고만 한다.** ⚠️ **다른 정책 엔진(Kubewarden 등)과 비교한 서술은 없고, 옮긴 정책이 몇 개인지도 없다.**"
+        },
+        {
+          "title": "Multi-cloud governance at scale",
+          "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+          "publisher": "Adevinta Tech Blog",
+          "date": "2024-12-17",
+          "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
         }
       ]
     }
