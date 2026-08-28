@@ -1,0 +1,217 @@
+{
+  "slug": "freshworks",
+  "name": "프레시웍스",
+  "name_en": "Freshworks Inc.",
+  "country": "IN",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-08-29",
+  "domain": "freshworks.com/explore-cx · /explore-it",
+  "one_liner": "한 덩어리 Rails 앱 위에 여러 고객을 얹고 그 폭발 반경을 계속 잘라 온 인도 SaaS",
+  "business_model": "**업무용 소프트웨어를 구독으로 판다.** 사업이 **둘로 갈린다** — **CX**(고객 응대: Freshdesk·Freshchat)와 **EX**(사내 업무: Freshservice 중심의 ITSM). **⭐ 그리고 기술 블로그의 경로가 그 부문을 그대로 따른다** — `/explore-cx/` 와 `/explore-it/` 다(이 관찰은 이 사이트의 것이다).\n\n**2026년 2분기** 총매출 **2억 3,740만 달러(+16% YoY)**, GAAP 순이익 **320만 달러**로 **그해 첫 GAAP 흑자**를 냈다. **1분기**는 **2억 2,860만 달러(+16%)** 에 **순 달러 유지율 106%** 였고, **회사 역사상 처음으로 ARR 100만 달러가 넘는 거래**가 나왔다.\n\n**⭐ 성장의 무게가 EX 쪽에 있다** — 전체가 16% 느는 동안 **EX ARR 이 24%** 늘었다. 그리고 회사는 AI 를 판매의 축으로 적는다 — **Freddy AI Copilot 이 신규 엔터프라이즈 거래의 71% 이상에 붙는다.**\n\n---\n\n**⚠️ 그런데 기술 블로그는 그 이야기를 안 한다**(이 대비는 이 사이트의 것이다). 읽을 수 있는 엔지니어링 글은 **`Rails@Scale` 이라는 시리즈**에 몰려 있고 — 회사가 그 취지를 *\"In this Freshworks Engineering series, Rails@Scale, we talk about some of the techniques we employ to scale up our products\"* 로 적는다 — **내용은 전부 2020~2021년의 Rails 운영 이야기**다. **AI 도, EX 부문의 ITSM 도, 지금 매출을 만드는 것들은 글에 없다.**\n\n**⭐⭐ 그래서 이 회사에서 읽을 수 있는 것은 한 가지 문제다** — **한 덩어리 Rails 앱에 고객 수만 곳을 얹어 놓고, 그중 하나가 잘못됐을 때 나머지가 안 죽게 하는 법.** 회사가 그 위험을 한 문장으로 적는다: *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down.\"*",
+  "products": [
+    "Freshdesk (고객 응대)",
+    "Freshservice (사내 IT 서비스 관리)",
+    "Freshsales (영업 CRM)",
+    "Freshchat (메신저 응대)",
+    "Freddy AI (제품 전반에 붙는 AI 부조종사)"
+  ],
+  "revenue_streams": [
+    {
+      "name": "EX — 사내 업무 소프트웨어 구독",
+      "how": "**Freshservice 중심의 ITSM.** **EX ARR 이 전년 대비 24%** 늘어 전체 성장률(16%)을 크게 앞선다 — **회사 성장의 무게중심이 여기다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Freshworks Reports Record Second Quarter 2026 Results",
+          "url": "https://ir.freshworks.com/news/news-details/2026/Freshworks-Reports-Record-Second-Quarter-2026-Results/default.aspx",
+          "publisher": "Freshworks Investor Relations",
+          "date": "2026-08",
+          "summary": "**2026년 2분기** — 총매출 **2억 3,740만 달러(+16% YoY)**, **EX ARR +24% YoY**, GAAP 순이익 **320만 달러**로 **2026년 첫 GAAP 흑자**. **Freddy AI Copilot 이 신규 엔터프라이즈 거래의 71% 이상에 붙는다**고 적는다. 매출 추정치를 **일곱 분기 연속** 넘겼고 Rule of 40 을 **여덟 분기 연속** 달성했다."
+        }
+      ]
+    },
+    {
+      "name": "CX — 고객 응대 소프트웨어 구독",
+      "how": "**Freshdesk·Freshchat.** 회사의 출발점이고 **기술 블로그가 다루는 것도 거의 전부 이쪽 시스템**이다. ⚠️ **CX 만의 ARR 수치는 이 사이트가 확인하지 못했다**",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Freshworks Reports Record Second Quarter 2026 Results",
+          "url": "https://ir.freshworks.com/news/news-details/2026/Freshworks-Reports-Record-Second-Quarter-2026-Results/default.aspx",
+          "publisher": "Freshworks Investor Relations",
+          "date": "2026-08",
+          "summary": "**2026년 2분기** — 총매출 **2억 3,740만 달러(+16% YoY)**, **EX ARR +24% YoY**, GAAP 순이익 **320만 달러**로 **2026년 첫 GAAP 흑자**. **Freddy AI Copilot 이 신규 엔터프라이즈 거래의 71% 이상에 붙는다**고 적는다. 매출 추정치를 **일곱 분기 연속** 넘겼고 Rule of 40 을 **여덟 분기 연속** 달성했다."
+        }
+      ]
+    },
+    {
+      "name": "AI 부가 판매 (Freddy AI Copilot)",
+      "how": "**신규 엔터프라이즈 거래의 71% 이상에 붙는다**고 회사가 적는다. ⚠️ **별도 매출로 얼마인지는 이 사이트가 확인하지 못했다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Freshworks Reports Record Second Quarter 2026 Results",
+          "url": "https://ir.freshworks.com/news/news-details/2026/Freshworks-Reports-Record-Second-Quarter-2026-Results/default.aspx",
+          "publisher": "Freshworks Investor Relations",
+          "date": "2026-08",
+          "summary": "**2026년 2분기** — 총매출 **2억 3,740만 달러(+16% YoY)**, **EX ARR +24% YoY**, GAAP 순이익 **320만 달러**로 **2026년 첫 GAAP 흑자**. **Freddy AI Copilot 이 신규 엔터프라이즈 거래의 71% 이상에 붙는다**고 적는다. 매출 추정치를 **일곱 분기 연속** 넘겼고 Rule of 40 을 **여덟 분기 연속** 달성했다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "파는 것은 둘인데 글로 쓴 것은 하나다",
+    "question": "무엇으로 돈을 벌고, 엔지니어링 글은 무엇을 다루는가?",
+    "code": "flowchart TD\n  BIZ[\"<b>업무용 소프트웨어를 구독으로 판다</b><br/>• 2026년 2분기 매출 2억 3,740만 달러, 16% 성장<br/>• EX ARR 은 24% 성장으로 더 빠르다<br/>• Freddy AI 가 신규 엔터프라이즈 거래의 71% 이상에\"]:::accent\n  CX[\"CX — 고객 응대 (Freshdesk)\"]:::list\n  EX[\"EX — 사내 IT 서비스 관리 (Freshservice)\"]:::list\n  BLOG[\"엔지니어링 글은 Rails at Scale 시리즈에 몰려 있다\"]:::list\n  OLD[\"2020년에서 2021년 사이의 Rails 운영 이야기다\"]:::quiet\n  GAP[\"AI 도 ITSM 도 글에 없다\"]:::quiet\n  D1[\"연 자리 하나 — 하나가 느려지면 전부가 막힌다\"]:::list\n  D2[\"연 자리 둘 — 큐 이백 개를 기계에 어떻게 얹는가\"]:::list\n  BIZ --> CX\n  BIZ --> EX\n  BIZ --> BLOG\n  BLOG --> OLD\n  BLOG --> GAP\n  BLOG --> D1\n  BLOG --> D2\n  CX --> D1"
+  },
+  "domains": [
+    {
+      "name": "하나가 느려지면 전부가 막힌다",
+      "why": "**이 회사의 엔지니어링 글이 가장 여러 번 돌아오는 자리다**(이 판단은 이 사이트의 것이다). 문제를 회사가 한 문장으로 적는다 — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**그리고 그 위험을 규모가 키운다** — Freshdesk 는 **단일 스레드 Passenger 프로세스**로 최대 **분당 약 50만 요청**을 받는다. **응답 시간이 조금만 흔들려도 요청이 줄을 선다.**\n\n**⭐ 두 편이 같은 문제를 다른 층에서 푼다**(이 묶음은 이 사이트의 것이다) — **HAProxy 편은 들어오기 전에 갈라 담고**(고객·경로·샤드·헤더별 shell, 그리고 느린 리포트와 빠른 티켓을 나눈다), **고가용성 편은 들어온 뒤에 끊는다**(긴 트랜잭션 중단 · 서킷 브레이커 · 엄격한 타임아웃). **앞에서 나누고 뒤에서 자르는 셈이다.**\n\n**⚠️ 두 편의 솔직함이 크게 다르다** — 고가용성 편은 **대가를 다섯 가지나 적는데** HAProxy 편은 **두 줄뿐**이다(이 대비도 이 사이트의 것이다).",
+      "tech": [
+        {
+          "tech": "HAProxy shell 라우팅 (호스트·경로·샤드·헤더)",
+          "solves": "**문제가 될 만한 트래픽을 들어오는 자리에서 갈라 담는다.** 한 고객이 말썽이면 그 도메인의 트래픽을 통째로 다른 shell 로 빼고, 한 샤드가 느려지면 완충 shell 로 보낸다. **헤더 라우팅은 이관 트래픽 전용**인데, 이관이 대개 고객이 라이브로 간 뒤에 일어나 도메인으로는 못 가르기 때문이다. 그리고 **느린 요청과 빠른 요청을 갈라 담는다**(리포트 약 300ms vs 티켓 약 100ms).",
+          "limits": "⚠️ **글이 적는 대가는 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. **규모도 *\"hundreds of web servers hosted in AWS\"* 로만 적고 shell 이 몇 개인지, 옮기는 데 얼마나 걸리는지가 없다**(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Freshdesk uses HAProxy at scale",
+              "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+              "publisher": "Freshworks Engineering",
+              "date": "2021-08-24",
+              "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "Semian 서킷 브레이커 (MySQL·Redis·HTTP 어댑터) + 드라이런",
+          "solves": "**뒤가 죽었을 때 앞이 계속 기다리지 않게 한다.** 회사는 이것을 *\"the best production tested circuit breaker gem for a Rails application\"* 이라 적고, **켜기 전에 드라이런으로 먼저 돌려** 오탐이 없는지 확인했다.",
+          "limits": "🔴 **한계를 분명히 적는다** — *\"cannot be configured to fail requests only to a subset of tables\"* 이고 **프로세스 단위로 동작**해 분산 판단을 못 한다(호스트 단위 계측은 *\"still under development\"*). **네트워크 수준의 DB 장애에는 맞지만 테이블 잠금이나 CPU 때문에 느려지는 경우에는 약하다.** ⚠️ 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling the Freshdesk web app for high Availability",
+              "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-07-15",
+              "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+            }
+          ]
+        },
+        {
+          "tech": "MySQL DB 이벤트로 긴 트랜잭션 중단 (최대 25초)",
+          "solves": "**트랜잭션 잠금과 CPU 를 많이 먹는 긴 읽기 질의가 다른 질의를 망치는 것**을 막는다 — 서킷 브레이커가 못 잡는 자리를 데이터베이스 쪽에서 끊는다.",
+          "limits": "🔴 **끊으면 애플리케이션이 그것을 감당해야 한다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling the Freshdesk web app for high Availability",
+              "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-07-15",
+              "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+            }
+          ]
+        },
+        {
+          "tech": "Envoy 사이드카 + HTTP 타임아웃 + 블랙리스트",
+          "solves": "나가는 호출을 사이드카로 보내 **속도 제한·연결 풀·타임아웃·재시도·응답 캐시**를 한자리에서 얻고, 들어오는 쪽은 HAProxy 블랙리스트로 **남용하는 서브도메인과 악성 IP** 를 막는다.",
+          "limits": "⚠️ **사이드카를 얼마나 넓게 깔았는지도, 타임아웃 값도, 블랙리스트가 실제로 무엇을 얼마나 막았는지도 글에 없다**(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling the Freshdesk web app for high Availability",
+              "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-07-15",
+              "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "큐 이백 개를 기계에 어떻게 얹는가",
+      "why": "**앞의 도메인이 요청을 가르는 이야기라면 여기는 백그라운드 잡을 가르는 이야기다**(이 구분은 이 사이트의 것이다). 문제가 다르다 — 폭발 반경이 아니라 **자원이 놀거나 몰리는 것**이다.\n\n**증상을 그대로 적는다** — *\"Sometimes, it went into a random distribution of queues into layers\"* 라 **어떤 층은 사용률이 10% 미만인데 어떤 층은 60~70%** 였다. 큐가 **200개 이상**이고 데이터센터마다 트래픽이 **24배** 차이 난다(미국 240,000 RPM vs 호주 10,000 RPM).\n\n**⭐ 그리고 이 글의 값은 버린 대안에 있다** — 큐 수를 줄이려 **포그라운드로 옮기는 안**과 **큐 시스템 자체를 바꾸는 안**을 각각 이유와 함께 버렸다. 특히 뒤엣것의 문장이 분명하다: *\"This problem isn't going to be solved if we move to a new queueing system.\"*",
+      "tech": [
+        {
+          "tech": "큐를 성격으로 다시 분류하기 (10개 버킷)",
+          "solves": "**하는 일의 성격을 보고 RPM·실행시간·SLA 로 재서 묶는다** — realtime 40개, scheduled 20개, external 20개 같은 식이다. 그러면 **버킷마다 알맞은 인스턴스 종류를 띄울 수 있어** 사용률이 고르게 된다. 결과가 **인프라 20% 감소**다.",
+          "limits": "⚠️ **분류 기준을 만들고 유지해야 한다** — 새 큐가 생길 때 어느 버킷인지 누가 정하는지가 글에 없다(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq queue management using custom middleware",
+              "url": "https://www.freshworks.com/explore-it/sidekiq-queue-management-using-custom-middleware/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-05-14",
+              "summary": "**백그라운드 큐가 200개가 넘는데 그것들을 층에 얹는 방식이 들쭉날쭉했다** — *\"Sometimes, it went into a random distribution of queues into layers\"* 라 어떤 층은 사용률이 10% 미만인데 어떤 층은 60~70% 였다.\n\n**답은 큐를 다시 분류한 것이다** — 하는 일의 성격을 보고 **RPM·실행시간·SLA** 기준으로 **10개 버킷**으로 묶었다(realtime 40개 · scheduled 20개 · external 20개). 그리고 **Sidekiq 미들웨어가 Redis 로 밀기 전에 큐 이름을 갈아 끼운다** — 개발자 코드는 그대로 두고 **로컬 캐시 5분**으로 Redis 왕복을 줄인다.\n\n🔴 **버린 대안 둘에 이유가 있다** — 큐 수를 줄이려 **포그라운드로 처리**하는 안은 *\"increased response time, and handling retries in transactions\"* 로 SLA 를 어겨서, **큐 시스템 자체를 바꾸는 안**은 *\"This problem isn't going to be solved if we move to a new queueing system\"* 라서 버렸다.\n\n**수치** — **인프라 20% 감소**, 데이터센터 간 트래픽 차이 **24배**(미국 240,000 RPM vs 호주 10,000 RPM), 고객 한 곳이 시간당 **약 4만 잡**. ⚠️ **대가는 안 적는다.**"
+            }
+          ]
+        },
+        {
+          "tech": "Sidekiq 클라이언트 미들웨어로 큐 이름 갈아 끼우기 (로컬 캐시 5분)",
+          "solves": "**개발자 코드를 안 고치고** 잡이 Redis 로 밀리기 전에 큐 이름을 다시 매핑한다. 매핑을 **5분 로컬 캐시**로 들고 있어 *\"avoid redis calls for every push\"* 한다.",
+          "limits": "⚠️ **캐시가 5분이면 매핑을 바꿔도 5분 동안은 옛 배치로 간다**(이 지적은 이 사이트의 것이다). 그리고 **이 글은 대가를 하나도 안 적는다** — 미들웨어가 실패하면 어떻게 되는지도 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Sidekiq queue management using custom middleware",
+              "url": "https://www.freshworks.com/explore-it/sidekiq-queue-management-using-custom-middleware/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-05-14",
+              "summary": "**백그라운드 큐가 200개가 넘는데 그것들을 층에 얹는 방식이 들쭉날쭉했다** — *\"Sometimes, it went into a random distribution of queues into layers\"* 라 어떤 층은 사용률이 10% 미만인데 어떤 층은 60~70% 였다.\n\n**답은 큐를 다시 분류한 것이다** — 하는 일의 성격을 보고 **RPM·실행시간·SLA** 기준으로 **10개 버킷**으로 묶었다(realtime 40개 · scheduled 20개 · external 20개). 그리고 **Sidekiq 미들웨어가 Redis 로 밀기 전에 큐 이름을 갈아 끼운다** — 개발자 코드는 그대로 두고 **로컬 캐시 5분**으로 Redis 왕복을 줄인다.\n\n🔴 **버린 대안 둘에 이유가 있다** — 큐 수를 줄이려 **포그라운드로 처리**하는 안은 *\"increased response time, and handling retries in transactions\"* 로 SLA 를 어겨서, **큐 시스템 자체를 바꾸는 안**은 *\"This problem isn't going to be solved if we move to a new queueing system\"* 라서 버렸다.\n\n**수치** — **인프라 20% 감소**, 데이터센터 간 트래픽 차이 **24배**(미국 240,000 RPM vs 호주 10,000 RPM), 고객 한 곳이 시간당 **약 4만 잡**. ⚠️ **대가는 안 적는다.**"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "open_questions": [
+    "**⚠️ 읽을 수 있는 엔지니어링 글이 2020~2021년에 몰려 있다.** `Rails@Scale` 시리즈(고가용성 2020-07-15 · Sidekiq 2020-05-14 · `Optimizing cache with MemoizeUntil` **아직 안 읽음**)와 HAProxy 편(2021-08-24)이다. **그 뒤의 엔지니어링 깊이글을 이 사이트는 아직 못 찾았다** — 2025년 3월의 `Meet the AI-Augmented Engineers at Freshworks` 같은 글은 `/theworks/` 아래의 매거진 성격이다. ⚠️ **`https://www.freshworks.com/explore-it/` 를 목록으로 열면 404 다** — 글 주소는 직접 열리지만 색인 페이지가 없다(323 에서 확인). **다음 사이클은 시리즈 안의 링크를 따라간다.**",
+    "**⚠️ 사업의 무게와 글의 무게가 어긋난다**(이 대비는 이 사이트의 것이다). 매출을 끄는 것은 **EX(ITSM) 부문**(ARR +24%)과 **Freddy AI**(신규 엔터프라이즈 거래의 71% 이상)인데, **엔지니어링 글은 거의 전부 CX 쪽 Freshdesk 의 Rails 운영 이야기**다. **AI 를 제품에 붙이는 기술 이야기도, ITSM 쪽 시스템 이야기도 이 사이트는 아직 못 찾았다.**",
+    "**같은 문제를 다루는 두 편의 솔직함이 크게 다르다.** 고가용성 편(2020-07)은 **대가를 다섯 가지 적는다** — ORM 롤백 테스트 부담 · 옛 Rails 의 고아 레코드 · Semian 이 테이블 단위로 못 자름 · 프로세스 단위 한계 · **Newrelic explain 쿼리가 감시를 방해**. 반면 HAProxy 편(2021-08)은 **두 줄뿐**이고 Sidekiq 편(2020-05)은 **하나도 없다**. **회사가 아니라 글쓴이에 따라 갈리는 것으로 보인다**(**추정**)."
+  ],
+  "sources": [
+    {
+      "title": "Scaling the Freshdesk web app for high Availability",
+      "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+      "publisher": "Freshworks Engineering (Rails@Scale)",
+      "date": "2020-07-15",
+      "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+    },
+    {
+      "title": "Sidekiq queue management using custom middleware",
+      "url": "https://www.freshworks.com/explore-it/sidekiq-queue-management-using-custom-middleware/",
+      "publisher": "Freshworks Engineering (Rails@Scale)",
+      "date": "2020-05-14",
+      "summary": "**백그라운드 큐가 200개가 넘는데 그것들을 층에 얹는 방식이 들쭉날쭉했다** — *\"Sometimes, it went into a random distribution of queues into layers\"* 라 어떤 층은 사용률이 10% 미만인데 어떤 층은 60~70% 였다.\n\n**답은 큐를 다시 분류한 것이다** — 하는 일의 성격을 보고 **RPM·실행시간·SLA** 기준으로 **10개 버킷**으로 묶었다(realtime 40개 · scheduled 20개 · external 20개). 그리고 **Sidekiq 미들웨어가 Redis 로 밀기 전에 큐 이름을 갈아 끼운다** — 개발자 코드는 그대로 두고 **로컬 캐시 5분**으로 Redis 왕복을 줄인다.\n\n🔴 **버린 대안 둘에 이유가 있다** — 큐 수를 줄이려 **포그라운드로 처리**하는 안은 *\"increased response time, and handling retries in transactions\"* 로 SLA 를 어겨서, **큐 시스템 자체를 바꾸는 안**은 *\"This problem isn't going to be solved if we move to a new queueing system\"* 라서 버렸다.\n\n**수치** — **인프라 20% 감소**, 데이터센터 간 트래픽 차이 **24배**(미국 240,000 RPM vs 호주 10,000 RPM), 고객 한 곳이 시간당 **약 4만 잡**. ⚠️ **대가는 안 적는다.**"
+    },
+    {
+      "title": "How Freshdesk uses HAProxy at scale",
+      "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+      "publisher": "Freshworks Engineering",
+      "date": "2021-08-24",
+      "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+    },
+    {
+      "title": "Freshworks Reports Record Second Quarter 2026 Results",
+      "url": "https://ir.freshworks.com/news/news-details/2026/Freshworks-Reports-Record-Second-Quarter-2026-Results/default.aspx",
+      "publisher": "Freshworks Investor Relations",
+      "date": "2026-08",
+      "summary": "**2026년 2분기** — 총매출 **2억 3,740만 달러(+16% YoY)**, **EX ARR +24% YoY**, GAAP 순이익 **320만 달러**로 **2026년 첫 GAAP 흑자**. **Freddy AI Copilot 이 신규 엔터프라이즈 거래의 71% 이상에 붙는다**고 적는다. 매출 추정치를 **일곱 분기 연속** 넘겼고 Rule of 40 을 **여덟 분기 연속** 달성했다."
+    },
+    {
+      "title": "Freshworks Reports First Quarter 2026 Results",
+      "url": "https://ir.freshworks.com/news/news-details/2026/Freshworks-Reports-First-Quarter-2026-Results/default.aspx",
+      "publisher": "Freshworks Investor Relations",
+      "date": "2026-05",
+      "summary": "**2026년 1분기** — 총매출 **2억 2,860만 달러**로 2025년 1분기 **1억 9,630만 달러** 대비 **16%** 성장. **순 달러 유지율(NDR) 106%**(2025년 4분기 108%, 2025년 1분기 105%). 회사 역사상 가장 큰 거래 둘을 성사시켰고 **처음으로 ARR 100만 달러가 넘는 거래**가 나왔다고 적는다."
+    }
+  ],
+  "features": []
+}

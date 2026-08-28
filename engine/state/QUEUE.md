@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Freshworks** | IN · SaaS | 323 에서 프로파일을 썼다 — **도메인 2개 · 기능 0개.** 다음은 도메인 ①(하나가 느려지면 전부가 막힌다)이고 재료는 `Scaling the Freshdesk web app for high Availability`(2020-07-15, **대가 다섯**)와 `How Freshdesk uses HAProxy at scale`(2021-08-24). ⚠️ **글이 2020~2021 의 `Rails@Scale` 시리즈에 몰려 있고 `/explore-it/` 목록 페이지는 404 다** |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Freshworks** | IN · SaaS | `freshworks.com/explore-it/` · `/explore-cx/` | ✅ WebFetch 로 본문이 온다 | **두 편이 한 주제로 묶인다 — 멀티테넌트에서 부하를 어떻게 갈라 담는가.** `Sidekiq queue management using custom middleware`(2020-05-14)는 **버린 대안 둘을 이유와 함께** 적는다 — 포그라운드 처리는 *"increased response time, and handling retries in transactions"* 로 SLA 를 어겨서, 큐 시스템 교체는 *"This problem isn't going to be solved if we move to a new queueing system"* 라서. **수치도 있다** — 큐 **200개 이상**을 10개 버킷으로 묶어 **인프라 20% 절감**, 데이터센터 간 트래픽 차이 **24배**(240,000 vs 10,000 RPM). `How Freshdesk uses HAProxy at scale`(2021-08-24)은 같은 문제를 라우팅 쪽에서 푼다(shell 단위 격리 · 호스트/경로/샤드/헤더 라우팅). ⚠️ **HAProxy 편은 대가가 두 줄뿐이고 수치도 약하다**(티켓 100ms vs 리포트 300ms) |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

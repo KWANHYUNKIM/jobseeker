@@ -648,6 +648,18 @@
       "one_liner": "가맹점 결제 기기를 구독으로 팔고 그 위에서 대출을 중개하는 인도 핀테크",
       "updated_at": "2026-08-29",
       "domain": "paytm.com/blog/engineering"
+    },
+    {
+      "slug": "freshworks",
+      "name": "프레시웍스",
+      "name_en": "Freshworks Inc.",
+      "country": "IN",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "한 덩어리 Rails 앱 위에 여러 고객을 얹고 그 폭발 반경을 계속 잘라 온 인도 SaaS",
+      "updated_at": "2026-08-29",
+      "domain": "freshworks.com/explore-cx · /explore-it"
     }
   ],
   "domains": [
@@ -841,7 +853,9 @@
     "옮기는 값과 남기는 값을 견준다",
     "거래 기록을 어디까지 맞출 것인가",
     "앞단에서 끝낸다",
-    "재는 일을 사지 않고 만든다"
+    "재는 일을 사지 않고 만든다",
+    "하나가 느려지면 전부가 막힌다",
+    "큐 이백 개를 기계에 어떻게 얹는가"
   ],
   "countries": {
     "KR": "한국",
