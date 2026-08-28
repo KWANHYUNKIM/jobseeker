@@ -8,63 +8,51 @@
 
 ## 지금 파는 중
 
-**Grab(SG · 모빌리티) `in_progress` — 도메인 5개 · 기능 5개.** 315 에서 **새 도메인 ⑤
-`에이전트보다 그 주위가 오래 걸린다` 를 열고**(`tech` 채움, `index.json` 최상위 `domains` 에도
-넣음) **기능 `wrapper-in-the-box`(둘러싼 것을 미리 싸 둔다)까지 썼다. 결정 8개.**
-읽은 편 — `Agent platform (Part 1)`(`/how-grab-builds-and-runs-ai-agents-at-scale`, 2026-07-24).
+**없다 — `in_progress` 가 0 이다.** 316 에서 **Grab 을 `done` 으로 닫았다. 완료 53곳.**
 
-**무엇이 나왔나** — 문제를 시간으로 보인다: *"The reasoning loop took a whole afternoon.
-The production wrapper took two weeks."* 그리고 한 줄로 적는다 — *"The hard part of building
-an agent was not the agent itself, but everything around it."*
-- **🔴 갈림은 플랫폼이냐 프레임워크냐** — *"A platform would have locked teams into rigid
-  assumptions that would soon become outdated."*
-- **⭐ 부품 목록이 곧 실패 목록이다** — *"Each part of LLM-Kit is a direct response to one of
-  the failures described above."* 평가 없음→평가 내장(*"Vibe check is not an evaluation
-  strategy"*) · 모델 교체 고통→중앙 게이트웨이 · 로그 흩어짐(*"grepping logs across three
-  separate systems"*)→자동 계측.
-- **수치가 규모 쪽에 있다** — 에이전트 서비스 **500개 이상** · MCP 서버 **50개 이상** ·
-  토큰 **월 수십억** · 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초**.
-- **⚠️ 없는 것** — 지연·비용·사고 감소 수치가 전부 없고, **버린 설계 대안이 플랫폼 대신
-  프레임워크 하나뿐**이다.
+**닫은 근거** — 마지막 남은 글 `Introducing the SOP-driven LLM agent frameworks` 를 실제로
+열어 보고 **기능으로 쓰지 않기로 했다.** 기준(**버린 대안 · 대가 · 수치 중 둘**)에서
+**수치 하나만 넘겼다.**
+- **✅ 수치는 이 회사 에이전트 글 중 가장 강하다** — **99.8% 정확도** · 계정 탈취 조사
+  **23분 → 3분**, **87% 자동화**, 오탐 **0** · 사기 조사 **평균 처리시간 45% 감소**,
+  **월 300시간 이상** 절감 · 전통 방식 대비 **최대 10배**.
+- **✅ 접근도 뚜렷하다** — SOP 를 **트리**로 표현해 **깊이 우선 탐색**으로 훑고, 계획·작업·
+  사용자 세 에이전트로 나누고, **상태 스택**으로 멈췄다 이어 간다. 문제도 분명하다 —
+  *"LLMs may make incorrect decisions or invent non-existent steps due to hallucination."*
+- **🔴 버린 설계 대안 0 · 인정한 한계 0.** 298 Dream11, 304 LoHoSearch·VitaBench·LongCat 과
+  같은 판단이다. **`open_questions` 에 읽고 안 쓴 이유와 수치를 남겼다.**
 
-**⭐⭐ 이번 사이클의 가장 센 관찰**(`open_questions` 와 `connections` 에 남겼다) —
-**같은 회사가 에이전트를 두 방향에서 다루면서 서로를 한 번도 안 부른다.**
-**Palana 는 못 믿어서 가두는 쪽**이라 제어면을 바깥에 두고 **기본 거부**에서 시작하고,
-**LLM-Kit 은 빨리 만들어 내보내는 쪽**이라 **강제하지 않는 프레임워크**를 골랐다.
-**만드는 쪽은 느슨하게, 가두는 쪽은 빡빡하게다.** ⚠️ **그래서 등록된 MCP 서버 50개 이상 중
-어떤 에이전트가 무엇에 닿는지를 누가 정하는지, Agent platform 글만으로는 알 수 없다.**
+**닫으면서 `business_model` 에 적은 것**(이 사이트의 정리라고 밝혔다) —
+**⭐ 같은 회사 안에서 재는 대상이 갈린다.** 앞의 셋(카운터 저장소·데이터 레이크·배차 실험)은
+**수치로 가득한 규모·비용 이야기**(p99 50% 개선 · 질의 70초→6초 · S3 비용 95% 절감)인데,
+**에이전트 계열 셋은 각각 신뢰(Palana, 수치 한 줄) · 준비 시간(LLM-Kit, 2주→1시간) ·
+일의 결과(SOP, 99.8%)를 잰다.**
+**⭐⭐ 그리고 세 편이 서로를 한 번도 안 부른다** — **만드는 쪽은 느슨하게**(강제하지 않는
+프레임워크), **가두는 쪽은 빡빡하게**(기본 거부·프록시 경유), **모는 쪽은 자유를 없앤다**
+(SOP 트리). **⚠️ '버린 대안의 이름이 자주 빠진다' 는 이 회사의 버릇이 에이전트 계열에서도
+이어진다.**
 
 ---
 
-**다음 사이클 — Grab 을 한 번 더 파거나 닫는다.**
-- **남은 Grab 글 하나**(주소 확인됨) —
-  `https://engineering.grab.com/introducing-the-sop-drive-llm-agent-framework`
-  (SOP 기반 LLM 에이전트 프레임워크). **⚠️ 223 규칙 — LLM-Kit 과 같은 문제면 도메인 ⑤ 의
-  두 번째 기능, 다르면 새 도메인.** **기준은 버린 대안 · 대가 · 수치 중 둘.**
-- **⚠️ Grab 의 에이전트 계열 글은 버린 대안을 잘 안 적는다**(Palana 는 넷이었지만 수치 한 줄,
-  LLM-Kit 은 수치는 좋은데 버린 대안 하나). **얇으면 억지로 쓰지 않고 닫는다.**
-- **닫을 때 `business_model` 에 적을 관찰** — **⭐ 같은 회사 안에서 글의 성격이 갈린다**:
-  이상거래 카운터·데이터 레이크·배차 실험은 **수치로 가득한 규모·비용 이야기**인데
-  (p99 50% 개선 · 노드당 45~50% 절감 · 질의 70초→6초 · S3 비용 95% 절감),
-  **에이전트 계열 둘은 성격이 다르다** — Palana 는 **신뢰**(수치 한 줄), LLM-Kit 은
-  **준비 시간과 규모**(성능·비용 없음). **재는 대상이 성능에서 신뢰와 속도로 옮겨 간
-  것으로 읽힌다**(추정). **이 사이트의 정리라고 밝힌다.**
+**다음 사이클 — `--gaps` 는 후보 조사를 가리킬 것이다(큐 0/3, `in_progress` 0).
+그런데 그보다 먼저 쓸 것이 있다.**
 
-**📌 그 밖에 남은 일**
-- **⭐⭐ 비교 문서 남은 축 하나가 아주 굵어졌다** — `에이전트에게 무엇을 못 하게 하는가`.
-  **Palana 가 세 번째 접근 제한 재료**로 들어와 **재료가 여덟**이다(병합 제한 monday.com
-  Morphex·Snap CodePal·Snap Casper / 접근·행동 제한 Wix AirBot·Wix 자가치유 두뇌·**Grab
-  Palana** / 반대편 Wix Agent Ready Repos·Wix 컴파일러 문지기·Adevinta).
+- **⭐⭐ 비교 문서 `에이전트에게 무엇을 못 하게 하는가` — 재료가 아홉이 됐다.**
+  **병합 제한** monday.com Morphex · Snap CodePal · Snap Casper /
+  **접근·행동 제한** Wix AirBot · Wix 자가치유 두뇌 · **Grab Palana**(기본 거부, 프록시가
+  자격을 대신 씀) /
+  **반대편(느슨하게 가는 쪽)** Wix Agent Ready Repos · Wix 컴파일러 문지기 · Adevinta ·
+  **⭐ Grab LLM-Kit**(같은 회사가 만드는 쪽은 강제 안 함).
+  **⭐ 그리고 316 에서 Grab SOP 가 네 번째 갈래를 준다 — 자유 추론 자체를 없앤다**
+  (기능으로는 안 썼지만 사실은 `open_questions` 에 수치까지 남겨 뒀다. 인용 가능).
   **⚠️ 310 의 `what-guards-the-gate` 와 겹치는 부분은 서로 가리키게 쓴다.**
-  **⭐ 그리고 315 의 LLM-Kit 이 그 축에 반대 방향 재료를 하나 더 준다** — 같은 회사가
-  **만드는 쪽은 느슨하게** 갔다.
 - **⚠️ 낡은 메모를 나르지 않는다**(314 의 교훈) — 후보를 나를 때 회사 파일의 `sources` 를
-  먼저 대조한다.
+  먼저 대조한다. 314 에서 Grab 후보 둘이 이미 기존 기능의 `sources` 였다.
 - **후보 조사** — 누적 **열두 곳 중 둘**. 안 본 곳: 인도 Zoho·Ola·Paytm·Freshworks ·
   유럽 Trade Republic·Personio · 일본 Sansan·freee·SmartHR·Money Forward(우선순위 낮음).
   **⚠️ 중국은 사실상 막혔다**(Xiaohongshu·Kuaishou 둘 다 블로그 없음, **추정**).
-- **분포** — **53곳.** US 22 포화 · 한국 아홉 · 일본 넷 · EU 일곱 · 중국 둘 · 동남아 하나 ·
-  인도 하나 · 아프리카 하나 · 라틴아메리카 0(재시도 금지). **비교 문서 30편.**
+- **분포** — **53곳 전부 `done`.** US 22 포화 · 한국 아홉 · 일본 넷 · EU 일곱 · 중국 둘 ·
+  동남아 하나 · 인도 하나 · 아프리카 하나 · 라틴아메리카 0(재시도 금지). **비교 문서 30편.**
 
 ## 다음 선택지
 
