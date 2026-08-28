@@ -8,38 +8,50 @@
 
 ## 지금 파는 중
 
-**Wix(51번째) `in_progress` — 도메인 2개 · 기능 1개.** 292 에서 도메인 ① 의 첫 기능
-`context-before-fix`(**왜 찾는지 말하게 한다**)를 썼다. **결정 8개**, 전부 대가가 붙는다.
+**Wix(51번째) `in_progress` — 도메인 2개 · 기능 2개.** 293 에서 도메인 ② 의 첫 기능
+`read-first-then-write`(**읽기를 먼저 옮기고 쓰기를 나중에 옮긴다**)를 썼다. **결정 8개**,
+전부 대가가 붙는다.
 
-**두 번째 편에서 새로 나온 것** — `How We Built the Brain Behind Our Self-Healing System:
-Context Retrieval at Org Scale`(2026-08-29). AirBot 이 **경보에서 출발해 조사를 대신한다면**,
-이쪽은 **그 조사에 필요한 맥락을 조직 규모에서 모으는 두뇌**다. 문제는 순진한 검색이
-*"finds the first textual match and stop. It won't ask why"* 라는 것.
-- **도구를 부르려면 이유를 대야 한다** — *"Every tool call requires a stated reason"*
-- **가지를 병렬로 판다** · **빈손이면 의미가 비슷한 것을 찾게 한다(벡터 DB 없이)**
-- **도구 응답에 다음 수를 실어 준다** — *"getting stuck or looping"* 방지
-- **세 층** — 플래너 / 리서처(데이터베이스·로그·코드 전문 서브에이전트) / 메모리
-- **🔴 버린 대안 셋** — **포맷팅 에이전트를 따로 뒀다가 되돌렸다**(*"the formatting agent had
-  no understanding of what the Researcher had actually discovered"*) · **LangChain**(잦은
-  파괴적 변경) · **Google ADK 포크**(MCP 를 순차 호출해 *"a performance killer"*)
-- **한계 셋 인정** — DB 레코드 찾기 · 수십 서비스 로그에서 격리 · **조직 지식이 Slack 스레드와
-  사람 머릿속에 산다**
-- 수치 — OctoCode 다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500
+**읽은 편 둘**(도메인 ② 는 이제 정독 완료)
+- `How We Built a Zero-Downtime Database Migration Service at Wix` — **인프라 층**, 약 200개
+  MySQL 클러스터 사이. **이번 기능의 본체.**
+- `Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration` — **앱 층**,
+  Cassandra 에서 DynamoDB 로. **이번엔 `tech` 와 대비 재료로만 썼다.**
 
-**⭐ 그리고 도메인 이름이 두 편에서 다 맞았다** — AirBot 은 **접근을 제한**(God Mode 금지 ·
-방화벽 구멍 없음), 이 편은 **행동을 제한**(이유 없이는 도구 못 부름). **둘 다 모델을 바꾸는
-대신 둘레를 짓는다.**
+**DB Mover 에서 나온 것** — 문제는 *"multiple applications share the same DB cluster"* 라
+한 앱이 무너지면 *"the issues spread and directly affected authentication"* 였다는 것.
+- **🔴 버린 대안 셋의 거절 이유가 각각 다르다** — **덤프**(*"cannot be performed with zero
+  downtime"*, 못 한다) · **Amazon DMS**(*"it simply doesn't fit"*, 안 맞는다) ·
+  **다중 소스 복제**(프라이머리 장애 위험과 번거로운 토폴로지, 위험하다)
+- **⭐ 값이 큰 결정** — **읽기를 먼저 넘기고 최소 1시간 뒤 쓰기를 넘긴다.** 그 사이가
+  *"a real-traffic validation window"* 이고, 쓰기를 넘긴 순간부터 *"rollback is not an
+  option without losing data"* 다 — **되돌릴 수 없어지는 지점을 회사가 직접 적었다.**
+- **⚠️ 반대 성질의 결정이 같은 설계 안에 있다** — **파티션 수는 맨 앞에서 못 박고 못 바꾼다**
+  (*"cannot be changed safely mid-flight"*, 바꾸면 처음부터). **그 대가로 쏠림을 안고 간다**
+  (*"we do have data skew"*).
+- 그 외 — 리플리카에서만 읽기(*"zero impact on production traffic"*) · Avro + 스키마
+  레지스트리 · MSK 상한 **8MB**(기본 1MB 는 *"far too small"*) · **DML 성공 후에만 오프셋
+  커밋** · **ProxySQL 뒤에서 갈아 끼워** *"no code changes"*
+- **⚠️ 없는 것** — 이관 소요 시간 · 실제로 옮긴 클러스터 수 · **실패도 되돌린 기록도 없다**
+
+**⭐⭐ 이 회사에서 가장 센 대비가 나왔다** — **같은 회사가 같은 문제를 두 층에서 따로 풀었고
+답이 정반대다.** 인프라 층은 **앱이 아무것도 모르게**(ProxySQL 뒤에서), 앱 층은 **앱이 전부
+알게**(챗룸별 이관 상태 표를 읽기마다 조회). **되돌리는 방식도 갈린다** — 인프라 층은 쓰기를
+넘기면 끝이고, 앱 층은 마지막까지 옛 쪽에 계속 써서 *"able to rollback at any moment"* 다.
+**그리고 실패를 적은 쪽은 앱 층뿐이다**(Inbox 의 클론에 *"missing data"* 가 있었다).
+`open_questions` 에 남겼다.
 
 **다음 사이클**
-- **도메인 ② `멈추지 않고 갈아 끼운다` 는 아직 283 의 후보 조사 수준으로만 확인했다** —
-  **무중단 DB 이관 편을 정독**하고, 두 번째로 `1,000 Servers, 160 Clusters, 30 Days, Zero
-  Downtime: Migrating Wix's MySQL Fleet to Graviton` 또는 `Data to Production: Bridging the
-  Gap Between Iceberg and Live Microservices` 를 읽는다.
-- 도메인 ① 에 남은 글 — `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System`
-  (Octocode Orchestrator, **사용자 불만에서 출발** — 223 규칙상 별도 기능이 될 수 있다) ·
-  `How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer Days...` ·
-  `From Co-Pilot to Full Automation` · `The End of Determinism` · `The Craft of Troubleshooting`
-  · `/post/microservices-reliability-playbook`
+- **📌 Inbox 편이 별도 기능 후보다** — 223 규칙상 **앱 층 이관은 인프라 층과 다른 문제**이고,
+  재료가 충분하다(세 가지 방식 · **실패 기록** · 대가 세 줄 · 챗룸 단위 증분). 다만
+  **결정이 5개 나오는지 먼저 센다.** 두 번째 편이 필요하면 `Data to Production: Bridging the
+  Gap Between Iceberg and Live Microservices` 또는 Graviton 이관 편을 찾는다
+  (**Graviton 편은 293 검색에서 주소를 못 찾았다** — 제목만 목록에 뜬다).
+- **도메인 ① 에 남은 글 다섯 편** — `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing
+  System`(Octocode Orchestrator, **사용자 불만에서 출발** — `context-before-fix` 와 별개 문제
+  일 수 있다) · `How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer
+  Days...` · `From Co-Pilot to Full Automation` · `The End of Determinism` ·
+  `The Craft of Troubleshooting` · `/post/microservices-reliability-playbook`
 - **Wix 잉여현금흐름 · Base44 매출 실액 미확인**
 - **큐 0/3** — Wix 를 다 판 뒤 후보 조사. **⚠️ 운영 사실 ⑲ 를 먼저 돌린다.**
 - **📌 Grab 보강 후보**(이미 `done`) — Palana 2부작(06-19/21) · Agent platform Part 1(07-24) ·
@@ -49,11 +61,13 @@ Context Retrieval at Org Scale`(2026-08-29). AirBot 이 **경보에서 출발해
   때문이고, **새 단서가 없으면 hold 를 유지한 채 닫는 것도 정당하다**(290 에서 확인).
 - **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
   **한국 편중 아홉.** **빈 자리는 라틴아메리카 하나뿐이고 재시도 금지.**
-- **⭐⭐ 비교 문서를 쓸 때가 됐다 — 축 후보 열.** 가장 센 것이 **`에이전트에게 무엇을 못 하게
-  하는가`** 로 재료가 **다섯**이 됐다: **병합 제한**(monday.com Morphex · Snap CodePal ·
-  Snap Casper) · **접근 제한**(Wix AirBot) · **행동 제한**(Wix 자가치유 두뇌 — 이유 강제).
-  Adevinta 가 반대편 재료(에이전트를 돌리는 대신 도구를 사서 잰다).
-  비교 문서는 `jd-viewer/public/reveng/domains/<slug>.md` 에 쓴다.
+- **⚠️ 비교 문서 축 후보 열.** 두 축이 동시에 굵어졌다.
+  - **⭐⭐ `에이전트에게 무엇을 못 하게 하는가`** — 재료 다섯. **병합 제한**(monday.com
+    Morphex · Snap CodePal · Snap Casper) · **접근 제한**(Wix AirBot) · **행동 제한**(Wix
+    자가치유 두뇌 — 이유 강제). 반대편은 Adevinta(에이전트 대신 도구를 사서 잰다).
+  - **⭐ `되돌릴 수 있는 것을 먼저 한다` 에 Wix 를 더할 수 있다** — 이미 있는 비교 문서
+    `reversible-first.md` 에 **읽기 먼저·쓰기 나중**과 **되돌릴 수 없어지는 지점을 회사가
+    적은 사례**가 딱 들어맞는다. **기존 문서 보강도 비교 문서 사이클로 친다.**
 
 ## 다음 선택지
 

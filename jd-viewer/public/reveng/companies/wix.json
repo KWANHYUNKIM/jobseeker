@@ -180,12 +180,12 @@
     },
     {
       "name": "멈추지 않고 갈아 끼운다",
-      "why": "**남의 사이트를 오래 돌리다 보면 갈아 끼울 것이 쌓인다**(이 정리는 이 사이트의 것이다). 이 묶음의 세 편이 전부 **멈추지 않고 옮기는 이야기**다 — 약 **200개 MySQL 클러스터**의 무중단 이관, **MySQL 함대를 Graviton 으로**(제목에 *1,000 Servers, 160 Clusters, 30 Days, Zero Downtime*), **Iceberg 를 라이브 마이크로서비스에 잇기**.\n\n**⭐ 무중단 이관 편은 버린 대안과 대가가 둘 다 촘촘하다** — **MySQL Dump** 는 *\"Simple and proven, but it cannot be performed with zero downtime\"*, **Amazon DMS** 는 *\"For our most critical MySQL workloads, it simply doesn't fit\"*, **다중 소스 복제**는 프라이머리 장애 위험과 번거로운 토폴로지로 버렸다. 그리고 **되돌릴 수 없는 지점을 못 박는다** — *\"From this point forward, rollback is not an option without losing data.\"*\n\n**⚠️ 이 도메인은 283 의 후보 조사에서 한 편을 확인했지만 정독하지 않았다** — 기능을 쓰기 전에 다시 읽고 두 번째 편도 연다.",
+      "why": "**남의 사이트를 오래 돌리다 보면 갈아 끼울 것이 쌓인다**(이 정리는 이 사이트의 것이다). 이 묶음의 세 편이 전부 **멈추지 않고 옮기는 이야기**다 — 약 **200개 MySQL 클러스터**의 무중단 이관, **MySQL 함대를 Graviton 으로**(제목에 *1,000 Servers, 160 Clusters, 30 Days, Zero Downtime*), **Iceberg 를 라이브 마이크로서비스에 잇기**.\n\n**⭐ 무중단 이관 편은 버린 대안과 대가가 둘 다 촘촘하다** — **MySQL Dump** 는 *\"Simple and proven, but it cannot be performed with zero downtime\"*, **Amazon DMS** 는 *\"For our most critical MySQL workloads, it simply doesn't fit\"*, **다중 소스 복제**는 프라이머리 장애 위험과 번거로운 토폴로지로 버렸다. 그리고 **되돌릴 수 없는 지점을 못 박는다** — *\"From this point forward, rollback is not an option without losing data.\"*\n\n**⚠️ 이 도메인은 283 의 후보 조사에서 한 편을 확인했지만 정독하지 않았다** — 기능을 쓰기 전에 다시 읽고 두 번째 편도 연다.\n\n**293 에서 두 편을 정독했다** — `How We Built a Zero-Downtime Database Migration Service`(인프라 층, MySQL 사이) 와 `Wix Inbox Journey: 3 Approaches`(앱 층, Cassandra 에서 DynamoDB 로). **⭐ 같은 회사가 같은 문제를 두 층에서 따로 풀었고 답이 다르다**(이 대비는 이 사이트의 것이다) — 하나는 **앱이 아무것도 모르게** 프록시 뒤에서 갈아 끼우고, 하나는 **앱이 전부 알고** 챗룸마다 어디를 볼지 판단한다. **그리고 실패를 적은 쪽은 앱 층이다.**",
       "tech": [
         {
           "tech": "약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스",
           "solves": "**버린 대안 셋에 이유가 각각 다르다** — **MySQL Dump**(*\"it cannot be performed with zero downtime\"*) · **Amazon DMS**(*\"DMS does not fully support this pattern… it simply doesn't fit\"*) · **다중 소스 복제**(프라이머리 노드 장애 위험과 번거로운 토폴로지). 규모는 약 **200개 MySQL 클러스터**이고, 읽기 전용 검증 창을 **1시간 이상** 두며 MSK 메시지 상한은 **8MB** 다.",
-          "limits": "**대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**(*\"some primary keys naturally produce much more data than others\"*) · **어느 시점부터 되돌릴 수 없다**(*\"rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster\"*). ⚠️ **이 항목은 283 의 후보 조사에서 확인한 것이고 아직 전체를 정독하지 않았다.**",
+          "limits": "**대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**(*\"some primary keys naturally produce much more data than others\"*) · **어느 시점부터 되돌릴 수 없다**(*\"rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster\"*). **293 에서 전문을 읽어 확인했다.**",
           "confidence": "confirmed",
           "sources": [
             {
@@ -193,19 +193,37 @@
               "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
               "publisher": "Wix Engineering",
               "date": "2026-08-29",
-              "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**. ⚠️ **이 요약은 283 의 후보 조사에서 확인한 것이고 아직 전체를 정독하지 않았다**(이 표시는 이 사이트의 것이다)."
+              "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+            }
+          ]
+        },
+        {
+          "tech": "앱 층에서 손으로 옮긴 사례 — Wix Inbox 의 Cassandra 에서 DynamoDB 로",
+          "solves": "**같은 문제를 인프라가 아니라 애플리케이션에서 푼다.** 양쪽에 다 쓰고, **챗룸 단위로** 옮기고, **챗룸별 이관 상태 표**를 두어 읽기마다 어디를 봐야 하는지 정한다. 과거 데이터는 **달 단위로 거슬러** 올라간다. 얻은 것은 *\"no one peak point where we moved production reads from one source to another\"* 다.",
+          "limits": "**🔴 실패를 적는다** — 클론을 떠서 옮기려던 첫 시도는 *\"our clone cluster had missing data and that not all data was transferred\"* 로 무너졌고 진행 상황도 *\"completely blind\"* 였다. **대가 셋** — 양쪽 쓰기가 *\"more resources from the application (heap, cpu, GC)\"* · 쓰기 지연 증가(*\"definitely worth the rollback ability\"*) · 읽기마다 상태 조회. ⚠️ **두 저장소를 실제로 대조했다는 서술은 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+              "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+              "publisher": "Wix Engineering",
+              "date": "2026-08-29",
+              "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "read-first-then-write"
+      ]
     }
   ],
   "open_questions": [
     "**⭐ `에이전트에게 무엇을 못 하게 하는가` 축에 네 번째 재료가 생겼다.** Wix 의 AirBot 은 **설계 결정마다 안 주는 것이 붙어 있다** — 인바운드 방화벽 구멍 없음(Socket Mode) · *\"Avoiding 'God Mode' API user\"*(IAM 역할로 최소 권한) · **자유 텍스트 출력 금지**(Pydantic 타입 강제, 근거는 *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"*). **monday.com Morphex**(민감 코드 병합 금지·주말 정지·Human Todos) · **Snap CodePal**(사람 리뷰를 대체하지 않는다) · **Snap Casper**(PR 만 열고 병합은 안 한다)와 나란히 선다. **⭐ 그런데 Wix 의 금지는 성격이 다르다** — 앞의 셋이 **무엇을 병합할 수 있는가**를 제한하는데, **Wix 는 무엇에 접근할 수 있는가를 제한한다**(이 구분은 이 사이트의 것이다).",
     "**⭐ 자동화율을 숫자로 적은 드문 사례다.** **PR 후보 180개 중 28개 직접 병합 = 15%** 이고 **85%는 사람 손을 거친다.** monday.com 의 Morphex 는 **주당 40개 PR 병합**이라고만 하고 **후보 대비 비율을 안 적으며**, Snap 의 Casper 는 *\"thousands of mergeable PRs each week\"* 라고만 한다. **몇 개를 냈고 그중 몇 개가 붙었는지를 함께 적은 것은 여기가 처음이다**(이 관찰은 이 사이트의 것이다).",
     "**⚠️ 아직 못 채운 것** — 도메인 ① 은 본문 **한 편**만 읽었고(일곱 편 중), 도메인 ② 는 283 의 후보 조사 수준으로만 확인했다(정독 필요). **재무도 매출·부킹만 확인했고 잉여현금흐름 등은 없다.** **Base44 의 매출 기여 실액도 없다.**",
-    "**⭐ 같은 회사가 에이전트를 두 방향으로 묶는다.** **AirBot 은 접근을 제한하고**(인바운드 방화벽 구멍 없음 · *\"Avoiding 'God Mode' API user\"* · Pydantic 타입 강제), **자가 치유의 두뇌는 행동을 제한한다**(*\"Every tool call requires a stated reason\"*). **둘 다 모델을 바꾸는 대신 둘레를 짓는다**(이 대비는 이 사이트의 것이다). **⚠️ 그리고 같은 글 안에서 쪼갤 자리와 아닌 자리가 갈린다** — 데이터베이스 전문 에이전트는 *\"far more effective than a general agent juggling everything at once\"* 인데, **포맷팅을 따로 뒀더니** *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 되돌렸다. **그 기준은 글에 없다.**"
+    "**⭐ 같은 회사가 에이전트를 두 방향으로 묶는다.** **AirBot 은 접근을 제한하고**(인바운드 방화벽 구멍 없음 · *\"Avoiding 'God Mode' API user\"* · Pydantic 타입 강제), **자가 치유의 두뇌는 행동을 제한한다**(*\"Every tool call requires a stated reason\"*). **둘 다 모델을 바꾸는 대신 둘레를 짓는다**(이 대비는 이 사이트의 것이다). **⚠️ 그리고 같은 글 안에서 쪼갤 자리와 아닌 자리가 갈린다** — 데이터베이스 전문 에이전트는 *\"far more effective than a general agent juggling everything at once\"* 인데, **포맷팅을 따로 뒀더니** *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 되돌렸다. **그 기준은 글에 없다.**",
+    "**⭐ 같은 회사가 같은 문제를 두 층에서 따로 풀었고 답이 정반대다.** **인프라 층**(DB Mover)은 **앱이 아무것도 모르게** 한다 — *\"Seamless for the application layer - no code changes\"* 이고 ProxySQL 뒤에서 갈아 끼운다. **앱 층**(Wix Inbox)은 **앱이 전부 안다** — 챗룸별 이관 상태 표를 두고 읽기마다 어디서 읽을지 정한다. **되돌리는 방식도 갈린다** — 인프라 층은 **쓰기를 넘기는 순간 되돌릴 수 없고**(*\"rollback is not an option without losing data\"*), 앱 층은 **마지막까지 옛 쪽에 계속 써서** *\"able to rollback at any moment\"* 다. **⚠️ 그리고 실패를 적은 쪽은 앱 층뿐이다** — Inbox 는 클론에 *\"missing data\"* 가 있었다고 쓰는데 DB Mover 편에는 실패도 되돌린 기록도 없다(이 대비는 이 사이트의 것이다)."
   ],
   "sources": [
     {
@@ -242,6 +260,20 @@
       "publisher": "Wix Engineering",
       "date": "2026-08-29",
       "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+    },
+    {
+      "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+      "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+      "publisher": "Wix Engineering",
+      "date": "2026-08-29",
+      "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+    },
+    {
+      "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+      "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+      "publisher": "Wix Engineering",
+      "date": "2026-08-29",
+      "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**."
     }
   ],
   "features": [
@@ -959,6 +991,748 @@
           "publisher": "Wix Engineering",
           "date": "2026-08-29",
           "summary": "**당번 엔지니어의 조사 과정을 에이전트가 대신한다.** 규모가 문제를 만든다 — **Apache Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 뒤져야 했다(경보 수신 → 수동 조사 → 로그 파싱 → 머릿속 종합). 그래서 *\"high cognitive load\"* 와 긴 평균 복구 시간이 남았다. **AirBot 은** *\"an AI-powered slack agent designed specifically for the Wix ecosystem\"* 이고 경보를 *\"from static notifications into active investigations\"* 로 바꾼다 — **원인 분석 · 조치(PR 생성 포함) · 담당 팀으로의 에스컬레이션.**\n\n**🔴 결정마다 '무엇을 안 주는가' 가 붙어 있다**(이 관찰은 이 사이트의 것이다). **Socket Mode 를 쓴 이유** — 연결이 바깥으로 나가므로 *\"there is no need to open inbound firewall ports\"* 이고 *\"punch holes in the firewall\"* 을 피한다. **Airflow REST API 대신 자체 MCP 를 만든 이유** — *\"Avoiding 'God Mode' API user\"* 이고 **IAM 역할로 S3 를 직접 읽어** *\"respecting least-privilege principles\"* 한다. **출력에 가드레일** — *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라 Pydantic 으로 **엄격한 타입 JSON** 만 받고 자유 텍스트 해법을 안 받는다. **모델도 계층으로 나눈다** — 로그 분류 같은 대량 작업은 **GPT-4o Mini**, 큰 맥락이 필요한 복잡한 원인 분석은 **Claude 4.5 Opus**.\n\n**버린 대안** — 하드코딩한 통합은 *\"brittle and unscalable\"* 이었고 *\"Standard automation breaks down in our heterogeneous stack\"* 였다.\n\n**🔴 수치가 풍부하고 자동화율을 솔직히 적는다** — **월 675 엔지니어 시간 절감**(*\"~4 full-time engineers\"*) · **PR 후보 180개 중 28개가 직접 병합 = 완전 자동화율 15%** · 성공 흐름 4,200건 중 **유의미한 개입 2,700건** · **긍정 피드백 66%** · **워크플로당 평균 약 0.30달러** · **팀 채널 30개 · 데이터 엔지니어 60명**. **⚠️ 15% 라는 것은 85% 가 사람 손을 거친다는 뜻이고**, 회사는 병합 안 된 PR 도 *\"acting as a 'Blueprint'\"* 로 값이 있다고 적는다. ⚠️ **오탐률이나 실패 사례는 따로 없다**(이 지적은 이 사이트의 것이다). 스택 — Slack Bolt Python · FastAPI · **MCP** · LangChain · **Pydantic** · GitHub API · Trino · Spark · Kubernetes · Docker · Vault · OpenMetadata."
+        }
+      ]
+    },
+    {
+      "key": "read-first-then-write",
+      "name": "읽기를 먼저 옮기고 쓰기를 나중에 옮긴다",
+      "domain": "멈추지 않고 갈아 끼운다",
+      "updated_at": "2026-08-29",
+      "ui": {
+        "title": "클러스터 하나를 옮기는 동안",
+        "question": "언제부터 되돌릴 수 없는가?",
+        "kind": "web",
+        "note": "**이관 서비스의 진행 화면을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내 도구에 이런 화면이 있는지 자체를 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 단계와 수치만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "이관 진행"
+          },
+          {
+            "type": "card",
+            "text": "한 클러스터를 여러 앱이 나눠 씁니다",
+            "items": [
+              "한쪽이 무너지면 옆으로 번진다",
+              "로그인까지 영향을 받았다",
+              "그래서 갈라 놓아야 한다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "어디서 읽어 오는가"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "원본이 아니라 복제본에서 읽는다",
+                "sub": "돌아가는 서비스에는 아무 영향이 없다",
+                "right": "복제본"
+              },
+              {
+                "title": "바뀌는 것을 계속 흘려 보낸다",
+                "sub": "통째로 받아 오는 방식은 멈춰야만 한다",
+                "right": "변경 흐름"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "chips",
+            "items": [
+              "작고 촘촘하다",
+              "타입이 강제된다",
+              "형식은 번호로만 실린다"
+            ],
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "시작할 때 못 박는 것"
+          },
+          {
+            "type": "text",
+            "text": "나눠 담을 칸의 개수는 도중에 못 바꿉니다 — 바꾸면 처음부터 다시입니다",
+            "pin": 4
+          },
+          {
+            "type": "text",
+            "text": "한 덩어리 상한을 여덟 배로 올려 뒀습니다 — 기본값으로는 안 들어갑니다",
+            "pin": 5
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "어디까지 처리했다고 표시하는가"
+          },
+          {
+            "type": "text",
+            "text": "새 쪽에 실제로 반영된 뒤에만 표시를 옮깁니다",
+            "pin": 6
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "넘기는 순서"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "읽는 연결만 먼저 새 쪽으로",
+                "sub": "진짜 트래픽으로 확인하는 창이 열린다",
+                "right": "한 시간 이상"
+              },
+              {
+                "title": "그다음 쓰는 연결",
+                "sub": "여기서부터 되돌리면 새로 쌓인 것이 사라진다",
+                "right": "되돌릴 수 없음"
+              }
+            ],
+            "pin": 7
+          },
+          {
+            "type": "text",
+            "text": "앱은 처음부터 끝까지 같은 곳에 연결합니다 — 코드를 고칠 일이 없습니다",
+            "pin": 8
+          },
+          {
+            "type": "button",
+            "text": "쓰기 넘기기",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "한 클러스터를 나눠 쓰다 같이 무너졌다",
+            "what": "약 **200개 MySQL 클러스터**를 운영하는데 *\"multiple applications share the same DB cluster\"* 였다. 그래서 한 앱이 문제가 되면 *\"the issues spread and directly affected authentication\"* 였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "복제본에서 읽고, 변경을 계속 흘린다",
+            "what": "*\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* 그리고 프라이머리가 아니라 리플리카에서 읽는데, 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "JSON 이 아니라 Avro 로 싣는다",
+            "what": "*\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing.\"* 스키마는 레지스트리에 한 번만 두고 *\"referenced by a small ID in every message, rather than embedded\"* 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "파티션 수는 시작할 때 정해진다",
+            "what": "*\"Partition count is one of the most critical decisions we make at the start of a migration\"* 이고 *\"it cannot be changed safely mid-flight\"* 다. 바꾸면 파티션별 일관성이 깨져 **처음부터 다시 시작해야 한다**. **그래서 쏠림을 안고 간다** — *\"some primary keys naturally produce much more data than others, so we do have data skew.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "기본 상한으로는 안 들어간다",
+            "what": "*\"MSK default maximum message size is 1 MB, which is far too small for our workloads\"* 라 **8MB** 로 올렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "반영된 뒤에만 처리 표시를 옮긴다",
+            "what": "*\"Kafka offsets are committed only after successful DML execution\"* 이고, 커밋 자체는 *\"asynchronously to avoid blocking the main processing loop\"* 로 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "읽기를 먼저, 최소 한 시간 뒤 쓰기를",
+            "what": "먼저 **읽기 전용 연결만** 새 클러스터로 돌려 *\"a real-traffic validation window\"* 를 만든다. **한 시간 이상** 지난 뒤 쓰기를 넘기는데, **그 순간부터** *\"rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster\"* 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "앱은 데이터베이스에 직접 연결하지 않는다",
+            "what": "ProxySQL 이 앞에 있어 *\"applications never connect to MySQL directly\"* 이고, 그래서 요구사항이던 *\"Seamless for the application layer - no code changes\"* 가 성립한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**문제는 데이터베이스가 느린 것이 아니라 여럿이 한 클러스터를 나눠 쓴 것이었다.** 약 **200개 MySQL 클러스터**를 운영하는데 *\"multiple applications share the same DB cluster\"* 라, 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다. **그래서 갈라 놓아야 하는데, 갈라 놓는 동안 멈출 수는 없다.**\n\n**요구사항 네 줄이 이 설계를 거의 다 정한다** — *\"Reliability above all\"* · *\"Fully online, zero downtime\"* · *\"Seamless for the application layer - no code changes\"* · *\"Strong data consistency, zero data loss.\"* **세 번째가 특히 무겁다**(이 정리는 이 사이트의 것이다) — 앱이 코드를 고치지 않아도 되게 하려면 **앱과 데이터베이스 사이에 이미 무언가가 있어야 한다.** 그래서 ProxySQL 이 앞에 있고 *\"applications never connect to MySQL directly\"* 다.\n\n**🔴 버린 대안 셋에 이유가 각각 다르다** — **MySQL Dump** 는 *\"it cannot be performed with zero downtime\"* 이고, **Amazon DMS** 는 *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* 이며, **다중 소스 복제**는 *\"high risk associated with primary-node failure and the cumbersome topology\"* 로 버렸다. **못 한다 · 안 맞는다 · 위험하다 — 세 종류의 거절이다**(이 구분은 이 사이트의 것이다).\n\n**⭐ 이 기능의 값이 큰 결정은 넘기는 순서다.** **읽기를 먼저 옮기고 최소 한 시간을 기다린 다음 쓰기를 옮긴다.** 그 한 시간이 *\"a real-traffic validation window\"* 다 — **진짜 트래픽으로 확인하되 아직 되돌릴 수 있는 구간을 일부러 만든 것이다**(이 정리는 이 사이트의 것이다). 그리고 **되돌릴 수 없어지는 지점을 회사가 직접 적는다**: *\"From this point forward, rollback is not an option without losing data.\"*\n\n**⚠️ 반대로 시작할 때 못 박고 못 바꾸는 것도 있다** — 파티션 수다. *\"it cannot be changed safely mid-flight\"* 이고 바꾸면 **처음부터 다시**다. **그 대가를 그대로 안고 간다** — *\"some primary keys naturally produce much more data than others, so we do have data skew.\"* **되돌릴 수 있는 지점을 뒤로 미룬 설계가, 다른 축에서는 되돌릴 수 없는 결정을 맨 앞에 두고 있다**(이 대비는 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "약 200개 MySQL 클러스터",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "label": "검증 창",
+            "value": "읽기만 넘긴 채 1시간 이상 — 그 뒤에 쓰기를 넘긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "label": "메시지 상한",
+            "value": "8MB (MSK 기본값 1MB 는 *\"far too small for our workloads\"*)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "label": "넘기는 시점의 지연",
+            "value": "*\"near-zero seconds\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "이관 한 건에 걸리는 시간 · 실제로 옮긴 클러스터 수 · 실패하거나 되돌린 사례가 하나도 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "읽기를 먼저 옮긴 대목에서",
+          "thought": "**되돌릴 수 있는 구간을 일부러 만들어 놓았다**(이 정리는 이 사이트의 것이다) — 읽기만 넘긴 한 시간은 *\"a real-traffic validation window\"* 이고, 이때 새 클러스터는 **진짜 트래픽을 받지만 아직 진실이 아니다.** ⭐ **이 사이트의 비교 문서 `되돌릴 수 있는 것을 먼저 한다` 와 정확히 같은 축이다** — Shopify 의 섀도 모드가 *\"진실은 옛 쪽에 두고\"* 비교한 것과 방향만 반대다(여기서는 **읽기의 진실만** 먼저 옮긴다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "파티션 수를 못 박는 대목에서",
+          "thought": "**같은 설계 안에 정반대 성질의 결정이 둘 있다.** 트래픽은 **되돌릴 수 있는 것부터** 옮기는데, 파티션 수는 **되돌릴 수 없는 것을 맨 앞**에 둔다 — *\"cannot be changed safely mid-flight\"* 이고 바꾸면 처음부터다. **그리고 그 대가를 감춘 게 아니라 적었다**: *\"we do have data skew.\"* ⚠️ **다만 쏠림이 얼마나 심한지, 그래서 어떤 이관이 느려지는지는 없다**(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이관마다 인프라를 새로 세우는 대목에서",
+          "thought": "**이관 한 건마다 전용 MSK 클러스터와 고유 컨슈머 그룹을 세우고 끝나면 없앤다.** *\"It exists only for the duration of the migration.\"* **격리를 위해 인프라를 일회용으로 쓰는 셈이다**(이 표현은 이 사이트의 것이다) — 한 이관의 문제가 다른 이관으로 못 번진다. ⚠️ **대가는 이관마다 드는 비용인데 액수가 없다**, 그리고 **여러 이관을 동시에 돌릴 때의 이야기도 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 회사의 Inbox 편과 나란히 놓고",
+          "thought": "**⭐ 같은 회사가 같은 문제를 두 층에서 따로 풀었고 답이 정반대다**(이 대비는 이 사이트의 것이다). **이쪽은 앱이 아무것도 모르게** 한다(*\"no code changes\"*, ProxySQL 뒤에서 갈아 끼운다). **Inbox 는 앱이 전부 안다** — 챗룸마다 이관 상태를 보고 어디서 읽을지 매번 정한다. ⚠️ **그리고 실패를 적은 쪽은 앱 층이다** — Inbox 는 클론에 *\"missing data\"* 가 있었다고 쓰는데, **이 글에는 실패도 되돌린 기록도 없다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "이관 작업",
+            "what": "클러스터 하나를 옮기는 한 건. **상태 기계로 관리된다**"
+          },
+          {
+            "name": "변경 흐름",
+            "what": "원본의 스냅샷과 이후 모든 변경 이벤트. **리플리카에서만 읽는다**"
+          },
+          {
+            "name": "전용 브로커",
+            "what": "이관 한 건에만 쓰이는 MSK 클러스터. **끝나면 사라진다**"
+          },
+          {
+            "name": "파티션",
+            "what": "기본키를 해시해 나눠 담는 칸. **개수가 시작할 때 정해지고 못 바꾼다**"
+          },
+          {
+            "name": "처리 표시",
+            "what": "어디까지 반영했는지의 오프셋. **대상에 실제로 쓰인 뒤에만 옮긴다**"
+          },
+          {
+            "name": "연결 라우터",
+            "what": "앱과 데이터베이스 사이의 ProxySQL. **읽기와 쓰기를 따로 돌릴 수 있다**"
+          },
+          {
+            "name": "검증 창",
+            "what": "읽기만 넘어간 한 시간 이상의 구간. **아직 되돌릴 수 있는 마지막 구간이다**"
+          }
+        ],
+        "invariants": [
+          "**원본의 프라이머리는 건드리지 않는다** — 읽기는 리플리카에서만",
+          "**앱은 코드를 고치지 않는다** — 라우터 뒤에서 갈아 끼운다",
+          "**대상에 반영된 뒤에만 처리 표시를 옮긴다**",
+          "**파티션 수는 도중에 못 바꾼다** — 바꾸면 처음부터 다시",
+          "**읽기가 먼저 넘어가고 쓰기가 나중에 넘어간다** — 그 사이가 되돌릴 수 있는 마지막 구간"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청을 검사한다",
+            "why": "행 크기 제약과 단일 소유 여부를 본다"
+          },
+          {
+            "step": "대상에 스키마를 먼저 만든다",
+            "why": "받을 그릇이 있어야 흘려 보낼 수 있다"
+          },
+          {
+            "step": "이 이관만 쓰는 브로커와 고유 그룹을 세운다",
+            "why": "다른 이관과 섞이지 않게 한다"
+          },
+          {
+            "step": "복제본의 스냅샷부터 흘리기 시작한다",
+            "why": "원본이 받는 트래픽에 영향을 주지 않는다"
+          },
+          {
+            "step": "이후의 모든 변경을 계속 흘린다",
+            "why": "통째로 받는 방식은 멈춰야만 한다"
+          },
+          {
+            "step": "받은 것을 대상에 써 넣는다",
+            "why": "라우터를 통해 넣는다"
+          },
+          {
+            "step": "성공한 뒤에만 처리 표시를 옮긴다",
+            "why": "쓰이지 않은 것을 처리했다고 하면 안 된다"
+          },
+          {
+            "step": "지연이 거의 없어질 때까지 따라붙는다",
+            "why": "넘기는 순간의 격차를 없앤다"
+          },
+          {
+            "step": "읽는 연결만 새 쪽으로 돌린다",
+            "why": "진짜 트래픽으로 확인하되 아직 되돌릴 수 있다"
+          },
+          {
+            "step": "한 시간 넘게 지켜본 뒤 쓰는 연결을 돌린다",
+            "why": "여기서부터는 되돌릴 수 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇으로 옮길 것인가?",
+            "chosen": "**변경 흐름(CDC)을 쓴다.** *\"the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable\"*",
+            "alternatives": [
+              "**MySQL Dump** — *\"Simple and proven, but it cannot be performed with zero downtime\"*",
+              "**Amazon DMS** — *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"*",
+              "**다중 소스 복제** — *\"high risk associated with primary-node failure and the cumbersome topology\"*"
+            ],
+            "tradeoff": "**거절의 종류가 셋 다 다르다** — 못 한다(덤프) · 안 맞는다(DMS) · 위험하다(다중 소스). ⚠️ **대가는 직접 만들고 운영해야 한다는 것**이다(이 지적은 이 사이트의 것이다) — 스트리밍 인프라와 상태 기계와 라우팅이 전부 사내 책임이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "question": "원본의 어디에서 읽을 것인가?",
+            "chosen": "**프라이머리가 아니라 리플리카에서 읽는다**",
+            "alternatives": [
+              "프라이머리에서 직접 읽기"
+            ],
+            "tradeoff": "이유가 명확하다 — *\"it guarantees that we have zero impact on production traffic.\"* ⚠️ **대가는 리플리카 지연이 출발점에 얹힌다는 것**인데(이 지적은 이 사이트의 것이다) **그 이야기는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 실어 나를 것인가?",
+            "chosen": "**Avro 와 스키마 레지스트리.** 스키마는 한 번만 정의하고 *\"referenced by a small ID in every message, rather than embedded\"*",
+            "alternatives": [
+              "JSON — 규모에 맞지 않는다"
+            ],
+            "tradeoff": "*\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing.\"* **크기와 타입 안전을 같이 산다.** ⚠️ **대가는 레지스트리를 운영해야 한다는 것**이고, **스키마가 바뀌는 중에 이관하면 어떻게 되는지는 글에 없다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "question": "파티션 수를 언제 정할 것인가?",
+            "chosen": "**시작할 때 못 박고 도중에 바꾸지 않는다.** *\"one of the most critical decisions we make at the start of a migration\"*",
+            "alternatives": [
+              "도중에 늘리기 — *\"it cannot be changed safely mid-flight\"* 이고 파티션별 일관성이 깨져 **처음부터 다시 시작**해야 한다"
+            ],
+            "tradeoff": "**🔴 대가를 회사가 직접 적는다** — *\"some primary keys naturally produce much more data than others, so we do have data skew.\"* **쏠림을 없애는 대신 안고 간다.** ⚠️ **얼마나 심한지, 그래서 어떤 이관이 느려지는지는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "question": "한 덩어리를 얼마나 크게 허용할 것인가?",
+            "chosen": "**8MB 로 올린다**",
+            "alternatives": [
+              "기본값 1MB — *\"far too small for our workloads\"*"
+            ],
+            "tradeoff": "**큰 행이 그대로 지나갈 수 있게 된다.** ⚠️ **대가는 브로커 쪽 메모리와 지연인데**(이 지적은 이 사이트의 것이다) **글에는 없다.** 애초에 요청 단계에서 *\"row-size constraints\"* 를 검사하므로 상한을 넘는 것은 시작 전에 걸러진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "question": "어디까지 처리했다고 언제 표시할 것인가?",
+            "chosen": "**대상에 DML 이 성공한 뒤에만 오프셋을 커밋한다.** 커밋 자체는 비동기로 해 *\"avoid blocking the main processing loop\"*",
+            "alternatives": [
+              "받자마자 커밋하기 — 대상에 안 쓰인 것을 처리했다고 표시하게 된다"
+            ],
+            "tradeoff": "**데이터를 잃지 않는 쪽으로 기울였다** — 요구사항이 *\"Strong data consistency, zero data loss\"* 였다. ⚠️ **대가는 재시작 시 같은 변경이 다시 적용될 수 있다는 것**이고(이 지적은 이 사이트의 것이다), **그래서 적용이 멱등해야 하는데 그 이야기는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "question": "트래픽을 어떤 순서로 넘길 것인가?",
+            "chosen": "**읽기를 먼저 넘기고, 최소 한 시간 뒤에 쓰기를 넘긴다.** 그 사이가 *\"a real-traffic validation window\"* 다",
+            "alternatives": [
+              "한 번에 전부 넘기기 — 되돌릴 수 있는 구간이 없어진다"
+            ],
+            "tradeoff": "**🔴 되돌릴 수 없어지는 지점을 회사가 직접 적는다** — *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **되돌릴 수 있는 구간을 일부러 만들어 뒤로 미룬 설계다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 그 한 시간 동안 읽기와 쓰기가 다른 클러스터를 본다는 것**인데(이 지적도 이 사이트의 것이다), **그 사이의 일관성을 어떻게 보장하는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "question": "앱이 무엇에 연결하게 할 것인가?",
+            "chosen": "**언제나 라우터에 연결한다.** *\"applications never connect to MySQL directly\"*",
+            "alternatives": [
+              "앱이 데이터베이스에 직접 연결하고 이관 때 설정을 바꾸기"
+            ],
+            "tradeoff": "요구사항 *\"Seamless for the application layer - no code changes\"* 가 이것으로 성립한다. **그리고 읽기와 쓰기를 따로 돌릴 수 있는 것도 라우터가 앞에 있기 때문이다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 라우터가 모든 트래픽의 단일 통로가 된다는 것**이고 **그 가용성 이야기는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Debezium",
+            "role": "원본 리플리카의 스냅샷과 이후 변경을 카프카 토픽으로 흘린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka (Amazon MSK)",
+            "role": "변경 이벤트의 통로. **이관 한 건마다 전용으로 세우고** 기본키를 결정적 해시로 나눠 담는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "tech": "Avro + 스키마 레지스트리",
+            "role": "직렬화. 규모상 필수이고 타입을 강제한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "tech": "ProxySQL",
+            "role": "앱과 데이터베이스 사이의 라우터. **읽기와 쓰기를 따로 넘길 수 있게 하는 자리**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "tech": "Python (Falcon)",
+            "role": "이관을 상태 기계로 관리하는 서비스. 파드가 동적으로 늘고 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Amazon DMS",
+            "role": "버린 것 — *\"it simply doesn't fit\"*. **같은 회사의 다른 팀은 앱 층 이관에서 이것도 안 썼다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              },
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**."
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "멈추지 않고 옮기면서 한 건도 잃지 않기",
+            "why_hard": "요구사항 네 줄이 서로 당긴다 — *\"Fully online, zero downtime\"* 와 *\"Strong data consistency, zero data loss\"* 와 *\"Seamless for the application layer - no code changes\"* 를 동시에 만족해야 한다. **표준 도구가 다 걸린다** — 덤프는 멈춰야 하고, DMS 는 *\"simply doesn't fit\"* 이며, 다중 소스 복제는 위험하다.",
+            "current_best": "**변경 흐름을 계속 흘리고, 라우터 뒤에서 읽기부터 넘긴다.** 리플리카에서만 읽어 원본에 영향을 주지 않고, 대상에 쓰인 뒤에만 처리 표시를 옮기며, 지연이 *\"near-zero seconds\"* 가 됐을 때 읽기를 먼저 돌린다. ⚠️ **이관 한 건이 얼마나 걸리는지, 실제로 몇 개를 옮겼는지, 실패한 적이 있는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              }
+            ]
+          },
+          {
+            "problem": "되돌릴 수 있는 구간이 언제 닫히는가",
+            "why_hard": "읽기만 넘어간 동안은 새 쪽에 아무것도 쌓이지 않아 되돌릴 수 있다. **쓰기가 넘어가는 순간 새 데이터가 한쪽에만 쌓이기 시작한다** — *\"rollback is not an option without losing data.\"*",
+            "current_best": "**그 구간을 최소 한 시간으로 정해 두고 진짜 트래픽으로 확인한다.** ⚠️ **한 시간이 왜 한 시간인지의 근거는 없고**, **그 창에서 실제로 문제를 잡아 되돌린 사례도 없다.** **⭐ 같은 회사의 Inbox 팀은 반대로 마지막까지 옛 쪽에 계속 썼다** — *\"we were able to rollback at any moment\"*(이 대비는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+              },
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "클러스터 하나가 옮겨 가는 길",
+          "question": "어디서 읽고 어디에 쓰는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[\"요청을 검사하고 대상에 스키마를 만든다\"]:::list\n  MSK[\"이 이관만 쓰는 브로커와 고유 그룹을 세운다\"]:::list\n  REP[\"복제본에서 스냅샷과 이후 변경을 읽는다\"]:::list\n  TOP[\"기본키를 해시해 칸마다 나눠 담는다\"]:::list\n  APP[\"받은 것을 대상에 써 넣는다\"]:::list\n  OFF[\"성공한 뒤에만 처리 표시를 옮긴다\"]:::list\n  LAG[\"지연이 거의 없어질 때까지 따라붙는다\"]:::list\n  RD[\"<b>읽는 연결만 새 쪽으로 돌린다</b><br/>• 진짜 트래픽으로 확인한다<br/>• 아직 되돌릴 수 있다<br/>• 한 시간 넘게 지켜본다\"]:::accent\n  WR[\"쓰는 연결을 돌린다 — 이관 완료\"]:::list\n  X1[\"원본에서 직접 읽기<br/>안 한다 — 돌아가는 서비스에 영향이 간다\"]:::quiet\n  X2[\"통째로 받아 오기와 관리형 이관 도구<br/>둘 다 버렸다 — 멈춰야 하거나 안 맞는다\"]:::quiet\n  REQ --> MSK --> REP --> TOP --> APP --> OFF --> LAG --> RD --> WR\n  REP -.-> X1\n  REQ -.-> X2"
+        },
+        {
+          "title": "이관 한 건의 상태",
+          "question": "되돌릴 수 있는 구간은 어디까지인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 준비\n  준비 : <b>그릇을 만든다</b><br/>대상에 스키마를 올리고 전용 브로커와 고유 그룹을 세운다<br/>칸의 개수는 여기서 정해지고 다시는 못 바꾼다\n  준비 --> 따라붙기 : 복제본에서 흘리기 시작\n  따라붙기 : <b>계속 흘려 보낸다</b><br/>대상에 쓰인 뒤에만 처리 표시를 옮긴다<br/>지연이 거의 없어질 때까지 붙는다\n  따라붙기 --> 읽기만넘김 : 격차가 거의 사라졌다\n  읽기만넘김 : <b>되돌릴 수 있는 마지막 구간</b><br/>새 쪽이 진짜 트래픽을 받지만 아직 진실이 아니다<br/>한 시간 이상 지켜본다\n  읽기만넘김 --> 따라붙기 : 이상하면 읽기를 되돌린다\n  읽기만넘김 --> 쓰기넘김 : 한 시간을 넘겼고 문제가 없다\n  쓰기넘김 : <b>여기서부터는 못 돌아온다</b><br/>새로 쌓이는 것이 새 쪽에만 있다<br/>되돌리면 그만큼을 잃는다\n  쓰기넘김 --> [*]"
+        },
+        {
+          "title": "바꿀 수 없는 것과 안 적힌 것",
+          "question": "이 글이 말하지 않는 것은?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"칸의 개수를 시작할 때 정한다\"]:::list\n  B[\"<b>도중에 바꾸면 처음부터 다시다</b><br/>그래서 데이터 쏠림을 안고 가는데 얼마나 심한지는 없다\"]:::accent\n  C[\"읽기와 쓰기가 한 시간 넘게 다른 곳을 본다\"]:::list\n  D[\"그 사이의 일관성을 어떻게 보장하는지 없다\"]:::list\n  E[\"재시작하면 같은 변경이 다시 올 수 있다\"]:::list\n  F[\"적용이 멱등해야 할 텐데 그 이야기가 없다\"]:::list\n  G[\"한 시간을 기다린다고 정했다\"]:::list\n  H[\"왜 한 시간인지 근거가 없다\"]:::list\n  I[\"이관마다 브로커를 새로 세운다\"]:::list\n  J[\"비용도 동시 이관 이야기도 없다\"]:::list\n  K[\"실패도 되돌린 기록도 없다\"]:::list\n  L[\"같은 회사 앱 층 편에는 실패가 적혀 있다\"]:::list\n  N[\"<i>쏠림과 되돌릴 수 없는 지점은 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  K --> L\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+          "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+          "publisher": "Wix Engineering",
+          "date": "2026-08-29",
+          "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**.\n\n**293 에서 전문을 읽고 나온 것** — **CDC 가 출발점이다**: *\"Change Data Capture (CDC) is the preferred primitive for live migrations. Streaming changes continuously keeps lag manageable.\"* **읽기는 프라이머리가 아니라 리플리카에서** 하는데 이유가 *\"it guarantees that we have zero impact on production traffic\"* 다. **JSON 대신 Avro** — *\"Avro is binary and compact, which is mandatory for our scale. Avro also enforces strong typing\"* 이고 스키마는 레지스트리에 두어 *\"referenced by a small ID in every message, rather than embedded\"* 한다. **MSK 기본 메시지 상한 1MB 는** *\"far too small for our workloads\"* 라 8MB 로 올렸고, **이관마다 전용 MSK 와 고유 컨슈머 그룹**을 두어 오프셋 추적을 격리한다. **오프셋은 대상 DB 에 DML 이 성공한 뒤에만 커밋한다.** **그리고 앱은 MySQL 에 직접 연결하지 않는다** — ProxySQL 이 앞에 있어 *\"Seamless for the application layer - no code changes\"* 가 성립한다. **처음 문제는 클러스터를 여러 앱이 나눠 쓴 것**이었다 — 한 앱이 무너지면 *\"the issues spread and directly affected authentication\"* 였다."
+        },
+        {
+          "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+          "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+          "publisher": "Wix Engineering",
+          "date": "2026-08-29",
+          "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**."
         }
       ]
     }
