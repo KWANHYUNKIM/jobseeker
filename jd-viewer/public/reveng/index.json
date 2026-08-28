@@ -684,6 +684,18 @@
    "one_liner": "회계에서 시작해 백오피스 전체로 번진 일본 SaaS — 그 아래 인증 기반을 4년에 걸쳐 떼어냈다",
    "updated_at": "2026-08-29",
    "domain": "developers.freee.co.jp"
+  },
+  {
+   "slug": "smarthr",
+   "name": "스마트에이치아르",
+   "name_en": "SmartHR, Inc.",
+   "country": "JP",
+   "category": "SaaS",
+   "status": "in_progress",
+   "features_done": 0,
+   "one_liner": "노무 관리 클라우드로 시작해 종업원 데이터를 축으로 번진 일본 SaaS — 새 영역은 한 덩어리 안에서 시작해 경계를 키운 뒤 떼어낸다",
+   "updated_at": "2026-08-29",
+   "domain": "tech.smarthr.jp"
   }
  ],
  "domains": [
@@ -887,7 +899,8 @@
   "화면을 되돌려도 종이는 안 돌아온다",
   "십 년 된 앱을 한 번에 못 옮긴다",
   "모든 제품이 기대던 것을 떼어낸다",
-  "멈출 수 없는 데이터베이스를 돌아가는 채로 바꾼다"
+  "멈출 수 없는 데이터베이스를 돌아가는 채로 바꾼다",
+  "한 덩어리 안에서 시작해 경계를 키운 뒤 떼어낸다"
  ],
  "countries": {
   "KR": "한국",
