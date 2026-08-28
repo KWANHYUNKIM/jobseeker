@@ -70,6 +70,78 @@
         ]
       }
     ],
+    "revenue": [
+      {
+        "name": "YOGO 커머스 판매",
+        "how": "크리에이터가 콘텐츠로 모은 트래픽을 자기 플랫폼 YOGO 로 보내 브랜드 상품을 팔고, 그 거래에서 수수료·판매 마진을 가져간다. 광고를 사서 사람을 데려오는 구조가 아니라 이미 가진 채널이 유입을 만든다.",
+        "weight": "누적 거래액 약 200억원 (2024)",
+        "domains": [
+          "커머스 주문·정산",
+          "외부 플랫폼 연동",
+          "AI 채널 발굴 (AI Discovery)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "MCN 기업 '글로우업리즈', 리브랜딩하고 올해 500억 매출 비전 발표",
+            "url": "https://www.newspim.com/news/view/20250221000171",
+            "publisher": "뉴스핌",
+            "date": "2025-02-21"
+          },
+          {
+            "title": "About Us — GLOW UP RIZZ INC.",
+            "url": "https://www.glowuprizz.com/aboutus",
+            "publisher": "글로우업리즈"
+          }
+        ]
+      },
+      {
+        "name": "PB 브랜드",
+        "how": "크리에이터 IP 를 붙인 자체 상품을 기획·생산해 직접 판다. 남의 상품을 중개할 때보다 마진이 크고, 판매 경로는 YOGO 를 그대로 쓴다.",
+        "domains": [
+          "커머스 주문·정산"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "About Us — GLOW UP RIZZ INC.",
+            "url": "https://www.glowuprizz.com/aboutus",
+            "publisher": "글로우업리즈"
+          }
+        ]
+      },
+      {
+        "name": "크리에이터 매니지먼트·광고 (MCN 본업)",
+        "how": "크리에이터를 관리하며 광고·브랜디드 콘텐츠 수익을 나눈다. 회사가 출발한 사업이고, 지금은 여기서 나온 채널이 커머스의 유입원 역할을 한다.",
+        "domains": [
+          "AI 채널 발굴 (AI Discovery)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "About Us — GLOW UP RIZZ INC.",
+            "url": "https://www.glowuprizz.com/aboutus",
+            "publisher": "글로우업리즈"
+          }
+        ]
+      },
+      {
+        "name": "온라인 강의 (Academy)",
+        "how": "커머스·콘텐츠에서 쌓은 노하우를 강의로 판다. 2025년 3월 론칭 예정으로 보도됐다. 수강 결제와 정산은 커머스 쪽 구조를 공유하는 것으로 보인다.",
+        "domains": [
+          "커머스 주문·정산"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "MCN 기업 '글로우업리즈', 리브랜딩하고 올해 500억 매출 비전 발표",
+            "url": "https://www.newspim.com/news/view/20250221000171",
+            "publisher": "뉴스핌",
+            "date": "2025-02-21"
+          }
+        ]
+      }
+    ],
     "domains": [
       {
         "name": "커머스 주문·정산",
@@ -526,6 +598,7 @@
   "open_questions": [
     "2024년 실적이 자료마다 다르다 — 공고 본문은 매출 188억·영업이익 37억, 뉴스핌 기사(2025-02-21)는 184억·32억이다. 어느 쪽이 확정 공시인지 확인하지 못해 기사 수치를 scale 에 적었다.",
     "개발 조직의 크기와 구성(백엔드/프론트 몇 명인지)을 밝힌 공개 자료가 없다. 공고 하나에 백엔드·프론트·AI·인프라가 전부 들어 있는 것으로 보아 소수 인원으로 보이지만 추정이다.",
-    "기술 블로그·컨퍼런스 발표 등 엔지니어가 쓴 공개 자료를 찾지 못했다. 그래서 people 에 개발 쪽 인물이 없다."
+    "기술 블로그·컨퍼런스 발표 등 엔지니어가 쓴 공개 자료를 찾지 못했다. 그래서 people 에 개발 쪽 인물이 없다.",
+    "F&B·부동산 사업이 사내 시스템을 쓰는지 확인하지 못했다. 소프트웨어가 떠받치는 근거를 못 찾아 revenue 에서 뺐다 — business 문단에는 남겨 뒀다."
   ]
 }
