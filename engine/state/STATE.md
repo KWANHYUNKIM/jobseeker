@@ -8,92 +8,52 @@
 
 ## 지금 파는 중
 
-**Wix (기타/이스라엘 · SaaS) — 51번째. 도메인 2개 · 기능 0개. 큐 잔량 0/3.**
+**Wix(51번째) `in_progress` — 도메인 2개 · 기능 1개.** 292 에서 도메인 ① 의 첫 기능
+`context-before-fix`(**왜 찾는지 말하게 한다**)를 썼다. **결정 8개**, 전부 대가가 붙는다.
 
-**291 에서 `--gaps` 가 [신규]로 Wix 를 지목했고 회사 프로파일을 만들었다.**
-**⚠️ kakao·roblox 는 지목하지 않았다** — `hold_reason` 이 달린 도메인은 사다리에서 빠지는
-것으로 보인다. **그 둘은 그대로 `in_progress` 로 남아 있다.**
+**두 번째 편에서 새로 나온 것** — `How We Built the Brain Behind Our Self-Healing System:
+Context Retrieval at Org Scale`(2026-08-29). AirBot 이 **경보에서 출발해 조사를 대신한다면**,
+이쪽은 **그 조사에 필요한 맥락을 조직 규모에서 모으는 두뇌**다. 문제는 순진한 검색이
+*"finds the first textual match and stop. It won't ask why"* 라는 것.
+- **도구를 부르려면 이유를 대야 한다** — *"Every tool call requires a stated reason"*
+- **가지를 병렬로 판다** · **빈손이면 의미가 비슷한 것을 찾게 한다(벡터 DB 없이)**
+- **도구 응답에 다음 수를 실어 준다** — *"getting stuck or looping"* 방지
+- **세 층** — 플래너 / 리서처(데이터베이스·로그·코드 전문 서브에이전트) / 메모리
+- **🔴 버린 대안 셋** — **포맷팅 에이전트를 따로 뒀다가 되돌렸다**(*"the formatting agent had
+  no understanding of what the Researcher had actually discovered"*) · **LangChain**(잦은
+  파괴적 변경) · **Google ADK 포크**(MCP 를 순차 호출해 *"a performance killer"*)
+- **한계 셋 인정** — DB 레코드 찾기 · 수십 서비스 로그에서 격리 · **조직 지식이 Slack 스레드와
+  사람 머릿속에 산다**
+- 수치 — OctoCode 다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500
 
-### 이 회사를 넣은 이유 — 블로그 열 편 중 일곱이 에이전트 이야기다
+**⭐ 그리고 도메인 이름이 두 편에서 다 맞았다** — AirBot 은 **접근을 제한**(God Mode 금지 ·
+방화벽 구멍 없음), 이 편은 **행동을 제한**(이유 없이는 도구 못 부름). **둘 다 모델을 바꾸는
+대신 둘레를 짓는다.**
 
-**AirBot 본문을 읽었다.** **Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이라
-경보가 오면 사람이 *"Airflow, Spark, and Kubernetes logs"* 를 손으로 이어야 했다. AirBot 이
-그 조사를 대신해 **월 675 엔지니어 시간**(*"~4 full-time engineers"*)을 아낀다.
-
-**🔴 그런데 값나가는 건 설계 결정마다 '무엇을 안 주는가' 가 붙어 있다는 점이다** — 인바운드
-방화벽 구멍을 안 뚫으려 **Socket Mode**, *"Avoiding 'God Mode' API user"* 하려고 REST API
-대신 **IAM 역할로 S3 를 직접 읽는 자체 MCP**, *"LLMs are inherently non-deterministic, but
-SRE automation demands reliability"* 라며 **Pydantic 으로 엄격한 타입 JSON만** 받는다.
-**모델도 계층으로 나눈다**(대량 분류는 GPT-4o Mini, 복잡한 원인 분석은 Claude 4.5 Opus).
-
-**🔴 그리고 자동화율을 숫자로 적는다** — **PR 후보 180개 중 28개 직접 병합 = 15%**,
-**즉 85%는 사람 손을 거친다.** 병합 안 된 PR 도 *"acting as a 'Blueprint'"* 로 값이 있다고
-적는다. **몇 개를 냈고 그중 몇 개가 붙었는지를 함께 적은 것은 이 사이트에서 처음이다** —
-monday.com Morphex 는 **주당 40 PR 병합**이라고만 하고 Snap Casper 는 *"thousands of
-mergeable PRs each week"* 라고만 한다.
-
-### ⭐⭐ 비교 축에 네 번째 재료가 생겼다 — 그런데 성격이 다르다
-
-`에이전트에게 무엇을 못 하게 하는가` 에 **Wix AirBot** 이 붙는다. **앞의 셋(monday.com
-Morphex · Snap CodePal · Snap Casper)은 무엇을 병합할 수 있는가를 제한하는데, Wix 는 무엇에
-접근할 수 있는가를 제한한다**(이 구분은 이 사이트의 것). `open_questions` 에 적었다.
-
-### 실적
-
-**Q2 2026 매출 5억 6,300만 달러(15% 성장) · 부킹 5억 6,900만 달러(12% 성장).**
-**⭐ Base44 가 자체 LLM `Base 1` 을 냈고**(*"the first app-creation platform to do so"*)
-**하반기 비GAAP 총이익률 약 60%** 로 본다. ⚠️ **잉여현금흐름과 Base44 매출 실액은 없다.**
-
-### 다음 사이클 — 도메인 ① 의 두 번째 편
-
-**⚠️ 도메인 ① 은 일곱 편 중 한 편만 읽었다.** 기능을 쓰려면 두 번째 편을 먼저 읽는다.
-후보 — `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System`(**Octocode
-Orchestrator** — 사용자 불만을 실시간으로 보고 진짜 버그를 가려 프로덕션 데이터와 코드로
-조사한 뒤 코딩 에이전트가 고쳐 PR 을 낸다. `Wix Octocode Research` 가 **OctoCode 정적 분석 ·
-Trino · Grafana · 사내외 문서**로 맥락을 모아 **버그인지 의도된 동작인지** 가린다) ·
-`How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale` ·
-`How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer Days in One
-Quarter by Automating Code Migrations` · `From Co-Pilot to Full Automation` ·
-`The End of Determinism`.
-**도메인 ② 는 283 수준으로만 확인했다** — `how-we-built-a-zero-downtime-database-migration-
-service-at-wix` 를 **정독**하고 `1,000 Servers, 160 Clusters, 30 Days, Zero Downtime` 이나
-`Data to Production: Bridging the Gap Between Iceberg and Live Microservices` 를 연다.
-**⚠️ URL 은 `WebSearch` + `allowed_domains: ["wix.engineering"]` 로 찾는다**(목록 카드가
-placeholder 로 온다, 운영 사실 ⑱).
-
-### 큐가 0 이 됐다
-
-**Wix 를 다 판 뒤 후보 조사 사이클을 한 번 끼운다**(`--gaps` 의 안내 — 바닥을 치기 전에
-채운다). **⚠️ 후보를 올리기 전에 완료 목록과 대조한다**(운영 사실 ⑲).
-**📌 Grab 보강 후보** — Palana 2부작(06-19/21) · Agent platform Part 1(07-24) ·
-**Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**.
-**📌 kakao·roblox 는 `in_progress` 로 남아 있다** — 각각 `hold_reason` 이 달린 도메인
-하나(kakao `동기화·다중 기기` 는 `tech`·`features` 둘 다 빔 / roblox `콘텐츠 저장·전송` 은
-공개 자료 없음). **새 단서가 없으면 hold 를 유지한 채 닫는 것도 정당하다.**
-**안 열어 본 후보** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
-**빈 자리는 라틴아메리카 하나뿐이고 재시도 금지다.** **한국 편중 아홉.**
-
-### ⚠️ 비교 문서 축 후보 열 (완료 48곳 · 전체 51곳)
-
-1. **⭐⭐ `에이전트에게 무엇을 못 하게 하는가`** — **재료 넷. 가장 잘 서 있다.**
-   monday.com Morphex(병합 제한) · Snap CodePal(사람 리뷰를 대체 안 함) · Snap Casper(PR 만
-   열기) · **Wix AirBot(접근 제한 — God Mode 금지·방화벽 구멍 금지·타입 강제)**.
-   **⭐ Adevinta 가 반대편** — 에이전트를 안 굴리고 도구를 사서 잰다.
-2. **⭐ `정한 값과 잰 값`** — monday.com ID 편(설정값) vs `mondayDB 3`·권한 편(측정값) ·
-   Snap GNSS(못 잰다) vs EyeConnect(세 자리) · **Wix AirBot(자동화율 15% 를 숫자로)**.
-3. **⭐ `얻은 것 옆에 잃은 것을 적는가`** — monday.com 안에서 갈린다 · Adevinta · Snap.
-4. **⭐ `크리티컬 패스에서 무엇을 빼는가`** — monday.com 번호와 권한 · Adevinta 반대편.
-5. **`틀린 가설을 어떻게 버리는가`** — Adevinta DNS · Careem Gzip 착시 · Doximity.
-6. **`아낀 값은 어디로 갔는가`** — Adevinta · Careem · Zerodha · Doximity.
-7. **`만드는 이야기만 있고 치우는 이야기가 없다`** — Adevinta 계정 폐기 부재.
-8. **`가장 느린 곳이 남의 것일 때`** — Adevinta.
-9. **`설정이 실제 동작을 가릴 때`** — Adevinta OCR.
-10. **`다시 시작한다면 다르게 하겠다`** — monday.com UUIDv7.
-
-**기존 재료** — **⭐⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서`**(Snap 다섯 + Adevinta) ·
-**⭐ `기계가 그렇다는데`**(Snap 둘 + Adevinta + monday.com + **Wix**) · `관측에 값을 무엇으로
-치르는가`(여덟 + monday.com) · `기한을 무엇으로 정하는가`(여섯) ·
-`되돌릴 수 있는 것을 먼저 한다` 보강.
+**다음 사이클**
+- **도메인 ② `멈추지 않고 갈아 끼운다` 는 아직 283 의 후보 조사 수준으로만 확인했다** —
+  **무중단 DB 이관 편을 정독**하고, 두 번째로 `1,000 Servers, 160 Clusters, 30 Days, Zero
+  Downtime: Migrating Wix's MySQL Fleet to Graviton` 또는 `Data to Production: Bridging the
+  Gap Between Iceberg and Live Microservices` 를 읽는다.
+- 도메인 ① 에 남은 글 — `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System`
+  (Octocode Orchestrator, **사용자 불만에서 출발** — 223 규칙상 별도 기능이 될 수 있다) ·
+  `How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer Days...` ·
+  `From Co-Pilot to Full Automation` · `The End of Determinism` · `The Craft of Troubleshooting`
+  · `/post/microservices-reliability-playbook`
+- **Wix 잉여현금흐름 · Base44 매출 실액 미확인**
+- **큐 0/3** — Wix 를 다 판 뒤 후보 조사. **⚠️ 운영 사실 ⑲ 를 먼저 돌린다.**
+- **📌 Grab 보강 후보**(이미 `done`) — Palana 2부작(06-19/21) · Agent platform Part 1(07-24) ·
+  **Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**. 뒤 둘은 기존 `iceberg-lake`·
+  `counter-service` 의 후속이다.
+- **📌 kakao·roblox 가 `in_progress` 로 남아 있다** — 각각 `hold_reason` 달린 도메인 하나
+  때문이고, **새 단서가 없으면 hold 를 유지한 채 닫는 것도 정당하다**(290 에서 확인).
+- **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
+  **한국 편중 아홉.** **빈 자리는 라틴아메리카 하나뿐이고 재시도 금지.**
+- **⭐⭐ 비교 문서를 쓸 때가 됐다 — 축 후보 열.** 가장 센 것이 **`에이전트에게 무엇을 못 하게
+  하는가`** 로 재료가 **다섯**이 됐다: **병합 제한**(monday.com Morphex · Snap CodePal ·
+  Snap Casper) · **접근 제한**(Wix AirBot) · **행동 제한**(Wix 자가치유 두뇌 — 이유 강제).
+  Adevinta 가 반대편 재료(에이전트를 돌리는 대신 도구를 사서 잰다).
+  비교 문서는 `jd-viewer/public/reveng/domains/<slug>.md` 에 쓴다.
 
 ## 다음 선택지
 

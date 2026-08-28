@@ -156,7 +156,7 @@
   "domains": [
     {
       "name": "에이전트에게 당번을 맡기되 열쇠는 안 준다",
-      "why": "**이 회사 기술블로그의 무게중심이 여기 있다** — 읽을 만한 글 열 편 중 **일곱 편**이 에이전트에게 일을 맡기는 이야기다(자율 버그 수정 · 당번 봇 · 자가 치유 · 코드 이관 자동화 · *\"From Co-Pilot to Full Automation\"*).\n\n**규모가 문제를 만든다** — **Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 이어야 했다.\n\n**⭐ 그런데 이 도메인의 이름을 '열쇠는 안 준다' 로 단 이유가 있다**(이 정리는 이 사이트의 것이다). **AirBot 의 설계 결정마다 무엇을 안 주는지가 붙어 있다** — 방화벽에 인바운드 구멍을 안 뚫으려고 **Socket Mode** 를 쓰고, *\"Avoiding 'God Mode' API user\"* 하려고 REST API 대신 **IAM 역할로 S3 를 직접 읽는 자체 MCP** 를 만들고, *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라며 **자유 텍스트 대신 엄격한 타입 JSON** 만 받는다.\n\n**⚠️ 이 도메인은 본문 한 편을 읽었다** — 기능을 쓰기 전에 두 편 이상 읽는다. 후보 — `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System` · `How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale` · `How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer Days in One Quarter by Automating Code Migrations`.",
+      "why": "**이 회사 기술블로그의 무게중심이 여기 있다** — 읽을 만한 글 열 편 중 **일곱 편**이 에이전트에게 일을 맡기는 이야기다(자율 버그 수정 · 당번 봇 · 자가 치유 · 코드 이관 자동화 · *\"From Co-Pilot to Full Automation\"*).\n\n**규모가 문제를 만든다** — **Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 이어야 했다.\n\n**⭐ 그런데 이 도메인의 이름을 '열쇠는 안 준다' 로 단 이유가 있다**(이 정리는 이 사이트의 것이다). **AirBot 의 설계 결정마다 무엇을 안 주는지가 붙어 있다** — 방화벽에 인바운드 구멍을 안 뚫으려고 **Socket Mode** 를 쓰고, *\"Avoiding 'God Mode' API user\"* 하려고 REST API 대신 **IAM 역할로 S3 를 직접 읽는 자체 MCP** 를 만들고, *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라며 **자유 텍스트 대신 엄격한 타입 JSON** 만 받는다.\n\n**⚠️ 이 도메인은 본문 한 편을 읽었다** — 기능을 쓰기 전에 두 편 이상 읽는다. 후보 — `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System` · `How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale` · `How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer Days in One Quarter by Automating Code Migrations`.\n\n**292 에서 두 번째 편을 읽었다** — `How We Built the Brain Behind Our Self-Healing System`. **AirBot 이 경보에서 출발해 조사를 대신한다면, 이쪽은 그 조사에 필요한 맥락을 조직 규모에서 모으는 쪽이다.** **⭐ 그리고 이 도메인의 이름이 여기서도 맞는다**(이 정리는 이 사이트의 것이다) — AirBot 은 **접근을 제한**했고(God Mode 금지·방화벽 구멍 금지), 이 편은 **행동을 제한한다**: **도구를 부르려면 이유를 대야 한다.**",
       "tech": [
         {
           "tech": "당번의 조사를 대신하는 슬랙 에이전트 — AirBot",
@@ -174,7 +174,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "context-before-fix"
+      ]
     },
     {
       "name": "멈추지 않고 갈아 끼운다",
@@ -202,7 +204,8 @@
   "open_questions": [
     "**⭐ `에이전트에게 무엇을 못 하게 하는가` 축에 네 번째 재료가 생겼다.** Wix 의 AirBot 은 **설계 결정마다 안 주는 것이 붙어 있다** — 인바운드 방화벽 구멍 없음(Socket Mode) · *\"Avoiding 'God Mode' API user\"*(IAM 역할로 최소 권한) · **자유 텍스트 출력 금지**(Pydantic 타입 강제, 근거는 *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"*). **monday.com Morphex**(민감 코드 병합 금지·주말 정지·Human Todos) · **Snap CodePal**(사람 리뷰를 대체하지 않는다) · **Snap Casper**(PR 만 열고 병합은 안 한다)와 나란히 선다. **⭐ 그런데 Wix 의 금지는 성격이 다르다** — 앞의 셋이 **무엇을 병합할 수 있는가**를 제한하는데, **Wix 는 무엇에 접근할 수 있는가를 제한한다**(이 구분은 이 사이트의 것이다).",
     "**⭐ 자동화율을 숫자로 적은 드문 사례다.** **PR 후보 180개 중 28개 직접 병합 = 15%** 이고 **85%는 사람 손을 거친다.** monday.com 의 Morphex 는 **주당 40개 PR 병합**이라고만 하고 **후보 대비 비율을 안 적으며**, Snap 의 Casper 는 *\"thousands of mergeable PRs each week\"* 라고만 한다. **몇 개를 냈고 그중 몇 개가 붙었는지를 함께 적은 것은 여기가 처음이다**(이 관찰은 이 사이트의 것이다).",
-    "**⚠️ 아직 못 채운 것** — 도메인 ① 은 본문 **한 편**만 읽었고(일곱 편 중), 도메인 ② 는 283 의 후보 조사 수준으로만 확인했다(정독 필요). **재무도 매출·부킹만 확인했고 잉여현금흐름 등은 없다.** **Base44 의 매출 기여 실액도 없다.**"
+    "**⚠️ 아직 못 채운 것** — 도메인 ① 은 본문 **한 편**만 읽었고(일곱 편 중), 도메인 ② 는 283 의 후보 조사 수준으로만 확인했다(정독 필요). **재무도 매출·부킹만 확인했고 잉여현금흐름 등은 없다.** **Base44 의 매출 기여 실액도 없다.**",
+    "**⭐ 같은 회사가 에이전트를 두 방향으로 묶는다.** **AirBot 은 접근을 제한하고**(인바운드 방화벽 구멍 없음 · *\"Avoiding 'God Mode' API user\"* · Pydantic 타입 강제), **자가 치유의 두뇌는 행동을 제한한다**(*\"Every tool call requires a stated reason\"*). **둘 다 모델을 바꾸는 대신 둘레를 짓는다**(이 대비는 이 사이트의 것이다). **⚠️ 그리고 같은 글 안에서 쪼갤 자리와 아닌 자리가 갈린다** — 데이터베이스 전문 에이전트는 *\"far more effective than a general agent juggling everything at once\"* 인데, **포맷팅을 따로 뒀더니** *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 되돌렸다. **그 기준은 글에 없다.**"
   ],
   "sources": [
     {
@@ -232,7 +235,732 @@
       "publisher": "Wix.com Ltd.",
       "date": "2026-08-29",
       "summary": "**나스닥 상장사(WIX)라 실적이 공개된다.** **2026년 2분기 — 매출 5억 6,300만 달러로 전년 대비 15% 성장**, **부킹은 5억 6,900만 달러로 12% 성장**. 성장 동력으로 **Base44 의 강한 실적**과 기존 Wix 성장을 든다. **⭐ Base44 가 자체 LLM `Base 1` 을 출시**했고 회사는 *\"the first app-creation platform to do so\"* 라고 적는다. **하반기 Base44 의 비GAAP 총이익률을 약 60%** 로 본다. ⚠️ **잉여현금흐름 등 나머지 지표는 이 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+    },
+    {
+      "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+      "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+      "publisher": "Wix Engineering",
+      "date": "2026-08-29",
+      "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
     }
   ],
-  "features": []
+  "features": [
+    {
+      "key": "context-before-fix",
+      "name": "왜 찾는지 말하게 한다",
+      "domain": "에이전트에게 당번을 맡기되 열쇠는 안 준다",
+      "updated_at": "2026-08-29",
+      "ui": {
+        "title": "버그 하나의 맥락을 모으기까지",
+        "question": "검색이 얕은 것을 어떻게 막는가?",
+        "kind": "web",
+        "note": "**맥락 수집 흐름을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내 도구의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 회사 글 두 편에 적힌 구조와 수치만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "맥락 수집"
+          },
+          {
+            "type": "card",
+            "text": "검색은 첫 일치에서 멈춥니다",
+            "items": [
+              "왜 그런지는 묻지 않는다",
+              "이 기능을 건드리는 서비스가 서른 개",
+              "그중 누가 책임인지 가려야 한다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "부르기 전에 이유를 댄다"
+          },
+          {
+            "type": "text",
+            "text": "도구를 쓰려면 왜 쓰는지 먼저 말해야 합니다",
+            "pin": 2
+          },
+          {
+            "type": "text",
+            "text": "그래야 겉의 낱말만 맞춰 보는 일을 안 합니다",
+            "pin": 2
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "어떻게 파는가"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "여러 갈래를 동시에 연다",
+                "sub": "한 줄로 파면 그림이 늦게 완성된다",
+                "right": "병렬"
+              },
+              {
+                "title": "빈손이면 비슷한 말로 다시 찾게 한다",
+                "sub": "따로 벡터 저장소를 두지 않는다",
+                "right": "힌트"
+              }
+            ],
+            "pin": 3
+          },
+          {
+            "type": "text",
+            "text": "도구가 답할 때 다음에 뭘 할지도 함께 알려 줍니다 — 맴돌지 않게",
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "셋으로 나눈다"
+          },
+          {
+            "type": "card",
+            "text": "각자 자기 것만 봅니다",
+            "items": [
+              "계획하는 쪽이 요청을 풀고 기억을 뒤진다",
+              "조사하는 쪽이 전문 일꾼들을 부린다",
+              "끝난 조사는 기억에 담긴다"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "해 보고 버린 것"
+          },
+          {
+            "type": "card",
+            "text": "출력을 따로 맡겼더니 얕아졌습니다",
+            "items": [
+              "다듬는 쪽이 무엇을 찾았는지 몰랐다",
+              "그래서 뻔한 답이 나왔다"
+            ],
+            "pin": 6
+          },
+          {
+            "type": "chips",
+            "items": [
+              "잦은 파괴적 변경",
+              "순차 호출은 성능을 죽인다"
+            ],
+            "pin": 7
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "text",
+            "text": "⚠️ 조직의 지식은 여전히 대화방과 사람 머릿속에 있습니다",
+            "pin": 8
+          },
+          {
+            "type": "button",
+            "text": "조사 시작",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "검색은 왜냐고 묻지 않는다",
+            "what": "순진한 검색은 *\"finds the first textual match and stop. It won't ask why.\"* 그리고 규모가 문제를 키운다 — *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "이유 없이는 도구를 못 부른다",
+            "what": "*\"Every tool call requires a stated reason.\"* 이유는 그것이 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 이기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "넓게 파고, 빈손이면 다르게 묻는다",
+            "what": "여러 조사 갈래를 **동시에** 열어 *\"dramatically reduces the time to a complete picture\"* 한다. 검색이 실패하면 **의미가 비슷한 것을 찾아보라는 힌트**를 주는데, **벡터 데이터베이스 없이** 그렇게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "도구가 다음 수를 알려 준다",
+            "what": "도구 응답에 *\"guidance on what to do next\"* 를 실어 **에이전트가** *\"getting stuck or looping\"* **하는 것을 막는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "각자 자기 것만 보게 쪼갠다",
+            "what": "**플래너**(요청을 풀고 기억 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트 조율) · **메모리**(끝난 사이클을 임베딩). 이유가 명확하다 — *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "출력을 갈랐다가 되돌렸다",
+            "what": "조사와 출력 정리를 따로 뒀더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다. **실제로 해 보고 버린 기록이다**(이 관찰은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "프레임워크도 골라 버렸다",
+            "what": "**LangChain** 은 *\"breaking changes across frequent version updates\"* 때문에 안 썼고, **Google ADK** 는 MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였다 — 그래서 **포크했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "못 모으는 맥락이 남는다",
+            "what": "한계를 셋 적는다 — 고수준 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**고치기 전에 무엇이 문제인지부터 알아야 하는데, 검색이 그걸 못 한다.** 회사가 한 줄로 적는다 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why.\"* **그리고 규모가 그 얕음을 치명적으로 만든다** — 한 기능을 건드리는 서비스가 서른 개면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**⭐ 이 회사의 답은 에이전트를 더 똑똑하게 만드는 것이 아니라 규칙을 거는 것이다**(이 정리는 이 사이트의 것이다). **도구를 부르려면 이유를 대야 하고**(*\"Every tool call requires a stated reason\"*), 그 이유가 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **말하게 만들어 생각하게 하는 셈이다.**\n\n**⭐ 그리고 도메인의 다른 편과 성격이 이어진다** — 같은 회사의 **AirBot** 은 **접근을 제한했고**(방화벽 구멍 금지 · *\"Avoiding 'God Mode' API user\"* · 타입 강제), **이 편은 행동을 제한한다**(이유 없이는 도구를 못 부른다). **둘 다 모델을 바꾸는 대신 둘레를 짓는다**(이 대비는 이 사이트의 것이다).\n\n**🔴 버린 대안 셋 중 하나가 실패 기록이다** — 조사와 출력 정리를 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 **뻔하고 얕은 답**이 나왔다. **나머지 둘은 프레임워크다** — LangChain 은 *\"breaking changes across frequent version updates\"* 로, Google ADK 는 MCP 호출을 순차 실행해 *\"a performance killer\"* 라서 **포크했다.**\n\n**⚠️ 그리고 못 모으는 맥락을 셋 인정한다** — 특히 마지막이 무겁다: 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **도구로 닿을 수 없는 곳에 답의 일부가 있다는 것을 적어 둔 셈이다**(이 정리는 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "채택",
+            "value": "OctoCode 다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "label": "구조",
+            "value": "세 층 — 플래너 · 리서처(데이터베이스·로그·코드 전문 서브에이전트) · 메모리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "label": "같은 도메인의 다른 편",
+            "value": "AirBot 은 월 675 엔지니어 시간을 아끼고 완전 자동화율이 15% 다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When AI Becomes Your On-Call Teammate: Inside Wix's AirBot That Saves 675 Engineering Hours a Month",
+                "url": "https://www.wix.engineering/post/when-ai-becomes-your-on-call-teammate-inside-wix-s-airbot-that-saves-675-engineering-hours-a-month",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**당번 엔지니어의 조사 과정을 에이전트가 대신한다.** 규모가 문제를 만든다 — **Apache Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 뒤져야 했다(경보 수신 → 수동 조사 → 로그 파싱 → 머릿속 종합). 그래서 *\"high cognitive load\"* 와 긴 평균 복구 시간이 남았다. **AirBot 은** *\"an AI-powered slack agent designed specifically for the Wix ecosystem\"* 이고 경보를 *\"from static notifications into active investigations\"* 로 바꾼다 — **원인 분석 · 조치(PR 생성 포함) · 담당 팀으로의 에스컬레이션.**\n\n**🔴 결정마다 '무엇을 안 주는가' 가 붙어 있다**(이 관찰은 이 사이트의 것이다). **Socket Mode 를 쓴 이유** — 연결이 바깥으로 나가므로 *\"there is no need to open inbound firewall ports\"* 이고 *\"punch holes in the firewall\"* 을 피한다. **Airflow REST API 대신 자체 MCP 를 만든 이유** — *\"Avoiding 'God Mode' API user\"* 이고 **IAM 역할로 S3 를 직접 읽어** *\"respecting least-privilege principles\"* 한다. **출력에 가드레일** — *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라 Pydantic 으로 **엄격한 타입 JSON** 만 받고 자유 텍스트 해법을 안 받는다. **모델도 계층으로 나눈다** — 로그 분류 같은 대량 작업은 **GPT-4o Mini**, 큰 맥락이 필요한 복잡한 원인 분석은 **Claude 4.5 Opus**.\n\n**버린 대안** — 하드코딩한 통합은 *\"brittle and unscalable\"* 이었고 *\"Standard automation breaks down in our heterogeneous stack\"* 였다.\n\n**🔴 수치가 풍부하고 자동화율을 솔직히 적는다** — **월 675 엔지니어 시간 절감**(*\"~4 full-time engineers\"*) · **PR 후보 180개 중 28개가 직접 병합 = 완전 자동화율 15%** · 성공 흐름 4,200건 중 **유의미한 개입 2,700건** · **긍정 피드백 66%** · **워크플로당 평균 약 0.30달러** · **팀 채널 30개 · 데이터 엔지니어 60명**. **⚠️ 15% 라는 것은 85% 가 사람 손을 거친다는 뜻이고**, 회사는 병합 안 된 PR 도 *\"acting as a 'Blueprint'\"* 로 값이 있다고 적는다. ⚠️ **오탐률이나 실패 사례는 따로 없다**(이 지적은 이 사이트의 것이다). 스택 — Slack Bolt Python · FastAPI · **MCP** · LangChain · **Pydantic** · GitHub API · Trino · Spark · Kubernetes · Docker · Vault · OpenMetadata."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "맥락 수집의 정확도·지연·비용 수치가 하나도 없다. 채택 수치는 도구(OctoCode)의 것이지 이 시스템의 것이 아니다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "이유를 대게 한 대목에서",
+          "thought": "**모델을 바꾸는 대신 절차를 바꿨다**(이 정리는 이 사이트의 것이다) — *\"Every tool call requires a stated reason.\"* **말하게 만들면 생각하게 된다는 가정**인데, 회사가 그 효과를 *\"rather than pattern-matching on surface-level keywords\"* 로 적는다. ⚠️ **대가는 호출마다 부담이 는다는 것**이고 **그 이유가 실제로 좋은지는 누가 보는지도 글에 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "포맷팅을 갈랐다가 되돌린 대목에서",
+          "thought": "**깔끔해 보이는 분리가 실패했다** — 조사와 출력을 나누면 각자 자기 일만 하면 될 것 같은데, *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 였다. **찾은 것을 아는 쪽만이 무엇이 중요한지 안다**(이 표현은 이 사이트의 것이다). ⭐ **그런데 같은 글이 다른 자리에서는 전문화를 옹호한다**(데이터베이스 전문 에이전트가 낫다). **쪼갤 자리와 아닌 자리가 갈린다는 뜻이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "벡터 데이터베이스를 안 쓴 자리에서",
+          "thought": "검색이 빈손일 때 **의미가 비슷한 것을 찾아보라고 힌트를 주는데 벡터 저장소는 두지 않는다.** **의미 검색을 인프라 대신 지시로 대신한 셈이다**(이 정리는 이 사이트의 것이다) — Snap 의 Code Search 가 *\"The retrieval system is dumb. The intelligence is in the loop\"* 로 같은 자리를 택한 것과 겹친다(이 대비도 이 사이트의 것이다). ⚠️ **대신 힌트의 품질이 결과를 좌우하는데 그 이야기는 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "못 모으는 맥락을 적은 자리에서",
+          "thought": "**조직 지식이** *\"lives in Slack threads and people's heads\"* **라는 것을 한계로 적는다.** **도구로 닿을 수 없는 곳에 답의 일부가 있다는 뜻이다**(이 정리는 이 사이트의 것이다). ⚠️ **그러면 에이전트가 아무리 잘 모아도 천장이 있는데**, 그 천장이 얼마나 낮은지는 글에 없다 — **얼마나 자주 사람 머릿속을 필요로 하는지의 수치가 없다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "플래너",
+            "what": "요청을 풀고 **기억을 조회**한다. 조사의 첫 칸"
+          },
+          {
+            "name": "리서처",
+            "what": "**데이터베이스·로그·코드 전문 서브에이전트**를 조율하는 오케스트레이터"
+          },
+          {
+            "name": "메모리",
+            "what": "끝난 조사 사이클을 **임베딩해** 다음 조사가 참고하게 한다"
+          },
+          {
+            "name": "이유 필드",
+            "what": "도구 호출마다 붙어야 하는 것. **없으면 못 부른다**"
+          },
+          {
+            "name": "힌트",
+            "what": "도구 응답에 실리는 다음 수 안내. **맴돌지 않게** 한다"
+          },
+          {
+            "name": "의미적 대안",
+            "what": "검색이 빈손일 때 주는 지시. **벡터 저장소 없이** 비슷한 말로 다시 찾게 한다"
+          }
+        ],
+        "invariants": [
+          "**이유 없이는 도구를 못 부른다** — 무엇을 왜 찾는지 먼저 말해야 한다",
+          "**한 줄로 파지 않는다** — 여러 갈래를 동시에 연다",
+          "**벡터 저장소를 두지 않는다** — 의미 검색을 지시로 대신한다",
+          "**조사와 출력을 가르지 않는다** — 갈랐더니 얕아졌다",
+          "**에이전트마다 맥락을 좁게 준다** — 다 아는 하나보다 각자 아는 여럿이 낫다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "조사 요청이 들어온다",
+            "why": "경보나 사용자 불만에서 시작한다"
+          },
+          {
+            "step": "계획하는 쪽이 요청을 풀고 기억을 뒤진다",
+            "why": "전에 비슷한 것을 본 적이 있는지 먼저 본다"
+          },
+          {
+            "step": "조사하는 쪽이 전문 일꾼들을 부른다",
+            "why": "데이터베이스·로그·코드를 각각 아는 쪽이 낫다"
+          },
+          {
+            "step": "도구를 부르기 전에 이유를 적는다",
+            "why": "겉의 낱말만 맞춰 보는 것을 막는다"
+          },
+          {
+            "step": "여러 갈래를 동시에 판다",
+            "why": "한 줄로 파면 전체 그림이 늦다"
+          },
+          {
+            "step": "빈손이면 비슷한 말로 다시 찾는다",
+            "why": "벡터 저장소 대신 지시로 푼다"
+          },
+          {
+            "step": "도구가 다음 수를 함께 알려 준다",
+            "why": "막히거나 맴도는 것을 막는다"
+          },
+          {
+            "step": "찾은 쪽이 답까지 정리한다",
+            "why": "출력을 따로 맡겼더니 얕아졌다"
+          },
+          {
+            "step": "끝난 조사를 기억에 담는다",
+            "why": "다음 조사가 참고한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "에이전트가 도구를 마음대로 부르게 할 것인가?",
+            "chosen": "**아니다 — 이유를 대야 부를 수 있다.** *\"Every tool call requires a stated reason\"*",
+            "alternatives": [
+              "필요하면 그냥 부르게 하기"
+            ],
+            "tradeoff": "근거가 명확하다 — *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords.\"* **모델을 바꾸는 대신 절차를 바꾼 것이다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 호출마다 부담이 는다는 것**이고, **그 이유가 실제로 좋은지 누가 보는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "question": "조사를 어떻게 진행할 것인가?",
+            "chosen": "**여러 갈래를 동시에 판다.** *\"dramatically reduces the time to a complete picture\"*",
+            "alternatives": [
+              "한 갈래씩 순차로 파기"
+            ],
+            "tradeoff": "**전체 그림이 빨리 선다.** ⚠️ **대가는 쓸데없는 갈래에도 계산을 쓴다는 것**인데(이 지적은 이 사이트의 것이다) **그 비용 수치는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "question": "의미 검색을 어떻게 할 것인가?",
+            "chosen": "**벡터 데이터베이스를 두지 않는다.** 검색이 빈손이면 **의미가 비슷한 것을 찾아보라는 힌트**를 준다",
+            "alternatives": [
+              "벡터 저장소를 두고 임베딩 검색을 붙이기"
+            ],
+            "tradeoff": "**의미 검색을 인프라 대신 지시로 대신한 셈이다**(이 정리는 이 사이트의 것이다) — 운영할 것이 하나 줄어든다. ⚠️ **대가는 힌트의 품질이 결과를 좌우한다는 것**이고 **그 이야기는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "question": "에이전트가 막히면 어떻게 하는가?",
+            "chosen": "**도구 응답에 다음 수를 실어 준다.** *\"guidance on what to do next\"*",
+            "alternatives": [
+              "에이전트가 알아서 빠져나오게 두기 — *\"getting stuck or looping\"* 이 났다"
+            ],
+            "tradeoff": "**도구가 에이전트를 안내한다** — 관계가 뒤집힌 자리다(이 표현은 이 사이트의 것이다). ⚠️ **대가는 도구가 에이전트의 사정을 알아야 한다는 것**이고, 그러면 **도구와 에이전트가 서로 묶인다**(이 지적도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "question": "에이전트를 하나로 둘 것인가 여럿으로 쪼갤 것인가?",
+            "chosen": "**쪼갠다.** 플래너 · 리서처(데이터베이스·로그·코드 전문 서브에이전트) · 메모리의 세 층",
+            "alternatives": [
+              "하나가 전부 다루게 하기"
+            ],
+            "tradeoff": "*\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"* **맥락을 좁게 주면 잘한다는 것**이다. **대가는 조율이 필요해진다는 것**이고 리서처가 그 일을 맡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "question": "출력 정리를 따로 맡길 것인가?",
+            "chosen": "**아니다 — 찾은 쪽이 답까지 정리한다.** 갈랐다가 되돌렸다",
+            "alternatives": [
+              "포맷팅 전용 에이전트를 두기 — 실제로 해 봤고 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다"
+            ],
+            "tradeoff": "**찾은 것을 아는 쪽만이 무엇이 중요한지 안다**(이 표현은 이 사이트의 것이다). **⭐ 그런데 같은 글이 다른 자리에서는 전문화를 옹호한다**(데이터베이스 전문 에이전트가 낫다) — **쪼갤 자리와 아닌 자리가 갈린다**(이 대비도 이 사이트의 것이다). ⚠️ **그 기준은 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "question": "에이전트 프레임워크로 무엇을 쓸 것인가?",
+            "chosen": "**LangChain 을 안 쓰고 Google ADK 를 포크했다**",
+            "alternatives": [
+              "LangChain — *\"breaking changes across frequent version updates\"*",
+              "Google ADK 를 그대로 — MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였다"
+            ],
+            "tradeoff": "**버린 이유가 성능과 안정성으로 갈린다**(이 정리는 이 사이트의 것이다) — 하나는 **자주 깨져서**, 하나는 **병렬이 안 돼서**. **대가는 포크를 직접 유지해야 한다는 것**이고 **업스트림에서 멀어진다**(이 지적도 이 사이트의 것이다). ⚠️ **그 유지 부담은 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "question": "모을 수 없는 맥락을 어떻게 할 것인가?",
+            "chosen": "**한계로 적어 둔다.** 고수준 설명에서 DB 레코드 찾기 · 수십 서비스의 로그에서 오류 격리 · **조직 지식이** *\"lives in Slack threads and people's heads\"*",
+            "alternatives": [
+              "못 모으는 것을 안 적기"
+            ],
+            "tradeoff": "**도구로 닿을 수 없는 곳에 답의 일부가 있다는 것을 적어 둔 셈이다**(이 정리는 이 사이트의 것이다). ⚠️ **그러면 아무리 잘 모아도 천장이 있는데, 얼마나 자주 사람 머릿속이 필요한지의 수치는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OctoCode",
+            "role": "정적 코드 분석. 채택은 다운로드 9만 · 주간 활성 5,000",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "tech": "Trino",
+            "role": "모든 사내 데이터베이스를 정규화해 질의하는 통로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              },
+              {
+                "title": "When AI Becomes Your On-Call Teammate: Inside Wix's AirBot That Saves 675 Engineering Hours a Month",
+                "url": "https://www.wix.engineering/post/when-ai-becomes-your-on-call-teammate-inside-wix-s-airbot-that-saves-675-engineering-hours-a-month",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**당번 엔지니어의 조사 과정을 에이전트가 대신한다.** 규모가 문제를 만든다 — **Apache Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 뒤져야 했다(경보 수신 → 수동 조사 → 로그 파싱 → 머릿속 종합). 그래서 *\"high cognitive load\"* 와 긴 평균 복구 시간이 남았다. **AirBot 은** *\"an AI-powered slack agent designed specifically for the Wix ecosystem\"* 이고 경보를 *\"from static notifications into active investigations\"* 로 바꾼다 — **원인 분석 · 조치(PR 생성 포함) · 담당 팀으로의 에스컬레이션.**\n\n**🔴 결정마다 '무엇을 안 주는가' 가 붙어 있다**(이 관찰은 이 사이트의 것이다). **Socket Mode 를 쓴 이유** — 연결이 바깥으로 나가므로 *\"there is no need to open inbound firewall ports\"* 이고 *\"punch holes in the firewall\"* 을 피한다. **Airflow REST API 대신 자체 MCP 를 만든 이유** — *\"Avoiding 'God Mode' API user\"* 이고 **IAM 역할로 S3 를 직접 읽어** *\"respecting least-privilege principles\"* 한다. **출력에 가드레일** — *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라 Pydantic 으로 **엄격한 타입 JSON** 만 받고 자유 텍스트 해법을 안 받는다. **모델도 계층으로 나눈다** — 로그 분류 같은 대량 작업은 **GPT-4o Mini**, 큰 맥락이 필요한 복잡한 원인 분석은 **Claude 4.5 Opus**.\n\n**버린 대안** — 하드코딩한 통합은 *\"brittle and unscalable\"* 이었고 *\"Standard automation breaks down in our heterogeneous stack\"* 였다.\n\n**🔴 수치가 풍부하고 자동화율을 솔직히 적는다** — **월 675 엔지니어 시간 절감**(*\"~4 full-time engineers\"*) · **PR 후보 180개 중 28개가 직접 병합 = 완전 자동화율 15%** · 성공 흐름 4,200건 중 **유의미한 개입 2,700건** · **긍정 피드백 66%** · **워크플로당 평균 약 0.30달러** · **팀 채널 30개 · 데이터 엔지니어 60명**. **⚠️ 15% 라는 것은 85% 가 사람 손을 거친다는 뜻이고**, 회사는 병합 안 된 PR 도 *\"acting as a 'Blueprint'\"* 로 값이 있다고 적는다. ⚠️ **오탐률이나 실패 사례는 따로 없다**(이 지적은 이 사이트의 것이다). 스택 — Slack Bolt Python · FastAPI · **MCP** · LangChain · **Pydantic** · GitHub API · Trino · Spark · Kubernetes · Docker · Vault · OpenMetadata."
+              }
+            ]
+          },
+          {
+            "tech": "Grafana",
+            "role": "라이브 로그와 런타임 오류. ⚠️ 수십 서비스의 로그에서 격리하기가 어렵다고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "tech": "MCP",
+            "role": "도구 연결 규약. 응답에 다음 수 힌트를 실어 보낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Google ADK (포크)",
+            "role": "MCP 호출을 순차 실행해 성능을 죽여 포크했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ LangChain",
+            "role": "버린 것 — 잦은 파괴적 변경",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "검색은 첫 일치에서 멈추고 왜냐고 묻지 않는다",
+            "why_hard": "*\"finds the first textual match and stop. It won't ask why.\"* 그리고 규모가 이를 키운다 — 한 기능을 건드리는 서비스가 서른 개면 **누가 책임인지**를 가려야 한다.",
+            "current_best": "**에이전트에게 규칙을 건다** — 도구를 부르려면 **이유를 대야 하고**, **여러 갈래를 동시에** 파며, 빈손이면 **의미가 비슷한 것**을 찾고, 도구가 **다음 수를 알려 준다**. 그리고 **맥락을 좁게 받은 전문 에이전트들**이 각자 자기 것만 본다. ⚠️ **맥락 수집의 정확도·지연·비용 수치는 하나도 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          },
+          {
+            "problem": "어떤 맥락은 도구로 닿을 수 없다",
+            "why_hard": "회사가 셋을 인정한다 — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다.",
+            "current_best": "**적어 두는 것까지가 답이다**(이 정리는 이 사이트의 것이다) — 글은 이 셋을 한계로 남기고 해법을 제시하지 않는다. ⚠️ **얼마나 자주 사람 머릿속이 필요한지의 수치가 없어 천장의 높이를 알 수 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+                "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "조사 하나가 맥락을 모으기까지",
+          "question": "부르기 전에 무엇을 요구하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[\"조사 요청이 들어온다\"]:::list\n  PLAN[\"계획하는 쪽이 요청을 풀고 기억을 뒤진다\"]:::list\n  WHY[\"<b>도구를 부르려면 이유를 대야 한다</b><br/>• 무엇을 왜 찾는지 먼저 말한다<br/>• 겉의 낱말만 맞추는 것을 막는다<br/>• 모델 대신 절차를 바꿨다\"]:::accent\n  PAR[\"여러 갈래를 동시에 판다\"]:::list\n  SPEC[\"데이터베이스와 로그와 코드를 각각 아는 쪽이 본다\"]:::list\n  HINT[\"빈손이면 비슷한 말로 다시 찾게 한다\"]:::list\n  NEXT[\"도구가 다음 수를 함께 알려 준다\"]:::list\n  OUT[\"찾은 쪽이 답까지 정리한다\"]:::list\n  MEM[\"끝난 조사를 기억에 담는다\"]:::list\n  X1[\"출력을 따로 맡기기<br/>해 보고 버렸다 — 무엇을 찾았는지 몰라 얕아졌다\"]:::quiet\n  X2[\"따로 벡터 저장소 두기<br/>안 했다 — 지시로 대신한다\"]:::quiet\n  REQ --> PLAN --> WHY --> PAR --> SPEC --> HINT --> NEXT --> OUT --> MEM\n  OUT -.-> X1\n  HINT -.-> X2"
+        },
+        {
+          "title": "도구 호출 하나가 지나는 자리",
+          "question": "이유가 없으면 어떻게 되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 의도\n  의도 : <b>무언가를 찾고 싶다</b><br/>겉의 낱말만 맞춰 보고 싶어지는 자리다\n  의도 --> 서술 : 이유를 적어야 한다\n  서술 : <b>왜 찾는지 말한다</b><br/>이걸 요구하는 것 자체가 생각하게 만든다\n  서술 --> 호출 : 이제 부를 수 있다\n  호출 : <b>도구가 답한다</b><br/>답에 다음 수 힌트가 함께 실린다\n  호출 --> 빈손 : 아무것도 못 찾았다\n  빈손 : <b>비슷한 말로 다시 찾게 한다</b><br/>따로 벡터 저장소를 두지 않는다\n  빈손 --> 서술\n  호출 --> 수확 : 무언가 나왔다\n  수확 : <b>다른 갈래와 합쳐진다</b><br/>여러 갈래를 동시에 팠으므로 그림이 빨리 선다\n  수확 --> 기억 : 조사가 끝난다\n  기억 : <b>다음 조사가 참고한다</b><br/>끝난 사이클을 담아 둔다\n  기억 --> [*]"
+        },
+        {
+          "title": "모아도 닿지 않는 곳",
+          "question": "에이전트의 천장은 어디인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"조직의 지식이 대화방과 사람 머릿속에 있다\"]:::list\n  B[\"<b>도구로 닿을 수 없는 곳에 답의 일부가 있다</b><br/>얼마나 자주 필요한지의 수치는 없어 천장 높이를 모른다\"]:::accent\n  C[\"높은 수준의 설명에서 시작한다\"]:::list\n  D[\"데이터베이스에서 그 레코드를 찾기가 정말 어렵다고 적는다\"]:::list\n  E[\"수십 개 서비스가 동시에 로그를 쏟는다\"]:::list\n  F[\"그중 이 오류를 골라내기가 정말 어렵다고 적는다\"]:::list\n  G[\"이유를 대게 해서 생각하게 만든다\"]:::list\n  H[\"그 이유가 좋은지 누가 보는지는 없다\"]:::list\n  I[\"채택 수치를 낸다\"]:::list\n  J[\"그건 도구의 수치이고 이 시스템의 정확도나 지연은 없다\"]:::list\n  N[\"<i>앞의 셋은 회사가 한계로 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale",
+          "url": "https://www.wix.engineering/post/how-we-built-the-brain-behind-our-self-healing-system-context-retrieval-at-org-scale",
+          "publisher": "Wix Engineering",
+          "date": "2026-08-29",
+          "summary": "**고치기 전에 맥락을 모으는 쪽 이야기다.** 문제는 검색이 얕다는 것 — 순진한 검색은 *\"finds the first textual match and stop. It won't ask why\"* 이고, 서비스와 개발자가 많으면 *\"which of the thirty services that touch this feature is actually responsible\"* 를 가려야 한다.\n\n**🔴 결정마다 에이전트에게 무언가를 강제하거나 금지한다**(이 관찰은 이 사이트의 것이다). **① 도구를 부르려면 이유를 대야 한다** — *\"Every tool call requires a stated reason\"* 이고 그 이유는 *\"forces the agent to actually think about what it's looking for rather than pattern-matching on surface-level keywords\"* 다. **② 가지를 병렬로 판다** — 한 줄로 파는 대신 여러 갈래를 동시에 열어 *\"dramatically reduces the time to a complete picture\"*. **③ 검색이 빈손이면 의미가 비슷한 것을 찾아보라는 힌트를 준다** — **벡터 데이터베이스 없이**. **④ 도구 응답에 다음에 뭘 할지를 실어 준다** — *\"getting stuck or looping\"* 을 막으려는 것이다. **⑤ 세 층으로 나눈다** — **플래너**(요청을 풀고 기억을 조회) · **리서처**(데이터베이스·로그·코드 전문 서브에이전트를 조율) · **메모리**(끝난 사이클을 임베딩해 다음에 쓴다). 쪼갠 이유가 명확하다: *\"a database agent whose entire context is about querying… is far more effective than a general agent juggling everything at once.\"*\n\n**🔴 버린 대안이 셋이고 하나는 실패 기록이다** — **포맷팅 에이전트를 따로 두기**: 실제로 조사와 출력을 갈랐더니 *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 *\"generic, shallow responses\"* 가 나왔다 · **LangChain**: *\"breaking changes across frequent version updates\"* 때문에 안 썼다 · **Google ADK**: MCP 도구 호출을 **순차로** 실행해 *\"a performance killer\"* 였고 그래서 **포크했다**.\n\n**⚠️ 한계를 셋 인정한다** — 고수준 버그 설명에서 *\"Finding specific records in a database… is genuinely difficult\"* · Grafana 에서 *\"across dozens of services producing logs simultaneously is genuinely difficult\"* · 그리고 조직 지식이 *\"lives in Slack threads and people's heads\"* 다. **수치** — OctoCode 채택이 **다운로드 9만 · 주간 활성 5,000 · 주간 다운로드 4,500**. 스택 — OctoCode · GitHub · Trino · Grafana · **MCP** · TypeScript."
+        },
+        {
+          "title": "When AI Becomes Your On-Call Teammate: Inside Wix's AirBot That Saves 675 Engineering Hours a Month",
+          "url": "https://www.wix.engineering/post/when-ai-becomes-your-on-call-teammate-inside-wix-s-airbot-that-saves-675-engineering-hours-a-month",
+          "publisher": "Wix Engineering",
+          "date": "2026-08-29",
+          "summary": "**당번 엔지니어의 조사 과정을 에이전트가 대신한다.** 규모가 문제를 만든다 — **Apache Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 뒤져야 했다(경보 수신 → 수동 조사 → 로그 파싱 → 머릿속 종합). 그래서 *\"high cognitive load\"* 와 긴 평균 복구 시간이 남았다. **AirBot 은** *\"an AI-powered slack agent designed specifically for the Wix ecosystem\"* 이고 경보를 *\"from static notifications into active investigations\"* 로 바꾼다 — **원인 분석 · 조치(PR 생성 포함) · 담당 팀으로의 에스컬레이션.**\n\n**🔴 결정마다 '무엇을 안 주는가' 가 붙어 있다**(이 관찰은 이 사이트의 것이다). **Socket Mode 를 쓴 이유** — 연결이 바깥으로 나가므로 *\"there is no need to open inbound firewall ports\"* 이고 *\"punch holes in the firewall\"* 을 피한다. **Airflow REST API 대신 자체 MCP 를 만든 이유** — *\"Avoiding 'God Mode' API user\"* 이고 **IAM 역할로 S3 를 직접 읽어** *\"respecting least-privilege principles\"* 한다. **출력에 가드레일** — *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라 Pydantic 으로 **엄격한 타입 JSON** 만 받고 자유 텍스트 해법을 안 받는다. **모델도 계층으로 나눈다** — 로그 분류 같은 대량 작업은 **GPT-4o Mini**, 큰 맥락이 필요한 복잡한 원인 분석은 **Claude 4.5 Opus**.\n\n**버린 대안** — 하드코딩한 통합은 *\"brittle and unscalable\"* 이었고 *\"Standard automation breaks down in our heterogeneous stack\"* 였다.\n\n**🔴 수치가 풍부하고 자동화율을 솔직히 적는다** — **월 675 엔지니어 시간 절감**(*\"~4 full-time engineers\"*) · **PR 후보 180개 중 28개가 직접 병합 = 완전 자동화율 15%** · 성공 흐름 4,200건 중 **유의미한 개입 2,700건** · **긍정 피드백 66%** · **워크플로당 평균 약 0.30달러** · **팀 채널 30개 · 데이터 엔지니어 60명**. **⚠️ 15% 라는 것은 85% 가 사람 손을 거친다는 뜻이고**, 회사는 병합 안 된 PR 도 *\"acting as a 'Blueprint'\"* 로 값이 있다고 적는다. ⚠️ **오탐률이나 실패 사례는 따로 없다**(이 지적은 이 사이트의 것이다). 스택 — Slack Bolt Python · FastAPI · **MCP** · LangChain · **Pydantic** · GitHub API · Trino · Spark · Kubernetes · Docker · Vault · OpenMetadata."
+        }
+      ]
+    }
+  ]
 }
