@@ -559,6 +559,27 @@
         "binarize-the-rubric"
       ],
       "file": "how-to-set-the-yardstick.md"
+    },
+    {
+      "slug": "what-agents-may-not-do",
+      "title": "에이전트에게 무엇을 못 하게 하는가 — 손을 묶었나 눈을 가렸나 머리를 좁혔나",
+      "question": "에이전트가 일하는 동안 무엇을 막아 두었고, 그 대가를 잰 곳이 있는가?",
+      "companies": [
+        "grab",
+        "wix",
+        "snap",
+        "monday"
+      ],
+      "features": [
+        "contain-not-trust",
+        "wrapper-in-the-box",
+        "context-before-fix",
+        "agent-ready-org",
+        "code-review-agent",
+        "agentic-code-search",
+        "agent-with-guardrails"
+      ],
+      "file": "what-agents-may-not-do.md"
     }
   ]
 }
