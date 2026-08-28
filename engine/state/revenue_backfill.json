@@ -9,7 +9,8 @@
     "musinsa",
     "netflix",
     "roblox",
-    "shopify"
+    "shopify",
+    "spotify"
   ],
   "skipped": [
     {
@@ -107,6 +108,22 @@
     {
       "slug": "planetscale",
       "reason": "비상장이라 매출 공개가 없다. 확인되는 것은 SKU 요금표(월 $5~$47,229)뿐이고 라인별 매출은 알 수 없다"
+    },
+    {
+      "slug": "slack",
+      "reason": "2021년 Salesforce 인수 이후 매출이 따로 공시되지 않는다. 약 23억 달러는 3자 집계이고 회사 발표가 아니다"
+    },
+    {
+      "slug": "snap",
+      "reason": "상장사지만 IR 이 내건 것은 총매출 성장률(19%)과 기타 매출 성장률(85%)뿐이라 광고·기타·하드웨어의 실액이 없다. 회사 문서에도 \"부문별 실액은 이 페이지에 없다\"로 남아 있다"
+    },
+    {
+      "slug": "stripe",
+      "reason": "비상장이다. 연간 서한으로 총매출 68억 달러는 공개되지만 결제 수수료와 Revenue suite 의 매출 분해는 없다. Revenue suite 의 10억 달러는 연간 런레이트라 회계연도 매출과 다르다"
+    },
+    {
+      "slug": "target",
+      "reason": "순매출 $104.8B 와 Roundel 광고 $915M 은 나오지만 광고가 순매출과 별도 항목(Other revenue)이라 분모가 갈리고, 멤버십과 Target Plus 는 성장률만 있고 금액이 공개되지 않는다"
     }
   ]
 }
