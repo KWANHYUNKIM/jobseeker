@@ -192,6 +192,21 @@
               "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
             }
           ]
+        },
+        {
+          "tech": "개발자 경험을 활동 지표 말고 무엇으로 재는가 — SPACE 설문과 Ledger",
+          "solves": "**활동 지표는 조작하기 쉬워 쓸모가 없다** — *\"these data points offer little insight into the actual productivity and well-being of your developers\"* 이고 굿하트의 법칙에 걸린다. 그래서 **시스템 데이터와 인식 데이터를 함께** 쓴다. 시스템 쪽은 **Ledger** 가 **DORA 지표**를 자동 계산하고, 인식 쪽은 **SPACE 프레임워크 기반 약 30문항**을 **1~7 척도**로 **익명** 수집한다(*\"without the fear of repercussions\"*). Product & Tech 인원은 **약 3,000명**이다.",
+          "limits": "**대가를 적는다** — 설문을 **5~10분**으로 줄인 대신 깊이를 내줬고, **응답률이 개발자의 약 3분의 1**이라 표본이 전부가 아니며, **브랜드마다 결과가 크게 갈려** 전사 처방이 아니라 지역별 개입이 필요하다. **⭐ 아픈 곳으로 나온 셋이 이 회사의 다른 글과 이어진다**(이 연결은 이 사이트의 것이다) — **기술 부채 우선순위 · 코드베이스에 기여하는 어려움 · 매일의 방해**. ⚠️ **버린 대안은 명시하지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Beyond Code: Measuring Developer Experience",
+              "url": "https://adevinta.com/techblog/beyond-code-measuring-developer-experience/",
+              "publisher": "Adevinta Tech Blog",
+              "date": "2024-03-26",
+              "summary": "**개발자 경험을 활동 지표로 재는 것을 그만둔 기록.** 문제 진술 — *\"Developers' experience is often only subject to activity metrics like committed lines of code, pull requests and story points. Unfortunately, these data points offer little insight into the actual productivity and well-being of your developers.\"* 그런 지표는 조작하기 쉬워 **굿하트의 법칙**에 걸린다 — *\"When a measure becomes a target, it ceases to be a good measure.\"* **그래서 시스템 데이터와 인식 데이터를 함께 쓴다** — 도구에서 자동으로 오는 PR·배포 수에 더해 *\"to get a holistic view of developer experience, we needed complementary data\"* 를 설문으로 받는다. **SPACE 프레임워크** 기반 **약 30문항**, 대부분 **1~7 리커트 척도**에 자유 서술을 붙이고, *\"All responses were collected anonymously to encourage our developers to speak truthfully and without the fear of repercussions.\"* 시스템 쪽은 **Ledger** 라는 사내 도구가 **DORA 지표**(리드 타임·배포 빈도·실패율·평균 복구 시간)를 자동 계산한다. **수치** — Product & Tech 인원 **약 3,000명**, **설문 응답은 개발자의 약 3분의 1**, 소요 **5~10분**(보통의 30분짜리 개발자 설문보다 짧다). **⚠️ 대가를 적는다** — 짧게 만든 대신 깊이를 내줬고, **응답률이 3분의 1이라 표본이 전부가 아니며**, **브랜드마다 결과가 크게 갈려 전사 처방이 아니라 지역별 개입이 필요하다.** 좋게 나온 것 — 목적의 명확성 · 릴리스 용이성 · 운영 환경 이해 · 스스로 막힘을 푸는 능력. 아픈 곳 — **기술 부채 우선순위 · 코드베이스에 기여하는 어려움 · 매일의 방해**. ⚠️ **버린 대안을 명시하지는 않는다.**"
+            }
+          ]
         }
       ],
       "features": [
@@ -237,13 +252,37 @@
         "account-metadata-spine",
         "policy-inventory-cost"
       ]
+    },
+    {
+      "name": "한 장터 안에서 흩어진 데이터를 하나로 모은다",
+      "why": "**⭐ 이 도메인은 이 사이트가 계속 비워 뒀던 칸이다**(이 정리는 이 사이트의 것이다). 274~277 에서 읽은 글이 전부 **플랫폼·도구** 쪽이었고, **개별 장터의 실제 시스템 이야기가 하나도 없었다.** `make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28)가 **독일 장터 Kleinanzeigen** 의 이야기다.\n\n**문제는 흩어진 셋을 하나로 모으는 것이다** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체를 만들되, **실시간 변경을 놓치지 않아야** 한다.\n\n**그리고 이 글의 값은 수치가 계단처럼 떨어지는 데 있다**(이 관찰은 이 사이트의 것이다) — 변경 포착이 **초당 5만 건**, 조인 집계가 **초당 1만 건**, 외부 서비스 호출이 **초당 3천 건**이고, **최종 산출이 초당 3천 건**이다. **가장 느린 단계가 전체를 정한다.**\n\n**⚠️ 이 도메인은 아직 이 한 편만 읽었다** — 두 번째 기능을 쓰려면 개별 장터의 다른 글을 더 찾아야 한다.",
+      "tech": [
+        {
+          "tech": "흩어진 데이터원 셋을 하나로 합치는 파이프라인 — Debezium + Kafka",
+          "solves": "**MySQL 테이블 둘과 외부 HTTP 서비스**를 합쳐 하나의 객체로 만든다. 변경은 **Debezium CDC** 로 흘리고(*\"durable and fast, so your apps can respond quickly and never miss an event\"*), 집계는 **Kafka 이벤트를 듣고 MySQL 에 직접 질의해 조인**하며, 전량 재처리를 위해 **압축 토픽에 최신 스냅샷**을 무한 보관한다.",
+          "limits": "**대가가 셋 다 적혀 있다** — 직접 질의는 **고부하에서 병목이 될 수 있고**, Debezium 은 *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code\"* 이며, 코드 대신 설정으로만 하니 **유연성이 준다**. **🔴 그리고 처리량이 단계마다 떨어진다** — **5만 → 1만 → 3천**(초당). ⚠️ **실패나 사고 기록은 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Make data migration easy with Debezium and Apache Kafka",
+              "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+              "publisher": "Adevinta Tech Blog",
+              "date": "2025-01-28",
+              "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+            }
+          ]
+        }
+      ],
+      "features": [
+        "three-sources-one-object"
+      ]
     }
   ],
   "open_questions": [
     "**⭐ 2024년 결론이 2026년에 뒤집혔다.** `measuring-the-impact-of-generative-ai-on-developer-productivity`(2024-05-07)는 GitHub Copilot 을 도입하고 *\"For us, Copilot looks like it's going to stay\"* 로 끝난다. **2026년 파일럿에서 그 도구가 추정 대비 1% 로 나오고, 회사는 Claude Code 를 엔지니어 2,000명 넘는 조직에 배포하기로 한다.** **그리고 2024년의 관찰도 부분적으로 반박된다** — *\"It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most\"* 였는데, 2026년에는 중급이 첫 사용자보다 **11배**(47% 대 4%) 이득을 보면서도 **Claude Code 만 그 격차가 없었다.** **자기가 2년 전에 쓴 것을 뒤집는 데이터를 그대로 낸다**(이 대조는 이 사이트의 것이다).",
     "**⚠️ 매출 실액을 확인할 수 없다 — 못 찾은 것이 아니라 공개되지 않는다.** 2024년 Permira·Blackstone 주도 컨소시엄의 공개매수로 **오슬로 증권거래소 A주가 2024-06-05 상장폐지**됐고, 그 뒤로 분기 실적을 내지 않는다. 지분이 **컨소시엄 지배 다수 · eBay 약 20% · Schibsted 약 13.6%** 로 알려져 있으나 **회사 보도자료가 아니라 2차 보도에서 온 값이라 `추정` 으로 둔다.**",
     "**⚠️ 글마다 수치의 밀도가 크게 다르다.** `multi-cloud-governance-at-scale`(732 계정·425 프로젝트·7,000줄·쿼터 500)과 `opa-memory…kyverno`(8GB→2.7GB·30+ 클러스터)와 AI 도구 평가(77명·165건·43/24/1%·4.2/3.6/2.8)는 수치가 풍부한데, **`from-lakehouse-architecture-to-data-mesh`(2024-12-10)는 수치가 하나도 없다** — 273 에서 열어 확인했다.",
-    "**⚠️ 브랜드가 열 개를 넘는데 개별 마켓플레이스의 시스템 글을 아직 못 봤다.** 읽은 세 편이 전부 **플랫폼·도구 쪽**이다(클라우드 거버넌스 · 정책 엔진 · AI 도구 평가). **leboncoin·Marktplaats·Kleinanzeigen 같은 실제 장터의 검색·추천·정산 이야기가 이 사이트에 아직 없다.**",
+    "**⚠️ 브랜드가 열 개를 넘는데 개별 마켓플레이스의 시스템 글이 하나뿐이다.** **278 에서 하나를 찾았다** — `make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28)가 **독일 장터 Kleinanzeigen** 의 데이터 파이프라인이고, 이것으로 도메인 ③ 을 열었다. **그러나 읽은 여덟 편 중 장터 안쪽 이야기는 이 하나뿐이고 나머지는 전부 여러 브랜드를 가로지르는 플랫폼·도구 쪽이다.** **leboncoin·Marktplaats·Subito 의 검색·추천·정산 이야기는 여전히 없다** — **쓸 것이 없어서인지 안 쓰기로 한 것인지는 알 수 없다**(이 지적은 이 사이트의 것이다).",
     "**⚠️ 비교한 것이 도구인지 요금제인지 섞여 있고, 같은 조건으로 다시 잰 기록이 없다.** 이긴 도구가 *\"selected the most powerful models 60 times more than the other tools\"* 였는데 **정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다.** 회사는 이 사실을 적으면서도 ROI 를 근거로 그 도구를 고른다. **요금제를 맞춰 다시 재 본 서술은 없다**(이 지적은 이 사이트의 것이다).",
     "**⚠️ 클라우드 거버넌스 글이 이름만 대고 넘어가는 항목이 다섯이다**(276 의 3회차 재독에서 확인). **ROLFP** 보안 위험 평가를 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 없다** · **FinOps 와 GovOps** 두 스쿼드로 나뉘어 있다고만 하고 **분담이 없다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다.** **그리고 사고나 실패 사례가 하나도 없다** — **계정이 732개까지 늘었다면 지운 계정도 있었을 텐데 만드는 이야기만 자세하다**(이 관찰은 이 사이트의 것이다).",
     "**⭐ 이 회사 안에서 사고를 적는 글과 안 적는 글이 갈린다.** 정책 엔진 편에는 **실제 사고가 있다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 OOMKill 이 배포와 파드 생성을 막았으며, **VerticalPodAutoscaler 로도 못 잡아** *\"the alerts became noisy and disruptive\"* 였다. **반면 같은 도메인의 클라우드 거버넌스 편은 계정을 732개까지 늘린 과정을 자세히 적으면서 사고도 폐기 절차도 안 적는다.** **터진 이야기를 쓰는 글 쪽이 결정과 대가가 더 촘촘하다**(이 대비는 이 사이트의 것이다)."
@@ -290,6 +329,20 @@
       "publisher": "Adevinta Tech Blog",
       "date": "2024-05-07",
       "summary": "**2년 전 편 — GitHub Copilot 하나를 도입하고 쓰이는지 관측한 기록이다.** 고른 이유가 성능이 아니다: *\"our previously close relationship with GitHub and the ease with which we could get started from a product and billing perspective.\"* 대신 *\"we evaluated Copilot from multiple angles such as security and legal, far beyond our standard purchasing process\"* 를 했다. **관측 자체가 문제였다** — *\"At this time, GitHub did not offer usage statistics for Copilot. We had to find another way to monitor how our developers were doing.\"* 그래서 2023년 말 **베타 100여 명**에 설문으로 시작했고, 2024년 2월 전사 발표 뒤 셀프서비스로 라이선스를 열었으며, **4월에 GitHub 사용량 API 가 나온 뒤에야 실측을 붙였다.** **수치** — **제안 수락률 약 20%**. 회사의 해석: *\"The fact that every fifth suggestion is accepted by our developers is not insignificant. However, it's far away from the idea that AIs can or will replace developers entirely.\"* **🔴 가장 큰 발견이 휴면 라이선스였다** — *\"The biggest takeaway for us was the amount of dormant licences\"* 이고 활동은 대부분 개발자에게서 나왔다(엔지니어링 매니저·PO·비기술 직군이 가장 낮았다). 그래서 **30일 미사용 시 라이선스를 자동 해제**하기로 했다. **🔴 위험도 적는다** — *\"We've seen (junior) developers put too much trust in Copilot and then having to ask for help from senior colleagues\"* 이고, 한 문장으로 정리한다: *\"Copilot is a tool that is as smart as the engineer using it. It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most.\"* **결론은 유지였다** — *\"For us, Copilot looks like it's going to stay… it's just a tool to accomplish the task at hand.\"* **⭐ 그런데 2026 년 파일럿에서 이 도구가 추정 대비 1% 로 나오고, 회사는 Claude Code 로 갈아탄다**(이 대조는 이 사이트의 것이다)."
+    },
+    {
+      "title": "Make data migration easy with Debezium and Apache Kafka",
+      "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+      "publisher": "Adevinta Tech Blog",
+      "date": "2025-01-28",
+      "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+    },
+    {
+      "title": "Beyond Code: Measuring Developer Experience",
+      "url": "https://adevinta.com/techblog/beyond-code-measuring-developer-experience/",
+      "publisher": "Adevinta Tech Blog",
+      "date": "2024-03-26",
+      "summary": "**개발자 경험을 활동 지표로 재는 것을 그만둔 기록.** 문제 진술 — *\"Developers' experience is often only subject to activity metrics like committed lines of code, pull requests and story points. Unfortunately, these data points offer little insight into the actual productivity and well-being of your developers.\"* 그런 지표는 조작하기 쉬워 **굿하트의 법칙**에 걸린다 — *\"When a measure becomes a target, it ceases to be a good measure.\"* **그래서 시스템 데이터와 인식 데이터를 함께 쓴다** — 도구에서 자동으로 오는 PR·배포 수에 더해 *\"to get a holistic view of developer experience, we needed complementary data\"* 를 설문으로 받는다. **SPACE 프레임워크** 기반 **약 30문항**, 대부분 **1~7 리커트 척도**에 자유 서술을 붙이고, *\"All responses were collected anonymously to encourage our developers to speak truthfully and without the fear of repercussions.\"* 시스템 쪽은 **Ledger** 라는 사내 도구가 **DORA 지표**(리드 타임·배포 빈도·실패율·평균 복구 시간)를 자동 계산한다. **수치** — Product & Tech 인원 **약 3,000명**, **설문 응답은 개발자의 약 3분의 1**, 소요 **5~10분**(보통의 30분짜리 개발자 설문보다 짧다). **⚠️ 대가를 적는다** — 짧게 만든 대신 깊이를 내줬고, **응답률이 3분의 1이라 표본이 전부가 아니며**, **브랜드마다 결과가 크게 갈려 전사 처방이 아니라 지역별 개입이 필요하다.** 좋게 나온 것 — 목적의 명확성 · 릴리스 용이성 · 운영 환경 이해 · 스스로 막힘을 푸는 능력. 아픈 곳 — **기술 부채 우선순위 · 코드베이스에 기여하는 어려움 · 매일의 방해**. ⚠️ **버린 대안을 명시하지는 않는다.**"
     }
   ],
   "features": [
@@ -2467,6 +2520,615 @@
           "publisher": "Adevinta Tech Blog",
           "date": "2024-12-17",
           "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+        }
+      ]
+    },
+    {
+      "key": "three-sources-one-object",
+      "name": "흩어진 셋을 하나로 모은다",
+      "domain": "한 장터 안에서 흩어진 데이터를 하나로 모은다",
+      "updated_at": "2026-08-28",
+      "ui": {
+        "title": "광고 하나가 완성된 모습이 되기까지",
+        "question": "데이터가 세 군데 있는데 하나로 어떻게 모으는가?",
+        "kind": "web",
+        "note": "**파이프라인의 흐름을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내에 이런 화면이 있었는지조차 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 구조와 처리량만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "데이터 파이프라인"
+          },
+          {
+            "type": "card",
+            "text": "필요한 것이 세 군데 있습니다",
+            "items": [
+              "데이터베이스 표 둘",
+              "바깥 서비스 하나",
+              "그리고 계속 바뀐다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "바뀐 것을 놓치지 않는다"
+          },
+          {
+            "type": "text",
+            "text": "주기적으로 훑는 대신 바뀌는 순간을 흘려보냅니다",
+            "pin": 2
+          },
+          {
+            "type": "amount",
+            "text": "초당 오만 건",
+            "sub": "변경을 포착하는 단계"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "합친다"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "전용 처리 엔진을 쓰지 않는다",
+                "sub": "이벤트를 듣고 데이터베이스에 직접 묻는다",
+                "right": "단순함"
+              },
+              {
+                "title": "대신 부하가 커지면 여기가 막힌다",
+                "sub": "회사가 그렇게 적는다",
+                "right": "대가"
+              }
+            ],
+            "pin": 3
+          },
+          {
+            "type": "amount",
+            "text": "초당 만 건",
+            "sub": "합치는 단계"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "바깥에 물어본다"
+          },
+          {
+            "type": "amount",
+            "text": "초당 삼천 건",
+            "sub": "바깥 서비스를 부르는 단계"
+          },
+          {
+            "type": "text",
+            "text": "가장 느린 곳이 전체 속도가 됩니다",
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "card",
+            "text": "처음부터 다시 만들어야 할 때를 대비합니다",
+            "items": [
+              "가장 최근 것만 남겨 둔다",
+              "기한 없이 보관한다"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "text",
+            "text": "직접 짠 코드 대신 설정으로 맞춥니다",
+            "pin": 6
+          },
+          {
+            "type": "button",
+            "text": "완성된 객체 내보내기",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "세 군데에 흩어져 있다",
+            "what": "**MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체를 만들어야 하고, **실시간 변경을 놓치면 안 된다.** 독일 장터 **Kleinanzeigen** 의 시스템이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "훑지 않고 흘려보낸다",
+            "what": "Debezium 커넥터로 MySQL 변경을 스트림한다 — *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 주기적으로 훑거나 스냅샷을 뜨는 방식은 **연속 변경을 못 잡아** 버렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "전용 엔진을 안 들였다",
+            "what": "Kafka Streams 와 RocksDB 를 들이는 대신 **이벤트를 듣고 MySQL 에 직접 질의해 조인**한다 — *\"simplicity of this setup was its biggest advantage.\"* **대가도 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "가장 느린 곳이 전체를 정한다",
+            "what": "변경 포착 **최대 초당 5만 건** → 조인 집계 **최대 초당 1만 건** → **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. **앞 단계가 아무리 빨라도 마지막에 맞춰진다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "전량 재처리를 대비해 둔다",
+            "what": "3자 서비스가 바뀌면 처음부터 다시 만들어야 하는데, **압축 토픽**에 최신 스냅샷을 두어 *\"most recent event is always available and stored indefinitely\"* 하게 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "코드 대신 설정으로",
+            "what": "커스텀 로직을 짜지 않고 **설정에 기댄다.** 회사가 대가를 적는다 — **유연성이 준다.** 그리고 Debezium 자체의 대가도 있다: *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**중고 장터의 광고 하나를 온전히 보여 주려면 데이터가 여러 군데서 와야 한다.** 여기서는 **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나이고, **그것들이 계속 바뀐다.** 그래서 문제가 둘로 갈린다 — **합치는 일**과 **바뀐 것을 놓치지 않는 일**이다(이 구분은 이 사이트의 것이다).\n\n**⭐ 이 글은 이 사이트가 Adevinta 에서 계속 비워 뒀던 칸을 채운다**(이 정리는 이 사이트의 것이다). 274~277 에 읽은 글이 전부 **플랫폼·도구** 쪽이었다 — 클라우드 거버넌스, 정책 엔진, AI 도구 평가. **브랜드가 열 개를 넘는 회사인데 정작 장터 안에서 무슨 일이 일어나는지가 없었다.** 이건 **독일 장터 Kleinanzeigen** 의 시스템이다.\n\n**⭐ 그리고 이 글의 값은 수치가 계단처럼 떨어지는 데 있다.** 변경 포착이 **초당 5만 건**, 조인 집계가 **초당 1만 건**, 외부 서비스 호출이 **초당 3천 건**이고 **최종 산출이 초당 3천 건**이다. **앞이 아무리 빨라도 마지막에 맞춰진다** — 그리고 **가장 느린 단계가 유일하게 자기가 통제하지 못하는 것**(바깥 서비스)이다(이 관찰은 이 사이트의 것이다).\n\n**설계의 성격도 분명하다** — Kafka Streams 와 RocksDB 를 들이는 대신 **이벤트를 듣고 데이터베이스에 직접 묻는 쪽**을 골랐고 이유가 *\"simplicity of this setup was its biggest advantage\"* 다. **복잡도를 사지 않는 대신 고부하에서 병목이 될 수 있다는 것을 안고 간다.**",
+        "metrics": [
+          {
+            "label": "변경 포착",
+            "value": "Debezium(MySQL→Kafka) 최대 초당 5만 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "조인 집계",
+            "value": "최대 초당 1만 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "외부 서비스 호출",
+            "value": "최대 초당 3천 건 — 가장 느린 단계다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "최종 산출",
+            "value": "초당 3천 건 — 가장 느린 단계에 맞춰진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "데이터 총량 · 지연 시간 · 재처리에 걸리는 시간 · 실패나 사고 기록",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "세 처리량을 나란히 볼 때",
+          "thought": "**5만 → 1만 → 3천으로 떨어지고 최종이 3천이다.** **앞 두 단계의 여유는 쓰이지 않는다**(이 정리는 이 사이트의 것이다). 그리고 **가장 느린 단계가 유일하게 자기 것이 아니다** — 바깥 HTTP 서비스다. ⚠️ **그런데 회사는 그 단계를 빠르게 하거나 우회하는 이야기를 하지 않는다** — 숫자만 적는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "전용 엔진을 안 들인 대목에서",
+          "thought": "*\"simplicity of this setup was its biggest advantage.\"* **복잡도를 사지 않기로 한 것이고, 그 값으로 고부하에서의 병목 가능성을 받았다**(이 정리는 이 사이트의 것이다). **드문 것은 그 병목을 미리 적어 뒀다는 점이다** — 보통은 잘 돌아간다는 이야기로 끝낸다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "압축 토픽을 둔 이유를 볼 때",
+          "thought": "**3자 서비스가 바뀌면 전량을 다시 만들어야 한다는 것을 미리 가정하고 설계했다**(이 해석은 이 사이트의 것이다). **되돌아갈 자리를 만들어 둔 것**이고, 값은 **최신 스냅샷을 기한 없이 들고 있는 것**이다. ⚠️ **그 저장 비용도, 재처리에 실제로 얼마나 걸리는지도 글에 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이 글을 이 회사의 다른 글과 나란히 볼 때",
+          "thought": "**이 회사에서 읽은 여덟 편 중 개별 장터의 시스템은 이것 하나다**(이 관찰은 이 사이트의 것이다). 나머지는 전부 여러 브랜드를 가로지르는 플랫폼·도구 이야기다. **브랜드가 열 개를 넘는데 장터 안쪽 이야기가 이렇게 적은 것 자체가 이 회사 기술블로그의 성격**으로 읽힌다 — 다만 **그것이 쓸 것이 없어서인지 안 쓰기로 한 것인지는 알 수 없다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "원천 셋",
+            "what": "**MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나. 합쳐서 하나의 객체가 된다"
+          },
+          {
+            "name": "변경 스트림",
+            "what": "Debezium 이 MySQL 변경을 흘린다. **최대 초당 5만 건**"
+          },
+          {
+            "name": "집계",
+            "what": "이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. **최대 초당 1만 건**"
+          },
+          {
+            "name": "외부 호출",
+            "what": "바깥 서비스에 묻는 단계. **최대 초당 3천 건이고 여기가 전체를 정한다**"
+          },
+          {
+            "name": "압축 토픽",
+            "what": "최신 스냅샷을 **기한 없이** 보관한다. 전량 재처리를 위한 자리다"
+          }
+        ],
+        "invariants": [
+          "**이벤트를 놓치지 않는다** — 주기적으로 훑는 대신 변경을 흘려보낸다",
+          "**전용 스트림 처리 엔진을 들이지 않는다** — 이벤트를 듣고 데이터베이스에 직접 묻는다",
+          "**최신 스냅샷은 늘 있다** — 압축 토픽에 기한 없이 남는다",
+          "**커스텀 로직 대신 설정으로 맞춘다** — 유연성을 내주고 단순함을 얻는다",
+          "**전체 처리량은 가장 느린 단계와 같다** — 초당 3천 건"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "MySQL 두 표에 변경이 생긴다",
+            "why": "광고 데이터가 계속 바뀐다"
+          },
+          {
+            "step": "Debezium 이 변경을 Kafka 로 흘린다",
+            "why": "주기적으로 훑으면 연속 변경을 놓친다"
+          },
+          {
+            "step": "소비자가 이벤트를 듣는다",
+            "why": "무엇이 바뀌었는지 알아야 합칠 것을 정한다"
+          },
+          {
+            "step": "MySQL 에 직접 질의해 조인한다",
+            "why": "전용 스트림 엔진을 안 들이기로 했다"
+          },
+          {
+            "step": "외부 HTTP 서비스에 묻는다",
+            "why": "세 번째 원천이다. 여기가 가장 느리다"
+          },
+          {
+            "step": "하나의 객체로 합친다",
+            "why": "흩어진 셋이 하나가 된다"
+          },
+          {
+            "step": "압축 토픽에 최신 스냅샷을 남긴다",
+            "why": "3자 서비스가 바뀌면 전량을 다시 만들어야 한다"
+          },
+          {
+            "step": "초당 3천 건으로 내보낸다",
+            "why": "가장 느린 단계에 맞춰진다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "바뀐 것을 어떻게 알 것인가?",
+            "chosen": "**변경 데이터 캡처로 흘려보낸다.** Debezium 커넥터가 MySQL 변경을 스트림한다",
+            "alternatives": [
+              "주기적으로 훑거나 스냅샷을 뜨기 — 연속 변경을 못 잡는다"
+            ],
+            "tradeoff": "*\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* **대가를 회사가 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **문제가 나면 애플리케이션 코드가 아니라 인프라를 들여다봐야 한다는 뜻이다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "합치는 일을 무엇으로 할 것인가?",
+            "chosen": "**이벤트를 듣고 MySQL 에 직접 질의해 조인한다.** *\"simplicity of this setup was its biggest advantage\"*",
+            "alternatives": [
+              "Kafka Streams 와 RocksDB 로 집계하기 — **불필요한 구조 복잡도**로 봤다"
+            ],
+            "tradeoff": "**복잡도를 사지 않는 대신 병목 가능성을 받았다**(이 정리는 이 사이트의 것이다) — 회사가 그대로 적는다: 직접 질의는 **고부하에서 병목이 될 수 있다.** **드문 것은 그 병목을 미리 적어 뒀다는 점이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "처음부터 다시 만들어야 할 때를 어떻게 대비할 것인가?",
+            "chosen": "**압축 토픽에 최신 스냅샷을 둔다.** *\"most recent event is always available and stored indefinitely\"*",
+            "alternatives": [
+              "필요할 때 원천에서 다시 읽기"
+            ],
+            "tradeoff": "**3자 서비스가 바뀌면 전량을 다시 만들어야 한다는 것을 미리 가정하고 되돌아갈 자리를 만들었다**(이 해석은 이 사이트의 것이다). **대가는 최신 스냅샷을 기한 없이 들고 있는 것**이고, ⚠️ **그 저장 비용도 재처리에 실제로 얼마나 걸리는지도 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "외부 서비스 호출을 파이프라인에 넣을 것인가?",
+            "chosen": "**넣는다.** 세 번째 원천이므로 합치는 과정 안에서 부른다",
+            "alternatives": [
+              "외부 데이터를 미리 복제해 두고 로컬에서 조인하기"
+            ],
+            "tradeoff": "**⚠️ 대가가 숫자로 드러난다** — 이 단계가 **최대 초당 3천 건**이고 앞 단계들은 **5만·1만**이다. **전체가 여기에 맞춰지고, 하필 이 단계만 자기가 통제하지 못하는 것이다**(이 관찰은 이 사이트의 것이다). ⚠️ **회사는 그 단계를 빠르게 하거나 우회하는 이야기를 하지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "직접 코드를 짤 것인가 설정으로 맞출 것인가?",
+            "chosen": "**설정으로 맞춘다.** 커스텀 로직에 기대지 않는다",
+            "alternatives": [
+              "필요한 처리를 코드로 구현하기"
+            ],
+            "tradeoff": "**유지할 코드가 줄어드는 대신 유연성이 준다** — 회사가 그렇게 적는다. **⚠️ 그리고 앞의 Debezium 대가와 겹친다**(이 연결은 이 사이트의 것이다) — 코드가 없으니 문제가 나면 더더욱 **인프라 층**을 봐야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Debezium",
+            "role": "MySQL 변경을 Kafka 로 흘린다. 최대 초당 5만 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Apache Kafka · Kafka Connect",
+            "role": "변경 스트림과 커넥터 운영의 바탕",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "압축 토픽",
+            "role": "최신 스냅샷을 기한 없이 보관해 전량 재처리를 가능하게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "MySQL 직접 질의",
+            "role": "이벤트를 듣고 조인한다. 최대 초당 1만 건. 고부하에서 병목이 될 수 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "MirrorMaker",
+            "role": "글에 언급된 구성 요소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Kafka Streams · RocksDB",
+            "role": "버린 대안 — 불필요한 구조 복잡도로 봤다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "합치는 동안에도 원천이 계속 바뀐다",
+            "why_hard": "**MySQL 테이블 둘과 외부 서비스**를 합쳐야 하는데 그 사이에도 변경이 들어온다. 주기적으로 훑는 방식은 **연속 변경을 놓친다**.",
+            "current_best": "**변경을 흘려보내고 이벤트가 올 때마다 합친다** — *\"durable and fast, so your apps can respond quickly and never miss an event.\"* 그리고 **전량 재처리가 필요할 때를 위해 압축 토픽에 최신 스냅샷을 남긴다.** ⚠️ **다만 지연 시간은 글에 없다** — 처리량만 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          },
+          {
+            "problem": "가장 느린 단계가 자기 것이 아니다",
+            "why_hard": "변경 포착 **초당 5만**, 조인 **초당 1만**인데 **외부 HTTP 서비스 호출이 초당 3천**이고 **최종이 3천**이다. **앞 단계의 여유는 쓰이지 않는다**(이 정리는 이 사이트의 것이다).",
+            "current_best": "**그 값을 받아들이고 숫자로 적는다.** ⚠️ **빠르게 하거나 우회하는 이야기는 없다** — 캐싱도, 배치 호출도, 미리 복제해 두는 안도 나오지 않는다(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Make data migration easy with Debezium and Apache Kafka",
+                "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2025-01-28",
+                "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "흩어진 셋이 하나가 되기까지",
+          "question": "전체 속도는 어디서 정해지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  DB1[\"데이터베이스 표 하나\"]:::list\n  DB2[\"데이터베이스 표 둘\"]:::list\n  CDC[\"바뀌는 순간을 흘려보낸다<br/>초당 오만 건까지\"]:::list\n  JOIN[\"이벤트를 듣고 데이터베이스에 직접 묻는다<br/>초당 만 건까지\"]:::list\n  EXT[\"<b>바깥 서비스에 물어본다</b><br/>• 초당 삼천 건까지<br/>• 여기가 가장 느리다<br/>• 유일하게 우리 것이 아니다\"]:::accent\n  OUT[\"하나의 객체로 나간다 — 초당 삼천 건\"]:::list\n  SNAP[\"가장 최근 것만 기한 없이 남긴다\"]:::list\n  X1[\"주기적으로 훑기<br/>버렸다 — 연속 변경을 놓친다\"]:::quiet\n  X2[\"전용 처리 엔진 들이기<br/>버렸다 — 단순함이 가장 큰 이점이었다\"]:::quiet\n  DB1 --> CDC\n  DB2 --> CDC\n  CDC --> JOIN --> EXT --> OUT\n  OUT --> SNAP\n  CDC -.-> X1\n  JOIN -.-> X2"
+        },
+        {
+          "title": "변경 하나가 지나는 자리",
+          "question": "어디서 기다리게 되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 발생\n  발생 : <b>표에서 값이 바뀐다</b><br/>훑기를 기다리지 않고 바로 흘러나간다\n  발생 --> 대기 : 스트림에 실린다\n  대기 : <b>소비자가 가져갈 때까지</b><br/>이 구간은 초당 오만 건을 견딘다\n  대기 --> 조합 : 소비자가 듣는다\n  조합 : <b>데이터베이스에 직접 물어 합친다</b><br/>초당 만 건. 부하가 크면 여기가 막힐 수 있다\n  조합 --> 문의 : 바깥이 필요하다\n  문의 : <b>외부 서비스를 부른다</b><br/>초당 삼천 건. 전체가 여기에 맞춰진다\n  문의 --> 완성 : 답이 왔다\n  완성 : <b>하나의 객체가 된다</b><br/>최신 모습이 압축된 자리에 남는다\n  완성 --> 재생 : 바깥이 바뀌어 전부 다시 만들어야 한다\n  재생 : <b>남겨 둔 최신 모습에서 다시 시작한다</b><br/>기한 없이 보관하기 때문에 가능하다\n  재생 --> 조합\n  완성 --> [*]"
+        },
+        {
+          "title": "이 글이 안 적은 것",
+          "question": "숫자는 처리량뿐인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"단계별 처리량은 적는다\"]:::list\n  B[\"<b>지연 시간은 한 줄도 없다</b><br/>몇 건을 견디는지는 알아도 한 건이 얼마나 걸리는지는 모른다\"]:::accent\n  C[\"가장 느린 곳이 바깥 서비스다\"]:::list\n  D[\"빠르게 하거나 우회하는 이야기가 없다 — 캐싱도 묶어 부르기도\"]:::list\n  E[\"최신 모습을 기한 없이 보관한다\"]:::list\n  F[\"그 저장 비용도 다시 만드는 데 걸리는 시간도 없다\"]:::list\n  G[\"직접 질의가 병목이 될 수 있다고 적는다\"]:::list\n  H[\"어느 정도 부하에서 그런지는 없다\"]:::list\n  I[\"잘 돌아간다는 이야기로 끝난다\"]:::list\n  J[\"사고나 실패 기록이 없다\"]:::list\n  N[\"<i>병목 가능성만 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Make data migration easy with Debezium and Apache Kafka",
+          "url": "https://adevinta.com/techblog/make-data-migration-easy-with-debezium-and-apache-kafka/",
+          "publisher": "Adevinta Tech Blog",
+          "date": "2025-01-28",
+          "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
         }
       ]
     }

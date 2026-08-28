@@ -8,75 +8,74 @@
 
 ## 지금 파는 중
 
-**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 2개 · 기능 3개. 큐 잔량 1/3.**
+**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 3개 · 기능 4개. 큐 잔량 1/3.**
 
-**277 에서 도메인 ② 의 두 번째 기능을 썼다** — `policy-inventory-cost`(규칙이 보려면
-기억해야 한다), **결정 6개** 전부 대가가 붙었다.
+**278 에서 미독 편 둘을 열었고 둘 다 재료가 있었다.** `--gaps` 는 [신규]를 냈지만
+**회사를 갈아타지 않는다는 규칙이 위**라 Adevinta 를 계속 팠다.
 
-**⚠️ `--gaps` 는 [신규]를 냈다**(빈 도메인이 없어서). **회사를 갈아타지 않는다는 규칙이
-위라 Adevinta 를 계속 팠고, 재독에서 실제 사고 기록이 나왔다.**
+### ⭐ 278 의 수확 — 계속 비워 뒀던 칸을 채웠다
 
-### 🔴 277 의 발견 — 이 회사 안에서 사고를 적는 글과 안 적는 글이 갈린다
+274~277 내내 **"개별 장터의 시스템 글이 없다"** 고 적어 왔는데,
+`make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28)가 **독일 장터
+Kleinanzeigen** 의 데이터 파이프라인이었다. **도메인 ③ `한 장터 안에서 흩어진 데이터를
+하나로 모은다` 를 열고 기능 `three-sources-one-object`(흩어진 셋을 하나로 모은다, 결정 5)를
+썼다.**
 
-**정책 엔진 편에는 사고가 있다** — *"OPA started experiencing performance degradation and
-sporadic OOMKills"* 이고 **OOMKill 이 배포와 파드 생성을 막았다.** **VerticalPodAutoscaler
-로도 못 잡았다** — *"Although our VerticalPodAutoscaler helped adjust resource allocation
-dynamically, the alerts became noisy and disruptive."* 주범은 **개발 클러스터와 CronJob 이
-많은 클러스터**(*"The number of pods doubled in a short time"*).
+**이 기능의 축은 처리량이 계단처럼 떨어지는 것이다** — 변경 포착 **초당 5만** → 조인 집계
+**초당 1만** → 외부 HTTP 호출 **초당 3천**, **최종이 3천**. **앞 단계의 여유는 쓰이지
+않고, 하필 가장 느린 단계만 자기가 통제하지 못하는 것**이다(이 관찰은 이 사이트의 것).
+⚠️ **그런데 회사는 그 단계를 빠르게 하거나 우회하는 이야기를 하지 않는다** — 캐싱도 배치
+호출도 미리 복제해 두는 안도 안 나온다.
 
-**반면 같은 도메인의 거버넌스 편은 계정을 732개까지 늘린 과정을 자세히 적으면서 사고도
-폐기 절차도 안 적는다.** **터진 이야기를 쓰는 글 쪽이 결정과 대가가 더 촘촘하다.**
-`open_questions` 에 적었다.
+**설계 성격도 분명하다** — Kafka Streams·RocksDB 를 안 들이고 **이벤트를 듣고 MySQL 에 직접
+질의**한다(*"simplicity of this setup was its biggest advantage"*). **드문 것은 그 대가를
+미리 적어 뒀다는 점** — 직접 질의는 **고부하에서 병목이 될 수 있다.**
 
-### 이 기능의 축 — 보려면 어딘가에 들고 있어야 한다
+### 도메인 ① 에 tech 하나를 더했다 — 개발자 경험 측정
 
-규칙이 옆을 봐야 하는데(*"real-world policies often require access to other objects in the
-cluster"*), **미리 담으면 메모리를 쓰고 그때그때 물으면 API 서버를 쓴다. 둘 다 안 쓰는
-방법은 없다**(이 정리는 이 사이트의 것). 고친 순서는 셋 — 대용량 객체를 참조하는 정책부터
-골라내고, **동기화에서 파드를 빼고**(**8GB→2.7GB**), 그 정책을 **동적 조회 + jmesPath** 로
-다시 썼다. **그리고 값을 옮겼다고 같은 문장에서 밝힌다** — *"reduces memory consumption but
-increases the load on the Kubernetes API server."* ⚠️ **다만 옮긴 값은 재지 않았다** —
-메모리는 잰 값을 내는데 API 서버 쪽은 관측 권고뿐이다.
-**버린 도구를 비난하지도 않는다** — *"does not aim to criticise Gatekeeper's inventory sync
-feature—which remains extremely useful."*
+`beyond-code-measuring-developer-experience`(2024-03-26)를 읽고 도메인 ① `tech` 에 넣었다.
+**활동 지표를 굿하트의 법칙으로 물리치고**(*"When a measure becomes a target, it ceases to
+be a good measure"*) **시스템 데이터(Ledger 가 DORA 자동 계산)와 인식 데이터(SPACE 기반 약
+30문항, 1~7 척도, 익명)를 함께** 쓴다. Product & Tech **약 3,000명**, **응답률 약 3분의 1**,
+**5~10분**. 대가도 적는다 — 짧게 만든 대신 깊이를 내줬고, **브랜드마다 결과가 갈려 지역별
+개입이 필요하다.** 아픈 곳 셋 — **기술 부채 우선순위 · 코드베이스 기여의 어려움 · 매일의
+방해.** **⚠️ 기능으로 쓰려면 도메인 ① 의 세 번째 편이 필요하다**(현재 두 편 읽음).
 
 ### 다음 사이클 — 닫는 쪽이 유력하다
 
-**두 도메인에 기능이 셋이고(① 1개 · ② 2개) 확보한 재료를 다 썼다.** `--gaps` 는 이번에도
-[신규]를 낼 것이다. **남은 미독 편에 재료가 서는지 한 번 보고, 얇으면 Adevinta 를 `done`
-으로 닫는다**(회사 `status` · `index.json` status · **QUEUE 진행 중 → 완료**, 완료 섹션은
-**불릿**, `'\n## 완료\n'` 로 줄 경계 매치).
+**도메인 셋에 기능 넷이고 확보한 재료를 다 썼다.** `--gaps` 는 이번에도 [신규]를 낼 것이다.
+**남은 미독에 재료가 서면 하나 더 쓰고, 얇으면 Adevinta 를 `done` 으로 닫는다**(회사
+`status` · `index.json` status · **QUEUE 진행 중 → 완료**, 완료 섹션은 **불릿**,
+`'\n## 완료\n'` 로 줄 경계 매치).
 
-**⚠️ 미독 편** — `make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28) ·
-`beyond-code-measuring-developer-experience`(2024-03-26, **도메인 ① 세 번째 편 후보**) ·
-`its-not-always-dns-unless-it-is` · `adevintas-machine-learning-golden-path` ·
-`deep-dive-in-paddleocr-inference` · `using-rasterization-to-make-document-sharing-safer` ·
-`from-lakehouse-architecture-to-data-mesh`(⚠️ **수치 0** 으로 확인됨, 273).
+**⚠️ 남은 미독** — `its-not-always-dns-unless-it-is` · `adevintas-machine-learning-golden-path`
+· `deep-dive-in-paddleocr-inference` · `using-rasterization-to-make-document-sharing-safer`.
+⚠️ `from-lakehouse-architecture-to-data-mesh` 는 **수치 0 으로 확인**(273), 다시 안 연다.
 
-**⭐ 닫는다면 `business_model` 에 적을 패턴 다섯이 서 있다:**
+**⭐ 닫는다면 `business_model` 에 적을 패턴 다섯:**
 ① **남의 것을 재고 재는 방법의 한계를 함께 적는다**(오차 원인 다섯 · 주관과 객관의 불일치를
 판정 없이 남김 · **2년 전 자기 결론을 뒤집는 데이터**).
-② **인프라를 고치는 대신 인프라에 대한 사실을 인프라로 승격시킨다**(*"having proper
-(meta)data is key to properly governing the cloud"*, 계정 생성을 승인 흐름에).
+② **인프라를 고치는 대신 인프라에 대한 사실을 인프라로 승격시킨다**(계정 생성을 승인 흐름에).
 ③ **통일을 시도하다 막히면 포기하고 위임한다**(공용 집합 쿼터 500 → ABAC 한계 넷 → 팀에).
-④ **값을 없애지 않고 옮기며 그렇다고 적는다**(메모리 → API 서버).
-⑤ **⚠️ 글마다 사고와 수치의 밀도가 극단적으로 다르다** — 정책 엔진 편에는 OOMKill 기록이
-있는데 거버넌스 편에는 **계정 폐기 절차도 사고도 없고**, data mesh 편은 **수치가 0** 이다.
+④ **값을 없애지 않고 옮기며 그렇다고 적는다**(메모리 → API 서버, **8GB→2.7GB**).
+⑤ **⚠️ 글마다 사고와 수치의 밀도가 극단적으로 다르다** — 정책 엔진 편에는 **OOMKill 기록**이
+있는데 거버넌스 편에는 **계정 폐기 절차도 사고도 없고**, Debezium 편은 **처리량만 있고 지연
+시간이 한 줄도 없으며**, data mesh 편은 **수치가 0** 이다.
 
 ### 이 회사에서 못 채운 것
 
-- **매출 실액 확인 불가** — 못 찾은 것이 아니라 **2024-06-05 상장폐지로 공개되지 않는다.**
-- **⚠️ 개별 장터의 시스템 글을 못 봤다** — 읽은 여섯이 전부 플랫폼·도구 쪽이다.
-  **leboncoin·Marktplaats·Kleinanzeigen 의 검색·추천·정산 이야기가 없다.**
+- **매출 실액 확인 불가** — **2024-06-05 상장폐지로 공개되지 않는다**(못 찾은 것이 아니다).
+- **⚠️ 장터 안쪽 글이 여전히 하나뿐** — 읽은 여덟 편 중 Kleinanzeigen 편 하나이고 나머지는
+  전부 플랫폼·도구다. **leboncoin·Marktplaats·Subito 의 검색·추천·정산 이야기가 없다.**
 
 ### 큐와 다음 회사
 
 **큐 잔량 1/3.** `--gaps` 의 안내 — **이 회사를 다 판 뒤 후보 조사 사이클을 한 번 끼운다.**
-**trivago**(독일 · 여행 메타서치, `tech.trivago.com` 자체 호스팅, 2026 글 여섯 편)만 대기에
-있다. **📌 Grab 보강 후보** — Palana 2부작 · Agent platform Part 1 · **Iceberg(07-10)** ·
-**Counter Service 저장소 이전(07-03)**, 뒤 둘은 기존 기능의 후속.
+**trivago**(독일 · 여행 메타서치, `tech.trivago.com` 자체 호스팅, 2026 글 여섯 편)만 대기.
+**📌 Grab 보강 후보** — Palana 2부작 · Agent platform Part 1 · **Iceberg(07-10)** ·
+**Counter Service 저장소 이전(07-03)**, 뒤 둘은 기존 `iceberg-lake`·`counter-service` 의 후속.
 **📌 Roblox 단서** — `about.roblox.com/newsroom/<연>/<월>/<슬러그>` 가 최종 주소. 본문은
-오는데 두 편 다 버린 대안이 없어 기준 미달로 접었다. **게임 자리가 급하면 다른 편을 연다.**
+오는데 두 편 다 버린 대안이 없어 기준 미달로 접었다.
 **안 열어 본 후보** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
 **빈 자리** — 라틴아메리카 0 · **게임 1** · **아프리카 1**(두 번 빈손) · 인도 1.
 **한국 편중 아홉.** **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao
@@ -85,15 +84,15 @@ feature—which remains extremely useful."*
 ### 비교 문서 재료
 
 - **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — Snap 다섯 + **Adevinta 가 축을
-  완성한다**(남의 도구를 자기 백로그로 재고, 오차 원인을 부록에 다섯 개 적고, 주관과 객관의
-  불일치를 판정 없이 남기고, **2년 전 자기 결론을 뒤집는 데이터를 낸다**).
+  완성한다.** ⭐ **그리고 `beyond-code` 편이 재료를 더한다** — **활동 지표를 굿하트의 법칙으로
+  물리치고 시스템 데이터와 인식 데이터를 함께 쓴다.**
 - **⭐ `기계가 그렇다는데`** — Snap 둘 + **Adevinta 하나**(유일하게 회의적이고 사는 쪽).
-- **⭐ 새 축 후보 `만드는 이야기만 있고 치우는 이야기가 없다`** — Adevinta 의 **계정 폐기
-  부재**가 첫 재료이고, **같은 회사의 정책 엔진 편이 반례**다(사고를 적는다). 이 사이트의
-  다른 회사에도 같은 빈칸이 있는지 확인할 값이 있다.
-- **⭐ 새 축 후보 `아낀 값은 어디로 갔는가`** — Adevinta 의 **메모리 → API 서버** 가 명시적
-  재료다. Careem 의 **지운 것을 치우는 비용**, Zerodha 의 **색인 대신 압축**, Doximity 의
-  **미룬 병합** 이 같은 축에 선다(이 묶음은 이 사이트의 것).
+- **⭐ 새 축 후보 `만드는 이야기만 있고 치우는 이야기가 없다`** — Adevinta 계정 폐기 부재가
+  첫 재료, 같은 회사 정책 엔진 편이 반례.
+- **⭐ 새 축 후보 `아낀 값은 어디로 갔는가`** — Adevinta 메모리→API 서버 · Careem 지운 것을
+  치우는 비용 · Zerodha 색인 대신 압축 · Doximity 미룬 병합.
+- **⭐ 새 축 후보 `가장 느린 곳이 남의 것일 때`** — Adevinta 의 **외부 서비스 초당 3천 건**이
+  전체를 정하는데 **우회 이야기가 없다.** 다른 회사에서 같은 자리를 찾아볼 값이 있다.
 - `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯) ·
   `되돌릴 수 있는 것을 먼저 한다` 보강.
 
