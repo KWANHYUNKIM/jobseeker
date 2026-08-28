@@ -154,7 +154,7 @@
   "domains": [
     {
       "name": "남이 만든 도구를 자기 업무로 재본다",
-      "why": "**이 회사는 AI 개발 도구를 만들지 않고 산다.** 그래서 사기 전에 재는데, **재는 방식이 이 사이트에서 처음 보는 것이다**(이 판단은 이 사이트의 것이다).\n\n**벤치마크가 아니라 실제 업무로 잰다** — **소프트웨어 엔지니어 77명이 실제 업무 165건**을 4주 동안(2025년 5~6월) 처리하며 도구 셋을 썼다. 결과는 **추정 시간 대비 약 43% / 24% / 1%** 이고 만족도가 **4.2 / 3.6 / 2.8** 이다.\n\n**⭐ 그런데 값이 나가는 것은 결과가 아니라 결과를 둘러싼 단서들이다.** 회사가 **한계를 첫머리에 적는다** — 기준이 *\"assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고, *\"The study lasted only 1 month, hence long term effects are not measured.\"* **그리고 요금제가 결과에 섞였다고 밝힌다** — 정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고르므로, **비교한 것이 도구인지 요금제인지가 섞여 있다**(이 정리는 이 사이트의 것이다).\n\n**⚠️ 아직 이 도메인의 글은 한 편만 읽었다** — 기능을 쓰기 전에 두 편 이상 읽는다.",
+      "why": "**이 회사는 AI 개발 도구를 만들지 않고 산다.** 그래서 사기 전에 재는데, **재는 방식이 이 사이트에서 처음 보는 것이다**(이 판단은 이 사이트의 것이다).\n\n**벤치마크가 아니라 실제 업무로 잰다** — **소프트웨어 엔지니어 77명이 실제 업무 165건**을 4주 동안(2025년 5~6월) 처리하며 도구 셋을 썼다. 결과는 **추정 시간 대비 약 43% / 24% / 1%** 이고 만족도가 **4.2 / 3.6 / 2.8** 이다.\n\n**⭐ 그런데 값이 나가는 것은 결과가 아니라 결과를 둘러싼 단서들이다.** 회사가 **한계를 첫머리에 적는다** — 기준이 *\"assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고, *\"The study lasted only 1 month, hence long term effects are not measured.\"* **그리고 요금제가 결과에 섞였다고 밝힌다** — 정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고르므로, **비교한 것이 도구인지 요금제인지가 섞여 있다**(이 정리는 이 사이트의 것이다).\n\n**275 에서 두 번째 글을 찾아 읽었다** — `measuring-the-impact-of-generative-ai-on-developer-productivity`(2024-05-07). **2년 전에는 GitHub Copilot 하나를 도입하고 쓰이는지만 봤다.** 그때 결론이 *\"For us, Copilot looks like it's going to stay\"* 였는데, **2026 년 파일럿에서 그 도구가 추정 대비 1% 로 나오고 회사는 Claude Code 로 갈아탄다**(이 대조는 이 사이트의 것이다).\n\n**두 글을 나란히 놓으면 재는 방식이 어떻게 자랐는지가 보인다** — 2024 년에는 **벤더가 사용량 통계를 안 줘서** 설문으로 시작했고(*\"At this time, GitHub did not offer usage statistics for Copilot\"*), 가장 큰 발견이 **휴면 라이선스**였다. 2026 년에는 **자기 백로그 과제 165건에 붙여** 재고 오차 원인을 다섯 개 적는다.",
       "tech": [
         {
           "tech": "실제 업무로 도구를 재는 사내 연구 — 77명 · 165건 · 4주",
@@ -170,9 +170,33 @@
               "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다)."
             }
           ]
+        },
+        {
+          "tech": "도구 하나를 도입하고 실제로 쓰이는지 관측한다 — 2024년 GitHub Copilot",
+          "solves": "**2년 전 편이고 질문이 다르다** — 세 도구를 견주는 것이 아니라 **하나를 들여놓고 쓰이는지** 본다. 고른 이유도 성능이 아니라 *\"our previously close relationship with GitHub and the ease with which we could get started from a product and billing perspective\"* 였고, 대신 보안·법무를 *\"far beyond our standard purchasing process\"* 로 봤다. **관측 자체가 문제였다** — *\"At this time, GitHub did not offer usage statistics for Copilot.\"* 그래서 베타 100여 명 설문으로 시작해 **4월에 사용량 API 가 나온 뒤에야** 실측을 붙였다. **제안 수락률 약 20%.**",
+          "limits": "**🔴 가장 큰 발견이 성능이 아니라 휴면 라이선스였다** — *\"The biggest takeaway for us was the amount of dormant licences\"* 라 **30일 미사용 자동 해제**를 도입한다. **그리고 위험을 적는다** — *\"We've seen (junior) developers put too much trust in Copilot and then having to ask for help from senior colleagues\"* 이고 *\"It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most.\"* **⭐ 이 관찰이 2026 년 파일럿에서 부분적으로 반박된다** — 중급이 첫 사용자보다 **11배** 이득을 보는 것은 같은 방향이지만, **Claude Code 만 그 격차가 없었다**(이 대조는 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Measuring the Impact of Generative AI on Developer Productivity",
+              "url": "https://adevinta.com/techblog/measuring-the-impact-of-generative-ai-on-developer-productivity/",
+              "publisher": "Adevinta Tech Blog",
+              "date": "2024-05-07",
+              "summary": "**2년 전 편 — GitHub Copilot 하나를 도입하고 쓰이는지 관측한 기록이다.** 고른 이유가 성능이 아니다: *\"our previously close relationship with GitHub and the ease with which we could get started from a product and billing perspective.\"* 대신 *\"we evaluated Copilot from multiple angles such as security and legal, far beyond our standard purchasing process\"* 를 했다. **관측 자체가 문제였다** — *\"At this time, GitHub did not offer usage statistics for Copilot. We had to find another way to monitor how our developers were doing.\"* 그래서 2023년 말 **베타 100여 명**에 설문으로 시작했고, 2024년 2월 전사 발표 뒤 셀프서비스로 라이선스를 열었으며, **4월에 GitHub 사용량 API 가 나온 뒤에야 실측을 붙였다.** **수치** — **제안 수락률 약 20%**. 회사의 해석: *\"The fact that every fifth suggestion is accepted by our developers is not insignificant. However, it's far away from the idea that AIs can or will replace developers entirely.\"* **🔴 가장 큰 발견이 휴면 라이선스였다** — *\"The biggest takeaway for us was the amount of dormant licences\"* 이고 활동은 대부분 개발자에게서 나왔다(엔지니어링 매니저·PO·비기술 직군이 가장 낮았다). 그래서 **30일 미사용 시 라이선스를 자동 해제**하기로 했다. **🔴 위험도 적는다** — *\"We've seen (junior) developers put too much trust in Copilot and then having to ask for help from senior colleagues\"* 이고, 한 문장으로 정리한다: *\"Copilot is a tool that is as smart as the engineer using it. It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most.\"* **결론은 유지였다** — *\"For us, Copilot looks like it's going to stay… it's just a tool to accomplish the task at hand.\"* **⭐ 그런데 2026 년 파일럿에서 이 도구가 추정 대비 1% 로 나오고, 회사는 Claude Code 로 갈아탄다**(이 대조는 이 사이트의 것이다)."
+            },
+            {
+              "title": "A pragmatic evaluation of software engineering AI tooling",
+              "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+              "publisher": "Adevinta Tech Blog",
+              "date": "2026-03-09",
+              "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "pilot-with-real-work"
+      ]
     },
     {
       "name": "나라마다 다른 장터를 한 벌의 규칙으로 돌린다",
@@ -213,9 +237,11 @@
     }
   ],
   "open_questions": [
+    "**⭐ 2024년 결론이 2026년에 뒤집혔다.** `measuring-the-impact-of-generative-ai-on-developer-productivity`(2024-05-07)는 GitHub Copilot 을 도입하고 *\"For us, Copilot looks like it's going to stay\"* 로 끝난다. **2026년 파일럿에서 그 도구가 추정 대비 1% 로 나오고, 회사는 Claude Code 를 엔지니어 2,000명 넘는 조직에 배포하기로 한다.** **그리고 2024년의 관찰도 부분적으로 반박된다** — *\"It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most\"* 였는데, 2026년에는 중급이 첫 사용자보다 **11배**(47% 대 4%) 이득을 보면서도 **Claude Code 만 그 격차가 없었다.** **자기가 2년 전에 쓴 것을 뒤집는 데이터를 그대로 낸다**(이 대조는 이 사이트의 것이다).",
     "**⚠️ 매출 실액을 확인할 수 없다 — 못 찾은 것이 아니라 공개되지 않는다.** 2024년 Permira·Blackstone 주도 컨소시엄의 공개매수로 **오슬로 증권거래소 A주가 2024-06-05 상장폐지**됐고, 그 뒤로 분기 실적을 내지 않는다. 지분이 **컨소시엄 지배 다수 · eBay 약 20% · Schibsted 약 13.6%** 로 알려져 있으나 **회사 보도자료가 아니라 2차 보도에서 온 값이라 `추정` 으로 둔다.**",
     "**⚠️ 글마다 수치의 밀도가 크게 다르다.** `multi-cloud-governance-at-scale`(732 계정·425 프로젝트·7,000줄·쿼터 500)과 `opa-memory…kyverno`(8GB→2.7GB·30+ 클러스터)와 AI 도구 평가(77명·165건·43/24/1%·4.2/3.6/2.8)는 수치가 풍부한데, **`from-lakehouse-architecture-to-data-mesh`(2024-12-10)는 수치가 하나도 없다** — 273 에서 열어 확인했다.",
-    "**⚠️ 브랜드가 열 개를 넘는데 개별 마켓플레이스의 시스템 글을 아직 못 봤다.** 읽은 세 편이 전부 **플랫폼·도구 쪽**이다(클라우드 거버넌스 · 정책 엔진 · AI 도구 평가). **leboncoin·Marktplaats·Kleinanzeigen 같은 실제 장터의 검색·추천·정산 이야기가 이 사이트에 아직 없다.**"
+    "**⚠️ 브랜드가 열 개를 넘는데 개별 마켓플레이스의 시스템 글을 아직 못 봤다.** 읽은 세 편이 전부 **플랫폼·도구 쪽**이다(클라우드 거버넌스 · 정책 엔진 · AI 도구 평가). **leboncoin·Marktplaats·Kleinanzeigen 같은 실제 장터의 검색·추천·정산 이야기가 이 사이트에 아직 없다.**",
+    "**⚠️ 비교한 것이 도구인지 요금제인지 섞여 있고, 같은 조건으로 다시 잰 기록이 없다.** 이긴 도구가 *\"selected the most powerful models 60 times more than the other tools\"* 였는데 **정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다.** 회사는 이 사실을 적으면서도 ROI 를 근거로 그 도구를 고른다. **요금제를 맞춰 다시 재 본 서술은 없다**(이 지적은 이 사이트의 것이다)."
   ],
   "sources": [
     {
@@ -223,7 +249,7 @@
       "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
       "publisher": "Adevinta Tech Blog",
       "date": "2026-03-09",
-      "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다)."
+      "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
     },
     {
       "title": "Multi-cloud governance at scale",
@@ -252,7 +278,792 @@
       "publisher": "Adevinta",
       "date": "2023-11-21",
       "summary": "**Permira·Blackstone 주도 컨소시엄이 주당 115 노르웨이크로네에 전량 공개매수를 제안했고, 2024년에 상장폐지로 이어졌다**(오슬로 증권거래소 A주 상장폐지 2024-06-05). 컨소시엄에 **General Atlantic·TCV** 가 함께 들어갔고, 이후 지분은 **컨소시엄이 지배 다수 · eBay 약 20% · Schibsted 약 13.6%** 로 알려져 있다. ⚠️ **지분 비율은 회사 보도자료가 아니라 2차 보도에서 온 값이라 이 사이트는 `추정` 으로 둔다.** **상장폐지 뒤로는 분기 실적을 공개하지 않는다** — 그래서 이 회사는 **매출 실액을 확인할 길이 없다**(이 판단은 이 사이트의 것이다)."
+    },
+    {
+      "title": "Measuring the Impact of Generative AI on Developer Productivity",
+      "url": "https://adevinta.com/techblog/measuring-the-impact-of-generative-ai-on-developer-productivity/",
+      "publisher": "Adevinta Tech Blog",
+      "date": "2024-05-07",
+      "summary": "**2년 전 편 — GitHub Copilot 하나를 도입하고 쓰이는지 관측한 기록이다.** 고른 이유가 성능이 아니다: *\"our previously close relationship with GitHub and the ease with which we could get started from a product and billing perspective.\"* 대신 *\"we evaluated Copilot from multiple angles such as security and legal, far beyond our standard purchasing process\"* 를 했다. **관측 자체가 문제였다** — *\"At this time, GitHub did not offer usage statistics for Copilot. We had to find another way to monitor how our developers were doing.\"* 그래서 2023년 말 **베타 100여 명**에 설문으로 시작했고, 2024년 2월 전사 발표 뒤 셀프서비스로 라이선스를 열었으며, **4월에 GitHub 사용량 API 가 나온 뒤에야 실측을 붙였다.** **수치** — **제안 수락률 약 20%**. 회사의 해석: *\"The fact that every fifth suggestion is accepted by our developers is not insignificant. However, it's far away from the idea that AIs can or will replace developers entirely.\"* **🔴 가장 큰 발견이 휴면 라이선스였다** — *\"The biggest takeaway for us was the amount of dormant licences\"* 이고 활동은 대부분 개발자에게서 나왔다(엔지니어링 매니저·PO·비기술 직군이 가장 낮았다). 그래서 **30일 미사용 시 라이선스를 자동 해제**하기로 했다. **🔴 위험도 적는다** — *\"We've seen (junior) developers put too much trust in Copilot and then having to ask for help from senior colleagues\"* 이고, 한 문장으로 정리한다: *\"Copilot is a tool that is as smart as the engineer using it. It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most.\"* **결론은 유지였다** — *\"For us, Copilot looks like it's going to stay… it's just a tool to accomplish the task at hand.\"* **⭐ 그런데 2026 년 파일럿에서 이 도구가 추정 대비 1% 로 나오고, 회사는 Claude Code 로 갈아탄다**(이 대조는 이 사이트의 것이다)."
     }
   ],
-  "features": []
+  "features": [
+    {
+      "key": "pilot-with-real-work",
+      "name": "백로그로 도구를 잰다",
+      "domain": "남이 만든 도구를 자기 업무로 재본다",
+      "updated_at": "2026-08-28",
+      "ui": {
+        "title": "도구를 사기 전에 재는 자리",
+        "question": "벤치마크 대신 자기 업무로 재면 무엇이 달라지는가?",
+        "kind": "web",
+        "note": "**파일럿의 절차를 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내에 이런 화면이 있었는지조차 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 절차와 수치만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "도구 파일럿"
+          },
+          {
+            "type": "card",
+            "text": "원래 있던 일로 잽니다",
+            "items": [
+              "엔지니어 일흔일곱 명",
+              "스쿼드 열네 개",
+              "실제 업무 백예순다섯 건"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "text",
+            "text": "팀마다 도구 하나를 넉 주 동안 씁니다",
+            "pin": 2
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "일을 시작하기 전에 적는다"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "이 일이 어떤 종류인가",
+                "sub": "버그 · 리팩터링 · 기능 · 이관 · 문서",
+                "right": "분류"
+              },
+              {
+                "title": "도구를 얼마나 써 봤나",
+                "sub": "처음인지 익숙한지",
+                "right": "경험"
+              },
+              {
+                "title": "도구 없이 얼마나 걸릴까",
+                "sub": "이 값이 나중에 기준이 된다",
+                "right": "추정"
+              }
+            ],
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "끝나고 적는다"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "실제로 얼마나 걸렸나",
+                "sub": "추정과 견준다",
+                "right": "시간"
+              },
+              {
+                "title": "어디까지 도구가 했나",
+                "sub": "전부 · 절반 · 수동 · 못 끝냄",
+                "right": "결과"
+              },
+              {
+                "title": "쓸 만했나",
+                "sub": "다섯 점 만점",
+                "right": "느낌"
+              }
+            ],
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "결과"
+          },
+          {
+            "type": "amount",
+            "text": "43% · 24% · 1%",
+            "sub": "추정 시간 대비 아낀 비율"
+          },
+          {
+            "type": "card",
+            "text": "숫자와 느낌이 어긋난 자리가 있습니다",
+            "items": [
+              "일 퍼센트로 나온 도구를",
+              "쓴 사람들은 도움이 됐다고 했다"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "text",
+            "text": "차이의 원인은 도구가 고르는 모델이었습니다",
+            "pin": 6
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "card",
+            "text": "틀릴 수 있는 이유를 따로 적습니다",
+            "items": [
+              "추정은 원래 낙관적이다",
+              "코딩 아닌 시간이 섞인다",
+              "한 달로는 오래 쓸 때를 모른다"
+            ],
+            "pin": 7
+          },
+          {
+            "type": "button",
+            "text": "주기적으로 다시 잰다",
+            "variant": "ghost",
+            "pin": 8
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "과제를 만들지 않았다",
+            "what": "*\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **엔지니어 77명 · 교차기능 스쿼드 14개 · 실제 업무 165건**, 2025년 5~6월 4주간.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "팀마다 도구 하나씩",
+            "what": "*\"Each team was assigned to one of the three AI tools for the whole period.\"* 배정 기준은 무작위가 아니라 **혼란 최소화**다 — *\"Tools were assigned to teams to minimize disruption, so results reflect real adoption contexts rather than randomized trials.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "기준이 되는 추정을 미리 적는다",
+            "what": "시작 전에 **과제 설명과 유형**(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구), **그 도구를 써 본 경험 수준**, **영역**(백엔드·프런트·안드로이드·iOS·인프라·풀스택), **AI 없이 걸릴 것으로 본 시간**, 예상 PR 수정 횟수를 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "끝나고 넷을 적는다",
+            "what": "실제 시간 · 실제 PR 수 · 결과(**100% AI 완료 / 절반 / 수동 / 미완료**) · **1~5점 평가**. 지표는 **추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "숫자와 느낌이 어긋난 것을 적는다",
+            "what": "*\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **전체 결과** — Claude Code **43% / 44건 / 완료율 74% / 4.2점**, Cursor **24% / 59건 / 59% / 3.6점**, GitHub Copilot **1% / 54건 / 44% / 2.8점**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "차이의 원인까지 갔다",
+            "what": "*\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **요금제가 다르기 때문이다** — 정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다. 실제 비용은 *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "틀릴 수 있는 이유를 부록에 적는다",
+            "what": "다섯이다 — **계획 오류와 추정 편향이 이득을 부풀린다** · 코드 리뷰·권한·빌드 같은 **비코딩 오버헤드**가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · **긴 과제 가중이 결과를 기울인다**. 완화책도 적는다 — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군**으로 두고, 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "이긴 도구보다 재는 능력이 값나간다",
+            "what": "*\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"* 그래서 *\"We plan to do periodic evaluations\"* 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**이 회사는 AI 개발 도구를 만들지 않고 산다.** 그래서 사기 전에 재야 하는데, **공개 벤치마크는 자기 업무를 대신 말해 주지 않는다**(이 정리는 이 사이트의 것이다). 그래서 **엔지니어 77명과 스쿼드 14개가 원래 백로그에 있던 과제 165건**을 4주 동안 도구로 처리하고, **시작 전에 적어 둔 추정 시간과 견줬다.**\n\n**⭐ 이 사이트가 읽은 AI 개발 도구 이야기는 전부 자기가 만든 것을 자기가 재는 쪽이었다**(이 대비는 이 사이트의 것이다). Snap 의 CodePal 은 사람 피드백으로 골든셋을 만들어 자기 도구를 쟀고, LinkedIn 도 자기 리뷰어를 쟀다. **남의 도구를 사서 자기 업무에 붙여 잰 기록은 여기가 처음이다.**\n\n**그리고 재는 태도가 다르다.** Snap 은 자기 지표의 범위를 밝혔지만(*\"not on live traffic\"*), **여기는 자기 방법이 틀릴 수 있는 이유를 부록에 다섯 개 적는다** — 추정이 원래 낙관적이라는 것부터. **그리고 숫자와 느낌이 어긋난 것을 그대로 남긴다**: Copilot 이 **1%** 로 나왔는데 쓴 사람들은 *\"the tool actually was very helpful for them\"* 이라고 했다.\n\n**⭐ 2년 전 편과 나란히 놓으면 결론이 뒤집힌 것이 보인다**(이 대조는 이 사이트의 것이다). 2024년에는 GitHub Copilot 하나를 들여놓고 *\"For us, Copilot looks like it's going to stay\"* 라고 적었다. **2026년 파일럿에서 그 도구가 1% 로 나오고, 회사는 Claude Code 를 엔지니어 2,000명 넘는 조직에 배포하기로 한다.**\n\n**그래서 회사가 이 파일럿의 진짜 값을 이렇게 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "엔지니어 77명 · 교차기능 스쿼드 14개 · 실제 백로그 과제 165건 · 4주(2025년 5~6월)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "label": "추정 대비 절감률",
+            "value": "Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "label": "과제 수와 완료율",
+            "value": "44건 74% · 59건 59% · 54건 44%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "label": "사용자 평가",
+            "value": "5점 만점에 4.2 · 3.6 · 2.8",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "label": "경험이 가르는 폭",
+            "value": "중급 사용자가 첫 사용자보다 11배(47% 대 4%) — 다만 Claude Code 만 그 격차가 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "label": "어떤 과제에서 이득이 컸나",
+            "value": "3일 넘는 큰 과제 약 30% · 1일 넘는 중간 과제 약 24% — 예상과 반대다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "정액제 둘은 월 40달러 안팎 · 종량제 하나는 최고 소비 10명이 한 달에 202달러",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "label": "결정",
+            "value": "Claude Code 를 엔지니어 2,000명 넘는 조직에 배포하기로 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "과제를 고르지 않은 대목에서",
+          "thought": "*\"not specifically chosen for the pilot\"* — **파일럿을 위해 만든 과제가 아니라 원래 하려던 일이다.** **도구가 잘하는 문제만 골라 재는 것을 막는 장치로 읽힌다**(이 해석은 이 사이트의 것이다). ⚠️ **대신 과제가 제각각이라 비교가 어려워진다** — 회사도 그것을 오차 원인 목록에 **과제 이질성**으로 적는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "숫자와 느낌이 어긋난 것을 적은 자리에서",
+          "thought": "**보통은 둘 중 하나를 버린다**(이 지적은 이 사이트의 것이다). 여기는 **1% 라는 값과 '도움이 됐다' 는 말을 나란히 남긴다.** ⚠️ **그런데 어느 쪽이 맞는지는 판정하지 않는다** — 자기 지표가 못 잡는 이득이 있는 것인지, 사람이 착각한 것인지에 대한 답이 글에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모델 선택 60배를 발견한 대목에서",
+          "thought": "**결과에서 멈추지 않고 왜 그런지까지 갔다** — 이긴 도구가 **가장 강한 모델을 60배 더 골랐고** 토큰도 60배였다. **그런데 이건 도구의 능력이 아니라 요금제의 설정이다**(이 정리는 이 사이트의 것이다). **비교한 것이 도구인지 요금제인지가 섞여 있고**, 회사는 그 사실을 적되 그래도 그 도구를 고른다 — **ROI 를 이유로 든다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "2년 전 편과 나란히 볼 때",
+          "thought": "**2024년 결론이 2026년에 뒤집혔다**(이 대조는 이 사이트의 것이다) — *\"Copilot looks like it's going to stay\"* 였는데 **1%** 로 나왔다. **그리고 2024년의 관찰도 부분적으로 반박된다** — *\"most beneficial to those that need it the least\"* 였는데, 2026년에는 중급이 첫 사용자보다 11배 이득이면서도 **Claude Code 만 그 격차가 없었다.** **자기가 2년 전에 쓴 것을 뒤집는 데이터를 그대로 낸다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "과제",
+            "what": "**팀 백로그에 원래 있던 것.** 유형·영역·경험 수준이 함께 기록된다"
+          },
+          {
+            "name": "추정 시간",
+            "what": "**시작 전에 적는 기준값.** 경험 있는 엔지니어가 AI 없이 걸릴 시간을 본다"
+          },
+          {
+            "name": "절감률",
+            "what": "실제 시간을 추정과 견준 값. **긴 과제에 가중치를 더 준다**"
+          },
+          {
+            "name": "완료 등급",
+            "what": "100% AI 완료 · 절반 · 수동 · 미완료 넷 중 하나"
+          },
+          {
+            "name": "대조군",
+            "what": "**이미 63% 가 갖고 있던 GitHub Copilot.** 새로 들어온 둘과 견주는 기준선"
+          },
+          {
+            "name": "오차 원인 목록",
+            "what": "부록에 다섯. 계획 오류 · 비코딩 오버헤드 · 과제 이질성 · 팀 구성 · 긴 과제 가중"
+          }
+        ],
+        "invariants": [
+          "**파일럿용 과제를 만들지 않는다** — 원래 백로그에 있던 것만 쓴다",
+          "**기준값을 일이 끝난 뒤에 정하지 않는다** — 추정을 시작 전에 적는다",
+          "**한 팀은 한 도구만 4주 내내 쓴다** — 도구를 섞지 않는다",
+          "**주관 평가를 함께 받는다** — 그리고 객관 지표와 어긋나면 어긋난 대로 적는다",
+          "**한 번으로 끝내지 않는다** — 주기적으로 다시 잰다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "팀 백로그에서 원래 하려던 과제를 고른다",
+            "why": "도구가 잘하는 문제만 골라 재는 것을 막는다"
+          },
+          {
+            "step": "팀마다 도구 하나를 배정한다",
+            "why": "혼란을 줄이려고 무작위 대신 팀 단위로 나눈다"
+          },
+          {
+            "step": "시작 전에 추정 시간과 맥락을 적는다",
+            "why": "나중에 견줄 기준이 이때 정해진다"
+          },
+          {
+            "step": "4주 동안 실제 업무를 그 도구로 한다",
+            "why": "실험실이 아니라 원래 하던 일이다"
+          },
+          {
+            "step": "끝나고 실제 시간·PR 수·완료 등급·평가를 적는다",
+            "why": "객관과 주관을 함께 남긴다"
+          },
+          {
+            "step": "추정 대비 절감률을 계산한다",
+            "why": "긴 과제에 가중치를 더 준다"
+          },
+          {
+            "step": "유형·영역·경험별로 갈라 본다",
+            "why": "총점에 묻히는 차이를 본다"
+          },
+          {
+            "step": "상위 5% 긴 과제를 빼고 다시 본다",
+            "why": "가중치가 결과를 만든 것인지 확인한다"
+          },
+          {
+            "step": "차이가 난 원인을 찾는다",
+            "why": "모델 선택이 60배 달랐다"
+          },
+          {
+            "step": "오차 원인을 부록에 적는다",
+            "why": "이 자가 어디서 틀릴 수 있는지 남긴다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇으로 도구를 잴 것인가?",
+            "chosen": "**팀 백로그에 원래 있던 과제로 잰다.** *\"not specifically chosen for the pilot\"*",
+            "alternatives": [
+              "공개 벤치마크 점수를 쓰기",
+              "파일럿용 과제를 따로 만들기"
+            ],
+            "tradeoff": "**도구가 잘하는 문제만 골라 재는 것을 막는다**(이 정리는 이 사이트의 것이다). **대가는 과제가 제각각이라 비교가 어려워진다는 것**이고, 회사도 오차 원인에 **과제 이질성**을 적는다 — *\"Task heterogeneity masks tool strengths/weaknesses in specific categories.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "question": "도구를 어떻게 나눠 줄 것인가?",
+            "chosen": "**팀 단위로 하나씩, 4주 내내.** 기준은 혼란 최소화다",
+            "alternatives": [
+              "사람 단위 무작위 배정"
+            ],
+            "tradeoff": "**회사가 대가를 그대로 적는다** — *\"Tools were assigned to teams to minimize disruption, so results reflect real adoption contexts rather than randomized trials.\"* **실제 도입 상황을 얻는 대신 무작위 대조의 힘을 잃는다**(이 정리는 이 사이트의 것이다) — 팀마다 구성이 다른 것이 결과에 섞이고, 그것도 오차 원인 목록에 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "question": "기준선을 무엇으로 삼을 것인가?",
+            "chosen": "**이미 63% 가 갖고 있던 GitHub Copilot 을 대조군으로 둔다**",
+            "alternatives": [
+              "도구 없이 하는 팀을 따로 두기"
+            ],
+            "tradeoff": "**아무도 놀리지 않고 기준선을 만든다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 대조군만 학습 곡선이 없다는 것**이다 — 이미 쓰던 도구라 익숙한데 나머지 둘은 처음이고, 실제로 **Cursor 는 IDE 가 달라 마찰이 있었다**(엔지니어 **50% 넘게가 IntelliJ·Xcode**). 그 지적은 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "question": "무엇을 지표로 삼을 것인가?",
+            "chosen": "**시작 전에 적은 추정 시간 대비 절감률.** 긴 과제에 가중치를 더 준다",
+            "alternatives": [
+              "수락된 코드 줄 수 같은 도구 자체 지표를 쓰기"
+            ],
+            "tradeoff": "**회사가 이 지표의 약점을 스스로 적는다** — *\"Results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 부록에 **계획 오류와 추정 편향이 이득을 부풀린다**고 적는다. **그래서 상위 5% 긴 과제를 빼고 방향이 같은지 확인했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "question": "주관 평가를 받을 것인가?",
+            "chosen": "**받는다 — 1~5점.** 그리고 객관 지표와 어긋나면 어긋난 대로 적는다",
+            "alternatives": [
+              "측정값만 신뢰하기"
+            ],
+            "tradeoff": "**보통은 둘 중 하나를 버리는데 여기는 나란히 남긴다**(이 지적은 이 사이트의 것이다) — Copilot 이 **1%** 인데 쓴 사람들은 *\"the tool actually was very helpful for them\"* 이라고 했다. ⚠️ **대가는 어느 쪽이 맞는지 판정하지 않는다는 것**이다 — 지표가 못 잡는 이득인지 사람의 착각인지에 대한 답이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "question": "결과가 왜 그렇게 나왔는지까지 볼 것인가?",
+            "chosen": "**본다.** 이긴 도구가 *\"selected the most powerful models 60 times more than the other tools\"* 이고 토큰도 60배였다",
+            "alternatives": [
+              "순위만 내고 끝내기"
+            ],
+            "tradeoff": "**원인을 찾자 비교의 성격이 드러났다**(이 정리는 이 사이트의 것이다) — 정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다. **즉 비교한 것이 도구의 능력인지 요금제의 설정인지가 섞여 있다.** **회사는 그 사실을 적으면서도 그 도구를 고른다** — 근거로 ROI 를 든다(최고 소비 10명이 월 **202달러**).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "question": "얼마나 오래 잴 것인가?",
+            "chosen": "**4주로 끝낸다**",
+            "alternatives": [
+              "몇 달에 걸쳐 장기 효과까지 보기"
+            ],
+            "tradeoff": "**빨리 정할 수 있는 대신 오래 썼을 때를 모른다** — 회사가 한계로 적는다: *\"Study lasted only 1 month, hence long term effects are not measured.\"* **그리고 시점도 못 박는다** — *\"Pilot was done in May-June 2025, with the state of tools at that point in time.\"* **자기 결과에 유효기간을 붙인 셈이다**(이 표현은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "question": "한 번 재고 끝낼 것인가?",
+            "chosen": "**주기적으로 다시 잰다.** *\"We plan to do periodic evaluations\"*",
+            "alternatives": [
+              "이번 승자를 정하고 마무리하기"
+            ],
+            "tradeoff": "회사가 이유를 한 문장으로 적는다 — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"* **대가는 이 절차 자체가 계속 드는 비용이 된다는 것**이다(이 지적은 이 사이트의 것이다) — 엔지니어 77명의 4주가 매번 필요하다. ⚠️ **그 비용을 계산한 서술은 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "사전·사후 기록 양식",
+            "role": "과제 유형·영역·경험 수준·추정 시간·예상 PR / 실제 시간·실제 PR·완료 등급·1~5점 평가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "tech": "가중 절감률",
+            "role": "추정 대비 실제를 비교하되 긴 과제에 가중치를 더 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "tech": "층화 분석",
+            "role": "과제 유형·영역·경험 수준별로 갈라 총점에 묻히는 차이를 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "tech": "민감도 확인",
+            "role": "상위 5% 긴 과제를 빼고도 방향이 같은지 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "tech": "대조군 (GitHub Copilot)",
+            "role": "이미 63% 가 갖고 있어 기준선 역할을 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 시험 대상 셋",
+            "role": "Claude Code · Cursor · GitHub Copilot. 회사가 공개한 파일럿 결과의 이름 그대로 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "도구가 실제로 도움이 됐는지 무엇으로 아는가",
+            "why_hard": "**기준이 될 '도구 없이 걸렸을 시간' 은 관측할 수 없다** — 같은 일을 두 번 할 수 없으니 추정에 기댈 수밖에 없다(이 설명은 이 사이트의 해석이다). 회사도 그 약점을 적는다: 추정이 *\"can be subjective\"* 이고 **계획 오류가 이득을 부풀린다.**",
+            "current_best": "**경험 있는 엔지니어가 시작 전에 추정을 적어 두고**, 층화 분석과 **상위 5% 제거 민감도 확인**으로 방향을 확인하며, **이미 널리 쓰이던 도구를 대조군**으로 둔다. ⚠️ **그래도 주관과 객관이 어긋난 자리가 남았고**(Copilot 1% 대 '도움이 됐다'), **어느 쪽이 맞는지는 판정하지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          },
+          {
+            "problem": "도구를 비교하는지 요금제를 비교하는지",
+            "why_hard": "이긴 도구가 *\"selected the most powerful models 60 times more than the other tools\"* 였다. **정액제는 기본으로 약한 모델을 고르고 종량제는 난이도에 따라 고르므로, 성능 차이의 상당 부분이 요금 구조에서 온다**(이 정리는 이 사이트의 것이다).",
+            "current_best": "**회사는 그 사실을 감추지 않고 적으면서 그래도 그 도구를 고른다** — 근거는 ROI 다(최고 소비 10명이 월 **202달러**). ⚠️ **같은 요금제로 맞춰 다시 재 본 기록은 없다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A pragmatic evaluation of software engineering AI tooling",
+                "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-03-09",
+                "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "과제 하나가 결과가 되기까지",
+          "question": "기준이 되는 값은 언제 정해지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  BL[\"팀 백로그에 원래 있던 일\"]:::list\n  ASSIGN[\"팀마다 도구 하나 — 넉 주 내내\"]:::list\n  PRE[\"<b>시작 전에 적는다</b><br/>• 일의 종류와 영역<br/>• 도구를 얼마나 써 봤나<br/>• 도구 없이 걸릴 시간\"]:::accent\n  WORK[\"실제로 그 일을 한다\"]:::list\n  POST[\"끝나고 실제 시간과 결과와 평가를 적는다\"]:::list\n  CALC[\"추정과 견줘 아낀 비율을 낸다\"]:::list\n  STRAT[\"종류와 영역과 경험별로 갈라 본다\"]:::list\n  SENS[\"가장 긴 것들을 빼고 다시 본다\"]:::list\n  WHY[\"차이의 원인을 찾는다 — 고른 모델이 예순 배 달랐다\"]:::list\n  X1[\"공개 점수표를 쓰기<br/>안 쓴다 — 우리 일을 대신 말해 주지 않는다\"]:::quiet\n  X2[\"사람 단위로 섞어 배정<br/>안 했다 — 혼란을 줄이려고\"]:::quiet\n  BL --> ASSIGN --> PRE --> WORK --> POST --> CALC --> STRAT --> SENS --> WHY\n  BL -.-> X1\n  ASSIGN -.-> X2"
+        },
+        {
+          "title": "과제 하나가 지나는 자리",
+          "question": "어디까지 도구가 했다고 적는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 대기\n  대기 : <b>백로그에 있던 일</b><br/>파일럿을 위해 만든 것이 아니다\n  대기 --> 기록 : 시작 전\n  기록 : <b>기준값을 먼저 적는다</b><br/>도구 없이 걸릴 시간과 맥락\n  기록 --> 수행 : 배정된 도구로\n  수행 : <b>넉 주 안에 실제로 한다</b><br/>도구를 섞지 않는다\n  수행 --> 전부 : 도구가 다 했다\n  수행 --> 절반 : 절반쯤 했다\n  수행 --> 수동 : 결국 손으로 했다\n  수행 --> 미완 : 못 끝냈다\n  전부 : <b>완료 등급으로 남는다</b><br/>도구별 완료율이 여기서 나온다\n  절반 : <b>부분으로 센다</b><br/>실제 시간과 평가는 그대로 적는다\n  수동 : <b>이것도 기록한다</b><br/>버리지 않는다\n  미완 : <b>미완료로 남긴다</b><br/>없던 일로 하지 않는다\n  전부 --> [*]\n  절반 --> [*]\n  수동 --> [*]\n  미완 --> [*]"
+        },
+        {
+          "title": "이 자가 흔들리는 자리",
+          "question": "회사는 어디서 틀릴 수 있다고 적는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"기준이 사람의 추정이다\"]:::list\n  B[\"<b>추정은 원래 낙관적이라 이득이 부풀 수 있다</b><br/>회사가 부록에 적는다\"]:::accent\n  C[\"코딩 아닌 시간이 섞인다\"]:::list\n  D[\"리뷰와 권한과 빌드 대기가 실제 시간에 들어간다\"]:::list\n  E[\"팀 단위로 배정했다\"]:::list\n  F[\"팀 구성 차이가 결과에 섞인다 — 무작위 대조가 아니다\"]:::list\n  G[\"긴 과제에 가중치를 준다\"]:::list\n  H[\"결과가 기울 수 있어 상위 오 퍼센트를 빼고 확인했다\"]:::list\n  I[\"대조군만 이미 쓰던 도구다\"]:::list\n  J[\"나머지 둘은 학습 곡선을 안고 쟀다 — 이 지적은 글에 없다\"]:::list\n  N[\"<i>앞의 넷은 회사가 적었다 — 마지막은 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "A pragmatic evaluation of software engineering AI tooling",
+          "url": "https://adevinta.com/techblog/a-pragmatic-evaluation-of-software-engineering-ai-tooling/",
+          "publisher": "Adevinta Tech Blog",
+          "date": "2026-03-09",
+          "summary": "**남이 만든 AI 코딩 도구 셋을 자기 엔지니어의 실제 업무에 붙여 재고, 자의 한계를 첫머리에 적는다.** 규모 — **소프트웨어 엔지니어 77명 · 실제 업무 165건 · 2025년 5~6월 4주간**. 대상 셋을 고른 이유는 *\"they were industry leaders at the time and had received positive feedback from many informal tests run by our engineers\"* 다. **결과 — 추정 시간 대비 Claude Code 약 43% · Cursor 약 24% · GitHub Copilot 약 1%**, 사용자 평가는 5점 만점에 **4.2 / 3.6 / 2.8**. **🔴 한계를 먼저 적는다** — *\"Our results are based on assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고 *\"The study lasted only 1 month, hence long term effects are not measured.\"* **🔴 그리고 요금제가 결과에 섞였다고 밝힌다** — *\"Cursor and Github Copilot had a flat rate close to 40$ per user and month, while Claude Code consumption model was a 'pay as you go'\"* 이고, 그래서 *\"Claude Code will select which model to use depending on the complexity of the task while for Cursor and Github Copilot selects the less powerful models by default.\"* **비교한 것이 도구인지 요금제인지가 섞여 있다는 뜻이다**(이 정리는 이 사이트의 것이다). **275 에서 원문을 다시 읽어 훨씬 많은 것이 나왔다.** **규모가 더 구체적이다** — **엔지니어 77명 · 교차기능 스쿼드 14개**, *\"Each team was assigned to one of the three AI tools for the whole period.\"* **과제는 만든 것이 아니라 원래 있던 것이다** — *\"These tasks were pre-existing in the teams' backlogs, integrated into their plans, and not specifically chosen for the pilot.\"* **사전에 적은 것** — 과제 설명과 유형(버그 수정·리팩터링·기능 개발·이관·문서·계획·도구) · 그 도구를 써 본 경험 수준 · 영역(백엔드·프런트·안드로이드·iOS·인프라·풀스택) · **AI 없이 걸릴 것으로 본 시간** · 예상 PR 수정 횟수. **사후에 적은 것** — 실제 시간 · 실제 PR 수 · 결과(100% AI 완료 / 절반 / 수동 / 미완료) · **1~5점 평가**. **지표는 추정 대비 절감률**이고 **긴 과제에 가중치를 더 준다**. **전체 결과** — Claude Code **43% · 과제 44건 · 완료율 74% · 4.2점** / Cursor **24% · 59건 · 59% · 3.6점** / GitHub Copilot **1% · 54건 · 44% · 2.8점**. **🔴 예상과 반대인 결과** — *\"Large (>3 days) and medium (>1) tasks got the most benefit\"*(각각 약 30%·24%). **🔴 경험이 이득을 가른다** — 중급 사용자가 첫 사용자보다 **11배**(47% 대 4%), **다만 Claude Code 만 그 격차가 없다**. **🔴 주관과 객관이 어긋난 기록을 그대로 적는다** — *\"Engineers that had Github Copilot assigned mentioned that the productivity result of ~1% did not reflect their experience, and that the tool actually was very helpful for them.\"* **🔴 결과의 원인까지 파고든다** — *\"Claude Code selected the most powerful models 60 times more than the other tools\"* 이고 토큰 소비도 60배였다. **실제 비용** — *\"Our 10 users with the highest consumption spent $202 in Claude Code during the month.\"* **마찰도 적는다** — 엔지니어의 **50% 넘게가 IntelliJ·Xcode** 를 쓰는데 Cursor 는 VSCode 포크라 *\"temporary learning curve\"* 가 생겼고, Claude Code 는 CLI 뿐이라 *\"Many users did not want to use Claude Code in the beginning\"* 였다가 써 보고 만족했다. **오차 원인을 부록에 다섯 개 적는다** — 계획 오류와 추정 편향이 이득을 부풀린다 · 코드 리뷰·권한·빌드 같은 비코딩 오버헤드가 지표를 왜곡한다 · 과제 이질성 · 팀 구성 차이 · 긴 과제 가중. **완화책도 적는다** — **63% 가 이미 갖고 있던 GitHub Copilot 을 대조군으로** 두고, 과제 유형·영역·경험별로 층화 분석하고, **상위 5% 긴 과제를 빼고도 방향이 같은지 확인했다.** **결정** — *\"Claude Code had the best ROI and integrates best within Adevinta workflows\"* 라 **엔지니어 2,000명 넘는 조직에 배포**하기로 했다. **🔴 그리고 이 파일럿의 진짜 값을 스스로 적는다** — *\"Building the capability to independently and rapidly evaluate, first hand, emerging AI tooling and generate reliable, evidence based results is ultimately more valuable than identifying a short term winner.\"*"
+        },
+        {
+          "title": "Measuring the Impact of Generative AI on Developer Productivity",
+          "url": "https://adevinta.com/techblog/measuring-the-impact-of-generative-ai-on-developer-productivity/",
+          "publisher": "Adevinta Tech Blog",
+          "date": "2024-05-07",
+          "summary": "**2년 전 편 — GitHub Copilot 하나를 도입하고 쓰이는지 관측한 기록이다.** 고른 이유가 성능이 아니다: *\"our previously close relationship with GitHub and the ease with which we could get started from a product and billing perspective.\"* 대신 *\"we evaluated Copilot from multiple angles such as security and legal, far beyond our standard purchasing process\"* 를 했다. **관측 자체가 문제였다** — *\"At this time, GitHub did not offer usage statistics for Copilot. We had to find another way to monitor how our developers were doing.\"* 그래서 2023년 말 **베타 100여 명**에 설문으로 시작했고, 2024년 2월 전사 발표 뒤 셀프서비스로 라이선스를 열었으며, **4월에 GitHub 사용량 API 가 나온 뒤에야 실측을 붙였다.** **수치** — **제안 수락률 약 20%**. 회사의 해석: *\"The fact that every fifth suggestion is accepted by our developers is not insignificant. However, it's far away from the idea that AIs can or will replace developers entirely.\"* **🔴 가장 큰 발견이 휴면 라이선스였다** — *\"The biggest takeaway for us was the amount of dormant licences\"* 이고 활동은 대부분 개발자에게서 나왔다(엔지니어링 매니저·PO·비기술 직군이 가장 낮았다). 그래서 **30일 미사용 시 라이선스를 자동 해제**하기로 했다. **🔴 위험도 적는다** — *\"We've seen (junior) developers put too much trust in Copilot and then having to ask for help from senior colleagues\"* 이고, 한 문장으로 정리한다: *\"Copilot is a tool that is as smart as the engineer using it. It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most.\"* **결론은 유지였다** — *\"For us, Copilot looks like it's going to stay… it's just a tool to accomplish the task at hand.\"* **⭐ 그런데 2026 년 파일럿에서 이 도구가 추정 대비 1% 로 나오고, 회사는 Claude Code 로 갈아탄다**(이 대조는 이 사이트의 것이다)."
+        }
+      ]
+    }
+  ]
 }

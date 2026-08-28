@@ -8,68 +8,74 @@
 
 ## 지금 파는 중
 
-**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 2개 · 기능 0개. 큐 잔량 1/3.**
+**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 2개 · 기능 1개. 큐 잔량 1/3.**
 
-**274 에서 `--gaps` 가 [신규]를 지목했다** — 대기 맨 위 Adevinta 를 열어 **회사 프로파일을
-만들었다.** 본문 세 편을 읽었다.
+**275 에서 `--gaps` 가 도메인 ①`남이 만든 도구를 자기 업무로 재본다` 를 지목했다.**
+규칙대로 **두 번째 글을 먼저 찾아 읽고**(⑱ 로 `allowed_domains: adevinta.com` 검색) 기능을
+썼다 — `pilot-with-real-work`(백로그로 도구를 잰다), **결정 8개** 전부 대가가 붙었다.
 
-### 왜 이 회사인가 — 재는 방식이 이 사이트에서 처음이다
+### 🔴 재독이 열여섯 번째로 옳았다 — 274 요약에 없던 것이 쏟아졌다
 
-**AI 개발 도구를 만들지 않고 산다.** 그래서 사기 전에 재는데, **벤치마크가 아니라 실제
-업무로 잰다** — **엔지니어 77명 · 실제 업무 165건 · 4주**(2025년 5~6월). 추정 시간 대비
-**약 43% / 24% / 1%**, 만족도 **4.2 / 3.6 / 2.8**.
+**규모** — 엔지니어 77명 · **교차기능 스쿼드 14개**, 팀마다 도구 하나를 4주 내내.
+**과제는 만든 것이 아니다** — *"pre-existing in the teams' backlogs… not specifically chosen
+for the pilot."* **완료율과 과제 수** — 74%/44건 · 59%/59건 · 44%/54건.
+**🔴 예상과 반대** — 큰 과제(3일 초과 약 30%)와 중간 과제(1일 초과 약 24%)가 가장 이득.
+**🔴 경험이 11배를 가른다**(중급 47% 대 첫 사용 4%) — **다만 Claude Code 만 그 격차가 없다.**
+**🔴 주관과 객관이 어긋난 것을 그대로 적는다** — Copilot 이 **1%** 인데 쓴 사람들은
+*"the tool actually was very helpful for them."*
+**🔴 원인까지 갔다** — 이긴 도구가 *"selected the most powerful models 60 times more than
+the other tools"* 이고 토큰도 60배. **비용** — 최고 소비 10명이 한 달에 **202달러**.
+**마찰** — 엔지니어 **50% 넘게가 IntelliJ·Xcode** 인데 Cursor 는 VSCode 포크라 학습 곡선이
+있었고, Claude Code 는 CLI 뿐이라 처음엔 거부감이 있었다가 써 보고 만족했다.
+**오차 원인을 부록에 다섯 개**(계획 오류 · 비코딩 오버헤드 · 과제 이질성 · 팀 구성 · 긴 과제
+가중), **완화책도 셋**(63%가 이미 쓰던 Copilot 을 **대조군**으로 · 층화 분석 · **상위 5%
+제거 민감도 확인**). **결정** — Claude Code 를 **엔지니어 2,000명 넘는 조직**에 배포.
+**🔴 그리고 파일럿의 진짜 값을 스스로 적는다** — *"Building the capability to independently
+and rapidly evaluate… is ultimately more valuable than identifying a short term winner."*
 
-**⭐ 값이 나가는 것은 결과가 아니라 그 둘레의 단서다.** 회사가 **한계를 첫머리에 적는다**
-(추정이 *"can be subjective"*, *"The study lasted only 1 month, hence long term effects
-are not measured"*) 그리고 **요금제가 결과에 섞였다고 밝힌다** — 정액제 둘은 기본으로 약한
-모델을 고르고 종량제 하나는 난이도에 따라 고른다. **잰 것이 도구의 능력인지 요금제의
-설정인지가 갈리지 않는다.**
+### 🔴 두 번째 글을 찾았고, 두 편이 맞물린다
 
-**이 사이트가 읽은 AI 개발 도구 이야기는 전부 자기가 만든 것을 자기가 재는 쪽이었다** —
-Snap 의 CodePal·Casper·Code Search 도, LinkedIn 의 코드 리뷰도. **남의 도구를 산 쪽의
-기록은 여기가 처음이다.**
+`measuring-the-impact-of-generative-ai-on-developer-productivity`(**2024-05-07**) —
+2년 전에는 **Copilot 하나를 도입하고 쓰이는지만** 봤다. 고른 이유도 성능이 아니라 관계와
+청구 편의였고, **벤더가 사용량 통계를 안 줘서**(*"GitHub did not offer usage statistics"*)
+설문으로 시작해 4월에 API 가 나온 뒤에야 실측을 붙였다. **수락률 약 20%**,
+**가장 큰 발견은 휴면 라이선스** → **30일 미사용 자동 해제**. 위험도 적는다 —
+*"(junior) developers put too much trust in Copilot"*, *"most beneficial to those that need
+it the least and least beneficial to those that need it the most."*
 
-### 도메인 둘
+**⭐ 2024년 결론이 2026년에 뒤집혔다** — *"Copilot looks like it's going to stay"* 였는데
+**1%** 로 나왔다. **그리고 2024년의 관찰도 부분적으로 반박된다**(11배 격차는 같은 방향인데
+Claude Code 만 예외). **자기가 2년 전에 쓴 것을 뒤집는 데이터를 그대로 낸다.**
+`open_questions` 맨 앞에 적었다.
 
-**① `남이 만든 도구를 자기 업무로 재본다`** — **⚠️ 본문을 한 편만 읽었다.** 기능을 쓰기
-전에 두 편 이상 읽는다(스물다섯 번 확인된 규칙). **다음에 열 것** — 목록에서 AI·평가
-계열을 `WebSearch` + `allowed_domains: ["adevinta.com"]` 으로 찾는다(운영 사실 ⑱).
+### 다음 사이클 — 도메인 ② 에 재료가 이미 두 편 있다
 
-**② `나라마다 다른 장터를 한 벌의 규칙으로 돌린다`** — **본문 두 편을 읽었다.**
-`multi-cloud-governance-at-scale`(2024-12-17): **AWS 계정 732개 · GCP 프로젝트 425개 ·
-12명**(2019년엔 150개 미만·3명). Confluence 표로 시작했다가 *"isn't a scalable solution
-when you have hundreds of accounts"*. **버린 대안 셋**(HR 포털 API — 데이터가 관리되지
-않고 조직 계층이 기능 구조와 다르다 / ABAC 단독 — 역할 전환이 비개발자에게 부담 / AWS
-기본 알림 — 루트 메일함을 아무도 안 본다), **대가도 적는다**, **권한 집합 소프트 쿼터
-500개**. `opa-memory…kyverno`(2025-02-12): **8GB→2.7GB**, 30+ 클러스터, 그리고 대가를 한
-문장으로 — *"This approach reduces memory consumption but increases the load on the
-Kubernetes API server."*
+**⚠️ `--gaps` 는 [진행 중 확장]으로 도메인 ②`나라마다 다른 장터를 한 벌의 규칙으로 돌린다`
+를 지목할 것이다.** **275 에서 `multi-cloud-governance-at-scale` 을 재독해 재료가 더
+늘었다** — 회사 철학이 *"You build it, you run it (and you pay for it)"* 이고, **계정 생성이
+승인 흐름**(팀 요청 → 예산 연결 → 예산 담당자 승인 → **IPAM 으로 충돌 없는 VPC 자동 배포**)
+이며, 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**을
+했고, 권한 폭발을 **ABAC → 고객 관리 정책(빈 역할에 명시적 거부)** 순으로 풀었다.
+**중심 문장** — *"having proper (meta)data is key to properly governing the cloud."*
+**⚠️ 223 규칙** — 계정·권한 거버넌스와 정책 엔진 메모리(OPA→Kyverno, **8GB→2.7GB**)는 다른
+문제로 보인다. **거버넌스 쪽 결정이 더 많으니 그쪽부터 쓴다.**
 
-**⭐ 도메인 ② 는 재료가 이미 두 편이라 다음 사이클에 기능을 쓸 수 있다.**
+### 이 회사에서 아직 못 채운 것
 
-### ⚠️ 이 회사에서 미리 알아 둘 것
-
-- **매출 실액은 확인 불가 — 못 찾은 것이 아니라 공개되지 않는다.** 2024년 Permira·
-  Blackstone 컨소시엄 공개매수로 **오슬로 A주 2024-06-05 상장폐지**. 지분(컨소시엄 다수 ·
-  eBay 약 20% · Schibsted 약 13.6%)은 **2차 보도 값이라 `추정`** 으로 뒀다.
-- **글마다 수치 밀도가 크게 다르다** — 위 세 편은 풍부한데
-  `from-lakehouse-architecture-to-data-mesh` 는 **수치가 0** 이다(273 에서 확인).
-- **⚠️ 개별 장터의 시스템 글을 아직 못 봤다** — 읽은 셋이 전부 플랫폼·도구 쪽이다.
+- **매출 실액 확인 불가** — 못 찾은 것이 아니라 **2024 상장폐지로 공개되지 않는다.**
+- **⚠️ 개별 장터의 시스템 글을 못 봤다** — 읽은 넷이 전부 플랫폼·도구 쪽이다.
   **leboncoin·Marktplaats·Kleinanzeigen 의 검색·추천·정산 이야기가 없다.**
+- 글마다 수치 밀도가 크게 다르다 — data mesh 편은 **수치가 0**(273 확인).
 
 ### 큐와 다음 회사
 
-**큐 잔량 1/3**(trivago 만 남았다). `--gaps` 가 알려 준 규칙 — **이 회사를 다 판 뒤 후보
-조사 사이클을 한 번 끼워 버퍼를 채운다**(바닥을 치고 채우면 사이클을 하나씩 버리게 된다).
-
-**trivago**(독일 · 기타/여행) — `tech.trivago.com` 자체 호스팅, 2026 글 여섯 편.
-`how-we-cut-kafka-consumer-deployment-costs-by-83` 이 셋 다 강했다(파드 **60→6, 83%** ·
-**8k msg/s** · 기동 **60초→10초**). **비어 있던 여행 자리를 채운다.**
-
-**📌 Grab 보강 후보(유효)** — 2026 새 글: Palana 2부작 · Agent platform Part 1 ·
-**Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**, 뒤 둘은 기존 기능의 후속.
-**📌 Roblox 단서** — 최종 주소 `about.roblox.com/newsroom/<연>/<월>/<슬러그>`, 본문은 오는데
-두 편 다 버린 대안이 없어 기준 미달로 접었다. **게임 자리가 급하면 다른 편을 연다.**
+**큐 잔량 1/3.** `--gaps` 의 안내 — **이 회사를 다 판 뒤 후보 조사 사이클을 한 번 끼워
+버퍼를 채운다.** **trivago**(독일 · 여행 메타서치, `tech.trivago.com` 자체 호스팅, 2026 글
+여섯 편)가 대기에 남아 있다.
+**📌 Grab 보강 후보** — Palana 2부작 · Agent platform Part 1 · **Iceberg(07-10)** ·
+**Counter Service 저장소 이전(07-03)**, 뒤 둘은 기존 기능의 후속.
+**📌 Roblox 단서** — `about.roblox.com/newsroom/<연>/<월>/<슬러그>` 가 최종 주소. 본문은
+오는데 두 편 다 버린 대안이 없어 기준 미달로 접었다. **게임 자리가 급하면 다른 편을 연다.**
 **안 열어 본 후보** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
 **빈 자리** — 라틴아메리카 0 · **게임 1** · **아프리카 1**(두 번 빈손) · 인도 1.
 **한국 편중 아홉.** **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao
@@ -78,10 +84,11 @@ Kubernetes API server."*
 ### 비교 문서 재료
 
 - **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — Snap 이 다섯 재료를 주고
-  **Adevinta 가 축을 완성한다**: **남의 도구를 자기 업무로 재고, 자의 한계를 결과보다 먼저
-  적으며, 요금제가 결과에 섞였다는 것까지 밝힌다.**
-- **⭐ `기계가 그렇다는데`** — Snap 둘(`code-review-agent` · `agentic-code-search`) +
-  **Adevinta 하나. Adevinta 만 회의적인 쪽이고, 유일하게 사는 쪽이다.**
+  **Adevinta 가 축을 완성한다**: **남의 도구를 자기 백로그로 재고**, **오차 원인을 부록에
+  다섯 개 적고**, **주관과 객관이 어긋난 것을 판정 없이 남기고**, **2년 전 자기 결론을
+  뒤집는 데이터를 낸다.**
+- **⭐ `기계가 그렇다는데`** — Snap 둘 + **Adevinta 하나. Adevinta 만 회의적이고 유일하게
+  사는 쪽이다.** 그리고 **재는 능력 자체가 승자보다 값나간다**는 새 논거를 준다.
 - `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯) ·
   `되돌릴 수 있는 것을 먼저 한다` 보강.
 
