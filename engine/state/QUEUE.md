@@ -20,7 +20,6 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **trivago** | 독일 · 기타(여행 메타서치) | `https://tech.trivago.com/` — **자체 호스팅**. 최신 2026-08-12, 2026 글이 여섯 편 | ✅ 목록·본문 모두 열림 | **273 에서 한 편을 열어 확인했고 셋 다 강했다.** `how-we-cut-kafka-consumer-deployment-costs-by-83`(2026-06-12) — **버린 대안을 셋 적는다**(*"Switching libraries wasn't a real fix"* · *"So was switching to reactor-kafka the answer? No — it didn't help once deployed to staging"* · 한쪽만 고치면 *"lag persists"*), **대가도 적고**(*"We wouldn't ship numbers that aggressive to production"* · *"In-memory delays are risky. Even when they work fine today, they can come back to bite you"*), **수치가 풍부하다**(파드 **60→6, 83% 감소** · 평균 지연 **7초**/최대 **30초** · **8k msg/s** · 파드 기동 **60초→10초**). **⭐ 여행 자리가 비어 있었다.** 다른 후보 편 — `From Always-On to On-Demand: Scaling Kafka Sinks with KEDA`(2026-02-18) · `Unifying Internal APIs: A Different Use Case for GraphQL Gateways`(2026-03-27) |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
