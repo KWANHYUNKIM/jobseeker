@@ -8,56 +8,62 @@
 
 ## 지금 파는 중
 
-**없다. 313 은 비교 문서 사이클이었다** — `자를 어떻게 세우는가 — 재기 전에 만들어야 하는 것`
-(`domains/how-to-set-the-yardstick.md`, **30번째 비교 문서**). `domains/index.json` 에도 등록했다.
+**Grab(SG · 모빌리티)을 314 에 다시 열었다 — `in_progress`, 도메인 4개 · 기능 4개.**
+새 도메인 `에이전트가 말을 안 들을 것을 전제한다` 를 열고(`tech` 채움, `index.json` 최상위
+`domains` 에도 넣음) 기능 `contain-not-trust`(**믿는 대신 가둔다**)까지 썼다. **결정 8개.**
+읽은 편 둘 — Palana Part 1(`/palana-part-1-secure-platform-for-ai-agents`) ·
+Part 2(`/part-2-palana-architecture`).
 
-**⚠️ 후보 조사를 세 번째로 미뤘다**(310·312·313). `--gaps` 는 큐가 0 이라 [후보 조사]를
-가리켰지만 **누적 성적이 열두 곳 중 둘**이다. **⭐ 53곳 전부 `done` 이고 `in_progress` 가 없다.**
+**🔴 이번 사이클의 가장 중요한 것은 낡은 메모를 바로잡은 것이다.**
+**여러 사이클 동안 'Grab 보강 후보' 로 `Counter Service 저장소 이전`(07-03)과 `Iceberg`
+(07-10)을 들고 다녔는데, 열어 보니 그 두 글은 이미 `counter-service` 와 `iceberg-lake` 의
+`sources` 였다.** 두 기능 다 **결정 일곱에 그림 셋**으로 이미 차 있다. **보강할 것이 아니라
+이미 쓴 것이었고, 메모가 사이클을 건너오며 낡은 채로 실려 다녔다.** 회사 `open_questions` 에
+기록했다. **⚠️ 앞으로 '보강 후보' 를 나를 때는 회사 파일의 `sources` 를 먼저 대조한다.**
 
-**⭐ 무엇을 엮었나 — 자를 세우는 여섯 갈래**(Snap 넷 + Meituan 둘)
-① **사람에게서 정답을 모아 만들고 범위를 밝힌다**(Snap CodePal — 골든셋 위의 값이지
-*"not on live traffic"* 이라고 스스로 좁힌다) · ② **참값을 못 구하면 못 잰다고 적는다**
-(Snap GNSS — *"we cannot provide definitive numerical accuracy metrics"*) · ③ **없는 자를
-만들어 놓고 결과가 나쁘다고 적는다**(Snap 공간 벤치마크 — **16개 모델이 전부 틀린 문항 둘**)
-· ④ **다른 편에서 앞 글의 범위를 좁힌다**(Snap Code Search 가 CodePal 을) · ⑤ **자가 무뎌지면
-새로 만든다**(Meituan LoHoSearch — 지식 그래프 출제) · ⑥ **이진화해 기계에게 맡긴다**
-(Meituan — 일치율 **85~90%** 문턱, Beam **62%→92%**).
+**무엇이 나왔나** — 문제를 두 편이 같은 말로 적는다: *"The more capability we give to the
+agents, the more valuable they get - but they also get riskier."*
+- **⭐ 설계의 전제를 한 문장으로 못 박는다** — *"Palana assumes an agent might become
+  confused, compromised, or uncooperative."* **헷갈림(실수)·뚫림(공격)·말 안 들음(의도)을
+  나란히 두고 경계 하나로 대비한다**(이 관찰은 이 사이트의 것).
+- **🔴 값이 가장 큰 결정 — 자격을 에이전트에게 안 준다.** *"Separating 'can read a
+  credential' from 'can cause a credentialed request' is powerful."* Vault 경로를
+  `kv/agents/` 와 `kv/proxy-secrets/` 로 가른다. **권한을 없애지 않고 위치를 옮겼다.**
+- **네트워크는 막는 대신 보이게 한다** — *"Instead of forbidding network access, Palana
+  makes network access observable."* 기본 거부 + 두 층(L3/L4 담기 · L7 판단과 감사).
+- **🔴 버린 것 넷** — 랩톱에서 돌리기 · 컨테이너로 싸기만 하기 · **프롬프트 수준 가드레일만**
+  (*"not enough"*) · 클라이언트가 준 헤더로 신원 정하기.
+- **⭐ 교훈에 사용성이 들어 있다** — *"If the secure path requires every team to learn
+  Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it."*
+  **안전한 길이 어려우면 사람들이 돌아간다는 것을 안전 설계의 일부로 적는다** — 이 사이트가
+  읽은 통제 이야기 중 드문 자리다.
+- **⚠️ 수치가 거의 없다** — *"hundreds of agents"* 한 줄뿐. **같은 회사의 카운터 저장소 편이
+  p99 50% 개선·노드당 45~50% 절감을, 데이터 레이크 편이 70초→6초·S3 비용 95% 절감을 내는
+  것과 대비된다.** **재는 대상이 성능이 아니라 신뢰라서로 읽힌다**(추정).
 
-**⭐ 문서의 중심 발견 셋**(전부 이 사이트의 정리)
-1. **갈리는 기준이 하나다 — 참값을 어디서 구할 수 있는가.** Snap 의 수치 밀도 차이가 난이도가
-   아니라 여기서 왔다(EyeConnect 는 두 기기를 맞대면 되고 GNSS 는 지구 위 참값이 필요하다).
-2. **점수는 모델의 성질이 아니라 자와 모델 사이의 관계다** — 같은 GPT-5.5 가 BrowseComp 에서
-   **80% 이상**, LoHoSearch 에서 **34.74%**. 도구 호출도 **35→61회**.
-3. **자를 만든 뒤 그 자의 한계를 적는가에서 Meituan 안이 갈린다** — 평가 방법론은 한계 다섯인데
-   **LoHoSearch·VitaBench 2.0 은 0줄**. **Snap 은 그 선이 없다**(자를 만든 글도 자기 결과가
-   나빴다고 적는다). ⚠️ **다만 Snap 쪽은 사내용, Meituan 쪽은 공개 벤치마크라 내놓는 자리가
-   다르면 태도도 달라질 수 있다**(추정).
-- **⭐ Snap 에만 있는 방식** — **다른 글에서 앞 글의 주장 범위를 좁힌다.** 이 사이트가 읽은 것 중
-  이런 자리는 여기 하나뿐이다.
-
-**⚠️ 인용 검사에서 3건이 걸렸는데 전부 우리말 인용이었다** — 원문 인용 안에 한국어가 섞인 게
-아니라 **`*"..."*` 를 우리말 표현에도 쓴 것**이었다. **`*"..."*` 는 원문 인용 전용으로 두고**
-우리말은 굵게로 바꿔 **혼용 0건**으로 만들었다. **다음에도 이 구분을 지킨다.**
+**⭐⭐ 비교 문서 축이 되살아났다** — 310 의 `what-guards-the-gate` 와 밀려 있던
+`에이전트에게 무엇을 못 하게 하는가` 에 **Palana 가 세 번째 접근 제한 재료**로 들어온다
+(Wix AirBot 의 God Mode 금지 · Wix 자가치유 두뇌의 행동 제한과 나란히). **Palana 는 그중
+가장 인프라 쪽으로 내려간 사례다.**
 
 ---
 
-**다음 사이클 — 비교 문서 축이 사실상 떨어졌다. 아래 순서로 고른다.**
-1. **📌 Grab 보강**(권함, 이미 `done`) — 기존 기능의 후속 글 둘이 있다:
-   **Iceberg(2026-07-10)** 는 `iceberg-lake` 의, **Counter Service 저장소 이전(2026-07-03)** 은
-   `counter-service` 의 후속이다. 그 밖에 Palana 2부작(06-19/21) · Agent platform Part 1(07-24).
-   **보강 사이클은 PROMPT.md 2′단계 — 이미 쓴 것을 다시 쓰지 않고 빈 칸만 채운다.**
-   `key`·`slug`·`name` 은 건드리지 않는다. **⚠️ 주소는 추측하지 말고 ⑱ 을 건다**
-   (`WebSearch` + `allowed_domains: ["engineering.grab.com"]`).
-2. **남은 비교 문서 축 하나** — `에이전트에게 무엇을 못 하게 하는가`(재료 일곱, 세 갈래).
-   **⚠️ 310 의 `what-guards-the-gate` 와 재료가 크게 겹친다** — Wix AirBot·Wix 컴파일러
-   문지기·monday.com Morphex 가 이미 거기 있다. **겹침이 심하면 안 쓴다.** 쓰려면 **병합
-   제한**(Snap CodePal·Snap Casper)을 중심에 두고 나머지는 가리키기만 한다.
-3. **후보 조사** — 안 본 곳: 인도 Zoho·Ola·Paytm·Freshworks · 유럽 Trade Republic·Personio ·
-   일본 Sansan·freee·SmartHR·Money Forward(우선순위 낮음). **⚠️ 중국은 사실상 막혔다**
-   (Xiaohongshu·Kuaishou 둘 다 블로그 없음, **추정**). **⚠️ ⑲ 를 먼저 돌린다.**
+**다음 사이클 — Grab 을 더 파거나 닫는다.**
+- **남은 Grab 후보**(주소 확인됨) — `https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale`(Agent platform Part 1, 2026-07-24) · `https://engineering.grab.com/introducing-the-sop-drive-llm-agent-framework`(SOP 기반 LLM 에이전트 프레임워크).
+  **⚠️ 223 규칙 — Palana 는 '가두는 자리' 이고 Agent platform 은 '만들고 굴리는 자리' 라
+  다른 문제일 수 있다.** 실물로 정한다.
+- **결정이 5개 안 나오면 Grab 을 다시 닫는다.**
+- **⚠️ Palana 편은 수치가 거의 없었다** — 같은 계열 글이 또 수치 0 이면 억지로 쓰지 않는다.
 
-**분포** — **53곳.** US 22 포화 · 한국 아홉 · 일본 넷 · EU 일곱 · 중국 둘 · 동남아 하나 ·
-인도 하나 · 아프리카 하나 · **라틴아메리카 0**(재시도 금지). **비교 문서 30편.**
+**📌 그 밖에 남은 일**
+- **비교 문서** — 남은 축은 `에이전트에게 무엇을 못 하게 하는가` 하나이고, **Palana 가 들어와
+  재료가 여덟이 됐다.** ⚠️ **310 의 `what-guards-the-gate` 와 겹치는 부분은 서로 가리키게
+  쓴다.** 비교 문서 30편.
+- **후보 조사** — 누적 **열두 곳 중 둘**. 안 본 곳: 인도 Zoho·Ola·Paytm·Freshworks ·
+  유럽 Trade Republic·Personio · 일본 Sansan·freee·SmartHR·Money Forward(우선순위 낮음).
+  **⚠️ 중국은 사실상 막혔다**(Xiaohongshu·Kuaishou 둘 다 블로그 없음, **추정**).
+- **분포** — **53곳.** US 22 포화 · 한국 아홉 · 일본 넷 · EU 일곱 · 중국 둘 · 동남아 하나 ·
+  인도 하나 · 아프리카 하나 · 라틴아메리카 0(재시도 금지).
 
 ## 다음 선택지
 

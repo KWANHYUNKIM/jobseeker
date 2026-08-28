@@ -355,10 +355,10 @@
       "name_en": "Grab",
       "country": "SG",
       "category": "모빌리티",
-      "status": "done",
-      "updated_at": "2026-08-22",
+      "status": "in_progress",
+      "updated_at": "2026-08-29",
       "one_liner": "한 앱 안에서 태우고 배달하고 결제까지 하는 회사 — 그래서 '누가 사기꾼인가'를 한자리에서 세야 한다",
-      "features_done": 3,
+      "features_done": 4,
       "domain": "grab.com"
     },
     {
@@ -823,7 +823,8 @@
     "AI 가 코드를 쓰는 팀을 굴린다",
     "해 보게 해서 데이터를 만든다",
     "이십 년 된 것을 멈추지 않고 옮긴다",
-    "테넌트가 사만 개일 때 문을 여는 법"
+    "테넌트가 사만 개일 때 문을 여는 법",
+    "에이전트가 말을 안 들을 것을 전제한다"
   ],
   "countries": {
     "KR": "한국",

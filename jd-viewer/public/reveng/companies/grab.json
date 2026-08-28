@@ -4,8 +4,8 @@
   "name_en": "Grab",
   "country": "SG",
   "category": "모빌리티",
-  "status": "done",
-  "updated_at": "2026-08-22",
+  "status": "in_progress",
+  "updated_at": "2026-08-29",
   "domain": "grab.com",
   "one_liner": "한 앱 안에서 태우고 배달하고 결제까지 하는 회사 — 그래서 '누가 사기꾼인가'를 한자리에서 세야 한다",
   "business_model": "**동남아의 슈퍼앱**이다. 한 앱 안에 **이동·배달·금융**이 함께 있다. 2025년 **온디맨드 GMV 221억 달러**(+21%)인데 그 안에서 **배달이 142억 달러(+21%)** 로 **모빌리티 79억 달러(+19%)** 보다 크다. 금융 서비스는 이 사이트가 **2024년 매출 2억 5,300만 달러(+44%)** 까지만 확인했다.\n\n**그리고 이 구조가 기술적 성격을 정한다**(이 해석은 이 사이트의 것이다). 한 사람이 **택시를 타고, 밥을 시키고, 결제까지** 같은 계정으로 하니 — **이상거래 판정도 한자리에서** 해야 한다. 실제로 이 회사의 이상거래 카운터는 **초당 수만 질의, 하루 약 10억 요청**을 받는다.\n\n**두 번째 성격은 저장소를 자주 갈아탄다는 것이다.** 이 사이트가 확인한 글 둘이 모두 이관 이야기다 — 카운터 저장소를 **와이드 컬럼 DB 에서 Aerospike 로**, 데이터 레이크를 **디렉터리 기반 Hive Parquet 에서 Apache Iceberg 로.** 그리고 두 글 다 **해 보고 안 된 것을 적는다** — 특히 카운터 쪽은 **주 인덱스를 NVMe 로 내렸다가 되돌린** 기록을 남겼다.\n\n**세 도메인에 걸쳐 두 가지 습관이 보인다.** 첫째, **이 회사에서 벽이 되는 것은 데이터의 크기가 아니라 개수다.** 카운터 저장소에서는 **인덱스가 레코드당 64바이트**라 수십억 개에서 RAM 이 먼저 찼고, 데이터 레이크에서는 **평균 1MB 미만 파일이 파티션당 수천 개**라 S3 API 비용과 스캔이 먼저 무너졌으며, 수집 글에도 *\"큰 표에 인덱스를 더하는 것은 저장·메모리 비용 때문에 권하지 않는다\"* 가 있다. **세 글이 서로를 언급하지 않는데 같은 결이다.**\n\n둘째, **바꾸기 전에 확인할 자리를 따로 만든다.** 저장소를 옮길 때는 **`WithShadow`·`WithSplit` 모드**로 트래픽을 견주며 옮겼고, 배차를 바꿀 때는 **시뮬레이션(DispatchGym)** 으로 옮겨 시험했으며, 합승 알고리즘을 만들기 전에는 **DBSCAN 으로 매칭 가능성부터** 쟀다. 그리고 그렇게 확인하고도 **안 되면 되돌린다** — 인덱스를 NVMe 로 내렸다가 되돌린 기록이 그것이다.\n\n**그런데 이 회사의 글에는 자주 빠지는 것이 있다 — 버린 대안의 이름.** Iceberg 를 고르며 *\"여러 오픈 테이블 형식을 검토했다\"* 고만 적고, 합승에서도 버린 매칭 방식을 밝히지 않는다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
@@ -218,6 +218,37 @@
       ],
       "features": [
         "dispatchgym"
+      ]
+    },
+    {
+      "name": "에이전트가 말을 안 들을 것을 전제한다",
+      "why": "**에이전트에게 진짜 일을 시키려면 진짜 권한을 줘야 하는데, 그 순간 위험해진다.** 회사가 그것을 두 편에서 같은 말로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier\"* · *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"*\n\n**⭐ 이 도메인의 답은 에이전트를 잘 만드는 것이 아니라 에이전트를 안 믿는 것이다**(이 정리는 이 사이트의 것이다). 회사가 전제를 한 문장으로 적는다 — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 두고**, 비밀은 프록시가 대신 쓰고, 네트워크는 기본 거부에서 시작한다.\n\n**⚠️ 이 회사의 다른 도메인들과 성격이 다르다**(이 관찰은 이 사이트의 것이다) — 이상거래 카운터·데이터 레이크·배차 실험은 **규모와 비용**의 문제였는데, 여기는 **신뢰의 문제**다. 그래서 수치가 거의 없고 대신 **전제와 경계**가 이야기의 중심이다.",
+      "tech": [
+        {
+          "tech": "에이전트를 담는 자리 — Palana",
+          "solves": "**에이전트마다 네임스페이스**를 주고(*\"Agents should not see each other's pods, secrets, or filesystem state by default\"*), **비밀은 프록시가 대신 쓰며**(Vault 경로를 `kv/agents/` 와 `kv/proxy-secrets/` 로 가른다), **네트워크는 기본 거부에서 시작해** 허용한 길만 연다(L3/L4 는 Cilium NetworkPolicy, L7 은 OPA 프록시). **LLM 호출도 래퍼를 지나** 에이전트별로 귀속되고, **놀면 계산만 끄고 상태는 남긴다**(Reaper 가 게이트웨이·프록시 로그와 Git·Slack·Prometheus 신호를 모아 판단). 스택 — 쿠버네티스 · Traefik · OAuth2-Proxy 와 Concedo · Cilium · OPA · Vault · LiteLLM 과 GrabGPT · Amazon EFS · Prometheus · `pcli` 와 포털.",
+          "limits": "**⚠️ 수치가 거의 없다** — Part 1 의 *\"It is currently used to run hundreds of agents\"* 하나뿐이고 **성능·지연·사고율·절감이 전부 없다**(이 지적은 이 사이트의 것이다). **회사가 아직이라고 적는 것** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+              "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+              "publisher": "Grab Tech",
+              "date": "2026-06-19",
+              "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+            },
+            {
+              "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+              "url": "https://engineering.grab.com/part-2-palana-architecture",
+              "publisher": "Grab Tech",
+              "date": "2026-06-21",
+              "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "contain-not-trust"
       ]
     }
   ],
@@ -1628,6 +1659,577 @@
           "summary": "합승 알고리즘을 만들기 **전에** 과거 예약을 DBSCAN(eps=300m)으로 분석해 **매칭 가능성이 하루 대부분 35~45%** 라는 것을 먼저 확인한 기록. 제약(좌석·경로 각도·ETA·우회·효율)과 승객·기사·회사 사이의 이해득실을 함께 적었다."
         }
       ]
+    },
+    {
+      "key": "contain-not-trust",
+      "name": "믿는 대신 가둔다",
+      "domain": "에이전트가 말을 안 들을 것을 전제한다",
+      "updated_at": "2026-08-29",
+      "business": {
+        "why": "**에이전트에게 진짜 일을 시키려면 진짜 권한을 줘야 하고, 그 순간 위험해진다.** 회사가 그 긴장을 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"*\n\n**🔴 그리고 설계의 전제를 한 문장으로 못 박는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* **헷갈리거나 뚫리거나 말을 안 들을 수 있다고 전제하고 짓는다**(이 정리는 이 사이트의 것이다). 그래서 **제어면이 에이전트 바깥에 있다.**\n\n**⭐ 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* 에이전트는 **자격을 읽을 수 없고** 프록시가 대신 요청을 만든다. Vault 경로도 **`kv/agents/`(에이전트용)와 `kv/proxy-secrets/`(프록시 전용)로 갈라** 최소 권한을 강제한다. **이유가 실무적이다** — 에이전트는 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하므로 파일시스템·로그·환경변수가 언제든 자격 저장소가 될 수 있다.\n\n**⭐ 네트워크를 다루는 방식도 특이하다** — 막는 것이 아니라 **보이게 한다**: *\"Instead of forbidding network access, Palana makes network access observable.\"* 기본은 거부지만 열어 준 길은 **두 층으로 지켜본다**(격리는 L3/L4, 애플리케이션 인식 판단과 감사는 L7 프록시).\n\n**🔴 버린 것 넷에 이유가 붙는다** — **랩톱에서 돌리기**(*\"That model is familiar and easy to adopt, but it has limits\"*) · **컨테이너로 싸기만 하기**(*\"Containers help package the runtime, but they do not answer the harder platform questions\"*) · **프롬프트 수준 가드레일만 쓰기**(*\"Prompt-level guardrails and model policies are useful, but they are not enough\"*) · **클라이언트가 준 헤더로 신원 정하기**(대신 쿠버네티스 컨텍스트에서 도출한다).\n\n**⭐ 교훈에 사용성이 들어 있는 것이 이 글의 특이한 점이다**(이 관찰은 이 사이트의 것이다) — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* **안전한 길이 어려우면 사람들이 돌아간다는 것을 안전 설계의 일부로 적는다.**\n\n**⚠️ 다만 수치가 거의 없다** — Part 1 의 *\"It is currently used to run hundreds of agents\"* 하나뿐이고 **성능·지연·사고율·절감이 전부 없다.** **이 회사의 다른 도메인들이 수치로 가득한 것과 대비된다**(이 대비는 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "*\"It is currently used to run hundreds of agents\"* — **수백 개 에이전트**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+                "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+                "publisher": "Grab Tech",
+                "date": "2026-06-19",
+                "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "비밀을 가르는 자리",
+            "value": "Vault 경로 둘 — `kv/agents/`(에이전트가 읽는 것) · `kv/proxy-secrets/`(프록시만 읽는 것)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "네트워크 통제 층",
+            "value": "둘 — Cilium NetworkPolicy(L3/L4, 담기) · OPA 프록시(L7, 판단과 감사)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "유휴 판단에 쓰는 신호",
+            "value": "넷 — 게이트웨이·프록시 로그 · Git 활동 · Slack 메시지 · Prometheus 지표",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "**성능·지연·사고율·절감이 전부 없다.** 프록시를 한 겹 지나는 비용도, 기본 거부에서 길을 여는 데 드는 시간도 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+                "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+                "publisher": "Grab Tech",
+                "date": "2026-06-19",
+                "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+              },
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "전제를 적은 문장에서",
+          "thought": "*\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* **셋을 나란히 둔 것이 눈에 걸린다**(이 관찰은 이 사이트의 것이다) — **헷갈림은 실수, 뚫림은 공격, 말 안 들음은 의도**다. **원인이 다른 셋을 같은 대비로 묶었다는 뜻이고**, 그래서 대책도 원인별이 아니라 **경계 하나**로 간다. ⚠️ **대가는 잘 도는 에이전트도 같은 벽 안에 산다는 것**이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자격을 읽는 것과 쓰는 것을 가른 자리에서",
+          "thought": "*\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* **권한을 없애지 않고 위치를 옮겼다**(이 표현은 이 사이트의 것이다) — 에이전트는 여전히 자격이 필요한 일을 할 수 있지만 **그 자격을 손에 쥐지는 못한다.** ⭐ **이 사이트가 Wix AirBot 에서 본 것과 같은 자리다** — 거기서도 *\"Avoiding 'God Mode' API user\"* 로 최소 권한을 걸었다. ⚠️ **대가는 프록시가 모든 요청의 단일 통로가 된다는 것**인데(이 지적은 이 사이트의 것이다) **그 가용성 이야기는 글에 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "안전한 길이 어려우면 돌아간다는 교훈에서",
+          "thought": "*\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* **보안 설계에 사용성을 넣은 자리이고, 이 사이트가 읽은 통제 이야기 중 드물다**(이 관찰은 이 사이트의 것이다). **막는 것만으로는 안 되고 막힌 길보다 열린 길이 쉬워야 한다**는 말이다. ⚠️ **다만 그래서 실제로 우회가 얼마나 줄었는지는 수치가 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "수치가 거의 없는 것을 보고",
+          "thought": "⚠️ **이 회사의 다른 글들과 대비된다**(이 대비는 이 사이트의 것이다). 카운터 저장소 편은 **p99 약 50% 개선 · 노드당 45~50% 저렴**을, 데이터 레이크 편은 **질의 70초에서 6초 · S3 API 비용 95% 절감**을 낸다. **그런데 이 편에는 수백 개 에이전트라는 한 줄뿐이다.** ⭐ **재는 대상이 성능이 아니라 신뢰라서 그런 것으로 읽힌다**(**추정**) — 사고가 안 난 것을 수치로 보이기는 어렵다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "에이전트",
+            "what": "**헷갈리거나 뚫리거나 말을 안 들을 수 있다고 전제되는 것.** 자기 네임스페이스 안에서 돈다"
+          },
+          {
+            "name": "네임스페이스",
+            "what": "에이전트 하나의 경계. **RBAC·저장소·네트워크 정책·로깅·쿼터·수명주기가 다 여기에 걸린다**"
+          },
+          {
+            "name": "프록시",
+            "what": "자격을 대신 쓰는 자리. **에이전트는 자격을 읽지 못하고 프록시가 요청을 만든다**"
+          },
+          {
+            "name": "에이전트용 비밀",
+            "what": "`kv/agents/` 에 있는 것. 에이전트가 읽을 수 있다"
+          },
+          {
+            "name": "프록시 전용 비밀",
+            "what": "`kv/proxy-secrets/` 에 있는 것. **에이전트는 존재만 알고 못 읽는다**"
+          },
+          {
+            "name": "활동 신호",
+            "what": "게이트웨이·프록시 로그 · Git · Slack · Prometheus. **놀고 있는지 판단하는 재료**"
+          },
+          {
+            "name": "제어면",
+            "what": "에이전트 **바깥**에 있는 것. 에이전트가 협조하지 않아도 돌아간다"
+          }
+        ],
+        "invariants": [
+          "**에이전트는 자격을 손에 쥐지 못한다** — 쓸 수는 있어도 읽지는 못한다",
+          "**기본은 거부다** — 열어 준 길만 나갈 수 있다",
+          "**신원은 클라이언트가 준 값에서 오지 않는다** — 쿠버네티스 컨텍스트에서 도출한다",
+          "**표시용으로 다듬은 사용자 값이 인가의 주체가 되지 않는다**",
+          "**제어면은 에이전트 안에 있지 않다** — 에이전트가 협조하지 않아도 멈출 수 있다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "에이전트마다 제 자리를 만든다",
+            "why": "서로의 파드·비밀·파일을 못 보게 한다"
+          },
+          {
+            "step": "그 자리에 권한과 저장소와 정책을 함께 건다",
+            "why": "경계 하나에 나머지가 다 걸린다"
+          },
+          {
+            "step": "비밀을 두 갈래로 나눠 넣는다",
+            "why": "읽어도 되는 것과 프록시만 쓸 것을 가른다"
+          },
+          {
+            "step": "에이전트를 띄운다",
+            "why": "이때 프록시 설정이 자동으로 주입된다"
+          },
+          {
+            "step": "나가는 길을 기본으로 막는다",
+            "why": "허용한 데만 갈 수 있게 한다"
+          },
+          {
+            "step": "열어 준 길은 두 층으로 지켜본다",
+            "why": "담는 일과 판단하는 일이 다르다"
+          },
+          {
+            "step": "모델을 부를 때도 대신 부르게 한다",
+            "why": "에이전트가 상위 자격을 가질 필요가 없다"
+          },
+          {
+            "step": "누가 무엇을 했는지 남긴다",
+            "why": "관측이 안전 모델의 일부다"
+          },
+          {
+            "step": "놀고 있으면 계산만 끈다",
+            "why": "상태를 남겨야 다시 시작하기 쉽다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "에이전트를 어디에서 돌릴 것인가?",
+            "chosen": "**플랫폼 위에서.** 쿠버네티스 위에 짓되 *\"simple workflows for users, direct primitives for advanced operators\"* 로 층을 나눈다",
+            "alternatives": [
+              "**개발자 랩톱에서** — *\"That model is familiar and easy to adopt, but it has limits\"*",
+              "**컨테이너로 싸기만 하기** — *\"Containers help package the runtime, but they do not answer the harder platform questions\"*"
+            ],
+            "tradeoff": "오래 도는 에이전트의 **상태**, 팀의 **공동 접근**, 보안 팀의 **가시성**이 랩톱에서는 안 된다. ⚠️ **대가는 플랫폼을 만들고 유지해야 한다는 것**이고(이 지적은 이 사이트의 것이다), **그 비용은 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+                "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+                "publisher": "Grab Tech",
+                "date": "2026-06-19",
+                "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "에이전트끼리의 경계를 무엇으로 그을 것인가?",
+            "chosen": "**에이전트마다 네임스페이스.** *\"Agents should not see each other's pods, secrets, or filesystem state by default\"*",
+            "alternatives": [
+              "한 네임스페이스에 여러 에이전트를 두기 — 서로의 파드·비밀·파일 상태가 보인다"
+            ],
+            "tradeoff": "*\"A namespace boundary is simple, but it compounds\"* — **RBAC·저장소·네트워크 정책·로깅·쿼터·수명주기가 한 경계에 다 걸린다.** **경계 하나를 잘 그으면 나머지가 따라온다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 에이전트 수만큼 네임스페이스를 관리해야 한다는 것**인데 **수백 개를 어떻게 감당하는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+                "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+                "publisher": "Grab Tech",
+                "date": "2026-06-19",
+                "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+              },
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "자격을 에이전트에게 줄 것인가?",
+            "chosen": "**주지 않는다. 프록시가 대신 쓴다.** Vault 경로를 `kv/agents/` 와 `kv/proxy-secrets/` 로 가른다",
+            "alternatives": [
+              "환경변수나 파일로 자격을 넘기기 — 에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하므로 파일시스템·로그·환경이 자격 저장소가 된다"
+            ],
+            "tradeoff": "**🔴 이 결정의 값이 가장 크다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* **권한을 없애지 않고 위치를 옮긴 것이다**(이 표현은 이 사이트의 것이다). 회사도 교훈에서 *\"Proxy-only secrets are one of the highest-leverage design choices\"* 로 꼽는다. ⚠️ **대가는 프록시가 모든 요청의 단일 통로가 된다는 것**이고 **그 가용성 이야기는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              },
+              {
+                "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+                "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+                "publisher": "Grab Tech",
+                "date": "2026-06-19",
+                "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "모델 호출은 예외로 둘 것인가?",
+            "chosen": "**아니다. 래퍼를 지난다.** *\"Agents do not need raw upstream LLM credentials\"* 이고 트래픽이 에이전트별로 귀속된다",
+            "alternatives": [
+              "에이전트에게 상위 LLM 자격을 직접 주기 — 자격이 새고 누가 얼마나 썼는지도 모른다"
+            ],
+            "tradeoff": "**자격을 감추는 것과 사용을 귀속시키는 것을 한 번에 얻는다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 지연이 한 겹 는다는 것**인데(이 지적도 이 사이트의 것이다) **수치가 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "네트워크를 막을 것인가 보이게 할 것인가?",
+            "chosen": "**둘 다.** 기본은 거부하되 *\"Instead of forbidding network access, Palana makes network access observable\"* — 열어 준 길은 **두 층**으로 본다(L3/L4 담기 + L7 판단과 감사)",
+            "alternatives": [
+              "네트워크를 전면 금지하기 — *\"Agents can be useful only if they can call tools and services\"*",
+              "한 층만 두기 — 담는 일과 애플리케이션 인식 판단은 다른 일이다"
+            ],
+            "tradeoff": "**쓸모를 없애지 않으면서 통제한다.** ⚠️ **대가는 길을 하나씩 열어 줘야 한다는 것**이고(이 지적은 이 사이트의 것이다), **길 하나 여는 데 드는 시간이나 절차는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+                "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+                "publisher": "Grab Tech",
+                "date": "2026-06-19",
+                "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+              },
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "신원을 어디서 가져올 것인가?",
+            "chosen": "**쿠버네티스 컨텍스트에서 도출한다.** 그리고 **원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태**를 쓴다",
+            "alternatives": [
+              "클라이언트가 준 헤더를 믿기",
+              "표시용·경로용으로 다듬은 값을 그대로 인가에 쓰기 — *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"*"
+            ],
+            "tradeoff": "**같은 사람을 가리키는 값이 여럿일 때 어느 것이 판단의 근거인지 못 박은 것이다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 표기를 두 벌 관리해야 한다는 것**이다(이 지적도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "놀고 있는 에이전트를 어떻게 할 것인가?",
+            "chosen": "**계산만 끄고 상태는 남긴다.** *\"Stop the compute, keep the state, and make resumption easy\"* — 네 가지 활동 신호(게이트웨이·프록시 로그 · Git · Slack · Prometheus)를 모아 판단한다",
+            "alternatives": [
+              "계속 켜 두기 — 자원이 든다",
+              "통째로 지우기 — 다시 시작하기 어렵다"
+            ],
+            "tradeoff": "*\"Long-running agents need lifecycle management\"* 라고 교훈에 적는다 — **컨테이너 하나 돌리는 것으로는 안 된다는 뜻이다.** ⚠️ **대가는 재개 의미론이 필요해진다는 것**이고, **유휴 문턱값이 설정 가능하다고만 하고 실제 값은 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "통제를 어디까지 어렵게 만들 것인가?",
+            "chosen": "**쉽게 만든다.** CLI(`pcli`)와 포털로 감싼다",
+            "alternatives": [
+              "팀마다 Terraform·Vault 정책 문법·쿠버네티스 RBAC 을 배우게 하기 — *\"teams will work around it\"*"
+            ],
+            "tradeoff": "**⭐ 안전한 길이 어려우면 사람들이 돌아간다는 것을 안전 설계의 일부로 적었다**(이 관찰은 이 사이트의 것이다) — **이 사이트가 읽은 통제 이야기 중 드문 자리다.** ⚠️ **대가는 감싸는 층을 유지해야 한다는 것**이고, **우회가 실제로 얼마나 줄었는지의 수치는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kubernetes",
+            "role": "실행 바닥. 네임스페이스·RBAC·NetworkPolicy·서비스 계정을 제공한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Vault",
+            "role": "비밀 보관. **경로로 접근을 가른다** — 에이전트용과 프록시 전용",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Cilium NetworkPolicy",
+            "role": "L3/L4 담기. 기본 거부",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Open Policy Agent",
+            "role": "L7 프록시 정책 판단과 감사",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "litellm-proxy-wrapper (LiteLLM · GrabGPT)",
+            "role": "LLM 요청을 대신 보낸다. **신원을 쿠버네티스 컨텍스트에서 도출**한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Traefik · OAuth2-Proxy · Concedo",
+            "role": "브라우저 트래픽의 인증과 라우팅(OIDC with PKCE)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Reaper",
+            "role": "유휴 판단과 정지. 게이트웨이·프록시 로그와 Git·Slack·Prometheus 신호를 모은다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Amazon EFS",
+            "role": "`/data` 영속 저장. 계산을 꺼도 남는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "pcli · 포털",
+            "role": "사람이 쓰는 자리. **어려우면 우회하므로 쉽게 만든다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "counter-service",
+          "how": "**같은 회사인데 글의 성격이 반대다**(이 대비는 이 사이트의 것이다) — 카운터 저장소 편은 p99 개선과 비용 절감을 수치로 내는데, 이 편은 **수백 개 에이전트라는 한 줄뿐**이다. **재는 대상이 성능이 아니라 신뢰이기 때문으로 읽힌다**(추정)."
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "쓸모와 위험이 같은 손잡이에 달려 있다",
+            "why_hard": "*\"The more capability we give to the agents, the more valuable they get - but they also get riskier.\"* 그리고 위험이 층으로 쌓인다 — 도구가 서비스를 부르고 서비스가 자격을 쓴다.",
+            "current_best": "**에이전트를 잘 만드는 대신 안 믿는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative\"* 를 전제로 삼고 **제어면을 바깥에 둔다.** 자격은 프록시가 대신 쓰고, 네트워크는 기본 거부에서 시작하되 **금지가 아니라 관측**으로 다룬다. ⚠️ **다만 프롬프트 수준 통제만으로는 부족하다고 적으면서도**(*\"not enough\"*) **플랫폼 통제가 무엇을 못 잡는지는 적지 않는다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+                "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+                "publisher": "Grab Tech",
+                "date": "2026-06-19",
+                "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+              },
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "problem": "에이전트에게 줄 신원이 아직 없다",
+            "why_hard": "지금은 **쿠버네티스 컨텍스트에서 신원을 도출**하는데, 그것은 실행 위치에 기댄 신원이다. 업계 표준이 아직 굳지 않았다고 적는다.",
+            "current_best": "**앞으로의 일로 남긴다** — SPIFFE·SPIRE 로 *\"an agentic identity\"* 를 주겠다고 적고, 업계가 OAuth 등으로 접근을 정리하기를 기다린다. 함께 남긴 것 — **자격 순환 · 이미지 갱신 · 외부 워크로드 정지**가 더 필요하고, **감독자·에이전트 무리·공급망 감시**는 *\"Emerging patterns\"* 로 실험 단계다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+                "url": "https://engineering.grab.com/part-2-palana-architecture",
+                "publisher": "Grab Tech",
+                "date": "2026-06-21",
+                "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "에이전트 하나가 자리를 얻고 일하기까지",
+          "question": "자격은 누구 손에 있는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  MAKE[\"에이전트마다 제 자리를 만든다\"]:::list\n  BIND[\"권한과 저장소와 정책을 그 자리에 함께 건다\"]:::list\n  SEC[\"<b>비밀을 두 갈래로 나눈다</b><br/>• 에이전트가 읽어도 되는 것<br/>• 대신 써 주는 쪽만 읽는 것<br/>• 읽는 것과 쓰는 것을 갈랐다\"]:::accent\n  RUN[\"에이전트를 띄운다\"]:::list\n  DENY[\"나가는 길을 기본으로 막는다\"]:::list\n  TWO[\"열어 준 길은 두 층으로 지켜본다\"]:::list\n  LLM[\"모델도 대신 불러 준다\"]:::list\n  LOG[\"누가 무엇을 했는지 남긴다\"]:::list\n  IDLE[\"놀면 계산만 끄고 상태는 남긴다\"]:::list\n  X1[\"랩톱에서 돌리기<br/>안 한다 — 상태도 공동 접근도 감시도 안 된다\"]:::quiet\n  X2[\"환경변수로 자격 주기<br/>안 한다 — 파일과 로그가 자격 저장소가 된다\"]:::quiet\n  X3[\"말로만 하지 말라고 하기<br/>부족하다고 적는다\"]:::quiet\n  MAKE --> BIND --> SEC --> RUN --> DENY --> TWO --> LLM --> LOG --> IDLE\n  MAKE -.-> X1\n  SEC -.-> X2\n  DENY -.-> X3"
+        },
+        {
+          "title": "에이전트 하나가 거치는 상태",
+          "question": "멈출 때 무엇이 남는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 자리만있음\n  자리만있음 : <b>경계가 먼저 생긴다</b><br/>권한과 저장소와 정책이 걸려 있다<br/>아직 도는 것은 없다\n  자리만있음 --> 비밀채움 : 두 갈래로 나눠 넣는다\n  비밀채움 : <b>읽을 것과 못 읽을 것이 갈렸다</b><br/>대신 써 주는 쪽만 아는 것이 따로 있다\n  비밀채움 --> 돎 : 띄운다\n  돎 : <b>일하고 있다</b><br/>나가는 길은 허용한 데만 열려 있다<br/>무엇을 했는지 남는다\n  돎 --> 조는중 : 아무 신호도 안 온다\n  조는중 : <b>놀고 있다고 본다</b><br/>로그와 저장소와 대화와 지표를 함께 본다<br/>끄기 전에 알린다\n  조는중 --> 돎 : 다시 움직인다\n  조는중 --> 멈춤 : 문턱을 넘겼다\n  멈춤 : <b>계산만 껐다</b><br/>자리와 권한과 데이터는 그대로다<br/>다시 시작하기 쉽게 두는 것이 목적이다\n  멈춤 --> 돎 : 다시 켠다"
+        },
+        {
+          "title": "이 벽이 못 막는 것",
+          "question": "무엇이 아직 안 되어 있는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"말로만 하는 통제로는 부족하다고 적는다\"]:::list\n  B[\"<b>그런데 플랫폼 통제가 무엇을 못 잡는지는 안 적는다</b><br/>못 막는 범위가 글에 없다\"]:::accent\n  C[\"신원을 실행 위치에서 끌어온다\"]:::list\n  D[\"에이전트 자체의 신원은 앞으로의 일로 남긴다\"]:::list\n  E[\"자격을 대신 써 주는 쪽이 하나 있다\"]:::list\n  F[\"그것이 모든 요청의 외길인데 가용성 이야기가 없다\"]:::list\n  G[\"기본으로 막고 길을 하나씩 연다\"]:::list\n  H[\"길 하나 여는 절차도 걸리는 시간도 없다\"]:::list\n  I[\"수백 개를 돌린다고 적는다\"]:::list\n  J[\"성능도 지연도 사고율도 절감도 없다\"]:::list\n  K[\"자격을 바꾸고 이미지를 갱신해야 한다\"]:::list\n  L[\"아직 더 필요하다고만 적혀 있다\"]:::list\n  N[\"<i>신원과 자격 순환은 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  K --> L\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+          "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+          "publisher": "Grab Tech",
+          "date": "2026-06-19",
+          "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+        },
+        {
+          "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+          "url": "https://engineering.grab.com/part-2-palana-architecture",
+          "publisher": "Grab Tech",
+          "date": "2026-06-21",
+          "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1641,7 +2243,8 @@
     "**배차 시뮬레이션이 무엇을 모델링하지 않는지** 글이 밝히지 않는다 — '모듈식'이라고만 적는다.",
     "합승에서 **받아들일 만한 우회 시간의 임계값**과 **승객의 실제 수락·참여율**을 밝히지 않는다. 상세 정량화는 **2부로 미뤘다.**",
     "DBSCAN 의 **eps=300m 를 고른 근거**를 밝히지 않는다 — 이 값이 '35~45%' 라는 답을 좌우한다(추정).",
-    "**슈퍼앱의 핵심 질문 — 이동과 배달이 같은 기사 풀을 나눠 쓰는가**를 다루는 자료를 이 사이트는 아직 찾지 못했다."
+    "**슈퍼앱의 핵심 질문 — 이동과 배달이 같은 기사 풀을 나눠 쓰는가**를 다루는 자료를 이 사이트는 아직 찾지 못했다.",
+    "**⚠️ 314 에서 STATE 의 낡은 메모를 바로잡았다**(이 기록은 이 사이트의 것이다). 여러 사이클 동안 **Grab 보강 후보로 `Counter Service 저장소 이전`(2026-07-03)과 `Iceberg`(2026-07-10)를 들고 다녔는데, 확인해 보니 그 두 글은 이미 `counter-service` 와 `iceberg-lake` 의 `sources` 로 들어가 있었다.** 두 기능 다 결정 일곱에 그림 셋으로 이미 차 있다. **보강할 것이 아니라 이미 쓴 것이었다** — 메모가 사이클을 건너오며 낡은 채로 실려 다닌 것이다. **남은 Grab 후보는 `Agent platform (Part 1)`(2026-07-24, `/how-grab-builds-and-runs-ai-agents-at-scale`)과 `Introducing the SOP-driven LLM agent frameworks` 다.**"
   ],
   "sources": [
     {
@@ -1685,6 +2288,20 @@
       "publisher": "Grab Engineering",
       "date": "—",
       "summary": "합승 알고리즘을 만들기 **전에** 과거 예약을 DBSCAN(eps=300m)으로 분석해 **매칭 가능성이 하루 대부분 35~45%** 라는 것을 먼저 확인한 기록. 제약(좌석·경로 각도·ETA·우회·효율)과 승객·기사·회사 사이의 이해득실을 함께 적었다."
+    },
+    {
+      "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+      "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+      "publisher": "Grab Tech",
+      "date": "2026-06-19",
+      "summary": "**에이전트를 어디에 두고 돌릴 것인가에서 시작한다.** 문제를 한 줄로 적는다 — *\"The more capability we give to the agents, the more valuable they get - but they also get riskier, and maintaining controls and oversight gets more challenging.\"* 그리고 실무의 요구를 셋으로 든다: **오래 도는 에이전트는 상태가 남아야 하고**, 팀은 Slack 이나 웹 화면으로 **함께 접근**해야 하며, 보안 팀은 **에이전트가 무엇을 하는지 들여다볼 수 있어야** 한다.\n\n**🔴 버린 대안 둘에 이유가 붙는다** — **랩톱에서 돌리기**: *\"The first wave of AI coding tools lived close to the user: an IDE plugin, a chat window, or a command-line assistant running on a developer's laptop. That model is familiar and easy to adopt, but it has limits.\"* · **컨테이너로 싸기만 하기**: *\"Containers help package the runtime, but they do not answer the harder platform questions.\"*\n\n**⭐ 설계의 전제를 한 문장으로 적는다** — *\"Palana assumes an agent might become confused, compromised, or uncooperative.\"* 그래서 **제어면을 에이전트 바깥에 둔다.** 다른 원칙들 — 쿠버네티스 위에 짓고(*\"simple workflows for users, direct primitives for advanced operators\"*), **에이전트마다 네임스페이스**를 줘 *\"Agents should not see each other's pods, secrets, or filesystem state by default\"* 하며, **비밀을 환경변수로 주지 않고**(에이전트가 *\"may execute tools, run untrusted code, summarize files, install packages, or expose a web UI\"* 하기 때문에), **네트워크를 막는 대신 보이게 한다** — *\"Instead of forbidding network access, Palana makes network access observable.\"*\n\n**수치는 하나뿐이다** — *\"It is currently used to run hundreds of agents\"*(수백 개의 에이전트를 돌린다). ⚠️ **성능·지연·사고율·절감 시간은 없다.**"
+    },
+    {
+      "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+      "url": "https://engineering.grab.com/part-2-palana-architecture",
+      "publisher": "Grab Tech",
+      "date": "2026-06-21",
+      "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
     }
   ]
 }
