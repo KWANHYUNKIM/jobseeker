@@ -203,7 +203,7 @@
     },
     {
       "name": "표를 만드는 쪽의 병목을 없앤다",
-      "why": "**읽는 쪽과 만드는 쪽은 다른 문제다**(이 구분은 이 사이트의 것이다). 도메인 ① 이 **한 조 개의 표를 어떻게 읽을 것인가**였다면, 여기는 **표에 무언가를 새로 만들 때 무엇이 막히는가**다.\n\n**막힌 것은 번호였다.** 아이템을 만들 때마다 **단일 MySQL 마스터**에서 번호를 받아야 했고, 그게 *\"a bottleneck and a single point of failure for creating board items\"* 였다. 회사가 그 무게를 한 줄로 적는다 — *\"every DB hiccup affected monday.com customers' ability to interact with their boards.\"*\n\n**그리고 제약이 하나 못 박혀 있었다** — **번호는 정수여야 한다.** 하위 서비스와 레거시가 숫자에 기대고 있어 UUID 로 가려면 *\"rewriting half the codebase\"* 였다. **바꿀 수 있는 것과 없는 것이 처음부터 갈려 있었던 셈이다**(이 정리는 이 사이트의 것이다).\n\n**⚠️ 이 도메인은 본문 한 편을 읽었다** — 두 번째 기능을 쓰려면 만드는 쪽 글을 하나 더 찾는다.",
+      "why": "**읽는 쪽과 만드는 쪽은 다른 문제다**(이 구분은 이 사이트의 것이다). 도메인 ① 이 **한 조 개의 표를 어떻게 읽을 것인가**였다면, 여기는 **표에 무언가를 새로 만들 때 무엇이 막히는가**다.\n\n**막힌 것은 번호였다.** 아이템을 만들 때마다 **단일 MySQL 마스터**에서 번호를 받아야 했고, 그게 *\"a bottleneck and a single point of failure for creating board items\"* 였다. 회사가 그 무게를 한 줄로 적는다 — *\"every DB hiccup affected monday.com customers' ability to interact with their boards.\"*\n\n**그리고 제약이 하나 못 박혀 있었다** — **번호는 정수여야 한다.** 하위 서비스와 레거시가 숫자에 기대고 있어 UUID 로 가려면 *\"rewriting half the codebase\"* 였다. **바꿀 수 있는 것과 없는 것이 처음부터 갈려 있었던 셈이다**(이 정리는 이 사이트의 것이다).\n\n**⚠️ 이 도메인은 본문 한 편을 읽었다** — 두 번째 기능을 쓰려면 만드는 쪽 글을 하나 더 찾는다.\n\n**289 에서 이 도메인의 범위가 넓어졌다** — `Redesign Authorization to monday.com Scale`(2026-04-26)을 읽고 보니, **번호를 받는 일과 권한을 확인하는 일이 같은 자리에 있다**(이 정리는 이 사이트의 것이다). **둘 다 아이템을 다룰 때마다 앞단에서 걸리고, 둘 다 답이 '미리 가져다 두기' 다.** ID 편은 *\"50ms to the critical path… is unacceptable\"* 이라 했고, 인가 편은 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙는 것이 문제였다. **크리티컬 패스에서 네트워크를 빼는 같은 답을 두 번 냈다.**",
       "tech": [
         {
           "tech": "번호를 구간째 미리 떼어 온다 — 중앙 ID 서비스와 양쪽 버퍼",
@@ -222,7 +222,8 @@
         }
       ],
       "features": [
-        "id-range-leasing"
+        "id-range-leasing",
+        "push-not-pull-authz"
       ]
     },
     {
@@ -272,7 +273,8 @@
     "**⚠️ 총 ARR 실액을 확인하지 못했다.** 2분기 매출(3억 6,460만 달러)과 성장률(22%), 유료 고객 수(65,783곳), 구간별 순매출 유지율은 나오는데 **총 ARR 은 이 발표 요약에 없다.** AI 제품 ARR 도 **'1분기 대비 두 배' 와 '순신규 ARR 의 17%'** 라는 상대값뿐이다.",
     "**⭐ 285 에서 3년 간격의 두 편을 나란히 읽어 흐름이 보였다.** 2023년 `Nice to meet you, mondayDB architecture` 는 **속도 층 Redis · 배치 층 Cassandra** 였고, 2026년 v3 에서 **배치 층이 오브젝트 스토리지의 DuckDB 파일**, **속도 층이 WAL 과 Kafka** 가 됐다. **그때 남긴 숙제가 다음 판의 설계가 됐다** — 2023년 글이 *\"live mutation handling unresolved\"* 로 끝났는데 v3 의 속도 층이 정확히 그 자리다. **⚠️ 다만 그때 든 Rust 리팩터링은 안 왔고 Go 로 갔는데, 그 이유는 어느 글에도 없다**(이 대조는 이 사이트의 것이다).",
     "**⚠️ 아이템 ID 생성 편은 나오는 숫자가 전부 설정값이다**(287 재독에서 확인). **1,000개 버퍼 · 80% 임계 · 50% 경보 · 50억** 은 전부 **정한 값**이고, **초당·하루 발급량도 실제 지연도 이행 일정도 팀 규모도 옛 시스템의 실제 사고 기록도 없다.** 기준으로 삼은 **50밀리초**조차 *\"50ms to the critical path… is unacceptable\"* 이라는 **피하려는 값**이지 잰 값이 아니다. **같은 회사의 `mondayDB 3` 편이 5배·20배·50배·40~60% 를 내는 것과 대비된다**(이 관찰은 이 사이트의 것이다).",
-    "**⭐ 이 회사가 두 자리에서 같은 답을 따로 냈다.** **보드를 읽는 엔진**(mondayDB)도 **텔레메트리를 읽는 저장소**(ClickHouse)도 **열 지향**이고 이유도 같다 — 거를 때 필요한 부분만 읽으면 된다(*\"most of the time you are querying specific attributes\"*). **읽는 패턴이 비슷하면 저장하는 모양도 같아진다는 것을 두 번 보여 준 셈이다.** ⚠️ **다만 두 글은 서로를 언급하지 않는다** — 관측 글이 mondayDB v3 를 계기로 들 뿐이다(이 연결은 이 사이트의 것이다)."
+    "**⭐ 이 회사가 두 자리에서 같은 답을 따로 냈다.** **보드를 읽는 엔진**(mondayDB)도 **텔레메트리를 읽는 저장소**(ClickHouse)도 **열 지향**이고 이유도 같다 — 거를 때 필요한 부분만 읽으면 된다(*\"most of the time you are querying specific attributes\"*). **읽는 패턴이 비슷하면 저장하는 모양도 같아진다는 것을 두 번 보여 준 셈이다.** ⚠️ **다만 두 글은 서로를 언급하지 않는다** — 관측 글이 mondayDB v3 를 계기로 들 뿐이다(이 연결은 이 사이트의 것이다).",
+    "**⭐⭐ 이 회사가 크리티컬 패스 문제에 같은 답을 두 번 냈다.** **아이템 번호 발급**은 *\"50ms to the critical path… is unacceptable\"* 이라며 **1,000개씩 미리 받아 두는 쪽**으로 갔고, **권한 확인**은 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙는 것을 **미리 복제해 메모리에서 판정하는 쪽**으로 풀었다. **둘 다 아이템을 다룰 때마다 앞단에서 걸리는 것이고, 둘 다 답이 '미리 가져다 두기' 다**(이 대비는 이 사이트의 것이다). **⚠️ 다만 대가를 적는 정도는 다르다** — ID 편은 **버려지는 번호**를 적는데 **권한 편은 대가를 한 줄도 안 적는다.**"
   ],
   "sources": [
     {
@@ -337,6 +339,13 @@
       "publisher": "monday.com Engineering",
       "date": "2026-03-19",
       "summary": "**경보를 줄이려고 먼저 경보를 데이터로 만든 기록.** 문제가 셋이다 — *\"when you're on-call once in a while, the recurring patterns are easy to miss\"*(가끔 당번을 서면 반복되는 패턴이 안 보인다) · **경보의 주인이 흐릿해** 오탐과 시끄러운 경보가 바로 안 고쳐진다 · 처리는 했지만 해결이 안 돼 *\"regressions or gradual performance degradation\"* 이 남는다.\n\n**결정 넷.** ① **먼저 센다** — *\"You can't improve what you can't measure.\"* PagerDuty 를 붙여 **경보가 뜨면 전용 보드에 항목이 자동 생성**되게 했다(**또 자기 제품을 도구로 쓴다**). ② **맥락을 붙인다** — 원시 경보 데이터로는 참·거짓을 가릴 수 없어, **당번이 처리 뒤에 분류하도록 항목을 늘리고** Slack 자동 알림으로 잊지 않게 했다. ③ **분기 엔지니어링 리뷰(QER)** — 경보 수, 오탐률, 가장 시끄러운 서비스를 함께 본다. ④ **거기서 나온 것을 우선순위가 매겨진 백로그로** 바꾼다.\n\n**🔴 경보를 사람 시간으로 환산한다** — *\"this alert paged us 10 times and cost us 7 engineer-hours last quarter.\"* **결과** — **오탐이 절반으로**(절대 수와 비율 둘 다). **범위** — Apps·API·Marketplace 팀의 **엔지니어 20명**, **1년 넘게**. **⚠️ 대가** — 분류를 당번이 계속 해야 하고 *\"easy to forget\"* 이라 알림으로 받쳐야 하며, 분기 리뷰를 지키는 규율에 기댄다. 회사도 *\"there are still plenty of areas for improvement\"* 라고 적는다. ⚠️ **버린 대안은 명시하지 않는다.**"
+    },
+    {
+      "title": "Redesign Authorization to monday.com Scale",
+      "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+      "publisher": "monday.com Engineering",
+      "date": "2026-04-26",
+      "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
     }
   ],
   "features": [
@@ -3388,6 +3397,682 @@
           "publisher": "monday.com Engineering",
           "date": "2026-03-19",
           "summary": "**경보를 줄이려고 먼저 경보를 데이터로 만든 기록.** 문제가 셋이다 — *\"when you're on-call once in a while, the recurring patterns are easy to miss\"*(가끔 당번을 서면 반복되는 패턴이 안 보인다) · **경보의 주인이 흐릿해** 오탐과 시끄러운 경보가 바로 안 고쳐진다 · 처리는 했지만 해결이 안 돼 *\"regressions or gradual performance degradation\"* 이 남는다.\n\n**결정 넷.** ① **먼저 센다** — *\"You can't improve what you can't measure.\"* PagerDuty 를 붙여 **경보가 뜨면 전용 보드에 항목이 자동 생성**되게 했다(**또 자기 제품을 도구로 쓴다**). ② **맥락을 붙인다** — 원시 경보 데이터로는 참·거짓을 가릴 수 없어, **당번이 처리 뒤에 분류하도록 항목을 늘리고** Slack 자동 알림으로 잊지 않게 했다. ③ **분기 엔지니어링 리뷰(QER)** — 경보 수, 오탐률, 가장 시끄러운 서비스를 함께 본다. ④ **거기서 나온 것을 우선순위가 매겨진 백로그로** 바꾼다.\n\n**🔴 경보를 사람 시간으로 환산한다** — *\"this alert paged us 10 times and cost us 7 engineer-hours last quarter.\"* **결과** — **오탐이 절반으로**(절대 수와 비율 둘 다). **범위** — Apps·API·Marketplace 팀의 **엔지니어 20명**, **1년 넘게**. **⚠️ 대가** — 분류를 당번이 계속 해야 하고 *\"easy to forget\"* 이라 알림으로 받쳐야 하며, 분기 리뷰를 지키는 규율에 기댄다. 회사도 *\"there are still plenty of areas for improvement\"* 라고 적는다. ⚠️ **버린 대안은 명시하지 않는다.**"
+        }
+      ]
+    },
+    {
+      "key": "push-not-pull-authz",
+      "name": "물어보지 않으려고 미리 갖고 있는다",
+      "domain": "표를 만드는 쪽의 병목을 없앤다",
+      "updated_at": "2026-08-29",
+      "ui": {
+        "title": "요청 하나가 권한 확인을 지나기까지",
+        "question": "판정할 때 물어보면 왜 안 되는가?",
+        "kind": "web",
+        "note": "**권한 확인 흐름을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내 도구의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 구조와 수치만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "권한 확인"
+          },
+          {
+            "type": "card",
+            "text": "거의 모든 요청이 여기를 지납니다",
+            "items": [
+              "데이터를 기다리느라 이백 밀리초쯤 붙었다",
+              "게다가 들쭉날쭉했다",
+              "느린 응답 하나가 시간 초과로 번졌다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "text",
+            "text": "기대던 서비스들이 핵심만큼의 보장을 갖고 있지 않았습니다",
+            "pin": 2
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "방향을 뒤집었다"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "판정할 때 물어보지 않는다",
+                "sub": "미리 받아 두고 메모리에서 판단한다",
+                "right": "전환"
+              },
+              {
+                "title": "변경은 흘려보낸다",
+                "sub": "기록을 따라 복제하고 파드로 흘린다",
+                "right": "복제"
+              }
+            ],
+            "pin": 3
+          },
+          {
+            "type": "text",
+            "text": "주기적으로 크게 담을 때는 값싼 저장소에서 가져옵니다",
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "누가 받을지도 바꿨다"
+          },
+          {
+            "type": "card",
+            "text": "아무 파드나 받으면 안 됩니다",
+            "items": [
+              "예전에는 돌아가며 받았다",
+              "그러면 파드마다 새 테넌트를 계속 미리 담아야 한다",
+              "같은 테넌트는 같은 파드로 보낸다"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "amount",
+            "text": "240 → 6 밀리초",
+            "sub": "절반이 지나는 시간"
+          },
+          {
+            "type": "chips",
+            "items": [
+              "구할 중 구백구십 이상이 메모리에서"
+            ],
+            "pin": 6
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "어떻게 갈아탔는가"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "한 번에 옮기지 않는다",
+                "sub": "데이터 출처를 하나씩",
+                "right": "점진"
+              },
+              {
+                "title": "두 엔진의 판정을 계속 견준다",
+                "sub": "다르면 트래픽을 안 올린다",
+                "right": "대조"
+              }
+            ],
+            "pin": 7
+          },
+          {
+            "type": "button",
+            "text": "요청 통과",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "모든 요청이 지나는 자리에서 이백 밀리초",
+            "what": "*\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었다. **더 나쁜 건 변동이었다** — *\"A single slow response or transient failure could cascade into timeouts.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "기대던 곳의 보장이 달랐다",
+            "what": "2~3티어 마이크로서비스에 의존했는데 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다. **MySQL 도 한계**였다 — 수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "물어보는 대신 미리 받아 둔다",
+            "what": "*\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **WAL 기반 CDC** 로 변경을 받아 **DynamoDB 로 복제**하고 **스트림**으로 서빙 파드에 흘린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "크게 담을 때는 값싼 곳에서",
+            "what": "테넌트 데이터의 주기 적재는 **S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **자주 바뀌는 것과 통째로 담는 것을 다른 저장소에 맡긴 셈이다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "아무 파드나 받으면 안 된다",
+            "what": "예전 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들었다 — **적재량·비용·지연**이 함께 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "거의 다 메모리에서 끝난다",
+            "what": "**P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로** 줄었고 **요청의 99% 넘게가 메모리에서 계산**된다. 목표는 **10배 확장**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "두 엔진을 나란히 돌리며 옮겼다",
+            "what": "*\"Rather than attempting a huge single migration, we moved data sources incrementally.\"* **원시 데이터·두 엔진의 판정·데이터 신선도**를 계속 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**권한 확인은 거의 모든 요청이 지나는 자리인데, 거기서 데이터를 기다리느라 약 200밀리초를 먹고 있었다.** 그리고 **더 나쁜 것은 그 값이 들쭉날쭉했다는 점이다** — *\"A single slow response or transient failure could cascade into timeouts.\"*\n\n**⭐ 문제의 뿌리가 의존 구조에 있었다**(이 정리는 이 사이트의 것이다). 회사가 그것을 정확히 적는다 — 기대던 2~3티어 서비스들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path.\"* **보장 수준이 낮은 것들이 가장 중요한 길목에 서 있었다.**\n\n**답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보지 않으면 남의 지연이 내 지연이 되지 않는다.**\n\n**⭐⭐ 그리고 이 회사가 같은 답을 두 번 냈다**(이 대비는 이 사이트의 것이다). **아이템 번호를 받는 일**도 *\"50ms to the critical path… is unacceptable\"* 이라며 **1,000개씩 미리 받아 두는 쪽**으로 갔다. **번호도 권한도, 아이템을 다룰 때마다 앞단에서 걸리는 것이고, 둘 다 답이 '미리 가져다 두기' 다.**\n\n**결과가 분명하다** — **P50 240밀리초 → 6밀리초**, **P99 720밀리초 → 80밀리초**, **요청의 99% 넘게가 메모리에서**. 목표는 **10배 확장**.\n\n**⚠️ 다만 이 글은 버린 대안도 한계도 적지 않는다**(이 지적은 이 사이트의 것이다) — 옛 시스템과의 대비만 있고, *\"While we continue extending this architecture to additional components\"* 라고만 한다. **같은 회사의 관측 편이 잃은 것을 길게 적는 것과 대비된다.**",
+        "metrics": [
+          {
+            "label": "지연 (중앙값)",
+            "value": "240밀리초 → 6밀리초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "지연 (상위 1%)",
+            "value": "720밀리초 → 80밀리초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "메모리에서 끝나는 비율",
+            "value": "요청의 99% 넘게",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "옛 시스템이 더하던 값",
+            "value": "데이터 소스를 기다리느라 약 200밀리초 — 게다가 변동이 컸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "목표",
+            "value": "10배 확장",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "버린 대안도 한계도 적지 않는다 · 복제 파이프라인의 지연이나 비용 수치도 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "의존 구조를 짚은 대목에서",
+          "thought": "**보장 수준이 낮은 것들이 가장 중요한 길목에 서 있었다** — *\"not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path.\"* **이건 성능 문제가 아니라 배치 문제다**(이 정리는 이 사이트의 것이다). 그래서 답도 그 서비스들을 빠르게 만드는 것이 아니라 **길목에서 빼는 것**이 됐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "평균보다 변동을 먼저 적은 것을 볼 때",
+          "thought": "**200밀리초라는 값보다 그것이 들쭉날쭉하다는 것을 문제로 든다** — *\"A single slow response or transient failure could cascade into timeouts.\"* **느린 것은 견딜 수 있어도 언제 느릴지 모르는 것은 못 견딘다**(이 표현은 이 사이트의 것이다). 실제로 고친 뒤 **P99 가 720에서 80으로** 줄어 **중앙값보다 꼬리가 더 극적으로 좋아졌다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "라우팅을 함께 바꾼 대목에서",
+          "thought": "**미리 받아 두기로 하면 누가 받을지도 함께 정해야 한다**(이 연결은 이 사이트의 것이다). 라운드로빈이면 **파드마다 모든 테넌트를 담아야 하므로** 미리 받아 두는 이점이 사라진다. **그래서 스티키니스가 선택이 아니라 따라오는 조건이 된다.** ⚠️ **대가는 테넌트가 고르지 않으면 파드도 고르지 않다는 것**인데 그 이야기는 글에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이 회사의 다른 편과 나란히 볼 때",
+          "thought": "**아이템 번호도 권한도 같은 답으로 갔다** — **크리티컬 패스에서 네트워크 빼기.** ID 편은 *\"50ms… is unacceptable\"* 이라 했고 여기는 *\"roughly 200ms\"* 가 문제였다(이 대비는 이 사이트의 것이다). ⚠️ **그런데 이 글은 대가를 안 적는다** — ID 편은 **버려지는 번호**를, 관측 편은 **떠안은 운영**을 적었는데, **여기는 복제를 유지하는 값도 스티키니스의 쏠림도 안 나온다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "복제된 상태",
+            "what": "판정에 필요한 데이터를 **미리 받아 파드 메모리에** 둔다"
+          },
+          {
+            "name": "변경 스트림",
+            "what": "**WAL 기반 CDC** 로 받아 DynamoDB 에 복제하고 스트림으로 파드에 흘린다"
+          },
+          {
+            "name": "스냅샷",
+            "what": "테넌트 데이터를 크게 담을 때 쓰는 **S3** — DynamoDB 비용을 줄이려는 자리다"
+          },
+          {
+            "name": "스티키니스 층",
+            "what": "**같은 테넌트는 같은 파드로.** 라운드로빈이면 미리 담아 두는 이점이 사라진다"
+          },
+          {
+            "name": "무결성 검사",
+            "what": "원시 데이터 · **두 엔진의 판정** · 신선도를 계속 비교한다"
+          }
+        ],
+        "invariants": [
+          "**판정할 때 밖에 물어보지 않는다** — 미리 받아 둔 메모리 상태로 결정한다",
+          "**같은 테넌트는 같은 파드가 본다** — 그래야 미리 담아 둔 것이 쓸모 있다",
+          "**자주 바뀌는 것과 통째로 담는 것을 다른 저장소에 맡긴다**",
+          "**한 번에 옮기지 않는다** — 데이터 소스를 하나씩",
+          "**두 엔진의 판정이 갈리면 트래픽을 안 올린다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "데이터 소스에서 변경이 난다",
+            "why": "권한에 쓰이는 값들이 계속 바뀐다"
+          },
+          {
+            "step": "기록을 따라 변경을 받아 낸다",
+            "why": "판정 시점에 물어보지 않으려면 미리 받아야 한다"
+          },
+          {
+            "step": "복제 저장소에 담는다",
+            "why": "파드가 각자 원본을 두드리지 않게 한다"
+          },
+          {
+            "step": "스트림으로 서빙 파드에 흘린다",
+            "why": "거의 실시간으로 최신을 유지한다"
+          },
+          {
+            "step": "크게 담을 때는 스냅샷에서 가져온다",
+            "why": "복제 저장소 비용을 줄인다"
+          },
+          {
+            "step": "요청이 들어온다",
+            "why": "거의 모든 요청이 이 자리를 지난다"
+          },
+          {
+            "step": "같은 테넌트를 같은 파드로 보낸다",
+            "why": "아무 데나 가면 파드마다 다 담아야 한다"
+          },
+          {
+            "step": "메모리에서 판정한다",
+            "why": "구백구십 이상이 여기서 끝난다"
+          },
+          {
+            "step": "두 엔진의 판정을 견준다",
+            "why": "다르면 트래픽을 안 올린다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "판정에 필요한 데이터를 언제 가져올 것인가?",
+            "chosen": "**미리 가져온다.** *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state\"*",
+            "alternatives": [
+              "판정 시점에 데이터 소스를 부르기 — 약 200밀리초가 붙었고 **변동이 컸다**"
+            ],
+            "tradeoff": "**남의 지연이 내 지연이 되지 않는다**(이 정리는 이 사이트의 것이다). 결과가 **P50 240→6밀리초**, **P99 720→80밀리초**다. **대가는 복제 파이프라인을 만들고 유지해야 한다는 것**이고, ⚠️ **그 비용이나 복제 지연의 수치는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "보장 수준이 낮은 서비스들을 어떻게 할 것인가?",
+            "chosen": "**길목에서 뺀다.** 빠르게 만드는 대신 크리티컬 패스에서 치운다",
+            "alternatives": [
+              "의존하는 서비스들의 가용성과 지연을 끌어올리기"
+            ],
+            "tradeoff": "회사가 문제를 배치로 진단한다 — 그 서비스들이 *\"not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path.\"* **성능 문제가 아니라 배치 문제로 본 것이다**(이 표현은 이 사이트의 것이다). **대가는 그 데이터의 최신성이 복제 지연만큼 늦어진다는 것**인데(이 지적도 이 사이트의 것이다) **글은 *\"close to real-time updates\"* 라고만 한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "복제를 어디에 담을 것인가?",
+            "chosen": "**두 곳으로 나눈다.** 변경은 **DynamoDB 와 스트림**으로, 주기적인 대량 적재는 **S3 스냅샷**으로",
+            "alternatives": [
+              "전부 DynamoDB 로 담기"
+            ],
+            "tradeoff": "이유가 값이다 — S3 스냅샷은 *\"reduce DynamoDB costs\"* 를 위한 것이다. **자주 바뀌는 것과 통째로 담는 것을 다른 저장소에 맡긴 셈이다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 두 경로를 다 유지해야 한다는 것**이고 **스냅샷 주기도 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "요청을 어느 파드가 받게 할 것인가?",
+            "chosen": "**같은 테넌트는 같은 파드로.** 스티키니스 층을 둔다",
+            "alternatives": [
+              "라운드로빈 — *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다"
+            ],
+            "tradeoff": "**미리 받아 두기로 하면 누가 받을지도 함께 정해야 한다**(이 연결은 이 사이트의 것이다) — 아무 데나 가면 **파드마다 모든 테넌트를 담아야 해서** 미리 담는 이점이 사라진다. 얻은 것은 **적재량·비용·지연**이 함께 줄어드는 것. ⚠️ **대가는 테넌트가 고르지 않으면 파드도 고르지 않다는 것**인데 그 이야기는 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "한 번에 갈아탈 것인가?",
+            "chosen": "**아니다 — 데이터 소스를 하나씩 옮긴다.** *\"Rather than attempting a huge single migration\"*",
+            "alternatives": [
+              "한 번에 전환하기"
+            ],
+            "tradeoff": "각 단계마다 검증한 뒤 트래픽을 올린다. **대가는 그동안 두 체계를 함께 운영해야 한다는 것**이다(이 지적은 이 사이트의 것이다) — ⚠️ **이행에 얼마나 걸렸는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "옮긴 것이 맞다는 것을 어떻게 아는가?",
+            "chosen": "**두 엔진의 판정을 계속 견준다.** 원시 데이터와 신선도도 함께 본다",
+            "alternatives": [
+              "테스트와 단계별 배포만으로 판단하기"
+            ],
+            "tradeoff": "*\"Any discrepancy was investigated before traffic was increased.\"* **판정이 갈리는 것을 트래픽을 올리기 전의 관문으로 삼았다**(이 정리는 이 사이트의 것이다). **대가는 두 엔진을 나란히 돌리는 값**이고, ⚠️ **실제로 불일치가 얼마나 났는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "WAL 기반 CDC",
+            "role": "데이터 소스의 변경을 받아 낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "DynamoDB + Streams",
+            "role": "복제본을 담고 서빙 파드로 변경을 흘린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "S3 스냅샷",
+            "role": "테넌트 데이터의 주기적 대량 적재. DynamoDB 비용을 줄이려는 자리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "스티키니스 라우팅",
+            "role": "같은 테넌트를 같은 파드로 보내 적재량·비용·지연을 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "무결성 검사",
+            "role": "원시 데이터·두 엔진의 판정·신선도를 계속 비교한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ MySQL",
+            "role": "옛 시스템 — 수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "가장 중요한 길목에 가장 보장이 약한 것들이 서 있다",
+            "why_hard": "인가는 *\"the critical path of almost every request\"* 인데, 거기서 부르던 2~3티어 서비스들이 *\"not designed with the same availability or latency guarantees as our core systems.\"* **그래서 평균 200밀리초보다 변동이 더 문제였다** — *\"A single slow response or transient failure could cascade into timeouts.\"*",
+            "current_best": "**그 서비스들을 빠르게 만드는 대신 길목에서 뺀다** — 데이터를 미리 복제해 두고 **메모리에서 판정**한다. **P99 가 720밀리초에서 80밀리초로** 줄어 **꼬리가 중앙값보다 더 극적으로 좋아졌다.** ⚠️ **대가는 복제 지연만큼 데이터가 늦다는 것**인데 글은 *\"close to real-time updates\"* 라고만 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "problem": "미리 담아 두려면 누가 담을지도 정해야 한다",
+            "why_hard": "라운드로빈으로 요청을 뿌리면 *\"forcing each pod to constantly preload new tenants\"* 라 **미리 담아 두는 이점이 사라진다.** **캐시를 만들었는데 캐시가 안 맞는 상태가 된다**(이 표현은 이 사이트의 것이다).",
+            "current_best": "**스티키니스 층으로 같은 테넌트를 같은 파드에 묶는다.** 적재량·비용·지연이 함께 줄었다. ⚠️ **테넌트 크기가 고르지 않을 때의 쏠림은 다루지 않는다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Redesign Authorization to monday.com Scale",
+                "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+                "publisher": "monday.com Engineering",
+                "date": "2026-04-26",
+                "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "요청 하나가 권한 확인을 지나기까지",
+          "question": "판정할 때 밖에 물어보지 않으려면?",
+          "kind": "flow",
+          "code": "flowchart TD\n  SRC[\"권한에 쓰이는 데이터가 바뀐다\"]:::list\n  CDC[\"기록을 따라 변경을 받아 낸다\"]:::list\n  REP[\"복제 저장소에 담는다\"]:::list\n  STREAM[\"스트림으로 서빙 파드에 흘린다\"]:::list\n  SNAP[\"크게 담을 때는 값싼 저장소에서\"]:::list\n  REQ[\"요청이 들어온다\"]:::list\n  STICK[\"<b>같은 테넌트는 같은 파드로</b><br/>• 돌아가며 받으면 파드마다 다 담아야 한다<br/>• 그러면 미리 담는 이점이 사라진다<br/>• 적재량과 비용과 지연이 함께 줄었다\"]:::accent\n  MEM[\"메모리에서 판정한다 — 구백구십 이상\"]:::list\n  X1[\"판정할 때 물어보기<br/>버렸다 — 이백 밀리초에 변동까지\"]:::quiet\n  X2[\"의존 서비스를 빠르게 만들기<br/>안 했다 — 길목에서 뺐다\"]:::quiet\n  SRC --> CDC --> REP --> STREAM --> MEM\n  SNAP --> MEM\n  REQ --> STICK --> MEM\n  REQ -.-> X1\n  CDC -.-> X2"
+        },
+        {
+          "title": "데이터 출처 하나가 옮겨지기까지",
+          "question": "두 체계를 언제까지 함께 돌리는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 옛방식\n  옛방식 : <b>판정할 때 물어본다</b><br/>이백 밀리초쯤 붙고 값이 들쭉날쭉하다\n  옛방식 --> 복제 : 이 출처를 옮기기로 한다\n  복제 : <b>변경을 미리 받아 담는다</b><br/>기록을 따라 흘려보낸다\n  복제 --> 병행 : 두 엔진을 함께 돌린다\n  병행 : <b>판정을 나란히 견준다</b><br/>원시 데이터와 신선도도 함께 본다\n  병행 --> 조사 : 판정이 갈렸다\n  조사 : <b>트래픽을 안 올린다</b><br/>다른 이유를 찾을 때까지 멈춘다\n  조사 --> 병행 : 원인을 고쳤다\n  병행 --> 전환 : 계속 같았다\n  전환 : <b>이 출처는 새 방식으로</b><br/>다음 출처로 넘어간다\n  전환 --> [*]"
+        },
+        {
+          "title": "이 글이 적지 않은 것",
+          "question": "같은 회사의 다른 글과 무엇이 다른가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"숫자는 확실하다\"]:::list\n  B[\"<b>그런데 대가를 한 줄도 안 적는다</b><br/>같은 회사 관측 편이 잃은 것을 길게 적는 것과 다르다\"]:::accent\n  C[\"미리 받아 두기로 했다\"]:::list\n  D[\"복제를 유지하는 값도 복제 지연 수치도 없다\"]:::list\n  E[\"같은 테넌트를 같은 파드로 묶는다\"]:::list\n  F[\"테넌트 크기가 고르지 않을 때의 쏠림은 없다\"]:::list\n  G[\"두 엔진을 나란히 돌려 견줬다\"]:::list\n  H[\"불일치가 실제로 얼마나 났는지 없다\"]:::list\n  I[\"출처를 하나씩 옮겼다\"]:::list\n  J[\"이행에 얼마나 걸렸는지 없다\"]:::list\n  N[\"<i>모두 이 사이트의 지적이다 — 회사가 한계로 적은 것은 없다</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Redesign Authorization to monday.com Scale",
+          "url": "https://engineering.monday.com/redesign-authorization-to-monday-com-scale/",
+          "publisher": "monday.com Engineering",
+          "date": "2026-04-26",
+          "summary": "**인가가 거의 모든 요청의 크리티컬 패스에 있었고, 거기서 약 200밀리초를 먹고 있었다.** 회사가 문제를 셋으로 적는다 — *\"Authorization sits on the critical path of almost every request at monday.com\"* 이고 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙었으며, **그 지연이 들쭉날쭉했다**: *\"A single slow response or transient failure could cascade into timeouts.\"* **MySQL 이 한계**였고(수평 확장이 복잡하고 많이 쓰는 테이블의 성능이 고르지 않았다), **2~3티어 마이크로서비스에 기대고 있었는데** 그것들이 *\"were not designed with the same availability or latency guarantees as our core systems, yet they sat directly on the critical path\"* 였다.\n\n**🔴 답은 방향을 뒤집는 것이었다** — *\"instead of fetching data at decision time, we would replicate the data ahead of time and make decisions using local, in-memory state.\"* **판정할 때 물어보는 대신 미리 받아 두고 메모리에서 판단한다.**\n\n**구조** — **WAL 기반 CDC** 로 데이터 소스의 변경을 받아 **DynamoDB 로 복제**하고 **DynamoDB Streams** 로 서빙 파드에 흘린다. **테넌트 데이터의 주기 적재는 S3 스냅샷**으로 해 *\"reduce DynamoDB costs\"* 한다. **그리고 라우팅을 바꿨다** — 예전의 라운드로빈은 *\"randomly distributed requests, forcing each pod to constantly preload new tenants\"* 였다. **스티키니스 층**을 두어 *\"requests from the same tenant are consistently routed and evaluated in the same pod\"* 하게 만들어 **적재량·비용·지연**을 줄였다.\n\n**이행이 조심스럽다** — *\"Rather than attempting a huge single migration, we moved data sources incrementally\"* 이고 각 단계마다 검증한 뒤 트래픽을 올렸다. **무결성 검사를 계속 돌린다** — 원시 데이터, **두 엔진의 판정**, 데이터 신선도를 비교하고 *\"Any discrepancy was investigated before traffic was increased.\"*\n\n**🔴 수치가 확실하다** — **P50 이 240밀리초에서 6밀리초로**, **P99 가 720밀리초에서 80밀리초로**. **요청의 99% 넘게가 메모리에서 계산된다.** 목표는 **10배 확장**. ⚠️ **버린 대안을 명시하지 않고**(옛 시스템과의 대비만 있다) **한계도 적지 않는다** — *\"While we continue extending this architecture to additional components\"* 라고만 한다(이 지적은 이 사이트의 것이다)."
+        },
+        {
+          "title": "How We Scaled Board Item ID Generation at monday.com",
+          "url": "https://engineering.monday.com/how-we-scaled-board-item-id-generation-at-monday-com/",
+          "publisher": "monday.com Engineering",
+          "date": "2026-04-09",
+          "summary": "**보드 아이템을 만드는 쪽 이야기.** 단일 MySQL 마스터가 *\"a bottleneck and a single point of failure for creating board items\"* 였고 *\"every DB hiccup affected monday.com customers' ability to interact with their boards\"* 였다. **제약이 하나 못 박혀 있다** — **아이템 ID 는 정수여야 한다.** 하위 서비스와 레거시가 숫자 ID 에 기대고 있어 UUID 로 가려면 *\"rewriting half the codebase\"* 였다. **버린 대안** — **SDK 가 DynamoDB 를 직접 부르는 안**: *\"The maintenance burden would be massive\"*(전사 SDK 갱신) · 파드가 수십만이라 **핫 파티션 스로틀링** · *\"managing thousands of concurrent HTTP connections to AWS is inefficient\"*. 그래서 **중앙 ID 서비스**를 골랐고, 생성 로직을 바꿔도 전사 이관이 필요 없으며 트래픽 급증의 *\"shock absorber\"* 가 된다. **DynamoDB 를 고른 이유 셋** — 글로벌 테이블의 **99.999% 가동 SLA** · **다중 지역 복제**(재해 복구에 필수) · VPC 안에서 **한 자릿수 밀리초**. 파티션 키는 `{domain}.{entityType}`(예: `boards.item`)이고 핵심은 원자적 연산 `SET lastID = if_not_exists(lastID, :min) + :count` — *\"no two servers could ever claim the same ID range, even if they requested it at the exact same microsecond.\"* **양쪽에서 버퍼링한다** — 클라이언트 SDK 가 시작할 때 **1,000개씩** 받아 두어 아이템 생성에 *\"zero network I/O\"* 이고 임계 아래로 떨어지면 뒤에서 채운다 · 서비스도 메모리 풀을 두고 **가용량이 80% 아래로 떨어지면** 채운다. **⚠️ 대가** — **미리 할당하니 파드가 죽으면 ID 가 낭비된다.** 그래서 **엔티티별 일일 소비 한도**와 **평소보다 50% 빨리 소비되면 경보**를 뒀다. 그리고 **ID 공간이 유한하다**(*\"strictly finite (JS Number.MAX_SAFE_INTEGER)\"*). **이행도 조심스럽다** — k6 로 DynamoDB 장애·파드 교체·버퍼 포화를 시뮬레이션하고, **섀도 모드**로 가짜 엔티티 키(`shadow.boards.item`)를 써서 프로덕션 카운터를 안 건드렸으며, **MySQL AUTO_INCREMENT 를 현재 최대치보다 50억 앞으로 밀어** 그 아래 간격을 채우게 하고 **1%에서 100%로** 천천히 올렸다. **🔴 그리고 정직한 후일담이 있다** — 새로 시작하는 프로젝트라면 *\"UUIDs are the superior choice\"* 이고 특히 **UUIDv7** 이 타임스탬프를 품어 정렬 가능하고 *\"sequentially close to each other, which keeps B-Tree indexes happy\"* 라고 적는다. **287 재독에서 결정적 문장 하나와 '안 적은 것' 여섯이 나왔다.** **🔴 왜 미리 받아 두는지의 근거가 있다** — *\"50ms to the critical path isn't just a noticeable delay—it's unacceptable.\"* **그리고 버퍼가 장애 흡수 장치이기도 하다** — 연결 끊김을 시험했더니 *\"local buffers allowed the app to survive short blips\"* 였다. **⚠️ 그런데 안 적은 것이 여섯이다**(이 목록은 이 사이트의 것이다) — **실제 지연·처리량 수치가 하나도 없고**(초당 몇 개, 하루 몇 개를 발급하는지 없다) · **DynamoDB 가 오래 죽었을 때의 대비책이 없고**(짧은 끊김은 버퍼로 버틴다고만 한다) · **버퍼를 1,000개로 정한 근거가 없고**(*\"e.g., 1,000 IDs\"* 라고만 한다) · **관측 세부가 없고**(경보 두 개만 나오고 대시보드도 SLO 도 없다) · **이행 일정이 통째로 없고** · **누가 만들었는지도, 옛 MySQL 이 실제로 어떻게 터졌는지도 없다.**"
         }
       ]
     }
