@@ -58,6 +58,10 @@
     {
       "slug": "github",
       "reason": "Microsoft 산하라 GitHub 단독 재무를 공시하지 않는다. ARR 30억 달러 초과는 회사 발표가 아니라 보도이고 Copilot 은 좌석 수(470만)만 공개돼 매출로 환산할 수 없다"
+    },
+    {
+      "slug": "grafana-labs",
+      "reason": "비상장이라 감사받은 공시가 없다. 회사 발표는 ARR 4억 달러 초과·고객 7,000곳뿐이고 Cloud/Enterprise 부문별 내역은 밝히지 않는다"
     }
   ]
 }
