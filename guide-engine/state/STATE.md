@@ -4,22 +4,23 @@
 
 ## 지금 쓰는 중
 
-**메가존클라우드 (`megazonecloud`) — `in_progress`.** 회사 골격 + 공고 3건 · 학습 24개.
+없음. **메가존클라우드를 `done` 으로 닫았다** — 공고 4건 · 학습 33개.
 
 | 채운 공고 | 잡은 직무 | 학습 |
 |---|---|---|
-| `Backend Developer / AI Research Engineer` (사람인 54570558) | Backend Developer | 9 |
-| `Full-Stack / Back-end Developer` (사람인 54177362) | Full-Stack Developer | 6 |
-| `Platform Engineer` (사람인 53565589) | 단일 직무 | 9 |
+| `Backend Developer / AI Research Engineer` (54570558) | Backend Developer | 9 |
+| `Full-Stack / Back-end Developer` (54177362) | Full-Stack Developer | 6 |
+| `Platform Engineer` (53565589) | 단일 직무 | 9 |
+| `Platform & Application Engineer` (54176206) | 단일 직무 (운영·기술지원) | 9 |
 
-**다음 사이클이 이 회사의 마지막이다.**
+모집중 64건 중 나머지 60여 건은 보안 컨설팅·데이터 분석·영업·교육 운영·총무·세무라
+백엔드/풀스택 지원자의 자리가 아니다. 뺀 이유를 `open_questions` 에 남겼고, 같은 판단을
+다음 회사도 할 수 있게 **PROMPT.md 의 완주 기준을 고쳤다**(모집중 전부 → 지원 대상 전부).
 
-1. `Platform & Application Engineer 채용` (사람인 rec_idx=54176, 경력 3년 이상)
-   — NHN Cloud·미들웨어(Apache/Tomcat/JEUS)·자격증 우대. **고객사 운영·기술지원**
-   자리이고 제품 개발이 아니다. verdict 에 그 점을 먼저 밝히고, fit.must_have 를
-   정직하게 쓴다(운영 경험이 없으면 안 맞는 자리다).
-2. 그다음 **`status: done` 으로 닫는다.** 남는 60여 건은 보안·데이터·영업·총무·재무라
-   3년차 백엔드/풀스택이 지원할 자리가 아니다. 닫을 때 `open_questions` 에 한 줄 남긴다.
+**다음 사이클은 신규다.** `--gaps` 가 QUEUE 맨 위 **미리디 (미리캔버스)** 를 지목한다.
+PROMPT.md 3단계(회사 골격)부터. 자료는 미리디 기술 블로그 — 프론트 모노레포 CI/CD 와
+Module Federation, SVG 필터 렌더링, 디자인 도메인 검색 모델 글이 있다.
+**회사명 표기가 `(주)미리디`·`㈜미리디`·`미리디` 셋이므로 aliases 를 전부 넣는다.**
 
 ## 자료 접근 지도
 
