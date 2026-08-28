@@ -8,60 +8,55 @@
 
 ## 지금 파는 중
 
-**monday.com (기타/이스라엘 · SaaS) — 50번째. 도메인 2개 · 기능 1개. 큐 잔량 1/3.**
+**monday.com (기타/이스라엘 · SaaS) — 50번째. 도메인 2개 · 기능 2개. 큐 잔량 1/3.**
 
-**285 에서 `--gaps` 가 도메인 ①`한 조 개의 표를 읽게 만든다` 를 지목했고, 규칙대로 두 번째
-편을 먼저 읽고 기능을 썼다** — `board-query-engine`(열로 세워 두고 두 층을 겹쳐 읽는다),
-**결정 8개** 전부 대가가 붙었다.
+**286 에서 도메인 ② 의 첫 기능을 썼다** — `agent-with-guardrails`(길을 잃지 않게 잘게
+자른다), **결정 8개** 전부 대가가 붙었다. 짝이 되는 편 `From 8 years down to 6 months` 를
+읽었다.
 
-### ⭐ 3년 간격의 두 편으로 썼다 — 이 사이트에서 드문 재료
+### ⭐⭐ 이 회사에서 가장 특이한 것 — 같은 시스템을 두 목소리로 썼다
 
-`Nice to meet you, mondayDB architecture`(**2023-07-26**)와 `mondayDB 3`(2026-05-19)를
-나란히 놓으니 흐름이 보였다.
+- **만든 사람 쪽**(`From 8 years down to 6 months`): **8 person-years 추정이 6 person-months
+  로**, **하루에 코드베이스의 1%**, 팀 **7명**. **⚠️ 성공률도 롤백률도 비용 실액도 없다.**
+- **에이전트 1인칭 쪽**(`I Am Morphex`): **한계 다섯**과 **밤 11시에 주간 담당자가 진단한
+  사고**. 주당 40 PR.
 
-- **2023** — 아이템 **2만 개**를 넘으면 무너졌다. **남의 데이터베이스 일곱을 검토하고 다
-  버렸다**(파티션 RDBMS · ElasticSearch · Apache Pinot · ClickHouse · Apache Druid ·
-  CockroachDB · Couchbase, *"None of these options completely met our requirements"*).
-  **열 저장 + 람다 아키텍처(속도 층 Redis · 배치 층 Cassandra) + 저장·계산 분리.**
-  **⚠️ 대가와 숙제를 적었다** — 셀마다 아이템 ID 반복 · *"JavaScript may not be the optimal
-  choice"* · **라이브 변형 처리 미해결** · 앞으로 병렬화·블룸 필터·**Rust 리팩터링**.
-- **2026 v3** — **배치 층이 오브젝트 스토리지의 DuckDB 파일**, **속도 층이 WAL 과 Kafka**,
-  서빙 층은 **Go on Kubernetes + 로컬 NVMe**(soft-stateful).
+**같은 일을 성과로 쓸 수도 대가로 쓸 수도 있는데 이 회사는 둘 다 냈고, 대가 쪽이 에이전트의
+입을 빌려 나온다.** `open_questions` 에 적었다.
 
-**🔴 그때 남긴 숙제가 다음 판의 설계가 됐다** — *"live mutation handling unresolved"* 가
-v3 의 속도 층이다. **⚠️ 다만 Rust 는 안 왔고 Go 로 갔는데 그 이유는 어느 글에도 없다.**
+### 이 기능의 축 — 왜 통째로 못 맡기는가
 
-**⭐ 버린 대안의 모양도 바뀌었다**(이 관찰은 이 사이트의 것) — 2023년에는 **밖에서 고를
-것들**을 견줬고, 2026년에는 **자기 설계 안의 우회 둘**(파일 안 버퍼링 · 파일 여러 개와 union)
-을 견주다 **문제를 다시 세웠다**: *"what if we don't write to DuckDB from the write path at
-all?"* **밖에 답이 없다는 걸 확인하고 나면 그다음 결정은 전부 안에서 난다.**
+순수 AI 도구를 써 보고 버렸다 — *"when we tried giving AI such complex tasks, it would get
+lost very quickly and start hallucinating."* **AI 를 더 좋게 만드는 대신 일을 모델이 감당할
+크기로 잘랐다** — Research → Plan → Review 를 **결정론적 오케스트레이터**가 돌리고, 파일마다
+**복잡도·영향도·난제·핵심 관련성**으로 점수를 매겨 순서를 정한다.
 
-### 도메인 ① 에 tech 를 하나 더했다 — 아이템 ID 생성
+**🔴 그리고 에이전트가 스스로 사람을 부를 수 있다** — 판단이 필요하면 **Human Todos** 를 달아
+*"alert the linter to block the PR from merging."* **멈추는 권한을 자동화 쪽에 준 것**이고,
+그 멈춤이 **린터라는 기존 관문**을 통해 걸린다. ⚠️ **다만 무엇을 '판단거리' 로 볼지는 결국
+AI 가 정한다** — 그 기준이 틀리면 조용히 지나가는데 그 이야기는 없다.
 
-`How We Scaled Board Item ID Generation`(2026-04-09). 단일 MySQL 마스터가 병목이자 단일
-실패점이었고, **ID 는 정수여야 했다**(UUID 이관은 *"rewriting half the codebase"*).
-**SDK 가 DynamoDB 를 직접 부르는 안을 버리고**(전사 SDK 갱신 · **핫 파티션 스로틀링** ·
-커넥션 수천 개) **중앙 ID 서비스**를 뒀다. **클라이언트가 1,000개씩 미리 받아** 생성 시
-*"zero network I/O"*, 서비스는 **가용량 80% 아래**에서 채운다. **대가는 파드가 죽으면 ID 가
-낭비된다는 것**(일일 소비 한도 + **평소보다 50% 빠르면 경보**)과 **ID 공간이 유한하다는 것**.
-이행은 **섀도 모드**와 **AUTO_INCREMENT 를 50억 앞으로 밀기**, **1%→100%**.
-**🔴 그리고 정직한 후일담** — 새로 시작한다면 *"UUIDs are the superior choice"*, 특히
-**UUIDv7**. **자기 선택을 설명한 뒤 다르게 하겠다고 적는 것은 이 사이트에서 드물다.**
-**⚠️ 이건 쓰기 쪽 이야기라 도메인 ① 의 두 번째 기능 재료가 된다**(223 규칙상 다른 문제).
+**⭐ 비교 테스트가 사고 뒤에 늘어났다는 점도 기록했다** — 처음부터 있던 장치가 아니다.
 
-### 다음 사이클 — 도메인 ② 가 유력하다
+**⚠️ 그리고 글이 스스로 생략을 밝힌다** — *"we didn't even talk about… Merge-a-thon,
+managing conflicts between simultaneous PRs, prompt structuring techniques."*
 
-**`--gaps` 는 [진행 중 확장]으로 도메인 ②`에이전트에게 코드를 맡기되 책임은 사람에게
-남긴다` 를 지목할 것이다**(기능 0개). **⚠️ 본문이 `I Am Morphex` 한 편뿐이라 두 번째 편을
-먼저 읽는다.**
-**⭐ 285 의 검색에서 새 편을 여럿 찾았다** — `From 8 years down to 6 months: How we built AI
-to split the monday.com monolith` **(이게 Morphex 의 짝이다)** · `How We Use AI to Turn Figma
-Designs into Production Code` · `Every Playwright Needs a Director` · `From Prompts to Clicks:
-Shipping MCP Apps in Production` · `The Death of model.fit()`(03-23) ·
-`Getting More Out of Every AI Token`(07-16).
-**URL 은 `WebSearch` + `allowed_domains: ["engineering.monday.com"]` 로 찾는다**(⑱).
+### 다음 사이클 — 도메인 ① 의 두 번째 기능이 재료가 서 있다
 
-**⚠️ 세 번째 묶음(관측·신뢰성)은 여전히 미독** — `Fueling the AI SRE: 600+ Services`(08-10) ·
+**`--gaps` 는 [진행 중 확장]을 안 낼 것이다**(두 도메인 다 기능이 있다). **그러나 회사를
+갈아타지 않는 규칙이 위이고, 재료가 이미 확보돼 있다.**
+
+**📌 도메인 ① 의 두 번째 기능 재료 — `How We Scaled Board Item ID Generation`(2026-04-09),
+이미 `tech` 에 적혀 있다.** 단일 MySQL 마스터가 병목이자 단일 실패점 · **ID 는 정수여야 함**
+(UUID 이관은 *"rewriting half the codebase"*) · **SDK 직접 호출 안을 버림**(전사 SDK 갱신 ·
+**핫 파티션 스로틀링** · 커넥션 수천) · **중앙 ID 서비스** · 원자적 `if_not_exists` 연산 ·
+**클라이언트 1,000개 선할당으로 zero network I/O** · 서비스는 **가용량 80% 아래**에서 채움 ·
+**대가: 파드가 죽으면 ID 낭비**(일일 한도 + **50% 빠르면 경보**) · **ID 공간 유한**
+(`JS Number.MAX_SAFE_INTEGER`) · **섀도 모드** · **AUTO_INCREMENT 50억 앞으로** · **1%→100%**
+· **🔴 후일담: 새로 시작한다면 UUIDv7**. **⚠️ 다만 223 규칙 — 읽기 엔진과 다른 문제이고,
+도메인 ① 이름이 "읽게 만든다" 라 쓰기 쪽인 이 편이 잘 맞는지 실물로 판단한다.**
+
+**⚠️ 세 번째 묶음(관측·신뢰성) 미독** — `Fueling the AI SRE: 600+ Services`(08-10) ·
 `Less Noise, Better Sleep`(03-19) · `Chaos Engineering Practices`(03-11) ·
 `How We Achieved Almost Limitless Observability`. **⚠️ 총 ARR 실액도 미확인.**
 
@@ -69,17 +64,17 @@ Shipping MCP Apps in Production` · `The Death of model.fit()`(03-23) ·
 
 **큐 잔량 1/3.** **Wix** 만 대기 — `www.wix.engineering/post/<슬러그>` **자체 호스팅**.
 ⚠️ **목록 카드가 placeholder 라 URL 은 `WebSearch`+`allowed_domains` 로 찾는다.**
-283 에서 무중단 DB 이관 편으로 확인 — **버린 대안 셋**(MySQL Dump · Amazon DMS · 다중 소스
-복제) / **대가**(파티션 수를 중간에 못 바꾼다 · 데이터 쏠림 · 어느 시점부터 롤백 시 데이터
-손실) / **수치**(약 200개 MySQL 클러스터 · 검증 창 1시간 이상 · MSK 8MB).
+283 에서 확인 — **버린 대안 셋**(MySQL Dump · Amazon DMS · 다중 소스 복제) / **대가**(파티션
+수를 중간에 못 바꾼다 · 데이터 쏠림 · 어느 시점부터 롤백 시 데이터 손실) / **수치**(약 200개
+MySQL 클러스터 · 검증 창 1시간 이상 · MSK 8MB).
 **📌 Grab 보강 후보** — Palana 2부작(06-19/21) · Agent platform Part 1(07-24) ·
-**Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**, 뒤 둘은 기존 기능의 후속.
+**Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**.
 **📌 Roblox 는 완료 회사이므로 보강 단서** — `about.roblox.com/newsroom/<연>/<월>/<슬러그>`.
 **안 열어 본 후보** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
 **빈 자리는 라틴아메리카 하나뿐이고 재시도 금지다.** **한국 편중 아홉.**
 **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
 
-### ⚠️ 비교 문서 새 축 후보 여섯 (완료 50곳)
+### ⚠️ 비교 문서 새 축 후보 일곱 (완료 50곳)
 
 1. **`틀린 가설을 어떻게 버리는가`** — **가장 잘 서 있다.** Adevinta DNS(헛발 둘·재발) ·
    Careem **Gzip CPU 착시** · Doximity **반복 횟수로 읽기**.
@@ -88,12 +83,11 @@ Shipping MCP Apps in Production` · `The Death of model.fit()`(03-23) ·
 3. **`만드는 이야기만 있고 치우는 이야기가 없다`** — Adevinta **계정 폐기 부재**.
 4. **`가장 느린 곳이 남의 것일 때`** — Adevinta **외부 서비스 초당 3천 건**.
 5. **`설정이 실제 동작을 가릴 때`** — Adevinta OCR **105개 중 70개 무시**.
-6. **⭐ `에이전트에게 무엇을 못 하게 하는가`** — monday.com Morphex 의 울타리(민감 코드 금지 ·
-   CI 우회 금지 · 주말 정지 · `mergeableState` 존중)가 첫 재료. Snap 의 CodePal(**사람 리뷰를
-   대체하지 않는다**)과 Casper(**PR 만 열고 병합은 안 한다**)가 같은 축.
-
-**⭐ 새 축 후보 일곱째 — `다시 시작한다면 다르게 하겠다`.** monday.com 의 ID 생성 편이
-**UUIDv7 을 권하며 끝난다.** 이 사이트에서 자기 선택을 설명한 뒤 뒤집는 글은 드물다.
+6. **⭐⭐ `에이전트에게 무엇을 못 하게 하는가`** — **이제 재료가 셋이다.** monday.com Morphex
+   (민감 코드 금지 · CI 우회 금지 · 주말 정지 · `mergeableState` 존중 · **Human Todos 로 스스로
+   병합을 막는다**) · Snap CodePal(**사람 리뷰를 대체하지 않는다**) · Snap Casper(**PR 만 열고
+   병합은 안 한다**). **가장 빨리 쓸 수 있는 축이 됐다.**
+7. **`다시 시작한다면 다르게 하겠다`** — monday.com ID 생성 편의 **UUIDv7 후일담**.
 
 **기존 재료** — **⭐⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서`**(Snap 다섯 + Adevinta) ·
 **⭐ `기계가 그렇다는데`**(Snap 둘 + Adevinta + **monday.com**) · `관측에 값을 무엇으로
