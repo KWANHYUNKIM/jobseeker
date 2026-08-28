@@ -2,12 +2,14 @@
   "slug": "miridih",
   "name": "미리디",
   "name_en": "MIRIDIH",
-  "aliases": ["미리디", "㈜미리디"],
+  "aliases": [
+    "미리디",
+    "㈜미리디"
+  ],
   "status": "in_progress",
   "updated_at": "2026-08-29",
   "site": "miridih.com",
   "one_liner": "브라우저 안에서 도는 디자인 편집기로 2천만 명을 모으고, 그 디자인을 인쇄해서도 파는 회사",
-
   "company": {
     "business": "비전문가가 브라우저에서 바로 디자인을 만들게 해 주는 편집기 **미리캔버스**를 구독으로 팔고, 거기서 만든 디자인을 실제 인쇄물로 뽑아 주는 커머스 **비즈하우스**로 한 번 더 판다. 두 제품이 한 흐름으로 이어져 있다는 것이 이 회사의 구조다 — 편집기에서 만든 결과물이 곧 인쇄 주문이 되므로, 편집기의 품질이 커머스 매출까지 끌고 간다. 2025년 매출 942억원으로 6년 연속 최대 실적을 갱신했지만 같은 해 영업손실 56.3억원으로 적자 전환했다. AI·인재·글로벌 마케팅에 돈을 쓰는 중이라는 뜻이고, 채용 공고가 AI 쪽에 몰려 있는 것도 같은 이유로 읽힌다.",
     "business_confidence": "confirmed",
@@ -34,7 +36,12 @@
         "as_of": "2025",
         "confidence": "confirmed",
         "sources": [
-          { "title": "미리디, 2025년 매출 942억원…6년 연속 최대 매출 경신", "url": "https://platum.kr/archives/284749", "publisher": "플래텀", "date": "2026-04-03" }
+          {
+            "title": "미리디, 2025년 매출 942억원…6년 연속 최대 매출 경신",
+            "url": "https://platum.kr/archives/284749",
+            "publisher": "플래텀",
+            "date": "2026-04-03"
+          }
         ]
       },
       {
@@ -43,7 +50,12 @@
         "as_of": "2025",
         "confidence": "confirmed",
         "sources": [
-          { "title": "미리디, 작년 매출 942억원·영업손실 56.3억원", "url": "https://zdnet.co.kr/view/?no=20260403163841", "publisher": "ZDNet Korea", "date": "2026-04-03" }
+          {
+            "title": "미리디, 작년 매출 942억원·영업손실 56.3억원",
+            "url": "https://zdnet.co.kr/view/?no=20260403163841",
+            "publisher": "ZDNet Korea",
+            "date": "2026-04-03"
+          }
         ]
       },
       {
@@ -52,7 +64,12 @@
         "as_of": "2026",
         "confidence": "confirmed",
         "sources": [
-          { "title": "미리디, 2025년 매출 942억원…6년 연속 최대 매출 경신", "url": "https://platum.kr/archives/284749", "publisher": "플래텀", "date": "2026-04-03" }
+          {
+            "title": "미리디, 2025년 매출 942억원…6년 연속 최대 매출 경신",
+            "url": "https://platum.kr/archives/284749",
+            "publisher": "플래텀",
+            "date": "2026-04-03"
+          }
         ]
       },
       {
@@ -61,7 +78,12 @@
         "as_of": "2026",
         "confidence": "confirmed",
         "sources": [
-          { "title": "미리디, 2025년 매출 942억원…6년 연속 최대 매출 경신", "url": "https://platum.kr/archives/284749", "publisher": "플래텀", "date": "2026-04-03" }
+          {
+            "title": "미리디, 2025년 매출 942억원…6년 연속 최대 매출 경신",
+            "url": "https://platum.kr/archives/284749",
+            "publisher": "플래텀",
+            "date": "2026-04-03"
+          }
         ]
       }
     ],
@@ -70,20 +92,41 @@
         "name": "미리캔버스 구독",
         "how": "브라우저 편집기를 무료로 열어 두고, 템플릿·폰트·고해상도 내보내기·AI 기능 같은 것을 유료 구독으로 판다. 가입자가 곧 저변이라 편집기가 느리거나 어렵다는 것이 그대로 이탈이 되고, 그래서 프론트엔드 성능이 이 회사에서는 취향이 아니라 매출 문제다.",
         "weight": "누적 가입자 2,000만 명",
-        "domains": ["웹 에디터", "렌더링·이미지 프로세싱", "디자인 검색·추천", "AI 에이전트 플랫폼", "결제·구독 과금", "데이터 플랫폼·지표"],
+        "domains": [
+          "웹 에디터",
+          "렌더링·이미지 프로세싱",
+          "디자인 검색·추천",
+          "AI 에이전트 플랫폼",
+          "결제·구독 과금",
+          "데이터 플랫폼·지표"
+        ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "미리디, 2025년 매출 942억원…6년 연속 최대 매출 경신", "url": "https://platum.kr/archives/284749", "publisher": "플래텀", "date": "2026-04-03" }
+          {
+            "title": "미리디, 2025년 매출 942억원…6년 연속 최대 매출 경신",
+            "url": "https://platum.kr/archives/284749",
+            "publisher": "플래텀",
+            "date": "2026-04-03"
+          }
         ]
       },
       {
         "name": "비즈하우스 인쇄 커머스",
         "how": "편집기에서 만든 디자인을 명함·현수막·굿즈 같은 실물로 인쇄해 판다. 소프트웨어 매출과 달리 원가와 생산 리드타임이 붙는 사업이라, 주문이 실제 인쇄 공정으로 넘어가는 경로와 출력 품질(색·해상도·재단선)이 곧 클레임과 재인쇄 비용이 된다.",
         "weight": "누적 가입자 270만 명",
-        "domains": ["인쇄 커머스 주문·제작", "렌더링·이미지 프로세싱", "결제·구독 과금", "데이터 플랫폼·지표"],
+        "domains": [
+          "인쇄 커머스 주문·제작",
+          "렌더링·이미지 프로세싱",
+          "결제·구독 과금",
+          "데이터 플랫폼·지표"
+        ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "미리캔버스·비즈하우스 성장 견인…미리디, 5년 연속 최대 매출 기록", "url": "https://www.newstap.co.kr/news/articleView.html?idxno=301365", "publisher": "뉴스탭" }
+          {
+            "title": "미리캔버스·비즈하우스 성장 견인…미리디, 5년 연속 최대 매출 기록",
+            "url": "https://www.newstap.co.kr/news/articleView.html?idxno=301365",
+            "publisher": "뉴스탭"
+          }
         ]
       }
     ],
@@ -99,7 +142,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "[미리캔버스] 프론트엔드 개발자 (웹&에디터) 채용 공고", "url": "https://www.wanted.co.kr/wd/337318", "publisher": "원티드" }
+          {
+            "title": "[미리캔버스] 프론트엔드 개발자 (웹&에디터) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/337318",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -113,8 +160,18 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "미리디 기술 블로그 (Medium)", "url": "https://medium.com/miridih", "publisher": "미리디", "summary": "SVG 필터의 브라우저 렌더링과 CSS filter 선택 기준을 다룬 글이 있다" },
-          { "title": "[미리디] 프론트엔드 개발자 - 이미지 프로세싱 채용 공고", "url": "https://www.wanted.co.kr/wd/368161", "publisher": "원티드", "summary": "이미지 프로세싱만 따로 뽑는 자리가 있다" }
+          {
+            "title": "미리디 기술 블로그 (Medium)",
+            "url": "https://medium.com/miridih",
+            "publisher": "미리디",
+            "summary": "SVG 필터의 브라우저 렌더링과 CSS filter 선택 기준을 다룬 글이 있다"
+          },
+          {
+            "title": "[미리디] 프론트엔드 개발자 - 이미지 프로세싱 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/368161",
+            "publisher": "원티드",
+            "summary": "이미지 프로세싱만 따로 뽑는 자리가 있다"
+          }
         ]
       },
       {
@@ -127,7 +184,12 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "미리디 기술 블로그 (Medium)", "url": "https://medium.com/miridih", "publisher": "미리디", "summary": "디자인 도메인 특성에 맞춘 검색 모델 개발 과정을 다룬 글이 있다" }
+          {
+            "title": "미리디 기술 블로그 (Medium)",
+            "url": "https://medium.com/miridih",
+            "publisher": "미리디",
+            "summary": "디자인 도메인 특성에 맞춘 검색 모델 개발 과정을 다룬 글이 있다"
+          }
         ]
       },
       {
@@ -142,7 +204,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "[미리캔버스] AI Agent Engineer (Platform) 채용 공고", "url": "https://www.wanted.co.kr/wd/347557", "publisher": "원티드" }
+          {
+            "title": "[미리캔버스] AI Agent Engineer (Platform) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/347557",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -155,7 +221,11 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "미리캔버스·비즈하우스 성장 견인…미리디, 5년 연속 최대 매출 기록", "url": "https://www.newstap.co.kr/news/articleView.html?idxno=301365", "publisher": "뉴스탭" }
+          {
+            "title": "미리캔버스·비즈하우스 성장 견인…미리디, 5년 연속 최대 매출 기록",
+            "url": "https://www.newstap.co.kr/news/articleView.html?idxno=301365",
+            "publisher": "뉴스탭"
+          }
         ]
       },
       {
@@ -168,7 +238,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "[미리캔버스] 시니어 백엔드 개발자 채용 공고", "url": "https://www.wanted.co.kr/wd/278395", "publisher": "원티드" }
+          {
+            "title": "[미리캔버스] 시니어 백엔드 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/278395",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -181,7 +255,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "[미리디] 애널리틱스 엔지니어 (Financial/Accounting) 채용 공고", "url": "https://www.wanted.co.kr/wd/342561", "publisher": "원티드" }
+          {
+            "title": "[미리디] 애널리틱스 엔지니어 (Financial/Accounting) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/342561",
+            "publisher": "원티드"
+          }
         ]
       }
     ],
@@ -218,7 +296,6 @@
       }
     ]
   },
-
   "salary": {
     "unit": "만원",
     "currency": "KRW",
@@ -232,8 +309,16 @@
         "basis": "public_data",
         "confidence": "inferred",
         "sources": [
-          { "title": "미리디 연봉정보 — 평균 5,326만원 (최저 3,011 / 최고 7,100)", "url": "https://m.saramin.co.kr/salaries/total-salary/view?csn=dUNjZ1lQdHphWlZjbmE5aGZiVm9rdz09", "publisher": "사람인" },
-          { "title": "(주)미리디 연봉정보 — 144건 기준 평균 3,716만원", "url": "https://www.jobplanet.co.kr/companies/76620/salaries/%EB%AF%B8%EB%A6%AC%EB%94%94", "publisher": "잡플래닛" }
+          {
+            "title": "미리디 연봉정보 — 평균 5,326만원 (최저 3,011 / 최고 7,100)",
+            "url": "https://m.saramin.co.kr/salaries/total-salary/view?csn=dUNjZ1lQdHphWlZjbmE5aGZiVm9rdz09",
+            "publisher": "사람인"
+          },
+          {
+            "title": "(주)미리디 연봉정보 — 144건 기준 평균 3,716만원",
+            "url": "https://www.jobplanet.co.kr/companies/76620/salaries/%EB%AF%B8%EB%A6%AC%EB%94%94",
+            "publisher": "잡플래닛"
+          }
         ]
       },
       {
@@ -251,11 +336,291 @@
       "적자 전환이 보상 정책에 영향을 줬는지 확인할 공개 자료가 없다"
     ]
   },
-
   "people": [],
-
-  "postings": [],
-
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/337318",
+      "title": "[미리캔버스] 프론트엔드 개발자 (웹&에디터)",
+      "site": "wanted",
+      "verdict": "브라우저 안에서 도는 디자인 편집기를 만드는 자리. 화면을 그리는 일이 아니라 **사용자가 요소를 끌고 겹치고 되돌리는 동안 60프레임을 지키는 일**이 본업이다. 자격요건이 React 가 아니라 브라우저 API 를 묻고 있어서, 프레임워크 사용 경험만으로는 얇게 읽힌다. 가입자 2,000만이 첫 화면에서 만나는 제품이라 성능이 곧 구독 전환이고, 이 회사에서 가장 이 회사다운 자리다.",
+      "fit": {
+        "must_have": [
+          "React·CSS 를 깊게 — '뛰어난'이라고 두 번 쓴 요건이다",
+          "브라우저 API 를 직접 써서 문제를 푼 경험",
+          "성능을 재고 고쳐 본 경험 (감이 아니라 프로파일러로)"
+        ],
+        "can_learn": [
+          "jotai (다른 상태 라이브러리를 알면 하루면 익는다)",
+          "framer motion·gsap (우대사항이고 문서가 좋다)",
+          "Turborepo·Vite 등 빌드 도구 (팀 스택이지 자격요건은 아니다)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "브라우저 API 로 '필요한 것만 그리기' — 이 공고의 관문",
+          "from": "qualification",
+          "quote": "Intersection Observer 를 비롯한 다양한 브라우저 API 를 활용하여 직관적인 코드를 짤 수 있는 분",
+          "priority": "core",
+          "why": "자격요건에 프레임워크가 아니라 **브라우저 API 이름이 직접 박힌** 드문 공고다. 편집기는 캔버스 위에 요소가 수백 개 올라가는데, 화면 밖의 것까지 다 그리면 스크롤 한 번에 프레임이 무너진다. Intersection Observer 를 예로 든 것은 '보이는 것만 다뤄라'를 아는지 묻는 것이고, 같은 계열로 ResizeObserver·MutationObserver·requestIdleCallback 이 함께 온다.",
+          "gap_check": "스크롤 이벤트에 핸들러를 다는 대신 Intersection Observer 를 쓰면 무엇이 좋아지는가? 그리고 그 관찰자가 **언제 콜백을 부르지 않는지**를 아는가?",
+          "drill": "요소 1,000개가 놓인 캔버스를 만들고 두 판으로 구현한다 — (1) 스크롤 이벤트로 위치를 계산하는 판, (2) Intersection Observer 로 보이는 것만 렌더하는 판. DevTools Performance 로 스크롤 중 프레임률과 스크립트 시간을 재서 비교한다. 그다음 ResizeObserver 로 캔버스 크기 변화에 반응하게 붙여 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "MDN — Intersection Observer API",
+              "url": "https://developer.mozilla.org/ko/docs/Web/API/Intersection_Observer_API",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — ResizeObserver",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver",
+              "kind": "docs"
+            },
+            {
+              "title": "Chrome DevTools — Performance 패널",
+              "url": "https://developer.chrome.com/docs/devtools/performance",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "성능 최적화 — 재고 고친 이야기를 숫자로 만들기",
+          "from": "qualification",
+          "quote": "성능 최적화 경험이 있으신 분",
+          "priority": "core",
+          "why": "한 줄뿐이지만 이 회사에서는 가장 무거운 요건이다. 편집기가 느리면 사용자는 기능을 못 찾는 게 아니라 **첫 방문에서 나간다** — 가입자 2,000만이 저변인 구독 사업에서 그건 곧 매출이다. 그래서 '최적화해 봤다'가 아니라 '무엇을 재서 어디를 고쳤고 숫자가 어떻게 변했다'까지가 한 세트다.",
+          "gap_check": "화면이 버벅인다. 자바스크립트 실행·레이아웃·페인트·합성 중 어디가 범인인지 프로파일러에서 구분할 수 있는가? 그리고 각각의 처방이 어떻게 다른가?",
+          "drill": "무거운 화면 하나를 골라 DevTools Performance 로 프레임을 기록하고 롱태스크를 찾는다. 처방을 하나씩만 적용하며 매번 다시 잰다 — (1) 리스트 가상화, (2) transform/opacity 로만 애니메이션, (3) CSS containment. **세 개를 한꺼번에 넣으면 무엇이 효과였는지 말할 수 없다.** 최종적으로 '전 → 후' 프레임률 표 한 장을 남긴다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "web.dev — Rendering performance",
+              "url": "https://web.dev/articles/rendering-performance",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — CSS containment",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — will-change",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/will-change",
+              "kind": "docs",
+              "note": "남용하면 오히려 느려지는 대표적인 속성"
+            }
+          ]
+        },
+        {
+          "topic": "React 와 CSS — '뛰어난'이라고 쓴 두 가지",
+          "from": "qualification",
+          "quote": "뛰어난 React, CSS 역량이 있으신 분",
+          "priority": "core",
+          "why": "CSS 를 React 와 같은 줄에 놓고 '뛰어난'을 붙인 것은, 이 제품에서 스타일이 장식이 아니라 **기능**이기 때문이다. 요소의 변형(transform), 겹침(z-index/stacking context), 잘림(overflow/clip-path)이 곧 편집기의 동작이다. 팀 스타일링 스택이 styled-components 라 런타임 비용까지 함께 보게 된다.",
+          "gap_check": "요소를 회전·확대한 상태에서 자식의 위치를 계산해야 한다. transform 이 좌표계와 stacking context 에 무엇을 하는지 설명할 수 있는가?",
+          "drill": "드래그로 옮기고, 핸들로 크기를 바꾸고, 회전까지 되는 요소 하나를 순수 React + CSS 로 만든다(라이브러리 금지). 회전된 상태에서 크기 조절 핸들이 어긋나지 않게 만드는 것이 이 연습의 핵심이다 — 여기서 좌표 변환을 손으로 겪게 된다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "React — Render and Commit",
+              "url": "https://react.dev/learn/render-and-commit",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — Stacking context",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Stacking_context",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — CSS transforms 사용하기",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transforms/Using_CSS_transforms",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "지연 로딩과 잘게 쪼갠 반응성",
+          "from": "task",
+          "quote": "lazy loading, fine grained reactivity 등 여러 기술을 활용하여 성능을 향상 시킵니다.",
+          "priority": "high",
+          "why": "담당 업무에 기법 이름을 두 개나 박아 둔 것은 그것이 이 팀의 일상이라는 뜻이다. 편집기는 상태가 크고 자주 바뀌는데, 요소 하나를 옮길 때 전체가 다시 그려지면 끝이다. 그래서 '무엇이 바뀌면 무엇만 다시 그린다'를 설계로 다루는 능력이 필요하고, 팀이 jotai 를 쓰는 것도 그 결이다.",
+          "gap_check": "요소 500개 중 하나의 색을 바꿨다. 다시 렌더되는 컴포넌트를 하나로 줄이려면 상태를 어떻게 쪼개야 하는가? Context 하나에 다 넣으면 왜 안 되는가?",
+          "drill": "같은 편집기 화면을 두 판으로 만든다 — (1) 하나의 큰 상태 객체, (2) jotai 로 요소마다 원자를 쪼갠 판. 요소 하나를 바꿀 때 리렌더되는 컴포넌트 수를 React DevTools Profiler 로 세어 비교한다. 여기에 무거운 패널을 dynamic import 로 떼어 내 초기 번들이 얼마나 줄었는지도 함께 기록한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Jotai 문서",
+              "url": "https://jotai.org/docs/introduction",
+              "kind": "docs",
+              "note": "팀이 실제로 쓰는 상태 관리다"
+            },
+            {
+              "title": "React — memo",
+              "url": "https://react.dev/reference/react/memo",
+              "kind": "docs"
+            },
+            {
+              "title": "Next.js — Lazy Loading",
+              "url": "https://nextjs.org/docs/app/guides/lazy-loading",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "이벤트 처리 — 드래그·멀티선택이 만드는 흐름",
+          "from": "preference",
+          "quote": "이벤트 처리에 대한 깊은 이해가 있으신 분 (zustand, jotai, RxJS)",
+          "priority": "high",
+          "why": "상태 라이브러리 둘과 RxJS 를 한 괄호에 넣은 것이 신호다. 편집기의 입력은 클릭 하나가 아니라 **눌렀다-움직였다-뗐다**의 흐름이고, 거기에 스냅·다중 선택·취소가 얹힌다. 그래서 이벤트를 스트림으로 다루는 감각을 우대사항에 적어 둔 것으로 읽힌다.",
+          "gap_check": "pointerdown → pointermove → pointerup 흐름에서 마우스가 창 밖으로 나가면 무슨 일이 생기는가? 그리고 드래그 중 다른 요소 위를 지날 때 이벤트가 어디로 가는가(포인터 캡처)?",
+          "drill": "여러 요소를 드래그로 범위 선택하고 함께 옮기는 기능을 만든다. pointer 이벤트로 먼저 구현한 뒤, 같은 로직을 RxJS 로 다시 써서 두 판을 비교한다. 창 밖으로 나갔다 돌아오는 경우, ESC 로 취소하는 경우를 반드시 처리한다 — 그 예외들이 이 항목의 실제 내용이다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "MDN — Pointer events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — setPointerCapture",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture",
+              "kind": "docs"
+            },
+            {
+              "title": "RxJS — Overview",
+              "url": "https://rxjs.dev/guide/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "애니메이션으로 조작을 이해시키기",
+          "from": "task",
+          "quote": "애니메이션을 적용해 유저 경험을 높입니다.",
+          "priority": "high",
+          "why": "편집기에서 애니메이션은 꾸밈이 아니라 **무슨 일이 일어났는지 알려 주는 장치**다 — 요소가 스냅될 때, 정렬될 때, 삭제될 때 사람이 결과를 눈으로 따라갈 수 있어야 한다. 우대사항의 framer motion·gsap 이 이 업무의 도구다. 다만 애니메이션은 성능과 정면으로 부딪히므로, 무엇을 움직이면 싸고 무엇이 비싼지를 함께 알아야 한다.",
+          "gap_check": "transform·opacity 를 움직이는 것과 width·top 을 움직이는 것은 브라우저에서 무엇이 다른가? 60프레임을 지키려면 어느 쪽을 써야 하는가?",
+          "drill": "요소 삭제·정렬·스냅에 애니메이션을 붙인다. 같은 효과를 CSS transition, framer motion, 그리고 Web Animations API 로 각각 구현하고 프레임률을 잰다. 일부러 width 를 애니메이션해서 레이아웃이 매 프레임 다시 계산되는 것을 프로파일러로 확인해 둔다 — 그 그림이 면접에서 가장 잘 통한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Motion (framer-motion) 문서",
+              "url": "https://motion.dev/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "GSAP 문서",
+              "url": "https://gsap.com/docs/v3/",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — Web Animations API",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "확장 가능한 인터페이스 설계 — 남이 쓸 것을 만든다",
+          "from": "preference",
+          "quote": "확장 가능하고 유연한 인터페이스 설계 경험이 있는 분",
+          "priority": "high",
+          "why": "편집기는 도형·텍스트·이미지·차트처럼 성격이 다른 요소가 계속 늘어난다. 새 요소를 하나 추가할 때 기존 코드를 여기저기 고쳐야 한다면 팀 속도가 거기서 죽는다. 함께 적힌 '라이브러리를 만들어본 경험'과 같은 이야기이고, 회사 기술 블로그가 모노레포의 계층 구조와 의존성 관리를 다루는 것도 같은 문제의식이다.",
+          "gap_check": "새로운 요소 종류를 하나 추가할 때 고쳐야 하는 파일이 몇 개인가? 그 수를 하나로 줄이려면 무엇을 인터페이스로 뽑아야 하는가?",
+          "drill": "요소 타입을 플러그인처럼 등록하는 구조로 편집기를 다시 짠다 — 각 타입이 렌더·직렬화·편집 패널을 스스로 들고 있고, 코어는 등록만 받는다. 그 상태에서 새 타입(예: QR 코드)을 추가해 보고 **코어 파일을 한 줄도 안 고치는지** 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Turborepo 문서",
+              "url": "https://turborepo.com/docs",
+              "kind": "docs",
+              "note": "팀 빌드 스택. 패키지 경계가 곧 인터페이스 경계가 된다"
+            },
+            {
+              "title": "미리디 기술 블로그 (Medium)",
+              "url": "https://medium.com/miridih",
+              "kind": "post",
+              "note": "모노레포 계층 구조와 의존성 관리, Module Federation 도입기를 다룬 글이 있다"
+            }
+          ]
+        },
+        {
+          "topic": "테스트 코드로 편집기를 붙잡기",
+          "from": "task",
+          "quote": "테스트 코드를 작성하여 서비스의 신뢰도를 높입니다.",
+          "priority": "high",
+          "why": "담당 업무 네 줄 중 한 줄이 테스트다. 편집기는 상호작용이 많아 수동 확인이 금방 한계에 닿고, 회귀가 나면 사용자의 작업물이 깨진다. 그런데 드래그·회전 같은 것은 단위 테스트로 잡기 어려워서, 무엇을 단위로 잡고 무엇을 E2E 로 넘길지 나누는 판단이 이 항목의 실제 내용이다.",
+          "gap_check": "'요소를 드래그해서 옮긴다'를 어떤 층에서 테스트할 것인가? 좌표 계산 로직과 실제 포인터 조작 중 무엇을 어디로 나누는가?",
+          "drill": "앞서 만든 편집기에 테스트를 붙인다 — 좌표 변환·스냅 계산 같은 순수 함수는 단위 테스트로, 드래그해서 옮기고 되돌리는 흐름은 Playwright 로. 그다음 일부러 스냅 로직을 깨뜨려 어느 테스트가 잡아내는지 확인한다. **잡아내지 못하는 버그를 하나 찾는 것이 이 연습의 목적이다.**",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Testing Library — React",
+              "url": "https://testing-library.com/docs/react-testing-library/intro/",
+              "kind": "docs"
+            },
+            {
+              "title": "Playwright 문서",
+              "url": "https://playwright.dev/docs/intro",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "회사가 알려 준 형식으로 이력서 다시 쓰기",
+          "from": "preference",
+          "quote": "단순히 어떠한 기술을 사용할 줄 아는지 에 대한 내용보다, 다양한 기술을 어떻게 활용하여 어떠한 문제를 해결했는지 경험에 기반하여 서술해주시면 좋아요.",
+          "priority": "core",
+          "why": "공고가 '이력서에 이런 내용을 함께 공유해주시면 좋아요!' 절을 따로 두고 네 가지를 요청했다 — 문제 해결 중심 서술, 가장 임팩트 있었던 경험이나 **큰 실패를 극복한 과정**, 오픈소스 기여, 팀 생산성 개선. 이건 취향이 아니라 채점 기준을 미리 알려 준 것이고, 기술 나열형 이력서는 여기서 특히 불리하다.",
+          "gap_check": "내 이력서에서 기술 이름을 전부 지워도 무슨 문제를 어떻게 풀었는지가 읽히는가? 그리고 '실패를 극복한 과정'에 쓸 이야기가 준비돼 있는가?",
+          "drill": "경험 세 건을 골라 각각 네 줄로 다시 쓴다 — 무엇이 문제였나 / 무엇을 시도했고 왜 그것을 골랐나 / 무엇을 버렸나 / 숫자가 어떻게 달라졌나. 그리고 **실패 사례 한 건을 따로 준비한다** — 공고가 명시적으로 물었는데 준비 안 해 가면 그 자리에서 만들어 답하게 된다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "미리캔버스를 직접 쓰면서 느린 지점을 찾아 프로파일링해 간다",
+          "why": "지원하는 제품이 웹에 공개돼 있고 무료로 쓸 수 있다. 요소를 수백 개 올려 놓고 DevTools 로 프레임을 기록해 '여기서 이런 이유로 프레임이 떨어지는 것 같다'를 한 장으로 정리해 가면, 이 제품을 만들 사람으로 보이는 가장 빠른 길이다. **단, 추측은 추측이라고 밝힌다** — 내부 사정을 모르고 단정하면 역효과다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "오픈소스 라이브러리에 기여하거나, 코드를 읽고 적용한 기록을 남긴다",
+          "why": "공고가 '오픈소스 라이브러리 기여 경험이나, 코드 분석 후 적용 경험이 있다면 알려 주세요'라고 직접 물었다. 기여가 어렵다면 jotai 나 framer motion 의 코드를 읽고 '이 구현이 왜 이렇게 됐는지'를 글로 정리한 것만으로도 이 요청에 답이 된다.",
+          "effort": "이틀~일주일"
+        },
+        {
+          "idea": "팀 생산성을 깎던 문제를 고친 이야기를 준비한다",
+          "why": "공고의 마지막 요청이 '팀의 생산성을 저하시키는 문제를 발굴하고 개선한 경험'이다. 빌드 시간을 줄였다, 리뷰가 막히던 지점을 없앴다, 반복 작업을 스크립트로 만들었다 — 개인 성과가 아니라 팀 성과로 말할 이야기 하나를 미리 골라 둔다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "만든 편집기 프로토타입을 공개해 둔다",
+          "why": "위 학습 항목들의 drill 이 사실상 하나의 편집기로 이어진다 — 드래그·회전·가상화·플러그인 구조·테스트까지. 저장소 하나로 묶어 두면 '뛰어난 React, CSS 역량'이라는 모호한 요건에 보여 줄 수 있는 답이 생긴다.",
+          "effort": "학습과 함께"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "성능을 무엇으로 재고 어디를 고쳤는가 — 프로파일러 화면을 설명할 수 있어야 한다",
+          "스크롤 이벤트 대신 Intersection Observer 를 쓰는 이유",
+          "요소 하나가 바뀔 때 리렌더 범위를 어떻게 줄이는가",
+          "transform·opacity 애니메이션과 레이아웃을 바꾸는 애니메이션의 차이",
+          "드래그 중 창 밖으로 나가거나 ESC 로 취소될 때의 처리",
+          "편집기의 어떤 부분을 단위 테스트로, 어떤 부분을 E2E 로 나눌 것인가",
+          "가장 임팩트 있었던 경험과 큰 실패를 극복한 과정 — 공고가 이력서에 적어 달라고 명시했다"
+        ],
+        "sources": [
+          {
+            "title": "[미리캔버스] 프론트엔드 개발자 (웹&에디터) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/337318",
+            "publisher": "원티드",
+            "summary": "'이력서에 이런 내용을 함께 공유해주시면 좋아요!' 절에 회사가 원하는 서술 방식이 적혀 있다"
+          }
+        ]
+      }
+    }
+  ],
   "open_questions": [
     "`people` 이 비어 있다. 회사 기술 블로그(medium.com/miridih)와 회사 채용 사이트의 개발자 인터뷰 페이지(miridih.com/ko/devinterview2) 를 둘 다 열어 봤으나 403 으로 막혔다. 글쓴이 이름을 확인할 수 없어 규칙대로 비워 뒀다 — 링크 없는 사람은 넣지 않는다.",
     "기술 블로그의 글 제목과 주제는 외부 집계(velopers.kr)로 확인했지만 본문을 직접 읽지 못했다. 도메인 서술에서 블로그를 근거로 든 항목은 그래서 `inferred` 다.",
