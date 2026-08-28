@@ -161,7 +161,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
                         기능 {n}
                       </span>
                     </div>
-                    <p className="text-xs text-(--color-muted) mt-1 leading-relaxed reveng-prose"><Md>{d.why}</Md></p>
+                    <MdBlock className="text-xs text-(--color-muted) mt-1 leading-relaxed reveng-prose">{d.why}</MdBlock>
                     {d.tech && d.tech.length > 0 && (
                       <ul className="mt-2 flex flex-col gap-1.5 border-t border-(--color-border) pt-2">
                         {d.tech.map((t) => (
@@ -283,7 +283,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
                   <li key={i} className="text-sm border-l-2 border-(--color-border) pl-2.5">
                     <span className="text-xs text-(--color-muted)">{t.at}</span>
                     <ConfBadge c={t.confidence} />
-                    <div className="text-(--color-text) leading-relaxed reveng-prose"><Md>{t.thought}</Md></div>
+                    <MdBlock className="text-(--color-text) leading-relaxed reveng-prose">{t.thought}</MdBlock>
                   </li>
                 ))}
               </ul>

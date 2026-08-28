@@ -87,7 +87,33 @@ export function Md({ children }: { children?: string | null }) {
   )
 }
 
-/** 줄바꿈이 들어 있는 긴 본문용 — 빈 줄을 문단으로 끊는다. */
+// 한 문단 안에서도 문장마다 줄을 끊는다. 한글 본문은 문장이 길고 쉼표가 많아
+// 문단 한 덩어리로 흘리면 어디까지 읽었는지를 놓친다. 문장 사이 간격은 문단
+// 사이보다 좁게 둬서 '한 문단'이라는 묶음 자체는 유지한다.
+//
+// 마침표 뒤에 공백이 올 때만 끊으므로 `34.6%` 같은 소수점은 걸리지 않는다.
+// 다만 `**… 했는가. 다음 문장**` 처럼 강조가 문장을 가로지르는 경우가 있어,
+// 조각의 `**`·백틱 개수가 홀수면 다음 조각과 도로 붙인다 — 안 그러면 별표가
+// 화면에 그대로 나온다.
+const SENT_END = /(?<=[.!?…])\s+/
+
+const odd = (s: string, re: RegExp) => ((s.match(re) ?? []).length % 2 === 1)
+
+function sentences(para: string): string[] {
+  const raw = para.split(SENT_END)
+  const out: string[] = []
+  let buf = ''
+  for (const piece of raw) {
+    buf = buf ? buf + ' ' + piece : piece
+    if (odd(buf, /\*\*/g) || odd(buf, /`/g)) continue
+    out.push(buf.trim())
+    buf = ''
+  }
+  if (buf.trim()) out.push(buf.trim())
+  return out.filter(Boolean)
+}
+
+/** 줄바꿈이 들어 있는 긴 본문용 — 빈 줄을 문단으로, 마침표를 줄로 끊는다. */
 export function MdBlock({
   children,
   className = '',
@@ -96,15 +122,23 @@ export function MdBlock({
   className?: string
 }) {
   const paras = useMemo(
-    () => (children ?? '').split(/\n{2,}/).filter((p) => p.trim() !== ''),
+    () =>
+      (children ?? '')
+        .split(/\n{2,}/)
+        .filter((p) => p.trim() !== '')
+        .map(sentences),
     [children],
   )
   if (!children) return null
   return (
     <div className={className}>
-      {paras.map((p, i) => (
-        <p key={i} className={i > 0 ? 'mt-3' : ''}>
-          <Md>{p}</Md>
+      {paras.map((sents, i) => (
+        <p key={i} className={i > 0 ? 'mt-3.5' : ''}>
+          {sents.map((s, k) => (
+            <span key={k} className="block mt-1 first:mt-0">
+              <Md>{s}</Md>
+            </span>
+          ))}
         </p>
       ))}
     </div>
