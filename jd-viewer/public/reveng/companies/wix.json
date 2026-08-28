@@ -251,10 +251,26 @@
               "summary": "**앞의 두 글이 에이전트를 만드는 이야기라면 이 글은 회사를 고치는 이야기다.** 문제를 첫 줄에 적는다 — *\"When you have over 2,500 microservices and thousands of engineers working across a massive multi-product platform, 'just use AI coding tools' is not a strategy.\"*\n\n**🔴 도구를 세 층으로 갈라 놓고 둘을 버린다** — **클라우드 에이전트**는 *\"Stateless per task… no codebase awareness, no iteration loop, no project context\"* 이고, **컴퓨터를 통째로 주는 에이전트**는 *\"The action space is unbounded. More capability, more autonomy, more risk\"* 다. 가운데인 **하네스**를 고르며 *\"The industry is converging on the harness tier as the practical sweet spot\"* 라고 적는다.\n\n**⭐ 그리고 에이전트가 아니라 저장소를 고친다** — **Agent Ready Repositories** 는 *\"a standard for structuring a codebase so that an AI agent can contribute to it reliably\"* 이고, `AGENTS.md`(*\"always-loaded minimal context\"*) · *\"Progressive disclosure through linked domain-specific markdown files\"* · *\"Markdown Design Logs that keep agents aligned with architectural decisions\"* 로 이뤄진다. 근거가 분명하다 — *\"An agent dropped into an unprepared codebase will produce unreliable results.\"*\n\n**하네스를 팀에 맡기지 않는다** — *\"Treat the harness as a platform responsibility, not a team decision\"* 이고 이유는 *\"having every team independently configure their agent setup creates inconsistency and drift\"* 다. **그리고 순서를 못 박는다** — *\"Invest in the review layer before pushing for higher automation rates upstream.\"*\n\n**개발 주기 다섯 단계에 각각 심는다** — **트리거**(*\"Reduce the distance between 'something needs to happen' and 'an agent starts working on it'\"*, **Fix My Bug** 는 *\"routes bug reports directly into an automated coding flow\"*) · **코드**(Agent Ready Repositories) · **리뷰**(*\"automated line-by-line review on every PR\"*, 구글 코드 리뷰 기준) · **빌드**(**Fix My Build** 가 실패 출력을 분석해 원인 가설을 낸다) · **관측**(모니터링 도구에 MCP 를 붙였다). 사람 쪽도 바꾼다 — **xEngineer** 는 *\"an AI native engineer that has at least one domain expertise who owns an entire feature end-to-end\"* 다.\n\n**⚠️ 한계를 유난히 솔직하게 적는다** — *\"The most honest thing we can say is that this is still in motion. We don't have a tidy case study with a before/after graph.\"* 그리고 *\"AI-generated code tends to over-engineer… An unused abstraction that passes all tests is still a liability\"* · Fix My Build 는 *\"It's not always right, but it's right enough often enough\"* · 도입 현황도 *\"Most of our engineers are somewhere in the first two stages\"* 다. **수치** — 마이크로서비스 **2,500개 이상** · 원인 지목 정확도 **85%**(WildMoose 연동) · 경보 **P90 평균 복구 시간 17% 개선**. 스택 — Claude Code · Cursor · GitHub Copilot · Codex · N8N · MCP · GitHub Actions · WildMoose."
             }
           ]
+        },
+        {
+          "tech": "컴파일러를 문 앞에 세운 일괄 수정 — 코드 샘플 2,000개 이관",
+          "solves": "어느 샘플이 대상인지 프로그램으로 알 수 없고 형식도 제각각이라 **판정과 변환을 둘 다 LLM 에 맡겼다**(분류 GPT-4 / 변환 GPT-3.5 turbo). 대신 **Velo 타입 정의를 받아 TypeScript 컴파일러로 컴파일해** 통과한 것만 내보낸다. 흩어진 파일은 **API 고유 ID 와 일관된 파일 구조**로 찾고 **매핑 파일**에 원래 자리를 적어 뒀다가 되돌린다.",
+          "limits": "**⭐ 검증 장치가 잡은 것이 모델의 실수가 아니었다** — *\"we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit\"* 였고, 나머지는 **타입 정의가 API 와 어긋난 경우**였다. **수치** — 샘플 **2,000개 이상** · 오류 처리에 **작성자 6명이 한나절**. ⚠️ **분류 정확도와 실제 변환 건수는 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+              "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+              "publisher": "Wix Engineering",
+              "date": "2026-08-29",
+              "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+            }
+          ]
         }
       ],
       "features": [
-        "agent-ready-org"
+        "agent-ready-org",
+        "compile-then-publish"
       ]
     }
   ],
@@ -265,7 +281,8 @@
     "**⭐ 같은 회사가 에이전트를 두 방향으로 묶는다.** **AirBot 은 접근을 제한하고**(인바운드 방화벽 구멍 없음 · *\"Avoiding 'God Mode' API user\"* · Pydantic 타입 강제), **자가 치유의 두뇌는 행동을 제한한다**(*\"Every tool call requires a stated reason\"*). **둘 다 모델을 바꾸는 대신 둘레를 짓는다**(이 대비는 이 사이트의 것이다). **⚠️ 그리고 같은 글 안에서 쪼갤 자리와 아닌 자리가 갈린다** — 데이터베이스 전문 에이전트는 *\"far more effective than a general agent juggling everything at once\"* 인데, **포맷팅을 따로 뒀더니** *\"the formatting agent had no understanding of what the Researcher had actually discovered\"* 라 되돌렸다. **그 기준은 글에 없다.**",
     "**⭐ 같은 회사가 같은 문제를 두 층에서 따로 풀었고 답이 정반대다.** **인프라 층**(DB Mover)은 **앱이 아무것도 모르게** 한다 — *\"Seamless for the application layer - no code changes\"* 이고 ProxySQL 뒤에서 갈아 끼운다. **앱 층**(Wix Inbox)은 **앱이 전부 안다** — 챗룸별 이관 상태 표를 두고 읽기마다 어디서 읽을지 정한다. **되돌리는 방식도 갈린다** — 인프라 층은 **쓰기를 넘기는 순간 되돌릴 수 없고**(*\"rollback is not an option without losing data\"*), 앱 층은 **마지막까지 옛 쪽에 계속 써서** *\"able to rollback at any moment\"* 다. **⚠️ 그리고 실패를 적은 쪽은 앱 층뿐이다** — Inbox 는 클론에 *\"missing data\"* 가 있었다고 쓰는데 DB Mover 편에는 실패도 되돌린 기록도 없다(이 대비는 이 사이트의 것이다).",
     "**⚠️ `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System` 의 주소를 못 찾았다.** 295 에서 `WebSearch` 에 `allowed_domains: [\"wix.engineering\"]` 을 걸어 **두 번 다른 표현으로** 찾았지만 목록과 다른 글의 사이드바에만 제목이 뜨고 상세 주소가 안 나온다(운영 사실 ⑬·⑱ 이 여기서는 안 통했다). **`From Co-Pilot to Full Automation` 이 그 글을 옆 글로 가리키고 있어 존재는 확인된다** — Fix My Bug 가 *\"routes bug reports directly into an automated coding flow\"* 한다는 한 줄까지만 확보했다. **⑰ 대로 주소를 추측하지 않았고 비워 둔다.**",
-    "**⭐ 이 회사는 대가를 적는 정도가 글마다 크게 다르다**(이 관찰은 이 사이트의 것이다). **가장 솔직한 쪽**이 조직 전체 이야기다 — *\"The most honest thing we can say is that this is still in motion. We don't have a tidy case study with a before/after graph.\"* **성과가 없다고 먼저 적는다.** **그다음이 앱 층 이관**(클론에 *\"missing data\"* 가 있었다는 실패 기록). **가장 적게 적는 쪽이 인프라 층 이관**으로, 대가는 셋 적지만 **실패도 되돌린 기록도 없다.** **네 글이 서로를 거의 언급하지 않는다는 점도 같다.**"
+    "**⭐ 이 회사는 대가를 적는 정도가 글마다 크게 다르다**(이 관찰은 이 사이트의 것이다). **가장 솔직한 쪽**이 조직 전체 이야기다 — *\"The most honest thing we can say is that this is still in motion. We don't have a tidy case study with a before/after graph.\"* **성과가 없다고 먼저 적는다.** **그다음이 앱 층 이관**(클론에 *\"missing data\"* 가 있었다는 실패 기록). **가장 적게 적는 쪽이 인프라 층 이관**으로, 대가는 셋 적지만 **실패도 되돌린 기록도 없다.** **네 글이 서로를 거의 언급하지 않는다는 점도 같다.**",
+    "**⭐ 이 회사에서 '모델을 손대지 않는다' 가 네 번째로 확인됐다**(이 정리는 이 사이트의 것이다). AirBot 은 **접근을 제한**했고(Socket Mode·God Mode 금지·Pydantic 타입 강제), 자가치유 두뇌는 **행동을 제한**했고(도구를 부르려면 이유를 대야 한다), Agent Ready Repositories 는 **환경을 정비**했고(*\"An agent dropped into an unprepared codebase will produce unreliable results\"*), 코드 샘플 일괄 수정은 **통과 조건을 만들었다**(컴파일러가 문지기). **넷 다 모델의 정확도를 올리는 쪽이 아니라 모델 바깥을 손보는 쪽이다.** ⚠️ **그리고 넷의 대가가 같은 방향으로 남는다** — 검사할 수 있는 것만 검사된다."
   ],
   "sources": [
     {
@@ -323,6 +340,13 @@
       "publisher": "Wix Engineering",
       "date": "2026-08-29",
       "summary": "**앞의 두 글이 에이전트를 만드는 이야기라면 이 글은 회사를 고치는 이야기다.** 문제를 첫 줄에 적는다 — *\"When you have over 2,500 microservices and thousands of engineers working across a massive multi-product platform, 'just use AI coding tools' is not a strategy.\"*\n\n**🔴 도구를 세 층으로 갈라 놓고 둘을 버린다** — **클라우드 에이전트**는 *\"Stateless per task… no codebase awareness, no iteration loop, no project context\"* 이고, **컴퓨터를 통째로 주는 에이전트**는 *\"The action space is unbounded. More capability, more autonomy, more risk\"* 다. 가운데인 **하네스**를 고르며 *\"The industry is converging on the harness tier as the practical sweet spot\"* 라고 적는다.\n\n**⭐ 그리고 에이전트가 아니라 저장소를 고친다** — **Agent Ready Repositories** 는 *\"a standard for structuring a codebase so that an AI agent can contribute to it reliably\"* 이고, `AGENTS.md`(*\"always-loaded minimal context\"*) · *\"Progressive disclosure through linked domain-specific markdown files\"* · *\"Markdown Design Logs that keep agents aligned with architectural decisions\"* 로 이뤄진다. 근거가 분명하다 — *\"An agent dropped into an unprepared codebase will produce unreliable results.\"*\n\n**하네스를 팀에 맡기지 않는다** — *\"Treat the harness as a platform responsibility, not a team decision\"* 이고 이유는 *\"having every team independently configure their agent setup creates inconsistency and drift\"* 다. **그리고 순서를 못 박는다** — *\"Invest in the review layer before pushing for higher automation rates upstream.\"*\n\n**개발 주기 다섯 단계에 각각 심는다** — **트리거**(*\"Reduce the distance between 'something needs to happen' and 'an agent starts working on it'\"*, **Fix My Bug** 는 *\"routes bug reports directly into an automated coding flow\"*) · **코드**(Agent Ready Repositories) · **리뷰**(*\"automated line-by-line review on every PR\"*, 구글 코드 리뷰 기준) · **빌드**(**Fix My Build** 가 실패 출력을 분석해 원인 가설을 낸다) · **관측**(모니터링 도구에 MCP 를 붙였다). 사람 쪽도 바꾼다 — **xEngineer** 는 *\"an AI native engineer that has at least one domain expertise who owns an entire feature end-to-end\"* 다.\n\n**⚠️ 한계를 유난히 솔직하게 적는다** — *\"The most honest thing we can say is that this is still in motion. We don't have a tidy case study with a before/after graph.\"* 그리고 *\"AI-generated code tends to over-engineer… An unused abstraction that passes all tests is still a liability\"* · Fix My Build 는 *\"It's not always right, but it's right enough often enough\"* · 도입 현황도 *\"Most of our engineers are somewhere in the first two stages\"* 다. **수치** — 마이크로서비스 **2,500개 이상** · 원인 지목 정확도 **85%**(WildMoose 연동) · 경보 **P90 평균 복구 시간 17% 개선**. 스택 — Claude Code · Cursor · GitHub Copilot · Codex · N8N · MCP · GitHub Actions · WildMoose."
+    },
+    {
+      "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+      "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+      "publisher": "Wix Engineering",
+      "date": "2026-08-29",
+      "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
     }
   ],
   "features": [
@@ -3153,6 +3177,665 @@
         }
       ],
       "sources": [
+        {
+          "title": "From Co-Pilot to Full Automation: How Wix Is Embedding AI Agents Across an Engineering Org at Scale",
+          "url": "https://www.wix.engineering/post/from-co-pilot-to-full-automation-how-wix-is-embedding-ai-agents-across-an-engineering-org-at-scale",
+          "publisher": "Wix Engineering",
+          "date": "2026-08-29",
+          "summary": "**앞의 두 글이 에이전트를 만드는 이야기라면 이 글은 회사를 고치는 이야기다.** 문제를 첫 줄에 적는다 — *\"When you have over 2,500 microservices and thousands of engineers working across a massive multi-product platform, 'just use AI coding tools' is not a strategy.\"*\n\n**🔴 도구를 세 층으로 갈라 놓고 둘을 버린다** — **클라우드 에이전트**는 *\"Stateless per task… no codebase awareness, no iteration loop, no project context\"* 이고, **컴퓨터를 통째로 주는 에이전트**는 *\"The action space is unbounded. More capability, more autonomy, more risk\"* 다. 가운데인 **하네스**를 고르며 *\"The industry is converging on the harness tier as the practical sweet spot\"* 라고 적는다.\n\n**⭐ 그리고 에이전트가 아니라 저장소를 고친다** — **Agent Ready Repositories** 는 *\"a standard for structuring a codebase so that an AI agent can contribute to it reliably\"* 이고, `AGENTS.md`(*\"always-loaded minimal context\"*) · *\"Progressive disclosure through linked domain-specific markdown files\"* · *\"Markdown Design Logs that keep agents aligned with architectural decisions\"* 로 이뤄진다. 근거가 분명하다 — *\"An agent dropped into an unprepared codebase will produce unreliable results.\"*\n\n**하네스를 팀에 맡기지 않는다** — *\"Treat the harness as a platform responsibility, not a team decision\"* 이고 이유는 *\"having every team independently configure their agent setup creates inconsistency and drift\"* 다. **그리고 순서를 못 박는다** — *\"Invest in the review layer before pushing for higher automation rates upstream.\"*\n\n**개발 주기 다섯 단계에 각각 심는다** — **트리거**(*\"Reduce the distance between 'something needs to happen' and 'an agent starts working on it'\"*, **Fix My Bug** 는 *\"routes bug reports directly into an automated coding flow\"*) · **코드**(Agent Ready Repositories) · **리뷰**(*\"automated line-by-line review on every PR\"*, 구글 코드 리뷰 기준) · **빌드**(**Fix My Build** 가 실패 출력을 분석해 원인 가설을 낸다) · **관측**(모니터링 도구에 MCP 를 붙였다). 사람 쪽도 바꾼다 — **xEngineer** 는 *\"an AI native engineer that has at least one domain expertise who owns an entire feature end-to-end\"* 다.\n\n**⚠️ 한계를 유난히 솔직하게 적는다** — *\"The most honest thing we can say is that this is still in motion. We don't have a tidy case study with a before/after graph.\"* 그리고 *\"AI-generated code tends to over-engineer… An unused abstraction that passes all tests is still a liability\"* · Fix My Build 는 *\"It's not always right, but it's right enough often enough\"* · 도입 현황도 *\"Most of our engineers are somewhere in the first two stages\"* 다. **수치** — 마이크로서비스 **2,500개 이상** · 원인 지목 정확도 **85%**(WildMoose 연동) · 경보 **P90 평균 복구 시간 17% 개선**. 스택 — Claude Code · Cursor · GitHub Copilot · Codex · N8N · MCP · GitHub Actions · WildMoose."
+        }
+      ]
+    },
+    {
+      "key": "compile-then-publish",
+      "name": "컴파일이 통과해야 내보낸다",
+      "domain": "에이전트가 들어올 수 있게 집을 고친다",
+      "updated_at": "2026-08-29",
+      "ui": {
+        "title": "샘플 2,000개를 한 번에 고칠 때",
+        "question": "틀린 것을 무엇으로 거르는가?",
+        "kind": "web",
+        "note": "**일괄 수정 파이프라인을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내 도구에 이런 화면이 있는지 자체를 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 단계와 수치만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "일괄 수정"
+          },
+          {
+            "type": "card",
+            "text": "모르는 것이 셋입니다",
+            "items": [
+              "어느 샘플이 대상인지 모른다",
+              "형식이 제각각이라 규칙을 못 세운다",
+              "파일이 어느 저장소에 있는지 모른다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "흩어진 것을 모은다"
+          },
+          {
+            "type": "text",
+            "text": "고유 번호와 일정한 파일 구조를 단서로 찾아 옵니다",
+            "pin": 2
+          },
+          {
+            "type": "text",
+            "text": "어디서 가져왔는지는 따로 적어 둡니다 — 나중에 되돌려 놓아야 하니까",
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "누가 판정하고 누가 고치는가"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "고칠 대상인지 가려내기",
+                "sub": "사람이 틀리는 것보다 나쁘지만 않으면 된다고 봤다",
+                "right": "큰 모델"
+              },
+              {
+                "title": "실제로 고쳐 쓰기",
+                "sub": "여럿을 시험해 보고 골랐다",
+                "right": "작은 모델"
+              }
+            ],
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "내보내기 전에"
+          },
+          {
+            "type": "text",
+            "text": "타입 정의를 받아 실제로 컴파일해 봅니다 — 통과해야 나갑니다",
+            "pin": 5
+          },
+          {
+            "type": "chips",
+            "items": [
+              "나온 오류는 잘림뿐이었다",
+              "타입 정의가 낡은 경우가 몇 건"
+            ],
+            "pin": 6
+          },
+          {
+            "type": "text",
+            "text": "오류는 전부 사람이 봅니다 — 여섯 명이 한나절",
+            "pin": 7
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "text",
+            "text": "적어 둔 자리로 되돌려 놓고 변경 요청 목록을 냅니다",
+            "pin": 3
+          },
+          {
+            "type": "button",
+            "text": "변경 요청 만들기",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "어려운 이유가 셋이고 다 모른다는 것이다",
+            "what": "문법이 바뀌어 샘플 **2,000여 개**가 낡았는데, *\"We had no programmatic way of knowing which specific samples we needed to change\"* 이고, 형식이 여러 해에 걸쳐 갈려 *\"We couldn't expect them all to have the same structure\"* 이며, *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "규칙 두 개로 흩어진 파일을 찾는다",
+            "what": "*\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo.\"* 그 둘을 단서로 GitHub 저장소를 검색해 샘플 파일을 모은다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "원래 자리를 매핑 파일에 적어 둔다",
+            "what": "모으는 스크립트가 *\"also created a mapping file\"* 하고, 마지막 스크립트가 *\"used the mapping file to apply all our code sample conversions to their respective source repos and returned a list of PRs\"* 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "판정과 변환에 다른 모델을 쓴다",
+            "what": "분류는 **GPT-4** 이고 근거가 솔직하다 — *\"it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* 변환은 실험 끝에 **GPT-3.5 turbo** 인데 *\"produced the best results out of the models we had available at the time\"* 였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "컴파일러가 문지기다",
+            "what": "*\"We couldn't publish bad code in the reference\"* 라, Velo API 의 타입 정의를 받아 TypeScript 컴파일러로 컴파일해 *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "잡힌 것은 모델의 실수가 아니었다",
+            "what": "*\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* 그리고 *\"a few cases where the samples failed to compile because the type definitions were out of sync with the underlying APIs.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "오류는 전부 사람이 본다",
+            "what": "*\"We decided to manually review all validation errors and fix them as needed\"* 이고, 나눠 맡았다 — **작성자 6명이 한나절**. 각자 *\"checked if it resulted from the code conversion and applied any necessary fixes\"* 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**앞 기능이 원칙이라면 이 기능은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 조직 전체 이야기가 *\"Invest in the review layer before pushing for higher automation rates upstream\"* 라고 적었는데, **여기서는 그 검토 층이 사람이 아니라 컴파일러다.**\n\n**문제는 크기가 아니라 모름이었다.** 문법이 바뀌어 코드 샘플 **2,000여 개**가 낡았는데, 어려운 이유 셋이 전부 *모른다*로 끝난다 — 어느 것이 대상인지 *\"no programmatic way of knowing\"*, 형식이 제각각이라 *\"couldn't expect them all to have the same structure\"*, 파일이 어디 있는지 *\"no straightforward way (that we could find).\"* **규칙을 못 세우니 판정과 변환을 둘 다 LLM 에 맡길 수밖에 없었다**(이 정리는 이 사이트의 것이다).\n\n**🔴 그래서 값을 치르는 대신 문을 세웠다.** *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference.\"* Velo API 의 타입 정의를 받아 **실제로 컴파일해 통과한 것만 내보낸다.** **모델을 믿을 수 있는지 묻는 대신 결과를 기계로 확인할 수 있는 형태로 만든 것이다**(이 표현은 이 사이트의 것이다).\n\n**⭐ 그리고 결과가 뜻밖이다** — *\"we never saw a single example of the LLM failing to convert the code properly.\"* 나온 오류는 **토큰 한도에 걸린 잘림**과 **타입 정의가 API 와 어긋난 몇 건**뿐이었다. **검증 장치가 잡아낸 것이 모델의 실수가 아니라 주변의 문제였다는 뜻이다**(이 정리는 이 사이트의 것이다). ⚠️ **다만 이것은 컴파일이 잡을 수 있는 범위 안에서의 이야기다** — 컴파일되지만 뜻이 달라진 코드는 이 문을 통과한다(이 지적도 이 사이트의 것이다).\n\n**사람의 자리도 분명하다** — *\"We decided to manually review all validation errors\"* 이고 **작성자 6명이 한나절**이면 끝났다. **자동화가 사람을 없앤 것이 아니라 사람이 볼 것을 오류 목록으로 줄였다**(이 정리는 이 사이트의 것이다).\n\n**⭐ 이 글은 기술 문서 팀이 썼다** — 이 회사의 다른 글들이 인프라·플랫폼 팀의 것인 데 비해 **다른 팀이 같은 원칙을 각자 적용한 사례가 하나 더 생긴 셈이다**(이 관찰은 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "Velo API 레퍼런스의 코드 샘플 2,000개 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "사람이 쓴 시간",
+            "value": "검증 오류 처리에 작성자 6명이 한나절",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "변환 실패",
+            "value": "*\"never saw a single example of the LLM failing to convert the code properly\"* — 잡힌 것은 토큰 잘림과 낡은 타입 정의뿐",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "모델",
+            "value": "분류 GPT-4 · 변환 GPT-3.5 turbo(당시 쓸 수 있던 것 중 실험으로 골랐다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "분류 정확도 · 실제로 고친 샘플 수 · 전체에 걸린 기간 · 비용",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "컴파일러를 문지기로 세운 대목에서",
+          "thought": "**모델을 믿을 수 있는지 묻는 대신 결과를 기계로 확인할 수 있는 형태로 만들었다**(이 표현은 이 사이트의 것이다). ⭐ **이 회사의 다른 글들과 같은 모양이다** — AirBot 은 출력을 Pydantic 으로 강제했고, 조직 전체 글은 *\"Invest in the review layer before…\"* 라고 적었다. **셋 다 모델의 정확도를 올리는 대신 통과 조건을 만든다.** ⚠️ **대가는 검사할 수 있는 것만 검사된다는 것**이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "변환이 한 번도 안 틀렸다는 대목에서",
+          "thought": "**뜻밖의 결과이고, 이 사이트가 여러 회사에서 본 것 중 드문 종류다** — 검증 장치를 세웠는데 **그것이 잡은 것이 모델의 실수가 아니라 주변의 문제**였다(토큰 잘림, 낡은 타입 정의). ⚠️ **다만 이것을 '모델이 정확했다'로 읽으면 안 된다**(이 지적은 이 사이트의 것이다) — **컴파일이 잡을 수 있는 범위 안에서만 확인된 것**이고, **컴파일되지만 예제로서 틀린 코드**는 이 문을 그냥 지난다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "분류를 맡긴 근거를 읽고",
+          "thought": "*\"it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **기준을 완벽이 아니라 사람과의 비교로 잡았다**(이 관찰은 이 사이트의 것이다). ⚠️ **그런데 그 비교를 실제로 했는지는 글에 없다** — 시험 데이터셋에서 잘했다고만 하고 **사람의 오류율도 모델의 분류 정확도도 숫자가 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사람이 한나절 쓴 대목에서",
+          "thought": "**자동화가 사람을 없앤 것이 아니라 사람이 볼 것을 오류 목록으로 줄였다**(이 정리는 이 사이트의 것이다) — *\"We decided to manually review all validation errors\"* 이고 여섯 명이 한나절이면 끝났다. ⭐ **같은 회사 AirBot 의 완전 자동화율 15% 와 결이 같다** — 자동화의 성과가 '사람이 사라졌다'가 아니라 '사람이 볼 것이 줄었다'로 적힌다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "코드 샘플",
+            "what": "레퍼런스에 실리는 예제. **2,000개가 넘고 형식이 제각각이다**"
+          },
+          {
+            "name": "API 고유 번호",
+            "what": "흩어진 저장소에서 그 API 의 샘플 파일을 찾는 단서"
+          },
+          {
+            "name": "매핑 파일",
+            "what": "모아 온 파일이 **원래 어디 있었는지**와 **고칠 대상인지**를 담는다"
+          },
+          {
+            "name": "분류 표시",
+            "what": "그 샘플이 바뀐 문법에 해당하는지의 판정 결과"
+          },
+          {
+            "name": "타입 정의",
+            "what": "Velo API 의 형태. **검증의 기준이자 그 자체가 낡을 수 있는 것**"
+          },
+          {
+            "name": "검증 오류",
+            "what": "컴파일이 실패한 건. **사람이 전부 본다**"
+          }
+        ],
+        "invariants": [
+          "**컴파일이 통과하지 않은 것은 내보내지 않는다**",
+          "**검증 오류는 하나도 빠짐없이 사람이 본다**",
+          "**고쳐 쓴 것은 원본 옆에 따로 둔다** — 원본을 곧바로 덮지 않는다",
+          "**어디서 가져왔는지를 잃지 않는다** — 매핑 파일이 되돌릴 자리를 안다",
+          "**판정과 변환은 다른 모델이 한다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "고유 번호로 저장소를 뒤져 샘플 파일을 모은다",
+            "why": "파일이 어디 있는지 알 방법이 그것뿐이었다"
+          },
+          {
+            "step": "어디서 가져왔는지 매핑 파일에 적는다",
+            "why": "고친 뒤 제자리로 돌려놓아야 한다"
+          },
+          {
+            "step": "큰 모델이 고칠 대상인지 가려낸다",
+            "why": "규칙으로는 못 가린다"
+          },
+          {
+            "step": "대상 표시를 매핑 파일에 더한다",
+            "why": "다음 단계가 그것만 처리한다"
+          },
+          {
+            "step": "작은 모델이 실제로 고쳐 쓴다",
+            "why": "형식이 제각각이라 스크립트로 못 바꾼다"
+          },
+          {
+            "step": "고쳐 쓴 것을 원본 옆에 둔다",
+            "why": "원본을 곧바로 덮지 않는다"
+          },
+          {
+            "step": "타입 정의를 받아 컴파일해 본다",
+            "why": "틀린 코드를 레퍼런스에 실을 수 없다"
+          },
+          {
+            "step": "실패한 것을 사람들이 나눠 본다",
+            "why": "변환 탓인지 아닌지 가려야 한다"
+          },
+          {
+            "step": "적어 둔 자리로 되돌려 놓고 변경 요청을 낸다",
+            "why": "흩어진 저장소마다 반영되어야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "고칠 대상을 어떻게 가려낼 것인가?",
+            "chosen": "**큰 모델에게 판정을 맡긴다.** 시스템 메시지에 분류 프롬프트를 두고 사용자 메시지에는 샘플만 넣는다",
+            "alternatives": [
+              "규칙이나 스크립트로 가려내기 — *\"We had no programmatic way of knowing which specific samples we needed to change\"*",
+              "사람이 2,000개를 하나씩 보기"
+            ],
+            "tradeoff": "근거를 완벽이 아니라 비교로 잡는다 — *\"it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **대가를 스스로 적는다** — *\"The probabilistic nature of LLMs meant that some percentage of the classifications would almost certainly be wrong.\"* ⚠️ **그런데 사람의 오류율도 모델의 분류 정확도도 숫자가 없다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "실제 변환을 무엇으로 할 것인가?",
+            "chosen": "**작은 모델에게 맡긴다.** 실험 끝에 GPT-3.5 turbo 가 *\"produced the best results out of the models we had available at the time\"*",
+            "alternatives": [
+              "스크립트로 치환하기 — *\"the code samples were in different and unpredictable formats meant that we couldn't easily script a way to convert\"*"
+            ],
+            "tradeoff": "**형식의 다양성이 규칙 기반을 막았다.** ⭐ **그리고 판정과 변환에 다른 모델을 쓴다** — 가리는 일에는 큰 것, 바꾸는 일에는 작은 것(이 관찰은 이 사이트의 것이다). ⚠️ **대가는 일정 비율이 틀릴 수 있다는 것**이고, **그래서 다음 결정이 필요해진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "틀린 변환을 어떻게 막을 것인가?",
+            "chosen": "**타입 정의를 받아 실제로 컴파일해 본다.** 통과한 것만 내보낸다",
+            "alternatives": [
+              "사람이 2,000개를 전부 검토하기",
+              "모델의 출력을 그대로 믿기 — *\"We couldn't publish bad code in the reference\"*"
+            ],
+            "tradeoff": "**모델을 믿을 수 있는지 묻는 대신 결과를 기계로 확인할 수 있는 형태로 만들었다**(이 표현은 이 사이트의 것이다). 확인되는 것은 *\"valid JavaScript and used the Velo APIs correctly\"* 까지다. ⚠️ **대가는 검사할 수 있는 것만 검사된다는 것** — **컴파일되지만 예제로서 뜻이 틀린 코드는 이 문을 그냥 지난다**(이 지적도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "검증 오류를 어디까지 사람이 볼 것인가?",
+            "chosen": "**전부 본다.** *\"We decided to manually review all validation errors and fix them as needed\"* — 작성자 6명이 나눠 한나절",
+            "alternatives": [
+              "오류도 자동으로 재시도하게 두기",
+              "일부만 표본으로 보기"
+            ],
+            "tradeoff": "**자동화가 사람을 없앤 것이 아니라 사람이 볼 것을 오류 목록으로 줄였다**(이 정리는 이 사이트의 것이다). 각 작성자가 *\"checked if it resulted from the code conversion\"* 하므로 **변환 탓이 아닌 것도 여기서 갈린다.** ⚠️ **대가는 오류가 많아지면 이 방식이 안 된다는 것**인데, 실제로는 오류가 적어서 성립했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "흩어진 파일을 어떻게 찾을 것인가?",
+            "chosen": "**두 가지 규칙에 기댄다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"*",
+            "alternatives": [
+              "저장소를 하나씩 뒤지기",
+              "경로 목록을 손으로 만들기"
+            ],
+            "tradeoff": "**이미 있던 일관성이 자동화를 가능하게 했다**(이 정리는 이 사이트의 것이다) — 앞 기능의 *\"unprepared codebase\"* 이야기와 같은 축이다. ⚠️ **대가는 그 두 규칙이 지켜지지 않은 곳은 못 찾는다는 것**인데(이 지적도 이 사이트의 것이다), **놓친 파일이 있었는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "고친 것을 언제 원본에 반영할 것인가?",
+            "chosen": "**맨 마지막에 한꺼번에.** 고쳐 쓴 것은 *\"near the originals in the repo\"* 에 두고, 마지막 스크립트가 매핑 파일을 보고 되돌려 PR 목록을 낸다",
+            "alternatives": [
+              "변환하는 즉시 원본을 덮기"
+            ],
+            "tradeoff": "**검증과 사람 검토가 끝나기 전에는 아무것도 원래 자리로 안 간다**(이 정리는 이 사이트의 것이다) — 되돌릴 수 있는 구간이 파이프라인 대부분을 차지한다. ⚠️ **대가는 그 사이에 원본이 바뀌면 어긋난다는 것**인데(이 지적도 이 사이트의 것이다), **그 처리 이야기는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "검증이 실패했을 때 원인을 어디까지 의심할 것인가?",
+            "chosen": "**변환 탓이 아닐 수 있다고 보고 확인한다.** 실제로 *\"the type definitions were out of sync with the underlying APIs\"* 인 경우가 나왔다",
+            "alternatives": [
+              "컴파일 실패를 전부 변환 실패로 처리하기"
+            ],
+            "tradeoff": "**⭐ 이 태도가 이 글의 결론을 만들었다** — 결국 *\"never saw a single example of the LLM failing to convert the code properly\"* 였고 나온 것은 **토큰 잘림**과 **낡은 타입 정의**뿐이었다. **검증 장치가 잡은 것이 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 사람이 한 건씩 원인을 갈라야 한다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "GPT-4",
+            "role": "고칠 대상인지 가려내는 분류",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "GPT-3.5 turbo",
+            "role": "실제 코드 변환 — 당시 쓸 수 있던 것 중 실험으로 골랐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "TypeScript 컴파일러",
+            "role": "**문지기.** Velo 타입 정의를 받아 변환 결과를 컴파일해 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "GitHub CLI · API",
+            "role": "흩어진 저장소에서 샘플 파일을 찾고 마지막에 PR 을 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "매핑 파일",
+            "role": "원래 자리와 대상 여부를 담는 중간 상태. **되돌려 놓을 수 있게 하는 것**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "규칙을 세울 수 없는 대상을 대량으로 고치기",
+            "why_hard": "어려운 이유 셋이 전부 **모른다**로 끝난다 — 어느 것이 대상인지 · 어떤 형식인지 · 어디 있는지. *\"Manually locating, classifying, and rewriting each code sample would have taken a huge amount of work and brought our whole team's general velocity to a halt.\"*",
+            "current_best": "**판정과 변환을 모델에 맡기고 컴파일러를 문 앞에 세운다.** 확인되는 것은 *\"valid JavaScript and used the Velo APIs correctly\"* 까지이고, 통과 못 한 것은 **전부 사람이 본다**(작성자 6명이 한나절). ⚠️ **컴파일되지만 예제로서 뜻이 틀린 코드는 이 문을 지난다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          },
+          {
+            "problem": "검증 장치의 기준 자체가 낡는 것",
+            "why_hard": "컴파일의 기준은 타입 정의인데, 실제로 *\"a few cases where the samples failed to compile because the type definitions were out of sync with the underlying APIs\"* 가 나왔다. **재는 자가 낡아 있으면 통과와 실패의 뜻이 흔들린다**(이 정리는 이 사이트의 것이다).",
+            "current_best": "**사람이 한 건씩 원인을 가른다** — 작성자가 *\"checked if it resulted from the code conversion\"* 한다. ⚠️ **타입 정의를 최신으로 유지하는 절차는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+                "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "샘플 하나가 고쳐져 돌아가기까지",
+          "question": "무엇이 문을 지키는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  FIND[\"고유 번호로 저장소를 뒤져 모아 온다\"]:::list\n  MAP[\"어디서 가져왔는지 적어 둔다\"]:::list\n  CLS[\"큰 모델이 고칠 대상인지 가린다\"]:::list\n  CONV[\"작은 모델이 고쳐 쓴다\"]:::list\n  NEAR[\"고친 것을 원본 옆에 둔다\"]:::list\n  GATE[\"<b>타입 정의를 받아 컴파일해 본다</b><br/>• 통과해야 내보낸다<br/>• 문법이 맞는지 본다<br/>• 규격대로 썼는지 본다\"]:::accent\n  HUMAN[\"실패한 것은 전부 사람이 나눠 본다\"]:::list\n  BACK[\"적어 둔 자리로 되돌려 놓고 변경 요청을 낸다\"]:::list\n  X1[\"규칙으로 가려내기<br/>못 한다 — 대상을 알아낼 방법이 없었다\"]:::quiet\n  X2[\"스크립트로 치환하기<br/>못 한다 — 형식이 제각각이다\"]:::quiet\n  FIND --> MAP --> CLS --> CONV --> NEAR --> GATE\n  GATE --> BACK\n  GATE --> HUMAN --> BACK\n  CLS -.-> X1\n  CONV -.-> X2"
+        },
+        {
+          "title": "샘플 하나가 거치는 상태",
+          "question": "언제 원본이 바뀌는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 모아옴\n  모아옴 : <b>작업 저장소로 가져왔다</b><br/>원래 어디 있었는지는 따로 적혀 있다<br/>원본은 아직 그대로다\n  모아옴 --> 대상아님 : 바뀐 문법과 상관없다\n  대상아님 : <b>손대지 않는다</b><br/>대부분의 샘플이 여기다\n  모아옴 --> 대상 : 고쳐야 한다고 표시됐다\n  대상 --> 고쳐씀 : 작은 모델이 다시 썼다\n  고쳐씀 : <b>원본 옆에 나란히 있다</b><br/>아직 아무 데도 반영되지 않았다\n  고쳐씀 --> 통과 : 컴파일이 됐다\n  고쳐씀 --> 실패 : 컴파일이 안 됐다\n  실패 : <b>사람이 원인을 가른다</b><br/>고쳐 쓰다 잘린 것인지<br/>기준이 낡은 것인지\n  실패 --> 통과 : 손보고 다시 세웠다\n  통과 --> [*] : 제자리로 돌아가 변경 요청이 된다"
+        },
+        {
+          "title": "이 문이 못 잡는 것",
+          "question": "통과가 뜻하는 것은 어디까지인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"컴파일이 되면 내보낸다\"]:::list\n  B[\"<b>문법과 규격까지만 확인된다</b><br/>컴파일되지만 예제로서 뜻이 틀린 코드는 그냥 지난다\"]:::accent\n  C[\"재는 기준이 타입 정의다\"]:::list\n  D[\"그 정의가 낡아 있던 경우가 실제로 나왔다\"]:::list\n  E[\"사람이 틀리는 것보다 낫기만 하면 된다고 봤다\"]:::list\n  F[\"그런데 사람의 오류율도 모델의 분류 정확도도 숫자가 없다\"]:::list\n  G[\"두 가지 규칙에 기대 파일을 찾는다\"]:::list\n  H[\"규칙이 안 지켜진 곳은 못 찾는데 놓친 것이 있었는지 없다\"]:::list\n  I[\"마지막에 한꺼번에 되돌려 놓는다\"]:::list\n  J[\"그 사이 원본이 바뀌면 어떻게 되는지 없다\"]:::list\n  N[\"<i>낡은 타입 정의는 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples",
+          "url": "https://www.wix.engineering/post/docs-automating-bulk-api-reference-rewrites-with-ai",
+          "publisher": "Wix Engineering",
+          "date": "2026-08-29",
+          "summary": "**앞의 조직 이야기가 원칙이라면 이 글은 그 원칙을 한 번 실제로 돌려 본 기록이다**(이 대비는 이 사이트의 것이다). 문법이 바뀌어 **Velo API 레퍼런스의 코드 샘플 2,000여 개**가 한꺼번에 낡았다. **어려운 이유가 셋이고 셋 다 '모른다' 다** — 어느 샘플이 대상인지 *\"We had no programmatic way of knowing which specific samples we needed to change\"* · 형식이 제각각이라 *\"We couldn't expect them all to have the same structure\"* · 파일이 여러 저장소에 흩어져 *\"There was no straightforward way (that we could find) to identify the source file for any given code sample.\"*\n\n**🔴 그래서 판정과 변환을 둘 다 LLM 에 맡기되 컴파일러를 문 앞에 세운다.** 분류는 GPT-4 로 하는데 근거가 솔직하다 — *\"We reasoned that it might not be worse than human error if we could write a prompt that performed well on a testing data set.\"* **변환은 실험해서 GPT-3.5 turbo 를 골랐다**(*\"produced the best results out of the models we had available at the time\"*). 그리고 **검증** — *\"Converting the code samples with AI meant that a certain percentage of the conversions might be wrong. We couldn't publish bad code in the reference\"* 라서, Velo API 의 타입 정의를 받아 **TypeScript 컴파일러로 컴파일해** *\"confirm that the new code was valid JavaScript and used the Velo APIs correctly\"* 했다.\n\n**⭐ 결과가 뜻밖이다** — *\"In practice, we never saw a single example of the LLM failing to convert the code properly. The only errors we encountered were cut-offs where the LLM hit the return token limit before completing the sample.\"* **거기에 타입 정의가 API 와 어긋난 경우가 몇 건 있었다.** **즉 검증 장치가 잡아낸 것은 모델의 실수가 아니라 주변의 문제였다**(이 정리는 이 사이트의 것이다).\n\n**흩어진 파일은 규칙으로 찾는다** — *\"Each Velo API has a unique identifier and the file structure for the sample files is consistent in every source repo\"* 라 GitHub 검색으로 모으고 **매핑 파일**에 원래 자리를 적어 뒀다가 마지막에 되돌려 PR 목록을 낸다. **다섯 단계** — 찾기 · 분류 · 변환과 검증 · 오류 처리 · 되돌려 넣기. **수치** — 샘플 **2,000개 이상** · 검증 오류 처리에 **작성자 6명이 한나절**. **⚠️ 분류 정확도와 변환 건수의 실제 숫자는 없다.**"
+        },
         {
           "title": "From Co-Pilot to Full Automation: How Wix Is Embedding AI Agents Across an Engineering Org at Scale",
           "url": "https://www.wix.engineering/post/from-co-pilot-to-full-automation-how-wix-is-embedding-ai-agents-across-an-engineering-org-at-scale",

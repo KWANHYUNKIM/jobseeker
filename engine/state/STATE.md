@@ -8,59 +8,53 @@
 
 ## 지금 파는 중
 
-**Wix(51번째) `in_progress` — 도메인 3개 · 기능 4개.** 295 에서 **새 도메인 ③
-`에이전트가 들어올 수 있게 집을 고친다` 를 열고 그 기능 `agent-ready-org`
-(**에이전트가 읽을 수 있게 저장소를 고친다**)까지 썼다. **결정 7개.** `tech` 도 함께 채웠고
-`index.json` 최상위 `domains` 에도 넣었다(**⚠️ 회사 항목의 `domain` 은 분류 문자열이라 거기
-넣으면 ✗ 가 난다 — 295 에서 한 번 걸렸다**).
+**Wix(51번째) `in_progress` — 도메인 3개 · 기능 5개.** 296 에서 도메인 ③ 의 두 번째 기능
+`compile-then-publish`(**컴파일이 통과해야 내보낸다**)를 썼다. **결정 7개.**
+읽은 글은 `From Manual Nightmare to AI Automation: Fixing 2,000 Code Samples`
+(`/post/docs-automating-bulk-api-reference-rewrites-with-ai`).
 
-**왜 새 도메인인가**(223 규칙) — 도메인 ① 은 **에이전트 하나를 어떻게 제약하는가**이고,
-③ 은 **수천 명이 쓰는 코드베이스를 에이전트가 들어올 수 있는 곳으로 만드는가**다.
-읽은 글은 `From Co-Pilot to Full Automation`.
+**무엇이 나왔나** — 문법이 바뀌어 Velo 코드 샘플 **2,000여 개**가 낡았는데 **어려운 이유 셋이
+전부 '모른다'** 였다(어느 것이 대상인지 · 어떤 형식인지 · 어디 있는지). 그래서 **판정(GPT-4)과
+변환(GPT-3.5 turbo)을 둘 다 모델에 맡기고 컴파일러를 문 앞에 세웠다** — 타입 정의를 받아
+TypeScript 로 컴파일해 통과한 것만 내보낸다.
+- **⭐ 결과가 뜻밖이다** — *"we never saw a single example of the LLM failing to convert the
+  code properly."* 나온 오류는 **토큰 한도에 걸린 잘림**과 **타입 정의가 API 와 어긋난 몇 건**
+  뿐이었다. **검증 장치가 잡은 것이 모델의 실수가 아니라 주변의 문제였다.**
+  ⚠️ **다만 컴파일이 잡는 범위 안의 이야기다** — 컴파일되지만 예제로서 틀린 코드는 지난다.
+- **사람의 자리** — *"We decided to manually review all validation errors"*, **작성자 6명이
+  한나절**. 자동화가 사람을 없앤 게 아니라 **볼 것을 오류 목록으로 줄였다**(AirBot 의 완전
+  자동화율 15% 와 결이 같다).
+- **분류를 맡긴 근거가 완벽이 아니라 비교다** — *"it might not be worse than human error…"*
+  ⚠️ **그런데 사람의 오류율도 모델의 분류 정확도도 숫자가 없다.**
+- **이 글은 기술 문서 팀이 썼다** — 다른 글들은 인프라·플랫폼 팀 것이다.
 
-**⭐ 이 글의 핵심은 에이전트가 아니라 저장소를 고친 것이다** — *"An agent dropped into an
-unprepared codebase will produce unreliable results."* **Agent Ready Repositories** 가
-`AGENTS.md`(최소 맥락) · 도메인 문서로의 점진적 공개 · 설계 로그로 이뤄진다.
-- **🔴 도구를 세 층으로 갈라 둘을 버린다** — 클라우드 에이전트(*"no codebase awareness,
-  no iteration loop, no project context"*) · 컴퓨터를 통째로 주는 쪽(*"The action space is
-  unbounded… more risk"*). 가운데 **하네스**를 고른다.
-- **하네스는 팀이 아니라 플랫폼이 정한다** — *"creates inconsistency and drift"*
-- **검토 층이 자동화 비율보다 먼저다** — *"Invest in the review layer before pushing for
-  higher automation rates upstream"*
-- **수치** — 마이크로서비스 **2,500개 이상** · 원인 지목 정확도 **85%**(WildMoose) ·
-  경보 **P90 MTTR 17% 개선**
-
-**⭐⭐ 이 회사에서 확정된 관찰 둘**(`open_questions` 에 남겼다)
+**⭐⭐ 이 회사에서 확정된 관찰 셋**(전부 `open_questions` 에 있다)
 1. **같은 문제를 두 층에서 정반대로 푼다** — 인프라 층 이관은 앱이 모르게(*"no code
    changes"*), 앱 층 이관은 앱이 전부 알게. 되돌리기도 정반대.
-2. **⭐ 대가를 적는 정도가 글마다 크게 다르다.** **가장 솔직한 쪽이 조직 전체 이야기**다 —
-   *"We don't have a tidy case study with a before/after graph."* **성과가 없다고 먼저
-   적는다.** 그다음이 앱 층 이관(클론 실패 기록), **가장 적게 적는 쪽이 인프라 층 이관**
-   (실패도 되돌린 기록도 없다). **네 글이 서로를 거의 언급하지 않는 것도 같다.**
+2. **대가를 적는 정도가 글마다 크게 다르다** — 가장 솔직한 쪽이 조직 전체 이야기
+   (*"We don't have a tidy case study with a before/after graph"*), 가장 적게 적는 쪽이
+   인프라 층 이관(실패도 되돌린 기록도 없다).
+3. **⭐ 모델을 손대지 않는다 — 네 번 확인됐다.** AirBot **접근 제한**(Socket Mode·God Mode
+   금지·Pydantic) / 자가치유 두뇌 **행동 제한**(도구를 부르려면 이유를 대야 한다) /
+   Agent Ready Repos **환경 정비** / 코드 샘플 일괄 수정 **통과 조건**(컴파일러가 문지기).
+   **넷 다 모델 바깥을 손본다. 그리고 대가가 같은 방향으로 남는다 — 검사할 수 있는 것만
+   검사된다.**
 
-**⚠️ 295 에서 처음으로 ⑱ 이 안 통했다** — `From Weeks to Hours: Inside Wix's Autonomous
-Bug-Fixing System` 의 상세 주소를 **두 번 다른 표현으로 검색했는데 못 찾았다.** 다른 글의
-사이드바에만 제목이 뜬다. **⑰ 대로 주소를 추측하지 않았고 `open_questions` 에 비워 뒀다.**
-(Fix My Bug 가 *"routes bug reports directly into an automated coding flow"* 한다는 한 줄만
-확보.) **새 단서 없이 다시 찾지 않는다.**
-
-**다음 사이클 — 도메인 ③ 을 더 파거나 Wix 를 닫는다.**
-- **남은 글**(주소 미확인이라 ⑱ 을 먼저 건다) — `How to Build AI Agents That Fix Themselves` ·
-  `How Wix Saved 650 Developer Days in One Quarter by Automating Code Migrations`
-  (**도메인 ③ 의 AI Migrations 와 이어질 수 있다**) · `The End of Determinism` ·
-  `The Craft of Troubleshooting` · `/post/microservices-reliability-playbook`(주소 확인됨) ·
-  `auto-scaling-ci-agents-at-wix`(**295 검색에서 주소 확인됨**) ·
-  `docs-automating-bulk-api-reference-rewrites-with-ai`(**주소 확인됨** — 코드 샘플 2,000개를
-  AI 로 고친 이야기, 도메인 ③ 과 이어질 수 있다)
-- **결정이 5개 안 나오면 Wix 를 `done` 으로 닫는다.** `business_model` 에 적을 패턴이 이미
-  넷 굳었다 — **같은 문제를 두 층에서 정반대로 푼다** · **제약을 거는 방식이 세 갈래다**
-  (AirBot **접근 제한** / 자가치유 두뇌 **행동 제한** / Agent Ready Repos **환경 정비**.
-  **셋 다 모델을 손대지 않는다**) · **대가를 적는 정도가 글마다 다르다** · **글들이 서로를
-  언급하지 않는다**.
+**다음 사이클 — 도메인 ③ 을 한 번 더 파거나 Wix 를 닫는다.**
+- **주소 확인된 남은 후보 하나** — `https://www.wix.engineering/post/auto-scaling-ci-agents-at-wix`
+  (CI 에이전트 오토스케일링. **인프라 쪽이라 새 도메인이 될 수도 있다**).
+  `/post/microservices-reliability-playbook` 도 주소 확인됨.
+- 주소 미확인(⑱ 을 걸어 찾는다) — `How Wix Saved 650 Developer Days in One Quarter by
+  Automating Code Migrations`(**도메인 ③ 과 가장 가깝다**) · `How to Build AI Agents That Fix
+  Themselves` · `The End of Determinism` · `The Craft of Troubleshooting`
+- **🚫 `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System` 은 재시도 금지**
+  (295 에서 두 번 다른 표현으로 검색해 실패 — ⑱ 이 안 통한 첫 사례).
+- **결정이 5개 안 나오면 `done` 으로 닫는다.** `business_model` 에 적을 패턴이 위의 셋으로
+  이미 충분하다. **이 사이트의 정리라고 밝힌다.**
 
 **그 밖에**
 - **Wix 잉여현금흐름 · Base44 매출 실액 미확인**
-- **큐 0/3 — `--gaps` 가 294·295 연속으로 [후보 조사]를 가리켰다.** Wix 를 닫는 즉시 후보 조사다.
+- **큐 0/3 — `--gaps` 가 294·295·296 연속으로 [후보 조사]를 가리켰다.** Wix 를 닫는 즉시다.
   **⚠️ ⑲ 를 먼저 돌린다** —
   `python3 -c "import json;d=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(sorted(e['slug'] for e in d['companies']))"`
 - **📌 Grab 보강 후보**(이미 `done`) — Palana 2부작(06-19/21) · Agent platform Part 1(07-24) ·
@@ -69,11 +63,12 @@ Bug-Fixing System` 의 상세 주소를 **두 번 다른 표현으로 검색했�
   때문이고, **새 단서가 없으면 hold 를 유지한 채 닫는 것도 정당하다**(290 에서 확인).
 - **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
   **한국 편중 아홉.** **빈 자리는 라틴아메리카 하나뿐이고 재시도 금지.**
-- **⚠️ 비교 문서 축 후보 열. 두 축이 굵어졌다.**
-  - **⭐⭐ `에이전트에게 무엇을 못 하게 하는가`** — 재료 **여섯**. **병합 제한**(monday.com
+- **⚠️ 비교 문서 축 후보 열. 한 축이 이제 가장 굵다.**
+  - **⭐⭐ `에이전트에게 무엇을 못 하게 하는가`** — 재료 **일곱**. **병합 제한**(monday.com
     Morphex · Snap CodePal · Snap Casper) · **접근 제한**(Wix AirBot) · **행동 제한**(Wix
-    자가치유 두뇌) · **환경 정비**(Wix Agent Ready Repos — 못 하게 하는 대신 할 수 있게
-    한다는 점에서 **반대편 재료다**). Adevinta 도 반대편.
+    자가치유 두뇌) · **환경 정비**(Wix Agent Ready Repos) · **통과 조건**(Wix 컴파일러 문지기).
+    **뒤 둘은 못 하게 하는 대신 할 수 있게 하거나 결과를 거르는 반대편 재료다.**
+    Adevinta 도 반대편(에이전트를 돌리는 대신 도구를 사서 잰다).
   - **⭐ 기존 `reversible-first.md` 보강** — Wix 두 이관 기능이 그 문서의 양극을 한 회사
     안에서 보여 준다. **기존 문서 보강도 비교 문서 사이클로 친다.**
 
