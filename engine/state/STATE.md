@@ -8,79 +8,83 @@
 
 ## 지금 파는 중
 
-**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 4개(도메인마다 2개). 큐 잔량 0/3.**
+**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 5개. 큐 잔량 0/3.**
 
-**270 에서 도메인 ② 의 두 번째 기능을 썼다** — `spatial-benchmark`(3D 를 아는지 재는 자를
-만든다), **결정 6개** 전부 대가가 붙었다.
+**271 에서 도메인 ② 의 세 번째 기능을 썼다** — `near-far-targeting`(손이 가까울수록
+어렵다), **결정 8개** 전부 대가가 붙었다. **미독이었던 두 편을 다 읽었다.**
 
-**⚠️ `--gaps` 는 [후보 조사]를 냈다**(빈 도메인이 없어서). **그러나 회사를 갈아타지 않는다는
-규칙이 위이므로 Snap 을 계속 팠다**(CLAUDE.md). 그리고 재료가 실제로 있었다 — **"얕을 수
-있다" 는 예상이 또 틀렸다**(운영 사실 ⑫ 가 **열다섯 번째**로 확인).
+**⚠️ `--gaps` 는 이번에도 [후보 조사]를 냈다**(빈 도메인이 없어서). **회사를 갈아타지
+않는다는 규칙이 위라 Snap 을 계속 팠고, 재료가 실제로 있었다** — **"얕을 수 있다" 는
+예상이 다섯 번째로 틀렸다**(운영 사실 ⑫).
 
-### 🔴 270 의 발견 ① — 자를 만들어 놓고 결과가 나쁘다고 적는다
+### 🔴 271 의 발견 — 이 회사에서 드물게 자기 설계가 나빴던 것을 적는다
 
-공간 벤치마크는 **7개 범주 80문항 · 모델 16개**를 돌리고, **추론을 더 시켜도 대부분 안
-늘었다**고 적는다 — 여럿이 **90.0% 에서 평평**, **Claude Opus 4.6 과 GPT-5.2 는 2점 하락**.
-회사의 결론: *"The honest read is not that heavy reasoning unlocked new spatial
-competence. It mostly did not."* **그리고 16개 모델이 전부 틀린 문항이 둘 있다**(부호 있는
-요 각도 · 좌측 스트레이프 벡터).
+`/spatial_interaction` 은 **초기 먼 거리 커서가 처음 만난 물체의 깊이에 달라붙었다**고
+적고, 조준이 *"felt delicate and unreliable"* 했다고 적는다. **원인을 GJK 기반 반복
+근사로 짚고 흔한 도형(상자·구·캡슐·원기둥)의 직접 기하 교차로 갈아 치웠다** —
+*"Up to 45% faster"* 이고 **10cm 든 10m 든 똑같이** 동작한다. UIKit 은 셰이더 작업을
+정점 데이터로 옮겨 **GPU 전력 약 40~50%** 를 줄였다.
 
-**이 회사가 자를 다루는 방식이 세 번째다** — CodePal 은 **사람 피드백으로 골든셋을 만들고
-범위를 밝혔고**(*"not on live traffic"*), GNSS 는 **참값을 못 구해 못 잰다고 적었고**,
-여기서는 **없는 자를 만들고 결과가 실망스럽다고 적는다.** `open_questions` 에 넣었다.
+**그리고 흔치 않은 결정이 하나 더 있다** — *"There's no secret sauce, no private system
+calls"* 이고 패키지를 언팩하면 고칠 수 있다. **플랫폼을 가진 쪽이 자기 특권을 안 쓴다.**
 
-### ⚠️ 270 의 발견 ② — 공개판이 아는 실패를 안 잰다
+### ⚠️ 271 의 대비 — 같은 도메인 안에서 수치 밀도가 갈린다
 
-회사가 *"Once the scene JSON gets large, models often become less reliable"* 를 적으면서
-**공개 벤치마크는 그 조건을 일부러 뺐다** — *"we intentionally kept the public benchmark
-tighter."* **알고 있는 실패를 자가 재지 않는다**(이 지적은 이 사이트의 것).
+`/spatial_interaction` 은 **45%·40~50%** 를, EyeConnect 는 **2.6초·15cm·2.2cm** 를 내는데,
+**GNSS 는** *"we cannot provide definitive numerical accuracy metrics"* 라 적고 **Snap
+Cloud 는 수치가 하나도 없다**(지연·용량·할당량 전부 정성). **⚠️ 그리고 `/spatial_interaction`
+이 재는 것도 속도와 전력에 몰려 있다** — **정작 고치려던 떨림과 조준 정확도의 숫자는 없다**.
+`open_questions` 에 적었다.
 
-### 🔴 270 의 정정 — 268 의 내 관찰에 반례가 나왔다
+### Snap Cloud 는 도메인 tech 로만 넣었다
 
-268 에 *"Specs/AR 글은 다른 Snap 글을 전혀 언급하지 않는다"* 고 적었는데,
-**`/specs_experiences` 는 링크한다**: *"see the earlier Snap Engineering article on spatial
-interaction for Spectacles"*(`/spatial_interaction`). **관찰은 GNSS·EyeConnect 두 편에서만
-참이었다.** `open_questions` 를 고쳐 적었다. **다만 CLAD 는 같은 회사의 CodePal·Code
-Search·Casper 를 전혀 안 부른다** — 같은 AI 개발 도구인데도 그렇다.
+제품 발표에 가깝고 **실패도 사후분석도 수치도 없다.** 다만 결정 둘은 값이 있어 tech 에
+적었다 — **안경에서 로그인 화면이 마찰이라 발행 시 프로젝트 식별자를 Lens 메타데이터에
+심고 API 한 번으로 세션을 받는다**, 그리고 **토큰 교환을 Lens 런타임 밖에서 한다**(Lens
+코드가 3자 자바스크립트이므로). 자체 호스팅은 *"would pull focus"* 라 버렸다.
 
-### 다음 사이클 — 닫는 쪽이 유력하다
+### 다음 사이클 — 닫는다
 
-**네 도메인 칸이 다 찼고 기능이 넷이다.** `--gaps` 는 이번에도 [후보 조사]를 낼 것이다.
-**남은 재료가 얇으면 Snap 을 `done` 으로 닫고**(회사 `status` · `index.json` status ·
-**QUEUE 진행 중 → 완료**, 완료 섹션은 **불릿**), **닫으면 다음 사이클이 곧바로 후보 조사다.**
+**읽을 수 있는 글을 다 읽었다** — 블로그 1쪽 6편 + 검색으로 찾은 4편(`/eyeconnect` ·
+`/spatial_interaction` · `/spectacles_supabase` · 그리고 목록의 나머지). **도메인 ① 2개 ·
+도메인 ② 3개로 기능이 다섯이다.** **다음 사이클은 Snap 을 `done` 으로 닫고**(회사 `status`
+· `index.json` status · **QUEUE 진행 중 → 완료**, 완료 섹션은 **불릿**) **곧바로 후보
+조사로 넘어간다.**
 
-- **⚠️ 미독** — `/spatial_interaction`(CLAD 글이 링크한 편) · `/spectacles_supabase`
-  (Snap Cloud, Supabase 기반 — *"often demands more than what runs on-device"*) ·
-  블로그 2쪽 이후.
-- **닫는다면 `business_model` 에 적을 패턴 넷** — ① **자를 어떻게 세울지가 반복해서
-  문제가 된다**(골든셋 만들기 / 못 잰다고 적기 / 자를 만들고 결과가 나쁘다고 적기) ②
-  **묶음마다 글끼리 잇는 방식이 다르다**(3부작은 번호를 달고 서로를 부르는데 Specs 는
-  느슨하고 CLAD 는 3부작을 안 부른다) ③ **같은 연작 안에서도 대가의 밀도가 크게 다르다**
-  (CodePal 다섯 줄 · Code Search 는 RAG 거절 이유 **일곱** vs **Casper 는 0줄**) ④
-  **설계의 출처로 남의 제품 동작을 든다**(Code Search → Claude Code 의 grep).
-- **⚠️ 매출 실액·DAU 미확인.** IR 홈에 MAU **971백만** · 총매출 **19% 성장**(Q2 2026) 뿐.
-  **IR 보도자료 목록에서 링크를 눌러 들어간다** — URL 추측은 두 번 404(운영 사실 ⑰).
+**⭐ 닫을 때 `business_model` 에 적을 패턴 다섯이 다 서 있다:**
+① **자를 어떻게 세울지가 반복해서 문제가 된다** — 골든셋을 만들고 범위를 밝히기(CodePal,
+*"not on live traffic"*) / **참값을 못 구해 못 잰다고 적기**(GNSS) / **자를 만들고 결과가
+나쁘다고 적기**(공간 벤치마크, *"It mostly did not"*) / **범위를 다른 편에서 밝히기**
+(Code Search 가 CodePal 의 '병합 전' 을 *"not because anything is build-verified"* 로 좁힌다).
+② **묶음마다 글끼리 잇는 방식이 다르다** — AI 도구 3부작은 번호를 달고 서로를 부르는데,
+**Specs 쪽에서 남을 부르는 글은 `/specs_experiences` 하나뿐**이고 **CLAD 는 같은 회사의
+CodePal·Code Search·Casper 를 전혀 안 부른다.**
+③ **대가의 밀도가 글마다 극단적으로 다르다** — Code Search 는 RAG 거절 이유 **일곱**,
+CodePal 은 다섯 줄, `/spatial_interaction` 은 버린 알고리즘과 실측 vs **Casper 0줄 ·
+Snap Cloud 0줄**.
+④ **설계의 출처로 남의 제품 동작을 든다** — Code Search → Claude Code 의 grep.
+⑤ **잴 수 있는 자리에서는 재고 못 재는 자리에서는 못 잰다고 적는다.**
+
+**⚠️ 남은 것** — **블로그 2쪽 이후 미확인**(JS 페이지네이션, 운영 사실 ⑬·⑱) ·
+**매출 실액·DAU 미확인**(IR 홈에 MAU **971백만** · 총매출 **19% 성장**(Q2 2026) 뿐;
+**IR 보도자료 목록에서 링크를 눌러** 들어간다 — URL 추측은 두 번 404, 운영 사실 ⑰).
 
 ### 다음 회사 — 큐가 0 이다
 
-Snap 을 닫으면 **곧바로 후보 조사이고 한국 밖에서** 찾는다(한국 회사가 아홉).
-**📌 Grab 보강 후보** — 이미 `done` 이지만 2026 새 글: **Palana 2부작**(06-19/21) ·
-Agent platform Part 1(07-24) · **Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**
-— 뒤 둘은 기존 `iceberg-lake` · `counter-service` 의 후속. **안 열어 본 후보(한국 밖)** —
-Sea/Shopee(다른 주소?) · GoTo/Tokopedia · Traveloka · Plaid · Adevinta · Skyscanner ·
-Carousell · VNG.
+**한국 밖에서** 찾는다(한국 회사가 아홉). **📌 Grab 보강 후보** — 이미 `done` 이지만
+2026 새 글: **Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)**
+· **Counter Service 저장소 이전(07-03)** — 뒤 둘은 기존 `iceberg-lake` · `counter-service`
+의 후속. **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia ·
+Traveloka · Plaid · Adevinta · Skyscanner · Carousell · VNG.
 
 **빈 자리** — 라틴아메리카 0(접었다·재시도 금지) · **게임 1**(Roblox) · 아프리카 1 ·
 인도 1 · 여행 1. 동남아는 Grab.
 **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
 
 **비교 문서 재료** — `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯)
-· **⭐ `기계가 그렇다는데` 에 Snap 이 두 답**(`code-review-agent` 와 `agentic-code-search` —
-후자는 **'모델이 좋아지면 내 것도 좋아진다'** 는 새 논거) · `되돌릴 수 있는 것을 먼저 한다`
-보강 · **⭐⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서` 에 Snap 이 네 재료를 준다** —
-**자를 못 구해 "못 잰다" 고 적은 사례(GNSS)는 이 사이트에 처음**이고, 잴 수 있는 쪽
-(EyeConnect)에서는 세 자리 수치를 내며, **범위를 다른 편에서 밝히는 경우**(Code Search →
-CodePal)가 있고, **자를 만들고 결과가 나쁘다고 적는 경우**(공간 벤치마크)까지 있다.
+· **⭐ `기계가 그렇다는데` 에 Snap 이 두 답**(후자는 **'모델이 좋아지면 내 것도 좋아진다'**
+는 새 논거) · `되돌릴 수 있는 것을 먼저 한다` 보강 · **⭐⭐ `무엇을 좋다고 부를 것인가`/
+`재 보고 나서` 에 Snap 하나가 다섯 재료를 준다**(위 패턴 ①·⑤).
 
 ## 다음 선택지
 

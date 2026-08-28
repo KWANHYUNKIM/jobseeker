@@ -271,11 +271,27 @@
               "summary": "**공간 앱은 만드는 방식이 다르다** — *\"the canvas is the world around the wearer, and the input model is hands, gaze, voice, mobile controls, and physical motion all at once. Get it wrong and the experience feels laggy, unreadable, or unstable.\"* **세 층** — **SIK**(핀치·잡기·찌르기·호버·손·모바일 컨트롤과 이벤트) · **SPECS UI Kit**(버튼·슬라이더·스위치·프레임·텍스트 입력·스크롤 뷰) · **CLAD**(Closed Loop Agentic Development — **Lens Studio 에 직접 붙어** 장면을 만들고 두 툴킷을 엮고 디버그하고 반복한다). **핵심 결정은 만들지 않고 가져다 쓰는 것이다** — CLAD 는 상호작용을 새로 지어내지 않고 *\"it reaches for the same battle-tested SIK and UI Kit components a developer would, which is exactly why the output holds up on hardware.\"* **버린 대안** — AI 를 범용 조수로 쓰는 것. 대신 도메인 지식을 *\"reusable, composable skills\"* 로 담았다. **MCP 로 붙어** Claude Code · Codex · Cursor 를 지원한다. 테스트는 **LEAF**(Lens Evaluation and Automation Framework)와 Bitmoji IK 인터랙터. **수치는 하나** — 동작하는 Lens 앱 **일곱 개를 각각 하루 정도에** 만들었다. **대가를 적는다** — 빨라진 것은 *\"standing up a scene, wiring interactions, and building out UI panels went from hours to minutes\"* 이고, **사람의 판단이 남는 곳은 공간 배치 조율과** *\"catching cases where the first generated layout was technically correct but didn't feel right on device\"* 다. ⚠️ **실패율도 성공률도 없다.** **🔴 그리고 이 글은 다른 Snap 글을 링크한다** — *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`)."
             }
           ]
+        },
+        {
+          "tech": "안경 밖의 백엔드 — Snap Cloud (Supabase 기반)",
+          "solves": "**공유 상태·진행 저장·리더보드처럼 기기 위에서 끝나지 않는 것들**을 위해 백엔드를 붙였다. **핵심은 안경에서 로그인 화면이 마찰이라는 것** — *\"authentication must happen invisibly, the instant a Lens launches.\"* **발행 시 Supabase 프로젝트 식별자를 Lens 메타데이터에 심어** 왕복을 줄이고, 플랫폼이 **그 사용자·그 프로젝트에 한정된 OIDC 토큰**을 내면 Lens 가 **API 한 번**으로 세션을 받는다. **토큰 교환은 Lens 런타임 밖에서 한다** — Lens 코드가 3자가 쓴 자바스크립트이기 때문이다. 자체 호스팅은 *\"would pull focus from building a great developer experience\"* 라 버렸고, Postgres 네이티브·오픈소스 부품·실시간 내장·`supabase-js` 보급을 이유로 Supabase 를 골랐다. **Snapchat OAuth 제공자를 GoTrue 에 업스트림했다.**",
+          "limits": "**⚠️ 수치가 하나도 없다** — 지연·용량·할당량이 전부 정성 표현이다. **알파이고 승인된 개발자만** 쓸 수 있으며, 지역이 미국·유럽·아시아태평양으로 제한되고 추가 지역은 로드맵이다. **⚠️ 이 글은 제품 발표에 가깝고 실패나 사후분석이 없다**(이 판단은 이 사이트의 것이다) — **같은 회사의 `/spatial_interaction` 이 버린 알고리즘과 45% 라는 실측을 적는 것과 대비된다.** **대가로 하나 더 붙는 것은 벤더 의존이다**(이 지적도 이 사이트의 것이다) — 회사는 접근 정책·비용·데이터 주권을 자기가 쥔다고 적지만 운영은 넘겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Snap Cloud: A Backend for Spectacles, Powered by Supabase",
+              "url": "https://eng.snap.com/spectacles_supabase",
+              "publisher": "Snap Engineering",
+              "date": "2026-08-27",
+              "summary": "**안경 위에서 도는 것만으로는 안 되는 것들이 있다** — *\"Building compelling experiences for AR glasses often demands more than what runs on-device. Multiplayer games need shared state, multi-level games require persistent progress, fitness challenge Lenses need shared state and leaderboards.\"* 지금까지 개발자는 *\"spinning up servers, managing databases, handling authentication — all before writing a single line of Lens logic\"* 를 해야 했다.\n\n**🔴 안경에서는 로그인 화면 자체가 마찰이다** — *\"Significant friction will be introduced when users wearing Spectacles are required to tap through login screens or enter passwords; authentication must happen invisibly, the instant a Lens launches.\"* 그래서 **Lens 를 발행할 때 Supabase 프로젝트 식별자를 Lens 메타데이터에 심어** 왕복을 줄이고, 플랫폼이 **그 사용자와 그 프로젝트에 한정된 OIDC 신원 토큰**을 발급하면 Lens 가 **API 한 번**으로 세션을 받는다 — *\"There is no OAuth redirect flow, no token management, and no login UI to build.\"*\n\n**🔴 그리고 토큰 교환을 Lens 런타임 밖에서 한다** — *\"An important architectural decision: the token exchange is performed outside the Lens runtime\"* 이고 이유가 명확하다: Lens 코드는 *\"JavaScript authored by third-party developers\"* 라 **Snapchat 사용자 토큰이나 인증 핸드셰이크에 직접 닿으면 안 된다.** *\"Security was a first-order design principle, not an afterthought.\"*\n\n**자체 호스팅을 버린 이유를 적는다** — *\"we determined that the operational complexity of hosting an open-source stack in-house would pull focus from building a great developer experience.\"* **Supabase 를 고른 이유 넷** — Postgres 네이티브(*\"There is no proprietary query language to learn\"*) · 오픈소스 부품(PostgREST · GoTrue · Deno Edge Functions · S3 호환 스토리지) · 실시간 내장 · `supabase-js` 의 보급. **그리고 Snapchat OAuth 제공자를 GoTrue 에 업스트림했다.** 구성은 **RLS 를 건 Postgres · 같은 RLS 가 걸린 스토리지 · Edge Functions · Realtime**. 로컬 개발은 Supabase CLI 의 `--profile snap`, **MCP 로 AI 코딩 도구가 프로젝트 맥락을 읽는다.**\n\n**⚠️ 한계** — **알파이고 승인된 개발자만** 쓸 수 있다(기간 중 무료) · 지역이 미국·유럽·아시아태평양이고 *\"expanding to additional regions\"* 가 로드맵이다 · **수치가 하나도 없다**(지연·용량·할당량 전부). ⚠️ **다른 Snap 글을 언급하지 않는다.** ⚠️ **이 글은 제품 발표에 가깝고 실패나 사후분석이 없다**(이 판단은 이 사이트의 것이다)."
+            }
+          ]
         }
       ],
       "features": [
         "mutual-gaze-align",
-        "spatial-benchmark"
+        "spatial-benchmark",
+        "near-far-targeting"
       ]
     }
   ],
@@ -290,8 +306,9 @@
     "**Specs 도메인의 본문을 한 편도 안 읽었다.** `World-scale Outdoor AR Tracking with GNSS`(2026-07-10)와 `Measuring Spatial Intelligence in LLMs`(2026-06-17)를 **제목만 보고 도메인을 열었다.** 기능을 쓰기 전에 두 편 이상 읽는다.",
     "**SPECS 의 판매량·가격·매출 기여를 확인하지 못했다.** 출시 사실(2026-06-16)만 확인했다.",
     "**같은 연작인데 글마다 대가의 밀도가 다르다.** CodePal 은 **대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는데**(*\"the held-out golden dataset, not on live traffic\"*), **Casper 는 대가를 한 줄도 안 적고 수치도 둘뿐이다**(*\"thousands of mergeable PRs each week\"* · *\"hundreds of custom Casper agents\"*). **PR 을 여는 쪽이 리뷰하는 쪽보다 자랑할 것이 많아서인지, 아직 겪은 게 적어서인지는 알 수 없다**(이 관찰은 이 사이트의 것이다). **Part 2 인 Code Search 는 아직 안 읽었다.**",
-    "**⚠️ Specs/AR 쪽이 서로를 부르는 정도가 글마다 다르다 — 270 에서 앞 관찰을 정정한다.** 268 에 *\"Specs/AR 글은 다른 Snap 글을 전혀 언급하지 않는다\"* 고 적었는데, **`/specs_experiences` 는 링크한다**: *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`). **관찰은 GNSS·EyeConnect 두 편에서만 참이었다**(이 정정은 이 사이트의 것이다). **다만 AI 개발 도구 3부작처럼 번호를 달고 서로를 부르지는 않고, `/specs_experiences` 의 CLAD 는 같은 회사의 CodePal·Code Search·Casper 를 전혀 안 부른다** — 같은 AI 개발 도구인데도 그렇다. **⚠️ `/spatial_interaction` 과 `/spectacles_supabase` 는 아직 안 읽었다.**",
-    "**⚠️ 자를 만들고 결과가 나쁘다고 적은 사례가 이 회사에서 세 번째 종류다.** CodePal 은 **사람 피드백으로 골든셋을 만들고 그 범위를 밝혔고**(*\"not on live traffic\"*), GNSS 는 **참값을 못 구해 못 잰다고 적었고**, 공간 벤치마크는 **없는 자를 만들어 놓고 결과가 실망스럽다고 적는다** — *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* **잘한다는 것을 무엇으로 부를지가 이 회사에서 반복해서 문제가 된다**(이 정리는 이 사이트의 것이다)."
+    "**⚠️ Specs/AR 쪽이 서로를 부르는 정도가 글마다 다르다 — 270 에서 앞 관찰을 정정한다.** 268 에 *\"Specs/AR 글은 다른 Snap 글을 전혀 언급하지 않는다\"* 고 적었는데, **`/specs_experiences` 는 링크한다**: *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`). **관찰은 GNSS·EyeConnect 두 편에서만 참이었다**(이 정정은 이 사이트의 것이다). **다만 AI 개발 도구 3부작처럼 번호를 달고 서로를 부르지는 않고, `/specs_experiences` 의 CLAD 는 같은 회사의 CodePal·Code Search·Casper 를 전혀 안 부른다** — 같은 AI 개발 도구인데도 그렇다. **271 에서 둘 다 읽었고 둘 다 다른 Snap 글을 언급하지 않는다** — **Specs 쪽에서 남을 부르는 글은 `/specs_experiences` 하나뿐이다.**",
+    "**⚠️ 자를 만들고 결과가 나쁘다고 적은 사례가 이 회사에서 세 번째 종류다.** CodePal 은 **사람 피드백으로 골든셋을 만들고 그 범위를 밝혔고**(*\"not on live traffic\"*), GNSS 는 **참값을 못 구해 못 잰다고 적었고**, 공간 벤치마크는 **없는 자를 만들어 놓고 결과가 실망스럽다고 적는다** — *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* **잘한다는 것을 무엇으로 부를지가 이 회사에서 반복해서 문제가 된다**(이 정리는 이 사이트의 것이다).",
+    "**⚠️ 같은 도메인 안에서도 수치의 밀도가 크게 갈린다.** `/spatial_interaction` 은 **45%** 와 **40~50%** 를 내고 EyeConnect 는 **2.6초·15cm·2.2cm** 를 내는데, **GNSS 는** *\"we cannot provide definitive numerical accuracy metrics\"* 라 적고 **Snap Cloud 는 수치가 하나도 없다**(지연·용량·할당량 전부 정성 표현). **⚠️ 그리고 `/spatial_interaction` 이 재는 것도 속도와 전력에 몰려 있다** — 떨림이 얼마나 줄었는지, 조준이 얼마나 정확해졌는지의 숫자는 없다(이 지적은 이 사이트의 것이다)."
   ],
   "sources": [
     {
@@ -356,6 +373,20 @@
       "publisher": "Snap Engineering",
       "date": "2026-08-20",
       "summary": "**공간 앱은 만드는 방식이 다르다** — *\"the canvas is the world around the wearer, and the input model is hands, gaze, voice, mobile controls, and physical motion all at once. Get it wrong and the experience feels laggy, unreadable, or unstable.\"* **세 층** — **SIK**(핀치·잡기·찌르기·호버·손·모바일 컨트롤과 이벤트) · **SPECS UI Kit**(버튼·슬라이더·스위치·프레임·텍스트 입력·스크롤 뷰) · **CLAD**(Closed Loop Agentic Development — **Lens Studio 에 직접 붙어** 장면을 만들고 두 툴킷을 엮고 디버그하고 반복한다). **핵심 결정은 만들지 않고 가져다 쓰는 것이다** — CLAD 는 상호작용을 새로 지어내지 않고 *\"it reaches for the same battle-tested SIK and UI Kit components a developer would, which is exactly why the output holds up on hardware.\"* **버린 대안** — AI 를 범용 조수로 쓰는 것. 대신 도메인 지식을 *\"reusable, composable skills\"* 로 담았다. **MCP 로 붙어** Claude Code · Codex · Cursor 를 지원한다. 테스트는 **LEAF**(Lens Evaluation and Automation Framework)와 Bitmoji IK 인터랙터. **수치는 하나** — 동작하는 Lens 앱 **일곱 개를 각각 하루 정도에** 만들었다. **대가를 적는다** — 빨라진 것은 *\"standing up a scene, wiring interactions, and building out UI panels went from hours to minutes\"* 이고, **사람의 판단이 남는 곳은 공간 배치 조율과** *\"catching cases where the first generated layout was technically correct but didn't feel right on device\"* 다. ⚠️ **실패율도 성공률도 없다.** **🔴 그리고 이 글은 다른 Snap 글을 링크한다** — *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`)."
+    },
+    {
+      "title": "Spatial Interaction for Spectacles",
+      "url": "https://eng.snap.com/spatial_interaction",
+      "publisher": "Snap Engineering (Specs)",
+      "date": "2026-08-27",
+      "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+    },
+    {
+      "title": "Snap Cloud: A Backend for Spectacles, Powered by Supabase",
+      "url": "https://eng.snap.com/spectacles_supabase",
+      "publisher": "Snap Engineering",
+      "date": "2026-08-27",
+      "summary": "**안경 위에서 도는 것만으로는 안 되는 것들이 있다** — *\"Building compelling experiences for AR glasses often demands more than what runs on-device. Multiplayer games need shared state, multi-level games require persistent progress, fitness challenge Lenses need shared state and leaderboards.\"* 지금까지 개발자는 *\"spinning up servers, managing databases, handling authentication — all before writing a single line of Lens logic\"* 를 해야 했다.\n\n**🔴 안경에서는 로그인 화면 자체가 마찰이다** — *\"Significant friction will be introduced when users wearing Spectacles are required to tap through login screens or enter passwords; authentication must happen invisibly, the instant a Lens launches.\"* 그래서 **Lens 를 발행할 때 Supabase 프로젝트 식별자를 Lens 메타데이터에 심어** 왕복을 줄이고, 플랫폼이 **그 사용자와 그 프로젝트에 한정된 OIDC 신원 토큰**을 발급하면 Lens 가 **API 한 번**으로 세션을 받는다 — *\"There is no OAuth redirect flow, no token management, and no login UI to build.\"*\n\n**🔴 그리고 토큰 교환을 Lens 런타임 밖에서 한다** — *\"An important architectural decision: the token exchange is performed outside the Lens runtime\"* 이고 이유가 명확하다: Lens 코드는 *\"JavaScript authored by third-party developers\"* 라 **Snapchat 사용자 토큰이나 인증 핸드셰이크에 직접 닿으면 안 된다.** *\"Security was a first-order design principle, not an afterthought.\"*\n\n**자체 호스팅을 버린 이유를 적는다** — *\"we determined that the operational complexity of hosting an open-source stack in-house would pull focus from building a great developer experience.\"* **Supabase 를 고른 이유 넷** — Postgres 네이티브(*\"There is no proprietary query language to learn\"*) · 오픈소스 부품(PostgREST · GoTrue · Deno Edge Functions · S3 호환 스토리지) · 실시간 내장 · `supabase-js` 의 보급. **그리고 Snapchat OAuth 제공자를 GoTrue 에 업스트림했다.** 구성은 **RLS 를 건 Postgres · 같은 RLS 가 걸린 스토리지 · Edge Functions · Realtime**. 로컬 개발은 Supabase CLI 의 `--profile snap`, **MCP 로 AI 코딩 도구가 프로젝트 맥락을 읽는다.**\n\n**⚠️ 한계** — **알파이고 승인된 개발자만** 쓸 수 있다(기간 중 무료) · 지역이 미국·유럽·아시아태평양이고 *\"expanding to additional regions\"* 가 로드맵이다 · **수치가 하나도 없다**(지연·용량·할당량 전부). ⚠️ **다른 Snap 글을 언급하지 않는다.** ⚠️ **이 글은 제품 발표에 가깝고 실패나 사후분석이 없다**(이 판단은 이 사이트의 것이다)."
     }
   ],
   "features": [
@@ -3192,6 +3223,730 @@
           "publisher": "Snap Engineering",
           "date": "2026-08-20",
           "summary": "**공간 앱은 만드는 방식이 다르다** — *\"the canvas is the world around the wearer, and the input model is hands, gaze, voice, mobile controls, and physical motion all at once. Get it wrong and the experience feels laggy, unreadable, or unstable.\"* **세 층** — **SIK**(핀치·잡기·찌르기·호버·손·모바일 컨트롤과 이벤트) · **SPECS UI Kit**(버튼·슬라이더·스위치·프레임·텍스트 입력·스크롤 뷰) · **CLAD**(Closed Loop Agentic Development — **Lens Studio 에 직접 붙어** 장면을 만들고 두 툴킷을 엮고 디버그하고 반복한다). **핵심 결정은 만들지 않고 가져다 쓰는 것이다** — CLAD 는 상호작용을 새로 지어내지 않고 *\"it reaches for the same battle-tested SIK and UI Kit components a developer would, which is exactly why the output holds up on hardware.\"* **버린 대안** — AI 를 범용 조수로 쓰는 것. 대신 도메인 지식을 *\"reusable, composable skills\"* 로 담았다. **MCP 로 붙어** Claude Code · Codex · Cursor 를 지원한다. 테스트는 **LEAF**(Lens Evaluation and Automation Framework)와 Bitmoji IK 인터랙터. **수치는 하나** — 동작하는 Lens 앱 **일곱 개를 각각 하루 정도에** 만들었다. **대가를 적는다** — 빨라진 것은 *\"standing up a scene, wiring interactions, and building out UI panels went from hours to minutes\"* 이고, **사람의 판단이 남는 곳은 공간 배치 조율과** *\"catching cases where the first generated layout was technically correct but didn't feel right on device\"* 다. ⚠️ **실패율도 성공률도 없다.** **🔴 그리고 이 글은 다른 Snap 글을 링크한다** — *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`)."
+        }
+      ]
+    },
+    {
+      "key": "near-far-targeting",
+      "name": "손이 가까울수록 어렵다",
+      "domain": "얼굴 앞에 컴퓨터를 놓는다",
+      "updated_at": "2026-08-28",
+      "ui": {
+        "title": "손끝이 버튼에 닿기까지",
+        "question": "가까울 때와 멀 때 왜 방식을 바꾸는가?",
+        "kind": "mobile",
+        "note": "**조준 방식이 바뀌는 흐름을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **SPECS 의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 회사의 상호작용 글에 적힌 것만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "조준"
+          },
+          {
+            "type": "card",
+            "text": "가까울수록 어려워집니다",
+            "items": [
+              "손이 조금 움직여도 각도가 크게 바뀐다",
+              "찌르는 건지 집는 건지도 헷갈린다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "멀리 있을 때"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "깊이를 하나로 정하지 않는다",
+                "sub": "처음 만난 물체에 달라붙던 것을 고쳤다",
+                "right": "평균"
+              },
+              {
+                "title": "빽빽한 곳에서는 천천히 정확하게",
+                "sub": "반응이 다른 스프링 둘을 쓴다",
+                "right": "완충"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "text",
+            "text": "작은 물체에서 떨리던 것은 계산 방식을 바꿔 고쳤습니다",
+            "pin": 3
+          },
+          {
+            "type": "chips",
+            "items": [
+              "십 센티든 십 미터든 똑같이"
+            ],
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "가까이 오면"
+          },
+          {
+            "type": "card",
+            "text": "손끝 자체가 커서가 됩니다",
+            "items": [
+              "요소 앞의 구역에 들어서면 바뀐다",
+              "멀리 쏘던 광선은 흐려져 사라진다"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "text",
+            "text": "손 떨림에 접촉이 끊기지 않게 붙었다 떨어지는 기준을 다르게 둡니다",
+            "pin": 6
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "전력"
+          },
+          {
+            "type": "amount",
+            "text": "40~50%",
+            "sub": "모서리 둥근 사각형의 GPU 전력 감소"
+          },
+          {
+            "type": "text",
+            "text": "칠할 때 하던 계산을 미리 꼭짓점에 넣어 두었습니다",
+            "pin": 7
+          },
+          {
+            "type": "card",
+            "text": "숨긴 것이 없습니다",
+            "items": [
+              "개발자가 쓸 수 있는 것만으로 만들었다",
+              "패키지를 풀어 그대로 고칠 수 있다"
+            ],
+            "pin": 8
+          },
+          {
+            "type": "button",
+            "text": "눌러 보기",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "가까울수록 각도가 커진다",
+            "what": "*\"Small hand movements translate to large angular changes.\"* 그리고 근거리에서는 **찌르기와 집기를 가르는 것 자체가 어렵다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "깊이를 확정하지 않는다",
+            "what": "초기 설계는 **처음 만난 물체의 깊이에 달라붙었다.** 고친 방식 — *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**을 써서 빽빽한 UI 패널에서는 *\"Slow and precise\"* 하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "떨림의 원인은 알고리즘이었다",
+            "what": "커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었고, **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차**로 바꿨다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "두 가지를 한꺼번에 얻었다",
+            "what": "*\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 이고 **크기 무관 정확도**다 — *\"Works reliably whether your UI is 10cm or 10m away.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "가까우면 손끝이 커서다",
+            "what": "요소 앞의 **InteractionPlane** 에 들어서면 *\"from raycasting to physical targeting. Your fingertip becomes the cursor\"* 로 바뀐다. 그리고 **손이 다가가면 먼 거리 커서가 저절로 사라진다** — 두 모드가 겹치지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "붙는 기준과 떨어지는 기준을 다르게",
+            "what": "**양안정 임계(bistable thresholding)** 로 손 추적 잡음에도 접촉을 유지한다. 그래서 **찌르기에서 집기로 넘어가도 대상을 안 놓친다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "칠하는 일을 꼭짓점으로 옮겼다",
+            "what": "UIKit v0.1.4 가 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겼고 GPU 전력이 약 40~50% 줄었다.** 동적 그래픽을 텍스처로 굽는 것도 함께 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "숨긴 호출이 없다",
+            "what": "*\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls.\"* 그리고 패키지를 **언팩하면 그대로 고칠 수 있다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**안경에서는 버튼 하나 누르는 일이 어려워진다.** 손이 가까워질수록 *\"Small hand movements translate to large angular changes\"* 이고, 근거리에서는 **찌르는 동작과 집는 동작을 가르는 것 자체가 문제**가 된다. 회사는 **모바일 UI 관례를 3D 로 옮기는 데서 시작하지 않았다**고 적는다.\n\n**⭐ 그리고 이 글은 이 회사에서 드물게 자기 설계가 나빴던 것을 적는다**(이 관찰은 이 사이트의 것이다). 먼 거리 커서의 초기 설계가 **처음 만난 물체의 깊이에 달라붙었고**, 조준은 *\"felt delicate and unreliable\"* 했다. **원인을 찾아 알고리즘을 갈아 치웠고 결과를 숫자로 낸다** — *\"Up to 45% faster\"*, 그리고 **10cm 든 10m 든 똑같이 동작한다.**\n\n**⭐ 같은 도메인의 다른 글들과 나란히 놓으면 이 회사의 성격이 보인다**(이 대비는 이 사이트의 것이다). **여기서는 버린 알고리즘과 실측이 둘 다 있고**, EyeConnect 도 2.6초·2.2cm 를 낸다. 반면 **GNSS 는 자를 못 구해 못 잰다고 적고**, 같은 날 나온 **Snap Cloud 는 수치가 하나도 없다** — 지연도 용량도 할당량도 정성 표현뿐이다. **잴 수 있는 자리에서는 재고, 못 재는 자리에서는 못 잰다고 적는다.**\n\n**⭐ 그리고 여기에 이 회사에서 흔치 않은 결정이 하나 더 있다** — **숨긴 것을 두지 않기로 했다.** *\"There's no secret sauce, no private system calls\"* 이고 패키지를 언팩하면 그대로 고칠 수 있다. **자기 플랫폼 위에서 자기가 특권을 안 쓰기로 한 것**이다.",
+        "metrics": [
+          {
+            "label": "조준 계산",
+            "value": "직접 기하 교차로 바꿔 최대 45% 빠르다 — 상자·구·캡슐·원기둥",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "거리 무관 정확도",
+            "value": "UI 가 10cm 든 10m 든 신뢰성 있게 동작한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "GPU 전력",
+            "value": "모서리 둥근 사각형 메시를 다시 만들어 약 40~50% 감소 (UIKit v0.1.4)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "프레임 작업",
+            "value": "FrameCache 로 프레임당 중복 계산 제거 · 손 근접 검사는 시간 분할과 배치 처리 (SIK v0.16.4)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "떨림이 얼마나 줄었는지, 오조준율이 얼마인지, 사용자 성공률이 얼마인지는 없다 — 재는 대상이 속도와 전력에 몰려 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "모드를 둘로 나눈 대목에서",
+          "thought": "**멀리서는 광선, 가까이서는 손끝** — 같은 문제를 거리에 따라 다른 방식으로 푼다. **그리고 전환을 감추는 데 공을 들였다**(이 정리는 이 사이트의 것이다): 손이 다가가면 먼 커서가 **저절로 흐려지고**, 근거리에서는 **양안정 임계**로 잡음에 접촉이 끊기지 않으며, **찌르기에서 집기로 넘어가도 대상을 안 놓친다.** **모드가 둘이라는 사실을 사용자가 모르게 하는 것이 설계의 절반이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "GJK 를 버린 대목에서",
+          "thought": "**일반적인 알고리즘을 흔한 경우의 전용 해로 바꾼 것이다**(이 정리는 이 사이트의 것이다). GJK 는 임의의 볼록 도형에 통하는 대신 반복 근사라 작은 크기에서 나빠졌고, **상자·구·캡슐·원기둥만 직접 풀어** 45% 를 얻었다. ⚠️ **대가는 목록 밖 도형이다** — 그때 무엇으로 떨어지는지는 글에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "숨긴 호출을 안 두기로 한 대목에서",
+          "thought": "*\"There's no secret sauce, no private system calls.\"* **플랫폼을 가진 쪽이 자기 특권을 안 쓰기로 한 것**이고, 그래서 **개발자가 만든 것이 기본 툴킷과 같은 조건에서 돈다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 내부 최적화를 못 쓴다는 것**인데 그 이야기는 글에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 도메인의 네 글을 나란히 볼 때",
+          "thought": "**잴 수 있는 자리에서는 재고 못 재는 자리에서는 못 잰다고 적는다**(이 정리는 이 사이트의 것이다). 여기는 **45% 와 40~50%** 를, EyeConnect 는 **2.6초·2.2cm** 를 내는데, GNSS 는 *\"we cannot provide definitive numerical accuracy metrics\"* 라 적고 **Snap Cloud 는 수치가 하나도 없다.** ⚠️ **다만 이 글이 재는 것도 속도와 전력에 몰려 있다** — **떨림이 얼마나 줄었는지, 조준이 얼마나 정확해졌는지의 숫자는 없다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "InteractionPlane",
+            "what": "요소 앞의 구역. 여기 들어서면 **광선 조준이 아니라 손끝이 커서가 된다**"
+          },
+          {
+            "name": "먼 거리 커서",
+            "what": "깊이가 **이진 확정이 아니라 가중 평균**이다. 손이 가까워지면 저절로 흐려진다"
+          },
+          {
+            "name": "스프링 둘",
+            "what": "반응 곡선이 다르다. 빽빽한 UI 에서는 천천히 정확하게 움직인다"
+          },
+          {
+            "name": "양안정 임계",
+            "what": "붙는 기준과 떨어지는 기준을 다르게 둬 **손 추적 잡음에도 접촉을 유지한다**"
+          },
+          {
+            "name": "직접 기하 교차",
+            "what": "상자·구·캡슐·원기둥은 반복 근사 대신 바로 푼다. **최대 45% 빠르고 크기에 무관하다**"
+          },
+          {
+            "name": "VisualElement",
+            "what": "요소(콜라이더·상태 기계·이벤트)와 비주얼(메시·재질·애니메이션)을 엮는다"
+          }
+        ],
+        "invariants": [
+          "**두 모드가 동시에 활성화되지 않는다** — 손이 다가가면 먼 커서가 사라진다",
+          "**깊이를 하나로 확정하지 않는다** — 처음 만난 물체에 달라붙지 않는다",
+          "**공개 API 만 쓴다** — 비공개 시스템 호출이 없고 언팩하면 고칠 수 있다",
+          "**손 추적과 컨트롤러가 동시에 동작한다**",
+          "**모바일 UI 관례에서 출발하지 않는다** — 공간을 먼저 놓는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "손이 멀리 있다",
+            "why": "광선으로 조준한다"
+          },
+          {
+            "step": "광선이 닿는 것들의 깊이를 가중 평균한다",
+            "why": "처음 만난 물체에 달라붙지 않게"
+          },
+          {
+            "step": "맥락에 따라 스프링 둘로 부드럽게 한다",
+            "why": "빽빽한 UI 에서는 천천히 정확하게"
+          },
+          {
+            "step": "흔한 도형은 직접 기하 교차로 푼다",
+            "why": "반복 근사는 작은 물체에서 떨렸다"
+          },
+          {
+            "step": "손이 요소 앞 구역에 들어선다",
+            "why": "가까울수록 각도 오차가 커진다"
+          },
+          {
+            "step": "먼 거리 커서를 흐려 없앤다",
+            "why": "두 모드가 겹치지 않게"
+          },
+          {
+            "step": "손끝을 커서로 삼는다",
+            "why": "물리적 타겟팅으로 바뀐다"
+          },
+          {
+            "step": "붙는 기준과 떨어지는 기준을 다르게 둔다",
+            "why": "손 추적 잡음에 접촉이 끊기지 않게"
+          },
+          {
+            "step": "찌르기에서 집기로 넘어가도 대상을 유지한다",
+            "why": "동작이 바뀌었다고 대상까지 놓치면 안 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "가까울 때도 광선으로 조준할 것인가?",
+            "chosen": "**아니다 — 요소 앞에 InteractionPlane 을 두고 물리적 타겟팅으로 바꾼다.** *\"Your fingertip becomes the cursor\"*",
+            "alternatives": [
+              "거리와 무관하게 레이캐스팅 하나로 가기"
+            ],
+            "tradeoff": "**근거리의 각도 확대 문제가 사라지는 대신 모드가 둘이 된다**(이 정리는 이 사이트의 것이다). **그래서 전환을 감추는 일이 따라온다** — 손이 다가가면 먼 커서를 흐려 없애고, 양안정 임계로 접촉을 유지하고, 찌르기·집기 전환에도 대상을 붙잡아 둔다. ⚠️ **구역의 크기나 전환 거리는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "커서의 깊이를 무엇으로 정할 것인가?",
+            "chosen": "**가중 평균으로.** *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment\"*",
+            "alternatives": [
+              "처음 만난 물체의 깊이로 확정하기 — **초기 설계가 그랬고 달라붙는 문제가 났다**"
+            ],
+            "tradeoff": "**이 회사에서 드물게 자기 설계가 나빴던 것을 적는 자리다**(이 관찰은 이 사이트의 것이다). **대가는 완충 장치가 필요해진다는 것** — 반응 곡선이 다른 **스프링 둘**을 맥락에 따라 쓴다. ⚠️ **가중치를 무엇으로 주는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "작은 물체에서 커서가 떨리는 것을 어떻게 고칠 것인가?",
+            "chosen": "**반복 근사를 버리고 직접 기하 교차로 바꾼다.** 상자·구·캡슐·원기둥",
+            "alternatives": [
+              "GJK 기반 반복 근사 — 원인이 여기였다. *\"targeting felt delicate and unreliable\"*"
+            ],
+            "tradeoff": "**두 가지를 한꺼번에 얻었다** — *\"Up to 45% faster\"* 이고 **크기에 무관해진다**(*\"whether your UI is 10cm or 10m away\"*). **대가는 일반성이다**(이 지적은 이 사이트의 것이다) — GJK 는 임의의 볼록 도형에 통하는데 직접 해는 목록에 있는 도형만이다. ⚠️ **목록 밖 도형에서 무엇으로 떨어지는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "손 추적 잡음에 접촉이 끊기는 것을 어떻게 막을 것인가?",
+            "chosen": "**양안정 임계(bistable thresholding)** — 붙는 기준과 떨어지는 기준을 다르게 둔다",
+            "alternatives": [
+              "단일 임계로 판정하기"
+            ],
+            "tradeoff": "**떨림에 접촉이 깜빡이지 않는 대신 뗄 때 한 박자 늦게 떨어진다**(이 정리는 이 사이트의 것이다). ⚠️ **두 임계값이 얼마인지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "GPU 전력을 어디서 줄일 것인가?",
+            "chosen": "**칠할 때 하던 계산을 미리 꼭짓점에 넣는다.** RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겼다",
+            "alternatives": [
+              "프래그먼트 셰이더에서 모서리를 계산하기"
+            ],
+            "tradeoff": "**GPU 전력이 약 40~50% 줄었다.** **대가는 메시가 복잡해지고 크기가 바뀔 때 정점 위상이 따라와야 한다는 것**이다(이 지적은 이 사이트의 것이다) — 실제로 반응형 크기 조절이 *\"custom vertex topology\"* 를 쓴다고 적혀 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "프레임마다 다 계산할 것인가?",
+            "chosen": "**아니다 — FrameCache 로 중복을 없애고, 손 근접 검사는 시간 분할과 배치 처리로, 찌르기 감지는 손이 가까울 때만 쏜다**",
+            "alternatives": [
+              "매 프레임 모든 콜라이더를 검사하기"
+            ],
+            "tradeoff": "**안경 위에서 프레임 예산이 빠듯하다**(이 정리는 이 사이트의 것이다). **대가는 여러 프레임에 걸쳐 처리하므로 반응이 한 박자 늦을 수 있다는 것**이고, ⚠️ **그 지연이 얼마인지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "내부 전용 기능을 쓸 것인가?",
+            "chosen": "**안 쓴다.** *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 언팩하면 고칠 수 있다",
+            "alternatives": [
+              "플랫폼 내부 API 로 최적화하기"
+            ],
+            "tradeoff": "**개발자가 만든 것이 기본 툴킷과 같은 조건에서 돈다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 내부 최적화를 못 쓴다는 것**인데 **그 이야기는 글에 없다** — 앞의 성능 작업이 전부 공개 API 안에서 이뤄졌다는 뜻으로 읽힌다(이 해석도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "모바일 UI 관례에서 출발할 것인가?",
+            "chosen": "**아니다.** *\"Did not start with mobile UI conventions and adapting them to 3D\"* — 공간을 먼저 놓는다",
+            "alternatives": [
+              "익숙한 모바일 패턴을 3D 로 옮기기"
+            ],
+            "tradeoff": "**손 추적과 컨트롤러가 동시에 동작하는 것이 기본이 된다** — 나중에 얹은 것이 아니다. **대가는 개발자가 아는 관례를 못 쓴다는 것**이다(이 지적은 이 사이트의 것이다). ⚠️ **그 학습 비용을 다룬 서술은 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Spectacles Interaction Kit (SIK)",
+            "role": "핀치·잡기·찌르기·호버와 이벤트. Lens Studio TypeScript 지원의 첫 내부 사용처 중 하나",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Spectacles UI Kit",
+            "role": "버튼·슬라이더·스위치·프레임·텍스트 입력·스크롤 뷰",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "InteractionPlane · PhysicalInteractionProvider",
+            "role": "근거리에서 광선 조준을 물리적 타겟팅으로 바꾼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "FrameCache",
+            "role": "프레임마다 반복되는 계산을 없앤다 (SIK v0.16.4)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "스프링-댐퍼 물리",
+            "role": "커서 깊이 완충과 ScrollWindow 의 관성·가장자리 되튐",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Spectacles Sync Kit",
+            "role": "버튼·슬라이더·조작 객체의 상태를 플래그 하나로 기기와 사용자 사이에 맞춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ GJK",
+            "role": "버린 것 — 반복 근사라 작은 크기에서 정확도가 나빠졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "가까울수록 조준이 어려워진다",
+            "why_hard": "*\"Small hand movements translate to large angular changes\"* 이고, 근거리에서는 **찌르기와 집기를 가르는 것 자체가 문제**다. 게다가 손 추적에는 잡음이 있어 접촉 판정이 깜빡인다.",
+            "current_best": "**거리에 따라 방식을 바꾸되 전환을 감춘다** — 요소 앞 구역에서 손끝이 커서가 되고, 먼 커서는 저절로 흐려지고, **양안정 임계**로 접촉을 유지하며, 찌르기·집기 전환에도 대상을 안 놓친다. ⚠️ **구역 크기·임계값·전환 거리는 어느 것도 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "problem": "일반적인 충돌 알고리즘이 작은 크기에서 나빠진다",
+            "why_hard": "**GJK 기반 반복 근사**를 쓰니 작은 물체에서 커서가 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. **근사의 오차가 물체 크기에 비해 커지는 자리다**(이 설명은 이 사이트의 해석이다).",
+            "current_best": "**흔한 도형을 직접 푼다** — 상자·구·캡슐·원기둥에 대해 기하 교차를 바로 계산해 *\"Up to 45% faster\"* 이고 **크기에 무관**해진다. ⚠️ **목록 밖 도형에서 무엇으로 떨어지는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Spatial Interaction for Spectacles",
+                "url": "https://eng.snap.com/spatial_interaction",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-08-27",
+                "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "손이 다가오면 방식이 바뀐다",
+          "question": "두 모드를 어떻게 겹치지 않게 하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  FAR[\"손이 멀다 — 광선으로 조준한다\"]:::list\n  DEPTH[\"깊이를 하나로 정하지 않는다<br/>처음 만난 물체에 달라붙던 것을 고쳤다\"]:::list\n  SPR[\"반응이 다른 스프링 둘로 부드럽게\"]:::list\n  GEO[\"흔한 도형은 바로 푼다 — 최대 사십오 퍼센트 빠르다\"]:::list\n  NEAR[\"<b>요소 앞 구역에 들어선다</b><br/>• 먼 커서를 흐려 없앤다<br/>• 손끝이 커서가 된다<br/>• 붙는 기준과 떨어지는 기준을 다르게\"]:::accent\n  ACT[\"찌르기에서 집기로 넘어가도 대상을 붙잡는다\"]:::list\n  X1[\"거리와 무관한 단일 조준<br/>안 쓴다 — 가까울수록 각도가 커진다\"]:::quiet\n  X2[\"반복 근사로 충돌 계산<br/>버렸다 — 작은 물체에서 떨렸다\"]:::quiet\n  FAR --> DEPTH --> SPR --> GEO --> NEAR --> ACT\n  FAR -.-> X1\n  GEO -.-> X2"
+        },
+        {
+          "title": "손끝 하나가 지나는 자리",
+          "question": "언제 붙고 언제 떨어지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 원거리\n  원거리 : <b>광선으로 조준한다</b><br/>깊이는 가중 평균이고 스프링 둘이 완충한다\n  원거리 --> 접근 : 손이 구역으로 들어온다\n  접근 : <b>먼 커서가 흐려진다</b><br/>두 모드가 동시에 켜지지 않게 한다\n  접근 --> 근접 : 물리적 타겟팅으로 바뀐다\n  근접 : <b>손끝이 커서다</b><br/>붙는 기준을 넘으면 대상에 붙는다\n  근접 --> 유지 : 손이 떨려도\n  유지 : <b>떨어지는 기준은 더 낮다</b><br/>추적 잡음에 접촉이 깜빡이지 않는다\n  유지 --> 전환 : 찌르기에서 집기로\n  전환 : <b>동작이 바뀌어도 대상은 그대로</b><br/>다시 찾지 않는다\n  유지 --> 원거리 : 손이 구역을 벗어난다\n  전환 --> 원거리 : 손이 구역을 벗어난다"
+        },
+        {
+          "title": "이 글이 재지 않은 것",
+          "question": "무엇이 좋아졌는지 어디까지 알 수 있는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"속도와 전력은 숫자로 낸다\"]:::list\n  B[\"<b>정작 고치려던 것의 숫자가 없다</b><br/>떨림이 얼마나 줄었는지 조준이 얼마나 정확해졌는지\"]:::accent\n  C[\"흔한 도형만 직접 푼다\"]:::list\n  D[\"목록 밖 도형에서 무엇으로 떨어지는지 글에 없다\"]:::list\n  E[\"구역과 임계로 모드를 가른다\"]:::list\n  F[\"구역 크기도 임계값도 전환 거리도 없다\"]:::list\n  G[\"여러 프레임에 나눠 처리한다\"]:::list\n  H[\"그만큼 반응이 늦을 수 있는데 지연 값이 없다\"]:::list\n  I[\"숨긴 호출을 안 쓴다\"]:::list\n  J[\"내부 최적화를 포기한 대가는 다루지 않는다\"]:::list\n  N[\"<i>모두 이 사이트의 지적이다 — 회사가 한계로 적은 것은 없다</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Spatial Interaction for Spectacles",
+          "url": "https://eng.snap.com/spatial_interaction",
+          "publisher": "Snap Engineering (Specs)",
+          "date": "2026-08-27",
+          "summary": "**손이 UI 에 가까울수록 조준이 어려워진다** — *\"Small hand movements translate to large angular changes.\"* 그래서 **요소 앞에 InteractionPlane 이라는 구역**을 두고 그 안에서는 **레이캐스팅을 버리고 물리적 타겟팅으로 바꾼다** — *\"Your fingertip becomes the cursor.\"* 손 추적 잡음에도 접촉이 끊기지 않게 **양안정 임계(bistable thresholding)** 를 쓰고, **찌르기에서 집기로 넘어가도 대상을 안 놓친다**.\n\n**🔴 먼 거리 커서는 실패를 적는다** — 초기 설계가 **처음 만난 물체의 깊이에 달라붙어** 직관에 어긋났다. 그래서 **깊이를 이진 확정이 아니라 가중 평균으로** 바꿨다: *\"Cursor depth along the targeting ray becomes a weighted average, not a binary commitment.\"* **반응 곡선이 다른 스프링 둘**로 맥락에 따라 부드럽게 하고(빽빽한 UI 패널에서는 *\"Slow and precise\"*), **손이 InteractionPlane 에 다가가면 커서가 저절로 사라진다.**\n\n**🔴 그리고 조준 알고리즘을 갈아 치웠다** — 커서가 작은 물체에서 떨렸고 *\"targeting felt delicate and unreliable\"* 였다. 원인은 **GJK 기반 반복 근사가 작은 크기에서 나빠지는 것**이었다. **흔한 도형(상자·구·캡슐·원기둥)에 대해 직접 기하 교차로 바꿨고 결과가 둘이다** — *\"Up to 45% faster. Geometric solutions outperform iterative approximation\"* 그리고 **크기 무관 정확도**: *\"Works reliably whether your UI is 10cm or 10m away.\"*\n\n**성능 작업에도 수치가 있다** — SIK v0.16.4 는 **FrameCache** 로 프레임마다 중복되는 계산을 없애고, 손 근접 검사를 **시간 분할 + 콜라이더 배치 처리**로 바꾸고, 찌르기 감지는 **손이 콜라이더 근처일 때만** 스피어캐스트를 쏜다. UIKit v0.1.4 는 **RoundedRectangle 메시를 다시 만들어 프래그먼트 셰이더 작업을 정점 데이터로 옮겨 GPU 전력을 약 40~50% 줄였다.**\n\n**설계 원칙** — **모바일 UI 관례에서 시작하지 않았다**(*\"Did not start with mobile UI conventions and adapting them to 3D\"*) · 손 추적과 컨트롤러가 **동시에** 동작한다 · **공개 API 만 쓴다**: *\"Every line of TypeScript is built on the same Lens Studio primitives available to any developer. There's no secret sauce, no private system calls\"* 이고 **패키지를 언팩하면 그대로 고칠 수 있다** · 버튼·슬라이더·조작 가능 객체가 **플래그 하나로** 기기와 사용자 사이에 상태를 맞춘다. 구조는 **Element + Visual = VisualElement**(요소가 콜라이더·상태 기계·이벤트, 비주얼이 메시·재질·애니메이션). ScrollWindow 는 **스프링-댐퍼 물리**로 관성 스크롤과 가장자리 되튐을 만든다. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+        },
+        {
+          "title": "Snap Cloud: A Backend for Spectacles, Powered by Supabase",
+          "url": "https://eng.snap.com/spectacles_supabase",
+          "publisher": "Snap Engineering",
+          "date": "2026-08-27",
+          "summary": "**안경 위에서 도는 것만으로는 안 되는 것들이 있다** — *\"Building compelling experiences for AR glasses often demands more than what runs on-device. Multiplayer games need shared state, multi-level games require persistent progress, fitness challenge Lenses need shared state and leaderboards.\"* 지금까지 개발자는 *\"spinning up servers, managing databases, handling authentication — all before writing a single line of Lens logic\"* 를 해야 했다.\n\n**🔴 안경에서는 로그인 화면 자체가 마찰이다** — *\"Significant friction will be introduced when users wearing Spectacles are required to tap through login screens or enter passwords; authentication must happen invisibly, the instant a Lens launches.\"* 그래서 **Lens 를 발행할 때 Supabase 프로젝트 식별자를 Lens 메타데이터에 심어** 왕복을 줄이고, 플랫폼이 **그 사용자와 그 프로젝트에 한정된 OIDC 신원 토큰**을 발급하면 Lens 가 **API 한 번**으로 세션을 받는다 — *\"There is no OAuth redirect flow, no token management, and no login UI to build.\"*\n\n**🔴 그리고 토큰 교환을 Lens 런타임 밖에서 한다** — *\"An important architectural decision: the token exchange is performed outside the Lens runtime\"* 이고 이유가 명확하다: Lens 코드는 *\"JavaScript authored by third-party developers\"* 라 **Snapchat 사용자 토큰이나 인증 핸드셰이크에 직접 닿으면 안 된다.** *\"Security was a first-order design principle, not an afterthought.\"*\n\n**자체 호스팅을 버린 이유를 적는다** — *\"we determined that the operational complexity of hosting an open-source stack in-house would pull focus from building a great developer experience.\"* **Supabase 를 고른 이유 넷** — Postgres 네이티브(*\"There is no proprietary query language to learn\"*) · 오픈소스 부품(PostgREST · GoTrue · Deno Edge Functions · S3 호환 스토리지) · 실시간 내장 · `supabase-js` 의 보급. **그리고 Snapchat OAuth 제공자를 GoTrue 에 업스트림했다.** 구성은 **RLS 를 건 Postgres · 같은 RLS 가 걸린 스토리지 · Edge Functions · Realtime**. 로컬 개발은 Supabase CLI 의 `--profile snap`, **MCP 로 AI 코딩 도구가 프로젝트 맥락을 읽는다.**\n\n**⚠️ 한계** — **알파이고 승인된 개발자만** 쓸 수 있다(기간 중 무료) · 지역이 미국·유럽·아시아태평양이고 *\"expanding to additional regions\"* 가 로드맵이다 · **수치가 하나도 없다**(지연·용량·할당량 전부). ⚠️ **다른 Snap 글을 언급하지 않는다.** ⚠️ **이 글은 제품 발표에 가깝고 실패나 사후분석이 없다**(이 판단은 이 사이트의 것이다)."
         }
       ]
     }

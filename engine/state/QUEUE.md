@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Snap** | US · 소셜(카메라·AR) | **270 기능 4개** — `code-review-agent` · `mutual-gaze-align` · `agentic-code-search` · `spatial-benchmark`(3D 를 아는지 재는 자를 만든다). **도메인 ① 2개 · 도메인 ② 2개.** **🔴 270 의 발견 — 자를 만들어 놓고 결과가 나쁘다고 적는다**(*"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not"*, 16개 모델 전부 틀린 문항 2개). **🔴 앞 관찰 정정** — `/specs_experiences` 는 다른 Snap 글을 링크한다. **⚠️ 미독 3편** — `/spatial_interaction` · `/spectacles_supabase` · (블로그 2쪽 이후). **⚠️ 매출 실액·DAU 미확인** |
+| **Snap** | US · 소셜(카메라·AR) | **271 기능 5개** — 도메인 ① 2개(`code-review-agent`·`agentic-code-search`) · **도메인 ② 3개**(`mutual-gaze-align`·`spatial-benchmark`·`near-far-targeting` 손이 가까울수록 어렵다, 결정 8). **🔴 이 회사에서 드물게 자기 설계가 나빴던 것을 적는다**(커서가 첫 물체 깊이에 달라붙었다, 조준이 *"delicate and unreliable"* → GJK 를 버리고 **최대 45% 빠른** 직접 기하 교차). **⚠️ 블로그 1쪽 6편 + 검색으로 찾은 4편, 총 10편을 다 읽었다.** **⚠️ 매출 실액·DAU 미확인** |
 
 ## 대기
 
