@@ -172,11 +172,37 @@ def check_company(r: Report, path: Path, doc: dict, jobs: dict) -> dict:
     for i, s in enumerate(co.get("scale") or []):
         check_claim(r, f"{w}.company.scale[{i}]", s)
         check_sources(r, f"{w}.company.scale[{i}]", s.get("sources"))
+    domain_names = set()
     for i, d in enumerate(co.get("domains") or []):
         if not d.get("name"):
             r.err(f"{w}.company.domains[{i}]: name 이 없다")
+        domain_names.add(d.get("name"))
         check_claim(r, f"{w}.company.domains[{i}]", d)
         check_sources(r, f"{w}.company.domains[{i}]", d.get("sources"))
+
+    # 수익원 → 도메인. 이 연결이 끊기면 도메인 목록은 기술 나열로 읽히고, 지원자는
+    # 자기가 만질 코드가 어느 돈에 붙어 있는지 알 수 없다 (PROMPT.md 3단계).
+    linked_domains = set()
+    no_domain: list[str] = []
+    for i, rv in enumerate(co.get("revenue") or []):
+        where = f"{w}.company.revenue[{i}]"
+        if not rv.get("name") or not rv.get("how"):
+            r.err(f"{where}: name/how 가 있어야 한다")
+        names = rv.get("domains") or []
+        if not names:
+            no_domain.append(rv.get("name", f"#{i}"))
+        for n in names:
+            if n not in domain_names:
+                r.err(f"{where}: domains 의 {n!r} 가 company.domains 에 없다 — 오타이거나 "
+                      f"안 쓴 도메인이다")
+            else:
+                linked_domains.add(n)
+        check_claim(r, where, rv)
+        check_sources(r, where, rv.get("sources"))
+    for n in domain_names - linked_domains:
+        if co.get("revenue"):
+            r.warn(f"{w}.company.domains: {n!r} 는 어느 수익원도 가리키지 않는다 — "
+                   f"신사업이면 why 에 그렇게 쓰고, 아니면 도메인을 다시 나눈다")
     for i, s in enumerate(co.get("signals") or []):
         if not s.get("reading") or not s.get("evidence"):
             r.err(f"{w}.company.signals[{i}]: reading/evidence 가 있어야 한다")
@@ -280,6 +306,8 @@ def check_company(r: Report, path: Path, doc: dict, jobs: dict) -> dict:
         "thin": thin,
         "no_edge": no_edge,
         "no_salary": not bool(sal and (sal.get("bands") or [])),
+        "no_revenue": not bool(co.get("revenue")),
+        "revenue_no_domain": no_domain,
         "no_domains": not bool(co.get("domains")),
         "no_business": not bool(co.get("business")),
     }
@@ -431,10 +459,14 @@ def gaps(index: dict, summaries: list[dict], jobs: dict, errors: list[str], show
             cand.append((1, f"[study<{MIN_STUDY}] {s['name']} — {u}"))
         if s["no_salary"]:
             cand.append((2, f"[salary 없음] {s['name']} (`{s['slug']}`)"))
+        if s["no_revenue"]:
+            cand.append((3, f"[revenue 없음] {s['name']} (`{s['slug']}`)"))
+        for n in s["revenue_no_domain"]:
+            cand.append((3, f"[수익원이 도메인과 안 이어짐] {s['name']} — {n}"))
         if s["no_domains"]:
-            cand.append((3, f"[domains 없음] {s['name']} (`{s['slug']}`)"))
+            cand.append((4, f"[domains 없음] {s['name']} (`{s['slug']}`)"))
         for u in s["no_edge"]:
-            cand.append((4, f"[edge 없음] {s['name']} — {u}"))
+            cand.append((5, f"[edge 없음] {s['name']} — {u}"))
     cand.sort(key=lambda x: x[0])
     if cand:
         print("### 이번 사이클의 대상 — 보강 (사다리 4순위)")

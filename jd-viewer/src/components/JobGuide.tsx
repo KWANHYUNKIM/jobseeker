@@ -466,7 +466,10 @@ function PeopleSection({ guide }: { guide: CompanyGuide }) {
 // ── 회사·도메인 ─────────────────────────────────────────────────────────
 function CompanySection({ guide }: { guide: CompanyGuide }) {
   const co = guide.company
-  if (!co || (!co.business && !(co.domains || []).length && !(co.signals || []).length)) return null
+  if (!co) return null
+  const empty =
+    !co.business && !(co.revenue || []).length && !(co.domains || []).length && !(co.signals || []).length
+  if (empty) return null
   return (
     <Block title="회사와 도메인" icon="◆">
       {co.business && (
@@ -486,6 +489,38 @@ function CompanySection({ guide }: { guide: CompanyGuide }) {
               <span className="text-(--color-faint)">{s.label} </span>
               <span className="text-(--color-text) tabular-nums">{s.value}</span>
             </span>
+          ))}
+        </div>
+      )}
+
+      {co.revenue && co.revenue.length > 0 && (
+        <div className="mt-3 pt-3 border-t border-(--color-border) space-y-2.5">
+          <FieldLabel>돈이 나오는 곳 → 그걸 떠받치는 도메인</FieldLabel>
+          {co.revenue.map((rv, i) => (
+            <div key={i} className="border border-(--color-border) rounded-md px-3 py-2.5">
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <span className="text-[13px] text-(--color-text)">{rv.name}</span>
+                {rv.weight && (
+                  <span className="text-[11px] text-(--color-accent) tabular-nums">{rv.weight}</span>
+                )}
+                {rv.confidence === 'inferred' && <Badge>추정</Badge>}
+              </div>
+              <p className="text-xs text-(--color-muted) leading-relaxed mt-1">{rv.how}</p>
+              {rv.domains && rv.domains.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                  <span className="text-[10px] text-(--color-faint) shrink-0">↳</span>
+                  {rv.domains.map((d) => (
+                    <span
+                      key={d}
+                      className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-accent)/12 text-(--color-accent) border border-(--color-accent)/30"
+                    >
+                      {d}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <Sources sources={rv.sources} />
+            </div>
           ))}
         </div>
       )}

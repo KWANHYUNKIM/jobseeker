@@ -107,11 +107,22 @@ export interface GuideDomain {
   sources?: Source[]
 }
 
+/** 수익원 하나. domains 는 이 돈을 떠받치는 GuideDomain.name 들이다. */
+export interface RevenueStream {
+  name: string
+  how: string
+  weight?: string
+  domains?: string[]
+  confidence?: Confidence
+  sources?: Source[]
+}
+
 export interface CompanyBrief {
   business?: string
   business_confidence?: Confidence
   business_sources?: Source[]
   scale?: { label: string; value: string; as_of?: string; confidence?: Confidence; sources?: Source[] }[]
+  revenue?: RevenueStream[]
   domains?: GuideDomain[]
   signals?: { reading: string; evidence: string; so_what?: string; confidence?: Confidence }[]
 }
