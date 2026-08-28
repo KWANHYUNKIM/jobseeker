@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-27",
+  "updated_at": "2026-08-29",
   "docs": [
     {
       "slug": "webtoon-distribution",
@@ -508,6 +508,25 @@
         "parallel-backups"
       ],
       "file": "where-it-piles-up.md"
+    },
+    {
+      "slug": "what-guards-the-gate",
+      "title": "문지기를 무엇으로 세우는가 — 기계가 만든 것을 무엇이 통과시키는가",
+      "question": "모델을 더 좋게 만드는 대신 문을 세운 회사들은 그 문을 무엇으로 만들었고, 그 문은 무엇을 못 잡는가?",
+      "companies": [
+        "wix",
+        "meituan",
+        "monday",
+        "cybozu"
+      ],
+      "features": [
+        "compile-then-publish",
+        "align-people-then-machines",
+        "run-it-to-verify",
+        "binarize-the-rubric",
+        "agent-with-guardrails"
+      ],
+      "file": "what-guards-the-gate.md"
     }
   ]
 }
