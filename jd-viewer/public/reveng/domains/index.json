@@ -580,6 +580,24 @@
         "agent-with-guardrails"
       ],
       "file": "what-agents-may-not-do.md"
+    },
+    {
+      "slug": "when-you-cannot-undo",
+      "title": "되돌릴 수 없을 때 무엇을 하는가 — 취소가 세상을 되돌리지 않을 때",
+      "question": "되돌릴 길의 값을 낼 것인가, 못 낸다면 무엇으로 대신하고 언제 닫는가?",
+      "companies": [
+        "paytm",
+        "freshworks",
+        "sansan"
+      ],
+      "features": [
+        "leave-what-costs-more",
+        "know-both-versions",
+        "paper-does-not-undo",
+        "layer-by-layer-async",
+        "coordinator-in-between"
+      ],
+      "file": "when-you-cannot-undo.md"
     }
   ]
 }
