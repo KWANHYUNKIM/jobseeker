@@ -8,62 +8,51 @@
 
 ## 지금 파는 중
 
-**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 2개 · 기능 1개. 큐 잔량 1/3.**
+**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 2개 · 기능 2개. 큐 잔량 1/3.**
 
-**275 에서 `--gaps` 가 도메인 ①`남이 만든 도구를 자기 업무로 재본다` 를 지목했다.**
-규칙대로 **두 번째 글을 먼저 찾아 읽고**(⑱ 로 `allowed_domains: adevinta.com` 검색) 기능을
-썼다 — `pilot-with-real-work`(백로그로 도구를 잰다), **결정 8개** 전부 대가가 붙었다.
+**276 에서 도메인 ②`나라마다 다른 장터를 한 벌의 규칙으로 돌린다` 의 첫 기능을 썼다** —
+`account-metadata-spine`(누가 쓰는지를 인프라로 둔다), **결정 8개** 전부 대가가 붙었다.
 
-### 🔴 재독이 열여섯 번째로 옳았다 — 274 요약에 없던 것이 쏟아졌다
+### 이 기능의 핵심 — 인프라를 고친 게 아니라 인프라에 대한 사실을 인프라로 승격시켰다
 
-**규모** — 엔지니어 77명 · **교차기능 스쿼드 14개**, 팀마다 도구 하나를 4주 내내.
-**과제는 만든 것이 아니다** — *"pre-existing in the teams' backlogs… not specifically chosen
-for the pilot."* **완료율과 과제 수** — 74%/44건 · 59%/59건 · 44%/54건.
-**🔴 예상과 반대** — 큰 과제(3일 초과 약 30%)와 중간 과제(1일 초과 약 24%)가 가장 이득.
-**🔴 경험이 11배를 가른다**(중급 47% 대 첫 사용 4%) — **다만 Claude Code 만 그 격차가 없다.**
-**🔴 주관과 객관이 어긋난 것을 그대로 적는다** — Copilot 이 **1%** 인데 쓴 사람들은
-*"the tool actually was very helpful for them."*
-**🔴 원인까지 갔다** — 이긴 도구가 *"selected the most powerful models 60 times more than
-the other tools"* 이고 토큰도 60배. **비용** — 최고 소비 10명이 한 달에 **202달러**.
-**마찰** — 엔지니어 **50% 넘게가 IntelliJ·Xcode** 인데 Cursor 는 VSCode 포크라 학습 곡선이
-있었고, Claude Code 는 CLI 뿐이라 처음엔 거부감이 있었다가 써 보고 만족했다.
-**오차 원인을 부록에 다섯 개**(계획 오류 · 비코딩 오버헤드 · 과제 이질성 · 팀 구성 · 긴 과제
-가중), **완화책도 셋**(63%가 이미 쓰던 Copilot 을 **대조군**으로 · 층화 분석 · **상위 5%
-제거 민감도 확인**). **결정** — Claude Code 를 **엔지니어 2,000명 넘는 조직**에 배포.
-**🔴 그리고 파일럿의 진짜 값을 스스로 적는다** — *"Building the capability to independently
-and rapidly evaluate… is ultimately more valuable than identifying a short term winner."*
+계정이 **150개 미만·3명(2019)** 에서 **AWS 732개 · GCP 425개 · 12명(2024)** 이 됐다.
+Confluence 표로 담당자를 관리하다 *"this isn't a scalable solution when you have hundreds
+of accounts"* 에 부딪혔다. 답은 **소유 정보를 위키가 아니라 API 로 들고, 그 데이터가 낡지
+않도록 계정 생성 자체를 예산 담당자의 승인 흐름에 넣은 것**이다 — *"keeping the ownership
+information up to date."* 회사의 한 줄: *"having proper (meta)data is key to properly
+governing the cloud."* 철학은 *"You build it, you run it (and you pay for it)."*
 
-### 🔴 두 번째 글을 찾았고, 두 편이 맞물린다
+**권한은 통일하려다 두 번 막히고 팀에 넘겼다**(이 읽기는 이 사이트의 것) — 공용 집합은
+**소프트 쿼터 500개**에, ABAC 은 **역할 전환 부담·속성 제약·같은 팀 안 직무 구분 불가**에
+막혔고, 세 번째는 **빈 역할에 명시적 거부를 걸어 팀이 자기 계정에서 관리**하게 한다.
 
-`measuring-the-impact-of-generative-ai-on-developer-productivity`(**2024-05-07**) —
-2년 전에는 **Copilot 하나를 도입하고 쓰이는지만** 봤다. 고른 이유도 성능이 아니라 관계와
-청구 편의였고, **벤더가 사용량 통계를 안 줘서**(*"GitHub did not offer usage statistics"*)
-설문으로 시작해 4월에 API 가 나온 뒤에야 실측을 붙였다. **수락률 약 20%**,
-**가장 큰 발견은 휴면 라이선스** → **30일 미사용 자동 해제**. 위험도 적는다 —
-*"(junior) developers put too much trust in Copilot"*, *"most beneficial to those that need
-it the least and least beneficial to those that need it the most."*
+### ⚠️ 276 의 3회차 재독에서 나온 것 — 새 결정이 아니라 '안 적은 것' 이었다
 
-**⭐ 2024년 결론이 2026년에 뒤집혔다** — *"Copilot looks like it's going to stay"* 였는데
-**1%** 로 나왔다. **그리고 2024년의 관찰도 부분적으로 반박된다**(11배 격차는 같은 방향인데
-Claude Code 만 예외). **자기가 2년 전에 쓴 것을 뒤집는 데이터를 그대로 낸다.**
-`open_questions` 맨 앞에 적었다.
+**이 글은 이름만 대고 넘어가는 항목이 다섯이다** — **ROLFP**(보안 위험 평가)가 무엇인지 ·
+**FinOps 와 GovOps** 두 스쿼드의 분담 · **예산 배분과 초과 시 처리** · **보안 연락처의 용도**
+· **계정 폐기·정리 절차가 통째로 없다.** **그리고 사고나 실패 사례가 하나도 없다.**
+**계정이 732개까지 늘었다면 지운 계정도 있었을 텐데 만드는 이야기만 자세하다.**
+failure 그림과 `open_questions` 에 적었다. **재독이 새 결정을 안 낸 것은 이번이 처음이지만,
+대신 이 글의 성격을 드러냈다**(운영 사실 ⑫ 의 첫 예외 — 다만 판단이 틀린 것은 아니다).
 
-### 다음 사이클 — 도메인 ② 에 재료가 이미 두 편 있다
+### 다음 사이클 — 도메인 ② 의 두 번째 기능 재료가 남아 있다
 
-**⚠️ `--gaps` 는 [진행 중 확장]으로 도메인 ②`나라마다 다른 장터를 한 벌의 규칙으로 돌린다`
-를 지목할 것이다.** **275 에서 `multi-cloud-governance-at-scale` 을 재독해 재료가 더
-늘었다** — 회사 철학이 *"You build it, you run it (and you pay for it)"* 이고, **계정 생성이
-승인 흐름**(팀 요청 → 예산 연결 → 예산 담당자 승인 → **IPAM 으로 충돌 없는 VPC 자동 배포**)
-이며, 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**을
-했고, 권한 폭발을 **ABAC → 고객 관리 정책(빈 역할에 명시적 거부)** 순으로 풀었다.
-**중심 문장** — *"having proper (meta)data is key to properly governing the cloud."*
-**⚠️ 223 규칙** — 계정·권한 거버넌스와 정책 엔진 메모리(OPA→Kyverno, **8GB→2.7GB**)는 다른
-문제로 보인다. **거버넌스 쪽 결정이 더 많으니 그쪽부터 쓴다.**
+**`opa-memory…kyverno`(2025-02-12)** 가 도메인 `tech` 에 이미 적혀 있다 — **30+ 클러스터 ×
+3+ 컨트롤러 파드**, 파드 변동이 심한 곳에서 메모리가 수 기가바이트씩 출렁였고 **동기화에서
+파드를 빼자 8GB→2.7GB**(약 65%). Kyverno 로 옮기며 대가를 한 문장으로 —
+*"This approach reduces memory consumption but increases the load on the Kubernetes API
+server."* ⚠️ **API 서버 부하 증가분의 수치는 없다.**
+**⚠️ 다만 이 한 편만으로 결정 5개가 서는지 먼저 센다.** 안 서면 **다른 편을 찾거나**
+(`WebSearch` + `allowed_domains: adevinta.com`, 운영 사실 ⑱) **Adevinta 를 닫는다.**
+목록에서 본 다른 편 — `make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28) ·
+`its-not-always-dns-unless-it-is` · `using-rasterization-to-make-document-sharing-safer` ·
+`deep-dive-in-paddleocr-inference` · `adevintas-machine-learning-golden-path` ·
+`beyond-code-measuring-developer-experience`(2024-03-26, **도메인 ① 세 번째 편 후보**).
 
 ### 이 회사에서 아직 못 채운 것
 
 - **매출 실액 확인 불가** — 못 찾은 것이 아니라 **2024 상장폐지로 공개되지 않는다.**
-- **⚠️ 개별 장터의 시스템 글을 못 봤다** — 읽은 넷이 전부 플랫폼·도구 쪽이다.
+- **⚠️ 개별 장터의 시스템 글을 못 봤다** — 읽은 다섯이 전부 플랫폼·도구 쪽이다.
   **leboncoin·Marktplaats·Kleinanzeigen 의 검색·추천·정산 이야기가 없다.**
 - 글마다 수치 밀도가 크게 다르다 — data mesh 편은 **수치가 0**(273 확인).
 
@@ -83,12 +72,13 @@ Claude Code 만 예외). **자기가 2년 전에 쓴 것을 뒤집는 데이터�
 
 ### 비교 문서 재료
 
-- **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — Snap 이 다섯 재료를 주고
-  **Adevinta 가 축을 완성한다**: **남의 도구를 자기 백로그로 재고**, **오차 원인을 부록에
-  다섯 개 적고**, **주관과 객관이 어긋난 것을 판정 없이 남기고**, **2년 전 자기 결론을
-  뒤집는 데이터를 낸다.**
-- **⭐ `기계가 그렇다는데`** — Snap 둘 + **Adevinta 하나. Adevinta 만 회의적이고 유일하게
-  사는 쪽이다.** 그리고 **재는 능력 자체가 승자보다 값나간다**는 새 논거를 준다.
+- **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — Snap 다섯 + **Adevinta 가 축을
+  완성한다**(남의 도구를 자기 백로그로 재고, 오차 원인을 부록에 다섯 개 적고, 주관과 객관의
+  불일치를 판정 없이 남기고, **2년 전 자기 결론을 뒤집는 데이터를 낸다**).
+- **⭐ `기계가 그렇다는데`** — Snap 둘 + **Adevinta 하나**(유일하게 회의적이고 사는 쪽,
+  **재는 능력이 승자보다 값나간다**는 논거).
+- **⭐ 새 축 후보 — `만드는 이야기만 있고 치우는 이야기가 없다`.** Adevinta 의 계정 폐기
+  부재가 첫 재료다. 이 사이트의 다른 회사에서도 같은 빈칸이 있는지 확인할 값이 있다.
 - `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯) ·
   `되돌릴 수 있는 것을 먼저 한다` 보강.
 

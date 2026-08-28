@@ -233,7 +233,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "account-metadata-spine"
+      ]
     }
   ],
   "open_questions": [
@@ -241,7 +243,8 @@
     "**⚠️ 매출 실액을 확인할 수 없다 — 못 찾은 것이 아니라 공개되지 않는다.** 2024년 Permira·Blackstone 주도 컨소시엄의 공개매수로 **오슬로 증권거래소 A주가 2024-06-05 상장폐지**됐고, 그 뒤로 분기 실적을 내지 않는다. 지분이 **컨소시엄 지배 다수 · eBay 약 20% · Schibsted 약 13.6%** 로 알려져 있으나 **회사 보도자료가 아니라 2차 보도에서 온 값이라 `추정` 으로 둔다.**",
     "**⚠️ 글마다 수치의 밀도가 크게 다르다.** `multi-cloud-governance-at-scale`(732 계정·425 프로젝트·7,000줄·쿼터 500)과 `opa-memory…kyverno`(8GB→2.7GB·30+ 클러스터)와 AI 도구 평가(77명·165건·43/24/1%·4.2/3.6/2.8)는 수치가 풍부한데, **`from-lakehouse-architecture-to-data-mesh`(2024-12-10)는 수치가 하나도 없다** — 273 에서 열어 확인했다.",
     "**⚠️ 브랜드가 열 개를 넘는데 개별 마켓플레이스의 시스템 글을 아직 못 봤다.** 읽은 세 편이 전부 **플랫폼·도구 쪽**이다(클라우드 거버넌스 · 정책 엔진 · AI 도구 평가). **leboncoin·Marktplaats·Kleinanzeigen 같은 실제 장터의 검색·추천·정산 이야기가 이 사이트에 아직 없다.**",
-    "**⚠️ 비교한 것이 도구인지 요금제인지 섞여 있고, 같은 조건으로 다시 잰 기록이 없다.** 이긴 도구가 *\"selected the most powerful models 60 times more than the other tools\"* 였는데 **정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다.** 회사는 이 사실을 적으면서도 ROI 를 근거로 그 도구를 고른다. **요금제를 맞춰 다시 재 본 서술은 없다**(이 지적은 이 사이트의 것이다)."
+    "**⚠️ 비교한 것이 도구인지 요금제인지 섞여 있고, 같은 조건으로 다시 잰 기록이 없다.** 이긴 도구가 *\"selected the most powerful models 60 times more than the other tools\"* 였는데 **정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다.** 회사는 이 사실을 적으면서도 ROI 를 근거로 그 도구를 고른다. **요금제를 맞춰 다시 재 본 서술은 없다**(이 지적은 이 사이트의 것이다).",
+    "**⚠️ 클라우드 거버넌스 글이 이름만 대고 넘어가는 항목이 다섯이다**(276 의 3회차 재독에서 확인). **ROLFP** 보안 위험 평가를 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 없다** · **FinOps 와 GovOps** 두 스쿼드로 나뉘어 있다고만 하고 **분담이 없다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다.** **그리고 사고나 실패 사례가 하나도 없다** — **계정이 732개까지 늘었다면 지운 계정도 있었을 텐데 만드는 이야기만 자세하다**(이 관찰은 이 사이트의 것이다)."
   ],
   "sources": [
     {
@@ -256,7 +259,7 @@
       "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
       "publisher": "Adevinta Tech Blog",
       "date": "2024-12-17",
-      "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트)."
+      "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
     },
     {
       "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
@@ -1062,6 +1065,754 @@
           "publisher": "Adevinta Tech Blog",
           "date": "2024-05-07",
           "summary": "**2년 전 편 — GitHub Copilot 하나를 도입하고 쓰이는지 관측한 기록이다.** 고른 이유가 성능이 아니다: *\"our previously close relationship with GitHub and the ease with which we could get started from a product and billing perspective.\"* 대신 *\"we evaluated Copilot from multiple angles such as security and legal, far beyond our standard purchasing process\"* 를 했다. **관측 자체가 문제였다** — *\"At this time, GitHub did not offer usage statistics for Copilot. We had to find another way to monitor how our developers were doing.\"* 그래서 2023년 말 **베타 100여 명**에 설문으로 시작했고, 2024년 2월 전사 발표 뒤 셀프서비스로 라이선스를 열었으며, **4월에 GitHub 사용량 API 가 나온 뒤에야 실측을 붙였다.** **수치** — **제안 수락률 약 20%**. 회사의 해석: *\"The fact that every fifth suggestion is accepted by our developers is not insignificant. However, it's far away from the idea that AIs can or will replace developers entirely.\"* **🔴 가장 큰 발견이 휴면 라이선스였다** — *\"The biggest takeaway for us was the amount of dormant licences\"* 이고 활동은 대부분 개발자에게서 나왔다(엔지니어링 매니저·PO·비기술 직군이 가장 낮았다). 그래서 **30일 미사용 시 라이선스를 자동 해제**하기로 했다. **🔴 위험도 적는다** — *\"We've seen (junior) developers put too much trust in Copilot and then having to ask for help from senior colleagues\"* 이고, 한 문장으로 정리한다: *\"Copilot is a tool that is as smart as the engineer using it. It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most.\"* **결론은 유지였다** — *\"For us, Copilot looks like it's going to stay… it's just a tool to accomplish the task at hand.\"* **⭐ 그런데 2026 년 파일럿에서 이 도구가 추정 대비 1% 로 나오고, 회사는 Claude Code 로 갈아탄다**(이 대조는 이 사이트의 것이다)."
+        }
+      ]
+    },
+    {
+      "key": "account-metadata-spine",
+      "name": "누가 쓰는지를 인프라로 둔다",
+      "domain": "나라마다 다른 장터를 한 벌의 규칙으로 돌린다",
+      "updated_at": "2026-08-28",
+      "ui": {
+        "title": "팀이 새 클라우드 계정을 받기까지",
+        "question": "계정이 천 개를 넘는데 주인을 어떻게 아는가?",
+        "kind": "web",
+        "note": "**사내 포털의 흐름을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **Cloud Management 포털의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 절차와 수치만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "클라우드 관리"
+          },
+          {
+            "type": "card",
+            "text": "계정이 천 개를 넘습니다",
+            "items": [
+              "AWS 계정 칠백삼십이 개",
+              "GCP 프로젝트 사백이십오 개",
+              "이걸 열두 명이 돌린다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "새 계정을 요청한다"
+          },
+          {
+            "type": "input",
+            "text": "어느 팀이 무엇에 쓰는가"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "예산을 고른다",
+                "sub": "계정은 반드시 예산에 붙는다",
+                "right": "필수"
+              },
+              {
+                "title": "예산 담당자가 승인한다",
+                "sub": "거절할 수도 있다",
+                "right": "승인"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "text",
+            "text": "모든 계정의 대역을 훑어 겹치지 않는 주소를 골라 줍니다",
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "팀 정보는 복사하지 않는다"
+          },
+          {
+            "type": "card",
+            "text": "이름이 아니라 바뀌지 않는 번호로 가리킵니다",
+            "items": [
+              "팀 이름이 바뀌어도 그대로",
+              "비용센터가 바뀌어도 그대로",
+              "조직도에서 자리를 옮겨도 그대로"
+            ],
+            "pin": 4
+          },
+          {
+            "type": "text",
+            "text": "인사 시스템의 조직도는 쓰지 않습니다",
+            "pin": 5
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "권한"
+          },
+          {
+            "type": "chips",
+            "items": [
+              "일반 역할",
+              "속성으로 가르기",
+              "팀이 직접 만든 정책"
+            ],
+            "pin": 6
+          },
+          {
+            "type": "text",
+            "text": "공용 권한 묶음은 오백 개가 상한입니다",
+            "pin": 7
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "card",
+            "text": "알림은 중앙이 받아 다시 보냅니다",
+            "items": [
+              "기본 알림은 아무도 안 보는 메일함으로 간다",
+              "포털과 하루·한 주 요약 메일로 돌린다"
+            ],
+            "pin": 8
+          },
+          {
+            "type": "button",
+            "text": "요청 보내기",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "사람보다 계정이 훨씬 빨리 늘었다",
+            "what": "2019년에는 **AWS 계정 150개 미만에 3명**이었고 2020년에 5명이 됐다. 2024년에는 **AWS 732개 · GCP 425개 · 12명**(FinOps·GovOps 두 스쿼드)이다. 회사가 이유를 적는다 — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "계정은 반드시 예산에 붙는다",
+            "what": "팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인하거나 거절한다.** 회사가 그 효과를 적는다 — *\"keeping the ownership information up to date.\"* 철학은 *\"You build it, you run it (and you pay for it)\"* 이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "주소가 겹치지 않게 골라 준다",
+            "what": "원하면 **기본 VPC 를 자동 배포**하는데, *\"scanning all CIDR within cloud accounts to avoid conflicts\"* 로 겹치지 않는 대역을 고른다. Catalogue API 가 **RFC1918 대역 전체를 관리한다**(IPAM).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "이름 대신 영구 번호로 가리킨다",
+            "what": "팀 정보를 복사해 두니 **팀이 바뀔 때마다 여러 곳을 연쇄로 고쳐야 했다.** 그래서 Organisations API 가 **영구 ID** 로 이름·비용센터·상위 노드를 추상화하고, 노드를 조직 그래프 안에서 옮길 수 있게 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "인사 조직도를 쓰지 않기로 했다",
+            "what": "HR 서비스 포털 API 를 버린 이유가 둘이다 — *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"we realised that HR hierarchy does not always replicate functional structure.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "권한을 세 갈래로 열어 뒀다",
+            "what": "**일반 권한 집합**(admin·power-user·read-only) · **ABAC**(IdP 속성을 역할에 넘겨 조건부 허용) · **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다). 팀은 따로 쓰거나 섞어 쓸 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "공용 묶음에는 상한이 있다",
+            "what": "팀들이 PR 로 커스텀 권한 집합을 요청하면서 **소프트 쿼터 500개**에 부딪혔고 *\"difficult to effectively manage the increasing number\"* 가 됐다. **그 상한이 ABAC 과 고객 관리 정책으로 간 이유다**(이 연결은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "기본 알림은 아무도 안 본다",
+            "what": "AWS 알림은 **루트 계정 메일함**으로 가는데 그건 거버넌스 팀이 관리하고, *\"Most of our engineers don't access it regularly.\"* 그래서 **AWS Health Aware** 로 받아 포털과 **일간·주간 다이제스트 메일**로 돌린다. 지금은 **예산 알림·비용 경보** 같은 사내 절차도 여기로 보낸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**브랜드가 열 개를 넘고 나라가 다르니 계정도 규칙도 따로 자란다.** 2019년에는 AWS 계정이 **150개 미만**이었고 팀이 **3명**이었다. 2024년에는 **AWS 732개 · GCP 425개**를 **12명**이 돌린다. **사람보다 계정이 훨씬 빨리 늘었다**(이 정리는 이 사이트의 것이다).\n\n**처음 방식이 무엇이었고 왜 깨졌는지를 적는다** — Confluence 표에 계정 담당자를 적었는데 *\"this isn't a scalable solution when you have hundreds of accounts\"* 였다.\n\n**⭐ 이 회사의 답이 특이한 것은 인프라를 고친 게 아니라 인프라에 대한 사실을 인프라로 승격시킨 것이다**(이 표현은 이 사이트의 것이다). 회사가 그 생각을 한 줄로 적는다 — *\"having proper (meta)data is key to properly governing the cloud.\"* 계정이 **누구 것이고 어느 예산에 붙고 어떤 대역을 쓰는지**를 위키가 아니라 **API 로 들고**, 그 데이터가 낡지 않도록 **계정 생성 자체를 예산 담당자의 승인 흐름 안에 넣었다.**\n\n**철학도 한 줄이다** — *\"You build it, you run it (and you pay for it).\"* 괄호 안이 이 시스템의 이유다 — **쓰는 팀이 값을 치르게 하려면 누가 쓰는지를 늘 알아야 한다**(이 연결은 이 사이트의 것이다).\n\n**⚠️ 다만 이 글은 이름만 대고 넘어가는 항목이 여럿이다**(이 관찰은 이 사이트의 것이다) — **ROLFP** 보안 위험 평가가 무엇인지, **FinOps 와 GovOps** 두 스쿼드가 각각 무엇을 하는지, **예산이 어떻게 배분되고 초과하면 어떻게 되는지**, **계정을 어떻게 폐기하는지**가 전부 없다. **그리고 사고나 실패 사례가 하나도 없다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "AWS 계정 732개 · GCP 프로젝트 425개 (2024)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "사람",
+            "value": "2019년 3명 → 2020년 5명 → 2024년 12명(FinOps·GovOps 두 스쿼드)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "계정 증가",
+            "value": "2019년 150개 미만 → 2024년 732개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "코드",
+            "value": "Catalogue API 가 400줄에서 7,000줄 넘는 파이썬으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "상한",
+            "value": "공용 권한 집합 소프트 쿼터 500개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "예산 배분·초과 처리·계정 폐기 절차·ROLFP 설명·두 스쿼드 분담·사고 사례가 전부 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "위키를 API 로 바꾼 대목에서",
+          "thought": "**바뀐 것은 저장 위치가 아니라 데이터의 지위다**(이 정리는 이 사이트의 것이다). 위키의 표는 **사람이 기억나면 고치는 것**이고, API 는 **계정을 만들려면 반드시 지나야 하는 관문**이다. **그래서 승인 흐름이 핵심이다** — 소유 정보를 따로 갱신하는 게 아니라 **계정을 얻는 행위 자체가 소유 정보를 남긴다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "인사 조직도를 안 쓰기로 한 자리에서",
+          "thought": "거절 이유 둘 중 뒤가 더 무겁다 — *\"HR hierarchy does not always replicate functional structure.\"* **누가 누구에게 보고하는지와 무엇을 함께 만드는지가 다르다는 뜻이다**(이 해석은 이 사이트의 것이다). **대가는 조직도를 두 벌 유지하게 된다는 것**이고, 회사는 그것을 **거버넌스 팀이 중앙에서 관리한다**고만 적는다 — ⚠️ **두 벌이 어긋날 때 어떻게 되는지는 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "권한이 세 갈래로 열린 것을 볼 때",
+          "thought": "**한 방식으로 통일하려다 두 번 실패한 흔적으로 읽힌다**(이 해석은 이 사이트의 것이다) — 공용 집합은 **500개 상한**에 막혔고, ABAC 은 **역할 전환 부담과 속성의 한계**에 막혔다. 그래서 **세 번째는 통일을 포기하고 팀에 넘긴다.** ⚠️ **팀이 자기 계정 안에서 완전히 관리하면 중앙은 그 안을 못 본다** — 그 이야기는 글에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이 글이 안 적은 것을 셀 때",
+          "thought": "**이름만 대고 넘어간 항목이 다섯이다**(이 관찰은 이 사이트의 것이다) — ROLFP 가 무엇인지, FinOps 와 GovOps 가 각각 무엇을 하는지, 예산이 어떻게 배분되고 초과하면 어떻게 되는지, 계정을 어떻게 폐기하는지, 보안 연락처를 어디에 쓰는지. **그리고 사고 사례가 하나도 없다.** **만드는 이야기는 자세한데 치우는 이야기가 없다** — 계정이 732개까지 늘었다면 지운 계정도 있었을 텐데 그 절차가 통째로 빠져 있다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Catalogue API",
+            "what": "클라우드 제공자 차이를 감추는 원시연산 묶음. **400줄에서 7,000줄 넘는 파이썬**으로 자랐다"
+          },
+          {
+            "name": "Organisations API",
+            "what": "조직 트리. **영구 ID** 로 이름·비용센터·상위 노드를 추상화하고 노드를 옮길 수 있다"
+          },
+          {
+            "name": "계정",
+            "what": "반드시 **예산·담당자·보안 연락처·ROLFP 평가**에 이어진다"
+          },
+          {
+            "name": "예산 담당자",
+            "what": "계정 생성 요청을 **승인하거나 거절한다**. 여기서 소유 정보가 최신으로 유지된다"
+          },
+          {
+            "name": "IPAM",
+            "what": "**RFC1918 대역**을 관리하고 전 계정의 CIDR 를 훑어 충돌을 막는다"
+          },
+          {
+            "name": "권한 세 갈래",
+            "what": "일반 권한 집합(**소프트 쿼터 500**) · ABAC · 팀이 자기 계정에서 관리하는 고객 관리 정책"
+          },
+          {
+            "name": "Notifications API",
+            "what": "AWS Health Aware 로 받아 포털과 **일간·주간 다이제스트 메일**로 돌린다"
+          }
+        ],
+        "invariants": [
+          "**계정은 예산 없이 만들어지지 않는다** — 승인 흐름을 반드시 지난다",
+          "**팀 데이터를 복사하지 않는다** — 영구 ID 로 가리킨다",
+          "**인사 조직도를 진실로 삼지 않는다** — 기능 조직을 따로 관리한다",
+          "**IP 대역은 중앙이 고른다** — 전 계정을 훑어 충돌을 막는다",
+          "**권한을 한 방식으로 통일하지 않는다** — 팀이 셋 중 골라 쓰거나 섞는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "팀이 포털에서 새 계정을 요청한다",
+            "why": "위키에 적는 대신 반드시 지나야 하는 관문이다"
+          },
+          {
+            "step": "요청이 예산에 연결된다",
+            "why": "쓰는 팀이 값을 치른다는 원칙이 여기서 걸린다"
+          },
+          {
+            "step": "예산 담당자가 승인하거나 거절한다",
+            "why": "이 순간 소유 정보가 최신이 된다"
+          },
+          {
+            "step": "Catalogue API 가 제공자에 계정을 만든다",
+            "why": "AWS·GCP·Datadog·Grafana·PagerDuty 를 같은 방식으로 다룬다"
+          },
+          {
+            "step": "IPAM 이 전 계정 대역을 훑는다",
+            "why": "겹치지 않는 주소를 골라야 한다"
+          },
+          {
+            "step": "원하면 기본 VPC 를 자동 배포한다",
+            "why": "팀이 주소 계획을 직접 하지 않아도 된다"
+          },
+          {
+            "step": "조직 트리의 영구 ID 로 팀을 가리킨다",
+            "why": "팀 이름이나 비용센터가 바뀌어도 연쇄 갱신이 없다"
+          },
+          {
+            "step": "팀이 권한 방식을 고른다",
+            "why": "공용 집합·속성 기반·자체 정책 중에서. 섞어도 된다"
+          },
+          {
+            "step": "알림을 중앙이 받아 다시 뿌린다",
+            "why": "기본 알림이 가는 메일함은 아무도 안 본다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "계정 소유 정보를 어디에 둘 것인가?",
+            "chosen": "**위키 표를 버리고 API 로 옮긴다.** 계정을 예산·담당자·보안 연락처·ROLFP 평가에 잇는다",
+            "alternatives": [
+              "Confluence 표에 계정별 연락처를 적기 — *\"this isn't a scalable solution when you have hundreds of accounts\"*"
+            ],
+            "tradeoff": "**바뀐 것은 저장 위치가 아니라 데이터의 지위다**(이 정리는 이 사이트의 것이다) — 위키는 기억나면 고치는 것이고 API 는 반드시 지나야 하는 관문이다. **대가는 그 API 를 계속 키워야 한다는 것**이고, 실제로 **400줄에서 7,000줄 넘는 파이썬**이 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "클라우드 제공자마다 다른 것을 어떻게 다룰 것인가?",
+            "chosen": "**하나의 원시연산 묶음으로 감춘다** — *\"a homogeneous interface of primitives that enables us to operate on cloud accounts, abstracting the details between the different cloud providers\"*",
+            "alternatives": [
+              "제공자마다 따로 다루기"
+            ],
+            "tradeoff": "**AWS·GCP 뿐 아니라 Datadog·Grafana Cloud·PagerDuty 까지 같은 방식으로 다룬다.** ⚠️ **대가는 제공자 고유 기능이 이 추상 뒤에서 늦게 들어오거나 새어 나온다는 것**인데(이 지적은 이 사이트의 것이다), **그 이야기는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "조직 구조를 어디서 가져올 것인가?",
+            "chosen": "**직접 만든다.** 조직 트리를 따로 두고 거버넌스 팀이 중앙에서 관리한다",
+            "alternatives": [
+              "HR 서비스 포털 API — *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"*"
+            ],
+            "tradeoff": "**누가 누구에게 보고하는지와 무엇을 함께 만드는지가 다르다**(이 해석은 이 사이트의 것이다). **대가는 조직도를 두 벌 유지하게 된다는 것**이고 ⚠️ **두 벌이 어긋날 때 어떻게 되는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "팀 정보를 복사할 것인가 참조할 것인가?",
+            "chosen": "**영구 ID 로 참조한다.** 이름·비용센터·상위 노드가 바뀌어도 ID 는 그대로이고 노드를 그래프 안에서 옮길 수 있다",
+            "alternatives": [
+              "팀 데이터를 계정 레코드에 복사해 두기 — **원래 그랬고, 팀이 바뀔 때마다 연쇄 갱신이 필요했다**"
+            ],
+            "tradeoff": "**바뀌는 것과 안 바뀌는 것을 갈라 놓았다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 무엇이든 보려면 한 단계를 더 거친다는 것**이고 그 이야기는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "계정을 어떻게 만들어 줄 것인가?",
+            "chosen": "**승인 흐름으로.** 팀이 요청 → 예산에 연결 → **예산 담당자가 승인·거절**",
+            "alternatives": [
+              "요청하면 바로 만들어 주기"
+            ],
+            "tradeoff": "회사가 얻는 것을 적는다 — *\"keeping the ownership information up to date.\"* **소유 정보를 따로 갱신하는 게 아니라 계정을 얻는 행위 자체가 그것을 남긴다**(이 정리는 이 사이트의 것이다). **대가는 마찰이 생긴다는 것**이고, ⚠️ **승인이 얼마나 걸리는지, 거절이 얼마나 나오는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "IP 대역을 누가 고를 것인가?",
+            "chosen": "**중앙이 고른다.** IPAM 이 RFC1918 대역을 관리하고 *\"scanning all CIDR within cloud accounts to avoid conflicts\"*",
+            "alternatives": [
+              "팀이 각자 대역을 정하기"
+            ],
+            "tradeoff": "**나중에 계정끼리 이어야 할 때 충돌이 없다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 중앙이 주소 공간의 병목이 된다는 것**이고, **RFC1918 대역 자체가 유한한데 계정이 732개까지 늘었을 때 얼마나 남았는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "권한을 어떻게 나눌 것인가 — 첫 시도",
+            "chosen": "**공용 권한 집합으로 시작했다가 ABAC 로 옮긴다.** IdP 속성을 역할에 넘겨 조건부로 허용한다",
+            "alternatives": [
+              "팀마다 커스텀 권한 집합을 PR 로 받기 — **소프트 쿼터 500개**에 막혔고 *\"difficult to effectively manage the increasing number\"*"
+            ],
+            "tradeoff": "**한계를 넷이나 적는다** — *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · 속성은 *\"can only be used in the trust policy of the role\"* · *\"cannot identify a job role given that attributes are sent within the same team\"* · 하위 그룹을 가르려면 결국 **이메일 주소**에 기댄다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "권한을 어떻게 나눌 것인가 — 두 번째 시도",
+            "chosen": "**통일을 포기하고 팀에 넘긴다.** 빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 자기 계정 안에서 이름을 아는 정책으로 채운다",
+            "alternatives": [
+              "중앙이 모든 권한을 계속 정의하기"
+            ],
+            "tradeoff": "팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 되고, 부족하면 권한 집합으로 역할을 전환하는 대비책이 있다. **세 방식을 따로 쓰거나 섞어 쓸 수 있다.** ⚠️ **대가는 중앙이 그 안을 못 본다는 것**이다(이 지적은 이 사이트의 것이다) — **한 방식으로 통일하려다 두 번 막히고 나서 내린 결정으로 읽힌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Catalogue API (Python)",
+            "role": "제공자 차이를 감추는 원시연산. 계정 생성·SSO 접근·CIDR 추적·예산 연결. 400줄에서 7,000줄 넘게 자랐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Organisations API",
+            "role": "조직 트리를 영구 ID 로 들고 비용센터에 잇는다. 노드를 그래프 안에서 옮길 수 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Cloud Management Portal",
+            "role": "승인 흐름을 붙인 셀프서비스 입구. 계정 요청과 접근 요청이 여기로 들어온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "IPAM",
+            "role": "RFC1918 대역 관리. 전 계정의 CIDR 를 훑어 충돌 없는 VPC 를 배포한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "AWS SSO + ABAC + 고객 관리 정책",
+            "role": "권한 세 갈래. 공용 집합은 소프트 쿼터 500개가 상한이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Notifications API + AWS Health Aware",
+            "role": "루트 메일함으로 가는 알림을 받아 포털과 일간·주간 다이제스트로 돌린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Selenium",
+            "role": "2019년 우회책 — AWS 에 SSO API 가 없어 스크립트로 계정을 대량 온보딩했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "인프라에 대한 사실이 인프라보다 빨리 낡는다",
+            "why_hard": "계정은 **150개 미만에서 732개**로 늘었는데 팀은 **3명에서 12명**이다. 그리고 조직은 계속 바뀐다 — 팀 데이터를 복사해 두니 **팀이 바뀔 때마다 여러 곳을 연쇄로 고쳐야 했고**, 위키 표는 *\"isn't a scalable solution when you have hundreds of accounts\"* 였다.",
+            "current_best": "**갱신을 따로 하지 않고 갱신이 일어나게 만든다**(이 정리는 이 사이트의 것이다) — 계정을 얻으려면 예산 담당자의 승인을 지나야 하고, 팀은 이름이 아니라 **영구 ID** 로 가리켜지며, 인사 조직도 대신 **기능 조직을 직접 관리한다.** 회사의 한 줄 — *\"having proper (meta)data is key to properly governing the cloud.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "problem": "권한을 한 방식으로 통일할 수 없다",
+            "why_hard": "공용 집합은 **소프트 쿼터 500개**에 막히고, ABAC 은 **역할 전환 부담**과 **속성이 신뢰 정책에서만 쓰인다는 제약**과 **같은 팀 안의 직무를 못 가른다는 한계**에 막힌다.",
+            "current_best": "**세 갈래를 다 열어 두고 팀이 고르거나 섞게 한다** — 마지막 갈래에서는 빈 역할에 명시적 거부를 걸어 **팀이 자기 계정 안에서 완전히 관리**하게 한다. ⚠️ **그러면 중앙이 그 안을 못 보는데 그 이야기는 글에 없다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-cloud governance at scale",
+                "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2024-12-17",
+                "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "새 계정 하나가 만들어지기까지",
+          "question": "소유 정보는 언제 최신이 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[\"팀이 포털에서 요청한다\"]:::list\n  BUD[\"<b>예산에 연결된다</b><br/>• 예산 담당자가 승인하거나 거절한다<br/>• 이 순간 주인이 기록된다<br/>• 만드는 사람이 값을 치른다\"]:::accent\n  CAT[\"같은 방식으로 제공자에 계정을 만든다\"]:::list\n  IPAM[\"모든 계정의 대역을 훑는다\"]:::list\n  VPC[\"겹치지 않는 주소로 기본 망을 깐다\"]:::list\n  ORG[\"팀은 바뀌지 않는 번호로 가리킨다\"]:::list\n  PERM[\"권한은 셋 중 골라 쓴다\"]:::list\n  NOTI[\"알림은 중앙이 받아 다시 보낸다\"]:::list\n  X1[\"위키 표에 담당자를 적기<br/>버렸다 — 수백 개에서는 안 된다\"]:::quiet\n  X2[\"인사 시스템의 조직도를 쓰기<br/>버렸다 — 관리도 안 되고 실제 조직과 다르다\"]:::quiet\n  REQ --> BUD --> CAT --> IPAM --> VPC\n  BUD --> ORG --> PERM --> NOTI\n  REQ -.-> X1\n  ORG -.-> X2"
+        },
+        {
+          "title": "권한을 나누는 방식이 자란 자리",
+          "question": "왜 한 가지로 통일하지 못했는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 직접관리\n  직접관리 : <b>사용자를 하나씩 만든다</b><br/>이천십구년 이전. 규모가 커지자 유지할 수 없었다\n  직접관리 --> 우회 : 외부 인증을 붙이려는데\n  우회 : <b>붙일 방법이 없었다</b><br/>당시엔 연동 규격도 프로그램 인터페이스도 없어 스크립트로 밀어 넣었다\n  우회 --> 공용 : 이천이십년 이후 인터페이스가 열린다\n  공용 : <b>공용 묶음 셋으로 시작</b><br/>관리자 · 준관리자 · 읽기 전용\n  공용 --> 상한 : 팀마다 맞춤을 요청한다\n  상한 : <b>오백 개에서 막힌다</b><br/>수가 늘수록 관리가 어려워졌다\n  상한 --> 속성 : 다른 방식을 찾는다\n  속성 : <b>속성으로 가른다</b><br/>다만 인증 뒤 역할을 바꿔야 하고 같은 팀 안의 직무는 못 가른다\n  속성 --> 위임 : 통일을 포기한다\n  위임 : <b>팀에 넘긴다</b><br/>빈 역할에 거부를 걸어 두고 팀이 자기 계정에서 채운다\n  위임 --> [*]"
+        },
+        {
+          "title": "이 글이 안 적은 것",
+          "question": "만드는 이야기 말고 무엇이 빠져 있는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"계정이 백오십 개에서 칠백삼십이 개로 늘었다\"]:::list\n  B[\"<b>그런데 계정을 지우는 절차가 통째로 없다</b><br/>만드는 이야기는 자세한데 치우는 이야기가 없다\"]:::accent\n  C[\"보안 위험 평가를 계정에 잇는다\"]:::list\n  D[\"그게 무엇인지도 어디에 쓰는지도 안 적는다\"]:::list\n  E[\"두 조로 나뉘어 있다\"]:::list\n  F[\"각각 무엇을 하는지 안 적는다\"]:::list\n  G[\"예산 담당자가 승인한다\"]:::list\n  H[\"예산을 어떻게 나누는지 넘치면 어떻게 되는지 없다\"]:::list\n  I[\"열두 명이 천 개를 돌린다\"]:::list\n  J[\"사고나 실패 사례가 하나도 없다\"]:::list\n  N[\"<i>모두 이 사이트의 지적이다 — 회사가 한계로 적은 것은 없다</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Multi-cloud governance at scale",
+          "url": "https://adevinta.com/techblog/multi-cloud-governance-at-scale/",
+          "publisher": "Adevinta Tech Blog",
+          "date": "2024-12-17",
+          "summary": "**AWS 계정 732개와 GCP 프로젝트 425개를 12명이 돌린다.** 2019년에는 계정이 150개 미만이었고 팀이 3명이었다. **처음에는 Confluence 표에 계정 담당자를 적었는데** *\"isn't a scalable solution when you have hundreds of accounts\"* 였다. **구조** — **Catalogue API**(400줄에서 **7,000줄 넘는 파이썬**으로 자랐다)가 *\"a homogeneous interface of primitives… abstracting the details between the different cloud providers\"* 를 준다 · **Organisations API** 가 조직 계층을 **영구 ID** 로 들고 이름·비용센터·상위 노드를 추상화한다 · **Cloud Management Portal** 이 승인 흐름을 붙인 셀프서비스 입구다 · **Notifications API** 는 AWS Health Aware 로 라우팅하고 **일간·주간 다이제스트 메일**을 보낸다. **권한은 네 층으로 쌓았다**(일반 권한 집합 → 팀이 IaC 로 관리하는 집합 → 역할 전환을 쓰는 ABAC → 계정별 고객 관리 정책). **🔴 버린 대안이 셋이고 이유가 각각 다르다** — **HR 서비스 포털 API**: *\"was not being properly maintained, and their data was not curated nor updated\"* 이고 *\"HR hierarchy does not always replicate functional structure\"* · **ABAC 만으로 가기**: *\"requires to switch roles after authenticating, which might be a burden for non-tech savvy users\"* · **AWS 기본 알림에 기대기**: 루트 계정 메일함을 봐야 하는데 *\"Most of our engineers don't access it regularly\"*. **⚠️ 대가도 적는다** — ABAC 속성은 *\"can only be used in the trust policy of the role which the user is jumping to\"* 이고, 일반 역할 방식은 *\"We cannot identify a job role given that attributes are sent within the same team, so we cannot effectively manage subgroups of people\"* 다. **권한 집합의 소프트 쿼터가 500개**라 그 자체가 병목이 된다. 스택 — AWS(SSO·IAM·Health Aware) · GCP · Datadog · Grafana Cloud · PagerDuty · Selenium(대량 온보딩 스크립트). **275·276 에서 두 번 더 읽어 나온 것.** **철학을 한 줄로 적는다** — *\"You build it, you run it (and you pay for it)\"* 이고, 중심 문장은 *\"having proper (meta)data is key to properly governing the cloud\"* 다. **자동화하는 이유도 적는다** — *\"In order to avoid being a blocker for a company of such scale and agility, we need to automate as much as possible.\"* **계정 생성이 승인 흐름이다** — 팀이 포털에서 요청하면 **예산에 연결되고 예산 담당자가 승인·거부**하며, 원하면 **IPAM 이 전 계정의 CIDR 를 훑어 겹치지 않는 대역으로 VPC 를 자동 배포**한다(*\"scanning all CIDR within cloud accounts to avoid conflicts\"*). 효과는 *\"keeping the ownership information up to date\"* 다. **접근 관리의 역사가 따로 있다** — 2019년 이전엔 IAM 사용자를 직접 관리했고(규모에서 유지 불가), 2019년엔 **AWS 에 외부 IdP 지원도 SSO API 도 없어 Selenium 스크립트로 대량 온보딩**했으며, 2020년 이후 SSO API 가 나오자 Catalogue API 가 *\"glue between AWS SSO, IdP user groups and Permission Sets\"* 가 됐다. **권한 폭발은 두 단계로 풀었다** — 일반 권한 집합으로 시작 → 팀이 PR 로 커스텀을 요청하며 **소프트 쿼터 500개**에 부딪힘 → **ABAC** → **고객 관리 정책**(빈 역할에 명시적 거부를 걸어 auditor·finance·developer 등으로 두고, 팀이 *\"completely manage their permissions within their own AWS accounts\"* 하게 한다. 부족하면 권한 집합으로 역할 전환하는 대비책이 있다). 팀은 셋(일반 역할·ABAC·자체 정책)을 따로 쓰거나 섞어 쓸 수 있다. **⚠️ 276 의 3회차 재독에서 확인한 것 — 이 글은 여러 항목을 이름만 대고 설명하지 않는다.** **ROLFP**(보안 위험 평가 프레임워크)는 Catalogue API 가 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 안 적는다** · **FinOps 와 GovOps 두 스쿼드**로 나뉘어 있다고만 하고 **분담을 안 적는다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다** · **사고나 실패 사례가 하나도 없다**(이 관찰은 이 사이트의 것이다)."
+        },
+        {
+          "title": "OPA memory usage considerations and lessons from our transition to Kyverno",
+          "url": "https://adevinta.com/techblog/opa-memory-usage-considerations-and-lessons-from-our-transition-to-kyverno/",
+          "publisher": "Adevinta Tech Blog",
+          "date": "2025-02-12",
+          "summary": "**정책 엔진이 클러스터마다 메모리를 먹는 문제.** **30개 넘는 클러스터에 각각 3개 이상의 컨트롤러 파드**가 돈다. OPA/Gatekeeper 는 판단에 쓸 자원을 동기화해 메모리에 들고 있어야 하는데, **파드 변동이 심한 클러스터에서 메모리가 수 기가바이트씩 출렁였다**. **동기화 대상에서 파드를 빼자 메모리가 8GB 에서 2.7GB 로 떨어졌다**(약 65% 감소). 그 뒤 Kyverno 로 옮겼는데 **대가를 명확히 적는다** — *\"This approach reduces memory consumption but increases the load on the Kubernetes API server.\"* **메모리를 아낀 값을 API 서버가 대신 낸다는 뜻이다**(이 정리는 이 사이트의 것이다)."
         }
       ]
     }
