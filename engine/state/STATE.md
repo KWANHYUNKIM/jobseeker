@@ -8,70 +8,70 @@
 
 ## 지금 파는 중
 
-**없다 — 272 에서 Snap 을 닫았다. 완료 48곳. 큐 잔량 0/3.**
+**없다 — 진행 중 회사가 없다. 완료 48곳. 큐 잔량 2/3.**
 
-**다음 사이클은 후보 조사다**(`--gaps` 도 그렇게 낸다). 회사를 파지 말고 **팔 수 있는지
-확인해 적기만** 한다 — 1차 자료가 **의사결정과 대가**를 말하는지 보고 `## 대기` 표로
-올린다. 목표 3곳.
+**273 은 후보 조사였다.** `--gaps` 가 [후보 조사]를 냈고 그게 맞았다. **여덟 곳을 열어
+두 곳을 올리고 여섯 곳을 접었다.**
 
-### 272 에서 한 일
+### 올린 곳 둘
 
-**Snap(48번째)을 `done` 으로 닫았다** — 도메인 2개 · 기능 5개.
-`business_model` 에 **글 열 편을 읽고 남은 반복 다섯**을 이 사이트의 정리로 적었다:
-① **자를 어떻게 세울지가 반복해서 문제가 되고 네 방식이 다 나온다**(골든셋을 만들고 범위를
-밝히기 / 못 잰다고 적기 / 자를 만들고 결과가 나쁘다고 적기 / **범위를 다른 편에서 밝히기**)
-② **잴 수 있는 자리에서는 재고 못 재는 자리에서는 못 잰다고 적는다** ③ **글끼리 잇는 방식이
-묶음마다 정반대다**(3부작은 서로를 부르는데 Specs 는 거의 안 부른다 — **한 회사 안에 양쪽이
-다 있는 첫 사례**) ④ **대가의 밀도가 극단적으로 다르다**(RAG 거절 이유 일곱 vs Casper·Snap
-Cloud 0줄) ⑤ **설계 근거로 남의 제품 동작을 든다**(Claude Code 의 grep — 이 사이트 첫 사례).
+**① Adevinta** (스페인·노르웨이 · 커머스/분류광고) — `adevinta.com/techblog/` **자체
+호스팅**. 세 편을 열었다. **⭐ `a-pragmatic-evaluation-of-software-engineering-ai-tooling`
+(2026-03-09)이 이 사이트에 특별한 값이 있다** — **엔지니어 77명 · 실제 업무 165건 · 4주**로
+AI 코딩 도구 셋을 재고(추정 대비 **43% / 24% / 1%**, 만족도 **4.2 / 3.6 / 2.8**),
+**한계를 첫머리에 적는다**(추정이 주관적이고, 한 달이라 장기 효과 미측정이며, **요금제
+차이가 결과에 영향**을 줬다). **Snap 과 정확히 반대 위치다 — Snap 은 자기가 만든 도구를
+재는데 여기는 남의 도구를 자기 업무에 붙여 재고 자를 의심한다.**
+⚠️ 글마다 편차가 있다 — data mesh 편은 **수치가 0** 이었다.
 
-### 🔴 272 의 수확 — 운영 사실 ⑱ 이 IR 에서도 통했다
+**② trivago** (독일 · 기타/여행 메타서치) — `tech.trivago.com` **자체 호스팅**, 2026 글이
+여섯 편. `how-we-cut-kafka-consumer-deployment-costs-by-83`(2026-06-12)이 **셋 다 강했다** —
+**버린 대안 셋**(*"So was switching to reactor-kafka the answer? No — it didn't help once
+deployed to staging"*), **대가**(*"In-memory delays are risky. Even when they work fine
+today, they can come back to bite you"*), **수치**(파드 **60→6, 83%** · 지연 평균 **7초**
+/최대 **30초** · **8k msg/s** · 기동 **60초→10초**). **⭐ 비어 있던 여행 자리를 채운다.**
 
-**매출 실액과 DAU 를 마침내 받았다.** IR 목록이 JS 라 URL 을 두 번 추측해 404 였는데
-(운영 사실 ⑰), **`WebSearch` 에 `allowed_domains: ["investor.snap.com"]` 을 걸어 상세
-경로를 찾아 원문을 열었다.** **Q2 2026 — 매출 15억 9,900만 달러(전년 대비 19% 증가) ·
-DAU 4억 9,300만(5% 증가) · MAU 9억 7,100만 · 순손실 1억 6,400만(전년 2억 6,300만에서 축소)
-· 조정 EBITDA 2억 5,000만 · FCF 1억 2,100만.** 지역별 북미 9억 4,290만 / 유럽 3억 5,380만
-/ 기타 3억 230만.
+### 📌 Roblox — 경로는 찾았는데 기준 미달이라 '확인해 둔 후보' 로 남겼다
 
-**⑱ 은 이제 두 종류 사이트에서 확인됐다** — 엔지니어링 블로그(268, `/eyeconnect`)와
-IR(272). **목록이 JS 로 도는 사이트는 URL 을 추측하지 말고 `allowed_domains` 검색을 먼저
-쓴다.**
+**최종 주소가 `about.roblox.com/newsroom/<연>/<월>/<슬러그>` 다**(`blog.roblox.com` →
+`corp.roblox.com` → `about.roblox.com`, **리다이렉트 두 번인데 본문은 다 온다**).
+두 편을 열었으나 **둘 다 버린 대안이 없고 수치가 약했다**. 대가는 적는다.
+**기준(셋 중 둘) 미달이라 접었지만 `Inside the Tech` 시리즈에 다른 편이 여럿이므로 게임
+자리가 급하면 다시 볼 값이 있다.** ⚠️ 2023~2024 글이라 최신은 아니다.
 
-### ⚠️ Snap 에서 끝내 못 채운 것
+### 접은 곳 여섯 — 이유는 `## 재시도 안 함` 에 적었다
 
-- **블로그 2쪽 이후를 못 봤다.** 검색으로 목록 밖 글 넷을 찾아 **총 열 편**을 읽었지만
-  2쪽 이후에 무엇이 있는지는 모른다.
-- **⚠️ Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글을 한 편도 못 봤다** —
-  1쪽에 없었고 검색으로도 안 나왔다. **이 회사의 가장 큰 시스템이 이 사이트에 비어 있다.**
-  `open_questions` 에 남겼다.
+**Plaid · Skyscanner · Traveloka · Carousell · Expedia** 는 전부 **Medium 호스팅**이고,
+**Plaid 은 커스텀 도메인(`engineering.plaid.com`)인데도 403** 이었다. **Zepto 도 403.**
+**아프리카는 두 번째로 빈손**이다(Paystack·Flutterwave 에 이어 Jumia·Chipper·Yoco·
+Safaricom 을 찾았지만 **엔지니어링 블로그 자체가 안 나온다** — 팟캐스트와 업계 뉴스뿐).
 
-### 다음 회사 — 후보 조사, 한국 밖에서
+### 다음 사이클
 
-**한국 회사가 아홉이라 한국 밖에서 찾는다.**
+**큐가 2 이므로 `--gaps` 는 [큐 미달]이나 [보강]을 낼 수 있다** — 출력을 실제로 보고
+따른다. **큐를 하나 더 채워도 되고, 대기 둘 중 하나를 파기 시작해도 된다.**
 
-**📌 1순위 — Grab 보강 후보.** 이미 `done` 이지만 `engineering.grab.com` 에 2026 새 글이
-있다: **Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
-**Counter Service 저장소 이전(07-03)**. **뒤 둘은 이 사이트의 기존 `iceberg-lake` ·
-`counter-service` 기능의 후속이다** — 보강으로 붙일 수 있다.
+**📌 Grab 보강 후보(계속 유효)** — 이미 `done` 이지만 `engineering.grab.com` 에 2026 새 글:
+**Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
+**Counter Service 저장소 이전(07-03)**. **뒤 둘은 기존 `iceberg-lake` · `counter-service`
+기능의 후속이다.**
 
-**안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · Traveloka ·
-Plaid · Adevinta · Skyscanner · Carousell · VNG.
-
-**빈 자리** — 라틴아메리카 0(접었다·재시도 금지) · **게임 1**(Roblox — Cygames 접어 실마리
-없음) · 아프리카 1 · 인도 1 · 여행 1. 동남아는 Grab.
+**안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
+**한국 편중은 그대로 아홉.**
+**빈 자리** — 라틴아메리카 0(재시도 금지) · **게임 1**(Roblox 는 위 단서) · **아프리카 1**
+(두 번 빈손 — 사실상 재시도 금지에 가깝다) · 인도 1. **여행은 trivago 가 채운다.**
 **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
 
-### 비교 문서 재료 — Snap 하나가 두 축을 크게 채웠다
+### 비교 문서 재료
 
-- **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — **Snap 하나가 다섯 재료를 준다.**
-  **자를 못 구해 "못 잰다" 고 적은 사례(GNSS)는 이 사이트에 처음이고**, 같은 회사가 잴 수
-  있는 쪽(EyeConnect · 상호작용)에서는 세 자리 수치를 내며, **범위를 다른 편에서 밝히는
-  경우**(Code Search → CodePal)와 **자를 만들고 결과가 나쁘다고 적는 경우**(공간 벤치마크)
-  까지 있다. Wayfair 의 *'잴 자가 있느냐로 갈린다'* 와 하이퍼커넥트 반례가 같은 축에 선다.
-- **⭐ `기계가 그렇다는데`** — Snap 이 두 답을 준다. **`agentic-code-search` 는 새 논거다** —
-  *"a stronger model means better search with nothing for us to change. RAG can't ride that
-  curve; its ceiling is the retriever, not the reasoner."*
+- **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — **Snap 하나가 다섯 재료를 준다**
+  (자를 못 구해 "못 잰다" 고 적은 GNSS 는 이 사이트에 처음, 잴 수 있는 쪽에서는 세 자리
+  수치, 범위를 다른 편에서 밝히기, 자를 만들고 결과가 나쁘다고 적기). **⭐ 여기에 Adevinta 가
+  붙으면 축이 완성된다** — **자기 도구가 아니라 남의 도구를 자기 업무로 재고, 그 자의 한계를
+  첫머리에 적는다.**
+- **⭐ `기계가 그렇다는데`** — Snap 이 두 답(`code-review-agent` · `agentic-code-search`,
+  후자는 *"a stronger model means better search with nothing for us to change"* 라는 새
+  논거)을 주고, **Adevinta 가 세 번째로 붙는다 — 유일하게 회의적인 쪽에서.**
 - `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯) ·
   `되돌릴 수 있는 것을 먼저 한다` 보강.
 
@@ -266,6 +266,16 @@ Yelp 의 광고 매출 도메인은 한 편만 읽었을 때 *"버린 대안이 
 
 
 ## 재시도 안 함
+
+- **Plaid** — `plaid.com/blog/...` 가 전부 **`engineering.plaid.com`(Medium 커스텀 도메인)
+  으로 301** 되고 그쪽은 **403**. 내용은 좋아 보였는데(Aurora MySQL → TiDB, **12k writes/sec**
+  병목, 우회 설계에 **연 2 엔지니어-년**) **본문을 못 받는다.**
+- **Zepto** — `blog.zepto.com` **403**.
+- **Skyscanner · Traveloka · Carousell · Expedia Group** — 전부 **Medium 호스팅**.
+  (Medium 호스팅 전반은 이미 막힌 곳이다.)
+- **아프리카 — 두 번째로 빈손.** Jumia · Chipper Cash · Yoco · Safaricom 을 찾았으나
+  **엔지니어링 블로그 자체가 없다**(팟캐스트·업계 뉴스만). Paystack·Flutterwave 에 이어
+  둘째다 — **새 단서 없이는 다시 찾지 않는다.**
 
 - **Cygames** `tech.cygames.co.jp` — **두 방법으로 두 번 다 실패했다**(252 WebFetch · 253 브라우저 `get_page_text`). 둘 다 *"본문 없음"* 이고 `/archives/` 는 404 다. **게임 자리(Roblox 하나뿐)를 메울 유일한 실마리였지만 접는다.** 새 단서(다른 도메인의 목록 주소)가 없으면 다시 열지 않는다.
 
