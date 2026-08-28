@@ -53,6 +53,10 @@
     {
       "slug": "dropbox",
       "reason": "FY2025 매출 총액(25.21억 달러)은 공개되지만 단일 구독 매출로만 공시한다. Dropbox Sign·DocSend 는 별도 공시가 없어 회사 문서에도 \"규모는 확인하지 못했다\"로 남아 있다"
+    },
+    {
+      "slug": "github",
+      "reason": "Microsoft 산하라 GitHub 단독 재무를 공시하지 않는다. ARR 30억 달러 초과는 회사 발표가 아니라 보도이고 Copilot 은 좌석 수(470만)만 공개돼 매출로 환산할 수 없다"
     }
   ]
 }
