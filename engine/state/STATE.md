@@ -8,72 +8,75 @@
 
 ## 지금 파는 중
 
-**없다. 완료 49곳. 진행 중 없음. 큐 잔량 0/3.**
+**없다. 완료 49곳. 진행 중 없음. 큐 잔량 2/3.**
 
-### 🔴 282 에서 잡은 오류 — 이미 완료한 회사를 큐에 다시 올렸다
+**283 은 후보 조사였고 `--gaps` 도 그렇게 냈다. 두 곳을 올렸다.**
 
-**273 의 후보 조사가 `tech.trivago.com` 을 새 후보로 판정해 대기에 올렸는데, trivago 는
-2026-08-22 에 이미 `done` 이었다**(기능 `kafka-consumers` · `internal-graphql-gateway`,
-소스 7개). **그때 근거로 삼은 Kafka 두 편(83% 절감 · KEDA)도 이미 소스에 들어 있었다.**
+### 🔴 운영 사실 ⑲ 가 첫 사이클에 값을 냈다 — 또 하나를 잡았다
 
-**282 에서 새 프로파일을 쓰다가 회사 파일을 덮어썼고, `index.json` 의 중복 검사(assert)가
-걸려서 알아챘다. 즉시 `git checkout` 으로 복구했다** — `status: done` · 기능 2개 · 도메인
-2개(`Kafka 소비 파이프라인` · `내부 API 통합`)가 그대로 살아 있다.
+**완료 목록을 먼저 뽑았더니 `roblox` 가 있었다.** 273 부터 STATE 에 *"게임 1 빈 자리 ·
+Roblox 단서"* 라고 적어 왔는데 **이미 판 회사였다.** QUEUE 의 '확인해 둔 후보' 에 정정을
+달았다 — **새 후보가 아니라 보강 단서로만 읽는다.**
 
-**⚠️ 원인은 후보 조사에서 완료 목록과 대조하지 않은 것이다.** 273 에서 검색으로 블로그를
-찾고 한 편을 열어 "기준 셋 통과" 까지는 맞았지만, **그 회사를 이미 팠는지를 안 봤다.**
+**⚠️ 그리고 '빈 자리' 기록 자체가 틀렸다.** 완료 목록을 보면 **아프리카도 차 있다** —
+`moniepoint`(나이지리아). **남은 빈 자리는 라틴아메리카 하나뿐이고 그건 재시도 금지다.**
+아래 목록을 고쳐 적었다.
 
-### 282 에 남긴 것
+### 올린 곳 둘 — 둘 다 이스라엘 SaaS, 둘 다 자체 호스팅
 
-- **큐 대기에서 trivago 를 뺐다**(완료된 회사다).
-- **회사 파일에는 진짜 새 정보만 보강했다** — **2026년 2분기 총매출 1억 6,840만 유로 ·
-  21% 성장**(여섯 분기 연속 두 자릿수) · **조정 EBITDA 110만 유로 흑자**(2023년 이후 첫
-  2분기 흑자) · **연간 가이던스 2,500만 → 약 3,000만 유로**. 기존에는 FY2025(총매출 5억
-  4,890만 유로)까지만 있었다.
-- **⭐ Adevinta 와의 대비를 적었다** — **Adevinta 는 2024 상장폐지로 실적이 공개되지 않는데
-  trivago 는 분기마다 숫자를 낸다.** 둘 다 유럽 마켓플레이스다.
-- **`open_questions` 에 이 중복 사건 자체를 기록했다.**
+**① monday.com** — `engineering.monday.com`, **2026 글이 24편**(최신 08-28).
+`mondaydb-3-solving-htap-for-a-trillion-table-system`(2026-05-19)을 열어 확인했다.
+**버린 대안** — DuckDB 안 쓰기 버퍼링과 보드당 여러 파일+union 을 검토하다
+*"what if we don't write to DuckDB from the write path at all?"* 로 방향을 틀었다.
+**대가** — **DuckDB 는 파일당 writer 하나**(*"this sounds like a dealbreaker"*) · **보드를
+가로지르는 읽기는 결과적 일관성**(*"typically converging within 500 milliseconds"*) · 캐시를
+잃으면 지연이 오른다. **수치** — 보드 로드 **5배** · 큰 보드 **20배** · 집계 **거의 50배** ·
+**인프라 비용 40~60% 감소** · **100만+ 조직의 보드 읽기 100%** · 캐시 히트율 **95%+** ·
+WAL 동기 중앙값 **3ms**. 다른 후보 편 — 보드 아이템 ID 생성(04-09) · 권한 재설계(04-26) ·
+**600+ 서비스 관측 표준화**(08-10).
 
-### 다음 사이클 — 후보 조사다 (큐 0/3)
+**② Wix** — `www.wix.engineering/post/<슬러그>`, 자체 호스팅.
+`how-we-built-a-zero-downtime-database-migration-service-at-wix` 로 확인했다.
+**버린 대안 셋** — MySQL Dump(*"it cannot be performed with zero downtime"*) · Amazon DMS
+(*"it simply doesn't fit"*) · 다중 소스 복제(프라이머리 장애 위험·번거로운 토폴로지).
+**대가** — **파티션 수는 시작할 때 정하고** *"cannot be changed safely mid-flight"* · 데이터
+쏠림 인정 · **어느 시점부터** *"rollback is not an option without losing data"*.
+**수치** — 약 **200개 MySQL 클러스터** · 검증 창 **1시간 이상** · MSK 메시지 **8MB**.
+⚠️ **목록 페이지는 카드가 placeholder 로 와서 날짜를 못 읽었다** — 글 URL 은 `WebSearch` +
+`allowed_domains` 로 찾는다(⑱).
 
-**⚠️ 운영 사실 ⑲ 를 반드시 쓴다** — **후보를 올리기 전에 `index.json` 의 완료 목록과
-대조한다.** 한 줄이면 된다:
-`python3 -c "import json;d=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(sorted(e['slug'] for e in d['companies']))"`
-**블로그 도메인이 아니라 회사 단위로 본다** — 이름이 달라 보여도 이미 판 회사일 수 있다.
+### 접은 곳 — `## 재시도 안 함` 에 적었다
 
-**후보 조사 기준(273 에서 쓴 그대로)** — 목록 제목만 보고 올리지 않는다. **글 한 편을 실제로
-열어** ① 버린 대안 ② 대가·한계 ③ 수치 를 보고 **셋 중 둘이 없으면 올리지 않는다.**
-**한국 밖에서** 찾는다(한국 회사가 아홉).
+**Lyft**(`eng.lyft.com` 이 **Medium 커스텀 도메인**) · **Trendyol · Hepsiburada**(Medium) —
+전부 이미 막힌 Medium 계열이다.
 
-**📌 Grab 보강 후보(가장 확실하다)** — 이미 `done` 이지만 `engineering.grab.com` 에 2026 새
-글이 있다: **Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
-**Counter Service 저장소 이전(07-03)**. **뒤 둘은 기존 `iceberg-lake` · `counter-service`
-기능의 후속**이라 보강으로 붙는다. **⚠️ 이건 '새 회사' 가 아니라 '보강' 이므로 큐가 아니라
-보강 후보로 다룬다.**
-**📌 Roblox 단서** — 최종 주소가 **`about.roblox.com/newsroom/<연>/<월>/<슬러그>`**(리다이렉트
-두 번, 본문은 다 온다). 두 편 다 버린 대안이 없어 기준 미달로 접었지만 `Inside the Tech`
-시리즈에 다른 편이 있다. **게임 자리가 급하면 다시 본다.**
+### 다음 사이클
+
+**큐 2/3 이므로 `--gaps` 는 [신규]로 monday.com 을 지목할 가능성이 크다.** 출력을 보고
+따르되, **한 곳을 더 채워 3/3 을 만드는 것도 정당하다**(`--gaps` 의 안내 — 바닥을 치기 전에
+채운다). **⚠️ 후보를 올리기 전에 완료 목록과 대조한다**(운영 사실 ⑲).
+
+**📌 Grab 보강 후보(큐가 아니라 보강)** — `engineering.grab.com` 2026 새 글:
+**Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
+**Counter Service 저장소 이전(07-03)**. 뒤 둘은 기존 `iceberg-lake`·`counter-service` 의 후속.
+**📌 Roblox 도 보강 단서**(완료 회사) — `about.roblox.com/newsroom/<연>/<월>/<슬러그>`.
 **안 열어 본 후보** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
-**빈 자리** — 라틴아메리카 0(재시도 금지) · **게임 1** · **아프리카 1**(두 번 빈손) · 인도 1.
-**여행은 trivago 가 이미 채우고 있었다.** **한국 편중 아홉.**
+**빈 자리(283 에서 정정)** — **라틴아메리카 하나뿐이고 재시도 금지다.** 게임은 `roblox`,
+아프리카는 `moniepoint`(나이지리아), 인도는 `zerodha`, 여행은 `trivago` 가 이미 차 있다.
+**한국 편중 아홉**(baemin·coupang·daangn·hyperconnect·kakao·kurly·musinsa·naver·toss).
 **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
 
 ### ⚠️ 비교 문서를 쓸 때가 됐다 — 새 축 후보 다섯
 
-**완료 49곳이고 Adevinta 하나가 축 다섯을 새로 세웠다.** `--gaps` 가 비교 문서를 지목하면
-아래에서 고른다(**같은 도메인을 두 회사 이상에서 채웠는지**가 기준이다).
-
 1. **`틀린 가설을 어떻게 버리는가`** — **가장 잘 서 있다.** Adevinta DNS 편(헛발 둘 · 증상만
    눌러 일주일 뒤 재발 · *"discard one hypothesis before starting a new one"*) · Careem 의
    **Gzip CPU 착시** · Doximity 의 **넓이 대신 반복 횟수로 읽기**.
-2. **`아낀 값은 어디로 갔는가`** — Adevinta **메모리→API 서버**(8GB→2.7GB, 옮겨 간 쪽은 안
-   쟀다) · Careem **언두 로그 5.7TB** · Zerodha **색인 대신 압축** · Doximity **미룬 병합**.
+2. **`아낀 값은 어디로 갔는가`** — Adevinta **메모리→API 서버**(8GB→2.7GB) · Careem **언두
+   로그 5.7TB** · Zerodha **색인 대신 압축** · Doximity **미룬 병합**.
 3. **`만드는 이야기만 있고 치우는 이야기가 없다`** — Adevinta 거버넌스 편의 **계정 폐기 절차
-   부재**(계정 732개)가 첫 재료, **같은 회사의 DNS·정책 엔진 편이 반례**.
-4. **`가장 느린 곳이 남의 것일 때`** — Adevinta 의 **외부 HTTP 서비스 초당 3천 건**이 전체를
-   정하는데(앞 단계는 5만·1만) **우회 이야기가 없다.**
-5. **`설정이 실제 동작을 가릴 때`** — Adevinta OCR 편의 **105개 중 70개가 무시** · **언어를
-   골라도 다른 모델이 돈다.**
+   부재**(계정 732개), **같은 회사의 DNS·정책 엔진 편이 반례**.
+4. **`가장 느린 곳이 남의 것일 때`** — Adevinta 의 **외부 HTTP 서비스 초당 3천 건**.
+5. **`설정이 실제 동작을 가릴 때`** — Adevinta OCR 편의 **105개 중 70개가 무시**.
 
 **기존 재료** — **⭐⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서` 에 Snap 다섯 + Adevinta** ·
 **⭐ `기계가 그렇다는데` 에 Snap 둘 + Adevinta 하나** · `관측에 값을 무엇으로 치르는가`(여덟)
@@ -270,6 +273,11 @@ Yelp 의 광고 매출 도메인은 한 편만 읽었을 때 *"버린 대안이 
 
 
 ## 재시도 안 함
+
+- **Lyft** — `eng.lyft.com` 이 **Medium 커스텀 도메인**이다(글 URL 에 `?gi=` 가 붙고 `/feed`
+  가 *"Lyft Engineering - Medium"* 이다). 자체 호스팅 경로가 따로 없다.
+- **Trendyol · Hepsiburada** — 둘 다 **Medium**(`medium.com/hepsiburadatech` 등). 자체
+  기술블로그 도메인이 안 나온다.
 
 **⑲ 후보를 올리기 전에 `index.json` 의 완료 목록과 대조한다.** 273 에서 trivago 를 새
 후보로 올렸는데 **2026-08-22 에 이미 `done` 이었다**(기능 2개, 근거로 삼은 글까지 이미
