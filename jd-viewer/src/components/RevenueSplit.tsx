@@ -29,8 +29,6 @@ export function RevenueSplit({
   total?: string
 }) {
   const known = streams.filter((s) => typeof s.share === 'number' && s.share > 0)
-  if (known.length < 2) return null
-
   const sum = known.reduce((a, s) => a + (s.share ?? 0), 0)
   const rest = Math.max(0, 100 - sum)
   // 합이 100 에 못 미치면 남은 만큼을 '그 외'로 둔다. 눈속임으로 늘려 채우면
@@ -39,6 +37,9 @@ export function RevenueSplit({
     ...known.map((s, i) => ({ key: s.name, name: s.name, share: s.share ?? 0, amount: s.amount, rank: i })),
     ...(rest > 1 ? [{ key: '__rest', name: '그 외', share: rest, amount: undefined, rank: -1 }] : []),
   ]
+  // 칸이 하나뿐이면 막대가 아니라 그냥 색칠한 줄이다. 다만 '광고 95% + 그 외'
+  // 처럼 회사가 한 줄로만 밝힌 경우는 그 자체가 그림이 되므로 살린다.
+  if (cells.length < 2) return null
 
   return (
     <figure className="m-0 mt-3 reveng-prose">
