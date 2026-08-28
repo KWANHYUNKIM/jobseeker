@@ -636,6 +636,18 @@
       "one_liner": "20년 넘은 그룹웨어를 팔면서 그것을 계속 옮겨 싣는 일본 SaaS",
       "updated_at": "2026-08-29",
       "domain": "blog.cybozu.io"
+    },
+    {
+      "slug": "paytm",
+      "name": "페이티엠",
+      "name_en": "Paytm (One97 Communications)",
+      "country": "IN",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "가맹점 결제 기기를 구독으로 팔고 그 위에서 대출을 중개하는 인도 핀테크",
+      "updated_at": "2026-08-29",
+      "domain": "paytm.com/blog/engineering"
     }
   ],
   "domains": [
@@ -825,7 +837,10 @@
     "이십 년 된 것을 멈추지 않고 옮긴다",
     "테넌트가 사만 개일 때 문을 여는 법",
     "에이전트가 말을 안 들을 것을 전제한다",
-    "에이전트보다 그 주위가 오래 걸린다"
+    "에이전트보다 그 주위가 오래 걸린다",
+    "옮기는 값과 남기는 값을 견준다",
+    "거래 기록을 어디까지 맞출 것인가",
+    "앞단에서 끝낸다"
   ],
   "countries": {
     "KR": "한국",

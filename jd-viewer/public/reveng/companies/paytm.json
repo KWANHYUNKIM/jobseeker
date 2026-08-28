@@ -1,0 +1,211 @@
+{
+  "slug": "paytm",
+  "name": "페이티엠",
+  "name_en": "Paytm (One97 Communications)",
+  "country": "IN",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-08-29",
+  "domain": "paytm.com/blog/engineering",
+  "one_liner": "가맹점 결제 기기를 구독으로 팔고 그 위에서 대출을 중개하는 인도 핀테크",
+  "business_model": "**두 수익원이 서로를 떠받친다** — **가맹점에게 결제 수단을 깔고, 그 가맹점의 거래 기록으로 대출을 중개한다.** 회사가 스스로를 *\"India's Merchants Payments Leader\"* 로 적는다.\n\n**2025년 6월 분기(FY26 1분기)** 숫자가 그 구조를 보인다 — 영업 매출 **1,918 크로르(+28% YoY)** 중 **순결제 매출이 529 크로르(+38%)**, **금융 서비스가 561 크로르(+100%)** 다. 기여 이익은 **1,151 크로르(+52%)**, 기여 마진 **60%**, PAT **123 크로르**로 **흑자 전환**했다.\n\n**⭐ 성장의 무게중심이 결제에서 금융으로 옮겨 갔다** — 결제가 38% 느는 동안 금융 서비스가 **두 배**가 됐고, 회사는 그 이유를 **가맹점 대출 확대와 DLG 포트폴리오의 trail revenue** 로 적는다. **결제는 관계를 만들고 금융이 마진을 낸다**(이 정리는 이 사이트의 것이다). ⚠️ **순결제 매출은 순액이고 영업 매출은 총액이라 두 숫자를 그대로 비율로 견주면 안 된다**(이 주의도 이 사이트의 것이다).\n\n---\n\n**⚠️ 그런데 이 회사의 기술 글은 그 사업 구조를 거의 안 다룬다**(이 관찰은 이 사이트의 것이다). `paytm.com/blog/engineering/` 의 글 열 편은 **저장·전달·거래 저장소·기기 보안·관측**에 몰려 있고, **대출 심사나 가맹점 정산 이야기는 한 편도 없다.** 그래서 이 사이트가 여는 도메인은 **회사가 파는 것이 아니라 회사가 글로 쓴 것**을 따라간다.\n\n**⚠️ 그리고 블로그가 2023년 4월에서 멈춰 있다** — 열 편 중 가장 최근이 `Achieving Seamless Data Migration`(2023-04-12)이고 그 뒤가 없다. **재료의 총량이 정해져 있다는 뜻이다.**",
+  "products": [
+    "Paytm 앱 (지갑·UPI·요금 납부)",
+    "Paytm for Business (가맹점 앱)",
+    "Soundbox (결제 알림 기기)",
+    "Paytm 결제 게이트웨이",
+    "금융 서비스 유통 (가맹점 대출 중개)"
+  ],
+  "revenue_streams": [
+    {
+      "name": "금융 서비스 유통",
+      "how": "**가맹점 대출 중개와 DLG 포트폴리오의 trail revenue.** FY26 1분기 **561 크로르**로 **전년 대비 100%** 늘었다 — 두 수익원 중 성장이 가장 빠르다",
+      "amount": "561 크로르 (2025년 6월 분기)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Paytm Q1 FY 2026: Solidifies Unrivalled Leadership in India's Merchant Payment Business, turns Profitable with ₹123 Cr PAT",
+          "url": "https://paytm.com/blog/investor-relations/paytm-turns-profitable-with-rs123cr-pat-in-q1fy26/",
+          "publisher": "Paytm Investor Relations",
+          "date": "2025-07-22",
+          "summary": "**2025년 6월 분기(FY26 1분기) 실적.** 영업 매출 **1,918 크로르(+28% YoY)**, 순결제 매출 **529 크로르(+38%)**, 금융 서비스 매출 **561 크로르(+100%)**. 기여 이익 **1,151 크로르(+52%)** 에 기여 마진 **60%**, PAT **123 크로르**, EBITDA **72 크로르**로 **흑자 전환**했다.\n\n금융 서비스가 두 배로 큰 이유를 **가맹점 대출 확대와 DLG(Default Loss Guarantee) 포트폴리오의 trail revenue** 로 적는다."
+        }
+      ]
+    },
+    {
+      "name": "결제 서비스 (순액)",
+      "how": "**가맹점 구독료(결제 기기)와 결제 처리 마진.** FY26 1분기 순결제 매출 **529 크로르(+38%)**. 회사는 성장 요인을 *\"high-quality subscription merchants\"* 증가와 처리 마진 개선으로 적는다",
+      "amount": "529 크로르 (2025년 6월 분기, 순액)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Paytm Q1 FY 2026: Solidifies Unrivalled Leadership in India's Merchant Payment Business, turns Profitable with ₹123 Cr PAT",
+          "url": "https://paytm.com/blog/investor-relations/paytm-turns-profitable-with-rs123cr-pat-in-q1fy26/",
+          "publisher": "Paytm Investor Relations",
+          "date": "2025-07-22",
+          "summary": "**2025년 6월 분기(FY26 1분기) 실적.** 영업 매출 **1,918 크로르(+28% YoY)**, 순결제 매출 **529 크로르(+38%)**, 금융 서비스 매출 **561 크로르(+100%)**. 기여 이익 **1,151 크로르(+52%)** 에 기여 마진 **60%**, PAT **123 크로르**, EBITDA **72 크로르**로 **흑자 전환**했다.\n\n금융 서비스가 두 배로 큰 이유를 **가맹점 대출 확대와 DLG(Default Loss Guarantee) 포트폴리오의 trail revenue** 로 적는다."
+        }
+      ]
+    },
+    {
+      "name": "그 밖 (마케팅 서비스·커머스 등)",
+      "how": "영업 매출 **1,918 크로르**에서 위 둘을 뺀 나머지. ⚠️ **순결제 매출이 순액이라 단순 차감으로 규모를 말할 수 없다** — 이 항목의 크기는 이 사이트가 확인하지 못했다",
+      "confidence": "unknown"
+    }
+  ],
+  "domain_map": {
+    "title": "파는 것과 글로 쓰는 것이 어긋난다",
+    "question": "무엇으로 돈을 벌고, 무엇을 공개된 글로 남겼는가?",
+    "code": "flowchart TD\n  BIZ[\"<b>가맹점에 결제를 깔고 그 위에서 대출을 중개한다</b><br/>• 2025년 6월 분기 영업 매출 1,918 크로르, 28% 증가<br/>• 금융 서비스 561 크로르로 두 배<br/>• 순결제 529 크로르, 38% 증가\"]:::accent\n  PAY[\"결제가 관계를 만든다\"]:::list\n  FIN[\"금융이 마진을 낸다\"]:::list\n  BLOG[\"공개된 기술 글 열 편\"]:::list\n  GAP[\"대출 심사도 가맹점 정산도 한 편도 없다\"]:::quiet\n  D1[\"연 자리 하나 — 리전을 옮기는 값과 남기는 값\"]:::list\n  D2[\"연 자리 둘 — 거래 기록을 어디까지 맞출 것인가\"]:::list\n  D3[\"연 자리 셋 — 앞단에서 끝내기\"]:::list\n  REST[\"아직 안 읽은 글 넷 — Redis 클러스터, 루팅 기기 차단, 가짜 문자 탐지, 관측\"]:::quiet\n  STOP[\"<i>블로그가 2023년 4월에서 멈췄다 — 이 집계는 이 사이트의 것</i>\"]:::quiet\n  BIZ --> PAY --> FIN\n  BIZ --> BLOG\n  BLOG --> GAP\n  BLOG --> D1\n  BLOG --> D2\n  BLOG --> D3\n  BLOG --> REST\n  BLOG --- STOP"
+  },
+  "domains": [
+    {
+      "name": "옮기는 값과 남기는 값을 견준다",
+      "why": "**450TB 짜리 S3 버킷 하나에 객체가 50억 개 있고, 그것을 뭄바이에서 새로 연 하이데라바드 리전으로 옮겨야 했다.** 이 도메인을 먼저 여는 이유는 **이 회사의 글 중 유일하게 버린 대안과 한계와 수치를 다 적는 글**이기 때문이다(이 판단은 이 사이트의 것이다).\n\n**⭐ 그리고 이 글의 결말이 특이하다 — 다 옮기지 않기로 했다.** S3 Batch Operations 에 재시도가 없어서 권한 문제로 실패한 수백만 객체를 다시 처리하려면 **50억 개를 다시 훑어 비용이 2배(추가 6만 달러)** 가 된다. 그래서 **실패한 것을 원래 리전에 남기거나 지웠다** — 근거는 *\"objects failed due to permission issues and were likely not in use\"* 다. **끝까지 옮기는 대신 안 옮길 것을 정한 셈이다**(이 표현은 이 사이트의 것이다).\n\n**시작하기 전에도 같은 계산을 했다** — 삭제 표시됐거나 낡은 **15억 개를 이관 전에 지웠다**.",
+      "tech": [
+        {
+          "tech": "S3 Cross-Region Replication + S3 Batch Operations",
+          "solves": "**데이터와 메타데이터를 함께 복제한다** — *\"they offered the ability to replicate both data and metadata\"* 가 고른 이유다. **버린 대안은 S3 Transfer Acceleration** 으로, *\"too cost-prohibitive for our large-scale Petabyte data transfer\"* 였다.",
+          "limits": "**🔴 재시도가 없다** — *\"No retry mechanism: As of today there is no retry mechanism to process only failed objects without creating a manifest again\"*. 실패한 것만 다시 돌릴 수 없고 매니페스트를 다시 만들어야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Achieving Seamless Data Migration: Petabytes of Legacy S3 Data and Billions of Objects Migration to a New Region",
+              "url": "https://paytm.com/blog/engineering/achieving-seamless-data-migration/",
+              "publisher": "Paytm Engineering",
+              "date": "2023-04-12",
+              "summary": "**S3 뭄바이 리전에서 신설 하이데라바드 리전으로 450TB · 객체 50억을 옮긴 기록이다.** 🔴 **버린 대안에 이유가 명시된다** — *\"S3 Transfer Acceleration, while a viable option, was too cost-prohibitive for our large-scale Petabyte data transfer\"*. 고른 것은 **S3 Cross-Region Replication 과 S3 Batch Operations** 로, *\"they offered the ability to replicate both data and metadata\"* 가 이유다.\n\n🔴 **한계를 셋 적는다.** ① **객체 단위 페일오버** — *\"While achieving bucket-level failover is relatively straightforward, the same cannot be said for objects-level failover\"*. ② **CDN 을 우회하는 하드코딩된 S3 URL** 이 레거시 앱에 남아 있어 접근 로그를 파이썬으로 훑어 찾아야 했다. ③ **⭐ S3 Batch Operations 에 재시도가 없다** — *\"No retry mechanism: As of today there is no retry mechanism to process only failed objects without creating a manifest again\"*. 권한 문제로 실패한 객체가 수백만인데 재처리하려면 50억 객체를 다시 훑어 **비용이 2배(추가 6만 달러)** 가 되므로 **실패한 것을 원래 리전에 남기거나 지우기로 했다**.\n\n**이관 전에 15억 개를 지웠다** — 삭제 표시됐거나 낡은 것들이라 *\"clean up such objects in order to streamline the migration process and reduce costs\"*."
+            }
+          ]
+        },
+        {
+          "tech": "객체 단위 CDN 페일오버",
+          "solves": "기본 위치에서 못 찾으면 보조 위치로 넘어가게 해 **이관 중에도 읽기가 끊기지 않게** 한다.",
+          "limits": "**버킷 단위와 난이도가 다르다** — *\"While achieving bucket-level failover is relatively straightforward, the same cannot be said for objects-level failover\"*. 그리고 **CDN 을 우회하는 하드코딩된 S3 URL** 이 레거시 앱에 남아 있어 이 장치가 안 걸리는 경로가 있었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Achieving Seamless Data Migration: Petabytes of Legacy S3 Data and Billions of Objects Migration to a New Region",
+              "url": "https://paytm.com/blog/engineering/achieving-seamless-data-migration/",
+              "publisher": "Paytm Engineering",
+              "date": "2023-04-12",
+              "summary": "**S3 뭄바이 리전에서 신설 하이데라바드 리전으로 450TB · 객체 50억을 옮긴 기록이다.** 🔴 **버린 대안에 이유가 명시된다** — *\"S3 Transfer Acceleration, while a viable option, was too cost-prohibitive for our large-scale Petabyte data transfer\"*. 고른 것은 **S3 Cross-Region Replication 과 S3 Batch Operations** 로, *\"they offered the ability to replicate both data and metadata\"* 가 이유다.\n\n🔴 **한계를 셋 적는다.** ① **객체 단위 페일오버** — *\"While achieving bucket-level failover is relatively straightforward, the same cannot be said for objects-level failover\"*. ② **CDN 을 우회하는 하드코딩된 S3 URL** 이 레거시 앱에 남아 있어 접근 로그를 파이썬으로 훑어 찾아야 했다. ③ **⭐ S3 Batch Operations 에 재시도가 없다** — *\"No retry mechanism: As of today there is no retry mechanism to process only failed objects without creating a manifest again\"*. 권한 문제로 실패한 객체가 수백만인데 재처리하려면 50억 객체를 다시 훑어 **비용이 2배(추가 6만 달러)** 가 되므로 **실패한 것을 원래 리전에 남기거나 지우기로 했다**.\n\n**이관 전에 15억 개를 지웠다** — 삭제 표시됐거나 낡은 것들이라 *\"clean up such objects in order to streamline the migration process and reduce costs\"*."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "거래 기록을 어디까지 맞출 것인가",
+      "why": "**돈이 오가는 기록을 담는 분산 데이터베이스에서 성능과 일관성 중 무엇을 얼마나 내줄지 정하는 자리다.** 회사가 그 선택을 명시적으로 적는다 — 강·약·중 세 일관성 중에서 골라 설정한다고 하고, 그 이유를 *\"the tradeoff between performance and the data consistency\"* 로 적는다.\n\n**버린 대안이 둘 있다** — **Raft** 를 안 쓴 이유가 *\"Paxos was easier to implement than Raft\"* 이고, **다중 리더**를 안 쓴 이유가 단일 리더가 더 효율적이라는 것이다. ⚠️ **둘 다 근거가 한 줄뿐이고 무엇을 재서 그렇게 판단했는지는 안 적는다**(이 지적은 이 사이트의 것이다).\n\n⚠️ **이 도메인은 아직 본문 한 편만 읽었고 수치가 하나도 없다** — *\"millions of digital transactions\"* 와 *\"superfast\"* 뿐이다. **기능을 쓰기 전에 한 편 더 읽는다.**",
+      "tech": [
+        {
+          "tech": "Paxos 단일 리더 합의",
+          "solves": "클러스터의 서버들이 서로 계속 상태를 맞추게 한다. **Raft 대신 고른 이유가 구현 난이도**이고(*\"Paxos was easier to implement than Raft\"*), **단일 리더를 고른 이유는 효율**이다.",
+          "limits": "⚠️ **왜 그렇게 판단했는지의 근거가 한 줄씩뿐이다** — 벤치마크도 사고 기록도 없다(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Paytm Handles Millions of Digital Transactions Safely Everyday",
+              "url": "https://paytm.com/blog/engineering/how-paytm-handles-millions-of-digital-transactions-safely-everyday/",
+              "publisher": "Paytm Engineering",
+              "date": "2022-09-16",
+              "summary": "**거래를 담는 분산 데이터베이스를 무엇으로 맞출 것인가에 대한 글이다.** **버린 대안이 둘 명시된다** — **Raft** 는 *\"Paxos was easier to implement than Raft\"* 라서, **다중 리더**는 *\"single leader approach as it is more efficient than the multi leader concept\"* 라서 버렸다. 샤드에 직접 적용하는 대신 **논리 데이터베이스 층**에 실행해 거기서 샤드로 내려보낸다.\n\n쓰기는 **LSM 트리**로 메모리에 모았다가 나중에 영속 저장소로 내리고, 엔진은 **InnoDB** 다. 일관성은 **강·약·중** 셋 중에서 골라 설정한다고 적는다 — *\"the three types of consistencies that any distributed system uses while calculating the tradeoff between performance and the data consistency\"*.\n\n⚠️ **수치가 없다** — *\"millions of digital transactions\"* 와 *\"superfast\"* 뿐이고 처리량·지연 값이 안 적혀 있다."
+            }
+          ]
+        },
+        {
+          "tech": "논리 데이터베이스 층 + 샤딩",
+          "solves": "샤드에 직접 적용하는 대신 **논리 데이터베이스에 실행하고 거기서 필요한 변경을 샤드로 내려보낸다** — 확장성이 이유다.",
+          "limits": "⚠️ **그 층이 병목이 되는지, 샤드 간 분포를 무엇으로 정하는지는 글에 없다**(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Paytm Handles Millions of Digital Transactions Safely Everyday",
+              "url": "https://paytm.com/blog/engineering/how-paytm-handles-millions-of-digital-transactions-safely-everyday/",
+              "publisher": "Paytm Engineering",
+              "date": "2022-09-16",
+              "summary": "**거래를 담는 분산 데이터베이스를 무엇으로 맞출 것인가에 대한 글이다.** **버린 대안이 둘 명시된다** — **Raft** 는 *\"Paxos was easier to implement than Raft\"* 라서, **다중 리더**는 *\"single leader approach as it is more efficient than the multi leader concept\"* 라서 버렸다. 샤드에 직접 적용하는 대신 **논리 데이터베이스 층**에 실행해 거기서 샤드로 내려보낸다.\n\n쓰기는 **LSM 트리**로 메모리에 모았다가 나중에 영속 저장소로 내리고, 엔진은 **InnoDB** 다. 일관성은 **강·약·중** 셋 중에서 골라 설정한다고 적는다 — *\"the three types of consistencies that any distributed system uses while calculating the tradeoff between performance and the data consistency\"*.\n\n⚠️ **수치가 없다** — *\"millions of digital transactions\"* 와 *\"superfast\"* 뿐이고 처리량·지연 값이 안 적혀 있다."
+            }
+          ]
+        },
+        {
+          "tech": "LSM 트리 쓰기 + InnoDB",
+          "solves": "변경을 메모리에 모았다가 나중에 영속 저장소로 내려 **쓰기 성능을 높인다**. 엔진은 오픈소스인 InnoDB 를 쓴다.",
+          "limits": "⚠️ **읽기 증폭이나 컴팩션 비용 이야기가 없다** — LSM 을 쓰면 따라오는 대가인데 글이 적지 않는다(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Paytm Handles Millions of Digital Transactions Safely Everyday",
+              "url": "https://paytm.com/blog/engineering/how-paytm-handles-millions-of-digital-transactions-safely-everyday/",
+              "publisher": "Paytm Engineering",
+              "date": "2022-09-16",
+              "summary": "**거래를 담는 분산 데이터베이스를 무엇으로 맞출 것인가에 대한 글이다.** **버린 대안이 둘 명시된다** — **Raft** 는 *\"Paxos was easier to implement than Raft\"* 라서, **다중 리더**는 *\"single leader approach as it is more efficient than the multi leader concept\"* 라서 버렸다. 샤드에 직접 적용하는 대신 **논리 데이터베이스 층**에 실행해 거기서 샤드로 내려보낸다.\n\n쓰기는 **LSM 트리**로 메모리에 모았다가 나중에 영속 저장소로 내리고, 엔진은 **InnoDB** 다. 일관성은 **강·약·중** 셋 중에서 골라 설정한다고 적는다 — *\"the three types of consistencies that any distributed system uses while calculating the tradeoff between performance and the data consistency\"*.\n\n⚠️ **수치가 없다** — *\"millions of digital transactions\"* 와 *\"superfast\"* 뿐이고 처리량·지연 값이 안 적혀 있다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "앞단에서 끝낸다",
+      "why": "**연 수조 회의 CDN 요청을 뒤로 안 보내는 이야기다.** 엣지의 동적 캐싱으로 백엔드 호출을 **99% 이상** 줄였고, 지연이 **500ms 에서 100ms**, 백엔드 인프라 비용이 **95%** 줄었다.\n\n**⭐ 선택의 근거가 시장에 있다** — 안드로이드 사용자 비중이 높고 *\"limited network availability\"* 인 인도 시장이라 **압축률이 중요했고**, 그래서 Gzip 대신 **Brotli** 를 골랐다(텍스트 자산에서 압축률 **20~26%** 개선).\n\n**⚠️ 그런데 이 도메인의 글은 버린 설계 대안도 인정한 대가도 하나도 없다.** 그래서 이 사이트는 그 글을 **기능으로 쓰지 않고 여기 기술 재료로만 썼다**(이 판단은 이 사이트의 것이다). **기능은 아직 안 읽은 `How Paytm Redis Clusters is Managing High Workloads`(2023-01-05)에서 나올 가능성이 크다** — 같은 '앞단에서 끝낸다' 문제의 다른 층이다(**추정**).",
+      "tech": [
+        {
+          "tech": "엣지 동적 캐싱 + HTTP/2 + Brotli",
+          "solves": "거래가 많은 서비스에서 **백엔드로 가는 CDN 호출을 99% 이상** 줄이고, HTTP/2 로 완전 적재 시간을 **45% 이상** 줄이며, Brotli 로 텍스트 자산 압축률을 **20~26%** 올린다. 결과는 지연 **500ms → 100ms**, 백엔드 인프라 비용 **95% 절감**, 연간 **수 크로르** 절감이다.",
+          "limits": "⚠️ **이 글은 못 하는 것을 하나도 적지 않는다** — 동적 캐싱의 무효화를 어떻게 하는지, 캐시가 틀렸을 때 무엇을 하는지, Brotli 압축의 CPU 값이 얼마인지가 전부 없다(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Paytm is Optimizing Trillion CDN Hits Annually to Provide Better Customer Experience",
+              "url": "https://paytm.com/blog/engineering/how-paytm-is-optimizing-trillion-cdn-hits-annually/",
+              "publisher": "Paytm Engineering",
+              "date": "2022-11-01",
+              "summary": "**연 수조 회의 CDN 요청을 앞단에서 끝내는 이야기다.** **HTTP/2** 로 *\"reduce fully loaded page load time (TTLB) by more than 45%\"*, **Brotli** 를 Gzip 대신 골라 텍스트 자산에서 *\"20-26% increase in compression ratio\"*, 엣지의 **동적 캐싱**으로 백엔드 호출을 *\"by more than 99%\"* 줄였다. 지연은 **500ms 에서 100ms**, 백엔드 인프라 비용은 **95%** 줄었고 연간 절감이 **수 크로르** 다.\n\n**인도 시장의 사정이 선택의 근거로 적힌다** — 안드로이드 사용자 비중이 높고 *\"limited network availability\"* 라서 압축률이 중요했다.\n\n⚠️ **버린 설계 대안도 인정한 대가도 하나도 없다** — 그래서 이 사이트는 이 글을 기능으로 쓰지 않고 도메인의 기술 재료로만 썼다(이 판단은 이 사이트의 것이다)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "open_questions": [
+    "**⚠️ 블로그가 2023년 4월에서 멈췄다.** `paytm.com/blog/engineering/` 의 글은 열 편이고 가장 최근이 `Achieving Seamless Data Migration`(2023-04-12)이다. **재료의 총량이 정해져 있다는 뜻이고, 이 회사는 재방문으로 새 것이 나올 가능성이 낮다**(이 판단은 이 사이트의 것이다).",
+    "**아직 안 읽은 글이 넷 있다**(제목과 주소만 확인했다) — `How Paytm Redis Clusters is Managing High Workloads with Growing Customer Base`(2023-01-05) · `Blocking App Access for Rooted or Jailbroken Devices to Safeguard Users`(2022-11-16) · `Detect Fake SMSs within Seconds!`(2022-03-03) · `Building an Open-source Monitoring System with Prometheus`(2022-08-30). **뒤의 둘(루팅 기기 차단·가짜 문자 탐지)이 한 주제로 묶이면 네 번째 도메인 감이다**(**추정**) — 둘 다 **기기와 문자를 얼마나 믿을 것인가**의 문제로 보인다.",
+    "**⚠️ 사업의 심장이 글에 없다.** 이 회사는 **가맹점 대출 중개**에서 매출이 두 배로 늘었는데(FY26 1분기 561 크로르, +100%) **심사·한도·상환·DLG 를 다루는 기술 글이 한 편도 없다.** 정산도 마찬가지다. **공개된 것은 저장·전달·기기 보안 같은 주변부뿐이다**(이 대비는 이 사이트의 것이다).",
+    "**`Optimizing Trillion CDN Hits`(2022-11-01)는 기능으로 쓰지 않기로 했다**(이 판단은 이 사이트의 것이다). **수치는 굵은데**(500ms→100ms · 백엔드 비용 95% 절감 · CDN 호출 99% 이상 감소 · 압축률 20~26% 개선) **버린 설계 대안도 인정한 한계도 0줄**이라 이 사이트의 기준(**버린 대안·대가·수치 중 둘**)에서 수치 하나만 넘긴다. 도메인 `앞단에서 끝낸다` 의 기술 재료로만 썼다."
+  ],
+  "sources": [
+    {
+      "title": "Achieving Seamless Data Migration: Petabytes of Legacy S3 Data and Billions of Objects Migration to a New Region",
+      "url": "https://paytm.com/blog/engineering/achieving-seamless-data-migration/",
+      "publisher": "Paytm Engineering",
+      "date": "2023-04-12",
+      "summary": "**S3 뭄바이 리전에서 신설 하이데라바드 리전으로 450TB · 객체 50억을 옮긴 기록이다.** 🔴 **버린 대안에 이유가 명시된다** — *\"S3 Transfer Acceleration, while a viable option, was too cost-prohibitive for our large-scale Petabyte data transfer\"*. 고른 것은 **S3 Cross-Region Replication 과 S3 Batch Operations** 로, *\"they offered the ability to replicate both data and metadata\"* 가 이유다.\n\n🔴 **한계를 셋 적는다.** ① **객체 단위 페일오버** — *\"While achieving bucket-level failover is relatively straightforward, the same cannot be said for objects-level failover\"*. ② **CDN 을 우회하는 하드코딩된 S3 URL** 이 레거시 앱에 남아 있어 접근 로그를 파이썬으로 훑어 찾아야 했다. ③ **⭐ S3 Batch Operations 에 재시도가 없다** — *\"No retry mechanism: As of today there is no retry mechanism to process only failed objects without creating a manifest again\"*. 권한 문제로 실패한 객체가 수백만인데 재처리하려면 50억 객체를 다시 훑어 **비용이 2배(추가 6만 달러)** 가 되므로 **실패한 것을 원래 리전에 남기거나 지우기로 했다**.\n\n**이관 전에 15억 개를 지웠다** — 삭제 표시됐거나 낡은 것들이라 *\"clean up such objects in order to streamline the migration process and reduce costs\"*."
+    },
+    {
+      "title": "How Paytm Handles Millions of Digital Transactions Safely Everyday",
+      "url": "https://paytm.com/blog/engineering/how-paytm-handles-millions-of-digital-transactions-safely-everyday/",
+      "publisher": "Paytm Engineering",
+      "date": "2022-09-16",
+      "summary": "**거래를 담는 분산 데이터베이스를 무엇으로 맞출 것인가에 대한 글이다.** **버린 대안이 둘 명시된다** — **Raft** 는 *\"Paxos was easier to implement than Raft\"* 라서, **다중 리더**는 *\"single leader approach as it is more efficient than the multi leader concept\"* 라서 버렸다. 샤드에 직접 적용하는 대신 **논리 데이터베이스 층**에 실행해 거기서 샤드로 내려보낸다.\n\n쓰기는 **LSM 트리**로 메모리에 모았다가 나중에 영속 저장소로 내리고, 엔진은 **InnoDB** 다. 일관성은 **강·약·중** 셋 중에서 골라 설정한다고 적는다 — *\"the three types of consistencies that any distributed system uses while calculating the tradeoff between performance and the data consistency\"*.\n\n⚠️ **수치가 없다** — *\"millions of digital transactions\"* 와 *\"superfast\"* 뿐이고 처리량·지연 값이 안 적혀 있다."
+    },
+    {
+      "title": "How Paytm is Optimizing Trillion CDN Hits Annually to Provide Better Customer Experience",
+      "url": "https://paytm.com/blog/engineering/how-paytm-is-optimizing-trillion-cdn-hits-annually/",
+      "publisher": "Paytm Engineering",
+      "date": "2022-11-01",
+      "summary": "**연 수조 회의 CDN 요청을 앞단에서 끝내는 이야기다.** **HTTP/2** 로 *\"reduce fully loaded page load time (TTLB) by more than 45%\"*, **Brotli** 를 Gzip 대신 골라 텍스트 자산에서 *\"20-26% increase in compression ratio\"*, 엣지의 **동적 캐싱**으로 백엔드 호출을 *\"by more than 99%\"* 줄였다. 지연은 **500ms 에서 100ms**, 백엔드 인프라 비용은 **95%** 줄었고 연간 절감이 **수 크로르** 다.\n\n**인도 시장의 사정이 선택의 근거로 적힌다** — 안드로이드 사용자 비중이 높고 *\"limited network availability\"* 라서 압축률이 중요했다.\n\n⚠️ **버린 설계 대안도 인정한 대가도 하나도 없다** — 그래서 이 사이트는 이 글을 기능으로 쓰지 않고 도메인의 기술 재료로만 썼다(이 판단은 이 사이트의 것이다)."
+    },
+    {
+      "title": "Paytm Q1 FY 2026: Solidifies Unrivalled Leadership in India's Merchant Payment Business, turns Profitable with ₹123 Cr PAT",
+      "url": "https://paytm.com/blog/investor-relations/paytm-turns-profitable-with-rs123cr-pat-in-q1fy26/",
+      "publisher": "Paytm Investor Relations",
+      "date": "2025-07-22",
+      "summary": "**2025년 6월 분기(FY26 1분기) 실적.** 영업 매출 **1,918 크로르(+28% YoY)**, 순결제 매출 **529 크로르(+38%)**, 금융 서비스 매출 **561 크로르(+100%)**. 기여 이익 **1,151 크로르(+52%)** 에 기여 마진 **60%**, PAT **123 크로르**, EBITDA **72 크로르**로 **흑자 전환**했다.\n\n금융 서비스가 두 배로 큰 이유를 **가맹점 대출 확대와 DLG(Default Loss Guarantee) 포트폴리오의 trail revenue** 로 적는다."
+    }
+  ],
+  "features": []
+}

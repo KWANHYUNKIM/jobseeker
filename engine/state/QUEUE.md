@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Paytm** | IN · 핀테크 | 319 에서 프로파일을 썼다 — **도메인 3개 · 기능 0개.** 다음은 도메인 ①(옮기는 값과 남기는 값을 견준다)의 기능이고 재료는 `Achieving Seamless Data Migration`(2023-04-12)이다. ⚠️ **블로그가 2023-04 에서 멈췄고 안 읽은 글이 넷 남았다** |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Paytm** | IN · 핀테크 | `paytm.com/blog/engineering/` | ✅ WebFetch 로 본문이 온다 | **두 편을 열어 봤고 둘째 편이 기준을 넉넉히 넘겼다.** `Achieving Seamless Data Migration`(2023-04-12, S3 뭄바이→하이데라바드 이관)은 **버린 대안·한계·수치 셋을 다 적는다** — **S3 Transfer Acceleration 을 비용 때문에 버렸고**, *"No retry mechanism"* 이라 실패 객체를 재처리하려면 **50억 객체를 다시 훑어 비용이 2배(추가 6만 달러)** 가 되므로 **실패한 것을 뭄바이에 남기거나 지우기로 했다.** 수치도 굵다 — **450TB · 객체 50억 · 15억 삭제**. ⚠️ **반대로 `Optimizing Trillion CDN Hits`(2022-11-01)는 수치만 강하고**(500ms→100ms · 백엔드 비용 95% 절감 · CDN 호출 99% 이상 감소) **버린 대안도 대가도 0줄이다.** **첫 글만 봤으면 떨어뜨렸을 회사다.** 인도 표본이 Zerodha 하나뿐인 것도 이유다 |
 | **Freshworks** | IN · SaaS | `freshworks.com/explore-it/` · `/explore-cx/` | ✅ WebFetch 로 본문이 온다 | **두 편이 한 주제로 묶인다 — 멀티테넌트에서 부하를 어떻게 갈라 담는가.** `Sidekiq queue management using custom middleware`(2020-05-14)는 **버린 대안 둘을 이유와 함께** 적는다 — 포그라운드 처리는 *"increased response time, and handling retries in transactions"* 로 SLA 를 어겨서, 큐 시스템 교체는 *"This problem isn't going to be solved if we move to a new queueing system"* 라서. **수치도 있다** — 큐 **200개 이상**을 10개 버킷으로 묶어 **인프라 20% 절감**, 데이터센터 간 트래픽 차이 **24배**(240,000 vs 10,000 RPM). `How Freshdesk uses HAProxy at scale`(2021-08-24)은 같은 문제를 라우팅 쪽에서 푼다(shell 단위 격리 · 호스트/경로/샤드/헤더 라우팅). ⚠️ **HAProxy 편은 대가가 두 줄뿐이고 수치도 약하다**(티켓 100ms vs 리포트 300ms) |
 
 
