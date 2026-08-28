@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **bol** | EU · 커머스 | 350 에서 59번째로 열었다 — **프로파일 완료 · 도메인 1개(`거래는 끝나도 정산은 계속된다`) · 기능 0개.** 재료 한 편만 읽어 **두 편 규칙 미충족.** 다음은 `Fast is slow, slow is fast`(데이터 엔지니어링 프로세스) 또는 `shifting left and shifting right`(카나리 릴리스) 또는 `near real-time X for you recommender systems`. **⚠️ 블로그 최신이 2024-11-07 이다** |
+| **bol** | EU · 커머스 | 351 에서 첫 기능 `move-four-years-of-past` 를 썼다 — **도메인 1개 · 기능 1개.** 결정 7개. **⚠️ 두 편 규칙 미충족**(한 편만 읽었다). **⭐ 재독이 넷을 더 냈다** — 전환 순간의 처리 · 리허설 방식 · 준비 단계에 새 인덱스 생성 · 상태 테이블의 재개 방식. **⚠️ 검증 이야기가 아예 없다.** 다음은 `Fast is slow, slow is fast`(2024-11-07, 같은 날) 또는 `shifting left and shifting right`(카나리) 또는 `near real-time X for you`(추천) |
 
 ## 대기
 
