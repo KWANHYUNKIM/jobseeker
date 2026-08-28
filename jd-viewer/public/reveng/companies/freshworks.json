@@ -173,9 +173,94 @@
       "features": [
         "rename-before-push"
       ]
+    },
+    {
+      "name": "한 코드베이스가 두 판을 동시에 안다",
+      "why": "**Rails 4.2 를 5.2 로 올리는데 개발을 멈출 수 없었다.** 그래서 **한 코드베이스가 두 버전에서 다 돌게** 만들고 **환경변수 하나**로 어느 쪽인지 정하게 했다. 목적이 명시된다 — **제품 팀의 기능 출시가 업그레이드 때문에 멈추지 않게** 하는 것이다.\n\n**⭐ 앞의 두 도메인과 문제가 다르다**(이 구분은 이 사이트의 것이다). ① 은 **한 고객의 문제가 전체를 무너뜨리지 않게** 하는 이야기이고 ② 는 **자원을 고르게 쓰는** 이야기인데, 여기는 **옛것과 새것이 같은 코드·같은 데이터 위에서 공존하는** 이야기다.\n\n**⭐⭐ 그리고 이 도메인의 값은 다 하고도 터진 셋에 있다**(이 판단은 이 사이트의 것이다). 이중 부팅·폐기 경고를 테스트 실패로 바꾸기·커버리지 90%·PR 마다 양쪽 테스트·블루그린·롤백 준비를 다 하고도 **분석 기능의 DateTime 정밀도**, **`Kernel.capture` 제거**, **CSRF 토큰 HMAC 의 하위 비호환**이 터졌다. 회사가 그 교훈을 이렇게 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**⚠️ 이 도메인은 글 한 편으로 썼다.** 이 사이트는 기능을 쓸 때 그 도메인의 글을 **두 편 이상** 읽는데, **이 회사에서 프레임워크 업그레이드를 다룬 글이 이것 하나다**(300·307·321 에서도 같은 방식으로 밝혔다).",
+      "tech": [
+        {
+          "tech": "bootboot 이중 부팅 + 잠금 파일 두 벌",
+          "solves": "**한 코드베이스가 두 Rails 버전에서 다 돈다.** 환경변수 **`DEPENDENCIES_NEXT`** 가 스위치이고 잠금 파일을 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 덕분에 **기능 출시가 안 멈춘다.**",
+          "limits": "⚠️ **애플리케이션 코드에 if/else 가 남는다.** 젬도 필요하면 두 버전을 조건부로 넣어야 하고, **내부 젬은 Rails 5 호환 패치를 위한 별도 브랜치**를 따로 유지해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        },
+        {
+          "tech": "deprecation_toolkit + 테스트 환경 raise + 프로덕션 `deprecation.rails` 알림",
+          "solves": "**폐기 경고를 테스트 실패로 바꿔 놓았다** — `ActiveSupport::Deprecation::Behavior` 를 raise 로 두면 새 폐기가 유닛 테스트를 깨뜨린다. 5.2 만이 아니라 **중간 판인 5.0·5.1 의 폐기도 함께** 모았다. 테스트가 못 덮는 것은 **프로덕션의 `deprecation.rails` 알림**으로 찾는다.",
+          "limits": "⚠️ **테스트가 안 닿는 코드의 폐기는 프로덕션에서야 알게 된다** — 회사가 그 보완책을 적어 두었다는 것이 곧 그 구멍을 인정한 것이다(이 해석은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        },
+        {
+          "tech": "직렬화 데이터의 양방향 호환 — 평범한 루비 객체 + 버전별 캐시 키",
+          "solves": "**옛 버전이 만든 것을 새 버전이 읽고, 새 버전이 만든 것도 옛 버전이 읽어야 한다.** Rails 객체를 그대로 저장하던 자리는 **평범한 루비 객체**로 바꾸고, 캐시는 **버전마다 다른 Memcache 키**를 써 서로 안 섞이게 했다.",
+          "limits": "⚠️ **캐시가 한동안 두 벌이 된다** — 그래서 이관이 끝난 뒤 지울 목록에 들어간다. **적중률이 얼마나 떨어졌는지, 메모리를 얼마나 더 썼는지는 글에 없다**(이 지적은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        },
+        {
+          "tech": "블루그린 전환 + 로그의 버전 태그",
+          "solves": "**두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 조금씩 옮긴다.** 로그에 **버전 태그**를 달아 어느 쪽에서 난 일인지 가르고, 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.",
+          "limits": "⚠️ **되돌린 기록은 없다** — 준비했다고만 적는다(이 지적은 이 사이트의 것이다). **전환에 며칠이 걸렸는지, 어느 비율에서 무엇을 봤는지도 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        },
+        {
+          "tech": "테스트를 K개 그룹으로 쪼개 컨테이너마다 전용 데이터베이스",
+          "solves": "**한 번 도는 데 1시간 45분이던 것을 20분 미만으로** 줄였다. 회사가 이유를 분명히 적는다 — *\"This high wait time was a severe bottleneck.\"* 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두** 돌렸다.",
+          "limits": "⚠️ **그룹 수만큼 컨테이너와 데이터베이스를 띄워야 한다** — 그 값이 글에 없다(이 지적은 이 사이트의 것이다). 그리고 **K 가 몇인지도 안 적혀 있다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        }
+      ],
+      "features": [
+        "know-both-versions"
+      ]
     }
   ],
   "open_questions": [
+    "**⚠️ 아직 안 읽은 `/saas/` 글이 넷 남았다**(326 기준) — `debugging-memory-corruption-in-production-rails-app-using-mozilla-rr-blog`(**프로덕션 메모리 손상을 기록·재생 디버거로 잡는 이야기** — Doximity `prod-profiling` 과 견줄 재료가 될 수 있다, **추정**) · `serving-private-content-from-s3-using-cloudfront-blog` · `how-feature-toggles-allow-us-to-experiment-at-scale-blog` · `optimizing-string-interpolations-in-ruby-blog`. **뒤의 둘은 Sidekiq 편이 본문에서 href 로 직접 건다.** ⚠️ **목록 페이지가 셋 다 안 열려**(`/explore-it/`·`/saas/eng-blogs/` 는 404) **이 회사의 글 전체 목록을 이 사이트는 확인하지 못했다** — 지금 아는 목록은 검색과 글 안의 링크로 모은 것이다.",
     "**🔴 325 에서 323 의 판단을 정정한다 — 엔지니어링 블로그가 생각보다 넓다**(PROMPT.md 2″단계). 323 에서는 읽을 수 있는 글이 `/explore-it/`·`/explore-cx/` 의 `Rails@Scale` 시리즈뿐이라고 적었는데, **⑱ 로 `Optimizing cache with MemoizeUntil` 을 찾다가 `/saas/` 아래에 엔지니어링 글이 더 있는 것을 확인했다** — `serving-private-content-from-s3-using-cloudfront-blog` · `how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog`(**무중단 Rails 업그레이드**) · `debugging-memory-corruption-in-production-rails-app-using-mozilla-rr-blog`(**프로덕션 메모리 손상 디버깅**) · `optimizing-string-interpolations-in-ruby-blog` · `how-feature-toggles-allow-us-to-experiment-at-scale-blog`. **뒤의 둘은 Sidekiq 편이 본문에서 href 로 직접 건다.** ⚠️ **다만 `https://www.freshworks.com/saas/eng-blogs/` 를 목록으로 열면 404 이고**(`/explore-it/` 도 404 다) **개별 글 주소로만 열린다.** **다음 사이클은 이 글들을 열어 새 도메인이 서는지 본다.**",
     "**⚠️ `Optimizing cache with MemoizeUntil` 은 본문이 사라졌다.** `https://www.freshworks.com/optimizing-cache-with-memoizeuntil-blog/` 로 주소는 찾았는데 **열면 `The Works` 마케팅 허브로 리다이렉트돼 기사 본문이 안 나온다**(325 에서 확인). 검색 결과 조각으로 **1분 주기 갱신으로 감싸 매 요청마다 Redis 를 안 치게 한다**는 것과, **2020년 4월 구글이 버킷을 안전하지 않다고 표시했을 때 Redis 의 플래그를 뒤집어 영향 시간을 줄였다**는 것까지는 확인했지만 **1차 자료의 본문이 아니므로 기능으로 쓰지 않는다.**",
     "**⚠️ 두 글이 서로를 안 부른다**(이 관찰은 이 사이트의 것이다). 고가용성 편(2020-07-15)은 같은 `Rails@Scale` 시리즈의 **`Optimizing cache with MemoizeUntil`** 과 **`Sidekiq queue management using custom middleware`** 를 부르는데, **HAProxy 편(2021-08-24)은 1년 뒤 글이라 거기 없다.** 그리고 **HAProxy 편이 고가용성 편을 부르는지는 이 사이트가 확인하지 못했다.** 두 글은 **같은 위험(한 고객의 문제가 전체를 무너뜨린다)을 다른 층에서 푸는데** 서로를 참조하지 않아, **앞에서 나누는 일과 뒤에서 끊는 일이 어떻게 맞물리는지는 두 글을 따로 읽어서는 알 수 없다.**",
@@ -219,6 +304,13 @@
       "publisher": "Freshworks Investor Relations",
       "date": "2026-05",
       "summary": "**2026년 1분기** — 총매출 **2억 2,860만 달러**로 2025년 1분기 **1억 9,630만 달러** 대비 **16%** 성장. **순 달러 유지율(NDR) 106%**(2025년 4분기 108%, 2025년 1분기 105%). 회사 역사상 가장 큰 거래 둘을 성사시켰고 **처음으로 ARR 100만 달러가 넘는 거래**가 나왔다고 적는다."
+    },
+    {
+      "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+      "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+      "publisher": "Freshworks Engineering",
+      "date": "2022-07-14",
+      "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
     }
   ],
   "features": [
@@ -1169,6 +1261,500 @@
           "publisher": "Freshworks Engineering (Rails@Scale)",
           "date": "2020-05-14",
           "summary": "**백그라운드 큐가 200개가 넘는데 그것들을 층에 얹는 방식이 들쭉날쭉했다** — *\"Sometimes, it went into a random distribution of queues into layers\"* 라 어떤 층은 사용률이 10% 미만인데 어떤 층은 60~70% 였다.\n\n**답은 큐를 다시 분류한 것이다** — 하는 일의 성격을 보고 **RPM·실행시간·SLA** 기준으로 **10개 버킷**으로 묶었다(realtime 40개 · scheduled 20개 · external 20개). 그리고 **Sidekiq 미들웨어가 Redis 로 밀기 전에 큐 이름을 갈아 끼운다** — 개발자 코드는 그대로 두고 **로컬 캐시 5분**으로 Redis 왕복을 줄인다.\n\n🔴 **버린 대안 둘에 이유가 있다** — 큐 수를 줄이려 **포그라운드로 처리**하는 안은 *\"increased response time, and handling retries in transactions\"* 로 SLA 를 어겨서, **큐 시스템 자체를 바꾸는 안**은 *\"This problem isn't going to be solved if we move to a new queueing system\"* 라서 버렸다.\n\n**수치** — **인프라 20% 감소**, 데이터센터 간 트래픽 차이 **24배**(미국 240,000 RPM vs 호주 10,000 RPM), 고객 한 곳이 시간당 **약 4만 잡**. ⚠️ **대가는 안 적는다.**"
+        }
+      ]
+    },
+    {
+      "key": "know-both-versions",
+      "name": "두 판을 동시에 아는 코드로 만든다",
+      "domain": "한 코드베이스가 두 판을 동시에 안다",
+      "updated_at": "2026-08-29",
+      "business": {
+        "why": "**Rails 4.2 를 5.2 로 올려야 하는데 그동안 제품 개발을 멈출 수 없었다.** 회사가 올리는 이유를 넷 적는데 그중 하나가 자기 자신이다 — *\"The older your version of Rails is, the harder it is to upgrade.\"* **미루면 더 비싸지는 종류의 일이다.**\n\n**⭐ 그래서 순서를 뒤집었다**(이 정리는 이 사이트의 것이다). 보통은 옮기고 나서 확인하는데, **여기는 확인할 수 있는 상태를 먼저 만들고 옮겼다** — 테스트가 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 이었으므로 **테스트부터 20분 미만으로 줄였고**, 그다음에 **한 코드베이스가 두 버전을 다 아는 상태**를 만들었다.\n\n**결과를 무중단·회귀 0 으로 적는다.** ⚠️ 다만 **그 판정의 근거는 글에 없다** — 트래픽 규모도, 오류율 변화도, 전환에 걸린 기간도 안 적혀 있다(이 지적은 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "올린 버전",
+            "value": "Rails 4.2.0 → 5.2.6",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "테스트 한 바퀴",
+            "value": "1시간 45분 → 20분 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "유닛 테스트 커버리지",
+            "value": "약 90%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "결과",
+            "value": "무중단 · 보고된 회귀 0 · 기능 출시 중단 없음 — ⚠️ 판정 근거는 글에 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "label": "그래도 터진 것",
+            "value": "셋 — DateTime 정밀도 · `Kernel.capture` 제거 · CSRF 토큰 HMAC 하위 비호환",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "업그레이드 계획을 세우다가",
+          "thought": "**개발을 멈추는 것이 가장 큰 값이라고 봤다.** 그래서 목표를 *\"regular development by product teams to proceed in parallel with the upgrade so that feature rollouts remained unaffected\"* 로 잡았다. **업그레이드를 프로젝트가 아니라 상태로 만든 셈이다**(이 표현은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        },
+        {
+          "at": "테스트를 한 번 돌려 보고",
+          "thought": "**1시간 45분이면 두 버전에서 다 돌릴 수 없다.** PR 마다 양쪽을 돌리려면 그 값이 두 배가 된다. **그래서 옮기기 전에 재는 도구부터 고쳤다** — 파일을 K개 그룹으로 갈라 **컨테이너마다 전용 데이터베이스**를 주고 20분 미만으로 줄였다(이 인과는 이 사이트의 해석이다).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        },
+        {
+          "at": "폐기 경고를 어떻게 다 찾을지 고민하다가",
+          "thought": "**사람이 목록을 훑는 대신 테스트가 깨지게 만들었다** — 테스트 환경의 폐기 동작을 **raise** 로 바꿨다. 그리고 **5.2 만이 아니라 건너뛰는 5.0·5.1 의 폐기까지** 모았다. **한 판 건너뛰면 그 사이의 경고도 같이 넘어온다는 것을 알고 있었다**(이 해석은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        },
+        {
+          "at": "다 준비하고 나서",
+          "thought": "**그래도 셋이 터졌다.** 회사가 그 교훈을 한 줄로 적는다 — *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"* **⭐ 그리고 터진 셋이 전부 같은 종류다** — 분석의 DateTime 정밀도, 사라진 `Kernel.capture`, CSRF 토큰의 HMAC 방식. **셋 다 코드가 아니라 옛것과 새것 사이의 표현 차이에서 났다**(이 관찰은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+              "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+              "publisher": "Freshworks Engineering",
+              "date": "2022-07-14",
+              "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "스위치",
+            "what": "환경변수 `DEPENDENCIES_NEXT`. **이 값 하나가 애플리케이션이 어느 Rails 로 뜰지를 정한다**"
+          },
+          {
+            "name": "잠금 파일 두 벌",
+            "what": "`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2). **두 버전의 의존성이 따로 고정된다**"
+          },
+          {
+            "name": "직렬화된 데이터",
+            "what": "직렬화 컬럼·쿠키·캐시에 든 것. **양쪽 버전이 서로 읽을 수 있어야 하는 유일한 공유 자원이다**"
+          },
+          {
+            "name": "색(blue/green)",
+            "what": "각 버전으로 뜬 인스턴스 그룹. **되돌린다는 것은 이전 색으로 트래픽을 되돌리는 것이다**"
+          }
+        ],
+        "invariants": [
+          "**데이터는 양방향으로 읽혀야 한다** — 옛 버전이 만든 것을 새 버전이 읽고, **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. 되돌릴 수 있으려면 이 조건이 필요하다(이 설명은 이 사이트의 것이다).",
+          "**두 버전에서 모두 테스트가 통과해야 병합된다** — *\"For each pull request, unit tests were executed in both Rails versions to ensure the fallback Rails version always had stable code.\"*",
+          "**이중 부팅의 흔적은 임시다** — if/else, 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 은 끝나면 지울 목록이다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "먼저 테스트를 K개 그룹으로 갈라 컨테이너마다 전용 데이터베이스를 준다 — 1시간 45분에서 20분 미만",
+            "why": "두 버전에서 다 돌리려면 한 바퀴 값이 두 배가 된다"
+          },
+          {
+            "step": "bootboot 으로 이중 부팅을 만들고 `DEPENDENCIES_NEXT` 를 스위치로 둔다",
+            "why": "제품 팀의 기능 출시가 멈추지 않아야 한다"
+          },
+          {
+            "step": "잠금 파일을 `Gemfile.lock` 과 `Gemfile_next.lock` 으로 가른다",
+            "why": "두 버전의 의존성이 서로 흔들지 않게"
+          },
+          {
+            "step": "안 쓰는 젬을 지우고, 필요하면 두 버전을 조건부로 넣는다. 내부 젬은 Rails 5 패치용 브랜치를 판다",
+            "why": "호환을 맞출 표면을 먼저 줄인다"
+          },
+          {
+            "step": "deprecation_toolkit 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 폐기 동작을 raise 로 바꾼다",
+            "why": "새 폐기가 유닛 테스트 실패로 드러나게"
+          },
+          {
+            "step": "테스트가 못 덮는 것은 프로덕션의 `deprecation.rails` 알림으로 찾는다",
+            "why": "커버리지 90% 밖이 남는다"
+          },
+          {
+            "step": "직렬화된 Rails 객체를 평범한 루비 객체로 바꾸고 캐시 키에 버전을 넣는다",
+            "why": "양쪽이 서로의 데이터를 읽을 수 있어야 한다"
+          },
+          {
+            "step": "PR 마다 두 버전에서 유닛 테스트를 돌리고 스테이징에서 Selenium 자동화로 회귀를 본다",
+            "why": "되돌아갈 쪽의 코드도 늘 안정적이어야 한다"
+          },
+          {
+            "step": "블루그린으로 두 색을 띄우고 트래픽을 조금씩 옮기며 로그의 버전 태그로 지켜본다",
+            "why": "문제가 나면 이전 색으로 되돌린다"
+          },
+          {
+            "step": "끝나면 if/else · 몽키패치 · 버전별 캐시 키 · `Gemfile_next.lock` 을 지우고 `config.load_defaults` 를 올린다",
+            "why": "이중 부팅의 흔적은 임시다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "업그레이드하는 동안 제품 개발을 멈출 것인가?",
+            "chosen": "**아니다 — bootboot 으로 이중 부팅을 만든다.** 환경변수 **`DEPENDENCIES_NEXT`** 하나로 어느 버전으로 뜰지 정하고, 잠금 파일을 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 가른다",
+            "alternatives": [
+              "개발을 얼고 한 번에 올리기 — 목표가 *\"feature rollouts remained unaffected\"* 였다"
+            ],
+            "tradeoff": "**업그레이드를 프로젝트가 아니라 상태로 만들었다**(이 표현은 이 사이트의 것이다). ⚠️ **대가는 애플리케이션 코드에 if/else 가 남는다는 것**이고, **내부 젬마다 Rails 5 호환 패치를 위한 별도 브랜치를 유지해야 한다.** 그래서 끝나고 지울 목록이 따로 생겼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "무엇부터 손댈 것인가?",
+            "chosen": "**테스트부터.** 한 바퀴에 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 이었다. 파일을 **K개 그룹**으로 나눠 **그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다",
+            "alternatives": [
+              "느린 테스트를 그대로 두고 업그레이드부터 하기 — PR 마다 두 버전에서 돌리면 값이 두 배가 된다"
+            ],
+            "tradeoff": "**옮기기 전에 재는 도구를 먼저 고쳤다**(이 정리는 이 사이트의 것이다) — 두 버전에서 모두 돌리기로 한 이상 이건 선택이 아니라 전제였다. ⚠️ **대가는 그룹 수만큼 컨테이너와 데이터베이스를 띄워야 한다는 것**인데(이 지적도 이 사이트의 것이다) **그 값도 K 가 몇인지도 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "폐기 예정 경고를 어떻게 다 찾을 것인가?",
+            "chosen": "**테스트가 깨지게 만든다.** `deprecation_toolkit` 으로 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 둔다. **건너뛰는 중간 판(5.0·5.1)의 폐기도 함께** 모은다",
+            "alternatives": [
+              "경고 로그를 사람이 훑기"
+            ],
+            "tradeoff": "**찾는 일을 이미 도는 장치에 얹었다**(이 표현은 이 사이트의 것이다) — 새 폐기가 곧 빨간 테스트가 된다. ⚠️ **대가는 테스트가 안 닿는 코드의 폐기는 못 잡는다는 것**이고, **회사도 그것을 알아 프로덕션의 `deprecation.rails` 알림을 따로 붙였다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "이미 저장된 데이터를 어떻게 할 것인가?",
+            "chosen": "**양쪽이 서로 읽을 수 있게 만든다.** 직렬화 컬럼에 Rails 객체를 그대로 넣던 자리는 **평범한 루비 객체**로 바꾸고, 캐시는 **버전별 Memcache 키**로 갈랐다",
+            "alternatives": [
+              "한 번에 새 형식으로 옮기고 옛 버전은 못 읽게 두기 — 그러면 되돌릴 수 없다"
+            ],
+            "tradeoff": "**🔴 이 결정이 되돌릴 길을 만든다**(이 정리는 이 사이트의 것이다) — 새 버전이 만든 데이터를 옛 버전이 못 읽으면 블루그린 롤백은 종이 위의 계획일 뿐이다. ⚠️ **대가는 캐시가 한동안 두 벌이 된다는 것**이고, **적중률이 얼마나 떨어졌는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "어떻게 넘길 것인가?",
+            "chosen": "**블루그린으로 조금씩.** 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달아 지켜본다. 실패하면 **안정적으로 돌던 이전 색으로 되돌린다**",
+            "alternatives": [
+              "한 번에 전부 새 버전으로 띄우기"
+            ],
+            "tradeoff": "**되돌릴 자리를 켜 둔 채로 옮겼다**(이 표현은 이 사이트의 것이다). ⚠️ **대가는 두 벌을 함께 돌리는 값**이고(이 지적도 이 사이트의 것이다), ⚠️ **되돌린 기록은 없다** — 준비했다고만 적는다. **전환에 얼마나 걸렸는지도 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "커버리지 90% 면 안심할 것인가?",
+            "chosen": "**아니다 — 폴백을 유지한다.** 회사가 교훈으로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures\"*. 그리고 **PR 마다 두 버전에서 유닛 테스트를 돌려** 되돌아갈 쪽의 코드도 늘 안정적이게 했다",
+            "alternatives": [
+              "테스트가 통과하면 옛 경로를 정리하기"
+            ],
+            "tradeoff": "**🔴 그리고 실제로 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣었다. **⭐ 셋 다 코드 논리가 아니라 옛것과 새것 사이의 표현 차이에서 났다**(이 관찰은 이 사이트의 것이다). ⚠️ **대가는 폴백을 유지하는 값**이고, **셋이 각각 얼마나 오래 갔는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "question": "끝나고 무엇을 치울 것인가?",
+            "chosen": "**이중 부팅의 흔적을 전부 지운다** — if/else 조건, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock`. 그리고 `new_framework_defaults` 를 살펴 **`config.load_defaults` 를 올린다**",
+            "alternatives": [
+              "그대로 두고 다음 업그레이드에 다시 쓰기"
+            ],
+            "tradeoff": "**⭐ 임시 장치를 임시로 끝낸 것이 이 글에서 드문 자리다**(이 평가는 이 사이트의 것이다) — 이 사이트가 읽은 이관 이야기 대부분은 **되돌릴 길을 언제 닫는지 안 적는다.** ⚠️ **대가는 다음 업그레이드에 그 장치를 다시 만들어야 한다는 것**이고(이 지적도 이 사이트의 것이다), **언제 치웠는지 시점은 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "bootboot",
+            "role": "한 코드베이스를 두 Rails 버전에서 부팅시킨다. 스위치는 환경변수 `DEPENDENCIES_NEXT`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "deprecation_toolkit + ActiveSupport::Notifications",
+            "role": "폐기 경고를 테스트 실패로 바꾸고, 테스트가 못 덮는 것은 프로덕션의 `deprecation.rails` 알림으로 잡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "도커 기반 병렬 테스트",
+            "role": "테스트 파일을 K개 그룹으로 갈라 컨테이너마다 전용 데이터베이스를 준다 — 1시간 45분에서 20분 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "버전별 Memcache 키",
+            "role": "두 Rails 버전이 같은 캐시를 서로 오염시키지 않게 한다. **이관이 끝나면 지운다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "블루그린 배포 + 로그 버전 태그",
+            "role": "두 색을 함께 띄우고 트래픽을 조금씩 옮기며, 실패하면 이전 색으로 되돌린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Selenium 자동화 테스트",
+            "role": "스테이징에서 앞단 회귀를 본다 — 유닛 테스트가 못 보는 자리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "split-then-cut",
+          "via": "둘 다 옛 경로를 살려 둔 채로 옮긴다 — 그런데 살려 두는 이유가 다르다",
+          "contract": "**웹 요청 쪽은 문제가 될 트래픽을 옆으로 빼려고 여러 갈래를 만들어 두고**(shell 라우팅), **업그레이드 쪽은 되돌아갈 자리를 남기려고 두 색을 함께 띄운다.** ⭐ **그런데 되돌릴 길을 닫는 시점을 정한 것은 업그레이드 쪽뿐이다**(이 대비는 이 사이트의 것이다) — 끝나고 if/else·몽키패치·버전별 캐시 키·`Gemfile_next.lock` 을 지웠다고 적는다. **HAProxy 편에는 shell 라우팅 규칙을 언제 걷는지가 없다.**",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "두 판이 같은 데이터를 서로 읽어야 하는 구간",
+            "why_hard": "**되돌릴 수 있으려면 새 버전이 만든 데이터를 옛 버전도 읽을 수 있어야 한다.** 그런데 프레임워크 업그레이드에서는 **직렬화 형식·쿠키 서명·캐시 표현이 바로 그 판 사이에서 바뀐다** — 이 회사에서 터진 셋 중 둘(**DateTime 정밀도**, **CSRF 토큰 HMAC**)이 정확히 그 자리였다(이 정리는 이 사이트의 것이다).",
+            "current_best": "이 회사의 답은 **저장 형식을 프레임워크에서 떼어 내는 것**이었다 — Rails 객체를 **평범한 루비 객체**로 바꾸고 캐시 키에 버전을 넣었다. ⚠️ **그래도 쿠키의 CSRF 토큰은 몽키패치로 메워야 했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          },
+          {
+            "problem": "무중단이었다는 것을 무엇으로 확인하는가",
+            "why_hard": "**무중단과 회귀 0 은 없었던 일에 대한 주장이라 그 자체로는 검증할 수 없다**(이 지적은 이 사이트의 것이다). 무엇을 얼마 동안 지켜봤고 어떤 지표가 어떻게 움직였는지가 있어야 그 말에 무게가 실린다.",
+            "current_best": "**⚠️ 이 글에는 그 근거가 없다.** 커버리지 **약 90%** 와 **PR 마다 두 버전 테스트**, **Selenium 회귀 시험**, **로그의 버전 태그**까지는 적는데 **트래픽 규모·오류율 변화·전환 기간·모니터링 지표가 하나도 없다.** 그리고 **실제로 셋이 터졌다는 사실 자체가 회귀 0 이라는 표현의 범위를 되묻게 한다**(이 지적도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+                "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+                "publisher": "Freshworks Engineering",
+                "date": "2022-07-14",
+                "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 코드베이스가 두 판으로 뜨는 길",
+          "question": "개발을 안 멈추면서 어떻게 옮기는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  CODE[\"한 코드베이스\"]\n  SW[\"<b>환경변수 DEPENDENCIES NEXT 가 스위치</b><br/>• Gemfile.lock 이면 Rails 4.2<br/>• Gemfile next.lock 이면 Rails 5.2<br/>• 젬은 필요하면 조건부로 둘 다\"]:::accent\n  OLD[\"Rails 4.2 로 뜬 색\"]:::list\n  NEW[\"Rails 5.2 로 뜬 색\"]:::list\n  DATA[(\"직렬화 컬럼 · 쿠키 · 캐시<br/>양쪽이 서로 읽어야 한다\")]\n  TEST[\"PR 마다 두 버전에서 유닛 테스트\"]:::list\n  SHIFT[\"트래픽을 조금씩 옮기고 로그의 버전 태그로 지켜본다\"]:::list\n  CLEAN[\"끝나면 if else 와 몽키패치와 버전별 캐시 키를 지운다\"]:::list\n  CODE --> SW\n  SW --> OLD\n  SW --> NEW\n  OLD --> DATA\n  NEW --> DATA\n  CODE --> TEST\n  OLD --> SHIFT\n  NEW --> SHIFT\n  SHIFT --> CLEAN"
+        },
+        {
+          "title": "업그레이드가 지나는 단계",
+          "question": "되돌릴 수 있는 구간은 어디까지인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 테스트를_먼저_고친다\n  테스트를_먼저_고친다 --> 이중부팅: 1시간 45분에서 20분 미만으로 줄인 뒤\n  이중부팅 --> 폐기정리: 새 폐기가 유닛 테스트를 깨뜨리게 둔다\n  폐기정리 --> 데이터양방향: 새 버전이 만든 것도 옛 버전이 읽게 만든다\n  데이터양방향 --> 점진전환: 두 색을 띄우고 트래픽을 옮긴다\n  점진전환 --> 되돌림: 문제가 나면 이전 색으로\n  되돌림 --> 점진전환: 고치고 다시 옮긴다\n  점진전환 --> 정리: 다 넘어가면 임시 장치를 지운다\n  정리 --> [*]\n\n  state 정리 {\n    [*] --> 여기부터는_못_돌아간다\n    여기부터는_못_돌아간다 --> 여기부터는_못_돌아간다: 잠금 파일과 버전별 캐시 키를 지웠다\n  }"
+        },
+        {
+          "title": "다 준비하고도 터진 셋",
+          "question": "커버리지 90퍼센트가 못 잡은 것은 무엇이었나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  READY[\"<b>준비한 것</b><br/>• 이중 부팅과 두 버전 테스트<br/>• 폐기 경고를 테스트 실패로<br/>• 커버리지 약 90퍼센트\"]:::accent\n  B1[\"분석 기능이 DateTime 정밀도 차이로 깨졌다\"]:::list\n  B2[\"Kernel 의 capture 제거로 예상 못 한 오류가 났다\"]:::list\n  B3[\"CSRF 토큰 HMAC 이 하위 호환이 안 됐다\"]:::list\n  FIX1[\"데이터베이스 컬럼을 고쳤다\"]:::list\n  FIX3[\"몽키패치를 넣었다\"]:::list\n  LESSON[\"교훈 — 커버리지가 백 퍼센트여도 모른다. 검증된 폴백을 둬라\"]:::list\n  N[\"<i>셋 다 코드 논리가 아니라 옛것과 새것 사이의 표현 차이였다 — 이 관찰은 이 사이트의 것</i>\"]:::quiet\n  READY --> B1 --> FIX1\n  READY --> B2\n  READY --> B3 --> FIX3\n  B1 --> LESSON\n  B2 --> LESSON\n  B3 --> LESSON\n  LESSON --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How we upgraded rails for Freshdesk Contact Center with zero regressions and downtime",
+          "url": "https://www.freshworks.com/saas/eng-blogs/how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog/",
+          "publisher": "Freshworks Engineering",
+          "date": "2022-07-14",
+          "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
         }
       ]
     }

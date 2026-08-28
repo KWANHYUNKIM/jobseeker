@@ -8,55 +8,58 @@
 
 ## 지금 파는 중
 
-**Freshworks(IN · SaaS) `in_progress` — 도메인 2개 · 기능 2개.** 325 에서 도메인 ② 의 기능
-**`rename-before-push`(밀기 직전에 이름을 갈아 끼운다)** 를 썼다. **결정 6개 · 그림 3장 ·
-생각 4개 · 난제 2건 · 연결 1건.** 재료는 Sidekiq 편(2020-05-14).
+**Freshworks(IN · SaaS) `in_progress` — 도메인 3개 · 기능 3개.** 326 에서 **세 번째 도메인
+`한 코드베이스가 두 판을 동시에 안다` 를 열고 기능 `know-both-versions`(두 판을 동시에 아는
+코드로 만든다)까지 썼다. 결정 7개 · 그림 3장 · 생각 4개 · 난제 2건 · 연결 1건.**
+재료는 `How we upgraded rails for Freshdesk Contact Center with zero regressions and
+downtime`(2022-07-14) — **325 에서 새로 찾은 `/saas/eng-blogs/` 글이고 주소가 살아 있었다.**
 
-**🔴 그리고 323 의 판단을 정정했다 — 블로그가 생각보다 넓다**(`open_questions` 에 남겼다).
-323 에서 *"읽을 수 있는 글은 `Rails@Scale` 시리즈뿐"* 이라고 적었는데, MemoizeUntil 주소를
-⑱ 로 찾다가 **`/saas/` 아래에 엔지니어링 글이 더 있는 것을 확인했다**:
-- `how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-downtime-blog`
-  (**무중단 Rails 업그레이드**) · `debugging-memory-corruption-in-production-rails-app-using-
-  mozilla-rr-blog`(**프로덕션 메모리 손상 디버깅**) · `serving-private-content-from-s3-using-
-  cloudfront-blog` · `optimizing-string-interpolations-in-ruby-blog` ·
-  `how-feature-toggles-allow-us-to-experiment-at-scale-blog`
-- **뒤의 둘은 Sidekiq 편이 본문에서 href 로 직접 건다.**
-- ⚠️ **`/saas/eng-blogs/` 도 `/explore-it/` 도 목록으로 열면 404 다** — 개별 글 주소로만 열린다.
-- ⚠️ **`Optimizing cache with MemoizeUntil` 은 본문이 사라졌다** — 주소는 찾았는데
-  마케팅 허브로 리다이렉트된다. **1차 자료가 아니므로 기능으로 안 쓴다.**
+**기준 판정** — **버린 대안 ❌**(하나도 안 적는다) · **대가 ✅✅✅** · **수치 ✅** → **2/3 통과.**
 
-**⑫ 가 또 크게 값했다 — 재독이 새 재료를 다섯 냈다**(323·324 에서 이미 본 글이다).
-- **세 가지 안을 놓고 골랐다**(앞서 안 것은 버린 둘뿐이었다).
-- **매핑은 YAML → 앱 초기화 로드 → Redis 집합 확인 → 5분 로컬 캐시** 순이다.
-- **🔴 실패 처리** — 매핑에 없으면 원래 이름을 쓰고, 조회가 터지면 `rescue StandardError` 로
-  **로그만 남긴다. 갈아 끼우기의 실패가 잡의 실패가 되지 않는다.**
-- **버킷 실제 구성** — Maintenance **50** · Realtime **40** · Occasional **30** · Scheduled
-  **20** · External **20** · Archive **5**. **크기가 고르지 않다.**
-- **Chef 레시피로 층을 띄운다** — **절감이 실제로 나오는 자리는 묶은 것이 아니라 버킷마다
-  다른 인스턴스 종류를 고른 것이다.** 그리고 데이터센터 RPM 이 넷 다 나온다(미국 240,000 ·
-  유럽 45,000 · 인도 40,000 · 호주 10,000).
+**⭐ 기능의 축** — **업그레이드를 프로젝트가 아니라 상태로 만들었다.** bootboot 이중 부팅에
+환경변수 **`DEPENDENCIES_NEXT`** 하나가 스위치이고, 잠금 파일을 **`Gemfile.lock`(4.2)과
+`Gemfile_next.lock`(5.2)** 로 갈라 **제품 팀의 기능 출시가 안 멈추게** 했다.
 
-**⭐ 기능의 축** — **바꾸는 자리를 사람에서 밀기 직전의 미들웨어로 옮겼다.** 개발자는 코드를
-안 고치고 **YAML 에 한 줄** 더한다. **⭐⭐ 그리고 이 설계의 값과 맹점이 같은 자리에 있다** —
-실패해도 원래 이름으로 떨어져 **잡을 잃지 않는데**, 바로 그래서 **잘못된 층에서 돌아도 티가
-안 난다.** `research.hard_problems` 에 그렇게 적었다.
+**⭐⭐ 이 기능에서 값이 가장 큰 세 자리**
+- **옮기기 전에 재는 도구를 먼저 고쳤다** — 테스트가 **1시간 45분**이라 두 버전에서 다 돌릴 수
+  없었다. 파일을 **K개 그룹**으로 갈라 컨테이너마다 전용 DB 를 줘 **20분 미만**으로 줄이고
+  나서 시작했다.
+- **되돌릴 길을 데이터가 만든다** — 새 버전이 만든 것을 **옛 버전도 읽을 수 있어야** 블루그린
+  롤백이 종이 위의 계획이 아니게 된다. 그래서 Rails 객체를 **평범한 루비 객체**로 바꾸고
+  **캐시 키에 버전**을 넣었다.
+- **🔴 다 하고도 셋이 터졌다** — 분석의 **DateTime 정밀도** · **`Kernel.capture` 제거** ·
+  **CSRF 토큰 HMAC 하위 비호환**(몽키패치로 메웠다). **⭐ 셋 다 코드 논리가 아니라 옛것과
+  새것 사이의 표현 차이에서 났다**(이 관찰은 이 사이트의 것). 회사의 교훈 —
+  *"You never know if something might break even if you have 100% code coverage."*
 
-**`connections` 로 324 의 기능과 이었다** — 둘 다 '무엇을 어디에 얹을지 미리 정한다' 인데
-**앞은 폭발 반경, 뒤는 활용률**이고, **앞은 애플리케이션 밖의 HAProxy 가, 뒤는 안의
-미들웨어가** 가른다. ⚠️ **두 글은 서로를 언급하지 않는다.**
+**⭐ 그리고 드문 자리가 하나 있다** — **임시 장치를 임시로 끝냈다.** if/else · 몽키패치 ·
+버전별 캐시 키 · `Gemfile_next.lock` 을 **끝나고 지웠다고 적는다.** 이 사이트가 읽은 이관
+이야기 대부분은 **되돌릴 길을 언제 닫는지 안 적는다** — `reversible-first.md` 의 *"언제 롤백
+경로를 닫는지 정한 곳이 없다"* 가 그 기록이다. **`connections` 로 324 의 기능과 그 대비를
+걸었다**(HAProxy 편에는 shell 라우팅을 언제 걷는지가 없다).
+
+**⚠️ `open_questions` 에 남긴 것** — 안 읽은 `/saas/` 글이 **넷** 남았고
+(**Mozilla rr 메모리 손상 디버깅** · CloudFront 사설 콘텐츠 · 기능 토글 · 문자열 보간),
+**목록 페이지가 셋 다 안 열려**(`/explore-it/`·`/saas/eng-blogs/` 404) **글 전체 목록을 끝내
+확인하지 못했다** — 지금 아는 목록은 검색과 글 안의 링크로 모은 것이다.
 
 ---
 
-**다음 사이클 — 열린 도메인 둘이 다 찼다. 새로 찾은 `/saas/` 글들을 연다.**
-- **1순위 — `how-we-upgraded-rails-for-freshdesk-contact-center-with-zero-regressions-and-
-  downtime-blog`.** 무중단 업그레이드는 이 사이트에 비교 재료가 많은 축이다
-  (`swap-while-running.md` · `reversible-first.md`). **⚠️ 주소를 추측하지 말고 ⑱ 로 확인한다.**
-- **2순위 — `debugging-memory-corruption-in-production-rails-app-using-mozilla-rr-blog`.**
-  프로덕션 진단 이야기라 Doximity `prod-profiling` 과 견줄 재료가 될 수 있다(추정).
-- **기준은 늘 같다 — 버린 대안 · 대가 · 수치 중 둘. 못 넘기면 억지로 안 쓰고 닫는다.**
-- **⚠️ 같은 시리즈 안에서 대가를 적는 정도가 갈린다** — 고가용성 편 **다섯** / HAProxy 편
-  **두 줄** / Sidekiq 편 **없음**. **회사가 아니라 글쓴이에 따라 갈리는 것으로 보인다**(추정).
-  **닫을 때 `business_model` 에 적을 관찰이다.**
+**다음 사이클 — 남은 넷 중 위부터 연다. 회사를 완주할 때까지 갈아타지 않는다.**
+- **1순위 `debugging-memory-corruption-in-production-rails-app-using-mozilla-rr-blog`.**
+  **기록·재생 디버거로 프로덕션 메모리 손상을 잡는 이야기**라 Doximity `prod-profiling`
+  (*"프로파일링은 자기 오버헤드를 더하고 타이밍을 바꾼다"*)과 정면으로 만난다(**추정**).
+  **⚠️ 주소를 추측하지 말고 ⑱ 로 확인한다** — 326 에서 통한 경로는 `/saas/eng-blogs/` 다.
+- **2순위** `how-feature-toggles-allow-us-to-experiment-at-scale-blog`(Sidekiq 편이 href 로
+  건다) · `serving-private-content-from-s3-using-cloudfront-blog` ·
+  `optimizing-string-interpolations-in-ruby-blog`.
+- **기준은 늘 같다 — 버린 대안 · 대가 · 수치 중 둘.** **⚠️ 223 규칙으로 기존 도메인 셋과
+  같은 문제인지 실물로 정한다.** 안 서면 **닫는다.**
+- **닫을 때 `business_model` 에 적을 관찰** — **⭐ 대가를 적는 정도가 글마다 크게 갈린다**:
+  고가용성 편 **다섯** · 업그레이드 편 **다섯**(사고 셋 포함) · HAProxy 편 **두 줄** ·
+  Sidekiq 편 **없음**. **회사 방침이 아니라 글쓴이에 따라 갈리는 것으로 보인다**(추정).
+  **⚠️ 그리고 무중단·회귀 0 이라는 판정의 근거가 없다** — 트래픽 규모·오류율·전환 기간이
+  전부 안 적혀 있다.
 
 **📌 그 밖**
 - **⚠️ 사업의 무게와 글의 무게가 어긋난다** — EX ARR **+24%** 와 Freddy AI(신규 엔터프라이즈
@@ -65,9 +68,10 @@
   Money Forward)이나 **유럽**(Personio). **인도 소진**, Trade Republic 은 Medium.
 - **⭐ 320 의 `leave-what-costs-more`(Paytm)가 비교 문서 두 편의 빈칸과 이어진다** —
   `reversible-first.md` 의 *"되돌리지 못해 앞으로 밀고 나간 사례가 없다"* 와
-  `where-it-piles-up.md` 의 **갚지 않고 이사한 쪽**.
+  `where-it-piles-up.md` 의 **갚지 않고 이사한 쪽**. **⭐ 326 의 기능은 같은 문서의 다른
+  빈칸과 이어진다** — *"언제 롤백 경로를 닫는지 정한 곳이 없다"* 에 **첫 재료다.**
 - **후보 조사 누적 열여섯 곳 중 넷.**
-- **⚠️ 낡은 메모를 나르지 않는다**(314·317·**325**). **⚠️ 두 방향 규칙**(298·305·318·321).
+- **⚠️ 낡은 메모를 나르지 않는다**(314·317·325). **⚠️ 두 방향 규칙**(298·305·318·321).
 - **분포** — **55곳.** US 22 포화 · 한국 아홉 · 일본 넷 · EU 일곱 · 중국 둘 · 동남아 하나 ·
   **인도 셋** · 아프리카 하나 · 라틴아메리카 0(재시도 금지). **비교 문서 31편.**
 
