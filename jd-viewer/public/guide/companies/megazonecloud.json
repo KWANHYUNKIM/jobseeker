@@ -676,6 +676,199 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54177362&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=64cab1e7-3c3e-4d3c-b669-bd64e143110b",
+      "title": "Full-Stack / Back-end Developer 채용",
+      "site": "saramin",
+      "verdict": "React/Vue 화면과 Java/Spring·Node 백엔드를 한 사람이 들고 가는 자리. 만들 것은 고객이 자기 클라우드를 들여다보는 통합 플랫폼이라, 숫자가 계속 바뀌는 화면을 빠르게 유지하는 일이 업무의 중심이 된다. ⚠️ 이 공고에도 Back-end Developer(경력 5~15년, AWS IoT Core)가 함께 묶여 있다 — 이 브리핑은 Full-Stack Developer(경력 3~10년) 쪽만 다룬다. 목록의 '경력 3~15년'은 두 직무를 합친 범위다. 공고 본문이 얇고 담당 업무는 '전체 JD 원문'에만 들어 있다.",
+      "fit": {
+        "must_have": [
+          "백엔드(Java/Spring 또는 Node.js)와 프론트엔드(React 또는 Vue)를 둘 다 해 본 경험",
+          "실시간으로 바뀌는 데이터를 화면에 얹어 본 경험",
+          "UI 성능을 실제로 재고 고쳐 본 경험"
+        ],
+        "can_learn": [
+          "Vue (React 를 했다면 문법 문제다. 공고가 둘 중 하나로 열어 뒀다)",
+          "AWS 배포·운영 (우대사항이고, 이 회사는 가르쳐 줄 사람이 가장 많은 곳이다)",
+          "회사 도메인(클라우드 사용량·정산) — 들어가서 배우는 부분"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Java/Spring 과 Node.js — 두 축 중 하나는 깊게, 하나는 말할 수 있게",
+          "from": "qualification",
+          "quote": "백엔드 개발 경험 (Java/Spring, Node.js)",
+          "priority": "core",
+          "why": "두 축을 나란히 적은 것은 프로젝트마다 스택이 다르다는 뜻으로 읽힌다. 실제로 이 회사 제품 조직 리더는 사내 인터뷰에서 Kotlin·Java·Spring Boot·JPA 축을 말했는데, 같은 공고의 다른 직무는 Node.js·TypeScript 로 적혀 있다. 한 축만 깊고 다른 축은 '왜 그걸 안 골랐는지'를 말할 수 있으면 이 요건은 충족된다.",
+          "gap_check": "같은 API 를 Spring 과 Node 로 짠다면 무엇이 달라지는가 — 동시성 모델, 예외 처리, 배포 단위 중 최소 둘을 구체적으로 말할 수 있는가?",
+          "drill": "이미 만들어 둔 API 하나를 반대 축으로 옮긴다(Spring → Node 든 그 반대든). 기능을 늘리지 말고, 옮기면서 '이 스택이라서 달라진 결정' 다섯 줄을 적는다. 특히 요청당 스레드와 이벤트 루프가 느린 외부 호출에서 어떻게 다르게 버티는지를 직접 부하를 걸어 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Spring Boot 공식 문서",
+              "url": "https://docs.spring.io/spring-boot/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Node.js — 이벤트 루프",
+              "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+              "kind": "docs"
+            },
+            {
+              "title": "메가존 Careers — 백엔드 개발자 인터뷰",
+              "url": "https://career.megazone.com/interview_backend",
+              "kind": "interview",
+              "note": "제품 조직이 실제로 쓰는 스택을 밝힌 자료"
+            }
+          ]
+        },
+        {
+          "topic": "React / Vue — 프레임워크가 아니라 렌더링을 아는 쪽",
+          "from": "qualification",
+          "quote": "프론트엔드 개발 경험 (React, Vue)",
+          "priority": "core",
+          "why": "둘 중 하나로 열어 둔 것은 도구를 가리지 않겠다는 뜻이고, 우대사항의 '특정 기술에 국한되지 않고' 와 같은 방향이다. 그래서 준비할 것은 API 암기가 아니라 **무엇이 언제 다시 그려지는가**다 — 이 회사가 만들 화면이 계속 갱신되는 대시보드라 특히 그렇다.",
+          "gap_check": "목록 화면에서 항목 하나만 바뀌었는데 전체가 다시 그려진다. React 와 Vue 각각에서 원인을 어디서 찾고 무엇으로 막는가?",
+          "drill": "같은 화면(필터 + 정렬 + 1,000행 테이블)을 React 와 Vue 로 각각 만든다. 두 판 모두 렌더 프로파일러를 켜서 '한 행이 바뀔 때 몇 개 컴포넌트가 다시 그려지는지' 재고, 불필요한 렌더를 줄인 뒤 숫자를 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "React — Render and Commit",
+              "url": "https://react.dev/learn/render-and-commit",
+              "kind": "docs"
+            },
+            {
+              "title": "Vue — Reactivity in Depth",
+              "url": "https://vuejs.org/guide/extras/reactivity-in-depth.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "실시간 데이터 처리와 UI 성능 최적화 — 이 공고의 진짜 알맹이",
+          "from": "qualification",
+          "quote": "실시간 데이터 처리 및 UI 성능 최적화 실무 경험",
+          "priority": "core",
+          "why": "자격요건 세 줄 중 유일하게 '실무 경험'이라고 못 박은 항목이고, 묶여 있는 다른 직무(IoT·대용량 실시간 데이터)와도 겹친다. 클라우드 사용량·모니터링처럼 숫자가 초 단위로 바뀌는 화면을 만든다는 뜻이라, 서버에서 얼마나 자주 밀어 줄 것인가와 화면이 그걸 어떻게 버틸 것인가가 한 문제로 붙는다.",
+          "gap_check": "초당 수십 건씩 갱신되는 값을 화면에 얹었더니 스크롤이 끊긴다. 서버 쪽(밀어 주는 주기·묶음 전송)과 화면 쪽(가상 스크롤·배치 렌더) 중 무엇부터 손대고, 그 판단 근거는 무엇인가?",
+          "drill": "WebSocket 또는 SSE 로 초당 수십 건이 들어오는 대시보드를 만든다. 먼저 아무 최적화 없이 만들어 프레임 드랍을 눈으로 확인한 뒤, (1) 서버에서 100ms 단위로 묶어 보내기, (2) 화면에서 가상 스크롤, (3) 갱신을 애니메이션 프레임에 몰아 적용하기를 하나씩 넣으며 각 단계의 프레임률을 기록한다. **세 가지를 한꺼번에 넣지 않는 것이 이 연습의 핵심이다** — 무엇이 얼마나 효과가 있었는지 말할 수 있어야 한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "MDN — Server-sent events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events",
+              "kind": "docs"
+            },
+            {
+              "title": "web.dev — Rendering performance",
+              "url": "https://web.dev/articles/rendering-performance",
+              "kind": "docs"
+            },
+            {
+              "title": "TanStack Virtual",
+              "url": "https://tanstack.com/virtual/latest",
+              "kind": "repo",
+              "note": "React·Vue 양쪽에서 쓰는 가상 스크롤"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 위에 올려 두고 운영하기",
+          "from": "preference",
+          "quote": "AWS 클라우드 환경에서의 서비스 배포 및 운영 경험",
+          "priority": "high",
+          "why": "AWS 를 대신 팔고 대신 운영하는 회사에서 이 항목이 우대사항인 것은, 지원자가 고객의 언어를 아느냐를 묻는 것에 가깝다. 콘솔을 눌러 본 수준보다 '배포가 실패했을 때 어디를 봤는가'가 이 회사에서는 훨씬 잘 통한다.",
+          "gap_check": "새 버전을 배포했는데 헬스체크를 못 넘긴다. 애플리케이션 로그·로드밸런서 대상 상태·보안그룹 중 어디부터 보고, 그동안 사용자는 무엇을 보고 있는가?",
+          "drill": "만든 풀스택 앱을 AWS 에 올린다(ECS 든 EC2 든). 일부러 헬스체크 경로를 틀리게 두고 배포해 실패를 재현하고, CloudWatch 로그로 원인을 찾는 과정을 기록한다. 그다음 롤링 업데이트 중 요청을 계속 던져 무중단이 되는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "AWS — Amazon ECS 개발자 안내서",
+              "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS — CloudWatch Logs",
+              "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대용량 트래픽 앞에서 아키텍처를 바꿔 본 이야기 만들기",
+          "from": "preference",
+          "quote": "대용량 트래픽 대응을 위한 시스템 아키텍처 개선 경험",
+          "priority": "high",
+          "why": "'개선 경험'이라고 쓴 것은 처음부터 크게 설계한 이야기가 아니라 **막힌 것을 뚫은 이야기**를 원한다는 뜻이다. 이 회사의 고객은 트래픽이 몰리는 기업들이고, 그 대응을 대신 해 주는 것이 사업이라 이 질문은 거의 확실히 나온다.",
+          "gap_check": "내가 만든 것 중 가장 느렸던 지점은 어디였고, 무엇을 재서 그렇게 판단했는가? 고친 뒤 숫자가 얼마나 달라졌는가?",
+          "drill": "만든 API 하나에 부하를 걸어(k6 등) 병목을 찾는다. 캐시·인덱스·커넥션 풀 중 하나만 고쳐 다시 재고, '무엇을 얼마나 재서 무엇을 골랐는지'를 한 장으로 정리한다. 숫자 없는 개선 이야기는 이 항목에 답하지 못한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "k6 문서",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS — Amazon ElastiCache",
+              "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "기술 선택을 근거로 설명하는 연습",
+          "from": "preference",
+          "quote": "특정 기술에 국한되지 않고 프로젝트 요구사항에 맞춰 최적의 기술 스택을 선택하고 적용할 수 있으신 분",
+          "priority": "high",
+          "why": "우대사항에 사람의 태도를 적어 둔 드문 줄이고, 이 회사에서는 실제 업무 조건이다 — 고객마다 AWS·Azure·NHN Cloud 로 판이 다르고 프로젝트마다 스택이 갈린다. 특정 프레임워크를 잘한다는 말보다, 고른 이유와 버린 대안을 말할 수 있는지가 이 줄에 답한다.",
+          "gap_check": "최근 프로젝트에서 고른 기술 하나를 대고, 그때 버린 후보와 그 선택으로 감수한 것을 말할 수 있는가? '더 익숙해서'가 답이라면 그것도 정직한 이유인데, 무엇을 대가로 치렀는지까지 붙일 수 있는가?",
+          "drill": "지금까지 만든 것에서 기술 선택 세 개를 골라 각각 '요구사항 → 후보 → 고른 것 → 대가'를 네 줄로 적는다. 대가 칸이 안 채워지는 항목이 있으면 그건 아직 선택이 아니라 습관이다 — 그 자리를 채우는 것이 이 연습이다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "클라우드 사용량 대시보드를 하나 만들어 간다",
+          "why": "이 회사가 파는 것이 결국 '내 클라우드가 지금 어떤 상태이고 얼마 나가는가'를 보여 주는 일이다. 수천 행 테이블에 실시간 갱신과 필터가 붙은 화면 하나면 자격요건 세 줄을 한꺼번에 증명한다 — 그리고 그게 실제로 만들 화면과 가장 가깝다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "지원할 포지션과 '깊은 축'을 지원서 첫 줄에 밝힌다",
+          "why": "한 공고에 Full-Stack(3~10년)과 Back-end(5~15년, IoT)가 묶여 있고, 백엔드 요건도 Java/Spring 과 Node 두 축으로 열려 있다. 어느 포지션에 어느 축으로 지원하는지 밝히지 않으면 둘 다 어중간하게 읽힌다.",
+          "effort": "한 줄"
+        },
+        {
+          "idea": "제품 조직(PDC)의 스택을 읽고 간다",
+          "why": "회사 채용 페이지의 백엔드 인터뷰에 팀 리더가 Kotlin·Spring Boot·JPA·EKS/ECS·Kafka·React 를 쓴다고 밝혀 뒀다. 공고의 기술 스택과 겹치면서도 다른데, 이 차이를 알고 '어느 조직에서 무엇을 하게 되는지' 되물으면 공고만 읽고 온 지원자와 갈린다.",
+          "effort": "한 시간"
+        },
+        {
+          "idea": "회사가 남의 인프라를 맡는다는 사실을 답변에 녹인다",
+          "why": "자기 서비스를 만드는 회사와 달리, 여기서는 장애가 나면 고객이 아니라 이 회사가 먼저 전화를 받는다. '내 서비스를 고쳤다'는 이야기를 '남이 쓰는 것을 내가 책임졌다'는 각도로 바꿔 말하면 이 회사의 일과 겹쳐 들린다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "실시간으로 바뀌는 데이터를 화면에 얹으면서 무엇이 느려졌고 무엇을 고쳤는가 — 자격요건에서 유일하게 '실무 경험'을 못 박은 항목이다",
+          "React/Vue 에서 불필요한 리렌더를 어떻게 찾아내는가",
+          "Java/Spring 과 Node 중 어느 축이 깊고, 다른 축을 안 고른 이유는 무엇인가",
+          "트래픽이 몰렸을 때 무엇을 재서 어디를 고쳤는가 (숫자로)",
+          "AWS 에서 배포가 실패했을 때 어디부터 보는가",
+          "공고 하단에 '필요 시 레퍼런스 체크, 인성검사가 진행 될 수 있습니다'가 적혀 있다"
+        ],
+        "sources": [
+          {
+            "title": "메가존클라우드 Full-Stack / Back-end Developer 채용 공고",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54177362&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=64cab1e7-3c3e-4d3c-b669-bd64e143110b",
+            "publisher": "사람인",
+            "summary": "전형 절차는 공개돼 있지 않고 레퍼런스 체크·인성검사 가능성만 명시돼 있다"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
