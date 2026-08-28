@@ -1,0 +1,237 @@
+{
+  "slug": "monday",
+  "name": "먼데이닷컴",
+  "name_en": "monday.com",
+  "country": "기타",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-08-28",
+  "domain": "협업 보드 SaaS",
+  "one_liner": "모두가 자기 모양대로 만드는 표를 한 조 개 굴리는 회사 — 그리고 그 코드를 에이전트가 주당 마흔 번 쪼갠다",
+  "business_model": "**협업 보드 SaaS 다.** 사람들이 각자 자기 모양대로 만드는 **보드(스프레드시트 같은 표)** 위에서 일을 굴리게 하고, **좌석 기반 구독**으로 판다(요금 구조의 세부는 확인하지 못했다).\n\n**나스닥 상장사(MNDY)라 실적이 공개된다** — **2026년 2분기 매출 3억 6,460만 달러, 전년 대비 22% 성장**이고 **유료 고객(사용자 10명 초과)이 65,783곳**(전년 61,803곳에서 6% 증가)이다. **순매출 유지율**은 전체 **109%**, 사용자 10명 초과 **113%**, ARR 5만 달러 초과와 10만 달러 초과가 각각 **115%** 다. **ARR 10만·50만 달러 초과 고객의 순증가가 사상 최대**였고 **non-GAAP 영업이익도 사상 최대**다.\n\n**⭐ AI 매출이 이미 세어진다** — **AI 제품에서 나온 ARR 이 1분기 대비 두 배**가 됐고 **2분기 순신규 ARR 의 17%** 를 차지한다.\n\n**⭐ 사업 구조가 기술 문제를 그대로 만든다**(이 정리는 이 사이트의 것이다). **모두가 자기 모양대로 표를 만드는 제품**이라 데이터가 *\"a trillion spreadsheets, each with different shapes, columns, types, and sizes\"* 가 된다 — **모양이 제각각인 것이 제품의 값이자 데이터베이스의 문제다.** 그래서 범용 데이터베이스를 안 쓰고 **자체 엔진을 세 층으로 만들었다.**\n\n**⚠️ 총 ARR 실액은 이 발표 요약에서 확인하지 못했다.**",
+  "products": [
+    "monday work management — 협업 보드",
+    "monday CRM · monday dev 등 제품군",
+    "monday apps marketplace — 확장 마켓플레이스"
+  ],
+  "ui_map": {
+    "title": "표 한 조 개와 그 코드를 쪼개는 에이전트",
+    "question": "이 회사가 지금 파는 두 문제는 무엇인가?",
+    "kind": "web",
+    "note": "**실제 화면 캡처가 아닙니다.** 기술블로그 본문 두 편과 실적 발표에 적힌 것만으로 그린 도해이고, **monday.com 제품이나 사내 도구의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 번호가 붙은 자리만 근거가 있습니다.",
+    "screen": [
+      {
+        "type": "appbar",
+        "text": "monday.com 엔지니어링"
+      },
+      {
+        "type": "card",
+        "text": "분기마다 숫자를 냅니다",
+        "items": [
+          "이천이십육년 이분기 매출 삼억 육천사백육십만 달러",
+          "전년 대비 이십이 퍼센트 성장",
+          "인공지능 제품 매출이 한 분기 만에 두 배"
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "label",
+        "text": "첫 번째 — 읽는 쪽"
+      },
+      {
+        "type": "card",
+        "text": "표가 한 조 개인데 모양이 다 다릅니다",
+        "items": [
+          "열도 타입도 크기도 제각각",
+          "모양이 다른 게 제품의 값이다",
+          "그게 데이터베이스에는 문제가 된다"
+        ],
+        "pin": 1
+      },
+      {
+        "type": "amount",
+        "text": "5배 · 20배 · 50배",
+        "sub": "보드 로드 · 큰 보드 · 집계"
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "label",
+        "text": "두 번째 — 쓰는 쪽"
+      },
+      {
+        "type": "card",
+        "text": "에이전트가 모놀리스를 쪼갭니다",
+        "items": [
+          "주당 마흔 개의 병합",
+          "민감한 코드는 못 건드린다",
+          "주말과 배포 동결에는 멈춘다"
+        ],
+        "pin": 2
+      },
+      {
+        "type": "text",
+        "text": "⚠️ 관측·신뢰성 글 넷은 아직 본문을 안 읽었습니다"
+      },
+      {
+        "type": "button",
+        "text": "기술블로그 — 이천이십육년 스물네 편",
+        "variant": "ghost"
+      }
+    ],
+    "pins": [
+      {
+        "n": 1,
+        "title": "모양이 제각각인 표 한 조 개",
+        "domain": "한 조 개의 표를 읽게 만든다",
+        "what": "*\"a trillion spreadsheets, each with different shapes, columns, types, and sizes.\"* 그래서 **범용 데이터베이스를 만들지 않았다** — *\"We did not build a general-purpose database.\"* 결과는 보드 로드 **5배** · 큰 보드 **20배** · 집계 **거의 50배** · **인프라 비용 40~60% 감소**.",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "mondayDB 3 - Solving HTAP for a Trillion-Table System",
+            "url": "https://engineering.monday.com/mondaydb-3-solving-htap-for-a-trillion-table-system/",
+            "publisher": "monday.com Engineering",
+            "date": "2026-05-19",
+            "summary": "**한 조 개의 스프레드시트를 읽게 만드는 자체 데이터베이스.** 문제는 *\"a trillion spreadsheets, each with different shapes, columns, types, and sizes\"* 이고, 회사는 **범용 데이터베이스를 만들지 않았다**고 못 박는다 — *\"We did not build a general-purpose database\"*, **목적에 맞춘 것이 범용을 이긴다**. **🔴 버린 대안이 흥미롭다** — DuckDB 안에 쓰기를 버퍼링하거나 보드마다 파일을 여러 개 두고 union 질의를 하는 우회를 검토하다 **방향을 틀었다**: *\"Instead, we stepped back and asked: what if we don't write to DuckDB from the write path at all?\"* **구조는 세 층** — **배치 층**은 오브젝트 스토리지의 **DuckDB 파일**이 차가운 데이터의 진실이고 플러시 파이프라인이 WAL 을 주기적으로 합친다 · **속도 층**은 변경이 **WAL → Kafka → writer** 로 흘러 **밀리초 안에** 읽기 시점 병합에 쓰인다 · **서빙 층**은 로컬 NVMe SSD 를 쓰는 쿠버네티스 위 Go 프로세스들로 **soft-stateful 한 읽기 캐시**이고, **진실이 S3 와 WAL 에 있으므로 어느 노드든 어느 보드든 서빙한다**. **⚠️ 대가를 정면으로 적는다** — **DuckDB 는 파일당 writer 가 하나**라 *\"For a system handling thousands of concurrent writes per second across hundreds of thousands of boards, this sounds like a dealbreaker\"* · **보드를 가로지르는 읽기는 결과적 일관성**이고 *\"typically converging within 500 milliseconds\"* · 따뜻한 캐시를 잃으면 *\"higher latency costs until it rebuilds\"*. **수치** — 보드 로드 **5배** · 큰 보드 **20배** · 집계 **거의 50배** · **인프라 비용 40~60% 감소** · **100만 개가 넘는 조직의 보드 읽기 트래픽 100%** · 캐시 히트율 **95% 이상** · **WAL 동기 중앙값 3밀리초**(보통 10밀리초 미만)."
+          }
+        ]
+      },
+      {
+        "n": 2,
+        "title": "에이전트가 주당 마흔 번 병합한다",
+        "domain": "에이전트에게 코드를 맡기되 책임은 사람에게 남긴다",
+        "what": "모놀리스의 유틸리티 파일을 공유 패키지로 옮기는 **9단계 파이프라인**이 돌고 **주당 40개 PR 이 병합**된다. **경계가 명시돼 있다** — 아키텍처 결정 불가 · CI 우회 불가 · **결제·청구·팀 정의는 병합 불가** · **배포 동결과 주말에는 멈춘다**.",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "I Am Morphex: I'm an AI Agent Growing Up Inside a Real Codebase",
+            "url": "https://engineering.monday.com/i-am-morphex-im-an-ai-agent-growing-up-inside-a-real-codebase/",
+            "publisher": "monday.com Engineering",
+            "date": "2026-04-16",
+            "summary": "**🔴 이 사이트에서 처음 보는 형식 — 에이전트가 1인칭으로 자기 한 해를 돌아본다.** *\"I was born to do one thing: split a monolith… I have opened thousands of pull requests, force-merged hundreds of them.\"* **하는 일** — 모놀리스의 유틸리티 파일을 공유 패키지로 옮긴다: *\"Take a utility file from the monolith, copy it into a shared package, fix the imports, run the tests, open a PR.\"* **9단계 파이프라인**(의존성 분석 → 대상 결정 → AST 파싱 → AI 분석 → 파일 이관 → 컴파일 수정 → 테스트 변환 → 코드 리뷰 → 정리)이고 **주당 40개 PR 을 병합**한다.\n\n**문제 진술이 날카롭다** — 모놀리스의 구조가 암묵적이라 쪼갤 수 없었다: *\"Files re-exported symbols three levels deep. Type definitions lived in the wrong packages. Constants were duplicated across modules with subtly different values.\"* 그리고 한 문장으로 정리한다: ***\"Most 'AI coding' attempts fail in real systems because the system is not ready for AI, not because the AI is not ready.\"***\n\n**경계를 명시한다** — 아키텍처 결정은 못 한다(대상 패키지는 사람이 검증) · **테스트가 통과해도 CI 를 건너뛸 수 없다** · **결제·청구·팀 정의 같은 민감한 코드는 병합할 수 없다** · **배포 동결과 주말에는 멈춘다** · GitHub 자신의 `mergeableState` 승인을 요구한다 — *\"If GitHub's own mergeableState said 'blocked,' I stopped, even if my per-check analysis saw nothing wrong.\"* 책임 소재도 만들었다 — **주간 담당자(developer-of-the-week)** 제도와 PagerDuty 연동 온콜.\n\n**버린 대안** — **사람이 앞단에서 무겁게 검토하는 것**. *\"became bottleneck, not safety mechanism\"* 이었다.\n\n**🔴 한계를 스스로 적는다** — 맥락을 못 읽는다(`// TODO: revisit after Q3 launch` 같은 것) · **일부러 틀리게 쓴 코드**(성능 꼼수, 테스트 목)를 다루기 어렵다 · **어질러진 코드베이스에 꽂으면 어지러움이 더 커진다**(*\"Plugging an agent into a messy codebase makes the mess louder\"*) · **거짓 안전감**(*\"If all my checks pass… it is tempting to merge without thinking\"*) · 분석이 체계적으로 틀리면 **단일 실패점**이 된다.\n\n**🔴 사고 기록도 있다** — 셀렉터 이관이 **테스트를 통과했는데 메모이제이션 로직에 숨은 부작용**이 있었고 특정 상태 전이에서 터졌다. **그 셀렉터를 들어 본 적도 없는 주간 담당자가 밤 11시에 진단해야 했다.** 대응은 **22포인트 AI 리뷰 검증 · 비교 테스트 · 동결 시 병합 차단**. **결론 한 줄** — ***\"Speed without accountability is worse than no speed at all.\"*** 스택 — NX 의존성 그래프 · Redux · Cypress · GitHub 상태 검사 · Sphera(배포) · PagerDuty · Slack · AST 파싱 · 기능 플래그 · **메타데이터 컬럼 20개짜리 프로젝트 보드**."
+          }
+        ]
+      }
+    ]
+  },
+  "domain_map": {
+    "title": "모양이 자유로운 제품이 만드는 두 문제",
+    "question": "읽는 쪽과 쓰는 쪽에서 각각 무엇이 걸리는가?",
+    "code": "flowchart TD\n  BIZ[\"<b>분기마다 숫자를 내는 상장사</b><br/>• 이분기 매출 삼억 육천사백육십만 달러<br/>• 전년 대비 이십이 퍼센트 성장<br/>• 인공지능 매출이 한 분기 만에 두 배\"]:::accent\n  FREE[\"누구나 자기 모양대로 표를 만든다\"]:::list\n  TRIL[\"표가 한 조 개가 된다\"]:::list\n  SHAPE[\"모양이 제각각이라 범용 저장소로는 안 된다\"]:::list\n  OWN[\"자체 엔진을 세 층으로 만든다\"]:::list\n  GROW[\"제품이 커지며 코드도 뭉친다\"]:::list\n  MONO[\"모놀리스의 구조가 암묵적이 된다\"]:::list\n  AGENT[\"에이전트가 쪼갠다 — 주당 마흔 번\"]:::list\n  RESP[\"대신 책임질 사람을 정해 둔다\"]:::list\n  N[\"<i>관측과 신뢰성 쪽 글 넷은 아직 안 읽었다</i>\"]:::quiet\n  BIZ --> FREE --> TRIL --> SHAPE --> OWN\n  BIZ --> GROW --> MONO --> AGENT --> RESP\n  RESP --- N"
+  },
+  "revenue_streams": [
+    {
+      "name": "좌석 기반 구독 (추정)",
+      "how": "**유료 고객을 '사용자 10명 초과' 기준으로 세고**(65,783곳) **ARR 구간별 순매출 유지율**을 따로 낸다(5만 달러 초과 115% · 10만 달러 초과 115%). **좌석과 계정 규모로 값이 오르는 구조로 읽힌다**(이 해석은 이 사이트의 것이다). ⚠️ **요금표의 세부는 확인하지 않았다.**",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "monday.com Announces Second Quarter 2026 Results",
+          "url": "https://ir.monday.com/news-and-events/news-releases/news-details/2026/monday-com-Announces-Second-Quarter-2026-Results/default.aspx",
+          "publisher": "monday.com Ltd. (IR)",
+          "date": "2026-08-10",
+          "summary": "**나스닥 상장사(MNDY)라 실적이 공개된다.** **2026년 2분기 매출 3억 6,460만 달러, 전년 대비 22% 성장.** **유료 고객(사용자 10명 초과)이 65,783곳**으로 2025년 6월 말 61,803곳에서 **6% 증가**. **순매출 유지율(NDR)** — 전체 **109%** · 사용자 10명 초과 **113%** · ARR 5만 달러 초과 **115%** · ARR 10만 달러 초과 **115%**. **ARR 10만 달러와 50만 달러 초과 고객의 순증가가 사상 최대**였고 **non-GAAP 영업이익도 사상 최대**다. **⭐ AI 제품에서 나온 ARR 이 1분기 대비 두 배**가 됐고 **2분기 순신규 ARR 의 17%** 를 차지한다. ⚠️ **총 ARR 실액은 이 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+        }
+      ]
+    },
+    {
+      "name": "AI 제품",
+      "how": "**AI 에서 나온 ARR 이 1분기 대비 두 배**가 됐고 **2분기 순신규 ARR 의 17%** 를 차지한다. ⚠️ **총 ARR 실액은 이 발표 요약에 없다.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "monday.com Announces Second Quarter 2026 Results",
+          "url": "https://ir.monday.com/news-and-events/news-releases/news-details/2026/monday-com-Announces-Second-Quarter-2026-Results/default.aspx",
+          "publisher": "monday.com Ltd. (IR)",
+          "date": "2026-08-10",
+          "summary": "**나스닥 상장사(MNDY)라 실적이 공개된다.** **2026년 2분기 매출 3억 6,460만 달러, 전년 대비 22% 성장.** **유료 고객(사용자 10명 초과)이 65,783곳**으로 2025년 6월 말 61,803곳에서 **6% 증가**. **순매출 유지율(NDR)** — 전체 **109%** · 사용자 10명 초과 **113%** · ARR 5만 달러 초과 **115%** · ARR 10만 달러 초과 **115%**. **ARR 10만 달러와 50만 달러 초과 고객의 순증가가 사상 최대**였고 **non-GAAP 영업이익도 사상 최대**다. **⭐ AI 제품에서 나온 ARR 이 1분기 대비 두 배**가 됐고 **2분기 순신규 ARR 의 17%** 를 차지한다. ⚠️ **총 ARR 실액은 이 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "한 조 개의 표를 읽게 만든다",
+      "why": "**제품이 자유로운 만큼 데이터가 제각각이다.** 회사가 문제를 한 줄로 적는다 — *\"a trillion spreadsheets, each with different shapes, columns, types, and sizes.\"* **모양이 자유로운 것이 제품의 값인데 그게 데이터베이스에는 문제가 된다**(이 정리는 이 사이트의 것이다).\n\n**그래서 범용 데이터베이스를 쓰지 않기로 했다** — *\"We did not build a general-purpose database\"* 이고 **목적에 맞춘 것이 범용을 이긴다**는 입장이다.\n\n**⭐ 버린 대안의 모양이 인상적이다** — DuckDB 안에 쓰기를 버퍼링하거나 보드마다 파일을 여러 개 두고 union 질의를 하는 우회를 검토하다 **문제를 다시 세웠다**: *\"Instead, we stepped back and asked: what if we don't write to DuckDB from the write path at all?\"* **막힌 제약을 우회하는 대신 그 제약이 걸리지 않는 자리로 옮긴 것이다**(이 표현은 이 사이트의 것이다).\n\n**⚠️ 이 도메인은 본문 한 편을 읽었다** — 기능을 쓰기 전에 두 편 이상 읽는다. 후보 — `Nice to meet you, mondayDB architecture` · `How We Scaled Board Item ID Generation`(2026-04-09) · `Redesign Authorization to monday.com Scale`(2026-04-26) · `Infrastructure scale review`.",
+      "tech": [
+        {
+          "tech": "쓰기 경로에서 아예 빼는 세 층 구조 — mondayDB 3",
+          "solves": "**배치 층**은 오브젝트 스토리지의 **DuckDB 파일**이 차가운 데이터의 진실이고 플러시 파이프라인이 WAL 을 주기적으로 합친다. **속도 층**은 변경이 **WAL → Kafka → writer** 로 흘러 **밀리초 안에** 읽기 시점 병합에 쓰인다. **서빙 층**은 로컬 NVMe SSD 를 쓰는 쿠버네티스 위 Go 프로세스들로 **soft-stateful 한 읽기 캐시**이고, **진실이 S3 와 WAL 에 있으므로 어느 노드든 어느 보드든 서빙한다**. **수치** — 보드 로드 **5배** · 큰 보드 **20배** · 집계 **거의 50배** · **인프라 비용 40~60% 감소** · **100만 개 넘는 조직의 보드 읽기 트래픽 100%** · 캐시 히트율 **95% 이상** · **WAL 동기 중앙값 3밀리초**.",
+          "limits": "**대가를 정면으로 적는다** — **DuckDB 는 파일당 writer 가 하나**여서 *\"For a system handling thousands of concurrent writes per second across hundreds of thousands of boards, this sounds like a dealbreaker\"* 다(그래서 쓰기 경로에서 빼는 설계가 나왔다) · **보드를 가로지르는 읽기는 결과적 일관성**이고 *\"typically converging within 500 milliseconds\"* — **대시보드처럼 여러 보드를 모으는 화면이 그 값을 낸다** · 따뜻한 캐시를 잃으면 *\"higher latency costs until it rebuilds\"*.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "mondayDB 3 - Solving HTAP for a Trillion-Table System",
+              "url": "https://engineering.monday.com/mondaydb-3-solving-htap-for-a-trillion-table-system/",
+              "publisher": "monday.com Engineering",
+              "date": "2026-05-19",
+              "summary": "**한 조 개의 스프레드시트를 읽게 만드는 자체 데이터베이스.** 문제는 *\"a trillion spreadsheets, each with different shapes, columns, types, and sizes\"* 이고, 회사는 **범용 데이터베이스를 만들지 않았다**고 못 박는다 — *\"We did not build a general-purpose database\"*, **목적에 맞춘 것이 범용을 이긴다**. **🔴 버린 대안이 흥미롭다** — DuckDB 안에 쓰기를 버퍼링하거나 보드마다 파일을 여러 개 두고 union 질의를 하는 우회를 검토하다 **방향을 틀었다**: *\"Instead, we stepped back and asked: what if we don't write to DuckDB from the write path at all?\"* **구조는 세 층** — **배치 층**은 오브젝트 스토리지의 **DuckDB 파일**이 차가운 데이터의 진실이고 플러시 파이프라인이 WAL 을 주기적으로 합친다 · **속도 층**은 변경이 **WAL → Kafka → writer** 로 흘러 **밀리초 안에** 읽기 시점 병합에 쓰인다 · **서빙 층**은 로컬 NVMe SSD 를 쓰는 쿠버네티스 위 Go 프로세스들로 **soft-stateful 한 읽기 캐시**이고, **진실이 S3 와 WAL 에 있으므로 어느 노드든 어느 보드든 서빙한다**. **⚠️ 대가를 정면으로 적는다** — **DuckDB 는 파일당 writer 가 하나**라 *\"For a system handling thousands of concurrent writes per second across hundreds of thousands of boards, this sounds like a dealbreaker\"* · **보드를 가로지르는 읽기는 결과적 일관성**이고 *\"typically converging within 500 milliseconds\"* · 따뜻한 캐시를 잃으면 *\"higher latency costs until it rebuilds\"*. **수치** — 보드 로드 **5배** · 큰 보드 **20배** · 집계 **거의 50배** · **인프라 비용 40~60% 감소** · **100만 개가 넘는 조직의 보드 읽기 트래픽 100%** · 캐시 히트율 **95% 이상** · **WAL 동기 중앙값 3밀리초**(보통 10밀리초 미만)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "에이전트에게 코드를 맡기되 책임은 사람에게 남긴다",
+      "why": "**🔴 이 사이트에서 처음 보는 형식의 글이 여기 있다** — **에이전트가 1인칭으로 자기 한 해를 돌아본다**: *\"I was born to do one thing: split a monolith… I have opened thousands of pull requests, force-merged hundreds of them.\"*\n\n**문제 진술이 날카롭다.** 모놀리스의 구조가 암묵적이라 쪼갤 수 없었다 — *\"Files re-exported symbols three levels deep. Type definitions lived in the wrong packages. Constants were duplicated across modules with subtly different values.\"* 그리고 한 줄로 정리한다: ***\"Most 'AI coding' attempts fail in real systems because the system is not ready for AI, not because the AI is not ready.\"***\n\n**⭐ 이 사이트가 읽은 AI 개발 도구 이야기 중 성격이 또 다르다**(이 대비는 이 사이트의 것이다) — Snap 은 **자기가 만든 도구를 자기가 쟀고**, Adevinta 는 **남의 도구를 자기 업무로 쟀는데**, 여기는 **에이전트를 한 해 굴린 뒤 그 경계와 사고를 적는다.**\n\n**⚠️ 이 도메인은 본문 한 편을 읽었다** — 기능을 쓰기 전에 두 편 이상 읽는다. 후보 — `Morphex Monthly: What It Actually Takes to Run an AI Agent in Production`(2026-05-13) · `Morphex Monthly: The Month I Learned to See Myself`(2026-06-22) · `From weeks to days: Agentic Loops`(2026-08-28) · `Using AI to Shift E2E Test Maintenance Left`(2026-02-16).",
+      "tech": [
+        {
+          "tech": "모놀리스를 쪼개는 에이전트와 그 울타리 — Morphex",
+          "solves": "**모놀리스의 유틸리티 파일을 공유 패키지로 옮긴다** — *\"Take a utility file from the monolith, copy it into a shared package, fix the imports, run the tests, open a PR.\"* **9단계 파이프라인**(의존성 분석 → 대상 결정 → AST 파싱 → AI 분석 → 파일 이관 → 컴파일 수정 → 테스트 변환 → 코드 리뷰 → 정리)이고 **주당 40개 PR 을 병합**한다. **울타리를 명시한다** — 아키텍처 결정은 못 하고(대상 패키지는 사람이 검증), **테스트가 통과해도 CI 를 건너뛸 수 없고**, **결제·청구·팀 정의 같은 민감한 코드는 병합할 수 없고**, **배포 동결과 주말에는 멈추며**, GitHub 자신의 `mergeableState` 승인을 요구한다 — *\"If GitHub's own mergeableState said 'blocked,' I stopped, even if my per-check analysis saw nothing wrong.\"* **버린 대안은 사람이 앞단에서 무겁게 검토하는 것**이었다 — *\"became bottleneck, not safety mechanism\"*.",
+          "limits": "**🔴 한계를 스스로 다섯 적는다** — 맥락을 못 읽고(`// TODO: revisit after Q3 launch` 같은 것) · **일부러 틀리게 쓴 코드**(성능 꼼수·테스트 목)를 다루기 어렵고 · **어질러진 코드베이스에 꽂으면 어지러움이 더 커지고**(*\"Plugging an agent into a messy codebase makes the mess louder\"*) · **거짓 안전감**이 생기며(*\"If all my checks pass… it is tempting to merge without thinking\"*) · 분석이 체계적으로 틀리면 **단일 실패점**이 된다. **🔴 사고 기록도 있다** — 셀렉터 이관이 **테스트를 통과했는데 메모이제이션 로직에 숨은 부작용**이 있었고, **그 셀렉터를 들어 본 적도 없는 주간 담당자가 밤 11시에 진단**해야 했다. 대응은 **22포인트 AI 리뷰 검증 · 비교 테스트 · 동결 시 병합 차단**. 결론 한 줄 — ***\"Speed without accountability is worse than no speed at all.\"***",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "I Am Morphex: I'm an AI Agent Growing Up Inside a Real Codebase",
+              "url": "https://engineering.monday.com/i-am-morphex-im-an-ai-agent-growing-up-inside-a-real-codebase/",
+              "publisher": "monday.com Engineering",
+              "date": "2026-04-16",
+              "summary": "**🔴 이 사이트에서 처음 보는 형식 — 에이전트가 1인칭으로 자기 한 해를 돌아본다.** *\"I was born to do one thing: split a monolith… I have opened thousands of pull requests, force-merged hundreds of them.\"* **하는 일** — 모놀리스의 유틸리티 파일을 공유 패키지로 옮긴다: *\"Take a utility file from the monolith, copy it into a shared package, fix the imports, run the tests, open a PR.\"* **9단계 파이프라인**(의존성 분석 → 대상 결정 → AST 파싱 → AI 분석 → 파일 이관 → 컴파일 수정 → 테스트 변환 → 코드 리뷰 → 정리)이고 **주당 40개 PR 을 병합**한다.\n\n**문제 진술이 날카롭다** — 모놀리스의 구조가 암묵적이라 쪼갤 수 없었다: *\"Files re-exported symbols three levels deep. Type definitions lived in the wrong packages. Constants were duplicated across modules with subtly different values.\"* 그리고 한 문장으로 정리한다: ***\"Most 'AI coding' attempts fail in real systems because the system is not ready for AI, not because the AI is not ready.\"***\n\n**경계를 명시한다** — 아키텍처 결정은 못 한다(대상 패키지는 사람이 검증) · **테스트가 통과해도 CI 를 건너뛸 수 없다** · **결제·청구·팀 정의 같은 민감한 코드는 병합할 수 없다** · **배포 동결과 주말에는 멈춘다** · GitHub 자신의 `mergeableState` 승인을 요구한다 — *\"If GitHub's own mergeableState said 'blocked,' I stopped, even if my per-check analysis saw nothing wrong.\"* 책임 소재도 만들었다 — **주간 담당자(developer-of-the-week)** 제도와 PagerDuty 연동 온콜.\n\n**버린 대안** — **사람이 앞단에서 무겁게 검토하는 것**. *\"became bottleneck, not safety mechanism\"* 이었다.\n\n**🔴 한계를 스스로 적는다** — 맥락을 못 읽는다(`// TODO: revisit after Q3 launch` 같은 것) · **일부러 틀리게 쓴 코드**(성능 꼼수, 테스트 목)를 다루기 어렵다 · **어질러진 코드베이스에 꽂으면 어지러움이 더 커진다**(*\"Plugging an agent into a messy codebase makes the mess louder\"*) · **거짓 안전감**(*\"If all my checks pass… it is tempting to merge without thinking\"*) · 분석이 체계적으로 틀리면 **단일 실패점**이 된다.\n\n**🔴 사고 기록도 있다** — 셀렉터 이관이 **테스트를 통과했는데 메모이제이션 로직에 숨은 부작용**이 있었고 특정 상태 전이에서 터졌다. **그 셀렉터를 들어 본 적도 없는 주간 담당자가 밤 11시에 진단해야 했다.** 대응은 **22포인트 AI 리뷰 검증 · 비교 테스트 · 동결 시 병합 차단**. **결론 한 줄** — ***\"Speed without accountability is worse than no speed at all.\"*** 스택 — NX 의존성 그래프 · Redux · Cypress · GitHub 상태 검사 · Sphera(배포) · PagerDuty · Slack · AST 파싱 · 기능 플래그 · **메타데이터 컬럼 20개짜리 프로젝트 보드**."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "open_questions": [
+    "**⭐ 이 사이트가 읽은 AI 개발 도구 이야기가 이제 셋으로 갈린다**(이 정리는 이 사이트의 것이다). **Snap 은 자기가 만든 도구를 자기가 쟀고**(CodePal·Casper·Code Search, 골든셋과 오탐 0%), **Adevinta 는 남의 도구를 자기 백로그 165건으로 쟀으며**(오차 원인 다섯을 부록에), **monday.com 은 에이전트를 한 해 굴린 뒤 그 울타리와 사고를 적는다**(주당 40 PR · 민감 코드 금지 · 주말 정지 · 밤 11시의 사고). **재는 이야기와 굴리는 이야기가 다르다.**",
+    "**⚠️ 세 번째 묶음(관측과 신뢰성)은 본문을 한 편도 안 읽었다.** `Fueling the AI SRE: How monday.com Standardized Observability for 600+ Services`(2026-08-10) · `Less Noise, Better Sleep`(2026-03-19) · `Chaos Engineering Practices`(2026-03-11) · `How We Achieved Almost Limitless Observability`. **서비스가 600개가 넘는다는 숫자만 제목에서 확인했다.**",
+    "**⚠️ 총 ARR 실액을 확인하지 못했다.** 2분기 매출(3억 6,460만 달러)과 성장률(22%), 유료 고객 수(65,783곳), 구간별 순매출 유지율은 나오는데 **총 ARR 은 이 발표 요약에 없다.** AI 제품 ARR 도 **'1분기 대비 두 배' 와 '순신규 ARR 의 17%'** 라는 상대값뿐이다."
+  ],
+  "sources": [
+    {
+      "title": "monday AI engineering Blog",
+      "url": "https://engineering.monday.com/",
+      "publisher": "monday.com",
+      "date": "2026-08-28",
+      "summary": "**자체 호스팅이고 2026년 글이 24편이다**(최신 2026-08-28). **묶음이 셋으로 보인다** — **자체 데이터베이스와 규모**(`mondayDB 3`(05-19) · `Nice to meet you, mondayDB architecture` · `How We Scaled Board Item ID Generation`(04-09) · `Redesign Authorization to monday.com Scale`(04-26) · `Infrastructure scale review`) · **에이전트를 실제로 굴리기**(`I Am Morphex`(04-16) · `Morphex Monthly` 연작 둘 · `From weeks to days: Agentic Loops`(08-28) · `The Death of model.fit()`(03-23) · `Getting More Out of Every AI Token`(07-16) · `Using AI to Shift E2E Test Maintenance Left`(02-16)) · **관측과 신뢰성**(`Fueling the AI SRE: 600+ Services`(08-10) · `Less Noise, Better Sleep`(03-19) · `Chaos Engineering Practices`(03-11) · `How We Achieved Almost Limitless Observability`). ⚠️ **셋째 묶음은 본문을 아직 안 읽었다.**"
+    },
+    {
+      "title": "mondayDB 3 - Solving HTAP for a Trillion-Table System",
+      "url": "https://engineering.monday.com/mondaydb-3-solving-htap-for-a-trillion-table-system/",
+      "publisher": "monday.com Engineering",
+      "date": "2026-05-19",
+      "summary": "**한 조 개의 스프레드시트를 읽게 만드는 자체 데이터베이스.** 문제는 *\"a trillion spreadsheets, each with different shapes, columns, types, and sizes\"* 이고, 회사는 **범용 데이터베이스를 만들지 않았다**고 못 박는다 — *\"We did not build a general-purpose database\"*, **목적에 맞춘 것이 범용을 이긴다**. **🔴 버린 대안이 흥미롭다** — DuckDB 안에 쓰기를 버퍼링하거나 보드마다 파일을 여러 개 두고 union 질의를 하는 우회를 검토하다 **방향을 틀었다**: *\"Instead, we stepped back and asked: what if we don't write to DuckDB from the write path at all?\"* **구조는 세 층** — **배치 층**은 오브젝트 스토리지의 **DuckDB 파일**이 차가운 데이터의 진실이고 플러시 파이프라인이 WAL 을 주기적으로 합친다 · **속도 층**은 변경이 **WAL → Kafka → writer** 로 흘러 **밀리초 안에** 읽기 시점 병합에 쓰인다 · **서빙 층**은 로컬 NVMe SSD 를 쓰는 쿠버네티스 위 Go 프로세스들로 **soft-stateful 한 읽기 캐시**이고, **진실이 S3 와 WAL 에 있으므로 어느 노드든 어느 보드든 서빙한다**. **⚠️ 대가를 정면으로 적는다** — **DuckDB 는 파일당 writer 가 하나**라 *\"For a system handling thousands of concurrent writes per second across hundreds of thousands of boards, this sounds like a dealbreaker\"* · **보드를 가로지르는 읽기는 결과적 일관성**이고 *\"typically converging within 500 milliseconds\"* · 따뜻한 캐시를 잃으면 *\"higher latency costs until it rebuilds\"*. **수치** — 보드 로드 **5배** · 큰 보드 **20배** · 집계 **거의 50배** · **인프라 비용 40~60% 감소** · **100만 개가 넘는 조직의 보드 읽기 트래픽 100%** · 캐시 히트율 **95% 이상** · **WAL 동기 중앙값 3밀리초**(보통 10밀리초 미만)."
+    },
+    {
+      "title": "I Am Morphex: I'm an AI Agent Growing Up Inside a Real Codebase",
+      "url": "https://engineering.monday.com/i-am-morphex-im-an-ai-agent-growing-up-inside-a-real-codebase/",
+      "publisher": "monday.com Engineering",
+      "date": "2026-04-16",
+      "summary": "**🔴 이 사이트에서 처음 보는 형식 — 에이전트가 1인칭으로 자기 한 해를 돌아본다.** *\"I was born to do one thing: split a monolith… I have opened thousands of pull requests, force-merged hundreds of them.\"* **하는 일** — 모놀리스의 유틸리티 파일을 공유 패키지로 옮긴다: *\"Take a utility file from the monolith, copy it into a shared package, fix the imports, run the tests, open a PR.\"* **9단계 파이프라인**(의존성 분석 → 대상 결정 → AST 파싱 → AI 분석 → 파일 이관 → 컴파일 수정 → 테스트 변환 → 코드 리뷰 → 정리)이고 **주당 40개 PR 을 병합**한다.\n\n**문제 진술이 날카롭다** — 모놀리스의 구조가 암묵적이라 쪼갤 수 없었다: *\"Files re-exported symbols three levels deep. Type definitions lived in the wrong packages. Constants were duplicated across modules with subtly different values.\"* 그리고 한 문장으로 정리한다: ***\"Most 'AI coding' attempts fail in real systems because the system is not ready for AI, not because the AI is not ready.\"***\n\n**경계를 명시한다** — 아키텍처 결정은 못 한다(대상 패키지는 사람이 검증) · **테스트가 통과해도 CI 를 건너뛸 수 없다** · **결제·청구·팀 정의 같은 민감한 코드는 병합할 수 없다** · **배포 동결과 주말에는 멈춘다** · GitHub 자신의 `mergeableState` 승인을 요구한다 — *\"If GitHub's own mergeableState said 'blocked,' I stopped, even if my per-check analysis saw nothing wrong.\"* 책임 소재도 만들었다 — **주간 담당자(developer-of-the-week)** 제도와 PagerDuty 연동 온콜.\n\n**버린 대안** — **사람이 앞단에서 무겁게 검토하는 것**. *\"became bottleneck, not safety mechanism\"* 이었다.\n\n**🔴 한계를 스스로 적는다** — 맥락을 못 읽는다(`// TODO: revisit after Q3 launch` 같은 것) · **일부러 틀리게 쓴 코드**(성능 꼼수, 테스트 목)를 다루기 어렵다 · **어질러진 코드베이스에 꽂으면 어지러움이 더 커진다**(*\"Plugging an agent into a messy codebase makes the mess louder\"*) · **거짓 안전감**(*\"If all my checks pass… it is tempting to merge without thinking\"*) · 분석이 체계적으로 틀리면 **단일 실패점**이 된다.\n\n**🔴 사고 기록도 있다** — 셀렉터 이관이 **테스트를 통과했는데 메모이제이션 로직에 숨은 부작용**이 있었고 특정 상태 전이에서 터졌다. **그 셀렉터를 들어 본 적도 없는 주간 담당자가 밤 11시에 진단해야 했다.** 대응은 **22포인트 AI 리뷰 검증 · 비교 테스트 · 동결 시 병합 차단**. **결론 한 줄** — ***\"Speed without accountability is worse than no speed at all.\"*** 스택 — NX 의존성 그래프 · Redux · Cypress · GitHub 상태 검사 · Sphera(배포) · PagerDuty · Slack · AST 파싱 · 기능 플래그 · **메타데이터 컬럼 20개짜리 프로젝트 보드**."
+    },
+    {
+      "title": "monday.com Announces Second Quarter 2026 Results",
+      "url": "https://ir.monday.com/news-and-events/news-releases/news-details/2026/monday-com-Announces-Second-Quarter-2026-Results/default.aspx",
+      "publisher": "monday.com Ltd. (IR)",
+      "date": "2026-08-10",
+      "summary": "**나스닥 상장사(MNDY)라 실적이 공개된다.** **2026년 2분기 매출 3억 6,460만 달러, 전년 대비 22% 성장.** **유료 고객(사용자 10명 초과)이 65,783곳**으로 2025년 6월 말 61,803곳에서 **6% 증가**. **순매출 유지율(NDR)** — 전체 **109%** · 사용자 10명 초과 **113%** · ARR 5만 달러 초과 **115%** · ARR 10만 달러 초과 **115%**. **ARR 10만 달러와 50만 달러 초과 고객의 순증가가 사상 최대**였고 **non-GAAP 영업이익도 사상 최대**다. **⭐ AI 제품에서 나온 ARR 이 1분기 대비 두 배**가 됐고 **2분기 순신규 ARR 의 17%** 를 차지한다. ⚠️ **총 ARR 실액은 이 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+    }
+  ],
+  "features": []
+}
