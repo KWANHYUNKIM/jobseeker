@@ -869,6 +869,261 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53565589&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422",
+      "title": "Platform Engineer 채용",
+      "site": "saramin",
+      "verdict": "회사의 AI 플랫폼(AIR)이 올라탈 쿠버네티스 클러스터를 직접 세우고 지키는 자리. 앞의 Backend Developer 공고가 '플랫폼 위에서 도는 코드'라면 여기는 '플랫폼이 서 있는 바닥'이다. 애플리케이션 개발자가 아니라 인프라 엔지니어를 뽑는 자리이고, 자격요건의 '쿠버네티스 운영 경험 3년 이상'이 사실상 관문이다 — 백엔드 3년차가 곧바로 지원하기는 어렵다. 다만 이 공고는 드물게 **회사가 이력서 쓰는 법을 직접 적어 뒀다**.",
+      "fit": {
+        "must_have": [
+          "Kubernetes 운영 경험 3년 이상 — 개발 경험이 아니라 운영이고, 이 줄이 관문이다",
+          "Linux 시스템과 네트워크에 대한 깊은 이해",
+          "CI/CD 와 IaC 도구를 실제로 굴려 본 경험"
+        ],
+        "can_learn": [
+          "Kueue 등 Job scheduler (우대사항이고 오픈소스라 직접 만져 볼 수 있다)",
+          "MLOps 플랫폼 (우대사항)",
+          "Go (Python 을 하면 시스템 개발 요건은 Python 으로도 충족된다)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "쿠버네티스 클러스터 운영 — 쓰는 것이 아니라 세우고 지키는 쪽",
+          "from": "qualification",
+          "quote": "Kubernetes (EKS, GKE, AKS, Openshift, Rancher 등) 운영 경험 3년 이상",
+          "priority": "core",
+          "why": "다섯 가지를 나란히 적은 것은 고객마다 판이 다르기 때문이다 — MSP 라 AWS 만 아는 사람으로는 안 된다. 그리고 담당 업무가 '클라우드 및 온프레미스 클러스터 설계, 구축, 운영'이라, 매니지드 클러스터만 써 본 경험과 직접 세워 본 경험이 여기서 갈린다.",
+          "gap_check": "노드 하나가 NotReady 로 빠졌다. kubelet·컨테이너 런타임·네트워크 플러그인 중 어디부터 보고, 그 노드 위의 파드들은 언제 어디로 옮겨지는가?",
+          "drill": "kubeadm 으로 매니지드가 아닌 클러스터를 직접 세운다(VM 세 대면 된다). 컨트롤 플레인과 워커를 나누고 CNI 를 손으로 붙인 뒤, 워커 하나를 강제로 죽여 파드가 어떻게 옮겨 가는지 시간까지 재서 기록한다. **EKS 만 써 본 사람과 이걸 해 본 사람은 이 공고에서 다르게 읽힌다.**",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Kubernetes — kubeadm 으로 클러스터 만들기",
+              "url": "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — Node 관리",
+              "url": "https://kubernetes.io/docs/concepts/architecture/nodes/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "리눅스와 네트워크 — 컨테이너가 서 있는 바닥",
+          "from": "qualification",
+          "quote": "Linux 시스템 및 네트워크에 대한 깊은 이해",
+          "priority": "core",
+          "why": "'깊은 이해'라고 쓴 유일한 줄이다. 쿠버네티스의 장애는 대부분 쿠버네티스가 아니라 그 아래에서 난다 — 네임스페이스, iptables/IPVS, DNS, MTU. 고객사 환경을 대신 진단해야 하는 회사라, 남의 네트워크를 읽는 능력이 그대로 업무다.",
+          "gap_check": "파드 A 에서 서비스 B 로 붙는데 간헐적으로 타임아웃이 난다. DNS·conntrack·MTU·네트워크 정책 중 어디부터 보고, 각각 무엇으로 확인하는가?",
+          "drill": "클러스터 안에서 파드 간 통신을 일부러 깨 본다 — CoreDNS 를 잠깐 내려 보고, 네트워크 정책으로 막아 보고, MTU 를 어긋나게 만들어 본다. 각 경우에 증상이 어떻게 다른지(즉시 실패 / 간헐 타임아웃 / 큰 패킷만 실패) 표로 정리한다. 이 표가 그대로 면접 답변이 된다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Kubernetes — 서비스 디버깅",
+              "url": "https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — 클러스터 네트워킹",
+              "url": "https://kubernetes.io/docs/concepts/cluster-administration/networking/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "IaC 와 CI/CD — 손으로 만든 인프라는 두 번 못 만든다",
+          "from": "qualification",
+          "quote": "CI/CD 도구 및 IaC 도구 사용 경험",
+          "priority": "core",
+          "why": "담당 업무에 'IaC 기반의 인프라 관리 (Terraform, Ansible 등)'와 'AIR Platforms 컴포넌트 배포를 위한 CI/CD 파이프라인 구축'이 나란히 있다. MSP 는 같은 구성을 고객사마다 반복해서 세우는 회사라, 재현 가능한 인프라가 취향이 아니라 사업의 전제다.",
+          "gap_check": "terraform apply 를 돌렸더니 지우면 안 되는 리소스가 destroy 목록에 떴다. 왜 그렇게 됐고, 그런 일이 애초에 안 생기게 하려면 상태(state)를 어떻게 다뤄야 하는가?",
+          "drill": "Terraform 으로 VPC + 쿠버네티스 클러스터를 정의하고, 같은 코드로 두 개의 환경(dev/stg)을 세운다. 상태 파일을 원격에 두고 잠금을 걸어 둔 뒤, 콘솔에서 리소스를 하나 손으로 바꿔 놓고 plan 이 그 드리프트를 어떻게 잡아내는지 확인한다. 그다음 Ansible 로 노드 위의 설정 하나를 멱등하게 적용해 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Terraform 공식 문서",
+              "url": "https://developer.hashicorp.com/terraform/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Terraform — State",
+              "url": "https://developer.hashicorp.com/terraform/language/state",
+              "kind": "docs",
+              "note": "드리프트와 잠금이 이 항목의 핵심이다"
+            },
+            {
+              "title": "Ansible 문서",
+              "url": "https://docs.ansible.com/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "컨테이너와 오케스트레이션의 원리",
+          "from": "qualification",
+          "quote": "컨테이너 기술 (Docker) 및 오케스트레이션에 대한 이해",
+          "priority": "core",
+          "why": "'사용 경험'이 아니라 '이해'라고 쓴 줄이다. 이미지를 만들 줄 아는 것과 컨테이너가 왜 격리되는지를 아는 것은 다르고, 인프라 자리에서는 후자를 묻는다 — 특히 GPU 를 붙이거나 권한을 조정할 때 그 차이가 드러난다.",
+          "gap_check": "컨테이너가 격리되는 근거는 무엇인가(네임스페이스·cgroup), 그리고 그 격리가 뚫리는 설정에는 어떤 것이 있는가?",
+          "drill": "같은 애플리케이션의 이미지를 세 번 만든다 — 아무 생각 없이 한 번, 멀티스테이지 빌드로 한 번, 배포 이미지를 distroless 나 slim 으로 한 번. 크기와 빌드 시간, 그리고 취약점 스캔 결과를 비교한다. 마지막으로 컨테이너 안에서 cgroup 값을 직접 읽어 리소스 제한이 어떻게 걸려 있는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Docker — 이미지 빌드 모범 사례",
+              "url": "https://docs.docker.com/build/building/best-practices/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — 컨테이너 런타임 인터페이스",
+              "url": "https://kubernetes.io/docs/concepts/architecture/cri/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티·하이브리드 클라우드 — 고객마다 판이 다르다",
+          "from": "preference",
+          "quote": "하이브리드 및 멀티 클라우드 인프라 설계, 구축, 운영 경험",
+          "priority": "high",
+          "why": "이 회사에서 멀티 클라우드는 유행어가 아니라 사업 조건이다. 제품 조직 리더도 사내 인터뷰에서 '가용성과 의존성 분산을 위해 기본적으로 멀티 클라우드와 MSA 를 지향한다'고 밝혔다. 담당 업무에 온프레미스가 함께 적힌 것도 같은 이유다 — 고객사는 규제나 이력 때문에 자기 데이터센터를 못 버린다.",
+          "gap_check": "같은 워크로드를 AWS 와 Azure 에 올린다면 무엇이 그대로 가고 무엇을 다시 짜야 하는가? 네트워크·IAM·관리형 서비스 중 어디가 가장 안 옮겨지는가?",
+          "drill": "Terraform 모듈 하나를 두 클라우드에 각각 적용해 본다(무료 티어로 충분하다). 공통으로 뽑을 수 있는 것과 결국 갈라지는 것을 나눠 적고, '추상화를 어디까지 하고 어디부터 포기했는지'를 한 장으로 정리한다. 멀티 클라우드의 진짜 답은 완전한 추상화가 아니라 어디서 포기했는가다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "메가존 Careers — 백엔드 개발자 인터뷰",
+              "url": "https://career.megazone.com/interview_backend",
+              "kind": "interview",
+              "note": "멀티 클라우드를 가용성 설계의 전제로 말하는 대목"
+            },
+            {
+              "title": "Terraform — Modules",
+              "url": "https://developer.hashicorp.com/terraform/language/modules",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Kueue 등 Job scheduler 운영 — AIR 이 서는 자리",
+          "from": "preference",
+          "quote": "Kueue 또는 기타 Kubernetes 기반 Job scheduler 사용 및 운영 경험",
+          "priority": "high",
+          "why": "같은 회사의 Backend Developer 공고에는 이것이 '커스터마이징 및 확장 개발'로 적혀 있고 여기서는 '사용 및 운영'이다. 두 자리가 같은 물건을 양쪽에서 잡는다는 뜻이라, 이 항목을 준비하면 두 공고 모두에 답이 된다. 그리고 GPU 대기열이 곧 비용이라 운영 쪽 판단이 그대로 돈이 된다.",
+          "gap_check": "GPU 쿼터를 다 쓴 클러스터에서 급한 작업이 들어왔다. 무엇을 밀어내고 무엇을 기다리게 할 것인가, 그리고 밀려난 작업의 진행 상황은 어떻게 되는가?",
+          "drill": "kind 클러스터에 Kueue 를 올리고 GPU 를 흉내 낸 커스텀 리소스로 쿼터를 건다. 작업을 여러 개 던져 대기열이 어떻게 도는지 보고, 쿼터를 줄여 기아 상태를 만든 뒤 어떤 설정으로 풀 수 있는지 실험한다. 클러스터 상태를 Prometheus 로 뽑아 대기 시간을 그래프로 남긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Kueue 공식 문서",
+              "url": "https://kueue.sigs.k8s.io/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Prometheus 문서",
+              "url": "https://prometheus.io/docs/introduction/overview/",
+              "kind": "docs",
+              "note": "담당 업무의 모니터링 스택이 Prometheus·Grafana·ELK/EFK 다"
+            }
+          ]
+        },
+        {
+          "topic": "Go 또는 Python 으로 운영 도구 만들기",
+          "from": "preference",
+          "quote": "Go 또는 Python 기반 시스템 개발 능력",
+          "priority": "high",
+          "why": "인프라 자리인데 개발 능력을 우대사항에 둔 것은, 이 팀이 남의 도구를 쓰기만 하는 팀이 아니라는 신호다. Kueue 도 오퍼레이터도 Go 로 쓰여 있고, 운영 자동화는 대개 Python 으로 시작한다. **백엔드 경험이 있는 지원자에게는 이 줄이 가장 큰 무기다** — 운영 3년이 부족해도 여기서 벌충할 여지가 있다.",
+          "gap_check": "매번 손으로 하던 운영 작업 하나를 코드로 옮긴다면 무엇을 고를 것이고, 그 코드가 잘못 돌았을 때 무엇이 망가지는가?",
+          "drill": "클러스터를 점검하는 작은 도구를 만든다 — 예를 들어 '요청만 있고 제한이 없는 파드', '오래 Pending 인 파드', '노드별 여유 자원'을 뽑아 표로 출력하는 CLI. Python 으로 먼저 만들고 같은 것을 Go 로 옮겨 두 판을 모두 GitHub 에 올린다(아래 edge 와 이어진다).",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Kubernetes Python Client",
+              "url": "https://github.com/kubernetes-client/python",
+              "kind": "repo"
+            },
+            {
+              "title": "client-go",
+              "url": "https://github.com/kubernetes/client-go",
+              "kind": "repo"
+            }
+          ]
+        },
+        {
+          "topic": "회사가 시킨 형식으로 이력서 다시 쓰기",
+          "from": "preference",
+          "quote": "리소스 관리, 스케일링, 성능 튜닝, 장애 대응 등과 관련된 인프라 운영 문제 해결 경험은 문제 상황 → 기술적 해결책 → 성과의 흐름이 드러나도록 구체적으로 작성",
+          "priority": "core",
+          "why": "공고가 이력서 서술 형식을 직접 지정한 드문 경우다. 이건 취향이 아니라 **채점 기준을 미리 알려 준 것**이다. 같은 경험도 '무엇을 썼다'로 적으면 이 기준에 안 걸리고, '무엇이 문제였고 → 어떻게 풀었고 → 무엇이 달라졌다'로 적어야 걸린다. 함께 적힌 다음 줄은 클러스터 경험에 '업무 기간, 클러스터 규모, 사용한 기술 스택, 레슨 및 인사이트'를 넣으라고까지 말한다.",
+          "gap_check": "내 이력서에서 인프라 경험 한 줄을 골라 문제 → 해결 → 성과 세 토막으로 나눌 수 있는가? 성과 칸에 숫자가 들어가는가?",
+          "drill": "지금까지의 인프라·운영 경험 세 건을 골라 각각 네 줄로 다시 쓴다 — (1) 무엇이 문제였나, (2) 무엇을 재서 원인을 짚었나, (3) 무엇으로 고쳤나, (4) 숫자가 어떻게 달라졌나. 클러스터 경험이라면 기간·규모·스택·레슨을 함께 적는다. **성과 칸이 안 채워지는 항목은 이력서에서 빼거나, 지금이라도 그 숫자를 만들어 둔다.**",
+          "hours": 6,
+          "resources": []
+        },
+        {
+          "topic": "MLOps 환경 구축 — AI 플랫폼 회사의 우대사항",
+          "from": "preference",
+          "quote": "MLOps 환경 구축, 운영 경험",
+          "priority": "nice",
+          "why": "AI 매출이 3,700억을 넘긴 회사이고 이 자리가 떠받치는 것이 AIR 플랫폼이다. 학습 작업을 스케줄링하는 것으로 끝나지 않고 그 위에 파이프라인과 실험 추적이 올라가므로, 인프라 쪽에서는 '그것들을 어떻게 클러스터에 올려 두느냐'가 접점이 된다.",
+          "gap_check": "Kubeflow 나 MLflow 를 클러스터에 올린다면 스토리지·인증·업그레이드 중 무엇이 가장 골칫거리가 되겠는가?",
+          "drill": "kind 나 소규모 클러스터에 MLflow 트래킹 서버를 올리고 아티팩트 저장소를 오브젝트 스토리지로 붙인다. 학습 잡을 두 번 돌려 실험이 기록되는지 확인하고, 서버를 재시작해도 기록이 살아남는지 본다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Kubeflow 문서",
+              "url": "https://www.kubeflow.org/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "MLflow 문서",
+              "url": "https://mlflow.org/docs/latest/index.html",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "GitHub 저장소·데모·블로그를 실제로 만들어 이력서에 건다",
+          "why": "공고가 우대사항 끝에 'GitHub repository, 데모, 블로그 글 등 외부 자료를 적극 활용 권장'이라고 직접 적었다. 이렇게까지 말한 공고에 링크 없이 지원하는 것은 시키는 것을 안 하는 셈이다. 위 학습 항목의 drill 들이 그대로 저장소 하나가 된다.",
+          "effort": "학습과 함께"
+        },
+        {
+          "idea": "매니지드가 아닌 클러스터를 세워 본 경험을 만든다",
+          "why": "담당 업무가 '클라우드 및 온프레미스 Kubernetes 클러스터 설계, 구축, 운영'이다. 고객사 중에는 자기 데이터센터를 못 버리는 곳이 많고, EKS 콘솔만 써 본 지원자와 kubeadm 으로 세워 본 지원자는 그 자리에서 갈린다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "장애 하나를 처음부터 끝까지 글로 써 둔다",
+          "why": "공고가 '단순한 경험 나열이 아닌 문제 인식, 성장 과정, 레슨과 인사이트가 드러나도록' 준비하라고 적었다. 장애 회고 한 편이 이 요구를 통째로 만족시키고, 동시에 블로그 글 권장 항목까지 함께 답한다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "같은 회사 Backend Developer 공고와 함께 본다",
+          "why": "여기서 '사용 및 운영'인 Kueue 가 그쪽에서는 '커스터마이징 및 확장 개발'이다. 같은 물건을 양쪽에서 잡는 두 자리라, 어느 쪽이 자기에게 맞는지 비교해 고르면 지원 이유 자체가 설득력을 갖는다.",
+          "effort": "한 시간"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "인프라 운영 문제 해결 경험을 '문제 상황 → 기술적 해결책 → 성과' 흐름으로 — 공고가 이 형식을 직접 지정했다",
+          "대규모 클러스터 관리 경험의 업무 기간·클러스터 규모·기술 스택·레슨 (공고에 명시된 요구사항)",
+          "노드 장애·파드 통신 실패 같은 상황에서 어디부터 보는가",
+          "IaC 상태 파일과 드리프트를 어떻게 다뤘는가",
+          "GPU 쿼터가 꽉 찼을 때 무엇을 밀어내고 무엇을 기다리게 하는가",
+          "공고 하단에 '필요 시 레퍼런스 체크, 인성검사가 진행 될 수 있습니다'가 적혀 있다"
+        ],
+        "sources": [
+          {
+            "title": "메가존클라우드 Platform Engineer 채용 공고",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53565589&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422",
+            "publisher": "사람인",
+            "summary": "우대사항 끝에 '이력서 및 실무 면접 준비 추천 사항' 네 줄이 회사 이름으로 적혀 있다"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
