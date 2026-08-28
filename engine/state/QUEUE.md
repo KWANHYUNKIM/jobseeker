@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **monday.com** | 기타(이스라엘) · SaaS(협업 보드) | **287 도메인 3개 · 기능 3개** — ① `board-query-engine` / ② `agent-with-guardrails` / **③ 신설 `표를 만드는 쪽의 병목을 없앤다`** + `id-range-leasing`(번호를 미리 떼어 온다, 결정 8). **⚠️ 도메인 ③ 은 본문 1편** — 두 번째 기능 전에 하나 더 읽는다. **⚠️ 관측·신뢰성 4편 미독.** **⚠️ 총 ARR 미확인** |
+| **monday.com** | 기타(이스라엘) · SaaS(협업 보드) | **288 도메인 4개 · 기능 4개** — ① `board-query-engine` / ② `agent-with-guardrails` / ③ `id-range-leasing` / **④ 신설 `직접 재기로 하고 편안함을 내준다`** + `self-run-observability`(결정 7). **🔴 얻은 것 옆에 잃은 것을 적는 글** — *"An all-in-one platform that is managing everything for you is paradise"*. **⭐ 두 자리에서 같은 답(열 지향)을 따로 냈다.** **읽을 만한 글을 거의 다 읽었다 — 다음 사이클에 닫을 만하다.** **⚠️ 총 ARR 미확인** |
 
 ## 대기
 

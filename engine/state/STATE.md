@@ -8,55 +8,64 @@
 
 ## 지금 파는 중
 
-**monday.com (기타/이스라엘 · SaaS) — 50번째. 도메인 3개 · 기능 3개. 큐 잔량 1/3.**
+**monday.com (기타/이스라엘 · SaaS) — 50번째. 도메인 4개 · 기능 4개. 큐 잔량 1/3.**
 
-**287 에서 도메인 ③ 을 새로 열고 기능을 썼다** — `표를 만드는 쪽의 병목을 없앤다` +
-`id-range-leasing`(번호를 미리 떼어 온다), **결정 8개** 전부 대가가 붙었다.
+**288 에서 도메인 ④ 를 열고 기능을 썼다** — `직접 재기로 하고 편안함을 내준다` +
+`self-run-observability`, **결정 7개** 전부 대가가 붙었다. **새 도메인의 `tech` 를 같은
+커밋에서 채워 경고는 1건을 유지했다**(287 의 실수를 반복하지 않았다).
 
-**⚠️ `--gaps` 는 [신규]를 냈지만 회사를 갈아타지 않는 규칙이 위라 monday.com 을 계속 팠다.**
+### 🔴 288 의 수확 — 얻은 것 옆에 잃은 것을 적는 글
 
-### 도메인을 새로 연 이유
+관측을 남에게 안 맡기고 **ClickHouse 를 직접 굴린다.** 계기는 **mondayDB v3 출시**였고,
+**계정·보드·아이템 단위로 보려면 값의 종류가 폭발하는데 쓰던 도구가 카디널리티로 값을
+물렸다** — **필요한 것이 정확히 비싸지는 구조였다**(이 정리는 이 사이트의 것).
 
-**아이템 ID 생성은 쓰기 쪽이고 도메인 ① 은 `한 조 개의 표를 읽게 만든다` 라 안 맞았다.**
-223 규칙대로 다른 문제로 보고 **도메인 ③** 을 열었다. `index.json` 의 `domains` 에도 넣었다.
+**얻은 것** — 트레이스 조회 **500ms 미만**, 카디널리티 과금에서 탈출.
+**🔴 그런데 같은 글에서 잃은 것을 나열한다** — *"terabytes, and eventually petabytes of
+data, which adds significant strain on the team"*, **노드 사이징·노드 수·디스크 레이아웃·
+경보 관리**를 직접, 이행 중에는 *"certain correlations require more than one click"*.
+그리고 한 문장으로 인정한다 — ***"An all-in-one platform that is managing everything for
+you is paradise."*** **얻은 것을 적는 글에서 이렇게 적는 경우는 드물다.**
 
-### 🔴 287 재독의 수확 — 새 결정 대신 결정적 문장 하나와 '안 적은 것' 여섯
+**🔴 실패도 적는다** — *"At first, we quickly realized the standard OTEL schemas weren't
+enough"* 이고 초기 구현이 *"did not meet our expectations"* 였다가 실험으로 골든 스키마를
+찾았다.
 
-**미리 받아 두는 근거가 못 박혀 있다** — *"50ms to the critical path isn't just a noticeable
-delay—it's unacceptable."* **그리고 그 버퍼가 장애도 흡수한다** — 연결이 끊겨도
-*"local buffers allowed the app to survive short blips."* **속도를 위해 둔 것이 장애 흡수
-장치도 된 셈이다.**
+### ⭐ 이 회사가 두 자리에서 같은 답을 따로 냈다
 
-**⚠️ 그런데 이 글의 숫자가 전부 설정값이다**(이 관찰은 이 사이트의 것) — **1,000개 · 80% ·
-50% · 50억** 은 다 **정한 값**이고, **초당·하루 발급량도 실제 지연도 이행 일정도 팀 규모도
-옛 시스템의 실제 사고 기록도 없다.** 기준인 **50밀리초조차 피하려는 값이지 잰 값이 아니다.**
-**같은 회사의 `mondayDB 3` 편이 5배·20배·50배·40~60% 를 내는 것과 대비된다.**
+**보드를 읽는 엔진(mondayDB)도 텔레메트리를 읽는 저장소(ClickHouse)도 열 지향**이고 이유도
+같다 — *"most of the time you are querying specific attributes."* **읽는 패턴이 비슷하면
+저장하는 모양도 같아진다.** ⚠️ **다만 두 글은 서로를 언급하지 않는다.**
 `open_questions` 에 적었다.
 
-**⚠️ DynamoDB 가 오래 죽었을 때의 대비책도 없다** — 짧은 끊김은 버퍼로 버틴다고만 한다.
+**같은 도메인의 경보 편도 tech 에 넣었다** — 줄이기 전에 **먼저 셌고**(*"You can't improve
+what you can't measure"*), **경보를 사람 시간으로 환산한다**(*"paged us 10 times and cost us
+7 engineer-hours last quarter"*). **오탐이 절반으로**(엔지니어 20명 · 1년 넘게).
+⚠️ **버린 대안은 없다.**
 
-### 이 기능의 축
+### 다음 사이클 — monday.com 을 닫을 만하다
 
-**정수 제약이 답의 모양을 거의 다 정했다**(이 정리는 이 사이트의 것) — 번호가 정수이고 순서가
-있으면 **누군가는 마지막 값을 알아야** 하고 그 자리가 다시 한 점이 된다. **한 점을 없애는
-대신 그 점에 덜 가게 만들었다.** 그리고 갈아탈 때는 **만나지 않는 자리를 먼저 만들었다** —
-옛 AUTO_INCREMENT 를 **50억 앞으로** 밀고 새 생성기가 그 아래를 채운다. 시험은 **섀도 키**로
-진짜 카운터를 안 건드리고 했다. **🔴 마무리가 드물다** — 자기 설계를 다 설명한 뒤
-*"UUIDs are the superior choice"*(특히 **UUIDv7**)라고 적는다.
+**도메인 넷에 기능 넷이고 읽을 만한 글을 거의 다 읽었다**(mondayDB 2편 · Morphex 2편 ·
+ID 생성 · 관측 2편 = **7편**). `--gaps` 는 [신규]를 낼 것이다.
 
-**⚠️ 검증 경고가 한때 2건이 됐다** — **새 도메인의 `tech` 를 비워 두면 경고가 난다**(STYLE.md
-2번). 같은 커밋 안에서 채워 1건으로 되돌렸다. **다음에 도메인을 열 때 `tech` 를 함께 채운다.**
+**⚠️ 남은 미독** — `Chaos Engineering Practices`(03-11) · `Fueling the AI SRE: 600+
+Services`(08-10) · `Redesign Authorization to monday.com Scale`(04-26) ·
+`From API Chaos to Collaborative Graph`(02-09) · `How We Use AI to Turn Figma Designs into
+Production Code` · `Every Playwright Needs a Director` 등. **한 편 더 볼지, 닫을지 판단한다.**
+**⚠️ "얇을 것" 이라는 예상은 여덟 번 다 틀렸다**(운영 사실 ⑫) — **열어는 본다.**
 
-### 다음 사이클
-
-**세 도메인 다 기능이 있으므로 `--gaps` 는 [신규]나 [보강]을 낼 것이다.** 남은 선택지:
-- **도메인 ③ 의 두 번째 기능** — ⚠️ 본문이 한 편뿐이라 만드는 쪽 글을 하나 더 찾아야 한다.
-- **세 번째 묶음(관측·신뢰성)으로 도메인 ④** — `Fueling the AI SRE: 600+ Services`(08-10) ·
-  `Less Noise, Better Sleep`(03-19) · `Chaos Engineering Practices`(03-11) ·
-  `How We Achieved Almost Limitless Observability`. **네 편이라 도메인이 충분히 선다.**
-- **monday.com 을 닫기** — 도메인 셋에 기능 셋이면 충분하다고 볼 수도 있다.
+**⭐ 닫는다면 `business_model` 에 적을 패턴 다섯:**
+① **⭐⭐ 같은 시스템을 두 목소리로 쓴다**(만든 사람 쪽은 **8 person-years → 6 person-months**
+에 성공률·롤백률 없음 / 에이전트 1인칭 쪽은 **한계 다섯과 밤 11시의 사고**).
+② **막힌 제약을 우회하는 대신 그 제약이 안 걸리는 자리로 옮긴다**(*"what if we don't write to
+DuckDB from the write path at all?"* · ID 는 **한 점에 덜 가게**).
+③ **밖에 답이 없으면 안에서 자리를 옮긴다**(2023년 **남의 DB 일곱** → 2026년 **자기 설계 안의
+우회 둘**).
+④ **⚠️ 글마다 숫자의 성격이 다르다** — `mondayDB 3` 은 **전부 측정값**(5배·20배·50배·40~60%),
+ID 생성 편은 **전부 설정값**(1,000·80%·50%·50억), 관측 편은 **500ms 는 측정인데 절감 폭은
+없다**.
+⑤ **얻은 것 옆에 잃은 것을 적는다** — 관측 편의 *"paradise"* 문장, ID 편의 **UUIDv7 후일담**.
 **⚠️ 총 ARR 실액은 여전히 미확인.**
-**URL 은 `WebSearch` + `allowed_domains: ["engineering.monday.com"]` 로 찾는다**(⑱).
 
 ### 큐와 다음 회사
 
@@ -67,32 +76,32 @@ delay—it's unacceptable."* **그리고 그 버퍼가 장애도 흡수한다** 
 MySQL 클러스터 · 검증 창 1시간 이상 · MSK 8MB).
 **📌 Grab 보강 후보** — Palana 2부작(06-19/21) · Agent platform Part 1(07-24) ·
 **Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**.
-**📌 Roblox 는 완료 회사이므로 보강 단서** — `about.roblox.com/newsroom/<연>/<월>/<슬러그>`.
+**📌 Roblox 는 완료 회사이므로 보강 단서.**
 **안 열어 본 후보** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
 **빈 자리는 라틴아메리카 하나뿐이고 재시도 금지다.** **한국 편중 아홉.**
 **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
 
-### ⚠️ 비교 문서 새 축 후보 여덟 (완료 50곳)
+### ⚠️ 비교 문서 새 축 후보 아홉 (완료 50곳)
 
-1. **⭐⭐ `에이전트에게 무엇을 못 하게 하는가`** — **재료 셋으로 가장 빨리 쓸 수 있다.**
-   monday.com Morphex(민감 코드 금지 · CI 우회 금지 · 주말 정지 · `mergeableState` 존중 ·
-   **Human Todos 로 스스로 병합을 막는다**) · Snap CodePal(**사람 리뷰를 대체하지 않는다**) ·
-   Snap Casper(**PR 만 열고 병합은 안 한다**).
-2. **`틀린 가설을 어떻게 버리는가`** — Adevinta DNS(헛발 둘·재발) · Careem **Gzip 착시** ·
-   Doximity **반복 횟수로 읽기**.
-3. **`아낀 값은 어디로 갔는가`** — Adevinta **메모리→API 서버** · Careem **언두 5.7TB** ·
-   Zerodha **색인 대신 압축** · Doximity **미룬 병합**.
-4. **`만드는 이야기만 있고 치우는 이야기가 없다`** — Adevinta **계정 폐기 부재**.
-5. **`가장 느린 곳이 남의 것일 때`** — Adevinta **외부 서비스 초당 3천 건**.
-6. **`설정이 실제 동작을 가릴 때`** — Adevinta OCR **105개 중 70개 무시**.
-7. **`다시 시작한다면 다르게 하겠다`** — monday.com ID 생성 편의 **UUIDv7 후일담**.
-8. **⭐ 새로 — `정한 값과 잰 값`.** monday.com ID 편은 숫자가 **전부 설정값**이고 같은 회사
-   `mondayDB 3` 은 **전부 측정값**이다. Snap 의 GNSS(**못 잰다고 적음**)와 EyeConnect(**세
-   자리 수치**)가 같은 축에 선다.
+1. **⭐⭐ `에이전트에게 무엇을 못 하게 하는가`** — **재료 셋. 가장 빨리 쓸 수 있다.**
+   monday.com Morphex(민감 코드 금지 · 주말 정지 · **Human Todos 로 스스로 병합을 막는다**) ·
+   Snap CodePal(**사람 리뷰를 대체하지 않는다**) · Snap Casper(**PR 만 열고 병합은 안 한다**).
+2. **⭐ `정한 값과 잰 값`** — monday.com ID 편(**전부 설정값**) vs `mondayDB 3`(**전부 측정값**)
+   · Snap GNSS(**못 잰다고 적음**) vs EyeConnect(**세 자리 수치**).
+3. **⭐ 새로 — `얻은 것 옆에 잃은 것을 적는가`.** monday.com 관측 편의 ***"paradise"*** 문장과
+   ID 편의 **UUIDv7 후일담**이 가장 강하고, Adevinta 정책 엔진의 **메모리→API 서버**,
+   Snap CodePal 의 *"not on live traffic"* 이 같은 축.
+4. **`틀린 가설을 어떻게 버리는가`** — Adevinta DNS · Careem **Gzip 착시** · Doximity.
+5. **`아낀 값은 어디로 갔는가`** — Adevinta · Careem · Zerodha · Doximity.
+6. **`만드는 이야기만 있고 치우는 이야기가 없다`** — Adevinta **계정 폐기 부재**.
+7. **`가장 느린 곳이 남의 것일 때`** — Adevinta **외부 서비스 초당 3천 건**.
+8. **`설정이 실제 동작을 가릴 때`** — Adevinta OCR **105개 중 70개 무시**.
+9. **`다시 시작한다면 다르게 하겠다`** — monday.com **UUIDv7**.
 
 **기존 재료** — **⭐⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서`**(Snap 다섯 + Adevinta) ·
 **⭐ `기계가 그렇다는데`**(Snap 둘 + Adevinta + monday.com) · `관측에 값을 무엇으로
-치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯) · `되돌릴 수 있는 것을 먼저 한다` 보강.
+치르는가`(여덟 — **monday.com 관측 편이 강한 재료로 붙는다**) · `기한을 무엇으로
+정하는가`(여섯) · `되돌릴 수 있는 것을 먼저 한다` 보강.
 
 ## 다음 선택지
 
