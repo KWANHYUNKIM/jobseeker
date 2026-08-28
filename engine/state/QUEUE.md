@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Snap** | US · 소셜(카메라·AR) | **268 기능 2개** — `code-review-agent`(사람보다 먼저 읽는다, 결정 8) · `mutual-gaze-align`(서로를 봐서 좌표를 맞춘다, 결정 8). **두 도메인이 다 찼다.** **🔴 268 의 발견 — 같은 도메인의 두 글이 자를 정반대로 다룬다**(EyeConnect 는 2.6초·2.2cm 를 내고 GNSS 는 *"cannot provide definitive numerical accuracy metrics"* 라고 밝힌다). **⚠️ 미독 4편** — `/code_search`(3부작 Part 2) · `/spatial_intelligence` · `/specs_experiences` · `/spectacles_supabase`. **⚠️ 블로그 8쪽 중 1쪽만 봤다**(JS 페이지네이션). **⚠️ 매출 실액·DAU 미확인** |
+| **Snap** | US · 소셜(카메라·AR) | **269 기능 3개** — `code-review-agent`(결정 8) · `mutual-gaze-align`(결정 8) · `agentic-code-search`(똑똑한 색인 대신 똑똑한 반복, 결정 8). **🔴 3부작을 셋 다 읽어 닫혔다** — Part 2 가 셋을 잇는 자리다. **🔴 설계 원천이 다른 회사 제품이다**(*"Claude Code doesn't query a vector store. It runs grep… The intelligence is in the loop"*). **RAG 거절 이유 일곱 개.** **⚠️ 미독 3편** — `/spatial_intelligence` · `/specs_experiences` · `/spectacles_supabase`. **⚠️ 블로그 8쪽 중 1쪽만 봤다.** **⚠️ 매출 실액·DAU 미확인** |
 
 ## 대기
 

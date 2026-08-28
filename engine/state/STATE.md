@@ -8,83 +8,87 @@
 
 ## 지금 파는 중
 
-**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 2개. 큐 잔량 0/3.**
+**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 3개. 큐 잔량 0/3.**
 
-**268 에서 도메인 ②`얼굴 앞에 컴퓨터를 놓는다` 에 기능을 썼다** —
-`mutual-gaze-align`(서로를 봐서 좌표를 맞춘다), **결정 8개** 전부 대가가 붙었다.
-**두 도메인이 다 찼다.**
+**269 에서 사용자가 직접 지시했다** — Part 2 `Code Search` 를 읽고 도메인 ① 의 두 번째
+기능을 썼다: `agentic-code-search`(똑똑한 색인 대신 똑똑한 반복), **결정 8개**.
+**3부작이 셋 다 읽혀 닫혔다.**
 
-### 268 에 읽은 것 — 제목만 알던 도메인의 본문 두 편
+### 🔴 269 의 발견 ① — 설계의 출처가 다른 회사 제품이다
 
-`--gaps` 가 도메인 ② 를 지목했고, **검색으로 실제 URL 을 찾아 두 편을 열었다**
-(`/specs_gnss`, `/eyeconnect`). **둘 다 버린 대안을 셋 넷씩 적고 대가를 길게 적는다** —
-"재료가 없을 수 있다" 던 예상이 또 틀렸다(운영 사실 ⑫ 가 **열네 번째**로 확인됐다).
+Code Search 는 아키텍처의 근거로 **Claude Code 가 실제로 어떻게 동작하는지**를 든다 —
+*"Claude Code doesn't query a vector store. It runs grep. It runs it many times… The model
+itself decides what to search for, evaluates results, and iterates. **The retrieval system
+is dumb. The intelligence is in the loop.**"* 그리고 물었다: *"What if remote agents could
+grep across all of Snap's code, the way Claude Code greps a local checkout?"*
+**이 사이트에서 남의 제품의 동작 방식을 자기 인프라 설계의 근거로 대놓고 적은 사례는 여기가
+처음이다.**
 
-**EyeConnect** — 좌표계를 맞추는 일을 **서로를 쳐다보는 것**으로 대신한다. 버린 대안 셋
-(지도 재측위·피듀셜·공유 SLAM), 키포인트 **5개**(각도·가림 저항), **3ms**, 중력 정렬 +
-**QEP**, RANSAC, NTP+격자 탐색, **90% 가 2.6초 안에 정렬 · 시작 15cm → 5m 안 최종 2.2cm**,
-**동시 3대 상한**, **영상을 안 보내고 맞춘 뒤 즉시 삭제**.
+### 🔴 269 의 발견 ② — RAG 를 버린 이유가 일곱이다
 
-**GNSS 실외 추적** — VIO·GNSS·자력계를 그래프 최적화로 융합. 네 센서가 각각 왜 혼자서는
-안 되는지 적고(자력계 **10~20도**), 대가가 길다(콜드 스타트 **30초+**, 보조 시 **10초**,
-저조도·차량 안에서 VIO 실패 → IMU 전용 모드).
+정확도 우선(*"a confident wrong answer"*) · 벡터 DB 는 상태를 가진 시스템이라 운영 표면이
+*"roughly doubled… for marginal user-facing benefit"* · 임베딩이 GPU 를 태운다 · 사람도
+에이전트도 정확 일치를 더 자주 원한다 · 정규식은 벡터로 **표현 자체가 안 된다** ·
+*"RAG flattens that into a single non-iterative retrieval step"* · **그리고 가장 값나가는
+이유** — *"a stronger model means better search with nothing for us to change. RAG can't
+ride that curve; its ceiling is the retriever, not the reasoner."*
+**대가도 적는다** — 키워드 없는 모호한 질문에서는 *"takes seconds, not milliseconds"*.
 
-### 🔴 268 의 발견 — 같은 도메인의 두 글이 자를 정반대로 다룬다
+### 🔴 269 의 발견 ③ — Part 2 가 Part 1 의 지표에 단서를 더한다
 
-**EyeConnect 는 숫자를 낸다**(2.6초 · 15cm · 2.2cm). **GNSS 는 못 낸다고 밝힌다** —
-*"Without a reliable, high-precision reference, we cannot provide definitive numerical
-accuracy metrics"* 라 평가가 *"qualitative observations… rather than absolute error
-statistics"* 다. **갈린 자리는 난이도가 아니라 정답을 어디서 구하느냐다** — EyeConnect 는
-**두 기기의 관측을 서로 대조**하면 되지만 GNSS 는 **지구 위 참값**을 따로 구해야 한다.
+CodePal 이 '병합 전에 잡았다' 고 말할 수 있는 이유가 *"true only because reviews run on
+open PRs, **not because anything is build-verified**."* **267 의 오탐 0% 는 같은 글 안에서
+*"not on live traffic"* 으로 좁혔는데 이 단서는 다음 편에 있다** — **이 회사는 범위를
+밝히되 항상 같은 글에서 밝히지는 않는다.** `open_questions` 에 적었다.
 
-**이 회사는 못 재면 못 잰다고 적는다 — 이걸로 두 번째다.** 267 의 CodePal 도 오탐 0% 의
-범위를 *"the held-out golden dataset, not on live traffic"* 으로 밝혔다.
-**Wayfair 의 패턴(*'잴 자가 있느냐' 로 갈린다*)과 같은 축이다.**
+### 3부작이 셋 다 확인됐다
 
-### ⚠️ 그리고 이 회사 안에서도 묶음마다 다르다
+Part 2 가 셋을 잇는 자리다 — Part 1(CodePal)이 *"The first production consumer of code
+search"* 였고, Part 3(Casper)은 *"lean on code search to move across all of Snap's code at
+a scale no engineer could by hand"* 한다. **CyberAgent·Wayfair·컬리에서 관찰한 '글끼리
+서로를 언급하지 않는다' 의 정반대를 세 번 다 확인했다.**
 
-**AI 개발 도구 쪽은 3부작 번호를 달고 서로를 부르는데**(Casper → CodePal → Code Search),
-**Specs/AR 쪽 두 글은 다른 Snap 글을 전혀 언급하지 않는다.** `open_questions` 에 적었다.
+### 다음 사이클 — 닫을지 더 팔지 정한다
 
-### 이 회사에서 남은 것 — 닫을지 더 팔지 판단이 필요하다
+**두 도메인이 다 찼고 기능이 셋이다.** `--gaps` 는 [진행 중 확장]을 안 낼 것이다.
+회사를 갈아타지 않는다는 규칙이 위이므로 **미독 3편 중 하나를 더 팔지, Snap 을 `done` 으로
+닫을지 먼저 정한다.**
 
-**두 도메인이 다 찼으므로 `--gaps` 는 다음 사이클에 [진행 중 확장]을 안 낼 것이다.**
-회사를 갈아타지 않는다는 규칙이 위이므로, **다음 사이클은 미독 4편 중 하나를 읽어 기능을
-더 쓸지, Snap 을 `done` 으로 닫을지 먼저 정한다.**
-
-- **⚠️ 미독 4편** — `/code_search`(**3부작 Part 2, 도메인 ① 의 두 번째 기능 재료**) ·
-  `/spatial_intelligence`(LLM 공간 지능 측정) · `/specs_experiences`(2026-08-20) ·
-  `/spectacles_supabase`(Snap Cloud, Supabase 기반 백엔드).
-- **닫는다면 `business_model` 에 패턴을 적을지 판단한다.** 서 있는 가설 —
-  **① 이 회사는 자기 지표의 범위를 밝힌다**(CodePal 오탐 0% 의 held-out 단서, GNSS 의
-  "못 잰다") · **② 묶음마다 글끼리 잇는 방식이 다르다**(AI 도구는 3부작, Specs 는 단절) ·
-  **③ 같은 연작 안에서도 대가의 밀도가 크게 다르다**(CodePal 다섯 줄 vs Casper 0줄).
-- **⚠️ 블로그 8쪽 중 1쪽만 봤다** — `?page=2` 는 1쪽과 같고 `/blog/2` 는 404(JS
-  페이지네이션, 운영 사실 ⑬). **다만 268 에서 검색으로 목록 밖 글(`/eyeconnect`,
-  `/spectacles_supabase`, `/ar-enabled-catalogs` 등)을 찾아냈다 — 페이지네이션을 못 뚫어도
-  `WebSearch` 에 `allowed_domains: eng.snap.com` 을 걸면 글을 찾을 수 있다.**
-- **⚠️ 매출 실액·DAU 를 못 찾았다.** IR 홈에 MAU **971백만** · 총매출 **19% 성장**(Q2 2026)
-  만 있다. **IR 보도자료 목록에서 링크를 눌러 들어간다** — URL 추측은 두 번 404(운영 사실 ⑰).
+- **⚠️ 미독 3편** — `/spatial_intelligence`(LLM 공간 지능 측정, 2026-06-17) ·
+  `/specs_experiences`(2026-08-20) · `/spectacles_supabase`(Snap Cloud, Supabase 기반
+  백엔드 — *"building compelling experiences for AR glasses often demands more than what
+  runs on-device"*). **앞의 둘은 도메인 ②(Specs/AR)의 두 번째 기능 재료가 될 수 있다.**
+- **닫는다면 `business_model` 에 적을 패턴 가설 셋** — ① **자기 지표의 범위를 밝힌다**
+  (CodePal 오탐 0% 의 held-out 단서 · GNSS 의 "못 잰다" · Code Search 의 build-verified
+  단서) ② **묶음마다 글끼리 잇는 방식이 다르다**(AI 도구 3부작은 서로를 부르는데 Specs 둘은
+  단절) ③ **같은 연작 안에서도 대가의 밀도가 크게 다르다**(CodePal 다섯 줄 · Code Search
+  일곱 이유 vs **Casper 0줄**).
+- **⚠️ 블로그 8쪽 중 1쪽만 봤다**(JS 페이지네이션, 운영 사실 ⑬). **다만 `WebSearch` 에
+  `allowed_domains: eng.snap.com` 을 걸면 목록 밖 글을 찾을 수 있다**(268 에서 `/eyeconnect`
+  를 그렇게 찾았다) — **운영 사실로 굳는다.**
+- **⚠️ 매출 실액·DAU 미확인.** IR 홈에 MAU **971백만** · 총매출 **19% 성장**(Q2 2026) 뿐.
+  **IR 보도자료 목록에서 링크를 눌러 들어간다** — URL 추측은 두 번 404(운영 사실 ⑰).
 
 ### 다음 회사 — 큐가 0 이다
 
 Snap 을 닫으면 **곧바로 후보 조사이고 한국 밖에서** 찾는다(한국 회사가 아홉).
-**📌 Grab 보강 후보** — 이미 `done` 이지만 `engineering.grab.com` 에 2026 새 글:
-**Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
-**Counter Service 저장소 이전(07-03)** — 뒤 둘은 기존 `iceberg-lake` · `counter-service`
-기능의 후속이다. **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia ·
-Traveloka · Plaid · Adevinta · Skyscanner · Carousell · VNG.
+**📌 Grab 보강 후보** — 이미 `done` 이지만 2026 새 글: **Palana 2부작**(06-19/21) ·
+Agent platform Part 1(07-24) · **Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**
+— 뒤 둘은 기존 `iceberg-lake` · `counter-service` 의 후속. **안 열어 본 후보(한국 밖)** —
+Sea/Shopee(다른 주소?) · GoTo/Tokopedia · Traveloka · Plaid · Adevinta · Skyscanner ·
+Carousell · VNG.
 
-**빈 자리** — 라틴아메리카 0(접었다·재시도 금지) · **게임 1**(Roblox — Cygames 접어 실마리
-없음) · 아프리카 1 · 인도 1 · 여행 1. 동남아는 Grab.
+**빈 자리** — 라틴아메리카 0(접었다·재시도 금지) · **게임 1**(Roblox) · 아프리카 1 ·
+인도 1 · 여행 1. 동남아는 Grab.
 **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
 
-**비교 문서 재료(4~5축)** — `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로
-정하는가`(여섯) · **`기계가 그렇다는데` 보강**(Snap `code-review-agent` 가 세 번째 답) ·
+**비교 문서 재료** — `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯)
+· **⭐ `기계가 그렇다는데` 에 Snap 이 두 답을 준다**(`code-review-agent` 와
+`agentic-code-search` — **후자는 '모델이 좋아지면 내 것도 좋아진다' 는 새로운 논거다**) ·
 `되돌릴 수 있는 것을 먼저 한다` 보강 · **⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서` 에
-Snap 이 강한 재료를 준다** — **자를 못 구해 "못 잰다" 고 적은 사례(GNSS)는 이 사이트에
-처음이고**, 같은 회사가 **잴 수 있는 쪽(EyeConnect)에서는 세 자리 수치를 낸다.** 하이퍼커넥트
-반례와 Wayfair 의 *'잴 자가 있느냐'* 패턴이 같은 축에 선다.
+Snap 이 세 재료를 준다** — **자를 못 구해 "못 잰다" 고 적은 사례(GNSS)는 이 사이트에
+처음이고**, 잴 수 있는 쪽(EyeConnect)에서는 세 자리 수치를 내며, **범위를 밝히되 다른 편에서
+밝히는 경우(Code Search → CodePal)도 있다.**
 
 ## 다음 선택지
 
