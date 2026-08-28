@@ -1,0 +1,159 @@
+{
+ "slug": "bol",
+ "name": "볼",
+ "name_en": "bol",
+ "country": "EU",
+ "category": "커머스",
+ "status": "in_progress",
+ "updated_at": "2026-08-29",
+ "domain": "techlab.bol.com",
+ "one_liner": "1999년에 첫 상품을 판 네덜란드 온라인 상점 — 거래가 끝난 뒤에도 계속되는 정산을 옛 모놀리스가 붙들고 있었다",
+ "business_model": "**네덜란드·벨기에의 온라인 상점이자 마켓플레이스다.** 자기가 사서 파는 상품과 **판매 파트너의 상품**이 한 화면에 섞여 있다.\n\n**2024년 기준 고객 1,360만 명 이상 · 판매 파트너 47,000곳 · 취급 상품 4,200만 종.** **1999년에 첫 상품을 팔았고** 2024년에 25주년을 맞았다. **⚠️ 이 수치는 모회사 Ahold Delhaize 의 2024년 연차보고서에서 확인한 것이고, 이 사이트가 각 항목을 한 줄씩 대조하지는 않았다.**\n\n---\n\n**⭐ 이 회사를 이 사이트가 고른 이유는 '끝난 거래' 다**(이 판단은 이 사이트의 것이다). 물건을 팔면 끝이 아니다 — **배송이 청구를 부르고, 반품이 크레딧 노트를 부르고, 그 모든 것이 부가세를 다시 계산하게 만든다.** 회사는 그 자리를 **financial fulfillment** 라 부르고 *\"Financial fulfilment is a grouping around transactions and connects trigger events, like a delivery with billing.\"* 라 설명한다.\n\n**⭐⭐ 그래서 이 회사의 이관 이야기는 다른 회사와 성질이 다르다** — **옛 주문에 새 사건이 오기 때문에 과거를 버릴 수가 없다.** *\"Without them, our new applications cannot process correctly the new events of the old orders.\"* 4TB 중 3TB 를 굳이 옮긴 이유가 그것이다.\n\n**⭐ 그리고 이 회사는 실패를 적는다**(이 관찰도 이 사이트의 것이다). 한 테이블이 사흘 넘게 돌다 멈춘 것, 관리형 이관 서비스가 18시간 뒤 외래키 하나로 반복 실패해 **2주를 조사에 쓴 것**, 인덱스 생성이 재시작 루프를 만든 것을 다 적는다. 그리고 *\"nobody in the company had ever tackled something quite like this before\"* 라고도 쓴다.\n\n**블로그는 기술 비중이 높지만 멈춰 있다** — `techlab.bol.com` 은 열 편 중 일곱이 기술 글인데 **최신이 2024-11-07 이다**(**이 사이트가 확인한 범위 안에서**). **⚠️ 그래서 재방문 가치는 낮을 수 있다.**",
+ "products": [
+  {
+   "name": "bol 온라인 상점",
+   "what": "네덜란드·벨기에의 온라인 상점. **취급 상품 4,200만 종**이고 자기 상품과 판매 파트너 상품이 섞여 있다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Ahold Delhaize Annual Report 2024",
+     "url": "https://aholddelhaize.com/investors/annual-reports/2024/",
+     "publisher": "Ahold Delhaize",
+     "date": "2024",
+     "summary": "**bol 의 사업 규모를 확인한 곳이다.** 2024년 기준 **고객 1,360만 명 이상**, **판매 파트너 47,000곳**, **취급 상품 4,200만 종.** 그리고 **1999년에 첫 상품을 팔았고** 2024년에 25주년을 맞았다. ⚠️ **이 사이트는 보고서에서 확인한 수치만 옮겼고 각 항목을 한 줄씩 대조하지는 않았다.**"
+    }
+   ]
+  },
+  {
+   "name": "판매 파트너 플랫폼",
+   "what": "**47,000곳**의 판매 파트너가 이 플랫폼 위에서 판다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Ahold Delhaize Annual Report 2024",
+     "url": "https://aholddelhaize.com/investors/annual-reports/2024/",
+     "publisher": "Ahold Delhaize",
+     "date": "2024",
+     "summary": "**bol 의 사업 규모를 확인한 곳이다.** 2024년 기준 **고객 1,360만 명 이상**, **판매 파트너 47,000곳**, **취급 상품 4,200만 종.** 그리고 **1999년에 첫 상품을 팔았고** 2024년에 25주년을 맞았다. ⚠️ **이 사이트는 보고서에서 확인한 수치만 옮겼고 각 항목을 한 줄씩 대조하지는 않았다.**"
+    }
+   ]
+  },
+  {
+   "name": "financial fulfillment 기반",
+   "what": "**거래를 묶고 배송 같은 사건을 청구와 잇는 자리.** 반품·크레딧 노트·부가세가 여기서 정해진다. ⚠️ **사용자가 이름을 아는 제품이 아니라 내부 기반이다** — 이 항목은 이 사이트가 기술 글에서 확인해 넣었다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Splitting the data of the monolith – Because who needs to sleep anyway…",
+     "url": "https://techlab.bol.com/en/blog/splitting-the-data-of-the-monolith-because-who-needs-to-sleep-anyway/",
+     "publisher": "bol Techlab",
+     "date": "2024-11-07",
+     "summary": "**2017년부터 2024년까지 돌던 모놀리스의 데이터를 두 마이크로서비스로 옮긴 이야기다.** 저자는 Istvan Bartuszek.\n\n**무엇을 다루던 시스템인가** — 고객 쪽 **financial fulfillment** 을 맡았다. 회사는 그것을 *\"Financial fulfilment is a grouping around transactions and connects trigger events, like a delivery with billing.\"* 라 설명한다. 즉 **거래를 묶고, 배송 같은 사건을 청구와 잇는 자리**다.\n\n**왜 과거를 못 버리나** — *\"Without them, our new applications cannot process correctly the new events of the old orders.\"* **옛 주문에 새 사건이 온다** — 글은 플레이스테이션 5 를 사서 받은 고객이 나중에 반품하면 새 시스템이 제대로 크레딧 노트를 내려면 옛 데이터가 필요하다는 예를 든다.\n\n**규모** — *\"it had collected 4 terabytes from which we still would like to handle 3T in two different microservices\"*. 상점 주문·고객·부가세가 약 **2TB**, 물류 이벤트가 약 **1TB**.\n\n**🔴 버린 대안이 셋이고 각각 이유가 붙는다** — ① **중개 앱을 2031년까지 그대로 돌린다**(이미 되지만 불필요한 애플리케이션을 무한정 떠안는다) ② **스케줄 잡을 만들어 데이터를 밀어 넣는다**(팀의 Java·Kotlin 역량을 쓸 수 있지만 **클라우드 비용과 소요 시간을 알 수 없어** 감당이 안 된다) ③ **물류 이벤트를 전부 리플레이한다**(모든 기능을 다시 시험할 수 있지만 **비용이 더 크고 과거 데이터의 불일치를 손으로 고쳐야 한다**).\n\n**고른 길** — Google 의 **Database Migration Service** 로 데이터베이스를 복제하고, 새 데이터베이스를 승격시키고, **Flyway 와 SQL 스크립트로 새 스키마에 맞게 변환**한 뒤 새 애플리케이션을 띄워 쌓인 메시지를 처리한다. 작업 창은 **준비 1~2시간**(인스턴스를 1대로 줄이고 불필요한 인덱스·제약을 걷고 저장 함수를 넣는다) · **실행 1~2일** · **복구 3~6시간**(인덱스·제약을 되돌리고 임시 변경을 치운다)이다.\n\n**변환 방식을 네 번 갈아탔다** — ① Flyway 위의 SQL 저장 함수(배치 관리가 뒤죽박죽) ② 체크포인트를 둔 상태 테이블(통제는 나아졌지만 **데이터베이스 CPU 가 4퍼센트밖에 안 쓰였다**) ③ ExecutorService 로 병렬 처리(**CPU 가 15퍼센트로 올랐고**, 6시간 걸리던 테이블이 병렬로는 **약 7시간**이 됐다) ④ **스크립트 자체를 고쳤다** — 서브셀렉트의 O(N제곱) 을 임시 테이블을 써 O(2N) 으로 바꾸자 **손을 못 대던 테이블이 10~12시간에 끝났다.**\n\n**🔴 실패를 셋 적는다** — 한 테이블은 **사흘 넘게 돌다 미완으로 멈췄다**(위의 O(N제곱)). DMS 는 **약 18시간을 잘 돌다가 외래키 하나 때문에 반복 실패**했고 **약 2주를 지원팀과 주고받으며 조사한 끝에** 병렬도를 최소로 낮춰 풀었다. 인덱스 생성이 **1시간 넘게** 걸려 Flyway 트랜잭션이 롤백되고 재시작 루프에 빠지자 **CREATE INDEX CONCURRENTLY** 로 피했다.\n\n**제약** — **DMS 잡은 하나씩만 돌릴 수 있고 각각 19~23시간**이 걸린다. 그리고 **일일 이행 의무는 멈출 수 없다.** 팀은 *\"the team are mainly Java/Kotlin developers using basic SQL scripts\"* 이고 *\"nobody in the company had ever tackled something quite like this before\"* 였다.\n\n**전체 기간** — *\"the full process took 2-3 months\"*."
+    }
+   ]
+  }
+ ],
+ "revenue_streams": [
+  {
+   "name": "상품 판매와 마켓플레이스",
+   "how": "**자기가 사서 파는 소매**와 **판매 파트너의 거래**가 함께 있다. 2024년 고객 **1,360만 명 이상**, 판매 파트너 **47,000곳**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Ahold Delhaize Annual Report 2024",
+     "url": "https://aholddelhaize.com/investors/annual-reports/2024/",
+     "publisher": "Ahold Delhaize",
+     "date": "2024",
+     "summary": "**bol 의 사업 규모를 확인한 곳이다.** 2024년 기준 **고객 1,360만 명 이상**, **판매 파트너 47,000곳**, **취급 상품 4,200만 종.** 그리고 **1999년에 첫 상품을 팔았고** 2024년에 25주년을 맞았다. ⚠️ **이 사이트는 보고서에서 확인한 수치만 옮겼고 각 항목을 한 줄씩 대조하지는 않았다.**"
+    }
+   ]
+  },
+  {
+   "name": "비중과 GMV",
+   "how": "⚠️ **소매와 마켓플레이스의 비중, 그리고 연간 GMV 를 이 사이트가 확인하지 못했다.** 모회사 분기 자료에 조각난 수치가 있으나 대조하지 않았다",
+   "confidence": "unknown"
+  }
+ ],
+ "domain_map": {
+  "title": "산 뒤에 벌어지는 일들이 이 회사의 기술을 정한다",
+  "question": "무엇으로 돈을 벌고, 왜 과거를 못 버리는가?",
+  "code": "flowchart TD\n  BUY[\"<b>고객이 산다</b><br/>• 자기 상품과 판매 파트너 상품이 섞여 있다<br/>• 취급이 사천이백만 종이다\"]:::list\n  SHIP[\"<b>배송과 청구가 짝을 이룬다</b><br/>• 배송 같은 사건이 청구로 이어진다\"]:::list\n  AFTER[\"<b>끝난 줄 알았던 주문에 사건이 온다</b><br/>• 반품<br/>• 환불과 크레딧 노트<br/>• 부가세 정산\"]:::list\n  OLD[\"<b>옛 모놀리스가 과거를 쥐고 있다</b>\"]:::accent\n  NEW[\"새 마이크로서비스 둘\"]:::quiet\n  BUY --> SHIP\n  SHIP --> AFTER\n  AFTER -->|\"옛 주문의 기록이 있어야 한다\"| OLD\n  OLD -->|\"사년 어치를 옮긴다\"| NEW"
+ },
+ "domains": [
+  {
+   "name": "거래는 끝나도 정산은 계속된다",
+   "why": "**물건을 팔면 끝이 아니다.** 배송이 청구를 부르고, 반품이 크레딧 노트를 부르고, 그것들이 부가세를 다시 계산하게 만든다. 회사는 그 자리를 **financial fulfillment** 라 부른다 — *\"Financial fulfilment is a grouping around transactions and connects trigger events, like a delivery with billing.\"*\n\n**⭐ 이 도메인의 성질이 이 회사의 기술 문제를 통째로 정한다**(이 정리는 이 사이트의 것이다). **끝난 주문에 새 사건이 오기 때문에 과거 기록을 버릴 수 없다** — *\"Without them, our new applications cannot process correctly the new events of the old orders.\"* 그래서 2017년부터 2024년까지 쌓인 **4TB 중 3TB 를 굳이 새 시스템으로 옮겨야 했다**(상점 주문·고객·부가세 약 2TB, 물류 이벤트 약 1TB).\n\n**⭐ 이름을 넓게 지었다**(334→335 의 교훈이다) — 데이터 이관 한 건이 아니라 **거래가 끝난 뒤에 계속되는 일 전부**를 담는다.\n\n**⚠️ 아직 한 편만 읽었다 — 두 편 규칙이 안 채워졌다.** 다음 사이클에 한 편 더 연다.",
+   "tech": [
+    {
+     "tech": "관리형 이관 서비스로 데이터베이스를 통째 복제한 뒤 승격시킨다",
+     "solves": "**3TB 를 손으로 밀어 넣지 않는다.** 스케줄 잡을 만들어 미는 안은 **클라우드 비용과 소요 시간을 알 수 없어** 버렸고, 복제 뒤 승격시키는 쪽을 골랐다.",
+     "limits": "🔴 **잡을 하나씩만 돌릴 수 있고 각각 19~23시간**이 걸린다. 그리고 **약 18시간을 잘 돌다가 외래키 하나 때문에 반복 실패**해 **약 2주를 지원팀과 주고받으며** 조사한 끝에 병렬도를 최소로 낮춰야 했다. ⚠️ **왜 그 외래키가 문제였는지는 글에 없다**(이 지적은 이 사이트의 것이다).",
+     "confidence": "confirmed",
+     "sources": [
+      {
+       "title": "Splitting the data of the monolith – Because who needs to sleep anyway…",
+       "url": "https://techlab.bol.com/en/blog/splitting-the-data-of-the-monolith-because-who-needs-to-sleep-anyway/",
+       "publisher": "bol Techlab",
+       "date": "2024-11-07",
+       "summary": "**2017년부터 2024년까지 돌던 모놀리스의 데이터를 두 마이크로서비스로 옮긴 이야기다.** 저자는 Istvan Bartuszek.\n\n**무엇을 다루던 시스템인가** — 고객 쪽 **financial fulfillment** 을 맡았다. 회사는 그것을 *\"Financial fulfilment is a grouping around transactions and connects trigger events, like a delivery with billing.\"* 라 설명한다. 즉 **거래를 묶고, 배송 같은 사건을 청구와 잇는 자리**다.\n\n**왜 과거를 못 버리나** — *\"Without them, our new applications cannot process correctly the new events of the old orders.\"* **옛 주문에 새 사건이 온다** — 글은 플레이스테이션 5 를 사서 받은 고객이 나중에 반품하면 새 시스템이 제대로 크레딧 노트를 내려면 옛 데이터가 필요하다는 예를 든다.\n\n**규모** — *\"it had collected 4 terabytes from which we still would like to handle 3T in two different microservices\"*. 상점 주문·고객·부가세가 약 **2TB**, 물류 이벤트가 약 **1TB**.\n\n**🔴 버린 대안이 셋이고 각각 이유가 붙는다** — ① **중개 앱을 2031년까지 그대로 돌린다**(이미 되지만 불필요한 애플리케이션을 무한정 떠안는다) ② **스케줄 잡을 만들어 데이터를 밀어 넣는다**(팀의 Java·Kotlin 역량을 쓸 수 있지만 **클라우드 비용과 소요 시간을 알 수 없어** 감당이 안 된다) ③ **물류 이벤트를 전부 리플레이한다**(모든 기능을 다시 시험할 수 있지만 **비용이 더 크고 과거 데이터의 불일치를 손으로 고쳐야 한다**).\n\n**고른 길** — Google 의 **Database Migration Service** 로 데이터베이스를 복제하고, 새 데이터베이스를 승격시키고, **Flyway 와 SQL 스크립트로 새 스키마에 맞게 변환**한 뒤 새 애플리케이션을 띄워 쌓인 메시지를 처리한다. 작업 창은 **준비 1~2시간**(인스턴스를 1대로 줄이고 불필요한 인덱스·제약을 걷고 저장 함수를 넣는다) · **실행 1~2일** · **복구 3~6시간**(인덱스·제약을 되돌리고 임시 변경을 치운다)이다.\n\n**변환 방식을 네 번 갈아탔다** — ① Flyway 위의 SQL 저장 함수(배치 관리가 뒤죽박죽) ② 체크포인트를 둔 상태 테이블(통제는 나아졌지만 **데이터베이스 CPU 가 4퍼센트밖에 안 쓰였다**) ③ ExecutorService 로 병렬 처리(**CPU 가 15퍼센트로 올랐고**, 6시간 걸리던 테이블이 병렬로는 **약 7시간**이 됐다) ④ **스크립트 자체를 고쳤다** — 서브셀렉트의 O(N제곱) 을 임시 테이블을 써 O(2N) 으로 바꾸자 **손을 못 대던 테이블이 10~12시간에 끝났다.**\n\n**🔴 실패를 셋 적는다** — 한 테이블은 **사흘 넘게 돌다 미완으로 멈췄다**(위의 O(N제곱)). DMS 는 **약 18시간을 잘 돌다가 외래키 하나 때문에 반복 실패**했고 **약 2주를 지원팀과 주고받으며 조사한 끝에** 병렬도를 최소로 낮춰 풀었다. 인덱스 생성이 **1시간 넘게** 걸려 Flyway 트랜잭션이 롤백되고 재시작 루프에 빠지자 **CREATE INDEX CONCURRENTLY** 로 피했다.\n\n**제약** — **DMS 잡은 하나씩만 돌릴 수 있고 각각 19~23시간**이 걸린다. 그리고 **일일 이행 의무는 멈출 수 없다.** 팀은 *\"the team are mainly Java/Kotlin developers using basic SQL scripts\"* 이고 *\"nobody in the company had ever tackled something quite like this before\"* 였다.\n\n**전체 기간** — *\"the full process took 2-3 months\"*."
+      }
+     ]
+    },
+    {
+     "tech": "Flyway 와 SQL 스크립트로 새 스키마 모양으로 변환한다",
+     "solves": "**옛 모양을 새 서비스의 모양으로 바꾼다.** 방식을 네 번 갈아탔다 — 저장 함수 → 체크포인트를 둔 상태 테이블 → 병렬 처리 → **스크립트 자체를 고치기.** 마지막이 결정적이었다: 서브셀렉트의 O(N제곱) 을 임시 테이블로 O(2N) 으로 바꾸자 **손을 못 대던 테이블이 10~12시간에 끝났다.**",
+     "limits": "🔴 **병렬화만으로는 부족했다** — 상태 테이블 단계에서 데이터베이스 CPU 가 **4퍼센트**밖에 안 쓰였고, 병렬 처리로 **15퍼센트**까지 올렸는데도 6시간 걸리던 테이블이 **약 7시간**으로 되레 늘었다. **⭐ 자원을 더 쓰는 것과 빨라지는 것이 같지 않았다**(이 정리는 이 사이트의 것이다). 그리고 **인덱스 생성이 1시간을 넘으면 Flyway 트랜잭션이 롤백되어 재시작 루프**에 빠졌다 — `CREATE INDEX CONCURRENTLY` 로 피했다.",
+     "confidence": "confirmed",
+     "sources": [
+      {
+       "title": "Splitting the data of the monolith – Because who needs to sleep anyway…",
+       "url": "https://techlab.bol.com/en/blog/splitting-the-data-of-the-monolith-because-who-needs-to-sleep-anyway/",
+       "publisher": "bol Techlab",
+       "date": "2024-11-07",
+       "summary": "**2017년부터 2024년까지 돌던 모놀리스의 데이터를 두 마이크로서비스로 옮긴 이야기다.** 저자는 Istvan Bartuszek.\n\n**무엇을 다루던 시스템인가** — 고객 쪽 **financial fulfillment** 을 맡았다. 회사는 그것을 *\"Financial fulfilment is a grouping around transactions and connects trigger events, like a delivery with billing.\"* 라 설명한다. 즉 **거래를 묶고, 배송 같은 사건을 청구와 잇는 자리**다.\n\n**왜 과거를 못 버리나** — *\"Without them, our new applications cannot process correctly the new events of the old orders.\"* **옛 주문에 새 사건이 온다** — 글은 플레이스테이션 5 를 사서 받은 고객이 나중에 반품하면 새 시스템이 제대로 크레딧 노트를 내려면 옛 데이터가 필요하다는 예를 든다.\n\n**규모** — *\"it had collected 4 terabytes from which we still would like to handle 3T in two different microservices\"*. 상점 주문·고객·부가세가 약 **2TB**, 물류 이벤트가 약 **1TB**.\n\n**🔴 버린 대안이 셋이고 각각 이유가 붙는다** — ① **중개 앱을 2031년까지 그대로 돌린다**(이미 되지만 불필요한 애플리케이션을 무한정 떠안는다) ② **스케줄 잡을 만들어 데이터를 밀어 넣는다**(팀의 Java·Kotlin 역량을 쓸 수 있지만 **클라우드 비용과 소요 시간을 알 수 없어** 감당이 안 된다) ③ **물류 이벤트를 전부 리플레이한다**(모든 기능을 다시 시험할 수 있지만 **비용이 더 크고 과거 데이터의 불일치를 손으로 고쳐야 한다**).\n\n**고른 길** — Google 의 **Database Migration Service** 로 데이터베이스를 복제하고, 새 데이터베이스를 승격시키고, **Flyway 와 SQL 스크립트로 새 스키마에 맞게 변환**한 뒤 새 애플리케이션을 띄워 쌓인 메시지를 처리한다. 작업 창은 **준비 1~2시간**(인스턴스를 1대로 줄이고 불필요한 인덱스·제약을 걷고 저장 함수를 넣는다) · **실행 1~2일** · **복구 3~6시간**(인덱스·제약을 되돌리고 임시 변경을 치운다)이다.\n\n**변환 방식을 네 번 갈아탔다** — ① Flyway 위의 SQL 저장 함수(배치 관리가 뒤죽박죽) ② 체크포인트를 둔 상태 테이블(통제는 나아졌지만 **데이터베이스 CPU 가 4퍼센트밖에 안 쓰였다**) ③ ExecutorService 로 병렬 처리(**CPU 가 15퍼센트로 올랐고**, 6시간 걸리던 테이블이 병렬로는 **약 7시간**이 됐다) ④ **스크립트 자체를 고쳤다** — 서브셀렉트의 O(N제곱) 을 임시 테이블을 써 O(2N) 으로 바꾸자 **손을 못 대던 테이블이 10~12시간에 끝났다.**\n\n**🔴 실패를 셋 적는다** — 한 테이블은 **사흘 넘게 돌다 미완으로 멈췄다**(위의 O(N제곱)). DMS 는 **약 18시간을 잘 돌다가 외래키 하나 때문에 반복 실패**했고 **약 2주를 지원팀과 주고받으며 조사한 끝에** 병렬도를 최소로 낮춰 풀었다. 인덱스 생성이 **1시간 넘게** 걸려 Flyway 트랜잭션이 롤백되고 재시작 루프에 빠지자 **CREATE INDEX CONCURRENTLY** 로 피했다.\n\n**제약** — **DMS 잡은 하나씩만 돌릴 수 있고 각각 19~23시간**이 걸린다. 그리고 **일일 이행 의무는 멈출 수 없다.** 팀은 *\"the team are mainly Java/Kotlin developers using basic SQL scripts\"* 이고 *\"nobody in the company had ever tackled something quite like this before\"* 였다.\n\n**전체 기간** — *\"the full process took 2-3 months\"*."
+      }
+     ]
+    },
+    {
+     "tech": "준비와 실행과 복구로 나눈 작업 창",
+     "solves": "**멈출 수 없는 일 옆에서 큰 변환을 돌린다.** 준비 **1~2시간**(인스턴스를 1대로 줄이고 불필요한 인덱스·제약을 걷고 저장 함수를 넣는다) · 실행 **1~2일** · 복구 **3~6시간**(인덱스·제약을 되돌린다). **인덱스와 제약을 일부러 걷어 놓는 것이 이 창의 핵심이다**(이 읽기는 이 사이트의 것이다).",
+     "limits": "🔴 **일일 이행 의무는 멈출 수 없다** — 그래서 이 창 안에서 끝내야 했다. 그리고 **전체가 2~3개월** 걸렸다. ⚠️ **그동안 옛 시스템과 새 시스템이 어떻게 공존했는지는 이 글에 자세히 없다**(이 지적은 이 사이트의 것이다).",
+     "confidence": "confirmed",
+     "sources": [
+      {
+       "title": "Splitting the data of the monolith – Because who needs to sleep anyway…",
+       "url": "https://techlab.bol.com/en/blog/splitting-the-data-of-the-monolith-because-who-needs-to-sleep-anyway/",
+       "publisher": "bol Techlab",
+       "date": "2024-11-07",
+       "summary": "**2017년부터 2024년까지 돌던 모놀리스의 데이터를 두 마이크로서비스로 옮긴 이야기다.** 저자는 Istvan Bartuszek.\n\n**무엇을 다루던 시스템인가** — 고객 쪽 **financial fulfillment** 을 맡았다. 회사는 그것을 *\"Financial fulfilment is a grouping around transactions and connects trigger events, like a delivery with billing.\"* 라 설명한다. 즉 **거래를 묶고, 배송 같은 사건을 청구와 잇는 자리**다.\n\n**왜 과거를 못 버리나** — *\"Without them, our new applications cannot process correctly the new events of the old orders.\"* **옛 주문에 새 사건이 온다** — 글은 플레이스테이션 5 를 사서 받은 고객이 나중에 반품하면 새 시스템이 제대로 크레딧 노트를 내려면 옛 데이터가 필요하다는 예를 든다.\n\n**규모** — *\"it had collected 4 terabytes from which we still would like to handle 3T in two different microservices\"*. 상점 주문·고객·부가세가 약 **2TB**, 물류 이벤트가 약 **1TB**.\n\n**🔴 버린 대안이 셋이고 각각 이유가 붙는다** — ① **중개 앱을 2031년까지 그대로 돌린다**(이미 되지만 불필요한 애플리케이션을 무한정 떠안는다) ② **스케줄 잡을 만들어 데이터를 밀어 넣는다**(팀의 Java·Kotlin 역량을 쓸 수 있지만 **클라우드 비용과 소요 시간을 알 수 없어** 감당이 안 된다) ③ **물류 이벤트를 전부 리플레이한다**(모든 기능을 다시 시험할 수 있지만 **비용이 더 크고 과거 데이터의 불일치를 손으로 고쳐야 한다**).\n\n**고른 길** — Google 의 **Database Migration Service** 로 데이터베이스를 복제하고, 새 데이터베이스를 승격시키고, **Flyway 와 SQL 스크립트로 새 스키마에 맞게 변환**한 뒤 새 애플리케이션을 띄워 쌓인 메시지를 처리한다. 작업 창은 **준비 1~2시간**(인스턴스를 1대로 줄이고 불필요한 인덱스·제약을 걷고 저장 함수를 넣는다) · **실행 1~2일** · **복구 3~6시간**(인덱스·제약을 되돌리고 임시 변경을 치운다)이다.\n\n**변환 방식을 네 번 갈아탔다** — ① Flyway 위의 SQL 저장 함수(배치 관리가 뒤죽박죽) ② 체크포인트를 둔 상태 테이블(통제는 나아졌지만 **데이터베이스 CPU 가 4퍼센트밖에 안 쓰였다**) ③ ExecutorService 로 병렬 처리(**CPU 가 15퍼센트로 올랐고**, 6시간 걸리던 테이블이 병렬로는 **약 7시간**이 됐다) ④ **스크립트 자체를 고쳤다** — 서브셀렉트의 O(N제곱) 을 임시 테이블을 써 O(2N) 으로 바꾸자 **손을 못 대던 테이블이 10~12시간에 끝났다.**\n\n**🔴 실패를 셋 적는다** — 한 테이블은 **사흘 넘게 돌다 미완으로 멈췄다**(위의 O(N제곱)). DMS 는 **약 18시간을 잘 돌다가 외래키 하나 때문에 반복 실패**했고 **약 2주를 지원팀과 주고받으며 조사한 끝에** 병렬도를 최소로 낮춰 풀었다. 인덱스 생성이 **1시간 넘게** 걸려 Flyway 트랜잭션이 롤백되고 재시작 루프에 빠지자 **CREATE INDEX CONCURRENTLY** 로 피했다.\n\n**제약** — **DMS 잡은 하나씩만 돌릴 수 있고 각각 19~23시간**이 걸린다. 그리고 **일일 이행 의무는 멈출 수 없다.** 팀은 *\"the team are mainly Java/Kotlin developers using basic SQL scripts\"* 이고 *\"nobody in the company had ever tackled something quite like this before\"* 였다.\n\n**전체 기간** — *\"the full process took 2-3 months\"*."
+      }
+     ]
+    }
+   ],
+   "features": []
+  }
+ ],
+ "open_questions": [
+  "**⚠️ 350 은 프로파일 사이클이라 기능을 쓰지 않았다.** 도메인 하나만 열었고 **두 편 규칙이 아직 안 채워졌다**(한 편만 읽었다).",
+  "**⚠️ 사업 수치는 모회사 Ahold Delhaize 의 2024년 연차보고서에서 확인한 것까지만 옮겼다** — 고객 1,360만 명 이상 · 판매 파트너 47,000곳 · 취급 4,200만 종 · 1999년 첫 판매. **소매와 마켓플레이스의 매출 비중, 연간 GMV 는 확인하지 못했다.**",
+  "**⚠️ 제목만 확인한 다른 글**(최신이 2024-11-07 이다) — `Fast is slow, slow is fast - rethinking Our Data Engineering Process`(2024-11-07) · `Database Setup So Easy, Your Cat Could Do It: Docker and Flyway Edition`(2024-08-02) · `Bol's journey in shifting left and shifting right: our Vision` 과 `... Canary Releases`(둘 다 2024-05-22) · `How we built near real-time X for you recommender systems at Bol`(2024-04-09) · `Navigating chaotic times: forecasting amid the pandemic`(2024-04-18). **기술 글이 열 편 중 일곱이다.**",
+  "**⭐ 비교 문서 `미루되 미룬 것이 안 보이게 한다 — 그럼 그것은 어디에 쌓이는가` 의 셋째 사례가 될 수 있다**(이 연결은 이 사이트의 것이다). 이 회사가 버린 첫 대안이 **중개 앱을 2031년까지 그대로 돌리는 것**인데, **미루는 쪽을 값으로 계산해 명시적으로 거부한 사례**다. ⚠️ **다만 그 값을 숫자로 적지는 않는다** — 비교 문서를 쓸지는 기능을 쓴 뒤에 정한다."
+ ],
+ "sources": [
+  {
+   "title": "Splitting the data of the monolith – Because who needs to sleep anyway…",
+   "url": "https://techlab.bol.com/en/blog/splitting-the-data-of-the-monolith-because-who-needs-to-sleep-anyway/",
+   "publisher": "bol Techlab",
+   "date": "2024-11-07",
+   "summary": "**2017년부터 2024년까지 돌던 모놀리스의 데이터를 두 마이크로서비스로 옮긴 이야기다.** 저자는 Istvan Bartuszek.\n\n**무엇을 다루던 시스템인가** — 고객 쪽 **financial fulfillment** 을 맡았다. 회사는 그것을 *\"Financial fulfilment is a grouping around transactions and connects trigger events, like a delivery with billing.\"* 라 설명한다. 즉 **거래를 묶고, 배송 같은 사건을 청구와 잇는 자리**다.\n\n**왜 과거를 못 버리나** — *\"Without them, our new applications cannot process correctly the new events of the old orders.\"* **옛 주문에 새 사건이 온다** — 글은 플레이스테이션 5 를 사서 받은 고객이 나중에 반품하면 새 시스템이 제대로 크레딧 노트를 내려면 옛 데이터가 필요하다는 예를 든다.\n\n**규모** — *\"it had collected 4 terabytes from which we still would like to handle 3T in two different microservices\"*. 상점 주문·고객·부가세가 약 **2TB**, 물류 이벤트가 약 **1TB**.\n\n**🔴 버린 대안이 셋이고 각각 이유가 붙는다** — ① **중개 앱을 2031년까지 그대로 돌린다**(이미 되지만 불필요한 애플리케이션을 무한정 떠안는다) ② **스케줄 잡을 만들어 데이터를 밀어 넣는다**(팀의 Java·Kotlin 역량을 쓸 수 있지만 **클라우드 비용과 소요 시간을 알 수 없어** 감당이 안 된다) ③ **물류 이벤트를 전부 리플레이한다**(모든 기능을 다시 시험할 수 있지만 **비용이 더 크고 과거 데이터의 불일치를 손으로 고쳐야 한다**).\n\n**고른 길** — Google 의 **Database Migration Service** 로 데이터베이스를 복제하고, 새 데이터베이스를 승격시키고, **Flyway 와 SQL 스크립트로 새 스키마에 맞게 변환**한 뒤 새 애플리케이션을 띄워 쌓인 메시지를 처리한다. 작업 창은 **준비 1~2시간**(인스턴스를 1대로 줄이고 불필요한 인덱스·제약을 걷고 저장 함수를 넣는다) · **실행 1~2일** · **복구 3~6시간**(인덱스·제약을 되돌리고 임시 변경을 치운다)이다.\n\n**변환 방식을 네 번 갈아탔다** — ① Flyway 위의 SQL 저장 함수(배치 관리가 뒤죽박죽) ② 체크포인트를 둔 상태 테이블(통제는 나아졌지만 **데이터베이스 CPU 가 4퍼센트밖에 안 쓰였다**) ③ ExecutorService 로 병렬 처리(**CPU 가 15퍼센트로 올랐고**, 6시간 걸리던 테이블이 병렬로는 **약 7시간**이 됐다) ④ **스크립트 자체를 고쳤다** — 서브셀렉트의 O(N제곱) 을 임시 테이블을 써 O(2N) 으로 바꾸자 **손을 못 대던 테이블이 10~12시간에 끝났다.**\n\n**🔴 실패를 셋 적는다** — 한 테이블은 **사흘 넘게 돌다 미완으로 멈췄다**(위의 O(N제곱)). DMS 는 **약 18시간을 잘 돌다가 외래키 하나 때문에 반복 실패**했고 **약 2주를 지원팀과 주고받으며 조사한 끝에** 병렬도를 최소로 낮춰 풀었다. 인덱스 생성이 **1시간 넘게** 걸려 Flyway 트랜잭션이 롤백되고 재시작 루프에 빠지자 **CREATE INDEX CONCURRENTLY** 로 피했다.\n\n**제약** — **DMS 잡은 하나씩만 돌릴 수 있고 각각 19~23시간**이 걸린다. 그리고 **일일 이행 의무는 멈출 수 없다.** 팀은 *\"the team are mainly Java/Kotlin developers using basic SQL scripts\"* 이고 *\"nobody in the company had ever tackled something quite like this before\"* 였다.\n\n**전체 기간** — *\"the full process took 2-3 months\"*."
+  },
+  {
+   "title": "Ahold Delhaize Annual Report 2024",
+   "url": "https://aholddelhaize.com/investors/annual-reports/2024/",
+   "publisher": "Ahold Delhaize",
+   "date": "2024",
+   "summary": "**bol 의 사업 규모를 확인한 곳이다.** 2024년 기준 **고객 1,360만 명 이상**, **판매 파트너 47,000곳**, **취급 상품 4,200만 종.** 그리고 **1999년에 첫 상품을 팔았고** 2024년에 25주년을 맞았다. ⚠️ **이 사이트는 보고서에서 확인한 수치만 옮겼고 각 항목을 한 줄씩 대조하지는 않았다.**"
+  }
+ ],
+ "features": []
+}
