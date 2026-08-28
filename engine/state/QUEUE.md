@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **freee** | JP · SaaS | 340 에서 둘째 기능 `swap-without-anyone-noticing` 을 쓰고 **두 편 규칙을 채웠다**(도메인 `why` 문장을 고쳤다) — **도메인 1개 · 기능 2개.** 같은 프로젝트를 두 각도로 봤다 — **왜 4년이 걸렸나**와 **어떻게 사용자가 모르게 갈아 끼웠나**. 남은 것 — Aurora 이관 · ClickHouse · Clean Architecture · **QA 95편 미독** |
+| **freee** | JP · SaaS | 341 에서 **새 도메인 `멈출 수 없는 데이터베이스를 돌아가는 채로 바꾼다`** 를 열고 셋째 기능 `swap-the-floor-before-the-peak` 을 썼다 — **도메인 2개 · 기능 3개.** 새 도메인도 **두 편 규칙을 지켰다**(Aurora 이관 2021-04 · RDS Proxy 스위치오버 2023-08). 남은 것 — DB 도메인 다섯 편 · ClickHouse · Clean Architecture · **QA 95편 미독** |
 
 ## 대기
 
