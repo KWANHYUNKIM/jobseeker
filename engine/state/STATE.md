@@ -8,52 +8,47 @@
 
 ## 지금 파는 중
 
-**Wix(51번째) `in_progress` — 도메인 2개 · 기능 2개.** 293 에서 도메인 ② 의 첫 기능
-`read-first-then-write`(**읽기를 먼저 옮기고 쓰기를 나중에 옮긴다**)를 썼다. **결정 8개**,
-전부 대가가 붙는다.
+**Wix(51번째) `in_progress` — 도메인 2개 · 기능 3개.** 294 에서 도메인 ② 의 두 번째 기능
+`chatroom-by-chatroom`(**챗룸마다 어디서 읽을지 정한다**)을 썼다. **결정 8개**, 전부 대가가
+붙는다. **223 규칙대로 인프라 층(`read-first-then-write`)과 갈라 썼다.**
 
-**읽은 편 둘**(도메인 ② 는 이제 정독 완료)
-- `How We Built a Zero-Downtime Database Migration Service at Wix` — **인프라 층**, 약 200개
-  MySQL 클러스터 사이. **이번 기능의 본체.**
-- `Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration` — **앱 층**,
-  Cassandra 에서 DynamoDB 로. **이번엔 `tech` 와 대비 재료로만 썼다.**
+**⑫ 가 또 맞았다 — 재독이 새 결정을 낸 열일곱 번째다.** 293 에서 한 번 읽은 글인데 294 에서
+다시 열어 다섯 가지가 새로 나왔다:
+- **양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다** — *"If either of the writes
+  failed, the entire request would fail"* (**불일치를 나중에 고치는 대신 안 만든다**)
+- **섀도 모드는 두 단계다** — try-catch 로 감싸 *"only reported errors"* 하다가, 익으면
+  *"removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed"*
+- **AWS 이관 도구를 안 쓴 이유** — *"it was easier to migrate using the application"*
+- **불변성을 운으로 적는다** — *"Luckily and importantly our messages are immutable"*
+- **교훈 넷** — *"Know your data"* · *"Let the new datasource handle real traffic early"* ·
+  *"Make sure you have a simple method to rollback"* · *"Monitoring is key"*
 
-**DB Mover 에서 나온 것** — 문제는 *"multiple applications share the same DB cluster"* 라
-한 앱이 무너지면 *"the issues spread and directly affected authentication"* 였다는 것.
-- **🔴 버린 대안 셋의 거절 이유가 각각 다르다** — **덤프**(*"cannot be performed with zero
-  downtime"*, 못 한다) · **Amazon DMS**(*"it simply doesn't fit"*, 안 맞는다) ·
-  **다중 소스 복제**(프라이머리 장애 위험과 번거로운 토폴로지, 위험하다)
-- **⭐ 값이 큰 결정** — **읽기를 먼저 넘기고 최소 1시간 뒤 쓰기를 넘긴다.** 그 사이가
-  *"a real-traffic validation window"* 이고, 쓰기를 넘긴 순간부터 *"rollback is not an
-  option without losing data"* 다 — **되돌릴 수 없어지는 지점을 회사가 직접 적었다.**
-- **⚠️ 반대 성질의 결정이 같은 설계 안에 있다** — **파티션 수는 맨 앞에서 못 박고 못 바꾼다**
-  (*"cannot be changed safely mid-flight"*, 바꾸면 처음부터). **그 대가로 쏠림을 안고 간다**
-  (*"we do have data skew"*).
-- 그 외 — 리플리카에서만 읽기(*"zero impact on production traffic"*) · Avro + 스키마
-  레지스트리 · MSK 상한 **8MB**(기본 1MB 는 *"far too small"*) · **DML 성공 후에만 오프셋
-  커밋** · **ProxySQL 뒤에서 갈아 끼워** *"no code changes"*
-- **⚠️ 없는 것** — 이관 소요 시간 · 실제로 옮긴 클러스터 수 · **실패도 되돌린 기록도 없다**
+**⭐⭐ 이 회사에서 가장 센 관찰(두 기능으로 확정됐다)** — **같은 회사가 같은 문제를 두 층에서
+정반대로 풀었다.** 인프라 층은 **앱이 아무것도 모르게**(ProxySQL 뒤, *"no code changes"*),
+앱 층은 **앱이 전부 알게**(읽기마다 챗룸 상태 조회). **되돌리는 방식도 갈린다** — 인프라 층은
+쓰기를 넘기면 *"rollback is not an option without losing data"*, 앱 층은 마지막까지 옛 쪽에
+써서 *"the ability at any time to just go back to Cassandra"*. **그리고 실패를 적은 쪽은 앱
+층뿐이고, 두 글은 서로를 언급하지 않는다.**
 
-**⭐⭐ 이 회사에서 가장 센 대비가 나왔다** — **같은 회사가 같은 문제를 두 층에서 따로 풀었고
-답이 정반대다.** 인프라 층은 **앱이 아무것도 모르게**(ProxySQL 뒤에서), 앱 층은 **앱이 전부
-알게**(챗룸별 이관 상태 표를 읽기마다 조회). **되돌리는 방식도 갈린다** — 인프라 층은 쓰기를
-넘기면 끝이고, 앱 층은 마지막까지 옛 쪽에 계속 써서 *"able to rollback at any moment"* 다.
-**그리고 실패를 적은 쪽은 앱 층뿐이다**(Inbox 의 클론에 *"missing data"* 가 있었다).
-`open_questions` 에 남겼다.
+**다음 사이클 — 도메인 ② 는 다 팠다. 둘 중 하나다.**
+1. **도메인 ① 을 더 판다.** 1순위는 `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing
+   System`(Octocode Orchestrator — **사용자 불만에서 출발**하므로 223 규칙상
+   `context-before-fix` 와 별개 문제일 수 있다). 다른 후보 — `How to Build AI Agents That Fix
+   Themselves` · `How Wix Saved 650 Developer Days...` · `From Co-Pilot to Full Automation` ·
+   `The End of Determinism` · `The Craft of Troubleshooting` ·
+   `/post/microservices-reliability-playbook`. **URL 은 추측하지 말고 ⑱**(`WebSearch` +
+   `allowed_domains: ["wix.engineering"]` — 여덟 번 통했다).
+2. **결정이 5개 안 나오면 Wix 를 `done` 으로 닫는다.** `business_model` 에 적을 패턴이 이미
+   셋 굳었다 — **⭐⭐ 같은 문제를 두 층에서 정반대로 푼다** · **⭐ 제약을 거는 방식이 두
+   갈래다**(AirBot 은 **접근 제한**, 자가치유 두뇌는 **행동 제한** — 둘 다 모델을 바꾸는 대신
+   둘레를 짓는다) · **실패를 적는 글과 안 적는 글이 갈린다**(Inbox 는 클론 실패를 적고
+   DB Mover 는 실패도 되돌린 기록도 없다).
 
-**다음 사이클**
-- **📌 Inbox 편이 별도 기능 후보다** — 223 규칙상 **앱 층 이관은 인프라 층과 다른 문제**이고,
-  재료가 충분하다(세 가지 방식 · **실패 기록** · 대가 세 줄 · 챗룸 단위 증분). 다만
-  **결정이 5개 나오는지 먼저 센다.** 두 번째 편이 필요하면 `Data to Production: Bridging the
-  Gap Between Iceberg and Live Microservices` 또는 Graviton 이관 편을 찾는다
-  (**Graviton 편은 293 검색에서 주소를 못 찾았다** — 제목만 목록에 뜬다).
-- **도메인 ① 에 남은 글 다섯 편** — `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing
-  System`(Octocode Orchestrator, **사용자 불만에서 출발** — `context-before-fix` 와 별개 문제
-  일 수 있다) · `How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer
-  Days...` · `From Co-Pilot to Full Automation` · `The End of Determinism` ·
-  `The Craft of Troubleshooting` · `/post/microservices-reliability-playbook`
+**그 밖에**
 - **Wix 잉여현금흐름 · Base44 매출 실액 미확인**
-- **큐 0/3** — Wix 를 다 판 뒤 후보 조사. **⚠️ 운영 사실 ⑲ 를 먼저 돌린다.**
+- **큐 0/3 — `--gaps` 가 294 에서 이미 [후보 조사]를 가리켰다.** Wix 를 닫는 즉시 후보 조사다.
+  **⚠️ ⑲ 를 먼저 돌린다** —
+  `python3 -c "import json;d=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(sorted(e['slug'] for e in d['companies']))"`
 - **📌 Grab 보강 후보**(이미 `done`) — Palana 2부작(06-19/21) · Agent platform Part 1(07-24) ·
   **Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**. 뒤 둘은 기존 `iceberg-lake`·
   `counter-service` 의 후속이다.
@@ -61,13 +56,13 @@
   때문이고, **새 단서가 없으면 hold 를 유지한 채 닫는 것도 정당하다**(290 에서 확인).
 - **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
   **한국 편중 아홉.** **빈 자리는 라틴아메리카 하나뿐이고 재시도 금지.**
-- **⚠️ 비교 문서 축 후보 열.** 두 축이 동시에 굵어졌다.
+- **⚠️ 비교 문서 축 후보 열. 두 축이 굵어졌다.**
   - **⭐⭐ `에이전트에게 무엇을 못 하게 하는가`** — 재료 다섯. **병합 제한**(monday.com
     Morphex · Snap CodePal · Snap Casper) · **접근 제한**(Wix AirBot) · **행동 제한**(Wix
-    자가치유 두뇌 — 이유 강제). 반대편은 Adevinta(에이전트 대신 도구를 사서 잰다).
-  - **⭐ `되돌릴 수 있는 것을 먼저 한다` 에 Wix 를 더할 수 있다** — 이미 있는 비교 문서
-    `reversible-first.md` 에 **읽기 먼저·쓰기 나중**과 **되돌릴 수 없어지는 지점을 회사가
-    적은 사례**가 딱 들어맞는다. **기존 문서 보강도 비교 문서 사이클로 친다.**
+    자가치유 두뇌). 반대편은 Adevinta.
+  - **⭐ 기존 `reversible-first.md` 를 보강한다** — **Wix 두 기능이 그 문서의 양극을 한 회사
+    안에서 보여 준다**(읽기 먼저·쓰기 나중으로 되돌릴 수 없는 지점을 뒤로 미룬 쪽 vs 마지막
+    까지 옛 쪽에 계속 쓴 쪽). **기존 문서 보강도 비교 문서 사이클로 친다.**
 
 ## 다음 선택지
 

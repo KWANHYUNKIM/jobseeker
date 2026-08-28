@@ -214,7 +214,8 @@
         }
       ],
       "features": [
-        "read-first-then-write"
+        "read-first-then-write",
+        "chatroom-by-chatroom"
       ]
     }
   ],
@@ -273,7 +274,7 @@
       "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
       "publisher": "Wix Engineering",
       "date": "2026-08-29",
-      "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**."
+      "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
     }
   ],
   "features": [
@@ -1733,6 +1734,692 @@
           "publisher": "Wix Engineering",
           "date": "2026-08-29",
           "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**."
+        }
+      ]
+    },
+    {
+      "key": "chatroom-by-chatroom",
+      "name": "챗룸마다 어디서 읽을지 정한다",
+      "domain": "멈추지 않고 갈아 끼운다",
+      "updated_at": "2026-08-29",
+      "ui": {
+        "title": "대화방 하나를 읽을 때",
+        "question": "옮기는 중에 어디서 읽는가?",
+        "kind": "mobile",
+        "note": "**이관 중의 읽기 판단을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사용자에게는 이런 표시가 보이지 않습니다**(이관은 앱 안쪽 일입니다). 회사 글에 적힌 단계와 대가만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "대화"
+          },
+          {
+            "type": "card",
+            "text": "떠나는 이유가 셋입니다",
+            "items": [
+              "방 번호로 나눠 담아 한쪽만 뜨거워졌다",
+              "심하면 노드가 죽었다",
+              "그리고 다룰 줄 아는 사람이 몇 없었다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "이 방은 옮겨졌는가"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "끝났다면 새 쪽에서 읽는다",
+                "sub": "방마다 따로 표시해 둔다",
+                "right": "새 쪽"
+              },
+              {
+                "title": "아니면 옛 쪽에서 읽는다",
+                "sub": "읽을 때마다 한 번 확인한다",
+                "right": "옛 쪽"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "text",
+            "text": "새로 만든 방은 비어 있으니 곧바로 끝난 것으로 둡니다",
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "쓸 때는"
+          },
+          {
+            "type": "text",
+            "text": "두 곳에 다 씁니다 — 한쪽이라도 실패하면 요청을 실패시킵니다",
+            "pin": 4
+          },
+          {
+            "type": "chips",
+            "items": [
+              "처음엔 오류만 기록했다",
+              "익은 뒤에 필수로 바꿨다"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "지난 것은 어떻게"
+          },
+          {
+            "type": "text",
+            "text": "만들어진 달을 보고 한 달씩 거슬러 올라가며 옮깁니다",
+            "pin": 6
+          },
+          {
+            "type": "card",
+            "text": "통째로 복제해 옮기려다 접었습니다",
+            "items": [
+              "복제본에 데이터가 빠져 있었다",
+              "얼마나 갔는지도 안 보였다",
+              "둘 다 받아들일 수 없었다"
+            ],
+            "pin": 7
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "text",
+            "text": "마지막까지 옛 쪽에도 계속 씁니다 — 언제든 돌아갈 수 있게",
+            "pin": 8
+          },
+          {
+            "type": "button",
+            "text": "보내기",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "떠난 이유의 마지막이 사람이다",
+            "what": "챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 *\"even resulted in node crashes and downtime\"* 였다. 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다. **그리고 셋째가 기술이 아니다** — *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "읽을 때마다 어디서 읽을지 정한다",
+            "what": "챗룸별 이관 상태 표를 두고, 읽기마다 *\"Checks if migration of a chatroom has already ended\"* 한 뒤 끝났으면 새 쪽에서, 아니면 옛 쪽에서 읽는다. **대가를 적는다** — *\"This obviously added some time to each request, but it really wasn't significant.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "새로 생긴 방은 옮길 것이 없다",
+            "what": "*\"newly created chatrooms as migrated in the status table - since they are created empty.\"* **새로 들어오는 것부터 새 쪽에 자리 잡게 하고 과거만 뒤에서 따라가게 한 것이다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "한쪽만 성공하는 상태를 만들지 않는다",
+            "what": "*\"We wrote to Cassandra, and immediately following that, to DynamoDB. If either of the writes failed, the entire request would fail.\"* **불일치를 나중에 고치는 대신 애초에 안 만든다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "새 저장소를 먼저 데운 뒤에 필수로 바꾼다",
+            "what": "처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 했다. 트래픽으로 데운 뒤 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "과거는 한 달씩 거슬러 올라간다",
+            "what": "*\"Having the information of each chatroom creation date, we triggered migration, month by month, steadily going back in time.\"* 얻은 것은 *\"visibility into the process and certainty of the migrated data\"* 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "복제본으로 옮기려다 접었다",
+            "what": "**🔴 실패 기록이다** — 클러스터 스냅샷 클론을 떠서 옮기려 했는데 *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고, 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "마지막까지 옛 쪽에 계속 쓴다",
+            "what": "*\"Writes to Cassandra (the old data source) continued in parallel with writes to the new datasource. This gave us the ability at any time to just go back to Cassandra if something went wrong.\"* 대가도 적는다 — *\"more resources from the application (heap, cpu, GC), keep that in mind.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**같은 회사가 같은 문제를 앱 층에서 푼 쪽이다.** 사용자 **2억 명 · 190개국**의 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. **떠난 이유 셋 중 마지막이 기술이 아니다** — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 나고 심하면 *\"node crashes and downtime\"* 이었고, 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구했고, **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain.\"* **다룰 줄 아는 사람의 수가 이주 사유로 적힌다**(이 관찰은 이 사이트의 것이다).\n\n**⭐ 방식을 데이터의 성질로 갈랐다.** 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나기만 기다리면** 두 저장소가 같아진다. 메시지 이력처럼 **영구히 남는 수 테라바이트**는 그렇게 안 되니 따로 판다. 회사가 교훈의 첫 줄로 그것을 적는다 — *\"Know your data. Its properties will lead the way to a right database solution, and the right migration approach.\"*\n\n**🔴 그리고 실패를 적는다.** 메시지 이력은 처음에 **클러스터 스냅샷 클론**을 떠서 옮기려 했는데 *\"our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"completely blind\"* 였다. *\"These 2 things were unacceptable.\"* **그래서 방식을 바꿔 챗룸 단위로 옮겼다** — 챗룸별 이관 상태 표를 두고 읽기마다 어디서 읽을지 정하며, 새로 생긴 방은 비어 있으니 곧바로 완료로 표시하고, 과거는 **한 달씩 거슬러** 올라간다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**⭐⭐ 앞 기능과 정반대의 답이다**(이 대비는 이 사이트의 것이다). 인프라 층의 이관 서비스는 **앱이 아무것도 모르게** 프록시 뒤에서 갈아 끼우고 *\"no code changes\"* 를 요구사항으로 삼는다. **여기서는 앱이 전부 안다** — 읽을 때마다 이 방이 옮겨졌는지 묻는다. **되돌리는 방식도 갈린다** — 저쪽은 쓰기를 넘기는 순간 끝이고, **이쪽은 마지막까지 옛 쪽에도 계속 써서** *\"the ability at any time to just go back to Cassandra\"* 를 유지한다.\n\n**⚠️ 다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술이 끝내 없다.** 수명 기반 방식에서도 *\"one full data lifecycle\"* 이 지나면 같아진다고만 하고 **확인 방법은 적지 않는다**(이 지적은 이 사이트의 것이다). 대신 회사가 기대는 것은 **불변성**인데, 그것을 실력이 아니라 운으로 적는다 — *\"Luckily and importantly our messages are immutable.\"*",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "사용자 2억 명 · 190개국 · 메시지 수 테라바이트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "개념 검증 규모",
+            "value": "수 기가바이트 — 클론 방식은 이 단계에서 접혔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "읽기마다 붙는 비용",
+            "value": "*\"added some time to each request, but it really wasn't significant\"* — **수치는 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "양쪽 쓰기의 비용",
+            "value": "*\"more resources from the application (heap, cpu, GC)\"* — **수치는 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "이관 전체에 걸린 기간 · 옮긴 챗룸 수 · 지연 증가폭 · **두 저장소를 대조했다는 서술**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "떠난 이유의 셋째를 읽고",
+          "thought": "**기술 문서에서 사람 수가 이주 사유로 적히는 것은 드물다**(이 관찰은 이 사이트의 것이다) — *\"only a few people at Wix knew Cassandra intimately enough.\"* 핫스팟과 인덱스 부담은 **고칠 수 있는 문제**인데, 이것은 고쳐도 남는다. ⚠️ **다만 관리형으로 옮기면 그 지식이 필요 없어지는지, 아니면 다른 지식이 필요해지는 것인지는 글에 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "클론 방식이 접힌 대목에서",
+          "thought": "**두 가지가 함께 걸렸는데 성격이 다르다** — 하나는 **데이터가 빠졌다**는 결과이고, 하나는 **얼마나 갔는지 안 보였다**는 과정이다. **후자가 없었으면 전자를 언제 알았을지 모른다**(이 정리는 이 사이트의 것이다). 실제로 교훈의 마지막이 그것이다 — *\"Monitoring is key… Without them you're practically blind.\"* ⭐ **그리고 개념 검증이 수 기가바이트였기에 잡혔다** — 수 테라바이트로 바로 갔으면 늦게 알았을 것이다(**추정**).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "불변성을 운으로 적은 자리에서",
+          "thought": "*\"Luckily and importantly our messages are immutable… This greatly simplified things for us.\"* **설계가 잘된 것이 아니라 데이터가 그렇게 생겼다고 적는다.** ⭐ **이것이 교훈 첫 줄과 이어진다** — *\"Know your data\"* 이고, **방식을 셋으로 가른 기준도 데이터의 성질이었다**(이 연결은 이 사이트의 것이다). ⚠️ **뒤집으면, 메시지가 바뀌는 종류였다면 이 방식 전체가 성립하지 않는다는 뜻인데 그 경우의 이야기는 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 회사의 인프라 층 이관과 나란히 놓고",
+          "thought": "**⭐⭐ 같은 회사가 같은 문제를 두 층에서 정반대로 풀었다**(이 대비는 이 사이트의 것이다). **앱이 아무것도 모르게** vs **앱이 전부 알게**, **쓰기를 넘기면 끝** vs **마지막까지 옛 쪽에도 쓴다**. ⚠️ **그리고 실패를 적은 쪽은 이쪽뿐이다** — 인프라 층 글에는 실패도 되돌린 기록도 없다. **두 글이 서로를 언급하지도 않는다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "챗룸",
+            "what": "이관의 단위. **방 하나가 통째로 옮겨지거나 아직 안 옮겨졌거나 둘 중 하나다**"
+          },
+          {
+            "name": "이관 상태 표",
+            "what": "방마다 이관이 **시작 전인지 진행 중인지 끝났는지**를 담는다. 읽기마다 조회된다"
+          },
+          {
+            "name": "메시지",
+            "what": "**만들어진 뒤 바뀌지 않는다** — 이 성질이 방식 전체의 전제다"
+          },
+          {
+            "name": "생애주기",
+            "what": "수명이 짧은 데이터가 한 바퀴 도는 기간. **그만큼 기다리면 두 저장소가 같아진다**"
+          },
+          {
+            "name": "섀도 쓰기",
+            "what": "실패해도 요청을 죽이지 않는 새 저장소 쓰기. **데운 뒤에 걷어낸다**"
+          },
+          {
+            "name": "생성 월",
+            "what": "과거를 거슬러 옮기는 순서를 정하는 기준"
+          }
+        ],
+        "invariants": [
+          "**한쪽만 성공한 쓰기를 남기지 않는다** — 실패하면 요청 전체가 실패한다",
+          "**옛 저장소에 대한 쓰기는 마지막까지 멈추지 않는다** — 되돌릴 길을 유지한다",
+          "**새로 만들어진 방은 이미 옮겨진 것으로 본다** — 비어 있기 때문이다",
+          "**메시지는 만들어진 뒤 바뀌지 않는다** — 이 전제가 깨지면 방식이 성립하지 않는다",
+          "**읽기는 언제나 그 방의 상태를 먼저 본다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "데이터의 성질부터 나눈다",
+            "why": "수명이 짧은 것과 영구한 것은 옮기는 방법이 다르다"
+          },
+          {
+            "step": "새 저장소 쓰기를 오류만 기록하게 붙인다",
+            "why": "트래픽을 받으며 익게 한다"
+          },
+          {
+            "step": "안정되면 감싼 것을 걷어낸다",
+            "why": "이제 새 저장소도 성공해야 요청이 성공한다"
+          },
+          {
+            "step": "새로 만들어진 방은 곧바로 완료로 표시한다",
+            "why": "비어 있으니 옮길 것이 없다"
+          },
+          {
+            "step": "읽을 때마다 그 방이 끝났는지 본다",
+            "why": "끝났으면 새 쪽, 아니면 옛 쪽에서 읽는다"
+          },
+          {
+            "step": "만들어진 달을 기준으로 한 달씩 거슬러 옮긴다",
+            "why": "어디까지 갔는지 보이게 한다"
+          },
+          {
+            "step": "옮긴 방은 상태 표에 끝났다고 적는다",
+            "why": "다음 읽기부터 새 쪽을 본다"
+          },
+          {
+            "step": "옛 쪽 트래픽이 줄어드는 것을 지켜본다",
+            "why": "오래 기다릴수록 옛 쪽으로 가는 읽기가 준다"
+          },
+          {
+            "step": "그동안에도 옛 쪽에 계속 쓴다",
+            "why": "언제든 되돌릴 수 있게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "이관 방식을 무엇으로 정할 것인가?",
+            "chosen": "**데이터의 성질로 정한다.** 수명이 짧고 통째로 덮어쓰는 것은 한 생애주기를 기다리고, 영구히 남는 것은 따로 판다",
+            "alternatives": [
+              "모든 데이터에 같은 방식 쓰기"
+            ],
+            "tradeoff": "교훈의 첫 줄이 이것이다 — *\"Know your data. Its properties will lead the way to a right database solution, and the right migration approach.\"* ⚠️ **대가는 방식을 여러 벌 만들어야 한다는 것**이고(이 지적은 이 사이트의 것이다), **실제로 이 회사는 셋을 만들었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "양쪽에 쓸 때 한쪽이 실패하면?",
+            "chosen": "**요청 전체를 실패시킨다.** *\"If either of the writes failed, the entire request would fail\"*",
+            "alternatives": [
+              "한쪽만 성공한 채 넘어가고 나중에 맞추기 — *\"handling possible inconsistencies between the two databases\"* 를 떠안게 된다"
+            ],
+            "tradeoff": "**불일치를 나중에 고치는 대신 애초에 안 만든다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 새 저장소가 곧바로 가용성의 일부가 된다는 것**이다 — 새 쪽이 흔들리면 사용자 요청이 실패한다. **그래서 다음 결정이 필요해진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "새 저장소를 언제부터 필수로 만들 것인가?",
+            "chosen": "**두 단계로 넘긴다.** 처음에는 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고, 데워진 뒤 *\"removed the try-catch clause\"*",
+            "alternatives": [
+              "처음부터 필수로 넣기 — 새 저장소가 아직 안 익은 채로 사용자 요청을 죽인다"
+            ],
+            "tradeoff": "교훈에도 적는다 — *\"Let the new datasource handle real traffic early. If something goes wrong, or there's some anomaly, there's a better chance to quickly reveal it.\"* ⚠️ **대가는 그 기간 동안 새 저장소의 실패가 요청에 드러나지 않는다는 것**이고(이 지적은 이 사이트의 것이다), **오류 보고를 사람이 봐야만 알 수 있다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "대량의 과거 데이터를 어떻게 옮길 것인가?",
+            "chosen": "**운영 클러스터를 원본으로 삼아 챗룸 단위로 옮긴다**",
+            "alternatives": [
+              "**클러스터 스냅샷 클론을 떠서 옮기기 — 실제로 해 보고 접었다.** *\"our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"completely blind\"* 였다. *\"These 2 things were unacceptable\"*"
+            ],
+            "tradeoff": "**🔴 개념 검증 단계에서 잡혔다** — 수 기가바이트로 해 봤기에 알았다. **읽기가 이미 새 쪽으로 넘어간 뒤라 운영 클러스터가** *\"no longer under high load\"* **였고, 그래서 원본으로 써도 됐다**(순서가 이것을 가능하게 했다 — 이 정리는 이 사이트의 것이다). ⚠️ **대가는 옮기는 작업이 운영 클러스터를 건드린다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "읽기를 언제 새 쪽으로 넘길 것인가?",
+            "chosen": "**한 번에 넘기지 않는다. 방마다 따로 넘긴다** — 읽기마다 *\"Checks if migration of a chatroom has already ended\"*",
+            "alternatives": [
+              "정해진 시점에 전체 읽기를 한꺼번에 넘기기"
+            ],
+            "tradeoff": "얻는 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"* **대가도 적는다** — *\"This obviously added some time to each request, but it really wasn't significant.\"* ⚠️ **얼마나인지는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "새로 만들어지는 방은 어떻게 처리할 것인가?",
+            "chosen": "**곧바로 이관 완료로 표시한다.** *\"newly created chatrooms as migrated in the status table - since they are created empty\"*",
+            "alternatives": [
+              "새 방도 옮길 대상에 넣고 순서를 기다리게 하기"
+            ],
+            "tradeoff": "**들어오는 것부터 새 쪽에 자리 잡게 하고 과거만 뒤에서 따라가게 한 것이다**(이 정리는 이 사이트의 것이다) — 옮길 양이 시간이 갈수록 늘지 않는다. ⚠️ **대가는 이 규칙이 틀리면**(빈 방이 아닌데 빈 방으로 표시되면) **그 방의 과거가 조용히 사라진다는 것**인데(이 지적도 이 사이트의 것이다), **그 검증 이야기는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "과거를 어떤 순서로 훑을 것인가?",
+            "chosen": "**만들어진 달을 기준으로 한 달씩 거슬러 올라간다**",
+            "alternatives": [
+              "전체를 한 번에 훑기 — 앞 시도가 그랬고 진행 상황이 안 보였다"
+            ],
+            "tradeoff": "얻는 것은 *\"visibility into the process and certainty of the migrated data\"* 다. **덩어리를 시간으로 잘라 진행률을 만든 셈이다**(이 표현은 이 사이트의 것이다). ⚠️ **대가는 한 달이 고르지 않다는 것**이고(초기 몇 달과 최근 몇 달의 양이 다르다 — 이 지적은 이 사이트의 것이다) **그 이야기는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "question": "되돌릴 길을 언제까지 유지할 것인가?",
+            "chosen": "**마지막까지.** *\"Writes to Cassandra (the old data source) continued in parallel… the ability at any time to just go back to Cassandra\"*",
+            "alternatives": [
+              "읽기가 다 넘어간 뒤 옛 쪽 쓰기를 끊기"
+            ],
+            "tradeoff": "**🔴 대가를 두 줄로 적는다** — *\"Writing to both databases obviously requires more resources from the application (heap, cpu, GC), keep that in mind\"* 이고 쓰기 지연도 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* 라고 판단했다. ⭐ **같은 회사의 인프라 층 이관은 정반대다** — 쓰기를 넘기는 순간 *\"rollback is not an option without losing data\"* 다(이 대비는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              },
+              {
+                "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+                "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**. ⚠️ **이 요약은 283 의 후보 조사에서 확인한 것이고 아직 전체를 정독하지 않았다**(이 표시는 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Apache Cassandra (자체 운영, EC2)",
+            "role": "떠나는 쪽. 챗룸 아이디를 파티션 키로 써서 쏠림과 노드 장애가 났다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "Amazon DynamoDB",
+            "role": "가는 쪽. 필요한 접근 패턴과 다중 리전 복제를 받쳐 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "이관 상태 표 (DynamoDB)",
+            "role": "챗룸마다 시작 전인지 진행 중인지 끝났는지를 담는다. **읽기 경로에 들어가 있다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ AWS Schema Conversion Tool · Database Migration Service",
+            "role": "보긴 했으나 안 썼다 — *\"it was easier to migrate using the application, so we did not use these tools\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "수 테라바이트를 옮기는 동안 어디까지 갔는지 알기",
+            "why_hard": "첫 시도가 여기서 무너졌다 — 클론을 떠서 전체를 훑었더니 *\"we still felt completely blind on the migration process\"* 였고, 나중에 보니 *\"our clone cluster had missing data.\"* **보이지 않으면 틀린 것도 안 보인다**(이 정리는 이 사이트의 것이다).",
+            "current_best": "**단위를 챗룸으로 쪼개고 상태를 표에 적는다.** 과거는 만들어진 달을 기준으로 거슬러 올라가 진행률을 만든다. 교훈으로 남긴 것이 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          },
+          {
+            "problem": "두 저장소가 정말 같은지 확인하기",
+            "why_hard": "양쪽에 다 쓰고 한쪽 실패 시 요청을 실패시키면 **새로 들어오는 것은** 어긋나지 않는다. **문제는 과거와 경계다** — 이미 옮긴 것이 맞는지, 빈 방으로 표시한 새 방이 정말 비었는지.",
+            "current_best": "**이 글에는 대조 방법이 없다.** 수명 기반 방식에서도 *\"one full data lifecycle\"* 이 지나면 같아진다고만 하고 확인 절차를 적지 않는다. 대신 기대는 것이 **불변성**인데 그것을 운으로 적는다 — *\"Luckily and importantly our messages are immutable.\"* ⚠️ **바뀌는 데이터였다면 이 방식이 성립하는지는 글에 없다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+                "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+                "publisher": "Wix Engineering",
+                "date": "2026-08-29",
+                "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "메시지 하나를 읽고 쓸 때",
+          "question": "앱은 무엇을 알고 있는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  W[\"메시지를 보낸다\"]:::list\n  W2[\"옛 쪽에 쓰고 이어서 새 쪽에도 쓴다\"]:::list\n  W3[\"한쪽이라도 실패하면 요청을 실패시킨다\"]:::list\n  R[\"대화를 연다\"]:::list\n  Q[\"<b>이 방이 옮겨졌는지 먼저 묻는다</b><br/>• 방마다 상태를 적어 둔다<br/>• 끝났으면 새 쪽에서 읽는다<br/>• 아니면 옛 쪽에서 읽는다\"]:::accent\n  NEW[\"새 쪽에서 읽는다\"]:::list\n  OLD[\"옛 쪽에서 읽는다\"]:::list\n  BF[\"한 달씩 거슬러 옮기고 끝나면 표를 고친다\"]:::list\n  X1[\"처음엔 새 쪽 쓰기 실패를 기록만 했다<br/>익은 뒤에 걷어냈다\"]:::quiet\n  X2[\"통째로 복제해 옮기기<br/>해 보고 접었다 — 빠진 데이터와 안 보이는 진행\"]:::quiet\n  W --> W2 --> W3\n  R --> Q\n  Q --> NEW\n  Q --> OLD\n  BF --> Q\n  W2 -.-> X1\n  BF -.-> X2"
+        },
+        {
+          "title": "방 하나가 거치는 상태",
+          "question": "언제부터 새 쪽에서 읽는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 옛쪽\n  옛쪽 : <b>아직 안 옮겼다</b><br/>읽기는 옛 쪽으로 가고 쓰기는 양쪽에 간다<br/>표에는 시작 전으로 적혀 있다\n  옛쪽 --> 옮기는중 : 그 달의 차례가 왔다\n  옮기는중 : <b>과거를 퍼 나르는 중이다</b><br/>읽기는 아직 옛 쪽으로 간다<br/>새로 들어오는 것은 이미 양쪽에 쌓인다\n  옮기는중 --> 새쪽 : 다 옮겼다고 표에 적는다\n  새쪽 : <b>이제 새 쪽에서 읽는다</b><br/>그래도 쓰기는 여전히 양쪽에 간다<br/>언제든 돌아갈 수 있다\n  [*] --> 새쪽 : 방이 새로 만들어졌다 — 비어 있으니 곧바로 끝난 것으로 둔다\n  새쪽 --> [*] : 옛 쪽 쓰기를 끊는 날"
+        },
+        {
+          "title": "이 방식이 기대고 있는 것",
+          "question": "무엇이 어긋나면 무너지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"메시지는 만들어진 뒤 바뀌지 않는다\"]:::list\n  B[\"<b>회사가 이것을 운이라고 적는다</b><br/>바뀌는 데이터였다면 이 방식이 되는지는 글에 없다\"]:::accent\n  C[\"새로 만든 방은 비어 있다고 본다\"]:::list\n  D[\"비어 있지 않았다면 그 과거가 조용히 사라진다\"]:::list\n  E[\"두 곳에 다 쓰고 한쪽 실패면 요청을 죽인다\"]:::list\n  F[\"새 저장소가 곧바로 가용성의 일부가 된다\"]:::list\n  G[\"익히는 동안은 새 쪽 실패를 기록만 한다\"]:::list\n  H[\"그 기간의 실패는 사람이 봐야만 안다\"]:::list\n  I[\"한 생애주기가 지나면 같아진다고 한다\"]:::list\n  J[\"같아졌는지 대조한 방법이 끝내 안 나온다\"]:::list\n  N[\"<i>불변성은 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Wix Inbox Journey: 3 Approaches for Zero Downtime Database Migration",
+          "url": "https://www.wix.engineering/post/wix-inbox-journey-3-approaches-for-zero-downtime-database-migration",
+          "publisher": "Wix Engineering",
+          "date": "2026-08-29",
+          "summary": "**같은 회사의 같은 문제를 앱 층에서 푼 편이다** — 채팅 데이터를 자체 운영 Cassandra 에서 DynamoDB 로 옮겼다. 떠난 이유가 셋인데 마지막이 특이하다 — 챗룸 아이디를 파티션 키로 써서 *\"uneven partitions and hotspots\"* 가 났고 심하면 **노드가 죽었다** · 새 접근 패턴이 보조 인덱스와 구체화 뷰를 요구해 부담이 늘었다 · **그리고** *\"only a few people at Wix knew Cassandra intimately enough, which makes it difficult to maintain\"* — **사람 수가 이유로 적힌다.**\n\n**세 가지 방식을 데이터 성질에 따라 갈랐다.** **① 수명 기반** — 접속 상태처럼 **수명이 짧고 통째로 덮어쓰는** 데이터는 양쪽에 다 쓰고 **한 생애주기가 지나면** 두 저장소가 같아진다. **② 반복(클론) 방식** — 메시지 이력용으로 **Cassandra 클러스터의 스냅샷 클론을 떠서** 옮기려 했다. **🔴 실패했다**: *\"we discovered that our clone cluster had missing data and that not all data was transferred\"* 였고 진행 상황도 *\"we still felt completely blind on the migration process\"* 였다. *\"These 2 things were unacceptable.\"* **③ 증분 방식** — 그래서 **챗룸 단위**로 바꿨다. **챗룸별 이관 상태 표**를 DynamoDB 에 두고, **새로 생긴 챗룸은 비어 있으니 곧바로 이관 완료로 표시**하며, 읽기마다 그 챗룸이 끝났는지 확인하고, 과거는 **달 단위로 거슬러 올라가며** 옮겼다. 얻은 것이 명확하다 — *\"The move was gradual. There was no one peak point where we moved production reads from one source to another.\"*\n\n**대가를 세 줄로 적는다** — 양쪽에 쓰면 *\"more resources from the application (heap, cpu, GC), keep that in mind\"* · 쓰기 지연이 *\"a bit\"* 늘지만 *\"definitely worth the rollback ability\"* · 읽기마다 상태를 보는 비용은 *\"added some time to each request, but it really wasn't significant\"*. **되돌릴 길은 마지막까지 열어 뒀다** — *\"we still kept writing to Cassandra… we were able to rollback at any moment.\"* 그리고 교훈으로 *\"Monitoring is key. Have metrics on everything. Without them you're practically blind\"* 를 남긴다. ⚠️ **다만 두 저장소의 데이터가 실제로 같은지 대조했다는 서술은 없다.** 규모 — 사용자 **2억 명 · 190개국**, 메시지 **수 테라바이트**, 개념 검증은 **수 기가바이트**.\n\n**294 에서 다시 읽고 나온 것**(재독이 새 결정을 낸 열일곱 번째다) — **① 양쪽에 쓰되 한쪽이라도 실패하면 요청 전체를 실패시킨다**: *\"If either of the writes failed, the entire request would fail.\"* **② 섀도 모드는 두 단계다** — 처음에는 새 저장소 쓰기를 try-catch 로 감싸 *\"only reported errors and did not fail write requests\"* 하고 트래픽으로 데운 뒤, 안정되면 *\"we removed the try-catch clause, making writing to DynamoDB necessary for a request to succeed\"* 한다. **③ AWS 이관 도구를 안 쓴 이유가 한 줄 있다** — *\"In our use case it was easier to migrate using the application, so we did not use these tools.\"* **④ 불변성을 운으로 적는다** — *\"Luckily and importantly our messages are immutable. They do not change after they are created. This greatly simplified things for us.\"* **⑤ 교훈 넷** — *\"Know your data\"* · *\"Let the new datasource handle real traffic early\"* · *\"Make sure you have a simple method to rollback\"* · *\"Monitoring is key. Have metrics on everything. Without them you're practically blind.\"* ⚠️ **그리고 확인된 빈칸** — 수명 기반 방식에서 두 저장소가 실제로 같아졌는지 **어떻게 확인했는지는 끝내 적히지 않는다**(이 지적은 이 사이트의 것이다)."
+        },
+        {
+          "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+          "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+          "publisher": "Wix Engineering",
+          "date": "2026-08-29",
+          "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**. ⚠️ **이 요약은 283 의 후보 조사에서 확인한 것이고 아직 전체를 정독하지 않았다**(이 표시는 이 사이트의 것이다)."
         }
       ]
     }
