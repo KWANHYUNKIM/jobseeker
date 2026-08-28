@@ -154,7 +154,7 @@
   "domains": [
     {
       "name": "남이 만든 도구를 자기 업무로 재본다",
-      "why": "**이 회사는 AI 개발 도구를 만들지 않고 산다.** 그래서 사기 전에 재는데, **재는 방식이 이 사이트에서 처음 보는 것이다**(이 판단은 이 사이트의 것이다).\n\n**벤치마크가 아니라 실제 업무로 잰다** — **소프트웨어 엔지니어 77명이 실제 업무 165건**을 4주 동안(2025년 5~6월) 처리하며 도구 셋을 썼다. 결과는 **추정 시간 대비 약 43% / 24% / 1%** 이고 만족도가 **4.2 / 3.6 / 2.8** 이다.\n\n**⭐ 그런데 값이 나가는 것은 결과가 아니라 결과를 둘러싼 단서들이다.** 회사가 **한계를 첫머리에 적는다** — 기준이 *\"assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고, *\"The study lasted only 1 month, hence long term effects are not measured.\"* **그리고 요금제가 결과에 섞였다고 밝힌다** — 정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고르므로, **비교한 것이 도구인지 요금제인지가 섞여 있다**(이 정리는 이 사이트의 것이다).\n\n**275 에서 두 번째 글을 찾아 읽었다** — `measuring-the-impact-of-generative-ai-on-developer-productivity`(2024-05-07). **2년 전에는 GitHub Copilot 하나를 도입하고 쓰이는지만 봤다.** 그때 결론이 *\"For us, Copilot looks like it's going to stay\"* 였는데, **2026 년 파일럿에서 그 도구가 추정 대비 1% 로 나오고 회사는 Claude Code 로 갈아탄다**(이 대조는 이 사이트의 것이다).\n\n**두 글을 나란히 놓으면 재는 방식이 어떻게 자랐는지가 보인다** — 2024 년에는 **벤더가 사용량 통계를 안 줘서** 설문으로 시작했고(*\"At this time, GitHub did not offer usage statistics for Copilot\"*), 가장 큰 발견이 **휴면 라이선스**였다. 2026 년에는 **자기 백로그 과제 165건에 붙여** 재고 오차 원인을 다섯 개 적는다.",
+      "why": "**이 회사는 AI 개발 도구를 만들지 않고 산다.** 그래서 사기 전에 재는데, **재는 방식이 이 사이트에서 처음 보는 것이다**(이 판단은 이 사이트의 것이다).\n\n**벤치마크가 아니라 실제 업무로 잰다** — **소프트웨어 엔지니어 77명이 실제 업무 165건**을 4주 동안(2025년 5~6월) 처리하며 도구 셋을 썼다. 결과는 **추정 시간 대비 약 43% / 24% / 1%** 이고 만족도가 **4.2 / 3.6 / 2.8** 이다.\n\n**⭐ 그런데 값이 나가는 것은 결과가 아니라 결과를 둘러싼 단서들이다.** 회사가 **한계를 첫머리에 적는다** — 기준이 *\"assessment of experienced software engineers on how long a task should last, which can be subjective\"* 이고, *\"The study lasted only 1 month, hence long term effects are not measured.\"* **그리고 요금제가 결과에 섞였다고 밝힌다** — 정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고르므로, **비교한 것이 도구인지 요금제인지가 섞여 있다**(이 정리는 이 사이트의 것이다).\n\n**275 에서 두 번째 글을 찾아 읽었다** — `measuring-the-impact-of-generative-ai-on-developer-productivity`(2024-05-07). **2년 전에는 GitHub Copilot 하나를 도입하고 쓰이는지만 봤다.** 그때 결론이 *\"For us, Copilot looks like it's going to stay\"* 였는데, **2026 년 파일럿에서 그 도구가 추정 대비 1% 로 나오고 회사는 Claude Code 로 갈아탄다**(이 대조는 이 사이트의 것이다).\n\n**두 글을 나란히 놓으면 재는 방식이 어떻게 자랐는지가 보인다** — 2024 년에는 **벤더가 사용량 통계를 안 줘서** 설문으로 시작했고(*\"At this time, GitHub did not offer usage statistics for Copilot\"*), 가장 큰 발견이 **휴면 라이선스**였다. 2026 년에는 **자기 백로그 과제 165건에 붙여** 재고 오차 원인을 다섯 개 적는다.\n\n**280 에서 이 도메인의 성격이 한 걸음 넓어졌다** — `deep-dive-in-paddleocr-inference` 는 **재보는 데서 그치지 않고 뜯어고친 기록**이다. **벤치마크에서는 강했는데 자기 환경에서 코드가 안 맞았다** — 남의 자로 좋다고 나온 것이 자기 것이 되지는 않는다(이 정리는 이 사이트의 것이다).",
       "tech": [
         {
           "tech": "실제 업무로 도구를 재는 사내 연구 — 77명 · 165건 · 4주",
@@ -210,7 +210,8 @@
         }
       ],
       "features": [
-        "pilot-with-real-work"
+        "pilot-with-real-work",
+        "fork-and-strip"
       ]
     },
     {
@@ -287,6 +288,21 @@
               "summary": "**개별 장터(Kleinanzeigen)의 실제 시스템 이야기다.** 문제는 **흩어진 셋을 하나로 모으는 것** — **MySQL 테이블 둘**과 **외부 HTTP 서비스** 하나를 합쳐 하나의 객체로 만들되, **실시간 변경을 놓치지 않아야** 한다. **결정 ① CDC 로 흘린다** — Debezium 커넥터로 MySQL 변경을 스트림한다: *\"Debezium is durable and fast, so your apps can respond quickly and never miss an event.\"* 수동 폴링이나 스냅샷은 연속 변경을 못 잡아 버렸다. **결정 ② Kafka Streams 를 쓰지 않는다** — 이벤트를 듣고 **MySQL 에 직접 질의해 조인**한다. 이유는 *\"simplicity of this setup was its biggest advantage\"* 이고, **Kafka Streams 와 RocksDB 를 들이는 것은 불필요한 구조 복잡도**로 봤다. **⚠️ 대가를 그대로 적는다** — 직접 질의는 **고부하에서 병목이 될 수 있다.** **결정 ③ 압축 토픽에 최신 스냅샷을 둔다** — 3자 서비스가 바뀌어 전량 재처리해야 할 때를 위해, *\"most recent event is always available and stored indefinitely\"*. **결정 ④ 코드 대신 설정으로 한다** — 커스텀 로직을 안 쓰는 대신 유연성이 준다. **⚠️ Debezium 의 대가도 적는다** — *\"troubleshooting can be challenging because issues often arise at the infrastructure level rather than in the application code.\"* **🔴 수치가 계단처럼 떨어진다** — Debezium(MySQL→Kafka) **최대 초당 5만 건** · 조인 집계 **최대 초당 1만 건** · **외부 서비스 호출 최대 초당 3천 건**. **최종 산출이 초당 3천 건**이다. 스택 — Debezium · Apache Kafka · Kafka Connect · MySQL · 압축 토픽 · MirrorMaker. ⚠️ **실패나 사고 기록은 없다.**"
             }
           ]
+        },
+        {
+          "tech": "공개하되 손대지 못하게 — 문서를 이미지로 굽는다",
+          "solves": "**leboncoin 이 문서를 공개하면서 수정을 막아야 했다.** 답은 **래스터화된 PDF** — *\"a regular PDF document, whose inner content is only images.\"* **비밀번호 보호는 버렸다** — *\"super easy to circumvent.\"* 검토한 오픈소스 셋은 **ImageMagick · LibreOffice + PDFtk-java · Poppler** 다. **규모** — 이미지·문서 서비스 **YAMS** 가 **월 260억 요청, 초당 1만 건 이상**이고 그중 **문서 변환이 약 120만 건**, **래스터 PDF 가 약 1만 4천 건**이다.",
+          "limits": "**🔴 대가를 여섯 개나 적는다** — 파일이 훨씬 커지고, **확대나 해상도에 잘 적응하지 못하며**, **접근성 기능을 전부 잃고**, 텍스트가 픽셀이 되어 **검색도 복사도 안 되고**, **하이퍼링크를 누를 수 없으며**, **오디오·비디오가 사라진다**. **문서를 잠그는 값이 문서를 쓸모없게 만드는 쪽으로 나간다**(이 정리는 이 사이트의 것이다). ⚠️ **셋 중 무엇을 골랐고 왜인지는 확인하지 못했다** — 그래서 기능으로 쓰지 않고 여기에만 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Using rasterization to make document sharing safer",
+              "url": "https://adevinta.com/techblog/using-rasterization-to-make-document-sharing-safer/",
+              "publisher": "Adevinta Tech Blog",
+              "date": "2026-08-28",
+              "summary": "**leboncoin 이 문서를 공개하면서 손대지 못하게 만드는 방법.** 답은 **래스터화된 PDF** — *\"a regular PDF document, whose inner content is only images\"* 다. **버린 대안은 비밀번호 보호**로, *\"super easy to circumvent\"* 라 버렸다. 상용 도구(UniPDF 등)는 *\"I will only list open-source projects\"* 라며 다루지 않았다. **검토한 오픈소스 셋** — ImageMagick · LibreOffice + PDFtk-java · Poppler. **🔴 대가를 여섯 개 적는다** — *\"The rasterized version file size is usually much larger\"* · *\"will not adapt easily to different zoom levels or screen resolutions\"* · *\"will lose all accessibility features\"* · 텍스트가 픽셀이 되어 **검색도 복사도 안 된다** · **하이퍼링크를 누를 수 없다** · **오디오·비디오가 사라진다**. **규모** — 이미지·문서 서비스 **YAMS** 가 **월 260억 요청, 초당 1만 건 이상**을 처리하고 그중 **문서 변환 요청이 약 120만 건**, **래스터 PDF 는 약 1만 4천 건**이다. **⚠️ 셋 중 무엇을 골랐는지와 그 이유는 이 추출에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+            }
+          ]
         }
       ],
       "features": [
@@ -298,7 +314,7 @@
     "**⭐ 2024년 결론이 2026년에 뒤집혔다.** `measuring-the-impact-of-generative-ai-on-developer-productivity`(2024-05-07)는 GitHub Copilot 을 도입하고 *\"For us, Copilot looks like it's going to stay\"* 로 끝난다. **2026년 파일럿에서 그 도구가 추정 대비 1% 로 나오고, 회사는 Claude Code 를 엔지니어 2,000명 넘는 조직에 배포하기로 한다.** **그리고 2024년의 관찰도 부분적으로 반박된다** — *\"It seems to be most beneficial to those that need it the least and least beneficial to those that need it the most\"* 였는데, 2026년에는 중급이 첫 사용자보다 **11배**(47% 대 4%) 이득을 보면서도 **Claude Code 만 그 격차가 없었다.** **자기가 2년 전에 쓴 것을 뒤집는 데이터를 그대로 낸다**(이 대조는 이 사이트의 것이다).",
     "**⚠️ 매출 실액을 확인할 수 없다 — 못 찾은 것이 아니라 공개되지 않는다.** 2024년 Permira·Blackstone 주도 컨소시엄의 공개매수로 **오슬로 증권거래소 A주가 2024-06-05 상장폐지**됐고, 그 뒤로 분기 실적을 내지 않는다. 지분이 **컨소시엄 지배 다수 · eBay 약 20% · Schibsted 약 13.6%** 로 알려져 있으나 **회사 보도자료가 아니라 2차 보도에서 온 값이라 `추정` 으로 둔다.**",
     "**⚠️ 글마다 수치의 밀도가 크게 다르다.** `multi-cloud-governance-at-scale`(732 계정·425 프로젝트·7,000줄·쿼터 500)과 `opa-memory…kyverno`(8GB→2.7GB·30+ 클러스터)와 AI 도구 평가(77명·165건·43/24/1%·4.2/3.6/2.8)는 수치가 풍부한데, **`from-lakehouse-architecture-to-data-mesh`(2024-12-10)는 수치가 하나도 없다** — 273 에서 열어 확인했다.",
-    "**⚠️ 브랜드가 열 개를 넘는데 개별 마켓플레이스의 시스템 글이 하나뿐이다.** **278 에서 하나를 찾았다** — `make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28)가 **독일 장터 Kleinanzeigen** 의 데이터 파이프라인이고, 이것으로 도메인 ③ 을 열었다. **그러나 읽은 여덟 편 중 장터 안쪽 이야기는 이 하나뿐이고 나머지는 전부 여러 브랜드를 가로지르는 플랫폼·도구 쪽이다.** **leboncoin·Marktplaats·Subito 의 검색·추천·정산 이야기는 여전히 없다** — **쓸 것이 없어서인지 안 쓰기로 한 것인지는 알 수 없다**(이 지적은 이 사이트의 것이다).",
+    "**⚠️ 브랜드가 열 개를 넘는데 개별 마켓플레이스의 시스템 글이 하나뿐이다.** **278 에서 하나를 찾았다** — `make-data-migration-easy-with-debezium-and-apache-kafka`(2025-01-28)가 **독일 장터 Kleinanzeigen** 의 데이터 파이프라인이고, 이것으로 도메인 ③ 을 열었다. **그러나 읽은 여덟 편 중 장터 안쪽 이야기는 이 하나뿐이고 나머지는 전부 여러 브랜드를 가로지르는 플랫폼·도구 쪽이다.** **leboncoin·Marktplaats·Subito 의 검색·추천·정산 이야기는 여전히 없다** — **쓸 것이 없어서인지 안 쓰기로 한 것인지는 알 수 없다**(이 지적은 이 사이트의 것이다). **280 에서 둘째를 찾았다** — `using-rasterization-to-make-document-sharing-safer` 가 **leboncoin** 의 문서 처리 이야기이고, 이미지·문서 서비스 **YAMS 가 월 260억 요청 · 초당 1만 건 이상**을 처리한다고 적는다. **다만 셋 중 무엇을 골랐는지가 확인되지 않아 기능으로 쓰지 않고 도메인 ③ `tech` 에만 넣었다.**",
     "**⚠️ 비교한 것이 도구인지 요금제인지 섞여 있고, 같은 조건으로 다시 잰 기록이 없다.** 이긴 도구가 *\"selected the most powerful models 60 times more than the other tools\"* 였는데 **정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다.** 회사는 이 사실을 적으면서도 ROI 를 근거로 그 도구를 고른다. **요금제를 맞춰 다시 재 본 서술은 없다**(이 지적은 이 사이트의 것이다).",
     "**⚠️ 클라우드 거버넌스 글이 이름만 대고 넘어가는 항목이 다섯이다**(276 의 3회차 재독에서 확인). **ROLFP** 보안 위험 평가를 계정에 잇는다고만 하고 **무엇인지도 어디에 쓰는지도 없다** · **FinOps 와 GovOps** 두 스쿼드로 나뉘어 있다고만 하고 **분담이 없다** · **예산**은 승인자만 나오고 **배분 방식도 초과 시 처리도 없다** · **보안 연락처**도 추적한다고만 한다 · **계정 폐기·정리 절차가 통째로 없다.** **그리고 사고나 실패 사례가 하나도 없다** — **계정이 732개까지 늘었다면 지운 계정도 있었을 텐데 만드는 이야기만 자세하다**(이 관찰은 이 사이트의 것이다). **⭐ 279 에서 반례를 하나 더 찾았다** — `its-not-always-dns-unless-it-is` 는 **두 번의 헛발과 재발까지 순서대로 적고 교훈 셋을 전부 자기 실수로 쓴다.** **같은 회사 안에서 사고를 적는 글과 안 적는 글의 차이가 점점 뚜렷해진다**(이 관찰은 이 사이트의 것이다).",
     "**⭐ 이 회사 안에서 사고를 적는 글과 안 적는 글이 갈린다.** 정책 엔진 편에는 **실제 사고가 있다** — *\"OPA started experiencing performance degradation and sporadic OOMKills\"* 이고 OOMKill 이 배포와 파드 생성을 막았으며, **VerticalPodAutoscaler 로도 못 잡아** *\"the alerts became noisy and disruptive\"* 였다. **반면 같은 도메인의 클라우드 거버넌스 편은 계정을 732개까지 늘린 과정을 자세히 적으면서 사고도 폐기 절차도 안 적는다.** **터진 이야기를 쓰는 글 쪽이 결정과 대가가 더 촘촘하다**(이 대비는 이 사이트의 것이다).",
@@ -374,6 +390,20 @@
       "publisher": "Adevinta Tech Blog",
       "date": "2026-08-28",
       "summary": "**여러 나라 팀의 ML 도구를 한 벌로 다시 만든 기록.** 문제 — *\"The coupling between the Machine Learning code and the engineering & infrastructure related code made our tooling — especially the template — too complex to use\"* 였고, 사용자가 개념과 기술을 다 이해하지 못해 *\"filled their workspace with black boxes that they couldn't debug\"* 였다. 구조적 한계도 있었다 — 템플릿이 **프로젝트당 Kubeflow 파이프라인 하나, 모든 단계가 컨테이너 하나를 공유**하는 전제였는데 **leboncoin 과 Marktplaats 의 작업 방식**은 다중 파이프라인·다중 컨테이너가 필요했다. 그리고 *\"Teams had developed their own tooling to address these pain points, which had led to an heterogeneous ML community which was difficult to support.\"* **고친 방향** — 코어와 바깥 층을 나눠 **점진적 복잡도**를 만들고, **ML 업무 로직(컴포넌트)과 오케스트레이션 코드(파이프라인)를 분리**하고, **KFP-Unicron CLI** 로 *\"Hide all this code behind a powerful and flexible CLI\"* 했다. **예제 파이프라인을 코어에서 뺀 이유가 구체적이다** — *\"The whole point of using Copier for the templating was its update flow\"* 인데 내장 예제가 **Copier 갱신을 엄청나게 복잡하게** 만들었다. **검토한 대안 셋** — 기존 KFP 최소 템플릿 · **leboncoin 의 구조** · **Google Cloud Vertex AI 템플릿**. 스페인·프랑스·네덜란드·이탈리아 팀이 참여했고 *\"One of these discussions took 16 hours over the course of 3 days\"* 였다. 스택 — Kubeflow Pipelines · MLflow · Copier · Backstage · Typer · Spark · PyTorch · TensorFlow · Diátaxis. **⚠️ 한계나 대가를 명시하지 않는다** — 문제를 다 풀었다는 서술로 끝나고 **채택률·사용자 수 같은 수치도 없다**(이 관찰은 이 사이트의 것이다)."
+    },
+    {
+      "title": "Deep Dive in PaddleOCR inference",
+      "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+      "publisher": "Adevinta Tech Blog",
+      "date": "2026-08-28",
+      "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+    },
+    {
+      "title": "Using rasterization to make document sharing safer",
+      "url": "https://adevinta.com/techblog/using-rasterization-to-make-document-sharing-safer/",
+      "publisher": "Adevinta Tech Blog",
+      "date": "2026-08-28",
+      "summary": "**leboncoin 이 문서를 공개하면서 손대지 못하게 만드는 방법.** 답은 **래스터화된 PDF** — *\"a regular PDF document, whose inner content is only images\"* 다. **버린 대안은 비밀번호 보호**로, *\"super easy to circumvent\"* 라 버렸다. 상용 도구(UniPDF 등)는 *\"I will only list open-source projects\"* 라며 다루지 않았다. **검토한 오픈소스 셋** — ImageMagick · LibreOffice + PDFtk-java · Poppler. **🔴 대가를 여섯 개 적는다** — *\"The rasterized version file size is usually much larger\"* · *\"will not adapt easily to different zoom levels or screen resolutions\"* · *\"will lose all accessibility features\"* · 텍스트가 픽셀이 되어 **검색도 복사도 안 된다** · **하이퍼링크를 누를 수 없다** · **오디오·비디오가 사라진다**. **규모** — 이미지·문서 서비스 **YAMS** 가 **월 260억 요청, 초당 1만 건 이상**을 처리하고 그중 **문서 변환 요청이 약 120만 건**, **래스터 PDF 는 약 1만 4천 건**이다. **⚠️ 셋 중 무엇을 골랐는지와 그 이유는 이 추출에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
     }
   ],
   "features": [
@@ -3878,6 +3908,669 @@
           "publisher": "Adevinta Tech Blog",
           "date": "2025-06-01",
           "summary": "**이 회사에서 드문 글 — 사고를 처음부터 끝까지, 틀린 가설까지 순서대로 적는다.** 시작은 금요일 오후, 사내 쿠버네티스 플랫폼(SCHIP)에서 도는 고객 서비스에 *\"a spike of HTTP error (5xx)\"* 가 났고 **몇 주 동안 간헐적으로 이어졌으며 특히 CronJob 이 도는 자정 무렵**에 몰렸다.\n\n**🔴 틀린 가설 ① — 인그레스 컨트롤러 스케일링.** 인스턴스가 *\"between 2–5\"* 로 흔들리고 조사 중에는 2개에 머물렀으며 *\"a small number of CPU throttling in our ingress controllers\"* 가 보였다. 최소 인스턴스를 최대치로 올렸고 **나아지는 듯했지만 근본 원인이 아니었다.**\n**🔴 틀린 가설 ② — 네트워킹.** 성능 저하가 *\"A fluent-bit agent stopped processing logs\"* 경보와 겹쳤고, 문제 노드의 에이전트가 전달을 못 하고 있었다. Calico 계층의 지연을 의심해 **노드를 드레인하고 재시작**했다. **또 일시적 개선뿐이었다.**\n\n**돌파구는 영향받은 애플리케이션 자체를 본 것이다** — 그것이 *\"a proxy server that sat in front of many Microservices making internal calls using a Kubernetes service name resolution\"* 였고, **프록시와 fluent-bit 둘 다 정규화되지 않은 호스트명**을 쓰고 있었다.\n\n**원인이 셋으로 갈렸다.** ① **동시 질의 한계** — DNSmasq 로그에 *\"Maximum number of concurrent DNS queries reached (max: 150)\"*. **150에서 1500으로** 올리자 DNS 지연 SLI 가 *\"instantly\"* 좋아졌지만 **일주일 만에 다시 나빠졌다.** ② **캐시가 안 되고 있었다** — 최신 CoreDNS 가 **RA(Recursion Available) 플래그를 꺼서** DNSmasq 가 클러스터 내부 응답을 캐시할 수 없었다. RA 비트를 강제해 캐시를 켰다. ③ **주범은 ndots 였다** — DNStop 으로 보니 *\"unresolvable domains flooding the DNS requests\"* 였다. **점이 다섯 개 미만인 도메인에는 검색 도메인이 붙어** `cluster.local.cluster.local` · `cluster.local.svc.cluster.local` 같은 쓰레기 질의가 생긴다. *\"This problem did affect everyone\"* 이지만 **밀도가 가장 높은 클러스터에서만 심하게 터졌고**, 거기서 **초당 130건 넘는 DNS 요청**이 나왔다.\n\n**고친 것 셋** — 쓰레기 검색에 **NXDOMAIN 을 돌려줘** CoreDNS 까지 안 가게 하고, fluent-bit 의 호스트명을 **점 다섯 개짜리 FQDN** 으로 바꾸고, **고객 애플리케이션에도 FQDN 을 쓰라고 요청**했다. **결과** — CoreDNS 요청이 *\"from more than 4000 requests/second to less than 1000 requests/second\"*, DNS 지연 SLI 가 *\"back to > 99.9%\"* 로 회복, *\"No further degradation\"*.\n\n**🔴 교훈을 셋 적는데 전부 자기 실수다.** ① **SLI 저하를 무시했었다** — *\"we did not see any issues\"* 라서 넘겼고, 그래서 *\"you need to make sure that you have defined, solid and practical SLIs for your SLO.\"* ② **여러 온콜이 병렬로 일했는데 조율이 없었다** — *\"a single place where we gathered all of the information\"* 이 없어 때로는 *\"worked on already discarded assumptions\"* 였다. 원칙으로 삼은 것: *\"discard one hypothesis before starting a new one.\"* ③ **표준 지표로는 못 찾았다** — DNStop 을 돌려서야 알았고 *\"we didn't have that information available in our metrics system.\"* **왜 한 클러스터였나** — 파드 밀도가 높고 **몇 시간마다 도는 CronJob** 이 있어 *\"why the issues were mostly reported to be happening at midnight\"*."
+        }
+      ]
+    },
+    {
+      "key": "fork-and-strip",
+      "name": "벤치마크는 좋았는데 코드가 안 맞았다",
+      "domain": "남이 만든 도구를 자기 업무로 재본다",
+      "updated_at": "2026-08-28",
+      "ui": {
+        "title": "남의 라이브러리를 쓸 만하게 만들기까지",
+        "question": "성능이 좋은데 왜 그대로 못 쓰는가?",
+        "kind": "web",
+        "note": "**작업의 순서를 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내에 이런 화면이 있었는지조차 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 문제와 수치만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "글자 읽기 모델 도입"
+          },
+          {
+            "type": "card",
+            "text": "점수는 좋았습니다",
+            "items": [
+              "그런데 코드가 우리 용도에 비해 너무 복잡했다",
+              "그대로는 운영에 못 올린다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "무엇이 문제였나"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "한 덩어리로 뭉쳐 있었다",
+                "sub": "만들 때와 부를 때 함수가 아주 길었다",
+                "right": "구조"
+              },
+              {
+                "title": "설정값이 백다섯 개",
+                "sub": "그중 일흔 개 넘게는 쓰이지도 않았다",
+                "right": "부풀림"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "amount",
+            "text": "105 → 20",
+            "sub": "남긴 설정값"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "조용히 다른 일이 벌어지고 있었다"
+          },
+          {
+            "type": "card",
+            "text": "언어를 골라도 그 언어가 아니었습니다",
+            "items": [
+              "프랑스어를 고르면 공용 모델로 간다",
+              "글자를 찾는 쪽은 무조건 영어 모델"
+            ],
+            "pin": 3
+          },
+          {
+            "type": "text",
+            "text": "모델 주소가 코드와 문서에서 서로 달랐습니다",
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "고친 방식"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "세 단계로 갈랐다",
+                "sub": "준비 · 추론 · 정리",
+                "right": "구조"
+              },
+              {
+                "title": "모델을 미리 받아 경로로 넘긴다",
+                "sub": "자동 내려받기에 기대지 않는다",
+                "right": "배포"
+              }
+            ],
+            "pin": 5
+          },
+          {
+            "type": "chips",
+            "items": [
+              "다른 형식으로 내보낸다"
+            ],
+            "pin": 6
+          },
+          {
+            "type": "text",
+            "text": "원래 코드에는 우리 기준의 테스트가 없어 새로 붙였습니다",
+            "pin": 7
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "card",
+            "text": "결과를 바꾸지는 않았습니다",
+            "items": [
+              "같은 이미지에 같은 예측",
+              "다만 문서는 대부분 다른 언어로 되어 있다"
+            ],
+            "pin": 8
+          },
+          {
+            "type": "button",
+            "text": "운영에 올린다",
+            "variant": "primary"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "점수와 쓸 만함은 다르다",
+            "what": "팀이 **PaddleOCR**(PP-OCRv3)을 쓰려는데 **벤치마크 성능은 강했지만 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **남의 자로 좋다고 나온 것이 자기 것이 되지는 않는다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "쓰이지도 않는 설정이 대부분이었다",
+            "what": "추론 클래스가 *\"105 parameters, of which more than 70 were ignored\"* 를 요구했다. **20개로 줄였다.** 클래스에는 *\"very long `__init__` and `__call__` methods\"* 가 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "고른 것과 도는 것이 달랐다",
+            "what": "`fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **글자를 찾는 검출 단계는 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "주소가 코드와 문서에서 달랐다",
+            "what": "`paddleocr.py` 의 하드코딩 URL 과 공식 문서가 어긋나 **일부 모델에는 아예 접근할 수 없었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "세 단계로 갈랐다",
+            "what": "**전처리·추론·후처리를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. 그리고 **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고** 모델을 미리 받아 경로로 넘긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "다른 형식으로 내보낸다",
+            "what": "**ONNX** 로 내보내면 Paddle 판과 **작은 수치 차이**가 생기는데, *\"satisfactory results on both CPU and GPU\"* 를 확인하고 받아들였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "테스트가 없었다",
+            "what": "원래 코드가 *\"was not tested according to the standards of our team\"* 이라 리팩터링하면서 *\"meaningful unit tests\"* 를 새로 붙여야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "n": 8,
+            "title": "예측은 그대로 두었다",
+            "what": "*\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* ⚠️ **다만 문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**벤치마크에서 좋은 것과 우리 운영에 올릴 수 있는 것은 다른 문제다**(이 정리는 이 사이트의 것이다). 팀이 **PaddleOCR** 을 쓰려는데 성능은 강했지만 **코드베이스가 자기 용도에 비해 지나치게 복잡했다.**\n\n**⭐ 이 도메인의 다른 기능과 나란히 놓으면 이 회사의 자세가 보인다.** AI 코딩 도구 파일럿에서는 **남의 도구를 자기 백로그로 재고 자의 한계를 먼저 적었고**, 여기서는 **남의 라이브러리를 뜯어서 자기 것으로 만든다.** **둘 다 남이 만든 것을 그대로 받아들이지 않는다는 점에서 같다.**\n\n**뜯어 보니 나온 것이 놀랍다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** 그리고 **고른 것과 실제로 도는 것이 달랐다** — 언어로 `fr` 을 고르면 범용 latin 모델로 조용히 매핑되고, 검출 단계는 **무엇을 고르든 English 모델**을 썼다. **설정이 실제 동작을 가리고 있었던 셈이다**(이 표현은 이 사이트의 것이다).\n\n**고친 뒤 예측은 그대로 두었다** — *\"does not alter predictions (compared to the 2.6 release) for images.\"* **바꾼 것은 결과가 아니라 다룰 수 있는 정도다.**",
+        "metrics": [
+          {
+            "label": "파라미터",
+            "value": "추론 클래스가 105개를 요구했고 그중 70개 넘게가 무시됐다 → 20개로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "label": "결과",
+            "value": "제안한 코드가 이미지에 대해 2.6 릴리스와 같은 예측을 낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "label": "내보내기",
+            "value": "ONNX 판과 Paddle 판 사이에 작은 수치 차이 — CPU·GPU 모두에서 만족스러워 받아들였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "지연 시간 · 처리량 · 정확도 수치 · 리팩터링에 든 기간이 하나도 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "파라미터 105개 중 70개가 무시되던 것을 볼 때",
+          "thought": "**쓰는 쪽에서는 그걸 알 방법이 없다**(이 지적은 이 사이트의 것이다). 설정을 바꿨는데 아무 일도 안 일어나면 값이 틀렸다고 생각하지 **그 설정이 무시된다고는 생각하지 않는다.** **뜯어 보고서야 알 수 있는 종류의 문제**이고, 그래서 이 회사는 뜯었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "언어를 골라도 다른 모델이 돌던 대목에서",
+          "thought": "**설정이 실제 동작을 가리고 있었다**(이 표현은 이 사이트의 것이다) — `fr` 을 고르면 범용 latin 으로 가고 검출은 늘 English 다. **그럴듯한 이름의 손잡이가 아무 데도 안 이어져 있는 것보다 나쁘다** — 이어져는 있는데 다른 데로 간다. 그래서 **손잡이를 안 쓰고 모델 경로를 직접 넘기기로** 했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "결과를 안 바꾸기로 한 자리에서",
+          "thought": "*\"does not alter predictions.\"* **이건 리팩터링의 성공 조건을 미리 못 박은 것으로 읽힌다**(이 해석은 이 사이트의 것이다) — 코드를 정리하면서 결과가 조금이라도 달라지면 **정리한 것인지 망친 것인지 알 수 없어진다.** ⚠️ **다만 ONNX 내보내기에서는 작은 수치 차이를 받아들였다** — 그 기준이 *\"satisfactory\"* 뿐이라 얼마까지 허용했는지는 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이 글이 안 적은 것을 셀 때",
+          "thought": "**수치가 105→20 하나뿐이다**(이 관찰은 이 사이트의 것이다) — **지연 시간도 처리량도 정확도도 리팩터링 기간도 없다.** OCR 을 운영에 올리는 이야기인데 **얼마나 빨라졌는지 얼마나 싸졌는지가 하나도 없다.** **다룰 수 있게 만든 것을 성과로 적고 성능은 안 잰다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "추론 클래스",
+            "what": "**파라미터 105개를 요구했고 70개 넘게가 무시됐다.** 20개로 줄였다"
+          },
+          {
+            "name": "세 단계",
+            "what": "전처리 · 추론 · 후처리. **각각 함수로 갈라 냈다**"
+          },
+          {
+            "name": "언어 파라미터",
+            "what": "`fr`·`es` 가 범용 latin 으로 매핑되고 **검출은 늘 English** 였다. 안 쓰기로 했다"
+          },
+          {
+            "name": "모델 경로",
+            "what": "미리 받아 직접 넘긴다. **자동 다운로드에 기대지 않는다**"
+          },
+          {
+            "name": "ONNX 판",
+            "what": "내보낸 모델. Paddle 판과 **작은 수치 차이**가 있다"
+          }
+        ],
+        "invariants": [
+          "**예측을 바꾸지 않는다** — 정리한 것인지 망친 것인지 구별하려면 결과가 같아야 한다",
+          "**언어 이름으로 모델을 고르지 않는다** — 경로를 직접 넘긴다",
+          "**실행 중에 모델을 내려받지 않는다** — 보안·오프라인 환경을 전제한다",
+          "**쓰이지 않는 설정을 노출하지 않는다** — 105개에서 20개로",
+          "**테스트 없이 고치지 않는다** — 원래 코드에 없어서 새로 붙였다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "벤치마크로 후보를 고른다",
+            "why": "성능이 강한 것으로 골랐다"
+          },
+          {
+            "step": "코드를 열어 본다",
+            "why": "운영에 올리려면 다룰 수 있어야 한다"
+          },
+          {
+            "step": "긴 함수를 세 단계로 가른다",
+            "why": "준비와 추론과 정리가 한 덩어리였다"
+          },
+          {
+            "step": "쓰이는 설정만 남긴다",
+            "why": "백다섯 중 일흔 넘게가 무시되고 있었다"
+          },
+          {
+            "step": "언어 손잡이를 안 쓰기로 한다",
+            "why": "고른 것과 실제로 도는 모델이 달랐다"
+          },
+          {
+            "step": "모델을 미리 받아 경로로 넘긴다",
+            "why": "주소가 코드와 문서에서 어긋났고 오프라인에서도 돌아야 한다"
+          },
+          {
+            "step": "다른 형식으로 내보낸다",
+            "why": "작은 수치 차이는 확인하고 받아들였다"
+          },
+          {
+            "step": "테스트를 새로 붙인다",
+            "why": "원래 코드에는 팀 기준의 테스트가 없었다"
+          },
+          {
+            "step": "같은 이미지에 같은 예측이 나오는지 본다",
+            "why": "정리한 것인지 망친 것인지 구별해야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "성능 좋은 라이브러리를 그대로 쓸 것인가?",
+            "chosen": "**아니다 — 뜯어서 자기 구조로 다시 만든다.** 전처리·추론·후처리를 각각 함수로 가른다",
+            "alternatives": [
+              "그대로 가져다 쓰기 — 코드가 자기 용도에 비해 지나치게 복잡했다"
+            ],
+            "tradeoff": "*\"more modular code and direct logic that fits our needs.\"* **대가는 상류를 따라가야 한다는 것**이다(이 지적은 이 사이트의 것이다) — 원본이 올라갈 때마다 자기 판을 맞춰야 한다. ⚠️ **그 유지 부담을 다룬 서술은 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "question": "설정을 얼마나 노출할 것인가?",
+            "chosen": "**105개에서 20개로 줄인다.** 쓰이는 것만 남긴다",
+            "alternatives": [
+              "원본 그대로 105개를 노출하기 — **그중 70개 넘게가 무시되고 있었다**"
+            ],
+            "tradeoff": "**쓰는 쪽에서는 무시되는 설정을 알 방법이 없다**(이 지적은 이 사이트의 것이다) — 바꿨는데 아무 일도 안 일어나면 값이 틀렸다고 생각한다. **대가는 원본이 나중에 그 설정들을 실제로 쓰게 되면 다시 열어야 한다는 것**이고, 그 이야기는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "question": "언어를 어떻게 고를 것인가?",
+            "chosen": "**언어 파라미터를 안 쓰고 모델 경로를 직접 지정한다**",
+            "alternatives": [
+              "언어 이름으로 고르기 — `fr`·`es` 가 범용 latin 으로 매핑되고 **검출은 무엇을 고르든 English** 였다"
+            ],
+            "tradeoff": "**그럴듯한 이름의 손잡이가 다른 데로 이어져 있는 것이 아무 데도 안 이어진 것보다 나쁘다**(이 표현은 이 사이트의 것이다). **대가는 어느 모델을 쓸지 쓰는 쪽이 알아야 한다는 것**이다 — 편의를 버리고 투명함을 샀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "question": "모델을 언제 가져올 것인가?",
+            "chosen": "**미리 받아 두고 경로를 넘긴다.** 실행 중 자동 다운로드에 기대지 않는다",
+            "alternatives": [
+              "프레임워크의 자동 다운로드를 쓰기 — 하드코딩 URL 과 공식 문서가 어긋나 **일부 모델은 아예 못 받았다**"
+            ],
+            "tradeoff": "**보안·오프라인 환경에서 돌아야 한다는 전제가 이 결정을 만든다**(이 연결은 이 사이트의 것이다). **대가는 모델을 배포에 함께 실어야 한다는 것**이고, ⚠️ **그 크기나 배포 방식은 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "question": "다른 실행 형식으로 내보낼 것인가?",
+            "chosen": "**ONNX 로 내보낸다.** Paddle 판과 작은 수치 차이가 있지만 받아들였다",
+            "alternatives": [
+              "원래 런타임 그대로 쓰기"
+            ],
+            "tradeoff": "근거는 *\"satisfactory results on both CPU and GPU\"* 다. ⚠️ **대가는 두 판의 결과가 완전히 같지 않다는 것**이고, **얼마까지 허용했는지의 기준이 *\"satisfactory\"* 뿐이다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "question": "고치면서 결과를 바꿔도 되는가?",
+            "chosen": "**안 된다.** *\"does not alter predictions (compared to the 2.6 release) for images\"*",
+            "alternatives": [
+              "정리하면서 동작도 함께 개선하기"
+            ],
+            "tradeoff": "**리팩터링의 성공 조건을 미리 못 박은 것으로 읽힌다**(이 해석은 이 사이트의 것이다) — 결과가 조금이라도 달라지면 **정리한 것인지 망친 것인지 알 수 없어진다.** **대가는 이번에 성능을 못 고친다는 것**이고, 실제로 **이 글에는 지연·처리량·정확도 수치가 하나도 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "PaddleOCR / PaddlePaddle",
+            "role": "바이두의 OCR 프레임워크. 벤치마크는 강했으나 코드가 복잡했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "tech": "PP-OCRv3",
+            "role": "쓰기로 한 아키텍처",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "tech": "ONNX",
+            "role": "내보내기 형식. Paddle 판과 작은 수치 차이가 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "tech": "SageMaker 엔드포인트",
+            "role": "배포 대상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "tech": "Streamlit",
+            "role": "결과를 눈으로 확인하는 시각화 도구",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 원본의 문서",
+            "role": "대부분 중국어·일본어·한국어라 번역해 가며 볼 수밖에 없었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "설정이 실제 동작을 가린다",
+            "why_hard": "추론 클래스의 **파라미터 105개 중 70개 넘게가 무시**되고 있었고, **언어를 고르면 다른 모델이 돌았다**(`fr` → 범용 latin, 검출은 늘 English). **쓰는 쪽에서는 이걸 알 방법이 없다** — 설정을 바꿨는데 아무 일도 안 일어나면 값이 틀렸다고 생각한다(이 지적은 이 사이트의 것이다).",
+            "current_best": "**뜯어 보고 쓰이는 것만 남긴다**(20개) 그리고 **이름 대신 경로를 직접 넘긴다.** ⚠️ **원본이 나중에 바뀌면 다시 맞춰야 하는데 그 이야기는 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          },
+          {
+            "problem": "고친 것이 나아진 것인지 어떻게 아는가",
+            "why_hard": "코드를 크게 정리하면서 결과가 달라지면 **정리한 것인지 망친 것인지 구별할 수 없다.** 게다가 **원래 코드에는 팀 기준의 테스트가 없었다.**",
+            "current_best": "**예측을 바꾸지 않기로 못 박고**(*\"does not alter predictions\"*) **의미 있는 단위 테스트를 새로 붙였다.** ⚠️ **대신 성능은 이번에 안 건드렸고, 이 글에는 지연·처리량·정확도 수치가 하나도 없다**(이 관찰은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Dive in PaddleOCR inference",
+                "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+                "publisher": "Adevinta Tech Blog",
+                "date": "2026-08-28",
+                "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "남의 라이브러리가 우리 것이 되기까지",
+          "question": "무엇을 남기고 무엇을 버렸는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  PICK[\"점수를 보고 고른다\"]:::list\n  OPEN[\"코드를 열어 본다\"]:::list\n  FIND[\"<b>뜯어 보고서야 보이는 것들</b><br/>• 설정 백다섯 중 일흔 넘게가 무시된다<br/>• 언어를 골라도 다른 모델이 돈다<br/>• 모델 주소가 코드와 문서에서 다르다\"]:::accent\n  SPLIT[\"준비와 추론과 정리를 갈라 낸다\"]:::list\n  TRIM[\"쓰이는 설정만 남긴다 — 스무 개\"]:::list\n  PATH[\"이름 대신 경로를 직접 넘긴다\"]:::list\n  PRE[\"모델을 미리 받아 둔다\"]:::list\n  TEST[\"테스트를 새로 붙인다\"]:::list\n  SAME[\"같은 이미지에 같은 예측인지 본다\"]:::list\n  X1[\"그대로 가져다 쓰기<br/>안 했다 — 우리 용도에 비해 너무 복잡했다\"]:::quiet\n  X2[\"실행 중에 모델 내려받기<br/>안 했다 — 오프라인에서도 돌아야 한다\"]:::quiet\n  PICK --> OPEN --> FIND --> SPLIT --> TRIM --> PATH --> PRE --> TEST --> SAME\n  OPEN -.-> X1\n  PRE -.-> X2"
+        },
+        {
+          "title": "설정 하나가 겪는 일",
+          "question": "바꿨는데 아무 일도 안 일어나면?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 노출\n  노출 : <b>백다섯 개가 열려 있다</b><br/>쓰는 쪽은 다 뜻이 있다고 믿는다\n  노출 --> 설정 : 값을 바꿔 본다\n  설정 : <b>아무 일도 안 일어난다</b><br/>일흔 개 넘게는 애초에 읽히지 않는다\n  설정 --> 오해 : 값이 틀렸나 싶다\n  오해 : <b>여기서 시간을 쓴다</b><br/>무시된다고는 생각하지 않는다\n  오해 --> 해체 : 코드를 열어 본다\n  해체 : <b>읽히는 것과 아닌 것을 가른다</b><br/>스무 개만 남긴다\n  해체 --> 명시 : 이름 대신 경로로\n  명시 : <b>고른 것이 도는 것과 같아진다</b><br/>편의를 버리고 투명함을 얻는다\n  명시 --> [*]"
+        },
+        {
+          "title": "이 글이 재지 않은 것",
+          "question": "운영에 올리는 이야기인데 숫자가 하나뿐이다",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"설정을 백다섯에서 스물로 줄였다\"]:::list\n  B[\"<b>수치는 이것 하나뿐이다</b><br/>지연도 처리량도 정확도도 걸린 기간도 없다\"]:::accent\n  C[\"예측을 바꾸지 않기로 했다\"]:::list\n  D[\"대신 성능은 이번에 못 고친다\"]:::list\n  E[\"다른 형식으로 내보내며 차이를 받아들였다\"]:::list\n  F[\"얼마까지 허용했는지 기준이 만족스럽다뿐이다\"]:::list\n  G[\"뜯어서 우리 구조로 다시 만들었다\"]:::list\n  H[\"원본이 올라갈 때 따라가는 부담은 다루지 않는다\"]:::list\n  I[\"모델을 미리 받아 배포에 싣는다\"]:::list\n  J[\"그 크기도 배포 방식도 없다\"]:::list\n  N[\"<i>모두 이 사이트의 지적이다 — 회사가 한계로 적은 것은 문서 언어와 수치 차이뿐</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Deep Dive in PaddleOCR inference",
+          "url": "https://adevinta.com/techblog/deep-dive-in-paddleocr-inference/",
+          "publisher": "Adevinta Tech Blog",
+          "date": "2026-08-28",
+          "summary": "**벤치마크는 좋았는데 코드가 프로덕션에 안 맞아 뜯어고친 기록.** Cognition 팀이 **PaddleOCR**(바이두의 OCR 프레임워크, PP-OCRv3)을 쓰려는데 **성능은 강한데 코드베이스가 자기 용도에 비해 지나치게 복잡했다.** **문제 넷과 고친 방법.** ① **모듈이 안 나뉘어 있었다** — 클래스에 *\"very long `__init__` and `__call__` methods\"* 가 있었고, **전처리·추론·후처리 세 단계를 각각 함수로 분리**해 *\"more modular code and direct logic that fits our needs\"* 를 만들었다. ② **파라미터가 부풀어 있었다** — 추론 클래스가 **파라미터 105개를 요구하는데 그중 70개 넘게가 무시되고 있었다.** **20개로 줄였다.** ③ **언어 추상화가 불투명했다** — `fr` 이나 `es` 를 고르면 조용히 **범용 latin 인식 모델**로 매핑되고, **검출은 무엇을 고르든 English 모델**을 썼다. 그래서 **언어 파라미터를 우회하고 모델 경로를 직접 지정**하기로 했다. ④ **모델 내려받기가 어긋났다** — `paddleocr.py` 의 하드코딩 URL 과 공식 문서가 달라 일부 모델에 아예 접근할 수 없었다. **보안·오프라인 환경에서 자동 다운로드에 기대는 것을 버리고 모델을 미리 받아 경로를 넘긴다.** **⚠️ 대가와 한계를 적는다** — **ONNX 로 내보내면 Paddle 판과 작은 수치 차이**가 생기는데 *\"satisfactory results on both CPU and GPU\"* 를 보고 받아들였다 · **문서가 대부분 중국어·일본어·한국어**라 구조적 해결 없이 번역해 가며 볼 수밖에 없었다 · **원래 코드가** *\"was not tested according to the standards of our team\"* 이라 리팩터링에 *\"meaningful unit tests\"* 를 새로 붙여야 했다. **결과** — *\"Our proposed code version does not alter predictions (compared to the 2.6 release) for images.\"* 스택 — PaddleOCR/PaddlePaddle · PP-OCRv3 · ONNX · Streamlit(시각화) · SageMaker 엔드포인트."
         }
       ]
     }

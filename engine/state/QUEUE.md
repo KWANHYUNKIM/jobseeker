@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Adevinta** | EU · 커머스(분류광고 마켓플레이스) | **279 도메인 3개 · 기능 5개** — ① `pilot-with-real-work` / ② `account-metadata-spine`·`policy-inventory-cost`·`dns-hunt`(틀린 가설을 둘 지나고서야, 결정 7) / ③ `three-sources-one-object`. **🔴 279 의 발견 — DNS 편이 두 번의 헛발과 재발까지 순서대로 적고 교훈 셋이 전부 자기 실수다.** **⚠️ 남은 미독 둘**(`deep-dive-in-paddleocr-inference` · `using-rasterization…`). **⚠️ 매출 실액 확인 불가**(2024 상장폐지) |
+| **Adevinta** | EU · 커머스(분류광고 마켓플레이스) | **280 도메인 3개 · 기능 6개** — ① `pilot-with-real-work`·`fork-and-strip`(벤치마크는 좋았는데 코드가 안 맞았다, 결정 6) / ② `account-metadata-spine`·`policy-inventory-cost`·`dns-hunt` / ③ `three-sources-one-object`. **⭐ 280 에서 leboncoin 글도 찾아 도메인 ③ tech 에 넣었다**(YAMS 월 260억 요청). **✅ 목록의 미독을 다 읽었다 — 다음 사이클에 닫는다.** **⚠️ 매출 실액 확인 불가**(2024 상장폐지) |
 
 ## 대기
 
