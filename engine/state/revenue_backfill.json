@@ -6,7 +6,10 @@
     "figma",
     "grab",
     "ly-corporation",
-    "musinsa"
+    "musinsa",
+    "netflix",
+    "roblox",
+    "shopify"
   ],
   "skipped": [
     {
@@ -96,6 +99,14 @@
     {
       "slug": "moniepoint",
       "reason": "비상장이라 매출 자체가 공개되지 않는다. 공개된 것은 거래 규모(월 TPV $17B, 일 결제 2,600만 건)와 계정 수뿐이고 수수료율도 밝히지 않아 세 수익원의 비중을 알 수 없다"
+    },
+    {
+      "slug": "notion",
+      "reason": "비상장이라 매출·ARR 실액이 공개되지 않는다(밸류에이션 110억 달러만 보도). \"ARR 의 50% 이상이 AI 를 쓰는 고객에서 나온다\"는 고객 구성이지 좌석 구독과 AI 애드온의 매출 비중이 아니다"
+    },
+    {
+      "slug": "planetscale",
+      "reason": "비상장이라 매출 공개가 없다. 확인되는 것은 SKU 요금표(월 $5~$47,229)뿐이고 라인별 매출은 알 수 없다"
     }
   ]
 }
