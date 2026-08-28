@@ -660,6 +660,18 @@
       "one_liner": "한 덩어리 Rails 앱 위에 여러 고객을 얹고 그 폭발 반경을 계속 잘라 온 인도 SaaS",
       "updated_at": "2026-08-29",
       "domain": "freshworks.com/explore-cx · /explore-it"
+    },
+    {
+      "slug": "sansan",
+      "name": "산산",
+      "name_en": "Sansan, Inc.",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "종이로 오는 것을 데이터로 바꿔 파는 일본 SaaS — 명함에서 시작해 청구서로 옮겨 갔다",
+      "updated_at": "2026-08-29",
+      "domain": "buildersbox.corp-sansan.com"
     }
   ],
   "domains": [
@@ -856,7 +868,8 @@
     "재는 일을 사지 않고 만든다",
     "하나가 느려지면 전부가 막힌다",
     "큐 이백 개를 기계에 어떻게 얹는가",
-    "한 코드베이스가 두 판을 동시에 안다"
+    "한 코드베이스가 두 판을 동시에 안다",
+    "저장소를 옮기면 붙어 있던 것이 따라오지 않는다"
   ],
   "countries": {
     "KR": "한국",
