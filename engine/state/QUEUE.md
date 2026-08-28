@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **freee** | JP · SaaS | 341 에서 **새 도메인 `멈출 수 없는 데이터베이스를 돌아가는 채로 바꾼다`** 를 열고 셋째 기능 `swap-the-floor-before-the-peak` 을 썼다 — **도메인 2개 · 기능 3개.** 새 도메인도 **두 편 규칙을 지켰다**(Aurora 이관 2021-04 · RDS Proxy 스위치오버 2023-08). 남은 것 — DB 도메인 다섯 편 · ClickHouse · Clean Architecture · **QA 95편 미독** |
+| **freee** | JP · SaaS | 342 에서 DB 도메인의 둘째 기능 `send-only-the-writes` 를 썼다 — **도메인 2개 · 기능 4개.** 이 도메인만 **세 편**을 읽었다(Aurora 이관 · RDS Proxy · Local Write Forwarding). 남은 것 — DB 도메인 다섯 편 · ClickHouse · Clean Architecture · **QA 95편 미독** |
 
 ## 대기
 
