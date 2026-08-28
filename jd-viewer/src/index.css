@@ -302,7 +302,8 @@ html, body, #root {
 }
 .md-code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.86em;
+  /* 12px 본문 안에서 0.86em 이면 10px 다 — 아래로는 내려보내지 않는다 */
+  font-size: max(12px, 0.86em);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 4px;
@@ -324,7 +325,9 @@ html, body, #root {
   letter-spacing: -0.003em;
   word-break: keep-all;      /* 한글 어절 중간에서 끊지 않는다 */
   overflow-wrap: anywhere;   /* 다만 긴 URL·영문 토큰은 넘치게 두지 않는다 */
-  max-width: 74ch;
+  /* 문장마다 줄을 끊으므로 줄길이는 좀 더 길어도 눈이 길을 잃지 않는다.
+     74ch 는 넓은 화면에서 컨테이너의 절반만 쓰고 문장이 매번 접혔다. */
+  max-width: 100ch;
 }
 
 /* ── Mermaid 도판(圖版) ────────────────────────────────────────────────────
@@ -363,7 +366,8 @@ html, body, #root {
 .mmd .cluster-label, .mmd .cluster span {
   color: var(--plate-ink) !important;
   font-weight: 700;
-  font-size: 0.94em;
+  /* em 은 부모(span.cluster > p)마다 곱해져 라벨이 10px 밑으로 내려간다. px 로 못 박는다 */
+  font-size: 13px;
 }
 
 /* 화살표 라벨은 선 위에 얹히므로 종이색으로 선을 끊어 준다 */
@@ -371,7 +375,7 @@ html, body, #root {
   background: var(--plate-paper) !important;
   color: var(--plate-ink) !important;
   fill: var(--plate-paper) !important;
-  font-size: 0.9em;
+  font-size: 12px;
 }
 .mmd .edgeLabel rect { fill: var(--plate-paper) !important; opacity: 1; }
 
