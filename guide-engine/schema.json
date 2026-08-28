@@ -1,0 +1,172 @@
+{
+  "_note": "설명형 스키마. 값은 그 필드에 무엇을 담는지에 대한 설명이다. 실제 검증은 guide-engine/validate.py 가 한다. 여기 없는 필드는 만들지 않는다.",
+
+  "index": {
+    "_file": "jd-viewer/public/guide/index.json — 뷰어가 공고를 열 때 이 파일 하나로 브리핑 유무를 판단한다",
+    "updated_at": "YYYY-MM-DD",
+    "companies": [
+      {
+        "slug": "string — companies/<slug>.json 의 파일명. 불변",
+        "name": "string — 표시용 회사명",
+        "aliases": [
+          "string — 공고의 company 를 normalizeCompany() 로 정규화한 값. 뷰어가 이 배열로 공고와 브리핑을 잇는다. 공고마다 표기가 달라질 수 있으므로(주식회사, (주), 영문 병기) 발견되는 대로 늘린다"
+        ],
+        "status": "in_progress|done",
+        "postings": "number — 채운 공고 수",
+        "study_items": "number — 전체 학습 항목 수",
+        "updated_at": "YYYY-MM-DD"
+      }
+    ]
+  },
+
+  "company_file": {
+    "_file": "jd-viewer/public/guide/companies/<slug>.json",
+
+    "slug": "string (영문 소문자·하이픈) — 한 번 정하면 불변",
+    "name": "string",
+    "name_en": "string (선택)",
+    "aliases": ["string — index 와 같은 값"],
+    "status": "in_progress|done",
+    "hold_reason": "string (선택) — in_progress 인 채로 더 쓰지 않기로 한 이유. 있으면 --gaps 가 확장 대상에서 뺀다",
+    "updated_at": "YYYY-MM-DD",
+    "site": "string (선택) — 회사 홈페이지 도메인",
+    "one_liner": "string — 이 회사를 한 줄로",
+
+    "company": {
+      "_note": "PROMPT.md 3단계. 회사에 붙는 사실 — 공고가 여럿이어도 한 번만 쓴다",
+      "business": "string — 무엇을 팔아 돈을 버는가",
+      "business_confidence": "confirmed|inferred|unknown",
+      "business_sources": ["source 객체"],
+      "scale": [
+        {
+          "label": "string — 무엇을 잰 숫자인가 (예: 2025 매출, 개발 인원)",
+          "value": "string — 숫자와 단위를 문자열로 (예: 250억원, 약 40명)",
+          "as_of": "string (선택) — 기준 시점",
+          "confidence": "confirmed|inferred|unknown",
+          "sources": ["source 객체 (confirmed 면 필수)"]
+        }
+      ],
+      "domains": [
+        {
+          "name": "string — 기술로 푸는 문제의 경계 (조직도가 아니다)",
+          "why": "string — 이 회사에서 이 문제가 왜 생기는가",
+          "what_to_know": ["string — 면접 전에 이 도메인에서 알고 가야 할 것"],
+          "confidence": "confirmed|inferred|unknown",
+          "sources": ["source 객체"]
+        }
+      ],
+      "signals": [
+        {
+          "_note": "공고 문장에서 읽히는 조직 신호. 전부 inferred 다",
+          "reading": "string — 무엇으로 읽히는가",
+          "evidence": "string — 그렇게 읽은 근거가 된 공고 문장",
+          "so_what": "string — 지원자가 그래서 무엇을 준비해야 하는가",
+          "confidence": "inferred"
+        }
+      ]
+    },
+
+    "salary": {
+      "_note": "PROMPT.md 2°단계. 근거가 없으면 이 객체를 통째로 비운다(null)",
+      "unit": "만원",
+      "currency": "KRW",
+      "as_of": "YYYY-MM",
+      "bands": [
+        {
+          "role": "string — 어느 직군 (예: 백엔드)",
+          "level": "string — 어느 연차 (예: 3~5년)",
+          "low": "number — 만원 단위 정수",
+          "high": "number — 만원 단위 정수",
+          "basis": "posting|public_data|market — 이 숫자가 무엇을 잰 것인가. posting=공고에 적힘, public_data=회사·공시·집계 서비스, market=같은 조건 시장 밴드(반드시 inferred)",
+          "confidence": "confirmed|inferred|unknown",
+          "sources": ["source 객체 (confirmed 면 필수)"]
+        }
+      ],
+      "equity": "string (선택) — 스톡옵션·성과급 등 공개된 것만",
+      "note": "string — 이 숫자를 어떻게 읽어야 하는가. 전 직군 평균이면 반드시 그 사실을",
+      "open_questions": ["string — 못 찾은 것"]
+    },
+
+    "people": [
+      {
+        "_note": "PROMPT.md 2″단계의 선을 넘지 않는다. public_work 없는 사람은 넣지 않는다",
+        "name": "string",
+        "role": "string — 공개된 직무",
+        "why_public": "string — 왜 공개 인물인가 (회사 소개, 컨퍼런스 발표, 서명 있는 기술글, 공개 인터뷰)",
+        "public_work": [
+          {
+            "title": "string",
+            "url": "string — 필수",
+            "kind": "talk|post|interview|paper|repo",
+            "date": "YYYY-MM-DD (선택)",
+            "summary": "string — 한 줄. 본문을 옮기지 않는다"
+          }
+        ],
+        "leanings": ["string — 그가 공개적으로 말하거나 쓴 것에서 나온 기술·제품·조직 관점만. 인상·성격·평판·소문은 쓰지 않는다"],
+        "what_it_means": "string — 지원자가 이걸로 무엇을 준비하면 되는가",
+        "confidence": "confirmed|inferred",
+        "sources": ["source 객체"]
+      }
+    ],
+
+    "postings": [
+      {
+        "_note": "PROMPT.md 4단계. 공고 하나 = 원소 하나",
+        "url": "string — all_jobs_enriched.json 의 url 과 정확히 같아야 한다. 뷰어가 이 값으로 잇는다. 불변",
+        "title": "string",
+        "site": "wanted|jumpit|jobkorea|saramin|dev|remote|ats",
+        "closed": "boolean (선택) — 마감된 공고. 지우지 않고 표시만 한다",
+        "verdict": "string — 이 공고가 찾는 사람 한 줄. 직함이 아니라 무엇을 혼자 끝낼 수 있는 사람인지",
+        "fit": {
+          "_note": "선택 — 지원 전에 스스로 재 볼 눈금",
+          "must_have": ["string — 이게 없으면 서류에서 걸린다"],
+          "can_learn": ["string — 지금 없어도 한두 달이면 따라잡는다"]
+        },
+        "study": [
+          {
+            "topic": "string — 무엇을 공부하는가",
+            "from": "qualification|preference|task — 이 항목이 어느 절에서 나왔나",
+            "quote": "string — 공고 원문 문장 그대로. 한 글자도 바꾸지 않는다(뷰어가 이 문자열로 본문을 하이라이트한다)",
+            "priority": "core|high|nice",
+            "why": "string — 이 회사에서 왜 필요한가. 기술 일반론이 아니라 이 공고의 업무와 이어서",
+            "gap_check": "string — 스스로에게 던질 질문 하나. 답할 수 있으면 넘어간다",
+            "drill": "string — 손으로 만들어 볼 것. 읽기가 아니라 만들기. 반나절~이틀 크기",
+            "hours": "number (선택) — drill 기준 대략의 시간",
+            "resources": [
+              {
+                "title": "string",
+                "url": "string",
+                "kind": "docs|post|talk|paper|repo|course",
+                "note": "string (선택) — 이 자료의 어느 부분을 보는가"
+              }
+            ]
+          }
+        ],
+        "edge": [
+          {
+            "_note": "study 를 다 한 사람을 전제로. 기본기 반복은 여기 들어가지 않는다",
+            "idea": "string — 무엇을 더 하면 앞서는가",
+            "why": "string — 왜 이게 이 회사에 먹히는가",
+            "effort": "string (선택) — 대략의 크기"
+          }
+        ],
+        "interview": {
+          "process": "string (선택) — 공개된 전형 절차. 없으면 비운다",
+          "expect": ["string — 예상되는 질문·과제. study 항목에서 끌어낸 것만. 지어낸 기출 금지"],
+          "sources": ["source 객체"]
+        }
+      }
+    ],
+
+    "open_questions": ["string — 두 번 찾아 두 번 다 없었던 것, 어긋났던 것"]
+  },
+
+  "source": {
+    "_note": "confidence 가 confirmed 인 모든 주장에 최소 하나 필요하다",
+    "title": "string",
+    "url": "string",
+    "publisher": "string (선택)",
+    "date": "YYYY-MM-DD (선택)",
+    "summary": "string (선택) — 한 줄"
+  }
+}

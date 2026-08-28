@@ -83,3 +83,6 @@ catch_capture/job_history.jsonl
 
 # 인프런 수집 주기 스탬프 (로컬 실행 기록)
 catch_capture/.inflearn_refresh.stamp
+
+# 취업 브리핑 엔진이 공고 60MB 를 매번 안 읽으려고 만드는 캐시 (원본에서 재생성됨)
+guide-engine/state/.jobs_cache.json

@@ -149,6 +149,17 @@ function App() {
             detail={error}
             hint={<>public/all_jobs_enriched.json 이 있는지 확인하세요.</>}
           />
+        ) : selected ? (
+          // 공고를 고르면 목록을 통째로 갈아끼운다. 모달로 띄우면 오른쪽 취업 가이드가
+          // 들어갈 폭이 안 나오고, 좁은 칸에 겹쳐 둔 JD 와 가이드는 둘 다 안 읽힌다.
+          <div key="jobdetail" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
+            <JobDetail
+              key={selected.url}
+              job={selected}
+              onClose={() => setSelected(null)}
+              onOpenUrl={openJobByUrl}
+            />
+          </div>
         ) : (
           <div className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
             <Sidebar
@@ -174,13 +185,6 @@ function App() {
               </MobileBar>
               <JobList jobs={filtered} selected={selected} onSelect={setSelected} />
             </main>
-            {selected && (
-              <JobDetail
-                job={selected}
-                onClose={() => setSelected(null)}
-                onOpenUrl={openJobByUrl}
-              />
-            )}
           </div>
         )
       ) : (
