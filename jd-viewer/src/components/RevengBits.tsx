@@ -14,7 +14,7 @@ export function ConfBadge({ c }: { c?: Confidence }) {
   return (
     <span
       className={
-        'ml-1.5 align-middle px-1 py-px rounded text-[10px] border ' +
+        'ml-1.5 align-middle px-1 py-px rounded text-xs border ' +
         (c === 'inferred'
           ? 'border-amber-500/40 text-amber-500'
           : 'border-(--color-border) text-(--color-muted)')
@@ -36,7 +36,7 @@ export function SourceLinks({ sources }: { sources?: Source[] }) {
           href={s.url}
           target="_blank"
           rel="noreferrer noopener"
-          className="text-[11px] text-(--color-accent) hover:underline"
+          className="text-xs text-(--color-accent) hover:underline"
           title={s.title}
         >
           {s.publisher || new URL(s.url).hostname}

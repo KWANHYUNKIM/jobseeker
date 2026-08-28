@@ -49,7 +49,7 @@ export function UiSketch({
               />
             ))}
           </Frame>
-          <p className="mt-2 max-w-[300px] text-[11px] leading-relaxed text-(--color-muted)">
+          <p className="mt-2 max-w-[300px] text-xs leading-relaxed text-(--color-muted)">
             <Md>{ui.note || DEFAULT_NOTE}</Md>
           </p>
         </div>
@@ -118,7 +118,7 @@ function Row({
             onClick={() => onPick(el.pin!)}
             title={`설명 ${el.pin} 번으로`}
             className={
-              'w-4 h-4 rounded-full border text-[9px] leading-none flex items-center justify-center tabular-nums transition ' +
+              'w-5 h-5 rounded-full border text-xs leading-none flex items-center justify-center tabular-nums transition ' +
               (on
                 ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent)'
                 : 'border-(--color-accent) text-(--color-accent) hover:bg-(--color-accent)/10')
@@ -145,7 +145,7 @@ function Element({ el }: { el: UiElement }) {
         </div>
       )
     case 'label':
-      return <div className="text-[11px] text-(--color-muted)">{el.text}</div>
+      return <div className="text-xs text-(--color-muted)">{el.text}</div>
     case 'text':
       return <div className="text-xs text-(--color-text) leading-relaxed">{el.text}</div>
     case 'input':
@@ -164,7 +164,7 @@ function Element({ el }: { el: UiElement }) {
           {(el.items ?? []).map((it) => (
             <span
               key={it}
-              className="px-1.5 py-0.5 rounded-full border border-(--color-border) text-[10px] text-(--color-text)"
+              className="px-1.5 py-0.5 rounded-full border border-(--color-border) text-xs text-(--color-text)"
             >
               {it}
             </span>
@@ -197,10 +197,10 @@ function Element({ el }: { el: UiElement }) {
             <div key={i} className="flex items-center gap-2 px-2 py-1.5">
               <div className="min-w-0">
                 <div className="text-xs text-(--color-text) truncate">{r.title}</div>
-                {r.sub && <div className="text-[10px] text-(--color-muted) truncate">{r.sub}</div>}
+                {r.sub && <div className="text-xs text-(--color-muted) truncate">{r.sub}</div>}
               </div>
               {r.right && (
-                <div className="ml-auto shrink-0 text-[11px] text-(--color-muted) tabular-nums">
+                <div className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums">
                   {r.right}
                 </div>
               )}
@@ -215,7 +215,7 @@ function Element({ el }: { el: UiElement }) {
             <span
               key={it}
               className={
-                'text-[11px] ' +
+                'text-xs ' +
                 (i === 0
                   ? 'text-(--color-text) font-medium border-b-2 border-(--color-accent) -mb-1.5 pb-1'
                   : 'text-(--color-muted)')
@@ -231,7 +231,7 @@ function Element({ el }: { el: UiElement }) {
         <div className="rounded border border-(--color-border) bg-(--color-panel) px-2.5 py-2">
           {el.text && <div className="text-xs font-medium text-(--color-text)">{el.text}</div>}
           {(el.items ?? []).map((it) => (
-            <div key={it} className="text-[11px] text-(--color-muted) mt-0.5">
+            <div key={it} className="text-xs text-(--color-muted) mt-0.5">
               {it}
             </div>
           ))}
@@ -270,7 +270,7 @@ function PinStep({
       <div className="flex items-start gap-2">
         <span
           className={
-            'mt-px shrink-0 w-4 h-4 rounded-full border text-[9px] leading-none flex items-center justify-center tabular-nums ' +
+            'mt-px shrink-0 w-5 h-5 rounded-full border text-xs leading-none flex items-center justify-center tabular-nums ' +
             (active
               ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent)'
               : 'border-(--color-accent) text-(--color-accent)')
@@ -290,7 +290,7 @@ function PinStep({
                   e.stopPropagation()
                   onPickDomain?.(p.domain!)
                 }}
-                className="ml-1.5 align-middle px-1.5 py-px rounded text-[10px] border border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-accent)"
+                className="ml-1.5 align-middle px-1.5 py-px rounded text-xs border border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-accent)"
                 title={onPickDomain ? '이 도메인의 기능만 보기' : undefined}
               >
                 {p.domain}

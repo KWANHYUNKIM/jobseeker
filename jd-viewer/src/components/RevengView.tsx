@@ -148,7 +148,7 @@ export function RevengView() {
                       {doc.features.map((f) => (
                         <span
                           key={f}
-                          className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted)"
+                          className="text-xs px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted)"
                         >
                           {f}
                         </span>
@@ -281,12 +281,12 @@ function CompanyCard({
           <CompanyLogo domain={c.domain} name={c.name} />
           <div className="min-w-0">
             <div className="font-semibold text-(--color-text) truncate">{c.name}</div>
-            <div className="text-[11px] text-(--color-muted) truncate">{c.name_en}</div>
+            <div className="text-xs text-(--color-muted) truncate">{c.name_en}</div>
           </div>
         </div>
         <span
           className={
-            'shrink-0 px-1.5 py-0.5 rounded text-[10px] border ' +
+            'shrink-0 px-1.5 py-0.5 rounded text-xs border ' +
             (c.status === 'done'
               ? 'border-(--color-accent)/40 text-(--color-accent)'
               : 'border-(--color-border) text-(--color-muted)')
@@ -297,7 +297,7 @@ function CompanyCard({
         </span>
       </div>
       <p className="text-xs text-(--color-muted) mt-2 line-clamp-2">{c.one_liner}</p>
-      <div className="flex items-center gap-1.5 mt-2.5 text-[11px] text-(--color-muted)">
+      <div className="flex items-center gap-1.5 mt-2.5 text-xs text-(--color-muted)">
         <span className="px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border)">
           {countryLabel}
         </span>

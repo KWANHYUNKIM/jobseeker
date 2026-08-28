@@ -60,10 +60,10 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           </span>
           <h2 className="text-lg font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">{c.name}</span></h2>
           <span className="text-sm text-(--color-muted)">{c.name_en}</span>
-          <span className="text-[11px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
+          <span className="text-xs px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
             {c.category}
           </span>
-          <span className="ml-auto text-[11px] text-(--color-muted)">갱신 {c.updated_at}</span>
+          <span className="ml-auto text-xs text-(--color-muted)">갱신 {c.updated_at}</span>
         </div>
         <p className="text-xs text-(--color-muted) mt-1">{c.one_liner}</p>
       </header>
@@ -141,7 +141,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-(--color-text)">{d.name}</span>
-                      <span className="ml-auto text-[11px] text-(--color-muted) tabular-nums">
+                      <span className="ml-auto text-xs text-(--color-muted) tabular-nums">
                         기능 {n}
                       </span>
                     </div>
@@ -217,7 +217,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
       <button onClick={onToggle} className="w-full text-left px-3 py-2.5 flex items-center gap-2">
         <span className="text-(--color-muted) text-xs">{open ? '▾' : '▸'}</span>
         <span className="text-sm font-medium text-(--color-text) shrink-0 whitespace-nowrap">{f.name}</span>
-        <span className="shrink-0 whitespace-nowrap text-[11px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
+        <span className="shrink-0 whitespace-nowrap text-xs px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
           {f.domain}
         </span>
         {!open && (
@@ -225,7 +225,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
             {strip(f.business.why)}
           </span>
         )}
-        <span className="ml-auto text-[11px] text-(--color-muted) tabular-nums shrink-0">
+        <span className="ml-auto text-xs text-(--color-muted) tabular-nums shrink-0">
           결정 {impl.decisions?.length ?? 0}
         </span>
       </button>
@@ -263,7 +263,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
               <ul className="flex flex-col gap-2">
                 {f.thinking.map((t, i) => (
                   <li key={i} className="text-sm border-l-2 border-(--color-border) pl-2.5">
-                    <span className="text-[11px] text-(--color-muted)">{t.at}</span>
+                    <span className="text-xs text-(--color-muted)">{t.at}</span>
                     <ConfBadge c={t.confidence} />
                     <div className="text-(--color-text) leading-relaxed reveng-prose"><Md>{t.thought}</Md></div>
                   </li>
@@ -294,7 +294,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
               )}
               {f.domain_model.invariants && f.domain_model.invariants.length > 0 && (
                 <>
-                  <p className="text-[11px] text-(--color-muted) mt-2 mb-1">
+                  <p className="text-xs text-(--color-muted) mt-2 mb-1">
                     불변식 — 코드보다 오래 사는 규칙
                   </p>
                   <ul className="list-disc pl-5 text-sm text-(--color-text) flex flex-col gap-1">
@@ -312,7 +312,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
               <ol className="flex flex-col gap-1.5">
                 {impl.flow.map((s, i) => (
                   <li key={i} className="text-sm flex gap-2">
-                    <span className="shrink-0 w-5 h-5 rounded-full bg-(--color-bg) border border-(--color-border) text-[11px] flex items-center justify-center text-(--color-muted) tabular-nums">
+                    <span className="shrink-0 w-5 h-5 rounded-full bg-(--color-bg) border border-(--color-border) text-xs flex items-center justify-center text-(--color-muted) tabular-nums">
                       {i + 1}
                     </span>
                     <span>
@@ -406,7 +406,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
                         {p.title}
                       </a>
                       <ConfBadge c={p.confidence} />
-                      <span className="text-[11px] text-(--color-muted)">
+                      <span className="text-xs text-(--color-muted)">
                         {p.venue ? ` · ${p.venue}` : ''}
                         {p.year ? ` · ${p.year}` : ''}
                         {p.authors ? ` · ${p.authors}` : ''}
@@ -421,7 +421,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
               )}
               {f.research.hard_problems && f.research.hard_problems.length > 0 && (
                 <>
-                  <p className="text-[11px] text-(--color-muted) mt-3 mb-1">
+                  <p className="text-xs text-(--color-muted) mt-3 mb-1">
                     아직 아무도 못 푼 것 — 내가 못 찾은 것(확인 못 한 것)과는 다르다
                   </p>
                   <div className="flex flex-col gap-2">
@@ -491,7 +491,7 @@ function DiagramBlock({ d, idKey }: { d: Diagram; idKey: string }) {
       <figcaption className="mb-1.5">
         <span className="text-sm font-medium text-(--color-text)"><Md>{d.title}</Md></span>
         {d.kind && (
-          <span className="ml-1.5 text-[10px] px-1 py-px rounded border border-(--color-border) text-(--color-muted)">
+          <span className="ml-1.5 text-xs px-1 py-px rounded border border-(--color-border) text-(--color-muted)">
             {KIND_LABEL[d.kind] ?? d.kind}
           </span>
         )}
@@ -517,7 +517,7 @@ function SourceList({ sources }: { sources: Source[] }) {
           >
             {s.title}
           </a>
-          <span className="text-[11px] text-(--color-muted)">
+          <span className="text-xs text-(--color-muted)">
             {s.publisher ? ` · ${s.publisher}` : ''}
             {s.date ? ` · ${s.date}` : ''}
           </span>
@@ -551,7 +551,7 @@ function Section({
 function Sub({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wide text-(--color-muted) mb-1.5">{title}</div>
+      <div className="text-xs uppercase tracking-wide text-(--color-muted) mb-1.5">{title}</div>
       {children}
     </div>
   )
