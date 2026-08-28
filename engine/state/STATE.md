@@ -8,62 +8,63 @@
 
 ## 지금 파는 중
 
-**Grab(SG · 모빌리티)을 314 에 다시 열었다 — `in_progress`, 도메인 4개 · 기능 4개.**
-새 도메인 `에이전트가 말을 안 들을 것을 전제한다` 를 열고(`tech` 채움, `index.json` 최상위
-`domains` 에도 넣음) 기능 `contain-not-trust`(**믿는 대신 가둔다**)까지 썼다. **결정 8개.**
-읽은 편 둘 — Palana Part 1(`/palana-part-1-secure-platform-for-ai-agents`) ·
-Part 2(`/part-2-palana-architecture`).
+**Grab(SG · 모빌리티) `in_progress` — 도메인 5개 · 기능 5개.** 315 에서 **새 도메인 ⑤
+`에이전트보다 그 주위가 오래 걸린다` 를 열고**(`tech` 채움, `index.json` 최상위 `domains` 에도
+넣음) **기능 `wrapper-in-the-box`(둘러싼 것을 미리 싸 둔다)까지 썼다. 결정 8개.**
+읽은 편 — `Agent platform (Part 1)`(`/how-grab-builds-and-runs-ai-agents-at-scale`, 2026-07-24).
 
-**🔴 이번 사이클의 가장 중요한 것은 낡은 메모를 바로잡은 것이다.**
-**여러 사이클 동안 'Grab 보강 후보' 로 `Counter Service 저장소 이전`(07-03)과 `Iceberg`
-(07-10)을 들고 다녔는데, 열어 보니 그 두 글은 이미 `counter-service` 와 `iceberg-lake` 의
-`sources` 였다.** 두 기능 다 **결정 일곱에 그림 셋**으로 이미 차 있다. **보강할 것이 아니라
-이미 쓴 것이었고, 메모가 사이클을 건너오며 낡은 채로 실려 다녔다.** 회사 `open_questions` 에
-기록했다. **⚠️ 앞으로 '보강 후보' 를 나를 때는 회사 파일의 `sources` 를 먼저 대조한다.**
+**무엇이 나왔나** — 문제를 시간으로 보인다: *"The reasoning loop took a whole afternoon.
+The production wrapper took two weeks."* 그리고 한 줄로 적는다 — *"The hard part of building
+an agent was not the agent itself, but everything around it."*
+- **🔴 갈림은 플랫폼이냐 프레임워크냐** — *"A platform would have locked teams into rigid
+  assumptions that would soon become outdated."*
+- **⭐ 부품 목록이 곧 실패 목록이다** — *"Each part of LLM-Kit is a direct response to one of
+  the failures described above."* 평가 없음→평가 내장(*"Vibe check is not an evaluation
+  strategy"*) · 모델 교체 고통→중앙 게이트웨이 · 로그 흩어짐(*"grepping logs across three
+  separate systems"*)→자동 계측.
+- **수치가 규모 쪽에 있다** — 에이전트 서비스 **500개 이상** · MCP 서버 **50개 이상** ·
+  토큰 **월 수십억** · 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초**.
+- **⚠️ 없는 것** — 지연·비용·사고 감소 수치가 전부 없고, **버린 설계 대안이 플랫폼 대신
+  프레임워크 하나뿐**이다.
 
-**무엇이 나왔나** — 문제를 두 편이 같은 말로 적는다: *"The more capability we give to the
-agents, the more valuable they get - but they also get riskier."*
-- **⭐ 설계의 전제를 한 문장으로 못 박는다** — *"Palana assumes an agent might become
-  confused, compromised, or uncooperative."* **헷갈림(실수)·뚫림(공격)·말 안 들음(의도)을
-  나란히 두고 경계 하나로 대비한다**(이 관찰은 이 사이트의 것).
-- **🔴 값이 가장 큰 결정 — 자격을 에이전트에게 안 준다.** *"Separating 'can read a
-  credential' from 'can cause a credentialed request' is powerful."* Vault 경로를
-  `kv/agents/` 와 `kv/proxy-secrets/` 로 가른다. **권한을 없애지 않고 위치를 옮겼다.**
-- **네트워크는 막는 대신 보이게 한다** — *"Instead of forbidding network access, Palana
-  makes network access observable."* 기본 거부 + 두 층(L3/L4 담기 · L7 판단과 감사).
-- **🔴 버린 것 넷** — 랩톱에서 돌리기 · 컨테이너로 싸기만 하기 · **프롬프트 수준 가드레일만**
-  (*"not enough"*) · 클라이언트가 준 헤더로 신원 정하기.
-- **⭐ 교훈에 사용성이 들어 있다** — *"If the secure path requires every team to learn
-  Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it."*
-  **안전한 길이 어려우면 사람들이 돌아간다는 것을 안전 설계의 일부로 적는다** — 이 사이트가
-  읽은 통제 이야기 중 드문 자리다.
-- **⚠️ 수치가 거의 없다** — *"hundreds of agents"* 한 줄뿐. **같은 회사의 카운터 저장소 편이
-  p99 50% 개선·노드당 45~50% 절감을, 데이터 레이크 편이 70초→6초·S3 비용 95% 절감을 내는
-  것과 대비된다.** **재는 대상이 성능이 아니라 신뢰라서로 읽힌다**(추정).
-
-**⭐⭐ 비교 문서 축이 되살아났다** — 310 의 `what-guards-the-gate` 와 밀려 있던
-`에이전트에게 무엇을 못 하게 하는가` 에 **Palana 가 세 번째 접근 제한 재료**로 들어온다
-(Wix AirBot 의 God Mode 금지 · Wix 자가치유 두뇌의 행동 제한과 나란히). **Palana 는 그중
-가장 인프라 쪽으로 내려간 사례다.**
+**⭐⭐ 이번 사이클의 가장 센 관찰**(`open_questions` 와 `connections` 에 남겼다) —
+**같은 회사가 에이전트를 두 방향에서 다루면서 서로를 한 번도 안 부른다.**
+**Palana 는 못 믿어서 가두는 쪽**이라 제어면을 바깥에 두고 **기본 거부**에서 시작하고,
+**LLM-Kit 은 빨리 만들어 내보내는 쪽**이라 **강제하지 않는 프레임워크**를 골랐다.
+**만드는 쪽은 느슨하게, 가두는 쪽은 빡빡하게다.** ⚠️ **그래서 등록된 MCP 서버 50개 이상 중
+어떤 에이전트가 무엇에 닿는지를 누가 정하는지, Agent platform 글만으로는 알 수 없다.**
 
 ---
 
-**다음 사이클 — Grab 을 더 파거나 닫는다.**
-- **남은 Grab 후보**(주소 확인됨) — `https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale`(Agent platform Part 1, 2026-07-24) · `https://engineering.grab.com/introducing-the-sop-drive-llm-agent-framework`(SOP 기반 LLM 에이전트 프레임워크).
-  **⚠️ 223 규칙 — Palana 는 '가두는 자리' 이고 Agent platform 은 '만들고 굴리는 자리' 라
-  다른 문제일 수 있다.** 실물로 정한다.
-- **결정이 5개 안 나오면 Grab 을 다시 닫는다.**
-- **⚠️ Palana 편은 수치가 거의 없었다** — 같은 계열 글이 또 수치 0 이면 억지로 쓰지 않는다.
+**다음 사이클 — Grab 을 한 번 더 파거나 닫는다.**
+- **남은 Grab 글 하나**(주소 확인됨) —
+  `https://engineering.grab.com/introducing-the-sop-drive-llm-agent-framework`
+  (SOP 기반 LLM 에이전트 프레임워크). **⚠️ 223 규칙 — LLM-Kit 과 같은 문제면 도메인 ⑤ 의
+  두 번째 기능, 다르면 새 도메인.** **기준은 버린 대안 · 대가 · 수치 중 둘.**
+- **⚠️ Grab 의 에이전트 계열 글은 버린 대안을 잘 안 적는다**(Palana 는 넷이었지만 수치 한 줄,
+  LLM-Kit 은 수치는 좋은데 버린 대안 하나). **얇으면 억지로 쓰지 않고 닫는다.**
+- **닫을 때 `business_model` 에 적을 관찰** — **⭐ 같은 회사 안에서 글의 성격이 갈린다**:
+  이상거래 카운터·데이터 레이크·배차 실험은 **수치로 가득한 규모·비용 이야기**인데
+  (p99 50% 개선 · 노드당 45~50% 절감 · 질의 70초→6초 · S3 비용 95% 절감),
+  **에이전트 계열 둘은 성격이 다르다** — Palana 는 **신뢰**(수치 한 줄), LLM-Kit 은
+  **준비 시간과 규모**(성능·비용 없음). **재는 대상이 성능에서 신뢰와 속도로 옮겨 간
+  것으로 읽힌다**(추정). **이 사이트의 정리라고 밝힌다.**
 
 **📌 그 밖에 남은 일**
-- **비교 문서** — 남은 축은 `에이전트에게 무엇을 못 하게 하는가` 하나이고, **Palana 가 들어와
-  재료가 여덟이 됐다.** ⚠️ **310 의 `what-guards-the-gate` 와 겹치는 부분은 서로 가리키게
-  쓴다.** 비교 문서 30편.
+- **⭐⭐ 비교 문서 남은 축 하나가 아주 굵어졌다** — `에이전트에게 무엇을 못 하게 하는가`.
+  **Palana 가 세 번째 접근 제한 재료**로 들어와 **재료가 여덟**이다(병합 제한 monday.com
+  Morphex·Snap CodePal·Snap Casper / 접근·행동 제한 Wix AirBot·Wix 자가치유 두뇌·**Grab
+  Palana** / 반대편 Wix Agent Ready Repos·Wix 컴파일러 문지기·Adevinta).
+  **⚠️ 310 의 `what-guards-the-gate` 와 겹치는 부분은 서로 가리키게 쓴다.**
+  **⭐ 그리고 315 의 LLM-Kit 이 그 축에 반대 방향 재료를 하나 더 준다** — 같은 회사가
+  **만드는 쪽은 느슨하게** 갔다.
+- **⚠️ 낡은 메모를 나르지 않는다**(314 의 교훈) — 후보를 나를 때 회사 파일의 `sources` 를
+  먼저 대조한다.
 - **후보 조사** — 누적 **열두 곳 중 둘**. 안 본 곳: 인도 Zoho·Ola·Paytm·Freshworks ·
   유럽 Trade Republic·Personio · 일본 Sansan·freee·SmartHR·Money Forward(우선순위 낮음).
   **⚠️ 중국은 사실상 막혔다**(Xiaohongshu·Kuaishou 둘 다 블로그 없음, **추정**).
 - **분포** — **53곳.** US 22 포화 · 한국 아홉 · 일본 넷 · EU 일곱 · 중국 둘 · 동남아 하나 ·
-  인도 하나 · 아프리카 하나 · 라틴아메리카 0(재시도 금지).
+  인도 하나 · 아프리카 하나 · 라틴아메리카 0(재시도 금지). **비교 문서 30편.**
 
 ## 다음 선택지
 

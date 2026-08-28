@@ -250,6 +250,30 @@
       "features": [
         "contain-not-trust"
       ]
+    },
+    {
+      "name": "에이전트보다 그 주위가 오래 걸린다",
+      "why": "**에이전트를 만드는 일보다 그 주위를 만드는 일이 오래 걸린다.** 회사가 그것을 시간으로 보인다 — *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"* 그리고 문제를 한 줄로 적는다: *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"*\n\n**⚠️ 같은 회사의 `에이전트가 말을 안 들을 것을 전제한다` 와 갈라 둔 이유**(223 의 규칙, 이 판단은 이 사이트의 것이다) — 저쪽은 **에이전트를 못 믿어서 가두는 문제**이고 여기는 **에이전트를 빨리 만들어 내보내는 문제**다. **그리고 이 글은 Palana 를 한 번도 언급하지 않는다.** 같은 회사가 같은 대상(에이전트)을 두 방향에서 다루면서 서로를 안 부른다.",
+      "tech": [
+        {
+          "tech": "프로덕션 포장을 미리 싸 둔 묶음 — LLM-Kit",
+          "solves": "**강제하는 플랫폼 대신 프레임워크**를 골랐다(*\"A framework let us meet developers where they already were\"*). 템플릿에 인증·비밀·설정·추적을 미리 넣어 **준비를 2주 이상에서 약 1시간**으로 줄이고, **GrabGPT 게이트웨이**로 공급자를 중앙에서 갈아 끼우며(*\"without a single application touching its code\"*), **OpenTelemetry** 로 로그와 트레이스를 자동으로 잇는다. **MCP 로 도구를 런타임에 발견해** 새 능력을 붙이는 데 재배포가 필요 없다. 평가(ROUGE·BLEU·LLM-as-judge)도 상자 안에 들어 있다. **규모** — 에이전트 서비스 **500개 이상**, MCP 서버 **50개 이상**, 토큰 **월 수십억**.",
+          "limits": "**⚠️ 버린 설계 대안을 따로 적지 않고**(플랫폼 대신 프레임워크를 고른 것 하나뿐이다) **대가도 구체적으로 적지 않는다**(이 지적은 이 사이트의 것이다). 지연·비용·사고 감소 수치가 없고, **프레임워크를 고른 값**(팀마다 다르게 쓰는 것을 어떻게 감당하는가)이 안 적혀 있다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+              "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+              "publisher": "Grab Tech",
+              "date": "2026-07-24",
+              "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+            }
+          ]
+        }
+      ],
+      "features": [
+        "wrapper-in-the-box"
+      ]
     }
   ],
   "features": [
@@ -2230,6 +2254,503 @@
           "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
         }
       ]
+    },
+    {
+      "key": "wrapper-in-the-box",
+      "name": "둘러싼 것을 미리 싸 둔다",
+      "domain": "에이전트보다 그 주위가 오래 걸린다",
+      "updated_at": "2026-08-29",
+      "business": {
+        "why": "**에이전트의 머리를 만드는 데는 반나절, 그것을 내보낼 포장을 만드는 데는 2주가 걸렸다.** 회사가 그 비대칭을 그대로 적는다 — *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"* 그래서 문제를 이렇게 정의한다: *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"*\n\n**🔴 아팠던 곳을 회고로 셋 적는다.** **평가가 없었다** — *\"Vibe check is not an evaluation strategy\"* 이고 지원 봇 시절은 사실상 **설정하고 내보내고 잘되기를 바라는** 수준이었다. **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다.** **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**⭐ 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* **강제하지 않고 이미 있는 자리로 찾아간 것이다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 팀마다 다르게 쓰는 것을 감당해야 한다는 것**인데 그 이야기는 없다.\n\n**⭐ 그리고 결정마다 앞의 아픔과 짝이 맞는다**(이 관찰은 이 사이트의 것이다) — 평가가 없었으니 **평가를 상자에 넣었고**, 모델 교체가 아팠으니 **게이트웨이를 중앙에 뒀고**, 로그가 흩어졌으니 **자동 계측을 넣었다.** 회사도 그렇게 적는다: *\"Each part of LLM-Kit is a direct response to one of the failures described above.\"*\n\n**수치가 규모 쪽에 있다** — 에이전트 서비스 **500개 이상**, 등록된 MCP 서버 **50개 이상**, 게이트웨이 토큰 **월 수십억**, 준비 시간 **2주 이상에서 약 1시간**.\n\n**⚠️ 없는 것도 분명하다** — **버린 설계 대안을 따로 적지 않고**(플랫폼 대신 프레임워크 하나뿐) **지연·비용·사고 감소 수치가 없다.** **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다** — 같은 대상을 가두는 쪽과 만들어 내보내는 쪽에서 각각 다루면서 서로를 안 부른다(이 지적은 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "줄인 것",
+            "value": "프로덕션 포장 준비가 **2주 이상 → 약 1시간**. 2024년 템플릿 이후 만들어진 에이전트 **수백 개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "기본값",
+            "value": "에이전트 단계당 타임아웃 **30초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 것",
+            "value": "지연 · 비용 · 사고 감소 · 오류율이 전부 없다. **버린 설계 대안도 플랫폼 대신 프레임워크 하나뿐이다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "반나절과 2주를 나란히 적은 대목에서",
+          "thought": "**만드는 일과 내보내는 일의 시간 차이를 숫자로 보인 것이 이 글의 출발점이다**(이 정리는 이 사이트의 것이다). 그리고 **줄인 것도 같은 축에서 잰다** — 2주 이상이 약 1시간이 됐다. ⭐ **성능이 아니라 준비 시간을 성과로 내세우는 글은 이 사이트가 읽은 것 중 드물다.** ⚠️ **다만 그 1시간 뒤의 품질은 안 잰다** — 템플릿으로 만든 에이전트가 더 나은지의 수치가 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "플랫폼 대신 프레임워크를 고른 자리에서",
+          "thought": "*\"A platform would have locked teams into rigid assumptions that would soon become outdated.\"* **모르는 것이 빨리 변하니 강제하지 않기로 한 것이다**(이 해석은 이 사이트의 것이다). ⭐ **같은 회사의 Palana 는 정반대다** — 거기서는 **제어면을 에이전트 바깥에 두고 기본을 거부**한다. **만드는 쪽은 느슨하게, 가두는 쪽은 빡빡하게**(이 대비도 이 사이트의 것이다). ⚠️ **두 글이 서로를 언급하지 않아 그 둘이 어떻게 만나는지는 알 수 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "결정과 아픔이 짝을 이루는 것을 보고",
+          "thought": "*\"Each part of LLM-Kit is a direct response to one of the failures described above.\"* **부품 목록이 곧 실패 목록이다**(이 표현은 이 사이트의 것이다) — 평가 없음→평가 내장, 모델 교체 고통→게이트웨이, 로그 흩어짐→자동 계측. ⭐ **회고를 설계의 목차로 쓴 셈이다.** ⚠️ **대가는 그 실패 목록에 없는 문제는 상자에 안 들어간다는 것**이고(이 지적은 이 사이트의 것이다), **무엇이 빠졌는지는 글에 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "도구를 런타임에 발견하는 대목에서",
+          "thought": "*\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent.\"* **능력을 늘리는 일과 배포를 떼어 놓았다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 에이전트가 무엇을 할 수 있는지가 배포 시점에 안 정해진다는 것**이다(이 지적도 이 사이트의 것이다) — **50개 넘는 MCP 서버가 등록돼 있는데 어떤 에이전트가 무엇에 닿는지의 통제 이야기가 이 글에는 없다.** 그 자리는 같은 회사의 Palana 가 맡는 것으로 보이는데 **글끼리 이어져 있지 않다**(**추정**).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "에이전트 서비스",
+            "what": "템플릿에서 갈라져 나온 하나. **500개가 넘는다**"
+          },
+          {
+            "name": "템플릿",
+            "what": "프로덕션 포장이 미리 들어 있는 출발점. **빈 파일이 아니라 도는 에이전트 둘을 준다**"
+          },
+          {
+            "name": "모델 게이트웨이",
+            "what": "공급자를 중앙에서 갈아 끼우는 자리. 앱 코드를 안 고쳐도 된다"
+          },
+          {
+            "name": "MCP 서버",
+            "what": "런타임에 발견되는 도구 묶음. **50개가 넘게 등록돼 있다**"
+          },
+          {
+            "name": "추적",
+            "what": "자동 계측으로 이어지는 로그와 트레이스. 전에는 세 시스템에 흩어져 있었다"
+          },
+          {
+            "name": "평가",
+            "what": "상자 안에 미리 들어간 것. 지원 봇 시절에 가장 아쉬웠던 것"
+          },
+          {
+            "name": "채널 제공자",
+            "what": "gRPC 대상을 헬스체크하고 실패하면 자동으로 다시 고른다"
+          }
+        ],
+        "invariants": [
+          "**빈 파일에서 시작하지 않는다** — 도는 에이전트를 갈라 쓴다",
+          "**모델 공급자를 앱 코드에서 고르지 않는다** — 게이트웨이가 정한다",
+          "**서비스 주소를 하드코딩하지 않는다** — 헬스체크하고 자동으로 다시 고른다",
+          "**새 능력을 붙이려고 재배포하지 않는다** — 서버를 등록한다",
+          "**평가는 나중에 붙이는 것이 아니다** — 상자에 미리 들어 있다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "템플릿에서 갈라 나온다",
+            "why": "빈 파일에서 시작하면 준비에만 두 주가 든다"
+          },
+          {
+            "step": "프로덕션 포장이 이미 붙어 있다",
+            "why": "인증과 비밀과 설정과 추적을 매번 만들 필요가 없다"
+          },
+          {
+            "step": "도는 에이전트 둘 중 하나를 고쳐 쓴다",
+            "why": "재시도와 시간 제한 정책도 함께 온다"
+          },
+          {
+            "step": "모델은 게이트웨이를 통해 부른다",
+            "why": "공급자가 바뀌어도 앱을 안 고친다"
+          },
+          {
+            "step": "도구는 등록된 서버에서 찾아 쓴다",
+            "why": "능력을 늘리는 데 재배포가 필요 없다"
+          },
+          {
+            "step": "서비스는 타입 있는 규약으로 부른다",
+            "why": "사내 대부분이 그렇게 통신한다"
+          },
+          {
+            "step": "부를 곳은 상태를 보고 고른다",
+            "why": "주소를 박아 두면 죽었을 때 못 피한다"
+          },
+          {
+            "step": "모든 층이 자동으로 기록된다",
+            "why": "세 군데를 뒤지며 이유를 찾던 일을 없앤다"
+          },
+          {
+            "step": "평가가 처음부터 붙어 있다",
+            "why": "느낌으로 판단하지 않게 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "강제할 것인가 도울 것인가?",
+            "chosen": "**프레임워크로 만든다.** *\"A framework let us meet developers where they already were\"*",
+            "alternatives": [
+              "**무거운 중앙 플랫폼** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated\"*"
+            ],
+            "tradeoff": "**모르는 것이 빨리 변하니 강제하지 않기로 한 것이다**(이 해석은 이 사이트의 것이다). ⚠️ **대가는 팀마다 다르게 쓰는 것을 감당해야 한다는 것**인데(이 지적도 이 사이트의 것이다) **거버넌스 이야기가 글에 없다.** ⭐ **같은 회사의 Palana 는 정반대로 기본 거부에서 시작한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "무엇을 미리 싸 둘 것인가?",
+            "chosen": "**프로덕션 포장 전부** — 인증·비밀·설정·추적을 템플릿에 넣는다",
+            "alternatives": [
+              "필요할 때 팀이 각자 붙이기 — *\"The production wrapper took two weeks\"*"
+            ],
+            "tradeoff": "**준비가 2주 이상에서 약 1시간이 됐다.** ⚠️ **대가는 상자가 무거워진다는 것**이고(이 지적은 이 사이트의 것이다), **그 1시간 뒤의 품질은 안 잰다** — 템플릿으로 만든 에이전트가 더 나은지의 수치가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "모델 공급자를 어디서 고를 것인가?",
+            "chosen": "**중앙 게이트웨이에서.** 공급자를 바꿔도 *\"without a single application touching its code\"*",
+            "alternatives": [
+              "앱마다 공급자를 연동하기 — 모델을 바꾸려면 곳곳을 고쳐야 했다"
+            ],
+            "tradeoff": "**바뀌는 것을 한곳에 모았다**(이 정리는 이 사이트의 것이다) — 모델은 이 판에서 가장 자주 바뀌는 부품이다. ⚠️ **대가는 게이트웨이가 모든 호출의 단일 통로가 된다는 것**인데 **가용성과 지연 이야기가 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "왜 그렇게 됐는지를 어떻게 알 것인가?",
+            "chosen": "**모든 층을 자동으로 계측한다.** FastAPI·HTTP·LangChain·MCP 를 OpenTelemetry 로 묶어 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다",
+            "alternatives": [
+              "팀마다 필요할 때 계측 붙이기 — 그 결과가 *\"grepping logs across three separate systems\"* 였다"
+            ],
+            "tradeoff": "**관측을 선택이 아니라 기본값으로 옮겼다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 계측 부담**인데(이 지적도 이 사이트의 것이다) **수치가 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "무엇에서 시작하게 할 것인가?",
+            "chosen": "**도는 에이전트 둘에서.** LangGraph ReAct 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃(**단계당 30초**)을 붙인다",
+            "alternatives": [
+              "빈 파일과 문서만 주기"
+            ],
+            "tradeoff": "**본이 있으면 절차가 사람 경험에 안 기댄다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 본에 없는 모양을 만들기가 어려워진다는 것**이고, **30초라는 기본값이 어디서 온 숫자인지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "새 능력을 어떻게 붙일 것인가?",
+            "chosen": "**런타임에 발견하게 한다.** *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"*",
+            "alternatives": [
+              "도구를 코드에 넣고 재배포하기"
+            ],
+            "tradeoff": "**능력을 늘리는 일과 배포를 떼어 놓았다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 에이전트가 무엇에 닿을 수 있는지가 배포 시점에 안 정해진다는 것**이다 — **50개 넘는 서버가 등록돼 있는데 누가 무엇에 닿는지의 통제 이야기가 이 글에는 없다**(그 자리는 같은 회사의 Palana 가 맡는 것으로 보이나 **글끼리 이어져 있지 않다**, **추정**).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "부를 곳의 주소를 어떻게 정할 것인가?",
+            "chosen": "**상태를 보고 고른다.** 헬스체크 후 실패 시 자동 재선택",
+            "alternatives": [
+              "서비스 주소를 코드에 박아 두기 — 죽었을 때 못 피한다"
+            ],
+            "tradeoff": "사내 대부분이 **gRPC** 로 통신하므로 타입 있는 클라이언트도 함께 얻는다. ⚠️ **대가는 서비스 발견 계층(Istio·Consul)에 묶인다는 것**이다(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "평가를 언제 붙일 것인가?",
+            "chosen": "**처음부터.** ROUGE·BLEU 와 LLM-as-judge 를 템플릿에 넣어 *\"is now in the box before a builder writes\"* 하게 했다",
+            "alternatives": [
+              "잘되는지 느낌으로 보기 — *\"Vibe check is not an evaluation strategy\"*"
+            ],
+            "tradeoff": "**가장 아쉬웠던 것을 기본값으로 옮겼다**(이 정리는 이 사이트의 것이다). ⭐ **이 사이트가 Meituan 에서 본 것과 같은 순서다** — 거기서도 **검토 층이 자동화 비율보다 먼저**였다(이 대비도 이 사이트의 것이다). ⚠️ **대가는 기본 지표가 그 과제에 안 맞을 수 있다는 것**이고, **얼마나 쓰이는지의 수치가 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "FastAPI",
+            "role": "HTTP 서버 바닥. 미들웨어가 주입된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "LangGraph (ReAct)",
+            "role": "추론 루프. 재시도와 타임아웃 정책이 붙는다(단계당 30초)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "GrabGPT 게이트웨이",
+            "role": "모델 공급자를 중앙에서 갈아 끼운다. 토큰 월 수십억",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "OpenTelemetry",
+            "role": "모든 층 자동 계측. 로그와 트레이스를 Grafana·Kibana 에서 잇는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "MCP",
+            "role": "도구를 런타임에 발견한다. 등록된 서버 50개 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "gRPC · Protocol Buffers · AutoGrpcChannelProvider (Istio·Consul)",
+            "role": "서비스 사이 통신과 대상 자동 재선택",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Vault · PostgreSQL + pgvector",
+            "role": "부팅 때 비밀 해석 · 영속과 벡터 저장이 미리 붙어 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "ROUGE·BLEU · LLM-as-judge",
+            "role": "템플릿에 들어간 평가. 느낌 대신 재게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "contain-not-trust",
+          "how": "**같은 회사가 같은 대상을 두 방향에서 다루는데 서로를 안 부른다**(이 지적은 이 사이트의 것이다). 이쪽은 **빨리 만들어 내보내는 문제**라 **강제하지 않는 프레임워크**를 골랐고, 저쪽은 **못 믿어서 가두는 문제**라 **기본 거부**에서 시작한다. **만드는 쪽은 느슨하게, 가두는 쪽은 빡빡하게**다. ⚠️ **그런데 이 글은 Palana 를 한 번도 언급하지 않아, 50개 넘는 MCP 서버 중 어떤 에이전트가 무엇에 닿는지를 누가 정하는지 알 수 없다**(**추정** — 그 자리는 Palana 가 맡는 것으로 보인다)."
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "에이전트보다 그 주위를 만드는 데 시간이 더 든다",
+            "why_hard": "*\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"* 인증·비밀·설정·추적을 팀마다 다시 만들면 그 시간이 에이전트 수만큼 곱해진다.",
+            "current_best": "**포장을 상자에 미리 넣는다** — 준비가 **2주 이상에서 약 1시간**이 됐고 에이전트 서비스가 **500개 이상**으로 늘었다. **그리고 부품 목록이 곧 실패 목록이다** — *\"Each part of LLM-Kit is a direct response to one of the failures described above.\"* ⚠️ **그 실패 목록에 없는 문제는 상자에 안 들어가는데, 무엇이 빠졌는지는 글에 없다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "problem": "만드는 쪽과 가두는 쪽이 이어지지 않는다",
+            "why_hard": "**도구를 런타임에 발견하게 하면 에이전트가 무엇에 닿을 수 있는지가 배포 시점에 안 정해진다.** 등록된 MCP 서버가 **50개 이상**인데 **이 글에는 누가 무엇에 닿는지의 통제 이야기가 없다.**",
+            "current_best": "**이 글에는 답이 없다**(이 정리는 이 사이트의 것이다). 같은 회사의 Palana 가 **기본 거부와 프록시 경유 자격**으로 그 자리를 맡는 것으로 보이지만(**추정**), **두 글은 서로를 한 번도 언급하지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+                "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+                "publisher": "Grab Tech",
+                "date": "2026-07-24",
+                "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "에이전트 하나가 만들어져 나가기까지",
+          "question": "무엇이 이미 붙어 있는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  FORK[\"도는 에이전트 둘 중 하나를 갈라 온다\"]:::list\n  BOX[\"<b>포장이 이미 붙어 있다</b><br/>• 인증과 비밀과 설정<br/>• 자동으로 남는 기록<br/>• 재게 하는 잣대까지\"]:::accent\n  EDIT[\"필요한 부분만 고친다\"]:::list\n  GW[\"모델은 가운데 문을 통해 부른다\"]:::list\n  MCP[\"도구는 등록된 곳에서 찾아 쓴다\"]:::list\n  GRPC[\"다른 서비스는 타입 있는 규약으로 부른다\"]:::list\n  PICK[\"부를 곳은 상태를 보고 고른다\"]:::list\n  OUT[\"내보낸다\"]:::list\n  X1[\"빈 파일에서 시작하기<br/>안 한다 — 준비에만 두 주가 든다\"]:::quiet\n  X2[\"앱마다 공급자를 연동하기<br/>안 한다 — 모델을 바꾸려면 곳곳을 고쳐야 했다\"]:::quiet\n  X3[\"무거운 중앙 플랫폼으로 강제하기<br/>안 한다 — 곧 낡을 가정에 팀을 묶는다\"]:::quiet\n  FORK --> BOX --> EDIT --> GW --> MCP --> GRPC --> PICK --> OUT\n  FORK -.-> X1\n  GW -.-> X2\n  BOX -.-> X3"
+        },
+        {
+          "title": "아팠던 곳이 부품이 된 자리",
+          "question": "무엇이 무엇에 대한 답인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 아픔\n  아픔 : <b>지원 봇 시절</b><br/>설정하고 내보내고 잘되기를 바랐다<br/>이유를 알려면 세 군데를 뒤져야 했다\n  아픔 --> 적음 : 무엇이 없었는지 적는다\n  적음 : <b>회고가 목차가 된다</b><br/>평가가 없었다 · 모델 교체가 아팠다 · 기록이 흩어졌다\n  적음 --> 넣음 : 부품으로 만든다\n  넣음 : <b>상자 안에 미리 들어간다</b><br/>평가와 가운데 문과 자동 기록<br/>부품 목록이 곧 실패 목록이 됐다\n  넣음 --> 퍼짐 : 팀들이 갈라 쓴다\n  퍼짐 : <b>오백 개가 넘는 서비스</b><br/>준비가 두 주에서 한 시간으로 줄었다<br/>강제하지 않았는데 퍼졌다\n  퍼짐 --> [*]"
+        },
+        {
+          "title": "상자에 안 들어간 것",
+          "question": "이 글이 말하지 않는 것은?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"부품이 곧 지난 실패의 답이다\"]:::list\n  B[\"<b>그 목록에 없던 문제는 상자에 안 들어간다</b><br/>무엇이 빠졌는지는 글에 없다\"]:::accent\n  C[\"도구를 돌아가는 중에 찾아 쓴다\"]:::list\n  D[\"누가 무엇에 닿는지의 통제 이야기가 이 글에 없다\"]:::list\n  E[\"강제하지 않는 쪽을 골랐다\"]:::list\n  F[\"팀마다 다르게 쓰는 것을 어떻게 감당하는지 없다\"]:::list\n  G[\"가운데 문으로 모델을 부른다\"]:::list\n  H[\"그 문이 외길인데 가용성도 지연도 없다\"]:::list\n  I[\"준비가 두 주에서 한 시간이 됐다\"]:::list\n  J[\"그 한 시간 뒤의 품질은 안 잰다\"]:::list\n  K[\"같은 회사가 가두는 쪽 글도 냈다\"]:::list\n  L[\"두 글이 서로를 한 번도 부르지 않는다\"]:::list\n  N[\"<i>전부 이 사이트의 지적 — 회사가 한계로 적은 것은 없다</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  K --> L\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+          "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+          "publisher": "Grab Tech",
+          "date": "2026-07-24",
+          "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -2244,7 +2765,8 @@
     "합승에서 **받아들일 만한 우회 시간의 임계값**과 **승객의 실제 수락·참여율**을 밝히지 않는다. 상세 정량화는 **2부로 미뤘다.**",
     "DBSCAN 의 **eps=300m 를 고른 근거**를 밝히지 않는다 — 이 값이 '35~45%' 라는 답을 좌우한다(추정).",
     "**슈퍼앱의 핵심 질문 — 이동과 배달이 같은 기사 풀을 나눠 쓰는가**를 다루는 자료를 이 사이트는 아직 찾지 못했다.",
-    "**⚠️ 314 에서 STATE 의 낡은 메모를 바로잡았다**(이 기록은 이 사이트의 것이다). 여러 사이클 동안 **Grab 보강 후보로 `Counter Service 저장소 이전`(2026-07-03)과 `Iceberg`(2026-07-10)를 들고 다녔는데, 확인해 보니 그 두 글은 이미 `counter-service` 와 `iceberg-lake` 의 `sources` 로 들어가 있었다.** 두 기능 다 결정 일곱에 그림 셋으로 이미 차 있다. **보강할 것이 아니라 이미 쓴 것이었다** — 메모가 사이클을 건너오며 낡은 채로 실려 다닌 것이다. **남은 Grab 후보는 `Agent platform (Part 1)`(2026-07-24, `/how-grab-builds-and-runs-ai-agents-at-scale`)과 `Introducing the SOP-driven LLM agent frameworks` 다.**"
+    "**⚠️ 314 에서 STATE 의 낡은 메모를 바로잡았다**(이 기록은 이 사이트의 것이다). 여러 사이클 동안 **Grab 보강 후보로 `Counter Service 저장소 이전`(2026-07-03)과 `Iceberg`(2026-07-10)를 들고 다녔는데, 확인해 보니 그 두 글은 이미 `counter-service` 와 `iceberg-lake` 의 `sources` 로 들어가 있었다.** 두 기능 다 결정 일곱에 그림 셋으로 이미 차 있다. **보강할 것이 아니라 이미 쓴 것이었다** — 메모가 사이클을 건너오며 낡은 채로 실려 다닌 것이다. **남은 Grab 후보는 `Agent platform (Part 1)`(2026-07-24, `/how-grab-builds-and-runs-ai-agents-at-scale`)과 `Introducing the SOP-driven LLM agent frameworks` 다.**",
+    "**⭐ 315 에서 굳은 관찰 — 같은 회사가 에이전트를 두 방향에서 다루면서 서로를 안 부른다**(이 지적은 이 사이트의 것이다). **Palana** 는 **못 믿어서 가두는 쪽**이라 제어면을 바깥에 두고 **기본 거부**에서 시작하고, **Agent platform(LLM-Kit)** 은 **빨리 만들어 내보내는 쪽**이라 *\"A platform would have locked teams into rigid assumptions\"* 라며 **강제하지 않는 프레임워크**를 골랐다. **만드는 쪽은 느슨하게, 가두는 쪽은 빡빡하게다.** ⚠️ **그런데 Agent platform 편은 Palana 를 한 번도 언급하지 않는다** — 등록된 MCP 서버가 **50개 이상**인데 **어떤 에이전트가 무엇에 닿는지를 누가 정하는지** 그 글만 봐서는 알 수 없다(그 자리는 Palana 가 맡는 것으로 보이나 **추정**이다)."
   ],
   "sources": [
     {
@@ -2302,6 +2824,13 @@
       "publisher": "Grab Tech",
       "date": "2026-06-21",
       "summary": "**Part 1 의 전제를 실제 구조로 옮긴 편이다.** 문제를 다시 적는다 — *\"AI agents are most valuable when they can act in real environments. That is also when they become risky.\"* 그리고 위험이 층으로 쌓이는 이유를 든다: 도구가 서비스를 부르고 서비스가 자격을 쓴다.\n\n**🔴 가장 값이 큰 결정은 비밀을 에이전트에게 안 주는 것이다** — *\"Separating 'can read a credential' from 'can cause a credentialed request' is powerful.\"* Vault 경로를 **`kv/agents/`(에이전트가 읽는 것)와 `kv/proxy-secrets/`(프록시만 읽는 것)로 가른다.** LLM 호출도 래퍼를 지나 *\"Agents do not need raw upstream LLM credentials\"* 이고, 그 래퍼는 **신원을 클라이언트가 준 헤더가 아니라 쿠버네티스 컨텍스트에서 도출한다.**\n\n**네트워크는 두 층으로 막는다** — 기본 거부 정책으로 담고(L3/L4), 그 위에 **OPA 프록시**를 둬 *\"application-aware decisions and audit\"* 을 한다. **신원 표기도 갈라 둔다** — 원본 이메일은 CRD 에만 두고 나머지엔 정제된 형태를 쓰는데, 이유가 *\"the display-safe or path-safe version of a user ID should not accidentally become the authorization subject\"* 다.\n\n**관측을 안전의 일부로 본다** — *\"Palana treats observability as part of the safety model, not a nice-to-have.\"* 그리고 **놀면 계산만 끄고 상태는 남긴다** — *\"Stop the compute, keep the state, and make resumption easy.\"* Reaper 가 게이트웨이·프록시 로그와 Git 활동, Slack 메시지, Prometheus 지표를 모아 판단한다.\n\n**⭐ 교훈에 사용성이 들어 있다** — *\"If the secure path requires every team to learn Terraform, Vault policy syntax, Kubernetes RBAC…teams will work around it.\"* 그 밖의 교훈 — *\"Agent platforms need security controls at the platform layer\"* · *\"Proxy-only secrets are one of the highest-leverage design choices\"* · *\"A namespace boundary is simple, but it compounds\"* · *\"Long-running agents need lifecycle management\"*. **그리고 프롬프트만으로는 안 된다고 적는다** — *\"Prompt-level guardrails and model policies are useful, but they are not enough.\"*\n\n**⚠️ 아직인 것을 적는다** — SPIFFE·SPIRE 로 에이전트 신원을 주는 것은 앞으로의 일이고, **자격 순환·이미지 갱신·외부 워크로드 정지**가 더 필요하며, 감독자·에이전트 무리·공급망 감시는 *\"Emerging patterns\"* 로 실험 단계다. **⚠️ 그리고 이 편에는 수치가 하나도 없다**(이 지적은 이 사이트의 것이다)."
+    },
+    {
+      "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+      "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+      "publisher": "Grab Tech",
+      "date": "2026-07-24",
+      "summary": "**문제를 첫 줄에 적는다** — *\"The hard part of building an agent was not the agent itself, but everything around it that had to be in place before it could safely run in front of users.\"* 그리고 그 비대칭을 시간으로 보인다: *\"The reasoning loop took a whole afternoon. The production wrapper took two weeks.\"*\n\n**아팠던 곳 셋을 회고로 적는다** — **평가가 없었다**(*\"Vibe check is not an evaluation strategy\"*, 지원 봇 시절은 사실상 *\"configure it, ship it, and hope it worked\"*) · **모델을 바꾸려면 공급자 연동을 곳곳에서 고쳐야 했다** · **관측이 흩어져** 이유를 알아내려면 *\"grepping logs across three separate systems\"* 해야 했다.\n\n**🔴 가장 큰 갈림은 플랫폼이냐 프레임워크냐다** — *\"A platform would have locked teams into rigid assumptions that would soon become outdated. A framework let us meet developers where they already were.\"* 그래서 **LLM-Kit** 은 강제하는 플랫폼이 아니라 **템플릿과 부품 묶음**이다.\n\n**무엇을 미리 싸 두었나** — 프로덕션 포장(인증·비밀·설정·추적)을 템플릿에 넣어 **2주 이상 걸리던 준비를 약 1시간**으로 줄였다 · **GrabGPT 게이트웨이**를 중앙에 둬 공급자를 바꿔도 *\"without a single application touching its code\"* · **OpenTelemetry** 로 FastAPI·HTTP·LangChain·MCP 를 자동 계측해 로그와 트레이스가 *\"in Grafana/Kibana for free\"* 로 이어진다 · **LangGraph ReAct** 로 *\"two working agents to fork from rather than a blank file\"* 을 주고 재시도·타임아웃 정책을 붙인다(**단계당 30초**) · 서비스 사이는 **gRPC**(사내 대부분이 그렇다) 이고 **AutoGrpcChannelProvider** 가 헬스체크 후 실패 시 자동 재선택한다 · **MCP 로 도구를 런타임에 발견한다** — *\"Adding a new capability can be as simple as registering an MCP server, rather than redeploying the agent\"* · **평가를 템플릿에 넣었다**(ROUGE·BLEU 와 LLM-as-judge).\n\n**수치** — 에이전트 서비스 **500개 이상** · 등록된 MCP 서버 **50개 이상** · 게이트웨이 토큰 **월 수십억** · 템플릿 준비 **2주 이상 → 약 1시간** · 단계당 타임아웃 **30초** · 2024년 템플릿 이후 만들어진 에이전트 **수백 개**.\n\n**⚠️ 버린 설계 대안을 따로 적지 않는다**(이 지적은 이 사이트의 것이다). Poetry 에서 `uv` 로, LangChain 에서 LangGraph 로 바꾼 것은 **거절이 아니라 진화**로 적혀 있다. **대가도 구체적으로 적지 않고**, 지연·비용·사고 감소 수치가 없다. **그리고 같은 회사의 Palana 를 한 번도 언급하지 않는다.**"
     }
   ]
 }

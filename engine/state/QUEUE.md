@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Grab** | SG · 모빌리티 | **314 에 다시 열었다 — 도메인 4개 · 기능 4개.** 새 도메인 `에이전트가 말을 안 들을 것을 전제한다`(`contain-not-trust` — Palana 2부작, **결정 8개**). **⚠️ 옛 보강 후보 둘은 이미 쓰여 있었다**(`counter-service`·`iceberg-lake` 의 sources). **남은 후보** — `Agent platform (Part 1)`(`/how-grab-builds-and-runs-ai-agents-at-scale`) · `Introducing the SOP-driven LLM agent frameworks`. 기존 셋 — 이상거래 카운터 저장소 · 데이터 레이크 · 배차 실험 |
+| **Grab** | SG · 모빌리티 | **315 새 도메인 ⑤ 를 열고 기능까지 — 도메인 5개 · 기능 5개.** ④ `에이전트가 말을 안 들을 것을 전제한다`(`contain-not-trust`, Palana) · ⑤ `에이전트보다 그 주위가 오래 걸린다`(`wrapper-in-the-box`, LLM-Kit — **결정 8개**, 에이전트 **500개 이상** · MCP 서버 **50개 이상** · 준비 **2주→1시간**). **⭐ 두 글이 서로를 안 부른다 — 만드는 쪽은 느슨하게, 가두는 쪽은 빡빡하게.** **남은 후보** — `/introducing-the-sop-drive-llm-agent-framework`. 기존 셋 — 이상거래 카운터 · 데이터 레이크 · 배차 실험 |
 
 ## 대기
 
