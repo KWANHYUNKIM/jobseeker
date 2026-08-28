@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Meituan (美团)** | CN · 커머스 | **302 새 도메인 ③ 을 열고 기능까지 — 도메인 3개 · 기능 3개.** ① `semantic-before-text`(검색 랭킹) · ② `binarize-the-rubric`(평가 체계) · ③ `align-people-then-machines`(**31만 줄 AI 리팩터링** — 결정 8개, **테스트 전자동 생성을 해 보고 버린 기록**). **⭐⭐ 같은 순서가 두 번 나온다 — 기준을 하나로 만드는 일이 자동화보다 먼저다.** **🔴 옛 글 404 — 홈의 href 만.** 실적 — Q2 2026 매출 **1,050억 위안(+14.4%)** |
+| **Meituan (美团)** | CN · 커머스 | **303 새 도메인 ④ 를 열고 기능까지 — 도메인 4개 · 기능 4개.** ① `semantic-before-text` · ② `binarize-the-rubric` · ③ `align-people-then-machines` · ④ `run-it-to-verify`(**EvoCUA** — 버린 대안 셋 · 한계 넷 · 소거 실험. OSWorld **56.7%** 공개 SOTA). **⭐⭐⭐ 같은 모양이 네 번 — 판단 대신 확인 가능한 형태를 만든다.** **⚠️ 글마다 솔직함이 갈린다**(LoHoSearch·LongCat 발표문은 한계 0줄). **🔴 옛 글 404** |
 
 ## 대기
 
