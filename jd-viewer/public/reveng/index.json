@@ -612,6 +612,18 @@
       "one_liner": "남이 웹사이트를 만들게 해 주는 회사 — 그리고 자기 장애 조사도 에이전트에게 맡기되 열쇠는 안 준다",
       "domain": "웹사이트 빌더 SaaS",
       "features_done": 5
+    },
+    {
+      "slug": "meituan",
+      "name": "메이퇀",
+      "name_en": "Meituan",
+      "country": "CN",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "음식 배달에서 시작해 동네 생활 전체를 파는 중국 플랫폼",
+      "updated_at": "2026-08-29",
+      "domain": "tech.meituan.com"
     }
   ],
   "domains": [
@@ -793,7 +805,8 @@
     "직접 재기로 하고 편안함을 내준다",
     "에이전트에게 당번을 맡기되 열쇠는 안 준다",
     "멈추지 않고 갈아 끼운다",
-    "에이전트가 들어올 수 있게 집을 고친다"
+    "에이전트가 들어올 수 있게 집을 고친다",
+    "검색이 무엇을 위로 올릴지 정한다"
   ],
   "countries": {
     "KR": "한국",
