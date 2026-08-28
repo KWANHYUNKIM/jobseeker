@@ -644,7 +644,7 @@
       "country": "IN",
       "category": "핀테크",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "가맹점 결제 기기를 구독으로 팔고 그 위에서 대출을 중개하는 인도 핀테크",
       "updated_at": "2026-08-29",
       "domain": "paytm.com/blog/engineering"
@@ -840,7 +840,8 @@
     "에이전트보다 그 주위가 오래 걸린다",
     "옮기는 값과 남기는 값을 견준다",
     "거래 기록을 어디까지 맞출 것인가",
-    "앞단에서 끝낸다"
+    "앞단에서 끝낸다",
+    "재는 일을 사지 않고 만든다"
   ],
   "countries": {
     "KR": "한국",
