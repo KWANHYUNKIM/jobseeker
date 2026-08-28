@@ -1,9 +1,18 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 // Mermaid 는 번들이 커서 동적 import 로 코드 스플릿한다(다이어그램을 열 때만 로드).
+// ELK 레이아웃도 같이 싣는다. mermaid 기본(dagre)은 상자를 층으로만 쌓고 선은
+// 대각선으로 질러가서, 노드가 열 개만 넘어도 선이 서로를 가로지른다.
+// ELK 는 직교로 꺾어 배선하고 층 안에서 자리를 바꿔 교차를 줄인다.
 let mermaidReady: Promise<typeof import('mermaid').default> | null = null
 function loadMermaid() {
-  if (!mermaidReady) mermaidReady = import('mermaid').then((m) => m.default)
+  if (!mermaidReady)
+    mermaidReady = Promise.all([import('mermaid'), import('@mermaid-js/layout-elk')]).then(
+      ([m, elk]) => {
+        m.default.registerLayoutLoaders(elk.default)
+        return m.default
+      },
+    )
   return mermaidReady
 }
 
@@ -23,6 +32,9 @@ type Plate = {
   faint: string
   accentBg: string
   accentInk: string
+  line: string
+  group: string
+  tint: string
 }
 function plate(): Plate {
   return {
@@ -32,6 +44,9 @@ function plate(): Plate {
     faint: '#8b9099',
     accentBg: '#fbdcc4', // 살구색 — 그림마다 한 군데뿐인 강조
     accentInk: '#b4460d',
+    line: '#4a5058',   // 선은 상자보다 한 톤 물러선다 — 글자가 먼저 읽혀야 한다
+    group: '#f6f7f9',  // 묶음 바탕
+    tint: '#eef0f3',   // 종착지(수익·결과) 바탕
   }
 }
 
@@ -39,16 +54,69 @@ function plate(): Plate {
 // 규격을 데이터가 아니라 렌더러가 들고 있어야, 나중에 양식을 바꿀 때
 // 그림 311장을 다시 건드리지 않는다.
 const CLASSED = /^\s*(flowchart|graph|stateDiagram)/
+const FLOW = /^\s*(flowchart|graph)/
+
+// 그림에 위계를 준다. 어디서 시작해서 어디로 끝나는지가 한눈에 안 잡히면
+// 상자가 아무리 반듯해도 지도로 안 읽힌다.
+//   들어오는 화살표가 없는 노드 = 입구  → 테두리를 한 단계 굵게
+//   나가는 화살표가 없는 노드 = 종착지 → 바탕을 옅게 깔아 무게를 준다
+// 필자가 이미 `:::` 로 지정한 노드는 건드리지 않는다.
+const EDGE_OP = /-{2,3}>|-\.-+>|={2,}>|-{3,}|-\.-+|~{3,}/
+const ID = /^\s*([A-Za-z_][\w-]*)/
+const SKIP = /^\s*(flowchart|graph|subgraph|end|classDef|class\s|style\s|click\s|linkStyle|direction|%%)/
+
+function roleClasses(code: string): string[] {
+  const indeg = new Map<string, number>()
+  const outdeg = new Map<string, number>()
+  const explicit = new Set<string>()
+  const bump = (m: Map<string, number>, k: string) => m.set(k, (m.get(k) ?? 0) + 1)
+
+  for (const raw of code.split('\n')) {
+    if (SKIP.test(raw)) continue
+    for (const m of raw.matchAll(/([A-Za-z_][\w-]*):::/g)) explicit.add(m[1])
+    // 화살표 라벨(|…|) 안에 화살표 기호가 들어 있을 수 있어 먼저 걷어낸다.
+    const line = raw.replace(/\|[^|]*\|/g, ' ')
+    if (!EDGE_OP.test(line)) continue
+    const parts = line.split(EDGE_OP)
+    if (parts.length < 2) continue
+    const ids = parts.map((seg) => seg.match(ID)?.[1] ?? '')
+    for (let k = 0; k < ids.length - 1; k++) {
+      const a = ids[k]
+      const b = ids[k + 1]
+      if (!a || !b) continue
+      bump(outdeg, a)
+      bump(indeg, b)
+    }
+  }
+
+  const all = new Set([...indeg.keys(), ...outdeg.keys()])
+  const entry: string[] = []
+  const outcome: string[] = []
+  for (const id of all) {
+    if (explicit.has(id)) continue
+    if (!indeg.has(id) && outdeg.has(id)) entry.push(id)
+    else if (!outdeg.has(id) && indeg.has(id)) outcome.push(id)
+  }
+  // 전부가 입구이거나 전부가 종착지면 위계가 아니라 잡음이다.
+  const out: string[] = []
+  if (entry.length && entry.length < all.size) out.push(`  class ${entry.join(',')} entry`)
+  if (outcome.length && outcome.length < all.size) out.push(`  class ${outcome.join(',')} outcome`)
+  return out
+}
+
 function withStandardClasses(code: string, p: Plate): string {
   if (!CLASSED.test(code.trim())) return code // 시퀀스도는 classDef 를 안 받는다
   const defs = [
     `classDef accent fill:${p.accentBg},stroke:${p.ink},color:${p.ink}`,
     `classDef quiet fill:${p.paper},stroke:${p.faint},color:${p.faint}`,
     `classDef list fill:${p.paper},stroke:${p.ink},color:${p.ink},text-align:left`,
+    `classDef entry fill:${p.paper},stroke:${p.ink},stroke-width:2px,color:${p.ink}`,
+    `classDef outcome fill:${p.tint},stroke:${p.ink},color:${p.ink}`,
   ]
   const lines = code.split('\n')
   const head = lines.findIndex((l) => l.trim() !== '')
   lines.splice(head + 1, 0, ...defs.map((d) => '  ' + d))
+  if (FLOW.test(code.trim())) lines.push(...roleClasses(code))
   return lines.join('\n')
 }
 
@@ -90,6 +158,15 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
         mermaid.initialize({
           startOnLoad: false,
           theme: 'base',
+          layout: 'elk',
+          elk: {
+            // 되돌이 화살표(결과 → 다시 질의)가 있는 그림이 많다. GREEDY 로 끊으면
+            // 위→아래 순서가 통째로 뒤집히므로, 필자가 쓴 순서를 따라가는 DFS 로 끊는다.
+            cycleBreakingStrategy: 'DEPTH_FIRST',
+            // 층 안에서 상자를 서로 맞춰 세운다 — 눈이 기둥을 따라 내려간다
+            nodePlacementStrategy: 'BRANDES_KOEPF',
+            mergeEdges: true,
+          },
           securityLevel: 'loose',
           fontFamily: "system-ui, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif",
           flowchart: {
@@ -97,21 +174,23 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
             // 인쇄 도판은 곡선을 쓰지 않는다. 선이 어디서 어디로 가는지가
             // 모양보다 중요해서 직선이 읽기 쉽다.
             curve: 'linear',
-            nodeSpacing: 40,
-            rankSpacing: 64,
-            padding: 12,
+            // ELK 가 꺾어 놓은 선을 그대로 쓴다 — 곡선으로 뭉개면 어디서 갈라지는지 흐려진다
+            // 여백이 곧 위계다 — 상자를 붙여 놓으면 묶음도 흐름도 안 보인다
+            nodeSpacing: 46,
+            rankSpacing: 80,
+            padding: 16,
             // 기본값(200px)은 한국어에서 '…아니 / 다' 처럼 낱말을 잘라 놓는다.
             // 줄바꿈은 필자가 <br/> 로 정하게 두고, 자동 줄바꿈은 넉넉히 뒤로 민다.
             wrappingWidth: 300,
             useMaxWidth: false,
           },
-          sequence: { useMaxWidth: false, actorMargin: 62, boxMargin: 12 },
+          sequence: { useMaxWidth: false, actorMargin: 70, boxMargin: 14 },
           // 도판 양식: 종이 위의 잉크. 상자는 전부 같은 무게로 두고,
           // 색은 한 곳(:::accent)에만 쓴다 — 색이 여러 개면 강조가 사라진다.
           themeVariables: {
             darkMode: !p.isLight,
             background: p.paper,
-            fontSize: '13.5px',
+            fontSize: '13px',
             primaryColor: p.paper,
             primaryTextColor: p.ink,
             primaryBorderColor: p.ink,
@@ -121,12 +200,12 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
             tertiaryColor: p.paper,
             tertiaryTextColor: p.ink,
             tertiaryBorderColor: p.ink,
-            lineColor: p.ink,
+            lineColor: p.line,
             textColor: p.ink,
             mainBkg: p.paper,
             nodeBorder: p.ink,
-            clusterBkg: 'transparent',
-            clusterBorder: p.ink,
+            clusterBkg: p.group,
+            clusterBorder: p.faint,
             edgeLabelBackground: p.paper,
             titleColor: p.ink,
             // 시퀀스
@@ -188,12 +267,16 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
             ⛶ 크게 보기
           </button>
         )}
-        {/* 인라인은 '읽히는 미리보기'다. 원본 비율을 지키되 폭을 넘으면 줄이고,
-            세로로 긴 그림은 잘라서 높이를 먹지 않게 한다 — 전체는 모달에서 본다. */}
+        {/* 세로로 긴 그림을 스크롤 상자에 가두면 지도가 아니라 창문이 된다.
+            높이로 맞추면 이번엔 글자가 7px 로 줄어든다 — 그래서 폭에만 맞추고
+            높이는 그림이 필요한 만큼 준다. 글자 크기는 원본(13px) 그대로다. */}
         {!loading && (
-          <div className="mmd overflow-auto p-3 max-h-[68vh]">
+          <div className="mmd p-4 flex justify-center">
             <div
-              style={{ width: dim.w, height: dim.h, maxWidth: '100%', aspectRatio: `${dim.w} / ${dim.h}` }}
+              style={{
+                width: `min(100%, ${dim.w}px)`,
+                aspectRatio: `${dim.w} / ${dim.h}`,
+              }}
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           </div>

@@ -334,17 +334,24 @@ html, body, #root {
    교과서 그림 양식이다. 종이 위의 잉크 — 각진 모서리, 얇고 균일한 선,
    그림자·그라데이션·둥근 맛 없음. 색은 :::accent 한 곳에만 쓴다.
    팔레트는 ArchitectureDiagram.tsx 의 plate() 가 정하고, 여기서는
-   themeVariables 로 닿지 않는 것(엣지 라벨 배경, 클러스터 라벨, 모서리)만 맡는다. */
+   themeVariables 로 닿지 않는 것(엣지 라벨 배경, 클러스터 라벨, 모서리)만 맡는다.
+
+   위계는 세 단(段)뿐이다: 상자의 글자(가장 진함) > 상자 테두리 > 선과 화살표 라벨.
+   선이 상자만큼 진하면 그림이 실타래로 보인다. */
 /* 도판은 앱 테마를 따르지 않는다 — 본문에 끼워 넣은 인쇄물이라 늘 흰 종이다.
    덕분에 어두운 화면에서도 그림 하나의 경계가 눈에 잡힌다. */
 .mmd {
   --plate-paper: #ffffff;
   --plate-ink: #16181d;
   --plate-faint: #8b9099;
+  --plate-line: #4a5058;
+  --plate-line-soft: #aeb4bd;
+  --plate-group: #f6f7f9;
   --plate-accent-ink: #b4460d;
   background: var(--plate-paper);
 }
-.mmd svg { max-width: none; height: auto; background: var(--plate-paper); }
+/* 바깥 상자가 정한 크기에 그림을 맞춘다. viewBox 가 있으니 비율은 알아서 지킨다 */
+.mmd svg { display: block; width: 100%; height: 100%; max-width: none; background: var(--plate-paper); }
 
 /* 각진 모서리 — 도판의 성격을 가장 크게 정하는 한 줄이다 */
 .mmd .node rect, .mmd .node polygon, .mmd .node path,
@@ -352,30 +359,60 @@ html, body, #root {
   rx: 0 !important; ry: 0 !important;
 }
 
-/* 선은 전부 같은 무게. 굵기로 중요도를 말하지 않는다 */
-.mmd .node rect, .mmd .node polygon, .mmd .node path { stroke-width: 1.15px; }
-.mmd .flowchart-link, .mmd .transition { stroke-width: 1.15px; }
-.mmd .marker { stroke: var(--plate-ink) !important; fill: var(--plate-ink) !important; }
+/* 상자 테두리는 얇고 균일하게. 굵기로 중요도를 말하는 자리는 :::entry 하나뿐이다 */
+.mmd .node rect, .mmd .node polygon, .mmd .node path { stroke-width: 1.1px; }
+.mmd .node .nodeLabel { font-weight: 500; }
 
-/* 묶음(subgraph)은 실선 테두리에 제목만. 바탕을 칠하지 않아 안쪽 상자가 살아난다 */
+/* 선은 상자보다 한 톤 물러선다 */
+.mmd .flowchart-link, .mmd .transition { stroke-width: 1.1px; stroke: var(--plate-line) !important; }
+.mmd .marker { stroke: var(--plate-line) !important; fill: var(--plate-line) !important; }
+
+/* 점선은 '곁가지·비동기'다. 더 옅게, 더 성기게 — 실선 흐름과 안 헷갈리게 */
+.mmd .edge-pattern-dotted, .mmd .edge-pattern-dashed {
+  stroke: var(--plate-line-soft) !important;
+  stroke-dasharray: 5 4 !important;
+}
+
+/* 묶음(subgraph)은 테두리로 가두지 않고 바탕으로 묶는다 — 안쪽 상자가 살아난다 */
 .mmd .cluster rect {
-  fill: transparent !important;
-  stroke: var(--plate-ink) !important;
-  stroke-width: 1.15px;
+  fill: var(--plate-group) !important;
+  stroke: var(--plate-line-soft) !important;
+  stroke-width: 1px;
 }
 .mmd .cluster-label, .mmd .cluster span {
-  color: var(--plate-ink) !important;
-  font-weight: 700;
+  color: var(--plate-faint) !important;
+  font-weight: 600;
   /* em 은 부모(span.cluster > p)마다 곱해져 라벨이 10px 밑으로 내려간다. px 로 못 박는다 */
-  font-size: 13px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
 }
 
-/* 화살표 라벨은 선 위에 얹히므로 종이색으로 선을 끊어 준다 */
+/* 화살표 라벨은 mermaid 가 재 놓은 foreignObject(≈19.5px) 안에 갇혀 있다.
+   안쪽 div(table-cell) → span(inline) → p 가 쌓이면서 54px 로 부풀어 잘려 나가,
+   라벨이 통째로 안 보이고 있었다. 세 겹을 전부 블록 한 줄로 눕힌다. */
+.mmd .edgeLabel foreignObject { overflow: visible; }
+.mmd .edgeLabel foreignObject > div {
+  display: block !important;
+  height: 100%;
+  line-height: 1;
+}
+.mmd .edgeLabel span { display: block !important; line-height: 1; }
+.mmd .edgeLabel p {
+  margin: 0 !important;
+  line-height: 1.25;
+  /* mermaid 가 재 둔 폭에 맞춰 접히면 '무엇을 찾는 / 지' 처럼 낱말이 잘린다.
+     foreignObject 를 overflow: visible 로 열어 뒀으니 한 줄로 흘려도 안 잘린다. */
+  white-space: nowrap;
+}
+
+/* 라벨은 선 위에 얹히므로 종이색으로 선을 끊어 준다.
+   상자 글자보다 옅게 둬야 '무엇이 상자이고 무엇이 설명인지'가 갈린다 */
 .mmd .edgeLabel, .mmd .edgeLabel p {
   background: var(--plate-paper) !important;
-  color: var(--plate-ink) !important;
+  color: var(--plate-line) !important;
   fill: var(--plate-paper) !important;
   font-size: 12px;
+  padding: 0 2px;
 }
 .mmd .edgeLabel rect { fill: var(--plate-paper) !important; opacity: 1; }
 
