@@ -24,6 +24,10 @@ interface Claim {
 export interface RevenueStream extends Claim {
   name: string
   how: string
+  /** 전체 매출에서 이 수익원이 차지하는 비중(%). 공개 실적에 숫자가 있을 때만 채운다 */
+  share?: number
+  /** 표시용 금액 문자열 — 단위가 회사마다 달라(조·억·$B) 계산하지 않고 그대로 적는다 */
+  amount?: string
 }
 
 export interface DomainTech extends Claim {
@@ -199,6 +203,8 @@ export interface Company {
   status: 'in_progress' | 'done'
   updated_at: string
   business_model: string
+  /** 표시용 총매출 한 줄. 예: '2025년 연결 매출 12조 350억' */
+  revenue_total?: string
   products: string[]
   one_liner: string
   /** 로고를 가져올 회사 도메인. 없으면 글자 마크로 대체한다. */

@@ -4,6 +4,7 @@ import { ArchitectureDiagram } from './ArchitectureDiagram'
 import { CompanyLogo } from './RevengView'
 import { UiSketch } from './UiSketch'
 import { ConfBadge, SourceLinks } from './RevengBits'
+import { RevenueSplit } from './RevenueSplit'
 import { Md, MdBlock } from './Md'
 import { Loader, ErrorState } from './ui'
 
@@ -97,6 +98,9 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
                 </span>
               ))}
             </div>
+          )}
+          {c.revenue_streams && c.revenue_streams.length > 0 && (
+            <RevenueSplit streams={c.revenue_streams} total={c.revenue_total} />
           )}
           {c.revenue_streams && c.revenue_streams.length > 0 && (
             <ul className="mt-3 flex flex-col gap-2">

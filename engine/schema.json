@@ -60,10 +60,13 @@
       "question": "string — 이 그림이 답하는 질문",
       "code": "string — mermaid flowchart"
     },
+    "revenue_total": "string (선택) — 표시용 총매출 한 줄. 예: '2025년 연결 매출 12조 350억'. 회사가 공개한 실적에 숫자가 있을 때만 적는다",
     "revenue_streams": [
       {
         "name": "string — 수익원",
         "how": "string — 어떻게 돈이 되는가",
+        "share": "number (선택) — 전체 매출에서 이 수익원이 차지하는 비중(%). 공개 실적에 부문별 숫자가 있을 때만. 둘 이상 채워지면 뷰어가 수익 구성 막대를 그린다",
+        "amount": "string (선택) — 표시용 금액. 단위가 회사마다 달라(조·억·$B) 계산하지 않고 원문 그대로 적는다",
         "confidence": "confirmed|inferred|unknown",
         "sources": [
           "source 객체 (confirmed 면 필수)"
