@@ -7,8 +7,24 @@ import { ConfBadge, SourceLinks } from './RevengBits'
 import { Md, MdBlock } from './Md'
 import { Loader, ErrorState } from './ui'
 
-// 접힌 줄의 한 줄 미리보기처럼 마크업이 방해가 되는 자리에서만 기호를 걷어낸다.
+// 접힌 줄의 미리보기처럼 마크업이 방해가 되는 자리에서만 기호를 걷어낸다.
 const strip = (s: string) => s.replace(/\*\*|`|\*/g, '')
+
+// 접힌 기능 줄의 미리보기. 폭에 맞춰 글자 단위로 자르면 늘 문장이 반토막 나므로
+// 문장 경계에서만 끊는다 — 한 문장은 통째로 보이거나 아예 안 보이거나 둘 중 하나다.
+const PREVIEW_CHARS = 160
+function preview(s: string): string {
+  const text = strip(s).trim()
+  if (text.length <= PREVIEW_CHARS) return text
+  const parts = text.split(/(?<=[.!?。」』])\s+/)
+  let out = ''
+  for (const p of parts) {
+    if (out && (out + ' ' + p).length > PREVIEW_CHARS) break
+    out = out ? out + ' ' + p : p
+  }
+  // 첫 문장 하나가 이미 한도를 넘으면 그 문장은 그대로 둔다(반토막보다 낫다).
+  return out || parts[0]
+}
 
 // 엔티티는 스키마상 {name, what} 이지만 초기 사이클들이 "이름 — 설명" 한 문자열로
 // 적어 둔 것이 남아 있다. 객체만 읽으면 그쪽이 통째로 빈 줄이 되므로 둘 다 받는다.
@@ -214,20 +230,22 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
   const impl = f.implementation ?? {}
   return (
     <div className="rounded border border-(--color-border) bg-(--color-panel)">
-      <button onClick={onToggle} className="w-full text-left px-3 py-2.5 flex items-center gap-2">
-        <span className="text-(--color-muted) text-xs">{open ? '▾' : '▸'}</span>
-        <span className="text-sm font-medium text-(--color-text) shrink-0 whitespace-nowrap">{f.name}</span>
-        <span className="shrink-0 whitespace-nowrap text-xs px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
-          {f.domain}
+      <button onClick={onToggle} className="w-full text-left px-3 py-2.5 flex flex-col gap-1">
+        <span className="flex items-center gap-2 w-full">
+          <span className="text-(--color-muted) text-xs">{open ? '▾' : '▸'}</span>
+          <span className="text-sm font-medium text-(--color-text)">{f.name}</span>
+          <span className="shrink-0 whitespace-nowrap text-xs px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
+            {f.domain}
+          </span>
+          <span className="ml-auto text-xs text-(--color-muted) tabular-nums shrink-0">
+            결정 {impl.decisions?.length ?? 0}
+          </span>
         </span>
         {!open && (
-          <span className="hidden sm:block text-xs text-(--color-muted) truncate ml-1">
-            {strip(f.business.why)}
+          <span className="block text-xs text-(--color-muted) leading-relaxed reveng-prose pl-5">
+            {preview(f.business.why)}
           </span>
         )}
-        <span className="ml-auto text-xs text-(--color-muted) tabular-nums shrink-0">
-          결정 {impl.decisions?.length ?? 0}
-        </span>
       </button>
 
       {open && (
