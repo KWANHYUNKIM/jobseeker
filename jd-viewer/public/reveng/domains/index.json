@@ -527,6 +527,21 @@
         "agent-with-guardrails"
       ],
       "file": "what-guards-the-gate.md"
+    },
+    {
+      "slug": "swap-while-running",
+      "title": "무중단으로 갈아 끼우기 — 앱이 아는가 모르는가",
+      "question": "멈추지 않고 옮길 때 애플리케이션은 그 사실을 아는가, 그리고 무중단을 사려고 무엇을 내줬는가?",
+      "companies": [
+        "wix",
+        "cybozu"
+      ],
+      "features": [
+        "read-first-then-write",
+        "chatroom-by-chatroom",
+        "same-node-rolling"
+      ],
+      "file": "swap-while-running.md"
     }
   ]
 }
