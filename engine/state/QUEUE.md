@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Freshworks** | IN · SaaS | 323 에서 프로파일을 썼다 — **도메인 2개 · 기능 0개.** 다음은 도메인 ①(하나가 느려지면 전부가 막힌다)이고 재료는 `Scaling the Freshdesk web app for high Availability`(2020-07-15, **대가 다섯**)와 `How Freshdesk uses HAProxy at scale`(2021-08-24). ⚠️ **글이 2020~2021 의 `Rails@Scale` 시리즈에 몰려 있고 `/explore-it/` 목록 페이지는 404 다** |
+| **Freshworks** | IN · SaaS | 324 에서 첫 기능 `split-then-cut`(앞에서 나누고 뒤에서 자른다)을 썼다 — **도메인 2개 · 기능 1개 · 결정 7개.** 남은 것은 도메인 ②(큐 이백 개를 기계에 어떻게 얹는가)이고 재료는 Sidekiq 편 한 편인데 **⚠️ 대가를 하나도 안 적는다.** 안 읽은 글 하나 — `Optimizing cache with MemoizeUntil` |
 
 ## 대기
 

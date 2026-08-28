@@ -131,7 +131,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "split-then-cut"
+      ]
     },
     {
       "name": "큐 이백 개를 기계에 어떻게 얹는가",
@@ -172,6 +174,8 @@
     }
   ],
   "open_questions": [
+    "**⚠️ 두 글이 서로를 안 부른다**(이 관찰은 이 사이트의 것이다). 고가용성 편(2020-07-15)은 같은 `Rails@Scale` 시리즈의 **`Optimizing cache with MemoizeUntil`** 과 **`Sidekiq queue management using custom middleware`** 를 부르는데, **HAProxy 편(2021-08-24)은 1년 뒤 글이라 거기 없다.** 그리고 **HAProxy 편이 고가용성 편을 부르는지는 이 사이트가 확인하지 못했다.** 두 글은 **같은 위험(한 고객의 문제가 전체를 무너뜨린다)을 다른 층에서 푸는데** 서로를 참조하지 않아, **앞에서 나누는 일과 뒤에서 끊는 일이 어떻게 맞물리는지는 두 글을 따로 읽어서는 알 수 없다.**",
+    "**⚠️ 설정값이 거의 없다**(이 지적은 이 사이트의 것이다). 유일하게 적힌 숫자가 `DECLARE max_transaction_time INT DEFAULT 25` 인데 **단위조차 안 적혀 있다.** Semian 의 문턱값·실패 횟수·열고 닫는 기준도, HTTP 타임아웃 값도, 오래 걸리는 요청 알림의 기준 시간도 전부 없다. **드라이런을 얼마나 오래 돌렸고 오탐이 몇 건이었는지**도 없다. **효과의 근거는 그래프 두 장**(*\"Prolonged request queuing observed without Semian\"* 대 *\"Limited request queuing observed with Semian\"*)뿐이고 **본문에 수치로 옮겨 적지 않는다.**",
     "**⚠️ 읽을 수 있는 엔지니어링 글이 2020~2021년에 몰려 있다.** `Rails@Scale` 시리즈(고가용성 2020-07-15 · Sidekiq 2020-05-14 · `Optimizing cache with MemoizeUntil` **아직 안 읽음**)와 HAProxy 편(2021-08-24)이다. **그 뒤의 엔지니어링 깊이글을 이 사이트는 아직 못 찾았다** — 2025년 3월의 `Meet the AI-Augmented Engineers at Freshworks` 같은 글은 `/theworks/` 아래의 매거진 성격이다. ⚠️ **`https://www.freshworks.com/explore-it/` 를 목록으로 열면 404 다** — 글 주소는 직접 열리지만 색인 페이지가 없다(323 에서 확인). **다음 사이클은 시리즈 안의 링크를 따라간다.**",
     "**⚠️ 사업의 무게와 글의 무게가 어긋난다**(이 대비는 이 사이트의 것이다). 매출을 끄는 것은 **EX(ITSM) 부문**(ARR +24%)과 **Freddy AI**(신규 엔터프라이즈 거래의 71% 이상)인데, **엔지니어링 글은 거의 전부 CX 쪽 Freshdesk 의 Rails 운영 이야기**다. **AI 를 제품에 붙이는 기술 이야기도, ITSM 쪽 시스템 이야기도 이 사이트는 아직 못 찾았다.**",
     "**같은 문제를 다루는 두 편의 솔직함이 크게 다르다.** 고가용성 편(2020-07)은 **대가를 다섯 가지 적는다** — ORM 롤백 테스트 부담 · 옛 Rails 의 고아 레코드 · Semian 이 테이블 단위로 못 자름 · 프로세스 단위 한계 · **Newrelic explain 쿼리가 감시를 방해**. 반면 HAProxy 편(2021-08)은 **두 줄뿐**이고 Sidekiq 편(2020-05)은 **하나도 없다**. **회사가 아니라 글쓴이에 따라 갈리는 것으로 보인다**(**추정**)."
@@ -213,5 +217,482 @@
       "summary": "**2026년 1분기** — 총매출 **2억 2,860만 달러**로 2025년 1분기 **1억 9,630만 달러** 대비 **16%** 성장. **순 달러 유지율(NDR) 106%**(2025년 4분기 108%, 2025년 1분기 105%). 회사 역사상 가장 큰 거래 둘을 성사시켰고 **처음으로 ARR 100만 달러가 넘는 거래**가 나왔다고 적는다."
     }
   ],
-  "features": []
+  "features": [
+    {
+      "key": "split-then-cut",
+      "name": "앞에서 나누고 뒤에서 자른다",
+      "domain": "하나가 느려지면 전부가 막힌다",
+      "updated_at": "2026-08-29",
+      "business": {
+        "why": "**한 덩어리 Rails 앱에 고객 수만 곳이 얹혀 있고, 그중 하나가 잘못되면 전부가 멈출 수 있다.** 회사가 그 위험을 한 문장으로 적는다 — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**규모가 그 위험을 키운다** — Freshdesk 는 **단일 스레드 Passenger 프로세스**로 최대 **분당 약 50만 요청**을 받는다. 스레드가 하나면 **느린 요청 하나가 그 프로세스를 통째로 붙잡는다**(이 설명은 이 사이트의 것이다). 그래서 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**⭐ 답이 한 장치가 아니라 두 자리에 걸쳐 있다**(이 묶음은 이 사이트의 것이다) — **들어오기 전에는 갈라 담고**(HAProxy 의 shell 라우팅), **들어온 뒤에는 끊는다**(긴 트랜잭션 중단 · 서킷 브레이커 · 타임아웃). **막을 수 없는 것을 옮기고, 옮길 수 없는 것을 끊는 셈이다.**",
+        "metrics": [
+          {
+            "label": "최대 트래픽",
+            "value": "분당 약 50만 요청",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "label": "트랜잭션 최대 시간",
+            "value": "25 — `DECLARE max_transaction_time INT DEFAULT 25`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "label": "요청 종류별 응답 시간",
+            "value": "티켓 약 100ms · 리포트 약 300ms",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Freshdesk uses HAProxy at scale",
+                "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+                "publisher": "Freshworks Engineering",
+                "date": "2021-08-24",
+                "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+              }
+            ]
+          },
+          {
+            "label": "웹 서버 규모",
+            "value": "AWS 위에 수백 대 — 그 이상은 안 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Freshdesk uses HAProxy at scale",
+                "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+                "publisher": "Freshworks Engineering",
+                "date": "2021-08-24",
+                "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇이 전체를 무너뜨리는지 세다가",
+          "thought": "**원인을 다섯 갈래로 갈랐다** — 오래 도는 데이터베이스 트랜잭션 · 응답 없는 샤드 · 느린 외부 호출 · 스팸과 서비스 거부 공격 · 애플리케이션 코드 문제. **⭐ 다섯 다 '남의 일이 내 프로세스를 붙잡는다' 는 한 모양이다**(이 정리는 이 사이트의 것이다) — 그래서 장치도 다섯이 아니라 **붙잡히기 전에 옮기거나 붙잡힌 것을 끊거나** 둘 중 하나다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Scaling the Freshdesk web app for high Availability",
+              "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-07-15",
+              "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+            }
+          ]
+        },
+        {
+          "at": "서킷 브레이커 하나면 되겠다고 생각했다가",
+          "thought": "**안 되는 자리가 분명했다.** Semian 은 **테이블 일부에만 실패를 낼 수 없고**(*\"Semian cannot be configured to fail requests only to a subset of tables in the database\"*) **프로세스 단위로 동작**한다. **네트워크가 끊긴 것은 잘 잡는데 행이나 테이블이 잠겨 느려진 것은 못 잡는다.** 그래서 **데이터베이스 쪽에도 장치를 하나 더 뒀다**(이 연결은 이 사이트의 해석이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling the Freshdesk web app for high Availability",
+              "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-07-15",
+              "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+            }
+          ]
+        },
+        {
+          "at": "서킷 브레이커를 켜기 전에",
+          "thought": "**바로 안 켰다.** 드라이런으로 먼저 돌려 *\"circuit transition states are only logged without affecting the real network connection\"* 하게 하고 오탐이 없는지 봤다. **끊는 장치를 잘못 켜면 그 자체가 장애가 된다**(이 표현은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling the Freshdesk web app for high Availability",
+              "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-07-15",
+              "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+            }
+          ]
+        },
+        {
+          "at": "관측 도구를 붙여 놓고 보니",
+          "thought": "**⭐ 재는 도구가 지키는 도구를 방해했다** — Newrelic 의 explain 쿼리가 Semian 의 감시에 끼어들어 **그것을 꺼야 했다.** **장치를 겹칠수록 장치끼리 부딪히는 자리가 생긴다**(이 정리는 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling the Freshdesk web app for high Availability",
+              "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+              "publisher": "Freshworks Engineering (Rails@Scale)",
+              "date": "2020-07-15",
+              "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+            }
+          ]
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "shell",
+            "what": "웹 서버들을 묶은 논리 단위. **문제가 될 트래픽을 통째로 옮겨 담는 그릇이고, 폭발 반경의 경계가 된다**"
+          },
+          {
+            "name": "Passenger 프로세스",
+            "what": "요청을 처리하는 단위. **단일 스레드라 느린 요청 하나가 그 프로세스를 통째로 붙잡는다** — 이 도메인의 모든 장치가 여기서 출발한다"
+          },
+          {
+            "name": "서킷",
+            "what": "MySQL·Redis·HTTP 각각에 걸린 Semian 의 판단 상태. **프로세스마다 따로 있고 서로 모른다**"
+          },
+          {
+            "name": "라우팅 기준",
+            "what": "어느 shell 로 보낼지 정하는 근거 — 호스트/도메인 · 경로 · 샤드 · 헤더 · 요청 종류"
+          }
+        ],
+        "invariants": [
+          "**스레드가 하나면 느린 것 하나가 전부를 막는다** — 이 도메인의 모든 결정이 이 사실에서 나온다(이 정리는 이 사이트의 것이다).",
+          "**서킷은 프로세스마다 따로 판단한다** — *\"Semian circuit breaker works at per process level and a distributed or per host instrumentation is still under development\"*. 전체가 합의해서 여는 것이 아니다.",
+          "**끊으면 애플리케이션이 그것을 감당해야 한다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"*."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 HAProxy 에 닿는다",
+            "why": "모든 갈래가 여기서 정해진다"
+          },
+          {
+            "step": "블랙리스트로 남용 서브도메인과 악성 IP 를 막는다",
+            "why": "스팸과 서비스 거부가 멀티테넌트 전체에 번지는 것을 앞에서 끊는다"
+          },
+          {
+            "step": "어느 shell 로 보낼지 정한다 — 호스트/도메인 · 경로 · 샤드 · 헤더",
+            "why": "문제가 될 트래픽을 나머지와 떼어 놓는다"
+          },
+          {
+            "step": "요청 종류로 한 번 더 가른다 — 티켓(약 100ms)과 리포트(약 300ms)",
+            "why": "느린 것이 빠른 것을 큐에서 막지 않게"
+          },
+          {
+            "step": "Passenger 프로세스가 요청을 처리한다",
+            "why": "단일 스레드라 여기서부터는 끊는 것이 유일한 수단이다"
+          },
+          {
+            "step": "MySQL DB 이벤트가 오래 도는 트랜잭션을 끊는다 — `DECLARE max_transaction_time INT DEFAULT 25`",
+            "why": "잠금과 CPU 를 먹는 긴 질의가 다른 질의를 망친다"
+          },
+          {
+            "step": "Semian 서킷 브레이커가 MySQL·Redis·HTTP 를 지켜보다 열리면 요청을 즉시 실패시킨다",
+            "why": "뒤가 죽었을 때 앞이 계속 기다리면 프로세스가 다 잠긴다"
+          },
+          {
+            "step": "나가는 호출은 Envoy 사이드카를 지난다",
+            "why": "속도 제한·연결 풀·타임아웃·재시도·응답 캐시와 지표를 한자리에서 얻는다"
+          },
+          {
+            "step": "오래 걸리는 요청은 Nagios 알림과 함께 스레드 덤프를 남긴다",
+            "why": "업무 로직의 알 수 없는 반복 같은 것은 코드를 봐야 안다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "오래 도는 트랜잭션을 누가 끊을 것인가?",
+            "chosen": "**데이터베이스가 끊는다.** MySQL DB 이벤트로 최대 트랜잭션 시간을 두고 넘기면 죽인다 — `DECLARE max_transaction_time INT DEFAULT 25`",
+            "alternatives": [
+              "애플리케이션이 스스로 끝나기를 기다리기 — 잠금과 CPU 를 먹는 긴 읽기 질의가 *\"impacts the performance of other queries\"*"
+            ],
+            "tradeoff": "**앱을 못 믿을 때 데이터베이스가 최후의 방어선이 된다**(이 표현은 이 사이트의 것이다). 🔴 **대가가 크다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드를 남긴다.** ⚠️ **끊긴 트랜잭션이 실제로 얼마나 자주 생기는지는 글에 없다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "question": "서킷 브레이커 하나로 충분한가?",
+            "chosen": "**아니다 — Semian 을 쓰되 거기에만 기대지 않는다.** 데이터베이스 쪽 이벤트와 HTTP 타임아웃과 사이드카를 함께 둔다",
+            "alternatives": [
+              "**Semian 하나로 해결하기** — *\"Semian cannot be configured to fail requests only to a subset of tables in the database\"* 이고 **프로세스 단위**라 분산 판단을 못 한다(호스트 단위 계측은 *\"still under development\"*). **네트워크 수준 장애에는 맞지만 행이나 테이블 잠금, CPU 때문에 느려지는 경우에는 약하다**"
+            ],
+            "tradeoff": "**한 장치가 못 보는 자리를 다른 장치로 덮었다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 지킬 장치가 여럿이 되고 서로 부딪힐 수 있다는 것**이고, **실제로 부딪혔다** — Newrelic 의 explain 쿼리가 Semian 의 감시를 방해해 **그것을 꺼야 했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "question": "서킷 브레이커를 바로 켤 것인가?",
+            "chosen": "**아니다 — 드라이런으로 먼저 돌린다.** *\"circuit transition states are only logged without affecting the real network connection\"* 하게 두고 오탐이 없는지 확인했다",
+            "alternatives": [
+              "프로덕션에 바로 켜기"
+            ],
+            "tradeoff": "**끊는 장치를 잘못 켜면 그 자체가 장애가 된다**(이 표현은 이 사이트의 것이다) — 그래서 판단만 시켜 보고 손은 못 대게 했다. ⚠️ **대가는 확인하는 동안은 안 지켜진다는 것**이고, **얼마나 오래 돌렸는지도 오탐이 몇 건이었는지도 글에 없다**(이 지적도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "question": "나가는 호출을 각 앱이 알아서 하게 할 것인가?",
+            "chosen": "**아니다 — Envoy 사이드카로 몰아넣는다.** 회사가 얻는 것을 나열한다 — *\"better visibility and controls like rate limiting, connection pooling, timeouts, retries, and response caching\"*",
+            "alternatives": [
+              "앱마다 HTTP 클라이언트에 각자 붙이기 — 다만 **엄격한 타임아웃 자체는 클라이언트에도 그대로 건다**"
+            ],
+            "tradeoff": "**밖으로 나가는 길을 하나로 모아 거기에 손잡이를 달았다**(이 정리는 이 사이트의 것이다). ⚠️ **대가는 홉이 한 겹 늘고 사이드카를 운영해야 한다는 것**인데(이 지적도 이 사이트의 것이다) **지연이 얼마나 느는지도, 사이드카를 어디까지 깔았는지도 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "question": "문제가 될 트래픽을 어디서 갈라낼 것인가?",
+            "chosen": "**들어오는 자리에서.** HAProxy 가 **shell** 이라는 논리 묶음으로 보내되 기준을 셋 쓴다 — **호스트/도메인**(말썽인 고객의 트래픽을 통째로 뺀다) · **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다) · **샤드**(느려진 샤드는 완충 shell 로)",
+            "alternatives": [
+              "한 덩어리 클러스터로 다 받기 — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*"
+            ],
+            "tradeoff": "**끊을 수 없는 것은 옮긴다**(이 표현은 이 사이트의 것이다). ⚠️ **대가를 글이 두 줄로 적는다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. **shell 이 몇 개인지, 옮기는 데 얼마나 걸리는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Freshdesk uses HAProxy at scale",
+                "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+                "publisher": "Freshworks Engineering",
+                "date": "2021-08-24",
+                "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+              }
+            ]
+          },
+          {
+            "question": "이관 트래픽을 어떻게 가를 것인가?",
+            "chosen": "**헤더로 가른다.** 이관 요청에 특정 헤더를 실어 **별도 shell 과 별도 Redis 엔드포인트**로 보낸다",
+            "alternatives": [
+              "도메인으로 가르기 — **이관은 대개 고객이 라이브로 간 뒤에 일어나서** 그러면 **라이브 트래픽과 이관 트래픽이 같은 shell 로 간다**"
+            ],
+            "tradeoff": "**⭐ 같은 고객의 트래픽인데 성격이 다르다는 것이 이 결정의 전부다**(이 정리는 이 사이트의 것이다) — 고객이라는 축으로는 못 가르니 **요청 자신이 자기가 무엇인지 말하게 했다.** ⚠️ **대가는 이관 경로가 헤더를 반드시 심어야 한다는 것**이고, **안 심긴 요청이 어떻게 되는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Freshdesk uses HAProxy at scale",
+                "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+                "publisher": "Freshworks Engineering",
+                "date": "2021-08-24",
+                "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+              }
+            ]
+          },
+          {
+            "question": "느린 요청과 빠른 요청을 같이 받을 것인가?",
+            "chosen": "**아니다 — 종류로 갈라 담는다.** 리포트(**약 300ms**)와 티켓(**약 100ms**)을 다른 shell 로 보내고, 지원 계층은 가용성 우선순위를 가장 높게 둔다",
+            "alternatives": [
+              "한 줄에 다 세우기 — 느린 것이 앞에 서면 빠른 것이 뒤에서 기다린다"
+            ],
+            "tradeoff": "**같은 큐에 두면 가장 느린 것이 전체의 속도가 된다**(이 표현은 이 사이트의 것이다). ⚠️ **대가는 요청의 종류를 미리 알아야 한다는 것**이고(이 지적도 이 사이트의 것이다), **분류가 애매한 요청을 어디로 보내는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Freshdesk uses HAProxy at scale",
+                "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+                "publisher": "Freshworks Engineering",
+                "date": "2021-08-24",
+                "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "HAProxy",
+            "role": "들어오는 자리에서 shell 로 갈라 담고 블랙리스트로 남용 서브도메인과 악성 IP 를 막는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Freshdesk uses HAProxy at scale",
+                "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+                "publisher": "Freshworks Engineering",
+                "date": "2021-08-24",
+                "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Semian (Ruby 서킷 브레이커)",
+            "role": "MySQL·Redis·HTTP 어댑터로 붙어 뒤가 죽으면 요청을 즉시 실패시킨다. **프로세스 단위**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "tech": "MySQL DB 이벤트",
+            "role": "최대 시간을 넘긴 트랜잭션을 데이터베이스가 직접 끊는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "tech": "Envoy 사이드카",
+            "role": "나가는 호출의 단일 통로 — 속도 제한·연결 풀·타임아웃·재시도·응답 캐시와 지표",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "tech": "Phusion Passenger",
+            "role": "요청을 처리하는 단일 스레드 프로세스. **이 도메인의 제약이 여기서 나온다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "tech": "Nagios + GDB 스레드 덤프",
+            "role": "오래 걸리는 요청에 알림을 띄우고 그 순간의 스레드를 떠 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "프로세스마다 따로 판단하는 서킷 브레이커",
+            "why_hard": "**서킷이 프로세스 단위면 같은 뒤단을 두고 프로세스마다 다른 판단을 한다.** 어떤 프로세스는 열려서 즉시 실패시키고 어떤 프로세스는 아직 닫힌 채 기다린다 — **전체로 보면 부분적으로만 보호된다**(이 설명은 이 사이트의 것이다). 회사도 그것을 한계로 적는다: *\"a distributed or per host instrumentation is still under development\"*.",
+            "current_best": "이 회사의 답은 **다른 층에 장치를 더 두는 것**이었다 — 데이터베이스 이벤트와 사이드카와 HAProxy 라우팅. ⚠️ **분산 서킷을 직접 만들려 했다는 서술은 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          },
+          {
+            "problem": "끊긴 다음에 사용자가 무엇을 보는가",
+            "why_hard": "**막는 장치의 이야기는 대개 시스템이 살아남았다는 데서 끝난다**(이 지적은 이 사이트의 것이다). 그런데 서킷이 열리면 그 요청은 **즉시 실패한다** — 그것이 사용자에게 오류로 보이는지, 다시 시도되는지, 줄어든 기능으로 대체되는지는 완전히 다른 이야기다.",
+            "current_best": "**⚠️ 이 글에 그 서술이 없다.** 요청을 즉시 실패시킨다고만 적고 **사용자 쪽 동작을 밝히지 않는다.** 이 사이트는 그 자리를 비워 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Freshdesk web app for high Availability",
+                "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+                "publisher": "Freshworks Engineering (Rails@Scale)",
+                "date": "2020-07-15",
+                "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "요청 하나가 지나는 두 관문",
+          "question": "어디까지가 나누는 일이고 어디부터가 끊는 일인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[\"요청\"]\n  BL[\"블랙리스트<br/>남용 서브도메인과 악성 IP\"]:::list\n  SPLIT[\"<b>들어오기 전에 갈라 담는다</b><br/>• 호스트와 경로와 샤드로 shell 을 고른다<br/>• 이관 트래픽은 헤더로 가른다<br/>• 느린 리포트와 빠른 티켓을 나눈다\"]:::accent\n  PROC[\"Passenger 프로세스 — 스레드가 하나다\"]:::list\n  DB[\"MySQL DB 이벤트<br/>오래 도는 트랜잭션을 끊는다\"]:::list\n  CB[\"Semian 서킷<br/>뒤가 죽으면 즉시 실패시킨다\"]:::list\n  OUT[\"Envoy 사이드카<br/>나가는 호출의 단일 통로\"]:::list\n  ALERT[\"오래 걸리면 Nagios 알림과 스레드 덤프\"]:::list\n  N[\"<i>끊긴 다음 사용자가 무엇을 보는지는 글에 없다</i>\"]:::quiet\n  REQ --> BL --> SPLIT --> PROC\n  PROC --> DB\n  PROC --> CB\n  PROC --> OUT\n  PROC --> ALERT\n  CB --- N"
+        },
+        {
+          "title": "서킷이 놓이는 자리",
+          "question": "켜기 전에 왜 판단만 시켜 봤는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 드라이런\n  드라이런 --> 드라이런: 상태 전이를 기록만 하고 연결에는 손대지 않는다\n  드라이런 --> 닫힘: 오탐이 없다고 확인되면 실제로 켠다\n  닫힘 --> 열림: 뒤가 죽었다고 판단한다\n  열림 --> 닫힘: 회복되면 다시 닫힌다\n  닫힘 --> 통과: 요청이 그대로 간다\n  열림 --> 즉시실패: 요청을 기다리게 두지 않는다\n  통과 --> [*]\n  즉시실패 --> [*]\n\n  state 열림 {\n    [*] --> 이_프로세스만\n    이_프로세스만 --> 이_프로세스만: 프로세스 단위라 옆 프로세스는 아직 닫혀 있을 수 있다\n  }"
+        },
+        {
+          "title": "서킷이 못 잡는 자리",
+          "question": "네트워크가 멀쩡한데 느려지면 무엇이 막는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  LOCK[\"행이나 테이블이 잠긴다\"]:::accent\n  SLOW[\"질의가 느려진다 — 연결은 멀쩡하다\"]:::list\n  SEMI[\"Semian 은 이것을 잘 못 잡는다\"]:::list\n  WHY[\"테이블 일부에만 실패를 낼 수 없고 프로세스 단위로 판단한다\"]:::quiet\n  QUEUE[\"단일 스레드 프로세스가 붙잡힌다\"]:::list\n  DBEV[\"그래서 데이터베이스가 직접 끊는다\"]:::list\n  ORM[\"끊긴 것을 앱과 ORM 이 감당해야 한다\"]:::list\n  ORPH[\"옛 Rails 는 오류를 삼켜 고아 레코드를 남긴다\"]:::list\n  LOCK --> SLOW --> SEMI --> QUEUE\n  SEMI --- WHY\n  QUEUE --> DBEV --> ORM --> ORPH"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Scaling the Freshdesk web app for high Availability",
+          "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+          "publisher": "Freshworks Engineering (Rails@Scale)",
+          "date": "2020-07-15",
+          "summary": "**단일 스레드 Passenger 프로세스로 최대 분당 약 50만 요청을 받는 Rails 앱을 어떻게 안 죽게 하는가.** 규모가 문제를 만든다 — 응답 시간이 조금만 흔들려도 요청이 줄을 서고 그것이 사용자에게 그대로 간다.\n\n**장치를 여럿 겹친다** — **MySQL DB 이벤트로 오래 도는 트랜잭션을 끊고**(최대 **25초**), **Semian 서킷 브레이커**를 MySQL·Redis·HTTP 어댑터로 붙이되 **드라이런 모드로 먼저 돌려** 오탐이 없는지 봤고, HTTP 클라이언트에 **엄격한 타임아웃**을 걸고, 나가는 호출은 **Envoy 사이드카**로 보내 속도 제한·연결 풀·재시도·캐시를 얻는다. HAProxy 에는 **블랙리스트**를 두고, 오래 걸리는 요청에는 **스레드 덤프와 함께 알림**을 띄운다.\n\n🔴 **대가를 유난히 많이 적는다** — *\"The application and the ORM must be tested against rollbacks and connection failures\"* 이고, **옛 Rails 는 연결 실패 때 오류를 삼켜 고아 레코드**를 남긴다. **Semian 은 테이블 단위로 못 자르고**(*\"cannot be configured to fail requests only to a subset of tables\"*) **프로세스 단위로 동작**해 분산 판단을 못 한다. 게다가 **Newrelic 의 explain 쿼리가 Semian 의 감시를 방해**해 그것을 꺼야 했다."
+        },
+        {
+          "title": "How Freshdesk uses HAProxy at scale",
+          "url": "https://www.freshworks.com/explore-cx/how-freshdesk-uses-haproxy-at-scale/",
+          "publisher": "Freshworks Engineering",
+          "date": "2021-08-24",
+          "summary": "**멀티테넌트의 폭발 반경이 문제다** — *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down\"*.\n\n**답은 웹 서버를 shell 이라는 논리 묶음으로 가르고 무엇을 어느 shell 로 보낼지를 여러 기준으로 정하는 것이다** — **호스트/도메인**(문제 고객의 트래픽을 통째로 뺀다), **경로**(유지보수성 백그라운드 잡은 천천히 빼도 된다), **샤드**(한 샤드가 느려지면 완충 shell 로), **헤더**(이관 트래픽). **헤더를 쓰는 근거가 좋다** — 이관은 대개 고객이 라이브로 간 뒤에 하므로 도메인으로 가르면 라이브와 이관이 같은 shell 로 간다.\n\n**요청 종류로도 가른다** — 느린 것이 빠른 것을 막지 않게 리포트(**약 300ms**)와 티켓(**약 100ms**)을 갈라 담는다. 지원 계층은 가용성 우선순위가 가장 높다.\n\n⚠️ **대가가 두 줄뿐이다** — 라우팅 규칙이 여러 종류라 운영이 복잡해지고, *\"sudden burst in traffic may, at times, increase the wait time in the queue\"*. 규모는 *\"hundreds of web servers hosted in AWS\"* 로만 적는다."
+        }
+      ]
+    }
+  ]
 }
