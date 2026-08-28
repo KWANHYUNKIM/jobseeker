@@ -8,70 +8,80 @@
 
 ## 지금 파는 중
 
-**없다 — 진행 중 회사가 없다. 완료 48곳. 큐 잔량 2/3.**
+**Adevinta (EU · 커머스/분류광고) — 49번째. 도메인 2개 · 기능 0개. 큐 잔량 1/3.**
 
-**273 은 후보 조사였다.** `--gaps` 가 [후보 조사]를 냈고 그게 맞았다. **여덟 곳을 열어
-두 곳을 올리고 여섯 곳을 접었다.**
+**274 에서 `--gaps` 가 [신규]를 지목했다** — 대기 맨 위 Adevinta 를 열어 **회사 프로파일을
+만들었다.** 본문 세 편을 읽었다.
 
-### 올린 곳 둘
+### 왜 이 회사인가 — 재는 방식이 이 사이트에서 처음이다
 
-**① Adevinta** (스페인·노르웨이 · 커머스/분류광고) — `adevinta.com/techblog/` **자체
-호스팅**. 세 편을 열었다. **⭐ `a-pragmatic-evaluation-of-software-engineering-ai-tooling`
-(2026-03-09)이 이 사이트에 특별한 값이 있다** — **엔지니어 77명 · 실제 업무 165건 · 4주**로
-AI 코딩 도구 셋을 재고(추정 대비 **43% / 24% / 1%**, 만족도 **4.2 / 3.6 / 2.8**),
-**한계를 첫머리에 적는다**(추정이 주관적이고, 한 달이라 장기 효과 미측정이며, **요금제
-차이가 결과에 영향**을 줬다). **Snap 과 정확히 반대 위치다 — Snap 은 자기가 만든 도구를
-재는데 여기는 남의 도구를 자기 업무에 붙여 재고 자를 의심한다.**
-⚠️ 글마다 편차가 있다 — data mesh 편은 **수치가 0** 이었다.
+**AI 개발 도구를 만들지 않고 산다.** 그래서 사기 전에 재는데, **벤치마크가 아니라 실제
+업무로 잰다** — **엔지니어 77명 · 실제 업무 165건 · 4주**(2025년 5~6월). 추정 시간 대비
+**약 43% / 24% / 1%**, 만족도 **4.2 / 3.6 / 2.8**.
 
-**② trivago** (독일 · 기타/여행 메타서치) — `tech.trivago.com` **자체 호스팅**, 2026 글이
-여섯 편. `how-we-cut-kafka-consumer-deployment-costs-by-83`(2026-06-12)이 **셋 다 강했다** —
-**버린 대안 셋**(*"So was switching to reactor-kafka the answer? No — it didn't help once
-deployed to staging"*), **대가**(*"In-memory delays are risky. Even when they work fine
-today, they can come back to bite you"*), **수치**(파드 **60→6, 83%** · 지연 평균 **7초**
-/최대 **30초** · **8k msg/s** · 기동 **60초→10초**). **⭐ 비어 있던 여행 자리를 채운다.**
+**⭐ 값이 나가는 것은 결과가 아니라 그 둘레의 단서다.** 회사가 **한계를 첫머리에 적는다**
+(추정이 *"can be subjective"*, *"The study lasted only 1 month, hence long term effects
+are not measured"*) 그리고 **요금제가 결과에 섞였다고 밝힌다** — 정액제 둘은 기본으로 약한
+모델을 고르고 종량제 하나는 난이도에 따라 고른다. **잰 것이 도구의 능력인지 요금제의
+설정인지가 갈리지 않는다.**
 
-### 📌 Roblox — 경로는 찾았는데 기준 미달이라 '확인해 둔 후보' 로 남겼다
+**이 사이트가 읽은 AI 개발 도구 이야기는 전부 자기가 만든 것을 자기가 재는 쪽이었다** —
+Snap 의 CodePal·Casper·Code Search 도, LinkedIn 의 코드 리뷰도. **남의 도구를 산 쪽의
+기록은 여기가 처음이다.**
 
-**최종 주소가 `about.roblox.com/newsroom/<연>/<월>/<슬러그>` 다**(`blog.roblox.com` →
-`corp.roblox.com` → `about.roblox.com`, **리다이렉트 두 번인데 본문은 다 온다**).
-두 편을 열었으나 **둘 다 버린 대안이 없고 수치가 약했다**. 대가는 적는다.
-**기준(셋 중 둘) 미달이라 접었지만 `Inside the Tech` 시리즈에 다른 편이 여럿이므로 게임
-자리가 급하면 다시 볼 값이 있다.** ⚠️ 2023~2024 글이라 최신은 아니다.
+### 도메인 둘
 
-### 접은 곳 여섯 — 이유는 `## 재시도 안 함` 에 적었다
+**① `남이 만든 도구를 자기 업무로 재본다`** — **⚠️ 본문을 한 편만 읽었다.** 기능을 쓰기
+전에 두 편 이상 읽는다(스물다섯 번 확인된 규칙). **다음에 열 것** — 목록에서 AI·평가
+계열을 `WebSearch` + `allowed_domains: ["adevinta.com"]` 으로 찾는다(운영 사실 ⑱).
 
-**Plaid · Skyscanner · Traveloka · Carousell · Expedia** 는 전부 **Medium 호스팅**이고,
-**Plaid 은 커스텀 도메인(`engineering.plaid.com`)인데도 403** 이었다. **Zepto 도 403.**
-**아프리카는 두 번째로 빈손**이다(Paystack·Flutterwave 에 이어 Jumia·Chipper·Yoco·
-Safaricom 을 찾았지만 **엔지니어링 블로그 자체가 안 나온다** — 팟캐스트와 업계 뉴스뿐).
+**② `나라마다 다른 장터를 한 벌의 규칙으로 돌린다`** — **본문 두 편을 읽었다.**
+`multi-cloud-governance-at-scale`(2024-12-17): **AWS 계정 732개 · GCP 프로젝트 425개 ·
+12명**(2019년엔 150개 미만·3명). Confluence 표로 시작했다가 *"isn't a scalable solution
+when you have hundreds of accounts"*. **버린 대안 셋**(HR 포털 API — 데이터가 관리되지
+않고 조직 계층이 기능 구조와 다르다 / ABAC 단독 — 역할 전환이 비개발자에게 부담 / AWS
+기본 알림 — 루트 메일함을 아무도 안 본다), **대가도 적는다**, **권한 집합 소프트 쿼터
+500개**. `opa-memory…kyverno`(2025-02-12): **8GB→2.7GB**, 30+ 클러스터, 그리고 대가를 한
+문장으로 — *"This approach reduces memory consumption but increases the load on the
+Kubernetes API server."*
 
-### 다음 사이클
+**⭐ 도메인 ② 는 재료가 이미 두 편이라 다음 사이클에 기능을 쓸 수 있다.**
 
-**큐가 2 이므로 `--gaps` 는 [큐 미달]이나 [보강]을 낼 수 있다** — 출력을 실제로 보고
-따른다. **큐를 하나 더 채워도 되고, 대기 둘 중 하나를 파기 시작해도 된다.**
+### ⚠️ 이 회사에서 미리 알아 둘 것
 
-**📌 Grab 보강 후보(계속 유효)** — 이미 `done` 이지만 `engineering.grab.com` 에 2026 새 글:
-**Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
-**Counter Service 저장소 이전(07-03)**. **뒤 둘은 기존 `iceberg-lake` · `counter-service`
-기능의 후속이다.**
+- **매출 실액은 확인 불가 — 못 찾은 것이 아니라 공개되지 않는다.** 2024년 Permira·
+  Blackstone 컨소시엄 공개매수로 **오슬로 A주 2024-06-05 상장폐지**. 지분(컨소시엄 다수 ·
+  eBay 약 20% · Schibsted 약 13.6%)은 **2차 보도 값이라 `추정`** 으로 뒀다.
+- **글마다 수치 밀도가 크게 다르다** — 위 세 편은 풍부한데
+  `from-lakehouse-architecture-to-data-mesh` 는 **수치가 0** 이다(273 에서 확인).
+- **⚠️ 개별 장터의 시스템 글을 아직 못 봤다** — 읽은 셋이 전부 플랫폼·도구 쪽이다.
+  **leboncoin·Marktplaats·Kleinanzeigen 의 검색·추천·정산 이야기가 없다.**
 
-**안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
-**한국 편중은 그대로 아홉.**
-**빈 자리** — 라틴아메리카 0(재시도 금지) · **게임 1**(Roblox 는 위 단서) · **아프리카 1**
-(두 번 빈손 — 사실상 재시도 금지에 가깝다) · 인도 1. **여행은 trivago 가 채운다.**
-**`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
+### 큐와 다음 회사
+
+**큐 잔량 1/3**(trivago 만 남았다). `--gaps` 가 알려 준 규칙 — **이 회사를 다 판 뒤 후보
+조사 사이클을 한 번 끼워 버퍼를 채운다**(바닥을 치고 채우면 사이클을 하나씩 버리게 된다).
+
+**trivago**(독일 · 기타/여행) — `tech.trivago.com` 자체 호스팅, 2026 글 여섯 편.
+`how-we-cut-kafka-consumer-deployment-costs-by-83` 이 셋 다 강했다(파드 **60→6, 83%** ·
+**8k msg/s** · 기동 **60초→10초**). **비어 있던 여행 자리를 채운다.**
+
+**📌 Grab 보강 후보(유효)** — 2026 새 글: Palana 2부작 · Agent platform Part 1 ·
+**Iceberg(07-10)** · **Counter Service 저장소 이전(07-03)**, 뒤 둘은 기존 기능의 후속.
+**📌 Roblox 단서** — 최종 주소 `about.roblox.com/newsroom/<연>/<월>/<슬러그>`, 본문은 오는데
+두 편 다 버린 대안이 없어 기준 미달로 접었다. **게임 자리가 급하면 다른 편을 연다.**
+**안 열어 본 후보** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · VNG.
+**빈 자리** — 라틴아메리카 0 · **게임 1** · **아프리카 1**(두 번 빈손) · 인도 1.
+**한국 편중 아홉.** **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao
+`동기화·다중 기기`.
 
 ### 비교 문서 재료
 
-- **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — **Snap 하나가 다섯 재료를 준다**
-  (자를 못 구해 "못 잰다" 고 적은 GNSS 는 이 사이트에 처음, 잴 수 있는 쪽에서는 세 자리
-  수치, 범위를 다른 편에서 밝히기, 자를 만들고 결과가 나쁘다고 적기). **⭐ 여기에 Adevinta 가
-  붙으면 축이 완성된다** — **자기 도구가 아니라 남의 도구를 자기 업무로 재고, 그 자의 한계를
-  첫머리에 적는다.**
-- **⭐ `기계가 그렇다는데`** — Snap 이 두 답(`code-review-agent` · `agentic-code-search`,
-  후자는 *"a stronger model means better search with nothing for us to change"* 라는 새
-  논거)을 주고, **Adevinta 가 세 번째로 붙는다 — 유일하게 회의적인 쪽에서.**
+- **⭐⭐ `무엇을 좋다고 부를 것인가` / `재 보고 나서`** — Snap 이 다섯 재료를 주고
+  **Adevinta 가 축을 완성한다**: **남의 도구를 자기 업무로 재고, 자의 한계를 결과보다 먼저
+  적으며, 요금제가 결과에 섞였다는 것까지 밝힌다.**
+- **⭐ `기계가 그렇다는데`** — Snap 둘(`code-review-agent` · `agentic-code-search`) +
+  **Adevinta 하나. Adevinta 만 회의적인 쪽이고, 유일하게 사는 쪽이다.**
 - `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯) ·
   `되돌릴 수 있는 것을 먼저 한다` 보강.
 

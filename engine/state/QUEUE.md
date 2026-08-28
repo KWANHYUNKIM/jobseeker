@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Adevinta** | EU · 커머스(분류광고 마켓플레이스) | **274 회사 프로파일 완료. 도메인 2개 · 기능 0개.** ① `남이 만든 도구를 자기 업무로 재본다`(AI 도구 평가 — **본문 1편 확인**) · ② `나라마다 다른 장터를 한 벌의 규칙으로 돌린다`(클라우드 거버넌스 + 정책 엔진 — **본문 2편 확인**). **⚠️ 매출 실액은 확인 불가** — 2024 상장폐지로 공개되지 않는다. **⚠️ 개별 장터(leboncoin·Marktplaats 등)의 시스템 글을 아직 못 봤다** |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Adevinta** | 스페인·노르웨이 · 커머스(분류광고 마켓플레이스) | `https://adevinta.com/techblog/` — **자체 호스팅**(Medium 미러가 따로 있지만 본문이 자기 도메인에서 다 온다) | ✅ 목록·본문 모두 열림 | **273 에서 세 편을 열어 확인했다.** ⭐ **`a-pragmatic-evaluation-of-software-engineering-ai-tooling`(2026-03-09)가 이 사이트에 특별한 값이 있다** — **엔지니어 77명 · 실제 업무 165건 · 4주**로 AI 코딩 도구 셋을 재고 결과를 낸다(추정 대비 **43% / 24% / 1%**, 만족도 **4.2 / 3.6 / 2.8**). **그리고 한계를 첫머리에 적는다** — 추정이 *"can be subjective"* 이고 *"The study lasted only 1 month, hence long term effects are not measured"* 이며 **요금제 차이가 결과에 영향**을 줬다(정액제 둘은 기본으로 약한 모델을 고르고 종량제 하나는 난이도에 따라 고른다). **Snap 과 정확히 반대 위치다** — Snap 은 자기가 만든 도구를 재는데 여기는 **남의 도구를 자기 업무에 붙여 재고 자를 의심한다**. 다른 편도 선다 — `opa-memory-usage…kyverno` 는 대가를 명시하고(*"reduces memory consumption but increases the load on the Kubernetes API server"*) **8GB→2.7GB · 30+ 클러스터** 를 낸다. ⚠️ `from-lakehouse-architecture-to-data-mesh` 는 **수치가 0** 이라 글마다 편차가 있다 |
 | **trivago** | 독일 · 기타(여행 메타서치) | `https://tech.trivago.com/` — **자체 호스팅**. 최신 2026-08-12, 2026 글이 여섯 편 | ✅ 목록·본문 모두 열림 | **273 에서 한 편을 열어 확인했고 셋 다 강했다.** `how-we-cut-kafka-consumer-deployment-costs-by-83`(2026-06-12) — **버린 대안을 셋 적는다**(*"Switching libraries wasn't a real fix"* · *"So was switching to reactor-kafka the answer? No — it didn't help once deployed to staging"* · 한쪽만 고치면 *"lag persists"*), **대가도 적고**(*"We wouldn't ship numbers that aggressive to production"* · *"In-memory delays are risky. Even when they work fine today, they can come back to bite you"*), **수치가 풍부하다**(파드 **60→6, 83% 감소** · 평균 지연 **7초**/최대 **30초** · **8k msg/s** · 파드 기동 **60초→10초**). **⭐ 여행 자리가 비어 있었다.** 다른 후보 편 — `From Always-On to On-Demand: Scaling Kafka Sinks with KEDA`(2026-02-18) · `Unifying Internal APIs: A Different Use Case for GraphQL Gateways`(2026-03-27) |
 
 
