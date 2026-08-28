@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Snap** | US · 소셜(카메라·AR) | **269 기능 3개** — `code-review-agent`(결정 8) · `mutual-gaze-align`(결정 8) · `agentic-code-search`(똑똑한 색인 대신 똑똑한 반복, 결정 8). **🔴 3부작을 셋 다 읽어 닫혔다** — Part 2 가 셋을 잇는 자리다. **🔴 설계 원천이 다른 회사 제품이다**(*"Claude Code doesn't query a vector store. It runs grep… The intelligence is in the loop"*). **RAG 거절 이유 일곱 개.** **⚠️ 미독 3편** — `/spatial_intelligence` · `/specs_experiences` · `/spectacles_supabase`. **⚠️ 블로그 8쪽 중 1쪽만 봤다.** **⚠️ 매출 실액·DAU 미확인** |
+| **Snap** | US · 소셜(카메라·AR) | **270 기능 4개** — `code-review-agent` · `mutual-gaze-align` · `agentic-code-search` · `spatial-benchmark`(3D 를 아는지 재는 자를 만든다). **도메인 ① 2개 · 도메인 ② 2개.** **🔴 270 의 발견 — 자를 만들어 놓고 결과가 나쁘다고 적는다**(*"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not"*, 16개 모델 전부 틀린 문항 2개). **🔴 앞 관찰 정정** — `/specs_experiences` 는 다른 Snap 글을 링크한다. **⚠️ 미독 3편** — `/spatial_interaction` · `/spectacles_supabase` · (블로그 2쪽 이후). **⚠️ 매출 실액·DAU 미확인** |
 
 ## 대기
 

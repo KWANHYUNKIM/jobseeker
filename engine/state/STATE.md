@@ -8,64 +8,56 @@
 
 ## 지금 파는 중
 
-**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 3개. 큐 잔량 0/3.**
+**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 4개(도메인마다 2개). 큐 잔량 0/3.**
 
-**269 에서 사용자가 직접 지시했다** — Part 2 `Code Search` 를 읽고 도메인 ① 의 두 번째
-기능을 썼다: `agentic-code-search`(똑똑한 색인 대신 똑똑한 반복), **결정 8개**.
-**3부작이 셋 다 읽혀 닫혔다.**
+**270 에서 도메인 ② 의 두 번째 기능을 썼다** — `spatial-benchmark`(3D 를 아는지 재는 자를
+만든다), **결정 6개** 전부 대가가 붙었다.
 
-### 🔴 269 의 발견 ① — 설계의 출처가 다른 회사 제품이다
+**⚠️ `--gaps` 는 [후보 조사]를 냈다**(빈 도메인이 없어서). **그러나 회사를 갈아타지 않는다는
+규칙이 위이므로 Snap 을 계속 팠다**(CLAUDE.md). 그리고 재료가 실제로 있었다 — **"얕을 수
+있다" 는 예상이 또 틀렸다**(운영 사실 ⑫ 가 **열다섯 번째**로 확인).
 
-Code Search 는 아키텍처의 근거로 **Claude Code 가 실제로 어떻게 동작하는지**를 든다 —
-*"Claude Code doesn't query a vector store. It runs grep. It runs it many times… The model
-itself decides what to search for, evaluates results, and iterates. **The retrieval system
-is dumb. The intelligence is in the loop.**"* 그리고 물었다: *"What if remote agents could
-grep across all of Snap's code, the way Claude Code greps a local checkout?"*
-**이 사이트에서 남의 제품의 동작 방식을 자기 인프라 설계의 근거로 대놓고 적은 사례는 여기가
-처음이다.**
+### 🔴 270 의 발견 ① — 자를 만들어 놓고 결과가 나쁘다고 적는다
 
-### 🔴 269 의 발견 ② — RAG 를 버린 이유가 일곱이다
+공간 벤치마크는 **7개 범주 80문항 · 모델 16개**를 돌리고, **추론을 더 시켜도 대부분 안
+늘었다**고 적는다 — 여럿이 **90.0% 에서 평평**, **Claude Opus 4.6 과 GPT-5.2 는 2점 하락**.
+회사의 결론: *"The honest read is not that heavy reasoning unlocked new spatial
+competence. It mostly did not."* **그리고 16개 모델이 전부 틀린 문항이 둘 있다**(부호 있는
+요 각도 · 좌측 스트레이프 벡터).
 
-정확도 우선(*"a confident wrong answer"*) · 벡터 DB 는 상태를 가진 시스템이라 운영 표면이
-*"roughly doubled… for marginal user-facing benefit"* · 임베딩이 GPU 를 태운다 · 사람도
-에이전트도 정확 일치를 더 자주 원한다 · 정규식은 벡터로 **표현 자체가 안 된다** ·
-*"RAG flattens that into a single non-iterative retrieval step"* · **그리고 가장 값나가는
-이유** — *"a stronger model means better search with nothing for us to change. RAG can't
-ride that curve; its ceiling is the retriever, not the reasoner."*
-**대가도 적는다** — 키워드 없는 모호한 질문에서는 *"takes seconds, not milliseconds"*.
+**이 회사가 자를 다루는 방식이 세 번째다** — CodePal 은 **사람 피드백으로 골든셋을 만들고
+범위를 밝혔고**(*"not on live traffic"*), GNSS 는 **참값을 못 구해 못 잰다고 적었고**,
+여기서는 **없는 자를 만들고 결과가 실망스럽다고 적는다.** `open_questions` 에 넣었다.
 
-### 🔴 269 의 발견 ③ — Part 2 가 Part 1 의 지표에 단서를 더한다
+### ⚠️ 270 의 발견 ② — 공개판이 아는 실패를 안 잰다
 
-CodePal 이 '병합 전에 잡았다' 고 말할 수 있는 이유가 *"true only because reviews run on
-open PRs, **not because anything is build-verified**."* **267 의 오탐 0% 는 같은 글 안에서
-*"not on live traffic"* 으로 좁혔는데 이 단서는 다음 편에 있다** — **이 회사는 범위를
-밝히되 항상 같은 글에서 밝히지는 않는다.** `open_questions` 에 적었다.
+회사가 *"Once the scene JSON gets large, models often become less reliable"* 를 적으면서
+**공개 벤치마크는 그 조건을 일부러 뺐다** — *"we intentionally kept the public benchmark
+tighter."* **알고 있는 실패를 자가 재지 않는다**(이 지적은 이 사이트의 것).
 
-### 3부작이 셋 다 확인됐다
+### 🔴 270 의 정정 — 268 의 내 관찰에 반례가 나왔다
 
-Part 2 가 셋을 잇는 자리다 — Part 1(CodePal)이 *"The first production consumer of code
-search"* 였고, Part 3(Casper)은 *"lean on code search to move across all of Snap's code at
-a scale no engineer could by hand"* 한다. **CyberAgent·Wayfair·컬리에서 관찰한 '글끼리
-서로를 언급하지 않는다' 의 정반대를 세 번 다 확인했다.**
+268 에 *"Specs/AR 글은 다른 Snap 글을 전혀 언급하지 않는다"* 고 적었는데,
+**`/specs_experiences` 는 링크한다**: *"see the earlier Snap Engineering article on spatial
+interaction for Spectacles"*(`/spatial_interaction`). **관찰은 GNSS·EyeConnect 두 편에서만
+참이었다.** `open_questions` 를 고쳐 적었다. **다만 CLAD 는 같은 회사의 CodePal·Code
+Search·Casper 를 전혀 안 부른다** — 같은 AI 개발 도구인데도 그렇다.
 
-### 다음 사이클 — 닫을지 더 팔지 정한다
+### 다음 사이클 — 닫는 쪽이 유력하다
 
-**두 도메인이 다 찼고 기능이 셋이다.** `--gaps` 는 [진행 중 확장]을 안 낼 것이다.
-회사를 갈아타지 않는다는 규칙이 위이므로 **미독 3편 중 하나를 더 팔지, Snap 을 `done` 으로
-닫을지 먼저 정한다.**
+**네 도메인 칸이 다 찼고 기능이 넷이다.** `--gaps` 는 이번에도 [후보 조사]를 낼 것이다.
+**남은 재료가 얇으면 Snap 을 `done` 으로 닫고**(회사 `status` · `index.json` status ·
+**QUEUE 진행 중 → 완료**, 완료 섹션은 **불릿**), **닫으면 다음 사이클이 곧바로 후보 조사다.**
 
-- **⚠️ 미독 3편** — `/spatial_intelligence`(LLM 공간 지능 측정, 2026-06-17) ·
-  `/specs_experiences`(2026-08-20) · `/spectacles_supabase`(Snap Cloud, Supabase 기반
-  백엔드 — *"building compelling experiences for AR glasses often demands more than what
-  runs on-device"*). **앞의 둘은 도메인 ②(Specs/AR)의 두 번째 기능 재료가 될 수 있다.**
-- **닫는다면 `business_model` 에 적을 패턴 가설 셋** — ① **자기 지표의 범위를 밝힌다**
-  (CodePal 오탐 0% 의 held-out 단서 · GNSS 의 "못 잰다" · Code Search 의 build-verified
-  단서) ② **묶음마다 글끼리 잇는 방식이 다르다**(AI 도구 3부작은 서로를 부르는데 Specs 둘은
-  단절) ③ **같은 연작 안에서도 대가의 밀도가 크게 다르다**(CodePal 다섯 줄 · Code Search
-  일곱 이유 vs **Casper 0줄**).
-- **⚠️ 블로그 8쪽 중 1쪽만 봤다**(JS 페이지네이션, 운영 사실 ⑬). **다만 `WebSearch` 에
-  `allowed_domains: eng.snap.com` 을 걸면 목록 밖 글을 찾을 수 있다**(268 에서 `/eyeconnect`
-  를 그렇게 찾았다) — **운영 사실로 굳는다.**
+- **⚠️ 미독** — `/spatial_interaction`(CLAD 글이 링크한 편) · `/spectacles_supabase`
+  (Snap Cloud, Supabase 기반 — *"often demands more than what runs on-device"*) ·
+  블로그 2쪽 이후.
+- **닫는다면 `business_model` 에 적을 패턴 넷** — ① **자를 어떻게 세울지가 반복해서
+  문제가 된다**(골든셋 만들기 / 못 잰다고 적기 / 자를 만들고 결과가 나쁘다고 적기) ②
+  **묶음마다 글끼리 잇는 방식이 다르다**(3부작은 번호를 달고 서로를 부르는데 Specs 는
+  느슨하고 CLAD 는 3부작을 안 부른다) ③ **같은 연작 안에서도 대가의 밀도가 크게 다르다**
+  (CodePal 다섯 줄 · Code Search 는 RAG 거절 이유 **일곱** vs **Casper 는 0줄**) ④
+  **설계의 출처로 남의 제품 동작을 든다**(Code Search → Claude Code 의 grep).
 - **⚠️ 매출 실액·DAU 미확인.** IR 홈에 MAU **971백만** · 총매출 **19% 성장**(Q2 2026) 뿐.
   **IR 보도자료 목록에서 링크를 눌러 들어간다** — URL 추측은 두 번 404(운영 사실 ⑰).
 
@@ -83,12 +75,12 @@ Carousell · VNG.
 **`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
 
 **비교 문서 재료** — `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로 정하는가`(여섯)
-· **⭐ `기계가 그렇다는데` 에 Snap 이 두 답을 준다**(`code-review-agent` 와
-`agentic-code-search` — **후자는 '모델이 좋아지면 내 것도 좋아진다' 는 새로운 논거다**) ·
-`되돌릴 수 있는 것을 먼저 한다` 보강 · **⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서` 에
-Snap 이 세 재료를 준다** — **자를 못 구해 "못 잰다" 고 적은 사례(GNSS)는 이 사이트에
-처음이고**, 잴 수 있는 쪽(EyeConnect)에서는 세 자리 수치를 내며, **범위를 밝히되 다른 편에서
-밝히는 경우(Code Search → CodePal)도 있다.**
+· **⭐ `기계가 그렇다는데` 에 Snap 이 두 답**(`code-review-agent` 와 `agentic-code-search` —
+후자는 **'모델이 좋아지면 내 것도 좋아진다'** 는 새 논거) · `되돌릴 수 있는 것을 먼저 한다`
+보강 · **⭐⭐ `무엇을 좋다고 부를 것인가`/`재 보고 나서` 에 Snap 이 네 재료를 준다** —
+**자를 못 구해 "못 잰다" 고 적은 사례(GNSS)는 이 사이트에 처음**이고, 잴 수 있는 쪽
+(EyeConnect)에서는 세 자리 수치를 내며, **범위를 다른 편에서 밝히는 경우**(Code Search →
+CodePal)가 있고, **자를 만들고 결과가 나쁘다고 적는 경우**(공간 벤치마크)까지 있다.
 
 ## 다음 선택지
 
@@ -273,6 +265,12 @@ Yelp 의 광고 매출 도메인은 한 편만 읽었을 때 *"버린 대안이 
 
 - 공개 자료가 **범위를 한정해서만** 말하는 경우(알고리즘 자체는 비공개 등), `business.why`
   맨 앞에 **범위 주의**를 단다. 선례: 카카오 `taxi-dispatch`, Netflix `adaptive-playback`.
+
+**⑱ 블로그 페이지네이션을 못 뚫어도 `WebSearch` 에 `allowed_domains` 를 걸면 목록 밖 글을
+찾을 수 있다.** 268 에서 `eng.snap.com` 의 `?page=2` 가 1쪽과 같은 것을 돌려주고 `/blog/2`
+는 404 였는데, `WebSearch(allowed_domains=["eng.snap.com"])` 로 `/eyeconnect` ·
+`/spectacles_supabase` 를 찾아냈다. **목록이 JS 로 도는 사이트에서 먼저 시도할 것.**
+
 
 ## 재시도 안 함
 

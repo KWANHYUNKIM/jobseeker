@@ -225,7 +225,7 @@
     },
     {
       "name": "얼굴 앞에 컴퓨터를 놓는다",
-      "why": "**2026-06-16 에 SPECS 증강현실 안경을 출시했다** — 보도자료 제목이 *\"Snap Inc. Debuts SPECS Augmented Reality Glasses to Make Computing More Human\"* 이다.\n\n**안경을 팔면 문제가 화면 밖으로 나간다**(이 연결은 이 사이트의 해석이다). 블로그에 **실외 AR 추적(GNSS, 2026-07-10)** 과 **LLM 의 공간 지능 측정(2026-06-17)** 이 올라오고, **AR 경험을 더 빨리 만드는 도구(2026-08-20)** 도 나온다.\n\n**이 사이트의 다른 소셜은 전부 화면 안에서 끝난다** — 인스타그램은 피드, Discord 는 음성, 하이퍼커넥트는 실시간 영상 매칭이다. **바깥 세계의 좌표를 다루는 회사는 여기가 처음이다.**\n\n**268 에서 본문 두 편을 읽었다**(GNSS 추적 · EyeConnect). **둘 다 버린 대안을 셋 넷씩 적고 대가를 길게 적는다.**\n\n**🔴 그런데 두 글이 자를 정반대로 다룬다**(이 대비는 이 사이트의 것이다). **EyeConnect 는 숫자를 낸다** — 90% 가 **2.6초** 안에 정렬되고 5m 안 최종 오차 중앙값이 **2.2cm** 다. **GNSS 는 숫자를 못 낸다고 밝힌다** — *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"* 라 평가가 *\"qualitative observations… rather than absolute error statistics\"* 다.\n\n**갈린 자리는 기술 난이도가 아니라 정답을 어디서 구하느냐다** — EyeConnect 는 **두 기기의 관측을 서로 대조**하면 되지만, GNSS 는 **지구 위 참값**을 따로 구해야 한다(이 설명은 이 사이트의 해석이다). 이 회사의 다른 도메인에서도 같은 축이 나온다 — CodePal 은 사람 피드백으로 골든셋을 만들어 재고, **그 자의 범위까지 밝힌다**.",
+      "why": "**2026-06-16 에 SPECS 증강현실 안경을 출시했다** — 보도자료 제목이 *\"Snap Inc. Debuts SPECS Augmented Reality Glasses to Make Computing More Human\"* 이다.\n\n**안경을 팔면 문제가 화면 밖으로 나간다**(이 연결은 이 사이트의 해석이다). 블로그에 **실외 AR 추적(GNSS, 2026-07-10)** 과 **LLM 의 공간 지능 측정(2026-06-17)** 이 올라오고, **AR 경험을 더 빨리 만드는 도구(2026-08-20)** 도 나온다.\n\n**이 사이트의 다른 소셜은 전부 화면 안에서 끝난다** — 인스타그램은 피드, Discord 는 음성, 하이퍼커넥트는 실시간 영상 매칭이다. **바깥 세계의 좌표를 다루는 회사는 여기가 처음이다.**\n\n**268 에서 본문 두 편을 읽었다**(GNSS 추적 · EyeConnect). **둘 다 버린 대안을 셋 넷씩 적고 대가를 길게 적는다.**\n\n**🔴 그런데 두 글이 자를 정반대로 다룬다**(이 대비는 이 사이트의 것이다). **EyeConnect 는 숫자를 낸다** — 90% 가 **2.6초** 안에 정렬되고 5m 안 최종 오차 중앙값이 **2.2cm** 다. **GNSS 는 숫자를 못 낸다고 밝힌다** — *\"Without a reliable, high-precision reference, we cannot provide definitive numerical accuracy metrics\"* 라 평가가 *\"qualitative observations… rather than absolute error statistics\"* 다.\n\n**갈린 자리는 기술 난이도가 아니라 정답을 어디서 구하느냐다** — EyeConnect 는 **두 기기의 관측을 서로 대조**하면 되지만, GNSS 는 **지구 위 참값**을 따로 구해야 한다(이 설명은 이 사이트의 해석이다). 이 회사의 다른 도메인에서도 같은 축이 나온다 — CodePal 은 사람 피드백으로 골든셋을 만들어 재고, **그 자의 범위까지 밝힌다**.\n\n**270 에서 두 편을 더 읽었다.** **🔴 그리고 앞 사이클의 내 관찰에 반례가 나왔다** — 268 에 *\"Specs/AR 글은 다른 Snap 글을 전혀 언급하지 않는다\"* 고 적었는데, **`/specs_experiences` 는 링크한다**: *\"see the earlier Snap Engineering article on spatial interaction for Spectacles.\"* **관찰은 GNSS·EyeConnect 두 편에서만 참이었다**(이 정정은 이 사이트의 것이다).",
       "tech": [
         {
           "tech": "실외에서 AR 을 붙잡아 둔다 — GNSS·VIO·자력계 그래프 융합",
@@ -256,10 +256,26 @@
               "summary": "**8페이지 목록이고 최신이 2026-08-20 이다.** 1쪽 6편 — `/specs_experiences`(SPECS 경험을 더 빨리 만들기, 2026-08-20) · `/casper`(Snap 의 AI 팀메이트 부대, 2026-07-28) · `/specs_gnss`(GNSS 로 실외 AR 추적, 2026-07-10) · `/code_search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01) · `/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17) · `/codepal`(AI 코드 리뷰어, 2026-06-05). **묶음이 둘로 뚜렷하다** — **AI 개발 도구 넷**(CodePal · Casper · Code Search · SPECS 경험 제작)과 **Specs/AR 둘**(GNSS 추적 · 공간 지능 측정). **⭐ CodePal 과 Casper 는 명시적으로 3부작의 일부다** — *\"how Snap is building toward end-to-end autonomous software delivery\"*. ⚠️ **1쪽에 Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.** ⚠️ **2쪽 이후를 못 봤다** — `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 404 다(페이지네이션이 JS 로 도는 것으로 보인다)."
             }
           ]
+        },
+        {
+          "tech": "AI 가 Lens Studio 를 몰아 공간 앱을 만든다 — CLAD",
+          "solves": "**공간 앱은 손·시선·음성·모바일 컨트롤·몸의 움직임이 한꺼번에 입력이라** 웹이나 모바일과 만드는 방식이 다르다. **세 층으로 받친다** — **SIK**(상호작용과 이벤트) · **SPECS UI Kit**(버튼·슬라이더·스크롤 뷰) · **CLAD**(Lens Studio 에 직접 붙어 장면을 만들고 툴킷을 엮고 디버그하고 반복한다). **MCP 로 붙어** Claude Code · Codex · Cursor 를 지원하고, 테스트는 **LEAF** 와 Bitmoji IK 인터랙터가 한다. **핵심은 새로 지어내지 않는 것이다** — *\"it reaches for the same battle-tested SIK and UI Kit components a developer would, which is exactly why the output holds up on hardware.\"* 동작하는 Lens 앱 **일곱 개를 각각 하루 정도에** 만들었다.",
+          "limits": "**빨라진 자리를 좁혀 적는다** — *\"standing up a scene, wiring interactions, and building out UI panels went from hours to minutes\"* 이고, **사람이 남는 곳은 공간 배치 조율과** *\"catching cases where the first generated layout was technically correct but didn't feel right on device\"* 다. **⚠️ 실패율도 성공률도 없다.** **⭐ 이 항목은 두 도메인에 걸친다** — AI 개발 도구이면서 Specs 를 만드는 일이다(이 지적은 이 사이트의 것이다). ⚠️ **그런데 3부작(CodePal·Code Search·Casper)과는 서로를 전혀 안 부른다** — 같은 회사의 AI 개발 도구인데도 그렇다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building SPECS Experiences Faster",
+              "url": "https://eng.snap.com/specs_experiences",
+              "publisher": "Snap Engineering",
+              "date": "2026-08-20",
+              "summary": "**공간 앱은 만드는 방식이 다르다** — *\"the canvas is the world around the wearer, and the input model is hands, gaze, voice, mobile controls, and physical motion all at once. Get it wrong and the experience feels laggy, unreadable, or unstable.\"* **세 층** — **SIK**(핀치·잡기·찌르기·호버·손·모바일 컨트롤과 이벤트) · **SPECS UI Kit**(버튼·슬라이더·스위치·프레임·텍스트 입력·스크롤 뷰) · **CLAD**(Closed Loop Agentic Development — **Lens Studio 에 직접 붙어** 장면을 만들고 두 툴킷을 엮고 디버그하고 반복한다). **핵심 결정은 만들지 않고 가져다 쓰는 것이다** — CLAD 는 상호작용을 새로 지어내지 않고 *\"it reaches for the same battle-tested SIK and UI Kit components a developer would, which is exactly why the output holds up on hardware.\"* **버린 대안** — AI 를 범용 조수로 쓰는 것. 대신 도메인 지식을 *\"reusable, composable skills\"* 로 담았다. **MCP 로 붙어** Claude Code · Codex · Cursor 를 지원한다. 테스트는 **LEAF**(Lens Evaluation and Automation Framework)와 Bitmoji IK 인터랙터. **수치는 하나** — 동작하는 Lens 앱 **일곱 개를 각각 하루 정도에** 만들었다. **대가를 적는다** — 빨라진 것은 *\"standing up a scene, wiring interactions, and building out UI panels went from hours to minutes\"* 이고, **사람의 판단이 남는 곳은 공간 배치 조율과** *\"catching cases where the first generated layout was technically correct but didn't feel right on device\"* 다. ⚠️ **실패율도 성공률도 없다.** **🔴 그리고 이 글은 다른 Snap 글을 링크한다** — *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`)."
+            }
+          ]
         }
       ],
       "features": [
-        "mutual-gaze-align"
+        "mutual-gaze-align",
+        "spatial-benchmark"
       ]
     }
   ],
@@ -274,7 +290,8 @@
     "**Specs 도메인의 본문을 한 편도 안 읽었다.** `World-scale Outdoor AR Tracking with GNSS`(2026-07-10)와 `Measuring Spatial Intelligence in LLMs`(2026-06-17)를 **제목만 보고 도메인을 열었다.** 기능을 쓰기 전에 두 편 이상 읽는다.",
     "**SPECS 의 판매량·가격·매출 기여를 확인하지 못했다.** 출시 사실(2026-06-16)만 확인했다.",
     "**같은 연작인데 글마다 대가의 밀도가 다르다.** CodePal 은 **대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는데**(*\"the held-out golden dataset, not on live traffic\"*), **Casper 는 대가를 한 줄도 안 적고 수치도 둘뿐이다**(*\"thousands of mergeable PRs each week\"* · *\"hundreds of custom Casper agents\"*). **PR 을 여는 쪽이 리뷰하는 쪽보다 자랑할 것이 많아서인지, 아직 겪은 게 적어서인지는 알 수 없다**(이 관찰은 이 사이트의 것이다). **Part 2 인 Code Search 는 아직 안 읽었다.**",
-    "**⚠️ Specs/AR 쪽 두 글은 다른 Snap 글을 전혀 언급하지 않는다.** AI 개발 도구 쪽(CodePal·Casper·Code Search)이 3부작 번호를 달고 서로를 부르는 것과 대비된다 — **같은 회사 안에서도 묶음마다 다르다**(이 관찰은 이 사이트의 것이다). ⚠️ **`/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17)와 `/specs_experiences`(2026-08-20), `/spectacles_supabase`(Snap Cloud) 는 아직 안 읽었다.** **269 에서 3부작은 셋 다 읽어 닫혔다.**"
+    "**⚠️ Specs/AR 쪽이 서로를 부르는 정도가 글마다 다르다 — 270 에서 앞 관찰을 정정한다.** 268 에 *\"Specs/AR 글은 다른 Snap 글을 전혀 언급하지 않는다\"* 고 적었는데, **`/specs_experiences` 는 링크한다**: *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`). **관찰은 GNSS·EyeConnect 두 편에서만 참이었다**(이 정정은 이 사이트의 것이다). **다만 AI 개발 도구 3부작처럼 번호를 달고 서로를 부르지는 않고, `/specs_experiences` 의 CLAD 는 같은 회사의 CodePal·Code Search·Casper 를 전혀 안 부른다** — 같은 AI 개발 도구인데도 그렇다. **⚠️ `/spatial_interaction` 과 `/spectacles_supabase` 는 아직 안 읽었다.**",
+    "**⚠️ 자를 만들고 결과가 나쁘다고 적은 사례가 이 회사에서 세 번째 종류다.** CodePal 은 **사람 피드백으로 골든셋을 만들고 그 범위를 밝혔고**(*\"not on live traffic\"*), GNSS 는 **참값을 못 구해 못 잰다고 적었고**, 공간 벤치마크는 **없는 자를 만들어 놓고 결과가 실망스럽다고 적는다** — *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* **잘한다는 것을 무엇으로 부를지가 이 회사에서 반복해서 문제가 된다**(이 정리는 이 사이트의 것이다)."
   ],
   "sources": [
     {
@@ -325,6 +342,20 @@
       "publisher": "Snap Engineering",
       "date": "2026-07-01",
       "summary": "**3부작의 Part 2 이고, 셋을 잇는 자리가 바로 여기다.** 문제는 규모다 — *\"thousands of repos across multiple organizations: millions of files and close to a terabyte of source\"* 이고, 원격 에이전트는 *\"have no working tree to lean on at all\"* 이라 저장소를 하나씩 클론해 grep 할 수 없다. 옛 도구는 *\"a single VM regex tool that couldn't scale past one machine's memory, went dark during reindexing, and had no story for AI agents\"* 였다. **에이전트가 답해야 하는 질문 둘** — *\"Which repo(s) should I be editing?\"* 와 *\"Is there prior art for this?\"*(없으면 *\"agents reinvent solutions or, worse, propose changes that conflict with how the rest of the org already does things\"*).\n\n**🔴 설계 원천을 다른 회사 제품으로 명시한다** — *\"Claude Code doesn't query a vector store. It runs grep. It runs it many times. It greps for an error string, reads a few hits, refines its query, greps again. The model itself decides what to search for, evaluates results, and iterates. **The retrieval system is dumb. The intelligence is in the loop.**\"* 그래서 물었다: *\"What if remote agents could grep across all of Snap's code, the way Claude Code greps a local checkout?\"*\n\n**🔴 RAG 를 버렸고 이유가 일곱이다** — ① *\"For code, the failure that hurts most is a confident wrong answer. We deliberately traded some speed for accuracy\"* ② 벡터 DB 는 *\"a stateful system you have to operate, secure, scale, and keep consistent\"* 라 운영 표면이 *\"roughly doubled… for marginal user-facing benefit\"* ③ 임베딩은 코드가 바뀔 때마다 *\"burn GPU compute\"* ④ *\"Engineers and agents both want exact matches more often than fuzzy ones\"* ⑤ `func .*Handler` 같은 정규식은 *\"a vector store has no way to express\"* ⑥ *\"RAG flattens that into a single non-iterative retrieval step\"* ⑦ **모델이 좋아지면 검색도 좋아진다** — *\"a stronger model means better search with nothing for us to change. RAG can't ride that curve; its ceiling is the retriever, not the reasoner.\"* **대가도 적는다** — 키워드로 붙잡을 게 없는 모호한 질문에서는 임베딩이 한 번에 끝나는데 이쪽은 *\"takes seconds, not milliseconds\"*. 나중에 **더하기로**(*\"additive, not the foundation\"*) 열어 둔다.\n\n**구조** — **Zoekt**(Sourcegraph 의 트라이그램 엔진)를 쓴다. 인덱스를 메모리 매핑하고 대규모 정규식에 빠르며 **언어 무관**하다: *\"it indexes text straight from a git tree… no build integration, no compiler plugin, no language server.\"* 빌드가 필요한 **Kythe 는** *\"a non-starter at this scale\"* 이고 *\"We didn't try to write our own.\"* **저장소 단위 샤딩**(한 저장소는 한 샤드에 통째로) — *\"a regex either matches a file or it doesn't, with no cross-shard merging at the file level\"*. 새 저장소는 데이터가 가장 적은 샤드로 가고, 진실은 오브젝트 스토리지의 매니페스트이며 샤드가 주기적으로 폴링해 맞춘다. **무중단 갱신** — 새 버전을 옛것 옆에 내려받고 **원자적으로 한 번에 교체**한다: *\"A query always hits exactly one complete index: never a half-written one, never none.\"* **증분 재색인** — 바뀐 저장소만 다시 하고, 대부분의 푸시는 몇 파일만 건드리므로 **델타를 만들어 이전 것 위에 쌓는다**: *\"A one-line change to a giant monorepo costs a one-line re-index, not a full rebuild.\"*\n\n**표면 둘** — **정확 검색**(정규식·리터럴·심볼, **p95 1초 미만 목표**)과 **AI 검색**(자연어). AI 검색은 RAG 가 아니라 **모델이 정확 검색을 여러 번 계획해 돌리고 종합한다** — *\"A typical AI search runs 5–10 underlying exact searches before producing an answer.\"* 회사의 한 줄: *\"We didn't build two retrieval systems. We built one fast retrieval primitive and let an agent compose it into something semantic.\"*\n\n**에이전트를 1등 사용자로 놓았다** — **MCP 서버로 노출**해 *\"any MCP-capable agent can call it with one config line. That includes Claude Code, Cursor, Codex, Casper (our internal remote coding agent), and CodePal (our AI code reviewer). … No custom integration per agent.\"* 그리고 **신원을 전파한다** — *\"Agents inherit their human user's repo access. A search only returns hits the calling user is allowed to see.\"*\n\n**🔴 Part 1 과의 연결이 이 글의 중심이다** — *\"The first production consumer of code search wasn't an engineer at a search box. It was CodePal, our AI code review tool (covered in Part 1 of this series).\"* 차별적 능력은 **저장소를 넘는 파급 범위**다: 모델이 *\"who calls this symbol, across every repo at Snap?\"* 을 물을 수 있고, **PR 이 건드리지도 않은 저장소의 호출부까지** 돌려받는다. 리뷰 시점에는 **그 커밋의 색인을 즉석에서 만드는데** 기존 심볼 해석·컨텍스트 구성과 **병렬로** 돌아 *\"the work overlaps rather than stacking up\"*. `find_callers` 같은 상위 도구도 별도 색인이 아니라 **같은 에이전트 루프**를 탄다. **Part 3 과도 잇는다** — *\"the fleet of autonomous agents we'll cover in Part 3, which lean on code search to move across all of Snap's code at a scale no engineer could by hand.\"* 결과로 *\"Remote agents stopped cloning\"* 을 적는다.\n\n**⚠️ 한계** — 새 저장소는 *\"waits for the daily batch that handles onboarding and shard assignment\"* · 샤드 이동은 *\"a handful of times a year, if that\"* · **그리고 Part 1 에 대한 단서를 하나 흘린다**: CodePal 의 '병합 전에 잡았다' 는 *\"true only because reviews run on open PRs, not because anything is build-verified.\"* **향후** — 심볼 항해(정규식 근사가 아닌 진짜 정의·참조 이동) · **키워드로 붙잡을 게 없는 질의에만 임베딩을 얹기**(*\"Additive, not replacing\"*) · 에이전트 루프 밀착."
+    },
+    {
+      "title": "Measuring Spatial Intelligence in LLMs",
+      "url": "https://eng.snap.com/spatial_intelligence",
+      "publisher": "Snap Engineering (Specs)",
+      "date": "2026-06-17",
+      "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+    },
+    {
+      "title": "Building SPECS Experiences Faster",
+      "url": "https://eng.snap.com/specs_experiences",
+      "publisher": "Snap Engineering",
+      "date": "2026-08-20",
+      "summary": "**공간 앱은 만드는 방식이 다르다** — *\"the canvas is the world around the wearer, and the input model is hands, gaze, voice, mobile controls, and physical motion all at once. Get it wrong and the experience feels laggy, unreadable, or unstable.\"* **세 층** — **SIK**(핀치·잡기·찌르기·호버·손·모바일 컨트롤과 이벤트) · **SPECS UI Kit**(버튼·슬라이더·스위치·프레임·텍스트 입력·스크롤 뷰) · **CLAD**(Closed Loop Agentic Development — **Lens Studio 에 직접 붙어** 장면을 만들고 두 툴킷을 엮고 디버그하고 반복한다). **핵심 결정은 만들지 않고 가져다 쓰는 것이다** — CLAD 는 상호작용을 새로 지어내지 않고 *\"it reaches for the same battle-tested SIK and UI Kit components a developer would, which is exactly why the output holds up on hardware.\"* **버린 대안** — AI 를 범용 조수로 쓰는 것. 대신 도메인 지식을 *\"reusable, composable skills\"* 로 담았다. **MCP 로 붙어** Claude Code · Codex · Cursor 를 지원한다. 테스트는 **LEAF**(Lens Evaluation and Automation Framework)와 Bitmoji IK 인터랙터. **수치는 하나** — 동작하는 Lens 앱 **일곱 개를 각각 하루 정도에** 만들었다. **대가를 적는다** — 빨라진 것은 *\"standing up a scene, wiring interactions, and building out UI panels went from hours to minutes\"* 이고, **사람의 판단이 남는 곳은 공간 배치 조율과** *\"catching cases where the first generated layout was technically correct but didn't feel right on device\"* 다. ⚠️ **실패율도 성공률도 없다.** **🔴 그리고 이 글은 다른 Snap 글을 링크한다** — *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`)."
     }
   ],
   "features": [
@@ -2501,6 +2532,666 @@
           "publisher": "Snap Engineering",
           "date": "2026-06-05",
           "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+        }
+      ]
+    },
+    {
+      "key": "spatial-benchmark",
+      "name": "3D 를 아는지 재는 자를 만든다",
+      "domain": "얼굴 앞에 컴퓨터를 놓는다",
+      "updated_at": "2026-08-28",
+      "ui": {
+        "title": "모델 하나를 채점하는 자리",
+        "question": "공간을 이해하는지 무엇으로 아는가?",
+        "kind": "web",
+        "note": "**채점 흐름을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **이 벤치마크의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 회사 글에 적힌 것만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다. **모델 이름과 점수는 회사가 공개한 실행 결과 그대로입니다.**",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "공간 추론 채점"
+          },
+          {
+            "type": "card",
+            "text": "기존 자로는 이걸 못 잽니다",
+            "items": [
+              "일반 추론과 코딩은 잘 재 왔다",
+              "XR 과 게임에 필요한 삼차원 추론은 아니다"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "무엇을 묻는가"
+          },
+          {
+            "type": "chips",
+            "items": [
+              "일곱 범주 여든 문항"
+            ],
+            "pin": 2
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "열 문항은 장면 정보를 함께 준다",
+                "sub": "다만 일부러 작게 유지했다",
+                "right": "맥락"
+              },
+              {
+                "title": "열한 문항은 연산 열로 답하게 한다",
+                "sub": "값만이 아니라 푸는 방법을",
+                "right": "형식"
+              }
+            ],
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "어떻게 채점하는가"
+          },
+          {
+            "type": "text",
+            "text": "글자가 맞는지가 아니라 값의 타입과 허용오차로 봅니다",
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "결과"
+          },
+          {
+            "type": "amount",
+            "text": "93.8%",
+            "sub": "가장 높은 모델"
+          },
+          {
+            "type": "card",
+            "text": "가장 약한 자리는 벡터 계산입니다",
+            "items": [
+              "최고가 열두 중 일곱",
+              "여럿은 열두 중 셋"
+            ],
+            "pin": 5
+          },
+          {
+            "type": "text",
+            "text": "시험한 모델 열여섯이 전부 틀린 문항이 둘 있습니다",
+            "pin": 6
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "card",
+            "text": "더 오래 생각하게 해도 안 늘었습니다",
+            "items": [
+              "여럿이 그대로였다",
+              "둘은 오히려 떨어졌다"
+            ],
+            "pin": 7
+          },
+          {
+            "type": "button",
+            "text": "다음 모델이 나오면 다시 돌린다",
+            "variant": "ghost"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "없는 자를 만들었다",
+            "what": "*\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* 모델이 틀리는 방식이 **손잡이 방향, 외적 뒤집기, 잘못된 깊이**다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "일곱 범주 여든 문항",
+            "what": "좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터. 답 형식도 섞여 있다 — 스칼라·불리언·3D 좌표·JSON.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "장면은 주되 작게",
+            "what": "10문항이 번들 장면 JSON 을 맥락으로 쓴다. **일부러 작게 유지했다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"* 11문항은 **구조화된 JSON DSL** 로 *\"a small sequence of reusable spatial ops\"* 를 요구한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "타입 검증기로 채점한다",
+            "what": "범용 텍스트 매칭을 버리고 **Inspect AI + 직접 만든 타입 검증기**를 쓴다 — 정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "벡터 계산이 가장 약하다",
+            "what": "선형대수·벡터에서 최고가 **12문항 중 7**(GPT-5.5 · Gemini 3 Flash Preview · Kimi K2.6 · Claude Fable 5)이고, Gemini 3.1 Pro Preview · Qwen 3.6 Plus · DeepSeek V4 Pro 는 **3/12** 다. 반면 관계·위상은 16 중 9가 만점이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "전부 틀린 문항이 둘",
+            "what": "**부호 있는 요 각도**와 **좌측 스트레이프 벡터**를 **16개 모델이 전부** 틀렸다. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다. 실패 모양도 적는다 — 외적 순서를 뒤집고, 왼쪽 대신 오른쪽 벡터를 내고, 정규화를 잊는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "n": 7,
+            "title": "더 생각시켜도 안 늘었다",
+            "what": "Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론 — *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**안경 위에서 도는 것을 모델에게 맡기려면 그 모델이 3D 를 아는지 먼저 알아야 한다.** 그런데 그것을 재는 자가 없었다 — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"*\n\n**왜 이게 그냥 정확도 문제가 아닌지도 적는다** — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"* **공간에서는 부호 하나가 부분 점수를 못 받는다**(이 정리는 이 사이트의 것이다).\n\n**⭐ 그리고 이 글은 자기가 만든 자로 잰 결과가 실망스럽다는 것을 그대로 적는다.** 추론을 더 시켜도 대부분 평평했고 둘은 떨어졌다 — *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* **16개 모델이 전부 틀린 문항이 둘 있다.** **이 회사가 자기 자의 한계를 밝히는 것은 봤는데**(CodePal 의 held-out, GNSS 의 '못 잰다'), **자를 만들어 놓고 결과가 안 좋다고 적는 것은 다른 종류다**(이 구분은 이 사이트의 것이다).\n\n**⭐ 그리고 이 회사가 재는 자를 만든 것이 세 번째다** — CodePal 은 **사람 피드백으로 골든셋**을 만들었고, GNSS 는 **자를 못 구해 못 잰다고 적었고**, 여기서는 **없는 자를 직접 만들었다.** **셋이 같은 축에 선다** — 무엇을 잘한다고 부를지 정하는 일이 이 회사에서 반복해서 문제가 된다(이 정리는 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "7개 범주 80문항 · 16개 모델 · 10문항은 장면 JSON 맥락 · 11문항은 JSON DSL 요구",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "상위 점수",
+            "value": "GPT-5.5 93.8% · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "가장 약한 범주",
+            "value": "선형대수·벡터 — 최고 12문항 중 7 · 최저 12문항 중 3",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "아무도 못 푼 문항",
+            "value": "2개 — 부호 있는 요 각도, 좌측 스트레이프 벡터(16개 모델 전부 실패)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "추론을 늘렸을 때",
+            "value": "대부분 평평(90.0% 유지) · Claude Opus 4.6 과 GPT-5.2 는 2점 하락",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "label": "큰 장면에서",
+            "value": "월드 공간 UI 수리 문제는 6개 중 5개 실패 — 장면 JSON 이 커지면 신뢰도가 떨어진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "공개판을 일부러 작게 한 대목에서",
+          "thought": "**회사는 큰 장면에서 모델이 나빠지는 것을 봤다고 적으면서**(*\"Once the scene JSON gets large, models often become less reliable\"*) **공개 벤치마크는 일부러 작게 유지했다** — *\"we intentionally kept the public benchmark tighter.\"* **알고 있는 실패를 공개판이 재지 않는다는 뜻이다**(이 지적은 이 사이트의 것이다). 자를 쓸 수 있게 만드는 것과 자가 아픈 곳을 재는 것이 여기서 갈린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "값만이 아니라 연산 열을 요구한 대목에서",
+          "thought": "11문항은 답을 *\"a small sequence of reusable spatial ops\"* 로 표현하게 한다. **맞는 답을 우연히 내는 것과 맞는 방법으로 내는 것을 가르려는 것으로 읽힌다**(이 해석은 이 사이트의 것이다). ⚠️ **대가가 실패 사유에 그대로 나온다** — 흔한 실패가 *\"missing required spatial utility operations, especially normalize, missing the final ANSWER: block\"* 이다. **형식을 못 맞춘 것과 못 푼 것이 같은 오답으로 잡힌다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "추론을 늘려도 안 늘어난 결과를 볼 때",
+          "thought": "**더 생각시키면 나아진다는 기대를 실측으로 눌렀다** — 여럿이 평평했고 둘은 떨어졌다. 그리고 **같은 점수를 훨씬 많은 토큰으로 받은 사례**(Gemini 3 Flash Preview 대 3.1 Pro Preview)까지 적는다. **잘하는지를 재려던 자가 값도 함께 드러낸 것이다**(이 정리는 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이 회사가 자를 다루는 방식을 모아 볼 때",
+          "thought": "**세 번째다**(이 정리는 이 사이트의 것이다) — CodePal 은 **사람 피드백으로 골든셋을 만들고 그 범위를 밝혔고**(*\"not on live traffic\"*), GNSS 는 **참값을 못 구해 못 잰다고 적었고**, 여기서는 **없는 자를 만들고 결과가 안 좋다고 적는다.** **잘한다는 것을 무엇으로 부를지가 이 회사에서 반복해서 문제가 된다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "문항",
+            "what": "7개 범주 80개. 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON"
+          },
+          {
+            "name": "장면 JSON",
+            "what": "10문항의 런타임 맥락. **공개판에서는 일부러 작게 유지했다**"
+          },
+          {
+            "name": "공간 연산 DSL",
+            "what": "11문항이 요구하는 답 형식. 값이 아니라 **재사용 가능한 연산 열**"
+          },
+          {
+            "name": "타입 검증기",
+            "what": "불리언은 정확히, 부동소수는 허용오차로, 벡터는 동등으로, 배치는 유효성으로 본다"
+          },
+          {
+            "name": "실패 모양",
+            "what": "외적 순서 뒤집기 · 왼쪽 대신 오른쪽 · 요 부호 반전 · 정규화 누락 · ANSWER 블록 누락"
+          }
+        ],
+        "invariants": [
+          "**글자가 맞는지로 채점하지 않는다** — 타입과 허용오차로 본다",
+          "**도구 호출과 엔진 고유 기능은 뺀다** — 공간 추론만 남긴다",
+          "**공개판의 장면은 작게 유지한다** — 큰 장면에서 나빠지는 것을 알면서도 그렇게 했다",
+          "**부호 오류는 부분 점수가 없다** — 왼쪽 대신 오른쪽은 거의 맞은 것이 아니다",
+          "**새 모델이 나오면 다시 돌린다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "7개 범주로 80문항을 만든다",
+            "why": "기존 벤치마크가 재지 않는 3D 추론만 남긴다"
+          },
+          {
+            "step": "10문항에는 장면 JSON 을 맥락으로 붙인다",
+            "why": "실제로 장면을 보고 답해야 하는 문제를 넣는다"
+          },
+          {
+            "step": "11문항은 연산 열로 답하게 한다",
+            "why": "값이 아니라 푸는 방법을 본다"
+          },
+          {
+            "step": "도구 호출과 엔진 기능은 뺀다",
+            "why": "Lens Studio 나 Unity 를 아는지가 아니라 공간을 아는지를 잰다"
+          },
+          {
+            "step": "모델 16개를 돌린다",
+            "why": "여러 제조사와 여러 크기를 나란히 둔다"
+          },
+          {
+            "step": "타입 검증기로 채점한다",
+            "why": "글자 맞추기로는 3D 좌표나 배치 유효성을 못 본다"
+          },
+          {
+            "step": "같은 모델을 추론량을 늘려 다시 돌린다",
+            "why": "더 생각시키면 나아지는지 확인한다"
+          },
+          {
+            "step": "범주별로 갈라 본다",
+            "why": "어디가 약한지가 총점에 묻히지 않는다"
+          },
+          {
+            "step": "새 모델이 나오면 다시 돌린다",
+            "why": "고정된 결과가 아니라 계속 재는 자로 둔다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "기존 벤치마크로 공간 추론을 잴 수 있는가?",
+            "chosen": "**없다고 보고 직접 만든다.** 7개 범주 80문항",
+            "alternatives": [
+              "일반 추론·코딩 벤치마크의 점수를 대신 쓰기"
+            ],
+            "tradeoff": "**재고 싶은 것만 남는 대신 80문항으로 좁다**(이 지적은 이 사이트의 것이다). 회사도 계속 돌릴 자로 두겠다고 적는다 — 새 모델이 나올 때마다 다시 돌리고 GitHub 로 의견을 받는다. ⚠️ **문항이 대표성 있는지를 검증한 서술은 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "답이 맞았는지 어떻게 판정하는가?",
+            "chosen": "**타입 검증기를 직접 만든다.** 불리언은 정확히, 부동소수는 허용오차로, 벡터는 동등으로, 배치는 유효성으로",
+            "alternatives": [
+              "범용 텍스트 매칭 — 버렸다"
+            ],
+            "tradeoff": "**3D 좌표나 배치 유효성은 글자 비교로 못 본다**(이 정리는 이 사이트의 것이다). **대가는 채점기를 직접 만들고 유지해야 한다는 것**이고, ⚠️ **허용오차를 얼마로 잡았는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "도구 호출과 엔진 기능을 포함할 것인가?",
+            "chosen": "**뺀다.** Lens Studio 나 Unity 고유 기능을 넣지 않고 공간 추론에만 집중한다",
+            "alternatives": [
+              "실제 개발 환경 그대로 재기"
+            ],
+            "tradeoff": "**모델이 특정 엔진을 아는지와 공간을 아는지가 섞이지 않는다**(이 정리는 이 사이트의 것이다). **대가는 실제 사용과 멀어진다는 것**이다 — 같은 회사의 CLAD 는 정확히 Lens Studio 를 모는 도구인데 이 자는 그 능력을 재지 않는다(이 대비도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              },
+              {
+                "title": "Building SPECS Experiences Faster",
+                "url": "https://eng.snap.com/specs_experiences",
+                "publisher": "Snap Engineering",
+                "date": "2026-08-20",
+                "summary": "**공간 앱은 만드는 방식이 다르다** — *\"the canvas is the world around the wearer, and the input model is hands, gaze, voice, mobile controls, and physical motion all at once. Get it wrong and the experience feels laggy, unreadable, or unstable.\"* **세 층** — **SIK**(핀치·잡기·찌르기·호버·손·모바일 컨트롤과 이벤트) · **SPECS UI Kit**(버튼·슬라이더·스위치·프레임·텍스트 입력·스크롤 뷰) · **CLAD**(Closed Loop Agentic Development — **Lens Studio 에 직접 붙어** 장면을 만들고 두 툴킷을 엮고 디버그하고 반복한다). **핵심 결정은 만들지 않고 가져다 쓰는 것이다** — CLAD 는 상호작용을 새로 지어내지 않고 *\"it reaches for the same battle-tested SIK and UI Kit components a developer would, which is exactly why the output holds up on hardware.\"* **버린 대안** — AI 를 범용 조수로 쓰는 것. 대신 도메인 지식을 *\"reusable, composable skills\"* 로 담았다. **MCP 로 붙어** Claude Code · Codex · Cursor 를 지원한다. 테스트는 **LEAF**(Lens Evaluation and Automation Framework)와 Bitmoji IK 인터랙터. **수치는 하나** — 동작하는 Lens 앱 **일곱 개를 각각 하루 정도에** 만들었다. **대가를 적는다** — 빨라진 것은 *\"standing up a scene, wiring interactions, and building out UI panels went from hours to minutes\"* 이고, **사람의 판단이 남는 곳은 공간 배치 조율과** *\"catching cases where the first generated layout was technically correct but didn't feel right on device\"* 다. ⚠️ **실패율도 성공률도 없다.** **🔴 그리고 이 글은 다른 Snap 글을 링크한다** — *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`)."
+              }
+            ]
+          },
+          {
+            "question": "장면 맥락을 얼마나 크게 줄 것인가?",
+            "chosen": "**작게 유지한다.** *\"we intentionally kept the public benchmark tighter\"*",
+            "alternatives": [
+              "실제 규모의 장면 JSON 을 그대로 주기"
+            ],
+            "tradeoff": "**⚠️ 회사가 큰 장면에서 모델이 나빠지는 것을 봤다고 적으면서 공개판에서는 그 조건을 뺐다** — *\"Once the scene JSON gets large, models often become less reliable.\"* **알고 있는 실패를 공개판이 재지 않는다**(이 지적은 이 사이트의 것이다). 향후 과제로 **요약 먼저 주고 필요할 때 하위 트리를 주는 방식**을 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "답만 받을 것인가, 푸는 방법도 받을 것인가?",
+            "chosen": "**11문항은 연산 열로 표현하게 한다** — *\"a small sequence of reusable spatial ops\"*",
+            "alternatives": [
+              "계산된 답만 받기"
+            ],
+            "tradeoff": "**맞는 답을 우연히 내는 것과 맞는 방법으로 내는 것을 가른다**(이 해석은 이 사이트의 것이다). **⚠️ 대가가 실패 사유에 그대로 나온다** — 흔한 실패가 *\"missing required spatial utility operations, especially normalize, missing the final ANSWER: block\"* 이라 **형식을 못 맞춘 것과 못 푼 것이 같은 오답으로 잡힌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "question": "추론을 더 시키면 나아지는가?",
+            "chosen": "**재 봤고, 대부분 안 나아졌다고 적는다.** *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not\"*",
+            "alternatives": [
+              "추론량을 늘려 점수를 올린 뒤 그 값을 보고하기"
+            ],
+            "tradeoff": "여럿이 **90.0% 에서 평평**했고 **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 그리고 **같은 점수를 훨씬 많은 토큰으로 받은 사례**도 적는다 — *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"* **잘하는지를 재려던 자가 값도 함께 드러냈다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Inspect AI",
+            "role": "평가 실행 틀. 그 위에 직접 만든 타입 검증기를 얹는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "타입 검증기",
+            "role": "불리언·부동소수 허용오차·벡터 동등·제약 좌표·배치 유효성으로 채점한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "번들 장면 JSON",
+            "role": "10문항의 런타임 맥락. 공개판에서는 일부러 작게 유지했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "공간 연산 DSL",
+            "role": "11문항의 답 형식 — 값이 아니라 재사용 가능한 연산 열",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 시험 대상 16종",
+            "role": "GPT · Gemini · Kimi · Claude · Qwen · DeepSeek · Gemma 계열. 회사가 공개한 실행 결과의 이름과 버전 그대로 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "공간에서는 부호 하나가 부분 점수를 못 받는다",
+            "why_hard": "회사가 그것을 정면으로 적는다 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"* **그리고 실패가 실제로 그 모양이다** — 외적 순서를 뒤집고, 왼쪽 대신 오른쪽 벡터를 내고, 요 부호를 반전한다.",
+            "current_best": "**아직 아무도 못 푸는 것이 있다** — 부호 있는 요 각도와 좌측 스트레이프 벡터를 **16개 모델이 전부** 틀렸다. 선형대수·벡터 범주 최고가 **12문항 중 7** 이다. ⚠️ **회사가 이것을 고치는 방법을 제시하지는 않는다** — 재는 데까지다(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          },
+          {
+            "problem": "장면이 커지면 오히려 못한다",
+            "why_hard": "*\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다 — 중요한 객체 관계를 놓치고, 어느 부분이 관련 있는지 헷갈리고, 무관한 세부에 과적합한다. 가장 어려운 전체 장면 문제는 **6개 중 5개가 실패**했다.",
+            "current_best": "**향후 방향으로 적는다** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약을 먼저 주고 필요할 때 하위 트리를 주기**. ⚠️ **공개 벤치마크는 이 조건을 일부러 뺐다** — *\"we intentionally kept the public benchmark tighter.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Measuring Spatial Intelligence in LLMs",
+                "url": "https://eng.snap.com/spatial_intelligence",
+                "publisher": "Snap Engineering (Specs)",
+                "date": "2026-06-17",
+                "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "모델 하나가 채점되기까지",
+          "question": "무엇을 재고 무엇을 일부러 안 재는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"일곱 범주 여든 문항\"]:::list\n  CTX[\"열 문항엔 장면 정보를 붙인다\"]:::list\n  DSL[\"열한 문항은 연산 열로 답하게 한다\"]:::list\n  RUN[\"모델 열여섯을 돌린다\"]:::list\n  SCORE[\"<b>타입으로 채점한다</b><br/>• 불리언은 정확히<br/>• 소수는 허용오차로<br/>• 배치는 유효한지로\"]:::accent\n  CAT[\"범주별로 갈라 본다\"]:::list\n  MORE[\"같은 모델을 더 생각시켜 다시 돌린다\"]:::list\n  X1[\"글자 맞추기로 채점<br/>버렸다 — 좌표와 배치를 못 본다\"]:::quiet\n  X2[\"엔진 고유 기능과 도구 호출<br/>뺐다 — 공간 추론만 남긴다\"]:::quiet\n  X3[\"실제 크기의 장면<br/>뺐다 — 공개판은 일부러 작게\"]:::quiet\n  Q --> CTX --> DSL --> RUN --> SCORE --> CAT --> MORE\n  SCORE -.-> X1\n  Q -.-> X2\n  CTX -.-> X3"
+        },
+        {
+          "title": "답 하나가 지나는 자리",
+          "question": "어디서 떨어지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 응답\n  응답 : <b>모델이 답을 낸다</b><br/>값일 수도 있고 연산 열일 수도 있다\n  응답 --> 형식 : 먼저 형식을 본다\n  형식 : <b>요구한 모양인가</b><br/>마무리 블록이 빠지거나 필수 연산이 없는 경우가 흔하다\n  형식 --> 오답 : 형식이 어긋났다\n  형식 --> 검증 : 형식은 맞다\n  검증 : <b>타입과 허용오차로 본다</b><br/>불리언 · 소수 · 벡터 · 좌표 · 배치 유효성\n  검증 --> 오답 : 값이 틀렸다\n  검증 --> 정답 : 값이 맞다\n  오답 : <b>못 푼 것과 형식을 못 맞춘 것이 같이 담긴다</b><br/>가장 흔한 것은 정규화 누락과 좌우 반전\n  정답 : <b>범주 점수에 들어간다</b><br/>관계와 위상은 만점이 여럿, 벡터는 절반을 겨우 넘는다\n  오답 --> [*]\n  정답 --> [*]"
+        },
+        {
+          "title": "이 자가 못 보는 것",
+          "question": "재기로 한 것 밖에 무엇이 있는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"큰 장면에서 나빠지는 것을 봤다고 적는다\"]:::list\n  B[\"<b>그런데 공개판은 그 조건을 일부러 뺐다</b><br/>알고 있는 실패를 이 자가 재지 않는다\"]:::accent\n  C[\"연산 열로 답하게 한다\"]:::list\n  D[\"형식을 못 맞춘 것과 못 푼 것이 같은 오답이 된다\"]:::list\n  E[\"엔진 고유 기능을 뺐다\"]:::list\n  F[\"같은 회사의 도구는 정확히 그 엔진을 모는 것인데 그 능력은 안 잰다\"]:::list\n  G[\"여든 문항이다\"]:::list\n  H[\"문항이 대표성 있는지 검증한 서술이 없다\"]:::list\n  I[\"약한 곳을 찾아 적는다\"]:::list\n  J[\"고치는 방법은 제시하지 않는다 — 재는 데까지다\"]:::list\n  N[\"<i>큰 장면 이야기는 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Measuring Spatial Intelligence in LLMs",
+          "url": "https://eng.snap.com/spatial_intelligence",
+          "publisher": "Snap Engineering (Specs)",
+          "date": "2026-06-17",
+          "summary": "**모델이 3D 를 아는지 재는 자가 없어서 직접 만들었다** — *\"Existing benchmarks tell us a lot about general reasoning, coding, and language fluency but much less about the 3D reasoning that matters in XR, games, simulation.\"* **7개 범주 80문항**(좌표·기하 / 변환·투영 / 제약 충족 / 공간 배치 / 관계·위상 / 계층 구조 / 선형대수·벡터). 답 형식이 섞여 있다 — 스칼라·불리언·3D 좌표·JSON. **10문항은 번들 장면 JSON 을 런타임 맥락으로 쓰고, 11문항은 구조화된 JSON DSL 을 요구한다** — *\"Instead of only asking for a computed answer, these prompts require the model to express the solution as a small sequence of reusable spatial ops.\"* 채점은 **Inspect AI + 직접 만든 타입 검증기**(정확한 불리언, 허용오차 있는 부동소수, 벡터 동등, 제약 좌표, 배치 유효성)로 하고 **범용 텍스트 매칭을 버렸다**.\n\n**버린 것 둘 더** — **도구 호출과 엔진 고유 기능(Lens Studio·Unity)을 뺐다**(*\"focused on the various aspects of spatial reasoning\"*) · **큰 장면 페이로드를 뺐다** — *\"As we saw how quickly excess scene JSON could create overload, we intentionally kept the public benchmark tighter.\"*\n\n**결과** — 상위: **GPT-5.5 93.8%** · Gemini 3 Flash Preview 92.5% · Kimi K2.6 90.0% · Claude Fable 5 88.8% · Gemini 3.5 Flash 88.8% · Claude Opus 4.8 87.5%. **관계·위상은 16 중 9가 만점**, 제약 충족도 9가 만점이다. **가장 약한 범주가 선형대수·벡터**로 최고가 **12문항 중 7**이고 셋은 **3/12** 다. **🔴 16개 모델 전부가 틀린 문항이 둘이다** — 부호 있는 요 각도와 좌측 스트레이프 벡터. 되튐 방향은 12/16, 슬라이드 벡터는 11/16 이 틀렸다.\n\n**🔴 실패의 모양을 적는다** — *\"Most models used the cross product in the wrong order. They returned the right vector instead of the left vector. They flipped the sign convention for signed yaw. They forgot to normalize.\"* 그리고 왜 이게 치명적인지도 — *\"A left/right sign error is catastrophic… A model that turns an avatar right when it should turn left is not 'almost correct.' It is wrong in the exact way that breaks the interaction.\"*\n\n**🔴 추론을 더 시켜도 안 늘었다** — Gemini 3.1 Pro Preview 와 Gemini 3 Flash Preview 는 **90.0% 에서 평평**, Claude Sonnet 4.6 도 평평, **Claude Opus 4.6 과 GPT-5.2 는 2점 떨어졌다.** 회사의 결론: *\"The honest read is not that heavy reasoning unlocked new spatial competence. It mostly did not.\"* 그리고 *\"Gemini 3 Flash Preview matched Gemini 3.1 Pro Preview on accuracy, but consumed dramatically more reasoning tokens for the same outcome.\"*\n\n**⚠️ 장면이 커지면 나빠진다** — *\"Once the scene JSON gets large, models often become less reliable\"* 이고 증상이 셋이다(중요한 객체 관계를 놓친다 · 어느 부분이 관련 있는지 헷갈린다 · 무관한 세부에 과적합한다). 가장 어려운 전체 장면 문제(월드 공간 UI 수리)는 **6개 중 5개가 실패**했다. **향후** — 더 조밀한 장면 표현 · 검색하듯 들여다보는 행동 · **요약 먼저 주고 필요할 때 하위 트리를 주기** · 새 모델이 나올 때마다 재실행. ⚠️ **다른 Snap 글을 언급하지 않는다.**"
+        },
+        {
+          "title": "Building SPECS Experiences Faster",
+          "url": "https://eng.snap.com/specs_experiences",
+          "publisher": "Snap Engineering",
+          "date": "2026-08-20",
+          "summary": "**공간 앱은 만드는 방식이 다르다** — *\"the canvas is the world around the wearer, and the input model is hands, gaze, voice, mobile controls, and physical motion all at once. Get it wrong and the experience feels laggy, unreadable, or unstable.\"* **세 층** — **SIK**(핀치·잡기·찌르기·호버·손·모바일 컨트롤과 이벤트) · **SPECS UI Kit**(버튼·슬라이더·스위치·프레임·텍스트 입력·스크롤 뷰) · **CLAD**(Closed Loop Agentic Development — **Lens Studio 에 직접 붙어** 장면을 만들고 두 툴킷을 엮고 디버그하고 반복한다). **핵심 결정은 만들지 않고 가져다 쓰는 것이다** — CLAD 는 상호작용을 새로 지어내지 않고 *\"it reaches for the same battle-tested SIK and UI Kit components a developer would, which is exactly why the output holds up on hardware.\"* **버린 대안** — AI 를 범용 조수로 쓰는 것. 대신 도메인 지식을 *\"reusable, composable skills\"* 로 담았다. **MCP 로 붙어** Claude Code · Codex · Cursor 를 지원한다. 테스트는 **LEAF**(Lens Evaluation and Automation Framework)와 Bitmoji IK 인터랙터. **수치는 하나** — 동작하는 Lens 앱 **일곱 개를 각각 하루 정도에** 만들었다. **대가를 적는다** — 빨라진 것은 *\"standing up a scene, wiring interactions, and building out UI panels went from hours to minutes\"* 이고, **사람의 판단이 남는 곳은 공간 배치 조율과** *\"catching cases where the first generated layout was technically correct but didn't feel right on device\"* 다. ⚠️ **실패율도 성공률도 없다.** **🔴 그리고 이 글은 다른 Snap 글을 링크한다** — *\"see the earlier Snap Engineering article on spatial interaction for Spectacles\"*(`/spatial_interaction`)."
         }
       ]
     }
