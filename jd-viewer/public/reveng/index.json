@@ -31,10 +31,10 @@
       "name_en": "Kakao",
       "country": "KR",
       "category": "메시징",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 6,
       "one_liner": "메시지가 반드시 도착한다는 약속 위에 올린 국민 플랫폼",
-      "updated_at": "2026-08-27",
+      "updated_at": "2026-08-29",
       "domain": "kakaocorp.com"
     },
     {
@@ -223,10 +223,10 @@
       "name_en": "Roblox",
       "country": "US",
       "category": "게임",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 3,
       "one_liner": "남이 만든 세계를 남의 기계가 아니라 우리 기계에서 돌려 주는 회사",
-      "updated_at": "2026-08-21",
+      "updated_at": "2026-08-29",
       "domain": "roblox.com"
     },
     {
