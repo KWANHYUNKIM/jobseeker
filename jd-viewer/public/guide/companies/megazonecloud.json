@@ -1,0 +1,408 @@
+{
+  "slug": "megazonecloud",
+  "name": "메가존클라우드",
+  "name_en": "Megazone Cloud",
+  "aliases": ["메가존클라우드", "메가존클라우드㈜"],
+  "status": "in_progress",
+  "updated_at": "2026-08-29",
+  "site": "megazone.com",
+  "one_liner": "남의 클라우드를 대신 사고 대신 운영해 돈을 버는 아시아 최대 MSP. 지금은 'AI 오케스트레이터'를 자처한다",
+
+  "company": {
+    "business": "고객사가 쓸 퍼블릭 클라우드(AWS·Google Cloud·Azure)를 대신 계약해 되팔고, 그 위에서 도는 시스템을 대신 운영한다. 돈은 리셀 마진과 운영 수수료에서 나오고, 여기에 AI 도입·데이터·보안 사업을 얹어 판다. 자기 서비스를 만들어 파는 회사가 아니라 **남의 인프라를 대신 책임지는 회사**라는 점이 이 회사의 모든 기술 선택을 설명한다 — 멀티 클라우드가 취향이 아니라 사업 조건이다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+        "url": "https://www.megazone.com/resources/newsroom/99",
+        "publisher": "메가존클라우드 뉴스룸",
+        "date": "2026-04-07",
+        "summary": "사업 부문별 매출과 흑자 전환을 회사가 직접 밝힌 자료"
+      }
+    ],
+    "scale": [
+      {
+        "label": "2025 매출",
+        "value": "1조 7,496억원 (전년 대비 +27.9%)",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드 뉴스룸",
+            "date": "2026-04-07"
+          }
+        ]
+      },
+      {
+        "label": "2025 당기순이익",
+        "value": "82억원 (조정 EBITDA 208억원) — 창사 이래 첫 흑자",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드 뉴스룸",
+            "date": "2026-04-07"
+          }
+        ]
+      },
+      {
+        "label": "임직원",
+        "value": "약 2,000명",
+        "as_of": "2026",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드 뉴스룸",
+            "date": "2026-04-07"
+          }
+        ]
+      },
+      {
+        "label": "해외 사업 매출",
+        "value": "1,500억원",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드 뉴스룸",
+            "date": "2026-04-07"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "퍼블릭 클라우드 리셀·매니지드 서비스",
+        "how": "고객이 쓸 AWS·Google Cloud·Azure 를 대신 계약해 되팔고(리셀 마진), 그 위에서 도는 시스템의 운영·관제를 맡아 수수료를 받는다. 매출의 뿌리이자 다른 사업이 올라타는 바닥이다.",
+        "weight": "구글 클라우드·워크스페이스만 연환산 2,000억원 돌파 (2025)",
+        "domains": ["클라우드 운영·관제", "비용 정산·FinOps"],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드 뉴스룸",
+            "date": "2026-04-07"
+          }
+        ]
+      },
+      {
+        "name": "AI 사업 (AIR 플랫폼·에이전트 구축)",
+        "how": "고객사의 AI 도입을 설계·구축하고, 그 AI 워크로드가 어느 클라우드에서 얼마에 돌지를 자기 플랫폼(AIR)으로 관리해 준다. 클라우드를 더 쓰게 만드는 사업이기도 해서 리셀 매출과 함께 늘어난다.",
+        "weight": "3,700억원 초과 (2025)",
+        "domains": ["AI 워크로드 스케줄링 (AIR)", "LLM 에이전트·RAG 구축"],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드 뉴스룸",
+            "date": "2026-04-07"
+          }
+        ]
+      },
+      {
+        "name": "보안 사업",
+        "how": "클라우드 보안 컨설팅(GRC·금융 규제 대응), 보안 솔루션 구축, 그리고 관제(AI-SOC)를 판다. 남의 인프라를 맡는 회사라 보안 사고의 책임 경계가 곧 계약 조건이 된다.",
+        "weight": "700억원 초과 (2025)",
+        "domains": ["클라우드 보안·관제"],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드 뉴스룸",
+            "date": "2026-04-07"
+          }
+        ]
+      },
+      {
+        "name": "자체 제품 (CloudPlex 등)",
+        "how": "운영하며 반복되는 일을 제품으로 만들어 판다. 사내 팀이 아키텍처부터 프론트·백엔드까지 직접 만든다는 사실이 회사 채용 인터뷰에 나와 있다. 매출 규모는 공개되지 않았다.",
+        "domains": ["자체 제품 개발"],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "메가존 Careers — 백엔드 개발자 인터뷰 (이교준)",
+            "url": "https://career.megazone.com/interview_backend",
+            "publisher": "메가존클라우드",
+            "summary": "CloudPlex Media 제품의 아키텍처·데브옵스·프론트·백엔드를 사내 팀이 맡고 있다고 밝힌 인터뷰"
+          }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "클라우드 운영·관제",
+        "why": "고객사 인프라가 죽으면 고객이 아니라 이 회사가 먼저 전화를 받는다. Linux·미들웨어·네트워크처럼 오래된 것과 Kubernetes 같은 새것이 한 자리에 섞여 있고, 장애를 남의 시스템에서 찾아내야 한다는 점이 자기 서비스를 운영하는 것과 결정적으로 다르다.",
+        "what_to_know": [
+          "Linux·Apache/Tomcat·JEUS 같은 미들웨어 운영 — 공고 자격요건에 그대로 있다",
+          "TCP/IP·DNS·SSL/TLS·방화벽과 VPC 구조 (남의 네트워크를 읽어야 한다)",
+          "장애 분석과 트러블슈팅을 절차로 만드는 일 — 고객 대응이 함께 붙는다",
+          "AWS 뿐 아니라 NHN Cloud·NCP 처럼 국내 클라우드도 대상이다"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Platform & Application Engineer 채용 공고",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54176",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "비용 정산·FinOps",
+        "why": "리셀 모델의 심장이다. 고객이 쓴 사용량을 정확히 재서 청구해야 매출이 서고, 반대로 그 비용을 깎아 주는 것이 재계약의 이유가 된다. 회사가 FinOps 컨설턴트와 비용 정산 운영 인력을 따로 뽑고 있고, 백엔드 공고에도 '미터링 및 빌링'이 업무로 적혀 있다.",
+        "what_to_know": [
+          "사용량 미터링과 빌링 — 쓴 만큼 재는 일이 곧 매출 데이터다",
+          "여러 클라우드의 과금 단위가 서로 다를 때 하나의 청구서로 합치는 문제",
+          "비용 최적화 제안을 근거 있게 만드는 법 (예약 인스턴스·스팟·리소스 정리)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Backend Developer / AI Research Engineer 채용 공고",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54570",
+            "publisher": "사람인",
+            "summary": "담당 업무에 'Job 제출, 모니터링, 미터링 및 빌링, 관리 기능을 위한 백엔드 개발'이 있다"
+          }
+        ]
+      },
+      {
+        "name": "AI 워크로드 스케줄링 (AIR)",
+        "why": "GPU 는 비싸고 유한한데 학습 작업은 줄을 선다. 누구 작업을 먼저 태울지, 어느 클라우드에서 돌릴지를 정하는 일이 그대로 비용이 된다. 공고에 Kubernetes 스케줄러(Kueue)를 커스터마이징한다고 적혀 있어, 남이 만든 스케줄러를 쓰는 수준이 아니라 고쳐 쓰는 수준이다.",
+        "what_to_know": [
+          "Kubernetes 의 스케줄링과 Kueue·Volcano 같은 배치 스케줄러가 푸는 문제",
+          "우선순위 큐와 리소스 쿼터 — 누구를 굶기지 않으면서 GPU 를 채우는 법",
+          "Custom Controller / Operator 로 쿠버네티스를 확장하는 방식",
+          "멀티 클라우드 비용 최적 실행환경 추천(Brain AI)이 이 도메인의 연구 축이다"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Backend Developer / AI Research Engineer 채용 공고",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54570",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "LLM 에이전트·RAG 구축",
+        "why": "대표가 회사의 방향으로 못 박은 '엔터프라이즈 AI 오케스트레이터'가 코드로 내려온 자리다. 고객사가 수백 개의 에이전트를 돌릴 때 그것을 배포·실행·관측하는 판을 만드는 일이라, 에이전트를 쓰는 쪽이 아니라 **에이전트를 통제하는 쪽**의 문제다.",
+        "what_to_know": [
+          "에이전트의 배포·실행·모니터링을 어떻게 서버 쪽 문제로 바꾸는가",
+          "RAG 시스템의 백엔드 — 색인 갱신, 검색 지연, 근거 추적",
+          "MLOps 플랫폼(Kubeflow·MLflow)과의 연동이 우대사항으로 붙어 있다"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Backend Developer / AI Research Engineer 채용 공고",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54570",
+            "publisher": "사람인"
+          },
+          {
+            "title": "염동훈 메가존클라우드 대표 \"멀티 에이전트 시대 'AI 오케스트레이터' 될 것\"",
+            "url": "https://biz.heraldcorp.com/article/10737851",
+            "publisher": "헤럴드경제"
+          }
+        ]
+      },
+      {
+        "name": "클라우드 보안·관제",
+        "why": "남의 인프라를 맡는 순간 그 인프라의 사고도 함께 맡는다. 그래서 보안이 별도 사업부이자 별도 매출이고, 공고도 컨설팅(GRC·금융)·구축·관제(AI-SOC)로 갈려 있다.",
+        "what_to_know": [
+          "SIEM/SOAR 로 로그를 모아 이상을 찾아내는 흐름",
+          "금융권 규제 대응(GRC)이 기술 결정을 어떻게 제약하는가",
+          "관제(CERT·운영)와 구축은 전혀 다른 일이다 — 공고가 나뉘어 있다"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 클라우드 AI-SOC 전문가 채용 공고",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54176",
+            "publisher": "사람인"
+          }
+        ]
+      },
+      {
+        "name": "자체 제품 개발",
+        "why": "운영하며 반복되는 일을 제품으로 굳히는 조직이 따로 있다(PDC). 여기는 SI 도 관제도 아니고 자기 코드를 오래 들고 가는 자리라, 같은 회사 안에서도 일하는 방식이 가장 다르다.",
+        "what_to_know": [
+          "가용성과 의존성 분산을 위한 멀티 클라우드·MSA 지향 — 팀 리더가 인터뷰에서 밝힌 원칙",
+          "Kotlin/Java/Python + Spring Boot·JPA·Kubernetes·EKS/ECS·Kafka·React 축",
+          "제품 하나가 개발 시작부터 데모까지 약 1년 걸렸다는 사례가 공개돼 있다"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존 Careers — 백엔드 개발자 인터뷰 (이교준)",
+            "url": "https://career.megazone.com/interview_backend",
+            "publisher": "메가존클라우드"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "한 공고 안에 서로 다른 두 직무가 묶여 있다. 제목의 경력 연차를 그대로 믿으면 안 된다",
+        "evidence": "'Backend Developer / AI Research Engineer 엔지니어 채용' 한 공고 안에 'Backend Developer (경력 3 ~ 10년)'와 'AI Research Engineer (경력 2 ~ 10년)'의 자격요건이 따로 적혀 있고, 목록에는 '경력2년↑'으로 뜬다",
+        "so_what": "지원할 때 어느 포지션인지 먼저 못 박고 그쪽 요건에만 답한다. 백엔드는 3년↑이고, 연구직은 '국제 학회 1저자 논문'이 자격요건이라 사실상 다른 채용이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "쿠버네티스가 우대가 아니라 자격요건이다. 쓰는 수준과 고치는 수준이 자격/우대로 갈려 있다",
+        "evidence": "자격요건에 'Kubernetes 환경에서의 애플리케이션 개발 또는 운영 경험', 우대사항에 'Kubernetes Custom Controller 또는 Operator 개발 경험'과 'Kueue, Volcano 등 Kubernetes 기반 스케줄러 개발 또는 커스터마이징 경험'이 있다",
+        "so_what": "kubectl 로 배포해 본 정도는 자격요건을 겨우 넘는다. CRD 하나를 직접 만들어 본 경험이 우대사항 두 줄을 한 번에 답한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "MSP 인데 자기 플랫폼을 만든다 — '남의 인프라 관리'만 기대하고 가면 어긋난다",
+        "evidence": "'Kubernetes 기반 AI Job scheduler (Kueue) 커스터마이징 및 확장 개발', 'AI agent 배포, 실행, 모니터링 백엔드 개발'은 고객사 운영이 아니라 자기 제품 개발이다",
+        "so_what": "같은 회사 공고라도 운영·컨설팅 자리와 제품 개발 자리가 완전히 다르다. 지원 전에 그 공고의 담당 업무가 '고객사'를 말하는지 '플랫폼'을 말하는지부터 본다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "직군이 세 갈래로 갈려 있고 요구하는 증명 방식이 각각 다르다",
+        "evidence": "운영·컨설팅 공고는 'AWS Solutions Architect Associate 이상', 'CKA, CKAD 등 Kubernetes 관련 자격증'을 우대사항에 두고, 연구직은 '국제 학회 및 저널에 1저자로서 peer-reviewed 연구 논문 출판 경험'을 자격요건에 둔다",
+        "so_what": "운영 쪽은 자격증이 실제로 값을 하고, 제품 개발 쪽은 만든 것이 값을 한다. 어느 갈래에 지원하느냐에 따라 준비물이 달라진다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "본사가 과천이고, 공고마다 근무지가 다르다",
+        "evidence": "여러 공고 하단에 '주 근무지는 과천 본사이며, 사업부서에 따라 상세근무지가 달라질 수 있습니다'가 공통으로 붙어 있고, 일부 공고는 서울 중구·부산으로 따로 적혀 있다",
+        "so_what": "고객사 상주 가능성을 포함해 근무지를 지원 전에 확인해 두는 편이 낫다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+
+  "salary": {
+    "unit": "만원",
+    "currency": "KRW",
+    "as_of": "2026-08",
+    "bands": [
+      {
+        "role": "전 직군 평균",
+        "level": "전체",
+        "low": 4381,
+        "high": 7746,
+        "basis": "public_data",
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "메가존클라우드 주식회사 연봉정보 — 평균 연봉 7,746만원",
+            "url": "https://m.saramin.co.kr/salaries/total-salary/view?csn=NWkzeDdtcWM0M0hWYW1ZRkFpWlU3dz09",
+            "publisher": "사람인"
+          },
+          {
+            "title": "메가존클라우드(주) 연봉정보 — 396건 기준 평균 4,381만원",
+            "url": "https://www.jobplanet.co.kr/companies/339331/salaries/%EB%A9%94%EA%B0%80%EC%A1%B4%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C",
+            "publisher": "잡플래닛"
+          }
+        ]
+      },
+      {
+        "role": "백엔드 / 플랫폼",
+        "level": "3~5년",
+        "low": 4500,
+        "high": 6500,
+        "basis": "market",
+        "confidence": "inferred"
+      }
+    ],
+    "note": "두 집계가 거의 두 배 차이 난다 — 사람인은 7,746만원, 잡플래닛은 등록 396건 기준 4,381만원이다. 산출 방식이 달라서다: 사람인은 국민연금·고용보험 기반 추정이라 임원과 고연차가 평균을 끌어올리고(임직원 약 2,000명), 잡플래닛은 재직자가 스스로 올린 값이라 표본이 아래로 쏠린다. 어느 쪽도 개발 직군의 밴드가 아니므로 그 범위를 그대로 밴드로 적었다. '백엔드/플랫폼 3~5년'은 같은 조건 시장 밴드일 뿐 출처가 있는 숫자가 아니다 — 협상 전 기준선으로만 쓴다. 공고에 금액이 적혀 있지 않다.",
+    "open_questions": [
+      "개발 직군만의 연봉 밴드를 밝힌 공개 자료를 찾지 못했다",
+      "직군(운영·컨설팅 / 제품 개발 / 연구)에 따라 밴드가 다를 것으로 보이지만 근거가 없다"
+    ]
+  },
+
+  "people": [
+    {
+      "name": "염동훈",
+      "role": "대표이사",
+      "why_public": "회사 뉴스룸이 대표이사로 밝히고 있고, 회사의 방향을 언론 인터뷰에서 반복해 직접 말해 왔다.",
+      "public_work": [
+        {
+          "title": "염동훈 메가존클라우드 대표 \"멀티 에이전트 시대 'AI 오케스트레이터' 될 것\"",
+          "url": "https://biz.heraldcorp.com/article/10737851",
+          "kind": "interview",
+          "summary": "통제 체계 없는 멀티 에이전트 환경이 혼란으로 이어진다며 오케스트레이터 역할을 선언한 인터뷰"
+        },
+        {
+          "title": "염동훈 메가존클라우드 대표 \"AI 네이티브 전환, 데이터 속 가치 모색부터\"",
+          "url": "http://www.itdaily.kr/news/articleView.html?idxno=232362",
+          "kind": "interview",
+          "summary": "AI 전환의 출발점을 자사 데이터에서 가치를 찾는 일로 규정한 인터뷰"
+        },
+        {
+          "title": "염동훈 메가존클라우드 대표 \"AI 에이전트, 새 직원 채용과 비슷\"",
+          "url": "https://www.mt.co.kr/amp/tech/2026/06/24/2026062416291811639",
+          "kind": "interview",
+          "date": "2026-06-24",
+          "summary": "에이전트 도입을 사람을 뽑는 일에 빗대어 설명한 인터뷰"
+        }
+      ],
+      "leanings": [
+        "\"멀티 에이전트의 혼돈을 해결하기 위한 엔터프라이즈 AI 오케스트레이터 역할을 수행하겠다\"고 공개적으로 밝혔다 — 회사의 방향을 에이전트를 만드는 쪽이 아니라 **통제하는 쪽**에 두고 있다",
+        "\"AI 네이티브 전환을 위해서는 각자의 회사에서 축적해온 데이터로부터 숨겨진 가치를 찾아내는 것이 우선\"이라고 말한다 — 모델보다 데이터를 앞에 둔다",
+        "AI 에이전트 도입을 '새 직원 채용'에 빗댄다. 권한·평가·책임이 따라붙는 문제로 본다는 뜻이다"
+      ],
+      "what_it_means": "면접에서 AI 이야기가 나오면 '무슨 모델을 썼나'보다 '여러 에이전트를 어떻게 통제·관측할 것인가'가 회사의 언어에 가깝다. 에이전트에 권한을 어디까지 줬고 그걸 어떻게 되돌렸는지를 말할 수 있으면 그대로 맞는다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+          "url": "https://www.megazone.com/resources/newsroom/99",
+          "publisher": "메가존클라우드 뉴스룸",
+          "date": "2026-04-07"
+        }
+      ]
+    },
+    {
+      "name": "이교준",
+      "role": "PDC CloudApps 1팀 리더",
+      "why_public": "회사 채용 홈페이지에 이름과 직함을 밝힌 백엔드 개발자 인터뷰가 실려 있다.",
+      "public_work": [
+        {
+          "title": "메가존 Careers — 백엔드 개발자 인터뷰",
+          "url": "https://career.megazone.com/interview_backend",
+          "kind": "interview",
+          "summary": "CloudPlex Media 제품의 아키텍처·데브옵스·프론트·백엔드를 맡고 있다고 밝힌 사내 인터뷰"
+        }
+      ],
+      "leanings": [
+        "\"가용성과 의존성 분산을 위해 기본적으로 멀티 클라우드와 MSA를 지향\"한다고 밝혔다 — 이 회사에서 멀티 클라우드는 유행이 아니라 가용성 설계의 전제다",
+        "제품 조직의 스택은 Kotlin·Java·Python 과 Spring Boot·JPA·Kubernetes·AWS EKS/ECS·Kafka·React 다. 공고에 적힌 Java/Python/Go 와 겹치면서도 다르다 — **조직마다 스택이 갈린다**",
+        "제품 하나가 개발 시작부터 데모까지 약 1년 걸렸다고 말한다. 짧은 스프린트로 찍어 내는 조직은 아니라는 신호다"
+      ],
+      "what_it_means": "자체 제품 조직(PDC)에 지원한다면 Spring/Kotlin 축을 준비하는 편이 맞고, 플랫폼·AI 공고라면 Go·Kubernetes 축이다. 같은 회사여도 준비물이 다르므로 공고의 기술 스택을 조직의 신호로 읽는다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "메가존 Careers — 백엔드 개발자 인터뷰",
+          "url": "https://career.megazone.com/interview_backend",
+          "publisher": "메가존클라우드"
+        }
+      ]
+    }
+  ],
+
+  "postings": [],
+
+  "open_questions": [
+    "영업이익 수치를 못 찾았다. 회사 자료는 당기순이익 82억원과 조정 EBITDA 208억원까지만 밝힌다.",
+    "개발 직군 연봉 밴드가 없고, 집계 두 곳이 4,381만원과 7,746만원으로 거의 두 배 차이 난다.",
+    "'메가존(주)' 표기의 공고가 1건 따로 있다(Physical AI). 별도 법인 표기로 보여 aliases 에서 뺐다 — 같은 채용이면 다음 사이클에 합친다.",
+    "채용 전형 절차를 밝힌 공개 자료를 찾지 못했다. 공고 하단에 '필요 시 레퍼런스 체크, 인성검사가 진행될 수 있습니다'만 공통으로 붙어 있다."
+  ]
+}
