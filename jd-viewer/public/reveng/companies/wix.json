@@ -1,0 +1,238 @@
+{
+  "slug": "wix",
+  "name": "윅스",
+  "name_en": "Wix",
+  "country": "기타",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-08-29",
+  "domain": "웹사이트 빌더 SaaS",
+  "one_liner": "남이 웹사이트를 만들게 해 주는 회사 — 그리고 자기 장애 조사도 에이전트에게 맡기되 열쇠는 안 준다",
+  "business_model": "**웹사이트 빌더 SaaS 다.** 사람들이 코드 없이 사이트를 만들고 운영하게 해 주고 **구독과 거래 수수료**로 판다(요금 구조의 세부는 확인하지 않았다).\n\n**나스닥 상장사(WIX)라 실적이 공개된다** — **2026년 2분기 매출 5억 6,300만 달러(전년 대비 15% 성장)**, **부킹 5억 6,900만 달러(12% 성장)**. 회사는 성장 동력으로 **Base44** 의 강한 실적을 든다.\n\n**⭐ 그리고 Base44 가 자체 LLM `Base 1` 을 냈다** — 회사가 *\"the first app-creation platform to do so\"* 라고 적고, **하반기 Base44 의 비GAAP 총이익률을 약 60%** 로 본다. **모델을 사서 쓰는 쪽에서 만드는 쪽으로 한 발 옮긴 셈이다**(이 정리는 이 사이트의 것이다).\n\n**⭐ 기술블로그의 무게중심도 거기에 있다**(이 관찰은 이 사이트의 것이다) — 읽을 만한 글 열 편 중 **일곱 편이 에이전트에게 일을 맡기는 이야기**다(자율 버그 수정 · 당번 봇 · 자가 치유 · 코드 이관 자동화). 나머지 셋은 **멈추지 않고 갈아 끼우는 이야기**다(무중단 DB 이관 · MySQL 함대를 Graviton 으로 · Iceberg 를 라이브 서비스에 잇기).\n\n**⚠️ 잉여현금흐름 등 나머지 재무 지표는 확인하지 못했다.**",
+  "products": [
+    "Wix — 웹사이트 빌더와 호스팅",
+    "Velo — 코드로 확장하는 개발 플랫폼",
+    "Base44 — 앱 생성 플랫폼(자체 LLM Base 1)"
+  ],
+  "ui_map": {
+    "title": "남의 사이트를 돌리는 회사가 자기 당번을 맡길 때",
+    "question": "이 회사가 지금 파는 두 문제는 무엇인가?",
+    "kind": "web",
+    "note": "**실제 화면 캡처가 아닙니다.** 기술블로그 본문 두 편과 목록, 실적 발표에 적힌 것만으로 그린 도해이고, **Wix 제품이나 사내 도구의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 번호가 붙은 자리만 근거가 있습니다.",
+    "screen": [
+      {
+        "type": "appbar",
+        "text": "Wix 엔지니어링"
+      },
+      {
+        "type": "card",
+        "text": "분기마다 숫자를 냅니다",
+        "items": [
+          "이분기 매출 오억 육천삼백만 달러",
+          "전년 대비 십오 퍼센트 성장",
+          "앱 생성 플랫폼이 자체 모델을 냈다"
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "label",
+        "text": "첫 번째 — 당번을 맡긴다"
+      },
+      {
+        "type": "card",
+        "text": "경보가 오면 사람이 로그를 뒤졌습니다",
+        "items": [
+          "파이프라인이 삼천오백 개",
+          "하루 사십억 건의 요청",
+          "여러 시스템의 로그를 손으로 잇는다"
+        ],
+        "pin": 1
+      },
+      {
+        "type": "amount",
+        "text": "월 675시간",
+        "sub": "아낀 엔지니어 시간"
+      },
+      {
+        "type": "text",
+        "text": "다만 완전히 자동으로 고쳐진 것은 열다섯 퍼센트입니다",
+        "pin": 1
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "label",
+        "text": "두 번째 — 멈추지 않고 옮긴다"
+      },
+      {
+        "type": "card",
+        "text": "데이터베이스 이백 개를 무중단으로",
+        "items": [
+          "덤프는 무중단이 안 된다",
+          "관리형 도구는 우리 방식에 안 맞았다",
+          "어느 시점부터는 되돌릴 수 없다"
+        ],
+        "pin": 2
+      },
+      {
+        "type": "button",
+        "text": "기술블로그",
+        "variant": "ghost"
+      }
+    ],
+    "pins": [
+      {
+        "n": 1,
+        "title": "조사를 대신하되 열쇠는 안 준다",
+        "domain": "에이전트에게 당번을 맡기되 열쇠는 안 준다",
+        "what": "**Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이라 경보가 오면 *\"Airflow, Spark, and Kubernetes logs\"* 를 손으로 뒤져야 했다. AirBot 이 그 조사를 대신해 **월 675 엔지니어 시간**(*\"~4 full-time engineers\"*)을 아낀다. **⚠️ 다만 PR 후보 180개 중 28개만 직접 병합돼 완전 자동화율은 15%** 다.",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "When AI Becomes Your On-Call Teammate: Inside Wix's AirBot That Saves 675 Engineering Hours a Month",
+            "url": "https://www.wix.engineering/post/when-ai-becomes-your-on-call-teammate-inside-wix-s-airbot-that-saves-675-engineering-hours-a-month",
+            "publisher": "Wix Engineering",
+            "date": "2026-08-29",
+            "summary": "**당번 엔지니어의 조사 과정을 에이전트가 대신한다.** 규모가 문제를 만든다 — **Apache Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 뒤져야 했다(경보 수신 → 수동 조사 → 로그 파싱 → 머릿속 종합). 그래서 *\"high cognitive load\"* 와 긴 평균 복구 시간이 남았다. **AirBot 은** *\"an AI-powered slack agent designed specifically for the Wix ecosystem\"* 이고 경보를 *\"from static notifications into active investigations\"* 로 바꾼다 — **원인 분석 · 조치(PR 생성 포함) · 담당 팀으로의 에스컬레이션.**\n\n**🔴 결정마다 '무엇을 안 주는가' 가 붙어 있다**(이 관찰은 이 사이트의 것이다). **Socket Mode 를 쓴 이유** — 연결이 바깥으로 나가므로 *\"there is no need to open inbound firewall ports\"* 이고 *\"punch holes in the firewall\"* 을 피한다. **Airflow REST API 대신 자체 MCP 를 만든 이유** — *\"Avoiding 'God Mode' API user\"* 이고 **IAM 역할로 S3 를 직접 읽어** *\"respecting least-privilege principles\"* 한다. **출력에 가드레일** — *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라 Pydantic 으로 **엄격한 타입 JSON** 만 받고 자유 텍스트 해법을 안 받는다. **모델도 계층으로 나눈다** — 로그 분류 같은 대량 작업은 **GPT-4o Mini**, 큰 맥락이 필요한 복잡한 원인 분석은 **Claude 4.5 Opus**.\n\n**버린 대안** — 하드코딩한 통합은 *\"brittle and unscalable\"* 이었고 *\"Standard automation breaks down in our heterogeneous stack\"* 였다.\n\n**🔴 수치가 풍부하고 자동화율을 솔직히 적는다** — **월 675 엔지니어 시간 절감**(*\"~4 full-time engineers\"*) · **PR 후보 180개 중 28개가 직접 병합 = 완전 자동화율 15%** · 성공 흐름 4,200건 중 **유의미한 개입 2,700건** · **긍정 피드백 66%** · **워크플로당 평균 약 0.30달러** · **팀 채널 30개 · 데이터 엔지니어 60명**. **⚠️ 15% 라는 것은 85% 가 사람 손을 거친다는 뜻이고**, 회사는 병합 안 된 PR 도 *\"acting as a 'Blueprint'\"* 로 값이 있다고 적는다. ⚠️ **오탐률이나 실패 사례는 따로 없다**(이 지적은 이 사이트의 것이다). 스택 — Slack Bolt Python · FastAPI · **MCP** · LangChain · **Pydantic** · GitHub API · Trino · Spark · Kubernetes · Docker · Vault · OpenMetadata."
+          }
+        ]
+      },
+      {
+        "n": 2,
+        "title": "멈추지 않고 갈아 끼운다",
+        "domain": "멈추지 않고 갈아 끼운다",
+        "what": "약 **200개 MySQL 클러스터**를 무중단으로 옮기는 사내 서비스가 있다. **버린 대안 셋** — MySQL Dump(*\"it cannot be performed with zero downtime\"*) · Amazon DMS(*\"it simply doesn't fit\"*) · 다중 소스 복제. **어느 시점부터는** *\"rollback is not an option without losing data.\"*",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+            "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+            "publisher": "Wix Engineering",
+            "date": "2026-08-29",
+            "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**. ⚠️ **이 요약은 283 의 후보 조사에서 확인한 것이고 아직 전체를 정독하지 않았다**(이 표시는 이 사이트의 것이다)."
+          }
+        ]
+      }
+    ]
+  },
+  "domain_map": {
+    "title": "남의 사이트를 돌리는 회사의 두 자리",
+    "question": "맡기는 쪽과 옮기는 쪽에서 각각 무엇이 걸리는가?",
+    "code": "flowchart TD\n  BIZ[\"<b>분기마다 숫자를 내는 상장사</b><br/>• 이분기 매출 오억 육천삼백만 달러<br/>• 전년 대비 십오 퍼센트 성장<br/>• 앱 생성 플랫폼이 자체 모델을 냈다\"]:::accent\n  MANY[\"남의 사이트를 아주 많이 돌린다\"]:::list\n  PIPE[\"파이프라인 삼천오백 개 · 하루 사십억 건\"]:::list\n  ONCALL[\"경보가 오면 사람이 로그를 잇는다\"]:::list\n  AGENT[\"에이전트에게 조사를 맡긴다\"]:::list\n  KEY[\"대신 열쇠는 안 준다\"]:::list\n  OLD[\"데이터베이스가 이백 개쯤 쌓인다\"]:::list\n  MOVE[\"멈추지 않고 갈아 끼워야 한다\"]:::list\n  N[\"<i>읽을 만한 글 열 편 중 일곱 편이 에이전트 이야기다</i>\"]:::quiet\n  BIZ --> MANY --> PIPE --> ONCALL --> AGENT --> KEY\n  BIZ --> OLD --> MOVE\n  AGENT --- N"
+  },
+  "revenue_streams": [
+    {
+      "name": "구독과 거래 (추정)",
+      "how": "**2026년 2분기 매출 5억 6,300만 달러(15% 성장)**, **부킹 5억 6,900만 달러(12% 성장)**. **부킹과 매출을 따로 내는 것은 선결제 구독이 있다는 뜻으로 읽힌다**(이 해석은 이 사이트의 것이다). ⚠️ **요금 구조의 세부는 확인하지 않았다.**",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Wix Reports Second Quarter 2026 Results",
+          "url": "https://www.wix.com/press-room/home/post/wix-reports-second-quarter-2026-results",
+          "publisher": "Wix.com Ltd.",
+          "date": "2026-08-29",
+          "summary": "**나스닥 상장사(WIX)라 실적이 공개된다.** **2026년 2분기 — 매출 5억 6,300만 달러로 전년 대비 15% 성장**, **부킹은 5억 6,900만 달러로 12% 성장**. 성장 동력으로 **Base44 의 강한 실적**과 기존 Wix 성장을 든다. **⭐ Base44 가 자체 LLM `Base 1` 을 출시**했고 회사는 *\"the first app-creation platform to do so\"* 라고 적는다. **하반기 Base44 의 비GAAP 총이익률을 약 60%** 로 본다. ⚠️ **잉여현금흐름 등 나머지 지표는 이 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+        }
+      ]
+    },
+    {
+      "name": "Base44 (앱 생성 플랫폼)",
+      "how": "회사가 성장 동력으로 든다. **자체 LLM `Base 1`** 을 냈고 *\"the first app-creation platform to do so\"* 라고 적는다. **하반기 비GAAP 총이익률 약 60%** 로 본다. ⚠️ **매출 기여 실액은 이 요약에 없다.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Wix Reports Second Quarter 2026 Results",
+          "url": "https://www.wix.com/press-room/home/post/wix-reports-second-quarter-2026-results",
+          "publisher": "Wix.com Ltd.",
+          "date": "2026-08-29",
+          "summary": "**나스닥 상장사(WIX)라 실적이 공개된다.** **2026년 2분기 — 매출 5억 6,300만 달러로 전년 대비 15% 성장**, **부킹은 5억 6,900만 달러로 12% 성장**. 성장 동력으로 **Base44 의 강한 실적**과 기존 Wix 성장을 든다. **⭐ Base44 가 자체 LLM `Base 1` 을 출시**했고 회사는 *\"the first app-creation platform to do so\"* 라고 적는다. **하반기 Base44 의 비GAAP 총이익률을 약 60%** 로 본다. ⚠️ **잉여현금흐름 등 나머지 지표는 이 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "에이전트에게 당번을 맡기되 열쇠는 안 준다",
+      "why": "**이 회사 기술블로그의 무게중심이 여기 있다** — 읽을 만한 글 열 편 중 **일곱 편**이 에이전트에게 일을 맡기는 이야기다(자율 버그 수정 · 당번 봇 · 자가 치유 · 코드 이관 자동화 · *\"From Co-Pilot to Full Automation\"*).\n\n**규모가 문제를 만든다** — **Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 이어야 했다.\n\n**⭐ 그런데 이 도메인의 이름을 '열쇠는 안 준다' 로 단 이유가 있다**(이 정리는 이 사이트의 것이다). **AirBot 의 설계 결정마다 무엇을 안 주는지가 붙어 있다** — 방화벽에 인바운드 구멍을 안 뚫으려고 **Socket Mode** 를 쓰고, *\"Avoiding 'God Mode' API user\"* 하려고 REST API 대신 **IAM 역할로 S3 를 직접 읽는 자체 MCP** 를 만들고, *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라며 **자유 텍스트 대신 엄격한 타입 JSON** 만 받는다.\n\n**⚠️ 이 도메인은 본문 한 편을 읽었다** — 기능을 쓰기 전에 두 편 이상 읽는다. 후보 — `From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System` · `How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale` · `How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer Days in One Quarter by Automating Code Migrations`.",
+      "tech": [
+        {
+          "tech": "당번의 조사를 대신하는 슬랙 에이전트 — AirBot",
+          "solves": "경보를 *\"from static notifications into active investigations\"* 로 바꾼다 — **원인 분석 · 조치(PR 생성 포함) · 담당 팀 에스컬레이션**. **모델을 계층으로 나눈다** — 로그 분류 같은 대량 작업은 **GPT-4o Mini**, 큰 맥락이 필요한 원인 분석은 **Claude 4.5 Opus**. **버린 대안은 하드코딩한 통합**으로 *\"brittle and unscalable\"* 이었고 *\"Standard automation breaks down in our heterogeneous stack\"* 였다. **수치** — **월 675 엔지니어 시간**(*\"~4 full-time engineers\"*) · 성공 흐름 4,200건 중 **유의미한 개입 2,700건** · **긍정 피드백 66%** · **워크플로당 평균 약 0.30달러** · 팀 채널 30개 · 데이터 엔지니어 60명.",
+          "limits": "**🔴 자동화율을 솔직히 적는다** — **PR 후보 180개 중 28개만 직접 병합돼 완전 자동화율이 15%** 다. **즉 85%는 사람 손을 거친다**(이 정리는 이 사이트의 것이다). 회사는 병합 안 된 PR 도 *\"acting as a 'Blueprint'\"* 로 값이 있다고 적는다. **그리고 안 주는 것이 명확하다** — 인바운드 방화벽 구멍 없음(Socket Mode) · *\"Avoiding 'God Mode' API user\"*(IAM 역할로 최소 권한) · **자유 텍스트 출력 금지**(Pydantic 으로 엄격한 타입 JSON). ⚠️ **오탐률이나 실패 사례는 따로 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "When AI Becomes Your On-Call Teammate: Inside Wix's AirBot That Saves 675 Engineering Hours a Month",
+              "url": "https://www.wix.engineering/post/when-ai-becomes-your-on-call-teammate-inside-wix-s-airbot-that-saves-675-engineering-hours-a-month",
+              "publisher": "Wix Engineering",
+              "date": "2026-08-29",
+              "summary": "**당번 엔지니어의 조사 과정을 에이전트가 대신한다.** 규모가 문제를 만든다 — **Apache Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 뒤져야 했다(경보 수신 → 수동 조사 → 로그 파싱 → 머릿속 종합). 그래서 *\"high cognitive load\"* 와 긴 평균 복구 시간이 남았다. **AirBot 은** *\"an AI-powered slack agent designed specifically for the Wix ecosystem\"* 이고 경보를 *\"from static notifications into active investigations\"* 로 바꾼다 — **원인 분석 · 조치(PR 생성 포함) · 담당 팀으로의 에스컬레이션.**\n\n**🔴 결정마다 '무엇을 안 주는가' 가 붙어 있다**(이 관찰은 이 사이트의 것이다). **Socket Mode 를 쓴 이유** — 연결이 바깥으로 나가므로 *\"there is no need to open inbound firewall ports\"* 이고 *\"punch holes in the firewall\"* 을 피한다. **Airflow REST API 대신 자체 MCP 를 만든 이유** — *\"Avoiding 'God Mode' API user\"* 이고 **IAM 역할로 S3 를 직접 읽어** *\"respecting least-privilege principles\"* 한다. **출력에 가드레일** — *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라 Pydantic 으로 **엄격한 타입 JSON** 만 받고 자유 텍스트 해법을 안 받는다. **모델도 계층으로 나눈다** — 로그 분류 같은 대량 작업은 **GPT-4o Mini**, 큰 맥락이 필요한 복잡한 원인 분석은 **Claude 4.5 Opus**.\n\n**버린 대안** — 하드코딩한 통합은 *\"brittle and unscalable\"* 이었고 *\"Standard automation breaks down in our heterogeneous stack\"* 였다.\n\n**🔴 수치가 풍부하고 자동화율을 솔직히 적는다** — **월 675 엔지니어 시간 절감**(*\"~4 full-time engineers\"*) · **PR 후보 180개 중 28개가 직접 병합 = 완전 자동화율 15%** · 성공 흐름 4,200건 중 **유의미한 개입 2,700건** · **긍정 피드백 66%** · **워크플로당 평균 약 0.30달러** · **팀 채널 30개 · 데이터 엔지니어 60명**. **⚠️ 15% 라는 것은 85% 가 사람 손을 거친다는 뜻이고**, 회사는 병합 안 된 PR 도 *\"acting as a 'Blueprint'\"* 로 값이 있다고 적는다. ⚠️ **오탐률이나 실패 사례는 따로 없다**(이 지적은 이 사이트의 것이다). 스택 — Slack Bolt Python · FastAPI · **MCP** · LangChain · **Pydantic** · GitHub API · Trino · Spark · Kubernetes · Docker · Vault · OpenMetadata."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "멈추지 않고 갈아 끼운다",
+      "why": "**남의 사이트를 오래 돌리다 보면 갈아 끼울 것이 쌓인다**(이 정리는 이 사이트의 것이다). 이 묶음의 세 편이 전부 **멈추지 않고 옮기는 이야기**다 — 약 **200개 MySQL 클러스터**의 무중단 이관, **MySQL 함대를 Graviton 으로**(제목에 *1,000 Servers, 160 Clusters, 30 Days, Zero Downtime*), **Iceberg 를 라이브 마이크로서비스에 잇기**.\n\n**⭐ 무중단 이관 편은 버린 대안과 대가가 둘 다 촘촘하다** — **MySQL Dump** 는 *\"Simple and proven, but it cannot be performed with zero downtime\"*, **Amazon DMS** 는 *\"For our most critical MySQL workloads, it simply doesn't fit\"*, **다중 소스 복제**는 프라이머리 장애 위험과 번거로운 토폴로지로 버렸다. 그리고 **되돌릴 수 없는 지점을 못 박는다** — *\"From this point forward, rollback is not an option without losing data.\"*\n\n**⚠️ 이 도메인은 283 의 후보 조사에서 한 편을 확인했지만 정독하지 않았다** — 기능을 쓰기 전에 다시 읽고 두 번째 편도 연다.",
+      "tech": [
+        {
+          "tech": "약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스",
+          "solves": "**버린 대안 셋에 이유가 각각 다르다** — **MySQL Dump**(*\"it cannot be performed with zero downtime\"*) · **Amazon DMS**(*\"DMS does not fully support this pattern… it simply doesn't fit\"*) · **다중 소스 복제**(프라이머리 노드 장애 위험과 번거로운 토폴로지). 규모는 약 **200개 MySQL 클러스터**이고, 읽기 전용 검증 창을 **1시간 이상** 두며 MSK 메시지 상한은 **8MB** 다.",
+          "limits": "**대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**(*\"some primary keys naturally produce much more data than others\"*) · **어느 시점부터 되돌릴 수 없다**(*\"rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster\"*). ⚠️ **이 항목은 283 의 후보 조사에서 확인한 것이고 아직 전체를 정독하지 않았다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+              "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+              "publisher": "Wix Engineering",
+              "date": "2026-08-29",
+              "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**. ⚠️ **이 요약은 283 의 후보 조사에서 확인한 것이고 아직 전체를 정독하지 않았다**(이 표시는 이 사이트의 것이다)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "open_questions": [
+    "**⭐ `에이전트에게 무엇을 못 하게 하는가` 축에 네 번째 재료가 생겼다.** Wix 의 AirBot 은 **설계 결정마다 안 주는 것이 붙어 있다** — 인바운드 방화벽 구멍 없음(Socket Mode) · *\"Avoiding 'God Mode' API user\"*(IAM 역할로 최소 권한) · **자유 텍스트 출력 금지**(Pydantic 타입 강제, 근거는 *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"*). **monday.com Morphex**(민감 코드 병합 금지·주말 정지·Human Todos) · **Snap CodePal**(사람 리뷰를 대체하지 않는다) · **Snap Casper**(PR 만 열고 병합은 안 한다)와 나란히 선다. **⭐ 그런데 Wix 의 금지는 성격이 다르다** — 앞의 셋이 **무엇을 병합할 수 있는가**를 제한하는데, **Wix 는 무엇에 접근할 수 있는가를 제한한다**(이 구분은 이 사이트의 것이다).",
+    "**⭐ 자동화율을 숫자로 적은 드문 사례다.** **PR 후보 180개 중 28개 직접 병합 = 15%** 이고 **85%는 사람 손을 거친다.** monday.com 의 Morphex 는 **주당 40개 PR 병합**이라고만 하고 **후보 대비 비율을 안 적으며**, Snap 의 Casper 는 *\"thousands of mergeable PRs each week\"* 라고만 한다. **몇 개를 냈고 그중 몇 개가 붙었는지를 함께 적은 것은 여기가 처음이다**(이 관찰은 이 사이트의 것이다).",
+    "**⚠️ 아직 못 채운 것** — 도메인 ① 은 본문 **한 편**만 읽었고(일곱 편 중), 도메인 ② 는 283 의 후보 조사 수준으로만 확인했다(정독 필요). **재무도 매출·부킹만 확인했고 잉여현금흐름 등은 없다.** **Base44 의 매출 기여 실액도 없다.**"
+  ],
+  "sources": [
+    {
+      "title": "Wix Engineering Blog",
+      "url": "https://www.wix.engineering/blog",
+      "publisher": "Wix",
+      "date": "2026-08-29",
+      "summary": "**자체 호스팅이고 Medium 이 아니다**(Medium 미러가 따로 있지만 본문이 `www.wix.engineering/post/<슬러그>` 에서 다 온다). ⚠️ **목록 페이지는 카드가 placeholder 로 와서 날짜를 못 읽는다** — 글 주소는 `WebSearch` 에 `allowed_domains: [\"wix.engineering\"]` 을 걸어 찾는다(운영 사실 ⑱). **묶음이 둘로 뚜렷하다** — **에이전트에게 일을 맡기는 쪽**(`From Weeks to Hours: Inside Wix's Autonomous Bug-Fixing System` · `When AI Becomes Your On-Call Teammate: AirBot` · `How We Built the Brain Behind Our Self-Healing System: Context Retrieval at Org Scale` · `How to Build AI Agents That Fix Themselves` · `How Wix Saved 650 Developer Days in One Quarter by Automating Code Migrations` · `From Co-Pilot to Full Automation` · `The End of Determinism: What's Left for Engineers When AI Writes the Code` — **일곱 편**) · **멈추지 않고 갈아 끼우는 쪽**(`How We Built a Zero-Downtime Database Migration Service at Wix` · `1,000 Servers, 160 Clusters, 30 Days, Zero Downtime: Migrating Wix's MySQL Fleet to Graviton` · `Data to Production: Bridging the Gap Between Iceberg and Live Microservices` — **세 편**). 그 밖에 `From Chaos to Control: How We Rebuilt Reliability in a World of Microservices` · `The Craft of Troubleshooting - From Art, to Science, to Automation` 도 있다."
+    },
+    {
+      "title": "When AI Becomes Your On-Call Teammate: Inside Wix's AirBot That Saves 675 Engineering Hours a Month",
+      "url": "https://www.wix.engineering/post/when-ai-becomes-your-on-call-teammate-inside-wix-s-airbot-that-saves-675-engineering-hours-a-month",
+      "publisher": "Wix Engineering",
+      "date": "2026-08-29",
+      "summary": "**당번 엔지니어의 조사 과정을 에이전트가 대신한다.** 규모가 문제를 만든다 — **Apache Airflow 파이프라인 3,500개**에 **하루 40억 HTTP 트랜잭션**이고, 경보가 오면 사람이 *\"Airflow, Spark, and Kubernetes logs to locate root causes\"* 를 손으로 뒤져야 했다(경보 수신 → 수동 조사 → 로그 파싱 → 머릿속 종합). 그래서 *\"high cognitive load\"* 와 긴 평균 복구 시간이 남았다. **AirBot 은** *\"an AI-powered slack agent designed specifically for the Wix ecosystem\"* 이고 경보를 *\"from static notifications into active investigations\"* 로 바꾼다 — **원인 분석 · 조치(PR 생성 포함) · 담당 팀으로의 에스컬레이션.**\n\n**🔴 결정마다 '무엇을 안 주는가' 가 붙어 있다**(이 관찰은 이 사이트의 것이다). **Socket Mode 를 쓴 이유** — 연결이 바깥으로 나가므로 *\"there is no need to open inbound firewall ports\"* 이고 *\"punch holes in the firewall\"* 을 피한다. **Airflow REST API 대신 자체 MCP 를 만든 이유** — *\"Avoiding 'God Mode' API user\"* 이고 **IAM 역할로 S3 를 직접 읽어** *\"respecting least-privilege principles\"* 한다. **출력에 가드레일** — *\"LLMs are inherently non-deterministic, but SRE automation demands reliability\"* 라 Pydantic 으로 **엄격한 타입 JSON** 만 받고 자유 텍스트 해법을 안 받는다. **모델도 계층으로 나눈다** — 로그 분류 같은 대량 작업은 **GPT-4o Mini**, 큰 맥락이 필요한 복잡한 원인 분석은 **Claude 4.5 Opus**.\n\n**버린 대안** — 하드코딩한 통합은 *\"brittle and unscalable\"* 이었고 *\"Standard automation breaks down in our heterogeneous stack\"* 였다.\n\n**🔴 수치가 풍부하고 자동화율을 솔직히 적는다** — **월 675 엔지니어 시간 절감**(*\"~4 full-time engineers\"*) · **PR 후보 180개 중 28개가 직접 병합 = 완전 자동화율 15%** · 성공 흐름 4,200건 중 **유의미한 개입 2,700건** · **긍정 피드백 66%** · **워크플로당 평균 약 0.30달러** · **팀 채널 30개 · 데이터 엔지니어 60명**. **⚠️ 15% 라는 것은 85% 가 사람 손을 거친다는 뜻이고**, 회사는 병합 안 된 PR 도 *\"acting as a 'Blueprint'\"* 로 값이 있다고 적는다. ⚠️ **오탐률이나 실패 사례는 따로 없다**(이 지적은 이 사이트의 것이다). 스택 — Slack Bolt Python · FastAPI · **MCP** · LangChain · **Pydantic** · GitHub API · Trino · Spark · Kubernetes · Docker · Vault · OpenMetadata."
+    },
+    {
+      "title": "How We Built a Zero-Downtime Database Migration Service at Wix",
+      "url": "https://www.wix.engineering/post/how-we-built-a-zero-downtime-database-migration-service-at-wix",
+      "publisher": "Wix Engineering",
+      "date": "2026-08-29",
+      "summary": "**약 200개 MySQL 클러스터를 멈추지 않고 옮기는 사내 서비스.** **버린 대안이 셋이고 이유가 각각 다르다** — **MySQL Dump**: *\"Simple and proven, but it cannot be performed with zero downtime\"* · **Amazon DMS**: *\"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit\"* · **다중 소스 복제**: 프라이머리 노드 장애 위험이 크고 토폴로지가 번거로워 버렸다. **⚠️ 대가를 셋 적는다** — **파티션 수가 시작할 때 정해지고** *\"it cannot be changed safely mid-flight\"* 이며 *\"Partition count is one of the most critical decisions we make at the start of a migration\"* 다 · **데이터 쏠림을 인정한다**: *\"some primary keys naturally produce much more data than others, so we do have data skew\"* · **되돌릴 수 없는 지점이 생긴다**: *\"From this point forward, rollback is not an option without losing data, the 'new' data that has been committed only to the new cluster.\"* **수치** — 약 **200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**. ⚠️ **이 요약은 283 의 후보 조사에서 확인한 것이고 아직 전체를 정독하지 않았다**(이 표시는 이 사이트의 것이다)."
+    },
+    {
+      "title": "Wix Reports Second Quarter 2026 Results",
+      "url": "https://www.wix.com/press-room/home/post/wix-reports-second-quarter-2026-results",
+      "publisher": "Wix.com Ltd.",
+      "date": "2026-08-29",
+      "summary": "**나스닥 상장사(WIX)라 실적이 공개된다.** **2026년 2분기 — 매출 5억 6,300만 달러로 전년 대비 15% 성장**, **부킹은 5억 6,900만 달러로 12% 성장**. 성장 동력으로 **Base44 의 강한 실적**과 기존 Wix 성장을 든다. **⭐ Base44 가 자체 LLM `Base 1` 을 출시**했고 회사는 *\"the first app-creation platform to do so\"* 라고 적는다. **하반기 Base44 의 비GAAP 총이익률을 약 60%** 로 본다. ⚠️ **잉여현금흐름 등 나머지 지표는 이 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+    }
+  ],
+  "features": []
+}

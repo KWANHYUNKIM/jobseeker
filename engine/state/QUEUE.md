@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Wix** | 기타(이스라엘) · SaaS(웹사이트 빌더) | **291 회사 프로파일 완료. 도메인 2개 · 기능 0개.** ① `에이전트에게 당번을 맡기되 열쇠는 안 준다`(AirBot **본문 확인** — 월 **675시간** 절감, **완전 자동화율 15%**) · ② `멈추지 않고 갈아 끼운다`(무중단 DB 이관 — 283 확인, **정독 필요**). **⚠️ 도메인 ① 은 일곱 편 중 한 편만 읽었다.** **실적 확보** — Q2 2026 매출 **5억 6,300만 달러 · 15% 성장** |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Wix** | 기타(이스라엘) · SaaS(웹사이트 빌더) | `https://www.wix.engineering/post/<슬러그>` — **자체 호스팅**(Medium 미러가 따로 있지만 본문이 자기 도메인에서 다 온다) | ✅ 본문 열림. ⚠️ **목록 페이지는 카드가 placeholder 로 와서 날짜를 못 읽었다** — 글 URL 은 `WebSearch` 에 `allowed_domains: ["wix.engineering"]` 로 찾는다(운영 사실 ⑱) | **283 에서 `how-we-built-a-zero-downtime-database-migration-service-at-wix` 를 열어 기준 셋을 다 확인했다.** **버린 대안 셋** — **MySQL Dump**(*"Simple and proven, but it cannot be performed with zero downtime"*) · **Amazon DMS**(*"DMS does not fully support this pattern. For our most critical MySQL workloads, it simply doesn't fit"*) · **다중 소스 복제**(프라이머리 장애 위험과 번거로운 토폴로지). **대가** — **파티션 수가** *"one of the most critical decisions we make at the start of a migration, and it cannot be changed safely mid-flight"* · 데이터 쏠림을 인정한다(*"some primary keys naturally produce much more data than others"*) · **어느 시점부터는** *"rollback is not an option without losing data"*. **수치** — **약 200개 MySQL 클러스터** · 읽기 전용 검증 창 **1시간 이상** · MSK 메시지 상한 **8MB**. **다른 후보 편** — `1,000 Servers, 160 Clusters, 30 Days, Zero Downtime: Migrating Wix's MySQL Fleet to Graviton` · `Data to Production: Bridging the Gap Between Iceberg and Live Microservices` · `How We Saved 650 Developer Days in One Quarter by Automating Code Migrations` |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
