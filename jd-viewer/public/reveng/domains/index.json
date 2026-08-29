@@ -1,603 +1,620 @@
 {
-  "updated_at": "2026-08-29",
-  "docs": [
-    {
-      "slug": "webtoon-distribution",
-      "title": "웹툰 배급 — 같은 자원을 반대 방향으로 쓴다",
-      "question": "같은 제약 아래에서 두 회사가 왜 정반대 답을 냈는가?",
-      "companies": [
-        "naver",
-        "kakao"
-      ],
-      "features": [
-        "toon-radar",
-        "wait-to-free"
-      ],
-      "file": "webtoon-distribution.md"
-    },
-    {
-      "slug": "payments",
-      "title": "결제 — 되돌릴 수 없는 일을 다루는 네 가지 방식",
-      "question": "실패를 상태로 남길 것인가, 현재를 가리킬 것인가, 아니면 되돌릴 일이 생기지 않게 미리 붙잡을 것인가?",
-      "companies": [
-        "toss",
-        "stripe",
-        "shopify",
-        "naver"
-      ],
-      "features": [
-        "payment-approval",
-        "idempotent-payments",
-        "api-surface",
-        "checkout-reservations",
-        "fast-settlement"
-      ],
-      "file": "payments.md"
-    },
-    {
-      "slug": "ad-surface",
-      "title": "지면·광고 — 결과인 곳, 침입자인 곳, 원래 거기 있던 것",
-      "question": "같은 화면에서 사용자 경험과 광고 수익이 부딪힐 때, 광고의 지위가 답을 어떻게 바꾸는가?",
-      "companies": [
-        "naver",
-        "kakao",
-        "daangn"
-      ],
-      "features": [
-        "smart-block",
-        "bizboard-surface",
-        "local-ads"
-      ],
-      "file": "ad-surface.md"
-    },
-    {
-      "slug": "dispatch",
-      "title": "배차 — 같은 이름 아래 서로 다른 세 문제",
-      "question": "결정의 범위가 이 호출인지 도시 전체인지가 아키텍처를 어떻게 바꾸는가?",
-      "companies": [
-        "kakao",
-        "baemin",
-        "uber"
-      ],
-      "features": [
-        "taxi-dispatch",
-        "rider-dispatch",
-        "marketplace-rl"
-      ],
-      "file": "dispatch.md"
-    },
-    {
-      "slug": "search-intent",
-      "title": "검색 — 무엇을 위에 놓을지보다, 그걸 얼마나 자주 바꿀 수 있는지",
-      "question": "세 회사 중 둘은 왜 랭킹이 아니라 랭킹을 못 바꾸게 막던 것을 고쳤는가?",
-      "companies": [
-        "coupang",
-        "naver",
-        "daangn"
-      ],
-      "features": [
-        "search-indexing",
-        "smart-block",
-        "search-infra"
-      ],
-      "file": "search-intent.md"
-    },
-    {
-      "slug": "identity-trust",
-      "title": "신원과 신뢰 — 확인할 수 없을 때 무엇으로 대신하는가",
-      "question": "사람을 특정할 수 있느냐가 제재와 경고 중 무엇을 쓸 수 있는지를 어떻게 정하는가?",
-      "companies": [
-        "daangn",
-        "kakao"
-      ],
-      "features": [
-        "identity-auth",
-        "trust-score",
-        "identity-trust"
-      ],
-      "file": "identity-trust.md"
-    },
-    {
-      "slug": "spatial-units",
-      "title": "공간 — 세는 단위, 담는 단위, 그리고 아예 안 만드는 쪽",
-      "question": "같은 격자를 만든 곳과 쓰는 곳은 왜 다르게 쓰는가?",
-      "companies": [
-        "uber",
-        "coupang",
-        "baemin"
-      ],
-      "features": [
-        "h3-grid",
-        "delivery-area",
-        "rider-dispatch"
-      ],
-      "file": "spatial-units.md"
-    },
-    {
-      "slug": "what-to-mix",
-      "title": "추천 — 개인화만 하면 밀려나는 것들",
-      "question": "잘 맞힐수록 무엇이 안 보이게 되고, 그 자리를 옆·안·앞·뒤 중 어디에 마련하는가?",
-      "companies": [
-        "musinsa",
-        "daangn",
-        "naver",
-        "instagram"
-      ],
-      "features": [
-        "style-personalization",
-        "feed-platform",
-        "smart-block",
-        "notification-diversity"
-      ],
-      "file": "what-to-mix.md"
-    },
-    {
-      "slug": "prefetch",
-      "title": "어디에 무엇을 미리 놓아두는가",
-      "question": "거의 같은 시스템을 지어 놓고 한쪽은 미리 채우고 한쪽은 채우지 않는다 — 무엇이 그 차이를 정하는가?",
-      "companies": [
-        "netflix",
-        "youtube",
-        "instagram",
-        "toss",
-        "baemin"
-      ],
-      "features": [
-        "open-connect-fill",
-        "ggc-edge",
-        "adaptive-playback",
-        "explore-funnel",
-        "interest-accrual",
-        "store-exposure"
-      ],
-      "file": "prefetch.md"
-    },
-    {
-      "slug": "discrete-choice",
-      "title": "몇 칸으로 자를 것인가",
-      "question": "연속적인 것을 칸으로 자를 때, 한쪽은 최적점을 놓치고 다른 쪽은 잘라서 더 정확해졌다. 무엇이 그 차이를 만드는가?",
-      "companies": [
-        "netflix",
-        "uber",
-        "musinsa"
-      ],
-      "features": [
-        "per-title-encoding",
-        "deep-eta",
-        "search-relevance",
-        "style-personalization",
-        "fashion-taxonomy"
-      ],
-      "file": "discrete-choice.md"
-    },
-    {
-      "slug": "backward-compat",
-      "title": "옛 약속을 어떻게 지키는가",
-      "question": "약속의 상대가 개발자인가 팔려 나간 기기인가가, 그 약속을 끝낼 수 있는지를 정한다.",
-      "companies": [
-        "netflix",
-        "stripe",
-        "toss",
-        "coupang"
-      ],
-      "features": [
-        "per-title-encoding",
-        "api-surface",
-        "payment-approval",
-        "docdb-migrations",
-        "delivery-area"
-      ],
-      "file": "backward-compat.md"
-    },
-    {
-      "slug": "machine-cannot-judge",
-      "title": "기계가 판정할 수 없는 것을 어디에 두는가",
-      "question": "못 하는 판정을 절차로 미는가, 규칙을 얹는가, 권한을 넘기는가, 사람을 상류에 두는가, 아예 판정하지 않는가?",
-      "companies": [
-        "youtube",
-        "discord",
-        "instagram",
-        "kakao",
-        "daangn"
-      ],
-      "features": [
-        "content-id",
-        "watch-next-ranking",
-        "automod-layers",
-        "integrity-classification",
-        "taxi-dispatch",
-        "trust-score"
-      ],
-      "file": "machine-cannot-judge.md"
-    },
-    {
-      "slug": "backpressure",
-      "title": "멈춤을 어떻게 정의하고 무엇을 먼저 버리는가",
-      "question": "'무중단'은 목표가 아니라 정의다 — 재시도 예산 안인가, 무엇을 잃지 않았는가, 화면이 떴는가?",
-      "companies": [
-        "stripe",
-        "shopify",
-        "discord",
-        "baemin",
-        "youtube"
-      ],
-      "features": [
-        "docdb-migrations",
-        "pods-isolation",
-        "bfcm-readiness",
-        "presence-fanout",
-        "message-storage",
-        "store-exposure",
-        "ggc-edge"
-      ],
-      "file": "backpressure.md"
-    },
-    {
-      "slug": "parallel-cutover",
-      "title": "두 시스템을 나란히 돌려 옮기기 — 무엇을 정답으로 삼는가",
-      "question": "옛 구현의 응답인가, 옛 저장소의 상태인가, 사용자 행동이 만드는 비율인가, 아니면 정답을 만들지 않는가?",
-      "companies": [
-        "shopify",
-        "stripe",
-        "toss",
-        "discord",
-        "coupang"
-      ],
-      "features": [
-        "storefront-renderer",
-        "checkout-reservations",
-        "docdb-migrations",
-        "payment-approval",
-        "message-storage",
-        "delivery-area"
-      ],
-      "file": "parallel-cutover.md"
-    },
-    {
-      "slug": "what-counts-as-good",
-      "title": "무엇을 좋다고 부를 것인가",
-      "question": "정답이 계산식에서 오는가 사람에게서 오는가, 그리고 정답을 바꿀 때 옛 성적표가 나빠지는 것을 감수하는가?",
-      "companies": [
-        "netflix",
-        "youtube",
-        "musinsa",
-        "uber",
-        "instagram"
-      ],
-      "features": [
-        "per-title-encoding",
-        "uvq-quality",
-        "watch-next-ranking",
-        "search-relevance",
-        "marketplace-rl",
-        "integrity-classification"
-      ],
-      "file": "what-counts-as-good.md"
-    },
-    {
-      "slug": "wrong-yardstick",
-      "title": "잘못된 자를 어떻게 알아채는가",
-      "question": "재고 있던 숫자가 재려던 것이 아니었을 때, 무엇이 그것을 드러냈고 무엇으로 바꿨는가?",
-      "companies": [
-        "baemin",
-        "instagram",
-        "bytedance",
-        "spotify",
-        "canva"
-      ],
-      "features": [
-        "rider-dispatch",
-        "notification-diversity",
-        "heteroscale",
-        "megascale",
-        "llm-evals-vs-experiments",
-        "session-revocations"
-      ],
-      "file": "wrong-yardstick.md"
-    },
-    {
-      "slug": "move-the-axis",
-      "title": "양 끝 중 하나를 고르지 않는 법",
-      "question": "절충점이 없는 갈등 앞에서, 손잡이를 돌리는 대신 그 손잡이가 걸려 있던 축을 어떻게 바꿨는가?",
-      "companies": [
-        "ly-corporation",
-        "github",
-        "dropbox",
-        "spotify",
-        "canva"
-      ],
-      "features": [
-        "kafka-e2ee",
-        "actions-runners",
-        "magic-pocket",
-        "rap",
-        "session-revocations"
-      ],
-      "file": "move-the-axis.md"
-    },
-    {
-      "slug": "what-expires-a-design",
-      "title": "무엇이 설계를 만료시키는가",
-      "question": "심장을 다시 짓게 만든 것은 무엇이었고, 몇 번이나 다시 지었는가?",
-      "companies": [
-        "dropbox",
-        "slack",
-        "notion",
-        "datadog",
-        "grafana-labs"
-      ],
-      "features": [
-        "nucleus-rewrite",
-        "unified-grid",
-        "vector-search-cost",
-        "monocle-timeseries",
-        "mimir-next-gen"
-      ],
-      "file": "what-expires-a-design.md"
-    },
-    {
-      "slug": "what-they-did-not-do",
-      "title": "안 하기로 한 것을 어떻게 적는가",
-      "question": "켰다가 끄거나, 되돌리지 않거나, 여기까지만 하기로 한 결정은 무엇이 뒤집었고 글에 어떻게 남았는가?",
-      "companies": [
-        "zalando",
-        "cloudflare",
-        "bytedance",
-        "grafana-labs",
-        "slack"
-      ],
-      "features": [
-        "client-side-lb",
-        "workers-kv-redundancy",
-        "muxflow",
-        "query-sharding",
-        "az-siloing"
-      ],
-      "file": "what-they-did-not-do.md"
-    },
-    {
-      "slug": "build-or-buy",
-      "title": "직접 만들 것인가, 가져올 것인가",
-      "question": "만들지 가져올지를 가른 것은 우리 쪽 실력이 아니라 후보 쪽의 무엇이었는가?",
-      "companies": [
-        "adyen",
-        "cloudflare",
-        "figma",
-        "coupang",
-        "ly-corporation",
-        "spotify"
-      ],
-      "features": [
-        "accounting-ledger",
-        "payment-path",
-        "unimog-edge-lb",
-        "livegraph-subscription",
-        "seller-understanding",
-        "device-attestation",
-        "podcast-previews"
-      ],
-      "file": "build-or-buy.md"
-    },
-    {
-      "slug": "count-not-size",
-      "title": "벽이 되는 것은 크기가 아니라 개수다",
-      "question": "한계를 정한 것이 데이터의 크기가 아니라 개수였을 때, 무엇의 개수가 무엇을 정했고 어떻게 막았는가?",
-      "companies": [
-        "ly-corporation",
-        "grab",
-        "discord",
-        "notion"
-      ],
-      "features": [
-        "hdfs-bridge",
-        "iceberg-lake",
-        "counter-service",
-        "voice-sfu",
-        "logical-shard-reshard"
-      ],
-      "file": "count-not-size.md"
-    },
-    {
-      "slug": "who-has-to-change",
-      "title": "누가 바뀌어야 하는가",
-      "question": "남의 도구를 거절한 이유가 성능이 아니었다면 무엇이었고, 그 대신 무엇을 직접 떠안았는가?",
-      "companies": [
-        "zerodha",
-        "trivago",
-        "allegro",
-        "vinted"
-      ],
-      "features": [
-        "console-warehouse",
-        "contract-notes",
-        "internal-graphql-gateway",
-        "independent-deploys",
-        "dc-network"
-      ],
-      "file": "who-has-to-change.md"
-    },
-    {
-      "slug": "machine-says-so",
-      "title": "기계가 그렇다는데 — 자동이 낸 것을 무엇으로 믿는가",
-      "question": "거르는가, 사후에 재는가, 사람을 안에 넣는가, 출처를 남기는가 — 그리고 넷 다 무엇을 못 보는가?",
-      "companies": [
-        "linkedin",
-        "doximity",
-        "moniepoint"
-      ],
-      "features": [
-        "qa-agent",
-        "ai-code-review",
-        "clinical-ai-trust",
-        "traceable-truth"
-      ],
-      "file": "machine-says-so.md"
-    },
-    {
-      "slug": "after-you-measure",
-      "title": "재 보고 나서 — 숫자가 그대로 답이 된 적이 없다",
-      "question": "잰 값이 예상과 달랐을 때 무엇을 고쳤는가 — 답인가, 자인가, 읽는 법인가?",
-      "companies": [
-        "careem",
-        "zerodha",
-        "yelp",
-        "doximity",
-        "target"
-      ],
-      "features": [
-        "cost-leaks",
-        "log-storage",
-        "partition-access",
-        "prod-profiling",
-        "repurchase-timing"
-      ],
-      "file": "after-you-measure.md"
-    },
-    {
-      "slug": "which-way-it-leans",
-      "title": "무엇을 잃기로 정했는가 — 오차를 어느 쪽으로 몰았는가",
-      "question": "완전성을 조금 내줄 때, 그 오차가 한쪽으로 기울게 만든 이유는 무엇인가?",
-      "companies": [
-        "moniepoint",
-        "doximity",
-        "yelp",
-        "target"
-      ],
-      "features": [
-        "critical-path",
-        "cdc-overlap",
-        "partition-access",
-        "split-shipments",
-        "repurchase-timing"
-      ],
-      "file": "which-way-it-leans.md"
-    },
-    {
-      "slug": "reversible-first",
-      "title": "되돌릴 수 있는 것을 먼저 한다 — 되돌릴 수 없는 지점을 어디까지 미뤘는가",
-      "question": "순서를 바꿔 되돌릴 길을 남긴 곳과, 그 길을 좁히고 앞으로만 간 곳은 무엇이 달랐는가?",
-      "companies": [
-        "figma",
-        "shopify",
-        "toss",
-        "yelp",
-        "planetscale"
-      ],
-      "features": [
-        "horizontal-sharding",
-        "webgpu-renderer",
-        "checkout-reservations",
-        "payment-approval",
-        "in-place-swap",
-        "parallel-backups"
-      ],
-      "file": "reversible-first.md"
-    },
-    {
-      "slug": "where-it-piles-up",
-      "title": "미루되 미룬 것이 안 보이게 한다 — 그럼 그것은 어디에 쌓이는가",
-      "question": "미룬 일을 감추는 장치는 무엇을 대신 떠안고, 그 청구서는 언제 오는가?",
-      "companies": [
-        "doximity",
-        "careem",
-        "planetscale"
-      ],
-      "features": [
-        "cdc-overlap",
-        "cost-leaks",
-        "parallel-backups"
-      ],
-      "file": "where-it-piles-up.md"
-    },
-    {
-      "slug": "what-guards-the-gate",
-      "title": "문지기를 무엇으로 세우는가 — 기계가 만든 것을 무엇이 통과시키는가",
-      "question": "모델을 더 좋게 만드는 대신 문을 세운 회사들은 그 문을 무엇으로 만들었고, 그 문은 무엇을 못 잡는가?",
-      "companies": [
-        "wix",
-        "meituan",
-        "monday",
-        "cybozu"
-      ],
-      "features": [
-        "compile-then-publish",
-        "align-people-then-machines",
-        "run-it-to-verify",
-        "binarize-the-rubric",
-        "agent-with-guardrails"
-      ],
-      "file": "what-guards-the-gate.md"
-    },
-    {
-      "slug": "swap-while-running",
-      "title": "무중단으로 갈아 끼우기 — 앱이 아는가 모르는가",
-      "question": "멈추지 않고 옮길 때 애플리케이션은 그 사실을 아는가, 그리고 무중단을 사려고 무엇을 내줬는가?",
-      "companies": [
-        "wix",
-        "cybozu"
-      ],
-      "features": [
-        "read-first-then-write",
-        "chatroom-by-chatroom",
-        "same-node-rolling"
-      ],
-      "file": "swap-while-running.md"
-    },
-    {
-      "slug": "how-to-set-the-yardstick",
-      "title": "자를 어떻게 세우는가 — 재기 전에 만들어야 하는 것",
-      "question": "참값을 어디서 구하고, 못 구하면 어떻게 적고, 자가 무뎌지면 무엇을 하는가?",
-      "companies": [
-        "snap",
-        "meituan"
-      ],
-      "features": [
-        "code-review-agent",
-        "agentic-code-search",
-        "mutual-gaze-align",
-        "spatial-benchmark",
-        "binarize-the-rubric"
-      ],
-      "file": "how-to-set-the-yardstick.md"
-    },
-    {
-      "slug": "what-agents-may-not-do",
-      "title": "에이전트에게 무엇을 못 하게 하는가 — 손을 묶었나 눈을 가렸나 머리를 좁혔나",
-      "question": "에이전트가 일하는 동안 무엇을 막아 두었고, 그 대가를 잰 곳이 있는가?",
-      "companies": [
-        "grab",
-        "wix",
-        "snap",
-        "monday"
-      ],
-      "features": [
-        "contain-not-trust",
-        "wrapper-in-the-box",
-        "context-before-fix",
-        "agent-ready-org",
-        "code-review-agent",
-        "agentic-code-search",
-        "agent-with-guardrails"
-      ],
-      "file": "what-agents-may-not-do.md"
-    },
-    {
-      "slug": "when-you-cannot-undo",
-      "title": "되돌릴 수 없을 때 무엇을 하는가 — 취소가 세상을 되돌리지 않을 때",
-      "question": "되돌릴 길의 값을 낼 것인가, 못 낸다면 무엇으로 대신하고 언제 닫는가?",
-      "companies": [
-        "paytm",
-        "freshworks",
-        "sansan"
-      ],
-      "features": [
-        "leave-what-costs-more",
-        "know-both-versions",
-        "paper-does-not-undo",
-        "layer-by-layer-async",
-        "coordinator-in-between"
-      ],
-      "file": "when-you-cannot-undo.md"
-    }
-  ]
+ "updated_at": "2026-08-29",
+ "docs": [
+  {
+   "slug": "webtoon-distribution",
+   "title": "웹툰 배급 — 같은 자원을 반대 방향으로 쓴다",
+   "question": "같은 제약 아래에서 두 회사가 왜 정반대 답을 냈는가?",
+   "companies": [
+    "naver",
+    "kakao"
+   ],
+   "features": [
+    "toon-radar",
+    "wait-to-free"
+   ],
+   "file": "webtoon-distribution.md"
+  },
+  {
+   "slug": "payments",
+   "title": "결제 — 되돌릴 수 없는 일을 다루는 네 가지 방식",
+   "question": "실패를 상태로 남길 것인가, 현재를 가리킬 것인가, 아니면 되돌릴 일이 생기지 않게 미리 붙잡을 것인가?",
+   "companies": [
+    "toss",
+    "stripe",
+    "shopify",
+    "naver"
+   ],
+   "features": [
+    "payment-approval",
+    "idempotent-payments",
+    "api-surface",
+    "checkout-reservations",
+    "fast-settlement"
+   ],
+   "file": "payments.md"
+  },
+  {
+   "slug": "ad-surface",
+   "title": "지면·광고 — 결과인 곳, 침입자인 곳, 원래 거기 있던 것",
+   "question": "같은 화면에서 사용자 경험과 광고 수익이 부딪힐 때, 광고의 지위가 답을 어떻게 바꾸는가?",
+   "companies": [
+    "naver",
+    "kakao",
+    "daangn"
+   ],
+   "features": [
+    "smart-block",
+    "bizboard-surface",
+    "local-ads"
+   ],
+   "file": "ad-surface.md"
+  },
+  {
+   "slug": "dispatch",
+   "title": "배차 — 같은 이름 아래 서로 다른 세 문제",
+   "question": "결정의 범위가 이 호출인지 도시 전체인지가 아키텍처를 어떻게 바꾸는가?",
+   "companies": [
+    "kakao",
+    "baemin",
+    "uber"
+   ],
+   "features": [
+    "taxi-dispatch",
+    "rider-dispatch",
+    "marketplace-rl"
+   ],
+   "file": "dispatch.md"
+  },
+  {
+   "slug": "search-intent",
+   "title": "검색 — 무엇을 위에 놓을지보다, 그걸 얼마나 자주 바꿀 수 있는지",
+   "question": "세 회사 중 둘은 왜 랭킹이 아니라 랭킹을 못 바꾸게 막던 것을 고쳤는가?",
+   "companies": [
+    "coupang",
+    "naver",
+    "daangn"
+   ],
+   "features": [
+    "search-indexing",
+    "smart-block",
+    "search-infra"
+   ],
+   "file": "search-intent.md"
+  },
+  {
+   "slug": "identity-trust",
+   "title": "신원과 신뢰 — 확인할 수 없을 때 무엇으로 대신하는가",
+   "question": "사람을 특정할 수 있느냐가 제재와 경고 중 무엇을 쓸 수 있는지를 어떻게 정하는가?",
+   "companies": [
+    "daangn",
+    "kakao"
+   ],
+   "features": [
+    "identity-auth",
+    "trust-score",
+    "identity-trust"
+   ],
+   "file": "identity-trust.md"
+  },
+  {
+   "slug": "spatial-units",
+   "title": "공간 — 세는 단위, 담는 단위, 그리고 아예 안 만드는 쪽",
+   "question": "같은 격자를 만든 곳과 쓰는 곳은 왜 다르게 쓰는가?",
+   "companies": [
+    "uber",
+    "coupang",
+    "baemin"
+   ],
+   "features": [
+    "h3-grid",
+    "delivery-area",
+    "rider-dispatch"
+   ],
+   "file": "spatial-units.md"
+  },
+  {
+   "slug": "what-to-mix",
+   "title": "추천 — 개인화만 하면 밀려나는 것들",
+   "question": "잘 맞힐수록 무엇이 안 보이게 되고, 그 자리를 옆·안·앞·뒤 중 어디에 마련하는가?",
+   "companies": [
+    "musinsa",
+    "daangn",
+    "naver",
+    "instagram"
+   ],
+   "features": [
+    "style-personalization",
+    "feed-platform",
+    "smart-block",
+    "notification-diversity"
+   ],
+   "file": "what-to-mix.md"
+  },
+  {
+   "slug": "prefetch",
+   "title": "어디에 무엇을 미리 놓아두는가",
+   "question": "거의 같은 시스템을 지어 놓고 한쪽은 미리 채우고 한쪽은 채우지 않는다 — 무엇이 그 차이를 정하는가?",
+   "companies": [
+    "netflix",
+    "youtube",
+    "instagram",
+    "toss",
+    "baemin"
+   ],
+   "features": [
+    "open-connect-fill",
+    "ggc-edge",
+    "adaptive-playback",
+    "explore-funnel",
+    "interest-accrual",
+    "store-exposure"
+   ],
+   "file": "prefetch.md"
+  },
+  {
+   "slug": "discrete-choice",
+   "title": "몇 칸으로 자를 것인가",
+   "question": "연속적인 것을 칸으로 자를 때, 한쪽은 최적점을 놓치고 다른 쪽은 잘라서 더 정확해졌다. 무엇이 그 차이를 만드는가?",
+   "companies": [
+    "netflix",
+    "uber",
+    "musinsa"
+   ],
+   "features": [
+    "per-title-encoding",
+    "deep-eta",
+    "search-relevance",
+    "style-personalization",
+    "fashion-taxonomy"
+   ],
+   "file": "discrete-choice.md"
+  },
+  {
+   "slug": "backward-compat",
+   "title": "옛 약속을 어떻게 지키는가",
+   "question": "약속의 상대가 개발자인가 팔려 나간 기기인가가, 그 약속을 끝낼 수 있는지를 정한다.",
+   "companies": [
+    "netflix",
+    "stripe",
+    "toss",
+    "coupang"
+   ],
+   "features": [
+    "per-title-encoding",
+    "api-surface",
+    "payment-approval",
+    "docdb-migrations",
+    "delivery-area"
+   ],
+   "file": "backward-compat.md"
+  },
+  {
+   "slug": "machine-cannot-judge",
+   "title": "기계가 판정할 수 없는 것을 어디에 두는가",
+   "question": "못 하는 판정을 절차로 미는가, 규칙을 얹는가, 권한을 넘기는가, 사람을 상류에 두는가, 아예 판정하지 않는가?",
+   "companies": [
+    "youtube",
+    "discord",
+    "instagram",
+    "kakao",
+    "daangn"
+   ],
+   "features": [
+    "content-id",
+    "watch-next-ranking",
+    "automod-layers",
+    "integrity-classification",
+    "taxi-dispatch",
+    "trust-score"
+   ],
+   "file": "machine-cannot-judge.md"
+  },
+  {
+   "slug": "backpressure",
+   "title": "멈춤을 어떻게 정의하고 무엇을 먼저 버리는가",
+   "question": "'무중단'은 목표가 아니라 정의다 — 재시도 예산 안인가, 무엇을 잃지 않았는가, 화면이 떴는가?",
+   "companies": [
+    "stripe",
+    "shopify",
+    "discord",
+    "baemin",
+    "youtube"
+   ],
+   "features": [
+    "docdb-migrations",
+    "pods-isolation",
+    "bfcm-readiness",
+    "presence-fanout",
+    "message-storage",
+    "store-exposure",
+    "ggc-edge"
+   ],
+   "file": "backpressure.md"
+  },
+  {
+   "slug": "parallel-cutover",
+   "title": "두 시스템을 나란히 돌려 옮기기 — 무엇을 정답으로 삼는가",
+   "question": "옛 구현의 응답인가, 옛 저장소의 상태인가, 사용자 행동이 만드는 비율인가, 아니면 정답을 만들지 않는가?",
+   "companies": [
+    "shopify",
+    "stripe",
+    "toss",
+    "discord",
+    "coupang"
+   ],
+   "features": [
+    "storefront-renderer",
+    "checkout-reservations",
+    "docdb-migrations",
+    "payment-approval",
+    "message-storage",
+    "delivery-area"
+   ],
+   "file": "parallel-cutover.md"
+  },
+  {
+   "slug": "what-counts-as-good",
+   "title": "무엇을 좋다고 부를 것인가",
+   "question": "정답이 계산식에서 오는가 사람에게서 오는가, 그리고 정답을 바꿀 때 옛 성적표가 나빠지는 것을 감수하는가?",
+   "companies": [
+    "netflix",
+    "youtube",
+    "musinsa",
+    "uber",
+    "instagram"
+   ],
+   "features": [
+    "per-title-encoding",
+    "uvq-quality",
+    "watch-next-ranking",
+    "search-relevance",
+    "marketplace-rl",
+    "integrity-classification"
+   ],
+   "file": "what-counts-as-good.md"
+  },
+  {
+   "slug": "wrong-yardstick",
+   "title": "잘못된 자를 어떻게 알아채는가",
+   "question": "재고 있던 숫자가 재려던 것이 아니었을 때, 무엇이 그것을 드러냈고 무엇으로 바꿨는가?",
+   "companies": [
+    "baemin",
+    "instagram",
+    "bytedance",
+    "spotify",
+    "canva"
+   ],
+   "features": [
+    "rider-dispatch",
+    "notification-diversity",
+    "heteroscale",
+    "megascale",
+    "llm-evals-vs-experiments",
+    "session-revocations"
+   ],
+   "file": "wrong-yardstick.md"
+  },
+  {
+   "slug": "move-the-axis",
+   "title": "양 끝 중 하나를 고르지 않는 법",
+   "question": "절충점이 없는 갈등 앞에서, 손잡이를 돌리는 대신 그 손잡이가 걸려 있던 축을 어떻게 바꿨는가?",
+   "companies": [
+    "ly-corporation",
+    "github",
+    "dropbox",
+    "spotify",
+    "canva"
+   ],
+   "features": [
+    "kafka-e2ee",
+    "actions-runners",
+    "magic-pocket",
+    "rap",
+    "session-revocations"
+   ],
+   "file": "move-the-axis.md"
+  },
+  {
+   "slug": "what-expires-a-design",
+   "title": "무엇이 설계를 만료시키는가",
+   "question": "심장을 다시 짓게 만든 것은 무엇이었고, 몇 번이나 다시 지었는가?",
+   "companies": [
+    "dropbox",
+    "slack",
+    "notion",
+    "datadog",
+    "grafana-labs"
+   ],
+   "features": [
+    "nucleus-rewrite",
+    "unified-grid",
+    "vector-search-cost",
+    "monocle-timeseries",
+    "mimir-next-gen"
+   ],
+   "file": "what-expires-a-design.md"
+  },
+  {
+   "slug": "what-they-did-not-do",
+   "title": "안 하기로 한 것을 어떻게 적는가",
+   "question": "켰다가 끄거나, 되돌리지 않거나, 여기까지만 하기로 한 결정은 무엇이 뒤집었고 글에 어떻게 남았는가?",
+   "companies": [
+    "zalando",
+    "cloudflare",
+    "bytedance",
+    "grafana-labs",
+    "slack"
+   ],
+   "features": [
+    "client-side-lb",
+    "workers-kv-redundancy",
+    "muxflow",
+    "query-sharding",
+    "az-siloing"
+   ],
+   "file": "what-they-did-not-do.md"
+  },
+  {
+   "slug": "build-or-buy",
+   "title": "직접 만들 것인가, 가져올 것인가",
+   "question": "만들지 가져올지를 가른 것은 우리 쪽 실력이 아니라 후보 쪽의 무엇이었는가?",
+   "companies": [
+    "adyen",
+    "cloudflare",
+    "figma",
+    "coupang",
+    "ly-corporation",
+    "spotify"
+   ],
+   "features": [
+    "accounting-ledger",
+    "payment-path",
+    "unimog-edge-lb",
+    "livegraph-subscription",
+    "seller-understanding",
+    "device-attestation",
+    "podcast-previews"
+   ],
+   "file": "build-or-buy.md"
+  },
+  {
+   "slug": "count-not-size",
+   "title": "벽이 되는 것은 크기가 아니라 개수다",
+   "question": "한계를 정한 것이 데이터의 크기가 아니라 개수였을 때, 무엇의 개수가 무엇을 정했고 어떻게 막았는가?",
+   "companies": [
+    "ly-corporation",
+    "grab",
+    "discord",
+    "notion"
+   ],
+   "features": [
+    "hdfs-bridge",
+    "iceberg-lake",
+    "counter-service",
+    "voice-sfu",
+    "logical-shard-reshard"
+   ],
+   "file": "count-not-size.md"
+  },
+  {
+   "slug": "who-has-to-change",
+   "title": "누가 바뀌어야 하는가",
+   "question": "남의 도구를 거절한 이유가 성능이 아니었다면 무엇이었고, 그 대신 무엇을 직접 떠안았는가?",
+   "companies": [
+    "zerodha",
+    "trivago",
+    "allegro",
+    "vinted"
+   ],
+   "features": [
+    "console-warehouse",
+    "contract-notes",
+    "internal-graphql-gateway",
+    "independent-deploys",
+    "dc-network"
+   ],
+   "file": "who-has-to-change.md"
+  },
+  {
+   "slug": "machine-says-so",
+   "title": "기계가 그렇다는데 — 자동이 낸 것을 무엇으로 믿는가",
+   "question": "거르는가, 사후에 재는가, 사람을 안에 넣는가, 출처를 남기는가 — 그리고 넷 다 무엇을 못 보는가?",
+   "companies": [
+    "linkedin",
+    "doximity",
+    "moniepoint"
+   ],
+   "features": [
+    "qa-agent",
+    "ai-code-review",
+    "clinical-ai-trust",
+    "traceable-truth"
+   ],
+   "file": "machine-says-so.md"
+  },
+  {
+   "slug": "after-you-measure",
+   "title": "재 보고 나서 — 숫자가 그대로 답이 된 적이 없다",
+   "question": "잰 값이 예상과 달랐을 때 무엇을 고쳤는가 — 답인가, 자인가, 읽는 법인가?",
+   "companies": [
+    "careem",
+    "zerodha",
+    "yelp",
+    "doximity",
+    "target"
+   ],
+   "features": [
+    "cost-leaks",
+    "log-storage",
+    "partition-access",
+    "prod-profiling",
+    "repurchase-timing"
+   ],
+   "file": "after-you-measure.md"
+  },
+  {
+   "slug": "which-way-it-leans",
+   "title": "무엇을 잃기로 정했는가 — 오차를 어느 쪽으로 몰았는가",
+   "question": "완전성을 조금 내줄 때, 그 오차가 한쪽으로 기울게 만든 이유는 무엇인가?",
+   "companies": [
+    "moniepoint",
+    "doximity",
+    "yelp",
+    "target"
+   ],
+   "features": [
+    "critical-path",
+    "cdc-overlap",
+    "partition-access",
+    "split-shipments",
+    "repurchase-timing"
+   ],
+   "file": "which-way-it-leans.md"
+  },
+  {
+   "slug": "reversible-first",
+   "title": "되돌릴 수 있는 것을 먼저 한다 — 되돌릴 수 없는 지점을 어디까지 미뤘는가",
+   "question": "순서를 바꿔 되돌릴 길을 남긴 곳과, 그 길을 좁히고 앞으로만 간 곳은 무엇이 달랐는가?",
+   "companies": [
+    "figma",
+    "shopify",
+    "toss",
+    "yelp",
+    "planetscale"
+   ],
+   "features": [
+    "horizontal-sharding",
+    "webgpu-renderer",
+    "checkout-reservations",
+    "payment-approval",
+    "in-place-swap",
+    "parallel-backups"
+   ],
+   "file": "reversible-first.md"
+  },
+  {
+   "slug": "where-it-piles-up",
+   "title": "미루되 미룬 것이 안 보이게 한다 — 그럼 그것은 어디에 쌓이는가",
+   "question": "미룬 일을 감추는 장치는 무엇을 대신 떠안고, 그 청구서는 언제 오는가?",
+   "companies": [
+    "doximity",
+    "careem",
+    "planetscale"
+   ],
+   "features": [
+    "cdc-overlap",
+    "cost-leaks",
+    "parallel-backups"
+   ],
+   "file": "where-it-piles-up.md"
+  },
+  {
+   "slug": "what-guards-the-gate",
+   "title": "문지기를 무엇으로 세우는가 — 기계가 만든 것을 무엇이 통과시키는가",
+   "question": "모델을 더 좋게 만드는 대신 문을 세운 회사들은 그 문을 무엇으로 만들었고, 그 문은 무엇을 못 잡는가?",
+   "companies": [
+    "wix",
+    "meituan",
+    "monday",
+    "cybozu"
+   ],
+   "features": [
+    "compile-then-publish",
+    "align-people-then-machines",
+    "run-it-to-verify",
+    "binarize-the-rubric",
+    "agent-with-guardrails"
+   ],
+   "file": "what-guards-the-gate.md"
+  },
+  {
+   "slug": "swap-while-running",
+   "title": "무중단으로 갈아 끼우기 — 앱이 아는가 모르는가",
+   "question": "멈추지 않고 옮길 때 애플리케이션은 그 사실을 아는가, 그리고 무중단을 사려고 무엇을 내줬는가?",
+   "companies": [
+    "wix",
+    "cybozu"
+   ],
+   "features": [
+    "read-first-then-write",
+    "chatroom-by-chatroom",
+    "same-node-rolling"
+   ],
+   "file": "swap-while-running.md"
+  },
+  {
+   "slug": "how-to-set-the-yardstick",
+   "title": "자를 어떻게 세우는가 — 재기 전에 만들어야 하는 것",
+   "question": "참값을 어디서 구하고, 못 구하면 어떻게 적고, 자가 무뎌지면 무엇을 하는가?",
+   "companies": [
+    "snap",
+    "meituan"
+   ],
+   "features": [
+    "code-review-agent",
+    "agentic-code-search",
+    "mutual-gaze-align",
+    "spatial-benchmark",
+    "binarize-the-rubric"
+   ],
+   "file": "how-to-set-the-yardstick.md"
+  },
+  {
+   "slug": "what-agents-may-not-do",
+   "title": "에이전트에게 무엇을 못 하게 하는가 — 손을 묶었나 눈을 가렸나 머리를 좁혔나",
+   "question": "에이전트가 일하는 동안 무엇을 막아 두었고, 그 대가를 잰 곳이 있는가?",
+   "companies": [
+    "grab",
+    "wix",
+    "snap",
+    "monday"
+   ],
+   "features": [
+    "contain-not-trust",
+    "wrapper-in-the-box",
+    "context-before-fix",
+    "agent-ready-org",
+    "code-review-agent",
+    "agentic-code-search",
+    "agent-with-guardrails"
+   ],
+   "file": "what-agents-may-not-do.md"
+  },
+  {
+   "slug": "when-you-cannot-undo",
+   "title": "되돌릴 수 없을 때 무엇을 하는가 — 취소가 세상을 되돌리지 않을 때",
+   "question": "되돌릴 길의 값을 낼 것인가, 못 낸다면 무엇으로 대신하고 언제 닫는가?",
+   "companies": [
+    "paytm",
+    "freshworks",
+    "sansan"
+   ],
+   "features": [
+    "leave-what-costs-more",
+    "know-both-versions",
+    "paper-does-not-undo",
+    "layer-by-layer-async",
+    "coordinator-in-between"
+   ],
+   "file": "when-you-cannot-undo.md"
+  },
+  {
+   "slug": "same-problem-three-answers",
+   "title": "제품이 늘자 경계가 무너졌다 — 같은 문제에 세 회사가 낸 세 가지 답",
+   "question": "경계가 무너졌을 때 무엇부터 손대는가 — 떼어내는가, 규칙으로 긋는가, 이름부터 맞추는가?",
+   "companies": [
+    "freee",
+    "smarthr",
+    "payfit"
+   ],
+   "features": [
+    "refactor-before-you-cut",
+    "swap-without-anyone-noticing",
+    "when-a-rule-is-not-enough",
+    "name-it-before-you-cut"
+   ],
+   "file": "same-problem-three-answers.md"
+  }
+ ]
 }
