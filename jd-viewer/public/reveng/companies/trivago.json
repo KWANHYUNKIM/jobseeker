@@ -1,1157 +1,1157 @@
 {
-  "slug": "trivago",
-  "name": "트리바고",
-  "name_en": "trivago",
-  "country": "EU",
-  "category": "검색",
-  "status": "done",
-  "updated_at": "2026-08-28",
-  "domain": "trivago.com",
-  "one_liner": "자기 재고가 없는 검색 — 남의 가격을 모아 비교하고, 그 가격이 낡으면 그게 곧 장애다",
-  "business_model": "**여행 메타서치다 — 자기 재고가 없다.** 호텔과 OTA(온라인 여행사)의 가격을 모아 비교해 주고, 사용자가 눌러 넘어가면 **리퍼럴 수수료**를 받는다.\n\n그 구조가 매출에 그대로 나타난다. FY2025 **총매출 5억 4,890만 유로**(+19%) 중 **리퍼럴 매출이 5억 3,290만 유로**(+17%) — **전체의 약 97%** 다(이 비율은 이 사이트의 계산). 순이익 1,120만 유로, 조정 EBITDA 1,580만 유로.\n\n**그래서 이 회사의 기술적 성격은 '남의 것을 다룬다'는 데서 나온다**(이 해석은 이 사이트의 것이다). 파는 물건이 자기 것이 아니므로 **가격을 계속 받아 와야** 하고, 그 가격은 **시시각각 바뀐다.** 실제로 이 회사의 파이프라인은 대체로 Kafka 위에 있고, 가격 메시지를 소비해 광고를 밀어 넣는 서비스는 **직접 매출을 만든다.**\n\n**그리고 이 도메인에서는 지연이 곧 오류다.** 컨슈머 lag 이 쌓이면 단순히 늦는 것이 아니라 **이미 만료된 호텔 가격이 하류로 밀려 나간다** — 사용자가 없는 가격을 보게 되는 것이다.\n\n**한 가지 더 — 쿠팡·아마존·무신사와 다르고 네이버·구글과도 다르다.** 자기 재고나 셀러 재고를 파는 것도, 문서를 색인해 순위를 매기는 것도 아니다. **남이 정한 가격을 모아 비교하는 자리**라, 이 사이트에 없던 축이다.\n\n**두 기능을 다 판 뒤에 보이는 것 — 이 회사는 '상대를 바꾼다'를 포기한 자리에서 설계를 시작한다**(이 해석은 이 사이트의 것이다). 가격도 남의 것이고 사내 상류 API 도 남의 것이다. Kafka 쪽에서는 상류의 속도를 **lag 으로 재서** 거기에 파드를 맞췄고(CPU 가 아니라), GraphQL 쪽에서는 **상류 15개를 고치는 대신 앞에 번역 층을 세웠다.** 둘 다 상대에게 요구하지 않는 쪽을 골랐다.\n\n**그 대가도 같은 모양이다 — 상대가 조용히 바뀌면 이쪽이 늦게 안다.** 컨슈머는 저트래픽 토픽의 lag 메타데이터가 2주 뒤 Kafka 에서 지워져 **신호 자체가 사라지는 것**을, 게이트웨이는 상류 스키마가 통보 없이 바뀌는 것을 **런타임에** 안다. 맞추는 쪽이 되기로 하면, 상대의 변화를 감지하는 일이 통째로 이쪽 숙제가 된다.\n\n**⭐ 282 에서 최신 분기를 더했다** — **2026년 2분기 총매출 1억 6,840만 유로, 전년 대비 21% 성장**으로 **여섯 분기 연속 두 자릿수**다. 추천 매출은 **미주 16% · 선진 유럽 14%** 성장했고, **조정 EBITDA 110만 유로 흑자**로 **2023년 이후 첫 2분기 흑자**다. **연간 가이던스도 올렸다** — 총매출 **10% 중반대 성장**, 조정 EBITDA **2,500만 → 약 3,000만 유로**. **FY2025 의 총매출 5억 4,890만 유로 이후 흐름이 이어지고 있다.**\n\n**⭐ 바로 앞에 판 회사와 대비된다**(이 정리는 이 사이트의 것이다) — **Adevinta 도 유럽 마켓플레이스인데 2024년 상장폐지로 실적이 공개되지 않아** 그쪽에는 *\"못 찾은 것이 아니라 공개되지 않는다\"* 고 적어야 했다. **trivago 는 같은 자리를 분기마다 숫자로 낸다.**",
-  "revenue_total": "FY2025 총매출 5억 4,890만 유로 (+19%)",
-  "products": [
-    "trivago (호텔·숙소 가격 비교)",
-    "광고주(호텔·OTA)용 입찰·캠페인 도구",
-    "사내 관리 도구 (어드민)"
-  ],
-  "revenue_streams": [
+ "slug": "trivago",
+ "name": "트리바고",
+ "name_en": "trivago",
+ "country": "EU",
+ "category": "검색",
+ "status": "done",
+ "updated_at": "2026-08-28",
+ "domain": "trivago.com",
+ "one_liner": "자기 재고가 없는 검색 — 남의 가격을 모아 비교하고, 그 가격이 낡으면 그게 곧 장애다",
+ "business_model": "**여행 메타서치다 — 자기 재고가 없다.** 호텔과 OTA(온라인 여행사)의 가격을 모아 비교해 주고, 사용자가 눌러 넘어가면 **리퍼럴 수수료**를 받는다.\n\n그 구조가 매출에 그대로 나타난다. FY2025 **총매출 5억 4,890만 유로**(+19%) 중 **리퍼럴 매출이 5억 3,290만 유로**(+17%) — **전체의 약 97%** 다(이 비율은 이 사이트의 계산). 순이익 1,120만 유로, 조정 EBITDA 1,580만 유로.\n\n**그래서 이 회사의 기술적 성격은 '남의 것을 다룬다'는 데서 나온다**(이 해석은 이 사이트의 것이다). 파는 물건이 자기 것이 아니므로 **가격을 계속 받아 와야** 하고, 그 가격은 **시시각각 바뀐다.** 실제로 이 회사의 파이프라인은 대체로 Kafka 위에 있고, 가격 메시지를 소비해 광고를 밀어 넣는 서비스는 **직접 매출을 만든다.**\n\n**그리고 이 도메인에서는 지연이 곧 오류다.** 컨슈머 lag 이 쌓이면 단순히 늦는 것이 아니라 **이미 만료된 호텔 가격이 하류로 밀려 나간다** — 사용자가 없는 가격을 보게 되는 것이다.\n\n**한 가지 더 — 쿠팡·아마존·무신사와 다르고 네이버·구글과도 다르다.** 자기 재고나 셀러 재고를 파는 것도, 문서를 색인해 순위를 매기는 것도 아니다. **남이 정한 가격을 모아 비교하는 자리**라, 이 사이트에 없던 축이다.\n\n**두 기능을 다 판 뒤에 보이는 것 — 이 회사는 '상대를 바꾼다'를 포기한 자리에서 설계를 시작한다**(이 해석은 이 사이트의 것이다). 가격도 남의 것이고 사내 상류 API 도 남의 것이다. Kafka 쪽에서는 상류의 속도를 **lag 으로 재서** 거기에 파드를 맞췄고(CPU 가 아니라), GraphQL 쪽에서는 **상류 15개를 고치는 대신 앞에 번역 층을 세웠다.** 둘 다 상대에게 요구하지 않는 쪽을 골랐다.\n\n**그 대가도 같은 모양이다 — 상대가 조용히 바뀌면 이쪽이 늦게 안다.** 컨슈머는 저트래픽 토픽의 lag 메타데이터가 2주 뒤 Kafka 에서 지워져 **신호 자체가 사라지는 것**을, 게이트웨이는 상류 스키마가 통보 없이 바뀌는 것을 **런타임에** 안다. 맞추는 쪽이 되기로 하면, 상대의 변화를 감지하는 일이 통째로 이쪽 숙제가 된다.\n\n**⭐ 282 에서 최신 분기를 더했다** — **2026년 2분기 총매출 1억 6,840만 유로, 전년 대비 21% 성장**으로 **여섯 분기 연속 두 자릿수**다. 추천 매출은 **미주 16% · 선진 유럽 14%** 성장했고, **조정 EBITDA 110만 유로 흑자**로 **2023년 이후 첫 2분기 흑자**다. **연간 가이던스도 올렸다** — 총매출 **10% 중반대 성장**, 조정 EBITDA **2,500만 → 약 3,000만 유로**. **FY2025 의 총매출 5억 4,890만 유로 이후 흐름이 이어지고 있다.**\n\n**⭐ 바로 앞에 판 회사와 대비된다**(이 정리는 이 사이트의 것이다) — **Adevinta 도 유럽 마켓플레이스인데 2024년 상장폐지로 실적이 공개되지 않아** 그쪽에는 **못 찾은 것이 아니라 공개되지 않는다** 고 적어야 했다. **trivago 는 같은 자리를 분기마다 숫자로 낸다.**",
+ "revenue_total": "FY2025 총매출 5억 4,890만 유로 (+19%)",
+ "products": [
+  "trivago (호텔·숙소 가격 비교)",
+  "광고주(호텔·OTA)용 입찰·캠페인 도구",
+  "사내 관리 도구 (어드민)"
+ ],
+ "revenue_streams": [
+  {
+   "name": "리퍼럴 수수료 (Referral Revenue)",
+   "how": "사용자가 비교 결과를 눌러 호텔·OTA 로 넘어갈 때 받는다. **FY2025 5억 3,290만 유로(+17%)로 총매출의 약 97%.** 지역별 Q4 성장은 아메리카 20% · 기타 16% · 선진 유럽 15%.",
+   "confidence": "confirmed",
+   "sources": [
     {
-      "name": "리퍼럴 수수료 (Referral Revenue)",
-      "how": "사용자가 비교 결과를 눌러 호텔·OTA 로 넘어갈 때 받는다. **FY2025 5억 3,290만 유로(+17%)로 총매출의 약 97%.** 지역별 Q4 성장은 아메리카 20% · 기타 16% · 선진 유럽 15%.",
+     "title": "trivago N.V. Q4·FY2025 실적",
+     "url": "https://ir.trivago.com/news-releases/news-release-details/trivago-nv-reports-solid-q4-2025-results-achieving-27-yoy",
+     "publisher": "trivago N.V. IR",
+     "date": "2026-02-03",
+     "summary": "FY2025 총매출 **5억 4,890만 유로**(+19%), 그중 **리퍼럴 매출 5억 3,290만 유로**(+17%). 순이익 1,120만 유로, 조정 EBITDA 1,580만 유로. Q4 매출 1억 2,000만 유로(+27%), 리퍼럴 1억 940만 유로(+17%) — 지역별 리퍼럴 성장은 아메리카 20%, 기타 16%, 선진 유럽 15%."
+    }
+   ],
+   "share": 97.1,
+   "amount": "5억 3,290만 유로"
+  },
+  {
+   "name": "그 밖의 매출",
+   "how": "총매출 5억 4,890만 유로에서 리퍼럴을 뺀 **약 1,600만 유로.** **구성을 이 사이트가 확인하지 못했다.**",
+   "confidence": "unknown",
+   "sources": [
+    {
+     "title": "trivago N.V. Q4·FY2025 실적",
+     "url": "https://ir.trivago.com/news-releases/news-release-details/trivago-nv-reports-solid-q4-2025-results-achieving-27-yoy",
+     "publisher": "trivago N.V. IR",
+     "date": "2026-02-03",
+     "summary": "FY2025 총매출 **5억 4,890만 유로**(+19%), 그중 **리퍼럴 매출 5억 3,290만 유로**(+17%). 순이익 1,120만 유로, 조정 EBITDA 1,580만 유로. Q4 매출 1억 2,000만 유로(+27%), 리퍼럴 1억 940만 유로(+17%) — 지역별 리퍼럴 성장은 아메리카 20%, 기타 16%, 선진 유럽 15%."
+    }
+   ],
+   "share": 2.9,
+   "amount": "약 1,600만 유로 — 총매출에서 리퍼럴을 뺀 값"
+  }
+ ],
+ "domain_map": {
+  "title": "트리바고 도메인 지도",
+  "question": "남의 가격이 낡기 전에 어디까지 흘러가야 하는가?",
+  "code": "flowchart TD\n  H[\"호텔 · OTA — <b>남의 재고, 남이 정한 가격</b>\"] --> K[(\"Kafka — 가격 메시지\")]\n  subgraph CONS[\"<b>Kafka 소비 파이프라인</b>\"]\n    PSE[\"<b>PSE-kafka</b><br/>가격 메시지를 소비해<br/>외부 서비스로 광고를 민다<br/><b>직접 매출을 만든다</b>\"]:::accent\n    LAG[\"<b>lag 이 쌓이면</b><br/>만료된 호텔 가격이 하류로<br/>= 지연이 아니라 <b>오류</b>\"]:::quiet\n    SINK[\"<b>싱크</b> — 이벤트를 서비스 로컬 DB 의<br/>질의하기 좋은 형태로 (구체화 뷰)<br/>3개 리전 · <b>50개 이상</b> · 각 1 CPU · 1GB\"]:::list\n    KEDA[\"<b>KEDA</b> — 신호는 CPU 가 아니라<br/><b>컨슈머 lag</b> · 0까지 축소\"]:::accent\n    PSE -.-> LAG\n    SINK --- KEDA\n  end\n  subgraph GW[\"<b>내부 API 통합</b>\"]\n    MESH[\"GraphQL Mesh 스키마 스티칭<br/><b>상류 15개 이상</b>(OpenAPI · MySQL · gRPC ·<br/>기존 GraphQL · 분석 뷰)<br/><i>Federation 을 안 쓴 이유 — 상류가<br/>GraphQL 을 채택해야 하기 때문</i>\"]:::list\n    ADMIN[\"사내 어드민 — 광고주 설정 · 호텔 콘텐츠 · 데이터 디버깅\"]\n    MESH --> ADMIN\n  end\n  K --> PSE\n  K --> SINK\n  PSE --> AD[\"외부 광고 서비스\"]\n  SINK --> DB[(\"서비스 로컬 DB\")] --> U[\"사용자 — 리뷰 · 하이라이트\"]"
+ },
+ "domains": [
+  {
+   "name": "Kafka 소비 파이프라인",
+   "why": "**파는 물건이 자기 것이 아니라 가격을 계속 받아 와야 하고, 그 가격은 시시각각 바뀐다.** 그래서 이 회사에서 Kafka 컨슈머가 늦는 것은 단순한 지연이 아니다 — **lag 이 쌓이면 이미 만료된 호텔 가격이 하류로 밀려 나간다.**\n\n그런데 이 부하는 **보통의 방법으로는 보이지 않는다.** 회사가 두 글에서 같은 말을 한다 — **메시지를 처리하는 일은 CPU 나 메모리를 확실하게 올리지 않는다.** 실제로 lag 이 쌓이고 P1 사고가 나던 서비스의 **CPU 는 10% 안팎**이었다.",
+   "tech": [
+    {
+     "tech": "다섯 계층으로 나눈 성능 조사",
+     "solves": "Kafka 폴 지연 → 스레드 → 컨슈머 라이브러리 → 메시지 처리 파이프라인 → 하류 의존성 순으로 파고들었다. **BlockHound**(블로킹 호출 없음), `Schedulers.enableMetrics()`(스레드 풀 포화 없음), **JFR 샘플링**(스레드가 거의 유휴)으로 **아닌 것부터 지웠다.**",
+     "limits": "**각 계층에서 하나씩 고쳐 봤지만 전부 실패했다** — 병목이 동시에 여럿이었기 때문이다.",
+     "confidence": "confirmed",
+     "sources": [
+      {
+       "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+       "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+       "publisher": "trivago Tech Blog",
+       "date": "2026-06-12",
+       "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+      }
+     ]
+    },
+    {
+     "tech": "reactor-kafka + `IsFinished` 플래그 + gRPC 스레드 풀 증설",
+     "solves": "자체 `KafkaReceiverFlux` 는 **`poll()` 때만 `commit()`** 해서 처리가 느려지면 오프셋이 밀렸다 → **별도 스레드에서 커밋하는 reactor-kafka** 로. 메시지마다 최소 75초를 보장하던 `delayElement` 를 **`IsFinished` 플래그로 없앴다.** 그리고 하류 gRPC 스레드 풀을 늘렸다. 결과: **파드 60 → 6(배포 비용 83% 절감)**, 기동 **약 60초 → 약 10초**, **lag 소멸 · P1 알림 중단**.",
+     "limits": "테스트에서 쓴 값(**flatMap 동시성 10,000 · gRPC 스레드 400**)은 ***그렇게 공격적인 수치를 프로덕션에 보내지는 않겠다*** 며 그대로 쓰지 않았다 — **프로덕션 실제 값은 밝히지 않는다.**",
+     "confidence": "confirmed",
+     "sources": [
+      {
+       "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+       "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+       "publisher": "trivago Tech Blog",
+       "date": "2026-06-12",
+       "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+      }
+     ]
+    },
+    {
+     "tech": "KEDA — 컨슈머 lag 을 신호로 한 자동 확장(0까지)",
+     "solves": "**CPU·메모리 대신 컨슈머 그룹 lag** 을 본다. `activationLagThreshold: 0`(lag 이 0을 넘으면 깨우고), `lagThreshold: 100`(원하는 복제본 ≈ 전체 lag ÷ 100), 폴링 **30초**, 쿨다운 **300초**. **표준 HPA 로는 못 하는 0까지 축소**가 된다. 결과: 리전당 하루 평균 **약 50 replica-hours → 1~2**.",
+     "limits": "**저트래픽 토픽이 위험하다** — 한 달에 한 번 갱신되는 토픽은 **2주 뒤 Kafka 가 소비자 그룹 메타데이터를 지울 수** 있어 정작 메시지가 왔을 때 못 깨어난다(완화: Cron 스케일러로 주기적으로 깨운다). 메트릭을 **6회 연속 못 가져오면 1개로 폴백**한다. 최대 복제본은 **파티션 수**를 넘을 수 없다.",
+     "confidence": "confirmed",
+     "sources": [
+      {
+       "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+       "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+       "publisher": "trivago Tech Blog",
+       "date": "2026-02-18",
+       "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+      }
+     ]
+    }
+   ],
+   "features": [
+    "kafka-consumers"
+   ]
+  },
+  {
+   "name": "내부 API 통합",
+   "why": "**사내 관리 도구가 흩어져 있었다** — 회사의 표현으로 **한 대시보드는 REST 엔드포인트에서, 다른 하나는 데이터베이스를 직접 치고, 세 번째는 분석 뷰에 의존했다.** 광고주 설정을 만지는 어카운트 매니저, 호텔 정보를 관리하는 콘텐츠 팀, 데이터를 디버깅하는 운영자가 각자 다른 곳을 본다.\n\n**그래서 이 게이트웨이는 고객이 아니라 사내를 향한다** — 회사가 스스로 **GraphQL 게이트웨이의 다른 용례** 라고 구분한 이유다.",
+   "tech": [
+    {
+     "tech": "GraphQL Mesh 스키마 스티칭 (Federation 대신)",
+     "solves": "**OpenAPI · MySQL · gRPC · 기존 GraphQL · 분석 뷰** 등 **15개 이상**의 상류를 GraphQL 로 자동 번역해 묶는다. **상류 서비스는 거의 그대로 둔다.** 이름 충돌은 접두사 변환(`DataStorage_Hotel` vs `HotelContent_Hotel`)으로 피하고, 게이트웨이는 **기존 NodeJS Express 서버에 얹어** 인증·모니터링·배포 파이프라인을 재사용한다.",
+     "limits": "**Federation 을 버린 이유가 분명하다 — 참여 서비스가 GraphQL 을 채택하고 스키마를 조율해야 하기 때문**이다. 그리고 스키마를 **의도적으로 얕고 넓게**(깊이 중첩된 엔티티 관계 대신) 두었다 — **상류가 스키마를 병합할 수 있는 속도보다 빨리 바뀌기 때문**이다.",
+     "confidence": "confirmed",
+     "sources": [
+      {
+       "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+       "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+       "publisher": "trivago Tech Blog",
+       "date": "2026-03-27",
+       "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+      }
+     ]
+    },
+    {
+     "tech": "게이트웨이를 얇게 유지하기 · 역할 기반 접근 제어 · 감사 로그",
+     "solves": "***깊은 커스터마이징을 의도적으로 피했다 — 번역하고 조합할 뿐 비즈니스 로직을 구현하지 않는다.*** 접근 제어는 리졸버를 감싸는 컴포저로 걸고(`@requiresScopes` 디렉티브로 옮길 계획), 감사 로그는 **의도가 아니라 실제 값과 기대값을 비교**해 남긴다.",
+     "limits": "회사가 인정한 것이 여럿이다 — **스키마 레지스트리가 없어** 팀들이 게이트웨이 팀에 알리지 않고 API 를 바꾸고 **깨지는 변경을 수동이나 런타임에** 발견한다(**자랑스럽지 않다**). 스테이징이 **프로덕션에 붙는 경우**가 있고 통합 스테이징 환경이 없다. 감사 항목을 **클라이언트가 올바로 구성해야** 하고, **오래 걸리는 파이프라인에는 이 패턴이 안 맞는다.** 6년째(2020년 시작) 운영 중.",
+     "confidence": "confirmed",
+     "sources": [
+      {
+       "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+       "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+       "publisher": "trivago Tech Blog",
+       "date": "2026-03-27",
+       "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+      }
+     ]
+    }
+   ],
+   "features": [
+    "internal-graphql-gateway"
+   ]
+  }
+ ],
+ "features": [
+  {
+   "key": "kafka-consumers",
+   "name": "하나씩 고쳐서는 아무것도 나아지지 않을 때",
+   "domain": "Kafka 소비 파이프라인",
+   "updated_at": "2026-08-22",
+   "business": {
+    "why": "가격 메시지를 소비해 외부 광고 서비스로 밀어 넣는 이 컨슈머는 **직접 매출을 만든다.** 그런데 증상이 이상했다 — **부하가 높은데 CPU 는 10% 안팎**이고, 배포할 때 컨슈머 그룹 합류가 느리고(**기동 약 60초**), **복제본 수를 이미 파티션 수만큼 맞췄는데도 lag 이 쌓였다.**\n\n그리고 이 도메인에서 lag 은 늦는 것으로 끝나지 않는다 — **쌓인 만큼 이미 만료된 호텔 가격이 하류로 밀려 나간다.** 실제로 **lag 관련 P1 사고가 19건** 났다.\n\n**가장 값진 대목은 고치는 과정이 아니라 고쳐도 안 나았던 기록이다.** 계층마다 원인을 찾아 하나씩 손봤는데 **번번이 그대로였다** — 병목이 하나가 아니었기 때문이다.",
+    "metrics": [
+     {
+      "label": "증상",
+      "value": "부하가 높은데 **CPU 약 10%**, 기동 **약 60초**, 복제본이 파티션 수와 같은데도 **lag 누적**, **lag 관련 P1 사고 19건**",
       "confidence": "confirmed",
       "sources": [
-        {
-          "title": "trivago N.V. Q4·FY2025 실적",
-          "url": "https://ir.trivago.com/news-releases/news-release-details/trivago-nv-reports-solid-q4-2025-results-achieving-27-yoy",
-          "publisher": "trivago N.V. IR",
-          "date": "2026-02-03",
-          "summary": "FY2025 총매출 **5억 4,890만 유로**(+19%), 그중 **리퍼럴 매출 5억 3,290만 유로**(+17%). 순이익 1,120만 유로, 조정 EBITDA 1,580만 유로. Q4 매출 1억 2,000만 유로(+27%), 리퍼럴 1억 940만 유로(+17%) — 지역별 리퍼럴 성장은 아메리카 20%, 기타 16%, 선진 유럽 15%."
-        }
-      ],
-      "share": 97.1,
-      "amount": "5억 3,290만 유로"
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "label": "결과",
+      "value": "파드 **60개 → 6개(배포 비용 83% 절감)**, 기동 **약 60초 → 약 10초**, **lag 소멸 · P1 알림 중단**",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "label": "테스트 처리량",
+      "value": "**초당 8천 메시지** 달성",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "label": "바뀌지 않은 것",
+      "value": "**참여율과 팀 간 요청 수는 그대로** — 사업 지표는 변하지 않았다",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "label": "싱크 쪽 규모",
+      "value": "**세 리전(US·EU·ASIA)에 50개 이상**의 싱크, 각각 **약 1 CPU · 1GB**",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+        "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-02-18",
+        "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+       }
+      ]
+     },
+     {
+      "label": "싱크 쪽 절감",
+      "value": "리전당 하루 평균 **약 50 replica-hours → 1~2 replica-hours**",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+        "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-02-18",
+        "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+       }
+      ]
+     }
+    ]
+   },
+   "thinking": [
+    {
+     "at": "CPU 그래프를 보고",
+     "thought": "부하가 높다는데 **CPU 가 10% 안팎**이다. 그러면 계산이 모자란 것이 아니다 — **어딘가에서 기다리고 있다.** 복제본은 이미 파티션 수만큼 있으니 **더 붙여 봐야 소용없다**(한 파티션은 한 소비자만 처리할 수 있다).",
+     "confidence": "confirmed"
     },
     {
-      "name": "그 밖의 매출",
-      "how": "총매출 5억 4,890만 유로에서 리퍼럴을 뺀 **약 1,600만 유로.** **구성을 이 사이트가 확인하지 못했다.**",
+     "at": "아닌 것부터 지우며",
+     "thought": "블로킹 호출인가 — **BlockHound** 로 봤더니 없다. 스레드 풀이 포화인가 — `Schedulers.enableMetrics()` 로 봤더니 아니다. **JFR** 로 샘플링해 보니 스레드가 **거의 유휴**다. 그런데 `poll()` 이 **약 10초**나 걸려 `max.poll.interval.ms` 를 넘고 있었다 — 브로커가 우리를 그룹에서 쫓아내고 있었다.",
+     "confidence": "confirmed"
+    },
+    {
+     "at": "컨슈머 라이브러리를 바꿔 보고",
+     "thought": "자체 `KafkaReceiverFlux` 는 **`poll()` 때만 `commit()`** 한다 — 처리가 느려지면 오프셋이 밀린다. spring-kafka 로 바꾸니 lag 이 잠깐 사라졌다. 그런데 **reactor-kafka 로 스테이징에 올려 보니 나아지지 않았다.** 라이브러리 하나로는 안 된다는 뜻이다.",
+     "confidence": "confirmed"
+    },
+    {
+     "at": "코드를 직접 읽고",
+     "thought": "메시지마다 **최소 75초를 보장하는 `delayElement`** 가 있었고 flatMap 동시성이 **256** 으로 묶여 있었다 — 그러면 처리량의 천장이 **동시성 ÷ 지연**으로 정해진다. 그리고 하류 gRPC 클라이언트는 스레드가 **15개**뿐인데 서버는 **평균 7초(최대 30초)** 로 응답하고 초당 250건이 온다. **네 곳이 동시에 막고 있었다** — 그래서 하나씩 고쳤을 때 아무 변화가 없었던 것이다.",
+     "confidence": "confirmed"
+    }
+   ],
+   "domain_model": {
+    "entities": [
+     {
+      "name": "PSE-kafka",
+      "what": "가격 검색 엔진의 Kafka 컨슈머. 호텔 가격 메시지를 소비해 외부 서비스로 광고를 민다 — **직접 매출을 만든다.**"
+     },
+     {
+      "name": "싱크 (sink)",
+      "what": "**하나 이상의 Kafka 토픽에서 이벤트를 읽어 서비스 DB 안의 질의하기 좋은 표현으로 바꾸는 소비자 애플리케이션.** 필터링·정규화·정책 검사를 거쳐 구체화 뷰를 쓴다."
+     },
+     {
+      "name": "컨슈머 lag",
+      "what": "밀린 메시지 수. **이 도메인에서는 지연이 아니라 오류의 크기다** — 쌓인 만큼 만료된 가격이 나간다."
+     },
+     {
+      "name": "`delayElement` 천장",
+      "what": "**flatMap 동시성 ÷ 지연 시간.** 동시성 256, 지연 75초면 처리량이 거기서 막힌다."
+     },
+     {
+      "name": "KEDA 스케일러",
+      "what": "lag 을 보고 복제본 수를 정한다 — `lagThreshold: 100` 이면 **원하는 복제본 ≈ 전체 lag ÷ 100.** 폴링 30초, 쿨다운 300초."
+     }
+    ],
+    "invariants": [
+     "**한 파티션은 한 번에 한 소비자만** 처리한다 — 그래서 복제본을 파티션 수 이상 늘려도 소용없다.",
+     "**lag 이 쌓이면 만료된 가격이 하류로 나간다** — 늦는 것이 아니라 틀리는 것이다.",
+     "**CPU·메모리는 이 부하를 보여 주지 않는다** — 신호는 lag 이다.",
+     "메트릭을 **6회 연속 못 가져오면 1개로 폴백**한다 — 데이터 신선도를 지키려고.",
+     "최대 복제본은 **파티션 수**(또는 DB 가 병목이면 그보다 낮게)를 넘지 않는다."
+    ]
+   },
+   "implementation": {
+    "flow": [
+     {
+      "step": "증상을 계층으로 나눈다 — **폴 지연 → 스레드 → 컨슈머 라이브러리 → 처리 파이프라인 → 하류 의존성**",
+      "why": "어디가 막혔는지 모를 때는 아닌 곳부터 지워야 한다."
+     },
+     {
+      "step": "**BlockHound · `Schedulers.enableMetrics()` · JFR** 로 블로킹·풀 포화·스레드 상태를 확인한다 — 셋 다 아니었다",
+      "why": "흔한 원인을 먼저 배제하면 남는 곳이 좁아진다."
+     },
+     {
+      "step": "컨슈머를 **reactor-kafka** 로 바꾼다 — 커밋을 **별도 스레드**에서 한다",
+      "why": "자체 구현은 `poll()` 때만 커밋해 처리가 느려지면 오프셋이 밀렸다."
+     },
+     {
+      "step": "**`IsFinished` 플래그를 도입해 `delayElement` 를 아예 없앤다**",
+      "why": "메시지당 최소 75초 보장이 처리량의 천장(동시성 ÷ 지연)을 만들고 있었다."
+     },
+     {
+      "step": "**gRPC 스레드 풀을 늘리고 flatMap 동시성을 올린다**",
+      "why": "하류가 평균 7초로 응답하는데 스레드가 15개면 그 자체가 병목이다."
+     },
+     {
+      "step": "**[싱크 쪽]** CPU·메모리 대신 **컨슈머 lag** 을 확장 신호로 삼는다(KEDA)",
+      "why": "메시지 처리는 CPU·메모리를 확실하게 올리지 않는다 — **처리할 메시지가 많다는 의미에서 바쁠 수 있지만 CPU 가 꼭 튀지는 않는다.**"
+     },
+     {
+      "step": "lag 이 0이면 **복제본을 0까지 줄인다.** 쿨다운 300초로 진동을 막는다",
+      "why": "상시 가동은 그 자체로 컨트롤 플레인·모니터링·브로커에 부담을 준다."
+     },
+     {
+      "step": "저트래픽 토픽에는 **Cron 스케일러로 주기적으로 깨운다**",
+      "why": "2주 넘게 조용하면 Kafka 가 소비자 그룹 메타데이터를 지울 수 있다."
+     }
+    ],
+    "decisions": [
+     {
+      "question": "lag 을 복제본을 늘려 해결할 것인가",
+      "chosen": "**늘리지 않는다.** 복제본 수가 **이미 파티션 수와 같았다.**",
+      "alternatives": [
+       "컨슈머 복제본을 더 붙인다"
+      ],
+      "tradeoff": "한 파티션은 한 번에 한 소비자만 처리하므로 **그 이상 늘려도 아무 효과가 없다.** 그래서 **가장 손쉬운 수가 애초에 막혀 있었다**(뒷문장은 이 사이트의 해석).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "question": "컨슈머 라이브러리를 바꾸는 것으로 될 것인가",
+      "chosen": "**그것만으로는 안 된다.** reactor-kafka 로 옮기되 **다른 셋과 함께** 고쳤다.",
+      "alternatives": [
+       "reactor-kafka 로만 바꾼다",
+       "`delayElement` 만 없앤다",
+       "gRPC 스레드 풀만 늘린다"
+      ],
+      "tradeoff": "버린 안 셋이 모두 **실제로 시도했다가 효과가 없었던 것들**이다 — 회사가 그 실패를 그대로 적었다. 이유는 하나다: **병목이 동시에 여럿이라 하나를 풀면 다음 것이 즉시 천장이 된다**(뒷문장은 이 사이트의 해석).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "question": "메시지마다 최소 75초를 보장하던 로직을 어떻게 할 것인가",
+      "chosen": "**`IsFinished` 플래그를 도입해 `delayElement` 를 없앤다.**",
+      "alternatives": [
+       "지연 시간을 줄인다",
+       "동시성만 올린다"
+      ],
+      "tradeoff": "지연을 줄이거나 동시성을 올리는 것은 **천장을 옮길 뿐 없애지 못한다** — 천장이 **동시성 ÷ 지연**으로 정해지기 때문이다(뒷문장은 이 사이트의 해석). 대신 플래그를 관리해야 한다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "question": "테스트에서 통한 값을 그대로 프로덕션에 쓸 것인가",
+      "chosen": "**쓰지 않는다.** 회사가 그대로 적었다 — ***그렇게 공격적인 수치를 프로덕션에 보내지는 않겠다***(테스트에서 쓴 flatMap 동시성 10,000 · gRPC 스레드 400).",
+      "alternatives": [
+       "테스트에서 가장 좋았던 값을 그대로 적용한다"
+      ],
+      "tradeoff": "**프로덕션 실제 값을 밝히지 않아** 바깥에서는 얼마나 올렸는지 알 수 없다. 대신 하류에 그 부하를 그대로 떠넘기지 않는다(뒷문장은 이 사이트의 추정).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "question": "싱크의 자동 확장 신호를 무엇으로 할 것인가",
+      "chosen": "**컨슈머 lag.** CPU·메모리가 아니다.",
+      "alternatives": [
+       "CPU 기반 HPA",
+       "메모리 기반 HPA"
+      ],
+      "tradeoff": "버린 이유가 분명하다 — **메시지 처리가 CPU·메모리를 확실하게 올리지 않는다.** **처리할 메시지가 많다는 의미에서 바쁠 수 있지만 CPU 가 꼭 튀지는 않는다**, 메모리는 백로그와 무관하게 **비교적 일정**하다. 그래서 자원 기반 확장은 **너무 늦게 반응한다.** 대신 lag 메트릭에 접근할 수 없으면(네트워크·인증 실패) **1개로 폴백**해야 한다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+        "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-02-18",
+        "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+       }
+      ]
+     },
+     {
+      "question": "쓰지 않는 싱크를 켜 둘 것인가",
+      "chosen": "**0까지 줄인다.** 표준 HPA 로는 못 하는 것을 KEDA 가 한다. 리전당 하루 **약 50 → 1~2 replica-hours.**",
+      "alternatives": [
+       "최소 1개는 늘 켜 둔다"
+      ],
+      "tradeoff": "**저트래픽 토픽이 위험해진다** — 한 달에 한 번 갱신되는 토픽은 **2주 뒤 Kafka 가 소비자 그룹 메타데이터를 지울 수** 있어 정작 메시지가 왔을 때 빨리 못 깨어난다. 완화는 **Cron 스케일러로 주기적으로 깨우는 것**. 그리고 못 깨어나면 사용자가 **리뷰·하이라이트에서 낡은 데이터**를 보게 된다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+        "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-02-18",
+        "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+       }
+      ]
+     },
+     {
+      "question": "이 변경을 어떻게 굴릴 것인가",
+      "chosen": "**중요하지 않은 싱크부터, 한 리전에서** 시작해 **한 주 동안 안정적인 것을 보고** 넓힌다.",
+      "alternatives": [
+       "전 리전에 한 번에 적용한다"
+      ],
+      "tradeoff": "넓히는 데 시간이 걸린다. 대신 **낡은 데이터가 사용자에게 보이는 위험**을 좁은 범위에서 먼저 만난다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+        "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-02-18",
+        "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+       }
+      ]
+     }
+    ],
+    "stack": [
+     {
+      "tech": "reactor-kafka",
+      "role": "별도 스레드에서 커밋한다. 자체 `KafkaReceiverFlux` 를 대체했다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "tech": "BlockHound · `Schedulers.enableMetrics()` · JFR",
+      "role": "블로킹 호출·스레드 풀 포화·스레드 상태를 배제하는 데 썼다 — **셋 다 원인이 아니었다.**",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "tech": "`IsFinished` 플래그",
+      "role": "메시지당 최소 75초를 보장하던 `delayElement` 를 없앤다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "tech": "KEDA (Kafka lag 스케일러)",
+      "role": "lag 을 신호로 0까지 축소·자동 확장. 폴링 30초, 쿨다운 300초, `lagThreshold: 100`.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+        "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-02-18",
+        "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+       }
+      ]
+     },
+     {
+      "tech": "Cron 스케일러",
+      "role": "저트래픽 토픽의 소비자 그룹이 지워지지 않게 주기적으로 깨운다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+        "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-02-18",
+        "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+       }
+      ]
+     },
+     {
+      "tech": "프로덕션의 실제 flatMap 동시성·gRPC 스레드 수",
+      "role": "— **밝히지 않는다.** 테스트값(10,000 / 400)만 나온다.",
       "confidence": "unknown",
       "sources": [
-        {
-          "title": "trivago N.V. Q4·FY2025 실적",
-          "url": "https://ir.trivago.com/news-releases/news-release-details/trivago-nv-reports-solid-q4-2025-results-achieving-27-yoy",
-          "publisher": "trivago N.V. IR",
-          "date": "2026-02-03",
-          "summary": "FY2025 총매출 **5억 4,890만 유로**(+19%), 그중 **리퍼럴 매출 5억 3,290만 유로**(+17%). 순이익 1,120만 유로, 조정 EBITDA 1,580만 유로. Q4 매출 1억 2,000만 유로(+27%), 리퍼럴 1억 940만 유로(+17%) — 지역별 리퍼럴 성장은 아메리카 20%, 기타 16%, 선진 유럽 15%."
-        }
-      ],
-      "share": 2.9,
-      "amount": "약 1,600만 유로 — 총매출에서 리퍼럴을 뺀 값"
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     }
+    ]
+   },
+   "connections": [
+    {
+     "to": "internal-graphql-gateway",
+     "via": "싱크가 이벤트를 **서비스 로컬 DB 의 질의하기 좋은 형태**로 만들어 두면, 사내 어드민은 그 DB·분석 뷰를 게이트웨이의 상류로 읽는다. 회사가 두 글을 이어 말한 적은 없다.",
+     "confidence": "inferred"
     }
-  ],
-  "domain_map": {
-    "title": "트리바고 도메인 지도",
-    "question": "남의 가격이 낡기 전에 어디까지 흘러가야 하는가?",
-    "code": "flowchart TD\n  H[\"호텔 · OTA — <b>남의 재고, 남이 정한 가격</b>\"] --> K[(\"Kafka — 가격 메시지\")]\n  subgraph CONS[\"<b>Kafka 소비 파이프라인</b>\"]\n    PSE[\"<b>PSE-kafka</b><br/>가격 메시지를 소비해<br/>외부 서비스로 광고를 민다<br/><b>직접 매출을 만든다</b>\"]:::accent\n    LAG[\"<b>lag 이 쌓이면</b><br/>만료된 호텔 가격이 하류로<br/>= 지연이 아니라 <b>오류</b>\"]:::quiet\n    SINK[\"<b>싱크</b> — 이벤트를 서비스 로컬 DB 의<br/>질의하기 좋은 형태로 (구체화 뷰)<br/>3개 리전 · <b>50개 이상</b> · 각 1 CPU · 1GB\"]:::list\n    KEDA[\"<b>KEDA</b> — 신호는 CPU 가 아니라<br/><b>컨슈머 lag</b> · 0까지 축소\"]:::accent\n    PSE -.-> LAG\n    SINK --- KEDA\n  end\n  subgraph GW[\"<b>내부 API 통합</b>\"]\n    MESH[\"GraphQL Mesh 스키마 스티칭<br/><b>상류 15개 이상</b>(OpenAPI · MySQL · gRPC ·<br/>기존 GraphQL · 분석 뷰)<br/><i>Federation 을 안 쓴 이유 — 상류가<br/>GraphQL 을 채택해야 하기 때문</i>\"]:::list\n    ADMIN[\"사내 어드민 — 광고주 설정 · 호텔 콘텐츠 · 데이터 디버깅\"]\n    MESH --> ADMIN\n  end\n  K --> PSE\n  K --> SINK\n  PSE --> AD[\"외부 광고 서비스\"]\n  SINK --> DB[(\"서비스 로컬 DB\")] --> U[\"사용자 — 리뷰 · 하이라이트\"]"
+   ],
+   "research": {
+    "papers": [],
+    "hard_problems": [
+     {
+      "problem": "병목이 여럿이면 하나를 고쳐도 아무것도 나아지지 않는다",
+      "why_hard": "성능 문제를 고치는 보통의 방법은 **가장 유력한 원인을 하나 고치고 재 보는 것**이다. 그런데 이 사례에서는 그 방법이 **번번이 실패했다** — reactor-kafka 로만 바꿔도, `delayElement` 만 없애도, gRPC 스레드 풀만 늘려도 지표가 그대로였다. 이유는 **네 곳이 동시에 막고 있었기 때문**이다: 커밋이 `poll()` 에 묶여 오프셋이 밀리고, `delayElement` 가 **동시성 ÷ 지연**이라는 천장을 만들고, gRPC 스레드가 **15개**인데 하류는 **평균 7초(최대 30초)** 로 답하고, 그 배압이 모든 계층으로 전파됐다. **하나를 풀면 다음 것이 즉시 천장이 되어, 고쳤다는 증거가 나타나지 않는다**(마지막 문장은 이 사이트의 해석).",
+      "current_best": "**계층으로 나눠 아닌 것부터 지운다.** 폴 지연 → 스레드 → 라이브러리 → 처리 파이프라인 → 하류 의존성 순으로 보고, **BlockHound·스레드 풀 메트릭·JFR** 로 흔한 원인을 먼저 배제했다. 그리고 **네 가지를 함께** 고쳤다 — 파드 **60 → 6**, 기동 **60초 → 10초**, lag 소멸. 다만 **테스트에서 통한 값을 그대로 쓰지는 않았다**(**그렇게 공격적인 수치를 프로덕션에 보내지는 않겠다**).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       }
+      ]
+     },
+     {
+      "problem": "이 부하는 CPU 와 메모리에 나타나지 않는다",
+      "why_hard": "두 글이 같은 관찰을 한다. 컨슈머는 **부하가 높은데 CPU 가 10% 안팎**이었고, 싱크 쪽에서는 **메시지 처리가 CPU 나 메모리를 확실하게 올리지 않는다** — **처리할 메시지가 많다는 의미에서 바쁠 수 있지만 CPU 가 꼭 튀지는 않는다.** 메모리는 백로그와 무관하게 일정하다. 그래서 **자원 기반 자동 확장은 너무 늦게 반응한다.** 문제는 이 부하가 **기다림**으로 이루어져 있다는 것이다 — 기다리는 것은 자원을 쓰지 않지만 일이 밀리는 것은 똑같다(마지막 문장은 이 사이트의 해석).",
+      "current_best": "**밀린 양 자체를 신호로 삼는다** — 컨슈머 lag. KEDA 로 `lagThreshold: 100`(복제본 ≈ 전체 lag ÷ 100), 폴링 30초, 쿨다운 300초, 그리고 **0까지 축소.** 리전당 하루 **약 50 → 1~2 replica-hours** 가 됐다. 대가는 **신호가 신호원에 의존한다**는 것이다 — 메트릭을 6회 연속 못 가져오면 1개로 폴백해야 하고, **저트래픽 토픽은 2주 뒤 소비자 그룹이 지워져 lag 자체가 사라질 수** 있어 Cron 으로 깨워 둬야 한다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+        "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-06-12",
+        "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+       },
+       {
+        "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+        "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-02-18",
+        "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+       }
+      ]
+     }
+    ]
+   },
+   "diagrams": [
+    {
+     "title": "네 곳이 동시에 막고 있었다",
+     "question": "왜 하나씩 고칠 때는 지표가 그대로였는가?",
+     "kind": "flow",
+     "code": "flowchart TD\n  SYM[\"<b>증상</b> — CPU 약 10%인데 lag 누적<br/>기동 약 60초 · <b>P1 사고 19건</b><br/>복제본은 이미 파티션 수와 같다\"]:::accent\n  SYM --> L1[\"① 폴 지연<br/><b>poll() 이 약 10초</b> → max.poll.interval.ms 초과<br/>→ 브로커가 그룹에서 쫓아냄\"]:::list\n  SYM --> L2[\"② 스레드<br/>BlockHound: 블로킹 없음<br/>스레드 풀: 포화 아님 · JFR: 거의 유휴<br/><b>→ 원인이 아니다</b>\"]:::quiet\n  SYM --> L3[\"③ 컨슈머 라이브러리<br/>자체 KafkaReceiverFlux 는<br/><b>poll() 때만 commit()</b>\"]:::list\n  SYM --> L4[\"④ 처리 파이프라인<br/><b>delayElement 최소 75초</b><br/>flatMap 동시성 256<br/>→ 천장 = <b>동시성 ÷ 지연</b>\"]:::list\n  SYM --> L5[\"⑤ 하류 의존성<br/>gRPC 스레드 <b>15개</b><br/>서버 평균 <b>7초</b>(최대 30초) · 초당 250건\"]:::list\n  L1 & L3 & L4 & L5 --> BP[\"<b>배압이 모든 계층으로 전파</b><br/>하나를 풀면 다음 것이 즉시 천장 (해석)\"]:::accent\n  BP --> ONE[\"개별 수정 — reactor-kafka 만 / delayElement 만 /<br/>gRPC 스레드만 / 복제본 추가<br/><b>전부 효과 없음</b>\"]:::quiet\n  BP --> ALL[\"<b>넷을 함께 고친다</b><br/>reactor-kafka(별도 스레드 커밋)<br/>+ IsFinished 플래그로 delayElement 제거<br/>+ gRPC 스레드 증설 + 동시성 상향\"]:::accent\n  ALL --> RES[\"파드 <b>60 → 6</b> (배포 비용 83%↓)<br/>기동 60초 → 10초 · lag 소멸 · P1 중단<br/>사업 지표(참여율·팀 간 요청)는 <b>그대로</b>\"]"
+    },
+    {
+     "title": "싱크 하나가 오가는 상태",
+     "question": "CPU 가 안 튀는 부하를 무엇으로 재는가?",
+     "kind": "state",
+     "code": "stateDiagram-v2\n  [*] --> 정지: 복제본 0 (표준 HPA 로는 불가)\n  정지 --> 기동: lag > 0 (activationLagThreshold 0)\n  note right of 기동\n    신호는 CPU·메모리가 아니라 lag\n    \"처리할 메시지가 많다는 의미에서 바쁠 수 있지만\n    CPU 가 꼭 튀지는 않는다\"\n  end note\n  기동 --> 확장: 복제본 ≈ 전체 lag ÷ 100\n  note right of 확장\n    lag 250 → 약 3개\n    lag 1200 → 약 12개\n    상한은 파티션 수\n  end note\n  확장 --> 축소: lag 감소\n  축소 --> 정지: 쿨다운 300초 뒤\n  기동 --> 폴백: 메트릭을 6회 연속 못 가져옴\n  note right of 폴백\n    복제본 1개로 —\n    데이터 신선도를 지키려고\n  end note\n  폴백 --> 기동\n  정지 --> 위험: 2주 넘게 조용한 토픽\n  note right of 위험\n    Kafka 가 소비자 그룹 메타데이터를 지운다\n    → 메시지가 와도 빨리 못 깨어난다\n    완화: Cron 스케일러로 주기적으로 깨움\n  end note\n  위험 --> 기동: Cron 이 깨운다"
+    },
+    {
+     "title": "실패 경로 — 신호가 없으면 확장도 없다",
+     "question": "lag 을 신호로 삼으면 무엇이 새로 위험해지는가?",
+     "kind": "failure",
+     "code": "flowchart TD\n  WAIT[\"이 부하는 <b>기다림</b>으로 이루어져 있다\"] -->|\"해석\"| NORES[\"기다리는 것은 자원을 쓰지 않는다<br/>그런데 일이 밀리는 건 똑같다\"]\n  NORES --> CPU[\"<b>CPU·메모리에 안 나타난다</b><br/>컨슈머 CPU 약 10% · 메모리는 백로그와 무관\"]\n  CPU --> LATE[\"자원 기반 자동 확장은 <b>너무 늦게</b> 반응한다\"]\n  LATE --> LAG[\"<b>lag 을 신호로</b>\"]:::accent\n  LAG --> DEP[\"<b>신호가 신호원에 의존한다</b>\"]\n  DEP --> M1[\"메트릭을 6회 연속 못 가져옴<br/>→ 1개로 폴백\"]:::quiet\n  DEP --> M2[\"저트래픽 토픽 — 2주 뒤<br/><b>소비자 그룹 메타데이터가 지워진다</b><br/>→ lag 자체가 사라진다\"]\n  M2 --> CRON[\"완화 — Cron 스케일러로 깨운다\"]:::quiet\n  M2 --> STALE[\"못 깨어나면 사용자가<br/><b>리뷰·하이라이트에서 낡은 데이터</b>를 본다\"]\n  LAGX[\"lag 이 쌓이면\"] --> EXPIRED[\"<b>만료된 호텔 가격이 하류로 나간다</b><br/>= 늦는 게 아니라 틀리는 것\"]:::accent\n  MORE[\"복제본을 더 붙인다\"] -->|\"막혀 있다\"| PART[\"<b>한 파티션은 한 소비자만</b><br/>이미 파티션 수와 같았다\"]:::quiet\n  TEST[\"테스트에서 통한 값<br/>동시성 10,000 · gRPC 400\"] -->|\"안 쓴다\"| CAUTION[\"*그렇게 공격적인 수치를<br/>프로덕션에 보내지는 않겠다*<br/><b>실제 값은 밝히지 않는다</b>\"]:::quiet"
+    }
+   ],
+   "sources": [
+    {
+     "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+     "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+     "publisher": "trivago Tech Blog",
+     "date": "2026-06-12",
+     "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+    },
+    {
+     "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+     "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+     "publisher": "trivago Tech Blog",
+     "date": "2026-02-18",
+     "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+    }
+   ]
   },
-  "domains": [
-    {
-      "name": "Kafka 소비 파이프라인",
-      "why": "**파는 물건이 자기 것이 아니라 가격을 계속 받아 와야 하고, 그 가격은 시시각각 바뀐다.** 그래서 이 회사에서 Kafka 컨슈머가 늦는 것은 단순한 지연이 아니다 — **lag 이 쌓이면 이미 만료된 호텔 가격이 하류로 밀려 나간다.**\n\n그런데 이 부하는 **보통의 방법으로는 보이지 않는다.** 회사가 두 글에서 같은 말을 한다 — **메시지를 처리하는 일은 CPU 나 메모리를 확실하게 올리지 않는다.** 실제로 lag 이 쌓이고 P1 사고가 나던 서비스의 **CPU 는 10% 안팎**이었다.",
-      "tech": [
-        {
-          "tech": "다섯 계층으로 나눈 성능 조사",
-          "solves": "Kafka 폴 지연 → 스레드 → 컨슈머 라이브러리 → 메시지 처리 파이프라인 → 하류 의존성 순으로 파고들었다. **BlockHound**(블로킹 호출 없음), `Schedulers.enableMetrics()`(스레드 풀 포화 없음), **JFR 샘플링**(스레드가 거의 유휴)으로 **아닌 것부터 지웠다.**",
-          "limits": "**각 계층에서 하나씩 고쳐 봤지만 전부 실패했다** — 병목이 동시에 여럿이었기 때문이다.",
-          "confidence": "confirmed",
-          "sources": [
-            {
-              "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-              "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-              "publisher": "trivago Tech Blog",
-              "date": "2026-06-12",
-              "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-            }
-          ]
-        },
-        {
-          "tech": "reactor-kafka + `IsFinished` 플래그 + gRPC 스레드 풀 증설",
-          "solves": "자체 `KafkaReceiverFlux` 는 **`poll()` 때만 `commit()`** 해서 처리가 느려지면 오프셋이 밀렸다 → **별도 스레드에서 커밋하는 reactor-kafka** 로. 메시지마다 최소 75초를 보장하던 `delayElement` 를 **`IsFinished` 플래그로 없앴다.** 그리고 하류 gRPC 스레드 풀을 늘렸다. 결과: **파드 60 → 6(배포 비용 83% 절감)**, 기동 **약 60초 → 약 10초**, **lag 소멸 · P1 알림 중단**.",
-          "limits": "테스트에서 쓴 값(**flatMap 동시성 10,000 · gRPC 스레드 400**)은 **\"그렇게 공격적인 수치를 프로덕션에 보내지는 않겠다\"** 며 그대로 쓰지 않았다 — **프로덕션 실제 값은 밝히지 않는다.**",
-          "confidence": "confirmed",
-          "sources": [
-            {
-              "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-              "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-              "publisher": "trivago Tech Blog",
-              "date": "2026-06-12",
-              "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-            }
-          ]
-        },
-        {
-          "tech": "KEDA — 컨슈머 lag 을 신호로 한 자동 확장(0까지)",
-          "solves": "**CPU·메모리 대신 컨슈머 그룹 lag** 을 본다. `activationLagThreshold: 0`(lag 이 0을 넘으면 깨우고), `lagThreshold: 100`(원하는 복제본 ≈ 전체 lag ÷ 100), 폴링 **30초**, 쿨다운 **300초**. **표준 HPA 로는 못 하는 0까지 축소**가 된다. 결과: 리전당 하루 평균 **약 50 replica-hours → 1~2**.",
-          "limits": "**저트래픽 토픽이 위험하다** — 한 달에 한 번 갱신되는 토픽은 **2주 뒤 Kafka 가 소비자 그룹 메타데이터를 지울 수** 있어 정작 메시지가 왔을 때 못 깨어난다(완화: Cron 스케일러로 주기적으로 깨운다). 메트릭을 **6회 연속 못 가져오면 1개로 폴백**한다. 최대 복제본은 **파티션 수**를 넘을 수 없다.",
-          "confidence": "confirmed",
-          "sources": [
-            {
-              "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-              "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-              "publisher": "trivago Tech Blog",
-              "date": "2026-02-18",
-              "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-            }
-          ]
-        }
-      ],
-      "features": [
-        "kafka-consumers"
-      ]
-    },
-    {
-      "name": "내부 API 통합",
-      "why": "**사내 관리 도구가 흩어져 있었다** — 회사의 표현으로 *\"한 대시보드는 REST 엔드포인트에서, 다른 하나는 데이터베이스를 직접 치고, 세 번째는 분석 뷰에 의존했다.\"* 광고주 설정을 만지는 어카운트 매니저, 호텔 정보를 관리하는 콘텐츠 팀, 데이터를 디버깅하는 운영자가 각자 다른 곳을 본다.\n\n**그래서 이 게이트웨이는 고객이 아니라 사내를 향한다** — 회사가 스스로 *\"GraphQL 게이트웨이의 다른 용례\"* 라고 구분한 이유다.",
-      "tech": [
-        {
-          "tech": "GraphQL Mesh 스키마 스티칭 (Federation 대신)",
-          "solves": "**OpenAPI · MySQL · gRPC · 기존 GraphQL · 분석 뷰** 등 **15개 이상**의 상류를 GraphQL 로 자동 번역해 묶는다. **상류 서비스는 거의 그대로 둔다.** 이름 충돌은 접두사 변환(`DataStorage_Hotel` vs `HotelContent_Hotel`)으로 피하고, 게이트웨이는 **기존 NodeJS Express 서버에 얹어** 인증·모니터링·배포 파이프라인을 재사용한다.",
-          "limits": "**Federation 을 버린 이유가 분명하다 — 참여 서비스가 GraphQL 을 채택하고 스키마를 조율해야 하기 때문**이다. 그리고 스키마를 **의도적으로 얕고 넓게**(깊이 중첩된 엔티티 관계 대신) 두었다 — **상류가 스키마를 병합할 수 있는 속도보다 빨리 바뀌기 때문**이다.",
-          "confidence": "confirmed",
-          "sources": [
-            {
-              "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-              "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-              "publisher": "trivago Tech Blog",
-              "date": "2026-03-27",
-              "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-            }
-          ]
-        },
-        {
-          "tech": "게이트웨이를 얇게 유지하기 · 역할 기반 접근 제어 · 감사 로그",
-          "solves": "**\"깊은 커스터마이징을 의도적으로 피했다 — 번역하고 조합할 뿐 비즈니스 로직을 구현하지 않는다.\"** 접근 제어는 리졸버를 감싸는 컴포저로 걸고(`@requiresScopes` 디렉티브로 옮길 계획), 감사 로그는 **의도가 아니라 실제 값과 기대값을 비교**해 남긴다.",
-          "limits": "회사가 인정한 것이 여럿이다 — **스키마 레지스트리가 없어** 팀들이 게이트웨이 팀에 알리지 않고 API 를 바꾸고 **깨지는 변경을 수동이나 런타임에** 발견한다(*\"자랑스럽지 않다\"*). 스테이징이 **프로덕션에 붙는 경우**가 있고 통합 스테이징 환경이 없다. 감사 항목을 **클라이언트가 올바로 구성해야** 하고, **오래 걸리는 파이프라인에는 이 패턴이 안 맞는다.** 6년째(2020년 시작) 운영 중.",
-          "confidence": "confirmed",
-          "sources": [
-            {
-              "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-              "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-              "publisher": "trivago Tech Blog",
-              "date": "2026-03-27",
-              "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-            }
-          ]
-        }
-      ],
-      "features": [
-        "internal-graphql-gateway"
-      ]
-    }
-  ],
-  "features": [
-    {
-      "key": "kafka-consumers",
-      "name": "하나씩 고쳐서는 아무것도 나아지지 않을 때",
-      "domain": "Kafka 소비 파이프라인",
-      "updated_at": "2026-08-22",
-      "business": {
-        "why": "가격 메시지를 소비해 외부 광고 서비스로 밀어 넣는 이 컨슈머는 **직접 매출을 만든다.** 그런데 증상이 이상했다 — **부하가 높은데 CPU 는 10% 안팎**이고, 배포할 때 컨슈머 그룹 합류가 느리고(**기동 약 60초**), **복제본 수를 이미 파티션 수만큼 맞췄는데도 lag 이 쌓였다.**\n\n그리고 이 도메인에서 lag 은 늦는 것으로 끝나지 않는다 — **쌓인 만큼 이미 만료된 호텔 가격이 하류로 밀려 나간다.** 실제로 **lag 관련 P1 사고가 19건** 났다.\n\n**가장 값진 대목은 고치는 과정이 아니라 고쳐도 안 나았던 기록이다.** 계층마다 원인을 찾아 하나씩 손봤는데 **번번이 그대로였다** — 병목이 하나가 아니었기 때문이다.",
-        "metrics": [
-          {
-            "label": "증상",
-            "value": "부하가 높은데 **CPU 약 10%**, 기동 **약 60초**, 복제본이 파티션 수와 같은데도 **lag 누적**, **lag 관련 P1 사고 19건**",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "label": "결과",
-            "value": "파드 **60개 → 6개(배포 비용 83% 절감)**, 기동 **약 60초 → 약 10초**, **lag 소멸 · P1 알림 중단**",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "label": "테스트 처리량",
-            "value": "**초당 8천 메시지** 달성",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "label": "바뀌지 않은 것",
-            "value": "**참여율과 팀 간 요청 수는 그대로** — 사업 지표는 변하지 않았다",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "label": "싱크 쪽 규모",
-            "value": "**세 리전(US·EU·ASIA)에 50개 이상**의 싱크, 각각 **약 1 CPU · 1GB**",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-                "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-02-18",
-                "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-              }
-            ]
-          },
-          {
-            "label": "싱크 쪽 절감",
-            "value": "리전당 하루 평균 **약 50 replica-hours → 1~2 replica-hours**",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-                "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-02-18",
-                "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-              }
-            ]
-          }
-        ]
-      },
-      "thinking": [
-        {
-          "at": "CPU 그래프를 보고",
-          "thought": "부하가 높다는데 **CPU 가 10% 안팎**이다. 그러면 계산이 모자란 것이 아니다 — **어딘가에서 기다리고 있다.** 복제본은 이미 파티션 수만큼 있으니 **더 붙여 봐야 소용없다**(한 파티션은 한 소비자만 처리할 수 있다).",
-          "confidence": "confirmed"
-        },
-        {
-          "at": "아닌 것부터 지우며",
-          "thought": "블로킹 호출인가 — **BlockHound** 로 봤더니 없다. 스레드 풀이 포화인가 — `Schedulers.enableMetrics()` 로 봤더니 아니다. **JFR** 로 샘플링해 보니 스레드가 **거의 유휴**다. 그런데 `poll()` 이 **약 10초**나 걸려 `max.poll.interval.ms` 를 넘고 있었다 — 브로커가 우리를 그룹에서 쫓아내고 있었다.",
-          "confidence": "confirmed"
-        },
-        {
-          "at": "컨슈머 라이브러리를 바꿔 보고",
-          "thought": "자체 `KafkaReceiverFlux` 는 **`poll()` 때만 `commit()`** 한다 — 처리가 느려지면 오프셋이 밀린다. spring-kafka 로 바꾸니 lag 이 잠깐 사라졌다. 그런데 **reactor-kafka 로 스테이징에 올려 보니 나아지지 않았다.** 라이브러리 하나로는 안 된다는 뜻이다.",
-          "confidence": "confirmed"
-        },
-        {
-          "at": "코드를 직접 읽고",
-          "thought": "메시지마다 **최소 75초를 보장하는 `delayElement`** 가 있었고 flatMap 동시성이 **256** 으로 묶여 있었다 — 그러면 처리량의 천장이 **동시성 ÷ 지연**으로 정해진다. 그리고 하류 gRPC 클라이언트는 스레드가 **15개**뿐인데 서버는 **평균 7초(최대 30초)** 로 응답하고 초당 250건이 온다. **네 곳이 동시에 막고 있었다** — 그래서 하나씩 고쳤을 때 아무 변화가 없었던 것이다.",
-          "confidence": "confirmed"
-        }
-      ],
-      "domain_model": {
-        "entities": [
-          {
-            "name": "PSE-kafka",
-            "what": "가격 검색 엔진의 Kafka 컨슈머. 호텔 가격 메시지를 소비해 외부 서비스로 광고를 민다 — **직접 매출을 만든다.**"
-          },
-          {
-            "name": "싱크 (sink)",
-            "what": "*\"하나 이상의 Kafka 토픽에서 이벤트를 읽어 서비스 DB 안의 질의하기 좋은 표현으로 바꾸는 소비자 애플리케이션.\"* 필터링·정규화·정책 검사를 거쳐 구체화 뷰를 쓴다."
-          },
-          {
-            "name": "컨슈머 lag",
-            "what": "밀린 메시지 수. **이 도메인에서는 지연이 아니라 오류의 크기다** — 쌓인 만큼 만료된 가격이 나간다."
-          },
-          {
-            "name": "`delayElement` 천장",
-            "what": "**flatMap 동시성 ÷ 지연 시간.** 동시성 256, 지연 75초면 처리량이 거기서 막힌다."
-          },
-          {
-            "name": "KEDA 스케일러",
-            "what": "lag 을 보고 복제본 수를 정한다 — `lagThreshold: 100` 이면 **원하는 복제본 ≈ 전체 lag ÷ 100.** 폴링 30초, 쿨다운 300초."
-          }
-        ],
-        "invariants": [
-          "**한 파티션은 한 번에 한 소비자만** 처리한다 — 그래서 복제본을 파티션 수 이상 늘려도 소용없다.",
-          "**lag 이 쌓이면 만료된 가격이 하류로 나간다** — 늦는 것이 아니라 틀리는 것이다.",
-          "**CPU·메모리는 이 부하를 보여 주지 않는다** — 신호는 lag 이다.",
-          "메트릭을 **6회 연속 못 가져오면 1개로 폴백**한다 — 데이터 신선도를 지키려고.",
-          "최대 복제본은 **파티션 수**(또는 DB 가 병목이면 그보다 낮게)를 넘지 않는다."
-        ]
-      },
-      "implementation": {
-        "flow": [
-          {
-            "step": "증상을 계층으로 나눈다 — **폴 지연 → 스레드 → 컨슈머 라이브러리 → 처리 파이프라인 → 하류 의존성**",
-            "why": "어디가 막혔는지 모를 때는 아닌 곳부터 지워야 한다."
-          },
-          {
-            "step": "**BlockHound · `Schedulers.enableMetrics()` · JFR** 로 블로킹·풀 포화·스레드 상태를 확인한다 — 셋 다 아니었다",
-            "why": "흔한 원인을 먼저 배제하면 남는 곳이 좁아진다."
-          },
-          {
-            "step": "컨슈머를 **reactor-kafka** 로 바꾼다 — 커밋을 **별도 스레드**에서 한다",
-            "why": "자체 구현은 `poll()` 때만 커밋해 처리가 느려지면 오프셋이 밀렸다."
-          },
-          {
-            "step": "**`IsFinished` 플래그를 도입해 `delayElement` 를 아예 없앤다**",
-            "why": "메시지당 최소 75초 보장이 처리량의 천장(동시성 ÷ 지연)을 만들고 있었다."
-          },
-          {
-            "step": "**gRPC 스레드 풀을 늘리고 flatMap 동시성을 올린다**",
-            "why": "하류가 평균 7초로 응답하는데 스레드가 15개면 그 자체가 병목이다."
-          },
-          {
-            "step": "**[싱크 쪽]** CPU·메모리 대신 **컨슈머 lag** 을 확장 신호로 삼는다(KEDA)",
-            "why": "메시지 처리는 CPU·메모리를 확실하게 올리지 않는다 — *\"처리할 메시지가 많다는 의미에서 바쁠 수 있지만 CPU 가 꼭 튀지는 않는다.\"*"
-          },
-          {
-            "step": "lag 이 0이면 **복제본을 0까지 줄인다.** 쿨다운 300초로 진동을 막는다",
-            "why": "상시 가동은 그 자체로 컨트롤 플레인·모니터링·브로커에 부담을 준다."
-          },
-          {
-            "step": "저트래픽 토픽에는 **Cron 스케일러로 주기적으로 깨운다**",
-            "why": "2주 넘게 조용하면 Kafka 가 소비자 그룹 메타데이터를 지울 수 있다."
-          }
-        ],
-        "decisions": [
-          {
-            "question": "lag 을 복제본을 늘려 해결할 것인가",
-            "chosen": "**늘리지 않는다.** 복제본 수가 **이미 파티션 수와 같았다.**",
-            "alternatives": [
-              "컨슈머 복제본을 더 붙인다"
-            ],
-            "tradeoff": "한 파티션은 한 번에 한 소비자만 처리하므로 **그 이상 늘려도 아무 효과가 없다.** 그래서 **가장 손쉬운 수가 애초에 막혀 있었다**(뒷문장은 이 사이트의 해석).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "question": "컨슈머 라이브러리를 바꾸는 것으로 될 것인가",
-            "chosen": "**그것만으로는 안 된다.** reactor-kafka 로 옮기되 **다른 셋과 함께** 고쳤다.",
-            "alternatives": [
-              "reactor-kafka 로만 바꾼다",
-              "`delayElement` 만 없앤다",
-              "gRPC 스레드 풀만 늘린다"
-            ],
-            "tradeoff": "버린 안 셋이 모두 **실제로 시도했다가 효과가 없었던 것들**이다 — 회사가 그 실패를 그대로 적었다. 이유는 하나다: **병목이 동시에 여럿이라 하나를 풀면 다음 것이 즉시 천장이 된다**(뒷문장은 이 사이트의 해석).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "question": "메시지마다 최소 75초를 보장하던 로직을 어떻게 할 것인가",
-            "chosen": "**`IsFinished` 플래그를 도입해 `delayElement` 를 없앤다.**",
-            "alternatives": [
-              "지연 시간을 줄인다",
-              "동시성만 올린다"
-            ],
-            "tradeoff": "지연을 줄이거나 동시성을 올리는 것은 **천장을 옮길 뿐 없애지 못한다** — 천장이 **동시성 ÷ 지연**으로 정해지기 때문이다(뒷문장은 이 사이트의 해석). 대신 플래그를 관리해야 한다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "question": "테스트에서 통한 값을 그대로 프로덕션에 쓸 것인가",
-            "chosen": "**쓰지 않는다.** 회사가 그대로 적었다 — **\"그렇게 공격적인 수치를 프로덕션에 보내지는 않겠다\"**(테스트에서 쓴 flatMap 동시성 10,000 · gRPC 스레드 400).",
-            "alternatives": [
-              "테스트에서 가장 좋았던 값을 그대로 적용한다"
-            ],
-            "tradeoff": "**프로덕션 실제 값을 밝히지 않아** 바깥에서는 얼마나 올렸는지 알 수 없다. 대신 하류에 그 부하를 그대로 떠넘기지 않는다(뒷문장은 이 사이트의 추정).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "question": "싱크의 자동 확장 신호를 무엇으로 할 것인가",
-            "chosen": "**컨슈머 lag.** CPU·메모리가 아니다.",
-            "alternatives": [
-              "CPU 기반 HPA",
-              "메모리 기반 HPA"
-            ],
-            "tradeoff": "버린 이유가 분명하다 — **메시지 처리가 CPU·메모리를 확실하게 올리지 않는다.** *\"처리할 메시지가 많다는 의미에서 바쁠 수 있지만 CPU 가 꼭 튀지는 않는다\"*, 메모리는 백로그와 무관하게 **비교적 일정**하다. 그래서 자원 기반 확장은 **너무 늦게 반응한다.** 대신 lag 메트릭에 접근할 수 없으면(네트워크·인증 실패) **1개로 폴백**해야 한다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-                "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-02-18",
-                "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-              }
-            ]
-          },
-          {
-            "question": "쓰지 않는 싱크를 켜 둘 것인가",
-            "chosen": "**0까지 줄인다.** 표준 HPA 로는 못 하는 것을 KEDA 가 한다. 리전당 하루 **약 50 → 1~2 replica-hours.**",
-            "alternatives": [
-              "최소 1개는 늘 켜 둔다"
-            ],
-            "tradeoff": "**저트래픽 토픽이 위험해진다** — 한 달에 한 번 갱신되는 토픽은 **2주 뒤 Kafka 가 소비자 그룹 메타데이터를 지울 수** 있어 정작 메시지가 왔을 때 빨리 못 깨어난다. 완화는 **Cron 스케일러로 주기적으로 깨우는 것**. 그리고 못 깨어나면 사용자가 **리뷰·하이라이트에서 낡은 데이터**를 보게 된다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-                "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-02-18",
-                "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-              }
-            ]
-          },
-          {
-            "question": "이 변경을 어떻게 굴릴 것인가",
-            "chosen": "**중요하지 않은 싱크부터, 한 리전에서** 시작해 **한 주 동안 안정적인 것을 보고** 넓힌다.",
-            "alternatives": [
-              "전 리전에 한 번에 적용한다"
-            ],
-            "tradeoff": "넓히는 데 시간이 걸린다. 대신 **낡은 데이터가 사용자에게 보이는 위험**을 좁은 범위에서 먼저 만난다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-                "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-02-18",
-                "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-              }
-            ]
-          }
-        ],
-        "stack": [
-          {
-            "tech": "reactor-kafka",
-            "role": "별도 스레드에서 커밋한다. 자체 `KafkaReceiverFlux` 를 대체했다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "tech": "BlockHound · `Schedulers.enableMetrics()` · JFR",
-            "role": "블로킹 호출·스레드 풀 포화·스레드 상태를 배제하는 데 썼다 — **셋 다 원인이 아니었다.**",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "tech": "`IsFinished` 플래그",
-            "role": "메시지당 최소 75초를 보장하던 `delayElement` 를 없앤다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "tech": "KEDA (Kafka lag 스케일러)",
-            "role": "lag 을 신호로 0까지 축소·자동 확장. 폴링 30초, 쿨다운 300초, `lagThreshold: 100`.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-                "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-02-18",
-                "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-              }
-            ]
-          },
-          {
-            "tech": "Cron 스케일러",
-            "role": "저트래픽 토픽의 소비자 그룹이 지워지지 않게 주기적으로 깨운다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-                "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-02-18",
-                "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-              }
-            ]
-          },
-          {
-            "tech": "프로덕션의 실제 flatMap 동시성·gRPC 스레드 수",
-            "role": "— **밝히지 않는다.** 테스트값(10,000 / 400)만 나온다.",
-            "confidence": "unknown",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          }
-        ]
-      },
-      "connections": [
-        {
-          "to": "internal-graphql-gateway",
-          "via": "싱크가 이벤트를 **서비스 로컬 DB 의 질의하기 좋은 형태**로 만들어 두면, 사내 어드민은 그 DB·분석 뷰를 게이트웨이의 상류로 읽는다. 회사가 두 글을 이어 말한 적은 없다.",
-          "confidence": "inferred"
-        }
-      ],
-      "research": {
-        "papers": [],
-        "hard_problems": [
-          {
-            "problem": "병목이 여럿이면 하나를 고쳐도 아무것도 나아지지 않는다",
-            "why_hard": "성능 문제를 고치는 보통의 방법은 **가장 유력한 원인을 하나 고치고 재 보는 것**이다. 그런데 이 사례에서는 그 방법이 **번번이 실패했다** — reactor-kafka 로만 바꿔도, `delayElement` 만 없애도, gRPC 스레드 풀만 늘려도 지표가 그대로였다. 이유는 **네 곳이 동시에 막고 있었기 때문**이다: 커밋이 `poll()` 에 묶여 오프셋이 밀리고, `delayElement` 가 **동시성 ÷ 지연**이라는 천장을 만들고, gRPC 스레드가 **15개**인데 하류는 **평균 7초(최대 30초)** 로 답하고, 그 배압이 모든 계층으로 전파됐다. **하나를 풀면 다음 것이 즉시 천장이 되어, 고쳤다는 증거가 나타나지 않는다**(마지막 문장은 이 사이트의 해석).",
-            "current_best": "**계층으로 나눠 아닌 것부터 지운다.** 폴 지연 → 스레드 → 라이브러리 → 처리 파이프라인 → 하류 의존성 순으로 보고, **BlockHound·스레드 풀 메트릭·JFR** 로 흔한 원인을 먼저 배제했다. 그리고 **네 가지를 함께** 고쳤다 — 파드 **60 → 6**, 기동 **60초 → 10초**, lag 소멸. 다만 **테스트에서 통한 값을 그대로 쓰지는 않았다**(*\"그렇게 공격적인 수치를 프로덕션에 보내지는 않겠다\"*).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              }
-            ]
-          },
-          {
-            "problem": "이 부하는 CPU 와 메모리에 나타나지 않는다",
-            "why_hard": "두 글이 같은 관찰을 한다. 컨슈머는 **부하가 높은데 CPU 가 10% 안팎**이었고, 싱크 쪽에서는 **메시지 처리가 CPU 나 메모리를 확실하게 올리지 않는다** — *\"처리할 메시지가 많다는 의미에서 바쁠 수 있지만 CPU 가 꼭 튀지는 않는다.\"* 메모리는 백로그와 무관하게 일정하다. 그래서 **자원 기반 자동 확장은 너무 늦게 반응한다.** 문제는 이 부하가 **기다림**으로 이루어져 있다는 것이다 — 기다리는 것은 자원을 쓰지 않지만 일이 밀리는 것은 똑같다(마지막 문장은 이 사이트의 해석).",
-            "current_best": "**밀린 양 자체를 신호로 삼는다** — 컨슈머 lag. KEDA 로 `lagThreshold: 100`(복제본 ≈ 전체 lag ÷ 100), 폴링 30초, 쿨다운 300초, 그리고 **0까지 축소.** 리전당 하루 **약 50 → 1~2 replica-hours** 가 됐다. 대가는 **신호가 신호원에 의존한다**는 것이다 — 메트릭을 6회 연속 못 가져오면 1개로 폴백해야 하고, **저트래픽 토픽은 2주 뒤 소비자 그룹이 지워져 lag 자체가 사라질 수** 있어 Cron 으로 깨워 둬야 한다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-                "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-06-12",
-                "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-              },
-              {
-                "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-                "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-02-18",
-                "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-              }
-            ]
-          }
-        ]
-      },
-      "diagrams": [
-        {
-          "title": "네 곳이 동시에 막고 있었다",
-          "question": "왜 하나씩 고칠 때는 지표가 그대로였는가?",
-          "kind": "flow",
-          "code": "flowchart TD\n  SYM[\"<b>증상</b> — CPU 약 10%인데 lag 누적<br/>기동 약 60초 · <b>P1 사고 19건</b><br/>복제본은 이미 파티션 수와 같다\"]:::accent\n  SYM --> L1[\"① 폴 지연<br/><b>poll() 이 약 10초</b> → max.poll.interval.ms 초과<br/>→ 브로커가 그룹에서 쫓아냄\"]:::list\n  SYM --> L2[\"② 스레드<br/>BlockHound: 블로킹 없음<br/>스레드 풀: 포화 아님 · JFR: 거의 유휴<br/><b>→ 원인이 아니다</b>\"]:::quiet\n  SYM --> L3[\"③ 컨슈머 라이브러리<br/>자체 KafkaReceiverFlux 는<br/><b>poll() 때만 commit()</b>\"]:::list\n  SYM --> L4[\"④ 처리 파이프라인<br/><b>delayElement 최소 75초</b><br/>flatMap 동시성 256<br/>→ 천장 = <b>동시성 ÷ 지연</b>\"]:::list\n  SYM --> L5[\"⑤ 하류 의존성<br/>gRPC 스레드 <b>15개</b><br/>서버 평균 <b>7초</b>(최대 30초) · 초당 250건\"]:::list\n  L1 & L3 & L4 & L5 --> BP[\"<b>배압이 모든 계층으로 전파</b><br/>하나를 풀면 다음 것이 즉시 천장 (해석)\"]:::accent\n  BP --> ONE[\"개별 수정 — reactor-kafka 만 / delayElement 만 /<br/>gRPC 스레드만 / 복제본 추가<br/><b>전부 효과 없음</b>\"]:::quiet\n  BP --> ALL[\"<b>넷을 함께 고친다</b><br/>reactor-kafka(별도 스레드 커밋)<br/>+ IsFinished 플래그로 delayElement 제거<br/>+ gRPC 스레드 증설 + 동시성 상향\"]:::accent\n  ALL --> RES[\"파드 <b>60 → 6</b> (배포 비용 83%↓)<br/>기동 60초 → 10초 · lag 소멸 · P1 중단<br/>사업 지표(참여율·팀 간 요청)는 <b>그대로</b>\"]"
-        },
-        {
-          "title": "싱크 하나가 오가는 상태",
-          "question": "CPU 가 안 튀는 부하를 무엇으로 재는가?",
-          "kind": "state",
-          "code": "stateDiagram-v2\n  [*] --> 정지: 복제본 0 (표준 HPA 로는 불가)\n  정지 --> 기동: lag > 0 (activationLagThreshold 0)\n  note right of 기동\n    신호는 CPU·메모리가 아니라 lag\n    \"처리할 메시지가 많다는 의미에서 바쁠 수 있지만\n    CPU 가 꼭 튀지는 않는다\"\n  end note\n  기동 --> 확장: 복제본 ≈ 전체 lag ÷ 100\n  note right of 확장\n    lag 250 → 약 3개\n    lag 1200 → 약 12개\n    상한은 파티션 수\n  end note\n  확장 --> 축소: lag 감소\n  축소 --> 정지: 쿨다운 300초 뒤\n  기동 --> 폴백: 메트릭을 6회 연속 못 가져옴\n  note right of 폴백\n    복제본 1개로 —\n    데이터 신선도를 지키려고\n  end note\n  폴백 --> 기동\n  정지 --> 위험: 2주 넘게 조용한 토픽\n  note right of 위험\n    Kafka 가 소비자 그룹 메타데이터를 지운다\n    → 메시지가 와도 빨리 못 깨어난다\n    완화: Cron 스케일러로 주기적으로 깨움\n  end note\n  위험 --> 기동: Cron 이 깨운다"
-        },
-        {
-          "title": "실패 경로 — 신호가 없으면 확장도 없다",
-          "question": "lag 을 신호로 삼으면 무엇이 새로 위험해지는가?",
-          "kind": "failure",
-          "code": "flowchart TD\n  WAIT[\"이 부하는 <b>기다림</b>으로 이루어져 있다\"] -->|\"해석\"| NORES[\"기다리는 것은 자원을 쓰지 않는다<br/>그런데 일이 밀리는 건 똑같다\"]\n  NORES --> CPU[\"<b>CPU·메모리에 안 나타난다</b><br/>컨슈머 CPU 약 10% · 메모리는 백로그와 무관\"]\n  CPU --> LATE[\"자원 기반 자동 확장은 <b>너무 늦게</b> 반응한다\"]\n  LATE --> LAG[\"<b>lag 을 신호로</b>\"]:::accent\n  LAG --> DEP[\"<b>신호가 신호원에 의존한다</b>\"]\n  DEP --> M1[\"메트릭을 6회 연속 못 가져옴<br/>→ 1개로 폴백\"]:::quiet\n  DEP --> M2[\"저트래픽 토픽 — 2주 뒤<br/><b>소비자 그룹 메타데이터가 지워진다</b><br/>→ lag 자체가 사라진다\"]\n  M2 --> CRON[\"완화 — Cron 스케일러로 깨운다\"]:::quiet\n  M2 --> STALE[\"못 깨어나면 사용자가<br/><b>리뷰·하이라이트에서 낡은 데이터</b>를 본다\"]\n  LAGX[\"lag 이 쌓이면\"] --> EXPIRED[\"<b>만료된 호텔 가격이 하류로 나간다</b><br/>= 늦는 게 아니라 틀리는 것\"]:::accent\n  MORE[\"복제본을 더 붙인다\"] -->|\"막혀 있다\"| PART[\"<b>한 파티션은 한 소비자만</b><br/>이미 파티션 수와 같았다\"]:::quiet\n  TEST[\"테스트에서 통한 값<br/>동시성 10,000 · gRPC 400\"] -->|\"안 쓴다\"| CAUTION[\"*그렇게 공격적인 수치를<br/>프로덕션에 보내지는 않겠다*<br/><b>실제 값은 밝히지 않는다</b>\"]:::quiet"
-        }
-      ],
+  {
+   "key": "internal-graphql-gateway",
+   "name": "상류를 바꾸지 않기로 하고 시작한다",
+   "domain": "내부 API 통합",
+   "updated_at": "2026-08-22",
+   "business": {
+    "why": "**범위 주의 — 이 기능은 매출 경로가 아니라 사내 관리 도구다.** 광고주 설정을 만지는 어카운트 매니저, 호텔 콘텐츠를 관리하는 팀, 데이터를 디버깅하는 운영자가 쓰는 화면들이다.\n\n문제는 그 화면들이 **각자 다른 경로로 같은 데이터를 읽고 있었다**는 것이다 — 회사의 표현으로 **한 대시보드는 REST 엔드포인트에서, 다른 하나는 데이터베이스를 직접 치고, 세 번째는 분석 뷰에 의존했다.** 새 도구를 하나 만들 때마다 **어디서 무엇을 읽을지부터 다시 정해야** 했다.\n\n**이 기능이 흥미로운 이유는 회사가 같은 문제를 두 번 풀었고 두 번 다르게 풀었기 때문이다.** trivago 의 **고객향** GraphQL 은 Federation 이다 — 2024년 글이 **Apollo 가 주창한 Federated GraphQL** 을 자기 구조로 설명하고, **GraphQL 서비스 하나의 잘못된 변경이 웹사이트 전체를 깨뜨릴 수 있다** 고 적는다. 그런데 **사내용에서는 그 Federation 을 명시적으로 버렸다.** 회사가 스스로 **GraphQL 게이트웨이의 다른 용례** 라고 제목에 단 이유다.\n\n**같은 회사가 같은 기술을 두 곳에서 다르게 쓴다면, 다른 것은 기술이 아니라 그 시스템이 감당해야 하는 것이다**(이 해석은 이 사이트의 것이다).",
+    "metrics": [
+     {
+      "label": "게이트웨이가 묶은 상류",
+      "value": "**15개 이상** — OpenAPI · MySQL · gRPC · 기존 GraphQL · 분석 뷰",
+      "confidence": "confirmed",
       "sources": [
-        {
-          "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-          "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-          "publisher": "trivago Tech Blog",
-          "date": "2026-06-12",
-          "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-        },
-        {
-          "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-          "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-          "publisher": "trivago Tech Blog",
-          "date": "2026-02-18",
-          "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-        }
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
       ]
-    },
-    {
-      "key": "internal-graphql-gateway",
-      "name": "상류를 바꾸지 않기로 하고 시작한다",
-      "domain": "내부 API 통합",
-      "updated_at": "2026-08-22",
-      "business": {
-        "why": "**범위 주의 — 이 기능은 매출 경로가 아니라 사내 관리 도구다.** 광고주 설정을 만지는 어카운트 매니저, 호텔 콘텐츠를 관리하는 팀, 데이터를 디버깅하는 운영자가 쓰는 화면들이다.\n\n문제는 그 화면들이 **각자 다른 경로로 같은 데이터를 읽고 있었다**는 것이다 — 회사의 표현으로 *\"한 대시보드는 REST 엔드포인트에서, 다른 하나는 데이터베이스를 직접 치고, 세 번째는 분석 뷰에 의존했다.\"* 새 도구를 하나 만들 때마다 **어디서 무엇을 읽을지부터 다시 정해야** 했다.\n\n**이 기능이 흥미로운 이유는 회사가 같은 문제를 두 번 풀었고 두 번 다르게 풀었기 때문이다.** trivago 의 **고객향** GraphQL 은 Federation 이다 — 2024년 글이 *\"Apollo 가 주창한 Federated GraphQL\"* 을 자기 구조로 설명하고, *\"GraphQL 서비스 하나의 잘못된 변경이 웹사이트 전체를 깨뜨릴 수 있다\"* 고 적는다. 그런데 **사내용에서는 그 Federation 을 명시적으로 버렸다.** 회사가 스스로 *\"GraphQL 게이트웨이의 다른 용례\"* 라고 제목에 단 이유다.\n\n**같은 회사가 같은 기술을 두 곳에서 다르게 쓴다면, 다른 것은 기술이 아니라 그 시스템이 감당해야 하는 것이다**(이 해석은 이 사이트의 것이다).",
-        "metrics": [
-          {
-            "label": "게이트웨이가 묶은 상류",
-            "value": "**15개 이상** — OpenAPI · MySQL · gRPC · 기존 GraphQL · 분석 뷰",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "label": "운영 기간",
-            "value": "**6년째** (2020년 시작)",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "label": "상류 서비스에 가한 변경",
-            "value": "**거의 없음** — 상류는 GraphQL 을 채택하지 않아도 된다",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "label": "지연 · 질의량 · 팀 규모",
-            "value": "**밝히지 않는다**",
-            "confidence": "unknown",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          }
-        ]
-      },
-      "thinking": [
-        {
-          "at": "흩어진 대시보드를 보던 시점",
-          "thought": "도구마다 데이터 경로가 달랐다는 것은 단순히 중복이 아니다 — **같은 호텔을 세 도구가 세 경로로 읽으면 세 답이 다를 수 있다.** 회사는 경로가 갈렸다는 사실만 적고 답이 어긋났다는 말은 하지 않았으므로, 여기까지는 이 사이트의 재구성이다.",
-          "confidence": "inferred"
-        },
-        {
-          "at": "게이트웨이 방식을 고를 때",
-          "thought": "Federation 은 **참여 서비스가 GraphQL 을 채택하고 스키마를 조율해야** 성립한다. 사내 상류 15개에 그것을 요구하면 게이트웨이를 세우기 전에 15개 팀의 일정을 먼저 맞춰야 한다. **그 요구를 하지 않기로 한 순간부터 설계가 결정된다.**",
-          "confidence": "confirmed"
-        },
-        {
-          "at": "통합 스키마를 설계할 때",
-          "thought": "**상류가 우리가 스키마를 병합할 수 있는 속도보다 빨리 바뀐다.** 그래서 엔티티 관계를 깊이 중첩하지 않고 **의도적으로 얕고 넓게** 두었다 — 깊은 관계는 상류 둘의 변경 속도를 서로 묶어 버린다.",
-          "confidence": "confirmed"
-        },
-        {
-          "at": "6년째 운영하며",
-          "thought": "팀들이 게이트웨이 팀에 알리지 않고 API 를 바꾸고, **깨지는 변경을 수동이나 런타임에 발견한다.** 회사는 이 대목을 감추지 않고 *\"자랑스럽지 않다\"* 고 적었다. **Federation 을 버릴 때 같이 버린 것이 여기서 청구서로 돌아온다** — 상류가 스키마에 참여하지 않는다는 것은 상류의 변경도 스키마에 나타나지 않는다는 뜻이다(이 연결은 이 사이트의 해석이다).",
-          "confidence": "confirmed"
-        }
-      ],
-      "domain_model": {
-        "entities": [
-          {
-            "name": "상류 소스 (upstream source)",
-            "what": "게이트웨이가 스키마를 읽어 들이는 단위. OpenAPI 문서 · MySQL 테이블 · gRPC · 기존 GraphQL SDL · 분석 뷰 중 하나이며, **게이트웨이 때문에 자기를 고치지 않는다.**"
-          },
-          {
-            "name": "통합 스키마 (unified schema)",
-            "what": "상류 스키마들을 번역해 하나로 스티칭한 GraphQL 스키마. **깊이 중첩하지 않고 얕고 넓게** 유지한다."
-          },
-          {
-            "name": "타입 접두사",
-            "what": "이름 충돌을 피하는 장치. 같은 `Hotel` 이라도 `DataStorage_Hotel` 과 `HotelContent_Hotel` 로 갈라진다."
-          },
-          {
-            "name": "리졸버 컴포저",
-            "what": "리졸버를 감싸 스코프를 검사하는 접근 제어 층. `@requiresScopes` 디렉티브로 옮길 계획이다."
-          },
-          {
-            "name": "감사 기록",
-            "what": "무엇을 하려 했는지가 아니라 **실제 값과 기대값을 비교**해 남기는 기록. 항목 구성은 클라이언트 몫이다."
-          }
-        ],
-        "invariants": [
-          "게이트웨이는 **비즈니스 로직을 구현하지 않는다** — 번역하고 조합할 뿐이다.",
-          "같은 이름의 상류 타입은 **접두사로 갈라져** 통합 스키마 안에서 겹치지 않는다.",
-          "상류는 게이트웨이를 위해 바뀌지 않는다 — **맞추는 쪽은 항상 게이트웨이다.**",
-          "스키마는 얕고 넓게 유지한다 — 상류 사이를 잇는 깊은 중첩 관계를 만들지 않는다."
-        ]
-      },
-      "implementation": {
-        "flow": [
-          {
-            "step": "상류 15개 이상의 인터페이스 정의를 있는 그대로 읽는다 (OpenAPI · MySQL 스키마 · gRPC · 기존 GraphQL SDL · 분석 뷰)",
-            "why": "상류를 고치지 않기로 했으므로 시작점이 '우리가 원하는 형태'가 아니라 '상대가 이미 내놓은 형태'다."
-          },
-          {
-            "step": "소스별 핸들러가 각 정의를 GraphQL 스키마로 번역한다",
-            "why": "서로 다른 프로토콜을 한 언어로 옮겨 놓아야 합칠 수 있다."
-          },
-          {
-            "step": "타입 이름에 소스 접두사를 붙인다 (`DataStorage_Hotel` · `HotelContent_Hotel`)",
-            "why": "여러 상류가 각자의 `Hotel` 을 갖고 있어 그대로 합치면 충돌한다."
-          },
-          {
-            "step": "스티칭으로 통합 스키마 하나를 만든다 — 깊은 중첩 없이 얕고 넓게",
-            "why": "클라이언트가 상류의 개수를 몰라도 되게 하되, 상류끼리의 변경 속도를 서로 묶지 않기 위해."
-          },
-          {
-            "step": "게이트웨이를 **기존 NodeJS Express 서버 위에** 얹는다",
-            "why": "인증 · 모니터링 · 배포 파이프라인을 새로 만들지 않고 그대로 쓰기 위해."
-          },
-          {
-            "step": "질의가 오면 리졸버를 감싼 컴포저가 스코프를 검사한다",
-            "why": "접근 제어를 리졸버마다 흩어 놓으면 누가 무엇을 볼 수 있는지 한자리에서 확인할 수 없다."
-          },
-          {
-            "step": "리졸버가 해당 상류를 호출하고 결과를 조합해 돌려준다 — 이 층에서 규칙을 계산하지 않는다",
-            "why": "*\"깊은 커스터마이징을 의도적으로 피했다\"* — 게이트웨이가 로직을 갖는 순간 상류와 두 벌이 된다."
-          },
-          {
-            "step": "감사 로그를 남긴다 — 의도가 아니라 **실제 값과 기대값을 비교해서**",
-            "why": "'무엇을 하려 했는가'는 실제로 무엇이 바뀌었는지를 증명하지 못한다."
-          }
-        ],
-        "decisions": [
-          {
-            "question": "상류 15개를 GraphQL 로 옮길 것인가, 앞에 게이트웨이를 세울 것인가",
-            "chosen": "앞에 게이트웨이를 세우고 **상류는 거의 그대로 둔다**",
-            "alternatives": [
-              "상류 서비스마다 GraphQL 채택",
-              "도구별로 지금처럼 각자 붙기"
-            ],
-            "tradeoff": "**15개 상류의 변화를 게이트웨이 혼자 흡수한다.** 상류 팀은 아무 부담이 없고, 부담은 전부 한 곳에 모인다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "question": "Federation 인가 스키마 스티칭인가 — 회사는 고객향에서 이미 Federation 을 쓰고 있다",
-            "chosen": "**GraphQL Mesh 의 스키마 스티칭** — 사내에서는 Federation 을 쓰지 않는다",
-            "alternatives": [
-              "Apollo Federation (고객향 GraphQL 에서 실제로 쓰는 방식)"
-            ],
-            "tradeoff": "Federation 을 버리면서 **상류가 스키마에 참여할 자리도 같이 버렸다.** 그래서 상류가 API 를 바꿔도 스키마 쪽에서 먼저 알 방법이 없다 — 아래의 '깨지는 변경' 문제가 여기서 나온다(이 인과 연결은 이 사이트의 해석이다).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              },
-              {
-                "title": "Streamlining GraphQL Service Testing with Karate",
-                "url": "https://tech.trivago.com/post/2024-07-08-streamlining-graphql-service-testing-with-karate",
-                "publisher": "trivago Tech Blog",
-                "date": "2024-07-08",
-                "summary": "**고객향 GraphQL 은 Federation 이다** — *\"Federated GraphQL, as championed by Apollo\"*, 스키마들이 *\"하나의 통합 게이트웨이로 스티칭된다.\"* 단위 테스트와 클라이언트 e2e 사이에 **배포된 앱 자체를 통합 테스트하는 칸이 비어 있었고**, *\"GraphQL 서비스 하나의 잘못된 변경이 웹사이트 전체를 깨뜨릴 수 있어\"* 개발자에게 큰 부담이었다. Karate 로 채우고 **PreProd 환경까지 둔다** — *\"Stage 와 Production 의 설정이 다를 수 있어서\"*."
-              }
-            ]
-          },
-          {
-            "question": "여러 상류가 같은 타입 이름을 쓸 때 무엇을 정답으로 삼는가",
-            "chosen": "**소스 접두사 변환** — `DataStorage_Hotel` 과 `HotelContent_Hotel` 을 둘 다 남긴다",
-            "alternatives": [
-              "하나로 병합해 정본 타입 만들기",
-              "필드 수동 재명명"
-            ],
-            "tradeoff": "게이트웨이가 감추려던 **상류 구조가 타입 이름으로 새어 나온다.** 클라이언트는 결국 '어느 상류의 호텔인가'를 알아야 한다(이 대가는 이 사이트의 해석이다).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "question": "통합 스키마를 깊이 중첩할 것인가, 얕고 넓게 둘 것인가",
-            "chosen": "**의도적으로 얕고 넓게** — 깊이 중첩된 엔티티 관계를 만들지 않는다",
-            "alternatives": [
-              "상류를 가로지르는 풍부한 엔티티 그래프"
-            ],
-            "tradeoff": "**GraphQL 의 큰 이점 하나를 스스로 접었다** — 한 번의 질의로 관계를 따라 내려가는 것. 이유는 성능이 아니라 속도다: **상류가 우리가 병합할 수 있는 속도보다 빨리 바뀐다.**",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "question": "게이트웨이를 새 서비스로 세울 것인가, 있는 것에 얹을 것인가",
-            "chosen": "**기존 NodeJS Express 서버에 얹는다** — 인증 · 모니터링 · 배포를 재사용",
-            "alternatives": [
-              "독립 서비스로 분리 배포"
-            ],
-            "tradeoff": "게이트웨이의 확장과 배포 주기가 **그 서버에 묶인다.** 사내용이라 트래픽 특성이 다르다는 점을 감안하면 합리적인 교환으로 보이지만, 회사가 부하 수치를 밝히지 않아 확인할 수 없다(추정).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "question": "게이트웨이에 비즈니스 로직을 넣을 것인가",
-            "chosen": "넣지 않는다 — *\"번역하고 조합할 뿐 비즈니스 로직을 구현하지 않는다\"*",
-            "alternatives": [
-              "게이트웨이에서 규칙 계산 · 깊은 커스터마이징"
-            ],
-            "tradeoff": "**상류가 주지 않는 것은 게이트웨이도 주지 못한다.** 사내 도구에 필요한 계산이 생기면 상류에 요청하거나 클라이언트가 해야 한다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "question": "접근 제어를 어디에 둘 것인가",
-            "chosen": "**리졸버를 감싸는 컴포저** — 이후 `@requiresScopes` 디렉티브로 옮길 계획",
-            "alternatives": [
-              "리졸버 안에 검사 코드",
-              "게이트웨이 앞단에서 경로 단위로만 차단"
-            ],
-            "tradeoff": "컴포저는 **코드**라서 스키마만 봐서는 누가 무엇을 볼 수 있는지 안 보인다. 디렉티브로 옮기려는 계획 자체가 그 불편의 증거다(추정).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "question": "상류가 깨지는 변경을 냈을 때 언제 알아채는가",
-            "chosen": "**지금은 수동이거나 런타임이다** — 스키마 레지스트리를 두지 않았다",
-            "alternatives": [
-              "스키마 레지스트리와 계약 검사",
-              "고객향처럼 PreProd 통합 테스트 파이프라인"
-            ],
-            "tradeoff": "회사가 *\"자랑스럽지 않다\"* 고 직접 적은 자리다. **같은 회사의 고객향 GraphQL 은 정확히 이 칸을 채워 두었다** — Karate 로 배포된 서비스를 통합 테스트하고, *\"Stage 와 Production 의 설정이 다를 수 있어서\"* PreProd 환경까지 둔다. 사내 게이트웨이는 반대로 **통합 스테이징이 없고 스테이징이 프로덕션에 붙는 경우가 있다.** 고객향은 *\"웹사이트 전체를 깨뜨릴 수 있어서\"* 그렇게 했다고 적혀 있으니, **차이를 만든 것은 기술이 아니라 깨졌을 때의 값이다**(이 대조는 이 사이트의 것이다).",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              },
-              {
-                "title": "Streamlining GraphQL Service Testing with Karate",
-                "url": "https://tech.trivago.com/post/2024-07-08-streamlining-graphql-service-testing-with-karate",
-                "publisher": "trivago Tech Blog",
-                "date": "2024-07-08",
-                "summary": "**고객향 GraphQL 은 Federation 이다** — *\"Federated GraphQL, as championed by Apollo\"*, 스키마들이 *\"하나의 통합 게이트웨이로 스티칭된다.\"* 단위 테스트와 클라이언트 e2e 사이에 **배포된 앱 자체를 통합 테스트하는 칸이 비어 있었고**, *\"GraphQL 서비스 하나의 잘못된 변경이 웹사이트 전체를 깨뜨릴 수 있어\"* 개발자에게 큰 부담이었다. Karate 로 채우고 **PreProd 환경까지 둔다** — *\"Stage 와 Production 의 설정이 다를 수 있어서\"*."
-              }
-            ]
-          }
-        ],
-        "stack": [
-          {
-            "tech": "GraphQL Mesh",
-            "role": "상류 15개 이상을 소스별 핸들러로 GraphQL 로 번역하고 **스티칭**해 통합 스키마 하나를 만든다. Federation 을 쓰지 않으므로 상류는 GraphQL 을 몰라도 된다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "tech": "NodeJS + Express (기존 서버)",
-            "role": "게이트웨이를 얹는 자리. **인증 · 모니터링 · 배포 파이프라인을 새로 만들지 않고 재사용**하기 위한 선택이다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "tech": "OpenAPI · MySQL · gRPC · 기존 GraphQL · 분석 뷰",
-            "role": "상류 소스의 종류. **이 목록이 곧 이 게이트웨이가 감당하기로 한 이질성의 범위**다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "tech": "리졸버 컴포저 → `@requiresScopes` 디렉티브",
-            "role": "역할 기반 접근 제어. 지금은 리졸버를 감싸는 코드이고, 스키마 디렉티브로 옮길 계획이다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          },
-          {
-            "tech": "감사 로그 (실제 값 ↔ 기대값 비교)",
-            "role": "사내 도구가 데이터를 바꾸는 시스템이므로 **무엇이 실제로 바뀌었는지**를 남긴다. 항목 구성은 클라이언트가 올바로 해야 한다.",
-            "confidence": "confirmed",
-            "sources": [
-              {
-                "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-                "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-                "publisher": "trivago Tech Blog",
-                "date": "2026-03-27",
-                "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-              }
-            ]
-          }
-        ]
-      },
-      "connections": [
-        {
-          "to": "kafka-consumers",
-          "via": "게이트웨이의 상류에는 **MySQL 과 분석 뷰**가 들어 있고, Kafka 싱크가 만드는 것이 바로 **서비스 로컬 DB 의 질의하기 좋은 형태**다. 두 기능이 같은 데이터를 각각 쓰는 쪽과 읽는 쪽에서 만나는 것으로 보이나, 회사가 둘을 연결해 말한 적은 없다.",
-          "confidence": "inferred"
-        }
-      ],
-      "diagrams": [
-        {
-          "title": "상류를 바꾸지 않기로 하면 남는 자리",
-          "kind": "flow",
-          "question": "상류 15개를 고치지 않고 어떻게 하나의 스키마로 묶었는가?",
-          "code": "flowchart TD\n  A[\"<b>OpenAPI</b><br/>• REST 서비스<br/>• 문서에서 스키마를 읽는다\"]:::list\n  B[\"<b>MySQL · 분석 뷰</b><br/>• 테이블을 직접 읽던 대시보드<br/>• 분석 뷰에 의존하던 대시보드\"]:::list\n  C[\"<b>gRPC · 기존 GraphQL</b><br/>• 이미 스키마가 있는 상류\"]:::list\n  M[\"<b>GraphQL Mesh</b><br/>• 소스별 핸들러가 GraphQL 로 번역<br/>• 접두사로 이름 충돌 회피<br/>• 스티칭 — 통합 스키마 1개\"]:::accent\n  E[\"<b>기존 NodeJS Express 서버</b><br/>• 인증 · 모니터링 · 배포 재사용\"]:::list\n  R[\"<b>리졸버 컴포저</b><br/>• 스코프 검사<br/>• 로직은 계산하지 않는다\"]:::list\n  ADM[\"사내 어드민<br/>광고주 설정 · 호텔 콘텐츠 · 데이터 디버깅\"]\n  AUD[\"감사 로그 — 실제 값과 기대값 비교\"]:::quiet\n  subgraph UP[\"<b>상류 15개 이상 — 거의 그대로 둔다</b>\"]\n    A\n    B\n    C\n  end\n  A --> M\n  B --> M\n  C --> M\n  M --> E\n  E --> R\n  R --> ADM\n  R -.->|\"무엇이 실제로 바뀌었나\"| AUD\n  ADM -.->|\"새 도구가 늘어도 상류를 다시 고르지 않는다\"| M"
-        },
-        {
-          "title": "상류 스키마 하나가 통합 스키마에 들어가는 길",
-          "kind": "state",
-          "question": "상류가 GraphQL 을 채택하지 않는데 어떻게 스키마가 되는가?",
-          "code": "stateDiagram-v2\n  [*] --> 상류그대로: 상류는 GraphQL 을 채택하지 않는다\n  상류그대로 --> 번역됨: 소스 핸들러가 정의를 읽어 GraphQL 로\n  note right of 번역됨\n    OpenAPI · MySQL · gRPC · 분석 뷰\n    상류를 고치지 않는 것이 전제다\n  end note\n  번역됨 --> 접두사부여: DataStorage_Hotel / HotelContent_Hotel\n  note right of 접두사부여\n    여러 상류가 각자의 Hotel 을 갖고 있다\n    합치지 않고 갈라 둔다\n  end note\n  접두사부여 --> 통합스키마: 스티칭\n  통합스키마 --> 노출됨: 얕고 넓게 — 깊은 중첩을 만들지 않는다\n  note right of 노출됨\n    깊은 관계는 상류 둘의\n    변경 속도를 서로 묶는다\n  end note\n  노출됨 --> 상류그대로: 상류가 바뀌면 다시 번역해야 한다\n  노출됨 --> 어긋남: 상류가 통보 없이 바뀌었다\n  note right of 어긋남\n    스키마 레지스트리가 없다\n    수동이나 런타임에 발견한다\n    회사의 표현 — \"자랑스럽지 않다\"\n  end note\n  어긋남 --> 번역됨: 사람이 알아채고 고친다"
-        },
-        {
-          "title": "실패 경로 — 같은 회사가 같은 칸을 한 번은 채우고 한 번은 비웠다",
-          "kind": "failure",
-          "question": "고객향 GraphQL 에는 있는 안전장치가 왜 사내 게이트웨이에는 없는가?",
-          "code": "flowchart TD\n  CH[\"상류 팀이 API 를 바꾼다\"] -->|\"게이트웨이 팀에 알리지 않는다\"| NOREG[\"<b>스키마 레지스트리가 없다</b>\"]:::accent\n  NOREG --> LATE[\"깨지는 변경을 <b>수동이나 런타임에</b> 발견\"]\n  LATE --> ADMIT[\"회사의 표현 — <i>“자랑스럽지 않다”</i>\"]:::quiet\n  NOREG -.->|\"원인\"| FED[\"Federation 을 버릴 때<br/><b>상류가 스키마에 참여할 자리</b>도 같이 버렸다<br/><i>(이 연결은 이 사이트의 해석)</i>\"]:::quiet\n  STG[\"<b>통합 스테이징이 없다</b><br/>스테이징이 프로덕션에 붙는 경우가 있다\"] --> LATE\n  subgraph CUST[\"<b>고객향 GraphQL — 같은 회사, 같은 기술</b>\"]\n    F2[\"<b>Apollo Federation</b><br/>• 각 서비스가 스키마를 갖는다<br/>• 통합 게이트웨이로 스티칭\"]:::list\n    K[\"<b>Karate 통합 테스트</b><br/>• 배포된 앱 자체를 검사<br/>• PreProd 환경까지 둔다\"]:::list\n    WHY[\"<i>“잘못된 변경 하나가<br/>웹사이트 전체를 깨뜨릴 수 있다”</i>\"]\n    F2 --> K\n    K --> WHY\n  end\n  WHY -->|\"차이를 만든 것은 기술이 아니라<br/><b>깨졌을 때의 값</b>\"| NOREG\n  OTHER[\"그 밖에 회사가 인정한 것\"] --> O1[\"문서화 부담 — 지식이 Slack 과 머릿속에\"]:::quiet\n  OTHER --> O2[\"감사 항목을 <b>클라이언트가 올바로 구성</b>해야 한다\"]:::quiet\n  OTHER --> O3[\"<b>오래 걸리는 파이프라인에는</b> 이 패턴이 안 맞는다\"]:::quiet\n  OTHER --> O4[\"팀이 넓은 업무 범위를 다뤄야 해<br/><b>개발자가 프로덕트 매니저가 된다</b>\"]:::quiet"
-        }
-      ],
+     },
+     {
+      "label": "운영 기간",
+      "value": "**6년째** (2020년 시작)",
+      "confidence": "confirmed",
       "sources": [
-        {
-          "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-          "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-          "publisher": "trivago Tech Blog",
-          "date": "2026-03-27",
-          "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-        },
-        {
-          "title": "Streamlining GraphQL Service Testing with Karate",
-          "url": "https://tech.trivago.com/post/2024-07-08-streamlining-graphql-service-testing-with-karate",
-          "publisher": "trivago Tech Blog",
-          "date": "2024-07-08",
-          "summary": "**고객향 GraphQL 은 Federation 이다** — *\"Federated GraphQL, as championed by Apollo\"*, 스키마들이 *\"하나의 통합 게이트웨이로 스티칭된다.\"* 단위 테스트와 클라이언트 e2e 사이에 **배포된 앱 자체를 통합 테스트하는 칸이 비어 있었고**, *\"GraphQL 서비스 하나의 잘못된 변경이 웹사이트 전체를 깨뜨릴 수 있어\"* 개발자에게 큰 부담이었다. Karate 로 채우고 **PreProd 환경까지 둔다** — *\"Stage 와 Production 의 설정이 다를 수 있어서\"*."
-        },
-        {
-          "title": "Technical Decision-Making",
-          "url": "https://tech.trivago.com/post/2023-02-22-technical-decision-making",
-          "publisher": "trivago Tech Blog",
-          "date": "2023-02-22",
-          "summary": "큰 기술 결정을 다루는 사내 절차 — **설계 문서 → 영향받는 사람 전원 리뷰 → 워킹 그룹 → 결정 회의 → ADR 로 기록.** 기본적으로 **프로젝트 리드가 결정을 소유**하고, *\"다수결에 구속되지 않지만 다수와 다르게 갈 때는 결과를 알고 책임져야 한다.\"*"
-        },
-        {
-          "title": "WARP - A Web Application Rewrite Project",
-          "url": "https://tech.trivago.com/post/2022-05-16-warp-a-web-application-rewrite-project",
-          "publisher": "trivago Tech Blog",
-          "date": "2022-05-16",
-          "summary": "2020년 4월~2021년 말, 자체 JS 프레임워크 Melody 를 버리고 Next.js·TypeScript·Preact 로 웹을 통째로 다시 쓴 기록. 페이지 무게 홈 **2.1MB → 1.7MB**, 결과 페이지 **4.1MB → 2.6MB**, 배포 **하루 1~2회 → 10회**, 최종 웹 개발자 **30명**. 대가도 적었다 — *\"새 기능 개발이 오랫동안 사실상 멈추는데, 이는 사업에 해가 될 수 있다\"*, 초기에는 *\"매출이 더 낮아지는 결과\"* 였다."
-        }
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
       ]
+     },
+     {
+      "label": "상류 서비스에 가한 변경",
+      "value": "**거의 없음** — 상류는 GraphQL 을 채택하지 않아도 된다",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "label": "지연 · 질의량 · 팀 규모",
+      "value": "**밝히지 않는다**",
+      "confidence": "unknown",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     }
+    ]
+   },
+   "thinking": [
+    {
+     "at": "흩어진 대시보드를 보던 시점",
+     "thought": "도구마다 데이터 경로가 달랐다는 것은 단순히 중복이 아니다 — **같은 호텔을 세 도구가 세 경로로 읽으면 세 답이 다를 수 있다.** 회사는 경로가 갈렸다는 사실만 적고 답이 어긋났다는 말은 하지 않았으므로, 여기까지는 이 사이트의 재구성이다.",
+     "confidence": "inferred"
+    },
+    {
+     "at": "게이트웨이 방식을 고를 때",
+     "thought": "Federation 은 **참여 서비스가 GraphQL 을 채택하고 스키마를 조율해야** 성립한다. 사내 상류 15개에 그것을 요구하면 게이트웨이를 세우기 전에 15개 팀의 일정을 먼저 맞춰야 한다. **그 요구를 하지 않기로 한 순간부터 설계가 결정된다.**",
+     "confidence": "confirmed"
+    },
+    {
+     "at": "통합 스키마를 설계할 때",
+     "thought": "**상류가 우리가 스키마를 병합할 수 있는 속도보다 빨리 바뀐다.** 그래서 엔티티 관계를 깊이 중첩하지 않고 **의도적으로 얕고 넓게** 두었다 — 깊은 관계는 상류 둘의 변경 속도를 서로 묶어 버린다.",
+     "confidence": "confirmed"
+    },
+    {
+     "at": "6년째 운영하며",
+     "thought": "팀들이 게이트웨이 팀에 알리지 않고 API 를 바꾸고, **깨지는 변경을 수동이나 런타임에 발견한다.** 회사는 이 대목을 감추지 않고 **자랑스럽지 않다** 고 적었다. **Federation 을 버릴 때 같이 버린 것이 여기서 청구서로 돌아온다** — 상류가 스키마에 참여하지 않는다는 것은 상류의 변경도 스키마에 나타나지 않는다는 뜻이다(이 연결은 이 사이트의 해석이다).",
+     "confidence": "confirmed"
     }
-  ],
-  "open_questions": [
-    "총매출에서 리퍼럴을 뺀 **약 1,600만 유로의 구성**을 이 사이트가 확인하지 못했다.",
-    "**메타서치의 본체 — 가격 수집·비교·랭킹과 광고 입찰**을 다루는 1차 자료를 찾지 못했다. 이 회사에서 연 도메인 둘은 인프라와 사내 도구 쪽이고, **회사가 그 본체를 기술 블로그에서 다루지 않는다.**",
-    "83% 글은 **프로덕션에 실제로 적용한 flatMap 동시성과 gRPC 스레드 수를 밝히지 않는다** — 테스트값(10,000 / 400)만 나온다.",
-    "KEDA 글은 **검토했다가 버린 대안을 밝히지 않는다** — CPU·메모리 자동 확장이 왜 부족한지만 설명한다.",
-    "GraphQL 게이트웨이 글은 **지연·질의량·팀 규모를 밝히지 않는다.** 사내 도구의 부하가 어느 정도인지 몰라 '기존 서버에 얹었다'는 선택의 무게를 재지 못했다.",
-    "**고객향 Federation 게이트웨이 자체를 다루는 글을 찾지 못했다.** 2024년 Karate 글이 그 구조를 전제로 설명할 뿐, 어떻게 세웠고 무엇을 감수했는지는 나오지 않는다.",
-    "**사내 게이트웨이가 왜 스키마 레지스트리를 두지 않았는지**는 나오지 않는다 — 검토하고 미룬 것인지, 필요를 나중에 알게 된 것인지 구분할 수 없다.",
-    "**⚠️ 282 의 기록 — 이 회사가 후보 조사에서 한 번 중복으로 올라왔다.** 273 의 후보 조사가 `tech.trivago.com` 을 새 후보로 판정해 큐 대기에 올렸는데, **이 회사는 2026-08-22 에 이미 `done` 이었다**(기능 `kafka-consumers` · `internal-graphql-gateway`). **그때 근거로 삼은 Kafka 두 편도 이미 소스에 들어 있었다.** 282 에서 큐에서 빼고, **후보 조사 때 `index.json` 의 완료 목록과 먼저 대조하는 절차**를 운영 사실로 남겼다(이 기록은 이 사이트의 것이다)."
-  ],
-  "sources": [
+   ],
+   "domain_model": {
+    "entities": [
+     {
+      "name": "상류 소스 (upstream source)",
+      "what": "게이트웨이가 스키마를 읽어 들이는 단위. OpenAPI 문서 · MySQL 테이블 · gRPC · 기존 GraphQL SDL · 분석 뷰 중 하나이며, **게이트웨이 때문에 자기를 고치지 않는다.**"
+     },
+     {
+      "name": "통합 스키마 (unified schema)",
+      "what": "상류 스키마들을 번역해 하나로 스티칭한 GraphQL 스키마. **깊이 중첩하지 않고 얕고 넓게** 유지한다."
+     },
+     {
+      "name": "타입 접두사",
+      "what": "이름 충돌을 피하는 장치. 같은 `Hotel` 이라도 `DataStorage_Hotel` 과 `HotelContent_Hotel` 로 갈라진다."
+     },
+     {
+      "name": "리졸버 컴포저",
+      "what": "리졸버를 감싸 스코프를 검사하는 접근 제어 층. `@requiresScopes` 디렉티브로 옮길 계획이다."
+     },
+     {
+      "name": "감사 기록",
+      "what": "무엇을 하려 했는지가 아니라 **실제 값과 기대값을 비교**해 남기는 기록. 항목 구성은 클라이언트 몫이다."
+     }
+    ],
+    "invariants": [
+     "게이트웨이는 **비즈니스 로직을 구현하지 않는다** — 번역하고 조합할 뿐이다.",
+     "같은 이름의 상류 타입은 **접두사로 갈라져** 통합 스키마 안에서 겹치지 않는다.",
+     "상류는 게이트웨이를 위해 바뀌지 않는다 — **맞추는 쪽은 항상 게이트웨이다.**",
+     "스키마는 얕고 넓게 유지한다 — 상류 사이를 잇는 깊은 중첩 관계를 만들지 않는다."
+    ]
+   },
+   "implementation": {
+    "flow": [
+     {
+      "step": "상류 15개 이상의 인터페이스 정의를 있는 그대로 읽는다 (OpenAPI · MySQL 스키마 · gRPC · 기존 GraphQL SDL · 분석 뷰)",
+      "why": "상류를 고치지 않기로 했으므로 시작점이 '우리가 원하는 형태'가 아니라 '상대가 이미 내놓은 형태'다."
+     },
+     {
+      "step": "소스별 핸들러가 각 정의를 GraphQL 스키마로 번역한다",
+      "why": "서로 다른 프로토콜을 한 언어로 옮겨 놓아야 합칠 수 있다."
+     },
+     {
+      "step": "타입 이름에 소스 접두사를 붙인다 (`DataStorage_Hotel` · `HotelContent_Hotel`)",
+      "why": "여러 상류가 각자의 `Hotel` 을 갖고 있어 그대로 합치면 충돌한다."
+     },
+     {
+      "step": "스티칭으로 통합 스키마 하나를 만든다 — 깊은 중첩 없이 얕고 넓게",
+      "why": "클라이언트가 상류의 개수를 몰라도 되게 하되, 상류끼리의 변경 속도를 서로 묶지 않기 위해."
+     },
+     {
+      "step": "게이트웨이를 **기존 NodeJS Express 서버 위에** 얹는다",
+      "why": "인증 · 모니터링 · 배포 파이프라인을 새로 만들지 않고 그대로 쓰기 위해."
+     },
+     {
+      "step": "질의가 오면 리졸버를 감싼 컴포저가 스코프를 검사한다",
+      "why": "접근 제어를 리졸버마다 흩어 놓으면 누가 무엇을 볼 수 있는지 한자리에서 확인할 수 없다."
+     },
+     {
+      "step": "리졸버가 해당 상류를 호출하고 결과를 조합해 돌려준다 — 이 층에서 규칙을 계산하지 않는다",
+      "why": "**깊은 커스터마이징을 의도적으로 피했다** — 게이트웨이가 로직을 갖는 순간 상류와 두 벌이 된다."
+     },
+     {
+      "step": "감사 로그를 남긴다 — 의도가 아니라 **실제 값과 기대값을 비교해서**",
+      "why": "'무엇을 하려 했는가'는 실제로 무엇이 바뀌었는지를 증명하지 못한다."
+     }
+    ],
+    "decisions": [
+     {
+      "question": "상류 15개를 GraphQL 로 옮길 것인가, 앞에 게이트웨이를 세울 것인가",
+      "chosen": "앞에 게이트웨이를 세우고 **상류는 거의 그대로 둔다**",
+      "alternatives": [
+       "상류 서비스마다 GraphQL 채택",
+       "도구별로 지금처럼 각자 붙기"
+      ],
+      "tradeoff": "**15개 상류의 변화를 게이트웨이 혼자 흡수한다.** 상류 팀은 아무 부담이 없고, 부담은 전부 한 곳에 모인다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "question": "Federation 인가 스키마 스티칭인가 — 회사는 고객향에서 이미 Federation 을 쓰고 있다",
+      "chosen": "**GraphQL Mesh 의 스키마 스티칭** — 사내에서는 Federation 을 쓰지 않는다",
+      "alternatives": [
+       "Apollo Federation (고객향 GraphQL 에서 실제로 쓰는 방식)"
+      ],
+      "tradeoff": "Federation 을 버리면서 **상류가 스키마에 참여할 자리도 같이 버렸다.** 그래서 상류가 API 를 바꿔도 스키마 쪽에서 먼저 알 방법이 없다 — 아래의 '깨지는 변경' 문제가 여기서 나온다(이 인과 연결은 이 사이트의 해석이다).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       },
+       {
+        "title": "Streamlining GraphQL Service Testing with Karate",
+        "url": "https://tech.trivago.com/post/2024-07-08-streamlining-graphql-service-testing-with-karate",
+        "publisher": "trivago Tech Blog",
+        "date": "2024-07-08",
+        "summary": "**고객향 GraphQL 은 Federation 이다** — *\"Federated GraphQL, as championed by Apollo\"*, 스키마들이 **하나의 통합 게이트웨이로 스티칭된다.** 단위 테스트와 클라이언트 e2e 사이에 **배포된 앱 자체를 통합 테스트하는 칸이 비어 있었고**, **GraphQL 서비스 하나의 잘못된 변경이 웹사이트 전체를 깨뜨릴 수 있어** 개발자에게 큰 부담이었다. Karate 로 채우고 **PreProd 환경까지 둔다** — **Stage 와 Production 의 설정이 다를 수 있어서**."
+       }
+      ]
+     },
+     {
+      "question": "여러 상류가 같은 타입 이름을 쓸 때 무엇을 정답으로 삼는가",
+      "chosen": "**소스 접두사 변환** — `DataStorage_Hotel` 과 `HotelContent_Hotel` 을 둘 다 남긴다",
+      "alternatives": [
+       "하나로 병합해 정본 타입 만들기",
+       "필드 수동 재명명"
+      ],
+      "tradeoff": "게이트웨이가 감추려던 **상류 구조가 타입 이름으로 새어 나온다.** 클라이언트는 결국 '어느 상류의 호텔인가'를 알아야 한다(이 대가는 이 사이트의 해석이다).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "question": "통합 스키마를 깊이 중첩할 것인가, 얕고 넓게 둘 것인가",
+      "chosen": "**의도적으로 얕고 넓게** — 깊이 중첩된 엔티티 관계를 만들지 않는다",
+      "alternatives": [
+       "상류를 가로지르는 풍부한 엔티티 그래프"
+      ],
+      "tradeoff": "**GraphQL 의 큰 이점 하나를 스스로 접었다** — 한 번의 질의로 관계를 따라 내려가는 것. 이유는 성능이 아니라 속도다: **상류가 우리가 병합할 수 있는 속도보다 빨리 바뀐다.**",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "question": "게이트웨이를 새 서비스로 세울 것인가, 있는 것에 얹을 것인가",
+      "chosen": "**기존 NodeJS Express 서버에 얹는다** — 인증 · 모니터링 · 배포를 재사용",
+      "alternatives": [
+       "독립 서비스로 분리 배포"
+      ],
+      "tradeoff": "게이트웨이의 확장과 배포 주기가 **그 서버에 묶인다.** 사내용이라 트래픽 특성이 다르다는 점을 감안하면 합리적인 교환으로 보이지만, 회사가 부하 수치를 밝히지 않아 확인할 수 없다(추정).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "question": "게이트웨이에 비즈니스 로직을 넣을 것인가",
+      "chosen": "넣지 않는다 — **번역하고 조합할 뿐 비즈니스 로직을 구현하지 않는다**",
+      "alternatives": [
+       "게이트웨이에서 규칙 계산 · 깊은 커스터마이징"
+      ],
+      "tradeoff": "**상류가 주지 않는 것은 게이트웨이도 주지 못한다.** 사내 도구에 필요한 계산이 생기면 상류에 요청하거나 클라이언트가 해야 한다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "question": "접근 제어를 어디에 둘 것인가",
+      "chosen": "**리졸버를 감싸는 컴포저** — 이후 `@requiresScopes` 디렉티브로 옮길 계획",
+      "alternatives": [
+       "리졸버 안에 검사 코드",
+       "게이트웨이 앞단에서 경로 단위로만 차단"
+      ],
+      "tradeoff": "컴포저는 **코드**라서 스키마만 봐서는 누가 무엇을 볼 수 있는지 안 보인다. 디렉티브로 옮기려는 계획 자체가 그 불편의 증거다(추정).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "question": "상류가 깨지는 변경을 냈을 때 언제 알아채는가",
+      "chosen": "**지금은 수동이거나 런타임이다** — 스키마 레지스트리를 두지 않았다",
+      "alternatives": [
+       "스키마 레지스트리와 계약 검사",
+       "고객향처럼 PreProd 통합 테스트 파이프라인"
+      ],
+      "tradeoff": "회사가 **자랑스럽지 않다** 고 직접 적은 자리다. **같은 회사의 고객향 GraphQL 은 정확히 이 칸을 채워 두었다** — Karate 로 배포된 서비스를 통합 테스트하고, **Stage 와 Production 의 설정이 다를 수 있어서** PreProd 환경까지 둔다. 사내 게이트웨이는 반대로 **통합 스테이징이 없고 스테이징이 프로덕션에 붙는 경우가 있다.** 고객향은 **웹사이트 전체를 깨뜨릴 수 있어서** 그렇게 했다고 적혀 있으니, **차이를 만든 것은 기술이 아니라 깨졌을 때의 값이다**(이 대조는 이 사이트의 것이다).",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       },
+       {
+        "title": "Streamlining GraphQL Service Testing with Karate",
+        "url": "https://tech.trivago.com/post/2024-07-08-streamlining-graphql-service-testing-with-karate",
+        "publisher": "trivago Tech Blog",
+        "date": "2024-07-08",
+        "summary": "**고객향 GraphQL 은 Federation 이다** — *\"Federated GraphQL, as championed by Apollo\"*, 스키마들이 **하나의 통합 게이트웨이로 스티칭된다.** 단위 테스트와 클라이언트 e2e 사이에 **배포된 앱 자체를 통합 테스트하는 칸이 비어 있었고**, **GraphQL 서비스 하나의 잘못된 변경이 웹사이트 전체를 깨뜨릴 수 있어** 개발자에게 큰 부담이었다. Karate 로 채우고 **PreProd 환경까지 둔다** — **Stage 와 Production 의 설정이 다를 수 있어서**."
+       }
+      ]
+     }
+    ],
+    "stack": [
+     {
+      "tech": "GraphQL Mesh",
+      "role": "상류 15개 이상을 소스별 핸들러로 GraphQL 로 번역하고 **스티칭**해 통합 스키마 하나를 만든다. Federation 을 쓰지 않으므로 상류는 GraphQL 을 몰라도 된다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "tech": "NodeJS + Express (기존 서버)",
+      "role": "게이트웨이를 얹는 자리. **인증 · 모니터링 · 배포 파이프라인을 새로 만들지 않고 재사용**하기 위한 선택이다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "tech": "OpenAPI · MySQL · gRPC · 기존 GraphQL · 분석 뷰",
+      "role": "상류 소스의 종류. **이 목록이 곧 이 게이트웨이가 감당하기로 한 이질성의 범위**다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "tech": "리졸버 컴포저 → `@requiresScopes` 디렉티브",
+      "role": "역할 기반 접근 제어. 지금은 리졸버를 감싸는 코드이고, 스키마 디렉티브로 옮길 계획이다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     },
+     {
+      "tech": "감사 로그 (실제 값 ↔ 기대값 비교)",
+      "role": "사내 도구가 데이터를 바꾸는 시스템이므로 **무엇이 실제로 바뀌었는지**를 남긴다. 항목 구성은 클라이언트가 올바로 해야 한다.",
+      "confidence": "confirmed",
+      "sources": [
+       {
+        "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+        "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+        "publisher": "trivago Tech Blog",
+        "date": "2026-03-27",
+        "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+       }
+      ]
+     }
+    ]
+   },
+   "connections": [
     {
-      "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
-      "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
-      "publisher": "trivago Tech Blog",
-      "date": "2026-06-12",
-      "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
-    },
-    {
-      "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
-      "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
-      "publisher": "trivago Tech Blog",
-      "date": "2026-02-18",
-      "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
-    },
-    {
-      "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
-      "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
-      "publisher": "trivago Tech Blog",
-      "date": "2026-03-27",
-      "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 *\"자랑스럽지 않다\"* 고 적는다."
-    },
-    {
-      "title": "trivago N.V. Q4·FY2025 실적",
-      "url": "https://ir.trivago.com/news-releases/news-release-details/trivago-nv-reports-solid-q4-2025-results-achieving-27-yoy",
-      "publisher": "trivago N.V. IR",
-      "date": "2026-02-03",
-      "summary": "FY2025 총매출 **5억 4,890만 유로**(+19%), 그중 **리퍼럴 매출 5억 3,290만 유로**(+17%). 순이익 1,120만 유로, 조정 EBITDA 1,580만 유로. Q4 매출 1억 2,000만 유로(+27%), 리퍼럴 1억 940만 유로(+17%) — 지역별 리퍼럴 성장은 아메리카 20%, 기타 16%, 선진 유럽 15%."
-    },
-    {
-      "title": "Streamlining GraphQL Service Testing with Karate",
-      "url": "https://tech.trivago.com/post/2024-07-08-streamlining-graphql-service-testing-with-karate",
-      "publisher": "trivago Tech Blog",
-      "date": "2024-07-08",
-      "summary": "**고객향 GraphQL 은 Federation 이다** — *\"Apollo 가 주창한 Federated GraphQL\"*. 배포된 앱 자체를 통합 테스트하는 칸이 비어 있었고, *\"잘못된 변경 하나가 웹사이트 전체를 깨뜨릴 수 있어\"* Karate 로 채우고 **PreProd 환경까지** 두었다."
-    },
-    {
-      "title": "Technical Decision-Making",
-      "url": "https://tech.trivago.com/post/2023-02-22-technical-decision-making",
-      "publisher": "trivago Tech Blog",
-      "date": "2023-02-22",
-      "summary": "큰 기술 결정을 다루는 사내 절차 — **설계 문서 → 영향받는 사람 전원 리뷰 → 워킹 그룹 → 결정 회의 → ADR 기록.** 기본적으로 **프로젝트 리드가 결정을 소유**하며 *\"다수결에 구속되지 않지만 다수와 다르게 갈 때는 책임져야 한다.\"*"
-    },
-    {
-      "title": "WARP - A Web Application Rewrite Project",
-      "url": "https://tech.trivago.com/post/2022-05-16-warp-a-web-application-rewrite-project",
-      "publisher": "trivago Tech Blog",
-      "date": "2022-05-16",
-      "summary": "2020년 4월~2021년 말, 자체 JS 프레임워크 Melody 를 버리고 Next.js·TypeScript·Preact 로 웹을 통째로 다시 쓴 기록. 페이지 무게 홈 **2.1MB → 1.7MB**, 결과 페이지 **4.1MB → 2.6MB**, 배포 **하루 1~2회 → 10회**, 최종 웹 개발자 **30명**. 대가도 적었다 — *\"새 기능 개발이 오랫동안 사실상 멈추는데, 이는 사업에 해가 될 수 있다\"*."
-    },
-    {
-      "title": "trivago Delivers Impressive 21% Growth in Q2, Raises Full Year Guidance Again After Sixth Double-Digit Quarter",
-      "url": "https://company.trivago.com/trivago-delivers-impressive-21-growth-in-q2-raises-full-year-guidance-again-after-sixth-double-digit-quarter/",
-      "publisher": "trivago N.V.",
-      "date": "2026-08-05",
-      "summary": "**282 에서 더한 최신 실적.** **2026년 2분기 총매출 1억 6,840만 유로, 전년 대비 21% 성장**이고 **여섯 분기 연속 두 자릿수 성장**이다. **추천 매출**은 **미주 16% · 선진 유럽 14%** 성장. **조정 EBITDA 110만 유로 흑자**로 **2023년 이후 첫 2분기 흑자**다. **연간 가이던스를 올렸다** — 총매출 **10% 중반대 성장**, 조정 EBITDA **2,500만 → 약 3,000만 유로**. ⚠️ **지역별 실액과 마케팅비 비중은 이 발표 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+     "to": "kafka-consumers",
+     "via": "게이트웨이의 상류에는 **MySQL 과 분석 뷰**가 들어 있고, Kafka 싱크가 만드는 것이 바로 **서비스 로컬 DB 의 질의하기 좋은 형태**다. 두 기능이 같은 데이터를 각각 쓰는 쪽과 읽는 쪽에서 만나는 것으로 보이나, 회사가 둘을 연결해 말한 적은 없다.",
+     "confidence": "inferred"
     }
-  ]
+   ],
+   "diagrams": [
+    {
+     "title": "상류를 바꾸지 않기로 하면 남는 자리",
+     "kind": "flow",
+     "question": "상류 15개를 고치지 않고 어떻게 하나의 스키마로 묶었는가?",
+     "code": "flowchart TD\n  A[\"<b>OpenAPI</b><br/>• REST 서비스<br/>• 문서에서 스키마를 읽는다\"]:::list\n  B[\"<b>MySQL · 분석 뷰</b><br/>• 테이블을 직접 읽던 대시보드<br/>• 분석 뷰에 의존하던 대시보드\"]:::list\n  C[\"<b>gRPC · 기존 GraphQL</b><br/>• 이미 스키마가 있는 상류\"]:::list\n  M[\"<b>GraphQL Mesh</b><br/>• 소스별 핸들러가 GraphQL 로 번역<br/>• 접두사로 이름 충돌 회피<br/>• 스티칭 — 통합 스키마 1개\"]:::accent\n  E[\"<b>기존 NodeJS Express 서버</b><br/>• 인증 · 모니터링 · 배포 재사용\"]:::list\n  R[\"<b>리졸버 컴포저</b><br/>• 스코프 검사<br/>• 로직은 계산하지 않는다\"]:::list\n  ADM[\"사내 어드민<br/>광고주 설정 · 호텔 콘텐츠 · 데이터 디버깅\"]\n  AUD[\"감사 로그 — 실제 값과 기대값 비교\"]:::quiet\n  subgraph UP[\"<b>상류 15개 이상 — 거의 그대로 둔다</b>\"]\n    A\n    B\n    C\n  end\n  A --> M\n  B --> M\n  C --> M\n  M --> E\n  E --> R\n  R --> ADM\n  R -.->|\"무엇이 실제로 바뀌었나\"| AUD\n  ADM -.->|\"새 도구가 늘어도 상류를 다시 고르지 않는다\"| M"
+    },
+    {
+     "title": "상류 스키마 하나가 통합 스키마에 들어가는 길",
+     "kind": "state",
+     "question": "상류가 GraphQL 을 채택하지 않는데 어떻게 스키마가 되는가?",
+     "code": "stateDiagram-v2\n  [*] --> 상류그대로: 상류는 GraphQL 을 채택하지 않는다\n  상류그대로 --> 번역됨: 소스 핸들러가 정의를 읽어 GraphQL 로\n  note right of 번역됨\n    OpenAPI · MySQL · gRPC · 분석 뷰\n    상류를 고치지 않는 것이 전제다\n  end note\n  번역됨 --> 접두사부여: DataStorage_Hotel / HotelContent_Hotel\n  note right of 접두사부여\n    여러 상류가 각자의 Hotel 을 갖고 있다\n    합치지 않고 갈라 둔다\n  end note\n  접두사부여 --> 통합스키마: 스티칭\n  통합스키마 --> 노출됨: 얕고 넓게 — 깊은 중첩을 만들지 않는다\n  note right of 노출됨\n    깊은 관계는 상류 둘의\n    변경 속도를 서로 묶는다\n  end note\n  노출됨 --> 상류그대로: 상류가 바뀌면 다시 번역해야 한다\n  노출됨 --> 어긋남: 상류가 통보 없이 바뀌었다\n  note right of 어긋남\n    스키마 레지스트리가 없다\n    수동이나 런타임에 발견한다\n    회사의 표현 — \"자랑스럽지 않다\"\n  end note\n  어긋남 --> 번역됨: 사람이 알아채고 고친다"
+    },
+    {
+     "title": "실패 경로 — 같은 회사가 같은 칸을 한 번은 채우고 한 번은 비웠다",
+     "kind": "failure",
+     "question": "고객향 GraphQL 에는 있는 안전장치가 왜 사내 게이트웨이에는 없는가?",
+     "code": "flowchart TD\n  CH[\"상류 팀이 API 를 바꾼다\"] -->|\"게이트웨이 팀에 알리지 않는다\"| NOREG[\"<b>스키마 레지스트리가 없다</b>\"]:::accent\n  NOREG --> LATE[\"깨지는 변경을 <b>수동이나 런타임에</b> 발견\"]\n  LATE --> ADMIT[\"회사의 표현 — <i>“자랑스럽지 않다”</i>\"]:::quiet\n  NOREG -.->|\"원인\"| FED[\"Federation 을 버릴 때<br/><b>상류가 스키마에 참여할 자리</b>도 같이 버렸다<br/><i>(이 연결은 이 사이트의 해석)</i>\"]:::quiet\n  STG[\"<b>통합 스테이징이 없다</b><br/>스테이징이 프로덕션에 붙는 경우가 있다\"] --> LATE\n  subgraph CUST[\"<b>고객향 GraphQL — 같은 회사, 같은 기술</b>\"]\n    F2[\"<b>Apollo Federation</b><br/>• 각 서비스가 스키마를 갖는다<br/>• 통합 게이트웨이로 스티칭\"]:::list\n    K[\"<b>Karate 통합 테스트</b><br/>• 배포된 앱 자체를 검사<br/>• PreProd 환경까지 둔다\"]:::list\n    WHY[\"<i>“잘못된 변경 하나가<br/>웹사이트 전체를 깨뜨릴 수 있다”</i>\"]\n    F2 --> K\n    K --> WHY\n  end\n  WHY -->|\"차이를 만든 것은 기술이 아니라<br/><b>깨졌을 때의 값</b>\"| NOREG\n  OTHER[\"그 밖에 회사가 인정한 것\"] --> O1[\"문서화 부담 — 지식이 Slack 과 머릿속에\"]:::quiet\n  OTHER --> O2[\"감사 항목을 <b>클라이언트가 올바로 구성</b>해야 한다\"]:::quiet\n  OTHER --> O3[\"<b>오래 걸리는 파이프라인에는</b> 이 패턴이 안 맞는다\"]:::quiet\n  OTHER --> O4[\"팀이 넓은 업무 범위를 다뤄야 해<br/><b>개발자가 프로덕트 매니저가 된다</b>\"]:::quiet"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+     "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+     "publisher": "trivago Tech Blog",
+     "date": "2026-03-27",
+     "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+    },
+    {
+     "title": "Streamlining GraphQL Service Testing with Karate",
+     "url": "https://tech.trivago.com/post/2024-07-08-streamlining-graphql-service-testing-with-karate",
+     "publisher": "trivago Tech Blog",
+     "date": "2024-07-08",
+     "summary": "**고객향 GraphQL 은 Federation 이다** — *\"Federated GraphQL, as championed by Apollo\"*, 스키마들이 **하나의 통합 게이트웨이로 스티칭된다.** 단위 테스트와 클라이언트 e2e 사이에 **배포된 앱 자체를 통합 테스트하는 칸이 비어 있었고**, **GraphQL 서비스 하나의 잘못된 변경이 웹사이트 전체를 깨뜨릴 수 있어** 개발자에게 큰 부담이었다. Karate 로 채우고 **PreProd 환경까지 둔다** — **Stage 와 Production 의 설정이 다를 수 있어서**."
+    },
+    {
+     "title": "Technical Decision-Making",
+     "url": "https://tech.trivago.com/post/2023-02-22-technical-decision-making",
+     "publisher": "trivago Tech Blog",
+     "date": "2023-02-22",
+     "summary": "큰 기술 결정을 다루는 사내 절차 — **설계 문서 → 영향받는 사람 전원 리뷰 → 워킹 그룹 → 결정 회의 → ADR 로 기록.** 기본적으로 **프로젝트 리드가 결정을 소유**하고, **다수결에 구속되지 않지만 다수와 다르게 갈 때는 결과를 알고 책임져야 한다.**"
+    },
+    {
+     "title": "WARP - A Web Application Rewrite Project",
+     "url": "https://tech.trivago.com/post/2022-05-16-warp-a-web-application-rewrite-project",
+     "publisher": "trivago Tech Blog",
+     "date": "2022-05-16",
+     "summary": "2020년 4월~2021년 말, 자체 JS 프레임워크 Melody 를 버리고 Next.js·TypeScript·Preact 로 웹을 통째로 다시 쓴 기록. 페이지 무게 홈 **2.1MB → 1.7MB**, 결과 페이지 **4.1MB → 2.6MB**, 배포 **하루 1~2회 → 10회**, 최종 웹 개발자 **30명**. 대가도 적었다 — **새 기능 개발이 오랫동안 사실상 멈추는데, 이는 사업에 해가 될 수 있다**, 초기에는 **매출이 더 낮아지는 결과** 였다."
+    }
+   ]
+  }
+ ],
+ "open_questions": [
+  "총매출에서 리퍼럴을 뺀 **약 1,600만 유로의 구성**을 이 사이트가 확인하지 못했다.",
+  "**메타서치의 본체 — 가격 수집·비교·랭킹과 광고 입찰**을 다루는 1차 자료를 찾지 못했다. 이 회사에서 연 도메인 둘은 인프라와 사내 도구 쪽이고, **회사가 그 본체를 기술 블로그에서 다루지 않는다.**",
+  "83% 글은 **프로덕션에 실제로 적용한 flatMap 동시성과 gRPC 스레드 수를 밝히지 않는다** — 테스트값(10,000 / 400)만 나온다.",
+  "KEDA 글은 **검토했다가 버린 대안을 밝히지 않는다** — CPU·메모리 자동 확장이 왜 부족한지만 설명한다.",
+  "GraphQL 게이트웨이 글은 **지연·질의량·팀 규모를 밝히지 않는다.** 사내 도구의 부하가 어느 정도인지 몰라 '기존 서버에 얹었다'는 선택의 무게를 재지 못했다.",
+  "**고객향 Federation 게이트웨이 자체를 다루는 글을 찾지 못했다.** 2024년 Karate 글이 그 구조를 전제로 설명할 뿐, 어떻게 세웠고 무엇을 감수했는지는 나오지 않는다.",
+  "**사내 게이트웨이가 왜 스키마 레지스트리를 두지 않았는지**는 나오지 않는다 — 검토하고 미룬 것인지, 필요를 나중에 알게 된 것인지 구분할 수 없다.",
+  "**⚠️ 282 의 기록 — 이 회사가 후보 조사에서 한 번 중복으로 올라왔다.** 273 의 후보 조사가 `tech.trivago.com` 을 새 후보로 판정해 큐 대기에 올렸는데, **이 회사는 2026-08-22 에 이미 `done` 이었다**(기능 `kafka-consumers` · `internal-graphql-gateway`). **그때 근거로 삼은 Kafka 두 편도 이미 소스에 들어 있었다.** 282 에서 큐에서 빼고, **후보 조사 때 `index.json` 의 완료 목록과 먼저 대조하는 절차**를 운영 사실로 남겼다(이 기록은 이 사이트의 것이다)."
+ ],
+ "sources": [
+  {
+   "title": "How We Cut Kafka Consumer Deployment Costs by 83%",
+   "url": "https://tech.trivago.com/post/2026-06-12-how-we-cut-kafka-consumer-deployment-costs-by-83",
+   "publisher": "trivago Tech Blog",
+   "date": "2026-06-12",
+   "summary": "**CPU 는 10%인데 lag 이 쌓이고 P1 사고가 19건** 나던 컨슈머를 다섯 계층으로 나눠 파고든 기록. 개별 수정이 전부 실패한 이유가 **병목이 동시에 여럿이었기 때문**이라는 것을 밝히고, 고친 뒤 파드가 **60개에서 6개**가 됐다."
+  },
+  {
+   "title": "From Always-On to On-Demand: Scaling Kafka Sinks with KEDA",
+   "url": "https://tech.trivago.com/post/2026-02-18-from-always-on-to-on-demand-scaling-kafka-sinks-with-keda",
+   "publisher": "trivago Tech Blog",
+   "date": "2026-02-18",
+   "summary": "세 리전에 **50개가 넘는 싱크**가 상시 떠 있던 것을 **컨슈머 lag 을 신호로** 자동 확장·0으로 축소하게 바꾼 이야기. **CPU·메모리로는 이 부하가 보이지 않는다**는 진단이 출발점이고, 저트래픽 토픽에서는 **소비자 그룹 메타데이터가 2주 뒤 지워질 위험**까지 적었다."
+  },
+  {
+   "title": "Unifying Internal APIs: A Different Use Case for GraphQL Gateways",
+   "url": "https://tech.trivago.com/post/2026-03-27-unifying-internal-apis-a-different-use-case-for-graphql-gateways",
+   "publisher": "trivago Tech Blog",
+   "date": "2026-03-27",
+   "summary": "고객이 아니라 **사내 관리 도구**를 위해 GraphQL 게이트웨이를 세운 이야기. Federation 대신 **GraphQL Mesh 의 스키마 스티칭**을 골라 **상류 서비스를 거의 건드리지 않았다.** 스키마 레지스트리가 없어 **깨지는 변경을 수동이나 런타임에 발견한다**는 것까지 **자랑스럽지 않다** 고 적는다."
+  },
+  {
+   "title": "trivago N.V. Q4·FY2025 실적",
+   "url": "https://ir.trivago.com/news-releases/news-release-details/trivago-nv-reports-solid-q4-2025-results-achieving-27-yoy",
+   "publisher": "trivago N.V. IR",
+   "date": "2026-02-03",
+   "summary": "FY2025 총매출 **5억 4,890만 유로**(+19%), 그중 **리퍼럴 매출 5억 3,290만 유로**(+17%). 순이익 1,120만 유로, 조정 EBITDA 1,580만 유로. Q4 매출 1억 2,000만 유로(+27%), 리퍼럴 1억 940만 유로(+17%) — 지역별 리퍼럴 성장은 아메리카 20%, 기타 16%, 선진 유럽 15%."
+  },
+  {
+   "title": "Streamlining GraphQL Service Testing with Karate",
+   "url": "https://tech.trivago.com/post/2024-07-08-streamlining-graphql-service-testing-with-karate",
+   "publisher": "trivago Tech Blog",
+   "date": "2024-07-08",
+   "summary": "**고객향 GraphQL 은 Federation 이다** — **Apollo 가 주창한 Federated GraphQL**. 배포된 앱 자체를 통합 테스트하는 칸이 비어 있었고, **잘못된 변경 하나가 웹사이트 전체를 깨뜨릴 수 있어** Karate 로 채우고 **PreProd 환경까지** 두었다."
+  },
+  {
+   "title": "Technical Decision-Making",
+   "url": "https://tech.trivago.com/post/2023-02-22-technical-decision-making",
+   "publisher": "trivago Tech Blog",
+   "date": "2023-02-22",
+   "summary": "큰 기술 결정을 다루는 사내 절차 — **설계 문서 → 영향받는 사람 전원 리뷰 → 워킹 그룹 → 결정 회의 → ADR 기록.** 기본적으로 **프로젝트 리드가 결정을 소유**하며 **다수결에 구속되지 않지만 다수와 다르게 갈 때는 책임져야 한다.**"
+  },
+  {
+   "title": "WARP - A Web Application Rewrite Project",
+   "url": "https://tech.trivago.com/post/2022-05-16-warp-a-web-application-rewrite-project",
+   "publisher": "trivago Tech Blog",
+   "date": "2022-05-16",
+   "summary": "2020년 4월~2021년 말, 자체 JS 프레임워크 Melody 를 버리고 Next.js·TypeScript·Preact 로 웹을 통째로 다시 쓴 기록. 페이지 무게 홈 **2.1MB → 1.7MB**, 결과 페이지 **4.1MB → 2.6MB**, 배포 **하루 1~2회 → 10회**, 최종 웹 개발자 **30명**. 대가도 적었다 — **새 기능 개발이 오랫동안 사실상 멈추는데, 이는 사업에 해가 될 수 있다**."
+  },
+  {
+   "title": "trivago Delivers Impressive 21% Growth in Q2, Raises Full Year Guidance Again After Sixth Double-Digit Quarter",
+   "url": "https://company.trivago.com/trivago-delivers-impressive-21-growth-in-q2-raises-full-year-guidance-again-after-sixth-double-digit-quarter/",
+   "publisher": "trivago N.V.",
+   "date": "2026-08-05",
+   "summary": "**282 에서 더한 최신 실적.** **2026년 2분기 총매출 1억 6,840만 유로, 전년 대비 21% 성장**이고 **여섯 분기 연속 두 자릿수 성장**이다. **추천 매출**은 **미주 16% · 선진 유럽 14%** 성장. **조정 EBITDA 110만 유로 흑자**로 **2023년 이후 첫 2분기 흑자**다. **연간 가이던스를 올렸다** — 총매출 **10% 중반대 성장**, 조정 EBITDA **2,500만 → 약 3,000만 유로**. ⚠️ **지역별 실액과 마케팅비 비중은 이 발표 요약에서 확인하지 못했다**(이 표시는 이 사이트의 것이다)."
+  }
+ ]
 }
