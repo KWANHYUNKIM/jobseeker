@@ -4,11 +4,11 @@
  "name_en": "PayFit",
  "country": "EU",
  "category": "SaaS",
- "status": "in_progress",
+ "status": "done",
  "updated_at": "2026-08-29",
  "domain": "backstage.payfit.com",
  "one_liner": "유럽 중소기업의 급여를 대신 계산해 주는 프랑스 SaaS — 나라마다 다른 노동법을 로우코드로 코드로 만든다",
- "business_model": "**유럽 중소기업의 급여·인사를 클라우드로 판다.** 2015년 프랑스에서 창업자 셋이 시작했고, **나라마다 다른 노동법을 코드로 옮긴 것**이 이 회사의 기반이다 — 회사는 그 로우코드 플랫폼을 **JetLang** 이라 부르고 *\"a low-code platform, to abstract the labour law into code\"* 라 한 줄로 설명한다.\n\n**⚠️ 사업 수치를 거의 확인하지 못했다**(이 한계는 이 사이트의 것이다). 회사 자체 발표에서 확인한 것은 **€254M 조달과 €1.82B 밸류에이션**뿐이다. **고객 수는 3자 정리마다 크게 어긋나** 쓰지 않았고(어떤 곳은 5천, 어떤 곳은 2만 이상이라 한다), 매출과 진출 국가 목록도 1차 자료로 확인하지 못했다.\n\n---\n\n**⭐ 이 회사를 이 사이트가 고른 이유는 축이다**(이 판단은 이 사이트의 것이다). freee·SmartHR 과 **같은 급여·인사 SaaS** 이고, 셋 다 **제품이 늘면서 경계가 무너진 문제**를 겪었다. 그런데 **답이 셋 다 다르다** — freee 는 **떼어냈고**(4년), SmartHR 은 **규칙으로 긋다 안 되어 프로세스로 나눴고**, PayFit 은 **이름부터 다시 정했다.**\n\n**⭐⭐ PayFit 의 증상이 특히 구체적이다** — **Pay Period 라는 말을 팀마다 다르게 써서** 서로 어긋났다. 그래서 개념을 갈라 **Payroll Period** 를 따로 세웠다. 회사는 이렇게 적는다: *\"Naming is hard and it is a key driver for all kinds of decisions, both business and technological.\"*\n\n**⚠️ 블로그는 얇고 멈춰 있다** — 엔지니어링 태그에 **여덟 편**뿐이고 최신이 **2024-07-08** 이다(이 사이트가 확인한 범위 안에서). **그리고 결이 고르지 않다** — 354 에서 세 편을 열었는데 **연혁 글은 버린 대안에 이유가 없고 대가를 아예 안 적으며**, PostgreSQL 인덱스 편은 **회사 시스템 이야기가 아니라 일반 벤치마크 해설**이었다. **쓸 만한 것은 도메인 주도 설계 편 하나였다.**",
+ "business_model": "**유럽 중소기업의 급여·인사를 클라우드로 판다.** 2015년 프랑스에서 창업자 셋이 시작했고, **나라마다 다른 노동법을 코드로 옮긴 것**이 이 회사의 기반이다 — 회사는 그 로우코드 플랫폼을 **JetLang** 이라 부르고 *\"a low-code platform, to abstract the labour law into code\"* 라 한 줄로 설명한다.\n\n**규모** — 회사의 기술 블로그가 2024년 1월에 밝힌 수는 **고객 10,000곳**, **서비스 대상 종업원 200,000명**, **3개국**(프랑스·스페인·영국)이다. 그리고 회사 자체 발표로 **€254M 조달 · €1.82B 밸류에이션**이 있다.\n\n**⚠️ 354 에서 적은 것을 356 에서 고쳤다**(PROMPT.md 2″단계). 354 에는 **고객 수는 3자 정리마다 크게 어긋나 쓰지 않았다**(어떤 곳은 5천, 어떤 곳은 2만 이상)고 적었는데, **1차 자료인 회사 기술 블로그에 10,000곳이라고 나와 있었다.** **⭐ 3자 추정을 견주느라 1차 자료를 늦게 본 셈이다.** ⚠️ **그리고 356 에서 이 사이트의 혼용 검사에 구멍이 있다는 것도 드러났다** — JSON 은 큰따옴표를 이스케이프하므로 파일 원문에 정규식을 걸면 아무것도 안 걸린다. **JSON 을 파싱한 뒤 문자열 값 위에서 검사해야 한다.** ⚠️ **매출은 여전히 1차 자료로 확인하지 못했다.**\n\n---\n\n**⭐ 이 회사를 이 사이트가 고른 이유는 축이다**(이 판단은 이 사이트의 것이다). freee·SmartHR 과 **같은 급여·인사 SaaS** 이고, 셋 다 **제품이 늘면서 경계가 무너진 문제**를 겪었다. 그런데 **답이 셋 다 다르다** — freee 는 **떼어냈고**(4년), SmartHR 은 **규칙으로 긋다 안 되어 프로세스로 나눴고**, PayFit 은 **이름부터 다시 정했다.**\n\n**⭐⭐ PayFit 의 증상이 특히 구체적이다** — **Pay Period 라는 말을 팀마다 다르게 써서** 서로 어긋났다. 그래서 개념을 갈라 **Payroll Period** 를 따로 세웠다. 회사는 이렇게 적는다: *\"Naming is hard and it is a key driver for all kinds of decisions, both business and technological.\"*\n\n**⚠️ 블로그는 얇고 멈춰 있다** — 엔지니어링 태그에 **여덟 편**뿐이고 최신이 **2024-07-08** 이다(이 사이트가 확인한 범위 안에서). **그리고 결이 고르지 않다** — 354 에서 세 편을 열었는데 **연혁 글은 버린 대안에 이유가 없고 대가를 아예 안 적으며**, PostgreSQL 인덱스 편은 **회사 시스템 이야기가 아니라 일반 벤치마크 해설**이었다. **쓸 만한 것은 도메인 주도 설계 편 하나였다.**\n\n---\n\n**⭐⭐ 356 에서 JetLang 의 실체가 한 걸음 드러났다.** 이 회사의 기반인데 지금까지는 *\"a low-code platform, to abstract the labour law into code\"* 라는 한 줄뿐이었다. 2024년 아키텍처 비전 글이 **그것이 지금 문제이기도 하다**고 적는다 — *\"The cohabitation between our internal low-code system, JetLang, and our more common full-code system is challenging.\"* **사내 로우코드와 일반 풀코드가 한집에 살면서 책임이 불명확해지고 진실의 원천이 여러 개가 됐다.** 그리고 **JetLang Action 안에 UI 와 비즈니스 로직과 데이터 모델링이 섞여 있다.**\n\n**⭐ 그러니 이 회사의 기반은 강점이자 짐이다**(이 정리는 이 사이트의 것이다). 나라마다 다른 노동법을 담으려고 만든 로우코드가, 제품이 커지자 **경계를 흐리는 자리**가 됐다. ⚠️ **다만 노동법이 실제로 어떻게 실행 가능한 코드가 되는지는 세 편을 읽고도 못 찾았다.**\n\n**⭐ 개선 수치는 있다** — **2023년에 앱 성능이 30퍼센트 좋아졌고**, 종업원 생성·오프보딩·회계 같은 **필수 경험의 속도가 2022년 대비 70퍼센트 올랐다**(2023년 하반기 기준).\n\n**⚠️ 그런데 이 회사의 글에는 대가가 거의 없다**(이 관찰은 이 사이트의 것이다). 356 에서 읽은 비전 글은 **버린 대안도 대가도 아예 적지 않고** 전환을 좋은 일로만 그린다. 354 의 연혁 글도 그랬다. **대가를 적은 것은 도메인 주도 설계 편 하나뿐이었고**(문화가 가장 어려웠다 · 회사가 멈출 수 없어 천천히 옮긴다 · 급여 데이터가 민감해 거버넌스가 복잡하다) **그마저 성과 수치는 하나도 없다.** **아픈 것을 적는 쪽과 좋아진 것을 재는 쪽이 서로 다른 글에 갈라져 있는 셈이다.**",
  "products": [
   {
    "name": "PayFit",
@@ -26,9 +26,16 @@
   },
   {
    "name": "JetLang",
-   "what": "**노동법을 코드로 추상화한 로우코드 플랫폼.** 나라마다 다른 규칙을 여기에 담는다. ⚠️ **누가 쓰고 어떻게 실행 가능한 코드가 되는지는 글에 없다**",
+   "what": "**노동법을 코드로 추상화한 로우코드 플랫폼.** 나라마다 다른 규칙을 여기에 담는다. **⭐ 그런데 2024년 아키텍처 비전 글은 그것이 지금 문제이기도 하다고 적는다** — 사내 로우코드와 일반 풀코드의 동거가 어렵고, **JetLang Action 안에 UI 와 비즈니스 로직과 데이터 모델링이 섞여 있다.** ⚠️ **노동법이 어떻게 실행 가능한 코드가 되는지, 누가 쓰는지는 세 편을 읽고도 못 찾았다.**",
    "confidence": "confirmed",
    "sources": [
+    {
+     "title": "Exploring our tech architecture vision",
+     "url": "https://backstage.payfit.com/exploring-our-tech-architecture-vision/",
+     "publisher": "Backstage by PayFit",
+     "date": "2024-01-24",
+     "summary": "**아키텍처를 어디로 가져갈지 밝힌 글이다.** 저자는 Clément Humbert · Alexis Chotard · Clément HELIOT.\n\n**⭐⭐ 이 사이트에 가장 값진 것은 JetLang 에 대한 한 문장이다** — *\"The cohabitation between our internal low-code system, JetLang, and our more common full-code system is challenging.\"* **사내 로우코드와 일반 풀코드가 한집에 사는 것이 어렵다**는 것이고, 그 결과가 **책임이 불명확하고 진실의 원천이 여러 개**인 상태다. 그리고 **JetLang Action 안에 UI 와 비즈니스 로직과 데이터 모델링이 섞여 있다.** ⚠️ **다만 노동법이 어떻게 코드가 되는지는 여기서도 안 나온다.**\n\n**현 상태의 증상** — 데이터 아키텍처가 **중앙 데이터베이스 하나에 몰린 모놀리스**이고, *\"Any code change could affect the whole system\"* 이다. 성능이 나빠지고 복잡한 기능을 더하기가 어려워졌다. 사업 쪽 영향으로 **앱 성능과 안정성 · 새 경험을 내는 속도 · 유지 공수와 인원 · 파트너 연동의 비효율**을 든다. 그리고 *\"much of our complexity is accidental\"* 이라고 적는다.\n\n**가려는 곳** — **이벤트 주도 · 도메인 주도**로 모놀리스를 비즈니스 도메인별 작은 서비스로 나눈다. 도메인은 급여 · 신고 · 회사 생애주기 · 종업원 관리 · 계약 · 보상 · 근태 · 아이덴티티 · 역할과 권한이다. **도메인 사이는 이벤트로 잇고**(*\"Events will be shared between domains to ensure the impact of a change can be seen everywhere in the application.\"*) **읽기 모델을 다른 데이터 모델과 분리**한다.\n\n**수치** — 고객 **10,000** · 서비스 대상 종업원 **200,000** · **3개국**(프랑스·스페인·영국) · **2023년 앱 성능 30퍼센트 개선** · **필수 경험**(종업원 생성 · 오프보딩 · 회계) **속도 70퍼센트 향상**(2023년 하반기 대 2022년).\n\n**⚠️ 판정은 1/3 이다**(이 사이트의 판정) — **수치는 강한데 버린 대안이 없고 대가가 아예 없다.** 이관의 비용도, 위험도, 재교육도, 일정도, 되돌릴 길도 안 적는다. **전환을 좋은 일로만 그린다.**"
+    },
     {
      "title": "How we managed to scale-up the PayFit architecture in our fast-growing context",
      "url": "https://backstage.payfit.com/how-we-managed-to-scale-up-the-payfit-architecture-in-our-fast-growing-context/",
@@ -42,8 +49,18 @@
  "revenue_streams": [
   {
    "name": "급여·인사 SaaS 구독",
-   "how": "유럽 중소기업 대상. ⚠️ **고객 수·매출·국가별 비중을 1차 자료로 확인하지 못했다**",
-   "confidence": "unknown"
+   "how": "유럽 중소기업 대상. **고객 10,000곳 · 서비스 대상 종업원 200,000명 · 3개국**(프랑스·스페인·영국) — 회사 기술 블로그가 2024년 1월에 밝힌 수다. ⚠️ **매출과 국가별 비중은 1차 자료로 확인하지 못했다.**",
+   "confidence": "confirmed",
+   "amount": "고객 10,000곳 · 종업원 200,000명 · 3개국 (2024-01)",
+   "sources": [
+    {
+     "title": "Exploring our tech architecture vision",
+     "url": "https://backstage.payfit.com/exploring-our-tech-architecture-vision/",
+     "publisher": "Backstage by PayFit",
+     "date": "2024-01-24",
+     "summary": "**아키텍처를 어디로 가져갈지 밝힌 글이다.** 저자는 Clément Humbert · Alexis Chotard · Clément HELIOT.\n\n**⭐⭐ 이 사이트에 가장 값진 것은 JetLang 에 대한 한 문장이다** — *\"The cohabitation between our internal low-code system, JetLang, and our more common full-code system is challenging.\"* **사내 로우코드와 일반 풀코드가 한집에 사는 것이 어렵다**는 것이고, 그 결과가 **책임이 불명확하고 진실의 원천이 여러 개**인 상태다. 그리고 **JetLang Action 안에 UI 와 비즈니스 로직과 데이터 모델링이 섞여 있다.** ⚠️ **다만 노동법이 어떻게 코드가 되는지는 여기서도 안 나온다.**\n\n**현 상태의 증상** — 데이터 아키텍처가 **중앙 데이터베이스 하나에 몰린 모놀리스**이고, *\"Any code change could affect the whole system\"* 이다. 성능이 나빠지고 복잡한 기능을 더하기가 어려워졌다. 사업 쪽 영향으로 **앱 성능과 안정성 · 새 경험을 내는 속도 · 유지 공수와 인원 · 파트너 연동의 비효율**을 든다. 그리고 *\"much of our complexity is accidental\"* 이라고 적는다.\n\n**가려는 곳** — **이벤트 주도 · 도메인 주도**로 모놀리스를 비즈니스 도메인별 작은 서비스로 나눈다. 도메인은 급여 · 신고 · 회사 생애주기 · 종업원 관리 · 계약 · 보상 · 근태 · 아이덴티티 · 역할과 권한이다. **도메인 사이는 이벤트로 잇고**(*\"Events will be shared between domains to ensure the impact of a change can be seen everywhere in the application.\"*) **읽기 모델을 다른 데이터 모델과 분리**한다.\n\n**수치** — 고객 **10,000** · 서비스 대상 종업원 **200,000** · **3개국**(프랑스·스페인·영국) · **2023년 앱 성능 30퍼센트 개선** · **필수 경험**(종업원 생성 · 오프보딩 · 회계) **속도 70퍼센트 향상**(2023년 하반기 대 2022년).\n\n**⚠️ 판정은 1/3 이다**(이 사이트의 판정) — **수치는 강한데 버린 대안이 없고 대가가 아예 없다.** 이관의 비용도, 위험도, 재교육도, 일정도, 되돌릴 길도 안 적는다. **전환을 좋은 일로만 그린다.**"
+    }
+   ]
   },
   {
    "name": "자본 조달",
@@ -126,10 +143,12 @@
   "**⚠️ 354 에서 349 의 판정을 정정했다**(PROMPT.md 2″단계). 349 는 `How we managed to scale-up the PayFit architecture`(2021-10-07)를 **2/3** 으로 봤는데, 본문을 다시 읽으니 **1/3 이다.** **버린 대안에 이유가 없고**(다른 회사는 단일 저장소를 유지하기도 한다고만 한다), **대가는 아예 안 적는다**(349 가 대가로 본 *\"We're only at the beginning of our vertical transformations\"* 는 대가가 아니라 진행 상황이다). 수치도 창업자 3명·채용 목표 250명·연도들뿐이고 **쪼갠 뒤 무엇이 나아졌는지가 없다.** **⭐ 요약을 근거로 판정하면 과대평가가 난다는 것을 이번에 겪었다.**",
   "**⚠️ 354 에서 세 편을 열어 하나만 썼다.** ① `How we managed to scale-up the PayFit architecture`(2021-10-07) — **1/3**(위 참조). ② `Of PostgreSQL, Indexes, and Foreign Keys`(2023-01-27) — **대가와 수치는 있으나**(인덱스가 읽기를 78퍼센트로 개선하고 쓰기는 101~106퍼센트로 느려진다, 벤치마크가 일반 지표로는 못 믿는다고 스스로 밝힌다) **회사 시스템 이야기가 아니라 일반 PostgreSQL 벤치마크 해설이다** — 353 의 교훈대로 **구현 층이 없어 기능으로 못 쓴다.** ③ `PayFit on the Domain-Driven Design Journey`(2023-06-02) — **2/3, 회사 자기 시스템의 서사라 이것으로 도메인을 열었다.**",
   "**⚠️ JetLang 의 본문을 못 찾았다.** 이 회사의 기반인데 **이름과 한 줄 설명만 확인했다** — *\"a low-code platform, to abstract the labour law into code\"*. **노동법이 어떻게 실행 가능한 코드가 되는지, 누가 쓰는지, 나라를 늘릴 때 무엇을 하는지가 전부 미확인이다.** **⭐ 다음 사이클의 첫 순위다.**",
-  "**⚠️ 제목만 확인한 다른 글** — `AI at PayFit: Empowering Through Education and Innovation (Vol. 1)`(2024-07-08) · `Our Data Assistant Adventure @ PayFit`(2024-04-17) · `Exploring our tech architecture vision`(2024-01-24) · `An introduction to load testing and k6`(2022-07-13) · `A glimpse at an Engineering Manager's life at PayFit`(2022-05-24) · `Introducing Midnight, our Design System`. **⚠️ 엔지니어링 태그는 여덟 편뿐이고 최신이 2024-07-08 이다.**",
   "**⭐⭐ freee·SmartHR 과 나란히 놓을 수 있다** — 셋 다 급여·인사 SaaS 이고 **제품이 늘며 경계가 무너진** 같은 문제를 겪었는데 **답이 다르다**: freee 는 **떼어냈고**(4년, 후회를 적는다), SmartHR 은 **Packwerk 로 규칙을 긋다 안 되어 프로세스로 나눴고**, PayFit 은 **이름부터 다시 정했다**(2년). **비교 문서의 재료다** — PayFit 을 완주한 뒤 정한다.",
   "**⭐ 355 의 재독이 넷을 더 냈다**(⑫ — 다섯 번째다). ① **북클럽이 엔지니어끼리**(대부분 개별 기여자에 매니저 몇) **시작해 제품·디자인·도메인 전문가로 넓어졌고, 그것이 읽는 것에서 하는 것으로 넘어간 계기였다.** ② **워크숍 참가자가 영업·고객지원·제품·디자인·엔지니어링이고 여러 나라에서 왔다.** ③ **급여 명세는 전에 *\"considered as an internal implementation detail\"* 이었다** — 이 사이트가 보기에 이 글에서 가장 값진 대목이다. ④ **급여 기간의 근거가 나라다** — *\"Usually, this is one month but some countries allow shorter periods too, for example one week\"*.",
-  "**⚠️ 355 에서 확인한 빈칸** — **코드나 시스템이 어떻게 됐는지가 없다.** 서비스가 나뉘었는지, 저장소가 갈렸는지, API 가 생겼는지 안 나오고 **바뀐 것은 다이어그램과 팀 구조다.** 그리고 **무엇이 안 됐는지, 다르게 했을 것이 무엇인지에 대한 말이 없다** — 글은 축하조로 끝나고 이 사례가 `Architecture Modernization` 책에 실렸다는 것으로 맺는다. **2년을 썼는데 성과 수치가 하나도 없다.**"
+  "**⚠️ 355 에서 확인한 빈칸** — **코드나 시스템이 어떻게 됐는지가 없다.** 서비스가 나뉘었는지, 저장소가 갈렸는지, API 가 생겼는지 안 나오고 **바뀐 것은 다이어그램과 팀 구조다.** 그리고 **무엇이 안 됐는지, 다르게 했을 것이 무엇인지에 대한 말이 없다** — 글은 축하조로 끝나고 이 사례가 `Architecture Modernization` 책에 실렸다는 것으로 맺는다. **2년을 썼는데 성과 수치가 하나도 없다.**",
+  "**⚠️ 356 에서 `Exploring our tech architecture vision`(2024-01-24)을 열었으나 기능으로 쓰지 않았다 — 판정 1/3.** **수치는 강한데**(고객 10,000 · 종업원 200,000 · 3개국 · 앱 성능 30퍼센트 개선 · 필수 경험 70퍼센트 향상) **버린 대안이 없고 대가가 아예 없다** — 이관 비용도, 위험도, 재교육도, 일정도, 되돌릴 길도 안 적고 전환을 좋은 일로만 그린다. **대신 프로파일을 보강하는 데 썼다**(353 의 방법). ⭐ **거기서 얻은 것이 JetLang 의 실체 한 걸음이다** — *\"The cohabitation between our internal low-code system, JetLang, and our more common full-code system is challenging.\"*",
+  "**⚠️ 356 시점에 WebSearch 예산이 소진됐다**(세션 200회). **그래서 JetLang 본문을 끝내 못 찾았다** — 355 의 1순위였는데 검색 없이는 주소를 찾을 방법이 없었다. **주소를 아는 글만 열 수 있는 상태로 회사를 닫는다.** **⭐ 재방문 사이클의 첫 일거리는 JetLang 이다** — 노동법이 어떻게 실행 가능한 코드가 되는지, 누가 쓰는지, 나라를 늘릴 때 무엇을 하는지가 전부 미확인이다.",
+  "**⚠️ 안 읽고 남긴 글** — `Our Data Assistant Adventure @ PayFit`(2024-04-17) · `AI at PayFit: Empowering Through Education and Innovation (Vol. 1)`(2024-07-08) · `An introduction to load testing and k6`(2022-07-13) · `A glimpse at an Engineering Manager's life at PayFit`(2022-05-24) · `Introducing Midnight, our Design System`. **⚠️ 엔지니어링 태그가 여덟 편뿐이고 최신이 2024-07-08 이라 새 재료는 많지 않아 보인다.**"
  ],
  "sources": [
   {
@@ -152,6 +171,13 @@
    "publisher": "PayFit",
    "date": "2022",
    "summary": "**€254M 을 조달하며 €1.82B 밸류에이션의 유니콘이 됐다는 회사 자체 발표다.** ⚠️ **이 사이트는 조달 규모와 밸류에이션까지만 확인해 옮겼다.**"
+  },
+  {
+   "title": "Exploring our tech architecture vision",
+   "url": "https://backstage.payfit.com/exploring-our-tech-architecture-vision/",
+   "publisher": "Backstage by PayFit",
+   "date": "2024-01-24",
+   "summary": "**아키텍처를 어디로 가져갈지 밝힌 글이다.** 저자는 Clément Humbert · Alexis Chotard · Clément HELIOT.\n\n**⭐⭐ 이 사이트에 가장 값진 것은 JetLang 에 대한 한 문장이다** — *\"The cohabitation between our internal low-code system, JetLang, and our more common full-code system is challenging.\"* **사내 로우코드와 일반 풀코드가 한집에 사는 것이 어렵다**는 것이고, 그 결과가 **책임이 불명확하고 진실의 원천이 여러 개**인 상태다. 그리고 **JetLang Action 안에 UI 와 비즈니스 로직과 데이터 모델링이 섞여 있다.** ⚠️ **다만 노동법이 어떻게 코드가 되는지는 여기서도 안 나온다.**\n\n**현 상태의 증상** — 데이터 아키텍처가 **중앙 데이터베이스 하나에 몰린 모놀리스**이고, *\"Any code change could affect the whole system\"* 이다. 성능이 나빠지고 복잡한 기능을 더하기가 어려워졌다. 사업 쪽 영향으로 **앱 성능과 안정성 · 새 경험을 내는 속도 · 유지 공수와 인원 · 파트너 연동의 비효율**을 든다. 그리고 *\"much of our complexity is accidental\"* 이라고 적는다.\n\n**가려는 곳** — **이벤트 주도 · 도메인 주도**로 모놀리스를 비즈니스 도메인별 작은 서비스로 나눈다. 도메인은 급여 · 신고 · 회사 생애주기 · 종업원 관리 · 계약 · 보상 · 근태 · 아이덴티티 · 역할과 권한이다. **도메인 사이는 이벤트로 잇고**(*\"Events will be shared between domains to ensure the impact of a change can be seen everywhere in the application.\"*) **읽기 모델을 다른 데이터 모델과 분리**한다.\n\n**수치** — 고객 **10,000** · 서비스 대상 종업원 **200,000** · **3개국**(프랑스·스페인·영국) · **2023년 앱 성능 30퍼센트 개선** · **필수 경험**(종업원 생성 · 오프보딩 · 회계) **속도 70퍼센트 향상**(2023년 하반기 대 2022년).\n\n**⚠️ 판정은 1/3 이다**(이 사이트의 판정) — **수치는 강한데 버린 대안이 없고 대가가 아예 없다.** 이관의 비용도, 위험도, 재교육도, 일정도, 되돌릴 길도 안 적는다. **전환을 좋은 일로만 그린다.**"
   }
  ],
  "features": [
