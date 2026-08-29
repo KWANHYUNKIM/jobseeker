@@ -500,12 +500,17 @@
    "companies": [
     "doximity",
     "careem",
-    "planetscale"
+    "planetscale",
+    "smarthr",
+    "bol"
    ],
    "features": [
     "cdc-overlap",
     "cost-leaks",
-    "parallel-backups"
+    "parallel-backups",
+    "share-a-few-connections",
+    "measure-before-the-season",
+    "move-four-years-of-past"
    ],
    "file": "where-it-piles-up.md"
   },
