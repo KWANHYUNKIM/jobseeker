@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **PayFit** | EU · SaaS | 354 에서 60번째로 열었다 — **프로파일 완료 · 도메인 1개(`급여라는 도메인을 어디서 자를 것인가`) · 기능 0개.** **⚠️ 349 의 판정을 정정했다** — 연혁 글은 2/3 이 아니라 **1/3**(버린 대안에 이유 없음 · 대가 아예 없음). 쓸 만한 것은 **도메인 주도 설계 편**(2023-06-02) 하나였다. **⭐ 다음 첫 순위는 JetLang 본문** — 이 회사의 기반인데 한 줄 설명만 확인했다. **⚠️ 엔지니어링 태그 여덟 편, 최신 2024-07-08** |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **PayFit** | EU · HR SaaS | `backstage.payfit.com` | ✅ **본문을 열어 확인했다**(`/how-we-managed-to-scale-up-the-payfit-architecture-in-our-fast-growing-context/`) | **2/3 — 버린 대안과 대가는 있는데 수치가 거의 없다.** 열어 본 글은 `How we managed to scale-up the PayFit architecture`(2021-10-07) — 단일 저장소에서 **수직 슬라이스 저장소**로 쪼갠 이야기다(코어 수직: 인증·문서 / 글로벌 제품 수직: 부재·경비·지불 / 국가별 제품 수직: 급여계산·신고). **버린 대안이 명시적** — 단일 저장소를 유지하는 길을 다른 회사들은 고르지만 자기들은 쪼갤 기회로 봤다고 적는다. **대가도 적는다** — *"We're only at the beginning of our vertical transformations"* 이고 큰 저장소는 아직 줄이는 중이며 실적이 제한적이다. **⚠️ 수치는 2021년 250명 채용 예정 하나뿐이다.** **⭐⭐ 축이 freee·SmartHR 과 정확히 겹친다** — 급여·인사 SaaS 이고, **JetLang 이라는 로우코드 언어로 노동법을 코드로 추상화**한다는 대목이 이 사이트에 없는 결이다(**본문은 아직 안 봤다**). 다른 후보 — `Exploring our tech architecture vision`(2024-01-24) · `PayFit on the Domain-Driven Design Journey`(2023-06-02) · `Of PostgreSQL, Indexes, and Foreign Keys`(2023-01-27) · `An introduction to load testing and k6`(2022-07-13). **🔴 얇고 멈춰 있다 — 엔지니어링 태그에 여덟 편뿐이고 최신이 2024-07-08 이다.** 도메인 두세 개가 한계일 것으로 보인다(추정). |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

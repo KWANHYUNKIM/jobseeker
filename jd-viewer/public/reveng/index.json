@@ -708,6 +708,18 @@
    "one_liner": "1999년에 첫 상품을 판 네덜란드 온라인 상점 — 거래가 끝난 뒤에도 계속되는 정산을 옛 모놀리스가 붙들고 있었다",
    "updated_at": "2026-08-29",
    "domain": "techlab.bol.com"
+  },
+  {
+   "slug": "payfit",
+   "name": "페이핏",
+   "name_en": "PayFit",
+   "country": "EU",
+   "category": "SaaS",
+   "status": "in_progress",
+   "features_done": 0,
+   "one_liner": "유럽 중소기업의 급여를 대신 계산해 주는 프랑스 SaaS — 나라마다 다른 노동법을 로우코드로 코드로 만든다",
+   "updated_at": "2026-08-29",
+   "domain": "backstage.payfit.com"
   }
  ],
  "domains": [
@@ -915,7 +927,8 @@
   "한 덩어리 안에서 시작해 경계를 키운 뒤 떼어낸다",
   "한 덩어리를 그대로 두고 버티게 만든다",
   "거래는 끝나도 정산은 계속된다",
-  "모델이 먹을 데이터를 층으로 나눠 만든다"
+  "모델이 먹을 데이터를 층으로 나눠 만든다",
+  "급여라는 도메인을 어디서 자를 것인가"
  ],
  "countries": {
   "KR": "한국",
