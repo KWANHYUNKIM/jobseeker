@@ -508,6 +508,264 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/328449",
+      "title": "백엔드 (Backend) 개발자",
+      "site": "wanted",
+      "verdict": "**한 공고 안에 팀이 둘 들어 있다.** 자격요건이 Python·REST·MongoDB·PostgreSQL 로 시작하다가 중간에 `[DS R&D]` 라는 머리말과 함께 **Kotlin·SpringBoot·JPA·Flyway** 를 다시 요구한다 — 언어도 프레임워크도 다르므로 **어느 쪽에 지원하는지 스스로 정하고 그 스택으로 지원서를 쓰는 것이 이 공고의 첫 과제**다(같은 방식의 사례: 토스플레이스 `Android Developer` 는 한 공고에 팀이 셋이었다). 담당 업무는 세 줄뿐이라 자리의 성격은 **자격요건과 우대사항에서 읽어야** 한다. 거기서 두 가지가 보인다. 첫째, **저장소가 여럿이다** — `InfluxDB, MongoDB, Elasticsearch` 가 우대에 나란히 있는데, 이건 **설비에서 올라오는 시계열·형식이 제각각인 원천·검색**을 각각 다른 도구로 받는다는 뜻이다. 둘째, **우대사항 맨 끝에 블록체인과 DID 가 있다** — 흔치 않은 조합이고, 회사가 스스로를 `Industrial AI & DataSpace Partner` 라 부르는 것과 이어진다. 경력 3년 이상, 서울 금천구(본사).",
+      "fit": {
+        "must_have": [
+          "백엔드 3년 이상 · Python 기반 API 개발 (Python 팀)",
+          "또는 Kotlin/Java + SpringBoot · JPA · Flyway (DS R&D 팀)",
+          "RESTful API 이해 · Git · Docker",
+          "비동기 사용 경험과 SQL 성능 최적화 경험"
+        ],
+        "can_learn": [
+          "제조 도메인 — 공고에 요구가 없다",
+          "InfluxDB·Elasticsearch (우대)",
+          "블록체인·DID 연동 (우대, 기본 이해 수준)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "먼저 팀을 정한다 — 한 공고, 두 스택",
+          "from": "qualification",
+          "quote": "Kotlin (또는 Java) 및 SpringBoot 기반의 백엔드 개발 경험이 있으신 분",
+          "priority": "core",
+          "why": "**이 줄은 공고 중간의 `[DS R&D]` 머리말 아래에 있다.** 그 위쪽은 Python·MongoDB·PostgreSQL 을 요구했는데, 여기서는 Kotlin·SpringBoot·JPA·Flyway 다 — **같은 자리가 아니라는 뜻으로 읽는 편이 자연스럽다.** 그러면 준비 방향이 갈린다: Python 쪽은 **서비스 백엔드와 데이터 연동**, DS R&D 쪽은 **트랜잭션·동시성·스키마 관리**가 무게 중심이다. 두 스택을 다 준비하려 들면 어느 쪽도 깊지 않게 되고, 지원서도 초점을 잃는다. **자기 경력과 가까운 쪽을 골라 그 언어로 쓰는 것**이 맞고, 가능하면 지원 시 어느 팀인지 밝히는 편이 낫다.",
+          "gap_check": "내 경력은 Python 서비스 백엔드와 JVM·Spring 중 어디에 가까운가? 두 스택 중 하나를 고른 이유를 한 문장으로 말할 수 있는가? 지원할 때 팀을 밝힐 방법이 있는가(자기소개 첫 문단·문의)?",
+          "drill": "**둘 중 하나를 고르고 세 줄로 적는다.** (1) 내 경험 중 이 공고와 가장 가까운 사례 하나, (2) 그래서 어느 팀에 맞는지, (3) 그 팀의 스택에서 내가 이미 아는 것과 배워야 할 것. 이 세 줄이 지원서 첫 문단이 되고, 아래 항목 중 무엇을 팔지도 여기서 정해진다.",
+          "hours": 2,
+          "resources": [
+            {
+              "title": "인터엑스 백엔드 개발자 채용 공고",
+              "url": "https://www.wanted.co.kr/wd/328449",
+              "kind": "docs",
+              "note": "자격요건 중간의 [DS R&D] 머리말을 직접 확인한다"
+            }
+          ]
+        },
+        {
+          "topic": "Python 백엔드 — 이쪽 팀의 기본기",
+          "from": "qualification",
+          "quote": "Python 기반 API 및 Backend 개발 경험이 있으신 분",
+          "priority": "core",
+          "why": "**필요스택 맨 위가 Python 이고, 채용 팀도 Python 개발자를 찾는다고 밝혔다.** 이 회사에서 Python 백엔드가 하는 일은 짐작할 수 있다 — **AI·데이터 쪽과 붙어 있기 때문**이다. 같은 회사의 `AI Agent Engineer` 공고가 FastAPI·Docker 를 요구하고, 데이터 파이프라인 자리가 따로 있는 것을 보면, 이 자리의 API 는 **모델·분석 결과를 제품 화면과 고객 시스템으로 내보내는 통로**에 가깝다. 그래서 준비의 중심은 문법이 아니라 **경계**다: 오래 걸리는 작업을 어떻게 다룰지, 큰 응답을 어떻게 흘려보낼지, 실패를 어떻게 돌려줄지.",
+          "gap_check": "오래 걸리는 요청(수십 초 이상)을 API 로 어떻게 다루는가? 요청 검증과 에러 응답 형식을 일관되게 만들어 봤는가? Docker 로 배포까지 해 본 적이 있는가?",
+          "drill": "**작지만 끝까지 가는 API 를 만든다.** (1) FastAPI 로 CRUD 와 조회 API 를 만들고, (2) **오래 걸리는 작업을 백그라운드로 빼고 상태 조회 엔드포인트**를 두고, (3) 요청 검증·에러 형식·로깅을 통일하고, (4) Docker 로 묶어 **한 줄 명령으로 뜨게** 만든다. (2)와 (4)가 이 공고의 요구에 정확히 닿는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "FastAPI 문서",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Docker — 파이썬 앱 컨테이너화",
+              "url": "https://docs.docker.com/guides/python/containerize/",
+              "kind": "docs"
+            },
+            {
+              "title": "REST API 설계 — 구글 API 디자인 가이드",
+              "url": "https://cloud.google.com/apis/design",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "저장소가 셋이다 — 시계열·문서·검색",
+          "from": "preference",
+          "quote": "InfluxDB, MongoDB, Elasticsearch 사용 경험이 있으신 분",
+          "priority": "core",
+          "why": "**이 한 줄이 제조 회사의 데이터 사정을 그대로 보여 준다.** 셋이 하는 일이 다르다 — **InfluxDB** 는 설비에서 초 단위로 올라오는 값(온도·압력·전류)을 받는 시계열 저장소, **MongoDB** 는 고객사마다 형식이 다른 데이터를 스키마 없이 받는 곳, **Elasticsearch** 는 로그·이력을 검색하는 곳이다. 여기에 필요스택의 PostgreSQL(정형 업무 데이터)까지 더하면 넷이 된다. **하나를 잘 쓰는 것보다 어느 데이터를 어디에 둘지 정하는 판단이 이 자리의 실력**이라는 뜻이고, 면접에서 물어보기도 좋은 주제다.",
+          "gap_check": "시계열 데이터를 관계형 DB 에 넣으면 무엇이 문제가 되는가? 스키마 없는 저장소를 쓰다가 나중에 겪는 어려움은? 같은 데이터를 두 곳에 두게 될 때 무엇을 정답으로 삼는가?",
+          "drill": "**같은 데이터를 세 곳에 넣어 본다.** (1) 가짜 설비 데이터를 만들어 초 단위로 흘리고, (2) **InfluxDB 에는 값의 흐름을, PostgreSQL 에는 설비·제품 정보를, Elasticsearch 에는 이벤트 로그를** 넣고, (3) 세 곳을 합쳐야 답이 나오는 질문(어제 3호기 불량이 늘어난 시간대의 온도는?)을 만들어 조회해 보고, (4) **각 저장소가 어디서 느려지는지** 기록한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "InfluxDB 문서",
+              "url": "https://docs.influxdata.com/influxdb/v2/",
+              "kind": "docs"
+            },
+            {
+              "title": "Elasticsearch 가이드",
+              "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "MongoDB — 데이터 모델링",
+              "url": "https://www.mongodb.com/docs/manual/data-modeling/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SQL 을 빠르게 만드는 일이 자격요건에 있다",
+          "from": "qualification",
+          "quote": "SQL 성능 최적화 경험이 있으신 분",
+          "priority": "core",
+          "why": "**필수 항목에 성능이 들어온 것은 데이터 양이 실제로 많다는 뜻**이다. 제조 데이터는 설비 수 × 센서 수 × 초 단위로 불어나서, 웹 서비스에서 잘 돌던 쿼리가 여기서는 안 돌아가는 일이 흔하다. 그리고 이 항목의 실력은 **인덱스를 아는 것**이 아니라 **왜 느린지 확인하는 습관**에서 갈린다 — 실행 계획을 보고, 어떤 단계에서 행이 폭발하는지 짚고, 인덱스·쿼리·스키마 중 무엇을 고칠지 정하는 것. 면접에서도 '느린 쿼리를 만나면 무엇부터 보는가'는 거의 반드시 나온다.",
+          "gap_check": "실행 계획을 읽을 줄 아는가 — 무엇부터 보는가? 인덱스를 추가했는데 안 빨라진 경험이 있는가, 왜였는가? 쿼리를 고치는 것과 스키마를 고치는 것을 어떻게 나누는가?",
+          "drill": "**느린 쿼리를 만들어 고친다.** (1) 수백만 행짜리 테이블을 만들고 **일부러 느린 쿼리**를 쓰고, (2) `EXPLAIN ANALYZE` 로 어디서 시간이 쓰이는지 보고, (3) 인덱스를 더해 전후를 재고, (4) **인덱스로 해결이 안 되는 경우**(정렬·집계·조인 순서)를 하나 만들어 쿼리나 스키마를 바꿔 해결한다. (4)까지 해 본 사람이 드물다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "PostgreSQL — EXPLAIN 사용법",
+              "url": "https://www.postgresql.org/docs/current/using-explain.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PostgreSQL — 인덱스 종류",
+              "url": "https://www.postgresql.org/docs/current/indexes-types.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Use The Index, Luke",
+              "url": "https://use-the-index-luke.com/",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "비동기 — 괄호 안이 Thread 라는 점",
+          "from": "qualification",
+          "quote": "비동기 (Thread) 사용 경험이 있으신 분",
+          "priority": "core",
+          "why": "**괄호가 흥미롭다.** 요즘 파이썬에서 비동기라 하면 대개 `async/await`(이벤트 루프)를 뜻하는데, 여기는 **Thread** 를 적었다. 무엇을 하는 회사인지 생각하면 자연스럽다 — 설비·외부 시스템과 통신하고 파일을 읽고 분석을 돌리는 일이 많은데, 이런 **블로킹 작업은 이벤트 루프보다 스레드가 편한 경우가 많다.** 그러니 준비도 양쪽을 다 알아 두는 편이 안전하다: **언제 스레드고 언제 async 인지**(CPU 바운드 대 I/O 바운드), 그리고 파이썬이라면 **GIL 때문에 스레드가 못 하는 일**이 무엇인지. 면접에서 이 구분을 설명할 수 있으면 좋은 신호가 된다.",
+          "gap_check": "스레드와 async 를 언제 각각 쓰는가? 파이썬의 GIL 이 무엇을 제한하는가 — CPU 작업은 어떻게 푸는가? 공유 자원을 여러 스레드가 건드릴 때 무엇을 조심하는가?",
+          "drill": "**세 방식으로 같은 일을 시켜 본다.** (1) 느린 외부 호출 100개를 **순차·스레드풀·async** 로 각각 처리해 시간을 재고, (2) CPU 를 쓰는 작업으로 바꿔 **스레드가 안 빨라지는 것**을 확인하고(그리고 프로세스로 풀고), (3) 공유 딕셔너리를 여러 스레드가 고쳐 **경쟁 상태를 재현**한 뒤 락으로 고친다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Python — concurrent.futures",
+              "url": "https://docs.python.org/3/library/concurrent.futures.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Python — asyncio",
+              "url": "https://docs.python.org/3/library/asyncio.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Python — GIL 설명",
+              "url": "https://wiki.python.org/moin/GlobalInterpreterLock",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "DS R&D 쪽 — 트랜잭션·동시성, 그리고 Flyway",
+          "from": "qualification",
+          "quote": "JPA / Hibernate 프레임워크 및 트랜잭션, 동시성 처리에 대한 이해를 갖추신 분",
+          "priority": "core",
+          "why": "**`[DS R&D]` 아래의 요구는 성격이 다르다** — JPA 를 쓸 줄 아느냐가 아니라 **트랜잭션과 동시성을 이해하느냐**를 묻는다. 그리고 바로 다음 줄이 `Flyway를 이용한 데이터베이스 마이그레이션(Migration) 경험` 인데, 이 조합이 시사하는 바가 있다: **스키마가 계속 바뀌는 시스템**이고, **여러 사람·여러 환경에 그 변경을 안전하게 적용해야 한다**는 것. 고객사마다 설치본이 있는 회사라면 더 그렇다 — 어느 고객이 어느 버전의 스키마를 쓰고 있는지가 실제 문제가 된다. JPA 쪽에서 자주 물어보는 지점(지연 로딩, N+1, 낙관적 잠금)도 결국 같은 자리에서 나온다.",
+          "gap_check": "N+1 문제를 설명하고 해결해 본 적이 있는가? 두 사람이 같은 행을 동시에 고치면 어떻게 되는가 — 낙관적·비관적 잠금을 언제 쓰는가? 이미 배포된 곳의 스키마를 바꿀 때 어떤 순서로 하는가?",
+          "drill": "**동시성과 마이그레이션을 각각 부숴 본다.** (1) JPA 로 목록·상세 조회를 만들고 **N+1 을 재현한 뒤 고치고**, (2) 같은 행을 동시에 수정해 **갱신 손실을 재현**한 뒤 낙관적 잠금으로 막고, (3) Flyway 로 스키마를 몇 번 바꾸고 **컬럼을 지우는 변경을 무중단으로** 해 본다(추가 → 이중 쓰기 → 이전 → 삭제).",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Spring Data JPA 문서",
+              "url": "https://docs.spring.io/spring-data/jpa/reference/",
+              "kind": "docs"
+            },
+            {
+              "title": "Flyway 문서",
+              "url": "https://documentation.red-gate.com/fd/flyway-documentation-138346877.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring — 트랜잭션 관리",
+              "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "우대사항 맨 끝의 블록체인 — 왜 여기 있나",
+          "from": "preference",
+          "quote": "Blockchain 시스템 (ex: 퍼블릭 블록체인, DID 서비스)에 대한 기본 이해, 연동 경험이 있으신 분",
+          "priority": "high",
+          "why": "**제조 AI 회사의 백엔드 공고에 블록체인이 나오는 것은 흔하지 않다.** 회사 소개를 함께 읽으면 실마리가 보인다 — 인터엑스는 스스로를 `Industrial AI & DataSpace Partner` 라 부른다. **데이터 스페이스**는 여러 회사가 데이터를 주고받되 **누가 무엇을 언제 줬는지, 어떤 조건으로 쓸 수 있는지**를 증명 가능하게 만드는 구조를 말하고, 유럽 제조업(Catena-X·Gaia-X)에서 활발한 흐름이다. **DID**(분산 신원)는 거기서 참여자 신원을 다루는 방식이다. 즉 이 우대사항은 취향이 아니라 **회사가 보는 방향**으로 읽는 편이 자연스럽다. `기본 이해` 수준이면 된다고 적혀 있으니, **한나절 읽고 가면 대화 하나를 더 열 수 있는 항목**이다.",
+          "gap_check": "회사 간에 데이터를 주고받을 때 신뢰가 왜 문제가 되는지 설명할 수 있는가? DID 가 기존 계정 방식과 무엇이 다른가? 블록체인을 쓰지 않고 같은 목적을 이루려면 무엇이 필요한가?",
+          "drill": "**개념만 정확히 잡는다(반나절).** (1) 데이터 스페이스가 풀려는 문제를 한 문단으로 정리하고, (2) DID 와 검증 가능한 자격증명(VC)의 구조를 그림으로 그리고, (3) **왜 블록체인이 쓰이는지와 안 써도 되는 경우**를 각각 한 줄로 적는다. 깊이 파는 대신 **왜 이 회사에 이 항목이 있는지 말할 수 있는 정도**가 목표다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "W3C — 분산 식별자(DID) 규격",
+              "url": "https://www.w3.org/TR/did-core/",
+              "kind": "docs"
+            },
+            {
+              "title": "Catena-X — 자동차 산업 데이터 스페이스",
+              "url": "https://catena-x.net/en/",
+              "kind": "docs"
+            },
+            {
+              "title": "Gaia-X",
+              "url": "https://gaia-x.eu/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "지원서 첫 문단에 어느 팀인지 쓴다",
+          "why": "한 공고에 **Python 팀과 `[DS R&D]` 팀의 요구가 나란히** 있다. 어느 쪽에 왜 맞는지를 자기 경험과 묶어 먼저 밝히면 읽는 사람이 **어디로 보낼지 바로 안다.** 안 밝히면 두 팀 어디에도 특별히 맞지 않는 지원서가 된다.",
+          "effort": "한 시간"
+        },
+        {
+          "idea": "세 저장소를 합쳐야 답이 나오는 질문 하나를 풀어 본 기록",
+          "why": "우대사항이 **`InfluxDB, MongoDB, Elasticsearch`** 를 나란히 적었다. 시계열·정형·로그를 각각 다른 곳에 넣고 **셋을 합쳐야 답이 나오는 질문**을 풀어 본 경험은, 제조 데이터의 사정을 이해했다는 신호가 된다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "느린 쿼리를 인덱스 없이 고친 사례",
+          "why": "`SQL 성능 최적화` 가 **우대가 아니라 필수**에 있다. 인덱스로 해결되는 사례는 흔하니, **인덱스로 안 되는 경우를 쿼리·스키마로 푼 이야기**가 훨씬 강하게 읽힌다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "컬럼을 지우는 스키마 변경을 무중단으로 해 본 기록",
+          "why": "DS R&D 쪽 요구가 **JPA 트랜잭션·동시성 + Flyway** 다. 고객사마다 설치본이 있는 회사에서 **이미 배포된 곳의 스키마를 안전하게 바꾸는 절차**를 아는 것은 그대로 실무 능력이다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "블록체인 항목이 왜 여기 있는지 한 문단으로 말할 수 있게 간다",
+          "why": "우대사항 맨 끝의 `DID` 는 회사가 스스로를 **DataSpace 파트너**라 부르는 것과 이어진다. 깊이 알 필요는 없고(`기본 이해` 라고 적혀 있다), **왜 제조 AI 회사가 이걸 보는지**를 말할 수 있으면 회사를 읽고 왔다는 인상을 준다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "Python 팀과 DS R&D 팀 중 어디에 지원하는가 — 이유는",
+          "오래 걸리는 요청을 API 로 어떻게 다루는가",
+          "시계열 데이터를 관계형 DB 에 넣으면 무엇이 문제가 되는가",
+          "같은 데이터를 두 저장소에 두게 될 때 무엇을 정답으로 삼는가",
+          "느린 쿼리를 만나면 무엇부터 보는가",
+          "인덱스를 추가했는데 안 빨라진 경험이 있는가 — 왜였는가",
+          "스레드와 async 를 언제 각각 쓰는가",
+          "파이썬의 GIL 이 무엇을 제한하는가 — CPU 작업은 어떻게 푸는가",
+          "N+1 문제를 설명하고 해결해 본 적이 있는가",
+          "두 사람이 같은 행을 동시에 고치면 어떻게 되는가",
+          "이미 배포된 곳의 스키마를 바꿀 때 어떤 순서로 하는가",
+          "회사 간에 데이터를 주고받을 때 신뢰가 왜 문제가 되는가"
+        ],
+        "sources": [
+          {
+            "title": "인터엑스 백엔드 (Backend) 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/328449",
+            "publisher": "원티드",
+            "summary": "Python·REST·MongoDB·PostgreSQL 이 필요스택이고, 자격요건 중간의 [DS R&D] 아래에 Kotlin·SpringBoot·JPA·Flyway 가 따로 적혀 있다. 우대에 InfluxDB·Elasticsearch 와 블록체인·DID"
+          },
+          {
+            "title": "인터엑스 [강남오피스] AI Agent Engineer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/342467",
+            "publisher": "원티드",
+            "summary": "같은 회사의 AI 쪽 자리 — 이 백엔드 자리의 API 가 무엇과 붙는지 짐작하게 해 준다"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
