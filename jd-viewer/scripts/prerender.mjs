@@ -436,6 +436,47 @@ for (const c of revengList) {
   add(abs(path), c.updated_at ?? today, 'monthly', '0.6')
 }
 
+// ── 기술 역설계: 도메인 비교 문서 ──────────────────────────────────────
+// 우리가 직접 쓴 글이라(남의 글 요약이 아니다) 색인 대상이다. 마크다운을 그대로
+// 옮기지 않고 표식만 걷어낸 본문을 싣는다 — 크롤러가 읽는 건 글의 내용이지 서식이 아니다.
+const domainDocs = readJson('reveng/domains/index.json')
+for (const doc of domainDocs?.docs ?? []) {
+  const md = existsSync(join(PUBLIC, `reveng/domains/${doc.file}`))
+    ? readFileSync(join(PUBLIC, `reveng/domains/${doc.file}`), 'utf8')
+    : ''
+  const plain = md
+    .replace(/^#.*$/gm, '')
+    .replace(/^>\s?/gm, '')
+    .replace(/[*`_#|]/g, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+  const path = `/reveng/docs/${encodeURIComponent(doc.slug)}`
+  const body =
+    `${NAV}<main><article>` +
+    `<h1>${esc(doc.title)}</h1>` +
+    (doc.question ? `<p>${esc(doc.question)}</p>` : '') +
+    section('비교', plain, 3000) +
+    `<p><a href="/reveng">기술 역설계 목록</a></p>` +
+    `</article></main>`
+  write(
+    path,
+    page({
+      path,
+      title: doc.title,
+      description: clip(doc.question || doc.title),
+      body,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: doc.title,
+        description: clip(doc.question || doc.title),
+        inLanguage: 'ko',
+        isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+      },
+    }),
+  )
+  add(SITE_URL + path, domainDocs?.updated_at ?? today, 'monthly', '0.6')
+}
+
 // 기술블로그 글 상세는 남의 글을 옮겨 놓은 화면이다. 주소는 있어야 하지만(공유·뒤로가기)
 // 색인은 원문이 가져가는 게 맞으므로 사이트맵에 넣지 않고 프리렌더도 하지 않는다.
 // 런타임 메타는 seo.ts 가 붙인다.
