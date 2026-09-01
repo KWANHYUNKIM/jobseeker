@@ -14,6 +14,8 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    /* 앱과 프리렌더 스크립트가 같이 쓰는 규칙 모듈(companySlug.js)을 읽기 위해 */
+    "allowJs": true,
 
     /* Linting */
     "noUnusedLocals": true,

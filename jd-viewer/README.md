@@ -23,9 +23,9 @@ URL 의 일부로 보지 않아서, 공고가 1만 건이어도 색인되는 주
 |------|------|
 | 공고 목록 | `/` (검색어는 `?q=`, 색인 제외) |
 | 공고 상세 | `/jobs/<사이트>-<공고번호>` |
-| 기업 기술스택 | `/companies`, `/companies/<회사>` |
+| 기업 기술스택 | `/companies`, `/companies/<회사 슬러그>` (`coupang`) |
 | 기술 레이더 | `/radar`, `/radar/<key>` |
-| 기술 역설계 | `/reveng/<slug>`, `/reveng/문서/<slug>` |
+| 기술 역설계 | `/reveng/<slug>`, `/reveng/docs/<slug>` |
 | 기술블로그 | `/blog`, `/blog/<id>` (원문이 색인 주체 — noindex) |
 | 그 외 탭 | `/mindmap` `/calendar` `/reposts` `/trend` |
 
@@ -33,6 +33,10 @@ URL 의 일부로 보지 않아서, 공고가 1만 건이어도 색인되는 주
 
 - `src/lib/router.ts` — pushState 라우터(60줄, 의존성 없음). 예전 해시 주소는
   진입 시 새 경로로 리다이렉트한다.
+- `src/lib/companySlug.js` — 한글 회사 이름을 ASCII 주소로. 영문 브랜드명 매핑
+  (`쿠팡` → `coupang`)이 먼저고, 없으면 국어의 로마자 표기법으로 옮긴다. 앱과
+  프리렌더가 같은 파일을 읽어야 주소가 갈라지지 않는다(그래서 `.js`).
+  눈에 걸리는 회사가 있으면 `BRAND_SLUGS` 에 한 줄 추가하면 된다.
 - `src/lib/seo.ts` + `src/lib/urls.ts` — 라우트마다 제목·설명·정규 URL·오픈그래프·
   구조화 데이터(JobPosting/Organization)를 `<head>` 에 갈아끼운다.
 - `scripts/prerender.mjs` — `npm run build` 끝에 주소별 정적 HTML 과 `sitemap.xml`,

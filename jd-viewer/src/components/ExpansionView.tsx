@@ -27,11 +27,11 @@ export function ExpansionView({
   onOpenCompany,
   focusTech,
 }: {
-  onOpenCompany?: (norm: string) => void
+  onOpenCompany?: (slug: string) => void
   /** 주소(`/trend?tech=React`)로 지정된 기술. */
   focusTech?: string | null
 }) {
-  const { companies, loading, error } = useCompanies()
+  const { companies, loading, error, slugOf } = useCompanies()
   const learning = useLearning()
   const [query, setQuery] = useState('')
   const [selectedTech, setSelectedTech] = useState<string | null>(null)
@@ -86,7 +86,7 @@ export function ExpansionView({
             searchUrl={learning.searchUrl}
             learningLoading={learning.loading}
             onSelectTech={setSelectedTech}
-            onOpenCompany={onOpenCompany}
+            onOpenCompany={(norm) => onOpenCompany?.(slugOf(norm))}
           />
         ) : (
           <EmptyState title="기술을 선택하세요" hint="좌측에서 기술을 고르면 함께 쓰는 스택·학습 경로가 표시됩니다." />
@@ -182,6 +182,7 @@ function TechPanel({
   searchUrl: string
   learningLoading: boolean
   onSelectTech: (t: string) => void
+  /** 회사 이름(norm)을 넘긴다 — 주소 슬러그로 바꾸는 건 목록을 든 바깥의 몫이다. */
   onOpenCompany?: (norm: string) => void
 }) {
   const cat = index.categoryOf[tech] ?? '기타'

@@ -21,7 +21,7 @@ const PAGE_SIZE = 12
 
 /**
  * @param seg 주소에서 `reveng` 다음 세그먼트들. `['toss']` 는 회사 상세,
- *   `['문서', 'same-problem-three-answers']` 는 비교 문서다.
+ *   `['docs', 'same-problem-three-answers']` 는 비교 문서다.
  */
 export function RevengView({ seg = [] }: { seg?: string[] }) {
   const { data, loading, error } = useRevengIndex()
@@ -29,8 +29,8 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
   const [country, setCountry] = useState<string | null>(null)
   const [category, setCategory] = useState<string | null>(null)
   // 무엇을 보고 있는지는 주소가 정한다. 회사 하나하나가 공유·색인 가능한 페이지다.
-  const slug = seg[0] === '문서' ? null : (seg[0] ?? null)
-  const docSlug = seg[0] === '문서' ? (seg[1] ?? null) : null
+  const slug = seg[0] === 'docs' ? null : (seg[0] ?? null)
+  const docSlug = seg[0] === 'docs' ? (seg[1] ?? null) : null
 
   const companies = useMemo(() => data?.companies ?? [], [data])
   const categories = useMemo(

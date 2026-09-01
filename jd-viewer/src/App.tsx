@@ -58,9 +58,14 @@ function App() {
 
   // `/jobs` 와 `/` 는 같은 화면이다. 같은 내용이 주소 두 개로 색인되면 서로의 순위를
   // 갉아먹으므로 목록의 주소는 `/` 하나로 모은다.
+  // 경로에 쓰던 한글 낱말(`/reveng/문서/...`)은 영어로 바꿨다 — 퍼센트 인코딩된 주소는
+  // 공유·로그·검색결과 어디서도 읽히지 않는다. 이미 나간 링크는 새 주소로 넘긴다.
   useEffect(() => {
     if (route.path === '/jobs') navigate(paths.jobs(), { replace: true })
-  }, [route.path])
+    else if (route.seg[0] === 'reveng' && route.seg[1] === '문서') {
+      navigate(route.seg[2] ? paths.revengDoc(route.seg[2]) : paths.reveng(), { replace: true })
+    }
+  }, [route.path, route.seg])
 
   const isJobList = tab === 'jobs' && !detail
   useEffect(() => {
@@ -181,8 +186,8 @@ function App() {
       {tab === 'companies' ? (
         <div key="companies" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <CompanyView
-            selectedNorm={detail}
-            onSelectCompany={(norm) => navigate(paths.company(norm))}
+            selectedSlug={detail}
+            onSelectCompany={(slug) => navigate(paths.company(slug))}
             onStudyTech={(tech) => navigate(paths.trend(tech))}
           />
         </div>
@@ -208,7 +213,7 @@ function App() {
       ) : tab === 'trend' ? (
         <div key="trend" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <TrendView
-            onOpenCompany={(norm) => navigate(paths.company(norm))}
+            onOpenCompany={(slug) => navigate(paths.company(slug))}
             focusTech={route.query.get('tech')}
           />
         </div>

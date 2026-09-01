@@ -13,7 +13,8 @@ export const paths = {
   jobs: () => '/',
   job: (j: Pick<Job, 'site' | 'pid'>) => `/jobs/${jobKey(j)}`,
   companies: () => '/companies',
-  company: (norm: string) => `/companies/${encodeURIComponent(norm)}`,
+  /** @param slug companySlug.js 가 만든 ASCII 슬러그(`coupang`). 한글 norm 이 아니다. */
+  company: (slug: string) => `/companies/${encodeURIComponent(slug)}`,
   mindmap: () => '/mindmap',
   blog: () => '/blog',
   blogPost: (id: string) => `/blog/${encodeURIComponent(id)}`,
@@ -24,7 +25,7 @@ export const paths = {
   trend: (tech?: string) => (tech ? `/trend?tech=${encodeURIComponent(tech)}` : '/trend'),
   reveng: () => '/reveng',
   revengCompany: (slug: string) => `/reveng/${encodeURIComponent(slug)}`,
-  revengDoc: (slug: string) => `/reveng/문서/${encodeURIComponent(slug)}`,
+  revengDoc: (slug: string) => `/reveng/docs/${encodeURIComponent(slug)}`,
 }
 
 /** 블로그 글의 주소 키 — 본문 id 가 있으면 그걸, 없으면 원문 URL 로 만든 짧은 해시. */

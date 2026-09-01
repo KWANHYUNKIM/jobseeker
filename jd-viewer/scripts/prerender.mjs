@@ -22,6 +22,9 @@ import { mkdirSync, readFileSync, writeFileSync, statSync, existsSync, readdirSy
 import { loadEnv } from 'vite'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+// 주소 슬러그 규칙은 앱과 공유한다 — 여기서만 다르게 만들면 프리렌더한 파일을
+// 앱이 만든 주소가 못 찾는다.
+import { buildCompanySlugs } from '../src/lib/companySlug.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(ROOT, 'dist')
@@ -220,9 +223,12 @@ const jobLinks = jobPages
   .join('')
 
 const companyList = (stacks?.companies ?? []).filter((c) => c.posting_count >= 2)
+// 슬러그는 파일 전체를 넣어 만든다(앱도 같은 입력을 쓴다 — 한쪽만 걸러 넣으면 이름이
+// 겹칠 때 붙는 번호가 어긋나 주소가 갈라진다).
+const { byNorm: companySlug } = buildCompanySlugs((stacks?.companies ?? []).map((c) => c.norm))
 const companyLinks = companyList
   .slice(0, 300)
-  .map((c) => `<li><a href="/companies/${encodeURIComponent(c.norm)}">${esc(c.name)} 기술스택</a></li>`)
+  .map((c) => `<li><a href="/companies/${companySlug.get(c.norm)}">${esc(c.name)} 기술스택</a></li>`)
   .join('')
 
 const radarList = radar?.companies ?? []
@@ -343,7 +349,7 @@ for (const j of jobPages) {
 // ── 회사 기술스택 ───────────────────────────────────────────────────────
 const stacksMtime = mtime('company_stacks.json')
 for (const c of companyList) {
-  const path = `/companies/${encodeURIComponent(c.norm)}`
+  const path = `/companies/${companySlug.get(c.norm)}`
   const tech = (c.top_tech ?? []).slice(0, 15).map((t) => t.name)
   const description = clip(
     `${c.name}의 채용공고 ${c.posting_count}건에서 뽑은 기술스택: ${tech.slice(0, 8).join(', ')}. ${c.summary ?? ''}`,

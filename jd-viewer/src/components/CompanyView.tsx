@@ -3,6 +3,7 @@ import { useCompanies } from '../lib/useCompanies'
 import { useLearning, type LearningVideo } from '../lib/useLearning'
 import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon, CompanyMark } from './ui'
 import { ROLE_COLORS } from '../lib/classify'
+import { navigate } from '../lib/router'
 import { paths } from '../lib/urls'
 import { absUrl, clip, useSeo } from '../lib/seo'
 import type { CompanyStack, CareerGuide } from '../types'
@@ -27,24 +28,36 @@ const CAT_ORDER = [
 ]
 
 export function CompanyView({
-  selectedNorm,
+  selectedSlug,
   onSelectCompany,
   onStudyTech,
 }: {
-  /** 주소(/companies/<norm>)에서 온 선택. 이 컴포넌트는 선택을 스스로 들고 있지 않는다. */
-  selectedNorm?: string | null
-  onSelectCompany: (norm: string) => void
+  /** 주소(/companies/coupang)에서 온 선택. 이 컴포넌트는 선택을 스스로 들고 있지 않는다. */
+  selectedSlug?: string | null
+  onSelectCompany: (slug: string) => void
   onStudyTech?: (tech: string) => void
 }) {
-  const { companies, meta, loading, error } = useCompanies()
+  const { companies, meta, loading, error, slugOf, bySlug } = useCompanies()
   const [query, setQuery] = useState('')
   const [navOpen, setNavOpen] = useState(false)
 
   // 주소로 회사가 지정돼 들어오면 검색어를 비운다 — 걸러진 목록 때문에
-  // 정작 지정된 회사가 왼쪽 목록에 안 보이는 상태를 막는다.
+  // 정작 지정된 회사가 왼쪽 목록에 안 보이는 상태를 막는다. 효과가 아니라 렌더 중에
+  // 맞추는 이유는, 주소가 바뀐 그 렌더에서 바로 반영돼야 한 번 더 그리지 않기 때문이다.
+  const [prevSlug, setPrevSlug] = useState(selectedSlug)
+  if (selectedSlug !== prevSlug) {
+    setPrevSlug(selectedSlug)
+    if (selectedSlug) setQuery('')
+  }
+
+  // 주소를 한글 이름에서 영문 슬러그로 바꿨다. 예전 주소(/companies/쿠팡)로 들어온
+  // 링크는 조용히 새 주소로 넘긴다 — 이미 공유되고 색인된 주소를 죽이지 않는다.
   useEffect(() => {
-    if (selectedNorm) setQuery('')
-  }, [selectedNorm])
+    if (!selectedSlug || companies.length === 0) return
+    if (bySlug(selectedSlug)) return
+    const legacy = companies.find((c) => c.norm === selectedSlug)
+    if (legacy) navigate(paths.company(slugOf(legacy.norm)), { replace: true })
+  }, [selectedSlug, companies, bySlug, slugOf])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -58,15 +71,18 @@ export function CompanyView({
   }, [companies, query])
 
   const selected = useMemo(
-    () => companies.find((c) => c.norm === selectedNorm) ?? filtered[0] ?? null,
-    [companies, selectedNorm, filtered],
+    () => (selectedSlug ? bySlug(selectedSlug) : null) ?? filtered[0] ?? null,
+    // bySlug 는 useCompanies 가 목록에서 만든 대응표를 읽을 뿐이라, 목록이 그대로면
+    // 결과도 그대로다. 함수 자체는 렌더마다 새로 생기므로 의존성에서 뺀다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [companies, selectedSlug, filtered],
   )
 
   // 주소로 회사가 지정된 화면의 제목·설명은 여기서 단다(App 은 이 데이터를 안 들고 있다).
   // 문구는 scripts/prerender.mjs 가 찍는 정적 HTML 과 같은 규칙이어야 한다.
   const tech = (selected?.top_tech ?? []).slice(0, 15).map((t) => t.name)
   useSeo(
-    selectedNorm && selected
+    selectedSlug && selected
       ? {
           title: `${selected.name} 기술스택·채용공고`,
           description: clip(
@@ -74,7 +90,7 @@ export function CompanyView({
               .slice(0, 8)
               .join(', ')}. ${selected.summary ?? ''}`,
           ),
-          canonical: absUrl(paths.company(selected.norm)),
+          canonical: absUrl(paths.company(slugOf(selected.norm))),
           jsonLd: {
             '@context': 'https://schema.org',
             '@type': 'Organization',
@@ -118,11 +134,11 @@ export function CompanyView({
             return (
               <a
                 key={c.norm}
-                href={paths.company(c.norm)}
+                href={paths.company(slugOf(c.norm))}
                 onClick={(e) => {
                   if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
                   e.preventDefault()
-                  onSelectCompany(c.norm)
+                  onSelectCompany(slugOf(c.norm))
                   setNavOpen(false)
                 }}
                 className={`block w-full text-left px-3 py-2.5 border-b border-(--color-border)/50 transition ${
