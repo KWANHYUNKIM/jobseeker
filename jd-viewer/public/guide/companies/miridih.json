@@ -6,7 +6,7 @@
     "미리디",
     "㈜미리디"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-29",
   "site": "miridih.com",
   "one_liner": "브라우저 안에서 도는 디자인 편집기로 2천만 명을 모으고, 그 디자인을 인쇄해서도 파는 회사",
@@ -1670,12 +1670,301 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/368161",
+      "title": "[미리디] 프론트엔드 개발자 - 이미지 프로세싱",
+      "site": "wanted",
+      "verdict": "같은 회사 프론트엔드 공고 중 **가장 낮은 층을 만지는 자리**다. 웹&에디터가 편집기의 상호작용과 프레임률이라면 여기는 **픽셀과 바이트** — Three.js 로 3D 편집툴을 만들고, canvas·WebGL·WebAssembly 로 이미지를 처리하고, pptx·pdf·zip 같은 구조화된 포맷을 뜯는다. 자격요건에 **자료구조·운영체제·컴퓨터 아키텍처·네트워크**를 적어 둔 드문 프론트엔드 공고이고, \"any 보면 잠 못 자는 분\"이라는 문장이 이 팀의 타입 태도를 그대로 말한다. **신입~경력 5년**이라 이 회사 공고 중 문턱이 가장 낮다.",
+      "fit": {
+        "must_have": [
+          "React + TypeScript 개발 경험",
+          "HTML·CSS·JavaScript 기초로 원하는 동작을 직접 구현할 수 있을 것",
+          "CS 기초 (자료구조·OS·아키텍처·네트워크) — 프론트엔드 공고에 드물게 명시돼 있다",
+          "타입 에러를 우회하지 않고 원인을 이해하는 태도"
+        ],
+        "can_learn": [
+          "Three.js (문서와 예제가 두껍다)",
+          "PandaCSS·Emotion (다른 CSS-in-JS 를 알면 넘어간다)",
+          "Jotai·TanStack Query (팀 스택이고 자격요건이 아니다)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "타입을 우회하지 않기 — any 를 없애는 연습",
+          "from": "qualification",
+          "quote": "타입 에러나 경고를 우회하기보다 원인을 이해하고 해결하는 것을 선호하는 분 (any 보면 잠 못 자는 분)",
+          "priority": "core",
+          "why": "괄호까지 붙여 적은 문장이라 이 팀의 성향이 그대로 드러난다. 그리고 이 자리가 다루는 것이 **이미지 버퍼와 바이너리 포맷**이라 타입이 특히 중요하다 — `any` 로 넘긴 픽셀 배열은 런타임에 조용히 깨지고, 그때는 화면이 이상해질 뿐 에러가 안 난다.",
+          "gap_check": "외부에서 받은 값(파일, API 응답)을 타입으로 좁히는 방법을 세 가지 이상 댈 수 있는가? `as` 로 단언하는 것과 타입 가드로 좁히는 것은 무엇이 다른가?",
+          "drill": "기존 프로젝트에서 `any` 를 전부 찾아 하나씩 없앤다. `tsconfig` 에 `strict` 와 `noImplicitAny` 를 켜고 늘어난 에러를 **우회하지 않고** 고친다. 특히 외부 입력을 다루는 경계에 타입 가드나 스키마 검증(zod 등)을 두고, `as` 로 눌렀던 자리를 목록으로 남겨 왜 그랬는지 적는다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "TypeScript 핸드북 — Narrowing",
+              "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+              "kind": "docs"
+            },
+            {
+              "title": "TypeScript — tsconfig strict 옵션",
+              "url": "https://www.typescriptlang.org/tsconfig/#strict",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "재사용과 유지보수가 쉬운 구조로 짜기",
+          "from": "qualification",
+          "quote": "객체 지향 등 설계 원칙을 바탕으로, '굴러만 가는 코드'보다 '재사용과 유지보수가 쉬운 구조'를 고민하는 분",
+          "priority": "core",
+          "why": "담당 업무가 **백오피스와 SDK** 를 함께 만드는 일이다. SDK 는 남이 쓰는 물건이라 한 번 내보낸 인터페이스를 쉽게 못 바꾸고, 백오피스는 화면이 계속 늘어난다. 그래서 '굴러만 가는 코드'와 대비시킨 이 문장이 실제 업무 조건이다.",
+          "gap_check": "내가 만든 컴포넌트를 다른 화면에서 쓰려니 안 맞는다. 무엇을 props 로 열고 무엇을 안에 가둘 것인지 어떤 기준으로 정하는가?",
+          "drill": "이미지 처리 기능 하나를 **코어 로직과 UI 로 분리**해 짠다 — 픽셀을 다루는 순수 함수 계층, 그것을 감싸는 훅, 그리고 화면. 코어를 npm 패키지처럼 별도 폴더로 빼고 UI 없이 단위 테스트만으로 검증되게 만든다. 그다음 **같은 코어로 두 번째 화면**을 만들어 보고 안 맞는 지점을 고친다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "React — 컴포넌트 간 State 공유",
+              "url": "https://react.dev/learn/sharing-state-between-components",
+              "kind": "docs"
+            },
+            {
+              "title": "TypeScript — 선언 파일 작성",
+              "url": "https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html",
+              "kind": "docs",
+              "note": "SDK 를 내보낼 때의 경계"
+            }
+          ]
+        },
+        {
+          "topic": "CS 기초 — 프론트엔드 공고에 이게 왜 있나",
+          "from": "qualification",
+          "quote": "자료구조, 운영체제, 컴퓨터 아키텍처, 네트워크 등 컴퓨터공학(CS) 기초 지식이 있으신 분",
+          "priority": "core",
+          "why": "프론트엔드 공고에 CS 기초를 자격요건으로 적는 경우는 드물다. **이 자리가 하는 일 때문이다** — 이미지 버퍼는 메모리 레이아웃 문제이고, WebAssembly 는 선형 메모리와 타입 폭을 알아야 하고, 큰 파일 업로드는 네트워크 문제다. 교양이 아니라 도구다.",
+          "gap_check": "4000×3000 RGBA 이미지 한 장이 메모리에서 몇 MB 인가? 그걸 열 장 동시에 다루면 브라우저에서 무슨 일이 생기는가?",
+          "drill": "`ImageData` 로 큰 이미지를 다루는 코드를 짜고 메모리를 직접 잰다 — 픽셀 배열의 크기를 손으로 계산해 보고 DevTools 메모리 스냅샷과 맞춰 본다. 그다음 같은 처리를 (1) 통째로 올리기, (2) 타일로 쪼개기 두 방식으로 짜서 피크 메모리를 비교한다. **숫자가 계산과 맞는지 확인하는 것이 이 연습의 핵심이다.**",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "MDN — ImageData",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/ImageData",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — TypedArray",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray",
+              "kind": "docs"
+            },
+            {
+              "title": "Chrome DevTools — 메모리 문제 해결",
+              "url": "https://developer.chrome.com/docs/devtools/memory-problems",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Three.js 로 3D 편집툴 만들기",
+          "from": "task",
+          "quote": "Three.js를 활용한 3D 편집툴을 개발합니다.",
+          "priority": "high",
+          "why": "미리캔버스가 2D 디자인 툴인데 **3D 편집툴을 따로 만든다**는 것은 목업·굿즈처럼 입체 결과물로 가는 길로 읽힌다. 인쇄 커머스(비즈하우스)와 이어지는 방향이라, 이 항목은 회사의 두 번째 수익원과 직접 붙어 있다. 2D 편집기와 달리 카메라·조명·좌표계가 더해져 상호작용 설계가 통째로 달라진다.",
+          "gap_check": "화면에서 마우스로 클릭한 지점이 3D 공간의 어느 물체인지 어떻게 알아내는가(레이캐스팅)? 그리고 물체를 끌어 옮길 때 어느 평면 위에서 움직이게 할 것인가?",
+          "drill": "Three.js 로 최소 편집기를 만든다 — 물체를 클릭해 선택(raycaster), 드래그로 이동, 스케일·회전 핸들. 카메라를 돌려도 조작이 어긋나지 않게 만드는 것이 이 연습의 어려운 부분이다. 프레임률을 재고, 물체를 100개로 늘려 어디서 떨어지는지 확인한다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Three.js 문서",
+              "url": "https://threejs.org/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Three.js — Raycaster",
+              "url": "https://threejs.org/docs/#api/en/core/Raycaster",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "canvas · WebGL · WebAssembly 로 이미지 처리하기",
+          "from": "preference",
+          "quote": "HTML canvas, WebGL, WebGPU, WebAssembly 등을 활용한 이미지 처리 프로그램 개발 경험",
+          "priority": "high",
+          "why": "직무명이 **이미지 프로세싱**인 만큼 이 우대사항이 사실상 본업이다. 네 가지를 나란히 적은 것은 **같은 처리를 어느 층에서 할지가 선택**이라는 뜻이다 — 픽셀 반복은 canvas 로 짜면 느리고, GPU 로 넘기면 빨라지지만 셰이더를 써야 하고, WASM 은 C/Rust 코드를 가져올 수 있지만 메모리 복사가 붙는다.",
+          "gap_check": "4000×3000 이미지에 블러를 건다. canvas 2D 반복문 / WebGL 셰이더 / WASM 중 무엇을 고를 것이고, 각각 어디서 시간을 쓰는가?",
+          "drill": "같은 필터(예: 가우시안 블러 또는 색 보정)를 세 가지로 구현한다 — (1) canvas 2D 픽셀 반복, (2) WebGL 프래그먼트 셰이더, (3) WASM(기존 C 라이브러리를 emscripten 으로 빌드하거나 Rust). 같은 이미지로 처리 시간을 재서 표로 만들고, **GPU/WASM 이 오히려 느려지는 크기**가 어디인지 찾는다(데이터 전송 비용 때문에 작은 이미지는 뒤집힌다).",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "MDN — Canvas API",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — WebGL API",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — WebAssembly",
+              "url": "https://developer.mozilla.org/en-US/docs/WebAssembly",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — WebGPU API",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "구조화된 바이너리·문서 포맷 뜯어 보기",
+          "from": "preference",
+          "quote": "이미지, 동영상, pptx, pdf, zip 등 구조화된 바이너리·문서 포맷을 다뤄보신 경험",
+          "priority": "high",
+          "why": "디자인 툴은 결국 **남의 포맷을 읽고 쓰는 일**이다 — pptx 로 내보내고, pdf 로 인쇄용을 뽑고, 이미지 여러 장을 zip 으로 묶는다. 그리고 pptx·docx 는 사실 zip 안의 XML 이라, zip 을 이해하면 그쪽이 한꺼번에 열린다. 이 우대사항 하나가 회사의 두 수익원(구독 내보내기 / 인쇄 주문)에 모두 걸린다.",
+          "gap_check": "pptx 파일의 확장자를 zip 으로 바꿔 열어 본 적이 있는가? 그 안에 무엇이 들어 있고, 슬라이드 한 장은 어디에 어떻게 적혀 있는가?",
+          "drill": "브라우저에서 pptx 를 열어 슬라이드 제목만 뽑아내는 도구를 만든다 — JSZip 으로 압축을 풀고 `ppt/slides/slideN.xml` 을 파싱한다. 그다음 반대로, 이미지 여러 장을 받아 **pptx 를 생성해** 실제 파워포인트에서 열리는지 확인한다. 마지막으로 PNG 헤더를 직접 읽어 가로·세로를 구해 본다(라이브러리 없이).",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "JSZip 문서",
+              "url": "https://stuk.github.io/jszip/",
+              "kind": "docs"
+            },
+            {
+              "title": "ECMA-376 (Office Open XML) 표준",
+              "url": "https://www.ecma-international.org/publications-and-standards/standards/ecma-376/",
+              "kind": "paper",
+              "note": "pptx·docx 의 원 규격"
+            },
+            {
+              "title": "MDN — File API",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/File_API",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "SDK 와 디자인 시스템 — 남이 쓸 것을 문서와 함께 만들기",
+          "from": "task",
+          "quote": "Storybook을 활용한 디자인 시스템을 개발합니다.",
+          "priority": "high",
+          "why": "담당 업무 첫 줄이 '백오피스 및 **SDK**'다. 즉 이 팀의 산출물 절반은 동료가 쓰는 물건이고, Storybook 은 그 사용설명서 역할을 한다. 컴포넌트를 만드는 것과 **남이 찾아 쓸 수 있게 만드는 것**은 다른 일이라, 상태 조합을 빠짐없이 보여 주는 감각이 필요하다.",
+          "gap_check": "내가 만든 컴포넌트의 상태 조합을 몇 가지나 문서로 보여 줄 수 있는가? 로딩·에러·빈 값·긴 텍스트·비활성은 다 있는가?",
+          "drill": "컴포넌트 5개짜리 작은 디자인 시스템을 만들고 Storybook 을 붙인다. 각 컴포넌트마다 **정상 상태 하나가 아니라 예외 상태들**을 스토리로 만든다(빈 값, 아주 긴 문자열, 로딩, 에러). MSW 로 API 응답을 흉내 내 실패 케이스도 스토리로 남기고, 접근성 검사를 돌려 지적된 것을 고친다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Storybook 문서",
+              "url": "https://storybook.js.org/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "MSW 문서",
+              "url": "https://mswjs.io/docs/",
+              "kind": "docs",
+              "note": "회사 테스트 스택에 있다"
+            },
+            {
+              "title": "Panda CSS 문서",
+              "url": "https://panda-css.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "번들과 메모리 줄이기",
+          "from": "preference",
+          "quote": "번들링, 메모리 최적화를 개선하기 위한 노력을 해본 경험",
+          "priority": "high",
+          "why": "Three.js 와 이미지 처리 라이브러리는 **무겁다.** 그대로 넣으면 첫 로딩이 무너지고, 큰 이미지를 여러 장 들고 있으면 탭이 죽는다. 이 자리에서는 번들과 메모리가 취향이 아니라 기능이 도는 조건이다.",
+          "gap_check": "번들에서 가장 큰 덩어리가 무엇인지 알고 있는가? 그리고 그것을 필요할 때만 불러오려면 코드의 어디를 끊어야 하는가?",
+          "drill": "Three.js 를 쓰는 화면을 만들고 번들을 분석한다(빌드 결과의 청크 크기 확인). 3D 편집기를 동적 import 로 떼어 내 첫 화면 번들이 얼마나 줄었는지 기록한다. 이어서 이미지를 열 장 열었다 닫는 시나리오에서 힙 스냅샷을 두 번 떠 **닫은 이미지가 실제로 회수되는지** 확인하고, 안 되면 참조를 끊는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Vite — 빌드 최적화",
+              "url": "https://vite.dev/guide/build",
+              "kind": "docs"
+            },
+            {
+              "title": "Chrome DevTools — 메모리 문제 해결",
+              "url": "https://developer.chrome.com/docs/devtools/memory-problems",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 가 만든 코드를 비판적으로 검증하기",
+          "from": "qualification",
+          "quote": "AI 코딩 도구를 활용해 개발하고, 그 결과물을 비판적으로 검토/검증해본 경험이 있으신 분",
+          "priority": "core",
+          "why": "**이 회사 공고 세 곳에 같은 요구가 반복된다**(프로덕트 프론트엔드, 이 자리, 그리고 백엔드). 회사 차원의 기준이라는 뜻이다. 다만 이 자리에서는 검증이 특히 어렵다 — 이미지 처리 코드는 **틀려도 에러가 안 나고 결과가 조금 이상할 뿐**이라, 눈으로 보고 넘어가기 쉽다.",
+          "gap_check": "AI 가 짜 준 이미지 필터가 '대충 맞아 보인다'. 맞는지 틀린지 어떻게 확인할 것인가 — 눈 말고 무엇으로?",
+          "drill": "AI 에게 이미지 필터를 하나 짜게 한 뒤 **정답을 아는 입력**으로 검증한다(단색 이미지, 체커보드, 경계가 뚜렷한 도형). 기대 픽셀값을 손으로 계산해 테스트로 못 박고, AI 코드가 어디서 어긋나는지 찾는다. 찾은 것을 '무엇이 틀렸고 왜 눈으로는 안 보였나'로 정리한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Vitest 문서",
+              "url": "https://vitest.dev/",
+              "kind": "docs"
+            },
+            {
+              "title": "Playwright — 시각적 비교",
+              "url": "https://playwright.dev/docs/test-snapshots",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "이미지 처리 데모 하나를 공개해 둔다",
+          "why": "신입~5년을 함께 받는 자리라 **경력보다 보여 줄 것이 순서를 바꾼다.** 위 drill 들이 그대로 하나의 데모가 된다 — 이미지를 올리면 필터가 걸리고, 3D 목업으로 얹히고, pptx 로 내보내지는 페이지. 이 회사가 실제로 파는 흐름과 같은 모양이다.",
+          "effort": "학습과 함께"
+        },
+        {
+          "idea": "같은 처리를 세 층으로 구현한 비교표를 들고 간다",
+          "why": "canvas / WebGL / WASM 을 나란히 재 본 사람은 드물다. '무엇이 빠른가'가 아니라 **'어느 크기부터 뒤집히는가'**를 숫자로 말하면, 우대사항 한 줄을 경험으로 덮는다.",
+          "effort": "위 drill 에 포함"
+        },
+        {
+          "idea": "API 가 실패한다고 가정한 코드를 보여 준다",
+          "why": "우대사항에 'API 응답이 항상 정상적일 것이라 가정하지 않고 예외 상황과 실패 케이스를 고려하시는 분'이 있다. 큰 파일 업로드가 중간에 끊기거나 이미지 디코딩이 실패하는 경우를 실제로 다룬 코드가 있으면 이 문장에 그대로 답한다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "배운 것을 기록하는 습관을 눈에 보이게 만든다",
+          "why": "우대사항 첫 줄이 '개발 중 만난 이슈나 배운 점을 틈틈이 기록하시는 분'이다. 위 drill 들의 측정 결과와 막혔던 지점을 글로 남겨 두면 그 자체가 이 요건의 증거가 되고, 회사 기술 블로그가 활발한 것과도 결이 맞는다.",
+          "effort": "학습과 함께"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "큰 이미지를 브라우저에서 다룰 때 메모리가 어떻게 되는가 (계산으로 답할 수 있는가)",
+          "같은 이미지 처리를 canvas·WebGL·WASM 중 무엇으로 할지 정하는 기준",
+          "3D 편집기에서 클릭한 지점의 물체를 어떻게 찾고, 드래그를 어느 평면에서 처리하는가",
+          "pptx·zip 같은 포맷의 구조를 아는가",
+          "any 를 없애면서 마주친 어려운 타입 문제 하나",
+          "SDK 로 내보낼 인터페이스를 정할 때 무엇을 열고 무엇을 닫았는가",
+          "AI 가 짜 준 코드가 '조금 이상한' 것을 어떻게 잡아냈는가"
+        ],
+        "sources": [
+          {
+            "title": "[미리디] 프론트엔드 개발자 - 이미지 프로세싱 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/368161",
+            "publisher": "원티드",
+            "summary": "담당 업무·자격요건·우대사항과 기술 스택(3D·테스트·번들러 포함)이 공개돼 있다"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
     "`people` 이 비어 있다. 회사 기술 블로그(medium.com/miridih)와 회사 채용 사이트의 개발자 인터뷰 페이지(miridih.com/ko/devinterview2) 를 둘 다 열어 봤으나 403 으로 막혔다. 글쓴이 이름을 확인할 수 없어 규칙대로 비워 뒀다 — 링크 없는 사람은 넣지 않는다.",
     "기술 블로그의 글 제목과 주제는 외부 집계(velopers.kr)로 확인했지만 본문을 직접 읽지 못했다. 도메인 서술에서 블로그를 근거로 든 항목은 그래서 `inferred` 다.",
     "미리캔버스 구독의 요금제 구성과 유료 전환율을 밝힌 공개 자료를 찾지 못했다. 매출 942억이 구독과 인쇄 커머스로 어떻게 갈리는지도 공개돼 있지 않다.",
-    "공고 표기가 `(주)미리디`·`㈜미리디`·`미리디` 셋이고 정규화하면 `미리디`와 `㈜미리디` 둘로 갈린다. aliases 에 둘 다 넣었다."
+    "공고 표기가 `(주)미리디`·`㈜미리디`·`미리디` 셋이고 정규화하면 `미리디`와 `㈜미리디` 둘로 갈린다. aliases 에 둘 다 넣었다.",
+    "모집중 38건 중 개발 공고 6건만 채우고 done 으로 닫았다. 뺀 것은 시니어(7년↑ 프론트/백엔드)·파트 리드·인턴·전문연구요원, 그리고 데이터 엔지니어/분석가/애널리틱스 계열이다 — 이 브리핑이 대상으로 삼는 지원자(3~6년 백엔드/프론트엔드)의 자리가 아니다. 데이터 직군을 볼 일이 생기면 다시 연다."
   ]
 }
