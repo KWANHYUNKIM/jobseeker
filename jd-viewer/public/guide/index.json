@@ -155,9 +155,10 @@
       "slug": "levit",
       "name": "레브잇",
       "aliases": [
-        "레브잇"
+        "레브잇",
+        "㈜레브잇"
       ],
-      "status": "in_progress",
+      "status": "done",
       "postings": 7,
       "study_items": 54,
       "updated_at": "2026-09-02"
