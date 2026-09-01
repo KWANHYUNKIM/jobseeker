@@ -81,8 +81,11 @@ export function JobList({ jobs, selected, onSelect }: Props) {
         })}
       </ul>
 
-      {/* 데스크톱: 표 */}
-      <div className="hidden md:block overflow-x-auto">
+      {/* 데스크톱: 표.
+          여기에 overflow-x-auto 를 주면 이 div 가 sticky 의 기준(스크롤 조상)이 되어
+          머리 줄이 바깥 main 을 따라 붙지 못하고 표와 같이 밀려 올라간다.
+          가로가 넘칠 때는 바깥 main(overflow-auto)이 대신 받는다. */}
+      <div className="hidden md:block">
         <table className="w-full text-sm border-collapse">
           <thead className="jd-panel-head sticky top-0 z-10">
             <tr className="text-left text-(--color-muted) font-medium">
