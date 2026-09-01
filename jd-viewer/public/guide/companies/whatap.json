@@ -331,7 +331,250 @@
       ]
     }
   ],
-  "postings": [],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/40159",
+      "title": "데브옵스 엔지니어(플랫폼 엔지니어)",
+      "site": "wanted",
+      "verdict": "와탭랩스 개발 공고 여덟 건 중 **연차의 문이 가장 넓다**(3년 이상 — 나머지는 5-15년, 5-20년). 그리고 이 자리에는 다른 회사의 데브옵스 공고에 없는 줄이 하나 있다: **`모니터링 Mocking Agent 설계 및 개발`**. 모니터링 회사는 자기 제품을 테스트하려면 **감시당할 시스템이 먼저 있어야 하는데**, 진짜 장애를 매번 낼 수는 없으니 **가짜로 메트릭·로그·헬스를 뿜어 주는 에이전트를 직접 만든다.** 그래서 이 자리는 '인프라를 깔아 주는 사람'이 아니라 **개발팀이 제품을 검증할 수 있게 판을 만들어 주는 사람**이고, 인프라 코드와 애플리케이션 코드를 둘 다 쓴다(Python·Java 가 자격요건에 있다).",
+      "fit": {
+        "must_have": [
+          "AWS 기반 STG/TEST 환경 구축·운영 3년 이상",
+          "Pulumi 또는 Terraform + Ansible 로 인프라 자동화",
+          "Python 으로 프로그램을 짤 수 있을 것 — 여기서는 스크립트가 아니라 에이전트다"
+        ],
+        "can_learn": [
+          "Mock/시뮬레이션 설계 — 개념은 단순하고, 만들어 보면 바로 이력이 된다",
+          "OpenTelemetry·Prometheus — 이 회사 제품의 이웃이라 읽어 두면 대화가 붙는다",
+          "EKS 기반 테스트 환경 — 우대사항이다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "가짜 시스템을 만드는 일 — 이 공고의 정체",
+          "from": "task",
+          "quote": "테스트와 검증을 위한 전용 Mock Agent를 구현하여 메트릭, 로그, 헬스 시뮬레이션을 지원합니다.",
+          "priority": "core",
+          "why": "모니터링 제품을 테스트하려면 **감시당할 시스템이 먼저 필요하다.** CPU 가 튀고 응답이 느려지고 로그가 쏟아지는 상황을 진짜 서버에서 매번 만들 수는 없으니, **그런 척하는 에이전트를 직접 만들어 붙인다.** 이 줄이 있어서 이 자리는 인프라 담당이 아니라 **제품 개발의 일부**가 된다 — 자격요건에 Python(에이전트 개발)이 들어간 이유이기도 하다. 다른 회사 데브옵스 경력으로는 이 부분을 말할 사람이 드물어서, 준비하면 그대로 차별점이 된다.",
+          "gap_check": "'서버 하나가 응답 지연 3초에 에러율 5%인 상태'를 어떻게 재현하는가? 그 가짜 데이터가 **진짜처럼 보이려면** 무엇이 필요한가(값의 분포, 시간에 따른 변동, 지표 사이의 상관)? 랜덤 숫자를 뿌리는 것과 무엇이 다른가?",
+          "drill": "**메트릭을 뿜는 작은 에이전트**를 파이썬으로 만든다. (1) CPU·메모리·응답시간·에러율을 시간에 따라 변하는 값으로 내보내고(정상 → 서서히 악화 → 장애 → 회복 시나리오를 설정 파일로), (2) 같은 프로세스에서 로그도 같은 시나리오에 맞춰 뱉고, (3) 헬스체크 엔드포인트가 그 상태를 반영하게 한다. 그다음 **Prometheus 로 긁어 Grafana 에 띄워** 그래프가 시나리오대로 움직이는지 확인한다. 마지막으로 인스턴스 50개를 동시에 띄워 **부하 테스트용으로 쓸 수 있는지** 본다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Prometheus — 클라이언트 라이브러리(Python)",
+              "url": "https://prometheus.github.io/client_python/",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenTelemetry — 계측 개념",
+              "url": "https://opentelemetry.io/docs/concepts/",
+              "kind": "docs",
+              "note": "무엇을 내보내야 '진짜처럼' 되는지의 표준 어휘"
+            },
+            {
+              "title": "Testcontainers",
+              "url": "https://testcontainers.com/",
+              "kind": "docs",
+              "note": "테스트용 의존 시스템을 코드로 띄우는 접근"
+            }
+          ]
+        },
+        {
+          "topic": "STG/TEST 를 프로덕션처럼 — 이 자리의 본업",
+          "from": "qualification",
+          "quote": "AWS 기반의 STG/TEST(또는 dev/staging) 환경 구축 및 운영 경험 3년 이상",
+          "priority": "core",
+          "why": "자격요건에서 **연차를 명시한 유일한 줄**이고, 그래서 이 공고가 실제로 요구하는 것이 무엇인지 가장 정확히 말해 준다. 검증 환경은 '싸게 대충 만든 프로덕션'이 아니라 **프로덕션과 다른 점을 아는 상태로 만든 환경**이다. 다르면 테스트가 거짓말을 하고, 똑같이 만들면 비용이 감당이 안 된다. 그 사이에서 **무엇을 같게 하고 무엇을 줄일지 정하는 판단**이 이 자리의 본업이다.",
+          "gap_check": "테스트 환경과 프로덕션이 달라서 못 잡는 버그를 세 가지 댈 수 있는가(데이터 양, 인스턴스 타입, 네트워크 경계)? 밤에 꺼 두는 환경에서 무엇이 깨지는가? 테스트 데이터는 어디서 오고 개인정보는 어떻게 처리하는가?",
+          "drill": "AWS 에 **같은 스택을 두 벌** 만든다 — prod 흉내와 test. 코드는 한 벌이고 변수만 다르게 한다(인스턴스 크기, 노드 수, 보존 기간). 그다음 **차이 목록을 문서로** 만든다: 무엇이 같고 무엇이 다르며 그 차이 때문에 못 잡는 문제는 무엇인지. 마지막으로 test 환경을 **밤에 내리고 아침에 올리는** 스케줄을 붙여 비용과 복구 시간을 잰다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "AWS 아키텍처 센터 — Well-Architected",
+              "url": "https://aws.amazon.com/architecture/well-architected/",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS VPC 문서",
+              "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "인프라를 코드로 — 두 번 돌려도 같아야 한다",
+          "from": "qualification",
+          "quote": "IaC/Automation: Pulumi 또는 Terraform, Ansible을 통한 인프라 자동화",
+          "priority": "core",
+          "why": "도구 이름이 셋이지만 시험하는 것은 하나다 — **같은 코드를 두 번 돌려도 결과가 같은가**(멱등성). 우대사항이 그것을 대놓고 말한다(`멱등·재현 가능한 인프라 코드`). 검증 환경은 **자주 지우고 다시 만드는 곳**이라 이 성질이 없으면 환경이 조금씩 달라지고, 그 순간 '테스트에서는 됐는데'가 시작된다. Pulumi 를 앞에 적은 것도 눈여겨볼 만하다 — **인프라를 일반 언어(Python 등)로 쓴다**는 뜻이고, 위의 Mock Agent 와 같은 언어로 묶인다.",
+          "gap_check": "Terraform 과 Ansible 은 각각 무엇을 담당하는가(만들기 vs 설정하기)? 같은 플레이북을 두 번 돌리면 안전한가 — 안전하지 않게 짜는 흔한 실수는? Pulumi 가 Terraform 과 다른 점을 한 문장으로 말할 수 있는가?",
+          "drill": "위에서 만든 두 환경을 **전부 코드로 옮긴다.** 네트워크·컴퓨트는 Terraform 또는 Pulumi, 서버 안 설정은 Ansible. 그다음 **`destroy` 후 `apply` 를 두 번** 돌려 결과가 완전히 같은지 확인하고, 두 번째 apply 에서 변경 사항이 0 이 나오는지 본다. 0 이 아니면 어느 리소스가 매번 바뀌는지 찾아 고친다 — 이 과정이 곧 '멱등'의 실습이다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Terraform 문서",
+              "url": "https://developer.hashicorp.com/terraform/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Pulumi 문서",
+              "url": "https://www.pulumi.com/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Ansible — 멱등성",
+              "url": "https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "환경이 서로 어긋나는 것을 막기",
+          "from": "task",
+          "quote": "환경 간 설정 및 버전 일관성을 유지하며 이를 체계적으로 문서화합니다.",
+          "priority": "high",
+          "why": "담당 업무에 **'문서화'까지 붙은 유일한 줄**이다. 환경이 여럿이면 시간이 지날수록 조용히 벌어진다 — 누가 급해서 콘솔에서 한 번 고치고, 어떤 환경만 버전이 올라가고, 그러다 재현이 안 되는 버그가 생긴다. 이 회사에서는 그 문제가 더 크다: 제품이 **고객마다 다른 환경**에 설치되므로, 검증 환경이 실제와 어긋나면 못 잡은 문제가 그대로 고객사에서 터진다.",
+          "gap_check": "코드로 만든 인프라를 누가 콘솔에서 손으로 고쳤다 — 어떻게 알아채는가? 환경마다 버전이 다른 것을 한 화면에서 볼 방법이 있는가?",
+          "drill": "**드리프트를 잡는 장치**를 붙인다. (1) `terraform plan`(또는 `pulumi preview`)을 매일 자동 실행해 변경이 감지되면 알리게 하고, (2) 각 환경의 주요 버전(런타임·에이전트·DB)을 한 곳에 모아 표로 보여 주는 페이지나 스크립트를 만든다. 그다음 **일부러 콘솔에서 하나를 바꿔** 알림이 오는지 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Terraform — plan 으로 드리프트 감지",
+              "url": "https://developer.hashicorp.com/terraform/cli/commands/plan",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS Config",
+              "url": "https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html",
+              "kind": "docs",
+              "note": "리소스 변경 이력을 남기는 쪽 접근"
+            }
+          ]
+        },
+        {
+          "topic": "옵저버빌리티 생태계를 이웃으로 알기",
+          "from": "preference",
+          "quote": "모니터링/ observability 도구 경험: Prometheus, Grafana, CloudWatch, WHATAP, OpenTelemetry 등",
+          "priority": "high",
+          "why": "다른 회사에서 이 줄은 '모니터링 좀 붙여 봤나'인데, **여기서는 회사가 만드는 물건 자체**다. 나열된 이름 중 WHATAP 은 자사 제품이고 나머지는 이웃이자 표준이다 — 특히 **OpenTelemetry** 는 '어떻게 계측해서 내보낼까'를 업계가 함께 정한 규격이라, 모니터링 회사에서 일하려면 알아야 하는 공통 언어다. 도구를 써 본 사람이 아니라 **왜 그런 모양인지 아는 사람**으로 보이는 것이 목표다.",
+          "gap_check": "메트릭·로그·트레이스가 각각 무엇을 잘하고 무엇을 못 하는가? Prometheus 가 데이터를 **긁어 가는(pull)** 이유는? OpenTelemetry 의 Collector 는 왜 따로 있는가?",
+          "drill": "Mock Agent 에 **세 가지를 다 붙인다** — Prometheus 메트릭, 구조화 로그, OpenTelemetry 트레이스. 그다음 Collector 를 하나 세워 셋을 모으고, Grafana 에서 **한 요청을 세 신호로 따라가 본다**(느린 요청을 트레이스로 찾고, 그 시각의 메트릭을 보고, 해당 로그를 연다). 이 경험이 그대로 면접 답이 된다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "OpenTelemetry Collector",
+              "url": "https://opentelemetry.io/docs/collector/",
+              "kind": "docs"
+            },
+            {
+              "title": "Prometheus 문서",
+              "url": "https://prometheus.io/docs/introduction/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "Grafana 문서",
+              "url": "https://grafana.com/docs/grafana/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "개발팀과 맞물리기 — 이 자리는 혼자 굴러가지 않는다",
+          "from": "qualification",
+          "quote": "개발팀과 API/인터페이스 설계 및 릴리즈 프로세스를 연동해 본 협업 경험",
+          "priority": "high",
+          "why": "인프라 요건이 아니라 **협업 요건을 자격요건에 넣었다.** 이 자리의 산출물(테스트 환경, Mock Agent, 검증 파이프라인)은 전부 **개발팀이 써야 값이 생기는 물건**이라, 무엇이 필요한지를 듣고 인터페이스를 맞추는 일이 업무의 큰 몫이다. 담당 업무의 `개발팀의 요구에 맞춘 다양한 검증 시나리오를 기술적으로 뒷받침합니다` 도 같은 말이다. 회사 문화 설명에도 수평적 토론과 분기 공유세션이 적혀 있어, **말과 글로 맞춰 가는 방식**이 기본값인 조직으로 읽힌다.",
+          "gap_check": "내가 만든 도구를 남이 쓰게 하려면 무엇이 필요한가(문서? 기본값? 예제?) 개발팀이 '이런 상황을 재현해 달라'고 했을 때 요구를 어떻게 받아 적는가?",
+          "drill": "Mock Agent 를 **남이 쓸 수 있게** 만든다 — 시나리오를 YAML 로 정의하게 하고, README 에 '이럴 때 이렇게' 예제 세 개를 넣고, 잘못된 설정에는 친절한 에러를 낸다. 그다음 **동료나 친구에게 문서만 주고 써 보게** 해서 막히는 지점을 고친다. 이 왕복이 이 항목의 실습이다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Google — 기술 문서 쓰기 강의",
+              "url": "https://developers.google.com/tech-writing",
+              "kind": "docs"
+            },
+            {
+              "title": "좋은 기술 문서를 만들기 위한 와탭의 여정",
+              "url": "https://www.whatap.io/ko/blog/96/",
+              "kind": "post",
+              "note": "이 회사가 문서를 어떻게 다루는지 직접 쓴 글"
+            }
+          ]
+        },
+        {
+          "topic": "쿠버네티스 위의 검증 환경",
+          "from": "preference",
+          "quote": "Kubernetes( EKS 등) 기반 STG/TEST 환경 구성 또는 워크로드 배포 경험",
+          "priority": "nice",
+          "why": "우대사항이고, 앞의 여섯 개를 끝낸 뒤에 볼 항목이다. 다만 방향은 분명하다 — 이 회사의 제품 자체가 **쿠버네티스를 감시하는 쪽**으로 넓어지고 있어(`Kubernetes 에이전트 개발자 (GPU/AI Observability)` 공고가 따로 있다), 검증 환경도 그쪽으로 간다. 여기까지 해 두면 사내에서 옮겨 갈 자리가 하나 더 생긴다는 뜻이기도 하다.",
+          "gap_check": "EKS 클러스터를 코드로 만들고 지울 수 있는가? 테스트용 워크로드를 네임스페이스로 격리하고 자원 한도를 걸 수 있는가?",
+          "drill": "Mock Agent 를 **쿠버네티스에 올린다.** 디플로이먼트로 여러 벌 띄우고, 네임스페이스로 시나리오를 나누고, 리소스 한도를 걸어 노드가 죽지 않게 한다. 그다음 클러스터를 코드로 지웠다 다시 만들어 **같은 상태로 복원되는지** 확인한다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Amazon EKS 사용 설명서",
+              "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — 리소스 관리",
+              "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Mock Agent 를 만들어 공개한다",
+          "why": "이 공고의 **가장 특이한 줄에 물건으로 답하는 방법**이다. 다른 회사 데브옵스 경력자에게는 이 항목이 아예 없어서, 시나리오 기반으로 메트릭·로그·헬스를 뿜는 작은 도구 하나면 지원자 무리에서 곧바로 갈린다. 이름을 붙이고 README 를 쓰면 그 자체가 포트폴리오다.",
+          "effort": "일주일"
+        },
+        {
+          "idea": "'테스트 환경과 프로덕션의 차이' 문서를 들고 간다",
+          "why": "자격요건에서 연차를 명시한 유일한 줄이 STG/TEST 환경이다. **무엇을 같게 하고 무엇을 줄였는지, 그 차이 때문에 못 잡는 문제는 무엇인지**를 표로 정리해 본 사람은 드물다. 담당 업무에 '문서화'가 들어간 회사라 문서 자체가 신호가 된다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "세 신호를 하나로 이어 본 경험을 만든다",
+          "why": "대표가 공개 인터뷰에서 말한 회사의 방향이 **'단품 모니터링이 아니라 이어 보는 옵저버빌리티'** 다. 느린 요청 하나를 트레이스로 찾고 그 시각의 메트릭과 로그로 따라간 이야기를 할 수 있으면, 회사가 무엇을 만들려는지 이해하고 온 사람이 된다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "스카우터 저장소를 열어 보고 간다",
+          "why": "김성조 CTO 가 시작한 오픈소스 APM 이 공개돼 있다. 에이전트가 어떻게 수집하고 어떤 형태로 보내는지를 코드로 한 번 훑으면, 이 회사 공고들에 반복되는 `Netty` 나 소켓 이야기가 왜 거기 있는지 보인다. **회사를 코드로 읽고 온 지원자**는 흔하지 않다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "모니터링 제품을 테스트하려면 무엇이 먼저 필요한가 — 가짜 메트릭을 어떻게 '진짜처럼' 만드는가",
+          "테스트 환경과 프로덕션이 달라서 못 잡는 버그를 세 가지 든다면",
+          "같은 IaC 코드를 두 번 돌려도 같은 결과가 나오게 하려면 무엇을 조심하는가",
+          "누군가 콘솔에서 손으로 인프라를 고쳤다 — 어떻게 알아채는가",
+          "메트릭·로그·트레이스는 각각 무엇을 잘하고 무엇을 못 하는가",
+          "Prometheus 가 pull 방식인 이유는",
+          "내가 만든 도구를 개발팀이 실제로 쓰게 하려면 무엇을 하는가",
+          "Terraform 과 Ansible 의 역할을 어떻게 나누는가"
+        ],
+        "sources": [
+          {
+            "title": "와탭랩스 데브옵스 엔지니어(플랫폼 엔지니어) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/40159",
+            "publisher": "원티드",
+            "summary": "AWS STG/TEST 인프라 구축과 모니터링 Mocking Agent 개발이 나란히 담당 업무에 있다. 경력 3년 이상으로 이 회사 개발 공고 중 문이 가장 넓다"
+          },
+          {
+            "title": "와탭랩스, 모니터링 서비스 글로벌 진출 본격화",
+            "url": "https://www.ddaily.co.kr/page/view/2024051313201764991",
+            "publisher": "디지털데일리",
+            "date": "2024-05-13",
+            "summary": "'단품이 아니라 이어 보는 옵저버빌리티'라는 회사 방향"
+          }
+        ]
+      }
+    }
+  ],
   "open_questions": [
     "2024년 매출 89억(전년 대비 19.8% 성장)·영업이익 적자라는 수치가 검색 결과 요약으로는 나오지만, THE VC·캐치 페이지가 직접 열람이 차단돼(403) 원문으로 확인하지 못했다. 그래서 scale 과 revenue 에 매출 숫자를 넣지 않았다.",
     "시리즈B(2021, 120억) 이후의 투자 라운드를 확인하지 못했다. 누적 180억 이상이라는 서술은 검색 요약에만 있다.",
