@@ -786,6 +786,276 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/278168",
+      "title": "DevOps Engineer",
+      "site": "wanted",
+      "verdict": "**같은 회사 `Backend Developer` 공고가 말한 MSA 를 실제로 돌리는 자리다.** 백엔드 쪽이 Kafka·CQRS·이벤트로 서비스를 나눈다면, 여기는 **그 조각들이 안 죽고 돌아가게** 만든다. 공고가 짧은 대신 **개발 환경을 통째로 적어 놓았다** — `AWS, Jenkins, k8s, argo, teraform, helm, elastic search, datadog, prometheus`. 준비 목록을 회사가 대신 써 준 셈이다. 이 자리를 다른 회사의 DevOps 와 가르는 것은 **트래픽의 모양**이다: 카페 주문은 **출근길과 점심시간에 몰리고**, 그 30분에 느려지면 손님은 앱을 닫고 줄을 선다. 그래서 우대사항에 `트래픽 관리를 위한 시스템 설계&개발` 과 `매우 빠르게 성장하는 서비스의 안정적인 운영` 이 나란히 있다. 그리고 담당 업무 두 번째 줄이 **`프로덕트팀 업무의 생산성과 운영 효율`** 이라는 점도 중요하다 — **인프라만이 아니라 동료 개발자의 속도까지 이 자리의 일**이다. 연차는 `신입-경력 10년`, **`[병역특례] DevOps Engineer`(278164)가 짝으로 열려 있다.**",
+      "fit": {
+        "must_have": [
+          "클라우드 인프라·DevOps 환경 구축과 아키텍처 설계 경험",
+          "쿠버네티스 기반 운영 경험",
+          "APM 솔루션(New Relic·Datadog·Pinpoint 등) 사용 경험",
+          "MSA 환경에서의 서비스 운영 경험",
+          "개발 환경 지표를 데이터로 모니터링할 수 있을 것"
+        ],
+        "can_learn": [
+          "트래픽 관리 시스템 설계 (우대)",
+          "보안 시스템 구축 (우대)",
+          "카페·O2O 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "스택이 통째로 적혀 있다 — 그대로 준비 목록",
+          "from": "task",
+          "quote": "개발환경 및 도구: AWS, Jenkins, k8s, argo, teraform, helm, elastic search, datadog, prometheus",
+          "priority": "core",
+          "why": "**아홉 개가 한 줄에 있고, 각각이 다른 층을 맡는다.** 클라우드(AWS), 빌드(Jenkins), 실행(k8s), 배포(argo — ArgoCD 로 읽힌다), 인프라 코드(terraform), 패키징(helm), 로그·검색(elastic search), 관측(datadog·prometheus). 이 조합에서 읽히는 것이 둘이다. 첫째, **빌드와 배포가 나뉘어 있다** — Jenkins 가 만들고 ArgoCD 가 클러스터를 깃 저장소 상태에 맞춘다(GitOps). 그러면 **되돌리기가 커밋 하나**가 된다. 둘째, **관측 도구가 둘이다**(Datadog·Prometheus) — 상용과 오픈소스를 함께 쓰는 흔한 모양이고, **무엇을 어디서 보는지 정리하는 일**이 실제 과제가 된다. **모르는 이름을 세어 보는 것이 가장 빠른 자기 진단**이다.",
+          "gap_check": "아홉 개 중 몇 개를 직접 다뤄 봤는가? Jenkins 와 ArgoCD 의 역할을 나눠 설명할 수 있는가? Datadog 과 Prometheus 를 함께 쓰면 무엇이 겹치는가?",
+          "drill": "**작은 판을 세워 아홉 개를 이어 본다.** (1) 로컬 쿠버네티스에 서비스 두 개를 올리고, (2) **Helm 차트로 묶어 ArgoCD 로 배포**하고, (3) Prometheus 로 지표를 보고, (4) Terraform 으로 클라우드 자원 하나를 만들어 본다. 한 번씩 만져 본 것만으로도 **이 공고의 절반이 읽힌다.**",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Argo CD 문서",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "Helm 문서",
+              "url": "https://helm.sh/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Terraform 문서",
+              "url": "https://developer.hashicorp.com/terraform/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MSA 를 돌린다는 것 — 서비스가 여럿일 때 생기는 일",
+          "from": "task",
+          "quote": "MSA 환경에서 안정적이고 효율적인 운영 방안을 계속 고민하고 발전시켜요.",
+          "priority": "core",
+          "why": "**서비스를 나누면 배포는 쉬워지고 운영은 어려워진다.** 하나가 죽었을 때 어디까지 번지는지 알기 어렵고, 느려진 원인이 내 서비스인지 남의 서비스인지 알 수 없으며, 서비스마다 설정과 배포가 흩어진다. 그래서 이 자리에서 반복되는 문제가 셋이다: **격리**(한 서비스의 문제가 옆으로 안 번지게 — 타임아웃·서킷브레이커·자원 제한), **추적**(요청 하나가 여러 서비스를 지나가는 경로를 한 줄기로 보기), **일관성**(서비스가 늘어나도 배포와 설정 방식이 같게). 같은 회사 백엔드 공고가 `도메인 이벤트 기반으로 서비스 간 느슨한 결합` 을 말하는데, **그 느슨함을 운영 쪽에서 지탱하는 것이 이 자리**다.",
+          "gap_check": "한 서비스가 느려질 때 옆으로 번지지 않게 하려면 무엇이 필요한가? 요청 하나를 여러 서비스에 걸쳐 따라갈 수 있는가? 서비스가 스무 개가 되면 무엇이 먼저 무너지는가?",
+          "drill": "**의존성을 죽여 보고 격리를 만든다.** (1) 서비스 A→B 구조를 만들고 B 를 죽여 A 가 어떻게 되는지 보고, (2) 타임아웃·재시도·서킷브레이커를 붙여 **A 가 계속 응답하게** 하고, (3) 파드에 자원 제한을 걸어 한 서비스가 노드를 독식하지 못하게 하고, (4) 추적 ID 를 전 구간에 흘려 **한 줄기로 보이게** 만든다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Kubernetes — 리소스 요청과 제한",
+              "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenTelemetry 문서",
+              "url": "https://opentelemetry.io/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE Book — 연쇄 장애 다루기",
+              "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "APM 이 필수 요건에 있다",
+          "from": "qualification",
+          "quote": "New Relic, Datadog, Pinpoint 등의 APM 솔루션을 이용해본 경험이 있는 분",
+          "priority": "core",
+          "why": "**세 이름을 나열한 것은 도구가 아니라 습관을 묻는 것이다.** APM 은 애플리케이션 **안**에서 어느 요청이 느리고 어디서 막혔는지 보여 준다 — 서버 지표(CPU·메모리)만으로는 절대 안 보이는 층이다. 이 회사에서 그게 왜 필요한지는 분명하다: **서비스가 여럿이고 주문이 초 단위로 쏟아진다.** `주문이 느려요` 라는 신고가 오면, 어느 서비스의 어느 쿼리가 원인인지 **몇 분 안에** 짚어야 한다. 그래서 이 항목의 실력은 대시보드를 만드는 것이 아니라 **알림에서 원인 후보까지 가는 경로를 짧게 만드는 것**이다.",
+          "gap_check": "APM 으로 느린 요청의 원인을 찾아본 적이 있는가? 서버 지표만으로 안 보이는 문제를 겪어 봤는가? 알림을 받고 원인 화면까지 몇 번의 클릭이 걸리는가?",
+          "drill": "**느린 요청을 심고 찾아 본다.** (1) 서비스에 APM(Datadog 무료 체험이나 오픈소스 대안)을 붙이고, (2) **일부러 느린 쿼리와 외부 호출**을 넣고, (3) 추적 화면에서 **시간이 어디에 쓰였는지** 짚고, (4) 알림에 **바로 그 화면으로 가는 링크**를 넣는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Datadog APM 문서",
+              "url": "https://docs.datadoghq.com/tracing/",
+              "kind": "docs"
+            },
+            {
+              "title": "Elastic APM",
+              "url": "https://www.elastic.co/guide/en/apm/guide/current/index.html",
+              "kind": "docs",
+              "note": "백엔드 공고 스택에 ElasticAPM 이 있다"
+            },
+            {
+              "title": "Pinpoint (오픈소스 APM)",
+              "url": "https://pinpoint-apm.gitbook.io/pinpoint",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "트래픽이 시간대로 몰린다 — 이 회사의 성능은 30분이다",
+          "from": "preference",
+          "quote": "트래픽 관리를 위한 시스템 설계&개발 경험이 있는 분",
+          "priority": "core",
+          "why": "**카페 주문의 트래픽 곡선은 웹 서비스와 다르다.** 하루 종일 고른 것이 아니라 **출근길(7~9시)과 점심시간(11~13시)에 몰린다.** 즉 평상시 자원으로는 남고, 피크에는 모자란다. 그래서 이 자리의 설계 문제가 정해진다: **얼마나 빨리 늘릴 수 있는가**(오토스케일링이 뜨는 데 걸리는 시간이 피크보다 느리면 소용없다), **미리 늘려 둘 것인가**(예측 기반), **못 늘리는 것은 무엇인가**(DB 커넥션·외부 결제 API 한도). 그리고 **피크에 못 버티면 잃는 것이 크다** — 손님은 앱을 닫고 줄을 서고, 점주는 그 시간의 매출을 잃는다.",
+          "gap_check": "오토스케일링이 실제로 뜨는 데 몇 초 걸리는지 재 봤는가? 피크에 먼저 무너지는 곳이 어디인지 아는가? 늘릴 수 없는 자원(DB·외부 API)은 어떻게 다루는가?",
+          "drill": "**피크를 흉내 내 본다.** (1) 평시의 10배 부하를 짧게 주는 시나리오를 만들고, (2) **오토스케일링이 따라오는 시간**을 재고, (3) 먼저 무너지는 지점을 찾고(대개 DB 커넥션), (4) **미리 늘려 두기와 대기열로 흘리기** 두 방법을 각각 넣어 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Kubernetes — HPA(수평 오토스케일링)",
+              "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+              "kind": "docs"
+            },
+            {
+              "title": "k6 — 부하 테스트",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Karpenter — 노드 자동 확장",
+              "url": "https://karpenter.sh/docs/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "동료 개발자의 속도도 이 자리의 일이다",
+          "from": "task",
+          "quote": "프로덕트팀 업무의 생산성과 운영 효율을 높이기 위해 고민하고 발전시켜요.",
+          "priority": "core",
+          "why": "**담당 업무 네 줄 중 하나가 인프라가 아니라 사람 이야기다.** 그리고 이 회사에서는 그 무게가 다르다 — 백엔드 공고가 개발 문화를 **`AI-First`** 라고 선언하고 `n8n/Make 등을 활용해 반복 업무를 자동화` 한다고 적었다. 즉 **자동화가 조직의 기본값**이고, 이 자리는 그 기반을 만든다: 배포를 기다리지 않게, 로컬 환경을 하루 만에 세우게, 테스트가 알아서 돌게. 그래서 이 항목의 실력은 **개발자가 무엇에 시간을 쓰는지 세어 보는 것**에서 시작한다 — 재 보지 않으면 무엇을 없앨지 정할 수 없다.",
+          "gap_check": "커밋에서 운영 반영까지 몇 분인지 재 본 적이 있는가? 개발자가 가장 자주 기다리는 것이 무엇인지 아는가? 내가 만든 도구를 실제로 몇 명이 쓰는가?",
+          "drill": "**기다림 하나를 없앤다.** (1) 팀(또는 개인 프로젝트)에서 **가장 오래 기다리는 단계**를 재고, (2) 그것을 줄이고(캐시·병렬화·불필요한 단계 제거), (3) **전후 시간을 기록**하고, (4) 그 변화가 하루에 몇 분을 아끼는지 곱해 본다. **숫자가 이 항목의 언어다.**",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "DORA — 소프트웨어 배포 성과 지표",
+              "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+              "kind": "post"
+            },
+            {
+              "title": "GitHub Actions — 워크플로 최적화",
+              "url": "https://docs.github.com/en/actions/how-tos/write-workflows",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "지표를 눈에 보이게 만든다",
+          "from": "qualification",
+          "quote": "개발 환경에 대한 지표를 가시적인 데이터로 모니터링 하실 수 있는 분",
+          "priority": "core",
+          "why": "**`개발 환경에 대한 지표` 라는 표현이 특이하다** — 서비스 지표(응답 시간·오류율)가 아니라 **개발 과정의 지표**를 말하는 것으로 읽힌다: 빌드 시간, 배포 빈도, 실패율, 되돌리는 데 걸린 시간. 앞 항목(생산성)과 짝을 이루는 요구다 — **재지 않으면 개선했는지 알 수 없기 때문**이다. 그리고 이건 신입·주니어에게 유리한 항목이기도 하다: 큰 인프라를 다뤄 본 적이 없어도 **자기 프로젝트의 빌드·배포 시간을 재고 줄인 기록**은 만들 수 있다. 이 회사의 연차 표기가 `신입-경력 10년` 인 것과 함께 읽으면, **여기서 점수를 벌 수 있다.**",
+          "gap_check": "빌드·배포 시간을 기록해 둔 적이 있는가? 배포가 실패하는 비율을 아는가? 그 숫자를 남에게 보여 줄 화면이 있는가?",
+          "drill": "**개발 지표 대시보드를 만든다.** (1) CI 에서 **빌드 시간·성공률**을 수집하고, (2) 배포 횟수와 되돌린 횟수를 기록하고, (3) Grafana 로 한 화면에 올리고, (4) 한 가지를 개선해 **그래프가 움직이는 것**을 확인한다. (4)가 있으면 이 항목은 끝난다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Grafana 문서",
+              "url": "https://grafana.com/docs/grafana/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Prometheus — 기본 개념",
+              "url": "https://prometheus.io/docs/introduction/overview/",
+              "kind": "docs"
+            },
+            {
+              "title": "DORA — 네 가지 지표",
+              "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "결제가 오가는 서비스의 보안",
+          "from": "preference",
+          "quote": "보안 시스템 구축 경험이 있거나 최신 보안 이슈에 관심이 많으신 분",
+          "priority": "high",
+          "why": "**우대사항 마지막 줄이지만 이 회사에서는 가볍지 않다.** 패스오더는 **결제와 적립을 다루고, 점주에게 정산까지 한다** — 즉 돈과 개인정보가 함께 흐른다. 그러면 인프라 쪽에서 챙길 것이 늘어난다: 비밀(DB 비밀번호·결제 키)을 어디에 두는지, 운영 접근에 기록이 남는지, 서비스 간 통신이 열려 있지 않은지, 컨테이너 이미지에 알려진 취약점이 없는지. 이 항목은 **깊이 파기보다 목록을 갖고 있는 것**이 먼저다 — 무엇을 점검해야 하는지 말할 수 있으면 대화가 된다.",
+          "gap_check": "비밀을 어디에 두는가 — 누가 볼 수 있는가? 운영 환경에 사람이 직접 접속하는가, 기록이 남는가? 컨테이너 이미지의 취약점을 검사해 본 적이 있는가?",
+          "drill": "**점검 목록을 만들어 한 번 돌린다.** (1) 비밀 관리·접근 기록·네트워크 정책·이미지 취약점 네 가지로 목록을 만들고, (2) 내 프로젝트에 각각 적용해 보고(예: Secrets Manager, Trivy 로 이미지 검사), (3) 발견한 것을 심각도와 함께 정리하고, (4) 하나를 실제로 고친다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Trivy — 컨테이너 취약점 검사",
+              "url": "https://trivy.dev/latest/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — 시크릿 관리",
+              "url": "https://kubernetes.io/docs/concepts/configuration/secret/",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP Top 10",
+              "url": "https://owasp.org/www-project-top-ten/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "아홉 개 도구를 한 판에 이어 본 기록",
+          "why": "공고가 **`AWS, Jenkins, k8s, argo, teraform, helm, elastic search, datadog, prometheus`** 를 그대로 적었다. Helm 으로 묶어 ArgoCD 로 배포하고 Prometheus 로 보는 작은 판 하나면, **모르는 이름의 절반이 아는 이름이 된다.**",
+          "effort": "일주일"
+        },
+        {
+          "idea": "피크 10배를 흉내 내고 오토스케일링 시간을 잰 기록",
+          "why": "카페 주문은 **출근길과 점심시간에 몰린다.** 우대사항의 `트래픽 관리` 는 그 이야기이고, **오토스케일링이 따라오는 시간**과 **먼저 무너지는 지점**을 잰 기록은 이 회사의 성능 문제를 이해했다는 증거다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "개발 지표 대시보드 + 하나를 개선해 그래프를 움직인 기록",
+          "why": "자격요건에 **`개발 환경에 대한 지표를 가시적인 데이터로 모니터링`** 이 있고, 담당 업무에도 **프로덕트팀의 생산성**이 있다. 큰 인프라 경험이 없어도 만들 수 있어 **연차가 낮을수록 값이 큰 항목**이다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "APM 으로 느린 요청의 원인을 짚은 기록",
+          "why": "APM 이 **우대가 아니라 필수**에 있다. 일부러 느린 쿼리를 심고 추적 화면에서 **시간이 어디에 쓰였는지** 짚어 본 경험은, 도구를 써 봤다가 아니라 **원인까지 가는 습관**을 보여 준다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "병역특례 짝 공고를 먼저 확인한다",
+          "why": "**`[병역특례] DevOps Engineer`(278164)** 가 따로 열려 있다. 산업기능요원 대상자라면 그쪽이고, 아니라면 이 공고다 — 이 회사는 거의 모든 직군이 짝을 이루므로 **제목의 대괄호부터 본다.**",
+          "effort": "십 분"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "Jenkins 와 ArgoCD 의 역할을 나눠 설명해 달라",
+          "Datadog 과 Prometheus 를 함께 쓰면 무엇이 겹치는가",
+          "한 서비스가 느려질 때 옆으로 번지지 않게 하려면",
+          "요청 하나를 여러 서비스에 걸쳐 따라갈 수 있는가",
+          "APM 으로 느린 요청의 원인을 찾아본 적이 있는가",
+          "서버 지표만으로 안 보이는 문제를 겪어 봤는가",
+          "오토스케일링이 실제로 뜨는 데 몇 초 걸리는가",
+          "피크에 먼저 무너지는 곳은 어디인가",
+          "늘릴 수 없는 자원은 어떻게 다루는가",
+          "커밋에서 운영 반영까지 몇 분인가",
+          "개발자가 가장 자주 기다리는 것은 무엇인가",
+          "비밀을 어디에 두고 누가 볼 수 있는가"
+        ],
+        "sources": [
+          {
+            "title": "페이타랩 DevOps Engineer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/278168",
+            "publisher": "원티드",
+            "summary": "클라우드 아키텍처 설계와 자원 운영, 프로덕트팀 생산성, 인프라·파이프라인 모니터링, MSA 운영. 개발환경은 AWS·Jenkins·k8s·argo·terraform·helm·elasticsearch·datadog·prometheus"
+          },
+          {
+            "title": "페이타랩 [병역특례] DevOps Engineer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/278164",
+            "publisher": "원티드",
+            "summary": "같은 자리의 산업기능요원 대상 공고"
+          },
+          {
+            "title": "페이타랩 Backend Developer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/325718",
+            "publisher": "원티드",
+            "summary": "이 자리가 돌리는 MSA 를 만드는 쪽 — Kafka·CQRS·이벤트 기반 구조와 AI-First 문화가 적혀 있다"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
