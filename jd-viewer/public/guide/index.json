@@ -116,6 +116,18 @@
       "postings": 12,
       "study_items": 82,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "interx",
+      "name": "인터엑스",
+      "aliases": [
+        "인터엑스",
+        "㈜인터엑스"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
