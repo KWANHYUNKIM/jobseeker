@@ -54,7 +54,14 @@ if isinstance(d, list):
 
 ENRICHED="$ROOT_DIR/jd-viewer/public/all_jobs_enriched.json"
 MIN_RATIO="${REFRESH_MIN_RATIO:-0.5}"
-NEW_COUNT="$(count_jobs "$SCREENSHOTS_DIR/$LATEST/all_jobs.json")"
+# 가드가 잡아야 하는 것은 **데이터 손실**이지 마감 전환이 아니다. enriched 는 모집중과
+# 마감을 함께 담으므로(마감을 지우면 "예전에 이런 자리가 있었다"가 사라진다) 새 스냅샷도
+# 두 파일을 합쳐 세야 같은 기준이 된다. 모집중만 세면, 마감 재확인(pipeline/close_check)이
+# 공고를 닫을수록 비율이 떨어져 멀쩡한 갱신이 급감으로 오인된다.
+ACTIVE_COUNT="$(count_jobs "$SCREENSHOTS_DIR/$LATEST/all_jobs.json")"
+CLOSED_COUNT="$(count_jobs "$SCREENSHOTS_DIR/$LATEST/all_jobs_closed.json")"
+NEW_COUNT="$(( ${ACTIVE_COUNT:-0} + ${CLOSED_COUNT:-0} ))"
+[ -z "$ACTIVE_COUNT" ] && NEW_COUNT=""
 OLD_COUNT="$(count_jobs "$ENRICHED")"
 
 if [ -z "$NEW_COUNT" ]; then
@@ -78,7 +85,7 @@ if [ -n "$OLD_COUNT" ] && [ "$OLD_COUNT" -gt 0 ] && [ "${REFRESH_FORCE:-0}" != "
 fi
 
 ln -sfn "$LATEST" all_개발자_latest
-echo "latest -> $LATEST (${NEW_COUNT}건${OLD_COUNT:+, 기존 ${OLD_COUNT}건})"
+echo "latest -> $LATEST (${NEW_COUNT}건 = 모집중 ${ACTIVE_COUNT} + 마감 ${CLOSED_COUNT:-0}${OLD_COUNT:+, 기존 ${OLD_COUNT}건})"
 
 # enrich + mindmap + 회사 기술스택 재빌드
 # build_company_stacks 는 company_profiles.json(crawl_company 결과)이 있으면 병합한다.
