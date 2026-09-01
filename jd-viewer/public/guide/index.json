@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-01",
+  "updated_at": "2026-09-02",
   "companies": [
     {
       "slug": "glowuprizz",
@@ -80,6 +80,18 @@
       "status": "done",
       "postings": 3,
       "study_items": 19,
+      "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "whatap",
+      "name": "와탭랩스",
+      "aliases": [
+        "와탭랩스",
+        "와탭"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
       "updated_at": "2026-09-02"
     }
   ]
