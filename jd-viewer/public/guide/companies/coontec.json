@@ -2,12 +2,13 @@
   "slug": "coontec",
   "name": "쿤텍",
   "name_en": "COONTEC",
-  "aliases": ["쿤텍"],
+  "aliases": [
+    "쿤텍"
+  ],
   "status": "in_progress",
   "updated_at": "2026-09-01",
   "site": "coontec.com",
   "one_liner": "공급망·임베디드·관제까지 보안을 넓게 파는 회사 — 사업그룹마다 스택이 완전히 다르다",
-
   "company": {
     "business": "2016년 설립된 보안 회사로, 스스로를 **'DX 보안 전문기업'**이라 부른다. 회사가 공개한 사업 영역은 공급망 보안·AI 공급망 보안·인프라 보안·조선/해양 보안·임베디드 가상화 및 보안·공격표면 보안·5G 특화망으로, **한 종류의 보안이 아니라 산업마다 다른 보안을 판다.** 자사 솔루션은 공급망 보안 `AEZIZ`, 가상화 검증 `FastVLabs`, XDR `TeraGRID` 가 대표이고, 회사 제품 목록에는 Zscaler·Sonatype·MEND·Claroty·PikeOS·TASKING 같은 **해외 벤더 제품도 함께 올라 있어** 자사 개발과 외부 제품 공급을 겸하는 것으로 보인다(회사가 그 관계를 명시하지는 않았다). 설립 이후 외부 투자 없이 매출과 영업이익을 키워 왔고, 2025년 시리즈A 를 받으며 **자사 솔루션 중심의 반복 매출(Recurring Revenue) 구조로 옮겨 가는 중**이다.",
     "business_confidence": "confirmed",
@@ -33,7 +34,11 @@
         "as_of": "2016",
         "confidence": "confirmed",
         "sources": [
-          { "title": "COONTEC — About Us", "url": "https://coontec.com/about-us/", "publisher": "쿤텍" }
+          {
+            "title": "COONTEC — About Us",
+            "url": "https://coontec.com/about-us/",
+            "publisher": "쿤텍"
+          }
         ]
       },
       {
@@ -42,8 +47,16 @@
         "as_of": "2026",
         "confidence": "confirmed",
         "sources": [
-          { "title": "COONTEC — About Us", "url": "https://coontec.com/about-us/", "publisher": "쿤텍" },
-          { "title": "쿤텍 기업정보 — 인원 77명", "url": "https://www.wanted.co.kr/company/28235", "publisher": "원티드" }
+          {
+            "title": "COONTEC — About Us",
+            "url": "https://coontec.com/about-us/",
+            "publisher": "쿤텍"
+          },
+          {
+            "title": "쿤텍 기업정보 — 인원 77명",
+            "url": "https://www.wanted.co.kr/company/28235",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -52,7 +65,12 @@
         "as_of": "2025",
         "confidence": "confirmed",
         "sources": [
-          { "title": "쿤텍, 시리즈A 투자 유치…\"글로벌 시장서 인정받겠다\"", "url": "https://m.ddaily.co.kr/page/view/2025082009072015363", "publisher": "디지털데일리", "date": "2025-08-20" }
+          {
+            "title": "쿤텍, 시리즈A 투자 유치…\"글로벌 시장서 인정받겠다\"",
+            "url": "https://m.ddaily.co.kr/page/view/2025082009072015363",
+            "publisher": "디지털데일리",
+            "date": "2025-08-20"
+          }
         ]
       }
     ],
@@ -60,19 +78,37 @@
       {
         "name": "자사 보안 솔루션",
         "how": "직접 만든 제품을 판다 — 공급망 보안 `AEZIZ`, 가상화 검증 `FastVLabs`, XDR `TeraGRID` 가 대표다. 회사는 이 축으로 **반복 매출(Recurring Revenue) 기반 모델을 확보했다**고 밝혔고 시리즈A 도 그 방향의 투자로 보인다. 매출 규모는 공개돼 있지 않다.",
-        "domains": ["공급망 보안 플랫폼", "보안 관제·XDR", "시스템·네트워크 보안 엔진", "임베디드·가상화 검증"],
+        "domains": [
+          "공급망 보안 플랫폼",
+          "보안 관제·XDR",
+          "시스템·네트워크 보안 엔진",
+          "임베디드·가상화 검증"
+        ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "쿤텍, 시리즈A 투자 유치…\"글로벌 시장서 인정받겠다\"", "url": "https://m.ddaily.co.kr/page/view/2025082009072015363", "publisher": "디지털데일리", "date": "2025-08-20" }
+          {
+            "title": "쿤텍, 시리즈A 투자 유치…\"글로벌 시장서 인정받겠다\"",
+            "url": "https://m.ddaily.co.kr/page/view/2025082009072015363",
+            "publisher": "디지털데일리",
+            "date": "2025-08-20"
+          }
         ]
       },
       {
         "name": "외부 보안 제품 공급·구축",
         "how": "회사 제품 목록에 Zscaler·Sonatype·MEND·Claroty·PikeOS·TASKING·Secure IC 처럼 **명백히 다른 회사의 제품**이 함께 올라 있다. 이를 고객 환경에 공급하고 붙이는 사업으로 읽히며, 설립 후 외부 투자 없이 버틸 수 있었던 현금 흐름의 상당 부분이 여기였을 가능성이 있다. **회사가 이 관계를 명시하지 않았으므로 추정이다.**",
-        "domains": ["보안 솔루션 구축·연동", "보안 관제·XDR"],
+        "domains": [
+          "보안 솔루션 구축·연동",
+          "보안 관제·XDR"
+        ],
         "confidence": "inferred",
         "sources": [
-          { "title": "COONTEC — About Us", "url": "https://coontec.com/about-us/", "publisher": "쿤텍", "summary": "솔루션 목록에 자사 제품과 해외 벤더 제품이 함께 나열돼 있다" }
+          {
+            "title": "COONTEC — About Us",
+            "url": "https://coontec.com/about-us/",
+            "publisher": "쿤텍",
+            "summary": "솔루션 목록에 자사 제품과 해외 벤더 제품이 함께 나열돼 있다"
+          }
         ]
       }
     ],
@@ -87,7 +123,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "쿤텍 [SCS사업그룹] 백엔드 개발자 3년 이상 채용 공고", "url": "https://www.wanted.co.kr/wd/370635", "publisher": "원티드" }
+          {
+            "title": "쿤텍 [SCS사업그룹] 백엔드 개발자 3년 이상 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/370635",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -100,7 +140,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "쿤텍 [NS사업그룹] 사이버 보안 프론트엔드 개발자 3~10년 채용 공고", "url": "https://www.wanted.co.kr/wd/374401", "publisher": "원티드" }
+          {
+            "title": "쿤텍 [NS사업그룹] 사이버 보안 프론트엔드 개발자 3~10년 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/374401",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -113,7 +157,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "[쿤텍 NS사업그룹] 보안솔루션 SW 개발자 채용 공고", "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53861021&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=1721e7bc-05c0-4ed7-8543-b3393dd58791", "publisher": "사람인" }
+          {
+            "title": "[쿤텍 NS사업그룹] 보안솔루션 SW 개발자 채용 공고",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53861021&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=1721e7bc-05c0-4ed7-8543-b3393dd58791",
+            "publisher": "사람인"
+          }
         ]
       },
       {
@@ -126,8 +174,16 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "쿤텍 [ES사업그룹] 임베디드 SW 테스팅 도구 개발자 채용 공고", "url": "https://www.wanted.co.kr/wd/350294", "publisher": "원티드" },
-          { "title": "COONTEC — About Us", "url": "https://coontec.com/about-us/", "publisher": "쿤텍" }
+          {
+            "title": "쿤텍 [ES사업그룹] 임베디드 SW 테스팅 도구 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/350294",
+            "publisher": "원티드"
+          },
+          {
+            "title": "COONTEC — About Us",
+            "url": "https://coontec.com/about-us/",
+            "publisher": "쿤텍"
+          }
         ]
       },
       {
@@ -140,7 +196,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "쿤텍 [SCS사업그룹] 백엔드 개발자 3년 이상 채용 공고", "url": "https://www.wanted.co.kr/wd/370635", "publisher": "원티드" }
+          {
+            "title": "쿤텍 [SCS사업그룹] 백엔드 개발자 3년 이상 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/370635",
+            "publisher": "원티드"
+          }
         ]
       }
     ],
@@ -177,7 +237,6 @@
       }
     ]
   },
-
   "salary": {
     "unit": "만원",
     "currency": "KRW",
@@ -198,7 +257,6 @@
       "시리즈A 투자 금액이 공개되지 않아 보상 여력을 가늠할 근거가 없다"
     ]
   },
-
   "people": [
     {
       "name": "방혁준",
@@ -236,9 +294,241 @@
       ]
     }
   ],
-
-  "postings": [],
-
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/370635",
+      "title": "[SCS사업그룹]백엔드 개발자 3년 이상",
+      "site": "wanted",
+      "verdict": "쿤텍 네 사업그룹 중 **웹 백엔드에 가장 가까운 자리**다 — Python·Django/FastAPI 로 자사 보안 솔루션의 서버를 만든다. 자격요건 다섯 줄은 어느 회사에나 있는 항목이라 **기술만 보면 흔한 공고**인데, 우대사항 여덟 줄 중 다섯이 전부 **맥락**이다: 정보보안 이해, 공급망보안 솔루션 이해, 폐쇄망 환경, B2B 유지보수, 금융권 프로젝트. 즉 **기술은 문턱이 낮고 도메인과 환경이 진짜 관문**이며, 뒤집으면 **읽어서 메울 수 있는 갭**이라는 뜻이기도 하다. ※ 공고 본문이 얇아(자격요건 138자) 학습 항목이 일곱 개다 — 없는 내용을 늘리지 않았다.",
+      "fit": {
+        "must_have": [
+          "백엔드 3년 이상, Python 기반 서버 개발",
+          "Django 또는 FastAPI",
+          "RDBMS 와 SQL"
+        ],
+        "can_learn": [
+          "공급망 보안 도메인(SBOM·취약점 대조) — 우대사항이고 공개 표준이라 읽어서 메운다",
+          "폐쇄망 배포 — 개념을 알면 절반은 따라온다",
+          "MSA·Docker·CI/CD (전부 우대사항이다)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "공급망 보안 — 내 제품 안에 남의 코드가 무엇이 들어 있나",
+          "from": "preference",
+          "quote": "공급망보안 솔루션에 대한 이해",
+          "priority": "high",
+          "why": "회사의 대표 자사 솔루션이 공급망 보안 `AEZIZ` 이고, 이 자리가 그 **플랫폼의 백엔드**다. 소프트웨어 공급망 보안은 결국 '우리 제품이 쓰는 남의 코드 목록(SBOM)을 만들고, 알려진 취약점과 대조하는 일'이라 **개념이 공개 표준으로 정리돼 있다** — 경력으로만 얻는 지식이 아니다. 이 공고에서 준비 대비 효과가 가장 크다.",
+          "gap_check": "SBOM 이 무엇이고 누가 왜 요구하는가? 그리고 '이 라이브러리 1.2.3 에 취약점이 있다'를 판정할 때 **오탐이 나는 이유**를 두 가지 이상 댈 수 있는가(버전 범위 표기, 배포판의 패치 백포팅)?",
+          "drill": "실제 프로젝트 하나에서 SBOM 을 뽑아 본다 — CycloneDX 나 SPDX 형식으로 의존성 목록을 만들고, OSV 나 NVD 에 대조해 취약점을 붙인다. 그다음 **오탐을 하나 찾아낸다**(버전은 걸리는데 실제로는 안 쓰는 코드 경로이거나, 배포판이 이미 백포트한 경우). 마지막으로 그 결과를 API 로 내려주는 작은 서비스를 만든다 — 이게 이 회사 제품의 축소판이다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "CycloneDX",
+              "url": "https://cyclonedx.org/",
+              "kind": "docs",
+              "note": "SBOM 표준 형식 중 하나"
+            },
+            {
+              "title": "SPDX",
+              "url": "https://spdx.dev/",
+              "kind": "docs"
+            },
+            {
+              "title": "OSV — 오픈소스 취약점 데이터베이스",
+              "url": "https://osv.dev/",
+              "kind": "docs"
+            },
+            {
+              "title": "NVD (National Vulnerability Database)",
+              "url": "https://nvd.nist.gov/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "폐쇄망 — 인터넷이 없는 곳에 설치되는 소프트웨어",
+          "from": "preference",
+          "quote": "폐쇄망 또는 사내망 환경 서비스 개발 경험",
+          "priority": "high",
+          "why": "보안 제품의 고객은 금융·방산·에너지처럼 **망이 닫힌 곳**이 많다. 그러면 익숙한 것들이 전부 안 된다 — `pip install` 이 안 되고, 컨테이너 이미지를 못 받아 오고, 우리가 SSH 로 들어갈 수도 없다. 게다가 이 제품은 **취약점 데이터베이스를 계속 갱신해야** 하는데 그것마저 오프라인으로 전달해야 한다. SaaS 만 해 본 사람에게 가장 낯선 제약이고, 그래서 준비하면 확실히 눈에 띈다.",
+          "gap_check": "인터넷 없는 서버에 파이썬 애플리케이션을 설치해야 한다. 의존성을 어떻게 가져가는가? 그리고 컨테이너 이미지는? 라이선스 검증이 외부 서버를 부른다면 어떻게 하는가?",
+          "drill": "네트워크를 끊은 VM 하나를 준비해 **거기에 앱을 설치해 본다.** (1) `pip download` 로 휠하우스를 만들어 옮기고, (2) 컨테이너 이미지를 tar 로 저장해 옮겨 로드하고, (3) 취약점 DB 같은 데이터 갱신 번들을 만들어 적용하는 절차를 짠다. 마지막으로 **우리가 접속 못 하는 상태에서 진단**할 수 있게 로그·설정·버전을 한 번에 모으는 명령을 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "pip download",
+              "url": "https://pip.pypa.io/en/stable/cli/pip_download/",
+              "kind": "docs"
+            },
+            {
+              "title": "docker save / load",
+              "url": "https://docs.docker.com/reference/cli/docker/image/save/",
+              "kind": "docs"
+            },
+            {
+              "title": "Harbor — 사설 레지스트리",
+              "url": "https://goharbor.io/docs/",
+              "kind": "docs",
+              "note": "폐쇄망 안에 이미지 저장소를 두는 흔한 방법"
+            }
+          ]
+        },
+        {
+          "topic": "Django 와 FastAPI 를 함께 적은 이유",
+          "from": "qualification",
+          "quote": "Django, FastAPI 등 웹 프레임워크 활용 경험",
+          "priority": "core",
+          "why": "둘은 성격이 반대다 — Django 는 관리자 화면·ORM·인증이 다 들어 있어 **B2B 제품의 백오피스를 빨리 세우는 데** 강하고, FastAPI 는 얇고 비동기라 **분석 결과를 내려주는 API** 에 맞는다. 회사가 둘을 나란히 적었다는 것은 제품 안에서 **역할이 갈려 있을 가능성**이 크다는 뜻이고, 면접에서 '언제 무엇을 쓰나'를 물을 만한 자리다.",
+          "gap_check": "같은 기능을 Django 와 FastAPI 로 만든다면 무엇이 달라지는가? Django ORM 을 쓰면서 비동기가 필요할 때 어디서 막히는가?",
+          "drill": "취약점 조회 API 를 두 프레임워크로 만든다 — Django(+DRF)로 한 번, FastAPI 로 한 번. **관리자 화면이 필요한 요구**(취약점 예외 처리 승인 같은)를 넣어 Django 가 얼마나 빨리 끝내는지 보고, 외부 취약점 DB 를 여러 개 동시에 조회하는 요구를 넣어 FastAPI 쪽이 어떻게 다른지 잰다. 두 판의 코드량과 응답 시간을 표로 남긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Django 문서",
+              "url": "https://docs.djangoproject.com/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "FastAPI 문서",
+              "url": "https://fastapi.tiangolo.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "Django — 비동기 지원",
+              "url": "https://docs.djangoproject.com/en/stable/topics/async/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "데이터 모델링과 쿼리 최적화 — 스캔 결과는 계속 쌓인다",
+          "from": "task",
+          "quote": "데이터베이스 모델링 및 쿼리 최적화",
+          "priority": "core",
+          "why": "담당 업무에 모델링과 최적화를 **한 줄로 묶어** 적었다. 공급망 보안 제품의 데이터는 성격이 뚜렷하다 — 프로젝트마다 의존성 수백~수천 개가 있고, 스캔할 때마다 그 스냅샷이 쌓이며, 사용자는 '지난달 대비 뭐가 늘었나'를 묻는다. **시간에 따라 반복 적재되는 데이터**를 어떻게 설계하느냐가 조회 속도를 결정한다.",
+          "gap_check": "매일 스캔 결과를 통째로 저장하면 한 달 뒤 무슨 일이 생기는가? '변한 것만' 저장하는 방식과 비교하면 조회는 어떻게 달라지는가?",
+          "drill": "프로젝트–스캔–의존성–취약점 4단 모델을 만들고 스캔 스냅샷을 30일치 넣는다. 그다음 세 질의를 짜서 `EXPLAIN` 으로 비교한다 — 최신 상태, 기간 내 신규 취약점, 특정 라이브러리를 쓰는 모든 프로젝트. **마지막 질의가 왜 어려운지**(역방향 조회) 확인하고 인덱스를 설계한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "PostgreSQL — EXPLAIN 사용하기",
+              "url": "https://www.postgresql.org/docs/current/using-explain.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PostgreSQL — 인덱스",
+              "url": "https://www.postgresql.org/docs/current/indexes.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "B2B 솔루션을 오래 들고 가기 — 고객사마다 갈라진다",
+          "from": "preference",
+          "quote": "B2B 솔루션 개발 및 유지보수 경험",
+          "priority": "high",
+          "why": "'개발'이 아니라 **'개발 및 유지보수'**라고 쓴 것이 신호다. B2B 보안 제품은 고객사마다 요구가 다르고, 폐쇄망이라 **업데이트가 동시에 안 된다** — 결국 여러 버전이 동시에 살아 있게 된다. 회사가 자사 솔루션 중심의 반복 매출로 옮겨 가는 국면이라, **제품을 오래 들고 가 본 경험**이 특히 값나가는 자리다.",
+          "gap_check": "고객 A 만 필요로 하는 기능 요청이 왔다. 제품에 넣을 것인가, 설정으로 뺄 것인가, 거절할 것인가? 그 판단 기준을 말할 수 있는가?",
+          "drill": "만든 서비스에 **고객별 차이를 흡수하는 층**을 만든다 — 기능 플래그와 설정 파일로 동작을 바꾸되 코드는 하나로 유지한다. 그다음 서로 다른 설정 두 벌로 같은 이미지를 띄워 보고, **설정으로 못 덮는 요구**를 하나 만들어 그때 무엇을 하는지 정리한다(별도 빌드? 플러그인? 거절?).",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Martin Fowler — Feature Toggles",
+              "url": "https://martinfowler.com/articles/feature-toggles.html",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "정보보안 기본기 — 보안 회사의 백엔드라는 것",
+          "from": "preference",
+          "quote": "정보보안 분야에 대한 이해와 관심",
+          "priority": "high",
+          "why": "보안 제품을 만드는 회사에서는 **우리 코드가 먼저 안전해야 한다.** 고객이 금융·방산이라 보안 점검을 통과해야 납품되고, 그때 흔히 걸리는 것이 웹 애플리케이션의 기본 항목들이다. '이해와 관심'이라고 부드럽게 썼지만, 실무에서는 **취약점 진단 결과를 받아 고치는 일**이 주기적으로 돌아온다.",
+          "gap_check": "내가 만든 API 에서 인증·인가·입력 검증·비밀 관리 중 가장 약한 곳은 어디인가? SQL 인젝션이 ORM 을 써도 나는 경우를 아는가?",
+          "drill": "만든 서비스를 **OWASP Top 10 기준으로 스스로 점검**한다. 특히 (1) 권한 검사를 빠뜨린 엔드포인트, (2) ORM 에서 raw SQL 을 쓰는 지점, (3) 로그에 찍히는 비밀값을 찾아 고친다. 그다음 의존성 취약점 스캐너를 CI 에 붙여 **빌드가 취약한 라이브러리에서 깨지게** 만든다 — 이 회사 제품이 하는 일을 내 파이프라인에 적용해 보는 셈이다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "OWASP Top 10",
+              "url": "https://owasp.org/www-project-top-ten/",
+              "kind": "docs"
+            },
+            {
+              "title": "OWASP ASVS",
+              "url": "https://owasp.org/www-project-application-security-verification-standard/",
+              "kind": "docs",
+              "note": "점검 항목을 체크리스트로 쓰기 좋다"
+            }
+          ]
+        },
+        {
+          "topic": "Docker 와 CI/CD — 폐쇄망까지 이어지는 자동화",
+          "from": "preference",
+          "quote": "Docker, CI/CD 등 개발 환경 자동화 경험",
+          "priority": "high",
+          "why": "보통의 회사라면 흔한 우대사항인데 여기서는 **끝이 다르다.** 파이프라인의 산출물이 '우리 클라우드에 배포'가 아니라 **'고객이 들고 들어갈 수 있는 꾸러미'**여야 하기 때문이다 — 이미지 tar, 오프라인 패키지, 설치 스크립트, 버전 기록. 자동화가 개발 편의가 아니라 납품 방식이 된다.",
+          "gap_check": "빌드 결과물을 인터넷 없는 고객사에 전달한다면 무엇을 함께 넣어야 하는가? 그리고 고객이 설치한 버전을 나중에 어떻게 확인하는가?",
+          "drill": "CI 를 만들어 **오프라인 설치 번들을 산출물로** 내놓게 한다 — 컨테이너 이미지 tar, 의존성 휠, 설정 예시, 버전·체크섬 파일. 그다음 네트워크 없는 VM 에서 그 번들만으로 설치가 되는지 확인하고, 설치 후 버전을 확인하는 명령을 함께 넣는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Docker 문서",
+              "url": "https://docs.docker.com/",
+              "kind": "docs"
+            },
+            {
+              "title": "GitHub Actions 문서",
+              "url": "https://docs.github.com/en/actions",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "SBOM 스캐너를 작게 만들어 공개해 둔다",
+          "why": "우대사항의 '공급망보안 솔루션에 대한 이해'를 **말이 아니라 물건으로** 답하는 길이다. 의존성을 뽑아 SBOM 을 만들고 OSV 에 대조해 결과를 API 로 내려주는 서비스면, 이 회사 제품(AEZIZ)의 축소판이라 면접이 바로 실무 대화가 된다.",
+          "effort": "일주일"
+        },
+        {
+          "idea": "폐쇄망 설치 번들을 실제로 만들어 본다",
+          "why": "SaaS 경력자 대부분에게 없는 경험이고, 이 회사 고객(금융·방산·에너지)에서는 기본 조건이다. 네트워크 끊은 VM 에 설치까지 성공한 기록이 있으면 우대사항 한 줄을 통째로 덮는다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "지원할 사업그룹을 지원서에 밝힌다",
+          "why": "쿤텍은 SCS·NS·ES·EC 네 그룹이 각각 다른 스택으로 공고를 낸다(웹 백엔드 / 관제 프론트 / 커널·네트워크 / 임베디드). 어느 그룹인지 밝히고 그쪽 이야기만 하면 회사 구조를 읽고 왔다는 뜻이 된다.",
+          "effort": "한 줄"
+        },
+        {
+          "idea": "같은 자리의 중복 공고를 정리하고 지원한다",
+          "why": "점핏·사람인에 `백엔드개발자 경력직(3↑)`과 `(6↑)` 처럼 **연차 구간만 다른 같은 공고**가 여러 건 올라와 있다. 모집중 23건이지만 실제 자리는 그보다 적으므로, 자기 연차에 맞는 한 건을 골라 지원한다.",
+          "effort": "십 분"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "SBOM 이 무엇이고 취약점 대조에서 오탐이 왜 나는가",
+          "인터넷 없는 고객사에 파이썬 애플리케이션과 데이터를 어떻게 전달하는가",
+          "Django 와 FastAPI 를 각각 어디에 쓰겠는가",
+          "매일 쌓이는 스캔 결과를 어떻게 모델링하고 조회를 어떻게 빠르게 하는가",
+          "고객사마다 다른 요구를 코드 하나로 어떻게 흡수하는가",
+          "본인이 만든 API 에서 권한·입력 검증·비밀 관리 중 약한 곳은 어디였는가",
+          "빌드 산출물을 고객이 들고 들어갈 수 있는 형태로 어떻게 만드는가"
+        ],
+        "sources": [
+          {
+            "title": "쿤텍 [SCS사업그룹] 백엔드 개발자 3년 이상 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/370635",
+            "publisher": "원티드",
+            "summary": "자격요건은 평범하지만 우대사항 여덟 줄 중 다섯이 도메인·환경(정보보안·공급망보안·폐쇄망·B2B·금융권)이다"
+          }
+        ]
+      }
+    }
+  ],
   "open_questions": [
     "매출·영업이익을 밝힌 공개 자료를 찾지 못했다. '설립 이후 외부 투자 없이 매출과 영업이익을 확대해 왔다'는 서술만 확인된다.",
     "시리즈A 투자 금액이 공개되지 않았다.",
