@@ -1470,6 +1470,254 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/382268",
+      "title": "Android Developer",
+      "site": "wanted",
+      "verdict": "**같은 회사 `Device Software Engineer(Android)`(4-15년)와 층이 다르다.** 저기가 기기 안쪽(Framework·HAL·AOSP·양산)이라면 **여기는 그 위에서 도는 앱**이다 — 겹치지 않으니 둘 다 볼 수 있고, 앱 개발자에게는 이쪽이 맞다. 그런데 이 공고에는 더 중요한 특징이 있다: **공고 하나에 팀이 셋 들어 있다.** 로컬연결(오프라인에서도 결제가 끊기지 않게), FacePay(얼굴로 2초 안에 결제), Client Platform(빠른 배포와 롤백·DX). 하는 일도 준비할 것도 셋이 상당히 다르므로, **지원 전에 어느 팀인지부터 정하는 것이 이 공고의 첫 번째 과제**다. 공통으로 깔린 것은 하나 — **여기 앱은 폰이 아니라 매장의 단말기에서 돌고, 인터넷이 끊겨도 장사는 계속돼야 한다.** 경력 3-8년, Kotlin·Compose·Coroutines.",
+      "fit": {
+        "must_have": [
+          "복잡한 Android 상용 서비스의 구조 설계 경험",
+          "Kotlin 코드베이스에서 품질·생산성을 개선해 본 경험",
+          "다양한 기기에서 일관된 UI/인터랙션을 설계해 본 경험"
+        ],
+        "can_learn": [
+          "결제 도메인(카드 리딩 → VAN 승인) — 공고가 배울 수 있다고 명시했다",
+          "TDS(Toss Design System) — 입사 후 쓰는 사내 시스템",
+          "펌웨어·OS 협업, 멀티플랫폼 SDK"
+        ]
+      },
+      "study": [
+        {
+          "topic": "먼저 팀을 고른다 — 공고 하나에 자리가 셋",
+          "from": "task",
+          "quote": "토스플레이스 Android 챕터는 현재 최고의 안정성과 매끄러운 결제 경험이라는 두 가지의 목표에 집중하고 있어요. 챕터의 목표에 따라 다음 3개의 조직에서 채용을 진행해요.",
+          "priority": "core",
+          "why": "**이 공고를 처음부터 끝까지 준비하려 들면 아무것도 깊게 못 한다.** 세 팀이 실제로 꽤 다르기 때문이다 — 로컬연결은 **동기화와 오프라인**(데이터 문제), FacePay 는 **카메라·인증·지연시간**(네이티브 성능 문제), Client Platform 은 **배포·계측·DX**(운영 문제)다. 그리고 이 구분은 면접에서도 그대로 드러난다. 먼저 자기 경험과 가장 가까운 팀을 하나 고르고, 아래 항목 중 **그 팀에 해당하는 둘을 깊게**, 나머지는 대화가 되는 정도로만 준비하는 것이 맞다.",
+          "gap_check": "내 경험이 데이터 동기화·네이티브 성능·배포와 계측 중 어디에 가장 가까운가? 세 팀의 일을 각각 한 문장으로 설명할 수 있는가? 지원할 때 팀을 밝힐 수 있는가(문의하거나 자기소개에 적기)?",
+          "drill": "**세 팀을 각각 한 문장으로 적고 그중 하나를 고른다.** 그리고 고른 이유를 **내 경험의 구체적인 사례 하나**와 묶어 세 줄로 쓴다. 이 세 줄이 지원서 첫 문단이 되고, 아래 항목 중 무엇을 깊게 팔지도 여기서 정해진다.",
+          "hours": 2,
+          "resources": [
+            {
+              "title": "토스플레이스 Android Developer 채용 공고",
+              "url": "https://www.wanted.co.kr/wd/382268",
+              "kind": "docs",
+              "note": "세 팀 설명이 공고 본문에 그대로 있다"
+            }
+          ]
+        },
+        {
+          "topic": "Local First — 인터넷이 끊겨도 장사는 계속된다",
+          "from": "task",
+          "quote": "토스포스·토스프론트 간 연결 안정성을 최대화하고, 인터넷이 불안정한 환경에서도 결제가 끊기지 않도록 오프라인에서 결점없이 동작하는 Local First 기반의 개발자 친화적 SDK Platform을 구축하고 있어요.",
+          "priority": "core",
+          "why": "**이 회사 앱과 보통의 앱을 가르는 가장 큰 문장이다.** 일반 앱은 인터넷이 끊기면 '네트워크 오류'를 띄우면 되지만, **가게는 그 순간에도 손님을 받아야 한다.** 그래서 Local First — 앱이 서버가 아니라 **자기 저장소를 먼저 믿고 동작하고**, 연결이 돌아오면 맞춘다. 어려운 부분은 저장이 아니라 **나중에 맞출 때**다: 같은 결제가 두 번 올라가지 않게, 서버와 기기가 다르게 알고 있을 때 무엇을 정답으로 삼을지, 순서가 뒤바뀐 요청을 어떻게 처리할지.",
+          "gap_check": "오프라인 중에 쌓인 요청을 복구 후 보낼 때 중복을 어떻게 막는가(멱등키)? 기기와 서버의 값이 다르면 무엇을 정답으로 삼는가? 오프라인 중에는 못 하게 막아야 하는 기능이 있는가?",
+          "drill": "**오프라인 우선 앱을 하나 만든다.** (1) Room 에 먼저 쓰고 화면은 로컬만 보게 하고, (2) 서버 전송을 큐로 빼서 WorkManager 로 재시도하고, (3) **비행기 모드로 열 건을 쌓았다가 복구**시켜 중복·순서·충돌이 어떻게 나는지 직접 본다. (4) 멱등키와 충돌 규칙을 넣어 고친다. 4번까지 간 경험이 이 팀에 그대로 답한다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Android — 오프라인 우선 앱",
+              "url": "https://developer.android.com/topic/architecture/data-layer/offline-first",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — WorkManager",
+              "url": "https://developer.android.com/topic/libraries/architecture/workmanager",
+              "kind": "docs"
+            },
+            {
+              "title": "Local-first software (Ink & Switch)",
+              "url": "https://www.inkandswitch.com/local-first/",
+              "kind": "post",
+              "note": "이 용어의 출처가 된 글"
+            }
+          ]
+        },
+        {
+          "topic": "기기와 기기가 서로를 찾는 문제",
+          "from": "task",
+          "quote": "디바이스 사이의 연결 UX를 개선하여 연결 문제를 완전히 해결해요.",
+          "priority": "core",
+          "why": "카운터에는 기기가 **둘 이상** 있다 — 사장님이 보는 포스와 손님이 보는 단말(토스포스·토스프론트). 이 둘이 서로를 찾고 붙어 있어야 결제가 된다. 그런데 **매장 무선 환경은 최악에 가깝다**: 남의 와이파이가 겹치고, 전자레인지가 돌고, 기기를 옮기고, 블루투스가 끊긴다. 그래서 이 문제는 프로토콜 지식보다 **끊겼을 때 사용자에게 무엇을 보여 주고 어떻게 되돌리느냐**의 문제에 가깝다 — 공고가 '연결'이 아니라 **`연결 UX`** 라고 쓴 이유다.",
+          "gap_check": "블루투스·와이파이 연결이 끊겼을 때 사용자에게 무엇을 보여 주는가 — 재연결을 자동으로 하는가? 결제 도중에 끊기면 어디까지 되돌리는가? 연결 실패를 어떻게 계측하는가?",
+          "drill": "**폰 두 대를 붙였다 떼어 본다.** (1) BLE 나 Wi-Fi Direct 로 폰 두 대를 연결해 간단한 메시지를 주고받고, (2) 한 대를 멀리 가져가거나 블루투스를 껐다 켜서 **끊김과 재연결을 재현**하고, (3) 화면에 상태(연결 중·끊김·재시도)를 정직하게 표시하고, (4) 통신 중간에 끊겼을 때 **작업을 안전하게 되돌리거나 이어받는** 흐름을 만든다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Android — Bluetooth Low Energy",
+              "url": "https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — Wi-Fi Direct (P2P)",
+              "url": "https://developer.android.com/develop/connectivity/wifi/wifi-direct",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "2초 — 얼굴로 결제하는 시간 예산",
+          "from": "task",
+          "quote": "Android 네이티브 기술의 깊은 영역을 다루며, 2초 안에 인증이 완료되는 빠르고 안전한 결제 경험을 구현하고 있어요.",
+          "priority": "core",
+          "why": "**숫자가 박힌 요구사항은 드물고, 박힌 순간 준비할 것이 분명해진다.** 2초 안에 카메라를 켜고, 얼굴을 잡고, 특징을 뽑고, 서버에 물어보고, 결과를 띄워야 한다. 이 예산을 지키려면 **어디에 몇 밀리초가 쓰이는지 재는 것**부터 시작해야 하고, 그다음은 대개 **미리 하기**(카메라 미리 준비), **덜 하기**(해상도·프레임 조절), **딴 데서 하기**(온디바이스 추론)로 풀린다. 공고가 `네이티브 기술의 깊은 영역` 이라고 쓴 것이 이 대목이다.",
+          "gap_check": "카메라를 켜서 첫 프레임이 나오기까지 몇 ms 인가 — 재 본 적이 있는가? 온디바이스 추론과 서버 호출 중 어디를 줄여야 하는지 어떻게 판단하는가? 실패했을 때(얼굴을 못 잡음) 사용자를 어떻게 안내하는가?",
+          "drill": "**시간 예산을 만들어 지켜 본다.** (1) CameraX 로 얼굴 인식(ML Kit) 앱을 만들고, (2) **구간마다 시간을 찍어** 카메라 준비·검출·후처리에 각각 몇 ms 가 드는지 표로 만들고, (3) 저사양 기기에서 같은 표를 만들어 비교하고, (4) 가장 큰 구간 하나를 골라 줄인 뒤 전후를 비교한다. **이 표 자체가 면접 자료**다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "CameraX",
+              "url": "https://developer.android.com/media/camera/camerax",
+              "kind": "docs"
+            },
+            {
+              "title": "ML Kit — 얼굴 검출",
+              "url": "https://developers.google.com/ml-kit/vision/face-detection/android",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — 앱 시작 시간과 지연 측정",
+              "url": "https://developer.android.com/topic/performance/vitals/launch-time",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "빠르게 감지·중단·롤백 — 남의 가게에 나간 앱",
+          "from": "task",
+          "quote": "배포 리스크를 줄이고 장애 발생 시 빠르게 감지·중단·롤백할 수 있는 환경을 구축해요.",
+          "priority": "core",
+          "why": "**세 동사가 순서대로 적혀 있다.** 이유는 앞선 `Server Developer(Platform)` 공고와 같지만 여기가 더 어렵다 — **서버는 내가 되돌리면 끝이지만, 앱은 이미 남의 기기에 들어가 있다.** 스토어 배포는 되돌리는 데 시간이 걸리고, 업데이트를 받을지도 기기 사정에 달렸다. 그래서 실무의 답은 대개 **'되돌리기'가 아니라 '끄기'** 다: 새 기능을 서버 스위치 뒤에 두고 단계적으로 열고, 이상하면 **재배포 없이 끈다.** Client Platform 팀의 일이 이것이다.",
+          "gap_check": "앱에서 문제를 '감지'하려면 무엇이 있어야 하는가(크래시 수집·지표·알림)? 재배포 없이 기능을 끌 수 있는 구조를 만들어 본 적이 있는가? 단계적 배포를 어떤 기준으로 멈추는가?",
+          "drill": "**끌 수 있는 앱을 만든다.** (1) 새 기능을 원격 설정 뒤에 넣어 **서버에서 끄면 즉시 사라지게** 하고, (2) 크래시·주요 지표를 수집해 대시보드에 붙이고, (3) **일부러 크래시가 나는 버전**을 일부 사용자에게만 내보내고, (4) 감지에서 끄기까지 걸린 시간을 잰다. 4번의 숫자가 이 팀에 하는 대답이다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Firebase Remote Config",
+              "url": "https://firebase.google.com/docs/remote-config",
+              "kind": "docs"
+            },
+            {
+              "title": "Play Console — 단계적 출시와 출시 중단",
+              "url": "https://support.google.com/googleplay/android-developer/answer/6346149",
+              "kind": "docs"
+            },
+            {
+              "title": "Firebase Crashlytics",
+              "url": "https://firebase.google.com/docs/crashlytics",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "상용 앱의 구조 — 자격요건의 첫 줄",
+          "from": "qualification",
+          "quote": "복잡한 Android 상용 서비스의 구조를 설계하고, 확장성과 유지보수성을 깊이 고민해보신 분을 찾아요.",
+          "priority": "core",
+          "why": "**자격요건 네 줄 중 첫 줄이고, 경력 3-8년의 실질적인 기준선이다.** 그리고 이 회사에서 '확장성'은 추상적인 말이 아니다 — 공고의 다른 줄이 그 이유를 밝힌다: `여러 앱/제품/단말 조합에서 공통 기능을 재사용`. 앱이 하나가 아니고 단말도 여러 종류라, **어디까지를 공통으로 빼고 어디부터 제품별로 둘지**가 실제 설계 문제가 된다. 면접에서 '구조를 어떻게 나눴나'가 아니라 **'나눈 뒤에 무엇이 편해졌나'** 를 물을 가능성이 높다.",
+          "gap_check": "모듈을 나눈 기준을 한 문장으로 말할 수 있는가 — 그리고 나눈 뒤 무엇이 좋아졌는가? 공통 모듈이 제품별 요구로 오염되는 것을 어떻게 막았는가? 빌드 시간이나 신규 화면 추가 시간이 줄었는가(숫자로)?",
+          "drill": "**내 프로젝트를 모듈로 쪼개고 숫자를 잰다.** (1) 앱 하나를 feature·core·design 모듈로 나누고, (2) **쪼개기 전후의 빌드 시간을 재고**, (3) 같은 코드로 **성격이 다른 두 앱**(예: 화면이 큰 버전과 작은 버전)을 만들어 보고, (4) 그 과정에서 공통 모듈이 어떻게 오염되는지 겪고 규칙을 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Android — 앱 모듈화 가이드",
+              "url": "https://developer.android.com/topic/modularization",
+              "kind": "docs"
+            },
+            {
+              "title": "Now in Android (구글 공식 예제 앱)",
+              "url": "https://github.com/android/nowinandroid",
+              "kind": "repo",
+              "note": "모듈 구조의 실제 예"
+            }
+          ]
+        },
+        {
+          "topic": "여러 기기에서 같은 경험 — Compose 와 Model-View-Whatever",
+          "from": "qualification",
+          "quote": "다양한 디바이스 환경에서도 일관된 사용자 경험을 제공하기 위한 UI 구조와 인터랙션을 설계해 본 경험이 있는 분을 선호해요.",
+          "priority": "high",
+          "why": "폰 앱에서는 화면 크기 몇 가지만 신경 쓰면 되지만, 여기서는 **손님 쪽 단말·사장님 쪽 포스·크기가 다른 기기들**이 섞인다. 그래서 이 요구는 반응형 레이아웃 이야기이면서 동시에 **상태 관리 이야기**다 — 같은 화면이 기기마다 다르게 배치돼도 동작은 같아야 하기 때문이다. 스택도 이를 뒷받침한다: `Jetpack Compose`, `Kotlin Coroutines`, 그리고 **`Model-View-Whatever`** — 특정 아키텍처 이름을 고집하지 않겠다는 표현이라, 면접에서 **패턴 이름보다 이유**를 물을 가능성이 높다.",
+          "gap_check": "화면 크기에 따라 레이아웃을 바꿀 때 상태를 어떻게 유지하는가? Compose 에서 불필요한 재구성(recomposition)을 어떻게 찾아 줄이는가? MVVM·MVI 중 무엇을 왜 골랐는지 이름 없이 설명할 수 있는가?",
+          "drill": "**한 화면을 두 크기로 만든다.** (1) Compose 로 목록·상세 화면을 만들고, (2) 큰 화면에서는 둘이 나란히, 작은 화면에서는 따로 뜨게 하되 **상태는 공유**하게 하고, (3) Layout Inspector 로 재구성 횟수를 보고 줄이고, (4) 화면 회전·크기 변경에서 상태가 살아남는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Compose — 적응형 레이아웃",
+              "url": "https://developer.android.com/develop/ui/compose/layouts/adaptive",
+              "kind": "docs"
+            },
+            {
+              "title": "Compose 성능 — 재구성 줄이기",
+              "url": "https://developer.android.com/develop/ui/compose/performance",
+              "kind": "docs"
+            },
+            {
+              "title": "Android — 앱 아키텍처 가이드",
+              "url": "https://developer.android.com/topic/architecture",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "오프라인에 쌓았다가 복구시켜 중복을 만들어 본 기록",
+          "why": "로컬연결 팀의 문장이 **`오프라인에서 결점없이 동작하는 Local First`** 다. 비행기 모드로 열 건을 쌓았다가 복구시켜 **중복과 순서 뒤바뀜을 직접 재현하고 멱등키로 고친** 이야기는, 이 팀에 가장 정확히 답한다.",
+          "effort": "나흘"
+        },
+        {
+          "idea": "'몇 ms 가 어디에 쓰이는지' 표를 만들어 간다",
+          "why": "FacePay 팀에는 **2초**라는 숫자가 박혀 있다. 카메라 준비·검출·후처리를 구간별로 재고 저사양 기기와 비교한 표는, 최적화 경험이 없어도 **재는 습관**을 보여 준다 — 이 팀에서는 그게 먼저다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "'재배포 없이 끄는' 구조를 만들어 본 기록",
+          "why": "Client Platform 팀의 `감지·중단·롤백` 은 앱에서 특히 어렵다 — **이미 남의 기기에 들어가 있기 때문**이다. 기능 플래그로 원격에서 끄고, 감지에서 끄기까지 걸린 시간을 잰 기록은 이 팀의 언어 그대로다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "지원서에 팀을 밝힌다",
+          "why": "공고가 **세 조직을 함께 뽑는다**고 밝혔다. 어느 팀에 왜 맞는지를 자기 경험과 묶어 첫 문단에 적으면, 읽는 사람이 **어디로 보낼지 바로 안다.** 반대로 안 적으면 세 팀 어디에도 특별히 맞지 않는 지원서가 된다.",
+          "effort": "한 시간"
+        },
+        {
+          "idea": "결제 도메인의 말을 익혀 간다 — 카드 리딩부터 VAN 승인까지",
+          "why": "공고가 `카드 리딩부터 VAN 승인까지의 결제 도메인을 경험하고 새로운 지식을 익힐 수 있는 기회` 라고 **배울 수 있다고** 적었으니 필수는 아니다. 다만 **VAN 이 무엇이고 승인이 어떤 경로로 오가는지** 한 시간만 읽어 가도 대화의 결이 달라진다.",
+          "effort": "한 시간"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "세 팀 중 어디에 지원하는가 — 그 이유는",
+          "오프라인 중에 쌓인 요청을 복구 후 보낼 때 중복을 어떻게 막는가",
+          "기기와 서버의 값이 다르면 무엇을 정답으로 삼는가",
+          "결제 도중에 기기 연결이 끊기면 어디까지 되돌리는가",
+          "카메라를 켜서 첫 프레임이 나오기까지 몇 ms 인가 — 재 본 적이 있는가",
+          "온디바이스 추론과 서버 호출 중 어디를 줄여야 하는지 어떻게 판단하는가",
+          "앱에서 문제를 감지하려면 무엇이 있어야 하는가",
+          "재배포 없이 기능을 끌 수 있는 구조를 만들어 본 적이 있는가",
+          "모듈을 나눈 기준은 무엇이고, 나눈 뒤 무엇이 좋아졌는가",
+          "Compose 에서 불필요한 재구성을 어떻게 찾아 줄이는가",
+          "MVVM·MVI 중 무엇을 왜 골랐는지 패턴 이름 없이 설명할 수 있는가"
+        ],
+        "sources": [
+          {
+            "title": "토스플레이스 Android Developer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/382268",
+            "publisher": "원티드",
+            "summary": "Android 챕터의 세 팀(로컬연결·FacePay·Client Platform)을 함께 채용. Kotlin·Coroutines·Jetpack Compose·TDS·Model-View-Whatever"
+          },
+          {
+            "title": "토스플레이스 Device Software Engineer (Android) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/382661",
+            "publisher": "원티드",
+            "summary": "같은 회사의 기기 안쪽 자리 — 이 공고와 층이 다르다(Framework·HAL·AOSP·양산)"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
