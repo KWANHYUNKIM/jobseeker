@@ -4,39 +4,37 @@
 
 ## 지금 쓰는 중
 
-**커넥트웨이브 (`connectwave`) — `in_progress`.** 공고 4건 · 학습 25개.
-(전체는 회사 9곳 · 완주 8곳 · 공고 31건 · 학습 242개 · 오류 0 · **경고 0**.)
+**커넥트웨이브 (`connectwave`) — `in_progress`.** 공고 5건 · 학습 32개.
+(전체는 회사 9곳 · 완주 8곳 · 공고 32건 · 학습 249개 · 오류 0 · **경고 0**.)
 
 | 채운 공고 | 무엇을 하는 자리 | 연차 | 학습 |
 |---|---|---|---|
-| `[메이크샵] 백엔드 개발자` (wanted/368346) | 주문·결제 + PHP↔NestJS 전환 | 3-8 | 7 |
+| `[메이크샵] 백엔드` (wanted/368346) | 주문·결제 + PHP↔NestJS 전환 | 3-8 | 7 |
 | `[Consumer Commerce] Data Engineer` (wanted/295194) | 수집→레이크→품질→서빙 | 3-15 | 7 |
-| `[메이크샵] 풀스택 개발자` (wanted/368343) | 고객사별 커스텀 흡수 | 3-8 | 4 |
-| `[CC CTO] Data Analytics Engineer` (wanted/370593) | **지표의 뜻을 정하는 일** | 3-8 | 7 |
+| `[메이크샵] 풀스택` (wanted/368343) | 고객사별 커스텀 흡수 | 3-8 | 4 |
+| `[CC CTO] Data Analytics Engineer` (wanted/370593) | 지표의 뜻을 정하기 | 3-8 | 7 |
+| `[CC CTO] Search Engineer` (wanted/273652) | **검색 엔진을 만들기** | 4-10 | 7 |
 
-**데이터 자리 둘은 도구가 겹치는데 일이 달랐다** — DE 는 옮기고 쌓고 내주는 쪽,
-AE 는 쌓인 것 위에서 숫자의 뜻을 정하는 쪽(지표 Contract·시맨틱 레이어·Superset).
-서로의 sources 와 edge 에 상대를 링크했다. 이 회사에서 이 방식이 세 번째로 통했다.
+검색은 예상대로 **이 회사에서 도메인 값이 가장 컸다.** 가장 특이한 줄은
+`형태소 분석기 개발 및 운영` — 남의 분석기를 쓰는 게 아니라 직접 만든다는 뜻이고,
+한국어 상품명(`갤럭시버즈3프로`)을 다루려면 그럴 수밖에 없다.
+**검색 '품질을 재는' 쪽은 AE 공고에 있으므로** 여기는 엔진 쪽으로 축을 갈랐다.
 
-> 공고에 **`셀프서비스 통계 MCP`** 가 적혀 있었다. AI 도구가 사내 지표를 표준 정의로
-> 물어보는 창구를 만들겠다는 뜻으로 읽힌다 — **지금 이걸 공고에 쓰는 회사는 드물다.**
-> edge 에 "시맨틱 레이어를 MCP 서버로 감싸 보라"를 넣었다.
+**남은 것과 판단 — 완주가 가까워졌다**
 
-**다음 순서**
+1. `[CC CTO] Machine Learning Engineer` (wanted/382080, 4-15년) — **본문 미열람.**
+   추천·생성형 AI(PLAi) 쪽으로 보인다. 검색·AE 와 겹칠 수 있으니 본문을 먼저 읽는다.
+2. 5년 이상 다섯 건 — `Backend Engineer(스토어플랫폼)`·`BE(지도/예약/자동차)`·
+   `Billing&Settlement Platform BE`·`DevOps Engineer` (모두 5-11년),
+   `[Consumer Commerce] 프론트엔드`(7년↑).
+   **이 중 `Billing&Settlement Platform BE` 는 도메인 값이 커 보인다**(정산은 커머스에서
+   가장 틀리면 안 되는 자리다). 하나쯤 쓰고 나머지는 이유를 남기는 쪽을 권한다.
+3. jobkorea·dev 사이트의 3건은 원티드와 **같은 자리의 중복**이다(Data Analytics
+   Engineer, 메이크샵 백엔드, 플레이오토 솔루션 개발자). 완주 계산에서 빼고
+   `open_questions` 에 적는다.
 
-1. `[CC CTO] Search Engineer` (wanted/273652, 4-10년) — **이 회사에서 도메인 값이 가장
-   클 자리.** AE 공고에서 이미 `검색 품질`·`카탈로그 매칭` 을 다뤘으니, 겹치면 그쪽을
-   가리키고 **엔진·랭킹·색인 쪽**으로 축을 잡는다. 본문 미열람.
-2. `[CC CTO] Machine Learning Engineer` (wanted/382080, 4-15년) — 추천·생성형 AI(PLAi).
-3. 5년 이상 다섯 건(`Backend Engineer(스토어플랫폼)`·`BE(지도/예약/자동차)`·
-   `Billing&Settlement Platform BE`·`DevOps Engineer` 모두 5-11년, `프론트엔드` 7년↑).
-   **쓰지 않기로 하면 이유를 `open_questions` 에 남긴다**(완주 기준).
-
-> **resources 의 URL 은 붙여 넣기 전에 공백·형식을 확인한다.** 이번에 Medium 링크에
-> 공백이 섞여 들어가 곧바로 걷어냈다. validate.py 는 URL 형식을 안 보므로 사람이 본다.
-> 확인 명령: `grep -o '"url": "[^"]*"' <파일> | grep -v 'http'`
-
-**매 사이클 `validate.py` 맨 아래 줄의 `경고 N` 을 확인한다.** 지금은 0이다.
+**매 사이클 확인** — `validate.py` 맨 아래 `경고 N`(지금 0),
+그리고 resources URL 공백: `grep -o '"url": "[^"]*"' <파일> | grep -v 'http'`
 
 
 ## 자료 접근 지도
