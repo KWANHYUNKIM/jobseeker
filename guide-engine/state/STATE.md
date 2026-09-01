@@ -4,39 +4,34 @@
 
 ## 지금 쓰는 중
 
-**커넥트웨이브 (`connectwave`) — `in_progress`.** 공고 1건 · 학습 7개.
-
-> 📌 **수치 정정** — 회사는 **9곳**이고 그중 **완주(done)는 8곳**이다.
-> (글로우업리즈 / 메가존클라우드 / 미리디 / 넛지헬스케어 / 빗썸 / 딥오토 / 쿤텍 / 와탭랩스,
-> 그리고 진행 중인 커넥트웨이브.) 앞선 사이클의 STATE 가 "9곳 완주"라고 적었는데
-> 그건 틀렸다. **셀 때는 `validate.py` 출력이나 index.json 을 그대로 옮긴다.**
+**커넥트웨이브 (`connectwave`) — `in_progress`.** 공고 2건 · 학습 14개.
+(전체는 회사 9곳 · 완주 8곳 · 공고 29건 · 학습 231개 — `validate.py` 출력 그대로.)
 
 | 채운 공고 | 무엇을 하는 자리 | 연차 |
 |---|---|---|
-| `[메이크샵] 백엔드 개발자` (wanted/368346) | 주문·결제·외부 주문 연동 + **PHP↔NestJS 전환 국면** | 3-8 |
+| `[메이크샵] 백엔드 개발자` (wanted/368346) | 주문·결제·외부 연동 + **PHP↔NestJS 전환 국면** | 3-8 |
+| `[Consumer Commerce] Data Engineer` (wanted/295194) | 수집→레이크→품질→**서빙** | 3-15 |
 
-이 공고에서 읽어 낸 것: **자격요건과 우대사항이 서로 다른 시대를 가리킨다.**
-필수는 PHP·jQuery·MySQL, 우대는 Node.js·NestJS·React·TypeScript. 그 사이를 잇는 것이
-이 자리의 실제 일이라 보고 세 번째 항목을 교살자 무화과(Strangler Fig)로 잡았다.
+**두 공고를 나란히 놓는 것 자체가 이 회사의 브리핑이 됐다** — 저쪽은 PHP·jQuery·MySQL,
+여기는 Iceberg·Spark·Airflow·Trino·CDC·dbt. 서로의 edge 와 sources 에 상대 공고를
+링크해 독자가 대비를 볼 수 있게 했다. 합쳐진 회사에서는 이 방식이 잘 통한다.
 
-**다음 순서 — 3년대가 두꺼운 쪽부터**
+**다음 순서**
 
-1. `[Consumer Commerce] Data Engineer` (wanted/295194, **3-15년**) — 본문을 읽었다.
-   Iceberg·Spark·Airflow·Trino·CDC·dbt. **메이크샵 공고와 나란히 놓으면 "한 회사 안의
-   두 시대"가 데이터로 드러난다** — verdict 에서 그 대비를 쓰면 좋다.
-2. `[메이크샵] 풀스택 개발자 (PHP/JavaScript)` (wanted/368343, 3-8년) — **자격·우대가
-   백엔드 공고와 글자 하나까지 같다.** 다른 것은 담당 업무뿐(`고객사별 요구사항을 분석하고
-   맞춤형 개발`). 와탭 백엔드↔로그 때처럼 **겹침을 verdict 에 밝히고 다른 줄만 축으로.**
-3. `[CC CTO] Data Analytics Engineer` (wanted/370593, 3-8년) — 본문 미열람.
-4. `[CC CTO] Search Engineer` (4-10년) · `Machine Learning Engineer` (4-15년) —
-   가격비교 회사의 검색·추천이라 도메인 값이 크다.
+1. `[메이크샵] 풀스택 개발자 (PHP/JavaScript)` (wanted/368343, 3-8년) — **자격요건과
+   우대사항이 백엔드 공고와 글자 하나까지 같다.** 다른 것은 담당 업무 세 줄뿐이고
+   축은 `고객사별 요구사항을 분석하고 맞춤형 개발을 수행해요` 다. 겹침을 verdict 에
+   밝히고 **커스텀 개발·고객사별 요구 흡수**만 축으로 잡는다(항목 4~5개가 정상).
+2. `[CC CTO] Data Analytics Engineer` (wanted/370593, 3-8년) — 본문 미열람.
+   Data Engineer 와 겹칠 가능성이 높으니 **본문을 먼저 읽고 대비를 잡는다.**
+3. `[CC CTO] Search Engineer` (wanted/273652, 4-10년) · `Machine Learning Engineer`
+   (wanted/382080, 4-15년) — 가격비교 회사의 검색·추천. **도메인 값이 가장 크다.**
 
-5년 이상 다섯 건(`Backend Engineer(스토어플랫폼)`·`BE(지도/예약/자동차)`·
-`Billing&Settlement Platform BE`·`DevOps Engineer` 모두 5-11년, `프론트엔드` 7년↑)은
-뒤로. **쓰지 않기로 하면 이유를 `open_questions` 에 남긴다.**
+5년 이상 다섯 건은 뒤로. **쓰지 않기로 하면 이유를 `open_questions` 에.**
 
 **보수 하나가 계속 대기 중** — `glowuprizz.json.postings[0]` 이 마감돼 경고가 뜬다
 (`closed: true`). 오류가 아니라 사다리에 안 잡히니 의도적으로 한 사이클을 끼워야 한다.
+**커넥트웨이브 공고 사이에 한 번 끼우는 것을 권한다** — 한 줄짜리 보수인데 계속 밀린다.
 
 
 ## 자료 접근 지도

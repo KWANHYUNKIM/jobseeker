@@ -552,6 +552,262 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/295194",
+      "title": "[Consumer Commerce] Data Engineer (3년 이상)",
+      "site": "wanted",
+      "verdict": "**같은 회사의 `[메이크샵] 백엔드` 공고와 나란히 읽으면 이 회사가 보인다.** 저쪽은 PHP·jQuery·MySQL 이고 여기는 Iceberg·Spark·Airflow·Trino·CDC·dbt 다 — **한 회사 안에 두 시대가 공존**하고, 그건 여러 회사가 합쳐진 조직이라 자연스러운 일이다. 이 자리는 그중 **데이터 커머스**(다나와·에누리) 쪽이다. 자격요건 열 줄이 전부 현대적 데이터 스택이라 **요구가 명확하고 넓다.** 다만 축은 도구가 아니라 담당 업무의 순서에 있다 — `수집 → 저장(레이크/웨어하우스) → 파이프라인 → 품질 → 서빙`. 특히 마지막 두 줄이 중요하다: **`데이터 품질 관리 체계 구축`** 과 **`데이터 서빙 레이어 개발`**. 데이터를 옮기는 것만이 아니라 **믿을 수 있게 만들고 남이 쓰게 하는 것**까지가 이 자리다. 경력 3-15년으로 문이 매우 넓다.",
+      "fit": {
+        "must_have": [
+          "데이터 엔지니어링 3년 이상",
+          "웨어하우스·마트 설계 경험과 고급 SQL",
+          "Python 또는 Scala 기반 데이터 처리",
+          "Hadoop 계열 데이터 레이크(HDFS·Hive·Iceberg)와 Spark",
+          "Airflow 운영"
+        ],
+        "can_learn": [
+          "Trino·ClickHouse 같은 쿼리 엔진 — 우대사항",
+          "CDC 파이프라인 — 우대사항이고 개념이 명확하다",
+          "dbt·Great Expectations — 우대사항. 품질 항목과 직접 이어진다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "레이크와 웨어하우스 — 왜 둘 다 있고 Iceberg 가 왜 나오나",
+          "from": "qualification",
+          "quote": "Hadoop 기반 HDFS, Hive, Iceberg 등 데이터 레이크 구성 경험",
+          "priority": "core",
+          "why": "담당 업무 첫 줄이 웨어하우스·마트이고 마지막 줄이 **`데이터 레이크 / 레이크하우스 아키텍처`** 다. 둘을 함께 적은 것이 이 자리의 상태를 말해 준다 — 원본을 싸게 쌓아 두는 곳(레이크)과 정제해 빠르게 조회하는 곳(웨어하우스)이 따로 있고, **그 둘을 잇는 형식으로 Iceberg 같은 테이블 포맷**이 들어와 있다. Hive 시절의 한계(스키마 변경, 파티션 관리, 동시 쓰기)를 왜 Iceberg 가 풀었는지 아는 것이 이 항목의 목표다.",
+          "gap_check": "Hive 테이블과 Iceberg 테이블은 무엇이 다른가(메타데이터·스냅샷·스키마 진화)? 파일이 작게 잔뜩 쌓이면 무슨 일이 일어나고 어떻게 다루는가? '어제 자 데이터를 다시 돌렸다'를 안전하게 하려면?",
+          "drill": "로컬에 **Spark + Iceberg** 를 띄우고 (1) 같은 데이터를 Hive 테이블과 Iceberg 테이블로 각각 만들어 컬럼 추가·타입 변경을 시도해 비교하고, (2) 작은 파일을 잔뜩 만든 뒤 compaction 전후 조회 시간을 재고, (3) 스냅샷으로 **과거 시점 조회와 롤백**을 해 본다. 3번이 재처리(백필)의 안전장치가 되는 이유를 직접 확인한다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Apache Iceberg 문서",
+              "url": "https://iceberg.apache.org/docs/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Spark — 구조적 API 가이드",
+              "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Databricks — 레이크하우스 개념",
+              "url": "https://www.databricks.com/glossary/data-lakehouse",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "파이프라인을 굴린다는 것 — Airflow 는 도구고 문제는 재처리다",
+          "from": "task",
+          "quote": "ETL/ELT 파이프라인 설계 및 자동화 (Airflow 기반 워크플로우 관리)",
+          "priority": "core",
+          "why": "Airflow 를 '써 봤다'는 사람은 많지만, 실무에서 갈리는 지점은 **어제 실패한 잡을 오늘 다시 돌릴 때**다. 같은 날짜를 두 번 처리해도 결과가 같아야 하고(멱등), 앞 단계가 늦어지면 뒷단계가 기다려야 하고, 한 달치를 다시 채우는 백필이 운영을 방해하면 안 된다. 커머스 데이터는 **주문·정산처럼 나중에 값이 바뀌는 것**이 많아 재처리가 예외가 아니라 일상이다.",
+          "gap_check": "같은 DAG 를 같은 날짜로 두 번 돌리면 데이터가 두 배가 되는가? 상류 테이블이 늦게 도착했을 때 하류를 어떻게 기다리게 하는가(센서·데이터 인지 스케줄링)? 30일치 백필을 돌릴 때 무엇을 제한하는가?",
+          "drill": "Airflow 로 **작은 파이프라인을 만들고 일부러 깨뜨린다.** (1) 파티션 덮어쓰기 방식으로 멱등하게 만들고 같은 실행을 두 번 돌려 확인, (2) 상류 지연을 흉내 내 하류가 기다리는지 보고, (3) 30일 백필을 동시 실행 제한을 걸고 돌려 운영 잡과 충돌하지 않는지 확인한다. **각 단계에서 무엇이 깨졌는지 기록하는 것**이 결과물이다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Apache Airflow 문서",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Airflow — 백필과 캐치업",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dag-run.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "품질 — '체계 구축'이라고 적힌 이유",
+          "from": "task",
+          "quote": "데이터 품질 관리 체계 구축 및 모니터링 자동화",
+          "priority": "core",
+          "why": "담당 업무에 **'검사'가 아니라 '체계 구축'** 이라고 쓰여 있고, 자격요건에도 `데이터 품질 관리(DQ), 데이터 검증 및 모니터링 자동화 경험` 이 따로 있다. 이유는 이 회사의 데이터 성격에 있다 — **가격비교는 남의 쇼핑몰에서 긁어 온 데이터로 굴러간다.** 원본이 예고 없이 바뀌고, 상품이 사라지고, 같은 물건이 다른 이름으로 온다. **틀린 데이터가 조용히 흘러가면 잘못된 가격이 사용자에게 보인다** — 이 회사에서 데이터 품질은 내부 문제가 아니라 제품 문제다.",
+          "gap_check": "'어제보다 행이 30% 줄었다'를 누가 알아채는가? 값이 형식은 맞는데 의미가 틀린 경우(가격이 1원)를 어떻게 잡는가? 검사가 실패하면 파이프라인을 멈출 것인가 흘려보낼 것인가 — 무엇을 기준으로 정하는가?",
+          "drill": "만든 파이프라인에 **품질 게이트를 세 층으로** 붙인다. (1) 스키마·널·유일성 같은 기본 규칙, (2) 행 수·평균값의 **전일 대비 변화 감지**, (3) 비즈니스 규칙(가격 > 0, 카테고리가 사전에 있는 값). 그다음 **실패했을 때의 행동을 규칙마다 다르게** 정하고(차단 / 경고 / 격리) 왜 그렇게 나눴는지 적는다. dbt 테스트나 Great Expectations 로 구현하면 우대사항까지 함께 답한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Great Expectations",
+              "url": "https://docs.greatexpectations.io/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "dbt — 테스트",
+              "url": "https://docs.getdbt.com/docs/build/data-tests",
+              "kind": "docs"
+            },
+            {
+              "title": "Monte Carlo — 데이터 관측성 개념",
+              "url": "https://www.montecarlodata.com/blog-what-is-data-observability/",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "서빙 — 만든 데이터를 남이 쓰게 하는 층",
+          "from": "task",
+          "quote": "데이터 서빙 레이어 개발 및 최적화 (API, 배치 서빙, 실시간 서빙)",
+          "priority": "core",
+          "why": "**이 줄이 이 공고를 여느 데이터 엔지니어 공고와 가른다.** 보통은 파이프라인까지가 일인데, 여기는 **만든 데이터를 API 로, 배치로, 실시간으로 내주는 것**까지 담당 업무다. 담당 업무에 `비즈니스 부서 및 데이터 분석가를 위한 데이터 서빙 환경 제공` 도 따로 있다. 즉 고객이 둘이다 — **사람(분석가)과 시스템(서비스)**. 요구가 정반대라 같은 데이터를 다른 모양으로 내줘야 하고, 우대사항의 Elasticsearch·Redis·Trino 가 그 자리를 채운다.",
+          "gap_check": "분석가가 쓸 조회와 서비스가 쓸 조회는 무엇이 다른가(응답 시간, 동시성, 예측 가능성)? 같은 지표를 배치로도 실시간으로도 내줄 때 값이 어긋나면 어떻게 하는가? 미리 계산해 둘 것과 즉석에서 계산할 것을 어떻게 가르는가?",
+          "drill": "같은 집계를 **세 경로로 내준다.** (1) 배치로 마트 테이블에 미리 계산해 두고, (2) Trino 로 레이크를 즉석 조회하게 하고, (3) 자주 쓰는 결과를 Redis 나 Elasticsearch 에 올려 API 로 낸다. 그다음 **응답 시간·비용·데이터 신선도**를 표로 비교하고, 어떤 요구에 어떤 경로가 맞는지 결론을 적는다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Trino 문서",
+              "url": "https://trino.io/docs/current/",
+              "kind": "docs"
+            },
+            {
+              "title": "Elasticsearch — 집계",
+              "url": "https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Redis — 데이터 타입",
+              "url": "https://redis.io/docs/latest/develop/data-types/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 서비스에서 데이터를 끌어오기 — 합쳐진 회사의 숙제",
+          "from": "task",
+          "quote": "다양한 소스 시스템(RDBMS, NoSQL, 로그 등)으로부터의 데이터 수집 및 통합",
+          "priority": "high",
+          "why": "이 회사는 **여러 회사가 합쳐져 만들어졌다.** 다나와·에누리·메이크샵·플레이오토·몰테일이 각자 오래 굴러온 시스템을 갖고 있으니, 데이터를 모으는 일은 기술 문제이기 전에 **서로 다른 규칙을 맞추는 문제**가 된다 — 상품 ID 체계가 다르고, 시간대와 통화가 다르고, '주문'의 정의조차 서비스마다 다를 수 있다. 우대사항의 **CDC** 가 여기서 값을 한다: 남의 운영 DB 를 매번 통째로 긁으면 그쪽이 죽으니, **변경분만 흘려보내는 방식**이 필요하다.",
+          "gap_check": "운영 DB 를 건드리지 않고 변경분만 가져오는 방법은? 소스 시스템의 스키마가 예고 없이 바뀌면 파이프라인이 어떻게 되는가? 서로 다른 서비스의 '같은 고객'을 어떻게 잇는가?",
+          "drill": "**CDC 를 직접 세운다.** (1) MySQL 두 개를 소스로 두고 Debezium + Kafka 로 변경분을 흘려보내고, (2) 컬럼 추가 같은 스키마 변경을 소스에 가해 파이프라인이 어떻게 반응하는지 보고, (3) 두 소스의 ID 체계를 잇는 매핑 테이블을 만들어 **통합 뷰**를 하나 만든다. 3번에서 부딪히는 문제들이 이 회사의 실제 숙제다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Debezium 문서",
+              "url": "https://debezium.io/documentation/reference/stable/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Kafka Connect",
+              "url": "https://kafka.apache.org/documentation/#connect",
+              "kind": "docs"
+            },
+            {
+              "title": "Confluent — 스키마 레지스트리",
+              "url": "https://docs.confluent.io/platform/current/schema-registry/index.html",
+              "kind": "docs",
+              "note": "소스 스키마 변경을 견디는 표준적인 방법"
+            }
+          ]
+        },
+        {
+          "topic": "SQL 을 '고급으로' 쓴다는 것",
+          "from": "qualification",
+          "quote": "SQL 고급 활용 능력 및 쿼리 성능 최적화 경험",
+          "priority": "high",
+          "why": "자격요건이 'SQL 사용'이 아니라 **`고급 활용 + 성능 최적화`** 다. 데이터 엔지니어의 SQL 은 애플리케이션 개발자의 SQL 과 다른 곳에서 어려워진다 — **수억 행을 다루고**, 윈도 함수로 순위·누적·기간 비교를 만들고, **조인 순서와 셔플이 비용을 결정한다.** 커머스 데이터에서는 특히 시간축 질의가 많다: 전일 대비, 동기간 대비, 최근 N일 이동평균.",
+          "gap_check": "윈도 함수로 '상품별 가격 변동 이력에서 직전 가격'을 뽑을 수 있는가? Spark 에서 조인 한쪽이 훨씬 작을 때 무엇을 쓰는가(브로드캐스트)? 특정 키에 데이터가 몰릴 때(스큐) 어떻게 푸는가?",
+          "drill": "커머스를 흉내 낸 데이터로 **질의 세 개를 만들고 튜닝한다.** (1) 상품별 최저가와 그 판매처(윈도 함수), (2) 일자별 카테고리 매출과 전일 대비 증감, (3) 재구매 고객 코호트. 각각 **실행 계획을 보고 한 번 이상 개선**하고 전후 시간을 기록한다. 스큐를 일부러 만들어 해결해 보면 면접 이야기가 하나 더 생긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "PostgreSQL — 윈도 함수 튜토리얼",
+              "url": "https://www.postgresql.org/docs/current/tutorial-window.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spark — 성능 튜닝",
+              "url": "https://spark.apache.org/docs/latest/sql-performance-tuning.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "기술 공유를 자격요건에 적어 둔 조직",
+          "from": "qualification",
+          "quote": "기술 공유와 협업을 중시하시는 분",
+          "priority": "high",
+          "why": "**자격요건 마지막 줄**이다(우대사항이 아니다). 데이터 조직에서 이 요구는 낭만이 아니라 실무다 — 데이터는 **만든 사람만 아는 순간 쓰이지 않는다.** 이 회사처럼 서비스가 여럿이고 부서가 여러 갈래인 곳에서는 더 그렇다. 담당 업무에도 `비즈니스 부서 및 데이터 분석가를 위한 데이터 서빙 환경 제공 및 개선` 이 있으니, **내가 만든 테이블을 남이 찾아 쓰게 만드는 일**까지가 업무다. 우대사항의 `데이터 거버넌스 및 데이터 카탈로그` 가 그 도구다.",
+          "gap_check": "내가 만든 테이블을 남이 어떻게 찾는가? 컬럼 하나의 뜻을 어디에 적어 두는가? 테이블을 바꿀 때 누가 쓰고 있는지 어떻게 아는가(계보)?",
+          "drill": "만든 데이터 마트에 **문서와 계보를 붙인다.** (1) dbt 로 모델을 정의하고 컬럼 설명을 달아 문서를 자동 생성하고, (2) 모델 간 의존 그래프(계보)를 뽑아 **바꿀 때 영향받는 것**을 확인하고, (3) 새 사람이 5분 안에 '이 지표는 어디서 나오나'를 알 수 있는지 실제로 시켜 본다. 이 결과물이 자격요건 마지막 줄에 대한 답이 된다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "dbt 문서",
+              "url": "https://docs.getdbt.com/docs/introduction",
+              "kind": "docs"
+            },
+            {
+              "title": "OpenMetadata",
+              "url": "https://docs.open-metadata.org/latest",
+              "kind": "docs",
+              "note": "카탈로그·계보를 다루는 오픈소스"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "'수집 → 레이크 → 품질 → 서빙'을 한 줄기로 만든 저장소",
+          "why": "이 공고의 담당 업무가 **정확히 그 순서**다. 조각난 예제 여러 개보다 **하나가 끝까지 이어진 파이프라인**이 훨씬 강하다 — CDC 로 넣고, Iceberg 에 쌓고, dbt 로 정제·테스트하고, Trino 와 API 로 내주는 흐름 하나면 자격요건 열 줄 대부분을 덮는다.",
+          "effort": "이 주"
+        },
+        {
+          "idea": "'가격 데이터가 틀렸을 때 무엇이 막아 주는가' 이야기를 준비한다",
+          "why": "이 회사에서 **데이터 품질은 내부 문제가 아니라 제품 문제**다 — 가격비교는 남의 쇼핑몰에서 긁어 온 데이터로 굴러가고, 틀린 값이 흘러가면 사용자에게 잘못된 가격이 보인다. 규칙마다 차단·경고·격리를 다르게 정한 설계를 말할 수 있으면 도메인을 이해하고 온 사람이 된다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "같은 집계를 세 경로로 내주고 비교표를 만든다",
+          "why": "담당 업무에 **`API, 배치 서빙, 실시간 서빙`** 이 나란히 적혀 있다. 배치 마트 · Trino 즉석 조회 · Redis/ES 캐시를 응답 시간·비용·신선도로 비교한 표는, '서빙 레이어를 안다'는 말을 숫자로 바꿔 준다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "지원 전에 사업부를 확인한다",
+          "why": "이 공고는 `[Consumer Commerce]` — 다나와·에누리 쪽이다. 같은 회사 `[메이크샵]` 공고는 **PHP·jQuery** 를 자격요건에 적는다. **한 회사 안에 두 시대가 있으니** 어느 쪽에 지원하는지가 곧 어떤 스택으로 일하는지다. 참고로 `[CC CTO] Data Analytics Engineer`(3-8년)가 따로 있어 **분석 엔지니어링 쪽을 원한다면 그쪽**이다.",
+          "effort": "십 분"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "Hive 테이블과 Iceberg 테이블은 무엇이 다른가",
+          "같은 DAG 를 같은 날짜로 두 번 돌려도 안전하게 만들려면",
+          "30일치 백필이 운영 잡을 방해하지 않게 하려면",
+          "'어제보다 행이 30% 줄었다'를 누가 어떻게 알아채는가",
+          "형식은 맞는데 의미가 틀린 값(가격 1원)을 어떻게 잡는가",
+          "품질 검사가 실패하면 파이프라인을 멈추는가 흘려보내는가",
+          "분석가가 쓸 조회와 서비스가 쓸 조회는 무엇이 다른가",
+          "운영 DB 를 건드리지 않고 변경분만 가져오는 방법",
+          "소스 스키마가 예고 없이 바뀌면 파이프라인은 어떻게 되는가",
+          "Spark 에서 특정 키에 데이터가 몰릴 때 어떻게 푸는가",
+          "내가 만든 테이블을 남이 찾아 쓰게 하려면 무엇이 필요한가"
+        ],
+        "sources": [
+          {
+            "title": "커넥트웨이브 [Consumer Commerce] Data Engineer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/295194",
+            "publisher": "원티드",
+            "summary": "웨어하우스·마트 설계, 서빙 레이어(API·배치·실시간), Airflow 파이프라인, 품질 체계, 레이크하우스 운영. 자격요건에 Iceberg·Spark·Airflow, 우대에 Kafka·Trino·CDC·dbt"
+          },
+          {
+            "title": "커넥트웨이브 [메이크샵] 백엔드 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/368346",
+            "publisher": "원티드",
+            "summary": "같은 회사인데 자격요건이 PHP·jQuery·MySQL 이다 — '두 시대'의 근거"
+          },
+          {
+            "title": "커넥트웨이브, 올 1분기 매출 10.5%↓ 1096억원",
+            "url": "https://byline.network/2024/05/16_9864225/",
+            "publisher": "바이라인네트워크",
+            "date": "2024-05-16",
+            "summary": "데이터 커머스(다나와·에누리) 부문의 거래액·매출 규모"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
