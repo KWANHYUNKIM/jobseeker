@@ -70,6 +70,17 @@
       "postings": 2,
       "study_items": 17,
       "updated_at": "2026-09-01"
+    },
+    {
+      "slug": "coontec",
+      "name": "쿤텍",
+      "aliases": [
+        "쿤텍"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-01"
     }
   ]
 }
