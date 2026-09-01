@@ -2,12 +2,14 @@
   "slug": "nudgehealthcare",
   "name": "넛지헬스케어",
   "name_en": "Nudge Healthcare",
-  "aliases": ["넛지헬스케어", "넛지헬스케어㈜"],
-  "status": "in_progress",
+  "aliases": [
+    "넛지헬스케어",
+    "넛지헬스케어㈜"
+  ],
+  "status": "done",
   "updated_at": "2026-09-01",
   "site": "cashwalk.com",
   "one_liner": "걸음 수에 돈을 붙여 습관을 바꾸고, 그렇게 매일 켜지는 잠금화면을 광고로 파는 회사",
-
   "company": {
     "business": "캐시워크는 걸으면 캐시를 주는 앱이지만 **돈은 사용자에게서 나오지 않는다.** 리워드로 사람을 매일 앱에 들어오게 만들고, 그 잠금화면과 앱 지면을 광고주에게 판다 — 2021년 기준 광고가 매출의 96%였다. 여기에 건강식품(키토선생)·웨어러블(캐시워치) 같은 상품 매출이 얹힌다. 즉 이 회사의 기술 문제는 '건강'이 아니라 **매일 수백만 명에게 리워드를 정확히 지급하고 광고를 정확히 노출·정산하는 일**이다. 회사 이름은 행동경제학의 넛지 이론에서 왔고, 창업 근거도 금전 보상이 건강 행동을 바꾼다는 해외 논문과 싱가포르 임상 연구였다고 대표가 밝혔다.",
     "business_confidence": "confirmed",
@@ -33,7 +35,12 @@
         "as_of": "2021",
         "confidence": "confirmed",
         "sources": [
-          { "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?", "url": "https://www.bloter.net/news/articleView.html?idxno=44036", "publisher": "블로터", "date": "2022-04-25" }
+          {
+            "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?",
+            "url": "https://www.bloter.net/news/articleView.html?idxno=44036",
+            "publisher": "블로터",
+            "date": "2022-04-25"
+          }
         ]
       },
       {
@@ -42,7 +49,12 @@
         "as_of": "2022",
         "confidence": "confirmed",
         "sources": [
-          { "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고", "url": "https://www.wanted.co.kr/wd/109188", "publisher": "원티드", "summary": "회사가 공고 본문 '지원해야 하는 이유'에 직접 적은 수치" }
+          {
+            "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/109188",
+            "publisher": "원티드",
+            "summary": "회사가 공고 본문 '지원해야 하는 이유'에 직접 적은 수치"
+          }
         ]
       },
       {
@@ -51,7 +63,12 @@
         "as_of": "2023",
         "confidence": "confirmed",
         "sources": [
-          { "title": "'캐시워크 운영사' 넛지헬스케어, 2023년 매출 1000억 돌파", "url": "https://n.news.naver.com/mnews/article/011/0004311755?sid=101", "publisher": "서울경제", "summary": "회사가 채용 공고의 관련기사로 링크한 보도. 기사 제목이 근거다" }
+          {
+            "title": "'캐시워크 운영사' 넛지헬스케어, 2023년 매출 1000억 돌파",
+            "url": "https://n.news.naver.com/mnews/article/011/0004311755?sid=101",
+            "publisher": "서울경제",
+            "summary": "회사가 채용 공고의 관련기사로 링크한 보도. 기사 제목이 근거다"
+          }
         ]
       },
       {
@@ -60,7 +77,12 @@
         "as_of": "2022-03",
         "confidence": "confirmed",
         "sources": [
-          { "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?", "url": "https://www.bloter.net/news/articleView.html?idxno=44036", "publisher": "블로터", "date": "2022-04-25" }
+          {
+            "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?",
+            "url": "https://www.bloter.net/news/articleView.html?idxno=44036",
+            "publisher": "블로터",
+            "date": "2022-04-25"
+          }
         ]
       },
       {
@@ -69,7 +91,11 @@
         "as_of": "2026",
         "confidence": "confirmed",
         "sources": [
-          { "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고", "url": "https://www.wanted.co.kr/wd/109188", "publisher": "원티드" }
+          {
+            "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/109188",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -78,7 +104,11 @@
         "as_of": "2023",
         "confidence": "confirmed",
         "sources": [
-          { "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고", "url": "https://www.wanted.co.kr/wd/109188", "publisher": "원티드" }
+          {
+            "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/109188",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -87,7 +117,11 @@
         "as_of": "2026",
         "confidence": "inferred",
         "sources": [
-          { "title": "넛지헬스케어(캐시워크) 기업정보", "url": "https://www.wanted.co.kr/company/1602", "publisher": "원티드" }
+          {
+            "title": "넛지헬스케어(캐시워크) 기업정보",
+            "url": "https://www.wanted.co.kr/company/1602",
+            "publisher": "원티드"
+          }
         ]
       }
     ],
@@ -96,29 +130,55 @@
         "name": "광고",
         "how": "리워드로 매일 앱을 켜게 만들고 그 지면을 판다. 상품은 잠금화면 배너, 돈버는퀴즈, 라이브형 퀴즈 등으로 **잠금화면에서 시작해 앱 안쪽까지 여러 번 노출시키는 형태**다. 광고를 보면 캐시가 쌓이는 구조라, 리워드 지급과 광고 노출이 한 몸으로 붙어 있다.",
         "weight": "2021년 545억원 — 매출의 96%",
-        "domains": ["걸음 수 집계와 리워드 지급", "잠금화면 광고 배급", "광고 상품·정산", "대규모 트래픽 API"],
+        "domains": [
+          "걸음 수 집계와 리워드 지급",
+          "잠금화면 광고 배급",
+          "광고 상품·정산",
+          "대규모 트래픽 API"
+        ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?", "url": "https://www.bloter.net/news/articleView.html?idxno=44036", "publisher": "블로터", "date": "2022-04-25" }
+          {
+            "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?",
+            "url": "https://www.bloter.net/news/articleView.html?idxno=44036",
+            "publisher": "블로터",
+            "date": "2022-04-25"
+          }
         ]
       },
       {
         "name": "상품 판매",
         "how": "쌓인 캐시를 쓸 곳을 회사가 직접 만든다 — 키토제닉 건강식품 '키토선생', 웨어러블 '캐시워치'. 광고로 번 돈이 리워드로 나가고 그 리워드가 다시 자사 상품 구매로 돌아오는 고리다.",
         "weight": "2021년 23억원 (전년 대비 2.4배)",
-        "domains": ["커머스 주문", "대규모 트래픽 API"],
+        "domains": [
+          "커머스 주문",
+          "대규모 트래픽 API"
+        ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?", "url": "https://www.bloter.net/news/articleView.html?idxno=44036", "publisher": "블로터", "date": "2022-04-25" }
+          {
+            "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?",
+            "url": "https://www.bloter.net/news/articleView.html?idxno=44036",
+            "publisher": "블로터",
+            "date": "2022-04-25"
+          }
         ]
       },
       {
         "name": "기관·기업 건강관리 연계",
         "how": "지자체·대기업과 손잡고 통합건강관리 프로그램에 걸음 데이터와 리워드 구조를 얹는다. **매출 기여 규모는 공개돼 있지 않아** 수익원으로 얼마나 큰지는 알 수 없고, 회사가 이 방향으로 사업을 넓히고 있다는 사실만 확인된다.",
-        "domains": ["건강 데이터·기관 연계", "걸음 수 집계와 리워드 지급"],
+        "domains": [
+          "건강 데이터·기관 연계",
+          "걸음 수 집계와 리워드 지급"
+        ],
         "confidence": "inferred",
         "sources": [
-          { "title": "넛지헬스케어, 서울시·삼성전자와 통합건강관리 돕는다", "url": "https://n.news.naver.com/mnews/article/092/0002339301?sid=105", "publisher": "전자신문", "summary": "회사가 채용 공고의 관련기사로 링크한 보도" }
+          {
+            "title": "넛지헬스케어, 서울시·삼성전자와 통합건강관리 돕는다",
+            "url": "https://n.news.naver.com/mnews/article/092/0002339301?sid=105",
+            "publisher": "전자신문",
+            "summary": "회사가 채용 공고의 관련기사로 링크한 보도"
+          }
         ]
       }
     ],
@@ -134,7 +194,11 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고", "url": "https://www.wanted.co.kr/wd/109188", "publisher": "원티드" }
+          {
+            "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/109188",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -147,7 +211,12 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?", "url": "https://www.bloter.net/news/articleView.html?idxno=44036", "publisher": "블로터", "date": "2022-04-25" }
+          {
+            "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?",
+            "url": "https://www.bloter.net/news/articleView.html?idxno=44036",
+            "publisher": "블로터",
+            "date": "2022-04-25"
+          }
         ]
       },
       {
@@ -160,7 +229,11 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고", "url": "https://www.wanted.co.kr/wd/109188", "publisher": "원티드" }
+          {
+            "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/109188",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -173,7 +246,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고", "url": "https://www.wanted.co.kr/wd/109188", "publisher": "원티드" }
+          {
+            "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/109188",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -185,7 +262,12 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?", "url": "https://www.bloter.net/news/articleView.html?idxno=44036", "publisher": "블로터", "date": "2022-04-25" }
+          {
+            "title": "'만보기 앱' 캐시워크, 영업이익률 두 자릿수 유지 비결은?",
+            "url": "https://www.bloter.net/news/articleView.html?idxno=44036",
+            "publisher": "블로터",
+            "date": "2022-04-25"
+          }
         ]
       },
       {
@@ -197,7 +279,11 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "넛지헬스케어, 서울시·삼성전자와 통합건강관리 돕는다", "url": "https://n.news.naver.com/mnews/article/092/0002339301?sid=105", "publisher": "전자신문" }
+          {
+            "title": "넛지헬스케어, 서울시·삼성전자와 통합건강관리 돕는다",
+            "url": "https://n.news.naver.com/mnews/article/092/0002339301?sid=105",
+            "publisher": "전자신문"
+          }
         ]
       }
     ],
@@ -234,7 +320,6 @@
       }
     ]
   },
-
   "salary": {
     "unit": "만원",
     "currency": "KRW",
@@ -248,9 +333,21 @@
         "basis": "public_data",
         "confidence": "inferred",
         "sources": [
-          { "title": "넛지헬스케어(주) 연봉정보", "url": "https://www.saramin.co.kr/zf_user/company-info/view-inner-salary/csn/M2ttVnFiU3hHVUp2SE5xZkZFQ01MQT09/company_nm/%EB%84%9B%EC%A7%80%ED%97%AC%EC%8A%A4%EC%BC%80%EC%96%B4?nomo=1", "publisher": "사람인" },
-          { "title": "넛지헬스케어(주) 연봉정보 — 123건 기준 평균 3,728만원", "url": "https://www.jobplanet.co.kr/companies/344453/salaries/%EB%84%9B%EC%A7%80%ED%97%AC%EC%8A%A4%EC%BC%80%EC%96%B4", "publisher": "잡플래닛" },
-          { "title": "넛지헬스케어(캐시워크) 기업정보 — 평균연봉 4,292만원", "url": "https://www.wanted.co.kr/company/1602", "publisher": "원티드" }
+          {
+            "title": "넛지헬스케어(주) 연봉정보",
+            "url": "https://www.saramin.co.kr/zf_user/company-info/view-inner-salary/csn/M2ttVnFiU3hHVUp2SE5xZkZFQ01MQT09/company_nm/%EB%84%9B%EC%A7%80%ED%97%AC%EC%8A%A4%EC%BC%80%EC%96%B4?nomo=1",
+            "publisher": "사람인"
+          },
+          {
+            "title": "넛지헬스케어(주) 연봉정보 — 123건 기준 평균 3,728만원",
+            "url": "https://www.jobplanet.co.kr/companies/344453/salaries/%EB%84%9B%EC%A7%80%ED%97%AC%EC%8A%A4%EC%BC%80%EC%96%B4",
+            "publisher": "잡플래닛"
+          },
+          {
+            "title": "넛지헬스케어(캐시워크) 기업정보 — 평균연봉 4,292만원",
+            "url": "https://www.wanted.co.kr/company/1602",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -268,7 +365,6 @@
       "2023년 300억원 투자 이후 보상 정책이 바뀌었는지 확인할 자료가 없다"
     ]
   },
-
   "people": [
     {
       "name": "나승균",
@@ -306,9 +402,270 @@
       ]
     }
   ],
-
-  "postings": [],
-
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/109188",
+      "title": "백엔드/서버 개발자",
+      "site": "wanted",
+      "verdict": "**모집중 39건 중 유일한 경력직 개발 공고다.** 나머지는 전부 병역특례·채용전환형 인턴·신입이라, 이 회사에 경력으로 들어가는 문은 사실상 이 하나다. 하는 일은 동시접속 100만짜리 앱의 서버 — 걸음 수를 받아 리워드를 지급하고, 잠금화면에 광고를 내보내고, 그 노출을 세어 정산까지 잇는다. 자격요건이 짧고 평범해 보이지만 **한 줄이 이 회사의 성격을 드러낸다** — 'RDBMS, NoSQL, Cache 설계'를 한 줄로 묶어 물은 것. 정확해야 하는 원장과 양이 많은 로그가 한 서비스 안에 같이 있다는 뜻이다.",
+      "fit": {
+        "must_have": [
+          "백엔드 3년 이상",
+          "Node.js 로 상용 서비스를 배포해 본 경험 (우대가 아니라 자격요건이다)",
+          "AWS 사용 경험 — AMI·EC2·S3·DynamoDB 를 이름으로 적어 뒀다",
+          "RDBMS·NoSQL·Cache 를 요구에 맞게 골라 설계해 본 경험"
+        ],
+        "can_learn": [
+          "TypeScript (우대사항이다 — 자격요건은 Node.js 다)",
+          "DynamoDB (관계형만 해 봤다면 키 설계 개념이 새롭지만 문서가 좋다)",
+          "GraphQL (REST 로도 자격요건이 충족된다)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "저장소를 고르는 감각 — 원장과 로그는 성격이 정반대다",
+          "from": "qualification",
+          "quote": "비즈니스 요구 사항에 따른 RDBMS, NoSQL, Cache 설계 경험이 있는 분",
+          "priority": "core",
+          "why": "이 공고에서 가장 많은 것을 말하는 한 줄이다. 셋을 나란히 적고 앞에 '비즈니스 요구 사항에 따른'을 붙인 것은 **하나를 깊게가 아니라 무엇을 어디에 둘지 고르는 능력**을 묻는 것이다. 실제로 이 회사 안에는 성격이 정반대인 데이터가 함께 있다 — 리워드 잔액은 한 원도 틀리면 안 되는 원장이고, 잠금화면 노출 로그는 하루 1억 건 넘게 쏟아지는 양의 문제다.",
+          "gap_check": "리워드 적립·사용 기록과 광고 노출 로그를 각각 어디에 둘 것인가? 그리고 '캐시에 넣어도 되는 것'과 '절대 캐시에서 읽으면 안 되는 것'을 어떤 기준으로 가르는가?",
+          "drill": "리워드 도메인을 두 저장소로 나눠 구현한다 — 잔액과 거래 내역은 RDB 에 트랜잭션으로, 노출/클릭 이벤트는 키-값 저장소에 append 로. 그다음 잔액 조회를 캐시로 감싸고 **적립 직후 캐시가 옛 값을 주는 상황을 일부러 만든다.** 그 상황을 어떻게 막을지 세 가지(무효화, 짧은 TTL, 쓰기 직후 캐시 갱신)를 넣어 비교하고 각각 무엇을 대가로 하는지 적는다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Amazon DynamoDB 개발자 안내서 — 키 설계",
+              "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Redis — 캐시 패턴",
+              "url": "https://redis.io/docs/latest/develop/use/patterns/",
+              "kind": "docs"
+            },
+            {
+              "title": "PostgreSQL — 트랜잭션 격리 수준",
+              "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Node.js 로 상용 서버를 배포하고 지키기",
+          "from": "qualification",
+          "quote": "Node.js로 상용 서비스 배포해 본 경험이 있는 분",
+          "priority": "core",
+          "why": "'써 봤다'가 아니라 **'상용 배포'**라고 못 박았고, 우대사항의 TypeScript 와 나눠 적은 것을 보면 타입 없는 코드베이스가 이미 돌고 있을 가능성이 크다. 동시접속 100만 규모에서 Node 의 단일 이벤트 루프는 장점이자 함정이다 — 한 요청의 무거운 계산이 전체를 세운다.",
+          "gap_check": "요청 하나가 CPU 를 오래 쓰면 다른 요청은 어떻게 되는가? 그리고 그런 코드가 들어왔는지 배포 전에 어떻게 알아채는가?",
+          "drill": "Node 서버에 일부러 무거운 동기 작업을 넣고 부하를 걸어 **다른 요청의 응답 시간이 어떻게 무너지는지** 잰다. 그다음 (1) worker_threads 로 옮기기, (2) 잘게 쪼개 양보하기 두 방법으로 고쳐 다시 재고, 이벤트 루프 지연(event loop lag)을 지표로 뽑아 대시보드에 올린다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Node.js — 이벤트 루프 막지 않기",
+              "url": "https://nodejs.org/en/learn/asynchronous-work/dont-block-the-event-loop",
+              "kind": "docs"
+            },
+            {
+              "title": "Node.js — Worker threads",
+              "url": "https://nodejs.org/api/worker_threads.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "봉우리를 견디는 설계 — 만보기는 트래픽이 고르지 않다",
+          "from": "task",
+          "quote": "앱 다운로드 1000만 이상 / 동시 접속자 100만의 대규모 서비스의 서버 운영 및 개발",
+          "priority": "high",
+          "why": "담당 업무 **첫 줄에 규모를 적었다.** 그리고 이 앱의 트래픽은 평평하지 않다 — 잠금화면은 출퇴근 시간에 몰리고, 걸음 수 집계와 리워드 리셋은 자정에 한꺼번에 쏠린다. 평균 초당 요청 수로는 안 보이는 문제이고, **봉우리에서 무엇이 먼저 무너지는지**를 아는 사람을 찾는 자리다.",
+          "gap_check": "자정에 수백만 명의 클라이언트가 동시에 같은 API 를 부른다. 서버를 늘리는 것 말고 무엇으로 이 쏠림을 흩뜨리는가?",
+          "drill": "클라이언트가 자정에 일제히 호출하는 상황을 부하 도구로 재현한다. 그다음 세 가지를 하나씩 넣으며 다시 잰다 — (1) 클라이언트 쪽 지터(랜덤 지연), (2) 서버 쪽 큐잉과 동시성 상한, (3) 결과 캐싱. **어느 것이 가장 크게 듣는지**와 각각이 사용자 경험에 무엇을 양보하는지 표로 남긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Amazon Builders' Library — Timeouts, retries, and backoff with jitter",
+              "url": "https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/",
+              "kind": "post"
+            },
+            {
+              "title": "k6 문서",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 관리형 서비스를 이름값 아는 수준으로",
+          "from": "qualification",
+          "quote": "AWS 사용 경험 (AMI, EC2, S3, DynamoDB 등)이 있는 분",
+          "priority": "core",
+          "why": "괄호 안의 조합이 이 회사의 인프라 성격을 그대로 말한다 — **AMI 와 EC2** 를 적은 것은 컨테이너보다 이미지를 구워 띄우는 방식이 남아 있다는 뜻이고, **DynamoDB** 는 대량의 키-값 데이터가 있다는 뜻이다. 복지의 해외 컨퍼런스 지원도 백엔드는 AWS re:Invent 로 지정돼 있어, AWS 가 이 팀의 기준 축이다.",
+          "gap_check": "DynamoDB 에서 특정 파티션에 요청이 몰리면 무슨 일이 생기는가? 그리고 그걸 피하려면 키를 어떻게 잡는가?",
+          "drill": "DynamoDB 테이블 하나를 만들어 **일부러 핫 파티션을 만든다**(모든 항목을 같은 파티션 키로). 스로틀이 걸리는 것을 확인한 뒤 키를 흩뜨려 다시 재고, 조회 패턴에 맞는 GSI 를 하나 붙여 본다. 이어서 EC2 인스턴스를 AMI 로 구워 같은 서버를 두 대 띄워 본다 — 배포가 '이미지를 굽는 일'이 되면 무엇이 달라지는지 겪어 두는 것이 목적이다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "DynamoDB — 파티션 키 설계 모범 사례",
+              "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Amazon EC2 — AMI",
+              "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "상용 API 를 설계한다는 것 — 버전과 호환",
+          "from": "qualification",
+          "quote": "상용에서 RESTful API 혹은 GraphQL을 설계한 경험이 있는 분",
+          "priority": "core",
+          "why": "'상용에서'라는 말이 붙은 이유가 있다. **앱은 서버처럼 한 번에 못 바꾼다** — 사용자가 업데이트를 안 하면 두 달 전 버전이 계속 붙는다. 그래서 API 를 바꾸는 순간 옛 앱을 깨지 않는 법이 설계의 절반이 된다. 우대사항의 '모바일 B2C 서비스 개발 경력'과 같은 이야기다.",
+          "gap_check": "이미 나간 앱이 쓰는 응답에서 필드 하나를 없애야 한다. 어떤 순서로 진행하고, 옛 버전 사용자가 몇 %일 때 실제로 지울 것인가?",
+          "drill": "API 하나를 두고 **호환을 깨는 변경**을 실제로 해 본다 — 필드 추가(안전)와 필드 제거·의미 변경(위험)을 각각 만들어, 옛 클라이언트 코드가 어떻게 깨지는지 재현한다. 그다음 버전 분기·기본값·기능 플래그 중 무엇으로 감쌀지 정하고, 옛 버전 사용 비율을 볼 수 있게 요청에 앱 버전을 실어 집계한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Google — API 설계 가이드",
+              "url": "https://cloud.google.com/apis/design",
+              "kind": "docs"
+            },
+            {
+              "title": "GraphQL — 스키마 진화와 필드 폐기",
+              "url": "https://graphql.org/learn/best-practices/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "백오피스 API 를 사용자 API 와 나누기",
+          "from": "task",
+          "quote": "Back Office REST API 서버 개발 및 운영",
+          "priority": "high",
+          "why": "담당 업무에 사용자 API 와 **따로** 적혀 있다. 광고 상품이 여럿이고 정산이 붙는 회사라 어드민이 실제로 무겁고, 성격이 완전히 다르다 — 사용자 API 는 초당 수만 건의 가벼운 읽기이고 어드민은 무거운 집계 쿼리를 몇 명이 돌린다. **한 서버에 두면 어드민의 무거운 조회 하나가 사용자 트래픽을 밀어낸다.**",
+          "gap_check": "어드민에서 한 달치 광고 노출을 집계하는 쿼리가 돌 때 사용자 API 가 느려진다. 무엇을 나눌 것인가 — 서버인가, DB 인가, 아니면 그 조회 자체인가?",
+          "drill": "같은 데이터를 쓰는 사용자 API 와 어드민 API 를 만들고, 어드민에서 무거운 집계를 돌리며 사용자 API 의 응답 시간을 잰다. 그다음 (1) 읽기 복제본으로 분리, (2) 집계를 미리 계산해 두기 두 방법으로 고쳐 비교한다. 권한도 나눠 **어드민 API 가 사용자 토큰으로는 절대 안 열리게** 만든다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "PostgreSQL — 읽기 복제(스트리밍 리플리케이션)",
+              "url": "https://www.postgresql.org/docs/current/warm-standby.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Amazon RDS — 읽기 전용 복제본",
+              "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "배포를 자동으로, 되돌릴 수 있게",
+          "from": "task",
+          "quote": "AWS 서버 배포 자동화 및 관리",
+          "priority": "high",
+          "why": "우대사항의 'DevOps, CI/CD 경험'과 짝이고, 복지에 **'회식 및 야근 없음'**이 적힌 것과도 이어진다 — 동시접속 100만 서비스에서 야근이 없으려면 배포와 롤백이 손을 덜 타야 한다. 자격요건이 아니라 담당 업무에 있다는 것은 들어가서 맡게 될 일이라는 뜻이다.",
+          "gap_check": "새 버전을 올렸는데 오류율이 올라간다. **몇 분 안에** 되돌릴 수 있는가? 되돌린 뒤 DB 스키마 변경은 어떻게 되는가?",
+          "drill": "무중단 배포 파이프라인을 만든다 — 빌드 → 이미지/아티팩트 → 단계적 전환 → 헬스체크. 일부러 실패하는 버전을 배포해 **자동으로 되돌아가는지** 확인하고 걸린 시간을 잰다. 그다음 컬럼을 추가·삭제하는 마이그레이션을 넣어, 롤백해도 안 깨지게 하는 순서(추가 먼저, 삭제 나중)를 손으로 겪어 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "AWS CodeDeploy 사용자 안내서",
+              "url": "https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html",
+              "kind": "docs"
+            },
+            {
+              "title": "GitHub Actions 문서",
+              "url": "https://docs.github.com/en/actions",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모바일 B2C 서버의 특성 — 클라이언트를 못 믿는다",
+          "from": "preference",
+          "quote": "모바일 B2C 서비스 개발 경력이 있는 분",
+          "priority": "high",
+          "why": "이 회사에서 이 우대사항은 특히 무겁다. **걸음 수가 사용자 기기에서 오고 그 대가로 돈에 준하는 캐시가 나가기 때문이다** — 클라이언트 값을 그대로 믿으면 그게 곧 손해다. 게다가 네트워크가 끊겼다 붙는 모바일 환경이라 같은 요청이 두 번 오는 일이 흔하다.",
+          "gap_check": "리워드 적립 요청이 네트워크 재시도로 두 번 도착했다. 두 번 지급되지 않게 하려면 무엇을 어디에 저장해야 하는가? 그리고 클라이언트가 보낸 걸음 수를 어디까지 믿을 것인가?",
+          "drill": "적립 API 에 **멱등 키**를 붙여 같은 요청을 열 번 던져도 한 번만 지급되게 만든다. 그다음 값 검증을 얹는다 — 시간당 증가량 상한, 이전 값과의 일관성 같은 규칙을 두고 이상치를 걸러 로그로 남긴다. 마지막으로 오프라인에서 쌓였다가 한꺼번에 올라오는 경우를 만들어 규칙이 정상 사용자를 막지 않는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Stripe — 멱등 요청",
+              "url": "https://docs.stripe.com/api/idempotent_requests",
+              "kind": "docs",
+              "note": "돈이 오가는 API 의 멱등 설계를 가장 명확하게 설명한 문서"
+            },
+            {
+              "title": "Transactional outbox 패턴",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "코드리뷰를 자격요건으로 적은 팀",
+          "from": "qualification",
+          "quote": "코드리뷰에 적극적으로 참여하실 수 있는 분",
+          "priority": "core",
+          "why": "기술이 아닌 항목을 자격요건에 넣은 유일한 줄이다. 앞줄의 '팀 단위에서 Git 사용 경험'과 묶이는데, **병역특례와 인턴이 조직의 큰 비중을 차지하는 회사**라는 점을 함께 놓고 보면 읽힌다 — 경력자가 들어와 리뷰로 기준을 세워 주기를 기대하는 자리일 가능성이 높다.",
+          "gap_check": "주니어의 PR 에서 동작은 맞는데 구조가 아쉽다. 지금 고치게 할 것인가 넘길 것인가, 그리고 그 기준을 말로 설명할 수 있는가?",
+          "drill": "최근 받은 리뷰와 내가 남긴 리뷰를 각각 다섯 개씩 다시 읽고 분류한다 — 취향인가, 버그인가, 구조인가. 그다음 **내 리뷰 기준을 한 장으로** 쓴다(무엇은 반드시 막고, 무엇은 제안하고, 무엇은 넘기는가). 오픈소스 PR 하나에 실제로 리뷰를 남겨 보면 그 기준이 통하는지 확인할 수 있다.",
+          "hours": 6,
+          "resources": [
+            {
+              "title": "Google — Code Review Developer Guide",
+              "url": "https://google.github.io/eng-practices/review/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "리워드 원장을 직접 만들어 간다",
+          "why": "이 회사의 심장이 '걸음 수를 받아 돈에 준하는 캐시를 지급하는 원장'이고, 그건 만들어 볼 수 있는 크기다. 적립·사용·환불이 항상 짝을 이루고, 같은 요청이 두 번 와도 한 번만 지급되고, 이상치를 걸러 내는 서비스 하나면 자격요건 절반을 한꺼번에 보여 준다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "야간 장애 대응을 면접에서 되묻는다",
+          "why": "동시접속 100만 서비스인데 복지에 '회식 및 야근 없음'이 적혀 있다. 자동화로 감당하는 것인지, 장애가 드문 것인지, 아니면 누군가 조용히 감당하는 것인지는 물어봐야 안다. **이 질문 자체가 운영을 아는 지원자로 보이게 한다.**",
+          "effort": "질문 하나"
+        },
+        {
+          "idea": "경력자가 기준을 세우는 자리라는 점을 활용한다",
+          "why": "이 회사 공고 39건 중 대부분이 병역특례·인턴이고 경력직 개발 공고는 이것 하나다. 코드리뷰가 자격요건에 들어간 것도 그 맥락으로 읽힌다. **'내가 팀에 무엇을 남겼는가'**(리뷰 기준, 배포 절차, 온보딩 문서) 이야기를 준비하면 이 자리의 기대와 정확히 맞는다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "행동을 바꾼 숫자로 말한다",
+          "why": "대표가 창업 근거를 행동경제학 논문과 싱가포르 임상에서 가져왔다고 공개적으로 말해 왔고, 회사 이름 자체가 넛지다. 내가 만든 기능이 **사용자 행동 지표를 어떻게 움직였는지** 숫자로 말할 수 있으면 이 회사의 언어와 겹친다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "리워드 적립과 광고 노출 로그를 각각 어디에 저장하고 왜 그렇게 나눴는가",
+          "적립 요청이 두 번 왔을 때 두 번 지급되지 않게 하는 방법",
+          "클라이언트가 보낸 걸음 수를 어디까지 믿고 어떻게 검증하는가",
+          "자정처럼 요청이 한꺼번에 몰리는 시각을 어떻게 흩뜨리는가",
+          "DynamoDB 에서 핫 파티션을 피하는 키 설계",
+          "이미 배포된 앱을 깨지 않고 API 를 바꾸는 순서",
+          "어드민의 무거운 집계가 사용자 API 를 밀어낼 때 무엇을 나누는가",
+          "배포가 잘못됐을 때 몇 분 안에 되돌릴 수 있는가"
+        ],
+        "sources": [
+          {
+            "title": "넛지헬스케어 백엔드/서버 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/109188",
+            "publisher": "원티드",
+            "summary": "회사 소개에 매출·투자·해외 다운로드 수치가 함께 적혀 있고, 복지에 직무별 해외 컨퍼런스 지원이 명시돼 있다"
+          }
+        ]
+      }
+    }
+  ],
   "open_questions": [
     "모집중 39건 중 경력직 개발 공고는 `백엔드/서버 개발자`(3~7년) **하나뿐**이다. 나머지는 병역특례(산업기능요원)와 채용전환형 인턴, 신입 자리다. 그래서 이 회사 브리핑은 공고 하나로 닫힐 가능성이 높다.",
     "2024~2025년 실적을 밝힌 자료를 찾지 못했다. 공고와 기사로 확인되는 것은 2023년 매출 1,000억 돌파까지다.",
