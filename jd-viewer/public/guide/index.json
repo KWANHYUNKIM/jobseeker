@@ -139,6 +139,17 @@
       "postings": 10,
       "study_items": 68,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "vivarepublica",
+      "name": "비바리퍼블리카",
+      "aliases": [
+        "비바리퍼블리카"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
