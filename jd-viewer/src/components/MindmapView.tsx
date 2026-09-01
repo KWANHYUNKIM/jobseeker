@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { SearchInput } from './ui'
 import { Transformer } from 'markmap-lib'
 import { Markmap, loadCSS, loadJS, globalCSS } from 'markmap-view'
 
@@ -89,6 +90,8 @@ export function MindmapView() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [domains, setDomains] = useState<string[]>([])
+  const [query, setQuery] = useState('')
+  const [matchCount, setMatchCount] = useState<number | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -148,9 +151,17 @@ export function MindmapView() {
             return colors[i]
           },
         })
+        // ⚠️ 여기서 ref 를 늦게 잡으면 안 된다. 개발 모드의 재마운트에서 정리 함수가
+        // 먼저 돌면 그때는 mmRef 가 아직 비어 있어 아무것도 못 지우고, 뒤늦게 대입된
+        // 인스턴스만 남는다 — 화면에는 맵이 보이는데 **펼치기·접기·검색이 죽은 인스턴스를
+        // 잡고 있어 아무 반응이 없다.** 만들자마자 잡고, 그 사이 취소됐으면 스스로 지운다.
+        if (cancelled) {
+          mm.destroy()
+          return
+        }
+        mmRef.current = mm
         await mm.setData(rootNode as never)
         await mm.fit()
-        mmRef.current = mm
         setLoading(false)
       } catch (e) {
         if (!cancelled) {
@@ -198,6 +209,42 @@ export function MindmapView() {
   }
 
   // 도메인 클릭: 해당 도메인의 기업 목록까지만 펼치고(직군/공고는 접음) 나머지 도메인은 접는다.
+  // 마인드맵의 검색은 목록 필터와 다르다. 노드를 지우면 가지가 끊겨 어디에 걸린
+  // 것인지 알 수 없으므로, **걸린 가지만 펼치고 나머지는 접는다.**
+  useEffect(() => {
+    const needle = query.trim().toLowerCase()
+    const t = setTimeout(async () => {
+      const mm = mmRef.current
+      const root = rootRef.current
+      if (!mm || !root) return
+      if (!needle) {
+        setMatchCount(null)
+        const reset = (n: MMNode, depth: number) => {
+          n.payload = n.payload || {}
+          n.payload.fold = depth >= 1 ? 1 : 0
+          if (n.children) for (const c of n.children) reset(c, depth + 1)
+        }
+        reset(root, 0)
+      } else {
+        let found = 0
+        const walk = (n: MMNode): boolean => {
+          const self = plainText(n.content).toLowerCase().includes(needle)
+          if (self) found += 1
+          let inChild = false
+          if (n.children) for (const c of n.children) inChild = walk(c) || inChild
+          n.payload = n.payload || {}
+          n.payload.fold = self || inChild ? 0 : 1
+          return self || inChild
+        }
+        walk(root)
+        setMatchCount(found)
+      }
+      await mm.setData(root as never)
+      await mm.fit()
+    }, 250) // 글자마다 트리 전체를 다시 그리면 큰 맵에서 입력이 밀린다
+    return () => clearTimeout(t)
+  }, [query])
+
   const jumpToDomain = async (domainName: string) => {
     if (!mmRef.current || !rootRef.current) return
     const walk = (n: MMNode, depth: number, target: string) => {
@@ -238,6 +285,17 @@ export function MindmapView() {
     <div className="flex flex-1 flex-col min-w-0 min-h-0">
       {/* 상단 toolbar - 직군 점프 + 컨트롤 */}
       <div className="border-b border-(--color-border) bg-(--color-panel) px-4 py-2 flex flex-wrap items-center gap-2 shrink-0">
+        <SearchInput
+          value={query}
+          onChange={setQuery}
+          placeholder="기업·직군·기술 검색"
+          className="w-full sm:w-64"
+        />
+        {matchCount !== null && (
+          <span className="text-[11px] text-(--color-muted)">
+            {matchCount === 0 ? '걸리는 마디가 없다' : <>걸린 마디 <b className="text-(--color-text)">{matchCount}</b></>}
+          </span>
+        )}
         <span className="text-[11px] text-(--color-text)/60 uppercase tracking-wider font-semibold mr-1">
           도메인
         </span>
