@@ -38,10 +38,26 @@ URL 의 일부로 보지 않아서, 공고가 1만 건이어도 색인되는 주
 - `scripts/prerender.mjs` — `npm run build` 끝에 주소별 정적 HTML 과 `sitemap.xml`,
   `robots.txt` 를 찍는다. 크롤러와 카카오톡·슬랙 미리보기 봇이 보는 게 이것이다.
   ```bash
-  SITE_URL=https://내도메인 npm run build   # 정규 URL 오리진(기본: ngrok 고정 주소)
   PRERENDER_JOBS=2000 npm run prerender    # 공고 페이지 수 제한(디스크 절약)
   ```
   현재 12,000쪽 남짓(공고 10.5k · 회사 2k · 레이더 100 · 역설계 60), `dist/` 기준 약 115MB.
+
+### 배포 도메인
+
+`canonical`·오픈그래프·`sitemap.xml`·`robots.txt` 의 기준 오리진은 `.env` 한 줄이다.
+앱(`seo.ts`)과 프리렌더가 **같은 값**을 읽는다 — 예전에는 이름이 둘(`VITE_SITE_URL` /
+`SITE_URL`)이라 한쪽만 고치면 화면은 새 도메인인데 sitemap 은 옛 도메인을 가리켰다.
+
+```bash
+cp .env.example .env      # VITE_SITE_URL=https://내도메인  (끝 슬래시 없이)
+npm run build
+SITE_URL=https://staging.example.com npm run build   # 한 번만 덮을 때(CI 등)
+```
+
+값이 없으면 `canonical` 은 상대경로로만 붙고 `sitemap.xml`·`robots.txt` 는 만들지
+않는다(지난 빌드에 남아 있던 것도 지운다). 틀린 도메인이 박힌 색인 파일을
+내보내느니 안 내보내는 쪽이 낫다 — 검색엔진에 "정본은 저기"라고 잘못 알려주는
+값이기 때문이다.
 
 서버는 `$uri → $uri/ → /index.html` 순으로 찾는다(`nginx.conf`, `bin/serve_viewer.py`).
 프리렌더가 있으면 그걸, 없으면 앱 셸을 주고 브라우저에서 라우터가 이어받는다.

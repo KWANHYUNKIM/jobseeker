@@ -14,10 +14,12 @@
  *
  * 실행: node scripts/prerender.mjs   (npm run build 끝에 자동 실행)
  * 환경변수:
- *   SITE_URL        정규 URL 의 기준 오리진
+ *   VITE_SITE_URL   정규 URL 의 기준 오리진(.env). 앱(seo.ts)과 같은 값을 쓴다.
+ *   SITE_URL        위를 한 번만 덮고 싶을 때(CI 등). 없으면 .env 를 따른다.
  *   PRERENDER_JOBS  공고 페이지 최대 개수(기본: 전부). 디스크를 아끼고 싶을 때만.
  */
-import { mkdirSync, readFileSync, writeFileSync, statSync, existsSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync, statSync, existsSync, readdirSync, rmSync } from 'node:fs'
+import { loadEnv } from 'vite'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -25,7 +27,21 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(ROOT, 'dist')
 const PUBLIC = join(ROOT, 'public')
 
-const SITE_URL = (process.env.SITE_URL || 'https://prevail-chapter-uncorrupt.ngrok-free.dev').replace(/\/$/, '')
+// 오리진은 배포마다 다르다. 이름을 하나로 묶어 둔다 — 예전에는 여기(SITE_URL)와
+// 앱(VITE_SITE_URL)이 서로 다른 이름을 봐서, .env 한쪽만 고치면 화면은 새 도메인인데
+// sitemap·canonical 은 옛 도메인을 가리키는 상태가 조용히 만들어졌다.
+// vite 의 loadEnv 로 앱과 같은 .env 를 읽고, CI 에서 한 번만 덮고 싶을 때만 SITE_URL 을 쓴다.
+const SITE_URL = (
+  process.env.SITE_URL ||
+  loadEnv(process.env.NODE_ENV || 'production', ROOT, 'VITE_').VITE_SITE_URL ||
+  ''
+).replace(/\/$/, '')
+
+// 오리진을 모르면 절대 URL 을 지어내지 않는다. 틀린 도메인이 박힌 canonical 은
+// 없는 것보다 나쁘다 — 검색엔진에 "정본은 저기"라고 잘못 알려주는 값이기 때문이다.
+// canonical 은 상대경로로 두고(문서 주소 기준으로 해석된다), 절대 URL 이 필수인
+// og:url·sitemap·robots 는 아예 만들지 않는다.
+const abs = (path) => (SITE_URL ? SITE_URL + path : path)
 const SITE_NAME = 'JD Viewer'
 const JOB_LIMIT = Number(process.env.PRERENDER_JOBS || 0) || Infinity
 
@@ -82,7 +98,7 @@ if (!existsSync(cachePath)) writeFileSync(cachePath, shell)
  * 런타임 메타가 겹쳐 같은 태그가 두 벌씩 남는다.
  */
 function page({ path, title, description, body, jsonLd, robots }) {
-  const url = SITE_URL + path
+  const url = abs(path)
   const full = `${title} | ${SITE_NAME}`
   const desc = clip(description)
   const head = [
@@ -94,7 +110,7 @@ function page({ path, title, description, body, jsonLd, robots }) {
     `<meta property="og:site_name" content="${SITE_NAME}" data-seo>`,
     `<meta property="og:title" content="${esc(full)}" data-seo>`,
     `<meta property="og:description" content="${esc(desc)}" data-seo>`,
-    `<meta property="og:url" content="${esc(url)}" data-seo>`,
+    SITE_URL ? `<meta property="og:url" content="${esc(url)}" data-seo>` : '',
     `<meta property="og:locale" content="ko_KR" data-seo>`,
     `<meta name="twitter:card" content="summary" data-seo>`,
     `<meta name="twitter:title" content="${esc(full)}" data-seo>`,
@@ -242,19 +258,19 @@ for (const [path, seo] of Object.entries(TAB_SEO)) {
               '@context': 'https://schema.org',
               '@type': 'WebSite',
               name: SITE_NAME,
-              url: SITE_URL,
+              url: abs('/'),
               description: seo.desc,
             }
           : null,
     }),
   )
-  add(SITE_URL + path, jobsMtime, 'daily', path === '/' ? '1.0' : '0.8')
+  add(abs(path), jobsMtime, 'daily', path === '/' ? '1.0' : '0.8')
 }
 
 // ── 공고 상세 ───────────────────────────────────────────────────────────
 for (const j of jobPages) {
   const path = `/jobs/${jobKey(j)}`
-  const url = SITE_URL + path
+  const url = abs(path)
   const stack = (j.tech_stack ?? []).slice(0, 12)
   const head = [j.company, j.career, j.location].filter(Boolean).join(' · ')
   const description = clip(
@@ -293,7 +309,7 @@ for (const j of jobPages) {
   const breadcrumb = {
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: SITE_NAME, item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 1, name: SITE_NAME, item: abs('/') },
       { '@type': 'ListItem', position: 2, name: j.company, item: url },
     ],
   }
@@ -367,7 +383,7 @@ for (const c of companyList) {
       },
     }),
   )
-  add(SITE_URL + path, stacksMtime, 'weekly', '0.6')
+  add(abs(path), stacksMtime, 'weekly', '0.6')
 }
 
 // ── 기술 레이더(글로벌 100곳) ───────────────────────────────────────────
@@ -393,7 +409,7 @@ for (const c of radarList) {
     `<p><a href="/radar">기업 100곳 기술 레이더</a></p>` +
     `</article></main>`
   write(path, page({ path, title: `${c.name} 기술스택·아키텍처`, description, body }))
-  add(SITE_URL + path, radarMtime, 'monthly', '0.6')
+  add(abs(path), radarMtime, 'monthly', '0.6')
 }
 
 // ── 기술 역설계 ─────────────────────────────────────────────────────────
@@ -411,7 +427,7 @@ for (const c of revengList) {
     `<p><a href="/reveng">전체 역설계 목록</a></p>` +
     `</article></main>`
   write(path, page({ path, title: `${c.name} 기술 역설계`, description, body }))
-  add(SITE_URL + path, c.updated_at ?? today, 'monthly', '0.6')
+  add(abs(path), c.updated_at ?? today, 'monthly', '0.6')
 }
 
 // 기술블로그 글 상세는 남의 글을 옮겨 놓은 화면이다. 주소는 있어야 하지만(공유·뒤로가기)
@@ -420,12 +436,25 @@ for (const c of revengList) {
 const blogCount = blogs?.posts?.length ?? 0
 
 // ── sitemap ─────────────────────────────────────────────────────────────
+// sitemap 의 <loc> 과 robots 의 Sitemap: 은 규격상 절대 URL 이어야 한다. 오리진을
+// 모르는 채로 찍으면 어느 도메인을 가리키는지 알 수 없는 파일이 나오므로 만들지 않는다.
+// 정적 HTML 은 이미 다 찍혔고 canonical 도 상대경로로 붙어 있어, 도메인이 정해지고
+// 다시 빌드하면 그때 색인 준비가 끝난다.
 // 한 파일 5만 URL·10MB 제한이 있어 2만 개씩 쪼개고 인덱스로 묶는다.
 const CHUNK = 20000
 const chunks = []
 for (let i = 0; i < urls.length; i += CHUNK) chunks.push(urls.slice(i, i + CHUNK))
 
-chunks.forEach((chunk, i) => {
+// dist 는 빌드마다 지워지지 않는다. 지난 빌드의 sitemap 을 남겨 두면 도메인을 바꾼
+// 뒤에도 옛 도메인을 가리키는 파일이 그대로 배포되고(조각 수가 줄면 꼬리도 남는다),
+// 오리진을 지운 빌드에서는 "안 만들었다"는 말과 달리 파일이 버젓이 서빙된다.
+for (const name of readdirSync(DIST)) {
+  if (/^sitemap(-\d+)?\.xml$/.test(name)) rmSync(join(DIST, name))
+}
+if (!SITE_URL && existsSync(join(DIST, 'robots.txt'))) rmSync(join(DIST, 'robots.txt'))
+
+const chunkFiles = SITE_URL ? chunks : []
+chunkFiles.forEach((chunk, i) => {
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     chunk
@@ -439,22 +468,29 @@ chunks.forEach((chunk, i) => {
   writeFileSync(join(DIST, `sitemap-${i + 1}.xml`), xml)
 })
 
-const index =
-  `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  chunks
-    .map((_, i) => `  <sitemap><loc>${SITE_URL}/sitemap-${i + 1}.xml</loc><lastmod>${today}</lastmod></sitemap>`)
-    .join('\n') +
-  `\n</sitemapindex>\n`
-writeFileSync(join(DIST, 'sitemap.xml'), index)
+if (SITE_URL) {
+  const index =
+    `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    chunks
+      .map((_, i) => `  <sitemap><loc>${SITE_URL}/sitemap-${i + 1}.xml</loc><lastmod>${today}</lastmod></sitemap>`)
+      .join('\n') +
+    `\n</sitemapindex>\n`
+  writeFileSync(join(DIST, 'sitemap.xml'), index)
 
-// robots.txt — 검색어가 붙은 목록은 같은 목록의 무한 변형이라 크롤 예산만 태운다.
-writeFileSync(
-  join(DIST, 'robots.txt'),
-  `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /*?q=\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
-)
+  // robots.txt — 검색어가 붙은 목록은 같은 목록의 무한 변형이라 크롤 예산만 태운다.
+  writeFileSync(
+    join(DIST, 'robots.txt'),
+    `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /*?q=\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
+  )
+}
 
 console.log(
   `[prerender] ${written}쪽 (공고 ${jobPages.length} · 회사 ${companyList.length} · 레이더 ${radarList.length} · 역설계 ${revengList.length})\n` +
-    `[prerender] sitemap ${chunks.length}개 · URL ${urls.length}개 · 블로그 글 ${blogCount}건은 색인 제외\n` +
-    `[prerender] 오리진 ${SITE_URL}`,
+    (SITE_URL
+      ? `[prerender] sitemap ${chunks.length}개 · URL ${urls.length}개 · 블로그 글 ${blogCount}건은 색인 제외\n` +
+        `[prerender] 오리진 ${SITE_URL}`
+      : `[prerender] 블로그 글 ${blogCount}건은 색인 제외\n` +
+        `[prerender] ⚠ VITE_SITE_URL 이 없어 sitemap.xml·robots.txt 를 만들지 않았습니다.\n` +
+        `[prerender]   jd-viewer/.env 에 VITE_SITE_URL=https://내도메인 을 적고 다시 빌드하세요` +
+        ` (.env.example 참고).`),
 )
