@@ -5,7 +5,7 @@
   "aliases": [
     "큐픽스"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-02",
   "site": "cupix.com",
   "one_liner": "현장을 360°로 찍어 3D 로 세우고, 도면과 어긋난 곳을 AI 가 짚어 주는 플랫폼 — 매출의 95% 이상이 해외에서 나온다",
@@ -359,7 +359,7 @@
           "실제 좌표에 맞추는 일(Georeference)이 왜 따로 필요한가 — 우대사항에 이 단어가 나온다",
           "3D 데이터의 표현 방식(포인트 클라우드·메시)과 각각의 크기·정확도 특성"
         ],
-        "confidence": "inferred",
+        "confidence": "confirmed",
         "sources": [
           {
             "title": "큐픽스 머신러닝 엔지니어 (Vision & AI) 채용 공고",
@@ -372,6 +372,12 @@
             "url": "https://www.wanted.co.kr/wd/369480",
             "publisher": "원티드",
             "summary": "공고 본문에 회사 소개가 통째로 있다 — 2015년 한국에서 시작, 매출의 97% 이상이 한국 밖, 40여 개국 15,000여 현장, 메이저 VC 10곳 이상"
+          },
+          {
+            "title": "큐픽스 머신러닝 엔지니어 (Vision & AI) 채용 공고 — 알고리즘 유닛 소개",
+            "url": "https://www.wanted.co.kr/wd/346358",
+            "publisher": "원티드",
+            "summary": "`2D 이미지를 기반으로 현실 공간을 3차원으로 재구성하고, 시간의 변화까지 반영한 4D 공간 이해 기술을 연구·개발하는 팀` 이라고 밝힌다"
           }
         ]
       },
@@ -383,7 +389,7 @@
           "`4D` 의 D 가 시간이라는 것 — 공정표와 3D 를 잇는다는 뜻",
           "진척률을 자동 산출한다는 문제가 왜 어려운가(가려짐·부분 시공·정답 라벨 없음)"
         ],
-        "confidence": "inferred",
+        "confidence": "confirmed",
         "sources": [
           {
             "title": "큐픽스 머신러닝 엔지니어(LLM, ML, RAG, AI Agent) 채용 공고",
@@ -396,6 +402,12 @@
             "url": "https://www.wanted.co.kr/wd/369480",
             "publisher": "원티드",
             "summary": "공고 본문에 회사 소개가 통째로 있다 — 2015년 한국에서 시작, 매출의 97% 이상이 한국 밖, 40여 개국 15,000여 현장, 메이저 VC 10곳 이상"
+          },
+          {
+            "title": "큐픽스 머신러닝 엔지니어(LLM, ML, RAG, AI Agent) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/373064",
+            "publisher": "원티드",
+            "summary": "담당 업무가 `BIM 도면과 현장 360° 캡처를 LLM/VLM이 비교·판단하는 도메인 특화 에이전트` 와 `설계 대비 진척도를 자동으로 매핑` 이다"
           }
         ]
       },
@@ -431,13 +443,19 @@
           "큰 장면을 나눠 보내는 방식(LOD·타일링·스트리밍)",
           "Angular 와 React 를 함께 쓰는 조직이라는 점 — 자격요건이 둘을 나란히 적는다"
         ],
-        "confidence": "inferred",
+        "confidence": "confirmed",
         "sources": [
           {
             "title": "큐픽스 [엔터프라이즈 공간 지능 플랫폼] 프론트엔드 엔지니어 채용 공고 — 회사 소개",
             "url": "https://www.wanted.co.kr/wd/369480",
             "publisher": "원티드",
             "summary": "공고 본문에 회사 소개가 통째로 있다 — 2015년 한국에서 시작, 매출의 97% 이상이 한국 밖, 40여 개국 15,000여 현장, 메이저 VC 10곳 이상"
+          },
+          {
+            "title": "큐픽스 프론트엔드 엔지니어 (4D Digital Twin with AI) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/356893",
+            "publisher": "원티드",
+            "summary": "프론트엔드 유닛이 `3D 디지털 트윈 플랫폼 상에서 BIM 기반 설계` 를 다루는 제품을 만든다고 밝히고 태그가 #WebGL #BIM #CAD #3DGraphics 다"
           }
         ]
       },
@@ -449,13 +467,19 @@
           "현장은 네트워크가 나쁘다 — 오프라인 저장과 나중 업로드",
           "큰 파일(360° 이미지)을 모바일에서 올리는 문제(재개·백그라운드)"
         ],
-        "confidence": "inferred",
+        "confidence": "confirmed",
         "sources": [
           {
             "title": "큐픽스 Flutter Engineer (iOS/Android) 채용 공고",
             "url": "https://www.wanted.co.kr/wd/348044",
             "publisher": "원티드",
             "summary": "Flutter(Dart) 모바일 앱. 자격요건에 WiFi/BLE 등 무선 네트워크 제어 경험이 있다"
+          },
+          {
+            "title": "큐픽스 Flutter Engineer (iOS/Android) 채용 공고 — 모바일 유닛 소개",
+            "url": "https://www.wanted.co.kr/wd/348044",
+            "publisher": "원티드",
+            "summary": "`360도 카메라, 드론 등 다양한 외부 기기를 제어하여 디지털 트윈 솔루션을 활용할 수 있게 돕고` 라고 밝힌다"
           }
         ]
       },
@@ -647,7 +671,8 @@
     "**AI-driven 전환과 폐쇄망이 서로 부딪힌다.** 인프라 공고(369486)는 팀이 `인프라 운영의 AI-driven 전환` 에 집중한다고 밝히면서 동시에 `폐쇄망 고객을 위한 온프레미스 격리 환경` 을 담당 업무로 둔다. **폐쇄망에서는 외부 LLM 도구를 쓸 수 없으므로 두 방향이 부딪히는데, 회사가 이를 어떻게 푸는지는 공고에 없다.** 지원자에게는 좋은 질문거리라 edge 에 넣었다.",
     "**이 회사에서 AI 도구 요구의 강도가 유일하게 낮은 공고가 Flutter 다.** 백엔드·프론트엔드·데이터·데브옵스는 `AI 엔지니어링 도구 … 활용해 본 경험` 을 **자격요건**에 두는데, `Flutter Engineer`(348044)는 `AI를 활용하여 개발을 진행해 보신 분` 을 **우대사항**에 둔다. **모바일 유닛만 AI-driven 전환의 강도가 낮은 것인지, 공고를 덜 고친 것인지 확인하지 못했다.**",
     "**모집중 11건을 모두 썼다.** 큐픽스는 개발·AI·보안 직군만 열한 건이었고 **본문이 전부 차 있어** 제외한 공고가 없다. **이 브리핑에서 모집중 전부를 쓴 첫 회사**다.",
-    "**연봉·임직원 수는 `salary` 와 `company.scale` 로 옮겼다.** 골격 사이클에 적어 둔 `salary 를 비워 두었다`·`임직원 수를 확인하지 못했다` 두 항목은 **채워졌거나 근거가 정리돼** 여기서 지웠다 — 연봉은 `salary.note` 와 `salary.open_questions` 가, 임직원 수는 `company.scale` 이 이어받는다."
+    "**연봉·임직원 수는 `salary` 와 `company.scale` 로 옮겼다.** 골격 사이클에 적어 둔 `salary 를 비워 두었다`·`임직원 수를 확인하지 못했다` 두 항목은 **채워졌거나 근거가 정리돼** 여기서 지웠다 — 연봉은 `salary.note` 와 `salary.open_questions` 가, 임직원 수는 `company.scale` 이 이어받는다.",
+    "**공고 열한 건을 다 쓴 뒤 골격을 되읽어 `domains` 넷의 신뢰도를 올렸다** — `공간 캡처·3D 재구성`(346358 유닛 소개) · `BIM 대조·4D 시공 추적`(373064 담당 업무) · `웹 3D 가시화`(356893 유닛 소개와 태그) · `현장 모바일 앱`(348044 모바일 유닛 소개). **골격 사이클에서 자격요건 한 줄로 짐작했던 것들이 나중 공고의 본문으로 확인됐다.** `revenue` 의 수익원 구분은 여전히 `inferred` 다 — 매출 구성이 공개돼 있지 않다."
   ],
   "postings": [
     {
