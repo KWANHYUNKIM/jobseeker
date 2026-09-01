@@ -1,0 +1,301 @@
+{
+  "slug": "deepauto",
+  "name": "딥오토",
+  "name_en": "DeepAuto.ai",
+  "aliases": ["딥오토", "㈜딥오토"],
+  "status": "in_progress",
+  "updated_at": "2026-09-01",
+  "site": "deepauto.ai",
+  "one_liner": "KAIST 연구실에서 나와 'AI를 싸게 돌리는 기술'을 논문과 제품 양쪽으로 내놓는 회사",
+
+  "company": {
+    "business": "2022년 말 KAIST 김재철AI대학원 황성주 교수와 석·박사 연구진이 세운 **리서치 기반 AI 스타트업**이다. 파는 것은 모델이 아니라 **모델을 쓰게 해 주는 판** — 기업이 에이전트 워크플로를 만들어 돌리는 `Agentic AI Workflow Builder`, 그리고 모델을 싸고 빠르게 서빙하는 `Scale Serve` 가 대표 제품이다. 이 회사의 특징은 **연구가 곧 제품의 원가 구조**라는 점이다: 자체 연구인 InfiniteHiP(계층적 가지치기 어텐션)은 48GB GPU 한 장에서 300만 토큰을 다루고 100만 토큰 디코딩을 18.95배 빠르게, GPU 메모리를 최대 96% 줄인다고 발표됐다 — 추론 비용이 곧 마진인 사업에서 그 숫자가 그대로 경쟁력이 된다. 고객은 엔터프라이즈이고(온프렘·하이브리드 배포, 멀티테넌시, SOC 2·ISO 27001 대응이 공고에 있다), 제조·건설·화공·기계 같은 산업 도면·문서와 금융 트랙을 따로 두고 있다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자",
+        "url": "https://www.hankyung.com/article/202311237863i",
+        "publisher": "한국경제",
+        "date": "2023-11-23",
+        "summary": "KAIST 황성주 교수와 석·박사가 2022년 말 창업했다는 사실과 사업 방향을 다룬 기사"
+      },
+      {
+        "title": "국내 스타트업 딥오토, LLM 긴 컨텍스트 추론 효율화 기술 공개",
+        "url": "https://www.aitimes.com/news/articleView.html?idxno=168056",
+        "publisher": "AI타임스",
+        "date": "2025-02-17",
+        "summary": "InfiniteHiP 의 원리와 성능 수치를 정리한 기사"
+      },
+      {
+        "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재",
+        "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409",
+        "publisher": "데일리시큐",
+        "summary": "2025년 연구 성과와 대표 제품(Agentic AI Workflow Builder, Scale Serve)을 밝힌 보도"
+      }
+    ],
+    "scale": [
+      {
+        "label": "설립",
+        "value": "2022년 말 — KAIST 김재철AI대학원 황성주 교수와 석·박사 연구진",
+        "as_of": "2022",
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자", "url": "https://www.hankyung.com/article/202311237863i", "publisher": "한국경제", "date": "2023-11-23" }
+        ]
+      },
+      {
+        "label": "투자",
+        "value": "네이버 D2SF·스프링캠프로부터 Seed 유치, 이후 Pre-A 단계",
+        "as_of": "2023",
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자", "url": "https://www.hankyung.com/article/202311237863i", "publisher": "한국경제", "date": "2023-11-23" }
+        ]
+      },
+      {
+        "label": "임직원",
+        "value": "약 9~29명 — 집계마다 다르다(원티드 9명, 다른 집계 18명·29명). 어느 쪽이든 **아주 작은 조직**이다",
+        "as_of": "2026",
+        "confidence": "inferred",
+        "sources": [
+          { "title": "딥오토 기업정보 — 채용 18건, 인원 9명", "url": "https://www.wanted.co.kr/company/46475", "publisher": "원티드" }
+        ]
+      },
+      {
+        "label": "연구 성과",
+        "value": "2025년 NeurIPS 7편 · EMNLP 1편 등 8편 게재",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재", "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409", "publisher": "데일리시큐" }
+        ]
+      },
+      {
+        "label": "InfiniteHiP 성능 (자체 발표)",
+        "value": "48GB GPU 한 장에서 최대 300만 토큰 · 100만 토큰 디코딩 18.95배 가속 · GPU 메모리 최대 96% 감소",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "국내 스타트업 딥오토, LLM 긴 컨텍스트 추론 효율화 기술 공개", "url": "https://www.aitimes.com/news/articleView.html?idxno=168056", "publisher": "AI타임스", "date": "2025-02-17" },
+          { "title": "InfiniteHiP 논문 (arXiv:2406.09827)", "url": "https://arxiv.org/abs/2406.09827", "publisher": "arXiv" }
+        ]
+      },
+      {
+        "label": "보유 GPU",
+        "value": "H100·B200 운용 및 보유, 확장 예정 (AWS 및 Neocloud 기반)",
+        "as_of": "2026",
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "Agentic AI Workflow Builder",
+        "how": "기업이 자기 업무에 맞는 에이전트 워크플로를 만들어 돌리게 해 주는 제품이다. 고객사 환경(온프렘·하이브리드)에 배포하고 멀티테넌시로 나눠 쓰는 구조가 공고에 적혀 있어, **엔터프라이즈에 도입해 파는 형태**로 읽힌다. 매출 규모는 공개돼 있지 않다.",
+        "domains": ["에이전트·워크플로우 플랫폼", "데이터 플랫폼", "엔터프라이즈 보안·멀티테넌시"],
+        "confidence": "inferred",
+        "sources": [
+          { "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재", "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409", "publisher": "데일리시큐", "summary": "대표 제품으로 Agentic AI Workflow Builder 와 Scale Serve 를 명시" },
+          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+        ]
+      },
+      {
+        "name": "Scale Serve (모델 서빙)",
+        "how": "모델을 싸고 빠르게 돌려 주는 제품이다. 회사의 연구(InfiniteHiP 등 추론 효율화)가 **그대로 원가 절감으로 이어지는 자리**라, 논문이 마케팅이 아니라 제품의 근거가 된다. GPU 를 직접 보유(H100·B200)하는 것도 같은 맥락이다. 매출 규모는 공개돼 있지 않다.",
+        "domains": ["GPU 서빙·추론 최적화", "엔터프라이즈 보안·멀티테넌시"],
+        "confidence": "inferred",
+        "sources": [
+          { "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재", "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409", "publisher": "데일리시큐" },
+          { "title": "국내 스타트업 딥오토, LLM 긴 컨텍스트 추론 효율화 기술 공개", "url": "https://www.aitimes.com/news/articleView.html?idxno=168056", "publisher": "AI타임스", "date": "2025-02-17" }
+        ]
+      },
+      {
+        "name": "산업·금융 도메인 구축",
+        "how": "플랫폼을 특정 산업에 맞춰 붙이는 일이다. 제조·건설·화공·기계의 **설계 도면과 기술 문서**를 읽는 AI 트랙이 있고, 금융 트랙(`[Financial] AI Engineer`, `[Financial] Backend Engineer`)이 따로 열려 있다. 두 트랙을 나눠 뽑는다는 것은 **버티컬별로 파는 구조**로 보인다. 매출 규모는 공개돼 있지 않다.",
+        "domains": ["비정형 문서·도면 AI", "데이터 플랫폼"],
+        "confidence": "inferred",
+        "sources": [
+          { "title": "딥오토 AI Engineer 전문가 채용 공고", "url": "https://www.wanted.co.kr/wd/356006", "publisher": "원티드", "summary": "PDF·Excel·CAD 도면을 다루는 에이전트 워크플로와 산업 도메인 우대가 적혀 있다" }
+        ]
+      }
+    ],
+    "domains": [
+      {
+        "name": "에이전트·워크플로우 플랫폼",
+        "why": "제품의 뼈대다. 에이전트는 한 번에 끝나지 않고 **몇 분에서 몇 시간씩 도는 작업**이라, 요청-응답이 아니라 워크플로 엔진과 워커로 짜야 한다. 공고가 Temporal·Airflow 를 이름으로 적은 이유이고, 미리디에서 본 '에이전트를 만들 판'과 비슷해 보이지만 여기는 **고객사가 직접 워크플로를 만들어 쓴다**는 점이 다르다.",
+        "what_to_know": [
+          "장기 실행 작업의 상태 관리 — 중간에 죽어도 이어서 돌게 하는 법",
+          "에이전트 간 비동기 호출을 API 와 워커로 어떻게 나누는가",
+          "고객이 만든 워크플로가 무한 루프에 빠지거나 비용을 태우는 것을 막는 장치"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+        ]
+      },
+      {
+        "name": "GPU 서빙·추론 최적화",
+        "why": "이 회사의 **연구와 제품이 만나는 자리**이자 원가가 결정되는 자리다. 같은 모델을 같은 GPU 로 몇 배 더 돌릴 수 있으면 그만큼이 마진이 된다. 공고에 SkyPilot·Ray·SGLang·vLLM 이 나열돼 있고 H100·B200 을 직접 보유한다 — 남의 API 를 부르는 회사가 아니라 **직접 돌리는 회사**라는 뜻이다.",
+        "what_to_know": [
+          "KV 캐시가 왜 메모리를 잡아먹고 무엇으로 줄이는가 (이 회사 연구의 출발점)",
+          "vLLM·SGLang 같은 서빙 엔진이 배치와 스케줄링으로 처리량을 올리는 방식",
+          "GPU 를 여러 작업이 나눠 쓸 때의 격리와 대기열",
+          "긴 컨텍스트가 지연과 비용에 미치는 영향"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" },
+          { "title": "InfiniteHiP 논문 (arXiv:2406.09827)", "url": "https://arxiv.org/abs/2406.09827", "publisher": "arXiv" }
+        ]
+      },
+      {
+        "name": "데이터 플랫폼",
+        "why": "에이전트가 답을 만들려면 고객 데이터가 들어와 있어야 한다. 공고가 '정형/비정형 데이터 ingestion, 저장, 조회, 분석 파이프라인'을 담당 업무로 적고 Clickhouse·Snowflake/Databricks·Postgres·Vector DB·NATS 를 나열한 것은, **성격이 다른 저장소를 목적별로 골라 쓰고 있다**는 뜻이다.",
+        "what_to_know": [
+          "칼럼형 DB(Clickhouse)가 무엇을 빠르게 하고 무엇을 못 하는가",
+          "Vector DB 를 어디에 두고 원본은 어디에 두는가",
+          "고객사마다 데이터가 격리돼야 하는 구조에서 파이프라인을 어떻게 나누는가"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+        ]
+      },
+      {
+        "name": "비정형 문서·도면 AI",
+        "why": "산업 버티컬을 파는 통로다. PDF·Excel 뿐 아니라 **CAD(AutoCAD·SolidWorks·CATIA) 도면**을 읽는다는 것이 특이한데, 도면은 글이 아니라 선과 레이어라 일반 문서 파이프라인으로 안 된다. 그래서 규칙 기반 전처리(Bbox 병합·경로 추적)와 AI 모델을 섞는 하이브리드 추론이 공고에 나온다.",
+        "what_to_know": [
+          "PDF·DXF·SVG 처럼 벡터·레이어 기반 포맷의 구조",
+          "OCR 과 객체 탐지를 어디까지 쓰고 어디부터 규칙으로 푸는가",
+          "정답이 애매한 산출물의 품질을 무엇으로 재는가 (벤치마크 프레임워크)"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "딥오토 AI Engineer 전문가 채용 공고", "url": "https://www.wanted.co.kr/wd/356006", "publisher": "원티드" }
+        ]
+      },
+      {
+        "name": "엔터프라이즈 보안·멀티테넌시",
+        "why": "고객이 대기업·금융이면 **제품보다 먼저 통과해야 하는 관문**이 생긴다. 공고 우대사항에 SOC 2 Type II·ISO 27001 대응 경험이 있고, 담당 업무에 '보안, 권한, 멀티테넌시 구조 설계'와 온프렘 배포가 적혀 있다. 게다가 에이전트가 코드를 실행하므로 **믿을 수 없는 코드를 격리해 돌리는 문제**까지 붙는다.",
+        "what_to_know": [
+          "고객사별 데이터·권한 격리를 어느 층에서 나누는가 (스키마·클러스터·계정)",
+          "온프렘 배포에서 업데이트와 장애 대응을 어떻게 하는가 (우리가 서버에 못 들어간다)",
+          "Untrusted code 실행 샌드박스 — 컨테이너와 VM 격리의 차이"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "공고가 먼저 '처음부터 다 알 필요 없다'고 말한다 — 넓게 걸치는 자리라는 뜻이다",
+        "evidence": "Backend Engineer 공고의 직무 개요에 '처음부터 모든 영역을 깊이 있게 아실 필요는 없습니다. 실무를 통해 아래 내용들을 전반적으로 숙지하며 특정 분야의 전문성(Specialty)을 키우고, 궁극적으로는 시스템의 경계를 넘나들며 주도적으로 문제를 정의하고 해결할 수 있는 엔지니어를 찾습니다.' 라고 적혀 있다",
+        "so_what": "친절해 보이지만 **한 사람이 백엔드·데이터·MLOps·인프라·보안을 다 만진다는 예고**이기도 하다. 임직원이 10~30명 규모라 그럴 수밖에 없다. '한 가지를 깊게'보다 '경계를 넘어가 본 경험'을 준비하는 편이 맞다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "코딩 에이전트 사용이 **자격요건**이다 — 우대사항이 아니다",
+        "evidence": "Backend Engineer 자격요건 목록에 '코딩 에이전트를 이용한 문제해결 능력' 이 다른 기술 요건들과 나란히 들어 있다",
+        "so_what": "'AI 를 만드는 회사'가 '개발할 때도 AI 를 쓰라'고 요건에 못 박은 것이다. 미리디도 비슷했지만 여기는 자격요건이라 더 무겁다 — 에이전트로 무엇을 어떻게 맡겼고 결과를 어떻게 검증했는지 말할 준비가 필요하다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "연구가 홍보가 아니라 원가다",
+        "evidence": "회사가 InfiniteHiP(계층적 가지치기 어텐션)으로 '48GB GPU 에서 300만 토큰, 100만 토큰 디코딩 18.95배, 메모리 최대 96% 감소'를 발표했고, 대표 제품에 모델 서빙(Scale Serve)이 있으며, GPU(H100·B200)를 직접 보유한다",
+        "so_what": "논문이 채용 홍보용이 아니라 **제품 마진의 근거**다. 면접에서 '추론 비용을 어떻게 줄이나'가 회사의 실제 언어이므로, 캐시·배치·양자화 같은 이야기를 비용으로 환산해 말할 수 있으면 잘 맞는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "엔터프라이즈에 판다 — 보안 인증과 온프렘이 요건에 있다",
+        "evidence": "우대사항에 'SOC 2 Type II, ISO 27001 인증 대응 경험' 과 'Untrusted code 실행을 위한 Sandbox 환경 구축 경험 (예: Container, VM 환경 기반)' 이 있고, 담당 업무에 '고객 환경(On-prem / Hybrid Cloud)에 대한 배포 및 운영 이슈 해결' 이 적혀 있다",
+        "so_what": "SaaS 만 해 본 사람에게는 낯선 제약이 붙는다 — 우리가 못 들어가는 서버에서 도는 소프트웨어를 어떻게 업데이트하고 디버깅할 것인가. 그 경험이 있으면 강하게 내세울 자리다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "해외 출장과 병역을 자격요건에 적었다",
+        "evidence": "Backend Engineer 자격요건 끝에 '남성의 경우 병역 필 또는 면제' 와 '해외 출장 결격 사유 없음' 이 있다",
+        "so_what": "해외 고객이나 파트너가 실제로 있다는 뜻으로 읽힌다. 함께 적힌 '영어 기술 문서를 읽고 레퍼런스를 기반으로 문제를 해결할 수 있는 능력'과 묶으면, **영어가 업무 조건**인 조직이다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+
+  "salary": {
+    "unit": "만원",
+    "currency": "KRW",
+    "as_of": "2026-09",
+    "bands": [
+      {
+        "role": "백엔드 / 플랫폼",
+        "level": "3~5년",
+        "low": 5000,
+        "high": 7000,
+        "basis": "market",
+        "confidence": "inferred"
+      }
+    ],
+    "note": "**집계를 하나밖에 못 찾았다** — 원티드 기업정보의 평균 5,852만원. 잡플래닛·사람인 등 다른 집계에는 표본이 잡히지 않는데, 설립 3년차에 임직원이 10~30명 규모라 애초에 통계가 서지 않는다. 그래서 전 직군 평균 밴드를 쓰지 않고 시장 밴드 하나만 남겼다(점 하나로 쓰지 않는 것이 규칙이다). 위 숫자는 Seed~Pre-A 단계 AI 스타트업의 같은 조건 시장 밴드일 뿐 출처가 있는 값이 아니다. **초기 스타트업이므로 스톡옵션 조건을 현금과 함께 확인하는 것이 특히 중요하다** — 다만 그 조건을 밝힌 공개 자료는 없다. 공고에 금액이 적혀 있지 않다.",
+    "open_questions": [
+      "개발 직군 연봉 밴드를 밝힌 공개 자료가 없다. 집계 자체가 원티드 하나뿐이다",
+      "스톡옵션 유무와 조건을 밝힌 자료를 찾지 못했다"
+    ]
+  },
+
+  "people": [
+    {
+      "name": "황성주",
+      "role": "공동대표 · KAIST 김재철AI대학원 교수",
+      "why_public": "학계에서 공개적으로 활동하는 연구자이고, 회사 창업과 연구 성과가 언론에 반복 보도돼 왔다. 미국 텍사스대에서 컴퓨터공학 박사를 받았고 헬스케어 AI 기업 에이아이트릭스를 창업한 연쇄 창업가다.",
+      "public_work": [
+        {
+          "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재",
+          "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409",
+          "kind": "post",
+          "summary": "2025년 한 해 NeurIPS 7편·EMNLP 1편 게재와 연구 주제(LLM 효율화, 멀티 에이전트, 시스템 프롬프트 최적화, Bayesian Optimization)를 정리한 보도"
+        },
+        {
+          "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자",
+          "url": "https://www.hankyung.com/article/202311237863i",
+          "kind": "interview",
+          "date": "2023-11-23",
+          "summary": "창업 배경과 'AI 운영 자동화' 라는 사업 방향을 다룬 기사"
+        },
+        {
+          "title": "KAIST 황성주 교수팀, NeurIPS에 빅테크 오토ML 문제 푼 비결 공개",
+          "url": "https://www.aitimes.com/news/articleView.html?idxno=141860",
+          "kind": "post",
+          "summary": "AutoML 연구 성과를 다룬 보도 — 회사 이름(AutoML)의 뿌리"
+        }
+      ],
+      "leanings": [
+        "**연구 주제가 곧 제품 로드맵이다.** 2025년 발표 주제가 LLM 효율화·멀티 에이전트 시스템·시스템 프롬프트 최적화·Bayesian Optimization 인데, 그대로 회사 제품(Agentic AI Workflow Builder, Scale Serve)과 겹친다",
+        "'AI 를 위한 AI' — AI 를 만드는 과정 자체를 자동화하는 쪽에 오래 서 있다. AutoML 연구에서 시작해 지금은 에이전트 운영 자동화로 이어진다",
+        "학계에 남아 있으면서 회사를 함께 이끈다(교수 겸 공동대표). 논문을 계속 내는 조직이라는 뜻이고, 실제로 2025년에만 8편이 나왔다"
+      ],
+      "what_it_means": "이 회사에서는 **'왜 이게 더 싸고 빠른가'를 근거로 말하는 문화**가 기본값일 가능성이 높다. 벤치마크와 수치로 설명하는 습관이 있으면 잘 맞고, 반대로 '해 봤더니 잘 되더라'로 끝나는 이야기는 약하게 들릴 수 있다. 논문을 읽고 구현으로 옮겨 본 경험이 있다면 앞세울 자리다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자",
+          "url": "https://www.hankyung.com/article/202311237863i",
+          "publisher": "한국경제",
+          "date": "2023-11-23"
+        }
+      ]
+    }
+  ],
+
+  "postings": [],
+
+  "open_questions": [
+    "매출을 밝힌 공개 자료가 없다. Seed~Pre-A 단계라 아직 공시 대상이 아닌 것으로 보이며, revenue 세 항목을 모두 inferred 로 둔 이유다.",
+    "임직원 수가 집계마다 9명·18명·29명으로 갈린다. 어느 쪽이 맞는지 확인하지 못해 범위로 적었다.",
+    "InfiniteHiP 성능 수치는 회사와 논문이 발표한 값이고 제3자 검증 결과를 찾지 못했다. scale 에 '자체 발표'라고 명시했다.",
+    "공동대표가 두 명(황성주·정원용)인데 정원용 대표의 공개 발언이나 저작을 찾지 못해 people 에 넣지 않았다.",
+    "공고 표기가 `딥오토`·`(주)딥오토`·`㈜딥오토` 셋이고 정규화하면 둘로 갈린다. aliases 에 둘 다 넣었다."
+  ]
+}

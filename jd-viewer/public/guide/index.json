@@ -58,6 +58,18 @@
       "postings": 4,
       "study_items": 35,
       "updated_at": "2026-09-01"
+    },
+    {
+      "slug": "deepauto",
+      "name": "딥오토",
+      "aliases": [
+        "딥오토",
+        "㈜딥오토"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-01"
     }
   ]
 }
