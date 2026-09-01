@@ -6,7 +6,7 @@
     "딥오토",
     "㈜딥오토"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-01",
   "site": "deepauto.ai",
   "one_liner": "KAIST 연구실에서 나와 'AI를 싸게 돌리는 기술'을 논문과 제품 양쪽으로 내놓는 회사",
@@ -647,6 +647,265 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/293288",
+      "title": "Frontend Engineer",
+      "site": "wanted",
+      "verdict": "**스택을 날짜까지 붙여 공개한 드문 공고다** — 'Next 15.3, React 19.1 + React Compiler, Tailwind v4, shadcn/ui' 를 '2025-04 기준'으로 적어 뒀다. 최신을 좇는 조직이라는 뜻이고, 반대로 말하면 **레퍼런스가 아직 안 쌓인 버전을 쓰며 스스로 길을 내야 한다**는 뜻이다. 그래서 자격요건이 프레임워크 경험만 묻지 않는다 — '회사의 AI 기술에 대한 하이레벨 이해', '영문 개발 레퍼런스를 우선하는 습관', 그리고 **'기존 AI 및 SaaS 제품들에서 레퍼런스를 찾아내는 능력'**이 나란히 들어 있다. 디자이너가 준 화면을 받아 그리는 자리가 아니라 **PM·디자이너와 함께 UI/UX 를 정하는 자리**다.",
+      "fit": {
+        "must_have": [
+          "웹 서비스 개발 4년 이상",
+          "React·Next.js 기반 개발 경험",
+          "영어 기술 문서를 먼저 찾아보는 습관 — 자격요건에 명시돼 있다",
+          "PM·디자이너와 화면을 같이 정할 수 있는 커뮤니케이션"
+        ],
+        "can_learn": [
+          "React Compiler·Tailwind v4 같은 최신 버전 (레퍼런스가 적어 어차피 다 같이 배운다)",
+          "Keycloak (OIDC 개념을 알면 설정 문제다)",
+          "Jotai·nuqs (다른 상태 도구를 알면 하루면 익는다)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "Next 15 · React 19 — 레퍼런스가 아직 얇은 버전을 쓴다는 것",
+          "from": "qualification",
+          "quote": "React 및 Next.js 기반 웹 개발 경험",
+          "priority": "core",
+          "why": "공고가 스택을 '2025-04 기준'이라며 버전까지 박아 뒀다 — **Next 15.3, React 19.1 + React Compiler, Tailwind v4.** 최신 조합이라 블로그에서 답을 찾기 어렵고 공식 문서와 릴리스 노트가 유일한 근거가 된다. 자격요건의 '영문 개발 레퍼런스를 우선하는 습관'이 왜 함께 있는지가 여기서 설명된다.",
+          "gap_check": "React Compiler 가 켜지면 `useMemo`·`useCallback` 을 손으로 쓰던 코드는 어떻게 되는가? 그리고 컴파일러가 최적화를 **포기하는** 코드 패턴은 어떤 것인가?",
+          "drill": "Next 15 + React 19 로 앱을 하나 세우고 **React Compiler 를 켠 상태와 끈 상태**를 비교한다 — 같은 화면에서 리렌더 횟수를 React DevTools Profiler 로 재고, 컴파일러가 건너뛴 컴포넌트가 있으면 왜인지 확인한다(ESLint 규칙이 알려 준다). Tailwind v4 도 v3 설정에서 옮겨 보며 무엇이 달라졌는지 적는다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Next.js — App Router",
+              "url": "https://nextjs.org/docs/app",
+              "kind": "docs"
+            },
+            {
+              "title": "React 19 릴리스 노트",
+              "url": "https://react.dev/blog/2024/12/05/react-19",
+              "kind": "post"
+            },
+            {
+              "title": "React Compiler",
+              "url": "https://react.dev/learn/react-compiler",
+              "kind": "docs"
+            },
+            {
+              "title": "Tailwind CSS 문서",
+              "url": "https://tailwindcss.com/docs",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AI 제품의 화면 — 느리고 틀릴 수 있는 응답을 UI 로 감당하기",
+          "from": "qualification",
+          "quote": "- 회사의 AI 기술에 대한 하이레벨 이해",
+          "priority": "core",
+          "why": "프론트엔드 공고가 AI 이해를 자격요건에 넣은 이유는 하나다 — **이 제품의 화면은 즉시 답이 오지 않는다.** 에이전트가 몇 분씩 돌고, 중간 결과가 흘러나오고, 가끔 틀리거나 실패한다. 그래서 로딩 스피너 하나로 덮을 수 없고, **진행 상황·중간 산출물·되돌리기·근거 표시**가 화면 설계의 일부가 된다. 백엔드가 만드는 워크플로 엔진의 반대편이 이 화면이다.",
+          "gap_check": "3분 걸리는 작업의 진행 상황을 어떻게 보여 줄 것인가? 중간에 사용자가 탭을 닫았다 돌아오면 어디서부터 보여 주는가? 그리고 결과가 틀렸을 때 사용자가 무엇을 할 수 있어야 하는가?",
+          "drill": "스트리밍 응답을 받는 화면을 만든다 — SSE 로 토큰이 흘러오게 하고, 도중 취소 버튼과 재시도를 붙인다. 그다음 **탭을 닫았다 여는 시나리오**를 만들어 서버에 진행 상태를 물어 이어서 그리게 한다. 마지막으로 '이 답의 근거' 를 함께 보여 주는 영역을 넣는다 — AI 화면과 일반 화면이 갈리는 지점이다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "MDN — Server-sent events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events",
+              "kind": "docs"
+            },
+            {
+              "title": "React — Suspense",
+              "url": "https://react.dev/reference/react/Suspense",
+              "kind": "docs"
+            },
+            {
+              "title": "TanStack Query 문서",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+              "kind": "docs",
+              "note": "회사 스택의 Backend State 담당"
+            }
+          ]
+        },
+        {
+          "topic": "남의 제품에서 레퍼런스를 찾아내는 능력",
+          "from": "qualification",
+          "quote": "- 기존 AI 및 SaaS 제품들에서 레퍼런스를 찾아내는 능력",
+          "priority": "core",
+          "why": "**자격요건에 이 문장을 넣은 공고는 거의 없다.** 임직원 10~30명 회사에 전담 디자이너가 여럿일 리 없고, AI 제품의 UI 패턴은 아직 교과서가 없다. 그래서 '이미 잘 푼 제품이 어떻게 풀었는지'를 찾아 근거로 삼는 능력이 곧 설계 능력이 된다. 담당 업무의 'PM, 디자이너와 협업하여 Solution UI/UX 기획 참여'와 짝을 이룬다.",
+          "gap_check": "'긴 작업의 진행 상황 표시'를 설계한다면 어떤 제품 셋을 열어 볼 것인가? 그리고 그것들이 **왜 그렇게 했는지**까지 설명할 수 있는가?",
+          "drill": "AI·SaaS 제품 다섯 개를 열어 같은 UI 문제 하나(예: 긴 작업 진행 표시, 또는 에이전트 실행 결과 보여 주기)를 **어떻게 풀었는지 캡처하고 비교표**를 만든다. 각각의 선택이 무엇을 얻고 무엇을 포기했는지 한 줄씩 적고, **우리 제품이라면 무엇을 고를지와 그 이유**로 마무리한다. 이 문서 한 장이 이 자격요건에 대한 직접적인 답이다.",
+          "hours": 8,
+          "resources": []
+        },
+        {
+          "topic": "영문 레퍼런스를 먼저 찾는 습관 만들기",
+          "from": "qualification",
+          "quote": "- 영어로 된 기술 문서 독해 능력, 영문 개발 레퍼런스를 우선하는 습관",
+          "priority": "core",
+          "why": "백엔드 공고에도 같은 요건이 있어 **회사 차원의 기준**으로 보인다. 그리고 이 팀의 스택을 보면 필연이다 — React Compiler 나 Tailwind v4 는 한국어 자료가 거의 없고, 있어도 옛 버전 기준이라 틀린 답을 준다. '우선하는 습관'이라고 쓴 것은 능력보다 **순서**를 묻는 것이다.",
+          "gap_check": "막혔을 때 첫 번째로 여는 창이 검색 결과인가 공식 문서인가? 최근에 릴리스 노트나 RFC 를 읽고 문제를 푼 적이 있는가?",
+          "drill": "위 drill 들을 진행하면서 **한국어 자료를 보지 않는 규칙**으로 일주일을 해 본다. 막힌 지점마다 '무슨 문서의 어느 절에서 답을 찾았는지'를 기록하고, 답이 문서에 없어 이슈 트래커나 소스를 봐야 했던 경우를 따로 표시한다. 그 기록이 이 요건의 증거가 된다.",
+          "hours": 4,
+          "resources": [
+            {
+              "title": "Next.js 릴리스 노트",
+              "url": "https://nextjs.org/blog",
+              "kind": "post"
+            },
+            {
+              "title": "React 블로그",
+              "url": "https://react.dev/blog",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "서버 상태와 컴포넌트 상태를 나누기",
+          "from": "preference",
+          "quote": "상태 관리 라이브러리(Redux, Recoil 등) 경험",
+          "priority": "high",
+          "why": "우대사항은 Redux·Recoil 을 말하지만 **실제 스택은 다르게 나뉘어 있다** — `Backend State: Tanstack Query`, `Component State: React Context, Jotai, react-hook-form, nuqs`. 즉 이 팀은 **서버에서 온 것과 화면에서 만든 것을 아예 다른 도구로** 다룬다. 하나의 전역 스토어에 다 넣던 방식과 사고가 다르므로, 그 경계를 설명할 수 있는지가 실제 질문이다.",
+          "gap_check": "서버에서 받은 목록을 전역 스토어에 넣으면 무엇이 문제가 되는가? 그리고 필터 조건은 왜 URL(nuqs)에 두는 편이 나은가?",
+          "drill": "목록·필터·상세가 있는 화면을 만든다 — 서버 데이터는 TanStack Query 로, 필터는 nuqs 로 URL 에, 화면 전용 상태(열림/선택)는 Jotai 로 나눈다. 그다음 **같은 화면을 전역 스토어 하나로도 만들어** 새로고침·뒤로가기·링크 공유가 어떻게 달라지는지 비교한다. 폼은 react-hook-form 으로 붙여 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "TanStack Query 문서",
+              "url": "https://tanstack.com/query/latest/docs/framework/react/overview",
+              "kind": "docs"
+            },
+            {
+              "title": "Jotai 문서",
+              "url": "https://jotai.org/docs/introduction",
+              "kind": "docs"
+            },
+            {
+              "title": "nuqs",
+              "url": "https://nuqs.dev/",
+              "kind": "docs",
+              "note": "URL 을 상태 저장소로 쓰는 도구"
+            },
+            {
+              "title": "React Hook Form",
+              "url": "https://react-hook-form.com/get-started",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "엔터프라이즈 인증 — Keycloak + next-auth",
+          "from": "qualification",
+          "quote": "• Auth: Keycloak + next-auth.",
+          "priority": "high",
+          "why": "스택에 Keycloak 이 있다는 것은 **고객사의 계정 체계에 붙는다**는 뜻이다. 엔터프라이즈는 자기 SSO 로 로그인하기를 원하고, 회사가 온프렘·하이브리드로 배포하는 것과도 이어진다. 프론트 입장에서는 로그인 화면 하나가 아니라 **토큰 수명·갱신·역할 기반 화면 제어**가 따라온다.",
+          "gap_check": "액세스 토큰이 화면을 보는 중에 만료됐다. 사용자가 눈치채지 않게 하려면 무엇이 필요한가? 그리고 역할에 따라 안 보여야 하는 메뉴를 **프론트에서만** 숨기면 왜 부족한가?",
+          "drill": "Keycloak 을 도커로 띄우고 next-auth 로 붙여 로그인 흐름을 만든다. 토큰 만료를 짧게 설정해 **갱신이 조용히 일어나는지** 확인하고, 실패했을 때 사용자를 어디로 보낼지 정한다. 역할을 둘 만들어 메뉴와 API 양쪽에서 막히는지 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Keycloak 문서",
+              "url": "https://www.keycloak.org/documentation",
+              "kind": "docs"
+            },
+            {
+              "title": "Auth.js (next-auth)",
+              "url": "https://authjs.dev/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "디자인 시스템 — shadcn/ui 위에 우리 것을 얹기",
+          "from": "preference",
+          "quote": "디자인 시스템 및 UI/UX 구현 경험",
+          "priority": "high",
+          "why": "스택이 'Tailwind v4, shadcn/ui-based components' 다. shadcn/ui 는 **라이브러리를 설치하는 방식이 아니라 코드를 복사해 내 것으로 만드는 방식**이라, 처음부터 '우리 컴포넌트'가 된다 — 편한 대신 관리 책임이 우리에게 온다. 작은 팀에서 화면이 늘어날 때 일관성을 지키는 일이 곧 이 항목이다.",
+          "gap_check": "shadcn/ui 컴포넌트를 프로젝트에 넣은 뒤 원본이 업데이트되면 어떻게 되는가? 우리 스타일을 입히면서도 나중에 갈아엎지 않으려면 어디를 건드려야 하는가?",
+          "drill": "shadcn/ui 로 컴포넌트 대여섯 개를 가져와 **우리 토큰(색·간격·타이포)으로 한 겹 감싼다.** 그다음 Storybook 이나 문서 페이지를 만들어 상태 조합(로딩·에러·빈 값·긴 텍스트·비활성)을 다 보여 준다. 마지막으로 새 화면 하나를 그 컴포넌트만으로 조립해 보고 부족한 것을 채운다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "shadcn/ui 문서",
+              "url": "https://ui.shadcn.com/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Tailwind CSS — 테마",
+              "url": "https://tailwindcss.com/docs/theme",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "테스트와 성능 — 재고 고친 이야기를 만들기",
+          "from": "preference",
+          "quote": "테스트 및 성능 최적화 경험",
+          "priority": "high",
+          "why": "AI 제품의 화면은 **상태가 많고 비동기가 얽혀** 수동 확인이 금방 한계에 닿는다 — 스트리밍 중 취소, 재시도, 부분 실패 같은 경로는 손으로 매번 재현하기 어렵다. 성능도 마찬가지로, 긴 결과가 계속 흘러들어오는 화면은 렌더 비용이 조용히 쌓인다.",
+          "gap_check": "'스트리밍 중 취소하면 요청도 끊긴다'를 어떤 층에서 테스트할 것인가? 그리고 결과가 길어질 때 프레임이 떨어지는지 무엇으로 확인하는가?",
+          "drill": "위에서 만든 스트리밍 화면에 테스트를 붙인다 — 상태 전이 로직은 단위 테스트로, 스트리밍·취소·재시도 흐름은 Playwright 로. 그다음 아주 긴 응답을 흘려보내며 DevTools Performance 로 프레임을 재고, **가상 스크롤이나 배치 렌더**로 고친 뒤 전후를 표로 남긴다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Playwright 문서",
+              "url": "https://playwright.dev/docs/intro",
+              "kind": "docs"
+            },
+            {
+              "title": "Vitest 문서",
+              "url": "https://vitest.dev/",
+              "kind": "docs"
+            },
+            {
+              "title": "web.dev — Rendering performance",
+              "url": "https://web.dev/articles/rendering-performance",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "AI 제품 UI 레퍼런스 비교표를 만들어 간다",
+          "why": "자격요건에 '기존 AI 및 SaaS 제품들에서 레퍼런스를 찾아내는 능력'이 직접 적혀 있다. 같은 UI 문제를 다섯 제품이 어떻게 풀었는지 비교하고 **우리라면 무엇을 고를지**까지 쓴 문서 한 장이면, 이 요건에 대한 답이자 PM·디자이너와 일할 수 있다는 증거가 된다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "최신 버전으로 만든 결과물을 공개해 둔다",
+          "why": "공고가 스택을 '2025-04 기준'이라며 버전까지 적었다. Next 15 + React 19 + React Compiler + Tailwind v4 로 실제로 만들어 본 저장소가 있으면, **레퍼런스가 얇은 환경에서 굴러 본 사람**으로 읽힌다. 옮기면서 겪은 함정을 글로 남기면 더 좋다.",
+          "effort": "일주일"
+        },
+        {
+          "idea": "백엔드 공고까지 읽고 제품 전체를 이해하고 간다",
+          "why": "같은 회사 `Backend Engineer (AI Platform)` 공고에 워크플로 엔진·GPU 서빙·멀티테넌시가 적혀 있다. 프론트가 그리는 화면이 **그 워크플로의 반대편**이라는 걸 알고 가면, 'AI 기술에 대한 하이레벨 이해'라는 모호한 요건을 구체적으로 답할 수 있다.",
+          "effort": "한 시간"
+        },
+        {
+          "idea": "온프렘 배포가 프론트에 주는 제약을 짚어 둔다",
+          "why": "회사가 고객사 환경(On-prem/Hybrid)에 배포한다. 그러면 프론트에도 제약이 생긴다 — 외부 CDN·폰트·분석 도구를 못 쓸 수 있고, 브라우저 버전이 낡을 수 있다. 이 점을 먼저 질문하면 엔터프라이즈 제품을 아는 사람으로 보인다.",
+          "effort": "질문 하나"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "React Compiler 가 켜지면 기존 메모이제이션 코드는 어떻게 되는가",
+          "3분 걸리는 작업의 진행 상황을 화면에서 어떻게 다루는가 (탭을 닫았다 열면?)",
+          "AI 응답이 틀렸을 때 사용자가 무엇을 할 수 있게 만들 것인가",
+          "서버 상태와 컴포넌트 상태를 나누는 기준, 필터를 URL 에 두는 이유",
+          "토큰 만료를 사용자가 눈치채지 않게 처리하는 방법",
+          "shadcn/ui 를 쓰면서 일관성을 유지하는 방법",
+          "같은 UI 문제를 다른 제품들이 어떻게 풀었는지 예를 들 수 있는가"
+        ],
+        "sources": [
+          {
+            "title": "딥오토 Frontend Engineer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/293288",
+            "publisher": "원티드",
+            "summary": "자격요건에 프론트 스택이 '2025-04 기준' 버전까지 명시돼 있고, AI 이해와 영문 레퍼런스 습관이 함께 요구된다"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
@@ -654,6 +913,7 @@
     "임직원 수가 집계마다 9명·18명·29명으로 갈린다. 어느 쪽이 맞는지 확인하지 못해 범위로 적었다.",
     "InfiniteHiP 성능 수치는 회사와 논문이 발표한 값이고 제3자 검증 결과를 찾지 못했다. scale 에 '자체 발표'라고 명시했다.",
     "공동대표가 두 명(황성주·정원용)인데 정원용 대표의 공개 발언이나 저작을 찾지 못해 people 에 넣지 않았다.",
-    "공고 표기가 `딥오토`·`(주)딥오토`·`㈜딥오토` 셋이고 정규화하면 둘로 갈린다. aliases 에 둘 다 넣었다."
+    "공고 표기가 `딥오토`·`(주)딥오토`·`㈜딥오토` 셋이고 정규화하면 둘로 갈린다. aliases 에 둘 다 넣었다.",
+    "모집중 21건 중 개발 공고 2건(백엔드 플랫폼·프론트엔드)만 채우고 done 으로 닫았다. `Backend Engineer (AI Platform) 0~3년` 은 3~5년 건과 본문이 동일해 별도로 쓰지 않고 verdict 에 한 줄로 밝혔다. AI Engineer 계열(0~3년 / 전문가 / Financial)은 경력 요건이 맞는 것도 있지만 AI 직군이라 이 브리핑이 잡은 독자(백엔드/풀스택/프론트엔드)와 결이 달라 뺐다 — 다만 회사 골격의 `비정형 문서·도면 AI` 도메인은 그 공고들에서 읽어 남겨 뒀다. 정보보안(7-14년)·서비스 기획도 대상이 아니다."
   ]
 }
