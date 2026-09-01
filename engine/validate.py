@@ -293,8 +293,29 @@ def check_company(data: dict, r: Report) -> None:
     if not DATE_RE.match(str(data.get("updated_at", ""))):
         r.err(w, f"updated_at 형식(YYYY-MM-DD) 위반: {data.get('updated_at')!r}")
 
+    # 수익 구성 막대는 share 를 그대로 폭으로 쓴다. 합이 100 을 넘으면 그림이
+    # 거짓말이 되므로 여기서 막는다. 보도의 반올림값(34.6+30.7+…)을 그대로
+    # 옮기면 실제로 100.1 이 되는 일이 있었다 — 금액에서 다시 계산해야 한다.
+    shares = []
     for i, rs in enumerate(data.get("revenue_streams") or []):
         _check_sources(rs, f"{w}.revenue_streams[{i}]", r)
+        sh = rs.get("share")
+        if sh is None:
+            continue
+        if not isinstance(sh, (int, float)) or isinstance(sh, bool):
+            r.err(w, f"revenue_streams[{i}].share 는 숫자여야 한다: {sh!r}")
+            continue
+        if not 0 < sh <= 100:
+            r.err(w, f"revenue_streams[{i}].share 범위 위반(0 초과 100 이하): {sh}")
+        if not rs.get("amount"):
+            r.warn(w, f"revenue_streams[{i}].share 가 있는데 amount 가 없다 — 원문 금액을 같이 적는다")
+        shares.append(sh)
+    if shares:
+        total = round(sum(shares), 1)
+        if total > 100:
+            r.err(w, f"revenue_streams 의 share 합이 100 을 넘는다: {total}")
+        if not data.get("revenue_total"):
+            r.warn(w, "share 를 적었으면 revenue_total(표시용 총매출 한 줄)도 적는다")
 
     if data.get("ui_map"):
         _check_ui(data["ui_map"], f"{w}.ui_map", r)
