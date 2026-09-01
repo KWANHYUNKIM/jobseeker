@@ -2,12 +2,13 @@
   "slug": "bithumb",
   "name": "빗썸",
   "name_en": "Bithumb",
-  "aliases": ["빗썸"],
+  "aliases": [
+    "빗썸"
+  ],
   "status": "in_progress",
   "updated_at": "2026-09-01",
   "site": "bithumb.com",
   "one_liner": "매출의 98%를 거래 수수료 하나로 버는 가상자산 거래소 — 그래서 무결성과 규제가 곧 사업 조건이다",
-
   "company": {
     "business": "사람들이 가상자산을 사고팔 때 붙는 **수수료**로 번다. 2025년 3분기 누적 기준 거래 수수료가 매출의 98.4%였고, 업비트(97.9%)도 사정이 같다 — 즉 이 업계는 **거래량이 곧 매출**이라 시장이 뜨거우면 실적이 뛰고 식으면 함께 식는다. 그래서 회사는 스테이킹·빗썸페이 같은 부수 수익을 늘리려 하지만 **규제가 그 경계를 정한다**(가상자산 대여를 확대했다가 금융당국 제지로 축소한 전례가 있다). 기술 조직의 성격도 여기서 나온다 — 고객 자산을 다루므로 금융 수준의 정합성이 요구되고, 컴플라이언스(AML/CFT)가 별도 백엔드 조직으로 존재한다.",
     "business_confidence": "confirmed",
@@ -34,7 +35,12 @@
         "as_of": "2025",
         "confidence": "confirmed",
         "sources": [
-          { "title": "빗썸, 지난해 영업익 1635억…전년比 22% 증가", "url": "https://www.etnews.com/20260331000457", "publisher": "전자신문", "date": "2026-03-31" }
+          {
+            "title": "빗썸, 지난해 영업익 1635억…전년比 22% 증가",
+            "url": "https://www.etnews.com/20260331000457",
+            "publisher": "전자신문",
+            "date": "2026-03-31"
+          }
         ]
       },
       {
@@ -43,7 +49,12 @@
         "as_of": "2025",
         "confidence": "confirmed",
         "sources": [
-          { "title": "빗썸, 지난해 영업익 1635억…전년比 22% 증가", "url": "https://www.etnews.com/20260331000457", "publisher": "전자신문", "date": "2026-03-31" }
+          {
+            "title": "빗썸, 지난해 영업익 1635억…전년比 22% 증가",
+            "url": "https://www.etnews.com/20260331000457",
+            "publisher": "전자신문",
+            "date": "2026-03-31"
+          }
         ]
       },
       {
@@ -52,7 +63,12 @@
         "as_of": "2025-Q3",
         "confidence": "confirmed",
         "sources": [
-          { "title": "업비트·빗썸 '깜짝실적' 냈지만…수수료에 치중된 매출", "url": "https://www.mt.co.kr/stock/2025/11/17/2025111715143825512", "publisher": "머니투데이", "date": "2025-11-17" }
+          {
+            "title": "업비트·빗썸 '깜짝실적' 냈지만…수수료에 치중된 매출",
+            "url": "https://www.mt.co.kr/stock/2025/11/17/2025111715143825512",
+            "publisher": "머니투데이",
+            "date": "2025-11-17"
+          }
         ]
       },
       {
@@ -61,7 +77,12 @@
         "as_of": "2025",
         "confidence": "confirmed",
         "sources": [
-          { "title": "[직장 돋보기 분석] 빗썸, 평균연봉 1억1600만원인 국내 대표 자산거래소", "url": "https://www.news2day.co.kr/article/20250613500128", "publisher": "뉴스투데이", "date": "2025-06-13" }
+          {
+            "title": "[직장 돋보기 분석] 빗썸, 평균연봉 1억1600만원인 국내 대표 자산거래소",
+            "url": "https://www.news2day.co.kr/article/20250613500128",
+            "publisher": "뉴스투데이",
+            "date": "2025-06-13"
+          }
         ]
       }
     ],
@@ -70,28 +91,53 @@
         "name": "거래 수수료",
         "how": "매수·매도가 체결될 때마다 수수료를 뗀다. **거래량이 곧 매출**이므로 시장이 몰릴 때 시스템이 버티느냐가 그대로 돈이 된다 — 체결이 밀리거나 앱이 멈추면 그 시간만큼 수수료를 못 받는 것을 넘어 고객이 다른 거래소로 옮겨 간다.",
         "weight": "2025년 3분기 누적 5,167억원 — 매출의 98.4%",
-        "domains": ["주문·체결과 거래 플랫폼", "가상자산 입출금과 월렛", "컴플라이언스·이상거래 탐지", "데이터 분석 플랫폼"],
+        "domains": [
+          "주문·체결과 거래 플랫폼",
+          "가상자산 입출금과 월렛",
+          "컴플라이언스·이상거래 탐지",
+          "데이터 분석 플랫폼"
+        ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "업비트·빗썸 '깜짝실적' 냈지만…수수료에 치중된 매출", "url": "https://www.mt.co.kr/stock/2025/11/17/2025111715143825512", "publisher": "머니투데이", "date": "2025-11-17" }
+          {
+            "title": "업비트·빗썸 '깜짝실적' 냈지만…수수료에 치중된 매출",
+            "url": "https://www.mt.co.kr/stock/2025/11/17/2025111715143825512",
+            "publisher": "머니투데이",
+            "date": "2025-11-17"
+          }
         ]
       },
       {
         "name": "스테이킹 등 자산 기반 서비스",
         "how": "고객이 맡긴 가상자산을 블록체인 검증에 참여시키고 그 보상을 나눈다. 수수료 의존을 낮추려는 방향이고, 공고에도 스테이킹 백엔드 자리가 따로 열려 있다. **매출 기여 규모는 공개되지 않았다** — 수수료가 98%라는 사실이 곧 나머지가 아직 작다는 뜻이다.",
-        "domains": ["스테이킹·보상 정산", "가상자산 입출금과 월렛"],
+        "domains": [
+          "스테이킹·보상 정산",
+          "가상자산 입출금과 월렛"
+        ],
         "confidence": "inferred",
         "sources": [
-          { "title": "빗썸 Staking Backend Engineer (블록체인) 채용 공고", "url": "https://www.wanted.co.kr/wd/376975", "publisher": "원티드", "summary": "담당 업무에 거래소 스테이킹 서비스 백엔드 개발과 검증인 노드 운영이 적혀 있다" }
+          {
+            "title": "빗썸 Staking Backend Engineer (블록체인) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/376975",
+            "publisher": "원티드",
+            "summary": "담당 업무에 거래소 스테이킹 서비스 백엔드 개발과 검증인 노드 운영이 적혀 있다"
+          }
         ]
       },
       {
         "name": "빗썸페이 (결제)",
         "how": "거래소 밖으로 나가는 결제 서비스다. 공고에 `Backend Engineer(빗썸페이)`·`Frontend Engineer(빗썸페이)`가 따로 열려 있어 별도 제품 조직이 있는 것으로 보인다. **매출 기여는 공개되지 않았다.**",
-        "domains": ["빗썸페이 결제"],
+        "domains": [
+          "빗썸페이 결제"
+        ],
         "confidence": "inferred",
         "sources": [
-          { "title": "[빗썸] Backend Engineer(빗썸페이) 채용 공고", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49702260?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=32&sc=630", "publisher": "잡코리아", "summary": "빗썸페이 전용 백엔드·프론트엔드 공고가 따로 있다" }
+          {
+            "title": "[빗썸] Backend Engineer(빗썸페이) 채용 공고",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49702260?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=32&sc=630",
+            "publisher": "잡코리아",
+            "summary": "빗썸페이 전용 백엔드·프론트엔드 공고가 따로 있다"
+          }
         ]
       }
     ],
@@ -106,7 +152,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "빗썸 Backend 개발자 (3년 이상) 채용 공고", "url": "https://www.wanted.co.kr/wd/373382", "publisher": "원티드" }
+          {
+            "title": "빗썸 Backend 개발자 (3년 이상) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/373382",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -120,7 +170,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "빗썸 Junior Backend Engineer (블록체인) 채용 공고", "url": "https://www.wanted.co.kr/wd/353750", "publisher": "원티드" }
+          {
+            "title": "빗썸 Junior Backend Engineer (블록체인) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/353750",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -133,7 +187,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "빗썸 Backend Engineer (컴플라이언스 시스템 개발) 채용 공고", "url": "https://www.wanted.co.kr/wd/373374", "publisher": "원티드" }
+          {
+            "title": "빗썸 Backend Engineer (컴플라이언스 시스템 개발) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/373374",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -146,7 +204,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "빗썸 Staking Backend Engineer (블록체인) 채용 공고", "url": "https://www.wanted.co.kr/wd/376975", "publisher": "원티드" }
+          {
+            "title": "빗썸 Staking Backend Engineer (블록체인) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/376975",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -158,7 +220,11 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "빗썸 Data Engineer 채용 공고", "url": "https://www.wanted.co.kr/wd/373363", "publisher": "원티드" }
+          {
+            "title": "빗썸 Data Engineer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/373363",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -170,7 +236,11 @@
         ],
         "confidence": "inferred",
         "sources": [
-          { "title": "[빗썸] Backend Engineer(빗썸페이) 채용 공고", "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49702260?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=32&sc=630", "publisher": "잡코리아" }
+          {
+            "title": "[빗썸] Backend Engineer(빗썸페이) 채용 공고",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49702260?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=32&sc=630",
+            "publisher": "잡코리아"
+          }
         ]
       }
     ],
@@ -207,7 +277,6 @@
       }
     ]
   },
-
   "salary": {
     "unit": "만원",
     "currency": "KRW",
@@ -221,9 +290,22 @@
         "basis": "public_data",
         "confidence": "inferred",
         "sources": [
-          { "title": "(주)빗썸 연봉정보 — 142건 기준 평균 5,439만원", "url": "https://www.jobplanet.co.kr/companies/352810/salaries/%EB%B9%97%EC%8D%B8", "publisher": "잡플래닛" },
-          { "title": "빗썸 연봉정보 — 평균 8,841만원", "url": "https://m.saramin.co.kr/salaries/total-salary/view?csn=SDVxbnVsOGJsQnhHQkpKMjU3SFpmUT09", "publisher": "사람인" },
-          { "title": "[직장 돋보기 분석] 빗썸, 평균연봉 1억1600만원인 국내 대표 자산거래소", "url": "https://www.news2day.co.kr/article/20250613500128", "publisher": "뉴스투데이", "date": "2025-06-13" }
+          {
+            "title": "(주)빗썸 연봉정보 — 142건 기준 평균 5,439만원",
+            "url": "https://www.jobplanet.co.kr/companies/352810/salaries/%EB%B9%97%EC%8D%B8",
+            "publisher": "잡플래닛"
+          },
+          {
+            "title": "빗썸 연봉정보 — 평균 8,841만원",
+            "url": "https://m.saramin.co.kr/salaries/total-salary/view?csn=SDVxbnVsOGJsQnhHQkpKMjU3SFpmUT09",
+            "publisher": "사람인"
+          },
+          {
+            "title": "[직장 돋보기 분석] 빗썸, 평균연봉 1억1600만원인 국내 대표 자산거래소",
+            "url": "https://www.news2day.co.kr/article/20250613500128",
+            "publisher": "뉴스투데이",
+            "date": "2025-06-13"
+          }
         ]
       },
       {
@@ -241,7 +323,6 @@
       "기본급 대 성과급의 비율을 밝힌 자료가 없다 — 위 집계 차이의 원인을 확정하지 못했다"
     ]
   },
-
   "people": [
     {
       "name": "이재원",
@@ -280,9 +361,290 @@
       ]
     }
   ],
-
-  "postings": [],
-
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/373382",
+      "title": "Backend 개발자 (3년 이상)",
+      "site": "wanted",
+      "verdict": "빗썸 세 조직 중 **서비스 조직** 자리다 — 블록체인 코어(월렛·입출금·노드)도, 컴플라이언스 백오피스도 아닌 **대고객 거래 플랫폼**을 만든다. 3년차에게 문이 가장 넓고, 스택도 Java/Kotlin + Spring Boot + JPA/QueryDSL 로 흔한 축이다. 다만 자격요건 열세 줄 중 **'트랜잭션 처리 및 데이터 정합성'** 한 줄이 이 회사의 무게중심이고, 우대사항의 **TWAP·Iceberg·Stop-Loss** 는 거래소 도메인을 아느냐를 묻는 유일한 줄이다 — 경험이 없어도 **공부해서 메울 수 있는 갭**이라 준비 대비 효과가 가장 크다.",
+      "fit": {
+        "must_have": [
+          "백엔드 3년 이상",
+          "Java/Kotlin + Spring Boot — 이 회사 세 조직이 공통으로 쓰는 단일 축이다",
+          "JPA·QueryDSL 등 ORM",
+          "트랜잭션과 데이터 정합성에 대한 실무 경험"
+        ],
+        "can_learn": [
+          "거래소 도메인(주문 유형·호가) — 우대사항이고 문서로 메울 수 있다",
+          "Spring WebFlux (우대사항이다)",
+          "MSA 분산 트랜잭션 (개념을 알면 첫해에 붙는다)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "트랜잭션과 정합성 — 이 회사의 무게중심",
+          "from": "qualification",
+          "quote": "트랜잭션 처리 및 데이터 정합성 유지에 대한 이해와 실무 경험을 보유하신 분",
+          "priority": "core",
+          "why": "자격요건 열세 줄 대부분은 흔한 항목인데 이 줄만 다르다. 거래소는 **같은 잔고를 두 요청이 동시에 쓰려는 상황**이 상시로 벌어지는 곳이고, 여기서 한 번 어긋나면 고객 자산이 틀어진다. 블록체인 조직 공고가 같은 일을 '금융 수준의 무결성'이라 부르는 것과 같은 이야기다.",
+          "gap_check": "잔고 1,000원인 계정에 800원 출금 요청이 동시에 두 개 들어왔다. 둘 다 성공하지 않게 하는 방법을 **격리 수준·비관적 락·낙관적 락** 세 가지로 각각 설명하고, 각각이 처리량에 무엇을 대가로 하는지 말할 수 있는가?",
+          "drill": "잔고 차감 API 를 만들고 동시 요청 100개를 던져 **실제로 마이너스 잔고를 만들어 본다.** 그다음 (1) `SELECT ... FOR UPDATE`, (2) 버전 컬럼 기반 낙관적 락, (3) Redis 분산 락 세 가지로 각각 막고 처리량과 실패율을 비교한다. 마지막으로 락 없이 **원자적 UPDATE 한 줄**(`SET balance = balance - ? WHERE balance >= ?`)로도 막아 보고 넷을 표로 정리한다 — 이 표가 그대로 면접 답변이다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "MySQL — InnoDB 트랜잭션 격리 수준",
+              "url": "https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-isolation-levels.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring Data JPA — 잠금(Locking)",
+              "url": "https://docs.spring.io/spring-data/jpa/reference/jpa/locking.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Redis — 분산 락",
+              "url": "https://redis.io/docs/latest/develop/use/patterns/distributed-locks/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "JPA·QueryDSL — 편의가 정합성을 갉아먹는 지점",
+          "from": "qualification",
+          "quote": "JPA, QueryDSL 등 ORM 활용 경험을 보유하신 분",
+          "priority": "core",
+          "why": "앞 항목과 한 몸이다. JPA 는 영속성 컨텍스트가 쓰기를 미뤄 주기 때문에 편한데, **그 미룸이 락을 잡는 시점을 바꾼다** — 잔고 같은 자원에서는 그게 곧 동시성 버그가 된다. 거래소처럼 정합성이 최우선인 곳에서 ORM 을 쓰려면 언제 flush 되고 언제 락이 걸리는지를 알아야 한다.",
+          "gap_check": "`@Transactional` 안에서 엔티티를 바꾸고 다른 서비스를 호출했다. 그 시점에 DB 에는 변경이 반영돼 있는가? 그리고 그 호출이 오래 걸리면 무엇이 문제가 되는가?",
+          "drill": "잔고 도메인을 JPA 로 짜고 쿼리 로그를 켠 채 **flush 시점을 눈으로 확인한다.** 그다음 트랜잭션 안에서 외부 API 호출을 흉내 내(3초 sleep) 커넥션과 락이 얼마나 오래 잡히는지 재고, 그 호출을 트랜잭션 밖으로 빼서 다시 잰다. QueryDSL 로 동적 조건 조회를 하나 만들고 N+1 이 나는지 확인한다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Spring Data JPA 문서",
+              "url": "https://docs.spring.io/spring-data/jpa/reference/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Querydsl 레퍼런스",
+              "url": "https://querydsl.com/static/querydsl/latest/reference/html_single/",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring — 트랜잭션 관리",
+              "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "거래소 주문 유형 — 가장 싸게 메울 수 있는 도메인 갭",
+          "from": "preference",
+          "quote": "TWAP, Iceberg, Stop-Loss 등 주문 유형 시스템 개발 경험 및 도메인 지식 보유하신 분",
+          "priority": "high",
+          "why": "우대사항 중 **유일하게 '도메인 지식'을 명시한 줄**이고, 거래소 경력이 없는 지원자와 있는 지원자를 가르는 자리다. 그런데 이 셋은 개념이 공개돼 있어 **읽고 만들어 보면 메울 수 있다** — 경력으로만 얻을 수 있는 것이 아니다. 준비 대비 효과가 이 공고에서 가장 크다.",
+          "gap_check": "Iceberg 주문은 왜 존재하는가(전량을 호가창에 드러내면 무슨 일이 생기는가)? TWAP 은 무엇을 평균 내는 것이고, Stop-Loss 는 시장가로 나갈 때 무엇이 위험한가?",
+          "drill": "간단한 주문서(오더북)를 메모리에 만들고 지정가·시장가 체결을 구현한다. 그 위에 셋을 얹는다 — **Iceberg**(총량 중 일부만 노출하고 체결되면 다음 조각을 내놓기), **TWAP**(정해진 시간 동안 쪼개어 내보내기), **Stop-Loss**(트리거 가격에 도달하면 주문 발동). 각각에서 **부분 체결과 취소가 겹칠 때** 무슨 문제가 생기는지 테스트로 못 박는다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Investopedia — TWAP",
+              "url": "https://www.investopedia.com/terms/t/twap.asp",
+              "kind": "post"
+            },
+            {
+              "title": "Investopedia — Iceberg Order",
+              "url": "https://www.investopedia.com/terms/i/icebergorder.asp",
+              "kind": "post"
+            },
+            {
+              "title": "Investopedia — Stop-Loss Order",
+              "url": "https://www.investopedia.com/terms/s/stop-lossorder.asp",
+              "kind": "post"
+            },
+            {
+              "title": "빗썸 API 문서",
+              "url": "https://apidocs.bithumb.com/",
+              "kind": "docs",
+              "note": "실제 거래소가 주문·호가를 어떤 모양으로 노출하는지"
+            }
+          ]
+        },
+        {
+          "topic": "급등락을 견디는 고성능 아키텍처",
+          "from": "task",
+          "quote": "고성능 서비스 아키텍처 구성 및 최적화",
+          "priority": "high",
+          "why": "거래소의 부하는 예측이 안 된다. 시세가 급변하면 **몇 분 안에 평소의 몇 배**가 몰리는데, 오토스케일링은 그 몇 분을 못 따라간다. 그래서 '스케일 아웃하면 된다'가 답이 아니고, **미리 확보해 두는 것**과 **몰릴 때 무엇을 먼저 포기할지 정해 두는 것**이 설계가 된다. 매출의 98%가 거래 수수료라 이 몇 분이 곧 돈이다.",
+          "gap_check": "트래픽이 10배로 뛰었다. 호가 조회·주문 접수·잔고 조회 중 무엇을 먼저 지키고 무엇을 잠시 포기할 것인가? 그 판단을 코드 어디에 넣는가?",
+          "drill": "주문 API 와 시세 조회 API 를 한 서버에 두고 부하를 걸어 **시세 조회가 주문을 밀어내는 것**을 재현한다. 그다음 (1) 스레드 풀/커넥션 풀 분리, (2) 시세는 캐시로 흡수, (3) 과부하 시 조회를 먼저 버리는 부하 차단(load shedding)을 넣고 각 단계의 주문 성공률을 기록한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "k6 문서",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Resilience4j 문서",
+              "url": "https://resilience4j.readme.io/docs/getting-started",
+              "kind": "docs",
+              "note": "회로 차단기·격벽(bulkhead)·속도 제한"
+            }
+          ]
+        },
+        {
+          "topic": "RDBMS 와 Redis — 무엇을 캐시에서 읽으면 안 되는가",
+          "from": "qualification",
+          "quote": "RDBMS, Redis 등 데이터베이스 및 캐시 시스템 활용 경험을 보유하신 분",
+          "priority": "core",
+          "why": "거래소에서 캐시는 **써야 하지만 위험한** 물건이다. 시세와 호가는 캐시가 필수인데(초당 수만 건이 읽는다), 잔고와 주문 상태를 캐시에서 읽으면 사용자가 없는 돈을 쓸 수 있다. 즉 이 자격요건의 진짜 질문은 '캐시를 써 봤나'가 아니라 **'어디에 쓰면 안 되는지 아나'**다.",
+          "gap_check": "잔고를 캐시에 두면 안 되는 이유를 한 줄로 말할 수 있는가? 그런데 잔고 조회가 초당 수만 건이라면 무엇으로 버티는가?",
+          "drill": "시세·호가는 Redis 로 캐시하고 잔고는 DB 직접 조회로 두는 두 갈래를 만든다. 부하를 걸어 각각의 지연과 DB 부하를 재고, 잔고 조회에 캐시를 붙여 본 뒤 **적립 직후 옛 값이 보이는 창(window)**을 실제로 측정한다. 그 창을 줄이는 방법(쓰기 시 즉시 갱신, 짧은 TTL)의 대가를 적는다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Redis 문서",
+              "url": "https://redis.io/docs/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring — 캐시 추상화",
+              "url": "https://docs.spring.io/spring-framework/reference/integration/cache.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "MSA 에서 정합성 지키기 — 분산 트랜잭션",
+          "from": "preference",
+          "quote": "MSA 환경에서의 분산 트랜잭션 관리 및 데이터 정합성 유지 경험이 있으신 분",
+          "priority": "high",
+          "why": "기술 스택에 MSA 가 적혀 있고, 자격요건의 정합성 요구가 서비스 경계를 넘으면 이 문제가 된다 — **주문·잔고·정산이 다른 서비스에 있으면 하나의 트랜잭션으로 묶을 수 없다.** 거래소에서 이건 이론이 아니라 매일 벌어지는 일이고, 되돌릴 수 없는 단계(온체인 출금)가 섞이면 더 어려워진다.",
+          "gap_check": "주문 체결은 성공했는데 잔고 차감이 실패했다. 2단계 커밋을 못 쓴다면 무엇으로 맞추는가? 그리고 보상 트랜잭션이 **또 실패하면** 어떻게 되는가?",
+          "drill": "주문 서비스와 잔고 서비스를 나누고 사가(Saga) 로 이어 본다 — 이벤트로 진행하고 실패 시 보상 처리. 중간에 한쪽을 죽여 **불일치 상태를 실제로 만들고**, 재처리로 수렴하는지 확인한다. 이벤트 발행과 DB 쓰기를 한 트랜잭션으로 묶기 위해 아웃박스 패턴을 얹는다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Saga 패턴",
+              "url": "https://microservices.io/patterns/data/saga.html",
+              "kind": "post"
+            },
+            {
+              "title": "Transactional outbox 패턴",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "Java/Kotlin + Spring Boot — 이 회사의 단일 축",
+          "from": "qualification",
+          "quote": "Java / Kotlin 기반 Spring Boot 서비스 개발 경험을 보유하신 분",
+          "priority": "core",
+          "why": "빗썸 세 조직(서비스·블록체인 코어·컴플라이언스) 공고가 **모두** 이 스택을 요구한다. 즉 Node·Python 축으로 일해 온 지원자에게는 이 회사만큼은 스택 자체가 관문이고, 반대로 Spring 경험자에게는 세 문이 모두 열려 있다는 뜻이다.",
+          "gap_check": "Spring 의 `@Transactional` 이 프록시로 동작하기 때문에 **같은 클래스 안에서 호출하면 안 걸린다**는 것을 아는가? 그런 함정을 몇 개나 댈 수 있는가?",
+          "drill": "Spring Boot 로 잔고 서비스를 짜면서 자주 밟는 함정을 일부러 만들어 본다 — 자기 호출(self-invocation) 트랜잭션 누락, `readOnly` 오해, 프록시 대상이 아닌 private 메서드. 각각을 재현하고 고친 뒤 **왜 그렇게 되는지 한 줄로** 적는다. Kotlin 을 쓴다면 `open` 키워드와 프록시의 관계도 함께 확인한다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Spring Boot 문서",
+              "url": "https://docs.spring.io/spring-boot/index.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring — 선언적 트랜잭션의 동작 방식",
+              "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "AWS 운영 — 거래소는 미리 확보해 둔다",
+          "from": "qualification",
+          "quote": "AWS 환경에서의 개발·운영 경험을 보유하신 분",
+          "priority": "core",
+          "why": "다른 회사에서도 흔한 요건이지만 여기서는 **쓰는 방식이 다르다.** 급등락 때 오토스케일링이 늦기 때문에 미리 띄워 두는 선택을 하게 되고, 그건 곧 평소에 노는 자원값을 감수한다는 뜻이다. 게다가 금융 규제상 거래 이력과 접근 로그를 오래 보관해야 해서 저장 설계도 달라진다.",
+          "gap_check": "인스턴스를 두 배로 늘리는 데 실제로 몇 분이 걸리는가? 그 몇 분 동안 들어온 요청은 어떻게 되는가?",
+          "drill": "오토스케일링 그룹을 만들어 **부하가 오른 뒤 실제로 확장이 끝날 때까지의 시간을 재 본다.** 그다음 (1) 최소 용량을 올려 미리 확보한 경우와 (2) 그대로 둔 경우의 실패율을 비교하고, 각각의 월 비용 차이를 계산한다. 그 표가 '왜 미리 띄워 두는가'에 대한 답이 된다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Amazon EC2 Auto Scaling 사용자 안내서",
+              "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+              "kind": "docs"
+            },
+            {
+              "title": "AWS — Elastic Load Balancing",
+              "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "WebFlux — 비동기가 답인 자리와 아닌 자리",
+          "from": "preference",
+          "quote": "Spring WebFlux 기반 비동기 서비스 개발 경험을 보유하신 분",
+          "priority": "nice",
+          "why": "우대사항이지만 거래소 문맥에서는 이유가 분명하다 — 시세·체결 알림처럼 **연결을 오래 붙들고 밀어 주는** 트래픽이 많기 때문이다. 다만 WebFlux 는 JDBC 를 만나는 순간 이점이 사라지므로, '무조건 좋다'가 아니라 **어디에 쓰고 어디에 안 쓰는지**를 말할 수 있어야 한다.",
+          "gap_check": "WebFlux 로 만든 API 가 JPA(JDBC)를 호출하면 무엇이 문제인가? 그럼에도 쓸 수 있는 경우는 언제인가?",
+          "drill": "같은 조회 API 를 MVC 와 WebFlux 로 각각 만들고 동시 연결 수를 올려 가며 스레드 수와 지연을 비교한다. 그다음 WebFlux 쪽에 블로킹 호출(JDBC)을 끼워 넣어 **이점이 사라지는 것을 눈으로 확인**하고, SSE 로 시세를 밀어 주는 엔드포인트를 하나 만들어 본다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Spring WebFlux 문서",
+              "url": "https://docs.spring.io/spring-framework/reference/web/webflux.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Project Reactor 레퍼런스",
+              "url": "https://projectreactor.io/docs/core/release/reference/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "주문서(오더북)를 직접 만들어 공개해 둔다",
+          "why": "거래소 경력이 없는 지원자가 도메인을 아는 사람으로 보이는 **가장 확실하고 가장 싼 길**이다. 지정가·시장가 체결에 Iceberg·TWAP·Stop-Loss 를 얹고 부분 체결·취소까지 테스트로 못 박은 저장소 하나면, 우대사항 두 줄(주문 유형·금융 거래소 도메인)을 한꺼번에 덮는다.",
+          "effort": "일주일"
+        },
+        {
+          "idea": "동시성으로 잔고가 어긋나는 상황을 만들고 고친 기록을 남긴다",
+          "why": "자격요건에서 유일하게 이 회사다운 줄이 '트랜잭션 처리 및 데이터 정합성'이다. 마이너스 잔고를 **실제로 만들어 본 뒤** 네 가지 방법으로 막고 처리량을 비교한 표는, 말로 하는 어떤 설명보다 강하다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "지원할 조직을 지원서 첫 줄에 밝힌다",
+          "why": "빗썸은 서비스·블록체인 코어·컴플라이언스 세 조직이 각각 다른 공고를 낸다. 블록체인 조직은 스스로를 '일반적인 서비스 개발 조직과는 분리되어'라고 소개할 만큼 구분이 뚜렷하다. 어느 쪽에 왜 지원하는지 밝히면 회사 구조를 읽고 왔다는 뜻이 된다.",
+          "effort": "한 줄"
+        },
+        {
+          "idea": "보안·규제를 기능처럼 말할 준비를 한다",
+          "why": "대표가 업계 최초 버그바운티 도입, FDS 고도화, 차세대 AML/CFT 개발을 밀어 온 것이 반복 보도됐고 회사는 컴플라이언스 백엔드를 따로 뽑는다. '빠르게 냈다'보다 **'안전하게 냈다'**가 위인 조직이므로, 취약점을 미리 잡거나 규제 요구를 시스템으로 흡수한 경험이 있으면 앞세운다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "동시 출금 요청에서 잔고가 마이너스가 되지 않게 하는 방법과 각 방식의 대가",
+          "JPA 에서 락이 걸리는 시점과 트랜잭션 안에서 외부 호출을 하면 안 되는 이유",
+          "무엇을 캐시에 두고 무엇은 절대 두지 않는가",
+          "시세가 급변해 트래픽이 10배가 됐을 때 무엇을 먼저 지키는가",
+          "주문·잔고가 다른 서비스에 있을 때 정합성을 어떻게 맞추는가 (사가·아웃박스)",
+          "Iceberg·TWAP·Stop-Loss 가 각각 무엇을 푸는 주문인가",
+          "Spring 트랜잭션이 안 걸리는 대표적인 함정"
+        ],
+        "sources": [
+          {
+            "title": "빗썸 Backend 개발자 (3년 이상) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/373382",
+            "publisher": "원티드",
+            "summary": "자격요건 13줄·우대사항 5줄과 복지가 상세히 공개돼 있다. 비포괄임금제와 1분 단위 초과근무 수당이 명시돼 있다"
+          }
+        ]
+      }
+    }
+  ],
   "open_questions": [
     "자체 기술 블로그를 찾지 못했다. 엔지니어가 쓴 공개 자료가 없어 people 에 개발 쪽 인물이 없다.",
     "스테이킹·빗썸페이가 매출에 얼마나 기여하는지 공개되지 않았다. 수수료가 98.4%라는 사실만 확인된다.",
