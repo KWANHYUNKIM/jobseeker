@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-29",
+  "updated_at": "2026-09-01",
   "companies": [
     {
       "slug": "glowuprizz",
@@ -35,6 +35,18 @@
       "postings": 6,
       "study_items": 53,
       "updated_at": "2026-08-29"
+    },
+    {
+      "slug": "nudgehealthcare",
+      "name": "넛지헬스케어",
+      "aliases": [
+        "넛지헬스케어",
+        "넛지헬스케어㈜"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-01"
     }
   ]
 }
