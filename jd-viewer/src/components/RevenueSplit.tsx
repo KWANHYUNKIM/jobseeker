@@ -39,7 +39,24 @@ export function RevenueSplit({
   ]
   // 칸이 하나뿐이면 막대가 아니라 그냥 색칠한 줄이다. 다만 '광고 95% + 그 외'
   // 처럼 회사가 한 줄로만 밝힌 경우는 그 자체가 그림이 되므로 살린다.
-  if (cells.length < 2) return null
+  //
+  // 수익원이 애초에 하나인 회사(Figma·무신사처럼 구독 하나로 사는 곳)는 나눌
+  // 것이 없어 막대가 성립하지 않는다. 그렇다고 통째로 접으면 확인해 둔 총매출까지
+  // 화면에서 사라지므로, 그 한 줄만 남긴다.
+  if (cells.length < 2) {
+    if (!total) return null
+    return (
+      <p className="mt-3 text-xs text-(--color-muted) tracking-wide reveng-prose">
+        {total}
+        {known.length === 1 && (
+          <span className="text-(--color-text)">
+            {' — 전부 '}
+            <Md>{known[0].name}</Md>
+          </span>
+        )}
+      </p>
+    )
+  }
 
   return (
     <figure className="m-0 mt-3 reveng-prose">
