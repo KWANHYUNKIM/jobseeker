@@ -2,12 +2,14 @@
   "slug": "deepauto",
   "name": "딥오토",
   "name_en": "DeepAuto.ai",
-  "aliases": ["딥오토", "㈜딥오토"],
+  "aliases": [
+    "딥오토",
+    "㈜딥오토"
+  ],
   "status": "in_progress",
   "updated_at": "2026-09-01",
   "site": "deepauto.ai",
   "one_liner": "KAIST 연구실에서 나와 'AI를 싸게 돌리는 기술'을 논문과 제품 양쪽으로 내놓는 회사",
-
   "company": {
     "business": "2022년 말 KAIST 김재철AI대학원 황성주 교수와 석·박사 연구진이 세운 **리서치 기반 AI 스타트업**이다. 파는 것은 모델이 아니라 **모델을 쓰게 해 주는 판** — 기업이 에이전트 워크플로를 만들어 돌리는 `Agentic AI Workflow Builder`, 그리고 모델을 싸고 빠르게 서빙하는 `Scale Serve` 가 대표 제품이다. 이 회사의 특징은 **연구가 곧 제품의 원가 구조**라는 점이다: 자체 연구인 InfiniteHiP(계층적 가지치기 어텐션)은 48GB GPU 한 장에서 300만 토큰을 다루고 100만 토큰 디코딩을 18.95배 빠르게, GPU 메모리를 최대 96% 줄인다고 발표됐다 — 추론 비용이 곧 마진인 사업에서 그 숫자가 그대로 경쟁력이 된다. 고객은 엔터프라이즈이고(온프렘·하이브리드 배포, 멀티테넌시, SOC 2·ISO 27001 대응이 공고에 있다), 제조·건설·화공·기계 같은 산업 도면·문서와 금융 트랙을 따로 두고 있다.",
     "business_confidence": "confirmed",
@@ -40,7 +42,12 @@
         "as_of": "2022",
         "confidence": "confirmed",
         "sources": [
-          { "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자", "url": "https://www.hankyung.com/article/202311237863i", "publisher": "한국경제", "date": "2023-11-23" }
+          {
+            "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자",
+            "url": "https://www.hankyung.com/article/202311237863i",
+            "publisher": "한국경제",
+            "date": "2023-11-23"
+          }
         ]
       },
       {
@@ -49,7 +56,12 @@
         "as_of": "2023",
         "confidence": "confirmed",
         "sources": [
-          { "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자", "url": "https://www.hankyung.com/article/202311237863i", "publisher": "한국경제", "date": "2023-11-23" }
+          {
+            "title": "'AI를 위한 AI' 딥오토, 네이버 D2SF로부터 첫 투자",
+            "url": "https://www.hankyung.com/article/202311237863i",
+            "publisher": "한국경제",
+            "date": "2023-11-23"
+          }
         ]
       },
       {
@@ -58,7 +70,11 @@
         "as_of": "2026",
         "confidence": "inferred",
         "sources": [
-          { "title": "딥오토 기업정보 — 채용 18건, 인원 9명", "url": "https://www.wanted.co.kr/company/46475", "publisher": "원티드" }
+          {
+            "title": "딥오토 기업정보 — 채용 18건, 인원 9명",
+            "url": "https://www.wanted.co.kr/company/46475",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -67,7 +83,11 @@
         "as_of": "2025",
         "confidence": "confirmed",
         "sources": [
-          { "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재", "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409", "publisher": "데일리시큐" }
+          {
+            "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재",
+            "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409",
+            "publisher": "데일리시큐"
+          }
         ]
       },
       {
@@ -76,8 +96,17 @@
         "as_of": "2025",
         "confidence": "confirmed",
         "sources": [
-          { "title": "국내 스타트업 딥오토, LLM 긴 컨텍스트 추론 효율화 기술 공개", "url": "https://www.aitimes.com/news/articleView.html?idxno=168056", "publisher": "AI타임스", "date": "2025-02-17" },
-          { "title": "InfiniteHiP 논문 (arXiv:2406.09827)", "url": "https://arxiv.org/abs/2406.09827", "publisher": "arXiv" }
+          {
+            "title": "국내 스타트업 딥오토, LLM 긴 컨텍스트 추론 효율화 기술 공개",
+            "url": "https://www.aitimes.com/news/articleView.html?idxno=168056",
+            "publisher": "AI타임스",
+            "date": "2025-02-17"
+          },
+          {
+            "title": "InfiniteHiP 논문 (arXiv:2406.09827)",
+            "url": "https://arxiv.org/abs/2406.09827",
+            "publisher": "arXiv"
+          }
         ]
       },
       {
@@ -86,7 +115,11 @@
         "as_of": "2026",
         "confidence": "confirmed",
         "sources": [
-          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+          {
+            "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/361662",
+            "publisher": "원티드"
+          }
         ]
       }
     ],
@@ -94,30 +127,63 @@
       {
         "name": "Agentic AI Workflow Builder",
         "how": "기업이 자기 업무에 맞는 에이전트 워크플로를 만들어 돌리게 해 주는 제품이다. 고객사 환경(온프렘·하이브리드)에 배포하고 멀티테넌시로 나눠 쓰는 구조가 공고에 적혀 있어, **엔터프라이즈에 도입해 파는 형태**로 읽힌다. 매출 규모는 공개돼 있지 않다.",
-        "domains": ["에이전트·워크플로우 플랫폼", "데이터 플랫폼", "엔터프라이즈 보안·멀티테넌시"],
+        "domains": [
+          "에이전트·워크플로우 플랫폼",
+          "데이터 플랫폼",
+          "엔터프라이즈 보안·멀티테넌시"
+        ],
         "confidence": "inferred",
         "sources": [
-          { "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재", "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409", "publisher": "데일리시큐", "summary": "대표 제품으로 Agentic AI Workflow Builder 와 Scale Serve 를 명시" },
-          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+          {
+            "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재",
+            "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409",
+            "publisher": "데일리시큐",
+            "summary": "대표 제품으로 Agentic AI Workflow Builder 와 Scale Serve 를 명시"
+          },
+          {
+            "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/361662",
+            "publisher": "원티드"
+          }
         ]
       },
       {
         "name": "Scale Serve (모델 서빙)",
         "how": "모델을 싸고 빠르게 돌려 주는 제품이다. 회사의 연구(InfiniteHiP 등 추론 효율화)가 **그대로 원가 절감으로 이어지는 자리**라, 논문이 마케팅이 아니라 제품의 근거가 된다. GPU 를 직접 보유(H100·B200)하는 것도 같은 맥락이다. 매출 규모는 공개돼 있지 않다.",
-        "domains": ["GPU 서빙·추론 최적화", "엔터프라이즈 보안·멀티테넌시"],
+        "domains": [
+          "GPU 서빙·추론 최적화",
+          "엔터프라이즈 보안·멀티테넌시"
+        ],
         "confidence": "inferred",
         "sources": [
-          { "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재", "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409", "publisher": "데일리시큐" },
-          { "title": "국내 스타트업 딥오토, LLM 긴 컨텍스트 추론 효율화 기술 공개", "url": "https://www.aitimes.com/news/articleView.html?idxno=168056", "publisher": "AI타임스", "date": "2025-02-17" }
+          {
+            "title": "딥오토, 국제 AI 컨퍼런스 NeurIPS·EMNLP에 논문 8편 게재",
+            "url": "https://www.dailysecu.com/news/articleView.html?idxno=201409",
+            "publisher": "데일리시큐"
+          },
+          {
+            "title": "국내 스타트업 딥오토, LLM 긴 컨텍스트 추론 효율화 기술 공개",
+            "url": "https://www.aitimes.com/news/articleView.html?idxno=168056",
+            "publisher": "AI타임스",
+            "date": "2025-02-17"
+          }
         ]
       },
       {
         "name": "산업·금융 도메인 구축",
         "how": "플랫폼을 특정 산업에 맞춰 붙이는 일이다. 제조·건설·화공·기계의 **설계 도면과 기술 문서**를 읽는 AI 트랙이 있고, 금융 트랙(`[Financial] AI Engineer`, `[Financial] Backend Engineer`)이 따로 열려 있다. 두 트랙을 나눠 뽑는다는 것은 **버티컬별로 파는 구조**로 보인다. 매출 규모는 공개돼 있지 않다.",
-        "domains": ["비정형 문서·도면 AI", "데이터 플랫폼"],
+        "domains": [
+          "비정형 문서·도면 AI",
+          "데이터 플랫폼"
+        ],
         "confidence": "inferred",
         "sources": [
-          { "title": "딥오토 AI Engineer 전문가 채용 공고", "url": "https://www.wanted.co.kr/wd/356006", "publisher": "원티드", "summary": "PDF·Excel·CAD 도면을 다루는 에이전트 워크플로와 산업 도메인 우대가 적혀 있다" }
+          {
+            "title": "딥오토 AI Engineer 전문가 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/356006",
+            "publisher": "원티드",
+            "summary": "PDF·Excel·CAD 도면을 다루는 에이전트 워크플로와 산업 도메인 우대가 적혀 있다"
+          }
         ]
       }
     ],
@@ -132,7 +198,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+          {
+            "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/361662",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -146,8 +216,16 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" },
-          { "title": "InfiniteHiP 논문 (arXiv:2406.09827)", "url": "https://arxiv.org/abs/2406.09827", "publisher": "arXiv" }
+          {
+            "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/361662",
+            "publisher": "원티드"
+          },
+          {
+            "title": "InfiniteHiP 논문 (arXiv:2406.09827)",
+            "url": "https://arxiv.org/abs/2406.09827",
+            "publisher": "arXiv"
+          }
         ]
       },
       {
@@ -160,7 +238,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+          {
+            "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/361662",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -173,7 +255,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "딥오토 AI Engineer 전문가 채용 공고", "url": "https://www.wanted.co.kr/wd/356006", "publisher": "원티드" }
+          {
+            "title": "딥오토 AI Engineer 전문가 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/356006",
+            "publisher": "원티드"
+          }
         ]
       },
       {
@@ -186,7 +272,11 @@
         ],
         "confidence": "confirmed",
         "sources": [
-          { "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고", "url": "https://www.wanted.co.kr/wd/361662", "publisher": "원티드" }
+          {
+            "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/361662",
+            "publisher": "원티드"
+          }
         ]
       }
     ],
@@ -223,7 +313,6 @@
       }
     ]
   },
-
   "salary": {
     "unit": "만원",
     "currency": "KRW",
@@ -244,7 +333,6 @@
       "스톡옵션 유무와 조건을 밝힌 자료를 찾지 못했다"
     ]
   },
-
   "people": [
     {
       "name": "황성주",
@@ -288,9 +376,279 @@
       ]
     }
   ],
-
-  "postings": [],
-
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/361662",
+      "title": "Backend Engineer (AI Platform) 3~5년",
+      "site": "wanted",
+      "verdict": "임직원 10~30명 규모 회사의 **End-to-End 플랫폼 엔지니어** 자리다 — 백엔드 서버부터 데이터 파이프라인, GPU 서빙, 온프렘 배포, 보안·멀티테넌시까지 한 사람이 걸친다. 공고가 먼저 '처음부터 다 알 필요는 없다'고 말하지만, 뒤집으면 **경계를 계속 넘어가야 하는 자리**라는 뜻이다. 자격요건 열두 줄 중 기술은 넓고 얕게 적혀 있고, 대신 **'코딩 에이전트를 이용한 문제해결 능력'과 '영어 기술 문서로 문제를 해결하는 능력'이 나란히 들어 있다** — 모르는 영역을 스스로 메우며 갈 수 있느냐를 묻는 셈이다. ※ 같은 회사의 `Backend Engineer (AI Platform) 0~3년` 은 **본문이 이 공고와 동일하다.** 연차 구간만 다른 같은 자리이므로 이 브리핑을 그대로 쓰면 된다.",
+      "fit": {
+        "must_have": [
+          "웹 서버·아키텍처 설계 경험 (Python 선호)",
+          "워크플로 시스템 경험 (Temporal·Airflow·Celery 중 하나라도)",
+          "클라우드 인프라 구축·관리 (AWS/GCP/Azure 중 하나)",
+          "영어 기술 문서로 스스로 문제를 푸는 습관 — 자격요건에 명시돼 있다"
+        ],
+        "can_learn": [
+          "GPU 서빙 스택(vLLM·SGLang·Ray) — 우대사항이고 문서가 좋다",
+          "Columnar DB(ClickHouse) — 우대사항",
+          "SOC 2·ISO 27001 대응 — 우대사항이고 회사에서 겪으며 배우는 종류다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "워크플로 엔진 — 몇 시간짜리 작업을 안전하게 굴리기",
+          "from": "qualification",
+          "quote": "다양한 Workflow 시스템에 대한 경험 (Temporal, Airflow, Celery 등)",
+          "priority": "core",
+          "why": "에이전트 작업은 **요청-응답으로 안 끝난다.** 도구를 부르고 모델을 기다리고 사람 확인을 받는 동안 몇 분에서 몇 시간이 흐르고, 그 사이 서버가 재배포되거나 죽는다. 그래서 이 도메인에서는 '워커에 던진다'가 아니라 **진행 상태를 밖에 두고 이어서 도는 구조**가 필요하고, 공고가 셋을 나열한 것은 그 셋이 서로 다른 답이기 때문이다 — Celery 는 작업 큐, Airflow 는 배치 DAG, Temporal 은 장기 실행 워크플로다.",
+          "gap_check": "Celery·Airflow·Temporal 이 각각 어떤 문제를 푸는지 한 줄씩 말할 수 있는가? '3시간짜리 에이전트 작업 중간에 서버가 재시작되면 이어서 돈다'를 어느 것으로 만드는가?",
+          "drill": "다단계 에이전트 작업(수집 → 분석 → 요약 → 저장)을 **Celery 와 Temporal 두 가지로** 만든다. 각각에서 중간 단계 직후 프로세스를 죽이고 **재시작 후 이어서 도는지** 확인한다. 그다음 사람 승인을 기다리는 단계를 끼워 넣어 '며칠 멈춰 있어도 되는' 워크플로가 되는지 본다 — 여기서 두 도구의 차이가 확연해진다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Temporal 문서",
+              "url": "https://docs.temporal.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apache Airflow 문서",
+              "url": "https://airflow.apache.org/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Celery 문서",
+              "url": "https://docs.celeryq.dev/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "GPU 서빙 — 이 회사의 원가가 결정되는 자리",
+          "from": "preference",
+          "quote": "GPU 기반 ML 또는 모델 서빙 인프라 구축 경험",
+          "priority": "high",
+          "why": "우대사항이지만 **이 회사에서는 사업의 심장**이다. 제품 하나가 모델 서빙(Scale Serve)이고, 자체 연구(InfiniteHiP)가 GPU 메모리를 최대 96% 줄였다고 발표한 회사다. GPU 는 시간당 비싸기 때문에 **같은 카드로 몇 배를 더 돌리느냐가 곧 마진**이고, 그래서 서빙 엔진의 배치·스케줄링이 애플리케이션 코드만큼 중요해진다.",
+          "gap_check": "요청을 하나씩 처리하는 것과 묶어서(continuous batching) 처리하는 것은 처리량이 왜 그렇게 차이 나는가? 그리고 KV 캐시가 메모리를 얼마나, 왜 잡아먹는가?",
+          "drill": "GPU 한 장(대여도 좋다)에 vLLM 으로 모델을 띄우고 부하를 건다. **동시 요청 수를 올려 가며 처리량과 지연을 재고**, 배치 크기와 최대 컨텍스트 길이를 바꿔 가며 어디서 메모리가 터지는지 확인한다. 그다음 같은 모델을 SGLang 으로도 띄워 두 엔진의 숫자를 표로 비교한다 — **그 표가 이 회사 면접에서 가장 잘 통하는 물건이다.**",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "vLLM 문서",
+              "url": "https://docs.vllm.ai/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "SGLang",
+              "url": "https://github.com/sgl-project/sglang",
+              "kind": "repo"
+            },
+            {
+              "title": "Ray 문서",
+              "url": "https://docs.ray.io/en/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "SkyPilot",
+              "url": "https://github.com/skypilot-org/skypilot",
+              "kind": "repo",
+              "note": "여러 클라우드의 GPU 를 싼 곳부터 잡아 쓰는 도구"
+            }
+          ]
+        },
+        {
+          "topic": "믿을 수 없는 코드를 격리해서 돌리기",
+          "from": "preference",
+          "quote": "Untrusted code 실행을 위한 Sandbox 환경 구축 경험 (예: Container, VM 환경 기반)",
+          "priority": "high",
+          "why": "이 줄이 있다는 것은 **에이전트가 코드를 실행한다**는 뜻이다. 고객이 만든 워크플로가 임의의 코드를 돌리는데 그게 우리 인프라에서 실행되므로, 컨테이너 하나로 나누는 것으로는 부족할 수 있다 — 커널을 공유하기 때문이다. 그래서 괄호에 'Container, VM 환경 기반'이라고 둘을 적어 뒀다. **일반 백엔드 공고에서는 거의 안 보이는 요건**이라 준비하면 확실히 눈에 띈다.",
+          "gap_check": "컨테이너 격리가 뚫리는 경로를 두 가지 이상 댈 수 있는가? gVisor 나 마이크로VM(Firecracker)이 그 사이에서 무엇을 더 막아 주는가?",
+          "drill": "임의의 파이썬 코드를 받아 실행하는 API 를 만든다. 먼저 그냥 실행해 보고(위험한 상태), 그다음 (1) 컨테이너 + 리소스 제한 + 네트워크 차단, (2) gVisor 나 마이크로VM 으로 한 겹 더 격리한다. **탈출을 시도하는 코드**(파일시스템 접근, 네트워크 호출, 무한 루프, 메모리 폭주)를 각각 넣어 어디서 막히는지 표로 남긴다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "gVisor 문서",
+              "url": "https://gvisor.dev/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Firecracker",
+              "url": "https://firecracker-microvm.github.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "Docker — 리소스 제한",
+              "url": "https://docs.docker.com/engine/containers/resource_constraints/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "우리가 못 들어가는 서버에 배포하기 — 온프렘·하이브리드",
+          "from": "task",
+          "quote": "클라우드 및 온프레미스 환경에서의 서비스 배포, 운영, 자동화",
+          "priority": "core",
+          "why": "SaaS 만 해 본 사람에게 가장 낯선 제약이다. **고객사 안에서 도는 소프트웨어는 우리가 로그를 볼 수도, SSH 로 들어갈 수도 없다.** 그래서 배포가 '우리가 올리는 일'이 아니라 '고객이 설치하는 일'이 되고, 버전이 고객마다 갈리며, 장애가 나면 전화로 진단해야 한다. 엔터프라이즈에 파는 회사라 이 제약이 제품 설계까지 바꾼다.",
+          "gap_check": "고객사 서버에서 우리 소프트웨어가 죽었다. **우리가 접속할 수 없다면** 무엇으로 원인을 알아내는가? 그리고 고객마다 다른 버전을 어떻게 관리하는가?",
+          "drill": "같은 애플리케이션을 두 갈래로 배포해 본다 — (1) 우리 클라우드에 상시 배포, (2) **Helm 차트로 패키징해 '남의 클러스터'에 설치**. 두 번째에서는 접속 없이 진단할 수 있게 진단 번들(설정·버전·최근 로그 요약)을 뽑는 명령을 만든다. 설정만 바꿔 두 환경을 지원하도록 코드에서 환경 의존을 걷어낸다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Helm 문서",
+              "url": "https://helm.sh/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — 설정 관리",
+              "url": "https://kubernetes.io/docs/concepts/configuration/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "멀티테넌시 — 고객끼리 절대 섞이지 않게",
+          "from": "task",
+          "quote": "엔터프라이즈 환경을 고려한 보안, 권한, 멀티테넌시 구조 설계고객 환경(On-prem / Hybrid Cloud)에 대한 배포 및 운영 이슈 해결",
+          "priority": "core",
+          "why": "엔터프라이즈 고객은 **자기 데이터가 남과 섞이지 않는다는 것을 증명하라고 요구한다.** 그리고 이 회사는 AI 플랫폼이라 섞임의 경로가 하나 더 있다 — 벡터 DB 의 임베딩과 모델 컨텍스트다. 검색 결과에 다른 고객의 문서 한 조각이 섞이면 그건 유출이고, 그 사고는 조용히 일어난다.",
+          "gap_check": "고객 격리를 어느 층에서 할 것인가 — 행 단위(테넌트 컬럼)·스키마·데이터베이스·클러스터? 각각의 비용과 사고 위험은 어떻게 다른가? 벡터 검색에서 테넌트 경계를 어떻게 강제하는가?",
+          "drill": "테넌트가 여럿인 문서 검색 API 를 만든다. 먼저 행 단위 격리로 짜고 **테넌트 필터를 빠뜨린 쿼리를 일부러 하나 만들어** 남의 데이터가 나오는 것을 본다. 그다음 (1) 쿼리에서 필터를 빠뜨릴 수 없게 만드는 장치(리포지토리 계층 강제, RLS), (2) 벡터 검색의 네임스페이스 분리를 넣고, **테넌트 누락을 잡는 테스트**를 CI 에 건다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "PostgreSQL — Row Security Policies",
+              "url": "https://www.postgresql.org/docs/current/ddl-rowsecurity.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Kubernetes — 멀티테넌시",
+              "url": "https://kubernetes.io/docs/concepts/security/multi-tenancy/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "성격이 다른 저장소를 목적별로 고르기",
+          "from": "preference",
+          "quote": "데이터 파이프라인 및 Columnar DB 운영 경험",
+          "priority": "high",
+          "why": "담당 업무에 Clickhouse·Snowflake/Databricks·Postgres·Vector DB·NATS 가 한 줄로 나열돼 있다. **다섯을 다 쓴다는 것은 각각이 다른 일을 한다는 뜻**이다 — 트랜잭션은 Postgres, 대량 분석은 칼럼형, 유사도 검색은 벡터, 메시지는 NATS. 이 자리에서 자주 하게 될 판단이 '이 데이터를 어디에 둘 것인가'다.",
+          "gap_check": "같은 로그를 Postgres 와 ClickHouse 에 넣고 '지난 30일 일별 집계'를 돌리면 왜 그렇게 차이가 나는가? 칼럼형이 못 하는 것은 무엇인가?",
+          "drill": "이벤트 로그 1,000만 건을 Postgres 와 ClickHouse 에 각각 넣고 세 가지 쿼리를 비교한다 — 단건 조회, 기간 집계, 고카디널리티 그룹핑. **칼럼형이 오히려 불리한 쿼리**를 하나 찾아낸다. 그다음 원본은 오브젝트 스토리지, 집계는 칼럼형, 최신 상태는 Postgres 로 나누는 파이프라인을 짜 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "ClickHouse 문서",
+              "url": "https://clickhouse.com/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "PostgreSQL 문서",
+              "url": "https://www.postgresql.org/docs/current/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "REST 밖의 프로토콜과 분산 시스템 읽기",
+          "from": "qualification",
+          "quote": "REST HTTP 이외의 다양한 프로토콜 및 분산시스템 분석 능력",
+          "priority": "core",
+          "why": "에이전트 플랫폼은 REST 만으로 안 된다 — 진행 상황을 계속 밀어 줘야 하고(SSE·WebSocket), 서비스끼리는 스트리밍으로 붙고(gRPC), 이벤트는 브로커를 탄다(NATS). '분석 능력'이라고 쓴 것도 특이한데, **남의 시스템이 왜 그렇게 동작하는지 읽어 내는 능력**을 묻는 것으로 보인다.",
+          "gap_check": "진행 중인 에이전트의 상태를 클라이언트에 밀어 준다면 SSE·WebSocket·폴링 중 무엇을 고르고 왜인가? 연결이 끊겼다 붙으면 놓친 구간을 어떻게 채우는가?",
+          "drill": "같은 '작업 진행 상황 스트리밍'을 세 가지로 구현한다 — 폴링, SSE, WebSocket. 각각에서 **연결을 강제로 끊었다 붙여** 놓친 이벤트를 어떻게 복구하는지 만든다(마지막 수신 위치 전달). 그다음 서비스 간 호출 하나를 gRPC 스트리밍으로 바꿔 보고 NATS 로 이벤트를 뿌려 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "gRPC 문서",
+              "url": "https://grpc.io/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "NATS 문서",
+              "url": "https://docs.nats.io/",
+              "kind": "docs"
+            },
+            {
+              "title": "MDN — Server-sent events",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "코딩 에이전트로 문제를 푸는 능력 — 자격요건이다",
+          "from": "qualification",
+          "quote": "코딩 에이전트를 이용한 문제해결 능력",
+          "priority": "core",
+          "why": "**우대사항이 아니라 자격요건**에, 클라우드·DB·CI/CD 같은 기술 항목들과 나란히 적혀 있다. AI 플랫폼을 만드는 회사가 '개발할 때도 AI 를 쓰라'고 요건에 넣은 것이고, 조직이 10~30명이라 **한 사람이 넓게 걸쳐야 하는 구조와도 이어진다** — 모르는 영역을 에이전트와 함께 빠르게 메우며 가라는 뜻으로 읽힌다.",
+          "gap_check": "에이전트에게 맡겨서 잘된 일과 맡기면 안 되는 일을 각각 예로 들 수 있는가? 생성된 코드를 무엇으로 검증하는가 — 테스트인가, 리뷰인가, 실행인가?",
+          "drill": "위 drill 들 중 하나(예: 샌드박스 실행기)를 **에이전트에게 맡겨 먼저 만들게 하고** 그 결과를 줄 단위로 검수한다. '고친 것 / 그대로 둔 것 / 다시 시킨 것'을 표로 남기고, 특히 **에이전트가 놓친 보안 구멍 하나**를 찾아 적는다 — 샌드박스처럼 위험이 분명한 주제는 이 검증 연습에 가장 좋은 재료다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "Claude Code 공식 문서",
+              "url": "https://docs.claude.com/en/docs/claude-code/overview",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "경계를 넘나드는 엔지니어가 된다는 것",
+          "from": "task",
+          "quote": "처음부터 모든 영역을 깊이 있게 아실 필요는 없습니다. 실무를 통해 아래 내용들을 전반적으로 숙지하며 특정 분야의 전문성(Specialty)을 키우고, 궁극적으로는 시스템의 경계를 넘나들며 주도적으로 문제를 정의하고 해결할 수 있는 엔지니어를 찾습니다.",
+          "priority": "core",
+          "why": "공고가 직무 개요에 이 문단을 먼저 놓았다. 친절한 말이지만 **회사 규모에서 나오는 현실**이기도 하다 — 임직원 10~30명이라 백엔드·데이터·MLOps·인프라·보안을 나눠 맡을 사람이 없다. 그래서 이 자리가 실제로 묻는 것은 특정 기술이 아니라 **'모르는 영역에 들어가 스스로 메워 본 적이 있는가'**이고, 함께 적힌 '영어 기술 문서로 문제를 해결하는 능력'이 그 방법이다.",
+          "gap_check": "내 전문 영역 **밖**의 문제를 맡아 끝까지 해결해 본 적이 있는가? 그때 무엇을 읽고 누구에게 물었으며, 얼마나 걸렸는가?",
+          "drill": "위 학습 항목 중 **가장 낯선 것 하나**를 골라(대개 GPU 서빙이나 샌드박스) 문서만 보고 끝까지 돌려 본다. 진행하면서 '막힌 지점 → 무엇을 읽었나 → 어떻게 풀었나'를 기록한다. 이 기록이 곧 이 항목의 답변이다 — **결과물보다 메워 간 과정이 증거**다.",
+          "hours": 6,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "서빙 엔진 두 개를 같은 조건에서 재고 표로 만든다",
+          "why": "이 회사는 추론 효율화를 논문으로 내고 그것을 제품(Scale Serve)으로 파는 곳이다. vLLM 과 SGLang 을 같은 GPU·같은 모델로 재서 처리량·지연·메모리를 비교한 표 한 장이면, **회사가 매일 하는 이야기에 숫자로 참여할 수 있다.**",
+          "effort": "이틀"
+        },
+        {
+          "idea": "오픈소스에 기여하거나 최소한 읽고 정리한다",
+          "why": "우대사항 첫 줄이 '오픈소스 프로젝트 기여 경험'이고, 이 회사 자체가 오픈소스(`hip-attention`)를 공개하는 조직이다. vLLM·SGLang 같은 서빙 스택의 이슈 하나를 코드까지 따라가 정리한 글이면 기여 전이라도 이 요건에 닿는다.",
+          "effort": "이틀~일주일"
+        },
+        {
+          "idea": "회사 논문 한 편을 읽고 구현 관점으로 정리해 간다",
+          "why": "InfiniteHiP(arXiv:2406.09827)은 이 회사의 정체성이다. 논문을 읽고 **'이걸 서빙 스택에 붙이면 어디가 바뀌는가'**를 정리해 가면, 연구를 제품으로 옮기는 조직의 언어를 이미 쓰는 사람이 된다. 논문을 읽고 구현으로 옮겨 본 경험은 이 회사에서 특히 값이 나간다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "온프렘 제약을 겪어 본 이야기를 준비한다",
+          "why": "담당 업무에 고객 환경(On-prem/Hybrid) 배포와 운영 이슈 해결이 있다. **우리가 접속할 수 없는 서버**에서 도는 소프트웨어를 다뤄 본 경험은 SaaS 경력자 대부분에게 없어서, 있으면 강한 차별점이 된다. 없다면 위 drill 로 만들어 간다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "3시간짜리 에이전트 작업 중간에 서버가 재시작되면 어떻게 이어서 도는가",
+          "Celery·Airflow·Temporal 이 각각 푸는 문제의 차이",
+          "GPU 서빙에서 배치와 KV 캐시가 처리량·메모리에 미치는 영향",
+          "고객이 만든 임의 코드를 어떻게 격리해서 실행하는가 (컨테이너와 VM 의 차이)",
+          "우리가 접속할 수 없는 고객사 서버의 장애를 어떻게 진단하는가",
+          "테넌트 격리를 어느 층에서 하고, 벡터 검색에서는 어떻게 강제하는가",
+          "에이전트 진행 상황을 클라이언트에 밀어 줄 때 SSE·WebSocket·폴링 중 무엇을 고르는가",
+          "전문 영역 밖의 문제를 스스로 메워 해결한 경험"
+        ],
+        "sources": [
+          {
+            "title": "딥오토 Backend Engineer (AI Platform) 3~5년 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/361662",
+            "publisher": "원티드",
+            "summary": "직무 개요에 End-to-End 플랫폼 엔지니어라는 성격이 적혀 있고, 워크플로·데이터·GPU·모니터링 스택이 이름으로 나열돼 있다"
+          }
+        ]
+      }
+    }
+  ],
   "open_questions": [
     "매출을 밝힌 공개 자료가 없다. Seed~Pre-A 단계라 아직 공시 대상이 아닌 것으로 보이며, revenue 세 항목을 모두 inferred 로 둔 이유다.",
     "임직원 수가 집계마다 9명·18명·29명으로 갈린다. 어느 쪽이 맞는지 확인하지 못해 범위로 적었다.",
