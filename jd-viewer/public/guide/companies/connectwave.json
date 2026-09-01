@@ -1742,6 +1742,260 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/340729",
+      "title": "[CC CTO] Billing&Settlement Platform BE",
+      "site": "wanted",
+      "verdict": "**돈이 실제로 움직이는 자리다.** 주문·결제·셀러 정산·세금계산서·포인트 지갑이 한 담당 업무에 다 들어 있고, 이 영역의 특징은 하나다 — **틀리면 조용히 넘어가지 않는다.** 화면 버그는 새로고침으로 넘어가지만 정산이 틀리면 **셀러에게 돈을 덜 주거나 더 준 것**이고, 세금계산서가 틀리면 법적 문제가 된다. 그리고 이 공고에는 이 회사를 이해하는 열쇠가 하나 더 있다 — **기술 스택이 이 회사에서 가장 현대적이다**(Kotlin, Kafka, Flink CDC, Debezium, ArgoCD, Loki). 같은 회사 `[메이크샵]` 공고가 PHP·jQuery 를 자격요건으로 적는 것과 나란히 놓으면, **한 회사 안에 세 시대가 있다**는 사실이 분명해진다. 담당 업무에 `플랫폼 현대화 및 구조 리팩토링` 이 있는 것도 그래서다. 경력 5-11년.",
+      "fit": {
+        "must_have": [
+          "Java 또는 Kotlin 백엔드 5년 이상",
+          "Spring Boot 기반 서비스 개발",
+          "RDBMS 설계·운영 (PostgreSQL/MySQL)",
+          "대규모 트랜잭션 구조 개발 경험"
+        ],
+        "can_learn": [
+          "정산·세금계산서 도메인 — 규칙이 공개돼 있어 읽어서 메울 수 있다",
+          "saga·cqrs·outbox — 우대사항이고 개념이 명확하다",
+          "Kafka·Flink CDC — 우대사항"
+        ]
+      },
+      "study": [
+        {
+          "topic": "정산 — 누구에게 얼마를 언제 주는가",
+          "from": "task",
+          "quote": "입점 셀러 정산 시스템 개발 및 운영",
+          "priority": "core",
+          "why": "**이 자리의 정체이자 커머스에서 가장 조용히 위험한 영역**이다. 주문 하나가 정산으로 가는 길에는 수수료, 쿠폰 분담, 배송비, 부분 취소, 반품, 정산 주기, 지급 보류가 겹겹이 붙는다. 게다가 **뒤늦게 바뀐다** — 이번 달에 준 돈이 다음 달 반품으로 뒤집히고, 그러면 차감해야 한다. 그래서 정산 시스템의 핵심은 계산식이 아니라 **'왜 이 금액인지 나중에 설명할 수 있는가'** 다. 셀러가 물으면 근거를 대야 하고, 그 근거가 없으면 신뢰가 무너진다.",
+          "gap_check": "이번 달에 지급한 뒤 반품이 들어오면 어떻게 처리하는가(차감? 마이너스 정산?)? 정산 금액이 틀렸다는 문의가 왔을 때 무엇을 보여 주는가? 계산 규칙이 바뀌면 과거 정산은 어떻게 되는가?",
+          "drill": "**정산 원장을 만든다.** (1) 주문 → 수수료·쿠폰·배송비 분해 → 정산 항목으로 쌓는 구조를 만들고, **금액을 지우지 않고 반대 항목을 더하는 방식**(가산·차감 이력)으로 설계한다. (2) 반품과 부분 취소를 넣어 금액이 어떻게 흘러가는지 확인하고, (3) 셀러에게 보여 줄 **정산 명세 화면**을 만들어 '왜 이 금액인지' 항목별로 설명되는지 본다. 3번이 이 항목의 시험대다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "복식부기(이중 기입) 원리로 원장 설계하기",
+              "url": "https://martinfowler.com/eaaDev/AccountingNarrative.html",
+              "kind": "post"
+            },
+            {
+              "title": "Martin Fowler — Event Sourcing",
+              "url": "https://martinfowler.com/eaaDev/EventSourcing.html",
+              "kind": "post",
+              "note": "금액을 덮어쓰지 않고 이력으로 남기는 접근"
+            }
+          ]
+        },
+        {
+          "topic": "포인트 지갑 — 잔액은 절대 어긋나면 안 된다",
+          "from": "task",
+          "quote": "포인트 Wallet, 충전 및 사용 관련 백엔드 개발",
+          "priority": "core",
+          "why": "포인트는 **회사의 부채**다. 충전한 만큼 나중에 써야 하고, 잔액이 실제보다 많으면 회사가 손해를 보고 적으면 사용자가 손해를 본다. 어려운 이유는 **동시성**이다 — 같은 사람이 두 창에서 동시에 결제하면 잔액이 두 번 차감돼야 하는데, 잘못 짜면 한 번만 빠지거나 음수가 된다. 그리고 정산과 마찬가지로 **잔액을 숫자 하나로 들고 있으면 안 된다** — 거래 이력의 합으로 설명될 수 있어야 한다.",
+          "gap_check": "잔액 컬럼을 갱신하는 방식과 이력의 합으로 계산하는 방식의 장단은? 동시 사용에서 음수 잔액을 막는 방법 세 가지를 댈 수 있는가? 만료 포인트는 어떤 순서로 차감하는가(선입선출)?",
+          "drill": "**포인트 원장을 만들고 부순다.** (1) 거래 이력 테이블과 잔액 캐시를 함께 두고, (2) 동시 결제 100개를 날려 음수가 나는지 확인한 뒤 잠금 전략을 바꿔 가며 비교하고(비관적 잠금 / 조건부 갱신 / 큐 직렬화), (3) **만료 정책과 부분 사용**을 넣어 선입선출로 차감되는지 본다. 마지막으로 **이력의 합과 잔액 캐시가 일치하는지 검사하는 배치**를 만든다 — 실무에서 반드시 있는 장치다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "PostgreSQL — 트랜잭션 격리 수준",
+              "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+              "kind": "docs"
+            },
+            {
+              "title": "PostgreSQL — 명시적 잠금",
+              "url": "https://www.postgresql.org/docs/current/explicit-locking.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Redis — 분산 락",
+              "url": "https://redis.io/docs/latest/develop/use-cases/patterns/distributed-locks/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 서비스에 걸친 거래 — saga·outbox 가 우대사항인 이유",
+          "from": "preference",
+          "quote": "saga / cqrs / outbox 패턴 등의 MSA/EDA 아키텍처 구성 및 운영 경험",
+          "priority": "core",
+          "why": "결제 하나가 완료되려면 **여러 시스템이 함께 성공해야 한다** — 주문 생성, 결제 승인, 포인트 차감, 재고 반영, 정산 예정 기록. 이들이 서로 다른 서비스에 있으면 **하나의 데이터베이스 트랜잭션으로 묶을 수 없다.** 중간에 하나가 실패하면 앞의 것을 되돌려야 하는데(보상 트랜잭션), 그게 saga 다. outbox 는 그보다 앞의 문제를 푼다 — **'DB 에는 저장됐는데 메시지는 안 나갔다'** 를 막기 위해 같은 트랜잭션에 메시지를 함께 넣어 두고 나중에 보내는 방식이다. 이 회사 스택에 Kafka·Debezium·Flink CDC 가 있는 것이 이 구조와 이어진다.",
+          "gap_check": "DB 저장과 메시지 발행 사이에 장애가 나면 무엇이 어긋나는가? 보상 트랜잭션이 또 실패하면? 같은 메시지가 두 번 오는 것을 소비자가 어떻게 견디는가(멱등 소비)?",
+          "drill": "**결제 흐름을 세 서비스로 쪼갠다.** (1) 주문·결제·포인트를 나누고 outbox 테이블 + Debezium 으로 이벤트를 흘려보내고, (2) 포인트 차감을 일부러 실패시켜 **보상 트랜잭션**으로 주문을 취소하고, (3) 같은 이벤트를 두 번 보내 **소비자가 멱등한지** 확인한다. 각 단계에서 데이터가 어긋난 상태를 스크린샷으로 남겨 두면 면접 이야기가 된다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Microservices — Saga 패턴",
+              "url": "https://microservices.io/patterns/data/saga.html",
+              "kind": "post"
+            },
+            {
+              "title": "Microservices — Transactional Outbox",
+              "url": "https://microservices.io/patterns/data/transactional-outbox.html",
+              "kind": "post"
+            },
+            {
+              "title": "Debezium 문서",
+              "url": "https://debezium.io/documentation/reference/stable/index.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "대규모 트랜잭션 구조 — 몰릴 때도 정확해야 한다",
+          "from": "qualification",
+          "quote": "Restful/Graphql API 및 대규모 트랜잭션 구조 개발 경험",
+          "priority": "core",
+          "why": "정확성만 필요하면 전부 직렬로 처리하면 된다. 문제는 **커머스 트래픽이 몰린다**는 것이다 — 세일이나 라이브 방송 때 결제가 폭증하는데, 그때도 잔액과 정산은 한 푼도 틀리면 안 된다. 그래서 **어디를 강하게 잠그고 어디를 느슨하게 둘지** 나누는 판단이 이 자리의 실력이 된다. 회사 전체 거래액이 분기 3조원 규모이므로 요구의 크기도 실제다.",
+          "gap_check": "결제 처리에서 가장 먼저 병목이 되는 곳은 어디인가? 잠금 범위를 줄이려면 무엇을 트랜잭션 밖으로 빼야 하는가(외부 API 호출은 절대 안에 두지 않는다)? 커넥션 풀이 마르면 어떤 증상이 나오는가?",
+          "drill": "**결제 API 에 부하를 준다.** (1) 초당 수백 건을 날려 응답 시간 분포를 보고, (2) 트랜잭션 안에 있던 외부 호출을 밖으로 빼서 전후를 비교하고, (3) 커넥션 풀을 줄여 병목을 재현한 뒤 **큐로 흡수하는 구조**로 바꿔 다시 잰다. 각 단계에서 **정확성이 유지되는지**(잔액 합계 검증)를 함께 확인하는 것이 핵심이다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "k6 — 부하 테스트",
+              "url": "https://grafana.com/docs/k6/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "HikariCP — 커넥션 풀 설정",
+              "url": "https://github.com/brettwooldridge/HikariCP",
+              "kind": "repo"
+            },
+            {
+              "title": "Spring — 트랜잭션 관리",
+              "url": "https://docs.spring.io/spring-framework/reference/data-access/transaction.html",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "세금계산서 — 법이 요구사항이 되는 영역",
+          "from": "task",
+          "quote": "증빙 및 세금계산서 발행 프로세스 개발",
+          "priority": "high",
+          "why": "**개발자가 정할 수 없는 요구사항**이 처음 등장하는 항목이다. 발행 시점, 필수 항목, 수정 발행 방법, 보관 기간이 전부 법과 국세청 규격으로 정해져 있고, **틀리면 버그가 아니라 위반**이다. 그래서 이 영역의 준비는 기술 학습이 아니라 **규칙을 정확히 읽고 그것을 시스템으로 옮기는 훈련**이다. 커머스 백엔드에서 이 경험이 있는 사람은 의외로 적어서, 알고 가면 눈에 띈다.",
+          "gap_check": "세금계산서를 잘못 발행하면 어떻게 바로잡는가(수정세금계산서의 사유 코드)? 발행 실패는 재시도해도 되는가 — 중복 발행 위험은? 외부 발행 대행 서비스가 응답이 없으면 어떻게 하는가?",
+          "drill": "**규칙을 읽고 상태 기계로 옮긴다.** (1) 국세청 전자세금계산서 규격에서 필수 항목과 수정 발행 사유를 정리하고, (2) 발행 요청 → 대기 → 성공/실패 → 수정 발행의 상태 전이를 그리고, (3) **중복 발행을 막는 키**와 재시도 정책을 설계한다. 코드가 아니라 **문서 한 장이 결과물**이어도 좋다 — 이 영역은 그렇게 준비하는 것이 맞다.",
+          "hours": 8,
+          "resources": [
+            {
+              "title": "국세청 전자세금계산서 안내",
+              "url": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2301&cntntsId=7710",
+              "kind": "docs"
+            },
+            {
+              "title": "홈택스 전자세금계산서",
+              "url": "https://www.hometax.go.kr",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "돌아가는 걸 멈추지 않고 갈아 끼우기 — 플랫폼 현대화",
+          "from": "task",
+          "quote": "서비스 확장에 대비한 플랫폼 현대화 및 구조 리팩토링",
+          "priority": "high",
+          "why": "**이 회사에서 이 줄이 특별한 이유**가 있다. 여러 회사가 합쳐진 조직이라 시스템도 시대별로 겹쳐 있고, 같은 회사의 `[메이크샵]` 공고는 아직 PHP·jQuery 를 자격요건에 적는다. 반면 이 공고의 스택 목록은 Kotlin·Kafka·Flink CDC·ArgoCD 다 — **현대화의 최전선이 여기**라는 뜻이다. 그런데 대상이 하필 **돈이 흐르는 시스템**이라, 옮기다 틀리면 즉시 사고가 된다. 그래서 이 항목의 핵심은 새 기술이 아니라 **되돌릴 수 있게 옮기는 방법**이다.",
+          "gap_check": "옛 시스템과 새 시스템이 같은 정산을 계산할 때 결과가 다르면 어떻게 아는가? 트래픽을 조금씩 옮기려면 무엇이 필요한가? 되돌리는 데 몇 분이 걸리는가 — 해 본 적이 있는가?",
+          "drill": "**섀도 실행으로 옮겨 본다.** (1) 기존 계산 로직 옆에 새 구현을 두고 **같은 입력으로 둘 다 돌려 결과를 비교하는 층**을 만들고(결과는 옛것만 사용), (2) 불일치를 모아 유형을 나누고, (3) 일치율이 충분해지면 기능 플래그로 조금씩 새 쪽으로 넘긴다. **1번이 핵심이다** — 돈 계산은 이렇게 옮긴다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Martin Fowler — Strangler Fig Application",
+              "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+              "kind": "post"
+            },
+            {
+              "title": "GitHub — Scientist (섀도 실행 라이브러리)",
+              "url": "https://github.com/github/scientist",
+              "kind": "repo",
+              "note": "옛 코드와 새 코드를 나란히 돌려 비교하는 방식"
+            }
+          ]
+        },
+        {
+          "topic": "Kotlin 과 이 회사의 '세 번째 시대'",
+          "from": "qualification",
+          "quote": "Java 또는 Kotlin 기반의 백엔드 개발 경력 5년 이상",
+          "priority": "high",
+          "why": "공고에 적힌 스택 목록을 그대로 보면 이 팀이 어디에 있는지 보인다 — Kotlin, Spring Boot, Exposed, PostgreSQL, Kafka, Flink CDC, Kubernetes, ArgoCD, Loki. **같은 회사에서 메이크샵은 PHP, 데이터 팀은 Iceberg·Spark, 여기는 Kotlin·Kafka 다.** 세 시대가 한 회사에 있다. 지원자에게 이 사실은 실용적으로 중요하다: **어느 팀에 가느냐가 앞으로 몇 년 쓸 기술을 정한다.** Kotlin 은 필수가 아니라 `Java 또는` 이므로, Java 경력자가 **Kotlin 을 읽고 쓸 준비만 해 가면** 문이 열린다.",
+          "gap_check": "Kotlin 의 null 안전성과 데이터 클래스가 Java 코드와 섞일 때 무엇을 조심하는가? 코루틴과 블로킹 코드가 섞이면 어떤 문제가 생기는가? JPA 와 Exposed 는 각각 어떤 상황에 맞는가?",
+          "drill": "**Java 로 짠 것을 Kotlin 으로 옮긴다.** (1) 위에서 만든 정산·포인트 코드 일부를 Kotlin 으로 다시 쓰고, (2) 두 언어가 한 프로젝트에 섞였을 때의 지점(null 처리, 컬렉션 변환)을 정리하고, (3) 같은 쿼리를 JPA·QueryDSL·Exposed 로 각각 써 보고 **어느 것이 어떤 질의에 편한지** 표로 남긴다. 이 회사 스택 목록에 셋이 다 있다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Kotlin 공식 문서",
+              "url": "https://kotlinlang.org/docs/home.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring Boot with Kotlin",
+              "url": "https://docs.spring.io/spring-boot/reference/features/kotlin.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Exposed (Kotlin SQL 라이브러리)",
+              "url": "https://github.com/JetBrains/Exposed",
+              "kind": "repo"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "'왜 이 금액인지 설명되는' 정산 원장을 만든다",
+          "why": "정산 시스템의 핵심은 계산식이 아니라 **근거를 나중에 댈 수 있는가**다. 금액을 덮어쓰지 않고 가산·차감 이력으로 쌓아 셀러 명세 화면까지 만든 저장소는, 이 도메인을 이해했다는 가장 직접적인 증거다.",
+          "effort": "일주일"
+        },
+        {
+          "idea": "포인트 잔액을 동시성으로 부숴 보고 고친 기록",
+          "why": "포인트는 **회사의 부채**이고 음수 잔액은 그대로 손실이다. 동시 결제 100개로 음수를 재현한 뒤 세 가지 잠금 전략을 비교하고, **이력의 합과 잔액이 맞는지 검사하는 배치**까지 만든 이야기는 5년차 이상에서도 흔하지 않다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "섀도 실행으로 계산 로직을 옮긴 데모",
+          "why": "담당 업무에 **`플랫폼 현대화 및 구조 리팩토링`** 이 있는데 대상이 돈이 흐르는 시스템이다. 옛 구현과 새 구현을 같은 입력으로 나란히 돌려 불일치를 모으는 층을 만든 경험은, **되돌릴 수 있게 옮길 줄 아는 사람**이라는 뜻이 된다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "이 회사에서 '어느 시대에 갈지' 정하고 지원한다",
+          "why": "같은 회사 안에 스택이 세 갈래다 — `[메이크샵]`은 PHP·jQuery, 데이터 팀은 Iceberg·Spark·Trino, **이 팀은 Kotlin·Kafka·Flink CDC·ArgoCD** 로 가장 현대적이다. 어느 팀에 가느냐가 앞으로 몇 년 쓸 기술을 정하므로, 공고 제목의 대괄호를 먼저 본다.",
+          "effort": "십 분"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "이번 달 정산 후 반품이 들어오면 어떻게 처리하는가",
+          "정산 금액이 틀렸다는 문의에 무엇을 보여 주는가",
+          "계산 규칙이 바뀌면 과거 정산은 어떻게 되는가",
+          "포인트 잔액을 컬럼으로 들 것인가 이력의 합으로 볼 것인가",
+          "동시 사용에서 음수 잔액을 막는 방법 세 가지",
+          "DB 저장과 메시지 발행 사이에 장애가 나면 무엇이 어긋나는가",
+          "보상 트랜잭션이 또 실패하면 어떻게 하는가",
+          "트랜잭션 안에 외부 API 호출을 두면 안 되는 이유",
+          "세금계산서를 잘못 발행했을 때 바로잡는 절차",
+          "돈 계산 로직을 새 시스템으로 어떻게 옮기는가"
+        ],
+        "sources": [
+          {
+            "title": "커넥트웨이브 [CC CTO] Billing&Settlement Platform BE 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/340729",
+            "publisher": "원티드",
+            "summary": "주문·결제, 셀러 정산, 세금계산서, 포인트 Wallet, 플랫폼 현대화. 스택은 Kotlin·Spring Boot·PostgreSQL·Kafka·Flink CDC·Kubernetes·ArgoCD"
+          },
+          {
+            "title": "커넥트웨이브 [메이크샵] 백엔드 개발자 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/368346",
+            "publisher": "원티드",
+            "summary": "같은 회사인데 자격요건이 PHP·jQuery 다 — '세 시대'의 근거"
+          },
+          {
+            "title": "커넥트웨이브, 올 1분기 매출 10.5%↓ 1096억원",
+            "url": "https://byline.network/2024/05/16_9864225/",
+            "publisher": "바이라인네트워크",
+            "date": "2024-05-16",
+            "summary": "연결 총거래액 분기 3조원, 셀러 45,604곳 — 정산이 걸린 규모"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [

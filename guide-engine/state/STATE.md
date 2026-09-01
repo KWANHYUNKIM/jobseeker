@@ -4,32 +4,39 @@
 
 ## 지금 쓰는 중
 
-**커넥트웨이브 (`connectwave`) — `in_progress`.** 공고 6건 · 학습 39개.
-(전체는 회사 9곳 · 완주 8곳 · 공고 33건 · 학습 256개 · 오류 0 · **경고 0**.)
+**커넥트웨이브 (`connectwave`) — `in_progress`.** 공고 7건 · 학습 46개.
+(전체는 회사 9곳 · 완주 8곳 · 공고 34건 · 학습 263개 · 오류 0 · **경고 0**.)
 
 | 채운 공고 | 무엇을 하는 자리 | 연차 | 학습 |
 |---|---|---|---|
-| `[메이크샵] 백엔드` (wanted/368346) | 주문·결제 + PHP↔NestJS 전환 | 3-8 | 7 |
-| `[Consumer Commerce] Data Engineer` (wanted/295194) | 수집→레이크→품질→서빙 | 3-15 | 7 |
-| `[메이크샵] 풀스택` (wanted/368343) | 고객사별 커스텀 흡수 | 3-8 | 4 |
-| `[CC CTO] Data Analytics Engineer` (wanted/370593) | 지표의 뜻을 정하기 | 3-8 | 7 |
-| `[CC CTO] Search Engineer` (wanted/273652) | 검색 엔진 만들기 | 4-10 | 7 |
-| `[CC CTO] Machine Learning Engineer` (wanted/382080) | **같은 상품 묶기(Entity Matching)** | 4-15 | 7 |
+| `[메이크샵] 백엔드` (368346) | 주문·결제 + PHP↔NestJS 전환 | 3-8 | 7 |
+| `[Consumer Commerce] Data Engineer` (295194) | 수집→레이크→품질→서빙 | 3-15 | 7 |
+| `[메이크샵] 풀스택` (368343) | 고객사별 커스텀 흡수 | 3-8 | 4 |
+| `[CC CTO] Data Analytics Engineer` (370593) | 지표의 뜻을 정하기 | 3-8 | 7 |
+| `[CC CTO] Search Engineer` (273652) | 검색 엔진 만들기 | 4-10 | 7 |
+| `[CC CTO] Machine Learning Engineer` (382080) | 같은 상품 묶기 | 4-15 | 7 |
+| `[CC CTO] Billing&Settlement Platform BE` (340729) | **돈이 실제로 움직이는 자리** | 5-11 | 7 |
 
-**세 공고가 같은 문제의 서로 다른 층이라는 것이 이 회사 브리핑의 뼈대가 됐다** —
-ML(모델) / Search(엔진·색인·랭킹) / AE(지표 정의와 측정). 서로의 sources·edge 에
-링크를 걸어 독자가 자리를 고르게 했다. **합쳐진 회사에서 이 방식이 다섯 번 통했다.**
+**이 회사에는 세 시대가 있다** — `[메이크샵]`은 PHP·jQuery, 데이터 팀은 Iceberg·Spark·
+Trino, Billing 팀은 **Kotlin·Kafka·Flink CDC·ArgoCD** 로 가장 현대적이다. 그 대비를
+Billing verdict 와 edge 에 넣어 두었다. **어느 팀에 가느냐가 앞으로 몇 년 쓸 기술을 정한다.**
 
-**남은 여섯 건과 판단 — 다음 사이클이 회사를 닫을 수 있다**
+**닫기 전에 확인할 것 하나 — 다음 사이클의 첫 일**
 
-1. `[CC CTO] Billing&Settlement Platform BE` (wanted/340729, 5-11년) — **하나는 쓰는 쪽을
-   권한다.** 정산은 커머스에서 가장 틀리면 안 되는 자리이고, 이 회사는 셀러 4.5만 곳과
-   제휴사 정산이 걸려 있어 도메인 값이 크다. 본문 미열람.
-2. 나머지 5년 이상 넷 — `Backend Engineer(스토어플랫폼)`·`BE(지도/예약/자동차)`·
-   `DevOps Engineer`(모두 5-11년), `[Consumer Commerce] 프론트엔드`(7년↑).
-   **연차가 높아 뺀다면 그 이유를 `open_questions` 에 한 줄씩.**
-3. jobkorea·dev 3건은 원티드와 **같은 자리의 중복**이다(Data Analytics Engineer,
-   메이크샵 백엔드, 플레이오토 솔루션 개발자). 이것도 `open_questions` 에 적는다.
+`[플레이오토] 솔루션 개발자` (jobkorea/49767061, **신입 지원 가능**). 본문 미열람인데
+**이 회사에서 신입·주니어에게 열린 유일한 자리**로 보인다. 이 브리핑의 독자 폭을 생각하면
+확인 없이 빼면 안 된다. 본문을 읽고 (a) 개발직이 맞고 본문이 있으면 쓰고,
+(b) 아니면 이유를 `open_questions` 에 남긴다. **그 뒤 회사를 `done` 으로 닫는다.**
+
+**닫을 때 `open_questions` 에 남길 것** (완주 기준)
+
+- 5년 이상이라 뺀 넷: `[CC CTO] Backend Engineer(스토어플랫폼)`(370599, 5-11),
+  `[Consumer Commerce] BE(지도/예약/자동차)`(345019, 5-11),
+  `[CC CTO] DevOps Engineer`(302948, 5-11), `[Consumer Commerce] 프론트엔드`(341130, 7년↑).
+  ※ 다만 5-11년 셋은 **이미 쓴 Billing(5-11)과 같은 구간**이다 — "연차가 높아서"가 아니라
+  **"같은 조직의 다른 도메인이고 앞서 쓴 일곱 건과 준비가 겹친다"** 가 정확한 이유다.
+- 사이트 중복 셋: jobkorea `Data Analytics Engineer`·`[플레이오토] 솔루션 개발자`,
+  dev(캐치) `[메이크샵] 백엔드` — 원티드와 같은 자리이거나 중복 노출이다.
 
 **매 사이클 확인** — `validate.py` 맨 아래 `경고 N`(지금 0),
 resources URL 공백: `grep -o '"url": "[^"]*"' <파일> | grep -v 'http'`
