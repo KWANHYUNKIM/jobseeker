@@ -105,6 +105,17 @@
       "postings": 7,
       "study_items": 46,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "tossplace",
+      "name": "토스플레이스",
+      "aliases": [
+        "토스플레이스"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
