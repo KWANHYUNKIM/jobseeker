@@ -162,6 +162,17 @@
       "postings": 7,
       "study_items": 54,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "cupix",
+      "name": "큐픽스",
+      "aliases": [
+        "큐픽스"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
