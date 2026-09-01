@@ -994,6 +994,263 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/347509",
+      "title": "Server Developer (Platform)",
+      "site": "wanted",
+      "verdict": "**고객이 동료 개발자인 자리다** — 프론트 쪽 `Frontend UX Engineer(Design System)` 의 서버판이라고 보면 정확하다. 담당 업무가 기능이 아니라 **다른 서버 개발자들이 매일 쓰는 것**을 만든다: 공통 모듈(Metric·Logging·분산 락·메시징), API Gateway, 모니터링·알림 시스템. 그리고 이 회사에서 그 무게가 특별하다 — **여기서 장애는 화면이 안 뜨는 게 아니라 8만 5천 곳의 카운터가 멈추는 일**이고, 사장님은 새로고침할 수 없다. 담당 업무에 `장애를 빠르게 감지하고, 빠르게 회복` 이 따로 한 줄로 적힌 이유다. 경력 3-18년으로 문이 넓고, **스택이 통째로 공개돼 있다**(Kotlin·Spring Cloud·Kafka·Kubernetes·Istio·ArgoCD·Vault·Thanos) — 준비 목록을 회사가 대신 써 준 셈이다.",
+      "fit": {
+        "must_have": [
+          "Java/Kotlin + Spring 으로 **공통 기능을 만들어 제공해 본** 경험",
+          "Redis·Kafka·ELK 에 익숙할 것",
+          "고가용성·대규모 실시간 트래픽 설계·운영 경험"
+        ],
+        "can_learn": [
+          "Istio·Thanos — 스택이 공개돼 있어 목록대로 따라갈 수 있다",
+          "Kubernetes 위 배포(ArgoCD·GoCD) — 우대 성격",
+          "오프라인 결제 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "남이 쓰는 모듈을 만든다 — 이 자리의 정체",
+          "from": "task",
+          "quote": "토스플레이스의 Server Developer가 Java/Kotlin, Spring Framework를 이용하여 개발할 때 공통적으로 필요한 기능들(Metric, Logging, Distributed Lock, Messaging 등)을 모듈화하여 제공해요.",
+          "priority": "core",
+          "why": "**제품이 아니라 도구를 만드는 자리**다. 그리고 남이 쓰는 코드는 성격이 완전히 다르다 — 내 서비스라면 고치면 그만이지만, **모듈은 열 개 서비스가 이미 쓰고 있어서 못 고친다.** 그래서 실력이 갈리는 지점이 기능이 아니라 **경계 설계**다: 무엇을 기본값으로 강제하고 무엇을 열어 둘지, 버전을 올릴 때 어떻게 안 깨지게 할지, 잘못 쓰면 어떻게 알려 줄지. 목록에 적힌 넷(Metric·Logging·분산 락·메시징)은 전부 **잘못 쓰면 조용히 망가지는** 것들이라 더 그렇다.",
+          "gap_check": "라이브러리에 기본값을 강제하는 것과 설정으로 여는 것의 기준은? 스무 개 서비스가 쓰는 모듈의 버전을 올려야 할 때 어떤 절차를 밟는가? 잘못된 사용을 **컴파일 시점에** 막을 수 있는가?",
+          "drill": "**Spring Boot 스타터를 하나 만든다.** (1) 자동 설정으로 메트릭과 구조화 로깅이 **붙이기만 하면 켜지게** 하고, (2) 설정값을 타입 안전하게 받고 잘못된 조합에 **기동 시점에 실패**하게 하고, (3) 서비스 두 개에 붙여 써 본 뒤, (4) **하위 호환을 한 번 깨며** 폐기 경고 → 다음 버전 제거 절차를 실습한다. 4번이 이 자리의 핵심 감각이다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Spring Boot — 자체 스타터 만들기",
+              "url": "https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html",
+              "kind": "docs"
+            },
+            {
+              "title": "Micrometer — 메트릭 계측",
+              "url": "https://docs.micrometer.io/micrometer/reference/",
+              "kind": "docs"
+            },
+            {
+              "title": "Semantic Versioning",
+              "url": "https://semver.org/lang/ko/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "모든 요청이 지나가는 문 — API Gateway",
+          "from": "task",
+          "quote": "토스플레이스에서 사용되는 공통 관심사의 플랫폼 서비스(API Gateway, Monitoring & Alert System 등)를 개발하고 운영해요.",
+          "priority": "core",
+          "why": "게이트웨이는 **모든 트래픽이 지나가는 단일 지점**이라, 여기서 잘하면 전 서비스가 한 번에 좋아지고 잘못하면 **전 서비스가 한 번에 죽는다.** 인증·인가, 유량 제한, 라우팅, 공통 헤더, 추적 ID 주입 같은 '공통 관심사'를 각 서비스에서 빼내 여기 모으는 것이 목적이다. 이 회사 스택에 **Istio** 가 있는 것도 같은 맥락이다 — 서비스 메시로 그 관심사를 인프라 층으로 더 내리는 접근이라, **애플리케이션 게이트웨이와 메시의 역할을 어떻게 나눌지**가 실제 설계 주제가 된다.",
+          "gap_check": "게이트웨이에 두면 좋은 것과 각 서비스에 남겨야 하는 것을 구분할 수 있는가? 게이트웨이가 병목이 되면 무엇부터 보는가? 배포 중에 요청이 끊기지 않게 하려면?",
+          "drill": "**작은 게이트웨이를 세운다.** (1) Spring Cloud Gateway 로 서비스 두 개를 라우팅하고, (2) 인증·유량 제한·추적 ID 주입을 필터로 넣고, (3) 뒤쪽 서비스를 죽여 **게이트웨이가 어떻게 반응하는지** 보고 타임아웃·서킷브레이커를 붙이고, (4) 같은 기능 일부를 Istio 로 옮겨 **무엇이 인프라에 더 맞는지** 비교한다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Spring Cloud Gateway",
+              "url": "https://docs.spring.io/spring-cloud-gateway/reference/",
+              "kind": "docs"
+            },
+            {
+              "title": "Istio 문서",
+              "url": "https://istio.io/latest/docs/",
+              "kind": "docs"
+            },
+            {
+              "title": "Resilience4j",
+              "url": "https://resilience4j.readme.io/docs/getting-started",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "빨리 알아채고 빨리 되돌리기 — 여기서 장애는 매장 정지다",
+          "from": "task",
+          "quote": "토스플레이스의 서버 인프라를 모니터링하고, 장애를 빠르게 감지하고, 빠르게 회복할 수 있도록 노력하고 있어요.",
+          "priority": "core",
+          "why": "**두 단어가 나란히 있다 — 감지와 회복.** 순서가 중요하다: 모르면 못 고치고, 알아도 되돌릴 수 없으면 소용없다. 그리고 이 회사에서는 대상이 다르다. 웹 서비스가 죽으면 사용자가 나중에 다시 오지만, **카운터가 멈추면 그 시간의 매출이 사라진다.** 8만 5천 곳에서 동시에. 그래서 이 자리의 실제 시험대는 대시보드를 만드는 기술이 아니라 **'무엇이 나빠지고 있다'를 몇 분 안에 아는가**와 **되돌리는 데 몇 분이 걸리는가**다.",
+          "gap_check": "무엇을 알림으로 걸 것인가 — CPU 가 높으면 깨워야 하는가? 사용자가 겪는 문제를 나타내는 지표는 무엇인가(SLI)? 배포를 되돌리는 데 몇 분 걸리는가 — 해 본 적이 있는가?",
+          "drill": "**감지와 회복을 각각 잰다.** (1) 서비스에 SLI(성공률·지연시간)를 정의하고 Prometheus·Grafana 로 대시보드를 만들고, (2) **원인이 아니라 증상**에 알림을 걸고(사용자가 아픈 것만 깨우게), (3) 일부러 나쁜 버전을 배포해 **알림이 오기까지의 시간**과 **되돌리는 데 걸린 시간**을 스톱워치로 잰다. (4) 그 두 숫자를 줄이는 것을 목표로 한 번 더 돌린다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Google SRE Workbook — SLO 기반 알림",
+              "url": "https://sre.google/workbook/alerting-on-slos/",
+              "kind": "post"
+            },
+            {
+              "title": "Prometheus — 알림 규칙",
+              "url": "https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/",
+              "kind": "docs"
+            },
+            {
+              "title": "Argo Rollouts — 점진 배포와 자동 롤백",
+              "url": "https://argo-rollouts.readthedocs.io/en/stable/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "분산 락과 메시징 — Redis 와 Kafka 를 왜 함께 묻나",
+          "from": "qualification",
+          "quote": "Redis나 Kafka, ELK 스택 등이 익숙한 분이면 좋아요.",
+          "priority": "core",
+          "why": "위 첫 항목의 공통 모듈 목록에 **`Distributed Lock`** 과 **`Messaging`** 이 들어 있고, 이 자격요건이 그 도구를 말한다. 결제 회사에서 이 둘은 장식이 아니다 — **같은 정산 배치가 두 서버에서 동시에 돌면 돈이 두 번 나가고**, 이벤트가 유실되면 매장 상태가 어긋난다. 그런데 분산 락은 **틀리게 쓰기 쉬운 도구**다: 락을 잡은 채 프로세스가 죽거나, 만료가 작업보다 짧거나, 재시도가 겹치면 조용히 깨진다. 그래서 회사가 **각자 만들지 말라고 모듈로 제공**하는 것이다.",
+          "gap_check": "락을 잡은 프로세스가 죽으면 어떻게 되는가? 만료 시간을 작업 시간보다 짧게 잡으면 무슨 일이 생기는가? 메시지를 두 번 받아도 안전하려면 소비자 쪽에 무엇이 필요한가?",
+          "drill": "**둘 다 부숴 본다.** (1) Redis 로 분산 락을 구현해 배치를 두 서버에서 동시에 돌리고, **락을 잡은 프로세스를 강제 종료**해 무슨 일이 나는지 본다(그리고 고친다). (2) Kafka 로 이벤트를 흘리고 소비자를 중간에 죽였다 살려 **중복 소비**를 재현한 뒤 멱등 처리를 붙인다. (3) 두 실험을 **공통 모듈로 감싸** 다른 서비스가 실수하지 않게 만든다 — 3번이 이 자리의 일이다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Redis — 분산 락",
+              "url": "https://redis.io/docs/latest/develop/use-cases/patterns/distributed-locks/",
+              "kind": "docs"
+            },
+            {
+              "title": "Kafka — 소비자 설정과 전달 보장",
+              "url": "https://kafka.apache.org/documentation/#consumerconfigs",
+              "kind": "docs"
+            },
+            {
+              "title": "Spring for Apache Kafka",
+              "url": "https://docs.spring.io/spring-kafka/reference/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "여러 층을 오르내리며 원인을 찾는 힘",
+          "from": "qualification",
+          "quote": "Spring Framework, JVM, OS, Network 등 다양한 레이어에서의 모니터링, 트러블슈팅, 성능튜닝 경험이 있으신 분이면 좋아요.",
+          "priority": "high",
+          "why": "**네 층을 나란히 적었다.** 플랫폼 자리이기 때문이다 — 제품 팀이 '느려요'를 들고 오면 그것이 애플리케이션 코드인지, GC 인지, 파일 디스크립터인지, 커넥션 풀인지, 네트워크인지 **내려가면서 좁혀야** 한다. 그리고 이 판단은 대개 **재현이 안 되는 상황**에서 해야 해서, 평소에 무엇을 남겨 두었느냐가 결과를 가른다. 웹 서비스 백엔드와 이 자리를 가르는 지점이 바로 여기다.",
+          "gap_check": "응답이 느릴 때 애플리케이션·JVM·OS·네트워크 중 어디부터 보는가 — 그 순서의 근거는? GC 로그에서 무엇을 보는가? 커넥션 풀이 마르면 어떤 증상이 나오는가?",
+          "drill": "**층마다 하나씩 고장 내고 잡아 본다.** (1) 스레드 풀을 줄여 큐 대기를 만들고, (2) 힙을 줄여 GC 압박을 만들고, (3) 커넥션 풀을 줄여 마르게 하고, (4) 네트워크 지연을 걸어(tc 나 툴박스) 각각 **어떤 지표가 먼저 움직이는지** 기록한다. 이 표가 실무에서 그대로 진단 순서표가 된다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Java Flight Recorder / JDK Mission Control",
+              "url": "https://docs.oracle.com/en/java/javase/21/jfapi/",
+              "kind": "docs"
+            },
+            {
+              "title": "Grafana — Loki 로그 조회",
+              "url": "https://grafana.com/docs/loki/latest/",
+              "kind": "docs"
+            },
+            {
+              "title": "Brendan Gregg — USE 방법론",
+              "url": "https://www.brendangregg.com/usemethod.html",
+              "kind": "post",
+              "note": "층을 내려가며 좁히는 표준 절차"
+            }
+          ]
+        },
+        {
+          "topic": "안 죽는 것보다 빨리 살아나는 것 — 고가용성",
+          "from": "qualification",
+          "quote": "고가용성의 확장 가능한 시스템을 설계하고 운영해 본 경험이 있는 분이면 좋아요.",
+          "priority": "high",
+          "why": "결제는 **완전히 안 죽게 만들 수 없다.** 그래서 실무의 목표는 '장애가 없다'가 아니라 **'장애가 좁게 번지고 빨리 끝난다'** 가 된다 — 한 서비스가 죽어도 결제는 되게, 한 리전이 흔들려도 카운터는 돌게. 담당 업무 마지막 줄의 `전체 시스템적인 관점에서 더 나은 아키텍처` 도 같은 이야기다. 그리고 카운터에는 특수한 선택지가 하나 더 있다: **잠깐 끊겨도 로컬에서 버티다가 나중에 맞추는 것**(오프라인 허용).",
+          "gap_check": "서비스 하나가 느려질 때 다른 서비스로 번지지 않게 하려면(격리·타임아웃·벌크헤드)? 뒤쪽이 죽었을 때 앞에서 무엇을 대신 보여 주는가? 복구된 뒤 밀린 것을 어떻게 처리하는가?",
+          "drill": "**의존성 하나를 죽여 놓고 살아남게 만든다.** (1) 서비스 A가 B를 부르는 구조에서 B를 죽이고 A가 어떻게 되는지 보고, (2) 타임아웃·서킷브레이커·폴백을 붙여 **A가 계속 응답하게** 만들고, (3) B가 살아난 뒤 **밀린 작업을 안전하게 재처리**하는 경로를 만든다. (4) 마지막으로 이 세 가지를 **공통 모듈로** 뽑는다 — 다시 이 자리의 일이다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Resilience4j — 서킷브레이커·벌크헤드",
+              "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+              "kind": "docs"
+            },
+            {
+              "title": "Google SRE Book — 연쇄 장애 다루기",
+              "url": "https://sre.google/sre-book/addressing-cascading-failures/",
+              "kind": "post"
+            }
+          ]
+        },
+        {
+          "topic": "스택이 통째로 적혀 있다 — 그대로 준비 목록으로",
+          "from": "preference",
+          "quote": "Kubernetes, Istio, GoCD, ArgoCD, Vault, Podman",
+          "priority": "high",
+          "why": "공고가 **네 줄로 스택을 다 밝혔다** — 언어·프레임워크(Kotlin·Spring Cloud·JPA), 저장소(MySQL·Redis·MongoDB·Elasticsearch·Kafka), 인프라(Kubernetes·Istio·GoCD·ArgoCD·Vault·Podman), 관측(Prometheus·Thanos·Grafana). 여기서 **눈여겨볼 이름이 둘**이다. **Thanos** 는 Prometheus 를 장기 보관·전역 조회로 확장하는 도구라 **모니터링 규모가 한 대로 감당이 안 된다**는 뜻이고, **Vault** 는 비밀 관리가 따로 서 있다는 뜻이다 — 결제 회사답다. 이 목록을 알고 가면 대화가 훨씬 구체적으로 붙는다.",
+          "gap_check": "Prometheus 한 대로 부족해지는 지점은 언제인가 — Thanos 는 그걸 어떻게 푸는가? 비밀을 코드·환경변수·Vault 중 어디에 두는 것이 왜 다른가? GoCD 와 ArgoCD 가 함께 있는 이유를 추측해 말할 수 있는가(빌드와 배포의 분리)?",
+          "drill": "**목록대로 작은 판을 세운다.** (1) 로컬 쿠버네티스에 서비스 두 개를 올리고 ArgoCD 로 배포하고, (2) Prometheus·Grafana 로 지표를 보고, (3) Vault 로 DB 비밀번호를 받아 쓰게 바꾸고, (4) 여유가 있으면 Istio 를 넣어 mTLS 와 트래픽 분할을 켜 본다. **한 번씩 만져 본 것만으로도** 이 회사 공고의 절반이 읽힌다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Argo CD 문서",
+              "url": "https://argo-cd.readthedocs.io/en/stable/",
+              "kind": "docs"
+            },
+            {
+              "title": "HashiCorp Vault 문서",
+              "url": "https://developer.hashicorp.com/vault/docs",
+              "kind": "docs"
+            },
+            {
+              "title": "Thanos",
+              "url": "https://thanos.io/tip/thanos/getting-started.md/",
+              "kind": "docs"
+            }
+          ]
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Spring Boot 스타터를 만들어 배포하고 호환을 한 번 깨 본다",
+          "why": "담당 업무가 **`공통적으로 필요한 기능들을 모듈화하여 제공`** 이다. 붙이기만 하면 메트릭·로깅이 켜지는 스타터를 만들고 **버전을 올리며 폐기 절차를 밟아 본** 이력은, 이 자리에 가장 정확히 답하는 물건이다.",
+          "effort": "일주일"
+        },
+        {
+          "idea": "'감지 몇 분, 회복 몇 분'을 실제로 잰 기록",
+          "why": "이 회사에서 장애는 **카운터가 멈추는 일**이다. 나쁜 버전을 일부러 배포해 알림까지 걸린 시간과 롤백까지 걸린 시간을 재고 **그 숫자를 줄인 이야기**는, 담당 업무의 `빠르게 감지하고, 빠르게 회복` 에 정면으로 답한다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "분산 락을 부숴 본 기록",
+          "why": "공통 모듈 목록에 `Distributed Lock` 이 있는 이유가 **각자 만들면 틀리기 때문**이다. 락을 잡은 프로세스를 강제 종료해 재현하고 고친 이야기는, 결제 도메인에서 특히 잘 읽힌다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "이 자리가 '제품 개발'이 아니라는 것을 알고 지원한다",
+          "why": "같은 회사 `Frontend Developer`(1-15)나 `Node.js Developer`(2-15)는 사용자·사내 사용자가 고객이다. 여기는 **동료 서버 개발자가 고객**이다 — 프론트의 `Frontend UX Engineer(Design System)` 와 같은 성격이다. 도메인 기능을 만들고 싶다면 다른 공고가 맞고, **모두가 딛는 바닥을 만드는 일**이 좋으면 여기다.",
+          "effort": "십 분"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "공통 모듈에서 무엇을 기본값으로 강제하고 무엇을 열어 두는가",
+          "스무 개 서비스가 쓰는 모듈의 버전을 올려야 할 때 절차는",
+          "게이트웨이에 둘 것과 각 서비스에 남길 것을 어떻게 나누는가",
+          "게이트웨이가 병목이 되면 무엇부터 보는가",
+          "무엇을 알림으로 걸 것인가 — CPU 가 높으면 깨워야 하는가",
+          "배포를 되돌리는 데 몇 분 걸리는가",
+          "분산 락을 잡은 프로세스가 죽으면 어떻게 되는가",
+          "메시지를 두 번 받아도 안전하게 하려면",
+          "응답이 느릴 때 애플리케이션·JVM·OS·네트워크 중 어디부터 보는가",
+          "한 서비스의 지연이 다른 서비스로 번지지 않게 하려면",
+          "Prometheus 한 대로 부족해지는 지점은 언제인가"
+        ],
+        "sources": [
+          {
+            "title": "토스플레이스 Server Developer (Platform) 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/347509",
+            "publisher": "원티드",
+            "summary": "공통 모듈(Metric·Logging·분산 락·메시징), API Gateway, 모니터링·알림 시스템, 장애 감지와 회복. 스택은 Kotlin·Spring Cloud·Kafka·Kubernetes·Istio·ArgoCD·Vault·Thanos"
+          },
+          {
+            "title": "토스플레이스, 2024년 연말결산 공개",
+            "url": "https://toss.im/tossfeed/article/tossplacewrapup",
+            "publisher": "토스피드",
+            "date": "2024-12-26",
+            "summary": "가맹점 8만 5천 곳 — 장애가 나면 멈추는 카운터의 수"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
