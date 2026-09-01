@@ -93,6 +93,17 @@
       "postings": 6,
       "study_items": 42,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "connectwave",
+      "name": "커넥트웨이브",
+      "aliases": [
+        "커넥트웨이브"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
