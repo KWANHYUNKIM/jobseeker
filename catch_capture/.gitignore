@@ -16,3 +16,6 @@ trends_reports/
 semantic.db
 semantic.db-shm
 semantic.db-wal
+# 마감 재확인 원장 — 공고 수만큼 커지는 런타임 상태(seen_jobs.json 과 같은 성격).
+job_closures.json
+job_closures.json.tmp

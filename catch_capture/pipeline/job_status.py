@@ -7,10 +7,16 @@
   - jumpit   : dday "D-4" / "D-DAY"
   - wanted   : 마감일 필드 없음 → 정보없음(active 유지)
 
-판정 규칙:
+판정 규칙(위에서부터 우선):
+  - 원본 재확인 원장(job_closures.json)에 답이 있으면 그것 — 사이트에 직접 물어본
+    결과라 추측이 끼어들 자리가 없다. `pipeline/close_check` 가 채운다.
   - 상시/수시/채용시/충원시/미정 등 → active (상시채용)
   - 마감일 파싱 성공 & 오늘보다 과거 → closed
   - 그 외(파싱 실패/필드 없음) → active (정보없음)
+
+텍스트만 보던 시절의 한계가 원장을 만든 이유다: wanted 는 마감일 필드 자체가 없어
+3천여 건이 영구 '모집중'이었고, 연도 없는 "06/14"는 몇 달만 지나면 어느 해인지로
+다시 흔들린다. 원장에는 연도까지 확정된 마감일과 사이트가 직접 말한 마감 여부가 들어온다.
 """
 from __future__ import annotations
 
@@ -18,8 +24,13 @@ import sys as _sys
 from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
 
+import json
 import re
 from datetime import date, timedelta
+
+# 원본 재확인 원장 — pipeline/close_check 가 쓰고 여기서 읽는다.
+CLOSURES_PATH = _Path(__file__).resolve().parent.parent / "job_closures.json"
+_closures_cache: tuple[float, dict] | None = None   # (mtime, 원장)
 
 # 상시채용/마감일 미정 계열 → 항상 모집중으로 간주
 ALWAYS_OPEN_RE = re.compile(
@@ -33,6 +44,42 @@ MD_RE = re.compile(r"(\d{1,2})\s*[./]\s*(\d{1,2})")
 
 def today_date() -> date:
     return date.today()
+
+
+def closure_key(job: dict) -> str:
+    """원장 키. 사이트 안에서 pid 가 공고를 특정한다(재공고는 새 pid 로 온다)."""
+    site = str(job.get("site") or "").strip()
+    pid = str(job.get("pid") or job.get("position_id") or job.get("rec_idx") or "").strip()
+    return f"{site}:{pid}" if site and pid else ""
+
+
+def load_closures(force: bool = False) -> dict:
+    """원장 로드. mtime 이 그대로면 캐시를 쓴다 — 만 건짜리 재판정 루프에서 매번
+    파일을 다시 읽으면 aggregate/enrich 가 눈에 띄게 느려진다."""
+    global _closures_cache
+    try:
+        mtime = CLOSURES_PATH.stat().st_mtime
+    except OSError:
+        _closures_cache = None
+        return {"checked": {}}
+    if not force and _closures_cache is not None and _closures_cache[0] == mtime:
+        return _closures_cache[1]
+    try:
+        data = json.loads(CLOSURES_PATH.read_text(encoding="utf-8"))
+        if not isinstance(data, dict) or not isinstance(data.get("checked"), dict):
+            data = {"checked": {}}
+    except Exception:   # 깨진 원장 때문에 파이프라인 전체가 멈추면 손해가 더 크다
+        data = {"checked": {}}
+    _closures_cache = (mtime, data)
+    return data
+
+
+def closure_for(job: dict) -> dict | None:
+    key = closure_key(job)
+    if not key:
+        return None
+    entry = load_closures()["checked"].get(key)
+    return entry if isinstance(entry, dict) else None
 
 
 def _collect_text(job: dict) -> str:
@@ -90,6 +137,27 @@ def parse_deadline(job: dict, today: date | None = None) -> tuple[date | None, b
 def classify_status(job: dict, today: date | None = None) -> tuple[str, str, str | None]:
     """(status, reason, deadline_iso) 반환. status는 'active' | 'closed'."""
     today = today or today_date()
+
+    # 원본에 직접 물어본 결과가 있으면 그것이 답이다. status "unknown" 은 "물어봤지만
+    # 답을 못 얻음"이라 아래 텍스트 규칙으로 넘긴다.
+    entry = closure_for(job)
+    if entry:
+        confirmed = entry.get("deadline") or None
+        try:
+            dl = date.fromisoformat(confirmed) if confirmed else None
+        except ValueError:
+            dl = None
+        if entry.get("status") == "closed":
+            return "closed", entry.get("reason") or "원본 확인: 마감", confirmed
+        if entry.get("status") == "active":
+            # 확인 시점엔 열려 있었어도 마감일은 그 사이 지날 수 있다(연도까지 확정된
+            # 날짜라 여기서는 안심하고 비교할 수 있다).
+            if dl and dl < today:
+                return "closed", f"원본 확인 마감일 경과({confirmed})", confirmed
+            if dl:
+                return "active", f"마감 {confirmed}", confirmed
+            return "active", entry.get("reason") or "원본 확인: 모집중", None
+
     deadline, always_open = parse_deadline(job, today)
     if always_open:
         return "active", "상시/수시 채용", None
@@ -123,7 +191,40 @@ def _selftest() -> int:
         if got != want:
             failed += 1
             print(f"FAIL {job} @{today} → {got} (기대 {want}, {reason})")
-    print(f"job_status selftest: {len(cases) - failed}/{len(cases)} 통과")
+
+    # 원장 우선 규칙 — 임시 원장 파일을 만들어 실제 로딩 경로 그대로 확인한다.
+    global CLOSURES_PATH, _closures_cache
+    import tempfile
+    saved_path, saved_cache = CLOSURES_PATH, _closures_cache
+    tmp = _Path(tempfile.mkdtemp()) / "job_closures.json"
+    tmp.write_text(json.dumps({"checked": {
+        "wanted:1": {"status": "closed", "reason": "원본 상태 close", "deadline": None},
+        "wanted:2": {"status": "active", "reason": "원본 확인: 모집중", "deadline": "2026-09-30"},
+        "wanted:3": {"status": "active", "reason": "원본 확인: 모집중", "deadline": "2026-06-30"},
+        "wanted:4": {"status": "unknown", "reason": "확인 실패", "deadline": None},
+    }}, ensure_ascii=False), encoding="utf-8")
+    try:
+        CLOSURES_PATH = tmp
+        load_closures(force=True)
+        ledger_cases = [
+            ({"site": "wanted", "pid": "1"}, date(2026, 8, 18), "closed"),   # 사이트가 마감이라 함
+            ({"site": "wanted", "pid": "2"}, date(2026, 8, 18), "active"),   # 확정 마감일이 미래
+            ({"site": "wanted", "pid": "3"}, date(2026, 8, 18), "closed"),   # 확인 후 마감일이 지남
+            ({"site": "wanted", "pid": "4", "deadline": "~ 06/14(일)"},      # 불명 → 텍스트 규칙
+             date(2026, 8, 18), "closed"),
+        ]
+        for job, today, want in ledger_cases:
+            got, reason, _iso = classify_status(job, today)
+            if got != want:
+                failed += 1
+                print(f"FAIL(원장) {job} @{today} → {got} (기대 {want}, {reason})")
+    finally:
+        CLOSURES_PATH, _closures_cache = saved_path, saved_cache
+        tmp.unlink(missing_ok=True)
+        tmp.parent.rmdir()
+
+    total = len(cases) + 4
+    print(f"job_status selftest: {total - failed}/{total} 통과")
     return 1 if failed else 0
 
 

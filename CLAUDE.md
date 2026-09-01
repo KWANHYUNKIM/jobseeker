@@ -5,6 +5,10 @@
 - `catch_capture/` : 채용 크롤 파이프라인 (기능별 패키지)
   - `crawlers/` : 사이트별 크롤러(crawl_*.py) + 공통(jobs_common)
   - `pipeline/` : 통합/중복제거/마감분류(aggregate, job_status), 수동보정(overrides)
+    마감 판정은 두 겹이다 — 공고가 들고 온 텍스트(`job_status`)와, 원본 사이트에
+    다시 물어보는 재확인(`close_check` → `job_closures.json` 원장). 원장이 우선한다.
+    크롤은 "지금 올라온 공고"만 알려주므로 재확인이 없으면 마감이 영영 안 닫힌다
+    (특히 마감일 표기가 아예 없는 wanted). auto_crawl 이 사이클마다 400건씩 돌린다.
   - `monitoring/` : 헬스 기록·이상탐지(health)
   - `automation/` : 크롤 오케스트레이션(crawl_all) + 자동화 데몬(auto_crawl)
   - `dashboard/` : 통계 대시보드(serve.py, 8765)
@@ -31,7 +35,7 @@
   회사를 모집중 공고 수로 줄 세워 준다. 스킬은 `/hireguide`, 루프는 `/loop 30m /hireguide`.
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
-`python -m pipeline.aggregate 개발자`, `python -m monitoring.health report`,
+`python -m pipeline.aggregate 개발자`, `python -m pipeline.close_check --limit 300`, `python -m monitoring.health report`,
 `python -m semantic.ingest && python -m semantic.embed && python -m semantic.similar`,
 `python -m semantic.search "재택 되는 백엔드"`, `python -m semantic.server`
 

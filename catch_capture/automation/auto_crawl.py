@@ -44,6 +44,8 @@ SCREENSHOTS_DIR = BASE_DIR / "screenshots"
 PID_FILE = BASE_DIR / "auto_crawl.pid"
 LOG_FILE = BASE_DIR / "auto_crawl.log"
 REFRESH_SH = ROOT_DIR / "jd-viewer" / "bin" / "refresh-data.sh"
+# 사이클당 마감 재확인 건수(원본 사이트 조회). 올리면 한 바퀴가 빨라지지만 차단 위험도 오른다.
+CLOSE_CHECK_LIMIT = int(os.environ.get("CLOSE_CHECK_LIMIT", "400"))
 
 # 크롤 오케스트레이션이 함께 굴리는 부가 작업(흩어진 cron 을 여기로 통합)
 RADAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_company_tech_radar.py"
@@ -211,6 +213,37 @@ def refresh_data(keyword: str) -> None:
     log(f"[refresh] jd-viewer {'완료' if rc == 0 else f'실패(rc={rc})'}")
 
     refresh_semantic()
+
+
+def refresh_closures(limit: int = CLOSE_CHECK_LIMIT) -> int:
+    """공고 마감 재확인 — 원본 사이트에 다시 물어 끝난 공고를 닫는다. 닫은 건수 반환.
+
+    크롤은 "지금 올라온 공고"만 가져오지, 어제 가져온 공고가 아직 살아 있는지는 말해
+    주지 않는다. 누적 폴더는 한 번 수집한 공고를 계속 들고 있으므로 확인해 주는 쪽이
+    없으면 마감 공고가 영원히 모집중으로 남는다 — 특히 마감일 표기 자체가 없는 wanted.
+
+    회차당 상한을 두고 오래 방치된 것부터 돌아가며 확인한다. 몇 사이클에 걸쳐 전체를
+    한 바퀴 돌게 되는데, 그래도 사이트마다 수천 건을 한 번에 두드리는 것보다 낫다
+    (차단당하면 크롤 본체까지 같이 죽는다). 실패해도 사이클은 그대로 진행한다.
+    """
+    try:
+        from pipeline import close_check
+    except ImportError as e:
+        log(f"[close] 모듈 적재 실패 — 건너뜀: {e}")
+        return 0
+    orch.builder_started("마감 재확인")
+    t0 = time.time()
+    try:
+        stats = close_check.run(limit=limit, verbose=False)
+        detail = (f"확인 {stats['checked']}건 → 마감 {stats['closed']} / "
+                  f"모집중 {stats['active']} / 불명 {stats['unknown']}")
+        log(f"[close] {detail}")
+        orch.builder_finished("마감 재확인", True, time.time() - t0, detail)
+        return stats["closed"]
+    except Exception as e:                                          # noqa: BLE001
+        log(f"[close] 실패: {e!r}")
+        orch.builder_finished("마감 재확인", False, time.time() - t0, repr(e))
+        return 0
 
 
 def refresh_semantic() -> None:
@@ -391,10 +424,18 @@ def run_cycle(keyword: str, count: int) -> bool:
         log(f"[aggregate] {len(kws)}개 키워드 통합 → all_{label}_*")
         aggregate(kws[0], keywords=kws, label=label)
 
+    # 마감 재확인은 갱신 **전**에 온다. 원장을 먼저 채워야 enrich 가 그 판정을 반영해
+    # 뷰어 데이터를 쓴다(순서가 바뀌면 닫은 공고가 한 사이클 늦게 반영된다).
+    closed_now = refresh_closures()
+
     after = _latest_all_dir(label)
     new_data = bool(after and after != before)
     if new_data:
         log(f"[crawl] 새 데이터 감지: {after} → 갱신 진행")
+        refresh_data(label)
+    elif closed_now:
+        # 새 공고가 없어도 마감이 생겼으면 화면은 바뀌어야 한다.
+        log(f"[crawl] 새 데이터는 없지만 마감 {closed_now}건 → 갱신 진행")
         refresh_data(label)
     else:
         log("[crawl] 새 데이터 없음 → 갱신 스킵")
