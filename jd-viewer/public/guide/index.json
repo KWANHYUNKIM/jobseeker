@@ -150,6 +150,17 @@
       "postings": 7,
       "study_items": 48,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "levit",
+      "name": "레브잇",
+      "aliases": [
+        "레브잇"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
