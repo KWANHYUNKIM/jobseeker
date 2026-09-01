@@ -6,7 +6,7 @@ import { useTechRelations } from '../lib/useTechRelations'
 import { ExpansionView } from './ExpansionView'
 import { RoleInsights } from './RoleInsights'
 import { LearningView } from './LearningView'
-import { Loader, ErrorState, TechIcon } from './ui'
+import { Loader, ErrorState, TechIcon, SearchInput, hits } from './ui'
 import type { TechRelation, TrendDay } from '../types'
 
 type TrendMode = 'trend' | 'relations' | 'learn' | 'paths'
@@ -27,6 +27,7 @@ export function TrendView({
   const { data: rel } = useTechRelations()
   const [mode, setMode] = useState<TrendMode>('trend')
   const [relTech, setRelTech] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
 
   // "이 기술 공부하기"로 진입하면 학습·확장 모드로 전환.
   // effect 대신 렌더 중 조정 — effect 에서 setState 하면 전환 전 모드가 한 프레임 보인다.
@@ -42,7 +43,16 @@ export function TrendView({
     return (data?.tracked ?? [])
       .map((t) => ({ tech: t, count: latest.tech[t] ?? 0, pct: pct(latest, t) }))
       .sort((a, b) => b.count - a.count)
+      .map((r, i) => ({ ...r, rank: i + 1 }))
   }, [data, latest])
+
+  // 순위표는 28위에서 자른다. 그런데 검색은 대개 **잘려 나간 아래쪽**을 찾는 일이라
+  // (내가 쓰는 기술이 몇 위인가), 검색어가 있으면 자르지 않는다. 순위 번호는
+  // 자르기 전 순위를 그대로 들고 다녀서 '43위' 처럼 제자리 숫자가 보인다.
+  const rankShown = useMemo(() => {
+    const found = ranking.filter((r) => hits(query, r.tech))
+    return query.trim() ? found : found.slice(0, 28)
+  }, [ranking, query])
 
   const relByName = useMemo(() => {
     const m = new Map<string, TechRelation>()
@@ -102,11 +112,17 @@ export function TrendView({
           {/* 좌: 현재 수요 순위 */}
           <aside className="w-full md:w-80 shrink-0 md:overflow-auto border-b md:border-b-0 md:border-r border-(--color-border) bg-(--color-panel) p-4">
             <h3 className="text-sm font-semibold text-(--color-text)">현재 기술 수요</h3>
-            <p className="text-xs text-(--color-muted) mb-3">
+            <p className="text-xs text-(--color-muted) mb-2">
               {latest.date} · 공고 {latest.total.toLocaleString()}건 중 언급 비중. 클릭=관계·맥락 보기
             </p>
+            <SearchInput value={query} onChange={setQuery} placeholder="기술 검색" className="mb-2" />
+            {query && (
+              <p className="text-[11px] text-(--color-muted) mb-2">
+                추적 {ranking.length}개 중 <b className="text-(--color-text)">{rankShown.length}개</b>
+              </p>
+            )}
             <ul className="flex flex-col gap-1">
-              {ranking.slice(0, 28).map((r, i) => {
+              {rankShown.map((r) => {
                 const on = r.tech === activeTech
                 return (
                   <li key={r.tech}>
@@ -114,7 +130,7 @@ export function TrendView({
                       onClick={() => setRelTech(r.tech)}
                       className={`w-full flex items-center gap-2 px-2 py-1 rounded text-left ${on ? 'bg-(--color-accent)/15' : 'hover:bg-(--color-bg)'}`}
                     >
-                      <span className="w-5 text-xs text-(--color-muted) tabular-nums">{i + 1}</span>
+                      <span className="w-5 text-xs text-(--color-muted) tabular-nums">{r.rank}</span>
                       <TechIcon tech={r.tech} size={14} />
                       <span className="w-28 text-sm text-(--color-text) truncate">{r.tech}</span>
                       <span className="flex-1 h-1.5 rounded bg-(--color-bg) overflow-hidden">

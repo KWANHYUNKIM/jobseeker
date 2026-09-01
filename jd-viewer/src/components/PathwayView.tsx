@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useCareerMap, type CareerCluster, type CareerEdge } from '../lib/useCareerMap'
-import { Loader, ErrorState } from './ui'
+import { Loader, ErrorState, SearchInput, hits } from './ui'
 
 // 이동 경로 뷰 — "지금 여기서 어디로 갈 수 있고, 가려면 무엇이 비는가".
 //
@@ -12,12 +12,28 @@ import { Loader, ErrorState } from './ui'
 export function PathwayView() {
   const { data, loading, error } = useCareerMap()
   const [selected, setSelected] = useState<number | null>(null)
+  const [query, setQuery] = useState('')
 
   const byId = useMemo(() => {
     const m = new Map<number, CareerCluster>()
     for (const c of data?.clusters ?? []) m.set(c.id, c)
     return m
   }, [data])
+
+  // 군집 이름은 자동으로 붙은 라벨이라 사람 머릿속의 말과 다를 때가 많다.
+  // 그래서 대표 기술·기업까지 걸어야 '내가 아는 말' 로 군집을 찾을 수 있다.
+  const shown = useMemo(
+    () =>
+      (data?.clusters ?? []).filter((c) =>
+        hits(
+          query,
+          c.name,
+          ...(c.tech ?? []).map((t) => t.name),
+          ...(c.companies ?? []).map((x) => x.name),
+        ),
+      ),
+    [data, query],
+  )
 
   const current = selected != null ? byId.get(selected) : data?.clusters[0]
   const maxSize = Math.max(...(data?.clusters ?? []).map((c) => c.size), 1)
@@ -51,8 +67,19 @@ export function PathwayView() {
           공고 {data.jobs.toLocaleString()}건을 내용으로 {data.k}개로 나눈 결과.
           직군명이 아니라 JD 임베딩이 정한 경계다.
         </p>
+        <SearchInput
+          value={query}
+          onChange={setQuery}
+          placeholder="군집·기술·기업 검색"
+          className="mb-2"
+        />
+        {query && (
+          <p className="text-[11px] text-(--color-muted) px-1 mb-1">
+            {data.clusters.length}개 중 <b className="text-(--color-text)">{shown.length}개</b>
+          </p>
+        )}
         <ul className="flex flex-col gap-0.5">
-          {data.clusters.map((c) => {
+          {shown.map((c) => {
             const on = c.id === current.id
             return (
               <li key={c.id}>

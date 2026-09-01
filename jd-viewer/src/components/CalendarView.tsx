@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useCalendar } from '../lib/useCalendar'
-import { Loader, ErrorState } from './ui'
+import { Loader, ErrorState, SearchInput, hits } from './ui'
 import type { CalendarItem } from '../types'
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
@@ -27,17 +27,28 @@ export function CalendarView() {
   const todayIso = iso(today)
   const [cursor, setCursor] = useState({ y: today.getFullYear(), m: today.getMonth() }) // m: 0-indexed
   const [selected, setSelected] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
+
+  // 검색은 달력 자체에 건다 — 목록만 거르면 히트맵은 여전히 전체 건수로 칠해져
+  // '이 회사 마감이 언제 몰려 있나' 를 볼 수가 없다.
+  const items = useMemo(
+    () =>
+      (data?.items ?? []).filter((it) =>
+        hits(query, it.company, it.title, SITE_LABEL[it.site] ?? it.site, it.career),
+      ),
+    [data, query],
+  )
 
   // 마감일 → 공고 목록
   const byDate = useMemo(() => {
     const map = new Map<string, CalendarItem[]>()
-    for (const it of data?.items ?? []) {
+    for (const it of items) {
       if (!it.deadline) continue
       if (!map.has(it.deadline)) map.set(it.deadline, [])
       map.get(it.deadline)!.push(it)
     }
     return map
-  }, [data])
+  }, [items])
 
   // 마감 임박(오늘 이후 14일)
   const upcoming = useMemo(() => {
@@ -89,12 +100,25 @@ export function CalendarView() {
     <div className="flex flex-col md:flex-row flex-1 min-h-0 min-w-0 overflow-y-auto md:overflow-hidden">
       {/* 캘린더 */}
       <div className="flex-1 min-w-0 md:overflow-auto p-4 sm:p-5 flex flex-col gap-3">
-        <div className="flex items-center gap-3 text-xs text-(--color-muted)">
-          <span>
-            마감일 표기 <b className="text-(--color-text)">{data?.dated ?? 0}</b>건 · 상시채용{' '}
-            <b className="text-(--color-text)">{data?.always_open ?? 0}</b>건
-            {' · '}전체 {data?.total ?? 0}건 중 기간 추출 {(data?.dated ?? 0) + (data?.always_open ?? 0)}건
-          </span>
+        <div className="flex flex-wrap items-center gap-3 text-xs text-(--color-muted)">
+          <SearchInput
+            value={query}
+            onChange={setQuery}
+            placeholder="회사·공고·사이트 검색"
+            className="w-full sm:w-72"
+          />
+          {query ? (
+            <span>
+              <b className="text-(--color-text)">{items.length}</b>건이 걸렸다 (마감일 표기{' '}
+              {data?.dated ?? 0}건 중)
+            </span>
+          ) : (
+            <span>
+              마감일 표기 <b className="text-(--color-text)">{data?.dated ?? 0}</b>건 · 상시채용{' '}
+              <b className="text-(--color-text)">{data?.always_open ?? 0}</b>건
+              {' · '}전체 {data?.total ?? 0}건 중 기간 추출 {(data?.dated ?? 0) + (data?.always_open ?? 0)}건
+            </span>
+          )}
           {data?.generated_at && <span className="ml-auto">갱신 {data.generated_at.slice(0, 10)}</span>}
         </div>
 

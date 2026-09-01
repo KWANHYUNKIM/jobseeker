@@ -7,7 +7,7 @@ import { CompanyTeardown } from './CompanyTeardown'
 import { goBack, onLinkClick } from '../lib/router'
 import { paths } from '../lib/urls'
 import { absUrl, clip, useSeo } from '../lib/seo'
-import { Loader, ErrorState, EmptyState, Pagination } from './ui'
+import { Loader, ErrorState, EmptyState, Pagination, SearchInput, hits } from './ui'
 
 // 카드 3열 × 4줄. 회사가 계속 쌓이는 탭이라 한 화면에 다 밀어 넣으면 곧 통 스크롤이 된다.
 const PAGE_SIZE = 12
@@ -28,6 +28,7 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
   const { data: domainDocs } = useDomainDocs()
   const [country, setCountry] = useState<string | null>(null)
   const [category, setCategory] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
   // 무엇을 보고 있는지는 주소가 정한다. 회사 하나하나가 공유·색인 가능한 페이지다.
   const slug = seg[0] === 'docs' ? null : (seg[0] ?? null)
   const docSlug = seg[0] === 'docs' ? (seg[1] ?? null) : null
@@ -44,9 +45,14 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
   const shown = useMemo(
     () =>
       companies.filter(
-        (c) => (!country || c.country === country) && (!category || c.category === category),
+        (c) =>
+          (!country || c.country === country) &&
+          (!category || c.category === category) &&
+          // 회사 이름만으로는 '메시징을 파는 곳' 같은 질문에 답할 수 없다.
+          // 한 줄 요약과 분류까지 걸어야 주제로 찾는 것이 된다.
+          hits(query, c.name, c.name_en, c.one_liner, c.category, c.slug),
       ),
-    [companies, country, category],
+    [companies, country, category, query],
   )
   // 훅이라 아래의 조기 반환들보다 위에 있어야 한다(호출 순서가 렌더마다 같아야 한다).
   const paged = usePaged(shown, PAGE_SIZE)
@@ -114,6 +120,14 @@ export function RevengView({ seg = [] }: { seg?: string[] }) {
         />
       ) : (
         <>
+          <div className="px-4 pt-3">
+            <SearchInput
+              value={query}
+              onChange={setQuery}
+              placeholder="회사·한 줄 요약·분류 검색"
+              className="w-full sm:w-96"
+            />
+          </div>
           <div className="flex flex-wrap items-center gap-1.5 px-4 py-2 border-b border-(--color-border)">
             <FilterChip active={!country && !category} onClick={() => { setCountry(null); setCategory(null) }}>
               전체 {companies.length}

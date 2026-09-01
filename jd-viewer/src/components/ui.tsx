@@ -136,6 +136,52 @@ export function EmptyState({ title, hint }: { title: string; hint?: ReactNode })
   )
 }
 
+// ── 키워드 검색 ─────────────────────────────────────────────
+// 탭마다 검색을 따로 만들면 생김새도 지우기 버튼 유무도 제각각이 된다. 데이터가
+// 달라도 "치면 걸러진다"는 약속은 같아야 해서 입력칸만 여기서 공유한다.
+// 무엇을 검색어에 걸지(회사명·제목·기술…)는 탭마다 다르므로 각 뷰가 정한다.
+export function SearchInput({
+  value,
+  onChange,
+  placeholder = '키워드 검색',
+  className = '',
+}: {
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  className?: string
+}) {
+  return (
+    <div className={'relative min-w-0 ' + className}>
+      <input
+        type="search"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className="w-full pl-3 pr-7 py-1.5 text-sm rounded bg-(--color-bg) border border-(--color-border) text-(--color-text) placeholder:text-(--color-muted) focus:border-(--color-accent) focus:outline-none"
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          aria-label="검색어 지우기"
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 px-1 text-xs text-(--color-muted) hover:text-(--color-accent)"
+        >
+          ✕
+        </button>
+      )}
+    </div>
+  )
+}
+
+/** 검색어를 여러 칸에 한 번에 건다. 대소문자·앞뒤 공백은 여기서 흡수한다. */
+export function hits(query: string, ...fields: (string | null | undefined)[]): boolean {
+  const q = query.trim().toLowerCase()
+  if (!q) return true
+  return fields.some((f) => f && f.toLowerCase().includes(q))
+}
+
 // ── 페이지네이션 ─────────────────────────────────────────────
 // 목록 탭(잡 리스트·기술 블로그·기술 역설계)이 공유한다. 왼쪽 필터 바는 길어서 스크롤이
 // 자연스럽지만, 오른쪽 본문까지 끝없이 스크롤되면 몇 번째를 보고 있는지가 사라진다.

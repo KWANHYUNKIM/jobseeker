@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useReposts, type RepostChange } from '../lib/useReposts'
-import { Loader, ErrorState } from './ui'
+import { Loader, ErrorState, SearchInput, hits } from './ui'
 
 // 재공고 — 마감됐다 다시 올라온 자리와 그 사이의 변경 로그.
 //
@@ -30,6 +30,7 @@ const TRIVIAL = new Set(['url', 'deadline', 'dday', 'site'])
 export function RepostView() {
   const { data, loading, error } = useReposts()
   const [picked, setPicked] = useState<number>(0)
+  const [query, setQuery] = useState('')
 
   const rows = useMemo(() => {
     if (!data) return []
@@ -43,6 +44,22 @@ export function RepostView() {
       unknown: r.changes.filter((c) => c.kind === 'text' && c.missing),
     }))
   }, [data])
+
+  // 검색어는 회사·제목·사이트에 더해 **무엇이 바뀌었는가**에도 건다 — '경력 요구'
+  // 로 쳐서 경력을 손본 자리만 보는 것이 이 탭에서 가장 자주 하는 일이다.
+  const shown = useMemo(
+    () =>
+      rows.filter(({ r, meaningful }) =>
+        hits(
+          query,
+          r.company,
+          r.title,
+          r.site,
+          ...meaningful.map((c) => FIELD_KO[c.field] ?? c.field),
+        ),
+      ),
+    [rows, query],
+  )
 
   if (loading) return <Loader label="재공고 불러오는 중…" />
   if (error)
@@ -63,7 +80,8 @@ export function RepostView() {
   if (!data || rows.length === 0)
     return <div className="p-8 text-(--color-muted)">재공고로 판정된 공고가 없습니다.</div>
 
-  const cur = rows[Math.min(picked, rows.length - 1)]
+  // 검색으로 목록이 줄면 고른 번호가 목록 밖을 가리킬 수 있다 — 첫 줄로 되돌린다.
+  const cur = shown.length > 0 ? shown[Math.min(picked, shown.length - 1)] : null
   const moves = data.summary.career_moves || {}
 
   return (
@@ -91,8 +109,23 @@ export function RepostView() {
 
       <div className="flex flex-col md:flex-row flex-1 min-h-0 overflow-y-auto md:overflow-hidden">
         <aside className="w-full md:w-80 shrink-0 md:overflow-auto border-b md:border-b-0 md:border-r border-(--color-border) bg-(--color-panel) p-2">
+          <div className="px-1 pb-2 flex flex-col gap-1">
+            <SearchInput
+              value={query}
+              onChange={(v) => {
+                setQuery(v)
+                setPicked(0)
+              }}
+              placeholder="회사·공고·바뀐 항목 검색"
+            />
+            {query && (
+              <div className="text-[11px] text-(--color-muted) px-0.5">
+                {rows.length}건 중 <b className="text-(--color-text)">{shown.length}건</b>
+              </div>
+            )}
+          </div>
           <ul className="flex flex-col gap-0.5">
-            {rows.map(({ r, meaningful }, i) => (
+            {shown.map(({ r, meaningful }, i) => (
               <li key={`${r.company}-${r.title}-${i}`}>
                 <button
                   onClick={() => setPicked(i)}
@@ -115,6 +148,12 @@ export function RepostView() {
         </aside>
 
         <main className="flex-1 min-w-0 md:overflow-auto p-4 sm:p-5">
+          {!cur ? (
+            <p className="text-sm text-(--color-muted)">
+              <b className="text-(--color-text)">{query}</b> 로 걸리는 재공고가 없습니다.
+            </p>
+          ) : (
+          <>
           <div className="flex items-baseline gap-2 flex-wrap">
             <h2 className="text-lg font-semibold text-(--color-text)">{cur.r.title}</h2>
             <span className="text-xs text-(--color-accent)">{cur.r.company || cur.r.site}</span>
@@ -175,6 +214,8 @@ export function RepostView() {
                 ))}
             </ul>
           </details>
+          </>
+          )}
         </main>
       </div>
     </div>

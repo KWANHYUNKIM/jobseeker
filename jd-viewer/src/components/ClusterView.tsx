@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { SearchInput } from './ui'
 import * as d3 from 'd3'
 
 // mindmap_tree.json 노드
@@ -47,6 +48,11 @@ export function ClusterView() {
   const [crumb, setCrumb] = useState<string[]>([])
   // 외부에서 호출할 zoom-out 핸들러
   const zoomOutRef = useRef<(() => void) | null>(null)
+  // 검색은 원을 지우는 게 아니라 **거기로 확대한다** — 원 배치가 곧 규모의 그림이라
+  // 걸러내면 그림 자체가 뜻을 잃는다. 이름으로 찾아 그 원으로 들어가는 쪽이 맞다.
+  const zoomToNameRef = useRef<((q: string) => number) | null>(null)
+  const [query, setQuery] = useState('')
+  const [hitCount, setHitCount] = useState<number | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -227,9 +233,30 @@ export function ClusterView() {
       if (focus.parent) zoom(null, focus.parent)
     }
 
+    zoomToNameRef.current = (q: string) => {
+      const needle = q.trim().toLowerCase()
+      if (!needle) return 0
+      const found = root.descendants().filter((d) => d.data.name.toLowerCase().includes(needle))
+      // 가장 큰 원부터 — 같은 말이 여러 곳에 있으면 규모가 큰 쪽이 먼저 궁금하다.
+      found.sort((a2, b2) => (b2.value ?? 0) - (a2.value ?? 0))
+      if (found.length) zoom(null, found[0])
+      return found.length
+    }
+
     setCrumb([root.data.name])
     zoomTo([root.x, root.y, root.r * 2 + 12])
   }
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!query.trim()) {
+        setHitCount(null)
+        return
+      }
+      setHitCount(zoomToNameRef.current?.(query) ?? 0)
+    }, 300)
+    return () => clearTimeout(t)
+  }, [query])
 
   if (error)
     return (
@@ -254,7 +281,20 @@ export function ClusterView() {
             </span>
           ))}
         </div>
-        <div className="absolute top-2 right-3 z-10 text-[11px] text-(--color-text)/50">
+        <div className="absolute top-2 right-3 z-10 flex items-center gap-2">
+          {hitCount !== null && (
+            <span className="text-[11px] text-(--color-text)/60">
+              {hitCount === 0 ? '걸리는 원이 없다' : `${hitCount}곳 중 가장 큰 원으로`}
+            </span>
+          )}
+          <SearchInput
+            value={query}
+            onChange={setQuery}
+            placeholder="기업·직군 검색"
+            className="w-44 sm:w-56"
+          />
+        </div>
+        <div className="absolute bottom-2 right-3 z-10 text-[11px] text-(--color-text)/50">
           원 클릭 = 확대 · 배경 클릭 = 뒤로 · 직군(채워진 원) 클릭 = 상세
         </div>
         {loading && (
