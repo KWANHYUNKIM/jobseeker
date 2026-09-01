@@ -173,6 +173,17 @@
       "postings": 11,
       "study_items": 93,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "plaif",
+      "name": "플라잎",
+      "aliases": [
+        "플라잎"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
