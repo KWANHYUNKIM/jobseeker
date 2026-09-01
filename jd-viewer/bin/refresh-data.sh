@@ -83,6 +83,10 @@ echo "latest -> $LATEST (${NEW_COUNT}건${OLD_COUNT:+, 기존 ${OLD_COUNT}건})"
 # enrich + mindmap + 회사 기술스택 재빌드
 # build_company_stacks 는 company_profiles.json(crawl_company 결과)이 있으면 병합한다.
 "$PY" "$SCRIPT_DIR/enrich_jobs.py"
+# 근무지 보수 — 크롤이 못 채운 칸을 원본(wanted 상세 API / jobkorea JSON-LD)에서
+# 받아 온다. 캐시가 있어 이미 확인한 공고는 다시 조회하지 않는다.
+(cd "$ROOT_DIR/catch_capture" && "$PY" -m pipeline.backfill_location) || \
+  echo "  [경고] 근무지 보수 실패 — 기존 값으로 계속합니다." >&2
 "$PY" "$SCRIPT_DIR/build_mindmap.py"
 "$PY" "$SCRIPT_DIR/build_company_stacks.py"
 # 회사 규모 색인 — 잡 리스트의 "기업 규모" 필터가 읽는 얇은 파일(공고 1건 회사 포함)

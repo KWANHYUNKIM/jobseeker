@@ -23,6 +23,7 @@ from urllib.parse import quote
 
 from playwright.async_api import async_playwright
 
+from pipeline.backfill_location import fetch_wanted as fetch_location
 from crawlers.jobs_common import (
     USER_AGENT,
     build_jd_sections,
@@ -57,7 +58,7 @@ async def collect_search_cards(page, max_scrolls: int) -> list[dict]:
                         title: a.getAttribute('data-position-name') || '',
                         company: a.getAttribute('data-company-name') || '',
                         category: a.getAttribute('data-job-category') || '',
-                        location: ((a.querySelector('[class*=\"location\"]') || {}).innerText || '').trim(),
+                        career: ((a.querySelector('[class*=\"location\"]') || {}).innerText || '').trim(),
                         reward: ((a.querySelector('[class*=\"reward\"]') || {}).innerText || '').trim(),
                     });
                 }
@@ -204,6 +205,10 @@ async def crawl(keyword: str, target: int, max_scrolls: int) -> None:
                 print(f"       ↳ 비개발자 (category={job['category']}), 스킵", flush=True)
                 continue
 
+            # 근무지는 카드에도 JD 본문에도 없다. 상세 API 만 시도·시군구를 정리된 칸으로
+            # 준다 — 지역 필터가 서 있는 유일한 근거라 여기서 한 번 더 물어본다.
+            location = await asyncio.to_thread(fetch_location, job["position_id"]) or ""
+
             try:
                 detail = await fetch_detail(ctx, job["href"])
             except Exception as e:
@@ -224,7 +229,8 @@ async def crawl(keyword: str, target: int, max_scrolls: int) -> None:
                 f"URL: {job['href']}",
                 "",
                 "[조건]",
-                f"위치/경력: {job.get('location', '')}",
+                f"위치: {location or '(확인 실패)'}",
+                f"경력: {job.get('career', '')}",
                 f"보상금: {job.get('reward', '')}",
                 "",
                 "[직무 카테고리]",
@@ -245,7 +251,8 @@ async def crawl(keyword: str, target: int, max_scrolls: int) -> None:
                 "title": job["title"],
                 "url": job["href"],
                 "category": job["category"],
-                "location": job.get("location"),
+                "location": location,
+                "career": job.get("career"),
                 "reward": job.get("reward"),
                 "skills": skills,
                 "tech_stack": tech,

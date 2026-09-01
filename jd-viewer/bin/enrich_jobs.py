@@ -29,6 +29,8 @@ sys.path.insert(0, str(ROOT / "catch_capture"))
 from pipeline.job_status import classify_status, today_date  # noqa: E402
 
 SECTION_PATTERN = re.compile(r"^\[([^\]]+)\]\s*$")
+# 지역 칸에 잘못 들어앉은 경력 표기를 골라내는 규칙(wanted 전용).
+CAREER_TEXT = re.compile(r"(경력|신입|무관|\d+\s*년)")
 
 
 HEADER_KEYS = {"회사", "제목", "URL", "경력", "고용형태", "학력", "위치"}
@@ -135,11 +137,22 @@ def normalize(job: dict) -> dict:
         return out
 
     # wanted / jumpit / saramin / dev / remote / ats — already have most fields
-    out["career"] = job.get("career") or job.get("location", "")
+    # location 칸을 경력으로 되쓰는 폴백은 그 값이 경력 꼴일 때만 유효하다 —
+    # 주소가 채워진 wanted 레코드에서 그대로 쓰면 경력 칸에 주소가 들어간다.
+    raw_career = (job.get("career") or "").strip()
+    if not raw_career:
+        fallback = (job.get("location") or "").strip()
+        raw_career = fallback if CAREER_TEXT.search(fallback) else ""
+    out["career"] = raw_career
     if site in ("saramin", "dev", "jumpit"):
         out["location"] = job.get("location", "")
     elif site == "wanted":
-        out["location"] = ""
+        # wanted 는 오래도록 카드의 경력 표기가 location 칸에 실려 왔다(검색 카드에
+        # 근무지가 없다). 그 값을 지역으로 내보내면 지역 필터가 "경력 3년 이상"을
+        # 지역으로 세므로, 경력 꼴이면 지역을 비운다. 진짜 주소는 상세 API 로
+        # 채운다 — pipeline/backfill_location.py 와 크롤러가 그 자리를 맡는다.
+        raw_loc = (job.get("location") or "").strip()
+        out["location"] = "" if CAREER_TEXT.search(raw_loc) else raw_loc
 
     # 해외 보드(remote) / 회사 자체 채용페이지(ats): 위치·지역·해외여부 보존
     if site in ("remote", "ats"):

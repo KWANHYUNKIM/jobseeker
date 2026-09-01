@@ -133,7 +133,12 @@ def parse_raw_meta(raw_text: str) -> dict:
     re_career = re.compile(r"신입|경력|인턴|경력무관")
     re_emp = re.compile(r"정규직|계약직|인턴|파견|프리랜서|단기|아르바이트")
     re_edu = re.compile(r"학력|대졸|대학원|고졸|초대졸|석사|박사|학사|학력무관")
-    re_loc = re.compile(r"^[가-힣]+(특별시|광역시|시|도)|서울|경기|인천|부산|대구|광주|대전|울산|세종|강원|충북|충남|전북|전남|경북|경남|제주")
+    # 시도로 **시작하는** 줄만 근무지로 본다. 예전 규칙은 시도 이름이 줄 안 어디에
+    # 있기만 하면 잡아서, "[울산] 제조 시스템 개발자 모집" 같은 공고 제목이 근무지
+    # 칸에 들어앉았다(그런 공고가 87건 있었다). 못 잡으면 빈 칸으로 두고,
+    # pipeline/backfill_location 이 공고 페이지의 JSON-LD 에서 진짜 주소를 받아온다 —
+    # 틀린 값보다 빈 값이 낫다.
+    re_loc = re.compile(r"^(서울|경기|인천|부산|대구|광주|대전|울산|세종|강원|충북|충남|전북|전남|경북|경남|제주)")
     re_dday = re.compile(r"^D-|채용시|상시|마감|~\d+/\d+")
     for s in lines:
         if not out["career"] and re_career.search(s):
