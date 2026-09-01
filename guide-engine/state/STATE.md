@@ -4,8 +4,8 @@
 
 ## 지금 쓰는 중
 
-**커넥트웨이브 (`connectwave`) — `in_progress`.** 공고 5건 · 학습 32개.
-(전체는 회사 9곳 · 완주 8곳 · 공고 32건 · 학습 249개 · 오류 0 · **경고 0**.)
+**커넥트웨이브 (`connectwave`) — `in_progress`.** 공고 6건 · 학습 39개.
+(전체는 회사 9곳 · 완주 8곳 · 공고 33건 · 학습 256개 · 오류 0 · **경고 0**.)
 
 | 채운 공고 | 무엇을 하는 자리 | 연차 | 학습 |
 |---|---|---|---|
@@ -13,28 +13,26 @@
 | `[Consumer Commerce] Data Engineer` (wanted/295194) | 수집→레이크→품질→서빙 | 3-15 | 7 |
 | `[메이크샵] 풀스택` (wanted/368343) | 고객사별 커스텀 흡수 | 3-8 | 4 |
 | `[CC CTO] Data Analytics Engineer` (wanted/370593) | 지표의 뜻을 정하기 | 3-8 | 7 |
-| `[CC CTO] Search Engineer` (wanted/273652) | **검색 엔진을 만들기** | 4-10 | 7 |
+| `[CC CTO] Search Engineer` (wanted/273652) | 검색 엔진 만들기 | 4-10 | 7 |
+| `[CC CTO] Machine Learning Engineer` (wanted/382080) | **같은 상품 묶기(Entity Matching)** | 4-15 | 7 |
 
-검색은 예상대로 **이 회사에서 도메인 값이 가장 컸다.** 가장 특이한 줄은
-`형태소 분석기 개발 및 운영` — 남의 분석기를 쓰는 게 아니라 직접 만든다는 뜻이고,
-한국어 상품명(`갤럭시버즈3프로`)을 다루려면 그럴 수밖에 없다.
-**검색 '품질을 재는' 쪽은 AE 공고에 있으므로** 여기는 엔진 쪽으로 축을 갈랐다.
+**세 공고가 같은 문제의 서로 다른 층이라는 것이 이 회사 브리핑의 뼈대가 됐다** —
+ML(모델) / Search(엔진·색인·랭킹) / AE(지표 정의와 측정). 서로의 sources·edge 에
+링크를 걸어 독자가 자리를 고르게 했다. **합쳐진 회사에서 이 방식이 다섯 번 통했다.**
 
-**남은 것과 판단 — 완주가 가까워졌다**
+**남은 여섯 건과 판단 — 다음 사이클이 회사를 닫을 수 있다**
 
-1. `[CC CTO] Machine Learning Engineer` (wanted/382080, 4-15년) — **본문 미열람.**
-   추천·생성형 AI(PLAi) 쪽으로 보인다. 검색·AE 와 겹칠 수 있으니 본문을 먼저 읽는다.
-2. 5년 이상 다섯 건 — `Backend Engineer(스토어플랫폼)`·`BE(지도/예약/자동차)`·
-   `Billing&Settlement Platform BE`·`DevOps Engineer` (모두 5-11년),
-   `[Consumer Commerce] 프론트엔드`(7년↑).
-   **이 중 `Billing&Settlement Platform BE` 는 도메인 값이 커 보인다**(정산은 커머스에서
-   가장 틀리면 안 되는 자리다). 하나쯤 쓰고 나머지는 이유를 남기는 쪽을 권한다.
-3. jobkorea·dev 사이트의 3건은 원티드와 **같은 자리의 중복**이다(Data Analytics
-   Engineer, 메이크샵 백엔드, 플레이오토 솔루션 개발자). 완주 계산에서 빼고
-   `open_questions` 에 적는다.
+1. `[CC CTO] Billing&Settlement Platform BE` (wanted/340729, 5-11년) — **하나는 쓰는 쪽을
+   권한다.** 정산은 커머스에서 가장 틀리면 안 되는 자리이고, 이 회사는 셀러 4.5만 곳과
+   제휴사 정산이 걸려 있어 도메인 값이 크다. 본문 미열람.
+2. 나머지 5년 이상 넷 — `Backend Engineer(스토어플랫폼)`·`BE(지도/예약/자동차)`·
+   `DevOps Engineer`(모두 5-11년), `[Consumer Commerce] 프론트엔드`(7년↑).
+   **연차가 높아 뺀다면 그 이유를 `open_questions` 에 한 줄씩.**
+3. jobkorea·dev 3건은 원티드와 **같은 자리의 중복**이다(Data Analytics Engineer,
+   메이크샵 백엔드, 플레이오토 솔루션 개발자). 이것도 `open_questions` 에 적는다.
 
 **매 사이클 확인** — `validate.py` 맨 아래 `경고 N`(지금 0),
-그리고 resources URL 공백: `grep -o '"url": "[^"]*"' <파일> | grep -v 'http'`
+resources URL 공백: `grep -o '"url": "[^"]*"' <파일> | grep -v 'http'`
 
 
 ## 자료 접근 지도
