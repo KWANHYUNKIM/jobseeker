@@ -141,7 +141,9 @@ export function BlogDetail({
           {state === 'error' && <div className="text-red-400">본문을 불러오지 못했습니다.</div>}
           {state === 'pending' && (
             <div className="text-(--color-muted)">
-              본문이 아직 수집되지 않았습니다. (크롤이 회차당 일부씩 수집 중)
+              {post.content_state === 'blocked'
+                ? '이 블로그는 본문 수집이 막혀 있습니다. (사이트 봇 차단 — 원본에서 읽어주세요)'
+                : '본문이 아직 수집되지 않았습니다. (크롤이 회차당 일부씩 수집 중)'}
               <br />
               <a href={post.url} target="_blank" rel="noreferrer" className="text-(--color-accent) hover:underline">
                 원본 페이지에서 읽기 ↗
