@@ -1718,6 +1718,236 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/310250",
+      "title": "iOS Developer",
+      "site": "wanted",
+      "verdict": "**같은 회사 `Android Developer`(3-8년)와 구성이 전혀 다르다.** 저쪽은 팀이 셋 들어 있고 담당 업무가 길지만, **여기는 세 줄이다** — 그리고 그 세 줄이 자리를 정확히 그린다: **아이패드를 계산대로 만드는 일**(토스 포스 iOS/iPadOS 앱)이다. 가장 눈에 띄는 줄은 두 번째다 — **`Go 언어로 작성된 멀티플랫폼 SDK`**. iOS 공고에서 Go 가 나오는 일은 드물고, 이건 **결제의 핵심 로직을 언어 하나로 쓰고 안드로이드·iOS 양쪽에서 같은 것을 쓴다**는 뜻이다(같은 회사 안드로이드 공고의 `Place SDK` 와 같은 물건으로 읽힌다). 자격요건도 특이하다 — **`특정 기술 스택이나 프레임워크의 지식보다 탄탄한 기본기`** 라고 못 박았다. 경력 3년 이상.",
+      "fit": {
+        "must_have": [
+          "iOS 개발 경력 3년 이상에 준하는 실력",
+          "기본기·논리적 사고·실제 구현 능력 (공고가 스택보다 이것을 앞세웠다)",
+          "다른 직군과 협업하는 커뮤니케이션"
+        ],
+        "can_learn": [
+          "Go — 멀티플랫폼 SDK 를 '적용'하는 쪽이라 언어를 새로 쓰는 자리는 아니다",
+          "Tuist·Fastlane — 도구는 들어와서 익힐 수 있다",
+          "결제·POS 도메인"
+        ]
+      },
+      "study": [
+        {
+          "topic": "iOS 공고에 Go 가 있는 이유",
+          "from": "task",
+          "quote": "Go 언어로 작성된 멀티플랫폼 SDK를 토스 포스 앱에서 사용할 수 있도록 적용해요.",
+          "priority": "core",
+          "why": "**이 공고에서 가장 특이한 한 줄이고, 회사의 선택이 드러나는 줄이다.** 결제의 핵심 로직(카드 처리, 오프라인 저장, 동기화 같은 것)을 **Swift 와 Kotlin 으로 두 번 쓰면 두 배 틀린다** — 특히 돈이 오가는 코드는 양쪽이 미세하게 다르게 동작하는 순간 사고가 된다. 그래서 한 번만 쓰고 양쪽에서 쓰게 만드는 선택을 했고, 그 언어가 Go 다. 다만 이 자리의 일은 Go 를 쓰는 것이 아니라 **`적용`** 이다 — 남이 만든 이질적인 라이브러리를 iOS 답게 감싸 앱에 얹는 일이고, 여기서 어려운 건 **경계**다: 타입 변환, 메모리, 스레드, 에러, 그리고 디버깅.",
+          "gap_check": "다른 언어로 만든 라이브러리를 Swift 에서 쓸 때 무엇이 문제가 되는가(타입·메모리·스레드)? 그 라이브러리 안에서 크래시가 나면 어떻게 원인을 찾는가? Swift 답지 않은 API 를 어떻게 감싸는가?",
+          "drill": "**Go 코드를 iOS 앱에서 불러 본다.** (1) `gomobile bind` 로 간단한 Go 패키지를 XCFramework 로 만들고, (2) Swift 에서 호출해 **문자열·바이트·에러가 어떻게 건너오는지** 확인하고, (3) 그 위에 **Swift 다운 얇은 래퍼**(async/await, Swift 에러 타입)를 씌우고, (4) Go 쪽에서 일부러 패닉을 내 **크래시 로그가 어떻게 보이는지** 본다. 4번이 실무에서 가장 자주 만나는 장면이다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "gomobile — Go 를 모바일에서 쓰기",
+              "url": "https://pkg.go.dev/golang.org/x/mobile/cmd/gomobile",
+              "kind": "docs"
+            },
+            {
+              "title": "Apple — XCFramework 배포",
+              "url": "https://developer.apple.com/documentation/xcode/creating-a-multi-platform-binary-framework-bundle",
+              "kind": "docs"
+            },
+            {
+              "title": "Swift — C/Objective-C 상호 운용",
+              "url": "https://www.swift.org/documentation/cxx-interop/",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "아이패드가 계산대다 — POS 앱의 조건",
+          "from": "task",
+          "quote": "매장 운영의 기본이 되는 토스 포스(POS) iOS/iPadOS 앱을 더 좋은 제품으로 개선해요.",
+          "priority": "core",
+          "why": "**같은 iOS 앱이라도 손에 드는 앱과 계산대에 고정된 앱은 요구가 다르다.** 이 앱은 (1) **하루 종일 켜져 있고**(메모리 누수가 저녁에 드러난다), (2) **손님 앞에서 쓰이고**(1초의 버벅임이 줄을 만든다), (3) **사장님이 매일 같은 동작을 수백 번 반복하고**(그래서 두 번 누를 것을 한 번으로 줄이는 것이 큰 개선이다), (4) **주변기기가 붙어 있다**(카드 리더·프린터·현금서랍). 담당 업무가 `더 좋은 제품으로 개선` 이라고만 적은 것은, **무엇을 개선할지 찾는 것부터가 일**이라는 뜻으로 읽는 편이 자연스럽다.",
+          "gap_check": "하루 종일 켜 둔 앱에서 무엇이 쌓이는가 — 재 본 적이 있는가? 같은 동작을 수백 번 하는 사용자를 위해 무엇을 바꿔야 하는가? 아이패드 화면 크기와 분할 화면을 고려한 레이아웃을 다뤄 봤는가?",
+          "drill": "**'반복 사용'을 기준으로 화면 하나를 고쳐 본다.** (1) 아이패드용 주문·계산 화면을 만들고, (2) **한 건을 처리하는 데 필요한 탭 수**를 세고, (3) 그 수를 줄이는 방향으로 다시 설계하고(자주 쓰는 항목 고정, 키보드 단축키, 큰 타깃), (4) 24시간 켜 두고 메모리를 재 본다. 2번의 숫자가 이 자리의 언어다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Apple HIG — iPadOS",
+              "url": "https://developer.apple.com/design/human-interface-guidelines/designing-for-ipados",
+              "kind": "docs"
+            },
+            {
+              "title": "Instruments 로 메모리·성능 보기",
+              "url": "https://developer.apple.com/documentation/xcode/improving-your-app-s-performance",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "네이티브와 웹을 한 앱에 — WKWebView",
+          "from": "qualification",
+          "quote": "WKWebView를 통해 Native와 Web 기능을 통합하여 제품을 개발한 경험이 있으면 좋아요.",
+          "priority": "core",
+          "why": "**같은 회사 프론트엔드 공고들과 이 줄에서 만난다.** 토스플레이스의 화면 상당수는 웹으로 만들어져 단말과 포스 안에서 도는데(그래서 `Frontend Developer` 공고가 '브라우저 밖'을 이야기한다), 그 웹을 **감싸 주는 쪽이 이 자리**다. 어려운 부분은 웹뷰를 띄우는 것이 아니라 **경계 설계**다: 네이티브 기능(카드 리더·프린터·카메라)을 웹에 어떻게 열어 줄지, 그 다리를 **누가 아무나 못 쓰게** 막을지, 웹이 죽었을 때 네이티브가 무엇을 할지, 그리고 **웹과 네이티브 중 어느 쪽을 배포할지**를 어떻게 나눌지.",
+          "gap_check": "웹에서 네이티브 기능을 부르는 다리를 어떻게 만드는가 — 아무 페이지나 부를 수 있으면 어떤 문제가 생기는가? 웹뷰가 하얗게 뜨면 사용자에게 무엇을 보여 주는가? 웹뷰 안의 오류를 어떻게 수집하는가?",
+          "drill": "**다리를 놓고 막아 본다.** (1) WKWebView 로 로컬 웹 페이지를 띄우고 `WKScriptMessageHandler` 로 네이티브 함수를 부르게 하고, (2) **허용된 도메인에서만** 그 다리가 열리게 막고, (3) 네이티브 → 웹 방향(`evaluateJavaScript`)도 만들어 양방향으로 만들고, (4) 웹뷰 로딩 실패·크래시를 재현해 **네이티브가 대신 보여 줄 화면**을 만든다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Apple — WKWebView",
+              "url": "https://developer.apple.com/documentation/webkit/wkwebview",
+              "kind": "docs"
+            },
+            {
+              "title": "Apple — WKScriptMessageHandler",
+              "url": "https://developer.apple.com/documentation/webkit/wkscriptmessagehandler",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Multi-module 과 Micro Feature Architecture",
+          "from": "preference",
+          "quote": "Multi-module App, Micro Feature Architecture",
+          "priority": "core",
+          "why": "스택 목록의 **맨 첫 줄**이다 — 이 팀이 구조를 중요하게 본다는 신호다. iOS 에서 모듈을 잘게 쪼개는 이유는 두 가지가 크다: **빌드 시간**(전체가 아니라 바꾼 모듈만 다시 빌드)과 **경계**(기능끼리 함부로 참조하지 못하게). 그리고 이 목록에 **`Tuist`** 가 함께 있는 것이 결정적이다 — 모듈이 수십 개가 되면 Xcode 프로젝트 파일을 사람이 관리할 수 없어서, **프로젝트를 코드로 생성**하는 도구를 쓴다. 즉 이 팀은 **이미 모듈이 많다**고 읽는 편이 자연스럽다.",
+          "gap_check": "모듈을 나누는 기준은 무엇인가 — 기능별인가 계층별인가? 기능 모듈끼리 서로 참조하지 못하게 하려면 무엇이 필요한가(인터페이스 모듈)? 모듈을 쪼갠 뒤 빌드 시간이 실제로 줄었는가?",
+          "drill": "**Tuist 로 모듈을 쪼개 보고 숫자를 잰다.** (1) 앱 하나를 Tuist 로 정의하고 feature·core·design 모듈로 나누고, (2) **쪼개기 전후 클린 빌드와 증분 빌드 시간을 재고**, (3) 기능 모듈이 서로를 직접 참조하지 못하게 인터페이스 모듈을 두고, (4) 기능 하나만 실행하는 **작은 앱(예제 앱)** 을 만들어 본다. 4번이 실무에서 개발 속도를 가장 크게 바꾼다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "Tuist 문서",
+              "url": "https://docs.tuist.dev/",
+              "kind": "docs"
+            },
+            {
+              "title": "Swift Package Manager — 타깃과 의존성",
+              "url": "https://developer.apple.com/documentation/xcode/organizing-your-code-with-local-packages",
+              "kind": "docs"
+            },
+            {
+              "title": "Xcode 빌드 시간 개선",
+              "url": "https://developer.apple.com/documentation/xcode/improving-the-speed-of-incremental-builds",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "Swift Concurrency 와 Combine 이 함께 있다",
+          "from": "preference",
+          "quote": "Swift Concurrency, Combine",
+          "priority": "high",
+          "why": "**둘이 나란히 적힌 것은 흔히 '옮겨 가는 중'이라는 뜻이다** — 기존 코드에 Combine 이 있고 새 코드는 async/await 로 쓰는 상태. 그래서 실무에서 자주 만나는 문제가 **두 세계를 잇는 일**이 된다(`AsyncSequence` 로 바꾸기, `withCheckedContinuation` 으로 감싸기). 그리고 이 앱에서는 동시성이 장식이 아니다 — **카드 리더·프린터·웹뷰·서버가 동시에 말을 걸어오고**, 결제 도중에 화면이 바뀌면 안 된다. `@MainActor` 와 취소(cancellation)를 정확히 다루는 것이 곧 안정성이다.",
+          "gap_check": "Combine 코드를 async/await 로 어떻게 잇는가? 화면이 사라질 때 진행 중인 작업을 취소하는가 — 어떻게? 어떤 코드가 메인 스레드에서 돌아야 하는지 무엇으로 보장하는가?",
+          "drill": "**두 세계를 잇고 취소를 넣는다.** (1) Combine 으로 만든 데이터 흐름을 `AsyncSequence` 로 감싸 async/await 쪽에서 쓰게 하고, (2) 콜백 기반 옛 API 를 `withCheckedContinuation` 으로 감싸고, (3) 화면을 나갈 때 **작업이 실제로 취소되는지** 로그로 확인하고, (4) `@MainActor` 를 붙였다 뗐다 하며 경고가 어디서 나는지 본다.",
+          "hours": 12,
+          "resources": [
+            {
+              "title": "Swift — Concurrency",
+              "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/",
+              "kind": "docs"
+            },
+            {
+              "title": "Apple — Combine 과 Swift Concurrency 잇기",
+              "url": "https://developer.apple.com/documentation/combine/publisher/values-1dm9r",
+              "kind": "docs"
+            }
+          ]
+        },
+        {
+          "topic": "스택보다 기본기를 본다고 못 박았다",
+          "from": "qualification",
+          "quote": "특정 기술 스택이나 프레임워크의 지식보다 탄탄한 기본기, 논리적 사고력과 추론 능력 그리고 실제 코드 구현 능력을 중요하게 생각해요.",
+          "priority": "core",
+          "why": "**이 문장은 준비 방향을 바꾼다.** Tuist·Combine·Go 를 이름만 외워 가는 준비는 여기서 잘 안 통한다는 뜻이고, 대신 **`실제 코드 구현 능력`** 을 본다고 적혀 있으므로 **코딩 과제나 라이브 코딩이 있을 가능성이 높다**고 보는 편이 안전하다. 그리고 `논리적 사고력과 추론 능력` 은 대개 **모르는 문제를 어떻게 좁혀 가는지**를 본다는 뜻이다 — 답을 아는지보다, 답을 모를 때 무엇을 먼저 확인하는지. 이력서 안내의 `기술적으로 어려웠지만 끝까지 파고들어 해결한 경험` 도 같은 곳을 가리킨다.",
+          "gap_check": "낯선 문제를 받았을 때 무엇부터 하는가 — 그 순서를 말로 설명할 수 있는가? 최근에 어려운 문제를 끝까지 파고들어 해결한 경험이 있는가, 그 과정을 기록해 두었는가? 손으로 코드를 짜며 생각을 말하는 연습을 해 봤는가?",
+          "drill": "**생각을 소리 내어 말하며 코드를 짠다.** (1) 알고리즘·설계 문제를 골라 **말로 접근을 설명하면서** 구현하고 녹음해 들어 보고, (2) 최근의 어려운 문제 하나를 골라 **증상 → 가설 → 확인 → 원인 → 해결** 다섯 단계로 정리하고, (3) 그 글을 3분 안에 말할 수 있게 줄인다. 3번이 면접에서 그대로 쓰인다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "Apple — Swift 언어 가이드",
+              "url": "https://docs.swift.org/swift-book/",
+              "kind": "docs"
+            },
+            {
+              "title": "XCTest 로 테스트 쓰기",
+              "url": "https://developer.apple.com/documentation/xctest",
+              "kind": "docs",
+              "note": "스택 목록에 XCTest 가 있다 — 테스트 쓰는 습관을 본다는 신호"
+            }
+          ]
+        },
+        {
+          "topic": "다른 직군과 협업 — 여기서는 하드웨어까지",
+          "from": "qualification",
+          "quote": "서로 다른 직군과 협업할 수 있는 커뮤니케이션 능력이 필요해요.",
+          "priority": "high",
+          "why": "흔한 문장이지만 **이 회사에서는 범위가 넓다.** 같은 제품에 붙는 사람이 디자이너·PO 만이 아니라 **웹 프론트엔드**(웹뷰 안쪽), **서버**, **안드로이드**(같은 Go SDK 를 쓴다), 그리고 **하드웨어·펌웨어**(카드 리더·프린터)까지다. 그래서 실제로 필요한 능력은 친화력이 아니라 **문제를 남의 언어로 옮겨 말하는 능력**이다 — 웹뷰 안에서 난 문제를 프론트엔드에게, 리더기가 안 붙는 문제를 하드웨어 담당에게 **재현 가능한 형태로** 전달하는 것.",
+          "gap_check": "다른 팀에 문제를 넘길 때 무엇을 함께 보내는가(재현 절차·로그·빈도)? 내 쪽이 아니라고 생각될 때 어떻게 증명하는가? 웹·서버·하드웨어 중 협업해 본 경험이 있는 쪽은?",
+          "drill": "**재현 가능한 버그 보고서를 써 본다.** 최근 겪은 문제 하나를 골라 (1) 증상, (2) **누구나 따라 할 수 있는 재현 절차**, (3) 빈도와 조건, (4) 로그·영상, (5) 내가 이미 확인한 것 — 다섯 항목으로 정리한다. 이 형식을 몸에 익히면 위 세 방향의 협업이 전부 쉬워진다.",
+          "hours": 4,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "Go 패키지를 iOS 앱에서 불러 본 기록",
+          "why": "담당 업무 세 줄 중 하나가 **`Go 언어로 작성된 멀티플랫폼 SDK를 토스 포스 앱에서 사용할 수 있도록 적용`** 이다. `gomobile bind` 로 XCFramework 를 만들어 Swift 에서 부르고, **Swift 다운 래퍼를 씌우고 패닉까지 재현해 본** 사람은 iOS 지원자 중 극소수다.",
+          "effort": "나흘"
+        },
+        {
+          "idea": "웹뷰 다리를 만들고 '아무나 못 쓰게' 막아 본 기록",
+          "why": "이 앱에서 웹뷰는 화면의 상당 부분이고, 그 다리로 **카드 리더와 프린터가 열린다.** 허용 도메인 제한까지 해 본 경험은 자격요건의 WKWebView 줄에 보안 관점까지 얹어 답한다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "모듈을 쪼개고 빌드 시간을 잰 숫자",
+          "why": "스택 목록 첫 줄이 `Multi-module App, Micro Feature Architecture` 이고 Tuist 가 있다 — **이미 모듈이 많다는 뜻**이다. 쪼개기 전후 빌드 시간과 기능별 예제 앱은 그 팀의 일상 문제에 그대로 닿는다.",
+          "effort": "사흘"
+        },
+        {
+          "idea": "'끝까지 파고들어 해결한 경험'을 다섯 단계로 정리해 간다",
+          "why": "자격요건이 **스택보다 기본기와 `실제 코드 구현 능력`** 을 앞세웠고, 이력서 안내도 `기술적으로 어려웠지만 끝까지 파고들어 해결한 경험` 과 **임팩트**를 요구한다. 증상 → 가설 → 확인 → 원인 → 해결에 숫자를 붙여 3분으로 줄여 두면 그대로 답이 된다.",
+          "effort": "하루"
+        },
+        {
+          "idea": "안드로이드 공고를 함께 읽는다",
+          "why": "같은 회사 `Android Developer`(382268) 에 나오는 **`Place SDK`** 와 여기의 Go SDK 는 같은 물건으로 읽힌다. 두 공고를 겹쳐 읽으면 **회사가 클라이언트를 어떻게 설계했는지**가 보이고, 면접에서 '왜 Go 로 만들었을 것 같나'에 답할 수 있다.",
+          "effort": "삼십 분"
+        }
+      ],
+      "interview": {
+        "expect": [
+          "다른 언어로 만든 라이브러리를 Swift 에서 쓸 때 무엇이 문제가 되는가",
+          "그 라이브러리 안에서 크래시가 나면 어떻게 원인을 찾는가",
+          "하루 종일 켜 둔 앱에서 무엇이 쌓이는가",
+          "같은 동작을 수백 번 반복하는 사용자를 위해 무엇을 바꾸겠는가",
+          "웹에서 네이티브 기능을 부르는 다리를 어떻게 만들고, 어떻게 막는가",
+          "웹뷰가 하얗게 뜨면 사용자에게 무엇을 보여 주는가",
+          "모듈을 나누는 기준은 무엇인가 — 쪼갠 뒤 무엇이 좋아졌는가",
+          "Combine 코드를 async/await 로 어떻게 잇는가",
+          "화면이 사라질 때 진행 중인 작업을 취소하는가 — 어떻게",
+          "낯선 문제를 받았을 때 무엇부터 확인하는가",
+          "다른 팀에 문제를 넘길 때 무엇을 함께 보내는가"
+        ],
+        "sources": [
+          {
+            "title": "토스플레이스 iOS Developer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/310250",
+            "publisher": "원티드",
+            "summary": "토스 포스 iOS/iPadOS 앱. Go 로 작성된 멀티플랫폼 SDK 적용, WKWebView 네이티브·웹 통합. 스택은 Multi-module·Micro Feature Architecture·Swift Concurrency·Combine·Tuist·SPM·Golang"
+          },
+          {
+            "title": "토스플레이스 Android Developer 채용 공고",
+            "url": "https://www.wanted.co.kr/wd/382268",
+            "publisher": "원티드",
+            "summary": "같은 회사 안드로이드 자리 — 여기의 `Place SDK` 가 이 공고의 Go 멀티플랫폼 SDK 와 같은 물건으로 읽힌다"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
