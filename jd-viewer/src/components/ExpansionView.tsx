@@ -28,7 +28,8 @@ export function ExpansionView({
   focusTech,
 }: {
   onOpenCompany?: (norm: string) => void
-  focusTech?: { tech: string; n: number } | null
+  /** 주소(`/trend?tech=React`)로 지정된 기술. */
+  focusTech?: string | null
 }) {
   const { companies, loading, error } = useCompanies()
   const learning = useLearning()
@@ -38,7 +39,7 @@ export function ExpansionView({
 
   // 다른 탭(회사 뷰)에서 "이 기술 공부하기"로 들어오면 해당 기술을 선택.
   useEffect(() => {
-    if (focusTech?.tech) setSelectedTech(focusTech.tech)
+    if (focusTech) setSelectedTech(focusTech)
   }, [focusTech])
 
   const index = useMemo(() => buildExpansionIndex(companies), [companies])

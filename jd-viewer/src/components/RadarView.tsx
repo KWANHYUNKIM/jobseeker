@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { goBack, navigate } from '../lib/router'
+import { paths } from '../lib/urls'
+import { absUrl, clip, useSeo } from '../lib/seo'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useRadar } from '../lib/useRadar'
@@ -32,7 +35,7 @@ const STACK_LABEL: Record<string, string> = {
   infra: '인프라/DevOps',
 }
 
-export function RadarView() {
+export function RadarView({ companyKey }: { companyKey?: string | null }) {
   const { data, loading, error } = useRadar()
   const [mode, setMode] = useState<'company' | 'domain'>('company')
   const [query, setQuery] = useState('')
@@ -41,10 +44,10 @@ export function RadarView() {
   const [langs, setLangs] = useState<Set<string>>(new Set())
   const [flags, setFlags] = useState<Set<string>>(new Set())
   const [sort, setSort] = useState<'default' | 'name' | 'country'>('default')
-  const [selected, setSelected] = useState<RadarCompany | null>(null)
   const [navOpen, setNavOpen] = useState(false)
 
-  const companies = data?.companies ?? []
+  // 매 렌더마다 새 배열이 되면 아래 useMemo 들이 전부 다시 돈다(회사 100곳 × 필터).
+  const companies = useMemo(() => data?.companies ?? [], [data])
 
   // 도메인 뷰에서 회사 이름을 클릭하면 상세를 연다
   const byName = useMemo(() => {
@@ -53,26 +56,28 @@ export function RadarView() {
     return m
   }, [companies])
 
-  // 회사 상세를 URL 해시(#radar/<key>)와 동기화 — 딥링크·공유·새로고침·뒤로가기 유지.
-  // 해시를 단일 출처로 삼는다: 열고 닫을 때 해시만 바꾸고, 상세 표시는 해시에서 파생.
-  const openCompany = (c: RadarCompany) => {
-    window.location.hash = `radar/${c.key}`
-  }
-  const closeCompany = () => {
-    if (window.location.hash.replace(/^#/, '').startsWith('radar/')) window.location.hash = 'radar'
-    else setSelected(null)
-  }
-  useEffect(() => {
-    const sync = () => {
-      const parts = window.location.hash.replace(/^#/, '').split('/')
-      setSelected(parts[0] === 'radar' && parts[1]
-        ? companies.find((c) => c.key === parts[1]) ?? null
-        : null)
-    }
-    sync()
-    window.addEventListener('hashchange', sync)
-    return () => window.removeEventListener('hashchange', sync)
-  }, [companies])
+  // 회사 상세는 주소(/radar/<key>)가 단일 출처다 — 딥링크·공유·새로고침·뒤로가기가
+  // 전부 같은 경로 하나로 해결된다. 열고 닫는 건 주소를 바꾸는 일이고, 무엇이 열려
+  // 있는지는 주소에서 파생된다.
+  const openCompany = (c: RadarCompany) => navigate(paths.radarCompany(c.key))
+  const closeCompany = () => goBack(paths.radar())
+  const selected = useMemo(
+    () => (companyKey ? (companies.find((c) => c.key === companyKey) ?? null) : null),
+    [companies, companyKey],
+  )
+
+  // 회사 상세의 제목·설명은 이 뷰가 단다 — 레이더 데이터를 들고 있는 게 여기뿐이다.
+  useSeo(
+    companyKey && selected
+      ? {
+          title: `${selected.name} 기술스택·아키텍처`,
+          description: clip(
+            `${selected.name}(${selected.domain})의 기술스택과 아키텍처. 언어: ${selected.languages.join(', ')}. ${selected.summary ?? ''}`,
+          ),
+          canonical: absUrl(paths.radarCompany(selected.key)),
+        }
+      : null,
+  )
 
   const langCount = useMemo(() => {
     const c = new Map<string, number>()
@@ -535,12 +540,17 @@ function CompanyRow({
         )}
         <span className="ml-auto">{company.architecture.join(' · ')}</span>
       </div>
-      <button
-        onClick={() => onOpen(company)}
+      <a
+        href={paths.radarCompany(company.key)}
+        onClick={(e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+          e.preventDefault()
+          onOpen(company)
+        }}
         className="text-left text-(--color-text) font-medium hover:text-(--color-accent) hover:underline"
       >
         {company.name}
-      </button>
+      </a>
       {company.summary && (
         <p className="mt-1 text-sm text-(--color-muted) line-clamp-2">{company.summary}</p>
       )}

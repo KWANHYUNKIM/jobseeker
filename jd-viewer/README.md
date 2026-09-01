@@ -1,8 +1,9 @@
 # jd-viewer
 
 채용 크롤 파이프라인(`catch_capture/`)이 만든 데이터를 시각화하는 React/Vite 뷰어.
-`public/` 의 JSON 을 그대로 소비하며, 상단 탭으로 6개 화면을 전환한다. 탭·회사 상세는
-URL 해시와 동기화되어 새로고침·공유·뒤로가기가 유지된다(예: `#radar`, `#radar/netflix`).
+`public/` 의 JSON 을 그대로 소비하며, 상단 탭으로 화면을 전환한다. 모든 화면은 진짜 경로를
+가진다(`/jobs/wanted-364849`, `/companies/쿠팡`, `/radar/netflix`) — 새로고침·공유·뒤로가기가
+그대로 되고, 빌드가 주소마다 정적 HTML 을 깔아 검색엔진이 색인할 수 있다.
 
 ## 실행
 
@@ -12,6 +13,38 @@ npm run dev        # 개발 서버(5173)
 npm run build      # tsc -b + vite build (타입체크 포함, 배포 산출물 dist/)
 npm run preview    # 빌드 결과 미리보기
 ```
+
+## 주소와 검색 노출(SEO)
+
+해시 라우팅(`#radar/netflix`)을 경로 라우팅으로 바꿨다. 해시 뒤는 서버도 검색엔진도
+URL 의 일부로 보지 않아서, 공고가 1만 건이어도 색인되는 주소는 `/` 하나뿐이었다.
+
+| 화면 | 주소 |
+|------|------|
+| 공고 목록 | `/` (검색어는 `?q=`, 색인 제외) |
+| 공고 상세 | `/jobs/<사이트>-<공고번호>` |
+| 기업 기술스택 | `/companies`, `/companies/<회사>` |
+| 기술 레이더 | `/radar`, `/radar/<key>` |
+| 기술 역설계 | `/reveng/<slug>`, `/reveng/문서/<slug>` |
+| 기술블로그 | `/blog`, `/blog/<id>` (원문이 색인 주체 — noindex) |
+| 그 외 탭 | `/mindmap` `/calendar` `/reposts` `/trend` |
+
+구성 요소는 셋이다.
+
+- `src/lib/router.ts` — pushState 라우터(60줄, 의존성 없음). 예전 해시 주소는
+  진입 시 새 경로로 리다이렉트한다.
+- `src/lib/seo.ts` + `src/lib/urls.ts` — 라우트마다 제목·설명·정규 URL·오픈그래프·
+  구조화 데이터(JobPosting/Organization)를 `<head>` 에 갈아끼운다.
+- `scripts/prerender.mjs` — `npm run build` 끝에 주소별 정적 HTML 과 `sitemap.xml`,
+  `robots.txt` 를 찍는다. 크롤러와 카카오톡·슬랙 미리보기 봇이 보는 게 이것이다.
+  ```bash
+  SITE_URL=https://내도메인 npm run build   # 정규 URL 오리진(기본: ngrok 고정 주소)
+  PRERENDER_JOBS=2000 npm run prerender    # 공고 페이지 수 제한(디스크 절약)
+  ```
+  현재 12,000쪽 남짓(공고 10.5k · 회사 2k · 레이더 100 · 역설계 60), `dist/` 기준 약 115MB.
+
+서버는 `$uri → $uri/ → /index.html` 순으로 찾는다(`nginx.conf`, `bin/serve_viewer.py`).
+프리렌더가 있으면 그걸, 없으면 앱 셸을 주고 브라우저에서 라우터가 이어받는다.
 
 ## 탭
 

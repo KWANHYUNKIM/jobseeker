@@ -14,7 +14,10 @@
     마감 공고는 색인에 남기되(지난 공고 통계·유사도의 재료) `meta.status` 로 표시해
     검색·추천에서 뺀다. 검색은 `--include-closed` 로 열 수 있다.
   - `paths.py` : 공통 경로(데이터/venv 위치) 단일 소스
-- `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173, public 데이터 소비)
+- `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173, public 데이터 소비).
+  화면마다 진짜 경로를 쓴다(`/jobs/<사이트>-<번호>`, `/companies/<회사>` 등) —
+  `src/lib/router.ts`(pushState) + `src/lib/seo.ts`(라우트별 head) +
+  `scripts/prerender.mjs`(빌드 때 주소별 정적 HTML·sitemap·robots). 자세한 건 뷰어 README.
 - `engine/` : 기업 기술 역설계 엔진 (크롤이 아니라 공개 자료 재구성).
   `PROMPT.md`(사이클 절차) / `schema.json`(형식) / `state/`(대기열·진행) /
   `validate.py`(커밋 전 검증). 산출물은 `jd-viewer/public/reveng/` 에 쌓이고

@@ -2,6 +2,9 @@ import { useMemo, useState } from 'react'
 import { useBlogs } from '../lib/useBlogs'
 import { usePaged } from '../lib/usePaged'
 import { BlogDetail } from './BlogDetail'
+import { goBack, navigate } from '../lib/router'
+import { blogKey, paths } from '../lib/urls'
+import { absUrl, clip, useSeo } from '../lib/seo'
 import { Loader, ErrorState, SidePanel, MobileBar, TechIcon, CompanyMark, Pagination } from './ui'
 import type { BlogPost } from '../types'
 
@@ -17,16 +20,35 @@ const COUNTRY_LABEL: Record<string, string> = {
   SG: '🇸🇬 싱가포르',
 }
 
-export function BlogView() {
+export function BlogView({ postId }: { postId?: string | null }) {
   const { data, loading, error } = useBlogs()
   const [query, setQuery] = useState('')
   const [stacks, setStacks] = useState<Set<string>>(new Set())
   const [country, setCountry] = useState<string | null>(null)
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
-  const [selected, setSelected] = useState<BlogPost | null>(null)
   const [navOpen, setNavOpen] = useState(false)
 
-  const posts = data?.posts ?? []
+  // 매 렌더마다 새 배열이 되면 아래 useMemo 들이 전부 다시 돈다(글 1천여 건 × 필터).
+  const posts = useMemo(() => data?.posts ?? [], [data])
+  // 열려 있는 글은 주소(/blog/<id>)에서 나온다 — 글 하나하나가 공유 가능한 링크가 된다.
+  const selected = useMemo(
+    () => (postId ? (posts.find((p) => blogKey(p) === postId) ?? null) : null),
+    [posts, postId],
+  )
+  const openPost = (p: BlogPost) => navigate(paths.blogPost(blogKey(p)))
+
+  // 글 상세는 남의 글을 옮겨 놓은 화면이다. 주소는 있어야 하지만(공유·뒤로가기)
+  // 색인은 원문이 가져가는 게 맞으므로 noindex 로 둔다 — 사이트맵에도 넣지 않는다.
+  useSeo(
+    selected
+      ? {
+          title: `${selected.title} — ${selected.company} 기술블로그`,
+          description: clip(selected.summary || selected.title),
+          canonical: absUrl(paths.blogPost(blogKey(selected))),
+          robots: 'noindex, follow',
+        }
+      : null,
+  )
   const tagCat = data?.tag_categories ?? {}
   const catOrder = data?.categories ?? []
 
@@ -176,7 +198,7 @@ export function BlogView() {
         </div>
         <ul className="divide-y divide-(--color-border)">
           {paged.slice.map((p) => (
-            <PostRow key={p.url} post={p} onPickStack={toggleStack} onOpen={setSelected} />
+            <PostRow key={p.url} post={p} onPickStack={toggleStack} onOpen={openPost} />
           ))}
           {filtered.length === 0 && (
             <li className="p-8 text-(--color-muted)">조건에 맞는 글이 없습니다.</li>
@@ -196,12 +218,12 @@ export function BlogView() {
       {selected && (
         <BlogDetail
           post={selected}
-          onClose={() => setSelected(null)}
+          onClose={() => goBack(paths.blog())}
           onOpenUrl={(url) => {
             // 추천 JSON 은 url 만 들고 있다. 필터에 걸려 목록에 없는 글도 열려야 하므로
             // 필터된 목록이 아니라 posts 전체에서 찾는다.
             const next = posts.find((p) => p.url === url)
-            if (next) setSelected(next)
+            if (next) openPost(next)
           }}
         />
       )}
@@ -234,12 +256,17 @@ function PostRow({
           <span className="sm:ml-auto text-(--color-muted) break-words">{post.categories.join(' · ')}</span>
         )}
       </div>
-      <button
-        onClick={() => onOpen(post)}
+      <a
+        href={paths.blogPost(blogKey(post))}
+        onClick={(e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+          e.preventDefault()
+          onOpen(post)
+        }}
         className="block text-left text-(--color-text) font-medium break-words hover:text-(--color-accent) hover:underline"
       >
         {post.title}
-      </button>
+      </a>
       <a
         href={post.url}
         target="_blank"

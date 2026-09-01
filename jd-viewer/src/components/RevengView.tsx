@@ -4,6 +4,9 @@ import remarkGfm from 'remark-gfm'
 import { useDomainDocs, useMarkdown, useRevengIndex, type IndexEntry } from '../lib/useReveng'
 import { usePaged } from '../lib/usePaged'
 import { CompanyTeardown } from './CompanyTeardown'
+import { goBack, onLinkClick } from '../lib/router'
+import { paths } from '../lib/urls'
+import { absUrl, clip, useSeo } from '../lib/seo'
 import { Loader, ErrorState, EmptyState, Pagination } from './ui'
 
 // 카드 3열 × 4줄. 회사가 계속 쌓이는 탭이라 한 화면에 다 밀어 넣으면 곧 통 스크롤이 된다.
@@ -16,13 +19,18 @@ const PAGE_SIZE = 12
 // 사람이 재구성한 내용이라, 어디까지가 회사가 말한 것이고 어디부터가 추정인지를
 // 화면이 항상 같이 보여줘야 한다. 그래서 신뢰도 뱃지가 이 탭의 1급 요소다.
 
-export function RevengView() {
+/**
+ * @param seg 주소에서 `reveng` 다음 세그먼트들. `['toss']` 는 회사 상세,
+ *   `['문서', 'same-problem-three-answers']` 는 비교 문서다.
+ */
+export function RevengView({ seg = [] }: { seg?: string[] }) {
   const { data, loading, error } = useRevengIndex()
   const { data: domainDocs } = useDomainDocs()
-  const [slug, setSlug] = useState<string | null>(null)
-  const [docSlug, setDocSlug] = useState<string | null>(null)
   const [country, setCountry] = useState<string | null>(null)
   const [category, setCategory] = useState<string | null>(null)
+  // 무엇을 보고 있는지는 주소가 정한다. 회사 하나하나가 공유·색인 가능한 페이지다.
+  const slug = seg[0] === '문서' ? null : (seg[0] ?? null)
+  const docSlug = seg[0] === '문서' ? (seg[1] ?? null) : null
 
   const companies = useMemo(() => data?.companies ?? [], [data])
   const categories = useMemo(
@@ -43,10 +51,30 @@ export function RevengView() {
   // 훅이라 아래의 조기 반환들보다 위에 있어야 한다(호출 순서가 렌더마다 같아야 한다).
   const paged = usePaged(shown, PAGE_SIZE)
 
-  if (slug) return <CompanyTeardown slug={slug} onBack={() => setSlug(null)} />
+  // 회사·비교문서 상세의 제목은 여기서 단다. 색인 목록(index.json)에 제목과 한 줄
+  // 요약이 이미 있으므로 상세 파일을 안 읽고도 메타를 만들 수 있다.
+  const entry = slug ? companies.find((c) => c.slug === slug) : null
+  const doc = docSlug ? domainDocs?.docs.find((d) => d.slug === docSlug) : null
+  useSeo(
+    entry
+      ? {
+          title: `${entry.name} 기술 역설계`,
+          description: clip(`${entry.name}(${entry.name_en ?? ''}) 기술 역설계 — ${entry.one_liner ?? ''}`),
+          canonical: absUrl(paths.revengCompany(entry.slug)),
+        }
+      : doc
+        ? {
+            title: doc.title,
+            description: clip(doc.question ?? doc.title),
+            canonical: absUrl(paths.revengDoc(doc.slug)),
+          }
+        : null,
+  )
+
+  if (slug) return <CompanyTeardown slug={slug} onBack={() => goBack(paths.reveng())} />
   if (docSlug) {
     const doc = domainDocs?.docs.find((d) => d.slug === docSlug)
-    if (doc) return <DomainDocView file={doc.file} title={doc.title} onBack={() => setDocSlug(null)} />
+    if (doc) return <DomainDocView file={doc.file} title={doc.title} onBack={() => goBack(paths.reveng())} />
   }
   if (loading) return <Loader label="역설계 데이터 불러오는 중…" />
   if (error)
@@ -106,7 +134,7 @@ export function RevengView() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4">
             {paged.slice.map((c) => (
-              <CompanyCard key={c.slug} c={c} countryLabel={data?.countries?.[c.country] ?? c.country} onOpen={() => setSlug(c.slug)} />
+              <CompanyCard key={c.slug} c={c} countryLabel={data?.countries?.[c.country] ?? c.country} />
             ))}
           </div>
           {shown.length === 0 ? (
@@ -135,10 +163,11 @@ export function RevengView() {
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {domainDocs.docs.map((doc) => (
-                  <button
+                  <a
                     key={doc.slug}
-                    onClick={() => setDocSlug(doc.slug)}
-                    className="text-left rounded-lg border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition-colors"
+                    href={paths.revengDoc(doc.slug)}
+                    onClick={onLinkClick(paths.revengDoc(doc.slug))}
+                    className="block text-left rounded-lg border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition-colors"
                   >
                     <div className="text-sm font-medium text-(--color-text)">{doc.title}</div>
                     {doc.question && (
@@ -154,7 +183,7 @@ export function RevengView() {
                         </span>
                       ))}
                     </div>
-                  </button>
+                  </a>
                 ))}
               </div>
             </section>
@@ -262,19 +291,14 @@ export function CompanyLogo({
   )
 }
 
-function CompanyCard({
-  c,
-  countryLabel,
-  onOpen,
-}: {
-  c: IndexEntry
-  countryLabel: string
-  onOpen: () => void
-}) {
+// 카드는 버튼이 아니라 링크다 — 회사마다 주소가 있어야 공유도 되고 색인도 된다.
+function CompanyCard({ c, countryLabel }: { c: IndexEntry; countryLabel: string }) {
+  const to = paths.revengCompany(c.slug)
   return (
-    <button
-      onClick={onOpen}
-      className="text-left rounded-lg border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition-colors"
+    <a
+      href={to}
+      onClick={onLinkClick(to)}
+      className="block text-left rounded-lg border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition-colors"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5 min-w-0">
@@ -306,7 +330,7 @@ function CompanyCard({
         </span>
         <span className="ml-auto tabular-nums">기능 {c.features_done}</span>
       </div>
-    </button>
+    </a>
   )
 }
 

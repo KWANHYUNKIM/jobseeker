@@ -20,7 +20,8 @@ export function TrendView({
   focusTech,
 }: {
   onOpenCompany?: (norm: string) => void
-  focusTech?: { tech: string; n: number } | null
+  /** 주소(`/trend?tech=React`)로 지정된 기술. 있으면 학습·확장 모드로 연다. */
+  focusTech?: string | null
 } = {}) {
   const { data, loading, error } = useTrends()
   const { data: rel } = useTechRelations()
@@ -32,7 +33,7 @@ export function TrendView({
   const [prevFocus, setPrevFocus] = useState(focusTech)
   if (focusTech !== prevFocus) {
     setPrevFocus(focusTech)
-    if (focusTech?.tech) setMode('learn')
+    if (focusTech) setMode('learn')
   }
 
   const latest = data?.days[data.days.length - 1]

@@ -1,18 +1,22 @@
 import { useMemo } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
+import { placeOf, UNKNOWN_REGION } from '../lib/region'
 import { usePaged } from '../lib/usePaged'
+import { onLinkClick } from '../lib/router'
+import { paths } from '../lib/urls'
 import { EmptyState, TechTag, CompanyMark, Pagination } from './ui'
 
 interface Props {
   jobs: Job[]
-  selected: Job | null
-  onSelect: (j: Job) => void
 }
 
 const PAGE_SIZE = 20
 
-export function JobList({ jobs, selected, onSelect }: Props) {
+// 공고 제목은 목록 안에서 유일하게 '진짜 링크'다. 줄 전체를 <a> 로 감싸면 안에 든
+// 원본 링크와 앵커가 겹쳐 잘못된 마크업이 되므로, 제목만 링크로 두고 줄 클릭은
+// 그대로 살린다. 크롤러는 이 제목 링크를 따라 공고 상세로 들어온다.
+export function JobList({ jobs }: Props) {
   const { page, setPage, totalPages, start, slice } = usePaged(jobs, PAGE_SIZE)
 
   const rows = useMemo(
@@ -20,6 +24,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
       slice.map((j) => ({
         job: j,
         roles: classifyRoles(j.title, j.tech_stack, j.qualifications || ''),
+        place: placeText(j),
       })),
     [slice],
   )
@@ -37,25 +42,29 @@ export function JobList({ jobs, selected, onSelect }: Props) {
     <div className="flex flex-col">
       {/* 모바일: 카드 리플로우 (표는 좁은 화면에서 잘리므로) */}
       <ul className="md:hidden divide-y divide-(--color-border)">
-        {rows.map(({ job: j, roles }, i) => {
-          const active = selected?.site === j.site && selected?.pid === j.pid
+        {rows.map(({ job: j, roles, place }, i) => {
+          const to = paths.job(j)
           return (
             <li
               key={`${j.site}-${j.pid}-${j.idx}`}
-              onClick={() => onSelect(j)}
-              className={'px-4 py-3 cursor-pointer transition ' + (active ? 'bg-(--color-accent)/15' : 'hover:bg-(--hover)')}
+              onClick={onLinkClick(to)}
+              className="px-4 py-3 cursor-pointer transition hover:bg-(--hover)"
             >
               <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
                 <span className="tabular-nums">{start + i + 1}</span>
                 <span className="px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border)">{j.site}</span>
                 <CompanyMark name={j.company} size={16} />
                 <span className="text-(--color-accent) truncate">{j.company}</span>
-                {j.career && <span className="ml-auto shrink-0">{j.career}</span>}
+                <SizeBadge size={j.company_size} />
+                <span className="ml-auto shrink-0 flex items-center gap-1.5">
+                  {place && <span>{place}</span>}
+                  {j.career && <span>{j.career}</span>}
+                </span>
               </div>
-              <div className="text-(--color-text) text-sm leading-snug line-clamp-2 mb-1.5">
+              <a href={to} onClick={onLinkClick(to)} className="block text-(--color-text) text-sm leading-snug line-clamp-2 mb-1.5">
                 {j.status === 'closed' && <ClosedBadge reason={j.closed_reason} />}
                 {j.title}
-              </div>
+              </a>
               {roles.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-1.5">
                   {roles.map((r) => (
@@ -94,22 +103,20 @@ export function JobList({ jobs, selected, onSelect }: Props) {
               <th className="px-3 py-2 font-medium w-48">회사</th>
               <th className="px-3 py-2 font-medium">공고 제목</th>
               <th className="px-3 py-2 font-medium w-44">분류 직군</th>
+              <th className="px-3 py-2 font-medium w-28">지역</th>
               <th className="px-3 py-2 font-medium w-24">경력</th>
               <th className="px-3 py-2 font-medium w-80">기술스택</th>
               <th className="px-3 py-2 font-medium w-16">원본</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ job: j, roles }, i) => {
-              const active = selected?.site === j.site && selected?.pid === j.pid
+            {rows.map(({ job: j, roles, place }, i) => {
+              const to = paths.job(j)
               return (
                 <tr
                   key={`${j.site}-${j.pid}-${j.idx}`}
-                  onClick={() => onSelect(j)}
-                  className={
-                    'border-b border-(--color-border) cursor-pointer transition ' +
-                    (active ? 'bg-(--color-accent)/15' : 'hover:bg-(--hover)')
-                  }
+                  onClick={onLinkClick(to)}
+                  className="border-b border-(--color-border) cursor-pointer transition hover:bg-(--hover)"
                 >
                   <td className="px-3 py-2 text-(--color-muted) tabular-nums">{start + i + 1}</td>
                   <td className="px-3 py-2">
@@ -121,13 +128,14 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                     <span className="flex items-center gap-1.5 min-w-0">
                       <CompanyMark name={j.company} size={16} />
                       <span className="truncate">{j.company}</span>
+                      <SizeBadge size={j.company_size} />
                     </span>
                   </td>
                   <td className="px-3 py-2 text-(--color-text)">
-                    <div className="line-clamp-2 leading-snug">
+                    <a href={to} onClick={onLinkClick(to)} className="line-clamp-2 leading-snug hover:text-(--color-accent)">
                       {j.status === 'closed' && <ClosedBadge reason={j.closed_reason} />}
                       {j.title}
-                    </div>
+                    </a>
                   </td>
                   <td className="px-3 py-2">
                     <div className="flex flex-wrap gap-1">
@@ -141,6 +149,9 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                         </span>
                       ))}
                     </div>
+                  </td>
+                  <td className="px-3 py-2 text-(--color-muted) text-xs" title={j.location || undefined}>
+                    {place || '-'}
                   </td>
                   <td className="px-3 py-2 text-(--color-muted) text-xs">{j.career || '-'}</td>
                   <td className="px-3 py-2">
@@ -197,6 +208,30 @@ function ClosedBadge({ reason }: { reason?: string }) {
       className="mr-1.5 align-middle inline-block px-1.5 py-0.5 text-[10px] font-medium rounded bg-(--color-muted)/20 text-(--color-muted) border border-(--color-border)"
     >
       마감
+    </span>
+  )
+}
+
+// 목록에 보일 근무지 — '서울 강남구' 처럼 시도+시군구까지만. 원본 주소는 title 로 남긴다.
+function placeText(job: Job): string {
+  const p = placeOf(job)
+  if (p.region === UNKNOWN_REGION) return ''
+  return p.district ? `${p.region} ${p.district}` : p.region
+}
+
+// 기업 규모 배지. 중소기업은 붙이지 않는다 — 열에 아홉이 그 값이라, 다 붙이면
+// 배지가 아니라 배경이 된다. 눈에 띄어야 하는 건 그 나머지다.
+function SizeBadge({ size }: { size?: Job['company_size'] }) {
+  if (!size || size === '중소기업') return null
+  return (
+    <span
+      className={`shrink-0 px-1 py-0.5 text-[10px] rounded border ${
+        size === '대기업'
+          ? 'border-(--color-accent)/50 text-(--color-accent)'
+          : 'border-(--color-border) text-(--color-muted)'
+      }`}
+    >
+      {size}
     </span>
   )
 }

@@ -3,15 +3,21 @@ import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
 import { useSimilarJobs } from '../lib/useSimilar'
 import { useJobGuide, PRIORITY_COLOR, type StudyFrom, type StudyItem } from '../lib/useGuide'
+import { goBack } from '../lib/router'
+import { paths } from '../lib/urls'
 import { TechTag, CompanyMark } from './ui'
 import { JobGuide } from './JobGuide'
 
 interface Props {
   job: Job
-  onClose: () => void
   /** 비슷한 공고를 눌렀을 때 그 공고로 갈아끼운다. 없으면 추천 섹션을 감춘다. */
   onOpenUrl?: (url: string) => void
 }
+
+// 닫기는 곧 뒤로가기다 — 상세가 주소를 가지므로, 목록으로 돌아가는 일은 히스토리를
+// 한 칸 되감는 것과 같다. 외부에서 상세로 바로 들어온 사람은 되감을 칸이 없으므로
+// 목록 주소로 보낸다.
+const onClose = () => goBack(paths.jobs())
 
 /**
  * 공고 상세 — 팝업이 아니라 화면 하나.
@@ -20,7 +26,7 @@ interface Props {
  * 서로를 밀어냈다. 둘 다 "끝까지 읽는" 글이라 좁은 칸에 겹쳐 두면 어느 쪽도 안 읽힌다.
  * 그래서 목록을 통째로 갈아끼우는 전체 화면으로 바꾸고 폭을 둘로 나눴다.
  */
-export function JobDetail({ job, onClose, onOpenUrl }: Props) {
+export function JobDetail({ job, onOpenUrl }: Props) {
   const [activeQuote, setActiveQuote] = useState<string | null>(null)
   const [pane, setPane] = useState<'jd' | 'guide'>('jd')
 
@@ -30,7 +36,7 @@ export function JobDetail({ job, onClose, onOpenUrl }: Props) {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+  }, [])
 
   // 추천을 눌러 다른 공고로 갈아끼면 스크롤·하이라이트·펼친 항목이 앞 공고의 것으로
   // 남는다. App 이 key={job.url} 로 이 컴포넌트를 통째로 다시 마운트해서 그걸 막는다 —
@@ -60,13 +66,18 @@ export function JobDetail({ job, onClose, onOpenUrl }: Props) {
       {/* 헤더 */}
       <div className="border-b border-(--color-border) bg-(--color-panel) px-4 sm:px-6 py-3 shrink-0">
         <div className="flex items-start gap-3">
-          <button
-            onClick={onClose}
+          <a
+            href={paths.jobs()}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+              e.preventDefault()
+              onClose()
+            }}
             className="shrink-0 mt-0.5 px-2.5 py-1.5 rounded border border-(--color-border) text-xs text-(--color-muted) hover:text-(--color-text) hover:bg-(--hover)"
             title="목록으로 (ESC)"
           >
             ← 목록
-          </button>
+          </a>
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-1">
               <span className="text-xs px-2 py-0.5 rounded bg-(--color-bg) text-(--color-muted) border border-(--color-border)">

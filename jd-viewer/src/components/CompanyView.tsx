@@ -3,6 +3,8 @@ import { useCompanies } from '../lib/useCompanies'
 import { useLearning, type LearningVideo } from '../lib/useLearning'
 import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon, CompanyMark } from './ui'
 import { ROLE_COLORS } from '../lib/classify'
+import { paths } from '../lib/urls'
+import { absUrl, clip, useSeo } from '../lib/seo'
 import type { CompanyStack, CareerGuide } from '../types'
 
 const CAT_COLOR: Record<string, string> = {
@@ -25,23 +27,24 @@ const CAT_ORDER = [
 ]
 
 export function CompanyView({
-  focusNorm,
+  selectedNorm,
+  onSelectCompany,
   onStudyTech,
 }: {
-  focusNorm?: string | null
+  /** 주소(/companies/<norm>)에서 온 선택. 이 컴포넌트는 선택을 스스로 들고 있지 않는다. */
+  selectedNorm?: string | null
+  onSelectCompany: (norm: string) => void
   onStudyTech?: (tech: string) => void
 }) {
   const { companies, meta, loading, error } = useCompanies()
   const [query, setQuery] = useState('')
-  const [selectedNorm, setSelectedNorm] = useState<string | null>(null)
   const [navOpen, setNavOpen] = useState(false)
 
-  // 다른 탭(기술스택 확장)에서 회사를 지정해 들어오면 선택·검색 동기화
+  // 주소로 회사가 지정돼 들어오면 검색어를 비운다 — 걸러진 목록 때문에
+  // 정작 지정된 회사가 왼쪽 목록에 안 보이는 상태를 막는다.
   useEffect(() => {
-    if (!focusNorm) return
-    setSelectedNorm(focusNorm)
-    setQuery('')
-  }, [focusNorm])
+    if (selectedNorm) setQuery('')
+  }, [selectedNorm])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -57,6 +60,31 @@ export function CompanyView({
   const selected = useMemo(
     () => companies.find((c) => c.norm === selectedNorm) ?? filtered[0] ?? null,
     [companies, selectedNorm, filtered],
+  )
+
+  // 주소로 회사가 지정된 화면의 제목·설명은 여기서 단다(App 은 이 데이터를 안 들고 있다).
+  // 문구는 scripts/prerender.mjs 가 찍는 정적 HTML 과 같은 규칙이어야 한다.
+  const tech = (selected?.top_tech ?? []).slice(0, 15).map((t) => t.name)
+  useSeo(
+    selectedNorm && selected
+      ? {
+          title: `${selected.name} 기술스택·채용공고`,
+          description: clip(
+            `${selected.name}의 채용공고 ${selected.posting_count}건에서 뽑은 기술스택: ${tech
+              .slice(0, 8)
+              .join(', ')}. ${selected.summary ?? ''}`,
+          ),
+          canonical: absUrl(paths.company(selected.norm)),
+          jsonLd: {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: selected.name,
+            ...(selected.homepage ? { url: selected.homepage } : {}),
+            description: clip(selected.summary, 300),
+            knowsAbout: tech,
+          },
+        }
+      : null,
   )
 
   if (loading) return <Loader label="회사 분석 데이터 불러오는 중…" />
@@ -88,13 +116,16 @@ export function CompanyView({
           {filtered.map((c) => {
             const active = selected?.norm === c.norm
             return (
-              <button
+              <a
                 key={c.norm}
-                onClick={() => {
-                  setSelectedNorm(c.norm)
+                href={paths.company(c.norm)}
+                onClick={(e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+                  e.preventDefault()
+                  onSelectCompany(c.norm)
                   setNavOpen(false)
                 }}
-                className={`w-full text-left px-3 py-2.5 border-b border-(--color-border)/50 transition ${
+                className={`block w-full text-left px-3 py-2.5 border-b border-(--color-border)/50 transition ${
                   active ? 'bg-(--color-accent)/15' : 'hover:bg-(--hover)'
                 }`}
               >
@@ -110,7 +141,7 @@ export function CompanyView({
                   {c.domains[0]?.name ?? '도메인 미상'}
                   {c.top_tech[0] ? ` · ${c.top_tech.slice(0, 3).map((t) => t.name).join(', ')}` : ''}
                 </div>
-              </button>
+              </a>
             )
           })}
         </div>
