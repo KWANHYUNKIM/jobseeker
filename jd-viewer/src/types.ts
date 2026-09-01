@@ -24,7 +24,14 @@ export interface Job {
   region?: string
   source_board?: string
   overseas?: boolean
+  // company_meta.json 에서 붙인 회사 규모. 공고 파일에는 없고 useJobs 가 이어 붙인다
+  // (규모 판정은 dashboard/classifier 가 소유 — 화이트리스트 + 공고의 사원수·매출액).
+  company_size?: CompanySize
 }
+
+export type CompanySize = '대기업' | '중견기업' | '중소기업'
+
+export const COMPANY_SIZES: CompanySize[] = ['대기업', '중견기업', '중소기업']
 
 // ── 회사 기술스택 분석 (company_stacks.json) ───────────────────────────
 export interface TechCount {
@@ -189,6 +196,8 @@ export interface BlogPost {
   tags: string[]
   lang: string
   content_id?: string
+  /** 'blocked': 사이트 봇 차단 등으로 본문 수집이 반복 실패한 글 (크롤이 재시도를 늦춘 상태) */
+  content_state?: 'blocked'
 }
 
 // 글별 본문/번역 (blog_content/<id>.json)

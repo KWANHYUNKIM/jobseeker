@@ -85,6 +85,8 @@ echo "latest -> $LATEST (${NEW_COUNT}건${OLD_COUNT:+, 기존 ${OLD_COUNT}건})"
 "$PY" "$SCRIPT_DIR/enrich_jobs.py"
 "$PY" "$SCRIPT_DIR/build_mindmap.py"
 "$PY" "$SCRIPT_DIR/build_company_stacks.py"
+# 회사 규모 색인 — 잡 리스트의 "기업 규모" 필터가 읽는 얇은 파일(공고 1건 회사 포함)
+"$PY" "$SCRIPT_DIR/build_company_meta.py"
 # 기술별 추천 학습 영상(YouTube) — company_stacks.json 의 기술 목록을 소비. 캐시로 증분 수집.
 "$PY" "$SCRIPT_DIR/build_learning.py"
 # 모집 캘린더 — JD 본문의 접수/모집기간·마감 표기를 파싱해 job_calendar.json 생성

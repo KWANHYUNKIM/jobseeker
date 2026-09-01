@@ -1,6 +1,8 @@
+import { useMemo } from 'react'
 import { emptyFilter, type FilterState } from '../lib/filter'
-import type { Site } from '../types'
-import { CAREER_BUCKETS } from '../types'
+import { districtCounts, regionCounts } from '../lib/region'
+import type { CompanySize, Job, Site } from '../types'
+import { CAREER_BUCKETS, COMPANY_SIZES } from '../types'
 import { SidePanel, TechIcon } from './ui'
 
 const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev', 'remote', 'ats']
@@ -14,6 +16,8 @@ const SITE_LABEL: Partial<Record<Site, string>> = {
 interface Props {
   filter: FilterState
   setFilter: (f: FilterState) => void
+  /** 지역·규모 칩의 건수는 현재 선택에 따라 달라져서 여기서 직접 센다. */
+  jobs: Job[]
   topStacks: { name: string; count: number }[]
   roleCounts: { name: string; count: number }[]
   totalCount: number
@@ -31,7 +35,27 @@ function toggle<T>(set: Set<T>, val: T): Set<T> {
   return next
 }
 
-export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, filteredCount, open, onClose, semantic }: Props) {
+export function Sidebar({ filter, setFilter, jobs, topStacks, roleCounts, totalCount, filteredCount, open, onClose, semantic }: Props) {
+  const regions = useMemo(() => regionCounts(jobs), [jobs])
+  const sizes = useMemo(() => {
+    const c = new Map<CompanySize, number>()
+    for (const j of jobs) {
+      if (j.company_size) c.set(j.company_size, (c.get(j.company_size) ?? 0) + 1)
+    }
+    return COMPANY_SIZES.map((name) => ({ name, count: c.get(name) ?? 0 })).filter((x) => x.count > 0)
+  }, [jobs])
+  // 시군구는 지역을 딱 하나 골랐을 때만 의미가 있다 — 여러 시도의 구를 한 줄에
+  // 늘어놓으면 같은 이름(중구·남구)이 뒤섞여 무엇을 고른 건지 알 수 없다.
+  const onlyRegion = filter.regions.size === 1 ? [...filter.regions][0] : null
+  const districts = useMemo(
+    () => (onlyRegion ? districtCounts(jobs, onlyRegion) : []),
+    [jobs, onlyRegion],
+  )
+
+  // 지역을 바꾸면 앞서 고른 시군구는 뜻을 잃는다(다른 시도의 구다). 같이 비운다.
+  const toggleRegion = (name: string) =>
+    setFilter({ ...filter, regions: toggle(filter.regions, name), districts: new Set() })
+
   return (
     <SidePanel side="left" desktopWidth="md:w-72" open={open} onClose={onClose} className="jd-side-panel">
      <div className="p-4 overflow-y-auto flex flex-col gap-5 text-sm h-full">
@@ -117,6 +141,43 @@ export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, 
         ))}
       </FilterGroup>
 
+      <FilterGroup title="지역">
+        {regions.map((r) => (
+          <Chip
+            key={r.name}
+            label={`${r.name} (${r.count})`}
+            active={filter.regions.has(r.name)}
+            onClick={() => toggleRegion(r.name)}
+          />
+        ))}
+      </FilterGroup>
+
+      {districts.length > 0 && (
+        <FilterGroup title={`${onlyRegion} 시·군·구`}>
+          {districts.map((d) => (
+            <Chip
+              key={d.name}
+              label={`${d.name} (${d.count})`}
+              active={filter.districts.has(d.name)}
+              onClick={() => setFilter({ ...filter, districts: toggle(filter.districts, d.name) })}
+            />
+          ))}
+        </FilterGroup>
+      )}
+
+      {sizes.length > 0 && (
+        <FilterGroup title="기업 규모">
+          {sizes.map((s) => (
+            <Chip
+              key={s.name}
+              label={`${s.name} (${s.count})`}
+              active={filter.sizes.has(s.name)}
+              onClick={() => setFilter({ ...filter, sizes: toggle(filter.sizes, s.name) })}
+            />
+          ))}
+        </FilterGroup>
+      )}
+
       <FilterGroup title="직군">
         {roleCounts.map((r) => (
           <Chip
@@ -152,6 +213,9 @@ export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, 
       </FilterGroup>
 
       {(filter.sites.size > 0 ||
+        filter.regions.size > 0 ||
+        filter.districts.size > 0 ||
+        filter.sizes.size > 0 ||
         filter.careers.size > 0 ||
         filter.stacks.size > 0 ||
         filter.roles.size > 0 ||
