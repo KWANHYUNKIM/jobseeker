@@ -16,13 +16,15 @@
       "slug": "megazonecloud",
       "name": "메가존클라우드",
       "aliases": [
+        "MegazoneCloud",
+        "㈜메가존클라우드",
         "메가존클라우드",
         "메가존클라우드㈜"
       ],
-      "status": "done",
-      "postings": 4,
-      "study_items": 33,
-      "updated_at": "2026-08-29"
+      "status": "in_progress",
+      "postings": 15,
+      "study_items": 146,
+      "updated_at": "2026-09-02"
     },
     {
       "slug": "miridih",
@@ -236,19 +238,6 @@
       "status": "done",
       "postings": 17,
       "study_items": 160,
-      "updated_at": "2026-09-02"
-    },
-    {
-      "slug": "megazone-cloud",
-      "name": "메가존클라우드",
-      "aliases": [
-        "메가존클라우드",
-        "㈜메가존클라우드",
-        "MegazoneCloud"
-      ],
-      "status": "in_progress",
-      "postings": 14,
-      "study_items": 140,
       "updated_at": "2026-09-02"
     }
   ]

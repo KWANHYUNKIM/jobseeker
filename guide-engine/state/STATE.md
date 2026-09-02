@@ -4,7 +4,17 @@
 
 ## 지금 쓰는 중
 
-**메가존클라우드 (`megazone-cloud`) — `in_progress`.** 공고 14건 · 학습 140개.
+**메가존클라우드 (`megazonecloud`) — `in_progress`.** 공고 15건 · 학습 146개.
+
+**⚠️ 슬러그를 `megazone-cloud` 에서 `megazonecloud` 로 되돌리고 두 파일을 합쳤다.**
+이 회사는 **2026-08-29 에 이미 `megazonecloud` 로 4건을 쓰고 `done` 으로 닫혀 있었다.**
+회사 골격 사이클이 그걸 못 보고 새 슬러그로 다시 열어 **같은 회사가 둘이 됐다.**
+`aliases` 가 겹치면 뷰어(`useGuide.ts` 의 `find`)는 **앞의 하나만** 찾으므로,
+새로 쓴 14건은 다 써 놓고도 화면에 영영 안 떴다. 합치면서 옛 파일의
+**`salary`(밴드 2개) · `people`(2명) · `Full-Stack / Back-end Developer` 공고**를
+되살렸고, 겹친 공고 3건은 새로 쓴 쪽(학습 10개)을 남겼다.
+**`validate.py` 에 `aliases` 충돌 검사를 넣었다 — 다음 사이클은 이 실수를 못 한다.**
+**새 회사를 열기 전에 `index.json` 에 그 이름이 이미 있는지 먼저 본다.**
 (전체: 회사 21곳 · 공고 170건 · 학습 1,389개 · 오류 0 · 경고 0.)
 
 **이번 회차 = `[메가존클라우드관계사] 메가존소프트 GCP AI Engineer`. 관계사 계열 첫 편.**
@@ -39,8 +49,8 @@
    (`Cloud Security Engineer` 가 그랬다). **본문이 두꺼운 쪽을 쓴다.**
    ⚠️ **법인 안내 줄이 있는지 확인**하고 verdict 첫 줄에 명시한다.
 2. `SW 개발자 (ServiceNow 솔루션)`(924자, 경력무관) — **ITSM, 이 브리핑에 없던 축.**
-3. `Full-Stack / Back-end Developer`(858자, 3~15년) /
-   `[메가존클라우드] Solution Architect`(556자, 4~10년).
+3. `[메가존클라우드] Solution Architect`(556자, 4~10년).
+   (`Full-Stack / Back-end Developer` 는 **합병으로 이미 들어왔다** — 다시 쓰지 않는다.)
 4. `Data Engineer (데이터 거버넌스)`(414자) / `Data Analyst`(384자) — 얇다. **함께 읽기.**
    ⚠️ 관계사 Data Engineer 를 쓴 뒤라 **각도가 남는지 먼저 확인.**
 5. `CX Platform Specialist`(1,046자) / `CX Service Operation Specialist`(785자).
