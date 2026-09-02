@@ -224,6 +224,19 @@
       "postings": 17,
       "study_items": 157,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "upstage",
+      "name": "업스테이지",
+      "aliases": [
+        "업스테이지",
+        "㈜업스테이지",
+        "Upstage"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
