@@ -86,3 +86,8 @@ catch_capture/.inflearn_refresh.stamp
 
 # 취업 브리핑 엔진이 공고 60MB 를 매번 안 읽으려고 만드는 캐시 (원본에서 재생성됨)
 guide-engine/state/.jobs_cache.json
+
+# 자동 브리핑 산출물 (guide-engine/autoguide.py 가 크롤 데이터에서 재생성 — 814곳 25MB).
+# 손으로 쓴 브리핑(jd-viewer/public/guide/companies/)은 그대로 추적한다. 저쪽은
+# 사람이 판단해서 쓴 글이라 되살릴 수 없고, 여기는 --all 한 번이면 56초에 다시 난다.
+jd-viewer/public/guide/auto/
