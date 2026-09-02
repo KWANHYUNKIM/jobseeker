@@ -184,6 +184,18 @@
       "postings": 10,
       "study_items": 81,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "robros",
+      "name": "로브로스",
+      "aliases": [
+        "로브로스",
+        "㈜로브로스"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
