@@ -209,6 +209,21 @@
       "postings": 8,
       "study_items": 72,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "elice",
+      "name": "엘리스",
+      "aliases": [
+        "엘리스",
+        "㈜엘리스",
+        "엘리스그룹",
+        "㈜엘리스그룹",
+        "Elice"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
