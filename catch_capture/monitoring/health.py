@@ -39,10 +39,15 @@ def _fill_rates(jobs: list[dict]) -> dict:
     return {f: round(sum(1 for j in jobs if not _empty(j.get(f))) / n, 3) for f in FIELDS}
 
 
-def _last_record(keyword: str) -> dict | None:
+# 이만큼의 기록 동안 숫자가 한 톨도 안 움직인 소스는 죽은 것으로 본다.
+# 사이클이 보통 1시간이니 12회 ≈ 반나절이다.
+STALE_RECORDS = 12
+
+
+def _recent_records(keyword: str, n: int) -> list[dict]:
     if not HISTORY.exists():
-        return None
-    last = None
+        return []
+    out = []
     for line in HISTORY.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
@@ -52,11 +57,12 @@ def _last_record(keyword: str) -> dict | None:
         except Exception:
             continue
         if r.get("keyword") == keyword:
-            last = r
-    return last
+            out.append(r)
+    return out[-n:]
 
 
-def detect_anomalies(cur: dict, prev: dict | None) -> list[str]:
+def detect_anomalies(cur: dict, prev: dict | None,
+                     recent: list[dict] | None = None) -> list[str]:
     out: list[str] = []
     cs = cur["site_counts"]
     for s, n in cs.items():
@@ -78,6 +84,17 @@ def detect_anomalies(cur: dict, prev: dict | None) -> list[str]:
         for s in ps:
             if s not in cs:
                 out.append(f"[{s}] 사이트 사라짐")
+
+    # 얼어붙은 소스. 위의 검사는 전부 "줄었나"를 보므로, 크롤이 아예 안 돌아
+    # 숫자가 그대로인 소스는 영영 안 걸린다 — remote·ats 가 이렇게 45일을 갔다.
+    # 누적 수치라 정상이면 조금씩이라도 늘어난다. 안 늘면 그 소스는 죽은 것이다.
+    if recent and len(recent) >= STALE_RECORDS:
+        window = recent[-STALE_RECORDS:]
+        for s, n in cs.items():
+            past = [r.get("site_counts", {}).get(s) for r in window]
+            if all(p == n for p in past):
+                out.append(f"[{s}] {STALE_RECORDS}회 기록 내내 {n}건 그대로 "
+                           f"— 이 소스는 크롤이 안 돌고 있다")
     return out
 
 
@@ -100,8 +117,9 @@ def record(keyword, site_counts, all_jobs, active_jobs, closed_jobs,
         },
         "failures": list(failures or []),
     }
-    prev = _last_record(keyword)
-    cur["anomalies"] = detect_anomalies(cur, prev)
+    recent = _recent_records(keyword, STALE_RECORDS)
+    prev = recent[-1] if recent else None
+    cur["anomalies"] = detect_anomalies(cur, prev, recent)
     with open(HISTORY, "a", encoding="utf-8") as f:
         f.write(json.dumps(cur, ensure_ascii=False) + "\n")
     LATEST.write_text(json.dumps(cur, ensure_ascii=False, indent=2), encoding="utf-8")
