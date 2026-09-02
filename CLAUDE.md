@@ -47,7 +47,7 @@
 - 이 머신은 8GB M1 이다. Playwright 크롤과 Ollama 임베딩이 동시에 뜨면 컨텍스트
   할당에 실패한다. 전량 임베딩이 필요하면 `auto_crawl stop` 후 돌린다.
 - `screenshots/` 는 타임스탬프 스냅샷이 사이클마다 쌓인다(개당 ~250MB).
-  `auto_crawl` 이 매 사이클 계열별 8개만 남기고 정리한다(`auto_crawl prune`으로 수동 실행).
+  `auto_crawl` 이 매 사이클 계열별 3개만 남기고 정리한다(`auto_crawl prune`으로 수동 실행).
 - 새 공고의 임베딩은 크롤 사이클 끝의 `refresh_semantic()` 이 증분으로 처리한다.
   그러려면 Ollama 가 늘 떠 있어야 한다 — `brew services start ollama`.
   꺼져 있으면 사이클은 그대로 돌고 임베딩만 조용히 건너뛴다(추천·검색이 낡아간다).

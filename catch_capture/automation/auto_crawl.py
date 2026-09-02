@@ -81,7 +81,10 @@ DEFAULT_INTERVAL = 3600  # 1시간
 
 # 디스크 유지보수 — 무한 로그/스냅샷 누적으로 디스크가 꽉 차 데몬이 죽는 사고 방지.
 LOG_MAX_BYTES = 20 * 1024 * 1024   # auto_crawl.log 로테이션 임계치(20MB)
-SNAPSHOT_KEEP = 8                  # screenshots 타임스탬프 폴더 계열별 보관 개수
+SNAPSHOT_KEEP = 3                  # screenshots 타임스탬프 폴더 계열별 보관 개수
+                                   # 8개일 때 통합 계열만 2.3GB(파일 25만 개)를 물고 있어
+                                   # 디스크가 8GB 밑으로 떨어지고 스왑이 터졌다. 3개면 충분하다
+                                   # — 스냅샷은 사이클마다 다시 만들어진다.
 _TS_RE = re.compile(r"_\d{8}_\d{6}$")  # <prefix>_YYYYMMDD_HHMMSS 접미사
 
 
