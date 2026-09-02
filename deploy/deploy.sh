@@ -15,8 +15,9 @@ COMPOSE_FILE="docker-compose.prod.yml"
 BRANCH="${DEPLOY_BRANCH:-main}"
 HEALTH_URL="http://127.0.0.1:8080/"
 
-log() { printf '\033[1;34m▶\033[0m %s\n' "$*"; }
-die() { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
+log()  { printf '\033[1;34m▶\033[0m %s\n' "$*"; }
+warn() { printf '\033[1;33m!\033[0m %s\n' "$*"; }
+die()  { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
 
 cd "$DEPLOY_DIR" || die "배포 디렉토리가 없습니다: $DEPLOY_DIR"
 [ -f "$COMPOSE_FILE" ] || die "$COMPOSE_FILE 이 없습니다"
@@ -60,6 +61,20 @@ if [ "${1:-}" != "--local" ]; then
     || die "fast-forward 불가. 로컬 변경/분기를 먼저 정리하세요 (git status 확인)"
 fi
 log "배포 리비전: $(git rev-parse --short HEAD) — $(git log -1 --pretty=%s)"
+
+# ── 크롤 스케줄 재등록 ─────────────────────────────────────
+# launchd 는 등록 당시의 인자를 계속 들고 돈다. setup-crawler.sh 의
+# KEYWORD/COUNT/INTERVAL 기본값을 고쳐 커밋해도, 누가 손으로 재등록하기 전까지
+# 서버는 옛 인자로 크롤한다. 실제로 2026-08-17 에 들어온 멀티 키워드 기본값이
+# 9/2 까지 반영되지 않아 수집량이 절반이었다.
+#
+# --reschedule 은 plist 가 최신 기본값과 같으면 아무것도 하지 않고, 크롤이
+# 돌고 있으면 사이클을 죽이지 않으려 다음 배포로 미룬다. 스케줄이 아예 등록되지
+# 않은 머신(뷰어 전용)에서는 그냥 건너뛴다.
+if [ -x ./deploy/setup-crawler.sh ]; then
+  # 여기서 실패해도 뷰어 배포까지 막을 이유는 없다.
+  ./deploy/setup-crawler.sh --reschedule || warn "크롤 스케줄 재등록 실패 — 수동 확인 필요"
+fi
 
 # ── 빌드 & 기동 ────────────────────────────────────────────
 log "이미지 빌드 및 컨테이너 기동"

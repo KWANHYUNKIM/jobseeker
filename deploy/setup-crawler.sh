@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # 크롤 파이프라인을 이 머신에 설치한다 — venv + Playwright + launchd 주기 실행.
 #
-#   ./deploy/setup-crawler.sh              # 설치만 (스케줄 등록 안 함)
-#   ./deploy/setup-crawler.sh --schedule   # 설치 + launchd 주기 실행 등록
-#   ./deploy/setup-crawler.sh --uninstall  # 스케줄 해제
+#   ./deploy/setup-crawler.sh               # 설치만 (스케줄 등록 안 함)
+#   ./deploy/setup-crawler.sh --schedule    # 설치 + launchd 주기 실행 등록
+#   ./deploy/setup-crawler.sh --reschedule  # 등록된 plist 만 최신 기본값으로 갱신
+#   ./deploy/setup-crawler.sh --uninstall   # 스케줄 해제
 #
 # 크롤러는 컨테이너가 아니라 네이티브로 돈다. Playwright 가 실제 브라우저를
 # 띄우고 사이트마다 봇 탐지를 우회해야 해서, 컨테이너 안의 헤드리스 환경보다
@@ -46,6 +47,106 @@ if [ "${1:-}" = "--uninstall" ]; then
 fi
 
 [ -d "$CATCH" ] || die "catch_capture 가 없습니다: $CATCH"
+
+# ── plist 생성·적용 ────────────────────────────────────────
+# 아래 두 함수는 --schedule 과 --reschedule 이 함께 쓴다. plist 내용을 한 곳에서만
+# 만들어야 두 경로가 갈라지지 않는다.
+write_plist() {  # $1 = 쓸 경로
+  cat > "$1" <<PLIST_EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$LABEL</string>
+
+  <!-- 자체 데몬(start)이 아니라 1회 실행(once)을 launchd 가 주기로 돌린다.
+       PID 파일 관리가 사라지고, 한 사이클이 주기보다 길어져도 launchd 가
+       같은 job 을 중복 실행하지 않는다. -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>$VENV/bin/python</string>
+    <string>-m</string>
+    <string>automation.auto_crawl</string>
+    <string>once</string>
+    <string>$KEYWORD</string>
+    <string>$COUNT</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>$CATCH</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <!-- launchd 는 로그인 셸 PATH 를 주지 않는다. 크롤러가 git/docker 를 부르므로 필요. -->
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+  </dict>
+
+  <key>StartInterval</key>
+  <integer>$INTERVAL</integer>
+
+  <!-- 등록 즉시 크롤하지 않는다. 첫 실행은 한 주기 뒤. -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>$HOME/Library/Logs/jobseeker-crawler.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>$HOME/Library/Logs/jobseeker-crawler.err.log</string>
+</dict>
+</plist>
+PLIST_EOF
+  plutil -lint "$1" >/dev/null || die "plist 문법 오류"
+}
+
+reload_plist() {
+  launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$PLIST"
+  launchctl print "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || die "launchd 등록 실패"
+}
+
+# 실행 여부는 launchd 에 직접 묻는다. pgrep -f 는 명령줄에 이 문자열이 들어간
+# 아무 셸이나(모니터링 one-liner, 이 스크립트를 논하는 파이프라인) 함께 잡는다.
+crawl_running() {
+  launchctl print "gui/$(id -u)/$LABEL" 2>/dev/null | grep -q "state = running"
+}
+
+# ── 재등록 (배포용) ────────────────────────────────────────
+# deploy.sh 가 매 배포마다 부른다. 위 KEYWORD/COUNT/INTERVAL 기본값을 바꿔도
+# launchd 는 등록 당시 인자를 계속 들고 있어서, 커밋만으로는 서버에 반영되지
+# 않는다. 2026-08-17 에 멀티 키워드 기본값이 들어왔지만 서버는 9/2 까지
+# 단일 키워드 plist 로 돌았고 수집량이 절반이었다.
+#
+# 의존성 설치는 건드리지 않는다 — 배포마다 pip/Playwright 를 재설치할 이유가 없다.
+if [ "${1:-}" = "--reschedule" ]; then
+  [ -f "$PLIST" ] || { log "크롤 스케줄이 등록돼 있지 않습니다 — 재등록 건너뜀"; exit 0; }
+
+  tmp="$(mktemp -t jobseeker-crawler-plist)"
+  trap 'rm -f "$tmp"' EXIT
+  write_plist "$tmp"
+
+  if cmp -s "$tmp" "$PLIST"; then
+    log "크롤 스케줄 최신 상태 (재등록 불필요)"
+    exit 0
+  fi
+
+  # 사이클 한 번이 30분을 넘는다. bootout 은 그걸 중간에 죽이므로 돌고 있으면
+  # 손대지 않고 다음 배포로 미룬다. 놓치더라도 경고는 배포 로그에 남는다.
+  if crawl_running; then
+    warn "plist 가 최신 기본값과 다르지만 크롤이 실행 중이라 재등록을 미룹니다."
+    warn "사이클이 끝난 뒤 ./deploy/setup-crawler.sh --reschedule 로 적용하세요."
+    exit 0
+  fi
+
+  log "plist 가 기본값과 달라 재등록합니다"
+  cp "$tmp" "$PLIST"
+  reload_plist
+  log "재등록 완료 — ${INTERVAL}초마다 '${KEYWORD}' ${COUNT}건 크롤"
+  exit 0
+fi
 
 # ── 파이썬 ─────────────────────────────────────────────────
 # 시스템 python3 는 macOS 15 기준 3.9 라 numpy>=2 / model2vec 을 못 쓴다.
@@ -94,61 +195,9 @@ if ! ls -d "$CATCH/screenshots"/all_통합_* >/dev/null 2>&1 \
 fi
 
 log "launchd 등록 ($LABEL, ${INTERVAL}초 주기)"
-cat > "$PLIST" <<PLIST_EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>$LABEL</string>
-
-  <!-- 자체 데몬(start)이 아니라 1회 실행(once)을 launchd 가 주기로 돌린다.
-       PID 파일 관리가 사라지고, 한 사이클이 주기보다 길어져도 launchd 가
-       같은 job 을 중복 실행하지 않는다. -->
-  <key>ProgramArguments</key>
-  <array>
-    <string>$VENV/bin/python</string>
-    <string>-m</string>
-    <string>automation.auto_crawl</string>
-    <string>once</string>
-    <string>$KEYWORD</string>
-    <string>$COUNT</string>
-  </array>
-
-  <key>WorkingDirectory</key>
-  <string>$CATCH</string>
-
-  <key>EnvironmentVariables</key>
-  <dict>
-    <!-- launchd 는 로그인 셸 PATH 를 주지 않는다. 크롤러가 git/docker 를 부르므로 필요. -->
-    <key>PATH</key>
-    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
-    <key>PYTHONUNBUFFERED</key>
-    <string>1</string>
-  </dict>
-
-  <key>StartInterval</key>
-  <integer>$INTERVAL</integer>
-
-  <!-- 등록 즉시 크롤하지 않는다. 첫 실행은 한 주기 뒤. -->
-  <key>RunAtLoad</key>
-  <false/>
-
-  <key>StandardOutPath</key>
-  <string>$HOME/Library/Logs/jobseeker-crawler.out.log</string>
-  <key>StandardErrorPath</key>
-  <string>$HOME/Library/Logs/jobseeker-crawler.err.log</string>
-</dict>
-</plist>
-PLIST_EOF
-
-plutil -lint "$PLIST" >/dev/null || die "plist 문법 오류"
-
-launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
-launchctl bootstrap "gui/$(id -u)" "$PLIST"
-launchctl print "gui/$(id -u)/$LABEL" >/dev/null 2>&1 \
-  && log "등록 완료 — ${INTERVAL}초마다 '${KEYWORD}' ${COUNT}건 크롤" \
-  || die "launchd 등록 실패"
+write_plist "$PLIST"
+reload_plist
+log "등록 완료 — ${INTERVAL}초마다 '${KEYWORD}' ${COUNT}건 크롤"
 
 echo
 echo "  상태 :  launchctl print gui/\$(id -u)/$LABEL | head -20"

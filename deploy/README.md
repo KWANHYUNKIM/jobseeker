@@ -48,6 +48,7 @@ COMPOSE_PROFILES=quick docker compose -f docker-compose.prod.yml up -d
 | `setup-server.sh` | OS 설정 — SSH 켜기, 절전 해제 (sudo 필요) |
 | `setup-runner.sh` | GitHub Actions 러너 설치 |
 | `setup-crawler.sh` | 크롤 파이프라인 설치(venv·Playwright) + launchd 주기 실행 |
+| | `--reschedule` 은 plist 만 갱신한다. `deploy.sh` 가 매 배포마다 불러 인자 드리프트를 막는다 |
 | `tunnel-url.sh` | 지금 떠 있는 공개 주소 확인 |
 | `sshd_jobseeker.conf` | SSH 강화 설정 (비밀번호 로그인 차단) |
 | `../.github/workflows/ci.yml` | 린트·타입체크·빌드 (GitHub 클라우드 러너) |
@@ -85,9 +86,10 @@ docker compose -f docker-compose.prod.yml down
 안정적이고, `paths.py`·`refresh-data.sh`도 `catch_capture/.venv`를 전제로 한다.
 
 ```bash
-./deploy/setup-crawler.sh              # venv + Playwright 설치만
-./deploy/setup-crawler.sh --schedule   # 위 + launchd 30분 주기 등록
-./deploy/setup-crawler.sh --uninstall  # 스케줄 해제 (venv·데이터는 유지)
+./deploy/setup-crawler.sh               # venv + Playwright 설치만
+./deploy/setup-crawler.sh --schedule    # 위 + launchd 1시간 주기 등록
+./deploy/setup-crawler.sh --reschedule  # plist 만 최신 기본값으로 갱신 (deploy.sh 가 자동 호출)
+./deploy/setup-crawler.sh --uninstall   # 스케줄 해제 (venv·데이터는 유지)
 
 # 수동 1회 실행
 cd catch_capture && .venv/bin/python -m automation.auto_crawl once 개발자 100
