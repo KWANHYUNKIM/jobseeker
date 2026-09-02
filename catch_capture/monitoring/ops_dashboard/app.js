@@ -405,6 +405,42 @@ async function pollState() {
 async function pollEvents() {
   try { renderEvents(await fetchJSON("/api/events?n=80")); } catch (e) {}
 }
+// 자동 브리핑은 사이클이 아니라 사람이 돌린다. 그래서 "몇 건"보다 **언제 돌렸나**를
+// 먼저 보여준다 — 공고는 매 사이클 바뀌는데 이 산출물은 다시 돌리기 전까지 안 바뀐다.
+function renderAutoguide(a) {
+  const stats = $("autoguideStats");
+  const tbody = $("autoguideTable").querySelector("tbody");
+  if (!a || !a.exists) {
+    $("autoguideSub").textContent = "아직 생성 안 됨";
+    stats.innerHTML = `<div class="muted">python3 guide-engine/autoguide.py --all 로 만듭니다.</div>`;
+    tbody.innerHTML = "";
+    return;
+  }
+  const stale = a.age_sec > 24 * 3600;
+  $("autoguideSub").textContent =
+    `${fmtAge(a.age_sec)} 전 생성${stale ? " · 하루 넘음, 다시 돌릴 때" : ""}`;
+
+  const cards = [
+    ["회사", a.companies], ["공고", a.postings],
+    ["중복 뺀 자리", a.distinct_active], ["학습 항목", a.study_items],
+    ["규모 근거", a.with_facts], ["연봉 근거", a.with_salary],
+    ["본문 없음", a.no_study],
+  ];
+  stats.innerHTML = cards.map(([label, n]) =>
+    `<div class="site done"><div class="site-name">${label}</div>` +
+    `<div class="site-count">${(n ?? 0).toLocaleString()}</div>` +
+    `<div class="site-status">&nbsp;</div></div>`).join("");
+
+  tbody.innerHTML = (a.top || []).map((c) =>
+    `<tr><td>${c.name}</td><td>${c.active}</td><td>${c.distinct}</td>` +
+    `<td>${c.study.toLocaleString()}</td>` +
+    `<td>${c.facts ? "O" : "—"}</td><td>${c.salary ? "O" : "—"}</td></tr>`).join("");
+}
+
+async function pollAutoguide() {
+  try { renderAutoguide(await fetchJSON("/api/autoguide")); } catch (e) {}
+}
+
 async function pollHealth() {
   try { renderHistory(await fetchJSON("/api/health?n=30")); } catch (e) {}
 }
@@ -412,7 +448,9 @@ async function pollHealth() {
 pollState();
 pollEvents();
 pollHealth();
+pollAutoguide();
 setInterval(pollState, 2000);
 setInterval(pollEvents, 3000);
 setInterval(pollHealth, 10000);
+setInterval(pollAutoguide, 30000);
 setInterval(tickCountdown, 1000);

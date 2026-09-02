@@ -190,6 +190,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._send_json(_builder_outputs())
             return
 
+        if path == "/api/autoguide":
+            self._send_json(_autoguide_summary())
+            return
+
         if path == "/api/health":
             n = self._query_int(qs, "n", 30)
             self._send_json(_tail_jsonl(HEALTH_HISTORY, n))
@@ -214,6 +218,48 @@ BUILDER_OUTPUTS = [
     ("직군 인사이트", "role_insights.json"),
 ]
 VIEWER_PUBLIC = CATCH_DIR.parent / "jd-viewer" / "public"
+
+
+# 자동 브리핑(guide-engine/autoguide.py)은 크롤 산출물에서 기계가 확정할 수 있는
+# 것만 뽑아 쌓는다. 사이클 산출물과 달리 손으로 돌리므로, 여기서 보여줘야 할 것은
+# "몇 건 나왔나" 보다 **언제 돌렸나** — 공고는 매 사이클 바뀌는데 이건 안 바뀐다.
+# index.json 은 뷰어 조회용(slug·aliases)이라 집계가 없다. 대시보드는 stats.json 을 본다.
+AUTOGUIDE_INDEX = CATCH_DIR.parent / "jd-viewer" / "public" / "guide" / "auto" / "stats.json"
+AUTOGUIDE_TOP = 12
+
+
+def _autoguide_summary() -> dict:
+    if not AUTOGUIDE_INDEX.exists():
+        return {"exists": False}
+    st = AUTOGUIDE_INDEX.stat()
+    doc = _read_json(AUTOGUIDE_INDEX)
+    cos = doc.get("companies", []) or []
+
+    def total(key: str) -> int:
+        return sum((c.get("counts") or {}).get(key, 0) for c in cos)
+
+    return {
+        "exists": True,
+        "age_sec": int(time.time() - st.st_mtime),
+        "mtime": datetime.fromtimestamp(st.st_mtime).isoformat(timespec="seconds"),
+        "generator": doc.get("generator", ""),
+        "updated_at": doc.get("updated_at", ""),
+        "companies": len(cos),
+        "postings": total("postings"),
+        "active": total("active"),
+        "distinct_active": total("distinct_active"),
+        "study_items": total("study_items"),
+        "with_facts": sum(1 for c in cos if c.get("has_facts")),
+        "with_salary": sum(1 for c in cos if c.get("has_salary")),
+        "no_study": sum(1 for c in cos if not (c.get("counts") or {}).get("study_items")),
+        "top": [{
+            "name": c.get("name", ""), "slug": c.get("slug", ""),
+            "active": (c.get("counts") or {}).get("active", 0),
+            "distinct": (c.get("counts") or {}).get("distinct_active", 0),
+            "study": (c.get("counts") or {}).get("study_items", 0),
+            "facts": bool(c.get("has_facts")), "salary": bool(c.get("has_salary")),
+        } for c in cos[:AUTOGUIDE_TOP]],
+    }
 
 
 def _builder_outputs() -> list[dict]:
