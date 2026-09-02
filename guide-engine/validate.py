@@ -338,6 +338,18 @@ def load_all(r: Report) -> tuple[dict, list[dict], dict]:
 
     summaries = [check_company(r, p, d, jobs) for p, d in docs]
 
+    # 같은 회사를 두 슬러그로 쓴 경우. 뷰어는 aliases 로 첫 번째 것만 찾으므로
+    # (useGuide.ts 의 `find`), 나중에 쓴 쪽은 다 써 놓고도 화면에 영영 안 뜬다.
+    # 엔진은 사이클마다 기억이 없어서 이 실수를 스스로 못 잡는다 — 여기서 잡는다.
+    owner: dict[str, str] = {}
+    for s in summaries:
+        for a in s["aliases"]:
+            if a in owner:
+                r.err(f"aliases 충돌: {a!r} 를 {owner[a]} 와 {s['slug']} 가 함께 쓴다 "
+                      f"— 뷰어는 앞의 하나만 찾는다. 한 슬러그로 합쳐라")
+            else:
+                owner[a] = s["slug"]
+
     # index 와 회사 파일의 불일치. 뷰어는 index 만 보고 "브리핑이 있다/없다"를 정하므로
     # 여기가 어긋나면 다 써 놓고도 화면에 안 뜬다.
     by_slug = {s["slug"]: s for s in summaries}
