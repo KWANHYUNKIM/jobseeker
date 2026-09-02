@@ -4,58 +4,55 @@
 
 ## 지금 쓰는 중
 
-**로브로스 (`robros`) — `in_progress`.** 공고 1건 · 학습 9개.
-(전체: 회사 17곳 · 완주 16곳 · 공고 106건 · 학습 788개 · 오류 0 · 경고 0.)
+**로브로스 (`robros`) — `in_progress`.** 공고 2건 · 학습 18개.
+(전체: 회사 17곳 · 완주 16곳 · 공고 107건 · 학습 797개 · 오류 0 · 경고 0.)
 
 | 채운 공고 | 무엇을 하는 자리 | 연차 | 학습 |
 |---|---|---|---|
-| `AI Research Scientist - Robot Action Model` (351957) | **시연에서 행동을 생성하는 모델을 만든다** | 신입 | 9 |
+| `AI Research Scientist - Robot Action Model` (351957) | 시연에서 행동을 생성하는 모델 | 신입 | 9 |
+| `Principal Humanoid Whole-Body Control RL` (354915) | **넘어지지 않으면서 그 행동을 하게** | 신입-5 | 9 |
 
-**이 브리핑에서 학계에 가장 가까운 자리**다 — 자격요건이 `Neural Network, Transformers,
-**Diffusion, Flow Matching**` 을 핵심 구조로 적고, 마지막에 **`깊은 수학적 기반`** 을 항목으로
-따로 세웠다. 그런데 연차 표기가 **`신입`** 이고
-`*** 자격요건은 **논문 작성이나 풍부한 연구 경험으로 뒷받침될 수 있습니다** ***` 가 붙어 있다.
+**두 자리를 `생성`과 `균형`으로 갈랐다.** 그리고 플라잎 `AI Robotics Lead`(351749)와도
+갈랐다 — **저기는 조립의 접촉, 여기는 보행의 균형**이다. 같은 `제어 이론 + 학습` 구도이지만
+물리가 다르다.
 
 **이 공고에서 잡은 축**
-- **왜 Diffusion·Flow Matching 인가** — 사람이 물건을 집는 방법은 하나가 아니라, **평균을
-  배우면 두 갈래의 가운데로 가서 실패한다.** drill 을 **그 실패를 재현하고 되살리기**로 잡았고
-  edge 에도 올렸다. 그리고 **Diffusion 은 느리다** → Flow Matching·action chunking 이 대안.
-- **VLA 는 위아래로 나뉜다** — 사전학습 모델을 가져다 쓰는 위쪽과 **관절 명령으로 바꾸는
-  action head**. **행동을 토큰으로 쪼갤 것인가**가 정밀도와 맞바꿈이다.
-- **BC 가 무너지는 이유와 DAgger** — 한 번 어긋나면 낯선 상태로 굴러간다. 그래서
-  **학습과 수집이 번갈아 도는 구조**이고, 회사에 `Data-Centric AI` 자리가 따로 있다.
-- **`견고한 평가 지표 설계` 가 담당 업무** — 로봇은 재기 어렵고 학습이 며칠 걸린다.
-  **오프라인 지표와 실제 성공률의 상관 자체가 관리 대상**이다.
-- **연구 자리 담당 업무에 분산 학습**(DDP/FSDP·혼합 정밀도·하이퍼파라미터) — 사내에 클러스터가
-  있다는 뜻이고, **배치를 키우면 학습률을 다시 잡아야 한다**는 실무가 붙는다.
-- **`설계` 는 무엇을 뺄지 정하는 일** — 카메라 수·상태 입력·과거 프레임·출력 형식.
-  drill 을 **ablation 표**로 잡았다.
-- **촉각은 `(Exposure)` 로 문턱을 낮춘 항목** — 잡는 순간 손이 물체를 가리고, 미끄러짐은
-  안 보인다. **표준이 없어 경험자가 드물고, 그래서 강점이 된다.**
+- **셋을 함께 하면 서로를 방해한다** — 팔을 뻗으면 무게중심이 나가고, 물건을 들면 질량이
+  바뀌고, 걸으면 상체가 흔들린다. drill 을 **팔을 뻗어 넘어뜨리기**로 잡았다.
+- **걷기에는 `잘 걷는다`의 정의가 없다** → 보상이 **항목의 합**이 되고 **가중치가 곧
+  걸음걸이**다. drill 은 **세 조합의 영상 비교**.
+- **공고가 실물과 시뮬레이터의 차이를 셋으로 적어 줬다**(`noise, delay, partial
+  observability`) — 그대로 공부 목록이 된다. **교사-학생 구조**까지 넣었다.
+- **long-horizon** — 신용 할당·중간 실수·탐색. 그리고 이 회사에선 **긴 작업 동안 넘어지면
+  안 된다**는 조건이 더 붙는다.
+- **`Dynamics & Control` 이 RL 과 나란히 자격요건에** — 부족구동·capture point·마찰 원뿔·
+  각운동량. **`legged robot 또는 humanoid 경험 우대`** 라 국내에 사람이 적다 → edge 로.
+- **학습 루프 자체가 담당 업무**(rollout→학습→평가) — 실험 하나가 오래 걸리므로
+  **여러 시드로 돌려 편차를 보는 것**이 실력이다.
+- **Vision-based RL 이 우대사항 첫 줄** — 지금은 자기 상태만 보고 걷지만 **계단·장애물
+  앞에서는 눈이 없다.** 아직 사람을 찾는 축으로 읽었다.
 
-**남은 순서** (9건 중 8건 미완)
+**발견 — 제목과 연차 표기가 어긋난다.** 제목은 `Principal` 이고 자격요건이 `석사 이상`·
+`end-to-end 수행`·`주니어 멘토링` 인데 **크롤 표기는 `신입-경력 5년`** 이고 **본문에 연차
+숫자가 없다.** 사실상 박사급을 찾는 자리로 보이나 확인하지 못해 `open_questions` 에 남기고
+**edge 첫 항목을 `지원 전에 물어보라`**로 잡았다.
 
-1. `Principal Humanoid Whole-Body Control RL`(354915, 신입-5년) — **이 회사만의 축.**
-   locomotion+balancing+manipulation, reward 설계, curriculum·domain randomization.
-   **플라잎 RL 브리핑과 각도를 갈라야 한다**(저기는 조립 접촉, 여기는 **균형**).
-2. `AI Research Scientist - Reinforcement Learning`(351953, 신입) — **본문이 351957 과 다르다**
-   (대조 완료). **Multimodal 모델에 RL 을 적용하는 쪽** — offline-to-online, reward model.
-   이번 공고가 **모방학습 중심**이었으니 **강화학습 중심**으로 갈라 쓴다.
-3. `AI Engineer - Data-Centric AI`(351891, 신입) — **분포 기준(coverage·imbalance·rarity) ·
-   실패의 sensor/trajectory 역추적 · 평가 프레임워크.** 플라잎 `Data Factory`(수집 체계)와
-   각도가 다르다 — **여기는 이미 있는 데이터를 분석해 성능으로 잇는 쪽.**
-4. `AI Training Infrastructure Engineer`(351698, 신입) — 이 브리핑에서 처음 다루는
-   **대규모 학습 인프라**. 이번 공고의 분산 학습 항목과 겹치지 않게 **클러스터 운영·재현성·
-   병목 측정** 쪽으로.
-5. `AI Research Scientist - Spatial AI`(351899, 신입) — NeRF·Gaussian Splatting·affordance·
-   **VR teleoperation**.
-6. `Robotics Control Software Engineer`(352164, 1년↑) · `Robotics ML Deployment
-   Engineer`(354916, 신입-4년) · `Robotics System Software Engineer`(352196, 1년↑) —
-   **연구 경력이 없어도 되는 쪽.** 플라잎의 시스템·FDE 브리핑과 각도를 갈라서 쓴다.
+**남은 순서** (9건 중 7건 미완)
+
+1. `AI Research Scientist - Reinforcement Learning`(351953, 신입) — **Multimodal 모델에 RL 을
+   적용하는 쪽**(offline-to-online·reward model). **351957(모방학습)·354915(전신 제어)와
+   세 번째로 갈라야 한다** — 여기는 **생성 모델 위의 RL**이다.
+2. `AI Engineer - Data-Centric AI`(351891, 신입) — 분포 기준·실패의 sensor/trajectory 역추적.
+   **플라잎 `Data Factory`(수집 체계)와 다르다** — 여기는 **있는 데이터를 분석해 성능으로 잇는 쪽.**
+3. `AI Training Infrastructure Engineer`(351698, 신입) — **클러스터 운영·재현성·병목 측정.**
+   351957 의 분산 학습 항목과 겹치지 않게.
+4. `AI Research Scientist - Spatial AI`(351899, 신입) — NeRF·GS·affordance·**VR teleoperation.**
+5. `Robotics Control Software Engineer`(352164) · `Robotics ML Deployment Engineer`(354916) ·
+   `Robotics System Software Engineer`(352196) — **연구 경력이 없어도 되는 쪽.**
 
 **닫기 전에 할 일**
-- `people` — 대표 이름이 검색 요약에 **`노승준`** 으로 나오나 **페이지에서 확인 못 했다.**
-- **IGRIS-C 사양·실증·투자**를 못 확인했다(와우테일·딜사이트·THE VC 전부 403). 다른 매체를 찾는다.
+- `people` — 대표 이름이 검색 요약에 **`노승준`** 으로 나오나 페이지에서 확인 못 했다.
+- **IGRIS-C 사양·실증·투자**를 못 확인했다(와우테일·딜사이트·THE VC 전부 403).
 
 **매 사이클 확인** — `validate.py` 맨 아래 `경고 N`(지금 0), URL 대조는 **원티드·점핏 패턴을
 함께**: `https://(?:www\.wanted\.co\.kr/wd/\d+|jumpit\.saramin\.co\.kr/position/\d+)`
@@ -544,6 +541,18 @@ STATE 에 적고 넘어간다. **`validate.py` 를 고치는 것은 코드 변�
 수 있습니다` 로 열어 두었다. **이런 문구를 study·edge 에서 명시적으로 짚어 주지 않으면**
 독자는 자격요건 목록만 보고 지원을 포기한다. **공고가 낮춰 준 문턱을 브리핑이 다시 높이지
 않는다.**
+
+**공고가 어려움을 목록으로 적어 주면 그것을 그대로 study 의 뼈대로 쓴다.** 로브로스
+전신 제어 공고는 `**noise, delay, partial observability** 대응` 이라고 실물과 시뮬레이터의
+차이를 셋으로 적어 두었다. 이런 줄은 **회사가 매일 부딪히는 것**이고, 지원자가 그 셋을
+각각 재고 회복시킨 표를 가져가면 **sim-to-real 질문 대부분이 그 표로 덮인다.**
+**추상적인 문장보다 이런 나열 줄을 먼저 찾는다.**
+
+**직함과 연차 표기가 어긋나면 본문 자격요건을 기준으로 삼되, 낮은 쪽 표기도 버리지 않는다.**
+로브로스 `Principal …` 은 자격요건이 `석사 이상 + end-to-end + 멘토링` 인데 표기가
+`신입-경력 5년` 이었다. **박사급으로만 단정하면 석사 졸업 예정자가 지원을 포기하고**,
+**표기만 믿으면 준비 없이 지원한다.** 브리핑은 **둘 다 밝히고 `지원 전에 물어보라`**로
+닫는 것이 맞다 — 확인할 수 없는 것을 단정하지 않는다.
 
 - `people` 은 대개 대표 한 명이다. 개발자가 쓴 공개 자료가 있는 회사는 드물고, 그럴 때
   **억지로 채우지 않는 것**이 규칙이다(PROMPT.md 2″단계).
