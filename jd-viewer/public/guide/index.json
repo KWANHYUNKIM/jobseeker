@@ -196,6 +196,19 @@
       "postings": 9,
       "study_items": 81,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "mobilint",
+      "name": "모빌린트",
+      "aliases": [
+        "모빌린트",
+        "㈜모빌린트",
+        "Mobilint"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
