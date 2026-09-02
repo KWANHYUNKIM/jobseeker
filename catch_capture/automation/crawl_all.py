@@ -119,7 +119,7 @@ def _parse_sources(only: str | None) -> list[str]:
 def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: bool = True,
                    depth: int | None = None, do_blog: bool = True,
                    blog_per_feed: int = BLOG_PER_FEED_DEFAULT) -> int:
-    """5개(또는 일부) 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 크롤 호출."""
+    """지정한 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 크롤 호출."""
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 

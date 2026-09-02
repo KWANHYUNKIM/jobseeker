@@ -1,7 +1,8 @@
 """채용 크롤 → 데이터 갱신을 주기적으로 반복하는 자동화 데몬.
 
 매 주기마다:
-  1) crawl_all.run_foreground 로 5개 사이트를 크롤하고 aggregate 까지 수행
+  1) crawl_all.run_foreground 로 키워드 사이트 5곳을 키워드마다 크롤하고,
+     키워드 무관 소스(remote·ats)는 사이클당 1회 붙인 뒤 aggregate 까지 수행
   2) 새 screenshots/all_<keyword>_* 폴더가 생기면(= 새 데이터)
        - dashboard/data.json 재빌드 (serve.py --build-only)
        - jd-viewer/public 데이터(enrich + mindmap) 갱신 (refresh-data.sh)
@@ -46,6 +47,12 @@ LOG_FILE = BASE_DIR / "auto_crawl.log"
 REFRESH_SH = ROOT_DIR / "jd-viewer" / "bin" / "refresh-data.sh"
 # 사이클당 마감 재확인 건수(원본 사이트 조회). 올리면 한 바퀴가 빨라지지만 차단 위험도 오른다.
 CLOSE_CHECK_LIMIT = int(os.environ.get("CLOSE_CHECK_LIMIT", "400"))
+
+# 키워드로 검색하는 국내 사이트. 사이클마다 키워드 수만큼 돈다.
+KEYWORD_SITES = ["dev", "jobkorea", "jumpit", "saramin", "wanted"]
+# 키워드와 무관한 소스(해외 원격 보드·회사 ATS). 보드 전체를 훑으므로 키워드마다
+# 돌 이유가 없다 — 기술 블로그와 같이 사이클당 1회(마지막 키워드)만 붙인다.
+AGNOSTIC_SITES = ["remote", "ats"]
 
 # 크롤 오케스트레이션이 함께 굴리는 부가 작업(흩어진 cron 을 여기로 통합)
 RADAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_company_tech_radar.py"
@@ -414,8 +421,9 @@ def run_cycle(keyword: str, count: int) -> bool:
     for kw in kws:
         # 멀티 키워드면 키워드별 단일 통합은 생략하고 마지막에 1회만 통합한다.
         # 기술 블로그는 키워드와 무관 → 사이클당 1회(마지막 키워드)만 실행
-        rc = run_foreground(kw, count, ["dev", "jobkorea", "jumpit", "saramin", "wanted"],
-                            do_aggregate=not multi, do_blog=(kw == kws[-1]))
+        last = kw == kws[-1]
+        rc = run_foreground(kw, count, KEYWORD_SITES + (AGNOSTIC_SITES if last else []),
+                            do_aggregate=not multi, do_blog=last)
         if rc != 0:
             rc_fail += 1
             log(f"[crawl] '{kw}' 일부 실패(rc={rc})")
