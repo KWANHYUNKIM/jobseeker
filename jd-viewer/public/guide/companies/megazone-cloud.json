@@ -1,0 +1,460 @@
+{
+  "slug": "megazone-cloud",
+  "name": "메가존클라우드",
+  "name_en": "Megazone Cloud",
+  "aliases": [
+    "메가존클라우드",
+    "㈜메가존클라우드",
+    "메가존",
+    "MegazoneCloud"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-02",
+  "site": "megazone.com",
+  "one_liner": "남의 클라우드를 대신 설계·운영해 주고 그 위에 자기 플랫폼과 AI를 얹는 국내 최대 MSP — 2025년 매출 1조 7,496억원에 영업이익 2억 3천만원으로 창사 첫 흑자를 냈다",
+  "salary": null,
+  "people": [],
+  "company": {
+    "business": "**남의 클라우드를 대신 설계하고 운영해 주는 회사다.** 이 브리핑에서 다룬 엘리스·업스테이지가 **자기 인프라**를 만들었다면, 메가존클라우드는 **AWS·Azure·GCP 를 고객사 대신 굴린다** — 이런 회사를 MSP(Managed Service Provider)라고 부른다.\n\n**돈이 도는 구조가 특이하고, 그것이 이 회사를 이해하는 열쇠다.** 2025년 **매출 1조 7,496억원**(전년 대비 27.9% 성장)인데 **영업이익은 2억 3,306만원**이다 — **매출 대비 0.01% 수준**이고, 그럼에도 **창사 이후 첫 흑자**다. **클라우드 사용료를 대신 결제하고 재판매하는 구조**라 매출은 크게 잡히지만 **마진이 얇다.** 그래서 회사가 가는 방향이 분명하다 — **마진이 두꺼운 쪽으로 옮기는 것**: 자체 플랫폼, AI, 보안. 실제로 2025년 **AI 매출 3,700억원 이상, 보안 700억원 이상, 해외 1,500억원**을 따로 밝혔고, **2030년까지 매출 3배·영업이익률 15%** 를 목표로 내놓았다.\n\n**그래서 채용 공고가 두 갈래로 갈린다.** 하나는 **남의 클라우드를 운영하는 사람**(클라우드 운영 엔지니어, 24/7 관제, 고객사 상주, Solution Architect, 보안 컨설턴트), 다른 하나는 **자기 것을 만드는 사람**(`AIR Platform` 백엔드, `Brain AI` 연구, 데이터 거버넌스, Cloudflare·CDN). **후자가 회사가 가려는 방향**이고, 공고에도 그 흔적이 있다 — `Backend Developer / AI Research Engineer` 공고는 **국제 학회 1저자 논문을 자격요건으로** 걸고 `NVIDIA L40S GPU 기반 자체 계산 클러스터` 를 언급한다. **MSP 회사에서 논문을 요구하는 자리가 나오는 것**이 이 전환의 증거다.\n\n**IPO 를 준비 중이다** — 2025~2026년 상장을 목표로 하고, 상장 시 기업가치가 최대 6.5조원에 이를 것이라는 전망이 보도됐다. 고객사는 5,000여 곳이고 임직원 규모는 자료마다 갈린다(회사 소개 약 2,700명 / 다른 집계 1,688명).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "메가존클라우드, 흑자 전환 성공…'25년 매출 1조 7500억원",
+        "url": "https://www.megazone.com/resources/newsroom/99",
+        "publisher": "메가존클라우드 뉴스룸",
+        "summary": "2025년 연결 매출 1조 7,496억원(+27.9%), 영업이익 2억 3,306만원, 당기순이익 82억원으로 창사 첫 흑자. AI 매출 3,700억·보안 700억·해외 1,500억. 2030년까지 매출 3배·영업이익률 15% 목표"
+      },
+      {
+        "title": "'흑자 전환' 메가존클라우드…IPO 속도 붙을까",
+        "url": "https://zdnet.co.kr/view/?no=20260407140657",
+        "publisher": "ZDNet Korea",
+        "date": "2026-04-07",
+        "summary": "흑자 전환과 IPO 추진 상황"
+      },
+      {
+        "title": "메가존클라우드 회사 소개",
+        "url": "https://www.megazone.com/about/company",
+        "publisher": "메가존클라우드",
+        "summary": "약 2,700명 임직원과 5,000여 고객사 규모를 회사가 밝힌다"
+      },
+      {
+        "title": "메가존클라우드, IPO로 글로벌 리더 노린다",
+        "url": "https://www.datanews.co.kr/news/article.html?no=136453",
+        "publisher": "데이터넷",
+        "summary": "상장 목표와 기업가치 전망"
+      }
+    ],
+    "scale": [
+      {
+        "label": "매출",
+        "value": "**2025년 1조 7,496억원** (전년 대비 **+27.9%**)",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 뉴스룸 — 흑자 전환·2025 실적",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드"
+          }
+        ]
+      },
+      {
+        "label": "영업이익",
+        "value": "**2025년 2억 3,306만원** · 당기순이익 82억원 — **창사 이후 첫 흑자**. **매출 1.7조에 영업이익 2.3억**이라는 조합이 이 회사의 사업 구조를 말한다",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 뉴스룸 — 흑자 전환·2025 실적",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드"
+          }
+        ]
+      },
+      {
+        "label": "사업별 매출",
+        "value": "**AI 3,700억원 이상 · 보안 700억원 이상 · 해외 1,500억원** (2025)",
+        "as_of": "2025",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 뉴스룸 — 흑자 전환·2025 실적",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드"
+          }
+        ]
+      },
+      {
+        "label": "고객사·임직원",
+        "value": "고객사 **5,000여 곳**. 임직원은 자료마다 갈린다 — 회사 소개 **약 2,700명**, 다른 집계 **1,688명**(2026-06 기준으로 보도)",
+        "as_of": "2026",
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "메가존클라우드 회사 소개",
+            "url": "https://www.megazone.com/about/company",
+            "publisher": "메가존클라우드"
+          }
+        ]
+      },
+      {
+        "label": "IPO",
+        "value": "**2025~2026년 상장 목표.** 상장 시 기업가치 최대 **6.5조원** 전망이 보도됐다",
+        "as_of": "2026",
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "'흑자 전환' 메가존클라우드…IPO 속도 붙을까",
+            "url": "https://zdnet.co.kr/view/?no=20260407140657",
+            "publisher": "ZDNet Korea",
+            "date": "2026-04-07"
+          }
+        ]
+      },
+      {
+        "label": "모집중 공고",
+        "value": "**크롤 기준 68건이지만 고유 제목은 54개**다 — **잡코리아(26)와 사람인(42)에 같은 자리를 중복 게시**한다. 그중 **개발·엔지니어 자리는 절반 이하**이고 나머지는 총무·세무·자금·영업·교육운영·인턴, 그리고 **보안 컨설턴트·프리세일즈(SA)** 다. **관계사(`메가존소프트`) 공고 5건도 섞여 있다**",
+        "as_of": "2026-09",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Backend Developer / AI Research Engineer 엔지니어 채용",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630",
+            "publisher": "채용 공고",
+            "summary": "잡코리아·사람인 양쪽에 같은 제목으로 올라온 자리 중 하나"
+          }
+        ]
+      },
+      {
+        "label": "근무지",
+        "value": "**과천 본사**가 주 근무지다 — 공고 안내에 `주 근무지는 과천 본사이며, 사업부서에 따라 상세근무지가 달라질 수 있습니다` 라고 적혀 있다. 별도로 **고객사 상주 자리**와 **부산사무소** 자리가 따로 있다",
+        "as_of": "2026-09",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Backend Developer / AI Research Engineer 엔지니어 채용",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630",
+            "publisher": "채용 공고",
+            "summary": "공고 하단 안내에 과천 본사 표기"
+          },
+          {
+            "title": "메가존클라우드 Cloud Engineer(고객사 상주 운영)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49842460?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=5&sc=630",
+            "publisher": "채용 공고",
+            "summary": "고객사 상주 형태가 별도 자리로 열려 있다"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "클라우드 재판매와 운영 대행 (MSP 본업)",
+        "how": "**고객사의 AWS·Azure·GCP 사용료를 대신 계약·결제하고 재판매하면서, 설계·구축·운영을 함께 맡는다.** 매출이 크게 잡히는 이유가 이것이다 — **고객이 쓴 클라우드 비용이 그대로 매출로 들어온다.** 대신 **마진이 얇다**(2025년 매출 1.7조에 영업이익 2.3억). 회사가 버는 지점은 **관리 수수료와 운영 계약**이고, 그래서 `클라우드 운영 엔지니어`, `Cloud Engineer/247 서비스`, `Cloud Engineer(고객사 상주 운영)` 같은 자리가 여럿 열려 있다.",
+        "weight": "2025년 전체 매출 1조 7,496억원의 대부분으로 추정",
+        "domains": [
+          "남의 클라우드를 대신 굴린다",
+          "24시간 돌아가는 관제와 운영",
+          "고객 앞에 서는 기술 — SA 와 컨설팅"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "클라우드 비용 최적화 (FinOps)",
+        "how": "**고객의 클라우드 비용을 줄여 주고 그 성과로 돈을 받는다.** 재판매 구조에서 자연스럽게 나오는 사업이다 — 우리가 청구서를 다루므로 **어디서 새는지 가장 잘 안다.** 공고에 `**클라우드 인프라 및 비용 관리 컨설턴트 (FinOps 전문가)**` 가 따로 있고, `[메가존클라우드] 클라우드 비용 정산 운영 인턴` 자리까지 별도로 열려 있다. **자체 AI 연구(`Brain AI`)의 목표도 여기에 닿는다** — `멀티 클라우드 비용 최적 실행환경을 자동으로 추천`.",
+        "domains": [
+          "클라우드 비용을 줄이는 일",
+          "자체 AI 연구 — Brain AI"
+        ],
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "메가존클라우드 클라우드 인프라 및 비용 관리 컨설턴트 (FinOps 전문가) 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53805490&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=11b02583-8273-456f-a366-0880f3f096d8",
+            "publisher": "채용 공고",
+            "summary": "FinOps 전담 자리가 따로 있다"
+          }
+        ]
+      },
+      {
+        "name": "AI 사업과 자체 플랫폼",
+        "how": "**2025년에만 3,700억원 이상**이라고 회사가 밝힌 축이고, **마진이 두꺼운 쪽으로 옮겨 가는 방향**이다. 고객의 AI 도입을 대신 해 주는 일(구축·컨설팅)과, **자체 플랫폼을 만들어 파는 일**이 함께 있다 — 공고의 `**AIR Platform**`(Kubernetes 기반 AI Job 스케줄러 `Kueue` 커스터마이징, 미터링·빌링, AI 에이전트 배포·모니터링, RAG 백엔드)이 후자다. `AIR 부문 AI 전문 Engineer` 자리도 따로 있다.",
+        "weight": "2025년 3,700억원 이상 (회사 발표)",
+        "domains": [
+          "AI 워크로드를 굴리는 플랫폼",
+          "자체 AI 연구 — Brain AI",
+          "데이터를 모아 쓰게 만드는 일"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 뉴스룸 — 흑자 전환·2025 실적",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드",
+            "summary": "AI 매출 3,700억원 이상"
+          },
+          {
+            "title": "메가존클라우드 [AIR Platform] Backend Developer, 플랫폼 기획 채용",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49656849?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=37&sc=630",
+            "publisher": "채용 공고",
+            "summary": "AIR Platform 이 자체 플랫폼임을 보여 주는 자리"
+          }
+        ]
+      },
+      {
+        "name": "클라우드 보안",
+        "how": "**2025년 700억원 이상.** 클라우드를 대신 운영하는 회사라 **보안도 함께 맡아 달라는 요구가 자연스럽게 따라온다.** 공고 수로도 확인된다 — 보안 관련 자리가 고유 제목 기준 여덟 개가 넘고(`클라우드 보안 엔지니어`, `보안 데이터 분석 엔지니어(SIEM/SOAR)`, `클라우드 AI-SOC 전문가(CERT·운영·관제)`, `클라우드 보안 컨설턴트(GRC/금융/거버넌스)`, `Security SA/프리세일즈`), **구축·관제·컨설팅·영업으로 층이 나뉘어 있다.**",
+        "weight": "2025년 700억원 이상 (회사 발표)",
+        "domains": [
+          "클라우드 보안",
+          "24시간 돌아가는 관제와 운영",
+          "고객 앞에 서는 기술 — SA 와 컨설팅"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 뉴스룸 — 흑자 전환·2025 실적",
+            "url": "https://www.megazone.com/resources/newsroom/99",
+            "publisher": "메가존클라우드",
+            "summary": "보안 매출 700억원 이상"
+          },
+          {
+            "title": "메가존클라우드 클라우드 보안 엔지니어 (신입 지원 가능)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49524185?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=11&sc=630",
+            "publisher": "채용 공고",
+            "summary": "보안 자리가 신입까지 열려 있다"
+          }
+        ]
+      },
+      {
+        "name": "교육 사업",
+        "how": "**클라우드·AI 기술 교육**을 별도 사업으로 한다. 공고에 `[메가존클라우드] **클라우드/AI 기술 교육 전문가**`, `Education Operation (교육 운영 코디네이터)`, `교육 사업 개발 및 영업` 이 함께 열려 있다. **MSP 에게 교육은 자연스러운 확장**이다 — 고객사 엔지니어가 클라우드를 다룰 줄 알아야 우리 운영도 수월해지고, **교육이 곧 영업 접점**이 된다. 다만 이 계열은 **개발 자리가 아니다.**",
+        "domains": [
+          "고객 앞에 서는 기술 — SA 와 컨설팅"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      }
+    ],
+    "domains": [
+      {
+        "name": "남의 클라우드를 대신 굴린다",
+        "why": "**이 회사의 본업이고, 자체 인프라를 가진 회사와 가장 크게 다른 점이다.** 우리 계정이 아니라 **고객 계정 안에서** 일한다 — 권한은 고객이 주는 만큼만이고, 우리가 좋다고 생각하는 구조를 강요할 수 없으며, **고객마다 이미 만들어 둔 것이 다르다.** 그리고 **AWS·Azure·GCP 를 동시에** 다룬다(공고 다수가 셋을 함께 적는다). 자체 서비스 회사라면 하나만 깊게 파면 되지만, **여기서는 셋의 차이를 아는 것이 실력**이 된다.",
+        "what_to_know": [
+          "**셋의 대응 서비스 지도** — 같은 개념이 AWS·Azure·GCP 에서 어떻게 다르게 불리고 무엇이 다른가",
+          "**남의 계정에서 일하는 법** — IAM 역할, 최소 권한, 감사 로그, 우리가 접근할 수 없을 때의 진단",
+          "**이미 만들어진 것 위에 올리기** — 그린필드가 아니라 **남이 만든 구조를 이어받는 일**이 대부분이다",
+          "**멀티 클라우드·하이브리드** — 한 고객이 둘 이상을 쓰는 경우의 네트워크와 신원 연결"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Cloud Engineer(고객사 상주 운영)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49842460?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=5&sc=630",
+            "publisher": "채용 공고",
+            "summary": "고객사 안에서 일하는 형태가 자리로 존재한다"
+          },
+          {
+            "title": "메가존클라우드 [메가존클라우드] Solution Architect 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53565634&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41ed72c1-2440-483b-972c-1bd0dab6c667",
+            "publisher": "채용 공고",
+            "summary": "고객 환경 설계를 맡는 자리"
+          }
+        ]
+      },
+      {
+        "name": "클라우드 비용을 줄이는 일",
+        "why": "**재판매 구조에서 가장 값나가는 기술이다.** 고객의 클라우드 청구서를 우리가 다루므로 **어디서 새는지 가장 잘 알고**, 줄여 준 만큼이 곧 관계가 된다. 그리고 **AI 워크로드가 들어오면서 판이 커졌다** — GPU 는 시간당 원가가 높아 **놀리면 바로 돈**이고, 어느 리전·어느 인스턴스·어느 시점에 돌릴지가 비용을 몇 배로 바꾼다. 자체 연구 `Brain AI` 의 목표가 정확히 이것이다.",
+        "what_to_know": [
+          "**FinOps 의 기본 흐름** — 가시화(누가 얼마 쓰는지) → 최적화 → 예측·예산",
+          "**절감 수단과 위험** — 예약·약정 할인, 스팟 인스턴스, 오토스케일링, 스토리지 계층, 유휴 자원 정리",
+          "**요청량과 실사용의 차이** — 대부분의 클러스터에서 요청한 자원의 절반도 안 쓴다",
+          "**GPU 원가** — 시간당 단가, 가동률 측정, 학습과 추론의 비용 구조 차이"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 클라우드 인프라 및 비용 관리 컨설턴트 (FinOps 전문가) 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53805490&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=11b02583-8273-456f-a366-0880f3f096d8",
+            "publisher": "채용 공고",
+            "summary": "FinOps 가 전담 자리로 존재한다"
+          }
+        ]
+      },
+      {
+        "name": "AI 워크로드를 굴리는 플랫폼",
+        "why": "**`AIR Platform` 이라는 자체 플랫폼을 만든다.** 공고가 하는 일을 구체적으로 적는다 — `**Kubernetes 기반 AI Job scheduler (Kueue) 커스터마이징 및 확장 개발**`, `Job 제출, 모니터링, **미터링 및 빌링**, 관리 기능`, `AI agent 배포, 실행, 모니터링 백엔드`, `RAG 시스템 백엔드`, `**분산 환경에서의 학습 작업 스케줄링 로직, 우선순위 큐, 리소스 관리**`. **남의 클라우드를 굴려 온 회사가 그 위에 자기 층을 얹는 것**이고, **마진이 두꺼운 쪽으로 가는 방향**이다.",
+        "what_to_know": [
+          "**쿠버네티스 배치 스케줄링** — `Kueue`·`Volcano` 가 왜 필요한가(기본 스케줄러로는 큐와 우선순위가 부족하다)",
+          "**GPU 자원 관리** — 분할(MIG·타임슬라이싱), 우선순위와 선점, 가동률",
+          "**미터링과 빌링** — 누가 얼마나 썼는지 세어 청구로 잇는 일. 여러 팀·고객이 한 클러스터를 나눠 쓴다",
+          "**Custom Controller / Operator** — 우대사항에 명시돼 있다. 쿠버네티스를 쓰는 것을 넘어 확장하는 일"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Backend Developer / AI Research Engineer 엔지니어 채용",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630",
+            "publisher": "채용 공고",
+            "summary": "Kueue 커스터마이징·미터링·빌링·분산 스케줄링이 담당 업무로 적혀 있다"
+          },
+          {
+            "title": "메가존클라우드 [AIR Platform] Backend Developer, 플랫폼 기획 채용",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49656849?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=37&sc=630",
+            "publisher": "채용 공고",
+            "summary": "AIR Platform 백엔드 자리"
+          }
+        ]
+      },
+      {
+        "name": "자체 AI 연구 — Brain AI",
+        "why": "**MSP 회사에서 국제 학회 1저자 논문을 자격요건으로 거는 자리가 나온다.** 공고가 연구 주제를 밝힌다 — `Transformer 기반 거대언어모델 및 거대비전모델 AI 워크로드의 **멀티 클라우드 비용 최적 실행환경을 자동으로 추천**해주는 새로운 AI 기술을 연구 (**Brain AI**)`. **본업(클라우드 운영)에서 나온 데이터로 본업을 자동화하는 연구**이고, `클라우드 환경에서의 AI 워크로드 실행 데이터를 수집 및 분석하고, **NVIDIA L40S GPU 기반 자체 계산 클러스터**를 효과적으로 활용` 한다고 적는다.",
+        "what_to_know": [
+          "**이 연구의 문제 정의** — 어떤 워크로드를 어느 클라우드·어느 인스턴스에서 돌리면 가장 싼가를 예측하는 문제",
+          "**Transformer 를 비용 예측에 쓰는 발상** — 시계열·구성 데이터를 시퀀스로 다루기",
+          "**실행 데이터 수집** — 본업에서 나오는 데이터가 곧 연구 자산이라는 구조",
+          "**연구를 제품으로 잇기** — 공고가 `연구 결과를 제품화해 AI 최적 운영의 어려운 병목 해결 선도` 라고 적는다"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Backend Developer / AI Research Engineer 엔지니어 채용",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630",
+            "publisher": "채용 공고",
+            "summary": "Brain AI 의 연구 주제와 자체 GPU 클러스터가 명시돼 있다"
+          }
+        ]
+      },
+      {
+        "name": "클라우드 보안",
+        "why": "**2025년 매출 700억원 이상이고, 공고 수로도 가장 두꺼운 축 중 하나다.** 그리고 **층이 뚜렷하게 나뉘어 있다** — 구축(`클라우드 보안 솔루션 구축 전문가`), 관제·대응(`클라우드 AI-SOC 전문가(CERT·운영·관제)`, `보안 데이터 분석 엔지니어(SIEM/SOAR)`), 컨설팅(`GRC/금융/거버넌스`), 영업 접점(`Security SA/프리세일즈`). **남의 클라우드를 운영하면 보안도 함께 맡게 되는 것**이 자연스러운 흐름이다.",
+        "what_to_know": [
+          "**클라우드 보안 설정 점검(CSPM)** — 공개 버킷·과도한 IAM·열린 보안그룹을 API 로 전수 조사",
+          "**SIEM/SOAR** — 로그를 모아 규칙으로 탐지하고 대응을 자동화하는 도구 계열",
+          "**관제(SOC)의 실제** — 알림을 줄이는 일이 규칙을 만드는 일보다 어렵다",
+          "**GRC** — 규제·인증·거버넌스. 금융권 고객이 따로 언급된다"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 클라우드 보안 엔지니어 (신입 지원 가능)",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49524185?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=11&sc=630",
+            "publisher": "채용 공고",
+            "summary": "보안 자리가 신입까지 열려 있다"
+          }
+        ]
+      },
+      {
+        "name": "데이터를 모아 쓰게 만드는 일",
+        "why": "**클라우드 위에 데이터 플랫폼을 얹는 일이 별도 축으로 있다.** 공고에 `**Data Engineer (데이터 거버넌스 전문가)**`, `Data Analyst`, 그리고 관계사의 `메가존소프트 Data Engineer` 가 함께 열려 있다. **`거버넌스` 라는 말이 붙은 것**이 이 회사다운 지점이다 — 고객사 데이터를 다루므로 **누가 무엇을 볼 수 있는지, 어디서 왔는지(계보), 품질이 보장되는지**가 기술만큼 중요하다.",
+        "what_to_know": [
+          "**데이터 거버넌스** — 카탈로그, 계보(lineage), 접근 권한, 품질 규칙",
+          "**클라우드 데이터 플랫폼** — 레이크·웨어하우스·레이크하우스의 차이와 각 클라우드의 대응 서비스",
+          "**파이프라인 도구** — 수집·변환·적재의 표준 구성",
+          "**고객사 데이터를 다룰 때의 선** — 우리가 보면 안 되는 것, 비식별화, 감사 로그"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Data Engineer (데이터 거버넌스 전문가) 채용",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49523705?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=19&sc=630",
+            "publisher": "채용 공고",
+            "summary": "데이터 거버넌스 전담 자리"
+          }
+        ]
+      },
+      {
+        "name": "24시간 돌아가는 관제와 운영",
+        "why": "**`Cloud Engineer/247 서비스` 라는 자리 이름이 그대로 말해 준다** — 24시간 7일 운영이다. MSP 의 계약에는 **가용성 약속(SLA)** 이 들어가고, 그것을 지키려면 **사람이 교대로 지켜본다.** 이 축의 자리는 **경력무관·신입까지 열려 있는 경우가 많아** 클라우드로 들어오는 입구가 되기도 한다. 다만 **교대 근무와 야간 대응**이 따라올 수 있으므로 지원 전에 근무 형태를 확인해야 한다.",
+        "what_to_know": [
+          "**모니터링과 알림 체계** — 무엇을 재고 언제 울리게 하는가, 알림 피로를 줄이는 법",
+          "**장애 대응 절차** — 등급, 에스컬레이션, 사후 분석",
+          "**SLA 와 가용성 계산** — 99.9% 와 99.99% 의 차이가 시간과 비용으로 무엇인지",
+          "**교대 근무의 현실** — 지원 전 확인할 것"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 Cloud Engineer/247 서비스 채용",
+            "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49378397?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=17&sc=630",
+            "publisher": "채용 공고",
+            "summary": "24/7 운영이 자리 이름에 들어 있다"
+          }
+        ]
+      },
+      {
+        "name": "고객 앞에 서는 기술 — SA 와 컨설팅",
+        "why": "**공고의 상당수가 엔지니어가 아니라 `SA`(Solution Architect)·`프리세일즈`·`컨설턴트`다.** MSP 는 **파는 것과 만드는 것이 붙어 있는 사업**이라, **고객 앞에서 구조를 설계하고 설득하는 자리**가 두껍다. `[메가존클라우드] Solution Architect`, `클라우드 보안 전문가(Security SA/Pre-Sales)`, `클라우드 보안 컨설턴트(GRC/금융/거버넌스)`, `CX Platform Specialist` 등이 그것이다. **코드를 쓰는 자리를 찾는다면 이 계열은 제목만 보고 지원하지 말아야 한다.**",
+        "what_to_know": [
+          "**SA 와 엔지니어의 차이** — 설계·제안·미팅 주도가 중심이고 구현은 다른 팀이 하는 경우가 많다",
+          "**프리세일즈** — 계약 전 단계의 기술 지원. 데모·PoC·기술 검증",
+          "**클라우드 자격증** — 이 계열에서는 신뢰의 표식으로 쓰이고 파트너 등급과도 연결된다",
+          "**제안서와 아키텍처 문서** — 산출물이 코드가 아니라 문서다"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "메가존클라우드 [메가존클라우드] Solution Architect 채용",
+            "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53565634&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41ed72c1-2440-483b-972c-1bd0dab6c667",
+            "publisher": "채용 공고",
+            "summary": "SA 자리가 별도로 있다"
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "**매출 1조 7,496억원인데 영업이익이 2억 3,306만원이다 — 매출로 이 회사를 읽으면 안 된다**",
+        "evidence": "ㆍKubernetes 기반 AI Job scheduler (Kueue) 커스터마이징 및 확장 개발",
+        "so_what": "2025년 매출이 1.7조인데 **영업이익은 2.3억**이고, 그럼에도 **창사 첫 흑자**다. **클라우드 사용료를 대신 결제해 재판매하는 구조**라 매출은 크게 잡히지만 마진이 얇기 때문이다. **지원자에게 이건 두 가지를 뜻한다.** ① `대기업 규모` 라고 생각하고 처우를 짐작하면 어긋난다 — **매출 규모와 수익력이 다르다.** ② **회사가 마진이 두꺼운 쪽으로 옮기는 중**이고, 위 evidence 처럼 **자체 플랫폼(`AIR Platform`)을 만드는 자리**가 그 방향이다. **AI 매출 3,700억·보안 700억**을 따로 밝힌 것도 같은 맥락이다. **`재판매를 운영하는 자리`와 `자기 것을 만드는 자리` 중 어느 쪽에 지원하는지가 이 회사에서는 특히 중요하다.**",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**MSP 회사인데 국제 학회 1저자 논문을 자격요건으로 거는 자리가 있다**",
+        "evidence": "ㆍ국제 학회 및 저널에 1저자로서 peer-reviewed 연구 논문 출판 경험",
+        "so_what": "`Backend Developer / AI Research Engineer` 공고의 후자 자격요건이다. 연구 주제도 밝힌다 — `**멀티 클라우드 비용 최적 실행환경을 자동으로 추천**해주는 새로운 AI 기술을 연구 (**Brain AI**)`, 그리고 `**NVIDIA L40S GPU 기반 자체 계산 클러스터**` 를 쓴다. **본업에서 나온 데이터로 본업을 자동화하는 연구**이고, 우대사항은 `탑티어 기계학습 국제 학회 논문 출판 실적 (NeurIPS, ICML, ICLR, CVPR, etc.)` 과 박사 학위다. **`MSP 는 운영만 한다` 는 짐작이 여기서 깨진다.** 다만 **한 공고 안에 백엔드와 연구 자리가 함께 묶여 있으므로**, 지원 전에 **어느 쪽으로 넣는지 분명히** 해야 한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**같은 자리를 잡코리아와 사람인에 중복 게시한다 — 68건이 아니라 54개 자리다**",
+        "evidence": "ㆍPython, Java, Go 언어 등을 사용한\n서버 애플리케이션 개발 경험 3년 이상",
+        "so_what": "크롤 기준 모집중 68건인데 **고유 제목은 54개**다(잡코리아 26 · 사람인 42). 위 evidence 가 들어간 `Backend Developer / AI Research Engineer` 공고도 **양쪽에 같은 내용으로 올라와 있다.** **지원자가 조심할 것은 둘이다.** ① **같은 자리에 두 번 지원하지 않는다.** ② **공고 수를 회사 규모나 채용 활발함의 지표로 쓰면 부풀려진다.** 그리고 **`54개 자리` 중에서도 개발·엔지니어는 절반 이하**다 — 총무·세무·자금·영업·교육운영·인턴, 그리고 **보안 컨설턴트·프리세일즈**가 섞여 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**관계사(`메가존소프트`) 공고가 섞여 있다 — 지원하는 회사가 다르다**",
+        "evidence": "[메가존클라우드관계사] 메가존소프트 GCP AI Engineer 채용",
+        "so_what": "제목에 `**[메가존클라우드관계사]**` 가 붙은 공고가 다섯 있다 — `메가존소프트 Data Engineer`(신입/경력), `메가존소프트 GCP AI Engineer`, `CDN & Security SA/SE Tech Engineer`. **채용 주체가 메가존클라우드가 아니라 관계사**라는 뜻이고, **처우·복지·근무지·조직 문화가 다를 수 있다.** 이 브리핑에서 **관계사 공고가 본사 공고와 같은 목록에 섞여 나오는 것은 드문 경우**다. **지원 전에 `내가 입사하는 법인이 어디인가` 를 확인**해야 하고, 면접에서 물어도 이상하지 않다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**신입 문이 이 브리핑의 후보 목록에서 가장 넓다 — 다만 열린 곳이 정해져 있다**",
+        "evidence": "클라우드 보안 엔지니어 (신입 지원 가능)",
+        "so_what": "`신입·경력` 11건 · `신입` 4건 · `경력무관` 6건으로 표기상 문이 넓고, 위 evidence 처럼 **제목에 `신입 지원 가능` 을 적은 자리도 있다.** 다만 **어디가 열려 있는지 보면 방향이 보인다** — **보안 구축·관제**, **24/7 클라우드 운영**, **ServiceNow 솔루션 SW 개발**, **관계사 Data Engineer**, 그리고 **교육·총무·인턴**. 반대로 **`AIR Platform` 백엔드나 `Brain AI` 연구는 경력·논문을 요구한다.** **신입에게 이 회사는 `운영과 보안으로 들어와 안쪽으로 옮겨 가는 경로`** 로 읽는 것이 현실적이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**근무지가 과천 본사이고, 고객사 상주 자리가 따로 있다**",
+        "evidence": "※ 주 근무지는 과천 본사이며, 사업부서에 따라 상세근무지가 달라질 수 있습니다.",
+        "so_what": "공고 하단 안내에 위 문장이 붙어 있다. 그리고 별도로 `**Cloud Engineer(고객사 상주 운영)**` 자리와 `[메가존클라우드] 총무 업무지원 (**부산사무소**)(계약직)` 이 있다. **MSP 는 고객사에 나가 있는 형태가 실재하는 업**이므로, **`상주` 가 제목에 없더라도 근무 형태를 확인**하는 편이 좋다 — 상주는 **소속은 우리 회사인데 매일 남의 회사로 출근**하는 형태라 경험과 소속감이 크게 달라진다. 그리고 **원격 근무에 대한 언급을 공고에서 찾지 못했다** — 앞서 다룬 엘리스·업스테이지와 대비된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**보안이 네 층으로 갈려 있다 — 같은 `보안` 이라도 하는 일이 전혀 다르다**",
+        "evidence": "클라우드 AI-SOC 전문가 채용 (CERT·운영·관제)",
+        "so_what": "보안 자리를 제목으로만 세어도 여덟 개가 넘고, **층이 뚜렷하다.** ① **구축** — `클라우드 보안 솔루션 구축 전문가`, `클라우드 보안 엔지니어(Cloud Security Engineer)`. ② **관제·대응** — 위 evidence(`CERT·운영·관제`)와 `보안 데이터 분석 엔지니어(SIEM/SOAR/Senior)`. ③ **컨설팅** — `클라우드 보안 컨설턴트 (GRC/금융/거버넌스)`. ④ **영업 접점** — `클라우드 보안 전문가 (Security SA)`, `(프리세일즈)`. **`보안 엔지니어` 를 찾는 사람이 제목만 보고 지원하면 컨설팅이나 프리세일즈에 닿을 수 있다** — 본문의 담당 업무를 반드시 읽는다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "postings": [],
+  "open_questions": [
+    "**임직원 수가 자료마다 크게 갈린다** — 회사 소개는 `약 2,700여명`, 다른 집계는 `1,688명`(2026-06). **관계사 포함 여부의 차이로 보이나 확정할 수 없다.**",
+    "**국내 MSP 점유율 1위 표현이 출처마다 다르다.** 여러 기사가 메가존클라우드를 MSP 1위로 소개하지만, **IDC 집계를 인용한 기사는 삼성SDS 1위·LG CNS·메가존 순으로 보도**한다. **집계 기준(매출 범위·계열사 물량 포함 여부)이 다른 것으로 보이나 확인하지 못해 `1위` 라고 단정하지 않았다.**",
+    "**`AIR Platform` 과 `AIR 부문` 의 관계를 확정하지 못했다.** 공고에 `AIR Platform(Backend Developer, 플랫폼 기획)` 과 `AIR 부문 AI 전문 Engineer` 가 따로 있는데, `AIR` 가 무엇의 약자인지 공고 어디에도 풀려 있지 않다.",
+    "**`Brain AI` 의 공개 자료를 찾지 못했다.** 공고에만 이름이 나오고 회사 뉴스룸이나 기술 블로그에서 설명을 확인하지 못했다.",
+    "**원격·재택 근무 제도가 있는지 공고에서 확인하지 못했다.** `주 근무지는 과천 본사` 라는 안내만 있다.",
+    "**`salary` 를 아직 조사하지 않았다** — 회사 골격 사이클이라 공고를 읽지 않았다. **공고를 채운 뒤 마지막에 조사한다.** 잡플래닛에 **연봉정보 403건**이 등록돼 있다고 검색 결과에 표시되므로(**직접 열지는 못했다**), 이 브리핑의 다른 회사들보다 표본이 크다.",
+    "**`people` 을 비워 뒀다** — 회사 골격 사이클에서 인물 조사를 하지 않았다. **닫을 때 회사 뉴스룸과 기술 블로그에서 서명 있는 글을 찾는다.**"
+  ]
+}

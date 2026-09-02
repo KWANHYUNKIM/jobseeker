@@ -237,6 +237,20 @@
       "postings": 17,
       "study_items": 160,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "megazone-cloud",
+      "name": "메가존클라우드",
+      "aliases": [
+        "메가존클라우드",
+        "㈜메가존클라우드",
+        "메가존",
+        "MegazoneCloud"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-02"
     }
   ]
 }
