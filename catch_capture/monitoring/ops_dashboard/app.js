@@ -422,9 +422,8 @@ function renderAutoguide(a) {
 
   const cards = [
     ["회사", a.companies], ["공고", a.postings],
-    ["중복 뺀 자리", a.distinct_active], ["학습 항목", a.study_items],
+    ["중복 뺀 자리", a.distinct_active], ["본문 있음", a.with_body],
     ["규모 근거", a.with_facts], ["연봉 근거", a.with_salary],
-    ["본문 없음", a.no_study],
   ];
   stats.innerHTML = cards.map(([label, n]) =>
     `<div class="site done"><div class="site-name">${label}</div>` +
@@ -433,7 +432,7 @@ function renderAutoguide(a) {
 
   tbody.innerHTML = (a.top || []).map((c) =>
     `<tr><td>${c.name}</td><td>${c.active}</td><td>${c.distinct}</td>` +
-    `<td>${c.study.toLocaleString()}</td>` +
+    `<td>${(c.body ?? 0).toLocaleString()}</td>` +
     `<td>${c.facts ? "O" : "—"}</td><td>${c.salary ? "O" : "—"}</td></tr>`).join("");
 }
 

@@ -248,15 +248,14 @@ def _autoguide_summary() -> dict:
         "postings": total("postings"),
         "active": total("active"),
         "distinct_active": total("distinct_active"),
-        "study_items": total("study_items"),
+        "with_body": total("with_body"),
         "with_facts": sum(1 for c in cos if c.get("has_facts")),
         "with_salary": sum(1 for c in cos if c.get("has_salary")),
-        "no_study": sum(1 for c in cos if not (c.get("counts") or {}).get("study_items")),
         "top": [{
             "name": c.get("name", ""), "slug": c.get("slug", ""),
             "active": (c.get("counts") or {}).get("active", 0),
             "distinct": (c.get("counts") or {}).get("distinct_active", 0),
-            "study": (c.get("counts") or {}).get("study_items", 0),
+            "body": (c.get("counts") or {}).get("with_body", 0),
             "facts": bool(c.get("has_facts")), "salary": bool(c.get("has_salary")),
         } for c in cos[:AUTOGUIDE_TOP]],
     }

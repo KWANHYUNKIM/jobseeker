@@ -7,7 +7,6 @@ import {
   FROM_LABEL,
   type AutoGuide,
   type AutoPosting,
-  type AutoStudyItem,
   type CompanyGuide,
   type GuidePosting,
   type Source,
@@ -41,7 +40,7 @@ export function JobGuide({ company, url, activeQuote, onQuote }: Props) {
     )
   }
 
-  const fallback = { auto, autoPosting, activeQuote, onQuote }
+  const fallback = { auto, autoPosting }
   if (!guide) return <NotYet company={company} kind="company" {...fallback} />
   if (!posting) return <NotYet company={company} kind="posting" guide={guide} {...fallback} />
 
@@ -86,16 +85,12 @@ function NotYet({
   guide,
   auto,
   autoPosting,
-  activeQuote,
-  onQuote,
 }: {
   company: string
   kind: 'company' | 'posting'
   guide?: CompanyGuide
   auto: AutoGuide | null
   autoPosting: AutoPosting | null
-  activeQuote: string | null
-  onQuote: (q: string | null) => void
 }) {
   return (
     <PanelShell>
@@ -124,12 +119,7 @@ function NotYet({
         </pre>
       </div>
       {auto && (
-        <AutoBrief
-          auto={auto}
-          posting={autoPosting}
-          activeQuote={activeQuote}
-          onQuote={onQuote}
-        />
+        <AutoBrief auto={auto} posting={autoPosting} />
       )}
       {guide && (
         <>
@@ -150,34 +140,43 @@ function NotYet({
 function AutoBrief({
   auto,
   posting,
-  activeQuote,
-  onQuote,
 }: {
   auto: AutoGuide
   posting: AutoPosting | null
-  activeQuote: string | null
-  onQuote: (q: string | null) => void
 }) {
   const facts = Object.values(auto.facts || {})
   const salary = auto.salary_mentions || []
   const dupOf = (auto.duplicates || []).find((g) =>
     g.postings.some((p) => p.url === posting?.url),
   )
+  const flags = posting?.employment_flags || []
+  const shared = posting?.shared_stack || []
+  const onlyHere = posting?.only_here || []
+  const careers = countCareers(auto)
+
+  // 담을 것이 하나도 없으면 패널을 그리지 않는다. 빈 상자를 놓아 두면 "이 회사는
+  // 정보가 없다"가 아니라 "이 화면이 고장 났다"로 읽힌다.
+  if (
+    !facts.length && !salary.length && !dupOf && !flags.length &&
+    !shared.length && !onlyHere.length && careers.length < 2
+  ) {
+    return null
+  }
 
   return (
     <>
       <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
         <div className="flex items-center gap-2 mb-1.5">
           <span className="text-xs font-medium tracking-wider text-(--color-muted)">
-            공고에서 뽑은 것
+            이 공고에 안 적힌 것
           </span>
           <span className="text-[10px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-faint)">
             자동 추출
           </span>
         </div>
         <p className="text-xs text-(--color-muted) leading-relaxed">
-          사람이 쓴 브리핑을 기다리는 동안, 크롤한 공고에서 기계가 확정할 수 있는 것만
-          모은 것입니다. 모집중{' '}
+          사람이 쓴 브리핑을 기다리는 동안, 이 회사의 다른 공고를 모아 본 것입니다.
+          왼쪽에 이미 적힌 문장은 옮기지 않습니다. 모집중{' '}
           <span className="text-(--color-text) tabular-nums">{auto.counts.active}</span>건 중 중복을
           뺀 실제 자리{' '}
           <span className="text-(--color-text) tabular-nums">{auto.counts.distinct_active}</span>개
@@ -185,10 +184,10 @@ function AutoBrief({
         </p>
       </div>
 
-      {posting && posting.employment_flags && posting.employment_flags.length > 0 && (
+      {flags.length > 0 && (
         <div className="rounded-lg border border-(--color-amber-400)/40 bg-(--color-amber-400)/8 p-3.5">
           <div className="flex flex-wrap items-center gap-1.5 mb-1">
-            {posting.employment_flags.map((f) => (
+            {flags.map((f) => (
               <Badge key={f}>{f}</Badge>
             ))}
           </div>
@@ -199,7 +198,7 @@ function AutoBrief({
       )}
 
       {dupOf && (
-        <Block title="같은 자리로 보이는 공고" icon="⧉" hint={dupOf.reason}>
+        <Block title="같은 자리가 여기에도" icon="⧉" hint={dupOf.reason}>
           <ul className="space-y-1">
             {dupOf.postings
               .filter((p) => p.url !== posting?.url)
@@ -219,14 +218,53 @@ function AutoBrief({
         </Block>
       )}
 
-      <AutoStudyList
-        items={posting?.study || []}
-        activeQuote={activeQuote}
-        onQuote={onQuote}
-      />
+      {(shared.length > 0 || onlyHere.length > 0) && (
+        <Block title="회사의 바탕 / 이 자리만의 것" icon="◆" hint="다른 공고와 대조한 것">
+          {shared.length > 0 && (
+            <div className="mb-2">
+              <FieldLabel>이 회사 다른 공고에도 나오는 기술</FieldLabel>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {shared.map((t) => (
+                  <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) text-(--color-muted)">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {onlyHere.length > 0 && (
+            <div>
+              <FieldLabel>이 공고에만 나오는 기술</FieldLabel>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {onlyHere.map((t) => (
+                  <span
+                    key={t}
+                    className="text-[10px] px-1.5 py-0.5 rounded border border-(--color-accent)/40 text-(--color-accent)"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </Block>
+      )}
+
+      {careers.length >= 2 && (
+        <Block title="이 회사가 뽑는 연차" icon="▤" hint="모집중 공고 전부">
+          <ul className="space-y-1">
+            {careers.map(([raw, n]) => (
+              <li key={raw} className="flex items-baseline gap-2 text-xs">
+                <span className="text-(--color-text)">{raw}</span>
+                <span className="text-[10px] text-(--color-faint) tabular-nums">×{n}</span>
+              </li>
+            ))}
+          </ul>
+        </Block>
+      )}
 
       {facts.length > 0 && (
-        <Block title="회사 규모" icon="▦" hint="공고 본문에 회사가 직접 적은 값">
+        <Block title="회사 규모" icon="▦" hint="다른 공고에 회사가 직접 적은 값">
           <dl className="space-y-1.5">
             {facts.map((f) => (
               <div key={f.label} className="flex items-baseline gap-2">
@@ -246,7 +284,7 @@ function AutoBrief({
       )}
 
       {salary.length > 0 && (
-        <Block title="연봉" icon="₩" hint="공고 원문에 숫자가 적힌 것만">
+        <Block title="연봉" icon="₩" hint="이 회사 공고 원문에 숫자가 적힌 것">
           <ul className="space-y-2">
             {salary.map((sm, i) => (
               <li key={i}>
@@ -259,9 +297,6 @@ function AutoBrief({
                   {sm.title}
                   {sm.career ? ` · ${sm.career}` : ''}
                 </div>
-                <blockquote className="border-l-2 border-(--color-border) pl-2 mt-1">
-                  <span className="text-[11px] text-(--color-muted)">{sm.quote}</span>
-                </blockquote>
               </li>
             ))}
           </ul>
@@ -284,74 +319,14 @@ function AutoBrief({
   )
 }
 
-// 손으로 쓴 학습 로드맵과 생김새를 일부러 다르게 한다. 저긴 항목을 펼치면 "왜"와
-// "만들어 볼 것"이 나오지만 여긴 **문장 자체가 전부**다. 펼침을 흉내 내면 열어 본
-// 사람이 빈 칸을 보게 되므로, 문장을 처음부터 보여주고 누르면 본문만 켠다.
-function AutoStudyList({
-  items,
-  activeQuote,
-  onQuote,
-}: {
-  items: AutoStudyItem[]
-  activeQuote: string | null
-  onQuote: (q: string | null) => void
-}) {
-  if (items.length === 0) return null
-  const rank: Record<string, number> = { core: 0, high: 1, nice: 2 }
-  const sorted = [...items].sort((a, b) => rank[a.priority] - rank[b.priority])
-
-  return (
-    <Block
-      title="공고가 요구하는 것"
-      icon="▸"
-      hint="누르면 왼쪽 본문의 그 문장이 켜집니다"
-    >
-      <ul className="space-y-1">
-        {sorted.map((it, i) => {
-          const isActive = activeQuote === it.quote
-          return (
-            <li key={`${it.quote}-${i}`}>
-              <button
-                onClick={() => onQuote(isActive ? null : it.quote)}
-                className={
-                  'w-full text-left rounded-md border px-2.5 py-2 transition ' +
-                  (isActive
-                    ? 'border-(--color-accent) bg-(--color-accent)/8'
-                    : 'border-transparent hover:border-(--color-border)')
-                }
-              >
-                <span className="block text-xs text-(--color-muted) leading-relaxed">
-                  {it.quote}
-                </span>
-                <span className="flex flex-wrap items-center gap-1.5 mt-1">
-                  <span
-                    className="text-[10px] px-1.5 py-0.5 rounded border"
-                    style={{
-                      borderColor: PRIORITY_COLOR[it.priority],
-                      color: PRIORITY_COLOR[it.priority],
-                    }}
-                  >
-                    {PRIORITY_LABEL[it.priority]}
-                  </span>
-                  <span className="text-[10px] text-(--color-faint)">
-                    {FROM_LABEL[it.from]}
-                  </span>
-                  {it.topics.map((t) => (
-                    <span
-                      key={t}
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) text-(--color-faint)"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </span>
-              </button>
-            </li>
-          )
-        })}
-      </ul>
-    </Block>
-  )
+/** 모집중 공고의 경력 표기를 많은 순으로. 하나뿐이면 왼쪽 헤더에 이미 있는 값이다. */
+function countCareers(auto: AutoGuide): [string, number][] {
+  const c = new Map<string, number>()
+  for (const p of auto.postings || []) {
+    if (p.closed || !p.career?.raw) continue
+    c.set(p.career.raw, (c.get(p.career.raw) || 0) + 1)
+  }
+  return [...c.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
 }
 
 // ── 헤더 ────────────────────────────────────────────────────────────────

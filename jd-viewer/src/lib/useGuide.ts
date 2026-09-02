@@ -54,16 +54,6 @@ export interface HighlightMark {
   from: StudyFrom
 }
 
-/** 자동 학습 항목을 하이라이트용으로 옮긴다. topic 은 찾은 기술 용어로 대신한다. */
-export function autoMark(it: AutoStudyItem): HighlightMark {
-  return {
-    quote: it.quote,
-    topic: it.topics.length ? it.topics.join(' · ') : '공고 문장',
-    priority: it.priority,
-    from: it.from,
-  }
-}
-
 export interface EdgeItem {
   idea: string
   why: string
@@ -171,15 +161,6 @@ export interface CompanyGuide {
 // `why`·`drill`·`verdict` 가 아예 없다. 타입을 합치면 화면이 빈 칸을 "아직 안 쓴 것"
 // 으로 그리게 되므로 **일부러 따로 둔다.**
 
-export interface AutoStudyItem {
-  /** 공고 원문 문장 그대로 — 손으로 쓴 브리핑과 같이 이 문자열로 본문을 하이라이트한다. */
-  quote: string
-  from: StudyFrom
-  priority: Priority
-  /** 문장에서 찾은 기술 용어. 없을 수 있다(문장이 기술 용어를 안 담은 경우). */
-  topics: string[]
-}
-
 export interface AutoPosting {
   url: string
   title: string
@@ -187,11 +168,12 @@ export interface AutoPosting {
   closed?: boolean
   career?: { raw: string; min_years: number | null; max_years: number | null; kind: string } | null
   location?: string
-  tech_stack?: string[]
   /** 계약직·프리랜서·파견·고객사상주 — 학습 계획의 전제가 달라지는 표기. */
   employment_flags?: string[]
-  has_body?: boolean
-  study?: AutoStudyItem[]
+  /** 이 회사 다른 공고에도 나오는 기술 — 이 회사의 바탕. */
+  shared_stack?: string[]
+  /** 이 공고에만 나오는 기술 — 이 자리만의 것. */
+  only_here?: string[]
 }
 
 export interface AutoFact {
@@ -233,7 +215,6 @@ export interface AutoGuide {
     closed: number
     with_body: number
     distinct_active: number
-    study_items: number
   }
   facts: Record<string, AutoFact>
   salary_mentions: AutoSalary[]

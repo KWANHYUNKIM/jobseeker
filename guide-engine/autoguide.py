@@ -14,8 +14,10 @@
 사람에게 손해다. 코드가 확정할 수 있는 것만 담고, 못 하는 것은 `gaps` 에 이름을 적어
 남긴다.
 
-`study[].quote` 는 validate.py 와 같은 규칙(공백만 접어 대조)으로 **공고 원문의
-부분문자열**이어야 한다 — 뷰어가 이 문자열로 본문을 하이라이트하기 때문이다.
+**공고에 적혀 있는 것은 담지 않는다.** 자격요건 문장을 뽑아 오른쪽에 늘어놓아 봤는데,
+그건 왼쪽 본문을 두 번 읽히는 것이지 알려주는 것이 아니었다. 여기 담는 것은 **공고
+하나만 봐서는 알 수 없는 것**뿐이다 — 회사가 다른 공고에 적어 둔 규모·연봉, 같은
+자리가 다른 사이트에도 올라온 사실, 이 회사가 공고 전반에서 반복하는 기술.
 """
 from __future__ import annotations
 
@@ -219,25 +221,16 @@ def parse_career(raw: str):
     return {"raw": s, "min_years": None, "max_years": None, "kind": "unparsed"}
 
 
-# ── 학습 항목 ────────────────────────────────────────────────────────────
-# 자격요건·우대사항·주요업무를 문장으로 쪼갠 것이 학습 항목의 원재료다. 다만 그
-# 절에는 공부할 것이 아닌 줄이 섞여 있다(학력, 근무지, 마감일, 고용형태…). 이걸
-# 거르지 않으면 "학력 무관"이 학습 항목이 되어 목록 전체의 신뢰가 깨진다.
-BULLET_RE = re.compile(r"^\s*(?:[•·ㆍ∙▪▶◆■□○●\-\*※]|\d+[\.\)]|[가-힣]\.)\s*")
-NOISE_RE = re.compile(
-    r"학력|근무지|근무\s*형태|고용\s*형태|마감|접수|제출|채용\s*절차|전형|"
-    r"연봉|급여|복리|복지|우대\s*사항$|자격\s*요건$|주요\s*업무$|담당\s*업무$|"
-    r"모집\s*(?:부문|인원)|성별|나이|병역|보훈|장애|채용시|출퇴근|위치|주소|"
-    r"^경력\s*[:：]|^경력\s*\d|^신입|^\s*$|문의|이메일|지원\s*방법")
-# 절 머리글은 학습 항목이 아니다. 원티드는 "2. 자격 요건 (Qualifications) / 필수"
-# 처럼 번호와 영문을 붙여 오므로 끝 앵커만으로는 안 걸린다.
-HEADER_RE = re.compile(
-    r"^\d*\.?\s*(?:자격\s*요건|우대\s*사항|주요\s*업무|담당\s*업무|필수\s*사항|"
-    r"근무\s*조건|복지|혜택|채용\s*전형|전형\s*절차|서비스\s*소개|회사\s*소개)"
-    r"\s*(?:\([^)]*\))?\s*(?:[/·|]\s*\S{1,10})?\s*[:：]?\s*$")
-# 사람 이름·회사 소개처럼 문장이 아닌 조각이 섞이는 것을 막는 최소 길이.
-MIN_LINE = 6
-MAX_LINE = 200
+# ── 회사 어휘 ────────────────────────────────────────────────────────────
+# 크롤러의 tech_stack 은 지명·복지·일반어가 섞여 들어온다(`세종특별자치시`,
+# `교육비`, `워케이션`). 그대로 두면 "이 회사가 쓰는 기술"에 "서울"이 낀다.
+# 두 글자 이하 한글도 뺀다 — `개발`·`설계`·`보안` 은 어느 공고에나 있어 알려주는
+# 것이 없다.
+VOCAB_STOP = {
+    "세종특별자치시", "일부 혜택은 고용형태", "교육비", "워케이션", "블로그",
+    "구글 문서", "학습 코칭", "학습 관리", "연구 및 개발", "학습 및 개발",
+}
+_HANGUL_RE = re.compile(r"[가-힣]")
 
 # 제목 유사도가 이 위면 같은 자리로 본다. 0.75 는 "금융SI 고급 개발자(원천징수/환원
 # 개발)" 과 "금융권 SI 고급 개발자( 원천징수/환원) 모집" 을 묶고, 같은 회사의 다른
@@ -245,90 +238,15 @@ MAX_LINE = 200
 TITLE_SIM = 0.75
 
 
-def build_vocab(all_jobs: list[dict]) -> list[str]:
-    """기술 용어 사전을 코퍼스에서 만든다 — 크롤러가 이미 뽑아 둔 tech_stack 이
-    사람이 손으로 적은 어떤 목록보다 이 데이터에 맞는다."""
-    c = Counter()
-    for j in all_jobs:
-        for t in j.get("tech_stack") or []:
-            if t:
-                c[t] += 1
-    return sorted(c, key=lambda t: (-len(t), t))   # 긴 것부터 — "Spring Boot" 가 "Spring" 보다 먼저
-
-
-# 영문 용어는 부분문자열로 찾으면 안 된다 — `Claude` 에서 `C` 를, `RAG` 에서 `R` 을
-# 잡아 목록이 쓰레기가 된다. 한글 용어는 조사가 붙어 오므로 경계를 걸지 않는다.
-_ASCII_TERM = re.compile(r"^[A-Za-z0-9][A-Za-z0-9+#.\- ]*$")
-_TERM_CACHE: dict[str, re.Pattern | None] = {}
-
-
-def _term_re(term: str):
-    if term not in _TERM_CACHE:
-        _TERM_CACHE[term] = (
-            re.compile(r"(?<![A-Za-z0-9+#.])" + re.escape(term) + r"(?![A-Za-z0-9+#])",
-                       re.IGNORECASE)
-            if _ASCII_TERM.match(term) else None)
-    return _TERM_CACHE[term]
-
-
-def match_topics(quote: str, vocab: list[str]) -> list[str]:
-    low = quote.lower()
-    hits, taken = [], []
-    for term in vocab:
-        t = term.lower()
-        rx = _term_re(term)
-        if rx is not None:
-            if not rx.search(quote):
-                continue
-        elif t not in low:
-            continue
-        if any(t in got for got in taken):      # "Spring" 은 "Spring Boot" 에 먹힌다
-            continue
-        taken.append(t)
-        hits.append(term)
-    return hits[:6]
-
-
-def split_lines(section: str) -> list[str]:
+def clean_stack(terms) -> list[str]:
     out = []
-    for raw in (section or "").split("\n"):
-        line = BULLET_RE.sub("", raw).strip()
-        line = re.sub(r"\s+", " ", line)
-        if len(line) < MIN_LINE or len(line) > MAX_LINE:
+    for t in terms or []:
+        if not t or t in VOCAB_STOP:
             continue
-        if NOISE_RE.search(line) or HEADER_RE.match(line):
+        if _HANGUL_RE.search(t) and len(t) <= 2:
             continue
-        out.append(line)
+        out.append(t)
     return out
-
-
-SECTIONS = [("qualifications", "qualification", "core"),
-            ("preferences", "preference", "nice"),
-            ("main_tasks", "task", "high")]
-
-
-def extract_study(job: dict, vocab: list[str]) -> list[dict]:
-    body = "\n".join([job.get("main_tasks") or "", job.get("qualifications") or "",
-                      job.get("preferences") or ""])
-    body_n = norm_text(body)
-    items, seen = [], set()
-    for field, origin, priority in SECTIONS:
-        for line in split_lines(job.get(field) or ""):
-            key = line.lower()
-            if key in seen:
-                continue
-            # 뷰어가 이 문자열로 본문을 하이라이트한다. 원문에 없으면 조용히
-            # 사라지므로, validate.py 와 같은 규칙으로 여기서 미리 떨어뜨린다.
-            if norm_text(line) not in body_n:
-                continue
-            seen.add(key)
-            items.append({
-                "quote": line,
-                "from": origin,
-                "priority": priority,
-                "topics": match_topics(line, vocab),
-            })
-    return items
 
 
 # ── 중복 공고 ────────────────────────────────────────────────────────────
@@ -402,7 +320,8 @@ def group_duplicates(postings: list[dict]) -> list[dict]:
 # 봐야 하나"를 그대로 알려 준다.
 UNCODEABLE = [
     ("verdict", "이 공고가 찾는 사람 한 줄 — 공고 문장을 업무와 이어 읽어야 나온다"),
-    ("study[].why / gap_check / drill", "왜 이 회사에서 필요한지와 손으로 만들 과제"),
+    ("학습 로드맵", "무엇을 왜 공부하고 무엇을 만들어 볼지 — 공고 문장을 그대로 옮기는 "
+                "것은 왼쪽 본문을 두 번 읽히는 것뿐이라 여기서 만들지 않는다"),
     ("company.business / domains / signals", "무엇을 팔아 버는가, 기술로 푸는 문제의 경계"),
     ("people", "공개 인물 — 공고에 없다. 컨퍼런스·기술글·인터뷰를 찾아야 한다"),
     ("edge", "다 한 사람이 더 할 것"),
@@ -410,18 +329,21 @@ UNCODEABLE = [
 ]
 
 
-def build_company(name: str, jobs: list[dict], vocab: list[str],
-                  slug: str) -> dict:
+def build_company(name: str, jobs: list[dict], slug: str) -> dict:
     active = [j for j in jobs if j.get("status") != "closed"]
     closed = [j for j in jobs if j.get("status") == "closed"]
     dups = group_duplicates(active)
     dup_extra = sum(len(g["postings"]) - 1 for g in dups)
 
+    # 회사 전체에서 이 기술이 몇 건에 나오는가. 공고 하나만 봐서는 알 수 없는 값이고,
+    # 이 화면이 왼쪽 JD 에 더할 수 있는 것이 정확히 이런 종류다.
+    stacks = Counter(t for j in jobs for t in clean_stack(j.get("tech_stack")))
+
     postings = []
     for j in sorted(jobs, key=lambda x: (x.get("status") == "closed", x.get("title") or "")):
-        study = extract_study(j, vocab)
         flags = [label for label, rx in EMPLOYMENT_FLAGS
                  if rx.search(j.get("full_jd") or "")]
+        mine = clean_stack(j.get("tech_stack"))
         postings.append({
             "url": j.get("url", ""),
             "title": j.get("title", ""),
@@ -429,13 +351,13 @@ def build_company(name: str, jobs: list[dict], vocab: list[str],
             "closed": j.get("status") == "closed",
             "career": parse_career(j.get("career") or ""),
             "location": norm_text(j.get("location") or "").split("지도보기")[0].strip(),
-            "tech_stack": j.get("tech_stack") or [],
             "employment_flags": flags,
-            "has_body": bool((j.get("qualifications") or "") or (j.get("main_tasks") or "")),
-            "study": study,
+            # 이 회사 다른 공고에도 나오는 기술 / 이 공고에만 나오는 기술.
+            # 앞은 "이 회사의 바탕", 뒤는 "이 자리만의 것" 이다.
+            "shared_stack": [t for t in mine if stacks[t] > 1],
+            "only_here": [t for t in mine if stacks[t] == 1],
         })
 
-    stacks = Counter(t for j in jobs for t in (j.get("tech_stack") or []))
     careers = [p["career"] for p in postings if not p["closed"] and p["career"]]
 
     return {
@@ -453,9 +375,9 @@ def build_company(name: str, jobs: list[dict], vocab: list[str],
             "postings": len(jobs),
             "active": len(active),
             "closed": len(closed),
-            "with_body": sum(1 for p in postings if p["has_body"]),
+            "with_body": sum(1 for j in jobs
+                             if (j.get("qualifications") or j.get("main_tasks"))),
             "distinct_active": len(active) - dup_extra,
-            "study_items": sum(len(p["study"]) for p in postings),
         },
         "facts": extract_facts(jobs),
         "salary_mentions": extract_salary(jobs),
@@ -534,8 +456,7 @@ def summarize(doc: dict) -> str:
     c = doc["counts"]
     out = [f"■ {doc['name']}  ({doc['slug']})",
            f"  공고 {c['postings']}건 — 모집중 {c['active']} / 마감 {c['closed']} / "
-           f"본문있음 {c['with_body']} / 중복 뺀 실제 자리 {c['distinct_active']}",
-           f"  학습 항목 {c['study_items']}개"]
+           f"본문있음 {c['with_body']} / 중복 뺀 실제 자리 {c['distinct_active']}"]
     if doc["facts"]:
         out.append("  사실: " + " · ".join(
             f"{f['label']} {f['value']}" for f in doc["facts"].values()))
@@ -573,7 +494,6 @@ def main() -> int:
     args = ap.parse_args()
 
     jobs = load_jobs()
-    vocab = build_vocab(jobs)
     by_company: dict[str, list[dict]] = defaultdict(list)
     display: dict[str, str] = {}
     for j in jobs:
@@ -615,7 +535,7 @@ def main() -> int:
         while slug in used:                       # 로마자가 겹치면 뒤에 번호를 붙인다
             slug += "-2"
         used.add(slug)
-        docs.append(build_company(display[n], by_company[n], vocab, slug))
+        docs.append(build_company(display[n], by_company[n], slug))
 
     for d in docs:
         print(summarize(d))
