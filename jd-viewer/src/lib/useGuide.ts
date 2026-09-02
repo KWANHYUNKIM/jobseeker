@@ -42,6 +42,28 @@ export interface StudyItem {
   resources?: GuideResource[]
 }
 
+/**
+ * 본문 하이라이트가 실제로 쓰는 것만 추린 형태. `StudyItem`(사람이 쓴 것)과
+ * `AutoStudyItem`(공고에서 뽑은 것)은 나머지가 전혀 다르지만 **하이라이트에 필요한
+ * 네 칸은 같다** — 본문 쪽이 넓은 타입을 요구하면 자동 브리핑 문장은 영영 못 켠다.
+ */
+export interface HighlightMark {
+  quote: string
+  topic: string
+  priority: Priority
+  from: StudyFrom
+}
+
+/** 자동 학습 항목을 하이라이트용으로 옮긴다. topic 은 찾은 기술 용어로 대신한다. */
+export function autoMark(it: AutoStudyItem): HighlightMark {
+  return {
+    quote: it.quote,
+    topic: it.topics.length ? it.topics.join(' · ') : '공고 문장',
+    priority: it.priority,
+    from: it.from,
+  }
+}
+
 export interface EdgeItem {
   idea: string
   why: string
@@ -143,6 +165,91 @@ export interface CompanyGuide {
   open_questions?: string[]
 }
 
+// ── 자동 브리핑 (guide-engine/autoguide.py) ──────────────────────────────
+// 손으로 쓴 브리핑이 없는 회사를 빈 화면으로 두지 않기 위한 **폴백**이다. 같은
+// 스키마가 아니다 — 저긴 사람이 판단해 쓴 글이고 여긴 정규식이 공고에서 뽑은 사실이라,
+// `why`·`drill`·`verdict` 가 아예 없다. 타입을 합치면 화면이 빈 칸을 "아직 안 쓴 것"
+// 으로 그리게 되므로 **일부러 따로 둔다.**
+
+export interface AutoStudyItem {
+  /** 공고 원문 문장 그대로 — 손으로 쓴 브리핑과 같이 이 문자열로 본문을 하이라이트한다. */
+  quote: string
+  from: StudyFrom
+  priority: Priority
+  /** 문장에서 찾은 기술 용어. 없을 수 있다(문장이 기술 용어를 안 담은 경우). */
+  topics: string[]
+}
+
+export interface AutoPosting {
+  url: string
+  title: string
+  site: string
+  closed?: boolean
+  career?: { raw: string; min_years: number | null; max_years: number | null; kind: string } | null
+  location?: string
+  tech_stack?: string[]
+  /** 계약직·프리랜서·파견·고객사상주 — 학습 계획의 전제가 달라지는 표기. */
+  employment_flags?: string[]
+  has_body?: boolean
+  study?: AutoStudyItem[]
+}
+
+export interface AutoFact {
+  label: string
+  value: string
+  quote: string
+  source_url: string
+  seen_in: number
+  of_postings: number
+}
+
+export interface AutoSalary {
+  low: number
+  high: number | null
+  unit: string
+  /** '이상' 이면 low 는 하한이지 밴드가 아니다. */
+  bound: string
+  quote: string
+  url: string
+  title: string
+  career?: string
+}
+
+export interface AutoDupGroup {
+  reason: string
+  confidence: Confidence
+  postings: { url: string; site: string; title: string }[]
+}
+
+export interface AutoGuide {
+  slug: string
+  name: string
+  aliases: string[]
+  generator: string
+  generated_at: string
+  counts: {
+    postings: number
+    active: number
+    closed: number
+    with_body: number
+    distinct_active: number
+    study_items: number
+  }
+  facts: Record<string, AutoFact>
+  salary_mentions: AutoSalary[]
+  tech_stack: { name: string; count: number }[]
+  duplicates: AutoDupGroup[]
+  postings: AutoPosting[]
+  /** 코드가 못 채우는 칸과, 채우려면 뭘 봐야 하는지. */
+  gaps: { field: string; needs: string }[]
+}
+
+interface AutoIndexEntry {
+  slug: string
+  name: string
+  aliases: string[]
+}
+
 interface IndexEntry {
   slug: string
   name: string
@@ -183,17 +290,47 @@ function loadCompany(slug: string): Promise<CompanyGuide | null> {
   return p
 }
 
+// 자동 브리핑도 같은 방식으로 목록 한 번 + 상세는 열어 본 회사만. 인덱스는 손으로 쓴
+// 것(20곳)보다 훨씬 크지만(800곳) 압축을 빼고 한 줄로 써서 200KB 안쪽이다.
+let autoIndexPromise: Promise<AutoIndexEntry[]> | null = null
+const autoFileCache = new Map<string, Promise<AutoGuide | null>>()
+
+function loadAutoIndex(): Promise<AutoIndexEntry[]> {
+  if (!autoIndexPromise) {
+    autoIndexPromise = fetch('/guide/auto/index.json')
+      .then((r) => (r.ok ? r.json() : { companies: [] }))
+      .then((d) => (d.companies || []) as AutoIndexEntry[])
+      .catch(() => [])
+  }
+  return autoIndexPromise
+}
+
+function loadAuto(slug: string): Promise<AutoGuide | null> {
+  let p = autoFileCache.get(slug)
+  if (!p) {
+    p = fetch(`/guide/auto/companies/${slug}.json`)
+      .then((r) => (r.ok ? (r.json() as Promise<AutoGuide>) : null))
+      .catch(() => null)
+    autoFileCache.set(slug, p)
+  }
+  return p
+}
+
 export interface JobGuideResult {
   loading: boolean
   /** 이 회사의 브리핑. 아직 안 쓴 회사면 null. */
   guide: CompanyGuide | null
   /** 이 공고에 딱 붙는 부분. 회사 브리핑은 있는데 이 공고는 아직이면 null. */
   posting: GuidePosting | null
+  /** 손으로 쓴 브리핑이 이 공고를 아직 안 덮었을 때만 채워지는 폴백. */
+  auto: AutoGuide | null
+  autoPosting: AutoPosting | null
 }
 
 /** 공고 하나에 붙는 취업 브리핑. 회사명 → aliases → slug → 파일. */
 export function useJobGuide(company: string, url: string): JobGuideResult {
   const [guide, setGuide] = useState<CompanyGuide | null>(null)
+  const [auto, setAuto] = useState<AutoGuide | null>(null)
   const [loading, setLoading] = useState(true)
   const norm = useMemo(() => normalizeCompany(company), [company])
 
@@ -201,15 +338,27 @@ export function useJobGuide(company: string, url: string): JobGuideResult {
     let cancelled = false
     setLoading(true)
     setGuide(null)
+    setAuto(null)
+
+    // 손으로 쓴 브리핑을 먼저 본다. 자동 브리핑은 **그게 이 공고를 못 덮을 때만**
+    // 받는다 — 둘을 늘 같이 받으면 이미 잘 쓰인 회사에서 800곳짜리 인덱스를 괜히
+    // 받게 되고, 화면에는 쓰이지도 않는다.
     loadIndex()
       .then((idx) => {
         const hit = (idx.companies || []).find((c) => (c.aliases || []).includes(norm))
         return hit ? loadCompany(hit.slug) : null
       })
-      .then((doc) => {
+      .then(async (doc) => {
         if (cancelled) return
         setGuide(doc)
-        setLoading(false)
+        const covered = (doc?.postings || []).some((p) => p.url === url)
+        if (!covered) {
+          const rows = await loadAutoIndex()
+          const hit = rows.find((c) => (c.aliases || []).includes(norm))
+          const a = hit ? await loadAuto(hit.slug) : null
+          if (!cancelled) setAuto(a)
+        }
+        if (!cancelled) setLoading(false)
       })
       .catch(() => {
         if (!cancelled) setLoading(false)
@@ -217,14 +366,18 @@ export function useJobGuide(company: string, url: string): JobGuideResult {
     return () => {
       cancelled = true
     }
-  }, [norm])
+  }, [norm, url])
 
   const posting = useMemo(
     () => (guide?.postings || []).find((p) => p.url === url) || null,
     [guide, url],
   )
+  const autoPosting = useMemo(
+    () => (auto?.postings || []).find((p) => p.url === url) || null,
+    [auto, url],
+  )
 
-  return { loading, guide, posting }
+  return { loading, guide, posting, auto, autoPosting }
 }
 
 export const PRIORITY_LABEL: Record<Priority, string> = {

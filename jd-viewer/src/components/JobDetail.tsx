@@ -2,7 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
 import { useSimilarJobs } from '../lib/useSimilar'
-import { useJobGuide, PRIORITY_COLOR, type StudyFrom, type StudyItem } from '../lib/useGuide'
+import {
+  useJobGuide,
+  autoMark,
+  PRIORITY_COLOR,
+  type HighlightMark,
+  type StudyFrom,
+} from '../lib/useGuide'
 import { goBack } from '../lib/router'
 import { paths } from '../lib/urls'
 import { TechTag, CompanyMark } from './ui'
@@ -47,12 +53,18 @@ export function JobDetail({ job, onOpenUrl }: Props) {
 
   // 본문 하이라이트는 가이드의 study[] 에서 나온다. 패널과 본문이 같은 데이터를 보되
   // 훅은 각자 부르는데, useJobGuide 는 fetch 를 캐시하므로 요청은 한 번이다.
-  const { posting } = useJobGuide(job.company, job.url)
+  // 손으로 쓴 브리핑이 이 공고를 아직 안 덮었으면 자동 브리핑의 문장으로 하이라이트한다.
+  // 오른쪽 패널이 자동 항목을 보여주는데 본문이 안 켜지면, 누르는 쪽 입장에서는 그냥
+  // 고장 난 화면이 된다.
+  const { posting, autoPosting } = useJobGuide(job.company, job.url)
   const marksBySection = useMemo(() => {
-    const by: Record<StudyFrom, StudyItem[]> = { qualification: [], preference: [], task: [] }
-    for (const s of posting?.study || []) if (by[s.from]) by[s.from].push(s)
+    const by: Record<StudyFrom, HighlightMark[]> = { qualification: [], preference: [], task: [] }
+    const items: HighlightMark[] = posting?.study?.length
+      ? posting.study
+      : (autoPosting?.study || []).map(autoMark)
+    for (const s of items) if (by[s.from]) by[s.from].push(s)
     return by
-  }, [posting])
+  }, [posting, autoPosting])
 
   // 좁은 화면에서는 두 단이 안 들어간다. 가이드를 본문 아래로 흘리면 스크롤 두 화면
   // 아래로 밀려나 아무도 안 보므로, 탭으로 갈아끼운다.
@@ -334,7 +346,7 @@ function FieldOrPlaceholder({
 }: {
   text: string | undefined
   url: string
-  marks?: StudyItem[]
+  marks?: HighlightMark[]
   activeQuote?: string | null
   onQuote?: (q: string | null) => void
 }) {
@@ -368,7 +380,7 @@ function Pre({
 }: {
   text: string
   muted?: boolean
-  marks?: StudyItem[]
+  marks?: HighlightMark[]
   activeQuote?: string | null
   onQuote?: (q: string | null) => void
 }) {
@@ -400,10 +412,10 @@ function escapeRe(s: string) {
 interface Hit {
   start: number
   end: number
-  item: StudyItem
+  item: HighlightMark
 }
 
-function findHits(text: string, marks: StudyItem[]): Hit[] {
+function findHits(text: string, marks: HighlightMark[]): Hit[] {
   const hits: Hit[] = []
   for (const item of marks) {
     const q = item.quote?.trim()
@@ -439,7 +451,7 @@ function Highlighted({
   onQuote,
 }: {
   text: string
-  marks: StudyItem[]
+  marks: HighlightMark[]
   activeQuote?: string | null
   onQuote?: (q: string | null) => void
 }) {

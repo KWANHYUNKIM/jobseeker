@@ -5,6 +5,9 @@ import {
   PRIORITY_LABEL,
   PRIORITY_COLOR,
   FROM_LABEL,
+  type AutoGuide,
+  type AutoPosting,
+  type AutoStudyItem,
   type CompanyGuide,
   type GuidePosting,
   type Source,
@@ -28,7 +31,7 @@ interface Props {
  * 있고, 항목을 펼치면 왼쪽 본문의 그 문장이 켜진다.
  */
 export function JobGuide({ company, url, activeQuote, onQuote }: Props) {
-  const { loading, guide, posting } = useJobGuide(company, url)
+  const { loading, guide, posting, auto, autoPosting } = useJobGuide(company, url)
 
   if (loading) {
     return (
@@ -38,8 +41,9 @@ export function JobGuide({ company, url, activeQuote, onQuote }: Props) {
     )
   }
 
-  if (!guide) return <NotYet company={company} kind="company" />
-  if (!posting) return <NotYet company={company} kind="posting" guide={guide} />
+  const fallback = { auto, autoPosting, activeQuote, onQuote }
+  if (!guide) return <NotYet company={company} kind="company" {...fallback} />
+  if (!posting) return <NotYet company={company} kind="posting" guide={guide} {...fallback} />
 
   return (
     <PanelShell>
@@ -80,10 +84,18 @@ function NotYet({
   company,
   kind,
   guide,
+  auto,
+  autoPosting,
+  activeQuote,
+  onQuote,
 }: {
   company: string
   kind: 'company' | 'posting'
   guide?: CompanyGuide
+  auto: AutoGuide | null
+  autoPosting: AutoPosting | null
+  activeQuote: string | null
+  onQuote: (q: string | null) => void
 }) {
   return (
     <PanelShell>
@@ -111,6 +123,14 @@ function NotYet({
             : `/loop 30m /hireguide`}
         </pre>
       </div>
+      {auto && (
+        <AutoBrief
+          auto={auto}
+          posting={autoPosting}
+          activeQuote={activeQuote}
+          onQuote={onQuote}
+        />
+      )}
       {guide && (
         <>
           <SalarySection guide={guide} />
@@ -119,6 +139,218 @@ function NotYet({
         </>
       )}
     </PanelShell>
+  )
+}
+
+// ── 자동 브리핑(폴백) ────────────────────────────────────────────────────
+// 손으로 쓴 브리핑이 없는 회사에서 화면을 빈 채로 두지 않는다. 다만 **이게 저것의
+// 축소판인 척하면 안 된다** — 여기 있는 건 정규식이 공고에서 뽑은 사실뿐이고,
+// "왜 필요한가"·"뭘 만들어 볼까"는 아예 없다. 그래서 색을 브랜드색으로 쓰지 않고
+// (그건 사람이 쓴 브리핑의 색이다), 무엇이 비어 있는지를 맨 아래 그대로 적는다.
+function AutoBrief({
+  auto,
+  posting,
+  activeQuote,
+  onQuote,
+}: {
+  auto: AutoGuide
+  posting: AutoPosting | null
+  activeQuote: string | null
+  onQuote: (q: string | null) => void
+}) {
+  const facts = Object.values(auto.facts || {})
+  const salary = auto.salary_mentions || []
+  const dupOf = (auto.duplicates || []).find((g) =>
+    g.postings.some((p) => p.url === posting?.url),
+  )
+
+  return (
+    <>
+      <div className="rounded-lg border border-(--color-border) bg-(--color-panel) p-4">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="text-xs font-medium tracking-wider text-(--color-muted)">
+            공고에서 뽑은 것
+          </span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-faint)">
+            자동 추출
+          </span>
+        </div>
+        <p className="text-xs text-(--color-muted) leading-relaxed">
+          사람이 쓴 브리핑을 기다리는 동안, 크롤한 공고에서 기계가 확정할 수 있는 것만
+          모은 것입니다. 모집중{' '}
+          <span className="text-(--color-text) tabular-nums">{auto.counts.active}</span>건 중 중복을
+          뺀 실제 자리{' '}
+          <span className="text-(--color-text) tabular-nums">{auto.counts.distinct_active}</span>개
+          · {auto.generated_at} 기준.
+        </p>
+      </div>
+
+      {posting && posting.employment_flags && posting.employment_flags.length > 0 && (
+        <div className="rounded-lg border border-(--color-amber-400)/40 bg-(--color-amber-400)/8 p-3.5">
+          <div className="flex flex-wrap items-center gap-1.5 mb-1">
+            {posting.employment_flags.map((f) => (
+              <Badge key={f}>{f}</Badge>
+            ))}
+          </div>
+          <p className="text-xs text-(--color-muted) leading-relaxed">
+            공고 본문에 위 표기가 있습니다. 정규직 상시 자리와 준비할 것이 달라집니다.
+          </p>
+        </div>
+      )}
+
+      {dupOf && (
+        <Block title="같은 자리로 보이는 공고" icon="⧉" hint={dupOf.reason}>
+          <ul className="space-y-1">
+            {dupOf.postings
+              .filter((p) => p.url !== posting?.url)
+              .map((p) => (
+                <li key={p.url} className="text-xs leading-relaxed">
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-(--color-muted) hover:text-(--color-accent)"
+                  >
+                    <span className="text-(--color-faint)">{p.site}</span> · {p.title}
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </Block>
+      )}
+
+      <AutoStudyList
+        items={posting?.study || []}
+        activeQuote={activeQuote}
+        onQuote={onQuote}
+      />
+
+      {facts.length > 0 && (
+        <Block title="회사 규모" icon="▦" hint="공고 본문에 회사가 직접 적은 값">
+          <dl className="space-y-1.5">
+            {facts.map((f) => (
+              <div key={f.label} className="flex items-baseline gap-2">
+                <dt className="text-[10px] tracking-wider text-(--color-faint) w-14 shrink-0">
+                  {f.label}
+                </dt>
+                <dd className="text-xs text-(--color-text)">
+                  {f.value}
+                  <span className="text-[10px] text-(--color-faint) ml-1.5 tabular-nums">
+                    공고 {f.seen_in}/{f.of_postings}건에 반복
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Block>
+      )}
+
+      {salary.length > 0 && (
+        <Block title="연봉" icon="₩" hint="공고 원문에 숫자가 적힌 것만">
+          <ul className="space-y-2">
+            {salary.map((sm, i) => (
+              <li key={i}>
+                <div className="text-[13px] text-(--color-text) tabular-nums">
+                  {sm.low.toLocaleString()}
+                  {sm.high ? `~${sm.high.toLocaleString()}` : ''} {sm.unit}
+                  {sm.bound !== 'point' && sm.bound !== 'range' ? ` ${sm.bound}` : ''}
+                </div>
+                <div className="text-[10px] text-(--color-faint) mt-0.5">
+                  {sm.title}
+                  {sm.career ? ` · ${sm.career}` : ''}
+                </div>
+                <blockquote className="border-l-2 border-(--color-border) pl-2 mt-1">
+                  <span className="text-[11px] text-(--color-muted)">{sm.quote}</span>
+                </blockquote>
+              </li>
+            ))}
+          </ul>
+        </Block>
+      )}
+
+      {auto.gaps && auto.gaps.length > 0 && (
+        <Block title="여기 없는 것" icon="○" hint="코드가 못 채우는 칸">
+          <ul className="space-y-1.5">
+            {auto.gaps.map((g) => (
+              <li key={g.field} className="text-xs leading-relaxed">
+                <span className="text-(--color-text)">{g.field}</span>
+                <span className="text-(--color-faint)"> — {g.needs}</span>
+              </li>
+            ))}
+          </ul>
+        </Block>
+      )}
+    </>
+  )
+}
+
+// 손으로 쓴 학습 로드맵과 생김새를 일부러 다르게 한다. 저긴 항목을 펼치면 "왜"와
+// "만들어 볼 것"이 나오지만 여긴 **문장 자체가 전부**다. 펼침을 흉내 내면 열어 본
+// 사람이 빈 칸을 보게 되므로, 문장을 처음부터 보여주고 누르면 본문만 켠다.
+function AutoStudyList({
+  items,
+  activeQuote,
+  onQuote,
+}: {
+  items: AutoStudyItem[]
+  activeQuote: string | null
+  onQuote: (q: string | null) => void
+}) {
+  if (items.length === 0) return null
+  const rank: Record<string, number> = { core: 0, high: 1, nice: 2 }
+  const sorted = [...items].sort((a, b) => rank[a.priority] - rank[b.priority])
+
+  return (
+    <Block
+      title="공고가 요구하는 것"
+      icon="▸"
+      hint="누르면 왼쪽 본문의 그 문장이 켜집니다"
+    >
+      <ul className="space-y-1">
+        {sorted.map((it, i) => {
+          const isActive = activeQuote === it.quote
+          return (
+            <li key={`${it.quote}-${i}`}>
+              <button
+                onClick={() => onQuote(isActive ? null : it.quote)}
+                className={
+                  'w-full text-left rounded-md border px-2.5 py-2 transition ' +
+                  (isActive
+                    ? 'border-(--color-accent) bg-(--color-accent)/8'
+                    : 'border-transparent hover:border-(--color-border)')
+                }
+              >
+                <span className="block text-xs text-(--color-muted) leading-relaxed">
+                  {it.quote}
+                </span>
+                <span className="flex flex-wrap items-center gap-1.5 mt-1">
+                  <span
+                    className="text-[10px] px-1.5 py-0.5 rounded border"
+                    style={{
+                      borderColor: PRIORITY_COLOR[it.priority],
+                      color: PRIORITY_COLOR[it.priority],
+                    }}
+                  >
+                    {PRIORITY_LABEL[it.priority]}
+                  </span>
+                  <span className="text-[10px] text-(--color-faint)">
+                    {FROM_LABEL[it.from]}
+                  </span>
+                  {it.topics.map((t) => (
+                    <span
+                      key={t}
+                      className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) text-(--color-faint)"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </span>
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+    </Block>
   )
 }
 
