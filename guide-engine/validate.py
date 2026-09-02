@@ -40,6 +40,11 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 MIN_STUDY = 3          # 공고 하나가 이 아래면 아직 안 채운 것으로 본다
 QUEUE_TARGET = 3       # 대기열이 이 아래로 떨어지면 후보 조사를 돈다
 STALE_DAYS = 60        # 이만큼 지난 회사는 재방문 대상
+EXPAND_CAP = 12        # 확장이 사다리 2순위를 쥘 수 있는 공고 수 상한.
+#                        한 회사를 완주할 때까지 안 넘어가는 규칙은 얕은 브리핑을
+#                        막지만, 모집중 67건짜리 회사가 걸리면 대기열이 하루 넘게
+#                        멈춘다(공고는 그동안 마감된다). 12건이면 얕지 않으므로
+#                        그 뒤로는 신규에 자리를 내주고, 남은 공고는 보강에서 잇는다.
 SHOW_NEXT = 5          # --gaps 가 대상 말고 더 보여줄 건수 (루프의 맥락을 아낀다)
 
 
@@ -425,8 +430,15 @@ def gaps(index: dict, summaries: list[dict], jobs: dict, errors: list[str], show
     tracked = {a for s in summaries for a in s["aliases"]}
 
     # 2순위 — 진행 중인 회사의 안 채운 공고
+    queued = queue_rows()
+    deferred: list[str] = []
     for s in summaries:
         if s["status"] != "in_progress" or s["hold_reason"]:
+            continue
+        # 이미 깊이 쓴 회사가 대기열을 계속 막는 것을 끊는다. 대기열이 비어 있으면
+        # 양보할 곳이 없으므로 그대로 확장을 이어간다.
+        if s["postings"] >= EXPAND_CAP and queued:
+            deferred.append(f"{s['name']}({s['postings']}건)")
             continue
         open_urls = [u for u, j in jobs.get("by_url", {}).items()
                      if j["norm"] in s["aliases"] and j["status"] != "closed"]
@@ -452,9 +464,12 @@ def gaps(index: dict, summaries: list[dict], jobs: dict, errors: list[str], show
         print()
 
     # 3순위 — 대기열
-    q = queue_rows()
+    q = queued
     if q:
         print("### 이번 사이클의 대상 — 신규 (사다리 3순위)")
+        if deferred:
+            print(f"※ 확장 {', '.join(deferred)} 은 {EXPAND_CAP}건을 넘겨 뒤로 미뤘다 — "
+                  f"남은 공고는 보강(4순위)에서 잇는다.")
         print(f"**{q[0]}** — QUEUE.md 맨 위. in_progress 로 바꾸고 PROMPT.md 3단계부터.")
         print()
         n = norm_company(q[0])
