@@ -32,7 +32,7 @@
   같고(PROMPT/schema/state/validate) 큐·상태·산출물은 완전히 따로다. 산출물은
   `jd-viewer/public/guide/` 에 쌓여 공고 상세 화면 오른쪽 패널이 읽는다.
   대기열은 `all_jobs_enriched.json` 에서 나온다 — `validate.py --gaps` 가 브리핑 없는
-  회사를 모집중 공고 수로 줄 세워 준다. 스킬은 `/hireguide`, 루프는 `/loop 30m /hireguide`.
+  회사를 모집중 공고 수로 줄 세워 준다.
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
 `python -m pipeline.aggregate 개발자`, `python -m pipeline.close_check --limit 300`, `python -m monitoring.health report`,
