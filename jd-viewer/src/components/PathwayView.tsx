@@ -27,7 +27,7 @@ export function PathwayView() {
       (data?.clusters ?? []).filter((c) =>
         hits(
           query,
-          c.name,
+          c.label,
           ...(c.tech ?? []).map((t) => t.name),
           ...(c.companies ?? []).map((x) => x.name),
         ),
