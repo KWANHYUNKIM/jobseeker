@@ -102,7 +102,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "sequence-fds"
+      ]
     },
     {
       "name": "빌려줄지 정하는 데 사람을 기다리게 하지 않는다",
@@ -116,9 +118,462 @@
     "**FDS 의 정확도 지표가 없다.** 회사가 precision·recall 을 적지 않고 t-SNE 군집 시각화로 대신한다. **얼마나 잡고 얼마나 헛짚는지는 공개 자료로 알 수 없다.**",
     "**비이자수익 1조 886억 원의 구성을 다 못 찾았다.** 수수료·플랫폼 수익 3,105억 원 외 **약 7,800억 원**이 무엇인지 이번 사이클에서 확인하지 못했다.",
     "**실적을 회사 IR 원문이 아니라 언론 보도에서 옮겼다.** `kakaobank.com` 의 IR 페이지를 이번 사이클에서 열지 않았다. 수치가 여러 매체에서 일치하지만 **1차 자료로 대조하지 않았다.**",
-    "**`eras` 를 세우지 않았다.** FDS 글이 **포인트 기반 → 시퀀스 기반**이라는 세대 교체를 분명히 말하지만 **그 앞 세대가 언제부터였는지가 없다.** 연도 없이 시대를 자르지 않는다(STYLE.md 8번). 기능 단계에서 `history` 로 쓸 수 있는지 다시 본다."
+    "**`eras` 를 세우지 않았다.** FDS 글이 **포인트 기반 → 시퀀스 기반**이라는 세대 교체를 분명히 말하지만 **그 앞 세대가 언제부터였는지가 없다.** 연도 없이 시대를 자르지 않는다(STYLE.md 8번). 기능 단계에서 `history` 로 쓸 수 있는지 다시 본다.",
+    "**\"약 30%를 보이스피싱 위협으로부터 지속적으로 모니터링\"** 이라는 문장이 글에 있는데 **무엇의 30%인지를 분명히 읽어내지 못했다**(전체 고객인지, 특정 대상군인지). 그래서 지표로 쓰지 않았다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "sequence-fds",
+      "name": "행동의 순서로 보는 사기 탐지",
+      "domain": "한 건이 아니라 순서를 본다",
+      "updated_at": "2026-09-04",
+      "business": {
+        "why": "고객 2,670만 명의 돈을 맡아 두는 이상 **그 돈이 남의 손으로 새는 것**을 막는 일이 신뢰의 근거다. 그런데 기존 방식은 **사기가 형태를 바꾸면 눈이 멀었다** — **ATM 현금인출 사기용으로 만든 모델이 이체 중심 사기로 변하자 \"기존 모델로는 탐지하지 못하는 사각지대가 광범위하게 발생\"** 했다. 거래 한 건만 보는 한 **\"사건이 발생한 후에야 대응하는 '사후 대응'에 가까웠\"** 고, 그래서는 **\"시시각각 변화하는 신종 사기 패턴을 선제적으로 막기에는 역부족\"** 이었다.",
+        "metrics": [
+          {
+            "label": "처리 요청",
+            "value": "하루 평균 1,800만 건 수준",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "label": "스트림 처리량",
+            "value": "Apache Flink 기반으로 하루 최소 2억 8,800만 건 이상의 레코드",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "label": "추론 지연",
+            "value": "평균 20ms 이내",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "label": "이상거래 비율",
+            "value": "0.1% 이하 (소수 클래스)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기존 모델이 사각지대를 만드는 것을 봤을 때",
+          "thought": "모델이 틀린 것이 아니라 **보는 단위가 틀렸다.** ATM 인출을 잡도록 만든 모델은 ATM 인출을 잘 잡는데, **사기가 이체로 옮겨 가면 그 모델은 아무것도 못 본다.** 거래 한 건을 보는 한 **새 수법이 나올 때마다 새 모델이 필요하다**(뒷문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모델 계열을 고를 때",
+          "thought": "긴 시퀀스를 다루는 정석은 순환 신경망인데, 여기에는 **운영 요구가 먼저 걸렸다.** 순차 처리라 **\"GPU 병렬화에 불리\"** 하고 **\"20ms 내에 다수 요청을 처리해야 하는 요구사항을 고려할 때 성능·효율 측면에서 한계\"** 였다. **모델의 성능이 아니라 지연 예산이 후보를 먼저 잘랐다**(뒷문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "파생 변수를 만들지 않기로 하고 나서",
+          "thought": "**\"별도의 파생 변수 생성 없이 모델 구조만으로\"** 징후를 찾게 하면 사람이 미리 정한 특징에 갇히지 않는다. 그런데 그 대가가 곧바로 왔다 — **\"원본 데이터(Raw Data)를 직접 학습하는 시퀀스 모델에는 기존의 변수 기반 XAI를 그대로 적용하기가 쉽지 않았습니다\".** **설명하는 능력을 변수와 함께 잃었다**(마지막 문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "성과를 무엇으로 보일지 정할 때",
+          "thought": "정답이 0.1% 이하인 데이터에서는 **정확도라는 말 자체가 잘 안 먹는다.** 그래서 보인 것이 **\"임베딩 벡터를 t-SNE로 시각화했을 때, 사기 관련 클래스가 특정 영역에 군집을 형성\"** 한다는 것이었다 — **모델이 둘을 나눠 배웠다는 증거**다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "행동 시퀀스",
+            "what": "한 고객의 이벤트를 시간 순서로 쌓은 것. 판단의 단위가 거래 한 건에서 이것으로 옮겨 갔다"
+          },
+          {
+            "name": "패치(구간·블록)",
+            "what": "시퀀스를 잘라 만든 덩어리. 개별 시점이 아니라 이 덩어리 사이의 관계까지 모델이 본다"
+          },
+          {
+            "name": "임베딩 벡터",
+            "what": "시퀀스를 수치 공간으로 옮긴 것. 정상과 사기가 서로 다른 자리에 모이는지가 학습이 됐는지의 눈금이다"
+          },
+          {
+            "name": "이상거래 라벨",
+            "what": "전체의 0.1% 이하. 이 희소함이 학습 방식을 두 단계로 나누게 만든 원인이다"
+          }
+        ],
+        "invariants": [
+          "**판단은 거래 한 건이 아니라 그 앞에 쌓인 순서를 함께 본다.** 그래서 **\"특정 거래가 발생하기 전이라도\"** 징후를 잡을 수 있다.",
+          "**평균 20ms 안에 답한다.** 이 예산은 모델을 고르기 전에 이미 정해져 있었고, 후보를 자르는 기준이 됐다.",
+          "**정답은 전체의 0.1% 이하다.** 그대로 학습하면 전부 정상이라고 답해도 성적이 좋으므로, 학습 구조가 이 사실을 전제해야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "고객 행동 이벤트가 Apache Flink 로 흐른다 — 하루 최소 2억 8,800만 건 이상",
+            "why": "판단의 재료가 거래 한 건이 아니라 그 앞의 흐름이므로, 흐름을 먼저 모아야 한다"
+          },
+          {
+            "step": "시간 순서로 쌓아 시퀀스를 만든다",
+            "why": "**\"시간의 흐름에 따라 축적된 연속적인 행동 데이터\"** 자체가 입력이다 — 사람이 요약한 변수가 아니다"
+          },
+          {
+            "step": "커스텀 패치 임베딩으로 구간(블록)을 만든다",
+            "why": "이미지의 패치처럼 시계열도 덩어리로 잘라야 **\"여러 이벤트 묶음(구간/블록) 간의 관계까지 학습\"** 할 수 있다"
+          },
+          {
+            "step": "ViT 변형이 Self-Attention 으로 모든 시점 간 연관성을 계산한다 — Multi-scale 추출과 Cross-Attention 을 더했다",
+            "why": "**\"Self-Attention은 시퀀스 내 모든 시점 간 연관성을 직접 계산\"** 하므로 앞쪽 정보가 희석되지 않는다"
+          },
+          {
+            "step": "NVIDIA Triton Inference Server 기반 GPU 서빙으로 응답한다 — 하루 평균 1,800만 건, 평균 20ms 이내",
+            "why": "실시간 판단이라 지연이 곧 요구사항이다. 모델을 고른 이유의 절반이 여기 있다"
+          },
+          {
+            "step": "Gradient Attention Rollout 으로 판단 근거를 뽑는다",
+            "why": "파생 변수를 없앤 대가로 기존 XAI 가 안 통했다. 금융에서 설명 못 하는 판단은 쓰기 어렵다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 **판단의 단위**로 삼을 것인가",
+            "chosen": "**시퀀스 전체** — **\"시간의 흐름에 따라 축적된 연속적인 행동 데이터\"** 를 본다",
+            "alternatives": [
+              "개별 거래(포인트) 단위 판단을 유지하고 규칙·모델을 계속 추가하기"
+            ],
+            "tradeoff": "포인트 방식은 **\"비교적 단순한 패턴\"** 을 값싸게 잡고 판단 근거도 명확한데, **사기 유형이 바뀌면 그 모델이 통째로 무력해진다** — ATM 에서 이체로 옮겨 갔을 때 실제로 그랬다. 시퀀스로 옮기면 그 문제는 줄지만 **입력이 무거워지고 판단 근거가 흐려진다**(뒷문장은 이 사이트의 해석이며, 근거가 흐려진 것은 아래 XAI 결정에서 회사가 직접 말한다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 모델 계열로 시퀀스를 다룰 것인가",
+            "chosen": "**Vision Transformer(ViT)를 금융 시계열에 맞게 변형**했다",
+            "alternatives": [
+              "ARIMA 등 전통 시계열 모형",
+              "RNN · LSTM · GRU"
+            ],
+            "tradeoff": "버린 이유가 서로 다르다. 전통 시계열은 비선형 패턴을 **\"단순 통계 모형만으로는 충분히 포착하기 어렵습니다\"**. 순환 신경망은 **\"시퀀스가 매우 길어지면 초반 정보가 희석되거나 소실될 가능성이 여전히 존재\"** 하고, 무엇보다 **\"순차 처리가 필요해 GPU 병렬화에 불리\"** 했다. 대신 ViT 는 이미지용 구조라 **패치 구성과 positional encoding 으로 시계열에 맞는 inductive bias 를 따로 만들어 줘야** 한다 — 공짜로 맞는 도구가 아니었다(마지막 문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "지연 예산을 모델 선택보다 **먼저** 둘 것인가",
+            "chosen": "**먼저 뒀다.** **\"20ms 내에 다수 요청을 처리해야 하는 요구사항\"** 이 순환 신경망을 탈락시킨 이유의 하나로 명시된다",
+            "alternatives": [
+              "정확도가 가장 높은 구조를 고르고 나서 지연을 맞추기"
+            ],
+            "tradeoff": "**비기능 요구가 모델 후보를 먼저 잘랐다.** 그래서 '가장 잘 맞히는 구조' 가 아니라 **'20ms 안에 답할 수 있는 것 중 가장 잘 맞히는 구조'** 를 고른 셈이다. 얼마나 손해였는지는 두 계열을 같은 조건에서 비교한 수치가 글에 없어 알 수 없다(두 문장 모두 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "사람이 만든 파생 변수를 쓸 것인가",
+            "chosen": "**쓰지 않는다.** **\"별도의 파생 변수 생성 없이 모델 구조만으로 보이스피싱의 징후를 시퀀스 안에서 탐지\"** 한다",
+            "alternatives": [
+              "도메인 지식으로 파생 변수를 만들어 기존 변수 기반 모델에 넣기"
+            ],
+            "tradeoff": "**설명하는 능력을 변수와 함께 잃었다.** 회사가 그대로 적는다 — **\"원본 데이터(Raw Data)를 직접 학습하는 시퀀스 모델에는 기존의 변수 기반 XAI를 그대로 적용하기가 쉽지 않았습니다\".** 사람이 정한 특징에 갇히지 않는 대신, 왜 그렇게 판단했는지를 말할 도구를 새로 만들어야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "0.1% 이하의 소수 클래스를 어떻게 학습시킬 것인가",
+            "chosen": "**Two-Stage 학습** — **\"Metric learning을 통해 Representation Learning을 우선적으로 한 후에(1-Step) Downstream Task를 추가하여 학습\"** 한다. 손실함수는 **ArcFace** 를 적용했을 때 가장 좋았다",
+            "alternatives": [
+              "한 번에 분류로 학습",
+              "표본 재조정(오버·언더샘플링)만으로 대응"
+            ],
+            "tradeoff": "단계가 둘로 늘어 **학습 파이프라인이 복잡해지고 1단계의 표현이 나쁘면 2단계가 그것을 물려받는다.** 대신 0.1% 라는 비율 때문에 분류 손실만으로는 잘 안 갈리는 문제를 **먼저 공간을 벌려 두는 것**으로 우회한다(두 문장 모두 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "ViT 를 그대로 쓸 것인가",
+            "chosen": "**변형했다** — 커스텀 패치 임베딩, Multi-scale 추출, Cross-Attention 레이어를 넣었다",
+            "alternatives": [
+              "표준 ViT 를 그대로 적용"
+            ],
+            "tradeoff": "표준 구조를 벗어난 만큼 **바깥의 연구 성과와 도구를 그대로 가져다 쓰기 어려워진다** — 새 기법이 나와도 이 변형 위에 다시 얹어야 한다. 대신 이미지용 가정(고정 크기 패치, 2차원 국소성)을 시계열에 맞게 고칠 수 있다(두 문장 모두 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "잃은 설명을 어떻게 되찾을 것인가",
+            "chosen": "**Gradient Attention Rollout** 기법으로 XAI 를 따로 붙였다",
+            "alternatives": [
+              "변수 기반 XAI 를 그대로 적용",
+              "설명 없이 운영"
+            ],
+            "tradeoff": "**변수 기반 설명과 같은 종류의 답이 아니다.** 어텐션이 어디를 봤는지는 말해 주지만 '어떤 변수가 얼마나 기여했다' 는 형태의 설명은 아니다 — 금융에서 요구되는 설명의 모양과 맞는지는 글이 다루지 않는다(이 문단 전체가 이 사이트의 해석이며, 회사가 적은 것은 기존 XAI 적용이 어려웠다는 사실과 이 기법을 도입했다는 사실까지다).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "좋아졌다는 것을 무엇으로 보일 것인가",
+            "chosen": "**정확도 지표 대신** **\"임베딩 벡터를 t-SNE로 시각화했을 때, 사기 관련 클래스가 특정 영역에 군집을 형성\"** 한다는 것과, **\"기존에 탐지가 어려웠던 사기 유형까지 포착하는 등 탐지 사각지대를 최소화\"** 했다는 것으로 보인다",
+            "alternatives": [
+              "precision·recall 등 정량 지표를 공개"
+            ],
+            "tradeoff": "**군집은 나뉘었다는 증거이지 얼마나 잡고 얼마나 헛짚는지에 대한 답이 아니다.** 사기 탐지에서 헛짚음은 **정상 고객의 거래를 막는 일**이라 비용이 큰데, 공개 자료에는 그 값이 없다(두 문장 모두 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Apache Flink",
+            "role": "행동 이벤트를 흘려 시퀀스의 재료를 만든다 — 하루 최소 2억 8,800만 건 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Vision Transformer 변형 (커스텀 패치 임베딩 · Multi-scale · Cross-Attention)",
+            "role": "시퀀스 전체와 구간 사이의 관계를 함께 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Metric learning + ArcFace (Two-Stage)",
+            "role": "0.1% 이하의 소수 클래스를 먼저 표현 공간에서 벌려 놓는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "NVIDIA Triton Inference Server · GPU 서빙",
+            "role": "하루 1,800만 건을 평균 20ms 이내로 처리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Gradient Attention Rollout",
+            "role": "파생 변수를 없애며 잃은 설명을 대신한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "고객 행동 이벤트 스트림",
+          "via": "Apache Flink",
+          "contract": "거래·조회·이동 같은 행동을 시간 순서로 받는다. 판단의 입력은 한 건이 아니라 이 흐름이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "거래 처리 경로",
+          "via": "동기 추론 호출 (평균 20ms 예산)",
+          "contract": "위험 판정을 돌려준다. 이 예산이 모델 구조 선택의 조건이 됐다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "빌려줄지 정하는 데 사람을 기다리게 하지 않는다",
+          "via": "서로 호출하지 않는다 — 같은 은행의 반대편",
+          "contract": "저쪽은 **들여보낼지**(여신 심사)를 정하고 이쪽은 **나가는 것을 막을지**(사기 탐지)를 정한다. 둘 다 사람을 기다리게 하지 않으면서 틀리면 안 되는 판단이다",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "ArcFace: Additive Angular Margin Loss for Deep Face Recognition",
+            "authors": "Jiankang Deng, Jia Guo, Niannan Xue, Stefanos Zafeiriou",
+            "year": "2019",
+            "venue": "CVPR 2019",
+            "url": "https://arxiv.org/abs/1801.07698",
+            "takeaway": "회사가 **직접 이름을 대며 가져다 쓴 것**이다 — **\"Arcface: Additive Angular Margin Loss for Deep Face Recognition에서 제안된 방식을 적용했을 때 가장 뛰어난 성능\"**. 원래는 얼굴 인식에서 **같은 사람은 모으고 다른 사람은 벌리려고** 만든 손실인데, 여기서는 **정상 행동과 사기 행동을 벌리는 데** 썼다. 0.1% 이하의 소수 클래스를 분류 손실만으로 가르기 어려울 때 **먼저 표현 공간을 벌려 두는** 발상을 빌려 온 것이다.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+            "authors": "Alexey Dosovitskiy 외",
+            "year": "2021",
+            "venue": "ICLR 2021",
+            "url": "https://arxiv.org/abs/2010.11929",
+            "takeaway": "이 기능의 뼈대다. 가져온 것은 **이미지를 패치로 잘라 Self-Attention 으로 전부 연결한다**는 발상이고, 그대로 쓰지 않았다 — **커스텀 패치 임베딩과 positional encoding 으로 시계열에 맞는 inductive bias 를 다시 만들었다.** 회사가 논문을 직접 인용한 것은 아니고 ViT 를 변형해 썼다는 서술로 엮었다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "**정답이 전체의 0.1% 이하이고 그 정답의 모양이 계속 바뀌는 문제를, 무엇으로 잘한다고 말할 것인가**",
+            "why_hard": "세 가지가 겹친다. **희소성** — 0.1% 이하에서는 전부 정상이라고 답해도 성적이 좋아 보인다. **비대칭 비용** — 놓치면 고객 돈이 나가고, 헛짚으면 정상 고객의 거래를 막는다. 두 손실의 단위가 달라 하나의 수로 합치기 어렵다. **표적의 이동** — 회사가 겪은 대로 **ATM 인출용 모델이 이체 사기 앞에서 무력해졌다.** 과거 데이터로 잰 성적이 **다음 수법에 대해서는 아무것도 보장하지 않는다**(마지막 문장은 이 사이트의 해석이다).",
+            "current_best": "이 회사는 **정량 지표 대신 표현 공간의 분리**(t-SNE 군집)와 **사각지대 축소**를 근거로 든다. 감수하는 것 — **얼마나 잡고 얼마나 헛짚는지가 남지 않는다.** 그리고 회사가 더 큰 한계를 스스로 적었다 — **\"풍선 효과… 개별 금융사의 노력만으로는 사회 전체의 보이스피싱 피해를 근본적으로 막기 어렵습니다\".** 한 은행에서 막으면 사기는 다른 곳으로 옮겨 갈 뿐이라는 뜻이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+                "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+                "publisher": "카카오뱅크 기술블로그",
+                "date": "2026-06-09",
+                "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "포인트에서 시퀀스로",
+          "question": "보는 단위를 바꾸면 무엇이 달라지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  OLD[\"<b>예전 — 거래 한 건(포인트)</b><br/>• 특정 거래 시점만 분석<br/>• 사후 대응에 가까웠다\"]:::quiet\n  MOVE[\"<b>사기가 형태를 바꾼다</b><br/>• ATM 현금인출 → 이체 중심<br/>• 탐지 사각지대가 광범위하게 발생\"]:::list\n  NEW[\"<b>지금 — 행동의 순서(시퀀스)</b><br/>• 시간에 따라 쌓인 연속 행동 전체<br/>• 파생 변수 없이 모델 구조만으로<br/>• 거래가 발생하기 전이라도 예측\"]:::accent\n  COST[\"<b>바꾸며 잃은 것</b><br/>• 변수 기반 XAI 가 안 통한다<br/>• 정확도 지표가 공개되지 않았다\"]:::list\n  OLD --> MOVE\n  MOVE --> NEW\n  NEW --> COST"
+        },
+        {
+          "title": "20ms 안에 도는 길",
+          "question": "지연 예산이 어떻게 모델 선택까지 정하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  EV[\"<b>행동 이벤트</b><br/>• Apache Flink<br/>• 하루 최소 2억 8,800만 건\"]:::list\n  SEQ[\"<b>시퀀스 구성</b><br/>• 시간 순서로 쌓는다\"]\n  PATCH[\"<b>커스텀 패치 임베딩</b><br/>• 구간(블록)으로 자른다\"]:::list\n  VIT[\"<b>ViT 변형</b><br/>• Self-Attention 으로 모든 시점 연결<br/>• Multi-scale · Cross-Attention\"]:::list\n  SERVE[\"<b>Triton · GPU 서빙</b><br/>• 하루 1,800만 건<br/>• 평균 20ms 이내\"]:::accent\n  CUT[\"<b>이 예산이 후보를 먼저 잘랐다</b><br/>• RNN·LSTM·GRU 는 순차 처리라 병렬화에 불리\"]:::quiet\n  XAI[\"Gradient Attention Rollout\"]\n  EV --> SEQ\n  SEQ --> PATCH\n  PATCH --> VIT\n  VIT --> SERVE\n  SERVE --> XAI\n  CUT -.->|\"모델 선택 조건\"| VIT"
+        },
+        {
+          "title": "막아도 옮겨 간다",
+          "question": "이 모델이 좋아져도 남는 문제는 무엇인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  RARE[\"<b>정답이 0.1% 이하</b><br/>• 전부 정상이라 해도 성적이 좋다\"]:::list\n  ASYM[\"<b>손실의 단위가 다르다</b><br/>• 놓치면 고객 돈이 나간다<br/>• 헛짚으면 정상 거래를 막는다\"]:::list\n  MOVING[\"<b>표적이 움직인다</b><br/>• 과거 데이터로 잰 성적이<br/>  다음 수법을 보장하지 않는다\"]:::list\n  NOMETRIC[\"<b>정확도 지표가 없다</b><br/>• t-SNE 군집과 사각지대 축소로 대신한다\"]:::accent\n  BALLOON[\"<b>풍선 효과</b><br/>• \"개별 금융사의 노력만으로는 사회 전체의<br/>  보이스피싱 피해를 근본적으로 막기 어렵습니다\"\"]:::quiet\n  RARE --> NOMETRIC\n  ASYM --> NOMETRIC\n  MOVING --> BALLOON\n  NOMETRIC --> BALLOON"
+        }
+      ],
+      "sources": [
+        {
+          "title": "AI, 고객 행동의 순서를 읽다: 카카오뱅크 시퀀스 기반 FDS 모델 개발기",
+          "url": "https://tech.kakaobank.com/posts/2606-sequence-based-fds-model/",
+          "publisher": "카카오뱅크 기술블로그",
+          "date": "2026-06-09",
+          "summary": "포인트 단위로 보던 사기 탐지를 시퀀스 전체를 보는 방식으로 바꾼 기록. 버린 대안(ARIMA·RNN/LSTM/GRU)과 그 이유, 20ms 예산, 0.1% 불균형 처리, XAI 를 잃고 되찾은 일까지 적었다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "sources": [
     {
