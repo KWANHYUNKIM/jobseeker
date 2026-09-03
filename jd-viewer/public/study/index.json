@@ -694,6 +694,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "network-separation",
+      "title": "망분리",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**업무망과 인터넷망을 갈라 놓아 둘 사이에 아무것도 오갈 수 없게** 만드는 것이다. 보안 사고의 경로를 통째로 끊는 대신, **개발자는 인터넷 없는 곳에서 개발하게 된다** — 그 불편이 이 낱말의 실체다.",
+      "aliases": [
+        "망분리",
+        "망 분리",
+        "네트워크 분리",
+        "폐쇄망",
+        "network separation"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
