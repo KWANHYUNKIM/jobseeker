@@ -4,31 +4,28 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **38개**(브리핑 35 + 중복 표시 3),
-학습 295개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **39개**(브리핑 36 + 중복 표시 3),
+학습 305개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
 
-직전 회차: **`Director, Back-end Engineering`**(ats, gh_jid=7227610). 줄 겹침 0.
-**`Director` 급의 첫 브리핑**이다(앞서 `Sr. Director` 는 세 절이 통째로 비어 못 썼다).
+직전 회차: **`Director - Backend Engineering - AI Infra`**(ats, gh_jid=7984671).
+줄 겹침 0.27. **두 번째 `Director` 브리핑**이고, 지난 회차의 교훈대로
+⚠️ **자격 요건이 담당업무 절 안(`Required Qualifications`)에 있는 것을 먼저 확인**하고 썼다.
 
-⚠️ **이 공고는 자격 요건이 담당업무 절 안에 `Basic Qualifications:` 로 붙어 있다** —
-`qualifications` 필드가 비어 보이지만 내용은 `main_tasks` 안에 있다. **인용은 거기서 뽑고
-`from` 은 원문 성격대로 `qualification` 을 붙였다.** `open_questions` 에도 적었다.
-
-이 공고로 채워진 것:
-- ⚠️ **관리 연차 사다리가 완성됐다** → 신호 8번:
-  `Manager`(관리 2년, 테크리드 포함) → `Manager`(senior management 3년) →
-  **`Director`(관리 7년)** → `Sr. Director`(다층 조직 8년).
-  그리고 이 공고는 **두 트랙을 함께 키우라**고 자격에 직접 적었다.
-- ⚠️ **AI 요건의 세 번째 층위** → 신호 9번: `Lead the team in exploring Agentic Coding and
-  Agentic Operations…`. 개인이 쓰는 것도, AI 제품을 만드는 것도 아니라 **조직에 들일지
-  판단하고 이끄는 일**이다. `edge` 를 **도입 실험 설계서(비교군·지표·실패 판정)** 로 잡았다.
-- ⚠️ **`China/Korea/India/US`** 가 이름으로 적혔다 — **인도는 이 공고가 처음**.
-  → 글로벌 도메인 `what_to_know` 에 보강(비동기 전제로 일정을 짠다).
+이 공고에서만 나온 것:
+- **모델이 아니라 모델이 도는 판**을 만든다 — `SDN Orchestrator`, GPU 헬스/장애 탐지,
+  병렬 파일 시스템(Lustre·Weka·VAST), AI 오브젝트 스토리지. 목표는 **`> 99.99%`**.
+  → **AI 도메인 `what_to_know` 에 보강**했다.
+- ⚠️ **요건에 `power envelopes, liquid cooling constraints`** 가 있다 — 이 회사 공고를
+  통틀어 가장 특이하다. **전력과 열이 곧 용량의 한계**라 소프트웨어가 그걸 알아야 한다.
+  `edge` 를 **전력·냉각 포함 용량 계산 한 장**으로 잡았다.
+- **관리 연차는 5년으로 낮고 기술 연차는 15년으로 높다** — 같은 급 `Director,
+  Back-end Engineering`(관리 7년)과 반대다. **깊이로 뽑는 관리자.**
+- `InfiniBand/RoCE` 는 **`ideally`**(우대에 가깝다), **L2/L3 기본기는 필수**.
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
 ⚠️ **`qualifications` 가 비어 보여도 `main_tasks` 안을 확인한다** — 영문 ats 공고에
-그런 형태가 있다.
+`Basic Qualifications:` / `Required Qualifications` 형태로 붙어 있는 경우가 **두 번 나왔다.**
 **본문이 글자 그대로 같으면 `duplicate_of` 로 표시**하고 그 회차는 그것으로 끝낸다.
 
 ⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 최대 겹침 0.33).
