@@ -337,6 +337,12 @@
         "evidence": "공고 13건의 자격요건을 전부 세었다. **연차 표기 없음**: `AI Infrastructure Engineer` · `AI Engineer (Navigation Agent)` · `Security Engineer (Security Platform)` (셋 다 기술 항목만 나열한다). 그다음부터 층이 진다 — **2년↑ + 학사↑**(`System Framework Engineer`: `학사 학위 혹은 준하는 경험 소유자 (이공계열 우대)`) → **3년↑**(`Backend Engineer (Open Platform)`, `Security Engineer (차량 보안)`: `3년 이상의 C/C++ 기반 임베디드 또는 Linux 개발 경험`) → **석사↑ + 3년↑**(`Senior Planning & Control System Engineer`) → **3-8년 + 석사↑**(`Physical AI Engineer (Model)`) → **5년↑**(`Senior AI Engineer (Driving VLM/VLA)`) → **7년↑**(`Senior ML Platform Engineer`: `Minimum of 7 years`) → **7년↑ + 석사/박사**(`Senior Computer Vision Engineer`) → **8년↑**(`Senior AI Agent Engineer (Gleo Interaction)`). ⚠️ `Senior Software Engineer (AD Framework)` 는 **자격요건이 `학사 이상` 뿐이고 `10년 이상` 은 우대사항**에 있다.",
         "so_what": "**이 회사에 처음 문을 두드린다면 연차 표기가 없는 셋부터 본다** — 기술 항목만 맞으면 서류에서 연차로 걸리지 않는다. 그다음이 `System Framework Engineer`(2년↑)다. ⚠️ **자율주행 인지·판단 쪽(`Computer Vision`·`Planning & Control`·`Physical AI`)은 석사 이상을 함께 요구**하므로 학위가 없으면 **플랫폼·인프라·보안 쪽 문이 현실적으로 넓다.** 그리고 **`AD Framework` 처럼 연차가 우대사항에만 있는 공고**는 자격요건만 충족해도 지원 자격이 되므로, **연차 숫자를 목록에서만 보고 포기하지 않는다.**",
         "confidence": "inferred"
+      },
+      {
+        "reading": "**만드는 일과 그게 맞는지 재는 일이 같은 공고에 들어 있다 — 검증이 층으로 나뉜다**",
+        "evidence": "13건의 담당업무를 훑으면 **`검증`·`평가`가 별도 업무로 적힌 공고가 절반을 넘는다**. 그런데 층이 다르다 — **AI 쪽은 평가 체계를 직접 설계**한다(`AI Engineer (Navigation Agent)`: `Agent의 성능 평가 체계와 핵심 지표를 설계하고, 실패 사례를 분석하여 모델 품질 개선` / `Senior AI Engineer (Driving VLM/VLA)`: `대규모 multimodal dataset 구축, 학습 recipe, evaluation benchmark, ablation 실험 설계`). **제어·모델 쪽은 시뮬레이션과 실차 두 겹**이다(`Physical AI Engineer (Model)`: `Simulation 및 실제 차량 환경에서 AI 모델 및 알고리즘 검증 수행` / `Senior Planning & Control System Engineer`: `실차 환경에서 제어 성능 검증 및 파라미터 튜닝 수행`). **보안 쪽은 무결성 검증 자체가 제품**이고(`Security Engineer (차량 보안)`: `Secure Boot 및 Firmware 무결성 검증 로직 개발`), **프레임워크 쪽은 검증 도구를 만든다**(`Senior Software Engineer (AD Framework)`: `Debugging, Testing 및 Validation을 위한 개발 도구 설계 및 개발`).",
+        "so_what": "**이 회사 면접에서는 `무엇을 만들었나` 만으로 부족하고 `그게 맞는지 어떻게 확인했나` 가 반드시 따라온다** — 2차 면접이 3시간이라는 것과도 맞물린다(신호 7번). 그래서 준비할 것이 분명하다: **자기 프로젝트마다 `무엇으로 성공을 판정했는가`, `실패 사례를 어떻게 모아 분석했는가`, `시뮬레이션과 실제가 달랐던 경험이 있는가`** 를 준비한다. ⚠️ **AI 직군에 지원한다면 모델 성능보다 `평가 체계를 직접 설계해 본 경험` 이 변별점**이 될 가능성이 높다 — 담당업무에 그렇게 적혀 있다.",
+        "confidence": "inferred"
       }
     ]
   },
