@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-09-03",
+ "updated_at": "2026-09-04",
  "articles": [
   {
    "slug": "atmega128",
@@ -72,6 +72,24 @@
    "sections": 5,
    "drills": 3,
    "updated_at": "2026-09-03"
+  },
+  {
+   "slug": "ohms-law",
+   "title": "옴의 법칙",
+   "category": "hardware",
+   "level": "basic",
+   "status": "done",
+   "one_liner": "`V = I × R` — 전압·전류·저항 중 둘을 알면 나머지가 정해진다. 이 문서의 알맹이는 공식이 아니라 **계산한 값과 실제로 살 수 있는 값이 다르다**는 것, 그리고 **계산이 맞아도 저항이 탈 수 있다**는 것이다.",
+   "aliases": [
+    "옴의 법칙",
+    "Ohm's law",
+    "V=IR",
+    "전류 제한 저항",
+    "분압"
+   ],
+   "sections": 5,
+   "drills": 3,
+   "updated_at": "2026-09-04"
   },
   {
    "slug": "pull-up-resistor",
