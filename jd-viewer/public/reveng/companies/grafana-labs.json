@@ -1,1232 +1,1397 @@
 {
- "slug": "grafana-labs",
- "name": "그라파나 랩스",
- "name_en": "Grafana Labs",
- "country": "US",
- "category": "SaaS",
- "status": "done",
- "updated_at": "2026-08-22",
- "domain": "grafana.com",
- "one_liner": "자기가 지은 구조를 공개적으로 버리는 회사 — 코드가 열려 있어 그 과정도 숨길 수 없다",
- "business_model": "**오픈소스를 만들어 놓고, 그것을 대신 굴려 주는 것으로 번다.** Grafana·Mimir·Loki·Tempo 는 누구나 받아서 자기 서버에 올릴 수 있고, 회사는 **관리형 Grafana Cloud** 와 엔터프라이즈 계약으로 회수한다.\n\n**비상장이라 감사받은 공시가 없다.** 회사 발표 기준으로 **2025년 ARR 4억 달러 초과 · 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳)이고, 기업가치는 보도 기준 60억 달러에서 90억 달러 라운드 논의로 이어졌다 — 이 사이트는 그것을 **추정으로만** 적는다.\n\n**그런데 이 회사를 Datadog 같은 관측 회사와 갈라놓는 것은 사업 모델이 아니라 그 결과다.** 코드가 열려 있으면 **아키텍처를 바꾸는 과정도 숨길 수 없다.** 그래서 이 회사의 글에는 다른 곳에서 보기 힘든 종류의 문장이 있다 — **\"복제 계수 3은 비싸다\"** 처럼, 자기가 골랐던 설계를 이름 붙여 부정하는 문장이다. 초기 Mimir 는 카산드라에서 영감을 받았고, 지금은 그 구조를 걷어내는 중이다(이 관찰은 이 사이트의 해석이다).\n\n**두 번째 성격은 남의 규모까지 감당해야 한다는 것이다.** Grafana Cloud 의 활성 시리즈가 수십억인데, **오픈소스 사용까지 합치면 전 세계에서 수백억**이다. 즉 이 회사가 만든 것은 자기 클라우드만이 아니라 **모르는 사람들의 온프렘 클러스터에서도 돌아야** 한다 — 그래서 '우리 환경에서만 되는 최적화'를 고르기 어렵다(마지막 문장은 이 사이트의 추정).\n\n**두 기능이 같은 습관을 보인다.** 첫째, **자기가 고른 것을 이름 붙여 부정한다** — **복제 계수 3은 비싸다**, 인제스터가 **사실상 분산된 단일 장애점** 이었다는 문장은 남이 한 지적이 아니라 자기 글이다. 둘째, **좋아지지 않은 것을 좋아졌다고 하지 않는다** — 차세대 구조 글은 **확장성이 나아진 게 아니라고 명시**하고(옛 구조도 새 구조도 \"매우 확장 가능하다\"), 질의 샤딩 문서는 **고객 질의의 60%만 샤딩된다**고 적으며 **병렬화가 아래 계층의 부하를 늘린다**고 경고한다. 셋째, **켜져 있다는 이유만으로 값을 내던 것을 찾아낸다** — 분산 환경에서 쓰지 않는 TSDB 격리를 끄자 인제스터 p99 지연이 90% 줄었다.\n\n**그리고 이 정직함은 성격이 아니라 구조에서 나올 수 있다**(추정) — 코드가 열려 있고 남의 온프렘 클러스터에서도 돌아야 하면, 되는 것과 안 되는 것을 정확히 적어야 남이 쓸 수 있기 때문이다. 실제로 이 회사의 문서에는 **설정 플래그 이름과 기본값, 그리고 지켜지지 않을 수 있는 조건**까지 적혀 있다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
- "products": [
-  "Grafana (대시보드·시각화)",
-  "Grafana Mimir (Prometheus 호환 시계열 장기 저장)",
-  "Grafana Loki (로그)",
-  "Grafana Tempo (트레이스)",
-  "Grafana Cloud (관리형) · Grafana Enterprise"
- ],
- "revenue_streams": [
-  {
-   "name": "Grafana Cloud (관리형)",
-   "how": "오픈소스를 대신 굴려 준다. **회사 발표로 2025년 ARR 4억 달러 초과, 고객 7,000곳** — 다만 부문별 내역은 밝히지 않는다.",
-   "confidence": "inferred",
-   "sources": [
+  "slug": "grafana-labs",
+  "name": "그라파나 랩스",
+  "name_en": "Grafana Labs",
+  "country": "US",
+  "category": "SaaS",
+  "status": "done",
+  "updated_at": "2026-09-04",
+  "domain": "grafana.com",
+  "one_liner": "자기가 지은 구조를 공개적으로 버리는 회사 — 코드가 열려 있어 그 과정도 숨길 수 없다",
+  "business_model": "**오픈소스를 만들어 놓고, 그것을 대신 굴려 주는 것으로 번다.** Grafana·Mimir·Loki·Tempo 는 누구나 받아서 자기 서버에 올릴 수 있고, 회사는 **관리형 Grafana Cloud** 와 엔터프라이즈 계약으로 회수한다.\n\n**비상장이라 감사받은 공시가 없다.** 회사 발표 기준으로 **2025년 ARR 4억 달러 초과 · 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳)이고, 기업가치는 보도 기준 60억 달러에서 90억 달러 라운드 논의로 이어졌다 — 이 사이트는 그것을 **추정으로만** 적는다.\n\n**그런데 이 회사를 Datadog 같은 관측 회사와 갈라놓는 것은 사업 모델이 아니라 그 결과다.** 코드가 열려 있으면 **아키텍처를 바꾸는 과정도 숨길 수 없다.** 그래서 이 회사의 글에는 다른 곳에서 보기 힘든 종류의 문장이 있다 — **\"복제 계수 3은 비싸다\"** 처럼, 자기가 골랐던 설계를 이름 붙여 부정하는 문장이다. 초기 Mimir 는 카산드라에서 영감을 받았고, 지금은 그 구조를 걷어내는 중이다(이 관찰은 이 사이트의 해석이다).\n\n**두 번째 성격은 남의 규모까지 감당해야 한다는 것이다.** Grafana Cloud 의 활성 시리즈가 수십억인데, **오픈소스 사용까지 합치면 전 세계에서 수백억**이다. 즉 이 회사가 만든 것은 자기 클라우드만이 아니라 **모르는 사람들의 온프렘 클러스터에서도 돌아야** 한다 — 그래서 '우리 환경에서만 되는 최적화'를 고르기 어렵다(마지막 문장은 이 사이트의 추정).\n\n**두 기능이 같은 습관을 보인다.** 첫째, **자기가 고른 것을 이름 붙여 부정한다** — **복제 계수 3은 비싸다**, 인제스터가 **사실상 분산된 단일 장애점** 이었다는 문장은 남이 한 지적이 아니라 자기 글이다. 둘째, **좋아지지 않은 것을 좋아졌다고 하지 않는다** — 차세대 구조 글은 **확장성이 나아진 게 아니라고 명시**하고(옛 구조도 새 구조도 \"매우 확장 가능하다\"), 질의 샤딩 문서는 **고객 질의의 60%만 샤딩된다**고 적으며 **병렬화가 아래 계층의 부하를 늘린다**고 경고한다. 셋째, **켜져 있다는 이유만으로 값을 내던 것을 찾아낸다** — 분산 환경에서 쓰지 않는 TSDB 격리를 끄자 인제스터 p99 지연이 90% 줄었다.\n\n**그리고 이 정직함은 성격이 아니라 구조에서 나올 수 있다**(추정) — 코드가 열려 있고 남의 온프렘 클러스터에서도 돌아야 하면, 되는 것과 안 되는 것을 정확히 적어야 남이 쓸 수 있기 때문이다. 실제로 이 회사의 문서에는 **설정 플래그 이름과 기본값, 그리고 지켜지지 않을 수 있는 조건**까지 적혀 있다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
+  "products": [
+    "Grafana (대시보드·시각화)",
+    "Grafana Mimir (Prometheus 호환 시계열 장기 저장)",
+    "Grafana Loki (로그)",
+    "Grafana Tempo (트레이스)",
+    "Grafana Cloud (관리형) · Grafana Enterprise"
+  ],
+  "revenue_streams": [
     {
-     "title": "Grafana Labs ARR 400M 돌파 · 고객 7,000곳 (회사 보도자료)",
-     "url": "https://grafana.com/press/2025/09/30/grafana-labs-surpasses-400m-arr-and-7000-customers-gains-new-investors-to-accelerate-global-expansion/",
-     "publisher": "Grafana Labs 보도자료 · 언론 보도",
-     "date": "2025-09-30",
-     "summary": "비상장이라 감사받은 공시는 없다. 회사 발표로 **2025년 ARR 4억 달러 초과, 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳). 기업가치는 보도 기준 60억 달러였고 이후 90억 달러 라운드 논의가 보도됐다."
-    }
-   ]
-  },
-  {
-   "name": "Grafana Enterprise (온프렘 상용 기능)",
-   "how": "오픈소스 위에 얹는 상용 기능과 지원. **비율을 회사가 밝힌 적이 없다** — 다만 'Grafana Enterprise Metrics 기능'이라며 오픈소스에서 제외한 기능(예: 클러스터 간 질의)이 존재한다는 것은 기술 문서에서 확인된다.",
-   "confidence": "inferred",
-   "sources": [
-    {
-     "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-     "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-     "publisher": "Grafana Labs Blog",
-     "date": "2022-04-08",
-     "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-    }
-   ]
-  },
-  {
-   "name": "오픈소스 자체",
-   "how": "직접 매출이 없다. **그런데 이것이 이 회사의 기술 결정을 제약한다** — 남의 클러스터에서도 돌아야 하기 때문이다(이 해석은 이 사이트의 것이다).",
-   "confidence": "unknown",
-   "sources": []
-  }
- ],
- "domain_map": {
-  "title": "그라파나 랩스 도메인 지도",
-  "question": "샘플 하나가 들어와 질의로 나가기까지, 옛 구조와 새 구조는 어디서 갈리는가?",
-  "code": "flowchart TD\n  A[\"에이전트 · Prometheus\"] --> D[\"디스트리뷰터\"]\n  subgraph OLD[\"<b>옛 구조</b> — 카산드라에서 영감\"]\n    OI[\"인제스터 — <b>복제 3벌</b><br/>쓰기 3벌 · 읽기 최소 2벌<br/><b>사실상 분산된 단일 장애점</b>\"]:::quiet\n    ORD[\"무거운 읽기가 인제스터를 밀면<br/>쓰기 성능이 함께 나빠진다\"]:::quiet\n  end\n  subgraph NEW[\"<b>새 구조</b> — 읽기·쓰기 분리\"]\n    K[(\"<b>Kafka</b> — 가운데<br/>커밋되면 쓰기 완료<br/>파티션 단위 소유\")]:::accent\n    NI[\"인제스터 — <b>순수 읽기 경로 부품</b><br/>비동기 재생 · 끊김 없는 소비<br/><b>복제 2벌 · 쿼럼 1</b>\"]:::accent\n    OS[(\"객체 저장 — 밑<br/>클라우드가 AZ 간 복제를 해 준다<br/>AZ 간 전송비 $0.02/GB 를 피한다\")]:::list\n    K --> NI\n    K --> OS\n  end\n  D --> K\n  D -.->|\"버렸다\"| OI\n  subgraph Q[\"<b>질의 실행</b>\"]\n    QS[\"시간 분할 + 질의 샤딩<br/>고카디널리티 질의 <b>10분의 1</b><br/>(37.7초 → 3.9초)<br/>현재 고객 질의의 60%\"]:::list\n  end\n  NI --> QS\n  OS --> QS\n  QS --> U[\"대시보드\"]"
- },
- "domains": [
-  {
-   "name": "시계열 수집·저장",
-   "why": "**Prometheus 는 오래 보관하도록 만들어지지 않았다.** 그래서 이 회사가 만든 것이 그 뒤를 받는 장기 저장인데, 규모가 곧 문제의 전부다 — Grafana Cloud 에서 활성 시리즈가 **수십억**이고 오픈소스까지 합치면 전 세계 **수백억**이다.\n\n**그리고 이 도메인의 이야기는 '어떻게 지었나'가 아니라 '무엇을 버렸나'다.** 초기 구조는 카산드라에서 영감을 받아 **복제 3벌 + 쿼럼**이었는데, 회사가 직접 적었다 — **\"복제 계수 3은 비싸다.\"**",
-   "tech": [
-    {
-     "tech": "Kafka 를 가운데 두는 새 구조",
-     "solves": "**쓰기는 Kafka 에 커밋되는 순간 끝난다.** 인제스터는 그 뒤에 비동기로 재생하며 **순수한 읽기 경로 부품**이 된다 — 재시작해도 **정확히 이전 위치부터 끊김 없이** 이어 읽는다. 그 결과 복제 계수가 **3 → 2**, 쿼럼이 **2 → 1**(파티션당 한 벌만 물으면 된다)로 줄어 **총소유비용 25% 절감**.",
-     "limits": "회사가 인정했다 — **객체 저장에 먼저 쓰는 데서 오는 지연 대가**를 받아들인 것이다(수치는 밝히지 않는다). 그리고 **확장성이 좋아진 것은 아니다** — 옛 구조도 새 구조도 \"매우 확장 가능하다\"고 적는다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-       "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-       "publisher": "Grafana Labs Blog",
-       "date": "—",
-       "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-      }
-     ]
+      "name": "Grafana Cloud (관리형)",
+      "how": "오픈소스를 대신 굴려 준다. **회사 발표로 2025년 ARR 4억 달러 초과, 고객 7,000곳** — 다만 부문별 내역은 밝히지 않는다.",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Grafana Labs ARR 400M 돌파 · 고객 7,000곳 (회사 보도자료)",
+          "url": "https://grafana.com/press/2025/09/30/grafana-labs-surpasses-400m-arr-and-7000-customers-gains-new-investors-to-accelerate-global-expansion/",
+          "publisher": "Grafana Labs 보도자료 · 언론 보도",
+          "date": "2025-09-30",
+          "summary": "비상장이라 감사받은 공시는 없다. 회사 발표로 **2025년 ARR 4억 달러 초과, 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳). 기업가치는 보도 기준 60억 달러였고 이후 90억 달러 라운드 논의가 보도됐다."
+        }
+      ]
     },
     {
-     "tech": "객체 저장을 밑에 (WarpStream 방식의 배치 쓰기)",
-     "solves": "동시 쓰기를 묶어 **네트워크로 복제하는 대신 객체 저장에 파일로 직접 쓴다.** 클라우드가 가용영역 간 복제를 알아서 하므로 **AZ 간 전송 비용($0.02/GB)** 을 피한다.",
-     "limits": "**다중 AZ 비용은 완화했을 뿐 여전히 걱정거리**라고 적는다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-       "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-       "publisher": "Grafana Labs Blog",
-       "date": "—",
-       "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-      }
-     ]
+      "name": "Grafana Enterprise (온프렘 상용 기능)",
+      "how": "오픈소스 위에 얹는 상용 기능과 지원. **비율을 회사가 밝힌 적이 없다** — 다만 'Grafana Enterprise Metrics 기능'이라며 오픈소스에서 제외한 기능(예: 클러스터 간 질의)이 존재한다는 것은 기술 문서에서 확인된다.",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+          "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+          "publisher": "Grafana Labs Blog",
+          "date": "2022-04-08",
+          "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+        }
+      ]
     },
     {
-     "tech": "분할·병합(split-and-merge) 컴팩터",
-     "solves": "원래 컴팩터는 수억 시리즈를 압축하지 못했고 결과 블록이 **TSDB 한계**(인덱스 64GB, 32비트 정수 때문에 섹션당 4GB)를 넘겼다. 소스 블록을 여러 그룹으로 묶어 **그룹마다 N개 샤드를 병렬 생성**한 뒤 샤드별로 순차 압축하고, 이를 여러 머신에 분산한다.",
-     "limits": "**압축되지 않은 블록이 질의되지 않도록 12시간 안에 모든 압축을 끝내야** 한다 — 시간이 제약이다. 그리고 **3벌 복제 때문에 모든 샘플이 세 번 들어오고 압축 때 중복을 제거**해야 한다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-       "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-       "publisher": "Grafana Labs Blog",
-       "date": "2022-04-08",
-       "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-      }
-     ]
-    },
-    {
-     "tech": "인제스터 디스크 쓰기 비동기화 + 청크 크기 지터",
-     "solves": "20초 스크레이프 간격에서는 인제스터마다 **7GB 청크가 40분마다 한꺼번에** 쓰였고 지연이 **10ms 에서 20~60초**로 튀었다. 청크 최대 크기에 **지터**를 주어 시점을 흩고, 쓰기를 **백그라운드 큐로 비동기화**했다. **p99 피크가 45초에서 3초로.**",
-     "limits": "회사가 적었다 — **지터는 문제를 부분적으로만 풀었다.** 청크는 블록 시간 경계를 넘을 수 없어 **2시간 경계에서는 여전히 주기적 스파이크**가 난다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-       "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-       "publisher": "Grafana Labs Blog",
-       "date": "2022-04-08",
-       "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-      }
-     ]
-    },
-    {
-     "tech": "해시 링(memberlist 가십) 최적화 · 존 인식 롤아웃",
-     "solves": "복제본 1,500개 규모에서 링 전파가 복제본당 **CPU 1.6~1.9코어**(합계 약 2,500코어)를 먹고 무작위 OOMKill 이 났다. 수신 경로의 상태 복제 제거·할당 축소·sync.pool·프로브 간격 완화 등으로 **가십 CPU 를 90% 넘게** 줄였다. 롤아웃은 존 인식 복제와 자체 쿠버네티스 오퍼레이터로 **50시간에서 30분 미만**으로.",
-     "limits": "memberlist 의 **패킷 손상 버그**까지 직접 고쳐 상류에 올려야 했다(PR #239·#260) — 남의 라이브러리 안까지 들어가야 했다는 뜻이다(뒷문장은 이 사이트의 해석).",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-       "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-       "publisher": "Grafana Labs Blog",
-       "date": "2022-04-08",
-       "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-      }
-     ]
-    }
-   ],
-   "features": [
-    "mimir-next-gen"
-   ]
-  },
-  {
-   "name": "질의 실행",
-   "why": "**PromQL 엔진은 단일 스레드다.** 그래서 고카디널리티·CPU 집약 질의는 **CPU 코어 하나의 속도에 묶인다** — 데이터를 아무리 잘 나눠 두어도 질의가 한 코어에서 돌면 소용이 없다.",
-   "tech": [
-    {
-     "tech": "시간 분할 + 질의 샤딩",
-     "solves": "긴 질의를 여러 개의 병렬 질의로 쪼개고(시간 분할), 데이터셋을 샤드로 나눠 **여러 머신에서 부분 질의를 실행**한다. 고카디널리티·CPU 집약 질의의 **실행 시간이 10분의 1** — 한 사례에서 **37.7초 → 3.9초**.",
-     "limits": "회사가 밝혔다 — **현재 고객 질의의 60%만 샤딩된다.** 더 많은 질의 유형을 지원하려고 작업 중이다. 그리고 **클러스터 간 질의는 범위에서 명시적으로 제외**했다(Grafana Enterprise Metrics 기능).",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-       "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-       "publisher": "Grafana Labs Blog",
-       "date": "2022-04-08",
-       "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-      }
-     ]
-    },
-    {
-     "tech": "TSDB 격리(isolation) 비활성화 · 정규식 매처 최적화",
-     "solves": "분산 Mimir 에서는 쓰지 않는 TSDB 격리가 **잠금 경합**을 일으키고 있었다 — 끄자 **인제스터 p99 지연이 90% 줄었다.** 라벨 정규식 매처 최적화로 흔한 정규식에서 **CPU 를 최대 90%** 줄였다.",
-     "limits": "이런 최적화의 상당수가 **상류 Prometheus 를 고치는 일**이라 남의 프로젝트 일정에 묶인다(이 해석은 이 사이트의 것이다).",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-       "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-       "publisher": "Grafana Labs Blog",
-       "date": "2022-04-08",
-       "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-      }
-     ]
-    },
-    {
-     "tech": "`__query_shard__` 라벨 주입 · 상한 · 옵트인",
-     "solves": "질의를 다시 써서 부분 질의로 나눈다(`\"N_of_M\"`). 전체가 안 되면 **안쪽 부분만** 나누고, 프론트엔드가 이어 붙인 뒤 비샤딩 연산을 마지막에 적용한다.",
-     "limits": "**샤딩되는 것은 `sum`·`min`·`max`·`count`·`avg` 뿐**이고 `histogram_quantile`·`absent`·`sort` 는 안 된다. 부분 질의는 **입력당 기본 128개**로 묶인다(시간 분할과 합산). **카디널리티 기반 샤딩을 써도 샤드당 실제 시리즈 수가 상한을 넘을 수 있다.**",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-       "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-       "publisher": "Grafana Labs Docs",
-       "date": "—",
-       "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-      }
-     ]
-    }
-   ],
-   "features": [
-    "query-sharding"
-   ]
-  }
- ],
- "features": [
-  {
-   "key": "mimir-next-gen",
-   "name": "자기가 고른 구조를 이름 붙여 부정하기",
-   "domain": "시계열 수집·저장",
-   "updated_at": "2026-08-22",
-   "business": {
-    "why": "초기 Mimir 는 **카산드라에서 영감을 받아** 지었다 — **복제 계수 3, 쿼럼 읽기·쓰기.** 인제스터 계층이 모든 데이터를 세 벌 들고 있는 공유 저장소였다.\n\n그런데 그 구조가 두 가지를 청구했다.\n\n**첫째, 비쌌다.** 회사가 쓴 문장 그대로다 — **\"복제 계수 3은 비싸다. 수집 경로에서 각 데이터의 세 벌을 유지해야 하고, 인제스터에서 최근 데이터를 다시 질의할 때는 일관성을 보장하려고 최소 두 벌을 물어야 한다.\"**\n\n**둘째, 인제스터가 사실상 분산된 단일 장애점이었다.** 무거운 읽기 질의가 인제스터를 밀면 **쓰기 성능이 함께 나빠졌고**, 최악의 경우 **읽기와 쓰기 경로가 동시에** 무너졌다.\n\n**그래서 이 기능은 새 시스템을 짓는 이야기가 아니라 자기가 골랐던 설계를 걷어내는 이야기다** — 그리고 코드가 열려 있어 그 과정을 숨길 수도 없다(마지막 문장은 이 사이트의 해석).",
-    "metrics": [
-     {
-      "label": "복제와 쿼럼",
-      "value": "**복제 3벌 · 쿼럼 2** → **복제 2벌 · 쿼럼 1.** 2벌은 \"인제스터 하나가 건강하지 않을 경우를 대비해\" 남긴 것이고, 질의는 **파티션당 한 벌**만 물으면 된다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "label": "비용",
-      "value": "Grafana Cloud 기준 **총소유비용 25% 절감**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "label": "피한 비용",
-      "value": "객체 저장에 직접 쓰면 클라우드가 AZ 간 복제를 해 주므로 **AZ 간 전송비 $0.02/GB** 를 피한다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "label": "감당해야 하는 규모",
-      "value": "Grafana Cloud 활성 시리즈 **수십억**, 오픈소스 사용까지 합치면 전 세계 **수백억**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "label": "확장성",
-      "value": "**좋아지지 않았다** — 회사가 옛 구조도 새 구조도 \"매우 확장 가능하다\"고 적는다. 이 재설계의 목적은 확장이 아니다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "label": "지연 대가",
-      "value": "객체 저장에 먼저 쓰는 **지연 페널티를 받아들였다** — **수치는 밝히지 않는다**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     }
-    ]
-   },
-   "thinking": [
-    {
-     "at": "비용 명세를 들여다보고",
-     "thought": "**복제 계수 3은 비싸다.** 쓰기 경로에서 세 벌을 들고 있어야 하고, 최근 데이터를 읽을 때는 일관성을 위해 **최소 두 벌을 물어야** 한다. 즉 3배가 저장에만 붙는 게 아니라 **읽기 비용에도 붙는다.**",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "장애를 되짚어 보고",
-     "thought": "인제스터가 읽기와 쓰기를 함께 받는다. 그래서 **무거운 질의가 들어오면 쓰기가 느려지고**, 나쁜 경우에는 **읽기와 쓰기가 같이 죽는다.** 이건 부하 문제가 아니라 **구조가 만든 결합**이다 — 인제스터가 사실상 분산된 단일 장애점이다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "무엇을 가운데 둘지 정할 때",
-     "thought": "쓰기를 **Kafka 에 커밋하는 것으로 끝내면**, 인제스터는 뒤에서 비동기로 재생하는 **순수한 읽기 경로 부품**이 된다. 그러면 읽기 쪽에서 무슨 일이 나도 쓰기는 이미 끝나 있다. 그리고 파티션 단위로 소유가 정해지니 **재시작해도 정확히 이전 위치부터 끊김 없이** 이어 읽을 수 있다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "복제를 누가 할지 되물으며",
-     "thought": "우리가 네트워크로 세 벌을 만들 이유가 있나. **객체 저장에 직접 쓰면 클라우드가 가용영역 간 복제를 알아서 한다** — 그러면 **AZ 간 전송비 $0.02/GB** 도 안 낸다. 대신 **객체 저장에 먼저 쓰는 지연을 받아들여야** 한다.",
-     "confidence": "confirmed"
-    }
-   ],
-   "domain_model": {
-    "entities": [
-     {
-      "name": "디스트리뷰터",
-      "what": "들어온 쓰기를 받아 넘긴다. 새 구조에서는 **Kafka 에 커밋되면 쓰기가 완료**된다."
-     },
-     {
-      "name": "Kafka (가운데)",
-      "what": "쓰기의 도착 지점이자 진실의 순서. **파티션 단위로 소유**가 정해진다."
-     },
-     {
-      "name": "인제스터",
-      "what": "옛 구조에서는 3벌을 든 공유 저장소이자 읽기·쓰기를 함께 받는 곳. **새 구조에서는 Kafka 를 비동기로 재생하는 순수 읽기 경로 부품**이다."
-     },
-     {
-      "name": "객체 저장 (밑)",
-      "what": "동시 쓰기를 묶어 파일로 직접 쓴다. **복제를 우리가 하지 않고 클라우드가 한다.**"
-     },
-     {
-      "name": "끊김 없는 소비 (gapless consumption)",
-      "what": "인제스터가 재시작해도 **정확히 이전 위치부터** 이어 읽는다."
-     }
-    ],
-    "invariants": [
-     "**쓰기는 Kafka 에 커밋되면 끝난다** — 인제스터를 기다리지 않는다.",
-     "**읽기 경로에서 무슨 일이 일어나도 쓰기 경로에 영향을 주지 않는다**(그 반대도).",
-     "질의는 **파티션당 한 벌**만 물으면 된다 — 쿼럼이 1이다.",
-     "복제 2벌은 **인제스터 하나가 건강하지 않을 때를 위한 것**이지 일관성을 위한 것이 아니다.",
-     "인제스터는 재시작 후 **정확히 이전 위치부터** 이어 읽는다.",
-     "**복제는 우리가 아니라 클라우드가 한다** — 객체 저장이 AZ 간에 알아서 복제한다."
-    ]
-   },
-   "implementation": {
-    "flow": [
-     {
-      "step": "디스트리뷰터가 쓰기를 받아 **Kafka 에 커밋한다 — 그 순간 쓰기 요청이 완료된다**",
-      "why": "쓰기 완료를 인제스터에 걸어 두면 읽기 부하가 쓰기를 밀어낸다."
-     },
-     {
-      "step": "동시 쓰기를 **배치로 묶어 객체 저장에 파일로 직접 쓴다** — 네트워크 링크로 복제하지 않는다",
-      "why": "클라우드가 AZ 간 복제를 해 주므로 우리가 할 이유가 없고, AZ 간 전송비도 안 낸다."
-     },
-     {
-      "step": "인제스터가 **자기 파티션을 비동기로 재생**한다 — 순수한 읽기 경로 부품이 된다",
-      "why": "쓰기 경로에서 빠져나오면 읽기 쪽 사고가 쓰기로 번지지 않는다."
-     },
-     {
-      "step": "인제스터가 재시작하면 **정확히 이전 위치부터 이어 읽는다**",
-      "why": "파티션 단위 소유가 정해져 있어야 예측 가능한 장애 전환이 된다."
-     },
-     {
-      "step": "질의는 **파티션당 한 벌**만 물어 답한다",
-      "why": "쿼럼 2가 사라지면 읽기 비용이 절반이 된다."
-     },
-     {
-      "step": "복제는 **2벌만** 유지한다 — 일관성이 아니라 **인제스터 하나가 건강하지 않을 때를 위한 여유**로",
-      "why": "복제의 목적이 바뀌면 필요한 벌 수도 바뀐다."
-     }
-    ],
-    "decisions": [
-     {
-      "question": "카산드라식 복제 3벌 + 쿼럼을 유지할 것인가",
-      "chosen": "**버린다.** 복제 **2벌**, 쿼럼 **1**(파티션당 한 벌만 질의).",
-      "alternatives": [
-       "복제 3벌 + 쿼럼 2를 유지하고 하드웨어로 감당한다"
-      ],
-      "tradeoff": "복제 2벌은 **일관성 보장이 아니라 인제스터 하나가 건강하지 않을 때를 위한 여유**다 — 즉 보장의 성격 자체가 바뀌었다(뒷문장은 이 사이트의 해석). 대신 회사가 밝힌 이유가 분명하다 — **\"복제 계수 3은 비싸다\"**, 쓰기에 세 벌, 읽기에 최소 두 벌.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "question": "쓰기 완료를 어디에서 인정할 것인가",
-      "chosen": "**Kafka 에 커밋되는 순간.** 인제스터는 그 뒤에 비동기로 재생한다.",
-      "alternatives": [
-       "인제스터가 3벌에 받아 쓴 뒤 완료로 본다(옛 구조)"
-      ],
-      "tradeoff": "**Kafka 라는 의존이 시스템의 한복판에 들어온다**(뒷문장은 이 사이트의 추정). 대신 재설계 목표의 첫째가 달성된다 — **\"읽기 경로에서 일어나는 무슨 일도 쓰기 경로에 영향을 주지 않아야 하고, 그 반대도 그렇다.\"**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "question": "복제를 누가 할 것인가",
-      "chosen": "**클라우드가.** 동시 쓰기를 묶어 객체 저장에 파일로 직접 쓰고, 가용영역 간 복제는 클라우드에 맡긴다.",
-      "alternatives": [
-       "네트워크 링크를 통해 우리가 여러 벌을 복제한다(옛 구조)"
-      ],
-      "tradeoff": "회사가 인정했다 — **객체 저장에 먼저 쓰는 데서 오는 지연 페널티를 받아들인다**(수치는 밝히지 않는다). 대신 **AZ 간 전송비 $0.02/GB** 를 내지 않는다. 다만 **다중 AZ 비용은 완화했을 뿐 여전히 걱정거리**라고 적는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "question": "인제스터의 역할을 무엇으로 할 것인가",
-      "chosen": "**순수한 읽기 경로 부품.** 파티션에서 소비하며 **끊김 없이**(gapless) 재생한다.",
-      "alternatives": [
-       "읽기와 쓰기를 모두 받는 공유 저장소로 둔다(옛 구조)"
-      ],
-      "tradeoff": "인제스터가 재생을 따라잡는 동안 **최근 데이터의 가시성에 시차**가 생길 수 있다(이 지적은 이 사이트의 추정 — 글은 이 점을 수치로 다루지 않는다). 대신 옛 구조의 근본 문제가 사라진다 — **무거운 읽기가 인제스터를 밀어 쓰기까지 무너뜨리던 것**, 즉 **분산된 단일 장애점.**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "question": "이 재설계로 확장성을 높일 것인가",
-      "chosen": "**아니다.** 회사가 옛 구조도 새 구조도 **\"매우 확장 가능하다\"** 고 적는다. 목표는 셋 — **읽기·쓰기 분리**, **예측 가능한 파티셔닝으로 장애 대응력**, **복제·쿼럼 축소로 비용.**",
-      "alternatives": [
-       "더 큰 규모를 목표로 다시 짓는다"
-      ],
-      "tradeoff": "\"더 커진다\"는 이야기를 못 하게 된다(뒷문장은 이 사이트의 해석). 대신 **무엇을 위한 재설계인지가 흐려지지 않는다** — 이 글이 성능 자랑이 아니라 비용·결합 이야기인 이유다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "question": "수억 시리즈짜리 블록 압축을 어떻게 할 것인가",
-      "chosen": "**분할·병합(split-and-merge) 컴팩터.** 소스 블록을 여러 그룹으로 묶어 그룹마다 **N개 샤드를 병렬 생성**하고, 샤드별로 순차 압축하며, 여러 머신에 분산한다.",
-      "alternatives": [
-       "기존 컴팩터를 그대로 쓴다"
-      ],
-      "tradeoff": "기존 컴팩터는 수억 시리즈를 감당하지 못했고 결과 블록이 **TSDB 한계**(인덱스 64GB, 32비트 정수 때문에 섹션당 4GB)를 넘겼다. 새 방식에도 시간 제약이 붙는다 — **압축되지 않은 블록이 질의되지 않도록 12시간 안에 모든 압축을 끝내야** 한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     },
-     {
-      "question": "인제스터의 디스크 쓰기가 한꺼번에 몰리는 것을 어떻게 할 것인가",
-      "chosen": "**청크 최대 크기에 지터를 주고, 쓰기를 백그라운드 큐로 비동기화한다.** p99 피크가 **45초 → 3초.**",
-      "alternatives": [
-       "동기 쓰기를 유지하고 디스크를 키운다"
-      ],
-      "tradeoff": "회사가 인정했다 — **지터는 문제를 부분적으로만 풀었다.** 청크가 블록 시간 경계를 넘을 수 없어 **2시간 경계에서는 여전히 주기적 스파이크**가 난다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     }
-    ],
-    "stack": [
-     {
-      "tech": "Apache Kafka",
-      "role": "쓰기의 도착 지점이자 순서. 커밋되면 쓰기 완료.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "tech": "객체 저장 (WarpStream 방식 배치 쓰기)",
-      "role": "동시 쓰기를 묶어 파일로 직접 쓴다. 복제를 클라우드에 맡긴다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "tech": "인제스터 (순수 읽기 경로 · 끊김 없는 소비)",
-      "role": "파티션을 비동기 재생하고 재시작 후 정확히 이전 위치부터 잇는다. 복제 2벌.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "tech": "Prometheus TSDB (수정본)",
-      "role": "저장 형식. 격리를 끄고(p99 지연 90% 감소), WAL 재생 경쟁 조건과 정규식 매처를 상류에 고쳐 올렸다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     },
-     {
-      "tech": "분할·병합 컴팩터",
-      "role": "수억 시리즈를 샤드로 나눠 병렬 압축. 12시간 안에 끝내야 한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     },
-     {
-      "tech": "memberlist 해시 링 + 존 인식 롤아웃 오퍼레이터",
-      "role": "클러스터 상태 공유와 배포. 가십 CPU 90% 이상 절감, 롤아웃 50시간 → 30분 미만.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     },
-     {
-      "tech": "새 구조가 어디까지 배포됐는지",
-      "role": "— 글은 전환의 설계를 설명하고 **적용 범위를 밝히지 않는다.**",
+      "name": "오픈소스 자체",
+      "how": "직접 매출이 없다. **그런데 이것이 이 회사의 기술 결정을 제약한다** — 남의 클러스터에서도 돌아야 하기 때문이다(이 해석은 이 사이트의 것이다).",
       "confidence": "unknown",
       "sources": []
-     }
-    ]
-   },
-   "connections": [
-    {
-     "to": "query-sharding",
-     "via": "읽기 쪽 부하가 가는 곳",
-     "contract": "샤딩은 querier 와 그 아래 인제스터·스토어 게이트웨이의 부하를 늘리는데, **옛 구조에서는 그 인제스터가 쓰기도 함께 받고 있었다.** 읽기·쓰기 분리가 병렬화의 전제이기도 하다 — **두 자료가 서로를 그렇게 엮지는 않는다**(해석).",
-     "confidence": "inferred"
     }
-   ],
-   "research": {
-    "papers": [],
-    "hard_problems": [
-     {
-      "problem": "복제는 안전을 위한 것인데 비용은 읽기에서도 청구된다",
-      "why_hard": "복제 3벌은 흔히 **저장 비용 3배**로만 생각된다. 그런데 회사가 짚은 것은 다른 쪽이다 — **최근 데이터를 인제스터에서 읽을 때 일관성을 보장하려면 최소 두 벌을 물어야 한다.** 즉 복제 계수가 **읽기 경로의 팬아웃까지 정한다.** 게다가 그 인제스터들이 읽기와 쓰기를 함께 받고 있으면, **무거운 질의가 쓰기를 밀어내고** 최악의 경우 두 경로가 함께 무너진다 — 안전을 위해 늘린 벌 수가 **장애의 전파 경로**가 되는 셈이다(마지막 문장은 이 사이트의 해석).",
-      "current_best": "**복제의 목적을 바꾼다.** 쓰기 완료를 Kafka 커밋으로 옮기고 나면, 인제스터의 복제는 더 이상 **일관성을 위한 것이 아니라 \"하나가 건강하지 않을 때를 위한 여유\"** 가 된다. 그래서 3벌·쿼럼2 가 **2벌·쿼럼1** 로 줄어든다(총소유비용 25% 절감). 그리고 진짜 복제는 **객체 저장을 통해 클라우드가** 한다. 대가는 **객체 저장에 먼저 쓰는 지연**인데 회사는 그 수치를 밝히지 않는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-        "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-        "publisher": "Grafana Labs Blog",
-        "date": "—",
-        "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-       }
-      ]
-     },
-     {
-      "problem": "주기적인 것들은 저절로 같은 순간에 몰린다",
-      "why_hard": "20초 스크레이프 간격에서 인제스터마다 **7GB 의 청크가 40분마다 한꺼번에** 디스크로 나갔고, 그때 지연이 **10ms 에서 20~60초**로 튀었다. 원인은 부하가 아니라 **동기화**다 — 같은 규칙으로 채워지는 것들은 같은 시점에 가득 차기 때문에, 아무도 몰리라고 시키지 않았는데 몰린다. 같은 결이 클러스터 상태에서도 나타났다: 복제본 1,500개 규모에서 해시 링 가십이 복제본당 **1.6~1.9 CPU 코어**(합계 약 2,500코어)를 먹고 있었다.",
-      "current_best": "**규칙에 무작위를 섞고, 시점과 실행을 떼어 놓는다.** 청크 최대 크기에 **지터**를 주어 채워지는 시점을 흩고, 쓰기를 **백그라운드 큐로 비동기화**했다 — p99 피크 **45초 → 3초**. 다만 회사가 인정한 대로 **지터는 부분적인 해결**이다: 청크가 블록 시간 경계를 넘을 수 없어 **2시간 경계에서는 여전히 주기적 스파이크**가 남는다. **주기 자체가 구조에서 나오면 무작위로는 다 못 흩는다**(마지막 문장은 이 사이트의 해석).",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     }
-    ]
-   },
-   "diagrams": [
-    {
-     "title": "쓰기 완료를 어디서 인정하느냐가 구조를 갈랐다",
-     "question": "인제스터는 왜 분산된 단일 장애점이었는가?",
-     "kind": "flow",
-     "code": "flowchart TD\n  W[\"쓰기 (샘플)\"] --> DIST[\"디스트리뷰터\"]\n  subgraph OLD[\"<b>옛 구조</b> — 카산드라에서 영감\"]\n    ING3[\"<b>인제스터 — 복제 3벌</b><br/>읽기와 쓰기를 함께 받는다\"]:::quiet\n    Q2[\"최근 데이터 질의 →<br/><b>일관성 위해 최소 2벌을 문다</b>\"]:::quiet\n    ING3 --> Q2\n    HEAVY[\"무거운 읽기가 인제스터를 민다\"] --> SLOW[\"<b>쓰기 성능이 함께 나빠진다</b>\"]\n    SLOW --> BOTH[\"최악에는 읽기·쓰기가 같이 무너진다<br/><b>= 분산된 단일 장애점</b>\"]\n    HEAVY -.-> ING3\n  end\n  subgraph NEW[\"<b>새 구조</b>\"]\n    K[(\"<b>Kafka</b> — 커밋되면 쓰기 완료\")]:::accent\n    OS[(\"<b>객체 저장</b><br/>동시 쓰기를 배치로 직접 파일 쓰기<br/><b>복제는 클라우드가</b> — AZ 간 $0.02/GB 회피\")]:::accent\n    ING2[\"인제스터 — <b>순수 읽기 경로</b><br/>비동기 재생 · 끊김 없는 소비<br/><b>복제 2벌 · 쿼럼 1</b>\"]:::list\n    K --> OS\n    K --> ING2\n  end\n  DIST -->|\"버렸다\"| ING3\n  DIST --> K\n  ING2 --> QRY[\"질의 — 파티션당 <b>한 벌</b>만\"]\n  OS --> QRY\n  QRY --> TCO[\"<b>총소유비용 25% 절감</b>\"]:::accent\n  LAT[\"대가 — 객체 저장에 먼저 쓰는 지연<br/><b>수치는 밝히지 않는다</b>\"]:::quiet\n  OS -.-> LAT"
-    },
-    {
-     "title": "복제 한 벌의 의미가 바뀌는 자리",
-     "question": "2벌은 3벌보다 하나 적은 것인가, 다른 것인가?",
-     "kind": "state",
-     "code": "stateDiagram-v2\n  [*] --> 옛구조\n  note right of 옛구조\n    복제 3벌 · 쿼럼 2\n    복제의 목적 = 일관성 보장\n    → 읽을 때도 두 벌을 물어야 한다\n  end note\n  옛구조 --> 진단: 비용 명세와 장애를 되짚는다\n  note right of 진단\n    \"복제 계수 3은 비싸다\"\n    무거운 읽기가 쓰기를 밀어낸다\n  end note\n  진단 --> 이동: 쓰기 완료를 Kafka 커밋으로 옮긴다\n  이동 --> 새구조\n  note right of 새구조\n    복제 2벌 · 쿼럼 1\n    복제의 목적이 바뀌었다\n    = \"하나가 건강하지 않을 때를 위한 여유\"\n    진짜 복제는 객체 저장이 클라우드에서 한다\n  end note\n  새구조 --> 재시작: 인제스터가 죽는다\n  재시작 --> 새구조: 정확히 이전 위치부터 이어 읽는다\n  새구조 --> [*]"
-    },
-    {
-     "title": "실패 경로 — 아무도 시키지 않았는데 같이 몰린다",
-     "question": "부하가 아니라 동기화가 문제일 때는 무엇을 하는가?",
-     "kind": "failure",
-     "code": "flowchart TD\n  RULE[\"같은 규칙으로 채워지는 청크<br/>20초 스크레이프 간격\"] --> SYNC[\"<b>같은 시점에 가득 찬다</b>\"]\n  SYNC --> BURST[\"인제스터마다 7GB 가<br/>40분마다 한꺼번에 디스크로\"]\n  BURST --> SPIKE[\"<b>지연 10ms → 20~60초</b>\"]:::accent\n  SPIKE --> JIT[\"완화 ① 청크 크기에 <b>지터</b>\"]:::quiet\n  SPIKE --> ASYNC[\"완화 ② 백그라운드 큐로 <b>비동기 쓰기</b><br/>p99 피크 45초 → 3초\"]:::quiet\n  JIT -->|\"회사가 인정\"| PART[\"<b>부분적 해결일 뿐</b><br/>청크는 블록 시간 경계를 못 넘는다<br/>→ <b>2시간 경계에 스파이크가 남는다</b>\"]\n  PART -->|\"해석\"| STRUCT[\"주기가 구조에서 나오면<br/>무작위로는 다 못 흩는다\"]\n  RING[\"복제본 1,500개의 해시 링 가십\"] --> CPU[\"복제본당 1.6~1.9 코어<br/><b>합계 약 2,500 코어</b> · 무작위 OOMKill\"]\n  CPU --> FIX[\"완화 — 상태 복제 제거 · 할당 축소 ·<br/>sync.pool · 프로브 간격 완화<br/><b>가십 CPU 90%+ 절감</b>\"]:::quiet\n  FIX --> UP[\"<b>남의 라이브러리 버그까지 고쳐 상류에 올렸다</b><br/>memberlist PR #239 · #260\"]\n  BIG[\"수억 시리즈 블록 압축\"] --> LIMIT[\"<b>TSDB 한계</b> — 인덱스 64GB<br/>32비트 정수 때문에 섹션당 4GB\"]\n  LIMIT --> SPLIT[\"완화 — 분할·병합 컴팩터<br/><b>단 12시간 안에 끝내야 한다</b>\"]:::quiet"
-    }
-   ],
-   "sources": [
-    {
-     "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-     "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-     "publisher": "Grafana Labs Blog",
-     "date": "—",
-     "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-    },
-    {
-     "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-     "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-     "publisher": "Grafana Labs Blog",
-     "date": "2022-04-08",
-     "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-    }
-   ]
+  ],
+  "domain_map": {
+    "title": "그라파나 랩스 도메인 지도",
+    "question": "샘플 하나가 들어와 질의로 나가기까지, 옛 구조와 새 구조는 어디서 갈리는가?",
+    "code": "flowchart TD\n  A[\"에이전트 · Prometheus\"] --> D[\"디스트리뷰터\"]\n  subgraph OLD[\"<b>옛 구조</b> — 카산드라에서 영감\"]\n    OI[\"인제스터 — <b>복제 3벌</b><br/>쓰기 3벌 · 읽기 최소 2벌<br/><b>사실상 분산된 단일 장애점</b>\"]:::quiet\n    ORD[\"무거운 읽기가 인제스터를 밀면<br/>쓰기 성능이 함께 나빠진다\"]:::quiet\n  end\n  subgraph NEW[\"<b>새 구조</b> — 읽기·쓰기 분리\"]\n    K[(\"<b>Kafka</b> — 가운데<br/>커밋되면 쓰기 완료<br/>파티션 단위 소유\")]:::accent\n    NI[\"인제스터 — <b>순수 읽기 경로 부품</b><br/>비동기 재생 · 끊김 없는 소비<br/><b>복제 2벌 · 쿼럼 1</b>\"]:::accent\n    OS[(\"객체 저장 — 밑<br/>클라우드가 AZ 간 복제를 해 준다<br/>AZ 간 전송비 $0.02/GB 를 피한다\")]:::list\n    K --> NI\n    K --> OS\n  end\n  D --> K\n  D -.->|\"버렸다\"| OI\n  subgraph Q[\"<b>질의 실행</b>\"]\n    QS[\"시간 분할 + 질의 샤딩<br/>고카디널리티 질의 <b>10분의 1</b><br/>(37.7초 → 3.9초)<br/>현재 고객 질의의 60%\"]:::list\n  end\n  NI --> QS\n  OS --> QS\n  QS --> U[\"대시보드\"]"
   },
-  {
-   "key": "query-sharding",
-   "name": "데이터는 나눠 뒀는데 질의가 한 코어에서 돈다",
-   "domain": "질의 실행",
-   "updated_at": "2026-08-22",
-   "business": {
-    "why": "저장을 아무리 잘 나눠 놓아도 **질의를 실행하는 엔진이 한 코어에서 돌면** 소용이 없다. **PromQL 엔진은 단일 스레드**여서, 고카디널리티·CPU 집약 질의는 결국 **CPU 코어 하나의 속도**에 묶인다.\n\n그런데 이 도메인의 어려움은 병렬화 자체가 아니다. **질의를 쪼개려면 질의의 의미를 알아야 한다.** `sum` 은 부분합을 더하면 되지만 `histogram_quantile` 은 그렇지 않다 — 조각마다 분위수를 구해 합칠 수 없기 때문이다(뒤 예시는 이 사이트의 해석).\n\n그래서 이 기능은 **어떤 질의를 쪼갤 수 있는지 목록을 만들고, 못 쪼개는 것은 어떻게 할지 정하는 일**이 된다.",
-    "metrics": [
-     {
-      "label": "효과",
-      "value": "고카디널리티·CPU 집약 질의의 **실행 시간 10분의 1** — 한 사례에서 **37.7초 → 3.9초**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     },
-     {
-      "label": "적용 범위",
-      "value": "**Grafana Cloud 고객 질의의 60%** 가 샤딩된다 — 나머지는 아직",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     },
-     {
-      "label": "폭발 방지 상한",
-      "value": "입력 질의 하나당 부분 질의 **기본 최대 128개**. 시간 분할을 함께 쓰면 **둘을 합쳐서** 이 상한이 적용된다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "label": "샤딩되는 집계",
-      "value": "**`sum` · `min` · `max` · `count` · `avg`**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "label": "샤딩되지 않는 함수",
-      "value": "**`absent` · `absent_over_time` · `histogram_quantile` · `sort` · `sort_desc`**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "label": "안 쓰는 기능을 끈 효과",
-      "value": "분산 Mimir 에서 쓰지 않는 **TSDB 격리(isolation)** 가 잠금 경합을 일으키고 있었다 — 끄자 **인제스터 p99 지연 90% 감소**. 라벨 정규식 매처 최적화로 흔한 정규식에서 **CPU 최대 90% 절감**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     }
-    ]
-   },
-   "thinking": [
+  "domains": [
     {
-     "at": "데이터를 잘 나눠 놓고도 질의가 느린 것을 보고",
-     "thought": "저장은 샤딩돼 있는데 **PromQL 엔진이 단일 스레드**다. 그러면 질의 하나의 속도는 **CPU 코어 하나**가 정한다 — 머신을 아무리 늘려도 그 질의는 빨라지지 않는다.",
-     "confidence": "confirmed"
+      "name": "시계열 수집·저장",
+      "why": "**Prometheus 는 오래 보관하도록 만들어지지 않았다.** 그래서 이 회사가 만든 것이 그 뒤를 받는 장기 저장인데, 규모가 곧 문제의 전부다 — Grafana Cloud 에서 활성 시리즈가 **수십억**이고 오픈소스까지 합치면 전 세계 **수백억**이다.\n\n**그리고 이 도메인의 이야기는 '어떻게 지었나'가 아니라 '무엇을 버렸나'다.** 초기 구조는 카산드라에서 영감을 받아 **복제 3벌 + 쿼럼**이었는데, 회사가 직접 적었다 — **\"복제 계수 3은 비싸다.\"**",
+      "tech": [
+        {
+          "tech": "Kafka 를 가운데 두는 새 구조",
+          "solves": "**쓰기는 Kafka 에 커밋되는 순간 끝난다.** 인제스터는 그 뒤에 비동기로 재생하며 **순수한 읽기 경로 부품**이 된다 — 재시작해도 **정확히 이전 위치부터 끊김 없이** 이어 읽는다. 그 결과 복제 계수가 **3 → 2**, 쿼럼이 **2 → 1**(파티션당 한 벌만 물으면 된다)로 줄어 **총소유비용 25% 절감**.",
+          "limits": "회사가 인정했다 — **객체 저장에 먼저 쓰는 데서 오는 지연 대가**를 받아들인 것이다(수치는 밝히지 않는다). 그리고 **확장성이 좋아진 것은 아니다** — 옛 구조도 새 구조도 \"매우 확장 가능하다\"고 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs Blog",
+              "date": "—",
+              "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+            }
+          ]
+        },
+        {
+          "tech": "객체 저장을 밑에 (WarpStream 방식의 배치 쓰기)",
+          "solves": "동시 쓰기를 묶어 **네트워크로 복제하는 대신 객체 저장에 파일로 직접 쓴다.** 클라우드가 가용영역 간 복제를 알아서 하므로 **AZ 간 전송 비용($0.02/GB)** 을 피한다.",
+          "limits": "**다중 AZ 비용은 완화했을 뿐 여전히 걱정거리**라고 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs Blog",
+              "date": "—",
+              "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+            }
+          ]
+        },
+        {
+          "tech": "분할·병합(split-and-merge) 컴팩터",
+          "solves": "원래 컴팩터는 수억 시리즈를 압축하지 못했고 결과 블록이 **TSDB 한계**(인덱스 64GB, 32비트 정수 때문에 섹션당 4GB)를 넘겼다. 소스 블록을 여러 그룹으로 묶어 **그룹마다 N개 샤드를 병렬 생성**한 뒤 샤드별로 순차 압축하고, 이를 여러 머신에 분산한다.",
+          "limits": "**압축되지 않은 블록이 질의되지 않도록 12시간 안에 모든 압축을 끝내야** 한다 — 시간이 제약이다. 그리고 **3벌 복제 때문에 모든 샘플이 세 번 들어오고 압축 때 중복을 제거**해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2022-04-08",
+              "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+            }
+          ]
+        },
+        {
+          "tech": "인제스터 디스크 쓰기 비동기화 + 청크 크기 지터",
+          "solves": "20초 스크레이프 간격에서는 인제스터마다 **7GB 청크가 40분마다 한꺼번에** 쓰였고 지연이 **10ms 에서 20~60초**로 튀었다. 청크 최대 크기에 **지터**를 주어 시점을 흩고, 쓰기를 **백그라운드 큐로 비동기화**했다. **p99 피크가 45초에서 3초로.**",
+          "limits": "회사가 적었다 — **지터는 문제를 부분적으로만 풀었다.** 청크는 블록 시간 경계를 넘을 수 없어 **2시간 경계에서는 여전히 주기적 스파이크**가 난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2022-04-08",
+              "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+            }
+          ]
+        },
+        {
+          "tech": "해시 링(memberlist 가십) 최적화 · 존 인식 롤아웃",
+          "solves": "복제본 1,500개 규모에서 링 전파가 복제본당 **CPU 1.6~1.9코어**(합계 약 2,500코어)를 먹고 무작위 OOMKill 이 났다. 수신 경로의 상태 복제 제거·할당 축소·sync.pool·프로브 간격 완화 등으로 **가십 CPU 를 90% 넘게** 줄였다. 롤아웃은 존 인식 복제와 자체 쿠버네티스 오퍼레이터로 **50시간에서 30분 미만**으로.",
+          "limits": "memberlist 의 **패킷 손상 버그**까지 직접 고쳐 상류에 올려야 했다(PR #239·#260) — 남의 라이브러리 안까지 들어가야 했다는 뜻이다(뒷문장은 이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2022-04-08",
+              "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "mimir-next-gen"
+      ]
     },
     {
-     "at": "먼저 시간으로 잘라 보고",
-     "thought": "긴 구간의 질의는 **여러 개의 짧은 질의로 나눠 병렬로** 돌릴 수 있다. 그런데 이건 **구간이 길 때만** 듣는다 — 짧은 구간에서 카디널리티가 높은 질의는 그대로 한 코어에 묶인다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "데이터셋 쪽을 나눌 방법을 찾다가",
-     "thought": "질의에 **`__query_shard__=\"1_of_4\"` 같은 라벨 셀렉터를 끼워 넣으면** 그 자체가 다른 질의가 된다. 즉 실행기를 고치지 않고 **질의를 다시 써서** 여러 대에 나눠 던질 수 있다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "어떤 연산까지 되는지 따져 보고",
-     "thought": "부분 결과를 합칠 수 있어야 나눌 수 있다. `sum`·`min`·`max`·`count`·`avg` 는 되고 `histogram_quantile`·`absent`·`sort` 는 안 된다. **전체 질의가 안 되더라도 안쪽 부분은 될 수 있으니** 그 부분만 나눈다 — 다만 나눌 수 있는 부분이 여럿이면 **조합적으로 폭발**하므로 상한이 필요하다.",
-     "confidence": "confirmed"
+      "name": "질의 실행",
+      "why": "**PromQL 엔진은 단일 스레드다.** 그래서 고카디널리티·CPU 집약 질의는 **CPU 코어 하나의 속도에 묶인다** — 데이터를 아무리 잘 나눠 두어도 질의가 한 코어에서 돌면 소용이 없다.",
+      "tech": [
+        {
+          "tech": "시간 분할 + 질의 샤딩",
+          "solves": "긴 질의를 여러 개의 병렬 질의로 쪼개고(시간 분할), 데이터셋을 샤드로 나눠 **여러 머신에서 부분 질의를 실행**한다. 고카디널리티·CPU 집약 질의의 **실행 시간이 10분의 1** — 한 사례에서 **37.7초 → 3.9초**.",
+          "limits": "회사가 밝혔다 — **현재 고객 질의의 60%만 샤딩된다.** 더 많은 질의 유형을 지원하려고 작업 중이다. 그리고 **클러스터 간 질의는 범위에서 명시적으로 제외**했다(Grafana Enterprise Metrics 기능).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2022-04-08",
+              "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+            }
+          ]
+        },
+        {
+          "tech": "TSDB 격리(isolation) 비활성화 · 정규식 매처 최적화",
+          "solves": "분산 Mimir 에서는 쓰지 않는 TSDB 격리가 **잠금 경합**을 일으키고 있었다 — 끄자 **인제스터 p99 지연이 90% 줄었다.** 라벨 정규식 매처 최적화로 흔한 정규식에서 **CPU 를 최대 90%** 줄였다.",
+          "limits": "이런 최적화의 상당수가 **상류 Prometheus 를 고치는 일**이라 남의 프로젝트 일정에 묶인다(이 해석은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2022-04-08",
+              "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+            }
+          ]
+        },
+        {
+          "tech": "`__query_shard__` 라벨 주입 · 상한 · 옵트인",
+          "solves": "질의를 다시 써서 부분 질의로 나눈다(`\"N_of_M\"`). 전체가 안 되면 **안쪽 부분만** 나누고, 프론트엔드가 이어 붙인 뒤 비샤딩 연산을 마지막에 적용한다.",
+          "limits": "**샤딩되는 것은 `sum`·`min`·`max`·`count`·`avg` 뿐**이고 `histogram_quantile`·`absent`·`sort` 는 안 된다. 부분 질의는 **입력당 기본 128개**로 묶인다(시간 분할과 합산). **카디널리티 기반 샤딩을 써도 샤드당 실제 시리즈 수가 상한을 넘을 수 있다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+              "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+              "publisher": "Grafana Labs Docs",
+              "date": "—",
+              "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "query-sharding"
+      ]
     }
-   ],
-   "domain_model": {
-    "entities": [
-     {
-      "name": "query-frontend",
-      "what": "질의를 받아 **샤딩 가능한 부분을 다시 쓰고** 부분 질의를 여러 querier 에 뿌린 뒤, 결과를 이어 붙이고 **남은 비샤딩 연산(예: `histogram_quantile`)을 마지막에** 적용한다."
-     },
-     {
-      "name": "querier",
-      "what": "부분 질의를 독립적으로 실행한다. 최근 데이터는 인제스터에서, 과거 데이터는 스토어 게이트웨이에서 가져온다."
-     },
-     {
-      "name": "`__query_shard__` 라벨",
-      "what": "`\"N_of_M\"` 형식(예: `\"1_of_4\"`). **질의에 끼워 넣는 라벨 셀렉터**이자 일을 나누는 유일한 장치."
-     },
-     {
-      "name": "시간 분할 (time splitting)",
-      "what": "긴 구간의 질의를 여러 짧은 질의로 나눈다. 샤딩과 **함께 쓰면 상한을 공유**한다."
-     },
-     {
-      "name": "`sharded_queries` 통계",
-      "what": "부분 질의가 몇 개였는지. **`sharded_queries=0` 이면 그 질의는 샤딩되지 않았다는 뜻.**"
-     }
-    ],
-    "invariants": [
-     "**부분 결과를 합칠 수 있는 연산만 샤딩한다** — `sum`·`min`·`max`·`count`·`avg`.",
-     "**전체가 안 되어도 안쪽 부분은 샤딩될 수 있다** — 샤딩 가능한 부분마다 따로 나눈다.",
-     "입력 질의 하나가 만드는 부분 질의는 **기본 128개를 넘지 않는다**(시간 분할과 합산).",
-     "샤딩은 **옵트인**이다 — `-query-frontend.parallelize-shardable-queries=true`.",
-     "샤딩되지 않는 질의도 **그대로 실행된다** — 병렬화의 이득만 못 볼 뿐이다.",
-     "**카디널리티 상한을 걸어도 실제 시리즈 수는 그것을 넘을 수 있다** — 회사가 명시한 한계다."
-    ]
-   },
-   "implementation": {
-    "flow": [
-     {
-      "step": "query-frontend 가 질의를 받아 **샤딩 가능한 부분을 찾는다**",
-      "why": "부분 결과를 합칠 수 있는 연산만 나눌 수 있다."
-     },
-     {
-      "step": "그 부분을 **`__query_shard__=\"N_of_M\"` 라벨 셀렉터가 붙은 부분 질의들로 다시 쓴다**",
-      "why": "실행 엔진을 고치지 않고 질의만 바꿔 병렬화한다."
-     },
-     {
-      "step": "긴 구간이면 **시간 분할**도 함께 적용한다 — 다만 **상한은 둘을 합쳐** 센다",
-      "why": "둘을 곱하면 부분 질의가 폭발한다."
-     },
-     {
-      "step": "부분 질의를 **여러 querier 에 병렬로** 던진다",
-      "why": "단일 스레드 엔진의 한계를 머신 수로 넘어선다."
-     },
-     {
-      "step": "각 querier 가 자기 샤드를 독립 실행한다 — 최근 데이터는 인제스터, 과거는 스토어 게이트웨이에서",
-      "why": "부분 질의끼리 서로 기다릴 필요가 없다."
-     },
-     {
-      "step": "프론트엔드가 결과를 **이어 붙이고(concat)**, **남은 비샤딩 연산을 마지막에** 적용한다",
-      "why": "`histogram_quantile` 같은 것은 합쳐진 뒤에야 계산할 수 있다."
-     },
-     {
-      "step": "샤딩되지 않은 질의는 **그대로 실행되고 `sharded_queries=0`** 으로 기록된다",
-      "why": "안 되는 것을 억지로 나누지 않고, 안 됐다는 사실만 남긴다."
-     }
-    ],
-    "decisions": [
-     {
-      "question": "단일 스레드 PromQL 엔진을 어떻게 넘어설 것인가",
-      "chosen": "**엔진을 고치지 않는다.** 질의를 **시간으로 나누고**(시간 분할) **데이터셋으로 나눠**(질의 샤딩) 여러 머신에서 부분 질의를 돌린다.",
-      "alternatives": [
-       "PromQL 엔진 자체를 다중 스레드로 만든다",
-       "더 빠른 CPU 를 쓴다"
-      ],
-      "tradeoff": "**상류 Prometheus 의 엔진을 그대로 쓰는 대신 모든 병렬화를 바깥에서 해야 한다**(뒷문장은 이 사이트의 해석). 대신 고카디널리티 질의의 실행 시간이 **10분의 1**(37.7초 → 3.9초)이 된다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     },
-     {
-      "question": "어떻게 나눌 것인가",
-      "chosen": "**질의를 다시 쓴다** — `__query_shard__=\"N_of_M\"` 라벨 셀렉터를 끼워 넣어 부분 질의를 만든다.",
-      "alternatives": [
-       "실행 계층에서 데이터를 나눠 준다"
-      ],
-      "tradeoff": "질의 재작성이 정확해야 하고, 재작성 규칙이 곧 기능의 한계가 된다(뒷문장은 이 사이트의 추정). 대신 querier 는 **평범한 PromQL 질의를 받는 것처럼** 동작한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "question": "어떤 연산까지 샤딩할 것인가",
-      "chosen": "**부분 결과를 합칠 수 있는 것만** — `sum`·`min`·`max`·`count`·`avg`. `absent`·`absent_over_time`·`histogram_quantile`·`sort`·`sort_desc` 는 하지 않는다.",
-      "alternatives": [
-       "모든 질의를 억지로 나누고 근사한다"
-      ],
-      "tradeoff": "**대시보드에서 흔한 `histogram_quantile` 이 목록의 반대쪽에 있다** — 지연 분위수 패널이 샤딩되지 않는다는 뜻이다(이 지적은 이 사이트의 추정 — 문서는 흔한 정도를 말하지 않는다). 대신 **결과가 정확하다.**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "question": "전체 질의가 샤딩 불가면 포기할 것인가",
-      "chosen": "**안쪽 부분만 나눈다.** \"전체 질의가 샤딩 가능하지 않아도 질의의 안쪽 부분은 샤딩될 수 있다.\" 샤딩 가능한 부분이 여럿이면 **각각 따로** 나눈다.",
-      "alternatives": [
-       "전체가 안 되면 통째로 단일 실행한다"
-      ],
-      "tradeoff": "샤딩 가능한 부분이 여럿이면 부분 질의가 **조합적으로 늘어난다** — 그래서 상한이 필요해졌다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "question": "질의 폭발을 어떻게 막을 것인가",
-      "chosen": "**입력 질의당 부분 질의 상한**(`query-sharding-max-sharded-queries`, 기본 **128**). 시간 분할을 함께 쓰면 **둘을 합쳐** 상한을 적용한다.",
-      "alternatives": [
-       "샤드 수만 정하고 상한은 두지 않는다"
-      ],
-      "tradeoff": "복잡한 질의는 원하는 만큼 나뉘지 않는다(뒷문장은 이 사이트의 추정). 대신 질의 하나가 클러스터를 통째로 먹는 일이 막힌다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "question": "샤드 수를 고정할 것인가, 데이터에 맞출 것인가",
-      "chosen": "**둘 다 둔다** — 고정(`query-sharding-total-shards`)과 **카디널리티 기반(실험적, `query-sharding-target-series-per-shard`)**. 후자는 결과 캐시 설정이 필요하다.",
-      "alternatives": [
-       "고정 샤드 수만 지원한다"
-      ],
-      "tradeoff": "회사가 인정했다 — **샤드당 실제로 가져오는 시리즈 수가 상한을 넘을 수 있다.** 질의의 카디널리티가 짧은 시간에 빠르게 변할 때 그렇다. 그래서 **고정 상한은 카디널리티 추정과 무관하게 항상 적용**된다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "question": "기본으로 켤 것인가",
-      "chosen": "**옵트인이다** — `-query-frontend.parallelize-shardable-queries=true` 를 켜야 동작한다. 켜면 `-querier.max-query-parallelism` 에 샤드 수를 곱해 조정하라고 안내한다.",
-      "alternatives": [
-       "기본으로 켠다"
-      ],
-      "tradeoff": "켜지 않은 사용자는 이득을 못 본다(뒷문장은 이 사이트의 추정). 대신 **병렬화가 클러스터 부하를 늘리기 때문에** 운영자가 알고 켜게 된다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "question": "쓰지 않는 기능은 어떻게 할 것인가",
-      "chosen": "**끈다.** 분산 Mimir 에서 쓰이지 않는 **TSDB 격리(isolation)** 를 비활성화했다 — **인제스터 p99 지연이 90% 줄었다.**",
-      "alternatives": [
-       "기본값을 그대로 둔다"
-      ],
-      "tradeoff": "상류의 기본값에서 벗어나므로 이후 변경을 따라가야 한다(뒷문장은 이 사이트의 추정). 대신 **안 쓰는 기능이 잠금 경합으로 값을 내고 있었다** — 켜져 있다는 이유만으로.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     }
-    ],
-    "stack": [
-     {
-      "tech": "query-frontend",
-      "role": "질의를 다시 쓰고 뿌리고 합친다. 비샤딩 연산은 마지막에 여기서 적용한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "tech": "`__query_shard__` 라벨 셀렉터",
-      "role": "`\"N_of_M\"` 형식으로 질의에 주입돼 일을 나눈다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "tech": "시간 분할 (`split-queries-by-interval`)",
-      "role": "긴 구간을 여러 질의로. 샤딩과 상한을 공유한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "tech": "카디널리티 기반 샤딩 (실험적)",
-      "role": "샤드당 목표 시리즈 수로 샤드 수를 정한다. 결과 캐시가 필요하다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "tech": "수정된 Prometheus TSDB",
-      "role": "격리 비활성화(인제스터 p99 -90%), 라벨 정규식 매처 최적화(CPU 최대 -90%).",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     },
-     {
-      "tech": "`sharded_queries` 질의 통계",
-      "role": "샤딩이 실제로 동작하는지 확인하는 지표. 0이면 샤딩되지 않은 질의다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
-      ]
-     },
-     {
-      "tech": "샤딩되는 질의 유형이 앞으로 얼마나 늘어날지",
-      "role": "— \"더 많은 질의 유형의 샤딩을 지원하려고 작업 중\" 이라고만 하고 **어떤 유형인지 밝히지 않는다.**",
-      "confidence": "unknown",
-      "sources": [
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     }
-    ]
-   },
-   "connections": [
+  ],
+  "features": [
     {
-     "to": "mimir-next-gen",
-     "via": "읽기 쪽 부하가 가는 곳",
-     "contract": "샤딩은 **querier 와 그 아래 데이터 저장소(최근 데이터는 인제스터, 과거는 스토어 게이트웨이)의 부하를 늘린다** — 그런데 옛 구조에서는 그 인제스터가 쓰기도 함께 받고 있었다. **읽기·쓰기를 떼어 낸 재설계가 이 병렬화의 전제 조건이기도 하다**(이 연결은 이 사이트의 해석이며, 두 자료가 서로를 그렇게 엮지는 않는다).",
-     "confidence": "inferred"
-    }
-   ],
-   "research": {
-    "papers": [],
-    "hard_problems": [
-     {
-      "problem": "병렬화는 시간을 없애지 않고 옮긴다",
-      "why_hard": "질의를 128조각으로 나누면 그 질의는 빨라진다. 그런데 **일의 총량은 그대로이고, 그 일이 동시에 아래로 쏟아진다.** 회사가 문서에 직접 적었다 — **\"병렬화는 질의 처리 시간을 줄이지만 querier 구성 요소와 그 아래 데이터 저장소(최근 데이터는 인제스터, 과거 데이터는 스토어 게이트웨이)의 부하를 늘린다. 청크와 인덱스 캐시 계층도 부하가 늘어난다.\"** 게다가 **샤딩 가능한 부분이 여럿이면 조합적으로** 부분 질의가 불어나, 질의 하나가 클러스터 전체를 먹을 수 있다.",
-      "current_best": "**상한을 둔다** — 입력 질의당 부분 질의 **기본 128개**, 시간 분할과 합산. 카디널리티 기반 샤딩을 쓰더라도 **고정 상한은 항상 적용**된다. 그리고 샤딩을 **옵트인**으로 두어 운영자가 부하 증가를 알고 켜게 하고, `-querier.max-query-parallelism` 을 샤드 수만큼 곱해 조정하라고 안내한다. 즉 **없앤 것이 아니라 얼마나 옮길지를 손잡이로 만든 것**이다(마지막 문장은 이 사이트의 해석).",
-      "confidence": "confirmed",
+      "key": "mimir-next-gen",
+      "name": "자기가 고른 구조를 이름 붙여 부정하기",
+      "domain": "시계열 수집·저장",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "초기 Mimir 는 **카산드라에서 영감을 받아** 지었다 — **복제 계수 3, 쿼럼 읽기·쓰기.** 인제스터 계층이 모든 데이터를 세 벌 들고 있는 공유 저장소였다.\n\n그런데 그 구조가 두 가지를 청구했다.\n\n**첫째, 비쌌다.** 회사가 쓴 문장 그대로다 — **\"복제 계수 3은 비싸다. 수집 경로에서 각 데이터의 세 벌을 유지해야 하고, 인제스터에서 최근 데이터를 다시 질의할 때는 일관성을 보장하려고 최소 두 벌을 물어야 한다.\"**\n\n**둘째, 인제스터가 사실상 분산된 단일 장애점이었다.** 무거운 읽기 질의가 인제스터를 밀면 **쓰기 성능이 함께 나빠졌고**, 최악의 경우 **읽기와 쓰기 경로가 동시에** 무너졌다.\n\n**그래서 이 기능은 새 시스템을 짓는 이야기가 아니라 자기가 골랐던 설계를 걷어내는 이야기다** — 그리고 코드가 열려 있어 그 과정을 숨길 수도 없다(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "복제와 쿼럼",
+            "value": "**복제 3벌 · 쿼럼 2** → **복제 2벌 · 쿼럼 1.** 2벌은 \"인제스터 하나가 건강하지 않을 경우를 대비해\" 남긴 것이고, 질의는 **파티션당 한 벌**만 물으면 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "Grafana Cloud 기준 **총소유비용 25% 절감**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "label": "피한 비용",
+            "value": "객체 저장에 직접 쓰면 클라우드가 AZ 간 복제를 해 주므로 **AZ 간 전송비 $0.02/GB** 를 피한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "label": "감당해야 하는 규모",
+            "value": "Grafana Cloud 활성 시리즈 **수십억**, 오픈소스 사용까지 합치면 전 세계 **수백억**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "label": "확장성",
+            "value": "**좋아지지 않았다** — 회사가 옛 구조도 새 구조도 \"매우 확장 가능하다\"고 적는다. 이 재설계의 목적은 확장이 아니다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "label": "지연 대가",
+            "value": "객체 저장에 먼저 쓰는 **지연 페널티를 받아들였다** — **수치는 밝히지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "비용 명세를 들여다보고",
+          "thought": "**복제 계수 3은 비싸다.** 쓰기 경로에서 세 벌을 들고 있어야 하고, 최근 데이터를 읽을 때는 일관성을 위해 **최소 두 벌을 물어야** 한다. 즉 3배가 저장에만 붙는 게 아니라 **읽기 비용에도 붙는다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "장애를 되짚어 보고",
+          "thought": "인제스터가 읽기와 쓰기를 함께 받는다. 그래서 **무거운 질의가 들어오면 쓰기가 느려지고**, 나쁜 경우에는 **읽기와 쓰기가 같이 죽는다.** 이건 부하 문제가 아니라 **구조가 만든 결합**이다 — 인제스터가 사실상 분산된 단일 장애점이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 가운데 둘지 정할 때",
+          "thought": "쓰기를 **Kafka 에 커밋하는 것으로 끝내면**, 인제스터는 뒤에서 비동기로 재생하는 **순수한 읽기 경로 부품**이 된다. 그러면 읽기 쪽에서 무슨 일이 나도 쓰기는 이미 끝나 있다. 그리고 파티션 단위로 소유가 정해지니 **재시작해도 정확히 이전 위치부터 끊김 없이** 이어 읽을 수 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "복제를 누가 할지 되물으며",
+          "thought": "우리가 네트워크로 세 벌을 만들 이유가 있나. **객체 저장에 직접 쓰면 클라우드가 가용영역 간 복제를 알아서 한다** — 그러면 **AZ 간 전송비 $0.02/GB** 도 안 낸다. 대신 **객체 저장에 먼저 쓰는 지연을 받아들여야** 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "디스트리뷰터",
+            "what": "들어온 쓰기를 받아 넘긴다. 새 구조에서는 **Kafka 에 커밋되면 쓰기가 완료**된다."
+          },
+          {
+            "name": "Kafka (가운데)",
+            "what": "쓰기의 도착 지점이자 진실의 순서. **파티션 단위로 소유**가 정해진다."
+          },
+          {
+            "name": "인제스터",
+            "what": "옛 구조에서는 3벌을 든 공유 저장소이자 읽기·쓰기를 함께 받는 곳. **새 구조에서는 Kafka 를 비동기로 재생하는 순수 읽기 경로 부품**이다."
+          },
+          {
+            "name": "객체 저장 (밑)",
+            "what": "동시 쓰기를 묶어 파일로 직접 쓴다. **복제를 우리가 하지 않고 클라우드가 한다.**"
+          },
+          {
+            "name": "끊김 없는 소비 (gapless consumption)",
+            "what": "인제스터가 재시작해도 **정확히 이전 위치부터** 이어 읽는다."
+          }
+        ],
+        "invariants": [
+          "**쓰기는 Kafka 에 커밋되면 끝난다** — 인제스터를 기다리지 않는다.",
+          "**읽기 경로에서 무슨 일이 일어나도 쓰기 경로에 영향을 주지 않는다**(그 반대도).",
+          "질의는 **파티션당 한 벌**만 물으면 된다 — 쿼럼이 1이다.",
+          "복제 2벌은 **인제스터 하나가 건강하지 않을 때를 위한 것**이지 일관성을 위한 것이 아니다.",
+          "인제스터는 재시작 후 **정확히 이전 위치부터** 이어 읽는다.",
+          "**복제는 우리가 아니라 클라우드가 한다** — 객체 저장이 AZ 간에 알아서 복제한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "디스트리뷰터가 쓰기를 받아 **Kafka 에 커밋한다 — 그 순간 쓰기 요청이 완료된다**",
+            "why": "쓰기 완료를 인제스터에 걸어 두면 읽기 부하가 쓰기를 밀어낸다."
+          },
+          {
+            "step": "동시 쓰기를 **배치로 묶어 객체 저장에 파일로 직접 쓴다** — 네트워크 링크로 복제하지 않는다",
+            "why": "클라우드가 AZ 간 복제를 해 주므로 우리가 할 이유가 없고, AZ 간 전송비도 안 낸다."
+          },
+          {
+            "step": "인제스터가 **자기 파티션을 비동기로 재생**한다 — 순수한 읽기 경로 부품이 된다",
+            "why": "쓰기 경로에서 빠져나오면 읽기 쪽 사고가 쓰기로 번지지 않는다."
+          },
+          {
+            "step": "인제스터가 재시작하면 **정확히 이전 위치부터 이어 읽는다**",
+            "why": "파티션 단위 소유가 정해져 있어야 예측 가능한 장애 전환이 된다."
+          },
+          {
+            "step": "질의는 **파티션당 한 벌**만 물어 답한다",
+            "why": "쿼럼 2가 사라지면 읽기 비용이 절반이 된다."
+          },
+          {
+            "step": "복제는 **2벌만** 유지한다 — 일관성이 아니라 **인제스터 하나가 건강하지 않을 때를 위한 여유**로",
+            "why": "복제의 목적이 바뀌면 필요한 벌 수도 바뀐다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "카산드라식 복제 3벌 + 쿼럼을 유지할 것인가",
+            "chosen": "**버린다.** 복제 **2벌**, 쿼럼 **1**(파티션당 한 벌만 질의).",
+            "alternatives": [
+              "복제 3벌 + 쿼럼 2를 유지하고 하드웨어로 감당한다"
+            ],
+            "tradeoff": "복제 2벌은 **일관성 보장이 아니라 인제스터 하나가 건강하지 않을 때를 위한 여유**다 — 즉 보장의 성격 자체가 바뀌었다(뒷문장은 이 사이트의 해석). 대신 회사가 밝힌 이유가 분명하다 — **\"복제 계수 3은 비싸다\"**, 쓰기에 세 벌, 읽기에 최소 두 벌.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "question": "쓰기 완료를 어디에서 인정할 것인가",
+            "chosen": "**Kafka 에 커밋되는 순간.** 인제스터는 그 뒤에 비동기로 재생한다.",
+            "alternatives": [
+              "인제스터가 3벌에 받아 쓴 뒤 완료로 본다(옛 구조)"
+            ],
+            "tradeoff": "**Kafka 라는 의존이 시스템의 한복판에 들어온다**(뒷문장은 이 사이트의 추정). 대신 재설계 목표의 첫째가 달성된다 — **\"읽기 경로에서 일어나는 무슨 일도 쓰기 경로에 영향을 주지 않아야 하고, 그 반대도 그렇다.\"**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "question": "복제를 누가 할 것인가",
+            "chosen": "**클라우드가.** 동시 쓰기를 묶어 객체 저장에 파일로 직접 쓰고, 가용영역 간 복제는 클라우드에 맡긴다.",
+            "alternatives": [
+              "네트워크 링크를 통해 우리가 여러 벌을 복제한다(옛 구조)"
+            ],
+            "tradeoff": "회사가 인정했다 — **객체 저장에 먼저 쓰는 데서 오는 지연 페널티를 받아들인다**(수치는 밝히지 않는다). 대신 **AZ 간 전송비 $0.02/GB** 를 내지 않는다. 다만 **다중 AZ 비용은 완화했을 뿐 여전히 걱정거리**라고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "question": "인제스터의 역할을 무엇으로 할 것인가",
+            "chosen": "**순수한 읽기 경로 부품.** 파티션에서 소비하며 **끊김 없이**(gapless) 재생한다.",
+            "alternatives": [
+              "읽기와 쓰기를 모두 받는 공유 저장소로 둔다(옛 구조)"
+            ],
+            "tradeoff": "인제스터가 재생을 따라잡는 동안 **최근 데이터의 가시성에 시차**가 생길 수 있다(이 지적은 이 사이트의 추정 — 글은 이 점을 수치로 다루지 않는다). 대신 옛 구조의 근본 문제가 사라진다 — **무거운 읽기가 인제스터를 밀어 쓰기까지 무너뜨리던 것**, 즉 **분산된 단일 장애점.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "question": "이 재설계로 확장성을 높일 것인가",
+            "chosen": "**아니다.** 회사가 옛 구조도 새 구조도 **\"매우 확장 가능하다\"** 고 적는다. 목표는 셋 — **읽기·쓰기 분리**, **예측 가능한 파티셔닝으로 장애 대응력**, **복제·쿼럼 축소로 비용.**",
+            "alternatives": [
+              "더 큰 규모를 목표로 다시 짓는다"
+            ],
+            "tradeoff": "\"더 커진다\"는 이야기를 못 하게 된다(뒷문장은 이 사이트의 해석). 대신 **무엇을 위한 재설계인지가 흐려지지 않는다** — 이 글이 성능 자랑이 아니라 비용·결합 이야기인 이유다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "question": "수억 시리즈짜리 블록 압축을 어떻게 할 것인가",
+            "chosen": "**분할·병합(split-and-merge) 컴팩터.** 소스 블록을 여러 그룹으로 묶어 그룹마다 **N개 샤드를 병렬 생성**하고, 샤드별로 순차 압축하며, 여러 머신에 분산한다.",
+            "alternatives": [
+              "기존 컴팩터를 그대로 쓴다"
+            ],
+            "tradeoff": "기존 컴팩터는 수억 시리즈를 감당하지 못했고 결과 블록이 **TSDB 한계**(인덱스 64GB, 32비트 정수 때문에 섹션당 4GB)를 넘겼다. 새 방식에도 시간 제약이 붙는다 — **압축되지 않은 블록이 질의되지 않도록 12시간 안에 모든 압축을 끝내야** 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "인제스터의 디스크 쓰기가 한꺼번에 몰리는 것을 어떻게 할 것인가",
+            "chosen": "**청크 최대 크기에 지터를 주고, 쓰기를 백그라운드 큐로 비동기화한다.** p99 피크가 **45초 → 3초.**",
+            "alternatives": [
+              "동기 쓰기를 유지하고 디스크를 키운다"
+            ],
+            "tradeoff": "회사가 인정했다 — **지터는 문제를 부분적으로만 풀었다.** 청크가 블록 시간 경계를 넘을 수 없어 **2시간 경계에서는 여전히 주기적 스파이크**가 난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Apache Kafka",
+            "role": "쓰기의 도착 지점이자 순서. 커밋되면 쓰기 완료.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "tech": "객체 저장 (WarpStream 방식 배치 쓰기)",
+            "role": "동시 쓰기를 묶어 파일로 직접 쓴다. 복제를 클라우드에 맡긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "tech": "인제스터 (순수 읽기 경로 · 끊김 없는 소비)",
+            "role": "파티션을 비동기 재생하고 재시작 후 정확히 이전 위치부터 잇는다. 복제 2벌.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "tech": "Prometheus TSDB (수정본)",
+            "role": "저장 형식. 격리를 끄고(p99 지연 90% 감소), WAL 재생 경쟁 조건과 정규식 매처를 상류에 고쳐 올렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "분할·병합 컴팩터",
+            "role": "수억 시리즈를 샤드로 나눠 병렬 압축. 12시간 안에 끝내야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "memberlist 해시 링 + 존 인식 롤아웃 오퍼레이터",
+            "role": "클러스터 상태 공유와 배포. 가십 CPU 90% 이상 절감, 롤아웃 50시간 → 30분 미만.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "새 구조가 어디까지 배포됐는지",
+            "role": "— 글은 전환의 설계를 설명하고 **적용 범위를 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "query-sharding",
+          "via": "읽기 쪽 부하가 가는 곳",
+          "contract": "샤딩은 querier 와 그 아래 인제스터·스토어 게이트웨이의 부하를 늘리는데, **옛 구조에서는 그 인제스터가 쓰기도 함께 받고 있었다.** 읽기·쓰기 분리가 병렬화의 전제이기도 하다 — **두 자료가 서로를 그렇게 엮지는 않는다**(해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "복제는 안전을 위한 것인데 비용은 읽기에서도 청구된다",
+            "why_hard": "복제 3벌은 흔히 **저장 비용 3배**로만 생각된다. 그런데 회사가 짚은 것은 다른 쪽이다 — **최근 데이터를 인제스터에서 읽을 때 일관성을 보장하려면 최소 두 벌을 물어야 한다.** 즉 복제 계수가 **읽기 경로의 팬아웃까지 정한다.** 게다가 그 인제스터들이 읽기와 쓰기를 함께 받고 있으면, **무거운 질의가 쓰기를 밀어내고** 최악의 경우 두 경로가 함께 무너진다 — 안전을 위해 늘린 벌 수가 **장애의 전파 경로**가 되는 셈이다(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**복제의 목적을 바꾼다.** 쓰기 완료를 Kafka 커밋으로 옮기고 나면, 인제스터의 복제는 더 이상 **일관성을 위한 것이 아니라 \"하나가 건강하지 않을 때를 위한 여유\"** 가 된다. 그래서 3벌·쿼럼2 가 **2벌·쿼럼1** 로 줄어든다(총소유비용 25% 절감). 그리고 진짜 복제는 **객체 저장을 통해 클라우드가** 한다. 대가는 **객체 저장에 먼저 쓰는 지연**인데 회사는 그 수치를 밝히지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "—",
+                "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+              }
+            ]
+          },
+          {
+            "problem": "주기적인 것들은 저절로 같은 순간에 몰린다",
+            "why_hard": "20초 스크레이프 간격에서 인제스터마다 **7GB 의 청크가 40분마다 한꺼번에** 디스크로 나갔고, 그때 지연이 **10ms 에서 20~60초**로 튀었다. 원인은 부하가 아니라 **동기화**다 — 같은 규칙으로 채워지는 것들은 같은 시점에 가득 차기 때문에, 아무도 몰리라고 시키지 않았는데 몰린다. 같은 결이 클러스터 상태에서도 나타났다: 복제본 1,500개 규모에서 해시 링 가십이 복제본당 **1.6~1.9 CPU 코어**(합계 약 2,500코어)를 먹고 있었다.",
+            "current_best": "**규칙에 무작위를 섞고, 시점과 실행을 떼어 놓는다.** 청크 최대 크기에 **지터**를 주어 채워지는 시점을 흩고, 쓰기를 **백그라운드 큐로 비동기화**했다 — p99 피크 **45초 → 3초**. 다만 회사가 인정한 대로 **지터는 부분적인 해결**이다: 청크가 블록 시간 경계를 넘을 수 없어 **2시간 경계에서는 여전히 주기적 스파이크**가 남는다. **주기 자체가 구조에서 나오면 무작위로는 다 못 흩는다**(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쓰기 완료를 어디서 인정하느냐가 구조를 갈랐다",
+          "question": "인제스터는 왜 분산된 단일 장애점이었는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  W[\"쓰기 (샘플)\"] --> DIST[\"디스트리뷰터\"]\n  subgraph OLD[\"<b>옛 구조</b> — 카산드라에서 영감\"]\n    ING3[\"<b>인제스터 — 복제 3벌</b><br/>읽기와 쓰기를 함께 받는다\"]:::quiet\n    Q2[\"최근 데이터 질의 →<br/><b>일관성 위해 최소 2벌을 문다</b>\"]:::quiet\n    ING3 --> Q2\n    HEAVY[\"무거운 읽기가 인제스터를 민다\"] --> SLOW[\"<b>쓰기 성능이 함께 나빠진다</b>\"]\n    SLOW --> BOTH[\"최악에는 읽기·쓰기가 같이 무너진다<br/><b>= 분산된 단일 장애점</b>\"]\n    HEAVY -.-> ING3\n  end\n  subgraph NEW[\"<b>새 구조</b>\"]\n    K[(\"<b>Kafka</b> — 커밋되면 쓰기 완료\")]:::accent\n    OS[(\"<b>객체 저장</b><br/>동시 쓰기를 배치로 직접 파일 쓰기<br/><b>복제는 클라우드가</b> — AZ 간 $0.02/GB 회피\")]:::accent\n    ING2[\"인제스터 — <b>순수 읽기 경로</b><br/>비동기 재생 · 끊김 없는 소비<br/><b>복제 2벌 · 쿼럼 1</b>\"]:::list\n    K --> OS\n    K --> ING2\n  end\n  DIST -->|\"버렸다\"| ING3\n  DIST --> K\n  ING2 --> QRY[\"질의 — 파티션당 <b>한 벌</b>만\"]\n  OS --> QRY\n  QRY --> TCO[\"<b>총소유비용 25% 절감</b>\"]:::accent\n  LAT[\"대가 — 객체 저장에 먼저 쓰는 지연<br/><b>수치는 밝히지 않는다</b>\"]:::quiet\n  OS -.-> LAT"
+        },
+        {
+          "title": "복제 한 벌의 의미가 바뀌는 자리",
+          "question": "2벌은 3벌보다 하나 적은 것인가, 다른 것인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 옛구조\n  note right of 옛구조\n    복제 3벌 · 쿼럼 2\n    복제의 목적 = 일관성 보장\n    → 읽을 때도 두 벌을 물어야 한다\n  end note\n  옛구조 --> 진단: 비용 명세와 장애를 되짚는다\n  note right of 진단\n    \"복제 계수 3은 비싸다\"\n    무거운 읽기가 쓰기를 밀어낸다\n  end note\n  진단 --> 이동: 쓰기 완료를 Kafka 커밋으로 옮긴다\n  이동 --> 새구조\n  note right of 새구조\n    복제 2벌 · 쿼럼 1\n    복제의 목적이 바뀌었다\n    = \"하나가 건강하지 않을 때를 위한 여유\"\n    진짜 복제는 객체 저장이 클라우드에서 한다\n  end note\n  새구조 --> 재시작: 인제스터가 죽는다\n  재시작 --> 새구조: 정확히 이전 위치부터 이어 읽는다\n  새구조 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 아무도 시키지 않았는데 같이 몰린다",
+          "question": "부하가 아니라 동기화가 문제일 때는 무엇을 하는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  RULE[\"같은 규칙으로 채워지는 청크<br/>20초 스크레이프 간격\"] --> SYNC[\"<b>같은 시점에 가득 찬다</b>\"]\n  SYNC --> BURST[\"인제스터마다 7GB 가<br/>40분마다 한꺼번에 디스크로\"]\n  BURST --> SPIKE[\"<b>지연 10ms → 20~60초</b>\"]:::accent\n  SPIKE --> JIT[\"완화 ① 청크 크기에 <b>지터</b>\"]:::quiet\n  SPIKE --> ASYNC[\"완화 ② 백그라운드 큐로 <b>비동기 쓰기</b><br/>p99 피크 45초 → 3초\"]:::quiet\n  JIT -->|\"회사가 인정\"| PART[\"<b>부분적 해결일 뿐</b><br/>청크는 블록 시간 경계를 못 넘는다<br/>→ <b>2시간 경계에 스파이크가 남는다</b>\"]\n  PART -->|\"해석\"| STRUCT[\"주기가 구조에서 나오면<br/>무작위로는 다 못 흩는다\"]\n  RING[\"복제본 1,500개의 해시 링 가십\"] --> CPU[\"복제본당 1.6~1.9 코어<br/><b>합계 약 2,500 코어</b> · 무작위 OOMKill\"]\n  CPU --> FIX[\"완화 — 상태 복제 제거 · 할당 축소 ·<br/>sync.pool · 프로브 간격 완화<br/><b>가십 CPU 90%+ 절감</b>\"]:::quiet\n  FIX --> UP[\"<b>남의 라이브러리 버그까지 고쳐 상류에 올렸다</b><br/>memberlist PR #239 · #260\"]\n  BIG[\"수억 시리즈 블록 압축\"] --> LIMIT[\"<b>TSDB 한계</b> — 인덱스 64GB<br/>32비트 정수 때문에 섹션당 4GB\"]\n  LIMIT --> SPLIT[\"완화 — 분할·병합 컴팩터<br/><b>단 12시간 안에 끝내야 한다</b>\"]:::quiet"
+        }
+      ],
       "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       }
+        {
+          "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+          "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+          "publisher": "Grafana Labs Blog",
+          "date": "—",
+          "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
+        },
+        {
+          "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+          "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+          "publisher": "Grafana Labs Blog",
+          "date": "2022-04-08",
+          "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+        }
       ]
-     },
-     {
-      "problem": "나눌 수 있는 질의와 사람들이 쓰는 질의가 같지 않다",
-      "why_hard": "부분 결과를 합칠 수 있어야 나눌 수 있다. 그래서 `sum`·`min`·`max`·`count`·`avg` 는 되지만 **`histogram_quantile`·`absent`·`sort` 는 안 된다** — 조각마다 분위수를 구해 더할 수 없고, '없음'은 조각 하나만 봐서는 알 수 없기 때문이다(이 설명은 이 사이트의 해석). 문제는 **못 나누는 쪽이 대시보드에서 드물지 않다**는 것이다(추정). 실제로 **Grafana Cloud 고객 질의의 60%만 샤딩된다.**",
-      "current_best": "**전체가 안 되면 안쪽 부분만 나눈다.** 샤딩 가능한 부분마다 따로 나누고, 프론트엔드가 결과를 이어 붙인 뒤 **남은 비샤딩 연산을 마지막에** 적용한다. 안 되는 질의는 그대로 실행하고 **`sharded_queries=0`** 으로 남긴다 — 억지로 근사하지 않는다. 회사는 **\"더 많은 질의 유형의 샤딩을 지원하려고 작업 중\"** 이라고만 적고 어떤 유형인지는 밝히지 않는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-        "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-        "publisher": "Grafana Labs Docs",
-        "date": "—",
-        "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-       },
-       {
-        "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-        "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-        "publisher": "Grafana Labs Blog",
-        "date": "2022-04-08",
-        "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-       }
-      ]
-     }
-    ]
-   },
-   "diagrams": [
-    {
-     "title": "질의를 고치는 대신 질의를 다시 쓴다",
-     "question": "엔진이 단일 스레드인데 어떻게 여러 대를 쓰는가?",
-     "kind": "flow",
-     "code": "flowchart TD\n  Q[\"PromQL 질의\"] --> FE[\"<b>query-frontend</b>\"]\n  FE --> CHECK{\"<b>샤딩 가능한가</b>\"}\n  CHECK -->|\"불가 — absent · histogram_quantile<br/>sort · sort_desc\"| NOSH[\"그대로 실행<br/><b>sharded_queries=0</b>\"]:::quiet\n  CHECK -->|\"가능 — sum · min · max<br/>count · avg\"| REW[\"<b>질의 재작성</b><br/>__query_shard__=\\\"1_of_M\\\" …<br/>(전체가 안 되면 <b>안쪽 부분만</b>)\"]:::accent\n  SPLIT[\"시간 분할<br/>긴 구간 → 여러 짧은 질의\"]:::list --> LIMIT\n  REW --> LIMIT{\"<b>상한 — 기본 128</b><br/>시간 분할과 <b>합산</b>\"}:::accent\n  LIMIT --> QR1[\"querier 1\"]\n  LIMIT --> QR2[\"querier 2\"]\n  LIMIT --> QRN[\"querier N\"]\n  QR1 & QR2 & QRN --> DATA[(\"인제스터 (최근) · 스토어 게이트웨이 (과거)<br/>청크 · 인덱스 캐시<br/><b>여기 부하가 늘어난다</b>\")]:::quiet\n  QR1 & QR2 & QRN --> CAT[\"<b>concat</b> — 결과 이어 붙이기\"]\n  CAT --> REST[\"남은 <b>비샤딩 연산</b>을 마지막에<br/>(예: histogram_quantile)\"]:::list\n  REST --> OUT[\"결과 — 고카디널리티 질의 <b>37.7초 → 3.9초</b>\"]\n  NOSH --> OUT"
     },
     {
-     "title": "질의 하나가 몇 조각이 되는지 정해지는 순서",
-     "question": "카디널리티로 정해도 상한은 왜 남는가?",
-     "kind": "state",
-     "code": "stateDiagram-v2\n  [*] --> 도착: 질의가 들어온다\n  도착 --> 비활성: parallelize-shardable-queries 가 꺼져 있다\n  note right of 비활성\n    샤딩은 옵트인이다\n    부하가 늘어나기 때문에\n    운영자가 알고 켜게 한다\n  end note\n  비활성 --> [*]\n  도착 --> 분석: 샤딩 가능한 부분을 찾는다\n  분석 --> 단일실행: 어느 부분도 샤딩 불가\n  단일실행 --> [*]\n  분석 --> 샤드수결정\n  샤드수결정 --> 고정: query-sharding-total-shards\n  샤드수결정 --> 카디널리티기반: target-series-per-shard (실험적)\n  note right of 카디널리티기반\n    결과 캐시가 필요하다\n    ⚠ 샤드당 실제 시리즈 수가\n    상한을 넘을 수 있다 —\n    카디널리티가 빠르게 변할 때\n  end note\n  고정 --> 상한적용\n  카디널리티기반 --> 상한적용\n  note right of 상한적용\n    기본 128\n    시간 분할과 합쳐서 센다\n    카디널리티 추정과 무관하게 항상 적용\n  end note\n  상한적용 --> 병렬실행\n  병렬실행 --> 병합: concat + 남은 비샤딩 연산\n  병합 --> [*]"
+      "key": "query-sharding",
+      "name": "데이터는 나눠 뒀는데 질의가 한 코어에서 돈다",
+      "domain": "질의 실행",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "저장을 아무리 잘 나눠 놓아도 **질의를 실행하는 엔진이 한 코어에서 돌면** 소용이 없다. **PromQL 엔진은 단일 스레드**여서, 고카디널리티·CPU 집약 질의는 결국 **CPU 코어 하나의 속도**에 묶인다.\n\n그런데 이 도메인의 어려움은 병렬화 자체가 아니다. **질의를 쪼개려면 질의의 의미를 알아야 한다.** `sum` 은 부분합을 더하면 되지만 `histogram_quantile` 은 그렇지 않다 — 조각마다 분위수를 구해 합칠 수 없기 때문이다(뒤 예시는 이 사이트의 해석).\n\n그래서 이 기능은 **어떤 질의를 쪼갤 수 있는지 목록을 만들고, 못 쪼개는 것은 어떻게 할지 정하는 일**이 된다.",
+        "metrics": [
+          {
+            "label": "효과",
+            "value": "고카디널리티·CPU 집약 질의의 **실행 시간 10분의 1** — 한 사례에서 **37.7초 → 3.9초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "적용 범위",
+            "value": "**Grafana Cloud 고객 질의의 60%** 가 샤딩된다 — 나머지는 아직",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "폭발 방지 상한",
+            "value": "입력 질의 하나당 부분 질의 **기본 최대 128개**. 시간 분할을 함께 쓰면 **둘을 합쳐서** 이 상한이 적용된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "샤딩되는 집계",
+            "value": "**`sum` · `min` · `max` · `count` · `avg`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "샤딩되지 않는 함수",
+            "value": "**`absent` · `absent_over_time` · `histogram_quantile` · `sort` · `sort_desc`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "안 쓰는 기능을 끈 효과",
+            "value": "분산 Mimir 에서 쓰지 않는 **TSDB 격리(isolation)** 가 잠금 경합을 일으키고 있었다 — 끄자 **인제스터 p99 지연 90% 감소**. 라벨 정규식 매처 최적화로 흔한 정규식에서 **CPU 최대 90% 절감**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "데이터를 잘 나눠 놓고도 질의가 느린 것을 보고",
+          "thought": "저장은 샤딩돼 있는데 **PromQL 엔진이 단일 스레드**다. 그러면 질의 하나의 속도는 **CPU 코어 하나**가 정한다 — 머신을 아무리 늘려도 그 질의는 빨라지지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "먼저 시간으로 잘라 보고",
+          "thought": "긴 구간의 질의는 **여러 개의 짧은 질의로 나눠 병렬로** 돌릴 수 있다. 그런데 이건 **구간이 길 때만** 듣는다 — 짧은 구간에서 카디널리티가 높은 질의는 그대로 한 코어에 묶인다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "데이터셋 쪽을 나눌 방법을 찾다가",
+          "thought": "질의에 **`__query_shard__=\"1_of_4\"` 같은 라벨 셀렉터를 끼워 넣으면** 그 자체가 다른 질의가 된다. 즉 실행기를 고치지 않고 **질의를 다시 써서** 여러 대에 나눠 던질 수 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어떤 연산까지 되는지 따져 보고",
+          "thought": "부분 결과를 합칠 수 있어야 나눌 수 있다. `sum`·`min`·`max`·`count`·`avg` 는 되고 `histogram_quantile`·`absent`·`sort` 는 안 된다. **전체 질의가 안 되더라도 안쪽 부분은 될 수 있으니** 그 부분만 나눈다 — 다만 나눌 수 있는 부분이 여럿이면 **조합적으로 폭발**하므로 상한이 필요하다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "query-frontend",
+            "what": "질의를 받아 **샤딩 가능한 부분을 다시 쓰고** 부분 질의를 여러 querier 에 뿌린 뒤, 결과를 이어 붙이고 **남은 비샤딩 연산(예: `histogram_quantile`)을 마지막에** 적용한다."
+          },
+          {
+            "name": "querier",
+            "what": "부분 질의를 독립적으로 실행한다. 최근 데이터는 인제스터에서, 과거 데이터는 스토어 게이트웨이에서 가져온다."
+          },
+          {
+            "name": "`__query_shard__` 라벨",
+            "what": "`\"N_of_M\"` 형식(예: `\"1_of_4\"`). **질의에 끼워 넣는 라벨 셀렉터**이자 일을 나누는 유일한 장치."
+          },
+          {
+            "name": "시간 분할 (time splitting)",
+            "what": "긴 구간의 질의를 여러 짧은 질의로 나눈다. 샤딩과 **함께 쓰면 상한을 공유**한다."
+          },
+          {
+            "name": "`sharded_queries` 통계",
+            "what": "부분 질의가 몇 개였는지. **`sharded_queries=0` 이면 그 질의는 샤딩되지 않았다는 뜻.**"
+          }
+        ],
+        "invariants": [
+          "**부분 결과를 합칠 수 있는 연산만 샤딩한다** — `sum`·`min`·`max`·`count`·`avg`.",
+          "**전체가 안 되어도 안쪽 부분은 샤딩될 수 있다** — 샤딩 가능한 부분마다 따로 나눈다.",
+          "입력 질의 하나가 만드는 부분 질의는 **기본 128개를 넘지 않는다**(시간 분할과 합산).",
+          "샤딩은 **옵트인**이다 — `-query-frontend.parallelize-shardable-queries=true`.",
+          "샤딩되지 않는 질의도 **그대로 실행된다** — 병렬화의 이득만 못 볼 뿐이다.",
+          "**카디널리티 상한을 걸어도 실제 시리즈 수는 그것을 넘을 수 있다** — 회사가 명시한 한계다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "query-frontend 가 질의를 받아 **샤딩 가능한 부분을 찾는다**",
+            "why": "부분 결과를 합칠 수 있는 연산만 나눌 수 있다."
+          },
+          {
+            "step": "그 부분을 **`__query_shard__=\"N_of_M\"` 라벨 셀렉터가 붙은 부분 질의들로 다시 쓴다**",
+            "why": "실행 엔진을 고치지 않고 질의만 바꿔 병렬화한다."
+          },
+          {
+            "step": "긴 구간이면 **시간 분할**도 함께 적용한다 — 다만 **상한은 둘을 합쳐** 센다",
+            "why": "둘을 곱하면 부분 질의가 폭발한다."
+          },
+          {
+            "step": "부분 질의를 **여러 querier 에 병렬로** 던진다",
+            "why": "단일 스레드 엔진의 한계를 머신 수로 넘어선다."
+          },
+          {
+            "step": "각 querier 가 자기 샤드를 독립 실행한다 — 최근 데이터는 인제스터, 과거는 스토어 게이트웨이에서",
+            "why": "부분 질의끼리 서로 기다릴 필요가 없다."
+          },
+          {
+            "step": "프론트엔드가 결과를 **이어 붙이고(concat)**, **남은 비샤딩 연산을 마지막에** 적용한다",
+            "why": "`histogram_quantile` 같은 것은 합쳐진 뒤에야 계산할 수 있다."
+          },
+          {
+            "step": "샤딩되지 않은 질의는 **그대로 실행되고 `sharded_queries=0`** 으로 기록된다",
+            "why": "안 되는 것을 억지로 나누지 않고, 안 됐다는 사실만 남긴다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "단일 스레드 PromQL 엔진을 어떻게 넘어설 것인가",
+            "chosen": "**엔진을 고치지 않는다.** 질의를 **시간으로 나누고**(시간 분할) **데이터셋으로 나눠**(질의 샤딩) 여러 머신에서 부분 질의를 돌린다.",
+            "alternatives": [
+              "PromQL 엔진 자체를 다중 스레드로 만든다",
+              "더 빠른 CPU 를 쓴다"
+            ],
+            "tradeoff": "**상류 Prometheus 의 엔진을 그대로 쓰는 대신 모든 병렬화를 바깥에서 해야 한다**(뒷문장은 이 사이트의 해석). 대신 고카디널리티 질의의 실행 시간이 **10분의 1**(37.7초 → 3.9초)이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "어떻게 나눌 것인가",
+            "chosen": "**질의를 다시 쓴다** — `__query_shard__=\"N_of_M\"` 라벨 셀렉터를 끼워 넣어 부분 질의를 만든다.",
+            "alternatives": [
+              "실행 계층에서 데이터를 나눠 준다"
+            ],
+            "tradeoff": "질의 재작성이 정확해야 하고, 재작성 규칙이 곧 기능의 한계가 된다(뒷문장은 이 사이트의 추정). 대신 querier 는 **평범한 PromQL 질의를 받는 것처럼** 동작한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 연산까지 샤딩할 것인가",
+            "chosen": "**부분 결과를 합칠 수 있는 것만** — `sum`·`min`·`max`·`count`·`avg`. `absent`·`absent_over_time`·`histogram_quantile`·`sort`·`sort_desc` 는 하지 않는다.",
+            "alternatives": [
+              "모든 질의를 억지로 나누고 근사한다"
+            ],
+            "tradeoff": "**대시보드에서 흔한 `histogram_quantile` 이 목록의 반대쪽에 있다** — 지연 분위수 패널이 샤딩되지 않는다는 뜻이다(이 지적은 이 사이트의 추정 — 문서는 흔한 정도를 말하지 않는다). 대신 **결과가 정확하다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "전체 질의가 샤딩 불가면 포기할 것인가",
+            "chosen": "**안쪽 부분만 나눈다.** \"전체 질의가 샤딩 가능하지 않아도 질의의 안쪽 부분은 샤딩될 수 있다.\" 샤딩 가능한 부분이 여럿이면 **각각 따로** 나눈다.",
+            "alternatives": [
+              "전체가 안 되면 통째로 단일 실행한다"
+            ],
+            "tradeoff": "샤딩 가능한 부분이 여럿이면 부분 질의가 **조합적으로 늘어난다** — 그래서 상한이 필요해졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "질의 폭발을 어떻게 막을 것인가",
+            "chosen": "**입력 질의당 부분 질의 상한**(`query-sharding-max-sharded-queries`, 기본 **128**). 시간 분할을 함께 쓰면 **둘을 합쳐** 상한을 적용한다.",
+            "alternatives": [
+              "샤드 수만 정하고 상한은 두지 않는다"
+            ],
+            "tradeoff": "복잡한 질의는 원하는 만큼 나뉘지 않는다(뒷문장은 이 사이트의 추정). 대신 질의 하나가 클러스터를 통째로 먹는 일이 막힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "샤드 수를 고정할 것인가, 데이터에 맞출 것인가",
+            "chosen": "**둘 다 둔다** — 고정(`query-sharding-total-shards`)과 **카디널리티 기반(실험적, `query-sharding-target-series-per-shard`)**. 후자는 결과 캐시 설정이 필요하다.",
+            "alternatives": [
+              "고정 샤드 수만 지원한다"
+            ],
+            "tradeoff": "회사가 인정했다 — **샤드당 실제로 가져오는 시리즈 수가 상한을 넘을 수 있다.** 질의의 카디널리티가 짧은 시간에 빠르게 변할 때 그렇다. 그래서 **고정 상한은 카디널리티 추정과 무관하게 항상 적용**된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "기본으로 켤 것인가",
+            "chosen": "**옵트인이다** — `-query-frontend.parallelize-shardable-queries=true` 를 켜야 동작한다. 켜면 `-querier.max-query-parallelism` 에 샤드 수를 곱해 조정하라고 안내한다.",
+            "alternatives": [
+              "기본으로 켠다"
+            ],
+            "tradeoff": "켜지 않은 사용자는 이득을 못 본다(뒷문장은 이 사이트의 추정). 대신 **병렬화가 클러스터 부하를 늘리기 때문에** 운영자가 알고 켜게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "쓰지 않는 기능은 어떻게 할 것인가",
+            "chosen": "**끈다.** 분산 Mimir 에서 쓰이지 않는 **TSDB 격리(isolation)** 를 비활성화했다 — **인제스터 p99 지연이 90% 줄었다.**",
+            "alternatives": [
+              "기본값을 그대로 둔다"
+            ],
+            "tradeoff": "상류의 기본값에서 벗어나므로 이후 변경을 따라가야 한다(뒷문장은 이 사이트의 추정). 대신 **안 쓰는 기능이 잠금 경합으로 값을 내고 있었다** — 켜져 있다는 이유만으로.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "query-frontend",
+            "role": "질의를 다시 쓰고 뿌리고 합친다. 비샤딩 연산은 마지막에 여기서 적용한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "`__query_shard__` 라벨 셀렉터",
+            "role": "`\"N_of_M\"` 형식으로 질의에 주입돼 일을 나눈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "시간 분할 (`split-queries-by-interval`)",
+            "role": "긴 구간을 여러 질의로. 샤딩과 상한을 공유한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "카디널리티 기반 샤딩 (실험적)",
+            "role": "샤드당 목표 시리즈 수로 샤드 수를 정한다. 결과 캐시가 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "수정된 Prometheus TSDB",
+            "role": "격리 비활성화(인제스터 p99 -90%), 라벨 정규식 매처 최적화(CPU 최대 -90%).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "`sharded_queries` 질의 통계",
+            "role": "샤딩이 실제로 동작하는지 확인하는 지표. 0이면 샤딩되지 않은 질의다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "샤딩되는 질의 유형이 앞으로 얼마나 늘어날지",
+            "role": "— \"더 많은 질의 유형의 샤딩을 지원하려고 작업 중\" 이라고만 하고 **어떤 유형인지 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "mimir-next-gen",
+          "via": "읽기 쪽 부하가 가는 곳",
+          "contract": "샤딩은 **querier 와 그 아래 데이터 저장소(최근 데이터는 인제스터, 과거는 스토어 게이트웨이)의 부하를 늘린다** — 그런데 옛 구조에서는 그 인제스터가 쓰기도 함께 받고 있었다. **읽기·쓰기를 떼어 낸 재설계가 이 병렬화의 전제 조건이기도 하다**(이 연결은 이 사이트의 해석이며, 두 자료가 서로를 그렇게 엮지는 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "병렬화는 시간을 없애지 않고 옮긴다",
+            "why_hard": "질의를 128조각으로 나누면 그 질의는 빨라진다. 그런데 **일의 총량은 그대로이고, 그 일이 동시에 아래로 쏟아진다.** 회사가 문서에 직접 적었다 — **\"병렬화는 질의 처리 시간을 줄이지만 querier 구성 요소와 그 아래 데이터 저장소(최근 데이터는 인제스터, 과거 데이터는 스토어 게이트웨이)의 부하를 늘린다. 청크와 인덱스 캐시 계층도 부하가 늘어난다.\"** 게다가 **샤딩 가능한 부분이 여럿이면 조합적으로** 부분 질의가 불어나, 질의 하나가 클러스터 전체를 먹을 수 있다.",
+            "current_best": "**상한을 둔다** — 입력 질의당 부분 질의 **기본 128개**, 시간 분할과 합산. 카디널리티 기반 샤딩을 쓰더라도 **고정 상한은 항상 적용**된다. 그리고 샤딩을 **옵트인**으로 두어 운영자가 부하 증가를 알고 켜게 하고, `-querier.max-query-parallelism` 을 샤드 수만큼 곱해 조정하라고 안내한다. 즉 **없앤 것이 아니라 얼마나 옮길지를 손잡이로 만든 것**이다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "problem": "나눌 수 있는 질의와 사람들이 쓰는 질의가 같지 않다",
+            "why_hard": "부분 결과를 합칠 수 있어야 나눌 수 있다. 그래서 `sum`·`min`·`max`·`count`·`avg` 는 되지만 **`histogram_quantile`·`absent`·`sort` 는 안 된다** — 조각마다 분위수를 구해 더할 수 없고, '없음'은 조각 하나만 봐서는 알 수 없기 때문이다(이 설명은 이 사이트의 해석). 문제는 **못 나누는 쪽이 대시보드에서 드물지 않다**는 것이다(추정). 실제로 **Grafana Cloud 고객 질의의 60%만 샤딩된다.**",
+            "current_best": "**전체가 안 되면 안쪽 부분만 나눈다.** 샤딩 가능한 부분마다 따로 나누고, 프론트엔드가 결과를 이어 붙인 뒤 **남은 비샤딩 연산을 마지막에** 적용한다. 안 되는 질의는 그대로 실행하고 **`sharded_queries=0`** 으로 남긴다 — 억지로 근사하지 않는다. 회사는 **\"더 많은 질의 유형의 샤딩을 지원하려고 작업 중\"** 이라고만 적고 어떤 유형인지는 밝히지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              },
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "질의를 고치는 대신 질의를 다시 쓴다",
+          "question": "엔진이 단일 스레드인데 어떻게 여러 대를 쓰는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"PromQL 질의\"] --> FE[\"<b>query-frontend</b>\"]\n  FE --> CHECK{\"<b>샤딩 가능한가</b>\"}\n  CHECK -->|\"불가 — absent · histogram_quantile<br/>sort · sort_desc\"| NOSH[\"그대로 실행<br/><b>sharded_queries=0</b>\"]:::quiet\n  CHECK -->|\"가능 — sum · min · max<br/>count · avg\"| REW[\"<b>질의 재작성</b><br/>__query_shard__=\\\"1_of_M\\\" …<br/>(전체가 안 되면 <b>안쪽 부분만</b>)\"]:::accent\n  SPLIT[\"시간 분할<br/>긴 구간 → 여러 짧은 질의\"]:::list --> LIMIT\n  REW --> LIMIT{\"<b>상한 — 기본 128</b><br/>시간 분할과 <b>합산</b>\"}:::accent\n  LIMIT --> QR1[\"querier 1\"]\n  LIMIT --> QR2[\"querier 2\"]\n  LIMIT --> QRN[\"querier N\"]\n  QR1 & QR2 & QRN --> DATA[(\"인제스터 (최근) · 스토어 게이트웨이 (과거)<br/>청크 · 인덱스 캐시<br/><b>여기 부하가 늘어난다</b>\")]:::quiet\n  QR1 & QR2 & QRN --> CAT[\"<b>concat</b> — 결과 이어 붙이기\"]\n  CAT --> REST[\"남은 <b>비샤딩 연산</b>을 마지막에<br/>(예: histogram_quantile)\"]:::list\n  REST --> OUT[\"결과 — 고카디널리티 질의 <b>37.7초 → 3.9초</b>\"]\n  NOSH --> OUT"
+        },
+        {
+          "title": "질의 하나가 몇 조각이 되는지 정해지는 순서",
+          "question": "카디널리티로 정해도 상한은 왜 남는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 도착: 질의가 들어온다\n  도착 --> 비활성: parallelize-shardable-queries 가 꺼져 있다\n  note right of 비활성\n    샤딩은 옵트인이다\n    부하가 늘어나기 때문에\n    운영자가 알고 켜게 한다\n  end note\n  비활성 --> [*]\n  도착 --> 분석: 샤딩 가능한 부분을 찾는다\n  분석 --> 단일실행: 어느 부분도 샤딩 불가\n  단일실행 --> [*]\n  분석 --> 샤드수결정\n  샤드수결정 --> 고정: query-sharding-total-shards\n  샤드수결정 --> 카디널리티기반: target-series-per-shard (실험적)\n  note right of 카디널리티기반\n    결과 캐시가 필요하다\n    ⚠ 샤드당 실제 시리즈 수가\n    상한을 넘을 수 있다 —\n    카디널리티가 빠르게 변할 때\n  end note\n  고정 --> 상한적용\n  카디널리티기반 --> 상한적용\n  note right of 상한적용\n    기본 128\n    시간 분할과 합쳐서 센다\n    카디널리티 추정과 무관하게 항상 적용\n  end note\n  상한적용 --> 병렬실행\n  병렬실행 --> 병합: concat + 남은 비샤딩 연산\n  병합 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 빨라진 만큼 어딘가가 바빠진다",
+          "question": "질의 하나가 클러스터를 먹지 않게 하는 것은 무엇인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  ONE[\"<b>PromQL 엔진은 단일 스레드</b>\"] --> BOUND[\"질의 하나의 속도 =<br/>CPU 코어 하나의 속도\"]\n  BOUND --> SPLIT[\"질의를 나눈다\"]:::accent\n  SPLIT --> FAST[\"실행 시간 10분의 1\"]\n  SPLIT --> LOAD[\"<b>일의 총량은 그대로인데<br/>동시에 아래로 쏟아진다</b>\"]\n  LOAD -->|\"문서가 명시\"| WHO[\"querier · 인제스터 · 스토어 게이트웨이<br/>청크 · 인덱스 캐시 <b>부하 증가</b>\"]\n  SPLIT --> COMBO[\"샤딩 가능한 부분이 여럿이면<br/><b>조합적으로 불어난다</b>\"]\n  COMBO --> EAT[\"질의 하나가 클러스터를 먹을 수 있다\"]\n  EAT --> CAP[\"완화 — 입력당 <b>기본 128</b> 상한<br/>시간 분할과 합산 · 항상 적용\"]:::quiet\n  WHO --> OPT[\"완화 — <b>옵트인</b> + max-query-parallelism 조정 안내\"]:::quiet\n  CAP & OPT -->|\"해석\"| KNOB[\"없앤 게 아니라<br/><b>얼마나 옮길지를 손잡이로</b> 만들었다\"]\n  TYPE[\"나눌 수 있는 연산만 나눈다\"] --> LIST[\"sum · min · max · count · avg ✅<br/><b>histogram_quantile · absent · sort ❌</b>\"]\n  LIST --> ONLY[\"<b>고객 질의의 60%만 샤딩된다</b>\"]\n  ONLY -->|\"추정\"| DASH[\"못 나누는 쪽이<br/>대시보드에서 드물지 않다\"]\n  UNUSED[\"안 쓰는 TSDB 격리가 켜져 있었다\"] -->|\"잠금 경합\"| COST[\"<b>인제스터 p99 지연</b><br/>끄자 90% 감소\"]:::accent"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+          "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+          "publisher": "Grafana Labs Docs",
+          "date": "—",
+          "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+        },
+        {
+          "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+          "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+          "publisher": "Grafana Labs Blog",
+          "date": "2022-04-08",
+          "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "**국가를 `US` 로 넣었다** — 본사가 뉴욕이기 때문이다. 다만 창업자들은 스웨덴 쪽이고 팀이 원격으로 넓게 흩어져 있어, **이 회사를 한 나라로 묶는 것 자체가 다소 인위적이다.**",
+    "**비상장이라 감사받은 재무가 없다.** ARR 4억 달러는 **회사 보도자료**의 숫자이고 부문별 내역은 없다.",
+    "새 구조 글은 **객체 저장에 먼저 쓰는 지연 대가를 수치로 밝히지 않는다** — '지연 페널티를 받아들였다'고만 적는다.",
+    "새 구조가 **어디까지 배포됐는지**(Grafana Cloud 전체인지 일부인지) 이 사이트는 확인하지 못했다.",
+    "10억 시리즈 글(2022)과 새 구조 글은 **시점이 몇 년 떨어져 있다** — 두 글 사이에 바뀐 것이 더 있을 수 있는데, 그 사이를 메우는 글은 아직 읽지 못했다(`a-year-in-mimir`, `maintainers-tell-all` 등).",
+    "**Loki(로그)·Tempo(트레이스)는 자료를 확인하지 않아 도메인으로 열지 않았다.**",
+    "질의 샤딩 문서는 **어떤 질의 유형을 앞으로 지원할지** 밝히지 않는다 — '작업 중'이라고만 적혀 있다.",
+    "**샤딩된 질의가 아래 계층에 얼마나 부하를 더 주는지** 수치가 없다 — '늘어난다'는 경고만 있다.",
+    "**Cortex 에서 Mimir 로 온 경위와 시점을 확인하지 못했다.** 2022년 글이 Mimir 을 '우리의 새 Prometheus TSDB' 로 소개하면서 그 앞에 무엇이 있었는지는 적지 않는다. 그래서 첫 시기를 Mimir 의 출발이 아니라 **대규모 부하 시험이 이뤄진 2021년**에서 열었다.",
+    "**질의 샤딩(query sharding)의 도입 시점이 없다.** 아키텍처 참조 문서라 날짜가 붙어 있지 않아 '질의 실행' 축의 세대를 따로 세우지 못했다."
+  ],
+  "sources": [
+    {
+      "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+      "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+      "publisher": "Grafana Labs Blog",
+      "date": "—",
+      "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
     },
     {
-     "title": "실패 경로 — 빨라진 만큼 어딘가가 바빠진다",
-     "question": "질의 하나가 클러스터를 먹지 않게 하는 것은 무엇인가?",
-     "kind": "failure",
-     "code": "flowchart TD\n  ONE[\"<b>PromQL 엔진은 단일 스레드</b>\"] --> BOUND[\"질의 하나의 속도 =<br/>CPU 코어 하나의 속도\"]\n  BOUND --> SPLIT[\"질의를 나눈다\"]:::accent\n  SPLIT --> FAST[\"실행 시간 10분의 1\"]\n  SPLIT --> LOAD[\"<b>일의 총량은 그대로인데<br/>동시에 아래로 쏟아진다</b>\"]\n  LOAD -->|\"문서가 명시\"| WHO[\"querier · 인제스터 · 스토어 게이트웨이<br/>청크 · 인덱스 캐시 <b>부하 증가</b>\"]\n  SPLIT --> COMBO[\"샤딩 가능한 부분이 여럿이면<br/><b>조합적으로 불어난다</b>\"]\n  COMBO --> EAT[\"질의 하나가 클러스터를 먹을 수 있다\"]\n  EAT --> CAP[\"완화 — 입력당 <b>기본 128</b> 상한<br/>시간 분할과 합산 · 항상 적용\"]:::quiet\n  WHO --> OPT[\"완화 — <b>옵트인</b> + max-query-parallelism 조정 안내\"]:::quiet\n  CAP & OPT -->|\"해석\"| KNOB[\"없앤 게 아니라<br/><b>얼마나 옮길지를 손잡이로</b> 만들었다\"]\n  TYPE[\"나눌 수 있는 연산만 나눈다\"] --> LIST[\"sum · min · max · count · avg ✅<br/><b>histogram_quantile · absent · sort ❌</b>\"]\n  LIST --> ONLY[\"<b>고객 질의의 60%만 샤딩된다</b>\"]\n  ONLY -->|\"추정\"| DASH[\"못 나누는 쪽이<br/>대시보드에서 드물지 않다\"]\n  UNUSED[\"안 쓰는 TSDB 격리가 켜져 있었다\"] -->|\"잠금 경합\"| COST[\"<b>인제스터 p99 지연</b><br/>끄자 90% 감소\"]:::accent"
-    }
-   ],
-   "sources": [
-    {
-     "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-     "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-     "publisher": "Grafana Labs Docs",
-     "date": "—",
-     "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+      "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+      "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+      "publisher": "Grafana Labs Blog",
+      "date": "2022-04-08",
+      "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
     },
     {
-     "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-     "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-     "publisher": "Grafana Labs Blog",
-     "date": "2022-04-08",
-     "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+      "title": "Grafana Labs ARR 400M 돌파 · 고객 7,000곳 (회사 보도자료)",
+      "url": "https://grafana.com/press/2025/09/30/grafana-labs-surpasses-400m-arr-and-7000-customers-gains-new-investors-to-accelerate-global-expansion/",
+      "publisher": "Grafana Labs 보도자료 · 언론 보도",
+      "date": "2025-09-30",
+      "summary": "비상장이라 감사받은 공시는 없다. 회사 발표로 **2025년 ARR 4억 달러 초과, 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳). 기업가치는 보도 기준 60억 달러였고 이후 90억 달러 라운드 논의가 보도됐다."
+    },
+    {
+      "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+      "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+      "publisher": "Grafana Labs Docs",
+      "date": "—",
+      "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
     }
-   ]
-  }
- ],
- "open_questions": [
-  "**국가를 `US` 로 넣었다** — 본사가 뉴욕이기 때문이다. 다만 창업자들은 스웨덴 쪽이고 팀이 원격으로 넓게 흩어져 있어, **이 회사를 한 나라로 묶는 것 자체가 다소 인위적이다.**",
-  "**비상장이라 감사받은 재무가 없다.** ARR 4억 달러는 **회사 보도자료**의 숫자이고 부문별 내역은 없다.",
-  "새 구조 글은 **객체 저장에 먼저 쓰는 지연 대가를 수치로 밝히지 않는다** — '지연 페널티를 받아들였다'고만 적는다.",
-  "새 구조가 **어디까지 배포됐는지**(Grafana Cloud 전체인지 일부인지) 이 사이트는 확인하지 못했다.",
-  "10억 시리즈 글(2022)과 새 구조 글은 **시점이 몇 년 떨어져 있다** — 두 글 사이에 바뀐 것이 더 있을 수 있는데, 그 사이를 메우는 글은 아직 읽지 못했다(`a-year-in-mimir`, `maintainers-tell-all` 등).",
-  "**Loki(로그)·Tempo(트레이스)는 자료를 확인하지 않아 도메인으로 열지 않았다.**",
-  "질의 샤딩 문서는 **어떤 질의 유형을 앞으로 지원할지** 밝히지 않는다 — '작업 중'이라고만 적혀 있다.",
-  "**샤딩된 질의가 아래 계층에 얼마나 부하를 더 주는지** 수치가 없다 — '늘어난다'는 경고만 있다."
- ],
- "sources": [
-  {
-   "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
-   "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
-   "publisher": "Grafana Labs Blog",
-   "date": "—",
-   "summary": "자기가 지은 구조를 공개적으로 버리는 글. 초기 Mimir 는 카산드라에서 영감받아 복제 3벌 + 쿼럼이었는데 **쓰기 때 세 벌을 두고 읽을 때 최소 두 벌을 물어야 해서 비쌌고**, 인제스터가 사실상 분산된 단일 장애점이었다. Kafka 를 가운데 두고 객체 저장을 밑에 깔아 읽기·쓰기 경로를 떼어 냈다 — 총소유비용 25% 절감."
-  },
-  {
-   "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
-   "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
-   "publisher": "Grafana Labs Blog",
-   "date": "2022-04-08",
-   "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
-  },
-  {
-   "title": "Grafana Labs ARR 400M 돌파 · 고객 7,000곳 (회사 보도자료)",
-   "url": "https://grafana.com/press/2025/09/30/grafana-labs-surpasses-400m-arr-and-7000-customers-gains-new-investors-to-accelerate-global-expansion/",
-   "publisher": "Grafana Labs 보도자료 · 언론 보도",
-   "date": "2025-09-30",
-   "summary": "비상장이라 감사받은 공시는 없다. 회사 발표로 **2025년 ARR 4억 달러 초과, 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳). 기업가치는 보도 기준 60억 달러였고 이후 90억 달러 라운드 논의가 보도됐다."
-  },
-  {
-   "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
-   "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
-   "publisher": "Grafana Labs Docs",
-   "date": "—",
-   "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
-  }
- ]
+  ],
+  "eras": [
+    {
+      "id": "2021-push-to-a-billion",
+      "from": "2021",
+      "to": "2026",
+      "title": "10억 시계열까지 밀어붙이며 부러지는 자리를 찾다",
+      "context": "**2021년**에 Grafana Mimir 클러스터를 대규모로 부하 시험했다. 목표는 **활성 시계열 10억 개**였고 그 규모에서 **초당 5,000만 샘플**을 받는다. 시험 클러스터는 **레플리카 1,500개**, **CPU 코어 약 7,000개**, **RAM 30TiB** 였고 스크레이프 간격은 **20초**였다.",
+      "what_changed": "그 규모에서 부러지는 자리를 하나씩 고쳤다. **해시 링** — 각 레플리카가 **\"링 변경을 memberlist 로 전파하는 데만 1.6~1.9 CPU 코어\"** 를 쓰고 있었고 전체로 **약 2,500 코어**였는데, **90% 넘게 줄였다.** **컴팩터** — 원래 것이 **\"컴팩션 작업량을 따라가지 못했고\"**, TSDB 에 **\"64GB 최대 인덱스 크기\"**, **\"일부 TSDB 인덱스 섹션의 4GB 최대 크기\"** 같은 제한이 있어 **분할·병합(split-and-merge) 컴팩터**를 만들었다. **청크 쓰기** — 2시간 블록 경계에서 동기 I/O 때문에 **\"99번째 백분위 쓰기 지연이 약 10ms 에서 20~60초로 튀었고\"**, 지터와 비동기 쓰기로 **\"99번째 백분위 최고치를 45초에서 3초로\"** 줄였다. **\"TSDB 격리를 끄자 인제스터의 99번째 백분위 기준 지연이 90% 줄었다.\"** **롤아웃** — 인제스터 600개를 순차로 굴리면 **50시간**이던 것을 멀티 존 방식으로 **30분 미만**으로 줄였다.",
+      "why": "이 시기의 일은 새 구조를 세우는 것이 아니라 **있는 구조를 목표 규모까지 밀어붙여 어디가 먼저 부러지는지 찾는 것**이었다. 부러진 자리가 전부 달랐다 — 링 전파, 컴팩션, 블록 경계, 롤아웃 순서.",
+      "tradeoff": "얻은 숫자마다 **무언가를 끄거나 미루거나 흩뜨려서** 얻었다. TSDB 격리를 **껐고**, 블록 경계의 동기 I/O 를 **비동기로 미뤘고**, 한꺼번에 몰리던 것을 **지터로 흩었다.** 이런 조정은 지연을 낮추는 대신 **정확성이나 즉시성을 조금씩 뒤로 미루는 거래**다. 그리고 이 시기가 끝내 손대지 않은 것이 하나 남는다 — **복제 계수 3** 이라는 구조 자체다. 그것이 다음 시기의 주제가 된다. (⚠️ 이 문단의 해석은 출처가 직접 말하지 않는 읽기다.)",
+      "domains": [
+        "시계열 수집·저장"
+      ],
+      "features": [],
+      "stack_in": [
+        "분할·병합 컴팩터",
+        "비동기 청크 쓰기 + 지터",
+        "멀티 존 롤아웃"
+      ],
+      "stack_out": [
+        "단일 컴팩터",
+        "블록 경계의 동기 I/O",
+        "TSDB 격리",
+        "순차 롤아웃"
+      ],
+      "metrics": [
+        {
+          "label": "목표 규모",
+          "value": "활성 시계열 10억 개 · 초당 5,000만 샘플",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs",
+              "date": "2022-04-08",
+              "summary": "활성 시계열 10억 개까지 밀어붙이며 부러진 자리들과 그것을 어떻게 고쳤는지를 수치와 함께 적은 회고."
+            }
+          ]
+        },
+        {
+          "label": "시험 클러스터",
+          "value": "레플리카 1,500개 · CPU 약 7,000코어 · RAM 30TiB",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs",
+              "date": "2022-04-08",
+              "summary": "활성 시계열 10억 개까지 밀어붙이며 부러진 자리들과 그것을 어떻게 고쳤는지를 수치와 함께 적은 회고."
+            }
+          ]
+        },
+        {
+          "label": "해시 링 CPU",
+          "value": "약 2,500코어에서 90% 이상 감소",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs",
+              "date": "2022-04-08",
+              "summary": "활성 시계열 10억 개까지 밀어붙이며 부러진 자리들과 그것을 어떻게 고쳤는지를 수치와 함께 적은 회고."
+            }
+          ]
+        },
+        {
+          "label": "롤아웃",
+          "value": "인제스터 600개 기준 50시간 → 30분 미만",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+              "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+              "publisher": "Grafana Labs",
+              "date": "2022-04-08",
+              "summary": "활성 시계열 10억 개까지 밀어붙이며 부러진 자리들과 그것을 어떻게 고쳤는지를 수치와 함께 적은 회고."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+          "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+          "publisher": "Grafana Labs",
+          "date": "2022-04-08",
+          "summary": "활성 시계열 10억 개까지 밀어붙이며 부러진 자리들과 그것을 어떻게 고쳤는지를 수치와 함께 적은 회고."
+        }
+      ]
+    },
+    {
+      "id": "2026-kafka-in-the-middle",
+      "from": "2026",
+      "to": "",
+      "title": "가운데에 Kafka 를 놓아 읽기와 쓰기를 떼어 놓다",
+      "context": "그전 구조는 **\"복제 계수 3에, 정족수 읽기와 쓰기\"** 였다. 인제스터가 모든 것을 **세 벌씩** 저장했고 일관성을 보장하려면 **최소 두 벌을 읽어야** 했다. 한계를 회사가 적는다 — **\"복제 계수 3은 비싸다\"**, 인제스터는 **\"큰 분산 단일 장애점\"** 이었고, **\"인제스터가 과부하되면 수집 경로, 즉 쓰기 경로도 영향을 받는다\"**. 최악의 경우 **\"쓰기 경로와 읽기 경로 양쪽에 영향을 주는 장애\"** 가 난다.",
+      "what_changed": "**2026년 1월**, **\"쓰기 경로와 읽기 경로 사이에 Kafka 를 놓았다\".** 쓰기 요청은 **\"데이터가 Kafka 에 커밋되는 즉시\"** 끝나고, 그 데이터는 **인제스터가 비동기로 재생**한다. 인제스터가 재시작해도 구멍이 나지 않도록 **갭리스 소비(gapless consumption)** 를 구현했다. 인제스터의 **복제 계수는 2**로, **읽기 경로의 정족수는 1**로 내렸다. 결과로 **Mimir 총소유비용(TCO)이 25% 줄었다.**",
+      "why": "앞 시기가 성능을 아무리 끌어올려도 **읽기와 쓰기가 같은 인제스터에 함께 매달려 있는 한** 한쪽의 과부하가 다른 쪽을 무너뜨린다. 가운데에 Kafka 를 놓는 것은 빠르게 만드는 일이 아니라 **둘을 떼어 놓는 일**이다 — 무거운 질의가 들어와도 쓰기는 Kafka 까지만 가면 끝난다.",
+      "tradeoff": "회사가 하나를 분명히 적는다. WarpStream 을 쓰면서 **\"데이터를 먼저 객체 스토리지에 쓰는 데서 오는 지연 페널티를 받아들였다\"** — 다중 AZ 전송 비용을 피하는 대가다. **비용을 지연으로 산 것**이다. 복제 계수를 3에서 2로, 읽기 정족수를 1로 내린 것도 같은 방향이다 — **여유분을 줄여 값을 낮추는 거래**이고, 그만큼 동시에 잃어도 되는 복제본의 수가 줄어든다. (마지막 문장은 출처가 말하지 않는 읽기다.)",
+      "domains": [
+        "시계열 수집·저장",
+        "질의 실행"
+      ],
+      "features": [
+        "mimir-next-gen"
+      ],
+      "stack_in": [
+        "쓰기·읽기 경로 사이의 Kafka",
+        "WarpStream(객체 스토리지 우선 쓰기)",
+        "갭리스 소비",
+        "복제 계수 2 · 읽기 정족수 1"
+      ],
+      "stack_out": [
+        "복제 계수 3",
+        "정족수 읽기·쓰기",
+        "읽기와 쓰기가 함께 매달린 인제스터"
+      ],
+      "metrics": [
+        {
+          "label": "총소유비용",
+          "value": "25% 감소",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs",
+              "date": "2026-01-02",
+              "summary": "복제 계수 3과 정족수 읽기·쓰기의 한계를 밝히고 쓰기·읽기 경로 사이에 Kafka 를 놓은 재설계를 적은 글."
+            }
+          ]
+        },
+        {
+          "label": "복제 계수",
+          "value": "3 → 2 (읽기 정족수 1)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs",
+              "date": "2026-01-02",
+              "summary": "복제 계수 3과 정족수 읽기·쓰기의 한계를 밝히고 쓰기·읽기 경로 사이에 Kafka 를 놓은 재설계를 적은 글."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+          "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+          "publisher": "Grafana Labs",
+          "date": "2026-01-02",
+          "summary": "복제 계수 3과 정족수 읽기·쓰기의 한계를 밝히고 쓰기·읽기 경로 사이에 Kafka 를 놓은 재설계를 적은 글."
+        }
+      ]
+    }
+  ]
 }
