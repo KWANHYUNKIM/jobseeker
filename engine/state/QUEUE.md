@@ -21,15 +21,37 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Fly.io** | US · SaaS | `fly.io/blog` | WebFetch ✅ (연 글 하나가 2026-01-14 갱신 표기. ⚠️ 목록 페이지에서 날짜를 못 받아 최신 글 날짜는 미확인) | **⏳ 로 남아 있던 후보를 이번에 확인했다.** `design-and-implementation`(Sprites 설계)을 열어 보니 **버린 대안이 셋이고 이유가 다 붙어 있다** — 사용자용 OCI 컨테이너를 버린 이유(*"Huge and fussy, they take forever to pull and unpack"*), NVMe 부착 스토리지를 버린 이유(*"Attached storage anchors workloads to specific physicals"* · *"It took 3 years to get workload migration right"*), 호스트 기반 오케스트레이션 대신 *"The most important orchestration and management work happens inside the VM"*. **대가도 적는다** — 오브젝트 스토리지는 *"the performance isn't adequate for a hot Postgres node"* 이고 Sprites 는 Fly Machines 와 **다른 종류의 컴퓨팅에 최적화**돼 있어 프로토타입 뒤 컨테이너로 옮기라고 권한다. ⚠️ **수치가 얇다** — *"just a second or two"*, *"100GB durable root filesystem"* 정도이고 규모·지연·비용 지표가 없다. **Monzo 와 반대 형태다**(저쪽은 수치는 있고 대가가 없었다). 다음에 열 글은 `corrosion`(내부 메시 상태 동기화). |
+| **Oxide Computer** | US · 기타(서버·하드웨어) | `oxide.computer/blog` | WebFetch ✅ (최신 2026-08-28) | **63곳 중 하드웨어를 만드는 회사가 없다** — 랙을 직접 설계해 팔면서 하이퍼바이저·펌웨어·컨트롤 플레인까지 자기가 쓴다. `performance-has-layers`(2026-06-18)를 열어 확인했다: **버린 대안 셋**(게스트 MTU 를 9000 대신 **8500** 으로 — *"reserve 500. The extra is deliberate"*, 스위치식 **포트별 MTU 손잡이를 버린 이유** — *"MTU is a property of a path, not of a port"*, IPv6 를 **호환용 덧붙임이 아니라 언더레이의 모국어로** — *"it is the rack's native tongue"*), **대가 명시**(*"jumbo frames are not a network go-fast button"* · 경로 MTU 탐색이 막히면 *"the application stalls and transfers nothing"* · 단일 연결은 **약 60 Gbps** 에서 천장), **수치 표**(내부 VPC 52.44→55.73 Gbps, 외부 7.70→32.67 Gbps, 슬레드 하나 합산 약 90 Gbps). **셋을 다 갖춘 드문 글이다.** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **369 후보 조사 결과 — 네 곳을 두드려 둘을 올렸다.** 큐가 0/3 이라 3순위(후보 조사)로 들어왔다.
+  - **✅ Fly.io** — 위 대기 표로 올렸다. **363 에서 ⏳ 로 남긴 것을 이번에 확인했다.**
+  - **✅ Oxide Computer** — 위 대기 표로 올렸다. **하드웨어를 만드는 회사가 하나도 없던 자리다.**
+  - **❌ Duolingo**(US · 교육) — `blog.duolingo.com/hub/engineering/` 는 **열리고 최신도 2026-08-04** 인데,
+    **두 편을 열어 보니 버린 대안이 없다.** `production-ready-ai-agent-platform`(2026-08-04)은
+    아예 대가라는 틀 자체를 부정한다 — **"Moving fast is usually framed as a tradeoff against
+    building production-ready systems. This platform collapses that tradeoff."**
+    `reduce-cpu-usage-97-percent`(2026-06-22)는 **수치가 좋지만**(CPU 약 97% 감소, 파드 32→8,
+    피크 CPU 3.5% 미만) **버려진 대안도 대가도 없는 버그 수정기**다.
+    **Monzo·GetYourGuide 와 같은 이유로 뺀다**(결정은 있는데 대가가 없다).
+  - **❌ Picnic**(NL · 물류·식료품) — **`blog.picnic.nl` 이 `jobs.picnic.app` 로 301** 된다.
+    **엔지니어링 블로그가 채용 페이지로 접혔다** — Riot Games·GetYourGuide 와 같은 형태다.
+    `picnic.tech` 는 오픈소스 저장소 목록일 뿐 글이 없다.
+    ⚠️ 예전 Medium 계정(`medium.com/picnic-engineering`)은 확인하지 않았다 — **Medium 은 403 이
+    잦으므로**(아데빈타·무신사·당근) 기대는 낮다.
+  - **❌ 게임 전반** — 63곳 중 게임이 Roblox 하나뿐이라 다시 두드렸으나 **후보 자체를 못 찾았다.**
+    363 에서 Riot Games 가 블로그를 뉴스로 접은 데 이어, 이번 검색에서도 **주요 스튜디오가 백엔드를
+    사내에서 만들고 공개하지 않는다**는 정리만 나온다. **⚠️ 새 단서(특정 글 주소)가 없으면 다시
+    두드리지 않는다** — 같은 벽을 세 번째로 들이받는 셈이다.
 
 - **363 후보 조사 결과 — 다섯 곳을 두드려 셋을 올렸다.** 큐가 0/3 이라 3순위(후보 조사)로 들어왔다.
   - **✅ ZOZO · ✅ 쏘카 · ✅ 카카오뱅크** — 위 대기 표로 올렸다. 셋 다 **글 본문까지 열어** 버린 대안·대가·수치를 확인했다.
   - **❌ Monzo**(UK · 핀테크) — `monzo.com/blog/technology` 는 **열리고 최신도 2026-08-13** 인데, 두 편을 열어 보니 **결정과 수치는 있고 대가가 거의 없다.** `a-meshy-approach-to-data` 는 중앙 소유권을 버린 이유와 결과 수치(비용 약 40% 감소·데이터 도착 약 25% 단축, dbt 모델 12,000개·팀 100곳 이상)를 주지만 트레이드오프를 적지 않고 *"아직 전사 마이그레이션 30% 진행 중"* 이라 한다. `the-engineering-behind-the-platform` 도 자체 서비스를 만든 이유는 적지만 그 대가를 안 적고 수치는 **마이크로서비스 3,000개 이상** 하나뿐이다. **GetYourGuide 를 떨어뜨린 것과 같은 이유다**(결정은 있는데 대가가 없다). 다만 예전 장애 회고들은 다를 수 있으니 **구체적인 회고 글 주소를 찾으면 그때 다시 볼 것.**
   - **❌ Riot Games**(게임) — `technology.riotgames.com` 이 **`riotgames.com/en/news?q=tech blog` 로 301** 된다. 전용 엔지니어링 블로그가 뉴스로 접힌 것으로 보인다(`/news` 는 **504**). 게임 자리가 Roblox 하나뿐이라 아쉽지만 **1차 블로그가 사라졌다.**
-  - **⏳ Fly.io**(US · SaaS) — `fly.io/blog` 는 **열린다**(Sprites·Litestream 계열 글). 본문을 아직 안 열어 봤다. **다음 후보 조사가 여기부터 볼 것** — `design-and-implementation`(Sprites 설계) 이 첫 후보다.
+  - **✅→ Fly.io** — **369 에서 확인해 대기 표로 올렸다.**
 - **311 후보 조사 결과 — 셋을 보고 하나도 못 올렸다.**
   - **❌ SoundCloud** — `soundcloud.com/blog` 은 **뉴스룸**이고 엔지니어링 블로그가 아니다. `developers.soundcloud.com` 은 API 문서다.
   - **❌ Kuaishou(快手)** — 검색해도 **전용 엔지니어링 블로그가 없다.** 오픈소스 저장소와 IR 블로그뿐이다. **중국 기업이 WeChat 공식계정만 쓰는 두 번째 사례다**(Xiaohongshu 가 첫 번째, 305).
