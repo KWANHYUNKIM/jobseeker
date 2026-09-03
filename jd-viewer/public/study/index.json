@@ -504,6 +504,23 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "backpressure",
+      "title": "백프레셔",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "처리하는 쪽이 **\"천천히 보내라\"를 보내는 쪽에 거슬러 전달하는** 장치다. 이게 없으면 못 따라간 일감이 큐에 쌓이고, 큐가 무한하면 **문제가 사라지는 게 아니라 지연과 메모리로 바뀐다.**",
+      "aliases": [
+        "백프레셔",
+        "배압",
+        "backpressure",
+        "back-pressure"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
