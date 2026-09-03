@@ -107,6 +107,43 @@ export interface Research {
   hard_problems?: HardProblem[]
 }
 
+// ── 시간축 (연표) ────────────────────────────────────────────
+// 나머지 타입이 전부 "지금 이렇게 되어 있다"라면 아래 둘은 "언제 그렇게 됐나"다.
+// 표시용 기간 문자열(period)은 일부러 두지 않는다 — from/to 와 어긋나는 순간
+// 어느 쪽이 맞는지 알 수 없어지므로, 라벨은 화면이 from/to 로 만든다.
+export interface Era extends Claim {
+  id: string
+  from: string
+  /** 아직 이어지는 시기면 빈 문자열 */
+  to?: string
+  title: string
+  context?: string
+  what_changed: string
+  /** 앞 시기의 무엇이 한계에 닿았는가 */
+  why: string
+  /** 그 대가로 무엇을 잃었나 */
+  tradeoff: string
+  domains?: string[]
+  features?: string[]
+  stack_in?: string[]
+  stack_out?: string[]
+  metrics?: Metric[]
+}
+
+/** 기능 하나의 세대 교체. 바뀐 적 없는 기능은 비어 있다 */
+export interface FeatureRevision extends Claim {
+  version: string
+  from: string
+  /** 지금 쓰는 구조면 빈 문자열 */
+  to?: string
+  what: string
+  /** 지금 구조(to 가 빔)면 비어 있다 */
+  why_changed?: string
+  tradeoff?: string
+  /** 속한 Era 의 id */
+  era?: string
+}
+
 // ── 화면 도해 (UiSketch) ─────────────────────────────────────
 // 이 탭의 글은 "무엇을 어떻게 만들었나"인데, 읽는 사람에게는 그게 앱의 어느 부분
 // 이야기인지 붙들 데가 없다. 그래서 사용자가 보는 화면을 먼저 놓고, 그 위의 번호에
@@ -171,6 +208,8 @@ export interface Feature {
   name: string
   domain: string
   updated_at?: string
+  /** 지금이 되기까지의 세대 교체. 한 번도 안 바뀐 기능은 없다 */
+  history?: FeatureRevision[]
   /** 이 기능이 사용자에게 보이는 자리 */
   ui?: UiSketchData
   business: { why: string; metrics?: Metric[] }
@@ -212,6 +251,8 @@ export interface Company {
   /** 앱 첫 화면 도해 — 어느 자리가 어느 도메인인지. 있으면 도메인 지도(mermaid)는 접힌다 */
   ui_map?: UiSketchData
   domain_map?: Diagram
+  /** 회사의 시대 구분 — 기술이 바뀐 지점으로 자른다 */
+  eras?: Era[]
   revenue_streams?: RevenueStream[]
   domains?: Domain[]
   features?: Feature[]

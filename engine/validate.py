@@ -36,6 +36,7 @@ STATUSES = {"in_progress", "done"}
 CONFIDENCE = {"confirmed", "inferred", "unknown"}
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+YEAR_RE = re.compile(r"^\d{4}(-\d{2})?$")  # 연표용 — 월까지만 알아도 정상이다
 
 # index.companies[] 가 회사 파일과 일치해야 하는 필드. 사이트 메인이 이 값만 보고
 # 카드를 그리므로, 상세와 어긋나면 목록과 상세가 다른 말을 하게 된다.
@@ -202,6 +203,103 @@ def _check_ui(ui: dict, where: str, r: Report) -> None:
             r.warn(f"{where}.pins", f"{n}번 설명이 화면의 어느 자리에도 안 걸려 있다")
 
 
+def _check_timeline(rows: list, where: str, r: Report, *,
+                    open_field: str, why_field: str | None = None) -> None:
+    """연표(eras·history) 공통 검사 — 순서·기간·열린 구간.
+
+    why_field 는 **떠난 이유**를 담는 필드일 때만 넘긴다(history.why_changed).
+    eras.why 는 "이 시기로 넘어온 이유"라 끝났든 이어지든 항상 있어야 하므로
+    여기서 보지 않고 _check_eras 가 필수로 잡는다. 두 의미를 같은 규칙으로 묶으면
+    아직 이어지는 시기마다 "why 를 지워라"라는 오탐이 난다.
+
+    비어 있는 것은 결함이 아니다(STYLE.md 8번). research 와 같은 이유로 gap 을
+    올리지 않는다 — 도구가 '채워라'라고 지목하는 순간 모든 회사가
+    "모놀리스 → MSA → 이벤트 기반" 세 시대를 갖게 된다.
+    """
+    prev = ""
+    open_rows = []
+    for i, row in enumerate(rows):
+        rw = f"{where}[{i}]"
+        frm = str(row.get("from") or "")
+        to = str(row.get("to") or "")
+        if not frm:
+            r.err(rw, "from 없음 — 시간축인데 시간이 없으면 남는 것이 없다. 연도를 모르면 이 항목을 쓰지 않는다")
+        elif not YEAR_RE.match(frm):
+            r.err(rw, f"from 형식(YYYY 또는 YYYY-MM) 위반: {frm!r}")
+        if to and not YEAR_RE.match(to):
+            r.err(rw, f"to 형식(YYYY 또는 YYYY-MM) 위반: {to!r}")
+        if frm and to and to < frm:
+            r.err(rw, f"to 가 from 보다 앞선다: {frm} → {to}")
+        if frm and prev and frm < prev:
+            r.warn(rw, f"앞 항목보다 이르다({prev} 다음에 {frm}) — 시간순으로 적는다")
+        prev = frm or prev
+
+        if to:
+            open_rows.append(None)
+            if why_field and not row.get(why_field):
+                r.err(rw, f"{why_field} 없음 — 끝난 {open_field}라면 무엇이 한계에 닿아 다음으로 넘어갔는지가 이 칸의 본체다")
+        else:
+            open_rows.append(rw)
+            if why_field and row.get(why_field):
+                r.warn(rw, f"아직 이어지는 {open_field}인데(to 가 빔) {why_field} 가 있다 — 넘어간 이유는 끝난 것에만 쓴다")
+        _check_sources(row, rw, r)
+
+    still_open = [x for x in open_rows if x]
+    if len(still_open) > 1:
+        r.err(where, f"to 가 빈 항목이 {len(still_open)}개다 — 지금 이어지는 시기는 하나뿐이어야 한다: {', '.join(still_open)}")
+
+
+def _check_eras(data: dict, w: str, r: Report,
+                domain_names: set, feature_keys: set) -> None:
+    eras = data.get("eras") or []
+    if not eras:
+        return  # STYLE.md 8번 — 갈아엎은 적 없는 회사는 비어 있는 게 맞다
+    if len(eras) > 5:
+        r.warn(f"{w}.eras", f"시기가 {len(eras)}개다 — 다섯을 넘겼으면 기술이 바뀐 지점이 아니라 "
+                            "사업 연혁(투자·상장)을 섞고 있을 확률이 높다(STYLE.md 8번)")
+    ids: set[str] = set()
+    for i, e in enumerate(eras):
+        ew = f"{w}.eras[{e.get('id', i)}]"
+        eid = e.get("id")
+        if not eid or not SLUG_RE.match(str(eid)):
+            r.err(ew, f"id 형식 위반(영문 소문자·숫자·하이픈): {eid!r}")
+        elif eid in ids:
+            r.err(ew, f"id 중복: {eid}")
+        else:
+            ids.add(str(eid))
+        for f in ("title", "what_changed", "why"):
+            if not e.get(f):
+                r.err(ew, f"{f} 없음")
+        if not e.get("tradeoff"):
+            r.err(ew, "tradeoff 없음 — 갈아엎어서 좋아지기만 한 이전은 없다. "
+                      "못 적겠으면 그 글을 홍보문으로 읽은 것이다(STYLE.md 8번)")
+        for name in e.get("domains") or []:
+            if name not in domain_names:
+                r.err(ew, f"domains 에 없는 도메인을 가리킨다: {name!r}")
+        for key in e.get("features") or []:
+            if key not in feature_keys:
+                r.err(ew, f"features 에 없는 기능 key 를 가리킨다: {key!r}")
+        for j, m in enumerate(e.get("metrics") or []):
+            _check_sources(m, f"{ew}.metrics[{j}]", r)
+    _check_timeline(eras, f"{w}.eras", r, open_field="시기")
+
+
+def _check_history(feat: dict, fw: str, r: Report, era_ids: set) -> None:
+    rows = feat.get("history") or []
+    if not rows:
+        return  # 한 번도 안 바뀐 기능이 정상이다
+    for i, h in enumerate(rows):
+        hw = f"{fw}.history[{i}]"
+        if not h.get("version"):
+            r.err(hw, "version 없음 — 세대 이름이 있어야 어느 구조를 말하는지 붙들 데가 생긴다")
+        if not h.get("what"):
+            r.err(hw, "what 없음 — 그때는 무엇으로 풀었는지가 이 칸의 본체다")
+        era = h.get("era")
+        if era and era not in era_ids:
+            r.err(hw, f"eras 에 없는 시기를 가리킨다: {era!r}")
+    _check_timeline(rows, f"{fw}.history", r, open_field="세대", why_field="why_changed")
+
+
 def _check_research(feat: dict, fw: str, r: Report) -> None:
     """STYLE.md 7번 — 회사 밖의 근거(논문·표준)와 아직 아무도 못 푼 것.
 
@@ -341,6 +439,8 @@ def check_company(data: dict, r: Report) -> None:
                 r.err(tw, "limits 없음 — 그 기술이 못 하는 것을 함께 쓴다(STYLE.md 2번)")
             _check_sources(t, tw, r)
 
+    era_ids = {str(e.get("id")) for e in (data.get("eras") or []) if e.get("id")}
+
     keys: set[str] = set()
     for i, feat in enumerate(data.get("features") or []):
         fw = f"{w}.features[{feat.get('key', i)}]"
@@ -424,6 +524,7 @@ def check_company(data: dict, r: Report) -> None:
             r.gap("thinking", fw, "thinking 없음")
 
         _check_research(feat, fw, r)
+        _check_history(feat, fw, r, era_ids)
 
         _check_sources(feat, fw, r)
 
@@ -440,6 +541,9 @@ def check_company(data: dict, r: Report) -> None:
                 r.warn(f"{w}.features[{feat.get('key')}].connections",
                        f"feature key 처럼 생겼는데 그런 기능이 없다: {to!r}")
 
+
+    # eras 는 도메인·기능 이름을 가리키므로 두 집합이 다 모인 뒤에 본다.
+    _check_eras(data, w, r, domain_names, keys)
 
     # 진행 중인 회사에서 아직 기능이 하나도 없는 도메인 — PROMPT.md 2단계 사다리의
     # 2순위다. 회사를 갈아타지 않는다는 규칙이 여기서 나온다.

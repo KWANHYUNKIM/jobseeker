@@ -1,5 +1,12 @@
 import { useMemo, useState } from 'react'
-import { useCompany, type Diagram, type Feature, type Source } from '../lib/useReveng'
+import {
+  useCompany,
+  type Diagram,
+  type Era,
+  type Feature,
+  type FeatureRevision,
+  type Source,
+} from '../lib/useReveng'
 import { ArchitectureDiagram } from './ArchitectureDiagram'
 import { CompanyLogo } from './RevengView'
 import { UiSketch } from './UiSketch'
@@ -188,6 +195,14 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           </Section>
         )}
 
+        {/* 구조를 본 뒤에 온다 — 도메인 이름을 알고 나서 읽어야 "이 시기에 그게
+            생겼다"가 붙들린다. 갈아엎은 적 없는 회사는 이 섹션이 아예 안 뜬다. */}
+        {c.eras && c.eras.length > 0 && (
+          <Section title="연표" sub="지금 구조에 오기까지 무엇을 버렸는가 — 기술이 바뀐 지점으로 자른다">
+            <EraTimeline eras={c.eras} />
+          </Section>
+        )}
+
         <Section
           title={domain ? `기능 — ${domain}` : '기능'}
           sub="왜 존재하는가 → 도메인 규칙 → 구현과 트레이드오프 → 다른 시스템과의 연결"
@@ -279,6 +294,14 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
               </div>
             )}
           </Sub>
+
+          {/* 지금 구조(아래 '구현')를 읽기 전에 그 앞에 무엇이 있었는지를 놓는다.
+              순서가 반대면 지금 구조가 유일한 답처럼 읽힌다. */}
+          {f.history && f.history.length > 0 && (
+            <Sub title="지금 구조가 되기까지">
+              <FeatureHistory rows={f.history} />
+            </Sub>
+          )}
 
           {f.thinking && f.thinking.length > 0 && (
             <Sub title="그때 무슨 생각을 했나">
@@ -523,6 +546,176 @@ function DiagramBlock({ d, idKey }: { d: Diagram; idKey: string }) {
       </figcaption>
       <ArchitectureDiagram code={d.code} idKey={idKey} />
     </figure>
+  )
+}
+
+// ── 연표 ────────────────────────────────────────────────────
+// 이 탭의 나머지가 전부 단면도라, 지금 구조가 처음부터 정답이었던 것처럼 읽힌다.
+// 시간축은 그 오해를 끊는 자리다 — 무엇을 버리고 여기까지 왔는가.
+//
+// 기간 문자열은 데이터에 두지 않고 여기서 만든다. from/to 와 별도로 표시용
+// period 를 들고 있으면 둘이 어긋나는 순간 어느 쪽이 맞는지 알 수 없어진다.
+function periodLabel(from: string, to?: string): string {
+  if (!from) return ''
+  return to ? (from === to ? from : `${from}–${to}`) : `${from}–현재`
+}
+
+/** 들어온 기술 / 걷어낸 기술. 부호로만 갈라 색을 아끼다 */
+function StackDelta({ inn, out }: { inn?: string[]; out?: string[] }) {
+  const items = [
+    ...(inn ?? []).map((t) => ({ t, sign: '+' })),
+    ...(out ?? []).map((t) => ({ t, sign: '−' })),
+  ]
+  if (items.length === 0) return null
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-2">
+      {items.map(({ t, sign }) => (
+        <span
+          key={sign + t}
+          className={
+            'px-1.5 py-0.5 rounded border text-xs tabular-nums ' +
+            (sign === '+'
+              ? 'border-(--color-border) text-(--color-text)'
+              : 'border-(--color-border) text-(--color-muted) line-through decoration-1')
+          }
+          title={sign === '+' ? '이 시기에 들어온 기술' : '이 시기에 걷어낸 기술'}
+        >
+          {sign} {t}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+function EraTimeline({ eras }: { eras: Era[] }) {
+  // 데이터가 시간순이라는 보장은 validate 가 경고로만 잡는다. 화면은 늘 정렬해 둔다.
+  const rows = useMemo(
+    () => [...eras].sort((a, b) => (a.from || '').localeCompare(b.from || '')),
+    [eras],
+  )
+  return (
+    <ol className="flex flex-col">
+      {rows.map((e, i) => (
+        <li key={e.id || i} className="relative pl-5 pb-5 last:pb-0">
+          {/* 세로줄 — 마지막 항목에서는 끊는다 */}
+          {i < rows.length - 1 && (
+            <span className="absolute left-[3px] top-3 bottom-0 w-px bg-(--color-border)" aria-hidden />
+          )}
+          <span
+            className={
+              'absolute left-0 top-1.5 w-[7px] h-[7px] rounded-full ' +
+              (e.to ? 'bg-(--color-border)' : 'bg-(--color-accent)')
+            }
+            aria-hidden
+          />
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className="text-xs text-(--color-muted) tabular-nums shrink-0">
+              {periodLabel(e.from, e.to)}
+            </span>
+            <span className="text-sm font-medium text-(--color-text)">
+              <Md>{e.title}</Md>
+            </span>
+            <ConfBadge c={e.confidence} />
+          </div>
+
+          {e.context && (
+            <MdBlock className="mt-1 text-xs text-(--color-muted) leading-relaxed reveng-prose">
+              {e.context}
+            </MdBlock>
+          )}
+
+          <MdBlock className="mt-1.5 text-sm text-(--color-text) leading-relaxed reveng-prose">
+            {e.what_changed}
+          </MdBlock>
+
+          <div className="mt-2 flex flex-col gap-1.5">
+            <div className="text-sm">
+              <span className="text-xs text-(--color-muted)">무엇이 한계였나 </span>
+              <MdBlock className="text-(--color-text) leading-relaxed reveng-prose">{e.why}</MdBlock>
+            </div>
+            {/* tradeoff 는 이 데이터에서 가장 잘 빠지는 칸이라 눈에 띄게 둔다 */}
+            <div className="text-sm border-l-2 border-(--color-border) pl-2.5">
+              <span className="text-xs text-(--color-muted)">그 대가로 잃은 것 </span>
+              <MdBlock className="text-(--color-text) leading-relaxed reveng-prose">{e.tradeoff}</MdBlock>
+            </div>
+          </div>
+
+          <StackDelta inn={e.stack_in} out={e.stack_out} />
+
+          {e.domains && e.domains.length > 0 && (
+            /* 위의 기술 칩과 생김새가 같아서, 캡션이 없으면 '+ H3 격자' 옆의
+               '배송 영역·라스트마일' 이 무엇인지 알 길이 없다. */
+            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+              <span className="text-xs text-(--color-muted)">이때 바뀐 도메인</span>
+              {e.domains.map((d) => (
+                <span
+                  key={d}
+                  className="px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-xs text-(--color-text)"
+                >
+                  {d}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {e.metrics && e.metrics.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {e.metrics.map((m) => (
+                <span
+                  key={m.label}
+                  className="px-2 py-1 rounded bg-(--color-bg) border border-(--color-border) text-xs"
+                >
+                  <span className="text-(--color-muted)"><Md>{m.label}</Md> </span>
+                  <span className="text-(--color-text) font-medium tabular-nums"><Md>{m.value}</Md></span>
+                  <ConfBadge c={m.confidence} />
+                </span>
+              ))}
+            </div>
+          )}
+
+          <SourceLinks sources={e.sources} />
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+/** 기능 하나의 세대 교체. 회사 연표보다 촘촘하므로 한 줄에 접어 둔다 */
+function FeatureHistory({ rows }: { rows: FeatureRevision[] }) {
+  const sorted = [...rows].sort((a, b) => (a.from || '').localeCompare(b.from || ''))
+  return (
+    <ol className="flex flex-col gap-2">
+      {sorted.map((h, i) => (
+        <li key={h.version + i} className="text-sm border-l-2 border-(--color-border) pl-2.5">
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className="text-xs text-(--color-muted) tabular-nums shrink-0">
+              {periodLabel(h.from, h.to)}
+            </span>
+            <span className="text-(--color-text) font-medium">{h.version}</span>
+            {!h.to && (
+              <span className="text-xs px-1 py-px rounded border border-(--color-accent)/40 text-(--color-accent)">
+                지금 구조
+              </span>
+            )}
+            <ConfBadge c={h.confidence} />
+          </div>
+          <MdBlock className="text-(--color-text) leading-relaxed reveng-prose">{h.what}</MdBlock>
+          {h.tradeoff && (
+            <div className="text-xs text-(--color-muted) mt-0.5">
+              <span>감수한 것 </span>
+              <MdBlock className="inline reveng-prose">{h.tradeoff}</MdBlock>
+            </div>
+          )}
+          {h.why_changed && (
+            <div className="text-xs text-(--color-muted) mt-0.5">
+              <span>넘어간 이유 </span>
+              <MdBlock className="inline reveng-prose">{h.why_changed}</MdBlock>
+            </div>
+          )}
+          <SourceLinks sources={h.sources} />
+        </li>
+      ))}
+    </ol>
   )
 }
 
