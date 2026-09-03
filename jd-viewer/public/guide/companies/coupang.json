@@ -244,7 +244,8 @@
           "**보안이 한 팀이 아니라 여러 갈래로 나뉜 회사**라, 지원할 때 자기가 어느 갈래인지 정해야 한다",
           "고객 데이터와 결제가 걸려 있어 **탐지와 대응이 상시 운영**된다(`Tier1 Security Analyst` 같은 교대 자리가 있다)",
           "`Digital Trust`·`GRC` 는 기술만이 아니라 **규정·감사**를 다룬다",
-          "⚠️ **보안은 조직이 여러 겹이다** — 공고로 확인된 것만 네 갈래다: **플랫폼**(`Identity, Access and Protection Infrastructure` — 키 관리·서비스 아이덴티티·사용자 인증·**동적 인가**로 **제로 트러스트**를 목표한다), **관제**(`Tier1 Security Analyst`, 24x7 교대), **거버넌스**(`정보보안 GRC` — 정책·인증·리스크), **개별 통로**(`보안엔지니어 (이메일 보안)`). 지원 전에 **어느 갈래인지 먼저 가른다** — 요구하는 능력이 전혀 다르다."
+          "⚠️ **보안은 조직이 여러 겹이다** — 공고로 확인된 것만 네 갈래다: **플랫폼**(`Identity, Access and Protection Infrastructure` — 키 관리·서비스 아이덴티티·사용자 인증·**동적 인가**로 **제로 트러스트**를 목표한다), **관제**(`Tier1 Security Analyst`, 24x7 교대), **거버넌스**(`정보보안 GRC` — 정책·인증·리스크), **개별 통로**(`보안엔지니어 (이메일 보안)`). 지원 전에 **어느 갈래인지 먼저 가른다** — 요구하는 능력이 전혀 다르다.",
+          "⚠️ **보안의 다섯 번째 갈래 — 데이터 보호.** `Director, Data Security Engineering (Digital Trust)` 는 **데이터가 어디 있고 누구에게 새는가**를 다룬다(탐지·분류·암호화·키 관리·DLP·토큰화·마스킹). 인증·인가를 다루는 **플랫폼** 갈래와 다르고, 정책·인증을 다루는 **거버넌스** 갈래와도 다르다. 보호 대상이 `structured and unstructured data` 와 클라우드·SaaS·데이터 레이크 전반이라 **하나의 통제로 못 덮는다.**"
         ],
         "confidence": "inferred",
         "sources": []
@@ -337,8 +338,8 @@
       },
       {
         "reading": "**AI 도구 숙련을 '요건'으로 적기 시작했다 — 아직 두 자리뿐이다**",
-        "evidence": "모집중 113건 중 AI·LLM 을 언급한 공고는 26건인데, 그중 **AI 코딩/분석 도구를 다루는 능력 자체를 자격·우대에 적은 공고는 2건**이다 — `CXDX Junior PM (데이터 분석 PM)` 의 `AI Tool(Claude Code, Copilot 등)을 고급 활용하여 문제 정의, 데이터 분석 코드 작성, 분석 리포트 생성을 효율화할 수 있는 역량을 갖추신 분` 과 `Senior Staff / Staff Machine Learning Engineer` 의 `Proficiency in AI coding Cursor/Windsurf/Claude Code/Codex.` ⚠️ **둘의 층위가 정반대다** — 신입 자리와 시니어 ML 자리. 나머지 24건의 AI 언급은 **만드는 대상**(LLM 서비스·GenAI 기능)이지 도구 사용 역량이 아니다. ⚠️ **세 번째 사례는 성격이 다르다** — `[쿠팡] CS Specialist (데이터 분석 & AI)`(경력 2년↑)는 AI 를 **보조 도구로 쓰는 것**이 아니라 **그것으로 업무를 자동화하는 설계**가 담당업무다(`LLM(OpenAI, Claude, Gemini 등)을 활용한 업무 자동화 워크플로우 설계 및 운영`, `AI Agent, RAG 등 AI 기술을 활용한 운영 프로세스 개선`). **개발 직군이 아닌 자리에 LLM·RAG 가 필수 요건으로 들어온 예**다. ⚠️ **세 번째 층위가 나왔다 — 조직 차원의 도입**. `Director, Back-end Engineering` 의 담당업무에 `Lead the team in exploring Agentic Coding and Agentic Operations to elevate productivity, enhance operational quality, and reduce repetitive tasks.` 가 있다. 개인이 도구를 쓰는 것도, AI 제품을 만드는 것도 아니라 **팀에 들일지 말지를 판단하고 이끄는 일**이다. ⚠️ **네 번째 층위 — 시스템이 스스로 판단하게 만드는 것.** `Director - Backend Engineering (Infrastructure)` 의 담당업무에 `AI-Driven Automation: Integrate AI/ML models to automate system functionality, including predictive scaling, automated bottleneck detection, and intelligent error recovery` 가 있다. 우대사항 쪽은 `Experience or a strong architectural vision` 이라 **경험이 없어도 구상이 있으면 된다**고 열어 두었다.",
-        "so_what": "**아직 '도구를 쓸 줄 아는 것'이 전 직군의 요건은 아니다** — 그러니 이력서에 도구 이름을 나열하는 것으로는 힘이 안 붙는다. 대신 **이 두 자리에 지원한다면 증명 방식을 준비한다**: 도구가 낸 결과를 **어디서 의심했고 어떻게 검증했는지**의 기록. 그리고 나머지 24건에서 AI 는 **내가 쓰는 것이 아니라 내가 만드는 것**이므로, 준비할 것이 완전히 다르다(모델·평가·서빙). ⚠️ **개발 직군이 아니어도 LLM 이 요건이 되는 자리가 생기고 있다** — CS·운영 쪽에서 `SQL + LLM 적용 경험` 조합을 요구한다. 이쪽을 노린다면 **평가 세트로 성능을 재 본 기록**이 가장 싼 증거다. ⚠️ **관리자로 지원한다면 준비물이 또 다르다** — 도구 사용 경험이 아니라 **도입을 재는 방법**(비교군·지표·실패 판정 기준)과 **품질·보안을 유지하는 장치**다.",
+        "evidence": "모집중 113건 중 AI·LLM 을 언급한 공고는 26건인데, 그중 **AI 코딩/분석 도구를 다루는 능력 자체를 자격·우대에 적은 공고는 2건**이다 — `CXDX Junior PM (데이터 분석 PM)` 의 `AI Tool(Claude Code, Copilot 등)을 고급 활용하여 문제 정의, 데이터 분석 코드 작성, 분석 리포트 생성을 효율화할 수 있는 역량을 갖추신 분` 과 `Senior Staff / Staff Machine Learning Engineer` 의 `Proficiency in AI coding Cursor/Windsurf/Claude Code/Codex.` ⚠️ **둘의 층위가 정반대다** — 신입 자리와 시니어 ML 자리. 나머지 24건의 AI 언급은 **만드는 대상**(LLM 서비스·GenAI 기능)이지 도구 사용 역량이 아니다. ⚠️ **세 번째 사례는 성격이 다르다** — `[쿠팡] CS Specialist (데이터 분석 & AI)`(경력 2년↑)는 AI 를 **보조 도구로 쓰는 것**이 아니라 **그것으로 업무를 자동화하는 설계**가 담당업무다(`LLM(OpenAI, Claude, Gemini 등)을 활용한 업무 자동화 워크플로우 설계 및 운영`, `AI Agent, RAG 등 AI 기술을 활용한 운영 프로세스 개선`). **개발 직군이 아닌 자리에 LLM·RAG 가 필수 요건으로 들어온 예**다. ⚠️ **세 번째 층위가 나왔다 — 조직 차원의 도입**. `Director, Back-end Engineering` 의 담당업무에 `Lead the team in exploring Agentic Coding and Agentic Operations to elevate productivity, enhance operational quality, and reduce repetitive tasks.` 가 있다. 개인이 도구를 쓰는 것도, AI 제품을 만드는 것도 아니라 **팀에 들일지 말지를 판단하고 이끄는 일**이다. ⚠️ **네 번째 층위 — 시스템이 스스로 판단하게 만드는 것.** `Director - Backend Engineering (Infrastructure)` 의 담당업무에 `AI-Driven Automation: Integrate AI/ML models to automate system functionality, including predictive scaling, automated bottleneck detection, and intelligent error recovery` 가 있다. 우대사항 쪽은 `Experience or a strong architectural vision` 이라 **경험이 없어도 구상이 있으면 된다**고 열어 두었다. ⚠️ **다섯 번째 층위 — AI 를 지켜야 할 위험으로 본다.** `Director, Data Security Engineering (Digital Trust)` 의 우대사항에 `Knowledge of modern risks related to AI/GenAI and data leakage.` 가 있고, 본문은 보호 대상에 `data lakes, AI/ML pipelines, GenAI systems` 를 넣는다. **AI 를 쓰는 쪽·만드는 쪽·도입하는 쪽·자동화하는 쪽에 이어, 막는 쪽 자리가 생겼다.**",
+        "so_what": "**아직 '도구를 쓸 줄 아는 것'이 전 직군의 요건은 아니다** — 그러니 이력서에 도구 이름을 나열하는 것으로는 힘이 안 붙는다. 대신 **이 두 자리에 지원한다면 증명 방식을 준비한다**: 도구가 낸 결과를 **어디서 의심했고 어떻게 검증했는지**의 기록. 그리고 나머지 24건에서 AI 는 **내가 쓰는 것이 아니라 내가 만드는 것**이므로, 준비할 것이 완전히 다르다(모델·평가·서빙). ⚠️ **개발 직군이 아니어도 LLM 이 요건이 되는 자리가 생기고 있다** — CS·운영 쪽에서 `SQL + LLM 적용 경험` 조합을 요구한다. 이쪽을 노린다면 **평가 세트로 성능을 재 본 기록**이 가장 싼 증거다. ⚠️ **관리자로 지원한다면 준비물이 또 다르다** — 도구 사용 경험이 아니라 **도입을 재는 방법**(비교군·지표·실패 판정 기준)과 **품질·보안을 유지하는 장치**다. ⚠️ **보안 쪽으로 간다면 준비물이 또 다르다** — RAG 색인의 권한 누수, 프롬프트·로그에 남는 민감 정보, 외부 모델로의 유출 경로처럼 **AI 가 만드는 새 유출 경로**를 손으로 확인해 본 기록이 가장 싼 증거다.",
         "confidence": "inferred"
       },
       {
@@ -6240,6 +6241,132 @@
           "비용을 줄인 사례를 **숫자로**",
           "피플 매니저로서 사람을 키운 사례",
           "복잡한 분석을 경영진에게 설명한 방법"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7994573",
+      "title": "Director, Data Security Engineering (Digital Trust)",
+      "site": "ats",
+      "verdict": "**데이터 자체를 지키는 조직의 리더.** 앞의 `Security Infrastructure` 가 **누가 무엇을 할 수 있나**(인증·인가)를 다뤘다면, 여기는 **데이터가 어디 있고 누구에게 새는가**를 다룬다 — 탐지·분류·암호화·DLP·토큰화·마스킹. ⚠️ **크롤 요약에 담당업무와 기본 자격이 담기지 않았다** — 아래 인용은 전부 **우대사항** 쪽이므로 **지원 전 원문을 직접 읽는다.** 본문의 담당업무는 `data discovery, classification, encryption, DLP` 로드맵 수립, 클라우드·SaaS·온프레미스 전반의 데이터 보호, **제로 트러스트 데이터 접근**, 그리고 **개인정보·법무 조직과의 정렬**이다.",
+      "fit": {
+        "must_have": [
+          "⚠️ **기본 자격이 크롤 데이터에 없다 — 원문 확인 필요.** 본문상 이 자리는 **데이터 보호 전략을 정의·실행하고 팀을 세우는 디렉터**다",
+          "데이터 탐지·분류·암호화·DLP 같은 **데이터 보호 통제를 설계해 본** 경험",
+          "클라우드(AWS·Azure·GCP)와 SaaS, 데이터 플랫폼 전반을 아우르는 시야",
+          "개인정보·법무·보안 아키텍처 조직과 **함께 일해 본** 경험"
+        ],
+        "can_learn": [
+          "DSPM 도구, 프라이버시 엔지니어링, 자격증(CISSP·CISM·CCSP) — **전부 우대사항**이다",
+          "⚠️ 같은 회사의 다른 보안 갈래는 **플랫폼**(`Security Infrastructure`) / **관제**(`Tier1 Security Analyst`) / **거버넌스**(`정보보안 GRC`) / **개별 통로**(`이메일 보안`) 브리핑을 본다 — **요구하는 능력이 다르다**"
+        ]
+      },
+      "study": [
+        {
+          "topic": "데이터가 어디 있는지부터 안다 — DSPM",
+          "from": "preference",
+          "quote": "Experience with Data Security Posture Management (DSPM) tools.",
+          "priority": "core",
+          "why": "⚠️ **데이터 보안의 첫 문제는 통제가 아니라 목록이다.** 클라우드·SaaS·데이터 레이크에 흩어진 데이터 중 **어디에 민감 정보가 있는지 아무도 모르는 상태**가 기본값이고, DSPM 은 그걸 찾아 분류하고 노출 위험을 매기는 도구다. 본문 담당업무도 `Data discovery, classification, and labeling` 을 첫 항목으로 든다 — **못 찾은 데이터는 못 지킨다.**",
+          "gap_check": "우리 조직에서 **주민번호나 카드번호가 들어 있는 저장소를 전부** 댈 수 있는가.",
+          "drill": "⚠️ **자기 환경에서만** 한다. 샘플 데이터가 든 저장소 몇 개(S3 버킷·DB·구글 시트 흉내)를 만들고 **분류 스캐너**를 직접 짜 본다 — ① 패턴으로 민감 정보 후보 찾기 ② **오탐을 줄이는 규칙**(체크섬·문맥) ③ 결과에 **노출 위험 점수**를 매긴다(공개 여부·접근자 수·양). ②와 ③이 상용 DSPM 이 파는 것의 본질이다.",
+          "hours": 10
+        },
+        {
+          "topic": "프라이버시 엔지니어링 — 설계에 개인정보를 넣는 일",
+          "from": "preference",
+          "quote": "Background in privacy engineering or working closely with CPO organizations.",
+          "priority": "core",
+          "why": "⚠️ **`CPO 조직`(개인정보보호책임자)과의 협업이 요건에 적혀 있다.** 본문도 `Partner with Privacy and Legal teams to embed privacy-by-design and data minimization principles` 라고 적는다 — 즉 **법무의 요구를 시스템 설계로 옮기는 일**이 이 자리의 몫이다. 핵심은 통제를 나중에 붙이는 게 아니라 **애초에 덜 모으고, 덜 오래 두고, 덜 식별되게** 만드는 것이다.",
+          "gap_check": "우리가 수집하는 필드 중 **실제로 안 쓰는 것**이 몇 개인가. 세어 본 적이 있는가.",
+          "drill": "한 서비스의 수집 필드를 전부 적고 각각 ① 무엇에 쓰이나 ② **안 쓰면 무슨 일이 생기나** ③ 보관 기간 ④ 가명화 가능한가 를 채운다. ②가 '아무 일도 없음'인 필드를 골라 **수집 중단 제안서**를 한 장 쓴다 — 데이터 최소화는 문서가 아니라 이런 제안에서 시작한다.",
+          "hours": 8
+        },
+        {
+          "topic": "AI·생성형 AI가 만드는 새 유출 경로",
+          "from": "preference",
+          "quote": "Knowledge of modern risks related to AI/GenAI and data leakage.",
+          "priority": "core",
+          "why": "⚠️ **이 회사 AI 요건의 다섯 번째 층위다** — 지금까지는 도구 사용, AI 제품 개발, 조직 도입, 시스템 자동화였는데 **여기서는 AI 가 지켜야 할 위험**으로 등장한다. 실제로 경로가 여럿이다: 직원이 사내 자료를 외부 모델에 붙여 넣는 것, RAG 색인에 **접근 권한이 없는 문서**가 섞이는 것, 모델이 학습 데이터를 뱉는 것, 로그와 프롬프트에 민감 정보가 남는 것. 본문도 `Drive security integration into modern data architectures (data lakes, AI/ML pipelines, GenAI systems)` 를 든다.",
+          "gap_check": "우리 RAG 시스템은 **질문한 사람의 권한**을 검색 단계에서 반영하는가, 아니면 색인 전체를 뒤지는가.",
+          "drill": "작은 RAG 를 만들고 **권한을 넣는다** — ① 문서마다 접근 그룹을 붙이고 ② 검색 시 **사용자 권한으로 먼저 거른 뒤** 유사도를 계산한다 ③ 권한 없는 문서가 답에 섞이는지 시험한다. 그다음 **프롬프트와 응답 로그에 무엇이 남는지** 확인하고 마스킹을 붙인다. ⚠️ 실습은 **본인이 만든 문서**로만 한다.",
+          "hours": 12
+        },
+        {
+          "topic": "규제가 센 환경에서 일한다는 것",
+          "from": "preference",
+          "quote": "Experience in large-scale enterprise or highly regulated environments.",
+          "priority": "high",
+          "why": "쿠팡은 커머스·결제·여신을 함께 하는 **미국 상장사**라, 지켜야 할 규정이 국내 개인정보 법규만이 아니다. 이런 환경에서 보안 통제는 **작동하는 것만으로 부족하고 증명 가능해야** 한다 — 본문의 `Support audit readiness` 가 그 말이다. 같은 회사 `정보보안 GRC` 자리가 다루는 인증·감사와 맞물린다.",
+          "gap_check": "내가 만든 통제가 **감사에서 증거로 제출될 수 있는 형태**인가.",
+          "drill": "통제 세 개를 골라 **증거 설계**를 한다 — ① 통제 내용 ② 증거(로그·설정 스냅숏·승인 기록) ③ **자동으로 남는가** ④ 보관 기간. ③이 '아니오'인 것을 하나 골라 자동화 방법을 적는다.",
+          "hours": 6
+        },
+        {
+          "topic": "전략과 실행을 함께 요구한다",
+          "from": "preference",
+          "quote": "Strategic thinking with strong execution focus",
+          "priority": "high",
+          "why": "본문이 `Establish multi-year roadmaps for data protection capabilities` 를 요구하면서 동시에 `Design and implement scalable controls` 를 든다 — **몇 년짜리 그림과 이번 분기의 구현을 같은 사람이** 한다는 뜻이다. 데이터 보안은 특히 **끝이 없는 영역**이라(데이터는 계속 늘고 새 시스템이 계속 생긴다) 로드맵이 없으면 사건 대응만 하다 끝난다.",
+          "gap_check": "내 보안 로드맵에서 **이번 분기에 실제로 끝나는 것**이 무엇인가.",
+          "drill": "데이터 보호 로드맵을 **2년 × 분기**로 그린다 — 축은 `탐지·분류` / `암호화·키 관리` / `DLP` / `접근 통제` 넷. 각 칸에 ① 그 분기의 결과물 ② **완료의 증거** ③ 못 하면 남는 위험. 그리고 **첫 분기 칸만 상세하게** 쓴다 — 나머지는 어차피 바뀐다.",
+          "hours": 6
+        },
+        {
+          "topic": "기술 깊이와 사업 감각을 함께",
+          "from": "preference",
+          "quote": "Deep technical expertise balanced with business acumen",
+          "priority": "high",
+          "why": "⚠️ **`balanced` 라는 말이 이 자리의 어려움이다.** 데이터 보안 통제는 대부분 **사업을 조금씩 불편하게 만든다** — DLP 는 오탐으로 업무를 막고, 암호화는 성능을 깎고, 최소화는 분석을 제한한다. 그래서 이 자리는 **위험을 돈으로 환산해 말할 수 있어야** 하고, 본문도 `aligned with business objectives and risk posture` 라고 적는다.",
+          "gap_check": "내가 제안한 통제의 **비용과 막는 위험의 크기**를 같은 표에 놓을 수 있는가.",
+          "drill": "통제 하나(예: DLP 확대)를 골라 **판단 표**를 만든다 — ① 막는 시나리오와 그 손실 추정 ② 도입·운영 비용 ③ **업무에 주는 마찰**(오탐률·지연) ④ 대안(범위를 좁히거나 탐지만) ⑤ 권고. ③을 정직하게 적는 제안이 실제로 통과된다.",
+          "hours": 6
+        },
+        {
+          "topic": "팀을 세우고 키운다",
+          "from": "preference",
+          "quote": "Strong leadership and team-building skills",
+          "priority": "high",
+          "why": "본문이 `Build, lead, and mentor a high-performing data security engineering team` 이라고 적는다 — **데이터 보안 엔지니어는 시장에 드문 직군**이라 이 자리에서 팀 빌딩은 채용만이 아니라 **인접 직군(데이터 엔지니어·플랫폼 엔지니어)을 데려와 키우는 일**이 된다. 필요한 능력이 데이터 이해와 보안 이해에 걸쳐 있기 때문이다.",
+          "gap_check": "보안 인재를 **밖에서만** 찾고 있는가, **안에서 키울 경로**가 있는가.",
+          "drill": "데이터 보안 엔지니어의 **역량 지도**를 그린다 — 데이터(모델링·파이프라인) / 보안(암호·접근통제) / 클라우드 / 규제. 그리고 **인접 직군에서 오는 사람**별로 ① 이미 가진 칸 ② 6개월에 채울 칸 ③ 그 방법(과제·멘토·교육)을 적는다.",
+          "hours": 5
+        },
+        {
+          "topic": "복잡한 분산 환경에서의 문제 해결",
+          "from": "preference",
+          "quote": "Problem-solving in complex, distributed environments",
+          "priority": "high",
+          "why": "본문이 보호 대상을 `structured and unstructured data`, `Cloud platforms (AWS, Azure, GCP)`, `SaaS applications (M365, Salesforce, etc.)`, `data lakes, warehouses` 로 나열한다 — **하나의 통제로 전부 덮을 수 없는 환경**이다. 그래서 이 자리의 문제 해결은 **각 환경의 고유한 통제를 엮어 하나의 정책처럼 보이게** 만드는 일이 된다.",
+          "gap_check": "같은 분류의 데이터가 **환경마다 다른 수준으로 보호되고 있지는 않은가.**",
+          "drill": "**정책 대 구현 표**를 만든다 — 행: 데이터 등급(공개·내부·기밀·규제), 열: 환경(사내 DB·데이터 레이크·SaaS·엔드포인트). 각 칸에 ① 현재 통제 ② 목표 ③ **격차**. 격차가 가장 큰 칸 하나를 골라 **왜 거기가 뚫려 있는지**(기술 한계인지 우선순위인지) 적는다.",
+          "hours": 6
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**권한을 반영하는 RAG** 를 직접 만들어 본 기록을 준비한다 — 권한 없는 문서가 답에 섞이지 않는지까지",
+          "why": "우대사항에 `modern risks related to AI/GenAI and data leakage` 가 있고, 본문도 `GenAI systems` 를 보호 대상에 넣는다. **이 위험을 손으로 확인해 본 사람은 아직 드물다.**",
+          "effort": "2~3일"
+        },
+        {
+          "idea": "⚠️ **지원 전 공고 원문을 직접 연다** — 크롤 요약에 담당업무와 기본 자격이 빠져 있다",
+          "why": "이 브리핑의 인용문은 전부 **우대사항**이라 실제 연차·필수 요건이 보이지 않는다. 원문의 `Job Overview` 와 `Key Responsibilities` 를 읽어야 지원 여부를 제대로 판단할 수 있다.",
+          "effort": "10분"
+        }
+      ],
+      "interview": {
+        "process": "Application Review - Phone Interview - Onsite (or Virtual Onsite) Interview – Offer. 공고에 `Job titles and responsibilities may be subject to change depending on the candidate's overall experience` 라고 적혀 있다 — **직함과 범위가 조정될 수 있다.**",
+        "expect": [
+          "⚠️ **기본 자격과 연차** — 크롤 요약에 없으므로 이쪽에서 확인한다",
+          "민감 데이터를 **찾아내는 것**부터 시작한 경험(탐지·분류)",
+          "DLP 오탐이 업무를 막았을 때의 대응",
+          "암호화·키 관리 설계와 성능·운영의 절충",
+          "개인정보·법무 조직과 함께 **설계 단계에서** 일한 사례",
+          "⚠️ **GenAI 로 인한 데이터 유출**을 어떻게 막을 것인가",
+          "환경마다 다른 통제를 하나의 정책으로 묶은 방법",
+          "통제의 비용과 막는 위험을 **같은 표**에 놓아 설득한 사례"
         ],
         "sources": []
       }
