@@ -574,6 +574,22 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "kafka",
+      "title": "Kafka",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "메시지를 **꺼내면 사라지는 큐가 아니라, 계속 덧붙여지는 로그(장부)** 로 다루는 시스템이다. 읽어도 지워지지 않으므로 **여러 소비자가 각자의 위치(오프셋)를 갖고**, 어제 것을 처음부터 다시 읽을 수도 있다.",
+      "aliases": [
+        "Kafka",
+        "Apache Kafka",
+        "카프카"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
