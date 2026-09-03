@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-09-03",
   "business_model": "**개발자 도구를 구독으로 판다.** 개인·팀·엔터프라이즈 요금제가 바탕이고 그 위에 **Copilot**(AI 코딩 보조)이 얹혔다. **⚠️ 범위 주의 — Microsoft 산하라 GitHub 단독 재무가 공시되지 않는다.** Microsoft 가 밝힌 것은 **유료 Copilot 좌석 470만**(2026-01-28 FY26 Q2, 전년 대비 약 75% 증가)이고, **GitHub 전체 ARR 30억 달러 초과**는 회사 발표가 아니라 사정을 아는 사람을 인용한 보도다. 그래서 이 문서의 수익 항목은 대부분 `inferred` 로 둔다. 원가 쪽은 특이하다 — **남의 코드를 맡아 두고, 남의 코드를 실행해 주고, 남의 코드를 검색해 준다.** 저장·연산·색인이 전부 고객 수가 아니라 **고객이 밀어 넣는 양**에 비례한다.\n\n**사내에서 같은 모양이 네 도메인에 걸쳐 반복된다.** 첫째, **쪼개는 기준을 데이터의 성질에서 가져온다** — 코드 검색은 Git 블롭 ID 로(같은 내용이면 같은 블롭이라 중복이 저절로 사라진다), 데이터 계층은 함께 쓰이는 테이블로, 저장은 저장소 단위로 나눈다. 둘째, **옮기기 전에 선부터 긋는다** — 물리 이동보다 `schema-domains.yml` 과 린터가 먼저 왔고, 복제본이 같은 상태인지도 체크섬으로 먼저 증명한다. 셋째, **하나에 전부 걸지 않는다** — Vitess 도입이 초기라 자체 write-cutover 를 따로 만들었고, MySQL 8.0 업그레이드 내내 역방향 복제로 돌아갈 길을 열어 뒀다. 넷째, **물리 한계 앞에서는 병렬화로 물러선다** — 대륙 간 왕복은 줄일 수 없으니 복제본별 작업을 겹쳐 돌리고, 일회용 환경의 준비 시간은 없앨 수 없으니 캐시를 이미지 쪽으로 옮긴다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "GitHub (저장소 호스팅·PR·이슈)",
@@ -2492,7 +2492,9 @@
     "**수평 샤딩** — 2021년 파티셔닝 글이 '다음은 수평 파티셔닝'이라며 별도 글을 예고했다. 그 글을 아직 확인하지 않았다.",
     "**Copilot 의 서빙 구조** — 최근 블로그가 제품 발표 쪽에 쏠려 있어 추론 인프라에 대한 자료를 확인하지 못했다.",
     "수평 샤딩(horizontal partitioning) — 회사가 계속 쓰고 있다고 밝히지만 별도 글로 미뤄 이 사이트에 내용이 없다.",
-    "CI 테스트를 쪼개 나눠 돌리는 방식(샤딩·병렬 배분) — 재사용 워크플로만 언급하고 구체적인 방식은 밝히지 않는다."
+    "CI 테스트를 쪼개 나눠 돌리는 방식(샤딩·병렬 배분) — 재사용 워크플로만 언급하고 구체적인 방식은 밝히지 않는다.",
+    "**2023년의 두 가지 — 코드 검색을 Blackbird 로 다시 지은 일과 MySQL 8.0 업그레이드 — 는 시기로 세우지 않았다.** 둘 다 날짜가 분명하지만(2023-02-06, 2023-12-07) 앞 시기들과 축이 달라, 회사 전체의 시대 구분에 넣는 것이 맞는지 판단하지 못했다. 기능 쪽 `blackbird` 에 이미 내용이 있다.",
+    "**RAID·DRBD 로 파일 서버를 쌍으로 묶던 시기가 언제 시작됐는지는 출처에 없다.** DGit 글이 그 구조를 설명하되 언제부터였는지는 적지 않는다. 그래서 그 시기를 따로 세우지 않고 2016년 시기의 '그 전 상태'로만 남겼다 — 연도를 모르면 시기로 만들지 않는다(STYLE.md 8번)."
   ],
   "sources": [
     {
@@ -2566,5 +2568,113 @@
       "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
     }
   ],
-  "domain": "github.com"
+  "domain": "github.com",
+  "eras": [
+    {
+      "id": "2016-dgit",
+      "from": "2016-04",
+      "to": "2019",
+      "title": "복제를 위층으로 끌어올렸다",
+      "context": "그전까지는 저장소 데이터를 **기성 디스크 계층 복제 기술 — RAID 와 DRBD** 로 두고 파일 서버를 **쌍으로** 묶었다. 한 저장소가 네 벌로 존재했다(주 서버에 RAID 로 두 벌, 그 서버의 핫스페어에 DRBD 로 두 벌). 복제를 아래층에 맡기면 애플리케이션은 그런 것이 있다는 사실조차 몰라도 된다.",
+      "what_changed": "**2016년 4월 DGit**(뒷날 Spokes)을 냈다. 개인 저장소를 먼저 옮기고 내부 비공개 저장소, **3개월간의 안정성 확인**을 거쳐 공개 저장소로 갔고, 최초 배포 **6개월 뒤** 대량 이관을 했다.",
+      "why": "**넘어가는 일을 사람이 했다.** 파일 서버에 문제가 생기면 사람이 장애를 확인하고 예비 서버에 인계를 명령해야 했고, 그래서 **매번 얼마간의 다운타임이 났다.** 그리고 **서버 두 대가 동시에 나가면 수십만 개 저장소가 오프라인**이 됐다 — 디스크에 맡긴 복제로는 여기까지가 한계였다.",
+      "tradeoff": "**복제가 더 이상 투명하지 않다.** 직렬화·잠금·장애 감지·재동기화를 **직접 구현해야 했다** — 디스크가 알아서 해 주던 일을 애플리케이션이 떠안은 것이다. 대신 **거의 놀고 있던 핫스페어 서버를 없앴다.**",
+      "domains": [
+        "Git 저장·복제"
+      ],
+      "features": [
+        "spokes-replication"
+      ],
+      "stack_out": [
+        "RAID",
+        "DRBD",
+        "핫스페어 파일 서버"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Introducing DGit",
+          "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+          "publisher": "GitHub Blog",
+          "date": "2016-04-05",
+          "summary": "RAID·DRBD 로 묶던 파일 서버 쌍을 애플리케이션 계층 복제로 바꾼 이유와 그 대가를 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2019-partition",
+      "from": "2019",
+      "to": "",
+      "title": "10년을 버틴 데이터베이스 하나를 쪼갰다",
+      "context": "**10여 년 전** GitHub.com 은 그 시절 다른 웹 애플리케이션들처럼 **루비 온 레일즈에 MySQL 데이터베이스 하나**로 시작했다. 기능별로 DB 를 떼고 읽기 복제본과 ProxySQL 을 붙였지만 **핵심은 여전히 주 클러스터 하나(`mysql1`)** 였다.",
+      "what_changed": "**2019년**에 관계형 DB 를 분할할 도구와 능력을 갖추는 계획을 세웠다. **2021년**에는 같은 테이블들이 여러 클러스터에 흩어졌다.",
+      "why": "성장과 가용성이 함께 걸렸다. **2019년 `mysql1` 은 평균 초당 95만 질의**를 받고 있었다.",
+      "tradeoff": "**스키마 도메인을 넘는 트랜잭션은 정합성을 보장할 수 없게 됐다.** 도메인을 가로지르는 조인도 못 쓰고, **질의를 나누거나 애플리케이션에서 직접 합쳐야** 한다. 스키마 도메인 설정, SQL 린터 둘, Vitess, 자체 컷오버 스크립트, ProxySQL 라우팅을 새로 만들었고, **130개 테이블을 옮기는 컷오버 창에서는 쓰기 실패로 사용자에게 보이는 오류가 몇 건 났다.**",
+      "domains": [
+        "데이터 계층"
+      ],
+      "features": [
+        "schema-domains"
+      ],
+      "stack_in": [
+        "Vitess",
+        "ProxySQL 라우팅",
+        "SQL 린터"
+      ],
+      "metrics": [
+        {
+          "label": "mysql1 질의 (2019)",
+          "value": "평균 초당 95만",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Partitioning GitHub's relational databases to handle scale",
+              "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+              "publisher": "GitHub Blog",
+              "date": "2021-09-27",
+              "summary": "MySQL 클러스터 하나로 버티던 구조를 스키마 도메인으로 쪼개면서 무엇을 잃었는지 밝힌다."
+            }
+          ]
+        },
+        {
+          "label": "분할 후 합계 질의 (2021)",
+          "value": "평균 초당 120만 · 호스트당 부하 절반",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Partitioning GitHub's relational databases to handle scale",
+              "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+              "publisher": "GitHub Blog",
+              "date": "2021-09-27",
+              "summary": "MySQL 클러스터 하나로 버티던 구조를 스키마 도메인으로 쪼개면서 무엇을 잃었는지 밝힌다."
+            }
+          ]
+        },
+        {
+          "label": "옮긴 테이블",
+          "value": "130개",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Partitioning GitHub's relational databases to handle scale",
+              "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+              "publisher": "GitHub Blog",
+              "date": "2021-09-27",
+              "summary": "MySQL 클러스터 하나로 버티던 구조를 스키마 도메인으로 쪼개면서 무엇을 잃었는지 밝힌다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Partitioning GitHub's relational databases to handle scale",
+          "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+          "publisher": "GitHub Blog",
+          "date": "2021-09-27",
+          "summary": "MySQL 클러스터 하나로 버티던 구조를 스키마 도메인으로 쪼개면서 무엇을 잃었는지 밝힌다."
+        }
+      ]
+    }
+  ]
 }
