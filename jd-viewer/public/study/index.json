@@ -37,6 +37,23 @@
    "updated_at": "2026-09-03"
   },
   {
+   "slug": "docker",
+   "title": "Docker",
+   "category": "infra",
+   "level": "core",
+   "status": "done",
+   "one_liner": "실행 환경을 **코드와 함께 굳혀 옮기는** 방법이다. 가상 머신이 아니라 **커널을 공유하는 프로세스 격리**라서 가볍고, 그 사실이 메모리 한도·격리 수준·이미지 크기 문제를 전부 설명한다.",
+   "aliases": [
+    "Docker",
+    "도커",
+    "컨테이너",
+    "Dockerfile"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "fastapi",
    "title": "FastAPI",
    "category": "framework",
