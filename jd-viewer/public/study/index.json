@@ -730,6 +730,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "slo",
+      "title": "SLI / SLO",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**\"우리 서비스는 어디까지 고장 나도 되는가\"를 숫자로 정해 둔 것**이다. 무엇을 잴지가 SLI, 그 값의 목표가 SLO, 어겼을 때 물어 줄 것까지 적으면 SLA — 그리고 목표에서 남은 만큼이 **오류 예산**이다.",
+      "aliases": [
+        "SLO",
+        "SLI",
+        "SLA",
+        "SLI/SLO",
+        "에러 버짓",
+        "오류 예산",
+        "error budget"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
