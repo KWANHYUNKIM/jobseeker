@@ -103,7 +103,10 @@ jobs:
           elif docker ps --format '{{.Names}}' 2>/dev/null | grep -qx jobseeker-quicktunnel; then
             u=$(./deploy/tunnel-url.sh 2>/dev/null | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1)
             echo "   방식    : quicktunnel (임시, 재시작마다 바뀜)"
-            echo "   주소    : ${u%%.*}****.trycloudflare.com   <- 앞부분만"
+            # 앞 6자만. 예전에는 ${u%%.*} 로 잘랐는데 그건 첫 점 앞까지라
+            # 서브도메인이 통째로 남았다 — 가린 게 아니라 다 보여준 셈이었다.
+            host=${u#https://}
+            echo "   주소    : $(printf %.6s "$host")…  (전체는 서버에서 ./deploy/tunnel-url.sh)"
           else
             echo "   방식    : 터널 없음 — LAN 안에서만 열린다"
           fi
