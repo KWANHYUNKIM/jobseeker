@@ -7,7 +7,7 @@
     "㈜딥오토"
   ],
   "status": "done",
-  "updated_at": "2026-09-01",
+  "updated_at": "2026-09-04",
   "site": "deepauto.ai",
   "one_liner": "KAIST 연구실에서 나와 'AI를 싸게 돌리는 기술'을 논문과 제품 양쪽으로 내놓는 회사",
   "company": {
@@ -905,7 +905,8 @@
             "summary": "자격요건에 프론트 스택이 '2025-04 기준' 버전까지 명시돼 있고, AI 이해와 영문 레퍼런스 습관이 함께 요구된다"
           }
         ]
-      }
+      },
+      "closed": true
     }
   ],
   "open_questions": [

@@ -7,7 +7,7 @@
     "㈜미리디"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-04",
   "site": "miridih.com",
   "one_liner": "브라우저 안에서 도는 디자인 편집기로 2천만 명을 모으고, 그 디자인을 인쇄해서도 파는 회사",
   "company": {
@@ -618,7 +618,8 @@
             "summary": "'이력서에 이런 내용을 함께 공유해주시면 좋아요!' 절에 회사가 원하는 서술 방식이 적혀 있다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/347557",

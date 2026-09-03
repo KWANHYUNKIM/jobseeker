@@ -5,7 +5,7 @@
     "토스플레이스"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-04",
   "site": "tossplace.com",
   "one_liner": "가게 카운터 위의 물건을 만드는 토스 — 소프트웨어 회사인데 하드웨어를 만들고, 그것을 배송·설치까지 해야 한다",
   "company": {
@@ -506,7 +506,8 @@
             "summary": "가맹점 8만 5천 곳과 업종 구성 — 이 화면들이 놓이는 곳"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/305444",
@@ -738,7 +739,8 @@
             "summary": "가맹점 8만 5천 곳 — 단말기를 보내고 설치해야 하는 규모가 이 자리를 만든다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/370534",

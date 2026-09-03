@@ -7,7 +7,7 @@
     "와탭"
   ],
   "status": "done",
-  "updated_at": "2026-09-03",
+  "updated_at": "2026-09-04",
   "site": "whatap.io",
   "one_liner": "남의 시스템 안을 초 단위로 들여다보는 것을 파는 회사 — 국산 APM의 뿌리(오픈소스 스카우터)에서 나와 SaaS로 옮겨 온 옵저버빌리티 플랫폼",
   "company": {
@@ -1058,7 +1058,8 @@
             "summary": "자격요건은 React·TypeScript 3년과 상용 서비스 경험 두 줄뿐이고, 우대사항 열 줄이 대부분 일하는 방식(주도적 수행, 코드 분석·개선, 디자인 시스템, 테스트, 도메인 관심, AI 에이전트)이다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/337341",
