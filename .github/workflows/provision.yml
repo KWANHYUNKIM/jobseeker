@@ -22,6 +22,16 @@ on:
         required: false
         default: false
         type: boolean
+      urls:
+        description: "대시보드 터널 주소까지 출력한다 (공개 로그에 남는다 — 인증이 없다)"
+        required: false
+        default: false
+        type: boolean
+      rotate:
+        description: "대시보드 터널을 재시작해 주소를 바꾼다 (노출된 주소를 죽인다)"
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: provision-server
@@ -37,6 +47,8 @@ jobs:
         env:
           DO_PIP: ${{ inputs.pip }}
           DO_SERVICES: ${{ inputs.services }}
+          DO_URLS: ${{ inputs.urls }}
+          DO_ROTATE: ${{ inputs.rotate }}
         run: |
           set -euo pipefail
           export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
@@ -114,6 +126,20 @@ jobs:
             echo "   주소    : ${u:-(로그에서 못 찾음 — 서버에서 ./deploy/tunnel-url.sh)}"
           else
             echo "   방식    : 터널 없음 — LAN 안에서만 열린다"
+          fi
+
+          if [ "$DO_URLS" = "true" ]; then
+            # 대시보드 터널에는 인증이 없다(tunnel-url.sh 도 그렇게 적어 뒀다).
+            # 여기 찍는 순간 공개 로그에 남으므로, 보고 나면 rotate 로 갈아엎는 게 맞다.
+            echo "-- 전체 주소 (인증 없음, 공개 로그에 남음)"
+            ./deploy/tunnel-url.sh 2>&1 | sed 's/^/   /' || true
+          fi
+
+          if [ "$DO_ROTATE" = "true" ]; then
+            echo "-- 대시보드 터널 주소 교체"
+            docker compose -f docker-compose.prod.yml restart ops-tunnel stats-tunnel || true
+            sleep 8
+            echo "   교체됨. 새 주소는 urls=true 로 다시 확인 (또는 서버에서 tunnel-url.sh)"
           fi
 
           echo "::group::서비스 진단"
