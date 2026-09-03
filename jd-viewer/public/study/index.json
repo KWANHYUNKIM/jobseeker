@@ -37,6 +37,25 @@
    "sections": 5,
    "drills": 3,
    "updated_at": "2026-09-03"
+  },
+  {
+   "slug": "uart",
+   "title": "UART",
+   "category": "firmware",
+   "level": "basic",
+   "status": "done",
+   "one_liner": "클럭선 없이 선 두 가닥으로 바이트를 주고받는 방식이다. 클럭을 안 보내는 대신 **양쪽이 같은 속도로 세기로 미리 약속**하고, 그 약속이 몇 % 만 어긋나도 글자가 깨진다.",
+   "aliases": [
+    "UART",
+    "시리얼 통신",
+    "serial",
+    "USART",
+    "RS-232",
+    "RS-485"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-03"
   }
  ],
  "categories": {
