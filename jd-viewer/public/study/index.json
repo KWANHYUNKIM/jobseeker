@@ -787,6 +787,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "sharding",
+      "title": "샤딩·파티셔닝",
+      "category": "data",
+      "level": "deep",
+      "status": "done",
+      "one_liner": "**한 테이블이 너무 커졌을 때 쪼개는 일**이다. 한 DB 안에서 조각으로 나누면 파티셔닝, **서버 자체를 나누면 샤딩** — 이름이 비슷하지만 잃는 것의 크기가 완전히 다르다.",
+      "aliases": [
+        "샤딩",
+        "파티셔닝",
+        "sharding",
+        "partitioning",
+        "파티션"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
