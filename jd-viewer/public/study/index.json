@@ -432,6 +432,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "circuit-breaker",
+      "title": "서킷 브레이커",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "실패가 잦아진 상대에게 **잠깐 동안 요청을 아예 보내지 않는** 장치다. 두꺼비집이 과전류를 끊듯, 이미 망가진 쪽으로 계속 흘려보내다 이쪽까지 무너지는 것을 막는다.",
+      "aliases": [
+        "서킷 브레이커",
+        "서킷브레이커",
+        "circuit breaker",
+        "Circuit Breaker",
+        "회로 차단기",
+        "Resilience4j"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
