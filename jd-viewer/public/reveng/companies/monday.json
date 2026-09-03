@@ -5,7 +5,7 @@
   "country": "기타",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-08-29",
+  "updated_at": "2026-09-03",
   "domain": "협업 보드 SaaS",
   "one_liner": "모두가 자기 모양대로 만드는 표를 한 조 개 굴리는 회사 — 그리고 그 코드를 에이전트가 주당 마흔 번 쪼갠다",
   "business_model": "**협업 보드 SaaS 다.** 사람들이 각자 자기 모양대로 만드는 **보드(스프레드시트 같은 표)** 위에서 일을 굴리게 하고, **좌석 기반 구독**으로 판다(요금 구조의 세부는 확인하지 못했다).\n\n**나스닥 상장사(MNDY)라 실적이 공개된다** — **2026년 2분기 매출 3억 6,460만 달러, 전년 대비 22% 성장**이고 **유료 고객(사용자 10명 초과)이 65,783곳**(전년 61,803곳에서 6% 증가)이다. **순매출 유지율**은 전체 **109%**, 사용자 10명 초과 **113%**, ARR 5만 달러 초과와 10만 달러 초과가 각각 **115%** 다. **ARR 10만·50만 달러 초과 고객의 순증가가 사상 최대**였고 **non-GAAP 영업이익도 사상 최대**다.\n\n**⭐ AI 매출이 이미 세어진다** — **AI 제품에서 나온 ARR 이 1분기 대비 두 배**가 됐고 **2분기 순신규 ARR 의 17%** 를 차지한다.\n\n**⭐ 사업 구조가 기술 문제를 그대로 만든다**(이 정리는 이 사이트의 것이다). **모두가 자기 모양대로 표를 만드는 제품**이라 데이터가 *\"a trillion spreadsheets, each with different shapes, columns, types, and sizes\"* 가 된다 — **모양이 제각각인 것이 제품의 값이자 데이터베이스의 문제다.** 그래서 범용 데이터베이스를 안 쓰고 **자체 엔진을 세 층으로 만들었다.**\n\n**⚠️ 총 ARR 실액은 이 발표 요약에서 확인하지 못했다.**\n\n---\n\n## 이 회사의 글 아홉 편을 읽고 남는 것 — 반복되는 여섯\n\n**아래는 이 사이트의 정리다.** 회사가 이렇게 묶어 적은 적은 없다.\n\n**① ⭐⭐ 같은 시스템을 두 목소리로 쓴다.** 모놀리스를 쪼갠 이야기가 두 편인데 말하는 것이\n다르다 — **만든 사람 쪽**(`From 8 years down to 6 months`)은 **8 person-years 추정이\n6 person-months 로** 줄었다고 하고 **성공률도 롤백률도 비용 실액도 없다.**\n**에이전트 1인칭 쪽**(`I Am Morphex`)은 **한계를 다섯 적고**(맥락 못 읽음 · 일부러 틀린 코드 ·\n*\"Plugging an agent into a messy codebase makes the mess louder\"* · 거짓 안전감 · 단일\n실패점) **밤 11시에 주간 담당자가 진단한 사고**를 적는다. **같은 일을 성과로도 대가로도 쓸 수\n있는데 이 회사는 둘 다 냈고, 대가 쪽이 에이전트의 입을 빌려 나온다.**\n\n**② 막힌 제약을 우회하는 대신 그 제약이 안 걸리는 자리로 옮긴다.** mondayDB v3 가 DuckDB 의\n**파일당 writer 하나**를 두고 파일 안 버퍼링과 파일 여러 개+union 을 검토하다 방향을 틀었다 —\n*\"Instead, we stepped back and asked: what if we don't write to DuckDB from the write path at\nall?\"* **쓰기가 파일에 닿지 않으면 writer 수가 문제가 되지 않는다.**\n\n**③ ⭐⭐ 크리티컬 패스에서는 미리 가져다 둔다 — 같은 답을 두 번 냈다.** **아이템 번호**는\n*\"50ms to the critical path isn't just a noticeable delay—it's unacceptable\"* 이라며\n**1,000개씩 선할당**해 생성 시 *\"zero network I/O\"* 로 만들었고, **권한 확인**은 데이터\n소스를 기다리느라 붙던 *\"roughly 200ms\"* 를 **미리 복제해 메모리에서 판정**하는 쪽으로\n풀었다(**P50 240→6ms · P99 720→80ms · 요청의 99% 넘게 메모리에서**). **그리고 미리 담기로\n하니 라우팅도 따라왔다** — 라운드로빈이면 *\"forcing each pod to constantly preload new\ntenants\"* 라 미리 담는 이점이 사라진다.\n\n**④ 밖에 답이 없으면 안에서 자리를 옮긴다.** 2023년에는 **남의 데이터베이스 일곱**(파티션\nRDBMS · ElasticSearch · Apache Pinot · ClickHouse · Apache Druid · CockroachDB · Couchbase)을\n견줘 **다 버렸고**(*\"None of these options completely met our requirements\"*), 2026년에는\n**자기 설계 안의 우회 둘**을 견주다 문제 자체를 다시 세웠다. **밖에 답이 없다는 걸 확인하고\n나면 그다음 결정은 전부 안에서 난다.**\n\n**⑤ ⚠️ 글마다 숫자의 성격이 다르다.** `mondayDB 3`(**5배 · 20배 · 50배 · 40~60%**)과 권한\n편(**240→6ms · 720→80ms**)은 **전부 측정값**인데, **아이템 ID 편은 전부 설정값**이다\n(**1,000 · 80% · 50% · 50억**) — 기준으로 삼은 **50밀리초조차 피하려는 값이지 잰 값이\n아니다.** 관측 편은 그 중간이다 — **트레이스 조회 500ms 는 측정인데 비용 절감 폭은 없다.**\n\n**⑥ ⚠️ 대가를 적는 정도도 글마다 다르다.** **관측 편**은 얻은 것 옆에 잃은 것을 나열하고\n한 문장으로 인정한다 — ***\"An all-in-one platform that is managing everything for you is\nparadise.\"*** **ID 편**은 **버려지는 번호**를 적고 **새로 시작하면 UUIDv7 을 쓰겠다**고까지\n적는다. **그런데 권한 편은 대가가 0줄이다** — 복제를 유지하는 값도, 복제 지연도, 스티키니스의\n쏠림도, 이행 기간도 없다. **같은 회사 안에서 가장 정직한 글과 가장 조용한 글이 나란히 있다.**",
@@ -275,7 +275,9 @@
     "**⚠️ 아이템 ID 생성 편은 나오는 숫자가 전부 설정값이다**(287 재독에서 확인). **1,000개 버퍼 · 80% 임계 · 50% 경보 · 50억** 은 전부 **정한 값**이고, **초당·하루 발급량도 실제 지연도 이행 일정도 팀 규모도 옛 시스템의 실제 사고 기록도 없다.** 기준으로 삼은 **50밀리초**조차 *\"50ms to the critical path… is unacceptable\"* 이라는 **피하려는 값**이지 잰 값이 아니다. **같은 회사의 `mondayDB 3` 편이 5배·20배·50배·40~60% 를 내는 것과 대비된다**(이 관찰은 이 사이트의 것이다).",
     "**⭐ 이 회사가 두 자리에서 같은 답을 따로 냈다.** **보드를 읽는 엔진**(mondayDB)도 **텔레메트리를 읽는 저장소**(ClickHouse)도 **열 지향**이고 이유도 같다 — 거를 때 필요한 부분만 읽으면 된다(*\"most of the time you are querying specific attributes\"*). **읽는 패턴이 비슷하면 저장하는 모양도 같아진다는 것을 두 번 보여 준 셈이다.** ⚠️ **다만 두 글은 서로를 언급하지 않는다** — 관측 글이 mondayDB v3 를 계기로 들 뿐이다(이 연결은 이 사이트의 것이다).",
     "**⭐⭐ 이 회사가 크리티컬 패스 문제에 같은 답을 두 번 냈다.** **아이템 번호 발급**은 *\"50ms to the critical path… is unacceptable\"* 이라며 **1,000개씩 미리 받아 두는 쪽**으로 갔고, **권한 확인**은 데이터 소스를 기다리느라 *\"roughly 200ms\"* 가 붙는 것을 **미리 복제해 메모리에서 판정하는 쪽**으로 풀었다. **둘 다 아이템을 다룰 때마다 앞단에서 걸리는 것이고, 둘 다 답이 '미리 가져다 두기' 다**(이 대비는 이 사이트의 것이다). **⚠️ 다만 대가를 적는 정도는 다르다** — ID 편은 **버려지는 번호**를 적는데 **권한 편은 대가를 한 줄도 안 적는다.**",
-    "**⚠️ 290 에서 마지막 한 편을 열었으나 기준 미달이라 안 썼다.** `From API Chaos to Collaborative Graph`(2026-02-09)는 **버린 대안을 명시하지 않고**(*\"While we did it with GraphQL, other approaches are possible\"* 이라고만 한다) **수치도 없으며** 대가는 둘뿐이다(한 번만 구현하면 된다 · 새 인프라가 필요하다). **대가 칸이 비면 안 쓴다는 규칙대로 넘겼다**(이 판단은 이 사이트의 것이다). **⚠️ 그 밖에 안 읽은 편** — `Chaos Engineering Practices`(2026-03-11) · `Fueling the AI SRE: 600+ Services`(2026-08-10) · Figma→코드 · `Every Playwright Needs a Director` · `Getting More Out of Every AI Token`(2026-07-16) · `The Death of model.fit()`(2026-03-23)."
+    "**⚠️ 290 에서 마지막 한 편을 열었으나 기준 미달이라 안 썼다.** `From API Chaos to Collaborative Graph`(2026-02-09)는 **버린 대안을 명시하지 않고**(*\"While we did it with GraphQL, other approaches are possible\"* 이라고만 한다) **수치도 없으며** 대가는 둘뿐이다(한 번만 구현하면 된다 · 새 인프라가 필요하다). **대가 칸이 비면 안 쓴다는 규칙대로 넘겼다**(이 판단은 이 사이트의 것이다). **⚠️ 그 밖에 안 읽은 편** — `Chaos Engineering Practices`(2026-03-11) · `Fueling the AI SRE: 600+ Services`(2026-08-10) · Figma→코드 · `Every Playwright Needs a Director` · `Getting More Out of Every AI Token`(2026-07-16) · `The Death of model.fit()`(2026-03-23).",
+    "mondayDB 는 1.0 뒤로 더 갔다 — 2.0(규모 쪽), 그리고 DuckDB 기반 3.0 이 있다. **세대별 연도를 확정하지 못해 기능 세대 교체(features[].history)는 비워 뒀다.** 제품·지원 페이지(`support.monday.com/.../mondayDB-3-0`)가 403 으로 막히고, 엔지니어링 글은 버전별 연도를 적지 않는다.",
+    "2014~2020 사이에 모놀리스를 언제부터 쪼개기 시작했는지는 못 찾았다. 2020년을 경계로 잡은 것은 그때 개발 환경이 도커로 옮겨지는 중이었다는 증언에 기댄 것이지, 분리를 시작한 시점이 확인된 것은 아니다."
   ],
   "sources": [
     {
@@ -4074,6 +4076,148 @@
           "publisher": "monday.com Engineering",
           "date": "2026-04-09",
           "summary": "**보드 아이템을 만드는 쪽 이야기.** 단일 MySQL 마스터가 *\"a bottleneck and a single point of failure for creating board items\"* 였고 *\"every DB hiccup affected monday.com customers' ability to interact with their boards\"* 였다. **제약이 하나 못 박혀 있다** — **아이템 ID 는 정수여야 한다.** 하위 서비스와 레거시가 숫자 ID 에 기대고 있어 UUID 로 가려면 *\"rewriting half the codebase\"* 였다. **버린 대안** — **SDK 가 DynamoDB 를 직접 부르는 안**: *\"The maintenance burden would be massive\"*(전사 SDK 갱신) · 파드가 수십만이라 **핫 파티션 스로틀링** · *\"managing thousands of concurrent HTTP connections to AWS is inefficient\"*. 그래서 **중앙 ID 서비스**를 골랐고, 생성 로직을 바꿔도 전사 이관이 필요 없으며 트래픽 급증의 *\"shock absorber\"* 가 된다. **DynamoDB 를 고른 이유 셋** — 글로벌 테이블의 **99.999% 가동 SLA** · **다중 지역 복제**(재해 복구에 필수) · VPC 안에서 **한 자릿수 밀리초**. 파티션 키는 `{domain}.{entityType}`(예: `boards.item`)이고 핵심은 원자적 연산 `SET lastID = if_not_exists(lastID, :min) + :count` — *\"no two servers could ever claim the same ID range, even if they requested it at the exact same microsecond.\"* **양쪽에서 버퍼링한다** — 클라이언트 SDK 가 시작할 때 **1,000개씩** 받아 두어 아이템 생성에 *\"zero network I/O\"* 이고 임계 아래로 떨어지면 뒤에서 채운다 · 서비스도 메모리 풀을 두고 **가용량이 80% 아래로 떨어지면** 채운다. **⚠️ 대가** — **미리 할당하니 파드가 죽으면 ID 가 낭비된다.** 그래서 **엔티티별 일일 소비 한도**와 **평소보다 50% 빨리 소비되면 경보**를 뒀다. 그리고 **ID 공간이 유한하다**(*\"strictly finite (JS Number.MAX_SAFE_INTEGER)\"*). **이행도 조심스럽다** — k6 로 DynamoDB 장애·파드 교체·버퍼 포화를 시뮬레이션하고, **섀도 모드**로 가짜 엔티티 키(`shadow.boards.item`)를 써서 프로덕션 카운터를 안 건드렸으며, **MySQL AUTO_INCREMENT 를 현재 최대치보다 50억 앞으로 밀어** 그 아래 간격을 채우게 하고 **1%에서 100%로** 천천히 올렸다. **🔴 그리고 정직한 후일담이 있다** — 새로 시작하는 프로젝트라면 *\"UUIDs are the superior choice\"* 이고 특히 **UUIDv7** 이 타임스탬프를 품어 정렬 가능하고 *\"sequentially close to each other, which keeps B-Tree indexes happy\"* 라고 적는다. **287 재독에서 결정적 문장 하나와 '안 적은 것' 여섯이 나왔다.** **🔴 왜 미리 받아 두는지의 근거가 있다** — *\"50ms to the critical path isn't just a noticeable delay—it's unacceptable.\"* **그리고 버퍼가 장애 흡수 장치이기도 하다** — 연결 끊김을 시험했더니 *\"local buffers allowed the app to survive short blips\"* 였다. **⚠️ 그런데 안 적은 것이 여섯이다**(이 목록은 이 사이트의 것이다) — **실제 지연·처리량 수치가 하나도 없고**(초당 몇 개, 하루 몇 개를 발급하는지 없다) · **DynamoDB 가 오래 죽었을 때의 대비책이 없고**(짧은 끊김은 버퍼로 버틴다고만 한다) · **버퍼를 1,000개로 정한 근거가 없고**(*\"e.g., 1,000 IDs\"* 라고만 한다) · **관측 세부가 없고**(경보 두 개만 나오고 대시보드도 SLO 도 없다) · **이행 일정이 통째로 없고** · **누가 만들었는지도, 옛 MySQL 이 실제로 어떻게 터졌는지도 없다.**"
+        }
+      ]
+    }
+  ],
+  "eras": [
+    {
+      "id": "2014-client-first",
+      "from": "2014",
+      "to": "2020",
+      "title": "브라우저가 사실상 데이터베이스였다",
+      "context": "2014년 출시. 보드를 보여주고 분석하는 일을 주로 클라이언트에서 했고, 장기 저장은 모놀리식 데이터베이스 하나였다.",
+      "what_changed": "데이터를 통째로 브라우저에 내려 그리는 구조로 시작했다. 서버는 오래 두는 곳이었지 읽는 곳이 아니었다.",
+      "why": "첫 시기다. 고객이 적을 때는 이 구조가 가장 빨리 만들어지고, 표의 모양이 사용자마다 다른 제품에서 서버가 미리 알 것이 별로 없었다.",
+      "tradeoff": "보드가 커지는 순간 브라우저의 한계가 곧 제품의 한계가 됐다 — **수천 건에서 죽었고 2만 건이 상한**이었다. 임포트는 몇 분에서 몇 시간이 걸렸고 심하면 아예 실패했다.",
+      "stack_in": [
+        "모놀리식 데이터베이스"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Introducing mondayDB 1.0",
+          "url": "https://monday.com/blog/product/introducing-mondaydb/",
+          "publisher": "monday.com",
+          "date": "2023-07-27",
+          "summary": "2014년의 클라이언트 중심 구조가 무엇에 막혔고 mondayDB 를 언제 전 고객에게 열었는지 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2020-split",
+      "from": "2020",
+      "to": "2022",
+      "title": "모놀리스를 쪼갰고, 대가는 개발자가 치렀다",
+      "context": "고객이 해마다 3배로 늘고 엔지니어링 팀이 해마다 두 배가 되던 시기다.",
+      "what_changed": "루비 모놀리스에서 핵심을 떼어 Node.js 마이크로서비스로 나눴다. 서비스마다 자기 데이터베이스를 갖고, 프로덕션은 EKS 위에서 돈다.",
+      "why": "개발자·기능·복잡도가 함께 늘면서 모놀리스 하나를 여럿이 같이 만드는 일이 감당이 안 됐다.",
+      "tradeoff": "쪼갠 비용이 **개발 환경으로 갔다.** 새로 온 사람이 환경 하나 세우는 데 며칠이 걸렸고, docker-compose 가 노트북을 잡아먹어 '마이크로서비스를 두어 개보다 많이 동시에 띄우는 것이 거의 불가능'해졌다. 서비스 간 의존 순서는 사람이 외워 수동으로 맞춰야 했다.",
+      "stack_in": [
+        "Node.js",
+        "EKS",
+        "Docker"
+      ],
+      "stack_out": [],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Development environments in the cloud",
+          "url": "https://engineering.monday.com/development-environments-in-the-cloud/",
+          "publisher": "monday engineering",
+          "date": "",
+          "summary": "마이크로서비스로 쪼갠 뒤 개발 환경이 어떻게 무너졌는지를 당사자가 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2022-sphera",
+      "from": "2022-05",
+      "to": "2023",
+      "title": "쪼갠 대가를 플랫폼으로 갚기 시작했다",
+      "context": "서비스가 80개였고 1년 뒤 120개가 됐다.",
+      "what_changed": "내부 개발자 플랫폼 **sphera** 의 첫 정식 버전을 2022년 5월 16일에 냈다. 앞 시기가 각 팀에 떠넘긴 환경 구성을 플랫폼이 가져간다.",
+      "why": "앞 시기가 개발 환경에 떠넘긴 비용이 서비스 수에 비례해 커졌다. 서비스가 80개를 넘으면 '각자 알아서'가 더는 성립하지 않는다.",
+      "tradeoff": "플랫폼을 깔았다고 옛 방식이 사라지지는 않는다 — **1년 가까이 지난 2023년 4월에도 R&D 의 60%만 sphera 를 쓴다.** 그동안은 두 벌을 함께 돌려야 한다.",
+      "domains": [
+        "표를 만드는 쪽의 병목을 없앤다"
+      ],
+      "metrics": [
+        {
+          "label": "서비스 수 (2022 → 2023)",
+          "value": "약 80개 → 약 120개",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Journey to Create an Internal Developer Platform",
+              "url": "https://engineering.monday.com/the-journey-to-create-an-internal-developer-platform/",
+              "publisher": "monday engineering",
+              "date": "2023-04",
+              "summary": "내부 개발자 플랫폼 sphera 의 첫 정식 버전 날짜와 그때의 서비스 수를 밝힌다."
+            }
+          ]
+        },
+        {
+          "label": "sphera 를 쓰는 R&D 비중 (2023-04)",
+          "value": "약 60%",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Journey to Create an Internal Developer Platform",
+              "url": "https://engineering.monday.com/the-journey-to-create-an-internal-developer-platform/",
+              "publisher": "monday engineering",
+              "date": "2023-04",
+              "summary": "내부 개발자 플랫폼 sphera 의 첫 정식 버전 날짜와 그때의 서비스 수를 밝힌다."
+            }
+          ]
+        }
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "The Journey to Create an Internal Developer Platform",
+          "url": "https://engineering.monday.com/the-journey-to-create-an-internal-developer-platform/",
+          "publisher": "monday engineering",
+          "date": "2023-04",
+          "summary": "내부 개발자 플랫폼 sphera 의 첫 정식 버전 날짜와 그때의 서비스 수를 밝힌다."
+        }
+      ]
+    },
+    {
+      "id": "2023-mondaydb",
+      "from": "2023-07",
+      "to": "",
+      "title": "읽는 일을 서버로 가져왔다",
+      "context": "2014년에 고른 클라이언트 중심 구조가 상한에 닿아 있었다.",
+      "what_changed": "**mondayDB** 를 2023년 7월 27일 전 고객에게 열었다. 행이 아니라 **열로 세워 저장하고**, 최근 변경은 Redis 속도층에, 지난 것은 Cassandra 배치층에 두고 질의할 때 서빙층이 둘을 겹쳐 읽는다. 저장과 계산을 갈라 놓았다.",
+      "why": "브라우저가 감당하던 상한(수천 건에서 죽고 2만 건이 최대)이 곧 제품의 상한이었다. 페이지를 나눠 읽으려면 읽는 일 자체가 서버에 있어야 했다.",
+      "tradeoff": "저장소를 둘 들고 질의마다 두 층을 겹쳐 읽어야 한다. 그리고 **데이터베이스를 직접 갖게 됐다** — 남이 고쳐 주지 않는 층이 하나 늘었다.",
+      "domains": [
+        "한 조 개의 표를 읽게 만든다"
+      ],
+      "features": [
+        "board-query-engine"
+      ],
+      "stack_in": [
+        "컬럼 지향 저장",
+        "Redis",
+        "Cassandra"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Introducing mondayDB 1.0",
+          "url": "https://monday.com/blog/product/introducing-mondaydb/",
+          "publisher": "monday.com",
+          "date": "2023-07-27",
+          "summary": "2014년의 클라이언트 중심 구조가 무엇에 막혔고 mondayDB 를 언제 전 고객에게 열었는지 적었다."
+        },
+        {
+          "title": "Nice to meet you, mondayDB architecture",
+          "url": "https://engineering.monday.com/nice-to-meet-you-mondaydb-architecture/",
+          "publisher": "monday engineering",
+          "date": "2023-07-26",
+          "summary": "속도층(Redis)·배치층(Cassandra)을 서빙층이 겹쳐 읽는 람다 구조와 컬럼 지향 저장을 설명한다."
         }
       ]
     }
