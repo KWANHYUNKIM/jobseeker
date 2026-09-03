@@ -8,7 +8,7 @@
     "Mobilint"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "site": "mobilint.com",
   "one_liner": "작은 기기에서 AI 를 돌리는 반도체(NPU)를 직접 설계해 칩과 보드로 판다 — **이 브리핑에서 유일한 반도체 회사**다.",
   "company": {
@@ -856,7 +856,8 @@
             "summary": "`오픈 소스 기반 AI 모델은 통상 400~500개 정도가 있고 에리스는 이를 대부분 처리할 수 있다`, `고객사 입장에서는 하나의 서비스를 제공하더라도 보통 5~10개의 모델이 융합해 사용한다` 는 발언이 이 자리의 일감 크기를 설명한다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/374073",
@@ -1157,7 +1158,8 @@
             "summary": "차별점을 성능이 아니라 개발자 경험에 둔다는 회사 전략이 담겨 있다 — 그 약속이 실제로 판정받는 곳이 SDK 다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/374069",
@@ -1454,7 +1456,8 @@
             "summary": "정밀도 축에서 마주 보는 자리 — 저기는 모델을 얼마나 줄일 수 있는지, 여기는 그 정밀도를 하드웨어가 얼마에 지원할지를 정한다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/374076",
@@ -1755,7 +1758,8 @@
             "summary": "FPGA 프로토타입 위에서 먼저 일하게 되는 소프트웨어 자리 — 칩이 나오기 전 팀 전체의 일정이 이 프로토타이핑에 걸린다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/374078",
@@ -2052,7 +2056,8 @@
             "summary": "정밀도 축에서 마주 보는 자리 — 담당 업무에 `INT8/INT4, FP8, MX Format의 HW 영향 분석 및 Datapath 방향 제시` 와 `Algorithm/Compiler/Runtime 팀과의 HW/SW Co-Design` 이 있고, 그 `Algorithm` 이 이 자리다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/380228",
@@ -2615,7 +2620,8 @@
             "summary": "이 자리가 정한 구조를 회로로 만드는 쪽 — AXI 인터커넥트와 메모리 서브시스템 RTL 설계가 담당 업무에 있다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/361782",
@@ -2901,7 +2907,8 @@
             "summary": "REGULUS 가 TSMC 12나노 기반으로 드론·CCTV·가전 등 온디바이스용이라고 밝힌다 — 이 자리가 필요한 이유가 거기에 있다"
           }
         ]
-      }
+      },
+      "closed": true
     }
   ],
   "open_questions": [

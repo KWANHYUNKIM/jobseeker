@@ -6,7 +6,7 @@
     "㈜커넥트웨이브"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "site": "connectwave.co.kr",
   "one_liner": "다나와·에누리·메이크샵·몰테일을 한 회사 안에 모아 둔 커머스 연합체 — 사업부마다 스택도 개발 문화도 다르다",
   "company": {
@@ -809,7 +809,8 @@
             "summary": "데이터 커머스(다나와·에누리) 부문의 거래액·매출 규모"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/368343",
@@ -1218,7 +1219,8 @@
             "summary": "다나와·에누리를 하나로 묶는 방향 — 지표 표준화가 왜 필요한지의 배경"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/273652",
@@ -1477,7 +1479,8 @@
             "summary": "데이터 커머스(다나와·에누리) 부문 거래액 6,000억 — 검색이 걸린 사업의 크기"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/382080",

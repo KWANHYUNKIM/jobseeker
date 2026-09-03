@@ -6,7 +6,7 @@
     "쿤텍"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "site": "coontec.com",
   "one_liner": "공급망·임베디드·관제까지 보안을 넓게 파는 회사 — 사업그룹마다 스택이 완전히 다르다",
   "company": {
@@ -937,7 +937,8 @@
             "summary": "보안 솔루션 웹 UI/UX + 백엔드 + RestAPI. 자격요건이 전부 '1개 이상'으로 열려 있고 경력 2-12년"
           }
         ]
-      }
+      },
+      "closed": true
     }
   ],
   "open_questions": [

@@ -7,7 +7,7 @@
     "와탭"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "site": "whatap.io",
   "one_liner": "남의 시스템 안을 초 단위로 들여다보는 것을 파는 회사 — 국산 APM의 뿌리(오픈소스 스카우터)에서 나와 SaaS로 옮겨 온 옵저버빌리티 플랫폼",
   "company": {
@@ -816,7 +816,8 @@
             "summary": "'단품이 아니라 이어 보는 옵저버빌리티'라는 회사 방향"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/313225",
@@ -1779,7 +1780,8 @@
             "summary": "서버 쪽 에이전트가 같은 문제(남의 프로세스에서 계측하기)를 어떻게 푸는지 코드로 볼 수 있다"
           }
         ]
-      }
+      },
+      "closed": true
     }
   ],
   "open_questions": [

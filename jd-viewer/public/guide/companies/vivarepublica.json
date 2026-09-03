@@ -6,7 +6,7 @@
     "비바리퍼블리카"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "site": "toss.im",
   "one_liner": "송금 하나로 시작해 은행·증권·결제까지 삼킨 회사 — 한 앱 안에서 금융 전체를 다시 만든 곳",
   "company": {
@@ -1320,7 +1320,8 @@
             "summary": "이 자리가 올라타는 공통 모듈·디자인 시스템을 만드는 쪽 — 두 브리핑을 겹쳐 읽으면 구조가 보인다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/335070",
@@ -1570,7 +1571,8 @@
             "summary": "신뢰성 기준을 세우는 쪽 — 이 공고의 root cause 요구와 겹쳐 읽을 만하다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/377225",

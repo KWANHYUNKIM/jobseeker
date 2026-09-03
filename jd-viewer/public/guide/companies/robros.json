@@ -7,7 +7,7 @@
     "㈜로브로스"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "site": "robros.co.kr",
   "one_liner": "사람 몸을 한 로봇에 지능을 넣는 회사 — 휴머노이드 `IGRIS-C` 와 그것을 움직이는 Multimodal 모델을 함께 만든다",
   "company": {
@@ -2867,7 +2867,8 @@
             "summary": "offline-to-online 알고리즘을 연구하는 자리 — 이 공고가 그 고리를 현장에서 실제로 돌리는 쪽이다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/352196",

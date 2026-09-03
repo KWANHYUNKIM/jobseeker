@@ -8,7 +8,7 @@
     "Upstage"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "site": "upstage.ai",
   "one_liner": "한국어 파운데이션 모델 `Solar` 와 문서 AI 를 직접 만들어 기업에 파는 회사 — 2026년 포털 `다음`을 인수해 AI 포털로 방향을 틀었고, 매출 248억에 영업손실 304억을 감수하며 모델에 돈을 붓고 있다",
   "salary": {
@@ -934,7 +934,8 @@
             "summary": "본문이 같은 원판. 학습 항목 열 개가 그쪽 브리핑에 있다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/373113",
@@ -1415,7 +1416,8 @@
             "summary": "같은 회사의 제품 쪽 연구 자리. 전형과 문턱이 다르다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/370318",
@@ -2217,7 +2219,8 @@
             "summary": "같은 에이전트 영역의 실행 계층 자리. 문턱이 한 단 아래다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/362629",
@@ -4800,7 +4803,8 @@
             "summary": "구축형(온프레미스) 제품. 책임 경계가 다르다"
           }
         ]
-      }
+      },
+      "closed": true
     }
   ],
   "open_questions": [

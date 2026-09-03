@@ -10,7 +10,7 @@
     "Elice"
   ],
   "status": "done",
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "site": "elice.io",
   "one_liner": "AI 교육 회사로 시작해 **데이터센터를 직접 짓는 회사**가 됐다 — 애플리케이션과 물리 인프라를 한 회사에서 나란히 볼 수 있는 드문 구성이다.",
   "company": {
@@ -1481,7 +1481,8 @@
             "summary": "같은 팀의 배포 파이프라인 자리 — SRE 와 자격요건이 동일하고, 이 공고와는 다루는 층이 다르다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/208423",
@@ -2933,7 +2934,8 @@
             "summary": "사고가 났을 때 고객에게 알리는 통로 — 장애 공지와 문의 대응이 담당 업무다"
           }
         ]
-      }
+      },
+      "closed": true
     },
     {
       "url": "https://www.wanted.co.kr/wd/57878",
