@@ -4,42 +4,45 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 모집중 113건 중 **27건** 작성(학습 227개).
+**쿠팡**(`coupang`) — `in_progress`. 모집중 113건 중 **28건** 작성(학습 236개).
 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
 
-직전 회차: **`[쿠팡페이] Senior QA Engineer (계약직)`**(saramin, `경력 5~12년`).
-줄 집합 대조 결과 **기존과 공통 줄 0개**. **QA 직군은 처음.**
+직전 회차: **`보안엔지니어 (이메일 보안) 채용`**(saramin, `경력5년↑`). 공통 줄 0.
+보안 직군의 **두 번째**(앞은 `Principal, Security Engineer`)이고 **국내 채용 보안 공고는 처음.**
 
 이 공고에서만 나온 것:
-- ⚠️ **전체 5년인데 QA/SDET 경력은 1년만 요구한다** — **개발자에서 테스트 자동화로
-  방향을 튼 사람에게 열린 구조**다. 자격에 프로그래밍 언어가 따로 있으니
-  **코드를 쓰는 QA** 를 찾는다.
-- 담당업무가 **예외 흐름을 이름으로 나열**한다 — `정상 결제뿐만 아니라 실패, 취소, 환불,
-  재처리`. 같은 조직 백엔드 공고들이 `데이터 정합성` 을 반복 요구하는 것과 정확히 짝이다.
-  → `edge` 를 **결제 예외 조합 표**(상태 × 요청)로 잡았다.
-- **`Test Data Management` 가 담당업무에 한 줄로 따로 있다** — 결제 E2E 는 데이터를
-  만드는 것부터가 일이고, 개인정보·카드 정보 때문에 실제 데이터를 못 쓴다.
-- ⚠️ **계약직**이다. `fit` 과 `interview` 에 계약 기간·전환 조건 확인을 넣었다.
+- 자격 요건 12줄 중 절반 이상이 `이메일` 로 시작한다 — **한 통로만 깊게 파는 자리.**
+  `SPF, DKIM, DMARC` 가 명시돼 있고 **피싱 모의 훈련 진행 경험**이 자격에 따로 있다.
+- ⚠️ 담당업무 마지막 줄이 **`업무 외 시간의 사고 및 이슈에 대비한 On-call`** —
+  공부할 항목이 아니라 **확인할 항목**으로 잡고, 면접 질문 다섯 개를 드릴로 만들었다.
+- 자격에 **설득 능력**이 있다(`데이터와 통찰력을 근거로 사람들을 설득하고`) — 보안은
+  남의 일하는 방식을 바꾸는 일이라 **금지하는 사람이 아니라 대안을 들고 오는 사람**.
+- ⚠️ **실습 경계를 항목마다 명시했다** — 헤더 분석은 **자기 계정**, 인증 설정은 **본인
+  소유 도메인**, 악성 분석은 **격리된 가상머신 + 공개 훈련용 샘플**(EICAR 등).
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합)** 을 본다.
 
-⚠️ **중복 게시 8건 목록**(이미 쓴 공고와 한국어 줄이 50% 넘게 겹친다) — 대상으로 잡히면
-줄 집합을 대조하고 같으면 건너뛴다: `CS Specialist (데이터 분석 & AI) 채용`(dev),
-`Manager, Back-end Engineering (Rocket Pay)`(ats), `Senior, Back-end Engineer (Advertiser
-Platform)`(ats), `Senior Staff Back-end Engineer (Rocket Pay)`(ats), `Sr Backend Engineer
-(Eats Merchant)`(ats), `Staff Backend Engineer (Orchestration Platform)`(ats),
-`Staff, Back-end Engineer (GOEX)`(ats), `Global Operations Technology(GOT) 개발자 집중 채용`(ats).
+⚠️ **중복 게시 8건** — 대상으로 잡히면 줄 집합을 대조하고 같으면 건너뛴다:
+`CS Specialist (데이터 분석 & AI) 채용`(dev), `Manager, Back-end Engineering (Rocket Pay)`(ats),
+`Senior, Back-end Engineer (Advertiser Platform)`(ats), `Senior Staff Back-end Engineer
+(Rocket Pay)`(ats), `Sr Backend Engineer (Eats Merchant)`(ats), `Staff Backend Engineer
+(Orchestration Platform)`(ats), `Staff, Back-end Engineer (GOEX)`(ats),
+`Global Operations Technology(GOT) 개발자 집중 채용`(ats).
+⚠️ 여기에 **`Senior Security Engineer (Detection Op…)`(ats)** 도 더한다 — 방금 쓴
+이메일 보안 공고와 **본문이 같다.**
 
-아직 안 다룬 축:
+아직 안 다룬 축(전부 공통 줄 0 확인함):
+- `[쿠팡/계약직] 정보보안 GRC 담당자 채용`(saramin, `경력8년↑`, 821/223/227) — **GRC 는 처음.**
+- `[쿠팡] Tier1 Security Analyst (계약직)`(saramin, `경력 1~4년`, 461/461/206) —
+  **보안의 낮은 연차 문**(신호 13번의 근거 중 하나).
 - **데이터 사이언스 4건** — ⚠️ 둘은 `qualifications` 가 비고 `preferences` 가 길다.
-- 보안 2건(`보안엔지니어 (이메일 보안)` — ⚠️ ats 공고와 중복, `[쿠팡/계약직] 정보보안 GRC 담당자`).
-- `[쿠팡로지스틱스서비스] Logistics Data Assistant`(`경력무관`) — **CLS 법인**은 처음이다.
+- `[쿠팡로지스틱스서비스] Logistics Data Assistant`(`경력무관`) — **CLS 법인은 처음.**
 
 닫을지 판단할 재료:
 - **`salary`**: **여전히 근거 없음.** 전형 마지막 단계는 공고마다 다르다 — 일반화 금지.
 - **`people`**: 공개 발표·서명 있는 기술 글. **못 찾으면 빈 배열이 정상.**
-- ⚠️ **113건 중 27건이지만 중복 게시가 최소 8건**이므로 실제 자리 수는 113보다 적다.
+- ⚠️ **113건 중 28건이지만 중복 게시가 최소 9건**이므로 실제 자리 수는 113보다 적다.
 
 ## 자료 접근 지도
 
@@ -55,6 +58,11 @@ Platform)`(ats), `Senior Staff Back-end Engineer (Rocket Pay)`(ats), `Sr Backend
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **보안 공고의 드릴에는 실습 경계를 항목마다 적는다.** 이메일 보안 공고에서 헤더 분석은
+  **자기 계정**, 인증(SPF/DKIM/DMARC) 실습은 **본인 소유 도메인**, 악성 파일 분석은
+  **격리된 가상머신 + 공개 훈련용 샘플**로 한정했다. 경계를 한 번만 적고 넘어가면 항목을
+  따로 읽는 뷰어에서는 그 문장이 안 보인다 — **항목마다 적는다.**
 
 - **얇은 공고는 얇게 쓴다.** 장애인 채용 라벨링 공고는 세 절 합계가 275자였다. 여기서
   10개를 채우려면 공고에 없는 말을 지어내야 한다 — **6개로 끝내고 `open_questions` 도
