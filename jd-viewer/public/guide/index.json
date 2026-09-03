@@ -253,6 +253,19 @@
       "postings": 1,
       "study_items": 9,
       "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "4valuesoft",
+      "name": "포밸류소프트",
+      "aliases": [
+        "포밸류소프트",
+        "㈜포밸류소프트",
+        "4ValueSoft"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-03"
     }
   ]
 }
