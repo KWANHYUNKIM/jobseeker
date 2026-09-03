@@ -14,7 +14,7 @@
 
 | 낱말 | slug | 왜 이 낱말 | 무엇을 읽을 수 있나 |
 |---|---|---|---|
-| JPA | `jpa` | **(b) 끊긴 링크 — `spring` 이 "N+1·영속성 컨텍스트·지연 로딩의 본체"라며 넘겼다.** **(c) 공고에서 Spring 과 한 묶음으로 나온다** — `JVM 생태계(Java, Kotlin, Spring, JPA)`(큐엠아이티), `JPA 사용 경험`(마인드허브), `MariaDB, Redis, JPA, QueryDSL, Liquibase`(헤렌). ⚠️ **`spring` 문서의 JPA 절은 `inferred` 로 남겨 뒀다** — 1차 자료 URL 을 확인하지 못했기 때문이다. **이 문서를 쓸 때 Jakarta Persistence 사양과 Hibernate 공식 문서 URL 을 `WebSearch` 로 확인해 그 절까지 소급해 받친다.** 축은 영속성 컨텍스트(1차 캐시·변경 감지·플러시 시점), 지연/즉시 로딩, N+1 의 세 가지 해법, 그리고 **ORM 을 쓰면서도 SQL 을 봐야 하는 이유** | Jakarta Persistence 사양(jakarta.ee), Hibernate 공식 문서(hibernate.org/orm/documentation). **URL 은 `WebSearch` 로 확인하고 건다** |
+| 트랜잭션 격리 수준 | `transaction-isolation` | **(b) 끊긴 링크 — `jpa` 가 "동시 수정에서 무엇이 이기는가"로 가리킨다.** **(c) 공고에 설명 없이 나온다** — `JPA / Hibernate 프레임워크 및 트랜잭션, 동시성 처리에 대한 이해`(인터엑스), `Redis 등을 활용한 동시성 제어(분산 락) 및 캐싱 전략 최적화`(네이버페이), `동시성 관련 이슈를 해결한 경험`(스콘에이아이). 축은 **네 격리 수준과 각각이 허용하는 이상 현상**(더티 리드·반복 불가 읽기·팬텀), MVCC 가 실제로 하는 일, **낙관적 vs 비관적 잠금**, 그리고 **분산 락이 왜 별개 문제인가**(→ `idempotency` 와 이어진다) | 표준은 SQL 표준(ISO/IEC 9075)이지만 **유료다** — 색띠·E24·TIA-485 때와 같은 처리. 링크 가능한 1차 자료는 **DB 벤더 문서**(PostgreSQL 의 Transaction Isolation 장, MySQL InnoDB 문서)이고 **벤더마다 기본값과 구현이 다르다는 사실 자체가 이 문서의 핵심**이다. URL 은 `WebSearch` 로 확인하고 건다 |
 | 멱등성 | `idempotency` | **(c) 회의에서 그냥 쓰이는 말.** 결제·주문 공고의 자격요건에 `멱등성`이 설명 없이 등장한다. 재시도·중복 요청·네트워크 타임아웃과 한 몸이라 백엔드 면접의 단골이기도 하다. 정의는 한 줄인데 *언제 멱등키를 쓰고 언제 분산 락을 쓰나*를 가른 글은 드물다 | HTTP 메서드 정의(RFC 9110), Stripe·Toss 결제 API 의 idempotency key 문서, 국내 커머스 기술블로그의 재시도 글 |
 
 ## 미룸
