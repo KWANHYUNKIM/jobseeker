@@ -468,6 +468,178 @@
           }
         ]
       }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8064140",
+      "title": "Senior Staff Backend Engineer - Fraud Detection",
+      "site": "ats",
+      "closed": false,
+      "verdict": "**모델이 내린 판단을 실제로 돈이 오가는 순간에 적용하는 시스템을 만드는 자리.** 조직 이름이 `Risk, Fraud & Trust Engineering` 이고, 공고가 이 자리의 성격을 한 줄로 말한다 — `bridge the gap between Data Science and Engineering`. **데이터 사이언티스트가 만든 모델을 운영에 올리고 그 위에 실시간 판단 시스템을 세우는 일**이다. **경력 13년 이상**, 스택은 **Java + 스트림 처리(Flink·Kafka·Spark Streaming)**.",
+      "fit": {
+        "must_have": [
+          "**백엔드·데이터 엔지니어링 또는 대규모 분산 시스템 경력 13년 이상**",
+          "**대규모 실시간 분산 데이터 처리 시스템**을 만들어 본 경험",
+          "**`Apache Flink, Kafka, Spark Streaming`** 같은 스트리밍 기술 실무",
+          "**Java 기반 백엔드**와 분산 시스템 아키텍처",
+          "**낮은 지연·높은 처리량의 파이프라인과 서빙 시스템** 설계",
+          "**운영 환경에서 모델을 배포·확장·최적화**해 본 경험",
+          "시스템 설계·확장성·장애 감내·운영 완성도에 대한 지식"
+        ],
+        "can_learn": [
+          "이상 거래 도메인 지식 — 공고가 따로 요구하지 않는다. **요구하는 것은 그것을 떠받치는 엔지니어링**이다",
+          "⚠️ **이 자리는 모델을 만드는 자리가 아니다** — 담당업무가 `Partner closely with Data Scientists` 이고 `translating complex modeling requirements into scalable engineering solutions` 다. **모델링을 하고 싶다면 이 회사의 Data Scientist 계열 공고를 본다**",
+          "⚠️ **본문이 영어**이고 자체 채용 사이트(ats) 공고다",
+          "⚠️ 담당업무에 **`provide leadership during critical production incidents`** 가 있다 — **장애 대응을 이끄는 일이 명시**돼 있다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "**결제 순간에 판단해야 한다 — 지연이 곧 제약이다**",
+          "from": "task",
+          "quote": "Build and optimize large-scale batch and real-time data pipelines capable of processing high-volume events with low latency and high reliability.",
+          "priority": "core",
+          "why": "**이상 거래 탐지가 다른 데이터 시스템과 갈리는 지점이 여기다.** 리포트는 늦어도 되지만 **결제를 막을지 말지는 그 자리에서 정해야 한다** — 고객은 기다리고 있고, 늦으면 정상 거래까지 실패한다. 그래서 이 시스템은 **`batch and real-time` 을 함께** 쓴다: 무거운 특징 계산(지난 30일 행동 같은 것)은 미리 해 두고, 결제 순간에는 **이미 계산된 값을 꺼내 모델에 넣고 답하는 것**만 한다. ⚠️ 여기서 유명한 함정이 있다 — **미리 계산한 값과 그 순간의 값이 어긋나는 것**(학습 때는 사후에 알 수 있던 정보가 실시간에는 없다).",
+          "gap_check": "결제 흐름 안에서 몇 밀리초 안에 답해야 하는 판단을 만들어 본 적이 있나? 미리 계산한 특징과 실시간 값이 어긋나는 문제를 아나?",
+          "drill": "**두 겹 파이프라인을 만든다.** ① 거래 이벤트 스트림을 만들고 ② **지난 기간 집계를 미리 계산해 빠른 저장소에 넣고** ③ 결제 시점에 그 값을 꺼내 판정하는 API 를 만들어 **99 백분위 응답을 재고** ④ 미리 계산이 늦어졌을 때 **옛 값을 쓸지 판정을 보류할지** 정책을 만들고 ⑤ 학습에 쓴 특징과 서빙에서 쓴 특징이 **같은 코드로 계산되게** 묶는다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**모델을 운영에 올리는 것 전부가 이 자리의 책임이다**",
+          "from": "task",
+          "quote": "Own the end-to-end productionization of machine learning models, ensuring deployment architectures meet performance, scalability, and operational requirements.",
+          "priority": "core",
+          "why": "**`end-to-end productionization` 과 `Own` 이 함께 있다** — 모델을 받아 올리는 것이 아니라 **올리는 방식 자체를 설계하고 책임진다**는 뜻이다. 여기에는 데이터 사이언티스트가 대개 다루지 않는 것들이 들어온다: **모델 버전 관리와 되돌리기**, **여러 모델을 동시에 태워 비교하기**, **판정 결과를 나중에 설명할 수 있게 기록하기**(왜 이 거래를 막았는지 물어보는 사람이 반드시 생긴다), 그리고 **모델이 조용히 나빠지는 것**을 잡아내기. ⚠️ 이상 거래는 특히 **정답이 늦게 온다** — 사기였는지는 며칠 뒤 신고로 알게 되므로 성능 확인이 실시간으로 안 된다.",
+          "gap_check": "모델을 되돌리는 데 얼마나 걸리나? 왜 이 판정이 나왔는지 나중에 설명할 수 있게 무엇을 남기나?",
+          "drill": "**판정을 설명 가능하게 만든다.** ① 모델 판정 API 를 만들고 ② 요청마다 **모델 버전·입력 특징·점수·임계값**을 함께 기록하고 ③ 임계값만 바꿔 재판정할 수 있게 하고 ④ 두 모델을 동시에 태워 **한쪽은 판정만 하고 기록**하게 하고(섀도) ⑤ **정답이 며칠 뒤 도착하는 상황**을 만들어 그때 성능을 계산하는 흐름을 붙인다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "막는 것과 통과시키는 것의 대가가 다르다",
+          "from": "task",
+          "quote": "Lead the architecture, design, and development of scalable data and ML infrastructure supporting fraud detection, risk evaluation, and trust systems.",
+          "priority": "core",
+          "why": "**세 단어가 나란히 있다 — `fraud detection`(잡기), `risk evaluation`(재기), `trust`(신뢰).** 이 도메인의 본질적 난제는 정확도가 아니라 **두 종류 실패의 값이 다르다는 것**이다: 사기를 놓치면 돈을 잃지만, **정상 고객을 막으면 그 고객을 잃는다**(그리고 고객센터 비용이 든다). 그래서 시스템은 **막느냐 통과시키느냐의 이분법이 아니라 여러 단계**를 갖는다 — 통과 / 추가 인증 요구 / 보류 후 검토 / 차단. **어느 점수 구간을 어디로 보낼지 정하는 것**이 곧 사업 결정이고, 그 결정을 **바꿀 수 있게 만드는 것**이 이 자리의 설계다.",
+          "gap_check": "놓친 사기와 잘못 막은 정상 거래의 비용을 비교해 본 적이 있나? 임계값을 코드 배포 없이 바꿀 수 있게 만들 수 있나?",
+          "drill": "**단계별 대응을 만든다.** ① 판정 점수를 구간으로 나눠 **통과·추가 인증·보류·차단** 네 갈래로 보내고 ② 각 구간의 경계를 **설정으로 바꿀 수 있게** 하고 ③ 경계를 옮겨 가며 **놓친 건수와 잘못 막은 건수가 어떻게 움직이는지** 표로 만들고 ④ 각 실패의 **비용을 가정해 총비용 곡선**을 그리고 ⑤ 최적 지점과 그 근거를 한 문단으로 쓴다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "스트림 처리 — Flink·Kafka 가 이름으로 적혔다",
+          "from": "qualification",
+          "quote": "Hands-on experience with data streaming technologies such as Apache Flink, Kafka, Spark Streaming, or similar frameworks",
+          "priority": "core",
+          "why": "**도구 이름이 셋이나 적힌 것은 실제로 쓰고 있다는 뜻이다.** 이상 거래에서 스트림 처리가 필요한 이유는 분명하다 — **판단의 재료가 `방금 전까지의 행동`** 이기 때문이다(5분 사이 결제 열 번, 다른 기기에서 동시 접속). 그래서 **상태를 들고 있는 처리**가 필요하고, 거기서 어려운 것들이 나온다: **상태가 커지면 어디에 두나**, **처리기가 죽으면 상태가 살아남나**(체크포인트), **늦게 온 이벤트를 이미 지나간 창에 어떻게 넣나**(워터마크), 그리고 **같은 이벤트가 두 번 와도 집계가 틀리지 않는가**.",
+          "gap_check": "상태를 들고 있는 스트림 처리에서 장애 복구가 어떻게 되는지 설명할 수 있나? 늦게 온 이벤트를 어떻게 다루나?",
+          "drill": "**상태를 가진 처리를 죽여 본다.** ① `최근 5분간 같은 카드의 결제 횟수` 를 계산하는 스트림 처리를 만들고 ② **처리기를 죽였다 살려** 집계가 이어지는지 확인하고(체크포인트) ③ **늦게 도착하는 이벤트**를 넣어 이미 닫힌 창을 어떻게 할지 두 방식으로 구현하고 ④ 같은 이벤트를 두 번 넣어 **집계가 틀리는지** 보고 ⑤ 상태 크기를 키워 **어디서 무너지는지** 재고 정리 정책을 만든다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "데이터 사이언스와 엔지니어링 사이를 잇는 일",
+          "from": "task",
+          "quote": "Partner closely with Data Scientists and Engineering teams to bridge model development and production deployment, translating complex modeling requirements into scalable engineering solutions.",
+          "priority": "high",
+          "why": "**이 문장이 이 자리의 정체다** — 모델을 만드는 사람도, 서비스를 만드는 사람도 아닌 **그 사이를 잇는 사람**이다. 이 경계에서 갈등이 생기는 지점은 정해져 있다: 데이터 사이언티스트는 **정확도를 위해 무거운 특징**을 쓰고 싶고 엔지니어는 **지연 예산** 안에 들어와야 하며, 실험 코드는 **노트북에서 돌지만 운영에서는 다르게 동작**하고(같은 계산을 다시 짜다 값이 어긋난다), 모델 갱신 주기와 배포 주기가 맞지 않는다. **번역한다(`translating`)** 는 말은 **모델의 요구를 시스템 제약 안으로 옮기는 협상**을 뜻한다.",
+          "gap_check": "모델이 요구하는 특징이 지연 예산을 넘길 때 어떻게 조율하나? 학습 코드와 서빙 코드가 다르게 계산되는 문제를 겪어 봤나?",
+          "drill": "**같은 특징을 두 곳에서 계산해 어긋나게 만든다.** ① 학습용 특징 계산을 파이썬으로, 서빙용을 자바로 각각 만들고 ② **같은 입력에 다른 값이 나오는 상황**을 재현하고(반올림·널 처리·시간대) ③ 검증 작업을 붙여 **차이를 자동으로 잡아내고** ④ 계산 정의를 한 곳에 두는 방법을 하나 구현하고 ⑤ 무거운 특징 하나를 골라 **지연 예산 안에 들어오게 근사**해 정확도 손실을 잰다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "장애 때 앞에 서는 것이 담당업무다",
+          "from": "task",
+          "quote": "Mentor senior engineers, drive technical decision-making, and provide leadership during critical production incidents and architectural reviews.",
+          "priority": "high",
+          "why": "**`during critical production incidents` 가 담당업무에 적힌 것은 이 시스템이 멈추면 곧바로 돈이 흐르거나 막히기 때문이다.** 이상 거래 시스템의 장애는 두 방향으로 나쁘다 — 판정이 멈춰 **전부 통과시키면 사기가 들어오고**, 전부 막으면 **정상 결제가 다 실패한다.** 그래서 이 시스템에는 **판정기가 죽었을 때 무엇을 할지 미리 정해 두는 것**이 반드시 있어야 하고, 그 결정은 기술이 아니라 사업 판단이다. 그리고 `Mentor senior engineers` — **시니어를 가르치는 것**이 담당업무다.",
+          "gap_check": "판정 시스템이 죽었을 때 통과시킬 것인가 막을 것인가? 그 결정을 누구와 어떻게 정하나?",
+          "drill": "**죽었을 때의 규칙을 만든다.** ① 판정 API 를 호출하는 결제 흐름을 만들고 ② 판정기를 죽여 **기본 동작 두 가지**(전부 통과 / 전부 보류)를 각각 구현하고 ③ 각각의 **한 시간치 피해를 추정**하고 ④ 금액대별로 다르게 대응하는 규칙을 만들고(소액은 통과, 고액은 보류) ⑤ 장애 대응 절차서를 한 장으로 쓴다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "오래 갈 방향을 정한다는 것",
+          "from": "task",
+          "quote": "Define long-term technical vision and roadmap for data processing, ML platform capabilities, and fraud detection infrastructure.",
+          "priority": "high",
+          "why": "**13년차 이상에게 요구되는 것은 지금 잘 돌아가게 하는 것이 아니라 2~3년 뒤에도 버티는 방향을 고르는 일이다.** 이 도메인에서 방향이 갈리는 지점은 분명하다 — **규칙 기반과 모델 기반의 비중**(규칙은 설명이 쉽고 즉시 바꿀 수 있지만 상대가 우회하는 순간 무력해진다), **범용 ML 플랫폼을 만들지 이 문제에 맞춘 것을 만들지**, 그리고 **사기 수법이 계속 바뀐다는 사실**을 어떻게 구조에 반영할지(새 특징을 며칠 만에 추가할 수 있는가). 로드맵의 값은 목록이 아니라 **하지 않기로 한 것**에서 나온다.",
+          "gap_check": "규칙과 모델을 각각 언제 쓰는지 설명할 수 있나? 새 사기 수법이 나타났을 때 대응까지 며칠 걸리는 구조인가?",
+          "drill": "**대응 속도를 재는 로드맵을 쓴다.** ① 새 사기 유형 하나를 가정하고 ② 지금 구조에서 **탐지까지·새 특징 추가까지·모델 재학습까지** 각각 며칠이 걸리는지 적고 ③ 가장 오래 걸리는 단계를 줄이는 방법을 셋 대고 ④ 규칙으로 임시 대응하고 모델로 넘기는 **2단계 계획**을 세우고 ⑤ **하지 않을 것**을 명시한다.",
+          "hours": 12,
+          "resources": []
+        },
+        {
+          "topic": "기준을 올린다 — 조직 차원의 일",
+          "from": "task",
+          "quote": "Lead complex cross-functional initiatives, establish engineering best practices, and raise the bar for system scalability, reliability, and operational excellence.",
+          "priority": "high",
+          "why": "**`raise the bar` 는 이 회사 공고에서 반복되는 표현이고, 개인이 잘하는 것과 다른 일이다.** 조직의 기준을 올리려면 **모범을 문서로 만들고, 그것이 지켜지는지 자동으로 확인하고, 안 지켜질 때 무엇을 할지 정해야** 한다. `cross-functional` 이 붙은 것도 중요하다 — 이 시스템은 **결제·고객센터·리스크 정책·데이터 사이언스**가 모두 이해관계자라, 기술 결정이 곧 그들의 업무를 바꾼다. **합의 없이 바꾸면 되돌아온다.**",
+          "gap_check": "팀 밖의 기준을 바꿔 본 적이 있나? 모범 사례가 지켜지는지 어떻게 확인했나?",
+          "drill": "**기준 하나를 정해 지켜지게 만든다.** ① `모든 판정 API 는 요청 식별자와 모델 버전을 기록한다` 같은 규칙을 정하고 ② 문서로 쓰고 ③ **CI 나 실행 시 검사로 강제**하고 ④ 기존 코드에서 몇 건이 위반인지 세고 ⑤ 이해관계자에게 보여 줄 **한 장짜리 설명**을 만든다.",
+          "hours": 12,
+          "resources": []
+        },
+        {
+          "topic": "Java 로 낮은 지연을 만든다",
+          "from": "qualification",
+          "quote": "Strong proficiency in Java-based backend development and distributed system architecture",
+          "priority": "high",
+          "why": "**앞서 쓴 물류 공고(`Global Operations Technology`)도 Java 를 명시했다 — 이 회사 백엔드의 공통 스택으로 보인다.** 다만 이 자리는 **지연 예산이 훨씬 빡빡하다**(결제 흐름 안에서 판단해야 한다). 그러면 Java 에서 신경 쓸 것이 달라진다 — **GC 로 멈추는 순간이 응답 꼬리를 만들고**, 객체를 많이 만들면 그 멈춤이 잦아지며, **특징을 담는 자료구조 선택**이 지연에 직접 영향을 준다. 그리고 모델 추론이 자바 안에서 도는지 별도 서비스인지에 따라 **경계를 넘는 비용**이 붙는다.",
+          "gap_check": "응답 시간의 꼬리를 GC 와 연결해 분석해 본 적이 있나? 모델 추론을 같은 프로세스에서 할지 분리할지 판단할 수 있나?",
+          "drill": "**두 구조를 비교한다.** ① 판정 로직을 **같은 프로세스에서 추론**하는 방식으로 만들고 ② **별도 추론 서비스 호출**로도 만들고 ③ 둘의 **99 백분위 응답과 처리량**을 재고 ④ GC 로그를 켜 멈춤과 꼬리를 겹쳐 보고 ⑤ 어느 쪽이 어떤 상황에 맞는지 정리한다.",
+          "hours": 14,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**단계별 대응과 총비용 곡선**(놓친 사기 vs 잘못 막은 정상 거래)",
+          "why": "이 도메인의 본질은 정확도가 아니라 **두 실패의 값이 다르다**는 것이다. 임계값을 옮겨 가며 두 오류가 어떻게 움직이는지 재고 **비용을 가정해 최적 지점을 고른 기록**은, 모델 지표만 말하는 지원자와 갈린다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**학습과 서빙에서 같은 특징이 다르게 계산되는 것을 재현하고 잡아낸 실습**",
+          "why": "담당업무가 `bridge the gap between Data Science and Engineering` 이다. 이 경계에서 가장 자주 나는 사고를 **일부러 만들고 자동 검증으로 잡은 기록**이 그 역할을 해 봤다는 증명이다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**판정기가 죽었을 때의 규칙**(금액대별 기본 동작과 피해 추정)",
+          "why": "담당업무에 `provide leadership during critical production incidents` 가 있다. 전부 통과와 전부 차단이 **각각 어떻게 나쁜지 숫자로 추정하고 금액대별로 나눈 규칙**은 기술이 아니라 사업 판단을 해 본 흔적이다.",
+          "effort": "하루"
+        },
+        {
+          "idea": "**새 사기 유형 대응까지 며칠 걸리는지 잰 로드맵**",
+          "why": "`Define long-term technical vision and roadmap` 이 담당업무다. 사기 수법은 계속 바뀌므로 **대응 속도 자체가 아키텍처의 품질**이다 — 탐지·특징 추가·재학습 각각의 소요를 재고 줄이는 계획은 이 층위의 문서다.",
+          "effort": "이틀"
+        }
+      ],
+      "interview": {
+        "process": "**전형 안내가 이 공고 본문에는 없다.** ⚠️ 같은 회사의 다른 자체 채용 사이트 공고(`Senior Staff, Back-end Engineer (Global Operations Technology)`)에는 `Application Review - 1st Interview - 2nd Interview - Offer` 와 **`12 weeks of probation period`(12주 수습)** 가 명시돼 있으므로 **비슷한 형태를 예상하되 단정하지 않는다** — 그 공고도 `may vary according to the specific job` 이라고 밝힌다. **본문이 영어**이므로 영어 이력서·면접 가능성을 염두에 둔다.",
+        "expect": [
+          "**결제 흐름 안에서 몇 밀리초 안에 답해야 하는 판단을 만들어 본 적이 있나**",
+          "미리 계산한 특징과 실시간 값이 어긋나는 문제를 어떻게 막나",
+          "**모델을 되돌리는 데 얼마나 걸리나. 왜 이 판정이 나왔는지 나중에 설명할 수 있나**",
+          "정답이 며칠 뒤 도착하는 문제에서 모델 성능을 어떻게 확인하나",
+          "**놓친 사기와 잘못 막은 정상 거래 중 무엇이 더 비싼가. 임계값을 어떻게 정했나**",
+          "임계값을 코드 배포 없이 바꿀 수 있게 만들어 봤나",
+          "**상태를 들고 있는 스트림 처리에서 장애 복구가 어떻게 되나**",
+          "늦게 온 이벤트를 이미 닫힌 창에 어떻게 넣나",
+          "모델이 요구하는 특징이 지연 예산을 넘길 때 어떻게 조율했나",
+          "**판정 시스템이 죽었을 때 통과시킬 것인가 막을 것인가**",
+          "새 사기 유형이 나타났을 때 대응까지 며칠 걸리는 구조인가",
+          "응답 시간의 꼬리를 GC 와 연결해 분석해 본 적이 있나"
+        ],
+        "sources": [
+          {
+            "title": "Senior Staff Backend Engineer - Fraud Detection",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8064140",
+            "publisher": "쿠팡 채용",
+            "summary": "경력 13년 이상. Risk, Fraud & Trust Engineering 조직이고 Flink·Kafka·Spark Streaming 과 Java 를 명시한다"
+          }
+        ]
+      }
     }
   ],
   "open_questions": [
