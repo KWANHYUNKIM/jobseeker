@@ -521,6 +521,23 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "embedding",
+      "title": "임베딩",
+      "category": "ai",
+      "level": "core",
+      "status": "done",
+      "one_liner": "글이나 이미지를 **고정 길이의 숫자 배열**로 바꾼 것이다. 좌표 하나하나에는 뜻이 없고, **두 배열 사이의 거리에만 뜻이 있다** — 뜻이 비슷하면 가깝게 놓이도록 학습된 결과이기 때문이다.",
+      "aliases": [
+        "임베딩",
+        "embedding",
+        "임베딩 벡터",
+        "벡터 임베딩"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
