@@ -538,6 +538,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "full-text-search",
+      "title": "전문 검색",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "문서 안의 **단어를 열쇠로 삼아 뒤집어 놓은 색인**으로 글을 찾는 방식이다. `LIKE '%값%'` 이 모든 행을 훑는 것과 달리, \"이 단어가 든 문서 목록\"을 곧바로 꺼낸다 — 대신 **무엇을 '단어'로 볼지**를 정하는 순간부터 모든 문제가 시작된다.",
+      "aliases": [
+        "전문 검색",
+        "전문검색",
+        "full-text search",
+        "풀텍스트 검색",
+        "역색인",
+        "FTS"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
