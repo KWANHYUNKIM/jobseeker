@@ -467,6 +467,9 @@ def run_iteration(keyword: str, count: int) -> None:
 
     재공고는 되돌아가 채울 수 없는 종류다(append-only 히스토리이고 원본 공고는
     사라진다). 그러니 갈라짐을 주석으로 경고하는 대신 갈라질 자리를 없앤다.
+
+    크롤 → 부가 빌더 → 디스크 유지보수까지가 한 회차다. 유지보수도 여기 둔다 —
+    같은 이유로 loop 에만 있었고, 같은 결과(운영에서만 안 돎)를 낳고 있었다.
     """
     try:
         run_cycle(keyword, count)
@@ -480,6 +483,14 @@ def run_iteration(keyword: str, count: int) -> None:
         enrich_extras()  # 레이더 리파인 + 후기 데몬 보장 + 학습 재수집(크롤 결과와 무관)
     except Exception as e:
         log(f"[err] enrich 예외: {e!r}")
+    # 디스크 유지보수도 한 회차의 일부다. loop 안에만 두었더니 운영(launchd → once)
+    # 에서는 한 번도 돌지 않았고, 스냅샷 한 계열이 개당 ~250MB 라 결국 디스크가 차서
+    # 데몬이 죽는다. SNAPSHOT_KEEP 을 8에서 3으로 줄여 둔 것도 여기가 돌아야 뜻이 있다.
+    try:
+        prune_snapshots()
+        rotate_log()
+    except Exception as e:
+        log(f"[err] 유지보수 예외: {e!r}")
 
 
 def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
@@ -495,12 +506,6 @@ def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
         time.sleep(interval)
     while True:
         run_iteration(keyword, count)
-        # 디스크 유지보수 — 사이클마다 스냅샷·로그가 무한히 쌓이면 결국 데몬이 디스크로 죽는다.
-        try:
-            prune_snapshots()
-            rotate_log()
-        except Exception as e:
-            log(f"[err] 유지보수 예외: {e!r}")
         next_at = (datetime.now() + timedelta(seconds=interval)).isoformat(timespec="seconds")
         orch.waiting(next_at, interval)
         log(f"[wait] 다음 크롤까지 {interval}s 대기")
