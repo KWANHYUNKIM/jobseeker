@@ -879,6 +879,24 @@
       "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "cqrs",
+      "title": "CQRS · 이벤트 소싱",
+      "category": "practice",
+      "level": "deep",
+      "status": "done",
+      "one_liner": "**읽을 때와 쓸 때 서로 다른 모델을 쓰는 것**이 CQRS 다. 이벤트 소싱은 **상태 대신 사건을 저장**하는 별개의 결정이고 — 둘은 자주 같이 나오지만 **같은 말이 아니다.**",
+      "aliases": [
+        "CQRS",
+        "이벤트 소싱",
+        "Event Sourcing",
+        "EDA",
+        "이벤트 기반 아키텍처"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
