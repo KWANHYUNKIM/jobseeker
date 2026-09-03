@@ -4,33 +4,33 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **41개**(브리핑 38 + 중복 표시 3),
-학습 323개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **42개**(브리핑 39 + 중복 표시 3),
+학습 332개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
 
-직전 회차: **`Director - Backend Engineering (Infrastructure)`**(ats). **네 번째 `Director`.**
-⚠️ **연차가 두 절에 흩어져 있었다** — `Basic Qualifications`(백엔드 **8년** + 5~10명 관리)는
-`main_tasks` 끝에, `Preferred`(**12년** + 관리 3년)는 `preferences` 에. **양쪽에서 인용**하고
-`edge` 에 **8~12년 사이면 기본 요건은 충족**이라고 적었다.
+직전 회차: **`Director, Back-end Engineering (Rocket Pay)`**(ats). **다섯 번째 `Director`.**
+세 절이 온전했고(321/389/318) 줄 겹침 0.04.
+
+이 공고의 값어치는 **같은 조직 매니저 공고와의 대비**에 있다 → 신호 8번에 넣었다:
+- `Manager, Back-end Engineering (Rocket Pay)`: **개발 10년 + 관리 2년**
+- `Director, Back-end Engineering (Rocket Pay)`: **개발 15년 + 관리 3년**
+- ⚠️ **관리 연차는 한 칸인데 개발 연차가 다섯 칸** 차이 → 이 회사에서 관리 트랙을
+  올라가는 조건은 **관리 규모보다 기술 깊이**로 보인다. 양쪽에 링크를 걸었다.
 
 이 공고에서만 나온 것:
-- **`durable execution platform` 을 백지에서 짓는 그린필드 팀** — Temporal/Cadence 계열.
-  ⚠️ 우대사항이 `Temporal or Cadence programming models and their underlying architecture`
-  를 콕 집는다. `edge` 를 **작은 엔진을 직접 만들어 보기**로 잡았다.
-- ⚠️ **목표 가용성 `5-6 nines`(99.9999%)** — 연간 약 32초. 사람 대응으로는 못 지키는 수준.
-- **어려운 문제를 이름으로 셋 적었다** — `distributed locking, timers, and deterministic
-  execution`. 드릴을 셋 각각으로 나눴다(펜싱 토큰 / 타이머 저장소 / 재생 시 같은 결과).
-- ⚠️ **AI 요건의 네 번째 층위** → 신호 9번: `predictive scaling, automated bottleneck
-  detection, and intelligent error recovery` — **시스템이 스스로 판단하게** 만든다.
-  `or a strong architectural vision` 이라 **경험 없이 구상만 있어도** 열어 뒀다.
-- **같은 `Director` 인데 기본 요건이 가장 낮다**(8년). 본문이 스스로를 `Technical Lead
-  Manager` 라 부르고 팀은 최대 10명 — **조직 규모가 아니라 문제 난이도로 무게가 실린 자리.**
+- **신규 결제 서비스 조직을 세우는 자리** — 드릴을 **"팀 경계보다 만들 것의 경계를 먼저"**
+  로 잡았다(신규 조직에서 흔한 실패).
+- ⚠️ **온라인과 오프라인을 함께 받는 플랫폼** — 오프라인은 단말·오프라인 승인·지연 전송이
+  끼어든다. `edge` 를 **계층 그림 + 오프라인에만 있는 예외**로 잡았다.
+- 담당업무가 **인증·정산·가맹점 연동** 셋을 이름으로 적는다 — 실시간/배치/남의 시스템으로
+  성격이 갈린다.
+- ⚠️ **육성 대상에 `엔지니어링 리더` 가 따로** 있다 — **키우는 사람을 키우는 일.**
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
 ⚠️ **세 절 중 비거나 한쪽만 찬 것이 있으면 `full_jd` 를 읽는다.** 영문 ats 공고에서 지금까지
 **네 가지 형태**가 나왔다 — ① 세 절 통째로 빔(대기열에서 제외됨) ② 자격이 `main_tasks`
-안에 붙음 ③ `Preferred` 만 `preferences` 에 담기고 `Basic` 누락 ④ **`Basic` 은
-`main_tasks` 끝에, `Preferred` 는 `preferences` 에 나뉨.**
+안에 붙음 ③ `Preferred` 만 `preferences` 에 담기고 `Basic` 누락 ④ `Basic` 은 `main_tasks`
+끝에, `Preferred` 는 `preferences` 에 나뉨.
 **본문이 글자 그대로 같으면 `duplicate_of` 로 표시**하고 그 회차는 그것으로 끝낸다.
 
 ⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 최대 겹침 0.33).
@@ -61,6 +61,11 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **같은 조직의 두 직급을 나란히 보면 회사의 승진 조건이 드러난다.** 쿠팡페이
+  `Manager`(개발 10년·관리 2년)와 `Director`(개발 15년·관리 3년)를 붙여 보니 **관리 연차는
+  한 칸, 개발 연차는 다섯 칸** 차이였다. 공고 하나로는 안 보이는 사실이라, 이런 쌍을
+  만나면 **양쪽 `fit.can_learn` 에 서로를 가리키는 줄을 넣고 신호에도 남긴다.**
 
 - **연차가 두 절에 흩어져 있으면 둘 다 적는다.** 영문 ats 공고는 `Basic Qualifications` 와
   `Preferred Qualifications` 를 나눠 쓰는데, 크롤이 이를 뒤섞어 담는다. 한쪽만 보면

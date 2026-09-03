@@ -330,7 +330,7 @@
       },
       {
         "reading": "**개인 기여자 트랙과 관리자 트랙이 제목에서 갈린다**",
-        "evidence": "제목이 `Senior Staff`·`Staff`·`Principal` 인 공고와 `Manager`·`Senior Manager`·`Director` 인 공고가 나란히 열려 있다. 관리자 쪽은 요건도 다르다 — `Manager, Front-end Engineering (TW Front Engineering)` 은 **`3+ years of senior management experience`** 와 **`At least 3 years of experience leading engineering teams`** 를 기술 경력 10년과 **함께** 요구한다. 반면 `Senior Staff`·`Principal` 계열은 담당업무에 `Mentor` 가 있어도 **관리 연차를 따로 요구하지 않는다**. ⚠️ **`Senior` 와 `Staff` 의 차이도 확인됐다** — `Advertiser Platform` 은 같은 팀에서 두 직급이 동시에 열려 있는데 **담당업무가 거의 같고 `Staff` 쪽에만 `코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 더 있다.** ⚠️ **회사가 직접 `(IC)` 라고 표기한 공고도 있다** — `Senior Staff Back-end Engineer (eCommerce Engineering)` 는 본문이 `As a Senior Staff Backend Engineer (IC)` 로 시작하고, 담당업무에 `Coach Senior and Staff level engineers` 가 있으면서도 **관리 연차를 요구하지 않는다**(대신 `3+ years in architecture leadership`). ⚠️ **프론트엔드에서도 같은 선이 확인된다** — `Staff Frontend Engineer (Coupang Eats)` 는 담당업무에 `Staff레벨: 팀 엔지니어들이 좋은 품질의 아키텍쳐 및 디자인을 만들 수 있도록 가이드` 를 두고도 **관리 연차 대신 `2년 이상의 웹 아키텍쳐 설계 및 구현 경험`** 을 요구한다. 반면 같은 프론트엔드의 `Manager, Front-end Engineering` 은 관리 3년을 따로 요구한다 — **직군이 아니라 트랙이 요건을 가른다.** ⚠️ **관리 트랙의 위쪽 끝도 확인됐다** — `Director`·`Sr. Director` 급 공고가 **113건 중 13건**이나 열려 있다. 그중 `Sr. Director, Back-End Engineering`(gh_jid=8118859, 본문 직함은 `Sr. Director, Site Reliability Engineering (Head of SRE)`)은 경력 15년과 **별개로** `8+ years leading large-scale, multi-layer engineering organizations, including senior managers, directors, and senior individual contributors.` 를 요구하고, `Experience building an SRE practice ... rather than operating a traditional support or operations function renamed as SRE.` 라는 **배제 조건**까지 적어 두었다. ⚠️ **관리 트랙의 진입 문턱은 공고마다 다르다** — `Manager, Back-end Engineering (Rocket Pay)` 는 개발 10년에 **`매니저 관리를 포함한 관리 경험 2년 이상 (멘토, 테크 리드 경험 포함)`** 만 요구한다. 같은 회사 `Manager, Front-end Engineering (TW)` 의 `3+ years of senior management experience` 보다 낮고, **괄호로 테크 리드·멘토 경험까지 인정**한다. ⚠️ 그리고 같은 조직의 개인 기여자 공고(`Staff Back-end Engineer (Rocket Pay)`, 개발 10년)와 **요건이 한 줄도 겹치지 않는다** — 매니저 쪽은 조율·로드맵·조직 성장이, 개인 기여자 쪽은 정합성·보안 설계와 기술적 오너십이 들어간다. ⚠️ **회사가 두 트랙의 존재를 요건에 직접 적은 공고도 있다** — `Director, Back-end Engineering` 은 `Passionate about growing careers and mentoring engineers across both the individual contributor and manager tracks` 를 자격에 넣었다. 그리고 이 공고로 **관리 연차 사다리가 채워진다**: `Manager`(관리 2년, 테크리드 포함) → `Manager`(senior management 3년) → **`Director`(관리 7년)** → `Sr. Director`(다층 조직 8년).",
+        "evidence": "제목이 `Senior Staff`·`Staff`·`Principal` 인 공고와 `Manager`·`Senior Manager`·`Director` 인 공고가 나란히 열려 있다. 관리자 쪽은 요건도 다르다 — `Manager, Front-end Engineering (TW Front Engineering)` 은 **`3+ years of senior management experience`** 와 **`At least 3 years of experience leading engineering teams`** 를 기술 경력 10년과 **함께** 요구한다. 반면 `Senior Staff`·`Principal` 계열은 담당업무에 `Mentor` 가 있어도 **관리 연차를 따로 요구하지 않는다**. ⚠️ **`Senior` 와 `Staff` 의 차이도 확인됐다** — `Advertiser Platform` 은 같은 팀에서 두 직급이 동시에 열려 있는데 **담당업무가 거의 같고 `Staff` 쪽에만 `코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 더 있다.** ⚠️ **회사가 직접 `(IC)` 라고 표기한 공고도 있다** — `Senior Staff Back-end Engineer (eCommerce Engineering)` 는 본문이 `As a Senior Staff Backend Engineer (IC)` 로 시작하고, 담당업무에 `Coach Senior and Staff level engineers` 가 있으면서도 **관리 연차를 요구하지 않는다**(대신 `3+ years in architecture leadership`). ⚠️ **프론트엔드에서도 같은 선이 확인된다** — `Staff Frontend Engineer (Coupang Eats)` 는 담당업무에 `Staff레벨: 팀 엔지니어들이 좋은 품질의 아키텍쳐 및 디자인을 만들 수 있도록 가이드` 를 두고도 **관리 연차 대신 `2년 이상의 웹 아키텍쳐 설계 및 구현 경험`** 을 요구한다. 반면 같은 프론트엔드의 `Manager, Front-end Engineering` 은 관리 3년을 따로 요구한다 — **직군이 아니라 트랙이 요건을 가른다.** ⚠️ **관리 트랙의 위쪽 끝도 확인됐다** — `Director`·`Sr. Director` 급 공고가 **113건 중 13건**이나 열려 있다. 그중 `Sr. Director, Back-End Engineering`(gh_jid=8118859, 본문 직함은 `Sr. Director, Site Reliability Engineering (Head of SRE)`)은 경력 15년과 **별개로** `8+ years leading large-scale, multi-layer engineering organizations, including senior managers, directors, and senior individual contributors.` 를 요구하고, `Experience building an SRE practice ... rather than operating a traditional support or operations function renamed as SRE.` 라는 **배제 조건**까지 적어 두었다. ⚠️ **관리 트랙의 진입 문턱은 공고마다 다르다** — `Manager, Back-end Engineering (Rocket Pay)` 는 개발 10년에 **`매니저 관리를 포함한 관리 경험 2년 이상 (멘토, 테크 리드 경험 포함)`** 만 요구한다. 같은 회사 `Manager, Front-end Engineering (TW)` 의 `3+ years of senior management experience` 보다 낮고, **괄호로 테크 리드·멘토 경험까지 인정**한다. ⚠️ 그리고 같은 조직의 개인 기여자 공고(`Staff Back-end Engineer (Rocket Pay)`, 개발 10년)와 **요건이 한 줄도 겹치지 않는다** — 매니저 쪽은 조율·로드맵·조직 성장이, 개인 기여자 쪽은 정합성·보안 설계와 기술적 오너십이 들어간다. ⚠️ **회사가 두 트랙의 존재를 요건에 직접 적은 공고도 있다** — `Director, Back-end Engineering` 은 `Passionate about growing careers and mentoring engineers across both the individual contributor and manager tracks` 를 자격에 넣었다. 그리고 이 공고로 **관리 연차 사다리가 채워진다**: `Manager`(관리 2년, 테크리드 포함) → `Manager`(senior management 3년) → **`Director`(관리 7년)** → `Sr. Director`(다층 조직 8년). ⚠️ **같은 조직의 `Manager` 와 `Director` 를 나란히 보면 무엇이 갈리는지 보인다** — 쿠팡페이 `Manager, Back-end Engineering (Rocket Pay)` 는 **개발 10년 + 관리 2년**, `Director, Back-end Engineering (Rocket Pay)` 는 **개발 15년 + 관리 3년**이다. **관리 연차는 한 칸인데 개발 연차가 다섯 칸** 차이라, 이 회사에서 관리 트랙을 올라가는 조건은 **관리 규모보다 기술 깊이**로 보인다.",
         "so_what": "**관리자가 되고 싶지 않다면 `Staff`·`Senior Staff`·`Principal` 계열을 본다** — 이 회사는 개인 기여자로도 `Principal` 까지 가는 경로가 열려 있다. 반대로 **관리로 가려면 `관리 경험 연차` 를 따로 증명해야 하므로**, 지금 팀을 이끌고 있다면 **인원·기간·채용/평가 참여·어려운 결정**을 숫자와 사례로 정리해 두는 편이 낫다. 그리고 **`Senior → Staff` 는 팀에 미치는 영향(리뷰·멘토링)으로 갈리는 것으로 보인다** — 기술 폭이 아니라 **남을 통해 일하는 몫**이 늘어난다는 뜻이다. **개인 기여자 트랙의 최상위에서 요구되는 것은 관리 연차가 아니라 `아키텍처 리딩` 연차**라는 점도 기억해 둔다 — 준비할 이력이 다르다(사람 관리 사례가 아니라 **여러 팀에 걸친 기술 결정 사례**). ⚠️ **관리로 갈 때 다음 칸은 '팀 몇 개'가 아니라 '매니저를 이끄는 몇 년'이다** — `Manager` 급이 관리 3년을 요구했다면 `Sr. Director` 급은 **매니저와 디렉터를 이끈 8년**을 요구한다. 즉 **내가 직접 만나지 않는 사람들이 일하는 방식을 바꾼 사례**가 준비물이 된다. 그리고 이 층위에서는 **조직을 만들었다는 증거보다 그 장치가 몇 개 팀에 퍼졌는지(채택)** 를 묻는다. ⚠️ **관리 트랙으로 넘어갈 생각이라면 문턱이 낮은 공고를 찾는 것이 현실적이다** — 같은 회사 안에서도 `관리 3년` 을 요구하는 자리와 **`테크 리드 경험 포함 2년`** 으로 여는 자리가 함께 있다. 지금 테크 리드라면 후자가 **첫 관리자 자리**가 될 수 있다.",
         "confidence": "inferred"
       },
@@ -3804,7 +3804,8 @@
         "can_learn": [
           "결제 도메인 — `Payment 도메인에서 근무 경험` 은 **우대사항**이다",
           "AWS·Kubernetes·데이터 파이프라인(Spark·Hadoop·Cassandra·Kafka·Airflow)도 **전부 우대사항**",
-          "⚠️ 같은 조직의 **개인 기여자 자리**를 원한다면 `Staff Back-end Engineer (Rocket Pay)`(10년) 또는 `[쿠팡] 백엔드 개발자 (로켓페이)`(12년) 쪽 브리핑을 본다"
+          "⚠️ 같은 조직의 **개인 기여자 자리**를 원한다면 `Staff Back-end Engineer (Rocket Pay)`(10년) 또는 `[쿠팡] 백엔드 개발자 (로켓페이)`(12년) 쪽 브리핑을 본다",
+          "⚠️ **같은 조직에 `Director` 자리도 열려 있다** — `Director, Back-end Engineering (Rocket Pay)`(**개발 15년 + 관리 3년**). 여기(개발 10년 + 관리 2년)와 비교하면 **관리 연차는 한 칸 차이인데 개발 연차가 다섯 칸** 차이다 — 이 회사에서 위로 가는 길은 **사람을 더 관리해서가 아니라 기술적으로 더 깊어져서**에 가깝다."
         ]
       },
       "study": [
@@ -5794,6 +5795,145 @@
           "p99.9 를 악화시키는 원인을 추적한 경험",
           "내부 플랫폼을 **다른 팀이 실제로 쓰게** 만든 방법",
           "⚠️ **자동 복구의 안전장치** — 잘못 판단했을 때 무엇이 막는가"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8124387",
+      "title": "Director, Back-end Engineering (Rocket Pay)",
+      "site": "ats",
+      "verdict": "**쿠팡페이에서 신규 결제 서비스 조직을 세우고 이끄는 디렉터.** ⚠️ 같은 조직에 이미 정리한 `Manager, Back-end Engineering (Rocket Pay)` 가 있는데 **요건이 갈리는 지점이 분명하다** — 매니저는 **개발 10년 + 관리 2년**, 여기는 **개발 15년 + 관리 3년**이다. 즉 **관리 연차는 한 칸인데 개발 연차가 다섯 칸 차이**다. 담당업무도 기능이 아니라 **조직·전략·플랫폼 설계**로 올라간다.",
+      "fit": {
+        "must_have": [
+          "**소프트웨어 개발 15년 + 관리 3년** — ⚠️ 여기도 `(멘토, 테크 리드 경험 포함)` 이라는 여지가 붙어 있다",
+          "제품·프로그램 관리 조직과 협업한 경험",
+          "애자일 환경에서 **여러 프로그램·프로젝트·개발 조직을 동시에** 관리",
+          "**아키텍처 설계 베스트 프랙티스**와 소프트웨어 공학·테스트 기본기",
+          "**크리티컬한 시스템 이슈를 직접 분석하고 처리**한 경험",
+          "JPA·MSA 이해, Java/Spring/Kotlin"
+        ],
+        "can_learn": [
+          "`Payment 또는 Fintech 도메인` 경험은 **우대사항**이다",
+          "AWS·Kubernetes, 데이터 플랫폼(Spark·Hadoop·Cassandra·Kafka·Airflow), 글로벌 아키텍처도 **전부 우대**",
+          "⚠️ **관리 연차가 2년대라면** 같은 조직의 `Manager, Back-end Engineering (Rocket Pay)`(개발 10년 + 관리 2년) 쪽이 맞는 문이다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "15년 + 관리 3년 — 무엇이 갈리는가",
+          "from": "qualification",
+          "quote": "소프트웨어 개발 경험 15년 이상으로 매니저 관리를 포함한 관리 경험 3년 이상 (멘토, 테크 리드 경험 포함)을 보유하신 분",
+          "priority": "core",
+          "why": "⚠️ **같은 조직 매니저 공고와 비교하면 이 자리의 성격이 드러난다** — 매니저는 개발 10년 + 관리 2년, 여기는 **개발 15년 + 관리 3년**. **관리 연차 차이는 한 칸인데 개발 연차가 다섯 칸**이다. 즉 이 회사에서 `Director` 로 올라가는 길은 **사람을 더 많이 관리해서**가 아니라 **기술적으로 더 깊어져서**에 가깝다(신호 8번). 그리고 여기도 괄호로 `멘토, 테크 리드 경험 포함` 을 열어 뒀다.",
+          "gap_check": "내 15년 중 **기술적으로 가장 어려운 결정**을 셋 댈 수 있는가. 관리 사례만 나온다면 이 자리의 축과 다르다.",
+          "drill": "경력을 **기술 결정 연표**로 다시 쓴다 — 연도별로 ① 내가 내린 기술 결정 ② 그 결정의 범위(내 팀·여러 팀·전사) ③ 지금 남아 있는 것과 사라진 것. **범위가 넓어지는 흐름**이 보이면 그게 디렉터 이력이고, 평평하면 관리 연차만 쌓인 것이다.",
+          "hours": 5
+        },
+        {
+          "topic": "신규 조직을 세우면서 전략을 함께 만든다",
+          "from": "task",
+          "quote": "신규 결제 서비스 개발 조직 리딩 및 기술 전략, 로드맵 수립",
+          "priority": "core",
+          "why": "⚠️ **`신규` 조직이다** — 사람을 뽑으면서 동시에 만들어야 하고, **첫 여섯 달의 결정이 그 뒤 몇 년을 정한다.** 여기서 흔한 실패는 조직 구조를 먼저 그리는 것이다: 무엇을 만들지 정해지기 전에 팀을 나누면 **경계가 제품이 아니라 사람에 맞춰진다.**",
+          "gap_check": "조직을 새로 만들 때 나는 **무엇부터 정하는가** — 팀 경계인가, 만들 것의 경계인가.",
+          "drill": "가상의 신규 결제 조직 설계서를 한 장으로 쓴다 — ① 6개월 안에 내보낼 것 ② 그것을 만들려면 필요한 **역할**(사람 수가 아니라) ③ 그 역할들이 자연스럽게 묶이는 **팀 경계** ④ **처음에는 한 팀으로 두었다가 언제 나눌지**. ④가 있는 설계가 신규 조직에서 살아남는다.",
+          "hours": 6
+        },
+        {
+          "topic": "온라인과 오프라인을 함께 받는 결제 플랫폼",
+          "from": "task",
+          "quote": "온라인 및 오프라인 결제를 지원하는 차세대 결제 플랫폼 설계 및 개발 주도",
+          "priority": "core",
+          "why": "⚠️ **오프라인이 함께 적혔다.** 앞서 정리한 로켓페이 공고들도 `온라인 및 오프라인 가맹점까지 확장` 을 말했는데, 이 둘은 기술적으로 꽤 다르다 — 오프라인은 **단말과 통신이 끼어들고**(NFC·QR·POS), **네트워크가 끊긴 상태의 결제**를 다뤄야 하며, 정산 주기와 수수료 구조도 다르다. 같은 플랫폼으로 받으려면 **공통 원장 위에 채널별 어댑터**를 두는 식의 분리가 필요해진다.",
+          "gap_check": "온라인 결제와 오프라인 결제의 차이를 **시스템 관점 다섯 가지**로 말할 수 있는가.",
+          "drill": "결제 플랫폼의 **계층 그림**을 그린다 — 채널(온라인 웹·앱·오프라인 단말) / 공통 결제 도메인(승인·매입·취소) / 외부 연동(카드사·밴·은행) / 원장. 각 계층 사이의 **계약(무엇을 주고받나)** 을 적고, **오프라인에만 있는 예외**(오프라인 승인, 단말 장애, 지연 전송)를 표시한다.",
+          "hours": 8
+        },
+        {
+          "topic": "결제 인증·정산·가맹점 연동",
+          "from": "task",
+          "quote": "결제 인증, 정산, 가맹점 연동 등 핵심 결제 인프라 개발 및 운영",
+          "priority": "core",
+          "why": "⚠️ **셋을 이름으로 적었다** — 성격이 다 다르다. **인증**은 실시간이고 규제가 걸리며 실패하면 결제가 안 된다. **정산**은 배치이고 회계와 이어져 하루만 틀려도 원장이 어긋난다. **가맹점 연동**은 남의 시스템과 붙는 일이라 **내가 못 고치는 쪽의 사정**을 견뎌야 한다. 같은 조직의 개인 기여자 공고들이 `정산·대사` 를 반복 요구하는 것과 이어진다.",
+          "gap_check": "셋 중 **가장 자주 사고가 나는 곳**이 어디이고 왜인지 말할 수 있는가.",
+          "drill": "셋을 각각 한 문단으로 정리한다 — ① 실패 모드(무엇이 어떻게 잘못되나) ② 그때 고객이 보는 것 ③ **복구 방법** ④ 사전에 막는 장치. 그다음 **가맹점 연동**만 골라 **상대가 응답하지 않을 때의 절차**(재시도·수기 처리·통지)를 설계한다.",
+          "hours": 8
+        },
+        {
+          "topic": "대규모 결제 트래픽의 아키텍처",
+          "from": "task",
+          "quote": "대규모 결제 트래픽 환경에서 안정적이고 확장 가능한 시스템 아키텍처 설계 및 고도화",
+          "priority": "high",
+          "why": "결제 트래픽은 **몰리는 시각이 정해져 있고**(프로모션·월말) 실패가 곧 매출 손실이다. 그리고 일반 서비스와 달리 **재시도가 위험하다** — 잘못 재시도하면 이중 결제가 된다. 그래서 확장성 설계에 **멱등성과 순서 보장이 함께** 걸린다.",
+          "gap_check": "트래픽이 몰릴 때 **큐를 두는 것**이 결제에서 왜 조심스러운지 설명할 수 있는가.",
+          "drill": "결제 승인 흐름에 부하를 걸어 ① 동기 처리 ② 큐를 통한 비동기 처리 두 방식을 비교한다. ②에서 **사용자에게 언제 성공을 알릴 것인가**를 정하고, **큐가 밀렸을 때 고객이 보는 화면**을 설계한다. 그리고 재시도에 **멱등 키**를 붙여 이중 결제가 안 나는지 확인한다.",
+          "hours": 10
+        },
+        {
+          "topic": "안정성·성능·보안을 운영 체계로 만든다",
+          "from": "task",
+          "quote": "서비스 안정성, 성능, 보안 강화를 위한 기술적 의사결정 및 운영 체계 구축",
+          "priority": "high",
+          "why": "⚠️ **`운영 체계 구축` 이 붙어 있다** — 한 번의 결정이 아니라 **계속 돌아가는 절차**를 만들라는 뜻이다. 결제는 보안 사고의 대가가 특히 크므로, 이 층위에서는 **배포 전 검토·권한 관리·감사 로그·사고 대응**이 사람 손이 아니라 체계로 있어야 한다(같은 회사 SRE 조직장 공고의 `governance ... rather than applied as a final review` 와 같은 결).",
+          "gap_check": "우리 조직의 보안·안정성 점검이 **언제 개입**하는가. 배포 직전뿐이라면 그건 체계가 아니다.",
+          "drill": "결제 서비스의 **위험 등급 규칙**을 만든다 — 변경 유형별로 ① 금액 계산이 바뀌는가 ② 권한이 바뀌는가 ③ 외부 연동이 바뀌는가. 하나라도 해당하면 **추가 리뷰와 롤백 계획을 요구**하게 하고, 나머지는 빠르게 통과시킨다. **모든 변경을 같은 무게로 다루지 않는 것**이 이 체계의 핵심이다.",
+          "hours": 6
+        },
+        {
+          "topic": "엔지니어와 '엔지니어링 리더'를 함께 키운다",
+          "from": "task",
+          "quote": "백엔드 엔지니어 및 엔지니어링 리더 육성을 통한 고성과 개발 조직 구축",
+          "priority": "core",
+          "why": "⚠️ **육성 대상에 `엔지니어링 리더` 가 따로 적혀 있다** — 디렉터의 일은 엔지니어를 키우는 것을 넘어 **키우는 사람을 키우는 것**이라는 뜻이다. 신규 조직이라 더 그렇다: 처음 세운 매니저·테크리드가 그 조직의 문화가 된다. 같은 회사 `Director, Back-end Engineering` 이 `both the individual contributor and manager tracks` 를 요구한 것과 같은 결이다.",
+          "gap_check": "내가 **매니저나 테크리드로 키운 사람**이 있는가. 그 사람은 지금 어떤가.",
+          "drill": "리더 후보 판을 만든다 — 후보별로 ① 지금 잘하는 것 ② 리더로서 부족한 것 ③ **다음 6개월에 맡길 일**(사람 문제인가 기술 결정인가) ④ 실패해도 되는 범위. ④를 정하는 것이 육성의 핵심이다 — 실패할 수 없는 일만 주면 아무도 자라지 않는다.",
+          "hours": 5
+        },
+        {
+          "topic": "크리티컬 이슈를 직접 분석한다",
+          "from": "qualification",
+          "quote": "크리티컬한 시스템 이슈를 분석하고 처리한 경험을 보유하신 분",
+          "priority": "high",
+          "why": "⚠️ **같은 조직 매니저 공고에도 있던 요건이다** — 이 회사는 관리 층위에서도 **직접 파는 능력**을 반복해서 묻는다(`Director - AI Infra` 의 하드웨어 요건, SRE 조직장의 `technical depth ... during critical incidents`). 결제 장애는 **돈의 상태가 어중간하게 남으므로** 복구 판단이 곧 손실 규모를 정한다.",
+          "gap_check": "최근 중대 장애에서 나는 **결정을 했는가, 전달을 했는가.**",
+          "drill": "과거 결제(또는 금전이 걸린) 장애 하나의 타임라인을 다시 그리고 **결정 지점마다** ① 그때 알던 것 ② 몰랐던 것 ③ **되돌릴 수 있었는가**를 적는다. 그리고 **장애 중 결정용 질문 열 개**를 만들어 둔다(영향 범위·금액·되돌리기 가능 여부·통지 대상 등).",
+          "hours": 5
+        },
+        {
+          "topic": "JPA·MSA 와 Java/Spring/Kotlin",
+          "from": "qualification",
+          "quote": "JPA, MSA에 대한 이해도가 높으신 분",
+          "priority": "high",
+          "why": "같은 조직의 모든 공고에 반복해서 나오는 스택이다(매니저·Staff·시니어 백엔드). 디렉터에게 이 요건이 뜻하는 건 직접 짜는 능력보다 **설계 리뷰에서 잘못된 방향을 알아보는 눈**이다 — 특히 결제에서 MSA 는 **한 트랜잭션이 갈라지는 문제**를 만들고, 그 보상 절차를 잘못 잡으면 돈이 어긋난다.",
+          "gap_check": "팀이 가져온 MSA 설계에서 **보상 절차가 빠진 것**을 알아볼 수 있는가.",
+          "drill": "팀의(또는 가상의) 결제 흐름 설계를 하나 받아 **실패 지점 목록**을 만든다 — 각 서비스 호출마다 ① 실패하면 무엇이 남나 ② 되돌리나 밀어붙이나 ③ **그 판단을 누가 하나**(자동·운영자). ③이 비어 있는 지점이 사고가 나는 자리다.",
+          "hours": 6
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**온·오프라인을 함께 받는 결제 플랫폼의 계층 그림**을 한 장 준비한다 — 오프라인에만 있는 예외까지",
+          "why": "담당업무가 `온라인 및 오프라인 결제를 지원하는 차세대 결제 플랫폼` 이다. 온라인 결제 경험자는 많고 **오프라인의 제약(단말·오프라인 승인·지연 전송)을 아는 사람은 드물다.**",
+          "effort": "1일"
+        },
+        {
+          "idea": "**리더를 키운 사례**를 하나 준비한다 — 실패할 수 있는 일을 맡긴 사례로",
+          "why": "담당업무에 `엔지니어링 리더 육성` 이 명시돼 있다. 사람을 키웠다는 말은 흔하지만 **실패해도 되는 범위를 정해 준 사례**는 드물고, 그게 디렉터의 육성이다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차가 적혀 있지 않다(쿠팡 채용 사이트 직접 지원).",
+        "expect": [
+          "⚠️ **연차 확인** — 개발 15년 + 관리 3년. **관리 2년대라면** 같은 조직 `Manager` 공고 쪽이 맞다",
+          "신규 조직을 세울 때의 순서 — 팀 경계를 언제 나눴는가",
+          "온라인과 오프라인 결제의 차이를 시스템으로 설명하기",
+          "인증·정산·가맹점 연동 각각의 실패 모드와 복구",
+          "결제에서 재시도와 큐를 다룰 때의 주의",
+          "안정성·보안을 **체계**로 만든 사례 — 변경의 무게를 나눴는가",
+          "매니저·테크리드를 키운 사례",
+          "중대 장애에서 내린 결정"
         ],
         "sources": []
       }
