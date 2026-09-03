@@ -212,6 +212,23 @@
    "updated_at": "2026-09-04"
   },
   {
+   "slug": "stm32",
+   "title": "STM32",
+   "category": "firmware",
+   "level": "core",
+   "status": "done",
+   "one_liner": "ARM Cortex-M 코어에 ST 의 주변장치를 붙인 **제품군**이다. 칩 하나가 아니라 수천 품목이고, 그래서 \"STM32 를 안다\"는 말은 **어느 시리즈인지**를 말해야 뜻이 생긴다.",
+   "aliases": [
+    "STM32",
+    "Cortex-M",
+    "STM32CubeMX",
+    "HAL"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "uart",
    "title": "UART",
    "category": "firmware",
