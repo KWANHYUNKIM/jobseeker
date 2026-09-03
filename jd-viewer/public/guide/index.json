@@ -306,6 +306,19 @@
       "postings": 27,
       "study_items": 234,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "coupang",
+      "name": "쿠팡",
+      "aliases": [
+        "쿠팡",
+        "쿠팡로지스틱스서비스",
+        "Coupang"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-04"
     }
   ]
 }

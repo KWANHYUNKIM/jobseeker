@@ -1,0 +1,306 @@
+{
+  "slug": "coupang",
+  "name": "쿠팡",
+  "name_en": "Coupang, Inc.",
+  "aliases": [
+    "쿠팡",
+    "쿠팡로지스틱스서비스",
+    "Coupang"
+  ],
+  "status": "in_progress",
+  "updated_at": "2026-09-04",
+  "site": "coupang.com",
+  "one_liner": "**직접 사서 직접 배송하는 커머스**로 시작해 **결제·배달·광고·대만까지 늘린 회사**. NYSE 상장사(`CPNG`)라 **이 엔진에서 실적을 공시로 확인할 수 있는 첫 회사**다.",
+  "company": {
+    "business": "**물건을 직접 사서 자기 창고에 넣고 자기 배송망으로 보내는 구조**가 본체다. 이 방식은 재고와 물류에 큰 돈이 들지만, **배송 시점을 회사가 통제할 수 있어** 다음 날(또는 새벽) 도착을 약속할 수 있다 — 그 약속이 곧 상품이다. 그 위에 **유료 멤버십**, **입점 판매자에게 파는 광고**, **결제(로켓페이)**, **배달(쿠팡이츠)**, 그리고 **대만 사업**이 얹혀 있다. 공시는 사업을 둘로 나눈다 — **`Product Commerce`**(커머스 본체)와 **`Developing Offerings`**(이츠·대만·Farfetch 등 키우는 중인 것들). ⚠️ **후자는 아직 적자를 내며 키우는 영역**이고, 그 사실이 채용에도 드러난다(이츠·대만 관련 공고가 여럿이다).",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {
+        "title": "Coupang Announces Results for Fourth Quarter 2025",
+        "url": "https://ir.aboutcoupang.com/news-events/news/news-details/2026/Coupang-Announces-Results-for-Fourth-Quarter-2025/default.aspx",
+        "publisher": "Coupang IR",
+        "summary": "사업 부문을 Product Commerce 와 Developing Offerings 로 나눠 보고한다"
+      },
+      {
+        "title": "Coupang, Inc. Form 8-K — FY2025 실적 발표 자료",
+        "url": "https://www.sec.gov/Archives/edgar/data/1834584/000183458426000022/cpng-12312025ex991.htm",
+        "publisher": "미국 증권거래위원회(SEC)",
+        "summary": "2025 연간 실적과 부문별 매출·활성 고객 수가 담겨 있다"
+      }
+    ],
+    "scale": [
+      {
+        "label": "2025 연간 총매출",
+        "value": "$34,534백만 (약 345억 달러)",
+        "as_of": "2025-12",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Coupang, Inc. Form 8-K — FY2025",
+            "url": "https://www.sec.gov/Archives/edgar/data/1834584/000183458426000022/cpng-12312025ex991.htm",
+            "publisher": "Coupang, Inc. SEC Form 8-K (FY2025)"
+          }
+        ]
+      },
+      {
+        "label": "2025 Product Commerce 매출",
+        "value": "$29,592백만",
+        "as_of": "2025-12",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Coupang, Inc. Form 8-K — FY2025",
+            "url": "https://www.sec.gov/Archives/edgar/data/1834584/000183458426000022/cpng-12312025ex991.htm",
+            "publisher": "Coupang, Inc. SEC Form 8-K (FY2025)"
+          }
+        ]
+      },
+      {
+        "label": "2025 Developing Offerings 매출",
+        "value": "$4,942백만",
+        "as_of": "2025-12",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Coupang, Inc. Form 8-K — FY2025",
+            "url": "https://www.sec.gov/Archives/edgar/data/1834584/000183458426000022/cpng-12312025ex991.htm",
+            "publisher": "Coupang, Inc. SEC Form 8-K (FY2025)"
+          }
+        ]
+      },
+      {
+        "label": "2025 순이익(주주 귀속)",
+        "value": "$208백만",
+        "as_of": "2025-12",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Coupang, Inc. Form 8-K — FY2025",
+            "url": "https://www.sec.gov/Archives/edgar/data/1834584/000183458426000022/cpng-12312025ex991.htm",
+            "publisher": "Coupang, Inc. SEC Form 8-K (FY2025)"
+          }
+        ]
+      },
+      {
+        "label": "Product Commerce 활성 고객",
+        "value": "24.6백만 명",
+        "as_of": "2025-12",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Coupang, Inc. Form 8-K — FY2025",
+            "url": "https://www.sec.gov/Archives/edgar/data/1834584/000183458426000022/cpng-12312025ex991.htm",
+            "publisher": "Coupang, Inc. SEC Form 8-K (FY2025)"
+          }
+        ]
+      },
+      {
+        "label": "모집중 개발·기술 공고",
+        "value": "113건 (본문 있는 것 103건)",
+        "as_of": "2026-09",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "이 엔진의 크롤 데이터",
+            "url": "https://www.coupang.jobs/kr/",
+            "publisher": "쿠팡 채용",
+            "summary": "채용 사이트와 원티드·사람인에서 수집한 모집중 공고를 센 것"
+          }
+        ]
+      }
+    ],
+    "revenue": [
+      {
+        "name": "Product Commerce — 로켓배송·마켓플레이스·멤버십·광고",
+        "how": "**직접 매입해 파는 상품의 판매 대금**이 가장 큰 몫이고, 여기에 **입점 판매자에게서 받는 수수료**, **멤버십 구독료**, 그리고 **판매자에게 파는 광고**가 붙는다. 광고는 상품을 이미 사고 있는 고객 앞에 노출을 파는 것이라 **이익률이 상품 판매보다 높다.** **그리고 이 세 갈래 전부가 모델 위에 얹혀 있다** — 카탈로그 정제, 검색·추천 랭킹, 수요 예측이 매출에 직접 붙는다.",
+        "weight": "2025년 $29,592백만 (전체의 약 86%)",
+        "domains": [
+          "커머스 플랫폼과 카탈로그",
+          "물류와 운영 기술",
+          "검색·추천·광고",
+          "클라우드 인프라와 내부 개발자 플랫폼",
+          "AI 기반과 ML 플랫폼"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Coupang, Inc. Form 8-K — FY2025",
+            "url": "https://www.sec.gov/Archives/edgar/data/1834584/000183458426000022/cpng-12312025ex991.htm",
+            "publisher": "Coupang, Inc. SEC Form 8-K (FY2025)"
+          }
+        ]
+      },
+      {
+        "name": "Developing Offerings — 쿠팡이츠·대만·Farfetch",
+        "how": "**배달 중개 수수료**, **대만 커머스 매출**, 그리고 인수한 명품 플랫폼(Farfetch)의 매출이 여기 묶인다. **아직 적자를 내며 키우는 영역**이라 매출 성장률이 본체보다 높다.",
+        "weight": "2025년 $4,942백만 (전체의 약 14%)",
+        "domains": [
+          "쿠팡이츠 — 주문·배차·가맹",
+          "글로벌 — 대만",
+          "검색·추천·광고"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Coupang, Inc. Form 8-K — FY2025",
+            "url": "https://www.sec.gov/Archives/edgar/data/1834584/000183458426000022/cpng-12312025ex991.htm",
+            "publisher": "Coupang, Inc. SEC Form 8-K (FY2025)"
+          }
+        ]
+      },
+      {
+        "name": "핀테크 — 로켓페이와 금융 상품",
+        "how": "**자사 결제 수단**으로 결제 흐름을 직접 쥐면 수수료가 밖으로 덜 나가고, 그 위에 **후불·대출 같은 금융 상품**을 얹을 수 있다. 공시에서 별도 부문으로 분리돼 있지는 않다.",
+        "weight": "공시에 별도 표기 없음",
+        "domains": [
+          "핀테크 — 결제와 금융",
+          "보안과 이상 거래 탐지"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      }
+    ],
+    "domains": [
+      {
+        "name": "커머스 플랫폼과 카탈로그",
+        "why": "**활성 고객 2,460만 명이 쓰는 서비스**를 떠받치는 층이다. 커머스에서 어려운 것은 화면이 아니라 **상품 데이터**다 — 같은 물건이 여러 판매자에게서 올라오고, 이름·규격·이미지가 제각각이며, **어느 것을 대표로 보여 줄지**가 매출을 바꾼다. 채용에도 `Catalog AI & Quality` 라는 이름이 그대로 나온다.",
+        "what_to_know": [
+          "**같은 상품을 하나로 묶는 문제**(중복 제거·대표 상품 선정)가 커머스 카탈로그의 핵심이다",
+          "**가격**이 따로 팀을 이룰 만큼 큰 문제다(제목에 `Pricing` 이 있다) — 경쟁 가격 추적·할인 적용 순서·최저가 표기의 정확성",
+          "대규모 트래픽에서의 조회·주문 흐름"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "물류와 운영 기술",
+        "why": "**이 회사를 다른 커머스와 가르는 부분이다.** 직접 배송하므로 **창고·차량·기사·구역**이 전부 소프트웨어가 다루는 대상이 된다. 채용에 `Global Operations Technology(GOT)` 가 반복해서 나오고, `First & Middlemile`, `SCMA`, `Automation Maintenance Engineer` 같은 자리가 따로 있다.",
+        "what_to_know": [
+          "**주문을 어느 창고에서 보낼지**, **한 차량에 무엇을 어떤 순서로 실을지** 같은 것이 최적화 문제로 풀린다(`Operation Research` 가 제목에 있다)",
+          "창고 자동화 설비가 있으면 **설비 유지보수까지 기술 조직의 일**이 된다",
+          "**약속한 시간에 도착하는 것**이 상품이므로, 지연을 예측하고 미리 알리는 일이 중요하다"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "핀테크 — 결제와 금융",
+        "why": "**채용에서 가장 자주 보이는 이름 중 하나가 `Rocket Pay` 다**(공고 다섯 건 이상). 결제는 커머스의 일부가 아니라 별도 조직으로 커져 있고, `New Fintech Product`·`Lending Engineering` 처럼 **금융 상품을 만드는 자리**까지 있다.",
+        "what_to_know": [
+          "결제는 **틀리면 돈이 틀리는 시스템**이라 멱등성·정산·대사가 기본이다",
+          "**금융 상품(후불·대출)은 규제를 받는다** — 심사·한도·연체 처리가 코드에 들어온다",
+          "`Fraud Detection` 이 별도 자리로 있다 — 결제 규모가 커지면 이상 거래 탐지가 곧 손익이다"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "검색·추천·광고",
+        "why": "**고객이 무엇을 보느냐가 매출을 정하고, 그 자리를 판매자에게 팔면 광고가 된다.** 채용에 `Senior Staff Ranking Engineer, Personalization`, `Advertiser Platform`, `Search AI Product` 가 있고, `Incrementality and Attribution` 을 다루는 데이터 사이언티스트 자리까지 따로 있다.",
+        "what_to_know": [
+          "**검색 결과에 광고를 섞을 때** 무엇을 어디에 넣을지가 매출과 사용자 경험을 동시에 건드린다",
+          "**`Incrementality`(광고가 없었어도 샀을까)** 를 재는 것이 광고 사업의 핵심 난제다 — 인과추론이 실제 업무로 들어온다",
+          "개인화 랭킹은 **모델 성능만이 아니라 지연과 비용**이 함께 걸린다"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "쿠팡이츠 — 주문·배차·가맹",
+        "why": "`Developing Offerings` 부문의 한 축이고 **아직 키우는 중**이다. 채용에 `Eats S&D`(공급·수요), `Eats Merchant`, `Eats Customer` 가 나뉘어 있어 **주문하는 쪽·만드는 쪽·배달하는 쪽을 각각 다루는 조직**임이 보인다.",
+        "what_to_know": [
+          "배달은 **실시간 수요와 공급을 맞추는 문제**다 — 주문이 몰리는 시간에 기사가 모자라면 배차가 무너진다",
+          "**가맹점 쪽 시스템**(메뉴·주문 접수·정산)은 커머스의 판매자 시스템과 성격이 다르다",
+          "커머스보다 **지연에 민감**하고 취소·환불이 잦다"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "클라우드 인프라와 내부 개발자 플랫폼",
+        "why": "제목에 **`K8`·`Service Mesh`·`Gateway Services`·`Messaging and Caching Platform`·`Cloud Infrastructure Automation`·`Developer Experience`·`Enterprise Network`** 가 각각 따로 있다 — **한 팀이 겸하는 규모가 아니라 층마다 팀이 있는 규모**라는 뜻이다.",
+        "what_to_know": [
+          "**`Developer Experience` 가 별도 자리로 있다** — 사내 개발자가 고객인 조직이 있다는 뜻이다",
+          "서비스가 많아지면 **서비스 간 통신(Service Mesh)과 입구(Gateway)** 가 별도 문제로 커진다",
+          "**메시징·캐시가 플랫폼으로 제공**된다 — 각 팀이 따로 운영하지 않는다"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "보안과 이상 거래 탐지",
+        "why": "**이 회사 채용에서 이례적으로 두꺼운 영역이다.** `Penetration Tester`(둘), `Digital Forensics & eDiscovery`, `Attack Surface Identification`, `Detection Operations : Email`, `Security Infrastructure`, `IAM`, `Digital Trust`, `정보보안 GRC`, `Tier1 Security Analyst` 가 전부 따로 열려 있다 — **공격을 찾는 쪽·막는 쪽·탐지하는 쪽·조사하는 쪽·규정 쪽이 다 나뉘어 있다.**",
+        "what_to_know": [
+          "**보안이 한 팀이 아니라 여러 갈래로 나뉜 회사**라, 지원할 때 자기가 어느 갈래인지 정해야 한다",
+          "고객 데이터와 결제가 걸려 있어 **탐지와 대응이 상시 운영**된다(`Tier1 Security Analyst` 같은 교대 자리가 있다)",
+          "`Digital Trust`·`GRC` 는 기술만이 아니라 **규정·감사**를 다룬다"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "AI 기반과 ML 플랫폼",
+        "why": "`Coupang AI Foundations`, `Director - Backend Engineering - AI Infra`, `Principal Engineer, ML`, `Senior Staff ll, AI Engineer (L7-2)` 처럼 **모델을 쓰는 자리와 모델을 돌릴 바탕을 만드는 자리가 따로** 열려 있다.",
+        "what_to_know": [
+          "**`AI Foundations` 라는 이름은 공통 모델·기반을 만드는 조직**을 뜻하는 경우가 많다 — 개별 서비스 모델과 다르다",
+          "커머스에서 AI 가 붙는 곳은 대개 **카탈로그 정제·검색 랭킹·추천·수요 예측·이상 탐지**다",
+          "`AI Infra` 가 백엔드 엔지니어링 아래에 있다 — **모델을 돌리는 인프라를 인프라 조직이 맡는 구조**로 읽힌다"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      },
+      {
+        "name": "글로벌 — 대만",
+        "why": "`Taiwan Relocation` 이 제목에 붙은 공고와 `TW Front Engineering` 팀 매니저 자리가 있다. **대만은 `Developing Offerings` 의 한 축**이고, 한국에서 만든 것을 그대로 옮기는 것이 아니라 **현지 조직을 세우는 중**임이 채용에 드러난다.",
+        "what_to_know": [
+          "⚠️ **`Relocation` 이 제목에 있는 공고는 근무지가 대만**이다 — 지원 전에 반드시 확인한다",
+          "현지 사업은 **결제 수단·주소 체계·언어·법이 달라** 코드가 그대로 가지 않는다",
+          "새 시장은 **데이터가 적어** 추천·예측이 한국만큼 안 된다"
+        ],
+        "confidence": "inferred",
+        "sources": []
+      }
+    ],
+    "signals": [
+      {
+        "reading": "**직급 체계가 공고 제목에 그대로 드러난다**",
+        "evidence": "제목에 `Manager` · `Senior Manager` · `Director` · `Staff` · `Senior Staff` · `Senior Staff ll` · `Principal` 이 붙고, 심지어 **`Senior Staff ll, AI Engineer (L7-2)` 처럼 내부 레벨 코드가 노출된 공고**도 있다. 113건 중 **`Senior`·`Staff`·`Principal`·`Lead` 가 제목에 든 것이 75건**이다.",
+        "so_what": "**자기 위치를 제목만으로 가늠할 수 있다** — 같은 `Back-end Engineer` 라도 `Senior Staff` 와 `Manager` 는 요구가 다르다(후자는 사람 관리가 들어간다). ⚠️ **`Director`·`Manager` 가 붙은 공고는 조직을 맡는 자리**이므로, 개인 기여자로 남고 싶다면 `Staff`·`Principal` 계열을 본다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**보안 조직이 여러 갈래로 나뉠 만큼 크다**",
+        "evidence": "`Senior Security Engineer (Penetration Tester)`, `(Digital Forensics & eDiscovery)`, `(Attack Surface Identification)`, `(Detection Operations : Email)`, `Director Backend Engineering (Security Infrastructure)`, `Senior Staff Backend Engineer (IAM)`, `Director, Data Security Engineering (Digital Trust)`, `[쿠팡/계약직] 정보보안 GRC 담당자`, `[쿠팡] Tier1 Security Analyst (계약직)` 가 **전부 별개 공고**로 열려 있다.",
+        "so_what": "**보안 직군으로 이 회사를 노린다면 갈래를 먼저 고른다** — 공격을 찾는 쪽(모의해킹·공격면 식별), 탐지·대응 쪽, 조사 쪽(포렌식), 인프라 쪽(IAM·보안 인프라), 규정 쪽(GRC)이 다르다. ⚠️ **`Tier1 Security Analyst` 와 `GRC` 는 계약직으로 열려 있다** — 고용 형태를 확인해야 한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**경력 표기가 없는 공고가 대부분이다 — 자체 채용 사이트 형식 때문이다**",
+        "evidence": "113건 중 **92건이 회사 자체 채용 사이트(ats) 공고이고 경력 연차 표기가 없다.** 연차가 적힌 21건은 원티드·사람인 경유 공고이며 범위가 넓다(`경력 6-25년`, `경력 5-20년`, `경력 1-5년` 등).",
+        "so_what": "**연차 숫자가 없다고 신입 지원이 가능한 것은 아니다** — 제목의 `Senior`·`Staff` 가 사실상 연차 표기 역할을 한다. **본문의 자격요건에서 요구 경험을 직접 읽어야 한다.** 반대로 **`경력 6-25년` 같은 넓은 범위는 목록 화면의 표기일 뿐**이므로 그 숫자만 보고 포기하지 않는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**주니어 문이 아주 좁지만 닫혀 있지는 않다**",
+        "evidence": "제목에 시니어 표기가 없는 38건 중 실제로 연차가 낮은 자리는 소수다 — `Machine Learning Engineer (Eats S&D)`(경력 1-5년), `CXDX Junior PM (데이터 분석 PM)`(신입/경력 2년 이하), `[쿠팡] Tier1 Security Analyst (계약직)`(경력 1~4년), `[쿠팡 장애인 채용] AI 데이터 라벨링 및 검수 (재택근무)`(경력무관), `[쿠팡로지스틱스서비스] Logistics Data Assistant`(경력무관).",
+        "so_what": "**경력이 짧다면 이 다섯을 먼저 본다.** ⚠️ 다만 **계약직·별도 법인·재택 라벨링 등 고용 형태가 제각각**이므로 공고 본문에서 반드시 확인한다. 그리고 **`쿠팡로지스틱스서비스(유)` 는 쿠팡과 다른 법인**이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**해외 근무가 전제된 공고가 섞여 있다**",
+        "evidence": "`Director, Program Management - Catalog AI & Quality (Taiwan Relocation)` 처럼 **제목에 `Relocation` 이 명시된 공고**가 있고, `Manager,Front-end Engineering (TW Front Engineering)` 처럼 대만 조직 자리가 따로 있다. 공시상 대만은 `Developing Offerings` 에 속한다.",
+        "so_what": "**제목의 괄호를 반드시 읽는다** — 근무지가 한국이 아닐 수 있다. 반대로 **해외 근무를 원한다면 이 회사가 실제 경로를 열어 두고 있다는 뜻**이기도 하다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+  "salary": null,
+  "people": [],
+  "postings": [],
+  "open_questions": [
+    "**아직 공고를 한 건도 쓰지 않았다** — 이번 회차는 회사 브리핑(3단계)만 했다. 113건 중 본문이 있는 103건에서 **도메인이 겹치지 않게 골라 가며** 채운다.",
+    "**`salary` 는 아직 비어 있다.** ⚠️ 이 회사는 **NYSE 상장사(`CPNG`)라 실적은 공시로 확인되지만 급여는 공시에 직군별로 나오지 않는다.** 미국 상장사는 **CEO 대비 중위 직원 보수 비율(Pay Ratio)** 을 공시하는 경우가 있으나 **전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다** — 다음 회차에 집계 서비스와 함께 확인한다.",
+    "**`people` 은 아직 비어 있다.** 공개 발표·서명 있는 기술 글을 찾아야 한다.",
+    "⚠️ **`쿠팡로지스틱스서비스(유)` 공고 1건이 같은 이름으로 묶여 있다** — 별도 법인이므로 `aliases` 에 정규화 값(`쿠팡로지스틱스서비스`)을 넣어 두었지만, **공고를 쓸 때 법인이 다르다는 사실을 밝혀야 한다.**"
+  ]
+}
