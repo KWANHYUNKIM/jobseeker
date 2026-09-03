@@ -485,6 +485,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "oauth2",
+      "title": "OAuth 2.0",
+      "category": "term",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**비밀번호를 건네지 않고 권한만 빌려주는 절차**다. \"이 앱이 내 구글 캘린더를 읽어도 된다\"를 사용자가 승인하면, 앱은 비밀번호 대신 **범위와 기한이 정해진 토큰**을 받는다.",
+      "aliases": [
+        "OAuth 2.0",
+        "OAuth2",
+        "OAuth",
+        "오어스",
+        "OIDC",
+        "OpenID Connect"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
