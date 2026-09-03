@@ -4,47 +4,49 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 4건 · 학습 36개.
-(전체: 회사 24곳 · 공고 191건 · 학습 1,564개 · **오류 0 · 경고 0**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 5건 · 학습 45개.
+(전체: 회사 24곳 · 공고 192건 · 학습 1,573개 · **오류 0** · **경고 5**.)
 
-**이번 회차 = `AI Infrastructure Engineer`(자체 채용페이지/Ashby, 판교·Remote 표기).**
-축: **`Kubernetes 와 Slurm 이 함께 나오는 이유`** · **`GPU 는 죽는 대신 느려지고 결과가 틀린다`** ·
-`쿼터·가동률(이 자리의 성과 지표)` · `분산 학습 확장 효율` · `리눅스를 커널 수준으로` ·
-**`'유지보수가 용이한' 이라는 형용사가 요구사항이다`** · `NVIDIA 스택(드라이버·CUDA·NCCL)` ·
-`대규모 클러스터 관측성` · `IaC(여러 데이터센터)`.
+**이번 회차 = `Senior ML Platform Engineer`(원티드 wd/293656, `경력 7년 이상`, 판교).**
+축: **`센서·캘리브레이션·어노테이션 셋을 함께 담는 레이크하우스`** · **`데이터 SDK — 사용자가
+사내 연구자다`** · **`병목을 셋으로 나눠 재기(처리·검색·TP 커버리지)`** · `웨어하우스 vs 레이크하우스
+(작은 파일 문제)` · **`분산 데이터 로더 — GPU 가 굶지 않게`** · `오케스트레이션과 재실행 범위` ·
+`'잘못 쓰기 어려운' SDK 설계` · `센서 데이터 실습` · **`주행 영상은 개인정보다`**.
 
-**⚠️⚠️ 이번에 큰 실수를 했다가 잡았다 — 제목으로 공고를 찾으면 다른 회사 것을 집는다.**
-`AI Infrastructure Engineer` 로 검색해 읽은 첫 결과가 **Together AI(샌프란시스코, greenhouse)** 였다.
-본문에 `About Together AI`·`$190,000 - $270,000` 이 있어 알아챘다. **포티투닷에도 같은 제목의
-공고가 따로 있었다**(판교, Ashby). → **공고를 찾을 때 반드시 `norm_company` 로 먼저 거른 뒤
-제목을 본다.** 크롤 데이터에 해외 ATS 회사가 들어와 있어 **동명 공고가 흔하다.**
-(앞 사이클들에서 적어 둔 "본문 5,088자" 같은 숫자도 이 오류의 영향을 받았을 수 있다 — 아래 목록은 다시 셌다.)
+**⚠️ `TP coverage` 가 성능 지표에 나란히 적혀 있었다** — `data processing latency, data search latency
+to Test Procedure (TP) coverage`. 앞의 둘은 흔한 지표지만 **세 번째는 자율주행 특유**다:
+**데이터가 많아도 필요한 상황이 빠져 있으면 검증이 안 된다.** `edge` 첫 항목을 **시나리오 커버리지
+표에서 빈 칸 찾기**로 세웠다. **성능 지표 목록에 낯선 항목이 섞여 있으면 그게 그 도메인의 본질이다.**
 
-**⚠️ 포티투닷 46건 실제 구성을 다시 셌다** — 판교 24 · **서니베일 9** · 바르샤바 3 · **호치민 1**
-(`[42dot Vietnam] QA Engineer (Automotive)`) · 나머지 원티드 9건은 전부 판교.
-**해외 자리 13건은 국내 자리로 쓰지 않는다** — 쓸 때 `verdict`·`fit` 에 근무지를 명시한다.
+**⚠️ 이 공고는 본문이 영어 전용이었다** — 같은 회사 국내(판교) 공고인데도 그렇다.
+`quote` 를 영어 원문에서 뽑았고, `fit.can_learn` 에 **영어 이력서·면접 전제**를 적었다.
+**포티투닷 공고는 세 종류다: 한국어 전용 / 한·영 병기 / 영어 전용.** 매번 확인한다.
 
-**⚠️ 데이터·플랫폼 축 셋을 대조한 결과** (이번에 확인)
-- `AI Infrastructure Engineer` ↔ 나머지 셋: **0.00~0.04(완전히 다름)** → 이번에 썼다.
-- `Senior ML Platform Engineer (Autonomous Driving)`(서니베일) ↔ `Senior AI Data Pipeline Engineer`(서니베일):
-  **0.54 / 0.70 / 0.82 — 사실상 같은 계열.** 둘 중 하나만 쓴다.
-- `Senior ML Platform Engineer`(원티드, 판교, `경력 7년 이상`) ↔ 위 서니베일 판: **0.68 / 0.81 / 0.19**
-  → **우대사항만 크게 다르다.** **판교 건을 쓰는 편이 낫다**(국내 자리이고 경력 표기가 있다).
+**⚠️ 대조 결과 안 쓸 것 둘** — `Senior ML Platform Engineer (Autonomous Driving)`(서니베일)과
+`Senior AI Data Pipeline Engineer (Autonomous Driving)`(서니베일)은 서로 0.54/0.70/0.82,
+이번에 쓴 판교 건과도 0.68/0.81 이다. **같은 계열이고 해외 자리라 쓰지 않는다** —
+**닫을 때 `open_questions` 에 이유를 남긴다.**
 
-**남은 순서**
-1. **`Senior ML Platform Engineer`(원티드 wd, 판교, `경력 7년 이상`)** — **다음.** 데이터·플랫폼 축 대표.
-   ⚠️ 서니베일 두 건은 **같은 계열이라 쓰지 않고** 닫을 때 `open_questions` 에 이유를 남긴다.
-2. `Senior Software Engineer (AD Framework)`(판교, 4,906자) / `Senior Planning & Control System Engineer`(판교, 4,845자) /
-   `Senior Computer Vision Engineer`(판교, 4,161자) — **자율주행 스택 축.** ⚠️ 서로 대조 먼저.
-3. `Security Engineer (Security Platform)`(판교, 2,687자) / `Security Engineer (차량 보안)`(판교, 1,065자) —
-   **차량 보안 각도.** 둘 대조 먼저.
-4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(판교, 2,294자) — 학위 과정 지원자에게 열린 유일한 문.
-5. `LLM Engineer (Data Generation)`·`Senior AI Engineer (Driving VLM/VLA)`·`AI Engineer (Navigation Agent)`·
-   `Senior AI Agent Engineer (Gleo Interactor)` — **Gleo·에이전트 축.** 넷 대조 먼저.
-6. 서니베일·바르샤바·호치민 13건은 **뒤로.** 쓰더라도 근무지를 앞세운다.
+**남은 순서** (판교 자리 위주)
+1. **자율주행 스택 축 셋 — 쓰기 전에 서로 대조.**
+   `Senior Software Engineer (AD Framework)`(4,906자) / `Senior Planning & Control System Engineer`(4,845자) /
+   `Senior Computer Vision Engineer (Autonomous Driving)`(4,161자). **셋 다 판교.**
+   ⚠️ 1회차 `Physical AI Engineer (Model)` 과도 겹칠 수 있다(계획·제어 각도) — **함께 대조.**
+2. **Gleo·에이전트 축 넷 — 대조 먼저.** `Senior AI Agent Engineer (Gleo Interactor)`(1,614자) /
+   `Senior AI Engineer (Driving VLM/VLA)`(2,333자) / `AI Engineer (Navigation Agent)`(1,829자) /
+   `LLM Engineer (Data Generation)`(2,196자). **회사 브리핑의 `차량 인포테인먼트와 음성 AI` 도메인과 맞물린다.**
+3. `Security Engineer (Security Platform)`(2,687자) / `Security Engineer (차량 보안)`(1,065자) — 둘 대조 먼저.
+4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
+5. `Senior Physical AI Engineer`(5,968자) — 1회차와 다른 자리임을 확인했다.
+6. 서니베일·바르샤바·호치민 13건은 **뒤로.**
+
+**⚠️ 경고 5건이 새로 떴다**(크롤이 마감을 새로 잡았다):
+`exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
+**대기열이 빌 때 `fix(guide)` 로 처리한다** — 사다리에 경고는 없으므로 스스로 밀려난다.
+(지난번 51건도 그래서 스무 사이클을 기다렸다. **이번엔 다섯 건이니 다음에 큐가 비면 바로 한다.**)
 
 **닫을 때 (넷)** — ① **`Pleos Vehicle OS` 회사 브리핑 보강** ② `salary` 비어 있음(사람인
-`view-inner-salary` 먼저 시도) ③ `people` 비어 있음(신임 박민우 대표 직접 발언 나오면) ④ 안 쓴 공고 이유.
+`view-inner-salary` 먼저 시도) ③ `people` 비어 있음 ④ 안 쓴 공고 이유(서니베일 두 건 포함).
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -64,6 +66,17 @@
 
 ## 배운 것
 
+- **성능 지표 목록에 낯선 항목이 섞여 있으면 그게 그 도메인의 본질이다.** 포티투닷 ML 플랫폼
+  공고는 병목 지표를 `처리 지연 / 검색 지연 / **TP(Test Procedure) 커버리지**` 로 적었다. 앞의 둘은
+  어디에나 있지만 세 번째는 자율주행만의 것이다 — **데이터가 많아도 필요한 상황이 빠져 있으면
+  검증이 안 된다.** `edge` 를 '빠진 칸 찾기'로 세우면 그 팀의 언어로 말하는 지원자가 된다.
+- **한 회사 안에서도 공고 언어가 갈린다.** 포티투닷은 **한국어 전용 / 한·영 병기 / 영어 전용** 세
+  종류가 섞여 있고, **판교 자리인데 영어 전용인 것도 있었다**(ML Platform). `quote` 를 어느 언어에서
+  뽑을지 매번 확인하고, **영어 전용이면 `fit` 에 영어 이력서·면접 전제를 적어 준다.**
+- **플랫폼 팀 공고는 '사용자가 누구인가'를 먼저 밝힌다.** 이 자리의 사용자는 고객이 아니라
+  **사내 ML 연구자**이고, 산출물이 화면이 아니라 **파이썬 SDK** 다. 그래서 `Expert-level Python` 이
+  문법 실력이 아니라 **API 설계·하위 호환·오용 방지** 요구가 된다. `verdict` 에서 이 전환을 해 주면
+  지원자가 자기 경력을 다시 배치할 수 있다.
 - **⚠️ 공고를 제목으로 찾지 않는다. 반드시 `norm_company` 로 먼저 거른다.** 실제로
   `AI Infrastructure Engineer` 를 제목으로 찾아 **Together AI(샌프란시스코)** 공고를 읽었다.
   본문의 `About Together AI`·달러 연봉 표기로 알아챘지만, **못 알아채면 다른 회사 요건을 그 회사
