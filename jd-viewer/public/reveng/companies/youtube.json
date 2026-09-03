@@ -5,7 +5,7 @@
   "country": "US",
   "category": "스트리밍",
   "status": "done",
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-09-03",
   "one_liner": "회사가 고르지 않은 카탈로그 위에서 성과의 정의부터 다시 세운 회사",
   "business_model": "광고가 중심이다. YouTube 광고 매출은 2025년 **403.67억 달러**(2024년 361.47억, 2023년 315.10억)로, Alphabet 총매출 4,028.36억 달러의 일부다. 구독(YouTube Premium·Music·TV)은 10-K 에서 **'Google subscriptions, platforms, and devices'(2025년 480.30억 달러)** 안에 Google One·Play·기기와 함께 묶여 있어 **YouTube 몫만 따로 확인할 수 없다.**\n\nNetflix 와 같은 스트리밍이지만 **비용의 구조가 반대편에서 온다.** Netflix 는 자기가 만들거나 사 온 소수의 콘텐츠를 자기가 정한 품질로 인코딩하지만, YouTube 는 **누가 무엇을 어떤 품질로 올릴지 통제하지 못한다.** 그래서 이 회사의 기술은 '어떻게 잘 압축할까'보다 앞에서 시작한다 — **올라온 것이 무엇이고 얼마나 좋은 것인지부터 판정해야 한다.**\n\n**사내에서 같은 모양이 두 번씩 반복된다.** 첫째, **기계가 판정할 수 없는 것을 시스템 밖에 놓는다** — Content ID 는 맥락(교육적 사용·패러디)을 보지 않고 클립 길이와 비율로 근사한 뒤 나머지를 이의 제기 절차로 밀고, 추천은 모델 점수 위에 **사람이 만든 평가자 지침**을 얹어 경계선 콘텐츠를 강등한다. 둘째, **무엇을 성과라고 부를지부터 다시 정한다** — 화질은 참조 기반 계산식을 버리고 사람의 주관 점수(MOS)로 옮겼고, 추천은 클릭에서 시청 시간으로, 다시 **설문 4~5점만 세는 '가치 있는 시청 시간'**으로 옮겼다(옮길 때 조회수 20% 감소를 감수했다).\n\n**세 번째로, 미리 정할 수 없는 것은 미리 정하지 않는다.** 엣지 캐시를 선제적으로 채우지 않고 **로컬 수요가 채우게** 두는 선택이 그 예다 — 카탈로그가 올라온 것 전부라는 사정과 같은 방향이지만, **회사가 그 이유를 밝힌 적은 없다**(이 연결은 이 사이트의 해석).",
   "products": [
@@ -2312,7 +2312,8 @@
     "YouTube 의 전송 프로토콜과 재생 측 적응(ABR·QUIC 등) — GGC 문서는 배치와 캐시필까지만 다룬다.",
     "GGC 가 '캐시 가능한 트래픽'을 무엇으로 정의하는지, 그리고 실제 적중률 분포.",
     "GGC 노드 하나가 담는 콘텐츠의 선정 기준 — 문서는 '그 지역에서 인기 있는 정적 콘텐츠'까지만 말한다.",
-    "추천(무엇을 위에 올리는가)이 엣지 캐시 적중률과 실제로 맞물리는지."
+    "추천(무엇을 위에 올리는가)이 엣지 캐시 적중률과 실제로 맞물리는지.",
+    "**이 연표는 추천의 목표 지표 축만 담고 있다.** 같은 회사에 업로드·트랜스코딩(2021년 자체 영상 가속 하드웨어 배치)과 저작권 식별(2010년 Content ID) 쪽에도 연도가 붙어 있지만 축이 달라 한 줄에 세우지 않았다. 피그마에서도 같은 문제가 있었다."
   ],
   "sources": [
     {
@@ -2337,5 +2338,148 @@
       "summary": "YouTube 광고 매출 2023년 315.10억 달러 → 2024년 361.47억 달러 → 2025년 403.67억 달러. Alphabet 총매출 2025년 4,028.36억 달러, 영업이익 1,290.39억 달러. 'Google subscriptions, platforms, and devices' 는 2025년 480.30억 달러이며 YouTube 구독뿐 아니라 Google One·Play·기기를 함께 담는다."
     }
   ],
-  "domain": "youtube.com"
+  "domain": "youtube.com",
+  "eras": [
+    {
+      "id": "2008-popularity",
+      "from": "2008",
+      "to": "2011",
+      "title": "인기가 곧 순위였다",
+      "context": "추천이 조회수와 인기 급상승을 따라갔다.",
+      "what_changed": "많이 본 것을 위로 올렸다. 가장 적은 정보로 만들 수 있는 순위다.",
+      "why": "첫 시기다. 사람마다 다르게 줄 근거가 아직 없을 때, 남들이 많이 본 것은 그런대로 쓸 만한 대리 지표다.",
+      "tradeoff": "**개인화가 성립하지 않는다.** 회사 스스로 이렇게 적었다 — 조회수가 가장 많다는 이유로 홈이 최신 스포츠와 음악만 추천한다면 답답하지 않겠느냐고.",
+      "domains": [
+        "추천·발견"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "On YouTube's recommendation system",
+          "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+          "publisher": "YouTube Official Blog",
+          "date": "2021-09-15",
+          "summary": "추천이 무엇을 목표로 삼아 왔는지를 연도별로 짚고, 지표를 바꿀 때 옛 숫자가 얼마나 떨어졌는지까지 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2011-clicks",
+      "from": "2011",
+      "to": "2012",
+      "title": "클릭을 참여로 쳤다",
+      "context": "인기만으로는 사람마다 다르게 줄 수 없었다.",
+      "what_changed": "**클릭 신호를 넣었다.** 무엇을 눌렀는지가 곧 무엇에 관심이 있는지라고 본 것이다.",
+      "why": "개인의 행동을 읽어야 개인화가 된다. 클릭은 가장 쉽게 모이는 개인 신호다.",
+      "tradeoff": "**클릭했다고 실제로 본 것은 아니다.** 이 지표는 '누르게 만드는 것'을 잘하는 콘텐츠에 상을 준다 — 보고 나서 후회하는 것과 구분하지 못한다.",
+      "domains": [
+        "추천·발견"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "On YouTube's recommendation system",
+          "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+          "publisher": "YouTube Official Blog",
+          "date": "2021-09-15",
+          "summary": "추천이 무엇을 목표로 삼아 왔는지를 연도별로 짚고, 지표를 바꿀 때 옛 숫자가 얼마나 떨어졌는지까지 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2012-watchtime",
+      "from": "2012",
+      "to": "2019",
+      "title": "시청시간으로 바꾸고 조회수 20%를 내줬다",
+      "context": "클릭만으로는 오해를 부른다는 것이 분명해졌다.",
+      "what_changed": "**2012년 시청시간(watchtime)을 목표로 세웠다.** 이후 **2015년에는 선정적이고 품질이 낮은 콘텐츠를 강등**했고, **2017년에는 보호집단에 대한 공정성 감사**를 넣었다.",
+      "why": "누른 것이 아니라 **머문 것**을 봐야 실제로 값을 준 것에 가깝다.",
+      "tradeoff": "**바꾸자마자 조회수가 20% 떨어졌다.** 지표를 바꾸면 옛 지표는 나빠진다 — 이 회사는 그걸 알면서 바꿨고 그 숫자를 공개했다. 한편 2015년 강등은 예상과 달랐다 — 나쁜 것을 내렸는데 **시청시간이 오히려 0.5% 늘었다.**",
+      "domains": [
+        "추천·발견"
+      ],
+      "features": [
+        "watch-next-ranking"
+      ],
+      "metrics": [
+        {
+          "label": "시청시간 도입 직후 조회수",
+          "value": "즉시 20% 하락",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "On YouTube's recommendation system",
+              "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+              "publisher": "YouTube Official Blog",
+              "date": "2021-09-15",
+              "summary": "추천이 무엇을 목표로 삼아 왔는지를 연도별로 짚고, 지표를 바꿀 때 옛 숫자가 얼마나 떨어졌는지까지 적었다."
+            }
+          ]
+        },
+        {
+          "label": "2015 저품질 강등 후 시청시간",
+          "value": "0.5% 증가",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "On YouTube's recommendation system",
+              "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+              "publisher": "YouTube Official Blog",
+              "date": "2021-09-15",
+              "summary": "추천이 무엇을 목표로 삼아 왔는지를 연도별로 짚고, 지표를 바꿀 때 옛 숫자가 얼마나 떨어졌는지까지 적었다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "On YouTube's recommendation system",
+          "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+          "publisher": "YouTube Official Blog",
+          "date": "2021-09-15",
+          "summary": "추천이 무엇을 목표로 삼아 왔는지를 연도별로 짚고, 지표를 바꿀 때 옛 숫자가 얼마나 떨어졌는지까지 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2019-what-not-to-show",
+      "from": "2019",
+      "to": "",
+      "title": "무엇을 덜 보여줄지 회사가 정하기 시작했다",
+      "context": "시청시간을 목표로 두면 오래 보게 만드는 것이 이긴다. 그중에는 오래 보게 만들지만 사실이 아닌 것도 있었다.",
+      "what_changed": "**2019년 경계선 콘텐츠(음모론·허위 주장)를 강등**하기 시작했다. 그리고 수동적인 시청시간 대신 **설문으로 확인한 '가치 있는 시청시간'** 쪽으로 목표를 옮겼다.",
+      "why": "머문 시간이 곧 만족은 아니다. 오래 봤다는 사실만으로는 그 경험이 좋았는지 알 수 없다.",
+      "tradeoff": "**미국에서 비구독·추천 경로의 경계선 콘텐츠 시청시간이 70% 떨어졌다.** 그리고 더 근본적인 값이 있다 — 그전까지는 사용자의 행동만 읽으면 됐는데, 이제 **무엇이 '경계선'이고 무엇이 '가치 있는' 시청인지를 회사가 정해야 하는 자리**에 섰다. 읽는 일에서 판단하는 일로 성격이 바뀐 것이다.",
+      "domains": [
+        "추천·발견"
+      ],
+      "metrics": [
+        {
+          "label": "경계선 콘텐츠 시청시간 (미국·비구독 추천)",
+          "value": "70% 하락",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "On YouTube's recommendation system",
+              "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+              "publisher": "YouTube Official Blog",
+              "date": "2021-09-15",
+              "summary": "추천이 무엇을 목표로 삼아 왔는지를 연도별로 짚고, 지표를 바꿀 때 옛 숫자가 얼마나 떨어졌는지까지 적었다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "On YouTube's recommendation system",
+          "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+          "publisher": "YouTube Official Blog",
+          "date": "2021-09-15",
+          "summary": "추천이 무엇을 목표로 삼아 왔는지를 연도별로 짚고, 지표를 바꿀 때 옛 숫자가 얼마나 떨어졌는지까지 적었다."
+        }
+      ]
+    }
+  ]
 }
