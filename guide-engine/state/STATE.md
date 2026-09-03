@@ -4,22 +4,24 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **55개**(브리핑 51 + 중복 표시 4),
-학습 427개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **56개**(브리핑 52 + 중복 표시 4),
+학습 437개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
 
-직전 회차: **`Principal, Back-End Engineer`**(ats, 쿠팡이츠). 형태 ④, 줄 겹침 0.05.
-**`Principal` 급 두 번째**(앞은 `Principal, Security Engineer`).
+직전 회차: **`SCMA Senior Staff Data Scientist`**(ats). 여러 회차 동안 STATE 에 읽어 둔
+공고를 드디어 썼다. **`preferences` 가 비어 자격이 전부 기준**이다.
 
 이 공고에서만 나온 것:
-- ⚠️ **`Principal` 의 요건이 관리가 아니라 `기술 리더십 7년`** 이고, 범위가
-  `organization / business unit level` 이다. 게다가 **`comfortable getting into code level
-  details … and building software`** 라고 **직접 만든다**고 못 박는다 → **신호 8번 보강.**
-- ⚠️ **`ongoing simplification` 이 담당업무에 있다** — 새로 만드는 것보다 **합치고 줄이는
-  결정**. `edge` 를 **단순화 사례**로 잡았다(없애는 일은 대개 아무의 성과도 아니다).
-- ⚠️ **`Ideally identify them before they happen`** — 사고 대응이 아니라 **예방**을 요구한다.
-  `edge` 를 **한계 지도**(자원별 현재값·한계값·남은 배수)로 잡았다.
-- **쿠팡이츠는 네 축이 서로 당긴다**(고객·가맹점·라이더·내부 운영) → **이츠 도메인
-  `what_to_know` 에 보강**: 이 도메인의 결정은 **어느 지표를 얼마나 내줄지 합의**에서 시작한다.
+- ⚠️ **제목(`Senior Staff`)과 본문(`As a Principal Data Scientist`)의 직함이 다르다** →
+  `open_questions`. **`Sr. Director, Back-End Engineering`(본문은 `Head of SRE`)에 이어 두 번째.**
+- 만드는 것은 **`Cognitive Engine`** — LLM 이 신호를 읽고 OR 이 발주를 실행한다.
+  규모가 본문에 있다: **하루 1,000만 개 이상 단위**, **수동 실행 50% 감축** 목표.
+- **핵심 축은 `Integrate DL & OR`** — 딥러닝이 신호를, OR 이 제약 아래 결정을 맡는다.
+  어려움을 **예측 오차가 최적해를 최악해로 만든다**로 잡고, `edge` 를
+  **점 추정 vs 시나리오 기반 비교 실험**으로 만들었다.
+- ⚠️ **`human-in-the-loop` → `human-on-the-loop`** 이 목표로 적혀 있다.
+  `edge` 둘째를 **자율 등급 표**(자동/승인/알림 + **상한**)로 잡았다 — 상한 없는 자율은 사고다.
+- 같은 OR 계열이지만 **문이 훨씬 넓은 `[CLS] First & Middlemile Data Scientist`(석사 + 3년)**
+  와 양쪽에 링크를 걸었다.
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
@@ -28,12 +30,8 @@
 ⚠️ **세 절 중 비거나 한쪽만 찬 것이 있으면 `full_jd` 를 읽는다**(네 가지 형태).
 ⚠️ **미국 공고면 `full_jd` 에서 `base pay` 를 찾아 `salary.note` 에 원문 그대로 더한다.**
 ⚠️ **본문에 근무지·언어·이전 단서가 있으면 `fit` 첫 줄로.**
+⚠️ **제목과 본문의 직함이 다르면 `open_questions` 에 적고 예상 질문에 확인을 넣는다**(두 번 나왔다).
 ⚠️ **개발 직군이 아니면 `verdict` 첫 줄에 밝힌다.**
-
-⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 최대 겹침 0.33).
-**제목은 `Senior Staff` 인데 본문 첫 줄은 `Principal Data Scientist`**. 요건은
-**Ph.D. 또는 석사 + 10년**, LLM·지식그래프·GNN·강화학습에 **MIP·동적계획법·메타휴리스틱**과
-**Gurobi/CPLEX/SCIP**, 이산사건 시뮬레이션(AnyLogic·Simio).
 
 ⚠️ **차이만 쓸 대상 4건**: `Senior, Back-end Engineer (Advertiser Platform)`(ats),
 `Senior Staff Back-end Engineer (Rocket Pay)`(ats),
@@ -55,6 +53,11 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **STATE 에 "읽어 둔 것"을 오래 들고 있으면 그 자체가 부채가 된다.** SCMA 공고는 여러
+  회차 동안 요약만 STATE 에 실려 다녔는데, 그동안 **매 회차 그 문단을 다시 읽고 다시
+  옮겨 적어야** 했다. `--gaps` 가 언젠가 그 공고를 가리킬 것이므로 **미리 읽어 둔 요약은
+  짧게 유지하고, 차례가 오면 바로 쓴다.**
 
 - **스택이 회사 표준과 다르면 그 이유를 찾아 적는다.** 쿠팡 공고 50건 중 하나만
   `Go/Rust/C++` 를 요구했는데, 그 팀이 **모든 요청이 지나는 데이터 경로**를 만들기
