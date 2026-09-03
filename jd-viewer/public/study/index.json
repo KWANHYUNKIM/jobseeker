@@ -1,434 +1,450 @@
 {
- "updated_at": "2026-09-04",
- "articles": [
-  {
-   "slug": "asyncio",
-   "title": "asyncio",
-   "category": "framework",
-   "level": "core",
-   "status": "done",
-   "one_liner": "한 스레드 안에서 **이벤트 루프**가 돌며, 기다리는 코루틴을 재우고 준비된 코루틴을 깨워 실행하는 방식이다. 양보 지점(`await`)이 코드에 **보이는** 것이 장점이자 함정이다.",
-   "aliases": [
-    "asyncio",
-    "이벤트 루프",
-    "코루틴",
-    "async/await"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "atmega128",
-   "title": "ATmega128",
-   "category": "firmware",
-   "level": "basic",
-   "status": "done",
-   "one_liner": "전원과 부품을 직접 연결한 회로 위에서, 프로그램 한 벌이 운영체제 없이 혼자 도는 8비트 마이크로컨트롤러다. 국내 펌웨어 실습에서 '첫 칩'으로 가장 많이 쓰였다.",
-   "aliases": [
-    "ATmega128",
-    "ATmega128A",
-    "아트메가128",
-    "아트메가",
-    "AVR"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-03"
-  },
-  {
-   "slug": "docker",
-   "title": "Docker",
-   "category": "infra",
-   "level": "core",
-   "status": "done",
-   "one_liner": "실행 환경을 **코드와 함께 굳혀 옮기는** 방법이다. 가상 머신이 아니라 **커널을 공유하는 프로세스 격리**라서 가볍고, 그 사실이 메모리 한도·격리 수준·이미지 크기 문제를 전부 설명한다.",
-   "aliases": [
-    "Docker",
-    "도커",
-    "컨테이너",
-    "Dockerfile"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "fastapi",
-   "title": "FastAPI",
-   "category": "framework",
-   "level": "core",
-   "status": "done",
-   "one_liner": "**타입 힌트를 런타임 검증·자동 문서로 바꾸는** 파이썬 웹 프레임워크다. 그리고 `def` 와 `async def` 를 **다른 곳에서 실행한다** — 이 두 문장이 이 프레임워크의 거의 전부다.",
-   "aliases": [
-    "FastAPI",
-    "pydantic",
-    "Uvicorn"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "gil",
-   "title": "GIL",
-   "category": "runtime",
-   "level": "core",
-   "status": "done",
-   "one_liner": "CPython 안에 하나뿐인 잠금. **한 번에 한 스레드만 파이썬 바이트코드를 실행하게** 만든다. 참조 카운팅을 싸게 지키려고 고른 거래이고, 그 대가로 파이썬의 동시성 선택지 전부가 결정됐다.",
-   "aliases": [
-    "GIL",
-    "전역 인터프리터 락",
-    "global interpreter lock",
-    "자유 스레드",
-    "free-threading"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "gpio-register",
-   "title": "GPIO 레지스터",
-   "category": "firmware",
-   "level": "core",
-   "status": "done",
-   "one_liner": "핀을 켜고 끄는 일은 어느 칩에서나 결국 **정해진 주소에 비트를 쓰는 일**이다. 이름이 DDRx·MODER·GPIO_ENABLE 로 갈리는 것은 취향이 아니라 레지스터 폭과 핀당 옵션 수의 결과다.",
-   "aliases": [
-    "GPIO",
-    "GPIO 레지스터",
-    "DDR",
-    "PORT",
-    "MODER",
-    "BSRR"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-03"
-  },
-  {
-   "slug": "i2c",
-   "title": "I²C",
-   "category": "firmware",
-   "level": "core",
-   "status": "done",
-   "one_liner": "선 두 가닥에 여러 장치를 매달고 **주소로 골라 부르는** 버스다. 아무도 선을 잡지 않으면 1 이 되는 성질(오픈 드레인 + 풀업) 위에, 주소·응답(ACK)·양보(중재)라는 규칙을 얹어 만들었다.",
-   "aliases": [
-    "I2C",
-    "I²C",
-    "TWI",
-    "아이스퀘어드씨"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-03"
-  },
-  {
-   "slug": "idempotency",
-   "title": "멱등성",
-   "category": "term",
-   "level": "core",
-   "status": "done",
-   "one_liner": "같은 요청을 **몇 번 보내도 결과가 한 번 보낸 것과 같은** 성질이다. 네트워크가 \"성공했는지 알 수 없는 상태\"를 만들기 때문에, 재시도가 있는 모든 시스템의 전제 조건이 된다.",
-   "aliases": [
-    "멱등성",
-    "멱등",
-    "idempotency",
-    "멱등키"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "interrupt",
-   "title": "인터럽트",
-   "category": "firmware",
-   "level": "core",
-   "status": "done",
-   "one_liner": "하드웨어가 **내 코드를 아무 줄에서나 끊고** 정해진 함수로 뛰어들게 만드는 장치다. \"기다리지 않고 반응한다\"의 실체이고, 그 대가로 **코드가 언제 끊길지 모르게** 된다.",
-   "aliases": [
-    "인터럽트",
-    "interrupt",
-    "ISR",
-    "인터럽트 서비스 루틴"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "java",
-   "title": "Java",
-   "category": "language",
-   "level": "core",
-   "status": "done",
-   "one_liner": "소스를 **바이트코드로 컴파일해 JVM 위에서 돌리는** 언어다. 이 한 겹이 이식성·안전성·극단적인 하위 호환성을 주고, 그 대가로 **기동 시간과 워밍업**을 가져갔다.",
-   "aliases": [
-    "Java",
-    "자바",
-    "JVM"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "java-in-finance",
-   "title": "금융권은 왜 Java 인가",
-   "category": "domain",
-   "level": "core",
-   "status": "done",
-   "one_liner": "언어가 빨라서도 좋아서도 아니다. **망분리라는 배포 제약, 20년치 코드 자산, 사람을 갈아 끼워도 돌아가야 하는 발주 구조** 셋이 겹친 자리에서 Java·Spring 이 가장 덜 위험한 선택이었기 때문이다.",
-   "aliases": [
-    "금융권 Java",
-    "금융권 자바",
-    "금융 SI",
-    "계정계",
-    "차세대 시스템"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-03"
-  },
-  {
-   "slug": "jpa",
-   "title": "JPA",
-   "category": "framework",
-   "level": "core",
-   "status": "done",
-   "one_liner": "객체와 테이블을 잇는 **사양**이다(구현은 Hibernate 등). 진짜 알맹이는 SQL 자동 생성이 아니라 **영속성 컨텍스트** — 언제 SQL 이 나가는지를 이것이 정한다.",
-   "aliases": [
-    "JPA",
-    "Hibernate",
-    "영속성 컨텍스트",
-    "ORM"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "modbus",
-   "title": "Modbus",
-   "category": "domain",
-   "level": "core",
-   "status": "done",
-   "one_liner": "설비에 \"몇 번지부터 몇 개 읽어 줘\"라고 묻고 답을 받는 **요청-응답 프로토콜**이다. 1979년 PLC 용으로 만들어진 단순함이 그대로 남아 지금도 산업 현장의 공용어다.",
-   "aliases": [
-    "Modbus",
-    "모드버스",
-    "Modbus RTU",
-    "Modbus TCP"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "mqtt",
-   "title": "MQTT",
-   "category": "domain",
-   "level": "core",
-   "status": "done",
-   "one_liner": "장치가 **브로커에 값을 던져 두면** 관심 있는 쪽이 알아서 받아 가는 방식이다. `modbus` 의 폴링을 정확히 뒤집었고, 그 대가로 **중복 수신**이라는 새 문제를 가져왔다.",
-   "aliases": [
-    "MQTT",
-    "브로커",
-    "발행/구독",
-    "pub/sub"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "ohms-law",
-   "title": "옴의 법칙",
-   "category": "hardware",
-   "level": "basic",
-   "status": "done",
-   "one_liner": "`V = I × R` — 전압·전류·저항 중 둘을 알면 나머지가 정해진다. 이 문서의 알맹이는 공식이 아니라 **계산한 값과 실제로 살 수 있는 값이 다르다**는 것, 그리고 **계산이 맞아도 저항이 탈 수 있다**는 것이다.",
-   "aliases": [
-    "옴의 법칙",
-    "Ohm's law",
-    "V=IR",
-    "전류 제한 저항",
-    "분압"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "pull-up-resistor",
-   "title": "풀업 저항",
-   "category": "hardware",
-   "level": "basic",
-   "status": "done",
-   "one_liner": "신호선을 전원 쪽에 약하게 묶어 두어, 아무도 그 선을 붙잡지 않을 때 '1' 이 되게 만드는 저항이다. 디지털 입력에는 '아무것도 아닌 상태'가 없기 때문에 존재한다.",
-   "aliases": [
-    "풀업 저항",
-    "풀업",
-    "pull-up",
-    "pullup",
-    "pull-up resistor",
-    "풀다운"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-03"
-  },
-  {
-   "slug": "python",
-   "title": "Python",
-   "category": "language",
-   "level": "core",
-   "status": "done",
-   "one_liner": "실행 속도를 내주고 사람이 코드를 쓰는 시간을 산 언어다. 무거운 계산은 C·Rust 로 짜인 라이브러리가 하고, 파이썬은 그것들을 엮는 자리에 선다.",
-   "aliases": [
-    "Python",
-    "파이썬"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "rs485",
-   "title": "RS-485",
-   "category": "firmware",
-   "level": "core",
-   "status": "done",
-   "one_liner": "선 두 가닥의 **전압 차이**로 값을 실어 공장 바닥 1km 까지 보내는 전기 규격이다. 프로토콜이 아니라 **전선 규격**이고, 그 위로 흐르는 것은 대개 UART 프레임과 Modbus 다.",
-   "aliases": [
-    "RS-485",
-    "RS485",
-    "TIA-485",
-    "EIA-485",
-    "차동 전송"
-   ],
-   "sections": 5,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "rtos",
-   "title": "RTOS",
-   "category": "runtime",
-   "level": "core",
-   "status": "done",
-   "one_liner": "'실시간'은 빠름이 아니라 **정해진 시간 안에 반드시 반응한다는 보장**이다. RTOS 는 그 보장을 만들기 위해 **우선순위 기반 선점 스케줄러**를 파는 물건이다.",
-   "aliases": [
-    "RTOS",
-    "실시간 운영체제",
-    "FreeRTOS",
-    "Zephyr"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "spi",
-   "title": "SPI",
-   "category": "firmware",
-   "level": "core",
-   "status": "done",
-   "one_liner": "마스터가 클럭을 만들고 **보내는 동시에 받는**(전이중) 방식이다. 주소가 없어 장치마다 **CS 선 한 가닥**을 쓰고, 그 대가로 I²C 보다 자릿수 단위로 빠르다.",
-   "aliases": [
-    "SPI",
-    "MOSI",
-    "MISO",
-    "CPOL",
-    "CPHA"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "spring",
-   "title": "Spring",
-   "category": "framework",
-   "level": "core",
-   "status": "done",
-   "one_liner": "**객체를 누가 만들고 누가 연결할지를 컨테이너에 넘긴** 프레임워크다. 그 위에 `@Transactional` 같은 것을 **프록시로 끼워 넣는 구조**가 얹혀 있고, 실무 함정의 대부분이 그 프록시에서 나온다.",
-   "aliases": [
-    "Spring",
-    "스프링",
-    "Spring Boot",
-    "스프링부트"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "stm32",
-   "title": "STM32",
-   "category": "firmware",
-   "level": "core",
-   "status": "done",
-   "one_liner": "ARM Cortex-M 코어에 ST 의 주변장치를 붙인 **제품군**이다. 칩 하나가 아니라 수천 품목이고, 그래서 \"STM32 를 안다\"는 말은 **어느 시리즈인지**를 말해야 뜻이 생긴다.",
-   "aliases": [
-    "STM32",
-    "Cortex-M",
-    "STM32CubeMX",
-    "HAL"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "transaction-isolation",
-   "title": "트랜잭션 격리 수준",
-   "category": "term",
-   "level": "core",
-   "status": "done",
-   "one_liner": "동시에 도는 트랜잭션들이 **서로를 얼마나 보게 할지**를 정하는 눈금이다. 완전한 격리는 느리기 때문에, **정확성을 얼마나 살 것인가**를 고르게 만든 장치다.",
-   "aliases": [
-    "트랜잭션 격리 수준",
-    "격리 수준",
-    "isolation level",
-    "MVCC",
-    "동시성 제어"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
-  },
-  {
-   "slug": "uart",
-   "title": "UART",
-   "category": "firmware",
-   "level": "basic",
-   "status": "done",
-   "one_liner": "클럭선 없이 선 두 가닥으로 바이트를 주고받는 방식이다. 클럭을 안 보내는 대신 **양쪽이 같은 속도로 세기로 미리 약속**하고, 그 약속이 몇 % 만 어긋나도 글자가 깨진다.",
-   "aliases": [
-    "UART",
-    "시리얼 통신",
-    "serial",
-    "USART",
-    "RS-232"
-   ],
-   "sections": 6,
-   "drills": 3,
-   "updated_at": "2026-09-04"
+  "updated_at": "2026-09-04",
+  "articles": [
+    {
+      "slug": "asyncio",
+      "title": "asyncio",
+      "category": "framework",
+      "level": "core",
+      "status": "done",
+      "one_liner": "한 스레드 안에서 **이벤트 루프**가 돌며, 기다리는 코루틴을 재우고 준비된 코루틴을 깨워 실행하는 방식이다. 양보 지점(`await`)이 코드에 **보이는** 것이 장점이자 함정이다.",
+      "aliases": [
+        "asyncio",
+        "이벤트 루프",
+        "코루틴",
+        "async/await"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "atmega128",
+      "title": "ATmega128",
+      "category": "firmware",
+      "level": "basic",
+      "status": "done",
+      "one_liner": "전원과 부품을 직접 연결한 회로 위에서, 프로그램 한 벌이 운영체제 없이 혼자 도는 8비트 마이크로컨트롤러다. 국내 펌웨어 실습에서 '첫 칩'으로 가장 많이 쓰였다.",
+      "aliases": [
+        "ATmega128",
+        "ATmega128A",
+        "아트메가128",
+        "아트메가",
+        "AVR"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "docker",
+      "title": "Docker",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "실행 환경을 **코드와 함께 굳혀 옮기는** 방법이다. 가상 머신이 아니라 **커널을 공유하는 프로세스 격리**라서 가볍고, 그 사실이 메모리 한도·격리 수준·이미지 크기 문제를 전부 설명한다.",
+      "aliases": [
+        "Docker",
+        "도커",
+        "컨테이너",
+        "Dockerfile"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "fastapi",
+      "title": "FastAPI",
+      "category": "framework",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**타입 힌트를 런타임 검증·자동 문서로 바꾸는** 파이썬 웹 프레임워크다. 그리고 `def` 와 `async def` 를 **다른 곳에서 실행한다** — 이 두 문장이 이 프레임워크의 거의 전부다.",
+      "aliases": [
+        "FastAPI",
+        "pydantic",
+        "Uvicorn"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "gil",
+      "title": "GIL",
+      "category": "runtime",
+      "level": "core",
+      "status": "done",
+      "one_liner": "CPython 안에 하나뿐인 잠금. **한 번에 한 스레드만 파이썬 바이트코드를 실행하게** 만든다. 참조 카운팅을 싸게 지키려고 고른 거래이고, 그 대가로 파이썬의 동시성 선택지 전부가 결정됐다.",
+      "aliases": [
+        "GIL",
+        "전역 인터프리터 락",
+        "global interpreter lock",
+        "자유 스레드",
+        "free-threading"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "gpio-register",
+      "title": "GPIO 레지스터",
+      "category": "firmware",
+      "level": "core",
+      "status": "done",
+      "one_liner": "핀을 켜고 끄는 일은 어느 칩에서나 결국 **정해진 주소에 비트를 쓰는 일**이다. 이름이 DDRx·MODER·GPIO_ENABLE 로 갈리는 것은 취향이 아니라 레지스터 폭과 핀당 옵션 수의 결과다.",
+      "aliases": [
+        "GPIO",
+        "GPIO 레지스터",
+        "DDR",
+        "PORT",
+        "MODER",
+        "BSRR"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "i2c",
+      "title": "I²C",
+      "category": "firmware",
+      "level": "core",
+      "status": "done",
+      "one_liner": "선 두 가닥에 여러 장치를 매달고 **주소로 골라 부르는** 버스다. 아무도 선을 잡지 않으면 1 이 되는 성질(오픈 드레인 + 풀업) 위에, 주소·응답(ACK)·양보(중재)라는 규칙을 얹어 만들었다.",
+      "aliases": [
+        "I2C",
+        "I²C",
+        "TWI",
+        "아이스퀘어드씨"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "idempotency",
+      "title": "멱등성",
+      "category": "term",
+      "level": "core",
+      "status": "done",
+      "one_liner": "같은 요청을 **몇 번 보내도 결과가 한 번 보낸 것과 같은** 성질이다. 네트워크가 \"성공했는지 알 수 없는 상태\"를 만들기 때문에, 재시도가 있는 모든 시스템의 전제 조건이 된다.",
+      "aliases": [
+        "멱등성",
+        "멱등",
+        "idempotency",
+        "멱등키"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "interrupt",
+      "title": "인터럽트",
+      "category": "firmware",
+      "level": "core",
+      "status": "done",
+      "one_liner": "하드웨어가 **내 코드를 아무 줄에서나 끊고** 정해진 함수로 뛰어들게 만드는 장치다. \"기다리지 않고 반응한다\"의 실체이고, 그 대가로 **코드가 언제 끊길지 모르게** 된다.",
+      "aliases": [
+        "인터럽트",
+        "interrupt",
+        "ISR",
+        "인터럽트 서비스 루틴"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "java",
+      "title": "Java",
+      "category": "language",
+      "level": "core",
+      "status": "done",
+      "one_liner": "소스를 **바이트코드로 컴파일해 JVM 위에서 돌리는** 언어다. 이 한 겹이 이식성·안전성·극단적인 하위 호환성을 주고, 그 대가로 **기동 시간과 워밍업**을 가져갔다.",
+      "aliases": [
+        "Java",
+        "자바",
+        "JVM"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "java-in-finance",
+      "title": "금융권은 왜 Java 인가",
+      "category": "domain",
+      "level": "core",
+      "status": "done",
+      "one_liner": "언어가 빨라서도 좋아서도 아니다. **망분리라는 배포 제약, 20년치 코드 자산, 사람을 갈아 끼워도 돌아가야 하는 발주 구조** 셋이 겹친 자리에서 Java·Spring 이 가장 덜 위험한 선택이었기 때문이다.",
+      "aliases": [
+        "금융권 Java",
+        "금융권 자바",
+        "금융 SI",
+        "계정계",
+        "차세대 시스템"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "jpa",
+      "title": "JPA",
+      "category": "framework",
+      "level": "core",
+      "status": "done",
+      "one_liner": "객체와 테이블을 잇는 **사양**이다(구현은 Hibernate 등). 진짜 알맹이는 SQL 자동 생성이 아니라 **영속성 컨텍스트** — 언제 SQL 이 나가는지를 이것이 정한다.",
+      "aliases": [
+        "JPA",
+        "Hibernate",
+        "영속성 컨텍스트",
+        "ORM"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "modbus",
+      "title": "Modbus",
+      "category": "domain",
+      "level": "core",
+      "status": "done",
+      "one_liner": "설비에 \"몇 번지부터 몇 개 읽어 줘\"라고 묻고 답을 받는 **요청-응답 프로토콜**이다. 1979년 PLC 용으로 만들어진 단순함이 그대로 남아 지금도 산업 현장의 공용어다.",
+      "aliases": [
+        "Modbus",
+        "모드버스",
+        "Modbus RTU",
+        "Modbus TCP"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "mqtt",
+      "title": "MQTT",
+      "category": "domain",
+      "level": "core",
+      "status": "done",
+      "one_liner": "장치가 **브로커에 값을 던져 두면** 관심 있는 쪽이 알아서 받아 가는 방식이다. `modbus` 의 폴링을 정확히 뒤집었고, 그 대가로 **중복 수신**이라는 새 문제를 가져왔다.",
+      "aliases": [
+        "MQTT",
+        "브로커",
+        "발행/구독",
+        "pub/sub"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "ohms-law",
+      "title": "옴의 법칙",
+      "category": "hardware",
+      "level": "basic",
+      "status": "done",
+      "one_liner": "`V = I × R` — 전압·전류·저항 중 둘을 알면 나머지가 정해진다. 이 문서의 알맹이는 공식이 아니라 **계산한 값과 실제로 살 수 있는 값이 다르다**는 것, 그리고 **계산이 맞아도 저항이 탈 수 있다**는 것이다.",
+      "aliases": [
+        "옴의 법칙",
+        "Ohm's law",
+        "V=IR",
+        "전류 제한 저항",
+        "분압"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "pull-up-resistor",
+      "title": "풀업 저항",
+      "category": "hardware",
+      "level": "basic",
+      "status": "done",
+      "one_liner": "신호선을 전원 쪽에 약하게 묶어 두어, 아무도 그 선을 붙잡지 않을 때 '1' 이 되게 만드는 저항이다. 디지털 입력에는 '아무것도 아닌 상태'가 없기 때문에 존재한다.",
+      "aliases": [
+        "풀업 저항",
+        "풀업",
+        "pull-up",
+        "pullup",
+        "pull-up resistor",
+        "풀다운"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "python",
+      "title": "Python",
+      "category": "language",
+      "level": "core",
+      "status": "done",
+      "one_liner": "실행 속도를 내주고 사람이 코드를 쓰는 시간을 산 언어다. 무거운 계산은 C·Rust 로 짜인 라이브러리가 하고, 파이썬은 그것들을 엮는 자리에 선다.",
+      "aliases": [
+        "Python",
+        "파이썬"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "rs485",
+      "title": "RS-485",
+      "category": "firmware",
+      "level": "core",
+      "status": "done",
+      "one_liner": "선 두 가닥의 **전압 차이**로 값을 실어 공장 바닥 1km 까지 보내는 전기 규격이다. 프로토콜이 아니라 **전선 규격**이고, 그 위로 흐르는 것은 대개 UART 프레임과 Modbus 다.",
+      "aliases": [
+        "RS-485",
+        "RS485",
+        "TIA-485",
+        "EIA-485",
+        "차동 전송"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "rtos",
+      "title": "RTOS",
+      "category": "runtime",
+      "level": "core",
+      "status": "done",
+      "one_liner": "'실시간'은 빠름이 아니라 **정해진 시간 안에 반드시 반응한다는 보장**이다. RTOS 는 그 보장을 만들기 위해 **우선순위 기반 선점 스케줄러**를 파는 물건이다.",
+      "aliases": [
+        "RTOS",
+        "실시간 운영체제",
+        "FreeRTOS",
+        "Zephyr"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "spi",
+      "title": "SPI",
+      "category": "firmware",
+      "level": "core",
+      "status": "done",
+      "one_liner": "마스터가 클럭을 만들고 **보내는 동시에 받는**(전이중) 방식이다. 주소가 없어 장치마다 **CS 선 한 가닥**을 쓰고, 그 대가로 I²C 보다 자릿수 단위로 빠르다.",
+      "aliases": [
+        "SPI",
+        "MOSI",
+        "MISO",
+        "CPOL",
+        "CPHA"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "spring",
+      "title": "Spring",
+      "category": "framework",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**객체를 누가 만들고 누가 연결할지를 컨테이너에 넘긴** 프레임워크다. 그 위에 `@Transactional` 같은 것을 **프록시로 끼워 넣는 구조**가 얹혀 있고, 실무 함정의 대부분이 그 프록시에서 나온다.",
+      "aliases": [
+        "Spring",
+        "스프링",
+        "Spring Boot",
+        "스프링부트"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "stm32",
+      "title": "STM32",
+      "category": "firmware",
+      "level": "core",
+      "status": "done",
+      "one_liner": "ARM Cortex-M 코어에 ST 의 주변장치를 붙인 **제품군**이다. 칩 하나가 아니라 수천 품목이고, 그래서 \"STM32 를 안다\"는 말은 **어느 시리즈인지**를 말해야 뜻이 생긴다.",
+      "aliases": [
+        "STM32",
+        "Cortex-M",
+        "STM32CubeMX",
+        "HAL"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "transaction-isolation",
+      "title": "트랜잭션 격리 수준",
+      "category": "term",
+      "level": "core",
+      "status": "done",
+      "one_liner": "동시에 도는 트랜잭션들이 **서로를 얼마나 보게 할지**를 정하는 눈금이다. 완전한 격리는 느리기 때문에, **정확성을 얼마나 살 것인가**를 고르게 만든 장치다.",
+      "aliases": [
+        "트랜잭션 격리 수준",
+        "격리 수준",
+        "isolation level",
+        "MVCC",
+        "동시성 제어"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "uart",
+      "title": "UART",
+      "category": "firmware",
+      "level": "basic",
+      "status": "done",
+      "one_liner": "클럭선 없이 선 두 가닥으로 바이트를 주고받는 방식이다. 클럭을 안 보내는 대신 **양쪽이 같은 속도로 세기로 미리 약속**하고, 그 약속이 몇 % 만 어긋나도 글자가 깨진다.",
+      "aliases": [
+        "UART",
+        "시리얼 통신",
+        "serial",
+        "USART",
+        "RS-232"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "jwt",
+      "title": "JWT",
+      "category": "term",
+      "level": "core",
+      "status": "done",
+      "one_liner": "로그인한 사람이 누구인지를 **서버가 서명해서 건네주는 쪽지**다. 받은 쪽은 그 쪽지의 서명만 확인하면 발급한 서버에 물어보지 않고도 믿을 수 있다 — 대신 **한 번 준 쪽지는 회수하기가 어렵다.**",
+      "aliases": [
+        "JWT",
+        "JSON Web Token",
+        "제이슨 웹 토큰"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
+    }
+  ],
+  "categories": {
+    "language": "언어",
+    "framework": "프레임워크",
+    "runtime": "런타임·플랫폼",
+    "infra": "인프라",
+    "data": "데이터",
+    "ai": "AI/ML",
+    "firmware": "펌웨어·임베디드",
+    "hardware": "하드웨어 기초",
+    "term": "IT 용어",
+    "domain": "도메인 상식",
+    "practice": "개발 방법론"
   }
- ],
- "categories": {
-  "language": "언어",
-  "framework": "프레임워크",
-  "runtime": "런타임·플랫폼",
-  "infra": "인프라",
-  "data": "데이터",
-  "ai": "AI/ML",
-  "firmware": "펌웨어·임베디드",
-  "hardware": "하드웨어 기초",
-  "term": "IT 용어",
-  "domain": "도메인 상식",
-  "practice": "개발 방법론"
- }
 }
