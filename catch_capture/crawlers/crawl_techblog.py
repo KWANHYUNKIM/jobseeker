@@ -437,8 +437,8 @@ def _warn_missing(pkg: str, effect: str) -> None:
 
     이 파일의 import 들은 전부 try/except 안에 있어서, 패키지가 없어도 크롤은
     '성공'한 것처럼 끝난다. 실제로 trafilatura 없이 몇 주를 돌면서 RSS 요약을
-    본문으로 저장하고, deep_translator 없이 영어 글을 통째로 버리고 있었다 —
-    로그 어디에도 그 사실이 없었다. 조용한 실패를 시끄럽게 만든다.
+    본문으로 저장하고 있었는데 로그 어디에도 그 사실이 없었다. 조용한 실패를
+    시끄럽게 만든다.
     """
     if pkg in _WARNED:
         return
@@ -455,7 +455,7 @@ def _translate_ko(md: str) -> str:
     try:
         from deep_translator import GoogleTranslator
     except ImportError:
-        _warn_missing("deep_translator", "번역 불가 → 영어 글은 본문 파일이 생성되지 않는다")
+        _warn_missing("deep_translator", "번역 불가 → 영어 글이 원문 그대로 저장된다")
         return ""
     tr = GoogleTranslator(source="auto", target="ko")
     md, atoms = _mask_atoms(md)
