@@ -4,53 +4,58 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 12건 · 학습 108개.
-(전체: 회사 24곳 · 공고 199건 · 학습 1,636개 · **오류 0** · **경고 5**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 13건 · 학습 117개.
+(전체: 회사 24곳 · **공고 200건** · 학습 1,645개 · **오류 0** · **경고 5**.)
 
-**이번 회차 = `Security Engineer (차량 보안)`(Ashby, 판교, **3년↑ C/C++ 임베디드**).**
-⚠️ **`Security Platform` 과 유사도 0.19/0.15 로 완전히 다른 자리였다** — 전자는 인증·인가·MCP·K8s
-(2회차 `Open Platform` 과 겹친다), 후자는 **OP-TEE·시큐어 부트·키 생명주기**. STATE 지시대로
-**차량 보안 쪽을 골랐고 겹치지 않았다.**
-축: **`하드웨어가 지켜 주는 영역(TrustZone·OP-TEE·HSE)`** · `차 안의 키를 어디에 둘까(소유권 이전 시 삭제)` ·
-**`중단에 안전한 키 교체 — 전원이 예고 없이 끊긴다`** · **`시큐어 부트 사슬과 롤백 공격`** ·
-`거부 테스트가 정상 테스트보다 많아야 한다` · `C/C++ 를 도구로 두들기기` ·
-**`'또는 학습 경험' — 이 회사에서 가장 관대한 자격 표현`** · `CTF 가 우대사항인 이유` · **`ISO 21434(TARA)`**.
+**이번 회차 = `Security Engineer (Security Platform)`(Ashby, 판교, 연차 표기 없음).**
+축: **`MCP 보안 — 이 엔진에서 처음`** · `관측 도구를 보안 눈으로(탐지 규칙 + 대응 절차서)` ·
+`플랫폼 의존성의 데이터 보존(Kafka 에 토큰이 며칠 남는다)` · `웹 취약점 일곱을 코드로 막기` ·
+`암호학을 적용해 본다는 것(알고리즘 혼동·키 회전 공존 기간)` · `서비스 간 인증과 감사 로깅` ·
+**`보안이 개발을 막지 않게 — 안전한 길을 쉬운 길로`** · `비밀·인증서 살림(무중단 회전)` ·
+**`권한 UI — 보안 엔지니어가 프론트를 만지는 이유`**.
 
-**⚠️ 이 공고에서 가장 값이 큰 발견: `Secure Boot, TrustZone, TEE 등에 대한 기본 이해 또는 학습 경험`**
-다른 자리들은 `개발 경험`·`양산 수준 배포 경험` 을 요구하는데 여기만 **`또는 학습 경험`** 이다.
-차량 보안 실무자가 국내에 드물어 **회사가 배울 사람을 받겠다고 밝힌 것**으로 읽힌다.
-→ `study` 한 항목을 **"학습 흔적을 저장소로 만들기"** 로 세웠다(OP-TEE 는 오픈소스라 QEMU 로 실습 가능).
-**`또는 학습 경험`·`또는 이에 준하는` 같은 표현은 지원자에게 문이 열리는 지점이므로 반드시 살린다.**
+**⚠️ 2회차 `Backend (Open Platform)` 과 겹칠 위험이 가장 큰 공고였는데 갈랐다.**
+2회차는 **"문을 여는 설계"**(OAuth 흐름·기기 인증·IAM 모델링·게이트웨이 커스터마이징),
+이번은 **"플랫폼 내부의 탐지·대응·키 살림"**(MCP·탐지 규칙·데이터 보존·비밀 회전·권한 UI).
+OAuth 기초는 다시 쓰지 않고, **알고리즘 혼동 공격·키 회전 공존 기간** 처럼 **운영에서 사고 나는 지점**으로 옮겼다.
 
-**⚠️ 두 표준이 짝을 이룬다** — `AD Framework` 회차의 **ISO 26262(기능안전, 고장이 나도 안 다치게)** 와
-이번 회차의 **ISO 21434(사이버보안, 공격을 받아도 안 다치게)**. **닫을 때 `domains` 의
-`차량 소프트웨어의 배포와 보안(OTA)` 항목에 ISO 21434 를 보강한다.**
+**⚠️ `MCP 서버/클라이언트` 가 담당업무에 이름으로 나온 것은 이 엔진에서 처음이다.**
+위험이 기존 API 와 다르다 — **도구 설명·응답에 지시가 섞여 들어오고**(간접 프롬프트 주입),
+에이전트 권한이 도구 체인을 타고 확대된다. **회사가 `Gleo Interactor` 같은 에이전트 제품을 만들기
+때문에 이 통로를 지키는 자리가 생긴 것**으로 읽힌다. → `edge` 첫 항목을 **MCP 서버를 만들어 스스로
+공격해 보기**로 세웠다(⚠️ 자기 서버에서만). **새 프로토콜이라 실무자가 거의 없어 희소성이 크다.**
+
+**⚠️ 이 공고에만 회사 문화 링크가 붙어 있다** — `42dot Way`(https://42dot.ai/careers/way),
+`Employee Engagement Program`(https://42dot.ai/careers/program).
+**닫을 때 이 두 링크를 `company.business_sources` 나 `signals` 근거로 쓸 수 있다** — 아직 안 읽었다.
 
 **남은 순서** (판교 위주)
-1. **`Security Engineer (Security Platform)`(2,687자)** — **다음.** ⚠️ **2회차 `Open Platform` 과 겹칠 위험이
-   가장 큰 공고다**(둘 다 인증·인가). 각도를 **`MCP 서버/클라이언트 보안`·`OTLP·Datadog 기반 보안 탐지와
-   incident response`·`SSRF/CSRF/XSS/replay 같은 구체 위협`·`Secret rotation·KMS/HSM·인증서 수명`·
-   `Next.js 운영 콘솔의 권한 UI`** 로 잡으면 겹치지 않는다. **2회차가 '문을 여는 설계'였다면 이쪽은
-   '플랫폼 내부의 탐지·대응·키 운영'이다.**
-2. `LLM Engineer (Data Generation)`(2,196자) / `(LLM Training)`(1,396자) /
-   `Senior Search & Ranking Engineer (AI Agent)`(2,145자) — auto-labeling·검색은 다뤘으니
-   **합성 데이터 품질 관리 / 랭킹 시스템 운영** 쪽으로.
-3. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — **RL 학습 루프·시나리오 생성·평가 자동화** 쪽으로.
-4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
-5. `Senior Physical AI Engineer` / `Physical AI Engineer` — 급수 차이. **한 건만.**
-6. 본문 짧은 판교 자리 6건(각도가 서로 멀어 겹칠 걱정 적다).
-7. 서니베일·바르샤바·호치민 13건은 **뒤로.**
+1. **`LLM Engineer (Data Generation)`(2,196자)** — **다음.** ⚠️ auto-labeling·검색은 VLM 회차에서 다뤘다 →
+   **합성 데이터 파이프라인·품질 관리·중복 제거·다양성 확보** 쪽으로 좁힌다.
+2. `Senior Search & Ranking Engineer (AI Agent)`(2,145자) — **랭킹 시스템 운영**(온라인 평가·A/B) 쪽으로.
+3. `LLM Engineer (LLM Training)`(1,396자) — 짧다. **사전학습·분산 학습 레시피** 쪽으로.
+4. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — **RL 학습 루프·시나리오 생성·평가 자동화** 쪽으로.
+5. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
+6. `Senior Physical AI Engineer` / `Physical AI Engineer` — 급수 차이. **한 건만.**
+7. 본문 짧은 판교 자리 6건: `Senior Backend Engineer(Mobile Platform)` · `Senior Release Engineer` ·
+   `Vehicle System Integration Engineer` · `Software Update Engineer` ·
+   `Deep Learning Engineer (음성 인식 및 wake word detection)` · `Test Engineer (Autonomous Driving)`.
+8. 서니베일·바르샤바·호치민 13건은 **뒤로.**
 
-**요건 사다리(닫을 때 `signals` 에)** — `Navigation Agent` 무표기 → `System Framework` 학사↑·2년↑ →
-**`Security (차량 보안)` 3년↑** → `Backend (Open Platform)` 3년↑ → `Planning & Control` 석사↑·3년↑ →
+**⚠️ 이 회사에 아직 15건 넘게 남았다 — `EXPAND_CAP` 을 이미 넘겼다(12).**
+**대기열(씨제이올리브영·쿠팡)이 있으므로 `--gaps` 가 곧 양보를 시킬 것이다.**
+→ **다음 사이클에서 `--gaps` 가 신규(3순위)를 가리키면 그 말을 따른다.** 남은 포티투닷 공고는
+보강(4순위)에서 잇는다. **여기 적어 둔 각도 지시가 그때의 재료다.**
+
+**요건 사다리** — `Navigation Agent`·`Security Platform` 무표기 → `System Framework` 학사↑·2년↑ →
+`Security (차량 보안)` 3년↑ → `Backend (Open Platform)` 3년↑ → `Planning & Control` 석사↑·3년↑ →
 `Driving VLM/VLA` 5년↑ → `ML Platform` 7년↑ → `Computer Vision` 석사/박사·7년↑ → `AI Agent (Gleo)` 8년↑.
 
 **⚠️ 경고 5건 미결**: `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
-**대기열이 비는 순간 `fix(guide)`.**
 
-**닫을 때 (일곱)** — ① **`Pleos Vehicle OS` 보강** ② **요건 사다리 + 전형 두 종류를 `signals` 에**
-③ **"신뢰하지 않는 층" 원칙을 `signals` 에**(사례 4건) ④ **`domains` 에 ISO 21434 보강**
-⑤ `salary` ⑥ `people` ⑦ 안 쓴 공고 이유.
+**닫을 때 (여덟)** — ① `Pleos Vehicle OS` 보강 ② 요건 사다리 + 전형 두 종류를 `signals` 에
+③ "신뢰하지 않는 층" 원칙을 `signals` 에(사례 4건) ④ `domains` 에 ISO 21434 보강
+⑤ **`42dot Way`·`Employee Engagement Program` 링크 읽고 반영** ⑥ `salary` ⑦ `people` ⑧ 안 쓴 공고 이유.
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -70,6 +75,17 @@
 
 ## 배운 것
 
+- **같은 회사의 두 보안 자리를 가르는 축은 '문을 여는 설계' vs '내부 운영'이다.** 포티투닷
+  `Open Platform`(OAuth 흐름·기기 인증·IAM 모델링)과 `Security Platform`(탐지 규칙·데이터 보존·
+  비밀 회전·권한 UI)이 그랬다. **겹치는 기술(OAuth·권한)이 있어도 `why` 를 운영 쪽으로 옮기면
+  전혀 다른 학습 항목이 나온다** — 알고리즘 혼동 공격, 키 회전 공존 기간, 인증서 만료 장애처럼.
+- **`MCP` 가 공고 담당업무에 등장하기 시작했다**(포티투닷 Security Platform, 2026-09 기준 이 엔진 처음).
+  위험이 기존 API 와 다르다 — **도구 설명·응답에 지시가 섞여 들어오고**(간접 프롬프트 주입) 에이전트
+  권한이 도구 체인을 타고 확대된다. **실무자가 거의 없어 지금 준비하면 희소성이 크다**고 `fit` 에 적어 준다.
+  ⚠️ 공격 실습은 **자기 서버·합법 실습장**으로 한정해 쓴다.
+- **회사 문화 페이지 링크가 특정 공고에만 붙는 경우가 있다.** 포티투닷은 `42dot Way`·
+  `Employee Engagement Program` 링크를 이 공고에만 넣었다. **회사를 닫을 때 `business_sources` 나
+  `signals` 근거로 쓸 수 있으므로, 발견하면 STATE 에 URL 을 적어 둔다.**
 - **`또는 학습 경험` · `또는 이에 준하는` 같은 표현은 문이 열리는 지점이므로 반드시 살린다.**
   포티투닷 차량 보안 자리는 `Secure Boot, TrustZone, TEE 등에 대한 **기본 이해 또는 학습 경험**` 으로
   적었다 — 같은 회사 다른 자리들이 `개발 경험`·`양산 배포 경험` 을 요구하는 것과 대조된다.
