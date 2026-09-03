@@ -178,7 +178,19 @@ const SHAPES: Record<string, React.ReactNode> = {
   ),
 }
 
-export function RegionIcon({ region, size = 16 }: { region: string; size?: number }) {
+// 땅·돌·건물의 색. 밝은 배경에서 읽히고 강조색(teal)과 겹치지 않는 따뜻한 계열.
+const REGION_COLOR = '#92400e' // amber-800
+
+/** active 는 '칩이 선택된 상태'. 그때는 색을 빼고 칩 글자색(흰색)을 따른다. */
+export function RegionIcon({
+  region,
+  size = 16,
+  active = false,
+}: {
+  region: string
+  size?: number
+  active?: boolean
+}) {
   const shape = SHAPES[region]
   if (!shape) return null
   return (
@@ -190,6 +202,7 @@ export function RegionIcon({ region, size = 16 }: { region: string; size?: numbe
       aria-hidden="true"
       focusable="false"
       className="shrink-0"
+      style={active ? undefined : { color: REGION_COLOR }}
     >
       {shape}
     </svg>

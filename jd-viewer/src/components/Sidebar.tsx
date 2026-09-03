@@ -138,7 +138,7 @@ export function Sidebar({ filter, setFilter, facets, totalCount, filteredCount, 
             key={r.name}
             label={r.name}
             count={r.count}
-            leading={<RegionIcon region={r.name} />}
+            leading={<RegionIcon region={r.name} active={filter.regions.has(r.name)} />}
             active={filter.regions.has(r.name)}
             onClick={() => toggleRegion(r.name)}
           />
@@ -166,7 +166,7 @@ export function Sidebar({ filter, setFilter, facets, totalCount, filteredCount, 
               key={s.name}
               label={s.name}
               count={s.count}
-              leading={<SizeIcon size={s.name} />}
+              leading={<SizeIcon size={s.name} active={filter.sizes.has(s.name)} />}
               active={filter.sizes.has(s.name)}
               onClick={() => setFilter({ ...filter, sizes: toggle(filter.sizes, s.name) })}
             />
@@ -180,7 +180,7 @@ export function Sidebar({ filter, setFilter, facets, totalCount, filteredCount, 
             key={r.name}
             label={r.name}
             count={r.count}
-            leading={<RoleIcon role={r.name} />}
+            leading={<RoleIcon role={r.name} active={filter.roles.has(r.name)} />}
             active={filter.roles.has(r.name)}
             onClick={() => setFilter({ ...filter, roles: toggle(filter.roles, r.name) })}
           />
@@ -193,7 +193,7 @@ export function Sidebar({ filter, setFilter, facets, totalCount, filteredCount, 
             key={c}
             label={c}
             count={careerCount.get(c) ?? 0}
-            leading={<CareerIcon career={c} />}
+            leading={<CareerIcon career={c} active={filter.careers.has(c)} />}
             active={filter.careers.has(c)}
             onClick={() => setFilter({ ...filter, careers: toggle(filter.careers, c) })}
           />

@@ -1,3 +1,4 @@
+import { roleColor } from '../lib/classify'
 import { CAREER_BUCKETS, COMPANY_SIZES, type CompanySize } from '../types'
 
 /**
@@ -172,8 +173,25 @@ function Bars({ level }: { level: number }) {
   )
 }
 
+// ── 색 ────────────────────────────────────────────────────────
+// 앱은 밝은 테마 하나뿐이다(index.css: color-scheme light, 패널 #ffffff).
+// 그냥 두면 아이콘이 --color-muted(#4a515e)를 물려받아 흰 바탕에서 힘이 없다.
+// 축마다 짙은 색을 하나씩 주면 그룹이 눈에 먼저 들어오고, 칩이 선택되면(강조색
+// 배경) 색을 떼어 흰 글자와 같이 반전시킨다 — 색을 유지하면 되레 안 보인다.
+const SIZE_COLOR = '#3730a3' // indigo-800 — 건물
+const CAREER_COLOR = '#166534' // green-800 — 단계가 올라간다
+
 // ── 공통 껍데기 ───────────────────────────────────────────────
-function Svg({ size, children }: { size: number; children: React.ReactNode }) {
+function Svg({
+  size,
+  color,
+  children,
+}: {
+  size: number
+  /** 안 주면 currentColor 를 그대로 쓴다(선택된 칩에서 흰색이 되도록). */
+  color?: string
+  children: React.ReactNode
+}) {
   return (
     <svg
       width={size}
@@ -183,27 +201,55 @@ function Svg({ size, children }: { size: number; children: React.ReactNode }) {
       aria-hidden="true"
       focusable="false"
       className="shrink-0"
+      style={color ? { color } : undefined}
     >
       {children}
     </svg>
   )
 }
 
-export function RoleIcon({ role, size = 16 }: { role: string; size?: number }) {
+/** active 는 '칩이 선택된 상태'. 그때는 색을 빼고 칩 글자색(흰색)을 따른다. */
+export function RoleIcon({
+  role,
+  size = 16,
+  active = false,
+}: {
+  role: string
+  size?: number
+  active?: boolean
+}) {
   const shape = ROLE_SHAPES[role]
-  return shape ? <Svg size={size}>{shape}</Svg> : null
+  // 직군 색은 classify.ts 가 이미 갖고 있다 — 목록의 직군 태그와 같은 색을 써야
+  // 사이드바에서 고른 것과 표에 뜬 것이 같은 것임을 색만 보고도 알 수 있다.
+  return shape ? <Svg size={size} color={active ? undefined : roleColor(role)}>{shape}</Svg> : null
 }
 
-export function SizeIcon({ size: name, px = 16 }: { size: CompanySize; px?: number }) {
+export function SizeIcon({
+  size: name,
+  px = 16,
+  active = false,
+}: {
+  size: CompanySize
+  px?: number
+  active?: boolean
+}) {
   const shape = SIZE_SHAPES[name]
-  return shape ? <Svg size={px}>{shape}</Svg> : null
+  return shape ? <Svg size={px} color={active ? undefined : SIZE_COLOR}>{shape}</Svg> : null
 }
 
-export function CareerIcon({ career, size = 16 }: { career: string; size?: number }) {
+export function CareerIcon({
+  career,
+  size = 16,
+  active = false,
+}: {
+  career: string
+  size?: number
+  active?: boolean
+}) {
   const level = CAREER_LEVEL[career]
   if (level === undefined) return null
   return (
-    <Svg size={size}>
+    <Svg size={size} color={active ? undefined : CAREER_COLOR}>
       <Bars level={level} />
     </Svg>
   )
