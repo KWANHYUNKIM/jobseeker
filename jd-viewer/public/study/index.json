@@ -712,6 +712,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "grpc",
+      "title": "gRPC",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**함수 호출처럼 생긴 서비스 간 통신**이다. URL·HTTP 메서드·JSON 대신 **`.proto` 파일에 적은 스키마에서 클라이언트와 서버 코드를 생성**하고, 그것을 HTTP/2 위로 바이너리로 주고받는다.",
+      "aliases": [
+        "gRPC",
+        "grpc",
+        "GRPC",
+        "protobuf",
+        "Protocol Buffers"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
