@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-09-03",
   "business_model": "**구독 하나로 번다.** FY2025 매출 25.21억 달러 · 유료 사용자 1,808만 · 사용자당 연 138.91달러. 개인·팀 요금제가 사실상 전부이고 전자서명(Dropbox Sign)·문서 공유 분석(DocSend)이 붙어 있다. **이 회사의 특이한 점은 원가 쪽에 있다** — 남의 클라우드가 아니라 자기 데이터센터에 파일을 두기 때문에, 매출총이익률이 **감가상각 일정**을 따라 움직인다. FY2025 에 GAAP 매출총이익률이 82.5% → 80.1% 로 떨어졌고 회사는 그 원인을 **'데이터센터 갱신 주기'**라고 명시했다.",
   "products": [
     "Dropbox (파일 저장·동기화·공유)",
@@ -2716,7 +2716,8 @@
     "**SMR 도입(2017)과 콜드 스토리지(2019) 자체의 판단 근거** — 이번 사이클은 Cowling·SSD 제거·InfoQ 를 축으로 썼다. 그 두 해의 개별 글은 아직 안 읽었다.",
     "**Nucleus 의 새 데이터 모델 자체** — 재작성 글은 세 나무와 플래너를 다루지 않고(테스트 글에서 나온다), 두 글 모두 나무를 어떻게 저장하고 서버 프로토콜이 어떤 모양인지는 밝히지 않는다.",
     "**Firefly 를 왜 대체했는지**가 어느 글에도 구체적으로 없다 — Nautilus 글은 '이전 검색 엔진(2015)'이라고만 언급하고 무엇이 부족했는지는 말하지 않는다.",
-    "**Dropbox Dash(AI 검색)** 와 Nautilus 의 관계 — 2018년 글은 임베딩 공간 검색·이미지/영상/음성 검색을 후속으로 예고했지만 그 글들을 아직 확인하지 않았다."
+    "**Dropbox Dash(AI 검색)** 와 Nautilus 의 관계 — 2018년 글은 임베딩 공간 검색·이미지/영상/음성 검색을 후속으로 예고했지만 그 글들을 아직 확인하지 않았다.",
+    "**Magic Pocket 시기(2013~2016)의 대가만 회사 자료로 확인하지 못했다.** 발표 글이 성능과 단위 원가라는 이득만 적고 무엇을 떠안았는지는 쓰지 않는다. 여기 적은 tradeoff 는 후속 작업 이력에서 이 사이트가 재구성한 것이라 `추정`으로 달았다."
   ],
   "sources": [
     {
@@ -2797,5 +2798,122 @@
       "summary": "500ms 예산을 실제로 지키는 방법과 장애 대비. 지연의 상당 부분이 외부 시스템 메타데이터 조회였다는 발견. 저자 Diwaker Gupta."
     }
   ],
-  "domain": "dropbox.com"
+  "domain": "dropbox.com",
+  "eras": [
+    {
+      "id": "2008-classic",
+      "from": "2008",
+      "to": "2013",
+      "title": "공유가 없던 세상을 전제로 지은 엔진 위에 있었다",
+      "context": "2008년 드롭박스 동기화가 베타로 나왔다. 메타데이터와 웹 서버는 자체 데이터센터에, **파일 내용은 아마존 S3** 에 두는 하이브리드였다 — S3 를 아주 일찍 쓴 회사다.",
+      "what_changed": "그때 만든 동기화 엔진(뒷날 'Sync Engine Classic' 이라 불린다) 위에서 회사가 굴러갔다.",
+      "why": "첫 시기다. 그때의 데이터 모델은 **공유가 없는 더 단순한 세상**을 전제로 설계됐고, 그 전제 위에서는 잘 돌았다.",
+      "tradeoff": "파일에 **옮겨져도 유지되는 안정적인 식별자가 없었다.** 그래서 이동이 '옛 자리에서 삭제 + 새 자리에 추가' 한 쌍으로 처리됐고, **그 사이에 네트워크가 끊기면 데이터가 사라질 수 있었다.** 정합성 보장이 거의 없어 테스트도 사실상 불가능했다.",
+      "domains": [
+        "파일 동기화"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Rewriting the heart of our sync engine",
+          "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+          "publisher": "Dropbox Tech Blog",
+          "date": "2020-03-09",
+          "summary": "2008년 엔진의 결함과 4년짜리 재작성의 대가를, 남에게 권하지 않는 이유까지 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2013-magic-pocket",
+      "from": "2013",
+      "to": "2016",
+      "title": "남의 클라우드에서 나와 디스크를 직접 샀다",
+      "context": "파일 내용을 아마존에 맡기고 있었다.",
+      "what_changed": "**2013년 여름**에 시작해 **2014년 8월 다크런치**, **2015년 2월 27일 정식 가동**, **2015년 10월 7일**에 사용자 데이터의 **90% 이상**을 자체 인프라에서 저장·서빙하게 됐다. 당시 전체가 **500페타바이트**다.",
+      "why": "성능을 자기 사정에 맞게 깎고 **단위 원가**를 직접 쥐기 위해서다. 남의 서비스 위에서는 둘 다 손댈 수 없다.",
+      "tradeoff": "**회사는 이 글에서 잃은 것을 적지 않는다.** 남이 대신 해 주던 저장 계층의 운영을 통째로 떠안은 것이 그 값인데, 그 뒤 이력이 그걸 보여준다 — **2022년에도 쓰기 처리량을 올리려고 SSD 캐시 디스크를 걷어내는 작업을 해야 했다.** 직접 가진 것은 계속 손봐야 한다.",
+      "domains": [
+        "저장 인프라"
+      ],
+      "features": [
+        "magic-pocket"
+      ],
+      "stack_out": [
+        "Amazon S3(파일 내용)"
+      ],
+      "metrics": [
+        {
+          "label": "자체 인프라 저장 비중 (2015-10)",
+          "value": "90% 이상",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling to exabytes and beyond",
+              "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+              "publisher": "Dropbox Tech Blog",
+              "date": "2016-03-14",
+              "summary": "S3 에 두던 파일 내용을 자체 인프라로 옮긴 일정과 규모를 밝힌다."
+            }
+          ]
+        },
+        {
+          "label": "전체 사용자 데이터",
+          "value": "500페타바이트",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling to exabytes and beyond",
+              "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+              "publisher": "Dropbox Tech Blog",
+              "date": "2016-03-14",
+              "summary": "S3 에 두던 파일 내용을 자체 인프라로 옮긴 일정과 규모를 밝힌다."
+            }
+          ]
+        }
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Scaling to exabytes and beyond",
+          "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+          "publisher": "Dropbox Tech Blog",
+          "date": "2016-03-14",
+          "summary": "S3 에 두던 파일 내용을 자체 인프라로 옮긴 일정과 규모를 밝힌다."
+        },
+        {
+          "title": "Increasing Magic Pocket write throughput by removing our SSD cache disks",
+          "url": "https://dropbox.tech/infrastructure/increasing-magic-pocket-write-throughput-by-removing-our-ssd-cache-disks",
+          "publisher": "Dropbox Tech Blog",
+          "date": "2022-12-08",
+          "summary": "자체 저장 인프라를 계속 손봐야 한다는 사실을 보여주는 후속 작업이다."
+        }
+      ]
+    },
+    {
+      "id": "2016-nucleus",
+      "from": "2016",
+      "to": "",
+      "title": "심장을 4년에 걸쳐 다시 썼다",
+      "context": "2008년에 지은 동기화 엔진의 데이터 모델이 한계에 닿아 있었다.",
+      "what_changed": "**2016년부터 4년 동안** 데스크톱 클라이언트의 동기화 엔진을 **바닥부터 다시 지어**, **2020년 3월** 코드명 **Nucleus** 로 전 사용자에게 냈다.",
+      "why": "안정적 식별자가 없어 이동이 삭제와 추가로 처리됐고 **그 틈에서 데이터가 사라질 수 있었다.** 불변식이 없으니 테스트로 잡을 수도 없었다 — 고쳐 쓰는 것으로는 닿지 않는 자리였다.",
+      "tradeoff": "회사가 대가를 직접 적고 **남에게는 권하지 않는다.** 재작성을 성공시키려면 **기능 개발 속도를 늦춰야 하고**, 옛 시스템에서 진척된 것은 새것으로 옮겨야 하므로 **옛 시스템의 모든 변경이 새 시스템의 결승선을 뒤로 민다.** 그 4년 동안 동기화 엔지니어들이 할 수 있었던 사용자 대상 작업이 많았다. 글은 조엘 스폴스키의 '**소프트웨어 회사가 저지를 수 있는 최악의 전략적 실수**'라는 말을 인용하고, 하기 전에 스스로 물으라고 한다 — 엔지니어 시간이 있는가, 더 느린 기능 개발을 받아들일 수 있는가, **지금 시스템을 깊이 이해하고 존중하는가.**",
+      "domains": [
+        "파일 동기화"
+      ],
+      "features": [
+        "nucleus-rewrite"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Rewriting the heart of our sync engine",
+          "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+          "publisher": "Dropbox Tech Blog",
+          "date": "2020-03-09",
+          "summary": "2008년 엔진의 결함과 4년짜리 재작성의 대가를, 남에게 권하지 않는 이유까지 적었다."
+        }
+      ]
+    }
+  ]
 }
