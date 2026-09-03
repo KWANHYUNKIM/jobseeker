@@ -129,6 +129,7 @@
         "title": "string",
         "site": "wanted|jumpit|jobkorea|saramin|dev|remote|ats",
         "closed": "boolean (선택) — 마감된 공고. 지우지 않고 표시만 한다",
+        "duplicate_of": "string (선택) — 본문이 같은 다른 게시의 url(같은 자리가 여러 채용 사이트에 다른 제목으로 올라온 경우). 이 값이 있으면 study 를 다시 쓰지 않고 verdict 로 어느 브리핑을 보라고만 가리킨다. 검증은 study 개수와 edge 를 요구하지 않고, --gaps 도 대기열에서 뺀다. 가리키는 url 은 같은 파일 안에 있어야 한다",
         "verdict": "string — 이 공고가 찾는 사람 한 줄. 직함이 아니라 무엇을 혼자 끝낼 수 있는 사람인지",
         "fit": {
           "_note": "선택 — 지원 전에 스스로 재 볼 눈금",

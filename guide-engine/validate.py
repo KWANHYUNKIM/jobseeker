@@ -274,9 +274,18 @@ def check_company(r: Report, path: Path, doc: dict, jobs: dict) -> dict:
         elif job["status"] == "closed" and not p.get("closed"):
             r.warn(f"{where}: 공고가 마감됐다 — closed: true 를 단다")
 
+        # 본문이 같은 다른 게시(사이트별 중복 게시)를 가리키는 공고는 브리핑을 다시 쓰지
+        # 않는다 — 같은 내용을 두 번 쓰면 뷰어에서 두 화면이 같은 말을 하게 된다.
+        dup = p.get("duplicate_of")
+        if dup:
+            if dup == url:
+                r.err(f"{where}: duplicate_of 가 자기 자신을 가리킨다")
+            elif dup not in {q.get("url") for q in (doc.get("postings") or [])}:
+                r.err(f"{where}: duplicate_of 가 이 파일에 없는 url 을 가리킨다 ({dup})")
+
         study = p.get("study") or []
         study_total += len(study)
-        if len(study) < MIN_STUDY:
+        if len(study) < MIN_STUDY and not dup:
             thin.append(url)
         for k, s in enumerate(study):
             sw = f"{where}.study[{k}]"
@@ -296,7 +305,7 @@ def check_company(r: Report, path: Path, doc: dict, jobs: dict) -> dict:
             for m, res in enumerate(s.get("resources") or []):
                 if not res.get("url"):
                     r.err(f"{sw}.resources[{m}]: url 이 없다")
-        if not (p.get("edge") or []):
+        if not (p.get("edge") or []) and not dup:
             no_edge.append(url)
 
     return {
@@ -445,7 +454,7 @@ def gaps(index: dict, summaries: list[dict], jobs: dict, errors: list[str], show
         done_urls = set()
         doc = json.loads((COMPANIES / f"{s['slug']}.json").read_text(encoding="utf-8"))
         for p in doc.get("postings") or []:
-            if len(p.get("study") or []) >= MIN_STUDY:
+            if len(p.get("study") or []) >= MIN_STUDY or p.get("duplicate_of"):
                 done_urls.add(p["url"])
         todo = [u for u in open_urls if u not in done_urls]
         if todo or s["no_business"]:
