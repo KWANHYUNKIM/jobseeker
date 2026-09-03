@@ -1,0 +1,36 @@
+{
+ "updated_at": "2026-09-03",
+ "articles": [
+  {
+   "slug": "atmega128",
+   "title": "ATmega128",
+   "category": "firmware",
+   "level": "basic",
+   "status": "done",
+   "one_liner": "전원과 부품을 직접 연결한 회로 위에서, 프로그램 한 벌이 운영체제 없이 혼자 도는 8비트 마이크로컨트롤러다. 국내 펌웨어 실습에서 '첫 칩'으로 가장 많이 쓰였다.",
+   "aliases": [
+    "ATmega128",
+    "ATmega128A",
+    "아트메가128",
+    "아트메가",
+    "AVR"
+   ],
+   "sections": 5,
+   "drills": 3,
+   "updated_at": "2026-09-03"
+  }
+ ],
+ "categories": {
+  "language": "언어",
+  "framework": "프레임워크",
+  "runtime": "런타임·플랫폼",
+  "infra": "인프라",
+  "data": "데이터",
+  "ai": "AI/ML",
+  "firmware": "펌웨어·임베디드",
+  "hardware": "하드웨어 기초",
+  "term": "IT 용어",
+  "domain": "도메인 상식",
+  "practice": "개발 방법론"
+ }
+}

@@ -1,0 +1,614 @@
+{
+ "slug": "atmega128",
+ "title": "ATmega128",
+ "title_en": "Atmel/Microchip ATmega128",
+ "aliases": [
+  "ATmega128",
+  "ATmega128A",
+  "아트메가128",
+  "아트메가",
+  "AVR"
+ ],
+ "category": "firmware",
+ "level": "basic",
+ "status": "done",
+ "updated_at": "2026-09-03",
+ "one_liner": "전원과 부품을 직접 연결한 회로 위에서, 프로그램 한 벌이 운영체제 없이 혼자 도는 8비트 마이크로컨트롤러다. 국내 펌웨어 실습에서 '첫 칩'으로 가장 많이 쓰였다.",
+ "summary": "ATmega128 은 Atmel(현 Microchip)이 만든 8비트 AVR 계열 마이크로컨트롤러다. 128KB 플래시·4KB SRAM·4KB EEPROM 과 53개의 입출력 핀을 한 칩에 담고 있고, 운영체제 없이 내가 쓴 main() 하나가 전원이 끊길 때까지 돈다. PC 프로그래밍과 결정적으로 다른 점은 **메모리 주소 하나가 곧 물리적인 핀 한 개**라는 것이다 — 변수에 값을 넣는 문장이 실제로 전압을 3V 올린다. 1990년대 말 AVR 계열의 상위 모델로 나와 오랫동안 산업용 제어기와 교육용 보드에 쓰였고, 지금은 새 설계에서 ARM Cortex-M(STM32)이나 ESP32 에 자리를 내줬지만 **레지스터를 직접 만지는 법을 배우는 자리**로는 여전히 남아 있다.",
+ "market": null,
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 칩 하나가 곧 컴퓨터 한 대",
+   "body": "ATmega128 은 **CPU·메모리·주변장치가 한 칩에 다 들어간** 마이크로컨트롤러(MCU)다. PC 로 치면 CPU·RAM·SSD·USB 컨트롤러·사운드카드가 손톱만 한 사각형 하나에 들어 있는 셈이고, 대신 전부 아주 작다.\n\n| | ATmega128 | 참고: 요즘 노트북 |\n|---|---|---|\n| 프로그램 저장 | 플래시 128KB | SSD 512GB (400만 배) |\n| 작업 메모리 | SRAM 4KB | RAM 16GB (400만 배) |\n| 클럭 | 최대 16MHz | 3GHz+ |\n| 운영체제 | 없음 | 있음 |\n\n숫자만 보면 장난감 같지만, 이 칩이 하는 일은 다르다. **엘리베이터 버튼을 읽고 모터를 멈추는 일**에는 16GB 가 필요 없고, 대신 *버튼을 누른 지 5ms 안에 반드시 반응한다*는 보장이 필요하다. 운영체제가 없다는 것이 여기서는 단점이 아니라 조건이다 — 스케줄러가 내 코드를 밀어낼 일이 없으니 실행 시간이 예측 가능하다.\n\n프로그램은 `main()` 안의 무한 루프 하나다. 끝나지 않는다. 끝나면 그건 고장이다.\n\n```c\n#include <avr/io.h>\n#include <util/delay.h>\n\nint main(void) {\n    DDRB = 0xFF;          // 포트 B 여덟 핀 전부 출력\n    while (1) {           // 이 루프는 전원이 끊길 때까지 돈다\n        PORTB = 0xFF;     // 여덟 핀에 5V\n        _delay_ms(500);\n        PORTB = 0x00;     // 0V\n        _delay_ms(500);\n    }\n}\n```",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "kind": "why",
+   "heading": "왜 이렇게 생겼나 — 핀이 곧 변수가 된 이유",
+   "body": "8비트 MCU 이전에 회로에서 무언가를 제어하려면 **논리 IC 를 납땜해서 회로 자체를 프로그램**해야 했다. 타이밍을 바꾸고 싶으면 부품을 갈아 끼웠다. MCU 는 그 회로를 소프트웨어로 옮긴 물건이고, 그러려면 **코드가 전압에 직접 닿을 길**이 있어야 했다.\n\nAVR 이 고른 길이 **메모리 맵드 I/O**다. 핀을 다루는 특수 명령을 따로 만들지 않고, *데이터 메모리 주소 몇 개를 물리 핀에 배선해 버렸다.* 그래서 `PORTB = 0xFF;` 라는 평범한 대입문이 실제로 여덟 개 핀의 전압을 올린다. C 로 회로를 만질 수 있게 된 근거가 이것이고, 이 문서에서 나오는 거의 모든 이야기가 여기서 파생된다.\n\n구조 쪽도 이유가 있다. AVR 은 **하버드 구조(Harvard architecture)** 라 프로그램(플래시)과 데이터(SRAM)의 통로가 따로 있다. 하나의 통로를 번갈아 쓰지 않으므로 *대부분의 명령이 클럭 한 번에 끝난다* — 16MHz 면 초당 약 1600만 개다. \"클럭이 3GHz 도 아닌데 어떻게 모터를 제어하나\"의 답이 여기 있다. 사이클 수를 셀 수 있다는 것, 즉 **몇 마이크로초 뒤에 무슨 일이 일어날지 계산할 수 있다**는 것이 이 칩의 값이다.\n\nATmega128 이 유독 복잡한 데도 내력이 있다. 이 칩은 앞 세대인 **ATmega103 을 대체하려고 나왔고, 그 호환 모드(M103C 퓨즈)를 지금도 품고 있다.** 아래 '지뢰'에 나오는 가장 악명 높은 함정이 거기서 나온다 — 새 칩인데 옛날 칩처럼 동작하는 상태가 공장 출하 설정으로 존재한다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "id": "pins",
+   "kind": "how",
+   "heading": "핀을 다루는 법 — DDR · PORT · PIN 세 글자",
+   "body": "AVR 에서 핀 하나를 다루는 레지스터는 **딱 세 개**이고, 이름은 포트 문자만 바뀐다(포트 B 면 `DDRB`·`PORTB`·`PINB`). 이 셋의 조합이 헷갈려서 초보자의 절반이 첫날 막힌다.\n\n- **DDRx** (Data Direction Register) — 이 핀은 **출력인가 입력인가**. 1 = 출력, 0 = 입력.\n- **PORTx** — 출력일 때는 **내보낼 값**, 입력일 때는 **내부 풀업 저항을 켤지 말지**.\n- **PINx** — **지금 핀에 실제로 걸린 값**을 읽는다. (쓰는 레지스터가 아니라 읽는 레지스터다.)\n\n초보자가 가장 많이 하는 실수는 입력을 읽으려고 `PORTD` 를 읽는 것이다. `PORTD` 는 *내가 쓴 값*이고, 핀에 실제로 걸린 전압은 `PIND` 에 있다. 스위치를 눌러도 값이 안 바뀌는 코드는 십중팔구 여기다.\n\n```c\n// 출력: 포트 B 0번 핀에 LED\nDDRB  |=  (1 << PB0);   // 출력으로\nPORTB |=  (1 << PB0);   // 5V (LED 켜짐 — 회로에 따라 반대일 수 있다)\nPORTB &= ~(1 << PB0);   // 0V\n\n// 입력: 포트 D 2번 핀에 스위치 (반대편은 GND)\nDDRD  &= ~(1 << PD2);   // 입력으로\nPORTD |=  (1 << PD2);   // 내부 풀업 ON — 안 누르면 1, 누르면 0\nif (!(PIND & (1 << PD2))) { /* 눌렸다 */ }\n```\n\n`(1 << PB0)` 는 \"0번 비트만 1인 값\"이다. `|=` 로 그 비트만 켜고, `&= ~` 로 그 비트만 끈다. **`PORTB = 0x01;` 처럼 통째로 대입하면 나머지 일곱 핀을 전부 0 으로 만든다** — 다른 핀에 뭔가 달려 있으면 그게 같이 꺼진다.\n\n입력에서 풀업이 필요한 이유는 따로 문서가 있을 만큼 중요하다(→ `pull-up-resistor`). 짧게만: 스위치가 안 눌린 동안 핀은 **아무 데도 연결되지 않은(floating) 상태**라 주변 전자기 잡음을 그대로 주워 0 과 1 을 제멋대로 오간다. 풀업은 \"아무 일도 없으면 1\"이라는 기본값을 만들어 준다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "id": "uart",
+   "kind": "how",
+   "heading": "말을 시키는 법 — UART 와 클럭이 한 몸인 이유",
+   "body": "펌웨어에는 화면이 없다. 그래서 **디버깅의 8할이 UART(시리얼) 로 PC 에 글자를 뱉는 일**이다. ATmega128 에는 USART 가 둘(USART0/1) 있다.\n\n속도(보율, baud rate)는 `UBRR` 레지스터에 숫자로 넣는데, 그 숫자는 **CPU 클럭에서 나눠 만든다.**\n\n```\nUBRR = F_CPU / (16 × BAUD) − 1        (U2X = 0, 일반 모드)\n```\n\n여기가 이 칩 초보자를 가장 오래 붙잡는 자리다. **공장 출고 상태의 ATmega128 은 외부 크리스탈이 아니라 내부 RC 발진기 약 1MHz 로 돈다.** 보드에 16MHz 크리스탈이 **꽂혀 있어도** 퓨즈를 안 바꿨으면 안 쓴다. 그 상태에서:\n\n- `_delay_ms(500)` 은 **8초쯤** 걸린다 (코드의 `F_CPU` 가 16MHz 로 적혀 있으므로 16배).\n- UART 는 화면에 깨진 글자를 뿌린다. 계산에 쓴 클럭과 실제 클럭이 다르니 보율이 통째로 어긋난다.\n\n게다가 내부 RC 는 온도·전압에 따라 수 % 씩 흔들린다. UART 는 보율 오차가 대략 ±2% 를 넘어가면 프레임이 깨지기 시작하므로, **시리얼을 쓸 거면 외부 크리스탈은 선택이 아니라 조건이다.** 크리스탈 값으로 16MHz 대신 **11.0592MHz** 를 다는 관행도 여기서 나왔다 — 이 값은 흔한 보율(9600·115200)로 나눌 때 오차가 0 에 가깝게 떨어진다.\n\n확인 순서는 늘 같다: ① 코드의 `F_CPU` ② 퓨즈(CKSEL)가 가리키는 클럭원 ③ 보드에 실제로 달린 크리스탈. **셋이 같은 숫자를 말해야 한다.**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    },
+    {
+     "title": "AVR Libc User Manual",
+     "url": "https://www.nongnu.org/avr-libc/user-manual/",
+     "publisher": "AVR Libc",
+     "kind": "docs",
+     "summary": "avr-gcc 표준 라이브러리. <avr/io.h>, <util/delay.h>, F_CPU 의 정의"
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "kind": "limits",
+   "heading": "경계 — 이 칩이 못 하는 것, 그리고 지금의 자리",
+   "body": "**메모리가 진짜로 작다.** SRAM 4KB 는 지역 변수·전역 변수·스택이 **함께** 쓰는 전부다. 문자열 배열 몇 개를 늘렸다가 스택이 전역 변수 영역을 덮으면, 컴파일 오류도 예외도 없이 **보드가 조용히 리셋을 반복한다.** 큰 상수 문자열은 `PROGMEM` 으로 플래시에 두는 관행이 여기서 나왔다.\n\n**부동소수점은 하드웨어에 없다.** `float` 연산은 소프트웨어 라이브러리로 도는 수십~수백 사이클짜리 일이고, `printf` 에 `%f` 를 쓰려면 별도의 링크 옵션까지 필요하다. 센서 값은 대개 정수 스케일(예: 0.01℃ 단위 정수)로 다룬다.\n\n**8비트다.** `int` 는 16비트이고, 32비트 연산은 여러 명령으로 쪼개진다. 통신 프로토콜을 만들 때 엔디안과 정수 폭을 손으로 챙겨야 한다.\n\n**수명주기.** ATmega128 은 오래된 부품이라 신규 설계에는 핀 호환 후속인 **ATmega128A** 나 아예 다른 계열(STM32·ESP32)을 고른다. 지금 이 칩이 남아 있는 자리는 둘이다 — **이미 그 칩으로 만들어져 돌고 있는 장비의 유지보수**, 그리고 **HAL 뒤에 숨지 않고 레지스터를 직접 만져 보는 학습.** 채용 공고에서 `AVR` 이 STM32·ESP32 와 나란히 적히는 것도 대개 앞의 이유다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    },
+    {
+     "title": "ATmega128 제품 페이지",
+     "url": "https://www.microchip.com/en-us/product/ATmega128",
+     "publisher": "Microchip",
+     "kind": "docs",
+     "summary": "수명주기 상태와 후속품(ATmega128A) 안내"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "spec",
+   "kind": "spec",
+   "caption": "핵심 스펙 (ATmega128 / ATmega128L)",
+   "note": "L 붙은 품번은 저전압·저속 판이다. 같은 코드가 돌지만 최대 클럭이 다르다",
+   "columns": [
+    "항목",
+    "값",
+    "메모"
+   ],
+   "rows": [
+    [
+     "플래시 (프로그램)",
+     "128 KB",
+     "쓰고 지우기 1만 회 보증"
+    ],
+    [
+     "SRAM (변수·스택)",
+     "4 KB",
+     "여기가 제일 먼저 모자란다"
+    ],
+    [
+     "EEPROM (전원 꺼도 남는 값)",
+     "4 KB",
+     "설정값 저장용. 10만 회"
+    ],
+    [
+     "범용 I/O 핀",
+     "53개",
+     "포트 A~F 각 8 + 포트 G 5"
+    ],
+    [
+     "최대 클럭",
+     "16 MHz (ATmega128) / 8 MHz (128L)",
+     "동작 전압에 따라 다르다"
+    ],
+    [
+     "동작 전압",
+     "4.5~5.5V (128) / 2.7~5.5V (128L)",
+     ""
+    ],
+    [
+     "ADC",
+     "10비트 · 8채널",
+     "포트 F"
+    ],
+    [
+     "USART (시리얼)",
+     "2개",
+     "USART0 / USART1"
+    ],
+    [
+     "타이머",
+     "8비트 2개 + 16비트 2개",
+     "T0·T2 / T1·T3"
+    ],
+    [
+     "기타 통신",
+     "SPI, TWI(I²C 호환)",
+     ""
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "id": "ports",
+   "kind": "pinmap",
+   "caption": "포트별 대체 기능 — 이 핀이 원래 무엇을 하는 자리인가",
+   "note": "**물리 핀 번호가 아니라 포트·비트로 적었다.** ATmega128 은 64-TQFP 와 64-MLF(QFN) 두 패키지가 있고 **패키지가 다르면 같은 기능이라도 핀 번호가 달라진다.** 반면 포트·비트 표기는 패키지와 무관하므로 데이터시트·회로도·코드 어디서나 그대로 통한다. 번호가 필요하면 반드시 **내 보드의 패키지**를 확인하고 데이터시트 Pin Configurations 절을 본다",
+   "columns": [
+    "포트",
+    "대체 기능",
+    "무엇에 쓰나"
+   ],
+   "rows": [
+    [
+     "PA0~PA7",
+     "AD0~AD7",
+     "외부 메모리(XMEM)의 주소·데이터 겸용 선. 안 쓰면 그냥 범용 I/O"
+    ],
+    [
+     "PB0~PB3",
+     "SS, SCK, MOSI, MISO",
+     "SPI. 센서·SD카드·다른 MCU 와의 고속 연결"
+    ],
+    [
+     "PB4~PB7",
+     "OC0, OC1A, OC1B, OC2/OC1C",
+     "타이머 출력 = PWM. 모터 속도·LED 밝기"
+    ],
+    [
+     "PC0~PC7",
+     "A8~A15",
+     "외부 메모리 상위 주소"
+    ],
+    [
+     "PD0, PD1",
+     "SCL, SDA (+ INT0/INT1)",
+     "TWI(I²C). 여러 센서를 선 두 가닥으로 잇는다"
+    ],
+    [
+     "PD2, PD3",
+     "RXD1, TXD1 (+ INT2/INT3)",
+     "두 번째 시리얼"
+    ],
+    [
+     "PD4~PD7",
+     "ICP1, XCK1, T1, T2",
+     "타이머 입력 캡처·외부 클럭"
+    ],
+    [
+     "PE0, PE1",
+     "RXD0, TXD0 / PDI, PDO",
+     "첫 번째 시리얼. **그리고 ISP 다운로드 선이 여기다**"
+    ],
+    [
+     "PE2~PE7",
+     "AIN0/1, OC3A~C, T3, INT4~7",
+     "아날로그 비교기·타이머3·외부 인터럽트"
+    ],
+    [
+     "PF0~PF3",
+     "ADC0~ADC3",
+     "아날로그 입력"
+    ],
+    [
+     "PF4~PF7",
+     "ADC4~ADC7 / TCK, TMS, TDO, TDI",
+     "**JTAG 과 겹친다 — 출고 상태에서는 I/O 로 못 쓴다**"
+    ],
+    [
+     "PG0~PG2",
+     "WR, RD, ALE",
+     "외부 메모리 제어"
+    ],
+    [
+     "PG3, PG4",
+     "TOSC2, TOSC1",
+     "32.768kHz 시계용 크리스탈"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "id": "ddr-truth",
+   "kind": "register",
+   "caption": "DDRxn · PORTxn 조합이 만드는 네 가지 상태",
+   "note": "PUD 는 SFIOR 레지스터의 비트로, 1 이면 칩 전체의 내부 풀업이 꺼진다. 기본값 0",
+   "columns": [
+    "DDRxn",
+    "PORTxn",
+    "핀 상태",
+    "무슨 뜻인가"
+   ],
+   "rows": [
+    [
+     "0",
+     "0",
+     "입력 · 풀업 없음 (Hi-Z)",
+     "떠 있는 상태. 아무것도 안 달렸으면 값이 흔들린다"
+    ],
+    [
+     "0",
+     "1",
+     "입력 · 내부 풀업 ON",
+     "스위치를 GND 로 받을 때의 정석 (PUD=0 일 때)"
+    ],
+    [
+     "1",
+     "0",
+     "출력 · LOW (0V)",
+     "핀을 GND 로 끌어내린다"
+    ],
+    [
+     "1",
+     "1",
+     "출력 · HIGH (VCC)",
+     "핀을 전원 전압으로 끌어올린다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "레지스터를 직접 만지는 펌웨어를 처음 배운다",
+   "pick": "ATmega128 (또는 더 작은 ATmega328P)",
+   "over": "STM32 + HAL 라이브러리",
+   "why": "데이터시트 한 권으로 칩 전체가 설명되고, 핀 하나를 켜는 데 필요한 레지스터가 셋뿐이다. STM32 는 같은 일을 하는 데 클럭 트리·RCC·GPIO 모드 설정을 먼저 통과해야 해서, 처음에는 'HAL 함수를 외우는 공부'가 되기 쉽다",
+   "tradeoff": "채용 시장의 수요는 ARM Cortex-M 쪽이 훨씬 크다. 여기서 배운 것을 STM32 로 한 번 더 옮기는 과정이 반드시 필요하다",
+   "confidence": "inferred"
+  },
+  {
+   "situation": "새 제품을 설계한다",
+   "pick": "STM32 · ESP32, 또는 기존 자산을 이어야 하면 핀 호환인 ATmega128A",
+   "over": "ATmega128 (원본 품번)",
+   "why": "ATmega128 은 오래된 부품이라 단가 대비 성능이 불리하고 조달이 갈수록 어렵다. 무선이 필요하면 ESP32 가 Wi-Fi/BLE 를 칩 안에 갖고 있어 회로가 통째로 줄어든다",
+   "tradeoff": "부품을 바꾸면 레지스터 이름부터 툴체인까지 코드 자산의 상당 부분을 다시 쓴다",
+   "confidence": "inferred",
+   "sources": [
+    {
+     "title": "ATmega128 제품 페이지",
+     "url": "https://www.microchip.com/en-us/product/ATmega128",
+     "publisher": "Microchip",
+     "kind": "docs",
+     "summary": "수명주기 상태와 후속품(ATmega128A) 안내"
+    }
+   ]
+  },
+  {
+   "situation": "시리얼(UART)로 PC 와 통신하는 기능이 들어간다",
+   "pick": "외부 크리스탈 (11.0592MHz 또는 16MHz) + CKSEL 퓨즈 설정",
+   "over": "출고 기본값인 내부 RC 발진기 1MHz",
+   "why": "내부 RC 는 온도·전압에 따라 수 % 흔들린다. UART 는 보율 오차가 누적되면 프레임이 깨지므로, 발진기 정확도가 곧 통신 성공률이다. 11.0592MHz 는 흔한 보율에서 오차가 사실상 0 이 된다",
+   "tradeoff": "부품(크리스탈+커패시터 2개)이 늘고, 퓨즈를 잘못 쓰면 칩이 응답하지 않는 상태가 된다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "situation": "변수·버퍼가 4KB SRAM 을 넘본다",
+   "pick": "먼저 PROGMEM(플래시 상수)·버퍼 축소, 그래도 모자라면 상위 MCU 로 교체",
+   "over": "XMEM 인터페이스로 외부 SRAM 붙이기",
+   "why": "외부 SRAM 을 붙이면 포트 A·C 와 PG0~PG2 를 통째로 내주고 접근 속도도 느려진다. 요즘은 SRAM 이 수십 KB 인 MCU 가 더 싸다",
+   "tradeoff": "칩 교체는 코드와 회로를 함께 다시 만드는 일이다. 이미 양산 중인 보드라면 XMEM 이 현실적인 답일 수 있다",
+   "confidence": "inferred"
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "PF4~PF7 에 LED·스위치를 달았는데 아무 반응이 없다",
+   "why": "이 네 핀은 JTAG 디버그 인터페이스(TCK/TMS/TDO/TDI)와 겹치고, **JTAGEN 퓨즈가 공장 출고 상태에서 켜져 있다.** 켜져 있는 동안 이 핀들은 범용 I/O 가 아니다",
+   "fix": "JTAG 을 안 쓸 거면 JTAGEN 퓨즈를 해제한다. 퓨즈를 못 건드리는 상황이면 코드에서 MCUCSR 의 JTD 비트를 **네 클럭 안에 연속 두 번** 써서 끈다",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "trap": "`_delay_ms(500)` 인데 8초쯤 걸린다. UART 는 글자가 깨진다",
+   "why": "출고 기본 클럭원이 **내부 RC 약 1MHz** 인데 코드의 `F_CPU` 는 16000000UL 로 적혀 있다. 크리스탈이 보드에 꽂혀 있어도 퓨즈(CKSEL)가 가리키지 않으면 안 쓴다. 16배 어긋난다",
+   "fix": "① 크리스탈을 쓰도록 CKSEL 퓨즈를 바꾸거나, ② `F_CPU` 를 실제 클럭(1000000UL)으로 맞춘다. **코드·퓨즈·보드 셋이 같은 숫자를 말하는지 확인하는 것이 순서다**",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    },
+    {
+     "title": "AVR Libc User Manual",
+     "url": "https://www.nongnu.org/avr-libc/user-manual/",
+     "publisher": "AVR Libc",
+     "kind": "docs",
+     "summary": "avr-gcc 표준 라이브러리. <avr/io.h>, <util/delay.h>, F_CPU 의 정의"
+    }
+   ]
+  },
+  {
+   "trap": "USART1 도 타이머3 도 없고, 포트 C 가 출력만 된다",
+   "why": "**M103C 퓨즈(ATmega103 호환 모드)** 가 켜진 칩이다. 앞 세대 칩처럼 동작하도록 기능 절반을 잠근 상태이고, 이 모드가 켜진 채 출하되는 물량이 있다",
+   "fix": "M103C 퓨즈를 해제하고 다시 프로그래밍한다. '데이터시트에 있는 기능이 없다' 싶으면 가장 먼저 의심할 자리다",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "trap": "ISP 다운로드가 안 된다 — MOSI/MISO 를 제대로 연결했는데도",
+   "why": "ATmega128 의 **직렬 프로그래밍 선은 SPI 의 MOSI/MISO 가 아니라 PDI(PE0)·PDO(PE1)** 다. 다른 AVR 의 회로도를 그대로 베끼면 여기서 걸린다",
+   "fix": "PE0(PDI)·PE1(PDO)·PB1(SCK)·RESET·VCC·GND 여섯 선을 프로그래머에 연결한다",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+    }
+   ]
+  },
+  {
+   "trap": "스위치를 누르지 않았는데 눌린 것처럼 값이 튄다",
+   "why": "입력 핀을 `DDRx=0` 으로만 두면 어디에도 연결되지 않은 **플로팅** 상태다. 손을 가까이 대는 것만으로도 값이 바뀐다",
+   "fix": "`PORTx |= (1<<n)` 으로 내부 풀업을 켜거나 외부에 10kΩ 풀업을 단다. 그래도 누르는 순간 값이 여러 번 튀면 그건 **채터링(bouncing)** 이고, 소프트웨어 디바운스가 따로 필요하다"
+  },
+  {
+   "trap": "퓨즈를 한 번 잘못 쓴 뒤로 칩이 프로그래머에 아예 응답하지 않는다",
+   "why": "CKSEL 을 '외부 클럭'으로 바꿔 놓고 외부 클럭원을 안 달았다면, 칩은 클럭이 없어 아무 명령도 실행하지 못한다. ISP 는 칩이 살아 있어야 동작한다",
+   "fix": "XTAL1 핀에 외부에서 클럭 신호(다른 MCU 나 함수발생기로 1MHz 구형파)를 넣어 살려 놓고 퓨즈를 되돌린다. **퓨즈를 쓰기 전에 계산기 사이트에서 비트를 한 번 확인하는 습관이 가장 싼 예방책이다**"
+  }
+ ],
+ "terms": [
+  {
+   "term": "MCU",
+   "en": "microcontroller unit",
+   "what": "CPU·메모리·주변장치를 한 칩에 담아 운영체제 없이 프로그램 하나를 돌리는 부품"
+  },
+  {
+   "term": "퓨즈 비트",
+   "en": "fuse bit",
+   "what": "프로그램이 아니라 칩의 성격(클럭원·JTAG·호환 모드)을 정하는 설정. 코드와 따로 쓰이고, 잘못 쓰면 칩이 응답하지 않을 수 있다"
+  },
+  {
+   "term": "하버드 구조",
+   "en": "Harvard architecture",
+   "what": "프로그램과 데이터의 메모리 통로가 분리된 구조. 명령을 읽으면서 동시에 데이터를 읽을 수 있어 대부분의 명령이 1사이클로 끝난다"
+  },
+  {
+   "term": "ISP",
+   "en": "In-System Programming",
+   "what": "칩을 보드에서 뽑지 않고 그 자리에서 프로그램을 써 넣는 방식"
+  },
+  {
+   "term": "플로팅",
+   "en": "floating",
+   "what": "입력 핀이 전원에도 접지에도 연결되지 않아 값이 잡음에 따라 흔들리는 상태"
+  },
+  {
+   "term": "채터링",
+   "en": "contact bounce",
+   "what": "기계식 스위치의 금속 접점이 붙는 순간 수 ms 동안 여러 번 튀는 현상. 한 번 눌렀는데 여러 번 눌린 것으로 읽힌다"
+  },
+  {
+   "term": "프리스케일러",
+   "en": "prescaler",
+   "what": "클럭을 정해진 비율로 나눠 느리게 만드는 장치. 타이머·ADC 가 자기 속도를 맞출 때 쓴다"
+  },
+  {
+   "term": "PROGMEM",
+   "en": "program memory",
+   "what": "상수를 SRAM 대신 플래시에 두는 avr-libc 의 지시자. 4KB SRAM 을 아끼는 첫 번째 수단"
+  }
+ ],
+ "drills": [
+  {
+   "task": "LED 하나를 1초 주기로 깜빡이고, 그 LED 에 넣을 전류 제한 저항을 옴의 법칙으로 직접 계산해 고른다 (VCC 5V, LED 순방향 전압 약 2V, 목표 전류 10mA)",
+   "done_when": "저항값을 계산식과 함께 적을 수 있고, 계산한 값과 실제로 꽂은 표준 저항값(E24 계열)이 왜 다른지 말할 수 있다",
+   "why": "펌웨어 첫 줄과 회로 첫 줄이 같은 문제라는 것을 손으로 확인하는 자리다. 계산 없이 '아무 저항이나' 꽂는 습관은 LED 나 핀을 태운다",
+   "needs": "ATmega128 보드, LED, 저항 몇 종",
+   "no_hardware": "SimulIDE 같은 무료 시뮬레이터에 AVR 을 올려 같은 회로를 그리거나, 최소한 계산만 종이에 해 본다. 계산은 장비가 필요 없고 이 실습의 절반이다",
+   "hours": 1
+  },
+  {
+   "task": "스위치를 내부 풀업으로 읽어 눌린 횟수를 세고, UART 로 PC 에 그 숫자를 찍는다",
+   "done_when": "한 번 눌렀을 때 숫자가 정확히 1 만 오른다 (채터링을 잡았다는 뜻이다)",
+   "why": "입력·풀업·디바운스·UART 라는, 이 칩으로 하는 일의 8할이 한 실습에 다 들어 있다",
+   "needs": "보드, 택트 스위치, USB-시리얼 변환기",
+   "no_hardware": "디바운스 로직만 PC 에서 C 로 작성하고, 스위치 입력을 배열(예: 1,0,1,1,0,1,1,1,1)로 흉내 내 통과시킨다",
+   "hours": 2
+  },
+  {
+   "task": "F_CPU 를 1MHz·8MHz·16MHz·11.0592MHz 로 두고 보율 9600 과 115200 에 대한 UBRR 값과 **실제 보율 오차(%)** 를 표로 만든다",
+   "done_when": "왜 11.0592MHz 크리스탈이 존재하는지 그 표를 가리키며 설명할 수 있다",
+   "why": "'UART 가 깨진다'는 문제의 원인 대부분이 이 표 안에 있다. 계산으로 끝나므로 장비가 아예 필요 없다",
+   "no_hardware": "이 실습은 처음부터 장비가 필요 없다 — 스프레드시트나 파이썬 몇 줄이면 된다",
+   "hours": 1
+  }
+ ],
+ "checks": [
+  "DDRx=0, PORTx=1 은 어떤 상태인가? 스위치를 GND 로 받을 때 왜 이 조합이 필요한가?",
+  "스위치를 눌러도 값이 안 바뀐다. PORTD 를 읽고 있는지 PIND 를 읽고 있는지부터 확인해야 하는 이유는?",
+  "16MHz 크리스탈이 보드에 꽂혀 있는데 _delay_ms 가 16배 느리다. 어디를 순서대로 확인하나?",
+  "PF4~PF7 에 단 LED 가 안 켜진다. 코드를 보기 전에 의심할 것은 무엇인가?",
+  "SRAM 4KB 를 넘겼을 때 컴파일러가 알려 주지 않는 이유는 무엇이고, 무엇으로 먼저 줄이나?"
+ ],
+ "evidence": [
+  {
+   "quote": "- AVR ATmega128 프로그래밍",
+   "from": "posting",
+   "where": "대일시스템 — 펌웨어 개발 (사람인, 마감)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53187908",
+   "what_it_shows": "칩 이름이 자격요건에 그대로 박히는 공고가 실재한다. 학습용으로만 남은 칩이 아니라 유지보수 인력을 뽑는 자리가 있다는 뜻이다"
+  },
+  {
+   "quote": "- AVR, ESPRESSIF 칩셋으로 임베디드 소프트웨어를 개발할 수 있는 역량 또는 그에 준하는 경험",
+   "from": "posting",
+   "where": "엣지크로스 — 임베디드 소프트웨어 개발자(신입) (점핏, 모집중)",
+   "url": "https://jumpit.saramin.co.kr/position/54920516",
+   "what_it_shows": "AVR 이 **신입 공고의 자격요건**으로 쓰인다. 이 칩을 실습으로 다뤄 본 것이 지원 자격이 되는 자리가 지금도 열려 있다"
+  },
+  {
+   "quote": "MCU (AVR, ESP32, STM32 등) 기반 센서 데이터 수집 및 펌웨어 개발",
+   "from": "posting",
+   "where": "클론팜 — 스마트팜 환경제어/IoT 하드웨어 (사람인, 모집중)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54646438",
+   "what_it_shows": "공고는 대개 AVR 을 ESP32·STM32 와 **묶어서** 요구한다. 하나를 깊게 해 두면 나머지로 옮길 수 있다는 전제가 시장 쪽에도 깔려 있다"
+  },
+  {
+   "quote": "ㆍAtmel ATMEGA 개발 가능자(IDE는 Atmel Studio 사용)",
+   "from": "posting",
+   "where": "에이하나/CGBIO — 메카노바이오연구센터 (사람인, 마감)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54029880",
+   "what_it_shows": "툴체인까지 지정된다. avr-gcc/Makefile 뿐 아니라 Atmel(Microchip) Studio 로도 한 번은 빌드해 보는 편이 낫다는 근거"
+  },
+  {
+   "quote": "1.AT32,Atmega MCU 탑재 제어 PCB와 PC간 통신 프로토콜 설계 및 구현",
+   "from": "posting",
+   "where": "캐리마텍 — 3D프린터 제어 프로그램 개발자 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/337720",
+   "what_it_shows": "실무에서 이 칩으로 하는 일이 대개 **PC 와의 통신 프로토콜**이라는 것. 이 문서의 UART 절이 취미가 아니라 업무인 이유다"
+  }
+ ],
+ "related": [
+  {
+   "slug": "pull-up-resistor",
+   "how": "이 문서의 입력 핀 이야기가 거기서 끝까지 설명된다 — 왜 10kΩ 인지, 내부 풀업으로 충분한 때는 언제인지"
+  },
+  {
+   "slug": "uart",
+   "how": "UBRR 계산과 보율 오차의 본체. 여기서는 ATmega128 쪽만 다뤘다"
+  },
+  {
+   "slug": "gpio-register",
+   "how": "DDR/PORT/PIN 이라는 발상 자체 — STM32·ESP32 에서 같은 일이 어떤 이름으로 나타나는가"
+  },
+  {
+   "slug": "interrupt",
+   "how": "INT0~INT7 로 '기다리지 않고 반응하는' 구조. while 루프로 핀을 계속 읽는 방식(폴링)의 대안"
+  },
+  {
+   "slug": "stm32",
+   "how": "이 칩에서 옮겨 가는 다음 자리. 채용 수요가 실제로 몰려 있는 쪽"
+  }
+ ],
+ "open_questions": [
+  "국내 대학·직업훈련 실습에서 ATmega128 이 표준처럼 쓰인 경위(교육과정 채택, 실습 보드 유통)는 1차 자료로 확인하지 못했다. 문서에서는 이 배경을 단정하지 않고 비워 두었다",
+  "tech_relations.json 은 `AVR`·`ATmega128` 을 추적 기술로 세지 않아 `market` 을 채우지 못했다 — 그래서 수요 근거는 `evidence` 의 공고 문장으로 대신했다. 추적 목록에 8비트 MCU 계열을 넣을지가 다음 판단거리다",
+  "M103C(ATmega103 호환) 퓨즈가 켜진 채 출하되는 물량의 비율은 공개 자료로 확인되지 않는다. 지뢰 항목에는 '그런 상태가 존재한다'까지만 적었다"
+ ],
+ "sources": [
+  {
+   "title": "ATmega128/128L 데이터시트 (doc2467)",
+   "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+   "publisher": "Microchip (Atmel)",
+   "kind": "datasheet",
+   "summary": "8비트 AVR ATmega128 의 1차 자료. 아래 표·수치는 전부 이 문서 기준이다"
+  },
+  {
+   "title": "ATmega128 제품 페이지",
+   "url": "https://www.microchip.com/en-us/product/ATmega128",
+   "publisher": "Microchip",
+   "kind": "docs",
+   "summary": "수명주기 상태와 후속품(ATmega128A) 안내"
+  },
+  {
+   "title": "AVR Libc User Manual",
+   "url": "https://www.nongnu.org/avr-libc/user-manual/",
+   "publisher": "AVR Libc",
+   "kind": "docs",
+   "summary": "avr-gcc 표준 라이브러리. <avr/io.h>, <util/delay.h>, F_CPU 의 정의"
+  }
+ ]
+}

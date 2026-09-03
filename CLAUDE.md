@@ -33,6 +33,16 @@
   `jd-viewer/public/guide/` 에 쌓여 공고 상세 화면 오른쪽 패널이 읽는다.
   대기열은 `all_jobs_enriched.json` 에서 나온다 — `validate.py --gaps` 가 브리핑 없는
   회사를 모집중 공고 수로 줄 세워 준다.
+- `study-engine/` : 기술 백과사전 엔진. 앞의 둘이 "이 회사"·"이 공고"를 다룬다면
+  여기 단위는 **낱말 하나**다 — ATmega128 핀맵·풀업 저항 같은 펌웨어/하드웨어 기초부터
+  파이썬 자료구조 선택, 금융권이 왜 Java 인지, 멱등성 같은 IT 용어까지. 브리핑이
+  "BullMQ 분산 락을 공부하라"에서 멈추면 그 다음 줄(그게 뭔데·왜 생겼는데·언제 그것
+  대신 저것인데)을 쓴다. 구조는 `engine/` 과 같고(PROMPT/schema/state/validate)
+  산출물은 `jd-viewer/public/study/` 에 쌓여 뷰어의 `기술 백과사전` 탭이 읽는다
+  (`/wiki`, `/wiki/<slug>` — `기술 트렌드 > 기술 관계·맥락` 의 다음 칸이다).
+  대기열은 `tech_relations.json`(수요 큰데 문서 없는 기술) + 이미 쓴 문서의 끊긴
+  `related` 링크에서 나온다. 모든 문서는 실제 공고 문장(`evidence`)과 실습(`drills`)으로
+  끝난다 — 읽고 끝나는 문서는 완성으로 치지 않는다.
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
 `python -m pipeline.aggregate 개발자`, `python -m pipeline.close_check --limit 300`, `python -m monitoring.health report`,
