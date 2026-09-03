@@ -805,6 +805,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "cdc",
+      "title": "CDC (변경 데이터 캡처)",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**DB 가 자기 복제를 위해 이미 쓰고 있는 변경 로그를 남이 읽는 것**이다. 애플리케이션에 손대지 않고도 \"무엇이 언제 어떻게 바뀌었는지\"가 스트림이 된다 — 대신 **DB 의 내장을 하나 붙잡고 있게 된다.**",
+      "aliases": [
+        "CDC",
+        "변경 데이터 캡처",
+        "Change Data Capture",
+        "Debezium",
+        "binlog"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {

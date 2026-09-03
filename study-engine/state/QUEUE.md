@@ -14,7 +14,6 @@
 
 | 낱말 | slug | 왜 이 낱말 | 무엇을 읽을 수 있나 |
 |---|---|---|---|
-| CDC | `cdc` | **49건(모집중 27)** 이고 데이터 엔지니어 공고에 반복된다: `CDC(Change Data Capture) 파이프라인 구축 경험 (Flink CDC, Debezium 등)`(넥스트증권), `CDC 파이프라인을 운영하며 대상 도메인을 넓히고, 소스 팀과 스키마 변경 규칙을 맞춰 백필·재처리를 안전하게 수행`(마카롱팩토리), `실시간(Kafka/Debezium) 및 배치(Airflow) 기반 데이터 파이프라인`(미리디). ⚠️ **낱말 충돌이 있다** — 반도체 공고의 `Lint, CDC, Synthesis, Formality, STA`(보스반도체)는 **Clock Domain Crossing** 이다. **이 충돌 자체를 문서에 적으면 이 백과사전다운 항목이 된다**(펌웨어와 데이터 양쪽을 다루는 유일한 백과사전이므로). 축: ① **DB 의 변경 로그를 읽는다**는 발상(`kafka` 의 로그 개념과 같은 뿌리) ② 폴링·트리거 대신 **WAL/binlog** ③ **스키마 변경이 파이프라인을 깨뜨린다** ④ 백필·재처리와 `idempotency` ⑤ **최종 일관성** — 언제까지 늦어도 되나 | Debezium 공식 문서 + MySQL binlog / PostgreSQL 논리적 복제 문서. **URL 은 `WebSearch` 로 확인하고 건다** |
 
 
 ## 미룸
