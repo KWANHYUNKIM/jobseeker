@@ -91,9 +91,10 @@ jobs:
           # 그래서 주소 전체는 찍지 않고, 어떤 방식으로 열려 있는지와 호스트의
           # 앞 몇 자만 남긴다. 고정 도메인을 쓰고 있다면 본인이 바로 알아본다.
           echo "-- 외부 공개 방식"
-          running=$(docker ps --format '{{.Names}}' 2>/dev/null | grep '^jobseeker-' | tr '
-' ' ')
-          echo "   컨테이너: ${running:-없음}"
+          # 줄바꿈을 공백으로 합칠 때 tr 을 쓰지 않는다 — 따옴표 안의 개행이
+          # YAML 블록을 끊는다. 따옴표 없는 echo 가 같은 일을 한다.
+          running=$(docker ps --format '{{.Names}}' 2>/dev/null | grep '^jobseeker-' || true)
+          echo "   컨테이너: $(echo $running)"
           echo "   LAN     : http://$(ipconfig getifaddr en0 2>/dev/null || echo '?'):8080"
           if docker ps --format '{{.Names}}' 2>/dev/null | grep -qx jobseeker-ngrok; then
             echo "   방식    : ngrok (고정 도메인)"
