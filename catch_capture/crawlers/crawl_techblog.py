@@ -12,6 +12,8 @@
   python -m crawlers.crawl_techblog            # 전체 피드, 피드당 최신 20개
   python -m crawlers.crawl_techblog 40         # 피드당 최신 40개
   python -m crawlers.crawl_techblog 20 woowahan,netflix  # 일부 회사만
+  python -m crawlers.crawl_techblog repair            # 알맹이 빠진 본문 실측
+  python -m crawlers.crawl_techblog repair --apply    # 지우고 다시 받게 한다
 """
 from __future__ import annotations
 
@@ -681,6 +683,98 @@ def _save_failures(fails: dict) -> None:
     tmp.replace(FAILURE_LOG)
 
 
+# trafilatura 가 붙여 주는 것들. 하나도 없으면 폴백(html_to_text)으로 만든 평문이다.
+_MD_MARKS = ("![", "```", "~~~")
+
+
+def _is_thin(rec: dict) -> str | None:
+    """의존성 없이 만들어져 알맹이가 빠진 본문인가. 사유 문자열 또는 None."""
+    text = rec.get("content") or ""
+    if not text.strip():
+        return "본문 비어 있음"
+    if rec.get("lang") != "ko" and not rec.get("translated"):
+        return "번역 없음"
+    has_mark = any(m in text for m in _MD_MARKS)
+    has_head = any(ln.startswith("#") for ln in text.splitlines())
+    has_table = any(ln.startswith("|") for ln in text.splitlines())
+    if not (has_mark or has_head or has_table):
+        return "이미지·제목·코드블록 전무(평문 폴백)"
+    return None
+
+
+def repair_content(apply: bool = False) -> int:
+    """의존성이 빠진 채로 만들어진 본문을 지우고 실패 이력을 푼다.
+
+    trafilatura 가 없던 동안 저장된 본문은 RSS 요약을 평문으로 옮긴 것이라
+    이미지·표·코드블록이 없다. build_content 는 파일이 있으면 그냥 건너뛰므로
+    (`path.exists()`), 패키지를 깔아도 그 파일들은 영원히 그대로다 — 지워야
+    다시 받는다.
+
+    실패 이력도 같이 푼다. deep_translator 가 없어 번역에 실패한 영어 글은
+    CONTENT_MAX_FAILS 를 넘겨 CONTENT_RETRY_DAYS(14일) 동안 재시도 대상에서
+    빠져 있다. 원인이 사라졌으니 대기도 풀어 준다.
+
+    기본은 실측만. 지우려면 --apply.
+    """
+    if not CONTENT_DIR.exists():
+        print(f"[repair] {CONTENT_DIR} 가 없습니다 — 할 일 없음", flush=True)
+        return 0
+
+    thin: list[tuple[Path, str, dict]] = []
+    total = 0
+    for f in sorted(CONTENT_DIR.glob("*.json")):
+        if f.name.startswith("_"):
+            continue                    # _failures.json 등 관리용 파일
+        total += 1
+        try:
+            rec = json.loads(f.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            thin.append((f, "읽을 수 없음", {}))
+            continue
+        why = _is_thin(rec)
+        if why:
+            thin.append((f, why, rec))
+
+    reasons: dict[str, int] = {}
+    for _f, why, _rec in thin:
+        reasons[why] = reasons.get(why, 0) + 1
+
+    print(f"[repair] 본문 {total:,}건 중 다시 받아야 할 것 {len(thin):,}건", flush=True)
+    for why, n in sorted(reasons.items(), key=lambda kv: -kv[1]):
+        print(f"    {n:>6,}건  {why}", flush=True)
+    for _f, why, rec in thin[:8]:
+        print(f"      예) [{rec.get('lang') or '?'}] {(rec.get('title') or '?')[:44]} — {why}",
+              flush=True)
+
+    fails = _load_failures()
+    stuck = sum(1 for r in fails.values() if r.get("count", 0) >= CONTENT_MAX_FAILS)
+    print(f"[repair] 실패 이력 {len(fails):,}건 (재시도 대기 중 {stuck:,}건)", flush=True)
+
+    if not apply:
+        print("[repair] 실측만 했습니다. 실제로 지우려면 --apply", flush=True)
+        return 0
+
+    removed = 0
+    for f, _why, _rec in thin:
+        try:
+            f.unlink()
+            removed += 1
+        except OSError as e:
+            print(f"    삭제 실패 {f.name}: {e}", flush=True)
+    try:
+        FAILURE_LOG.unlink(missing_ok=True)
+    except OSError:
+        pass
+
+    cycles = -(-removed // CONTENT_LIMIT_DEFAULT) if removed else 0
+    print(f"[repair] {removed:,}건 삭제 · 실패 이력 초기화", flush=True)
+    print(f"    회차당 {CONTENT_LIMIT_DEFAULT}건씩 다시 받으므로 약 {cycles:,}사이클이 걸립니다.",
+          flush=True)
+    print("    먼저 확인: catch_capture/.venv/bin/pip install -r catch_capture/requirements.txt",
+          flush=True)
+    return 0
+
+
 def process_content(posts: list[dict], limit: int = CONTENT_LIMIT_DEFAULT,
                     translate: bool = True) -> dict:
     """본문 파일이 없는 글을 최신순으로 limit개까지 수집/번역. content_id는 전부 채움.
@@ -818,10 +912,13 @@ def crawl(per_feed: int, only: set[str] | None) -> None:
 
 
 def main() -> None:
-    per_feed = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 20
+    args = sys.argv[1:]
+    if args and args[0] == "repair":
+        raise SystemExit(repair_content(apply="--apply" in args))
+    per_feed = int(args[0]) if args and args[0].isdigit() else 20
     only = None
-    if len(sys.argv) > 2:
-        only = {s.strip() for s in sys.argv[2].split(",") if s.strip()}
+    if len(args) > 1 and not args[1].startswith("-"):
+        only = {s.strip() for s in args[1].split(",") if s.strip()}
     crawl(per_feed, only)
 
 
