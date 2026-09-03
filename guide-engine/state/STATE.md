@@ -4,50 +4,52 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 8건 · 학습 72개.
-(전체: 회사 24곳 · **공고 195건 · 학습 1,600개** · **오류 0** · **경고 5**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 9건 · 학습 81개.
+(전체: 회사 24곳 · 공고 196건 · 학습 1,609개 · **오류 0** · **경고 5**.)
 
-**이번 회차 = `Senior Computer Vision Engineer (Autonomous Driving)`(Ashby, 판교, 석사/박사+7년).**
-**담당업무가 연구 주제 목록**이라 지난 회차에 정한 방식대로 **주제별로 study 를 세웠다.**
-축: `왜 3차원인가(좌표 변환을 손으로)` · `점군 표현 셋(점·복셀·BEV)` · `자세 추정과 추적(ID 스위치)` ·
-**`레이블 없는 데이터로 배우기 — 라벨 효율 곡선`** · **`월드 모델·폐루프 시뮬레이션(예측이 무너지는 지평)`** ·
-`저수준·물리 기반 비전(악천후)` · `SLAM·깊이·재구성` · **`시간 동기 10ms = 28cm`** · `CUDA 커널`.
+**이번 회차 = `Senior AI Agent Engineer (Gleo Interactor)`(Ashby, 판교·Remote, **경력 8년 이상**).**
+**이 회사 공고 중 요건이 가장 높다**(CV 7년↑보다 위).
+축: `차 안의 에이전트가 다른 이유(오프라인 후퇴·응답 예산)` · `다단계 실행(도구 호출 실패 처리)` ·
+**`에이전트가 차를 잘못 조작하지 못하게 막기`** · `대화 설계(말과 행동이 어긋나지 않게)` ·
+**`평가 하네스 — 위험 요청 거부율을 별도 지표로`** · `컨텍스트 예산(차량 상태는 초마다 변한다)` ·
+`온디바이스·파인튜닝` · `개인 엔티티 검색(집·아까 그곳·엄마)` · `IVI 앱 경계(Android)`.
 
-**⚠️ 지난 회차의 대조 판단을 정정한다** — "우대사항이 회사 공통 문구"라고 적었는데,
-**진짜 공통 문구는 우대사항이 아니라 말미의 `ADDITIONAL INFORMATION` 안내문**이었다
-(채용절차법·평판조회·수습·서치펌 문구). CV 공고의 우대사항에는 **고유 항목이 분명히 있다**
-(`SLAM, depth estimation, 3D reconstruction`·`CUDA, OpenCL`·`CVPR, ICCV, TPAMI`·`VR/AR`).
-→ **유사도가 우대사항에서 높게 나오면 '공통 안내문 때문인지'를 먼저 확인한다.**
-자체 채용페이지(ats) 공고는 **본문 끝 20~30줄이 전 공고 공통**이므로 유사도가 구조적으로 올라간다.
+**⚠️ 에이전트 여섯 공고를 대조했다 — 전부 0.35 미만으로 별개다.**
+`Gleo Interactor` / `Driving VLM/VLA` / `Navigation Agent` / `LLM Engineer (Data Generation)` /
+`LLM Engineer (LLM Training)` / `Senior Search & Ranking Engineer (AI Agent)`.
+**한 회사가 에이전트 계열로만 여섯 자리를 뽑는다** — 회사 브리핑의 `차량 인포테인먼트와 음성 AI`
+도메인이 실제로 이 회사의 무게중심 중 하나임이 채용으로 확인된다.
 
-**⚠️ 이 회사는 자리마다 요건 차이가 크다 — 지원자에게 이게 가장 쓸모 있는 정보다**
-`System Framework` 학사↑·2년↑ / `Backend (Open Platform)` 3년↑ / `Planning & Control` 석사↑·3년↑ /
-`ML Platform` 학사↑·7년↑ / **`Computer Vision` 석사·박사+7년↑(가장 높다)**.
-**닫을 때 `company.signals` 에 이 사다리를 한 항목으로 넣는다.**
+**⚠️ 세 자리가 같은 사고방식을 공유한다 — 브리핑 사이를 잇는 축이 생겼다**
+`Planning & Control`(학습 정책을 검사기로 거른다) · `Backend (Open Platform)`(권한을 구조로 막는다) ·
+`Gleo Interactor`(에이전트의 차량 제어를 규칙 층이 거부한다). **셋 다 "AI/외부 입력을 신뢰하지 않는
+층을 따로 둔다"** 다. **닫을 때 `company.signals` 에 이 공통 설계 원칙을 한 항목으로 넣는다.**
+
+**요건 사다리(닫을 때 `signals` 에 넣을 것)**
+`System Framework` 학사↑·2년↑ → `Backend (Open Platform)` 3년↑ → `Planning & Control` 석사↑·3년↑ →
+`ML Platform` 7년↑ → `Computer Vision` 석사/박사·7년↑ → **`AI Agent (Gleo)` 8년↑**.
 
 **남은 순서** (판교 위주)
-1. **Gleo·에이전트 축 넷 — 대조 먼저.** `Senior AI Agent Engineer (Gleo Interactor)`(1,614자) /
-   `Senior AI Engineer (Driving VLM/VLA)`(2,333자) / `AI Engineer (Navigation Agent)`(1,829자) /
-   `LLM Engineer (Data Generation)`(2,196자). **회사 브리핑의 `차량 인포테인먼트와 음성 AI` 도메인과 맞물린다.**
-   ⚠️ **`Gleo AI` 는 회사의 유일한 공개 양산 사례**(더 뉴 그랜저)다 — 그 각도를 살린다.
+1. **`AI Engineer (Navigation Agent)`(1,829자)** 또는 **`Senior AI Engineer (Driving VLM/VLA)`(2,333자)** — **다음.**
+   ⚠️ **Gleo Interactor 와 겹치지 않게**: Navigation 은 **경로·지도 도메인**, VLM/VLA 는
+   **주행 영상을 언어와 잇는 모델** 쪽으로 각도를 잡는다. **먼저 두 본문을 읽고 고른다.**
 2. `Security Engineer (Security Platform)`(2,687자) / `Security Engineer (차량 보안)`(1,065자) — 둘 대조 먼저.
-   ⚠️ 인증·인가는 2회차에서 다뤘다 → **CAN 버스·침입 탐지·시큐어부트** 쪽으로.
-3. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — ⚠️ **이번 회차에서 월드 모델·폐루프를
-   다뤘다.** 겹치므로 **RL 학습 인프라·시나리오 생성** 쪽으로 각도를 틀거나 뒤로 미룬다.
-4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
-5. `Senior Physical AI Engineer`(5,968자) / `Physical AI Engineer`(4,098자) — 급수 차이(담당업무 0.40).
-   **한 건만 쓰고 나머지는 `open_questions` 에.**
-6. `Senior Backend Engineer(Mobile Platform)`(1,622자) / `Senior Release Engineer`(1,746자) /
-   `Vehicle System Integration Engineer`(1,573자) / `Software Update Engineer`(1,522자) /
-   `Deep Learning Engineer (음성 인식 및 wake word detection)`(1,471자) / `Test Engineer (Autonomous Driving)`(1,216자) —
-   **본문이 짧은 판교 자리들.** 얇은 대로 깊게 판다.
-7. 서니베일·바르샤바·호치민 13건은 **뒤로.**
+   ⚠️ 인증·인가는 2회차 → **CAN 버스·침입 탐지·시큐어부트** 쪽으로.
+3. `LLM Engineer (Data Generation)`(2,196자) / `(LLM Training)`(1,396자) / `Senior Search & Ranking (AI Agent)`(2,145자).
+4. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — ⚠️ 월드 모델은 CV 회차에서 다뤘다 →
+   **RL 학습 인프라·시나리오 생성** 쪽으로.
+5. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
+6. `Senior Physical AI Engineer` / `Physical AI Engineer` — 급수 차이. **한 건만.**
+7. 본문 짧은 판교 자리들: `Senior Backend Engineer(Mobile Platform)` · `Senior Release Engineer` ·
+   `Vehicle System Integration Engineer` · `Software Update Engineer` ·
+   `Deep Learning Engineer (음성 인식 및 wake word detection)` · `Test Engineer (Autonomous Driving)`.
+8. 서니베일·바르샤바·호치민 13건은 **뒤로.**
 
 **⚠️ 경고 5건 미결**: `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
-**대기열이 비는 순간 `fix(guide)` 로 바로 처리한다.**
+**대기열이 비는 순간 `fix(guide)`.**
 
-**닫을 때 (다섯)** — ① **`Pleos Vehicle OS` 회사 브리핑 보강** ② **요건 사다리를 `signals` 에 추가**
-③ `salary` 비어 있음(사람인 `view-inner-salary` 먼저) ④ `people` 비어 있음 ⑤ 안 쓴 공고 이유.
+**닫을 때 (여섯)** — ① **`Pleos Vehicle OS` 보강** ② **요건 사다리를 `signals` 에** ③ **"신뢰하지 않는
+층" 공통 설계 원칙을 `signals` 에** ④ `salary`(사람인 `view-inner-salary` 먼저) ⑤ `people` ⑥ 안 쓴 공고 이유.
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -67,6 +69,17 @@
 
 ## 배운 것
 
+- **한 회사의 여러 공고에서 같은 사고방식이 반복되면 그것이 그 회사의 설계 원칙이다.** 포티투닷은
+  세 자리에서 똑같은 구조를 요구했다 — 학습 정책을 검사기로 거르고(`Planning & Control`), 권한을
+  코드가 아니라 구조로 막고(`Open Platform`), 에이전트의 차량 제어를 규칙 층이 거부한다(`Gleo`).
+  **"AI/외부 입력을 신뢰하지 않는 층을 따로 둔다"** 가 회사 공통 원칙이고, 이건 공고 하나만 봐서는
+  안 보인다. **회사를 닫을 때 `signals` 에 넣으면 지원자가 면접에서 그 언어로 말할 수 있다.**
+- **평가가 담당업무와 자격요건에 두 번 적히면 그게 회사의 아픈 곳이다.** Gleo 공고는 `평가 지표,
+  데이터셋, 평가 환경 구축` 을 양쪽에 넣었다. → `study` 에서 평가를 한 항목으로 세우고,
+  `edge` 에도 **평가 하네스**를 넣는다. 이런 반복은 "우리 이거 못 하고 있다"는 신호다.
+- **차량·기기용 에이전트에는 웹 에이전트에 없는 항목이 셋 붙는다** — ① **오프라인 후퇴**(터널)
+  ② **응답 시간 예산**(늦으면 사용자가 다시 말한다) ③ **실행 거부 규칙**(기계를 조작하므로).
+  기기와 붙는 에이전트 공고를 만나면 이 셋을 먼저 찾는다.
 - **⚠️ 자체 채용페이지(ats) 공고는 본문 끝 20~30줄이 전 공고 공통이다.** 포티투닷은 말미에
   `ADDITIONAL INFORMATION`(채용절차법·평판조회·수습·서치펌)이 모든 공고에 똑같이 붙어 있어,
   **`preferences` 유사도가 구조적으로 0.7~0.8 까지 올라간다.** 지난 회차에 이걸 "우대사항이 공통
