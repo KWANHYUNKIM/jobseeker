@@ -1,0 +1,663 @@
+{
+ "slug": "asyncio",
+ "title": "asyncio",
+ "title_en": "asyncio (Python event loop)",
+ "aliases": [
+  "asyncio",
+  "이벤트 루프",
+  "코루틴",
+  "async/await"
+ ],
+ "category": "framework",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-04",
+ "one_liner": "한 스레드 안에서 **이벤트 루프**가 돌며, 기다리는 코루틴을 재우고 준비된 코루틴을 깨워 실행하는 방식이다. 양보 지점(`await`)이 코드에 **보이는** 것이 장점이자 함정이다.",
+ "summary": "asyncio 는 스레드를 늘리지 않고 동시성을 만드는 방법이다. **이벤트 루프 하나가 한 스레드에서 돌면서** 실행 준비가 된 코루틴을 차례로 실행하고, `await` 를 만나면 그 코루틴을 재워 두고 다른 것으로 넘어간다. 그래서 동시 연결 수천 개를 스레드 하나로 다룰 수 있다. `python` 문서가 *언제 asyncio 를 고르나*를, `gil` 문서가 *왜 스레드로는 CPU 바운드가 안 되나*를 다뤘다면 이 문서는 **루프 안에서 실제로 무슨 일이 일어나는가**를 다룬다 — 코루틴과 태스크의 차이, 취소가 어떻게 전달되는지(`CancelledError`), 그리고 **안 기다린 태스크의 예외가 조용히 사라지는 문제**. 마지막 절은 실무에서 가장 아픈 성질이다: **한 번 `async` 를 들이면 그것을 부르는 함수도 전부 `async` 가 된다**(함수 색). 그래서 asyncio 를 쓸지 말지는 함수 하나의 결정이 아니라 **코드베이스 전체의 결정**이다.",
+ "market": null,
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 한 스레드, 하나의 루프, 여러 코루틴",
+   "body": "```python\nimport asyncio\n\nasync def fetch(url):          # 코루틴 함수\n    await client.get(url)      # ← 여기서 멈추고 루프에 제어를 넘긴다\n\nasync def main():\n    await asyncio.gather(*[fetch(u) for u in urls])   # 1000개를 한 스레드로\n\nasyncio.run(main())            # 이벤트 루프를 만들고 돌린다 (3.7+)\n```\n\n부품은 셋뿐이다.\n\n- **코루틴** — `async def` 로 정의한, **중간에 멈췄다 그 자리에서 이어 실행되는** 함수.\n- **이벤트 루프** — 준비된 코루틴을 골라 실행하고, 기다리는 것은 재워 두는 스케줄러. **한 스레드에서 돈다.**\n- **`await`** — \"여기서 기다린다\"이자 **\"여기서 다른 코루틴이 끼어들어도 된다\"**는 표시.\n\n두 번째 뜻이 중요하다. **`await` 가 없는 구간은 끊기지 않는다.** 그래서 `gil` 문서의 `counter += 1` 경쟁이 asyncio 에서는 (한 루프 안에서라면) **생기지 않는다** — 스레드처럼 아무 줄에서나 바뀌는 것이 아니라 **내가 적어 둔 `await` 지점에서만** 바뀌기 때문이다.\n\n```\n스레드 (선점형)         asyncio (협력형)\n─────────────────      ─────────────────\n어디서든 끊긴다         await 에서만 끊긴다\n경쟁 조건이 곳곳에      경쟁 조건이 await 주변에만\n락이 필요하다           대개 락이 필요 없다\n```\n\n**대신 협력하지 않는 코루틴 하나가 전체를 세운다.** `await` 없이 3초 도는 계산을 넣으면 그 3초 동안 이벤트 루프는 아무 일도 못 한다. 이 맞바꿈이 asyncio 의 성격 전부다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    },
+    {
+     "title": "Python 표준 라이브러리 — asyncio",
+     "url": "https://docs.python.org/3/library/asyncio.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "이벤트 루프·실행 API 의 목차. to_thread·run_in_executor 도 이 아래에 있다"
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "kind": "why",
+   "heading": "왜 이렇게 생겼나 — 콜백을 없애려고 문법을 바꿨다",
+   "body": "동시 연결이 많은 서버를 스레드로 만들면 두 가지가 발목을 잡는다. **스레드마다 스택 메모리가 들고**(수백 KB 단위), **전환할 때마다 커널을 거친다.** 연결 하나에 스레드 하나를 주는 방식은 수천 개에서 무너진다.\n\n그래서 나온 답이 **한 스레드에서 I/O 다중화**다 — OS 의 `epoll`·`kqueue` 같은 장치에 \"이 소켓들 중 하나라도 준비되면 알려 달라\"고 맡기고, 준비된 것만 처리한다. 이 구조는 파이썬보다 훨씬 오래됐고(Twisted, Node.js), 문제는 **코드 모양**이었다.\n\n```python\n# 콜백 시대: 흐름이 뒤집힌다\nfetch(url, on_done=lambda r: parse(r, on_done=lambda d: save(d, on_done=...)))\n```\n\n논리적으로는 \"받아서 파싱하고 저장한다\"인데 코드는 중첩으로 뒤집힌다. 오류 처리는 콜백마다 따로 붙고, 스택 트레이스는 의미를 잃는다. 이것이 **콜백 지옥**이다.\n\n**PEP 492**(파이썬 3.5)가 `async`/`await` 문법을 언어에 넣어 이 모양을 되돌렸다.\n\n```python\n# 같은 일, 위에서 아래로 읽힌다\nr = await fetch(url)\nd = await parse(r)\nawait save(d)\n```\n\n**멈출 수 있는 함수라는 개념 자체는 제너레이터(`yield`)로 이미 가능했다.** 실제로 초기 asyncio 는 `yield from` 기반이었다. 전용 문법을 만든 이유는 **의도를 구분하기 위해서다** — `yield` 는 값을 내놓는 것이고 `await` 는 기다리는 것인데, 같은 키워드로 두 가지를 하면 읽는 사람도 도구도 헷갈린다.\n\n> **정리하면 — 구조(한 스레드 + I/O 다중화)는 오래된 것이고, asyncio 가 새로 준 것은 그 구조를 위에서 아래로 읽히게 쓰는 문법이다.** 그리고 그 문법이 다음 절의 문제(함수 색)를 함께 가져왔다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "PEP 492 — Coroutines with async and await syntax",
+     "url": "https://peps.python.org/pep-0492/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "async/await 문법이 3.5 에 들어온 근거 문서. 왜 제너레이터 기반 코루틴에서 전용 문법으로 옮겼는지가 적혀 있다"
+    },
+    {
+     "title": "Python 표준 라이브러리 — asyncio",
+     "url": "https://docs.python.org/3/library/asyncio.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "이벤트 루프·실행 API 의 목차. to_thread·run_in_executor 도 이 아래에 있다"
+    }
+   ]
+  },
+  {
+   "id": "task",
+   "kind": "how",
+   "heading": "코루틴 · 태스크 · gather — 무엇이 실제로 도나",
+   "body": "**코루틴을 만드는 것만으로는 아무 일도 일어나지 않는다.**\n\n```python\nfetch(url)                    # ✗ 코루틴 객체만 만들어졌다. 실행되지 않는다\n                              #   (\"coroutine was never awaited\" 경고)\nawait fetch(url)              # ○ 지금 여기서 기다리며 실행\nt = asyncio.create_task(fetch(url))   # ○ 루프에 등록해 백그라운드로 실행 (3.7+)\n```\n\n- **코루틴** — 실행 계획. 누가 `await` 해 주거나 태스크로 감싸야 돈다.\n- **태스크** — **루프에 등록된 코루틴.** 등록되는 순간부터 루프가 알아서 굴린다. 취소·완료 상태를 갖는다.\n\n여러 개를 동시에 돌리는 방법이 둘이고, **차이가 예외 처리에서 갈린다.**\n\n**`gather`** — 예전부터 있던 방식. 기본적으로 하나가 예외를 던지면 그 예외가 즉시 올라오지만, **나머지 태스크는 자동으로 취소되지 않는다.** `return_exceptions=True` 를 주면 예외를 결과 목록에 담아 돌려준다(그러면 **아무것도 실패로 보이지 않으므로** 직접 검사해야 한다).\n\n**`TaskGroup`**(3.11+) — 하나가 실패하면 **나머지를 취소하고** 모아서 `ExceptionGroup` 으로 올린다. 블록을 벗어날 때 안에서 만든 태스크를 **전부 기다려 준다.** 공식 문서가 `gather` 보다 **강한 보장**을 준다고 적은 이유다.\n\n```python\nasync with asyncio.TaskGroup() as tg:      # 3.11+\n    tg.create_task(fetch(a))\n    tg.create_task(fetch(b))\n# 여기서 둘 다 끝났다. 하나가 실패했으면 다른 하나는 취소되고 예외가 올라온다\n```\n\n**3.11 이상이면 `TaskGroup` 이 기본 선택이다.** `gather` 는 \"실패해도 나머지는 계속\"이 정말 필요할 때만 쓴다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "cancel",
+   "kind": "how",
+   "heading": "취소와 예외 — 조용히 사라지는 것들",
+   "body": "이 절이 asyncio 버그의 대부분이 사는 곳이다.\n\n**① 취소는 예외로 전달된다.** 태스크를 취소하면 루프는 그 코루틴이 멈춰 있는 **`await` 지점에 `CancelledError` 를 던진다.** 그래서 정리 코드는 `finally` 에 둔다.\n\n```python\ntry:\n    await conn.read()\nexcept asyncio.CancelledError:\n    raise                # ← 반드시 다시 던진다\nfinally:\n    await conn.close()   # 정리\n```\n\n**`except Exception` 으로 취소를 삼키면 취소가 안 먹는다.** 다행히 3.8부터 `CancelledError` 는 `BaseException` 을 상속하므로 `except Exception` 에 걸리지 않는다 — 하지만 `except BaseException` 이나 맨 `except:` 를 쓰면 그대로 삼킨다.\n\n**타임아웃도 취소로 구현돼 있다.** `asyncio.timeout()`(3.11+)과 `wait_for` 는 시간이 지나면 안쪽 태스크를 **취소한다.** 그러니 타임아웃이 걸리는 코드는 취소를 견디게 짜야 한다.\n\n**② 안 기다린 태스크의 예외는 조용히 사라진다.** 가장 악명 높은 함정이다.\n\n```python\nasyncio.create_task(background_job())   # ✗ 반환값을 버렸다\n```\n\n두 가지가 동시에 일어난다.\n\n- **태스크 객체를 아무도 참조하지 않으면 가비지 컬렉터가 수거할 수 있다** — 작업이 끝나기 전에 사라질 수 있다.\n- **그 태스크 안에서 예외가 나도 아무도 그것을 꺼내 보지 않는다.** 파이썬은 태스크가 소멸될 때 `Task exception was never retrieved` 를 로그로 남기는 것이 전부다. **처리 흐름은 아무 일 없던 것처럼 계속된다.**\n\n그래서 규칙은 하나다. **태스크를 만들면 어딘가에서 기다리거나, 참조를 보관하거나, `TaskGroup` 안에서 만든다.**\n\n```python\nself._tasks.add(t := asyncio.create_task(job()))   # 참조 보관\nt.add_done_callback(self._tasks.discard)\n```\n\n**③ 예외가 어디서 터지는지 알아 둔다.** `gather(return_exceptions=True)` 는 예외를 **값으로** 돌려준다 — 검사하지 않으면 실패가 성공처럼 보인다. `TaskGroup` 은 `ExceptionGroup` 으로 묶어 올리므로 `except*` 문법(3.11+)으로 종류별로 받는다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "color",
+   "kind": "limits",
+   "heading": "경계 — 함수 색, 그리고 asyncio 가 못 하는 것",
+   "body": "**한 번 `async` 를 들이면 그것을 부르는 함수도 `async` 가 되어야 한다.** `await` 는 코루틴 안에서만 쓸 수 있으므로, 호출 사슬을 따라 위로 계속 번진다. 이것이 **함수 색(function color)** 문제다.\n\n```\nmain()  →  handler()  →  service()  →  repo()  →  db.query()\n                                                    ↑ 이것만 async 로 바꿨는데\n  전부 async 가 되어야 한다  ←────────────────────────┘\n```\n\n그래서 **asyncio 채택은 함수 하나의 결정이 아니라 코드베이스의 결정**이다. 그리고 라이브러리 생태계가 둘로 갈린다 — `requests` 대신 `httpx`, 동기 DB 드라이버 대신 비동기 드라이버. **쓰려는 라이브러리가 전부 비동기를 지원하는지 먼저 확인**하는 것이 순서다.\n\n**동기 라이브러리를 꼭 써야 하면 스레드로 던진다.** `asyncio.to_thread()`(3.9+)나 `run_in_executor` 가 그 통로다. 다만 이것은 **탈출구이지 해법이 아니다** — 스레드 수만큼 비용이 들고, `gil` 문서의 제약이 그대로 적용된다.\n\n**CPU 바운드는 asyncio 로 해결되지 않는다.** 이벤트 루프는 한 스레드이고, 바이트코드 실행은 여전히 GIL 아래에 있다. 무거운 계산은 **프로세스로 뺀다**(→ `gil`).\n\n**디버깅이 더 어렵다.** 스택 트레이스가 `await` 경계에서 끊기고, \"어느 태스크가 이걸 만들었나\"가 안 보인다. `asyncio.run(..., debug=True)` 나 `PYTHONASYNCIODEBUG` 로 느린 콜백·안 기다린 코루틴 경고를 켜는 것이 첫 대응이다.\n\n**그리고 협력하지 않는 코드 한 줄이 전부를 세운다.** 이것이 asyncio 의 성능이 무너지는 가장 흔한 방식이고, 실패가 조용하다 — 서버가 죽지 않고 **그냥 느려진다.**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    },
+    {
+     "title": "Python 표준 라이브러리 — asyncio",
+     "url": "https://docs.python.org/3/library/asyncio.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "이벤트 루프·실행 API 의 목차. to_thread·run_in_executor 도 이 아래에 있다"
+    },
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "asyncio 가 CPU 바운드를 해결하지 못하는 이유의 출처 — 바이트코드 실행은 여전히 한 스레드다"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "versions",
+   "kind": "spec",
+   "caption": "버전별 asyncio — 문장에 버전을 붙여야 하는 이유",
+   "note": "`TaskGroup`·`asyncio.timeout`·`except*` 은 **3.11 이상**에서만 쓸 수 있다. 배포 대상 버전을 먼저 확인하고 고른다(→ `python` 의 버전 표)",
+   "columns": [
+    "버전",
+    "들어온 것",
+    "실무에서 갈리는 지점"
+   ],
+   "rows": [
+    [
+     "3.5",
+     "`async` / `await` 문법 (PEP 492)",
+     "제너레이터 기반(`yield from`) 코루틴은 이제 안 쓴다"
+    ],
+    [
+     "3.7",
+     "`asyncio.run()`, `asyncio.create_task()`",
+     "루프를 직접 만들고 닫는 옛 코드(`get_event_loop`)는 여기서 정리됐다"
+    ],
+    [
+     "3.9",
+     "`asyncio.to_thread()`",
+     "동기 라이브러리를 던지는 표준 통로. 그전에는 `run_in_executor` 를 직접 썼다"
+    ],
+    [
+     "**3.11**",
+     "**`TaskGroup`**, **`asyncio.timeout()`**, `ExceptionGroup`·`except*`",
+     "**여기서 예외·취소 처리가 크게 쉬워졌다.** 3.11 미만이면 `gather` 로 직접 관리해야 한다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "PEP 492 — Coroutines with async and await syntax",
+     "url": "https://peps.python.org/pep-0492/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "async/await 문법이 3.5 에 들어온 근거 문서. 왜 제너레이터 기반 코루틴에서 전용 문법으로 옮겼는지가 적혀 있다"
+    },
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "objects",
+   "kind": "compare",
+   "caption": "코루틴 · 태스크 — 무엇이 이미 돌고 있나",
+   "note": "\"만들었는데 실행이 안 된다\"의 원인은 대개 첫 줄이다. 코루틴은 **계획**이고 태스크는 **등록된 실행**이다",
+   "columns": [
+    "",
+    "코루틴",
+    "태스크"
+   ],
+   "rows": [
+    [
+     "만드는 법",
+     "`fetch(u)` — `async def` 호출",
+     "`asyncio.create_task(fetch(u))`"
+    ],
+    [
+     "언제 도나",
+     "**누가 `await` 할 때**",
+     "**만든 즉시 루프가 굴린다**"
+    ],
+    [
+     "취소",
+     "직접 대상이 아니다",
+     "`t.cancel()` — `await` 지점에 `CancelledError`"
+    ],
+    [
+     "안 기다리면",
+     "실행되지 않음 (`never awaited` 경고)",
+     "**예외가 조용히 사라질 수 있다** — 참조도 잃으면 수거될 수 있다"
+    ],
+    [
+     "언제 쓰나",
+     "지금 순서대로 기다릴 때",
+     "동시에 여러 개를 굴릴 때 (또는 `TaskGroup` 안에서)"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "gather-vs-tg",
+   "kind": "compare",
+   "caption": "gather vs TaskGroup — 하나가 실패하면?",
+   "note": "3.11 이상이면 `TaskGroup` 이 기본이다. `gather` 는 '하나가 실패해도 나머지는 끝까지'가 정말 필요할 때만 남긴다",
+   "columns": [
+    "",
+    "`gather(...)`",
+    "`gather(..., return_exceptions=True)`",
+    "`TaskGroup` (3.11+)"
+   ],
+   "rows": [
+    [
+     "예외가 나면",
+     "그 예외가 즉시 올라온다",
+     "**예외를 결과 값으로 담아 준다**",
+     "나머지를 **취소**하고 `ExceptionGroup` 으로 올린다"
+    ],
+    [
+     "나머지 태스크",
+     "자동으로 취소되지 않는다",
+     "전부 끝까지 돈다",
+     "**취소된다**"
+    ],
+    [
+     "실패를 놓칠 위험",
+     "낮다",
+     "**높다 — 결과를 검사하지 않으면 성공처럼 보인다**",
+     "낮다"
+    ],
+    [
+     "블록 종료 시 대기",
+     "`await` 한 것만",
+     "같음",
+     "**안에서 만든 태스크 전부**"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "symptoms",
+   "kind": "glossary",
+   "caption": "증상 → 먼저 의심할 것",
+   "note": "asyncio 의 실패는 대개 조용하다 — 죽지 않고 느려지거나, 예외가 로그 한 줄로만 남는다",
+   "columns": [
+    "증상",
+    "먼저 의심할 것",
+    "확인·조치"
+   ],
+   "rows": [
+    [
+     "서버가 요청 하나에 전체가 멈춘다",
+     "**이벤트 루프에서 블로킹 호출** (`time.sleep`·`requests`·무거운 계산)",
+     "`asyncio.run(..., debug=True)` 로 느린 콜백 경고를 켠다 → `to_thread` 로 뺀다"
+    ],
+    [
+     "코루틴이 실행되지 않는다",
+     "`await` 를 빼먹었다",
+     "`coroutine was never awaited` 경고를 찾는다"
+    ],
+    [
+     "백그라운드 작업이 중간에 사라진다",
+     "**`create_task` 반환값을 버렸다**",
+     "참조를 보관하거나 `TaskGroup` 안에서 만든다"
+    ],
+    [
+     "예외가 났는데 아무 일도 안 일어났다",
+     "안 기다린 태스크의 예외 / `return_exceptions=True` 결과 미검사",
+     "`Task exception was never retrieved` 로그를 찾는다"
+    ],
+    [
+     "`cancel()` 을 불렀는데 안 멈춘다",
+     "`except BaseException` 또는 맨 `except:` 로 취소를 삼켰다",
+     "`CancelledError` 는 잡았으면 **다시 던진다**"
+    ],
+    [
+     "동시 요청을 늘렸는데 처리량이 안 는다",
+     "실제로는 CPU 바운드다",
+     "프로파일링 후 프로세스로 뺀다 (→ `gil`)"
+    ]
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "여러 작업을 동시에 돌리는데, 하나가 실패하면 나머지도 의미가 없다",
+   "pick": "`asyncio.TaskGroup` (3.11+)",
+   "over": "`asyncio.gather`",
+   "why": "하나가 실패하면 나머지를 취소하고 예외를 모아 올린다. 블록을 벗어날 때 안에서 만든 태스크를 전부 기다려 주므로 **빠뜨린 태스크가 남지 않는다** — 공식 문서가 `gather` 보다 강한 보장이라고 적은 부분이다",
+   "tradeoff": "3.11 이상이 필요하고, `ExceptionGroup`·`except*` 문법에 익숙해져야 한다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "situation": "쓰려는 라이브러리가 동기(블로킹)뿐이다",
+   "pick": "`asyncio.to_thread()` (3.9+) 또는 `run_in_executor`",
+   "over": "코루틴 안에서 그냥 호출하기",
+   "why": "블로킹 호출 한 줄이 이벤트 루프를 통째로 세운다. 스레드로 던지면 루프는 계속 돌고, I/O 대기 중에는 GIL 도 풀리므로 겹쳐 실행된다",
+   "tradeoff": "**탈출구이지 해법이 아니다.** 스레드 수만큼 비용이 들고, CPU 바운드에는 효과가 없다(→ `gil`)",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio",
+     "url": "https://docs.python.org/3/library/asyncio.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "이벤트 루프·실행 API 의 목차. to_thread·run_in_executor 도 이 아래에 있다"
+    },
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "asyncio 가 CPU 바운드를 해결하지 못하는 이유의 출처 — 바이트코드 실행은 여전히 한 스레드다"
+    }
+   ]
+  },
+  {
+   "situation": "요청 처리와 별개로 백그라운드 작업을 하나 띄운다",
+   "pick": "태스크 참조를 컬렉션에 보관 (+ 완료 시 제거), 또는 `TaskGroup`",
+   "over": "`asyncio.create_task(job())` 결과를 버리기",
+   "why": "참조가 없으면 태스크가 끝나기 전에 수거될 수 있고, 그 안의 예외는 로그 한 줄로만 남고 사라진다",
+   "tradeoff": "관리 코드가 조금 늘어난다. 프레임워크가 백그라운드 태스크 API 를 제공하면 그쪽을 쓰는 편이 낫다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "situation": "외부 호출에 시간 제한을 둔다",
+   "pick": "`asyncio.timeout()` (3.11+) — 그 아래 버전이면 `wait_for`",
+   "over": "직접 타이머를 돌려 플래그를 검사하기",
+   "why": "둘 다 내부적으로 **취소**로 구현돼 있어, 시간이 지나면 안쪽 코루틴의 `await` 지점에 `CancelledError` 가 던져진다. 직접 만들면 이 정리 흐름을 재현해야 한다",
+   "tradeoff": "타임아웃이 걸리는 코드가 **취소를 견디게** 짜여 있어야 한다 — 정리는 `finally` 에",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "situation": "이미지 변환·모델 전처리처럼 CPU 가 계속 일한다",
+   "pick": "프로세스 (`ProcessPoolExecutor`·워커 큐)",
+   "over": "asyncio 나 `to_thread`",
+   "why": "이벤트 루프는 한 스레드이고 바이트코드 실행은 GIL 아래에 있다. 계산을 코루틴으로 감싸도 병렬이 되지 않고, 오히려 루프를 굶긴다",
+   "tradeoff": "직렬화·메모리 비용이 붙는다(→ `gil`·`python`)",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "asyncio 가 CPU 바운드를 해결하지 못하는 이유의 출처 — 바이트코드 실행은 여전히 한 스레드다"
+    }
+   ]
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "`async def` 안에서 `time.sleep(1)` 을 썼더니 서버 전체가 1초씩 멈춘다",
+   "why": "이벤트 루프는 한 스레드다. 블로킹 호출은 루프에게 제어를 돌려주지 않으므로 **다른 모든 코루틴이 그 시간만큼 굶는다**",
+   "fix": "`await asyncio.sleep(1)` 로 바꾼다. 라이브러리라 바꿀 수 없으면 `asyncio.to_thread()` 로 던진다. `debug=True` 로 느린 콜백 경고를 켜 두면 이런 코드를 초기에 잡는다",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio",
+     "url": "https://docs.python.org/3/library/asyncio.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "이벤트 루프·실행 API 의 목차. to_thread·run_in_executor 도 이 아래에 있다"
+    }
+   ]
+  },
+  {
+   "trap": "`create_task` 로 띄운 백그라운드 작업이 가끔 실행되지 않고 끝난다",
+   "why": "**태스크 객체를 아무도 참조하지 않으면 가비지 컬렉터가 수거할 수 있다.** 루프가 강한 참조를 보장하지 않는다",
+   "fix": "`self._tasks.add(t)` 처럼 참조를 보관하고 `add_done_callback` 으로 지운다. 더 좋은 것은 `TaskGroup` 안에서 만드는 것이다",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "trap": "태스크 안에서 예외가 났는데 로그도 없고 아무 일도 안 일어났다",
+   "why": "**아무도 그 태스크를 `await` 하지 않았다.** 예외는 태스크 안에 남아 있다가 소멸 시점에 `Task exception was never retrieved` 한 줄로만 나타난다",
+   "fix": "태스크를 반드시 기다리거나 `TaskGroup` 을 쓴다. `gather(return_exceptions=True)` 를 썼다면 **결과 목록을 검사해** 예외 인스턴스를 골라낸다",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "trap": "`task.cancel()` 을 불렀는데 태스크가 계속 돈다",
+   "why": "코루틴이 `CancelledError` 를 삼켰다. 맨 `except:` 나 `except BaseException` 이 원인이다(3.8부터 `CancelledError` 는 `BaseException` 계열이라 `except Exception` 에는 걸리지 않는다)",
+   "fix": "취소를 잡았으면 정리만 하고 **반드시 `raise` 로 다시 던진다.** 정리 코드는 `finally` 에 두는 것이 안전하다",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "trap": "코루틴을 불렀는데 아무 일도 일어나지 않는다",
+   "why": "`fetch(url)` 은 **코루틴 객체를 만들 뿐** 실행하지 않는다. `await` 하거나 태스크로 감싸야 한다",
+   "fix": "`await fetch(url)` 또는 `asyncio.create_task(...)`. 파이썬이 남기는 `coroutine ... was never awaited` 경고를 무시하지 않는다",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+     "url": "https://docs.python.org/3/library/asyncio-task.html",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "trap": "동시 요청을 늘렸는데 처리량이 늘지 않고 지연만 커진다",
+   "why": "일이 실제로는 **CPU 바운드**다. 루프는 한 스레드이므로 계산이 몰리면 그냥 줄을 서게 된다",
+   "fix": "프로파일링으로 CPU/대기 비율을 확인하고, 계산은 프로세스 워커로 뺀다. asyncio 는 **대기를 겹치는** 도구이지 계산을 나누는 도구가 아니다",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "asyncio 가 CPU 바운드를 해결하지 못하는 이유의 출처 — 바이트코드 실행은 여전히 한 스레드다"
+    }
+   ]
+  }
+ ],
+ "terms": [
+  {
+   "term": "이벤트 루프",
+   "en": "event loop",
+   "what": "준비된 콜백·코루틴을 실행하고 I/O 대기를 OS 에 맡기는 스케줄러. 한 스레드에서 돈다"
+  },
+  {
+   "term": "코루틴",
+   "en": "coroutine",
+   "what": "`async def` 로 정의한, `await` 에서 멈췄다 이어 실행되는 함수. 호출만 하면 객체만 만들어진다"
+  },
+  {
+   "term": "태스크",
+   "en": "Task",
+   "what": "루프에 등록된 코루틴. 만든 즉시 굴러가고 취소·완료 상태를 갖는다"
+  },
+  {
+   "term": "협력적 멀티태스킹",
+   "en": "cooperative multitasking",
+   "what": "각 작업이 스스로 양보해야 전환이 일어나는 방식. 양보 지점이 `await` 로 코드에 보인다"
+  },
+  {
+   "term": "함수 색",
+   "en": "function color",
+   "what": "`async` 함수를 부르려면 부르는 쪽도 `async` 여야 한다는 성질. 호출 사슬 전체로 번진다"
+  },
+  {
+   "term": "CancelledError",
+   "en": "asyncio.CancelledError",
+   "what": "취소를 전달하는 예외. `await` 지점에 던져지고, 잡았으면 다시 던져야 한다"
+  },
+  {
+   "term": "ExceptionGroup",
+   "en": "ExceptionGroup",
+   "what": "여러 예외를 한 번에 묶어 올리는 3.11 의 예외 타입. `TaskGroup` 이 이걸 쓰고 `except*` 로 받는다"
+  },
+  {
+   "term": "I/O 다중화",
+   "en": "I/O multiplexing",
+   "what": "`epoll`·`kqueue` 등으로 여러 소켓 중 준비된 것만 알려 받는 OS 기능. 이벤트 루프의 바닥"
+  }
+ ],
+ "drills": [
+  {
+   "task": "`python` 문서의 세 번째 실습(FastAPI 의 `time.sleep` vs `await asyncio.sleep`)을 이어받아 확장한다 — ① 블로킹 엔드포인트에 동시 요청 10개를 걸어 총 시간을 재고 ② 그 호출을 `asyncio.to_thread` 로 감싸 다시 재고 ③ 세 경우(블로킹·to_thread·순수 async)의 시간을 표로 만든다",
+   "done_when": "`to_thread` 가 블로킹과 순수 async 사이 어디에 위치하는지 숫자로 보여 줄 수 있고, 왜 그 중간인지 설명할 수 있다",
+   "why": "'블로킹을 만나면 to_thread' 라는 처방이 실제로 얼마나 회복해 주는지를 확인한다. 탈출구와 해법의 차이가 숫자로 남는다",
+   "no_hardware": "장비가 필요 없다 — `uvicorn` 과 `curl`/`httpx` 로 로컬에서 끝난다",
+   "hours": 2
+  },
+  {
+   "task": "**예외가 사라지는 것을 재현한다.** ① `create_task` 로 예외를 던지는 코루틴을 띄우고 반환값을 버린 뒤 프로그램이 정상 종료되는 것을 확인한다 ② 로그에 `Task exception was never retrieved` 가 언제 나오는지 본다 ③ 같은 코드를 `TaskGroup` 으로 바꿔 예외가 올라오는 것을 확인한다 ④ `gather(return_exceptions=True)` 로 바꿔 예외가 **값**으로 오는 것을 확인한다",
+   "done_when": "네 경우의 차이를 표로 정리했고, 어느 경우가 실무에서 가장 위험한지 이유와 함께 말할 수 있다",
+   "why": "asyncio 에서 가장 비싼 버그가 '아무 일도 안 일어난 것처럼 보이는 실패'다. 한 번 재현해 보면 `create_task` 를 쓸 때마다 손이 멈춘다",
+   "no_hardware": "장비가 필요 없다 — 파이썬 스크립트 30줄이면 된다",
+   "hours": 2
+  },
+  {
+   "task": "취소를 견디는 코루틴을 만든다. ① `asyncio.timeout(1)` 안에서 3초 걸리는 작업을 돌려 취소가 어느 줄에서 발생하는지 출력으로 확인하고 ② `finally` 에 정리 코드를 넣어 실제로 실행되는지 보고 ③ `except Exception` 과 `except BaseException` 으로 각각 감싸 취소가 삼켜지는지 비교한다",
+   "done_when": "취소가 `await` 지점에 던져진다는 것을 출력으로 보여 줄 수 있고, 어떤 `except` 가 취소를 막는지 답할 수 있다",
+   "why": "타임아웃·종료 처리가 있는 서버 코드는 반드시 취소를 만난다. 그때 정리가 안 되면 커넥션·파일이 남는다",
+   "no_hardware": "장비가 필요 없다. 3.11 미만이면 `asyncio.wait_for` 로 같은 실험을 한다",
+   "hours": 1
+  }
+ ],
+ "checks": [
+  "코루틴을 호출하면 왜 아무 일도 일어나지 않나? 태스크와 무엇이 다른가?",
+  "`await` 가 '기다린다' 말고 또 무엇을 뜻하나? 그 성질 때문에 asyncio 에서 락이 대개 필요 없는 이유는?",
+  "`gather` 와 `TaskGroup` 은 하나가 실패했을 때 나머지를 어떻게 다루나?",
+  "`create_task` 의 반환값을 버리면 무슨 일이 생기나? 두 가지를 말할 수 있나?",
+  "`CancelledError` 를 잡았을 때 반드시 해야 하는 일은?",
+  "함수 색(function color) 문제 때문에 asyncio 채택이 '코드베이스의 결정'이 되는 이유는?"
+ ],
+ "evidence": [
+  {
+   "quote": "• asyncio 비동기 프로그래밍 경험이 있는 분",
+   "from": "posting",
+   "where": "미켈로로보틱스 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/343902",
+   "what_it_shows": "라이브러리 이름이 아니라 **`asyncio` 자체**가 자격요건이다. 이벤트 루프·취소·예외를 아는지 묻는 자리"
+  },
+  {
+   "quote": "• FastAPI / Uvicorn 기반 비동기 웹 서버 개발 경험",
+   "from": "posting",
+   "where": "미켈로로보틱스 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/343902",
+   "what_it_shows": "실무의 asyncio 는 대개 FastAPI·Uvicorn 위에서 만난다 — 루프를 직접 만들지 않고 프레임워크가 굴리는 루프에 코루틴을 얹는 형태다"
+  },
+  {
+   "quote": "• Python 기반의 AI 연동 로직, 데이터 처리 또는 API 개발 경험이 있으신 분 (FastAPI 등 비동기 웹 프레임워크 경험 우대)",
+   "from": "posting",
+   "where": "누리미디어(DBpia) (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/376543",
+   "what_it_shows": "**비동기 프레임워크가 '우대'로 명시된다.** 외부 모델 API 를 호출하는 일이 많아지면서 대기를 겹치는 능력이 곧 처리량이 됐다"
+  },
+  {
+   "quote": "• Python 기반 백엔드 개발 실무 경험 (FastAPI 등 비동기 웹 프레임워크).",
+   "from": "posting",
+   "where": "포밸류소프트 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/371489",
+   "what_it_shows": "금융 SI 회사의 공고에도 비동기 프레임워크가 들어온다 — `java-in-finance` 의 전통 축과 대비되는 신호다"
+  },
+  {
+   "quote": "• Python 비동기 프로그래밍(asyncio 등) 및 동시성 처리 역량",
+   "from": "posting",
+   "where": "제논 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/289537",
+   "what_it_shows": "`비동기` 와 `동시성` 을 나란히 적는다. 둘을 구분해 설명할 수 있는지가 이 문서와 `gil` 을 함께 읽는 이유다"
+  }
+ ],
+ "related": [
+  {
+   "slug": "python",
+   "how": "언제 asyncio 를 고르나 — 선택의 기준은 거기 있고, 여기서는 고른 뒤의 이야기를 다뤘다"
+  },
+  {
+   "slug": "gil",
+   "how": "왜 asyncio 가 CPU 바운드를 못 푸는가. I/O 에서 GIL 이 풀린다는 사실이 이 방식의 전제다"
+  },
+  {
+   "slug": "interrupt",
+   "how": "선점형(하드웨어가 아무 줄에서나 끊는다)과 협력형(`await` 에서만 끊긴다)의 대비. 원자성 문제가 왜 다르게 나타나는지"
+  },
+  {
+   "slug": "fastapi",
+   "how": "실무에서 asyncio 를 만나는 실제 창구. 타입 힌트를 런타임 검증으로 바꾸는 부분까지가 거기 본체다"
+  }
+ ],
+ "open_questions": [
+  "`asyncio.run()`·`create_task` 는 3.7, `to_thread` 는 3.9, `TaskGroup`·`asyncio.timeout`·`except*` 은 3.11 로 적었다. **이 중 3.11 항목은 이번 사이클에 검색으로 확인했고**, 3.7·3.9 항목은 표준 문서의 'Added in version' 표기를 기준으로 썼다 — 표를 고칠 때는 해당 함수의 문서 페이지를 직접 확인한다",
+  "이벤트 루프의 한 바퀴(준비된 콜백 → I/O 폴링 → 타이머)는 구현 세부이며 버전에 따라 달라질 수 있어, 본문에서는 순서를 단정하지 않고 **'OS 의 다중화 장치에 맡긴다'** 수준으로만 썼다. 정확한 흐름은 CPython 의 `asyncio/base_events.py` 를 읽어야 한다",
+  "`uvloop` 처럼 이벤트 루프를 교체하는 구현이 성능을 얼마나 바꾸는지는 워크로드 의존이라 숫자를 쓰지 않았다. 루프 교체는 `fastapi` 문서에서 다룰 자리다",
+  "`market` 은 비어 있다. `tech_relations.json` 은 asyncio 를 추적 기술로 세지 않는다 — 수요 숫자는 `python` 문서에 있고, 여기서는 모집중 공고 5건을 `evidence` 로 받쳤다"
+ ],
+ "sources": [
+  {
+   "title": "Python 표준 라이브러리 — asyncio: Coroutines and Tasks",
+   "url": "https://docs.python.org/3/library/asyncio-task.html",
+   "publisher": "Python Software Foundation",
+   "kind": "docs",
+   "summary": "코루틴·태스크·gather·TaskGroup·timeout 의 1차 자료. TaskGroup 은 3.11 에 추가됐고 gather 보다 강한 보장을 준다는 서술이 여기 있다"
+  },
+  {
+   "title": "Python 표준 라이브러리 — asyncio",
+   "url": "https://docs.python.org/3/library/asyncio.html",
+   "publisher": "Python Software Foundation",
+   "kind": "docs",
+   "summary": "이벤트 루프·실행 API 의 목차. to_thread·run_in_executor 도 이 아래에 있다"
+  },
+  {
+   "title": "PEP 492 — Coroutines with async and await syntax",
+   "url": "https://peps.python.org/pep-0492/",
+   "publisher": "Python Software Foundation",
+   "kind": "standard",
+   "summary": "async/await 문법이 3.5 에 들어온 근거 문서. 왜 제너레이터 기반 코루틴에서 전용 문법으로 옮겼는지가 적혀 있다"
+  },
+  {
+   "title": "Python 용어집 — global interpreter lock",
+   "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+   "publisher": "Python Software Foundation",
+   "kind": "docs",
+   "summary": "asyncio 가 CPU 바운드를 해결하지 못하는 이유의 출처 — 바이트코드 실행은 여전히 한 스레드다"
+  }
+ ]
+}

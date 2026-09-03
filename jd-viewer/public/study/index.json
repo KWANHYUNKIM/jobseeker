@@ -2,6 +2,23 @@
  "updated_at": "2026-09-04",
  "articles": [
   {
+   "slug": "asyncio",
+   "title": "asyncio",
+   "category": "framework",
+   "level": "core",
+   "status": "done",
+   "one_liner": "한 스레드 안에서 **이벤트 루프**가 돌며, 기다리는 코루틴을 재우고 준비된 코루틴을 깨워 실행하는 방식이다. 양보 지점(`await`)이 코드에 **보이는** 것이 장점이자 함정이다.",
+   "aliases": [
+    "asyncio",
+    "이벤트 루프",
+    "코루틴",
+    "async/await"
+   ],
+   "sections": 5,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "atmega128",
    "title": "ATmega128",
    "category": "firmware",
