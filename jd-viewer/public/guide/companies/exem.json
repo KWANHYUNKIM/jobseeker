@@ -1,0 +1,260 @@
+{
+  "slug": "exem",
+  "name": "엑셈",
+  "name_en": "EXEM",
+  "aliases": ["엑셈", "㈜엑셈", "EXEM"],
+  "status": "in_progress",
+  "updated_at": "2026-09-03",
+  "site": "ex-em.com",
+  "one_liner": "국산 DB 성능 관리(MaxGauge)로 자리를 잡고 APM·AIOps·옵저버빌리티까지 넓힌 2015년 코스닥 상장사. 지금은 온프레미스 영구 라이선스에서 SaaS 구독으로, 그리고 'AI 인프라를 감시하는 회사'로 방향을 옮기는 중이다.",
+
+  "company": {
+    "business": "**남의 시스템이 느려지거나 멈추는 것을 감시하는 소프트웨어를 만들어 판다.** 제품이 계층별로 갈려 있다 — `MaxGauge`(DB 성능 관리, 회사가 국내 1위로 소개), `InterMax`(애플리케이션 전 구간 거래 추적, APM), `XAIOps`(AI 기반 장애 예측·이상탐지, AIOps), `EBIGs/Woodpecker`(빅데이터 시스템 운영), `exemONE`(이 모두를 묶은 풀스택 통합 모니터링), `DataSaker`(AWS 기반 옵저버빌리티 SaaS, 2023년 6월 출시), `Exemble`(기업 데이터 기반 생성형 AI 운영, LLMOps). 고객은 약 1,000곳(제조·금융·유통·공공)이고, `exemONE` 은 일본 미즈호은행·이데미츠코산까지 나갔다. 2015년 코스닥 상장(A205100), 별도 기준 2025년 매출 442억.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {"title": "EXEM 공식 홈페이지", "url": "https://www.ex-em.com/", "publisher": "엑셈", "summary": "제품 목록과 사업 영역. 'Data Everywhere, Make it Matter'"},
+      {"title": "엑셈, AI 탑재 '엑셈원'으로 국내외 옵저버빌리티 시장 공략 가속", "url": "https://zdnet.co.kr/view/?no=20260727171924", "publisher": "ZDNet Korea", "date": "2026-07-27", "summary": "미즈호은행·이데미츠코산 공급, 국내외 고객 60곳 이상"},
+      {"title": "엑셈, 풀스택 옵저버빌리티 SaaS 출시", "url": "https://www.datanet.co.kr/news/articleView.html?idxno=184671", "publisher": "데이터넷", "summary": "DataSaker — AWS 기반, 원격 기술지원을 차별점으로 내세움"}
+    ],
+    "scale": [
+      {"label": "2025년 매출", "value": "별도 442억원 (영업이익 29억·순이익 49억) / 연결 478억원 (영업이익 37억·순이익 87억)", "as_of": "2025 회계연도", "confidence": "confirmed",
+       "sources": [{"title": "엑셈, 2025년 매출 478억 원... 30억 원 현금배당 추진", "url": "https://ex-em.com/ko/resource/ir/news/3571", "publisher": "엑셈 IR", "date": "2026-03-18"}]},
+      {"label": "2024년 매출", "value": "연결 612억원 (전년 대비 14% 증가, 영업이익 88억·순이익 108억) — **2025년보다 크다**", "as_of": "2024 회계연도", "confidence": "confirmed",
+       "sources": [{"title": "엑셈, 작년 역대 최대 매출 612억 달성", "url": "https://zdnet.co.kr/view/?no=20250321202258", "publisher": "ZDNet Korea", "date": "2025-03-21", "summary": "자회사 신시웨이 매출 118억이 포함된 연결 실적"}]},
+      {"label": "사원 수", "value": "327명", "as_of": "2026-09", "confidence": "confirmed",
+       "sources": [{"title": "(주)엑셈 기업정보", "url": "https://www.saramin.co.kr/zf_user/company-info/view/csn/UzJldGtZVFZnUVcvN2pUaitXN1h1UT09/company_nm/(%EC%A3%BC)%EC%97%91%EC%85%88", "publisher": "사람인"}]},
+      {"label": "설립·상장", "value": "2001년 1월 설립 / 코스닥 상장(종목코드 A205100) / 대표 조종암·고평석 각자대표", "confidence": "confirmed",
+       "sources": [{"title": "(주)엑셈 기업정보", "url": "https://www.saramin.co.kr/zf_user/company-info/view/csn/UzJldGtZVFZnUVcvN2pUaitXN1h1UT09/company_nm/(%EC%A3%BC)%EC%97%91%EC%85%88", "publisher": "사람인", "summary": "설립 2001년 1월(상장용 SPC 는 2014년 8월), 업종 시스템 소프트웨어 개발 및 공급업, 병역특례 인증업체"}]},
+      {"label": "고객 규모", "value": "누적 약 1,000곳 / `exemONE` 누적 고객 약 60곳", "confidence": "confirmed",
+       "sources": [
+         {"title": "EXEM 공식 홈페이지", "url": "https://www.ex-em.com/", "publisher": "엑셈"},
+         {"title": "엑셈, AI 탑재 '엑셈원'으로 국내외 옵저버빌리티 시장 공략 가속", "url": "https://zdnet.co.kr/view/?no=20260727171924", "publisher": "ZDNet Korea", "date": "2026-07-27"}]},
+      {"label": "자회사", "value": "신시웨이(DB 접근제어·보안) — 2024년 매출 118억·영업이익 24억", "confidence": "confirmed",
+       "sources": [{"title": "엑셈, 작년 역대 최대 매출 612억 달성", "url": "https://zdnet.co.kr/view/?no=20250321202258", "publisher": "ZDNet Korea", "date": "2025-03-21"}]},
+      {"label": "위치", "value": "서울 강서구 마곡중앙8로5길 40 (마곡)", "confidence": "confirmed",
+       "sources": [{"title": "EXEM 공식 홈페이지", "url": "https://www.ex-em.com/", "publisher": "엑셈"}]}
+    ],
+    "revenue": [
+      {
+        "name": "솔루션 라이선스 — MaxGauge · InterMax · exemONE · XAIOps",
+        "how": "고객사 서버에 설치하는 **영구 라이선스**를 판다. 감시할 대상(DB 인스턴스 수, 서버 수, 코어 수)에 비례해 값이 매겨지는 구조라, 고객이 시스템을 늘리면 매출이 따라 는다. 신규 구축 사업(공공 정보화, 금융 차세대)에 맞춰 팔리므로 **발주 사이클을 탄다.**",
+        "weight": "2024년 기준 APM 라이선스 25억 증가(전년 대비 41%), exemONE 라이선스 18억",
+        "domains": ["DB 성능 관리", "애플리케이션 전 구간 추적(APM)", "통합 모니터링과 옵저버빌리티"],
+        "confidence": "confirmed",
+        "sources": [{"title": "엑셈, 작년 역대 최대 매출 612억 달성", "url": "https://zdnet.co.kr/view/?no=20250321202258", "publisher": "ZDNet Korea", "date": "2025-03-21"}]
+      },
+      {
+        "name": "유지보수와 기술지원",
+        "how": "라이선스를 판 뒤 해마다 받는 돈이다. 모니터링 제품은 한번 깔면 오래 쓰고, DB·OS 가 올라가면 에이전트도 따라 올라가야 해서 유지보수가 끊기기 어렵다. 회사가 `DataSaker` 를 내면서 **성능관리 전문가의 원격 기술지원**을 차별점으로 내세운 것도 이 자산 위에 선 이야기다.",
+        "domains": ["DB 성능 관리", "애플리케이션 전 구간 추적(APM)"],
+        "confidence": "inferred",
+        "sources": [{"title": "엑셈, 풀스택 옵저버빌리티 SaaS 출시… 성능관리 전문가 원격 기술지원으로 차별화", "url": "https://www.industrynews.co.kr/news/articleView.html?idxno=50183", "publisher": "인더스트리뉴스"}]
+      },
+      {
+        "name": "SaaS 구독 — DataSaker",
+        "how": "AWS 위에서 돌리는 구독형이다. 고객 서버에 에이전트만 깔고 수집·저장·화면은 엑셈이 운영한다. **파는 방식이 바뀌면 만드는 방식도 바뀐다** — 고객사마다 따로 설치하던 제품에서, 여러 고객의 데이터를 한 플랫폼에서 나눠 담는 멀티테넌시 구조로 가야 하고, 저장 비용이 곧 원가가 된다.",
+        "weight": "2023년 6월 출시",
+        "domains": ["통합 모니터링과 옵저버빌리티", "대용량 시계열·로그 처리"],
+        "confidence": "confirmed",
+        "sources": [{"title": "DataSaker 솔루션 소개", "url": "https://m.ex-em.com/product/datasaker", "publisher": "엑셈"}]
+      },
+      {
+        "name": "AI 인프라 운영 — XAIOps · Exemble · GPU/NPU 성능관리",
+        "how": "가장 최근에 열리는 쪽이다. 회사는 `XAIOps` 로 장애를 예측하고, `Exemble` 로 기업의 생성형 AI 운영(LLMOps)을 다루며, **GPU·NPU 성능관리 솔루션**을 내놓았다. 논리는 회사의 원래 사업과 같다 — 새 인프라가 들어오면 그것을 감시할 도구가 필요해진다. 다만 아직 라이선스·유지보수만큼의 매출로 확인되지는 않는다.",
+        "domains": ["AIOps — 이상탐지와 장애 예측", "AI 인프라 감시(GPU·LLM)"],
+        "confidence": "confirmed",
+        "sources": [
+          {"title": "고평석 \"AI 확산의 진정한 병목은 성능 아닌 비용\" [SFF 인터뷰]", "url": "https://www.sisajournal.com/news/articleView.html?idxno=371962", "publisher": "시사저널", "date": "2026-05-07"},
+          {"title": "엑셈, 트릴리온랩스와 손잡고 독자 파운데이션 모델 사업자 도전", "url": "https://zdnet.co.kr/view/?no=20260213092355", "publisher": "ZDNet Korea", "date": "2026-02-13"}
+        ]
+      },
+      {
+        "name": "자회사 신시웨이 — DB 접근제어·보안",
+        "how": "별도 법인이 파는 DB 보안 제품이다. 엑셈이 '누가 DB 를 느리게 만드나'를 본다면 신시웨이는 '누가 DB 에 접근하나'를 본다. 감시 대상이 같아 영업 채널을 공유하기 좋다. **연결 실적에 잡히므로 엑셈의 연결 매출을 읽을 때 이 몫을 빼고 봐야 한다.**",
+        "weight": "2024년 매출 118억·영업이익 24억",
+        "domains": ["DB 성능 관리"],
+        "confidence": "confirmed",
+        "sources": [{"title": "엑셈, 작년 역대 최대 매출 612억 달성", "url": "https://zdnet.co.kr/view/?no=20250321202258", "publisher": "ZDNet Korea", "date": "2025-03-21"}]
+      }
+    ],
+    "domains": [
+      {
+        "name": "DB 성능 관리",
+        "why": "회사의 시작이자 아직도 이름값의 근원이다(`MaxGauge`). 데이터베이스는 느려질 때 이유를 밖에서 알기 어렵다 — 같은 쿼리가 어제는 0.1초, 오늘은 30초가 되는데 코드는 그대로다. 그래서 **DB 내부의 대기 이벤트(wait event)와 세션 상태를 초 단위로 긁어내 시간축에 세우는 일**이 제품의 본체가 된다. 고객사 운영 DB 에 붙는 도구라, 감시하다가 감시 대상을 느리게 만들면 안 된다는 제약이 늘 따라온다.",
+        "what_to_know": [
+          "Oracle 의 대기 이벤트와 ASH/AWR 이 무엇을 보여 주는가 — 국산 APM 이 흉내 내려 한 대상이 이것이다",
+          "SQL 실행계획이 바뀌는 이유(통계정보·바인드 변수·인덱스) 와 그것이 장애로 이어지는 경로",
+          "국산 DB(Tibero)·오픈소스 DB(PostgreSQL·MySQL)의 성능 지표는 무엇이 어떻게 다른가",
+          "**에이전트가 대상 시스템에 주는 부하를 어떻게 줄이나** — 샘플링 주기, 수집 항목, 버퍼링"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "EXEM 공식 홈페이지 — 제품", "url": "https://www.ex-em.com/", "publisher": "엑셈"}]
+      },
+      {
+        "name": "애플리케이션 전 구간 추적(APM)",
+        "why": "`InterMax` 가 다루는 문제다. 사용자가 '느리다'고 할 때 원인이 앱인지 WAS 인지 DB 인지 네트워크인지 가려내려면, **거래 하나가 지나간 모든 구간을 하나로 꿰어야** 한다. 이걸 하려면 애플리케이션 코드를 고치지 않고 실행 중에 계측을 끼워 넣어야 하고(자바 에이전트·바이트코드 조작), 구간마다 같은 거래임을 알아볼 식별자를 심어야 한다. 2024년 이 부문 라이선스가 41% 늘었다.",
+        "what_to_know": [
+          "분산 추적의 기본 개념: trace/span, 컨텍스트 전파, 샘플링",
+          "JVM 에이전트가 코드 수정 없이 계측을 넣는 방법(`java.lang.instrument`, 바이트코드 변환)",
+          "OpenTelemetry 가 표준이 되면서 상용 APM 이 무엇을 두고 경쟁하게 됐는가",
+          "WAS-DB 구간이 왜 가장 자주 범인인가 — 커넥션 풀, 락, 느린 쿼리"
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {"title": "EXEM 공식 홈페이지 — InterMax", "url": "https://www.ex-em.com/", "publisher": "엑셈"},
+          {"title": "엑셈, WAS-DB 연계 성능 진단 프리미엄 서비스", "url": "https://www.industrynews.co.kr/news/articleView.html?idxno=50411", "publisher": "인더스트리뉴스"}
+        ]
+      },
+      {
+        "name": "통합 모니터링과 옵저버빌리티",
+        "why": "제품이 계층별로 갈려 있으면 고객은 화면을 여러 개 봐야 한다. `exemONE` 은 그걸 하나로 묶은 것이고, `DataSaker` 는 같은 것을 SaaS 로 다시 만든 것이다. 여기서 진짜 문제는 화면이 아니라 **서로 다른 계층의 신호를 같은 시간축·같은 대상 식별자로 정렬하는 것**이다 — 컨테이너는 뜨고 지는데 서버 이름으로 묶을 수 없고, 로그·메트릭·트레이스는 형식도 주기도 다르다.",
+        "what_to_know": [
+          "메트릭·로그·트레이스 세 신호가 각각 무엇에 강하고 무엇에 약한가",
+          "쿠버네티스·도커 환경에서 대상이 계속 바뀔 때 무엇을 키로 삼아 묶는가(레이블·리소스 속성)",
+          "온프레미스 설치형과 SaaS 가 아키텍처에서 갈리는 지점 — 멀티테넌시, 데이터 격리, 보관 기간",
+          "알림이 너무 많아 아무도 안 보게 되는 문제(alert fatigue)를 무엇으로 줄이나"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "DataSaker 솔루션 소개", "url": "https://m.ex-em.com/product/datasaker", "publisher": "엑셈", "summary": "인프라·DB·애플리케이션과 쿠버네티스·도커·컨테이너 로그까지 풀스택"}]
+      },
+      {
+        "name": "대용량 시계열·로그 처리",
+        "why": "모니터링 회사의 원가는 곧 **저장과 조회**다. 고객 하나가 서버 수백 대면 초 단위 지표가 하루에 수억 건 쌓이고, 그걸 몇 달 보관하면서 '지난달 이 시각'을 몇 초 안에 보여 줘야 한다. SaaS 로 가면 이 비용이 그대로 마진에 붙는다. 회사가 `EBIGs/Woodpecker` 로 빅데이터 시스템 운영까지 제품화한 것도 같은 뿌리에서 나온다.",
+        "what_to_know": [
+          "시계열 데이터의 압축·다운샘플링·보관 정책(raw → 1분 → 1시간)",
+          "카디널리티 폭발 — 태그를 잘못 설계하면 저장소가 감당하지 못하는 이유",
+          "수집 파이프라인(에이전트 → 큐 → 저장소)에서 유실과 중복을 어떻게 다루나",
+          "로그 검색과 지표 조회가 요구하는 저장 구조가 어떻게 다른가"
+        ],
+        "confidence": "inferred",
+        "sources": [{"title": "EXEM 공식 홈페이지 — EBIGs/Woodpecker", "url": "https://www.ex-em.com/", "publisher": "엑셈"}]
+      },
+      {
+        "name": "AIOps — 이상탐지와 장애 예측",
+        "why": "`XAIOps` 가 다루는 문제이고, 이 회사가 데이터 사이언티스트·AI 엔지니어를 뽑는 이유다. 모니터링 회사에는 **레이블 없는 시계열이 어마어마하게 쌓여 있다** — 그걸로 '평소와 다르다'를 판단하고 장애 전조를 잡아내려는 것이 이 제품이다. 어려움은 모델이 아니라 데이터에 있다: 정상 패턴이 요일·업무 주기마다 다르고, 진짜 장애는 드물어 학습 데이터가 극단적으로 불균형하며, 틀린 경보는 곧 신뢰 상실이다.",
+        "what_to_know": [
+          "시계열 이상탐지의 기본 접근(통계 기반, 예측 잔차 기반, 재구성 오차 기반)과 각각의 한계",
+          "계절성·주기성이 있는 지표에서 '평소'를 어떻게 정의하나",
+          "장애처럼 드문 사건을 다루는 법 — 불균형 데이터, 임계값 대신 순위",
+          "탐지 결과를 운영자가 믿게 만드는 것: 근거 제시, 오탐 비용, 사람이 개입하는 지점"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "EXEM 공식 홈페이지 — XAIOps", "url": "https://www.ex-em.com/", "publisher": "엑셈"}]
+      },
+      {
+        "name": "AI 인프라 감시(GPU·LLM)",
+        "why": "회사가 지금 방향을 틀고 있는 곳이다. 대표가 인터뷰에서 `AI 확산의 진정한 병목과 변수는 모델의 성능이 아닌 인프라와 비용` 이라고 말하고, 회사는 **GPU·NPU 성능관리 솔루션**과 `Exemble`(LLMOps)을 내놓았다. 논리는 창업 때와 똑같다 — 새 인프라가 비싸게 들어오면 그것을 감시하고 아끼는 도구가 필요해진다. DB 에서 했던 일을 GPU 에서 다시 하려는 시도로 읽힌다.",
+        "what_to_know": [
+          "GPU 사용률이 왜 오해를 부르는 지표인가(utilization vs. 실제 연산 효율, 메모리 대역폭)",
+          "LLM 서비스에서 무엇을 재야 하는가 — 토큰 처리량, 첫 토큰 지연, 배치 크기, KV 캐시",
+          "추론 비용과 전력비가 원가에서 차지하는 위치 (대표가 직접 지목한 항목이다)",
+          "sLLM·온프레미스 추론이 비용 문제의 답이 되는 경우와 안 되는 경우"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "고평석 \"AI 확산의 진정한 병목은 성능 아닌 비용\" [SFF 인터뷰]", "url": "https://www.sisajournal.com/news/articleView.html?idxno=371962", "publisher": "시사저널", "date": "2026-05-07"}]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "같은 자리를 사람인·잡코리아에 나눠 올리고, 한 공고 안에 직군을 여럿 묶는다 — **공고 수가 자리 수가 아니다**",
+        "evidence": "사람인 `[빅데이터/AI] Data Scientist, AI Engineer, FDE, PM, ETL, DA` 한 건에 직군이 여섯이고(자격요건 2,958자·우대사항 4,679자), 같은 계열이 잡코리아에는 `[빅데이터/AI] 데이터 사이언티스트, AI 엔지니어` 로 올라와 있다. `Java, Golang` 계열과 `풀스택`·`데이터 엔지니어(ETL)`·`Cloud Native Engineer(Observability)` 도 두 사이트에 겹친다.",
+        "so_what": "지원 전에 **한 공고 안에서 내가 지원할 직군이 어느 문단인지 먼저 찾아야 한다.** 자격요건이 6개 직군 것을 이어 붙인 형태라, 전부를 요구한다고 읽으면 지레 포기하게 된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**계약직 표기가 여럿 섞여 있다**",
+        "evidence": "`풀스택 개발자 (5년 이상, 계약직)` · `데이터 엔지니어(ETL) (2년 이상, 계약직)` 처럼 제목에 계약직이 명시된 공고가 여러 건이고, 마감된 것 중에도 `풀스택 개발자 (3년 이상, 계약직)` 이 있다.",
+        "so_what": "제목의 괄호를 반드시 읽어야 한다. 같은 회사 안에서 정규직 자리(`[개발] Java 개발자`·`Java 개발자 (1년 이상)`)와 계약직 자리가 나란히 열려 있다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**중급 이하의 문이 이 목록에서 가장 넓다**",
+        "evidence": "`Java 개발자 (1년 이상)`(`경력 1~3년`), `[개발] Java 개발자`(`경력2년↑`), `[개발] Java, Golang`·`[개발/엔지니어] Java, Golang, Engineer`(둘 다 `경력무관`), `데이터 엔지니어(ETL)`(`경력2년↑`).",
+        "so_what": "상장사이면서 1~3년차 문이 열려 있는 경우는 드물다. **경력이 짧다면 이 회사는 우선순위가 높다.** 다만 `경력무관` 표기가 곧 신입 채용을 뜻하는지는 본문에서 확인해야 한다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "연결 매출이 2024년 612억에서 2025년 478억으로 줄었다 — 숫자를 읽을 때 자회사 몫을 함께 봐야 한다",
+        "evidence": "2024년 연결 612억(자회사 신시웨이 118억 포함, 영업이익 88억) → 2025년 연결 478억·별도 442억(영업이익 37억/29억).",
+        "so_what": "면접에서 사업 이야기를 할 때 **연결과 별도를 구분해 말하는 것만으로도 준비된 지원자로 읽힌다.** 다만 감소의 원인(자회사 편입 변동인지 소프트웨어 판매 자체인지)은 공개 자료로 확정하지 못했으므로, 단정하지 말고 물어보는 편이 낫다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "회사가 '감시 대상'을 DB 에서 AI 인프라로 옮기고 있다 — 채용 직군이 그걸 따라간다",
+        "evidence": "대표 인터뷰의 `AI 확산의 진정한 병목과 변수는 모델의 성능이 아닌 인프라와 비용` 과 GPU·NPU 성능관리 솔루션, 트릴리온랩스와의 파운데이션 모델 협력(2026-02). 채용에서도 `[빅데이터/AI]` 계열이 가장 많은 자리를 차지한다.",
+        "so_what": "이 회사에서 AI 직군은 '모델을 잘 만드는 사람'보다 **'시계열·로그를 다뤄 운영을 자동화하는 사람'** 에 가깝다. 포트폴리오를 이미지·NLP 가 아니라 **이상탐지·시계열 예측**으로 맞추면 결이 맞는다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "제품이 온프레미스 설치형에서 SaaS 로 갈라지는 중이라, 같은 회사 안에 다른 성격의 개발이 공존한다",
+        "evidence": "`MaxGauge`·`InterMax`·`exemONE` 은 고객사 설치형이고 `DataSaker` 는 AWS 기반 SaaS(2023년 6월 출시)다. 채용에도 `Cloud Native Engineer(Observability)` 자리가 따로 있다.",
+        "so_what": "지원할 때 **어느 제품 쪽인지가 커리어를 가른다.** 설치형은 고객사 환경·성능·안정성이 중심이고, SaaS 쪽은 쿠버네티스·멀티테넌시·비용이 중심이다. 면접에서 이 구분을 물어보는 것이 좋다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "현장 엔지니어가 스스로 도구를 만드는 것을 대표가 공개적으로 장려한다",
+        "evidence": "대표 인터뷰: `현장에서 문제점을 가장 잘 파악하고 있는 사람이 AI를 통해 스스로 문제를 해결할 수 있는 시대`. 같은 인터뷰에서 사내 엔지니어들이 AI 툴을 만들어 사흘 걸릴 일을 반나절로 줄인 사례가 언급된다.",
+        "so_what": "'회사 업무를 자동화해 본 경험'이 이 회사에서는 곁가지가 아니라 평가 대상이다. 사내 도구·스크립트·자동화 사례를 이력서에 넣어도 좋은 회사다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+
+  "salary": {
+    "unit": "만원",
+    "currency": "KRW",
+    "as_of": "2026-09",
+    "bands": [
+      {
+        "role": "전 직군",
+        "level": "전사 평균",
+        "low": 4189,
+        "high": 4189,
+        "basis": "public_data",
+        "confidence": "inferred",
+        "sources": [{"title": "(주)엑셈 연봉정보 (295건, 평균 4,189만원)", "url": "https://www.jobplanet.co.kr/companies/64576/salaries/%EC%97%91%EC%85%88", "publisher": "잡플래닛"}]
+      }
+    ],
+    "note": "⚠️ **검색 결과 요약에서만 확인했고 페이지를 직접 열지 못했다**(잡플래닛은 WebFetch 가 403 을 받는다). 그래서 링크는 남기되 등급은 `inferred` 다. 표본이 295건으로 이 목록에서 가장 큰 편이라 신뢰도는 상대적으로 높지만, **전 직군 평균**이라 개발·데이터 직군과는 다르다. 공고에는 금액이 적혀 있지 않다. 참고할 점 하나 — **상장사라 사업보고서에 직원 평균급여가 공시된다.** DART 에서 직접 확인하면 이 숫자를 `confirmed` 로 올릴 수 있다.",
+    "open_questions": [
+      "DART 사업보고서의 '직원 등의 현황'(1인 평균 급여액)을 이번 사이클에 열지 못했다 — 다음 보강에서 확인한다: https://dart.fss.or.kr (회사명 '엑셈')",
+      "직군별·연차별 밴드를 받칠 공개 자료를 찾지 못했다"
+    ]
+  },
+
+  "people": [
+    {
+      "name": "고평석",
+      "role": "엑셈 각자대표",
+      "why_public": "공개 인터뷰(시사저널)에 실명·직함으로 등장했고, 회사 IR·언론 보도에 대표로 소개된다",
+      "public_work": [
+        {
+          "title": "고평석 \"AI 확산의 진정한 병목은 성능 아닌 비용\" [SFF 인터뷰]",
+          "url": "https://www.sisajournal.com/news/articleView.html?idxno=371962",
+          "kind": "interview",
+          "date": "2026-05-07",
+          "summary": "AI 확산의 병목을 모델 성능이 아니라 인프라와 비용으로 지목하고, 회사의 대응(sLLM·온프레미스·GPU/NPU 성능관리)을 밝혔다"
+        }
+      ],
+      "leanings": [
+        "AI 의 제약을 모델이 아니라 인프라·비용으로 본다 — `AI 확산의 진정한 병목과 변수는 모델의 성능이 아닌 인프라와 비용` 이라고 말했다",
+        "비용을 구체적으로 쪼개어 말한다 — `GPU 등 초기 비용에 상당한 투자를 해야 할뿐더러 추론 비용(토큰 비용)과 인프라 유지비(전력비) 등도 상당하다`",
+        "회사의 답을 큰 모델이 아니라 효율에서 찾는다 — `효율적인 소형언어모델(sLLM)이나 온프레미스 기반 AI 서비스 개발에 매진하고, 불필요한 AI 인프라 과잉 증설을 막기 위해 GPU·NPU 성능관리 솔루션을 제시` 한다고 밝혔다",
+        "도구를 만드는 주체를 현장으로 본다 — `현장에서 문제점을 가장 잘 파악하고 있는 사람이 AI를 통해 스스로 문제를 해결할 수 있는 시대` 라고 말했다"
+      ],
+      "what_it_means": "면접에서 AI 이야기를 할 때 **모델 성능이 아니라 비용과 운영으로 말하는 편이 이 대표의 관심사와 맞는다.** 'GPU 를 얼마나 아꼈나', '추론 비용을 어떻게 줄였나', '내 업무를 도구로 만들어 몇 시간을 줄였나' 가 이 회사의 언어다. 반대로 최신 모델 벤치마크 중심의 포트폴리오는 이 회사의 문제와 거리가 있다.",
+      "confidence": "confirmed",
+      "sources": [{"title": "시사저널 SFF 인터뷰", "url": "https://www.sisajournal.com/news/articleView.html?idxno=371962", "publisher": "시사저널", "date": "2026-05-07"}]
+    }
+  ],
+
+  "postings": [],
+
+  "open_questions": [
+    "**연결 매출 감소(2024년 612억 → 2025년 478억)의 원인을 공개 자료로 확정하지 못했다.** 자회사 신시웨이(2024년 매출 118억)의 연결 편입 변동인지, 소프트웨어 판매 자체의 변화인지 가리지 못했다. 두 숫자를 모두 `scale` 에 남겨 두었다",
+    "**DART 사업보고서를 이번 사이클에 열지 못했다.** 상장사이므로 직원 평균급여·부문별 매출·연구개발비가 공시돼 있을 것이다 — `salary` 와 `revenue` 의 비중을 `confirmed` 로 올릴 수 있는 가장 확실한 길이다",
+    "**신시웨이의 현재 지위를 확인하지 못했다.** 2023년 보도에는 코스닥 상장 예비심사 통과가 언급되는데, 이후 상장 여부와 엑셈의 지분율이 지금 어떻게 되는지 찾지 못했다",
+    "**대표가 두 명(조종암·고평석)인데 역할 분담을 공개 자료로 확인하지 못했다.** 조종암 대표의 인터뷰(투데이에너지)도 검색에 잡히지만 이번 사이클에서는 열지 않았다 — 다음 보강에서 본다",
+    "**공고 본문의 세 필드가 잡코리아 건에서 전부 비어 있다**(7건 중 6건). 사람인 건은 본문이 충실하므로 공고 사이클은 사람인 위주로 진행한다"
+  ]
+}

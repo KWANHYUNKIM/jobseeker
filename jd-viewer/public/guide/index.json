@@ -266,6 +266,19 @@
       "postings": 5,
       "study_items": 37,
       "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "exem",
+      "name": "엑셈",
+      "aliases": [
+        "엑셈",
+        "㈜엑셈",
+        "EXEM"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-03"
     }
   ]
 }
