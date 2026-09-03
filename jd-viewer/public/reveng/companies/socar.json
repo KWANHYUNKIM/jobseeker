@@ -92,7 +92,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "discount-self-heal"
+      ]
     },
     {
       "name": "차 한 대의 생애를 얼마로 만들 것인가",
@@ -107,7 +109,512 @@
     "**`eras` 를 세우지 않았다.** '쏘카 2.0' 이 2024년부터의 전환으로 보이고(2022~2023년과 2024~2025년을 회사가 나눠 비교한다) 이름도 붙어 있지만, **그때 기술적으로 무엇을 갈아엎었는지를 적은 자료를 찾지 못했다.** 연도만 있고 바뀐 내용이 없으면 시대로 자르지 않는다(STYLE.md 8번). 수요 예측·차량 배치 쪽 글을 열어 확인되면 그때 세운다.",
     "**두 번째 도메인의 `tech` 가 비어 있다.** '차 한 대의 생애를 얼마로 만들 것인가' 는 실적 발표문의 문장으로 경계만 잡았고, **무슨 기술로 풀었는지는 아직 안 읽었다.** 기술블로그의 **데이터 카테고리가 24편으로 가장 크므로** 거기에 재료가 있을 것으로 보인다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "discount-self-heal",
+      "name": "할인권 자가복구 에이전트",
+      "domain": "남의 화면이 바뀌면 우리가 환불한다",
+      "updated_at": "2026-09-04",
+      "business": {
+        "why": "쏘카존은 대부분 **남의 주차장** 안에 있고, 그 정산 장비를 **장비사 50여 곳**이 각자 만든다. 반납할 때 할인권이 자동으로 적용돼야 하는데 **장비사가 화면이나 정책을 바꾸면 그 자동화가 깨진다.** 규모가 작지 않다 — **연간 약 30만 건**이 실패하고 그중 **약 16.5만 건이 환불로** 이어진다. 그런데 고칠 자리가 남의 시스템이라, 사람이 **인지하고 배치 코드를 수정·배포하는 전 과정**을 맡아 **평균 4시간**이 걸렸다.",
+        "metrics": [
+          {
+            "label": "연간 할인권 적용 실패",
+            "value": "약 30만 건 · 그중 환불로 이어진 것 약 16.5만 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "상대해야 하는 장비사",
+            "value": "50여 곳",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "대응 시간",
+            "value": "사람이 평균 4시간 → 복구 기준 5분 이내",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "복구 실적",
+            "value": "2개월간 7,267건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "복구 한 건의 LLM 비용",
+            "value": "대략 몇백 원 수준",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "프롬프트 한 줄 고치는 값 (PoC)",
+            "value": "검증 20~30분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "원인 분류 정확도 (PoC)",
+            "value": "100%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "첫 설계(원인별 에이전트 분리)를 접을 때",
+          "thought": "DOM·네트워크·정책처럼 원인별로 에이전트를 나누려 했는데 **순환에 걸렸다** — **\"어느 에이전트에게 보낼지 라우팅하려면 이미 상당한 분석이 끝나 있어야\"** 한다. 분류를 앞에 두면 **분류기가 먼저 정확해야 하는데, 그 정확도를 만들려면 다시 분석이 필요하다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "LLM 에게 무엇까지 맡길지 정할 때",
+          "thought": "전체 문제를 던져 주고 알아서 풀게 두는 방식과, 판단할 자리만 정해 주는 방식이 있었다. 고른 쪽은 뒤였다 — **\"상태와 라우팅을 코드가 저수준에서 직접 쥐고, LLM은 전체 문제를 자유롭게 푸는 게 아니라 각 노드 안에서만 판단\"** 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "에이전트에게 어디까지 시킬지 정할 때",
+          "thought": "복구는 시켜도 배포는 못 시킨다. **\"에이전트는 절대 코드를 배포하지 않습니다\"** — 낼 수 있는 최대치가 Draft PR 이고 머지는 사람 몫이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "PoC 에서 프롬프트를 고칠 때마다",
+          "thought": "**\"프롬프트나 그래프를 고칠 때마다 스크립트로 전체를 다시 돌려 결과를 눈으로 대조\"** 했다. **한 줄 고치는 데 20~30분.** 고치는 일이 빨라진 대신 **고치는 것을 고치는 일이 느려졌다**(뒷문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "장비사(정산 장비 사업자)",
+            "what": "쏘카가 고칠 수 없는 남의 시스템. 50여 곳이 각자 다르고, 바꿀 때 알려 줄 의무가 없다"
+          },
+          {
+            "name": "기준선 스키마(baseline schema)",
+            "what": "그 장비사의 화면·API 가 원래 어땠는지의 기록. `systemType` 필드가 API 경로와 브라우저 경로를 가른다"
+          },
+          {
+            "name": "케이스(어드민)",
+            "what": "실행 하나의 기록. 원인 분류·분석 코멘트·트레이스 링크가 함께 붙는다"
+          },
+          {
+            "name": "Draft PR",
+            "what": "에이전트가 낼 수 있는 최대치. 코드 변경 제안이지 배포가 아니다"
+          }
+        ],
+        "invariants": [
+          "**에이전트는 코드를 배포하지 않는다.** Draft PR 까지가 끝이고 머지는 사람이 한다.",
+          "**근거는 LLM 의 자기보고가 아니다.** 케이스에 남는 데이터는 **실제 도구 wrapper 가 기록한 값**이다.",
+          "**단계는 LLM 이 정하지 않는다.** 순서는 StateGraph 로 고정돼 있고, API·브라우저 경로도 기준선 스키마의 `systemType` 이 정적으로 정한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "할인권 적용 실패를 받는다",
+            "why": "이 체계의 신호는 실패다 — 실패가 나야 무언가 달라졌다는 것을 안다"
+          },
+          {
+            "step": "기준선 스키마의 `systemType` 으로 경로를 고른다 — API 인가 브라우저인가",
+            "why": "장비사마다 붙는 방식이 다른데, 이 선택을 LLM 에게 맡기지 않고 **정적으로** 정한다"
+          },
+          {
+            "step": "login → search → discount 를 순서대로 밟는다",
+            "why": "**개발자가 실제로 밟는 대응 순서를 그대로 옮긴 것**이다. 원인을 몰라도 시작할 수 있다"
+          },
+          {
+            "step": "check 가 적용 여부를 독립적으로 재검증한다",
+            "why": "적용했다고 믿는 것과 적용된 것은 다르다. 그래서 discount 와 분리된 별도 단계다"
+          },
+          {
+            "step": "compare 가 화면·API 가 기준선과 달라졌는지 본다",
+            "why": "check 가 '이번에 됐나' 를 본다면 compare 는 **'무엇이 바뀌었나'** 를 본다 — 변경점 감지가 목적이다"
+          },
+          {
+            "step": "실패하면 analyze 가 원인을 분류한다 — 시도 3회 / 누적 3분 / confidence 0.5 초과에서 종료",
+            "why": "답이 나올 때까지 도는 루프는 비용이 끝나지 않는다. 언제 포기할지를 미리 정해 둔다"
+          },
+          {
+            "step": "필요하면 Draft PR 을 만든다. 배포하지 않는다",
+            "why": "증상은 에이전트가 지우고, 원인은 사람이 고친다"
+          },
+          {
+            "step": "결과를 어드민 케이스로 기록한다 — 원인 분류·분석 코멘트·트레이스 링크",
+            "why": "다음에 같은 장비사가 또 깨졌을 때 읽을 것이 남아야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "원인별로 나눌 것인가, 사람이 밟는 순서를 그대로 밟을 것인가",
+            "chosen": "**개발자가 실제로 밟는 대응 순서를 그대로** 다섯 단계로 옮겼다 — login → search → discount → check → compare",
+            "alternatives": [
+              "DOM·네트워크·정책처럼 원인별로 에이전트를 나누고 라우팅"
+            ],
+            "tradeoff": "**원인을 모르는 채로 다섯 단계를 다 밟으므로 낭비가 있다.** 대신 **\"어느 에이전트에게 보낼지 라우팅하려면 이미 상당한 분석이 끝나 있어야\"** 하는 순환을 피했고, 그 결과 **프롬프트가 짧아지고 실패 지점이 명확해졌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트 프레임워크를 무엇으로 할 것인가",
+            "chosen": "**LangGraph** 의 StateGraph 로 단계 순서를 고정한다",
+            "alternatives": [
+              "OpenAI Agent SDK",
+              "Claude Agent SDK"
+            ],
+            "tradeoff": "벤더 SDK 를 버린 이유가 둘이다 — **\"특정 벤더에 묶이거나 상태·라우팅을 저수준에서 쥐기 어려워\"**. 그 대신 **상태와 라우팅을 직접 짜야 하고 그 코드를 회사가 계속 떠안는다**(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "LLM 에게 무엇까지 맡길 것인가",
+            "chosen": "**\"상태와 라우팅을 코드가 저수준에서 직접 쥐고, LLM은 전체 문제를 자유롭게 푸는 게 아니라 각 노드 안에서만 판단\"** 하게 했다",
+            "alternatives": [
+              "도구를 쥐여 주고 전체 문제를 스스로 풀게 두기"
+            ],
+            "tradeoff": "**그래프에 없는 상황은 못 푼다** — 사람이 밟아 본 적 없는 순서는 에이전트도 밟지 못한다. 대신 어디서 틀렸는지가 **노드 단위로 좁혀진다**(두 문장 모두 이 사이트의 해석이며, 회사가 적은 것은 '실패 지점이 명확해졌다'까지다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "적용과 검증을 한 단계로 둘 것인가",
+            "chosen": "**discount 와 check 를 나눴고**, 그 위에 **compare 를 하나 더** 뒀다",
+            "alternatives": [
+              "discount 안에서 성공 여부까지 판단",
+              "실패 재발로만 확인"
+            ],
+            "tradeoff": "단계가 늘어 **복구 한 건의 시간과 비용이 는다.** 대신 **'적용했다'와 '적용됐다'가 갈리고**, compare 가 **기준선과 달라진 점**을 따로 잡아 준다 — 같은 실패가 다시 나기 전에 변경을 발견할 여지가 생긴다(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트에게 코드를 고치게 할 것인가",
+            "chosen": "**Draft PR 까지만.** **\"에이전트는 절대 코드를 배포하지 않습니다\"**",
+            "alternatives": [
+              "원인을 찾으면 자동으로 수정·배포",
+              "아예 코드에 손대지 않고 복구만"
+            ],
+            "tradeoff": "**진짜 원인은 사람이 머지할 때까지 남는다** — 그동안 에이전트가 하는 일은 **증상을 매번 다시 지우는 것**이다. 건당 몇백 원이 계속 나간다. 대신 잘못된 수정이 프로덕션에 나가는 일은 구조적으로 없다(첫 문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "언제 포기할 것인가",
+            "chosen": "원인 분류 루프에 한도 셋 — **분석 시도 3회 · 누적 3분 경과 · confidence 0.5 초과**",
+            "alternatives": [
+              "답이 나올 때까지 반복",
+              "시간 제한만 두기"
+            ],
+            "tradeoff": "**세 조건 중 어느 것도 정답을 보장하지 않는다.** `confidence 0.5` 는 절반의 확신에서 멈추라는 뜻이고, 3분은 사람의 4시간에 비하면 짧지만 왕복이 여러 번 도는 시간이다. **넘으면 그냥 끝난다** — 못 고친 채로 사람에게 넘어간다(해석은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "비용이 폭주하는 것을 어떻게 막을 것인가",
+            "chosen": "**현장별·티켓별 cooldown** 을 둔다",
+            "alternatives": [
+              "실패할 때마다 즉시 재시도",
+              "전체 예산 상한만 두기"
+            ],
+            "tradeoff": "**쿨다운 동안 같은 현장에서 난 실패는 복구되지 않는다.** 한 장비사가 통째로 깨진 상황이 정확히 그런 경우인데, 그때 복구가 가장 필요하다(해석은 이 사이트의 것이다). 건당 몇백 원이라도 연 30만 건 규모에서는 상한이 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 근거로 남길 것인가",
+            "chosen": "**\"근거 데이터는 LLM 자기보고가 아니라 실제 도구 wrapper가 기록한 값\"** 이다",
+            "alternatives": [
+              "에이전트가 스스로 보고한 내용을 기록"
+            ],
+            "tradeoff": "**도구마다 wrapper 를 짜야 한다.** 대신 에이전트가 **\"했다고 말한 것\"과 \"한 것\"이 갈린다** — 자기보고를 근거로 삼으면 실패를 성공으로 적는 일을 막을 방법이 없다(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "LangGraph (StateGraph)",
+            "role": "다섯 단계의 순서를 고정하고 상태·라우팅을 코드가 쥔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Playwright MCP",
+            "role": "사람이 관리자 웹을 쓰듯 화면을 조작한다 — 로그인·검색·할인권 입력",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Gemini 3.1 Pro",
+            "role": "각 노드 안에서의 판단을 맡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "접근성 트리 기반 구조화 스냅샷",
+            "role": "화면을 픽셀이 아니라 구조로 받아, 장비사마다 다른 화면을 같은 방식으로 밟는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "기준선 스키마(`systemType`)",
+            "role": "API 경로와 브라우저 경로를 정적으로 가른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "어드민 케이스 기록",
+            "role": "원인 분류·분석 코멘트·트레이스 링크를 실행마다 남긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "장비사 시스템 (외부 50여 곳)",
+          "via": "기준선 스키마의 `systemType` 이 고른 API 또는 브라우저 경로",
+          "contract": "**계약이 없다는 것이 이 연결의 성질이다.** 쏘카가 화면을 조작해 할인권을 넣을 뿐, 장비사는 바꿀 때 알려 줄 의무가 없다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "코드 저장소",
+          "via": "Draft PR",
+          "contract": "에이전트가 수정을 제안하고 사람이 머지한다. 배포 권한은 넘기지 않는다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "어드민(케이스)",
+          "via": "실행마다의 기록",
+          "contract": "원인 분류·분석 코멘트·트레이스 링크를 남긴다. 근거는 도구 wrapper 가 기록한 값이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "환불 처리",
+          "via": "복구 실패",
+          "contract": "복구되지 않은 실패가 환불로 이어진다 — 연 약 30만 건 중 약 16.5만 건이 그 경로다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "**내가 고칠 수 없는 남의 시스템에 매출이 걸려 있을 때, 그쪽의 변경을 어떻게 알아채는가**",
+            "why_hard": "**계약이 없다.** 50여 곳이 각자 바꾸고 알려 줄 의무가 없으며, 표준도 없어 화면과 API 가 제각각이다. 더 근본적인 것은 **신호의 성질**이다 — 이 체계는 **실패를 신호로 삼는데**, 실패 없이 조용히 달라지는 변경(할인이 덜 먹거나 조건이 달라지는 경우)에는 신호 자체가 없다. 비용 구조도 걸린다: 50곳을 주기적으로 전부 찔러 보려면 건당 비용이 그만큼 곱해진다(마지막 문장은 이 사이트의 해석이다).",
+            "current_best": "**실패가 났을 때 compare 로 변경점을 찾는다.** 감수하는 것을 회사가 남은 숙제로 그대로 적었다 — **실패 없는 장비사의 조용한 변경 감지**, 그리고 **기준선 스키마·힌트의 자동 갱신 파이프라인**이 아직 없다는 것.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "장애를 스스로 복구하는 AI 에이전트",
+                "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+                "publisher": "SOCAR 테크 블로그",
+                "date": "2026-07-22",
+                "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "사람이 하던 일과 지금",
+          "question": "4시간이 5분이 되면서, 사람 몫으로 남은 것은 무엇인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  FAIL[\"<b>할인권 적용 실패</b><br/>• 연 약 30만 건<br/>• 환불로 약 16.5만 건\"]:::list\n  OLD[\"<b>예전 — 사람이 전 과정</b><br/>• 장애 인지<br/>• 배치 코드 수정<br/>• 배포<br/>• 평균 4시간\"]:::quiet\n  NEW[\"<b>지금 — 에이전트가 복구</b><br/>• 화면을 사람처럼 조작<br/>• 실패한 할인권을 다시 적용<br/>• 복구 기준 5분 이내\"]:::accent\n  LEFT[\"<b>사람 몫으로 남은 것</b><br/>• Draft PR 머지<br/>• 프롬프트·그래프 손보기(한 줄에 20~30분)<br/>• 한도를 넘겨 끝난 건\"]:::list\n  COST[\"<b>새로 생긴 비용</b><br/>• 복구 한 건에 몇백 원<br/>• 원인이 남아 있는 동안 계속\"]:::list\n  FAIL --> OLD\n  FAIL --> NEW\n  NEW --> LEFT\n  NEW --> COST"
+        },
+        {
+          "title": "다섯 단계와 그 뒤",
+          "question": "원인을 모르는 채로 어떻게 복구를 시작하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  IN[\"<b>실패 접수</b>\"]\n  ROUTE[\"<b>systemType 으로 경로 선택</b><br/>• API 인가 브라우저인가<br/>• 정적으로 정해진다 — LLM 이 안 고른다\"]:::list\n  L[\"login — 로그인을 수행\"]\n  S[\"search — 차량을 조회\"]\n  D[\"discount — 할인권을 적용\"]\n  C[\"<b>check — 적용 여부를 검증</b><br/>• discount 와 분리된 별도 단계\"]:::list\n  CMP[\"<b>compare — 기준선과 달라진 점</b><br/>• 이번에 됐나가 아니라 무엇이 바뀌었나\"]:::accent\n  AN[\"<b>analyze — 실패했을 때만</b><br/>• 시도 3회<br/>• 누적 3분<br/>• confidence 0.5 초과면 종료\"]:::list\n  PR[\"<b>Draft PR</b><br/>• 배포는 하지 않는다\"]:::list\n  CASE[\"어드민 케이스 기록\"]:::quiet\n  IN --> ROUTE\n  ROUTE --> L\n  L --> S\n  S --> D\n  D --> C\n  C --> CMP\n  C -->|\"실패\"| AN\n  AN --> PR\n  CMP --> CASE\n  PR --> CASE"
+        },
+        {
+          "title": "어디서 멈추는가",
+          "question": "이 체계가 못 잡는 것과, 잡고도 못 고치는 것은 무엇인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  QUIET[\"<b>실패 없이 조용히 바뀐 장비사</b><br/>• 신호가 없다<br/>• 회사가 남은 숙제로 적었다\"]:::accent\n  NOSIG[\"<b>에이전트가 돌지 않는다</b>\"]\n  LIMIT[\"<b>한도에 걸려 끝난 건</b><br/>• 시도 3회<br/>• 누적 3분<br/>• confidence 0.5\"]:::list\n  COOL[\"<b>쿨다운 중인 현장</b><br/>• 현장별·티켓별<br/>• 통째로 깨졌을 때가 가장 필요한 순간\"]:::list\n  ROOT[\"<b>원인은 그대로</b><br/>• Draft PR 은 사람이 머지해야 한다<br/>• 그동안 증상만 매번 지운다\"]:::list\n  HUMAN[\"사람에게 넘어간다\"]\n  REFUND[\"환불\"]:::quiet\n  QUIET --> NOSIG\n  NOSIG --> REFUND\n  LIMIT --> HUMAN\n  COOL --> REFUND\n  ROOT --> HUMAN"
+        }
+      ],
+      "sources": [
+        {
+          "title": "장애를 스스로 복구하는 AI 에이전트",
+          "url": "https://tech.socar.kr/dev/2026/07/22/agentic-engineering-in-production",
+          "publisher": "SOCAR 테크 블로그",
+          "date": "2026-07-22",
+          "summary": "주차 할인권 적용 실패를 사람이 평균 4시간에 고치던 것을 단계형 에이전트로 5분 이내로 줄인 기록. 버린 대안·한도·비용·아직 못 잡는 것을 함께 적었다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "sources": [
     {
