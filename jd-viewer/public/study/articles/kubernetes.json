@@ -1,0 +1,693 @@
+{
+  "slug": "kubernetes",
+  "title": "Kubernetes",
+  "title_en": "Kubernetes",
+  "aliases": [
+    "Kubernetes",
+    "쿠버네티스",
+    "K8s",
+    "k8s"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-04",
+  "one_liner": "**\"원하는 상태\"를 적어 두면 시스템이 계속 그 상태로 되돌리는** 컨테이너 운영 시스템이다. 파드·디플로이먼트 같은 이름들이 아니라 **이 되돌리기(컨트롤러 루프)** 가 본체이고, 그래서 **노드와 파드가 언제든 사라진다는 전제** 위에 모든 것이 얹혀 있다.",
+  "summary": "`docker` 문서는 \"컨테이너는 배포 문제를 없애지 않는다, 옮겼을 뿐이다\"로 끝났다. 옮겨진 그 문제 — **여러 대에 어떻게 굴리나** — 를 맡는 것이 Kubernetes 다. 핵심은 명령이 아니라 **선언**이다: \"이 이미지를 3벌 띄우고, 각각 메모리 512Mi 를 요청하며, 이 검사에 통과해야 트래픽을 받는다\"를 적어 두면 컨트롤러가 **현재 상태를 계속 그쪽으로 밀어붙인다.** 실무에서 걸리는 지점은 셋이다 — **`requests` 와 `limits` 는 하는 일이 다르다**(앞은 스케줄러의 배치 기준, 뒤는 실행 중 상한. `docker` 의 OOMKilled 가 여기서 **스케줄링 문제로 되돌아온다**), **세 프로브의 역할이 다르다**(재시작 / 트래픽 / 초기화 대기), 그리고 **가장 어려운 결정은 도입 자체다.** 서비스 하나에 트래픽이 일정하다면 이 복잡도를 살 이유가 없다.",
+  "market": {
+    "tech": "Kubernetes",
+    "layer": "인프라/클라우드",
+    "postings": 1182,
+    "pct_jobs": 16.4,
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 명령이 아니라 선언, 그리고 되돌리기",
+      "body": "Kubernetes 를 배울 때 파드·디플로이먼트·서비스부터 외우면 **가장 중요한 성질을 놓친다.** 그것들은 어휘이고, 문법은 하나다.\n\n```\n명령형:  \"서버 A 에 컨테이너를 띄워라\"      → 죽으면? 사람이 다시 띄운다\n선언형:  \"이 컨테이너가 항상 3벌 있어야 한다\"  → 죽으면? **시스템이 다시 띄운다**\n```\n\n원하는 상태(desired state)를 적어 두면 **컨트롤러가 현재 상태와 비교해 차이를 메우는 일을 끝없이 반복한다.** 파드가 죽어도, 노드가 사라져도, 사람이 실수로 지워도 — **다시 만들어진다.**\n\n> **그래서 이 시스템의 전제는 \"모든 것은 언제든 사라질 수 있다\"이다.** 파드에 붙은 IP 도, 파드가 쓰던 로컬 디스크도, 그 파드가 떠 있던 노드도. `docker` 문서가 말한 **휘발 파일시스템**이 여기서는 **휘발 인스턴스**로 확대된다.\n\n**그 전제가 애플리케이션에 요구하는 것이 있다.**\n\n- **어디서 죽어도 괜찮아야 한다** — 언제든 종료 신호를 받고 정리할 수 있어야 한다(`docker` 의 PID 1·시그널 이야기가 그대로 이어진다).\n- **상태를 자기 안에 두면 안 된다** — 세션·업로드 파일·캐시를 로컬에 두면 파드가 옮겨질 때 사라진다(`jwt` 가 무상태를 이야기한 그 이유가 여기서 인프라 요구사항이 된다).\n- **여러 벌이 동시에 떠도 괜찮아야 한다** — 롤링 배포 중에는 **옛 버전과 새 버전이 함께** 산다.\n\n**공고가 이 낱말을 적는 방식도 그 성격을 보여 준다** — `Kubernetes 환경 기반의 마이크로서비스 설계 및 구축`(로앤컴퍼니), `Docker, Kubernetes 환경에 대한 깊은 이해와 운영 경험`(아르템코퍼레이션). **거의 언제나 Docker 와 붙어 나오고**(`docker` 문서의 동반 53.9%가 그 숫자다), CI/CD 와도 붙는다.",
+      "confidence": "inferred"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 생겼나 — 컨테이너 하나를 여러 대에 굴리면",
+      "body": "`docker` 로 이미지를 만들었다. 서버 한 대에서는 `docker run` 이면 끝이다. **서버가 열 대가 되는 순간 질문이 쏟아진다.**\n\n```\n① 이 컨테이너를 **어느 서버에** 띄우나?        (메모리 남은 곳? 그걸 누가 아나)\n② 죽으면 **누가 다시** 띄우나?                 (감시 스크립트? 그 스크립트가 죽으면?)\n③ 다른 서비스가 이걸 **어떻게 찾나**?          (IP 가 매번 바뀌는데)\n④ 새 버전으로 **어떻게 바꿔치기**하나?         (한 번에 다 내리면 장애)\n⑤ 서버 한 대가 죽으면 **거기 있던 것들**은?\n⑥ 트래픽이 늘면 **몇 벌로 늘리나**, 누가 판단하나?\n```\n\n**각각을 손으로 풀 수는 있다.** 그리고 실제로 많은 팀이 그렇게 했다 — 배포 스크립트, 헬스체크 크론, 로드밸런서 설정 갱신 스크립트, 서버 목록 관리 파일. **문제는 그것들이 서로를 모른다는 것**이다. 스케일 아웃 스크립트가 방금 늘린 서버를 로드밸런서 스크립트가 아직 모르고, 그 사이에 요청이 떨어진다.\n\n**Kubernetes 가 판 것은 개별 기능이 아니라 그 여섯을 한 모델 아래 묶는 것이다.**\n\n| 질문 | 담당 |\n|---|---|\n| ① 어디에 | **스케줄러** — 요청한 자원이 남은 노드를 고른다 |\n| ② 죽으면 | 컨트롤러(원하는 복제 수를 유지) + **liveness 프로브** |\n| ③ 어떻게 찾나 | 서비스(안정적인 이름과 주소) |\n| ④ 바꿔치기 | **롤링 업데이트** — 옛 파드를 점진적으로 교체 |\n| ⑤ 노드 장애 | 컨트롤러가 다른 노드에 다시 만든다 |\n| ⑥ 몇 벌로 | 오토스케일러(그리고 그 판단의 재료가 ①의 자원 지표) |\n\n> **핵심은 이 여섯이 같은 '원하는 상태' 모델을 공유한다는 것이다.** 그래서 사람이 개입하지 않아도 서로 어긋나지 않는다 — 그게 스크립트 더미와의 차이다.\n\n**그리고 이 문서가 반드시 붙여야 할 한 줄.** `docker` 는 \"환경 차이를 이미지로 밀어 넣고 대신 이미지·레지스트리·오케스트레이션을 관리하게 된다\"로 끝났다. **Kubernetes 는 그 '오케스트레이션'을 맡는 대신 클러스터라는 새 관리 대상을 준다.** 문제가 또 한 번 옮겨진 것이고, **그 거래가 남는 장사인지가 이 문서의 마지막 절이다.**",
+      "confidence": "inferred"
+    },
+    {
+      "id": "resources",
+      "kind": "how",
+      "heading": "requests 와 limits — `docker` 의 OOMKilled 가 스케줄링 문제로 돌아온다",
+      "body": "컨테이너마다 CPU·메모리를 두 가지로 적는다. **이름이 비슷해서 같은 것으로 읽기 쉬운데, 하는 일이 완전히 다르다.**\n\n```yaml\nresources:\n  requests:   { memory: \"512Mi\", cpu: \"250m\" }   # 스케줄러가 보는 값\n  limits:     { memory: \"1Gi\",   cpu: \"500m\" }   # 실행 중 상한\n```\n\n**`requests` = 자리 예약.** 스케줄러는 **요청되지 않은 여유 용량이 있는 노드**에만 파드를 놓는다. 즉 이 값은 **배치 결정에만** 쓰이고, 실행 중에 이만큼을 보장받는 것과는 다르다(CPU 는 경합 시 비율 배분의 가중치가 된다).\n\n**`limits` = 넘으면 벌어지는 일.** 그리고 CPU 와 메모리가 **다르게** 동작한다.\n\n| | 넘으면 |\n|---|---|\n| CPU limit | **스로틀링** — 느려진다(죽지는 않는다) |\n| Memory limit | **커널이 OOM 으로 죽인다** — 컨테이너가 그대로 종료된다 |\n\n> **`docker` 문서가 다룬 그 사고가 여기서 다시 나온다.** 자바 힙을 컨테이너 메모리보다 크게 잡으면 커널이 죽이고 애플리케이션 로그에는 아무것도 안 남는다. 다른 점은 **이제 그것이 스케줄링과 얽힌다**는 것이다 — limit 을 크게 적으면 안 죽는 대신 노드를 많이 잡아먹고, requests 를 작게 적으면 배치는 쉬운데 **노드가 압박받을 때 먼저 쫓겨난다.**\n\n**그 쫓겨나는 순서를 정하는 것이 QoS 등급이다.** `requests`/`limits` 를 어떻게 적었느냐가 등급을 자동으로 정한다.\n\n```\nGuaranteed  : requests == limits (모든 컨테이너, CPU·메모리 둘 다)\nBurstable   : requests < limits, 또는 일부만 지정\nBestEffort  : 아무것도 안 적음\n```\n\n그리고 노드가 압박을 받으면 **BestEffort → Burstable → Guaranteed 순으로 축출**된다. **아무것도 안 적는 것이 가장 위험한 선택**인 이유다 — 편해 보이지만 **가장 먼저 죽는 줄에 서는 것**이다.\n\n> **실무의 기본형**: 메모리는 **requests = limits**(예측 가능하게, 그리고 축출을 피하려고), CPU 는 **requests 만** 두고 limit 은 신중히(스로틀링이 지연으로 나타난다). 그리고 **애플리케이션이 자기 한도를 알게** 만든다(`docker` 문서의 그 이야기 — 요즘 JVM 은 컨테이너 한도를 인식한다).",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Resource Management for Pods and Containers",
+          "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests` 와 `limits` 가 하는 일이 다르다는 것의 1차 자료. **`requests` 는 스케줄러가 노드를 고르는 기준**(요청되지 않은 여유 용량이 있어야 배치된다)이고, **`limits` 는 실행 중의 상한**이다 — 메모리 한도를 넘으면 커널이 OOM 으로 프로세스를 죽인다"
+        },
+        {
+          "title": "Kubernetes 문서 — Pod Quality of Service Classes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests`/`limits` 를 어떻게 적었느냐가 파드의 **QoS 등급**(Guaranteed · Burstable · BestEffort)을 정하고, **노드가 압박을 받으면 BestEffort → Burstable → Guaranteed 순으로 축출**된다"
+        }
+      ]
+    },
+    {
+      "id": "probes",
+      "kind": "how",
+      "heading": "세 프로브 — 재시작할 것인가, 트래픽을 보낼 것인가",
+      "body": "컨테이너가 **떠 있는 것**과 **일할 수 있는 것**은 다르다. Kubernetes 는 그 둘을 다른 검사로 본다.\n\n| 프로브 | 실패하면 | 쓰는 곳 |\n|---|---|---|\n| **liveness** | **컨테이너를 재시작**한다 | 데드락처럼 **스스로 못 빠져나오는** 상태 |\n| **readiness** | **트래픽을 끊는다**(서비스 목록에서 IP 를 뺀다) | 아직 준비 안 됨, 일시적 과부하 |\n| **startup** | (성공까지 나머지 둘을 미룬다) | **초기화가 느린** 애플리케이션 |\n\n**이 셋을 헷갈리면 사고의 형태가 바로 정해진다.**\n\n**① liveness 에 의존성 검사를 넣는다** — \"DB 에 연결되는가\"를 liveness 로 두면, **DB 가 잠깐 흔들릴 때 모든 파드가 동시에 재시작**한다. 그리고 재시작한 파드들이 한꺼번에 DB 에 붙어 상황을 더 나쁘게 만든다. `circuit-breaker` 문서의 그 고리가 인프라 층에서 재현되는 것이다.\n→ **liveness 는 '이 프로세스가 스스로 회복 못 한다'일 때만.** 의존성은 **readiness** 로.\n\n**② readiness 를 안 건다** — 컨테이너가 뜨자마자 트래픽이 들어온다. 초기화가 끝나기 전이면 **롤링 배포 때마다 5xx 가 잠깐 뜬다.**\n\n**③ 초기화가 느린데 startup 프로브가 없다** — liveness 가 먼저 실패해 **영원히 재시작만 반복**한다(`CrashLoopBackOff`). startup 프로브를 두면 그 시간을 기다려 준다.\n\n**그리고 이것이 롤링 배포와 직결된다.** 롤링 업데이트는 옛 파드를 **점진적으로** 교체하며 서비스를 유지하는데, \"새 파드가 준비됐다\"의 판정이 곧 **readiness** 다.\n\n```\nmaxUnavailable : 동시에 몇 개까지 없어도 되나   (백분율은 내림)\nmaxSurge       : 동시에 몇 개까지 더 띄워도 되나 (백분율은 올림)\n```\n\n> **readiness 가 거짓말을 하면 무중단 배포가 무중단이 아니다.** \"떴다\"고만 답하는 readiness 는 준비 안 된 파드로 트래픽을 보내고, 그동안 옛 파드는 이미 내려간다. **배포 중에만 나는 에러**의 대부분이 여기서 온다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Liveness, Readiness, and Startup Probes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/probes/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "세 프로브의 역할이 각각 다르다 — **liveness** 는 컨테이너를 **재시작**할지, **readiness** 는 **트래픽을 보낼지**(실패하면 서비스의 EndpointSlice 에서 파드 IP 가 빠진다), **startup** 은 느린 초기화를 기다려 준다(성공 전까지 나머지 둘을 실행하지 않는다)"
+        },
+        {
+          "title": "Kubernetes 문서 — Update a Deployment Without Downtime (rolling update)",
+          "url": "https://kubernetes.io/docs/tasks/run-application/update-deployment-rolling/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "롤링 업데이트는 옛 파드를 새 파드로 **점진적으로 교체**해 서비스를 유지한다. `maxUnavailable`·`maxSurge` 로 속도를 정하고, 백분율은 원하는 복제 수 기준으로 **maxUnavailable 은 내림, maxSurge 는 올림**으로 계산된다"
+        }
+      ]
+    },
+    {
+      "id": "when-not",
+      "kind": "limits",
+      "heading": "언제 안 쓰나 — 이 문서에서 가장 실용적인 절",
+      "body": "Kubernetes 는 **복잡도를 주고 유연성을 산다.** 그 거래가 손해인 경우가 생각보다 많다.\n\n**안 쓰는 편이 나은 조건들**\n\n- **서비스가 하나이고 트래픽이 일정하다.** 스케줄링·오토스케일링·서비스 디스커버리가 풀어 줄 문제가 애초에 없다. VM 두 대 + 로드밸런서로 끝난다.\n- **팀에 이걸 운영할 사람이 없다.** 클러스터 업그레이드, 네트워킹(CNI), 스토리지(CSI), 인증서, RBAC, 리소스 튜닝 — **이건 부업으로 되는 일이 아니다.** 관리형(EKS/GKE)을 써도 노드·워크로드 운영은 남는다.\n- **관리형 컨테이너 서비스로 충분하다.** \"컨테이너 이미지를 주면 알아서 굴려 주는\" 서비스들이 있다. **필요한 것이 '컨테이너 실행'뿐이라면** 클러스터를 갖는 대가를 낼 이유가 없다.\n- **상태가 무겁다.** 데이터베이스를 클러스터 안에서 굴리는 것은 가능하지만 **난이도가 다른 게임**이다. 관리형 DB 를 쓰고 애플리케이션만 올리는 편이 대개 낫다.\n\n**그래도 쓰는 것이 맞는 조건들**\n\n- **서비스가 여럿이고 자원 사용이 들쭉날쭉하다** — 빈 패킹으로 서버를 덜 쓰게 된다.\n- **배포가 잦고 무중단이 요구된다** — 롤링·롤백이 기본 기능이다.\n- **여러 팀이 같은 인프라를 나눠 쓴다** — 네임스페이스·쿼터·RBAC 이 그 경계를 만든다(`multi-tenancy` 의 그 문제를 인프라 층에서 푸는 셈이다).\n- **어차피 이 생태계의 도구를 쓸 것이다** — 인그레스·시크릿·오퍼레이터·GitOps.\n\n**그리고 도입해도 없어지지 않는 것들.**\n\n- **애플리케이션의 문제는 그대로다.** 느린 쿼리는 파드를 늘려도 느리다(`db-index`).\n- **YAML 이 새 코드베이스가 된다** — 그리고 대개 아무도 리뷰하지 않는다.\n- **비용이 줄어든다는 보장이 없다** — 컨트롤 플레인, 노드의 여유분, 모니터링 스택이 더해진다.\n\n> **`docker` 의 마지막 문장이 여기서도 성립한다 — 문제를 없앤 것이 아니라 옮겼다.** 이번에 옮겨 간 곳은 **클러스터 운영**이고, 그것을 감당할 사람이 있는지가 도입 결정의 전부다.",
+      "confidence": "inferred"
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 무엇을 포기하고 얻었나",
+      "body": "**① 노드와 파드는 언제든 사라진다는 전제.** 이것이 이 시스템이 **포기한 것**이다 — \"이 서버는 계속 거기 있다\"는 가정. 그 대가로 장애 복구와 재배치를 자동화했다. 그래서 **로컬 상태에 의존하는 애플리케이션은 여기서 계속 아프다.**\n\n**② 네트워킹이 어렵다.** 파드 IP 는 바뀌고, 서비스는 가상 IP 이며, 클러스터 밖에서 들어오는 길(인그레스·로드밸런서)은 또 다른 층이다. **\"왜 안 붙지\"의 절반이 여기서 나온다.**\n\n**③ 상태 있는 워크로드.** StatefulSet·PersistentVolume 이 있지만 **스토리지가 노드에 묶이는 순간** 스케줄링의 자유가 줄어든다. DB 를 클러스터에 넣을지는 **가능한가**가 아니라 **감당할 수 있는가**의 문제다.\n\n**④ 버전이 빨리 오른다.** 클러스터 업그레이드가 정기 업무가 되고, API 가 폐기되면 매니페스트를 고쳐야 한다. **버전을 밝히지 않은 문서는 빨리 낡는다**(이 문서도 마찬가지다).\n\n**⑤ 디버깅 경로가 길어진다.** 애플리케이션 → 컨테이너 → 파드 → 노드 → 클러스터. 문제가 어느 층인지 가르는 데 시간이 든다. `observability` 가 이 백과사전의 다음 낱말 중 하나인 이유이기도 하다.\n\n**⑥ 그리고 보안 경계가 컨테이너다.** `docker` 문서가 말한 대로 **컨테이너는 VM 이 아니다** — 커널을 공유한다. 신뢰 경계가 필요한 워크로드(다른 고객의 코드 실행 등)에는 추가 격리가 필요하다.\n\n> 한 줄로: **Kubernetes 는 \"서버가 특별하지 않다\"고 선언한 시스템이다.** 그 선언을 애플리케이션과 팀이 받아들일 수 있으면 강력하고, 못 받아들이면 **복잡도만 남는다.**",
+      "confidence": "inferred"
+    }
+  ],
+  "tables": [
+    {
+      "id": "docker-to-k8s",
+      "kind": "compare",
+      "caption": "`docker` 가 끝난 자리에서 새로 생기는 것들",
+      "note": "`docker` 문서의 마지막 절(\"컨테이너는 배포 문제를 옮겼을 뿐이다\")이 남긴 질문들이다. 각각을 손으로 풀 수 있지만 **서로를 모른다는 것**이 스크립트 더미의 문제였다",
+      "columns": [
+        "질문",
+        "한 대에서는",
+        "여러 대에서는",
+        "Kubernetes 의 답"
+      ],
+      "rows": [
+        [
+          "어디에 띄우나",
+          "고민 없음",
+          "노드를 골라야",
+          "**스케줄러**(requests 기준)"
+        ],
+        [
+          "죽으면",
+          "수동 재시작",
+          "감시가 필요",
+          "컨트롤러 + liveness"
+        ],
+        [
+          "어떻게 찾나",
+          "localhost",
+          "IP 가 바뀐다",
+          "서비스(안정적 이름)"
+        ],
+        [
+          "새 버전 교체",
+          "내리고 올리기",
+          "무중단이 필요",
+          "**롤링 업데이트**"
+        ],
+        [
+          "서버 장애",
+          "전체 장애",
+          "재배치 필요",
+          "다른 노드에 다시 생성"
+        ],
+        [
+          "몇 벌로",
+          "고정",
+          "부하에 따라",
+          "오토스케일러"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "resources",
+      "kind": "spec",
+      "caption": "requests · limits · QoS 등급",
+      "note": "**아무것도 안 적으면 BestEffort 가 되어 가장 먼저 축출된다.** 편해 보이는 선택이 가장 위험한 자리",
+      "columns": [
+        "항목",
+        "무엇",
+        "넘거나 부족하면"
+      ],
+      "rows": [
+        [
+          "`requests`",
+          "**스케줄러가 노드를 고르는 기준**(자리 예약)",
+          "여유 없는 노드에는 배치되지 않는다(Pending)"
+        ],
+        [
+          "`limits` (CPU)",
+          "실행 중 상한",
+          "**스로틀링** — 느려진다"
+        ],
+        [
+          "`limits` (메모리)",
+          "실행 중 상한",
+          "**커널이 OOM 으로 종료**(OOMKilled)"
+        ],
+        [
+          "Guaranteed",
+          "모든 컨테이너에서 requests == limits",
+          "가장 늦게 축출된다"
+        ],
+        [
+          "Burstable",
+          "requests < limits 또는 일부만 지정",
+          "중간"
+        ],
+        [
+          "BestEffort",
+          "아무것도 안 적음",
+          "**가장 먼저 축출**된다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Resource Management for Pods and Containers",
+          "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests` 와 `limits` 가 하는 일이 다르다는 것의 1차 자료. **`requests` 는 스케줄러가 노드를 고르는 기준**(요청되지 않은 여유 용량이 있어야 배치된다)이고, **`limits` 는 실행 중의 상한**이다 — 메모리 한도를 넘으면 커널이 OOM 으로 프로세스를 죽인다"
+        },
+        {
+          "title": "Kubernetes 문서 — Pod Quality of Service Classes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests`/`limits` 를 어떻게 적었느냐가 파드의 **QoS 등급**(Guaranteed · Burstable · BestEffort)을 정하고, **노드가 압박을 받으면 BestEffort → Burstable → Guaranteed 순으로 축출**된다"
+        }
+      ]
+    },
+    {
+      "id": "probes",
+      "kind": "compare",
+      "caption": "세 프로브 — 헷갈리면 사고의 형태가 정해진다",
+      "columns": [
+        "프로브",
+        "실패하면",
+        "넣어야 할 것",
+        "넣으면 안 되는 것"
+      ],
+      "rows": [
+        [
+          "liveness",
+          "**컨테이너 재시작**",
+          "스스로 못 빠져나오는 상태(데드락)",
+          "**의존성 검사**(DB 흔들리면 전체 재시작)"
+        ],
+        [
+          "readiness",
+          "**트래픽 차단**(서비스에서 IP 제외)",
+          "의존성·워밍업·일시적 과부하",
+          "재시작해야 낫는 상태"
+        ],
+        [
+          "startup",
+          "(성공까지 나머지 둘 보류)",
+          "초기화가 느린 애플리케이션",
+          "상시 검사"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Liveness, Readiness, and Startup Probes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/probes/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "세 프로브의 역할이 각각 다르다 — **liveness** 는 컨테이너를 **재시작**할지, **readiness** 는 **트래픽을 보낼지**(실패하면 서비스의 EndpointSlice 에서 파드 IP 가 빠진다), **startup** 은 느린 초기화를 기다려 준다(성공 전까지 나머지 둘을 실행하지 않는다)"
+        }
+      ]
+    },
+    {
+      "id": "when-not",
+      "kind": "compare",
+      "caption": "도입 판단 — 무엇을 사고 무엇을 내주나",
+      "columns": [
+        "조건",
+        "Kubernetes",
+        "대안"
+      ],
+      "rows": [
+        [
+          "서비스 1개 · 트래픽 일정",
+          "**과하다**",
+          "VM + 로드밸런서"
+        ],
+        [
+          "컨테이너 실행만 필요",
+          "과하다",
+          "관리형 컨테이너 서비스"
+        ],
+        [
+          "서비스 여럿 · 부하 들쭉날쭉",
+          "**적합**(빈 패킹)",
+          "—"
+        ],
+        [
+          "잦은 배포 · 무중단 요구",
+          "**적합**(롤링·롤백)",
+          "블루-그린 스크립트"
+        ],
+        [
+          "여러 팀이 인프라 공유",
+          "적합(네임스페이스·쿼터)",
+          "계정/VPC 분리"
+        ],
+        [
+          "운영 인력 없음",
+          "**하지 않는다**",
+          "관리형 PaaS"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "symptoms",
+      "kind": "glossary",
+      "caption": "증상 → 원인 찾기",
+      "columns": [
+        "증상",
+        "의심",
+        "확인"
+      ],
+      "rows": [
+        [
+          "파드가 `Pending` 에서 안 넘어간다",
+          "**requests 를 만족할 노드가 없다**",
+          "노드 여유 용량 vs 요청량, 스케줄링 이벤트"
+        ],
+        [
+          "`OOMKilled` 로 재시작",
+          "메모리 limit 초과(커널이 죽였다)",
+          "limit 값과 실제 사용량, 애플리케이션이 한도를 아는지"
+        ],
+        [
+          "`CrashLoopBackOff`",
+          "초기화 전에 liveness 실패 / 기동 자체 실패",
+          "**startup 프로브** 유무, 컨테이너 로그"
+        ],
+        [
+          "배포 중에만 5xx",
+          "readiness 가 거짓말",
+          "readiness 가 실제 준비 상태를 보는지, maxUnavailable"
+        ],
+        [
+          "DB 가 흔들리자 전 파드 재시작",
+          "**liveness 에 의존성 검사**",
+          "liveness/readiness 의 검사 내용을 바꾼다"
+        ],
+        [
+          "노드가 압박받자 특정 파드만 죽는다",
+          "QoS 등급(BestEffort)",
+          "requests/limits 를 적었는지"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Resource Management for Pods and Containers",
+          "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests` 와 `limits` 가 하는 일이 다르다는 것의 1차 자료. **`requests` 는 스케줄러가 노드를 고르는 기준**(요청되지 않은 여유 용량이 있어야 배치된다)이고, **`limits` 는 실행 중의 상한**이다 — 메모리 한도를 넘으면 커널이 OOM 으로 프로세스를 죽인다"
+        },
+        {
+          "title": "Kubernetes 문서 — Pod Quality of Service Classes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests`/`limits` 를 어떻게 적었느냐가 파드의 **QoS 등급**(Guaranteed · Burstable · BestEffort)을 정하고, **노드가 압박을 받으면 BestEffort → Burstable → Guaranteed 순으로 축출**된다"
+        },
+        {
+          "title": "Kubernetes 문서 — Liveness, Readiness, and Startup Probes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/probes/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "세 프로브의 역할이 각각 다르다 — **liveness** 는 컨테이너를 **재시작**할지, **readiness** 는 **트래픽을 보낼지**(실패하면 서비스의 EndpointSlice 에서 파드 IP 가 빠진다), **startup** 은 느린 초기화를 기다려 준다(성공 전까지 나머지 둘을 실행하지 않는다)"
+        }
+      ]
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "서비스가 여럿이고 **자원 사용이 시간대별로 들쭉날쭉**하다",
+      "pick": "Kubernetes(빈 패킹 + 오토스케일)",
+      "over": "서비스마다 전용 VM",
+      "why": "전용 VM 은 최대 부하에 맞춰야 해서 평소에 대부분이 논다. 스케줄러가 요청량 기준으로 채워 넣으면 **같은 서버 수로 더 많은 워크로드**를 굴린다",
+      "tradeoff": "클러스터 운영이 새 업무로 생기고, `requests` 를 잘못 적으면 그 이득이 사라진다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Resource Management for Pods and Containers",
+          "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests` 와 `limits` 가 하는 일이 다르다는 것의 1차 자료. **`requests` 는 스케줄러가 노드를 고르는 기준**(요청되지 않은 여유 용량이 있어야 배치된다)이고, **`limits` 는 실행 중의 상한**이다 — 메모리 한도를 넘으면 커널이 OOM 으로 프로세스를 죽인다"
+        }
+      ]
+    },
+    {
+      "situation": "서비스가 하나이고 트래픽이 일정하다",
+      "pick": "VM 두 대 + 로드밸런서(또는 관리형 컨테이너 서비스)",
+      "over": "Kubernetes 도입",
+      "why": "스케줄링·디스커버리·오토스케일이 풀어 줄 문제가 애초에 없다. **얻는 것 없이 복잡도만 산다**",
+      "tradeoff": "나중에 서비스가 늘면 그때 이전 비용을 치른다 — **왜 안 썼는지 적어 두면** 그 판단을 다시 할 수 있다"
+    },
+    {
+      "situation": "배포가 잦고 **무중단**이 요구된다",
+      "pick": "롤링 업데이트 + readiness 프로브",
+      "over": "수동 배포 스크립트",
+      "why": "옛 파드를 점진적으로 교체하며 서비스를 유지하고, 문제가 생기면 롤백이 한 명령이다. **판정 기준(readiness)이 시스템에 내장**돼 있다는 것이 스크립트와의 차이",
+      "tradeoff": "readiness 가 거짓말하면 **무중단이 아니게 된다** — 그 검사를 제대로 만드는 것이 실제 작업이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Update a Deployment Without Downtime (rolling update)",
+          "url": "https://kubernetes.io/docs/tasks/run-application/update-deployment-rolling/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "롤링 업데이트는 옛 파드를 새 파드로 **점진적으로 교체**해 서비스를 유지한다. `maxUnavailable`·`maxSurge` 로 속도를 정하고, 백분율은 원하는 복제 수 기준으로 **maxUnavailable 은 내림, maxSurge 는 올림**으로 계산된다"
+        },
+        {
+          "title": "Kubernetes 문서 — Liveness, Readiness, and Startup Probes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/probes/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "세 프로브의 역할이 각각 다르다 — **liveness** 는 컨테이너를 **재시작**할지, **readiness** 는 **트래픽을 보낼지**(실패하면 서비스의 EndpointSlice 에서 파드 IP 가 빠진다), **startup** 은 느린 초기화를 기다려 준다(성공 전까지 나머지 둘을 실행하지 않는다)"
+        }
+      ]
+    },
+    {
+      "situation": "메모리 사용량이 **예측 가능**하고 축출되면 안 되는 워크로드",
+      "pick": "메모리 `requests == limits`(Guaranteed)",
+      "over": "limits 만 크게 잡기",
+      "why": "노드 압박 시 축출 순서가 **BestEffort → Burstable → Guaranteed** 다. 중요한 워크로드를 뒤로 보내려면 등급을 올려야 하고, 그 조건이 requests == limits 다",
+      "tradeoff": "여유 자원이 남아도 못 쓰고, 노드 배치가 빡빡해진다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Pod Quality of Service Classes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests`/`limits` 를 어떻게 적었느냐가 파드의 **QoS 등급**(Guaranteed · Burstable · BestEffort)을 정하고, **노드가 압박을 받으면 BestEffort → Burstable → Guaranteed 순으로 축출**된다"
+        }
+      ]
+    },
+    {
+      "situation": "초기화에 **수십 초 이상** 걸리는 애플리케이션이다",
+      "pick": "startup 프로브",
+      "over": "liveness 의 `initialDelaySeconds` 를 크게 잡기",
+      "why": "initialDelay 를 늘리면 **평상시 장애 감지도 그만큼 늦어진다.** startup 프로브는 기동 때만 기다려 주고, 성공한 뒤에는 liveness 가 정상 주기로 돈다",
+      "tradeoff": "프로브가 하나 더 늘어 설정이 복잡해진다 — 대신 기동과 운영의 기준을 분리할 수 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Liveness, Readiness, and Startup Probes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/probes/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "세 프로브의 역할이 각각 다르다 — **liveness** 는 컨테이너를 **재시작**할지, **readiness** 는 **트래픽을 보낼지**(실패하면 서비스의 EndpointSlice 에서 파드 IP 가 빠진다), **startup** 은 느린 초기화를 기다려 준다(성공 전까지 나머지 둘을 실행하지 않는다)"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "`requests`/`limits` 를 아예 안 적는다",
+      "why": "안 적어도 잘 뜬다. 그리고 적으면 배치가 까다로워지니 미루게 된다",
+      "fix": "**BestEffort 는 노드가 압박받을 때 가장 먼저 축출된다.** 최소한 메모리 requests 는 적는다. 값은 실측(실제 사용량)에서 시작해 조정한다",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Pod Quality of Service Classes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests`/`limits` 를 어떻게 적었느냐가 파드의 **QoS 등급**(Guaranteed · Burstable · BestEffort)을 정하고, **노드가 압박을 받으면 BestEffort → Burstable → Guaranteed 순으로 축출**된다"
+        }
+      ]
+    },
+    {
+      "trap": "liveness 프로브에 DB·외부 API 검사를 넣는다",
+      "why": "\"살아 있다\"를 넓게 해석한다. 의존성이 죽으면 이 서비스도 일을 못 하니 맞는 말처럼 들린다",
+      "fix": "**liveness 는 재시작이 답일 때만.** 의존성은 **readiness** 로 옮긴다 — 트래픽만 끊고 파드는 살려 둔다. 안 그러면 DB 가 흔들릴 때 **전 파드가 동시에 재시작**한다",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Liveness, Readiness, and Startup Probes",
+          "url": "https://kubernetes.io/docs/concepts/workloads/pods/probes/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "세 프로브의 역할이 각각 다르다 — **liveness** 는 컨테이너를 **재시작**할지, **readiness** 는 **트래픽을 보낼지**(실패하면 서비스의 EndpointSlice 에서 파드 IP 가 빠진다), **startup** 은 느린 초기화를 기다려 준다(성공 전까지 나머지 둘을 실행하지 않는다)"
+        }
+      ]
+    },
+    {
+      "trap": "readiness 를 `200 OK` 만 돌려주는 엔드포인트로 만든다",
+      "why": "가장 쉽게 구현된다. 그리고 평소에는 아무 문제가 없다",
+      "fix": "**실제로 요청을 처리할 수 있는지**를 본다(커넥션 풀 준비, 캐시 워밍업, 필수 의존성). 그렇지 않으면 **롤링 배포 때마다 5xx** 가 새어 나가고 원인을 못 찾는다",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Update a Deployment Without Downtime (rolling update)",
+          "url": "https://kubernetes.io/docs/tasks/run-application/update-deployment-rolling/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "롤링 업데이트는 옛 파드를 새 파드로 **점진적으로 교체**해 서비스를 유지한다. `maxUnavailable`·`maxSurge` 로 속도를 정하고, 백분율은 원하는 복제 수 기준으로 **maxUnavailable 은 내림, maxSurge 는 올림**으로 계산된다"
+        }
+      ]
+    },
+    {
+      "trap": "메모리 limit 을 애플리케이션 설정과 따로 정한다",
+      "why": "`docker` 문서의 그 사고와 같다 — JVM 힙이나 워커 수를 컨테이너 한도와 무관하게 잡는다",
+      "fix": "**애플리케이션이 컨테이너 한도를 인식하도록** 설정하고(요즘 런타임은 대체로 지원한다), 힙 + 비힙 + 오버헤드가 limit 안에 들어오게 계산한다. `OOMKilled` 는 애플리케이션 로그에 아무것도 안 남긴다",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Resource Management for Pods and Containers",
+          "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests` 와 `limits` 가 하는 일이 다르다는 것의 1차 자료. **`requests` 는 스케줄러가 노드를 고르는 기준**(요청되지 않은 여유 용량이 있어야 배치된다)이고, **`limits` 는 실행 중의 상한**이다 — 메모리 한도를 넘으면 커널이 OOM 으로 프로세스를 죽인다"
+        }
+      ]
+    },
+    {
+      "trap": "CPU limit 을 습관적으로 건다",
+      "why": "메모리에 limit 을 거니 CPU 도 걸어야 할 것 같다. 그런데 CPU 초과는 **죽이지 않고 느리게** 만든다",
+      "fix": "CPU 는 **requests 로 몫을 확보**하고 limit 은 신중히 정한다. 불필요한 CPU limit 은 **여유 자원이 남는데도 스로틀링**을 만들고, 그 지연은 애플리케이션 지표에서 원인 없이 나타난다",
+      "sources": [
+        {
+          "title": "Kubernetes 문서 — Resource Management for Pods and Containers",
+          "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "publisher": "Kubernetes",
+          "kind": "docs",
+          "summary": "`requests` 와 `limits` 가 하는 일이 다르다는 것의 1차 자료. **`requests` 는 스케줄러가 노드를 고르는 기준**(요청되지 않은 여유 용량이 있어야 배치된다)이고, **`limits` 는 실행 중의 상한**이다 — 메모리 한도를 넘으면 커널이 OOM 으로 프로세스를 죽인다"
+        }
+      ]
+    },
+    {
+      "trap": "YAML 을 아무도 리뷰하지 않는다",
+      "why": "코드가 아니라 설정처럼 느껴진다. 그런데 거기에 자원·프로브·복제 수·롤링 속도가 전부 들어 있다",
+      "fix": "**매니페스트를 코드로 취급한다** — 리뷰·린트·정책 검사(필수 필드 강제)를 붙인다. 이 문서의 지뢰 다섯 개가 전부 YAML 한 줄에서 나온다는 점이 근거다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "원하는 상태",
+      "en": "desired state",
+      "what": "\"이렇게 되어 있어야 한다\"고 선언한 것. 컨트롤러가 현재 상태를 계속 여기로 밀어붙인다"
+    },
+    {
+      "term": "컨트롤러 루프",
+      "en": "control loop",
+      "what": "현재 상태와 원하는 상태를 비교해 차이를 메우는 반복. 이 시스템의 문법"
+    },
+    {
+      "term": "파드",
+      "en": "pod",
+      "what": "함께 배치·실행되는 컨테이너 묶음. 스케줄링과 네트워크의 최소 단위"
+    },
+    {
+      "term": "스케줄러",
+      "en": "scheduler",
+      "what": "파드를 어느 노드에 놓을지 정하는 것. 판단 기준은 `limits` 가 아니라 **`requests`**"
+    },
+    {
+      "term": "QoS 등급",
+      "en": "QoS class",
+      "what": "Guaranteed·Burstable·BestEffort. 노드 압박 시 **축출 순서**를 정한다"
+    },
+    {
+      "term": "축출",
+      "en": "eviction",
+      "what": "노드 자원이 부족해 파드를 내보내는 것. OOMKilled 와는 다른 사건이다"
+    },
+    {
+      "term": "프로브",
+      "en": "probe",
+      "what": "컨테이너 상태 검사. liveness(재시작)·readiness(트래픽)·startup(초기화 대기)"
+    },
+    {
+      "term": "롤링 업데이트",
+      "en": "rolling update",
+      "what": "옛 파드를 점진적으로 새 파드로 교체하는 배포. `maxSurge`·`maxUnavailable` 로 속도를 정한다"
+    },
+    {
+      "term": "매니페스트",
+      "en": "manifest",
+      "what": "원하는 상태를 적은 YAML. **설정이 아니라 코드로 취급해야 한다**"
+    }
+  ],
+  "drills": [
+    {
+      "task": "**스케줄 가능/불가를 손으로 계산한다.** 노드 3대(각 CPU 4코어·메모리 8Gi, 시스템 예약 1코어·1Gi)와 파드 명세 5개(requests 를 각각 다르게)를 종이에 적고, 스케줄러가 되어 **어디에 놓을지** 배치한다. 그다음 파드 하나의 requests 를 두 배로 올려 **`Pending` 이 생기는 지점**을 찾는다",
+      "done_when": "어떤 파드가 왜 `Pending` 이 되는지 설명할 수 있고, **limits 를 아무리 키워도 배치 결과는 안 바뀐다**는 것을 확인했다",
+      "why": "`requests` 와 `limits` 를 헷갈리는 것이 이 낱말의 첫 번째 벽이다. 손으로 배치해 보면 둘이 다른 층의 값이라는 게 남는다",
+      "hours": 1
+    },
+    {
+      "task": "**프로브를 잘못 걸었을 때의 사고를 시나리오로 쓴다.** 세 가지 상황 — ①DB 가 30초간 응답하지 않는다 ②새 버전의 초기화가 60초 걸린다 ③메모리 누수로 서서히 느려진다 — 에 대해, `liveness 만 있음` / `readiness 만 있음` / `셋 다 적절히` 세 구성에서 **각각 무슨 일이 벌어지는지** 표를 채운다",
+      "done_when": "①에서 liveness 에 의존성 검사를 넣으면 **전 파드가 동시에 재시작**한다는 것, ②에서 startup 프로브가 없으면 `CrashLoopBackOff` 가 된다는 것을 표로 설명할 수 있다",
+      "why": "프로브는 설정 세 줄이지만 사고의 형태를 결정한다. 시나리오를 미리 써 두면 실제 장애에서 판단이 빨라진다",
+      "hours": 1
+    },
+    {
+      "task": "**도입 판단표를 만든다.** 자기 서비스(또는 관심 있는 공고의 서비스)에 대해 이 문서의 `when-not` 표 여섯 줄을 채우고, **결론과 근거를 한 문단**으로 쓴다. 결론이 '도입'이면 **누가 운영할 것인지**를, '미도입'이면 **어떤 신호가 오면 다시 볼 것인지**를 함께 적는다",
+      "done_when": "결론이 취향이 아니라 **조건 여섯 줄**에서 나왔고, 재검토 시점이나 담당이 명시됐다",
+      "why": "이 낱말에서 가장 값비싼 실수는 잘못 쓰는 것이 아니라 **필요 없는데 도입하는 것**이다. 그리고 그 판단은 대개 문서로 남지 않아 몇 년 뒤 아무도 이유를 모른다",
+      "no_hardware": "클러스터가 없어도 되는 실습이다 — 오히려 도입 전에 해야 하는 일이다",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "명령형과 선언형의 차이를 파드가 죽는 상황으로 설명할 수 있는가?",
+    "`requests` 와 `limits` 는 각각 언제 쓰이며, 스케줄러가 보는 것은 어느 쪽인가?",
+    "메모리 limit 을 넘으면 무슨 일이 일어나고, CPU limit 을 넘으면 무슨 일이 일어나는가?",
+    "아무 자원도 적지 않은 파드는 어떤 QoS 등급이며 왜 위험한가?",
+    "liveness 에 DB 연결 검사를 넣으면 어떤 사고가 나는가?",
+    "배포 중에만 5xx 가 난다. 가장 먼저 의심할 것은?",
+    "Kubernetes 를 쓰지 않는 편이 나은 조건을 세 가지 댈 수 있는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Docker, Kubernetes 환경에 대한 깊은 이해와 운영 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372131",
+      "where": "아르템코퍼레이션 채용공고 (원티드)",
+      "what_it_shows": "**둘이 거의 언제나 붙어 나온다**(`docker` 문서의 동반 53.9%). 그리고 요구가 '사용'이 아니라 **'깊은 이해와 운영'** 이다 — 이 문서가 개념 나열 대신 자원·프로브·도입 판단을 다루는 이유"
+    },
+    {
+      "quote": "• Kubernetes 환경 기반의 마이크로서비스 설계 및 구축",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373999",
+      "where": "로앤컴퍼니(lawtalk) 채용공고 (원티드)",
+      "what_it_shows": "**MSA 와 한 묶음**으로 요구된다 — 서비스가 여럿일 때 값을 한다는 이 문서의 판단 기준이 공고에 그대로 나타난 형태"
+    },
+    {
+      "quote": "• Kubernetes, Docker, GitHub Actions 등 컨테이너 / CI/CD 환경 구축 및 운영 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/259710",
+      "where": "베이글코드(Bagelcode) 채용공고 (원티드)",
+      "what_it_shows": "**CI/CD 와 묶인다** — 배포가 잦다는 뜻이고, 그것이 롤링 업데이트와 프로브가 실무의 핵심이 되는 이유다"
+    },
+    {
+      "quote": "• 쿠버네티스 자격증 보유",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/337341",
+      "where": "와탭랩스(WhaTapLabs) 채용공고 (원티드)",
+      "what_it_shows": "**자격증이 요건으로 적히는 드문 낱말**이다 — 운영 지식의 범위가 넓어 '해 봤다'로는 검증이 어렵다는 시장의 판단이 드러난다"
+    },
+    {
+      "quote": "• Linux GPU 서버 운영, Docker·K8s 기반 LLM 추론 환경 구축",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/376020",
+      "where": "테크핀레이팅스 채용공고 (원티드)",
+      "what_it_shows": "**GPU·LLM 추론 쪽으로도 요구된다** — 자원 요청/제한이 GPU 로 확장되는 영역이고, 이 문서의 `requests`/`limits` 이해가 그대로 쓰이는 자리"
+    }
+  ],
+  "related": [
+    {
+      "slug": "docker",
+      "how": "그 문서가 \"컨테이너는 배포 문제를 없애지 않는다, 옮겼을 뿐이다\"로 끝난 자리에서 시작한다. **cgroup·OOMKilled·PID 1 이 여기서 스케줄링·프로브 문제로 되돌아온다**"
+    },
+    {
+      "slug": "circuit-breaker",
+      "how": "liveness 에 의존성 검사를 넣으면 DB 장애가 **전 파드 동시 재시작**으로 번진다 — 그 문서가 다룬 연쇄 장애가 인프라 층에서 재현되는 형태"
+    },
+    {
+      "slug": "multi-tenancy",
+      "how": "여러 팀이 한 클러스터를 나눠 쓰는 것도 테넌시 문제다. 네임스페이스·쿼터·RBAC 이 그 격리 수단이고, **시끄러운 이웃**이 그대로 나타난다"
+    },
+    {
+      "slug": "observability",
+      "how": "**아직 없는 문서.** 디버깅 경로가 애플리케이션→컨테이너→파드→노드→클러스터로 길어지므로, 어느 층인지 가르는 지표가 없으면 운영이 성립하지 않는다"
+    }
+  ],
+  "open_questions": [
+    "`market` 은 `tech_relations.json` 에서 그대로 옮겼다(Kubernetes · 인프라/클라우드 · 1,182건 · 16.4%, 2026-09-04 스냅샷). **동반 목록(`with`)은 그 파일에 없어** 옮기지 않았다. 직접 세면 `Kubernetes|K8s|쿠버네티스|EKS|GKE|Helm` 기준 **1,999건(모집중 979)** 인데, `kafka` 때와 같이 **집계 범위가 달라 섞지 않고 둘 다 밝힌다**",
+    "**버전을 본문에 못 박지 않았다.** 인용한 내용(requests/limits 의 역할, QoS 등급과 축출 순서, 세 프로브, 롤링 업데이트의 maxSurge/maxUnavailable)은 오래 안정적인 개념이지만, **Kubernetes 는 버전이 빨리 오르고 API 가 폐기된다** — 설정 이름과 기본값은 자기 클러스터 버전 문서를 봐야 한다",
+    "**네트워킹(CNI·Service·Ingress·NetworkPolicy)과 스토리지(CSI·PV/PVC)는 다루지 않았다.** 각각 문서 하나가 필요한 주제이고, 이 문서는 `docker` 가 남긴 질문(자원·헬스체크·배포·도입 판단)이라는 한 축만 맡았다",
+    "**오토스케일링**(HPA/VPA/Cluster Autoscaler)은 '오토스케일러가 있다'까지만 적었다. 지표 선택과 스케일 지연은 별도 주제이고, 잘못 설정하면 `backpressure` 의 진동 문제가 인프라 층에서 재현된다",
+    "**GPU·특수 자원의 requests/limits** 는 확인하지 않았다(공고에 LLM 추론 환경이 나옴). 확장 자원은 정수 단위이고 오버커밋이 안 되는 등 규칙이 다르다 — 필요할 때 해당 문서를 열어야 한다"
+  ],
+  "sources": [
+    {
+      "title": "Kubernetes 문서 — Resource Management for Pods and Containers",
+      "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+      "publisher": "Kubernetes",
+      "kind": "docs",
+      "summary": "`requests` 와 `limits` 가 하는 일이 다르다는 것의 1차 자료. **`requests` 는 스케줄러가 노드를 고르는 기준**(요청되지 않은 여유 용량이 있어야 배치된다)이고, **`limits` 는 실행 중의 상한**이다 — 메모리 한도를 넘으면 커널이 OOM 으로 프로세스를 죽인다"
+    },
+    {
+      "title": "Kubernetes 문서 — Pod Quality of Service Classes",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+      "publisher": "Kubernetes",
+      "kind": "docs",
+      "summary": "`requests`/`limits` 를 어떻게 적었느냐가 파드의 **QoS 등급**(Guaranteed · Burstable · BestEffort)을 정하고, **노드가 압박을 받으면 BestEffort → Burstable → Guaranteed 순으로 축출**된다"
+    },
+    {
+      "title": "Kubernetes 문서 — Liveness, Readiness, and Startup Probes",
+      "url": "https://kubernetes.io/docs/concepts/workloads/pods/probes/",
+      "publisher": "Kubernetes",
+      "kind": "docs",
+      "summary": "세 프로브의 역할이 각각 다르다 — **liveness** 는 컨테이너를 **재시작**할지, **readiness** 는 **트래픽을 보낼지**(실패하면 서비스의 EndpointSlice 에서 파드 IP 가 빠진다), **startup** 은 느린 초기화를 기다려 준다(성공 전까지 나머지 둘을 실행하지 않는다)"
+    },
+    {
+      "title": "Kubernetes 문서 — Update a Deployment Without Downtime (rolling update)",
+      "url": "https://kubernetes.io/docs/tasks/run-application/update-deployment-rolling/",
+      "publisher": "Kubernetes",
+      "kind": "docs",
+      "summary": "롤링 업데이트는 옛 파드를 새 파드로 **점진적으로 교체**해 서비스를 유지한다. `maxUnavailable`·`maxSurge` 로 속도를 정하고, 백분율은 원하는 복제 수 기준으로 **maxUnavailable 은 내림, maxSurge 는 올림**으로 계산된다"
+    }
+  ]
+}

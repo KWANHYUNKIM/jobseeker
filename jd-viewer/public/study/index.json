@@ -644,6 +644,23 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "kubernetes",
+      "title": "Kubernetes",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**\"원하는 상태\"를 적어 두면 시스템이 계속 그 상태로 되돌리는** 컨테이너 운영 시스템이다. 파드·디플로이먼트 같은 이름들이 아니라 **이 되돌리기(컨트롤러 루프)** 가 본체이고, 그래서 **노드와 파드가 언제든 사라진다는 전제** 위에 모든 것이 얹혀 있다.",
+      "aliases": [
+        "Kubernetes",
+        "쿠버네티스",
+        "K8s",
+        "k8s"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
