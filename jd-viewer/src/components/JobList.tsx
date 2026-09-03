@@ -52,7 +52,6 @@ export function JobList({ jobs }: Props) {
             >
               <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
                 <span className="tabular-nums">{start + i + 1}</span>
-                <span className="px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border)">{j.site}</span>
                 <CompanyMark name={j.company} size={16} />
                 <span className="text-(--color-accent) truncate">{j.company}</span>
                 <SizeBadge size={j.company_size} />
@@ -99,7 +98,6 @@ export function JobList({ jobs }: Props) {
           <thead className="jd-panel-head sticky top-0 z-10">
             <tr className="text-left text-(--color-muted) font-medium">
               <th className="px-3 py-2 font-medium w-10">#</th>
-              <th className="px-3 py-2 font-medium w-20">사이트</th>
               <th className="px-3 py-2 font-medium w-48">회사</th>
               <th className="px-3 py-2 font-medium">공고 제목</th>
               <th className="px-3 py-2 font-medium w-44">분류 직군</th>
@@ -119,11 +117,6 @@ export function JobList({ jobs }: Props) {
                   className="border-b border-(--color-border) cursor-pointer transition hover:bg-(--hover)"
                 >
                   <td className="px-3 py-2 text-(--color-muted) tabular-nums">{start + i + 1}</td>
-                  <td className="px-3 py-2">
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-(--color-bg) text-(--color-muted) border border-(--color-border)">
-                      {j.site}
-                    </span>
-                  </td>
                   <td className="px-3 py-2 text-(--color-muted) max-w-[12rem]" title={j.company}>
                     <span className="flex items-center gap-1.5 min-w-0">
                       <CompanyMark name={j.company} size={16} />
