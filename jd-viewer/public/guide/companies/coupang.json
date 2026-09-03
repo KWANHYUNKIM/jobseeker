@@ -291,6 +291,12 @@
         "evidence": "`Director, Program Management - Catalog AI & Quality (Taiwan Relocation)` 처럼 **제목에 `Relocation` 이 명시된 공고**가 있고, `Manager,Front-end Engineering (TW Front Engineering)` 처럼 대만 조직 자리가 따로 있다. 공시상 대만은 `Developing Offerings` 에 속한다.",
         "so_what": "**제목의 괄호를 반드시 읽는다** — 근무지가 한국이 아닐 수 있다. 반대로 **해외 근무를 원한다면 이 회사가 실제 경로를 열어 두고 있다는 뜻**이기도 하다.",
         "confidence": "inferred"
+      },
+      {
+        "reading": "**백엔드 공통 스택이 Java 로 보인다 — 공고 절반에 나온다**",
+        "evidence": "모집중 113건의 담당업무·자격요건에서 `Java`(JavaScript 제외)를 세니 **57건**이었다. 지금까지 쓴 공고 셋이 모두 그렇다 — `Global Operations Technology`(`Strong familiarity developing with Java and the Spring Framework`), `Fraud Detection`(`Strong proficiency in Java-based backend development`), `Principal, Security Engineer`(`Strong scripting or software development skills in Python, Java, or similar languages`). ⚠️ 다만 마지막 건은 **`Python, Java, or similar`** 로 열어 두었다.",
+        "so_what": "**이 회사 백엔드를 노린다면 Java 를 준비의 중심에 둔다** — 문법이 아니라 **대규모 운영에서 겪는 것들**(GC 로 멈추는 순간과 응답 꼬리, 스레드풀·커넥션풀, 프레임워크 버전 올리기)이 면접의 재료가 된다. ⚠️ **반대로 Java 가 없는 절반도 있으므로**(데이터·ML·보안 일부는 Python 계열) **지원할 공고의 본문에서 직접 확인**한다.",
+        "confidence": "inferred"
       }
     ]
   },
@@ -637,6 +643,178 @@
             "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8064140",
             "publisher": "쿠팡 채용",
             "summary": "경력 13년 이상. Risk, Fraud & Trust Engineering 조직이고 Flink·Kafka·Spark Streaming 과 Java 를 명시한다"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8124210",
+      "title": "Principal, Security Engineer",
+      "site": "ats",
+      "closed": false,
+      "verdict": "**제목은 보안이지만 실제 주제는 `신원과 접근 권한(IAM)` 하나다.** 회사 안의 **누가 무엇에 접근할 수 있는지를 관리하는 기반**을 현대화하는 자리이고, 본문이 그 규모를 밝힌다 — `one of the largest and most complex technology environments in the region`. **경력 12년 이상**이며, ⚠️ **`Active Directory` 와 `Entra` 에 대한 깊은 전문성**을 요구한다. 즉 **웹 서비스 보안이 아니라 사내 인프라 신원 관리**가 이 자리의 세계다.",
+      "fit": {
+        "must_have": [
+          "**IAM·디렉터리 서비스·인프라 보안 실무 12년 이상**",
+          "**`Microsoft Active Directory` 와 `Entra`** 를 대규모 환경에서 운영·설계·문제 해결한 깊은 경험",
+          "**여러 도메인이 얽힌 AD 환경**의 설계·이전·현대화 경험",
+          "**`LDAP, Kerberos, Group Policy, DNS`** 와 인증 프로토콜, 디렉터리 서비스 아키텍처에 대한 이해",
+          "**고가용성·미션 크리티컬 신원 인프라**를 대규모로 지탱한 경험",
+          "**`Python, Java` 등으로 직접 만드는 능력** — `building engineering solutions rather than relying solely on commercial products`",
+          "학사 학위 또는 그에 준하는 실무 경험"
+        ],
+        "can_learn": [
+          "⚠️ **이 자리는 모의해킹·탐지·포렌식 자리가 아니다** — 같은 회사에 그런 공고가 따로 있다(회사 브리핑 신호 2번). **`Active Directory` 경험이 없으면 지원 요건이 사실상 막힌다**",
+          "클라우드 신원 공급자 연동 — 본문이 `hybrid environment that includes Active Directory, cloud identity providers, and internally developed solutions` 라고 밝힌다",
+          "⚠️ **본문이 영어**이고 자체 채용 사이트(ats) 공고다",
+          "⚠️ 담당업무에 **`as the highest level of technical escalation`** 이 있다 — **최종 에스컬레이션을 받는 자리**다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "**신원 인프라가 멈추면 회사가 멈춘다**",
+          "from": "task",
+          "quote": "Experience supporting highly available, mission-critical identity infrastructure at scale.",
+          "priority": "core",
+          "why": "**`mission-critical` 이라는 표현이 과장이 아니다.** 신원 시스템은 다른 모든 시스템의 앞에 있다 — 로그인이 안 되면 **개발자도 물류 현장 직원도 고객센터도 일을 못 한다.** 게다가 이 층은 **고쳐야 할 사람도 못 들어가는** 특수한 장애를 만든다(잠금 상태). 그래서 이 도메인의 설계는 다른 곳과 다르다: **인증 경로가 여러 개여야 하고**, 비상용 계정과 그 사용 기록이 있어야 하며, **디렉터리는 여러 곳에 복제**돼 하나가 죽어도 인증이 이어져야 한다. 이 회사는 물류 현장까지 24시간 돌아가므로 **정비 창을 잡는 것 자체가 문제**가 된다.",
+          "gap_check": "인증 시스템이 죽었을 때 복구할 사람이 로그인할 수 있나? 비상 계정을 어떻게 관리하나?",
+          "drill": "**잠금 상태를 만들어 본다.** ① 인증 서버를 두고 애플리케이션이 그것을 통해서만 로그인하게 만들고 ② **인증 서버를 죽여** 아무도 못 들어가는 상태를 재현하고 ③ **비상 계정 경로**를 만들되 사용 시 기록이 남게 하고 ④ 인증 서버를 두 대로 늘려 하나가 죽어도 되는지 확인하고 ⑤ **복제 지연 중에 권한을 바꾸면** 어느 쪽이 이기는지 관찰한다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**Active Directory — 오래됐지만 회사의 중심에 있다**",
+          "from": "qualification",
+          "quote": "Deep expertise in administering, engineering, and troubleshooting Microsoft Active",
+          "priority": "core",
+          "why": "**대규모 기업에서 사내 신원의 중심은 여전히 AD 인 경우가 많고, 이 공고가 그 사실을 보여 준다.** 웹 서비스만 다뤄 온 엔지니어에게 이 세계는 낯설다 — 사용자·그룹·컴퓨터가 **트리 구조로 관리**되고, 정책이 **Group Policy 로 내려가며**, 인증은 **Kerberos 티켓**으로 돌고, **DNS 가 잘못되면 인증이 통째로 깨진다**(AD 는 DNS 에 의존한다). 그리고 오래 운영된 AD 는 **아무도 지우지 못하는 그룹과 권한이 쌓여** 있어, 현대화의 절반이 **정리**가 된다.",
+          "gap_check": "Kerberos 인증이 어떤 순서로 이뤄지는지 설명할 수 있나? AD 가 DNS 에 의존한다는 것이 무슨 뜻인지 아나?",
+          "drill": "**작은 디렉터리를 세워 본다.** ① 디렉터리 서버(오픈소스 LDAP 로도 개념은 같다)를 띄우고 사용자·그룹을 만들고 ② 애플리케이션이 **LDAP 으로 인증**하게 붙이고 ③ **그룹 중첩**을 만들어 권한이 어떻게 상속되는지 보고 ④ DNS 를 잘못 설정해 **인증이 깨지는 것**을 재현하고 ⑤ 사용자가 퇴사했을 때 **어디까지 지워야 하는지** 목록을 만든다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "여러 도메인을 하나로 합치는 일",
+          "from": "qualification",
+          "quote": "Experience designing, migrating, or modernizing complex multi-domain Active Directoryenvironments.",
+          "priority": "core",
+          "why": "**`multi-domain` 이 나온 것은 이 회사가 여러 법인·여러 나라에 걸쳐 있기 때문이다**(회사 브리핑: 대만 사업, `쿠팡로지스틱스서비스` 같은 별도 법인). 회사가 커지거나 합병하면 **디렉터리가 여러 개 생기고**, 그러면 같은 사람이 여러 계정을 갖게 되고 권한이 어디에 있는지 아무도 모르게 된다. 합치는 일(`migrating`)은 기술보다 **순서와 되돌림 계획**이 어렵다 — 사용자는 매일 로그인하고 있고, **한 번 옮긴 계정은 되돌리기 힘들다.** 그래서 **병행 기간을 어떻게 버틸지**가 계획의 본체가 된다.",
+          "gap_check": "같은 사람이 여러 계정을 가진 상태를 어떻게 정리하나? 이전 중 병행 기간의 인증을 어떻게 다루나?",
+          "drill": "**두 디렉터리를 합쳐 본다.** ① 디렉터리 두 개를 만들고 **같은 사람이 양쪽에 있는 상황**을 만들고 ② 어느 쪽이 진짜인지 정하는 규칙을 세우고 ③ **한쪽에서 다른 쪽으로 옮기되 옛 쪽으로도 로그인이 되는 기간**을 만들고 ④ 그 기간에 **권한을 바꾸면 어떻게 되는지** 확인하고 ⑤ 되돌리는 절차를 쓴다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**입사부터 퇴사까지 — 권한의 생애주기**",
+          "from": "task",
+          "quote": "Engineer solutions that strengthen authentication, directory services, access management, and identity lifecycle processes.",
+          "priority": "core",
+          "why": "**`identity lifecycle` 이 이 도메인에서 가장 자주 무너지는 곳이다.** 사람은 입사하고, 팀을 옮기고, 휴직하고, 퇴사한다. **입사할 때 권한을 주는 것은 잘 되지만 옮기거나 나갈 때 회수하는 것은 잘 안 된다** — 그래서 오래된 회사일수록 **아무도 안 쓰는데 살아 있는 권한**이 쌓인다(그리고 그게 사고의 통로가 된다). 이 회사는 **물류 현장 인력까지 포함해 사람이 많고 이동이 잦아** 문제가 더 크다. 대책은 사람의 성실함이 아니라 **인사 시스템의 변화가 자동으로 권한에 반영되는 구조**다.",
+          "gap_check": "퇴사자의 권한이 남아 있는지 어떻게 확인하나? 팀을 옮긴 사람의 옛 권한은 누가 회수하나?",
+          "drill": "**자동 회수를 만든다.** ① 인사 정보(입사·부서 이동·퇴사)를 흉내 내는 원천을 만들고 ② 그 변화를 받아 **권한을 자동으로 부여·회수**하게 하고 ③ 부서 이동 시 **옛 권한을 언제 회수할지**(즉시 / 유예 기간) 두 방식을 만들고 ④ **자동으로 못 지우는 권한**(수동으로 준 것, 외부 시스템)을 찾아내는 점검을 붙이고 ⑤ 회수되지 않은 권한 목록을 주기적으로 보고하게 한다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**사서 쓰지 말고 만들라고 적혀 있다**",
+          "from": "qualification",
+          "quote": "Experience automating operational processes and building engineering solutions rather than relying solely on commercial products.",
+          "priority": "core",
+          "why": "**보안·IAM 영역은 상용 제품이 많은데, 이 공고는 명시적으로 반대 방향을 요구한다.** 이유는 규모에 있다 — 사람과 시스템이 아주 많아지면 **제품이 제공하는 기본 기능으로는 안 맞는 요구**가 생기고, 라이선스 비용이 사람 수에 비례해 커지며, **제품이 못 하는 자동화를 사람이 손으로 메우게** 된다. 그래서 이 자리는 **`Python, Java` 로 직접 도구를 만드는 능력**을 요구한다. ⚠️ 다만 담당업무에 `Evaluate and integrate modern identity technologies` 도 있으므로 **전부 직접 만들라는 뜻은 아니고, 어디까지 사고 어디부터 만들지 가르는 판단**이 요구된다.",
+          "gap_check": "운영 작업 중 손으로 하던 것을 자동화해 본 적이 있나? 제품을 사는 것과 만드는 것의 경계를 어떻게 정하나?",
+          "drill": "**손으로 하던 것 하나를 없앤다.** ① 권한 신청·승인 과정을 흉내 내 만들고(엑셀·메일로 하던 것을 가정) ② **신청 → 승인 → 반영 → 기록**을 코드로 잇고 ③ 승인자가 없을 때·거부됐을 때의 흐름을 넣고 ④ **분기마다 권한을 다시 확인하는 절차**를 자동화하고 ⑤ 이 도구를 만드는 비용과 상용 제품 구매 비용을 **3년치로 비교**한다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "최종 에스컬레이션을 받는다는 것",
+          "from": "task",
+          "quote": "Troubleshoot and resolve complex directory service, authentication, and integration issues as the highest level of technical escalation.",
+          "priority": "high",
+          "why": "**`the highest level` 이라는 표현은 이 사람 뒤에 물어볼 사람이 없다는 뜻이다.** 신원 문제는 특히 진단이 어렵다 — 증상이 **`가끔 로그인이 안 된다`** 처럼 모호하고, 원인이 여러 층(클라이언트·네트워크·DNS·디렉터리 복제·애플리케이션 설정)에 걸쳐 있으며, **재현이 안 된다**. 그래서 이 층위의 실력은 지식보다 **방법**에서 나온다: 증상을 층으로 나눠 좁히고, **로그를 시각으로 정렬해 인과를 맞추고**, 재현 가능한 최소 조건을 만드는 것.",
+          "gap_check": "`가끔 안 된다`는 신고를 좁혀 본 경험이 있나? 여러 시스템의 로그를 시각으로 맞춰 본 적이 있나?",
+          "drill": "**모호한 장애를 만들어 좁힌다.** ① 인증 흐름에 **10% 확률로 실패하는 구간**을 몰래 넣고 ② 다른 사람에게 `가끔 로그인이 안 된다`고만 알리고 ③ 층별로 좁히는 절차를 문서로 만들며 찾고 ④ 각 층에서 **무엇을 봐야 하는지** 목록화하고 ⑤ 다음에 같은 신고가 오면 **몇 분 안에 좁힐 수 있는 도구**를 만든다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "권한이 계속 맞는지 지켜보는 장치",
+          "from": "qualification",
+          "quote": "Strong experience in building continuous controls around AD, Entra and IAM platforms.",
+          "priority": "high",
+          "why": "**`continuous controls` 는 한 번 점검하고 끝내는 것이 아니라 늘 지켜보는 장치를 뜻한다.** 신원 환경은 매일 바뀌므로(사람이 들어오고 나가고 권한을 신청한다) **어제 맞았던 상태가 오늘 틀릴 수 있다.** 그래서 규칙을 코드로 만들어 **상시 검사**한다 — 관리자 권한을 가진 계정이 늘었는가, 비밀번호가 만료되지 않는 계정이 있는가, **오래 안 쓴 계정이 살아 있는가**, 서비스 계정이 사람처럼 쓰이고 있는가. 이건 감사(監査) 대응이기도 하다 — 이 회사는 **미국 상장사**라 내부 통제 요구가 따라온다(회사 브리핑: NYSE `CPNG`).",
+          "gap_check": "권한 상태를 상시로 검사하는 규칙을 만들어 본 적이 있나? 서비스 계정과 사람 계정을 어떻게 구분해 관리하나?",
+          "drill": "**상시 점검을 만든다.** ① 디렉터리에서 계정·그룹을 읽어 오고 ② 규칙 다섯 개를 코드로 쓰고(관리자 수 / 만료 없는 비밀번호 / 90일 미사용 / 주인 없는 계정 / 과도한 그룹 중첩) ③ 위반을 **매일 검사해 목록으로** 내고 ④ **새 위반과 기존 위반을 구분**해 보여 주고 ⑤ 자동으로 고칠 것과 사람이 봐야 할 것을 가른다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "섞여 있는 환경을 하나처럼 보이게",
+          "from": "task",
+          "quote": "Evaluate and integrate modern identity technologies while supporting a hybrid environment that includes Active Directory, cloud identity providers, and internally developed solutions.",
+          "priority": "high",
+          "why": "**세 종류가 공존한다고 공고가 밝힌다** — 사내 AD, 클라우드 신원 공급자, 그리고 **직접 만든 것**. 사용자 입장에서는 **한 번 로그인하면 다 되기를** 기대하므로, 이 셋을 잇는 일이 생긴다(단일 로그인·토큰 교환·권한 매핑). 어려운 부분은 **어느 쪽이 진실인가**다 — 사람 정보는 AD 에 있는데 권한은 클라우드에 있고, 자체 시스템은 또 다른 식별자를 쓴다. 그리고 **한쪽에서 계정을 지워도 다른 쪽에 남아 있으면** 앞의 생애주기 문제가 그대로 재발한다.",
+          "gap_check": "단일 로그인이 어떻게 동작하는지 설명할 수 있나? 여러 시스템에서 같은 사람을 잇는 식별자를 어떻게 정하나?",
+          "drill": "**셋을 이어 본다.** ① 디렉터리 하나, 외부 신원 공급자 하나, 자체 사용자 표 하나를 두고 ② **하나의 식별자로 셋을 잇고** ③ 단일 로그인으로 두 애플리케이션에 들어가게 만들고 ④ **한 곳에서 계정을 비활성화**했을 때 나머지가 어떻게 되는지 확인하고 ⑤ 안 따라오는 곳을 찾아 **동기화 처리**를 붙인다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "기준과 방향을 세우는 몫",
+          "from": "task",
+          "quote": "Help establish architectural direction and technical standards for enterprise identity platforms.",
+          "priority": "high",
+          "why": "**`Principal` 직함에 붙는 일이고, 신원 영역에서 특히 무겁다.** 표준이 없으면 각 팀이 **자기 방식으로 인증을 붙이고**(어떤 곳은 자체 비밀번호, 어떤 곳은 토큰), 그러면 권한을 한눈에 볼 수 없게 되며 **회수도 안 된다.** 그래서 이 자리의 표준은 문서가 아니라 **쓰기 쉬운 기본 경로**여야 한다 — 새 서비스를 만들 때 **가장 쉬운 방법이 곧 올바른 방법**이 되게 만드는 것(라이브러리·템플릿·기본 설정). 그리고 이 회사 규모에서는 **표준을 바꾸는 데 드는 비용**이 크므로, 방향을 정할 때 되돌릴 여지를 남겨야 한다.",
+          "gap_check": "여러 팀이 인증을 각자 붙이는 상황을 정리해 본 적이 있나? 표준을 강제하지 않고 따르게 만드는 방법을 아나?",
+          "drill": "**기본 경로를 만든다.** ① 새 서비스가 인증을 붙이는 **가장 쉬운 방법**(라이브러리 한 줄·템플릿)을 만들고 ② 그 경로를 안 쓰면 무엇이 번거로워지는지 설계하고 ③ 기존 서비스 하나를 그 경로로 옮겨 보고 ④ **옮기는 데 든 시간**을 재고 ⑤ 전사 적용 계획과 **하지 않을 것**을 적는다.",
+          "hours": 12,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**잠금 상태를 재현하고 비상 경로를 만든 기록**",
+          "why": "신원 인프라는 `mission-critical` 이고, 죽으면 **고칠 사람도 못 들어간다**. 인증 서버를 실제로 죽여 그 상태를 만들어 보고 **기록이 남는 비상 계정 경로**까지 만든 기록은 이 도메인의 특수성을 아는 사람의 물건이다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**인사 변화에 따라 권한이 자동 회수되는 구조**와 회수 안 되는 것 목록",
+          "why": "`identity lifecycle` 이 담당업무에 있다. 권한을 주는 것은 누구나 만들지만 **옮기고 나갈 때 회수하는 것**이 늘 무너진다 — 자동으로 못 지우는 권한을 찾아내는 점검까지 있으면 실무를 아는 것이다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**상시 점검 규칙 다섯 개와 새/기존 위반 구분**",
+          "why": "`building continuous controls` 가 자격요건이다. 한 번 점검하고 끝내는 것과 **매일 검사해 새 위반만 드러내는 것**은 다른 일이고, 미국 상장사의 내부 통제 요구와도 직접 이어진다.",
+          "effort": "하루"
+        },
+        {
+          "idea": "**`가끔 로그인이 안 된다`를 좁혀 낸 절차서**",
+          "why": "담당업무에 `as the highest level of technical escalation` 이 있다. 모호한 증상을 층별로 좁히는 절차와 **다음에 몇 분 안에 좁힐 도구**까지 만든 기록은, 지식이 아니라 방법을 가진 사람으로 읽힌다.",
+          "effort": "이틀"
+        }
+      ],
+      "interview": {
+        "process": "**전형 안내가 이 공고 본문에는 없다.** ⚠️ 같은 회사의 다른 자체 채용 사이트 공고에는 `Application Review - 1st Interview - 2nd Interview - Offer` 와 **`12 weeks of probation period`(12주 수습)** 가 명시돼 있으나, 그 공고도 `may vary according to the specific job` 이라고 밝히므로 **이 자리에 그대로 적용된다고 단정하지 않는다.** **본문이 영어**이므로 영어 이력서·면접 가능성을 염두에 둔다.",
+        "expect": [
+          "**인증 시스템이 죽었을 때 복구할 사람이 로그인할 수 있나. 비상 계정을 어떻게 관리했나**",
+          "Kerberos 인증이 어떤 순서로 이뤄지나",
+          "AD 가 DNS 에 의존한다는 것이 무슨 뜻인가",
+          "**여러 도메인의 AD 를 합치거나 이전해 본 경험. 병행 기간을 어떻게 버텼나**",
+          "같은 사람이 여러 계정을 가진 상태를 어떻게 정리했나",
+          "**퇴사자·부서 이동자의 권한 회수를 어떻게 자동화했나**",
+          "자동으로 회수되지 않는 권한을 어떻게 찾아내나",
+          "**상용 제품을 사는 것과 직접 만드는 것의 경계를 어떻게 정했나**",
+          "`가끔 로그인이 안 된다`는 신고를 어떻게 좁혔나",
+          "권한 상태를 상시로 검사하는 규칙을 만들어 본 적이 있나",
+          "서비스 계정과 사람 계정을 어떻게 구분해 관리하나",
+          "**여러 팀이 인증을 각자 붙이는 상황을 어떻게 정리했나**"
+        ],
+        "sources": [
+          {
+            "title": "Principal, Security Engineer",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8124210",
+            "publisher": "쿠팡 채용",
+            "summary": "경력 12년 이상. 실제 주제는 IAM 이며 Active Directory·Entra·LDAP·Kerberos 전문성과 직접 만드는 능력을 요구한다"
           }
         ]
       }
