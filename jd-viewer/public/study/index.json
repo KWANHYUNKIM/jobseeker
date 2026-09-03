@@ -20,6 +20,24 @@
    "updated_at": "2026-09-03"
   },
   {
+   "slug": "gil",
+   "title": "GIL",
+   "category": "runtime",
+   "level": "core",
+   "status": "done",
+   "one_liner": "CPython 안에 하나뿐인 잠금. **한 번에 한 스레드만 파이썬 바이트코드를 실행하게** 만든다. 참조 카운팅을 싸게 지키려고 고른 거래이고, 그 대가로 파이썬의 동시성 선택지 전부가 결정됐다.",
+   "aliases": [
+    "GIL",
+    "전역 인터프리터 락",
+    "global interpreter lock",
+    "자유 스레드",
+    "free-threading"
+   ],
+   "sections": 5,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "gpio-register",
    "title": "GPIO 레지스터",
    "category": "firmware",

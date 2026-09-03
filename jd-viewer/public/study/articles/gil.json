@@ -1,0 +1,711 @@
+{
+ "slug": "gil",
+ "title": "GIL",
+ "title_en": "Global Interpreter Lock",
+ "aliases": [
+  "GIL",
+  "전역 인터프리터 락",
+  "global interpreter lock",
+  "자유 스레드",
+  "free-threading"
+ ],
+ "category": "runtime",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-04",
+ "one_liner": "CPython 안에 하나뿐인 잠금. **한 번에 한 스레드만 파이썬 바이트코드를 실행하게** 만든다. 참조 카운팅을 싸게 지키려고 고른 거래이고, 그 대가로 파이썬의 동시성 선택지 전부가 결정됐다.",
+ "summary": "GIL 은 \"한 번에 한 스레드만 파이썬 바이트코드를 실행한다\"는 규칙을 강제하는 인터프리터 전역 잠금이다. `python` 문서가 *언제 스레드·프로세스·asyncio 를 고르나*를 다뤘다면, 이 문서는 **왜 그 선택지가 그렇게 생겼나**를 다룬다. 답은 파이썬의 메모리 관리에 있다 — 모든 객체가 참조 카운트를 들고 있고, 그 숫자를 스레드 둘이 동시에 고치면 살아 있는 객체가 사라진다. 이걸 막는 방법은 셋이었고(객체마다 락 / 원자적 연산 / 전역 락 하나) CPython 은 **전역 락 하나**를 골랐다. 그 선택이 단일 스레드 성능을 지키고 **C 확장을 스레드 안전 걱정 없이 붙일 수 있게** 만들었으며, numpy 부터 PyTorch 까지 생태계 전체가 그 위에 지어졌다. 그리고 **가장 흔한 오해가 하나 있다 — GIL 은 내 코드를 원자적으로 만들어 주지 않는다.** `counter += 1` 은 여러 바이트코드이고, 그 사이에서 스레드가 바뀐다. 지금은 걷어내는 길이 실제로 열렸다(PEP 703 → **3.13 실험 → 3.14 공식 지원, 다만 기본값은 아니다**).",
+ "market": null,
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 그리고 무엇이 아닌가",
+   "body": "GIL(Global Interpreter Lock)은 CPython 인터프리터에 **하나뿐인 잠금**이다. 파이썬 바이트코드를 실행하려면 이 잠금을 쥐어야 하고, 쥔 스레드는 하나뿐이다.\n\n```\n코어 8개 · 스레드 4개 · CPU 바운드 작업\n\n시간 →\n스레드1  ████        ████        ████\n스레드2      ████        ████\n스레드3          ████        ████\n스레드4              ████\n         ↑ 한 순간에 딱 하나만 실행된다 (코어가 남아도)\n```\n\n**그런데 GIL 이 무엇이 아닌지가 더 중요하다. GIL 은 내 코드를 스레드 안전하게 만들지 않는다.**\n\n```python\ncounter = 0\ndef work():\n    global counter\n    for _ in range(100_000):\n        counter += 1        # ← 원자적이 아니다\n```\n\n`counter += 1` 은 **값을 읽고 → 1을 더하고 → 다시 넣는** 여러 바이트코드다. 인터프리터는 **바이트코드 사이에서 스레드를 바꿀 수 있으므로**, 읽은 뒤 쓰기 전에 다른 스레드가 끼어들면 증가가 사라진다. 스레드 4개로 위 코드를 돌리면 400,000 이 아닌 값이 나온다.\n\n`gpio-register` 문서의 read-modify-write 경쟁과 **완전히 같은 구조**다. MCU 에서는 인터럽트가 끼어들고, 파이썬에서는 인터프리터가 스레드를 바꾼다.\n\n> **GIL 이 지키는 것은 인터프리터의 내부 상태(참조 카운트, 힙 구조)이지 내 변수가 아니다.** 공유 변수를 고칠 때는 GIL 이 있어도 `threading.Lock` 이 필요하다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    },
+    {
+     "title": "Python 표준 라이브러리 — sys.setswitchinterval",
+     "url": "https://docs.python.org/3/library/sys.html#sys.setswitchinterval",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "인터프리터가 스레드를 강제로 바꾸는 간격(기본 5ms)을 읽고 바꾸는 함수"
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "kind": "why",
+   "heading": "왜 생겼나 — 참조 카운팅을 싸게 지키는 방법",
+   "body": "파이썬의 모든 것은 객체이고, 객체마다 **참조 카운트**(자기를 가리키는 이름의 개수)가 붙어 있다. 카운트가 0 이 되면 그 자리에서 메모리를 돌려준다. 단순하고 빠르며 예측 가능한 방식이다.\n\n문제는 스레드다. **카운트를 올리고 내리는 연산이 스레드 둘 사이에서 겹치면 값이 깨진다.**\n\n```\n스레드1: 카운트 읽기(1) → +1 → 쓰기(2)\n스레드2:      카운트 읽기(1) → +1 → 쓰기(2)   ← 3이어야 하는데 2\n```\n\n이 경우 **아무도 안 보는 줄 알고 살아 있는 객체를 지운다**(크래시) 또는 **영원히 안 지운다**(메모리 누수). 참조 카운팅을 쓰는 언어라면 반드시 풀어야 하는 문제이고, 방법은 셋뿐이었다.\n\n| 방법 | 얻는 것 | 잃는 것 |\n|---|---|---|\n| 객체마다 락 | 진짜 병렬 | 모든 연산에 락 비용 — 단일 스레드가 크게 느려진다 |\n| 원자적 연산(atomic) | 락보다 가벼움 | 여전히 비용이 있고, 순환 참조 수집 등 구조 전체를 다시 설계해야 한다 |\n| **전역 락 하나** | **단일 스레드 성능 유지 · 구현이 단순** | **CPU 바운드 병렬성 포기** |\n\n1990년대 초 CPython 은 세 번째를 골랐다. 당시 컴퓨터는 코어가 하나였으니 **잃는 것이 사실상 없었다.**\n\n**그리고 이 선택이 생태계를 만들었다.** GIL 이 있으면 C 확장을 짤 때 스레드 안전을 거의 신경 쓰지 않아도 된다 — 내 C 코드가 도는 동안 다른 파이썬 코드는 실행되지 않으니까. **numpy·pandas·PyTorch·SciPy 가 이 전제 위에서 만들어졌다.** \"파이썬은 느린데 왜 데이터·AI 를 다 하나\"의 답이 그 라이브러리들이고, 그 라이브러리들이 쉽게 만들어질 수 있었던 이유의 일부가 GIL 이다.\n\n> **그래서 GIL 은 실수가 아니라 거래다.** CPU 바운드 병렬성을 내주고 단일 스레드 성능과 C 확장 생태계를 샀다. 30년 뒤 코어가 16개가 되면서 그 거래의 값이 비싸졌고, 그것이 다음 절과 마지막 절의 이야기다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    },
+    {
+     "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython",
+     "url": "https://peps.python.org/pep-0703/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "GIL 을 걷어내는 설계와 그 대가(참조 카운팅 변경·단일 스레드 성능·C 확장 호환)가 정리된 원문"
+    }
+   ]
+  },
+  {
+   "id": "release",
+   "kind": "how",
+   "heading": "언제 풀리나 — 스레드가 여전히 쓸모 있는 이유",
+   "body": "GIL 은 쥐고 안 놓는 잠금이 아니다. **네 가지 순간에 풀린다.** 이 목록이 \"언제 스레드를 써도 되나\"의 답이다.\n\n**① 정해진 간격마다 (강제 전환).** 인터프리터는 일정 시간이 지나면 실행 중인 스레드에게 GIL 을 내놓으라고 요구한다. 기본값은 **5ms** 이고 `sys.getswitchinterval()` 로 확인, `sys.setswitchinterval()` 로 바꿀 수 있다. 이 덕분에 CPU 바운드 스레드가 여러 개여도 **번갈아** 실행된다(빨라지지는 않는다).\n\n**② I/O 를 기다릴 때.** 파일·소켓·DB 를 읽는 시스템 콜에 들어가면 **GIL 을 놓고** 기다린다. 그 사이 다른 스레드가 실행된다. **I/O 바운드 작업에 스레드가 유효한 이유가 이것이고**, `requests` 를 스레드 풀로 감싸는 관행이 여기서 나온다.\n\n**③ C 확장이 명시적으로 놓을 때.** C API 에는 GIL 을 놓고 다시 잡는 매크로(`Py_BEGIN_ALLOW_THREADS` / `Py_END_ALLOW_THREADS`)가 있다. numpy 의 큰 행렬 연산은 이 구간에서 돌기 때문에 **진짜로 여러 코어를 쓴다.** \"파이썬은 병렬이 안 된다\"가 numpy 에서는 틀린 말이 되는 근거다.\n\n**④ `time.sleep()` 등 명시적 양보.** 잠드는 동안 잠금을 쥐고 있을 이유가 없다.\n\n**그래서 판단이 이렇게 갈린다.**\n\n- **기다리는 시간이 대부분이다** → 스레드(또는 asyncio)로 이득을 본다. GIL 은 걸림돌이 아니다.\n- **계산하는 시간이 대부분이다** → 스레드는 무의미하거나 **전환 비용 때문에 더 느려진다.** 프로세스로 나눈다.\n- **계산이 C 라이브러리 안에서 일어난다** → 이미 병렬로 돌고 있을 수 있다. **추측하지 말고 프로파일링한다.**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    },
+    {
+     "title": "Python/C API — Thread State and the Global Interpreter Lock",
+     "url": "https://docs.python.org/3/c-api/init.html#thread-state-and-the-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "C 확장이 GIL 을 놓고 다시 잡는 방법(Py_BEGIN_ALLOW_THREADS 등). numpy 가 병렬로 도는 근거가 여기다"
+    },
+    {
+     "title": "Python 표준 라이브러리 — sys.setswitchinterval",
+     "url": "https://docs.python.org/3/library/sys.html#sys.setswitchinterval",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "인터프리터가 스레드를 강제로 바꾸는 간격(기본 5ms)을 읽고 바꾸는 함수"
+    }
+   ]
+  },
+  {
+   "id": "removal",
+   "kind": "how",
+   "heading": "걷어내는 길 — PEP 703 과 지금의 상태",
+   "body": "GIL 을 없애자는 시도는 20년 넘게 있었고 매번 같은 벽에 막혔다 — **단일 스레드가 느려진다.** 참조 카운팅을 스레드 안전하게 만들려면 카운트 조작마다 비용이 붙고, 그 비용은 스레드를 하나도 안 쓰는 코드까지 물어야 한다.\n\n**PEP 703**(2023)이 그 벽을 넘는 설계를 내놨다. 참조 카운팅 자체를 바꾸는 것이 요점이다 — 자주 쓰이는 객체를 아예 **불멸(immortal)** 로 만들어 카운트를 세지 않고, 소유 스레드 여부에 따라 다른 방식으로 세고(biased reference counting), 락 없는 자료구조를 도입한다. 그리고 **GIL 없는 빌드를 별도로** 제공한다.\n\n진행 상태를 **버전으로 못 박아 적으면** 이렇다.\n\n- **3.12** — 인터프리터마다 GIL 을 따로 두는 길이 들어갔다(**PEP 684**). 한 프로세스 안에 서브인터프리터를 여러 개 띄우고 각자 GIL 을 갖게 하는 방식이다.\n- **3.13** — **자유 스레드(free-threaded) 빌드가 실험적으로** 들어갔다(PEP 703). 기본 빌드가 아니라 별도 빌드다.\n- **3.14** — **PEP 779** 가 받아들여져 자유 스레드 빌드가 **'실험' 딱지를 떼고 공식 지원 단계(2단계)** 가 됐다. **다만 여전히 기본값이 아니라 선택 빌드다.** 이 단계의 조건으로 **단일 스레드 성능 저하 상한(pyperformance 기준 15%)** 과 메모리 상한이 정해졌고, 3.14 시점에는 그 격차가 **한 자릿수~10% 대**로 줄었다.\n- **다음 단계(3단계)** 는 자유 스레드가 **기본값**이 되는 것이고, 그 조건은 별도로 제시돼 있다.\n\n**실무 판단은 아직 조심스럽게 한다.** 자유 스레드 빌드는 ABI 가 달라 **C 확장이 그 빌드용으로 다시 빌드·검증돼야** 하고, 무엇보다 **GIL 이 사라지면 지금까지 GIL 덕분에 조용히 넘어갔던 경쟁 조건이 드러난다.** 오래된 라이브러리를 얹으면 예전에 없던 버그가 나타날 수 있다.\n\n> 그래서 이 문서의 다른 모든 절은 **\"GIL 은 있다\"** 를 전제로 쓰였다. 그 전제가 언제 뒤집히는지는 위 목록의 3단계이고, 그때는 이 문서를 다시 써야 한다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython",
+     "url": "https://peps.python.org/pep-0703/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "GIL 을 걷어내는 설계와 그 대가(참조 카운팅 변경·단일 스레드 성능·C 확장 호환)가 정리된 원문"
+    },
+    {
+     "title": "PEP 779 — Criteria for supported status for free-threaded Python",
+     "url": "https://peps.python.org/pep-0779/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "자유 스레드 빌드가 '실험'을 떼고 공식 지원(2단계)이 되는 조건. 단일 스레드 성능 저하 상한과 메모리 상한이 여기 적혀 있다"
+    },
+    {
+     "title": "PEP 684 — A Per-Interpreter GIL",
+     "url": "https://peps.python.org/pep-0684/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "인터프리터마다 GIL 을 따로 두는 길. 3.12 에 들어갔고 서브인터프리터 경로의 근거다"
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "kind": "limits",
+   "heading": "경계 — GIL 을 탓하면 안 되는 문제들",
+   "body": "**\"파이썬이 느리다\"의 대부분은 GIL 과 무관하다.** 단일 스레드 성능은 인터프리터 구조(동적 타입·객체 오버헤드)에서 오고, 알고리즘·자료구조 선택이 훨씬 큰 차이를 만든다(→ `python` 의 자료구조 절). **프로파일링 없이 GIL 을 원인으로 지목하는 것이 이 낱말의 가장 흔한 오용이다.**\n\n**GIL 이 없어져도 동시성은 어렵다.** 오히려 지금까지 GIL 이 가려 준 문제가 드러난다 — 공유 상태 경쟁, 락 순서에 따른 교착, 캐시 라인 경합. 자유 스레드가 기본이 되는 미래에도 **`Lock` 과 불변 데이터, 큐로 주고받는 설계**는 그대로 필요하다.\n\n**CPython 만의 이야기다.** Jython·IronPython 은 호스트 런타임의 GC 를 쓰므로 GIL 이 없고, PyPy 는 있다(STM 실험이 있었다). \"파이썬에는 GIL 이 있다\"는 문장은 정확히는 \"**CPython 에는** GIL 이 있다\"다.\n\n**다른 런타임은 같은 문제를 다르게 풀었다.** 공고에 나오는 `Java 21+ ... Virtual Thread 기반 동시성 처리`, `Lock-Free 자료구조, Atomic 연산` 같은 문장이 그 증거다 — JVM 은 처음부터 진짜 병렬 스레드를 전제로 메모리 모델과 원자적 연산을 규격에 넣었고, 그 대가로 **개발자가 스레드 안전을 항상 신경 써야** 한다. **GIL 은 그 부담을 인터프리터가 대신 진 것**이고, 그래서 파이썬에서는 초심자가 스레드로 크래시를 내지 않는다. 잃은 것과 얻은 것이 이렇게 대응된다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    },
+    {
+     "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython",
+     "url": "https://peps.python.org/pep-0703/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "GIL 을 걷어내는 설계와 그 대가(참조 카운팅 변경·단일 스레드 성능·C 확장 호환)가 정리된 원문"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "release-table",
+   "kind": "spec",
+   "caption": "GIL 이 풀리는 네 순간",
+   "note": "이 표가 \"스레드를 써도 되나\"의 판단 근거다. 스위치 간격의 기본값 5ms 는 `sys.getswitchinterval()` 로 확인할 수 있다",
+   "columns": [
+    "언제",
+    "무엇이 놓나",
+    "그래서",
+    "확인·제어"
+   ],
+   "rows": [
+    [
+     "정해진 간격",
+     "인터프리터가 강제 전환",
+     "CPU 바운드 스레드가 번갈아 돈다 (빨라지진 않는다)",
+     "`sys.getswitchinterval()` (기본 5ms)"
+    ],
+    [
+     "**I/O 대기**",
+     "시스템 콜 진입 시 자동",
+     "**I/O 바운드에는 스레드가 유효하다**",
+     "코드 변경 없이 적용된다"
+    ],
+    [
+     "**C 확장 안**",
+     "확장이 명시적으로 (`Py_BEGIN_ALLOW_THREADS`)",
+     "**numpy 큰 연산은 진짜 병렬**",
+     "라이브러리 구현에 달렸다 — 프로파일링으로 확인"
+    ],
+    [
+     "`time.sleep()` 등",
+     "명시적 양보",
+     "잠든 스레드가 남을 막지 않는다",
+     "—"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    },
+    {
+     "title": "Python/C API — Thread State and the Global Interpreter Lock",
+     "url": "https://docs.python.org/3/c-api/init.html#thread-state-and-the-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "C 확장이 GIL 을 놓고 다시 잡는 방법(Py_BEGIN_ALLOW_THREADS 등). numpy 가 병렬로 도는 근거가 여기다"
+    },
+    {
+     "title": "Python 표준 라이브러리 — sys.setswitchinterval",
+     "url": "https://docs.python.org/3/library/sys.html#sys.setswitchinterval",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "인터프리터가 스레드를 강제로 바꾸는 간격(기본 5ms)을 읽고 바꾸는 함수"
+    }
+   ]
+  },
+  {
+   "id": "versions",
+   "kind": "spec",
+   "caption": "GIL 을 걷어내는 일정 — 버전으로 못 박아 읽는다",
+   "note": "\"파이썬은 GIL 이 있다/없다\"는 문장은 **버전과 빌드를 함께 말해야** 참이 된다. 자유 스레드는 3.14 에서도 **선택 빌드**이고 기본값이 아니다",
+   "columns": [
+    "버전",
+    "무엇이 들어갔나",
+    "근거",
+    "실무 의미"
+   ],
+   "rows": [
+    [
+     "3.12",
+     "인터프리터별 GIL (서브인터프리터마다 따로)",
+     "PEP 684",
+     "한 프로세스에서 여러 인터프리터를 병렬로 — C 확장 지원이 관문"
+    ],
+    [
+     "3.13",
+     "**자유 스레드 빌드 (실험)**",
+     "PEP 703",
+     "별도 빌드. 실험 단계라 운영 투입 근거가 약했다"
+    ],
+    [
+     "**3.14**",
+     "**자유 스레드 빌드 공식 지원 (2단계)** — '실험' 딱지 제거",
+     "PEP 779",
+     "여전히 **선택 빌드**. 단일 스레드 저하 상한(15%)·메모리 상한이 조건으로 명시됐다"
+    ],
+    [
+     "이후 (3단계)",
+     "자유 스레드가 **기본값**이 되는 단계",
+     "PEP 779 의 후속 조건",
+     "그때 이 문서의 전제가 뒤집힌다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "PEP 684 — A Per-Interpreter GIL",
+     "url": "https://peps.python.org/pep-0684/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "인터프리터마다 GIL 을 따로 두는 길. 3.12 에 들어갔고 서브인터프리터 경로의 근거다"
+    },
+    {
+     "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython",
+     "url": "https://peps.python.org/pep-0703/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "GIL 을 걷어내는 설계와 그 대가(참조 카운팅 변경·단일 스레드 성능·C 확장 호환)가 정리된 원문"
+    },
+    {
+     "title": "PEP 779 — Criteria for supported status for free-threaded Python",
+     "url": "https://peps.python.org/pep-0779/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "자유 스레드 빌드가 '실험'을 떼고 공식 지원(2단계)이 되는 조건. 단일 스레드 성능 저하 상한과 메모리 상한이 여기 적혀 있다"
+    }
+   ]
+  },
+  {
+   "id": "myths",
+   "kind": "glossary",
+   "caption": "GIL 에 대한 흔한 오해",
+   "note": "아래 넷 중 앞의 둘이 실제 버그로 이어진다. 특히 첫 줄은 코드 리뷰에서 자주 지나친다",
+   "columns": [
+    "오해",
+    "사실",
+    "그래서 할 일"
+   ],
+   "rows": [
+    [
+     "\"GIL 이 있으니 공유 변수는 안전하다\"",
+     "**아니다.** `counter += 1` 은 여러 바이트코드이고 그 사이에 스레드가 바뀐다",
+     "공유 상태에는 `threading.Lock` 을 쓴다"
+    ],
+    [
+     "\"파이썬은 스레드를 써도 소용없다\"",
+     "I/O 대기 중에는 GIL 이 풀린다 — **I/O 바운드에는 유효하다**",
+     "CPU 바운드인지 I/O 바운드인지 먼저 재 본다"
+    ],
+    [
+     "\"numpy 도 GIL 때문에 한 코어만 쓴다\"",
+     "C 확장은 계산 구간에서 GIL 을 놓을 수 있다",
+     "추측하지 말고 CPU 사용률·프로파일러로 확인"
+    ],
+    [
+     "\"파이썬이 느린 건 GIL 때문이다\"",
+     "단일 스레드 성능은 인터프리터 구조와 알고리즘의 문제다",
+     "GIL 을 지목하기 전에 프로파일링과 자료구조를 본다"
+    ]
+   ]
+  },
+  {
+   "id": "langs",
+   "kind": "compare",
+   "caption": "같은 문제를 다른 런타임은 어떻게 풀었나",
+   "note": "정답이 하나인 문제가 아니다 — **누가 스레드 안전을 책임지는가**를 서로 다르게 정한 것이다",
+   "columns": [
+    "",
+    "메모리 관리",
+    "병렬 실행",
+    "스레드 안전의 책임"
+   ],
+   "rows": [
+    [
+     "CPython",
+     "참조 카운팅 + 순환 수집",
+     "**GIL 로 직렬화** (I/O·C 확장에서 해제)",
+     "**인터프리터가 상당 부분 대신 진다**"
+    ],
+    [
+     "JVM (Java)",
+     "추적 GC",
+     "진짜 병렬 스레드 (+ 가상 스레드)",
+     "**개발자** — 메모리 모델·`volatile`·원자적 연산"
+    ],
+    [
+     "Go",
+     "추적 GC",
+     "고루틴 + 다중 코어 스케줄러",
+     "개발자 — 채널로 주고받기를 권장"
+    ],
+    [
+     "JS (Node)",
+     "추적 GC",
+     "단일 스레드 이벤트 루프 + 워커",
+     "구조적으로 공유가 없어 부담이 작다"
+    ]
+   ],
+   "confidence": "inferred"
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "공유 카운터·딕셔너리를 여러 스레드가 고친다",
+   "pick": "`threading.Lock` (또는 `queue.Queue` 로 주고받기)",
+   "over": "\"GIL 이 있으니 괜찮다\"고 두는 것",
+   "why": "GIL 은 인터프리터 내부 상태를 지킬 뿐 내 변수를 지키지 않는다. `counter += 1` 은 여러 바이트코드이고 그 사이에서 스레드가 바뀐다",
+   "tradeoff": "락 경합이 생기고 교착 위험이 붙는다. 가능하면 공유를 없애고 큐로 주고받는 설계가 더 안전하다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "situation": "CPU 를 계속 쓰는 작업을 빠르게 하고 싶다",
+   "pick": "프로세스 (`ProcessPoolExecutor`·작업 큐) 또는 계산을 C 라이브러리로 밀기",
+   "over": "스레드 개수 늘리기",
+   "why": "GIL 때문에 파이썬 바이트코드는 한 번에 하나만 실행된다. 스레드를 늘리면 전환 비용만 늘어 **더 느려지기도** 한다",
+   "tradeoff": "프로세스는 메모리가 배로 들고 데이터를 직렬화해 주고받는다. 큰 배열이면 그 비용이 이득을 잡아먹을 수 있다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    },
+    {
+     "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython",
+     "url": "https://peps.python.org/pep-0703/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "GIL 을 걷어내는 설계와 그 대가(참조 카운팅 변경·단일 스레드 성능·C 확장 호환)가 정리된 원문"
+    }
+   ]
+  },
+  {
+   "situation": "외부 API·DB 호출이 수백 건이다",
+   "pick": "스레드 풀 또는 asyncio",
+   "over": "프로세스 풀",
+   "why": "I/O 대기 중에는 GIL 이 풀리므로 스레드로 충분히 겹쳐 실행된다. 프로세스는 이 경우 메모리와 기동 비용만 더 든다",
+   "tradeoff": "스레드는 개수만큼 메모리를 쓰고, asyncio 는 코드 전체가 async 로 물든다(→ `python` 의 동시성 절)",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "situation": "자유 스레드(GIL 없는) 빌드를 운영에 쓰고 싶다",
+   "pick": "먼저 의존 C 확장의 지원 여부 확인 + 기존 코드의 경쟁 조건 점검",
+   "over": "빌드만 바꿔 그대로 올리기",
+   "why": "3.14 에서 공식 지원 단계가 됐지만 **여전히 선택 빌드**이고 ABI 가 다르다. 그리고 GIL 이 사라지면 지금까지 조용히 넘어갔던 경쟁 조건이 드러난다",
+   "tradeoff": "단일 스레드 성능이 다소 떨어지고(공식 조건상 상한이 정해져 있다), 생태계 검증이 아직 진행 중이다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "PEP 779 — Criteria for supported status for free-threaded Python",
+     "url": "https://peps.python.org/pep-0779/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "자유 스레드 빌드가 '실험'을 떼고 공식 지원(2단계)이 되는 조건. 단일 스레드 성능 저하 상한과 메모리 상한이 여기 적혀 있다"
+    },
+    {
+     "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython",
+     "url": "https://peps.python.org/pep-0703/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "GIL 을 걷어내는 설계와 그 대가(참조 카운팅 변경·단일 스레드 성능·C 확장 호환)가 정리된 원문"
+    }
+   ]
+  },
+  {
+   "situation": "한 프로세스 안에서 격리된 병렬 실행이 필요하다",
+   "pick": "서브인터프리터 (인터프리터별 GIL)",
+   "over": "스레드",
+   "why": "인터프리터마다 GIL 을 따로 갖는 길이 3.12 에 들어갔다(PEP 684). 프로세스보다 가볍고 스레드보다 격리된 중간 선택지다",
+   "tradeoff": "C 확장 지원이 관문이고 인터프리터 사이 데이터 공유가 제한적이다. 아직 성숙 단계라 프로세스가 안전한 기본값이다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "PEP 684 — A Per-Interpreter GIL",
+     "url": "https://peps.python.org/pep-0684/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "인터프리터마다 GIL 을 따로 두는 길. 3.12 에 들어갔고 서브인터프리터 경로의 근거다"
+    }
+   ]
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "스레드 4개로 카운터를 400,000 까지 올렸는데 결과가 그보다 적다",
+   "why": "`counter += 1` 이 원자적이라고 믿었다. 읽기·더하기·쓰기가 여러 바이트코드이고 그 사이에서 인터프리터가 스레드를 바꾼다. **GIL 이 있어도 이 경쟁은 그대로 있다**",
+   "fix": "`with lock:` 으로 감싸거나, 각 스레드가 자기 지역 변수에 세고 마지막에 합친다. `dis.dis()` 로 그 한 줄이 몇 개의 바이트코드인지 직접 보는 것이 이해에 빠르다",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "trap": "CPU 바운드 작업을 스레드로 나눴더니 오히려 느려졌다",
+   "why": "GIL 을 두고 스레드가 번갈아 잡느라 전환 비용만 늘었다. 실행량은 그대로인데 오버헤드가 붙는다",
+   "fix": "프로세스로 바꾼다. 그 전에 **정말 CPU 바운드인지** 프로파일링으로 확인한다 — I/O 가 섞여 있으면 판단이 달라진다",
+   "sources": [
+    {
+     "title": "Python 용어집 — global interpreter lock",
+     "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+    }
+   ]
+  },
+  {
+   "trap": "\"GIL 때문에 느리다\"고 결론 내고 구조를 바꿨는데 개선이 없다",
+   "why": "단일 스레드 성능은 GIL 과 무관하다. 원인이 O(n²) 알고리즘이나 잘못된 자료구조였다면 병렬화로는 아무것도 나아지지 않는다",
+   "fix": "`cProfile` 로 가장 오래 걸리는 한 곳을 먼저 찾는다. 대개 그 한 곳이 전체의 대부분이다(→ `python` 의 성능 절)"
+  },
+  {
+   "trap": "`sys.setswitchinterval()` 을 줄여 응답성을 높이려 했더니 전체가 느려졌다",
+   "why": "간격을 줄이면 전환이 잦아져 **전환 비용이 늘고 캐시 효율이 떨어진다.** 이 값은 응답성과 처리량의 맞바꿈이다",
+   "fix": "기본값(5ms)을 건드리기 전에 구조를 본다. 응답성이 목표라면 I/O 를 asyncio 로 옮기거나 무거운 작업을 워커로 빼는 것이 정답에 가깝다",
+   "sources": [
+    {
+     "title": "Python 표준 라이브러리 — sys.setswitchinterval",
+     "url": "https://docs.python.org/3/library/sys.html#sys.setswitchinterval",
+     "publisher": "Python Software Foundation",
+     "kind": "docs",
+     "summary": "인터프리터가 스레드를 강제로 바꾸는 간격(기본 5ms)을 읽고 바꾸는 함수"
+    }
+   ]
+  },
+  {
+   "trap": "자유 스레드 빌드로 바꿨더니 예전에 없던 버그가 나기 시작했다",
+   "why": "**GIL 이 가려 주던 경쟁 조건이 드러난 것이다.** 바이트코드 사이에서만 바뀌던 스레드가 이제 진짜로 동시에 실행된다",
+   "fix": "공유 상태를 찾아 락으로 감싸거나 불변 데이터·큐 기반으로 바꾼다. 그리고 의존 C 확장이 그 빌드를 지원하는지 먼저 확인한다",
+   "sources": [
+    {
+     "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython",
+     "url": "https://peps.python.org/pep-0703/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "GIL 을 걷어내는 설계와 그 대가(참조 카운팅 변경·단일 스레드 성능·C 확장 호환)가 정리된 원문"
+    },
+    {
+     "title": "PEP 779 — Criteria for supported status for free-threaded Python",
+     "url": "https://peps.python.org/pep-0779/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "자유 스레드 빌드가 '실험'을 떼고 공식 지원(2단계)이 되는 조건. 단일 스레드 성능 저하 상한과 메모리 상한이 여기 적혀 있다"
+    }
+   ]
+  },
+  {
+   "trap": "\"파이썬에는 GIL 이 있다\"고 문서에 썼는데 반박당했다",
+   "why": "정확히는 **CPython 에** 있다. Jython·IronPython 은 호스트 런타임의 GC 를 쓰므로 없고, 3.13 이후에는 **같은 CPython 에도 GIL 없는 빌드가 있다**",
+   "fix": "구현체와 버전·빌드를 함께 적는다. \"CPython 3.12 기본 빌드에서는\" 처럼 쓰면 시간이 지나도 문장이 틀리지 않는다",
+   "sources": [
+    {
+     "title": "PEP 779 — Criteria for supported status for free-threaded Python",
+     "url": "https://peps.python.org/pep-0779/",
+     "publisher": "Python Software Foundation",
+     "kind": "standard",
+     "summary": "자유 스레드 빌드가 '실험'을 떼고 공식 지원(2단계)이 되는 조건. 단일 스레드 성능 저하 상한과 메모리 상한이 여기 적혀 있다"
+    }
+   ]
+  }
+ ],
+ "terms": [
+  {
+   "term": "참조 카운팅",
+   "en": "reference counting",
+   "what": "객체를 가리키는 이름의 개수를 세어 0이 되면 즉시 메모리를 돌려주는 방식. GIL 이 지키는 대상이다"
+  },
+  {
+   "term": "바이트코드",
+   "en": "bytecode",
+   "what": "파이썬 소스가 컴파일된 중간 명령. 인터프리터는 이 단위로 실행하고 **그 사이에서** 스레드를 바꾼다"
+  },
+  {
+   "term": "스위치 간격",
+   "en": "switch interval",
+   "what": "한 스레드가 GIL 을 쥘 수 있는 기본 시간(기본 5ms). `sys.setswitchinterval()` 로 바꾼다"
+  },
+  {
+   "term": "CPU 바운드 / I/O 바운드",
+   "en": "CPU-bound / I/O-bound",
+   "what": "시간을 계산에 쓰는 일과 기다리는 데 쓰는 일. GIL 의 영향이 완전히 갈리는 기준이다"
+  },
+  {
+   "term": "자유 스레드 빌드",
+   "en": "free-threaded build",
+   "what": "GIL 없이 동작하는 CPython 빌드. 3.13 실험 → 3.14 공식 지원(선택 빌드)"
+  },
+  {
+   "term": "불멸 객체",
+   "en": "immortal object",
+   "what": "참조 카운트를 세지 않는 객체(`None`·작은 정수 등). GIL 제거 설계의 부품 중 하나"
+  },
+  {
+   "term": "서브인터프리터",
+   "en": "subinterpreter",
+   "what": "한 프로세스 안의 독립된 파이썬 인터프리터. 3.12부터 각자 GIL 을 가질 수 있다"
+  },
+  {
+   "term": "Py_BEGIN_ALLOW_THREADS",
+   "en": "—",
+   "what": "C 확장이 계산 구간에서 GIL 을 놓는 매크로. numpy 가 병렬로 도는 근거"
+  }
+ ],
+ "drills": [
+  {
+   "task": "`counter += 1` 이 원자적이 아님을 직접 본다. ① `dis.dis()` 로 그 한 줄이 몇 개의 바이트코드인지 확인하고 ② 스레드 4개가 각각 100,000번 증가시켜 결과가 400,000 보다 작게 나오는 실행을 만들고 ③ `Lock` 으로 감싸 정확히 400,000 이 되는 것을 확인한다",
+   "done_when": "손실이 실제로 관측되고, 어느 바이트코드 사이에서 스레드가 바뀌면 손실이 생기는지 짚을 수 있다",
+   "why": "이 문서에서 유일하게 실제 버그로 이어지는 오해를 손으로 깨는 자리다. 면접에서도 자주 나온다",
+   "no_hardware": "장비가 필요 없다. 손실이 잘 안 보이면 `sys.setswitchinterval()` 을 아주 작게 줘 전환을 늘린다",
+   "hours": 1
+  },
+  {
+   "task": "`python` 문서의 두 번째 실습을 이어서, **같은 작업을 세 가지로** 돌려 시간을 잰다 — ① 순차 ② 스레드 4개 ③ 프로세스 4개. 작업은 (a) 순수 파이썬 계산(소수 판정) (b) `time.sleep(1)` (c) numpy 대형 행렬 곱 세 종류로 각각 해 본다",
+   "done_when": "(a) 는 스레드가 안 빨라지고 (b) 는 빨라지며 (c) 는 스레드로도 빨라질 수 있다는 것을 자기 숫자로 보여 줄 수 있고, (c) 의 이유를 `Py_BEGIN_ALLOW_THREADS` 로 설명할 수 있다",
+   "why": "\"GIL 이 풀리는 네 순간\" 표가 측정으로 확인된다. (c) 를 빼먹으면 'numpy 도 한 코어만 쓴다'는 오해가 남는다",
+   "no_hardware": "장비가 필요 없다. `os.cpu_count()` 로 워커 수를 맞추고, numpy 가 없으면 (c) 는 생략하고 이유만 적는다",
+   "hours": 2
+  },
+  {
+   "task": "내가 쓰는 파이썬의 상태를 문서화한다 — ① 버전과 구현체(`sys.version`, `sys.implementation`) ② 자유 스레드 빌드인지(`sys._is_gil_enabled()` 가 있는 버전이면 그 값도) ③ `sys.getswitchinterval()` ④ 주요 의존 패키지 중 C 확장이 있는 것 목록. 그리고 자유 스레드 빌드로 옮긴다면 무엇을 먼저 확인해야 하는지 세 줄로 적는다",
+   "done_when": "\"우리 환경은 CPython 3.x 기본 빌드이고, 자유 스레드로 옮기려면 이 패키지들의 지원을 확인해야 한다\"를 근거와 함께 쓸 수 있다",
+   "why": "'파이썬에는 GIL 이 있다'가 앞으로 버전·빌드에 따라 달라지므로, **내 환경을 사실로 아는 것**이 그 문장을 정확히 쓰는 유일한 방법이다",
+   "no_hardware": "장비가 필요 없다 — 인터프리터 한 번 띄우면 된다",
+   "hours": 1
+  }
+ ],
+ "checks": [
+  "GIL 이 지키는 것은 무엇인가? 내 공유 변수는 왜 그 보호를 못 받나?",
+  "참조 카운팅을 스레드 안전하게 만드는 세 가지 방법과, CPython 이 전역 락을 고른 이유는?",
+  "GIL 이 있는데도 I/O 작업에 스레드가 유효한 이유는?",
+  "numpy 의 큰 행렬 연산이 여러 코어를 쓸 수 있는 근거는 무엇인가?",
+  "\"파이썬에는 GIL 이 있다\"를 정확한 문장으로 다시 쓴다면?",
+  "자유 스레드 빌드로 옮길 때 확인해야 하는 두 가지는 무엇인가?"
+ ],
+ "evidence": [
+  {
+   "quote": "• Python 비동기 프로그래밍(asyncio 등) 및 동시성 처리 역량",
+   "from": "posting",
+   "where": "제논 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/289537",
+   "what_it_shows": "파이썬 공고가 `동시성 처리 역량` 을 따로 적는다 — 그 역량의 절반이 **왜 스레드로는 안 되는지**를 아는 것이고, 그 답이 이 문서다"
+  },
+  {
+   "quote": "• Celery + Redis를 활용한 비동기 작업 큐 설계 및 운영",
+   "from": "posting",
+   "where": "드랩 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/370975",
+   "what_it_shows": "GIL 이 있는 언어가 규모를 내는 표준 방식이 **프로세스(워커)를 늘리는 것**이라는 실물 증거. 이 구조가 공고의 자격요건으로 굳어져 있다"
+  },
+  {
+   "quote": "• 동시성 관련 이슈를 해결한 경험이 있으신 분",
+   "from": "posting",
+   "where": "스콘에이아이 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/372316",
+   "what_it_shows": "'해결한 경험'을 묻는다 — GIL 이 있어도 경쟁 조건은 생기고(`counter += 1`), 그걸 겪어 본 사람을 찾는다는 뜻이다"
+  },
+  {
+   "quote": "· Java 21+ 및 JVM 아키텍처에 대한 높은 이해와 Virtual Thread 기반 동시성 처리 경험이 있으신 분",
+   "from": "posting",
+   "where": "인피니티익스체인지코리아 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/380508",
+   "what_it_shows": "같은 문제를 **GIL 없는 런타임은 다르게 푼다**는 것이 채용 문장에서도 갈린다. 그 대가로 개발자가 스레드 안전을 항상 진다"
+  },
+  {
+   "quote": "• 객체지향 프로그래밍 및 멀티스레드/비동기 처리에 대한 이해도가 높으신분",
+   "from": "posting",
+   "where": "모니트 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/365281",
+   "what_it_shows": "`멀티스레드` 와 `비동기` 를 나란히 적는다 — 둘 중 무엇을 언제 쓰는지가 곧 GIL 이 풀리는 순간에 대한 이해다"
+  }
+ ],
+ "related": [
+  {
+   "slug": "python",
+   "how": "이 낱말이 나온 자리. 선택의 기준(언제 스레드·프로세스·asyncio)은 거기 있고, 여기서는 그 기준이 왜 그렇게 생겼는지를 다뤘다"
+  },
+  {
+   "slug": "asyncio",
+   "how": "GIL 을 우회하는 대신 아예 한 스레드로 도는 길. 이벤트 루프와 코루틴의 본체"
+  },
+  {
+   "slug": "gpio-register",
+   "how": "`counter += 1` 경쟁과 완전히 같은 구조가 MCU 에 있다 — read-modify-write 와 원자적 쓰기"
+  },
+  {
+   "slug": "interrupt",
+   "how": "인터프리터가 스레드를 바꾸는 것과 하드웨어가 코드를 끊는 것의 대응. `volatile` 과 원자성 이야기가 그쪽 판본이다"
+  }
+ ],
+ "open_questions": [
+  "3.14 의 단일 스레드 성능 저하 폭은 **PEP 779 가 정한 상한(pyperformance 기준 15%)** 과 그 시점의 측정치(한 자릿수~10%대)로만 적었다. 실제 값은 워크로드·플랫폼에 따라 달라지므로 배수나 단일 숫자로 쓰지 않았다 — 판단이 필요하면 자기 워크로드로 재는 것이 유일한 방법이다",
+  "자유 스레드가 **기본값**이 되는 3단계의 시점은 조건만 제시돼 있고 버전이 확정된 것으로 쓰지 않았다. 이 문서의 모든 절은 '기본 빌드에는 GIL 이 있다'를 전제로 한다",
+  "PEP 703 이 도입한 세부 기법(biased reference counting, 불멸 객체, 락 없는 자료구조)은 **이름과 목적까지만** 적었다. 각 기법의 동작을 쓰려면 원문의 해당 절을 직접 대조해야 하고, 이번 사이클에서는 하지 않았다",
+  "`market` 은 비어 있다. `tech_relations.json` 은 GIL 같은 런타임 개념을 추적 기술로 세지 않는다 — 대신 동시성·워커 큐를 요구하는 모집중 공고 5건을 `evidence` 로 받쳤다. 수요 숫자는 `python` 문서에 있다"
+ ],
+ "sources": [
+  {
+   "title": "Python 용어집 — global interpreter lock",
+   "url": "https://docs.python.org/3/glossary.html#term-global-interpreter-lock",
+   "publisher": "Python Software Foundation",
+   "kind": "docs",
+   "summary": "GIL 의 공식 정의. 메모리 관리를 스레드 안전하게 만들기 위한 잠금이고, I/O 중에는 풀린다는 서술이 여기 있다"
+  },
+  {
+   "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython",
+   "url": "https://peps.python.org/pep-0703/",
+   "publisher": "Python Software Foundation",
+   "kind": "standard",
+   "summary": "GIL 을 걷어내는 설계와 그 대가(참조 카운팅 변경·단일 스레드 성능·C 확장 호환)가 정리된 원문"
+  },
+  {
+   "title": "PEP 779 — Criteria for supported status for free-threaded Python",
+   "url": "https://peps.python.org/pep-0779/",
+   "publisher": "Python Software Foundation",
+   "kind": "standard",
+   "summary": "자유 스레드 빌드가 '실험'을 떼고 공식 지원(2단계)이 되는 조건. 단일 스레드 성능 저하 상한과 메모리 상한이 여기 적혀 있다"
+  },
+  {
+   "title": "PEP 684 — A Per-Interpreter GIL",
+   "url": "https://peps.python.org/pep-0684/",
+   "publisher": "Python Software Foundation",
+   "kind": "standard",
+   "summary": "인터프리터마다 GIL 을 따로 두는 길. 3.12 에 들어갔고 서브인터프리터 경로의 근거다"
+  },
+  {
+   "title": "Python/C API — Thread State and the Global Interpreter Lock",
+   "url": "https://docs.python.org/3/c-api/init.html#thread-state-and-the-global-interpreter-lock",
+   "publisher": "Python Software Foundation",
+   "kind": "docs",
+   "summary": "C 확장이 GIL 을 놓고 다시 잡는 방법(Py_BEGIN_ALLOW_THREADS 등). numpy 가 병렬로 도는 근거가 여기다"
+  },
+  {
+   "title": "Python 표준 라이브러리 — sys.setswitchinterval",
+   "url": "https://docs.python.org/3/library/sys.html#sys.setswitchinterval",
+   "publisher": "Python Software Foundation",
+   "kind": "docs",
+   "summary": "인터프리터가 스레드를 강제로 바꾸는 간격(기본 5ms)을 읽고 바꾸는 함수"
+  }
+ ]
+}
