@@ -102,6 +102,36 @@ export function track(t: string, k?: string, from?: string, s?: number): void {
 }
 
 /**
+ * 어디서 왔나. 호스트 이름까지만 본다.
+ *
+ * 전체 referrer URL 에는 검색어나 사설 페이지 경로가 붙어 오는 일이 있어서 그대로
+ * 적으면 남의 사정을 우리 로그에 옮겨 적는 셈이 된다. 유입 경로를 알기에는
+ * '어느 사이트에서 왔나'로 충분하다.
+ */
+function referrerSource(): string {
+  const r = document.referrer
+  if (!r) return 'direct'
+  try {
+    const h = new URL(r).hostname.replace(/^www\./, '')
+    // 같은 사이트에서 온 것은 유입이 아니라 사이트 안에서의 이동이다.
+    return h === location.hostname ? 'internal' : h.slice(0, 60)
+  } catch {
+    return 'unknown'
+  }
+}
+
+/**
+ * 방문 시작. 페이지가 실제로 로드될 때 한 번만 부른다.
+ *
+ * SPA 라 화면 이동은 대부분 로드를 다시 하지 않는다. 그래서 이 사건은 '새 방문'과
+ * 거의 같은 뜻이 된다 — 몇 명이 들어왔고 어디서 왔는지를 세는 재료다.
+ * 주소는 경로만 남긴다(쿼리·해시 제외) — 검색어나 토큰이 붙어 있을 수 있다.
+ */
+export function trackVisit(): void {
+  track('session', location.pathname.slice(0, 200), referrerSource())
+}
+
+/**
  * 항목 하나에 머문 시간.
  *
  * 탭이 숨겨진 동안은 세지 않는다. 창을 띄워 두고 자리를 뜬 시간까지 '봤다'로 세면

@@ -46,6 +46,22 @@
     </section>
 
     <!-- 뷰어 데이터 빌더: 사이클마다 도는 산출물 갱신 상태 -->
+    <!-- 방문·유입: 방문자가 만든 데이터. 크롤 상태와 성격이 달라 따로 둔다. -->
+    <section class="card">
+      <h2>방문·유입 <span class="muted" id="visitSub"></span></h2>
+      <div class="sites" id="visitStats"></div>
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <h3 class="subhead">어디서 들어오나</h3>
+          <table class="histtable" id="srcTable"><tbody></tbody></table>
+        </div>
+        <div>
+          <h3 class="subhead">첫 화면</h3>
+          <table class="histtable" id="landTable"><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
     <section class="card">
       <h2>뷰어 데이터 빌더 <span class="muted" id="builderSub"></span></h2>
       <div class="sites" id="builders"></div>

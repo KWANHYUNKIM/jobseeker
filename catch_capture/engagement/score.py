@@ -2,11 +2,13 @@
 
 **두 가지를 뽑는다.**
 
-  items  항목별 관심도 — 얼마나 열렸고(views), 얼마나 머물렀고(중앙값 체류),
-         원본으로 몇 명이 넘어갔나(outbound). 이 셋을 섞어 0~1 점수를 낸다.
-  next   항목 사이의 이동 — 이 공고를 본 사람이 그다음 무엇을 눌렀나.
-         '내용이 닮았다'(임베딩)와 다른 종류의 근거다. 추천을 섞을 때 이쪽이
-         "사람들이 실제로 그다음에 본다"를 맡는다.
+  items   항목별 관심도 — 얼마나 열렸고(views), 얼마나 머물렀고(중앙값 체류),
+          원본으로 몇 명이 넘어갔나(outbound). 이 셋을 섞어 0~1 점수를 낸다.
+  next    항목 사이의 이동 — 이 공고를 본 사람이 그다음 무엇을 눌렀나.
+          '내용이 닮았다'(임베딩)와 다른 종류의 근거다. 추천을 섞을 때 이쪽이
+          "사람들이 실제로 그다음에 본다"를 맡는다.
+  traffic 얼마나 들어오고 어디서 오는가 — 방문 수, 순 방문자, 신규/재방문,
+          유입 경로(referrer 호스트), 첫 화면(랜딩 경로), 날짜별 추이.
 
 **평균이 아니라 중앙값을 쓴다.** 체류시간은 꼬리가 길다 — 탭을 띄워 놓고 점심을
 먹고 온 한 사람이 평균을 통째로 끌어올린다. 그 한 명 때문에 엉뚱한 공고가 위로
@@ -74,6 +76,38 @@ def load(days: int) -> list[dict]:
     return out
 
 
+def _traffic(events: list[dict], seen_before: set[str]) -> dict:
+    """방문 통계. 'session' 사건(페이지 로드 1회)이 재료다.
+
+    신규/재방문은 **이 집계 창 안에서** 처음 보이는 세션인지로 가른다. 창 밖에서
+    왔던 사람은 신규로 잡히는데, 그 한계를 감추는 것보다 이름에 드러내는 게 낫다
+    (new_in_window).
+    """
+    starts = [e for e in events if e.get("t") == "session"]
+    sources: dict[str, int] = defaultdict(int)
+    landings: dict[str, int] = defaultdict(int)
+    daily: dict[str, int] = defaultdict(int)
+    visitors: set[str] = set()
+    new_ones: set[str] = set()
+    for e in starts:
+        sid = e.get("sid") or "?"
+        visitors.add(sid)
+        if sid not in seen_before:
+            new_ones.add(sid)
+        sources[str(e.get("from") or "unknown")] += 1
+        landings[str(e.get("k") or "/")] += 1
+        daily[datetime.fromtimestamp(e.get("ts") or 0).strftime("%Y-%m-%d")] += 1
+    top = lambda d, n: sorted(d.items(), key=lambda kv: -kv[1])[:n]  # noqa: E731
+    return {
+        "visits": len(starts),
+        "visitors": len(visitors),
+        "new_in_window": len(new_ones),
+        "sources": top(sources, 20),
+        "landings": top(landings, 20),
+        "daily": sorted(daily.items()),
+    }
+
+
 def build(events: list[dict]) -> dict:
     views: dict[str, int] = defaultdict(int)
     dwells: dict[str, list[int]] = defaultdict(list)
@@ -133,8 +167,19 @@ def build(events: list[dict]) -> dict:
         depths.append(sum(1 for e in evs if e.get("t") == "view"))
     total_dwell = sum(sum(v) for v in dwells.values())
 
+    # 창 시작 이전에도 있었던 세션인지 — 신규/재방문을 가르는 기준.
+    # events 는 이미 창으로 잘려 있으므로, 창 안에서 session 이 아닌 사건으로
+    # 먼저 나타난 세션은 '이어서 온 사람'이다.
+    first_seen: dict[str, str] = {}
+    for e in events:
+        sid = e.get("sid")
+        if sid and sid not in first_seen:
+            first_seen[sid] = e.get("t") or ""
+    returning = {sid for sid, kind in first_seen.items() if kind != "session"}
+
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "traffic": _traffic(events, returning),
         "totals": {
             "events": len(events),
             "sessions": len(sessions),
@@ -163,6 +208,13 @@ def main(argv: list[str]) -> int:
     print(f"  열람 {t['views']:,} · 원본이동 {t['outbound']:,} · 총 체류 {t['dwell_secs']:,}초")
     print(f"  세션당 중앙값 — 길이 {t['median_session_secs']}초 · 열람 {t['median_views_per_session']}건")
     print(f"  점수 매긴 항목 {t['scored_items']:,} · 이동 경로 {len(doc['next']):,}")
+    tr = doc["traffic"]
+    print(f"  방문 {tr['visits']:,} · 순 방문자 {tr['visitors']:,} "
+          f"(그중 신규 {tr['new_in_window']:,})")
+    if tr["sources"]:
+        print("  유입 경로: " + ", ".join(f"{k} {v}" for k, v in tr["sources"][:6]))
+    if tr["landings"]:
+        print("  첫 화면:   " + ", ".join(f"{k} {v}" for k, v in tr["landings"][:4]))
     if not events:
         print("  아직 쌓인 기록이 없습니다 — 수집 서버(engagement.collect)가 떠 있는지 확인하세요.")
     if args.dry_run:

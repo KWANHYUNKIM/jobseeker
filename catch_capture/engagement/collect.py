@@ -44,7 +44,7 @@ ROTATE_BYTES = 64 * 1024 * 1024
 
 # 받아들이는 사건 종류. 모르는 종류는 버린다 — 스키마가 조용히 늘어나면
 # 나중에 집계하는 쪽에서 무엇이 무엇인지 아무도 모르게 된다.
-KINDS = {"view", "click", "dwell", "search", "filter"}
+KINDS = {"session", "view", "click", "dwell", "search", "filter"}
 
 
 def _rotate_if_big() -> None:

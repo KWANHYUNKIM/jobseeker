@@ -143,3 +143,12 @@ main { max-width: 1140px; margin: 0 auto; padding: 20px 22px 40px; }
 .ev.t-wait .em { color: var(--muted); }
 
 .foot { text-align: center; color: var(--muted); font-size: 12px; padding: 16px; }
+
+/* 카드 안의 작은 소제목 (방문·유입의 두 표) */
+.subhead {
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--muted, #8b949e);
+  font-weight: 500;
+  margin: 0 0 6px;
+}

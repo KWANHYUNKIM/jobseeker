@@ -293,6 +293,57 @@ function fmtAge(sec) {
   return `${Math.round(sec / 86400)}일`;
 }
 
+// 방문·유입. 크롤이 만든 숫자가 아니라 방문자가 만든 숫자다.
+// 비어 있을 때 '아직 아무도 안 왔다'와 '수집이 안 돌고 있다'를 구분해 준다 —
+// 둘을 뭉뚱그리면 몇 주 동안 0 을 보면서 원인을 모른다.
+function renderVisits(e) {
+  const stats = $("visitStats");
+  const src = document.querySelector("#srcTable tbody");
+  const land = document.querySelector("#landTable tbody");
+  if (!e) {
+    stats.innerHTML = `<div class="muted">engagement.json 이 없습니다 — ` +
+      `수집 서버(<code>engagement.collect</code>, 8772)와 집계(<code>engagement.score</code>)가 도는지 확인하세요.</div>`;
+    $("visitSub").textContent = "";
+    src.innerHTML = ""; land.innerHTML = "";
+    return;
+  }
+  const t = e.traffic || {}, tot = e.totals || {};
+  $("visitSub").textContent = e.generated_at ? `집계 ${e.generated_at}` : "";
+  if (!t.visits) {
+    stats.innerHTML = `<div class="muted">아직 방문 기록이 없습니다. ` +
+      `수집은 돌고 있고(집계 파일 존재) 방문이 없거나, 뷰어가 아직 새 빌드가 아닙니다.</div>`;
+    src.innerHTML = ""; land.innerHTML = "";
+    return;
+  }
+  const cells = [
+    { name: "방문", v: t.visits, sub: "페이지 로드" },
+    { name: "순 방문자", v: t.visitors, sub: `신규 ${t.new_in_window ?? 0}` },
+    { name: "세션 길이", v: fmtSecs(tot.median_session_secs), sub: "중앙값" },
+    { name: "세션당 열람", v: tot.median_views_per_session ?? 0, sub: "중앙값" },
+    { name: "원본 이동", v: tot.outbound ?? 0, sub: "지원하러 나감" },
+  ];
+  stats.innerHTML = "";
+  for (const c of cells) {
+    const d = document.createElement("div");
+    d.className = "site";
+    d.innerHTML = `<div class="site-name">${c.name}</div>` +
+      `<div class="site-count">${c.v}</div><div class="site-status">${c.sub}</div>`;
+    stats.appendChild(d);
+  }
+  const rows = (list, empty) =>
+    (list && list.length
+      ? list.slice(0, 8).map(([k, n]) =>
+          `<tr><td title="${k}">${k}</td><td class="num">${n.toLocaleString()}</td></tr>`).join("")
+      : `<tr><td class="muted">${empty}</td></tr>`);
+  src.innerHTML = rows(t.sources, "유입 기록 없음");
+  land.innerHTML = rows(t.landings, "랜딩 기록 없음");
+}
+
+function fmtSecs(v) {
+  if (!v) return "0초";
+  return v < 90 ? `${Math.round(v)}초` : `${Math.round(v / 60)}분`;
+}
+
 function renderHealth(s) {
   const h = s.health_latest || {};
   const banner = $("anomalyBanner");
@@ -442,6 +493,8 @@ async function pollAutoguide() {
 
 async function pollHealth() {
   try { renderHistory(await fetchJSON("/api/health?n=30")); } catch (e) {}
+  // 집계는 사이클마다 한 번이라 자주 볼 이유가 없다 — health 와 같은 주기에 얹는다.
+  try { renderVisits(await fetchJSON("/api/engagement")); } catch (e) { renderVisits(null); }
 }
 
 pollState();

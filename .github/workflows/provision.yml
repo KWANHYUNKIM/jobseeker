@@ -1,0 +1,103 @@
+name: Provision server
+
+# Deploy 가 다루지 않는 서버 준비 작업을 한다.
+#
+# Deploy 는 git 을 당기고 컨테이너를 다시 세운다. 그게 전부다 — 파이썬 의존성을
+# 깔지 않고, launchd 서비스를 등록하지 않는다. 그 둘은 지금까지 사람이 맥 앞에
+# 앉아서 했는데, 그래서 requirements.txt 에 패키지를 추가해도 서버에는 몇 주째
+# 안 깔려 있는 일이 생겼다(trafilatura, deep_translator). 그 간극을 메운다.
+#
+# 기본은 **확인만** 한다. 무엇이 없고 무엇이 도는지 먼저 보고, 필요하면 켠다.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pip:
+        description: "requirements.txt 를 다시 설치한다"
+        required: false
+        default: false
+        type: boolean
+      services:
+        description: "launchd 대시보드·API 서비스를 다시 등록한다 (잠깐 재시작됨)"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: provision-server
+  cancel-in-progress: false
+
+jobs:
+  provision:
+    name: 서버 준비
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 20
+    steps:
+      - name: 준비 및 점검
+        env:
+          DO_PIP: ${{ inputs.pip }}
+          DO_SERVICES: ${{ inputs.services }}
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+          # 러너 워크스페이스가 아니라 서버가 실제로 쓰는 클론을 만진다.
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          [ -d "$REPO/.git" ] || { echo "::error::서버 클론을 찾지 못했다: $REPO"; exit 1; }
+          cd "$REPO"
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || { echo "::error::venv 가 없다 — ./deploy/setup-crawler.sh 를 먼저"; exit 1; }
+
+          git fetch --prune origin
+          git merge --ff-only origin/main || echo "::warning::fast-forward 불가 — 클론에 로컬 변경이 있다"
+          echo "리비전: $(git rev-parse --short HEAD)  $(git log -1 --pretty=%s)"
+
+          echo "::group::지금 상태"
+          echo "-- 파이썬 선택 의존성"
+          for m in trafilatura deep_translator playwright; do
+            if "$PY" -c "import $m" 2>/dev/null; then
+              echo "  O $m"
+            else
+              echo "  X $m  (없음)"
+            fi
+          done
+          echo "-- 로컬 서비스 포트"
+          for p in 8765 8770 8771 8772 8910; do
+            if curl -fsS --max-time 2 "http://127.0.0.1:$p/" >/dev/null 2>&1 \
+               || curl -fsS --max-time 2 "http://127.0.0.1:$p/health" >/dev/null 2>&1; then
+              echo "  O $p 응답"
+            else
+              echo "  X $p 무응답"
+            fi
+          done
+          echo "::endgroup::"
+
+          if [ "$DO_PIP" = "true" ]; then
+            echo "::group::pip install"
+            "$PY" -m pip install --quiet --upgrade pip
+            "$PY" -m pip install -r catch_capture/requirements.txt
+            echo "::endgroup::"
+          fi
+
+          if [ "$DO_SERVICES" = "true" ]; then
+            echo "::group::launchd 서비스 등록"
+            # setup-dashboards.sh 는 매번 bootout 후 bootstrap 한다 — 멱등이지만
+            # 대시보드·검색 API 가 몇 초 끊긴다. 크롤 데몬(별도 label)은 안 건드린다.
+            ./deploy/setup-dashboards.sh
+            echo "::endgroup::"
+          fi
+
+          echo "::group::반영 후 확인"
+          for m in trafilatura deep_translator; do
+            "$PY" -c "import $m; print('  O $m', $m.__version__)" 2>/dev/null || echo "  X $m 여전히 없음"
+          done
+          # 수집기는 뜨는 데 잠깐 걸린다.
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            curl -fsS --max-time 2 "http://127.0.0.1:8772/health" && break || sleep 2
+          done
+          echo
+          echo "-- 쌓인 행동 기록"
+          ( cd catch_capture && "$PY" -m engagement.collect --stats ) || true
+          echo "-- 집계 다시"
+          ( cd catch_capture && "$PY" -m engagement.score ) || true
+          echo "::endgroup::"

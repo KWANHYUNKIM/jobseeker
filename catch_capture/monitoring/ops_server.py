@@ -8,6 +8,7 @@
   GET /api/state       → run_state.json + 데몬 생존여부(auto_crawl.pid 기준)
   GET /api/events?n=N  → run_events.jsonl 최근 N줄 (기본 80)
   GET /api/health?n=N  → health_history.jsonl 최근 N줄 (기본 30)
+  GET /api/engagement  → public/engagement.json (방문·유입·행동 점수)
 
 사용법:
     python -m monitoring.ops_server            # 8770 포트
@@ -184,6 +185,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
         if path == "/api/events":
             n = self._query_int(qs, "n", 80)
             self._send_json(_tail_jsonl(EVENTS_FILE, n))
+            return
+
+        if path == "/api/engagement":
+            # 방문자가 만든 유일한 데이터다. 크롤 상태와 달리 여기가 비어 있으면
+            # '아직 아무도 안 왔다'와 '수집 서버가 안 떴다'를 구분해야 하므로
+            # 파일이 없을 때 null 을 그대로 돌려준다(프런트가 안내를 띄운다).
+            self._send_json(_read_json(VIEWER_PUBLIC / "engagement.json"))
             return
 
         if path == "/api/builders":
