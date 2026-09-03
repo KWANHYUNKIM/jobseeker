@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-02",
+  "updated_at": "2026-09-03",
   "companies": [
     {
       "slug": "glowuprizz",
@@ -239,6 +239,20 @@
       "postings": 17,
       "study_items": 160,
       "updated_at": "2026-09-02"
+    },
+    {
+      "slug": "wolobrothers",
+      "name": "워로브라더스",
+      "aliases": [
+        "왈로우",
+        "워로브라더스",
+        "㈜워로브라더스",
+        "WOLOBrothers"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-03"
     }
   ]
 }
