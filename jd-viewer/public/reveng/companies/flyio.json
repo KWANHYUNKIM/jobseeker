@@ -1,0 +1,160 @@
+{
+  "slug": "flyio",
+  "name": "Fly.io",
+  "name_en": "Fly.io",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-04",
+  "domain": "fly.io",
+  "one_liner": "1분 넘게 걸리던 것을 1~2초로 줄이려고 컨테이너도 합의도 버린 클라우드 — 무엇을 없앨지로 설계하는 회사다",
+  "business_model": "**개발자에게 앱이 돌아갈 컴퓨트를 판다.** 전 세계에 **\"thousands of high-powered servers around the world\"** 를 두고, **\"edge proxies from Tokyo to Amsterdam\"** 이 요청을 가장 가까운 고객 인스턴스로 보낸다. 과금은 사용량 기준이다 — Sprites 를 두고 **\"Sprites bill only for what you actually use\"** 라고 적는다.\n\n**⚠️ 이 회사는 매출·고객 수 같은 숫자를 내놓지 않는다.** 비상장 사기업이고 기술 글에도 규모 지표가 거의 없다. **그래서 이 파일의 `metrics` 는 대부분 비어 있고, 그것이 정상이다**(이 판단은 이 사이트의 것이다).\n\n**대신 이 회사가 공개하는 것은 '무엇을 버렸는가' 다.** 두 편의 글이 전부 그 형식이다 — Sprites 는 **사용자용 컨테이너·부착 스토리지·호스트 기반 오케스트레이션 셋을 버려서** 만들었고, Corrosion 은 **분산 합의를 버려서** 만들었다. 앞서 판 인프라 회사들과 자리가 다르다(아래 대비는 이 사이트의 정리다) — 클라우드플레어는 **엣지에서 무엇을 할 수 있는가**였고, 그라파나 랩스는 **시계열을 어떻게 담을 것인가**, 플래닛스케일은 **데이터베이스를 어떻게 나눌 것인가**였다. 여기는 **켜는 데 걸리는 시간과 상태를 퍼뜨리는 시간**이라는 두 개의 '기다림' 이 문제의 본체다.",
+  "revenue_total": "⚠️ 공개되지 않았다 — 비상장 사기업이고 기술 글에도 매출·고객 수가 없다",
+  "products": [
+    "Fly Machines (컨테이너 이미지로 띄우는 VM)",
+    "Sprites (컨테이너 없이 1~2초에 뜨는 VM)",
+    "Corrosion (내부 상태 동기화 시스템 · 오픈소스)"
+  ],
+  "revenue_streams": [
+    {
+      "name": "사용량 기반 컴퓨트 과금",
+      "what": "고객이 실제로 쓴 만큼 받는다 — Sprites 를 두고 **\"Sprites bill only for what you actually use\"** 라고 적는다. **⚠️ 단가·구성·규모는 이 사이클에서 확인하지 않았다.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Design & Implementation of Sprites",
+          "url": "https://fly.io/blog/design-and-implementation/",
+          "publisher": "Fly.io · Thomas Ptacek",
+          "date": "2026-01-14 (갱신 표기)",
+          "summary": "Fly Machines 에서 무엇을 셋이나 버려 생성 시간을 1~2초로 줄였는지 — 사용자용 컨테이너, 부착 스토리지, 호스트 기반 오케스트레이션을 각각 왜 버렸는지 적었다."
+        }
+      ]
+    },
+    {
+      "name": "⚠️ 그 밖의 수익원은 확인하지 못했다",
+      "what": "저장소·대역폭·부가 서비스가 따로 과금되는지, 각각이 매출에서 얼마인지를 공개 자료에서 찾지 못했다.",
+      "confidence": "unknown"
+    }
+  ],
+  "domain_map": {
+    "title": "Fly.io 도메인 지도",
+    "question": "두 종류의 기다림 — 켜지는 시간과 퍼지는 시간 — 을 각각 무엇을 버려서 줄였는가?",
+    "code": "flowchart TD\n  DEV[\"<b>개발자 · 에이전트</b><br/>• \"get Claude or Gemini to build<br/>  a full-stack application\"\"]:::list\n  BOOT[\"<b>1분을 1~2초로 줄이려고 무엇을 버릴 것인가</b><br/>• 사용자용 컨테이너를 없앤다<br/>• 디스크를 오브젝트 스토리지로<br/>• 오케스트레이션을 VM 안으로\"]:::accent\n  VM[\"<b>Sprite</b><br/>• 루트 권한이 있는 리눅스 VM<br/>• 100GB 지속 루트 파일시스템\"]:::list\n  STATE[\"<b>합의를 버리고 상태를 퍼뜨린다</b><br/>• Corrosion — gossip + CRDT<br/>• 워커가 자기 상태의 진실\"]:::list\n  EDGE[\"<b>엣지 프록시</b><br/>• 도쿄에서 암스테르담까지<br/>• 가장 가까운 인스턴스로 보낸다\"]:::list\n  BILL[\"사용한 만큼 과금\"]:::quiet\n  DEV --> BOOT\n  BOOT --> VM\n  VM -->|\"어디에 무엇이 떠 있는가\"| STATE\n  STATE -->|\"몇 초 안에 수렴\"| EDGE\n  EDGE --> VM\n  VM --> BILL"
+  },
+  "domains": [
+    {
+      "name": "1분을 1~2초로 줄이려고 무엇을 버릴 것인가",
+      "why": "**\"Creating a Fly Machine can take over a minute\"** 였다. 에이전트가 코드를 짜다 컴퓨터 한 대를 띄우는 쓰임에서는 그 1분이 전부를 망친다 — 저자는 Sprites 를 **\"ball-point disposable computers\"** 라 부르고 **\"Sprites might be the fastest thing there currently exists to get Claude or Gemini to build a full-stack application on the Internet\"** 이라고 적는다. **빠르게 만드는 방법이 무언가를 더하는 것이 아니라 셋을 버리는 것**이었다는 점이 이 도메인의 성격이다(뒷문장은 이 사이트의 해석이다).",
+      "tech": [
+        {
+          "tech": "사용자용 컨테이너를 없앤다 — 대신 모든 워커가 다음에 뜰 컨테이너를 미리 안다",
+          "solves": "**\"Most of what's slow about creating a Fly Machine is containers\"** 였다. 사용자가 고르는 이미지를 없애자 **\"Every physical worker knows exactly what container the next Sprite is going to start with\"** 가 되어 미리 준비해 둘 수 있다. 결과가 **\"They `create` in just a second or two\"** 다. 저자의 표현으로 **\"Sprites get rid of the user-facing container. Literally: problem solved.\"**",
+          "limits": "**격리를 없앤 것이 아니다** — **\"user code running on a Sprite isn't running in the root namespace. We've slid a container between you and the kernel\"**. 없앤 것은 **사용자가 이미지를 고를 자유**이고, 그래서 자기 이미지를 그대로 가져오려면 Fly Machines 로 가야 한다. 저자도 프로토타입은 Sprites 에서 하고 **\"then containerize it and ship it as a Fly Machine\"** 을 권한다(가운데 문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Design & Implementation of Sprites",
+              "url": "https://fly.io/blog/design-and-implementation/",
+              "publisher": "Fly.io · Thomas Ptacek",
+              "date": "2026-01-14 (갱신 표기)",
+              "summary": "Fly Machines 에서 무엇을 셋이나 버려 생성 시간을 1~2초로 줄였는지 — 사용자용 컨테이너, 부착 스토리지, 호스트 기반 오케스트레이션을 각각 왜 버렸는지 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "디스크를 오브젝트 스토리지에 둔다 — JuiceFS 모델 + 100GB NVMe 캐시 + Litestream",
+          "solves": "부착 스토리지는 **\"anchors workloads to specific physicals\"** 라 옮기기 어렵고, 회사는 **\"It took 3 years to [get workload migration right]\"** 고 적는다. 그래서 **\"The Sprite storage stack is organized around the JuiceFS model… splitting storage into data ('chunks') and metadata\"** 로 갔다. **\"A Sprite has a sparse 100GB NVMe volume attached to it, which the stack uses to cache chunks\"** 이고 메타데이터는 **Litestream 으로 내구성을 지킨다.** 그 결과 **\"In a real sense, the durable state of a Sprite is simply a URL\"** 이 된다 — 옮기는 일이 주소를 넘기는 일이 된다.",
+          "limits": "**성능이 대가다.** 회사가 그대로 적는다 — **\"We've always wanted to run Fly Machine disks off object storage… but the performance isn't adequate for a hot Postgres node\".** 그리고 저자가 이 부분을 **\"in flux\"** 라고 밝히며 설명을 줄인다 — **아직 굳지 않은 자리다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Design & Implementation of Sprites",
+              "url": "https://fly.io/blog/design-and-implementation/",
+              "publisher": "Fly.io · Thomas Ptacek",
+              "date": "2026-01-14 (갱신 표기)",
+              "summary": "Fly Machines 에서 무엇을 셋이나 버려 생성 시간을 1~2초로 줄였는지 — 사용자용 컨테이너, 부착 스토리지, 호스트 기반 오케스트레이션을 각각 왜 버렸는지 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "오케스트레이션을 VM 안으로 — inside-out",
+          "solves": "보통은 호스트가 게스트를 관리하는데 여기서는 반대다 — **\"the most important orchestration and management work happens inside the VM\"**. 저장소 스택(체크포인트·복원), 서비스 관리자, 로그, 네트워크 바인딩이 VM 안에서 돈다. 이득이 분명하다 — **\"Changes to Sprites don't restart host components or muck with global state. The blast radius is just new VMs\"**.",
+          "limits": "**게스트가 짊어지는 것이 늘어난다.** 관리 소프트웨어가 고객 VM 안에서 도는 구조라, 그 코드의 문제는 고객이 쓰는 자리에서 드러난다. 회사도 **\"It's early days for our internal tooling\"** 이라고 적는다(첫 문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Design & Implementation of Sprites",
+              "url": "https://fly.io/blog/design-and-implementation/",
+              "publisher": "Fly.io · Thomas Ptacek",
+              "date": "2026-01-14 (갱신 표기)",
+              "summary": "Fly Machines 에서 무엇을 셋이나 버려 생성 시간을 1~2초로 줄였는지 — 사용자용 컨테이너, 부착 스토리지, 호스트 기반 오케스트레이션을 각각 왜 버렸는지 적었다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "합의를 버리고 상태를 퍼뜨린다",
+      "why": "**\"edge proxies from Tokyo to Amsterdam can keep the accurate routing table that allows them to route requests for applications to the nearest customer instances\"** 가 이 도메인의 일이다. 문제는 거리다 — 오랫동안 **\"we relied on HashiCorp Consul to route traffic\"** 했는데 **\"Consensus protocols like Raft break down over long distances\"** 였고, 더 근본적으로는 **\"our Consul cluster… wasted time guaranteeing consensus for updates that couldn't conflict in the first place\"** 였다. **애초에 충돌하지 않는 갱신에 합의 비용을 치르고 있었다**는 것이 전환의 근거다.",
+      "tech": [
+        {
+          "tech": "합의를 빼고 gossip + CRDT — SWIM · QUIC · cr-sqlite",
+          "solves": "설계를 회사가 한 문장으로 적는다 — **\"no locking, no central servers, and no distributed consensus. Instead, we exploit our orchestration model: workers own their own state, so updates from different workers almost never conflict.\"** SWIM 기반 gossip 으로 **\"each step of the protocol, spam a random subset of nodes\"** 하고, 변경은 QUIC 로 퍼뜨리며, **cr-sqlite** CRDT 확장이 **\"changes to any column of a row are logged in a special `crsql_changes` table\"** 로 남긴다. **\"Several times a second… our state synchronization system blasts updates\"** 하고 **\"converges quickly (in seconds)\"**.",
+          "limits": "합의를 버린다는 것은 **잠깐 동안 노드마다 다른 것을 본다는 뜻**이다(이 문장은 이 사이트의 해석이다). 회사가 실제로 적은 함정은 다른 종류다 — **\"New nullable columns are kryptonite to large Corrosion tables\"**. **CRDT 테이블의 스키마를 바꾸는 일이 위험하다**는 것이고, 합의를 없앤 대신 **자료구조가 스키마 변경에 민감해졌다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Corrosion",
+              "url": "https://fly.io/blog/corrosion/",
+              "publisher": "Fly.io · Thomas Ptacek & Peter Cai",
+              "date": "2025-10-22 (갱신 표기)",
+              "summary": "라우팅 상태를 전 세계 엣지 프록시에 퍼뜨리는 문제에서 Consul 과 분산 합의를 버리고 gossip + CRDT 로 간 기록. 겪은 사고와 스스로 인정한 설계 실수까지 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "워커가 자기 상태의 진실이다 — OSPF 에서 빌려 온 발상",
+          "solves": "**\"individual servers are the source of truth for their workloads\"** 로 두면 갱신이 서로 부딪힐 일이 거의 없다. 발상은 라우팅 프로토콜에서 왔다 — 각 라우터가 자기 링크를 소유하고 변경을 빠르게 퍼뜨리는 **link-state routing protocol** 방식이다.",
+          "limits": "**회사가 스스로 실수를 적었다** — **\"In retrospect, our Corrosion rollout repeated a mistake we made with Consul: we built a single global state domain.\"** 합의를 없앴어도 **전역 상태를 하나로 둔 구조는 그대로 물려받았고**, 그래서 사고가 전 함대에 번졌다. 실제로 Rust 의 `RwLock` 데드락 때는 **\"Within a few seconds every proxy in our fleet had locked up\"** 했고, Consul mTLS 인증서가 만료됐을 때는 **\"we're literally saturating our uplinks almost everywhere in our fleet\"** 였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Corrosion",
+              "url": "https://fly.io/blog/corrosion/",
+              "publisher": "Fly.io · Thomas Ptacek & Peter Cai",
+              "date": "2025-10-22 (갱신 표기)",
+              "summary": "라우팅 상태를 전 세계 엣지 프록시에 퍼뜨리는 문제에서 Consul 과 분산 합의를 버리고 gossip + CRDT 로 간 기록. 겪은 사고와 스스로 인정한 설계 실수까지 적었다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "open_questions": [
+    "**매출·고객 수·서버 대수 같은 규모 지표가 없다.** 비상장 사기업이고 기술 글에도 숫자가 거의 없다 — 확인된 것은 **\"thousands of high-powered servers around the world\"** 정도다. **그래서 지표 칸을 억지로 채우지 않았다.**",
+    "**Sprites 의 저장소 스택은 아직 굳지 않았다.** 저자가 **\"Because it's in flux, let's keep it simple\"** 이라며 설명을 줄인다. **지금 쓴 내용이 다음에 달라질 수 있다** — 재방문 사이클에서 먼저 볼 자리다.",
+    "**`eras` 를 세우지 않았다.** 두 전환(Fly Machines → Sprites, Consul → Corrosion)이 모두 **세대 교체가 분명한데 연도가 없다.** Corrosion 글은 **\"For longer than we should have, we relied on HashiCorp Consul\"** 이라고만 하고, Sprites 글의 **\"It took 3 years to get workload migration right\"** 도 기간이지 연도가 아니다. 연도 없이 시대를 자르지 않는다(STYLE.md 8번).",
+    "**Sprites 의 성능 수치가 없다.** 생성이 **\"just a second or two\"** 라는 것 말고 지연·처리량·비용 비교가 없고, 오브젝트 스토리지 디스크가 어느 정도로 느린지도 **\"not adequate for a hot Postgres node\"** 라는 말뿐이다.",
+    "**Corrosion 의 규모 수치가 얇다.** 노드 수는 **\"thousands\"**, 수렴은 **\"in seconds\"** 로만 적힌다 — 정확한 전파 지연·테이블 크기·갱신량이 없다."
+  ],
+  "features": [],
+  "eras": [],
+  "sources": [
+    {
+      "title": "The Design & Implementation of Sprites",
+      "url": "https://fly.io/blog/design-and-implementation/",
+      "publisher": "Fly.io · Thomas Ptacek",
+      "date": "2026-01-14 (갱신 표기)",
+      "summary": "Fly Machines 에서 무엇을 셋이나 버려 생성 시간을 1~2초로 줄였는지 — 사용자용 컨테이너, 부착 스토리지, 호스트 기반 오케스트레이션을 각각 왜 버렸는지 적었다."
+    },
+    {
+      "title": "Corrosion",
+      "url": "https://fly.io/blog/corrosion/",
+      "publisher": "Fly.io · Thomas Ptacek & Peter Cai",
+      "date": "2025-10-22 (갱신 표기)",
+      "summary": "라우팅 상태를 전 세계 엣지 프록시에 퍼뜨리는 문제에서 Consul 과 분산 합의를 버리고 gossip + CRDT 로 간 기록. 겪은 사고와 스스로 인정한 설계 실수까지 적었다."
+    }
+  ]
+}

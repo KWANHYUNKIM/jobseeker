@@ -15,13 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| (없음) | | |
+| **Fly.io** | US · SaaS | 프로파일 완료(370) · 도메인 2(1분을 1~2초로 줄이려고 무엇을 버릴 것인가[tech 3] / 합의를 버리고 상태를 퍼뜨린다[tech 2]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Fly.io** | US · SaaS | `fly.io/blog` | WebFetch ✅ (연 글 하나가 2026-01-14 갱신 표기. ⚠️ 목록 페이지에서 날짜를 못 받아 최신 글 날짜는 미확인) | **⏳ 로 남아 있던 후보를 이번에 확인했다.** `design-and-implementation`(Sprites 설계)을 열어 보니 **버린 대안이 셋이고 이유가 다 붙어 있다** — 사용자용 OCI 컨테이너를 버린 이유(*"Huge and fussy, they take forever to pull and unpack"*), NVMe 부착 스토리지를 버린 이유(*"Attached storage anchors workloads to specific physicals"* · *"It took 3 years to get workload migration right"*), 호스트 기반 오케스트레이션 대신 *"The most important orchestration and management work happens inside the VM"*. **대가도 적는다** — 오브젝트 스토리지는 *"the performance isn't adequate for a hot Postgres node"* 이고 Sprites 는 Fly Machines 와 **다른 종류의 컴퓨팅에 최적화**돼 있어 프로토타입 뒤 컨테이너로 옮기라고 권한다. ⚠️ **수치가 얇다** — *"just a second or two"*, *"100GB durable root filesystem"* 정도이고 규모·지연·비용 지표가 없다. **Monzo 와 반대 형태다**(저쪽은 수치는 있고 대가가 없었다). 다음에 열 글은 `corrosion`(내부 메시 상태 동기화). |
 | **Oxide Computer** | US · 기타(서버·하드웨어) | `oxide.computer/blog` | WebFetch ✅ (최신 2026-08-28) | **63곳 중 하드웨어를 만드는 회사가 없다** — 랙을 직접 설계해 팔면서 하이퍼바이저·펌웨어·컨트롤 플레인까지 자기가 쓴다. `performance-has-layers`(2026-06-18)를 열어 확인했다: **버린 대안 셋**(게스트 MTU 를 9000 대신 **8500** 으로 — *"reserve 500. The extra is deliberate"*, 스위치식 **포트별 MTU 손잡이를 버린 이유** — *"MTU is a property of a path, not of a port"*, IPv6 를 **호환용 덧붙임이 아니라 언더레이의 모국어로** — *"it is the rack's native tongue"*), **대가 명시**(*"jumbo frames are not a network go-fast button"* · 경로 MTU 탐색이 막히면 *"the application stalls and transfers nothing"* · 단일 연결은 **약 60 Gbps** 에서 천장), **수치 표**(내부 VPC 52.44→55.73 Gbps, 외부 7.70→32.67 Gbps, 슬레드 하나 합산 약 90 Gbps). **셋을 다 갖춘 드문 글이다.** |
 
 
