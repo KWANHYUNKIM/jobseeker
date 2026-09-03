@@ -292,6 +292,20 @@
       "postings": 13,
       "study_items": 117,
       "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "cjoliveyoung",
+      "name": "CJ올리브영",
+      "aliases": [
+        "씨제이올리브영",
+        "CJ올리브영",
+        "올리브영",
+        "㈜씨제이올리브영"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-03"
     }
   ]
 }
