@@ -4,44 +4,49 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 6건 · 학습 54개.
-(전체: 회사 24곳 · 공고 193건 · 학습 1,582개 · **오류 0** · **경고 5**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 7건 · 학습 63개.
+(전체: 회사 24곳 · 공고 194건 · 학습 1,591개 · **오류 0** · **경고 5**.)
 
-**이번 회차 = `Senior Software Engineer (AD Framework)`(Ashby, 판교·Remote 표기).**
-축: **`자율주행 미들웨어 — 모듈이 아니라 그 사이`** · **`실행 프레임워크(주기·데드라인)`** ·
-**`Linux 와 RTOS 가 한 차에`** · **`기능안전 ISO 26262 / ASIL`** · `추적·재생 도구 만들기` ·
-`ROS2 를 써 본 것 vs 만들어 본 것` · `C/C++ 에 Lua 가 붙은 이유` · **`DoIP(진단 통신)`** · `Yocto·CMake`.
+**이번 회차 = `Senior Planning & Control System Engineer (Autonomous Driving)`(Ashby, 판교).**
+**이 엔진이 다룬 200여 공고 중 기계·자동차공학이 자격요건에 명시된 첫 자리다**
+(`제어공학, 전기공학, 기계공학, 자동차공학, 로봇공학 … 석사 이상과 3년 이상`).
+축: **`PID·LQR/LQG·SMC·MPC 를 언제 무엇에 쓰나`** · `실시간 궤적 최적화(수렴 실패 대비)` ·
+**`결정적 실시간 C++ — 루프 안 할당 0`** · **`학습 정책을 신뢰하지 않는 구조(safety filter)`** ·
+`차량 동역학 모델의 한계` · `실차 튜닝(지연·데드밴드)` · **`승차감을 숫자로(저크·횡가속도)`** ·
+`액추에이터 폐루프` · `전공 문이 넓다`.
 
-**⚠️ 대조에서 중요한 것을 배웠다 — 유사도가 우대사항에서만 높을 수 있다.**
-자율주행 스택 다섯 공고를 대조했더니 **우대사항만 0.69~0.81**, 담당업무·자격요건은 **0.02~0.20** 이었다.
-**우대사항이 회사 공통 문구(boilerplate)** 이기 때문이다. → **중복 판단은 담당업무·자격요건으로 한다.**
-(엑셈에서는 반대였다 — 자격요건까지 0.93 이라 진짜 중복이었다.)
-`Physical AI Engineer` ↔ `Senior Physical AI Engineer` 만 담당업무 0.40·자격요건 0.46 으로
-**같은 계열의 급수 차이**다.
+**⚠️ 두 후보를 견주고 골랐다** — `Senior Computer Vision Engineer`(4,161자)는 담당업무가
+**연구 주제 나열**(`3D shape modeling`·`Object pose estimation`·`World models` …)이고 요건이
+**7년↑ + 석사/박사**로 더 높다. Planning & Control 이 **재료가 구체적이고 요건이 낮아** 먼저 썼다.
+**CV 는 다음 순서에 남겨 두되, '주제 나열형 공고'는 각 주제를 study 항목으로 옮기는 방식이 맞다.**
+
+**⚠️ 이 자리가 `Physical AI Engineer (Model)`(1회차)와 겹치지 않게 한 방법**
+1회차는 **학습으로 궤적을 만드는** 쪽, 이번은 **그 궤적을 실제 조향·가감속으로 바꾸는** 쪽으로 갈랐다.
+그리고 담당업무의 `Planning 결과물, RL/IL 기반 Policy … 를 제어 시스템에 통합` 한 줄을
+**"AI 를 신뢰하지 않도록 설계하는 자리"** 로 읽어 두 자리를 잇는 다리로 썼다(회사 안 협업 구조가 드러난다).
 
 **남은 순서** (판교 위주)
-1. **`Senior Planning & Control System Engineer (Autonomous Driving)`(4,845자)** 또는
-   **`Senior Computer Vision Engineer (Autonomous Driving)`(4,161자)** — **다음.** 둘 다 판교.
-   ⚠️ 1회차 `Physical AI Engineer (Model)` 이 **계획·궤적 생성**을 다뤘으므로,
-   **Planning & Control 은 '고전 제어·안전 검증' 쪽으로, Computer Vision 은 '인지' 쪽으로** 각도를 잡아야
-   겹치지 않는다. **먼저 두 본문을 읽고 어느 쪽이 덜 겹치는지 보고 고른다.**
+1. **`Senior Computer Vision Engineer (Autonomous Driving)`(4,161자, 7년↑·석사/박사)** — **다음.**
+   담당업무가 연구 주제 목록이다: `3D shape modeling and processing` · `Object pose estimation and tracking` ·
+   `Efficient and scalable vision` · `Low-level and physics-based vision` ·
+   **`Self-supervised representation learning from large-scale unlabeled scene data`** ·
+   **`World models and closed-loop simulation for autonomous driving`**.
+   ⚠️ **각도는 '인지(perception)'와 '레이블 없는 대규모 데이터'** — 1회차(계획)·이번(제어)과 안 겹친다.
 2. **Gleo·에이전트 축 넷 — 대조 먼저.** `Senior AI Agent Engineer (Gleo Interactor)`(1,614자) /
    `Senior AI Engineer (Driving VLM/VLA)`(2,333자) / `AI Engineer (Navigation Agent)`(1,829자) /
    `LLM Engineer (Data Generation)`(2,196자).
 3. `Security Engineer (Security Platform)`(2,687자) / `Security Engineer (차량 보안)`(1,065자) — 둘 대조 먼저.
-   ⚠️ **`Backend Engineer (Open Platform)` 에서 인증·인가를 이미 깊게 다뤘다** — 차량 보안은
-   **침입 탐지·CAN 버스·시큐어부트** 쪽으로 각도를 틀어야 겹치지 않는다.
+   ⚠️ **인증·인가는 2회차에서 다뤘다** → **CAN 버스·침입 탐지·시큐어부트** 쪽으로 각도를 튼다.
 4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
-5. `Senior Physical AI Engineer`(5,968자) / `Physical AI Engineer`(4,098자) — **둘은 급수 차이**이므로
+5. `Senior Physical AI Engineer`(5,968자) / `Physical AI Engineer`(4,098자) — **급수 차이**(담당업무 0.40).
    **한 건만 쓰고 나머지는 `open_questions` 에 이유를 남긴다.**
 6. 서니베일·바르샤바·호치민 13건은 **뒤로.**
 
-**⚠️ 경고 5건 미결**(크롤이 새로 잡은 마감): `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
-**대기열이 비는 순간 `fix(guide)` 로 바로 처리한다**(사다리에 경고는 없어 스스로 밀려난다).
+**⚠️ 경고 5건 미결**: `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
+**대기열이 비는 순간 `fix(guide)` 로 바로 처리한다.**
 
 **닫을 때 (넷)** — ① **`Pleos Vehicle OS` 회사 브리핑 보강** ② `salary` 비어 있음(사람인
-`view-inner-salary` 먼저 시도) ③ `people` 비어 있음 ④ 안 쓴 공고 이유(서니베일 ML/데이터 두 건,
-Physical AI 급수 중복, 잡코리아 계열 등).
+`view-inner-salary` 먼저) ③ `people` 비어 있음 ④ 안 쓴 공고 이유.
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -61,6 +66,17 @@ Physical AI 급수 중복, 잡코리아 계열 등).
 
 ## 배운 것
 
+- **같은 회사에서 인접한 두 자리는 '주고받는 관계'로 이어 준다.** 포티투닷 `Physical AI`(학습으로
+  궤적 생성)와 `Planning & Control`(그 궤적을 조향·가감속으로 변환)은 실제로 산출물을 주고받는다.
+  후자의 담당업무 `RL/IL 기반 Policy … 를 제어 시스템에 통합` 을 **"AI 를 신뢰하지 않도록 설계하는
+  자리"** 로 읽으니 두 브리핑이 겹치지 않으면서 **회사 안 협업 구조가 드러났다.**
+- **자격요건의 전공 목록이 문의 넓이를 알려 준다.** 이 자리는 `제어공학·전기공학·기계공학·
+  자동차공학·로봇공학` 이 명시됐고 요건이 **석사+3년**(같은 회사 CV 는 7년↑)이었다.
+  **컴퓨터공학이 아닌 배경에게 열린 자리는 이 엔진에서 드물다** — 발견하면 `fit` 에 그 사실을 적는다.
+- **담당업무가 '연구 주제 나열'인 공고는 각 주제를 study 항목으로 옮긴다.** 포티투닷 CV 공고는
+  담당업무가 `3D shape modeling` · `World models and closed-loop simulation` 처럼 **주제 목록**이다.
+  이런 공고에서 `verdict` 를 한 줄로 요약하려 하면 흐려지므로, **주제별로 '왜 이 회사에서 이게
+  필요한가'를 붙이는 방식**이 맞다(다음 회차에 적용).
 - **⚠️ 유사도가 우대사항에서만 높은 경우가 있다 — 회사 공통 문구 때문이다.** 포티투닷 자율주행
   다섯 공고는 **우대사항 0.69~0.81 인데 담당업무·자격요건은 0.02~0.20** 이었다. 반대로 엑셈
   Java/Golang 두 건은 **자격요건까지 0.93** 이라 진짜 중복이었다.
