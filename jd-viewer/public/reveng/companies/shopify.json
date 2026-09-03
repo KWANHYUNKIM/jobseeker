@@ -5,7 +5,7 @@
   "country": "CA",
   "category": "커머스",
   "status": "done",
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-09-03",
   "one_liner": "남의 가게가 판 만큼 버는 회사",
   "business_model": "**구독료보다 거래에서 훨씬 많이 번다.** 2025년 매출 **115.6억 달러**(+30%) 중 머천트 솔루션이 **88.04억 달러**, 구독 솔루션이 **27.52억 달러**로 거래 쪽이 세 배 넘게 크다. 가게들이 실제로 판 금액(GMV)은 **3,784.41억 달러**(+29%), 월 반복 매출(MRR)은 2.05억 달러, 잉여현금흐름은 20억 달러(마진 17%)다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 **자기 지면**에서 벌고, Netflix 는 **자기 구독**에서 벌고, 쿠팡은 **자기가 파는 물건**에서 번다. Shopify 는 **남의 매출의 일부**를 받는다.\n\n**그래서 가용성이 자기 서비스의 문제가 아니라 남의 매출의 문제가 된다** — 우리가 몇 분 멈추면 수백만 가게의 판매가 그만큼 멈춘다. 이 회사의 엔지니어링 이야기가 확장보다 **격리와 복구**에 무게를 싣는 이유로 보인다(이 두 문단의 연결은 이 사이트의 해석이다).\n\n**사내에서 같은 모양이 세 번씩 반복된다.** 첫째, **격리의 단위가 곧 전환의 단위다** — pod 를 복구 데이터센터로 옮기고, BFCM 스케일 테스트에서 리전 페일오버를 돌리고, 재고 예약을 MySQL 로 옮길 때도 **pod 단위로 트래픽이 적은 곳부터** 넘겼다. 둘째, **미리 한계를 찾아 두고 되돌릴 길을 열어 둔다** — 스케일 테스트는 통과가 아니라 한계점을 찾는 것이 목적이고, 재고 예약과 스토어프론트 모두 **두 시스템을 나란히 돌려 비교한 뒤**(섀도 모드·Verifier) 킬 스위치를 열어 둔 채 옮겼으며, 성수기에는 변경 속도를 늦춘다. 셋째, **남의 매출을 대신 처리하는 회사라 '멈춤'과 '손실'의 정의가 다르다** — 복구를 속도가 아니라 **'요청이나 작업을 떨어뜨리지 않고'** 로 정의하고, 오버셀이 나면 그 비용(주문 취소·사과·지원)을 상인이 문다는 것을 설계의 출발점으로 삼는다. (이 묶음들은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "revenue_total": "2025년 매출 115억 6,000만 달러 (+30%)",
@@ -2251,7 +2251,8 @@
     "BFCM 스케일 테스트에서 나온 '체크아웃 큐'가 재고 예약과 어떻게 맞물리는지.",
     "상인이 쓴 테마 코드 자체가 느릴 때 회사가 무엇을 하는지(제한·경고·자동 최적화) — 읽은 글에 없다.",
     "스토어프론트 렌더러와 pod 의 관계 — 두 글 모두 명시하지 않는다.",
-    "스토어프론트 자료는 2020년 글 두 편이다 — 이후의 변화(Hydrogen·Oxygen 등)는 반영돼 있지 않다."
+    "스토어프론트 자료는 2020년 글 두 편이다 — 이후의 변화(Hydrogen·Oxygen 등)는 반영돼 있지 않다.",
+    "**재고 예약을 Redis 에서 MySQL 로 되돌린 일은 연도가 없어 시기로 세우지 않았다.** 회사가 '수년간 Redis 위에서 돌았다'고만 하고 언제 시작했는지도, 언제 바꿨는지도 적지 않는다(글은 2026-05). 예약과 재고 원장이 서로 다른 시스템에 있어 한 원자적 단계로 묶을 수 없었고 그래서 과판매·과소판매가 났다는 이유는 분명하다 — **되돌린 결정이라 연표에 들어갈 값이 큰데 시점만 없다.**"
   ],
   "sources": [
     {
@@ -2269,5 +2270,89 @@
       "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
     }
   ],
-  "domain": "shopify.com"
+  "domain": "shopify.com",
+  "eras": [
+    {
+      "id": "2016-pods",
+      "from": "2016",
+      "to": "2019",
+      "title": "성능과 확장성을 얻고 회복력을 잃었다",
+      "context": "**2015년에 더 큰 데이터베이스 서버를 사는 것이 더는 불가능해졌다.** 수직으로 키우는 길이 끝난 것이다.",
+      "what_changed": "**2016년에 런타임 아키텍처를 재편했다.** 데이터베이스를 샤딩해 옆으로 늘리고 그 위에 **Pod** 구조를 세웠다. 규칙이 엄격하다 — **공유 자원은 한 번에 한 Pod 하고만 통신하고, Pod 를 가로지르는 동작은 아예 허용하지 않는다.** 어느 Pod 로 보낼지는 로드밸런서의 **Sorting Hat** 이 정한다.",
+      "why": "더 큰 기계가 없으면 옆으로 가는 수밖에 없다. 샤딩 말고는 성장을 이어갈 방법이 없었다.",
+      "tradeoff": "회사가 한 문장으로 적었다 — **\"성능과 확장성에서 얻은 것을 회복력에서 잃었다.\"** 샤드 하나가 죽으면 모든 샤드를 도는 코드(`Sharding.with_each_shard`)가 통째로 실패해서 **그 동작이 플랫폼 전체에서 불가능**해졌다. 그리고 **Pod 를 가로지르는 질의를 영구히 포기**했다.",
+      "domains": [
+        "멀티테넌시·격리"
+      ],
+      "features": [
+        "pods-isolation"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "A Pods Architecture To Allow Shopify To Scale",
+          "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+          "publisher": "Shopify Engineering",
+          "date": "2018-03-02",
+          "summary": "더 큰 서버를 살 수 없게 된 뒤 샤딩과 Pod 로 간 경위와, 그 대가로 회복력을 잃었다는 사실을 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2019-storefront-rewrite",
+      "from": "2019-01",
+      "to": "",
+      "title": "15년 된 스토어프론트를 다시 쓰기 시작했다",
+      "context": "스토어프론트를 굴리던 코드는 **15년도 더 전, 토비가 Snowdevil 을 냈을 때 시작된 것**이다. 트래픽이 늘수록 **요청 하나를 계산하는 시간이 점점 느려졌다.**",
+      "what_changed": "**2019년 1월**에 모든 온라인 스토어프론트를 떠받치는 핵심 소프트웨어를 다시 쓰기 시작했다. 새 구현이 처리하는 요청의 **평균 서버 응답 시간이 4~6배 빨라졌다.**",
+      "why": "스토어프론트는 모놀리스의 다른 부분보다 **성능 요구가 더 엄격하다.** 같은 덩어리 안에 두면 그 기준을 따로 지킬 수가 없다.",
+      "tradeoff": "**끝내는 데 걸리는 시간이 곧 대가였다.** 1년 반이 지난 시점에도 **기능 동등성이 90%대**여서 옛 구현을 못 버렸고, 그동안 **두 구현을 나란히 굴리며 출력이 같은지 비교하는 검증기**와 트래픽을 나누는 **nginx Lua 라우팅 모듈**을 따로 유지해야 했다. 그 사이 **아주 드문 경계 조건에서 깨지는 코드를 몇 번 프로덕션에 냈다.**",
+      "domains": [
+        "스토어프론트 렌더링"
+      ],
+      "features": [
+        "storefront-renderer"
+      ],
+      "metrics": [
+        {
+          "label": "새 구현의 서버 응답 시간",
+          "value": "4~6배 빨라짐",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+              "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+              "publisher": "Shopify Engineering",
+              "date": "2020-08-20",
+              "summary": "15년 넘은 스토어프론트를 다시 쓰면서 두 구현을 나란히 굴리고 출력을 비교한 방식을 적었다."
+            }
+          ]
+        },
+        {
+          "label": "기능 동등성 (2020-08 시점)",
+          "value": "90% 이상 · 100% 아님",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+              "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+              "publisher": "Shopify Engineering",
+              "date": "2020-08-20",
+              "summary": "15년 넘은 스토어프론트를 다시 쓰면서 두 구현을 나란히 굴리고 출력을 비교한 방식을 적었다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+          "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+          "publisher": "Shopify Engineering",
+          "date": "2020-08-20",
+          "summary": "15년 넘은 스토어프론트를 다시 쓰면서 두 구현을 나란히 굴리고 출력을 비교한 방식을 적었다."
+        }
+      ]
+    }
+  ]
 }
