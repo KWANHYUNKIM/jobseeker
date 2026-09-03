@@ -348,6 +348,24 @@
    "updated_at": "2026-09-04"
   },
   {
+   "slug": "transaction-isolation",
+   "title": "트랜잭션 격리 수준",
+   "category": "term",
+   "level": "core",
+   "status": "done",
+   "one_liner": "동시에 도는 트랜잭션들이 **서로를 얼마나 보게 할지**를 정하는 눈금이다. 완전한 격리는 느리기 때문에, **정확성을 얼마나 살 것인가**를 고르게 만든 장치다.",
+   "aliases": [
+    "트랜잭션 격리 수준",
+    "격리 수준",
+    "isolation level",
+    "MVCC",
+    "동시성 제어"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "uart",
    "title": "UART",
    "category": "firmware",
