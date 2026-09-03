@@ -5,7 +5,7 @@
   "country": "US",
   "category": "핀테크",
   "status": "done",
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-09-03",
   "one_liner": "되돌릴 수 없는 일을 다시 시도해도 안전하게 만드는 일을 파는 회사",
   "business_model": "가맹점 대신 결제를 처리하고 거래액에 비례해 수수료를 받는다. 2025년 총 결제액 **1.9조 달러**(+34%)로 세계 GDP 의 약 1.6%가 이 위를 지나갔고, 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러다. 앞선 회사들과 결정적으로 다른 점은 **고객이 사용자가 아니라 개발자**라는 것이다 — 그래서 이 회사의 제품은 화면이 아니라 **API 의 계약**이고, '다시 시도해도 되는가' 같은 질문이 UX 문제가 아니라 상품의 핵심이 된다. 결제 위에 Billing·Invoicing·Tax 같은 매출 운영 제품(Revenue suite)을 얹어 수익원을 넓히고 있다.",
   "products": [
@@ -2653,7 +2653,9 @@
     "heat management 와 shard autoscaling 은 회사가 각각 프로토타입·투자 중이라고만 밝혔다 — 아직 만들어지지 않은 것이다.",
     "결제 처리·결제수단(카드망·로컬 수단 연동) 도메인은 아직 자료를 찾지 못했다.",
     "결제 처리·결제수단(카드망·은행·나라별 로컬 수단 연동)은 끝내 공개 엔지니어링 자료를 찾지 못해 도메인으로 세우지 않았다 — 135개 통화·185개국이라는 사실만 Ledger 글에 나온다.",
-    "Billing 분석의 지연을 더 낮추는 방법은 '작업 중'이라고만 밝힌다."
+    "Billing 분석의 지연을 더 낮추는 방법은 '작업 중'이라고만 밝힌다.",
+    "**stripe.dev 기술블로그 본문을 못 읽었다.** Ledger(자금 이동 추적·검증), Radar 구축기, 문서 데이터베이스 무중단 이전(2024년 6월 6일, Jimmy Morzaria·Suraj Narkhede), Billing 실시간 분석(2025년 9월 16일) 넷 다 제목과 날짜·저자까지만 오고 본문이 자바스크립트로 그려진다. 데이터 인프라와 자금 기록 축의 연표가 비어 있는 이유가 이것이다 — 회사가 안 쓴 게 아니라 이쪽이 못 읽었다.",
+    "**Charges API 가 언제부터였는지는 확인하지 못했다.** 문서가 그것이 무엇을 못 하는지는 적지만 언제 만들었는지는 적지 않는다. 그래서 첫 시기를 Charges 의 시작이 아니라 **그것을 버리게 만든 2019년**에서 열었고, Charges 시절의 모양은 `context` 에 남겼다."
   ],
   "sources": [
     {
@@ -2710,5 +2712,65 @@
       "summary": "구독 지표를 평균 24시간 지연 배치에서 최소 15분 지연 스트리밍으로 옮긴 이야기. Flink state 로 증분 갱신하고, 초기 state 는 Spark 로 만들며, Pinot v2 의 윈도 집계로 예비집계를 없앴다. 고객이 지표 정의를 바꿔도 대시보드는 멈추지 않는다."
     }
   ],
-  "domain": "stripe.com"
+  "domain": "stripe.com",
+  "eras": [
+    {
+      "id": "2019-payment-intents",
+      "from": "2019",
+      "to": "",
+      "title": "규제가 API 모양을 바꿨다 — 만들고 끝내는 모델을 버리다",
+      "context": "그전까지 카드 결제는 **Charges API** 로 만들었다. 요청 하나로 만들고 그 자리에서 끝내는 **동기 모델**이다. 결제가 '한 번의 호출'인 세계에서는 이것이 가장 단순한 모양이었다.",
+      "what_changed": "**2019년 9월 14일**, 유럽 PSD2 의 **강력한 고객 인증(SCA)** 이 시행됐다. 카드 결제가 SCA 를 맞추려면 **3D Secure** 를 써야 한다. Stripe 는 축을 **Payment Intents API** 로 옮겼다 — **\"고객 결제 흐름의 생애주기를 추적하고, 규제 요구·맞춤 Radar 사기 규칙·리다이렉트 기반 결제수단이 요구할 때 추가 인증 단계를 발동\"** 하는 API 다. 지금 Charges API 는 **\"카드 결제를 만드는 용도로는 폐기됐고 지원 제거를 계획\"** 중이며, **\"새 연동은 Charges API 로 결제를 만들 수 없다\".**",
+      "why": "회사가 Charges API 가 **못 하는 것**을 목록으로 적는다 — **\"신용카드 규정 준수에 필요한 것이 많다\"**면서 **인도 소재 사업자**, **은행의 카드 인증 요청**, **강력한 고객 인증(SCA)** 셋을 든다. 만들고 곧바로 끝내는 모델에는 **중간에 은행이 사용자에게 인증을 요구하고 돌아오는 흐름**을 담을 자리가 없다. 성능이나 규모가 아니라 **바깥의 규칙이 API 의 모양을 바꾼** 경우다.",
+      "tradeoff": "값은 이 회사가 아니라 **이 API 를 쓰던 모든 개발자**가 냈다. 마이그레이션 문서가 바꿔야 할 필드를 표로 하나하나 적는다 — `charge.source` → `charge.payment_method_details`, `charge.source.id` → `charge.payment_method`, `charge.source.last4` → `charge.payment_method_details.card.last4`, 카드 브랜드 값마저 `American Express` 에서 `amex` 로. 결제 흐름이 여럿인 앱은 결제를 만드는 코드보다 먼저 **charge 객체를 읽는 코드부터 전부** 고쳐야 한다. 그리고 되돌아갈 길이 닫혔다 — **\"새 기능은 Payment Intents API 에서만 쓸 수 있다\".** 남은 연동을 그대로 두는 것은 가능하지만, 그 순간부터 **아무것도 새로 받지 못하는 상태로 고정**된다.",
+      "domains": [
+        "결제 API·개발자 제품"
+      ],
+      "features": [
+        "api-surface"
+      ],
+      "stack_in": [
+        "Payment Intents API",
+        "3D Secure",
+        "Stripe Checkout"
+      ],
+      "stack_out": [
+        "Charges API(카드 결제 생성 용도 폐기)",
+        "charge.source 계열 필드"
+      ],
+      "metrics": [
+        {
+          "label": "SCA 시행",
+          "value": "2019년 9월 14일 (유럽 PSD2)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Strong Customer Authentication readiness",
+              "url": "https://docs.stripe.com/strong-customer-authentication",
+              "publisher": "Stripe Docs",
+              "date": "2026-09 확인",
+              "summary": "PSD2 의 강력한 고객 인증이 언제부터 시행됐고 무엇을 요구하는지를 적은 문서."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Charges versus Payment Intents APIs",
+          "url": "https://docs.stripe.com/payments/payment-intents/migration/charges",
+          "publisher": "Stripe Docs",
+          "date": "2026-09 확인",
+          "summary": "Charges API 가 무엇을 못 하는지, 왜 폐기됐는지, 옮기려면 어떤 필드를 어떻게 바꿔야 하는지를 회사가 표로 적었다."
+        },
+        {
+          "title": "Strong Customer Authentication readiness",
+          "url": "https://docs.stripe.com/strong-customer-authentication",
+          "publisher": "Stripe Docs",
+          "date": "2026-09 확인",
+          "summary": "PSD2 의 강력한 고객 인증이 언제부터 시행됐고 무엇을 요구하는지를 적은 문서."
+        }
+      ]
+    }
+  ]
 }
