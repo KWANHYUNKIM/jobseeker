@@ -4,43 +4,47 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 3건 · 학습 27개.
-(전체: 회사 24곳 · 공고 190건 · 학습 1,555개 · **오류 0 · 경고 0**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 4건 · 학습 36개.
+(전체: 회사 24곳 · 공고 191건 · 학습 1,564개 · **오류 0 · 경고 0**.)
 
-**이번 회차 = `System Framework Engineer`(원티드 wd/310542, `경력 2년 이상`·학사↑, 경기 성남시).**
-**이 회사에서 요건이 가장 낮은 문**이다(Physical AI 는 석사↑, Open Platform 은 3년↑).
-축: **`시스템 프레임워크가 차량 OS 에서 무엇을 맡나(Pleos)`** ·
-**`차량·가전 리눅스 계보(Tizen·AGL·GENIVI·CCOS·WebOS)`** · **`왜 Rust 가 들어왔나`** ·
-`차 안이 이미 분산 시스템이다` · **`DDS·gRPC·Some/IP·MQTT 의 계층별 분업`** · `DDS vs Zenoh` ·
-`부팅 시간·장기 메모리` · `프로파일링(perf/ftrace)` · `학위 대신 시스템 계층 이력 만들기`.
+**이번 회차 = `AI Infrastructure Engineer`(자체 채용페이지/Ashby, 판교·Remote 표기).**
+축: **`Kubernetes 와 Slurm 이 함께 나오는 이유`** · **`GPU 는 죽는 대신 느려지고 결과가 틀린다`** ·
+`쿼터·가동률(이 자리의 성과 지표)` · `분산 학습 확장 효율` · `리눅스를 커널 수준으로` ·
+**`'유지보수가 용이한' 이라는 형용사가 요구사항이다`** · `NVIDIA 스택(드라이버·CUDA·NCCL)` ·
+`대규모 클러스터 관측성` · `IaC(여러 데이터센터)`.
 
-**⚠️ 우대사항 한 줄에서 회사의 미결정이 읽혔다** — `DDS (Data Distribution Service) 또는 Zenoh 경험`.
-둘을 `또는` 으로 묶은 것은 **아직 확정하지 않았거나 비교 중이라는 신호**로 읽어, `edge` 첫 항목을
-**비교표 만들어 가기**로 세웠다. **`~ 또는 ~` 로 묶인 신기술 쌍은 회사의 미결정을 드러낸다.**
+**⚠️⚠️ 이번에 큰 실수를 했다가 잡았다 — 제목으로 공고를 찾으면 다른 회사 것을 집는다.**
+`AI Infrastructure Engineer` 로 검색해 읽은 첫 결과가 **Together AI(샌프란시스코, greenhouse)** 였다.
+본문에 `About Together AI`·`$190,000 - $270,000` 이 있어 알아챘다. **포티투닷에도 같은 제목의
+공고가 따로 있었다**(판교, Ashby). → **공고를 찾을 때 반드시 `norm_company` 로 먼저 거른 뒤
+제목을 본다.** 크롤 데이터에 해외 ATS 회사가 들어와 있어 **동명 공고가 흔하다.**
+(앞 사이클들에서 적어 둔 "본문 5,088자" 같은 숫자도 이 오류의 영향을 받았을 수 있다 — 아래 목록은 다시 셌다.)
 
-**⚠️ `CCOS` 를 자격요건 괄호에서 발견했다** — 현대차그룹의 커넥티드카 OS다. 담당업무는 `Pleos` 이므로
-**기존 자산과 새 OS 를 잇는 일이 있다는 신호로 읽힌다.** 다만 공개 자료가 얇아 **단정하지 않고**
-`edge` 에서 "정리해 가서 면접에서 질문하라"로 처리했다.
+**⚠️ 포티투닷 46건 실제 구성을 다시 셌다** — 판교 24 · **서니베일 9** · 바르샤바 3 · **호치민 1**
+(`[42dot Vietnam] QA Engineer (Automotive)`) · 나머지 원티드 9건은 전부 판교.
+**해외 자리 13건은 국내 자리로 쓰지 않는다** — 쓸 때 `verdict`·`fit` 에 근무지를 명시한다.
 
-**남은 순서** (46건 중 **실제 자리 수는 여전히 안 셌다** — ats 37건 ↔ 원티드 9건 대조 필요)
-1. **데이터·플랫폼 축 셋 — 쓰기 전에 반드시 대조.**
-   `AI Infrastructure Engineer`(5,088자) / `Senior ML Platform Engineer (Autonomous Driving)`(3,958자) /
-   `Senior AI Data Pipeline Engineer (Autonomous Driving)`(3,904자). **셋이 겹치면 한둘만 쓴다.**
-   ⚠️ 이 축은 **회사 브리핑의 `학습 데이터 파이프라인과 ML 플랫폼` 도메인**과 맞물린다 —
-   주행 데이터가 하루 테라바이트라는 점, 어느 장면을 학습에 쓸지 고르는 문제가 각도다.
-2. `Sr. Test Automation Engineer (SIL/HIL Infrastructure)`(3,862자) — **이 엔진에 없던 각도.**
-3. 펌웨어 둘(`Secure Boot & Real Time Platform` / `Embedded OTA & Uptane Security Platform`) —
-   **Uptane 은 차량 OTA 보안 프레임워크다.** 임베디드 전제라 문이 좁지만 각도 값이 크다.
-4. `Senior Physical AI Engineer`(5,968자) — 1회차와 **다른 자리**임을 확인했다(유사도 0.04~0.09).
-5. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
-6. **서니베일·바르샤바 자리는 국내 자리로 쓰지 않는다** — 쓸 때 `verdict`·`fit` 에 근무지를 명시한다.
+**⚠️ 데이터·플랫폼 축 셋을 대조한 결과** (이번에 확인)
+- `AI Infrastructure Engineer` ↔ 나머지 셋: **0.00~0.04(완전히 다름)** → 이번에 썼다.
+- `Senior ML Platform Engineer (Autonomous Driving)`(서니베일) ↔ `Senior AI Data Pipeline Engineer`(서니베일):
+  **0.54 / 0.70 / 0.82 — 사실상 같은 계열.** 둘 중 하나만 쓴다.
+- `Senior ML Platform Engineer`(원티드, 판교, `경력 7년 이상`) ↔ 위 서니베일 판: **0.68 / 0.81 / 0.19**
+  → **우대사항만 크게 다르다.** **판교 건을 쓰는 편이 낫다**(국내 자리이고 경력 표기가 있다).
 
-**닫을 때 (넷)**
-1. **`Pleos Vehicle OS` 를 회사 브리핑에 보강한다** — 지금 `company.business`·`domains` 에는
-   `Gleo AI` 만 있고 Vehicle OS 의 제품명이 없다. **공고가 회사 사이트보다 앞선 사례다.**
-2. `salary` 가 **비어 있다** — 사람인 `view-inner-salary` 경로(엑셈에서 열렸다)를 먼저 시도.
-3. `people` 도 **비어 있다** — 신임 박민우 대표의 **직접 발언**이 나오면 채운다.
-4. 안 쓴 공고의 이유를 `open_questions` 첫 줄부터 적는다.
+**남은 순서**
+1. **`Senior ML Platform Engineer`(원티드 wd, 판교, `경력 7년 이상`)** — **다음.** 데이터·플랫폼 축 대표.
+   ⚠️ 서니베일 두 건은 **같은 계열이라 쓰지 않고** 닫을 때 `open_questions` 에 이유를 남긴다.
+2. `Senior Software Engineer (AD Framework)`(판교, 4,906자) / `Senior Planning & Control System Engineer`(판교, 4,845자) /
+   `Senior Computer Vision Engineer`(판교, 4,161자) — **자율주행 스택 축.** ⚠️ 서로 대조 먼저.
+3. `Security Engineer (Security Platform)`(판교, 2,687자) / `Security Engineer (차량 보안)`(판교, 1,065자) —
+   **차량 보안 각도.** 둘 대조 먼저.
+4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(판교, 2,294자) — 학위 과정 지원자에게 열린 유일한 문.
+5. `LLM Engineer (Data Generation)`·`Senior AI Engineer (Driving VLM/VLA)`·`AI Engineer (Navigation Agent)`·
+   `Senior AI Agent Engineer (Gleo Interactor)` — **Gleo·에이전트 축.** 넷 대조 먼저.
+6. 서니베일·바르샤바·호치민 13건은 **뒤로.** 쓰더라도 근무지를 앞세운다.
+
+**닫을 때 (넷)** — ① **`Pleos Vehicle OS` 회사 브리핑 보강** ② `salary` 비어 있음(사람인
+`view-inner-salary` 먼저 시도) ③ `people` 비어 있음(신임 박민우 대표 직접 발언 나오면) ④ 안 쓴 공고 이유.
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -60,6 +64,17 @@
 
 ## 배운 것
 
+- **⚠️ 공고를 제목으로 찾지 않는다. 반드시 `norm_company` 로 먼저 거른다.** 실제로
+  `AI Infrastructure Engineer` 를 제목으로 찾아 **Together AI(샌프란시스코)** 공고를 읽었다.
+  본문의 `About Together AI`·달러 연봉 표기로 알아챘지만, **못 알아채면 다른 회사 요건을 그 회사
+  브리핑에 쓰게 된다.** 크롤 데이터에 해외 ATS 회사가 다수 들어와 있어 **동명 공고가 흔하다.**
+  → 조회 스크립트는 항상 `'<회사>' in V.norm_company(j.get('company'))` 를 먼저 건다.
+- **해외 ATS 공고에는 달러 연봉 밴드가 그대로 적혀 있다**(Together AI: `$190,000 - $270,000 + equity`).
+  국내 회사 브리핑에는 쓸 수 없지만, **해외 회사를 큐에 올릴 때는 `salary` 를 `basis: "posting"`·
+  `confirmed` 로 쓸 수 있는 드문 기회**라는 뜻이다. 기억해 둔다.
+- **자체 채용페이지(ats) 공고는 전형 절차가 본문에 다 있다.** 포티투닷 Ashby 공고에는 5단계 절차,
+  **`온라인 기술 테스트`**, `3개월 수습`, `평판조회`, 채용절차법 안내까지 들어 있었다.
+  **`site: "ats"` 는 `career` 가 비는 대신 `interview` 를 가장 잘 채울 수 있는 소스다.**
 - **`A 또는 B 경험` 으로 묶인 신기술 쌍은 회사의 미결정을 드러낸다.** 포티투닷 우대사항의
   `DDS 또는 Zenoh` 가 그랬다 — 둘은 세대가 다른 기술이라, 함께 적혔다는 것은 **아직 고르는 중**
   이라는 뜻으로 읽힌다. 이럴 때 `edge` 는 "둘 다 배우기"가 아니라 **"비교표를 만들어 가기"** 가 된다.
