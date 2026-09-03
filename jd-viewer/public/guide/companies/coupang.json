@@ -336,6 +336,12 @@
         "evidence": "전형 절차 절이 적혀 있는 79건 중 **21건**이 `전화면접` 또는 `리크루터 폰 스크리닝` 을 앞단에 두고 있다. `CXDX Junior PM` 은 `서류전형 → (리크루터 폰 스크리닝) 전화면접 → 화상면접 → 최종 합격` 이고, 다른 다수 공고는 `서류전형 - 1차 면접 - 2차 면접 – 최종 합격` 처럼 면접 차수만 적는다.",
         "so_what": "**서류 다음이 곧바로 기술 면접이 아닐 수 있다.** 전화로 먼저 거르는 단계에서는 코딩이 아니라 **지원 동기·경력 요약·연봉·입사 가능 시점** 같은 것을 짧게 묻는다. 목소리만으로 **3분짜리 자기 요약**을 만들어 두면 이 단계가 쉬워진다. ⚠️ 다만 79건 중 21건이므로 **모든 공고가 그렇지는 않다 — 지원할 공고의 절차를 직접 확인한다.**",
         "confidence": "inferred"
+      },
+      {
+        "reading": "**채용 사이트의 연차 표기가 본문 요건보다 낮은 공고가 있다**",
+        "evidence": "사이트 `career` 표기와 본문의 연차 요건을 **둘 다 가진 18건**을 대조했더니, **본문이 요구하는 최소 연차가 사이트 표기 하한보다 높은 공고가 3건**이었다 — `[쿠팡] 백엔드 개발자 (로켓페이)`(표기 `경력 6-25년` / 본문 `Backend 개발 경력 12년 이상`), `Staff Data Engineer (Coupang Pay)`(표기 `경력 8-16년` / 본문 `10+ years`), `[쿠팡] 백엔드 개발자 (Orchestration Platform)`(표기 `경력 5-20년` / 본문 `대규모 소프트웨어 인프라 설계, 개발 및 유지 관리 경험 10년 이상`). ⚠️ 한 공고 안에서 엇갈리는 경우도 있다 — `[쿠팡] 백엔드 개발자` 는 자격 요건에 `프로그래밍 경력 6년 이상` 과 `실무 8년차 이상 또는 그에 준하는 역량` 을 함께 적었다. **왜 다른지는 확인하지 못했다**(채용 사이트 입력값과 본문이 따로 관리되는 것으로 보이지만 근거는 없다).",
+        "so_what": "**검색 결과의 연차 필터만 믿고 지원 여부를 정하지 않는다** — 표기보다 본문 요건이 높을 수 있다. 반대로 표기가 넓게(`6-25년`) 잡힌 공고를 보고 '나는 안 되겠다'고 접을 필요도 없다. **항상 본문의 자격 요건 줄을 직접 읽고**, 두 숫자가 다르면 **리크루터 전화면접에서 먼저 확인한다**(쿠팡 한국어 공고는 대개 전형 앞단에 전화면접이 있다 — 신호 10번). 한 공고 안에서 엇갈릴 때는 `또는 그에 준하는 역량` 같은 여지 문구가 붙어 있는지도 함께 본다.",
+        "confidence": "inferred"
       }
     ]
   },
@@ -2899,6 +2905,152 @@
           "무중단 마이그레이션 — **양쪽 쓰기 중 한쪽만 성공했을 때**",
           "기술적 판단이 사업 숫자로 이어진 사례 (`실제 비즈니스 임팩트` 가 요건에 있다)",
           "설계 리뷰·멘토링에서 **다른 팀을 설득한 방법**"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "url": "https://www.wanted.co.kr/wd/378188",
+      "title": "Staff Data Engineer (Coupang Pay)",
+      "site": "wanted",
+      "verdict": "**쿠팡페이의 데이터 레이크·웨어하우스를 다시 짓는 자리.** ⚠️ 사이트 표기는 `경력 8-16년` 인데 **본문은 `10+ years`** 다. 데이터 엔지니어링 공고인데 담당업무 절반이 **남을 움직이는 일**이다 — 다른 팀의 KPI 를 같이 정하고, **로그를 남기도록 소스 쪽을 설득하고**, 표준을 조직에 심는다.",
+      "fit": {
+        "must_have": [
+          "⚠️ **본문 기준 빅데이터 10년** (사이트 표기 `8-16년` 과 다르다 — **본문을 믿는다**)",
+          "Spark·Hive 로 **직접 손을 댄** 분산 처리 (`Strong hands-on experience` 라고 적혀 있다)",
+          "데이터 모델링·아키텍처·웨어하우징을 **깊게** 이해",
+          "Java / Scala / Python 중 하나",
+          "AWS 같은 클라우드에서의 확장성·신뢰성 감각"
+        ],
+        "can_learn": [
+          "Iceberg·Hudi·Doris·ClickHouse 처럼 **나열된 여덟 개를 다 알 필요는 없다** — `such as` 로 예시를 든 문장이다",
+          "금융 도메인(`Experience in financial services industry is a plus.`)과 영어(`English speaker is a plus.`)는 **둘 다 plus** 로만 적혀 있다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "데이터 모델링·아키텍처·웨어하우징 — 10년치를 무엇으로 증명하나",
+          "from": "qualification",
+          "quote": "10+ years of experience working on Bigdata with deep understanding of data modeling, data architecture, and data warehousing.",
+          "priority": "core",
+          "why": "⚠️ **사이트 표기(`경력 8-16년`)보다 본문이 높다.** 그리고 요구하는 것이 도구가 아니라 **모델링·아키텍처·웨어하우징** 세 가지의 이해다 — 즉 Spark 를 몇 년 썼는지가 아니라 **테이블을 어떻게 나눴고 왜 그렇게 나눴는지**를 묻는 자리다. 결제 도메인이라 **한 번 잘못 잡은 스키마가 정산·대사 전체를 흔든다.**",
+          "gap_check": "내가 설계한 팩트 테이블의 **입자(grain)** 를 한 문장으로 말할 수 있는가 — '결제 시도 한 건'인지 '승인된 결제 한 건'인지. 흐릿하면 그 위의 모든 집계가 흐릿하다.",
+          "drill": "결제 도메인의 스타 스키마를 한 장 그린다 — 팩트(결제 시도) + 차원(가맹점·카드사·시각·상품). 그다음 **까다로운 질문 다섯 개**(부분 취소가 있으면 매출은? 승인 후 매입 실패는? 환불이 다음 달이면?)를 던지고 **스키마가 답할 수 있는지** 확인한다. 답 못 하는 질문마다 **무엇을 더 저장해야 하는지**를 적는 게 결과물이다.",
+          "hours": 8
+        },
+        {
+          "topic": "Spark·Hive — 손으로 만져 본 분산 처리",
+          "from": "qualification",
+          "quote": "Strong hands-on experience in distributed processing using Spark, and Hive.",
+          "priority": "core",
+          "why": "⚠️ `hands-on` 을 굳이 적었다 — 이 층위(Staff)에서도 **설계만 하는 사람이 아니라 직접 돌리는 사람**을 찾는다는 뜻이다. 쿠팡페이 규모에서 Spark 작업이 느려지는 이유는 대개 코드가 아니라 **데이터가 한쪽으로 쏠려서**(skew)거나 **셔플이 과해서**다. 그걸 실행 계획으로 짚어 낼 수 있느냐가 갈림길이다.",
+          "gap_check": "내 Spark 작업이 느릴 때 **실행 계획과 스테이지별 시간**을 보는가, 아니면 executor 를 늘리는가.",
+          "drill": "일부러 **한쪽으로 쏠린 조인**을 만든다(키 하나에 데이터의 절반). 느린 걸 확인한 뒤 ① 브로드캐스트 조인 ② 솔팅(키에 난수 붙이기) ③ 사전 집계 — 세 방법으로 각각 고치고 **스테이지 시간과 셔플 크기**를 비교표로 남긴다. 이 표 한 장이 면접에서 hands-on 을 증명한다.",
+          "hours": 10
+        },
+        {
+          "topic": "차세대 데이터 레이크와 웨어하우스를 '다시' 짓는다는 것",
+          "from": "task",
+          "quote": "Design and build Coupang's next generation Data Lake, Data Warehouse and Systems.",
+          "priority": "core",
+          "why": "⚠️ **`next generation` 이라고 적혀 있다** — 지금 쓰는 것이 있고 그걸 대체한다는 뜻이다(무엇이 한계였는지는 공고가 밝히지 않는다). 이런 자리에서 진짜 어려운 건 새 시스템을 만드는 게 아니라 **쓰는 사람들을 옮기는 일**이다. 옛 테이블을 계속 쓰는 팀이 남으면 두 벌이 영원히 공존한다.",
+          "gap_check": "내가 만든 새 데이터 모델로 **기존 사용자를 옮겨 본** 경험이 있는가. 새로 만든 경험과는 다른 칸이다.",
+          "drill": "기존 테이블 하나를 새 모델로 옮기는 계획을 4단계로 쓴다 — ① 양쪽 적재 ② **두 결과를 매일 비교하는 검증 잡** ③ 소비자를 한 팀씩 이전 ④ 옛 테이블 폐기(예고 → 읽기 차단 → 삭제). ②의 **비교 리포트 형식**까지 정하는 게 핵심이다 — '값이 다르다'가 아니라 **어느 컬럼이 몇 건 다른지**가 나와야 사람이 움직인다.",
+          "hours": 8
+        },
+        {
+          "topic": "파이프라인 기술이 여덟 개 나열된 이유",
+          "from": "task",
+          "quote": "Design and build reliable data pipelines using modern distributed processing technologies such as Spark, Flink, Redshift, Iceberg, Presto, Hudi, Doris and ClickHouse with the ability to scale very large data volumes.",
+          "priority": "core",
+          "why": "⚠️ **여덟 개가 나열돼 있지만 `such as` 다** — 전부 요구하는 게 아니라 **이 정도 계열을 다룬다**는 신호다. 다만 목록의 구성이 정보를 준다: 배치(Spark)와 스트림(Flink), 테이블 포맷(Iceberg·Hudi), 질의 엔진(Presto·ClickHouse·Doris)이 **각 층에서 둘씩** 나온다 — 즉 **한 벌로 통일된 스택이 아니라 층마다 선택지가 있는 환경**이다. 그래서 필요한 건 도구 개수가 아니라 **왜 이 층에 이걸 골랐는지 말하는 능력**이다.",
+          "gap_check": "Iceberg 같은 테이블 포맷이 **없던 시절의 무엇을 해결했는지** 말할 수 있는가(스키마 변경·시점 조회·작은 파일 문제).",
+          "drill": "같은 데이터를 ① 파케이 파일 그대로 ② Iceberg 테이블 — 두 형태로 적재하고 **컬럼 추가·과거 시점 조회·레코드 수정**을 각각 시도한다. ①에서 안 되는 것들을 표로 적으면 테이블 포맷의 존재 이유가 손에 남는다. 스트림 쪽은 별도로, 같은 집계를 **배치와 Flink 로 각각** 만들어 **결과가 언제 어긋나는지**(늦게 도착한 데이터) 확인한다.",
+          "hours": 12
+        },
+        {
+          "topic": "로그를 남기게 설득하기 — 이 공고에서 가장 특이한 줄",
+          "from": "task",
+          "quote": "Work closely with other teams, identify their data needs, identify core KPI's to drive business growth, Influence source data producers to log key attributes.",
+          "priority": "high",
+          "why": "⚠️ **`Influence source data producers to log key attributes`** — 데이터 엔지니어링 공고에서 보기 드문 문장이다. 없는 데이터는 아무리 좋은 파이프라인도 못 만들어 내므로, **애초에 남기게 만드는 것**이 이 자리의 상류 작업이 된다. 그런데 로그를 남기는 쪽은 남의 팀이고 그들에겐 당장 이득이 없다 — **그래서 이건 기술이 아니라 협상이다.** KPI 를 같이 정하자고 적힌 것도 같은 맥락이다(그들의 지표가 돼야 남긴다).",
+          "gap_check": "내가 **없는 데이터 때문에 답 못 한 질문**을 목록으로 갖고 있는가. 없으면 무엇을 요청할지도 모른다.",
+          "drill": "지금 다루는 도메인에서 **답하고 싶은데 못 답하는 질문 다섯 개**를 적고, 각각 ① 어떤 필드가 있으면 되나 ② 누가 남겨야 하나 ③ **그 팀에게 무슨 이득인가** ④ 남기는 비용을 적는다. ③을 못 채우는 요청은 대개 거절당한다 — 그 칸을 채우는 연습이 이 항목의 전부다.",
+          "hours": 4
+        },
+        {
+          "topic": "Tableau 대시보드 — 분석가가 아니라 데이터 엔지니어가 만든다",
+          "from": "task",
+          "quote": "Design and build tableau dashboards for Fintech Tech units and specific Business units.",
+          "priority": "high",
+          "why": "파이프라인만 깔고 끝나는 자리가 아니라 **소비되는 화면까지** 만든다. 대상이 `Fintech Tech units and specific Business units` 라 **기술 조직과 사업 조직이 같은 숫자를 봐야 한다**는 뜻인데, 이 둘은 원하는 게 다르다 — 기술 쪽은 지연·실패율, 사업 쪽은 거래액·수수료. **하나의 데이터 위에서 두 화면이 어긋나지 않게** 만드는 게 일이다.",
+          "gap_check": "같은 지표를 두 팀이 **다르게 계산하고 있는 경우**를 우리 조직에서 댈 수 있는가.",
+          "drill": "핵심 지표 세 개를 골라 **지표 정의서**를 쓴다 — 이름·계산식·제외 조건·집계 기준 시각(주문 시각인가 정산 시각인가)·**누가 소유하는가**. 그다음 실제 대시보드 두 개가 그 정의를 따르는지 대조한다. 어긋난 항목이 나오면 그게 조직의 진짜 데이터 부채다.",
+          "hours": 6
+        },
+        {
+          "topic": "표준을 심고 강제하기",
+          "from": "task",
+          "quote": "Foster, mentor, and enforce industry best practices in data architecture, design patterns, big data platform, storage, distributed compute and coding standard.",
+          "priority": "high",
+          "why": "⚠️ **`enforce`(강제)라는 단어가 들어 있다** — 권하는 데서 끝나지 않는다는 뜻이다. 다만 사람이 매번 지적하는 방식은 규모를 못 따라가므로, 이 층위에서 실제로 하는 일은 **표준을 도구에 넣는 것**이 된다(템플릿·린트·CI 검사·리뷰 기준). 쿠팡의 SRE 공고가 `governance ... rather than applied as a final review` 라고 한 것과 같은 문제다.",
+          "gap_check": "우리 팀의 데이터 규약 중 **사람이 지키는 것**과 **도구가 막는 것**의 비율은?",
+          "drill": "자기 팀의 파이프라인 규약 하나(파티션 기준, 네이밍, 필수 메타데이터 중 하나)를 골라 **CI 검사로 만든다.** 그리고 반드시 **예외를 신청하는 방법**을 함께 만든다 — 빠져나갈 문이 없는 규칙은 결국 꺼지거나 우회된다.",
+          "hours": 6
+        },
+        {
+          "topic": "MPP 데이터베이스와 SQL/NoSQL",
+          "from": "qualification",
+          "quote": "Extensive experience Bigdata Platform, Data Warehousing concepts and languages (SQL, NoSQL) and MPP databases.",
+          "priority": "high",
+          "why": "MPP(대규모 병렬 처리) 데이터베이스는 **여러 노드에 나눠 담고 동시에 훑는** 구조라, **어떤 키로 분산하느냐**가 성능을 좌우한다. 잘못 잡으면 한 노드만 일하고 나머지가 논다. 목록에 Redshift·ClickHouse·Doris 가 있는 것도 같은 계열이다.",
+          "gap_check": "내가 쓰는 웨어하우스의 **분산 키와 정렬 키**를 무엇으로 잡았는지, 그리고 그 이유를 말할 수 있는가.",
+          "drill": "같은 테이블을 **분산 키를 다르게** 두 벌 만들고(예: 가맹점 ID vs 결제 시각) 대표 질의 세 개를 각각 돌려 시간과 스캔량을 비교한다. **어느 질의에서 뒤집히는지**를 찾는 게 목적이다 — 만능 키는 없다는 걸 숫자로 확인한다.",
+          "hours": 6
+        },
+        {
+          "topic": "클라우드에서의 확장성과 신뢰성",
+          "from": "qualification",
+          "quote": "Hands on experience with Cloud Based Computing platforms such as AWS and understanding of scalability and reliability issues.",
+          "priority": "high",
+          "why": "데이터 파이프라인은 **실패가 정상**인 시스템이다 — 노드가 죽고, 파일이 늦게 오고, 같은 배치가 두 번 돈다. 그래서 `reliability` 가 요건에 들어간다. 담당업무의 `reliable data pipelines` 와 같은 말이다: **다시 돌려도 같은 결과가 나오는가**(재실행 안전성)가 이 분야의 정합성이다.",
+          "gap_check": "내 파이프라인을 **어제 날짜로 다시 돌리면** 결과가 같은가, 아니면 중복이 쌓이는가.",
+          "drill": "일별 집계 잡 하나를 **두 번 연속 실행**해 본다. 중복이 쌓이면 ① 파티션 덮어쓰기 ② 병합(merge/upsert) 두 방식으로 각각 고치고, **중간에 실패했을 때 절반만 남는지**도 확인한다. 여기에 **늦게 도착한 데이터**(어제 데이터가 오늘 옴)를 넣어 재처리 규칙까지 정한다.",
+          "hours": 8
+        },
+        {
+          "topic": "금융 도메인과 영어 — 둘 다 plus 로만 적혀 있다",
+          "from": "qualification",
+          "quote": "Experience in financial services industry is a plus.",
+          "priority": "nice",
+          "why": "쿠팡페이 소속인데도 **금융 경험을 필수로 두지 않았다.** 바로 다음 줄의 `English speaker is a plus.` 도 같다 — **둘 다 없어도 지원할 수 있다**는 뜻이다. 다만 결제 데이터는 일반 로그와 다른 제약이 붙는다: **보관 기간·마스킹·감사**가 법으로 정해져 있고, 지표 하나가 정산 금액과 이어진다.",
+          "gap_check": "개인정보나 카드 정보가 섞인 데이터를 다룰 때, 나는 **어느 단계에서 가리는지** 정해 두었는가.",
+          "drill": "샘플 결제 데이터를 만들고 **원본 → 가공 → 분석용** 세 층을 나눈다. 각 층에서 ① 무엇이 남고 ② 무엇이 마스킹되며 ③ 누가 접근할 수 있는지를 표로 적는다. 그리고 **분석용 층만으로 답할 수 있는 질문과 없는 질문**을 각각 세 개씩 적어 본다.",
+          "hours": 5
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**지표 정의서 + 검증 잡** 한 쌍을 실제로 만들어 공개해 둔다 — 정의만이 아니라 그 정의가 지켜지는지 매일 검사하는 코드까지",
+          "why": "이 공고의 담당업무는 파이프라인·대시보드·표준이 한 묶음이다. **정의서는 흔하고 검증은 드물다** — 두 개가 붙어 있으면 `enforce` 라는 단어에 바로 답이 된다.",
+          "effort": "2~3일"
+        },
+        {
+          "idea": "`next generation` 이라는 말에 대비해, **기존 웨어하우스에서 새 구조로 옮긴 사례**를 사용자 이전까지 포함해 정리한다",
+          "why": "이 자리의 첫 과제가 이관일 가능성이 높다. 면접에서 만든 이야기보다 **옮긴 이야기**가 훨씬 적게 나온다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차가 적혀 있지 않다.",
+        "expect": [
+          "⚠️ **연차 확인** — 사이트 표기 `경력 8-16년` 과 본문 `10+ years` 가 다르다",
+          "설계한 데이터 모델의 **입자(grain)** 와 그렇게 잡은 이유",
+          "Spark 작업이 느릴 때의 진단 순서 — 쏠림·셔플·조인 전략",
+          "배치와 스트림에서 **같은 지표가 어긋나는 경우**와 그 처리",
+          "파이프라인 **재실행 안전성**과 늦게 온 데이터 처리",
+          "다른 팀이 로그를 남기게 설득한 경험 (`Influence source data producers` 가 담당업무에 있다)",
+          "데이터 표준을 **강제한 방법** — 사람이 아니라 도구로"
         ],
         "sources": []
       }
