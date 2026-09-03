@@ -331,6 +331,12 @@
         "evidence": "공고 13건의 본문을 전부 대조했다. 기본형은 `서류 → 코딩 테스트 → 1차 면접(1시간 내외) → 2차 면접(대면 혹은 화상, 3시간 내외) → 처우 협의·입사` 이고, **코딩 테스트가 없는 것은 `System Framework Engineer`(대신 **1차 면접이 2시간**)와 `AI Engineer (Navigation Agent)` 둘뿐**이다. `AI Infrastructure Engineer` 는 같은 단계를 **`온라인 기술 테스트`** 로 적었다. 그리고 `전형절차는 직무별로 다르게 운영될 수 있으며` 라는 단서가 본문에 있다.",
         "so_what": "**코딩 테스트는 사실상 기본값으로 준비한다**(13건 중 11건). 다만 **2차 면접이 3시간**이라는 것이 이 회사 전형의 진짜 특징이다 — 그 길이는 **여러 사람이 여러 주제를 묻는다**는 뜻이므로, 알고리즘만이 아니라 **자기 프로젝트를 층별로(설계·실패·측정) 설명할 준비**가 필요하다. 그리고 **`Application Screening` 처럼 전형 안내가 영어로만 적힌 공고**(`Senior ML Platform Engineer`)가 있으므로, 그런 자리는 **영어 진행 가능성**을 염두에 둔다.",
         "confidence": "inferred"
+      },
+      {
+        "reading": "**요건이 층으로 갈린다 — 연차 표기가 아예 없는 자리가 셋 있다**",
+        "evidence": "공고 13건의 자격요건을 전부 세었다. **연차 표기 없음**: `AI Infrastructure Engineer` · `AI Engineer (Navigation Agent)` · `Security Engineer (Security Platform)` (셋 다 기술 항목만 나열한다). 그다음부터 층이 진다 — **2년↑ + 학사↑**(`System Framework Engineer`: `학사 학위 혹은 준하는 경험 소유자 (이공계열 우대)`) → **3년↑**(`Backend Engineer (Open Platform)`, `Security Engineer (차량 보안)`: `3년 이상의 C/C++ 기반 임베디드 또는 Linux 개발 경험`) → **석사↑ + 3년↑**(`Senior Planning & Control System Engineer`) → **3-8년 + 석사↑**(`Physical AI Engineer (Model)`) → **5년↑**(`Senior AI Engineer (Driving VLM/VLA)`) → **7년↑**(`Senior ML Platform Engineer`: `Minimum of 7 years`) → **7년↑ + 석사/박사**(`Senior Computer Vision Engineer`) → **8년↑**(`Senior AI Agent Engineer (Gleo Interaction)`). ⚠️ `Senior Software Engineer (AD Framework)` 는 **자격요건이 `학사 이상` 뿐이고 `10년 이상` 은 우대사항**에 있다.",
+        "so_what": "**이 회사에 처음 문을 두드린다면 연차 표기가 없는 셋부터 본다** — 기술 항목만 맞으면 서류에서 연차로 걸리지 않는다. 그다음이 `System Framework Engineer`(2년↑)다. ⚠️ **자율주행 인지·판단 쪽(`Computer Vision`·`Planning & Control`·`Physical AI`)은 석사 이상을 함께 요구**하므로 학위가 없으면 **플랫폼·인프라·보안 쪽 문이 현실적으로 넓다.** 그리고 **`AD Framework` 처럼 연차가 우대사항에만 있는 공고**는 자격요건만 충족해도 지원 자격이 되므로, **연차 숫자를 목록에서만 보고 포기하지 않는다.**",
+        "confidence": "inferred"
       }
     ]
   },

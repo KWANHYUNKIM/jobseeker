@@ -4,37 +4,35 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress` 보강 시작.** 공고 13건 · 학습 117개 · **신호 7개**.
+**포티투닷 (`42dot`) — `in_progress` 보강 중.** 공고 13건 · 학습 117개 · **신호 8개**.
 (전체: 회사 25곳 · 공고 227건 · 학습 1,879개 · **오류 0 · 경고 0**.)
 
-**이번 회차 = 보강 1순위 `전형 재확인`. ⚠️ 13건 중 여섯 건이 틀려 있었다.**
-`Physical AI Engineer (Model)` · `Backend Engineer (Open Platform)` · `System Framework Engineer` ·
-`Senior ML Platform Engineer` · `Senior Software Engineer (AD Framework)` ·
-`Senior Planning & Control System Engineer` — **여섯 건 모두 `공고에 전형 절차가 적혀 있지 않다`고
-써 놨는데 `full_jd` 에 다 있었다.** 목록 화면에 안 보이는 항목을 본문에서 확인하지 않은 탓이다.
-**지금은 13건 전부 본문 문구로 맞췄고, 그 사실을 `open_questions` 에 남겼다.**
+**이번 회차 = 보강 2순위 `요건 사다리` → `signals` 8번째.**
+**⚠️ STATE 에 적어 뒀던 사다리를 그대로 쓰지 않고 13건의 자격요건을 다시 세었고, 실제로 달랐다.**
 
-**고치면서 신호 하나를 건졌다(7번째)** — 기본형은
-`서류 → 코딩 테스트 → 1차 면접(1시간 내외) → 2차 면접(대면 혹은 화상, **3시간 내외**) → 처우 협의·입사`.
-**코딩 테스트가 없는 것은 둘뿐**(`System Framework Engineer` — 대신 **1차가 2시간**, `AI Engineer
-(Navigation Agent)`). `AI Infrastructure Engineer` 만 같은 단계를 **`온라인 기술 테스트`** 로 적었다.
-⚠️ **진짜 특징은 2차가 3시간이라는 것** — 여러 사람이 여러 주제를 묻는다는 뜻이라 **자기 프로젝트를
-층별로(설계·실패·측정) 설명할 준비**가 필요하다. ⚠️ **`Senior ML Platform Engineer` 는 전형 안내까지
-영어로만** 적혀 있다.
-⚠️ `System Framework Engineer` 에만 **평판조회·3개월 수습**이 함께 적혀 있다.
+**확인된 사다리** — **연차 표기 없음 셋**(`AI Infrastructure Engineer` · `AI Engineer (Navigation Agent)` ·
+`Security Engineer (Security Platform)`) → **2년↑+학사↑**(`System Framework`) →
+**3년↑**(`Open Platform`, `Security(차량 보안)`) → **석사↑+3년↑**(`Planning & Control`) →
+**3-8년+석사↑**(`Physical AI (Model)`) → **5년↑**(`Driving VLM/VLA`) → **7년↑**(`ML Platform`) →
+**7년↑+석사/박사**(`Computer Vision`) → **8년↑**(`Gleo Interaction`).
+⚠️ **`AD Framework` 는 자격요건이 `학사 이상` 뿐이고 `10년 이상` 은 우대사항이다** —
+**연차 숫자를 목록에서만 보고 포기하면 안 되는 사례.**
+
+**`so_what`**: 처음 문을 두드린다면 **연차 무표기 셋부터**. 그다음이 `System Framework`(2년↑).
+⚠️ **인지·판단 쪽(Computer Vision·Planning & Control·Physical AI)은 석사 이상을 함께 요구**하므로
+학위가 없으면 **플랫폼·인프라·보안 쪽 문이 현실적으로 넓다.**
 
 ---
 
-## ⚠️ 다음 회차 = **포티투닷 보강 2순위**. 한 사이클에 하나씩.
+## ⚠️ 다음 회차 = **포티투닷 보강 3순위**. 한 사이클에 하나씩.
 
-2. **요건 사다리를 `signals` 로** — 무표기(`Navigation Agent`) → 학사↑·2년↑(`System Framework`) →
-   3년↑(`Security(차량보안)`·`Open Platform`) → 석사↑·3년↑(`Planning & Control`) → 5년↑(`Driving VLM/VLA`)
-   → 7년↑(`ML Platform`) → 석사/박사·7년↑(`Computer Vision`) → 8년↑(`Gleo`).
-   **지원자에게 "어디부터 문이 열리는가"를 보여 주는 것이 이 회사에서 가장 쓸모 있는 정보다.**
-3. **"AI·외부 입력을 신뢰하지 않는 층" 원칙** → `signals`. 4건에서 반복해서 나왔다.
+3. **"AI·외부 입력을 신뢰하지 않는 층" 원칙** → `signals`.
+   ⚠️ **STATE 의 기억을 믿지 말고 공고 본문에서 실제 문장을 다시 찾아 인용한다**(2순위에서 사다리가
+   기억과 달랐다). 4건에서 반복해 나왔다고 적어 뒀으니 **몇 건인지부터 다시 센다.**
 4. **ISO 21434** 를 `domains` 에 보강 / `42dot Way`·`Employee Engagement Program` 링크 확인
    (`https://42dot.ai/careers/program` 이 본문에 있다).
 5. `salary` / `people` — ⚠️ **누출된 내부 이메일은 쓰지 않기로 이미 정했다.**
+   ⚠️ 포티투닷은 **현대차그룹 계열**이라 `salary` 는 집계 서비스 외에 **모회사 공시**도 볼 수 있는지 확인.
 
 **그다음: 대기 1곳 — 쿠팡.** NYSE `CPNG` 라 **SEC 공시로 `salary`·`scale` 을 뒷받침할 첫 기회**다.
 ⚠️ 106건 중 79건이 Senior/Staff 제목이다.
@@ -55,6 +53,18 @@
 
 ## 배운 것
 
+- **⚠️ STATE 에 적어 둔 사실도 쓰기 전에 원본에서 다시 센다.** 포티투닷 요건 사다리를 STATE 메모
+  그대로 쓰려다 13건을 다시 세니 **연차 표기가 아예 없는 자리가 셋**이었고 순서도 달랐다.
+  **STATE 는 "다음에 무엇을 할지"의 기록이지 "무엇이 사실인지"의 출처가 아니다.**
+- **연차 요건은 자격요건에 있는지 우대사항에 있는지를 가른다.** 포티투닷 `AD Framework` 는
+  자격요건이 `학사 이상` 뿐이고 **`10년 이상` 은 우대사항**이었다. 목록 화면의 경력 표기나
+  우대사항 숫자만 보고 포기하는 지원자가 실제로 많으므로, **`so_what` 에 이 구분을 적어 준다.**
+- **"어디부터 문이 열리는가"는 공고를 아무리 자세히 써도 한 건씩 봐서는 안 보인다.** 회사 전체를
+  줄 세워야 나오고, 그게 `signals` 의 값이다. **연차 무표기 → 2년 → 3년 → 석사+3년 → 5년 → 7년 →
+  8년** 처럼 층을 보여 주면 지원자는 자기 위치를 한눈에 안다.
+- **학위 요건이 특정 도메인에만 몰려 있으면 그것도 함께 적는다.** 포티투닷은 인지·판단(Computer
+  Vision·Planning & Control·Physical AI)만 석사 이상을 요구하고 플랫폼·인프라·보안은 아니다 —
+  **학위가 없는 지원자에게 이 사실 하나가 지원 전략을 통째로 바꾼다.**
 - **⚠️ `공고에 전형이 적혀 있지 않다`고 쓰기 전에 반드시 `full_jd` 를 본다.** 포티투닷에서 여섯 건이
   그렇게 틀려 있었다 — **크롤이 채우는 `main_tasks`·`qualifications` 에는 전형이 안 들어오고
   `full_jd` 에만 있다.** CJ올리브영에서 같은 실수를 열 건 했고, 이번에 여섯 건이 또 나왔다.
