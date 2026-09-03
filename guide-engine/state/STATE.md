@@ -4,35 +4,35 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **45개**(브리핑 42 + 중복 표시 3),
-학습 360개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **46개**(브리핑 43 + 중복 표시 3),
+학습 369개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
 
-직전 회차: **`Director, Data Security Engineering (Digital Trust)`**(ats). **여덟 번째 `Director`**,
-**보안 여섯 번째 공고**, ⚠️ **형태 ③**(담당업무·기본 자격 누락, `preferences` 만 담김).
-인용은 우대사항에서만 뽑고 담당업무는 `why` 에서 풀었으며, **`verdict`·`fit`·`edge`·예상 질문
-네 곳에 "원문을 직접 읽으라"** 를 넣었다.
+직전 회차: **`Director, Program Management - Catalog AI & Quality (Taiwan Relocation)`**(ats).
+**프로그램 매니지먼트 직군의 첫 공고**, 형태 ④.
 
-이 회차로 정리된 것:
-- ⚠️ **보안이 다섯 갈래가 됐다** → 보안 도메인 `what_to_know` 에 추가:
-  **플랫폼**(인증·인가) / **데이터 보호**(탐지·분류·암호화·DLP) / **관제** / **거버넌스** /
-  **개별 통로**. 앞의 `Security Infrastructure` 가 **누가 무엇을 할 수 있나**라면
-  여기는 **데이터가 어디 있고 누구에게 새는가**다.
-- ⚠️ **AI 요건의 다섯 번째 층위** → 신호 9번: `Knowledge of modern risks related to
-  AI/GenAI and data leakage.` **쓰는 쪽·만드는 쪽·도입하는 쪽·자동화하는 쪽에 이어
-  막는 쪽 자리가 생겼다.** `edge` 를 **권한을 반영하는 RAG 를 직접 만들어 보기**로 잡았다.
-- **데이터 보안의 첫 문제는 통제가 아니라 목록**이라는 것을 첫 항목의 축으로 삼았다
-  (`못 찾은 데이터는 못 지킨다`).
+이 공고에서만 나온 것:
+- ⚠️ **제목에 `Taiwan Relocation`** — 근무지가 대만이다. **학습이 아니라 결정 항목**이라
+  `fit.must_have` 첫 줄과 `edge`·예상 질문에 넣고, **글로벌 도메인 `what_to_know` 에도
+  "대만은 이전 채용도 있다"** 를 적었다(비자·계약·기간·귀임은 공고에 없다).
+- ⚠️ 공고가 스스로 **`Unlike traditional program management roles, this position requires a
+  hands-on builder mindset.`** 이라고 선을 긋는다 — **일정 관리 PM 이 아니라 직접 만드는 PM.**
+  드릴을 **48시간 MVP**(남에게 개발을 부탁하지 않는다)로 잡았다.
+- ⚠️ **`Establish evaluation frameworks for prompt engineering and LLM output quality`** 가
+  담당업무이자 우대사항에도 다시 나온다 — **회사가 두 번 적은 항목**이라 `edge` 로 올렸다.
+  지표를 **정확도 하나가 아니라 과잉 수정률·누락률로 나누게** 했다(수백만 건에 적용되므로
+  1% 오류도 수만 건).
+- ⚠️ 우대사항에 **`Background from Amazon, Uber, Airbnb, Agoda, or similar technology
+  companies`** — **특정 회사 출신을 우대로 적은 드문 표기**다.
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
 ⚠️ **세 절 중 비거나 한쪽만 찬 것이 있으면 `full_jd` 를 읽는다** — 영문 ats 공고의
 **네 가지 형태**(① 통째로 빔 ② 자격이 `main_tasks` 안 ③ `Preferred` 만 담김
 ④ `Basic`/`Minimum` 은 `main_tasks` 끝 + `Preferred` 는 `preferences`).
-⚠️ **형태 ③ 이면 `verdict`·`fit`·`edge`·예상 질문에 "원문 확인"을 넣는다** — 인용문이 전부
-우대 쪽이라 **실제 기준이 안 보인다.**
+⚠️ **형태 ③ 이면 `verdict`·`fit`·`edge`·예상 질문에 "원문 확인"을 넣는다.**
+⚠️ **제목이나 본문에 근무지·이전·비자 단서가 있으면 `fit` 첫 줄로 올린다** — 준비가 아니라
+**결정 항목**이다(미국 채용, 대만 이전 둘 다 나왔다).
 **본문이 글자 그대로 같으면 `duplicate_of` 로 표시**하고 그 회차는 그것으로 끝낸다.
-⚠️ **미국 채용 공고면** 근무지 주의를 `fit` 에 적고, 금액이 있으면 **`salary.note` 에 원문
-그대로** 더한다(환산하지 않는다).
 
 ⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 최대 겹침 0.33).
 **제목은 `Senior Staff` 인데 본문 첫 줄은 `Principal Data Scientist`**. 요건은
@@ -60,6 +60,11 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **근무지는 학습 항목이 아니라 `fit` 의 첫 줄이다.** 미국 채용(보상이 `US geographic
+  markets` 기준)과 대만 이전(`Taiwan Relocation`)이 연달아 나왔다. 이런 조건은 공부해서
+  갖추는 것이 아니라 **지원 여부를 가르는 결정**이므로, `fit.must_have` 맨 위와 `edge`,
+  예상 질문에 함께 적는다. **공고 본문에 조건이 안 적혀 있다는 사실도 함께 밝힌다.**
 
 - **금액을 찾았다고 다 담지 않는다.** 쿠팡 미국 공고에서 `$174,000~$290,000` 를 찾았지만
   **원화로 환산해 `bands` 에 넣지 않았다** — 환율·직급·지역·세제·복리후생 차이가 지워지고,
