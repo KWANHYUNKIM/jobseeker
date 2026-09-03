@@ -4,53 +4,53 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 11건 · 학습 99개.
-(전체: 회사 24곳 · 공고 198건 · 학습 1,627개 · **오류 0** · **경고 5**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 12건 · 학습 108개.
+(전체: 회사 24곳 · 공고 199건 · 학습 1,636개 · **오류 0** · **경고 5**.)
 
-**이번 회차 = `Senior AI Engineer (Driving VLM/VLA)`(Ashby, 판교, 5년↑ 또는 뛰어난 연구 성과).**
-축: **`VLA — 보고 말하는 데서 행동까지`** · `다섯 양식을 한 시퀀스로(토큰화·시간 정렬)` ·
-`장면 이해 네 갈래(위험은 드물다)` · **`auto-labeling·장면 검색 — 회사에 곧바로 돈이 되는 지점`** ·
-`학습 recipe·ablation 계획서` · `일곱 갈래 중 하나는 깊게` · `자기회귀 vs 확산` ·
-`행동 조건 영상 생성` · `BEV vs occupancy`.
+**이번 회차 = `Security Engineer (차량 보안)`(Ashby, 판교, **3년↑ C/C++ 임베디드**).**
+⚠️ **`Security Platform` 과 유사도 0.19/0.15 로 완전히 다른 자리였다** — 전자는 인증·인가·MCP·K8s
+(2회차 `Open Platform` 과 겹친다), 후자는 **OP-TEE·시큐어 부트·키 생명주기**. STATE 지시대로
+**차량 보안 쪽을 골랐고 겹치지 않았다.**
+축: **`하드웨어가 지켜 주는 영역(TrustZone·OP-TEE·HSE)`** · `차 안의 키를 어디에 둘까(소유권 이전 시 삭제)` ·
+**`중단에 안전한 키 교체 — 전원이 예고 없이 끊긴다`** · **`시큐어 부트 사슬과 롤백 공격`** ·
+`거부 테스트가 정상 테스트보다 많아야 한다` · `C/C++ 를 도구로 두들기기` ·
+**`'또는 학습 경험' — 이 회사에서 가장 관대한 자격 표현`** · `CTF 가 우대사항인 이유` · **`ISO 21434(TARA)`**.
 
-**⚠️ 연구 자리인데 담당업무에 실용 기능이 나란히 있다** —
-`Scene captioning, visual question answering, auto-labeling, data mining, retrieval`.
-이유가 회사 사정에 있다: **라벨 붙이는 속도가 병목**이고 연구자는 장면을 **말로 찾고 싶다.**
-→ `edge` 첫 항목을 **'말로 찾는 장면 검색 + 자동 라벨 오류율'** 로 세웠다.
-**같은 회사 `ML Platform` 의 데이터 SDK 검색 기능이 이 모델을 쓸 가능성이 높다** — 브리핑끼리 이어진다.
+**⚠️ 이 공고에서 가장 값이 큰 발견: `Secure Boot, TrustZone, TEE 등에 대한 기본 이해 또는 학습 경험`**
+다른 자리들은 `개발 경험`·`양산 수준 배포 경험` 을 요구하는데 여기만 **`또는 학습 경험`** 이다.
+차량 보안 실무자가 국내에 드물어 **회사가 배울 사람을 받겠다고 밝힌 것**으로 읽힌다.
+→ `study` 한 항목을 **"학습 흔적을 저장소로 만들기"** 로 세웠다(OP-TEE 는 오픈소스라 QEMU 로 실습 가능).
+**`또는 학습 경험`·`또는 이에 준하는` 같은 표현은 지원자에게 문이 열리는 지점이므로 반드시 살린다.**
 
-**⚠️ VLA 의 함정을 `edge` 로 만들었다** — **말은 그럴듯한데 행동이 틀릴 수** 있다.
-`이유를 바꿔 넣었을 때 행동이 따라 바뀌는지` 확인하는 실험을 넣었고,
-이건 이 회사가 세 자리에서 반복하는 **"신뢰하지 않는 층"** 사고와 같은 결이다(네 번째 사례).
+**⚠️ 두 표준이 짝을 이룬다** — `AD Framework` 회차의 **ISO 26262(기능안전, 고장이 나도 안 다치게)** 와
+이번 회차의 **ISO 21434(사이버보안, 공격을 받아도 안 다치게)**. **닫을 때 `domains` 의
+`차량 소프트웨어의 배포와 보안(OTA)` 항목에 ISO 21434 를 보강한다.**
 
 **남은 순서** (판교 위주)
-1. **`Security Engineer (Security Platform)`(2,687자)** / **`Security Engineer (차량 보안)`(1,065자)** — **다음. 둘 대조 먼저.**
-   ⚠️ **인증·인가는 2회차(`Open Platform`)에서 깊게 다뤘다** → **CAN 버스·침입 탐지(IDS)·시큐어부트·
-   침투 테스트** 쪽으로 각도를 튼다. `차량 보안` 쪽이 그 각도에 더 가까울 것으로 보인다.
+1. **`Security Engineer (Security Platform)`(2,687자)** — **다음.** ⚠️ **2회차 `Open Platform` 과 겹칠 위험이
+   가장 큰 공고다**(둘 다 인증·인가). 각도를 **`MCP 서버/클라이언트 보안`·`OTLP·Datadog 기반 보안 탐지와
+   incident response`·`SSRF/CSRF/XSS/replay 같은 구체 위협`·`Secret rotation·KMS/HSM·인증서 수명`·
+   `Next.js 운영 콘솔의 권한 UI`** 로 잡으면 겹치지 않는다. **2회차가 '문을 여는 설계'였다면 이쪽은
+   '플랫폼 내부의 탐지·대응·키 운영'이다.**
 2. `LLM Engineer (Data Generation)`(2,196자) / `(LLM Training)`(1,396자) /
-   `Senior Search & Ranking Engineer (AI Agent)`(2,145자).
-   ⚠️ **auto-labeling·검색을 이번에 다뤘다** → Data Generation 은 **합성 데이터 파이프라인·품질 관리**,
-   Search & Ranking 은 **랭킹 시스템 운영** 쪽으로 좁힌다.
-3. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — ⚠️ 월드 모델·행동 조건 생성을
-   CV 회차와 이번 회차에서 다뤘다 → **RL 학습 루프·시나리오 생성·평가 자동화** 쪽으로.
+   `Senior Search & Ranking Engineer (AI Agent)`(2,145자) — auto-labeling·검색은 다뤘으니
+   **합성 데이터 품질 관리 / 랭킹 시스템 운영** 쪽으로.
+3. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — **RL 학습 루프·시나리오 생성·평가 자동화** 쪽으로.
 4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
 5. `Senior Physical AI Engineer` / `Physical AI Engineer` — 급수 차이. **한 건만.**
-6. 본문 짧은 판교 자리 6건: `Senior Backend Engineer(Mobile Platform)` · `Senior Release Engineer` ·
-   `Vehicle System Integration Engineer` · `Software Update Engineer` ·
-   `Deep Learning Engineer (음성 인식 및 wake word detection)` · `Test Engineer (Autonomous Driving)`.
-   ⚠️ **이 여섯은 각도가 서로 멀어 겹칠 걱정이 적다.** AI 계열을 다 쓴 뒤 여기로 온다.
+6. 본문 짧은 판교 자리 6건(각도가 서로 멀어 겹칠 걱정 적다).
 7. 서니베일·바르샤바·호치민 13건은 **뒤로.**
 
 **요건 사다리(닫을 때 `signals` 에)** — `Navigation Agent` 무표기 → `System Framework` 학사↑·2년↑ →
-`Backend (Open Platform)` 3년↑ → `Planning & Control` 석사↑·3년↑ → **`Driving VLM/VLA` 5년↑** →
-`ML Platform` 7년↑ → `Computer Vision` 석사/박사·7년↑ → `AI Agent (Gleo)` 8년↑.
-**전형 두 종류** — 5단계(코딩 테스트 있음, 대부분) / 4단계(없음, Navigation Agent).
+**`Security (차량 보안)` 3년↑** → `Backend (Open Platform)` 3년↑ → `Planning & Control` 석사↑·3년↑ →
+`Driving VLM/VLA` 5년↑ → `ML Platform` 7년↑ → `Computer Vision` 석사/박사·7년↑ → `AI Agent (Gleo)` 8년↑.
 
 **⚠️ 경고 5건 미결**: `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
 **대기열이 비는 순간 `fix(guide)`.**
 
-**닫을 때 (여섯)** — ① **`Pleos Vehicle OS` 보강** ② **요건 사다리 + 전형 두 종류를 `signals` 에**
-③ **"신뢰하지 않는 층" 원칙을 `signals` 에**(사례 4건) ④ `salary` ⑤ `people` ⑥ 안 쓴 공고 이유.
+**닫을 때 (일곱)** — ① **`Pleos Vehicle OS` 보강** ② **요건 사다리 + 전형 두 종류를 `signals` 에**
+③ **"신뢰하지 않는 층" 원칙을 `signals` 에**(사례 4건) ④ **`domains` 에 ISO 21434 보강**
+⑤ `salary` ⑥ `people` ⑦ 안 쓴 공고 이유.
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -70,6 +70,19 @@
 
 ## 배운 것
 
+- **`또는 학습 경험` · `또는 이에 준하는` 같은 표현은 문이 열리는 지점이므로 반드시 살린다.**
+  포티투닷 차량 보안 자리는 `Secure Boot, TrustZone, TEE 등에 대한 **기본 이해 또는 학습 경험**` 으로
+  적었다 — 같은 회사 다른 자리들이 `개발 경험`·`양산 배포 경험` 을 요구하는 것과 대조된다.
+  **실무자가 드문 분야에서 회사가 배울 사람을 받겠다고 밝힌 것**이므로, `study` 를
+  **"학습 흔적을 저장소로 만들기"** 로 세우면 지원자가 곧바로 움직일 수 있다.
+- **보안 자리의 `drill` 은 '되는지'가 아니라 '안 되는지'로 끝낸다.** 서명 검증이 올바른 이미지를
+  통과시키는 것은 절반이고, **변조·절단·서명 없음·다른 키·버전 하락을 모두 거부**해야 한다.
+  **거부 테스트가 정상 테스트보다 많은 것이 정상**이라고 명시해 주면 사고방식이 전달된다.
+  ⚠️ 그리고 실습은 **합법적인 실습장(워게임·CTF·자기 기기)** 으로 한정해 적는다.
+- **표준이 짝으로 나타나면 함께 적어 준다.** 같은 회사에서 `ISO 26262`(기능안전)와
+  `ISO 21434`(사이버보안)가 다른 공고에 각각 나왔다 — **'고장이 나도 안 다치게' vs '공격을 받아도
+  안 다치게'** 로 대비시키면 둘 다 한 번에 이해된다. 완성차는 이런 표준이 규제·인증과 이어져 있어
+  **표준을 아는 사람이 실제로 필요하다.**
 - **연구 자리 공고에 실용 기능이 섞여 있으면 그게 회사의 병목이다.** 포티투닷 VLM/VLA 공고는
   연구 주제 옆에 `auto-labeling, data mining, retrieval` 을 적었다 — **라벨 붙이는 속도가 데이터
   쌓이는 속도를 못 따라가고, 연구자가 장면을 말로 찾고 싶다**는 사정이다. `edge` 를 논문이 아니라
