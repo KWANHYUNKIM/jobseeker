@@ -376,11 +376,11 @@
     "currency": "KRW",
     "as_of": "2026-09",
     "bands": [],
-    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다.",
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다. ⚠️ **미국 공고에서 범위가 더 나왔다** — `Manager, Mobile Engineering — Search AI Product & Mobile` 은 `The base pay for this position ranges from $194,000/year in our lowest geographic market to $243,000/year in our highest geographic market.` 라고 적고, 이미 정리한 `Senior Staff Ranking Engineer, Personalization` 에도 `The base pay for Staff position ranges from $152K/year to $277K/year.` 와 `Annual bonus is 0-20% of the base salary` 가 있다. **즉 미국 채용 공고는 범위를 표기하는 것이 관행으로 보이고, 직급이 올라간다고 상단이 반드시 높아지지도 않는다**(Staff 상단 $277K > Manager 상단 $243K). ⚠️ **여전히 한국 채용에는 적용되지 않으며, 원화로 환산하지 않는다.**",
     "open_questions": [
       "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
-      "미국 공고의 범위가 다른 직급에도 표기되는지는 확인하지 못했다 — 지금까지는 `Director, Data Engineering` 한 건에서만 봤다.",
-      "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다."
+      "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다.",
+      "미국 채용 공고 **세 건**에서 범위가 확인됐다(`Director, Data Engineering` $174K~$290K / `Manager, Mobile Engineering` $194K~$243K / `Senior Staff Ranking Engineer` $152K~$277K). **한국 공고에는 여전히 하나도 없다.**"
     ]
   },
   "people": [],
@@ -7044,6 +7044,155 @@
       "site": "ats",
       "verdict": "⚠️ **같은 자리가 채용 사이트 두 곳에 올라온 것이다** — 자격·우대의 모든 줄이 이미 정리한 `Manager, Back-end Engineering (Rocket Pay)`(wanted)에 그대로 들어 있고, **이쪽에는 담당업무가 아예 없다.** 즉 정보가 더 적은 게시다. **브리핑은 그쪽 하나로 충분하니 거기를 본다.** 두 자리가 아니므로 **한 곳으로만 지원한다**(신호 12번).",
       "duplicate_of": "https://www.wanted.co.kr/wd/381757"
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8067901",
+      "title": "Manager, Mobile Engineering — Search AI Product & Mobile",
+      "site": "ats",
+      "verdict": "⚠️ **모바일 직군의 첫 공고다** — 지금까지 정리한 쿠팡 48건에 백엔드·프론트·데이터·ML·보안·PM·법무는 있었지만 모바일은 없었다. 맡는 것은 **검색·발견 화면의 모바일 아키텍처**이고, 핵심은 **ML 모델을 앱에 얹는 방식을 정하는 일**(온디바이스 추론 / 서버 랭킹 신호 소비 / 실험 플래그)이다. 요건은 **모바일 8년 + 피플 매니지먼트 2년**. ⚠️ **미국 채용이다** — 보상이 `US geographic markets` 기준이고 범위가 `$194,000` ~ `$243,000` 로 적혀 있다.",
+      "fit": {
+        "must_have": [
+          "⚠️ **미국 근무로 보인다** — 보상 설명이 미국 시장 기준이고 복리후생도 미국식이다. **근무지·비자 조건을 전형 중에 확인한다**",
+          "**모바일 개발 8년 + 피플 매니지먼트 2년**",
+          "**iOS 또는 Android 중 하나에 전문성** (둘 다일 필요는 없다)",
+          "모바일 아키텍처 패턴(MVVM·TCA·Coordinators)과 **언제 무엇을 쓸지**",
+          "고트래픽·데이터 집약 앱에서 기능을 만들어 출시한 경험",
+          "**모바일 A/B 실험** — 계측·분석·반복",
+          "모바일 성능(메모리·동시성·렌더링·네트워크)에 대한 이해"
+        ],
+        "can_learn": [
+          "⚠️ **ML 을 직접 만들 필요는 없다** — 공고가 `you don't need to build models` 라고 밝힌다. **읽고 판단할 수 있으면 된다**",
+          "LLM 기반 기능(대화형 검색·질의 재작성·의미 랭킹) 친숙도는 **우대사항**",
+          "검색·추천·피드 제품 경험, 대규모 이커머스 앱 경험도 **우대**"
+        ]
+      },
+      "study": [
+        {
+          "topic": "ML 모델을 앱에 얹는 세 갈래",
+          "from": "task",
+          "quote": "Set technical direction for mobile-side integration of ML models (on-device inference, server-side ranking signal consumption, feature flag-gated experiments)",
+          "priority": "core",
+          "why": "⚠️ **괄호 안에 세 방식이 나열돼 있고 성격이 다 다르다.** **온디바이스 추론**은 빠르고 개인정보가 안 나가지만 **모델 크기·배터리·기기 편차**가 문제다. **서버 랭킹 신호 소비**는 모델을 서버에 두고 앱은 결과만 쓰는 방식이라 운영이 쉽지만 **네트워크에 묶인다**. **플래그로 감싼 실험**은 둘 중 무엇을 하든 필요하다 — 모델은 바뀌므로 **끄고 되돌릴 수 있어야** 한다.",
+          "gap_check": "'이 기능은 온디바이스로, 저건 서버로'를 **무엇을 기준으로** 가르겠는가(지연·개인정보·모델 크기·업데이트 주기).",
+          "drill": "작은 랭킹·추천 기능 하나를 **두 방식으로** 만든다 — ① 서버가 순위를 주고 앱은 그리기만 ② **온디바이스 모델**(Core ML 또는 TFLite/ONNX)로 앱에서 계산. 그다음 ③ 앱 크기·첫 응답 시간·오프라인 동작을 비교하고 ④ **모델을 바꿔야 할 때 각각 무엇을 해야 하는지**(앱 배포 vs 서버 배포) 적는다. ④가 실무의 갈림길이다.",
+          "hours": 14
+        },
+        {
+          "topic": "모바일 8년 + 관리 2년 — 이 회사에서의 위치",
+          "from": "qualification",
+          "quote": "8+ years of industry experience in mobile development and 2 years of people management experience.",
+          "priority": "core",
+          "why": "⚠️ **`people management` 2년을 명시했다** — 같은 회사 `Manager (Rocket Pay)` 가 `멘토, 테크 리드 경험 포함` 으로 문을 연 것과 달리 **여기는 직접 보고자를 둔 관리**를 요구하는 것으로 읽힌다(`Director, Data Engineering` 도 `people manager` 라고 적었다). 담당업무 첫 줄도 `Build, grow and mentor a team of mobile engineers includign iOS and Android.` 로 **iOS·Android 두 진영을 한 팀으로** 이끄는 일이다.",
+          "gap_check": "나는 **내 전문 플랫폼이 아닌 쪽 엔지니어**(iOS 하는 사람이 Android 팀원)를 이끌어 본 적이 있는가.",
+          "drill": "iOS·Android 두 진영이 **다르게 판단하는 지점**을 표로 만든다 — 아키텍처 패턴, 비동기 처리, 배포 주기(앱스토어 심사 vs 단계적 출시), 실험 플래그 적용 방식. 각 행에 **내가 잘 아는 쪽과 모르는 쪽**을 표시하고, 모르는 쪽에 대해 **팀원에게 물을 질문 세 개**를 만든다.",
+          "hours": 5
+        },
+        {
+          "topic": "검색·발견 화면의 아키텍처를 정한다",
+          "from": "task",
+          "quote": "Define and drive the architecture for Coupang's search and discovery features, including search results pages, query suggestions, zero-state discovery, and AI-powered recommendations",
+          "priority": "core",
+          "why": "⚠️ **화면 넷을 이름으로 적었다** — 검색 결과, 질의 제안, **zero-state**(아무것도 입력 안 한 상태), AI 추천. 넷의 성격이 다르다: 결과 페이지는 **스크롤 성능**, 질의 제안은 **입력마다 오는 응답의 지연**, zero-state 는 **무엇을 보여 줄지의 판단**, 추천은 **모델 출력의 표현**이다. 같은 회사 데이터 엔지니어링 공고가 `Search and Recommendations drive over 70% of product discovery` 라고 밝힌 그 화면들이다.",
+          "gap_check": "검색어를 한 글자 칠 때마다 제안을 부른다면 **어떻게 요청 수를 줄이겠는가**(디바운스·취소·캐시).",
+          "drill": "검색 화면을 만든다 — ① 입력마다 제안 요청 ② **디바운스와 이전 요청 취소**를 붙이고 요청 수를 비교 ③ 결과 목록에 **이미지 지연 로딩과 재사용**을 넣어 스크롤 프레임을 잰다 ④ zero-state 에 **무엇을 보여 줄지** 두 안을 만들어 본다(최근 검색 vs 추천). 각 단계의 **숫자**를 기록한다.",
+          "hours": 12
+        },
+        {
+          "topic": "성능 예산·메모리·지연을 소유한다",
+          "from": "task",
+          "quote": "Own the end-to-end technical quality bar: performance budgets, memory footprints, latency targets",
+          "priority": "core",
+          "why": "⚠️ **`budgets`·`footprints`·`targets` 세 단어가 다 숫자를 뜻한다** — 즉 감이 아니라 **정해 놓은 한계**를 관리하라는 뜻이다. 모바일에서 이게 특히 중요한 이유는 **기기 편차** 때문이다: 최신 기기에서 괜찮은 화면이 3년 된 기기에서는 버벅인다. 그래서 이 자리는 **어느 기기를 기준으로 삼을지**부터 정해야 한다.",
+          "gap_check": "우리 앱의 성능 기준이 **어느 기기·어느 조건**에서 정해졌는지 아는가.",
+          "drill": "성능 예산 문서를 한 장 쓴다 — ① 기준 기기(하위 20% 사양) ② 화면별 목표(첫 프레임·스크롤 드롭 프레임·메모리 상한) ③ **측정 방법과 자동화**(CI 에서 재는지) ④ 넘었을 때의 처리(경고인가 차단인가). 그리고 실제 앱 하나에서 ②의 숫자를 **한 번 재 본다.**",
+          "hours": 8
+        },
+        {
+          "topic": "모바일 A/B 실험 — 계측이 먼저다",
+          "from": "qualification",
+          "quote": "Demonstrated experience with A/B experimentation on mobile — instrumentation, analysis, iteration",
+          "priority": "core",
+          "why": "⚠️ **`instrumentation` 이 맨 앞에 있다** — 모바일 실험이 웹보다 어려운 이유가 여기 있다: **앱은 버전이 남는다.** 실험을 켜려면 새 앱을 배포해야 하고, 옛 버전 사용자는 계속 옛 동작을 본다. 그래서 **원격 플래그와 서버 주도 설정**이 필수가 되고, 로그가 빠지면 **다시 심으려면 또 배포**해야 한다.",
+          "gap_check": "우리 앱에서 **새 실험을 켜는 데 배포가 필요한가.** 필요하다면 실험 주기가 앱 심사 주기에 묶인다.",
+          "drill": "실험 하나를 설계·구현한다 — ① 원격 플래그로 분기 ② **노출·클릭 로그를 먼저** 심고 ③ 앱 버전과 OS 를 로그에 함께 남긴다 ④ 결과를 **버전별로 나눠** 본다. ④에서 **옛 버전이 결과를 흐리는 것**을 직접 확인하는 게 목적이다.",
+          "hours": 10
+        },
+        {
+          "topic": "백엔드·ML 팀과 조직을 넘어 협업한다",
+          "from": "task",
+          "quote": "Drive the cross team collaborations with Backend and ML teams, even cross organizations.",
+          "priority": "high",
+          "why": "⚠️ **`even cross organizations` 까지 적었다.** 검색은 앱 혼자 못 만든다 — 랭킹은 ML, 데이터는 백엔드, 지표는 분석 조직에 있다. 그리고 공고가 `Comfort reading and reasoning about backend APIs, data pipelines, and ML model outputs (you don't need to build models yourself)` 라고 밝히듯, **직접 만들 필요는 없지만 읽고 따질 수는 있어야** 대화가 된다.",
+          "gap_check": "ML 팀이 '모델을 바꿨다'고 할 때 나는 **앱에서 무엇이 달라지는지** 물을 수 있는가.",
+          "drill": "모델이 바뀔 때의 **영향 체크리스트**를 만든다 — ① 응답 형식이 바뀌나 ② 지연이 바뀌나 ③ 빈 결과나 이상값이 늘 수 있나 ④ **앱이 방어해야 할 케이스** ⑤ 되돌릴 때 앱도 배포해야 하나. 그리고 실제 API 하나로 ④를 코드에 넣어 본다.",
+          "hours": 6
+        },
+        {
+          "topic": "아키텍처 패턴을 '언제 쓸지'",
+          "from": "qualification",
+          "quote": "Strong grasp of mobile architecture patterns (MVVM, TCA, Coordinators, etc.) and when to apply them",
+          "priority": "high",
+          "why": "⚠️ **`when to apply them` 이 붙어 있다** — 패턴을 아는 것보다 **안 쓰는 판단**을 묻는다. 검색 화면처럼 상태가 복잡한 곳에는 구조가 값을 하지만, 단순한 화면에 무거운 패턴을 씌우면 **읽기 어려워지고 신입이 못 들어온다.** 팀을 이끄는 자리라 이 판단이 곧 코드베이스의 성격이 된다.",
+          "gap_check": "우리 앱에서 **패턴이 과한 화면**을 하나 댈 수 있는가.",
+          "drill": "같은 화면을 **두 가지 구조**로 만든다 — ① 단순한 방식 ② 무거운 패턴. 그다음 **요구 변경 두 개**(상태 추가, 화면 분기)를 넣고 고친 파일 수와 **처음 보는 사람이 이해하는 데 걸린 시간**을 비교한다. 두 번째 항목이 이 드릴의 핵심이다.",
+          "hours": 8
+        },
+        {
+          "topic": "설계 문서와 아키텍처 리뷰",
+          "from": "task",
+          "quote": "Lead architecture reviews and design docs; your decisions have long-term codebase impact",
+          "priority": "high",
+          "why": "⚠️ **`long-term codebase impact` 라고 못 박았다** — 모바일은 **되돌리기가 특히 비싸다.** 서버는 배포하면 끝이지만 앱은 **옛 버전이 몇 달 남고**, 잘못된 데이터 모델이나 저장 구조는 마이그레이션까지 필요하다. 그래서 이 자리의 리뷰는 **되돌릴 수 없는 결정**을 먼저 본다.",
+          "gap_check": "내 앱에서 **한 번 배포하면 되돌리기 어려운 것**을 셋 댈 수 있는가(로컬 DB 스키마, 저장된 형식, API 계약).",
+          "drill": "설계 문서 템플릿을 만든다 — ① 문제 ② 선택지와 대가 ③ **되돌릴 수 있는가**(앱 배포만으로 되나) ④ 옛 버전 호환 ⑤ 이 결정이 틀렸다면 언제 알 수 있나. 그리고 과거 결정 하나를 그 템플릿으로 소급해 쓴다.",
+          "hours": 6
+        },
+        {
+          "topic": "팀 문화와 프로세스를 다듬는 일",
+          "from": "task",
+          "quote": "Build inclusive team culture to make every one belong, refine process to make team members’ work easier.",
+          "priority": "high",
+          "why": "⚠️ **담당업무 두 번째 줄이 문화다.** 그리고 뒤에 붙은 말이 구체적이다 — `refine process to make team members' work easier`. 즉 문화를 구호가 아니라 **일이 쉬워지게 만드는 절차**로 본다. 모바일 팀은 iOS·Android 로 나뉘고 **배포 주기와 도구가 달라** 한쪽이 소외되기 쉬운데, 그걸 막는 것이 이 항목의 실체로 읽힌다.",
+          "gap_check": "우리 팀에서 **가장 불편한 반복 작업**이 무엇인지 팀원에게 물어본 적이 있는가.",
+          "drill": "팀의 불편 목록을 만든다 — 팀원 각자에게 **최근 2주에 가장 짜증났던 일 셋**을 익명으로 받는다. 빈도×시간으로 줄 세우고 **가장 큰 것 하나를 실제로 없앤다.** 그리고 4주 뒤 같은 질문을 다시 던져 목록이 바뀌었는지 본다.",
+          "hours": 5
+        },
+        {
+          "topic": "LLM 기반 검색 기능이 앱에 오면",
+          "from": "preference",
+          "quote": "Familiarity with LLM-based product features (conversational search, query rewriting, semantic ranking)",
+          "priority": "nice",
+          "why": "우대사항이지만 팀 이름이 `Search AI Product & Mobile` 이라 방향이 분명하다. 셋의 앱 쪽 난이도가 다르다 — **대화형 검색**은 응답이 스트리밍으로 오고 길이를 모르니 **UI 가 흔들리고**, **질의 재작성**은 사용자가 친 말과 실제 검색어가 달라져 **무엇을 보여 줄지** 정해야 하며, **의미 랭킹**은 결과 순서가 예전과 달라져 **사용자가 혼란스러워할 수 있다.**",
+          "gap_check": "응답이 **한 글자씩 오는 화면**을 만들어 본 적이 있는가.",
+          "drill": "스트리밍 응답 화면을 만든다 — ① 토큰이 올 때마다 렌더 ② **레이아웃이 튀지 않게** 처리 ③ 중간에 취소 ④ 실패 시 이미 보여 준 내용을 어떻게 할지. 그다음 **질의가 재작성됐을 때** 원래 검색어와 바뀐 검색어를 어떻게 보여 줄지 두 안을 만든다.",
+          "hours": 10
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**온디바이스 vs 서버 랭킹 비교 기록**을 준비한다 — 앱 크기·지연·오프라인·모델 교체 비용까지",
+          "why": "담당업무가 `mobile-side integration of ML models` 의 방향을 정하는 일이다. **둘 다 만들어 보고 숫자로 비교한 사람**은 드물고, 그 표 하나가 이 자리의 언어다.",
+          "effort": "2~3일"
+        },
+        {
+          "idea": "⚠️ **근무지·비자 조건을 먼저 확인한다** — 보상이 미국 시장 기준이다",
+          "why": "`Our compensation reflects the cost of labor across several US geographic markets.` 와 `$194,000 ~ $243,000` 가 본문에 있다. **한국 근무를 전제로 지원하면 조건이 전혀 다를 수 있다.**",
+          "effort": "10분"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차가 적혀 있지 않다(쿠팡 채용 사이트 직접 지원). `Job Requisition ID: R0076403` 이 적혀 있다.",
+        "expect": [
+          "⚠️ **근무지·비자** — 보상이 미국 기준이다",
+          "온디바이스 추론과 서버 랭킹을 **무엇으로 가르는지**",
+          "iOS·Android 두 진영을 한 팀으로 이끈 방식",
+          "모바일 A/B 실험 — **옛 앱 버전**을 어떻게 다뤘는지",
+          "성능 예산을 정하고 지킨 사례 (기준 기기 포함)",
+          "되돌리기 어려운 결정을 리뷰에서 잡아낸 경험",
+          "ML 팀과 모델 변경의 영향을 조율한 사례"
+        ],
+        "sources": []
+      }
     }
   ],
   "open_questions": [
