@@ -449,8 +449,12 @@ def gaps(index: dict, summaries: list[dict], jobs: dict, errors: list[str], show
         if s["postings"] >= EXPAND_CAP and queued:
             deferred.append(f"{s['name']}({s['postings']}건)")
             continue
+        # 세 절(담당업무·자격요건·우대사항)이 통째로 빈 공고는 대기열에서 뺀다 —
+        # quote 를 뽑을 곳이 없어 브리핑을 쓸 수 없는데, 남겨 두면 대기열 맨 앞을
+        # 영영 막는다. 크롤이 나중에 채우면 저절로 다시 들어온다.
         open_urls = [u for u, j in jobs.get("by_url", {}).items()
-                     if j["norm"] in s["aliases"] and j["status"] != "closed"]
+                     if j["norm"] in s["aliases"] and j["status"] != "closed"
+                     and (j.get("text") or "").strip()]
         done_urls = set()
         doc = json.loads((COMPANIES / f"{s['slug']}.json").read_text(encoding="utf-8"))
         for p in doc.get("postings") or []:
