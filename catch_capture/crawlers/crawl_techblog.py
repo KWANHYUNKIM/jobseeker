@@ -14,6 +14,8 @@
   python -m crawlers.crawl_techblog 20 woowahan,netflix  # 일부 회사만
   python -m crawlers.crawl_techblog repair            # 알맹이 빠진 본문 실측
   python -m crawlers.crawl_techblog repair --apply    # 지우고 다시 받게 한다
+  python -m crawlers.crawl_techblog repair --retranslate --apply
+                                                     # 원문만 있는 글도 번역까지 다시
 """
 from __future__ import annotations
 
@@ -647,10 +649,17 @@ def build_content(post: dict, translate: bool = True) -> bool:
         return False
     content_ko = ""
     if translate and post.get("lang") != "ko":
+        # 번역이 안 돼도 원문은 저장한다.
+        #
+        # 예전에는 여기서 파일을 쓰지 않고 돌아갔다. 그래서 영어 글은 '번역이 없는'
+        # 상태가 아니라 **본문이 통째로 없는** 상태가 됐고, 세 번 실패하면 14일간
+        # 재시도 대상에서도 빠졌다. deep_translator 가 설치돼 있지 않던 동안 영어
+        # 글이 하나도 안 쌓인 이유가 이것이다.
+        #
+        # 번역기는 남의 서비스라 언제든 막힌다. 그때마다 이미 손에 쥔 원문까지 버릴
+        # 이유가 없다 — 영어를 읽는 사람에게는 원문이 오히려 원하는 것이고, 번역은
+        # 나중에 채워 넣을 수 있다(process_content 의 보강 단계).
         content_ko = _translate_ko(text)
-        if not content_ko:
-            post["_content_fail"] = "translate"
-            return False   # 번역 실패(차단 등) → 파일 미작성, 다음 회차 재시도
     rec = {
         "url": post["url"],
         "title": post.get("title"),
@@ -687,13 +696,18 @@ def _save_failures(fails: dict) -> None:
 _MD_MARKS = ("![", "```", "~~~")
 
 
-def _is_thin(rec: dict) -> str | None:
-    """의존성 없이 만들어져 알맹이가 빠진 본문인가. 사유 문자열 또는 None."""
+def _is_thin(rec: dict, retranslate: bool = False) -> str | None:
+    """다시 받아야 할 본문인가. 사유 문자열 또는 None.
+
+    번역이 없는 것은 기본적으로 보지 않는다 — 이제 원문만 저장된 상태가 정상이다.
+    번역기가 다시 살아나 지난 글까지 채우고 싶을 때만 retranslate 로 포함시킨다
+    (그 글들은 지워야 다음 사이클에 번역까지 붙여 다시 만들어진다).
+    """
     text = rec.get("content") or ""
     if not text.strip():
         return "본문 비어 있음"
-    if rec.get("lang") != "ko" and not rec.get("translated"):
-        return "번역 없음"
+    if retranslate and rec.get("lang") != "ko" and not rec.get("translated"):
+        return "번역 없음(원문만 있음)"
     has_mark = any(m in text for m in _MD_MARKS)
     has_head = any(ln.startswith("#") for ln in text.splitlines())
     has_table = any(ln.startswith("|") for ln in text.splitlines())
@@ -702,7 +716,7 @@ def _is_thin(rec: dict) -> str | None:
     return None
 
 
-def repair_content(apply: bool = False) -> int:
+def repair_content(apply: bool = False, retranslate: bool = False) -> int:
     """의존성이 빠진 채로 만들어진 본문을 지우고 실패 이력을 푼다.
 
     trafilatura 가 없던 동안 저장된 본문은 RSS 요약을 평문으로 옮긴 것이라
@@ -713,6 +727,10 @@ def repair_content(apply: bool = False) -> int:
     실패 이력도 같이 푼다. deep_translator 가 없어 번역에 실패한 영어 글은
     CONTENT_MAX_FAILS 를 넘겨 CONTENT_RETRY_DAYS(14일) 동안 재시도 대상에서
     빠져 있다. 원인이 사라졌으니 대기도 풀어 준다.
+
+    retranslate 를 주면 '원문만 있고 번역이 없는 글'도 대상에 넣는다. 번역기가
+    막혀 있던 동안 쌓인 것을 나중에 채우는 용도다 — 평소에는 원문만 있는 게 정상이라
+    기본값에서는 건드리지 않는다.
 
     기본은 실측만. 지우려면 --apply.
     """
@@ -731,7 +749,7 @@ def repair_content(apply: bool = False) -> int:
         except (json.JSONDecodeError, OSError):
             thin.append((f, "읽을 수 없음", {}))
             continue
-        why = _is_thin(rec)
+        why = _is_thin(rec, retranslate=retranslate)
         if why:
             thin.append((f, why, rec))
 
@@ -914,7 +932,8 @@ def crawl(per_feed: int, only: set[str] | None) -> None:
 def main() -> None:
     args = sys.argv[1:]
     if args and args[0] == "repair":
-        raise SystemExit(repair_content(apply="--apply" in args))
+        raise SystemExit(repair_content(apply="--apply" in args,
+                                        retranslate="--retranslate" in args))
     per_feed = int(args[0]) if args and args[0].isdigit() else 20
     only = None
     if len(args) > 1 and not args[1].startswith("-"):
