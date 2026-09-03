@@ -101,7 +101,24 @@ PLIST_EOF
 
   plutil -lint "$plist" >/dev/null || die "plist 문법 오류: $label"
   launchctl bootout "gui/$UID_N/$label" 2>/dev/null || true
-  launchctl bootstrap "gui/$UID_N" "$plist"
+
+  # bootout 은 비동기다. 아직 내려가는 중인 label 을 다시 bootstrap 하면
+  # "Bootstrap failed: 5: Input/output error" 로 죽는다 — 실제로 그렇게 멈춰서
+  # 서비스 하나가 내려간 채 남은 적이 있다. 사라진 것을 확인하고 올린다.
+  for _ in 1 2 3 4 5 6 7 8 9 10; do
+    launchctl print "gui/$UID_N/$label" >/dev/null 2>&1 || break
+    sleep 1
+  done
+
+  # 그래도 경합이 남을 수 있어 몇 번 다시 시도한다. 여기서 그냥 죽으면 앞에서
+  # bootout 한 서비스가 올라오지 못한 채로 스크립트가 끝난다.
+  ok=0
+  for attempt in 1 2 3; do
+    if launchctl bootstrap "gui/$UID_N" "$plist" 2>/dev/null; then ok=1; break; fi
+    warn "  bootstrap 재시도 ($attempt/3): $label"
+    sleep 2
+  done
+  [ "$ok" = 1 ] || die "bootstrap 실패: $label (launchctl print gui/$UID_N/$label 로 확인)"
 done
 
 log "기동 확인"
