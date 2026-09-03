@@ -608,6 +608,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "elasticsearch",
+      "title": "Elasticsearch",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "Lucene 의 역색인을 **여러 서버에 나눠 담고 복제해 주는 분산 검색 엔진**이다. 검색만 잘하는 것이 아니라 **집계와 로그 저장소**로도 쓰이는데, 그 대가로 **트랜잭션도 조인도 없고 '방금 쓴 글이 바로 안 보이는'** 시스템을 운영하게 된다.",
+      "aliases": [
+        "Elasticsearch",
+        "ElasticSearch",
+        "엘라스틱서치",
+        "OpenSearch",
+        "ELK"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
