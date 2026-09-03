@@ -212,6 +212,23 @@
    "updated_at": "2026-09-04"
   },
   {
+   "slug": "rtos",
+   "title": "RTOS",
+   "category": "runtime",
+   "level": "core",
+   "status": "done",
+   "one_liner": "'실시간'은 빠름이 아니라 **정해진 시간 안에 반드시 반응한다는 보장**이다. RTOS 는 그 보장을 만들기 위해 **우선순위 기반 선점 스케줄러**를 파는 물건이다.",
+   "aliases": [
+    "RTOS",
+    "실시간 운영체제",
+    "FreeRTOS",
+    "Zephyr"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "spi",
    "title": "SPI",
    "category": "firmware",
