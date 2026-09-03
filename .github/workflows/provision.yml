@@ -87,6 +87,26 @@ jobs:
             *) echo "   ? /collect -> HTTP $code" ;;
           esac
 
+          # 공개 주소. **이 레포는 public 이라 Actions 로그도 공개된다.**
+          # 그래서 주소 전체는 찍지 않고, 어떤 방식으로 열려 있는지와 호스트의
+          # 앞 몇 자만 남긴다. 고정 도메인을 쓰고 있다면 본인이 바로 알아본다.
+          echo "-- 외부 공개 방식"
+          running=$(docker ps --format '{{.Names}}' 2>/dev/null | grep '^jobseeker-' | tr '
+' ' ')
+          echo "   컨테이너: ${running:-없음}"
+          echo "   LAN     : http://$(ipconfig getifaddr en0 2>/dev/null || echo '?'):8080"
+          if docker ps --format '{{.Names}}' 2>/dev/null | grep -qx jobseeker-ngrok; then
+            echo "   방식    : ngrok (고정 도메인)"
+          elif docker ps --format '{{.Names}}' 2>/dev/null | grep -qx jobseeker-cloudflared; then
+            echo "   방식    : Cloudflare 고정 터널 (본인 도메인)"
+          elif docker ps --format '{{.Names}}' 2>/dev/null | grep -qx jobseeker-quicktunnel; then
+            u=$(./deploy/tunnel-url.sh 2>/dev/null | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1)
+            echo "   방식    : quicktunnel (임시, 재시작마다 바뀜)"
+            echo "   주소    : ${u%%.*}****.trycloudflare.com   <- 앞부분만"
+          else
+            echo "   방식    : 터널 없음 — LAN 안에서만 열린다"
+          fi
+
           echo "::group::서비스 진단"
           for name in ops stats search collect; do
             label="com.jobseeker.$name"
