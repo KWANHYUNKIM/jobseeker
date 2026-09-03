@@ -64,6 +64,7 @@ STALE_DAYS = 14
 # 재고를 미리 채워 두는 것과 같은 이치라 목표 수량을 두고 그 아래로 내려가면 채운다.
 QUEUE_TARGET = 3
 QUEUE_MD = ROOT / "engine" / "state" / "QUEUE.md"
+TIMELINE_LEDGER = ROOT / "engine" / "state" / "timeline.json"
 
 
 def _queue_depth() -> int | None:
@@ -732,9 +733,66 @@ def _print_gaps(r: Report) -> int:
     return 1 if r.errors else 0
 
 
+def _dated_sources(node) -> int:
+    """이 회사 자료 중 **연도가 적힌** 것이 몇 건인가.
+
+    연표는 연도가 있는 자료에서만 나온다. 자료가 아무리 많아도 날짜가 없으면
+    시간축을 못 만드므로, 백필 대상을 고를 때는 총 자료 수가 아니라 이 수를 본다.
+    """
+    n = 0
+    if isinstance(node, dict):
+        if node.get("url") and node.get("title"):
+            if YEAR_RE.match(str(node.get("date") or "")[:7].rstrip("-")):
+                n += 1
+        for v in node.values():
+            n += _dated_sources(v)
+    elif isinstance(node, list):
+        for v in node:
+            n += _dated_sources(v)
+    return n
+
+
+def _print_timeline(companies: dict[str, dict]) -> int:
+    """연표(eras)가 아직 없는 회사를 자료가 많은 순으로 보여준다.
+
+    일부러 `--gaps` 와 따로 둔다. --gaps 는 "이건 결함이다"라는 목록이라, 거기에
+    연표를 넣으면 매 사이클이 채우라고 지목하고 결국 모든 회사가 똑같은 세 시대를
+    갖게 된다(STYLE.md 8번, research 로 이미 한 번 겪은 일). 이쪽은 결함 목록이
+    아니라 **아직 안 본 회사 목록**이다 — 보고 나서 연도가 없으면 건너뛰는 것이
+    정상이고, 그 사실을 state/timeline.json 에 적어 두면 다시 부르지 않는다.
+    """
+    try:
+        ledger = json.loads(TIMELINE_LEDGER.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        ledger = {}
+    skipped = ledger.get("skipped") or {}
+
+    rows = []
+    for slug, c in companies.items():
+        if c.get("eras"):
+            continue
+        if slug in skipped:
+            continue
+        rows.append((_dated_sources(c), len(c.get("features") or []), slug, c.get("name", slug)))
+    rows.sort(reverse=True)
+
+    done = sum(1 for c in companies.values() if c.get("eras"))
+    print(f"## 연표 — 채운 회사 {done} · 남은 회사 {len(rows)} · 건너뛴 회사 {len(skipped)}")
+    if not rows:
+        print("\n남은 대상이 없다. 없는 일을 만들지 않는다 — 여기서 끝낸다.")
+        return 0
+    print("\n다음 대상 (연도 있는 자료가 많은 순):\n")
+    for dated, feats, slug, name in rows[:SHOW_NEXT]:
+        print(f"  {slug:<24} {name:<16} 연도 있는 자료 {dated:>3}건 · 기능 {feats}개")
+    print("\n맨 위 하나만 판다. 연도가 적힌 자료를 못 찾으면 억지로 쓰지 말고")
+    print("engine/state/timeline.json 의 skipped 에 이유와 함께 적는다.")
+    return 0
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:]]
     want_gaps = "--gaps" in args or "--gaps-all" in args
+    want_timeline = "--timeline" in args
     if "--gaps-all" in args:
         globals()["SHOW_NEXT"] = 10 ** 9
     args = [a for a in args if not a.startswith("--")]
@@ -756,6 +814,9 @@ def main() -> int:
     index = _load(INDEX, r)
     if index is not None and not only:
         check_index(index, companies, r)
+
+    if want_timeline:
+        return _print_timeline(companies)
 
     if want_gaps:
         return _print_gaps(r)
