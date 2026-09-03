@@ -20,6 +20,24 @@
    "updated_at": "2026-09-03"
   },
   {
+   "slug": "java-in-finance",
+   "title": "금융권은 왜 Java 인가",
+   "category": "domain",
+   "level": "core",
+   "status": "done",
+   "one_liner": "언어가 빨라서도 좋아서도 아니다. **망분리라는 배포 제약, 20년치 코드 자산, 사람을 갈아 끼워도 돌아가야 하는 발주 구조** 셋이 겹친 자리에서 Java·Spring 이 가장 덜 위험한 선택이었기 때문이다.",
+   "aliases": [
+    "금융권 Java",
+    "금융권 자바",
+    "금융 SI",
+    "계정계",
+    "차세대 시스템"
+   ],
+   "sections": 5,
+   "drills": 3,
+   "updated_at": "2026-09-03"
+  },
+  {
    "slug": "pull-up-resistor",
    "title": "풀업 저항",
    "category": "hardware",
