@@ -3,7 +3,9 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { BlogContent, BlogPost } from '../types'
 import { useLocale } from '../lib/locale'
+import { blendByEngagement, useEngagement } from '../lib/useEngagement'
 import { useSimilarPosts } from '../lib/useSimilar'
+import { track, useDwell } from '../lib/track'
 
 const COUNTRY_LABEL: Record<string, string> = {
   KR: '🇰🇷 한국', US: '🇺🇸 미국', JP: '🇯🇵 일본', DE: '🇩🇪 독일',
@@ -48,7 +50,13 @@ export function BlogDetail({
   const [state, setState] = useState<'loading' | 'ready' | 'pending' | 'error'>('loading')
   const [view, setView] = useState<View>('ko')
   const { lookup } = useSimilarPosts()
-  const similar = onOpenUrl ? lookup(post.url) : []
+  const eng = useEngagement()
+  const similar = onOpenUrl ? blendByEngagement(lookup(post.url), eng, post.url) : []
+
+  useDwell(post.url)
+  useEffect(() => {
+    track('view', post.url)
+  }, [post.url])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
@@ -135,6 +143,7 @@ export function BlogDetail({
             )}
             <a
               href={post.url}
+              onClick={() => track('click', 'outbound', post.url)}
               target="_blank"
               rel="noreferrer"
               className="text-xs text-(--color-accent) hover:underline ml-auto"
@@ -208,7 +217,10 @@ export function BlogDetail({
                 {similar.map((s) => (
                   <li key={s.url}>
                     <button
-                      onClick={() => onOpenUrl(s.url)}
+                      onClick={() => {
+                        track('click', s.url, post.url)
+                        onOpenUrl(s.url)
+                      }}
                       className="w-full text-left px-3 py-2.5 rounded border border-(--color-border) hover:bg-(--hover) hover:border-(--color-accent)/40 flex items-center gap-3"
                     >
                       <span className="flex-1 min-w-0">

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
+import { blendByEngagement, useEngagement } from '../lib/useEngagement'
 import { useSimilarJobs } from '../lib/useSimilar'
+import { track, useDwell } from '../lib/track'
 import {
   useJobGuide,
   PRIORITY_COLOR,
@@ -48,7 +50,15 @@ export function JobDetail({ job, onOpenUrl }: Props) {
   // 상태 하나하나를 useEffect 로 되돌리는 것보다 지워야 할 것을 빠뜨릴 일이 없다.
   const roles = classifyRoles(job.title, job.tech_stack, job.qualifications || '')
   const { lookup } = useSimilarJobs()
-  const similar = onOpenUrl ? lookup(job.url) : []
+  const eng = useEngagement()
+  // 유사도가 바닥을 잡고, 사람들이 실제로 그다음에 본 것이 순위를 조금 올린다.
+  const similar = onOpenUrl ? blendByEngagement(lookup(job.url), eng, job.url) : []
+
+  // 무엇을 열었고 얼마나 머물렀나. 이 둘이 추천을 고칠 유일한 근거다.
+  useDwell(job.url)
+  useEffect(() => {
+    track('view', job.url)
+  }, [job.url])
 
   // 본문 하이라이트는 가이드의 study[] 에서 나온다. 패널과 본문이 같은 데이터를 보되
   // 훅은 각자 부르는데, useJobGuide 는 fetch 를 캐시하므로 요청은 한 번이다.
@@ -114,6 +124,7 @@ export function JobDetail({ job, onOpenUrl }: Props) {
           {job.url && (
             <a
               href={job.url}
+              onClick={() => track('click', 'outbound', job.url)}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex shrink-0 items-center gap-1.5 px-3 py-1.5 rounded bg-(--color-accent) text-(--color-on-accent) text-sm font-medium hover:opacity-90"
@@ -212,7 +223,12 @@ export function JobDetail({ job, onOpenUrl }: Props) {
                 {similar.map((s) => (
                   <li key={s.url}>
                     <button
-                      onClick={() => onOpenUrl(s.url)}
+                      onClick={() => {
+                        // 어느 공고에서 어느 공고로 넘어갔는지. score.py 의 'next'
+                        // 가 이 한 줄에서 만들어진다.
+                        track('click', s.url, job.url)
+                        onOpenUrl(s.url)
+                      }}
                       className="w-full text-left px-3 py-2.5 rounded border border-(--color-border) hover:bg-(--hover) hover:border-(--color-accent)/40 flex items-center gap-3"
                     >
                       <span className="flex-1 min-w-0">
