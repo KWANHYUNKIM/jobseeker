@@ -39,6 +39,23 @@
    "updated_at": "2026-09-03"
   },
   {
+   "slug": "i2c",
+   "title": "I²C",
+   "category": "firmware",
+   "level": "core",
+   "status": "done",
+   "one_liner": "선 두 가닥에 여러 장치를 매달고 **주소로 골라 부르는** 버스다. 아무도 선을 잡지 않으면 1 이 되는 성질(오픈 드레인 + 풀업) 위에, 주소·응답(ACK)·양보(중재)라는 규칙을 얹어 만들었다.",
+   "aliases": [
+    "I2C",
+    "I²C",
+    "TWI",
+    "아이스퀘어드씨"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-03"
+  },
+  {
    "slug": "java-in-finance",
    "title": "금융권은 왜 Java 인가",
    "category": "domain",
