@@ -32,6 +32,9 @@ const TAB_BY_SEG: Record<string, Tab> = {
   radar: 'radar',
   calendar: 'calendar',
   trend: 'trend',
+  // 백과사전은 `기술 트렌드` 탭 안의 한 모드다(관계·맥락의 다음 칸). 다만 문서마다
+  // 진짜 주소가 있어야 색인·공유가 되므로 첫 세그먼트를 따로 뒀다.
+  wiki: 'trend',
   reveng: 'reveng',
   reposts: 'reposts',
 }
@@ -131,8 +134,11 @@ function App() {
     // 회사·레이더·역설계·블로그 상세의 제목은 그 데이터를 들고 있는 뷰가 직접 단다.
     // 여기서 탭 제목을 달면 모든 회사 페이지가 "기업 기술스택 분석" 한 줄로 색인된다.
     if (detail && (tab === 'companies' || tab === 'radar' || tab === 'reveng' || tab === 'blog')) return null
+    // 백과사전 문서의 제목은 WikiView 가 직접 단다(문서 데이터를 그쪽이 들고 있다).
+    const onWiki = route.seg[0] === 'wiki'
+    if (onWiki && detail) return null
 
-    const t = TAB_SEO[tab] ?? TAB_SEO.jobs
+    const t = TAB_SEO[onWiki ? 'wiki' : tab] ?? TAB_SEO.jobs
     return {
       title: t.title,
       description: t.desc,
@@ -140,7 +146,7 @@ function App() {
       // 검색어가 걸린 목록은 같은 목록의 무한 변형이라 색인해봐야 중복 페이지만 는다.
       robots: filter.query && isJobList ? 'noindex, follow' : undefined,
     }
-  }, [selected, tab, detail, route.path, filter.query, isJobList])
+  }, [selected, tab, detail, route.path, route.seg, filter.query, isJobList])
   useSeo(seo)
 
   return (
@@ -169,8 +175,11 @@ function App() {
           <TabLink active={tab === 'reposts'} to={paths.reposts()}>
             재공고
           </TabLink>
-          <TabLink active={tab === 'trend'} to={paths.trend()}>
+          <TabLink active={tab === 'trend' && route.seg[0] !== 'wiki'} to={paths.trend()}>
             개발 트렌드
+          </TabLink>
+          <TabLink active={route.seg[0] === 'wiki'} to={paths.wiki()}>
+            기술 백과사전
           </TabLink>
           <TabLink active={tab === 'reveng'} to={paths.reveng()}>
             기술 역설계
@@ -216,6 +225,7 @@ function App() {
           <TrendView
             onOpenCompany={(slug) => navigate(paths.company(slug))}
             focusTech={route.query.get('tech')}
+            wiki={route.seg[0] === 'wiki' ? { slug: route.seg[1] ?? null } : null}
           />
         </div>
       ) : tab === 'reveng' ? (

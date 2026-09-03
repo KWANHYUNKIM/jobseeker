@@ -6,10 +6,15 @@ import { useTechRelations } from '../lib/useTechRelations'
 import { ExpansionView } from './ExpansionView'
 import { RoleInsights } from './RoleInsights'
 import { LearningView } from './LearningView'
+import { WikiView, WikiLink } from './WikiView'
+import { articleByTech, useStudyIndex } from '../lib/useStudy'
 import { Loader, ErrorState, TechIcon, SearchInput, hits } from './ui'
+import { navigate } from '../lib/router'
+import { paths } from '../lib/urls'
 import type { TechRelation, TrendDay } from '../types'
+import type { IndexEntry } from '../lib/useStudy'
 
-type TrendMode = 'trend' | 'relations' | 'learn' | 'paths'
+type TrendMode = 'trend' | 'relations' | 'learn' | 'paths' | 'wiki'
 
 function pct(d: TrendDay, t: string): number {
   return d.total ? Math.round((1000 * (d.tech[t] ?? 0)) / d.total) / 10 : 0
@@ -18,14 +23,18 @@ function pct(d: TrendDay, t: string): number {
 export function TrendView({
   onOpenCompany,
   focusTech,
+  wiki,
 }: {
   onOpenCompany?: (norm: string) => void
   /** 주소(`/trend?tech=React`)로 지정된 기술. 있으면 학습·확장 모드로 연다. */
   focusTech?: string | null
+  /** 주소가 `/wiki` 계열이면 백과사전 모드. `slug` 가 있으면 그 문서를 연다. */
+  wiki?: { slug: string | null } | null
 } = {}) {
   const { data, loading, error } = useTrends()
   const { data: rel } = useTechRelations()
-  const [mode, setMode] = useState<TrendMode>('trend')
+  const { data: studyIndex } = useStudyIndex()
+  const [mode, setMode] = useState<TrendMode>(wiki ? 'wiki' : 'trend')
   const [relTech, setRelTech] = useState<string | null>(null)
   const [query, setQuery] = useState('')
 
@@ -35,6 +44,15 @@ export function TrendView({
   if (focusTech !== prevFocus) {
     setPrevFocus(focusTech)
     if (focusTech) setMode('learn')
+  }
+
+  // 주소가 백과사전(`/wiki`, `/wiki/<slug>`)이면 그 모드로. 반대로 다른 탭에서 돌아오면
+  // 원래 모드로 되돌린다 — 모드가 주소와 어긋나면 뒤로가기가 엉뚱한 화면을 연다.
+  const onWiki = Boolean(wiki)
+  const [prevWiki, setPrevWiki] = useState(onWiki)
+  if (onWiki !== prevWiki) {
+    setPrevWiki(onWiki)
+    setMode(onWiki ? 'wiki' : 'trend')
   }
 
   const latest = data?.days[data.days.length - 1]
@@ -73,6 +91,7 @@ export function TrendView({
           <ModeBtn active={mode === 'relations'} onClick={() => setMode('relations')}>기술 관계·맥락</ModeBtn>
           <ModeBtn active={mode === 'learn'} onClick={() => setMode('learn')}>학습·확장</ModeBtn>
           <ModeBtn active={mode === 'paths'} onClick={() => setMode('paths')}>요구사항 → 학습</ModeBtn>
+          <ModeBtn active={mode === 'wiki'} onClick={() => { setMode('wiki'); navigate(paths.wiki()) }}>백과사전</ModeBtn>
         </div>
         <span className="text-xs text-(--color-muted)">
           {mode === 'trend'
@@ -81,11 +100,15 @@ export function TrendView({
               ? '함께 쓰이는 기술(스택 레이어)과 어디서·왜 쓰이는지'
               : mode === 'learn'
                 ? '기술 선택 → 함께 쓰는 기술 확장 추천 + 학습 커리큘럼'
-                : '우대사항이 요구하는 것 → 읽을 기술 블로그 글 + 돈 주고 볼 만한 강의'}
+                : mode === 'wiki'
+                  ? '낱말 하나를 끝까지 — 왜 생겼나 · 언제 그것 대신 저것 · 손으로 해 볼 것'
+                  : '우대사항이 요구하는 것 → 읽을 기술 블로그 글 + 돈 주고 볼 만한 강의'}
         </span>
       </div>
 
-      {mode === 'paths' ? (
+      {mode === 'wiki' ? (
+        <WikiView slug={wiki?.slug ?? null} />
+      ) : mode === 'paths' ? (
         <LearningView />
       ) : mode === 'learn' ? (
         <div className="flex flex-1 min-h-0 min-w-0">
@@ -146,7 +169,11 @@ export function TrendView({
 
           {/* 우: 관계·맥락 */}
           <main className="flex-1 min-w-0 md:overflow-auto p-4 sm:p-5 flex flex-col gap-5">
-            {detail ? <RelationDetail t={detail} /> : <p className="text-(--color-muted)">관계 데이터를 불러오는 중…</p>}
+            {detail ? (
+              <RelationDetail t={detail} wiki={articleByTech(studyIndex, detail.name)} />
+            ) : (
+              <p className="text-(--color-muted)">관계 데이터를 불러오는 중…</p>
+            )}
             {rel?.domains && rel.domains.length > 0 && (
               <div>
                 <h2 className="text-lg font-semibold text-(--color-text) mb-1">도메인별 인사이트</h2>
@@ -178,7 +205,7 @@ export function TrendView({
   )
 }
 
-function RelationDetail({ t }: { t: TechRelation }) {
+function RelationDetail({ t, wiki }: { t: TechRelation; wiki: IndexEntry | null }) {
   // 함께 쓰는 기술을 레이어별로 묶기
   const byLayer = useMemo(() => {
     const m = new Map<string, typeof t.related>()
@@ -202,6 +229,9 @@ function RelationDetail({ t }: { t: TechRelation }) {
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{t.context}</ReactMarkdown>
         </div>
       )}
+
+      {/* 관계·맥락은 '무엇과 함께 얼마나'까지다. 그 다음 줄(그래서 그게 뭔데)은 백과사전에 있다 */}
+      <WikiLink entry={wiki} />
 
       <div className="mt-4">
         <div className="text-xs font-medium text-(--color-muted) mb-2">함께 쓰이는 기술 (스택 레이어별 · {t.name} 공고 중 비율)</div>

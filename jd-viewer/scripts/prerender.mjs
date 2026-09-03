@@ -148,7 +148,7 @@ function write(path, html) {
 }
 
 // 모든 정적 본문에 공통으로 붙는 머리 — 크롤러가 여기서 다른 탭으로 건너간다.
-const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a></nav>`
+const NAV = `<nav><a href="/">개발자 채용공고</a> · <a href="/companies">기업 기술스택</a> · <a href="/blog">기술블로그</a> · <a href="/radar">기술 레이더</a> · <a href="/calendar">모집 캘린더</a> · <a href="/trend">기술 트렌드</a> · <a href="/reveng">기술 역설계</a> · <a href="/wiki">기술 백과사전</a> · <a href="/mindmap">커리어 마인드맵</a> · <a href="/reposts">재공고</a></nav>`
 
 const section = (h, text, max = 1200) =>
   text ? `<section><h2>${esc(h)}</h2><p>${esc(clip(text, max))}</p></section>` : ''
@@ -158,6 +158,7 @@ const jobs = readJson('all_jobs_enriched.json') ?? []
 const stacks = readJson('company_stacks.json')
 const radar = readJson('company_tech_radar.json')
 const revengIndex = readJson('reveng/index.json')
+const studyIndex = readJson('study/index.json')
 const blogs = readJson('tech_blogs.json')
 
 const jobKey = (j) => `${j.site}-${j.pid}` // src/lib/urls.ts 의 jobKey 와 같은 규칙
@@ -213,6 +214,10 @@ const TAB_SEO = {
     title: '기업 기술 역설계',
     desc: '공개 자료만으로 재구성한 기업의 비즈니스 모델 → 도메인 → 기능 구현 → 시스템 연결.',
   },
+  '/wiki': {
+    title: '개발자 기술 백과사전',
+    desc: 'ATmega128 핀맵부터 풀업 저항, 파이썬 자료구조 선택, 멱등성까지 — 공부하다 막히는 낱말 하나를 실제 채용공고 문장과 손으로 해 볼 실습까지 붙여 설명합니다.',
+  },
 }
 
 // 목록 페이지의 정적 본문에는 실제 링크를 깐다. 크롤러는 이 링크를 타고 상세로
@@ -241,11 +246,17 @@ const revengLinks = revengList
   .map((c) => `<li><a href="/reveng/${encodeURIComponent(c.slug)}">${esc(c.name)} 기술 역설계</a></li>`)
   .join('')
 
+const studyList = studyIndex?.articles ?? []
+const studyLinks = studyList
+  .map((a) => `<li><a href="/wiki/${encodeURIComponent(a.slug)}">${esc(a.title)}</a> — ${esc(clip(a.one_liner, 100))}</li>`)
+  .join('')
+
 const HUB_LINKS = {
   '/': `<h2>최근 채용공고</h2><ul>${jobLinks}</ul>`,
   '/companies': `<h2>회사 목록</h2><ul>${companyLinks}</ul>`,
   '/radar': `<h2>기업 목록</h2><ul>${radarLinks}</ul>`,
   '/reveng': `<h2>역설계한 회사</h2><ul>${revengLinks}</ul>`,
+  '/wiki': `<h2>문서 목록</h2><ul>${studyLinks}</ul>`,
 }
 
 const jobsMtime = mtime('all_jobs_enriched.json')
@@ -436,6 +447,48 @@ for (const c of revengList) {
   add(abs(path), c.updated_at ?? today, 'monthly', '0.6')
 }
 
+// ── 기술 백과사전 ───────────────────────────────────────────────────────
+// 우리가 직접 쓴 글이라 색인 대상이다. 본문은 요약·절 제목·실습만 싣는다 — 크롤러에게
+// 필요한 건 '이 주소에 이 낱말의 설명이 있다'는 사실이고, 전문을 두 벌로 두면 앱이
+// 그리는 화면과 정적 HTML 이 갈릴 때 어느 쪽이 정본인지 알 수 없어진다.
+for (const a of studyList) {
+  const path = `/wiki/${encodeURIComponent(a.slug)}`
+  const doc = readJson(`study/articles/${a.slug}.json`)
+  const description = clip(`${a.one_liner} ${doc?.summary ?? ''}`)
+  const heads = (doc?.sections ?? []).map((x) => x.heading).filter(Boolean)
+  const drills = (doc?.drills ?? []).map((d) => d.task).filter(Boolean)
+  const body =
+    `${NAV}<main><article>` +
+    `<h1>${esc(a.title)}</h1>` +
+    `<p>${esc(a.one_liner)}</p>` +
+    section('요약', doc?.summary, 900) +
+    (heads.length ? `<h2>목차</h2><ul>${heads.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>` : '') +
+    (drills.length
+      ? `<h2>손으로 해 볼 것</h2><ul>${drills.map((d) => `<li>${esc(clip(d, 200))}</li>`).join('')}</ul>`
+      : '') +
+    `<p><a href="/wiki">기술 백과사전 목록</a></p>` +
+    `</article></main>`
+  write(
+    path,
+    page({
+      path,
+      title: `${a.title} — 개발자 기술 백과사전`,
+      description,
+      body,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        headline: a.title,
+        description,
+        inLanguage: 'ko',
+        dateModified: a.updated_at,
+        isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+      },
+    }),
+  )
+  add(abs(path), a.updated_at ?? today, 'monthly', '0.6')
+}
+
 // ── 기술 역설계: 도메인 비교 문서 ──────────────────────────────────────
 // 우리가 직접 쓴 글이라(남의 글 요약이 아니다) 색인 대상이다. 마크다운을 그대로
 // 옮기지 않고 표식만 걷어낸 본문을 싣는다 — 크롤러가 읽는 건 글의 내용이지 서식이 아니다.
@@ -532,7 +585,7 @@ if (SITE_URL) {
 }
 
 console.log(
-  `[prerender] ${written}쪽 (공고 ${jobPages.length} · 회사 ${companyList.length} · 레이더 ${radarList.length} · 역설계 ${revengList.length})\n` +
+  `[prerender] ${written}쪽 (공고 ${jobPages.length} · 회사 ${companyList.length} · 레이더 ${radarList.length} · 역설계 ${revengList.length} · 백과사전 ${studyList.length})\n` +
     (SITE_URL
       ? `[prerender] sitemap ${chunks.length}개 · URL ${urls.length}개 · 블로그 글 ${blogCount}건은 색인 제외\n` +
         `[prerender] 오리진 ${SITE_URL}`
