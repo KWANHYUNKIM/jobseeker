@@ -1,0 +1,185 @@
+{
+  "slug": "42dot",
+  "name": "포티투닷",
+  "name_en": "42dot",
+  "aliases": ["포티투닷", "42dot", "포티투닷㈜"],
+  "status": "in_progress",
+  "updated_at": "2026-09-03",
+  "site": "42dot.ai",
+  "one_liner": "현대차그룹의 소프트웨어 센터. 차를 '바퀴 달린 컴퓨터'로 다시 짜는 일(SDV)을 맡고 있고, 2022년 그룹에 편입된 뒤 2025년 매출 277억에 영업손실 3,498억을 냈다 — 매출로 도는 회사가 아니라 그룹이 투자하는 개발 조직이다.",
+
+  "company": {
+    "business": "**남에게 소프트웨어를 파는 회사가 아니라, 현대차·기아의 차에 들어갈 소프트웨어를 만드는 조직이다.** 2019년 송창현 전 네이버 CTO 가 창업했고 2022년 8월 현대차그룹 계열사로 편입됐다(현대차 57%·기아 38%). 축은 **SDV(Software-Defined Vehicle) 플랫폼** — 차량의 전기·전자 구조를 표준화하는 `E/E Architecture`, 차량 기능을 통합 관리하는 `Vehicle OS`, 그리고 음성 AI 에이전트 `Gleo AI`(현대차 `더 뉴 그랜저` 탑재)를 얹은 인포테인먼트. 여기에 **자율주행 AI**(ADAS~로보택시), **Agentic AI**, **Fleet AI** 가 붙는다. 거점은 판교 본사·미국 서니베일·폴란드 바르샤바 셋이다.",
+    "business_confidence": "confirmed",
+    "business_sources": [
+      {"title": "42dot 공식 홈페이지", "url": "https://42dot.ai/", "publisher": "포티투닷", "summary": "'현대자동차그룹의 글로벌 소프트웨어 센터'. SDV 플랫폼(E/E Architecture·Vehicle OS·Infotainment)과 AI 솔루션(Autonomous Driving·Agentic·Fleet)"},
+      {"title": "포티투닷 송창현號, 현대차그룹 'SDV' 전환 가속", "url": "https://www.m-i.kr/news/articleView.html?idxno=1008791", "publisher": "매일일보", "summary": "2019년 설립, 2022년 8월 그룹 계열사 편입"}
+    ],
+    "scale": [
+      {"label": "2025년 실적", "value": "매출 277억원(전년 대비 +10.9%) / **영업손실 3,498억원**(+98.7%) / 당기순손실 3,639억원(+107.6%)", "as_of": "2025 회계연도", "confidence": "confirmed",
+       "sources": [{"title": "포티투닷 실적 추이", "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808", "publisher": "CEO스코어데일리", "summary": "R&D·인프라 투자 확대로 비용 급증"}]},
+      {"label": "2024년 영업손실", "value": "약 1,700억원", "as_of": "2024 회계연도", "confidence": "confirmed",
+       "sources": [{"title": "현대차 자율주행 포티투닷, 1700억 영업손…아직 '죽음의 계곡'", "url": "https://v.daum.net/v/20250326111703821?f=p", "publisher": "언론 보도", "date": "2025-03-26"}]},
+      {"label": "지분 구조", "value": "현대차 57% · 기아 38% (인수에 현대차 2,767억 + 기아 1,541억 = 총 4,308억원 투입)", "confidence": "confirmed",
+       "sources": [{"title": "포티투닷 실적 추이", "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808", "publisher": "CEO스코어데일리"}]},
+      {"label": "인원 규모", "value": "제2 판교테크노밸리 신사옥 A동을 통째로 써 **약 1,500명 수용** 예정", "confidence": "confirmed",
+       "sources": [{"title": "포티투닷 실적 추이", "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808", "publisher": "CEO스코어데일리"}]},
+      {"label": "거점", "value": "판교(본사, 모집중 24건) · 미국 서니베일(9건) · 폴란드 바르샤바(3건)", "as_of": "2026-09", "confidence": "confirmed",
+       "sources": [{"title": "42dot 공식 홈페이지", "url": "https://42dot.ai/", "publisher": "포티투닷"}]},
+      {"label": "경영진 교체", "value": "2025년 12월 창업자 송창현 대표 사임 → **박민우 사장**(전 테슬라·엔비디아)이 AVP본부장 겸 대표로 선임", "as_of": "2026", "confidence": "confirmed",
+       "sources": [
+         {"title": "현대차그룹, AVP본부장 겸 포티투닷 대표에 박민우 사장 영입", "url": "https://www.autoelectronics.co.kr/article/articleView.asp?idx=6628", "publisher": "오토일렉트로닉스"},
+         {"title": "현대차 SDV 사령탑 송창현 사장 사임", "url": "https://v.daum.net/v/20251204104653762", "publisher": "언론 보도", "date": "2025-12-04"}
+       ]}
+    ],
+    "revenue": [
+      {
+        "name": "그룹 내 개발 — 현대차·기아 차량에 들어가는 소프트웨어",
+        "how": "**이 회사의 돈은 시장이 아니라 모회사에서 온다.** 지분이 현대차 57%·기아 38%이고, 만드는 것이 그룹 차량에 탑재될 `Vehicle OS`·`E/E Architecture`·인포테인먼트다. 그래서 매출 277억은 회사 규모가 아니라 **그룹 내 정산 규모**에 가깝고, 영업손실 3,498억이 실제 투입된 개발비를 말해 준다. 지원자 입장에서 중요한 것은 하나다 — **여기서 만든 것의 성패는 매출이 아니라 '양산차에 실렸는가'로 판정된다.**",
+        "weight": "2025년 매출 277억 / 영업손실 3,498억",
+        "domains": ["SDV 플랫폼과 차량 OS", "차량 인포테인먼트와 음성 AI", "차량 소프트웨어의 배포와 보안(OTA)"],
+        "confidence": "confirmed",
+        "sources": [{"title": "포티투닷 실적 추이", "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808", "publisher": "CEO스코어데일리"}]
+      },
+      {
+        "name": "양산 탑재 제품 — Gleo AI",
+        "how": "회사가 유일하게 '차에 실렸다'고 공개적으로 내세우는 제품이다. 현대차 `더 뉴 그랜저` 에 탑재된 차량용 음성 AI 에이전트로, **연구 단계와 양산 단계를 가르는 기준선**이 된다. 그룹 안에서 이 회사의 존재 이유를 증명하는 자리이기도 하다.",
+        "domains": ["차량 인포테인먼트와 음성 AI"],
+        "confidence": "confirmed",
+        "sources": [{"title": "42dot 공식 홈페이지 — Gleo AI", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+      },
+      {
+        "name": "자율주행 — 아직 매출이 아니라 비용인 쪽",
+        "how": "ADAS 부터 로보택시까지를 목표로 하고, 창업기에는 **수요응답형 자율주행차 서비스**와 AI 물류·운송 관리 플랫폼을 했다. 영업손실이 2024년 1,700억 → 2025년 3,498억으로 커진 배경에 이 투자가 있다. **어느 수익원도 아직 이 도메인을 직접 떠받치지 못한다** — 도메인을 잘못 나눈 것이 아니라 **아직 돈이 되기 전 단계**라는 뜻이다.",
+        "domains": ["자율주행 인지·모델", "학습 데이터 파이프라인과 ML 플랫폼", "차량 소프트웨어 검증(SIL/HIL)"],
+        "confidence": "inferred",
+        "sources": [{"title": "포티투닷 송창현號, 현대차그룹 'SDV' 전환 가속", "url": "https://www.m-i.kr/news/articleView.html?idxno=1008791", "publisher": "매일일보"}]
+      }
+    ],
+    "domains": [
+      {
+        "name": "SDV 플랫폼과 차량 OS",
+        "why": "이 회사가 존재하는 이유다. 지금 차에는 제어기(ECU)가 수십~수백 개 들어가고 부품사마다 소프트웨어가 다르다. **SDV 는 그걸 소수의 고성능 컴퓨터로 모으고 그 위에 표준 OS 를 얹어, 기능을 소프트웨어로 정의하겠다는 것**이다. 회사가 `E/E Architecture` 와 `Vehicle OS` 를 나란히 내세우는 이유이고, 하드웨어 회사 안에서 소프트웨어 조직이 부딪히는 지점도 정확히 여기다.",
+        "what_to_know": [
+          "차량 E/E 아키텍처가 분산형(ECU 다수) → 도메인형 → 존(zonal)형으로 옮겨 가는 흐름",
+          "차량 네트워크: CAN 과 Automotive Ethernet 이 각각 무엇을 나르는가",
+          "AUTOSAR(Classic/Adaptive)가 무엇을 표준화하려는 것인가",
+          "실시간성 요구 — 브레이크 제어와 화면 렌더링이 같은 컴퓨터에 있을 때의 문제(하이퍼바이저·파티셔닝)",
+          "**양산차의 제약**: 부팅 시간, 전원 관리, 10년 이상의 수명, 리콜 비용"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "42dot — SDV 플랫폼", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+      },
+      {
+        "name": "차량 인포테인먼트와 음성 AI",
+        "why": "운전자가 실제로 만지는 층이고, 이 회사가 **양산 탑재까지 간 유일한 공개 사례**(`Gleo AI`, 더 뉴 그랜저)가 여기 있다. 스마트폰 앱과 다른 점은 **운전 중이라는 조건** — 화면을 오래 볼 수 없고, 음성이 첫 입력 수단이며, 응답이 느리면 위험해진다. 최근에는 LLM 기반 에이전트로 옮겨 가고 있어(`Agentic AI`), **차 안에서 도는 AI 의 지연·비용·오프라인 동작**이 실제 문제로 올라온다.",
+        "what_to_know": [
+          "IVI(In-Vehicle Infotainment) 시스템의 구성 — OS, 그래픽 스택, 앱 프레임워크",
+          "음성 에이전트의 파이프라인: 웨이크워드 → 음성 인식 → 의도 파악 → 차량 기능 호출",
+          "차 안에서 LLM 을 쓸 때의 제약: 네트워크가 끊기는 구간, 응답 지연, 토큰 비용",
+          "차량 기능을 에이전트가 호출한다는 것의 안전 경계 — 무엇까지 자동으로 실행해도 되나"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "42dot — Gleo AI", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+      },
+      {
+        "name": "자율주행 인지·모델",
+        "why": "회사가 `ADAS부터 로보택시까지` 를 사업 영역으로 적었고, 채용에서 `Physical AI Engineer (Model)`·`Senior Physical AI Engineer` 자리가 가장 본문이 길다(5,968자). **웹 서비스의 AI 와 결정적으로 다른 점은 틀렸을 때의 대가**다 — 추천이 틀리면 클릭이 줄지만 인지가 틀리면 사고가 난다. 그래서 모델 성능만큼 **실패 모드와 검증**이 중요해진다.",
+        "what_to_know": [
+          "센서 구성(카메라·라이다·레이더)과 각각이 못 보는 것, 그리고 센서 퓨전",
+          "인지 → 예측 → 계획 → 제어로 이어지는 자율주행 스택의 단계",
+          "**엣지 케이스**가 왜 이 분야의 본질인가 — 흔한 상황은 이미 풀렸다",
+          "차량에 실리는 모델의 제약: 정해진 연산 자원, 정해진 지연 시간, 결정성(같은 입력에 같은 출력)"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "42dot — Autonomous Driving AI", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+      },
+      {
+        "name": "학습 데이터 파이프라인과 ML 플랫폼",
+        "why": "채용에 `Senior AI Data Pipeline Engineer (Autonomous Driving)`·`Senior ML Platform Engineer`·`AI Infrastructure Engineer` 가 나란히 있다. 자율주행은 **차량이 하루에 만들어 내는 주행 데이터가 테라바이트 단위**라, 그걸 모으고 고르고 라벨링하고 학습에 넣는 파이프라인 자체가 하나의 제품이 된다. 이 도메인이 이 회사에서 **웹·데이터 커리어와 가장 가까운 입구**이기도 하다.",
+        "what_to_know": [
+          "대용량 주행 데이터의 수집·저장·검색 — 어떤 장면을 어떻게 다시 찾아내나",
+          "무엇을 학습에 쓸지 고르는 문제(데이터 선별) — 전부 쓰는 것은 불가능하다",
+          "라벨링 파이프라인과 자동 라벨링, 그리고 품질 관리",
+          "GPU 클러스터 위에서 학습 작업을 돌리는 플랫폼 — 스케줄링, 실험 추적, 재현성"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "42dot 채용 — AI Infrastructure / ML Platform / AI Data Pipeline Engineer", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+      },
+      {
+        "name": "차량 소프트웨어의 배포와 보안(OTA)",
+        "why": "**차는 앱스토어처럼 업데이트할 수 없다.** 달리는 중에는 안 되고, 실패하면 차가 멈추며, 공격자가 가짜 업데이트를 밀어 넣으면 사람이 다친다. 채용 공고에 `Sr. Staff Firmware Engineer (Embedded OTA & Uptane Security Platform)`·`(Secure Boot & Real Time Platform)` 이 있는 것이 이 문제의 무게를 보여 준다. **`Uptane` 은 차량 OTA 를 위해 만들어진 보안 프레임워크**다.",
+        "what_to_know": [
+          "OTA 업데이트의 안전 장치: A/B 파티션, 롤백, 전원 차단 대비",
+          "시큐어 부트가 무엇을 보장하고 무엇을 못 하나",
+          "Uptane 이 일반 소프트웨어 업데이트 보안(TUF)과 무엇이 다른가 — 차량 특유의 위협 모델",
+          "리콜과 OTA 의 관계 — 소프트웨어로 고칠 수 있는 결함과 아닌 것"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "42dot 채용 — Firmware Engineer (OTA·Secure Boot)", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+      },
+      {
+        "name": "차량 소프트웨어 검증(SIL/HIL)",
+        "why": "채용에 `Sr. Test Automation Engineer (SIL/HIL Infrastructure)` 가 있다. **차는 실물로 다 시험할 수 없다** — 위험하고, 느리고, 재현이 안 된다. 그래서 소프트웨어만 돌리는 시험(SIL)과 실제 제어기 하드웨어를 물려 돌리는 시험(HIL)을 자동화해, 같은 상황을 몇 천 번 반복한다. 웹의 CI 와 목적은 같지만 **다루는 것이 실물과 물리 시간**이라 성격이 다르다.",
+        "what_to_know": [
+          "SIL(Software-in-the-Loop)·HIL(Hardware-in-the-Loop)·시뮬레이션의 역할 분담",
+          "주행 시나리오를 어떻게 정의하고 회귀 시험으로 굳히나",
+          "재현성 — 같은 시나리오가 항상 같은 결과를 내게 만드는 것이 왜 어려운가",
+          "차량 소프트웨어의 기능안전(ISO 26262)이 검증에 요구하는 것"
+        ],
+        "confidence": "confirmed",
+        "sources": [{"title": "42dot 채용 — Test Automation Engineer (SIL/HIL)", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+      }
+    ],
+    "signals": [
+      {
+        "reading": "**매출이 아니라 투자로 도는 조직이다** — 지원자가 이 회사를 읽는 첫 번째 축",
+        "evidence": "2025년 매출 277억인데 영업손실 3,498억이다(2024년 손실 1,700억에서 두 배로 커졌다). 지분은 현대차 57%·기아 38%이고 인수에 4,308억이 들어갔다.",
+        "so_what": "스타트업의 손실과는 성격이 다르다 — 외부 투자자가 아니라 **모회사가 예산을 대는 개발 조직**에 가깝다. 그래서 이 회사에서 성과는 매출이 아니라 **'양산차에 실렸는가'** 로 판정된다. 면접에서도 '무엇을 출시까지 끌고 갔는가'가 '무엇을 연구했는가'보다 무겁게 읽힐 가능성이 높다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "경영진이 통째로 바뀌었고, 방향도 함께 바뀌는 중이다",
+        "evidence": "2025년 12월 창업자 송창현 대표가 사임하고, **전 테슬라·엔비디아 출신 박민우 사장**이 AVP본부장 겸 대표로 왔다. 이어 AVP본부에 `SDV플랫폼담당`·`HMI담당`이 신설되고, **실리콘밸리(SV)실장에 엔비디아 출신 제레미 마**, **SDV플랫폼개발센터장에 테슬라 출신 김동욱**이 선임됐다.",
+        "so_what": "**지금 지원하면 새 체제의 초기에 들어가는 것이다.** 좋게 보면 조직과 방향이 다시 짜이는 시기라 자리가 열려 있고, 반대로 보면 **작년 자료로 회사를 이해하면 틀린다.** 면접에서 조직 개편 이후의 목표를 묻는 것이 자연스럽고, 실제로 도움이 된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "미국·폴란드 거점 채용이 전체의 4분의 1이다 — 실리콘밸리 조직이 커지는 중으로 읽힌다",
+        "evidence": "모집중 46건의 근무지가 판교 24 · **서니베일 9** · 바르샤바 3(1건은 Remote)로 갈린다. 새 경영진에 `실리콘밸리(SV)실장` 자리가 신설됐다.",
+        "so_what": "**영어로 일하는 비중이 실제로 있다.** 공고가 영어로 쓰인 것이 많고(자체 채용페이지 37건), 팀이 시차를 두고 나뉘어 있다는 뜻이다. 국내 자리에 지원하더라도 **영문 문서와 비동기 협업**이 준비 항목이 된다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "**공고 46건 중 37건이 자체 채용페이지 수집분이라 경력 표기가 없다** — 목록만 보면 문의 넓이를 잘못 읽는다",
+        "evidence": "`career` 가 비어 있는 것이 37건이고, 표기가 있는 9건은 `2년 이상`~`10년 이상`으로 흩어져 있다. 제목에 `Senior`·`Sr. Staff` 가 붙은 것은 19건이다.",
+        "so_what": "**경력 요건은 본문에서 읽어야 한다.** 그리고 제목에 `Senior` 가 없는 자리(예: `System Framework Engineer` 2년↑, `Backend Engineer (Open Platform)` 3년↑, `3D Application Engineer`, `Embedded SW Engineer`)부터 확인하는 것이 효율적이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "정규직 전환형 인턴을 석·박사 대상으로 따로 뽑는다",
+        "evidence": "`[MS/PhD Intern] AI Engineer (정규직 전환형)`(본문 2,294자)이 모집중이다.",
+        "so_what": "**학위 과정 중인 지원자에게 열린 문이 있다.** 이 회사 채용이 전반적으로 시니어 중심인 것을 감안하면, 재학생·졸업 예정자에게는 이 경로가 현실적이다.",
+        "confidence": "inferred"
+      },
+      {
+        "reading": "자리 이름이 곧 회사의 문제 목록이다 — 웹 서비스 회사에는 없는 직군이 많다",
+        "evidence": "`IVI OS Engineer (Camera System / Network / Vehicle System)`, `Sr. Staff Firmware Engineer (Secure Boot & Real Time Platform)`, `(Embedded OTA & Uptane Security Platform)`, `Sr. Test Automation Engineer (SIL/HIL Infrastructure)`, `Software Update Engineer`, `3D Application Engineer (Automotive 3D Visualization)`.",
+        "so_what": "**서버·웹 커리어에서 넘어오려면 어느 계층으로 들어갈지부터 정해야 한다.** 가장 가까운 입구는 `Backend Engineer (Open Platform)`·`AI Data Pipeline`·`ML Platform` 쪽이고, IVI·펌웨어 쪽은 임베디드 경험이 전제된다.",
+        "confidence": "inferred"
+      }
+    ]
+  },
+
+  "salary": null,
+
+  "people": [],
+
+  "open_questions": [
+    "**`salary` 를 비웠다.** 비상장이라 사업보고서가 없고, 집계 서비스 수치도 이번 사이클에서 확인하지 못했다. **지어낸 숫자 하나가 나머지 전부를 못 믿게 만들기 때문에 통째로 비운다**(PROMPT 2°단계). 다음 보강에서 사람인 `view-inner-salary` 페이지(엑셈에서 열렸던 경로)와 잡플래닛·캐치를 확인한다",
+    "**`people` 을 비웠다 — 판단이 필요했던 자리다.** 신임 대표 **박민우 사장**(전 테슬라·엔비디아)의 선임은 언론으로 확인되지만, **그가 기술·조직에 대해 직접 말한 공개 자료를 찾지 못했다**(기사에 나오는 것은 기자의 요약이다). 전임 송창현 대표의 사임 메시지는 **사내 메일이 유출된 것**이라 PROMPT 2″단계의 '공개적으로 말한 것'에 해당하지 않아 쓰지 않았다. 새 경영진의 공개 발표·인터뷰가 나오면 그때 채운다",
+    "**2026년 현재의 인원 수를 확정하지 못했다** — 확인된 것은 신사옥 A동에 약 1,500명을 수용할 예정이라는 계획 수치뿐이다",
+    "**조직 개편 이후 포티투닷 법인과 현대차 AVP본부의 경계가 어떻게 정리됐는지 확인하지 못했다.** 대표가 AVP본부장을 겸하고 두 조직의 칸막이를 없앤다는 보도가 있어, **채용 주체와 실제 소속이 다를 수 있다.** 지원 전에 확인이 필요한 항목이라 `signals` 에도 적었다",
+    "**공고 46건 중 실제 자리 수를 아직 세지 않았다** — 자체 채용페이지(37건)와 원티드(9건)에 같은 자리가 겹칠 수 있다. 공고 사이클 첫 회차에서 대조한다"
+  ]
+}

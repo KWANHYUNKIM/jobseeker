@@ -279,6 +279,19 @@
       "postings": 4,
       "study_items": 33,
       "updated_at": "2026-09-03"
+    },
+    {
+      "slug": "42dot",
+      "name": "포티투닷",
+      "aliases": [
+        "포티투닷",
+        "42dot",
+        "포티투닷㈜"
+      ],
+      "status": "in_progress",
+      "postings": 0,
+      "study_items": 0,
+      "updated_at": "2026-09-03"
     }
   ]
 }
