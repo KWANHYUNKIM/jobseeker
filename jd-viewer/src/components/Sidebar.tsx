@@ -1,8 +1,6 @@
-import { useMemo } from 'react'
-import { emptyFilter, type FilterState } from '../lib/filter'
-import { districtCounts, regionCounts } from '../lib/region'
-import type { CompanySize, Job, Site } from '../types'
-import { CAREER_BUCKETS, COMPANY_SIZES } from '../types'
+import { emptyFilter, type FilterState, type Facets } from '../lib/filter'
+import type { Site } from '../types'
+import { CAREER_BUCKETS } from '../types'
 import { SidePanel, TechIcon } from './ui'
 
 const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev', 'remote', 'ats']
@@ -16,10 +14,11 @@ const SITE_LABEL: Partial<Record<Site, string>> = {
 interface Props {
   filter: FilterState
   setFilter: (f: FilterState) => void
-  /** 지역·규모 칩의 건수는 현재 선택에 따라 달라져서 여기서 직접 센다. */
-  jobs: Job[]
-  topStacks: { name: string; count: number }[]
-  roleCounts: { name: string; count: number }[]
+  /**
+   * 칩에 붙는 건수. 축마다 "자기 축을 뺀 나머지 필터"를 적용해 센 값이라
+   * (computeFacets), 숫자가 곧 "이걸 누르면 몇 건이 되는지"다.
+   */
+  facets: Facets
   totalCount: number
   filteredCount: number
   open: boolean
@@ -35,22 +34,11 @@ function toggle<T>(set: Set<T>, val: T): Set<T> {
   return next
 }
 
-export function Sidebar({ filter, setFilter, jobs, topStacks, roleCounts, totalCount, filteredCount, open, onClose, semantic }: Props) {
-  const regions = useMemo(() => regionCounts(jobs), [jobs])
-  const sizes = useMemo(() => {
-    const c = new Map<CompanySize, number>()
-    for (const j of jobs) {
-      if (j.company_size) c.set(j.company_size, (c.get(j.company_size) ?? 0) + 1)
-    }
-    return COMPANY_SIZES.map((name) => ({ name, count: c.get(name) ?? 0 })).filter((x) => x.count > 0)
-  }, [jobs])
+export function Sidebar({ filter, setFilter, facets, totalCount, filteredCount, open, onClose, semantic }: Props) {
+  const { regions, districts, sizes, roles, stacks, siteCount, careerCount } = facets
   // 시군구는 지역을 딱 하나 골랐을 때만 의미가 있다 — 여러 시도의 구를 한 줄에
   // 늘어놓으면 같은 이름(중구·남구)이 뒤섞여 무엇을 고른 건지 알 수 없다.
   const onlyRegion = filter.regions.size === 1 ? [...filter.regions][0] : null
-  const districts = useMemo(
-    () => (onlyRegion ? districtCounts(jobs, onlyRegion) : []),
-    [jobs, onlyRegion],
-  )
 
   // 지역을 바꾸면 앞서 고른 시군구는 뜻을 잃는다(다른 시도의 구다). 같이 비운다.
   const toggleRegion = (name: string) =>
@@ -135,6 +123,7 @@ export function Sidebar({ filter, setFilter, jobs, topStacks, roleCounts, totalC
           <Chip
             key={s}
             label={SITE_LABEL[s] ?? s}
+            count={siteCount.get(s) ?? 0}
             active={filter.sites.has(s)}
             onClick={() => setFilter({ ...filter, sites: toggle(filter.sites, s) })}
           />
@@ -145,7 +134,8 @@ export function Sidebar({ filter, setFilter, jobs, topStacks, roleCounts, totalC
         {regions.map((r) => (
           <Chip
             key={r.name}
-            label={`${r.name} (${r.count})`}
+            label={r.name}
+            count={r.count}
             active={filter.regions.has(r.name)}
             onClick={() => toggleRegion(r.name)}
           />
@@ -157,7 +147,8 @@ export function Sidebar({ filter, setFilter, jobs, topStacks, roleCounts, totalC
           {districts.map((d) => (
             <Chip
               key={d.name}
-              label={`${d.name} (${d.count})`}
+              label={d.name}
+              count={d.count}
               active={filter.districts.has(d.name)}
               onClick={() => setFilter({ ...filter, districts: toggle(filter.districts, d.name) })}
             />
@@ -170,7 +161,8 @@ export function Sidebar({ filter, setFilter, jobs, topStacks, roleCounts, totalC
           {sizes.map((s) => (
             <Chip
               key={s.name}
-              label={`${s.name} (${s.count})`}
+              label={s.name}
+              count={s.count}
               active={filter.sizes.has(s.name)}
               onClick={() => setFilter({ ...filter, sizes: toggle(filter.sizes, s.name) })}
             />
@@ -179,10 +171,11 @@ export function Sidebar({ filter, setFilter, jobs, topStacks, roleCounts, totalC
       )}
 
       <FilterGroup title="직군">
-        {roleCounts.map((r) => (
+        {roles.map((r) => (
           <Chip
             key={r.name}
-            label={`${r.name} (${r.count})`}
+            label={r.name}
+            count={r.count}
             active={filter.roles.has(r.name)}
             onClick={() => setFilter({ ...filter, roles: toggle(filter.roles, r.name) })}
           />
@@ -194,17 +187,19 @@ export function Sidebar({ filter, setFilter, jobs, topStacks, roleCounts, totalC
           <Chip
             key={c}
             label={c}
+            count={careerCount.get(c) ?? 0}
             active={filter.careers.has(c)}
             onClick={() => setFilter({ ...filter, careers: toggle(filter.careers, c) })}
           />
         ))}
       </FilterGroup>
 
-      <FilterGroup title={`기술스택 (상위 ${Math.min(40, topStacks.length)})`}>
-        {topStacks.slice(0, 40).map((s) => (
+      <FilterGroup title={`기술스택 (상위 ${Math.min(40, stacks.length)})`}>
+        {stacks.slice(0, 40).map((s) => (
           <Chip
             key={s.name}
-            label={`${s.name} (${s.count})`}
+            label={s.name}
+            count={s.count}
             icon={s.name}
             active={filter.stacks.has(s.name)}
             onClick={() => setFilter({ ...filter, stacks: toggle(filter.stacks, s.name) })}
@@ -247,13 +242,20 @@ function Chip({
   active,
   onClick,
   icon,
+  count,
 }: {
   label: string
   active: boolean
   onClick: () => void
   /** 이 칩이 가리키는 기술 이름. 로고가 있으면 앞에 붙는다. */
   icon?: string
+  /** 이 칩을 누르면 남는 건수. 안 넘기면 숫자를 붙이지 않는다. */
+  count?: number
 }) {
+  // 0건 칩은 흐리게. 사이트·지역·규모·경력처럼 목록이 고정된 축은 0건이어도 자리를
+  // 지키므로(computeFacets), 여기서 흐리게 만들어 "눌러도 빈 목록"임을 알린다.
+  // 직군·기술스택은 성격상 동적 목록이라 0건이면 애초에 오지 않는다.
+  const empty = count === 0 && !active
   return (
     <button
       onClick={onClick}
@@ -261,11 +263,17 @@ function Chip({
         'inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs border transition ' +
         (active
           ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent)'
-          : 'border-(--color-border) text-(--color-muted) hover:text-(--color-text) hover:border-(--color-accent)')
+          : 'border-(--color-border) text-(--color-muted) hover:text-(--color-text) hover:border-(--color-accent)') +
+        (empty ? ' opacity-40' : '')
       }
     >
       {icon && <TechIcon tech={icon} size={13} />}
       {label}
+      {count !== undefined && (
+        <span className={'tabular-nums ' + (active ? 'opacity-80' : 'opacity-60')}>
+          {count.toLocaleString()}
+        </span>
+      )}
     </button>
   )
 }

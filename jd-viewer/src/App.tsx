@@ -17,7 +17,7 @@ import { useSeo } from './lib/seo'
 import { breadcrumbJsonLd, jobDescription, jobJsonLd, jobKey, jobTitle, paths, TAB_SEO } from './lib/urls'
 import { absUrl, SITE_NAME } from './lib/seo'
 import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
-import { applyFilter, applyLocalFacets, emptyFilter, stackCounts, roleCounts } from './lib/filter'
+import { applyFilter, applyLocalFacets, computeFacets, emptyFilter } from './lib/filter'
 import type { Job } from './types'
 
 type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'reveng' | 'reposts'
@@ -102,8 +102,9 @@ function App() {
     // 지역·규모는 API 가 모르는 축이라 여기서 한 번 더 건다(순서는 그대로 둔다).
     return applyLocalFacets(found, filter)
   }, [hits, localFiltered, jobs, filter])
-  const allStacks = useMemo(() => stackCounts(jobs), [jobs])
-  const allRoles = useMemo(() => roleCounts(jobs), [jobs])
+  // 칩 건수는 필터를 타야 한다. 예전에는 jobs 전체로 셌더니, 목록은 '모집중만'
+  // 3천 건인데 사이드바는 마감까지 합친 1만 건을 말하고 있었다.
+  const facets = useMemo(() => computeFacets(jobs, filter), [jobs, filter])
 
   // 공고 상세는 공고별 제목·설명·JobPosting 구조화 데이터를 쓰고, 그 외 탭은
   // 탭 문구를 쓴다. 검색어가 걸린 목록은 색인하지 않는다(같은 목록의 무한 변형이라
@@ -248,9 +249,7 @@ function App() {
             <Sidebar
               filter={filter}
               setFilter={setFilter}
-              jobs={jobs}
-              topStacks={allStacks}
-              roleCounts={allRoles}
+              facets={facets}
               totalCount={jobs.length}
               filteredCount={filtered.length}
               open={filterOpen}
