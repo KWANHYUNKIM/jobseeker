@@ -4,42 +4,34 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **51개**(브리핑 48 + 중복 표시 3),
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **52개**(브리핑 48 + **중복 표시 4**),
 학습 399개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
 
-직전 회차: **`Manager, Backend Engineering (New Fintech Product)`**(ats).
-⚠️ **줄 겹침 0.96 — 차이가 딱 한 줄이었다.**
+직전 회차: **`Manager, Back-end Engineering (Rocket Pay)`**(ats) → **`duplicate_of` 로 표시.**
+⚠️ **줄 겹침 1.0** — 자격·우대의 **모든 줄**이 이미 쓴 wanted 공고(381757)에 들어 있고,
+**이쪽에는 담당업무가 아예 없다**(더 적은 정보). **정보가 하나도 사라지지 않으므로 묶었다.**
+양쪽에 링크를 걸었다.
 
-**`Director, Back-end Engineering (Rocket Pay)` 와 담당업무·우대사항이 100% 같고
-자격도 한 줄만 다르다**:
-- 여기: **`소프트웨어 개발 경험 10년 이상으로 매니저 관리를 포함한 관리 경험 2년 이상`**
-- 그쪽: **`15년 이상 … 3년 이상`**
-→ **신호 8번에 결정적 대비로 넣었다**: **같은 일에 두 직함이 걸려 있고 차이는 개발 5년 +
-관리 1년뿐이다.** `so_what` 에 **"직함으로 지원 여부를 정하지 않는다"** 를 더했다
-(쿠팡은 공고에 `직급과 담당 업무 범위는 … 변경될 수 있습니다` 라고도 적는다).
-양쪽에 링크를 걸고 **학습은 차이에서만 3개** 썼다.
-
-⚠️ **`duplicate_of` 로 묶지 않았다** — 자격 한 줄이 실제로 다르고, 그 한 줄이 **지원
-가능 여부를 가르는 정보**이기 때문이다. 중복으로 묶으면 그 차이가 사라진다.
+⚠️ **지난 회차와 대비된다** — `Manager (New Fintech Product)` 는 겹침 0.96 이었지만
+**연차 한 줄이 지원 판단을 갈라서 묶지 않았고**, 이번은 겹침 1.0 에 **새 정보가 0이라 묶었다.**
+기준은 유사도 숫자가 아니라 **"묶으면 사라지는 정보가 있는가"** 다.
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
-⚠️ **겹침이 높으면 차집합 양쪽을 뽑아 차이부터 확인**하고 **차이만 쓴다.**
+⚠️ **겹침이 높으면 차집합 양쪽을 뽑는다** — **한쪽이 비면 `duplicate_of`,
+차이가 남으면 그 차이만 쓴다.**
 ⚠️ **세 절 중 비거나 한쪽만 찬 것이 있으면 `full_jd` 를 읽는다**(네 가지 형태).
 ⚠️ **본문에 근무지·언어·이전 단서가 있으면 `fit` 첫 줄로.**
 ⚠️ **개발 직군이 아니면 `verdict` 첫 줄에 밝힌다.**
-**본문이 글자 그대로 같으면 `duplicate_of`**, **한 줄이라도 지원 판단을 가르는 차이가
-있으면 묶지 않고 차이만 쓴다.**
 
 ⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 최대 겹침 0.33).
 **제목은 `Senior Staff` 인데 본문 첫 줄은 `Principal Data Scientist`**. 요건은
 **Ph.D. 또는 석사 + 10년**, LLM·지식그래프·GNN·강화학습에 **MIP·동적계획법·메타휴리스틱**과
 **Gurobi/CPLEX/SCIP**, 이산사건 시뮬레이션(AnyLogic·Simio).
 
-⚠️ **차이만 쓸 대상 5건**: `Manager, Back-end Engineering (Rocket Pay)`(ats),
-`Senior, Back-end Engineer (Advertiser Platform)`(ats), `Senior Staff Back-end Engineer
-(Rocket Pay)`(ats), `Staff Backend Engineer (Orchestration Platform)`(ats),
-`Staff, Back-end Engineer (GOEX)`(ats).
+⚠️ **차이만 쓸 대상 4건**: `Senior, Back-end Engineer (Advertiser Platform)`(ats),
+`Senior Staff Back-end Engineer (Rocket Pay)`(ats),
+`Staff Backend Engineer (Orchestration Platform)`(ats), `Staff, Back-end Engineer (GOEX)`(ats).
 
 - **`people`**: 공개 발표·서명 있는 기술 글. **못 찾으면 빈 배열이 정상.**
 
@@ -57,6 +49,11 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **`duplicate_of` 의 기준은 유사도가 아니라 "묶으면 사라지는 정보"다.** 겹침 0.96 이어도
+  연차 한 줄이 지원 판단을 가르면 **묶지 않고 차이를 쓰고**, 겹침 1.0 에 새 정보가 없으면
+  **묶는다.** 두 사례가 연달아 나와 기준이 분명해졌다 — **차집합 양쪽을 뽑아 한쪽이
+  비는지 보면 된다.**
 
 - **차이가 한 줄이어도 그 한 줄이 지원 판단을 가르면 중복으로 묶지 않는다.** 쿠팡
   `Manager (New Fintech Product)` 와 `Director (Rocket Pay)` 는 담당업무·우대사항이 100%
