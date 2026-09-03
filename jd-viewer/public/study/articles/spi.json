@@ -1,0 +1,669 @@
+{
+ "slug": "spi",
+ "title": "SPI",
+ "title_en": "Serial Peripheral Interface",
+ "aliases": [
+  "SPI",
+  "MOSI",
+  "MISO",
+  "CPOL",
+  "CPHA"
+ ],
+ "category": "firmware",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-04",
+ "one_liner": "마스터가 클럭을 만들고 **보내는 동시에 받는**(전이중) 방식이다. 주소가 없어 장치마다 **CS 선 한 가닥**을 쓰고, 그 대가로 I²C 보다 자릿수 단위로 빠르다.",
+ "summary": "SPI 는 `i2c` 문서의 비교표에서 가운데 열로 비워 둔 자리다. I²C 가 \"선을 둘로 줄이고 규칙을 늘린\" 선택이라면 **SPI 는 정확히 반대를 골랐다** — 선을 넉넉히 쓰고 규칙을 없앴다. 클럭선(SCLK)·나가는 선(MOSI)·들어오는 선(MISO)이 따로 있어 **송수신이 동시에** 일어나고, 드라이버가 푸시풀이라 상승 시간에 매이지 않아 **수~수십 Mbit/s** 로 돈다. 주소 개념이 없는 대신 **장치마다 CS(칩 선택) 선을 하나씩** 내준다. 그런데 SPI 에는 **통일된 규격 문서가 없다.** 모토로라의 관행에서 굳어졌고, 그래서 신호 이름(`MOSI`/`SDI`, `CS`/`SS`/`NSS`)도 벤더마다 다르고 **클럭 극성·위상(CPOL/CPHA) 조합도 부품마다 지원 범위가 다르다.** 결과적으로 SPI 실무의 절반은 **부품 데이터시트의 타이밍도를 읽는 일**이고, 실패의 절반은 **모드를 잘못 골라 비트가 한 칸 밀리는 것**이다.",
+ "market": null,
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 시프트 레지스터 두 개를 맞물린 것",
+   "body": "```\n        MCU (마스터)                     장치 (슬레이브)\n        SCLK ──────────────────────────▶ SCLK   클럭은 마스터만 만든다\n        MOSI ──────────────────────────▶ SDI    마스터 → 슬레이브\n        MISO ◀────────────────────────── SDO    슬레이브 → 마스터\n        CS1  ──────────────────────────▶ CS     이 장치를 고른다 (LOW 활성)\n        CS2  ──▶ (다른 장치)\n```\n\nSPI 의 동작 모델은 **시프트 레지스터 두 개가 고리로 맞물린 것**이다. 클럭이 한 번 똑딱하면 마스터의 비트 하나가 나가고 슬레이브의 비트 하나가 들어온다. **8번 똑딱하면 한 바이트를 주고, 동시에 한 바이트를 받는다.**\n\n여기서 초보자가 가장 많이 막히는 사실이 나온다. **읽으려면 보내야 한다.** MISO 에 데이터가 흐르려면 클럭이 있어야 하고, 클럭은 마스터가 데이터를 보낼 때만 만들어진다. 그래서 \"응답만 받고 싶을 때\"도 **의미 없는 바이트(더미, 보통 `0xFF` 나 `0x00`)를 보내야** 한다.\n\n```c\nspi_transfer(0x9F);                 // 명령: JEDEC ID 를 달라\nid1 = spi_transfer(0xFF);           // 더미를 보내며 1바이트 받는다\nid2 = spi_transfer(0xFF);\n```\n\n그리고 **주소가 없다.** I²C 는 `0x68` 을 외쳐 장치를 고르지만, SPI 는 **그 장치의 CS 선을 LOW 로 내려** 고른다. 장치가 다섯 개면 CS 선이 다섯 개다 — 이것이 SPI 의 비용 전부이자, 규칙이 단순한 이유다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "kind": "why",
+   "heading": "왜 이렇게 생겼나 — I²C 와 반대편을 골랐다",
+   "body": "`i2c` 문서에서 \"선을 둘로 줄이면 문제가 줄줄이 따라온다\"고 썼다. **SPI 는 그 문제들을 애초에 만들지 않는 쪽을 골랐다.**\n\n| 문제 | I²C 의 답 | SPI 의 답 |\n|---|---|---|\n| 누구한테 말하나 | 주소 바이트 | **CS 선 한 가닥** |\n| 동시에 말하면 안 부서지나 | 오픈 드레인 (wired-AND) | **한 번에 한 슬레이브만 CS 를 내린다** |\n| 알아들었나 | ACK 비트 | **없다** |\n| 느린 장치가 섞이면 | 클럭 스트레칭 | **없다** (마스터가 속도를 맞춘다) |\n| 마스터가 둘이면 | 중재 | **없다** |\n\n표의 오른쪽 열에 '없다'가 셋이다. **SPI 는 프로토콜이 아니라 배선 규약에 가깝다.** 그리고 그 단순함이 속도를 만들었다.\n\n- **드라이버가 푸시풀이다.** 1 을 능동적으로 밀기 때문에 풀업 저항의 상승 시간에 매이지 않는다(→ `pull-up-resistor` 의 RC 계산이 SPI 에는 없다).\n- **클럭선이 있다.** 수신 측이 시간을 세지 않으므로 `uart` 의 보율 오차 문제가 아예 없다.\n- **전이중이다.** 송신과 수신이 다른 선을 쓴다.\n\n그 결과 흔한 부품에서 수십 MHz 가 나온다 — 예컨대 널리 쓰이는 시리얼 플래시(W25Q128JV)는 **최대 133MHz** 를 규격으로 적고 있다.\n\n**대가는 둘이다.** 첫째, **핀을 많이 쓴다**(3 + 장치 수). 둘째 — 그리고 이것이 더 아프다 — **통일된 규격 문서가 없다.** I²C 에는 NXP 의 UM10204 가 있고 RS-485 에는 TIA/EIA-485 가 있지만, SPI 는 1980년대 모토로라의 관행이 사실상의 표준이 된 것이다. 그래서:\n\n- 신호 이름이 갈린다 — `MOSI`/`SDI`/`DI`, `MISO`/`SDO`/`DO`, `CS`/`SS`/`NSS`/`CE`.\n- **클럭 모드 지원 범위가 부품마다 다르다.** 네 조합 중 둘만 지원하는 부품이 흔하다.\n- 바이트 순서·명령 체계·타이밍 제약이 전부 부품 문서에 따로 있다.\n\n> **그래서 SPI 를 안다는 것은 규격을 안다는 뜻이 아니라 데이터시트의 타이밍도를 읽을 수 있다는 뜻이다.** 이 문서가 모드 표를 앞세우는 이유다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    },
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  },
+  {
+   "id": "modes",
+   "kind": "how",
+   "heading": "CPOL / CPHA — 실패의 절반이 여기 있다",
+   "body": "클럭을 만드는 방식에 두 가지 선택이 있고, 조합이 네 개다.\n\n- **CPOL** (clock polarity) — 유휴 상태의 클럭이 LOW(0)인가 HIGH(1)인가.\n- **CPHA** (clock phase) — 데이터를 **첫 번째 가장자리**에서 샘플링하는가(0) **두 번째 가장자리**에서 하는가(1).\n\n요점은 하나다. **한쪽은 데이터를 내놓는 가장자리, 다른 한쪽은 읽는 가장자리를 서로 반대로 잡아야 한다.** 마스터와 슬레이브가 같은 조합을 쓰지 않으면 **읽는 순간에 데이터가 아직 준비되지 않았거나 이미 바뀌어 있다.**\n\n증상이 특이해서 알아보기 쉽다.\n\n- **전부 `0x00` 또는 `0xFF`** 만 읽힌다 (한 가장자리 차이로 아무것도 안 잡힌다).\n- **비트가 한 칸 밀린다** — 보낸 `0x9F` 가 `0x3E` 나 `0xCF` 로 읽힌다(1비트 좌/우 이동).\n- **간헐적으로만 맞는다** — 클럭을 낮추면 되고 올리면 깨진다(타이밍 여유 부족).\n\n**부품이 네 모드를 다 지원하지 않는다.** 예컨대 W25Q128JV 데이터시트는 **모드 0(0,0)과 모드 3(1,1)** 에서 동작한다고 적는다 — 둘 다 **상승 가장자리에서 데이터가 안정**되는 조합이고, 차이는 유휴 클럭이 LOW 인지 HIGH 인지뿐이다. 이런 부품에 모드 1·2 를 설정하면 아무리 배선을 확인해도 통신이 안 된다.\n\n> **순서는 늘 같다.** ① 부품 데이터시트에서 타이밍도(또는 \"SPI mode 0/3\" 같은 문장)를 찾는다 → ② MCU 쪽 SPI 를 그 모드로 설정한다 → ③ 그래도 안 되면 클럭을 아주 낮춰(예: 1MHz) 배선·모드 문제와 속도 문제를 가른다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    },
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  },
+  {
+   "id": "transaction",
+   "kind": "how",
+   "heading": "거래 한 번 — CS 를 내리고 올리는 사이가 한 단위다",
+   "body": "SPI 에는 START/STOP 조건이 없다. **CS 를 LOW 로 내린 순간부터 HIGH 로 올릴 때까지가 한 거래**이고, 그 안의 바이트 수는 부품이 정한다.\n\n```\nCS  ▔▔▔╲___________________________________╱▔▔▔\nSCLK    ┈┈┃┃┃┃┃┃┃┃ ┃┃┃┃┃┃┃┃ ┃┃┃┃┃┃┃┃ ┈┈\nMOSI    ┈┈[ 0x03 ][ 주소 3바이트 ][ 0xFF … ]┈┈   ← 읽기 명령 + 주소 + 더미\nMISO    ┈┈[  무시 ][    무시     ][ 데이터 ]┈┈   ← 여기부터 유효\n```\n\n**중간에 CS 를 올리면 거래가 끊긴다.** 플래시 읽기처럼 수십 KB 를 연속으로 받는 동작은 CS 를 계속 LOW 로 유지한 채 클럭만 계속 돌리는 것이고, 그래서 **CS 를 바이트마다 토글하는 코드는 대개 잘못됐다**(부품이 그걸 요구하는 경우도 있으니 데이터시트가 기준이다).\n\nMCU 쪽에서 CS 를 다루는 방법이 둘이라는 것도 알아 둘 만하다. **하드웨어가 자동으로** 관리하게 할 수도 있고(ST 의 NSS 처럼), **평범한 GPIO 로 직접** 내리고 올릴 수도 있다. 장치가 여러 개면 **GPIO 로 직접 관리하는 것이 보통**이다 — 하드웨어 CS 는 한 개뿐이고, 거래 경계를 코드가 정확히 통제할 수 있어야 하기 때문이다(→ `gpio-register` 의 원자적 쓰기).\n\n그리고 **슬레이브는 먼저 말할 수 없다.** 클럭이 없으면 아무것도 못 보내므로, \"데이터가 준비됐다\"를 알리려면 **별도의 인터럽트 핀**을 하나 더 쓴다. 센서 모듈에 `INT`·`DRDY` 핀이 붙어 있는 이유이고, 그 핀은 결국 외부 인터럽트로 받는다(→ `interrupt`).",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    },
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  },
+  {
+   "id": "multi",
+   "kind": "how",
+   "heading": "장치 여러 개 — CS 를 늘리거나 사슬로 잇는다",
+   "body": "**① 개별 CS (기본).** SCLK·MOSI·MISO 는 공유하고 CS 만 장치마다 따로 뺀다. 배선이 직관적이고 어떤 부품이든 되지만, **핀이 장치 수만큼 든다.**\n\n```\n장치 3개 → SCLK + MOSI + MISO + CS×3 = 6핀\n장치 8개 → 3 + 8 = 11핀   ← 핀 예산이 먼저 마른다\n```\n\n핀이 부족하면 **디코더**(3핀으로 8개 CS 생성)나 시프트 레지스터로 CS 를 확장한다.\n\n**② 데이지 체인.** 첫 장치의 출력을 다음 장치의 입력에 물려 **하나의 긴 시프트 레지스터**로 만든다. CS 는 하나로 공유한다. LED 드라이버·시프트 레지스터처럼 **이 방식을 지원하도록 설계된 부품**에서만 쓴다.\n\n```\nMOSI ─▶[장치1]─▶[장치2]─▶[장치3]─▶ MISO      CS 는 셋이 공유\n```\n\n장치가 셋이면 **3바이트를 한 번에 밀어 넣어야** 각자에게 자기 바이트가 도달한다. 즉 **하나만 갱신할 수 없고 늘 전체를 다시 써야** 한다. 대신 핀은 4개로 끝난다.\n\n**속도의 실제 상한을 정하는 것들.** 부품이 133MHz 를 지원한다고 그 속도가 나오는 게 아니다.\n\n- **슬레이브의 최대 클럭** — 데이터시트의 값. 여러 장치가 섞이면 **가장 느린 장치가 상한**이다(또는 장치별로 속도를 바꿔 가며 쓴다).\n- **배선 길이와 용량** — SPI 는 보드 안 전제다. 케이블로 빼면 신호가 무너진다.\n- **MCU 쪽 분주기** — SPI 클럭은 버스 클럭을 정수로 나눠 만들므로 원하는 값이 정확히 안 나올 수 있다(→ `stm32` 의 클럭 트리).\n- **셋업/홀드 시간** — 고속에서는 배선 지연이 타이밍 여유를 잡아먹는다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    },
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "kind": "limits",
+   "heading": "경계 — SPI 가 해 주지 않는 것",
+   "body": "**오류 검출이 전혀 없다.** ACK 도 패리티도 CRC 도 없다. 잡음으로 비트가 뒤집히면 그대로 값이 된다. 그래서 중요한 데이터에는 **위에 체크섬을 얹거나 읽은 값을 검증**해야 한다(플래시는 읽기 후 비교, 센서는 범위 검사). `i2c` 의 ACK 조차 없다는 점에서 오히려 더 벌거벗은 규약이다.\n\n**표준이 없어 호환성 문제가 생긴다.** 신호 이름, 모드 지원 범위, 명령 체계, 심지어 비트 순서(MSB/LSB 우선)까지 부품마다 다르다. **\"SPI 장치니까 붙으면 된다\"가 성립하지 않는다.**\n\n**거리가 짧다.** 보드 안 또는 수십 cm 가 전제다. 그 이상은 차동 방식(→ `rs485`)이나 다른 인터페이스로 간다.\n\n**핀을 먹는다.** 장치 수만큼 CS 가 늘어난다. 센서 여섯 개를 물릴 때 `i2c` 를 고르는 이유가 이것이다.\n\n**슬레이브가 주도할 수 없다.** 인터럽트 핀을 따로 두지 않으면 마스터가 계속 물어봐야 한다(폴링).\n\n**그리고 확장 규격이 따로 자랐다.** 데이터 선을 2·4·8개로 늘린 Dual/Quad/Octal SPI 가 플래시 메모리에서 표준처럼 쓰이고(같은 클럭에서 몇 배의 대역폭), 그 위에 **메모리를 코드 실행 공간처럼 매핑하는 방식**(XIP)까지 있다. 이름은 여전히 SPI 인데 **핀 수와 프로토콜이 사실상 다른 물건**이라, 부품 문서를 볼 때 어느 모드를 말하는지 확인해야 한다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    },
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "signals",
+   "kind": "glossary",
+   "caption": "네 개의 선 — 그리고 벤더마다 다른 이름",
+   "note": "**이름이 통일돼 있지 않다.** 데이터시트마다 다른 표기를 쓰므로, 회로도를 볼 때 '어느 방향의 선인가'로 판단해야 한다. 최근에는 주종(master/slave) 표현을 피해 controller/peripheral 계열 용어를 쓰는 문서도 있다",
+   "columns": [
+    "역할",
+    "흔한 이름",
+    "다른 표기",
+    "방향"
+   ],
+   "rows": [
+    [
+     "클럭",
+     "SCLK",
+     "SCK · CLK",
+     "마스터 → 슬레이브 (**마스터만 만든다**)"
+    ],
+    [
+     "마스터가 보내는 데이터",
+     "MOSI",
+     "SDI · DI · SI · COPI",
+     "마스터 → 슬레이브"
+    ],
+    [
+     "슬레이브가 보내는 데이터",
+     "MISO",
+     "SDO · DO · SO · CIPO",
+     "슬레이브 → 마스터"
+    ],
+    [
+     "칩 선택",
+     "CS",
+     "SS · NSS · CE · EN",
+     "마스터 → 슬레이브 (**대개 LOW 활성**)"
+    ],
+    [
+     "(선택) 준비 알림",
+     "INT · DRDY",
+     "IRQ · RDY",
+     "슬레이브 → 마스터 (**SPI 규약 밖 — GPIO 인터럽트**)"
+    ]
+   ]
+  },
+  {
+   "id": "modes-table",
+   "kind": "spec",
+   "caption": "CPOL / CPHA 네 조합 — 부품이 요구하는 것을 맞춘다",
+   "note": "'첫 번째 가장자리'는 CS 를 내린 뒤 오는 첫 클럭 변화를 말한다. **부품이 네 조합을 다 지원하지 않는 경우가 흔하다** — 예컨대 W25Q128JV 는 모드 0 과 3 만 쓴다(둘 다 상승 가장자리에서 데이터가 안정된다). 정확한 조건은 언제나 그 부품의 타이밍도가 기준이다",
+   "columns": [
+    "모드",
+    "CPOL",
+    "CPHA",
+    "유휴 클럭",
+    "데이터를 읽는 가장자리"
+   ],
+   "rows": [
+    [
+     "**0**",
+     "0",
+     "0",
+     "LOW",
+     "첫 번째 (상승)"
+    ],
+    [
+     "1",
+     "0",
+     "1",
+     "LOW",
+     "두 번째 (하강)"
+    ],
+    [
+     "2",
+     "1",
+     "0",
+     "HIGH",
+     "첫 번째 (하강)"
+    ],
+    [
+     "**3**",
+     "1",
+     "1",
+     "HIGH",
+     "두 번째 (상승)"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    },
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  },
+  {
+   "id": "multi-table",
+   "kind": "compare",
+   "caption": "장치를 여러 개 붙이는 두 방식",
+   "note": "데이지 체인은 **부품이 그렇게 설계돼 있어야** 쓴다(출력이 다음 장치의 입력으로 흐르는 구조). 아무 SPI 부품이나 사슬로 이을 수 있는 것이 아니다",
+   "columns": [
+    "",
+    "개별 CS",
+    "데이지 체인"
+   ],
+   "rows": [
+    [
+     "핀 수 (장치 N개)",
+     "3 + N",
+     "**4 (고정)**"
+    ],
+    [
+     "장치를 고르는 법",
+     "그 장치의 CS 만 LOW",
+     "고르지 않는다 — 순서로 도달"
+    ],
+    [
+     "하나만 갱신",
+     "가능",
+     "**불가능 — 전체를 다시 밀어 넣는다**"
+    ],
+    [
+     "아무 부품이나",
+     "**된다**",
+     "지원 부품만"
+    ],
+    [
+     "쓰는 자리",
+     "센서·플래시·SD카드 등 대부분",
+     "LED 드라이버·시프트 레지스터 등"
+    ]
+   ],
+   "confidence": "inferred",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    }
+   ]
+  },
+  {
+   "id": "real-part",
+   "kind": "spec",
+   "caption": "실제 부품의 SPI 규격 예 — W25Q128JV (시리얼 플래시)",
+   "note": "부품 데이터시트가 SPI 의 사실상 규격서라는 것을 보여 주는 예다. ⚠️ 인용한 PDF 는 제조사 사이트가 아닌 공개 미러이며(제조사 직접 링크는 확인하지 못했다), 값은 그 문서 기준이다",
+   "columns": [
+    "항목",
+    "값",
+    "그래서"
+   ],
+   "rows": [
+    [
+     "지원 SPI 모드",
+     "**모드 0 (0,0) 과 모드 3 (1,1)**",
+     "모드 1·2 로 설정하면 배선이 맞아도 통신이 안 된다"
+    ],
+    [
+     "최대 클럭",
+     "**133 MHz**",
+     "SPI 가 I²C 와 자릿수 단위로 갈리는 이유"
+    ],
+    [
+     "Dual / Quad I/O",
+     "데이터 선을 2·4개로 확장",
+     "같은 클럭에서 2·4배 대역폭 — 이름은 SPI 인데 핀 수가 다르다"
+    ],
+    [
+     "명령 체계",
+     "부품 고유 (읽기·쓰기·ID·소거 …)",
+     "SPI 규약에는 명령이 없다. **전부 부품 문서에 있다**"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  },
+  {
+   "id": "symptoms",
+   "kind": "glossary",
+   "caption": "증상 → 먼저 의심할 것",
+   "note": "SPI 는 ACK 가 없어 실패해도 아무 신호가 없다. 그래서 증상의 **모양**으로 원인을 좁히는 것이 가장 빠르다",
+   "columns": [
+    "증상",
+    "먼저 의심할 것",
+    "확인·조치"
+   ],
+   "rows": [
+    [
+     "전부 `0x00` 또는 `0xFF` 만 읽힌다",
+     "**모드(CPOL/CPHA) 불일치**, CS 가 안 내려감, MISO 미연결",
+     "데이터시트의 모드를 확인하고 클럭을 1MHz 로 낮춰 재시도"
+    ],
+    [
+     "**비트가 한 칸 밀린 값**이 온다",
+     "**CPHA 가 반대다**",
+     "모드 0↔1 (또는 2↔3) 을 바꿔 본다"
+    ],
+    [
+     "읽기 명령을 보냈는데 응답이 없다",
+     "**더미 바이트를 안 보냈다**",
+     "MISO 를 읽으려면 클럭이 필요하다 — `0xFF` 를 보내며 받는다"
+    ],
+    [
+     "낮은 클럭에서는 되고 올리면 깨진다",
+     "배선 길이·부하, 슬레이브 최대 클럭 초과",
+     "가장 느린 장치의 상한을 확인하고 배선을 짧게"
+    ],
+    [
+     "장치를 하나 더 붙이자 전부 이상해졌다",
+     "**CS 가 겹쳤다** (동시에 두 개가 LOW)",
+     "CS 핀별 상태를 확인. 유휴 시 전부 HIGH 인지 부팅 시점까지 포함해 본다"
+    ],
+    [
+     "MOSI 는 파형이 보이는데 MISO 가 조용하다",
+     "슬레이브가 선택되지 않았거나 전원·핀 배치 오류",
+     "CS·전원·MISO 배선과 부품 방향(핀 1 위치)을 확인"
+    ]
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "고속 ADC·SD카드·플래시·디스플레이처럼 데이터가 많이 흐른다",
+   "pick": "SPI",
+   "over": "I²C",
+   "why": "푸시풀 드라이버라 상승 시간에 매이지 않고 전이중이라 송수신이 겹친다. 흔한 부품에서 수십 MHz 가 나온다 — I²C 의 100k~400kHz 와 자릿수가 다르다",
+   "tradeoff": "장치마다 CS 핀이 늘고, 주소가 없어 배선이 곧 연결 구조가 된다. 오류 검출도 없다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  },
+  {
+   "situation": "센서 대여섯 개에서 값만 읽는다",
+   "pick": "I²C",
+   "over": "SPI",
+   "why": "SPI 는 장치 수만큼 CS 핀을 먹는다(3 + N). 센서 값은 초당 수십~수백 바이트라 속도가 문제되지 않으므로, 선 두 가닥에 주소로 여럿을 매다는 쪽이 이긴다",
+   "tradeoff": "속도가 낮고 풀업 계산·주소 충돌 관리가 따라온다(→ `i2c`)"
+  },
+  {
+   "situation": "같은 종류 장치를 여러 개 줄줄이 물린다 (LED 드라이버·시프트 레지스터)",
+   "pick": "데이지 체인 (지원 부품일 때)",
+   "over": "장치마다 CS 를 뽑기",
+   "why": "핀이 4개로 고정된다. 여러 장치를 하나의 긴 시프트 레지스터로 다루므로 갱신 코드도 단순해진다",
+   "tradeoff": "**하나만 갱신할 수 없다** — 늘 전체를 다시 밀어 넣는다. 그리고 그 구조를 지원하는 부품에서만 된다"
+  },
+  {
+   "situation": "슬레이브가 '데이터 준비됐다'를 알려야 한다",
+   "pick": "별도 인터럽트 핀(INT·DRDY) + 외부 인터럽트",
+   "over": "마스터가 상태 레지스터를 계속 폴링하기",
+   "why": "SPI 는 슬레이브가 먼저 말할 방법이 없다. 폴링은 버스와 CPU 를 계속 태우고, 늦게 읽으면 데이터를 놓친다",
+   "tradeoff": "핀이 하나 더 들고 ISR 이 늘어난다(→ `interrupt`)"
+  },
+  {
+   "situation": "통신이 되는지 안 되는지부터 가려야 한다",
+   "pick": "클럭을 아주 낮추고(예: 1MHz) ID 레지스터를 읽어 보기",
+   "over": "목표 속도로 바로 데이터 전송을 시도하기",
+   "why": "속도 문제와 모드·배선 문제를 분리해야 원인이 좁혀진다. 대부분의 부품에는 고정된 값을 돌려주는 ID 명령이 있어 **정답을 아는 상태로 시험**할 수 있다",
+   "tradeoff": "추가 단계처럼 보이지만, 이 절차를 건너뛰면 배선·모드·속도를 한꺼번에 의심하게 된다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "읽으려는데 계속 `0xFF` 만 돌아온다",
+   "why": "**더미 바이트를 보내지 않았다.** MISO 에 데이터가 흐르려면 클럭이 있어야 하고, 클럭은 마스터가 무언가를 보낼 때만 생긴다",
+   "fix": "`0xFF` 같은 의미 없는 값을 보내면서 반환값을 받는다. 대부분의 SPI API 가 `transfer(tx) -> rx` 형태인 이유가 이것이다",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    }
+   ]
+  },
+  {
+   "trap": "보낸 값과 다른, 한 비트 밀린 값이 읽힌다",
+   "why": "**CPHA 가 반대다.** 데이터를 내놓는 가장자리와 읽는 가장자리가 어긋나 한 클럭만큼 밀린다",
+   "fix": "모드를 0↔1 또는 2↔3 으로 바꿔 본다. 그 전에 데이터시트에서 그 부품이 지원하는 모드를 확인한다 — 네 개를 다 지원하지 않는 부품이 흔하다",
+   "sources": [
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    },
+    {
+     "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+    }
+   ]
+  },
+  {
+   "trap": "장치를 하나 더 붙였더니 둘 다 안 된다",
+   "why": "**CS 두 개가 동시에 LOW 다.** 두 슬레이브가 같은 MISO 선을 밀어 서로 싸운다. 부팅 직후 GPIO 가 초기화되기 전 구간에서도 생긴다",
+   "fix": "CS 핀을 출력으로 설정하고 **가장 먼저 HIGH 로 올린다.** 부팅 중 유휴를 보장하려면 외부 풀업을 단다(→ `pull-up-resistor`)"
+  },
+  {
+   "trap": "SD카드나 센서가 낮은 클럭에서만 동작한다",
+   "why": "**슬레이브의 최대 클럭을 넘겼거나** 배선이 길어 셋업/홀드 여유가 사라졌다. 여러 장치가 섞였다면 가장 느린 장치가 상한이다",
+   "fix": "각 부품의 최대 클럭을 확인해 가장 낮은 값에 맞추거나, 장치별로 클럭을 바꿔 가며 쓴다. 배선을 짧게 하고 스터브를 줄인다"
+  },
+  {
+   "trap": "블록을 연속으로 읽는데 중간부터 값이 깨진다",
+   "why": "**바이트마다 CS 를 올렸다.** 대부분의 부품은 CS 를 내린 동안을 한 거래로 보고 내부 주소 포인터를 이어 간다 — 중간에 올리면 거래가 끊긴다",
+   "fix": "블록 전체 동안 CS 를 LOW 로 유지한다. 부품이 바이트 단위 토글을 요구하는 경우도 있으니 **데이터시트의 거래 그림**이 기준이다",
+   "sources": [
+    {
+     "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+     "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+    }
+   ]
+  },
+  {
+   "trap": "부품 문서의 신호 이름이 회로도와 달라 배선을 반대로 했다",
+   "why": "**SPI 에는 통일 규격이 없다.** `MOSI`/`SDI`/`DI`, `MISO`/`SDO`/`DO` 처럼 같은 선이 다른 이름으로 적힌다. 슬레이브 쪽 문서는 자기 기준으로 `SDI`(입력)를 쓰는 경우가 많다",
+   "fix": "이름이 아니라 **방향**으로 판단한다 — 마스터의 출력은 슬레이브의 입력에 간다. 회로도에 방향을 화살표로 적어 두면 실수가 줄어든다"
+  }
+ ],
+ "terms": [
+  {
+   "term": "전이중",
+   "en": "full duplex",
+   "what": "송신과 수신이 서로 다른 선으로 동시에 일어나는 것. SPI 는 클럭 한 번에 1비트를 주고 1비트를 받는다"
+  },
+  {
+   "term": "CPOL / CPHA",
+   "en": "clock polarity / phase",
+   "what": "유휴 클럭의 값과 데이터를 읽는 가장자리를 정하는 두 비트. 조합이 네 개(모드 0~3)다"
+  },
+  {
+   "term": "CS",
+   "en": "chip select",
+   "what": "이 장치와 이야기하겠다는 표시. 대개 LOW 활성이고, 내린 동안이 한 거래다"
+  },
+  {
+   "term": "더미 바이트",
+   "en": "dummy byte",
+   "what": "읽기만 하고 싶을 때 클럭을 만들려고 보내는 의미 없는 값(`0xFF` 등)"
+  },
+  {
+   "term": "데이지 체인",
+   "en": "daisy chain",
+   "what": "장치의 출력을 다음 장치의 입력에 물려 하나의 긴 시프트 레지스터로 만드는 구성"
+  },
+  {
+   "term": "MSB 우선",
+   "en": "MSB first",
+   "what": "상위 비트부터 보내는 순서. SPI 는 대개 MSB 우선이지만 설정 가능한 부품도 있다(UART 는 LSB 우선 — → `uart`)"
+  },
+  {
+   "term": "Quad SPI",
+   "en": "QSPI",
+   "what": "데이터 선을 4개로 늘려 같은 클럭에서 4배 대역폭을 내는 확장. 플래시 메모리에서 표준처럼 쓰인다"
+  },
+  {
+   "term": "셋업 / 홀드 시간",
+   "en": "setup / hold time",
+   "what": "클럭 가장자리 전후로 데이터가 안정돼 있어야 하는 시간. 고속에서 배선 지연이 이 여유를 잡아먹는다"
+  }
+ ],
+ "drills": [
+  {
+   "task": "**네 모드를 손으로 그린다.** 바이트 `0xA5`(1010 0101)를 모드 0·1·2·3 으로 각각 전송하는 파형을 종이에 그리고, ① 클럭 유휴 상태 ② 데이터가 바뀌는 가장자리 ③ 읽는 가장자리를 표시한다. 그다음 **모드 0 으로 보낸 것을 모드 1 로 읽으면** 어떤 값이 나오는지 비트 단위로 따라간다",
+   "done_when": "잘못된 모드로 읽었을 때 나오는 값을 계산으로 얻을 수 있고, '한 비트 밀림'이라는 증상이 왜 생기는지 파형으로 설명할 수 있다",
+   "why": "SPI 실패의 절반이 모드다. 파형을 한 번 그려 보면 로직 분석기 화면을 읽을 수 있게 된다",
+   "no_hardware": "처음부터 장비가 필요 없다 — 종이와 펜이면 된다",
+   "hours": 1
+  },
+  {
+   "task": "**플래시 ID 읽기 거래를 바이트로 설계한다.** W25Q 계열의 JEDEC ID 명령(`0x9F`)을 쓰는 거래를 ① CS 내림 ② 보낼 바이트 순서 ③ 받을 바이트 위치 ④ CS 올림 으로 적고, 각 단계에서 MOSI·MISO 에 실제로 무엇이 실리는지 표로 만든다. 데이터시트에서 기대되는 ID 값도 함께 적는다",
+   "done_when": "'정답을 아는 상태로 시험하는' 절차가 왜 디버깅의 첫 단계인지 설명할 수 있고, 더미 바이트가 어디에 몇 개 필요한지 답할 수 있다",
+   "why": "실무에서 새 SPI 부품을 붙일 때 가장 먼저 하는 일이 이것이다. 이 표가 있으면 코드가 세 줄로 줄어든다",
+   "no_hardware": "데이터시트만 있으면 된다 — 보드가 없어도 표는 완성된다",
+   "hours": 1
+  },
+  {
+   "task": "**핀 예산을 계산한다.** 센서 3개 + 플래시 1개 + 디스플레이 1개를 붙이는 회로를 ① 전부 SPI(개별 CS) ② 전부 I²C ③ 섞어 쓰기(고속은 SPI, 센서는 I²C)로 각각 설계해 필요한 핀 수와 예상 병목을 표로 비교한다",
+   "done_when": "세 구성의 핀 수를 숫자로 답할 수 있고, 왜 실무 보드가 대개 ③번 형태인지 설명할 수 있다",
+   "why": "'SPI vs I²C'는 취향 문제가 아니라 핀과 대역폭의 산수다. 이 계산이 보드 설계의 첫 결정이다",
+   "no_hardware": "장비가 필요 없다 — 종이 계산으로 끝난다",
+   "hours": 1
+  }
+ ],
+ "checks": [
+  "SPI 에서 '읽으려면 보내야 한다'는 말은 무슨 뜻인가?",
+  "장치를 고르는 방법이 I²C 와 어떻게 다른가? 그 차이가 핀 수에 어떻게 나타나나?",
+  "CPOL 과 CPHA 는 각각 무엇을 정하나? 모드가 어긋나면 어떤 증상이 나오나?",
+  "부품 데이터시트가 SPI 의 사실상 규격서인 이유는?",
+  "블록을 연속으로 읽을 때 CS 를 계속 LOW 로 유지해야 하는 이유는?",
+  "슬레이브가 '데이터 준비됨'을 알리려면 무엇이 더 필요한가? 왜 SPI 만으로는 안 되나?"
+ ],
+ "evidence": [
+  {
+   "quote": "• 시리얼 통신 프로토콜(UART, SPI, I2C) 구현 경험",
+   "from": "posting",
+   "where": "디하이브 — 임베디드 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/366867",
+   "what_it_shows": "세 방식을 묶어 요구한다 — **고를 줄 아는가**를 묻는 문장이고, 이 문서의 핀 예산 실습이 그 답이다"
+  },
+  {
+   "quote": "• SPI, I2C, CAN, UART 등 하드웨어 인터페이스 및 통신 프로토콜에 대한 이해",
+   "from": "posting",
+   "where": "메디인테크 — 의료기기 펌웨어 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/334864",
+   "what_it_shows": "`이해` 가 붙는다. 라이브러리 호출이 아니라 모드·거래 구조를 아는지 묻는다는 신호"
+  },
+  {
+   "quote": "• SPI, UART, I2C 등 통신 인터페이스 제어 경험",
+   "from": "posting",
+   "where": "웰리시스 — 임베디드 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/335324",
+   "what_it_shows": "의료·계측 장비에서 고속 ADC 를 SPI 로 읽는 구성이 흔하다 — 이 문서의 첫 `when_to_use` 가 그 자리다"
+  },
+  {
+   "quote": "• • 하드웨어 회로 분석 및 드라이버 개발(I2C, SPI, UART 등)",
+   "from": "posting",
+   "where": "신성테크 — 펌웨어 개발자 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/370243",
+   "what_it_shows": "**드라이버 개발**이 업무다. SPI 부품 드라이버는 곧 데이터시트의 명령 표를 코드로 옮기는 일이고, 규격 문서가 없기 때문에 그렇다"
+  },
+  {
+   "quote": "• 센서 하드웨어 인터페이스(UART, SPI, I2C, CAN) 프로그래밍 경험 보유자",
+   "from": "posting",
+   "where": "니어스랩 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/356279",
+   "what_it_shows": "센서 쪽에서 SPI 와 I²C 가 함께 나온다 — 같은 보드에서 둘을 나눠 쓰는 구성이 표준이라는 뜻이다"
+  }
+ ],
+ "related": [
+  {
+   "slug": "i2c",
+   "how": "정반대의 선택. 비교표의 가운데 열을 이 문서가 채웠고, 풀업·주소·중재 이야기는 거기 있다"
+  },
+  {
+   "slug": "uart",
+   "how": "클럭선이 없는 쪽. 보율 오차 문제가 SPI 에는 아예 없는 이유가 거기서 대비된다"
+  },
+  {
+   "slug": "stm32",
+   "how": "SPI 클럭이 버스 클럭의 분주로 만들어진다 — 원하는 속도가 정확히 안 나오는 이유가 클럭 트리에 있다"
+  },
+  {
+   "slug": "interrupt",
+   "how": "슬레이브가 먼저 말할 수 없어 INT·DRDY 핀을 쓰는데, 그 핀을 받는 것이 외부 인터럽트다"
+  },
+  {
+   "slug": "pull-up-resistor",
+   "how": "SPI 에는 풀업이 필요 없는 이유(푸시풀), 그리고 CS 유휴를 보장하려 풀업을 다는 예외"
+  }
+ ],
+ "open_questions": [
+  "**SPI 는 통일된 규격 문서가 없다.** 이 문서의 모드 표와 프레임 설명은 MCU 레퍼런스 매뉴얼(RM0090)의 SPI 장과 실제 부품 데이터시트를 근거로 썼다 — `i2c`(UM10204)·`rs485`(TIA/EIA-485)처럼 가리킬 표준 원문이 없다는 사실 자체가 이 낱말의 성질이다",
+  "인용한 W25Q128JV 데이터시트 URL 은 **제조사 사이트가 아니라 공개 미러**다. 제조사 직접 링크를 이번 사이클에 확인하지 못했고, 값(모드 0/3, 133MHz)은 그 문서 기준이다. 표를 고칠 때는 제조사 페이지에서 최신 리비전을 확인한다",
+  "Dual/Quad/Octal SPI 와 XIP 는 이름만 남기고 다루지 않았다 — 핀 구성과 명령 체계가 사실상 다른 물건이라 별도 문서가 필요하다. 아직 큐에 올리지 않았다",
+  "`market` 은 비어 있다. `tech_relations.json` 은 SPI 를 추적 기술로 세지 않는다 — 대신 모집중 공고 5건을 `evidence` 로 받쳤다"
+ ],
+ "sources": [
+  {
+   "title": "RM0090 — STM32F4 Reference manual (SPI 절)",
+   "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+   "publisher": "STMicroelectronics",
+   "kind": "datasheet",
+   "summary": "CPOL/CPHA 조합과 프레임 형식, NSS(칩 선택) 관리 방식이 이 문서의 SPI 장에 있다. SPI 는 통일 규격 문서가 없어 MCU·부품 문서가 사실상의 1차 자료다"
+  },
+  {
+   "title": "W25Q128JV — 3V 128M-bit Serial Flash Memory with Dual/Quad SPI (데이터시트)",
+   "url": "https://files.pine64.org/doc/datasheet/pine64/w25q128jv%20spi%20revc%2011162016.pdf",
+   "publisher": "Winbond",
+   "kind": "datasheet",
+   "summary": "실제 부품의 SPI 규격 예 — 지원 모드가 0 과 3 뿐이고 최대 133MHz, Dual/Quad I/O 를 갖는다. ⚠️ 이 URL 은 제조사 사이트가 아니라 공개 미러다(제조사 직접 링크는 이번 사이클에 확인하지 못했다)"
+  }
+ ]
+}

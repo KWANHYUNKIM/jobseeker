@@ -212,6 +212,24 @@
    "updated_at": "2026-09-04"
   },
   {
+   "slug": "spi",
+   "title": "SPI",
+   "category": "firmware",
+   "level": "core",
+   "status": "done",
+   "one_liner": "마스터가 클럭을 만들고 **보내는 동시에 받는**(전이중) 방식이다. 주소가 없어 장치마다 **CS 선 한 가닥**을 쓰고, 그 대가로 I²C 보다 자릿수 단위로 빠르다.",
+   "aliases": [
+    "SPI",
+    "MOSI",
+    "MISO",
+    "CPOL",
+    "CPHA"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "stm32",
    "title": "STM32",
    "category": "firmware",
