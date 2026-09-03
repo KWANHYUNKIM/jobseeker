@@ -841,6 +841,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "sse",
+      "title": "SSE (서버 전송 이벤트)",
+      "category": "framework",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**서버가 브라우저에 계속 밀어 주는 한 방향 통로**다. 그냥 HTTP 응답을 안 끊고 이어 보내는 것이라서, **재접속과 이어받기가 규격에 들어 있다** — LLM 답변이 한 글자씩 나오는 그 방식이다.",
+      "aliases": [
+        "SSE",
+        "Server-Sent Events",
+        "EventSource",
+        "서버 전송 이벤트",
+        "스트리밍 응답"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
