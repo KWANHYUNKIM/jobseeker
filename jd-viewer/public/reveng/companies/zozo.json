@@ -155,7 +155,492 @@
       "summary": "회사가 스스로 거는 서비스 목록 — **ZOZOTOWN**(zozo.jp) · **WEAR**(wear.jp) · **MS(Multi-Size)** · **ZOZOUSED** · **Fulfillment by ZOZO** · **elove by ZOZO**. ⚠️ 이 페이지에는 각 서비스의 설명도 수익 모델도 없다."
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "fuzzy-search",
+      "name": "애매한 검색 (WEAR)",
+      "domain": "애매한 말로 찾기",
+      "updated_at": "2026-09-04",
+      "business": {
+        "why": "**태그가 붙지 않은 투고는 검색에 존재하지 않는다.** WEAR 의 기존 검색은 사람이 붙인 태그와 글자가 겹쳐야 걸렸는데, 패션에서 찾는 사람은 브랜드도 상품명도 모르고 표기가 흔들리며 오타를 낸다. 재고 대부분이 남의 것인 이 회사에서 **못 찾은 상품은 없는 상품과 같다**(뒷문장은 이 사이트의 해석이다). 애매한 검색은 태그 바깥을 메우려고 태그 검색 **옆에** 세운 경로다.",
+        "metrics": [
+          {
+            "label": "벡터 크기",
+            "value": "1024차원 · fp32 기준 투고 1건당 약 4KB",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "label": "색인 크기",
+            "value": "13.2GB → 5.2GB (60.6% 감소)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "label": "양자화 정확도",
+            "value": "fp32 대비 상위 20건 중복률 95% 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "label": "derived_source 대가",
+            "value": "검색 시 약 20ms 오버헤드",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "label": "리인덱싱 직후 지연",
+            "value": "평상시 약 200ms → 최대 약 20초 · warmup 후 p99 평균 369ms",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "label": "갱신 주기",
+            "value": "차분 데이터를 10분 간격으로 투입",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "태그 검색의 바깥을 보게 됐을 때",
+          "thought": "태그를 더 잘 붙이게 하는 길과, 태그 없이도 찾게 하는 길이 있었다. 앞쪽은 투고하는 사람의 손을 빌려야 하고 그 손은 통제할 수 없다. 그래서 **찾는 쪽에서 푸는 문제로 옮겼다**고 보인다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "양자화 방식을 고를 때",
+          "thought": "회사가 기준을 직접 적었다 — **\"정확도와 도입의 손쉬움의 균형을 중시\"**. 더 세게 줄이는 방법이 있는 줄 알면서 덜 줄이는 쪽을 골랐다는 뜻이다. **사전학습이 필요한 방법은 그 자체로 운영 부담**이라는 판단이 뒤에 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "리인덱싱 직후 지연이 20초까지 튀는 것을 봤을 때",
+          "thought": "평상시 200ms 짜리가 20초가 되는 것은 느린 것이 아니라 **없는 것**이다. 그런데 원인이 코드가 아니라 **HNSW 그래프가 아직 메모리에 안 올라온 상태**라, 고칠 자리가 질의가 아니라 **순서**였다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "좋아졌는지 판정할 방법을 정할 때",
+          "thought": "**\"nDCG 와 같은 정량 지표에 의한 자동 평가가 아니라 목시에 의한 정성 평가로 진행했다\"**고 적는다. 애매한 검색은 정답 집합을 만들기 어렵다 — '이런 느낌' 에 대한 정답을 누가 정하느냐가 먼저 걸린다(뒷문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "투고(post)",
+            "what": "WEAR 의 코디 게시물. 검색이 돌려주는 단위이자 벡터 하나가 대표하는 것"
+          },
+          {
+            "name": "태그",
+            "what": "사람이 투고에 붙인 라벨. 기존 검색의 유일한 열쇠였고, 지금은 폴백 경로의 근거로 남았다"
+          },
+          {
+            "name": "임베딩 벡터",
+            "what": "투고 하나를 1024차원 수치로 옮긴 것. 원본의 파생물이지 원본이 아니다"
+          },
+          {
+            "name": "인덱스 별칭(alias)",
+            "what": "검색이 바라보는 이름. 리인덱싱은 새 인덱스를 다 준비한 뒤 이 이름만 갈아 끼운다"
+          }
+        ],
+        "invariants": [
+          "**검색은 항상 무언가를 돌려준다.** 애매한 검색이 0.5초 안에 답하지 못하면 기존 태그 검색 결과가 대신 나간다 — 빈 화면이나 오류가 사용자에게 가지 않는다.",
+          "**별칭이 가리키는 인덱스는 warmup 이 끝난 인덱스다.** 준비가 덜 된 인덱스로 트래픽이 넘어가지 않도록 별칭 전환이 마지막 단계다.",
+          "**벡터는 투고의 파생물이다.** 원본 투고가 지워지면 색인에서도 지운다 — 10분 간격 워크플로에 '삭제된 투고를 인덱스에서 제거' 단계가 들어 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "질의를 형태소 분석한다 (Sudachi · Kuromoji)",
+            "why": "일본어는 띄어쓰기가 없어 무엇이 한 낱말인지부터 정해야 전문검색이 성립한다"
+          },
+          {
+            "step": "hybrid query 를 구성한다",
+            "why": "전문검색과 벡터검색을 따로 돌려 앱에서 합치는 대신, 검색 엔진 한 번의 호출로 묶기 위해"
+          },
+          {
+            "step": "`multi_match`(BM25)와 `neural`(k-NN)을 나란히 실행한다",
+            "why": "글자가 겹치는 것과 뜻이 가까운 것은 다른 질문이고, 애매한 검색은 둘 다 필요하다"
+          },
+          {
+            "step": "normalization-processor 가 두 점수를 min_max 로 0~1 에 맞춘 뒤 가중 산술평균으로 합친다",
+            "why": "회사 표현으로 **\"스케일이 다른 점수를 맞춰 통합하기 위한 구조\"** 다 — BM25 점수와 코사인 유사도는 애초에 같은 자로 잴 수 없다"
+          },
+          {
+            "step": "min_score 로 점수가 낮은 것을 잘라낸다",
+            "why": "벡터 검색은 무엇을 넣어도 '가장 가까운 것' 을 돌려주므로, 관련 없는 결과를 끊어 줄 선이 따로 필요하다"
+          },
+          {
+            "step": "인기도 스코어로 다시 정렬한다",
+            "why": "관련성이 비슷한 투고들 사이에서는 사람들이 실제로 본 것이 앞에 오는 편이 낫다"
+          },
+          {
+            "step": "응답한다. 여기까지 0.5초를 넘기면 기존 태그 검색 결과로 대신한다",
+            "why": "애매한 검색은 있으면 좋은 것이지 없으면 안 되는 것이 아니다 — 느려지는 값으로 검색 전체를 멈출 수는 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "태그 검색 자체를 갈아엎을 것인가, 옆에 다른 경로를 세울 것인가",
+            "chosen": "태그 검색은 그대로 두고 애매한 검색을 **별도 경로로** 붙였다. 그리고 그 태그 검색을 **폴백 대상으로** 남겼다",
+            "alternatives": [
+              "태그 검색을 벡터 검색으로 대체",
+              "태그 검색에 동의어·오타 사전을 계속 덧대기"
+            ],
+            "tradeoff": "경로가 둘이 되어 **같은 질의가 어느 쪽에서 답했느냐에 따라 결과와 순서가 달라진다.** 사용자는 그 차이를 알 수 없다. 대신 새 경로가 죽어도 검색이 통째로 죽지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "전문검색과 벡터검색을 어디서 합칠 것인가",
+            "chosen": "OpenSearch 의 **hybrid query** 안에서 합친다. normalization-processor 가 **min_max 로 0~1 정규화한 뒤 가중 산술평균**으로 최종 점수를 만든다",
+            "alternatives": [
+              "두 질의를 따로 던지고 애플리케이션에서 합치기",
+              "한쪽만 쓰기"
+            ],
+            "tradeoff": "합치는 규칙이 **검색 엔진 설정 안으로 들어간다.** 가중치를 바꾸려면 인덱스 파이프라인을 건드려야 하고, **점수 분포가 바뀌면 그 규칙이 조용히 어긋난다** — 실제로 버전 업 때 그 일이 났다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "두 점수 중 어느 쪽에 무게를 둘 것인가",
+            "chosen": "**전문검색 쪽에 더 큰 가중치**를 뒀다",
+            "alternatives": [
+              "균등 가중",
+              "벡터 쪽 우위"
+            ],
+            "tradeoff": "**의미는 맞는데 글자가 안 겹치는 결과가 뒤로 밀린다** — 애매한 검색을 붙인 이유가 바로 그 결과들인데도 그렇다. 정확히 친 사람의 기대를 깨지 않는 쪽을 먼저 지킨 셈이다(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "벡터를 무엇으로 줄일 것인가",
+            "chosen": "**스칼라 양자화(SQfp16)** — fp32 대비 **50% 감소**, **사전학습이 필요 없고 매핑의 `encoder` 설정만 추가**하면 된다",
+            "alternatives": [
+              "프로덕트 양자화",
+              "이진 양자화",
+              "줄이지 않고 fp32 유지"
+            ],
+            "tradeoff": "더 세게 줄일 수 있는 두 방법을 버렸으니 **줄일 수 있는 만큼 다 줄이지는 않았다.** 회사가 든 기준은 **\"정확도와 도입의 손쉬움의 균형\"** 이다 — 사전학습이 필요한 방법은 그 자체로 운영에 얹히는 일이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "벡터를 `_source` 에도 그대로 둘 것인가",
+            "chosen": "**derived_source** 를 켠다 — **\"벡터 데이터가 `_source` 에 중복 저장되지 않고, 필요하면 k-NN 검색용 자료구조에서 도출된다\"**",
+            "alternatives": [
+              "`_source` 에 벡터를 그대로 저장"
+            ],
+            "tradeoff": "**검색 시 약 20ms 오버헤드**가 붙는다. 저장 공간을 시간으로 바꾼 거래이고, 이 20ms 는 뒤에 나오는 0.5초 예산 안에서 쓰인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "리인덱싱 직후의 첫 질의를 누가 맞을 것인가",
+            "chosen": "별칭을 갈아 끼우기 **전에** warmup API 로 HNSW 그래프를 미리 올린다. 순서는 **새 인덱스 생성 → 데이터 투입 → refresh → warmup API → 별칭 전환** 이다",
+            "alternatives": [
+              "별칭을 먼저 바꾸고 첫 사용자 질의가 그래프를 데우게 두기",
+              "리인덱싱을 트래픽이 적은 시간에만 하기"
+            ],
+            "tradeoff": "순서를 지키는 값이 **기다림**이다. **\"HNSW 그래프 구축과 flush/merge 는 Bulk API 완료 후에도 비동기로 계속된다\"** 라서 **\"Bulk API 의 완료 ≠ warmup 실행 가능\"** 이고, warmup 이 대상으로 삼는 것은 **\"flush/merge 가 완료되어 디스크에 영속화된 그래프뿐\"** 이다. 즉 언제 warmup 을 불러도 되는지를 따로 확인해야 한다. 그렇게 해도 **스파이크를 완전히 막지는 못한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "그래도 늦으면 사용자에게 무엇을 줄 것인가",
+            "chosen": "**애매한 검색 전용 OpenSearch 클라이언트에 0.5초 타임아웃**을 걸고, 넘으면 **기존 태그 검색 결과를 돌려준다.** 실패는 **감시 기반에 기록**한다",
+            "alternatives": [
+              "타임아웃 없이 기다리기",
+              "오류를 그대로 화면에 내기",
+              "전체 검색을 함께 실패시키기"
+            ],
+            "tradeoff": "**품질 저하가 장애로 보이지 않는다.** 사용자는 자기가 폴백을 받았다는 사실을 모르고, 화면은 정상으로 보인다. 그래서 **감시 기록이 이 경로가 나빠지고 있다는 유일한 단서**가 된다(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "좋아졌는지를 무엇으로 판정할 것인가",
+            "chosen": "**목시(目視)에 의한 정성 평가** — 평가용 질의를 준비하고 검색 결과를 스프레드시트에 늘어놓아 **키워드와의 관련성과 표시 순서의 위화감을 팀이 함께 확인**했다",
+            "alternatives": [
+              "nDCG 같은 정량 지표에 의한 자동 평가"
+            ],
+            "tradeoff": "**회귀를 자동으로 잡을 수 없다.** 실제로 버전 업으로 전문검색 점수가 전체적으로 낮아져 **정상 결과가 min_score 임계값에 걸려 빠지는 일**이 났다. 회사도 **\"min_score 를 이용할 경우 버전 업 등에 의한 점수 분포의 변화까지 포함해 운용을 상정해 둘 것\"** 이라고 적었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OpenSearch (2.10 이상) hybrid query",
+            "role": "전문검색과 벡터검색을 한 번의 호출로 묶는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "normalization-processor",
+            "role": "두 점수를 min_max 로 0~1 에 맞추고 가중 산술평균으로 합친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "HNSW",
+            "role": "벡터 근사 최근접 탐색의 자료구조. 이것이 메모리에 올라와 있느냐가 리인덱싱 직후 지연을 가른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "SQfp16 스칼라 양자화 · derived_source",
+            "role": "색인 크기를 13.2GB 에서 5.2GB 로 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Sudachi · Kuromoji",
+            "role": "일본어 형태소 분석. 전문검색이 성립하려면 낱말 경계가 먼저 정해져야 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "BigQuery → GCS → S3",
+            "role": "차분 데이터를 10분 간격으로 흘려 색인을 따라오게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+                "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-27",
+                "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "기존 태그 검색",
+          "via": "동기 폴백 경로",
+          "contract": "애매한 검색이 0.5초 안에 답하지 못하면 태그 검색 결과를 대신 돌려준다. 반대로 태그 검색은 애매한 검색의 상태를 알 필요가 없다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "투고 데이터 웨어하우스(BigQuery)",
+          "via": "10분 간격 차분 워크플로 (BigQuery → GCS → S3 → 벡터화 → 투입)",
+          "contract": "새로 올라오거나 지워진 투고를 10분 안에 색인에 반영한다. 삭제분 제거와 refresh · warmup 까지가 한 묶음이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "감시 기반",
+          "via": "실패 기록",
+          "contract": "폴백이 일어난 사실을 남긴다 — 사용자 화면에는 아무 표시가 없으므로 이 기록이 유일한 신호다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs",
+            "authors": "Yu. A. Malkov, D. A. Yashunin",
+            "year": "2018",
+            "venue": "IEEE TPAMI",
+            "url": "https://arxiv.org/abs/1603.09320",
+            "takeaway": "이 기능의 벡터 검색이 딛고 선 자료구조다. **HNSW 는 그래프를 타고 내려가며 이웃을 좁히는 방식이라 그래프가 메모리에 올라와 있어야 빠르다** — 그래서 이 회사의 문제가 '질의가 느리다'가 아니라 **'리인덱싱 직후에만 느리다'** 로 나타났고, 답도 질의 최적화가 아니라 **warmup 이라는 순서 문제**가 됐다. 회사가 논문을 직접 언급한 것은 아니고, OpenSearch 의 k-NN 이 이 구조를 쓴다는 사실로 엮었다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "서로 다른 검색기의 점수를 무엇을 기준으로 합칠 것인가",
+            "why_hard": "**BM25 점수와 벡터 유사도는 같은 자로 잰 값이 아니다.** 척도도 다르고 분포도 데이터·모델·엔진 버전에 따라 움직인다. **두 점수를 어떻게 섞어야 '맞는' 순서가 나오는지는 데이터 안에 답이 없고**, 사람이 정한 가중치가 곧 정답 노릇을 한다. 비용 구조도 걸린다 — 자동으로 맞추려면 정답 집합(관련성 라벨)이 필요한데, '이런 느낌' 류의 질의에 대한 정답을 만드는 일 자체가 비싸다.",
+            "current_best": "점수를 정규화해 가중합하거나(이 회사가 고른 길), 점수를 버리고 **순위만 섞는 RRF** 를 쓴다. 앞쪽은 분포가 바뀔 때마다 다시 맞춰야 하고 — 이 회사가 버전 업에서 그 일을 겪었다 — 뒤쪽은 점수 크기에 담긴 정보를 버린다.",
+            "confidence": "inferred"
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "질의 하나가 지나는 길",
+          "question": "애매한 말이 어떻게 두 갈래로 갈렸다가 하나의 순서로 합쳐지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"<b>질의</b><br/>• 표기 흔들림<br/>• 오타·약칭<br/>• 뜻만 비슷한 말\"]:::list\n  MA[\"<b>형태소 분석</b><br/>• Sudachi<br/>• Kuromoji\"]:::list\n  H[\"<b>hybrid query 구성</b>\"]\n  BM[\"<b>multi_match (BM25)</b><br/>• 글자가 겹치는가\"]:::list\n  NE[\"<b>neural (k-NN)</b><br/>• 뜻이 가까운가\"]:::list\n  NP[\"<b>normalization-processor</b><br/>• min_max 로 0~1<br/>• 가중 산술평균<br/>• 전문검색에 더 큰 가중치\"]:::accent\n  MIN[\"<b>min_score 로 잘라낸다</b><br/>• 벡터는 늘 '가장 가까운 것'을 준다\"]:::list\n  POP[\"<b>인기도 스코어로 재정렬</b>\"]\n  R[\"<b>응답</b>\"]\n  Q --> MA\n  MA --> H\n  H --> BM\n  H --> NE\n  BM --> NP\n  NE --> NP\n  NP --> MIN\n  MIN --> POP\n  POP --> R"
+        },
+        {
+          "title": "인덱스가 검색에 나서기까지",
+          "question": "왜 별칭 전환이 마지막이고 warmup 이 그 앞인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 새인덱스생성\n  새인덱스생성 --> 데이터투입\n  데이터투입 --> refresh완료: 색인은 됐지만 그래프는 아직 비동기로 만들어지는 중\n  refresh완료 --> warmup완료: 디스크에 영속화된 HNSW 그래프만 데울 수 있다\n  warmup완료 --> 서비스중: 별칭을 갈아 끼운다\n  서비스중 --> 서비스중: 10분마다 차분 투입 · 삭제분 제거 · refresh · warmup\n  서비스중 --> [*]: 다음 리인덱싱 때 교체된다"
+        },
+        {
+          "title": "0.5초를 넘겼을 때",
+          "question": "애매한 검색이 늦거나 죽으면 사용자는 무엇을 보는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[\"<b>애매한 검색 요청</b>\"]\n  OS[\"<b>OpenSearch</b><br/>• 전용 클라이언트<br/>• 타임아웃 0.5초\"]:::list\n  OK[\"<b>하이브리드 결과</b>\"]\n  SLOW[\"<b>0.5초 초과 · 실패</b>\"]:::accent\n  TAG[\"<b>기존 태그 검색 결과</b>\"]\n  MON[\"<b>감시 기반에 기록</b>\"]:::quiet\n  USER[\"<b>사용자 화면</b><br/>• 정상으로 보인다<br/>• 무엇을 못 받았는지 모른다\"]:::list\n  Q --> OS\n  OS -->|\"제때 응답\"| OK\n  OK --> USER\n  OS -->|\"0.5초 초과\"| SLOW\n  SLOW --> TAG\n  TAG --> USER\n  SLOW --> MON"
+        }
+      ],
+      "sources": [
+        {
+          "title": "WEARのあいまい検索を支えるOpenSearchハイブリッド検索 ── ベクトル量子化・暖気機構・スコア調整の実践",
+          "url": "https://techblog.zozo.com/entry/wear-hybrid-search",
+          "publisher": "ZOZO TECH BLOG",
+          "date": "2026-08-27",
+          "summary": "WEAR 의 애매한 검색을 전문검색과 벡터검색의 하이브리드로 세운 과정. 양자화 선택, 웜업 순서, 0.5초 타임아웃과 폴백, 목시 평가의 한계까지 회사가 직접 적었다."
+        }
+      ]
+    }
+  ],
   "eras": [
     {
       "id": "2025-modular-monolith",
@@ -200,7 +685,9 @@
       "domains": [
         "애매한 말로 찾기"
       ],
-      "features": [],
+      "features": [
+        "fuzzy-search"
+      ],
       "stack_in": [
         "OpenSearch 하이브리드 검색",
         "벡터 양자화",
