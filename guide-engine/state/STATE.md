@@ -4,49 +4,44 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 5건 · 학습 45개.
-(전체: 회사 24곳 · 공고 192건 · 학습 1,573개 · **오류 0** · **경고 5**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 6건 · 학습 54개.
+(전체: 회사 24곳 · 공고 193건 · 학습 1,582개 · **오류 0** · **경고 5**.)
 
-**이번 회차 = `Senior ML Platform Engineer`(원티드 wd/293656, `경력 7년 이상`, 판교).**
-축: **`센서·캘리브레이션·어노테이션 셋을 함께 담는 레이크하우스`** · **`데이터 SDK — 사용자가
-사내 연구자다`** · **`병목을 셋으로 나눠 재기(처리·검색·TP 커버리지)`** · `웨어하우스 vs 레이크하우스
-(작은 파일 문제)` · **`분산 데이터 로더 — GPU 가 굶지 않게`** · `오케스트레이션과 재실행 범위` ·
-`'잘못 쓰기 어려운' SDK 설계` · `센서 데이터 실습` · **`주행 영상은 개인정보다`**.
+**이번 회차 = `Senior Software Engineer (AD Framework)`(Ashby, 판교·Remote 표기).**
+축: **`자율주행 미들웨어 — 모듈이 아니라 그 사이`** · **`실행 프레임워크(주기·데드라인)`** ·
+**`Linux 와 RTOS 가 한 차에`** · **`기능안전 ISO 26262 / ASIL`** · `추적·재생 도구 만들기` ·
+`ROS2 를 써 본 것 vs 만들어 본 것` · `C/C++ 에 Lua 가 붙은 이유` · **`DoIP(진단 통신)`** · `Yocto·CMake`.
 
-**⚠️ `TP coverage` 가 성능 지표에 나란히 적혀 있었다** — `data processing latency, data search latency
-to Test Procedure (TP) coverage`. 앞의 둘은 흔한 지표지만 **세 번째는 자율주행 특유**다:
-**데이터가 많아도 필요한 상황이 빠져 있으면 검증이 안 된다.** `edge` 첫 항목을 **시나리오 커버리지
-표에서 빈 칸 찾기**로 세웠다. **성능 지표 목록에 낯선 항목이 섞여 있으면 그게 그 도메인의 본질이다.**
+**⚠️ 대조에서 중요한 것을 배웠다 — 유사도가 우대사항에서만 높을 수 있다.**
+자율주행 스택 다섯 공고를 대조했더니 **우대사항만 0.69~0.81**, 담당업무·자격요건은 **0.02~0.20** 이었다.
+**우대사항이 회사 공통 문구(boilerplate)** 이기 때문이다. → **중복 판단은 담당업무·자격요건으로 한다.**
+(엑셈에서는 반대였다 — 자격요건까지 0.93 이라 진짜 중복이었다.)
+`Physical AI Engineer` ↔ `Senior Physical AI Engineer` 만 담당업무 0.40·자격요건 0.46 으로
+**같은 계열의 급수 차이**다.
 
-**⚠️ 이 공고는 본문이 영어 전용이었다** — 같은 회사 국내(판교) 공고인데도 그렇다.
-`quote` 를 영어 원문에서 뽑았고, `fit.can_learn` 에 **영어 이력서·면접 전제**를 적었다.
-**포티투닷 공고는 세 종류다: 한국어 전용 / 한·영 병기 / 영어 전용.** 매번 확인한다.
-
-**⚠️ 대조 결과 안 쓸 것 둘** — `Senior ML Platform Engineer (Autonomous Driving)`(서니베일)과
-`Senior AI Data Pipeline Engineer (Autonomous Driving)`(서니베일)은 서로 0.54/0.70/0.82,
-이번에 쓴 판교 건과도 0.68/0.81 이다. **같은 계열이고 해외 자리라 쓰지 않는다** —
-**닫을 때 `open_questions` 에 이유를 남긴다.**
-
-**남은 순서** (판교 자리 위주)
-1. **자율주행 스택 축 셋 — 쓰기 전에 서로 대조.**
-   `Senior Software Engineer (AD Framework)`(4,906자) / `Senior Planning & Control System Engineer`(4,845자) /
-   `Senior Computer Vision Engineer (Autonomous Driving)`(4,161자). **셋 다 판교.**
-   ⚠️ 1회차 `Physical AI Engineer (Model)` 과도 겹칠 수 있다(계획·제어 각도) — **함께 대조.**
+**남은 순서** (판교 위주)
+1. **`Senior Planning & Control System Engineer (Autonomous Driving)`(4,845자)** 또는
+   **`Senior Computer Vision Engineer (Autonomous Driving)`(4,161자)** — **다음.** 둘 다 판교.
+   ⚠️ 1회차 `Physical AI Engineer (Model)` 이 **계획·궤적 생성**을 다뤘으므로,
+   **Planning & Control 은 '고전 제어·안전 검증' 쪽으로, Computer Vision 은 '인지' 쪽으로** 각도를 잡아야
+   겹치지 않는다. **먼저 두 본문을 읽고 어느 쪽이 덜 겹치는지 보고 고른다.**
 2. **Gleo·에이전트 축 넷 — 대조 먼저.** `Senior AI Agent Engineer (Gleo Interactor)`(1,614자) /
    `Senior AI Engineer (Driving VLM/VLA)`(2,333자) / `AI Engineer (Navigation Agent)`(1,829자) /
-   `LLM Engineer (Data Generation)`(2,196자). **회사 브리핑의 `차량 인포테인먼트와 음성 AI` 도메인과 맞물린다.**
+   `LLM Engineer (Data Generation)`(2,196자).
 3. `Security Engineer (Security Platform)`(2,687자) / `Security Engineer (차량 보안)`(1,065자) — 둘 대조 먼저.
+   ⚠️ **`Backend Engineer (Open Platform)` 에서 인증·인가를 이미 깊게 다뤘다** — 차량 보안은
+   **침입 탐지·CAN 버스·시큐어부트** 쪽으로 각도를 틀어야 겹치지 않는다.
 4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
-5. `Senior Physical AI Engineer`(5,968자) — 1회차와 다른 자리임을 확인했다.
+5. `Senior Physical AI Engineer`(5,968자) / `Physical AI Engineer`(4,098자) — **둘은 급수 차이**이므로
+   **한 건만 쓰고 나머지는 `open_questions` 에 이유를 남긴다.**
 6. 서니베일·바르샤바·호치민 13건은 **뒤로.**
 
-**⚠️ 경고 5건이 새로 떴다**(크롤이 마감을 새로 잡았다):
-`exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
-**대기열이 빌 때 `fix(guide)` 로 처리한다** — 사다리에 경고는 없으므로 스스로 밀려난다.
-(지난번 51건도 그래서 스무 사이클을 기다렸다. **이번엔 다섯 건이니 다음에 큐가 비면 바로 한다.**)
+**⚠️ 경고 5건 미결**(크롤이 새로 잡은 마감): `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
+**대기열이 비는 순간 `fix(guide)` 로 바로 처리한다**(사다리에 경고는 없어 스스로 밀려난다).
 
 **닫을 때 (넷)** — ① **`Pleos Vehicle OS` 회사 브리핑 보강** ② `salary` 비어 있음(사람인
-`view-inner-salary` 먼저 시도) ③ `people` 비어 있음 ④ 안 쓴 공고 이유(서니베일 두 건 포함).
+`view-inner-salary` 먼저 시도) ③ `people` 비어 있음 ④ 안 쓴 공고 이유(서니베일 ML/데이터 두 건,
+Physical AI 급수 중복, 잡코리아 계열 등).
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -66,6 +61,17 @@ to Test Procedure (TP) coverage`. 앞의 둘은 흔한 지표지만 **세 번째
 
 ## 배운 것
 
+- **⚠️ 유사도가 우대사항에서만 높은 경우가 있다 — 회사 공통 문구 때문이다.** 포티투닷 자율주행
+  다섯 공고는 **우대사항 0.69~0.81 인데 담당업무·자격요건은 0.02~0.20** 이었다. 반대로 엑셈
+  Java/Golang 두 건은 **자격요건까지 0.93** 이라 진짜 중복이었다.
+  → **중복 판단은 `main_tasks`·`qualifications` 로 한다. `preferences` 유사도만 높으면 별개 자리다.**
+- **한 회사에서 공고를 여럿 쓸 때는 '이미 쓴 각도'를 목록으로 관리한다.** 포티투닷에서 계획·궤적은
+  1회차(Physical AI)에서, 인증·인가는 2회차(Open Platform)에서, 차량 미들웨어 통신은 3회차(System
+  Framework)에서, GPU 클러스터는 4회차에서, 데이터 플랫폼은 5회차에서 다뤘다. **다음 공고는 남은
+  각도로 잡아야** 여섯 편이 서로 다른 말을 한다. STATE 의 '남은 순서'에 각도까지 적어 둔다.
+- **`Lua` 처럼 낯선 스크립트 언어가 요구에 섞이면 이유를 판다.** 포티투닷 AD Framework 는
+  `Python, Bash, Lua` 를 함께 적었는데, Lua 는 런타임이 작아 **기기 안에서 설정·시나리오를 코드 밖으로
+  빼는 데** 쓰인다. 즉 "재컴파일 없이 프레임워크 동작을 바꾼다"는 설계 의도가 읽힌다.
 - **성능 지표 목록에 낯선 항목이 섞여 있으면 그게 그 도메인의 본질이다.** 포티투닷 ML 플랫폼
   공고는 병목 지표를 `처리 지연 / 검색 지연 / **TP(Test Procedure) 커버리지**` 로 적었다. 앞의 둘은
   어디에나 있지만 세 번째는 자율주행만의 것이다 — **데이터가 많아도 필요한 상황이 빠져 있으면
