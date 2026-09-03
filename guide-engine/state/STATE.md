@@ -4,39 +4,36 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 모집중 113건 중 **19건** 작성(학습 164개).
+**쿠팡**(`coupang`) — `in_progress`. 모집중 113건 중 **20건** 작성(학습 172개).
 도메인 9개 · 신호 11개 · `salary: null` · `people: []`.
 
-직전 회차: **`Senior Machine Learning Engineer (Eats S&D)`**(wanted 366261, `경력 3-9년`).
-STATE 가 시킨 대로 **쓰기 전에 겹침을 먼저 쟀다** — 이미 쓴 `Machine Learning Engineer
-(Eats S&D)`(1-5년)와 **main 0.99 / qual 0.79 / pref 0.97**. 사실상 같은 공고의 상위 연차판.
+직전 회차: **`[쿠팡] 백엔드 개발자 (Orchestration Platform)`**(wanted 383861).
+고르기 전에 **세 절 길이(871/236/0)와 최대 겹침(0.09)** 을 둘 다 확인했다.
 
-그래서 **반복하지 않고 차이 네 곳만 썼다**(학습 4개):
-- `개발 경험 1년 이상 혹은 이에 준하는 역량` → **`개발 및 배포 경험 3년 이상`**
-  (**`배포` 가 붙고 `혹은 이에 준하는 역량` 여지가 사라졌다**)
-- `주도적인 문제 발견` → **`+ 비즈니스 임팩트 도출 능력`**
-- `석사 학위` → **`석사/박사 학위`**
-- `협업 역량` → **`협업 경험`**(역량은 보여 주면 되고 경험은 있었어야 한다)
-
-그리고 **주니어 공고 쪽 `fit.can_learn` 에 상위 공고를 가리키는 줄을 넣었다** — 도메인
-공부를 두 번 하지 않게. `open_questions` 에 **한 자리를 두 공고로 올린 것인지 두 자리인지
-확인 못 했다**고 적었다.
+이 공고에서만 나온 것:
+- **규모가 숫자로 적혀 있다** — `매일 수십만 개의 Hive/Spark 작업`, `여러 클러스터에 걸쳐
+  수만 개의 Airflow DAG`. → **클라우드/내부 플랫폼 도메인의 `what_to_know` 에 보강.**
+- 도구가 공개돼 있다 — Airflow · **Netflix Genie** · Docker · K8s · ArgoCD · Terraform.
+  ⚠️ **Genie 는 국내 공고에서 드문 이름**이라 `edge` 로도 넣었다(작업 제출 중개 = 여러
+  클러스터를 사용자에게 감추는 문제).
+- 이 팀은 **Airflow 를 쓰는 쪽이 아니라 굴리는 쪽**이다 — 격리·공정 분배가 문제의 본체.
+- 신호 11번의 **세 번째 사례**를 공고 안에서 확인(표기 `5-20년` / 본문 `10년 이상`).
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
+**고르기 전에 ① 세 절 길이 ② 이미 쓴 공고와의 겹침**을 둘 다 본다.
 
-쿠팡이 계속 나오면 — **고르기 전에 ① 세 절 길이 ② 이미 쓴 공고와의 겹침** 둘 다 본다.
 아직 안 다룬 축:
 - **데이터 사이언스 4건** — `SCMA Senior Staff Data Scientist`(2043/2144/0),
   `Senior Staff Data Scientist`(1824/0/2683), `Senior Staff, Data Scientist (Incrementality
-  and Attribution)`(3233/0/3540), `[CLS] First & Middlemile Data Scientist (Operation
-  Research)`(413/375/157). ⚠️ **둘은 `qualifications` 가 비고 `preferences` 가 길다.**
-- `[쿠팡] 백엔드 개발자 (Orchestration Platform)` — 신호 11번의 세 번째 사례(표기 5년/본문 10년).
-- `Senior Back-end Engineer(Eats Merchant)`(경력 4년) — 이츠의 **가맹점 쪽**은 아직 없다.
+  and Attribution)`(3233/0/3540), `[CLS] First & Middlemile Data Scientist`(413/375/157).
+  ⚠️ **둘은 `qualifications` 가 비고 `preferences` 가 길다.**
+- 쿠팡이츠 **가맹점·고객 쪽** — `Senior Back-end Engineer(Eats Merchant)`(4년),
+  `Staff Back-end Engineer (Eats Customer)`(7년). 이미 쓴 Eats 공고(ML·프론트)와 겹침을 잰다.
 
 닫을지 판단할 재료:
-- **`salary`**: **여전히 근거 없음.** 한국어 공고 세 건 모두 전형 마지막이 `처우협의`.
+- **`salary`**: **여전히 근거 없음.** 한국어 공고 **네 건 모두** 전형 마지막이 `처우협의`.
 - **`people`**: 공개 발표·서명 있는 기술 글. **못 찾으면 빈 배열이 정상.**
-- ⚠️ **113건 중 19건이므로 `status: done` 은 신중히.** `hold_reason` 이 더 정직할 수 있다.
+- ⚠️ **113건 중 20건이므로 `status: done` 은 신중히.** `hold_reason` 이 더 정직할 수 있다.
 
 ## 자료 접근 지도
 
