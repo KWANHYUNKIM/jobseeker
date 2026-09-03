@@ -4,28 +4,36 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **39개**(브리핑 36 + 중복 표시 3),
-학습 305개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **40개**(브리핑 37 + 중복 표시 3),
+학습 313개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
 
-직전 회차: **`Director - Backend Engineering - AI Infra`**(ats, gh_jid=7984671).
-줄 겹침 0.27. **두 번째 `Director` 브리핑**이고, 지난 회차의 교훈대로
-⚠️ **자격 요건이 담당업무 절 안(`Required Qualifications`)에 있는 것을 먼저 확인**하고 썼다.
+직전 회차: **`Director, Back-End Engineering (E-commerce Engineering)`**(ats).
+**세 번째 `Director` 브리핑.**
+
+⚠️ **크롤 요약이 절을 잘못 담은 세 번째 형태를 만났다.**
+- (1) 세 절이 통째로 빔 → 못 씀(`Sr. Director`) → **이제 대기열에서 제외됨**
+- (2) 자격이 `main_tasks` 안에 붙음(`Basic Qualifications:` / `Required Qualifications`)
+- (3) **이번**: 담당업무와 `Basic Qualifications` 가 빠지고 **`Preferred Qualifications` 만
+  `preferences` 로 담김** → 인용문이 전부 우대 쪽이고 **`5+ years` 처럼 실제 기준(개발
+  10년)보다 낮은 숫자가 보인다.** `verdict`·`fit`·`edge`·`open_questions` 에 **원문을 직접
+  읽으라**고 명시했다.
+
+**⚠️ 다음 회차 규칙에 추가: 세 절이 한쪽만 차 있으면 `full_jd` 를 확인한다.**
 
 이 공고에서만 나온 것:
-- **모델이 아니라 모델이 도는 판**을 만든다 — `SDN Orchestrator`, GPU 헬스/장애 탐지,
-  병렬 파일 시스템(Lustre·Weka·VAST), AI 오브젝트 스토리지. 목표는 **`> 99.99%`**.
-  → **AI 도메인 `what_to_know` 에 보강**했다.
-- ⚠️ **요건에 `power envelopes, liquid cooling constraints`** 가 있다 — 이 회사 공고를
-  통틀어 가장 특이하다. **전력과 열이 곧 용량의 한계**라 소프트웨어가 그걸 알아야 한다.
-  `edge` 를 **전력·냉각 포함 용량 계산 한 장**으로 잡았다.
-- **관리 연차는 5년으로 낮고 기술 연차는 15년으로 높다** — 같은 급 `Director,
-  Back-end Engineering`(관리 7년)과 반대다. **깊이로 뽑는 관리자.**
-- `InfiniBand/RoCE` 는 **`ideally`**(우대에 가깝다), **L2/L3 기본기는 필수**.
+- 맡는 팀이 **`Core Member Platform`**, 만드는 것은 **차세대 데이터 서빙 플랫폼**.
+  홈·검색·카테고리·상세·장바구니·결제·주문이 그 위에 올라간다
+  → **커머스 도메인 `what_to_know` 에 보강.**
+- 목표가 **대만 등 다른 시장 확장**이라 **한국 전제를 걷어내는 일**이 실제 과제다.
+- ⚠️ 요건에 **데이터 파이프라인**(Spark·Hadoop·Cassandra·Kafka·Airflow)이 있다 —
+  `data-serving platform` 이라 그렇다. 드릴을 **데이터 신선도 지도**로 잡았다
+  (전부 실시간으로 만들 필요는 없다).
+- `Java / IntelliJ / Spring` — **IDE 까지 적은 드문 항목.**
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
-⚠️ **`qualifications` 가 비어 보여도 `main_tasks` 안을 확인한다** — 영문 ats 공고에
-`Basic Qualifications:` / `Required Qualifications` 형태로 붙어 있는 경우가 **두 번 나왔다.**
+⚠️ **세 절 중 비거나 한쪽만 찬 것이 있으면 `full_jd` 를 읽는다** — 영문 ats 공고에서
+지금까지 **세 가지 형태**가 나왔다(위 참조).
 **본문이 글자 그대로 같으면 `duplicate_of` 로 표시**하고 그 회차는 그것으로 끝낸다.
 
 ⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 최대 겹침 0.33).
@@ -33,11 +41,10 @@
 **Ph.D. 또는 석사 + 10년**, LLM·지식그래프·GNN·강화학습에 **MIP·동적계획법·메타휴리스틱**과
 **Gurobi/CPLEX/SCIP**, 이산사건 시뮬레이션(AnyLogic·Simio).
 
-⚠️ **차이만 쓸 대상 6건**(겹침 50%↑이지만 문장이 달라 중복이 아니다):
-`Manager, Back-end Engineering (Rocket Pay)`(ats), `Senior, Back-end Engineer (Advertiser
-Platform)`(ats), `Senior Staff Back-end Engineer (Rocket Pay)`(ats), `Staff Backend Engineer
-(Orchestration Platform)`(ats), `Staff, Back-end Engineer (GOEX)`(ats),
-`Global Operations Technology(GOT) 개발자 집중 채용`(ats).
+⚠️ **차이만 쓸 대상 6건**: `Manager, Back-end Engineering (Rocket Pay)`(ats),
+`Senior, Back-end Engineer (Advertiser Platform)`(ats), `Senior Staff Back-end Engineer
+(Rocket Pay)`(ats), `Staff Backend Engineer (Orchestration Platform)`(ats),
+`Staff, Back-end Engineer (GOEX)`(ats), `Global Operations Technology(GOT) 개발자 집중 채용`(ats).
 
 닫을지 판단할 재료:
 - **`salary`**: **여전히 근거 없음.** 전형 마지막 단계는 공고마다 다르다 — 일반화 금지.
@@ -57,6 +64,13 @@ Platform)`(ats), `Senior Staff Back-end Engineer (Rocket Pay)`(ats), `Staff Back
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **크롤 요약의 절 구분을 믿지 않는다.** 영문 ats 공고에서 세 가지 형태가 나왔다 —
+  ① 세 절이 통째로 빔 ② 자격이 `main_tasks` 안에 붙음 ③ **`Preferred Qualifications`
+  만 `preferences` 로 담기고 `Basic Qualifications` 는 누락.** ③이 특히 위험하다:
+  **연차 요건이 실제보다 낮게 보여** 지원자가 잘못 판단할 수 있다. 세 절이 한쪽만 차
+  있으면 `full_jd` 를 읽고, **인용은 세 절에서 하되 `verdict` 와 `fit` 에 실제 기준을
+  적고 "원문을 직접 읽으라"고 쓴다.**
 
 - **절이 비어 보여도 다른 절 안에 들어 있을 수 있다.** 영문 ats 공고 중에는 자격 요건이
   `Basic Qualifications:` 라는 제목과 함께 **담당업무 절 안에** 통째로 붙어 있는 형태가
