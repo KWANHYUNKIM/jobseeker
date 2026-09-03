@@ -14,7 +14,8 @@
     python auto_crawl.py start                         # 개발자 20건, 1시간 주기
     python auto_crawl.py start 개발자 30 1800          # 키워드 30건, 30분(1800s) 주기
     python auto_crawl.py start 개발자 20 3600 --now    # 시작하자마자 1회 크롤 (기본은 한 주기 뒤)
-    python auto_crawl.py once                          # 1회만 크롤+갱신 (포그라운드)
+    python auto_crawl.py once                          # 1회만 크롤+갱신+빌더 (포그라운드)
+                                                       # 운영 launchd 가 쓰는 경로. loop 한 회차와 같다.
     python auto_crawl.py status
     python auto_crawl.py logs [n]
     python auto_crawl.py stop
@@ -454,6 +455,33 @@ def run_cycle(keyword: str, count: int) -> bool:
     return new_data
 
 
+def run_iteration(keyword: str, count: int) -> None:
+    """한 회차 = 크롤 + 부가 빌더. **loop 와 once 의 유일한 공통 본체.**
+
+    이 함수가 있는 이유는 순전히 두 진입점이 갈라지는 것을 막기 위해서다. 자체 데몬
+    (`start` → loop)과 launchd 주기 실행(`once`)은 같은 일을 해야 하는데, once 가
+    run_cycle 만 부르고 enrich_extras 를 빠뜨린 채로 오래 돌았다. 운영 plist 는 once
+    를 쓰므로(deploy/setup-crawler.sh) 그 차이는 **운영에서만** 드러났다 — 재공고·
+    커리어 맵·블로그 가이드는 enrich_extras 안에만 있어서 운영에서 한 번도 돌지
+    않았고, 로컬에서는 loop 로 돌리니 멀쩡해 보였다.
+
+    재공고는 되돌아가 채울 수 없는 종류다(append-only 히스토리이고 원본 공고는
+    사라진다). 그러니 갈라짐을 주석으로 경고하는 대신 갈라질 자리를 없앤다.
+    """
+    try:
+        run_cycle(keyword, count)
+    except Exception as e:  # 한 회차 실패해도 부가 빌더는 돌려야 한다
+        log(f"[err] 사이클 예외: {e!r}")
+        orch.error("cycle", repr(e))
+    # 크롤이 실패했어도 부른다. enrich_extras 는 직전 사이클이 남긴 enriched JSON 을
+    # 읽으므로 이번 크롤 성패와 무관하게 할 일이 있고, 여기서 거르면 그 회차의
+    # 재공고 변경은 영영 기록되지 않는다.
+    try:
+        enrich_extras()  # 레이더 리파인 + 후기 데몬 보장 + 학습 재수집(크롤 결과와 무관)
+    except Exception as e:
+        log(f"[err] enrich 예외: {e!r}")
+
+
 def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
     sys.path.insert(0, str(BASE_DIR))
     log(f"===== auto_crawl 데몬 시작 (keyword={keyword}, count={count}, "
@@ -466,15 +494,7 @@ def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
         log(f"[wait] 첫 크롤까지 {interval}s 대기 (--now 로 즉시 실행 가능)")
         time.sleep(interval)
     while True:
-        try:
-            run_cycle(keyword, count)
-        except Exception as e:  # 한 주기 실패해도 데몬은 계속
-            log(f"[err] 사이클 예외: {e!r}")
-            orch.error("cycle", repr(e))
-        try:
-            enrich_extras()  # 레이더 리파인 + 후기 데몬 보장 + 학습 재수집(크롤 결과와 무관)
-        except Exception as e:
-            log(f"[err] enrich 예외: {e!r}")
+        run_iteration(keyword, count)
         # 디스크 유지보수 — 사이클마다 스냅샷·로그가 무한히 쌓이면 결국 데몬이 디스크로 죽는다.
         try:
             prune_snapshots()
@@ -592,7 +612,7 @@ def main() -> None:
         sys.path.insert(0, str(BASE_DIR))
         keyword = rest[0] if len(rest) > 0 else DEFAULT_KEYWORD
         count = int(rest[1]) if len(rest) > 1 else DEFAULT_COUNT
-        run_cycle(keyword, count)
+        run_iteration(keyword, count)
     elif sub == "prune":
         keep = int(rest[0]) if rest and rest[0].isdigit() else SNAPSHOT_KEEP
         dry = "--dry-run" in rest
