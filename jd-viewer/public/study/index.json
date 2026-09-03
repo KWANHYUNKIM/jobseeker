@@ -677,6 +677,23 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "observability",
+      "title": "관측성",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "시스템 **밖으로 나오는 신호만 보고 안에서 무슨 일이 벌어지는지 알아낼 수 있는 정도**를 말한다. 대시보드를 몇 개 가졌느냐가 아니라 — **미리 예상하지 못한 질문에 답할 수 있느냐**가 기준이다.",
+      "aliases": [
+        "관측성",
+        "옵저버빌리티",
+        "observability",
+        "o11y"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
