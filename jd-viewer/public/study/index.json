@@ -626,6 +626,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "multi-tenancy",
+      "title": "멀티테넌시",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**하나의 시스템으로 여러 고객사(테넌트)를 함께 서빙**하는 구조다. 서버·DB 를 공유해 비용과 운영을 줄이는 대신, **\"A 회사가 B 회사 데이터를 절대 못 본다\"를 기술로 보장할 책임**을 지게 된다.",
+      "aliases": [
+        "멀티테넌시",
+        "멀티테넌트",
+        "multi-tenancy",
+        "multi-tenant",
+        "테넌트 격리"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
