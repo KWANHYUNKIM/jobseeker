@@ -4,55 +4,53 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 10건 · 학습 90개.
-(전체: 회사 24곳 · 공고 197건 · 학습 1,618개 · **오류 0** · **경고 5**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 11건 · 학습 99개.
+(전체: 회사 24곳 · 공고 198건 · 학습 1,627개 · **오류 0** · **경고 5**.)
 
-**이번 회차 = `AI Engineer (Navigation Agent)`(Ashby, 판교).**
-⚠️ **이 회사에서 예외적인 두 가지를 발견했다** — ① **자격요건에 연차 표기가 없다**(다른 공고는
-2~8년↑) ② **전형이 4단계이고 코딩 테스트가 없다**(다른 공고는 5단계·2단계에 코딩 테스트).
-**드물게 넓은 문**이라 `fit` 과 `interview.process` 양쪽에 명시했다.
-축: `파인튜닝 방법 고르기(SFT vs 선호 최적화)` · `이동 맥락을 입력에 넣기` ·
-**`LLM 만으로 하지 않는다 — 전통 ML 이 담당업무에 있다`** · `합성 데이터의 현실 격차` ·
-`실패 유형 분포(하나 고치면 다른 게 나빠진다)` · `정확도·안정성·지연의 상충` ·
-`내비 도구 다섯의 성질(ETA 는 구간이다)` · **`이동 데이터는 궤적이 곧 신원이다`** · `메모리 예산 안 파인튜닝`.
+**이번 회차 = `Senior AI Engineer (Driving VLM/VLA)`(Ashby, 판교, 5년↑ 또는 뛰어난 연구 성과).**
+축: **`VLA — 보고 말하는 데서 행동까지`** · `다섯 양식을 한 시퀀스로(토큰화·시간 정렬)` ·
+`장면 이해 네 갈래(위험은 드물다)` · **`auto-labeling·장면 검색 — 회사에 곧바로 돈이 되는 지점`** ·
+`학습 recipe·ablation 계획서` · `일곱 갈래 중 하나는 깊게` · `자기회귀 vs 확산` ·
+`행동 조건 영상 생성` · `BEV vs occupancy`.
 
-**⚠️ 같은 회사 두 에이전트 자리를 가른 방법** — `Gleo Interactor`(8년↑)는 **실행 구조와 안전**,
-`Navigation Agent`(연차 무표기)는 **모델을 직접 학습시키는 쪽**. 담당업무가 전자는 오케스트레이션·
-Conversation Design, 후자는 파인튜닝·데이터셋·평가 체계다. **한 회사에 같은 계열 자리가 여럿이면
-'모델을 만드는 자리'와 '시스템을 만드는 자리'로 먼저 갈라 본다.**
+**⚠️ 연구 자리인데 담당업무에 실용 기능이 나란히 있다** —
+`Scene captioning, visual question answering, auto-labeling, data mining, retrieval`.
+이유가 회사 사정에 있다: **라벨 붙이는 속도가 병목**이고 연구자는 장면을 **말로 찾고 싶다.**
+→ `edge` 첫 항목을 **'말로 찾는 장면 검색 + 자동 라벨 오류율'** 로 세웠다.
+**같은 회사 `ML Platform` 의 데이터 SDK 검색 기능이 이 모델을 쓸 가능성이 높다** — 브리핑끼리 이어진다.
 
-**요건 사다리(닫을 때 `signals` 에)**
-**`Navigation Agent` 연차 무표기** → `System Framework` 학사↑·2년↑ → `Backend (Open Platform)` 3년↑ →
-`Planning & Control` 석사↑·3년↑ → `Driving VLM/VLA` 5년↑ → `ML Platform` 7년↑ →
-`Computer Vision` 석사/박사·7년↑ → `AI Agent (Gleo)` 8년↑.
-**전형도 두 종류다** — 5단계(코딩 테스트 있음) / 4단계(없음, Navigation Agent).
+**⚠️ VLA 의 함정을 `edge` 로 만들었다** — **말은 그럴듯한데 행동이 틀릴 수** 있다.
+`이유를 바꿔 넣었을 때 행동이 따라 바뀌는지` 확인하는 실험을 넣었고,
+이건 이 회사가 세 자리에서 반복하는 **"신뢰하지 않는 층"** 사고와 같은 결이다(네 번째 사례).
 
 **남은 순서** (판교 위주)
-1. **`Senior AI Engineer (Driving VLM/VLA)`(2,333자, 5년↑)** — **다음.**
-   ⚠️ 각도: **주행 영상·궤적·언어를 한 모델로 잇는 foundation model.** CV 회차(인지)·Physical AI 회차
-   (궤적 생성)와 겹치지 않게 **멀티모달 정렬·auto-labeling·scene captioning** 쪽으로 잡는다.
-   본문에 `Action-conditioned video generation, world model, 4D scene modeling` 이 있다.
-2. `Security Engineer (Security Platform)`(2,687자) / `Security Engineer (차량 보안)`(1,065자) — 둘 대조 먼저.
-   ⚠️ 인증·인가는 2회차 → **CAN 버스·침입 탐지·시큐어부트** 쪽으로.
-3. `LLM Engineer (Data Generation)`(2,196자) / `(LLM Training)`(1,396자) /
+1. **`Security Engineer (Security Platform)`(2,687자)** / **`Security Engineer (차량 보안)`(1,065자)** — **다음. 둘 대조 먼저.**
+   ⚠️ **인증·인가는 2회차(`Open Platform`)에서 깊게 다뤘다** → **CAN 버스·침입 탐지(IDS)·시큐어부트·
+   침투 테스트** 쪽으로 각도를 튼다. `차량 보안` 쪽이 그 각도에 더 가까울 것으로 보인다.
+2. `LLM Engineer (Data Generation)`(2,196자) / `(LLM Training)`(1,396자) /
    `Senior Search & Ranking Engineer (AI Agent)`(2,145자).
-   ⚠️ **데이터 생성·랭킹은 이번 회차에서 일부 다뤘다** — Data Generation 은 **합성 데이터 파이프라인**,
-   Search & Ranking 은 **검색 시스템** 쪽으로 각도를 좁힌다.
-4. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — 월드 모델은 CV 회차에서 →
-   **RL 학습 인프라·시나리오 생성** 쪽으로.
-5. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
-6. `Senior Physical AI Engineer` / `Physical AI Engineer` — 급수 차이. **한 건만.**
-7. 본문 짧은 판교 자리들(6건): `Senior Backend Engineer(Mobile Platform)` · `Senior Release Engineer` ·
+   ⚠️ **auto-labeling·검색을 이번에 다뤘다** → Data Generation 은 **합성 데이터 파이프라인·품질 관리**,
+   Search & Ranking 은 **랭킹 시스템 운영** 쪽으로 좁힌다.
+3. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — ⚠️ 월드 모델·행동 조건 생성을
+   CV 회차와 이번 회차에서 다뤘다 → **RL 학습 루프·시나리오 생성·평가 자동화** 쪽으로.
+4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
+5. `Senior Physical AI Engineer` / `Physical AI Engineer` — 급수 차이. **한 건만.**
+6. 본문 짧은 판교 자리 6건: `Senior Backend Engineer(Mobile Platform)` · `Senior Release Engineer` ·
    `Vehicle System Integration Engineer` · `Software Update Engineer` ·
    `Deep Learning Engineer (음성 인식 및 wake word detection)` · `Test Engineer (Autonomous Driving)`.
-8. 서니베일·바르샤바·호치민 13건은 **뒤로.**
+   ⚠️ **이 여섯은 각도가 서로 멀어 겹칠 걱정이 적다.** AI 계열을 다 쓴 뒤 여기로 온다.
+7. 서니베일·바르샤바·호치민 13건은 **뒤로.**
+
+**요건 사다리(닫을 때 `signals` 에)** — `Navigation Agent` 무표기 → `System Framework` 학사↑·2년↑ →
+`Backend (Open Platform)` 3년↑ → `Planning & Control` 석사↑·3년↑ → **`Driving VLM/VLA` 5년↑** →
+`ML Platform` 7년↑ → `Computer Vision` 석사/박사·7년↑ → `AI Agent (Gleo)` 8년↑.
+**전형 두 종류** — 5단계(코딩 테스트 있음, 대부분) / 4단계(없음, Navigation Agent).
 
 **⚠️ 경고 5건 미결**: `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
 **대기열이 비는 순간 `fix(guide)`.**
 
 **닫을 때 (여섯)** — ① **`Pleos Vehicle OS` 보강** ② **요건 사다리 + 전형 두 종류를 `signals` 에**
-③ **"신뢰하지 않는 층" 공통 설계 원칙을 `signals` 에** ④ `salary`(사람인 `view-inner-salary` 먼저)
-⑤ `people` ⑥ 안 쓴 공고 이유.
+③ **"신뢰하지 않는 층" 원칙을 `signals` 에**(사례 4건) ④ `salary` ⑤ `people` ⑥ 안 쓴 공고 이유.
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -72,6 +70,16 @@ Conversation Design, 후자는 파인튜닝·데이터셋·평가 체계다. **�
 
 ## 배운 것
 
+- **연구 자리 공고에 실용 기능이 섞여 있으면 그게 회사의 병목이다.** 포티투닷 VLM/VLA 공고는
+  연구 주제 옆에 `auto-labeling, data mining, retrieval` 을 적었다 — **라벨 붙이는 속도가 데이터
+  쌓이는 속도를 못 따라가고, 연구자가 장면을 말로 찾고 싶다**는 사정이다. `edge` 를 논문이 아니라
+  **그 병목을 푸는 산출물**로 세우면 지원자가 훨씬 강해진다.
+- **브리핑끼리 이어지는 지점을 찾아 적어 준다.** `ML Platform` 의 데이터 SDK 검색 기능과
+  `VLM/VLA` 의 캡션·검색 모델은 **같은 문제의 양쪽**이다. 한 회사를 여러 공고로 쓰면 이런 연결이
+  보이고, 그것이 지원자에게는 **"이 회사에서 내 자리가 어디에 붙는가"** 의 답이 된다.
+- **`A 또는 B` 로 자격을 대체 가능하게 열어 둔 문구를 놓치지 않는다.** VLM/VLA 공고는
+  `5년 이상의 연구/개발 경험 **또는** … 뛰어난 연구 성과(proven track record)` 로 적었다.
+  **연차가 모자란 지원자에게는 이 뒷문이 전부**이므로 `fit.must_have` 에 그대로 옮긴다.
 - **전형 절차도 공고마다 다르다 — 같은 회사라도.** 포티투닷은 대부분 5단계(2단계가 코딩 테스트)
   인데 `Navigation Agent` 만 **4단계이고 코딩 테스트가 없다.** 그리고 그 공고만 **자격요건에 연차
   표기가 없다.** → **`interview.process` 를 회사 기본값으로 채우지 말고 매 공고 본문에서 확인한다.**
