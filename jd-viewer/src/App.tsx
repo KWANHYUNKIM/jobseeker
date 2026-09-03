@@ -18,7 +18,6 @@ import { breadcrumbJsonLd, jobDescription, jobJsonLd, jobKey, jobTitle, paths, T
 import { absUrl, SITE_NAME } from './lib/seo'
 import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
 import { applyFilter, applyLocalFacets, computeFacets, emptyFilter } from './lib/filter'
-import { setLocale, useLocale } from './lib/locale'
 import type { Job } from './types'
 
 type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'reveng' | 'reposts'
@@ -177,15 +176,12 @@ function App() {
             기술 역설계
           </TabLink>
         </div>
-        <div className="ml-auto flex items-center gap-2.5 shrink-0">
-          <LanguageToggle />
-          <span className="text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
-            <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
-            <span className="hidden sm:inline"> · 필터 </span>
-            <span className="hidden sm:inline text-(--color-accent) font-medium">{filtered.length.toLocaleString()}</span>
-            <span className="hidden sm:inline">건</span>
-          </span>
-        </div>
+        <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
+          <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
+          <span className="hidden sm:inline"> · 필터 </span>
+          <span className="hidden sm:inline text-(--color-accent) font-medium">{filtered.length.toLocaleString()}</span>
+          <span className="hidden sm:inline">건</span>
+        </span>
       </nav>
 
       {tab === 'companies' ? (
@@ -284,38 +280,6 @@ function App() {
 }
 
 // 탭은 진짜 링크다. 크롤러는 onClick 을 따라가지 않는다 — href 가 있어야 다음 페이지를 본다.
-/**
- * 언어 선택. 첫 방문은 브라우저 언어로 자동 판단하고, 한 번 고르면 그 선택을 기억한다.
- *
- * 지금 이 선택이 실제로 바꾸는 것은 기술 블로그 본문(원문/번역)과 `<html lang>` 뿐이라,
- * 라벨을 'English' 로 달면 인터페이스까지 영어가 될 것처럼 읽힌다. 그래서 무엇에
- * 적용되는지 title 로 분명히 적어 둔다. 인터페이스 문구가 번역되면 그때 떼면 된다.
- */
-function LanguageToggle() {
-  const locale = useLocale()
-  return (
-    <div
-      className="inline-flex rounded-md border border-(--color-border) overflow-hidden text-[11px]"
-      title="보는 언어. 지금은 기술 블로그 본문을 원문으로 볼지 번역으로 볼지에 적용됩니다 (인터페이스 문구는 아직 한국어입니다)."
-    >
-      {([['ko', '한국어'], ['en', 'EN']] as const).map(([code, label]) => (
-        <button
-          key={code}
-          onClick={() => setLocale(code)}
-          aria-pressed={locale === code}
-          className={`px-2 py-1 transition ${
-            locale === code
-              ? 'bg-(--color-accent) text-(--color-on-accent) font-medium'
-              : 'text-(--color-muted) hover:text-(--color-text) hover:bg-(--hover)'
-          }`}
-        >
-          {label}
-        </button>
-      ))}
-    </div>
-  )
-}
-
 function TabLink({ active, to, children }: { active: boolean; to: string; children: React.ReactNode }) {
   return (
     <a
