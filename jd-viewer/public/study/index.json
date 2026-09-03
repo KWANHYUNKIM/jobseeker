@@ -142,6 +142,23 @@
    "updated_at": "2026-09-03"
   },
   {
+   "slug": "modbus",
+   "title": "Modbus",
+   "category": "domain",
+   "level": "core",
+   "status": "done",
+   "one_liner": "설비에 \"몇 번지부터 몇 개 읽어 줘\"라고 묻고 답을 받는 **요청-응답 프로토콜**이다. 1979년 PLC 용으로 만들어진 단순함이 그대로 남아 지금도 산업 현장의 공용어다.",
+   "aliases": [
+    "Modbus",
+    "모드버스",
+    "Modbus RTU",
+    "Modbus TCP"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "ohms-law",
    "title": "옴의 법칙",
    "category": "hardware",
