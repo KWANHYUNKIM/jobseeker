@@ -240,14 +240,23 @@
       },
       {
         "name": "AI 기반과 ML 플랫폼",
-        "why": "`Coupang AI Foundations`, `Director - Backend Engineering - AI Infra`, `Principal Engineer, ML`, `Senior Staff ll, AI Engineer (L7-2)` 처럼 **모델을 쓰는 자리와 모델을 돌릴 바탕을 만드는 자리가 따로** 열려 있다.",
+        "why": "`Coupang AI Foundations`, `Director - Backend Engineering - AI Infra`, `Principal Engineer, ML`, `Senior Staff ll, AI Engineer (L7-2)` 처럼 **모델을 쓰는 자리와 모델을 돌릴 바탕을 만드는 자리가 따로** 열려 있다. ⚠️ **그리고 회사가 GPU 를 사내 서비스로 제공한다** — `Sr. Staff Observability Engineer (GPU Cloud & Telemetry Platform)` 공고에 **`GPU-as-a-Service (GPUaaS) infrastructure`** 라고 적혀 있다. 즉 **모델을 만드는 조직과 그것을 돌릴 GPU 를 빌려 주는 조직이 따로 있다.**",
         "what_to_know": [
           "**`AI Foundations` 라는 이름은 공통 모델·기반을 만드는 조직**을 뜻하는 경우가 많다 — 개별 서비스 모델과 다르다",
           "커머스에서 AI 가 붙는 곳은 대개 **카탈로그 정제·검색 랭킹·추천·수요 예측·이상 탐지**다",
-          "`AI Infra` 가 백엔드 엔지니어링 아래에 있다 — **모델을 돌리는 인프라를 인프라 조직이 맡는 구조**로 읽힌다"
+          "`AI Infra` 가 백엔드 엔지니어링 아래에 있다 — **모델을 돌리는 인프라를 인프라 조직이 맡는 구조**로 읽힌다",
+          "**GPU 를 서비스로 제공하면 따라오는 문제가 있다** — 누가 얼마나 썼는지 재고(과금), 한 팀이 독점하지 못하게 막고(격리), **`잘 쓰고 있는가` 를 본다.** ⚠️ **GPU 는 할당받고도 노는 경우가 흔해**(데이터 대기·CPU 병목) 점유율이 아니라 **실제 사용 효율**이 지표가 된다",
+          "관측 스택이 공고에 그대로 있다 — **`Grafana Alloy, Mimir, Loki, Vector`** 와 **`NVIDIA DCGM, MIG, NVLink, PCIe`**, 네트워크는 **`RDMA, InfiniBand`**. 학습 클러스터는 **카드 간 통신이 병목**이 되므로 네트워크가 관측 대상에 들어온다"
         ],
         "confidence": "inferred",
-        "sources": []
+        "sources": [
+          {
+            "title": "Sr. Staff Observability Engineer (GPU Cloud & Telemetry Platform)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7992094",
+            "publisher": "쿠팡 채용",
+            "summary": "GPUaaS 인프라와 그 관측 스택이 본문에 명시돼 있다"
+          }
+        ]
       },
       {
         "name": "글로벌 — 대만과 일본",
@@ -1504,6 +1513,178 @@
             "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8120779",
             "publisher": "쿠팡 채용",
             "summary": "경력 8년 이상. 쿠팡에서 파는 모든 상품의 가격을 정하는 팀이고 하루 수억 건을 처리한다. 자격요건에 영어 말하기·쓰기가 명시돼 있다"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7992094",
+      "title": "Sr. Staff Observability Engineer (GPU Cloud & Telemetry Platform)",
+      "site": "ats",
+      "closed": false,
+      "verdict": "**쿠팡이 사내에 GPU 를 서비스로 제공하고 있고, 그것을 들여다보는 시스템을 만드는 자리다.** 공고가 밝힌다 — `observability platform for a GPU-as-a-Service (GPUaaS) infrastructure`. **회사 브리핑에 없던 사실**이고, 다루는 것도 구체적이다: `Grafana Alloy, Mimir, Loki, and Vector` 로 **`planet-scale telemetry pipelines`** 를 만들고 **`GPU workloads, Kubernetes clusters, and datacenter infrastructure`** 를 본다. ⚠️ **이 공고는 본문이 이 회사에서 가장 두껍다** — 도구 이름과 지표까지 다 적혀 있어 **무엇을 준비할지가 명확한 대신 요구 범위가 넓다.**",
+      "fit": {
+        "must_have": [
+          "**관측성 플랫폼 설계와 운영** — 지표·로그·추적 전 구간",
+          "**`Grafana Alloy`(지표 수집)·`Mimir`(시계열 저장)·`Loki`(로그)·`Datadog Vector`(로그 수집·변환)** 스택",
+          "**쿠버네티스와 컨테이너 텔레메트리**",
+          "**고카디널리티 데이터** 설계 경험(GPU ID·테넌트·워크로드 라벨)",
+          "**`Go/Python`** 으로 자동화를 만드는 능력",
+          "**SLI/SLO·에러 예산** 기반 운영"
+        ],
+        "can_learn": [
+          "GPU 하드웨어 지표(`NVIDIA DCGM, MIG, NVLink, PCIe`) — **관측성 경험이 있으면 대상만 바뀌는 것**이라 배울 수 있다",
+          "`RDMA, InfiniBand` 네트워크 — 학습 클러스터 특유의 영역이다",
+          "`Terraform`·CI/CD 연동, OpenTelemetry — 담당업무에 나온다",
+          "⚠️ **이 자리는 모델을 만들지 않는다** — **GPU 를 쓰는 사람들이 잘 쓰게 만드는 쪽**이다. 같은 회사 `Machine Learning Engineer` 계열과 완전히 다르다",
+          "⚠️ **본문이 영어**이고 자체 채용 사이트(ats) 공고다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "**GPU 를 서비스로 빌려 준다는 것**",
+          "from": "task",
+          "quote": "We are seeking a Sr. Staff Observability Engineer to lead the design and evolution of our observability platform for a GPU-as-a-Service (GPUaaS) infrastructure. This role will own the end-to-end telemetry strategy—from high-throughput metri",
+          "priority": "core",
+          "why": "**`GPU-as-a-Service` 는 GPU 가 비싸고 모자라기 때문에 생기는 구조다.** 팀마다 GPU 를 사서 쓰면 **놀고 있는 카드가 많아지므로**, 한곳에 모아 두고 필요한 팀이 빌려 쓰게 만든다. 그러면 새 문제가 생긴다 — **누가 얼마나 썼는지 재야 하고**(과금), **한 팀이 다 쓰지 못하게 막아야 하고**(격리), 무엇보다 **`잘 쓰고 있는가` 를 봐야 한다.** GPU 는 **할당받고도 놀리는 경우가 흔해서**(데이터를 기다리느라, 코드가 CPU 에서 병목이라) **점유율이 아니라 실제 사용 효율**을 봐야 한다 — 담당업무의 `GPU utilization efficiency` 가 그 뜻이다.",
+          "gap_check": "GPU 를 할당받고도 놀리는 이유를 셋 이상 댈 수 있나? 점유와 실제 사용을 어떻게 구분해 재나?",
+          "drill": "**GPU 사용을 재 본다.** ① GPU 하나(또는 클라우드 대여)에서 학습을 돌리고 ② **점유율과 실제 연산 사용률을 함께 기록**하고 ③ 데이터 로딩을 일부러 느리게 해 **점유는 100%인데 연산은 노는 상태**를 만들고 ④ 배치 크기·데이터 로더를 바꿔 개선하고 ⑤ **`효율` 을 정의하는 지표 하나**를 만들어 근거를 적는다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**고카디널리티 — 관측성을 무너뜨리는 것**",
+          "from": "task",
+          "quote": "High-cardinality labels (GPU IDs, tenants, workloads)",
+          "priority": "core",
+          "why": "**이 항목이 관측성 엔지니어링의 진짜 난제다.** 지표에 라벨을 붙일수록 자세히 볼 수 있지만, **라벨 조합 수만큼 시계열이 늘어난다** — GPU 1,000개 × 테넌트 100개 × 작업 종류 50개면 순식간에 수백만 개다. 그러면 **저장 비용이 폭증하고 질의가 느려지며 결국 시스템이 죽는다.** 그래서 실무의 판단은 **무엇을 라벨로 두고 무엇을 로그로 밀어낼지**가 된다(자세한 것은 로그에, 집계할 것만 지표에). 담당업무가 `High-Cardinality Telemetry Design` 을 항목으로 따로 둔 것은 이 회사 규모에서 이게 상시 문제라는 뜻이다.",
+          "gap_check": "카디널리티가 폭증하는 라벨을 알아볼 수 있나? 지표와 로그 중 어디에 둘지 어떻게 정하나?",
+          "drill": "**폭증시키고 줄여 본다.** ① 지표 수집 시스템을 띄우고 ② 라벨 하나에 **고유 값이 수만 개**인 것을 넣어(요청 ID 같은 것) 시계열 수와 메모리를 재고 ③ 질의가 느려지는 것을 확인하고 ④ 그 라벨을 **로그로 옮기고** 지표는 집계만 남겨 다시 재고 ⑤ **라벨 추가를 검토하는 기준표**를 만든다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "Grafana 스택 — 도구 이름이 전부 적혀 있다",
+          "from": "task",
+          "quote": "You will architect and operate planet-scale telemetry pipelines leveraging Grafana Alloy, Mimir, Loki, and Vector, ensuring high-fidelity observability across GPU workloads, Kubernetes clusters, and datacenter infrastructure.",
+          "priority": "core",
+          "why": "**넷이 각각 다른 층을 맡고, 그 조합을 아는 것이 이 자리의 실무다** — `Alloy` 는 지표를 모아 보내고(Prometheus 호환), `Mimir` 는 그것을 오래 저장하며, `Vector` 는 로그를 받아 걸러 변환하고, `Loki` 는 로그를 저장·검색한다. 이 조합을 고른 이유도 짐작할 수 있다 — **오픈소스라 규모가 커져도 라이선스 비용이 사람 수나 데이터 양에 비례하지 않는다.** 운영에서 어려운 곳은 정해져 있다: **`remote_write` 튜닝**(보낼 것이 밀리면 수집기 메모리가 찬다), **보존 기간과 비용**, 그리고 **압축·정리 작업이 무거워지는 것**.",
+          "gap_check": "지표 수집기에서 저장소로 보내는 구간이 밀리면 무슨 일이 생기나? 보존 기간을 어떻게 정하나?",
+          "drill": "**작은 관측 스택을 세운다.** ① Prometheus 호환 수집기와 저장소를 띄우고 ② 로그 수집·저장도 붙이고 ③ **저장소를 일부러 느리게 만들어** 수집기 쪽이 어떻게 되는지 보고(밀림·유실) ④ 보존 기간을 바꿔 **디스크 사용량 곡선**을 그리고 ⑤ 같은 데이터를 상용 서비스에 넣었다고 가정해 **비용을 비교**한다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**GPU 는 무엇을 봐야 하는가**",
+          "from": "task",
+          "quote": "GPU hardware (NVIDIA DCGM, MIG, NVLink, PCIe)",
+          "priority": "core",
+          "why": "**일반 서버 관측성과 다른 대상이 여기 있다.** GPU 는 **온도와 전력이 성능을 직접 깎고**(과열되면 클럭이 내려간다), **카드끼리 데이터를 주고받는 통로**(NVLink·PCIe)가 병목이 되며, **한 카드를 쪼개 여러 작업에 나눠 주는 방식**(MIG)을 쓰면 쪼갠 단위로 봐야 한다. 그래서 `DCGM`(NVIDIA 의 GPU 상태 수집 도구) 같은 것이 나온다. ⚠️ 여기서 흔한 오해는 **`GPU 사용률 100%` 를 잘 쓰고 있다는 뜻으로 읽는 것**이다 — 실제로는 비효율적인 연산으로 카드를 붙잡고 있을 수 있다.",
+          "gap_check": "GPU 사용률이 100%인데 학습이 느린 경우를 설명할 수 있나? 발열과 전력이 성능에 어떻게 영향을 주나?",
+          "drill": "**GPU 상태를 수집해 본다.** ① GPU 지표 수집기를 붙여 **사용률·메모리·온도·전력**을 기록하고 ② 무거운 학습을 돌려 **온도가 오르며 성능이 떨어지는지** 관찰하고 ③ 배치 크기를 바꿔 메모리와 처리량의 관계를 재고 ④ 여러 작업을 한 카드에 올려 **서로 방해하는 것**을 확인하고 ⑤ `이 카드가 잘 쓰이고 있는가` 를 판정하는 규칙을 만든다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**층을 가로질러 원인을 잇는다**",
+          "from": "task",
+          "quote": "GPU → Node → Kubernetes → Application → Network",
+          "priority": "core",
+          "why": "**이 화살표가 이 자리에서 가장 어려운 일을 요약한다.** 학습이 느려졌다는 신고가 왔을 때 원인은 어느 층에나 있을 수 있다 — GPU 가 과열됐거나, 노드의 디스크가 느리거나, 쿠버네티스가 다른 작업을 같은 노드에 올렸거나, 코드가 데이터를 못 대거나, **네트워크가 밀렸거나**(여러 카드로 학습하면 카드 간 통신이 병목이 된다). 각 층의 지표가 **따로 놀면 원인을 못 찾으므로**, 같은 작업 식별자로 **층을 관통해 이을 수 있어야** 한다. 담당업무의 `needle-in-a-haystack` 이 그 뜻이다.",
+          "gap_check": "학습이 느려진 원인을 층별로 좁혀 본 적이 있나? 여러 층의 지표를 같은 작업으로 잇는 방법을 아나?",
+          "drill": "**층별 원인을 만들어 좁힌다.** ① 학습 작업 하나를 돌리며 GPU·노드·컨테이너·애플리케이션 지표를 **같은 식별자로 이어** 남기고 ② 네 가지 원인을 하나씩 만들어(디스크 느림·다른 작업 간섭·데이터 로딩 병목·네트워크 지연) ③ 각각에서 **어느 지표가 먼저 움직이는지** 기록하고 ④ 그 차이를 **좁히는 순서표**로 만들고 ⑤ 한 화면에서 층을 오갈 수 있는 대시보드를 만든다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "여러 팀이 나눠 쓰는 GPU — 격리와 과금",
+          "from": "task",
+          "quote": "Tenant-level usage and billing insights",
+          "priority": "high",
+          "why": "**GPU 를 서비스로 제공하면 반드시 따라오는 두 가지다** — **누가 얼마나 썼는지**(과금이나 내부 배분)와 **한 팀이 다른 팀을 방해하지 못하게 하는 것**(격리). 과금 쪽에서 어려운 것은 **무엇을 기준으로 셀지**다: 할당한 시간인가, 실제로 연산한 시간인가, 아니면 카드 수 × 시간인가. **할당 기준으로 재면 놀려도 돈을 내고**, 실제 사용 기준으로 재면 **비효율적으로 오래 붙잡는 쪽이 이득**을 본다. 그래서 대개 둘을 함께 보여 주고 **효율을 드러내는 방식**을 쓴다 — 담당업무가 `usage and billing insights` 라고 `insights` 를 붙인 이유다.",
+          "gap_check": "GPU 사용량을 무엇을 기준으로 청구해야 공정한가? 한 팀이 자원을 독점하지 못하게 막는 방법을 아나?",
+          "drill": "**사용량 리포트를 만든다.** ① 여러 팀이 같은 GPU 풀을 쓰는 상황을 만들고 ② **할당 시간과 실제 연산 시간을 둘 다 집계**하고 ③ 팀별 리포트에 **효율(실제/할당)을 함께 표시**하고 ④ 한 팀이 자원을 오래 붙잡는 상황을 만들어 **할당량이나 우선순위로 제한**하고 ⑤ 어느 기준이 공정한지 근거를 적는다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "반응하는 감시에서 미리 아는 감시로",
+          "from": "task",
+          "quote": "Strategic Roadmap: Define the multi-year vision for GPU infrastructure observability, transitioning from reactive monitoring to SLO-driven, predictive, and automated observability.",
+          "priority": "high",
+          "why": "**`reactive → SLO-driven → predictive → automated` 이라는 방향이 로드맵으로 적혀 있다.** 지금 무엇을 하고 있고 어디로 가려는지가 그대로 드러난다 — **터진 뒤에 대응하는 단계**에서 **목표를 정하고 여유분으로 관리하는 단계**로, 나아가 **터지기 전에 알아채고 자동으로 대응하는 단계**로. GPU 인프라에서 예측이 가능한 이유가 있다: **온도와 전력, 오류 정정 횟수 같은 지표는 고장 전에 먼저 움직인다.** 그래서 카드가 죽기 전에 **그 카드에 새 작업을 안 주는 것**만으로도 실패한 학습을 크게 줄일 수 있다.",
+          "gap_check": "고장 전에 먼저 움직이는 지표를 찾아 본 적이 있나? 경보를 자동 대응으로 바꿔 본 적이 있나?",
+          "drill": "**미리 빼내는 규칙을 만든다.** ① GPU 지표를 모으고 ② 하드웨어 오류·온도 이상을 **경보 규칙**으로 만들고 ③ 경보가 뜨면 **그 노드에 새 작업을 배정하지 않게** 자동 처리하고 ④ 이미 도는 작업은 어떻게 할지 정하고(즉시 중단 vs 완료까지 대기) ⑤ 이 규칙으로 **막을 수 있었던 실패가 몇 건인지** 과거 데이터로 추정한다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "**관측성 자체가 비싸다 — 사느냐 만드느냐**",
+          "from": "task",
+          "quote": "Define build vs. buy decisions (Datadog vs OSS vs hybrid approaches)",
+          "priority": "high",
+          "why": "**담당업무에 상용 제품 이름과 오픈소스가 함께 적힌 것이 이 판단의 무게를 보여 준다.** 관측성은 **데이터 양에 비례해 비용이 커지는 대표적인 영역**이라, 규모가 크면 상용 서비스 비용이 인프라 비용을 넘기도 한다. 반대로 오픈소스는 **공짜가 아니라 운영 인력으로 값을 치른다**(버전 올리기·용량 계획·장애 대응). 그래서 실무의 답은 대개 **섞는 것**이다 — 중요한 일부는 상용으로, 대량은 오픈소스로. 그리고 **어느 쪽이든 데이터를 줄이는 것**(표본·필터·집계)이 가장 큰 비용 절감이 된다.",
+          "gap_check": "관측성 비용을 데이터 양으로 계산해 본 적이 있나? 로그를 줄이면서 필요한 것을 잃지 않는 방법을 아나?",
+          "drill": "**줄이면서 지킨다.** ① 로그 파이프라인을 만들고 **하루 발생량과 저장 비용**을 계산하고 ② 오류가 아닌 로그를 **표본만 남기게** 바꾸고 ③ 자주 쓰는 필드만 남겨 크기를 줄이고 ④ **줄인 뒤에도 장애를 조사할 수 있는지** 실제 사례로 확인하고 ⑤ 상용 서비스에 같은 양을 넣었을 때의 비용과 비교한다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "쓰는 사람이 스스로 보게 만든다",
+          "from": "task",
+          "quote": "Enable self-service observability for platform and ML engineering teams",
+          "priority": "high",
+          "why": "**`self-service` 가 담당업무에 있는 것은 이 팀이 병목이 되면 안 되기 때문이다.** GPU 를 쓰는 팀이 늘어날수록 `내 학습이 왜 느리냐` 는 질문이 늘고, 그걸 관측성 팀이 매번 답하면 아무 일도 못 한다. 그래서 **표준 대시보드와 재사용 가능한 패널**을 만들어(`Standardize dashboard frameworks and reusable panels`) **각 팀이 자기 작업을 스스로 들여다보게** 만든다. 여기서 중요한 것은 화면이 아니라 **무엇을 보여 줄지 고르는 것**이다 — 지표를 전부 보여 주면 오히려 아무도 못 읽는다.",
+          "gap_check": "다른 팀이 스스로 볼 수 있는 대시보드를 만들어 본 적이 있나? 무엇을 보여 주고 무엇을 감출지 어떻게 정하나?",
+          "drill": "**세 화면으로 줄인다.** ① 수집한 지표로 대시보드를 만들되 **`내 작업은 잘 돌고 있나` 한 화면**, **`왜 느린가` 한 화면**, **`자원을 얼마나 쓰고 있나` 한 화면**으로 제한하고 ② 각 화면에 **지표를 다섯 개 이하**로 두고 ③ 실제 사용자에게 보여 주고 **질문이 나오는 지점**을 기록하고 ④ 그 질문에 답하도록 고치고 ⑤ 재사용 가능한 형태로 템플릿화한다.",
+          "hours": 12,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**점유율은 100%인데 연산은 노는 상태를 재현하고 고친 기록**",
+          "why": "GPUaaS 관측성의 핵심 질문이 `잘 쓰고 있는가` 다. **데이터 로딩을 느리게 해 그 상태를 만들고, 배치 크기와 로더를 바꿔 개선한 수치**는 GPU 를 실제로 다뤄 본 사람의 물건이다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**카디널리티를 폭증시키고 줄인 실험**과 라벨 검토 기준표",
+          "why": "담당업무에 `High-Cardinality Telemetry Design` 이 항목으로 따로 있다. **고유 값이 수만 개인 라벨을 넣어 시계열 수와 질의 시간이 무너지는 것을 재고**, 로그로 옮겨 되돌린 기록은 이 자리의 상시 문제를 아는 답이다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**층을 관통해 원인을 좁히는 순서표**(GPU→노드→K8s→앱→네트워크)",
+          "why": "담당업무가 `cross-layer correlation` 과 `needle-in-a-haystack` 을 적었다. 네 가지 원인을 하나씩 만들어 **어느 지표가 먼저 움직이는지 기록한 표**는, 지식이 아니라 방법을 가진 사람으로 읽힌다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**로그를 줄이면서 조사 가능성을 지킨 기록**과 상용 대비 비용 비교",
+          "why": "`Define build vs. buy decisions (Datadog vs OSS vs hybrid approaches)` 가 담당업무다. **줄인 뒤에도 실제 장애를 조사할 수 있는지 확인한 것**까지 있으면 비용 이야기가 탁상공론이 되지 않는다.",
+          "effort": "이틀"
+        }
+      ],
+      "interview": {
+        "process": "**전형 안내가 이 공고 본문에는 없다.** ⚠️ 같은 회사의 다른 자체 채용 사이트 공고에는 `Application Review - 1st Interview - 2nd Interview - Offer` 와 **`12 weeks of probation period`** 가, 원티드 경유 공고에는 `서류전형 - 리크루터 스크리닝 - 1차 면접 - 2차 면접 - 처우협상 - 최종합격` 이 적혀 있다 — **형태가 여럿이므로 단정하지 않는다.** **본문이 영어**이므로 영어 이력서·면접 가능성을 염두에 둔다.",
+        "expect": [
+          "**GPU 를 할당받고도 놀리는 이유를 셋 이상 대라. 점유와 실제 사용을 어떻게 구분해 재나**",
+          "GPU 사용률이 100%인데 학습이 느린 경우를 설명하라",
+          "**카디널리티가 폭증하는 라벨을 알아볼 수 있나. 지표와 로그 중 어디에 둘지 어떻게 정하나**",
+          "지표 수집기에서 저장소로 보내는 구간이 밀리면 무슨 일이 생기나",
+          "보존 기간과 비용을 어떻게 정했나",
+          "발열과 전력이 GPU 성능에 어떻게 영향을 주나",
+          "**학습이 느려진 원인을 층별로 좁혀 본 경험. 여러 층의 지표를 어떻게 이었나**",
+          "GPU 사용량을 무엇을 기준으로 청구해야 공정한가",
+          "한 팀이 자원을 독점하지 못하게 막는 방법",
+          "**고장 전에 먼저 움직이는 지표를 찾아 본 적이 있나**",
+          "관측성 비용을 어떻게 줄였나. 줄이고도 조사할 수 있었나",
+          "다른 팀이 스스로 볼 수 있는 대시보드를 만들 때 무엇을 감췄나"
+        ],
+        "sources": [
+          {
+            "title": "Sr. Staff Observability Engineer (GPU Cloud & Telemetry Platform)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7992094",
+            "publisher": "쿠팡 채용",
+            "summary": "GPU-as-a-Service 인프라의 관측성 플랫폼을 만드는 자리. Grafana Alloy·Mimir·Loki·Vector 와 NVIDIA DCGM·MIG·NVLink, RDMA·InfiniBand 가 본문에 나온다"
           }
         ]
       }
