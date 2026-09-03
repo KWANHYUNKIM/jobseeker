@@ -897,6 +897,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "dlq",
+      "title": "DLQ · 재처리",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**몇 번 시도해도 처리 못 한 메시지를 따로 빼 두는 큐**다. 목적은 보관이 아니라 **나머지가 계속 흐르게 하는 것** — 그리고 빼 둔 것을 **누가 보고 어떻게 되돌릴지**가 이 낱말의 실제 내용이다.",
+      "aliases": [
+        "DLQ",
+        "데드레터",
+        "Dead Letter Queue",
+        "재처리",
+        "지수 백오프"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
