@@ -39,6 +39,21 @@
    "updated_at": "2026-09-03"
   },
   {
+   "slug": "python",
+   "title": "Python",
+   "category": "language",
+   "level": "core",
+   "status": "done",
+   "one_liner": "실행 속도를 내주고 사람이 코드를 쓰는 시간을 산 언어다. 무거운 계산은 C·Rust 로 짜인 라이브러리가 하고, 파이썬은 그것들을 엮는 자리에 선다.",
+   "aliases": [
+    "Python",
+    "파이썬"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-03"
+  },
+  {
    "slug": "uart",
    "title": "UART",
    "category": "firmware",
