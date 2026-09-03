@@ -7,7 +7,7 @@
     "42dot",
     "포티투닷㈜"
   ],
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-04",
   "site": "42dot.ai",
   "one_liner": "현대차그룹의 소프트웨어 센터. 차를 '바퀴 달린 컴퓨터'로 다시 짜는 일(SDV)을 맡고 있고, 2022년 그룹에 편입된 뒤 2025년 매출 277억에 영업손실 3,498억을 냈다 — 매출로 도는 회사가 아니라 그룹이 투자하는 개발 조직이다.",
@@ -38,6 +38,12 @@
         "url": "https://42dot.ai/careers/program",
         "publisher": "42dot",
         "summary": "회사가 직접 쓴 일하는 방식과 복지 프로그램 안내 — `시간과 장소에 구애받지 않고 오직 성과에만 집중할 수 있는 문화를 지향합니다`"
+      },
+      {
+        "title": "42DOT — THE DEVELOPERS BEHIND THE SOFTWARE DEFINED CAR",
+        "url": "https://www.hyundaimotorgroup.com/en/story/42dot-what-makes-good-developer",
+        "publisher": "현대자동차그룹 저널",
+        "summary": "Vehicle OS·Gleo·자율주행 팀 리드 셋의 공개 인터뷰"
       }
     ],
     "scale": [
@@ -366,8 +372,120 @@
       }
     ]
   },
-  "salary": null,
-  "people": [],
+  "salary": {
+    "unit": "만원",
+    "currency": "KRW",
+    "as_of": "2026-09",
+    "bands": [
+      {
+        "role": "전 직군 평균",
+        "level": "전체",
+        "low": 6032,
+        "high": 6032,
+        "basis": "public_data",
+        "confidence": "inferred",
+        "sources": [
+          {
+            "title": "포티투닷(42dot) 기업정보",
+            "url": "https://www.wanted.co.kr/company/8794",
+            "publisher": "원티드",
+            "summary": "평균연봉 6,032만원 · 국민연금 가입 695명 · 고용보험 가입 588명"
+          }
+        ]
+      }
+    ],
+    "note": "**전 직군 평균 한 값이다 — 직군별·연차별 구분은 공개돼 있지 않다.** 다만 이 회사는 **현대차그룹의 소프트웨어 센터**라 인원 대부분이 개발·연구 직군으로 보이고, **제조·판매 인력이 섞이지 않는다**는 점에서 CJ올리브영 같은 유통사보다 평균값이 개발 직군을 더 잘 대표한다(그래서 `inferred` 로 남긴다). ⚠️ **공고 13건 어디에도 급여 표기가 없고**, 요건이 **연차 무표기부터 8년 이상까지 넓게 퍼져 있어**(신호 8번) 실제 편차는 이 한 값보다 훨씬 클 것이다. **전형 마지막 단계가 `처우 협의` 이므로 그 자리에서 확인하는 것이 가장 정확하다.**",
+    "open_questions": [
+      "직군별(플랫폼·인프라·AI·보안) 밴드와 연차별 구간이 공개돼 있지 않다",
+      "현대차그룹 계열이지만 **모회사 사업보고서에 종속회사 급여 수준이 분리돼 나오는지는 확인하지 못했다**",
+      "⚠️ 커뮤니티(블라인드 등)에 연봉·재택 관련 글이 있으나 **출처가 있어도 평판·소문은 쓰지 않는다는 원칙**에 따라 반영하지 않았다"
+    ]
+  },
+  "people": [
+    {
+      "name": "Sunghan Ryu",
+      "role": "Gleo Core 팀 리드",
+      "why_public": "현대차그룹 공식 저널의 **공개 인터뷰**에 이름과 직책이 실렸다. ⚠️ 영문 표기를 그대로 옮긴다(한글 표기는 기사에 병기돼 있지 않다).",
+      "public_work": [
+        {
+          "title": "42DOT — THE DEVELOPERS BEHIND THE SOFTWARE DEFINED CAR",
+          "url": "https://www.hyundaimotorgroup.com/en/story/42dot-what-makes-good-developer",
+          "kind": "interview",
+          "summary": "42dot 팀 리드 셋이 SDV·AI 에이전트·자율주행 개발에 대해 말한 공개 인터뷰"
+        }
+      ],
+      "leanings": [
+        "**모델 성능과 제품은 다른 문제라고 본다** — `과거에는 모델 성능 개선이 중요한 목표였지만, 제품은 다르다`",
+        "**기술이 고객에게 닿는 전 구간을 책임진다는 관점** — `기술이 제품이 되어 고객 경험으로 전달될 때, 우리는 그 과정의 모든 부분을 책임감 있게 개발하고 검증해야 한다`",
+        "**AI 에이전트에 공격적 점검(red teaming)을 적용**했고, 그 과정에서 신조어 처리 문제를 발견해 **외부 LLM API 기반에서 자체 도메인 특화 모델로 전환**했다고 밝혔다"
+      ],
+      "what_it_means": "**`Senior AI Agent Engineer (Gleo Interaction)`(8년↑) 에 지원한다면 이 인터뷰가 그 팀의 사고방식을 그대로 보여 준다.** 준비 방향이 분명해진다 — **모델 정확도보다 `제품이 된 뒤의 문제`**(예상 못 한 입력·안전 장치·자체 모델로의 전환 판단)를 말할 수 있어야 한다. **외부 API 에서 자체 모델로 옮긴 경험이나, 공격적으로 실패를 찾아본 경험**이 있으면 그것부터 정리한다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Hyundai Motor Group Journal",
+          "url": "https://www.hyundaimotorgroup.com/en/story/42dot-what-makes-good-developer",
+          "publisher": "현대자동차그룹"
+        }
+      ]
+    },
+    {
+      "name": "Junhee Lee",
+      "role": "Vehicle OS 팀 리드",
+      "why_public": "같은 공개 인터뷰에 이름과 직책이 실렸다.",
+      "public_work": [
+        {
+          "title": "42DOT — THE DEVELOPERS BEHIND THE SOFTWARE DEFINED CAR",
+          "url": "https://www.hyundaimotorgroup.com/en/story/42dot-what-makes-good-developer",
+          "kind": "interview",
+          "summary": "Vehicle OS 가 무엇을 감추어 주는지, 그리고 무엇을 보고 사람을 뽑는지에 대해 말한다"
+        }
+      ],
+      "leanings": [
+        "**차량 도메인 지식은 진입 장벽이 아니라고 본다** — `자동차 도메인 지식은 언제든 배울 수 있다`",
+        "**Vehicle OS 의 목표를 `복잡한 제어기 구조를 몰라도 쓸 수 있게 하는 것`으로 설명**한다(예로 든 코드가 `Window.set_position(0.5)` 처럼 단순하다)",
+        "**`문제의 근본으로 가서 그 답을 다른 사람이 사용할 수 있을 만큼 깔끔하게 만드는 것`** 을 일의 기준으로 든다",
+        "채용에서 보는 것을 **`실제 작업에서 어떤 기술을 사용했고, 얼마나 깊이 있게 이해했으며, 문제를 얼마나 끈기 있게 풀었는지`** 로 말했고, `우리는 기본을 가장 중요하게 생각한다` 고 덧붙였다"
+      ],
+      "what_it_means": "**자동차 밖에서 온 지원자에게 가장 중요한 문장이 여기 있다** — 도메인 지식보다 **기본기와 문제를 끝까지 파고든 경험**을 본다고 팀 리드가 직접 말했다. 그러니 **차량 지식이 없다는 이유로 지원을 미룰 근거는 약하다**(다만 신호 8번대로 인지·판단 쪽은 학위 요건이 따로 있다). 면접 준비는 **프로젝트 하나를 골라 `왜 그 기술을 골랐고, 어디까지 이해했고, 어떻게 끝까지 풀었는지`** 를 층층이 말할 수 있게 하는 쪽이 맞다. `SDV 플랫폼과 차량 OS` 도메인과 직접 이어진다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Hyundai Motor Group Journal",
+          "url": "https://www.hyundaimotorgroup.com/en/story/42dot-what-makes-good-developer",
+          "publisher": "현대자동차그룹"
+        }
+      ]
+    },
+    {
+      "name": "Hayoung Kim",
+      "role": "Trion 팀 리드 (자율주행 AI)",
+      "why_public": "같은 공개 인터뷰에 이름과 직책이 실렸다.",
+      "public_work": [
+        {
+          "title": "42DOT — THE DEVELOPERS BEHIND THE SOFTWARE DEFINED CAR",
+          "url": "https://www.hyundaimotorgroup.com/en/story/42dot-what-makes-good-developer",
+          "kind": "interview",
+          "summary": "VLA 기반 자율주행 개발과 팀 운영 방식에 대해 말한다"
+        }
+      ],
+      "leanings": [
+        "**자율주행 AI 의 어려움을 고려할 요소의 수로 설명**한다 — `자율주행 AI는 엄청난 수의 요소를 고려해야 한다`",
+        "**VLA(Vision Language Action) 기반**으로 자율주행을 개발하고 있다고 밝혔다",
+        "**평가 지표를 세워 팀이 그것을 올려 가는 방식**으로 일한다 — `팀원들이 마치 게임의 점수를 올리듯이 평가 지표를 높여가며 모델을 개선`. 차선 변경 기능에서는 두 팀이 **실제 운전 사례를 광범위하게 검토**했다고 한다",
+        "리더 역할을 **`팀이 더 나은 결정을 내릴 수 있도록 돕는 표준을 세우고 다양한 전문성을 자연스럽게 연결하는 사람`** 으로 정의하고, 사람에게는 **`문제를 독립적으로 정의하고 끝까지 검증하는 능력`** 을 중시한다"
+      ],
+      "what_it_means": "**신호 9번(검증·평가가 별도 업무)의 가장 직접적인 뒷받침이다** — 팀 리드가 `평가 지표를 세워 올려 간다`, `끝까지 검증하는 능력` 을 그대로 말한다. **`Senior AI Engineer (Driving VLM/VLA)`(5년↑)의 `evaluation benchmark, ablation 실험 설계` 가 실제로 어떻게 돌아가는지** 보여 주므로, 지원한다면 **자기 프로젝트의 평가 지표를 어떻게 정했고 무엇이 그 지표로 안 잡혔는지**까지 준비한다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Hyundai Motor Group Journal",
+          "url": "https://www.hyundaimotorgroup.com/en/story/42dot-what-makes-good-developer",
+          "publisher": "현대자동차그룹"
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**`salary` 를 비웠다.** 비상장이라 사업보고서가 없고, 집계 서비스 수치도 이번 사이클에서 확인하지 못했다. **지어낸 숫자 하나가 나머지 전부를 못 믿게 만들기 때문에 통째로 비운다**(PROMPT 2°단계). 다음 보강에서 사람인 `view-inner-salary` 페이지(엑셈에서 열렸던 경로)와 잡플래닛·캐치를 확인한다",
     "**`people` 을 비웠다 — 판단이 필요했던 자리다.** 신임 대표 **박민우 사장**(전 테슬라·엔비디아)의 선임은 언론으로 확인되지만, **그가 기술·조직에 대해 직접 말한 공개 자료를 찾지 못했다**(기사에 나오는 것은 기자의 요약이다). 전임 송창현 대표의 사임 메시지는 **사내 메일이 유출된 것**이라 PROMPT 2″단계의 '공개적으로 말한 것'에 해당하지 않아 쓰지 않았다. 새 경영진의 공개 발표·인터뷰가 나오면 그때 채운다",
