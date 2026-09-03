@@ -143,6 +143,24 @@
    "updated_at": "2026-09-03"
   },
   {
+   "slug": "rs485",
+   "title": "RS-485",
+   "category": "firmware",
+   "level": "core",
+   "status": "done",
+   "one_liner": "선 두 가닥의 **전압 차이**로 값을 실어 공장 바닥 1km 까지 보내는 전기 규격이다. 프로토콜이 아니라 **전선 규격**이고, 그 위로 흐르는 것은 대개 UART 프레임과 Modbus 다.",
+   "aliases": [
+    "RS-485",
+    "RS485",
+    "TIA-485",
+    "EIA-485",
+    "차동 전송"
+   ],
+   "sections": 5,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "uart",
    "title": "UART",
    "category": "firmware",
@@ -154,12 +172,11 @@
     "시리얼 통신",
     "serial",
     "USART",
-    "RS-232",
-    "RS-485"
+    "RS-232"
    ],
    "sections": 6,
    "drills": 3,
-   "updated_at": "2026-09-03"
+   "updated_at": "2026-09-04"
   }
  ],
  "categories": {
