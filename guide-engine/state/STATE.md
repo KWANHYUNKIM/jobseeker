@@ -4,43 +4,42 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 모집중 113건 중 **26건** 작성(학습 218개).
-도메인 9개 · **신호 13개** · `salary: null` · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 모집중 113건 중 **27건** 작성(학습 227개).
+도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
 
-직전 회차: **`[쿠팡 장애인 채용] AI 데이터 라벨링 및 검수 (재택근무)`**(saramin, `경력무관`).
-**113건 중 문턱이 가장 낮은 자리**다. 얇은 공고라 **학습 6개로 얇게 썼다.**
+직전 회차: **`[쿠팡페이] Senior QA Engineer (계약직)`**(saramin, `경력 5~12년`).
+줄 집합 대조 결과 **기존과 공통 줄 0개**. **QA 직군은 처음.**
 
-이 회차에 센 것 → **신호 13번**:
-- **`경력무관` 은 2건**뿐(이 공고 + `Logistics Data Assistant`).
-- **3년 이하 요건 7건은 전부 데이터 분석·CS·보안 분석·PM 계열** — **개발 직군엔 3년 이하 문이 없다.**
-- **본문에 `재택` 이 나오는 공고는 5건**뿐이고 대개 `재택 + 오피스 출근 병행` 이다.
-  **제목에 재택근무가 적힌 것은 이 공고 하나.**
-
-공고 자체의 발견:
-- 담당업무에 **`윤리/도덕성 검수`** 가 있다 — 맞고 틀림만이 아니라 **내보내도 되는 답인지**를 본다.
-- ⚠️ 자격에 **글쓰기 요건**이 있다(`육하원칙에 의거하여`) — 산출물이 라벨이 아니라 **사유**다.
-- 전형이 **`전형 → 화상면접 → 결과발표`** 로 이 회사에서 가장 단계가 적다.
+이 공고에서만 나온 것:
+- ⚠️ **전체 5년인데 QA/SDET 경력은 1년만 요구한다** — **개발자에서 테스트 자동화로
+  방향을 튼 사람에게 열린 구조**다. 자격에 프로그래밍 언어가 따로 있으니
+  **코드를 쓰는 QA** 를 찾는다.
+- 담당업무가 **예외 흐름을 이름으로 나열**한다 — `정상 결제뿐만 아니라 실패, 취소, 환불,
+  재처리`. 같은 조직 백엔드 공고들이 `데이터 정합성` 을 반복 요구하는 것과 정확히 짝이다.
+  → `edge` 를 **결제 예외 조합 표**(상태 × 요청)로 잡았다.
+- **`Test Data Management` 가 담당업무에 한 줄로 따로 있다** — 결제 E2E 는 데이터를
+  만드는 것부터가 일이고, 개인정보·카드 정보 때문에 실제 데이터를 못 쓴다.
+- ⚠️ **계약직**이다. `fit` 과 `interview` 에 계약 기간·전환 조건 확인을 넣었다.
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합)** 을 본다.
 
-⚠️ **중복 게시가 생각보다 많다.** 이미 쓴 공고들의 한국어 줄과 **50% 넘게 겹치는 미완 공고가
-8건** 있다 — `CS Specialist (데이터 분석 & AI) 채용`(dev), `Manager, Back-end Engineering
-(Rocket Pay)`(ats), `Senior, Back-end Engineer (Advertiser Platform)`(ats), `Senior Staff
-Back-end Engineer (Rocket Pay)`(ats), `Sr Backend Engineer (Eats Merchant)`(ats),
-`Staff Backend Engineer (Orchestration Platform)`(ats), `Staff, Back-end Engineer (GOEX)`(ats),
-`Global Operations Technology(GOT) 개발자 집중 채용`(ats).
-**대상으로 잡히면 먼저 줄 집합을 대조하고, 같으면 건너뛴다.**
+⚠️ **중복 게시 8건 목록**(이미 쓴 공고와 한국어 줄이 50% 넘게 겹친다) — 대상으로 잡히면
+줄 집합을 대조하고 같으면 건너뛴다: `CS Specialist (데이터 분석 & AI) 채용`(dev),
+`Manager, Back-end Engineering (Rocket Pay)`(ats), `Senior, Back-end Engineer (Advertiser
+Platform)`(ats), `Senior Staff Back-end Engineer (Rocket Pay)`(ats), `Sr Backend Engineer
+(Eats Merchant)`(ats), `Staff Backend Engineer (Orchestration Platform)`(ats),
+`Staff, Back-end Engineer (GOEX)`(ats), `Global Operations Technology(GOT) 개발자 집중 채용`(ats).
 
 아직 안 다룬 축:
-- `[쿠팡페이] Senior QA Engineer (계약직)`(saramin, 5년) — **QA 직군은 처음.**
 - **데이터 사이언스 4건** — ⚠️ 둘은 `qualifications` 가 비고 `preferences` 가 길다.
-- 보안 2건(`보안엔지니어 (이메일 보안)`, `정보보안 GRC 담당자`) — ⚠️ 앞의 것은 ats 공고와 중복.
+- 보안 2건(`보안엔지니어 (이메일 보안)` — ⚠️ ats 공고와 중복, `[쿠팡/계약직] 정보보안 GRC 담당자`).
+- `[쿠팡로지스틱스서비스] Logistics Data Assistant`(`경력무관`) — **CLS 법인**은 처음이다.
 
 닫을지 판단할 재료:
 - **`salary`**: **여전히 근거 없음.** 전형 마지막 단계는 공고마다 다르다 — 일반화 금지.
 - **`people`**: 공개 발표·서명 있는 기술 글. **못 찾으면 빈 배열이 정상.**
-- ⚠️ **113건 중 26건이지만 중복 게시가 최소 8건**이므로 **실제 자리 수는 113보다 적다.**
+- ⚠️ **113건 중 27건이지만 중복 게시가 최소 8건**이므로 실제 자리 수는 113보다 적다.
 
 ## 자료 접근 지도
 
