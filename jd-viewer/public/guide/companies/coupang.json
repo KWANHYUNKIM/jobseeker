@@ -4810,6 +4810,27 @@
         ],
         "sources": []
       }
+    },
+    {
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/565141?ReturnUrl=RecruitInfo",
+      "title": "CS Specialist (데이터 분석 & AI) 채용",
+      "site": "dev",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 본문(담당업무·자격요건·우대사항)이 `[쿠팡] CS Specialist (데이터 분석 & AI)` 와 **글자 그대로 같다**. 브리핑은 그쪽 하나로 충분하니 **거기를 본다.** 두 자리가 아니므로 **한 곳으로만 지원한다**(신호 12번).",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54660962&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=6f12a8c2-7291-4c1f-9c6e-edde23f7d405"
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8161175",
+      "title": "Senior Security Engineer (Detection Operations : Email)",
+      "site": "ats",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 본문(담당업무·자격요건·우대사항)이 `보안엔지니어 (이메일 보안) 채용` 와 **글자 그대로 같다**. 브리핑은 그쪽 하나로 충분하니 **거기를 본다.** 두 자리가 아니므로 **한 곳으로만 지원한다**(신호 12번).",
+      "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54875253&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=f1a50b6a-2f35-4768-a342-7cd261998b6d"
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8127112",
+      "title": "Sr Backend Engineer (Eats Merchant)",
+      "site": "ats",
+      "verdict": "⚠️ **같은 자리가 다른 채용 사이트에 올라온 게시다** — 본문(담당업무·자격요건·우대사항)이 `Senior Back-end Engineer(Eats Merchant)` 와 **글자 그대로 같다**. 브리핑은 그쪽 하나로 충분하니 **거기를 본다.** 두 자리가 아니므로 **한 곳으로만 지원한다**(신호 12번).",
+      "duplicate_of": "https://www.wanted.co.kr/wd/255060"
     }
   ],
   "open_questions": [

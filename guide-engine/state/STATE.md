@@ -4,46 +4,41 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 모집중 113건 중 **31건** 작성(학습 260개).
-도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **34개**(브리핑 31 + **중복 표시 3**),
+학습 260개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
 
-직전 회차: **`[쿠팡로지스틱스서비스] Logistics Data Assistant 모집`**(saramin, `경력무관`).
-**CLS(물류 계열사)는 처음.** 공통 줄 0.
+⚠️ **직전 회차는 보수 사이클이었다.** `--gaps` 상단이 **이미 중복이라고 확인해 둔 공고**
+(`CS Specialist (데이터 분석 & AI) 채용`, catch)였는데, **엔진에 그걸 표시할 수단이 없었다** —
+`MIN_STUDY = 3` 이라 브리핑을 안 쓰면 영영 대기열 상단에 남아 **루프가 막힌다.**
 
-이 공고에서만 나온 것:
-- ⚠️ **`main_tasks` 가 `ㆍ` 한 글자다** — 담당업무가 요약 절에 없고 **`full_jd` 에만** 있다.
-  quote 는 세 절에서만 뽑히므로 **자격 4줄 + 우대 5줄에서만 인용**하고, 담당업무 내용은
-  `why` 안에서 풀어 썼다. (검증에 걸리기 전에 미리 확인했다.)
-- ⚠️ **전환 경로가 본문에 명시된 첫 사례** — `계약직 12개월(최대 24개월 근무 후 평가에
-  따라 정규직 전환 검토 가능)`. `edge` 를 그 조건 확인으로 잡았다.
-- 자격 요건이 **`SQL … 또는 이에 준하는 역량`** 이다 — 경력 없이도 **기록으로 증명**하면
-  되는 구조라 `edge` 첫째를 **한 쪽짜리 분석 노트 두세 편 공개**로 잡았다.
-- ⚠️ **`[쿠팡 이해상충 정책]` — 쿠팡 그룹사 재직 중이면 근무가 금지된다.**
-- CLS 소개(택배운송사업자 지정, 분류전담인력·쿠팡친구·영업점)를 **물류 도메인
-  `what_to_know` 에 보강**했다.
+그래서 **최소 변경**을 했다(커밋 두 개로 나눔 — 코드/스키마 먼저, 데이터 다음):
+- `schema.json` 에 **`postings[].duplicate_of`** 를 더했다.
+- `validate.py`: `duplicate_of` 가 있으면 **study·edge 를 요구하지 않고 `--gaps` 에서도 뺀다.**
+  대신 **가리키는 url 이 같은 파일 안에 있는지** 검증한다(자기 자신도 막는다).
+- 쿠팡에서 **본문이 글자 그대로 같은 3건**을 그렇게 표시했다:
+  `CS Specialist …`(catch) → saramin, `Senior Security Engineer (Detection Op…)`(ats) →
+  `보안엔지니어 (이메일 보안)`, `Sr Backend Engineer (Eats Merchant)`(ats) → wanted.
+
+⚠️ **나머지 6건은 완전 일치가 아니어서 표시하지 않았다** — 겹침이 50%를 넘을 뿐이다.
+대상으로 잡히면 **`Senior Machine Learning Engineer` 때처럼 차이만 쓴다**:
+`Manager, Back-end Engineering (Rocket Pay)`(ats), `Senior, Back-end Engineer (Advertiser
+Platform)`(ats), `Senior Staff Back-end Engineer (Rocket Pay)`(ats), `Staff Backend Engineer
+(Orchestration Platform)`(ats), `Staff, Back-end Engineer (GOEX)`(ats),
+`Global Operations Technology(GOT) 개발자 집중 채용`(ats).
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합)** 을 본다.
 
-⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 세 절 온전)를 이번 회차에
-먼저 열어 봤으나 **`--gaps` 상단이 CLS 였으므로 사다리를 따랐다.** 그 공고는 영문이고
-**제목은 `Senior Staff` 인데 본문 첫 줄은 `Principal Data Scientist`** 다(신호 11번 계열의
-제목/본문 불일치). 요건은 **Ph.D. 또는 석사 + 10년**, LLM·지식그래프·GNN·강화학습에
-**MIP·동적계획법·메타휴리스틱**과 **Gurobi/CPLEX/SCIP**, 이산사건 시뮬레이션(AnyLogic·Simio)
-까지 요구한다. 전형은 `Application Review - Phone Interview - Onsite … - Offer`.
-
-⚠️ **중복 게시 9건** — 대상으로 잡히면 줄 집합 대조 후 같으면 건너뛴다:
-`CS Specialist (데이터 분석 & AI) 채용`(dev), `Manager, Back-end Engineering (Rocket Pay)`(ats),
-`Senior, Back-end Engineer (Advertiser Platform)`(ats), `Senior Staff Back-end Engineer
-(Rocket Pay)`(ats), `Sr Backend Engineer (Eats Merchant)`(ats), `Staff Backend Engineer
-(Orchestration Platform)`(ats), `Staff, Back-end Engineer (GOEX)`(ats),
-`Global Operations Technology(GOT) 개발자 집중 채용`(ats),
-`Senior Security Engineer (Detection Op…)`(ats).
+⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 세 절 온전).
+**제목은 `Senior Staff` 인데 본문 첫 줄은 `Principal Data Scientist`** 다(제목/본문 불일치).
+요건은 **Ph.D. 또는 석사 + 10년**, LLM·지식그래프·GNN·강화학습에 **MIP·동적계획법·
+메타휴리스틱**과 **Gurobi/CPLEX/SCIP**, 이산사건 시뮬레이션(AnyLogic·Simio)까지.
+전형은 `Application Review - Phone Interview - Onsite … - Offer`.
 
 닫을지 판단할 재료:
 - **`salary`**: **여전히 근거 없음.** 전형 마지막 단계는 공고마다 다르다 — 일반화 금지.
 - **`people`**: 공개 발표·서명 있는 기술 글. **못 찾으면 빈 배열이 정상.**
-- ⚠️ **113건 중 31건이지만 중복 게시가 최소 9건**이므로 실제 자리 수는 113보다 적다.
+- ⚠️ **113건 중 브리핑 31건 + 중복 3건.** 중복이 더 있으므로 **실제 자리 수는 113보다 적다.**
 
 ## 자료 접근 지도
 
@@ -59,6 +54,15 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **엔진이 막으면 엔진을 고친다 — 단, 커밋을 나눈다.** 중복 게시를 표시할 수단이 없어
+  `--gaps` 가 같은 공고를 계속 상단에 올렸다. `duplicate_of` 를 더해 풀었는데,
+  **코드·스키마 커밋과 데이터 커밋을 따로** 냈다("코드 변경은 섞지 않는다"는 규칙은
+  한 커밋에 섞지 말라는 뜻이지 고치지 말라는 뜻이 아니다). 그리고 **새 필드에는 반드시
+  검증을 함께 넣는다** — 여기서는 가리키는 url 이 같은 파일 안에 있는지, 자기 자신을
+  가리키지 않는지.
+- **완전히 같은 것만 중복으로 표시한다.** 겹침이 50%를 넘어도 문장이 다르면 그건 중복이
+  아니라 **차이만 쓸 대상**이다. 애매한 것을 중복으로 묶으면 그 공고의 진짜 차이가 사라진다.
 
 - **`main_tasks` 가 비어 있어도 공고를 버리지 않는다.** CLS 공고는 요약 절의 담당업무가
   `ㆍ` 한 글자였고 실제 내용은 `full_jd` 에만 있었다. **quote 는 자격·우대에서만 뽑고,
