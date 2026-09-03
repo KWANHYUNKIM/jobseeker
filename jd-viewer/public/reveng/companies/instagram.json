@@ -5,7 +5,7 @@
   "country": "US",
   "category": "소셜",
   "status": "done",
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-09-03",
   "one_liner": "수십억 개 중에서 고르되 한 번에 고르지 않는 법을 파는 회사",
   "business_model": "**Meta 산하 서비스**다. 사용자에게 돈을 받지 않고 그들이 보는 지면을 광고로 판다. Meta 전체로는 2025년 매출 **2,009.7억 달러**(+22%), 2025년 12월 평균 Family 일간 활성 이용자 **35.8억 명**(+7%). 연간 광고 노출 +12%, 평균 광고 단가 +9%. **Instagram 단독 매출은 IR 에서 분리 공시되지 않는다.** 앞선 회사들과 다른 점은 **다룰 콘텐츠의 자릿수**다 — 당근의 피드가 사내 서비스들의 콘텐츠를 모으는 문제였다면 여기는 **수십억 개에서 실시간으로 고르는** 문제다. 그래서 기술이 '무엇을 위에 놓을까'가 아니라 **'어떻게 하면 전부를 정밀하게 보지 않아도 되게 할까'**에서 시작한다.\n\n**그리고 이 회사를 네 도메인에 걸쳐 읽으면 같은 처방이 두 번 반복된다.** Explore 퍼널의 **Two Tower** 와 광고 랭킹의 **오프라인/온라인 분리** — 둘 다 **미리 계산할 수 있게 하려고 사용자와 아이템(광고)의 상호작용 피처를 포기한다.** 밀리초 예산 안에서 수십억 개를 다뤄야 하는 회사라 **'사용자 쪽을 떼어 캐시한다'가 이 회사의 기본 문법**이다. 흥미로운 건 그 대가가 매번 같다는 것 — **지금 이 사람과 이 아이템 사이에서 벌어지는 일을 앞단에서 볼 수 없다**(마지막 문장은 이 사이트의 해석).",
   "products": [
@@ -1766,7 +1766,9 @@
     "오프라인 사용자 임베딩을 얼마나 자주 갱신하는지(신선도)는 밝히지 않는다.",
     "학습·서빙 인프라의 규모(가속기 수·파라미터 수)와 A/B 실험의 세부는 공개되지 않았다.",
     "Instagram 고유의 무결성 시스템은 1차 자료를 찾지 못했다 — 이 도메인의 자료는 2019년 발표이고 사례가 Facebook 계정 쪽에 치우쳐 있다.",
-    "무결성 점수가 추천 퍼널의 최종 재랭킹에 어떤 형태로 들어가는지는 두 글 모두 밝히지 않는다."
+    "무결성 점수가 추천 퍼널의 최종 재랭킹에 어떤 형태로 들어가는지는 두 글 모두 밝히지 않는다.",
+    "**이전을 언제 결정하고 언제 착수했는지는 확인하지 못했다.** 2014년 6월 기사가 진행 상황을 전하지만 시작 시점을 적지 않고, 시작 시점을 다룬 기사(datacenterdynamics)는 403 으로 막혔다. 그래서 `from` 을 2014년으로 뒀다 — 이 시기의 사건이 그해에 진행되고 있었다는 사실까지가 확인된 것이다.",
+    "**추천·광고 랭킹 축은 세대별 연도가 없어 세우지 못했다.** Explore 추천 시스템(2023-08)과 광고 랭킹 다단계 아키텍처(2026-08) 둘 다 '지금 이렇게 되어 있다'로 쓰였다. 후자는 이전 방식(사용자 이벤트 시퀀스를 한 모델이, 희소 특징 상호작용을 다른 모델이 다루는 하이브리드)의 한계를 세 가지로 적기는 한다 — 컴포넌트 사이의 손실 있는 지식 전달, 수동 특징 공학 의존, 랭킹과 시퀀스 모델 컴포넌트 간 간섭으로 인한 확장 한계. 그런데 **그게 언제였는지가 없다.**"
   ],
   "sources": [
     {
@@ -1805,5 +1807,64 @@
       "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
     }
   ],
-  "domain": "instagram.com"
+  "domain": "instagram.com",
+  "eras": [
+    {
+      "id": "2014-out-of-someone-elses-cloud",
+      "from": "2014",
+      "to": "",
+      "title": "남의 클라우드에서 나오려니 주소 공간이 부딪혔다",
+      "context": "아마존 EC2 에서 **수천 대 규모의 인스턴스**를 돌리고 있었고 매일 더 띄우는 중이었다. 사용자는 **약 2억 명**이었고, **옮기는 동안 그 수가 두 배가 됐다.**",
+      "what_changed": "모회사(페이스북)의 데이터센터로 옮겼다. 먼저 **아마존 VPC 안으로 들어가는 단계를 약 3주에** 마치고, 거기서 데이터센터 쪽으로 조각씩 넘겼다.",
+      "why": "모회사의 인프라 안으로 들이는 일이다. ⚠️ 이 자료는 그 결정의 이유를 적지 않는다 — 무엇이 한계였는지가 아니라 무엇을 했는지만 전한다.",
+      "tradeoff": "**첫 단계의 주된 문제가 주소였다** — **페이스북의 사설 IP 공간이 EC2 의 IP 공간과 충돌**했다. 그래서 **`Neti` 라는 동적 IP 테이블 조작 데몬을 새로 만들어야** 했다. 어느 클라우드에서 돌든 인스턴스마다 하나의 주소를 주고, 필요한 보안 그룹 기능을 제공하는 도구다. **두 회사의 네트워크를 하나로 보이게 만드는 도구를 먼저 지어야 옮기는 일이 시작될 수 있었다** — 옮기기 전에 옮길 길부터 만든 것이다.",
+      "stack_in": [
+        "Neti(동적 IP 테이블 데몬)",
+        "Amazon VPC(경유)"
+      ],
+      "stack_out": [
+        "Amazon EC2"
+      ],
+      "metrics": [
+        {
+          "label": "사용자 (2014-06 시점)",
+          "value": "약 2억 명 · 이전 중 두 배 증가",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Instagram Migrates from Amazon's Cloud into Facebook Data Centers",
+              "url": "https://www.datacenterknowledge.com/cloud/instagram-migrates-from-amazon-s-cloud-into-facebook-data-centers",
+              "publisher": "Data Center Knowledge",
+              "date": "2014-06-27",
+              "summary": "아마존에서 모회사 데이터센터로 옮기는 과정에서 사설 IP 공간이 충돌해 도구를 새로 만들어야 했던 일을 전한다."
+            }
+          ]
+        },
+        {
+          "label": "VPC 단계 소요",
+          "value": "약 3주",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Instagram Migrates from Amazon's Cloud into Facebook Data Centers",
+              "url": "https://www.datacenterknowledge.com/cloud/instagram-migrates-from-amazon-s-cloud-into-facebook-data-centers",
+              "publisher": "Data Center Knowledge",
+              "date": "2014-06-27",
+              "summary": "아마존에서 모회사 데이터센터로 옮기는 과정에서 사설 IP 공간이 충돌해 도구를 새로 만들어야 했던 일을 전한다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Instagram Migrates from Amazon's Cloud into Facebook Data Centers",
+          "url": "https://www.datacenterknowledge.com/cloud/instagram-migrates-from-amazon-s-cloud-into-facebook-data-centers",
+          "publisher": "Data Center Knowledge",
+          "date": "2014-06-27",
+          "summary": "아마존에서 모회사 데이터센터로 옮기는 과정에서 사설 IP 공간이 충돌해 도구를 새로 만들어야 했던 일을 전한다."
+        }
+      ]
+    }
+  ]
 }
