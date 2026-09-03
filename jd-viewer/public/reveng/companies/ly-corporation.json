@@ -1,1817 +1,1903 @@
 {
- "slug": "ly-corporation",
- "name": "LY 코퍼레이션 (라인야후)",
- "name_en": "LY Corporation",
- "country": "JP",
- "category": "메시징",
- "status": "done",
- "updated_at": "2026-08-21",
- "domain": "lycorp.co.jp",
- "one_liner": "일본에서 메신저·포털·결제를 한 회사가 쥐고 있다 — 그래서 합병 이전의 시스템 두 벌을 물려받았다",
- "business_model": "**메신저 LINE 과 포털 Yahoo! JAPAN, 결제 PayPay 를 한 회사가 함께 굴린다.** 앱 자체는 공짜로 열어 두고, 그 위에 광고와 커머스와 금융을 얹어 회수하는 구조다.\n\n매출은 세 부문으로 나뉜다(FY2026/03, 2026년 3월 31일 종료 · 백만 엔):\n**Commerce 857,897 · Media 734,545 · Strategic 445,775 · Others 10,235 · 조정 -12,086 → 연결 합계 2,036,366.**\n**가장 큰 부문이 광고가 아니라 커머스**라는 점이 이 회사를 다른 메신저 회사와 갈라놓는다.\n\n**그리고 이 회사의 기술적 성격은 합병에서 나온다.** LINE 과 Yahoo! JAPAN 이 각자 십수 년씩 키운 시스템을 물려받았기 때문에, 같은 일을 하는 물건이 **두 벌** 있다 — 하둡 클러스터도, 네임스페이스를 푸는 방식도, 권한을 거는 단위도 서로 다르다. 그래서 이 회사의 글은 '무엇을 새로 지었나'보다 **'서로 다른 역사를 가진 둘을 어떻게 잇는가'**를 자주 다룬다(이 관찰은 이 사이트의 해석이다).\n\n**세 도메인에 걸쳐 같은 모양이 반복된다.** 첫째, **옮기기 전에 선부터 긋는다** — 레이크는 인증·인가·격리·거버넌스를 전송보다 먼저 세웠고, Kafka 는 '헤더가 없으면 평문'이라는 규칙을 정한 뒤에야 1%부터 켰다. 둘째, **둘을 합치지 않고 나란히 둔 채 잇는다** — 경로 기반 영역과 테이블 기반 영역을 선으로 갈랐고, 키 회전 중에는 옛 키와 새 키를 함께 살렸으며, 안드로이드와 iOS 는 WebAuthn 으로 묶되 서버에 통일 로직을 남겨 두었다. 셋째, **완벽을 포기하고 확률로 좁힌다** — 공유 KEK 유출은 회전으로, 어테스테이션 우회는 빈도 이상 탐지로, 작은 파일은 주기적 병합으로 눌러 둘 뿐 근본 해결을 주장하지 않는다. 넷째, **엄격함이 공격자보다 정상 사용자를 먼저 자른다** — 인증서 검증을 규격대로 조였더니 걸린 것이 대부분 인코딩이 이상한 정상 기기였고, 그래서 기준을 상황별로 나눴다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
- "revenue_total": "FY2026/03 연결 매출 2,036,366 백만 엔 (약 2조 엔)",
- "products": [
-  "LINE (메신저)",
-  "Yahoo! JAPAN (포털·검색)",
-  "PayPay (결제)",
-  "LINE 앱 내 쇼핑 탭 (FY2025 하반기부터 단계 도입)",
-  "Yahoo! JAPAN 광고"
- ],
- "revenue_streams": [
-  {
-   "name": "Commerce Business",
-   "how": "이커머스 관련 서비스. **FY2026/03 매출 857,897 백만 엔**으로 세 부문 중 가장 크다.",
-   "confidence": "confirmed",
-   "sources": [
+  "slug": "ly-corporation",
+  "name": "LY 코퍼레이션 (라인야후)",
+  "name_en": "LY Corporation",
+  "country": "JP",
+  "category": "메시징",
+  "status": "done",
+  "updated_at": "2026-09-03",
+  "domain": "lycorp.co.jp",
+  "one_liner": "일본에서 메신저·포털·결제를 한 회사가 쥐고 있다 — 그래서 합병 이전의 시스템 두 벌을 물려받았다",
+  "business_model": "**메신저 LINE 과 포털 Yahoo! JAPAN, 결제 PayPay 를 한 회사가 함께 굴린다.** 앱 자체는 공짜로 열어 두고, 그 위에 광고와 커머스와 금융을 얹어 회수하는 구조다.\n\n매출은 세 부문으로 나뉜다(FY2026/03, 2026년 3월 31일 종료 · 백만 엔):\n**Commerce 857,897 · Media 734,545 · Strategic 445,775 · Others 10,235 · 조정 -12,086 → 연결 합계 2,036,366.**\n**가장 큰 부문이 광고가 아니라 커머스**라는 점이 이 회사를 다른 메신저 회사와 갈라놓는다.\n\n**그리고 이 회사의 기술적 성격은 합병에서 나온다.** LINE 과 Yahoo! JAPAN 이 각자 십수 년씩 키운 시스템을 물려받았기 때문에, 같은 일을 하는 물건이 **두 벌** 있다 — 하둡 클러스터도, 네임스페이스를 푸는 방식도, 권한을 거는 단위도 서로 다르다. 그래서 이 회사의 글은 '무엇을 새로 지었나'보다 **'서로 다른 역사를 가진 둘을 어떻게 잇는가'**를 자주 다룬다(이 관찰은 이 사이트의 해석이다).\n\n**세 도메인에 걸쳐 같은 모양이 반복된다.** 첫째, **옮기기 전에 선부터 긋는다** — 레이크는 인증·인가·격리·거버넌스를 전송보다 먼저 세웠고, Kafka 는 '헤더가 없으면 평문'이라는 규칙을 정한 뒤에야 1%부터 켰다. 둘째, **둘을 합치지 않고 나란히 둔 채 잇는다** — 경로 기반 영역과 테이블 기반 영역을 선으로 갈랐고, 키 회전 중에는 옛 키와 새 키를 함께 살렸으며, 안드로이드와 iOS 는 WebAuthn 으로 묶되 서버에 통일 로직을 남겨 두었다. 셋째, **완벽을 포기하고 확률로 좁힌다** — 공유 KEK 유출은 회전으로, 어테스테이션 우회는 빈도 이상 탐지로, 작은 파일은 주기적 병합으로 눌러 둘 뿐 근본 해결을 주장하지 않는다. 넷째, **엄격함이 공격자보다 정상 사용자를 먼저 자른다** — 인증서 검증을 규격대로 조였더니 걸린 것이 대부분 인코딩이 이상한 정상 기기였고, 그래서 기준을 상황별로 나눴다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
+  "revenue_total": "FY2026/03 연결 매출 2,036,366 백만 엔 (약 2조 엔)",
+  "products": [
+    "LINE (메신저)",
+    "Yahoo! JAPAN (포털·검색)",
+    "PayPay (결제)",
+    "LINE 앱 내 쇼핑 탭 (FY2025 하반기부터 단계 도입)",
+    "Yahoo! JAPAN 광고"
+  ],
+  "revenue_streams": [
     {
-     "title": "Financial Highlights — 세그먼트별 매출",
-     "url": "https://www.lycorp.co.jp/en/ir/finance/highlight.html",
-     "publisher": "LY Corporation IR",
-     "date": "2026-05",
-     "summary": "FY2026/03(2026년 3월 31일 종료) 세그먼트별 매출. Media 734,545 · Commerce 857,897 · Strategic 445,775 · Others 10,235 · 조정 -12,086, 연결 합계 2,036,366 백만 엔."
+      "name": "Commerce Business",
+      "how": "이커머스 관련 서비스. **FY2026/03 매출 857,897 백만 엔**으로 세 부문 중 가장 크다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Financial Highlights — 세그먼트별 매출",
+          "url": "https://www.lycorp.co.jp/en/ir/finance/highlight.html",
+          "publisher": "LY Corporation IR",
+          "date": "2026-05",
+          "summary": "FY2026/03(2026년 3월 31일 종료) 세그먼트별 매출. Media 734,545 · Commerce 857,897 · Strategic 445,775 · Others 10,235 · 조정 -12,086, 연결 합계 2,036,366 백만 엔."
+        }
+      ],
+      "share": 42.1,
+      "amount": "857,897 백만 엔"
+    },
+    {
+      "name": "Media Business",
+      "how": "광고. **FY2026/03 매출 734,545 백만 엔.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Financial Highlights — 세그먼트별 매출",
+          "url": "https://www.lycorp.co.jp/en/ir/finance/highlight.html",
+          "publisher": "LY Corporation IR",
+          "date": "2026-05",
+          "summary": "FY2026/03(2026년 3월 31일 종료) 세그먼트별 매출. Media 734,545 · Commerce 857,897 · Strategic 445,775 · Others 10,235 · 조정 -12,086, 연결 합계 2,036,366 백만 엔."
+        }
+      ],
+      "share": 36.0,
+      "amount": "734,545 백만 엔"
+    },
+    {
+      "name": "Strategic Business",
+      "how": "금융·결제를 포함한 전략 사업. **FY2026/03 매출 445,775 백만 엔.** 부문 안의 서비스별 내역은 이 공시 수준에서는 갈라지지 않는다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Financial Highlights — 세그먼트별 매출",
+          "url": "https://www.lycorp.co.jp/en/ir/finance/highlight.html",
+          "publisher": "LY Corporation IR",
+          "date": "2026-05",
+          "summary": "FY2026/03(2026년 3월 31일 종료) 세그먼트별 매출. Media 734,545 · Commerce 857,897 · Strategic 445,775 · Others 10,235 · 조정 -12,086, 연결 합계 2,036,366 백만 엔."
+        }
+      ],
+      "share": 21.8,
+      "amount": "445,775 백만 엔"
     }
-   ],
-   "share": 42.1,
-   "amount": "857,897 백만 엔"
+  ],
+  "domain_map": {
+    "title": "LY 코퍼레이션 도메인 지도",
+    "question": "메시지 하나가 암호화된 채로 어디까지 흐르는가?",
+    "code": "flowchart TD\n  U[\"사용자 — LINE 앱\"]\n  subgraph MSG[\"<b>암호·기기 신뢰</b> — 누가 말하는가\"]\n    LS[\"Letter Sealing (E2EE)\"]\n    PQ[\"PQC 하이브리드 계획<br/>지금 모아 나중에 푸는 위협\"]:::quiet\n    DA[\"기기 어테스테이션 — TEE<br/>믿을 수 없는 기기에서<br/>믿을 수 있는 대답을 받는다\"]:::accent\n  end\n  subgraph PIPE[\"<b>스트리밍 파이프라인</b> — 서비스와 서비스 사이\"]\n    PROD[\"생산자 인터셉터<br/>DEK 로 레코드 암호화\"]\n    K[(\"Kafka 브로커<br/>초당 100만 메시지<br/><b>평문을 보지 않는다</b>\")]\n    CONS[\"소비자 디시리얼라이저<br/>헤더 보고 복호 또는 통과\"]\n  end\n  subgraph LAKE[\"<b>데이터 레이크 통합</b> — 합병 이전 둘을 잇는다\"]\n    V[\"구 LINE — ViewFS<br/>테이블 단위 권한\"]\n    R[\"구 Yahoo! JAPAN — RBF<br/>경로 단위 권한\"]\n    G[\"Kerberos 교차 신뢰 · 큐 · NodeLabel<br/>먼저 통제, 그다음 전송\"]\n  end\n  KMS[(\"키 관리 서비스<br/>KEK 공개키 / 개인키\")]:::list\n  U --> DA\n  U --> LS\n  LS -.-> PQ\n  U --> PROD\n  KMS -->|\"공개키만\"| PROD\n  PROD --> K --> CONS\n  KMS -->|\"인가된 소비자에게만 개인키\"| CONS\n  CONS --> LAKE\n  V --- G --- R"
   },
-  {
-   "name": "Media Business",
-   "how": "광고. **FY2026/03 매출 734,545 백만 엔.**",
-   "confidence": "confirmed",
-   "sources": [
+  "domains": [
     {
-     "title": "Financial Highlights — 세그먼트별 매출",
-     "url": "https://www.lycorp.co.jp/en/ir/finance/highlight.html",
-     "publisher": "LY Corporation IR",
-     "date": "2026-05",
-     "summary": "FY2026/03(2026년 3월 31일 종료) 세그먼트별 매출. Media 734,545 · Commerce 857,897 · Strategic 445,775 · Others 10,235 · 조정 -12,086, 연결 합계 2,036,366 백만 엔."
+      "name": "스트리밍 파이프라인",
+      "why": "서비스 사이를 잇는 Kafka 토픽 하나가 **초당 100만 메시지**를 나른다. 한 팀이 쓰고 여러 팀이 읽는 구조라, 이 한 줄기가 막히거나 새면 그 뒤의 팀이 전부 영향을 받는다. **TLS·SASL·ACL 은 전송 중과 접근을 지키지만 브로커 디스크에 남는 페이로드는 평문이다** — 그 자리를 이 도메인이 다룬다.",
+      "tech": [
+        {
+          "tech": "DEK-KEK 이중 키 구조 (AES-GCM + ECIES secp521r1)",
+          "solves": "비싼 비대칭 연산을 **큰 페이로드가 아니라 짧은 DEK 에만** 쓴다. 덕분에 **생산자는 공개키만** 받고 **소비자는 인가를 받아야 개인키**를 받는 식으로 암호화 권한과 복호화 권한을 갈라 놓을 수 있다.",
+          "limits": "키 관리 서비스가 새로운 의존이 된다 — 암호화 자체보다 **키를 누구에게 주느냐**가 시스템의 무게중심이 된다(뒷문장은 이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+              "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+              "publisher": "LY Corporation Tech Blog",
+              "date": "2026-07-29",
+              "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "공유 KEK",
+          "solves": "소비자가 몇이든 **메시지 헤더의 메타데이터를 한 항목으로** 유지한다.",
+          "limits": "회사가 직접 적었다 — **키가 새면 과거와 미래의 메시지를 모두 복호화할 수 있다.** KMS 인가와 주기적 회전으로 완화할 뿐, 이 구조를 대체할 다른 수는 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+              "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+              "publisher": "LY Corporation Tech Blog",
+              "date": "2026-07-29",
+              "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "Kafka 인터셉터·디시리얼라이저 (레코드 단위 암호화)",
+          "solves": "클라이언트 내부를 고치지 않고 **표준 확장점**만 쓴다. 그래서 **Kafka 업그레이드와의 호환이 유지되고**, 생산자·소비자 코드를 바꾸지 않고 암호화를 배포할 수 있다.",
+          "limits": "배치 단위보다 **CPU 와 메시지 크기가 더 든다** — 회사는 그 대가를 알고 골랐다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+              "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+              "publisher": "LY Corporation Tech Blog",
+              "date": "2026-07-29",
+              "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "kafka-e2ee"
+      ]
+    },
+    {
+      "name": "암호·기기 신뢰",
+      "why": "**이 회사는 암호를 한 덩어리로 다룬다.** PQC 글이 보호 대상으로 묶어 놓은 것이 **Letter Sealing(종단간 암호화) · FIDO · 백업** 셋이고, 기기 어테스테이션도 **FIDO2 WebAuthn 객체** 위에 서 있다 — 메시지 내용을 지키는 일과 **누가 이 계정으로 말하는지**를 지키는 일이 같은 암호 기반을 쓴다.\n\n두 문제의 성격은 다르다. 메시지 암호화는 **서버로부터** 내용을 지키는 일이고, 기기 어테스테이션은 **믿을 수 없는 기기에서 믿을 수 있는 대답을 받아 내는** 일이다. 후자에서 회사가 출발점으로 삼은 문장이 이것이다 — **소프트웨어 기반 접근에는 한계가 있다.**",
+      "tech": [
+        {
+          "tech": "Letter Sealing (종단간 암호화)",
+          "solves": "1:1 채팅·그룹 채팅·음성/영상 통화를 앱과 앱 사이에서 잠근다. **키는 사용자 기기에만 두고 서버에 두지 않아** 서버가 복호화할 수 없다. 지금은 기본값으로 켜져 있다.",
+          "limits": "**키 교환 방식을 공개하지 않는다.** 그룹은 초기에 **50명 제한**이었고, 나간 사용자는 그 뒤 그룹 메시지를 복호화하지 못한다. iOS 는 VoIP 알림이 안정된 **9.3.1** 이후에야 알림에서 내용을 풀 수 있었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The next step for even safer messaging: Letter Sealing",
+              "url": "https://engineering.linecorp.com/en/blog/the-next-step-for-even-safer-messaging-letter-sealing/",
+              "publisher": "LINE Engineering",
+              "date": "2016",
+              "summary": "LINE 의 종단간 암호화 Letter Sealing 을 기본값으로 켠 이야기. 키는 사용자 기기에만 두고 서버에 두지 않는다. 다만 키 교환 방식은 밝히지 않고, 그룹은 초기에 50명 제한이었다."
+            }
+          ]
+        },
+        {
+          "tech": "PQC 하이브리드 (고전 + 양자 내성 알고리즘 동시 사용)",
+          "solves": "표준화 과정에서 **Rainbow 가 탈락하고 SIKE 가 키 복구 공격을 맞은** 전례가 있어, 새 알고리즘 하나에 전부 걸지 않는다. 둘을 함께 써서 한쪽이 깨져도 남는다.",
+          "limits": "회사가 직접 적었다 — **설계와 구현이 복잡해지고 상호운용 문제와 키 관리 복잡성이 따라온다.** 이행에 **10년 이상**을 예상한다(SHA-2·AES 전환, TLS 1.2 전환의 전례).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Journey to PQC: Protecting data in the quantum computing era",
+              "url": "https://techblog.lycorp.co.jp/en/pqc-to-protect-data-in-the-age-of-quantum-computers",
+              "publisher": "LY Corporation Tech Blog",
+              "date": "2026",
+              "summary": "Letter Sealing·FIDO·백업에 쓰는 암호를 양자 이후로 옮기는 계획. '지금 모아 두었다가 나중에 푼다'(HNDL)를 위협 모델로 삼고, 고전 알고리즘과 PQC 를 함께 쓰는 하이브리드로 간다 — 그 복잡성과 상호운용 문제도 함께 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "기기 어테스테이션 (Android Key Attestation · iOS App Attest)",
+          "solves": "신뢰의 뿌리를 앱이 아니라 **TEE** 에 둔다. 2023년 12월 적용해 2024년 5월 전 국가 완료, **iOS 성공률 100%에 근접**, 자체 체인 검증으로 **안드로이드 실패 10분의 1.**",
+          "limits": "회사가 명시했다 — **OS 를 직접 수정하지 않고 앱·커널 취약점으로 root 를 얻으면 우회된다.** 두 플랫폼의 객체 구조가 달라 서버에 통일 로직이 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LINE device attestation service (1)",
+              "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+              "publisher": "LY Corporation Tech Blog",
+              "date": "2024",
+              "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+            },
+            {
+              "title": "LINE device attestation service (2)",
+              "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+              "publisher": "LY Corporation Tech Blog",
+              "date": "2024",
+              "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "device-attestation"
+      ]
+    },
+    {
+      "name": "데이터 레이크 통합",
+      "why": "**합병 이전의 하둡 클러스터가 두 벌 있고, 합치면 1EB 를 넘는다.** 구 LINE 은 클라이언트 쪽에서 네임스페이스를 푸는 ViewFS 에 **테이블 단위** 권한, 구 Yahoo! JAPAN 은 서버 쪽에서 모으는 RBF 에 **경로 단위** 권한이다. 같은 일을 서로 다른 역사로 하고 있어, **네트워크를 잇는 것만으로는 안 됐다.**",
+      "tech": [
+        {
+          "tech": "Kerberos 교차 영역 신뢰 (Cross-Realm)",
+          "solves": "독립적으로 돌던 두 KDC 사이에 인증을 먼저 세운다. 계정 이름은 `auth_to_local` 매핑으로 양쪽에서 같게 맞춘다.",
+          "limits": "IP 충돌 때문에 KDC 를 다시 세워야 했다 — 기술 불일치 목록에 최소 HDFS 블록 크기 차이도 함께 올라 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+              "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+              "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+              "date": "2026",
+              "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+            }
+          ]
+        },
+        {
+          "tech": "전용 CapacityScheduler 큐 + NodeLabel + L4 ACL",
+          "solves": "인가받은 계정만 통과시키고, 승인되지 않은 DistCP 잡이 아예 네트워크에 닿지 못하게 격리한다.",
+          "limits": "**전송을 열기 전에 통제를 먼저 만든다**는 뜻이라, 잇는 데 걸리는 시간이 길어진다(뒷문장은 이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+              "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+              "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+              "date": "2026",
+              "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+            }
+          ]
+        },
+        {
+          "tech": "DistCP (S3 경유 교환 방식 대신)",
+          "solves": "별도 환경에서 S3 를 거쳐 주고받던 기존 방식보다 **더 간단하고 빠르다.**",
+          "limits": "WAN 링크에 부담을 주지 않으려고 **작게 시작**해야 했다 — 초기 처리량이 제한된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+              "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+              "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+              "date": "2026",
+              "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+            }
+          ]
+        },
+        {
+          "tech": "Trino + Spark (Hive 대체)",
+          "solves": "대화형 분석은 Trino, 무거운 작업은 Spark 로 갈랐다. 워크플로 200개 이상, 파이프라인 300개 이상 — Spark 는 **CPU 효율 약 2.4배.**",
+          "limits": "**Spark 는 메모리를 더 먹고 작은 파일을 잔뜩 만든다.** 질의 안의 변수 설정을 둘 다 지원하지 않아 Airflow 쪽 우회가 필요했고, **하루 9TB 갱신 작업은 아직 풀리지 않았다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+              "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+              "publisher": "LY Corporation Tech Blog",
+              "date": "2025",
+              "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "hdfs-bridge"
+      ]
     }
-   ],
-   "share": 36.0,
-   "amount": "734,545 백만 엔"
-  },
-  {
-   "name": "Strategic Business",
-   "how": "금융·결제를 포함한 전략 사업. **FY2026/03 매출 445,775 백만 엔.** 부문 안의 서비스별 내역은 이 공시 수준에서는 갈라지지 않는다.",
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "features": [
     {
-     "title": "Financial Highlights — 세그먼트별 매출",
-     "url": "https://www.lycorp.co.jp/en/ir/finance/highlight.html",
-     "publisher": "LY Corporation IR",
-     "date": "2026-05",
-     "summary": "FY2026/03(2026년 3월 31일 종료) 세그먼트별 매출. Media 734,545 · Commerce 857,897 · Strategic 445,775 · Others 10,235 · 조정 -12,086, 연결 합계 2,036,366 백만 엔."
-    }
-   ],
-   "share": 21.8,
-   "amount": "445,775 백만 엔"
-  }
- ],
- "domain_map": {
-  "title": "LY 코퍼레이션 도메인 지도",
-  "question": "메시지 하나가 암호화된 채로 어디까지 흐르는가?",
-  "code": "flowchart TD\n  U[\"사용자 — LINE 앱\"]\n  subgraph MSG[\"<b>암호·기기 신뢰</b> — 누가 말하는가\"]\n    LS[\"Letter Sealing (E2EE)\"]\n    PQ[\"PQC 하이브리드 계획<br/>지금 모아 나중에 푸는 위협\"]:::quiet\n    DA[\"기기 어테스테이션 — TEE<br/>믿을 수 없는 기기에서<br/>믿을 수 있는 대답을 받는다\"]:::accent\n  end\n  subgraph PIPE[\"<b>스트리밍 파이프라인</b> — 서비스와 서비스 사이\"]\n    PROD[\"생산자 인터셉터<br/>DEK 로 레코드 암호화\"]\n    K[(\"Kafka 브로커<br/>초당 100만 메시지<br/><b>평문을 보지 않는다</b>\")]\n    CONS[\"소비자 디시리얼라이저<br/>헤더 보고 복호 또는 통과\"]\n  end\n  subgraph LAKE[\"<b>데이터 레이크 통합</b> — 합병 이전 둘을 잇는다\"]\n    V[\"구 LINE — ViewFS<br/>테이블 단위 권한\"]\n    R[\"구 Yahoo! JAPAN — RBF<br/>경로 단위 권한\"]\n    G[\"Kerberos 교차 신뢰 · 큐 · NodeLabel<br/>먼저 통제, 그다음 전송\"]\n  end\n  KMS[(\"키 관리 서비스<br/>KEK 공개키 / 개인키\")]:::list\n  U --> DA\n  U --> LS\n  LS -.-> PQ\n  U --> PROD\n  KMS -->|\"공개키만\"| PROD\n  PROD --> K --> CONS\n  KMS -->|\"인가된 소비자에게만 개인키\"| CONS\n  CONS --> LAKE\n  V --- G --- R"
- },
- "domains": [
-  {
-   "name": "스트리밍 파이프라인",
-   "why": "서비스 사이를 잇는 Kafka 토픽 하나가 **초당 100만 메시지**를 나른다. 한 팀이 쓰고 여러 팀이 읽는 구조라, 이 한 줄기가 막히거나 새면 그 뒤의 팀이 전부 영향을 받는다. **TLS·SASL·ACL 은 전송 중과 접근을 지키지만 브로커 디스크에 남는 페이로드는 평문이다** — 그 자리를 이 도메인이 다룬다.",
-   "tech": [
-    {
-     "tech": "DEK-KEK 이중 키 구조 (AES-GCM + ECIES secp521r1)",
-     "solves": "비싼 비대칭 연산을 **큰 페이로드가 아니라 짧은 DEK 에만** 쓴다. 덕분에 **생산자는 공개키만** 받고 **소비자는 인가를 받아야 개인키**를 받는 식으로 암호화 권한과 복호화 권한을 갈라 놓을 수 있다.",
-     "limits": "키 관리 서비스가 새로운 의존이 된다 — 암호화 자체보다 **키를 누구에게 주느냐**가 시스템의 무게중심이 된다(뒷문장은 이 사이트의 해석).",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-       "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-       "publisher": "LY Corporation Tech Blog",
-       "date": "2026-07-29",
-       "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-      }
-     ]
-    },
-    {
-     "tech": "공유 KEK",
-     "solves": "소비자가 몇이든 **메시지 헤더의 메타데이터를 한 항목으로** 유지한다.",
-     "limits": "회사가 직접 적었다 — **키가 새면 과거와 미래의 메시지를 모두 복호화할 수 있다.** KMS 인가와 주기적 회전으로 완화할 뿐, 이 구조를 대체할 다른 수는 글에 없다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-       "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-       "publisher": "LY Corporation Tech Blog",
-       "date": "2026-07-29",
-       "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-      }
-     ]
-    },
-    {
-     "tech": "Kafka 인터셉터·디시리얼라이저 (레코드 단위 암호화)",
-     "solves": "클라이언트 내부를 고치지 않고 **표준 확장점**만 쓴다. 그래서 **Kafka 업그레이드와의 호환이 유지되고**, 생산자·소비자 코드를 바꾸지 않고 암호화를 배포할 수 있다.",
-     "limits": "배치 단위보다 **CPU 와 메시지 크기가 더 든다** — 회사는 그 대가를 알고 골랐다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-       "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-       "publisher": "LY Corporation Tech Blog",
-       "date": "2026-07-29",
-       "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-      }
-     ]
-    }
-   ],
-   "features": [
-    "kafka-e2ee"
-   ]
-  },
-  {
-   "name": "암호·기기 신뢰",
-   "why": "**이 회사는 암호를 한 덩어리로 다룬다.** PQC 글이 보호 대상으로 묶어 놓은 것이 **Letter Sealing(종단간 암호화) · FIDO · 백업** 셋이고, 기기 어테스테이션도 **FIDO2 WebAuthn 객체** 위에 서 있다 — 메시지 내용을 지키는 일과 **누가 이 계정으로 말하는지**를 지키는 일이 같은 암호 기반을 쓴다.\n\n두 문제의 성격은 다르다. 메시지 암호화는 **서버로부터** 내용을 지키는 일이고, 기기 어테스테이션은 **믿을 수 없는 기기에서 믿을 수 있는 대답을 받아 내는** 일이다. 후자에서 회사가 출발점으로 삼은 문장이 이것이다 — **소프트웨어 기반 접근에는 한계가 있다.**",
-   "tech": [
-    {
-     "tech": "Letter Sealing (종단간 암호화)",
-     "solves": "1:1 채팅·그룹 채팅·음성/영상 통화를 앱과 앱 사이에서 잠근다. **키는 사용자 기기에만 두고 서버에 두지 않아** 서버가 복호화할 수 없다. 지금은 기본값으로 켜져 있다.",
-     "limits": "**키 교환 방식을 공개하지 않는다.** 그룹은 초기에 **50명 제한**이었고, 나간 사용자는 그 뒤 그룹 메시지를 복호화하지 못한다. iOS 는 VoIP 알림이 안정된 **9.3.1** 이후에야 알림에서 내용을 풀 수 있었다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "The next step for even safer messaging: Letter Sealing",
-       "url": "https://engineering.linecorp.com/en/blog/the-next-step-for-even-safer-messaging-letter-sealing/",
-       "publisher": "LINE Engineering",
-       "date": "2016",
-       "summary": "LINE 의 종단간 암호화 Letter Sealing 을 기본값으로 켠 이야기. 키는 사용자 기기에만 두고 서버에 두지 않는다. 다만 키 교환 방식은 밝히지 않고, 그룹은 초기에 50명 제한이었다."
-      }
-     ]
-    },
-    {
-     "tech": "PQC 하이브리드 (고전 + 양자 내성 알고리즘 동시 사용)",
-     "solves": "표준화 과정에서 **Rainbow 가 탈락하고 SIKE 가 키 복구 공격을 맞은** 전례가 있어, 새 알고리즘 하나에 전부 걸지 않는다. 둘을 함께 써서 한쪽이 깨져도 남는다.",
-     "limits": "회사가 직접 적었다 — **설계와 구현이 복잡해지고 상호운용 문제와 키 관리 복잡성이 따라온다.** 이행에 **10년 이상**을 예상한다(SHA-2·AES 전환, TLS 1.2 전환의 전례).",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "Journey to PQC: Protecting data in the quantum computing era",
-       "url": "https://techblog.lycorp.co.jp/en/pqc-to-protect-data-in-the-age-of-quantum-computers",
-       "publisher": "LY Corporation Tech Blog",
-       "date": "2026",
-       "summary": "Letter Sealing·FIDO·백업에 쓰는 암호를 양자 이후로 옮기는 계획. '지금 모아 두었다가 나중에 푼다'(HNDL)를 위협 모델로 삼고, 고전 알고리즘과 PQC 를 함께 쓰는 하이브리드로 간다 — 그 복잡성과 상호운용 문제도 함께 적었다."
-      }
-     ]
-    },
-    {
-     "tech": "기기 어테스테이션 (Android Key Attestation · iOS App Attest)",
-     "solves": "신뢰의 뿌리를 앱이 아니라 **TEE** 에 둔다. 2023년 12월 적용해 2024년 5월 전 국가 완료, **iOS 성공률 100%에 근접**, 자체 체인 검증으로 **안드로이드 실패 10분의 1.**",
-     "limits": "회사가 명시했다 — **OS 를 직접 수정하지 않고 앱·커널 취약점으로 root 를 얻으면 우회된다.** 두 플랫폼의 객체 구조가 달라 서버에 통일 로직이 남는다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "LINE device attestation service (1)",
-       "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-       "publisher": "LY Corporation Tech Blog",
-       "date": "2024",
-       "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+      "key": "kafka-e2ee",
+      "name": "Kafka 종단간 암호화 — 브로커가 평문을 보지 않게",
+      "domain": "스트리밍 파이프라인",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "서비스 사이를 잇는 **Kafka 토픽 하나가 초당 100만 메시지**를 나른다. 한 팀이 쓰고 여러 팀이 읽는다. 그 안에는 **민감한 개인정보**가 흐른다.\n\nTLS/SASL 도 있고 ACL 도 있다. 그런데 그것들이 지키는 것은 **전송 중의 데이터와 접근 권한**이지, **브로커에 저장된 페이로드**가 아니다. 채팅 메시지는 이미 Letter Sealing 으로 앱과 앱 사이가 잠겨 있는데, **그 아래 인프라 계층은 그렇지 않았다.**\n\n그래서 회사가 잡은 목표는 한 줄이다 — **\"생산하는 시점에 암호화하고, 소비자가 복호화할 때까지 암호화된 채로 둔다.\"** 어려움은 암호화 자체가 아니라 **이미 초당 100만 건이 흐르고 있는 줄기를 멈추지 않고** 그 위에 얹는 데 있다.",
+        "metrics": [
+          {
+            "label": "대상 토픽의 규모",
+            "value": "**초당 최대 100만 메시지.** 한 팀이 생산하고 여러 팀이 소비한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "암호화가 먹은 CPU",
+            "value": "인스턴스당 **1% 미만.** 프로덕션 실측도 예측한 1% 이내에 머물렀다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "측정 조건",
+            "value": "프로덕션 동등 환경에서 평문 대 암호문을 **10분 구간**으로 비교. 최대 **초당 5,000 요청**, 페이로드 **수십 KB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "롤아웃",
+            "value": "암호화 비율을 **1% → 10% → 50% → 100%** 로 올렸다. 2주 동안 **암복호화 관련 사고 0건**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "추가로 든 인프라",
+            "value": "**없다** — 서비스 중단 없이, 추가 인프라 비용 없이 적용했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          }
+        ]
       },
-      {
-       "title": "LINE device attestation service (2)",
-       "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-       "publisher": "LY Corporation Tech Blog",
-       "date": "2024",
-       "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-      }
-     ]
+      "thinking": [
+        {
+          "at": "TLS 도 ACL 도 이미 있는데 왜 또 암호화하나",
+          "thought": "그것들이 지키는 것은 **전송 중**과 **접근 권한**이다. 브로커 디스크에 남는 페이로드는 여전히 평문이다. 채팅은 Letter Sealing 으로 잠겨 있는데 **그 밑을 흐르는 인프라는 잠겨 있지 않았다** — 층이 하나 비어 있었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "소비자마다 키를 주려다가",
+          "thought": "처음에는 소비자별 KEK 을 생각했다. 그런데 그러면 **헤더의 메타데이터가 소비자 수에 비례해 쌓인다.** 소비자가 늘 때마다 모든 메시지가 무거워진다 — **한 명이 늘어난 비용을 전체 트래픽이 나눠 낸다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "배치 단위로 묶어 암호화하면 더 싼데",
+          "thought": "CPU 도 크기도 배치 쪽이 유리하다. 그런데 그러려면 **클라이언트 내부를 고쳐야 한다.** 그러면 Kafka 를 올릴 때마다 우리가 고친 자리를 따라가야 한다. **인터셉터와 디시리얼라이저라는 표준 확장점**만 쓰면 생산자·소비자 코드를 건드리지 않고도 켤 수 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "켜는 순간을 정할 때",
+          "thought": "한 번에 전부 켜면 되돌릴 수가 없다. **헤더가 있으면 복호화하고 없으면 그대로 통과**시키게 하면, 암호문과 평문이 같은 토픽에서 공존한다. 그러면 1%부터 켜 보고 지표를 보면서 올릴 수 있고, 이상하면 **설정 하나로 즉시 되돌릴 수 있다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "DEK (Data Encryption Key)",
+            "what": "페이로드를 실제로 암호화하는 대칭키. **AES-GCM**, 메시지 배치 단위로 생성하거나 캐시해 재사용한다."
+          },
+          {
+            "name": "KEK (Key Encryption Key)",
+            "what": "DEK 를 감싸는 **타원곡선 비대칭 키쌍**(ECIES, secp521r1). 키 관리 서비스가 쥔다."
+          },
+          {
+            "name": "메시지 헤더",
+            "what": "**KEK ID**(어느 키 버전인지)와 **그 KEK 으로 암호화된 DEK** 가 들어간다. 헤더의 유무 자체가 '이 메시지가 암호문인가'의 표시다."
+          },
+          {
+            "name": "생산자 인터셉터",
+            "what": "보내기 직전 레코드를 암호화하고 헤더를 붙인다. KMS 를 폴링해 활성 공개키를 받는다."
+          },
+          {
+            "name": "소비자 디시리얼라이저",
+            "what": "헤더를 보고 복호화할지 그대로 통과시킬지 고른다. 자기 KEK ID 에 맞는 헤더 항목을 골라 DEK 를 푼다."
+          }
+        ],
+        "invariants": [
+          "페이로드는 **생산자에서 소비자까지** 암호문으로 남는다 — 브로커는 평문을 보지 않는다.",
+          "**생산자는 공개키만** 받는다. 개인키는 인가받은 소비자에게만 간다 — 암호화 권한과 복호화 권한이 갈라져 있다.",
+          "헤더의 메타데이터 항목은 **소비자 수와 무관하게 하나**다.",
+          "헤더가 없는 메시지는 **평문으로 통과**시킨다 — 그래서 전환 중에 둘이 공존한다.",
+          "회전 중에는 **옛 KEK 과 새 KEK 이 동시에 살아 있다.**",
+          "파티션 라우팅 키는 **바꾸지 않는다** — 암호화가 파티셔닝을 흔들지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "생산자 인터셉터가 KMS 를 폴링해 **활성 KEK 공개키**를 받아 둔다",
+            "why": "회전이 일어나도 생산자가 스스로 따라잡아야 한다."
+          },
+          {
+            "step": "레코드마다 **DEK 로 페이로드를 암호화**한다 (AES-GCM)",
+            "why": "배치가 아니라 레코드 단위여야 표준 확장점만으로 끝난다."
+          },
+          {
+            "step": "그 **DEK 를 KEK 공개키로 감싸** 헤더에 넣는다. 헤더에는 KEK ID 도 함께 들어간다",
+            "why": "비싼 비대칭 연산을 큰 페이로드가 아니라 짧은 키에만 쓴다."
+          },
+          {
+            "step": "회전 중이면 **활성 공개키 전부로 DEK 를 각각 감싸** 헤더에 여러 항목을 넣는다",
+            "why": "옛 키를 쓰는 소비자와 새 키를 쓰는 소비자가 같은 메시지를 함께 읽어야 한다."
+          },
+          {
+            "step": "브로커는 그대로 저장한다 — **평문을 보지 않는다**",
+            "why": "이 기능의 목적 자체가 브로커에 남는 평문을 없애는 것이다."
+          },
+          {
+            "step": "소비자 디시리얼라이저가 **헤더가 있는지 본다.** 없으면 그대로 통과시킨다",
+            "why": "전환 중에는 암호문과 평문이 같은 토픽에 섞여 있다."
+          },
+          {
+            "step": "있으면 **자기 KEK ID 에 맞는 항목**을 골라 개인키로 DEK 를 풀고, 그 DEK 로 페이로드를 푼다",
+            "why": "복호화 권한은 KMS 인가를 받은 소비자에게만 있다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "TLS·SASL·ACL 위에 또 암호화를 얹을 것인가",
+            "chosen": "**얹는다.** 클라이언트 계층에서 종단간으로 — 생산 시점에 암호화하고 소비자가 풀 때까지 그대로 둔다.",
+            "alternatives": [
+              "전송 암호화와 접근 제어로 충분하다고 본다",
+              "브로커 디스크 암호화로 대신한다"
+            ],
+            "tradeoff": "키 관리 서비스라는 **의존이 하나 늘고**, 시스템의 무게중심이 암호화 자체에서 **'키를 누구에게 주느냐'로 옮겨 간다**(뒷문장은 이 사이트의 해석). 대신 브로커가 뚫려도 페이로드는 암호문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "소비자마다 KEK 을 줄 것인가, 하나를 나눠 쓸 것인가",
+            "chosen": "**공유 KEK.** 여러 소비자가 키쌍 하나를 함께 쓴다.",
+            "alternatives": [
+              "소비자마다 KEK 을 따로 준다"
+            ],
+            "tradeoff": "회사가 직접 적었다 — **키가 새면 과거와 미래의 메시지를 모두 복호화할 수 있다.** KMS 인가와 주기적 회전으로 완화할 뿐이다. 대신 **소비자가 몇이든 헤더 메타데이터는 한 항목**으로 고정된다 — 소비자별 격리보다 **안정적인 메시지 크기**를 골랐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "레코드 단위로 암호화할 것인가, 배치 단위로 할 것인가",
+            "chosen": "**레코드 단위.** 배치로 묶이기 전에 각 레코드를 암호화한다.",
+            "alternatives": [
+              "배치 단위로 묶어 한 번에 암호화한다"
+            ],
+            "tradeoff": "**CPU 가 조금 더 들고 메시지 크기도 늘어난다.** 대신 인터셉터·디시리얼라이저라는 **표준 확장점**만 쓰므로 클라이언트 내부를 고칠 필요가 없고, **Kafka 업그레이드와의 호환이 유지되며**, 생산자·소비자를 바꾸지 않고 배포할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "대칭키 하나로 끝낼 것인가",
+            "chosen": "**DEK-KEK 이중 구조.** 페이로드는 대칭키(AES-GCM)로, 그 키는 비대칭키(ECIES secp521r1)로 감싼다.",
+            "alternatives": [
+              "공유 대칭키 하나로 전부 암호화한다",
+              "페이로드를 직접 비대칭키로 암호화한다"
+            ],
+            "tradeoff": "키가 두 종류가 되어 **회전과 배포가 두 겹**이 된다(뒷문장은 이 사이트의 추정). 대신 비싼 비대칭 연산이 **짧은 DEK 에만** 걸려 대규모 Kafka 환경에서 성능이 나오고, **생산자에게는 공개키만** 주는 식으로 권한을 가를 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "전환 중에 평문과 암호문을 어떻게 함께 둘 것인가",
+            "chosen": "**헤더 유무로 판별하고, 없으면 평문으로 통과시킨다.**",
+            "alternatives": [
+              "토픽을 새로 파서 옮긴다",
+              "시점을 정해 모두 한 번에 전환한다"
+            ],
+            "tradeoff": "**\"헤더가 없으면 평문\"이라는 규칙이 켜져 있는 한, 헤더를 떼어 낸 메시지도 통과한다**(이 지적은 이 사이트의 추정 — 글은 이 위험을 다루지 않는다). 대신 토픽을 새로 파거나 서비스를 멈추지 않아도 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "켤 때 얼마씩 켤 것인가",
+            "chosen": "**1% → 10% → 50% → 100%.** 각 단계에서 지표를 보고 올리고, 이상하면 설정으로 즉시 롤백한다.",
+            "alternatives": [
+              "한 번에 전체를 전환한다"
+            ],
+            "tradeoff": "전환 기간이 길어지고 그동안 두 경로를 모두 관리해야 한다. 대신 2주 동안 **암복호화 사고가 0건**이었고 프로덕션 CPU 증가도 예측 범위 안이었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "키를 회전할 때 소비자를 어떻게 끊지 않을 것인가",
+            "chosen": "**회전 기간에는 옛 KEK 과 새 KEK 을 함께 활성으로 둔다.** 생산자는 활성 공개키 **전부로 DEK 를 각각 감싸** 헤더에 여러 항목을 넣고, 소비자는 자기 KEK ID 에 맞는 것을 고른다.",
+            "alternatives": [
+              "시점을 정해 모든 소비자를 동시에 교체한다"
+            ],
+            "tradeoff": "회전 기간에는 **헤더가 활성 키 수만큼 커진다** — 공유 KEK 으로 아낀 크기를 회전 동안에는 일부 도로 내놓는 셈이다(뒷문장은 이 사이트의 해석). 대신 옛 키 소비자와 새 키 소비자가 **같은 메시지를 동시에** 처리할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "AES-GCM (DEK)",
+            "role": "페이로드를 실제로 암호화하는 대칭 알고리즘. 메시지 배치 단위로 생성하거나 캐시해 재사용한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "ECIES · secp521r1 (KEK)",
+            "role": "DEK 를 감싸는 타원곡선 비대칭 키쌍. 생산자에게는 공개키만, 소비자에게는 인가 후 개인키.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "키 관리 서비스(KMS)",
+            "role": "KEK 을 보관하고 인가를 건다. 생산자·소비자가 폴링해 활성 키를 따라잡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka ProducerInterceptor · Deserializer",
+            "role": "암호화·복호화를 끼워 넣는 표준 확장점. 클라이언트 내부를 고치지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "메시지 헤더 (KEK ID + 암호화된 DEK)",
+            "role": "복호화에 필요한 정보를 메시지가 스스로 들고 다닌다. 헤더의 유무가 암호문 여부의 표시이기도 하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "KMS 구현체가 무엇인지",
+            "role": "— 글은 '키 관리 서비스'라고만 적고 **자체 제작인지 외부 제품인지 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "hdfs-bridge",
+          "via": "같은 줄기의 아래쪽",
+          "contract": "이 파이프라인을 지나온 데이터가 레이크에 쌓인다. **두 글은 서로를 언급하지 않는다** — 이 연결은 이 사이트의 추정이고, 암호문이 레이크에서 어떤 상태로 놓이는지는 어느 글도 말하지 않는다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "여러 소비자에게 같은 암호문을 주면서 키는 각자에게 두기",
+            "why_hard": "**크기와 격리가 같은 손잡이의 양 끝이다.** 소비자마다 키를 따로 주면 복호화 권한은 깔끔히 갈리지만 **메시지마다 소비자 수만큼 메타데이터가 붙는다** — 소비자 한 명이 늘어난 비용을 초당 100만 건 전체가 나눠 낸다. 하나로 모으면 크기는 고정되지만 **그 키 하나가 새는 순간 과거와 미래가 함께 열린다.** 회사도 이 사이의 다른 수를 내놓지 못했다 — 글은 공유 KEK 의 대가를 인정하고 인가와 회전으로 완화한다고만 적는다.",
+            "current_best": "**공유 KEK + KMS 인가 + 주기적 회전.** 회전 중에는 활성 키 전부로 DEK 를 각각 감싸 옛 소비자와 새 소비자가 같은 메시지를 함께 읽게 한다 — 즉 **격리를 키의 공간이 아니라 시간으로 옮겨 놓은 셈이다**(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+                "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026-07-29",
+                "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "지금 모아 두었다가 나중에 푸는 공격 (Harvest Now, Decrypt Later)",
+            "why_hard": "오늘 안전한 암호문이 **오늘 도둑맞아도 오늘 풀리지 않을 뿐**이다. 공격자가 지금 모아 두고 양자 컴퓨터가 성숙한 뒤에 풀면, **이미 지나간 트래픽이 그때 열린다.** 그래서 '언제까지 비밀이어야 하는가(x) + 옮기는 데 걸리는 시간(y) < 양자가 오는 시점(z)' 이라는 부등식이 성립해야 하는데, 회사는 이행에만 **10년 이상**이 걸린다고 본다(SHA-2·AES 와 TLS 1.2 전환의 전례). 이 Kafka 파이프라인이 쓰는 secp521r1 도 고전 타원곡선이라 같은 시계 위에 있다 — **다만 이 연결은 이 사이트의 추정이고, PQC 글이 Kafka 를 지목하지는 않는다.**",
+            "current_best": "**하이브리드** — 고전 알고리즘과 PQC 를 동시에 쓴다. 표준화 과정에서 Rainbow 가 탈락하고 SIKE 가 키 복구 공격을 맞았기 때문에 새 알고리즘 하나에 전부 걸지 않는다. 대가도 회사가 적었다 — **설계·구현이 복잡해지고 상호운용과 키 관리 문제가 따라온다.** 아직 프로덕션에 배포된 PQC 알고리즘은 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Journey to PQC: Protecting data in the quantum computing era",
+                "url": "https://techblog.lycorp.co.jp/en/pqc-to-protect-data-in-the-age-of-quantum-computers",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2026",
+                "summary": "Letter Sealing·FIDO·백업에 쓰는 암호를 양자 이후로 옮기는 계획. '지금 모아 두었다가 나중에 푼다'(HNDL)를 위협 모델로 삼고, 고전 알고리즘과 PQC 를 함께 쓰는 하이브리드로 간다 — 그 복잡성과 상호운용 문제도 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "메시지 하나가 암호문으로 지나가는 길",
+          "question": "브로커는 무엇을 보는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  KMS[(\"<b>키 관리 서비스</b><br/>KEK 키쌍 (ECIES secp521r1)\")]:::list\n  KMS -->|\"<b>공개키만</b>\"| PI\n  KMS -->|\"인가받은 소비자에게만<br/><b>개인키</b>\"| DS\n  APP[\"생산 서비스\"] --> PI[\"<b>생산자 인터셉터</b><br/>• DEK 생성 (AES-GCM)<br/>• 레코드 암호화<br/>• DEK 를 KEK 으로 감싸 헤더에\"]:::list\n  PI --> MSG[\"<b>메시지</b><br/>키 — 파티션 라우팅 (그대로)<br/>헤더 — KEK ID + 감싼 DEK<br/>본문 — DEK 로 암호화된 페이로드\"]:::accent\n  MSG --> B[(\"<b>Kafka 브로커</b><br/>초당 100만 메시지<br/><b>평문을 보지 않는다</b>\")]\n  B --> DS{\"<b>소비자 디시리얼라이저</b><br/>헤더가 있는가\"}\n  DS -->|\"있다\"| DEC[\"DEK 를 풀고<br/>페이로드를 푼다\"]\n  DS -->|\"없다\"| PASS[\"<b>평문으로 통과</b><br/>— 전환 중 공존\"]:::quiet\n  DEC --> OUT[\"소비 서비스\"]\n  PASS --> OUT"
+        },
+        {
+          "title": "켜는 순서 — 되돌릴 수 있는 상태로만 나아간다",
+          "question": "이상하면 어디로 돌아가는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 평문: 적용 전\n  평문 --> 일부암호화: 암호화 비율 1%\n  note right of 일부암호화\n    같은 토픽에 암호문과 평문이 섞인다\n    소비자는 헤더 유무로 갈라 읽는다\n  end note\n  일부암호화 --> 확대: 10% → 50%\n  확대 --> 전량: 100%\n  확대 --> 일부암호화: 지표 이상 — 설정으로 즉시 롤백\n  전량 --> 확대: 설정으로 즉시 롤백\n  전량 --> 회전중: KEK 회전 시작\n  회전중 --> 회전중: 헤더에 활성 키 수만큼 감싼 DEK\n  note right of 회전중\n    옛 키 소비자와 새 키 소비자가\n    같은 메시지를 함께 읽는다\n    대신 헤더가 그만큼 커진다 (해석)\n  end note\n  회전중 --> 전량: 옛 키 폐기"
+        },
+        {
+          "title": "실패 경로 — 크기를 얻고 무엇을 내주었나",
+          "question": "공유 KEK 이 새면 무엇이 열리는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  PER[\"소비자별 KEK\"] --> ISO[\"복호화 권한이 깔끔히 갈린다\"]\n  PER --> GROW[\"<b>헤더가 소비자 수에 비례해 커진다</b>\"]\n  GROW -->|\"해석\"| ALL[\"한 명이 늘어난 비용을<br/>초당 100만 건 전체가 나눠 낸다\"]\n  GROW --> SHARE[\"<b>공유 KEK 으로 물러선다</b>\"]:::accent\n  SHARE --> FIX[\"헤더는 항목 하나로 고정\"]\n  SHARE --> LEAK[\"<b>키가 새면</b>\"]\n  LEAK --> PAST[\"과거 메시지가 열린다\"]\n  LEAK --> FUT[\"미래 메시지도 열린다\"]\n  PAST --> MIT[\"완화 — KMS 인가 · 주기적 회전\"]:::quiet\n  FUT --> MIT\n  HDR[\"규칙 — 헤더가 없으면 평문\"] --> COEX[\"전환 중 공존이 가능해진다\"]\n  HDR -->|\"추정 · 글은 다루지 않는다\"| STRIP[\"헤더를 떼어 낸 메시지도<br/>그대로 통과한다\"]\n  REC[\"레코드 단위를 골랐다\"] --> COMPAT[\"Kafka 업그레이드와 호환 유지\"]\n  REC --> COST[\"CPU·크기가 배치 단위보다 더 든다\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+          "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+          "publisher": "LY Corporation Tech Blog",
+          "date": "2026-07-29",
+          "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
+        },
+        {
+          "title": "Journey to PQC: Protecting data in the quantum computing era",
+          "url": "https://techblog.lycorp.co.jp/en/pqc-to-protect-data-in-the-age-of-quantum-computers",
+          "publisher": "LY Corporation Tech Blog",
+          "date": "2026",
+          "summary": "Letter Sealing·FIDO·백업에 쓰는 암호를 양자 이후로 옮기는 계획. '지금 모아 두었다가 나중에 푼다'(HNDL)를 위협 모델로 삼고, 고전 알고리즘과 PQC 를 함께 쓰는 하이브리드로 간다 — 그 복잡성과 상호운용 문제도 함께 적었다."
+        }
+      ]
+    },
+    {
+      "key": "hdfs-bridge",
+      "name": "서로 다른 역사를 가진 레이크 두 벌 잇기",
+      "domain": "데이터 레이크 통합",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**합병으로 하둡 클러스터가 두 벌 생겼다.** 구 LINE 것과 구 Yahoo! JAPAN 것이고, **합치면 1EB 를 넘는다.**\n\n문제는 크기가 아니라 **역사**다. 두 클러스터는 서로 다른 시대에 태어나 서로 다른 답을 골랐다 — 구 LINE 은 하둡 3.x 시절에 여러 분석 환경을 통합해 만들었고 **클라이언트 쪽에서 네임스페이스를 푸는 ViewFS** 에 **테이블 단위** 권한을 건다. 구 Yahoo! JAPAN 은 하둡 0.2 시절부터 자라 네임노드 확장 한계에 부딪히자 **서버 쪽에서 모으는 RBF** 로 갔고 **경로 단위**(POSIX 를 닮은) 권한을 건다.\n\n회사가 이 일에서 얻은 결론은 한 줄이다 — **\"단순히 네트워크를 잇고 데이터 전송을 켜는 것으로는 충분하지 않았다.\"** 이 도메인은 새로 짓는 이야기가 아니라 **이미 다 자란 둘을 잇는 이야기**다.",
+        "metrics": [
+          {
+            "label": "합친 규모",
+            "value": "주요 클러스터를 합해 **1엑사바이트(EB) 초과.** 클러스터별 용량·노드 수는 공개하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "label": "네임스페이스를 푸는 위치",
+            "value": "구 LINE **ViewFS(클라이언트 쪽)** vs 구 Yahoo! JAPAN **RBF(서버 쪽) + Observer NameNode 로 읽기 분산**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "label": "권한을 거는 단위",
+            "value": "구 LINE **DB·테이블 단위(역할 기반)** vs 구 Yahoo! JAPAN **HDFS 경로 단위(POSIX 유사)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "label": "이 플랫폼 위에서 도는 일 (구 Yahoo! JAPAN 쪽)",
+            "value": "파이프라인 **300개 이상**, Hive 통계 워크플로 **200개 이상**을 옮겼다. **파티션당 600GB 를 하루 15개**, 피크에 메모리 **100TB** 를 쓰는 작업도 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+                "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2025",
+                "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "HDFS 요청 추이",
+            "value": "2020~2025년 **해마다 증가**(그래프만 있고 절대 수치는 비공개)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "합치자는 말이 나왔을 때",
+          "thought": "통합 플랫폼을 곧바로 짓는 대신, **각 플랫폼의 기존 성격을 살린 채 서로의 데이터에 닿는 것**을 먼저 하기로 했다. 두 조직이 키운 데이터를 서로 쓸 수 있게 하는 것이 목적이지, 하나로 만드는 것이 목적은 아니다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "권한 체계를 맞추려다",
+          "thought": "구 Yahoo! JAPAN 의 경로 구조를 그대로 둔 채 구 LINE 의 권한 시스템을 얹어 볼 수 있다. 그런데 그러면 **테이블 기반과 경로 기반이 계속 공존하게 되고, 장기적으로 운영 규칙과 사용자 경험이 더 복잡해진다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그래서 어떻게 할지 정할 때",
+          "thought": "구 Yahoo! JAPAN 플랫폼 안에 **구 LINE 의 관리 모델에 맞춘 새 영역을 따로 판다.** 기존 경로 기반 영역과 새 테이블 기반 영역이 **선으로 갈라져 있으면**, 기존 운영을 흔들지 않고 단계적으로 옮길 수 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "전송을 켜기 전에",
+          "thought": "네트워크만 이으면 승인되지 않은 DistCP 잡이 그대로 돈다. **인증(Kerberos 교차 신뢰) → 인가(전용 큐) → 격리(NodeLabel·L4 ACL) → 거버넌스(보안·법무 검토)** 를 먼저 세우고 그다음 전송을 연다. 하둡 안쪽만 보아서는 안 되고 **인프라·네트워크·운영 문화까지 가로질러** 봐야 했다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "ViewFS 네임스페이스 (구 LINE)",
+            "what": "클라이언트 쪽에서 마운트 테이블로 경로를 푼다. 여러 네임스페이스가 **데이터노드를 공유**하고, 하둡 버전이 섞여 있다."
+          },
+          {
+            "name": "RBF 네임스페이스 (구 Yahoo! JAPAN)",
+            "what": "라우터가 **서버 쪽에서** 여러 네임스페이스를 모아 하나처럼 보이게 한다. 읽기는 Observer NameNode 로 분산한다."
+          },
+          {
+            "name": "새 테이블 기반 영역",
+            "what": "구 Yahoo! JAPAN 플랫폼 안에 구 LINE 의 관리 모델로 새로 판 자리. **기존 경로 기반 영역과 명확히 분리**돼 있다."
+          },
+          {
+            "name": "Kerberos 영역(realm)",
+            "what": "두 클러스터가 각자 KDC 를 갖고 있다. 교차 영역 신뢰로 잇고 계정 이름은 `auth_to_local` 로 맞춘다."
+          },
+          {
+            "name": "DistCP 잡",
+            "what": "클러스터 사이로 데이터를 나르는 작업. 전용 큐에 들어가고 NodeLabel·L4 ACL 로 갈 수 있는 곳이 정해진다."
+          }
+        ],
+        "invariants": [
+          "**경로 기반 영역과 테이블 기반 영역은 선으로 갈라져 있다** — 한 영역 안에서는 규칙이 하나다.",
+          "인가받은 계정만 전용 큐를 통과한다 — 그 밖의 DistCP 잡은 **네트워크에 닿지 못한다.**",
+          "계정 이름은 두 클러스터에서 **같게 매핑**된다.",
+          "전송은 **거버넌스 검토(보안·법무)를 통과한 뒤**에만 열린다.",
+          "**작은 파일이 늘면 네임노드 힙이 줄어든다** — 주기적으로 병합해야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "두 KDC 사이에 **Kerberos 교차 영역 신뢰**를 세운다",
+            "why": "서로를 모르는 두 클러스터가 먼저 상대의 신원을 인정해야 그다음이 있다."
+          },
+          {
+            "step": "계정 이름을 `auth_to_local` 매핑으로 **양쪽에서 같게** 맞춘다",
+            "why": "같은 사람이 양쪽에서 다른 이름이면 권한을 걸 수가 없다."
+          },
+          {
+            "step": "승인된 계정만 쓰는 **전용 CapacityScheduler 큐**를 만든다",
+            "why": "인증만으로는 부족하다 — 무엇을 얼마나 쓸 수 있는지도 정해야 한다."
+          },
+          {
+            "step": "**NodeLabel 과 L4 ACL** 로 네트워크를 격리해, 승인되지 않은 DistCP 잡이 아예 상대에 닿지 못하게 한다",
+            "why": "큐를 우회해 도는 잡이 있으면 앞의 두 층이 의미가 없다."
+          },
+          {
+            "step": "기술 불일치 목록을 만든다 — **최소 HDFS 블록 크기 차이**, **IP 충돌(KDC 재구축 필요)** 등",
+            "why": "역사가 다른 둘은 눈에 안 보이는 설정에서 어긋난다."
+          },
+          {
+            "step": "구 Yahoo! JAPAN 플랫폼 안에 **테이블 기반 새 영역**을 파고, 기존 경로 기반 영역과 분리한다",
+            "why": "두 모델을 한 자리에 섞으면 규칙이 복잡해진다 — 섞는 대신 나눈다."
+          },
+          {
+            "step": "보안·법무 검토를 포함한 **거버넌스 절차**를 통과한 뒤 전송을 연다",
+            "why": "조직이 합쳐졌다고 데이터가 자동으로 서로의 것이 되지는 않는다."
+          },
+          {
+            "step": "**DistCP** 로 옮긴다 — WAN 에 부담을 주지 않도록 **작게 시작**한다",
+            "why": "한 번에 밀면 두 조직이 함께 쓰는 회선이 먼저 무너진다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "통합 플랫폼을 새로 지을 것인가, 잇기부터 할 것인가",
+            "chosen": "**잇기부터.** 각 플랫폼의 기존 성격을 살린 채 서로의 데이터에 닿는 것을 먼저 한다.",
+            "alternatives": [
+              "처음부터 하나의 통합 플랫폼으로 합친다"
+            ],
+            "tradeoff": "두 관리 모델이 **계속 공존**하고, 회사도 이를 인정한다 — **\"어떤 데이터가 어떤 단위로 어떤 규칙 아래 관리되는지 알기 어려워질 수 있다.\"** 대신 기존 운영을 멈추지 않아도 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "question": "권한 체계를 어느 쪽으로 맞출 것인가",
+            "chosen": "**구 Yahoo! JAPAN 플랫폼 안에 구 LINE 의 관리 모델을 따르는 새 영역을 만든다.** 기존 경로 기반 영역과 명확히 분리한다.",
+            "alternatives": [
+              "구 Yahoo! JAPAN 의 HDFS 경로 구조를 유지한 채 구 LINE 의 권한 시스템을 얹는다"
+            ],
+            "tradeoff": "영역이 둘로 나뉘어 **어느 영역에 있느냐에 따라 규칙이 달라진다.** 대신 버린 안(권한 시스템만 얹기)은 **테이블 기반과 경로 기반이 한 자리에서 계속 섞여** 운영 규칙과 사용자 경험이 장기적으로 더 복잡해질 것으로 봤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "question": "데이터를 무엇으로 옮길 것인가",
+            "chosen": "**DistCP.** 기존의 별도 환경 + Amazon S3 경유 교환 방식을 쓰지 않는다.",
+            "alternatives": [
+              "별도 환경에서 S3 를 거쳐 주고받는 기존 방식을 계속 쓴다"
+            ],
+            "tradeoff": "클러스터끼리 직접 닿게 되므로 **계층을 가로지르는 통제를 전부 새로 설계해야** 했다. 또 WAN 링크 과부하를 피하려 **작게 시작**해야 해서 초기 처리량이 제한된다. 대신 더 간단하고 빠르다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "question": "네트워크를 잇는 것으로 충분한가",
+            "chosen": "**충분하지 않다.** 인증(Kerberos 교차 신뢰) → 인가(전용 큐) → 격리(NodeLabel·L4 ACL) → 거버넌스(보안·법무 검토) 를 **전송보다 먼저** 세운다.",
+            "alternatives": [
+              "연결을 먼저 열고 통제를 나중에 붙인다"
+            ],
+            "tradeoff": "잇는 데 걸리는 시간이 길어진다(뒷문장은 이 사이트의 해석). 대신 승인되지 않은 DistCP 잡이 상대 클러스터에 **애초에 닿지 못한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "question": "계정 이름이 다른 것을 어떻게 할 것인가",
+            "chosen": "Kerberos **`auth_to_local` 매핑**으로 두 클러스터에서 이름을 같게 표준화한다.",
+            "alternatives": [
+              "양쪽 이름을 그대로 두고 매핑 표를 따로 관리한다"
+            ],
+            "tradeoff": "매핑 규칙 자체가 운영 대상이 되고, 규칙을 잘못 쓰면 엉뚱한 계정 권한이 된다(뒷문장은 이 사이트의 추정). 대신 권한을 한 이름 기준으로 걸 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "question": "질의 엔진은 무엇으로 갈 것인가 (구 Yahoo! JAPAN 쪽 워크플로)",
+            "chosen": "**Hive 를 버리고 대화형은 Trino, 무거운 작업은 Spark 로** 나눈다. 워크플로 200개 이상을 옮겼다.",
+            "alternatives": [
+              "Hive 를 계속 쓴다",
+              "하나의 엔진으로 전부 통일한다"
+            ],
+            "tradeoff": "회사가 적었다 — **Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고**, 분산 실행 때문에 **작은 파일을 잔뜩 만들어** 출력 관리를 손으로 해야 한다. Trino·Spark 는 **질의 안의 변수 설정을 지원하지 않아** Airflow 쪽 파이썬 우회가 필요했다. **하루 9TB 가 갱신되는 작업은 아직 풀리지 않았다** — Iceberg 를 검토 중이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+                "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2025",
+                "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "옮기는 단위를 무엇으로 잡을 것인가",
+            "chosen": "**파이프라인 단위 — Airflow DAG 하나씩.** 각 변경은 테스트·코드 리뷰·정해진 릴리스 절차를 거친다.",
+            "alternatives": [
+              "엔진을 통째로 바꾸고 전부 한 번에 전환한다"
+            ],
+            "tradeoff": "300개가 넘는 파이프라인을 하나씩 통과시켜야 해서 오래 걸린다(뒷문장은 이 사이트의 해석). 대신 호환 문제가 터져도 **그 DAG 하나에 갇힌다** — 실제로 tinyint 통계 메타데이터, 탭 구분자 표기, ORDER BY 의 NULL 처리, 이스케이프 문자, 숫자 캐스팅, Hive UDF 까지 하나씩 어긋났다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+                "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2025",
+                "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ViewFS (구 LINE)",
+            "role": "클라이언트 쪽 네임스페이스 해석. 네임스페이스들이 데이터노드를 공유하고 하둡 버전이 섞여 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "Router-based Federation + Observer NameNode (구 Yahoo! JAPAN)",
+            "role": "서버 쪽에서 네임스페이스를 모으고 읽기를 분산한다. 단일 네임스페이스가 네임노드 확장 한계에 부딪혀 도입했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "Kerberos 교차 영역 신뢰 + `auth_to_local`",
+            "role": "독립 KDC 둘 사이의 인증과 계정 이름 표준화.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "CapacityScheduler 전용 큐 · NodeLabel · L4 ACL",
+            "role": "인가와 네트워크 격리. 승인되지 않은 DistCP 잡을 원천에서 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "DistCP",
+            "role": "클러스터 간 데이터 전송. S3 경유 교환 방식을 대체했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "Trino",
+            "role": "대화형 SQL 분석. Hive 를 대신한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+                "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2025",
+                "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Apache Spark",
+            "role": "무거운 작업. CPU 효율 약 2.4배, 대신 메모리를 더 먹는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+                "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2025",
+                "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Apache Airflow",
+            "role": "파이프라인 오케스트레이션. 이전 단위가 DAG 하나였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+                "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2025",
+                "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Apache Iceberg",
+            "role": "— 하루 9TB 갱신 문제의 **검토 중인 후보**일 뿐, 도입했다는 말은 없다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+                "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2025",
+                "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "kafka-e2ee",
+          "via": "같은 줄기의 아래쪽",
+          "contract": "Kafka 를 지나온 데이터가 결국 이 레이크에 쌓인다. **다만 두 글은 서로를 언급하지 않는다** — 이 연결은 이 사이트의 추정이고, 특히 **E2EE 로 암호화된 페이로드가 레이크에서 어떤 상태로 놓이는지는 어느 글도 말하지 않는다.**",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "작은 파일이 네임노드의 기억을 먹는다",
+            "why_hard": "HDFS 는 파일 하나하나의 메타데이터를 **네임노드 힙(메모리)** 에 들고 있다. 그래서 **데이터의 양이 아니라 파일의 개수**가 한계를 정한다. 그런데 분산 실행 엔진은 태생적으로 작은 파일을 많이 만든다 — 병렬로 쓰면 쓰는 쪽마다 파일이 생기기 때문이다. **빨라지려고 병렬로 쪼갠 것이 저장 계층의 한계를 당긴다.** 이 회사의 글 두 편이 각자 다른 쪽에서 같은 문제에 부딪힌다 — 하나는 네임노드 힙 관리에서, 다른 하나는 Spark 출력에서.",
+            "current_best": "**주기적 병합.** 작은 파일이 지나치게 많은 테이블을 찾아 합치고, Spark 출력은 손으로 관리한다. 근본적인 답은 아니고 — **관리로 눌러 두는 것**이다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              },
+              {
+                "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+                "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2025",
+                "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "두 관리 모델이 공존할 때 '이 데이터는 누구 규칙인가'",
+            "why_hard": "권한을 **테이블 단위**로 거는 세계와 **경로 단위**로 거는 세계는 각자 안에서는 일관되지만, 한 사용자가 둘을 오가는 순간 무너진다. 회사가 직접 적었다 — 크로스 플랫폼 데이터를 쓰는 사용자는 **양쪽의 접근 제어와 운영 절차를 각각 이해하고 다뤄야 한다.** 어느 한쪽으로 통일하는 것은 기술 문제가 아니라 이미 그 위에서 일하는 사람들의 문제라서, 옳은 답이 있어도 옮길 수가 없다(마지막 절은 이 사이트의 해석).",
+            "current_best": "**섞지 않고 나눈다** — 경로 기반 영역과 테이블 기반 영역을 선으로 갈라 두고 단계적으로 옮긴다. 회사는 이것을 끝이 아니라 남은 과제로 적었다 — **\"사용성 개선과 더 안전하고 신뢰할 수 있는 데이터 연계 장치가 과제로 남아 있다.\"**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+                "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+                "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+                "date": "2026",
+                "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "전송을 열기까지 — 통제가 먼저다",
+          "question": "승인되지 않은 잡은 어디서 막히는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph L[\"<b>구 LINE 플랫폼</b>\"]\n    LV[\"ViewFS — 클라이언트 쪽 해석\"]:::list\n    LA[\"권한: DB · 테이블 단위\"]\n    LK[(\"KDC A\")]\n  end\n  subgraph Y[\"<b>구 Yahoo! JAPAN 플랫폼</b>\"]\n    YR[\"RBF — 서버 쪽 취합<br/>+ Observer NameNode (읽기 분산)\"]:::list\n    YA[\"권한: HDFS 경로 단위\"]\n    YK[(\"KDC B\")]\n    NEW[\"<b>새 테이블 기반 영역</b><br/>구 LINE 관리 모델<br/>기존 영역과 선으로 분리\"]:::accent\n  end\n  LK <-->|\"<b>① 인증</b><br/>Kerberos 교차 영역 신뢰<br/>auth_to_local 로 이름 통일\"| YK\n  Q[\"<b>② 인가</b><br/>전용 CapacityScheduler 큐<br/>승인 계정만\"] --> N[\"<b>③ 격리</b><br/>NodeLabel · L4 ACL\"]\n  N --> G[\"<b>④ 거버넌스</b><br/>보안 · 법무 검토\"]\n  G --> DC[\"<b>DistCP</b><br/>WAN 부담 때문에 작게 시작\"]\n  DC --> NEW\n  BAD[\"승인 안 된 DistCP 잡\"] -->|\"큐에서 걸리고\"| X[\"차단\"]:::quiet\n  BAD -->|\"우회해도 네트워크에서\"| X\n  L -.->|\"데이터\"| DC"
+        },
+        {
+          "title": "한 테이블이 새 영역으로 옮겨 가는 동안",
+          "question": "옮기는 중에 규칙은 어느 쪽인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 경로기반영역: 구 Yahoo! JAPAN 에서 살던 데이터\n  경로기반영역 --> 검토중: 보안 · 법무 거버넌스\n  검토중 --> 경로기반영역: 반려\n  검토중 --> 전송중: DistCP — 작게 시작\n  전송중 --> 테이블기반영역: 새 영역에 안착\n  note right of 전송중\n    이 구간에서는 같은 데이터가\n    양쪽 규칙 아래에 함께 있다\n    — 사용자는 둘 다 이해해야 한다\n  end note\n  테이블기반영역 --> 테이블기반영역: 작은 파일 주기적 병합\n  note right of 테이블기반영역\n    네임노드 힙은 데이터 양이 아니라\n    파일 개수가 정한다\n  end note"
+        },
+        {
+          "title": "실패 경로 — 빨라지려고 쪼갠 것이 되돌아온다",
+          "question": "두 글이 각자 다른 쪽에서 만난 같은 벽은 무엇인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  PAR[\"분산 실행으로 쪼갠다\"] --> FAST[\"CPU 효율 약 2.4배 (Spark)\"]\n  PAR --> MEM[\"<b>메모리를 더 먹는다</b>\"]\n  PAR --> SMALL[\"<b>작은 파일이 잔뜩 생긴다</b>\"]:::accent\n  SMALL --> HEAP[\"네임노드 힙은<br/><b>파일 개수</b>가 정한다\"]\n  HEAP -->|\"해석\"| BACK[\"빨라지려고 쪼갠 것이<br/>저장 계층의 한계를 당긴다\"]\n  SMALL --> MERGE[\"완화 — 주기적 병합 · 출력 수동 관리\"]:::quiet\n  TWO[\"두 관리 모델 공존\"] --> OK[\"각 영역 안에서는 일관\"]\n  TWO --> CROSS[\"<b>오가는 사용자는</b><br/>양쪽 절차를 각각 이해해야 한다\"]\n  CROSS --> UNK[\"어떤 데이터가 어떤 단위로<br/>어떤 규칙 아래인지 알기 어려워진다\"]\n  NET[\"네트워크만 잇는다\"] -->|\"회사의 결론\"| NOT[\"충분하지 않았다\"]\n  BIG[\"한 번에 크게 전송\"] -->|\"WAN 링크\"| WAN[\"두 조직이 함께 쓰는 회선이<br/>먼저 무너진다\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+          "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+          "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+          "date": "2026",
+          "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
+        },
+        {
+          "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+          "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+          "publisher": "LY Corporation Tech Blog",
+          "date": "2025",
+          "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+        }
+      ]
+    },
+    {
+      "key": "device-attestation",
+      "name": "이 요청이 진짜 그 앱에서 왔는가",
+      "domain": "암호·기기 신뢰",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "계정 탈취·스팸·피싱·자동화 사기를 막으려면 **\"이 요청을 보낸 것이 진짜 우리 앱인가\"**를 알아야 한다. 그런데 회사가 출발점으로 삼은 문장이 이것이다 — **소프트웨어 기반 접근에는 한계가 있다.**\n\nroot 를 쥔 공격자는 앱을 **마음대로 조작**할 수 있고, 클라이언트를 리버스 엔지니어링해 만든 **대체 클라이언트의 요청은 정상 요청과 구분되지 않는다.** 앱 안에 아무리 검사를 넣어도, 그 검사를 도는 것도 공격자의 기기다.\n\n그래서 신뢰의 뿌리를 **소프트웨어 바깥**으로 옮긴다 — 운영체제 수준에서도 개인키에 닿을 수 없는 **하드웨어 격리 영역(TEE)** 에 두고, 그 키로 서명된 것만 믿는다. **믿을 수 없는 기기에서 믿을 수 있는 대답을 받아 내는 것이 이 기능의 전부다**(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "배포",
+            "value": "**2023년 12월** LINE Android·iOS 앱에 적용, 국가별로 단계적으로 넓혀 **2024년 5월**에 서비스 중인 전 국가 완료",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              },
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "label": "검증 방식을 다시 짠 효과",
+            "value": "자체 `CertPathValidator` 기반 구현으로 **안드로이드 기기 실패를 10분의 1로**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "label": "iOS 성공률",
+            "value": "**100%에 가깝다** — 애플 생태계가 일관된 덕",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "label": "시장에서 마주친 것",
+            "value": "패키지 이름을 바꾸는 **듀얼 앱이 10종 이상** 쓰이고 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "label": "기기에서 읽는 신호",
+            "value": "`attestationSecurityLevel`(Software 0 / TrustedEnvironment 1 / StrongBox 2) · `deviceLocked` · `verifiedBootState`(Verified 0 / SelfSigned 1 / Unverified 2 / Failed 3)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "앱 안에 검사를 넣어 보고",
+          "thought": "소프트웨어로 막는 데는 한계가 있다. **root 를 쥐면 앱을 마음대로 조작**할 수 있고, 리버스해서 만든 대체 클라이언트의 요청은 **정상 요청과 구분되지 않는다.** 검사하는 코드 자체가 공격자의 기기 위에서 돈다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그럼 무엇을 믿을 수 있나",
+          "thought": "**개인키가 OS 수준에서조차 노출되지 않는 하드웨어 격리 영역**이 있다. 거기서 만든 키로 서명하면, 그 서명은 '이 기기의 그 하드웨어가 만들었다'는 뜻이 된다. 믿는 대상을 앱에서 **칩으로** 내린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "두 플랫폼이 서로 다른 물건을 내놓을 때",
+          "thought": "안드로이드는 인증서 체인을, iOS 는 App Attest 결과를 준다 — **구조가 크게 다르다.** **WebAuthn(FIDO2) 규격**을 따르게 하면 클라이언트 쪽 형태는 맞출 수 있다. 그래도 **서버에는 둘을 하나로 모으는 로직이 여전히 필요하다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "켜고 나서 실패 로그를 봤을 때",
+          "thought": "검증에 실패한 요청이 전부 공격자가 아니었다. **대부분은 인증서 인코딩이 이상한 정상 사용자**였다 — RFC 5280 의 두 자리 연도 해석, 만료일이 `0` 으로 박힌 인증서. **보안 검증을 조이면 정상 사용자가 먼저 걸린다.** 검증 기준을 상황에 따라 나누는 구현을 따로 만들어 실패를 10분의 1로 줄였다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "TEE (신뢰 실행 환경)",
+            "what": "하드웨어로 격리된 영역. 안드로이드는 ARM TrustZone 또는 StrongBox, iOS 는 Secure Enclave. **여기서 만든 개인키는 OS 수준에서 접근할 수 없다.**"
+          },
+          {
+            "name": "어테스테이션 키 / 어서션 키",
+            "what": "어테스테이션 키는 기기에 심긴 것으로 **중간 인증서**에 들어 있다. 어서션 키는 TEE 에서 새로 만들어 **리프 인증서**에 담기고, 이후 요청마다 서명에 쓴다."
+          },
+          {
+            "name": "챌린지",
+            "what": "서버가 주는 **일회성 난수**. 서명 대상에 들어가 재전송 공격을 막는다."
+          },
+          {
+            "name": "어테스테이션 객체 (등록)",
+            "what": "인증서 체인 + 챌린지에 대한 서명 + 기기·앱 보안 정보. WebAuthn 형태를 따른다."
+          },
+          {
+            "name": "어서션 객체 (인증)",
+            "what": "등록된 개인키로 챌린지와 요청 데이터를 서명한 것. 중요한 기능에서는 **결제 금액·수취인 같은 API 파라미터까지 서명 대상에 넣는다.**"
+          },
+          {
+            "name": "Risk Metric (Apple)",
+            "what": "**지난 한 달 동안 그 기기에서 일어난 어테스테이션 횟수.** 임계를 넘는 사용자는 비정상일 확률이 뚜렷이 높았다."
+          }
+        ],
+        "invariants": [
+          "어서션 개인키는 **TEE 밖으로 나오지 않는다** — OS 도 못 읽는다.",
+          "챌린지는 **일회성**이다 — 같은 요청을 다시 보내면 통과하지 못한다.",
+          "루트 인증서는 **Google(안드로이드) · Apple(iOS)** 이 자기 서명한 것이다 — 신뢰의 끝이 우리 밖에 있다.",
+          "서명 대상에 API 파라미터가 들어가면 **그 파라미터 그대로일 때만** 유효하다.",
+          "`attestationSecurityLevel` 이 Software 거나, 부트로더가 잠겨 있지 않거나, `verifiedBootState` 가 Verified 가 아니면 **믿지 않는다.**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**[등록]** 클라이언트가 서버에서 **일회성 챌린지**를 받는다",
+            "why": "서명이 언제 만들어진 것인지 서버가 못 정하면 재전송을 막을 수 없다."
+          },
+          {
+            "step": "**TEE 안에서 어서션 키쌍**을 만든다",
+            "why": "개인키가 OS 에 노출되는 순간 이 모든 것이 무의미해진다."
+          },
+          {
+            "step": "인증서 체인 + 챌린지 서명 + 기기·앱 보안 정보를 담은 **어테스테이션 객체**를 만든다",
+            "why": "'이 공개키가 신뢰할 수 있는 하드웨어에서, 변조되지 않은 앱에 의해 만들어졌다'를 한 덩어리로 증명한다."
+          },
+          {
+            "step": "서버가 **x.509 체인을 플랫폼 루트 인증서까지** 검증한다 — 리프는 중간이, 중간은 루트가 보증한다",
+            "why": "체인이 끊기면 그 키가 하드웨어에서 나왔다는 근거가 사라진다."
+          },
+          {
+            "step": "서버가 **Google 인증서 폐기 목록(CRL)** 을 확인한다",
+            "why": "유출된 어테스테이션 키로 만든 증명을 계속 받아 주면 안 된다."
+          },
+          {
+            "step": "서명·챌린지·앱 서명을 검증하고 통과하면 **공개키를 사용자 정보와 함께 등록**한다",
+            "why": "이후 요청은 이 공개키로만 검증된다."
+          },
+          {
+            "step": "**[인증]** 요청 때마다 챌린지를 받아 **어서션 객체**에 서명해 보낸다. 결제·송금 같은 기능에서는 **API 파라미터를 서명 대상에 묶는다**",
+            "why": "기기가 진짜라는 것만으로는 부족하다 — 중간에서 금액이 바뀌면 그 요청은 다른 요청이다."
+          },
+          {
+            "step": "서버가 저장된 공개키로 서명을 검증하고 앱 무결성을 확인한다",
+            "why": "등록 시점의 신뢰를 매 요청으로 이어 준다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "소프트웨어로 막을 것인가, 하드웨어에 근거를 둘 것인가",
+            "chosen": "**하드웨어.** TEE 에서 키를 만들고 그 서명만 믿는다.",
+            "alternatives": [
+              "앱 안의 무결성 검사와 난독화로 막는다",
+              "서버 쪽 행동 분석만으로 막는다"
+            ],
+            "tradeoff": "**플랫폼별 구현이 갈린다**(TrustZone/StrongBox vs Secure Enclave). TEE 가 없는 기기나 에뮬레이터는 `attestationSecurityLevel` 이 Software 로 떨어져 **애초에 통과하지 못한다** — 정당한 구형 기기까지 걸릴 수 있다(뒷문장은 이 사이트의 추정). 대신 root 를 쥔 공격자도 개인키에는 닿지 못한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "프로토콜을 직접 만들 것인가",
+            "chosen": "**WebAuthn(FIDO2) 규격을 따른다.**",
+            "alternatives": [
+              "자체 프로토콜을 정의한다"
+            ],
+            "tradeoff": "규격을 따라도 **안드로이드와 iOS 의 어테스테이션 객체 구조가 크게 달라, 서버에 둘을 하나로 모으는 로직이 여전히 필요하다** — 회사가 직접 적은 한계다. 대신 표준과 호환되고 플랫폼이 바뀌어도 형태가 유지된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              },
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "question": "무엇에 서명할 것인가 — 기기만인가, 요청까지인가",
+            "chosen": "**중요한 기능에서는 API 파라미터를 어서션에 묶는다** — 결제 금액, 수취인 같은 값.",
+            "alternatives": [
+              "기기 신뢰만 확인하고 요청 내용은 별도로 다룬다"
+            ],
+            "tradeoff": "서명 대상이 요청마다 달라져 클라이언트·서버 양쪽이 그 값을 정확히 같게 만들어야 한다(뒷문장은 이 사이트의 추정). 대신 중간에서 내용이 바뀐 요청은 **기기가 진짜여도** 통과하지 못한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "인증서 체인 검증을 플랫폼 기본 구현에 맡길 것인가",
+            "chosen": "**Security R&D 팀이 Java `CertPathValidator` 기반으로 따로 구현**해, 정상 사용자와 의심스러운 활동을 가르는 상황별 기준을 넣었다.",
+            "alternatives": [
+              "표준 검증 결과를 그대로 통과/차단으로 쓴다"
+            ],
+            "tradeoff": "**검증 기준을 우리가 짊어지게 된다** — 기준이 느슨해지면 그만큼 열린다(뒷문장은 이 사이트의 추정). 대신 안드로이드 기기 실패가 **10분의 1**로 줄었다. 원인은 대부분 공격이 아니라 **RFC 5280 의 두 자리 연도 해석, 만료일이 `0` 인 인증서** 같은 인코딩 문제였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "question": "유출된 어테스테이션 키를 어떻게 걸러낼 것인가",
+            "chosen": "어테스테이션 때마다 **Google 인증서 폐기 목록(CRL)** 을 확인한다.",
+            "alternatives": [
+              "폐기 확인 없이 체인 검증만 한다"
+            ],
+            "tradeoff": "외부 폐기 목록에 의존하게 되고 그것이 늦거나 비면 그만큼 늦는다(뒷문장은 이 사이트의 추정). 대신 이미 새어 나간 키로 만든 증명이 계속 통과하지는 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "우회를 어떻게 알아챌 것인가",
+            "chosen": "**이상 탐지를 한 층 더 둔다** — 한 기기에서 일어나는 어테스테이션 **빈도**를 재고, iOS 는 Apple 의 **Risk Metric**(지난 한 달 어테스테이션 횟수)을 쓴다. 임계를 넘은 사용자는 비정상일 확률이 뚜렷이 높았다.",
+            "alternatives": [
+              "하드웨어 검증만으로 충분하다고 본다"
+            ],
+            "tradeoff": "회사가 직접 적었다 — **그런 행위를 완벽히 탐지하는 것은 거의 불가능하다.** 보조 수단일 뿐이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              },
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "question": "언제 전부 켤 것인가",
+            "chosen": "**국가별 단계 롤아웃** — 2023년 12월 시작해 2024년 5월에 서비스 중인 전 국가 완료.",
+            "alternatives": [
+              "전 국가에 한 번에 적용한다"
+            ],
+            "tradeoff": "전환 기간이 길어지고 그동안 나라마다 다른 상태가 된다. 대신 인증서 인코딩 같은 **예상 못 한 실패를 좁은 범위에서 먼저 만난다**(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Android Key Attestation (ARM TrustZone · StrongBox)",
+            "role": "TEE 에서 키를 만들고 인증서 체인으로 증명한다. 확장 스키마로 보안 수준·부트로더 잠금·부트 상태를 읽는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "iOS App Attest (Secure Enclave)",
+            "role": "WebAuthn 형태의 구조를 돌려준다. 변조된 앱은 `rpIdHash` 가 달라져 잡힌다 — 최신 아이폰에는 공개된 탈옥 익스플로잇이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              },
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "tech": "WebAuthn / FIDO2 객체",
+            "role": "두 플랫폼을 같은 규격으로 묶는다. 그래도 서버에는 구조 차이를 흡수하는 로직이 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              },
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "tech": "자체 x.509 체인 검증 (Java CertPathValidator 기반)",
+            "role": "상황별 기준을 넣어 정상 사용자와 의심 활동을 가른다. 안드로이드 실패를 10분의 1로 줄였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "tech": "Google 인증서 폐기 목록(CRL)",
+            "role": "유출된 어테스테이션 키로 만든 증명을 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Apple Risk Metric + 빈도 기반 이상 탐지",
+            "role": "하드웨어 검증을 통과한 뒤에도 남는 우회를 확률로 좁힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              },
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "tech": "어테스테이션 서버가 어떤 저장소를 쓰는지",
+            "role": "— 글은 '공개키를 저장하고 검증한다'고만 적고 **저장 계층을 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "신뢰의 뿌리를 하드웨어에 두어도 우회는 남는다",
+            "why_hard": "회사가 직접 적었다 — **애플리케이션과 커널 취약점을 통해 기기의 운영체제를 직접 수정하지 않고 root 를 얻으면 기기 어테스테이션은 우회될 수 있다.** 어테스테이션이 증명하는 것은 **'이 키가 그 하드웨어에서 나왔다'**이지 **'지금 이 요청이 정직하다'**가 아니기 때문이다. 정상적인 기기 위에서 정상적인 앱이 서명하게 만들 수만 있으면, 그 서명은 진짜다. **증명의 대상과 막으려는 대상이 애초에 어긋나 있다**(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**확률로 좁힌다** — 한 기기의 어테스테이션 빈도를 재고, iOS 는 Apple Risk Metric(지난 한 달 횟수)을 본다. 임계를 넘은 사용자는 비정상일 확률이 뚜렷이 높았다. 다만 회사가 못 박았다 — **그런 행위를 완벽히 탐지하는 것은 거의 불가능하다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (1)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+              },
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          },
+          {
+            "problem": "검증 실패만으로는 공격자와 정상 사용자를 가를 수 없다",
+            "why_hard": "보안 검증을 조이면 **정상 사용자가 먼저 걸린다.** 실제로 안드로이드에서 인증서 체인 검증에 실패한 요청의 대부분이 공격이 아니라 **인코딩이 이상한 정상 기기**였다 — RFC 5280 의 두 자리 연도 해석, 만료일이 `0` 인 인증서. 세상에 나가 있는 기기의 상태는 규격보다 다양해서, **규격대로 엄격하게 검증할수록 규격을 못 지킨 정상 기기가 잘려 나간다.**",
+            "current_best": "**검증 기준을 상황별로 나눈다** — 표준 결과를 그대로 통과/차단으로 쓰지 않고 자체 구현으로 맥락을 본다. 안드로이드 실패가 10분의 1이 됐다. 그 대가로 **기준의 책임을 회사가 진다**(마지막 절은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LINE device attestation service (2)",
+                "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+                "publisher": "LY Corporation Tech Blog",
+                "date": "2024",
+                "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "등록과 인증 — 신뢰가 칩에서 서버로 건너오는 길",
+          "question": "서버는 무엇을 근거로 이 요청을 믿는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph DEV[\"<b>사용자 기기</b>\"]\n    APP[\"LINE 앱\"]\n    subgraph TEE[\"<b>TEE</b> — TrustZone · StrongBox · Secure Enclave\"]\n      SK[(\"어서션 <b>개인키</b><br/>OS 도 읽을 수 없다\")]:::accent\n    end\n  end\n  SRV[\"<b>어테스테이션 서버</b>\"]\n  SRV -->|\"① 일회성 챌린지\"| APP\n  APP --> TEE\n  TEE -->|\"② 키쌍 생성 · 챌린지 서명\"| ATT[\"<b>어테스테이션 객체</b> (WebAuthn)<br/>• 인증서 체인 (리프·중간·루트)<br/>• 챌린지 서명<br/>• 기기·앱 보안 정보\"]:::list\n  ATT --> V{\"<b>서버 검증</b>\"}\n  V --> C1[\"x.509 체인 → 플랫폼 루트<br/>(Google · Apple)\"]\n  V --> C2[\"Google CRL — 폐기된 키인가\"]\n  V --> C3[\"보안 수준 · deviceLocked<br/>verifiedBootState\"]\n  V --> C4[\"앱 서명 · AttestationApplicationId\"]\n  C1 & C2 & C3 & C4 --> OK[\"③ 공개키를 사용자와 함께 등록\"]\n  OK --> ASSERT[\"④ <b>이후 매 요청</b><br/>챌린지 + 요청 데이터 서명<br/>결제·송금은 <b>금액·수취인까지 서명에 묶는다</b>\"]:::accent\n  ASSERT --> RISK[\"⑤ 그래도 남는 것 —<br/>빈도 이상 탐지 · Apple Risk Metric\"]:::quiet"
+        },
+        {
+          "title": "한 기기가 놓이는 자리",
+          "question": "통과하지 못한 기기는 전부 공격자인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 미등록\n  미등록 --> 검증중: 어테스테이션 요청\n  검증중 --> 신뢰됨: 체인 · 부트 상태 · 앱 서명 모두 통과\n  검증중 --> 거절: Software 보안 수준 / 부트로더 열림<br/>verifiedBootState ≠ Verified / 폐기된 인증서\n  검증중 --> 회색지대: 인증서 인코딩 이상\n  note right of 회색지대\n    대부분 공격자가 아니라 정상 사용자였다\n    RFC 5280 두 자리 연도 · 만료일 \"0\"\n    자체 CertPathValidator 로 실패 1/10\n  end note\n  회색지대 --> 신뢰됨: 상황별 기준으로 재판정\n  회색지대 --> 거절: 의심 신호가 겹칠 때\n  신뢰됨 --> 신뢰됨: 매 요청 어서션 서명\n  신뢰됨 --> 관찰대상: 어테스테이션 빈도 이상 · Risk Metric 초과\n  note right of 관찰대상\n    하드웨어 검증은 통과했다\n    그래도 확률로만 좁힐 수 있다\n  end note\n  거절 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 증명한 것과 막으려는 것이 어긋난다",
+          "question": "서명이 진짜인데도 요청이 가짜일 수 있는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SW[\"소프트웨어로 막는다\"] --> ROOT[\"root 를 쥐면<br/>앱을 마음대로 조작한다\"]\n  SW --> ALT[\"리버스한 대체 클라이언트의 요청은<br/><b>정상 요청과 구분되지 않는다</b>\"]\n  ROOT & ALT --> HW[\"<b>하드웨어(TEE)로 내려간다</b>\"]:::accent\n  HW --> PROVE[\"증명하는 것 —<br/>'이 키가 그 하드웨어에서 나왔다'\"]\n  WANT[\"막으려는 것 —<br/>'지금 이 요청이 정직하다'\"]\n  PROVE -.->|\"해석 · 둘은 같지 않다\"| WANT\n  BYPASS[\"OS 를 직접 수정하지 않고<br/>앱·커널 취약점으로 얻은 root\"] -->|\"회사가 인정\"| PASS[\"<b>어테스테이션이 우회된다</b><br/>서명은 진짜다\"]\n  PASS --> MIT[\"완화 — 빈도 이상 탐지 · Risk Metric<br/><b>완벽한 탐지는 거의 불가능</b>\"]:::quiet\n  STRICT[\"규격대로 엄격하게 검증\"] --> FALSE[\"규격을 못 지킨 <b>정상 기기</b>가 잘린다\"]\n  FALSE --> CTX[\"완화 — 상황별 기준 (실패 1/10)\"]:::quiet\n  CTX -->|\"추정\"| OWN[\"기준의 책임을 회사가 진다\"]\n  DUAL[\"패키지 이름을 바꾸는 듀얼 앱 10종 이상\"] --> APPID[\"AttestationApplicationId 로 잡는다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "LINE device attestation service (1)",
+          "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+          "publisher": "LY Corporation Tech Blog",
+          "date": "2024",
+          "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+        },
+        {
+          "title": "LINE device attestation service (2)",
+          "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+          "publisher": "LY Corporation Tech Blog",
+          "date": "2024",
+          "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
+        }
+      ]
     }
-   ],
-   "features": [
-    "device-attestation"
-   ]
-  },
-  {
-   "name": "데이터 레이크 통합",
-   "why": "**합병 이전의 하둡 클러스터가 두 벌 있고, 합치면 1EB 를 넘는다.** 구 LINE 은 클라이언트 쪽에서 네임스페이스를 푸는 ViewFS 에 **테이블 단위** 권한, 구 Yahoo! JAPAN 은 서버 쪽에서 모으는 RBF 에 **경로 단위** 권한이다. 같은 일을 서로 다른 역사로 하고 있어, **네트워크를 잇는 것만으로는 안 됐다.**",
-   "tech": [
+  ],
+  "open_questions": [
+    "Kafka E2EE 글은 CPU 증가(1% 미만)만 밝히고 **메모리·지연·메시지 크기 증가율은 수치로 내놓지 않는다.**",
+    "DEK 를 배치마다 새로 만드는지 캐시로 재사용하는지 — 글은 둘 다 언급하지만 **어떤 기준으로 갈리는지는 적지 않는다.**",
+    "KEK 회전 주기가 구체적으로 얼마인지 — '주기적'이라고만 적혀 있다.",
+    "PQC 는 **아직 프로덕션에 배포된 알고리즘이 없다** — 계획 단계의 글이라 실제 적용 지점과 오버헤드 수치가 없다.",
+    "HDFS 통합 글은 **클러스터별 용량·노드 수·파일 수를 공개하지 않는다.** 합계 1EB 초과와 추세 그래프만 있다.",
+    "HDFS 통합 글은 **DistCP 로 실제 얼마를 옮겼는지, 얼마나 걸렸는지**를 적지 않는다.",
+    "새 테이블 기반 영역으로의 이전이 **어디까지 진행됐는지** 비율이 없다.",
+    "**Letter Sealing 자체는 여전히 기능으로 팔 수 없다** — 원문이 열리기는 하지만 키 교환 프로토콜도 다중 기기 키 동기화도 밝히지 않는다. 도메인 `tech` 에만 남겨 두었다.",
+    "어테스테이션 서버가 **공개키를 어디에 저장하는지** 밝히지 않는다.",
+    "이상 탐지의 **빈도 임계값**이 얼마인지 밝히지 않는다.",
+    "**Kafka 에 종단간 암호화를 적용한 시점을 확인하지 못했다.** 글은 2026-07-29 에 나왔고 초당 100만 건짜리 토픽에 적용해 인스턴스당 CPU 증가가 1% 미만이었다고 밝히지만, 언제 한 일인지는 적지 않는다. 그래서 별도 시기로 세우지 않았다. 이 작업의 대가는 회사가 밝혔다 — **여러 소비자가 KEK 하나를 공유하는 방식을 골라 소비자별 키 격리를 포기**했다(소비자가 늘어도 메시지 헤더를 안정적으로 유지하려고).",
+    "**두 레이크를 잇는 작업이 언제 시작됐는지도 없다.** 글은 '조직 통합 이후'라고만 한다. 그래서 2023년 10월 1일이라는 합병일을 시기의 시작으로 삼았지, 작업 착수일이 확인된 것은 아니다."
+  ],
+  "sources": [
     {
-     "tech": "Kerberos 교차 영역 신뢰 (Cross-Realm)",
-     "solves": "독립적으로 돌던 두 KDC 사이에 인증을 먼저 세운다. 계정 이름은 `auth_to_local` 매핑으로 양쪽에서 같게 맞춘다.",
-     "limits": "IP 충돌 때문에 KDC 를 다시 세워야 했다 — 기술 불일치 목록에 최소 HDFS 블록 크기 차이도 함께 올라 있다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-       "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-       "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-       "date": "2026",
-       "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-      }
-     ]
+      "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+      "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+      "publisher": "LY Corporation Tech Blog",
+      "date": "2026-07-29",
+      "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
     },
     {
-     "tech": "전용 CapacityScheduler 큐 + NodeLabel + L4 ACL",
-     "solves": "인가받은 계정만 통과시키고, 승인되지 않은 DistCP 잡이 아예 네트워크에 닿지 못하게 격리한다.",
-     "limits": "**전송을 열기 전에 통제를 먼저 만든다**는 뜻이라, 잇는 데 걸리는 시간이 길어진다(뒷문장은 이 사이트의 해석).",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-       "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-       "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-       "date": "2026",
-       "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-      }
-     ]
+      "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
+      "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+      "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
+      "date": "2026",
+      "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
     },
     {
-     "tech": "DistCP (S3 경유 교환 방식 대신)",
-     "solves": "별도 환경에서 S3 를 거쳐 주고받던 기존 방식보다 **더 간단하고 빠르다.**",
-     "limits": "WAN 링크에 부담을 주지 않으려고 **작게 시작**해야 했다 — 초기 처리량이 제한된다.",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-       "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-       "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-       "date": "2026",
-       "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-      }
-     ]
+      "title": "Journey to PQC: Protecting data in the quantum computing era",
+      "url": "https://techblog.lycorp.co.jp/en/pqc-to-protect-data-in-the-age-of-quantum-computers",
+      "publisher": "LY Corporation Tech Blog",
+      "date": "2026",
+      "summary": "Letter Sealing·FIDO·백업에 쓰는 암호를 양자 이후로 옮기는 계획. '지금 모아 두었다가 나중에 푼다'(HNDL)를 위협 모델로 삼고, 고전 알고리즘과 PQC 를 함께 쓰는 하이브리드로 간다 — 그 복잡성과 상호운용 문제도 함께 적었다."
     },
     {
-     "tech": "Trino + Spark (Hive 대체)",
-     "solves": "대화형 분석은 Trino, 무거운 작업은 Spark 로 갈랐다. 워크플로 200개 이상, 파이프라인 300개 이상 — Spark 는 **CPU 효율 약 2.4배.**",
-     "limits": "**Spark 는 메모리를 더 먹고 작은 파일을 잔뜩 만든다.** 질의 안의 변수 설정을 둘 다 지원하지 않아 Airflow 쪽 우회가 필요했고, **하루 9TB 갱신 작업은 아직 풀리지 않았다.**",
-     "confidence": "confirmed",
-     "sources": [
-      {
-       "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-       "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-       "publisher": "LY Corporation Tech Blog",
-       "date": "2025",
-       "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-      }
-     ]
+      "title": "Financial Highlights — 세그먼트별 매출",
+      "url": "https://www.lycorp.co.jp/en/ir/finance/highlight.html",
+      "publisher": "LY Corporation IR",
+      "date": "2026-05",
+      "summary": "FY2026/03(2026년 3월 31일 종료) 세그먼트별 매출. Media 734,545 · Commerce 857,897 · Strategic 445,775 · Others 10,235 · 조정 -12,086, 연결 합계 2,036,366 백만 엔."
+    },
+    {
+      "title": "Migration from Hive to Trino and Spark: Challenges and insights",
+      "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
+      "publisher": "LY Corporation Tech Blog",
+      "date": "2025",
+      "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
+    },
+    {
+      "title": "The next step for even safer messaging: Letter Sealing",
+      "url": "https://engineering.linecorp.com/en/blog/the-next-step-for-even-safer-messaging-letter-sealing/",
+      "publisher": "LINE Engineering",
+      "date": "2016",
+      "summary": "LINE 의 종단간 암호화 Letter Sealing 을 기본값으로 켠 이야기. 키는 사용자 기기에만 두고 서버에 두지 않는다. 다만 키 교환 방식은 밝히지 않고, 그룹은 초기에 50명 제한이었다."
+    },
+    {
+      "title": "LINE device attestation service (1)",
+      "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
+      "publisher": "LY Corporation Tech Blog",
+      "date": "2024",
+      "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
+    },
+    {
+      "title": "LINE device attestation service (2)",
+      "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
+      "publisher": "LY Corporation Tech Blog",
+      "date": "2024",
+      "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
     }
-   ],
-   "features": [
-    "hdfs-bridge"
-   ]
-  }
- ],
- "features": [
-  {
-   "key": "kafka-e2ee",
-   "name": "Kafka 종단간 암호화 — 브로커가 평문을 보지 않게",
-   "domain": "스트리밍 파이프라인",
-   "updated_at": "2026-08-21",
-   "business": {
-    "why": "서비스 사이를 잇는 **Kafka 토픽 하나가 초당 100만 메시지**를 나른다. 한 팀이 쓰고 여러 팀이 읽는다. 그 안에는 **민감한 개인정보**가 흐른다.\n\nTLS/SASL 도 있고 ACL 도 있다. 그런데 그것들이 지키는 것은 **전송 중의 데이터와 접근 권한**이지, **브로커에 저장된 페이로드**가 아니다. 채팅 메시지는 이미 Letter Sealing 으로 앱과 앱 사이가 잠겨 있는데, **그 아래 인프라 계층은 그렇지 않았다.**\n\n그래서 회사가 잡은 목표는 한 줄이다 — **\"생산하는 시점에 암호화하고, 소비자가 복호화할 때까지 암호화된 채로 둔다.\"** 어려움은 암호화 자체가 아니라 **이미 초당 100만 건이 흐르고 있는 줄기를 멈추지 않고** 그 위에 얹는 데 있다.",
-    "metrics": [
-     {
-      "label": "대상 토픽의 규모",
-      "value": "**초당 최대 100만 메시지.** 한 팀이 생산하고 여러 팀이 소비한다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "label": "암호화가 먹은 CPU",
-      "value": "인스턴스당 **1% 미만.** 프로덕션 실측도 예측한 1% 이내에 머물렀다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "label": "측정 조건",
-      "value": "프로덕션 동등 환경에서 평문 대 암호문을 **10분 구간**으로 비교. 최대 **초당 5,000 요청**, 페이로드 **수십 KB**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "label": "롤아웃",
-      "value": "암호화 비율을 **1% → 10% → 50% → 100%** 로 올렸다. 2주 동안 **암복호화 관련 사고 0건**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "label": "추가로 든 인프라",
-      "value": "**없다** — 서비스 중단 없이, 추가 인프라 비용 없이 적용했다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     }
-    ]
-   },
-   "thinking": [
+  ],
+  "eras": [
     {
-     "at": "TLS 도 ACL 도 이미 있는데 왜 또 암호화하나",
-     "thought": "그것들이 지키는 것은 **전송 중**과 **접근 권한**이다. 브로커 디스크에 남는 페이로드는 여전히 평문이다. 채팅은 Letter Sealing 으로 잠겨 있는데 **그 밑을 흐르는 인프라는 잠겨 있지 않았다** — 층이 하나 비어 있었다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "소비자마다 키를 주려다가",
-     "thought": "처음에는 소비자별 KEK 을 생각했다. 그런데 그러면 **헤더의 메타데이터가 소비자 수에 비례해 쌓인다.** 소비자가 늘 때마다 모든 메시지가 무거워진다 — **한 명이 늘어난 비용을 전체 트래픽이 나눠 낸다**(마지막 문장은 이 사이트의 해석).",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "배치 단위로 묶어 암호화하면 더 싼데",
-     "thought": "CPU 도 크기도 배치 쪽이 유리하다. 그런데 그러려면 **클라이언트 내부를 고쳐야 한다.** 그러면 Kafka 를 올릴 때마다 우리가 고친 자리를 따라가야 한다. **인터셉터와 디시리얼라이저라는 표준 확장점**만 쓰면 생산자·소비자 코드를 건드리지 않고도 켤 수 있다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "켜는 순간을 정할 때",
-     "thought": "한 번에 전부 켜면 되돌릴 수가 없다. **헤더가 있으면 복호화하고 없으면 그대로 통과**시키게 하면, 암호문과 평문이 같은 토픽에서 공존한다. 그러면 1%부터 켜 보고 지표를 보면서 올릴 수 있고, 이상하면 **설정 하나로 즉시 되돌릴 수 있다.**",
-     "confidence": "confirmed"
-    }
-   ],
-   "domain_model": {
-    "entities": [
-     {
-      "name": "DEK (Data Encryption Key)",
-      "what": "페이로드를 실제로 암호화하는 대칭키. **AES-GCM**, 메시지 배치 단위로 생성하거나 캐시해 재사용한다."
-     },
-     {
-      "name": "KEK (Key Encryption Key)",
-      "what": "DEK 를 감싸는 **타원곡선 비대칭 키쌍**(ECIES, secp521r1). 키 관리 서비스가 쥔다."
-     },
-     {
-      "name": "메시지 헤더",
-      "what": "**KEK ID**(어느 키 버전인지)와 **그 KEK 으로 암호화된 DEK** 가 들어간다. 헤더의 유무 자체가 '이 메시지가 암호문인가'의 표시다."
-     },
-     {
-      "name": "생산자 인터셉터",
-      "what": "보내기 직전 레코드를 암호화하고 헤더를 붙인다. KMS 를 폴링해 활성 공개키를 받는다."
-     },
-     {
-      "name": "소비자 디시리얼라이저",
-      "what": "헤더를 보고 복호화할지 그대로 통과시킬지 고른다. 자기 KEK ID 에 맞는 헤더 항목을 골라 DEK 를 푼다."
-     }
-    ],
-    "invariants": [
-     "페이로드는 **생산자에서 소비자까지** 암호문으로 남는다 — 브로커는 평문을 보지 않는다.",
-     "**생산자는 공개키만** 받는다. 개인키는 인가받은 소비자에게만 간다 — 암호화 권한과 복호화 권한이 갈라져 있다.",
-     "헤더의 메타데이터 항목은 **소비자 수와 무관하게 하나**다.",
-     "헤더가 없는 메시지는 **평문으로 통과**시킨다 — 그래서 전환 중에 둘이 공존한다.",
-     "회전 중에는 **옛 KEK 과 새 KEK 이 동시에 살아 있다.**",
-     "파티션 라우팅 키는 **바꾸지 않는다** — 암호화가 파티셔닝을 흔들지 않는다."
-    ]
-   },
-   "implementation": {
-    "flow": [
-     {
-      "step": "생산자 인터셉터가 KMS 를 폴링해 **활성 KEK 공개키**를 받아 둔다",
-      "why": "회전이 일어나도 생산자가 스스로 따라잡아야 한다."
-     },
-     {
-      "step": "레코드마다 **DEK 로 페이로드를 암호화**한다 (AES-GCM)",
-      "why": "배치가 아니라 레코드 단위여야 표준 확장점만으로 끝난다."
-     },
-     {
-      "step": "그 **DEK 를 KEK 공개키로 감싸** 헤더에 넣는다. 헤더에는 KEK ID 도 함께 들어간다",
-      "why": "비싼 비대칭 연산을 큰 페이로드가 아니라 짧은 키에만 쓴다."
-     },
-     {
-      "step": "회전 중이면 **활성 공개키 전부로 DEK 를 각각 감싸** 헤더에 여러 항목을 넣는다",
-      "why": "옛 키를 쓰는 소비자와 새 키를 쓰는 소비자가 같은 메시지를 함께 읽어야 한다."
-     },
-     {
-      "step": "브로커는 그대로 저장한다 — **평문을 보지 않는다**",
-      "why": "이 기능의 목적 자체가 브로커에 남는 평문을 없애는 것이다."
-     },
-     {
-      "step": "소비자 디시리얼라이저가 **헤더가 있는지 본다.** 없으면 그대로 통과시킨다",
-      "why": "전환 중에는 암호문과 평문이 같은 토픽에 섞여 있다."
-     },
-     {
-      "step": "있으면 **자기 KEK ID 에 맞는 항목**을 골라 개인키로 DEK 를 풀고, 그 DEK 로 페이로드를 푼다",
-      "why": "복호화 권한은 KMS 인가를 받은 소비자에게만 있다."
-     }
-    ],
-    "decisions": [
-     {
-      "question": "TLS·SASL·ACL 위에 또 암호화를 얹을 것인가",
-      "chosen": "**얹는다.** 클라이언트 계층에서 종단간으로 — 생산 시점에 암호화하고 소비자가 풀 때까지 그대로 둔다.",
-      "alternatives": [
-       "전송 암호화와 접근 제어로 충분하다고 본다",
-       "브로커 디스크 암호화로 대신한다"
+      "id": "2016-letter-sealing",
+      "from": "2016",
+      "to": "2023-10",
+      "title": "메시지는 봉인했지만 그것이 흐르는 관은 열려 있었다",
+      "context": "메시징이 주력인 회사에서 **'우리도 못 읽는다'는 것이 곧 제품의 약속**이다.",
+      "what_changed": "**2016년 채팅 메시지에 `Letter Sealing` 이라는 종단간 암호화를 넣었다.** 주고받는 당사자 말고는 내용을 볼 수 없게 한 것이다.",
+      "why": "메시징 회사에서 신뢰는 기능이 아니라 전제다. 그 전제를 기술로 못 박아야 했다.",
+      "tradeoff": "**암호화가 메시지에서 멈췄다.** 그 메시지가 흘러가는 파이프라인, 곧 **Kafka 브로커에 저장되는 페이로드는 평문**으로 남았다. Kafka 가 전송 보안과 접근 제어를 주긴 하지만 **그 통제는 '누가 브로커에 접근하는가'를 규율할 뿐 브로커에 저장된 데이터의 평문 자체를 지키지 않는다.** ⚠️ 회사가 이것을 Letter Sealing 의 대가라고 부른 적은 없다 — 뒷날 이 구멍을 메우는 글에서 드러난 사실을 이 사이트가 그 시기의 값으로 놓은 것이다.",
+      "domains": [
+        "암호·기기 신뢰"
       ],
-      "tradeoff": "키 관리 서비스라는 **의존이 하나 늘고**, 시스템의 무게중심이 암호화 자체에서 **'키를 누구에게 주느냐'로 옮겨 간다**(뒷문장은 이 사이트의 해석). 대신 브로커가 뚫려도 페이로드는 암호문이다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "소비자마다 KEK 을 줄 것인가, 하나를 나눠 쓸 것인가",
-      "chosen": "**공유 KEK.** 여러 소비자가 키쌍 하나를 함께 쓴다.",
-      "alternatives": [
-       "소비자마다 KEK 을 따로 준다"
+      "features": [
+        "kafka-e2ee"
       ],
-      "tradeoff": "회사가 직접 적었다 — **키가 새면 과거와 미래의 메시지를 모두 복호화할 수 있다.** KMS 인가와 주기적 회전으로 완화할 뿐이다. 대신 **소비자가 몇이든 헤더 메타데이터는 한 항목**으로 고정된다 — 소비자별 격리보다 **안정적인 메시지 크기**를 골랐다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "레코드 단위로 암호화할 것인가, 배치 단위로 할 것인가",
-      "chosen": "**레코드 단위.** 배치로 묶이기 전에 각 레코드를 암호화한다.",
-      "alternatives": [
-       "배치 단위로 묶어 한 번에 암호화한다"
-      ],
-      "tradeoff": "**CPU 가 조금 더 들고 메시지 크기도 늘어난다.** 대신 인터셉터·디시리얼라이저라는 **표준 확장점**만 쓰므로 클라이언트 내부를 고칠 필요가 없고, **Kafka 업그레이드와의 호환이 유지되며**, 생산자·소비자를 바꾸지 않고 배포할 수 있다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "대칭키 하나로 끝낼 것인가",
-      "chosen": "**DEK-KEK 이중 구조.** 페이로드는 대칭키(AES-GCM)로, 그 키는 비대칭키(ECIES secp521r1)로 감싼다.",
-      "alternatives": [
-       "공유 대칭키 하나로 전부 암호화한다",
-       "페이로드를 직접 비대칭키로 암호화한다"
-      ],
-      "tradeoff": "키가 두 종류가 되어 **회전과 배포가 두 겹**이 된다(뒷문장은 이 사이트의 추정). 대신 비싼 비대칭 연산이 **짧은 DEK 에만** 걸려 대규모 Kafka 환경에서 성능이 나오고, **생산자에게는 공개키만** 주는 식으로 권한을 가를 수 있다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "전환 중에 평문과 암호문을 어떻게 함께 둘 것인가",
-      "chosen": "**헤더 유무로 판별하고, 없으면 평문으로 통과시킨다.**",
-      "alternatives": [
-       "토픽을 새로 파서 옮긴다",
-       "시점을 정해 모두 한 번에 전환한다"
-      ],
-      "tradeoff": "**\"헤더가 없으면 평문\"이라는 규칙이 켜져 있는 한, 헤더를 떼어 낸 메시지도 통과한다**(이 지적은 이 사이트의 추정 — 글은 이 위험을 다루지 않는다). 대신 토픽을 새로 파거나 서비스를 멈추지 않아도 된다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "켤 때 얼마씩 켤 것인가",
-      "chosen": "**1% → 10% → 50% → 100%.** 각 단계에서 지표를 보고 올리고, 이상하면 설정으로 즉시 롤백한다.",
-      "alternatives": [
-       "한 번에 전체를 전환한다"
-      ],
-      "tradeoff": "전환 기간이 길어지고 그동안 두 경로를 모두 관리해야 한다. 대신 2주 동안 **암복호화 사고가 0건**이었고 프로덕션 CPU 증가도 예측 범위 안이었다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "키를 회전할 때 소비자를 어떻게 끊지 않을 것인가",
-      "chosen": "**회전 기간에는 옛 KEK 과 새 KEK 을 함께 활성으로 둔다.** 생산자는 활성 공개키 **전부로 DEK 를 각각 감싸** 헤더에 여러 항목을 넣고, 소비자는 자기 KEK ID 에 맞는 것을 고른다.",
-      "alternatives": [
-       "시점을 정해 모든 소비자를 동시에 교체한다"
-      ],
-      "tradeoff": "회전 기간에는 **헤더가 활성 키 수만큼 커진다** — 공유 KEK 으로 아낀 크기를 회전 동안에는 일부 도로 내놓는 셈이다(뒷문장은 이 사이트의 해석). 대신 옛 키 소비자와 새 키 소비자가 **같은 메시지를 동시에** 처리할 수 있다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     }
-    ],
-    "stack": [
-     {
-      "tech": "AES-GCM (DEK)",
-      "role": "페이로드를 실제로 암호화하는 대칭 알고리즘. 메시지 배치 단위로 생성하거나 캐시해 재사용한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "ECIES · secp521r1 (KEK)",
-      "role": "DEK 를 감싸는 타원곡선 비대칭 키쌍. 생산자에게는 공개키만, 소비자에게는 인가 후 개인키.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "키 관리 서비스(KMS)",
-      "role": "KEK 을 보관하고 인가를 건다. 생산자·소비자가 폴링해 활성 키를 따라잡는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "Kafka ProducerInterceptor · Deserializer",
-      "role": "암호화·복호화를 끼워 넣는 표준 확장점. 클라이언트 내부를 고치지 않는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "메시지 헤더 (KEK ID + 암호화된 DEK)",
-      "role": "복호화에 필요한 정보를 메시지가 스스로 들고 다닌다. 헤더의 유무가 암호문 여부의 표시이기도 하다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "KMS 구현체가 무엇인지",
-      "role": "— 글은 '키 관리 서비스'라고만 적고 **자체 제작인지 외부 제품인지 밝히지 않는다.**",
-      "confidence": "unknown",
-      "sources": []
-     }
-    ]
-   },
-   "connections": [
-    {
-     "to": "hdfs-bridge",
-     "via": "같은 줄기의 아래쪽",
-     "contract": "이 파이프라인을 지나온 데이터가 레이크에 쌓인다. **두 글은 서로를 언급하지 않는다** — 이 연결은 이 사이트의 추정이고, 암호문이 레이크에서 어떤 상태로 놓이는지는 어느 글도 말하지 않는다.",
-     "confidence": "inferred"
-    }
-   ],
-   "research": {
-    "papers": [],
-    "hard_problems": [
-     {
-      "problem": "여러 소비자에게 같은 암호문을 주면서 키는 각자에게 두기",
-      "why_hard": "**크기와 격리가 같은 손잡이의 양 끝이다.** 소비자마다 키를 따로 주면 복호화 권한은 깔끔히 갈리지만 **메시지마다 소비자 수만큼 메타데이터가 붙는다** — 소비자 한 명이 늘어난 비용을 초당 100만 건 전체가 나눠 낸다. 하나로 모으면 크기는 고정되지만 **그 키 하나가 새는 순간 과거와 미래가 함께 열린다.** 회사도 이 사이의 다른 수를 내놓지 못했다 — 글은 공유 KEK 의 대가를 인정하고 인가와 회전으로 완화한다고만 적는다.",
-      "current_best": "**공유 KEK + KMS 인가 + 주기적 회전.** 회전 중에는 활성 키 전부로 DEK 를 각각 감싸 옛 소비자와 새 소비자가 같은 메시지를 함께 읽게 한다 — 즉 **격리를 키의 공간이 아니라 시간으로 옮겨 놓은 셈이다**(마지막 문장은 이 사이트의 해석).",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-        "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026-07-29",
-        "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "problem": "지금 모아 두었다가 나중에 푸는 공격 (Harvest Now, Decrypt Later)",
-      "why_hard": "오늘 안전한 암호문이 **오늘 도둑맞아도 오늘 풀리지 않을 뿐**이다. 공격자가 지금 모아 두고 양자 컴퓨터가 성숙한 뒤에 풀면, **이미 지나간 트래픽이 그때 열린다.** 그래서 '언제까지 비밀이어야 하는가(x) + 옮기는 데 걸리는 시간(y) < 양자가 오는 시점(z)' 이라는 부등식이 성립해야 하는데, 회사는 이행에만 **10년 이상**이 걸린다고 본다(SHA-2·AES 와 TLS 1.2 전환의 전례). 이 Kafka 파이프라인이 쓰는 secp521r1 도 고전 타원곡선이라 같은 시계 위에 있다 — **다만 이 연결은 이 사이트의 추정이고, PQC 글이 Kafka 를 지목하지는 않는다.**",
-      "current_best": "**하이브리드** — 고전 알고리즘과 PQC 를 동시에 쓴다. 표준화 과정에서 Rainbow 가 탈락하고 SIKE 가 키 복구 공격을 맞았기 때문에 새 알고리즘 하나에 전부 걸지 않는다. 대가도 회사가 적었다 — **설계·구현이 복잡해지고 상호운용과 키 관리 문제가 따라온다.** 아직 프로덕션에 배포된 PQC 알고리즘은 없다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Journey to PQC: Protecting data in the quantum computing era",
-        "url": "https://techblog.lycorp.co.jp/en/pqc-to-protect-data-in-the-age-of-quantum-computers",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2026",
-        "summary": "Letter Sealing·FIDO·백업에 쓰는 암호를 양자 이후로 옮기는 계획. '지금 모아 두었다가 나중에 푼다'(HNDL)를 위협 모델로 삼고, 고전 알고리즘과 PQC 를 함께 쓰는 하이브리드로 간다 — 그 복잡성과 상호운용 문제도 함께 적었다."
-       }
-      ]
-     }
-    ]
-   },
-   "diagrams": [
-    {
-     "title": "메시지 하나가 암호문으로 지나가는 길",
-     "question": "브로커는 무엇을 보는가?",
-     "kind": "flow",
-     "code": "flowchart TD\n  KMS[(\"<b>키 관리 서비스</b><br/>KEK 키쌍 (ECIES secp521r1)\")]:::list\n  KMS -->|\"<b>공개키만</b>\"| PI\n  KMS -->|\"인가받은 소비자에게만<br/><b>개인키</b>\"| DS\n  APP[\"생산 서비스\"] --> PI[\"<b>생산자 인터셉터</b><br/>• DEK 생성 (AES-GCM)<br/>• 레코드 암호화<br/>• DEK 를 KEK 으로 감싸 헤더에\"]:::list\n  PI --> MSG[\"<b>메시지</b><br/>키 — 파티션 라우팅 (그대로)<br/>헤더 — KEK ID + 감싼 DEK<br/>본문 — DEK 로 암호화된 페이로드\"]:::accent\n  MSG --> B[(\"<b>Kafka 브로커</b><br/>초당 100만 메시지<br/><b>평문을 보지 않는다</b>\")]\n  B --> DS{\"<b>소비자 디시리얼라이저</b><br/>헤더가 있는가\"}\n  DS -->|\"있다\"| DEC[\"DEK 를 풀고<br/>페이로드를 푼다\"]\n  DS -->|\"없다\"| PASS[\"<b>평문으로 통과</b><br/>— 전환 중 공존\"]:::quiet\n  DEC --> OUT[\"소비 서비스\"]\n  PASS --> OUT"
-    },
-    {
-     "title": "켜는 순서 — 되돌릴 수 있는 상태로만 나아간다",
-     "question": "이상하면 어디로 돌아가는가?",
-     "kind": "state",
-     "code": "stateDiagram-v2\n  [*] --> 평문: 적용 전\n  평문 --> 일부암호화: 암호화 비율 1%\n  note right of 일부암호화\n    같은 토픽에 암호문과 평문이 섞인다\n    소비자는 헤더 유무로 갈라 읽는다\n  end note\n  일부암호화 --> 확대: 10% → 50%\n  확대 --> 전량: 100%\n  확대 --> 일부암호화: 지표 이상 — 설정으로 즉시 롤백\n  전량 --> 확대: 설정으로 즉시 롤백\n  전량 --> 회전중: KEK 회전 시작\n  회전중 --> 회전중: 헤더에 활성 키 수만큼 감싼 DEK\n  note right of 회전중\n    옛 키 소비자와 새 키 소비자가\n    같은 메시지를 함께 읽는다\n    대신 헤더가 그만큼 커진다 (해석)\n  end note\n  회전중 --> 전량: 옛 키 폐기"
-    },
-    {
-     "title": "실패 경로 — 크기를 얻고 무엇을 내주었나",
-     "question": "공유 KEK 이 새면 무엇이 열리는가?",
-     "kind": "failure",
-     "code": "flowchart TD\n  PER[\"소비자별 KEK\"] --> ISO[\"복호화 권한이 깔끔히 갈린다\"]\n  PER --> GROW[\"<b>헤더가 소비자 수에 비례해 커진다</b>\"]\n  GROW -->|\"해석\"| ALL[\"한 명이 늘어난 비용을<br/>초당 100만 건 전체가 나눠 낸다\"]\n  GROW --> SHARE[\"<b>공유 KEK 으로 물러선다</b>\"]:::accent\n  SHARE --> FIX[\"헤더는 항목 하나로 고정\"]\n  SHARE --> LEAK[\"<b>키가 새면</b>\"]\n  LEAK --> PAST[\"과거 메시지가 열린다\"]\n  LEAK --> FUT[\"미래 메시지도 열린다\"]\n  PAST --> MIT[\"완화 — KMS 인가 · 주기적 회전\"]:::quiet\n  FUT --> MIT\n  HDR[\"규칙 — 헤더가 없으면 평문\"] --> COEX[\"전환 중 공존이 가능해진다\"]\n  HDR -->|\"추정 · 글은 다루지 않는다\"| STRIP[\"헤더를 떼어 낸 메시지도<br/>그대로 통과한다\"]\n  REC[\"레코드 단위를 골랐다\"] --> COMPAT[\"Kafka 업그레이드와 호환 유지\"]\n  REC --> COST[\"CPU·크기가 배치 단위보다 더 든다\"]:::quiet"
-    }
-   ],
-   "sources": [
-    {
-     "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-     "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-     "publisher": "LY Corporation Tech Blog",
-     "date": "2026-07-29",
-     "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-    },
-    {
-     "title": "Journey to PQC: Protecting data in the quantum computing era",
-     "url": "https://techblog.lycorp.co.jp/en/pqc-to-protect-data-in-the-age-of-quantum-computers",
-     "publisher": "LY Corporation Tech Blog",
-     "date": "2026",
-     "summary": "Letter Sealing·FIDO·백업에 쓰는 암호를 양자 이후로 옮기는 계획. '지금 모아 두었다가 나중에 푼다'(HNDL)를 위협 모델로 삼고, 고전 알고리즘과 PQC 를 함께 쓰는 하이브리드로 간다 — 그 복잡성과 상호운용 문제도 함께 적었다."
-    }
-   ]
-  },
-  {
-   "key": "hdfs-bridge",
-   "name": "서로 다른 역사를 가진 레이크 두 벌 잇기",
-   "domain": "데이터 레이크 통합",
-   "updated_at": "2026-08-21",
-   "business": {
-    "why": "**합병으로 하둡 클러스터가 두 벌 생겼다.** 구 LINE 것과 구 Yahoo! JAPAN 것이고, **합치면 1EB 를 넘는다.**\n\n문제는 크기가 아니라 **역사**다. 두 클러스터는 서로 다른 시대에 태어나 서로 다른 답을 골랐다 — 구 LINE 은 하둡 3.x 시절에 여러 분석 환경을 통합해 만들었고 **클라이언트 쪽에서 네임스페이스를 푸는 ViewFS** 에 **테이블 단위** 권한을 건다. 구 Yahoo! JAPAN 은 하둡 0.2 시절부터 자라 네임노드 확장 한계에 부딪히자 **서버 쪽에서 모으는 RBF** 로 갔고 **경로 단위**(POSIX 를 닮은) 권한을 건다.\n\n회사가 이 일에서 얻은 결론은 한 줄이다 — **\"단순히 네트워크를 잇고 데이터 전송을 켜는 것으로는 충분하지 않았다.\"** 이 도메인은 새로 짓는 이야기가 아니라 **이미 다 자란 둘을 잇는 이야기**다.",
-    "metrics": [
-     {
-      "label": "합친 규모",
-      "value": "주요 클러스터를 합해 **1엑사바이트(EB) 초과.** 클러스터별 용량·노드 수는 공개하지 않는다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "label": "네임스페이스를 푸는 위치",
-      "value": "구 LINE **ViewFS(클라이언트 쪽)** vs 구 Yahoo! JAPAN **RBF(서버 쪽) + Observer NameNode 로 읽기 분산**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "label": "권한을 거는 단위",
-      "value": "구 LINE **DB·테이블 단위(역할 기반)** vs 구 Yahoo! JAPAN **HDFS 경로 단위(POSIX 유사)**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "label": "이 플랫폼 위에서 도는 일 (구 Yahoo! JAPAN 쪽)",
-      "value": "파이프라인 **300개 이상**, Hive 통계 워크플로 **200개 이상**을 옮겼다. **파티션당 600GB 를 하루 15개**, 피크에 메모리 **100TB** 를 쓰는 작업도 있다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-        "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2025",
-        "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "label": "HDFS 요청 추이",
-      "value": "2020~2025년 **해마다 증가**(그래프만 있고 절대 수치는 비공개)",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     }
-    ]
-   },
-   "thinking": [
-    {
-     "at": "합치자는 말이 나왔을 때",
-     "thought": "통합 플랫폼을 곧바로 짓는 대신, **각 플랫폼의 기존 성격을 살린 채 서로의 데이터에 닿는 것**을 먼저 하기로 했다. 두 조직이 키운 데이터를 서로 쓸 수 있게 하는 것이 목적이지, 하나로 만드는 것이 목적은 아니다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "권한 체계를 맞추려다",
-     "thought": "구 Yahoo! JAPAN 의 경로 구조를 그대로 둔 채 구 LINE 의 권한 시스템을 얹어 볼 수 있다. 그런데 그러면 **테이블 기반과 경로 기반이 계속 공존하게 되고, 장기적으로 운영 규칙과 사용자 경험이 더 복잡해진다.**",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "그래서 어떻게 할지 정할 때",
-     "thought": "구 Yahoo! JAPAN 플랫폼 안에 **구 LINE 의 관리 모델에 맞춘 새 영역을 따로 판다.** 기존 경로 기반 영역과 새 테이블 기반 영역이 **선으로 갈라져 있으면**, 기존 운영을 흔들지 않고 단계적으로 옮길 수 있다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "전송을 켜기 전에",
-     "thought": "네트워크만 이으면 승인되지 않은 DistCP 잡이 그대로 돈다. **인증(Kerberos 교차 신뢰) → 인가(전용 큐) → 격리(NodeLabel·L4 ACL) → 거버넌스(보안·법무 검토)** 를 먼저 세우고 그다음 전송을 연다. 하둡 안쪽만 보아서는 안 되고 **인프라·네트워크·운영 문화까지 가로질러** 봐야 했다.",
-     "confidence": "confirmed"
-    }
-   ],
-   "domain_model": {
-    "entities": [
-     {
-      "name": "ViewFS 네임스페이스 (구 LINE)",
-      "what": "클라이언트 쪽에서 마운트 테이블로 경로를 푼다. 여러 네임스페이스가 **데이터노드를 공유**하고, 하둡 버전이 섞여 있다."
-     },
-     {
-      "name": "RBF 네임스페이스 (구 Yahoo! JAPAN)",
-      "what": "라우터가 **서버 쪽에서** 여러 네임스페이스를 모아 하나처럼 보이게 한다. 읽기는 Observer NameNode 로 분산한다."
-     },
-     {
-      "name": "새 테이블 기반 영역",
-      "what": "구 Yahoo! JAPAN 플랫폼 안에 구 LINE 의 관리 모델로 새로 판 자리. **기존 경로 기반 영역과 명확히 분리**돼 있다."
-     },
-     {
-      "name": "Kerberos 영역(realm)",
-      "what": "두 클러스터가 각자 KDC 를 갖고 있다. 교차 영역 신뢰로 잇고 계정 이름은 `auth_to_local` 로 맞춘다."
-     },
-     {
-      "name": "DistCP 잡",
-      "what": "클러스터 사이로 데이터를 나르는 작업. 전용 큐에 들어가고 NodeLabel·L4 ACL 로 갈 수 있는 곳이 정해진다."
-     }
-    ],
-    "invariants": [
-     "**경로 기반 영역과 테이블 기반 영역은 선으로 갈라져 있다** — 한 영역 안에서는 규칙이 하나다.",
-     "인가받은 계정만 전용 큐를 통과한다 — 그 밖의 DistCP 잡은 **네트워크에 닿지 못한다.**",
-     "계정 이름은 두 클러스터에서 **같게 매핑**된다.",
-     "전송은 **거버넌스 검토(보안·법무)를 통과한 뒤**에만 열린다.",
-     "**작은 파일이 늘면 네임노드 힙이 줄어든다** — 주기적으로 병합해야 한다."
-    ]
-   },
-   "implementation": {
-    "flow": [
-     {
-      "step": "두 KDC 사이에 **Kerberos 교차 영역 신뢰**를 세운다",
-      "why": "서로를 모르는 두 클러스터가 먼저 상대의 신원을 인정해야 그다음이 있다."
-     },
-     {
-      "step": "계정 이름을 `auth_to_local` 매핑으로 **양쪽에서 같게** 맞춘다",
-      "why": "같은 사람이 양쪽에서 다른 이름이면 권한을 걸 수가 없다."
-     },
-     {
-      "step": "승인된 계정만 쓰는 **전용 CapacityScheduler 큐**를 만든다",
-      "why": "인증만으로는 부족하다 — 무엇을 얼마나 쓸 수 있는지도 정해야 한다."
-     },
-     {
-      "step": "**NodeLabel 과 L4 ACL** 로 네트워크를 격리해, 승인되지 않은 DistCP 잡이 아예 상대에 닿지 못하게 한다",
-      "why": "큐를 우회해 도는 잡이 있으면 앞의 두 층이 의미가 없다."
-     },
-     {
-      "step": "기술 불일치 목록을 만든다 — **최소 HDFS 블록 크기 차이**, **IP 충돌(KDC 재구축 필요)** 등",
-      "why": "역사가 다른 둘은 눈에 안 보이는 설정에서 어긋난다."
-     },
-     {
-      "step": "구 Yahoo! JAPAN 플랫폼 안에 **테이블 기반 새 영역**을 파고, 기존 경로 기반 영역과 분리한다",
-      "why": "두 모델을 한 자리에 섞으면 규칙이 복잡해진다 — 섞는 대신 나눈다."
-     },
-     {
-      "step": "보안·법무 검토를 포함한 **거버넌스 절차**를 통과한 뒤 전송을 연다",
-      "why": "조직이 합쳐졌다고 데이터가 자동으로 서로의 것이 되지는 않는다."
-     },
-     {
-      "step": "**DistCP** 로 옮긴다 — WAN 에 부담을 주지 않도록 **작게 시작**한다",
-      "why": "한 번에 밀면 두 조직이 함께 쓰는 회선이 먼저 무너진다."
-     }
-    ],
-    "decisions": [
-     {
-      "question": "통합 플랫폼을 새로 지을 것인가, 잇기부터 할 것인가",
-      "chosen": "**잇기부터.** 각 플랫폼의 기존 성격을 살린 채 서로의 데이터에 닿는 것을 먼저 한다.",
-      "alternatives": [
-       "처음부터 하나의 통합 플랫폼으로 합친다"
-      ],
-      "tradeoff": "두 관리 모델이 **계속 공존**하고, 회사도 이를 인정한다 — **\"어떤 데이터가 어떤 단위로 어떤 규칙 아래 관리되는지 알기 어려워질 수 있다.\"** 대신 기존 운영을 멈추지 않아도 된다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "question": "권한 체계를 어느 쪽으로 맞출 것인가",
-      "chosen": "**구 Yahoo! JAPAN 플랫폼 안에 구 LINE 의 관리 모델을 따르는 새 영역을 만든다.** 기존 경로 기반 영역과 명확히 분리한다.",
-      "alternatives": [
-       "구 Yahoo! JAPAN 의 HDFS 경로 구조를 유지한 채 구 LINE 의 권한 시스템을 얹는다"
-      ],
-      "tradeoff": "영역이 둘로 나뉘어 **어느 영역에 있느냐에 따라 규칙이 달라진다.** 대신 버린 안(권한 시스템만 얹기)은 **테이블 기반과 경로 기반이 한 자리에서 계속 섞여** 운영 규칙과 사용자 경험이 장기적으로 더 복잡해질 것으로 봤다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "question": "데이터를 무엇으로 옮길 것인가",
-      "chosen": "**DistCP.** 기존의 별도 환경 + Amazon S3 경유 교환 방식을 쓰지 않는다.",
-      "alternatives": [
-       "별도 환경에서 S3 를 거쳐 주고받는 기존 방식을 계속 쓴다"
-      ],
-      "tradeoff": "클러스터끼리 직접 닿게 되므로 **계층을 가로지르는 통제를 전부 새로 설계해야** 했다. 또 WAN 링크 과부하를 피하려 **작게 시작**해야 해서 초기 처리량이 제한된다. 대신 더 간단하고 빠르다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "question": "네트워크를 잇는 것으로 충분한가",
-      "chosen": "**충분하지 않다.** 인증(Kerberos 교차 신뢰) → 인가(전용 큐) → 격리(NodeLabel·L4 ACL) → 거버넌스(보안·법무 검토) 를 **전송보다 먼저** 세운다.",
-      "alternatives": [
-       "연결을 먼저 열고 통제를 나중에 붙인다"
-      ],
-      "tradeoff": "잇는 데 걸리는 시간이 길어진다(뒷문장은 이 사이트의 해석). 대신 승인되지 않은 DistCP 잡이 상대 클러스터에 **애초에 닿지 못한다.**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "question": "계정 이름이 다른 것을 어떻게 할 것인가",
-      "chosen": "Kerberos **`auth_to_local` 매핑**으로 두 클러스터에서 이름을 같게 표준화한다.",
-      "alternatives": [
-       "양쪽 이름을 그대로 두고 매핑 표를 따로 관리한다"
-      ],
-      "tradeoff": "매핑 규칙 자체가 운영 대상이 되고, 규칙을 잘못 쓰면 엉뚱한 계정 권한이 된다(뒷문장은 이 사이트의 추정). 대신 권한을 한 이름 기준으로 걸 수 있다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "question": "질의 엔진은 무엇으로 갈 것인가 (구 Yahoo! JAPAN 쪽 워크플로)",
-      "chosen": "**Hive 를 버리고 대화형은 Trino, 무거운 작업은 Spark 로** 나눈다. 워크플로 200개 이상을 옮겼다.",
-      "alternatives": [
-       "Hive 를 계속 쓴다",
-       "하나의 엔진으로 전부 통일한다"
-      ],
-      "tradeoff": "회사가 적었다 — **Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고**, 분산 실행 때문에 **작은 파일을 잔뜩 만들어** 출력 관리를 손으로 해야 한다. Trino·Spark 는 **질의 안의 변수 설정을 지원하지 않아** Airflow 쪽 파이썬 우회가 필요했다. **하루 9TB 가 갱신되는 작업은 아직 풀리지 않았다** — Iceberg 를 검토 중이다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-        "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2025",
-        "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "옮기는 단위를 무엇으로 잡을 것인가",
-      "chosen": "**파이프라인 단위 — Airflow DAG 하나씩.** 각 변경은 테스트·코드 리뷰·정해진 릴리스 절차를 거친다.",
-      "alternatives": [
-       "엔진을 통째로 바꾸고 전부 한 번에 전환한다"
-      ],
-      "tradeoff": "300개가 넘는 파이프라인을 하나씩 통과시켜야 해서 오래 걸린다(뒷문장은 이 사이트의 해석). 대신 호환 문제가 터져도 **그 DAG 하나에 갇힌다** — 실제로 tinyint 통계 메타데이터, 탭 구분자 표기, ORDER BY 의 NULL 처리, 이스케이프 문자, 숫자 캐스팅, Hive UDF 까지 하나씩 어긋났다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-        "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2025",
-        "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-       }
-      ]
-     }
-    ],
-    "stack": [
-     {
-      "tech": "ViewFS (구 LINE)",
-      "role": "클라이언트 쪽 네임스페이스 해석. 네임스페이스들이 데이터노드를 공유하고 하둡 버전이 섞여 있다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "tech": "Router-based Federation + Observer NameNode (구 Yahoo! JAPAN)",
-      "role": "서버 쪽에서 네임스페이스를 모으고 읽기를 분산한다. 단일 네임스페이스가 네임노드 확장 한계에 부딪혀 도입했다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "tech": "Kerberos 교차 영역 신뢰 + `auth_to_local`",
-      "role": "독립 KDC 둘 사이의 인증과 계정 이름 표준화.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "tech": "CapacityScheduler 전용 큐 · NodeLabel · L4 ACL",
-      "role": "인가와 네트워크 격리. 승인되지 않은 DistCP 잡을 원천에서 막는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "tech": "DistCP",
-      "role": "클러스터 간 데이터 전송. S3 경유 교환 방식을 대체했다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     },
-     {
-      "tech": "Trino",
-      "role": "대화형 SQL 분석. Hive 를 대신한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-        "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2025",
-        "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "Apache Spark",
-      "role": "무거운 작업. CPU 효율 약 2.4배, 대신 메모리를 더 먹는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-        "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2025",
-        "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "Apache Airflow",
-      "role": "파이프라인 오케스트레이션. 이전 단위가 DAG 하나였다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-        "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2025",
-        "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "Apache Iceberg",
-      "role": "— 하루 9TB 갱신 문제의 **검토 중인 후보**일 뿐, 도입했다는 말은 없다.",
       "confidence": "inferred",
       "sources": [
-       {
-        "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-        "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2025",
-        "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-       }
+        {
+          "title": "The next step for even safer messaging: Letter Sealing",
+          "url": "https://engineering.linecorp.com/en/blog/the-next-step-for-even-safer-messaging-letter-sealing/",
+          "publisher": "LINE Engineering",
+          "date": "2016",
+          "summary": "채팅 메시지에 종단간 암호화를 넣은 일을 알린다."
+        },
+        {
+          "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
+          "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
+          "publisher": "LY Corporation Tech Blog",
+          "date": "2026-07-29",
+          "summary": "브로커에 저장되던 평문 페이로드를 암호화하면서 무엇을 내줬는지 적었다."
+        }
       ]
-     }
-    ]
-   },
-   "connections": [
+    },
     {
-     "to": "kafka-e2ee",
-     "via": "같은 줄기의 아래쪽",
-     "contract": "Kafka 를 지나온 데이터가 결국 이 레이크에 쌓인다. **다만 두 글은 서로를 언급하지 않는다** — 이 연결은 이 사이트의 추정이고, 특히 **E2EE 로 암호화된 페이로드가 레이크에서 어떤 상태로 놓이는지는 어느 글도 말하지 않는다.**",
-     "confidence": "inferred"
+      "id": "2023-10-two-of-everything",
+      "from": "2023-10",
+      "to": "",
+      "title": "시스템 두 벌을 물려받았다",
+      "context": "**2023년 10월 1일**, Z홀딩스·LINE·야후재팬·Z엔터테인먼트·Z데이터가 합쳐 **LY 코퍼레이션**이 됐다.",
+      "what_changed": "조직이 하나가 되자 **각 플랫폼에 쌓인 데이터를 서로 쓰는 일이 중요해졌다.** 옛 LINE 과 옛 야후재팬이 각자 키워 온, **합쳐서 1엑사바이트가 넘는 HDFS 클러스터 두 벌**을 잇기 시작했다. 야후재팬 쪽은 **하둡 0.2 시절부터** 이어져 온 것이다.",
+      "why": "합병의 값은 데이터가 합쳐질 때 나온다. 회사가 하나인데 레이크가 둘이면 통합은 서류상으로만 끝난 것이다.",
+      "tradeoff": "**네트워크를 잇고 데이터를 옮길 수 있게 하는 것만으로는 부족했다.** 네임스페이스를 다루는 방식부터 달랐고(LINE 은 클라이언트 쪽 **ViewFS**, 야후재팬은 서버 쪽 **Router-based Federation**), 접근 제어 모델도 달랐다 — LINE 은 **역할 기반 요청·승인 흐름이라 사용자가 HDFS 내부를 몰라도 됐고**, 야후재팬은 **HDFS 권한을 그대로** 썼다. 통제의 단위 자체가 한쪽은 DB/테이블, 한쪽은 HDFS 경로다. 그래서 **옛 구조를 보존할지 시스템을 다시 지을지를 골라야 했다** — 합병이 남긴 진짜 비용은 저장 용량이 아니라 **두 역사가 서로 번역되지 않는다는 것**이다.",
+      "domains": [
+        "데이터 레이크 통합"
+      ],
+      "features": [
+        "hdfs-bridge"
+      ],
+      "metrics": [
+        {
+          "label": "두 클러스터 합계",
+          "value": "1엑사바이트 이상",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and insights",
+              "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+              "publisher": "LY Corporation Tech Blog",
+              "date": "2026",
+              "summary": "서로 다른 역사를 가진 두 데이터 레이크를 잇는 일이 네트워크 연결만으로 되지 않는 이유를 적었다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "LY Corporation Takes Its First Step",
+          "url": "https://www.lycorp.co.jp/en/news/release/000847/",
+          "publisher": "LY Corporation",
+          "date": "2023-10-01",
+          "summary": "Z홀딩스·LINE·야후재팬·Z엔터테인먼트·Z데이터가 합쳐 LY 코퍼레이션이 된 날을 알린다."
+        },
+        {
+          "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and insights",
+          "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
+          "publisher": "LY Corporation Tech Blog",
+          "date": "2026",
+          "summary": "서로 다른 역사를 가진 두 데이터 레이크를 잇는 일이 네트워크 연결만으로 되지 않는 이유를 적었다."
+        }
+      ]
     }
-   ],
-   "research": {
-    "papers": [],
-    "hard_problems": [
-     {
-      "problem": "작은 파일이 네임노드의 기억을 먹는다",
-      "why_hard": "HDFS 는 파일 하나하나의 메타데이터를 **네임노드 힙(메모리)** 에 들고 있다. 그래서 **데이터의 양이 아니라 파일의 개수**가 한계를 정한다. 그런데 분산 실행 엔진은 태생적으로 작은 파일을 많이 만든다 — 병렬로 쓰면 쓰는 쪽마다 파일이 생기기 때문이다. **빨라지려고 병렬로 쪼갠 것이 저장 계층의 한계를 당긴다.** 이 회사의 글 두 편이 각자 다른 쪽에서 같은 문제에 부딪힌다 — 하나는 네임노드 힙 관리에서, 다른 하나는 Spark 출력에서.",
-      "current_best": "**주기적 병합.** 작은 파일이 지나치게 많은 테이블을 찾아 합치고, Spark 출력은 손으로 관리한다. 근본적인 답은 아니고 — **관리로 눌러 두는 것**이다(마지막 문장은 이 사이트의 해석).",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       },
-       {
-        "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-        "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2025",
-        "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-       }
-      ]
-     },
-     {
-      "problem": "두 관리 모델이 공존할 때 '이 데이터는 누구 규칙인가'",
-      "why_hard": "권한을 **테이블 단위**로 거는 세계와 **경로 단위**로 거는 세계는 각자 안에서는 일관되지만, 한 사용자가 둘을 오가는 순간 무너진다. 회사가 직접 적었다 — 크로스 플랫폼 데이터를 쓰는 사용자는 **양쪽의 접근 제어와 운영 절차를 각각 이해하고 다뤄야 한다.** 어느 한쪽으로 통일하는 것은 기술 문제가 아니라 이미 그 위에서 일하는 사람들의 문제라서, 옳은 답이 있어도 옮길 수가 없다(마지막 절은 이 사이트의 해석).",
-      "current_best": "**섞지 않고 나눈다** — 경로 기반 영역과 테이블 기반 영역을 선으로 갈라 두고 단계적으로 옮긴다. 회사는 이것을 끝이 아니라 남은 과제로 적었다 — **\"사용성 개선과 더 안전하고 신뢰할 수 있는 데이터 연계 장치가 과제로 남아 있다.\"**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-        "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-        "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-        "date": "2026",
-        "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-       }
-      ]
-     }
-    ]
-   },
-   "diagrams": [
-    {
-     "title": "전송을 열기까지 — 통제가 먼저다",
-     "question": "승인되지 않은 잡은 어디서 막히는가?",
-     "kind": "flow",
-     "code": "flowchart TD\n  subgraph L[\"<b>구 LINE 플랫폼</b>\"]\n    LV[\"ViewFS — 클라이언트 쪽 해석\"]:::list\n    LA[\"권한: DB · 테이블 단위\"]\n    LK[(\"KDC A\")]\n  end\n  subgraph Y[\"<b>구 Yahoo! JAPAN 플랫폼</b>\"]\n    YR[\"RBF — 서버 쪽 취합<br/>+ Observer NameNode (읽기 분산)\"]:::list\n    YA[\"권한: HDFS 경로 단위\"]\n    YK[(\"KDC B\")]\n    NEW[\"<b>새 테이블 기반 영역</b><br/>구 LINE 관리 모델<br/>기존 영역과 선으로 분리\"]:::accent\n  end\n  LK <-->|\"<b>① 인증</b><br/>Kerberos 교차 영역 신뢰<br/>auth_to_local 로 이름 통일\"| YK\n  Q[\"<b>② 인가</b><br/>전용 CapacityScheduler 큐<br/>승인 계정만\"] --> N[\"<b>③ 격리</b><br/>NodeLabel · L4 ACL\"]\n  N --> G[\"<b>④ 거버넌스</b><br/>보안 · 법무 검토\"]\n  G --> DC[\"<b>DistCP</b><br/>WAN 부담 때문에 작게 시작\"]\n  DC --> NEW\n  BAD[\"승인 안 된 DistCP 잡\"] -->|\"큐에서 걸리고\"| X[\"차단\"]:::quiet\n  BAD -->|\"우회해도 네트워크에서\"| X\n  L -.->|\"데이터\"| DC"
-    },
-    {
-     "title": "한 테이블이 새 영역으로 옮겨 가는 동안",
-     "question": "옮기는 중에 규칙은 어느 쪽인가?",
-     "kind": "state",
-     "code": "stateDiagram-v2\n  [*] --> 경로기반영역: 구 Yahoo! JAPAN 에서 살던 데이터\n  경로기반영역 --> 검토중: 보안 · 법무 거버넌스\n  검토중 --> 경로기반영역: 반려\n  검토중 --> 전송중: DistCP — 작게 시작\n  전송중 --> 테이블기반영역: 새 영역에 안착\n  note right of 전송중\n    이 구간에서는 같은 데이터가\n    양쪽 규칙 아래에 함께 있다\n    — 사용자는 둘 다 이해해야 한다\n  end note\n  테이블기반영역 --> 테이블기반영역: 작은 파일 주기적 병합\n  note right of 테이블기반영역\n    네임노드 힙은 데이터 양이 아니라\n    파일 개수가 정한다\n  end note"
-    },
-    {
-     "title": "실패 경로 — 빨라지려고 쪼갠 것이 되돌아온다",
-     "question": "두 글이 각자 다른 쪽에서 만난 같은 벽은 무엇인가?",
-     "kind": "failure",
-     "code": "flowchart TD\n  PAR[\"분산 실행으로 쪼갠다\"] --> FAST[\"CPU 효율 약 2.4배 (Spark)\"]\n  PAR --> MEM[\"<b>메모리를 더 먹는다</b>\"]\n  PAR --> SMALL[\"<b>작은 파일이 잔뜩 생긴다</b>\"]:::accent\n  SMALL --> HEAP[\"네임노드 힙은<br/><b>파일 개수</b>가 정한다\"]\n  HEAP -->|\"해석\"| BACK[\"빨라지려고 쪼갠 것이<br/>저장 계층의 한계를 당긴다\"]\n  SMALL --> MERGE[\"완화 — 주기적 병합 · 출력 수동 관리\"]:::quiet\n  TWO[\"두 관리 모델 공존\"] --> OK[\"각 영역 안에서는 일관\"]\n  TWO --> CROSS[\"<b>오가는 사용자는</b><br/>양쪽 절차를 각각 이해해야 한다\"]\n  CROSS --> UNK[\"어떤 데이터가 어떤 단위로<br/>어떤 규칙 아래인지 알기 어려워진다\"]\n  NET[\"네트워크만 잇는다\"] -->|\"회사의 결론\"| NOT[\"충분하지 않았다\"]\n  BIG[\"한 번에 크게 전송\"] -->|\"WAN 링크\"| WAN[\"두 조직이 함께 쓰는 회선이<br/>먼저 무너진다\"]:::quiet"
-    }
-   ],
-   "sources": [
-    {
-     "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-     "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-     "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-     "date": "2026",
-     "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-    },
-    {
-     "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-     "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-     "publisher": "LY Corporation Tech Blog",
-     "date": "2025",
-     "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-    }
-   ]
-  },
-  {
-   "key": "device-attestation",
-   "name": "이 요청이 진짜 그 앱에서 왔는가",
-   "domain": "암호·기기 신뢰",
-   "updated_at": "2026-08-21",
-   "business": {
-    "why": "계정 탈취·스팸·피싱·자동화 사기를 막으려면 **\"이 요청을 보낸 것이 진짜 우리 앱인가\"**를 알아야 한다. 그런데 회사가 출발점으로 삼은 문장이 이것이다 — **소프트웨어 기반 접근에는 한계가 있다.**\n\nroot 를 쥔 공격자는 앱을 **마음대로 조작**할 수 있고, 클라이언트를 리버스 엔지니어링해 만든 **대체 클라이언트의 요청은 정상 요청과 구분되지 않는다.** 앱 안에 아무리 검사를 넣어도, 그 검사를 도는 것도 공격자의 기기다.\n\n그래서 신뢰의 뿌리를 **소프트웨어 바깥**으로 옮긴다 — 운영체제 수준에서도 개인키에 닿을 수 없는 **하드웨어 격리 영역(TEE)** 에 두고, 그 키로 서명된 것만 믿는다. **믿을 수 없는 기기에서 믿을 수 있는 대답을 받아 내는 것이 이 기능의 전부다**(마지막 문장은 이 사이트의 해석).",
-    "metrics": [
-     {
-      "label": "배포",
-      "value": "**2023년 12월** LINE Android·iOS 앱에 적용, 국가별로 단계적으로 넓혀 **2024년 5월**에 서비스 중인 전 국가 완료",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       },
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "label": "검증 방식을 다시 짠 효과",
-      "value": "자체 `CertPathValidator` 기반 구현으로 **안드로이드 기기 실패를 10분의 1로**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "label": "iOS 성공률",
-      "value": "**100%에 가깝다** — 애플 생태계가 일관된 덕",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "label": "시장에서 마주친 것",
-      "value": "패키지 이름을 바꾸는 **듀얼 앱이 10종 이상** 쓰이고 있다",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "label": "기기에서 읽는 신호",
-      "value": "`attestationSecurityLevel`(Software 0 / TrustedEnvironment 1 / StrongBox 2) · `deviceLocked` · `verifiedBootState`(Verified 0 / SelfSigned 1 / Unverified 2 / Failed 3)",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       }
-      ]
-     }
-    ]
-   },
-   "thinking": [
-    {
-     "at": "앱 안에 검사를 넣어 보고",
-     "thought": "소프트웨어로 막는 데는 한계가 있다. **root 를 쥐면 앱을 마음대로 조작**할 수 있고, 리버스해서 만든 대체 클라이언트의 요청은 **정상 요청과 구분되지 않는다.** 검사하는 코드 자체가 공격자의 기기 위에서 돈다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "그럼 무엇을 믿을 수 있나",
-     "thought": "**개인키가 OS 수준에서조차 노출되지 않는 하드웨어 격리 영역**이 있다. 거기서 만든 키로 서명하면, 그 서명은 '이 기기의 그 하드웨어가 만들었다'는 뜻이 된다. 믿는 대상을 앱에서 **칩으로** 내린다.",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "두 플랫폼이 서로 다른 물건을 내놓을 때",
-     "thought": "안드로이드는 인증서 체인을, iOS 는 App Attest 결과를 준다 — **구조가 크게 다르다.** **WebAuthn(FIDO2) 규격**을 따르게 하면 클라이언트 쪽 형태는 맞출 수 있다. 그래도 **서버에는 둘을 하나로 모으는 로직이 여전히 필요하다.**",
-     "confidence": "confirmed"
-    },
-    {
-     "at": "켜고 나서 실패 로그를 봤을 때",
-     "thought": "검증에 실패한 요청이 전부 공격자가 아니었다. **대부분은 인증서 인코딩이 이상한 정상 사용자**였다 — RFC 5280 의 두 자리 연도 해석, 만료일이 `0` 으로 박힌 인증서. **보안 검증을 조이면 정상 사용자가 먼저 걸린다.** 검증 기준을 상황에 따라 나누는 구현을 따로 만들어 실패를 10분의 1로 줄였다.",
-     "confidence": "confirmed"
-    }
-   ],
-   "domain_model": {
-    "entities": [
-     {
-      "name": "TEE (신뢰 실행 환경)",
-      "what": "하드웨어로 격리된 영역. 안드로이드는 ARM TrustZone 또는 StrongBox, iOS 는 Secure Enclave. **여기서 만든 개인키는 OS 수준에서 접근할 수 없다.**"
-     },
-     {
-      "name": "어테스테이션 키 / 어서션 키",
-      "what": "어테스테이션 키는 기기에 심긴 것으로 **중간 인증서**에 들어 있다. 어서션 키는 TEE 에서 새로 만들어 **리프 인증서**에 담기고, 이후 요청마다 서명에 쓴다."
-     },
-     {
-      "name": "챌린지",
-      "what": "서버가 주는 **일회성 난수**. 서명 대상에 들어가 재전송 공격을 막는다."
-     },
-     {
-      "name": "어테스테이션 객체 (등록)",
-      "what": "인증서 체인 + 챌린지에 대한 서명 + 기기·앱 보안 정보. WebAuthn 형태를 따른다."
-     },
-     {
-      "name": "어서션 객체 (인증)",
-      "what": "등록된 개인키로 챌린지와 요청 데이터를 서명한 것. 중요한 기능에서는 **결제 금액·수취인 같은 API 파라미터까지 서명 대상에 넣는다.**"
-     },
-     {
-      "name": "Risk Metric (Apple)",
-      "what": "**지난 한 달 동안 그 기기에서 일어난 어테스테이션 횟수.** 임계를 넘는 사용자는 비정상일 확률이 뚜렷이 높았다."
-     }
-    ],
-    "invariants": [
-     "어서션 개인키는 **TEE 밖으로 나오지 않는다** — OS 도 못 읽는다.",
-     "챌린지는 **일회성**이다 — 같은 요청을 다시 보내면 통과하지 못한다.",
-     "루트 인증서는 **Google(안드로이드) · Apple(iOS)** 이 자기 서명한 것이다 — 신뢰의 끝이 우리 밖에 있다.",
-     "서명 대상에 API 파라미터가 들어가면 **그 파라미터 그대로일 때만** 유효하다.",
-     "`attestationSecurityLevel` 이 Software 거나, 부트로더가 잠겨 있지 않거나, `verifiedBootState` 가 Verified 가 아니면 **믿지 않는다.**"
-    ]
-   },
-   "implementation": {
-    "flow": [
-     {
-      "step": "**[등록]** 클라이언트가 서버에서 **일회성 챌린지**를 받는다",
-      "why": "서명이 언제 만들어진 것인지 서버가 못 정하면 재전송을 막을 수 없다."
-     },
-     {
-      "step": "**TEE 안에서 어서션 키쌍**을 만든다",
-      "why": "개인키가 OS 에 노출되는 순간 이 모든 것이 무의미해진다."
-     },
-     {
-      "step": "인증서 체인 + 챌린지 서명 + 기기·앱 보안 정보를 담은 **어테스테이션 객체**를 만든다",
-      "why": "'이 공개키가 신뢰할 수 있는 하드웨어에서, 변조되지 않은 앱에 의해 만들어졌다'를 한 덩어리로 증명한다."
-     },
-     {
-      "step": "서버가 **x.509 체인을 플랫폼 루트 인증서까지** 검증한다 — 리프는 중간이, 중간은 루트가 보증한다",
-      "why": "체인이 끊기면 그 키가 하드웨어에서 나왔다는 근거가 사라진다."
-     },
-     {
-      "step": "서버가 **Google 인증서 폐기 목록(CRL)** 을 확인한다",
-      "why": "유출된 어테스테이션 키로 만든 증명을 계속 받아 주면 안 된다."
-     },
-     {
-      "step": "서명·챌린지·앱 서명을 검증하고 통과하면 **공개키를 사용자 정보와 함께 등록**한다",
-      "why": "이후 요청은 이 공개키로만 검증된다."
-     },
-     {
-      "step": "**[인증]** 요청 때마다 챌린지를 받아 **어서션 객체**에 서명해 보낸다. 결제·송금 같은 기능에서는 **API 파라미터를 서명 대상에 묶는다**",
-      "why": "기기가 진짜라는 것만으로는 부족하다 — 중간에서 금액이 바뀌면 그 요청은 다른 요청이다."
-     },
-     {
-      "step": "서버가 저장된 공개키로 서명을 검증하고 앱 무결성을 확인한다",
-      "why": "등록 시점의 신뢰를 매 요청으로 이어 준다."
-     }
-    ],
-    "decisions": [
-     {
-      "question": "소프트웨어로 막을 것인가, 하드웨어에 근거를 둘 것인가",
-      "chosen": "**하드웨어.** TEE 에서 키를 만들고 그 서명만 믿는다.",
-      "alternatives": [
-       "앱 안의 무결성 검사와 난독화로 막는다",
-       "서버 쪽 행동 분석만으로 막는다"
-      ],
-      "tradeoff": "**플랫폼별 구현이 갈린다**(TrustZone/StrongBox vs Secure Enclave). TEE 가 없는 기기나 에뮬레이터는 `attestationSecurityLevel` 이 Software 로 떨어져 **애초에 통과하지 못한다** — 정당한 구형 기기까지 걸릴 수 있다(뒷문장은 이 사이트의 추정). 대신 root 를 쥔 공격자도 개인키에는 닿지 못한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "프로토콜을 직접 만들 것인가",
-      "chosen": "**WebAuthn(FIDO2) 규격을 따른다.**",
-      "alternatives": [
-       "자체 프로토콜을 정의한다"
-      ],
-      "tradeoff": "규격을 따라도 **안드로이드와 iOS 의 어테스테이션 객체 구조가 크게 달라, 서버에 둘을 하나로 모으는 로직이 여전히 필요하다** — 회사가 직접 적은 한계다. 대신 표준과 호환되고 플랫폼이 바뀌어도 형태가 유지된다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       },
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "question": "무엇에 서명할 것인가 — 기기만인가, 요청까지인가",
-      "chosen": "**중요한 기능에서는 API 파라미터를 어서션에 묶는다** — 결제 금액, 수취인 같은 값.",
-      "alternatives": [
-       "기기 신뢰만 확인하고 요청 내용은 별도로 다룬다"
-      ],
-      "tradeoff": "서명 대상이 요청마다 달라져 클라이언트·서버 양쪽이 그 값을 정확히 같게 만들어야 한다(뒷문장은 이 사이트의 추정). 대신 중간에서 내용이 바뀐 요청은 **기기가 진짜여도** 통과하지 못한다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "인증서 체인 검증을 플랫폼 기본 구현에 맡길 것인가",
-      "chosen": "**Security R&D 팀이 Java `CertPathValidator` 기반으로 따로 구현**해, 정상 사용자와 의심스러운 활동을 가르는 상황별 기준을 넣었다.",
-      "alternatives": [
-       "표준 검증 결과를 그대로 통과/차단으로 쓴다"
-      ],
-      "tradeoff": "**검증 기준을 우리가 짊어지게 된다** — 기준이 느슨해지면 그만큼 열린다(뒷문장은 이 사이트의 추정). 대신 안드로이드 기기 실패가 **10분의 1**로 줄었다. 원인은 대부분 공격이 아니라 **RFC 5280 의 두 자리 연도 해석, 만료일이 `0` 인 인증서** 같은 인코딩 문제였다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "question": "유출된 어테스테이션 키를 어떻게 걸러낼 것인가",
-      "chosen": "어테스테이션 때마다 **Google 인증서 폐기 목록(CRL)** 을 확인한다.",
-      "alternatives": [
-       "폐기 확인 없이 체인 검증만 한다"
-      ],
-      "tradeoff": "외부 폐기 목록에 의존하게 되고 그것이 늦거나 비면 그만큼 늦는다(뒷문장은 이 사이트의 추정). 대신 이미 새어 나간 키로 만든 증명이 계속 통과하지는 않는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       }
-      ]
-     },
-     {
-      "question": "우회를 어떻게 알아챌 것인가",
-      "chosen": "**이상 탐지를 한 층 더 둔다** — 한 기기에서 일어나는 어테스테이션 **빈도**를 재고, iOS 는 Apple 의 **Risk Metric**(지난 한 달 어테스테이션 횟수)을 쓴다. 임계를 넘은 사용자는 비정상일 확률이 뚜렷이 높았다.",
-      "alternatives": [
-       "하드웨어 검증만으로 충분하다고 본다"
-      ],
-      "tradeoff": "회사가 직접 적었다 — **그런 행위를 완벽히 탐지하는 것은 거의 불가능하다.** 보조 수단일 뿐이다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       },
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "question": "언제 전부 켤 것인가",
-      "chosen": "**국가별 단계 롤아웃** — 2023년 12월 시작해 2024년 5월에 서비스 중인 전 국가 완료.",
-      "alternatives": [
-       "전 국가에 한 번에 적용한다"
-      ],
-      "tradeoff": "전환 기간이 길어지고 그동안 나라마다 다른 상태가 된다. 대신 인증서 인코딩 같은 **예상 못 한 실패를 좁은 범위에서 먼저 만난다**(뒷문장은 이 사이트의 해석).",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     }
-    ],
-    "stack": [
-     {
-      "tech": "Android Key Attestation (ARM TrustZone · StrongBox)",
-      "role": "TEE 에서 키를 만들고 인증서 체인으로 증명한다. 확장 스키마로 보안 수준·부트로더 잠금·부트 상태를 읽는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "iOS App Attest (Secure Enclave)",
-      "role": "WebAuthn 형태의 구조를 돌려준다. 변조된 앱은 `rpIdHash` 가 달라져 잡힌다 — 최신 아이폰에는 공개된 탈옥 익스플로잇이 없다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       },
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "tech": "WebAuthn / FIDO2 객체",
-      "role": "두 플랫폼을 같은 규격으로 묶는다. 그래도 서버에는 구조 차이를 흡수하는 로직이 남는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       },
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "tech": "자체 x.509 체인 검증 (Java CertPathValidator 기반)",
-      "role": "상황별 기준을 넣어 정상 사용자와 의심 활동을 가른다. 안드로이드 실패를 10분의 1로 줄였다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "tech": "Google 인증서 폐기 목록(CRL)",
-      "role": "유출된 어테스테이션 키로 만든 증명을 막는다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       }
-      ]
-     },
-     {
-      "tech": "Apple Risk Metric + 빈도 기반 이상 탐지",
-      "role": "하드웨어 검증을 통과한 뒤에도 남는 우회를 확률로 좁힌다.",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       },
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "tech": "어테스테이션 서버가 어떤 저장소를 쓰는지",
-      "role": "— 글은 '공개키를 저장하고 검증한다'고만 적고 **저장 계층을 밝히지 않는다.**",
-      "confidence": "unknown",
-      "sources": []
-     }
-    ]
-   },
-   "connections": [],
-   "research": {
-    "papers": [],
-    "hard_problems": [
-     {
-      "problem": "신뢰의 뿌리를 하드웨어에 두어도 우회는 남는다",
-      "why_hard": "회사가 직접 적었다 — **애플리케이션과 커널 취약점을 통해 기기의 운영체제를 직접 수정하지 않고 root 를 얻으면 기기 어테스테이션은 우회될 수 있다.** 어테스테이션이 증명하는 것은 **'이 키가 그 하드웨어에서 나왔다'**이지 **'지금 이 요청이 정직하다'**가 아니기 때문이다. 정상적인 기기 위에서 정상적인 앱이 서명하게 만들 수만 있으면, 그 서명은 진짜다. **증명의 대상과 막으려는 대상이 애초에 어긋나 있다**(마지막 문장은 이 사이트의 해석).",
-      "current_best": "**확률로 좁힌다** — 한 기기의 어테스테이션 빈도를 재고, iOS 는 Apple Risk Metric(지난 한 달 횟수)을 본다. 임계를 넘은 사용자는 비정상일 확률이 뚜렷이 높았다. 다만 회사가 못 박았다 — **그런 행위를 완벽히 탐지하는 것은 거의 불가능하다.**",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (1)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-       },
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     },
-     {
-      "problem": "검증 실패만으로는 공격자와 정상 사용자를 가를 수 없다",
-      "why_hard": "보안 검증을 조이면 **정상 사용자가 먼저 걸린다.** 실제로 안드로이드에서 인증서 체인 검증에 실패한 요청의 대부분이 공격이 아니라 **인코딩이 이상한 정상 기기**였다 — RFC 5280 의 두 자리 연도 해석, 만료일이 `0` 인 인증서. 세상에 나가 있는 기기의 상태는 규격보다 다양해서, **규격대로 엄격하게 검증할수록 규격을 못 지킨 정상 기기가 잘려 나간다.**",
-      "current_best": "**검증 기준을 상황별로 나눈다** — 표준 결과를 그대로 통과/차단으로 쓰지 않고 자체 구현으로 맥락을 본다. 안드로이드 실패가 10분의 1이 됐다. 그 대가로 **기준의 책임을 회사가 진다**(마지막 절은 이 사이트의 추정).",
-      "confidence": "confirmed",
-      "sources": [
-       {
-        "title": "LINE device attestation service (2)",
-        "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-        "publisher": "LY Corporation Tech Blog",
-        "date": "2024",
-        "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-       }
-      ]
-     }
-    ]
-   },
-   "diagrams": [
-    {
-     "title": "등록과 인증 — 신뢰가 칩에서 서버로 건너오는 길",
-     "question": "서버는 무엇을 근거로 이 요청을 믿는가?",
-     "kind": "flow",
-     "code": "flowchart TD\n  subgraph DEV[\"<b>사용자 기기</b>\"]\n    APP[\"LINE 앱\"]\n    subgraph TEE[\"<b>TEE</b> — TrustZone · StrongBox · Secure Enclave\"]\n      SK[(\"어서션 <b>개인키</b><br/>OS 도 읽을 수 없다\")]:::accent\n    end\n  end\n  SRV[\"<b>어테스테이션 서버</b>\"]\n  SRV -->|\"① 일회성 챌린지\"| APP\n  APP --> TEE\n  TEE -->|\"② 키쌍 생성 · 챌린지 서명\"| ATT[\"<b>어테스테이션 객체</b> (WebAuthn)<br/>• 인증서 체인 (리프·중간·루트)<br/>• 챌린지 서명<br/>• 기기·앱 보안 정보\"]:::list\n  ATT --> V{\"<b>서버 검증</b>\"}\n  V --> C1[\"x.509 체인 → 플랫폼 루트<br/>(Google · Apple)\"]\n  V --> C2[\"Google CRL — 폐기된 키인가\"]\n  V --> C3[\"보안 수준 · deviceLocked<br/>verifiedBootState\"]\n  V --> C4[\"앱 서명 · AttestationApplicationId\"]\n  C1 & C2 & C3 & C4 --> OK[\"③ 공개키를 사용자와 함께 등록\"]\n  OK --> ASSERT[\"④ <b>이후 매 요청</b><br/>챌린지 + 요청 데이터 서명<br/>결제·송금은 <b>금액·수취인까지 서명에 묶는다</b>\"]:::accent\n  ASSERT --> RISK[\"⑤ 그래도 남는 것 —<br/>빈도 이상 탐지 · Apple Risk Metric\"]:::quiet"
-    },
-    {
-     "title": "한 기기가 놓이는 자리",
-     "question": "통과하지 못한 기기는 전부 공격자인가?",
-     "kind": "state",
-     "code": "stateDiagram-v2\n  [*] --> 미등록\n  미등록 --> 검증중: 어테스테이션 요청\n  검증중 --> 신뢰됨: 체인 · 부트 상태 · 앱 서명 모두 통과\n  검증중 --> 거절: Software 보안 수준 / 부트로더 열림<br/>verifiedBootState ≠ Verified / 폐기된 인증서\n  검증중 --> 회색지대: 인증서 인코딩 이상\n  note right of 회색지대\n    대부분 공격자가 아니라 정상 사용자였다\n    RFC 5280 두 자리 연도 · 만료일 \"0\"\n    자체 CertPathValidator 로 실패 1/10\n  end note\n  회색지대 --> 신뢰됨: 상황별 기준으로 재판정\n  회색지대 --> 거절: 의심 신호가 겹칠 때\n  신뢰됨 --> 신뢰됨: 매 요청 어서션 서명\n  신뢰됨 --> 관찰대상: 어테스테이션 빈도 이상 · Risk Metric 초과\n  note right of 관찰대상\n    하드웨어 검증은 통과했다\n    그래도 확률로만 좁힐 수 있다\n  end note\n  거절 --> [*]"
-    },
-    {
-     "title": "실패 경로 — 증명한 것과 막으려는 것이 어긋난다",
-     "question": "서명이 진짜인데도 요청이 가짜일 수 있는가?",
-     "kind": "failure",
-     "code": "flowchart TD\n  SW[\"소프트웨어로 막는다\"] --> ROOT[\"root 를 쥐면<br/>앱을 마음대로 조작한다\"]\n  SW --> ALT[\"리버스한 대체 클라이언트의 요청은<br/><b>정상 요청과 구분되지 않는다</b>\"]\n  ROOT & ALT --> HW[\"<b>하드웨어(TEE)로 내려간다</b>\"]:::accent\n  HW --> PROVE[\"증명하는 것 —<br/>'이 키가 그 하드웨어에서 나왔다'\"]\n  WANT[\"막으려는 것 —<br/>'지금 이 요청이 정직하다'\"]\n  PROVE -.->|\"해석 · 둘은 같지 않다\"| WANT\n  BYPASS[\"OS 를 직접 수정하지 않고<br/>앱·커널 취약점으로 얻은 root\"] -->|\"회사가 인정\"| PASS[\"<b>어테스테이션이 우회된다</b><br/>서명은 진짜다\"]\n  PASS --> MIT[\"완화 — 빈도 이상 탐지 · Risk Metric<br/><b>완벽한 탐지는 거의 불가능</b>\"]:::quiet\n  STRICT[\"규격대로 엄격하게 검증\"] --> FALSE[\"규격을 못 지킨 <b>정상 기기</b>가 잘린다\"]\n  FALSE --> CTX[\"완화 — 상황별 기준 (실패 1/10)\"]:::quiet\n  CTX -->|\"추정\"| OWN[\"기준의 책임을 회사가 진다\"]\n  DUAL[\"패키지 이름을 바꾸는 듀얼 앱 10종 이상\"] --> APPID[\"AttestationApplicationId 로 잡는다\"]"
-    }
-   ],
-   "sources": [
-    {
-     "title": "LINE device attestation service (1)",
-     "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-     "publisher": "LY Corporation Tech Blog",
-     "date": "2024",
-     "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-    },
-    {
-     "title": "LINE device attestation service (2)",
-     "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-     "publisher": "LY Corporation Tech Blog",
-     "date": "2024",
-     "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-    }
-   ]
-  }
- ],
- "open_questions": [
-  "Kafka E2EE 글은 CPU 증가(1% 미만)만 밝히고 **메모리·지연·메시지 크기 증가율은 수치로 내놓지 않는다.**",
-  "DEK 를 배치마다 새로 만드는지 캐시로 재사용하는지 — 글은 둘 다 언급하지만 **어떤 기준으로 갈리는지는 적지 않는다.**",
-  "KEK 회전 주기가 구체적으로 얼마인지 — '주기적'이라고만 적혀 있다.",
-  "PQC 는 **아직 프로덕션에 배포된 알고리즘이 없다** — 계획 단계의 글이라 실제 적용 지점과 오버헤드 수치가 없다.",
-  "HDFS 통합 글은 **클러스터별 용량·노드 수·파일 수를 공개하지 않는다.** 합계 1EB 초과와 추세 그래프만 있다.",
-  "HDFS 통합 글은 **DistCP 로 실제 얼마를 옮겼는지, 얼마나 걸렸는지**를 적지 않는다.",
-  "새 테이블 기반 영역으로의 이전이 **어디까지 진행됐는지** 비율이 없다.",
-  "**Letter Sealing 자체는 여전히 기능으로 팔 수 없다** — 원문이 열리기는 하지만 키 교환 프로토콜도 다중 기기 키 동기화도 밝히지 않는다. 도메인 `tech` 에만 남겨 두었다.",
-  "어테스테이션 서버가 **공개키를 어디에 저장하는지** 밝히지 않는다.",
-  "이상 탐지의 **빈도 임계값**이 얼마인지 밝히지 않는다."
- ],
- "sources": [
-  {
-   "title": "1M messages per second: Applying E2EE to Apache Kafka in the LINE app",
-   "url": "https://techblog.lycorp.co.jp/en/applying-e2ee-to-apache-kafka-in-line-app",
-   "publisher": "LY Corporation Tech Blog",
-   "date": "2026-07-29",
-   "summary": "초당 100만 메시지가 흐르는 Kafka 토픽 하나에 종단간 암호화를 무중단으로 얹은 기록. 소비자마다 키를 주려다 헤더가 소비자 수만큼 불어나는 것을 보고 공유 KEK 로 물러선 이야기, 배치 단위 대신 레코드 단위를 고른 이유, 1%→10%→50%→100% 로 켠 롤아웃까지 대가를 함께 적었다."
-  },
-  {
-   "title": "Connecting 1EB+ HDFS clusters with different histories: Challenges and design decisions",
-   "url": "https://techblog.lycorp.co.jp/en/techverse2026-184",
-   "publisher": "LY Corporation Tech Blog · Tech-Verse 2026",
-   "date": "2026",
-   "summary": "합병 전 LINE 과 Yahoo! JAPAN 이 각자 키운 하둡 클러스터를 잇는 이야기. 합치면 1EB 를 넘고, 한쪽은 ViewFS(클라이언트 쪽 네임스페이스)·테이블 단위 권한, 다른 쪽은 RBF(서버 쪽)·경로 단위 권한이라 네트워크를 잇는 것만으로는 안 됐다."
-  },
-  {
-   "title": "Journey to PQC: Protecting data in the quantum computing era",
-   "url": "https://techblog.lycorp.co.jp/en/pqc-to-protect-data-in-the-age-of-quantum-computers",
-   "publisher": "LY Corporation Tech Blog",
-   "date": "2026",
-   "summary": "Letter Sealing·FIDO·백업에 쓰는 암호를 양자 이후로 옮기는 계획. '지금 모아 두었다가 나중에 푼다'(HNDL)를 위협 모델로 삼고, 고전 알고리즘과 PQC 를 함께 쓰는 하이브리드로 간다 — 그 복잡성과 상호운용 문제도 함께 적었다."
-  },
-  {
-   "title": "Financial Highlights — 세그먼트별 매출",
-   "url": "https://www.lycorp.co.jp/en/ir/finance/highlight.html",
-   "publisher": "LY Corporation IR",
-   "date": "2026-05",
-   "summary": "FY2026/03(2026년 3월 31일 종료) 세그먼트별 매출. Media 734,545 · Commerce 857,897 · Strategic 445,775 · Others 10,235 · 조정 -12,086, 연결 합계 2,036,366 백만 엔."
-  },
-  {
-   "title": "Migration from Hive to Trino and Spark: Challenges and insights",
-   "url": "https://techblog.lycorp.co.jp/en/migration-from-hive-to-trino-and-spark",
-   "publisher": "LY Corporation Tech Blog",
-   "date": "2025",
-   "summary": "구 Yahoo! JAPAN 서비스의 행동·거래 데이터를 다루던 Hive 워크플로 200여 개를 Trino 와 Spark 로 옮긴 기록. 파티션당 600GB 를 하루 15개씩, 피크에 메모리 100TB 를 쓰는 작업까지 있었다. Spark 는 CPU 효율이 약 2.4배지만 메모리를 더 먹고 작은 파일을 잔뜩 만든다 — 그 대가를 함께 적었다."
-  },
-  {
-   "title": "The next step for even safer messaging: Letter Sealing",
-   "url": "https://engineering.linecorp.com/en/blog/the-next-step-for-even-safer-messaging-letter-sealing/",
-   "publisher": "LINE Engineering",
-   "date": "2016",
-   "summary": "LINE 의 종단간 암호화 Letter Sealing 을 기본값으로 켠 이야기. 키는 사용자 기기에만 두고 서버에 두지 않는다. 다만 키 교환 방식은 밝히지 않고, 그룹은 초기에 50명 제한이었다."
-  },
-  {
-   "title": "LINE device attestation service (1)",
-   "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-1",
-   "publisher": "LY Corporation Tech Blog",
-   "date": "2024",
-   "summary": "소프트웨어 방어가 root 앞에서 무력하다는 데서 출발해, 신뢰의 뿌리를 하드웨어(TEE)로 옮긴 이야기. Android Key Attestation 과 iOS App Attest 를 WebAuthn 형태로 통일하고, 인증서 체인·부트 상태·폐기 목록까지 서버에서 검증한다. 완벽한 탐지는 불가능하다는 것도 함께 적었다."
-  },
-  {
-   "title": "LINE device attestation service (2)",
-   "url": "https://techblog.lycorp.co.jp/en/line-device-attestation-2",
-   "publisher": "LY Corporation Tech Blog",
-   "date": "2024",
-   "summary": "실제로 켜 보니 검증에 실패한 요청이 대부분 공격자가 아니라 인증서 인코딩이 이상한 정상 사용자였다는 기록. 자체 CertPathValidator 로 다시 짜 안드로이드 실패를 10분의 1로 줄였고, iOS 는 성공률이 100%에 가까웠다. OS 를 직접 고치지 않는 root 로는 우회된다는 것도 인정한다."
-  }
- ]
+  ]
 }
