@@ -467,6 +467,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "db-index",
+      "title": "DB 인덱스",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "찾을 값을 **미리 정렬해 따로 만들어 둔 자료구조**다. 덕분에 수억 행에서 몇 번의 읽기로 원하는 행에 닿지만, 그 대가로 **쓸 때마다 함께 고쳐야 하고** 조건을 조금만 비틀면 조용히 안 쓰인다.",
+      "aliases": [
+        "DB 인덱스",
+        "데이터베이스 인덱스",
+        "인덱스",
+        "복합 인덱스",
+        "database index"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
