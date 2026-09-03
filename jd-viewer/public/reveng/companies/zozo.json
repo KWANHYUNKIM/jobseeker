@@ -4,7 +4,7 @@
   "name_en": "ZOZO",
   "country": "JP",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-04",
   "domain": "zozo.jp",
   "one_liner": "취급고 6,660억 엔 중 2,284억 엔만 매출로 잡히는 회사 — 남의 옷을 대신 팔고, 찾게 하는 일로 번다",
@@ -59,7 +59,7 @@
   "domain_map": {
     "title": "ZOZO 도메인 지도",
     "question": "브랜드 이름을 모르는 사람이 옷을 찾고, 그 다음 상품까지 가는 길은 어디를 지나 취급고가 되는가?",
-    "code": "flowchart TD\n  U[\"<b>찾는 사람</b><br/>• 브랜드 이름을 모른다<br/>• 오타와 표기 흔들림<br/>• '이런 느낌' 으로 찾는다\"]:::list\n  SEARCH[\"<b>애매한 말로 찾기</b><br/>• 전문검색 + 벡터검색<br/>• 점수 정규화와 가중 결합<br/>• 색인 워밍업\"]:::accent\n  IDX[\"<b>색인</b><br/>• 코디 투고와 상품<br/>• 10분 간격 차분 갱신\"]:::list\n  PDP[\"<b>상품 상세</b><br/>• 추천 아이템 지면\"]:::list\n  RECO[\"<b>빌린 모델이 조용히 나빠질 때</b><br/>• 관리형 추천 API<br/>• 응답 로그로 품질 감시<br/>• 자체 모델 폴백\"]:::list\n  STOCK[\"브랜드 재고 (수탁)\"]:::quiet\n  ORDER[\"주문과 물류\"]:::quiet\n  GMV[\"<b>취급고 6,660억 엔</b>\"]:::list\n  REV[\"매출 2,284억 엔 (약 34%)\"]:::quiet\n  U --> SEARCH\n  IDX -->|\"후보\"| SEARCH\n  STOCK -->|\"무엇이 있는가\"| IDX\n  SEARCH --> PDP\n  RECO -->|\"지면을 채운다\"| PDP\n  PDP --> ORDER\n  ORDER --> GMV\n  GMV -->|\"수수료로 남는 몫\"| REV\n  ORDER -.->|\"입은 사진이 다시 색인으로\"| IDX\n  STOCK -->|\"전체 SKU 가 커버리지의 분모\"| RECO"
+    "code": "flowchart TD\n  U[\"<b>찾는 사람</b><br/>• 브랜드 이름을 모른다<br/>• 오타와 표기 흔들림<br/>• '이런 느낌' 으로 찾는다\"]:::list\n  SEARCH[\"<b>애매한 말로 찾기</b><br/>• 전문검색 + 벡터검색<br/>• 점수 정규화와 가중 결합<br/>• 색인 워밍업\"]:::accent\n  IDX[\"<b>색인</b><br/>• 코디 투고와 상품<br/>• 10분 간격 차분 갱신\"]:::list\n  PDP[\"<b>상품 상세</b><br/>• 추천 아이템 지면\"]:::list\n  BANDIT[\"<b>덜 아는 후보에 얼마를 걸 것인가</b><br/>• 여러 후보 중 무엇을 보일지<br/>• 과거 실적을 출발선으로\"]:::list\n  SURFACE[\"<b>표시 지면(시책)</b><br/>• ⚠️ 어느 지면인지는 비공개\"]:::quiet\n  RECO[\"<b>빌린 모델이 조용히 나빠질 때</b><br/>• 관리형 추천 API<br/>• 응답 로그로 품질 감시<br/>• 자체 모델 폴백\"]:::list\n  STOCK[\"브랜드 재고 (수탁)\"]:::quiet\n  ORDER[\"주문과 물류\"]:::quiet\n  GMV[\"<b>취급고 6,660억 엔</b>\"]:::list\n  REV[\"매출 2,284억 엔 (약 34%)\"]:::quiet\n  U --> SEARCH\n  IDX -->|\"후보\"| SEARCH\n  STOCK -->|\"무엇이 있는가\"| IDX\n  SEARCH --> PDP\n  RECO -->|\"지면을 채운다\"| PDP\n  PDP --> ORDER\n  ORDER --> GMV\n  GMV -->|\"수수료로 남는 몫\"| REV\n  ORDER -.->|\"입은 사진이 다시 색인으로\"| IDX\n  STOCK -->|\"전체 SKU 가 커버리지의 분모\"| RECO\n  BANDIT -->|\"후보를 고른다\"| SURFACE\n  SURFACE --> ORDER"
   },
   "domains": [
     {
@@ -168,6 +168,60 @@
       ],
       "features": [
         "model-drift-watch"
+      ]
+    },
+    {
+      "name": "덜 아는 후보에 얼마를 걸 것인가",
+      "why": "**여러 후보 중 무엇을 보여줄지 고르는 지면**이 있다 — 회사 표현으로 **\"ZOZOTOWN 의 어떤 시책에서 사용자에게 표시할 콘텐츠를 여러 후보 중에서 골라 배포\"** 한다. 문제는 새 후보다. 실적이 없으면 **\"배포가 최적 후보로 수렴하기까지 시간이 걸리고, 그동안 인게이지먼트율이 낮은 후보에도 배포가 할당된다\".** 그 수렴 기간이 그대로 손실이고, **새 후보를 넣을 때마다 같은 손실을 다시 치른다**(뒷문장은 이 사이트의 해석이다). ⚠️ **어느 지면인지는 공개하지 않았다** — 글이 **\"대상 시책의 상세에는 언급하지 않고\"** 라고 밝힌다.",
+      "tech": [
+        {
+          "tech": "Thompson Sampling + 과거 실적에서 추정한 베타 사전분포",
+          "solves": "후보마다 베타 분포를 두고 매 배포마다 표본을 뽑아 가장 큰 것을 고른다. 이 회사가 손댄 자리는 알고리즘이 아니라 **출발선**이다 — 균등한 `Beta(1,1)` 대신 **\"과거 실적 데이터를 사전분포로 활용한다\".** 새 후보가 아무것도 모르는 상태에서 시작하지 않는다.",
+          "limits": "**과거가 지금과 다르면 틀린 출발선을 준다.** 그래서 **사전분포의 최대 강도를 제어**하고 **데이터 필터링 임계값**을 함께 뒀다. 강도를 낮추면 콜드스타트 개선 폭이 줄고, 높이면 새 후보가 과거에 갇힌다 — 어느 쪽도 자동으로 정해지지 않는다(뒷문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Thompson Samplingのコールドスタート対策",
+              "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+              "publisher": "ZOZO TECH BLOG",
+              "date": "2026-08-31",
+              "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+            }
+          ]
+        },
+        {
+          "tech": "세그먼트 수준의 사전분포",
+          "solves": "사전분포를 후보 하나하나가 아니라 **세그먼트 단위**로 잡는다. 실적이 전혀 없는 후보도 자기가 속한 세그먼트의 과거를 물려받아 출발할 수 있다.",
+          "limits": "**같은 세그먼트의 후보들이 같은 출발선을 받는다.** 세그먼트 안의 차이는 관측이 쌓여야 드러난다. 회사도 후속 과제로 **세그먼트 수준을 넘어 후보별 예측 모델로 가는 것**을 든다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Thompson Samplingのコールドスタート対策",
+              "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+              "publisher": "ZOZO TECH BLOG",
+              "date": "2026-08-31",
+              "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+            }
+          ]
+        },
+        {
+          "tech": "오프라인 시뮬레이션 + 본번 A/B, 그리고 가드레일 지표",
+          "solves": "오프라인 시뮬레이션에서 **리그렛을 패턴A 대비 약 13% 개선**하고 필요한 분포를 **12~17% 절감**했으며, **본번 A/B 테스트에서 필요한 배포 수를 패턴A 대비 약 15~25% 절감**했다.",
+          "limits": "**비즈니스 지표는 목표가 아니라 가드레일이다** — **\"비즈니스 지표에 대해서는 악화가 없음을 확인하는 가드레일\"** 이라고 회사가 적는다. 즉 **나빠지지 않았다는 것만 말하고 좋아졌다는 것은 말하지 않는다.** 수렴이 빨라진 것이 매출로 이어졌는지는 이 설계가 답하지 않는다(뒷문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Thompson Samplingのコールドスタート対策",
+              "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+              "publisher": "ZOZO TECH BLOG",
+              "date": "2026-08-31",
+              "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "warm-start-bandit"
       ]
     }
   ],
@@ -1123,6 +1177,364 @@
           "publisher": "ZOZO TECH BLOG",
           "date": "2026-08-21",
           "summary": "관리형 추천 API 의 모델이 오류 없이 조용히 나빠진 2025년 5월 사건 뒤, 응답 로그만으로 품질을 재는 감시 체계를 세우고 운영한 기록. 세 지표·두 단계 임계값·수동 폴백과 그 한계를 회사가 직접 적었다."
+        }
+      ]
+    },
+    {
+      "key": "warm-start-bandit",
+      "name": "차가운 후보를 데우기",
+      "domain": "덜 아는 후보에 얼마를 걸 것인가",
+      "updated_at": "2026-09-04",
+      "business": {
+        "why": "후보를 새로 넣을 때마다 **수렴할 때까지의 배포가 낭비된다.** 회사 표현으로 **\"배포가 최적 후보로 수렴하기까지 시간이 걸리고, 그동안 인게이지먼트율이 낮은 후보에도 배포가 할당된다\".** 후보를 자주 바꾸는 지면일수록 이 손실이 반복해서 쌓인다(뒷문장은 이 사이트의 해석이다).",
+        "metrics": [
+          {
+            "label": "리그렛 (오프라인 시뮬레이션)",
+            "value": "패턴A 대비 약 13% 개선",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          },
+          {
+            "label": "필요한 분포 (오프라인)",
+            "value": "12~17% 절감",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          },
+          {
+            "label": "필요한 배포 수 (본번 A/B)",
+            "value": "패턴A 대비 약 15~25% 절감",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "콜드스타트를 어디서 풀지 정할 때",
+          "thought": "고칠 수 있는 자리가 둘이었다 — **고르는 규칙**을 바꾸거나, **시작하는 자리**를 바꾸거나. 규칙은 이미 잘 도는데 새 후보만 매번 바닥에서 출발한다면, 문제는 알고리즘이 아니라 **출발선**이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "사전분포를 무엇으로 둘지 정할 때",
+          "thought": "균등한 `Beta(1,1)` 은 **'아무것도 모른다'** 는 선언인데, 사실은 아무것도 모르는 상태가 아니었다. 비슷한 후보들이 과거에 어떻게 굴렀는지를 이미 갖고 있었다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "과거를 얼마나 믿을지 정할 때",
+          "thought": "과거를 세게 믿으면 콜드스타트는 사라지지만 **새 후보가 과거의 평균에 갇힌다.** 약하게 믿으면 원래 문제가 그대로다. 그래서 **강도에 상한**을 두고 **데이터가 모자라면 아예 쓰지 않는 임계값**을 함께 걸었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇으로 성공을 잴지 정할 때",
+          "thought": "이 작업이 노리는 것은 **수렴 속도**이지 매출이 아니다. 그래서 비즈니스 지표를 이겨야 할 목표로 두지 않고 **\"악화가 없음을 확인하는 가드레일\"** 로 뒀다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "후보(candidate)",
+            "what": "그 지면에 나갈 수 있는 콘텐츠 하나. 새로 들어오면 실적이 없다"
+          },
+          {
+            "name": "베타 분포",
+            "what": "후보 하나가 얼마나 잘 먹히는지에 대한 지금까지의 믿음. 관측이 쌓이면 좁아진다"
+          },
+          {
+            "name": "사전분포(prior)",
+            "what": "관측이 없을 때의 출발선. 이 회사는 이것을 과거 실적에서 추정한다"
+          },
+          {
+            "name": "세그먼트",
+            "what": "사전분포를 물려주는 단위. 후보 개별이 아니라 이 층에서 과거가 상속된다"
+          },
+          {
+            "name": "가드레일 지표",
+            "what": "이겨야 하는 목표가 아니라 나빠지면 안 되는 선"
+          }
+        ],
+        "invariants": [
+          "**사전분포는 출발선이지 결론이 아니다.** 관측이 쌓이면 밀려나야 하고, 그래서 강도에 상한이 있다.",
+          "**과거를 물려받을 근거가 모자라면 물려받지 않는다.** 데이터 필터링 임계값에 못 미치는 후보는 과거를 쓰지 않는다.",
+          "**비즈니스 지표는 개선 대상이 아니라 침범하면 안 되는 선이다.**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "후보마다 베타 분포를 둔다",
+            "why": "'얼마나 잘 먹히는가' 를 하나의 수가 아니라 **분포**로 들고 있어야 '얼마나 확신하는가' 까지 표현된다"
+          },
+          {
+            "step": "새 후보의 사전분포를 과거 실적 데이터에서 추정한다 — 세그먼트 수준",
+            "why": "실적이 없다는 것과 아무것도 모른다는 것은 다르다. 비슷한 후보들의 과거가 이미 있다"
+          },
+          {
+            "step": "사전분포의 최대 강도를 제어하고, 데이터가 임계값에 못 미치면 쓰지 않는다",
+            "why": "과거를 너무 세게 믿으면 새 후보가 그 평균에서 못 벗어난다"
+          },
+          {
+            "step": "배포할 때마다 각 후보의 분포에서 표본을 뽑아 가장 큰 것을 고른다",
+            "why": "Thompson Sampling — 확신이 없는 후보일수록 표본이 넓게 흩어져 가끔 뽑히므로, 탐색이 규칙 안에 들어 있다"
+          },
+          {
+            "step": "결과로 그 후보의 분포를 갱신한다",
+            "why": "관측이 쌓이면 분포가 좁아지고 출발선의 영향이 줄어든다"
+          },
+          {
+            "step": "오프라인 시뮬레이션으로 리그렛을 패턴A와 비교한다",
+            "why": "본번에 걸기 전에 방향이 맞는지를 싸게 확인한다"
+          },
+          {
+            "step": "본번 A/B 테스트로 필요한 배포 수를 확인한다",
+            "why": "오프라인에서 좋아진 것이 실제 트래픽에서도 좋아지는지는 다른 질문이다"
+          },
+          {
+            "step": "비즈니스 지표는 가드레일로 본다",
+            "why": "수렴을 빠르게 하려다 매출을 깎으면 아무 소용이 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "콜드스타트를 **알고리즘**으로 풀 것인가 **출발선**으로 풀 것인가",
+            "chosen": "알고리즘은 그대로 두고 **사전분포를 과거 실적에서 추정해 출발선을 옮겼다**",
+            "alternatives": [
+              "균등한 `Beta(1,1)` 로 시작해 관측이 쌓이기를 기다린다"
+            ],
+            "tradeoff": "**과거가 지금과 다르면 틀린 출발선을 주게 된다.** 균등 사전분포는 느리지만 편향이 없는데, 과거를 넣는 순간 그 편향을 함께 들여온다 — 그래서 강도 상한과 필터링 임계값이 **함께 필요해졌다**(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          },
+          {
+            "question": "과거 실적을 얼마나 믿을 것인가",
+            "chosen": "**사전분포의 최대 강도를 제어**하고 **데이터 필터링 임계값**을 둔다",
+            "alternatives": [
+              "과거 실적의 관측 수를 그대로 사전분포 강도로 쓰기",
+              "실적이 있는 세그먼트면 조건 없이 물려주기"
+            ],
+            "tradeoff": "**두 방향 모두 나빠진다.** 강도를 낮추면 콜드스타트 개선 폭이 줄고, 높이면 새 후보가 과거의 평균에 갇혀 좋은 후보를 늦게 찾는다. **어느 쪽도 자동으로 정해지지 않아 사람이 값을 정해야 한다**(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          },
+          {
+            "question": "사전분포를 어느 단위로 잡을 것인가",
+            "chosen": "**세그먼트 수준**에서 잡는다",
+            "alternatives": [
+              "후보별 예측 모델로 개별 사전분포를 만든다",
+              "전체 평균 하나를 모두에게 준다"
+            ],
+            "tradeoff": "**같은 세그먼트의 후보들이 같은 출발선을 받는다** — 세그먼트 안의 차이는 관측이 쌓여야 드러나므로, 세그먼트 평균보다 훨씬 좋은 후보도 남들과 같은 자리에서 시작한다. 회사도 후속 과제로 **세그먼트 수준을 넘어 후보별 예측 모델**로 가는 것을 든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 주 지표로 삼을 것인가",
+            "chosen": "**리그렛과 필요한 배포 수**를 주 지표로 두고, **비즈니스 지표는 가드레일**로 뒀다",
+            "alternatives": [
+              "매출·CTR 같은 비즈니스 지표를 주 지표로 삼기"
+            ],
+            "tradeoff": "회사 표현이 그대로 한계다 — **\"비즈니스 지표에 대해서는 악화가 없음을 확인하는 가드레일\".** **나빠지지 않았다는 것만 말하고 좋아졌다는 것은 말하지 않는다.** 수렴이 15~25% 빨라진 것이 실제로 얼마를 벌었는지는 이 설계로 답하지 않는다(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          },
+          {
+            "question": "오프라인 결과만으로 낼 것인가",
+            "chosen": "오프라인 시뮬레이션으로 리그렛을 비교한 뒤 **본번 A/B 테스트로 다시 쟀다**",
+            "alternatives": [
+              "오프라인 시뮬레이션 결과만으로 배포",
+              "바로 본번에 올리고 관찰"
+            ],
+            "tradeoff": "**두 숫자가 같은 것을 재지 않는다.** 오프라인은 리그렛 약 13% 개선·분포 12~17% 절감이었고 본번은 필요한 배포 수 약 15~25% 절감이다 — 지표가 달라 직접 비교되지 않는다. 확인에 시간과 트래픽이 들지만, 그 값을 치르지 않으면 시뮬레이션의 가정이 맞았는지 알 수 없다(뒷문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Thompson Sampling (베타-이항 켤레)",
+            "role": "후보 분포에서 표본을 뽑아 가장 큰 것을 고른다. 탐색이 별도 규칙이 아니라 표집 안에 들어 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          },
+          {
+            "tech": "과거 실적 기반 사전분포 추정",
+            "role": "새 후보의 출발선을 세그먼트의 과거에서 가져온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          },
+          {
+            "tech": "오프라인 시뮬레이션 · 본번 A/B 테스트",
+            "role": "리그렛과 필요 배포 수로 방향을 확인하고 실제 트래픽에서 다시 잰다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "model-drift-watch",
+          "via": "같은 문제의 다른 층 — 서로 호출하지 않는다",
+          "contract": "저쪽은 **빌린 모델의 출력이 나빠지는 것**을 밖에서 재고, 이쪽은 **직접 굴리는 선택 규칙이 새 후보를 얼마나 빨리 데우는가**를 잰다. 둘 다 '무엇을 보여줄지' 를 정하지만 한쪽은 관리형 서비스에 맡긴 지면이고 한쪽은 사내에서 도는 시책이다",
+          "confidence": "inferred"
+        },
+        {
+          "to": "표시 지면(시책)",
+          "via": "배포 요청마다의 후보 선택",
+          "contract": "후보 목록을 받아 하나를 고르고, 결과를 관측으로 돌려받는다. ⚠️ **어느 지면인지는 공개하지 않았다** — 글이 대상 시책의 상세를 밝히지 않는다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "과거 실적 데이터",
+          "via": "세그먼트 단위 사전분포 추정 (배치)",
+          "contract": "세그먼트별 과거 성과를 받아 베타 사전분포의 모수로 바꾼다. 데이터가 임계값에 못 미치면 쓰지 않는다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "On the Likelihood that One Unknown Probability Exceeds Another in View of the Evidence of Two Samples",
+            "authors": "William R. Thompson",
+            "year": "1933",
+            "venue": "Biometrika 25(3/4)",
+            "url": "https://www.jstor.org/stable/2332286",
+            "takeaway": "이 기능이 **빌려 온 것과 더한 것을 가르는 자리**다. 빌린 것은 **표본을 뽑아 가장 큰 것을 고른다**는 규칙 하나이고, 그것만으로는 실적 없는 후보가 넓은 분포에서 출발해 수렴이 느리다는 성질이 그대로 남는다. 이 회사가 더한 것은 규칙이 아니라 **그 분포의 출발선을 과거 실적으로 옮긴 것**이다. 회사가 이 논문을 직접 인용한 것은 아니다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "아직 모르는 후보에 **얼마를 걸 것인가**",
+            "why_hard": "**정보를 얻으려면 써 봐야 하는데, 써 보는 동안의 손실은 되돌릴 수 없다.** 어느 후보가 최적인지 알았을 때는 그것을 알아내느라 쓴 배포가 이미 나간 뒤다. 그리고 **정답이 고정돼 있지도 않다** — 계절·재고·유행이 바뀌면 과거의 최적이 지금의 최적이 아니라서, 탐색을 영영 멈출 수 없다. 비용 구조가 문제의 본체다.",
+            "current_best": "사전 지식을 **사전분포로 넣어 출발선을 옮긴다**(이 회사가 고른 길). 감수하는 것은 둘이다 — 그 사전 지식이 지금과 어긋나면 **손실이 오히려 커지고**, 얼마나 믿을지(강도)는 **사람이 정하는 값**으로 남는다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Thompson Samplingのコールドスタート対策",
+                "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+                "publisher": "ZOZO TECH BLOG",
+                "date": "2026-08-31",
+                "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "새 후보가 만드는 손실",
+          "question": "실적이 없는 후보를 넣으면 무슨 일이 벌어지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  NEW[\"<b>새 후보</b><br/>• 실적이 없다\"]:::list\n  FLAT[\"<b>균등한 출발선</b><br/>• Beta(1,1)<br/>• '아무것도 모른다' 는 선언\"]:::list\n  SPREAD[\"<b>분포가 넓다</b><br/>• 표본이 크게 흩어진다<br/>• 그래서 자주 뽑힌다\"]:::list\n  WASTE[\"<b>수렴까지의 배포</b><br/>• 인게이지먼트율이 낮은 후보에도 할당된다\"]:::accent\n  AGAIN[\"<b>후보를 바꿀 때마다 반복된다</b>\"]:::quiet\n  NEW --> FLAT\n  FLAT --> SPREAD\n  SPREAD --> WASTE\n  WASTE --> AGAIN"
+        },
+        {
+          "title": "출발선을 과거에서 가져오는 길",
+          "question": "'아무것도 모른다' 를 어디까지 '조금은 안다' 로 바꾸는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  HIST[\"<b>과거 실적 데이터</b>\"]\n  SEG[\"<b>세그먼트 단위로 묶는다</b><br/>• 후보별이 아니다<br/>• 같은 세그먼트는 같은 출발선\"]:::list\n  GATE[\"<b>두 개의 안전장치</b><br/>• 사전분포 최대 강도 제어<br/>• 데이터 필터링 임계값\"]:::accent\n  PRIOR[\"<b>베타 사전분포</b>\"]\n  TS2[\"<b>Thompson Sampling</b><br/>• 분포에서 표본을 뽑는다<br/>• 가장 큰 것을 고른다\"]:::list\n  OBS[\"<b>관측으로 갱신</b><br/>• 분포가 좁아진다<br/>• 출발선의 영향이 줄어든다\"]:::list\n  NEXT[\"<b>남은 과제</b><br/>• 세그먼트를 넘어 후보별 예측 모델로\"]:::quiet\n  HIST --> SEG\n  SEG --> GATE\n  GATE --> PRIOR\n  PRIOR --> TS2\n  TS2 --> OBS\n  OBS --> TS2\n  SEG -.-> NEXT"
+        },
+        {
+          "title": "출발선을 잘못 주면",
+          "question": "과거를 너무 믿거나 덜 믿으면 각각 무엇이 깨지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[\"<b>사전분포의 강도를 얼마로 둘 것인가</b>\"]:::accent\n  WEAK[\"<b>너무 약하면</b><br/>• 균등 출발선과 다를 게 없다<br/>• 콜드스타트가 그대로 남는다\"]:::list\n  STRONG[\"<b>너무 세면</b><br/>• 새 후보가 과거 평균에 갇힌다<br/>• 좋은 후보를 늦게 찾는다\"]:::list\n  STALE[\"<b>과거가 지금과 다르면</b><br/>• 틀린 출발선을 준다<br/>• 손실이 되레 커진다\"]:::list\n  GUARD[\"<b>가드레일 지표</b><br/>• 악화가 없음만 확인한다<br/>• 좋아졌는지는 말하지 않는다\"]:::quiet\n  MAN[\"<b>강도는 사람이 정하는 값으로 남는다</b>\"]\n  Q --> WEAK\n  Q --> STRONG\n  Q --> STALE\n  WEAK --> MAN\n  STRONG --> MAN\n  STALE --> GUARD"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Thompson Samplingのコールドスタート対策",
+          "url": "https://techblog.zozo.com/entry/thompson-sampling-cold-start",
+          "publisher": "ZOZO TECH BLOG",
+          "date": "2026-08-31",
+          "summary": "여러 후보 중 무엇을 보일지 고르는 시책에서, 실적 없는 새 후보 때문에 수렴이 늦어지는 문제를 **과거 실적을 사전분포로 쓰는 방식**으로 줄인 기록. 오프라인 시뮬레이션과 **본번 A/B 테스트** 결과가 함께 있다."
         }
       ]
     }
