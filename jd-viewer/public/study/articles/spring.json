@@ -1,0 +1,652 @@
+{
+ "slug": "spring",
+ "title": "Spring",
+ "title_en": "Spring Framework / Spring Boot",
+ "aliases": [
+  "Spring",
+  "스프링",
+  "Spring Boot",
+  "스프링부트"
+ ],
+ "category": "framework",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-04",
+ "one_liner": "**객체를 누가 만들고 누가 연결할지를 컨테이너에 넘긴** 프레임워크다. 그 위에 `@Transactional` 같은 것을 **프록시로 끼워 넣는 구조**가 얹혀 있고, 실무 함정의 대부분이 그 프록시에서 나온다.",
+ "summary": "Spring 은 `java` 문서가 \"동반 44%, 공고의 절반이 함께 요구한다\"며 넘긴 자리다. 이 데이터셋에서도 **Spring 공고의 83.0% 가 Java 를 함께 요구하고**, 절반 이상(52.8%)이 **Spring Boot** 를 함께 적는다 — 언어·프레임워크·부트가 사실상 한 묶음이라는 뜻이다. 본체는 **DI 컨테이너** 하나다. 객체를 `new` 로 만들지 않고 컨테이너가 만들어 넣어 주면, **구현을 갈아 끼울 수 있고 테스트에서 가짜로 바꿀 수 있다.** 여기에 **AOP** 가 붙어 트랜잭션·보안·로깅처럼 여기저기 흩어질 코드를 한 곳으로 모으는데, **그 구현이 프록시**라서 유명한 함정들이 생긴다 — `@Transactional` 이 **같은 클래스 안에서 부르면 안 먹는** 것이 대표적이다. Boot 는 그 위에서 **설정을 관례로 대신하고**(자동 설정) **서버를 내장해** 실행 가능한 jar 하나로 만든다. 그래서 시작은 쉽고, **문제가 생기면 무엇이 자동으로 켜졌는지부터 봐야** 한다. 그리고 버전 단절이 하나 있다 — **Boot 3.0 은 Java 17 을 요구하고 `javax.*` 를 `jakarta.*` 로 바꿨다.**",
+ "market": {
+  "tech": "Spring",
+  "layer": "백엔드",
+  "postings": 834,
+  "pct_jobs": 11.6,
+  "with": [
+   {
+    "name": "Java",
+    "pct": 83.0,
+    "why": "**Spring 공고의 83%가 Java 를 함께 적는다** — 이 생태계에서 둘은 사실상 한 낱말이다(→ `java`)"
+   },
+   {
+    "name": "Spring Boot",
+    "pct": 52.8,
+    "why": "절반 이상이 Boot 를 명시한다. '순수 Spring' 으로 새로 시작하는 프로젝트는 드물다는 뜻"
+   },
+   {
+    "name": "AWS",
+    "pct": 48.0,
+    "why": "온프레미스 이미지와 달리 실제로는 클라우드 위에서 돈다 — 기동 시간·메모리 설정이 실무 주제가 된다(→ `java` 의 GC 절)"
+   },
+   {
+    "name": "MySQL",
+    "pct": 31.5,
+    "why": "관계형 DB 와 ORM(JPA)이 딸려 온다. 이 문서의 N+1 절이 실무가 되는 자리"
+   },
+   {
+    "name": "Docker",
+    "pct": 29.7,
+    "why": "실행 가능한 jar 하나로 만드는 Boot 의 구조가 컨테이너와 잘 맞는다"
+   },
+   {
+    "name": "React",
+    "pct": 29.7,
+    "why": "백엔드 Spring + 프런트 React 조합. 풀스택을 요구하는 공고에서 함께 잡힌다"
+   }
+  ],
+  "as_of": "2026-09-04"
+ },
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 컨테이너가 객체를 만들어 준다",
+   "body": "Spring 의 본체는 **DI(의존성 주입) 컨테이너**다. 내가 `new` 로 객체를 만들지 않고, **컨테이너가 만들어 필요한 곳에 넣어 준다.**\n\n```java\n@Service\nclass OrderService {\n    private final PaymentGateway gateway;      // 인터페이스에만 의존\n    OrderService(PaymentGateway gateway) {     // 컨테이너가 넣어 준다\n        this.gateway = gateway;\n    }\n}\n```\n\n컨테이너가 관리하는 객체를 **빈(bean)** 이라 부르고, 빈들을 담은 것이 **애플리케이션 컨텍스트**다. `@Service`·`@Repository`·`@Component` 는 \"이 클래스를 빈으로 만들어라\"는 표시이고, `@Configuration` + `@Bean` 은 직접 만들어 등록하는 방법이다.\n\n**Spring Boot 는 그 위의 층이다.** 세 가지를 더한다.\n\n1. **자동 설정** — 클래스패스에 무엇이 있는지 보고 필요한 빈을 알아서 등록한다(DB 드라이버가 있으면 커넥션 풀을, 웹 스타터가 있으면 MVC 를).\n2. **내장 서버** — 톰캣을 안에 넣어 **실행 가능한 jar 하나**로 만든다. WAR 를 만들어 서버에 배포하던 과정이 사라진다.\n3. **스타터 의존성** — `spring-boot-starter-web` 하나로 필요한 라이브러리 묶음과 **검증된 버전 조합**이 딸려 온다.\n\n> **그래서 '스프링을 안다'는 말은 대개 Boot 를 안다는 뜻이다.** 공고의 절반 이상이 `Spring Boot` 를 함께 적고(52.8%), `Spring Boot 3.x 우대` 처럼 **버전까지 조건이 되는** 경우도 있다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Spring Boot 프로젝트 페이지",
+     "url": "https://spring.io/projects/spring-boot",
+     "publisher": "Spring",
+     "kind": "docs",
+     "summary": "자동 설정·내장 서버·스타터라는 Boot 의 전제와 현재 지원 버전 목록"
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "kind": "why",
+   "heading": "왜 필요했나 — DI 와 AOP 가 각각 푼 문제",
+   "body": "**① DI 는 '누가 객체를 만드느냐'의 문제를 풀었다.**\n\n직접 만들면 이렇게 된다.\n\n```java\nclass OrderService {\n    private final PaymentGateway gateway = new TossGateway(apiKey, timeout);  // 못 바꾼다\n}\n```\n\n이 코드는 **테스트할 수 없다.** 결제사에 진짜 요청이 나가고, 실패를 흉내 낼 방법이 없고, 결제사를 바꾸려면 이 클래스를 고쳐야 한다. 생성 책임을 밖으로 빼면 셋이 한 번에 풀린다 — **테스트에서 가짜를 넣고, 구현을 갈아 끼우고, 설정(키·타임아웃)을 한 곳에서 관리한다.**\n\n2000년대 초 자바 엔터프라이즈(EJB)는 이런 일을 무거운 컨테이너와 상속 규칙으로 강제했다. Spring 이 이긴 이유는 **평범한 자바 객체(POJO)를 그대로 두고** 조립만 밖에서 했기 때문이다.\n\n**② AOP 는 '흩어지는 코드'의 문제를 풀었다.**\n\n트랜잭션·보안·로깅·재시도는 **모든 메서드에 조금씩 들어가는** 코드다. 손으로 쓰면 이렇게 된다.\n\n```java\ntx.begin();\ntry { ... } catch (e) { tx.rollback(); throw e; }\ntx.commit();\n```\n\n이 뼈대가 메서드마다 반복되고, 하나라도 빠뜨리면 조용히 깨진다. Spring 은 이것을 **`@Transactional` 한 줄**로 바꿨다. 어떻게? **대상 객체를 감싼 프록시를 만들어**, 호출이 프록시를 지나갈 때 앞뒤로 트랜잭션 코드를 끼워 넣는다.\n\n```\n호출자 ──▶ [프록시: 트랜잭션 시작] ──▶ 실제 객체.메서드() ──▶ [커밋/롤백]\n```\n\n**이 구조가 이 문서의 핵심이고, 실무 함정의 대부분이 여기서 나온다.** 프록시를 지나가지 않는 호출에는 아무 일도 일어나지 않기 때문이다(다음 절).\n\n**③ Boot 는 '설정의 무게'를 풀었다.** 예전 Spring 은 XML 설정이 수백 줄이었다. Boot 는 **관례와 자동 설정**으로 그 대부분을 없앴고, 그 대가로 **무엇이 켜져 있는지 눈에 안 보이게** 됐다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Spring Boot 프로젝트 페이지",
+     "url": "https://spring.io/projects/spring-boot",
+     "publisher": "Spring",
+     "kind": "docs",
+     "summary": "자동 설정·내장 서버·스타터라는 Boot 의 전제와 현재 지원 버전 목록"
+    }
+   ]
+  },
+  {
+   "id": "proxy",
+   "kind": "how",
+   "heading": "@Transactional 은 프록시다 — 함정 넷",
+   "body": "AOP 가 프록시로 구현된다는 사실 하나에서 **가장 유명한 버그 네 개**가 나온다.\n\n**① 같은 클래스 안에서 부르면 안 먹는다 (자기 호출).**\n\n```java\n@Service\nclass OrderService {\n    public void process() {\n        save();          // ✗ 프록시를 안 지나간다 → 트랜잭션 없음\n    }\n    @Transactional\n    public void save() { ... }\n}\n```\n\n호출자가 밖에서 `process()` 를 부를 때는 프록시를 지나지만, **`process()` 안에서 `save()` 를 부르는 것은 `this.save()`** 라 프록시를 거치지 않는다. 애너테이션은 붙어 있는데 아무 일도 일어나지 않고, **오류도 나지 않는다.**\n\n**② `private`·`final` 에는 안 붙는다.** 프록시는 상속이나 인터페이스 구현으로 만들어지므로 **재정의할 수 없는 메서드**는 가로챌 수 없다.\n\n**③ 롤백 규칙이 직관과 다르다.** 기본 설정에서 **런타임 예외(unchecked)는 롤백하지만 체크 예외는 커밋한다.** `IOException` 을 던졌는데 데이터가 남아 있는 상황이 여기서 나온다.\n\n**④ 예외를 삼키면 롤백도 사라진다.** 메서드 안에서 `try-catch` 로 예외를 잡아 로그만 남기면, 프록시는 정상 종료로 보고 **커밋한다.**\n\n**고치는 법은 대개 구조를 바꾸는 것이다** — 트랜잭션이 필요한 메서드를 **다른 빈으로 분리해** 프록시를 지나게 하거나, 호출 경계를 바꾼다. `rollbackFor` 로 규칙을 명시하는 것도 방법이지만, **왜 프록시를 안 지났는지**를 먼저 확인하는 것이 순서다.\n\n> **트랜잭션 전파(propagation)** 도 같은 층의 이야기다. 이미 트랜잭션이 있는데 다른 트랜잭션 메서드를 부르면 **합칠지 새로 열지**를 정하는 설정이고, 기본값은 합치는 쪽이다. 재시도·부분 커밋이 필요한 흐름에서는 이 값을 의식적으로 골라야 한다."
+  },
+  {
+   "id": "jpa",
+   "kind": "how",
+   "heading": "JPA 와 N+1 — 쿼리를 세지 않으면 모른다",
+   "body": "Spring 공고에는 **JPA/Hibernate 가 거의 항상 따라온다**(`JVM 생태계(Java, Kotlin, Spring, JPA)`). ORM 은 객체와 테이블을 이어 주지만, **쿼리가 코드에서 사라지기 때문에** 성능 문제가 조용히 자란다.\n\n**대표가 N+1 이다.**\n\n```java\nList<Order> orders = orderRepo.findAll();     // 쿼리 1번\nfor (Order o : orders) {\n    o.getCustomer().getName();                 // 주문마다 쿼리 1번씩 → N번\n}\n```\n\n주문이 100건이면 **쿼리가 101번** 나간다. 코드에는 반복문 하나뿐이라 **읽어서는 안 보인다.** 원인은 **지연 로딩(lazy loading)** 이다 — 연관 객체를 실제로 쓸 때 가서 가져오는데, 그게 반복문 안이면 매번 쿼리가 된다.\n\n푸는 방법은 셋이고, 전부 **\"필요한 것을 한 번에 가져온다\"** 는 같은 발상이다.\n\n- **페치 조인** — 쿼리에서 연관을 함께 가져온다.\n- **엔티티 그래프** — 어떤 연관을 함께 로딩할지 선언한다.\n- **배치 크기 설정** — N번을 `N/배치크기` 번으로 줄인다.\n\n**그런데 먼저 할 일은 세는 것이다.** 실행되는 SQL 을 로그로 켜 두고 **요청 하나에 쿼리가 몇 번 나가는지** 확인하면, N+1 은 눈에 바로 띈다. 이 습관이 없으면 개발 환경(데이터 10건)에서는 멀쩡하다가 운영(10만 건)에서 터진다.\n\n**영속성 컨텍스트도 알아 둬야 한다.** 트랜잭션 안에서 조회한 엔티티는 컨텍스트가 들고 있다가 **필드를 바꾸면 트랜잭션이 끝날 때 자동으로 UPDATE 를 날린다**(변경 감지). `save()` 를 안 불렀는데 값이 바뀌는 것이 버그처럼 보이지만 **설계된 동작**이다. 반대로 트랜잭션 밖에서는 지연 로딩이 실패한다 — 유명한 `LazyInitializationException` 이 그것이다.",
+   "confidence": "inferred"
+  },
+  {
+   "id": "boot",
+   "kind": "how",
+   "heading": "Boot 의 자동 설정 — 편한 만큼 안 보인다",
+   "body": "Boot 는 **클래스패스에 무엇이 있는지 보고** 빈을 자동으로 등록한다. `spring-boot-starter-web` 을 넣으면 톰캣·MVC·JSON 변환기가 딸려 오고, DB 드라이버가 있으면 커넥션 풀이 만들어진다.\n\n**대가는 \"무엇이 켜졌는지 모른다\"는 것이다.** 그래서 세 가지를 알아 둬야 한다.\n\n**① 무엇이 자동 설정됐는지 보는 법.** Boot 는 **조건부**로 빈을 만든다(\"이 클래스가 있으면\", \"이 빈이 아직 없으면\"). 어떤 조건이 맞았고 안 맞았는지를 **보고서로 출력**할 수 있다 — 애플리케이션을 디버그 모드로 띄우면 자동 설정 보고서가 나온다. **\"왜 이 빈이 안 만들어지지\"의 답이 대개 거기 있다.**\n\n**② 내가 만든 빈이 이긴다.** 자동 설정은 대개 \"이 타입의 빈이 아직 없을 때만\" 등록하도록 되어 있어서, **같은 타입 빈을 직접 정의하면 자동 설정이 물러난다.** 커스터마이징의 기본 방법이 이것이다.\n\n**③ 설정 값의 우선순위.** `application.yml`·환경 변수·커맨드라인 인자·프로파일별 파일이 겹치면 **정해진 순서로 덮인다.** 로컬에서는 되는데 운영에서 다른 값이 먹는 문제의 원인이 대개 여기다.\n\n**그리고 버전 단절이 하나 있다.** **Spring Boot 3.0 은 Java 17 을 최소 버전으로 요구하고, `javax.*` 패키지를 `jakarta.*` 로 바꿨다**(Jakarta EE 9 기준선). 이건 임포트 문 하나 바꾸는 수준이 아니라 **의존 라이브러리들도 함께 옮겨 가야 하는 전환**이라, 2.x 프로젝트를 올릴 때 가장 큰 작업이 된다. 공고가 `Spring Boot 3.x 우대` 라고 적는 것은 **그 전환을 겪어 봤느냐**를 묻는 것에 가깝다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Spring Boot 3.0 Goes GA (공식 블로그)",
+     "url": "https://spring.io/blog/2022/11/24/spring-boot-3-0-goes-ga/",
+     "publisher": "Spring (Broadcom/VMware)",
+     "kind": "docs",
+     "summary": "Boot 3.0 이 **Java 17 기준선**과 **Jakarta EE 9(jakarta.* 네임스페이스)** 로 옮겨 갔다는 공식 발표. GraalVM 네이티브 이미지 지원도 여기서 발표됐다"
+    },
+    {
+     "title": "Spring Boot 3.0 Release Notes",
+     "url": "https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes",
+     "publisher": "Spring Projects",
+     "kind": "docs",
+     "summary": "2.x 에서 3.0 으로 올릴 때 무엇이 깨지는지의 1차 목록 — `javax.*` → `jakarta.*` 전환, 최소 Java 버전, 의존성 변경"
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "kind": "limits",
+   "heading": "경계 — 무겁고, 마법이 있고, 그래서 무엇을 잃나",
+   "body": "**기동 시간과 메모리.** 컨테이너가 빈을 스캔하고 프록시를 만들고 자동 설정을 평가하는 데 시간이 든다. `java` 문서의 JVM 기동·워밍업 비용 위에 프레임워크 몫이 더해지므로, **짧게 뜨고 죽는 실행에는 특히 불리하다.** 그래서 네이티브 이미지(GraalVM) 지원이 Boot 3 의 주요 항목으로 들어왔다.\n\n**마법의 대가는 디버깅이다.** 스택 트레이스에 프록시와 프레임워크 프레임이 잔뜩 끼고, \"왜 이 빈이 주입됐지\"·\"왜 이 설정이 먹었지\"를 추적하려면 **컨테이너의 동작 방식을 알아야** 한다. 편의는 앞에서 받고 비용은 문제가 생겼을 때 치른다.\n\n**얇은 프레임워크가 나은 자리도 있다.** API 몇 개짜리 서비스에 컨테이너·자동 설정·ORM 을 전부 얹을 이유는 없다. 공고가 `Java(Spring Boot) 또는 Python(FastAPI, Django 등)` 로 한 자리를 두 스택에 여는 것도 그 판단이 열려 있다는 뜻이다(→ `fastapi`).\n\n**비동기 모델이 두 갈래다.** 전통적인 MVC(요청당 스레드)와 리액티브(WebFlux)가 있고, **가상 스레드(Java 21)가 들어오면서 그 선택의 무게가 달라졌다** — 블로킹 코드를 그대로 두고도 동시성을 얻을 수 있게 됐기 때문이다(→ `java`). 새로 시작한다면 **어느 쪽을 고를지 팀이 명시적으로 정해야** 한다.\n\n**그리고 배우는 양이 많다.** DI·AOP·트랜잭션·JPA·Boot 설정이 각각 문서 하나씩이고, 그것을 다 아는 것이 이 생태계의 진입 비용이다. 공고가 `Java(Spring/Spring Boot) 기반의 백엔드 개발 경험` 을 통째로 요구하는 이유이기도 하다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Spring Boot 3.0 Goes GA (공식 블로그)",
+     "url": "https://spring.io/blog/2022/11/24/spring-boot-3-0-goes-ga/",
+     "publisher": "Spring (Broadcom/VMware)",
+     "kind": "docs",
+     "summary": "Boot 3.0 이 **Java 17 기준선**과 **Jakarta EE 9(jakarta.* 네임스페이스)** 로 옮겨 갔다는 공식 발표. GraalVM 네이티브 이미지 지원도 여기서 발표됐다"
+    },
+    {
+     "title": "Spring Boot 프로젝트 페이지",
+     "url": "https://spring.io/projects/spring-boot",
+     "publisher": "Spring",
+     "kind": "docs",
+     "summary": "자동 설정·내장 서버·스타터라는 Boot 의 전제와 현재 지원 버전 목록"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "proxy-table",
+   "kind": "glossary",
+   "caption": "프록시 때문에 생기는 함정 넷",
+   "note": "넷 다 **오류가 나지 않고 조용히 동작하지 않는다**는 공통점이 있다. `@Transactional` 을 붙였는데 롤백이 안 되면 이 표부터 훑는다. 이 표의 근거는 프록시 기반 AOP 라는 구조 자체이며, 개별 항목의 조문 출처는 달지 않았다",
+   "columns": [
+    "상황",
+    "왜 안 먹나",
+    "고치는 법"
+   ],
+   "rows": [
+    [
+     "**같은 클래스 안에서 호출** (`this.method()`)",
+     "프록시를 거치지 않는다",
+     "**다른 빈으로 분리**해 밖에서 호출되게 한다"
+    ],
+    [
+     "`private` / `final` 메서드",
+     "프록시가 재정의할 수 없다",
+     "`public` 으로 바꾸고 클래스도 상속 가능하게"
+    ],
+    [
+     "체크 예외를 던졌는데 커밋됐다",
+     "기본 롤백 규칙이 **런타임 예외만**",
+     "`@Transactional(rollbackFor = ...)` 로 명시"
+    ],
+    [
+     "예외를 `try-catch` 로 잡았다",
+     "프록시가 정상 종료로 본다",
+     "다시 던지거나 롤백을 명시적으로 표시"
+    ]
+   ]
+  },
+  {
+   "id": "boot3",
+   "kind": "spec",
+   "caption": "Spring Boot 2.x → 3.x 의 단절",
+   "note": "공고의 `Spring Boot 3.x 우대` 는 이 전환을 겪어 봤느냐를 묻는 것에 가깝다. **의존 라이브러리들도 함께 jakarta 로 옮겨 가야** 해서 임포트 치환만으로 끝나지 않는다",
+   "columns": [
+    "항목",
+    "2.x",
+    "**3.x**",
+    "실무 영향"
+   ],
+   "rows": [
+    [
+     "최소 Java",
+     "8 / 11",
+     "**17**",
+     "런타임·빌드·CI 를 모두 올려야 한다"
+    ],
+    [
+     "네임스페이스",
+     "`javax.*`",
+     "**`jakarta.*`**",
+     "임포트뿐 아니라 **서드파티 라이브러리 호환**이 관건"
+    ],
+    [
+     "기준 규격",
+     "Java EE 8",
+     "Jakarta EE 9 기준선 (EE 10 호환 의존성)",
+     "서블릿·JPA·검증 API 가 전부 여기 걸린다"
+    ],
+    [
+     "네이티브 이미지",
+     "실험적",
+     "GraalVM 네이티브 이미지 지원",
+     "기동 시간이 중요한 배포에서 선택지가 생겼다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Spring Boot 3.0 Goes GA (공식 블로그)",
+     "url": "https://spring.io/blog/2022/11/24/spring-boot-3-0-goes-ga/",
+     "publisher": "Spring (Broadcom/VMware)",
+     "kind": "docs",
+     "summary": "Boot 3.0 이 **Java 17 기준선**과 **Jakarta EE 9(jakarta.* 네임스페이스)** 로 옮겨 갔다는 공식 발표. GraalVM 네이티브 이미지 지원도 여기서 발표됐다"
+    },
+    {
+     "title": "Spring Boot 3.0 Release Notes",
+     "url": "https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes",
+     "publisher": "Spring Projects",
+     "kind": "docs",
+     "summary": "2.x 에서 3.0 으로 올릴 때 무엇이 깨지는지의 1차 목록 — `javax.*` → `jakarta.*` 전환, 최소 Java 버전, 의존성 변경"
+    }
+   ]
+  },
+  {
+   "id": "vs-fastapi",
+   "kind": "compare",
+   "caption": "Spring · FastAPI — 같은 문제를 어떻게 푸나",
+   "note": "공고가 `Java(Spring Boot) 또는 Python(FastAPI, Django 등)` 로 한 자리를 두 스택에 여는 경우가 흔하다. **같은 문제(주입·검증·트랜잭션·동시성)를 각자 어떻게 푸는지** 대응시켜 두면 옮겨 타기 쉽다",
+   "columns": [
+    "",
+    "Spring (Boot)",
+    "FastAPI"
+   ],
+   "rows": [
+    [
+     "의존성 주입",
+     "**컨테이너가 빈을 관리** (`@Service`·생성자 주입)",
+     "`Depends` — 요청 단위로 함수 주입"
+    ],
+    [
+     "입력 검증",
+     "Bean Validation (`@Valid`) + DTO",
+     "**타입 힌트 + pydantic** (선언이 곧 검증)"
+    ],
+    [
+     "API 문서",
+     "별도 도구(springdoc 등)",
+     "**자동 생성** (OpenAPI 내장)"
+    ],
+    [
+     "트랜잭션",
+     "**`@Transactional` (프록시 AOP)**",
+     "프레임워크가 관여하지 않는다 — 라이브러리로 직접"
+    ],
+    [
+     "동시성",
+     "요청당 스레드 (+ WebFlux, 21부터 가상 스레드)",
+     "이벤트 루프 + 스레드풀 (`def`/`async def`)"
+    ],
+    [
+     "포함 범위",
+     "**넓다** (보안·배치·데이터·클라우드)",
+     "얇다 (ORM·인증은 직접 고른다)"
+    ]
+   ],
+   "confidence": "inferred",
+   "sources": [
+    {
+     "title": "Spring Boot 프로젝트 페이지",
+     "url": "https://spring.io/projects/spring-boot",
+     "publisher": "Spring",
+     "kind": "docs",
+     "summary": "자동 설정·내장 서버·스타터라는 Boot 의 전제와 현재 지원 버전 목록"
+    }
+   ]
+  },
+  {
+   "id": "symptoms",
+   "kind": "glossary",
+   "caption": "증상 → 먼저 의심할 것",
+   "note": "Spring 의 실패는 대개 **오류 없이 조용히 다르게 동작하는** 형태다. 그래서 증상별 용의자를 외워 두는 편이 빠르다",
+   "columns": [
+    "증상",
+    "먼저 의심할 것",
+    "확인·조치"
+   ],
+   "rows": [
+    [
+     "`@Transactional` 인데 롤백이 안 된다",
+     "**자기 호출**, private/final, 체크 예외, 예외 삼킴",
+     "위 프록시 표 네 줄을 순서대로 확인"
+    ],
+    [
+     "요청 하나에 쿼리가 수십~수백 번 나간다",
+     "**N+1 (지연 로딩)**",
+     "SQL 로그를 켜서 세고, 페치 조인·엔티티 그래프·배치 크기로 묶는다"
+    ],
+    [
+     "`save()` 를 안 했는데 값이 바뀌었다",
+     "영속성 컨텍스트의 **변경 감지**",
+     "설계된 동작이다. 의도가 아니면 트랜잭션 경계나 조회 방식(DTO 조회)을 바꾼다"
+    ],
+    [
+     "트랜잭션 밖에서 연관 객체를 쓰다 예외",
+     "지연 로딩 + 컨텍스트 종료",
+     "필요한 것을 트랜잭션 안에서 로딩하거나 DTO 로 변환해 내보낸다"
+    ],
+    [
+     "빈을 못 찾는다 / 두 개라 모호하다",
+     "컴포넌트 스캔 범위, 같은 타입 빈 중복",
+     "`@Primary`·`@Qualifier`, 스캔 대상 패키지 확인"
+    ],
+    [
+     "로컬에선 되는데 운영에서 다른 값이 먹는다",
+     "**설정 우선순위**(환경 변수·프로파일·커맨드라인)",
+     "실제 적용된 설정을 실행 시점에 확인한다"
+    ]
+   ]
+  },
+  {
+   "id": "auto",
+   "kind": "compare",
+   "caption": "설정을 바꾸는 세 가지 방법",
+   "note": "Boot 는 대개 '이 타입 빈이 아직 없으면' 조건으로 자동 설정을 등록한다. 그래서 **내가 정의한 빈이 이긴다** — 이것이 커스터마이징의 기본 원리다",
+   "columns": [
+    "방법",
+    "언제",
+    "주의"
+   ],
+   "rows": [
+    [
+     "프로퍼티 (`application.yml`)",
+     "값만 바꾸면 될 때 (포트·풀 크기·타임아웃)",
+     "우선순위 규칙을 알아야 한다(환경 변수가 파일을 덮는다)"
+    ],
+    [
+     "**빈을 직접 정의**",
+     "동작 자체를 바꿔야 할 때",
+     "자동 설정이 물러난다 — 그 대신 나머지도 내가 챙긴다"
+    ],
+    [
+     "자동 설정 제외",
+     "쓰지 않을 기능이 켜져 문제를 만들 때",
+     "왜 켜졌는지 먼저 확인(디버그 보고서). 제외는 마지막 수단"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Spring Boot 프로젝트 페이지",
+     "url": "https://spring.io/projects/spring-boot",
+     "publisher": "Spring",
+     "kind": "docs",
+     "summary": "자동 설정·내장 서버·스타터라는 Boot 의 전제와 현재 지원 버전 목록"
+    }
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "도메인이 크고 트랜잭션·보안·배치까지 필요한 백엔드를 만든다",
+   "pick": "Spring Boot",
+   "over": "얇은 프레임워크(FastAPI·Flask)에 직접 붙이기",
+   "why": "트랜잭션·보안·배치·데이터 접근이 **이미 한 생태계 안에서 맞물려** 있다. 그리고 인력 시장이 가장 두껍다 — 이 데이터셋에서 Spring 공고의 83%가 Java 를 함께 요구할 만큼 표준 조합이다",
+   "tradeoff": "기동 시간·메모리·학습량이 크고, 프록시·자동 설정 같은 '마법'의 디버깅 비용을 나중에 치른다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Spring Boot 프로젝트 페이지",
+     "url": "https://spring.io/projects/spring-boot",
+     "publisher": "Spring",
+     "kind": "docs",
+     "summary": "자동 설정·내장 서버·스타터라는 Boot 의 전제와 현재 지원 버전 목록"
+    }
+   ]
+  },
+  {
+   "situation": "엔드포인트 몇 개짜리 API 서버나 ML 서빙을 빨리 띄운다",
+   "pick": "FastAPI (또는 얇은 프레임워크)",
+   "over": "Spring Boot",
+   "why": "컨테이너·자동 설정·ORM 이 필요 없는 규모에서는 그 전부가 짐이다. 검증·문서가 타입 힌트만으로 따라오는 쪽이 빠르다(→ `fastapi`)",
+   "tradeoff": "규모가 커지면 트랜잭션·보안·배치를 직접 고르고 조립해야 한다. 팀에 Java 자산이 있으면 이질적인 스택이 하나 늘어난다"
+  },
+  {
+   "situation": "같은 클래스의 다른 메서드에 트랜잭션을 걸어야 한다",
+   "pick": "**그 메서드를 다른 빈으로 분리**",
+   "over": "`@Transactional` 을 붙이고 `this.method()` 로 호출",
+   "why": "프록시를 지나지 않는 호출에는 애너테이션이 아무 일도 하지 않는다. **오류도 나지 않아** 운영에서야 데이터가 남는 것으로 발견된다",
+   "tradeoff": "클래스가 늘고 구조가 한 겹 복잡해진다. 대신 트랜잭션 경계가 눈에 보이게 된다"
+  },
+  {
+   "situation": "목록 화면에서 연관 데이터를 함께 보여 준다",
+   "pick": "페치 조인·엔티티 그래프로 **한 번에 가져오기**",
+   "over": "반복문 안에서 연관 객체를 꺼내 쓰기",
+   "why": "지연 로딩은 쓰는 순간 쿼리를 날린다. 반복문 안이면 N+1 이 되고, 데이터가 늘수록 선형으로 느려진다",
+   "tradeoff": "필요 없는 컬럼까지 가져올 수 있고 쿼리가 복잡해진다. 화면에 필요한 것만 DTO 로 조회하는 방법도 함께 검토한다"
+  },
+  {
+   "situation": "Boot 2.x 프로젝트를 계속 쓸지 3.x 로 올릴지 정한다",
+   "pick": "**Java 17 과 의존성 호환을 먼저 조사한 뒤** 계획적으로 3.x",
+   "over": "임포트만 `jakarta` 로 치환해 보기",
+   "why": "3.0 은 **Java 17 최소 버전**과 **`javax.*` → `jakarta.*`** 전환을 함께 요구한다. 서드파티 라이브러리가 jakarta 판을 내놓았는지가 실제 관문이다",
+   "tradeoff": "전환 기간에 두 버전을 함께 유지해야 할 수 있다. 다만 미루면 보안 패치와 생태계에서 멀어진다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Spring Boot 3.0 Goes GA (공식 블로그)",
+     "url": "https://spring.io/blog/2022/11/24/spring-boot-3-0-goes-ga/",
+     "publisher": "Spring (Broadcom/VMware)",
+     "kind": "docs",
+     "summary": "Boot 3.0 이 **Java 17 기준선**과 **Jakarta EE 9(jakarta.* 네임스페이스)** 로 옮겨 갔다는 공식 발표. GraalVM 네이티브 이미지 지원도 여기서 발표됐다"
+    },
+    {
+     "title": "Spring Boot 3.0 Release Notes",
+     "url": "https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes",
+     "publisher": "Spring Projects",
+     "kind": "docs",
+     "summary": "2.x 에서 3.0 으로 올릴 때 무엇이 깨지는지의 1차 목록 — `javax.*` → `jakarta.*` 전환, 최소 Java 버전, 의존성 변경"
+    }
+   ]
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "`@Transactional` 을 붙였는데 롤백이 안 된다",
+   "why": "**프록시를 지나지 않았거나**(자기 호출·private) **롤백 규칙에 안 걸렸다**(체크 예외·예외 삼킴). 넷 다 오류 없이 조용히 넘어간다",
+   "fix": "메서드를 다른 빈으로 분리해 프록시를 지나게 하고, 필요하면 `rollbackFor` 로 규칙을 명시한다. 예외를 잡았으면 반드시 다시 던진다"
+  },
+  {
+   "trap": "개발 환경에서는 빠른데 운영에서 목록 조회가 몇 초씩 걸린다",
+   "why": "**N+1** 이다. 데이터가 10건일 때는 11번 쿼리라 안 보이고, 10만 건이면 그대로 드러난다",
+   "fix": "SQL 로그를 켜서 **요청당 쿼리 수를 센다.** 그다음 페치 조인·엔티티 그래프·배치 크기로 묶는다. 목록 화면은 DTO 조회가 더 나을 때도 많다"
+  },
+  {
+   "trap": "트랜잭션 밖에서 연관 객체를 읽다가 예외가 났다",
+   "why": "지연 로딩인데 **영속성 컨텍스트가 이미 닫혔다.** 컨트롤러나 뷰에서 엔티티를 그대로 쓰면 자주 생긴다",
+   "fix": "필요한 데이터를 **트랜잭션 안에서 로딩**하거나 DTO 로 변환해 내보낸다. 컨텍스트를 늘려 여는 설정(OSIV)은 문제를 미룰 뿐 커넥션 점유를 늘린다"
+  },
+  {
+   "trap": "빈이 두 개라 주입에 실패하거나 엉뚱한 구현이 들어온다",
+   "why": "같은 타입 빈이 여럿이고 우선순위를 안 정했다. 자동 설정이 만든 빈과 내가 만든 빈이 겹치는 경우도 있다",
+   "fix": "`@Primary` 로 기본을 정하거나 `@Qualifier` 로 지목한다. 자동 설정과 겹쳤다면 **내 빈이 이긴다**는 원칙을 확인한다"
+  },
+  {
+   "trap": "Boot 3 으로 올렸더니 컴파일은 되는데 실행 중에 클래스를 못 찾는다",
+   "why": "**`javax.*` → `jakarta.*` 전환**이 끝나지 않았다. 내 코드는 바꿨어도 서드파티 라이브러리가 옛 네임스페이스일 수 있다",
+   "fix": "의존성들의 jakarta 호환 버전을 확인해 함께 올린다. 릴리스 노트의 마이그레이션 항목을 체크리스트로 쓴다",
+   "sources": [
+    {
+     "title": "Spring Boot 3.0 Release Notes",
+     "url": "https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes",
+     "publisher": "Spring Projects",
+     "kind": "docs",
+     "summary": "2.x 에서 3.0 으로 올릴 때 무엇이 깨지는지의 1차 목록 — `javax.*` → `jakarta.*` 전환, 최소 Java 버전, 의존성 변경"
+    }
+   ]
+  },
+  {
+   "trap": "로컬에서는 되는데 운영에서 설정 값이 다르게 먹는다",
+   "why": "**설정 소스가 여러 개**이고 우선순위가 있다 — 환경 변수·커맨드라인·프로파일별 파일이 `application.yml` 을 덮는다",
+   "fix": "실행 시점에 **실제 적용된 값**을 확인한다(설정 노출 엔드포인트나 기동 로그). 그리고 환경별 파일을 명확히 나눈다"
+  }
+ ],
+ "terms": [
+  {
+   "term": "DI / IoC",
+   "en": "Dependency Injection / Inversion of Control",
+   "what": "객체를 직접 만들지 않고 컨테이너가 만들어 넣어 주는 방식. 테스트 대체와 구현 교체가 여기서 나온다"
+  },
+  {
+   "term": "빈",
+   "en": "bean",
+   "what": "컨테이너가 관리하는 객체. `@Service`·`@Bean` 등으로 등록한다"
+  },
+  {
+   "term": "애플리케이션 컨텍스트",
+   "en": "ApplicationContext",
+   "what": "빈들을 담고 관리하는 컨테이너 본체"
+  },
+  {
+   "term": "AOP",
+   "en": "Aspect-Oriented Programming",
+   "what": "트랜잭션·로깅처럼 여기저기 흩어지는 관심사를 한 곳에 모으는 기법. Spring 에서는 프록시로 구현된다"
+  },
+  {
+   "term": "프록시",
+   "en": "proxy",
+   "what": "실제 객체를 감싸 호출 앞뒤에 코드를 끼워 넣는 대리 객체. `@Transactional` 함정의 원인"
+  },
+  {
+   "term": "자동 설정",
+   "en": "auto-configuration",
+   "what": "클래스패스와 조건을 보고 빈을 알아서 등록하는 Boot 의 기능"
+  },
+  {
+   "term": "스타터",
+   "en": "starter",
+   "what": "함께 쓰는 라이브러리와 검증된 버전 조합을 묶어 둔 의존성"
+  },
+  {
+   "term": "영속성 컨텍스트",
+   "en": "persistence context",
+   "what": "트랜잭션 동안 엔티티를 관리하는 공간. 변경 감지로 UPDATE 를 자동 생성한다"
+  },
+  {
+   "term": "지연 로딩",
+   "en": "lazy loading",
+   "what": "연관 객체를 실제로 쓸 때 가져오는 방식. 반복문 안에서 쓰면 N+1 이 된다"
+  },
+  {
+   "term": "N+1",
+   "en": "N+1 problem",
+   "what": "목록 1번 + 항목마다 1번씩, 총 N+1 번의 쿼리가 나가는 문제"
+  }
+ ],
+ "drills": [
+  {
+   "task": "**프록시 함정을 재현한다.** 한 서비스 클래스에 `@Transactional` 메서드를 두고 ① 밖에서 호출 ② 같은 클래스 안에서 호출(`this`) 두 경로를 만든 뒤, 각각 예외를 던져 **롤백 여부를 확인**한다. 그다음 그 메서드를 다른 빈으로 분리해 ②가 고쳐지는 것을 본다",
+   "done_when": "같은 애너테이션이 붙은 코드가 호출 경로에 따라 다르게 동작하는 것을 보여 줄 수 있고, 이유를 프록시로 설명할 수 있다",
+   "why": "이 함정은 글로 읽으면 '알겠다' 싶지만 실무에서 그대로 당한다. 한 번 재현하면 코드 리뷰에서 눈에 들어온다",
+   "needs": "로컬 DB (H2 같은 인메모리로 충분)",
+   "no_hardware": "DB 설치 없이 H2 인메모리로 끝난다. 그마저 어려우면 **호출 경로 두 개를 그림으로 그려** 프록시를 지나는지 표시하는 것으로 대체",
+   "hours": 2
+  },
+  {
+   "task": "**N+1 을 쿼리 수로 확인한다.** 연관이 있는 엔티티 둘(주문–고객)을 만들고 목록을 조회하며 SQL 로그를 켠다. ① 지연 로딩 그대로 ② 페치 조인 ③ 배치 크기 설정 세 경우의 **쿼리 개수**를 세어 표로 만든다. 데이터를 10건·1000건으로 늘려 각각 다시 센다",
+   "done_when": "세 방식의 쿼리 수를 데이터 양별로 표에 적을 수 있고, 왜 개발 환경에서는 안 보이는지 설명할 수 있다",
+   "why": "'ORM 이 느리다'가 아니라 '쿼리를 안 센 것'이라는 사실이 손에 남는다. 실무에서 가장 자주 하는 성능 개선이다",
+   "needs": "로컬 DB",
+   "no_hardware": "H2 인메모리로 충분하다. 환경이 없으면 **쿼리 수를 손으로 계산**해 표를 만든다(목록 1 + 항목 N)",
+   "hours": 2
+  },
+  {
+   "task": "**자동 설정을 들여다본다.** Boot 앱을 디버그 모드로 띄워 자동 설정 보고서를 출력하고, ① 조건이 맞아 등록된 것 ② 조건이 안 맞아 건너뛴 것을 각각 세 개씩 골라 '무엇 때문에 그렇게 됐는지' 적는다. 그다음 같은 타입의 빈을 직접 정의해 **자동 설정이 물러나는 것**을 확인한다",
+   "done_when": "'왜 이 빈이 만들어졌/안 만들어졌나'를 보고서로 답할 수 있고, 내 빈이 자동 설정을 이기는 것을 확인했다",
+   "why": "Boot 의 '마법'을 읽는 법을 배우는 자리다. 이걸 모르면 설정 문제를 검색으로만 풀게 된다",
+   "no_hardware": "장비가 필요 없다 — 빈 프로젝트 하나면 된다",
+   "hours": 1
+  }
+ ],
+ "checks": [
+  "DI 가 실제로 푼 문제 세 가지를 말할 수 있나? (테스트·교체·설정)",
+  "`@Transactional` 이 같은 클래스 안 호출에서 안 먹는 이유는?",
+  "체크 예외를 던졌을 때 기본 동작은 롤백인가 커밋인가?",
+  "N+1 은 왜 개발 환경에서 잘 안 보이나? 확인하는 첫 방법은?",
+  "`save()` 를 부르지 않았는데 값이 바뀌어 저장되는 이유는?",
+  "Spring Boot 3.0 으로 올릴 때 반드시 함께 처리해야 하는 두 가지는?"
+ ],
+ "evidence": [
+  {
+   "quote": "• JVM 생태계(Java, Kotlin, Spring, JPA)에 대한 경험 및 이해가 있으신 분",
+   "from": "posting",
+   "where": "큐엠아이티 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/356935",
+   "what_it_shows": "**Spring 과 JPA 가 한 묶음으로 요구된다** — 이 문서가 N+1 절을 따로 둔 이유다. 언어(Java·Kotlin)까지 함께 적히는 것도 `java` 문서와 이어진다"
+  },
+  {
+   "quote": "• Java(Spring/Spring Boot) 기반의 백엔드 개발 경험",
+   "from": "posting",
+   "where": "마인드허브 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/313335",
+   "what_it_shows": "`Spring/Spring Boot` 를 붙여 적는다 — 실무에서 둘을 나눠 말하지 않는다는 뜻이고, `market` 의 Spring Boot 동반 52.8% 가 문장으로 나타난 것"
+  },
+  {
+   "quote": "• Java + Spring Boot 기반의 서비스 개발 및 운영 경험 (Spring Boot 3.x 우대)",
+   "from": "posting",
+   "where": "에이치투오호스피탈리티 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/371696",
+   "what_it_shows": "**프레임워크 버전이 우대 조건이 된다.** 2.x→3.x 는 Java 17·jakarta 전환이 걸린 단절이라, 겪어 봤느냐를 묻는 문장에 가깝다"
+  },
+  {
+   "quote": "• MariaDB, Redis, JPA, QueryDSL, Liquibase",
+   "from": "posting",
+   "where": "헤렌 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/373691",
+   "what_it_shows": "스택 목록이 곧 이 생태계의 표준 조합이다 — ORM(JPA) 위에 타입 안전 쿼리(QueryDSL)와 스키마 마이그레이션(Liquibase)이 얹힌다"
+  },
+  {
+   "quote": "• Backend: Java(Spring Boot) 또는 Python(FastAPI, Django 등) 프레임워크를 활용하여 확장성 있고 안정적인 RESTful API 서버 설계 및 구현이 가능하신 분",
+   "from": "posting",
+   "where": "아이알큐더스 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/369107",
+   "what_it_shows": "**한 자리를 두 스택에 연다** — 이 문서의 FastAPI 비교표가 채용 문장에서 그대로 확인되는 지점이다"
+  }
+ ],
+ "related": [
+  {
+   "slug": "java",
+   "how": "이 프레임워크가 도는 런타임. JVM 기동·GC·가상 스레드는 거기 있고, 동반 83%라는 숫자의 반대편이다"
+  },
+  {
+   "slug": "fastapi",
+   "how": "같은 자리를 두고 갈리는 반대편 스택. 주입·검증·트랜잭션을 각각 어떻게 푸는지 비교표로 대응시켰다"
+  },
+  {
+   "slug": "java-in-finance",
+   "how": "이 스택이 한국 금융·공공에서 유독 두꺼운 이유. 제도·자산·발주 구조가 거기 있다"
+  },
+  {
+   "slug": "jpa",
+   "how": "N+1·영속성 컨텍스트·지연 로딩의 본체. 여기서는 Spring 쪽 접점까지만 다뤘다"
+  },
+  {
+   "slug": "idempotency",
+   "how": "트랜잭션이 롤백된 뒤 재시도할 때의 문제. 같은 요청이 두 번 처리돼도 안전한가"
+  }
+ ],
+ "open_questions": [
+  "**JPA/Hibernate 절은 `inferred` 로 두었다.** 영속성 컨텍스트·지연 로딩·N+1 은 널리 통용되는 동작이지만, 이번 사이클에서 Jakarta Persistence 사양이나 Hibernate 공식 문서의 URL 을 확인하지 못했다. `jpa` 문서를 쓸 때 1차 자료로 다시 받친다",
+  "`@Transactional` 의 프록시 방식은 설정(JDK 동적 프록시 vs CGLIB)과 버전에 따라 세부가 다르다. 이 문서는 **'프록시를 지나야 동작한다'는 원리와 그 결과 네 가지**까지만 쓰고 구현 방식별 차이는 다루지 않았다",
+  "자동 설정 보고서를 보는 정확한 방법(플래그·엔드포인트 이름)은 Boot 버전에 따라 달라 **'디버그 모드로 띄우면 보고서가 나온다'** 수준으로만 적었다. 실제 사용 시 쓰는 버전의 문서를 확인해야 한다",
+  "WebFlux(리액티브)와 가상 스레드 이후의 선택 기준은 **경계 절에서 문제 제기만** 하고 다루지 않았다 — 별도 문서가 필요한 주제다",
+  "`market` 숫자는 `tech_relations.json` 의 2026-09-04 00:41 생성분이다(공고 834건 · 11.6%). **크롤마다 바뀌므로 재방문 사이클에서 다시 맞춘다** — 지금 `python`·`java` 가 같은 이유로 미결 상태다"
+ ],
+ "sources": [
+  {
+   "title": "Spring Boot 프로젝트 페이지",
+   "url": "https://spring.io/projects/spring-boot",
+   "publisher": "Spring",
+   "kind": "docs",
+   "summary": "자동 설정·내장 서버·스타터라는 Boot 의 전제와 현재 지원 버전 목록"
+  },
+  {
+   "title": "Spring Boot 3.0 Goes GA (공식 블로그)",
+   "url": "https://spring.io/blog/2022/11/24/spring-boot-3-0-goes-ga/",
+   "publisher": "Spring (Broadcom/VMware)",
+   "kind": "docs",
+   "summary": "Boot 3.0 이 **Java 17 기준선**과 **Jakarta EE 9(jakarta.* 네임스페이스)** 로 옮겨 갔다는 공식 발표. GraalVM 네이티브 이미지 지원도 여기서 발표됐다"
+  },
+  {
+   "title": "Spring Boot 3.0 Release Notes",
+   "url": "https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes",
+   "publisher": "Spring Projects",
+   "kind": "docs",
+   "summary": "2.x 에서 3.0 으로 올릴 때 무엇이 깨지는지의 1차 목록 — `javax.*` → `jakarta.*` 전환, 최소 Java 버전, 의존성 변경"
+  }
+ ]
+}
