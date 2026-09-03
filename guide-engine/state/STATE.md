@@ -4,41 +4,44 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **34개**(브리핑 31 + **중복 표시 3**),
-학습 260개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **35개**(브리핑 32 + 중복 표시 3),
+학습 269개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
 
-⚠️ **직전 회차는 보수 사이클이었다.** `--gaps` 상단이 **이미 중복이라고 확인해 둔 공고**
-(`CS Specialist (데이터 분석 & AI) 채용`, catch)였는데, **엔진에 그걸 표시할 수단이 없었다** —
-`MIN_STUDY = 3` 이라 브리핑을 안 쓰면 영영 대기열 상단에 남아 **루프가 막힌다.**
+직전 회차: **`[CLS] First & Middlemile Data Scientist (Operation Research)`**(ats, 한국어 본문).
+**데이터 사이언스 계열의 첫 공고**이고, 지난 회차의 `duplicate_of` 가 작동해
+**미완이 82 → 79로 줄고 상단이 넘어갔다.**
 
-그래서 **최소 변경**을 했다(커밋 두 개로 나눔 — 코드/스키마 먼저, 데이터 다음):
-- `schema.json` 에 **`postings[].duplicate_of`** 를 더했다.
-- `validate.py`: `duplicate_of` 가 있으면 **study·edge 를 요구하지 않고 `--gaps` 에서도 뺀다.**
-  대신 **가리키는 url 이 같은 파일 안에 있는지** 검증한다(자기 자신도 막는다).
-- 쿠팡에서 **본문이 글자 그대로 같은 3건**을 그렇게 표시했다:
-  `CS Specialist …`(catch) → saramin, `Senior Security Engineer (Detection Op…)`(ats) →
-  `보안엔지니어 (이메일 보안)`, `Sr Backend Engineer (Eats Merchant)`(ats) → wanted.
+이 공고에서만 나온 것:
+- **머신러닝이 아니라 운영 연구(OR)** 다 — `선형 계획법, 정수 계획법, 동적 계획법,
+  네트워크 흐름` 을 이름으로 못 박았고 솔버는 **`CPLEX(선호)/Gurobi/Xpress`**.
+- ⚠️ **`불확실성 하에서`** 라는 조건이 요건에 있다 — 확정값 최적해는 현실에서 무너지므로
+  **민감도·로버스트**를 드릴에 넣었다.
+- ⚠️ **영어 회화가 자격 요건**이다(우대 아님). `CRM FP&A` 도 그랬고 `Staff Data Engineer` 는
+  `is a plus` 였다 — **직무마다 기준이 다르다**가 세 번째로 확인됐다.
+- 담당업무에 **`의사결정 지원 도구 및 시스템 구축`** 이 있다 — 모델로 끝나지 않는다.
+- **같은 OR 계열인데 연차가 갈린다** — 여기는 **석사 + 3년**, `SCMA Senior Staff Data
+  Scientist` 는 **박사/석사 + 10년**에 LLM·GNN·강화학습까지. `fit` 에 그 경로를 적었다.
 
-⚠️ **나머지 6건은 완전 일치가 아니어서 표시하지 않았다** — 겹침이 50%를 넘을 뿐이다.
-대상으로 잡히면 **`Senior Machine Learning Engineer` 때처럼 차이만 쓴다**:
+## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
+**고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합)** 을 본다.
+**본문이 글자 그대로 같으면 `duplicate_of` 로 표시**하고 그 회차는 그것으로 끝낸다.
+
+⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 세 절 온전).
+**제목은 `Senior Staff` 인데 본문 첫 줄은 `Principal Data Scientist`**(제목/본문 불일치).
+요건은 **Ph.D. 또는 석사 + 10년**, LLM·지식그래프·GNN·강화학습에 **MIP·동적계획법·
+메타휴리스틱**과 **Gurobi/CPLEX/SCIP**, 이산사건 시뮬레이션(AnyLogic·Simio)까지.
+전형은 `Application Review - Phone Interview - Onsite … - Offer`.
+⚠️ **방금 쓴 CLS OR 공고와 계열이 같으므로 겹침을 먼저 재고, 높으면 차이만 쓴다.**
+
+⚠️ **차이만 쓸 대상 6건**(겹침 50%↑이지만 문장이 달라 중복이 아니다):
 `Manager, Back-end Engineering (Rocket Pay)`(ats), `Senior, Back-end Engineer (Advertiser
 Platform)`(ats), `Senior Staff Back-end Engineer (Rocket Pay)`(ats), `Staff Backend Engineer
 (Orchestration Platform)`(ats), `Staff, Back-end Engineer (GOEX)`(ats),
 `Global Operations Technology(GOT) 개발자 집중 채용`(ats).
 
-## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
-**고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합)** 을 본다.
-
-⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 세 절 온전).
-**제목은 `Senior Staff` 인데 본문 첫 줄은 `Principal Data Scientist`** 다(제목/본문 불일치).
-요건은 **Ph.D. 또는 석사 + 10년**, LLM·지식그래프·GNN·강화학습에 **MIP·동적계획법·
-메타휴리스틱**과 **Gurobi/CPLEX/SCIP**, 이산사건 시뮬레이션(AnyLogic·Simio)까지.
-전형은 `Application Review - Phone Interview - Onsite … - Offer`.
-
 닫을지 판단할 재료:
 - **`salary`**: **여전히 근거 없음.** 전형 마지막 단계는 공고마다 다르다 — 일반화 금지.
 - **`people`**: 공개 발표·서명 있는 기술 글. **못 찾으면 빈 배열이 정상.**
-- ⚠️ **113건 중 브리핑 31건 + 중복 3건.** 중복이 더 있으므로 **실제 자리 수는 113보다 적다.**
 
 ## 자료 접근 지도
 
