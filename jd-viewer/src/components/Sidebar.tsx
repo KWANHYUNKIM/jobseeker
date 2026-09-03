@@ -1,6 +1,7 @@
 import { emptyFilter, type FilterState, type Facets } from '../lib/filter'
 import type { Site } from '../types'
 import { CAREER_BUCKETS } from '../types'
+import { RegionIcon } from './RegionIcon'
 import { SidePanel, TechIcon } from './ui'
 
 const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev', 'remote', 'ats']
@@ -136,6 +137,7 @@ export function Sidebar({ filter, setFilter, facets, totalCount, filteredCount, 
             key={r.name}
             label={r.name}
             count={r.count}
+            leading={<RegionIcon region={r.name} />}
             active={filter.regions.has(r.name)}
             onClick={() => toggleRegion(r.name)}
           />
@@ -243,6 +245,7 @@ function Chip({
   onClick,
   icon,
   count,
+  leading,
 }: {
   label: string
   active: boolean
@@ -251,6 +254,8 @@ function Chip({
   icon?: string
   /** 이 칩을 누르면 남는 건수. 안 넘기면 숫자를 붙이지 않는다. */
   count?: number
+  /** 라벨 앞에 놓을 그림(지역 랜드마크 등). icon 과 달리 그리는 쪽이 정한다. */
+  leading?: React.ReactNode
 }) {
   // 0건 칩은 흐리게. 사이트·지역·규모·경력처럼 목록이 고정된 축은 0건이어도 자리를
   // 지키므로(computeFacets), 여기서 흐리게 만들어 "눌러도 빈 목록"임을 알린다.
@@ -267,6 +272,7 @@ function Chip({
         (empty ? ' opacity-40' : '')
       }
     >
+      {leading}
       {icon && <TechIcon tech={icon} size={13} />}
       {label}
       {count !== undefined && (
