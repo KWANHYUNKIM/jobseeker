@@ -4,43 +4,45 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 9건 · 학습 81개.
-(전체: 회사 24곳 · 공고 196건 · 학습 1,609개 · **오류 0** · **경고 5**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 10건 · 학습 90개.
+(전체: 회사 24곳 · 공고 197건 · 학습 1,618개 · **오류 0** · **경고 5**.)
 
-**이번 회차 = `Senior AI Agent Engineer (Gleo Interactor)`(Ashby, 판교·Remote, **경력 8년 이상**).**
-**이 회사 공고 중 요건이 가장 높다**(CV 7년↑보다 위).
-축: `차 안의 에이전트가 다른 이유(오프라인 후퇴·응답 예산)` · `다단계 실행(도구 호출 실패 처리)` ·
-**`에이전트가 차를 잘못 조작하지 못하게 막기`** · `대화 설계(말과 행동이 어긋나지 않게)` ·
-**`평가 하네스 — 위험 요청 거부율을 별도 지표로`** · `컨텍스트 예산(차량 상태는 초마다 변한다)` ·
-`온디바이스·파인튜닝` · `개인 엔티티 검색(집·아까 그곳·엄마)` · `IVI 앱 경계(Android)`.
+**이번 회차 = `AI Engineer (Navigation Agent)`(Ashby, 판교).**
+⚠️ **이 회사에서 예외적인 두 가지를 발견했다** — ① **자격요건에 연차 표기가 없다**(다른 공고는
+2~8년↑) ② **전형이 4단계이고 코딩 테스트가 없다**(다른 공고는 5단계·2단계에 코딩 테스트).
+**드물게 넓은 문**이라 `fit` 과 `interview.process` 양쪽에 명시했다.
+축: `파인튜닝 방법 고르기(SFT vs 선호 최적화)` · `이동 맥락을 입력에 넣기` ·
+**`LLM 만으로 하지 않는다 — 전통 ML 이 담당업무에 있다`** · `합성 데이터의 현실 격차` ·
+`실패 유형 분포(하나 고치면 다른 게 나빠진다)` · `정확도·안정성·지연의 상충` ·
+`내비 도구 다섯의 성질(ETA 는 구간이다)` · **`이동 데이터는 궤적이 곧 신원이다`** · `메모리 예산 안 파인튜닝`.
 
-**⚠️ 에이전트 여섯 공고를 대조했다 — 전부 0.35 미만으로 별개다.**
-`Gleo Interactor` / `Driving VLM/VLA` / `Navigation Agent` / `LLM Engineer (Data Generation)` /
-`LLM Engineer (LLM Training)` / `Senior Search & Ranking Engineer (AI Agent)`.
-**한 회사가 에이전트 계열로만 여섯 자리를 뽑는다** — 회사 브리핑의 `차량 인포테인먼트와 음성 AI`
-도메인이 실제로 이 회사의 무게중심 중 하나임이 채용으로 확인된다.
+**⚠️ 같은 회사 두 에이전트 자리를 가른 방법** — `Gleo Interactor`(8년↑)는 **실행 구조와 안전**,
+`Navigation Agent`(연차 무표기)는 **모델을 직접 학습시키는 쪽**. 담당업무가 전자는 오케스트레이션·
+Conversation Design, 후자는 파인튜닝·데이터셋·평가 체계다. **한 회사에 같은 계열 자리가 여럿이면
+'모델을 만드는 자리'와 '시스템을 만드는 자리'로 먼저 갈라 본다.**
 
-**⚠️ 세 자리가 같은 사고방식을 공유한다 — 브리핑 사이를 잇는 축이 생겼다**
-`Planning & Control`(학습 정책을 검사기로 거른다) · `Backend (Open Platform)`(권한을 구조로 막는다) ·
-`Gleo Interactor`(에이전트의 차량 제어를 규칙 층이 거부한다). **셋 다 "AI/외부 입력을 신뢰하지 않는
-층을 따로 둔다"** 다. **닫을 때 `company.signals` 에 이 공통 설계 원칙을 한 항목으로 넣는다.**
-
-**요건 사다리(닫을 때 `signals` 에 넣을 것)**
-`System Framework` 학사↑·2년↑ → `Backend (Open Platform)` 3년↑ → `Planning & Control` 석사↑·3년↑ →
-`ML Platform` 7년↑ → `Computer Vision` 석사/박사·7년↑ → **`AI Agent (Gleo)` 8년↑**.
+**요건 사다리(닫을 때 `signals` 에)**
+**`Navigation Agent` 연차 무표기** → `System Framework` 학사↑·2년↑ → `Backend (Open Platform)` 3년↑ →
+`Planning & Control` 석사↑·3년↑ → `Driving VLM/VLA` 5년↑ → `ML Platform` 7년↑ →
+`Computer Vision` 석사/박사·7년↑ → `AI Agent (Gleo)` 8년↑.
+**전형도 두 종류다** — 5단계(코딩 테스트 있음) / 4단계(없음, Navigation Agent).
 
 **남은 순서** (판교 위주)
-1. **`AI Engineer (Navigation Agent)`(1,829자)** 또는 **`Senior AI Engineer (Driving VLM/VLA)`(2,333자)** — **다음.**
-   ⚠️ **Gleo Interactor 와 겹치지 않게**: Navigation 은 **경로·지도 도메인**, VLM/VLA 는
-   **주행 영상을 언어와 잇는 모델** 쪽으로 각도를 잡는다. **먼저 두 본문을 읽고 고른다.**
+1. **`Senior AI Engineer (Driving VLM/VLA)`(2,333자, 5년↑)** — **다음.**
+   ⚠️ 각도: **주행 영상·궤적·언어를 한 모델로 잇는 foundation model.** CV 회차(인지)·Physical AI 회차
+   (궤적 생성)와 겹치지 않게 **멀티모달 정렬·auto-labeling·scene captioning** 쪽으로 잡는다.
+   본문에 `Action-conditioned video generation, world model, 4D scene modeling` 이 있다.
 2. `Security Engineer (Security Platform)`(2,687자) / `Security Engineer (차량 보안)`(1,065자) — 둘 대조 먼저.
    ⚠️ 인증·인가는 2회차 → **CAN 버스·침입 탐지·시큐어부트** 쪽으로.
-3. `LLM Engineer (Data Generation)`(2,196자) / `(LLM Training)`(1,396자) / `Senior Search & Ranking (AI Agent)`(2,145자).
-4. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — ⚠️ 월드 모델은 CV 회차에서 다뤘다 →
+3. `LLM Engineer (Data Generation)`(2,196자) / `(LLM Training)`(1,396자) /
+   `Senior Search & Ranking Engineer (AI Agent)`(2,145자).
+   ⚠️ **데이터 생성·랭킹은 이번 회차에서 일부 다뤘다** — Data Generation 은 **합성 데이터 파이프라인**,
+   Search & Ranking 은 **검색 시스템** 쪽으로 각도를 좁힌다.
+4. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — 월드 모델은 CV 회차에서 →
    **RL 학습 인프라·시나리오 생성** 쪽으로.
 5. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
 6. `Senior Physical AI Engineer` / `Physical AI Engineer` — 급수 차이. **한 건만.**
-7. 본문 짧은 판교 자리들: `Senior Backend Engineer(Mobile Platform)` · `Senior Release Engineer` ·
+7. 본문 짧은 판교 자리들(6건): `Senior Backend Engineer(Mobile Platform)` · `Senior Release Engineer` ·
    `Vehicle System Integration Engineer` · `Software Update Engineer` ·
    `Deep Learning Engineer (음성 인식 및 wake word detection)` · `Test Engineer (Autonomous Driving)`.
 8. 서니베일·바르샤바·호치민 13건은 **뒤로.**
@@ -48,8 +50,9 @@
 **⚠️ 경고 5건 미결**: `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
 **대기열이 비는 순간 `fix(guide)`.**
 
-**닫을 때 (여섯)** — ① **`Pleos Vehicle OS` 보강** ② **요건 사다리를 `signals` 에** ③ **"신뢰하지 않는
-층" 공통 설계 원칙을 `signals` 에** ④ `salary`(사람인 `view-inner-salary` 먼저) ⑤ `people` ⑥ 안 쓴 공고 이유.
+**닫을 때 (여섯)** — ① **`Pleos Vehicle OS` 보강** ② **요건 사다리 + 전형 두 종류를 `signals` 에**
+③ **"신뢰하지 않는 층" 공통 설계 원칙을 `signals` 에** ④ `salary`(사람인 `view-inner-salary` 먼저)
+⑤ `people` ⑥ 안 쓴 공고 이유.
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -69,6 +72,17 @@
 
 ## 배운 것
 
+- **전형 절차도 공고마다 다르다 — 같은 회사라도.** 포티투닷은 대부분 5단계(2단계가 코딩 테스트)
+  인데 `Navigation Agent` 만 **4단계이고 코딩 테스트가 없다.** 그리고 그 공고만 **자격요건에 연차
+  표기가 없다.** → **`interview.process` 를 회사 기본값으로 채우지 말고 매 공고 본문에서 확인한다.**
+  전형 단계 수는 지원자에게 **문의 넓이만큼 중요한 정보**다.
+- **한 회사에 같은 계열 자리가 여럿이면 '모델을 만드는 자리'와 '시스템을 만드는 자리'로 먼저 갈라 본다.**
+  포티투닷 에이전트 계열은 `Gleo Interactor`(오케스트레이션·안전·Conversation Design)와
+  `Navigation Agent`(파인튜닝·데이터셋·평가 체계)로 깔끔히 갈렸다. **담당업무 첫 두 줄만 봐도 갈린다.**
+- **담당업무에 전통 ML 이 LLM 과 나란히 적혀 있으면 그게 실무의 실제 구조다.** `분류, 예측, 랭킹 등
+  전통적인 Machine Learning 기법` 이 LLM 파인튜닝 옆에 있는 이유는, **에이전트를 통째로 LLM 으로
+  만들면 느리고 비싸고 통제가 어렵기 때문**이다. `study` 에서 **"어느 판단을 LLM 에서 빼면 이득인가"**
+  를 드릴로 세우면 실무 감각이 그대로 드러난다.
 - **한 회사의 여러 공고에서 같은 사고방식이 반복되면 그것이 그 회사의 설계 원칙이다.** 포티투닷은
   세 자리에서 똑같은 구조를 요구했다 — 학습 정책을 검사기로 거르고(`Planning & Control`), 권한을
   코드가 아니라 구조로 막고(`Open Platform`), 에이전트의 차량 제어를 규칙 층이 거부한다(`Gleo`).
