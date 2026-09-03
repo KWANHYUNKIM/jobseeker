@@ -590,6 +590,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "vector-db",
+      "title": "벡터 DB",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "임베딩 벡터를 저장하고 **\"이것과 가까운 것 K개\"** 를 빠르게 찾아 주는 저장소다. 핵심은 저장이 아니라 색인인데, 그 색인은 **정확한 답을 포기하는 대신 빨라진다**(근사 최근접, ANN) — `db-index` 의 B-tree 와 정반대의 거래다.",
+      "aliases": [
+        "벡터 DB",
+        "벡터 데이터베이스",
+        "vector database",
+        "vector db",
+        "ANN"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
