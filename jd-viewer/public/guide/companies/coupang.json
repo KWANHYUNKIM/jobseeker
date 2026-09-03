@@ -337,7 +337,7 @@
       },
       {
         "reading": "**개인 기여자 트랙과 관리자 트랙이 제목에서 갈린다**",
-        "evidence": "제목이 `Senior Staff`·`Staff`·`Principal` 인 공고와 `Manager`·`Senior Manager`·`Director` 인 공고가 나란히 열려 있다. 관리자 쪽은 요건도 다르다 — `Manager, Front-end Engineering (TW Front Engineering)` 은 **`3+ years of senior management experience`** 와 **`At least 3 years of experience leading engineering teams`** 를 기술 경력 10년과 **함께** 요구한다. 반면 `Senior Staff`·`Principal` 계열은 담당업무에 `Mentor` 가 있어도 **관리 연차를 따로 요구하지 않는다**. ⚠️ **`Senior` 와 `Staff` 의 차이도 확인됐다** — `Advertiser Platform` 은 같은 팀에서 두 직급이 동시에 열려 있는데 **담당업무가 거의 같고 `Staff` 쪽에만 `코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 더 있다.** ⚠️ **회사가 직접 `(IC)` 라고 표기한 공고도 있다** — `Senior Staff Back-end Engineer (eCommerce Engineering)` 는 본문이 `As a Senior Staff Backend Engineer (IC)` 로 시작하고, 담당업무에 `Coach Senior and Staff level engineers` 가 있으면서도 **관리 연차를 요구하지 않는다**(대신 `3+ years in architecture leadership`). ⚠️ **프론트엔드에서도 같은 선이 확인된다** — `Staff Frontend Engineer (Coupang Eats)` 는 담당업무에 `Staff레벨: 팀 엔지니어들이 좋은 품질의 아키텍쳐 및 디자인을 만들 수 있도록 가이드` 를 두고도 **관리 연차 대신 `2년 이상의 웹 아키텍쳐 설계 및 구현 경험`** 을 요구한다. 반면 같은 프론트엔드의 `Manager, Front-end Engineering` 은 관리 3년을 따로 요구한다 — **직군이 아니라 트랙이 요건을 가른다.** ⚠️ **관리 트랙의 위쪽 끝도 확인됐다** — `Director`·`Sr. Director` 급 공고가 **113건 중 13건**이나 열려 있다. 그중 `Sr. Director, Back-End Engineering`(gh_jid=8118859, 본문 직함은 `Sr. Director, Site Reliability Engineering (Head of SRE)`)은 경력 15년과 **별개로** `8+ years leading large-scale, multi-layer engineering organizations, including senior managers, directors, and senior individual contributors.` 를 요구하고, `Experience building an SRE practice ... rather than operating a traditional support or operations function renamed as SRE.` 라는 **배제 조건**까지 적어 두었다. ⚠️ **관리 트랙의 진입 문턱은 공고마다 다르다** — `Manager, Back-end Engineering (Rocket Pay)` 는 개발 10년에 **`매니저 관리를 포함한 관리 경험 2년 이상 (멘토, 테크 리드 경험 포함)`** 만 요구한다. 같은 회사 `Manager, Front-end Engineering (TW)` 의 `3+ years of senior management experience` 보다 낮고, **괄호로 테크 리드·멘토 경험까지 인정**한다. ⚠️ 그리고 같은 조직의 개인 기여자 공고(`Staff Back-end Engineer (Rocket Pay)`, 개발 10년)와 **요건이 한 줄도 겹치지 않는다** — 매니저 쪽은 조율·로드맵·조직 성장이, 개인 기여자 쪽은 정합성·보안 설계와 기술적 오너십이 들어간다. ⚠️ **회사가 두 트랙의 존재를 요건에 직접 적은 공고도 있다** — `Director, Back-end Engineering` 은 `Passionate about growing careers and mentoring engineers across both the individual contributor and manager tracks` 를 자격에 넣었다. 그리고 이 공고로 **관리 연차 사다리가 채워진다**: `Manager`(관리 2년, 테크리드 포함) → `Manager`(senior management 3년) → **`Director`(관리 7년)** → `Sr. Director`(다층 조직 8년). ⚠️ **같은 조직의 `Manager` 와 `Director` 를 나란히 보면 무엇이 갈리는지 보인다** — 쿠팡페이 `Manager, Back-end Engineering (Rocket Pay)` 는 **개발 10년 + 관리 2년**, `Director, Back-end Engineering (Rocket Pay)` 는 **개발 15년 + 관리 3년**이다. **관리 연차는 한 칸인데 개발 연차가 다섯 칸** 차이라, 이 회사에서 관리 트랙을 올라가는 조건은 **관리 규모보다 기술 깊이**로 보인다. ⚠️ **`Manager` 라고 다 관리 자리는 아니다** — `Manager, Back-end Engineering (Global Operations Technology)` 는 담당업무 첫 줄이 `소프트웨어 개발 라이프사이클 전반에 걸쳐 Global Ops Tech 조직의 테크리드로 역할` 이고 **자격에 관리 연차가 한 줄도 없다**(같은 회사 `Manager (Rocket Pay)` 는 `관리 경험 2년 이상` 을 명시한다). **직함이 아니라 자격 요건을 봐야 트랙을 알 수 있다.** ⚠️ **결정적인 대비가 하나 더 나왔다** — `Manager, Backend Engineering (New Fintech Product)` 와 `Director, Back-end Engineering (Rocket Pay)` 는 **담당업무와 우대사항이 100% 같고 자격도 한 줄만 다르다**: `소프트웨어 개발 경험 10년 이상으로 매니저 관리를 포함한 관리 경험 2년 이상` / `15년 이상 … 3년 이상`. **같은 일에 두 직함이 걸려 있고 차이는 개발 5년 + 관리 1년뿐**이다. ⚠️ **한 공고 안에 두 직급을 병기한 경우도 있다** — `[Opportunistic Hire] Sr. Staff Engineer` 는 본문이 `[Senior Staff Engineer]/[Staff Engineer]`, 자격이 `[12+]/[8+] years of professional software development experience with at least 2+ years of experience as a Technical Lead.` 다. 두 공고로 나눠 올린 `Manager`/`Director` 사례와 함께 보면, **이 회사는 직급을 후보자에 맞춰 정하는 쪽**으로 보인다. ⚠️ **`Principal` 의 요건은 관리가 아니라 기술 리더십이다** — `Principal, Back-End Engineer`(쿠팡이츠)는 `7+ years of experience in technical leadership roles. Demonstrated experience in driving technical vision and execution at an organization / business unit level` 을 요구하고, 담당업무에 **채용과 멘토링까지** 있으면서도 `You will be comfortable getting into code level details with other engineers and building software.` 라고 **직접 만든다**고 못 박는다.",
+        "evidence": "제목이 `Senior Staff`·`Staff`·`Principal` 인 공고와 `Manager`·`Senior Manager`·`Director` 인 공고가 나란히 열려 있다. 관리자 쪽은 요건도 다르다 — `Manager, Front-end Engineering (TW Front Engineering)` 은 **`3+ years of senior management experience`** 와 **`At least 3 years of experience leading engineering teams`** 를 기술 경력 10년과 **함께** 요구한다. 반면 `Senior Staff`·`Principal` 계열은 담당업무에 `Mentor` 가 있어도 **관리 연차를 따로 요구하지 않는다**. ⚠️ **`Senior` 와 `Staff` 의 차이도 확인됐다** — `Advertiser Platform` 은 같은 팀에서 두 직급이 동시에 열려 있는데 **담당업무가 거의 같고 `Staff` 쪽에만 `코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 더 있다.** ⚠️ **회사가 직접 `(IC)` 라고 표기한 공고도 있다** — `Senior Staff Back-end Engineer (eCommerce Engineering)` 는 본문이 `As a Senior Staff Backend Engineer (IC)` 로 시작하고, 담당업무에 `Coach Senior and Staff level engineers` 가 있으면서도 **관리 연차를 요구하지 않는다**(대신 `3+ years in architecture leadership`). ⚠️ **프론트엔드에서도 같은 선이 확인된다** — `Staff Frontend Engineer (Coupang Eats)` 는 담당업무에 `Staff레벨: 팀 엔지니어들이 좋은 품질의 아키텍쳐 및 디자인을 만들 수 있도록 가이드` 를 두고도 **관리 연차 대신 `2년 이상의 웹 아키텍쳐 설계 및 구현 경험`** 을 요구한다. 반면 같은 프론트엔드의 `Manager, Front-end Engineering` 은 관리 3년을 따로 요구한다 — **직군이 아니라 트랙이 요건을 가른다.** ⚠️ **관리 트랙의 위쪽 끝도 확인됐다** — `Director`·`Sr. Director` 급 공고가 **113건 중 13건**이나 열려 있다. 그중 `Sr. Director, Back-End Engineering`(gh_jid=8118859, 본문 직함은 `Sr. Director, Site Reliability Engineering (Head of SRE)`)은 경력 15년과 **별개로** `8+ years leading large-scale, multi-layer engineering organizations, including senior managers, directors, and senior individual contributors.` 를 요구하고, `Experience building an SRE practice ... rather than operating a traditional support or operations function renamed as SRE.` 라는 **배제 조건**까지 적어 두었다. ⚠️ **관리 트랙의 진입 문턱은 공고마다 다르다** — `Manager, Back-end Engineering (Rocket Pay)` 는 개발 10년에 **`매니저 관리를 포함한 관리 경험 2년 이상 (멘토, 테크 리드 경험 포함)`** 만 요구한다. 같은 회사 `Manager, Front-end Engineering (TW)` 의 `3+ years of senior management experience` 보다 낮고, **괄호로 테크 리드·멘토 경험까지 인정**한다. ⚠️ 그리고 같은 조직의 개인 기여자 공고(`Staff Back-end Engineer (Rocket Pay)`, 개발 10년)와 **요건이 한 줄도 겹치지 않는다** — 매니저 쪽은 조율·로드맵·조직 성장이, 개인 기여자 쪽은 정합성·보안 설계와 기술적 오너십이 들어간다. ⚠️ **회사가 두 트랙의 존재를 요건에 직접 적은 공고도 있다** — `Director, Back-end Engineering` 은 `Passionate about growing careers and mentoring engineers across both the individual contributor and manager tracks` 를 자격에 넣었다. 그리고 이 공고로 **관리 연차 사다리가 채워진다**: `Manager`(관리 2년, 테크리드 포함) → `Manager`(senior management 3년) → **`Director`(관리 7년)** → `Sr. Director`(다층 조직 8년). ⚠️ **같은 조직의 `Manager` 와 `Director` 를 나란히 보면 무엇이 갈리는지 보인다** — 쿠팡페이 `Manager, Back-end Engineering (Rocket Pay)` 는 **개발 10년 + 관리 2년**, `Director, Back-end Engineering (Rocket Pay)` 는 **개발 15년 + 관리 3년**이다. **관리 연차는 한 칸인데 개발 연차가 다섯 칸** 차이라, 이 회사에서 관리 트랙을 올라가는 조건은 **관리 규모보다 기술 깊이**로 보인다. ⚠️ **`Manager` 라고 다 관리 자리는 아니다** — `Manager, Back-end Engineering (Global Operations Technology)` 는 담당업무 첫 줄이 `소프트웨어 개발 라이프사이클 전반에 걸쳐 Global Ops Tech 조직의 테크리드로 역할` 이고 **자격에 관리 연차가 한 줄도 없다**(같은 회사 `Manager (Rocket Pay)` 는 `관리 경험 2년 이상` 을 명시한다). **직함이 아니라 자격 요건을 봐야 트랙을 알 수 있다.** ⚠️ **결정적인 대비가 하나 더 나왔다** — `Manager, Backend Engineering (New Fintech Product)` 와 `Director, Back-end Engineering (Rocket Pay)` 는 **담당업무와 우대사항이 100% 같고 자격도 한 줄만 다르다**: `소프트웨어 개발 경험 10년 이상으로 매니저 관리를 포함한 관리 경험 2년 이상` / `15년 이상 … 3년 이상`. **같은 일에 두 직함이 걸려 있고 차이는 개발 5년 + 관리 1년뿐**이다. ⚠️ **한 공고 안에 두 직급을 병기한 경우도 있다** — `[Opportunistic Hire] Sr. Staff Engineer` 는 본문이 `[Senior Staff Engineer]/[Staff Engineer]`, 자격이 `[12+]/[8+] years of professional software development experience with at least 2+ years of experience as a Technical Lead.` 다. 두 공고로 나눠 올린 `Manager`/`Director` 사례와 함께 보면, **이 회사는 직급을 후보자에 맞춰 정하는 쪽**으로 보인다. ⚠️ **`Principal` 의 요건은 관리가 아니라 기술 리더십이다** — `Principal, Back-End Engineer`(쿠팡이츠)는 `7+ years of experience in technical leadership roles. Demonstrated experience in driving technical vision and execution at an organization / business unit level` 을 요구하고, 담당업무에 **채용과 멘토링까지** 있으면서도 `You will be comfortable getting into code level details with other engineers and building software.` 라고 **직접 만든다**고 못 박는다. ⚠️ **`Advertiser Platform` 두 공고의 연차 차이까지 확인됐다** — `Senior` 는 `알고리즘, 데이터 구조 및 설계 패턴에 대한 깊은 이해를 바탕으로 한 소프트웨어 개발 경력 3년 이상`, `Staff` 는 같은 문장에 **`8년 이상`**. **문장 전체가 같고 숫자와 멘토링 한 줄만 다르다** — `Senior → Staff` 는 **연차 다섯 칸과 「남을 통해 만드는 몫」** 으로 갈린다.",
         "so_what": "**관리자가 되고 싶지 않다면 `Staff`·`Senior Staff`·`Principal` 계열을 본다** — 이 회사는 개인 기여자로도 `Principal` 까지 가는 경로가 열려 있다. 반대로 **관리로 가려면 `관리 경험 연차` 를 따로 증명해야 하므로**, 지금 팀을 이끌고 있다면 **인원·기간·채용/평가 참여·어려운 결정**을 숫자와 사례로 정리해 두는 편이 낫다. 그리고 **`Senior → Staff` 는 팀에 미치는 영향(리뷰·멘토링)으로 갈리는 것으로 보인다** — 기술 폭이 아니라 **남을 통해 일하는 몫**이 늘어난다는 뜻이다. **개인 기여자 트랙의 최상위에서 요구되는 것은 관리 연차가 아니라 `아키텍처 리딩` 연차**라는 점도 기억해 둔다 — 준비할 이력이 다르다(사람 관리 사례가 아니라 **여러 팀에 걸친 기술 결정 사례**). ⚠️ **관리로 갈 때 다음 칸은 '팀 몇 개'가 아니라 '매니저를 이끄는 몇 년'이다** — `Manager` 급이 관리 3년을 요구했다면 `Sr. Director` 급은 **매니저와 디렉터를 이끈 8년**을 요구한다. 즉 **내가 직접 만나지 않는 사람들이 일하는 방식을 바꾼 사례**가 준비물이 된다. 그리고 이 층위에서는 **조직을 만들었다는 증거보다 그 장치가 몇 개 팀에 퍼졌는지(채택)** 를 묻는다. ⚠️ **관리 트랙으로 넘어갈 생각이라면 문턱이 낮은 공고를 찾는 것이 현실적이다** — 같은 회사 안에서도 `관리 3년` 을 요구하는 자리와 **`테크 리드 경험 포함 2년`** 으로 여는 자리가 함께 있다. 지금 테크 리드라면 후자가 **첫 관리자 자리**가 될 수 있다. ⚠️ **직함으로 지원 여부를 정하지 않는다** — 같은 담당업무가 `Manager` 와 `Director` 두 공고로 올라와 있고, 쿠팡은 공고에 `직급과 담당 업무 범위는 후보자의 전반적인 경력과 경험 등 제반사정을 고려하여 변경될 수 있습니다` 라고도 적는다. **연차가 낮은 쪽 요건을 넘으면 지원하고, 직함·범위는 대화로 맞춘다.**",
         "confidence": "inferred"
       },
@@ -2092,7 +2092,8 @@
           "광고 도메인 — 공고가 따로 요구하지 않는다. 다만 **광고주가 사용자라는 사실**이 설계의 전제다",
           "⚠️ **연차 표기가 없다** — 제목의 `Staff` 가 사실상 연차 표기다(회사 브리핑 신호 3번)",
           "⚠️ **같은 팀의 `Senior` 공고와 함께 보면 좋다** — 담당업무가 거의 같으므로 **멘토링 몫을 질 준비가 됐는지**로 고르면 된다",
-          "⚠️ **본문이 짧은 편**이라 지원 전에 채용 페이지에서 최신 본문을 확인하는 것이 좋다"
+          "⚠️ **본문이 짧은 편**이라 지원 전에 채용 페이지에서 최신 본문을 확인하는 것이 좋다",
+          "⚠️ **같은 팀에 `Senior` 공고도 열려 있다** — `Senior, Back-end Engineer (Advertiser Platform)`. **담당업무·우대사항이 같고 다른 것은 두 가지뿐**이다: 경력이 **3년**(여기는 8년), 그리고 **`코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 그쪽엔 없다.** **3~8년 구간이면 둘 다 지원 가능 범위**이고, 선택은 **남을 이끌 몫을 지금 맡을지**로 갈린다."
         ]
       },
       "study": [
@@ -7631,6 +7632,76 @@
       "site": "ats",
       "verdict": "⚠️ **제목은 `Senior Back-end Engineer` 인데 본문은 통째로 QA 공고다.** 담당업무·자격·우대 **16줄이 이미 정리한 `[쿠팡페이] Senior QA Engineer (계약직)`(saramin)와 글자 그대로 같다**(구두점만 다르다) — 테스트 전략, 자동화 프레임워크(Selenium·Appium·Playwright), CI/CD 품질 게이트, 결제 E2E, 테스트 데이터 관리. **백엔드 자리로 보고 지원하면 다른 일이 나온다.** ⚠️ **브리핑은 QA 공고 쪽을 보고, 지원 전 리크루터에게 어느 직무인지 확인한다.**",
       "duplicate_of": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54645584&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=b7e8250f-e799-498a-8199-864186a95f5d"
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8111544",
+      "title": "Senior, Back-end Engineer (Advertiser Platform)",
+      "site": "ats",
+      "verdict": "⚠️ **이미 정리한 `Staff, Back-end Engineer (Advertiser Platform)` 와 같은 팀의 아래 직급이다** — 담당업무·우대사항이 그대로 같고 **다른 것은 세 줄뿐**이다: **경력 3년 이상**(그쪽은 8년), 그리고 **`코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 여기엔 없다.** ⚠️ **연차 차이가 다섯 칸이라 이 회사 광고 플랫폼 팀의 실질적인 입구**로 보인다. **업무 공부는 그쪽 브리핑을 그대로 쓰고, 여기서는 차이만 다룬다.**",
+      "fit": {
+        "must_have": [
+          "⚠️ **알고리즘·자료구조·설계 패턴을 바탕으로 한 개발 3년** — 같은 팀 `Staff` 공고는 **8년**이다. **3~8년 구간이면 이쪽이 맞는 문**이다",
+          "나머지 요건은 `Staff, Back-end Engineer (Advertiser Platform)` 브리핑과 같다"
+        ],
+        "can_learn": [
+          "우대사항도 그쪽과 동일하다",
+          "⚠️ **멘토링·코드 리뷰 책임이 이 공고에는 없다** — 즉 **본인이 만드는 데 집중하는 자리**로 읽힌다. 그 몫을 맡고 싶다면 `Staff` 쪽이다",
+          "광고 도메인 자체 — 같은 회사 `Staff, Back-end Engineer (Advertiser Platform)` 브리핑에서 업무 내용을 본다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "3년 — 이 팀에서 가장 낮은 문",
+          "from": "qualification",
+          "quote": "알고리즘, 데이터 구조 및 설계 패턴에 대한 깊은 이해를 바탕으로 한 소프트웨어 개발 경력 3년 이상인 분",
+          "priority": "core",
+          "why": "⚠️ **같은 팀의 `Staff` 공고는 이 문장을 `8년 이상` 으로 적는다** — 문장 전체가 같고 숫자만 다르다. 지금까지 정리한 쿠팡 개발 직군에서 **3년은 가장 낮은 축**이고(신호 13번에서 확인한 대로 개발 직군에 3년 이하 문이 없었다), **광고 플랫폼 팀이 그 예외**인 셈이다. 그리고 요구가 프레임워크가 아니라 **알고리즘·자료구조·설계 패턴** 이라는 점이 중요하다 — 경력이 짧아도 **기본기로 뽑겠다**는 뜻으로 읽힌다.",
+          "gap_check": "내 3년이 **프레임워크 사용 3년**인가 **문제를 풀어 본 3년**인가. 이 공고는 뒤쪽을 묻는다.",
+          "drill": "최근에 만든 기능 셋을 골라 **자료구조·알고리즘 관점으로 다시 쓴다** — 각각 ① 무엇을 저장했나(자료구조)와 왜 그것인가 ② 시간·공간 복잡도 ③ **데이터가 100배가 되면 무엇이 먼저 무너지나** ④ 다른 선택지. 프레임워크 이름 없이 설명할 수 있으면 이 요건에 답할 수 있다.",
+          "hours": 6
+        },
+        {
+          "topic": "멘토링이 요건에서 빠졌다는 것",
+          "from": "task",
+          "quote": "광고주향 캠페인 관리와 리포팅을 위한 확장가능하고 고성능의 마이크로 서비스 기반의 백엔드 서비스 개발 설계, 개발 및 운영",
+          "priority": "core",
+          "why": "⚠️ **`Staff` 공고에는 있는 `코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 여기엔 없다.** 담당업무의 나머지는 똑같으므로, **차이는 일이 아니라 책임의 범위**다 — 이 자리는 **본인이 맡은 것을 끝내는 데** 무게가 있고, `Staff` 는 거기에 **남을 통해 만드는 몫**이 더해진다(신호 8번). 지원자에게 이건 **지금 어느 쪽을 원하는지**의 문제다.",
+          "gap_check": "나는 지금 **내 것을 더 깊게** 하고 싶은가, **남의 것까지 책임지고** 싶은가.",
+          "drill": "최근 1년에 한 일을 **내가 만든 것 / 남이 만들도록 도운 것** 둘로 나눠 시간 비중을 낸다. 뒤쪽이 20%를 넘고 그게 즐거웠다면 `Staff` 쪽 준비를(코드 리뷰 사례·멘토링 사례 정리), 아니라면 이 공고에 맞춰 **깊이 있는 구현 사례 셋**을 다듬는다.",
+          "hours": 4
+        },
+        {
+          "topic": "같은 팀 두 공고를 어떻게 볼 것인가",
+          "from": "preference",
+          "quote": "적정 규모의 빅데이터 그리고/또는 머신러닝 경험이 있는 분",
+          "priority": "high",
+          "why": "⚠️ **우대사항이 두 공고에 똑같이 붙어 있다** — 즉 3년이든 8년이든 **원하는 기술의 방향은 같다.** 광고 플랫폼은 노출·클릭 로그가 대량으로 흐르는 곳이라 대용량과 분산이 계속 따라붙는다. 3년 지원자라면 이 항목은 **지금 갖추라는 요구가 아니라 앞으로 가는 방향**으로 읽는 편이 맞다.",
+          "gap_check": "대용량을 다뤄 본 적이 없다면, **작게라도 흉내 내 본 경험**이 있는가.",
+          "drill": "로그 100만 건을 만들어 **집계를 세 방식**으로 해 본다 — ① 메모리에 다 올리기 ② 청크로 나눠 처리 ③ 미리 집계해 두기. 각각의 **메모리와 시간**을 재고 **어느 크기부터 ①이 안 되는지** 자기 노트북 기준으로 선을 그어 둔다. 이 표 하나가 '대용량 경험'의 출발점이 된다.",
+          "hours": 6
+        }
+      ],
+      "edge": [
+        {
+          "idea": "⚠️ **두 공고를 나란히 놓고 어느 쪽에 지원할지 정한다** — 차이는 **연차(3년/8년)와 멘토링 한 줄**뿐이다",
+          "why": "담당업무와 우대사항이 같으므로 **일은 같다.** 3~8년 구간이라면 **둘 다 지원 가능 범위**이고, 선택은 **지금 남을 이끌 준비가 됐는지**로 갈린다.",
+          "effort": "10분"
+        },
+        {
+          "idea": "업무 준비는 **`Staff, Back-end Engineer (Advertiser Platform)` 브리핑을 그대로 쓴다**",
+          "why": "담당업무·우대사항이 같은 문장이다. **같은 공부를 두 번 하지 않는다.**",
+          "effort": "—"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차가 적혀 있지 않다(쿠팡 채용 사이트 직접 지원).",
+        "expect": [
+          "업무 관련 질문은 **`Staff, Back-end Engineer (Advertiser Platform)` 브리핑의 예상 질문과 같다**",
+          "여기서만 더 물을 것: **알고리즘·자료구조 기본기** — 요건이 프레임워크가 아니라 그쪽을 적었다",
+          "⚠️ **직급 확인** — 같은 팀에 3년/8년 두 공고가 열려 있다"
+        ],
+        "sources": []
+      }
     }
   ],
   "open_questions": [
