@@ -97,7 +97,16 @@
    "kind": "how",
    "heading": "JPA 와 N+1 — 쿼리를 세지 않으면 모른다",
    "body": "Spring 공고에는 **JPA/Hibernate 가 거의 항상 따라온다**(`JVM 생태계(Java, Kotlin, Spring, JPA)`). ORM 은 객체와 테이블을 이어 주지만, **쿼리가 코드에서 사라지기 때문에** 성능 문제가 조용히 자란다.\n\n**대표가 N+1 이다.**\n\n```java\nList<Order> orders = orderRepo.findAll();     // 쿼리 1번\nfor (Order o : orders) {\n    o.getCustomer().getName();                 // 주문마다 쿼리 1번씩 → N번\n}\n```\n\n주문이 100건이면 **쿼리가 101번** 나간다. 코드에는 반복문 하나뿐이라 **읽어서는 안 보인다.** 원인은 **지연 로딩(lazy loading)** 이다 — 연관 객체를 실제로 쓸 때 가서 가져오는데, 그게 반복문 안이면 매번 쿼리가 된다.\n\n푸는 방법은 셋이고, 전부 **\"필요한 것을 한 번에 가져온다\"** 는 같은 발상이다.\n\n- **페치 조인** — 쿼리에서 연관을 함께 가져온다.\n- **엔티티 그래프** — 어떤 연관을 함께 로딩할지 선언한다.\n- **배치 크기 설정** — N번을 `N/배치크기` 번으로 줄인다.\n\n**그런데 먼저 할 일은 세는 것이다.** 실행되는 SQL 을 로그로 켜 두고 **요청 하나에 쿼리가 몇 번 나가는지** 확인하면, N+1 은 눈에 바로 띈다. 이 습관이 없으면 개발 환경(데이터 10건)에서는 멀쩡하다가 운영(10만 건)에서 터진다.\n\n**영속성 컨텍스트도 알아 둬야 한다.** 트랜잭션 안에서 조회한 엔티티는 컨텍스트가 들고 있다가 **필드를 바꾸면 트랜잭션이 끝날 때 자동으로 UPDATE 를 날린다**(변경 감지). `save()` 를 안 불렀는데 값이 바뀌는 것이 버그처럼 보이지만 **설계된 동작**이다. 반대로 트랜잭션 밖에서는 지연 로딩이 실패한다 — 유명한 `LazyInitializationException` 이 그것이다.",
-   "confidence": "inferred"
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Jakarta Persistence — 사양 목록 (Jakarta EE)",
+     "url": "https://jakarta.ee/specifications/persistence/",
+     "publisher": "Eclipse Foundation",
+     "kind": "standard",
+     "summary": "JPA 가 구현체가 아니라 사양이라는 근거. 영속성 컨텍스트·지연 로딩의 정의가 이 사양 계열 문서에 있다"
+    }
+   ]
   },
   {
    "id": "boot",
@@ -620,7 +629,7 @@
   }
  ],
  "open_questions": [
-  "**JPA/Hibernate 절은 `inferred` 로 두었다.** 영속성 컨텍스트·지연 로딩·N+1 은 널리 통용되는 동작이지만, 이번 사이클에서 Jakarta Persistence 사양이나 Hibernate 공식 문서의 URL 을 확인하지 못했다. `jpa` 문서를 쓸 때 1차 자료로 다시 받친다",
+  "JPA 절은 **2026-09-04 보수 사이클에서 Jakarta Persistence 사양 URL 로 받쳤다**(`jpa` 문서가 확보한 것). 다만 **Hibernate 구현체 고유 동작**(플러시 모드 세부, 배치 설정 이름)은 여전히 근거를 걸지 않았다 — 그건 구현체 문서를 확인해야 한다",
   "`@Transactional` 의 프록시 방식은 설정(JDK 동적 프록시 vs CGLIB)과 버전에 따라 세부가 다르다. 이 문서는 **'프록시를 지나야 동작한다'는 원리와 그 결과 네 가지**까지만 쓰고 구현 방식별 차이는 다루지 않았다",
   "자동 설정 보고서를 보는 정확한 방법(플래그·엔드포인트 이름)은 Boot 버전에 따라 달라 **'디버그 모드로 띄우면 보고서가 나온다'** 수준으로만 적었다. 실제 사용 시 쓰는 버전의 문서를 확인해야 한다",
   "WebFlux(리액티브)와 가상 스레드 이후의 선택 기준은 **경계 절에서 문제 제기만** 하고 다루지 않았다 — 별도 문서가 필요한 주제다",
@@ -647,6 +656,13 @@
    "publisher": "Spring Projects",
    "kind": "docs",
    "summary": "2.x 에서 3.0 으로 올릴 때 무엇이 깨지는지의 1차 목록 — `javax.*` → `jakarta.*` 전환, 최소 Java 버전, 의존성 변경"
+  },
+  {
+   "title": "Jakarta Persistence — 사양 목록 (Jakarta EE)",
+   "url": "https://jakarta.ee/specifications/persistence/",
+   "publisher": "Eclipse Foundation",
+   "kind": "standard",
+   "summary": "JPA 가 구현체가 아니라 사양이라는 근거. 영속성 컨텍스트·지연 로딩의 정의가 이 사양 계열 문서에 있다"
   }
  ]
 }
