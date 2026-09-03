@@ -297,6 +297,12 @@
         "evidence": "모집중 113건의 담당업무·자격요건에서 `Java`(JavaScript 제외)를 세니 **57건**이었다. 지금까지 쓴 공고 셋이 모두 그렇다 — `Global Operations Technology`(`Strong familiarity developing with Java and the Spring Framework`), `Fraud Detection`(`Strong proficiency in Java-based backend development`), `Principal, Security Engineer`(`Strong scripting or software development skills in Python, Java, or similar languages`). ⚠️ 다만 마지막 건은 **`Python, Java, or similar`** 로 열어 두었다.",
         "so_what": "**이 회사 백엔드를 노린다면 Java 를 준비의 중심에 둔다** — 문법이 아니라 **대규모 운영에서 겪는 것들**(GC 로 멈추는 순간과 응답 꼬리, 스레드풀·커넥션풀, 프레임워크 버전 올리기)이 면접의 재료가 된다. ⚠️ **반대로 Java 가 없는 절반도 있으므로**(데이터·ML·보안 일부는 Python 계열) **지원할 공고의 본문에서 직접 확인**한다.",
         "confidence": "inferred"
+      },
+      {
+        "reading": "**문턱이 공고마다 크게 다르다 — 12~15년짜리 옆에 5년짜리가 있다**",
+        "evidence": "지금까지 읽은 공고의 경력 요건이 `15+ years`(Global Operations Technology) · `13+ years`(Fraud Detection) · `12+ years`(Principal, Security Engineer) 인데, 같은 자체 채용 사이트의 `Senior Back-end Engineer (Messaging and Caching Platform)` 은 **`5+ years of experience in designing, developing and maintaining large-scale software infrastructures`** 다. ⚠️ 대신 이 공고에는 다른 공고에 없는 요건이 붙는다 — **`Business level of English`** 와 **`BS or advanced degree in Computer Science/Engineering, Information Systems or related technical field`**.",
+        "so_what": "**제목의 `Senior`·`Staff`·`Principal` 로 문턱을 짐작하되, 본문의 연차 숫자를 반드시 확인한다** — 같은 `Senior` 라도 5년과 15년이 섞여 있다. 그리고 **연차 문턱이 낮은 공고에는 다른 문턱(영어·학위)이 붙어 있을 수 있으므로**, 자격요건을 **끝까지 읽고 지원 가능 여부를 판단**한다.",
+        "confidence": "inferred"
       }
     ]
   },
@@ -815,6 +821,177 @@
             "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8124210",
             "publisher": "쿠팡 채용",
             "summary": "경력 12년 이상. 실제 주제는 IAM 이며 Active Directory·Entra·LDAP·Kerberos 전문성과 직접 만드는 능력을 요구한다"
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8146684",
+      "title": "Senior Back-end Engineer (Messaging and Caching Platform)",
+      "site": "ats",
+      "closed": false,
+      "verdict": "**사내 모든 팀이 쓰는 메시징과 캐시를 플랫폼으로 제공하는 자리.** 앞서 쓴 쿠팡 공고 셋이 12~15년을 요구한 것과 달리 **`5+ years`** 이고, 요구가 구체적이다 — **하루 `tera-bytes and peta-bytes`** 를 처리하고 **`99.99% to 99.999%` 가용성**을 지킨다. ⚠️ 자격요건에 **`Business level of English`** 와 **학위(`BS or advanced degree`)** 가 명시돼 있다. **고객이 사내 조직이고, 이 플랫폼이 멈추면 그 위의 서비스가 다 멈춘다.**",
+      "fit": {
+        "must_have": [
+          "**대규모 소프트웨어 인프라 설계·개발·유지보수 5년 이상**",
+          "**분산 시스템과 `Kafka, Spark` 같은 컴퓨팅 프레임워크 전문성**",
+          "**AWS 클라우드**에서의 개발과 운영 경험",
+          "**복잡한 문제를 빠르게 분류하고 원인을 찾는 능력**",
+          "⚠️ **`Business level of English`** — 자격요건에 직접 적혀 있다",
+          "⚠️ **컴퓨터공학·정보시스템 등 관련 전공 학사 이상**"
+        ],
+        "can_learn": [
+          "캐시 운영 세부 — 공고가 도구를 특정하지 않는다(`Kafka, Spark,etc.`)",
+          "⚠️ **이 자리는 서비스를 만드는 자리가 아니라 플랫폼을 만드는 자리다** — `provide company-wi[de]` 라고 적혀 있고 고객이 사내 팀이다. **기능 개발이 하고 싶다면 커머스·이츠 쪽 공고를 본다**",
+          "⚠️ **본문이 영어와 한국어로 나란히** 있다 — 이 회사 자체 채용 사이트 공고 중 드문 형태다",
+          "⚠️ **`12 weeks of probation period`(12주 수습)** 가 명시돼 있다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "**99.99% 와 99.999% 사이에 한 자릿수가 아니라 한 세계가 있다**",
+          "from": "task",
+          "quote": "Keep improving our platform stability, performance and achieving 99.99% to 99.999% availability with smooth operations.",
+          "priority": "core",
+          "why": "**숫자를 시간으로 바꾸면 이 항목의 무게가 보인다** — 99.99% 는 1년에 약 **52분** 멈출 수 있고, 99.999% 는 약 **5분**이다. 5분이면 **사람이 알아채고 손으로 고치는 것이 불가능**하다는 뜻이고, 그래서 설계가 통째로 달라진다: 장애를 사람이 아니라 **시스템이 먼저 감지하고 자동으로 우회**해야 하고, **배포와 정비도 무중단**이어야 하며(멈추는 시간에 다 들어간다), 무엇보다 **의존하는 것들의 가용성이 더 높아야** 한다. 그리고 이 플랫폼은 **사내 모든 팀이 쓰므로** 한 번 멈추면 그 위의 서비스가 전부 멈춘다.",
+          "gap_check": "99.99% 와 99.999% 를 연간 허용 시간으로 환산할 수 있나? 5분 안에 자동 복구되려면 무엇이 필요한가?",
+          "drill": "**허용 시간을 예산처럼 써 본다.** ① 서비스 하나를 두고 **목표 가용성과 연간 허용 시간**을 정하고 ② 배포·정비·장애 각각이 **몇 분을 쓰는지** 기록하고 ③ 무중단 배포로 바꿔 배포 몫을 0 으로 만들고 ④ 의존 대상 하나를 죽여 **자동으로 우회되는지** 확인하고 ⑤ 남은 예산으로 **무엇을 더 할 수 있는지** 정리한다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**하루 페타바이트 — 규모가 설계를 정한다**",
+          "from": "task",
+          "quote": "Write durable code with the ability to process tera-bytes and peta-bytes each day.",
+          "priority": "core",
+          "why": "**`durable` 과 규모가 한 문장에 있는 것이 핵심이다.** 이 정도 양에서는 평소에 안 보이던 것들이 문제가 된다 — **디스크가 차는 속도**(보존 기간을 며칠로 잡느냐가 곧 비용이자 용량), **네트워크 대역폭**, 그리고 **한 번의 재처리가 며칠 걸리는 상황**. 그리고 `durable`(유실 없음)은 공짜가 아니다: 여러 복제본에 다 쓰고 확인받으면 안전하지만 느려지고, 하나만 쓰고 넘어가면 빠르지만 **그 서버가 죽으면 데이터가 사라진다.** 플랫폼 팀은 이 선택을 **쓰는 팀마다 다르게 줄 수 있게** 만들어야 한다.",
+          "gap_check": "유실 없음과 처리량 사이의 교환을 설명할 수 있나? 보존 기간을 정하는 기준이 있나?",
+          "drill": "**안전과 속도를 저울질해 본다.** ① 메시지 시스템을 띄우고 ② **복제본에 모두 쓰고 확인받는 설정**과 **하나만 쓰고 넘어가는 설정**으로 각각 처리량을 재고 ③ 쓰는 도중 서버를 죽여 **각각 데이터가 남는지** 확인하고 ④ 보존 기간을 바꿔 가며 **디스크 사용량 곡선**을 그리고 ⑤ 팀마다 다른 설정을 줄 수 있는 구조를 설계한다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "**고객이 동료다 — 플랫폼 팀의 성격**",
+          "from": "task",
+          "quote": "Work closely with Coupang internal and external Customers and wow them with our cutting-edging products.",
+          "priority": "core",
+          "why": "**`Customers` 를 대문자로 쓴 것이 이 팀의 관점을 보여 준다** — 사내 팀을 고객으로 대한다는 뜻이다. 플랫폼 일의 어려움이 여기서 나온다: 요구가 **서로 충돌하고**(어떤 팀은 지연이 짧아야 하고 어떤 팀은 유실이 없어야 한다), 한 팀의 잘못된 사용이 **다른 팀을 망가뜨리며**(한 팀이 과도하게 쓰면 전체가 느려진다), 그리고 **인터페이스를 바꾸면 쓰는 모든 팀이 움직여야** 한다. 그래서 플랫폼 팀은 기능만이 아니라 **한 팀이 다른 팀을 해치지 못하게 막는 장치**(할당량·격리)와 **스스로 해결할 수 있는 문서·도구**를 함께 만든다.",
+          "gap_check": "한 팀의 과도한 사용이 다른 팀에 영향을 주는 것을 어떻게 막나? 사내 고객의 충돌하는 요구를 어떻게 조율하나?",
+          "drill": "**한 팀이 다른 팀을 해치게 만들어 본다.** ① 공용 메시지 시스템에 두 팀을 두고 ② 한쪽이 **폭주하는 상황**을 만들어 다른 쪽 지연이 늘어나는 것을 재고 ③ **할당량이나 격리**를 넣어 다시 재고 ④ 쓰는 쪽이 **스스로 상태를 볼 수 있는 화면**을 만들고 ⑤ 새 팀이 들어올 때의 안내 문서를 한 장으로 쓴다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "Kafka 를 쓰는 것과 운영하는 것은 다른 일이다",
+          "from": "qualification",
+          "quote": "Expertise in distributed systems and computing frameworks like Kafka, Spark,etc.",
+          "priority": "core",
+          "why": "**같은 회사 `Fraud Detection` 공고도 Kafka 를 적었지만 층이 다르다** — 그쪽은 **쓰는 쪽**이고 여기는 **제공하는 쪽**이다. 운영자 관점에서 걸리는 것은 다른 목록이다: **파티션 수를 잘못 잡으면 나중에 늘리기 어렵고**(순서 보장이 깨진다), 소비자가 늘고 줄 때마다 **재분배로 잠깐 멈추며**, **한 소비자가 느리면 밀린 양이 쌓이고**, 디스크와 보존 기간을 잘못 잡으면 **오래된 메시지가 사라져 재처리가 불가능**해진다. 그리고 브로커 자체의 **버전 올리기·확장·장애 교체**가 상시 업무가 된다.",
+          "gap_check": "파티션 수가 나중에 문제가 되는 이유를 설명할 수 있나? 소비자 재분배 중에 무슨 일이 생기나?",
+          "drill": "**운영자 입장에서 다뤄 본다.** ① 브로커를 여러 대 띄우고 토픽을 만들고 ② **소비자를 늘렸다 줄여** 재분배 중 처리가 멈추는 시간을 재고 ③ 한 소비자를 느리게 만들어 **밀린 양이 쌓이는 것**을 관찰하고 ④ 브로커 한 대를 죽여 **복제와 리더 교체**를 확인하고 ⑤ 파티션을 늘려 보고 **순서 보장이 어떻게 되는지** 정리한다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "여러 팀이 함께 쓰는 캐시의 문제",
+          "from": "task",
+          "quote": "Architect and build Coupang's Messaging and Caching Platform",
+          "priority": "core",
+          "why": "**메시징과 캐시가 한 팀에 묶여 있는 것은 둘 다 `여러 팀이 공유하는 중간 계층`이기 때문이다.** 공유 캐시에서 생기는 문제는 정해져 있다 — **키 이름이 겹치고**(다른 팀 데이터를 덮어쓴다), 한 팀이 **큰 값을 잔뜩 넣어 메모리를 차지하며**, **한꺼번에 만료되면 뒤로 요청이 몰리고**(썬더링 허드), 무엇보다 **캐시가 죽었을 때 원본이 그 부하를 감당할 수 있는가**가 문제가 된다. 플랫폼 팀은 이걸 **쓰는 팀이 실수해도 전체가 안 무너지게** 설계해야 한다.",
+          "gap_check": "공유 캐시에서 팀 간 격리를 어떻게 하나? 캐시가 통째로 죽었을 때 원본이 버틸 수 있나?",
+          "drill": "**캐시를 죽여 본다.** ① 캐시 앞뒤로 원본 저장소를 두고 부하를 걸고 ② **캐시를 통째로 비워** 원본으로 몰리는 요청을 재고 ③ 만료 시각을 흩뜨리거나 **하나만 다시 계산**하게 해 완화하고 ④ 팀별 키 접두사와 **용량 제한**을 넣고 ⑤ 한 팀이 큰 값을 넣었을 때 **다른 팀이 밀려나는지** 확인한다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "AWS 위에서 — 관리형을 쓸까 직접 운영할까",
+          "from": "qualification",
+          "quote": "Solid (AWS) cloud background on both software development and operations",
+          "priority": "high",
+          "why": "**`both software development and operations` 가 붙은 것이 이 자리의 성격이다** — 만들기만 하는 것이 아니라 **운영까지 진다**. 그리고 이 규모에서는 판단이 하나 생긴다: 클라우드가 제공하는 **관리형 메시징·캐시를 쓸 것인가, 직접 운영할 것인가.** 관리형은 운영 부담이 적지만 **세밀한 조정이 안 되고 규모가 커지면 비용이 급격히 는다.** 직접 운영하면 조정과 비용은 유리하지만 **버전 올리기·장애 대응·용량 계획을 우리가 진다.** 하루 페타바이트 규모의 회사가 **플랫폼 팀을 따로 두는 이유**가 대개 이 계산에 있다.",
+          "gap_check": "관리형 서비스와 직접 운영의 경계를 어떻게 정하나? 규모가 커질 때 비용이 어떻게 변하는지 계산해 봤나?",
+          "drill": "**비용 곡선을 그려 본다.** ① 같은 기능을 **관리형 서비스**와 **직접 띄운 것**으로 각각 준비하고 ② 처리량을 10배·100배로 가정해 **월 비용을 각각 추정**하고 ③ 직접 운영 쪽에 **사람 시간(버전 올리기·장애 대응)** 을 비용으로 넣고 ④ 두 곡선이 만나는 지점을 찾고 ⑤ **그 지점 전후로 무엇을 골라야 하는지** 한 문단으로 쓴다.",
+          "hours": 12,
+          "resources": []
+        },
+        {
+          "topic": "**빠르게 좁히는 능력이 자격요건에 있다**",
+          "from": "qualification",
+          "quote": "Team player and fast learner with the ability to quickly triage and troubleshoot",
+          "priority": "high",
+          "why": "**`quickly triage` 가 앞에 온 것이 중요하다** — 원인을 찾는 것보다 **먼저 분류하는 것**이다. 플랫폼 팀에는 사내 여러 팀에서 `느려요`, `메시지가 안 와요` 같은 신고가 동시에 들어오는데, 그중 **우리 문제인지 쓰는 쪽 문제인지 가르는 것**이 첫 일이다(대개 절반 이상은 쓰는 쪽의 설정이나 사용 방식이다). 그래서 이 자리에는 **경계를 증명하는 수단**이 필요하다 — 구간별 지표, 팀별 사용량, 그리고 **신고를 받자마자 확인하는 점검 목록**.",
+          "gap_check": "`플랫폼이 느려요` 라는 신고를 받았을 때 우리 문제인지 어떻게 가르나?",
+          "drill": "**분류 절차를 만든다.** ① 플랫폼과 그것을 쓰는 애플리케이션을 두고 ② **양쪽 구간의 지표**를 각각 남기고 ③ 세 가지 상황을 만들어(플랫폼 과부하 / 특정 팀 폭주 / 애플리케이션 설정 오류) 각각 **지표가 어떻게 다른지** 기록하고 ④ 그 차이를 **신고 접수 시 5분 안에 확인하는 목록**으로 만들고 ⑤ 쓰는 팀이 스스로 확인할 수 있게 공개한다.",
+          "hours": 12,
+          "resources": []
+        },
+        {
+          "topic": "새 기술을 실제 제품에 적용한다는 것",
+          "from": "qualification",
+          "quote": "Strong ownership and be passionate about applying new technologies to real",
+          "priority": "high",
+          "why": "**`to real products` 라는 꼬리가 이 문장을 태도가 아닌 능력으로 만든다** — 새 기술을 **아는 것**과 **하루 페타바이트가 흐르는 시스템에 넣는 것**은 완전히 다르다. 플랫폼 계층에서 새것을 도입하는 일은 특히 조심스럽다: **쓰는 팀이 수십 개**라 문제가 생기면 파급이 크고, 되돌리기가 어렵고, **성능 특성이 규모에서만 드러난다**(작은 시험에서는 다 잘 돈다). 그래서 실무의 방식은 정해져 있다 — 새것과 옛것을 **함께 돌려 결과를 비교하고**, 트래픽 일부만 태우고, **되돌릴 스위치를 먼저 만든다.**",
+          "gap_check": "새 기술을 운영에 넣을 때 되돌릴 준비를 어떻게 하나? 작은 시험에서 안 드러나는 문제를 어떻게 찾나?",
+          "drill": "**바꿔치기를 안전하게 해 본다.** ① 지금 쓰는 구성 요소 하나를 다른 것으로 바꾸는 상황을 만들고 ② **둘을 함께 돌려** 같은 입력에 대한 결과를 비교하고 ③ 트래픽의 1%만 새것으로 보내고 ④ **되돌리는 스위치**를 만들어 시간을 재고 ⑤ 부하를 10배로 올려 **작은 시험에서 안 보이던 차이**를 찾는다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "⚠️ 영어와 학위가 자격요건에 적혀 있다",
+          "from": "qualification",
+          "quote": "Business level of English",
+          "priority": "high",
+          "why": "**이 회사 공고에서 영어 능력이 자격요건에 별도 항목으로 적히는 경우는 흔하지 않고, 적혔다면 실제로 쓴다는 뜻이다.** 이 팀은 `internal and external Customers` 를 상대하고 본문이 영어·한국어 병기다 — **문서와 회의가 영어로 오갈 가능성**을 염두에 두는 편이 안전하다. 함께 적힌 **`BS or advanced degree in Computer Science/Engineering, Information Systems or related technical field`** 도 눈에 띈다 — 이 회사 다른 공고 상당수가 학위를 명시하지 않는 것과 대비된다. ⚠️ **지원 전에 이 두 줄을 확인하지 않으면 서류에서 걸릴 수 있다.**",
+          "gap_check": "기술 문서를 영어로 써 본 적이 있나? 영어로 설계를 설명해 본 적이 있나?",
+          "drill": "**영어로 한 장을 써 본다.** ① 앞의 실습 중 하나를 골라 **영어 설계 문서 한 장**으로 쓰고(문제·대안·선택·근거) ② 소리 내어 읽으며 **5분 발표**로 줄이고 ③ 예상 질문 다섯 개와 답을 영어로 준비하고 ④ 자주 막히는 표현을 목록으로 만든다.",
+          "hours": 10,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**연간 허용 시간을 예산처럼 쓴 기록**(배포·정비·장애가 각각 몇 분)",
+          "why": "담당업무가 `99.99% to 99.999% availability` 를 명시한다. 숫자를 **분으로 환산해 예산처럼 배분하고 무중단 배포로 배포 몫을 0 으로 만든 기록**은, 가용성을 구호가 아니라 계산으로 다루는 사람의 물건이다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**한 팀이 다른 팀을 해치는 상황을 만들고 격리로 막은 실습**",
+          "why": "고객이 사내 팀인 플랫폼에서 가장 흔한 사고다. 폭주를 재현해 **지연이 늘어나는 것을 재고 할당량·격리로 다시 잰 기록**은 플랫폼 팀의 일을 이해했다는 직접적 증거다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**캐시를 통째로 비웠을 때 원본이 버티는지 잰 실험**",
+          "why": "공유 캐시의 최악은 캐시 장애가 아니라 **그 뒤 원본으로 몰리는 요청**이다. 만료를 흩뜨리거나 하나만 재계산하게 고친 전후 수치가 있으면 규모를 다뤄 본 것으로 읽힌다.",
+          "effort": "하루"
+        },
+        {
+          "idea": "**관리형 vs 직접 운영의 비용 곡선과 교차점**",
+          "why": "`Solid (AWS) cloud background on both software development and operations` 가 자격요건이다. 처리량을 10·100배로 놓고 **사람 시간까지 비용에 넣어 두 곡선의 교차점을 찾은 계산**은, 플랫폼 팀을 왜 따로 두는지 아는 사람의 답이다.",
+          "effort": "이틀"
+        }
+      ],
+      "interview": {
+        "process": "**전형: `Application Review - 1st Interview - 2nd Interview - Offer`.** `The exact nature of the recruitment process may vary according to the specific job` 라는 단서가 붙는다. ⚠️ **`12 weeks of probation period`(12주 수습)** 가 명시되고 `may be either skipped, shortened or extended` 라고 덧붙인다. **본문이 영어·한국어 병기**이며 자격요건에 **`Business level of English`** 가 있어 **영어 면접 가능성을 염두에 두는 편이 안전하다.** 불합격자는 `Fair Hiring Procedure Act` 에 따라 **제출 서류 반환을 요청할 수 있고**, 회사는 **180일간 원본을 보관**한다고 안내한다. `취업보호 대상자(보훈·장애인 등) 우대`.",
+        "expect": [
+          "**99.99% 와 99.999% 를 연간 허용 시간으로 환산할 수 있나. 5분 안에 자동 복구되려면 무엇이 필요한가**",
+          "무중단 배포를 만들어 본 경험",
+          "**유실 없음과 처리량 사이의 교환을 설명하라**",
+          "보존 기간을 정하는 기준은 무엇인가",
+          "**한 팀의 과도한 사용이 다른 팀에 영향을 주는 것을 어떻게 막나**",
+          "사내 고객의 충돌하는 요구를 어떻게 조율했나",
+          "**파티션 수가 나중에 문제가 되는 이유. 소비자 재분배 중에 무슨 일이 생기나**",
+          "밀린 양이 쌓일 때 어떻게 대응하나",
+          "**공유 캐시가 통째로 죽었을 때 원본이 버틸 수 있나**",
+          "관리형 서비스와 직접 운영의 경계를 어떻게 정했나",
+          "`플랫폼이 느려요` 라는 신고를 받았을 때 우리 문제인지 어떻게 가르나",
+          "새 기술을 운영에 넣을 때 되돌릴 준비를 어떻게 했나"
+        ],
+        "sources": [
+          {
+            "title": "Senior Back-end Engineer (Messaging and Caching Platform)",
+            "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8146684",
+            "publisher": "쿠팡 채용",
+            "summary": "경력 5년 이상. 하루 TB~PB 처리와 99.99~99.999% 가용성을 목표로 하고, 자격요건에 Business level of English 와 학사 이상이 명시돼 있다"
           }
         ]
       }
