@@ -2,58 +2,168 @@
   "slug": "42dot",
   "name": "포티투닷",
   "name_en": "42dot",
-  "aliases": ["포티투닷", "42dot", "포티투닷㈜"],
+  "aliases": [
+    "포티투닷",
+    "42dot",
+    "포티투닷㈜"
+  ],
   "status": "in_progress",
   "updated_at": "2026-09-03",
   "site": "42dot.ai",
   "one_liner": "현대차그룹의 소프트웨어 센터. 차를 '바퀴 달린 컴퓨터'로 다시 짜는 일(SDV)을 맡고 있고, 2022년 그룹에 편입된 뒤 2025년 매출 277억에 영업손실 3,498억을 냈다 — 매출로 도는 회사가 아니라 그룹이 투자하는 개발 조직이다.",
-
   "company": {
     "business": "**남에게 소프트웨어를 파는 회사가 아니라, 현대차·기아의 차에 들어갈 소프트웨어를 만드는 조직이다.** 2019년 송창현 전 네이버 CTO 가 창업했고 2022년 8월 현대차그룹 계열사로 편입됐다(현대차 57%·기아 38%). 축은 **SDV(Software-Defined Vehicle) 플랫폼** — 차량의 전기·전자 구조를 표준화하는 `E/E Architecture`, 차량 기능을 통합 관리하는 `Vehicle OS`, 그리고 음성 AI 에이전트 `Gleo AI`(현대차 `더 뉴 그랜저` 탑재)를 얹은 인포테인먼트. 여기에 **자율주행 AI**(ADAS~로보택시), **Agentic AI**, **Fleet AI** 가 붙는다. 거점은 판교 본사·미국 서니베일·폴란드 바르샤바 셋이다.",
     "business_confidence": "confirmed",
     "business_sources": [
-      {"title": "42dot 공식 홈페이지", "url": "https://42dot.ai/", "publisher": "포티투닷", "summary": "'현대자동차그룹의 글로벌 소프트웨어 센터'. SDV 플랫폼(E/E Architecture·Vehicle OS·Infotainment)과 AI 솔루션(Autonomous Driving·Agentic·Fleet)"},
-      {"title": "포티투닷 송창현號, 현대차그룹 'SDV' 전환 가속", "url": "https://www.m-i.kr/news/articleView.html?idxno=1008791", "publisher": "매일일보", "summary": "2019년 설립, 2022년 8월 그룹 계열사 편입"}
+      {
+        "title": "42dot 공식 홈페이지",
+        "url": "https://42dot.ai/",
+        "publisher": "포티투닷",
+        "summary": "'현대자동차그룹의 글로벌 소프트웨어 센터'. SDV 플랫폼(E/E Architecture·Vehicle OS·Infotainment)과 AI 솔루션(Autonomous Driving·Agentic·Fleet)"
+      },
+      {
+        "title": "포티투닷 송창현號, 현대차그룹 'SDV' 전환 가속",
+        "url": "https://www.m-i.kr/news/articleView.html?idxno=1008791",
+        "publisher": "매일일보",
+        "summary": "2019년 설립, 2022년 8월 그룹 계열사 편입"
+      }
     ],
     "scale": [
-      {"label": "2025년 실적", "value": "매출 277억원(전년 대비 +10.9%) / **영업손실 3,498억원**(+98.7%) / 당기순손실 3,639억원(+107.6%)", "as_of": "2025 회계연도", "confidence": "confirmed",
-       "sources": [{"title": "포티투닷 실적 추이", "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808", "publisher": "CEO스코어데일리", "summary": "R&D·인프라 투자 확대로 비용 급증"}]},
-      {"label": "2024년 영업손실", "value": "약 1,700억원", "as_of": "2024 회계연도", "confidence": "confirmed",
-       "sources": [{"title": "현대차 자율주행 포티투닷, 1700억 영업손…아직 '죽음의 계곡'", "url": "https://v.daum.net/v/20250326111703821?f=p", "publisher": "언론 보도", "date": "2025-03-26"}]},
-      {"label": "지분 구조", "value": "현대차 57% · 기아 38% (인수에 현대차 2,767억 + 기아 1,541억 = 총 4,308억원 투입)", "confidence": "confirmed",
-       "sources": [{"title": "포티투닷 실적 추이", "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808", "publisher": "CEO스코어데일리"}]},
-      {"label": "인원 규모", "value": "제2 판교테크노밸리 신사옥 A동을 통째로 써 **약 1,500명 수용** 예정", "confidence": "confirmed",
-       "sources": [{"title": "포티투닷 실적 추이", "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808", "publisher": "CEO스코어데일리"}]},
-      {"label": "거점", "value": "판교(본사, 모집중 24건) · 미국 서니베일(9건) · 폴란드 바르샤바(3건)", "as_of": "2026-09", "confidence": "confirmed",
-       "sources": [{"title": "42dot 공식 홈페이지", "url": "https://42dot.ai/", "publisher": "포티투닷"}]},
-      {"label": "경영진 교체", "value": "2025년 12월 창업자 송창현 대표 사임 → **박민우 사장**(전 테슬라·엔비디아)이 AVP본부장 겸 대표로 선임", "as_of": "2026", "confidence": "confirmed",
-       "sources": [
-         {"title": "현대차그룹, AVP본부장 겸 포티투닷 대표에 박민우 사장 영입", "url": "https://www.autoelectronics.co.kr/article/articleView.asp?idx=6628", "publisher": "오토일렉트로닉스"},
-         {"title": "현대차 SDV 사령탑 송창현 사장 사임", "url": "https://v.daum.net/v/20251204104653762", "publisher": "언론 보도", "date": "2025-12-04"}
-       ]}
+      {
+        "label": "2025년 실적",
+        "value": "매출 277억원(전년 대비 +10.9%) / **영업손실 3,498억원**(+98.7%) / 당기순손실 3,639억원(+107.6%)",
+        "as_of": "2025 회계연도",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "포티투닷 실적 추이",
+            "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808",
+            "publisher": "CEO스코어데일리",
+            "summary": "R&D·인프라 투자 확대로 비용 급증"
+          }
+        ]
+      },
+      {
+        "label": "2024년 영업손실",
+        "value": "약 1,700억원",
+        "as_of": "2024 회계연도",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "현대차 자율주행 포티투닷, 1700억 영업손…아직 '죽음의 계곡'",
+            "url": "https://v.daum.net/v/20250326111703821?f=p",
+            "publisher": "언론 보도",
+            "date": "2025-03-26"
+          }
+        ]
+      },
+      {
+        "label": "지분 구조",
+        "value": "현대차 57% · 기아 38% (인수에 현대차 2,767억 + 기아 1,541억 = 총 4,308억원 투입)",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "포티투닷 실적 추이",
+            "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808",
+            "publisher": "CEO스코어데일리"
+          }
+        ]
+      },
+      {
+        "label": "인원 규모",
+        "value": "제2 판교테크노밸리 신사옥 A동을 통째로 써 **약 1,500명 수용** 예정",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "포티투닷 실적 추이",
+            "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808",
+            "publisher": "CEO스코어데일리"
+          }
+        ]
+      },
+      {
+        "label": "거점",
+        "value": "판교(본사, 모집중 24건) · 미국 서니베일(9건) · 폴란드 바르샤바(3건)",
+        "as_of": "2026-09",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "42dot 공식 홈페이지",
+            "url": "https://42dot.ai/",
+            "publisher": "포티투닷"
+          }
+        ]
+      },
+      {
+        "label": "경영진 교체",
+        "value": "2025년 12월 창업자 송창현 대표 사임 → **박민우 사장**(전 테슬라·엔비디아)이 AVP본부장 겸 대표로 선임",
+        "as_of": "2026",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "현대차그룹, AVP본부장 겸 포티투닷 대표에 박민우 사장 영입",
+            "url": "https://www.autoelectronics.co.kr/article/articleView.asp?idx=6628",
+            "publisher": "오토일렉트로닉스"
+          },
+          {
+            "title": "현대차 SDV 사령탑 송창현 사장 사임",
+            "url": "https://v.daum.net/v/20251204104653762",
+            "publisher": "언론 보도",
+            "date": "2025-12-04"
+          }
+        ]
+      }
     ],
     "revenue": [
       {
         "name": "그룹 내 개발 — 현대차·기아 차량에 들어가는 소프트웨어",
         "how": "**이 회사의 돈은 시장이 아니라 모회사에서 온다.** 지분이 현대차 57%·기아 38%이고, 만드는 것이 그룹 차량에 탑재될 `Vehicle OS`·`E/E Architecture`·인포테인먼트다. 그래서 매출 277억은 회사 규모가 아니라 **그룹 내 정산 규모**에 가깝고, 영업손실 3,498억이 실제 투입된 개발비를 말해 준다. 지원자 입장에서 중요한 것은 하나다 — **여기서 만든 것의 성패는 매출이 아니라 '양산차에 실렸는가'로 판정된다.**",
         "weight": "2025년 매출 277억 / 영업손실 3,498억",
-        "domains": ["SDV 플랫폼과 차량 OS", "차량 인포테인먼트와 음성 AI", "차량 소프트웨어의 배포와 보안(OTA)"],
+        "domains": [
+          "SDV 플랫폼과 차량 OS",
+          "차량 인포테인먼트와 음성 AI",
+          "차량 소프트웨어의 배포와 보안(OTA)"
+        ],
         "confidence": "confirmed",
-        "sources": [{"title": "포티투닷 실적 추이", "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808", "publisher": "CEO스코어데일리"}]
+        "sources": [
+          {
+            "title": "포티투닷 실적 추이",
+            "url": "https://m.ceoscoredaily.com/page/view/2026040210535185808",
+            "publisher": "CEO스코어데일리"
+          }
+        ]
       },
       {
         "name": "양산 탑재 제품 — Gleo AI",
         "how": "회사가 유일하게 '차에 실렸다'고 공개적으로 내세우는 제품이다. 현대차 `더 뉴 그랜저` 에 탑재된 차량용 음성 AI 에이전트로, **연구 단계와 양산 단계를 가르는 기준선**이 된다. 그룹 안에서 이 회사의 존재 이유를 증명하는 자리이기도 하다.",
-        "domains": ["차량 인포테인먼트와 음성 AI"],
+        "domains": [
+          "차량 인포테인먼트와 음성 AI"
+        ],
         "confidence": "confirmed",
-        "sources": [{"title": "42dot 공식 홈페이지 — Gleo AI", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+        "sources": [
+          {
+            "title": "42dot 공식 홈페이지 — Gleo AI",
+            "url": "https://42dot.ai/",
+            "publisher": "포티투닷"
+          }
+        ]
       },
       {
         "name": "자율주행 — 아직 매출이 아니라 비용인 쪽",
         "how": "ADAS 부터 로보택시까지를 목표로 하고, 창업기에는 **수요응답형 자율주행차 서비스**와 AI 물류·운송 관리 플랫폼을 했다. 영업손실이 2024년 1,700억 → 2025년 3,498억으로 커진 배경에 이 투자가 있다. **어느 수익원도 아직 이 도메인을 직접 떠받치지 못한다** — 도메인을 잘못 나눈 것이 아니라 **아직 돈이 되기 전 단계**라는 뜻이다.",
-        "domains": ["자율주행 인지·모델", "학습 데이터 파이프라인과 ML 플랫폼", "차량 소프트웨어 검증(SIL/HIL)"],
+        "domains": [
+          "자율주행 인지·모델",
+          "학습 데이터 파이프라인과 ML 플랫폼",
+          "차량 소프트웨어 검증(SIL/HIL)"
+        ],
         "confidence": "inferred",
-        "sources": [{"title": "포티투닷 송창현號, 현대차그룹 'SDV' 전환 가속", "url": "https://www.m-i.kr/news/articleView.html?idxno=1008791", "publisher": "매일일보"}]
+        "sources": [
+          {
+            "title": "포티투닷 송창현號, 현대차그룹 'SDV' 전환 가속",
+            "url": "https://www.m-i.kr/news/articleView.html?idxno=1008791",
+            "publisher": "매일일보"
+          }
+        ]
       }
     ],
     "domains": [
@@ -68,7 +178,13 @@
           "**양산차의 제약**: 부팅 시간, 전원 관리, 10년 이상의 수명, 리콜 비용"
         ],
         "confidence": "confirmed",
-        "sources": [{"title": "42dot — SDV 플랫폼", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+        "sources": [
+          {
+            "title": "42dot — SDV 플랫폼",
+            "url": "https://42dot.ai/",
+            "publisher": "포티투닷"
+          }
+        ]
       },
       {
         "name": "차량 인포테인먼트와 음성 AI",
@@ -80,7 +196,13 @@
           "차량 기능을 에이전트가 호출한다는 것의 안전 경계 — 무엇까지 자동으로 실행해도 되나"
         ],
         "confidence": "confirmed",
-        "sources": [{"title": "42dot — Gleo AI", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+        "sources": [
+          {
+            "title": "42dot — Gleo AI",
+            "url": "https://42dot.ai/",
+            "publisher": "포티투닷"
+          }
+        ]
       },
       {
         "name": "자율주행 인지·모델",
@@ -92,7 +214,13 @@
           "차량에 실리는 모델의 제약: 정해진 연산 자원, 정해진 지연 시간, 결정성(같은 입력에 같은 출력)"
         ],
         "confidence": "confirmed",
-        "sources": [{"title": "42dot — Autonomous Driving AI", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+        "sources": [
+          {
+            "title": "42dot — Autonomous Driving AI",
+            "url": "https://42dot.ai/",
+            "publisher": "포티투닷"
+          }
+        ]
       },
       {
         "name": "학습 데이터 파이프라인과 ML 플랫폼",
@@ -104,7 +232,13 @@
           "GPU 클러스터 위에서 학습 작업을 돌리는 플랫폼 — 스케줄링, 실험 추적, 재현성"
         ],
         "confidence": "confirmed",
-        "sources": [{"title": "42dot 채용 — AI Infrastructure / ML Platform / AI Data Pipeline Engineer", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+        "sources": [
+          {
+            "title": "42dot 채용 — AI Infrastructure / ML Platform / AI Data Pipeline Engineer",
+            "url": "https://42dot.ai/",
+            "publisher": "포티투닷"
+          }
+        ]
       },
       {
         "name": "차량 소프트웨어의 배포와 보안(OTA)",
@@ -116,7 +250,13 @@
           "리콜과 OTA 의 관계 — 소프트웨어로 고칠 수 있는 결함과 아닌 것"
         ],
         "confidence": "confirmed",
-        "sources": [{"title": "42dot 채용 — Firmware Engineer (OTA·Secure Boot)", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+        "sources": [
+          {
+            "title": "42dot 채용 — Firmware Engineer (OTA·Secure Boot)",
+            "url": "https://42dot.ai/",
+            "publisher": "포티투닷"
+          }
+        ]
       },
       {
         "name": "차량 소프트웨어 검증(SIL/HIL)",
@@ -128,7 +268,13 @@
           "차량 소프트웨어의 기능안전(ISO 26262)이 검증에 요구하는 것"
         ],
         "confidence": "confirmed",
-        "sources": [{"title": "42dot 채용 — Test Automation Engineer (SIL/HIL)", "url": "https://42dot.ai/", "publisher": "포티투닷"}]
+        "sources": [
+          {
+            "title": "42dot 채용 — Test Automation Engineer (SIL/HIL)",
+            "url": "https://42dot.ai/",
+            "publisher": "포티투닷"
+          }
+        ]
       }
     ],
     "signals": [
@@ -170,16 +316,214 @@
       }
     ]
   },
-
   "salary": null,
-
   "people": [],
-
   "open_questions": [
     "**`salary` 를 비웠다.** 비상장이라 사업보고서가 없고, 집계 서비스 수치도 이번 사이클에서 확인하지 못했다. **지어낸 숫자 하나가 나머지 전부를 못 믿게 만들기 때문에 통째로 비운다**(PROMPT 2°단계). 다음 보강에서 사람인 `view-inner-salary` 페이지(엑셈에서 열렸던 경로)와 잡플래닛·캐치를 확인한다",
     "**`people` 을 비웠다 — 판단이 필요했던 자리다.** 신임 대표 **박민우 사장**(전 테슬라·엔비디아)의 선임은 언론으로 확인되지만, **그가 기술·조직에 대해 직접 말한 공개 자료를 찾지 못했다**(기사에 나오는 것은 기자의 요약이다). 전임 송창현 대표의 사임 메시지는 **사내 메일이 유출된 것**이라 PROMPT 2″단계의 '공개적으로 말한 것'에 해당하지 않아 쓰지 않았다. 새 경영진의 공개 발표·인터뷰가 나오면 그때 채운다",
     "**2026년 현재의 인원 수를 확정하지 못했다** — 확인된 것은 신사옥 A동에 약 1,500명을 수용할 예정이라는 계획 수치뿐이다",
     "**조직 개편 이후 포티투닷 법인과 현대차 AVP본부의 경계가 어떻게 정리됐는지 확인하지 못했다.** 대표가 AVP본부장을 겸하고 두 조직의 칸막이를 없앤다는 보도가 있어, **채용 주체와 실제 소속이 다를 수 있다.** 지원 전에 확인이 필요한 항목이라 `signals` 에도 적었다",
     "**공고 46건 중 실제 자리 수를 아직 세지 않았다** — 자체 채용페이지(37건)와 원티드(9건)에 같은 자리가 겹칠 수 있다. 공고 사이클 첫 회차에서 대조한다"
+  ],
+  "postings": [
+    {
+      "url": "https://www.wanted.co.kr/wd/366270",
+      "title": "Physical AI Engineer (Model)",
+      "site": "wanted",
+      "verdict": "**차가 다음 몇 초 동안 어디로 갈지를 모델이 직접 내놓게 만드는 자리다.** 인지 결과를 받아 경로를 계산하던 고전 방식과, 센서에서 조향까지를 하나의 신경망으로 잇는 End-to-End 방식을 **둘 다 알고 이어 붙일 수 있는 사람**을 찾는다. 그리고 그 모델이 **차 안의 정해진 칩에서 실시간으로** 돌아야 한다 — 서버 GPU 에서 잘 도는 것으로는 끝나지 않는다.",
+      "fit": {
+        "must_have": [
+          "**석사 이상 또는 이에 준하는 실무 경험** — 자격요건 첫 줄이다. 이 엔진에서 학위를 명시한 몇 안 되는 공고다",
+          "PyTorch 나 **JAX** 로 모델을 직접 학습시켜 본 경험",
+          "**Motion Planning·필터링(칼만/파티클)·내비게이션의 이론과 구현** — 딥러닝만으로는 이 자리에 못 들어간다",
+          "시뮬레이션이든 실제 하드웨어든 **모델을 검증해 본** 경험"
+        ],
+        "can_learn": [
+          "CUDA·TensorRT 추론 최적화 — 우대사항이고, 필요성을 이해하면 도구는 따라온다",
+          "차량 도메인 자체(차량 좌표계·제어 인터페이스) — 로보틱스 배경이 있으면 옮겨 앉기 어렵지 않다",
+          "**논문 게재는 우대사항이지 자격요건이 아니다** — 없어도 지원할 수 있다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "End-to-End 로 주행 궤적을 내는 모델이 무엇인가",
+          "from": "task",
+          "quote": "End-to-End Trajectory Generation 및 Decision-making Model 개발을 위한 데이터 전처리, 모델 학습 및 성능 검증 수행",
+          "priority": "core",
+          "why": "**이 공고의 중심이다.** 전통적인 자율주행은 인지 → 예측 → 계획 → 제어를 각각 사람이 만든 모듈로 나눴는데, End-to-End 는 그 사이를 신경망으로 잇거나 통째로 대체한다. 모듈 경계에서 정보가 깎이는 문제를 없애는 대신, **왜 그렇게 판단했는지 설명하기 어려워지고 실패가 어디서 났는지 짚기 힘들어진다.** 회사가 `Perception, Planning, Control 팀과 협업` 을 별도 줄로 적은 것은, 이 모델이 기존 모듈 조직 위에 얹힌다는 뜻으로 읽힌다.",
+          "gap_check": "모듈 방식과 End-to-End 방식이 각각 무엇을 얻고 무엇을 잃는지 세 가지씩 댈 수 있나? 그리고 E2E 모델이 잘못 판단했을 때 원인을 어떻게 좁힐 것인가?",
+          "drill": "**주행 데이터로 궤적 예측 모델을 만든다.** 공개 자율주행 데이터셋(nuScenes·Waymo Open 등)에서 한 구간을 골라, 과거 몇 초의 상태로 **다음 3초의 궤적**을 내놓는 모델을 학습시킨다. 평가는 정확도 하나가 아니라 **① 평균 변위 오차 ② 충돌·차선 이탈 발생률 ③ 급격한 조향·가속 비율** 셋으로 본다 — 마지막 항목이 '사람이 탈 만한가'를 가른다.",
+          "hours": 20,
+          "resources": [
+            {
+              "title": "nuScenes 데이터셋",
+              "url": "https://www.nuscenes.org/",
+              "kind": "docs",
+              "note": "궤적 예측·계획 과제와 평가 지표가 정의돼 있다"
+            }
+          ]
+        },
+        {
+          "topic": "모방학습과 모델 기반 강화학습 — 왜 이 둘인가",
+          "from": "task",
+          "quote": "Model-Based Reinforcement Learning(MBRL) 및 Imitation Learning(IL) 알고리즘 개발 및 최적화",
+          "priority": "core",
+          "why": "자율주행에서 **강화학습을 실제 도로에서 시행착오로 학습시킬 수는 없다.** 그래서 두 갈래를 쓴다 — 사람의 주행을 흉내 내는 **모방학습(IL)**, 그리고 세계가 어떻게 변할지를 모델로 배워 그 안에서 시뮬레이션하며 학습하는 **모델 기반 강화학습(MBRL)**. 회사가 둘을 나란히 적은 것은 **'사람처럼 운전하되 사람이 안 해 본 상황도 다룬다'** 는 요구로 읽힌다. IL 의 고질적 문제(분포 이탈 — 흉내만 낸 정책이 처음 보는 상태에 빠지면 걷잡을 수 없어진다)를 아는 것이 이 항목의 핵심이다.",
+          "gap_check": "모방학습만으로 학습한 정책이 배포 후 왜 점점 더 나빠질 수 있는지(compounding error) 설명할 수 있나? 그걸 줄이는 방법을 하나라도 아나?",
+          "drill": "**같은 과제를 IL 과 MBRL 로 각각 풀어 비교한다.** 간단한 주행 시뮬레이터(예: CARLA 의 소규모 시나리오나 2D 차량 환경)에서 ① 전문가 궤적을 흉내 내는 행동 복제 ② 환경 모델을 학습해 그 안에서 계획하는 방식을 만들고, **처음 보는 시나리오에서 성능이 어떻게 갈리는지** 표로 낸다.",
+          "hours": 20,
+          "resources": [
+            {
+              "title": "CARLA 자율주행 시뮬레이터",
+              "url": "https://carla.org/",
+              "kind": "docs",
+              "note": "시나리오를 반복 재현할 수 있어 IL/RL 비교 실험에 쓰인다"
+            }
+          ]
+        },
+        {
+          "topic": "고전 알고리즘을 버리지 않는다 — 계획·필터링·내비게이션",
+          "from": "task",
+          "quote": "Motion Planning, Filtering(Kalman Filter, Particle Filter 등), Navigation 알고리즘 통합 및 검증",
+          "priority": "core",
+          "why": "**딥러닝만 아는 지원자가 이 공고에서 가장 크게 미끄러지는 지점이다.** 실제 차량 스택에서 신경망은 전부를 대체하지 않는다 — 센서 잡음을 다듬는 칼만 필터, 안전을 보장하는 계획 알고리즘, 지도 기반 내비게이션이 여전히 아래를 받친다. 그리고 **모델이 이상한 값을 내놓을 때 그것을 걸러 내는 것도 이 고전 계층**이다. 자격요건에도 `이론적 이해 및 구현 경험` 으로 다시 나온다.",
+          "gap_check": "칼만 필터가 무엇을 가정하고 그 가정이 깨지면 어떻게 되는지 설명할 수 있나? 파티클 필터를 대신 쓰는 상황은 어떤 경우인가?",
+          "drill": "**칼만 필터와 파티클 필터를 직접 구현해 비교한다.** 잡음이 섞인 위치 관측으로 차량의 위치·속도를 추정하는 문제를 만들고, ① 선형·가우시안 가정이 맞을 때 ② 비선형이거나 다봉 분포일 때 두 필터의 결과가 어떻게 갈리는지 그림으로 본다. 그다음 그 추정 위에 **A\\* 나 격자 기반 경로 계획**을 얹어 끝까지 이어 붙인다.",
+          "hours": 16,
+          "resources": [
+            {
+              "title": "Probabilistic Robotics (Thrun 외) — 개요",
+              "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+              "kind": "docs",
+              "note": "칼만·파티클 필터의 표준 교재. 필요한 장만 본다"
+            }
+          ]
+        },
+        {
+          "topic": "차 안에서 실시간으로 돌게 만들기 — 이 자리를 연구직과 가르는 조건",
+          "from": "task",
+          "quote": "CUDA 기반 딥러닝 모델 및 Planning Pipeline 최적화를 통한 On-device Real-time 성능 확보 지원",
+          "priority": "core",
+          "why": "**서버 GPU 에서 잘 도는 모델은 이 회사에서 절반만 끝난 것이다.** 차에 실리는 연산 장치는 정해져 있고, 전력과 발열에 묶여 있으며, **정해진 시간 안에 반드시 답을 내야 한다**(늦은 답은 틀린 답과 같다). 이 회사가 SDV 를 하는 조직이라 이 제약이 특히 강하고, 우대사항의 `C++, CUDA, TensorRT` 가 같은 이야기를 한다.",
+          "gap_check": "내 모델의 추론 지연을 밀리초 단위로 재 본 적이 있나? 지연의 분포(평균이 아니라 최악값)를 보고 판단해야 하는 이유를 설명할 수 있나?",
+          "drill": "**같은 모델을 세 가지로 돌려 지연을 비교한다** — ① PyTorch 그대로 ② TorchScript/ONNX ③ TensorRT(FP16 또는 INT8). 매번 **평균이 아니라 p99 지연**과 정확도 변화를 함께 기록하고, **정해진 예산(예: 50ms) 안에 드는 조합**을 찾는다. 이 표가 이 항목의 결과물이다.",
+          "hours": 14,
+          "resources": [
+            {
+              "title": "NVIDIA TensorRT 문서",
+              "url": "https://docs.nvidia.com/deeplearning/tensorrt/",
+              "kind": "docs",
+              "note": "정밀도 낮추기(FP16/INT8)와 그때의 정확도 손실을 다루는 절부터 본다"
+            }
+          ]
+        },
+        {
+          "topic": "시뮬레이션에서 실제 차량으로 — sim-to-real 간극",
+          "from": "task",
+          "quote": "Simulation 및 실제 차량 환경에서 AI 모델 및 알고리즘 검증 수행",
+          "priority": "core",
+          "why": "시뮬레이터에서 완벽하던 모델이 실제 차에서 무너지는 일이 이 분야의 상수다 — 센서 잡음, 지연, 타이어 접지, 다른 운전자의 행동이 시뮬레이터와 다르기 때문이다. 그래서 **'시뮬레이션에서 얼마나 잘하나'가 아니라 '시뮬레이션 결과를 얼마나 믿을 수 있나'** 가 실력이 된다. 회사의 다른 자리(`Sr. Test Automation Engineer (SIL/HIL Infrastructure)`)가 이 문제를 인프라로 다루고 있어, **협업 상대가 누구인지도 여기서 보인다.**",
+          "gap_check": "시뮬레이터와 실차의 차이 중 내 모델 성능에 가장 크게 영향을 줄 것 세 가지를 짚을 수 있나?",
+          "drill": "**시뮬레이터에 일부러 현실을 섞는다.** 앞의 모델을 ① 깨끗한 관측 ② 센서 잡음 추가 ③ 관측 지연(100ms) 추가 ④ 제어 지연 추가 순으로 시험해 **어느 지점에서 무너지는지** 찾는다. 그리고 무너지지 않게 만드는 방법(잡음을 넣어 학습, 지연 보상, 예측 지평 조정)을 하나 적용해 개선폭을 잰다.",
+          "hours": 14,
+          "resources": []
+        },
+        {
+          "topic": "학위 요건을 어떻게 읽을 것인가",
+          "from": "qualification",
+          "quote": "컴퓨터공학, 전자공학, 로봇공학, 항공우주공학 또는 관련 분야 석사 학위 이상 또는 이에 준하는 실무 경험",
+          "priority": "core",
+          "why": "**이 엔진이 다룬 190여 공고 중 학위를 자격요건 첫 줄에 놓은 몇 안 되는 자리다.** 그런데 뒤에 `또는 이에 준하는 실무 경험` 이 붙어 있다는 점이 중요하다 — 학위가 없으면 **그에 준한다는 것을 증명할 산출물**이 있어야 한다는 뜻이다. 회사가 같은 공고에서 **정규직 전환형 MS/PhD 인턴**을 따로 뽑고 있는 것도 이 자리의 인재상을 보여 준다.",
+          "gap_check": "석사 학위가 없다면, '이에 준하는 실무 경험'으로 무엇을 내놓을 것인가? 논문이 아니라면 무엇이 그 자리를 대신할 수 있나?",
+          "drill": "**'준하는 경험'의 목록을 만든다** — 여기 나온 드릴들(궤적 예측 모델, IL/MBRL 비교, 필터 구현, TensorRT 최적화, sim-to-real 실험)을 하나의 저장소로 묶고, **각각을 짧은 기술 문서로 정리**한다. 논문 대신 **재현 가능한 실험 기록**이 그 자리를 대신한다. 회사가 원하는 것은 학위 자체가 아니라 **문제를 정의하고 검증하는 훈련**이기 때문이다.",
+          "hours": 10,
+          "resources": []
+        },
+        {
+          "topic": "PyTorch 옆에 JAX 가 적힌 이유",
+          "from": "qualification",
+          "quote": "Python 및 최신 딥러닝 프레임워크(PyTorch, JAX)를 활용한 AI 모델 개발 및 학습 경험",
+          "priority": "high",
+          "why": "국내 공고에서 **JAX 를 나란히 적는 곳은 드물다.** JAX 는 함수형이고 컴파일(XLA) 기반이라, **같은 계산을 대량으로 병렬로 돌리거나 물리 시뮬레이션과 학습을 한 그래프에 넣을 때** 유리하다 — 로보틱스·제어 쪽 연구에서 쓰이는 이유가 그것이다. 이 한 줄이 **이 팀이 논문 구현을 직접 따라간다는 신호**로 읽힌다.",
+          "gap_check": "JAX 의 `jit`·`vmap` 이 무엇을 해 주는지, 그리고 PyTorch 로 같은 것을 하려면 무엇이 번거로운지 말할 수 있나?",
+          "drill": "**작은 모델 하나를 PyTorch 와 JAX 로 각각 구현한다.** 같은 데이터·같은 구조로 학습시키고 ① 코드 길이 ② 학습 속도 ③ **여러 환경을 동시에 굴릴 때(`vmap`)의 차이**를 비교한다. JAX 를 실무에서 안 쓰더라도, **왜 이 팀이 그걸 적었는지 이해했다는 것**이 면접에서 드러난다.",
+          "hours": 10,
+          "resources": [
+            {
+              "title": "JAX 공식 문서",
+              "url": "https://docs.jax.dev/",
+              "kind": "docs",
+              "note": "`jit`·`vmap`·`grad` 세 변환만 먼저 잡는다"
+            }
+          ]
+        },
+        {
+          "topic": "논문을 읽고 구현하는 습관 — 우대사항이지만 이 팀의 언어다",
+          "from": "preference",
+          "quote": "ICRA, IROS, CVPR, NeurIPS, RSS 등 Robotics 및 Computer Vision 분야 Top-tier 학회 또는 저널 논문 게재 경험",
+          "priority": "high",
+          "why": "**게재 경험은 없어도 되지만, 그 학회들이 무엇을 다루는지는 알아야 한다.** 이 분야는 6개월이면 표준이 바뀌고, 팀 안의 대화가 논문 제목으로 오간다. 그리고 우대사항 목록 전체가 그 흐름을 가리킨다 — `End-to-End Trajectory Generation`, `Generative AI 기반 Motion Planning`, `대규모 Imitation Learning 데이터셋`. **읽고 구현해 본 기록이 게재를 대신할 수 있다.**",
+          "gap_check": "최근 2년 안에 나온 End-to-End 자율주행 논문 중 하나를 골라, 무엇이 새로웠고 어떤 한계가 지적됐는지 말할 수 있나?",
+          "drill": "**논문 한 편을 골라 핵심만 재현한다.** End-to-End 계획이나 생성형 모션 플래닝 논문 하나를 정해, ① 한 장 요약(문제·방법·결과·한계) ② 작은 규모로 핵심 아이디어 재현 ③ **원 논문과 다른 결과가 나온 이유**를 적는다. 세 번째가 가장 값이 크다 — 재현 실패의 원인을 짚는 것이 곧 실력이다.",
+          "hours": 16,
+          "resources": []
+        },
+        {
+          "topic": "C++ 로 내려가는 지점 — 연구와 양산이 만나는 경계",
+          "from": "preference",
+          "quote": "C++, CUDA, TensorRT 기반 고성능 연산 및 추론 최적화 경험",
+          "priority": "high",
+          "why": "**모델은 파이썬으로 만들지만 차에는 C++ 로 들어간다.** 실시간성과 자원 제약 때문이고, 앞의 `On-device Real-time` 요구와 같은 이야기다. 이 회사에서 이 항목이 특히 중요한 이유는 조직 구조에 있다 — 회사에는 `IVI OS Engineer`·`Firmware Engineer` 처럼 **아래 계층을 맡는 팀이 따로 있어서**, 모델 담당자가 그들과 말이 통하려면 이 언어를 알아야 한다.",
+          "gap_check": "파이썬으로 학습한 모델을 C++ 런타임에 올릴 때 무엇이 문제가 되는지(전처리 재현, 수치 차이, 메모리 관리) 짚을 수 있나?",
+          "drill": "**학습한 모델을 C++ 로 추론시킨다.** ONNX 로 내보내고 C++ 에서 로드해 실행하되, **파이썬 쪽과 출력이 완전히 같은지 수치로 대조**한다. 어긋나면 전처리·정밀도·연산 순서 중 어디서 갈렸는지 찾는다 — 실무에서 가장 자주 생기는 문제가 정확히 이것이다.",
+          "hours": 12,
+          "resources": []
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**모델 하나를 학습부터 온디바이스 추론까지 끝까지 끌고 간 기록**을 낸다",
+          "why": "이 회사의 성과 기준은 논문이 아니라 **양산차 탑재**다(회사 브리핑 참조). 학습만 한 포트폴리오는 많지만, **정해진 지연 예산 안에 넣기까지** 해 본 기록은 드물다. `p99 지연`과 정확도 손실을 함께 적은 표 한 장이 그 증거가 된다.",
+          "effort": "주말 세 번"
+        },
+        {
+          "idea": "**실패 분석 문서**를 준비한다 — 모델이 언제 무너졌고 왜였는지",
+          "why": "자율주행은 잘 될 때가 아니라 **엣지 케이스**에서 실력이 갈린다. 잡음·지연을 넣어 무너뜨린 실험 기록은 '나는 이 분야의 어려움이 어디 있는지 안다'는 가장 직접적인 신호다. 이 회사가 SIL/HIL 인프라 자리를 따로 뽑는 것과도 결이 맞는다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**고전 알고리즘과 신경망을 이어 붙인 예제**를 만든다",
+          "why": "공고가 두 세계를 **한 사람 안에서** 요구한다(`Motion Planning, Filtering ... 통합 및 검증`). 칼만 필터로 다듬은 상태를 신경망 계획기에 넣거나, 신경망 출력을 안전 검사기로 거르는 구조를 만들어 본 지원자는 이 자리에 정확히 맞는다.",
+          "effort": "이틀"
+        },
+        {
+          "idea": "**최근 논문 한 편의 재현 실패 보고서**를 들고 간다",
+          "why": "우대사항이 논문 게재이지만, 게재 없이 그 언어를 쓸 수 있음을 보이는 가장 빠른 길이 재현이다. 특히 **'왜 원 논문과 다른 결과가 나왔나'** 를 설명하는 문서는 게재 경험자에게도 인정받는 종류의 산출물이다.",
+          "effort": "일주일"
+        }
+      ],
+      "interview": {
+        "process": "공고에 전형 절차가 적혀 있지 않다. **본문이 한국어와 영어로 나란히 쓰여 있고**, 회사가 미국 서니베일·폴란드 바르샤바에도 거점을 두고 있어 **영어 면접 가능성을 염두에 두는 편이 안전하다.**",
+        "expect": [
+          "End-to-End 방식과 모듈 방식의 장단점 — 그리고 실패했을 때 원인을 어떻게 좁히나",
+          "모방학습 정책이 배포 후 나빠지는 문제를 겪어 봤나. 어떻게 다뤘나",
+          "칼만 필터의 가정이 깨지는 상황과 그때의 대안",
+          "모델 추론 지연을 어떻게 줄였나. 정확도를 얼마나 잃었나",
+          "시뮬레이션 결과를 어디까지 믿나. 실차와 달랐던 경험이 있나",
+          "TensorRT 로 정밀도를 낮췄을 때 생긴 문제와 해결",
+          "최근 읽은 관련 논문 한 편과 그 한계",
+          "**석사 학위가 없다면 '이에 준하는 실무 경험'으로 무엇을 제시하겠는가**",
+          "근무지 확인 — **이 공고는 경기 성남시(판교)** 이지만 같은 회사에 서니베일·바르샤바 자리가 섞여 있다"
+        ],
+        "sources": [
+          {
+            "title": "Physical AI Engineer (Model)",
+            "url": "https://www.wanted.co.kr/wd/366270",
+            "publisher": "원티드",
+            "summary": "경력 3-8년, 경기 성남시. 본문이 한국어·영어 병기다"
+          }
+        ]
+      }
+    }
   ]
 }
