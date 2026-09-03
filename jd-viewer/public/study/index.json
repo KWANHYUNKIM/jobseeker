@@ -451,6 +451,22 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "rag",
+      "title": "RAG",
+      "category": "ai",
+      "level": "core",
+      "status": "done",
+      "one_liner": "질문에 답하기 전에 **먼저 자료를 찾아 와서 그것만 보고 답하게** 하는 구조다. 모델을 다시 학습시키지 않고도 어제 만든 문서를 답에 반영할 수 있고, 대신 **찾기를 틀리면 답도 함께 틀린다.**",
+      "aliases": [
+        "RAG",
+        "Retrieval-Augmented Generation",
+        "검색 증강 생성"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
