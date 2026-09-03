@@ -768,6 +768,25 @@
       "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "caching",
+      "title": "캐시 전략",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**느린 곳에서 가져온 것을 빠른 곳에 베껴 두는 일**이다. 어려운 부분은 베끼는 쪽이 아니라 **언제 그 사본을 버리느냐** — 캐시 문제의 거의 전부가 여기서 나온다.",
+      "aliases": [
+        "캐시",
+        "캐싱",
+        "캐시 전략",
+        "캐싱 전략",
+        "cache",
+        "caching"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
