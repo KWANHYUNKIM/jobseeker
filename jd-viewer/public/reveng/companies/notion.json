@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-09-03",
   "one_liner": "글자 한 줄도 페이지도 DB 행도 전부 같은 것으로 만든 회사",
   "business_model": "팀 단위 좌석 구독으로 판다. 2025년 비공개 테일 오퍼에서 **110억 달러** 밸류에이션이 매겨졌고(총 약 2억 7천만 달러 규모, Sequoia·Index 재참여 + GIC 신규), **ARR 의 50% 이상이 AI 를 쓰는 고객에서 나온다** — 그 비중이 1년 만에 두 배 넘게 늘었다. 성장은 특히 아시아태평양에서 나서 싱가포르에 사무실을 열었다(도쿄·서울·시드니에 이어).\n\n**이 회사의 기술적 정체성은 '무엇을 파는가'보다 '무엇으로 만들어졌는가'에 있다.** 글자 한 줄, 이미지, 목록 항목, 데이터베이스의 행, 그리고 페이지 자체까지 **전부 같은 것(블록)** 이다. 이 하나의 선택이 제품의 자유로움과 시스템의 어려움을 동시에 만든다.",
   "products": [
@@ -2239,7 +2239,8 @@
     "**CRDT 를 어떻게 쓰는지** — 회사가 '새 CRDT 데이터 모델로 이행한다'고만 밝히고 방식도, 텍스트가 아닌 블록(이미지·데이터베이스)의 충돌 처리도 설명하지 않았다.",
     "**블록 구조가 왜 참조 추적을 어렵게 하는지** — 회사가 '블록 구조 때문에 어려운 문제를 풀어야 했다'고 적었지만 무엇이 어떻게 어려웠는지는 쓰지 않았다.",
     "오프라인으로 둘 수 있는 페이지 수의 현재 한계 — '계속 밀어 올리는 중'이라는 표현까지만 나온다.",
-    "**질의 시점에 권한을 어떻게 거르는지** — 벡터 검색 글은 색인 효율만 다루고 접근 제어 구조는 밝히지 않는다. 권한이 회수됐을 때 이미 색인된 내용을 어떻게 하는지도 없다."
+    "**질의 시점에 권한을 어떻게 거르는지** — 벡터 검색 글은 색인 효율만 다루고 접근 제어 구조는 밝히지 않는다. 권한이 회수됐을 때 이미 색인된 내용을 어떻게 하는지도 없다.",
+    "**벡터 검색은 2년에 걸쳐 네 번 갈아엎었다고 회사가 밝히지만(2026-02) 각 세대의 연도가 없어** 시기로 세우지 않았다. 데이터독에서와 같은 문제다 — 세대의 순서는 알아도 언제인지 모르면 연표가 되지 않는다."
   ],
   "sources": [
     {
@@ -2285,5 +2286,130 @@
       "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
     }
   ],
-  "domain": "notion.com"
+  "domain": "notion.com",
+  "eras": [
+    {
+      "id": "2020-shard",
+      "from": "2020",
+      "to": "2023",
+      "title": "다섯 해를 버틴 한 대를 480조각으로 나눴다",
+      "context": "포스트그레스 모놀리스 하나가 **다섯 해 동안 네 자릿수 규모의 성장**을 견뎌 왔다.",
+      "what_changed": "**2020년 중반**에 제품 사용량이 그 한 대의 능력을 넘어설 것이 분명해졌다. **480개 논리 샤드를 32개 물리 데이터베이스**에 **15개씩** 나눠 담았다.",
+      "why": "신호가 구체적이었다 — **포스트그레스의 `VACUUM` 이 계속 멈춰 서기 시작했고**, 트랜잭션 ID 되돌기(wraparound) 위험이 다가오고 있었다. 느려진 게 아니라 **정해진 벽이 보인 것**이다.",
+      "tradeoff": "**회사가 스스로 '더 일찍 쪼갰어야 했다'고 적었다.** 작은 팀이라 조기 최적화의 대가를 잘 알았고, 그래서 기다렸는데 **결국 데이터베이스가 이미 심하게 눌린 뒤에 옮기게 됐다.** 그 대가로 컬럼 백필조차 모놀리스에 부하를 더할 수 없어 **쓰기가 일어날 때 한 행씩 채우는 별도 따라잡기 스크립트**를 만들어야 했고, 마지막 전환에서는 **5분의 예정된 점검**을 수백만 사용자에게 부과했다.",
+      "domains": [
+        "저장·샤딩"
+      ],
+      "metrics": [
+        {
+          "label": "논리 샤드 · 물리 데이터베이스",
+          "value": "480개 · 32대 (대당 15개)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+              "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+              "publisher": "Notion Blog",
+              "date": "2021-10-06",
+              "summary": "모놀리스가 무엇에 막혀 480개 논리 샤드로 갔는지와, 더 일찍 쪼갰어야 했다는 반성을 적었다."
+            }
+          ]
+        },
+        {
+          "label": "전환 점검 시간",
+          "value": "5분",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+              "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+              "publisher": "Notion Blog",
+              "date": "2021-10-06",
+              "summary": "모놀리스가 무엇에 막혀 480개 논리 샤드로 갔는지와, 더 일찍 쪼갰어야 했다는 반성을 적었다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+          "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+          "publisher": "Notion Blog",
+          "date": "2021-10-06",
+          "summary": "모놀리스가 무엇에 막혀 480개 논리 샤드로 갔는지와, 더 일찍 쪼갰어야 했다는 반성을 적었다."
+        }
+      ]
+    },
+    {
+      "id": "2023-reshard",
+      "from": "2023",
+      "to": "",
+      "title": "3년 만에 다시 쪼갰고, 이번엔 멈추지 않았다",
+      "context": "32개 샤드 가운데 **일부가 최대 트래픽 때 CPU 사용률 90%를 넘었고**, 여럿이 프로비저닝된 **디스크 대역폭의 한계**에 가까워졌다. PgBouncer 를 늘리다 **연결 수 한계**에도 부딪혔다.",
+      "what_changed": "**2023년에 물리 데이터베이스를 32개에서 96개로** 세 배 늘렸다. 전환 뒤 최대 트래픽 때 CPU·IOPS 사용률이 **약 20%** 로 떨어졌다.",
+      "why": "앞 시기에 만든 여유가 3년 만에 다 찼다. 그리고 새해 트래픽 급증이 다가오고 있었다 — **정해진 날짜가 있는 부하는 기다려 주지 않는다.**",
+      "tradeoff": "**무중단을 사려니 계획에 없던 층을 하나 더 쪼개야 했다.** 그냥 옮기면 전환 전까지 **옛 샤드마다 연결이 18개씩** 생겨 감당이 안 됐고, 그래서 **PgBouncer 자체를 4개 클러스터(각 24개 데이터베이스 담당)로 쪼개는** 단계가 중간에 끼어들었다. 복제도 처음엔 사흘이 걸려 색인 생성을 뒤로 미뤄 12시간으로 줄였다. 지난번의 5분 점검은 없앴지만, 개별 페일오버마다 **1초쯤의 저장 스피너**는 남았다.",
+      "domains": [
+        "저장·샤딩"
+      ],
+      "features": [
+        "logical-shard-reshard"
+      ],
+      "metrics": [
+        {
+          "label": "물리 데이터베이스",
+          "value": "32대 → 96대",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+              "url": "https://www.notion.com/blog/the-great-re-shard",
+              "publisher": "Notion Blog",
+              "date": "2023-07-17",
+              "summary": "32개에서 96개로 다시 쪼개면서 무중단을 지키기 위해 PgBouncer 까지 쪼개야 했던 과정을 적었다."
+            }
+          ]
+        },
+        {
+          "label": "전환 후 최대 트래픽 사용률",
+          "value": "CPU·IOPS 약 20%",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+              "url": "https://www.notion.com/blog/the-great-re-shard",
+              "publisher": "Notion Blog",
+              "date": "2023-07-17",
+              "summary": "32개에서 96개로 다시 쪼개면서 무중단을 지키기 위해 PgBouncer 까지 쪼개야 했던 과정을 적었다."
+            }
+          ]
+        },
+        {
+          "label": "복제 소요",
+          "value": "사흘 → 12시간(색인 생성을 뒤로 미뤄)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+              "url": "https://www.notion.com/blog/the-great-re-shard",
+              "publisher": "Notion Blog",
+              "date": "2023-07-17",
+              "summary": "32개에서 96개로 다시 쪼개면서 무중단을 지키기 위해 PgBouncer 까지 쪼개야 했던 과정을 적었다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+          "url": "https://www.notion.com/blog/the-great-re-shard",
+          "publisher": "Notion Blog",
+          "date": "2023-07-17",
+          "summary": "32개에서 96개로 다시 쪼개면서 무중단을 지키기 위해 PgBouncer 까지 쪼개야 했던 과정을 적었다."
+        }
+      ]
+    }
+  ]
 }
