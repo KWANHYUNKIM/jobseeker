@@ -750,6 +750,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "distributed-lock",
+      "title": "분산 락",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**서로 다른 서버에서 도는 프로세스들이 같은 것을 동시에 건드리지 못하게** 막는 장치다. 한 대 안의 락과 달리 **믿을 것이 네트워크와 시계뿐**이라, \"잡았다고 믿는 것\"과 \"정말 잡고 있는 것\"이 어긋날 수 있다.",
+      "aliases": [
+        "분산 락",
+        "분산락",
+        "distributed lock",
+        "Redlock",
+        "락"
+      ],
+      "sections": 7,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
