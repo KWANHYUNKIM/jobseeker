@@ -425,6 +425,24 @@ def _unmask_atoms(md: str, atoms: list[str]) -> str:
     return _ATOM_MASK.sub(repl, md)
 
 
+_WARNED: set[str] = set()
+
+
+def _warn_missing(pkg: str, effect: str) -> None:
+    """빠진 선택 의존성을 프로세스당 한 번만 크게 알린다.
+
+    이 파일의 import 들은 전부 try/except 안에 있어서, 패키지가 없어도 크롤은
+    '성공'한 것처럼 끝난다. 실제로 trafilatura 없이 몇 주를 돌면서 RSS 요약을
+    본문으로 저장하고, deep_translator 없이 영어 글을 통째로 버리고 있었다 —
+    로그 어디에도 그 사실이 없었다. 조용한 실패를 시끄럽게 만든다.
+    """
+    if pkg in _WARNED:
+        return
+    _WARNED.add(pkg)
+    print(f"  [!] {pkg} 미설치 — {effect}", flush=True)
+    print("      해결: catch_capture/.venv/bin/pip install -r catch_capture/requirements.txt", flush=True)
+
+
 def _translate_ko(md: str) -> str:
     """마크다운을 한국어 번역. 코드블록은 원문 그대로 두고 산문만 번역.
 
@@ -433,6 +451,7 @@ def _translate_ko(md: str) -> str:
     try:
         from deep_translator import GoogleTranslator
     except ImportError:
+        _warn_missing("deep_translator", "번역 불가 → 영어 글은 본문 파일이 생성되지 않는다")
         return ""
     tr = GoogleTranslator(source="auto", target="ko")
     md, atoms = _mask_atoms(md)
@@ -515,6 +534,10 @@ def _to_markdown(html: str) -> str:
         return ""
     try:
         import trafilatura
+    except ImportError:
+        _warn_missing("trafilatura", "본문 추출 불가 → RSS 요약만 남고 이미지·표·코드블록 소실")
+        return ""
+    try:
         md = trafilatura.extract(
             _inject_video_embeds(html), output_format="markdown",
             include_tables=True, include_comments=False, include_formatting=True,
@@ -572,9 +595,14 @@ def _article_text(post: dict) -> str:
     static_html = ""
     try:
         import trafilatura
-        static_html = trafilatura.fetch_url(url) or ""
-    except Exception:
+    except ImportError:
+        _warn_missing("trafilatura", "원문 페이지를 받지 못해 RSS 본문으로만 처리된다")
         static_html = ""
+    else:
+        try:
+            static_html = trafilatura.fetch_url(url) or ""
+        except Exception:
+            static_html = ""
 
     md = _to_markdown(static_html)          # 정적 페이지
     rss_md = _to_markdown(raw)              # RSS 본문

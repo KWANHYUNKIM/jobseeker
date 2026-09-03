@@ -7,3 +7,9 @@ numpy>=2.0.0
 beautifulsoup4>=4.12
 # crawl_techblog_graph 의 파이프라인 그래프(LLM 없음)
 langgraph>=0.2
+# crawl_techblog 의 본문 추출 — 없으면 RSS 요약만 남고 이미지·표·코드블록이 통째로
+# 사라진다(_to_markdown 이 ImportError 를 삼키고 빈 문자열을 돌려주기 때문).
+trafilatura>=1.12
+# crawl_techblog 의 한국어 번역 — 없으면 영어 글은 본문 파일이 아예 안 만들어진다.
+# 패키지 이름은 하이픈, import 는 언더스코어(deep_translator).
+deep-translator>=1.11
