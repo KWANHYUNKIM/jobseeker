@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-09-03",
   "one_liner": "권위가 하나 있다는 사실에서 걷어낼 것을 세어 나간 회사",
   "business_model": "**좌석 기반 구독으로 번다.** 2025년 매출 **10.56억 달러**(+41%), 4분기 3.038억(+40%). 순매출유지율(NDR)이 **136%** 이고 연 10만 달러 이상 쓰는 유료 고객이 **1,405곳** 이라, **이미 들어온 고객이 더 쓰면서 자라는 구조**다. non-GAAP 영업이익은 1.295억 달러(마진 12%)이고, GAAP 영업손실 13억 달러에는 **IPO 관련 일회성 주식보상비용 9.757억 달러**가 들어 있다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 자기 지면에서, Netflix 는 자기 구독에서, 쿠팡은 자기가 파는 물건에서, Shopify 는 남의 매출의 일부에서 번다. Figma 는 **일하는 사람의 자리(좌석)** 에서 번다 — 그래서 **여러 사람이 한 파일에 동시에 들어와 있는 것 자체가 제품의 값어치**가 된다(뒷문장은 이 사이트의 해석).\n\n그리고 사용자의 위치가 인프라의 제약이 된다 — **주간 활성 사용자의 80% 이상이 미국 밖**인데 인프라는 오리건 데이터센터 중심이다(2019년 기준).",
   "revenue_total": "2025년 매출 10억 5,600만 달러 (+41%)",
@@ -2530,7 +2530,8 @@
     "**타일 기반 렌더러의 내부** — 타일 크기·분할 규칙, 마스킹·블러·블렌드 모드를 GPU 에서 어떻게 구현했는지. '고도로 최적화된 타일 기반 엔진'이라는 표현까지만 공개돼 있다.",
     "WebGPU 전환의 구체적 수치 — 어떤 기기에서 얼마나 좋아졌는지는 '일부 개선·나머지 중립'까지만 밝힌다.",
     "샤딩 이후의 현재 상태 — 2024년 글은 '올해 더 복잡한 DB 를 샤딩한다'까지만 말한다. 어디까지 갔는지는 모른다.",
-    "PGKeeper(PgBouncer 를 대체한 자체 연결·부하 관리 서비스)는 이번 사이클에서 다루지 않았다 — 별도 자료가 있다."
+    "PGKeeper(PgBouncer 를 대체한 자체 연결·부하 관리 서비스)는 이번 사이클에서 다루지 않았다 — 별도 자료가 있다.",
+    "**이 연표는 데이터 저장 축만 담고 있다.** 같은 회사에 렌더링·런타임 쪽 변천도 연도가 붙어 있는데(2017년 WebAssembly 도입, 2025년 WebGL→WebGPU) 축이 달라 한 줄에 세우지 않았다. 회사의 시대를 두 축으로 나눠 보여줄지, 한 줄로 합칠지는 정하지 못했다."
   ],
   "sources": [
     {
@@ -2555,5 +2556,113 @@
       "summary": "2025년 매출 10.56억 달러(+41%), 4분기 3.038억 달러(+40%). 순매출유지율(NDR) 136%, 연 10만 달러 이상 쓰는 유료 고객 1,405곳. non-GAAP 영업이익 1.295억 달러(마진 12%)이고 GAAP 영업손실 13억 달러에는 IPO 관련 일회성 주식보상비용 9.757억 달러가 들어 있다. 2026년 매출 가이던스는 13.66~13.74억 달러."
     }
   ],
-  "domain": "figma.com"
+  "domain": "figma.com",
+  "eras": [
+    {
+      "id": "2020-single-postgres",
+      "from": "2020",
+      "to": "2022",
+      "title": "AWS 에서 제일 큰 기계 한 대 위에 다 있었다",
+      "context": "**포스트그레스 데이터베이스 하나**가 **AWS 의 가장 큰 물리 인스턴스** 위에서 돌았다.",
+      "what_changed": "쪼개지 않고 제일 큰 한 대에 올렸다. 데이터베이스가 하나면 트랜잭션도 외래키도 조인도 전부 데이터베이스가 대신 지켜 준다.",
+      "why": "첫 시기다. 한 대로 되는 동안에는 그게 가장 적은 일을 하는 방법이다.",
+      "tradeoff": "**제일 큰 기계를 골랐다는 것은 그 위가 없다는 뜻이다.** 성장이 여러 방향에서 한꺼번에 확장성을 위협했고, 결국 CPU 사용률이 병목이 됐다.",
+      "domains": [
+        "데이터 저장·확장"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How Figma's Databases Team Lived to Tell the Scale",
+          "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+          "publisher": "Figma Blog",
+          "date": "2024-03-14",
+          "summary": "포스트그레스 한 대에서 수직 분할을 거쳐 수평 샤딩까지 간 경로와, 샤딩으로 포기한 것들을 나열했다."
+        }
+      ]
+    },
+    {
+      "id": "2022-vertical",
+      "from": "2022",
+      "to": "2023-09",
+      "title": "관련된 테이블끼리 묶어 세로로 갈랐다",
+      "context": "한 대의 상한에 닿아 있었다.",
+      "what_changed": "**2022년 말**까지 캐시와 읽기 복제본, 그리고 **열두 개쯤의 수직 분할 데이터베이스**로 이루어진 분산 구조를 만들었다. `Figma 파일` · `조직` 처럼 **관련된 테이블 묶음을 각자의 분할로** 떼어냈다.",
+      "why": "CPU 사용률이 병목이라 지렛대가 필요했다.",
+      "tradeoff": "**수직 분할의 최소 단위는 테이블 하나다.** 그래서 **수 테라바이트·수십억 행짜리 테이블 하나가 커지면 거기서 끝난다.** 실제로 포스트그레스 **vacuum 중에 신뢰성 영향**이 보이기 시작했고, **아마존 RDS 가 지원하는 최대 IOPS 를 곧 넘을 참**이었다.",
+      "domains": [
+        "데이터 저장·확장"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How Figma's Databases Team Lived to Tell the Scale",
+          "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+          "publisher": "Figma Blog",
+          "date": "2024-03-14",
+          "summary": "포스트그레스 한 대에서 수직 분할을 거쳐 수평 샤딩까지 간 경로와, 샤딩으로 포기한 것들을 나열했다."
+        }
+      ]
+    },
+    {
+      "id": "2023-horizontal",
+      "from": "2023-09",
+      "to": "",
+      "title": "데이터베이스가 지켜 주던 것을 하나씩 내려놓았다",
+      "context": "테이블 하나가 한 대에 안 들어가는 크기가 됐다.",
+      "what_changed": "**2023년 9월 첫 테이블을 수평 샤딩했다. 끝에서 끝까지 아홉 달**이 걸렸다. DBProxy 질의 엔진, **논리 샤딩과 물리 샤딩의 분리**, 토폴로지 관리, 섀도 플래닝, 포스트그레스 뷰를 새로 만들었다. **물리 샤딩까지 끝난 뒤에도 되돌릴 수 있는 능력**을 유지했다.",
+      "why": "수직 분할로는 테이블 하나보다 작게 못 나눈다. vacuum 신뢰성과 IOPS 상한이 동시에 다가오고 있었다.",
+      "tradeoff": "**대가가 길고, 회사가 그걸 다 적었다.** 어떤 SQL 질의는 비효율이 되거나 아예 지원할 수 없고, 애플리케이션이 라우팅에 필요한 정보를 직접 넘겨야 한다. **외래키와 전역 유니크 인덱스를 포스트그레스가 더는 강제해 주지 않고**, 트랜잭션이 여러 샤드에 걸치면서 **트랜잭션성도 포스트그레스에 맡길 수 없다** — 일부 데이터베이스에는 쓰기가 성공하고 일부는 실패하는 **부분 커밋**이 가능해진다. 샤드 키 범위 스캔은 연속된 키가 서로 다른 샤드로 흩어지므로 비효율이 되고, 흩뿌려 모으는(scatter-gather) 질의는 **구현이 매우 복잡한 데다 너무 많아지면 수평 샤딩의 확장성 자체를 해친다.**",
+      "domains": [
+        "데이터 저장·확장"
+      ],
+      "features": [
+        "horizontal-sharding"
+      ],
+      "stack_in": [
+        "DBProxy",
+        "논리/물리 샤딩 분리"
+      ],
+      "metrics": [
+        {
+          "label": "첫 테이블 샤딩에 걸린 기간",
+          "value": "약 아홉 달",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's Databases Team Lived to Tell the Scale",
+              "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-03-14",
+              "summary": "포스트그레스 한 대에서 수직 분할을 거쳐 수평 샤딩까지 간 경로와, 샤딩으로 포기한 것들을 나열했다."
+            }
+          ]
+        },
+        {
+          "label": "수직 분할 데이터베이스 (2022 말)",
+          "value": "열두 개가량",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's Databases Team Lived to Tell the Scale",
+              "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-03-14",
+              "summary": "포스트그레스 한 대에서 수직 분할을 거쳐 수평 샤딩까지 간 경로와, 샤딩으로 포기한 것들을 나열했다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How Figma's Databases Team Lived to Tell the Scale",
+          "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+          "publisher": "Figma Blog",
+          "date": "2024-03-14",
+          "summary": "포스트그레스 한 대에서 수직 분할을 거쳐 수평 샤딩까지 간 경로와, 샤딩으로 포기한 것들을 나열했다."
+        }
+      ]
+    }
+  ]
 }
