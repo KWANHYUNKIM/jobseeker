@@ -823,6 +823,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "zero-trust",
+      "title": "제로 트러스트",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**\"공격자가 이미 안에 있다\"를 전제로 짜는 보안**이다. 사내망이라서·VPN 을 탔으니까 믿어 주는 것을 그만두고, **요청 하나하나를 매번 검증**한다.",
+      "aliases": [
+        "제로 트러스트",
+        "제로트러스트",
+        "Zero Trust",
+        "zero trust",
+        "mTLS"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
