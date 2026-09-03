@@ -74,6 +74,19 @@ jobs:
 
           # 안 뜨는 서비스는 이유를 봐야 한다. launchd 는 실패한 job 을 조용히
           # 재시작만 반복하고 화면에는 아무것도 안 남긴다. 상태와 마지막 오류를 꺼내 온다.
+          # 뷰어(nginx) -> 수집기 경로가 실제로 뚫렸는지. 여기가 막히면 브라우저가
+          # 보낸 것이 한 건도 안 닿는데, 수집기 자체는 멀쩡해 보여서 알아채기 어렵다.
+          # 빈 본문을 보내 400(수집기가 받았다)인지 200(nginx 가 SPA 를 돌려줬다)인지 본다.
+          # 400 은 우리 서버만 낼 수 있는 답이므로 이벤트를 만들지 않고 확인이 된다.
+          echo "-- 뷰어 -> 수집기 경로"
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 -X POST -H "Content-Type: application/json" -d "{}" "http://127.0.0.1:8080/collect" || echo 000)
+          case "$code" in
+            400) echo "   O /collect -> 수집기 도달 (400 = 빈 본문 거절)" ;;
+            200) echo "   X /collect 가 SPA 로 떨어짐 — nginx 설정이 옛 컨테이너다. 재배포 필요" ;;
+            502|504) echo "   X /collect -> 502/504 — 수집기(8772)가 안 뜸" ;;
+            *) echo "   ? /collect -> HTTP $code" ;;
+          esac
+
           echo "::group::서비스 진단"
           for name in ops stats search collect; do
             label="com.jobseeker.$name"
