@@ -4,34 +4,38 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **46개**(브리핑 43 + 중복 표시 3),
-학습 369개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **47개**(브리핑 44 + 중복 표시 3),
+학습 377개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
 
-직전 회차: **`Director, Program Management - Catalog AI & Quality (Taiwan Relocation)`**(ats).
-**프로그램 매니지먼트 직군의 첫 공고**, 형태 ④.
+직전 회차: **`Enterprise Network Staff Architect/Engineer`**(ats). 줄 겹침 0.
 
-이 공고에서만 나온 것:
-- ⚠️ **제목에 `Taiwan Relocation`** — 근무지가 대만이다. **학습이 아니라 결정 항목**이라
-  `fit.must_have` 첫 줄과 `edge`·예상 질문에 넣고, **글로벌 도메인 `what_to_know` 에도
-  "대만은 이전 채용도 있다"** 를 적었다(비자·계약·기간·귀임은 공고에 없다).
-- ⚠️ 공고가 스스로 **`Unlike traditional program management roles, this position requires a
-  hands-on builder mindset.`** 이라고 선을 긋는다 — **일정 관리 PM 이 아니라 직접 만드는 PM.**
-  드릴을 **48시간 MVP**(남에게 개발을 부탁하지 않는다)로 잡았다.
-- ⚠️ **`Establish evaluation frameworks for prompt engineering and LLM output quality`** 가
-  담당업무이자 우대사항에도 다시 나온다 — **회사가 두 번 적은 항목**이라 `edge` 로 올렸다.
-  지표를 **정확도 하나가 아니라 과잉 수정률·누락률로 나누게** 했다(수백만 건에 적용되므로
-  1% 오류도 수만 건).
-- ⚠️ 우대사항에 **`Background from Amazon, Uber, Airbnb, Agoda, or similar technology
-  companies`** — **특정 회사 출신을 우대로 적은 드문 표기**다.
+⚠️ **일본 채용 공고였다 — 제목으로는 전혀 안 드러난다.** 전형 절차와 근무 조건이
+**일본어**로 적혀 있고(`書類選考 → 電話／Zoom面接 → オンサイト面接 → 内定`),
+자격에 **`Business level in English and Japanese speaking`** 이 있다.
+앞서 STATE 에 "일본 공고는 제목에 없다"고 적었는데 — **제목이 아니라 본문에 있었다.**
+
+→ **글로벌 도메인 `what_to_know` 에 정리**: 해외 채용이 **미국(보상이 US 기준) · 대만
+(`Taiwan Relocation`) · 일본(본문 일부가 일본어)** 세 갈래로 확인됐고 **어느 것도
+제목만으로는 알 수 없다.** 본문의 **언어와 조건 표기**를 봐야 한다.
+
+→ **보안 도메인에도 여섯 번째 갈래를 추가**: **사내 네트워크**(차세대 방화벽·SASE·ZTNA).
+`Security Infrastructure` 가 **서비스 사이의** 제로 트러스트라면 여기는 **사람과 사내 앱
+사이의** 제로 트러스트다.
+
+공고 자체:
+- 총 10년과 **별개로 네트워크·클라우드 보안 5년**을 요구한다.
+- 화려한 제품 이름 사이에 **`Core Networking: Routing and Switching` 기본기를 따로** 적었다.
+- 실무 난이도를 **"새 정책을 만드는 것보다 낡은 정책을 안전하게 지우는 것"** 으로 잡고
+  `edge` 를 **정책 청소 절차**로 만들었다.
+- ⚠️ **실습 경계를 항목마다 명시**(자기 장비·자기 랩).
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
 ⚠️ **세 절 중 비거나 한쪽만 찬 것이 있으면 `full_jd` 를 읽는다** — 영문 ats 공고의
 **네 가지 형태**(① 통째로 빔 ② 자격이 `main_tasks` 안 ③ `Preferred` 만 담김
 ④ `Basic`/`Minimum` 은 `main_tasks` 끝 + `Preferred` 는 `preferences`).
-⚠️ **형태 ③ 이면 `verdict`·`fit`·`edge`·예상 질문에 "원문 확인"을 넣는다.**
-⚠️ **제목이나 본문에 근무지·이전·비자 단서가 있으면 `fit` 첫 줄로 올린다** — 준비가 아니라
-**결정 항목**이다(미국 채용, 대만 이전 둘 다 나왔다).
+⚠️ **본문에 근무지·언어·이전 단서가 있으면 `fit` 첫 줄로 올린다** — **결정 항목**이다.
+지금까지 미국·대만·일본 세 종류가 나왔고 **전부 제목만으로는 몰랐다.**
 **본문이 글자 그대로 같으면 `duplicate_of` 로 표시**하고 그 회차는 그것으로 끝낸다.
 
 ⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 최대 겹침 0.33).
@@ -60,6 +64,11 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **해외 채용은 제목이 아니라 본문에서 드러난다.** 쿠팡에서 미국(보상이 `US geographic
+  markets` 기준)·대만(`Taiwan Relocation`)·일본(**전형과 근무 조건이 일본어**) 세 종류가
+  나왔는데 **셋 다 제목만으로는 알 수 없었다.** 앞서 "일본 공고는 제목에 없다"고 세었던
+  것은 **제목만 센 결과였다** — 근무지를 셀 때는 **본문의 언어와 조건 표기**까지 본다.
 
 - **근무지는 학습 항목이 아니라 `fit` 의 첫 줄이다.** 미국 채용(보상이 `US geographic
   markets` 기준)과 대만 이전(`Taiwan Relocation`)이 연달아 나왔다. 이런 조건은 공부해서
