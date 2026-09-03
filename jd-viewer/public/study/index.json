@@ -661,6 +661,22 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "bigdecimal",
+      "title": "BigDecimal",
+      "category": "language",
+      "level": "basic",
+      "status": "done",
+      "one_liner": "**십진 소수를 정확히 담는 자료형**이다. `double` 은 0.1 조차 정확히 담지 못하는데, 그 오차가 돈 계산에서는 **1원씩 어긋나 감사에서 잡히는 사고**가 되기 때문에 만들어졌다.",
+      "aliases": [
+        "BigDecimal",
+        "빅데시멀",
+        "십진 소수 자료형"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {

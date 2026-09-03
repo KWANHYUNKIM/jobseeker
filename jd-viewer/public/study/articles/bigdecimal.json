@@ -1,0 +1,639 @@
+{
+  "slug": "bigdecimal",
+  "title": "BigDecimal",
+  "title_en": "BigDecimal",
+  "aliases": [
+    "BigDecimal",
+    "빅데시멀",
+    "십진 소수 자료형"
+  ],
+  "category": "language",
+  "level": "basic",
+  "status": "done",
+  "updated_at": "2026-09-04",
+  "one_liner": "**십진 소수를 정확히 담는 자료형**이다. `double` 은 0.1 조차 정확히 담지 못하는데, 그 오차가 돈 계산에서는 **1원씩 어긋나 감사에서 잡히는 사고**가 되기 때문에 만들어졌다.",
+  "summary": "컴퓨터의 `double`·`float` 은 2진 부동소수점이라 **십진 소수 대부분을 정확히 표현하지 못한다.** 자바 문서가 그 사실을 직접 적는다 — `new BigDecimal(0.1)` 은 0.1 이 아니라 `0.1000000000000000055511151231257827021181583404541015625` 다. 계산 하나에서는 티가 안 나지만 **누적되고 비교되고 감사받는** 금액에서는 사고가 된다. BigDecimal 은 값을 **정수(unscaled value) + 소수 자릿수(scale)** 로 나눠 담아 이 문제를 없앤다. 대신 세 가지를 배워야 한다 — **`String` 생성자를 써야 하고**(문서가 그렇게 권한다), **나눗셈에는 반올림 규칙을 반드시 정해야 하며**(안 정하면 예외다 — 그게 설계다), **`equals` 와 `compareTo` 가 다르다**(`2.0` 과 `2.00`). 그리고 이 모든 것의 대안으로 **금액을 최소 단위 정수(원·센트)로 다루는** 길이 있다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 정수와 소수 자릿수로 쪼개 담는다",
+      "body": "`double` 은 값을 **2의 거듭제곱의 합**으로 저장한다. BigDecimal 은 완전히 다른 방식이다.\n\n```\n값 = unscaled value × 10^(-scale)\n\n1234.56  →  unscaled = 123456,  scale = 2\n0.1      →  unscaled = 1,       scale = 1     ← 정확하다\n```\n\n**정수 하나와 소수 자릿수 하나**로 나눠 담기 때문에, 십진으로 적을 수 있는 값은 **오차 없이** 담긴다. 자릿수 제한도 사실상 없다(정수 부분이 커지면 메모리를 더 쓸 뿐이다).\n\n**`scale` 이 값의 일부라는 점이 이 자료형의 성격을 정한다.**\n\n```java\nnew BigDecimal(\"2.0\")   // unscaled=20,  scale=1\nnew BigDecimal(\"2.00\")  // unscaled=200, scale=2   ← 같은 값, 다른 표현\n```\n\n둘은 **수로는 같지만 객체로는 다르다.** 이 성질이 뒤의 `equals` 함정을 만들고, 동시에 **\"이 금액은 소수 둘째 자리까지다\"라는 정보를 값이 스스로 갖고 다니게** 해 준다 — 통화마다 자릿수가 다른 세계에서 그것은 기능이다.\n\n> **이 낱말은 자바에만 있는 것이 아니다.** 파이썬은 `decimal.Decimal`, C# 은 `decimal`, DB 는 `NUMERIC`/`DECIMAL` 타입으로 같은 문제를 푼다. **개념은 하나이고 이름만 다르다** — 그래서 이 문서는 자바 문서를 인용하되 결론은 언어와 무관하다.\n\n**공고에서는 이 낱말이 거의 안 보인다.** 이 저장소의 공고 전체에서 `BigDecimal` 이 그대로 적힌 것은 **1건**이다 — `금액 계산 처리 경험 (BigDecimal 등)`(셀빅). 대신 **그것을 전제하는 문장**이 잔뜩 있다: `정산/환불/원장(ledger) 시스템 설계 경험`(가이아코퍼레이션), `결제, 정산, 회계성 데이터, PG/VAN 연동 등 **정합성이 중요한 시스템**`(레드블루). `pull-up-resistor` 문서와 같은 유형이다 — **이름은 안 나오는데 그것 없이는 그 일을 못 한다.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 생겼나 — 0.1 은 2진수로 끝나지 않는다",
+      "body": "십진수 `1/3` 을 소수로 적으면 `0.333…` 으로 끝나지 않는다. **2진수에서는 `1/10` 이 그렇다.**\n\n```\n0.1 (십진) = 0.0001100110011001100…  (2진, 무한 반복)\n```\n\n`double` 은 유한한 비트로 저장하므로 **어딘가에서 자른다.** 그래서 저장된 값은 0.1 이 아니라 그 근처의 다른 수다. 자바 문서가 이 사실을 **정확한 자릿수까지** 적어 둔다.\n\n> `new BigDecimal(0.1)` 은 0.1 과 정확히 같은 값을 만들 것 같지만, 실제로는 **`0.1000000000000000055511151231257827021181583404541015625`** 다. 0.1 은 `double` 로 정확히 표현될 수 없기 때문이다 — **생성자에 들어가는 값 자체가 이미 0.1 이 아니다.**\n\n**계산 하나에서는 이 오차가 안 보인다.** 화면에 찍을 때 반올림되기 때문이다. 문제는 세 가지 상황에서 드러난다.\n\n**① 누적된다.** 1원 미만의 오차가 10만 건 쌓이면 그것은 더 이상 1원 미만이 아니다. 정산·마감처럼 **합계를 맞춰야 하는 일**에서 바로 잡힌다.\n\n**② 비교가 실패한다.** `0.1 + 0.2 == 0.3` 이 거짓이다(대부분의 언어에서). 금액이 같은지 확인하는 코드가 조용히 틀린다.\n\n**③ 설명할 수 없다.** 감사·정산 담당자가 \"이 1원은 어디서 왔나\"를 물었을 때, **부동소수점 오차라는 답은 답이 아니다.** 금액 계산에서 요구되는 것은 빠름이 아니라 **재현 가능하고 설명 가능한 결과**다.\n\n> **그래서 규칙은 단순하다 — 돈에는 `double`·`float` 을 쓰지 않는다.** 그리고 이 문서가 `java-in-finance` 다음에 오는 이유이기도 하다. 그 문서가 \"금융권이 왜 Java 인가\"를 다뤘다면, 여기는 **그 안에서 금액을 어떻게 담는가** 하나만 맡는다.\n\n**대신 얻는 대가도 분명하다** — 연산이 느리고(객체 생성과 정수 연산이 따른다) 코드가 장황해진다(`a + b` 대신 `a.add(b)`). **속도가 정말 중요한 곳**(과학 계산·그래픽·통계)에서는 `double` 이 맞고, 그때 오차는 **허용되는 성질**이다. 자료형 선택은 정확성 대 성능의 문제이지 옳고 그름이 아니다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        }
+      ]
+    },
+    {
+      "id": "how",
+      "kind": "how",
+      "heading": "쓰는 법 — 세 가지만 지키면 된다",
+      "body": "**① `String` 으로 만든다.**\n\n```java\nnew BigDecimal(\"0.1\")      // ✅ 정확히 0.1\nnew BigDecimal(0.1)        // ❌ 0.1000000000000000055511151231257827021181583404541015625\nBigDecimal.valueOf(0.1)    // ✅ Double.toString 을 거치므로 0.1\n```\n\n자바 문서가 명시적으로 권한다 — **`String` 생성자는 완벽하게 예측 가능하므로 `double` 생성자보다 이쪽을 쓰라**고. `double` 을 받아야만 하는 상황이면 `valueOf(double)` 을 쓴다.\n\n> **이 규칙의 진짜 무게는 경계에 있다.** JSON·폼·외부 API 에서 숫자가 들어올 때 **중간에 `double` 로 한 번이라도 지나가면 그 순간 오차가 박힌다.** 파싱 단계부터 문자열로 받아야 한다.\n\n**② 나눗셈에는 반올림 규칙을 반드시 준다.**\n\n```java\na.divide(b)                                  // 무한소수면 ArithmeticException\na.divide(b, 2, RoundingMode.HALF_UP)         // 소수 2자리, 반올림 규칙 명시\n```\n\n`1/3` 처럼 딱 떨어지지 않는 나눗셈에서 규칙이 없으면 **예외가 난다.** 불친절해 보이지만 **그것이 설계다** — 반올림을 어떻게 할지는 언어가 정할 문제가 아니라 **도메인·법규가 정할 문제**이기 때문이다. `RoundingMode.UNNECESSARY` 는 아예 \"이 연산은 정확히 떨어질 것\"이라고 **주장하는** 모드이고, 아니면 예외를 던진다.\n\n**③ 소수 자릿수를 명시적으로 맞춘다.**\n\n```java\namount.setScale(2, RoundingMode.HALF_UP)   // 원화면 0, 달러면 2\n```\n\n계산 중간에는 정밀도를 넉넉히 두고 **저장·표시 직전에 한 번** 맞추는 것이 기본형이다. 중간마다 반올림하면 **반올림 오차가 누적**된다.\n\n**반올림 모드는 골라야 한다.** 실무에서 갈리는 것은 둘이다.\n\n| 모드 | 0.5 를 | 쓰는 곳 |\n|---|---|---|\n| `HALF_UP` | 올림(0.5 → 1) | 일상적인 금액, 한국 실무에서 흔하다 |\n| `HALF_EVEN` | **짝수 쪽으로**(0.5 → 0, 1.5 → 2) | 통계적 편향을 줄여 회계·금융에서 선호(은행가 반올림) |\n\n> **어느 쪽이 맞는지는 이 문서가 정할 수 없다** — 계약·회계 기준·법규가 정한다. 이 문서가 말할 수 있는 것은 **\"정하지 않은 채로 두면 안 된다\"** 까지다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        },
+        {
+          "title": "java.math.RoundingMode (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/RoundingMode.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "반올림 모드 여덟 가지의 정의. **`UNNECESSARY` 는 '결과가 정확할 것'이라고 주장하는 모드**여서, 반올림이 필요해지면 예외를 던진다 — 즉 **반올림은 선택이지 기본값이 아니다**"
+        }
+      ]
+    },
+    {
+      "id": "equals",
+      "kind": "how",
+      "heading": "`equals` 와 `compareTo` 가 다르다 — 가장 자주 밟는 함정",
+      "body": "`2.0` 과 `2.00` 은 **같은 값이지만 다른 표현**이다. 그리고 자바는 그 둘을 다르게 다룬다.\n\n```java\nnew BigDecimal(\"2.0\").equals(new BigDecimal(\"2.00\"))       // false ❗\nnew BigDecimal(\"2.0\").compareTo(new BigDecimal(\"2.00\"))    // 0 (같다)\n```\n\n문서의 표현으로는 — **`equals` 는 수치 값과 표현이 모두 같아야** 참이고, `compareTo` 가 쓰는 자연 순서는 **같은 값의 무리를 서로 같다고 본다.**\n\n**이 차이가 사고를 만드는 자리들.**\n\n- **금액 비교**: `if (paid.equals(price))` 는 `10000` 과 `10000.00` 을 다르다고 한다. **금액 비교는 언제나 `compareTo(...) == 0`.**\n- **`HashSet`·`HashMap` 키**: 해시는 `equals` 를 따르므로 **같은 금액이 다른 키로 들어간다.** 중복 제거가 조용히 실패한다.\n- **`List.contains`·`assertEquals`**: 같은 이유로 테스트가 이상하게 실패하거나(또는 더 나쁘게) 이상하게 통과한다.\n- **`BigDecimal.ZERO` 와의 비교**: `x.equals(BigDecimal.ZERO)` 는 `0.00` 에 대해 거짓이다. **`x.compareTo(BigDecimal.ZERO) == 0`** 을 쓴다.\n\n> **규칙 하나로 요약된다 — BigDecimal 은 `compareTo` 로 비교하고, 컬렉션의 키로 쓰지 않는다.** 키가 필요하면 `setScale` 로 자릿수를 통일한 값을 쓰거나, 애초에 문자열·최소 단위 정수를 키로 쓴다.\n\n**그리고 불변(immutable)이라는 점도 함께 기억해야 한다.**\n\n```java\namount.add(fee);          // ❌ 결과를 버린다 — amount 는 그대로다\namount = amount.add(fee); // ✅\n```\n\n모든 연산이 **새 객체를 돌려준다.** `String` 과 같은 성질이고, 같은 실수가 난다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        }
+      ]
+    },
+    {
+      "id": "alternative",
+      "kind": "limits",
+      "heading": "대안 — 금액을 정수로 다루는 길",
+      "body": "소수를 아예 안 쓰는 방법이 있다. **금액을 그 통화의 최소 단위 정수로 담는 것**이다.\n\n```\n1,234원      → 1234        (원화의 최소 단위는 1원)\n$12.34       → 1234 cents\n```\n\n**장점이 분명하다.**\n- 정수 연산이라 **빠르고 오차가 없다.**\n- 언어·DB·JSON 어디를 지나도 **정수는 정수**다(뒤에서 볼 직렬화 문제가 사라진다).\n- 비교·해시·키 사용이 전부 자연스럽다.\n\n**대신 대가가 있다.**\n- **최소 단위보다 작은 값을 못 담는다.** 그런데 그런 값이 필요할 때가 있다 — 단가, 환율, 이자율, 세율 계산의 중간값. 그래서 실무에서는 **저장은 정수, 계산 중간은 BigDecimal** 로 섞기도 한다.\n- **통화마다 자릿수가 다르다**(원 0자리, 달러 2자리, 일부 통화 3자리). \"1234\"가 얼마인지는 **통화를 함께 들고 다녀야** 알 수 있다.\n- **읽는 사람이 헷갈린다.** 로그의 `1234` 가 12.34 인지 1,234 인지 — 타입 이름이나 필드명으로 못 박아야 한다.\n\n**고르는 기준은 이렇게 정리된다.**\n\n| 상황 | 대개 |\n|---|---|\n| 금액을 더하고 빼기만 한다 | **최소 단위 정수** |\n| 비율·이자·세금 계산이 섞인다 | **BigDecimal**(또는 둘을 섞어 쓴다) |\n| 여러 통화를 다룬다 | 통화 + 금액을 **한 타입으로 묶는다**(Money 패턴) |\n| 성능이 극단적으로 중요하다 | 정수 |\n\n> **그리고 어느 쪽을 고르든 진짜 결정은 따로 있다 — \"어디서 반올림하는가\".** 자료형은 오차를 없애 줄 뿐, **부가세를 항목마다 계산해 더할지 합계에 한 번 계산할지**는 사람이 정한다. 그 순서가 1원을 만든다.",
+      "confidence": "inferred"
+    },
+    {
+      "id": "boundary",
+      "kind": "limits",
+      "heading": "경계 — 자료형 하나로 끝나지 않는다",
+      "body": "BigDecimal 을 잘 써도 **값이 시스템의 경계를 넘을 때** 오차가 다시 들어온다.\n\n**① DB 컬럼 타입.** 애플리케이션은 BigDecimal 인데 컬럼이 `DOUBLE`·`FLOAT` 이면 **저장하는 순간 오차가 박힌다.** 금액 컬럼은 `NUMERIC`/`DECIMAL(정밀도, 자릿수)` 이어야 한다. 그리고 그 자릿수가 애플리케이션의 `scale` 과 어긋나면 **DB 가 알아서 반올림**한다 — 어떤 규칙으로 했는지 모르는 채로.\n\n**② JSON 직렬화.** 이것이 가장 자주 놓치는 자리다. `{\"amount\": 1234.56}` 으로 내보내면 **자바스크립트가 그것을 `number`(=double)로 읽는다.** 즉 여기까지 지킨 정확성이 브라우저에서 깨진다.\n→ **금액은 문자열로 주고받는다**(`\"1234.56\"`). 많은 결제 API 가 금액을 문자열로 정의하는 이유가 이것이다.\n\n**③ 언어 경계.** 파이썬 `decimal.Decimal`, C# `decimal`, 자바스크립트는 **표준 십진 타입이 아예 없다**(라이브러리를 쓴다). 시스템이 여러 언어로 나뉘면 **경계마다 문자열로 넘기는 것**이 가장 안전하다.\n\n**④ 그리고 자료형이 대신해 주지 않는 결정들.**\n- **반올림 모드**(`HALF_UP` vs `HALF_EVEN`) — 계약·회계 기준이 정한다.\n- **반올림 시점** — 항목별인가 합계인가. 순서가 결과를 바꾼다.\n- **통화별 자릿수** — 원·달러·디나르가 다르다.\n- **환율 계산의 중간 정밀도** — 몇 자리까지 들고 갈 것인가.\n\n> 한 줄로: **BigDecimal 은 \"컴퓨터가 만드는 오차\"를 없애 준다. \"사람이 정해야 하는 규칙\"은 그대로 남는다.** 그리고 정산 사고의 대부분은 후자에서 난다.",
+      "confidence": "inferred"
+    }
+  ],
+  "tables": [
+    {
+      "id": "api",
+      "kind": "spec",
+      "caption": "BigDecimal 핵심 API 와 함정",
+      "note": "자바 21 javadoc 기준. 다른 언어의 십진 타입도 **생성·나눗셈·비교** 이 세 자리에서 같은 함정이 난다",
+      "columns": [
+        "하려는 일",
+        "이렇게",
+        "이러면 안 된다"
+      ],
+      "rows": [
+        [
+          "값 만들기",
+          "`new BigDecimal(\"0.1\")` / `BigDecimal.valueOf(0.1)`",
+          "`new BigDecimal(0.1)` — **0.1 이 아니다**"
+        ],
+        [
+          "더하기·빼기",
+          "`a = a.add(b)`",
+          "`a.add(b)` — **불변이라 결과를 버린다**"
+        ],
+        [
+          "나누기",
+          "`a.divide(b, 2, RoundingMode.HALF_UP)`",
+          "`a.divide(b)` — 무한소수면 **예외**"
+        ],
+        [
+          "자릿수 맞추기",
+          "`setScale(2, RoundingMode.HALF_UP)`",
+          "계산 중간마다 반올림(오차 누적)"
+        ],
+        [
+          "같은지 비교",
+          "`a.compareTo(b) == 0`",
+          "`a.equals(b)` — **2.0 ≠ 2.00**"
+        ],
+        [
+          "0인지 확인",
+          "`x.compareTo(BigDecimal.ZERO) == 0`",
+          "`x.equals(BigDecimal.ZERO)` — `0.00` 에 거짓"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        },
+        {
+          "title": "java.math.RoundingMode (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/RoundingMode.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "반올림 모드 여덟 가지의 정의. **`UNNECESSARY` 는 '결과가 정확할 것'이라고 주장하는 모드**여서, 반올림이 필요해지면 예외를 던진다 — 즉 **반올림은 선택이지 기본값이 아니다**"
+        }
+      ]
+    },
+    {
+      "id": "types",
+      "kind": "compare",
+      "caption": "double vs BigDecimal vs 최소 단위 정수",
+      "columns": [
+        "기준",
+        "double/float",
+        "BigDecimal",
+        "최소 단위 정수"
+      ],
+      "rows": [
+        [
+          "십진 정확성",
+          "**없다**(0.1 도 못 담는다)",
+          "정확하다",
+          "정확하다"
+        ],
+        [
+          "속도·메모리",
+          "가장 빠르다",
+          "느리고 객체를 만든다",
+          "빠르다"
+        ],
+        [
+          "코드",
+          "`a + b`",
+          "`a.add(b)`",
+          "`a + b`"
+        ],
+        [
+          "소수 필요",
+          "가능",
+          "가능",
+          "**불가**(최소 단위 미만)"
+        ],
+        [
+          "비교",
+          "`==` 위험",
+          "**`compareTo`**",
+          "`==` 안전"
+        ],
+        [
+          "언제",
+          "과학·그래픽·통계",
+          "비율·이자·세금이 섞인 금액",
+          "더하고 빼기만 하는 금액"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "rounding",
+      "kind": "glossary",
+      "caption": "반올림 모드 — 자주 쓰는 것들",
+      "note": "모드는 여덟 가지가 있다. **어느 것이 맞는지는 계약·회계 기준·법규가 정한다** — 이 표는 고르는 자리를 보여 줄 뿐이다",
+      "columns": [
+        "모드",
+        "0.5 를",
+        "1.5 를",
+        "성격"
+      ],
+      "rows": [
+        [
+          "`HALF_UP`",
+          "1",
+          "2",
+          "일상적 반올림. 한국 실무에서 흔하다"
+        ],
+        [
+          "`HALF_DOWN`",
+          "0",
+          "1",
+          "0.5 를 버린다"
+        ],
+        [
+          "`HALF_EVEN`",
+          "**0**",
+          "**2**",
+          "짝수 쪽으로 — 통계적 편향이 적어 회계·금융에서 선호"
+        ],
+        [
+          "`DOWN` / `UP`",
+          "0 / 1",
+          "1 / 2",
+          "절사 / 무조건 올림"
+        ],
+        [
+          "`FLOOR` / `CEILING`",
+          "0 / 1",
+          "1 / 2",
+          "음수에서 `DOWN`/`UP` 과 갈린다"
+        ],
+        [
+          "`UNNECESSARY`",
+          "**예외**",
+          "예외",
+          "\"정확히 떨어진다\"는 주장. 아니면 `ArithmeticException`"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.RoundingMode (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/RoundingMode.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "반올림 모드 여덟 가지의 정의. **`UNNECESSARY` 는 '결과가 정확할 것'이라고 주장하는 모드**여서, 반올림이 필요해지면 예외를 던진다 — 즉 **반올림은 선택이지 기본값이 아니다**"
+        }
+      ]
+    },
+    {
+      "id": "boundary",
+      "kind": "compare",
+      "caption": "경계마다 오차가 다시 들어온다",
+      "columns": [
+        "경계",
+        "위험",
+        "대응"
+      ],
+      "rows": [
+        [
+          "DB 컬럼",
+          "`DOUBLE`/`FLOAT` 이면 저장 시 오차",
+          "`NUMERIC`/`DECIMAL(p, s)` 로. 자릿수를 앱과 맞춘다"
+        ],
+        [
+          "JSON 응답",
+          "숫자로 내보내면 **JS 가 double 로 읽는다**",
+          "**문자열로** 주고받는다(`\"1234.56\"`)"
+        ],
+        [
+          "외부 API 입력",
+          "문자열 → double → BigDecimal 경유",
+          "파싱부터 **문자열로** 받는다"
+        ],
+        [
+          "언어 경계",
+          "JS 는 표준 십진 타입이 없다",
+          "경계는 문자열, 내부는 각 언어의 십진 타입"
+        ],
+        [
+          "로그·리포트",
+          "`1234` 가 12.34 인지 1,234 인지 모호",
+          "단위를 필드명·타입에 못 박는다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "symptoms",
+      "kind": "glossary",
+      "caption": "증상 → 원인 찾기",
+      "columns": [
+        "증상",
+        "의심",
+        "확인"
+      ],
+      "rows": [
+        [
+          "합계가 1원 어긋난다",
+          "반올림 시점(항목별 vs 합계)",
+          "계산 순서와 `setScale` 호출 위치"
+        ],
+        [
+          "같은 금액인데 다르다고 나온다",
+          "`equals` 로 비교 중",
+          "`compareTo(...) == 0` 으로 바꾼다"
+        ],
+        [
+          "중복 제거가 안 된다",
+          "`HashSet`/`Map` 키로 사용",
+          "scale 통일 또는 다른 키 타입"
+        ],
+        [
+          "`ArithmeticException`",
+          "나눗셈에 반올림 규칙 없음",
+          "`divide(b, scale, RoundingMode…)`"
+        ],
+        [
+          "값을 더했는데 안 바뀐다",
+          "**불변** — 결과를 버렸다",
+          "`a = a.add(b)`"
+        ],
+        [
+          "브라우저에서만 값이 다르다",
+          "JSON 을 숫자로 내보냈다",
+          "응답을 문자열로 바꾼다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        }
+      ]
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "금액에 **비율·이자·세금** 계산이 섞인다",
+      "pick": "BigDecimal(또는 그 언어의 십진 타입)",
+      "over": "double",
+      "why": "2진 부동소수점은 0.1 조차 정확히 담지 못해 **오차가 누적되고 비교가 실패한다.** 그리고 정산에서 요구되는 것은 속도가 아니라 **재현 가능하고 설명 가능한 결과**다",
+      "tradeoff": "연산이 느리고 코드가 장황해진다(`a.add(b)`) — 그 비용은 금액 계산에서 거의 언제나 감수할 만하다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        }
+      ]
+    },
+    {
+      "situation": "금액을 **더하고 빼기만** 한다(주문 합계, 잔액 증감)",
+      "pick": "최소 단위 정수(원·센트)",
+      "over": "BigDecimal",
+      "why": "정수 연산이라 빠르고 오차가 없으며, **DB·JSON·다른 언어를 지나도 정수는 정수**다 — 경계에서 오차가 다시 들어오는 문제 자체가 사라진다",
+      "tradeoff": "최소 단위보다 작은 값을 못 담고, 통화별 자릿수를 코드가 알고 있어야 한다"
+    },
+    {
+      "situation": "외부에서 숫자를 받아 금액으로 쓴다(API·폼·CSV)",
+      "pick": "**문자열로 받아 문자열 생성자**로 만든다",
+      "over": "`double` 로 파싱한 뒤 변환",
+      "why": "중간에 `double` 을 한 번이라도 지나면 그 순간 오차가 박힌다. 자바 문서도 **`String` 생성자를 쓰라고 권한다** — 완벽하게 예측 가능하기 때문이다",
+      "tradeoff": "파싱 코드가 조금 늘고, 잘못된 문자열에 대한 예외 처리가 필요하다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        }
+      ]
+    },
+    {
+      "situation": "회계·금융 기준을 따라야 한다",
+      "pick": "`HALF_EVEN`(은행가 반올림) — **단, 기준 문서를 확인하고**",
+      "over": "습관적으로 `HALF_UP`",
+      "why": "`HALF_UP` 은 0.5 를 늘 올리므로 반복하면 **한쪽으로 치우친다.** `HALF_EVEN` 은 그 편향을 줄여 회계·금융에서 선호된다",
+      "tradeoff": "일상적 직관(0.5 는 올림)과 달라 검수자가 의아해할 수 있다 — **어느 쪽이든 계약·기준에 근거를 두고 문서에 적는다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "java.math.RoundingMode (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/RoundingMode.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "반올림 모드 여덟 가지의 정의. **`UNNECESSARY` 는 '결과가 정확할 것'이라고 주장하는 모드**여서, 반올림이 필요해지면 예외를 던진다 — 즉 **반올림은 선택이지 기본값이 아니다**"
+        }
+      ]
+    },
+    {
+      "situation": "과학 계산·그래픽·통계처럼 **대량 수치 연산**을 한다",
+      "pick": "double",
+      "over": "BigDecimal",
+      "why": "여기서는 미세 오차가 허용되는 성질이고, 속도와 메모리가 결과를 좌우한다. BigDecimal 로 하면 수십 배 느려지고 얻는 것이 없다",
+      "tradeoff": "누적 오차를 알고 있어야 하고, 비교에 `==` 를 쓰면 안 된다는 것은 여전하다"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "`new BigDecimal(0.1)` 처럼 `double` 로 만든다",
+      "why": "타입이 맞으니 컴파일도 되고 화면에도 0.1 로 보인다. 그런데 **생성자에 들어가는 값이 이미 0.1 이 아니다**",
+      "fix": "**`new BigDecimal(\"0.1\")` 또는 `BigDecimal.valueOf(0.1)`.** 그리고 코드 전체에서 `double` 이 금액 경로에 끼지 않는지 훑는다 — 파싱·계산·직렬화 어디든",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        }
+      ]
+    },
+    {
+      "trap": "금액을 `equals` 로 비교한다",
+      "why": "객체 비교는 `equals` 라고 배운다. 그런데 BigDecimal 의 `equals` 는 **값과 표현이 모두** 같아야 참이다",
+      "fix": "**`compareTo(...) == 0`** 을 쓴다. 0 비교도 마찬가지(`x.compareTo(BigDecimal.ZERO) == 0`). 코드 리뷰 체크리스트에 넣을 만한 항목이다",
+      "sources": [
+        {
+          "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+        }
+      ]
+    },
+    {
+      "trap": "BigDecimal 을 `HashSet`·`HashMap` 의 키로 쓴다",
+      "why": "해시 컬렉션은 `equals`/`hashCode` 를 쓰는데, 그 둘이 **scale 을 구분**한다. 그래서 `10000` 과 `10000.00` 이 다른 키가 된다",
+      "fix": "키로 쓰지 않는다. 꼭 필요하면 **`setScale` 로 자릿수를 통일**한 값을 쓰거나, 최소 단위 정수·문자열을 키로 삼는다"
+    },
+    {
+      "trap": "연산 결과를 대입하지 않는다(`amount.add(fee);`)",
+      "why": "`String` 과 같은 실수다. **불변 객체라 원본이 안 바뀌고**, 에러도 안 난다 — 금액이 조용히 그대로 남는다",
+      "fix": "`amount = amount.add(fee);` 정적 분석 도구가 잡아 주는 경우가 많으니 **경고를 켜 둔다**"
+    },
+    {
+      "trap": "계산 중간마다 반올림한다",
+      "why": "각 단계에서 자릿수를 맞춰야 깔끔해 보인다. 그런데 **반올림 오차가 매 단계 쌓인다**",
+      "fix": "중간 계산은 넉넉한 정밀도로 두고 **저장·표시 직전에 한 번** `setScale` 한다. 그리고 **반올림 시점(항목별 vs 합계)을 도메인 규칙으로 문서에 적는다** — 그 순서가 1원을 만든다"
+    },
+    {
+      "trap": "JSON 응답에 금액을 숫자로 내보낸다",
+      "why": "타입이 숫자니 숫자로 보내는 것이 자연스럽다. 그런데 **자바스크립트에는 십진 타입이 없어 double 로 읽는다**",
+      "fix": "**금액은 문자열로** 주고받는다(`\"1234.56\"`). 많은 결제 API 가 그렇게 정의돼 있고, 통화 코드를 함께 보내면 자릿수 해석도 명확해진다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "부동소수점",
+      "en": "floating point",
+      "what": "수를 가수와 지수로 나눠 담는 방식. 2진 기반이라 십진 소수 대부분을 정확히 못 담는다"
+    },
+    {
+      "term": "scale",
+      "en": "scale",
+      "what": "소수점 아래 자릿수. BigDecimal 에서는 **값의 일부**라 `2.0` 과 `2.00` 이 구분된다"
+    },
+    {
+      "term": "unscaled value",
+      "en": "unscaled value",
+      "what": "소수점을 걷어낸 정수부. 값 = unscaled × 10^(-scale)"
+    },
+    {
+      "term": "반올림 모드",
+      "en": "RoundingMode",
+      "what": "0.5 를 어느 쪽으로 보낼지의 규칙. 여덟 가지가 있고 **도메인이 고른다**"
+    },
+    {
+      "term": "은행가 반올림",
+      "en": "banker's rounding (HALF_EVEN)",
+      "what": "0.5 를 짝수 쪽으로 보내 반복 시 편향을 줄이는 방식"
+    },
+    {
+      "term": "불변 객체",
+      "en": "immutable",
+      "what": "연산이 원본을 바꾸지 않고 새 객체를 돌려준다. 결과를 대입하지 않으면 아무 일도 안 일어난다"
+    },
+    {
+      "term": "최소 단위 정수",
+      "en": "minor units",
+      "what": "금액을 그 통화의 최소 단위(원·센트) 정수로 담는 방식"
+    },
+    {
+      "term": "Money 패턴",
+      "en": "money pattern",
+      "what": "금액과 통화를 한 타입으로 묶어 다루는 설계. 통화별 자릿수 문제를 타입이 떠안는다"
+    },
+    {
+      "term": "NUMERIC / DECIMAL",
+      "en": "",
+      "what": "DB 의 십진 타입. 금액 컬럼은 `DOUBLE` 이 아니라 이것이어야 한다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "**오차를 직접 본다.** 아무 언어에서든 ①`0.1 + 0.2` 를 출력하고 ②`0.1 + 0.2 == 0.3` 을 확인하고 ③(자바라면) `new BigDecimal(0.1)` 을 그대로 출력한다. 그다음 같은 계산을 십진 타입(BigDecimal·Decimal)으로 다시 한다",
+      "done_when": "③에서 `0.1000000000000000055511151231257827021181583404541015625` 같은 값을 **자기 화면에서 봤고**, 문자열 생성자로 만들면 그 값이 사라지는 것을 확인했다",
+      "why": "이 낱말은 한 번 눈으로 보면 끝난다. 그리고 본 사람은 금액 코드에서 `double` 을 다시 쓰지 않는다",
+      "no_hardware": "실행 환경이 없으면 종이로 계산한다 — `0.1` 을 2진 소수로 손으로 바꿔 보면 `0.000110011…` 이 반복되는 것이 보인다(1/10 을 2로 계속 나눠 보면 된다)",
+      "hours": 1
+    },
+    {
+      "task": "**1원이 어디서 생기는지 만든다.** 단가 `333.333…`(=`1000/3`) 짜리 상품을 3개 주문한 뒤 부가세 10%를 붙이는 계산을, ①항목별로 반올림해 더하기 ②합계를 낸 뒤 한 번 반올림하기 두 방식으로 각각 계산한다. 반올림 모드도 `HALF_UP` 과 `HALF_EVEN` 으로 바꿔 본다",
+      "done_when": "네 조합의 결과가 표에 적혔고, **최소 두 개가 서로 다르다**는 것을 확인했다. 그리고 \"우리 서비스는 어느 조합인가\"에 답할 수 있다(모르면 그것이 이 실습의 결론이다)",
+      "why": "자료형을 고쳐도 남는 문제가 이것이다. 정산 사고의 대부분이 **반올림 시점과 모드**에서 나오고, 그 결정은 코드가 아니라 도메인 규칙이다",
+      "hours": 1
+    },
+    {
+      "task": "**경계를 점검한다.** 자기 서비스(또는 상상한 결제 서비스)에서 금액이 지나는 경로를 그린다 — 외부 입력 → 파싱 → 계산 → DB → API 응답 → 화면. 각 구간의 **실제 타입**을 적고, `double` 이나 JSON 숫자가 끼어 있는 곳에 표시한다",
+      "done_when": "경로에 `double`/JSON number 가 최소 한 곳 발견됐거나, 없다면 **없다는 것을 근거와 함께** 말할 수 있다(DB 컬럼 타입까지 확인)",
+      "why": "자료형을 아무리 잘 골라도 **경계에서 다시 오차가 들어온다.** 이 그림 한 장이 그 지점을 전부 드러낸다",
+      "no_hardware": "코드 접근이 없으면 공개 결제 API 문서(포트원·토스페이먼츠 등)를 열어 **금액 필드의 타입**을 확인한다 — 문자열인지 숫자인지, 왜 그런지 생각해 본다",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "`double` 이 0.1 을 정확히 담지 못하는 이유를 한 문장으로 설명할 수 있는가?",
+    "`new BigDecimal(0.1)` 과 `new BigDecimal(\"0.1\")` 은 왜 다른가?",
+    "나눗셈에 반올림 규칙을 안 주면 왜 예외가 나며, 그것이 왜 좋은 설계인가?",
+    "`2.0` 과 `2.00` 을 `equals` 와 `compareTo` 는 각각 어떻게 판단하는가?",
+    "금액을 최소 단위 정수로 다루는 방식의 장점과 한계는?",
+    "BigDecimal 을 잘 써도 오차가 다시 들어올 수 있는 경계 세 곳을 댈 수 있는가?",
+    "합계가 1원 어긋났다. 자료형 말고 무엇을 먼저 확인하겠는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "금액 계산 처리 경험 (BigDecimal 등)",
+      "from": "posting",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54749217&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=912118a0-f79e-4d54-818e-4325432092e6",
+      "where": "셀빅 채용공고 (사람인)",
+      "what_it_shows": "**이 저장소의 공고 전체에서 `BigDecimal` 이 그대로 적힌 유일한 건이다.** 그리고 그 앞에 `금액 계산 처리 경험` 이 붙어 있다 — 이 자료형이 요구되는 맥락이 무엇인지 한 줄이 다 말해 준다"
+    },
+    {
+      "quote": "• 정산/환불/원장(ledger) 시스템 설계 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/374927",
+      "where": "가이아코퍼레이션 채용공고 (원티드)",
+      "what_it_shows": "**낱말은 없지만 전제가 있다.** 원장(ledger)은 합계가 맞아야 하는 시스템이고, 거기서 부동소수점 오차는 곧 감사 지적이다 — `pull-up-resistor` 와 같은 유형의 근거"
+    },
+    {
+      "quote": "• 결제, 정산, 회계성 데이터, PG/VAN 연동 등 정합성이 중요한 시스템을 다뤄보신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373605",
+      "where": "레드블루 채용공고 (원티드)",
+      "what_it_shows": "**\"정합성이 중요한\"** 이라는 표현이 이 문서의 존재 이유다. 정합성은 트랜잭션만의 문제가 아니라 **값을 어떤 타입으로 담는가**에서 시작한다"
+    },
+    {
+      "quote": "• 증권, 핀테크 등 금융 도메인(특히 원장, 주문, 체결 등) 시스템을 개발하거나 운영해 보신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/380884",
+      "where": "네이버페이 채용공고 (원티드)",
+      "what_it_shows": "체결·원장처럼 **소수 자릿수가 계약으로 정해진** 도메인. 통화·종목마다 자릿수가 다르고 그것을 값이 들고 다녀야 한다는 이 문서의 `scale` 이야기가 실무로 나타나는 자리"
+    },
+    {
+      "quote": "• 결제(Payment) 및 정산 시스템 아키텍처 설계",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/317608",
+      "where": "메디트(Medit) 채용공고 (원티드)",
+      "what_it_shows": "정산이 **아키텍처 설계 항목**으로 요구된다 — 그 설계의 가장 아래층이 '금액을 무엇으로 담고 어디서 반올림하는가'이고, 그것을 안 정하면 위층이 아무리 좋아도 1원이 어긋난다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "java-in-finance",
+      "how": "그 문서가 \"금융권이 왜 Java 인가\"를 다뤘고 이 낱말을 가리켰다. 여기는 **그 안에서 금액을 어떻게 담는가** 하나만 맡는다 — 금융 이야기는 그쪽에 있다"
+    },
+    {
+      "slug": "ohms-law",
+      "how": "같은 축의 문서다 — **계산으로 나온 값과 실제로 쓸 수 있는 값이 다르다.** 저항은 E24 계열로 반올림해야 하고, 금액은 통화의 자릿수로 반올림해야 한다"
+    },
+    {
+      "slug": "db-index",
+      "how": "금액 컬럼의 타입이 `NUMERIC` 이어야 하는 이유가 여기 있다. 그리고 그 컬럼으로 범위 검색을 한다면 인덱스 설계는 그 문서의 몫이다"
+    },
+    {
+      "slug": "idempotency",
+      "how": "정산에서 같은 요청이 두 번 처리되면 금액이 두 배가 된다 — **자료형이 정확해도 중복 처리는 막지 못한다.** 정합성의 다른 축"
+    }
+  ],
+  "open_questions": [
+    "`market` 은 비어 있다. `tech_relations.json` 은 자료형을 추적 기술로 세지 않는다. 그리고 **`BigDecimal` 이라는 낱말이 그대로 적힌 공고는 이 저장소 전체에서 1건뿐**이다 — 대신 그것을 전제하는 문장(`정산/환불/원장`, `정합성이 중요한 시스템`, `회계`)이 **513건(모집중 138·마감 375)** 있다. `pull-up-resistor` 와 같은 처리다",
+    "**IEEE 754(부동소수점 표준)는 유료 표준이라 조문을 인용하지 않았다.** 대신 **자바 javadoc 이 직접 적은 예시**(`new BigDecimal(0.1)` 의 실제 값)를 근거로 썼다 — `ohms-law`(IEC 60063)·`rs485`(TIA/EIA-485)·`rbac`(INCITS 359)과 같은 처리다",
+    "javadoc 인용은 **Java SE 21 기준**이다. `BigDecimal` 의 동작은 오래 안정적이지만(`equals`/`compareTo` 의 차이는 초기부터 그렇다), **버전별 세부와 새 메서드**는 자기 버전 문서를 봐야 한다",
+    "**다른 언어의 십진 타입 차이는 확인하지 않았다.** 파이썬 `decimal` 은 컨텍스트(전역 정밀도) 개념이 있고 C# `decimal` 은 128비트 고정 범위라 **자바와 성질이 다르다** — 이 문서는 개념이 같다는 것까지만 말한다",
+    "**반올림 기준의 법적 근거**(부가가치세 계산의 절사 규칙, 통화별 최소 단위 규정 등)는 다루지 않았다. 나라·세목·계약마다 다르고, **법·규제를 확인 없이 쓰지 않는다**는 이 엔진의 규칙에 따라 '도메인이 정한다'까지만 적었다"
+  ],
+  "sources": [
+    {
+      "title": "java.math.BigDecimal (Java SE 21 javadoc)",
+      "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html",
+      "publisher": "Oracle",
+      "kind": "docs",
+      "summary": "이 낱말의 1차 자료. **`new BigDecimal(0.1)` 은 0.1 이 아니라 0.1000000000000000055511151231257827021181583404541015625 이라고 문서가 직접 적는다** — 그래서 **String 생성자를 쓰라고 권한다**. `equals` 는 값과 **표현(scale)이 모두** 같아야 하고 `compareTo` 는 값만 본다는 것, `setScale` 에서 `RoundingMode.UNNECESSARY` 인데 반올림이 필요하면 `ArithmeticException` 이 난다는 것도 여기 있다"
+    },
+    {
+      "title": "java.math.RoundingMode (Java SE 21 javadoc)",
+      "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/RoundingMode.html",
+      "publisher": "Oracle",
+      "kind": "docs",
+      "summary": "반올림 모드 여덟 가지의 정의. **`UNNECESSARY` 는 '결과가 정확할 것'이라고 주장하는 모드**여서, 반올림이 필요해지면 예외를 던진다 — 즉 **반올림은 선택이지 기본값이 아니다**"
+    }
+  ]
+}
