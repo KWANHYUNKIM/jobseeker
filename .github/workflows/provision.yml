@@ -72,6 +72,18 @@ jobs:
           done
           echo "::endgroup::"
 
+          # 안 뜨는 서비스는 이유를 봐야 한다. launchd 는 실패한 job 을 조용히
+          # 재시작만 반복하고 화면에는 아무것도 안 남긴다. 상태와 마지막 오류를 꺼내 온다.
+          echo "::group::서비스 진단"
+          for name in ops stats search collect; do
+            label="com.jobseeker.$name"
+            info=$(launchctl print "gui/$(id -u)/$label" 2>/dev/null | awk '/state = |last exit code = /{$1=$1; print "     " $0}' | head -2)
+            if [ -n "$info" ]; then echo "   [$label]"; echo "$info"; else echo "   [$label] 등록 안 됨"; fi
+            err="$HOME/Library/Logs/jobseeker-$name.err.log"
+            if [ -s "$err" ]; then echo "     stderr 끝:"; tail -6 "$err" | sed 's/^/       /'; fi
+          done
+          echo "::endgroup::"
+
           if [ "$DO_PIP" = "true" ]; then
             echo "::group::pip install"
             "$PY" -m pip install --quiet --upgrade pip
