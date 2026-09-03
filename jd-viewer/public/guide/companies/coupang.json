@@ -218,7 +218,8 @@
         "what_to_know": [
           "배달은 **실시간 수요와 공급을 맞추는 문제**다 — 주문이 몰리는 시간에 기사가 모자라면 배차가 무너진다",
           "**가맹점 쪽 시스템**(메뉴·주문 접수·정산)은 커머스의 판매자 시스템과 성격이 다르다",
-          "커머스보다 **지연에 민감**하고 취소·환불이 잦다"
+          "커머스보다 **지연에 민감**하고 취소·환불이 잦다",
+          "⚠️ **네 축이 서로 당긴다** — `Principal, Back-End Engineer` 공고가 조직을 `builds various products & services for our Customers, Stores (Restaurants/Cafes), Couriers and internal operations` 라고 소개하고, `a complex multi-faceted problem that requires optimization across the business (customer experience, merchant management, delivery efficiency & effectiveness)` 라고 밝힌다. **고객 경험을 올리면 배달 비용이 오르고, 효율을 올리면 체감이 나빠지는** 구조라, 이 도메인의 결정은 **어느 지표를 얼마나 내줄지 합의하는 일**에서 시작한다."
         ],
         "confidence": "inferred",
         "sources": []
@@ -336,7 +337,7 @@
       },
       {
         "reading": "**개인 기여자 트랙과 관리자 트랙이 제목에서 갈린다**",
-        "evidence": "제목이 `Senior Staff`·`Staff`·`Principal` 인 공고와 `Manager`·`Senior Manager`·`Director` 인 공고가 나란히 열려 있다. 관리자 쪽은 요건도 다르다 — `Manager, Front-end Engineering (TW Front Engineering)` 은 **`3+ years of senior management experience`** 와 **`At least 3 years of experience leading engineering teams`** 를 기술 경력 10년과 **함께** 요구한다. 반면 `Senior Staff`·`Principal` 계열은 담당업무에 `Mentor` 가 있어도 **관리 연차를 따로 요구하지 않는다**. ⚠️ **`Senior` 와 `Staff` 의 차이도 확인됐다** — `Advertiser Platform` 은 같은 팀에서 두 직급이 동시에 열려 있는데 **담당업무가 거의 같고 `Staff` 쪽에만 `코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 더 있다.** ⚠️ **회사가 직접 `(IC)` 라고 표기한 공고도 있다** — `Senior Staff Back-end Engineer (eCommerce Engineering)` 는 본문이 `As a Senior Staff Backend Engineer (IC)` 로 시작하고, 담당업무에 `Coach Senior and Staff level engineers` 가 있으면서도 **관리 연차를 요구하지 않는다**(대신 `3+ years in architecture leadership`). ⚠️ **프론트엔드에서도 같은 선이 확인된다** — `Staff Frontend Engineer (Coupang Eats)` 는 담당업무에 `Staff레벨: 팀 엔지니어들이 좋은 품질의 아키텍쳐 및 디자인을 만들 수 있도록 가이드` 를 두고도 **관리 연차 대신 `2년 이상의 웹 아키텍쳐 설계 및 구현 경험`** 을 요구한다. 반면 같은 프론트엔드의 `Manager, Front-end Engineering` 은 관리 3년을 따로 요구한다 — **직군이 아니라 트랙이 요건을 가른다.** ⚠️ **관리 트랙의 위쪽 끝도 확인됐다** — `Director`·`Sr. Director` 급 공고가 **113건 중 13건**이나 열려 있다. 그중 `Sr. Director, Back-End Engineering`(gh_jid=8118859, 본문 직함은 `Sr. Director, Site Reliability Engineering (Head of SRE)`)은 경력 15년과 **별개로** `8+ years leading large-scale, multi-layer engineering organizations, including senior managers, directors, and senior individual contributors.` 를 요구하고, `Experience building an SRE practice ... rather than operating a traditional support or operations function renamed as SRE.` 라는 **배제 조건**까지 적어 두었다. ⚠️ **관리 트랙의 진입 문턱은 공고마다 다르다** — `Manager, Back-end Engineering (Rocket Pay)` 는 개발 10년에 **`매니저 관리를 포함한 관리 경험 2년 이상 (멘토, 테크 리드 경험 포함)`** 만 요구한다. 같은 회사 `Manager, Front-end Engineering (TW)` 의 `3+ years of senior management experience` 보다 낮고, **괄호로 테크 리드·멘토 경험까지 인정**한다. ⚠️ 그리고 같은 조직의 개인 기여자 공고(`Staff Back-end Engineer (Rocket Pay)`, 개발 10년)와 **요건이 한 줄도 겹치지 않는다** — 매니저 쪽은 조율·로드맵·조직 성장이, 개인 기여자 쪽은 정합성·보안 설계와 기술적 오너십이 들어간다. ⚠️ **회사가 두 트랙의 존재를 요건에 직접 적은 공고도 있다** — `Director, Back-end Engineering` 은 `Passionate about growing careers and mentoring engineers across both the individual contributor and manager tracks` 를 자격에 넣었다. 그리고 이 공고로 **관리 연차 사다리가 채워진다**: `Manager`(관리 2년, 테크리드 포함) → `Manager`(senior management 3년) → **`Director`(관리 7년)** → `Sr. Director`(다층 조직 8년). ⚠️ **같은 조직의 `Manager` 와 `Director` 를 나란히 보면 무엇이 갈리는지 보인다** — 쿠팡페이 `Manager, Back-end Engineering (Rocket Pay)` 는 **개발 10년 + 관리 2년**, `Director, Back-end Engineering (Rocket Pay)` 는 **개발 15년 + 관리 3년**이다. **관리 연차는 한 칸인데 개발 연차가 다섯 칸** 차이라, 이 회사에서 관리 트랙을 올라가는 조건은 **관리 규모보다 기술 깊이**로 보인다. ⚠️ **`Manager` 라고 다 관리 자리는 아니다** — `Manager, Back-end Engineering (Global Operations Technology)` 는 담당업무 첫 줄이 `소프트웨어 개발 라이프사이클 전반에 걸쳐 Global Ops Tech 조직의 테크리드로 역할` 이고 **자격에 관리 연차가 한 줄도 없다**(같은 회사 `Manager (Rocket Pay)` 는 `관리 경험 2년 이상` 을 명시한다). **직함이 아니라 자격 요건을 봐야 트랙을 알 수 있다.** ⚠️ **결정적인 대비가 하나 더 나왔다** — `Manager, Backend Engineering (New Fintech Product)` 와 `Director, Back-end Engineering (Rocket Pay)` 는 **담당업무와 우대사항이 100% 같고 자격도 한 줄만 다르다**: `소프트웨어 개발 경험 10년 이상으로 매니저 관리를 포함한 관리 경험 2년 이상` / `15년 이상 … 3년 이상`. **같은 일에 두 직함이 걸려 있고 차이는 개발 5년 + 관리 1년뿐**이다. ⚠️ **한 공고 안에 두 직급을 병기한 경우도 있다** — `[Opportunistic Hire] Sr. Staff Engineer` 는 본문이 `[Senior Staff Engineer]/[Staff Engineer]`, 자격이 `[12+]/[8+] years of professional software development experience with at least 2+ years of experience as a Technical Lead.` 다. 두 공고로 나눠 올린 `Manager`/`Director` 사례와 함께 보면, **이 회사는 직급을 후보자에 맞춰 정하는 쪽**으로 보인다.",
+        "evidence": "제목이 `Senior Staff`·`Staff`·`Principal` 인 공고와 `Manager`·`Senior Manager`·`Director` 인 공고가 나란히 열려 있다. 관리자 쪽은 요건도 다르다 — `Manager, Front-end Engineering (TW Front Engineering)` 은 **`3+ years of senior management experience`** 와 **`At least 3 years of experience leading engineering teams`** 를 기술 경력 10년과 **함께** 요구한다. 반면 `Senior Staff`·`Principal` 계열은 담당업무에 `Mentor` 가 있어도 **관리 연차를 따로 요구하지 않는다**. ⚠️ **`Senior` 와 `Staff` 의 차이도 확인됐다** — `Advertiser Platform` 은 같은 팀에서 두 직급이 동시에 열려 있는데 **담당업무가 거의 같고 `Staff` 쪽에만 `코드 리뷰를 수행하고 팀의 주니어 멤버를 멘토링` 한 줄이 더 있다.** ⚠️ **회사가 직접 `(IC)` 라고 표기한 공고도 있다** — `Senior Staff Back-end Engineer (eCommerce Engineering)` 는 본문이 `As a Senior Staff Backend Engineer (IC)` 로 시작하고, 담당업무에 `Coach Senior and Staff level engineers` 가 있으면서도 **관리 연차를 요구하지 않는다**(대신 `3+ years in architecture leadership`). ⚠️ **프론트엔드에서도 같은 선이 확인된다** — `Staff Frontend Engineer (Coupang Eats)` 는 담당업무에 `Staff레벨: 팀 엔지니어들이 좋은 품질의 아키텍쳐 및 디자인을 만들 수 있도록 가이드` 를 두고도 **관리 연차 대신 `2년 이상의 웹 아키텍쳐 설계 및 구현 경험`** 을 요구한다. 반면 같은 프론트엔드의 `Manager, Front-end Engineering` 은 관리 3년을 따로 요구한다 — **직군이 아니라 트랙이 요건을 가른다.** ⚠️ **관리 트랙의 위쪽 끝도 확인됐다** — `Director`·`Sr. Director` 급 공고가 **113건 중 13건**이나 열려 있다. 그중 `Sr. Director, Back-End Engineering`(gh_jid=8118859, 본문 직함은 `Sr. Director, Site Reliability Engineering (Head of SRE)`)은 경력 15년과 **별개로** `8+ years leading large-scale, multi-layer engineering organizations, including senior managers, directors, and senior individual contributors.` 를 요구하고, `Experience building an SRE practice ... rather than operating a traditional support or operations function renamed as SRE.` 라는 **배제 조건**까지 적어 두었다. ⚠️ **관리 트랙의 진입 문턱은 공고마다 다르다** — `Manager, Back-end Engineering (Rocket Pay)` 는 개발 10년에 **`매니저 관리를 포함한 관리 경험 2년 이상 (멘토, 테크 리드 경험 포함)`** 만 요구한다. 같은 회사 `Manager, Front-end Engineering (TW)` 의 `3+ years of senior management experience` 보다 낮고, **괄호로 테크 리드·멘토 경험까지 인정**한다. ⚠️ 그리고 같은 조직의 개인 기여자 공고(`Staff Back-end Engineer (Rocket Pay)`, 개발 10년)와 **요건이 한 줄도 겹치지 않는다** — 매니저 쪽은 조율·로드맵·조직 성장이, 개인 기여자 쪽은 정합성·보안 설계와 기술적 오너십이 들어간다. ⚠️ **회사가 두 트랙의 존재를 요건에 직접 적은 공고도 있다** — `Director, Back-end Engineering` 은 `Passionate about growing careers and mentoring engineers across both the individual contributor and manager tracks` 를 자격에 넣었다. 그리고 이 공고로 **관리 연차 사다리가 채워진다**: `Manager`(관리 2년, 테크리드 포함) → `Manager`(senior management 3년) → **`Director`(관리 7년)** → `Sr. Director`(다층 조직 8년). ⚠️ **같은 조직의 `Manager` 와 `Director` 를 나란히 보면 무엇이 갈리는지 보인다** — 쿠팡페이 `Manager, Back-end Engineering (Rocket Pay)` 는 **개발 10년 + 관리 2년**, `Director, Back-end Engineering (Rocket Pay)` 는 **개발 15년 + 관리 3년**이다. **관리 연차는 한 칸인데 개발 연차가 다섯 칸** 차이라, 이 회사에서 관리 트랙을 올라가는 조건은 **관리 규모보다 기술 깊이**로 보인다. ⚠️ **`Manager` 라고 다 관리 자리는 아니다** — `Manager, Back-end Engineering (Global Operations Technology)` 는 담당업무 첫 줄이 `소프트웨어 개발 라이프사이클 전반에 걸쳐 Global Ops Tech 조직의 테크리드로 역할` 이고 **자격에 관리 연차가 한 줄도 없다**(같은 회사 `Manager (Rocket Pay)` 는 `관리 경험 2년 이상` 을 명시한다). **직함이 아니라 자격 요건을 봐야 트랙을 알 수 있다.** ⚠️ **결정적인 대비가 하나 더 나왔다** — `Manager, Backend Engineering (New Fintech Product)` 와 `Director, Back-end Engineering (Rocket Pay)` 는 **담당업무와 우대사항이 100% 같고 자격도 한 줄만 다르다**: `소프트웨어 개발 경험 10년 이상으로 매니저 관리를 포함한 관리 경험 2년 이상` / `15년 이상 … 3년 이상`. **같은 일에 두 직함이 걸려 있고 차이는 개발 5년 + 관리 1년뿐**이다. ⚠️ **한 공고 안에 두 직급을 병기한 경우도 있다** — `[Opportunistic Hire] Sr. Staff Engineer` 는 본문이 `[Senior Staff Engineer]/[Staff Engineer]`, 자격이 `[12+]/[8+] years of professional software development experience with at least 2+ years of experience as a Technical Lead.` 다. 두 공고로 나눠 올린 `Manager`/`Director` 사례와 함께 보면, **이 회사는 직급을 후보자에 맞춰 정하는 쪽**으로 보인다. ⚠️ **`Principal` 의 요건은 관리가 아니라 기술 리더십이다** — `Principal, Back-End Engineer`(쿠팡이츠)는 `7+ years of experience in technical leadership roles. Demonstrated experience in driving technical vision and execution at an organization / business unit level` 을 요구하고, 담당업무에 **채용과 멘토링까지** 있으면서도 `You will be comfortable getting into code level details with other engineers and building software.` 라고 **직접 만든다**고 못 박는다.",
         "so_what": "**관리자가 되고 싶지 않다면 `Staff`·`Senior Staff`·`Principal` 계열을 본다** — 이 회사는 개인 기여자로도 `Principal` 까지 가는 경로가 열려 있다. 반대로 **관리로 가려면 `관리 경험 연차` 를 따로 증명해야 하므로**, 지금 팀을 이끌고 있다면 **인원·기간·채용/평가 참여·어려운 결정**을 숫자와 사례로 정리해 두는 편이 낫다. 그리고 **`Senior → Staff` 는 팀에 미치는 영향(리뷰·멘토링)으로 갈리는 것으로 보인다** — 기술 폭이 아니라 **남을 통해 일하는 몫**이 늘어난다는 뜻이다. **개인 기여자 트랙의 최상위에서 요구되는 것은 관리 연차가 아니라 `아키텍처 리딩` 연차**라는 점도 기억해 둔다 — 준비할 이력이 다르다(사람 관리 사례가 아니라 **여러 팀에 걸친 기술 결정 사례**). ⚠️ **관리로 갈 때 다음 칸은 '팀 몇 개'가 아니라 '매니저를 이끄는 몇 년'이다** — `Manager` 급이 관리 3년을 요구했다면 `Sr. Director` 급은 **매니저와 디렉터를 이끈 8년**을 요구한다. 즉 **내가 직접 만나지 않는 사람들이 일하는 방식을 바꾼 사례**가 준비물이 된다. 그리고 이 층위에서는 **조직을 만들었다는 증거보다 그 장치가 몇 개 팀에 퍼졌는지(채택)** 를 묻는다. ⚠️ **관리 트랙으로 넘어갈 생각이라면 문턱이 낮은 공고를 찾는 것이 현실적이다** — 같은 회사 안에서도 `관리 3년` 을 요구하는 자리와 **`테크 리드 경험 포함 2년`** 으로 여는 자리가 함께 있다. 지금 테크 리드라면 후자가 **첫 관리자 자리**가 될 수 있다. ⚠️ **직함으로 지원 여부를 정하지 않는다** — 같은 담당업무가 `Manager` 와 `Director` 두 공고로 올라와 있고, 쿠팡은 공고에 `직급과 담당 업무 범위는 후보자의 전반적인 경력과 경험 등 제반사정을 고려하여 변경될 수 있습니다` 라고도 적는다. **연차가 낮은 쪽 요건을 넘으면 지원하고, 직함·범위는 대화로 맞춘다.**",
         "confidence": "inferred"
       },
@@ -7319,6 +7320,155 @@
           "자동 재시도가 **위험한 요청**을 어떻게 구분하는지",
           "Go/Rust/C++ 로 만든 시스템과 **왜 그 언어였는지**",
           "다른 팀을 메시로 옮기게 만든 방법"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7721023",
+      "title": "Principal, Back-End Engineer",
+      "site": "ats",
+      "verdict": "**쿠팡이츠 엔지니어링 전체의 기술 방향을 잡는 개인 기여자 최상위 자리.** ⚠️ **`Principal` 인데 요구하는 것이 관리 연차가 아니라 `기술 리더십 7년`** 이다 — 그리고 `You will be comfortable getting into code level details with other engineers and building software.` 라고 **직접 코드를 만진다**고 못 박는다. 요건은 **B2C 제품 10년(Java·AWS 선호) + 기술 리더십 7년**. ⚠️ 자격이 `Minimum Qualifications` 로 **담당업무 절 안에** 붙어 있다.",
+      "fit": {
+        "must_have": [
+          "**B2C 규모 제품 10년** — `preferably in Java stack and AWS cloud environment`",
+          "⚠️ **기술 리더십 역할 7년** — 관리 연차가 아니라 **조직·사업부 수준의 기술 비전과 실행**을 이끈 경험",
+          "**직접 만드는 능력** — 확장 가능하고 고가용인 제품을 설계·구축·전달한 실력",
+          "Java, 시스템·데이터 아키텍처, **분산 컴퓨팅·스토리지, 메시징, 캐시, 성능 튜닝**",
+          "**여러 나라에 흩어진 팀**과 함께 일을 밀어 본 경험",
+          "학사·석사·박사(컴퓨터공학·공학 계열)"
+        ],
+        "can_learn": [
+          "`Ecommerce / Food Delivery product development experience, a big plus` — **도메인 경험은 큰 가점이지만 필수가 아니다**",
+          "⚠️ 관리 트랙을 원한다면 같은 회사 `Manager`·`Director` 계열을 본다 — **이 자리는 개인 기여자 최상위**다(신호 8번)",
+          "쿠팡이츠의 실제 조직 구성 — 같은 회사 `Eats Merchant`·`Eats Customer`·`Eats S&D` 브리핑에서 각 축을 볼 수 있다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "기술 리더십 7년 — 관리 연차가 아니다",
+          "from": "qualification",
+          "quote": "7+ years of experience in technical leadership roles. Demonstrated experience in driving technical vision and execution at an organization / business unit level",
+          "priority": "core",
+          "why": "⚠️ **`Principal` 의 요건이 관리가 아니라 기술 리더십이라는 것이 이 회사 개인 기여자 트랙의 성격을 보여 준다**(신호 8번). 그리고 범위를 `organization / business unit level` 로 못 박았다 — **팀 하나가 아니라 사업부 전체**다. 준비물은 사람 관리 사례가 아니라 **여러 팀의 방향을 바꾼 기술 결정**이다.",
+          "gap_check": "내가 정한 기술 방향 때문에 **다른 팀의 계획이 바뀐** 사례를 셋 댈 수 있는가.",
+          "drill": "기술 리더십 이력을 **영향 반경**으로 정리한다 — 결정별로 ① 범위(내 팀 / 여러 팀 / 사업부) ② 바뀐 것 ③ **반대가 있었나, 어떻게 넘었나** ④ 지금도 유효한가. **범위가 넓어지는 흐름**이 보이면 그게 `Principal` 이력이고, ③이 비면 아직 합의를 만들어 본 적이 없는 것이다.",
+          "hours": 5
+        },
+        {
+          "topic": "코드 레벨까지 내려간다",
+          "from": "task",
+          "quote": "You will be comfortable getting into code level details with other engineers and building software.",
+          "priority": "core",
+          "why": "⚠️ **이 회사 관리·리드 공고에 반복해서 나오는 요구인데, 여기서는 가장 직설적이다** — `building software` 라고 적었다. 이 층위에서 코드를 놓으면 **설계 판단의 근거가 남의 보고**가 되고, 그러면 틀린 전제를 못 걸러 낸다. 담당업무의 `Dive deep to solve critical system issues` 와 짝을 이룬다.",
+          "gap_check": "최근 6개월에 **내가 직접 읽고 고친 코드**가 있는가.",
+          "drill": "맡은(또는 관심 있는) 시스템에서 **가장 복잡한 경로 하나**를 골라 직접 따라 읽는다 — 진입점부터 저장까지. 그리고 **한 쪽 요약**을 쓴다: 데이터가 지나는 경로, 상태가 사는 곳, 실패할 수 있는 지점 셋. 팀에게 받지 말고 **직접 그리는 것**이 요점이다.",
+          "hours": 8
+        },
+        {
+          "topic": "아키텍처를 소유하고 계속 단순화한다",
+          "from": "task",
+          "quote": "Own the overall architecture plan and application of best practice architecture, design patterns and ongoing simplification of the system landscape",
+          "priority": "core",
+          "why": "⚠️ **`ongoing simplification` — 단순화가 담당업무에 명시돼 있다.** 오래된 조직에서 시스템은 저절로 늘어나고(서비스·큐·저장소·배치), 아무도 지우지 않으면 **이해할 수 없는 지형**이 된다. 그래서 이 자리는 새로 만드는 것보다 **합치고 줄이는 결정**을 해야 하고, 그건 대개 **아무의 성과도 아닌 일**이라 리더가 밀어야 한다.",
+          "gap_check": "우리 시스템에서 **없애도 되는 것**을 셋 댈 수 있는가. 없앤 적이 있는가.",
+          "drill": "시스템 지형도를 그린다 — 서비스·저장소·큐·배치를 전부 적고 각각에 ① 소유 팀 ② 마지막 변경 시점 ③ **대체 가능한 것** ④ 없앨 때의 위험. 그다음 **가장 없애기 쉬운 것 하나**를 골라 제거 계획을 한 쪽으로 쓴다(예고 → 트래픽 차단 → 삭제).",
+          "hours": 8
+        },
+        {
+          "topic": "문제가 터지기 전에 찾아낸다",
+          "from": "task",
+          "quote": "Dive deep to solve critical system issues. Ideally identify them before they happen and device a plan to address them",
+          "priority": "core",
+          "why": "⚠️ **`before they happen` — 사고 대응이 아니라 예방을 요구한다.** 이게 가능하려면 **지표와 한계선을 미리 알고 있어야** 한다: 지금 사용률이 몇 %인지, 어디가 먼저 포화되는지, 다음 성수기에 몇 배가 오는지. 담당업무의 마지막 줄 `Own definition, measurement, and reporting of system and operational metrics` 이 그 도구다.",
+          "gap_check": "우리 시스템이 **몇 배 트래픽까지 견디는지** 숫자로 아는가. 언제 재 봤는가.",
+          "drill": "핵심 시스템 하나로 **한계 지도**를 만든다 — 자원별로(CPU·메모리·커넥션·큐 길이·저장 용량) ① 현재값 ② 한계값 ③ **남은 배수** ④ 그 한계에 먼저 닿을 시점. 그리고 ③이 가장 작은 셋을 골라 **선제 조치 계획**을 적는다. 이 표를 분기마다 갱신하면 예방이 된다.",
+          "hours": 8
+        },
+        {
+          "topic": "지표를 정의하고 재고 보고하는 일을 소유한다",
+          "from": "task",
+          "quote": "Own definition, measurement, and reporting of system and operational metrics",
+          "priority": "high",
+          "why": "⚠️ **세 단계를 다 소유한다** — 무엇을 잴지 정하고, 실제로 재고, 알린다. 이 중 가장 어려운 것은 **정의**다: 같은 '주문 성공률'도 취소·재시도·부분 실패를 어떻게 세느냐로 값이 달라진다. 그리고 정의가 흔들리면 **분기마다 다른 숫자로 다른 결론**이 나온다.",
+          "gap_check": "우리 핵심 지표의 **계산식이 문서로** 있는가. 두 팀이 같은 값을 내는가.",
+          "drill": "핵심 지표 다섯 개의 **정의서**를 쓴다 — 이름 / 계산식 / 제외 조건 / 기준 시각 / **소유자**. 그다음 각 지표를 **두 가지 방법**으로 계산해 값이 같은지 확인한다. 다르면 그 차이가 곧 조직이 헷갈리고 있는 지점이다.",
+          "hours": 6
+        },
+        {
+          "topic": "조직 수준의 기술 전략과 로드맵",
+          "from": "task",
+          "quote": "Engage with senior leadership and product owner(s) in developing and executing technical strategy and roadmap ensuring scalability and simplicity",
+          "priority": "high",
+          "why": "⚠️ **`scalability and simplicity` 를 함께 적었다** — 둘은 자주 부딪힌다. 확장을 위해 나누면 복잡해지고, 단순하게 두면 한계가 온다. 이 자리는 그 사이에서 **지금 어느 쪽이 급한지**를 정하고, 그 판단을 **리더십과 제품 오너에게 설명**해야 한다.",
+          "gap_check": "내 로드맵에 **단순화 항목**이 하나라도 있는가. 새 기능만 있다면 지형은 계속 복잡해진다.",
+          "drill": "1년 기술 로드맵을 **두 줄로** 그린다 — 위: 확장(새로 만들 것), 아래: **단순화(없앨 것·합칠 것)**. 각 분기에 아래 줄이 비어 있으면 채운다. 그리고 각 항목에 **안 하면 6개월 뒤 무슨 일이 생기나**를 한 줄씩 붙인다.",
+          "hours": 6
+        },
+        {
+          "topic": "Java·분산·메시징·캐시·성능 튜닝",
+          "from": "qualification",
+          "quote": "Solid technical expertise and experience in Java development, system & data architecture, distributed computing & storage, messaging services, caches and performance tuning",
+          "priority": "core",
+          "why": "⚠️ **여섯 가지를 한 줄에 나열했다** — 이 자리가 다루는 문제의 범위다. 쿠팡이츠는 주문·배차·가맹점·정산이 **초 단위로 얽히는** 시스템이라, 메시징(비동기)과 캐시(가게 정보·거리)와 성능(피크 시간)이 전부 한 화면 뒤에 있다. `performance tuning` 이 마지막에 붙은 것도 이 도메인답다.",
+          "gap_check": "성능 문제를 **추측이 아니라 측정으로** 좁혀 본 경험이 있는가.",
+          "drill": "자바 서비스 하나로 **튜닝 한 바퀴**를 돈다 — ① 부하를 걸어 p99 를 재고 ② **프로파일러**로 시간이 어디서 쓰이는지 보고 ③ GC 로그를 확인하고 ④ 하나만 고쳐 다시 잰다. 그리고 **고치지 않은 가설**도 함께 적는다 — 왜 그게 원인이 아니었는지가 진짜 실력이다.",
+          "hours": 10
+        },
+        {
+          "topic": "여러 나라에 흩어진 팀과 일한다",
+          "from": "qualification",
+          "quote": "Experience collaborating and driving initiatives across globally distributed teams",
+          "priority": "high",
+          "why": "⚠️ **이 회사 공고에 반복해서 나오는 요건이다** — 앞서 확인한 거점만 해도 **한국·대만·일본·중국·미국·인도**다. 쿠팡이츠도 예외가 아니고, 시차가 벌어지면 **결정이 문서로 남아야** 진행된다. `driving initiatives` 라고 적힌 것이 중요하다: 참여가 아니라 **끌고 가는** 쪽이다.",
+          "gap_check": "내 결정 문서를 **12시간 뒤에 읽는 사람이 질문 없이** 따라올 수 있는가.",
+          "drill": "최근 결정 하나를 **비동기용 문서**로 다시 쓴다 — 배경(맥락 없는 사람 기준) / 결정과 근거 / **예상 질문과 답을 미리** / 반대 의견을 남길 곳과 마감. 그리고 다른 시간대 동료에게 보내 **되돌아온 질문 수**를 센다.",
+          "hours": 5
+        },
+        {
+          "topic": "시니어 엔지니어를 뽑고 키운다",
+          "from": "task",
+          "quote": "Help recruit top tier senior engineers to develop and grow a high performance and impact-driven organization",
+          "priority": "high",
+          "why": "⚠️ **개인 기여자 최상위인데 채용이 담당업무에 있다.** 관리자가 아니어도 **면접과 기준 만들기**에 깊이 관여한다는 뜻이고, 이 층위에서는 **어떤 사람을 뽑을지 정하는 것**이 곧 조직의 기술 수준이 된다. 바로 다음 줄의 `Develop, mentor, and coach engineers on architecture, design and engineering best practices` 와 한 쌍이다.",
+          "gap_check": "내가 만든 면접 문제나 평가 기준이 **팀에서 계속 쓰이고** 있는가.",
+          "drill": "시니어 백엔드용 **면접 설계**를 한 장으로 만든다 — ① 이 자리에서 반드시 확인할 것 셋 ② 각각을 확인하는 방법(설계 문제·사례 질문·코드 읽기) ③ **가르칠 수 있는 것과 없는 것** ④ 탈락 기준. ③을 명확히 하면 면접이 훨씬 빨라진다.",
+          "hours": 5
+        },
+        {
+          "topic": "미션 크리티컬 프로젝트를 여러 조직과 밀어붙인다",
+          "from": "task",
+          "quote": "Drive mission critical projects in collaboration with various stakeholders and engineers to solve complex business problems",
+          "priority": "high",
+          "why": "쿠팡이츠 조직 소개가 `It's a complex multi-faceted problem that requires optimization across the business (customer experience, merchant management, delivery efficiency & effectiveness)` 라고 밝힌다 — **고객·가맹점·배달 효율이 서로 당긴다.** 한쪽을 좋게 하면 다른 쪽이 나빠지므로, 이 층위의 프로젝트는 **어느 지표를 얼마나 내줄지 합의**하는 데서 시작한다.",
+          "gap_check": "서로 부딪히는 지표 사이에서 **어느 쪽을 얼마나 양보할지** 정해 본 적이 있는가.",
+          "drill": "이츠형 문제 하나를 잡고 **지표 상충 표**를 만든다 — 예: 배달 시간을 줄이면 기사 비용이 오르고, 묶음 배송을 늘리면 시간이 는다. 각 조합에 ① 누가 이득 ② 누가 손해 ③ **합의가 필요한 조직**을 적는다. 그리고 **한 시나리오를 골라 숫자로** 계산해 본다.",
+          "hours": 8
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**한계 지도**(자원별 현재값·한계값·남은 배수)를 만들어 간다",
+          "why": "담당업무가 `Ideally identify them before they happen` 을 요구한다. **사고를 막은 이야기는 드물고**, 이 표 한 장이면 예방이 감이 아니라 절차라는 걸 보여 줄 수 있다.",
+          "effort": "1일"
+        },
+        {
+          "idea": "**단순화 사례**를 하나 준비한다 — 무엇을 없앴고 어떻게 설득했는지",
+          "why": "`ongoing simplification` 이 담당업무에 명시돼 있다. 만든 이야기는 흔하고 **없앤 이야기는 드물다** — 없애는 일은 대개 아무의 성과도 아니라서, 그걸 해낸 사람은 눈에 띈다.",
+          "effort": "반나절"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차가 적혀 있지 않다(쿠팡 채용 사이트 직접 지원).",
+        "expect": [
+          "기술 방향을 정해 **여러 팀의 계획을 바꾼** 사례",
+          "직접 코드를 보고 판단한 최근 사례 (`code level details` 가 명시돼 있다)",
+          "시스템을 **단순화한** 경험 — 무엇을 없앴고 어떻게 설득했는지",
+          "사고를 **미리 막은** 사례와 그때 본 지표",
+          "지표 정의가 흔들려 결론이 달라졌던 경험",
+          "고객·가맹점·배달 효율이 부딪힐 때의 판단",
+          "여러 나라 팀과 비동기로 일을 밀어 본 방식",
+          "시니어 채용 기준을 만든 경험"
         ],
         "sources": []
       }

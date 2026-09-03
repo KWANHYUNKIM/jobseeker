@@ -4,25 +4,22 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **54개**(브리핑 50 + 중복 표시 4),
-학습 417개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **55개**(브리핑 51 + 중복 표시 4),
+학습 427개. 도메인 9개 · 신호 13개 · `salary`(밴드 비움) · `people: []`.
 
-직전 회차: **`[Opportunistic Hire] Sr. Staff Engineer`**(ats). 줄 겹침 0.09.
-팀은 **`Gateway Services`** — `building Coupang's traffic infrastructure layer using Service Mesh`.
+직전 회차: **`Principal, Back-End Engineer`**(ats, 쿠팡이츠). 형태 ④, 줄 겹침 0.05.
+**`Principal` 급 두 번째**(앞은 `Principal, Security Engineer`).
 
 이 공고에서만 나온 것:
-- ⚠️ **한 공고에 두 직급이 병기돼 있다** — 본문 `[Senior Staff Engineer]/[Staff Engineer]`,
-  자격 **`[12+]/[8+] years`**. → **신호 8번 보강**: `Manager`/`Director` 를 **두 공고로**
-  나눈 사례와 함께 보면 **이 회사는 직급을 후보자에 맞춰 정하는 쪽**으로 보인다.
-  `fit` 에 **"8년을 넘으면 `Staff` 쪽 문이 열려 있다"** 를 적었다.
-- ⚠️ **Go/Rust/C++ 를 요구하는 첫 공고**다(나머지 49건은 대부분 Java·Kotlin·Spring).
-  이유를 **데이터 경로라 GC 정지와 메모리가 곧 지연**으로 풀고, `edge` 를
-  **Go 로 만든 작은 프록시**로 잡았다.
-- ⚠️ **`at least the past three years`** — 보안 공고의 `Recent experience` 와 같은
-  **최근성 요구**다.
-- 도구에 **SPIFFE** 가 있다 — `Security Infrastructure` 공고의 **서비스 간 제로 트러스트**와
-  이어지는 축이라 `fit` 에 연결을 적었다.
-- → **클라우드/내부 플랫폼 도메인 `what_to_know` 에 트래픽 층을 보강**했다.
+- ⚠️ **`Principal` 의 요건이 관리가 아니라 `기술 리더십 7년`** 이고, 범위가
+  `organization / business unit level` 이다. 게다가 **`comfortable getting into code level
+  details … and building software`** 라고 **직접 만든다**고 못 박는다 → **신호 8번 보강.**
+- ⚠️ **`ongoing simplification` 이 담당업무에 있다** — 새로 만드는 것보다 **합치고 줄이는
+  결정**. `edge` 를 **단순화 사례**로 잡았다(없애는 일은 대개 아무의 성과도 아니다).
+- ⚠️ **`Ideally identify them before they happen`** — 사고 대응이 아니라 **예방**을 요구한다.
+  `edge` 를 **한계 지도**(자원별 현재값·한계값·남은 배수)로 잡았다.
+- **쿠팡이츠는 네 축이 서로 당긴다**(고객·가맹점·라이더·내부 운영) → **이츠 도메인
+  `what_to_know` 에 보강**: 이 도메인의 결정은 **어느 지표를 얼마나 내줄지 합의**에서 시작한다.
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
