@@ -336,7 +336,7 @@
       },
       {
         "reading": "**AI 도구 숙련을 '요건'으로 적기 시작했다 — 아직 두 자리뿐이다**",
-        "evidence": "모집중 113건 중 AI·LLM 을 언급한 공고는 26건인데, 그중 **AI 코딩/분석 도구를 다루는 능력 자체를 자격·우대에 적은 공고는 2건**이다 — `CXDX Junior PM (데이터 분석 PM)` 의 `AI Tool(Claude Code, Copilot 등)을 고급 활용하여 문제 정의, 데이터 분석 코드 작성, 분석 리포트 생성을 효율화할 수 있는 역량을 갖추신 분` 과 `Senior Staff / Staff Machine Learning Engineer` 의 `Proficiency in AI coding Cursor/Windsurf/Claude Code/Codex.` ⚠️ **둘의 층위가 정반대다** — 신입 자리와 시니어 ML 자리. 나머지 24건의 AI 언급은 **만드는 대상**(LLM 서비스·GenAI 기능)이지 도구 사용 역량이 아니다. ⚠️ **세 번째 사례는 성격이 다르다** — `[쿠팡] CS Specialist (데이터 분석 & AI)`(경력 2년↑)는 AI 를 **보조 도구로 쓰는 것**이 아니라 **그것으로 업무를 자동화하는 설계**가 담당업무다(`LLM(OpenAI, Claude, Gemini 등)을 활용한 업무 자동화 워크플로우 설계 및 운영`, `AI Agent, RAG 등 AI 기술을 활용한 운영 프로세스 개선`). **개발 직군이 아닌 자리에 LLM·RAG 가 필수 요건으로 들어온 예**다. ⚠️ **세 번째 층위가 나왔다 — 조직 차원의 도입**. `Director, Back-end Engineering` 의 담당업무에 `Lead the team in exploring Agentic Coding and Agentic Operations to elevate productivity, enhance operational quality, and reduce repetitive tasks.` 가 있다. 개인이 도구를 쓰는 것도, AI 제품을 만드는 것도 아니라 **팀에 들일지 말지를 판단하고 이끄는 일**이다.",
+        "evidence": "모집중 113건 중 AI·LLM 을 언급한 공고는 26건인데, 그중 **AI 코딩/분석 도구를 다루는 능력 자체를 자격·우대에 적은 공고는 2건**이다 — `CXDX Junior PM (데이터 분석 PM)` 의 `AI Tool(Claude Code, Copilot 등)을 고급 활용하여 문제 정의, 데이터 분석 코드 작성, 분석 리포트 생성을 효율화할 수 있는 역량을 갖추신 분` 과 `Senior Staff / Staff Machine Learning Engineer` 의 `Proficiency in AI coding Cursor/Windsurf/Claude Code/Codex.` ⚠️ **둘의 층위가 정반대다** — 신입 자리와 시니어 ML 자리. 나머지 24건의 AI 언급은 **만드는 대상**(LLM 서비스·GenAI 기능)이지 도구 사용 역량이 아니다. ⚠️ **세 번째 사례는 성격이 다르다** — `[쿠팡] CS Specialist (데이터 분석 & AI)`(경력 2년↑)는 AI 를 **보조 도구로 쓰는 것**이 아니라 **그것으로 업무를 자동화하는 설계**가 담당업무다(`LLM(OpenAI, Claude, Gemini 등)을 활용한 업무 자동화 워크플로우 설계 및 운영`, `AI Agent, RAG 등 AI 기술을 활용한 운영 프로세스 개선`). **개발 직군이 아닌 자리에 LLM·RAG 가 필수 요건으로 들어온 예**다. ⚠️ **세 번째 층위가 나왔다 — 조직 차원의 도입**. `Director, Back-end Engineering` 의 담당업무에 `Lead the team in exploring Agentic Coding and Agentic Operations to elevate productivity, enhance operational quality, and reduce repetitive tasks.` 가 있다. 개인이 도구를 쓰는 것도, AI 제품을 만드는 것도 아니라 **팀에 들일지 말지를 판단하고 이끄는 일**이다. ⚠️ **네 번째 층위 — 시스템이 스스로 판단하게 만드는 것.** `Director - Backend Engineering (Infrastructure)` 의 담당업무에 `AI-Driven Automation: Integrate AI/ML models to automate system functionality, including predictive scaling, automated bottleneck detection, and intelligent error recovery` 가 있다. 우대사항 쪽은 `Experience or a strong architectural vision` 이라 **경험이 없어도 구상이 있으면 된다**고 열어 두었다.",
         "so_what": "**아직 '도구를 쓸 줄 아는 것'이 전 직군의 요건은 아니다** — 그러니 이력서에 도구 이름을 나열하는 것으로는 힘이 안 붙는다. 대신 **이 두 자리에 지원한다면 증명 방식을 준비한다**: 도구가 낸 결과를 **어디서 의심했고 어떻게 검증했는지**의 기록. 그리고 나머지 24건에서 AI 는 **내가 쓰는 것이 아니라 내가 만드는 것**이므로, 준비할 것이 완전히 다르다(모델·평가·서빙). ⚠️ **개발 직군이 아니어도 LLM 이 요건이 되는 자리가 생기고 있다** — CS·운영 쪽에서 `SQL + LLM 적용 경험` 조합을 요구한다. 이쪽을 노린다면 **평가 세트로 성능을 재 본 기록**이 가장 싼 증거다. ⚠️ **관리자로 지원한다면 준비물이 또 다르다** — 도구 사용 경험이 아니라 **도입을 재는 방법**(비교군·지표·실패 판정 기준)과 **품질·보안을 유지하는 장치**다.",
         "confidence": "inferred"
       },
@@ -5646,6 +5646,154 @@
           "데이터 신선도와 서빙 성능 사이의 판단",
           "멘토·테크리드로서 사람을 키운 사례 (`Basic Qualifications` 에 있다)",
           "⚠️ **연차 확인** — 본문 `10+ years` 와 우대 쪽 `5+ years` 가 함께 있다"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8040140",
+      "title": "Director - Backend Engineering (Infrastructure)",
+      "site": "ats",
+      "verdict": "**사내 수백 개 팀이 쓸 워크플로 엔진을 백지에서 짓는 그린필드 팀의 리더.** 만드는 것은 `durable execution platform` — **오래 걸리는 작업을 코드로 쓰되 중간에 죽어도 이어지게** 하는 기반이고, 로켓배송 같은 흐름이 그 위에 올라간다. ⚠️ **목표 가용성이 `5-6 nines`(99.9999%)** 다. ⚠️ **연차가 두 벌로 적혀 있다** — `Basic Qualifications` 는 **백엔드 8년 + 5~10명 관리**, `Preferred` 는 **12년 + 관리 3년**.",
+      "fit": {
+        "must_have": [
+          "⚠️ **기본 요건: 백엔드 8년 + 5~10명 팀을 관리해 본 경험**(우대 쪽은 12년 + 관리 3년으로 더 높다)",
+          "**Java 와 Spring**",
+          "AWS 등 클라우드",
+          "**고가용 분산 시스템을 만들고 유지해 본** 경험",
+          "컴퓨터공학·전기공학·수학 등 학사"
+        ],
+        "can_learn": [
+          "⚠️ **Temporal·Cadence 지식은 `Specialized Knowledge` 로 우대사항**이다 — 몰라도 지원할 수 있지만, 이 팀이 만드는 것이 바로 그 계열이라 **개념만 알고 가도 대화가 달라진다**",
+          "Cassandra·TiDB, 오픈소스 기여, 분산 추적 — 전부 **우대사항**",
+          "AI/ML 로 시스템을 자동화한 경험도 **우대**(`or a strong architectural vision` 이라고 여지를 뒀다)"
+        ]
+      },
+      "study": [
+        {
+          "topic": "내구성 있는 실행(durable execution)이란 무엇인가",
+          "from": "preference",
+          "quote": "Specialized Knowledge: Deep familiarity with the Temporal or Cadence programming models and their underlying architecture. Experience in Kubernetes and containerization.",
+          "priority": "core",
+          "why": "⚠️ **이 팀이 만드는 물건의 이름이 우대사항에 적혀 있다.** 핵심 발상은 이렇다 — 주문 처리처럼 **여러 단계를 며칠에 걸쳐 밟는 작업**을 코드로 쓰되, 서버가 죽어도 **중단된 지점부터 이어지게** 한다. 그러려면 모든 단계의 결과를 기록해 두고 재실행 시 **같은 순서로 같은 결정**이 나와야 한다(결정적 실행). 상태 기계를 손으로 짜던 일을 언어 수준으로 올린 것이다.",
+          "gap_check": "'서버가 3단계에서 죽었을 때 4단계부터 이어서 한다'를 **직접 구현**한다면 무엇이 필요한지 말할 수 있는가.",
+          "drill": "작은 워크플로 엔진을 만든다 — ① 각 단계의 입력·출력을 **이벤트 로그에 기록** ② 프로세스를 죽였다 살렸을 때 로그를 **재생해 상태를 복원** ③ 이미 끝난 단계는 **다시 실행하지 않기** ④ 외부 호출은 멱등하게. 그다음 Temporal 문서를 읽고 **내가 안 만든 기능 다섯 개**를 찾아 적는다(타이머, 시그널, 버전 관리, 자식 워크플로, 재시도 정책).",
+          "hours": 14
+        },
+        {
+          "topic": "백지에서 설계한다는 것",
+          "from": "task",
+          "quote": "Architect from Zero: Lead the end-to-end design of a distributed workflow engine. You will Build the Best Team and Help Them Grow by setting the gold standard for architectural integrity and high-performance code.",
+          "priority": "core",
+          "why": "⚠️ **`greenfield team` 이라고 본문이 밝힌다** — 고칠 레거시가 없는 대신 **정답도 없다.** 이런 팀에서 리더가 하는 일은 코드를 많이 쓰는 게 아니라 **되돌릴 수 있는 순서로 결정을 배열하는 것**이다: 지금 정해야 하는 것(데이터 모델·API 계약)과 나중에 정해도 되는 것(내부 최적화)을 가르지 못하면 초기에 굳어 버린다.",
+          "gap_check": "새 시스템을 시작할 때, 나는 **가장 먼저 고정하는 것**이 무엇인가. 왜 그것인가.",
+          "drill": "가상의 새 플랫폼 하나를 잡고 **결정 순서표**를 만든다 — 결정 10개를 적고 각각 ① 지금 정해야 하나 ② 나중에 바꾸는 비용 ③ **잘못 정했을 때 언제 알게 되나**. ②가 크고 ③이 늦은 항목이 곧 **먼저 실험해야 할 것**이다. 그중 하나를 골라 **작은 프로토타입**으로 확인한다.",
+          "hours": 8
+        },
+        {
+          "topic": "5-6 nines 를 목표로 잡는다는 것",
+          "from": "task",
+          "quote": "Define Extreme Availability: Design for \"5-6 nines\" (99.9999% availability). You will Dive Deep into the tail latencies and edge cases of distributed state management to ensure our platform is always on for our customers.",
+          "priority": "core",
+          "why": "⚠️ **99.9999% 는 연간 약 32초**다. 사람이 대응해서 지킬 수 있는 수준이 아니고, **장애가 나도 서비스가 계속되게 설계**해야 나오는 숫자다 — 다중 리전, 자동 승격, 부분 실패 흡수. 그리고 `tail latencies` 를 함께 적은 게 중요하다: 평균이 아니라 **가장 느린 요청**이 이런 플랫폼의 품질을 정한다.",
+          "gap_check": "내 시스템의 **p99.9 지연**을 아는가. 평균만 보고 있지는 않은가.",
+          "drill": "서비스 하나에 부하를 주고 ① 평균·p50·p99·p99.9 를 함께 그린다 ② **가장 느린 1%가 왜 느린지** 추적한다(GC·재시도·커넥션 대기·핫 파티션 중 무엇인가) ③ 하나를 고치고 다시 잰다. 그리고 **가용성 목표별 허용 시간 표**(99.9% / 99.99% / 99.9999%)를 만들어 **각 목표가 요구하는 설계 차이**를 한 문단으로 적는다.",
+          "hours": 10
+        },
+        {
+          "topic": "분산 락·타이머·결정적 실행",
+          "from": "task",
+          "quote": "Solve Hard Problems: Address challenges related to distributed locking, timers, and deterministic execution. You must Be Data-Driven to validate architectural decisions against massive traffic patterns.",
+          "priority": "core",
+          "why": "⚠️ **어려운 문제를 이름으로 셋 적었다.** 셋 다 워크플로 엔진의 심장이다 — **락**은 같은 작업이 두 곳에서 돌지 않게, **타이머**는 '3일 뒤에 이걸 해라'를 수백만 건 관리하려고, **결정적 실행**은 재생했을 때 같은 결과가 나오게 하려고 필요하다. 특히 타이머는 규모가 커지면 그 자체가 별도의 분산 시스템이 된다.",
+          "gap_check": "'3일 뒤 실행'을 **백만 건** 관리한다면 어떻게 저장하고 깨울 것인가.",
+          "drill": "세 가지를 각각 작게 만든다 — ① **분산 락**을 Redis 나 DB 로 구현하고 **락을 쥔 노드가 죽었을 때**를 처리한다(임대 시간·펜싱 토큰) ② **타이머 저장소**를 만들어 10만 건을 넣고 깨우는 시간을 잰다(정렬된 인덱스 vs 시간 버킷) ③ 같은 워크플로를 **두 번 재생**해 결과가 같은지 확인하고, `현재 시각`·`난수`를 쓰면 왜 깨지는지 본다. ③이 결정적 실행의 핵심이다.",
+          "hours": 14
+        },
+        {
+          "topic": "자바·파이썬의 동시성과 메모리",
+          "from": "preference",
+          "quote": "Technical Mastery: Expert-level proficiency in Java, Python with deep understanding of concurrency and memory management.",
+          "priority": "core",
+          "why": "⚠️ **`concurrency and memory management` 를 콕 집었다.** 워크플로 엔진은 **수많은 대기 중 작업을 메모리에 들고 있지 않아야** 확장되고, 동시에 수천 개의 상태 전이를 안전하게 처리해야 한다. 여기서 흔한 실패가 **스레드 하나에 워크플로 하나**를 묶는 설계다 — 몇 만 개에서 무너진다.",
+          "gap_check": "대기 중인 작업 100만 개를 **메모리에 안 들고** 관리하는 방법을 말할 수 있는가.",
+          "drill": "동시 작업 1만 개를 처리하는 서비스를 ① 스레드 풀 ② 비동기(가상 스레드·코루틴·async) 두 방식으로 만든다. **메모리 사용량과 처리량**을 비교하고, ③ 작업 상태를 **메모리 대신 저장소에 두고 필요할 때만 올리는** 방식으로 다시 만들어 셋을 비교한다.",
+          "hours": 12
+        },
+        {
+          "topic": "AI 로 시스템을 스스로 고치게 한다",
+          "from": "task",
+          "quote": "AI-Driven Automation: Integrate AI/ML models to automate system functionality, including predictive scaling, automated bottleneck detection, and intelligent error recovery, ensuring we Wow the Customer through seamless platform performance and availability.",
+          "priority": "high",
+          "why": "⚠️ **이 회사 AI 요건의 네 번째 층위다** — 도구 사용, AI 제품 개발, 조직 도입에 이어 여기서는 **시스템 자체가 스스로 판단하게** 만든다. 셋을 이름으로 적었다: 예측 확장·병목 탐지·지능형 복구. 다만 우대사항은 `Experience or a strong architectural vision` 이라 **경험이 없어도 구상이 있으면 된다**고 열어 두었다. 그리고 이 층위에서 중요한 건 모델 성능이 아니라 **틀렸을 때의 안전장치**다.",
+          "gap_check": "자동 복구가 **잘못 판단했을 때** 무엇이 막아 주는가. 그 경계를 정할 수 있는가.",
+          "drill": "자동 복구 후보를 표로 만든다 — 장애 유형별로 ① 탐지 신호 ② 자동 조치 ③ **되돌릴 수 있나** ④ **연속 실행 제한**(같은 조치를 몇 번까지) ⑤ 사람에게 넘기는 조건. 그다음 예측 확장을 하나 만들어 **과거 데이터로 백테스트**하고, 틀렸을 때의 비용(과다 확장 vs 부족)을 숫자로 적는다.",
+          "hours": 10
+        },
+        {
+          "topic": "상태를 저장하는 데이터베이스",
+          "from": "preference",
+          "quote": "Stateful Database Experience: Experience with Cassandra and TiDB preferred",
+          "priority": "high",
+          "why": "워크플로 엔진은 **모든 단계를 기록**하므로 쓰기가 많고 데이터가 빨리 는다. Cassandra 는 쓰기 확장에 강하지만 **트랜잭션과 질의가 제한**되고, TiDB 는 SQL 과 분산을 함께 주지만 **운영이 복잡**하다. 즉 이 선택은 성능 비교가 아니라 **엔진이 어떤 일관성을 필요로 하는가**의 문제다.",
+          "gap_check": "'워크플로 상태를 갱신한다'는 연산에 **어떤 일관성 보장**이 필요한지 말할 수 있는가.",
+          "drill": "이벤트 로그 저장을 두 형태로 설계한다 — ① 워크플로 ID 로 파티션한 넓은 행(Cassandra 식) ② 관계형 테이블 + 인덱스. 각각에서 **자주 쓰는 질의 다섯 개**(재생, 대기 중 타이머 조회, 상태별 집계)를 어떻게 처리할지 적고 **어느 쪽이 어디서 막히는지** 표로 만든다.",
+          "hours": 8
+        },
+        {
+          "topic": "보이지 않으면 못 고친다 — 관측성",
+          "from": "preference",
+          "quote": "Observability Expert: Expertise in building highly observable systems using distributed tracing and advanced telemetry to proactively identify issues.",
+          "priority": "high",
+          "why": "⚠️ `proactively` 가 붙어 있다 — 터진 뒤 보는 게 아니라 **터지기 전에 찾는다**는 뜻이다. 워크플로는 **며칠에 걸쳐 여러 서비스를 넘나들므로** 일반적인 요청 추적으로는 안 보인다: 한 워크플로의 생애 전체를 하나로 묶어 보여 주는 추적이 필요하다. 같은 회사에 `Sr. Staff Observability Engineer` 자리가 따로 있는 것도 이 회사가 이 축을 중요하게 본다는 신호다.",
+          "gap_check": "우리 시스템에서 **하나의 논리적 작업**이 여러 서비스를 거칠 때, 그걸 한 화면에서 볼 수 있는가.",
+          "drill": "세 서비스를 거치는 흐름에 **분산 추적**을 붙인다(OpenTelemetry 로 충분). 그다음 ① 며칠 걸리는 작업을 흉내 내고 ② **추적이 끊기는 지점**(비동기 큐를 넘을 때)을 찾아 컨텍스트를 이어 붙인다 ③ 워크플로 ID 로 **전 구간을 조회**할 수 있게 만든다.",
+          "hours": 10
+        },
+        {
+          "topic": "8년 + 5~10명 — 이 회사 관리 사다리에서의 위치",
+          "from": "qualification",
+          "quote": "8 years of experience in backend software development",
+          "priority": "core",
+          "why": "⚠️ **같은 `Director` 인데 기본 요건이 8년이다** — `Director, Back-end Engineering`(개발 12년·관리 7년), `Director - AI Infra`(15년·리더십 5년)와 비교하면 **가장 낮다.** 대신 이 자리는 **`Technical Lead Manager`** 라고 본문이 부르고 팀은 최대 10명이다. 즉 조직 규모가 아니라 **문제의 난이도로 무게가 실린 자리**로 읽힌다. 우대 쪽에는 `12+ years` 와 `3 years of experience managing a team of 5-10 engineers` 가 적혀 있다.",
+          "gap_check": "나는 **5~10명 규모에서 직접 설계까지 하는 리더** 인가, 아니면 관리에 집중하는 리더인가. 이 자리는 앞쪽을 찾는다.",
+          "drill": "최근 1년의 시간 사용을 나눠 본다 — ① 직접 설계·코드 ② 리뷰 ③ 사람·조직 ④ 회의·보고. 그리고 **이 자리가 요구하는 비율**을 상상해 적어 보고 차이를 확인한다. 차이가 크면 지원 자체를 다시 생각할 재료가 된다.",
+          "hours": 3
+        },
+        {
+          "topic": "수백 개 팀을 고객으로 두는 플랫폼",
+          "from": "task",
+          "quote": "Stakeholder management - Work cross functionally with our product teams to provide infrastructure which serves the company’s business needs",
+          "priority": "high",
+          "why": "본문이 `hundreds of domain teams` 를 위해 만든다고 밝히고, `hundreds of millions of dollars of revenue flowing through the systems` 라고 적는다 — **내부 플랫폼이지만 실패의 대가는 매출**이다. 이런 플랫폼에서 어려운 건 기능이 아니라 **채택**이다: 팀들이 기존 방식을 버리고 옮겨 와야 의미가 생긴다.",
+          "gap_check": "내가 만든 내부 플랫폼을 **몇 팀이 실제로 썼는가.** 안 쓴 팀은 왜 안 썼는가.",
+          "drill": "플랫폼 도입 계획을 한 장으로 쓴다 — ① 첫 사용자로 삼을 팀 두 곳과 **고른 이유** ② 그들이 지금 겪는 고통 ③ 옮기는 비용과 **우리가 대신 해 줄 것** ④ 성공 판정 기준 ⑤ **안 쓰기로 한 팀을 어떻게 대할지**. ⑤가 없는 계획은 강제 이관이 되고, 강제 이관은 원망을 남긴다.",
+          "hours": 6
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**작은 durable execution 엔진**을 직접 만들어 공개해 둔다 — 이벤트 로그 재생·멱등·타이머까지",
+          "why": "우대사항이 `Temporal or Cadence programming models and their underlying architecture` 를 콕 집는데, **써 본 사람은 있어도 만들어 본 사람은 드물다.** 작아도 만들어 보면 `deterministic execution` 이 왜 어려운지 말할 수 있게 된다.",
+          "effort": "3~5일"
+        },
+        {
+          "idea": "⚠️ **연차 두 벌을 구분해 확인하고 지원한다** — 기본 8년 / 우대 12년",
+          "why": "이 공고는 `Basic Qualifications`(8년)와 `Preferred`(12년)가 **다른 절에 흩어져** 있다. 8~12년 사이라면 **기본 요건은 충족**하므로, 우대 쪽 숫자만 보고 접을 이유가 없다.",
+          "effort": "10분"
+        }
+      ],
+      "interview": {
+        "process": "Application Review -> Phone Interview -> Onsite (or Virtual Onsite) Interview –> Offer.",
+        "expect": [
+          "중단된 작업을 이어서 실행하는 설계 — **이벤트 로그와 재생**",
+          "분산 락에서 **락을 쥔 노드가 죽었을 때**의 처리",
+          "수백만 건의 타이머를 관리하는 방법",
+          "**결정적 실행**을 깨는 것들(현재 시각·난수·외부 호출)",
+          "99.9999% 를 목표로 할 때 달라지는 설계",
+          "p99.9 를 악화시키는 원인을 추적한 경험",
+          "내부 플랫폼을 **다른 팀이 실제로 쓰게** 만든 방법",
+          "⚠️ **자동 복구의 안전장치** — 잘못 판단했을 때 무엇이 막는가"
         ],
         "sources": []
       }

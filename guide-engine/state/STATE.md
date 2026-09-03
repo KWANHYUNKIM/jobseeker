@@ -4,36 +4,33 @@
 
 ## 지금 쓰는 중
 
-**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **40개**(브리핑 37 + 중복 표시 3),
-학습 313개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
+**쿠팡**(`coupang`) — `in_progress`. 공고 항목 **41개**(브리핑 38 + 중복 표시 3),
+학습 323개. 도메인 9개 · 신호 13개 · `salary: null` · `people: []`.
 
-직전 회차: **`Director, Back-End Engineering (E-commerce Engineering)`**(ats).
-**세 번째 `Director` 브리핑.**
-
-⚠️ **크롤 요약이 절을 잘못 담은 세 번째 형태를 만났다.**
-- (1) 세 절이 통째로 빔 → 못 씀(`Sr. Director`) → **이제 대기열에서 제외됨**
-- (2) 자격이 `main_tasks` 안에 붙음(`Basic Qualifications:` / `Required Qualifications`)
-- (3) **이번**: 담당업무와 `Basic Qualifications` 가 빠지고 **`Preferred Qualifications` 만
-  `preferences` 로 담김** → 인용문이 전부 우대 쪽이고 **`5+ years` 처럼 실제 기준(개발
-  10년)보다 낮은 숫자가 보인다.** `verdict`·`fit`·`edge`·`open_questions` 에 **원문을 직접
-  읽으라**고 명시했다.
-
-**⚠️ 다음 회차 규칙에 추가: 세 절이 한쪽만 차 있으면 `full_jd` 를 확인한다.**
+직전 회차: **`Director - Backend Engineering (Infrastructure)`**(ats). **네 번째 `Director`.**
+⚠️ **연차가 두 절에 흩어져 있었다** — `Basic Qualifications`(백엔드 **8년** + 5~10명 관리)는
+`main_tasks` 끝에, `Preferred`(**12년** + 관리 3년)는 `preferences` 에. **양쪽에서 인용**하고
+`edge` 에 **8~12년 사이면 기본 요건은 충족**이라고 적었다.
 
 이 공고에서만 나온 것:
-- 맡는 팀이 **`Core Member Platform`**, 만드는 것은 **차세대 데이터 서빙 플랫폼**.
-  홈·검색·카테고리·상세·장바구니·결제·주문이 그 위에 올라간다
-  → **커머스 도메인 `what_to_know` 에 보강.**
-- 목표가 **대만 등 다른 시장 확장**이라 **한국 전제를 걷어내는 일**이 실제 과제다.
-- ⚠️ 요건에 **데이터 파이프라인**(Spark·Hadoop·Cassandra·Kafka·Airflow)이 있다 —
-  `data-serving platform` 이라 그렇다. 드릴을 **데이터 신선도 지도**로 잡았다
-  (전부 실시간으로 만들 필요는 없다).
-- `Java / IntelliJ / Spring` — **IDE 까지 적은 드문 항목.**
+- **`durable execution platform` 을 백지에서 짓는 그린필드 팀** — Temporal/Cadence 계열.
+  ⚠️ 우대사항이 `Temporal or Cadence programming models and their underlying architecture`
+  를 콕 집는다. `edge` 를 **작은 엔진을 직접 만들어 보기**로 잡았다.
+- ⚠️ **목표 가용성 `5-6 nines`(99.9999%)** — 연간 약 32초. 사람 대응으로는 못 지키는 수준.
+- **어려운 문제를 이름으로 셋 적었다** — `distributed locking, timers, and deterministic
+  execution`. 드릴을 셋 각각으로 나눴다(펜싱 토큰 / 타이머 저장소 / 재생 시 같은 결과).
+- ⚠️ **AI 요건의 네 번째 층위** → 신호 9번: `predictive scaling, automated bottleneck
+  detection, and intelligent error recovery` — **시스템이 스스로 판단하게** 만든다.
+  `or a strong architectural vision` 이라 **경험 없이 구상만 있어도** 열어 뒀다.
+- **같은 `Director` 인데 기본 요건이 가장 낮다**(8년). 본문이 스스로를 `Technical Lead
+  Manager` 라 부르고 팀은 최대 10명 — **조직 규모가 아니라 문제 난이도로 무게가 실린 자리.**
 
 ## ⚠️ 다음 회차 = **`--gaps` 를 먼저 돌린다.** (예상을 여기 적지 않는다.)
 **고르기 전에 ① 세 절 길이 ② 겹침(비율 + 한국어 줄 집합).**
-⚠️ **세 절 중 비거나 한쪽만 찬 것이 있으면 `full_jd` 를 읽는다** — 영문 ats 공고에서
-지금까지 **세 가지 형태**가 나왔다(위 참조).
+⚠️ **세 절 중 비거나 한쪽만 찬 것이 있으면 `full_jd` 를 읽는다.** 영문 ats 공고에서 지금까지
+**네 가지 형태**가 나왔다 — ① 세 절 통째로 빔(대기열에서 제외됨) ② 자격이 `main_tasks`
+안에 붙음 ③ `Preferred` 만 `preferences` 에 담기고 `Basic` 누락 ④ **`Basic` 은
+`main_tasks` 끝에, `Preferred` 는 `preferences` 에 나뉨.**
 **본문이 글자 그대로 같으면 `duplicate_of` 로 표시**하고 그 회차는 그것으로 끝낸다.
 
 ⚠️ **읽어 둔 것**: `SCMA Senior Staff Data Scientist`(2043/2144/0, 최대 겹침 0.33).
@@ -64,6 +61,12 @@
 | 크레딧잡·잡플래닛 등 집계 | WebSearch 로 수치만 | **전 직군 평균**이다. 서비스마다 값이 다르다(글로우업리즈: 2,747 / 2,816 / 3,455만원) |
 
 ## 배운 것
+
+- **연차가 두 절에 흩어져 있으면 둘 다 적는다.** 영문 ats 공고는 `Basic Qualifications` 와
+  `Preferred Qualifications` 를 나눠 쓰는데, 크롤이 이를 뒤섞어 담는다. 한쪽만 보면
+  **기준을 실제보다 높게(또는 낮게) 오해**한다. `fit.must_have` 첫 줄에 **기본 요건**을
+  적고, 우대 쪽 숫자는 그 옆에 괄호로 밝힌 뒤 `edge` 에 **"그 사이면 기본은 충족"** 을
+  적어 두면 지원자가 스스로 판단할 수 있다.
 
 - **크롤 요약의 절 구분을 믿지 않는다.** 영문 ats 공고에서 세 가지 형태가 나왔다 —
   ① 세 절이 통째로 빔 ② 자격이 `main_tasks` 안에 붙음 ③ **`Preferred Qualifications`
