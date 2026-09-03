@@ -4,49 +4,50 @@
 
 ## 지금 쓰는 중
 
-**포티투닷 (`42dot`) — `in_progress`.** 공고 7건 · 학습 63개.
-(전체: 회사 24곳 · 공고 194건 · 학습 1,591개 · **오류 0** · **경고 5**.)
+**포티투닷 (`42dot`) — `in_progress`.** 공고 8건 · 학습 72개.
+(전체: 회사 24곳 · **공고 195건 · 학습 1,600개** · **오류 0** · **경고 5**.)
 
-**이번 회차 = `Senior Planning & Control System Engineer (Autonomous Driving)`(Ashby, 판교).**
-**이 엔진이 다룬 200여 공고 중 기계·자동차공학이 자격요건에 명시된 첫 자리다**
-(`제어공학, 전기공학, 기계공학, 자동차공학, 로봇공학 … 석사 이상과 3년 이상`).
-축: **`PID·LQR/LQG·SMC·MPC 를 언제 무엇에 쓰나`** · `실시간 궤적 최적화(수렴 실패 대비)` ·
-**`결정적 실시간 C++ — 루프 안 할당 0`** · **`학습 정책을 신뢰하지 않는 구조(safety filter)`** ·
-`차량 동역학 모델의 한계` · `실차 튜닝(지연·데드밴드)` · **`승차감을 숫자로(저크·횡가속도)`** ·
-`액추에이터 폐루프` · `전공 문이 넓다`.
+**이번 회차 = `Senior Computer Vision Engineer (Autonomous Driving)`(Ashby, 판교, 석사/박사+7년).**
+**담당업무가 연구 주제 목록**이라 지난 회차에 정한 방식대로 **주제별로 study 를 세웠다.**
+축: `왜 3차원인가(좌표 변환을 손으로)` · `점군 표현 셋(점·복셀·BEV)` · `자세 추정과 추적(ID 스위치)` ·
+**`레이블 없는 데이터로 배우기 — 라벨 효율 곡선`** · **`월드 모델·폐루프 시뮬레이션(예측이 무너지는 지평)`** ·
+`저수준·물리 기반 비전(악천후)` · `SLAM·깊이·재구성` · **`시간 동기 10ms = 28cm`** · `CUDA 커널`.
 
-**⚠️ 두 후보를 견주고 골랐다** — `Senior Computer Vision Engineer`(4,161자)는 담당업무가
-**연구 주제 나열**(`3D shape modeling`·`Object pose estimation`·`World models` …)이고 요건이
-**7년↑ + 석사/박사**로 더 높다. Planning & Control 이 **재료가 구체적이고 요건이 낮아** 먼저 썼다.
-**CV 는 다음 순서에 남겨 두되, '주제 나열형 공고'는 각 주제를 study 항목으로 옮기는 방식이 맞다.**
+**⚠️ 지난 회차의 대조 판단을 정정한다** — "우대사항이 회사 공통 문구"라고 적었는데,
+**진짜 공통 문구는 우대사항이 아니라 말미의 `ADDITIONAL INFORMATION` 안내문**이었다
+(채용절차법·평판조회·수습·서치펌 문구). CV 공고의 우대사항에는 **고유 항목이 분명히 있다**
+(`SLAM, depth estimation, 3D reconstruction`·`CUDA, OpenCL`·`CVPR, ICCV, TPAMI`·`VR/AR`).
+→ **유사도가 우대사항에서 높게 나오면 '공통 안내문 때문인지'를 먼저 확인한다.**
+자체 채용페이지(ats) 공고는 **본문 끝 20~30줄이 전 공고 공통**이므로 유사도가 구조적으로 올라간다.
 
-**⚠️ 이 자리가 `Physical AI Engineer (Model)`(1회차)와 겹치지 않게 한 방법**
-1회차는 **학습으로 궤적을 만드는** 쪽, 이번은 **그 궤적을 실제 조향·가감속으로 바꾸는** 쪽으로 갈랐다.
-그리고 담당업무의 `Planning 결과물, RL/IL 기반 Policy … 를 제어 시스템에 통합` 한 줄을
-**"AI 를 신뢰하지 않도록 설계하는 자리"** 로 읽어 두 자리를 잇는 다리로 썼다(회사 안 협업 구조가 드러난다).
+**⚠️ 이 회사는 자리마다 요건 차이가 크다 — 지원자에게 이게 가장 쓸모 있는 정보다**
+`System Framework` 학사↑·2년↑ / `Backend (Open Platform)` 3년↑ / `Planning & Control` 석사↑·3년↑ /
+`ML Platform` 학사↑·7년↑ / **`Computer Vision` 석사·박사+7년↑(가장 높다)**.
+**닫을 때 `company.signals` 에 이 사다리를 한 항목으로 넣는다.**
 
 **남은 순서** (판교 위주)
-1. **`Senior Computer Vision Engineer (Autonomous Driving)`(4,161자, 7년↑·석사/박사)** — **다음.**
-   담당업무가 연구 주제 목록이다: `3D shape modeling and processing` · `Object pose estimation and tracking` ·
-   `Efficient and scalable vision` · `Low-level and physics-based vision` ·
-   **`Self-supervised representation learning from large-scale unlabeled scene data`** ·
-   **`World models and closed-loop simulation for autonomous driving`**.
-   ⚠️ **각도는 '인지(perception)'와 '레이블 없는 대규모 데이터'** — 1회차(계획)·이번(제어)과 안 겹친다.
-2. **Gleo·에이전트 축 넷 — 대조 먼저.** `Senior AI Agent Engineer (Gleo Interactor)`(1,614자) /
+1. **Gleo·에이전트 축 넷 — 대조 먼저.** `Senior AI Agent Engineer (Gleo Interactor)`(1,614자) /
    `Senior AI Engineer (Driving VLM/VLA)`(2,333자) / `AI Engineer (Navigation Agent)`(1,829자) /
-   `LLM Engineer (Data Generation)`(2,196자).
-3. `Security Engineer (Security Platform)`(2,687자) / `Security Engineer (차량 보안)`(1,065자) — 둘 대조 먼저.
-   ⚠️ **인증·인가는 2회차에서 다뤘다** → **CAN 버스·침입 탐지·시큐어부트** 쪽으로 각도를 튼다.
+   `LLM Engineer (Data Generation)`(2,196자). **회사 브리핑의 `차량 인포테인먼트와 음성 AI` 도메인과 맞물린다.**
+   ⚠️ **`Gleo AI` 는 회사의 유일한 공개 양산 사례**(더 뉴 그랜저)다 — 그 각도를 살린다.
+2. `Security Engineer (Security Platform)`(2,687자) / `Security Engineer (차량 보안)`(1,065자) — 둘 대조 먼저.
+   ⚠️ 인증·인가는 2회차에서 다뤘다 → **CAN 버스·침입 탐지·시큐어부트** 쪽으로.
+3. `Senior AI Engineer (Closed-loop Simulation & RL)`(2,453자) — ⚠️ **이번 회차에서 월드 모델·폐루프를
+   다뤘다.** 겹치므로 **RL 학습 인프라·시나리오 생성** 쪽으로 각도를 틀거나 뒤로 미룬다.
 4. `[MS/PhD Intern] AI Engineer (정규직 전환형)`(2,294자) — 학위 과정 지원자에게 열린 유일한 문.
-5. `Senior Physical AI Engineer`(5,968자) / `Physical AI Engineer`(4,098자) — **급수 차이**(담당업무 0.40).
-   **한 건만 쓰고 나머지는 `open_questions` 에 이유를 남긴다.**
-6. 서니베일·바르샤바·호치민 13건은 **뒤로.**
+5. `Senior Physical AI Engineer`(5,968자) / `Physical AI Engineer`(4,098자) — 급수 차이(담당업무 0.40).
+   **한 건만 쓰고 나머지는 `open_questions` 에.**
+6. `Senior Backend Engineer(Mobile Platform)`(1,622자) / `Senior Release Engineer`(1,746자) /
+   `Vehicle System Integration Engineer`(1,573자) / `Software Update Engineer`(1,522자) /
+   `Deep Learning Engineer (음성 인식 및 wake word detection)`(1,471자) / `Test Engineer (Autonomous Driving)`(1,216자) —
+   **본문이 짧은 판교 자리들.** 얇은 대로 깊게 판다.
+7. 서니베일·바르샤바·호치민 13건은 **뒤로.**
 
 **⚠️ 경고 5건 미결**: `exem[2]` · `interx[6]` · `plaif[1]` · `robros[3]` · `robros[4]`.
 **대기열이 비는 순간 `fix(guide)` 로 바로 처리한다.**
 
-**닫을 때 (넷)** — ① **`Pleos Vehicle OS` 회사 브리핑 보강** ② `salary` 비어 있음(사람인
-`view-inner-salary` 먼저) ③ `people` 비어 있음 ④ 안 쓴 공고 이유.
+**닫을 때 (다섯)** — ① **`Pleos Vehicle OS` 회사 브리핑 보강** ② **요건 사다리를 `signals` 에 추가**
+③ `salary` 비어 있음(사람인 `view-inner-salary` 먼저) ④ `people` 비어 있음 ⑤ 안 쓴 공고 이유.
 
 **대기 2곳: 씨제이올리브영 → 쿠팡.**
 
@@ -66,6 +67,18 @@
 
 ## 배운 것
 
+- **⚠️ 자체 채용페이지(ats) 공고는 본문 끝 20~30줄이 전 공고 공통이다.** 포티투닷은 말미에
+  `ADDITIONAL INFORMATION`(채용절차법·평판조회·수습·서치펌)이 모든 공고에 똑같이 붙어 있어,
+  **`preferences` 유사도가 구조적으로 0.7~0.8 까지 올라간다.** 지난 회차에 이걸 "우대사항이 공통
+  문구"라고 잘못 적었다 — **실제 우대사항에는 고유 항목이 있었다.**
+  → **유사도가 우대사항에서 높으면 공통 안내문을 걷어내고 다시 본다.**
+- **한 회사의 자리별 요건 차이를 사다리로 정리해 준다.** 포티투닷은 학사↑·2년↑(System Framework)
+  부터 석사/박사+7년↑(Computer Vision)까지 폭이 컸다. **지원자가 가장 먼저 알고 싶은 것이 이것**
+  이므로, 회사를 닫을 때 `company.signals` 에 한 항목으로 넣는다.
+- **연구 주제 나열형 공고는 주제별로 '이 회사에서 왜 이게 필요한가'를 붙인다.** CV 공고의
+  `World models and closed-loop simulation` 은 **녹화 데이터로는 내 행동에 대한 반응을 못 본다**는
+  한계에서 나오고, `Self-supervised … unlabeled scene data` 는 **라벨 붙이는 속도가 데이터 쌓이는
+  속도를 못 따라간다**는 사정에서 나온다. **주제를 회사 사정과 이어야 학습 항목이 된다.**
 - **같은 회사에서 인접한 두 자리는 '주고받는 관계'로 이어 준다.** 포티투닷 `Physical AI`(학습으로
   궤적 생성)와 `Planning & Control`(그 궤적을 조향·가감속으로 변환)은 실제로 산출물을 주고받는다.
   후자의 담당업무 `RL/IL 기반 Policy … 를 제어 시스템에 통합` 을 **"AI 를 신뢰하지 않도록 설계하는
