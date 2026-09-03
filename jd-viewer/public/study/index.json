@@ -859,6 +859,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "zero-downtime-deploy",
+      "title": "무중단 배포",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**서비스를 멈추지 않고 새 버전으로 바꾸는 일**이다. 전략(롤링·블루그린·카나리) 고르기는 쉬운 쪽이고, **어려운 것은 두 버전이 잠시 함께 도는 동안 데이터와 요청을 어떻게 하느냐**다.",
+      "aliases": [
+        "무중단 배포",
+        "블루그린",
+        "블루/그린",
+        "Blue-Green",
+        "카나리",
+        "Canary",
+        "롤링 업데이트"
+      ],
+      "sections": 7,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
