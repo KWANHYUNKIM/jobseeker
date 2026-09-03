@@ -5,7 +5,7 @@
   "country": "IN",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-08-29",
+  "updated_at": "2026-09-03",
   "domain": "freshworks.com/explore-cx · /explore-it",
   "one_liner": "한 덩어리 Rails 앱 위에 여러 고객을 얹고 그 폭발 반경을 계속 잘라 온 인도 SaaS",
   "business_model": "**업무용 소프트웨어를 구독으로 판다.** 사업이 **둘로 갈린다** — **CX**(고객 응대: Freshdesk·Freshchat)와 **EX**(사내 업무: Freshservice 중심의 ITSM). **⭐ 그리고 기술 블로그의 경로가 그 부문을 그대로 따른다** — `/explore-cx/` 와 `/explore-it/` 다(이 관찰은 이 사이트의 것이다).\n\n**2026년 2분기** 총매출 **2억 3,740만 달러(+16% YoY)**, GAAP 순이익 **320만 달러**로 **그해 첫 GAAP 흑자**를 냈다. **1분기**는 **2억 2,860만 달러(+16%)** 에 **순 달러 유지율 106%** 였고, **회사 역사상 처음으로 ARR 100만 달러가 넘는 거래**가 나왔다.\n\n**⭐ 성장의 무게가 EX 쪽에 있다** — 전체가 16% 느는 동안 **EX ARR 이 24%** 늘었다. 그리고 회사는 AI 를 판매의 축으로 적는다 — **Freddy AI Copilot 이 신규 엔터프라이즈 거래의 71% 이상에 붙는다.**\n\n---\n\n**⚠️ 그런데 기술 블로그는 그 이야기를 안 한다**(이 대비는 이 사이트의 것이다). 읽을 수 있는 엔지니어링 글은 **`Rails@Scale` 이라는 시리즈**에 몰려 있고 — 회사가 그 취지를 *\"In this Freshworks Engineering series, Rails@Scale, we talk about some of the techniques we employ to scale up our products\"* 로 적는다 — **내용은 전부 2020~2021년의 Rails 운영 이야기**다. **AI 도, EX 부문의 ITSM 도, 지금 매출을 만드는 것들은 글에 없다.**\n\n**⭐⭐ 그래서 이 회사에서 읽을 수 있는 것은 한 가지 문제다** — **한 덩어리 Rails 앱에 고객 수만 곳을 얹어 놓고, 그중 하나가 잘못됐을 때 나머지가 안 죽게 하는 법.** 회사가 그 위험을 한 문장으로 적는다: *\"a simple failure for one customer at the database level has threatened to take the entire web cluster down.\"*\n\n---\n\n**여기부터는 323~327 에서 이 회사의 글 넷을 읽고 더한 것이다. 이 정리는 이 사이트의 것이다.**\n\n**⭐ 대가를 적는 정도가 글마다 크게 갈린다.**\n\n| 글 | 인정한 대가 |\n|---|---|\n| **고가용성**(2020-07) | **다섯** — ORM 롤백 테스트 부담 · 옛 Rails 의 고아 레코드 · Semian 이 테이블 단위로 못 자름 · 프로세스 단위 한계 · **Newrelic explain 쿼리가 감시를 방해해 꺼야 했다** |\n| **Rails 업그레이드**(2022-07) | **다섯** — 이중 부팅의 if/else 부담 · **실제로 터진 사고 셋**(DateTime 정밀도 · `Kernel.capture` 제거 · CSRF 토큰 HMAC 하위 비호환) |\n| **HAProxy**(2021-08) | **두 줄** — 운영 복잡도 · 버스트 때 대기 시간 |\n| **Sidekiq**(2020-05) | **하나도 없다** |\n\n**회사 방침이 아니라 글쓴이에 따라 갈리는 것으로 보인다**(**추정**).\n\n**⚠️ 그리고 결과를 판정한 근거가 대체로 없다.** 업그레이드 편은 **무중단·회귀 0** 이라고 적으면서\n**트래픽 규모·오류율 변화·전환 기간이 하나도 없고**, 고가용성 편의 효과는 **그래프 두 장**으로만\n보인다. 설정값도 거의 없어 **유일한 숫자가 단위도 안 적힌 `max_transaction_time INT DEFAULT 25`** 다.\n**⭐ 대가를 가장 많이 적은 두 편이 결과의 근거는 가장 적게 적는다**(이 대비는 이 사이트의 것이다).\n\n**⚠️ 블로그가 네 경로에 흩어져 있고 목록 페이지가 안 열린다.** `/explore-it/`·`/explore-cx/`·\n`/saas/`·`/saas/eng-blogs/` 에 걸쳐 있는데 **`/explore-it/` 과 `/saas/eng-blogs/` 는 목록으로\n열면 404** 다. 게다가 **살아 있는 글과 죽은 글이 섞여 있다** — Rails 업그레이드 편은 열리는데\n`Optimizing cache with MemoizeUntil` 과 `How feature toggles allow us to experiment at scale`\n은 **마케팅 허브로 리다이렉트되고**, `Debugging memory corruption in production Rails app\nusing Mozilla rr` 은 **주소를 두 형태로 시도해도 404** 다. **그래서 이 회사의 글 전체 목록을\n이 사이트는 끝내 확인하지 못했다** — 지금 아는 목록은 검색과 글 안의 링크로 모은 것이다.",
@@ -268,7 +268,9 @@
     "**⚠️ 설정값이 거의 없다**(이 지적은 이 사이트의 것이다). 유일하게 적힌 숫자가 `DECLARE max_transaction_time INT DEFAULT 25` 인데 **단위조차 안 적혀 있다.** Semian 의 문턱값·실패 횟수·열고 닫는 기준도, HTTP 타임아웃 값도, 오래 걸리는 요청 알림의 기준 시간도 전부 없다. **드라이런을 얼마나 오래 돌렸고 오탐이 몇 건이었는지**도 없다. **효과의 근거는 그래프 두 장**(*\"Prolonged request queuing observed without Semian\"* 대 *\"Limited request queuing observed with Semian\"*)뿐이고 **본문에 수치로 옮겨 적지 않는다.**",
     "**⚠️ 읽을 수 있는 엔지니어링 글이 2020~2021년에 몰려 있다.** `Rails@Scale` 시리즈(고가용성 2020-07-15 · Sidekiq 2020-05-14 · `Optimizing cache with MemoizeUntil` **아직 안 읽음**)와 HAProxy 편(2021-08-24)이다. **그 뒤의 엔지니어링 깊이글을 이 사이트는 아직 못 찾았다** — 2025년 3월의 `Meet the AI-Augmented Engineers at Freshworks` 같은 글은 `/theworks/` 아래의 매거진 성격이다. ⚠️ **`https://www.freshworks.com/explore-it/` 를 목록으로 열면 404 다** — 글 주소는 직접 열리지만 색인 페이지가 없다(323 에서 확인). **다음 사이클은 시리즈 안의 링크를 따라간다.**",
     "**⚠️ 사업의 무게와 글의 무게가 어긋난다**(이 대비는 이 사이트의 것이다). 매출을 끄는 것은 **EX(ITSM) 부문**(ARR +24%)과 **Freddy AI**(신규 엔터프라이즈 거래의 71% 이상)인데, **엔지니어링 글은 거의 전부 CX 쪽 Freshdesk 의 Rails 운영 이야기**다. **AI 를 제품에 붙이는 기술 이야기도, ITSM 쪽 시스템 이야기도 이 사이트는 아직 못 찾았다.**",
-    "**같은 문제를 다루는 두 편의 솔직함이 크게 다르다.** 고가용성 편(2020-07)은 **대가를 다섯 가지 적는다** — ORM 롤백 테스트 부담 · 옛 Rails 의 고아 레코드 · Semian 이 테이블 단위로 못 자름 · 프로세스 단위 한계 · **Newrelic explain 쿼리가 감시를 방해**. 반면 HAProxy 편(2021-08)은 **두 줄뿐**이고 Sidekiq 편(2020-05)은 **하나도 없다**. **회사가 아니라 글쓴이에 따라 갈리는 것으로 보인다**(**추정**)."
+    "**같은 문제를 다루는 두 편의 솔직함이 크게 다르다.** 고가용성 편(2020-07)은 **대가를 다섯 가지 적는다** — ORM 롤백 테스트 부담 · 옛 Rails 의 고아 레코드 · Semian 이 테이블 단위로 못 자름 · 프로세스 단위 한계 · **Newrelic explain 쿼리가 감시를 방해**. 반면 HAProxy 편(2021-08)은 **두 줄뿐**이고 Sidekiq 편(2020-05)은 **하나도 없다**. **회사가 아니라 글쓴이에 따라 갈리는 것으로 보인다**(**추정**).",
+    "**셸(shell) 구조와 마이크로서비스로 간 시점을 확인하지 못했다.** 2020년 7월 글은 그 시점의 구조 — 샤딩된 다중 테넌트, 쇼피파이의 Pod 에서 영감을 받은 셸 격리 — 를 설명하지만 **언제 그렇게 됐는지는 적지 않는다.** 그래서 이 연표는 2014년 샤딩 하나로만 되어 있다.",
+    "**Rails 4.2 → 5.2 업그레이드도 시점이 없다.** 2022년 7월 글이 방법(bootboot 로 두 버전을 동시에 부팅, 테스트를 K개 컨테이너로 쪼개 1시간 45분을 20분 미만으로 줄임)과 어려움(DateTime 정밀도 차이, CSRF 토큰 비호환으로 몽키패치, `Kernel#capture` 제거)을 자세히 적지만 **언제 했는지는 없다.**"
   ],
   "sources": [
     {
@@ -1756,6 +1758,88 @@
           "publisher": "Freshworks Engineering",
           "date": "2022-07-14",
           "summary": "**Freshdesk Contact Center 의 Rails 를 4.2.0 에서 5.2.6 으로 올린 기록이다.** 올리는 이유를 넷 적는다 — 보안 패치, 젬 호환, 새 기능, 그리고 **미루면 더 어려워진다**(*\"The older your version of Rails is, the harder it is to upgrade\"*).\n\n**핵심은 이중 부팅이다** — **bootboot** 젬으로 한 코드베이스가 두 버전에서 다 돌게 하고 **환경변수 `DEPENDENCIES_NEXT`** 를 스위치로 쓴다. 잠금 파일도 **`Gemfile.lock`(4.2)과 `Gemfile_next.lock`(5.2)** 로 갈랐다. 목적이 분명하다 — **제품 팀의 개발이 업그레이드와 나란히 계속 돌아가게** 하는 것이다.\n\n**테스트를 먼저 고쳤다** — 한 번 도는 데 **1시간 45분**이라 *\"This high wait time was a severe bottleneck\"* 였다. 테스트 파일을 **K개 그룹으로 나눠 그룹마다 별도 도커 컨테이너와 전용 데이터베이스**를 줘 **20분 미만**으로 줄였다. 커버리지는 **약 90%** 이고 **PR 마다 두 버전에서 모두 유닛 테스트를 돌렸다.**\n\n**폐기 경고는 테스트를 깨뜨려 잡았다** — `deprecation_toolkit` 으로 5.0·5.1·5.2 의 폐기를 모으고 테스트 환경의 `ActiveSupport::Deprecation::Behavior` 를 **raise** 로 두었다. 유닛 테스트가 못 덮는 것은 **프로덕션에서 `deprecation.rails` 알림**으로 찾았다.\n\n**데이터는 양방향으로 읽혀야 했다** — 직렬화 컬럼·쿠키·캐시의 기존 데이터를 새 버전이 읽어야 하고 **새 버전이 만든 것도 옛 버전이 읽을 수 있어야** 한다. Rails 객체를 그대로 저장한 것은 **평범한 루비 객체로 바꾸고**, 캐시는 **버전별 Memcache 키**로 갈랐다.\n\n**넘기는 것은 블루그린이다** — 두 버전의 인스턴스 그룹을 함께 띄우고 트래픽을 점진 전환하며 **로그에 버전 태그**를 달았다. 실패하면 **안정적으로 돌던 이전 색으로 되돌릴 준비**를 해 뒀다.\n\n🔴 **그래도 셋이 터졌다** — 분석 기능이 **DateTime 정밀도 차이**로 깨져 컬럼을 고쳤고, **`Kernel` 의 `capture` 제거**로 예상 못 한 오류가 났으며, **Rails 5.2 의 CSRF 토큰 HMAC 생성 방식이 4.2 와 하위 호환이 안 돼 몽키패치**를 넣어야 했다. 회사가 교훈을 한 줄로 적는다: *\"You never know if something might break even if you have 100% code coverage. So have a battle-tested fallback to mitigate failures.\"*\n\n**끝나고 치웠다** — 이중 부팅의 if/else, 하위 호환 몽키패치, 버전별 캐시 키, `Gemfile_next.lock` 을 전부 지우고 `new_framework_defaults` 를 살펴 `config.load_defaults` 를 올렸다.\n\n⚠️ **버린 대안은 하나도 안 적는다.** 그리고 **트래픽 규모·오류율·성능 비교·투입 인원·달력 기준 기간·고친 폐기 건수가 전부 없다.**"
+        }
+      ]
+    }
+  ],
+  "eras": [
+    {
+      "id": "2014-stop-going-up",
+      "from": "2014",
+      "to": "",
+      "title": "위로 키우는 것을 그만두고 옆으로 갈랐다",
+      "context": "**1년 만에 고객이 400% 늘고, 주당 요청이 200만 건에서 6,500만 건**이 됐다. 그동안 인스턴스를 **Medium 1세대 EC2 에서 High Memory Quadruple Extra Large 까지** 올려 RAM 을 **3.75GB 에서 64GB** 로 키웠다.",
+      "what_changed": "**수직 확장을 그만두고 데이터베이스를 샤딩했다.** 새로 가입하는 고객은 별도 샤드로 보내고 샤드 하나에 약 2만 테넌트를 담는 방식이다.",
+      "why": "회사가 내린 결론이 한 문장이다 — **\"위로 키우는 것은 어느 지점까지만 데려다준다.\"** 그리고 그 과정에서 알게 된 것이 있다: **더 넣은 RAM 과 CPU 사이클이 작업량과 비례하지 않는다.**",
+      "tradeoff": "**샤딩에 닿기 전에 시도한 것들이 각자 제약을 남겼다.** 읽기/쓰기 분리(MySQL 복제, 읽기:쓰기 4:1)는 **라운드로빈이 금세 쓸모없어져** 슬레이브마다 역할을 따로 줘야 했다. **MySQL 파티셔닝은 모든 질의가 파티션 키를 포함해야 하고, 그렇지 않은 질의는 모든 파티션을 훑어 성능이 곤두박질친다** — 저장 방식이 질의문의 모양을 정해 버린 것이다. Redis 는 **확장도 폴백도 안 돼서 원자적 연산에는 쓰지 않기로** 했다.",
+      "domains": [
+        "하나가 느려지면 전부가 막힌다"
+      ],
+      "stack_in": [
+        "데이터베이스 샤딩",
+        "Memcached",
+        "Amazon RedShift",
+        "Redis"
+      ],
+      "metrics": [
+        {
+          "label": "주당 요청 (1년 사이)",
+          "value": "200만 건 → 6,500만 건",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled Freshdesk (Part I) – Before Sharding",
+              "url": "https://www.linkedin.com/pulse/20140611175851-17680820-how-we-scaled-freshdesk-part-i-before-sharding",
+              "publisher": "Freshworks (LinkedIn)",
+              "date": "2014-06-11",
+              "summary": "샤딩으로 가기 전에 위로 키우며 시도한 것들과 각각이 남긴 제약을 적었다."
+            }
+          ]
+        },
+        {
+          "label": "수직 확장의 끝",
+          "value": "RAM 3.75GB → 64GB",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we scaled Freshdesk (Part I) – Before Sharding",
+              "url": "https://www.linkedin.com/pulse/20140611175851-17680820-how-we-scaled-freshdesk-part-i-before-sharding",
+              "publisher": "Freshworks (LinkedIn)",
+              "date": "2014-06-11",
+              "summary": "샤딩으로 가기 전에 위로 키우며 시도한 것들과 각각이 남긴 제약을 적었다."
+            }
+          ]
+        },
+        {
+          "label": "최대 처리량 (2020-07 시점)",
+          "value": "분당 약 50만 요청",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling the Freshdesk web app for high Availability",
+              "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+              "publisher": "Freshworks",
+              "date": "2020-07-15",
+              "summary": "2020년 7월 시점의 구조를 설명한다 — 최대 분당 50만 요청, 샤딩된 다중 테넌트."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How we scaled Freshdesk (Part I) – Before Sharding",
+          "url": "https://www.linkedin.com/pulse/20140611175851-17680820-how-we-scaled-freshdesk-part-i-before-sharding",
+          "publisher": "Freshworks (LinkedIn)",
+          "date": "2014-06-11",
+          "summary": "샤딩으로 가기 전에 위로 키우며 시도한 것들과 각각이 남긴 제약을 적었다."
+        },
+        {
+          "title": "Scaling the Freshdesk web app for high Availability",
+          "url": "https://www.freshworks.com/explore-cx/scaling-the-freshdesk-web-app-for-high-availability/",
+          "publisher": "Freshworks",
+          "date": "2020-07-15",
+          "summary": "2020년 7월 시점의 구조를 설명한다 — 최대 분당 50만 요청, 샤딩된 다중 테넌트."
         }
       ]
     }
