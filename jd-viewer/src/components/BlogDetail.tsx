@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { BlogContent, BlogPost } from '../types'
 import { useLocale } from '../lib/locale'
 import { blendByEngagement, useEngagement } from '../lib/useEngagement'
-import { useSimilarPosts } from '../lib/useSimilar'
+import { useSimilarPosts, type SimilarItem } from '../lib/useSimilar'
 import { track, useDwell } from '../lib/track'
+import { paths } from '../lib/urls'
+import { CompanyMark } from './ui'
 
 const COUNTRY_LABEL: Record<string, string> = {
   KR: '🇰🇷 한국', US: '🇺🇸 미국', JP: '🇯🇵 일본', DE: '🇩🇪 독일',
@@ -36,6 +38,14 @@ function videoEmbed(href?: string): string | null {
 
 const VIDEO_FILE = /\.(mp4|webm|ogg)(\?|$)/i
 
+/**
+ * 블로그 글 상세 — 팝업이 아니라 화면 하나.
+ *
+ * 원래는 모달이었다. 그런데 여기 들어오는 건 끝까지 읽는 글이다 — 코드 블록과
+ * 아키텍처 그림이 들어간 남의 기술 글을, 어두운 장막 뒤 3xl 칸에 넣어 두면
+ * 가로로 넘치고 세로로 길어져 읽다 말게 된다. 공고 상세와 같이 목록을 통째로
+ * 갈아끼우는 전체 화면으로 두고, 남는 폭은 '비슷한 글' 이 가져간다.
+ */
 export function BlogDetail({
   post,
   onClose,
@@ -61,11 +71,7 @@ export function BlogDetail({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
+    return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
   useEffect(() => {
@@ -107,147 +113,197 @@ export function BlogDetail({
   const body =
     content && (view === 'ko' && content.translated ? content.content_ko : content.content)
 
-  // 추천을 눌러 다른 글로 갈아끼면 내용만 바뀌고 스크롤은 그대로라 본문 중간이 보인다.
-  const scrollRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: 0 })
-  }, [post.url])
-
   return (
-    <div
-      ref={scrollRef}
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4 sm:p-8"
-      onClick={onClose}
-    >
-      <div
-        className="relative bg-(--color-panel) border border-(--color-border) rounded-lg w-full max-w-3xl my-4 shadow-2xl jd-modal-in"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 헤더 */}
-        <div className="sticky top-0 z-10 bg-(--color-panel)/95 backdrop-blur border-b border-(--color-border) rounded-t-lg px-6 py-4">
-          <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
-            <span className="text-(--color-accent) font-medium">{post.company}</span>
-            <span>{COUNTRY_LABEL[post.country] ?? post.country}</span>
-            {post.published && <span>· {post.published}</span>}
-            <button onClick={onClose} className="ml-auto text-(--color-muted) hover:text-(--color-text) text-lg leading-none">
-              ✕
-            </button>
+    <div className="flex flex-col flex-1 min-h-0">
+      {/* 헤더 */}
+      <div className="border-b border-(--color-border) bg-(--color-panel) px-4 sm:px-6 py-3 shrink-0">
+        <div className="flex items-start gap-3">
+          <a
+            href={paths.blog()}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+              e.preventDefault()
+              onClose()
+            }}
+            className="shrink-0 mt-0.5 px-2.5 py-1.5 rounded border border-(--color-border) text-xs text-(--color-muted) hover:text-(--color-text) hover:bg-(--hover)"
+            title="목록으로 (ESC)"
+          >
+            ← 목록
+          </a>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-(--color-muted) mb-1">
+              <span className="inline-flex items-center gap-1.5">
+                <CompanyMark name={post.company} size={15} />
+                <span className="text-(--color-accent) font-medium">{post.company}</span>
+              </span>
+              <span>{COUNTRY_LABEL[post.country] ?? post.country}</span>
+              {post.published && <span>· {post.published}</span>}
+              {post.categories.length > 0 && <span>· {post.categories.join(' · ')}</span>}
+            </div>
+            <h2 className="text-(--color-text) text-lg sm:text-xl font-semibold leading-snug break-words">
+              {post.title}
+            </h2>
           </div>
-          <h2 className="text-(--color-text) font-semibold text-lg">{post.title}</h2>
-          <div className="mt-2 flex items-center gap-2">
-            {content?.translated && (
-              <div className="flex rounded overflow-hidden border border-(--color-border) text-xs">
-                <ViewBtn active={view === 'ko'} onClick={() => setView('ko')}>한국어 번역</ViewBtn>
-                <ViewBtn active={view === 'orig'} onClick={() => setView('orig')}>원문</ViewBtn>
+          <a
+            href={post.url}
+            onClick={() => track('click', 'outbound', post.url)}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden sm:inline-flex shrink-0 items-center gap-1.5 px-3 py-1.5 rounded bg-(--color-accent) text-(--color-on-accent) text-sm font-medium hover:opacity-90"
+          >
+            원본 페이지 ↗
+          </a>
+        </div>
+
+        {content?.translated && (
+          <div className="mt-3 flex rounded-md overflow-hidden border border-(--color-border) text-xs w-fit">
+            <ViewBtn active={view === 'ko'} onClick={() => setView('ko')}>한국어 번역</ViewBtn>
+            <ViewBtn active={view === 'orig'} onClick={() => setView('orig')}>원문</ViewBtn>
+          </div>
+        )}
+      </div>
+
+      {/* 본문 + 오른쪽 추천 */}
+      <div className="flex flex-1 min-h-0">
+        <div data-scroll className="flex-1 min-w-0 overflow-auto px-4 sm:px-8 py-6">
+          <div className="mx-auto max-w-[52rem]">
+            {state === 'loading' && <div className="text-(--color-muted)">본문 불러오는 중…</div>}
+            {state === 'error' && <div className="text-red-400">본문을 불러오지 못했습니다.</div>}
+            {state === 'pending' && (
+              <div className="text-(--color-muted)">
+                {post.content_state === 'blocked'
+                  ? '이 블로그는 본문 수집이 막혀 있습니다. (사이트 봇 차단 — 원본에서 읽어주세요)'
+                  : '본문이 아직 수집되지 않았습니다. (크롤이 회차당 일부씩 수집 중)'}
+                <br />
+                <a href={post.url} target="_blank" rel="noreferrer" className="text-(--color-accent) hover:underline">
+                  원본 페이지에서 읽기 ↗
+                </a>
               </div>
             )}
-            <a
-              href={post.url}
-              onClick={() => track('click', 'outbound', post.url)}
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs text-(--color-accent) hover:underline ml-auto"
-            >
-              ↗ 원본 페이지
-            </a>
+            {state === 'ready' && (
+              <>
+                {view === 'ko' && content?.translated && (
+                  <div className="mb-3 text-xs text-(--color-muted)">
+                    ※ 기계 번역(무료 엔진) — 정확한 내용은 원문을 확인하세요.
+                  </div>
+                )}
+                <article className="blog-md text-(--color-text)">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      a({ href, children }) {
+                        const embed = videoEmbed(href)
+                        if (embed)
+                          return (
+                            <span className="blog-video">
+                              <iframe
+                                src={embed}
+                                title="video"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            </span>
+                          )
+                        if (href && VIDEO_FILE.test(href))
+                          return <video src={href} controls className="blog-video-file" />
+                        return (
+                          <a href={href} target="_blank" rel="noreferrer">
+                            {children}
+                          </a>
+                        )
+                      },
+                    }}
+                  >
+                    {body || ''}
+                  </ReactMarkdown>
+                </article>
+              </>
+            )}
+
+            <div className="mt-8 border-t border-(--color-border) pt-4">
+              <a
+                href={post.url}
+                onClick={() => track('click', 'outbound', post.url)}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-(--color-accent) hover:underline"
+              >
+                ↗ 원본 페이지에서 보기
+              </a>
+            </div>
+
+            {/* 오른쪽 단이 없는 폭에서는 본문 아래로 흘린다. */}
+            {similar.length > 0 && onOpenUrl && (
+              <section className="xl:hidden mt-6 border-t border-(--color-border) pt-4">
+                <SimilarHeading />
+                <SimilarList items={similar} from={post.url} onOpenUrl={onOpenUrl} />
+              </section>
+            )}
           </div>
         </div>
 
-        {/* 본문 */}
-        <div className="px-6 py-5">
-          {state === 'loading' && <div className="text-(--color-muted)">본문 불러오는 중…</div>}
-          {state === 'error' && <div className="text-red-400">본문을 불러오지 못했습니다.</div>}
-          {state === 'pending' && (
-            <div className="text-(--color-muted)">
-              {post.content_state === 'blocked'
-                ? '이 블로그는 본문 수집이 막혀 있습니다. (사이트 봇 차단 — 원본에서 읽어주세요)'
-                : '본문이 아직 수집되지 않았습니다. (크롤이 회차당 일부씩 수집 중)'}
-              <br />
-              <a href={post.url} target="_blank" rel="noreferrer" className="text-(--color-accent) hover:underline">
-                원본 페이지에서 읽기 ↗
-              </a>
-            </div>
-          )}
-          {state === 'ready' && (
-            <>
-              {view === 'ko' && content?.translated && (
-                <div className="mb-3 text-xs text-(--color-muted)">
-                  ※ 기계 번역(무료 엔진) — 정확한 내용은 원문을 확인하세요.
-                </div>
-              )}
-              <article className="blog-md text-(--color-text)">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    a({ href, children }) {
-                      const embed = videoEmbed(href)
-                      if (embed)
-                        return (
-                          <span className="blog-video">
-                            <iframe
-                              src={embed}
-                              title="video"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            />
-                          </span>
-                        )
-                      if (href && VIDEO_FILE.test(href))
-                        return <video src={href} controls className="blog-video-file" />
-                      return (
-                        <a href={href} target="_blank" rel="noreferrer">
-                          {children}
-                        </a>
-                      )
-                    },
-                  }}
-                >
-                  {body || ''}
-                </ReactMarkdown>
-              </article>
-            </>
-          )}
-
-          {similar.length > 0 && onOpenUrl && (
-            <section className="mt-6 border-t border-(--color-border) pt-4">
-              <h3 className="text-xs uppercase tracking-wider text-(--color-muted) mb-2.5 font-medium">
-                비슷한 글
-              </h3>
-              <ul className="space-y-1.5">
-                {similar.map((s) => (
-                  <li key={s.url}>
-                    <button
-                      onClick={() => {
-                        track('click', s.url, post.url)
-                        onOpenUrl(s.url)
-                      }}
-                      className="w-full text-left px-3 py-2.5 rounded border border-(--color-border) hover:bg-(--hover) hover:border-(--color-accent)/40 flex items-center gap-3"
-                    >
-                      <span className="flex-1 min-w-0">
-                        <span className="block text-(--color-text) text-[13px] leading-snug truncate">
-                          {s.title || s.url}
-                        </span>
-                        {s.company && (
-                          <span className="block text-(--color-muted) text-xs mt-0.5 truncate">
-                            {s.company}
-                          </span>
-                        )}
-                      </span>
-                      <span
-                        className="text-xs text-(--color-muted) shrink-0 tabular-nums"
-                        title={`코사인 유사도 ${s.score.toFixed(3)}`}
-                      >
-                        {Math.round(s.score * 100)}%
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </div>
+        {similar.length > 0 && onOpenUrl && (
+          <aside
+            data-scroll
+            className="hidden xl:block w-80 shrink-0 border-l border-(--color-border) overflow-auto px-4 py-6"
+          >
+            <SimilarHeading />
+            <SimilarList items={similar} from={post.url} onOpenUrl={onOpenUrl} />
+          </aside>
+        )}
       </div>
     </div>
+  )
+}
+
+function SimilarHeading() {
+  return (
+    <h3 className="text-xs uppercase tracking-wider text-(--color-muted) mb-2.5 font-medium">
+      비슷한 글
+    </h3>
+  )
+}
+
+function SimilarList({
+  items,
+  from,
+  onOpenUrl,
+}: {
+  items: SimilarItem[]
+  from: string
+  onOpenUrl: (url: string) => void
+}) {
+  return (
+    <ul className="space-y-1.5">
+      {items.map((s) => (
+        <li key={s.url}>
+          <button
+            onClick={() => {
+              track('click', s.url, from)
+              onOpenUrl(s.url)
+            }}
+            className="w-full text-left px-3 py-2.5 rounded border border-(--color-border) hover:bg-(--hover) hover:border-(--color-accent)/40 flex items-center gap-3"
+          >
+            <span className="flex-1 min-w-0">
+              <span className="block text-(--color-text) text-[13px] leading-snug truncate">
+                {s.title || s.url}
+              </span>
+              {s.company && (
+                <span className="block text-(--color-muted) text-xs mt-0.5 truncate">
+                  {s.company}
+                </span>
+              )}
+            </span>
+            <span
+              className="text-xs text-(--color-muted) shrink-0 tabular-nums"
+              title={`코사인 유사도 ${s.score.toFixed(3)}`}
+            >
+              {Math.round(s.score * 100)}%
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
   )
 }
 

@@ -119,6 +119,24 @@ export function BlogView({ postId }: { postId?: string | null }) {
       />
     )
 
+  // 글을 고르면 목록을 통째로 갈아끼운다 — 공고 상세와 같은 방식이다. 모달로 띄우면
+  // 남의 기술 글이 어두운 장막 뒤 좁은 칸에 갇혀 코드 블록과 그림이 가로로 넘친다.
+  // key 를 글 주소로 두면 추천을 눌러 다른 글로 넘어갈 때 스크롤·번역 토글이 초기화된다.
+  if (selected)
+    return (
+      <BlogDetail
+        key={selected.url}
+        post={selected}
+        onClose={() => goBack(paths.blog())}
+        onOpenUrl={(url) => {
+          // 추천 JSON 은 url 만 들고 있다. 필터에 걸려 목록에 없는 글도 열려야 하므로
+          // 필터된 목록이 아니라 posts 전체에서 찾는다.
+          const next = posts.find((p) => p.url === url)
+          if (next) openPost(next)
+        }}
+      />
+    )
+
   return (
     <div className="flex flex-1 min-h-0 min-w-0">
       {/* 사이드바: 검색 + 국가 + 카테고리별 기술 키워드 (모바일=드로어) */}
@@ -215,18 +233,6 @@ export function BlogView({ postId }: { postId?: string | null }) {
         )}
       </main>
 
-      {selected && (
-        <BlogDetail
-          post={selected}
-          onClose={() => goBack(paths.blog())}
-          onOpenUrl={(url) => {
-            // 추천 JSON 은 url 만 들고 있다. 필터에 걸려 목록에 없는 글도 열려야 하므로
-            // 필터된 목록이 아니라 posts 전체에서 찾는다.
-            const next = posts.find((p) => p.url === url)
-            if (next) openPost(next)
-          }}
-        />
-      )}
     </div>
   )
 }
