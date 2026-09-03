@@ -1,0 +1,691 @@
+{
+ "slug": "gpio-register",
+ "title": "GPIO 레지스터",
+ "title_en": "GPIO registers",
+ "aliases": [
+  "GPIO",
+  "GPIO 레지스터",
+  "DDR",
+  "PORT",
+  "MODER",
+  "BSRR"
+ ],
+ "category": "firmware",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-03",
+ "one_liner": "핀을 켜고 끄는 일은 어느 칩에서나 결국 **정해진 주소에 비트를 쓰는 일**이다. 이름이 DDRx·MODER·GPIO_ENABLE 로 갈리는 것은 취향이 아니라 레지스터 폭과 핀당 옵션 수의 결과다.",
+ "summary": "GPIO 레지스터는 **특정 메모리 주소에 물리 핀이 배선된 것**이다. `PORTB = 0xFF;` 같은 평범한 대입문이 실제로 전압을 올리는 이유이고, C 로 회로를 만질 수 있는 근거다. 그런데 칩을 옮기면 이름이 통째로 바뀐다 — AVR 은 `DDRx/PORTx/PINx` 셋인데 STM32 는 `MODER/OTYPER/OSPEEDR/PUPDR/IDR/ODR/BSRR` 로 일곱이고, ESP32 는 아예 '어느 주변장치 신호를 이 핀에 연결할까'를 정하는 매트릭스가 앞에 붙는다. **이 문서의 목적은 그 대응표를 만드는 것**이다 — 세 칩이 답해야 하는 질문은 똑같고(방향·출력값·입력값·대체 기능·전기적 성질), 답의 모양만 다르다. 그 사실을 손에 넣으면 `atmega128` 에서 배운 것이 ARM 쪽으로 옮겨진다. 채용 수요가 몰려 있는 쪽이 거기다.",
+ "market": null,
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 핀 하나를 살리려면 답해야 하는 다섯 질문",
+   "body": "GPIO(General-Purpose Input/Output) 레지스터는 **주소가 곧 핀인 메모리**다. CPU 입장에서는 그냥 메모리 쓰기이고, 칩 안에서는 그 비트가 출력 드라이버의 스위치에 연결돼 있다.\n\n핀 하나를 쓰려면 칩이 다음 질문에 답을 갖고 있어야 한다. **어느 칩이든 이 다섯 개다.**\n\n1. **방향** — 이 핀은 입력인가 출력인가?\n2. **출력값** — 출력이라면 지금 1인가 0인가?\n3. **입력값** — 지금 핀에 실제로 걸린 전압은 무엇인가?\n4. **대체 기능** — 이 핀을 GPIO 로 쓸 것인가, UART·SPI·타이머 같은 주변장치에 내줄 것인가?\n5. **전기적 성질** — 내부 풀업/풀다운을 켤 것인가, 출력이 푸시풀인가 오픈드레인인가, 얼마나 빠르게 흔들 것인가?\n\n작은 8비트 칩은 1~3만 레지스터로 두고 4·5를 다른 방식으로 처리한다. 큰 칩일수록 질문마다 레지스터가 하나씩 생긴다. **레지스터 개수의 차이는 칩의 세련됨이 아니라 핀당 선택지의 개수**다."
+  },
+  {
+   "id": "why",
+   "kind": "why",
+   "heading": "왜 칩마다 이름이 다른가 — 폭·옵션·라우팅",
+   "body": "세 칩의 레지스터 구성이 갈리는 이유는 셋뿐이다.\n\n**① 레지스터 폭이 다르다.** AVR 은 8비트 기계이고 포트 하나가 핀 8개다. 그래서 `DDRB` 한 바이트의 비트 하나가 핀 하나에 그대로 대응한다 — **1비트 = 1핀**이라 이름이 셋이면 끝난다.\n\nSTM32 는 32비트 기계이고 포트 하나가 핀 16개다. 핀마다 '입력/출력/대체기능/아날로그' 네 가지 중 하나를 골라야 하므로 **핀당 2비트**가 필요하고, 32비트 레지스터 하나(`MODER`)에 16핀 × 2비트가 딱 들어간다. 대체 기능은 종류가 16가지라 **핀당 4비트**가 필요해 레지스터 두 개(`AFRL`/`AFRH`)로 쪼개진다. **레지스터가 많아 보이는 것은 핀당 비트 수가 늘었기 때문**이다.\n\n**② 핀당 선택지가 다르다.** STM32 는 출력 타입(푸시풀/오픈드레인), 출력 속도, 풀업/풀다운을 각각 따로 고를 수 있다. 그래서 `OTYPER`·`OSPEEDR`·`PUPDR` 이 따로 있다. AVR 에서는 이 셋 중 풀업만 있고, 그것도 `PORTx` 가 겸한다(입력일 때의 `PORTx` 가 풀업 스위치다).\n\n**③ 주변장치를 어느 핀에 붙일 수 있느냐가 다르다.** AVR·STM32 는 \"UART0 의 TX 는 이 핀\"이 **하드웨어로 정해져** 있다(STM32 는 몇 가지 대안 중 고르는 정도). ESP32 는 **GPIO 매트릭스**를 둬서 대부분의 주변장치 신호를 거의 아무 핀에나 연결할 수 있다. 그래서 ESP32 의 핀 설정은 '방향을 정한다'보다 **'어느 신호를 이 핀으로 라우팅한다'** 에 가깝고, 레지스터 구성도 그 모양이다.\n\n> 정리하면 — **AVR 은 핀이 곧 비트, STM32 는 핀이 곧 비트 필드, ESP32 는 핀이 곧 라우팅 대상**이다. 이 한 줄이 세 칩의 레지스터 표를 읽는 열쇠다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467) — I/O Ports 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "DDRx·PORTx·PINx 세 레지스터의 정의와 SBI/CBI 단일 비트 명령이 여기 있다"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    },
+    {
+     "title": "ESP32 Technical Reference Manual",
+     "url": "https://documentation.espressif.com/esp32_technical_reference_manual_en.pdf",
+     "publisher": "Espressif",
+     "kind": "datasheet",
+     "summary": "IO_MUX 와 GPIO Matrix 장. 주변장치 신호를 어느 핀에나 붙이는 구조가 여기 설명돼 있다"
+    }
+   ]
+  },
+  {
+   "id": "atomic",
+   "kind": "how",
+   "heading": "같은 문제, 세 가지 답 — 비트 하나를 원자적으로 바꾸기",
+   "body": "이 문서에서 가장 실무적인 부분이다. 흔히 쓰는 이 한 줄에는 함정이 있다.\n\n```c\nPORTB |= (1 << 0);   // 겉보기엔 한 줄, 실제로는 세 단계\n```\n\n컴파일하면 **읽고(load) → 고치고(or) → 쓴다(store)** 의 세 명령이 된다. 그 사이에 인터럽트가 끼어들어 같은 포트의 다른 핀을 바꾸면, 돌아와서 쓰는 값이 **인터럽트가 쓴 값을 덮어 지운다.** 하드웨어에서 이런 버그는 '가끔 LED 가 안 꺼진다' 처럼 나타나 재현이 어렵다.\n\n세 칩이 이 문제에 각자 답을 냈다.\n\n**AVR — 단일 명령(SBI/CBI)**\n\n하위 32개 I/O 주소에 한해 `SBI`(비트 세트)·`CBI`(비트 클리어)라는 **단일 명령**이 있다. 컴파일러가 `PORTB |= (1<<0)` 를 이 명령 하나로 바꿔 주면 원자적이다. 주소가 그 범위 밖이거나 값이 상수가 아니면 세 명령으로 풀리므로, 중요한 구간은 인터럽트를 잠그고 처리한다.\n\n**STM32 — BSRR (한 번의 쓰기)**\n\n32비트 `BSRR` 은 **하위 16비트가 '세트', 상위 16비트가 '리셋'** 이다. 읽지 않고 쓰기만 하므로 read-modify-write 자체가 없다.\n\n```c\nGPIOA->BSRR = (1 << 5);         // PA5 를 1 로 — 원자적\nGPIOA->BSRR = (1 << (5 + 16));  // PA5 를 0 으로 — 원자적\n```\n\n**ESP32 — W1TS / W1TC (쓰기 전용 레지스터 쌍)**\n\n'1을 쓰면 세트되는 레지스터'와 '1을 쓰면 클리어되는 레지스터'를 따로 둔다(`GPIO_OUT_W1TS_REG` / `GPIO_OUT_W1TC_REG`). 0을 쓴 비트는 영향을 받지 않으므로, 역시 읽을 필요가 없다.\n\n**세 방식의 발상은 같다 — 읽지 않고 쓰기만 해서 경쟁을 없앤다.** 이름이 SBI 든 BSRR 이든 W1TS 든, 새 칩의 매뉴얼에서 찾아야 할 것은 \"읽지 않고 비트만 바꾸는 방법이 무엇인가\" 하나다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467) — I/O Ports 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "DDRx·PORTx·PINx 세 레지스터의 정의와 SBI/CBI 단일 비트 명령이 여기 있다"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    },
+    {
+     "title": "ESP32 Technical Reference Manual",
+     "url": "https://documentation.espressif.com/esp32_technical_reference_manual_en.pdf",
+     "publisher": "Espressif",
+     "kind": "datasheet",
+     "summary": "IO_MUX 와 GPIO Matrix 장. 주변장치 신호를 어느 핀에나 붙이는 구조가 여기 설명돼 있다"
+    }
+   ]
+  },
+  {
+   "id": "porting",
+   "kind": "how",
+   "heading": "옮길 때 실제로 하는 일 — 초기화 순서가 다르다",
+   "body": "레지스터 이름만 바꿔 적으면 될 것 같지만, **초기화 순서에서 먼저 막힌다.**\n\n**AVR** — 전원이 들어오면 포트는 바로 쓸 수 있다. `DDRB`·`PORTB` 만 설정하면 끝이다.\n\n**STM32** — **해당 포트의 클럭을 먼저 켜야 한다.** 전력을 아끼려고 대부분의 주변장치가 클럭이 꺼진 채로 부팅하기 때문이다. 클럭이 꺼져 있으면 레지스터에 써도 아무 일이 없고 읽으면 0 이 나온다 — 오류도, 경고도 없다.\n\n```c\nRCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;   // ← 이 줄을 빠뜨리는 것이 STM32 첫날의 관문\nGPIOA->MODER |= (0b01 << (5 * 2));      // PA5 를 출력으로 (2비트 필드)\nGPIOA->BSRR   = (1 << 5);               // PA5 = 1\n```\n\n**ESP32** — 핀을 GPIO 로 쓸지 주변장치에 내줄지 IO_MUX 에서 정하고, 주변장치라면 매트릭스로 신호를 연결한다. 실무에서는 ESP-IDF 의 `gpio_config()` 같은 API 로 이 과정을 한 번에 처리하는 것이 보통이다.\n\n> **이식의 요령**: 레지스터 이름을 1:1 로 옮기려 하지 말고, `what` 절의 **다섯 질문에 대한 답을 새 칩의 매뉴얼에서 찾는다.** 질문은 그대로이므로 답만 갈아 끼우면 된다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    },
+    {
+     "title": "ESP-IDF Programming Guide — GPIO & RTC GPIO (ESP32)",
+     "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/gpio.html",
+     "publisher": "Espressif",
+     "kind": "docs",
+     "summary": "GPIO34~39 가 입력 전용이고 내부 풀업·풀다운이 없다는 사실이 여기 명시돼 있다"
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "kind": "limits",
+   "heading": "경계 — 레지스터를 직접 만질 때와 아닐 때",
+   "body": "**레지스터 직접 제어의 값은 세 가지다.** 무슨 일이 일어나는지 정확히 알 수 있고, 코드가 작고 빠르며, **HAL 이 이상하게 굴 때 원인을 찾을 수 있다.** 마지막이 실무에서 가장 크다 — 라이브러리를 쓰더라도 그 아래를 아는 사람이 문제를 푼다.\n\n**한계도 분명하다.** 레지스터 코드는 칩 시리즈가 바뀌면 그대로 쓸 수 없다. 같은 STM32 안에서도 F1 과 F4 는 GPIO 설정 레지스터의 **이름부터 다르다**(F1 은 `CRL`/`CRH`, F4 는 `MODER` 계열). 제품군을 여러 개 지원해야 하는 코드에서 레지스터를 직접 만지면 `#ifdef` 숲이 된다.\n\n그래서 현실적인 선은 이렇게 그어진다.\n\n- **배우는 중이거나, 칩 하나짜리 소형 제품이거나, 지연 시간이 극단적으로 중요한 구간** → 레지스터 직접.\n- **여러 보드·시리즈를 지원하거나, 팀이 크거나, 주변장치 설정이 복잡한 구간(USB·이더넷)** → 벤더 HAL/LL.\n- 대개는 **섞어 쓴다** — 초기화는 HAL 로, 인터럽트 안의 핀 토글 같은 뜨거운 구간만 레지스터로.\n\n**그리고 GPIO 레지스터가 답이 아닌 문제가 있다.** 핀이 흔들리는 것은 풀업의 문제이고(→ `pull-up-resistor`), 폴링으로 못 잡는 짧은 신호는 인터럽트의 문제다(→ `interrupt`). 레지스터를 아무리 잘 써도 그 둘은 해결되지 않는다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 은 GPIO 설정 레지스터가 CRL/CRH 다 — F4 와 이름부터 다르다는 근거"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "map",
+   "kind": "compare",
+   "caption": "세 칩 대응표 — 같은 질문, 다른 이름",
+   "note": "AVR 은 ATmega128, STM32 는 F4 계열(RM0090), ESP32 는 ESP32(오리지널) 기준이다. **STM32 는 시리즈마다 다르다** — F1(RM0008)은 설정 레지스터가 `CRL`/`CRH` 라 이 표와 다르다. ESP32 레지스터 이름은 TRM 의 IO_MUX/GPIO Matrix 장 표기를 따랐다",
+   "columns": [
+    "질문",
+    "AVR (ATmega128)",
+    "STM32 (F4)",
+    "ESP32"
+   ],
+   "rows": [
+    [
+     "방향 (입력/출력)",
+     "`DDRx`",
+     "`MODER` (핀당 2비트)",
+     "`GPIO_ENABLE_REG` (출력 인에이블)"
+    ],
+    [
+     "출력값 쓰기",
+     "`PORTx`",
+     "`ODR`",
+     "`GPIO_OUT_REG`"
+    ],
+    [
+     "입력값 읽기",
+     "**`PINx`**",
+     "**`IDR`**",
+     "**`GPIO_IN_REG`**"
+    ],
+    [
+     "비트만 원자적으로",
+     "`SBI`/`CBI` 명령",
+     "**`BSRR`** (하위16=세트, 상위16=리셋)",
+     "**`GPIO_OUT_W1TS_REG` / `W1TC_REG`**"
+    ],
+    [
+     "내부 풀업/풀다운",
+     "입력일 때의 `PORTx` (풀업만)",
+     "`PUPDR`",
+     "IO_MUX 의 풀업/풀다운 비트"
+    ],
+    [
+     "푸시풀 / 오픈드레인",
+     "없음 (푸시풀 고정)",
+     "`OTYPER`",
+     "IO_MUX / GPIO 설정"
+    ],
+    [
+     "출력 속도(슬루레이트)",
+     "없음",
+     "`OSPEEDR`",
+     "드라이브 세기 설정"
+    ],
+    [
+     "대체 기능(UART·SPI 등)",
+     "핀마다 고정",
+     "`AFRL`/`AFRH` (핀당 4비트)",
+     "**GPIO 매트릭스로 거의 아무 핀에나**"
+    ],
+    [
+     "쓰기 전 준비",
+     "없음",
+     "**`RCC` 로 포트 클럭 인에이블**",
+     "IO_MUX 선택 + 매트릭스 연결"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467) — I/O Ports 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "DDRx·PORTx·PINx 세 레지스터의 정의와 SBI/CBI 단일 비트 명령이 여기 있다"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    },
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 은 GPIO 설정 레지스터가 CRL/CRH 다 — F4 와 이름부터 다르다는 근거"
+    },
+    {
+     "title": "ESP32 Technical Reference Manual",
+     "url": "https://documentation.espressif.com/esp32_technical_reference_manual_en.pdf",
+     "publisher": "Espressif",
+     "kind": "datasheet",
+     "summary": "IO_MUX 와 GPIO Matrix 장. 주변장치 신호를 어느 핀에나 붙이는 구조가 여기 설명돼 있다"
+    },
+    {
+     "title": "ESP-IDF Programming Guide — GPIO & RTC GPIO (ESP32)",
+     "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/gpio.html",
+     "publisher": "Espressif",
+     "kind": "docs",
+     "summary": "GPIO34~39 가 입력 전용이고 내부 풀업·풀다운이 없다는 사실이 여기 명시돼 있다"
+    }
+   ]
+  },
+  {
+   "id": "stm32-offsets",
+   "kind": "register",
+   "caption": "STM32F4 GPIO 포트 하나의 레지스터 배치",
+   "note": "포트 기준 주소에서의 오프셋이다(RM0090 의 GPIO register map). 포트마다 이 블록이 통째로 반복되므로, 주소만 바꾸면 같은 코드가 다른 포트에 그대로 적용된다",
+   "columns": [
+    "오프셋",
+    "이름",
+    "무엇을 정하나",
+    "핀당 비트"
+   ],
+   "rows": [
+    [
+     "0x00",
+     "MODER",
+     "입력/출력/대체기능/아날로그",
+     "2"
+    ],
+    [
+     "0x04",
+     "OTYPER",
+     "푸시풀 / 오픈드레인",
+     "1"
+    ],
+    [
+     "0x08",
+     "OSPEEDR",
+     "출력 속도",
+     "2"
+    ],
+    [
+     "0x0C",
+     "PUPDR",
+     "풀업 / 풀다운 / 없음",
+     "2"
+    ],
+    [
+     "0x10",
+     "IDR",
+     "**입력으로 읽히는 실제 값**",
+     "1 (읽기 전용)"
+    ],
+    [
+     "0x14",
+     "ODR",
+     "출력으로 쓴 값",
+     "1"
+    ],
+    [
+     "0x18",
+     "BSRR",
+     "**비트 세트/리셋 (원자적, 쓰기 전용)**",
+     "1 + 1"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    }
+   ]
+  },
+  {
+   "id": "atomic-table",
+   "kind": "compare",
+   "caption": "'읽지 않고 쓰기만' 하는 세 가지 방법",
+   "note": "셋 다 목적이 같다 — read-modify-write 를 없애 인터럽트와의 경쟁을 원천 차단한다. 새 칩을 만나면 매뉴얼에서 이 기능부터 찾는다",
+   "columns": [
+    "칩",
+    "방법",
+    "쓰는 법",
+    "제약"
+   ],
+   "rows": [
+    [
+     "AVR",
+     "`SBI` / `CBI` 단일 명령",
+     "`PORTB |= (1<<0)` 를 컴파일러가 명령 하나로 바꿔 준다",
+     "하위 32개 I/O 주소 + 상수 비트일 때만. 아니면 3명령으로 풀린다"
+    ],
+    [
+     "STM32",
+     "`BSRR` 한 번 쓰기",
+     "`GPIOA->BSRR = (1<<5)` / 끄기는 `(1<<(5+16))`",
+     "같은 쓰기에서 세트와 리셋이 겹치면 세트가 이긴다"
+    ],
+    [
+     "ESP32",
+     "`W1TS` / `W1TC` 레지스터 쌍",
+     "켤 비트만 1 로 써 넣는다. 0 인 비트는 그대로",
+     "레지스터가 둘로 나뉘어 코드가 길어진다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467) — I/O Ports 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "DDRx·PORTx·PINx 세 레지스터의 정의와 SBI/CBI 단일 비트 명령이 여기 있다"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    },
+    {
+     "title": "ESP32 Technical Reference Manual",
+     "url": "https://documentation.espressif.com/esp32_technical_reference_manual_en.pdf",
+     "publisher": "Espressif",
+     "kind": "datasheet",
+     "summary": "IO_MUX 와 GPIO Matrix 장. 주변장치 신호를 어느 핀에나 붙이는 구조가 여기 설명돼 있다"
+    }
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "인터럽트 안에서, 또는 여러 곳에서 같은 포트의 핀을 바꾼다",
+   "pick": "원자적 레지스터 (`BSRR`, `W1TS`/`W1TC`, AVR 은 상수 비트로 `SBI`/`CBI` 유도)",
+   "over": "`ODR |= (1<<n)` 같은 read-modify-write",
+   "why": "읽고-고치고-쓰는 세 단계 사이에 인터럽트가 끼면 그쪽이 쓴 값을 덮어 지운다. 재현이 안 되는 '가끔 안 켜짐' 버그의 전형적인 원인이다",
+   "tradeoff": "레지스터 이름이 칩마다 달라 이식성이 떨어지고, BSRR 의 상위/하위 16비트 규칙처럼 외울 것이 생긴다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    }
+   ]
+  },
+  {
+   "situation": "칩 하나짜리 소형 제품이거나 지금 배우는 중이다",
+   "pick": "레지스터 직접 제어",
+   "over": "벤더 HAL",
+   "why": "무슨 일이 일어나는지 정확히 보이고 바이너리가 작다. 그리고 **HAL 이 이상하게 굴 때 원인을 찾을 수 있는 사람**이 되는 것이 이 공부의 목적이다",
+   "tradeoff": "칩 시리즈가 바뀌면 다시 쓴다. 같은 STM32 안에서도 F1 과 F4 는 GPIO 설정 레지스터 이름부터 다르다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 은 GPIO 설정 레지스터가 CRL/CRH 다 — F4 와 이름부터 다르다는 근거"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    }
+   ]
+  },
+  {
+   "situation": "여러 보드·시리즈를 하나의 코드로 지원한다",
+   "pick": "벤더 HAL/LL 라이브러리",
+   "over": "레지스터 직접 제어",
+   "why": "시리즈마다 다른 레지스터 차이를 라이브러리가 흡수한다. 직접 쓰면 `#ifdef` 가 코드를 잠식한다",
+   "tradeoff": "코드가 커지고 느려지며, 문제가 생겼을 때 라이브러리 안쪽까지 읽어야 한다"
+  },
+  {
+   "situation": "ESP32 에서 UART·SPI 를 보드 배치상 편한 핀으로 빼고 싶다",
+   "pick": "GPIO 매트릭스로 신호를 그 핀에 연결",
+   "over": "핀이 고정돼 있다고 보고 보드를 다시 그리는 것",
+   "why": "ESP32 는 대부분의 주변장치 신호를 거의 아무 핀에나 라우팅할 수 있다. AVR·STM32 에서 몸에 밴 '이 기능은 이 핀' 이라는 전제가 여기서는 틀리다",
+   "tradeoff": "입력 전용 핀(GPIO34~39)·스트래핑 핀·플래시가 쓰는 핀은 예외다. 매트릭스를 거치면 고속 신호에서 IO_MUX 직결보다 불리할 수 있다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ESP32 Technical Reference Manual",
+     "url": "https://documentation.espressif.com/esp32_technical_reference_manual_en.pdf",
+     "publisher": "Espressif",
+     "kind": "datasheet",
+     "summary": "IO_MUX 와 GPIO Matrix 장. 주변장치 신호를 어느 핀에나 붙이는 구조가 여기 설명돼 있다"
+    },
+    {
+     "title": "ESP-IDF Programming Guide — GPIO & RTC GPIO (ESP32)",
+     "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/gpio.html",
+     "publisher": "Espressif",
+     "kind": "docs",
+     "summary": "GPIO34~39 가 입력 전용이고 내부 풀업·풀다운이 없다는 사실이 여기 명시돼 있다"
+    }
+   ]
+  },
+  {
+   "situation": "한 포트의 여러 핀을 동시에 같은 순간에 바꿔야 한다 (병렬 버스, LCD)",
+   "pick": "마스크를 계산해 포트에 **한 번** 쓰기",
+   "over": "핀마다 `|=` 를 반복하는 것",
+   "why": "핀별로 나눠 쓰면 핀들이 몇 사이클씩 어긋나 바뀐다. 병렬 데이터에서는 그 어긋남이 곧 잘못된 값으로 읽힌다",
+   "tradeoff": "같은 포트의 다른 용도 핀까지 건드리지 않도록 마스크를 정확히 만들어야 한다"
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "STM32 에서 레지스터에 값을 썼는데 아무 일도 안 일어나고, 다시 읽으면 0 이다",
+   "why": "**해당 포트의 클럭이 꺼져 있다.** 전력 절감을 위해 대부분의 주변장치가 클럭 꺼진 상태로 부팅한다. 클럭이 없으면 레지스터는 존재하지 않는 것과 같고, 오류도 나지 않는다",
+   "fix": "`RCC` 의 인에이블 레지스터로 그 포트의 클럭을 먼저 켠다(F4 는 `RCC->AHB1ENR`). STM32 에서 '아무 반응 없음'의 1순위 용의자다",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    }
+   ]
+  },
+  {
+   "trap": "인터넷에서 찾은 STM32 예제를 그대로 썼는데 `MODER` 가 없다는 컴파일 오류가 난다",
+   "why": "**시리즈가 다르다.** STM32F1 은 GPIO 설정 레지스터가 `CRL`/`CRH` 이고, F4 계열의 `MODER`·`OTYPER`·`OSPEEDR`·`PUPDR` 구성과 다르다",
+   "fix": "쓰는 칩의 **레퍼런스 매뉴얼 번호**부터 확인한다(F1=RM0008, F4=RM0090). 예제를 옮길 때는 시리즈가 같은지 먼저 본다",
+   "sources": [
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 은 GPIO 설정 레지스터가 CRL/CRH 다 — F4 와 이름부터 다르다는 근거"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+    }
+   ]
+  },
+  {
+   "trap": "인터럽트를 켠 뒤로 LED 가 가끔 안 꺼진다 — 재현이 안 된다",
+   "why": "`ODR |= (1<<n)` 이 read-modify-write 라, 읽은 뒤 쓰기 전에 인터럽트가 같은 포트를 바꾸면 그 변경이 사라진다",
+   "fix": "`BSRR`·`W1TS`/`W1TC` 처럼 **읽지 않는** 레지스터를 쓴다. 그럴 수 없으면 그 구간만 인터럽트를 잠근다"
+  },
+  {
+   "trap": "입력 핀을 읽었는데 스위치를 눌러도 값이 안 바뀐다",
+   "why": "**출력값 레지스터를 읽고 있다.** `PORTx`(AVR)·`ODR`(STM32)은 *내가 쓴 값*이고, 핀에 실제로 걸린 값은 `PINx`·`IDR`·`GPIO_IN_REG` 에 있다",
+   "fix": "입력은 반드시 입력 레지스터로 읽는다. 세 칩 대응표의 세 번째 줄이 그것만 따로 굵게 적혀 있는 이유다"
+  },
+  {
+   "trap": "ESP32 의 GPIO34~39 에 스위치를 달았는데 값이 계속 떠다니고 출력도 안 된다",
+   "why": "**GPIO34~39 는 입력 전용이고 내부 풀업·풀다운이 없다.** 소프트웨어로 켤 수 있는 저항이 아예 존재하지 않는다",
+   "fix": "외부에 풀업·풀다운 저항을 단다(→ `pull-up-resistor`). 출력이 필요하면 다른 핀을 쓴다",
+   "sources": [
+    {
+     "title": "ESP-IDF Programming Guide — GPIO & RTC GPIO (ESP32)",
+     "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/gpio.html",
+     "publisher": "Espressif",
+     "kind": "docs",
+     "summary": "GPIO34~39 가 입력 전용이고 내부 풀업·풀다운이 없다는 사실이 여기 명시돼 있다"
+    }
+   ]
+  },
+  {
+   "trap": "ESP32 보드에 부품을 달았더니 리셋 후 부팅이 안 되거나 이상한 모드로 뜬다",
+   "why": "부팅 시점에 특정 핀들의 전압을 읽어 동작 모드를 정하는 **스트래핑 핀**이 있다. 거기에 풀다운·LED·센서를 물리면 부팅 판단이 바뀐다",
+   "fix": "보드·칩 문서에서 스트래핑 핀 목록을 확인하고 일반 입출력으로 쓰지 않는다. 꼭 써야 하면 부팅 동안 그 핀의 상태가 기본값을 유지하도록 회로를 짠다",
+   "sources": [
+    {
+     "title": "ESP-IDF Programming Guide — GPIO & RTC GPIO (ESP32)",
+     "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/gpio.html",
+     "publisher": "Espressif",
+     "kind": "docs",
+     "summary": "GPIO34~39 가 입력 전용이고 내부 풀업·풀다운이 없다는 사실이 여기 명시돼 있다"
+    }
+   ]
+  }
+ ],
+ "terms": [
+  {
+   "term": "레지스터",
+   "en": "register",
+   "what": "주변장치의 동작을 정하는, 특정 주소에 배선된 저장소. 값을 쓰면 하드웨어가 실제로 그렇게 동작한다"
+  },
+  {
+   "term": "메모리 맵드 I/O",
+   "en": "memory-mapped I/O",
+   "what": "주변장치 레지스터를 메모리 주소 공간에 배치해 평범한 읽기·쓰기로 다루게 하는 방식"
+  },
+  {
+   "term": "read-modify-write",
+   "en": "read-modify-write",
+   "what": "읽고 고치고 다시 쓰는 세 단계. 중간에 인터럽트가 끼면 변경이 사라질 수 있다"
+  },
+  {
+   "term": "원자적 연산",
+   "en": "atomic operation",
+   "what": "쪼개지지 않는 연산. 중간에 다른 코드가 끼어들 여지가 없다"
+  },
+  {
+   "term": "대체 기능",
+   "en": "alternate function",
+   "what": "핀을 GPIO 대신 UART·SPI·타이머 같은 주변장치에 내주는 설정"
+  },
+  {
+   "term": "GPIO 매트릭스",
+   "en": "GPIO matrix",
+   "what": "주변장치 신호와 물리 핀을 자유롭게 연결하는 ESP32 의 교환기. '이 기능은 이 핀' 이라는 전제를 없앤다"
+  },
+  {
+   "term": "스트래핑 핀",
+   "en": "strapping pin",
+   "what": "부팅 시점의 전압으로 칩의 동작 모드를 정하는 핀. 함부로 다른 용도로 쓰면 부팅이 바뀐다"
+  },
+  {
+   "term": "HAL / LL",
+   "en": "Hardware Abstraction Layer / Low-Layer",
+   "what": "벤더가 제공하는 주변장치 라이브러리. HAL 은 추상화가 두껍고 LL 은 레지스터에 가깝다"
+  }
+ ],
+ "drills": [
+  {
+   "task": "\"포트의 0번 핀을 출력으로 만들고 HIGH 로 둔다\"를 AVR·STM32F4·ESP32 세 가지로 각각 써서 한 표에 나란히 놓는다. 각 줄이 `what` 절의 다섯 질문 중 무엇에 답하는지 표시한다",
+   "done_when": "STM32 쪽에 `RCC` 클럭 인에이블 줄이 들어 있고, 세 코드에서 '입력 읽기' 레지스터를 각각 정확히 짚을 수 있다",
+   "why": "이식은 레지스터 이름을 옮기는 일이 아니라 **같은 질문에 새 답을 찾는 일**이라는 걸 손으로 확인한다. 이 표 하나가 다음 칩으로 넘어가는 다리다",
+   "no_hardware": "장비가 필요 없다 — 각 칩의 레퍼런스 매뉴얼과 편집기면 된다. 컴파일도 필요 없다",
+   "hours": 2
+  },
+  {
+   "task": "read-modify-write 경쟁을 PC 에서 재현한다. 스레드 둘이 같은 정수 변수에 각각 다른 비트를 `|=` 로 수십만 번 세팅하게 하고, 끝난 뒤 잃어버린 비트가 몇 개인지 센다. 그다음 원자적 연산(또는 락)으로 바꿔 0 이 되는 것을 확인한다",
+   "done_when": "손실 개수가 0 이 아닌 실행을 만들어 낼 수 있고, 그것이 왜 MCU 의 `PORTx |= ` 와 같은 문제인지 설명할 수 있다",
+   "why": "MCU 에서는 인터럽트, PC 에서는 스레드일 뿐 문제의 구조가 같다. 장비 없이 이 버그를 눈으로 보는 유일한 방법이다",
+   "no_hardware": "처음부터 장비가 필요 없다 — 파이썬·C 아무 언어나 된다",
+   "hours": 1
+  },
+  {
+   "task": "`GPIOA->ODR |= (1<<5)` 와 `GPIOA->BSRR = (1<<5)` 를 각각 컴파일해 생성된 어셈블리 명령 수를 비교한다 (`arm-none-eabi-gcc -S -O2`)",
+   "done_when": "두 방식의 명령 수와 메모리 접근 횟수 차이를 숫자로 말할 수 있고, 왜 하나는 원자적이고 하나는 아닌지 어셈블리로 가리킬 수 있다",
+   "why": "'원자적이다'라는 말이 추상적인 주장이 아니라 명령 개수의 문제라는 걸 확인한다",
+   "needs": "arm-none-eabi-gcc 툴체인",
+   "no_hardware": "보드는 필요 없다 — 컴파일만 하면 된다. 툴체인 설치가 어려우면 온라인 컴파일러(godbolt 류)에서 같은 실험을 할 수 있다",
+   "hours": 1
+  }
+ ],
+ "checks": [
+  "핀 하나를 쓰기 위해 칩이 답해야 하는 다섯 질문은 무엇인가? 그 질문들이 AVR·STM32·ESP32 에서 각각 어느 레지스터에 대응하나?",
+  "STM32 는 왜 AVR 보다 GPIO 레지스터가 많은가? 개수 차이가 뜻하는 것은?",
+  "`ODR |= (1<<5)` 대신 `BSRR` 을 쓰는 이유는? 인터럽트와 무슨 관계인가?",
+  "STM32 에서 레지스터에 썼는데 아무 반응이 없다면 가장 먼저 확인할 것은?",
+  "입력값을 읽을 때 `PORTx`·`ODR` 을 읽으면 안 되는 이유는?",
+  "ESP32 의 GPIO 매트릭스는 AVR·STM32 의 어떤 전제를 깨뜨리나?"
+ ],
+ "evidence": [
+  {
+   "quote": "MCU (AVR, ESP32, STM32 등) 기반 센서 데이터 수집 및 펌웨어 개발",
+   "from": "posting",
+   "where": "클론팜 — 스마트팜 환경제어/IoT 하드웨어 (사람인, 모집중)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54646438",
+   "what_it_shows": "**공고가 세 칩을 한 줄에 묶어 요구한다.** 이 문서가 대응표 형태인 이유가 그것이다 — 실무는 한 칩만 쓰지 않는다"
+  },
+  {
+   "quote": "- AVR, ESPRESSIF MCU 대상 임베디드 소프트웨어 개발",
+   "from": "posting",
+   "where": "엣지크로스 — 임베디드 소프트웨어 개발자(신입) (점핏, 모집중)",
+   "url": "https://jumpit.saramin.co.kr/position/54920516",
+   "what_it_shows": "신입 공고가 AVR 과 ESP 계열을 함께 요구한다. 둘 사이를 옮겨 다니는 능력이 곧 지원 자격이라는 뜻"
+  },
+  {
+   "quote": "ㆍ마이크로컨트롤러(STM32, AVR 등) 또는 임베디드 보드 사용 유경험자",
+   "from": "posting",
+   "where": "한국로봇융합연구원 — 정기채용 (사람인, 모집중)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54897008",
+   "what_it_shows": "`STM32, AVR 등` 이라는 표현은 **칩이 아니라 그 밑의 공통 개념**을 묻는다는 신호다. 이 문서의 다섯 질문이 그 공통 개념이다"
+  },
+  {
+   "quote": "H/W 회로도와 데이터시트를 기반으로 펌웨어 개발 및 디버깅이 가능한 분",
+   "from": "posting",
+   "where": "크래블 — 컨트롤러 개발 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/372341",
+   "what_it_shows": "레퍼런스 매뉴얼을 읽어 레지스터를 찾아내는 것이 요구 역량이다. 예제 코드를 복사하는 것과 갈리는 지점"
+  },
+  {
+   "quote": "• • 하드웨어 회로 분석 및 드라이버 개발(I2C, SPI, UART 등)",
+   "from": "posting",
+   "where": "신성테크 — 펌웨어 개발자 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/370243",
+   "what_it_shows": "드라이버 개발은 결국 주변장치 레지스터를 다루는 일이다. GPIO 는 그중 가장 단순한 사례이자 입구다"
+  }
+ ],
+ "related": [
+  {
+   "slug": "atmega128",
+   "how": "이 개념이 처음 나온 자리. DDR/PORT/PIN 의 실제 코드와 진리표가 거기 있다"
+  },
+  {
+   "slug": "stm32",
+   "how": "표의 가운데 열을 통째로 다룰 문서. 클럭 트리·RCC·HAL 이야기가 거기 본체다"
+  },
+  {
+   "slug": "interrupt",
+   "how": "이 문서의 원자성 절이 왜 필요한지의 반대편 — 언제 인터럽트가 끼어드는가"
+  },
+  {
+   "slug": "pull-up-resistor",
+   "how": "레지스터로 켜는 '내부 풀업'이 실제로 무엇인지, 그리고 왜 20~50kΩ 로는 부족한 자리가 있는지"
+  }
+ ],
+ "open_questions": [
+  "ESP32 의 레지스터 이름(`GPIO_OUT_W1TS_REG` 등)은 TRM 의 IO_MUX/GPIO Matrix 장 표기를 따랐으나, **이번 사이클에서 PDF 본문을 기계적으로 추출해 대조하지는 못했다**(문서가 압축돼 텍스트 검색이 되지 않았다). 입력 전용 핀(GPIO34~39)과 내부 풀업 부재는 ESP-IDF 공식 문서로 확인했다. 표를 확장할 때는 TRM 해당 장을 직접 열어 대조한다",
+  "STM32 는 시리즈가 많아 이 문서의 가운데 열은 **F4(RM0090) 하나만** 대표로 썼다. F1 이 다르다는 사실만 지뢰로 남겼고, G0·L4·H7 등은 다루지 않았다 — `stm32` 문서에서 시리즈별로 정리할 자리다",
+  "`market` 은 비어 있다. `tech_relations.json` 은 GPIO·레지스터 같은 개념을 추적 기술로 세지 않는다. 대신 세 칩을 한 줄에 묶어 요구하는 모집중 공고 5건을 `evidence` 로 받쳤다"
+ ],
+ "sources": [
+  {
+   "title": "ATmega128/128L 데이터시트 (doc2467) — I/O Ports 절",
+   "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+   "publisher": "Microchip (Atmel)",
+   "kind": "datasheet",
+   "summary": "DDRx·PORTx·PINx 세 레지스터의 정의와 SBI/CBI 단일 비트 명령이 여기 있다"
+  },
+  {
+   "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+   "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+   "publisher": "STMicroelectronics",
+   "kind": "datasheet",
+   "summary": "STM32F4 의 GPIO 레지스터(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR)와 오프셋이 이 문서의 GPIO 장에 있다"
+  },
+  {
+   "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+   "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+   "publisher": "STMicroelectronics",
+   "kind": "datasheet",
+   "summary": "STM32F1 은 GPIO 설정 레지스터가 CRL/CRH 다 — F4 와 이름부터 다르다는 근거"
+  },
+  {
+   "title": "ESP32 Technical Reference Manual",
+   "url": "https://documentation.espressif.com/esp32_technical_reference_manual_en.pdf",
+   "publisher": "Espressif",
+   "kind": "datasheet",
+   "summary": "IO_MUX 와 GPIO Matrix 장. 주변장치 신호를 어느 핀에나 붙이는 구조가 여기 설명돼 있다"
+  },
+  {
+   "title": "ESP-IDF Programming Guide — GPIO & RTC GPIO (ESP32)",
+   "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/gpio.html",
+   "publisher": "Espressif",
+   "kind": "docs",
+   "summary": "GPIO34~39 가 입력 전용이고 내부 풀업·풀다운이 없다는 사실이 여기 명시돼 있다"
+  }
+ ]
+}
