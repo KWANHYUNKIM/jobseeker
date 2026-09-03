@@ -557,6 +557,23 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "rbac",
+      "title": "RBAC",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "권한을 사람에게 직접 주지 않고 **'역할'이라는 중간 이름표에 붙여 두고, 사람에게는 역할만 주는** 방식이다. 사람이 바뀔 때 고칠 곳이 한 군데로 줄어드는 대신, **역할 자체가 걷잡을 수 없이 늘어나는** 문제를 새로 얻는다.",
+      "aliases": [
+        "RBAC",
+        "역할 기반 접근 제어",
+        "롤 기반 권한",
+        "role-based access control"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-04"
     }
   ],
   "categories": {
