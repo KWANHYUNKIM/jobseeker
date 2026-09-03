@@ -243,7 +243,8 @@
         "what_to_know": [
           "**보안이 한 팀이 아니라 여러 갈래로 나뉜 회사**라, 지원할 때 자기가 어느 갈래인지 정해야 한다",
           "고객 데이터와 결제가 걸려 있어 **탐지와 대응이 상시 운영**된다(`Tier1 Security Analyst` 같은 교대 자리가 있다)",
-          "`Digital Trust`·`GRC` 는 기술만이 아니라 **규정·감사**를 다룬다"
+          "`Digital Trust`·`GRC` 는 기술만이 아니라 **규정·감사**를 다룬다",
+          "⚠️ **보안은 조직이 여러 겹이다** — 공고로 확인된 것만 네 갈래다: **플랫폼**(`Identity, Access and Protection Infrastructure` — 키 관리·서비스 아이덴티티·사용자 인증·**동적 인가**로 **제로 트러스트**를 목표한다), **관제**(`Tier1 Security Analyst`, 24x7 교대), **거버넌스**(`정보보안 GRC` — 정책·인증·리스크), **개별 통로**(`보안엔지니어 (이메일 보안)`). 지원 전에 **어느 갈래인지 먼저 가른다** — 요구하는 능력이 전혀 다르다."
         ],
         "confidence": "inferred",
         "sources": []
@@ -5934,6 +5935,154 @@
           "안정성·보안을 **체계**로 만든 사례 — 변경의 무게를 나눴는가",
           "매니저·테크리드를 키운 사례",
           "중대 장애에서 내린 결정"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8040145",
+      "title": "Director Backend Engineering (Security Infrastructure)",
+      "site": "ats",
+      "verdict": "**모든 서비스가 그 위에서 인증·인가를 받는 보안 플랫폼 조직의 리더.** 팀 이름은 `Identity, Access and Protection Infrastructure` 이고 목표는 **제로 트러스트**다. 맡는 축은 **동적 인가(dynamic authorization)** — `watching all API calls for risk indicators, triggering corrective actions` 라고 본문이 적는다. ⚠️ **자격이 두 절에 흩어져 있다**: `Basic` 은 **12년(고급학위면 10년) + 엔지니어 관리 5년**, `Preferred` 는 석·박사와 Istio 계열.",
+      "fit": {
+        "must_have": [
+          "⚠️ **기본 요건: 소프트웨어 12년**(석·박사 등 고급학위면 **10년**) **+ 엔지니어 관리 5년**",
+          "**대규모 분산 시스템의 설계·개발을 이끈** 경험",
+          "⚠️ **최근의 보안·IAM 경험** — `Recent experience` 라고 적혀 있다(오래전 경험만으로는 약하다)",
+          "미션·비전·로드맵을 여러 조직과 함께 정의해 본 경험",
+          "경쟁하는 우선순위를 동시에 다뤄 본 경험"
+        ],
+        "can_learn": [
+          "석사·박사 학위는 **우대사항**이다",
+          "보안 프로토콜·시스템을 직접 만든 경험, IaC·Kubernetes·**gRPC·Istio** 도 **우대**",
+          "⚠️ 같은 회사의 개인 기여자 보안 자리는 `Principal, Security Engineer` 브리핑을, 관제·정책 쪽은 `Tier1 Security Analyst`·`정보보안 GRC 담당자`·`보안엔지니어 (이메일 보안)` 를 본다"
+        ]
+      },
+      "study": [
+        {
+          "topic": "제로 트러스트 — 무엇을 더 이상 믿지 않는가",
+          "from": "task",
+          "quote": "Our work spans many layers of the application stack – from cryptographic key management to service identity to user authentication and dynamic authorization – to achieve a modern Zero Trust architecture.",
+          "priority": "core",
+          "why": "⚠️ **계층을 넷으로 나눠 적었다** — 키 관리 → 서비스 아이덴티티 → 사용자 인증 → 동적 인가. 제로 트러스트의 요점은 **사내 네트워크 안이라고 믿지 않는 것**이라, 서비스끼리도 서로를 증명해야 하고(그래서 서비스 아이덴티티), 요청마다 권한을 다시 따진다. 예전처럼 **방화벽 안쪽을 안전지대로 두는 설계**와 근본이 다르다.",
+          "gap_check": "'내부 서비스라서 인증 없이 호출한다'는 구간이 우리 시스템에 몇 개 있는가.",
+          "drill": "⚠️ **본인이 만든 환경에서만** 한다. 서비스 두 개를 띄우고 ① 평문 내부 호출로 시작해 ② **양쪽 인증(mTLS)** 을 붙이고 ③ 인증서를 짧은 수명으로 바꿔 **자동 갱신**을 붙인다. 그리고 **인증서가 만료됐을 때 무슨 일이 생기는지** 일부러 확인한다 — 제로 트러스트로 갈 때 가장 자주 나는 사고가 이것이다.",
+          "hours": 10
+        },
+        {
+          "topic": "동적 인가 — 이 팀이 맡는 축",
+          "from": "task",
+          "quote": "We are seeking an engineering leader to lead our dynamic authorization effort. This team protects our customers by watching all API calls for risk indicators, triggering corrective actions when necessary.",
+          "priority": "core",
+          "why": "⚠️ **`all API calls` 를 본다는 것이 이 자리의 규모다.** 정적 권한(이 역할은 이걸 할 수 있다)과 달리 **동적 인가는 상황을 함께 본다** — 평소와 다른 위치·기기·빈도면 같은 사람이라도 다르게 판단한다. 어려움은 판단 로직이 아니라 **모든 호출 경로에 끼어들면서 지연을 거의 안 늘리는 것**이고, 잘못 막으면 **정상 사용자가 서비스를 못 쓴다.**",
+          "gap_check": "인가 판단을 요청 경로에 넣을 때 **허용되는 추가 지연**이 얼마인지 정할 수 있는가.",
+          "drill": "작은 인가 게이트웨이를 만든다 — ① 요청마다 정책을 평가(OPA 같은 정책 엔진을 붙여도 좋다) ② **p99 지연 증가**를 잰다 ③ 정책 캐시를 넣고 다시 잰다 ④ **정책 서버가 죽었을 때** 열지 닫을지(fail-open/fail-closed)를 정하고 그 근거를 적는다. ④가 이 도메인의 핵심 결정이다.",
+          "hours": 12
+        },
+        {
+          "topic": "12년 + 관리 5년, 그리고 '최근의' 보안 경험",
+          "from": "qualification",
+          "quote": "Recent experience with security, IAM or related technologies.",
+          "priority": "core",
+          "why": "⚠️ **`Recent` 라는 단어가 붙은 드문 요건이다.** 보안·인증 분야는 표준과 공격 방식이 빠르게 바뀌어서(OAuth 2.1, 패스키, 워크로드 아이덴티티) **5년 전 지식이 지금 틀릴 수 있다.** 기본 요건은 `12+ years professional experience working in software engineering teams, or 10+ years' experience with advanced degree.` 와 `5+ years' experience managing engineers.` 다.",
+          "gap_check": "최근 2년 안에 **직접 만져 본** 인증·인가 기술이 있는가. 문서로 읽은 것 말고.",
+          "drill": "최근 표준 셋을 골라 **작게 구현**한다 — ① OIDC 로그인 흐름 ② **패스키(WebAuthn)** 등록·인증 ③ 워크로드 아이덴티티(서비스가 사람 없이 자기를 증명하는 방식). 각각에서 **이전 방식 대비 무엇이 나아졌고 무엇이 새로 어려워졌는지** 한 문단씩 적는다.",
+          "hours": 12
+        },
+        {
+          "topic": "전사가 쓰게 만드는 일",
+          "from": "task",
+          "quote": "Drive the evolution of our platform by overseeing strategy, creating roadmaps, driving execution, and working for company-wide adoption.",
+          "priority": "core",
+          "why": "⚠️ **`company-wide adoption` 이 목표에 들어 있다.** 보안 플랫폼은 만들어 두면 저절로 쓰이지 않는다 — 개발팀 입장에선 **당장 이득 없이 일이 늘어나는 변경**이기 때문이다. 그래서 이 자리의 성과는 기능 수가 아니라 **몇 개 서비스가 실제로 올라탔는가**이고, 방법은 강제보다 **기본값으로 만들기**(새 서비스는 자동으로 붙게)에 가깝다.",
+          "gap_check": "내가 만든 플랫폼을 **안 쓰는 팀**은 왜 안 쓰는가. 물어본 적이 있는가.",
+          "drill": "채택 계획을 한 장으로 쓴다 — ① 지금 채택률(서비스 수 기준) ② **안 쓰는 이유 세 가지**(모름·비용·기능 부족) ③ 각각에 대한 수단(문서·마이그레이션 도구·기본값) ④ 분기별 목표 ⑤ **끝까지 안 옮기는 서비스를 어떻게 할지**. ⑤ 없는 계획은 채택률 80%에서 멈춘다.",
+          "hours": 6
+        },
+        {
+          "topic": "대규모 분산 시스템을 이끈 경험",
+          "from": "qualification",
+          "quote": "Experience leading design and development of large scale distributed systems.",
+          "priority": "core",
+          "why": "보안 인프라는 **모든 요청이 지나는 길목**이라 가용성 요구가 특히 높다 — 인가 서비스가 멈추면 회사 전체가 멈춘다. 그래서 이 자리에서 분산 시스템 경험은 기능 확장보다 **의존을 줄이고 부분 실패를 견디는 설계**로 쓰인다. 같은 회사 인프라 디렉터 공고들이 `5-6 nines` 나 티어별 신뢰성을 말하는 것과 이어진다.",
+          "gap_check": "내 시스템이 **의존하는 곳이 죽었을 때** 어떻게 동작하는지 전부 말할 수 있는가.",
+          "drill": "인가 경로의 **의존 지도**를 그리고 각 의존에 ① 죽으면 어떻게 되나 ② 캐시로 버틸 수 있나 ③ 버티는 동안의 **보안 위험**을 적는다. ③이 이 도메인의 특수함이다 — 가용성을 위해 캐시를 오래 두면 **취소된 권한이 살아 있게 된다.**",
+          "hours": 8
+        },
+        {
+          "topic": "Istio·gRPC — 서비스 사이의 신원",
+          "from": "preference",
+          "quote": "Experience working with Infrastructure as Code, Kubernetes, gRPC and Istio.",
+          "priority": "high",
+          "why": "⚠️ **넷이 한 줄에 있는 게 우연이 아니다.** 쿠버네티스 위에서 서비스가 수백 개면 **서로를 어떻게 믿을지**가 문제가 되고, 서비스 메시(Istio)가 그 층에서 **자동 mTLS 와 정책**을 제공한다. gRPC 는 그 위의 통신 규약이고, IaC 는 이 모든 설정을 **손이 아니라 코드로** 관리한다는 뜻이다. 즉 이 줄은 **제로 트러스트를 실제로 구현하는 도구 묶음**이다.",
+          "gap_check": "서비스 메시를 넣으면 **무엇이 좋아지고 무엇이 비싸지는지** 둘 다 말할 수 있는가.",
+          "drill": "로컬 쿠버네티스에 서비스 두 개를 띄우고 Istio(또는 Linkerd)를 붙인다 — ① 자동 mTLS 가 붙는 것을 확인 ② **한쪽만 메시에 넣어** 어떻게 되는지 본다 ③ 권한 정책을 걸어 특정 서비스만 호출되게 한다 ④ **사이드카가 늘리는 지연과 자원**을 잰다. ④를 재 본 사람이 도입 판단을 할 수 있다.",
+          "hours": 10
+        },
+        {
+          "topic": "좋은 사람을 뽑고 문화를 만든다",
+          "from": "task",
+          "quote": "Help build a great team by hiring the best and actively shaping team culture.",
+          "priority": "high",
+          "why": "⚠️ **담당업무의 첫 줄이 채용이다.** 보안 인프라는 **잘못 만들면 조용히 뚫리는** 영역이라 실력 편차의 대가가 크고, 그래서 채용이 성과의 큰 몫이 된다. 본문도 `hire and retain the best` 를 따로 적는다. 문화 쪽에서 특히 중요한 건 **실수를 숨기지 않는 분위기**다 — 보안 사고는 숨기면 커진다.",
+          "gap_check": "우리 팀에서 **본인 실수를 스스로 알리는 일**이 실제로 일어나는가.",
+          "drill": "보안 조직용 **채용 기준표**를 만든다 — 역할별로 ① 반드시 확인할 것 ② 면접에서 무엇으로 확인하나(과제·사례 질문) ③ **가르칠 수 있는 것과 없는 것**. 그리고 최근 사고(또는 가상 사고) 하나로 **비난 없는 회고** 양식을 만들어 본다 — 시간순 사실 / 그때 알던 것 / 놓친 신호 / **개인이 아니라 절차의 문제**.",
+          "hours": 6
+        },
+        {
+          "topic": "필요하면 직접 판다",
+          "from": "task",
+          "quote": "Dive deep when necessary to lead by example and help with high priority projects.",
+          "priority": "high",
+          "why": "⚠️ **이 회사 관리자 공고에 반복해서 나오는 요건이다**(`Manager (Rocket Pay)` 의 크리티컬 이슈 딥다이브, SRE 조직장의 기술 깊이, AI Infra 디렉터의 하드웨어 감각). 보안에서는 특히 그렇다 — **취약점 보고나 사고는 세부에서 판가름 나고**, 리더가 세부를 모르면 위험도를 잘못 매긴다.",
+          "gap_check": "최근에 **팀의 보안 설계에서 내가 직접 찾아낸 문제**가 있는가.",
+          "drill": "팀(또는 공개 프로젝트)의 인증·인가 흐름 하나를 골라 **위협 모델링**을 한 장으로 한다 — ① 신뢰 경계 ② 각 경계에서 가능한 공격 ③ 현재 막는 것 ④ **막지 못하는 것과 그 이유**. ⚠️ 실습은 **자기 코드·자기 환경**에 한정한다.",
+          "hours": 8
+        },
+        {
+          "topic": "전략과 당장의 성과 사이에서 밀고 가기",
+          "from": "task",
+          "quote": "Drive execution through technical and organizational complexities, balancing strategic goals and immediate impact.",
+          "priority": "high",
+          "why": "보안 플랫폼은 **성과가 늦게 보인다** — 아무 일도 안 일어나는 것이 성공이라서, 사업 쪽에서 보면 투자 대비 체감이 약하다. 그래서 이 자리는 **긴 로드맵을 지키면서도 분기마다 눈에 보이는 것**을 내야 하고, 그 균형이 `balancing` 이라는 단어에 들어 있다.",
+          "gap_check": "내 보안 로드맵에서 **이번 분기에 다른 팀이 체감할 변화**가 하나라도 있는가.",
+          "drill": "로드맵을 두 줄로 나눠 쓴다 — 위: 2년짜리 구조 변경(제로 트러스트 전환 같은), 아래: **분기마다 개발팀이 체감할 작은 이득**(로그인 코드 삭제, 권한 요청 자동화 등). 아래 줄이 비는 분기가 있으면 그 분기에 **지지를 잃는다.**",
+          "hours": 5
+        },
+        {
+          "topic": "여러 조직과 미션·비전을 맞춘다",
+          "from": "qualification",
+          "quote": "Experience in collaborating with cross-functional teams to define mission, vision, and roadmaps.",
+          "priority": "high",
+          "why": "⚠️ **이 항목은 `Basic` 과 `Preferred` 양쪽에 똑같이 적혀 있다** — 회사가 두 번 적었다는 건 실제로 중요하다는 뜻이다. 보안 플랫폼은 **모든 조직의 일하는 방식을 바꾸므로** 합의 없이 밀면 우회당한다. 본문의 `Drive alignment across key stakeholders` 도 같은 말이다.",
+          "gap_check": "내 로드맵에 **다른 조직의 이름과 그들이 얻는 것**이 적혀 있는가.",
+          "drill": "보안 로드맵 항목 다섯 개를 골라 각각 **이해관계자 표**를 붙인다 — 조직 / 그들이 부담하는 것 / **그들이 얻는 것** / 반대할 이유 / 설득 재료. '얻는 것'이 비어 있는 항목은 **강제로만 진행되고 결국 늦어진다.**",
+          "hours": 5
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**채택 계획**을 한 장 준비한다 — 채택률·안 쓰는 이유·기본값 전략·끝까지 안 옮기는 서비스 처리까지",
+          "why": "담당업무가 `working for company-wide adoption` 을 목표로 적었다. **만들었다는 이야기는 흔하고 퍼뜨린 이야기는 드물다** — 보안 플랫폼에서는 특히 그렇다.",
+          "effort": "반나절"
+        },
+        {
+          "idea": "**인가 게이트웨이의 지연·장애 실험 기록**을 준비한다 — fail-open/fail-closed 판단 근거까지",
+          "why": "`watching all API calls` 라는 규모에서 가장 먼저 묻는 것이 **지연과 장애 시 동작**이다. 숫자와 판단 근거를 함께 가져오면 대화가 바로 깊어진다.",
+          "effort": "1~2일"
+        }
+      ],
+      "interview": {
+        "process": "Application Review -> Phone Interview -> Onsite (or Virtual Onsite) Interview –> Offer. 공고에 `Job titles and responsibilities may be subject to change depending on the candidate's overall experience` 라고 적혀 있다 — **직함과 범위가 조정될 수 있다.**",
+        "expect": [
+          "⚠️ **연차 확인** — 기본 12년(고급학위면 10년) + 관리 5년",
+          "제로 트러스트로 옮길 때의 순서와 **가장 자주 나는 사고**",
+          "동적 인가를 요청 경로에 넣을 때의 **지연과 실패 처리**(fail-open/closed)",
+          "가용성을 위해 캐시를 두면 생기는 **권한 취소 지연** 문제",
+          "서비스 메시 도입의 이득과 비용",
+          "보안 플랫폼을 **전사가 쓰게** 만든 방법",
+          "최근에 직접 만져 본 인증·인가 기술 (`Recent experience` 가 요건이다)",
+          "보안 조직의 채용 기준과 **비난 없는 회고**"
         ],
         "sources": []
       }
