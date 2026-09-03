@@ -66,6 +66,8 @@ REPOSTS_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_reposts.py"
 CAREER_MAP_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_career_map.py"
 BLOG_GUIDES_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_blog_guides.py"
 INFLEARN_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_inflearn.py"
+# 행동 기록 집계는 crawlers/ 가 아니라 catch_capture 패키지 안에 있다.
+ENGAGEMENT_ARGS = ["-m", "engagement.score"]
 RADAR_REFINE_N = 2                     # 사이클당 레이더 점진 리파인 회사 수
 LEARNING_REFRESH_SECS = 6 * 3600       # 학습영상 캐시 무시 재수집 주기(기존 learning cron 대체)
 # 인프런은 강의 상세를 한 건씩 받아오느라 기술 24개에 6~8분이 든다. 강의 카탈로그는
@@ -382,6 +384,24 @@ def run_builder(label: str, script: Path, args: list[str] | None = None,
         orch.builder_finished(label, False, time.time() - t0, repr(e))
 
 
+def run_engagement() -> None:
+    """행동 기록 → public/engagement.json.
+
+    다른 빌더와 달리 스크립트 경로가 아니라 모듈(-m)이라 run_builder 를 못 쓴다.
+    수집 서버가 안 떠 있어도 조용히 0건으로 끝나므로 실패로 보지 않는다.
+    """
+    orch.builder_started("행동 점수")
+    t0 = time.time()
+    try:
+        rc = subprocess.call([_python_executable(), *ENGAGEMENT_ARGS], cwd=str(BASE_DIR))
+        ok = rc == 0
+        log(f"[engagement] {'완료' if ok else f'실패(rc={rc})'} ({time.time() - t0:.0f}s)")
+        orch.builder_finished("행동 점수", ok, time.time() - t0, "" if ok else f"rc={rc}")
+    except Exception as e:  # noqa: BLE001
+        log(f"[engagement] 예외: {e!r}")
+        orch.builder_finished("행동 점수", False, time.time() - t0, repr(e))
+
+
 def enrich_extras() -> None:
     """크롤과 무관하게 매 사이클 굴리는 부가 작업.
 
@@ -402,6 +422,9 @@ def enrich_extras() -> None:
     run_builder("블로그 가이드", BLOG_GUIDES_SCRIPT)
     run_builder("인프런 강의", INFLEARN_SCRIPT, stamp=INFLEARN_STAMP,
                 every_secs=INFLEARN_REFRESH_SECS)
+    # 행동 점수는 크롤 결과와 무관하게 매 사이클 다시 센다. 기록은 방문자가
+    # 만들고 크롤은 그것을 모른다 — 크롤이 실패한 회차에도 갱신돼야 한다.
+    run_engagement()
 
 
 def run_cycle(keyword: str, count: int) -> bool:

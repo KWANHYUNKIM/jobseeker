@@ -4,6 +4,7 @@
 #   ops (8770)   : 크롤 파이프라인 실시간 운영 대시보드 — "지금 뭘 하는지"
 #   stats(8765)  : 통계 대시보드 — 공고 분류·집계
 #   search(8771) : 하이브리드 검색 API — 뷰어가 /api/ 로 부른다
+#   collect(8772): 행동 기록 수집 — 뷰어가 /collect 로 부른다
 #
 # ops·stats 는 dashboards 프로필의 터널로 외부에 직접 노출된다. search 는 다르다.
 # 뷰어 nginx 가 /api/ 를 이 포트로 프록시하므로 뷰어 주소만 열려 있으면 되고,
@@ -37,6 +38,7 @@ SERVICES=(
   "com.jobseeker.ops:monitoring.ops_server|--port|8770|--no-open:OPS_HOST:8770"
   "com.jobseeker.stats:dashboard/serve.py|--port|8765:DASH_HOST:8765"
   "com.jobseeker.search:semantic.server|--port|8771:SEARCH_HOST:8771"
+  "com.jobseeker.collect:engagement.collect|--port|8772:COLLECT_HOST:8772"
 )
 
 uninstall() {

@@ -77,6 +77,11 @@ jd-viewer/bin/.inflearn_cache/
 # 지워도 build_reposts.py 가 마감 아카이브에서 다시 부트스트랩한다.
 catch_capture/job_history.jsonl
 
+# 행동 기록 원본 — 방문자가 무엇을 눌렀는지. 개인 식별 정보는 없지만(익명 세션
+# 난수만) 서버 밖으로 나갈 이유가 없는 운영 데이터다. 집계 결과만 public 으로 나간다.
+catch_capture/engagement/events.jsonl
+catch_capture/engagement/events.jsonl.1
+
 # 인프런 수집 주기 스탬프 (로컬 실행 기록)
 catch_capture/.inflearn_refresh.stamp
 

@@ -216,6 +216,7 @@ BUILDER_OUTPUTS = [
     ("학습 영상", "learning_resources.json"),
     ("기업 스택", "company_stacks.json"),
     ("직군 인사이트", "role_insights.json"),
+    ("행동 점수", "engagement.json"),
 ]
 VIEWER_PUBLIC = CATCH_DIR.parent / "jd-viewer" / "public"
 
