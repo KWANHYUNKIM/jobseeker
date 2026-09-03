@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { BlogContent, BlogPost } from '../types'
+import { useLocale } from '../lib/locale'
 import { useSimilarPosts } from '../lib/useSimilar'
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -78,7 +79,6 @@ export function BlogDetail({
       .then((data: BlogContent | null) => {
         if (cancelled || !data) return
         setContent(data)
-        setView(data.translated ? 'ko' : 'orig')
         setState('ready')
       })
       .catch(() => !cancelled && setState('error'))
@@ -86,6 +86,15 @@ export function BlogDetail({
       cancelled = true
     }
   }, [post.content_id])
+
+  // 무엇을 먼저 보여줄지는 보는 사람의 언어가 정한다. 한국어 사용자에게는 번역이,
+  // 그 외에는 원문이 기본이다 — 영어권 사용자에게 기계 번역된 한국어를 먼저 들이미는
+  // 것은 원문이 이미 그 사람의 언어인데도 굳이 한 겹 씌우는 셈이다.
+  // (한국어 글은 translated 가 false 라 어느 쪽이든 원문으로 간다.)
+  const locale = useLocale()
+  useEffect(() => {
+    if (content) setView(locale === 'ko' && content.translated ? 'ko' : 'orig')
+  }, [content, locale])
 
   const body =
     content && (view === 'ko' && content.translated ? content.content_ko : content.content)
