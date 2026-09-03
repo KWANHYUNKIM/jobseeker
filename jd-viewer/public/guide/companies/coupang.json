@@ -367,7 +367,18 @@
       }
     ]
   },
-  "salary": null,
+  "salary": {
+    "unit": "만원",
+    "currency": "KRW",
+    "as_of": "2026-09",
+    "bands": [],
+    "note": "⚠️ **한국 채용 공고에는 급여가 적혀 있지 않다.** 지금까지 정리한 쿠팡 공고 40여 건 중 금액이 나온 것은 **미국 채용 공고 한 건**뿐이다 — `Director, Data Engineering` 은 `The base pay for this position ranges from $174,000/year in our lowest geographic market to $290,000/year in our highest geographic market.` 라고 적고, 보상 설명이 `US geographic markets` 기준이며 401K·PTO 같은 미국식 복리후생을 든다. **이 숫자는 미국 시장·해당 직급의 기본급 범위이므로 한국 채용에 그대로 적용되지 않는다** — 환율로 환산해 옮기면 직급·지역·세제·복리후생 차이가 전부 지워지므로 **여기에 원화 밴드로 담지 않았다.** 한국 쪽에서 확인된 것은 **전형 절차의 마지막 단계가 `처우협의`(또는 `처우협상`)인 공고가 여러 건**이라는 사실뿐이다(한국어 공고 다수). ⚠️ 미국 상장사라 실적은 공시로 확인되지만 **직군별 급여는 공시되지 않는다** — Pay Ratio 는 전 세계·전 직군 중위값이라 한국 개발 직군을 대표하지 못한다.",
+    "open_questions": [
+      "한국 개발 직군의 실제 밴드는 확인하지 못했다. **공고에 없고, 공시에도 직군별로는 나오지 않는다.**",
+      "미국 공고의 범위가 다른 직급에도 표기되는지는 확인하지 못했다 — 지금까지는 `Director, Data Engineering` 한 건에서만 봤다.",
+      "`처우협의` 단계에서 무엇을 근거로 정해지는지(직급 테이블·전 직장 연봉·시장 조사)는 알 수 없다."
+    ]
+  },
   "people": [],
   "postings": [
     {
@@ -6083,6 +6094,152 @@
           "보안 플랫폼을 **전사가 쓰게** 만든 방법",
           "최근에 직접 만져 본 인증·인가 기술 (`Recent experience` 가 요건이다)",
           "보안 조직의 채용 기준과 **비난 없는 회고**"
+        ],
+        "sources": []
+      }
+    },
+    {
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8063697",
+      "title": "Director, Data Engineering",
+      "site": "ats",
+      "verdict": "**검색·추천 조직의 데이터 엔지니어링을 이끄는 자리.** 규모가 본문에 적혀 있다 — `Search and Recommendations drive over 70% of product discovery`. 맡는 것은 **작은 데이터 엔지니어 팀**이고, 만드는 것은 **분석·프로덕션 ETL/ELT 와 그 데이터의 신뢰성**이다. ⚠️ **이 공고는 미국 채용이고 연봉 범위가 본문에 적혀 있다**(`$174,000` ~ `$290,000`) — 한국 공고에는 없는 정보다. ⚠️ 자격이 `Minimum Qualifications` 로 **담당업무 절 안에** 붙어 있다.",
+      "fit": {
+        "must_have": [
+          "**데이터 엔지니어링 8년**(고객 대면 기술 회사에서) **+ 피플 매니저 3년 이상**",
+          "데이터 모델링·ETL·**Python·SQL**",
+          "분산 처리와 분산 저장(**Spark·HDFS·S3**)",
+          "ETL 스케줄러(**Airflow·Dagster·DBT**)"
+        ],
+        "can_learn": [
+          "실험·통계 전문성, ML 개념 이해, 이커머스·검색 경험 — **전부 우대사항**이다",
+          "⚠️ **근무지가 미국으로 보인다** — 보상 설명이 `US geographic markets` 기준이고 복리후생도 401K·PTO 등 미국식이다. **지원 전 근무지와 비자 조건을 반드시 확인한다**"
+        ]
+      },
+      "study": [
+        {
+          "topic": "검색·추천이 상품 발견의 70%를 만든다",
+          "from": "task",
+          "quote": "Search and Recommendations drive over 70% of product discovery for our millions of daily customers, so the scale and impact of our work is massive!",
+          "priority": "core",
+          "why": "⚠️ **숫자가 이 조직의 무게를 말해 준다.** 검색이 잘못되면 상품이 안 팔리는 게 아니라 **아예 보이지 않는다.** 그래서 이 팀의 데이터는 분석용이 아니라 **모델이 먹는 재료**다 — 본문도 `analyzes customer data to determine how our Search models should be designed` 라고 적는다. 데이터가 틀리면 모델이 틀리고, 모델이 틀리면 매출이 움직인다.",
+          "gap_check": "내가 만든 데이터가 **어떤 의사결정이나 모델**로 이어지는지 끝까지 말할 수 있는가.",
+          "drill": "자기 도메인에서 **데이터 → 결정 사슬**을 하나 그린다 — 로그 수집 → 가공 → 지표/피처 → 모델이나 사람의 결정 → 사업 결과. 각 화살표에 **끊어졌을 때 무슨 일이 생기나**를 적고, **가장 조용히 끊길 수 있는 지점**을 표시한다.",
+          "hours": 5
+        },
+        {
+          "topic": "작은 팀을 이끌며 직접 만드는 자리",
+          "from": "task",
+          "quote": "Lead a small team of Data Engineers to ideate, build, and manage analytics and production data ETL/ELT systems for high-volume data ingestion from diverse sources",
+          "priority": "core",
+          "why": "⚠️ **`small team` 이라고 적혀 있고, `ideate, build, and manage` 셋을 함께 요구한다** — 즉 관리만 하는 자리가 아니다(같은 회사 다른 디렉터 공고들이 여러 팀을 이끄는 것과 다르다). 그리고 **분석용과 프로덕션용 파이프라인을 함께** 맡는데, 둘은 요구가 다르다: 분석은 유연함, 프로덕션은 **정시성과 재현성**이 먼저다.",
+          "gap_check": "분석용 파이프라인과 서비스에 쓰이는 파이프라인을 **다른 기준으로** 운영하고 있는가.",
+          "drill": "자기 파이프라인들을 두 무리로 나눈다 — ① 사람이 보는 것 ② **모델이나 서비스가 먹는 것**. ②에만 붙여야 할 것을 목록으로 만든다(SLA·스키마 계약·회귀 검증·롤백). 그리고 ②의 하나를 골라 **빠진 항목 하나를 실제로 붙인다.**",
+          "hours": 6
+        },
+        {
+          "topic": "로깅이 제대로 심겼는지 보장하는 일",
+          "from": "task",
+          "quote": "Partner with Data Science, Engineering, and Product to enable reliable, accurate logging/implementation and usage of Search data",
+          "priority": "core",
+          "why": "⚠️ **데이터 엔지니어링의 진짜 상류는 로깅이다.** 검색은 **노출·클릭·구매**의 관계로 모델을 학습하는데, 로그가 하나 빠지거나 순서가 틀리면 **모델이 잘못 배운다.** 그리고 로그를 심는 쪽은 서비스 개발팀이라 이 일은 **협상과 표준화**가 된다 — 같은 회사 `Staff Data Engineer (Coupang Pay)` 의 `Influence source data producers to log key attributes` 와 같은 문제다.",
+          "gap_check": "우리 로그 스키마가 바뀔 때 **누가 언제 알게 되는가.** 배포 후에 안다면 이미 늦다.",
+          "drill": "핵심 로그 하나에 **스키마 계약**을 만든다 — ① 필수 필드와 의미 ② 버전 규칙(무엇을 바꾸면 깨지나) ③ **CI 에서 검증**(정의에 없는 필드·빠진 필드) ④ 어긋났을 때 알림. 그리고 **일부러 필드를 빼서** ③이 잡는지 확인한다.",
+          "hours": 8
+        },
+        {
+          "topic": "데이터 품질·관측성·신뢰성을 수명 전체에",
+          "from": "task",
+          "quote": "Ensure data quality, observability, and reliability across the data lifecycle",
+          "priority": "core",
+          "why": "⚠️ **`across the data lifecycle` — 수집부터 폐기까지**를 말한다. 데이터 문제의 특징은 **조용하다**는 것이다: 서비스는 오류를 던지지만 데이터는 그냥 **숫자가 조금 이상해질 뿐**이다. 그래서 이 층위의 일은 **틀렸다는 것을 자동으로 알아채는 장치**를 까는 것이고, 그게 없으면 발견자는 늘 마지막에 보는 사람(경영진)이 된다.",
+          "gap_check": "어제 데이터가 **절반만 들어왔다면** 우리는 몇 시간 만에 아는가.",
+          "drill": "핵심 테이블 하나에 **품질 점검 다섯 개**를 붙인다 — 행 수 편차, 필수 값 결측, 중복 키, 값 범위, **최신성**(마지막 갱신 시각). 각각에 **경고와 차단**을 구분해 정하고(차단은 다운스트림을 멈춘다), 최근 30일 데이터로 **오탐이 얼마나 나는지** 먼저 재 본다.",
+          "hours": 8
+        },
+        {
+          "topic": "데이터 시스템의 SLA 를 정한다",
+          "from": "task",
+          "quote": "Define and manage SLAs for data systems",
+          "priority": "high",
+          "why": "⚠️ **데이터에 SLA 를 붙인다는 건 약속이 생긴다는 뜻**이다 — '아침 8시까지 어제 데이터가 준비된다' 같은. 이게 있어야 소비하는 팀이 계획을 세울 수 있고, 없으면 **모두가 늘 불안하게 기다린다.** 다만 약속을 만들면 지켜야 하므로, **재처리 시간과 지연 시 통지**까지 함께 설계해야 한다.",
+          "gap_check": "우리 데이터의 **약속된 준비 시각**이 있는가. 못 지켰을 때 누가 어떻게 아는가.",
+          "drill": "주요 데이터셋 다섯 개에 SLA 표를 만든다 — 준비 시각 / 최근 30일 준수율 / **지연 시 영향받는 팀** / 지연 통지 경로 / 재처리 소요. 준수율이 가장 낮은 하나를 골라 **원인을 유형별로** 나눈다(상류 지연·자원 부족·실패 재시도).",
+          "hours": 6
+        },
+        {
+          "topic": "성능·비용·확장성을 함께 본다",
+          "from": "task",
+          "quote": "Optimize systems for performance, cost efficiency, and scalability",
+          "priority": "high",
+          "why": "⚠️ **`cost efficiency` 가 성능과 나란히 있다.** 대규모 데이터에서 비용은 곧 설계다 — 같은 결과를 내는 두 파이프라인의 비용이 열 배 차이 날 수 있다(파일 포맷·파티션·스캔 범위·클러스터 크기). 디렉터 층위에서는 **어느 잡이 얼마를 쓰는지 보이게 만드는 것**이 먼저다.",
+          "gap_check": "우리 파이프라인 중 **가장 비싼 잡 세 개**를 아는가.",
+          "drill": "파이프라인 하나를 골라 ① 현재 비용(또는 자원 사용량)을 재고 ② **스캔 범위를 줄여**(파티션 프루닝·컬럼 선택) 다시 재고 ③ 파일 크기를 조정해(작은 파일 병합) 다시 잰다. 각 단계의 **비용과 소요 시간 변화**를 표로 남기면 그게 이 자리의 언어다.",
+          "hours": 8
+        },
+        {
+          "topic": "데이터의 보안과 규정 준수",
+          "from": "task",
+          "quote": "Ensure security and compliance of data per industry standards",
+          "priority": "high",
+          "why": "검색 데이터는 **무엇을 찾아봤는지**의 기록이라 민감도가 높다. 그래서 이 층위에서는 **누가 어떤 데이터에 접근할 수 있는지**, **어디까지 가명·비식별화하는지**, **얼마나 보관하는지**가 설계에 들어간다. 같은 회사 `정보보안 GRC` 공고가 다루는 통제와 이어지는 지점이다.",
+          "gap_check": "우리 데이터 접근 권한을 **마지막으로 검토한 것이 언제**인가.",
+          "drill": "데이터 계층별 **접근·보관 표**를 만든다 — 원본 / 가공 / 분석용 각각에 ① 무엇이 남고 ② 누가 접근 가능하고 ③ 보관 기간 ④ 삭제는 어떻게 되는가(백업 포함). ④가 가장 자주 비는 칸이다.",
+          "hours": 6
+        },
+        {
+          "topic": "8년 + 피플 매니저 3년",
+          "from": "qualification",
+          "quote": "3+ years experience as a people manager",
+          "priority": "core",
+          "why": "⚠️ **`people manager` 라고 못 박았다** — 테크리드나 멘토가 아니라 **직접 보고자를 둔 관리**를 말한다(같은 회사 `Manager (Rocket Pay)` 가 `멘토, 테크 리드 경험 포함` 으로 열어 둔 것과 대비된다). 그리고 기본 요건은 `8 years of Data Engineering experience in customer-facing technology companies` 로, **고객 대면 회사**라는 조건이 붙어 있다.",
+          "gap_check": "내 관리 경험이 **직접 보고자를 둔 것**인가, 프로젝트 리딩인가. 이 공고는 앞쪽을 묻는다.",
+          "drill": "관리 이력을 정리한다 — 기간별로 ① 직접 보고자 수 ② 채용·평가 참여 여부 ③ **키운 사람의 다음 단계**(승진·이직 포함). ③을 적을 수 있어야 3년이 채워진 것이다.",
+          "hours": 3
+        },
+        {
+          "topic": "Spark·Airflow 계열의 실무",
+          "from": "qualification",
+          "quote": "Experience with ETL schedulers (e.g. Airflow, Dagster, DBT)",
+          "priority": "high",
+          "why": "세 도구를 나란히 적은 것이 정보다 — **Airflow 는 오케스트레이션, DBT 는 SQL 변환, Dagster 는 데이터 자산 중심**으로 관점이 다르다. 디렉터가 고를 것은 도구가 아니라 **파이프라인을 무엇 단위로 볼 것인가**(태스크인가 데이터 자산인가)이고, 그 선택이 팀의 사고방식을 바꾼다.",
+          "gap_check": "우리는 파이프라인을 **작업 순서**로 보는가, **데이터 자산의 관계**로 보는가.",
+          "drill": "같은 파이프라인을 ① Airflow DAG(태스크 중심) ② DBT 모델(자산 중심) 두 방식으로 표현해 본다. **한 테이블의 상류를 추적하는 일**을 양쪽에서 해 보고 어느 쪽이 쉬운지 기록한다. 그리고 **실패했을 때 다시 돌려야 하는 범위**를 양쪽에서 비교한다.",
+          "hours": 8
+        },
+        {
+          "topic": "경영진까지 간결하게 설명하기",
+          "from": "preference",
+          "quote": "Ability to communicate data concepts simply and succinctly to cross-functional team members, up to the C-suite",
+          "priority": "high",
+          "why": "⚠️ **`up to the C-suite` 라고 범위를 못 박았다.** 검색 데이터는 개념이 복잡한데(노출 편향·실험 간섭·지연된 전환) 결정은 그 위에서 내려진다. 여기서 필요한 건 단순화가 아니라 **어디까지 단순화해도 결론이 안 바뀌는지 아는 것**이다 — 잘못 단순화하면 잘못된 결정을 부른다.",
+          "gap_check": "내 분석을 **세 문장**으로 줄일 수 있는가. 줄이면서 **버린 조건**을 알고 있는가.",
+          "drill": "복잡한 분석 하나를 **세 층으로** 쓴다 — ① 경영진용 세 문장(결론·근거·필요한 결정) ② 리더용 반쪽(방법과 한계) ③ 실무용 전체. 그리고 ①에서 **의도적으로 버린 조건 세 개**를 따로 적어 둔다 — 질문이 오면 그것으로 답한다.",
+          "hours": 5
+        }
+      ],
+      "edge": [
+        {
+          "idea": "**로그 스키마 계약 + CI 검증**을 실제로 만들어 본 기록을 준비한다",
+          "why": "담당업무가 `reliable, accurate logging/implementation` 을 명시한다. 파이프라인을 잘 짜는 사람은 많고, **상류의 로그를 계약으로 묶어 본 사람은 드물다.**",
+          "effort": "1~2일"
+        },
+        {
+          "idea": "⚠️ **근무지와 채용 조건을 먼저 확인한다** — 보상 설명이 미국 시장 기준이다",
+          "why": "이 공고는 `US geographic markets` 기준 연봉과 401K·PTO 같은 미국식 복리후생을 적는다. **한국 근무를 전제로 지원하면 조건이 전혀 다를 수 있다.**",
+          "effort": "10분"
+        }
+      ],
+      "interview": {
+        "process": "공고 본문에 전형 절차가 적혀 있지 않다(쿠팡 채용 사이트 직접 지원).",
+        "expect": [
+          "⚠️ **근무지·비자 조건** — 보상 설명이 미국 기준이다",
+          "분석용과 프로덕션 파이프라인을 다르게 운영한 방식",
+          "로그 품질을 상류에서 보장한 경험",
+          "데이터가 **조용히 틀렸을 때** 알아채는 장치",
+          "데이터 SLA 를 정하고 지킨 경험",
+          "비용을 줄인 사례를 **숫자로**",
+          "피플 매니저로서 사람을 키운 사례",
+          "복잡한 분석을 경영진에게 설명한 방법"
         ],
         "sources": []
       }
