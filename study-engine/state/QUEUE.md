@@ -14,7 +14,6 @@
 
 | 낱말 | slug | 왜 이 낱말 | 무엇을 읽을 수 있나 |
 |---|---|---|---|
-| MQTT | `mqtt` | **(b) 끊긴 링크 — `modbus` 가 게이트웨이의 반대편으로 가리킨다.** **(c) 공고에서 Modbus 와 한 문장에 나온다** — `Modbus, MQTT, TCP/IP 소켓 통신 등 디바이스-서버 간 통신 프로토콜을 직접 설계하거나 구현해본 경험`(헤리트), `Serial, TCP/IP, UDP, MQTT, ASN.1`(바이다). 축은 **폴링의 반대** — 발행/구독으로 뒤집힌 방향, QoS 0/1/2 와 **중복 전달이 왜 생기나**(→ `idempotency` 와 바로 이어진다), 유지 메시지·유언(LWT)·킵얼라이브, 토픽 설계. **`modbus` 가 '폴링 주기가 곧 지연'이라고 쓴 자리의 답이 이 문서다** | MQTT 사양은 **OASIS 표준**(mqtt.org 에서 안내)이고 v3.1.1·v5.0 이 갈린다 — **버전을 밝혀 써야 한다.** URL 은 `WebSearch` 로 확인하고 건다 |
 | JPA | `jpa` | **(b) 끊긴 링크 — `spring` 이 "N+1·영속성 컨텍스트·지연 로딩의 본체"라며 넘겼다.** **(c) 공고에서 Spring 과 한 묶음으로 나온다** — `JVM 생태계(Java, Kotlin, Spring, JPA)`(큐엠아이티), `JPA 사용 경험`(마인드허브), `MariaDB, Redis, JPA, QueryDSL, Liquibase`(헤렌). ⚠️ **`spring` 문서의 JPA 절은 `inferred` 로 남겨 뒀다** — 1차 자료 URL 을 확인하지 못했기 때문이다. **이 문서를 쓸 때 Jakarta Persistence 사양과 Hibernate 공식 문서 URL 을 `WebSearch` 로 확인해 그 절까지 소급해 받친다.** 축은 영속성 컨텍스트(1차 캐시·변경 감지·플러시 시점), 지연/즉시 로딩, N+1 의 세 가지 해법, 그리고 **ORM 을 쓰면서도 SQL 을 봐야 하는 이유** | Jakarta Persistence 사양(jakarta.ee), Hibernate 공식 문서(hibernate.org/orm/documentation). **URL 은 `WebSearch` 로 확인하고 건다** |
 | 멱등성 | `idempotency` | **(c) 회의에서 그냥 쓰이는 말.** 결제·주문 공고의 자격요건에 `멱등성`이 설명 없이 등장한다. 재시도·중복 요청·네트워크 타임아웃과 한 몸이라 백엔드 면접의 단골이기도 하다. 정의는 한 줄인데 *언제 멱등키를 쓰고 언제 분산 락을 쓰나*를 가른 글은 드물다 | HTTP 메서드 정의(RFC 9110), Stripe·Toss 결제 API 의 idempotency key 문서, 국내 커머스 기술블로그의 재시도 글 |
 

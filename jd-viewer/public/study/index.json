@@ -175,6 +175,23 @@
    "updated_at": "2026-09-04"
   },
   {
+   "slug": "mqtt",
+   "title": "MQTT",
+   "category": "domain",
+   "level": "core",
+   "status": "done",
+   "one_liner": "장치가 **브로커에 값을 던져 두면** 관심 있는 쪽이 알아서 받아 가는 방식이다. `modbus` 의 폴링을 정확히 뒤집었고, 그 대가로 **중복 수신**이라는 새 문제를 가져왔다.",
+   "aliases": [
+    "MQTT",
+    "브로커",
+    "발행/구독",
+    "pub/sub"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "ohms-law",
    "title": "옴의 법칙",
    "category": "hardware",
