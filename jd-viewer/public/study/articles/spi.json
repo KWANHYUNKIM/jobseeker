@@ -1,0 +1,980 @@
+{
+ "slug": "spi",
+ "title": "SPI",
+ "title_en": "Serial Peripheral Interface (SPI)",
+ "aliases": [
+  "SPI",
+  "Serial Peripheral Interface",
+  "직렬 주변장치 인터페이스",
+  "MOSI",
+  "MISO",
+  "SCK",
+  "CPOL",
+  "CPHA",
+  "SPI 모드"
+ ],
+ "category": "firmware",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-04",
+ "one_liner": "장치마다 선을 한 가닥씩 더 뽑아 **말 걸 상대를 그 선으로 고르고**, 클럭에 맞춰 보내는 것과 받는 것을 같은 순간에 주고받는 방식이다. 주소도 응답도 없어 규칙이 거의 없고, 그 빈자리를 부품 데이터시트가 대신 채운다.",
+ "summary": "SPI 는 클럭선(SCK) 하나, 나가는 데이터선(MOSI) 하나, 들어오는 데이터선(MISO) 하나에 **장치마다 선택선(CS)을 한 가닥씩** 더 뽑아 쓰는 방식이다. I²C 가 선을 둘로 줄이려고 주소·응답(ACK)·중재라는 규칙을 잔뜩 만든 것과 정확히 반대로, SPI 는 **선을 더 쓰는 대신 규칙을 거의 다 없앴다** — 주소가 없고, 받았다는 대답이 없고, 오류 검출이 없고, 느린 장치가 기다려 달라고 말할 방법도 없다. 그 대가로 가장 빠르고(예: NOR 플래시 W25Q128JV 는 133MHz 까지 규정한다), 두 데이터선이 동시에 흐르는 전이중(full-duplex)이다 — 그래서 **읽으려면 무의미한 바이트를 보내야 한다.** 결정적으로 SPI 에는 **표준 문서가 없다.** 1980년대 모토로라 M68HC11 의 관행이 굳은 사실상의 표준(de facto standard)이라 RFC 도 IEEE 번호도 없고, 그래서 클럭 모드(CPOL/CPHA)와 CS 를 어떻게 다뤄야 하는지는 **부품 데이터시트가 유일한 1차 자료**다. 실무에서 SPI 가 안 될 때 원인은 대개 둘 중 하나다 — **모드를 틀렸거나, CS 를 잘못 다뤘거나.**",
+ "market": null,
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 네 가닥과, 자리를 맞바꾸는 두 개의 시프트 레지스터",
+   "body": "SPI 버스에는 선이 넷이다. 그중 셋은 모두가 나눠 쓰고, 하나는 장치마다 따로 뽑는다.\n\n- **SCK** (Serial Clock) — 마스터가 만드는 클럭.\n- **MOSI** (Master Out, Slave In) — 마스터가 내보내는 선.\n- **MISO** (Master In, Slave Out) — 마스터가 받는 선.\n- **CS** (Chip Select, `SS`·`NSS`·`CSB` 로도 쓴다) — **말 걸 상대를 고르는 선. 장치마다 한 가닥씩.**\n\n```\n           ┌──────── SCK  ────────┬────────────┬────────────┐\n           ├──────── MOSI ────────┼────────────┼────────────┤\n  MCU      ├──────── MISO ────────┴────────────┴────────────┤\n (마스터)  ├─ CS0 ──→ 플래시                                 │\n           ├─ CS1 ──────────────→ 센서                       │\n           └─ CS2 ───────────────────────────→ 디스플레이 ───┘\n\n  장치 n 개 = 선 3 + n 가닥.  주소는 없다. 배선이 곧 주소다.\n```\n\n이름이 방향을 그대로 적어 둔 것이라 **MOSI 는 MOSI 끼리, MISO 는 MISO 끼리 잇는다** — 교차하지 않는다. (부품에 따라 `SDI`/`SDO`, `DI`/`DO`, `SI`/`SO` 로 적혀 있고, 그때는 **부품 쪽에서 본 이름**이라 MCU 의 MOSI 가 부품의 SDI 로 간다.)\n\n**동작의 알맹이는 시프트 레지스터 두 개다.** 마스터에 8비트, 슬레이브에 8비트가 있고, 두 개가 MOSI·MISO 로 이어져 하나의 고리를 이룬다. 클럭이 한 번 뛸 때마다 고리가 한 칸 돈다 — 마스터의 비트 하나가 슬레이브로 들어가고, 동시에 슬레이브의 비트 하나가 마스터로 들어온다. 여덟 번 돌면 두 바이트가 통째로 자리를 바꾼다.\n\n> ATmega128 데이터시트는 이 구조를 이렇게 적는다 — \"The system consists of two Shift Registers, and a Master clock generator. … Data is always shifted from Master to Slave on the MOSI line, and from Slave to Master on the MISO line.\" 모토로라의 원본 문서는 더 짧다 — \"During an SPI transfer, data is simultaneously transmitted (shifted out serially) and received (shifted in serially).\"\n\n여기서 SPI 특유의 감각 하나가 나온다. **보내는 것과 받는 것은 선택지가 아니라 같은 사건이다.** 8비트를 받고 싶으면 8비트를 내보내야 한다 — 클럭을 만드는 유일한 방법이 데이터 레지스터에 쓰는 것이기 때문이다. ATmega128 데이터시트의 마스터 예제 코드에 `SPI_MasterReceive` 같은 함수가 아예 없는 이유가 이것이다. `SPDR = cData;` 한 줄이 클럭 발생기를 켜고, 그 여덟 클럭이 끝나면 받은 바이트가 같은 레지스터에 들어와 있다.\n\n```c\n/* 센서 레지스터 하나 읽기 — SPI 에서는 '읽기'가 늘 이렇게 생겼다 */\nCS_LOW();\nspi_xfer(0xD0);   /* 명령/주소를 보낸다. 이때 돌아온 값은 쓰레기 */\nval = spi_xfer(0x00);  /* 무의미한 바이트를 보내야 클럭이 나가고, 그때 답이 온다 */\nCS_HIGH();\n```\n\n이 `0x00` 이 **더미 바이트(dummy byte)** 다. 라이브러리가 `Receive()` 라는 이름으로 감싸 두었어도 선로에서는 언제나 이 교환이 일어난다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "kind": "why",
+   "heading": "왜 주소를 버리고 선을 하나 더 쓰기로 했나",
+   "body": "I²C 는 **선을 둘로 줄이려고** 주소·ACK·중재·클럭 스트레칭을 만들었다. 그 규칙 하나하나가 \"선을 아끼기로 했으니 이제 이 문제도 풀어야 한다\"의 답이었다 (→ `i2c`).\n\nSPI 는 같은 계산을 정반대로 했다. **선 한 가닥이 규칙 한 뭉치보다 싸다.**\n\n**① \"누구한테 말하는 건가?\" → 선을 하나 더 뽑는다.** 주소 바이트도, 주소 충돌도, 7비트/8비트 혼동도 없다. CS 를 내리면 그 장치가 듣고, 나머지는 아예 귀를 닫는다. 대신 **장치를 하나 늘릴 때마다 MCU 핀이 하나씩 사라진다.** 센서 여섯 개면 3 + 6 = 9핀이다 (I²C 는 2핀).\n\n**② \"동시에 말하면 부서지지 않나?\" → 애초에 한 명만 말한다.** 선택된 슬레이브 하나만 MISO 를 구동하고 나머지는 하이임피던스(high-Z)로 손을 뗀다. 그러니 오픈 드레인일 이유가 없다 — SPI 는 **푸시풀(push-pull)** 로 선을 양쪽으로 밀고 당긴다. 풀업 저항이 필요 없고, **풀업의 상승 시간에 속도가 묶이지도 않는다** (→ `pull-up-resistor`). SPI 가 I²C 보다 한 자릿수 빠른 이유의 절반이 여기다.\n\n**③ \"말을 알아들었는지 어떻게 아나?\" → 알 방법이 없다.** ACK 이 없다. 응답 비트도, 체크섬도, 재전송도 없다. 이건 게으름이 아니라 선택이다 — 확인 절차를 넣으면 그만큼 클럭이 늘고, 애초에 보드 위 5cm 짜리 배선에서 비트가 깨질 일이 드물다고 본 것이다.\n\n**④ \"느린 장치가 섞이면?\" → 마스터가 알아서 천천히 간다.** 슬레이브가 클럭을 붙잡는 장치(클럭 스트레칭)가 없다. 슬레이브는 마스터의 클럭에 맞출 뿐이고, 못 맞추면 그냥 깨진다.\n\n### 그리고 이 물건에는 규격 문서가 없다\n\nI²C 에는 `UM10204` 라는 번호가 붙은 규격서가 있다. RS-485 에는 `TIA/EIA-485` 가 있다. **SPI 에는 그런 문서가 없다.** RFC 도, IEEE 번호도, 표준화 기구도 없다.\n\n1차 자료로 거슬러 올라가면 닿는 곳은 표준 문서가 아니라 **한 회사의 레퍼런스 매뉴얼** — 모토로라 M68HC11 의 8장이다. 그리고 그 매뉴얼이 왜 모드가 네 개인지까지 적어 두었다.\n\n> \"Software can select any of four combinations of serial clock (SCK) phase and polarity… In some cases, the phase and polarity are changed between transfers to allow a master device to communicate with peripheral slaves having different requirements. The flexibility of the SPI system on the MC68HC11A8 allows direct interface to **almost any existing synchronous serial peripheral.**\"\n\n읽어야 할 문장은 마지막 줄이다. **SPI 는 새 규격을 세우려고 만든 것이 아니라, 이미 세상에 있던 제각각인 동기식 직렬 부품들에 다 붙으려고 만든 것이다.** 그래서 모드가 네 개고, 그래서 부품마다 요구가 다른 것이 버그가 아니라 설계 의도다. 규격이 통일을 강제하지 않으니 통일될 이유도 없었다.\n\n결론은 실무에 그대로 닿는다 — **SPI 에서 1차 자료는 부품 데이터시트뿐이다.** 이 문서를 포함해 어떤 요약본도 데이터시트를 대신하지 못한다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    },
+    {
+     "title": "UM10204 — I²C-bus specification and user manual",
+     "url": "https://www.nxp.com/docs/en/user-guide/UM10204.pdf",
+     "publisher": "NXP",
+     "kind": "standard",
+     "summary": "비교를 위해서만 인용한다 — I²C 에는 이런 규격 문서가 있고 SPI 에는 없다"
+    }
+   ]
+  },
+  {
+   "id": "modes",
+   "kind": "how",
+   "heading": "CPOL / CPHA — 이 낱말에서 가장 많이 틀리는 자리",
+   "body": "SPI 는 클럭선을 쓰지만, **클럭의 어느 엣지에서 비트를 읽을지**는 아무도 정해 주지 않았다. 그것을 정하는 비트가 둘이다.\n\n- **CPOL** (Clock Polarity) — SCK 가 **아무 일도 안 할 때의 레벨**. 0 이면 LOW, 1 이면 HIGH.\n- **CPHA** (Clock Phase) — **첫 번째 엣지에서 샘플링할지(0), 두 번째 엣지에서 할지(1).**\n\n**모드 번호 = (CPOL << 1) | CPHA** 다. 그래서 모드 0~3 이 나온다. 표는 아래 `모드 0~3` 표에 있다.\n\n### 이 둘의 무게는 같지 않다\n\n원본 매뉴얼이 이 점을 명확히 적어 두었다.\n\n> \"The clock polarity is specified by the CPOL control bit, which selects an active high or active low clock and **has no significant effect on the transfer format.** The clock phase (CPHA) control bit selects **one of two fundamentally different transfer formats.**\"\n\n즉 **진짜 질문은 CPHA 다.** CPOL 은 그 형태를 위아래로 뒤집을 뿐이다. 그리고 여기서 실무자가 늘 놓치는 결과 하나가 따라 나온다.\n\n**모드 0 과 모드 3 은 둘 다 \"상승 엣지에서 샘플링\"한다.** (모드 0 은 유휴 LOW 의 첫 엣지가 상승, 모드 3 은 유휴 HIGH 의 두 번째 엣지가 상승이다.) 마찬가지로 **모드 1 과 모드 2 는 둘 다 하강 엣지에서 샘플링한다.** 부품 데이터시트가 \"모드 0 과 3 을 지원한다\"고 적는 일이 그렇게 잦은 이유가 이것이다 — 슬레이브 안쪽 로직이 완전히 같고, 거래와 거래 사이에 클럭선이 LOW 로 쉬느냐 HIGH 로 쉬느냐만 다르다. Winbond 가 그 말을 그대로 적었다.\n\n> \"SPI bus operation Mode 0 (0,0) and 3 (1,1) are supported. **The primary difference between Mode 0 and Mode 3 concerns the normal state of the CLK signal when the SPI bus master is in standby** and data is not being transferred to the Serial Flash.\"\n\n### CPHA = 0 의 숨은 조건\n\nCPHA=0 이면 **첫 번째 엣지가 이미 샘플링 엣지**다. 그러면 첫 비트는 클럭이 한 번도 움직이기 전에 선 위에 올라와 있어야 한다 — 실제로는 **CS 가 떨어지는 순간**에 올린다. 그래서 CPHA=0 을 쓰는 부품은 CS 를 다루는 방식에 예민하고, \"첫 바이트만 맞는다\" 류의 증상이 여기서 나온다. BME280 이 모드를 판별하는 방법이 그 사정을 잘 보여 준다 — **CSB 가 떨어진 직후의 SCK 레벨**을 보고 '00' 인지 '11' 인지 스스로 정한다.\n\n### 데이터시트에서 모드를 역산하는 법\n\n많은 데이터시트가 `CPOL`·`CPHA` 라는 말을 아예 안 쓴다. 대신 이렇게 적는다.\n\n> \"Data on SDI is latched by the device at SCK **rising edge** and SDO is changed at SCK **falling edge**.\" (BME280)\n> \"…use the DI input pin to serially write instructions, addresses or data to the device on the **rising edge** of CLK. The DO output pin is used to read data or status from the device on the **falling edge** of CLK.\" (W25Q128JV)\n\n**두 줄만 찾으면 된다.**\n\n1. **유휴 SCK 레벨**은 무엇인가 → CPOL\n2. **입력이 래치되는 엣지**는 무엇인가 → CPOL 과 합쳐 CPHA 가 나온다\n\n위 두 부품은 모두 \"상승 엣지에서 래치\"다. 유휴가 LOW 면 상승이 첫 엣지 → CPHA=0 → **모드 0**. 유휴가 HIGH 면 상승은 두 번째 엣지 → CPHA=1 → **모드 3**. 그래서 둘 다 \"0 또는 3\"이다.\n\n### 왜 데이터시트를 안 보면 반드시 틀리는가\n\n**모드가 틀려도 통신은 도는 것처럼 보인다.** 클럭은 나가고, 선은 흔들리고, 값은 돌아온다 — 다만 틀린 값이다. SPI 에는 \"못 알아들었다\"를 말할 방법이 없으므로(ACK 이 없다) **오류가 오류로 보이지 않는다.** 값이 한 비트 밀리거나, 정확히 2배로 읽히거나, 첫 바이트만 맞는다. 게다가 라이브러리마다 기본값이 다르고, 벤더마다 표기가 다르며(`SPI_MODE0` / `(0,0)` / `'00'` / \"rising edge latch\"), 같은 보드 위의 부품 둘이 서로 다른 모드를 요구하는 일도 흔하다.\n\n**모드는 버스의 성질이 아니라 거래의 성질이다.** 모토로라 매뉴얼이 이미 \"전송 사이에 위상과 극성을 바꿔 요구가 다른 슬레이브들과 통신하게 한다\"고 적어 두었다. 다만 바꾸는 시점은 **CS 를 내리기 전**이어야 한다 — 유휴 클럭 레벨이 바뀌는 일이므로 거래 도중에 바꾸면 선이 엣지 하나를 더 만들어 낸다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    },
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "W25Q128JV 3V 128M-bit Serial Flash Memory 데이터시트 (Revision H, 2021-03-10)",
+     "url": "https://www.winbond.com/resource-files/W25Q128JV%20RevH%2003102021%20Plus.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "6.1절이 '모드 0 과 3 만 지원한다'고 못 박고 그 둘의 차이가 유휴 클럭 레벨뿐임을 적어 두었다"
+    },
+    {
+     "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+     "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+     "publisher": "Bosch Sensortec",
+     "kind": "datasheet",
+     "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "cs",
+   "kind": "how",
+   "heading": "CS — 고르는 선이 사실은 START·STOP 까지 겸한다",
+   "body": "CS 를 \"장치를 고르는 스위치\"로만 알면 SPI 함정의 절반을 그대로 밟는다. **CS 는 I²C 의 START·STOP 자리를 혼자 맡는다.**\n\nCS 가 하는 일은 넷이다.\n\n1. **고른다** — CS 가 LOW 인 장치만 듣는다. 거의 언제나 액티브 로다(이름 위에 줄이 그어져 있거나 `/CS`·`CSB`·`nCS` 로 적힌다).\n2. **MISO 를 넘겨받는다** — 선택된 장치만 MISO 를 구동하고, 나머지는 하이임피던스로 손을 뗀다. ATmega128 은 슬레이브 동작을 이렇게 적는다 — \"the SPI interface will remain sleeping with **MISO tri-stated** as long as the SS pin is driven high.\"\n3. **비트 카운터를 리셋한다** — \"The SS pin is useful for packet/byte synchronization to keep the slave bit counter synchronous with the master clock generator. **When the SS pin is driven high, the SPI slave will immediately reset the send and receive logic, and drop any partially received data in the Shift Register.**\" 클럭 하나를 놓쳐 어긋난 상태를 **CS 를 올렸다 내리는 것만으로 복구**할 수 있다는 뜻이다 (I²C 에서 SCL 을 아홉 번 토글해야 했던 그 자리다).\n4. **거래의 경계를 긋는다** — CS 를 누른 채로 바이트를 계속 보내면 그것은 한 거래다. BME280 은 이 성질을 그대로 쓴다 — 읽기에서 주소를 한 번만 주면 **CSB 가 올라갈 때까지 주소가 자동 증가**하며 계속 나온다.\n\n### 주소가 없다는 말의 진짜 뜻\n\nSPI 에는 버스 주소가 없다. 그러나 **레지스터 주소는 여전히 필요하다** — 그래서 그것이 **첫 바이트(명령 바이트) 안으로 들어간다.** BME280 의 규칙이 전형적이다.\n\n> 레지스터 주소의 **MSB 는 쓰지 않고 R/W 비트로 대신한다** (읽기 = 1, 쓰기 = 0).\n> 예: 주소 `0xF7` 은 SPI 레지스터 주소 `0x77` 로 접근한다. 쓰기면 `0x77`, 읽기면 `0xF7` 을 보낸다.\n\nI²C 에서 7비트 주소를 한 칸 밀고 R/W 를 붙이던 그 혼동(→ `i2c`)과 **정확히 대칭인 함정**이 여기 있다. I²C 는 주소를 왼쪽으로 밀고, SPI 는 주소의 맨 위 비트를 R/W 로 덮어쓴다.\n\n### 마스터에서 CS 를 잘못 두면 마스터가 슬레이브가 된다\n\nATmega128·M68HC11 계열에는 악명 높은 함정이 하나 있다. 마스터로 설정했더라도 **`SS` 핀을 입력으로 둔 채 그 핀이 LOW 로 떨어지면**, 하드웨어는 그것을 \"다른 마스터가 나를 슬레이브로 골랐다\"로 해석한다.\n\n> \"1. **The MSTR bit in SPCR is cleared and the SPI system becomes a slave.** As a result of the SPI becoming a slave, the MOSI and SCK pins become inputs. 2. The SPIF flag in SPSR is set…\"\n> \"…when interrupt-driven SPI transmission is used in master mode, and there exists a possibility that SS is driven low, **the interrupt should always check that the MSTR bit is still set.**\"\n\n모토로라가 이걸 **모드 폴트(mode fault)** 라 불렀고, 목적은 두 마스터가 같은 선을 밀어 부품이 타는 것을 막는 것이었다. I²C 의 중재(arbitration)가 \"진 쪽이 데이터를 잃지 않고 물러난다\"였다면, SPI 의 대응은 \"거래를 통째로 버리고 손을 뗀다\"다. **SPI 는 멀티마스터를 푼 것이 아니라 포기한 것이다.**\n\n해결은 간단하다 — 마스터에서는 `SS` 핀을 **출력**으로 잡는다. 그러면 그 핀은 일반 출력이 되고 SPI 시스템에 영향을 주지 않는다.\n\n### 핀 산수\n\n| 장치 수 | SPI 핀 | I²C 핀 |\n|---|---|---|\n| 1 | 4 | 2 |\n| 3 | 6 | 2 |\n| 6 | 9 | 2 |\n| 10 | 13 | 2 |\n\n**이것이 SPI 가 내는 가장 정직한 값이다.** 규칙을 안 만든 대가는 배선으로 낸다. 핀이 모자라면 다음 절의 데이지 체인이나 74HC138 같은 디코더로 CS 를 늘리는 방법이 있지만, 둘 다 조건이 붙는다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    },
+    {
+     "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+     "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+     "publisher": "Bosch Sensortec",
+     "kind": "datasheet",
+     "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "daisy",
+   "kind": "how",
+   "heading": "데이지 체인 — CS 하나로 여럿을 잇는 법, 그리고 그 조건",
+   "body": "핀이 모자라는데 장치가 같은 종류로 여럿이라면, **CS 를 늘리지 않고 장치를 줄로 세우는** 방법이 있다.\n\n```\n MCU ─MOSI→ [595 #1] ─QH′→ [595 #2] ─QH′→ [595 #3]\n     ─SCK ──────┴─────────────┴─────────────┘   (모두 공유)\n     ─CS ───────┴─────────────┴─────────────┘   (모두 공유, 여기서는 RCLK)\n```\n\n첫 절의 \"두 개의 시프트 레지스터가 고리를 이룬다\"를 그대로 늘린 것이다. **체인 전체가 하나의 긴 시프트 레지스터**가 된다. 24비트를 밀어 넣고 CS 를 한 번 올리면 세 칩의 출력이 **동시에** 바뀐다.\n\n### 74HC595 가 교과서적 사례인 이유\n\nTI 의 SN74HC595 는 시프트 레지스터 8비트 뒤에 저장(latch) 레지스터 8비트를 두고, **클럭을 두 개** 준다.\n\n| 핀 | 하는 일 | SPI 에서의 자리 |\n|---|---|---|\n| `SER` | 직렬 입력 | MOSI |\n| `SRCLK` | 시프트 클럭 | SCK |\n| `RCLK` | 저장 레지스터로 옮기는 래치 클럭 | **CS 자리** (거래의 끝) |\n| `QH′` | 밀려 나간 비트의 직렬 출력 | 다음 칩의 `SER` 로 |\n| `OE` | 출력 허용 | — |\n\n**`QH′` 가 데이지 체인의 조건 그 자체다.** 받은 것을 다음으로 흘려보내는 직렬 출력이 있어야 줄을 세울 수 있다. 플래시나 대부분의 센서에는 이런 핀이 없고, 그래서 그것들은 CS 를 따로 뽑을 수밖에 없다.\n\n`RCLK` 가 따로 있는 이유도 분명하다. **비트가 지나가는 동안 출력이 흔들리면 안 되기 때문**이다. 24클럭을 다 민 뒤 `RCLK` 를 한 번 올려야 중간 상태가 LED 로 새 나가지 않는다. TI 는 두 클럭을 묶어도 된다고 적으면서 그 대가를 덧붙인다 — \"The clocks can be tied together, in which case **the shift register is one clock pulse ahead of the storage register.**\"\n\n### 보내는 순서가 뒤집힌다\n\n데이지 체인에서 가장 자주 틀리는 곳이다. 비트는 MCU 에서 가까운 칩부터 지나간다. 그러니 **먼저 보낸 바이트가 가장 멀리 간다.**\n\n```\n보낼 것:  #1 에 0xAA,  #2 에 0xBB,  #3 에 0xCC\n보내는 순서:  0xCC → 0xBB → 0xAA   (뒤집는다)\n그다음 RCLK 한 번.\n```\n\n### 데이지 체인이 내주는 것\n\n- **부품이 직렬 출력을 가져야 한다.** 없으면 불가능하다.\n- **모드와 비트 순서가 전부 같아야 한다.** 하나만 달라도 체인 전체가 어긋난다.\n- **개별 장치만 골라 말 걸 수 없다.** 하나만 바꾸려 해도 전체 길이만큼 밀어야 한다.\n- **길이가 곧 지연이다.** N개 체인이면 한 번 갱신에 8N 클럭.\n- **중간 한 칸이 죽으면 뒤가 전부 죽는다.** CS 를 따로 뽑았다면 하나만 죽었을 것이다.\n\n그래서 데이지 체인은 **같은 종류를 여럿, 동시에, 통째로 갱신할 때**의 방법이다. 서로 다른 부품 셋을 묶는 도구가 아니다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "SNx4HC595 8-Bit Shift Registers With 3-State Output Registers (SCLS041J, 1982-12 / 2021-10 개정)",
+     "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+     "publisher": "Texas Instruments",
+     "kind": "datasheet",
+     "summary": "데이지 체인의 교과서적 부품. 시프트용 SRCLK 와 래치용 RCLK 가 따로 있고, 다음 칩으로 넘기는 직렬 출력 QH′ 가 있다"
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "kind": "limits",
+   "heading": "경계 — 왜 SPI 는 보드 밖으로 잘 안 나가나",
+   "body": "SPI 는 보드 위에서 가장 빠르고 가장 단순한 선택이다. 그리고 **커넥터를 하나 지나는 순간 거의 모든 장점이 사라진다.**\n\n**① 규격이 없으니 케이블 규격도 없다.** RS-485 에는 전압·종단·유닛 로드가 문서로 정해져 있고(→ `rs485`), I²C 에는 버스 용량 상한 400pF 가 규격에 박혀 있다. **SPI 에는 커넥터도, 케이블도, 전기 규격도 정의된 적이 없다.** 표준이 없다는 사실이 여기서 실무 비용으로 바뀐다 — 참고할 문서가 없으니 매번 자기 회로에서 실험해야 한다.\n\n**② 클럭이 별도 선이라, 도착 시각 차이가 곧 오류다.** UART 는 클럭을 안 보내니 배선 지연이 문제가 되지 않고, I²C 는 느려서 여유가 크다. SPI 는 **SCK 와 데이터선이 같은 순간에 도착해야** 한다. 어긋난 만큼 setup/hold 창을 그대로 깎아 먹는다. 그 창이 얼마나 좁은지는 데이터시트에 있다 — BME280 은 SDI setup 20 ns, SDI hold 20 ns, CSB setup/hold 각 20 ns 다(F_spi 최대 10 MHz). 수십 cm 케이블이 만드는 지연과 스큐는 이 정도 예산 안에서 놀 만한 크기가 아니다.\n\n**③ 왕복이 있다.** 마스터는 자기가 만든 클럭으로 MISO 를 읽는데, MISO 는 나갔다 들어온 신호다. 선이 길어질수록 이 왕복 시간이 창을 더 깎는다. 고속 SPI 컨트롤러에 \"수신 샘플 지연\" 류의 조정 항목이 있는 이유가 이것이다. *(이 문단은 setup/hold 예산에서 따라 나오는 추론이다 — 특정 컨트롤러의 레지스터 이름을 확인하지는 않았다.)*\n\n**④ 단일 종단(single-ended)이다.** 모든 선이 GND 를 기준으로 한 절대 전압이다. 접지가 흔들리면 신호가 흔들린다. 차동 전송의 잡음 제거는 여기에 없다 (→ `rs485`).\n\n**⑤ 오류 검출이 아예 없다.** I²C 는 그나마 ACK 이 있어 \"장치가 거기 있다\"까지는 안다. SPI 는 그것조차 없다. 슬레이브가 빠져도, 전원이 없어도, 모드가 틀려도 마스터는 **무언가를 읽어 온다.** 그래서 SPI 를 쓰는 코드에는 거의 언제나 **알려진 값을 읽어 확인하는 단계**가 들어간다 — 플래시의 JEDEC ID, 센서의 chip id. 이게 SPI 판 \"버스 스캐너\"다.\n\n**⑥ 흐름 제어가 없다.** 슬레이브가 \"잠깐\"이라고 말할 방법이 없다. 마스터 쪽에도 여유가 없기는 마찬가지다 — ATmega128 은 \"single buffered in the transmit direction and double buffered in the receive direction\" 이라, **받은 바이트를 다음 바이트가 다 들어오기 전에 읽지 않으면 앞의 것이 사라진다.**\n\n**⑦ 핫플러그와 멀티마스터는 사실상 없다.** 모드 폴트는 충돌을 푸는 장치가 아니라 손을 떼는 장치다.\n\n**⑧ 핀이 선형으로 는다.** 장치 10개면 13핀이다. 이게 물리적 한계가 되는 지점에서 사람들은 I²C 로 돌아가거나, 데이지 체인을 쓰거나, 디코더로 CS 를 만든다.\n\n그래서 SPI 의 자리는 명확하다 — **같은 기판 위, 혹은 짧은 리본 케이블 하나 안쪽.** 그 밖으로 나가야 하면 UART 계열·RS-485·CAN·이더넷이 시작되는 자리다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+     "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+     "publisher": "Bosch Sensortec",
+     "kind": "datasheet",
+     "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+    },
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "UM10204 — I²C-bus specification and user manual",
+     "url": "https://www.nxp.com/docs/en/user-guide/UM10204.pdf",
+     "publisher": "NXP",
+     "kind": "standard",
+     "summary": "비교를 위해서만 인용한다 — I²C 에는 이런 규격 문서가 있고 SPI 에는 없다"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "modes",
+   "kind": "spec",
+   "caption": "SPI 모드 0~3 — CPOL·CPHA 가 정하는 것",
+   "note": "**모드 번호 = (CPOL << 1) | CPHA.** ATmega128 데이터시트 Table 73(CPOL and CPHA Functionality)과 CPOL 비트 설명(\"When this bit is written to one, SCK is high when idle\")을 옮긴 것이다. 읽는 법: '첫 번째 엣지'는 CS 가 내려간 뒤 SCK 에 처음 생기는 변화를 말한다. **0 과 3 은 둘 다 상승 엣지에서 샘플링하고, 1 과 2 는 둘 다 하강 엣지에서 샘플링한다** — 부품 데이터시트가 모드를 짝으로 지원하는 이유다",
+   "columns": [
+    "모드",
+    "CPOL",
+    "CPHA",
+    "SCK 유휴 레벨",
+    "샘플링(읽는) 엣지",
+    "셋업(내놓는) 엣지"
+   ],
+   "rows": [
+    [
+     "0",
+     "0",
+     "0",
+     "LOW",
+     "첫 번째 = **상승**",
+     "두 번째 = 하강"
+    ],
+    [
+     "1",
+     "0",
+     "1",
+     "LOW",
+     "두 번째 = **하강**",
+     "첫 번째 = 상승"
+    ],
+    [
+     "2",
+     "1",
+     "0",
+     "HIGH",
+     "첫 번째 = **하강**",
+     "두 번째 = 상승"
+    ],
+    [
+     "3",
+     "1",
+     "1",
+     "HIGH",
+     "두 번째 = **상승**",
+     "첫 번째 = 하강"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    }
+   ]
+  },
+  {
+   "id": "device-modes",
+   "kind": "compare",
+   "caption": "같은 낱말, 네 가지 표기 — 부품들이 각자 뭐라고 적었나",
+   "note": "**SPI 에 규격 문서가 없다는 사실이 실무에 닿는 자리다.** 넷 다 데이터시트 PDF 본문에서 직접 확인했다(2026-09-04). 어느 부품도 'SPI 모드'라는 말을 같은 방식으로 쓰지 않는다는 것이 요점이다",
+   "columns": [
+    "부품",
+    "데이터시트가 적은 말 (원문)",
+    "지원 모드",
+    "입력을 래치하는 엣지"
+   ],
+   "rows": [
+    [
+     "W25Q128JV (NOR 플래시)",
+     "\"SPI bus operation Mode 0 (0,0) and 3 (1,1) are supported.\"",
+     "**0, 3 뿐**",
+     "DI 는 CLK **상승** 엣지 / DO 는 하강 엣지에서 바뀐다"
+    ],
+    [
+     "BME280 (온습압 센서)",
+     "\"compatible with SPI mode '00' (CPOL = CPHA = '0') and mode '11' (CPOL = CPHA = '1')\"",
+     "**00, 11 뿐** — CSB 하강 직후의 SCK 레벨로 **자동 판별**한다",
+     "SDI 는 SCK **상승** 엣지 / SDO 는 하강 엣지에서 바뀐다"
+    ],
+    [
+     "ATmega128 (MCU, 마스터·슬레이브)",
+     "SPCR 의 `CPOL`·`CPHA` 비트로 고른다 (Table 73)",
+     "**0~3 전부**",
+     "모드에 따라 (위 표)"
+    ],
+    [
+     "SN74HC595 (시프트 레지스터)",
+     "'모드'라는 말이 없다. `SER` 은 `SRCLK` 기준으로 셋업/홀드가 규정되고, 시프트는 `SRCLK` 상승에서 일어난다",
+     "표기 없음 — **상승 엣지 시프트에서 역산하면 0 또는 3** (추론)",
+     "`SER` 은 `SRCLK` **상승** 엣지"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "W25Q128JV 3V 128M-bit Serial Flash Memory 데이터시트 (Revision H, 2021-03-10)",
+     "url": "https://www.winbond.com/resource-files/W25Q128JV%20RevH%2003102021%20Plus.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "6.1절이 '모드 0 과 3 만 지원한다'고 못 박고 그 둘의 차이가 유휴 클럭 레벨뿐임을 적어 두었다"
+    },
+    {
+     "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+     "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+     "publisher": "Bosch Sensortec",
+     "kind": "datasheet",
+     "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+    },
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "SNx4HC595 8-Bit Shift Registers With 3-State Output Registers (SCLS041J, 1982-12 / 2021-10 개정)",
+     "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+     "publisher": "Texas Instruments",
+     "kind": "datasheet",
+     "summary": "데이지 체인의 교과서적 부품. 시프트용 SRCLK 와 래치용 RCLK 가 따로 있고, 다음 칩으로 넘기는 직렬 출력 QH′ 가 있다"
+    }
+   ]
+  },
+  {
+   "id": "spcr",
+   "kind": "register",
+   "caption": "ATmega128 SPCR — 모드를 정하는 두 비트가 실제로 어디에 있나",
+   "note": "ATmega128/128L 데이터시트(doc2467, 2467X–AVR–06/11)의 SPI Control Register. **같은 이름의 레지스터가 M68HC11 의 `$1028` 에도 `SPIE SPE DWOM MSTR CPOL CPHA SPR1 SPR0` 로 있다** — 20년 넘게 비트 배치가 그대로 옮겨졌다는 뜻이고, SPI 가 모토로라에서 나왔다는 가장 눈에 보이는 흔적이다. 클럭 분주는 `SPR1:SPR0` = 00·01·10·11 → f_osc/4·/16·/64·/128 이고, `SPSR` 의 `SPI2X` 를 1 로 두면 각각 /2·/8·/32·/64 가 된다",
+   "columns": [
+    "비트",
+    "이름",
+    "하는 일"
+   ],
+   "rows": [
+    [
+     "7",
+     "SPIE",
+     "전송 완료(SPIF) 인터럽트 허용"
+    ],
+    [
+     "6",
+     "SPE",
+     "SPI 켜기. 켜는 순간 MOSI·MISO·SCK·SS 핀의 방향이 하드웨어에 넘어간다"
+    ],
+    [
+     "5",
+     "DORD",
+     "1 = LSB 먼저, 0 = **MSB 먼저**(기본). 값이 8비트 통째로 뒤집혀 보이면 여기다"
+    ],
+    [
+     "4",
+     "MSTR",
+     "1 = 마스터. **`SS` 를 입력으로 둔 채 LOW 가 되면 하드웨어가 이 비트를 스스로 지운다**"
+    ],
+    [
+     "3",
+     "**CPOL**",
+     "1 = SCK 가 유휴일 때 HIGH, 0 = LOW"
+    ],
+    [
+     "2",
+     "**CPHA**",
+     "0 = 첫 번째 엣지에서 샘플, 1 = 두 번째 엣지에서 샘플"
+    ],
+    [
+     "1, 0",
+     "SPR1, SPR0",
+     "SCK 분주 선택 (SPSR 의 SPI2X 와 합쳐 7가지). 슬레이브에서는 아무 효과가 없다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    }
+   ]
+  },
+  {
+   "id": "vs",
+   "kind": "compare",
+   "caption": "SPI 쪽에서 본 UART · I²C · SPI — 고를 때 실제로 묻는 것들",
+   "note": "`i2c` 문서에도 세 방식 비교표가 있다. 그쪽은 선 수·속도처럼 **스펙**을 나란히 놓았고, 이 표는 **고르는 사람이 실제로 부딪히는 질문**으로 줄을 세웠다. 두 표는 같은 셋을 다른 축으로 자른 것이다",
+   "columns": [
+    "묻는 것",
+    "SPI",
+    "I²C",
+    "UART"
+   ],
+   "rows": [
+    [
+     "상대를 어떻게 고르나",
+     "**선 한 가닥(CS)** — 배선이 곧 주소",
+     "주소 바이트 (7비트)",
+     "못 고른다. 1:1"
+    ],
+    [
+     "장치를 하나 더 붙이면",
+     "**MCU 핀 1개 + 배선 1가닥**",
+     "안 는다 (주소만 겹치지 않으면)",
+     "포트가 통째로 하나 더"
+    ],
+    [
+     "한 클럭에 흐르는 방향",
+     "**양쪽 동시 (전이중)** — 구조상 그렇다",
+     "한 방향씩 (반이중)",
+     "두 선이 서로 독립"
+    ],
+    [
+     "'읽기'는 어떻게 생겼나",
+     "**더미 바이트를 보내야** 클럭이 나가고 그때 답이 온다",
+     "주소의 R/W 비트로 방향을 바꾼다",
+     "그냥 오면 받는다"
+    ],
+    [
+     "받는 쪽이 '잠깐'이라 할 수 있나",
+     "**없다**",
+     "클럭 스트레칭",
+     "규격엔 없다 (RTS/CTS 는 별도 배선)"
+    ],
+    [
+     "못 알아들었을 때 알 방법",
+     "**없다** — 틀린 값이 그냥 올라온다",
+     "NACK (내용 검증은 아니다)",
+     "패리티·프레이밍 에러"
+    ],
+    [
+     "규격 문서",
+     "**없다 (de facto)** — 1차 자료는 부품 데이터시트",
+     "NXP UM10204",
+     "전기 규격은 따로(RS-232·RS-485), 프레임은 관행"
+    ],
+    [
+     "안 될 때 먼저 보는 것",
+     "**모드(CPOL/CPHA)와 CS**",
+     "주소와 풀업",
+     "보율(baud rate)"
+    ]
+   ],
+   "confidence": "inferred",
+   "sources": [
+    {
+     "title": "UM10204 — I²C-bus specification and user manual",
+     "url": "https://www.nxp.com/docs/en/user-guide/UM10204.pdf",
+     "publisher": "NXP",
+     "kind": "standard",
+     "summary": "비교를 위해서만 인용한다 — I²C 에는 이런 규격 문서가 있고 SPI 에는 없다"
+    },
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    }
+   ]
+  },
+  {
+   "id": "symptoms",
+   "kind": "spec",
+   "caption": "증상 → 먼저 의심할 것",
+   "note": "위 세 줄이 실무에서 나는 문제의 대부분이다. SPI 에는 오류 신호가 없으므로 **증상은 언제나 '틀린 값'의 모양으로만** 나타난다 — 그래서 값의 모양을 읽는 것이 곧 디버깅이다",
+   "columns": [
+    "증상",
+    "먼저 의심할 것",
+    "확인·조치"
+   ],
+   "rows": [
+    [
+     "값이 한 비트씩 밀려 읽힌다 (0x2A 가 0x54 나 0x15 로)",
+     "**CPHA 가 어긋났다.** 샘플링 엣지가 반 클럭 밀리면 비트 경계가 한 칸 옆에서 잡힌다",
+     "모드를 1 만큼 바꿔 본다 (0↔1, 2↔3). 그다음 **알려진 값**(플래시 JEDEC ID, 센서 chip id)으로 확인한다"
+    ],
+    [
+     "값이 8비트 통째로 뒤집혀 읽힌다 (0x01 ↔ 0x80)",
+     "**비트 순서(MSB/LSB first).** SPI 의 기본은 MSB 먼저지만 규격이 없으니 강제도 없다",
+     "ATmega 라면 `SPCR` 의 `DORD` 비트. 라이브러리라면 `LSBFIRST`/`MSBFIRST` 인자"
+    ],
+    [
+     "첫 바이트만 맞고 그다음부터 깨진다",
+     "**CS 를 다루는 방식이 부품 요구와 다르다.** CPHA=0 이면 첫 비트가 CS 하강 때 나가므로, 바이트마다 CS 를 올렸다 내려야 하는 부품이 있다",
+     "데이터시트의 CS 파형을 본다. 자동 증가 읽기는 CS 를 눌러 둬야 하고, 반대인 부품도 있다"
+    ],
+    [
+     "아무것도 안 읽히고 MISO 가 계속 0 또는 1 로만 보인다",
+     "CS 극성·핀 오배선, 슬레이브 미선택, 전원 미인가",
+     "CS 가 실제로 LOW 로 떨어지는지부터 본다. SPI 에는 ACK 이 없으므로 '장치가 있다'를 확인해 주는 것은 chip id 뿐이다"
+    ],
+    [
+     "장치를 하나 더 붙였더니 원래 되던 것까지 안 된다",
+     "**선택되지 않은 슬레이브가 MISO 를 놓지 않는다.** 두 출력이 같은 선을 밀고 당긴다",
+     "각 부품이 CS=HIGH 에서 MISO 를 하이임피던스로 두는지 확인. 중간의 버퍼·레벨시프터도 같이 의심한다"
+    ],
+    [
+     "마스터가 갑자기 슬레이브가 된다 (AVR·HC11)",
+     "**`SS` 를 입력으로 둔 채 LOW 로 떨어졌다.** `MSTR` 비트가 하드웨어에 의해 지워진다",
+     "마스터에서는 `SS` 를 **출력**으로 잡는다. 인터럽트 구동이면 ISR 에서 `MSTR` 을 매번 확인한다"
+    ],
+    [
+     "클럭을 올리자 깨진다",
+     "배선 길이·스큐가 setup/hold 창을 먹었다",
+     "클럭을 내려 되는지 먼저 본다. BME280 기준 창은 setup 20 ns / hold 20 ns 다 — 이 예산 안에서 케이블은 사치다"
+    ],
+    [
+     "빠르게 연속으로 읽으면 앞의 바이트가 사라진다",
+     "**수신 오버런.** ATmega128 은 송신 단일 버퍼, 수신 이중 버퍼라 다음 바이트가 다 들어오기 전에 읽어야 한다",
+     "인터럽트나 DMA 로 받거나, 폴링 루프에서 다른 일을 줄인다"
+    ]
+   ],
+   "confidence": "inferred",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+     "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+     "publisher": "Bosch Sensortec",
+     "kind": "datasheet",
+     "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+    }
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "보드 위에서 SD카드·NOR 플래시·컬러 디스플레이처럼 초당 수백 kB 이상이 흐른다",
+   "pick": "SPI",
+   "over": "I²C",
+   "why": "I²C 는 오픈 드레인 + 풀업 구조라 상승 시간에 속도가 묶이지만, SPI 는 푸시풀이라 전기적 경로가 견디는 데까지 간다 — W25Q128JV 데이터시트는 3.0~3.6V 에서 **133MHz**(2.7~3.0V 에서 104MHz, Read Data 03h 명령만은 50MHz)를 규정한다. 게다가 전이중이라 보내면서 동시에 받는다",
+   "tradeoff": "장치마다 CS 핀 하나씩 사라진다. 오류 검출이 아예 없으므로 chip id 확인·체크섬 같은 검증을 위에서 직접 얹어야 한다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "W25Q128JV 3V 128M-bit Serial Flash Memory 데이터시트 (Revision H, 2021-03-10)",
+     "url": "https://www.winbond.com/resource-files/W25Q128JV%20RevH%2003102021%20Plus.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "6.1절이 '모드 0 과 3 만 지원한다'고 못 박고 그 둘의 차이가 유휴 클럭 레벨뿐임을 적어 두었다"
+    }
+   ]
+  },
+  {
+   "situation": "센서 대여섯 개에서 가끔 값만 읽어 오면 된다",
+   "pick": "I²C",
+   "over": "SPI",
+   "why": "SPI 는 3 + n 핀이라 여섯 개면 9핀이다. 센서 값은 대개 초당 수백 바이트라 SPI 의 속도가 통째로 논다. 핀·배선·기판 자리는 계속 비싸지는데 사는 것이 없다",
+   "tradeoff": "주소 충돌, 풀업 계산, 클럭 스트레칭이라는 규칙 뭉치를 떠안는다 (→ `i2c`, `pull-up-resistor`)",
+   "confidence": "inferred"
+  },
+  {
+   "situation": "같은 종류의 장치를 여럿 줄 세워 한꺼번에 값을 밀어 넣는다 (LED 드라이버, 시프트 레지스터, 계전기 보드)",
+   "pick": "데이지 체인 (공유 CS 하나)",
+   "over": "장치마다 CS 를 따로 뽑기",
+   "why": "장치가 몇 개든 핀이 3개로 고정되고, 체인 전체가 하나의 긴 시프트 레지스터라 래치 한 번에 **모든 장치의 출력이 동시에** 바뀐다. 74HC595 처럼 `QH′` 같은 직렬 출력을 가진 부품이 이걸 위해 만들어졌다",
+   "tradeoff": "부품이 직렬 출력을 가져야 하고, 모드·비트 순서가 전부 같아야 하며, 보내는 바이트 순서가 뒤집힌다. 개별 장치만 골라 말 걸 수 없고, 중간 한 칸이 죽으면 뒤가 전부 죽는다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "SNx4HC595 8-Bit Shift Registers With 3-State Output Registers (SCLS041J, 1982-12 / 2021-10 개정)",
+     "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+     "publisher": "Texas Instruments",
+     "kind": "datasheet",
+     "summary": "데이지 체인의 교과서적 부품. 시프트용 SRCLK 와 래치용 RCLK 가 따로 있고, 다음 칩으로 넘기는 직렬 출력 QH′ 가 있다"
+    }
+   ]
+  },
+  {
+   "situation": "같은 SPI 버스에 물린 부품들이 서로 다른 모드를 요구한다",
+   "pick": "CS 를 내리기 전에 모드를 다시 설정하고 거래하기 (또는 SPI 컨트롤러를 따로 쓰기)",
+   "over": "\"어차피 다 모드 0 이겠지\" 하고 한 번만 설정하기",
+   "why": "모토로라 레퍼런스 매뉴얼이 이미 \"전송 사이에 위상과 극성을 바꿔, 요구가 다른 슬레이브들과 통신하게 한다\"고 적어 두었다. **모드는 버스의 속성이 아니라 거래의 속성**이고, SPI 에 규격이 없는 이상 부품들이 통일될 이유도 없다",
+   "tradeoff": "거래마다 레지스터를 다시 쓰는 오버헤드가 붙고, 유휴 클럭 레벨이 바뀌는 일이므로 **CS 가 내려간 뒤에는 절대 바꾸면 안 된다**(엣지가 하나 더 생긴다)",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    }
+   ]
+  },
+  {
+   "situation": "센서나 보드를 장비 밖 몇 m 거리에 둬야 한다",
+   "pick": "RS-485·CAN 같은 차동 버스, 또는 UART 계열",
+   "over": "SPI 케이블을 그냥 길게 뽑는 것",
+   "why": "SPI 는 클럭이 별도 선이라 **데이터와 클럭의 도착 시각 차가 곧 setup/hold 창을 깎는다.** BME280 기준 그 창은 setup 20 ns / hold 20 ns 다. 게다가 SPI 에는 규격 문서가 없어 케이블·커넥터·전기 규격이 정의된 적조차 없다 — 참고할 것이 없다",
+   "tradeoff": "속도가 크게 내려가고, 프레임·주소·검사 같은 프로토콜을 직접 얹어야 한다 (→ `rs485`, `uart`)",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+     "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+     "publisher": "Bosch Sensortec",
+     "kind": "datasheet",
+     "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+    }
+   ]
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "모드를 안 맞췄는데 \"통신은 되는 것처럼\" 보인다 — 값이 한 비트씩 밀리거나 정확히 2배로 읽힌다",
+   "why": "모드가 틀려도 클럭은 나가고 선은 흔들리고 값은 돌아온다. **SPI 에는 \"못 알아들었다\"를 말할 방법이 없다.** I²C 라면 NACK 이 왔을 자리에서 SPI 는 그럴듯한 쓰레기를 준다",
+   "fix": "데이터시트 파형에서 딱 두 줄만 찾는다 — **(a) 유휴 SCK 레벨, (b) 입력이 래치되는 엣지.** 거기서 모드를 역산한다. 그래도 안 되면 0→1→2→3 을 넣어 보되, 매번 **알려진 값을 읽는 명령**(플래시의 JEDEC ID `0x9F`, 센서의 chip id)으로 확인한다 — 아무 값이나 읽으면 맞았는지 알 수 없다",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "W25Q128JV 3V 128M-bit Serial Flash Memory 데이터시트 (Revision H, 2021-03-10)",
+     "url": "https://www.winbond.com/resource-files/W25Q128JV%20RevH%2003102021%20Plus.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "6.1절이 '모드 0 과 3 만 지원한다'고 못 박고 그 둘의 차이가 유휴 클럭 레벨뿐임을 적어 두었다"
+    }
+   ]
+  },
+  {
+   "trap": "AVR·HC11 에서 마스터가 갑자기 슬레이브로 바뀐다",
+   "why": "`SS` 핀을 **입력으로 둔 채** 그 핀이 LOW 로 떨어지면, 하드웨어는 \"다른 마스터가 나를 슬레이브로 골랐다\"로 해석해 `MSTR` 비트를 스스로 지운다. MOSI·SCK 는 입력으로 바뀌고, 그때부터 아무것도 안 나간다. 모토로라가 **모드 폴트(mode fault)** 라 부른 보호 장치이고, 목적은 두 마스터가 같은 선을 밀어 부품이 타는 것을 막는 것이다",
+   "fix": "마스터에서는 `SS` 핀을 **출력으로** 설정한다 — 그러면 일반 출력이 되어 SPI 시스템에 영향을 주지 않는다. 인터럽트 구동이면 ATmega 데이터시트가 명시적으로 요구하는 대로 **ISR 에서 `MSTR` 이 아직 서 있는지 매번 확인**하고, 지워졌으면 다시 세운다",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    }
+   ]
+  },
+  {
+   "trap": "장치를 하나 더 붙였더니 원래 되던 것까지 안 된다",
+   "why": "선택되지 않은 슬레이브가 MISO 를 놓지 않는다. 정상이라면 CS 가 HIGH 인 동안 MISO 는 하이임피던스여야 하고(ATmega 는 \"MISO tri-stated as long as the SS pin is driven high\"), 그러지 않으면 두 출력이 같은 선을 밀고 당긴다. 값이 이상해지는 정도로 끝나지 않고 부품이 상할 수도 있다",
+   "fix": "각 부품이 CS=HIGH 에서 MISO 를 놓는지 데이터시트에서 확인한다. 안 놓는 부품(그리고 중간에 낀 버퍼·레벨시프터)은 3-state 버퍼를 따로 넣거나 CS 로 게이팅한다. 범인 찾기는 **하나씩 떼었다 붙이는 것**이 가장 빠르다",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    }
+   ]
+  },
+  {
+   "trap": "첫 바이트만 맞고 그다음이 깨진다 / 또는 CS 를 눌러 둔 채 여러 번 읽으면 값이 이상하다",
+   "why": "CS 를 \"고르는 스위치\"로만 보고 있다. **CS 는 I²C 의 START·STOP 자리를 겸한다** — 올라가는 순간 슬레이브의 송수신 로직이 리셋되고 시프트 레지스터에 반쯤 들어온 데이터가 버려진다. 그래서 \"바이트마다 CS 를 토글하라\"는 부품과 \"거래 내내 눌러 둬라\"는 부품이 갈리고, 둘을 바꿔 쓰면 정확히 이 증상이 난다",
+   "fix": "데이터시트의 **CS 파형 그림**을 본다(문장 말고 그림이다). 자동 증가 읽기(BME280 처럼 주소 하나 주고 계속 읽는 것)는 CS 를 눌러 둬야 하고, CPHA=0 계열은 바이트마다 올렸다 내려야 하는 경우가 많다. 어긋난 상태는 **CS 를 한 번 올렸다 내리는 것만으로** 복구된다는 점도 함께 기억한다",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+     "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+     "publisher": "Bosch Sensortec",
+     "kind": "datasheet",
+     "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+    }
+   ]
+  },
+  {
+   "trap": "\"읽기\" 함수를 불렀는데 클럭이 안 나간다 / 늘 0x00 이나 0xFF 만 읽힌다",
+   "why": "SPI 마스터에서 클럭을 만드는 유일한 방법은 **데이터 레지스터에 쓰는 것**이다. ATmega128 데이터시트의 마스터 예제 코드에 받기 함수가 아예 없는 이유가 이것이다 — `SPDR = cData;` 가 클럭 발생기를 시작한다. 보내지 않으면 받을 수도 없다",
+   "fix": "**더미 바이트를 보내고 그때 돌아온 값을 읽는다.** HAL 계열이 `Transmit`/`Receive`/`TransmitReceive` 를 다 제공해도 선로에서는 전부 같은 교환이다. 더미 값이 아무거나여도 되는지는 부품마다 다르므로 데이터시트를 본다",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+    },
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    }
+   ]
+  },
+  {
+   "trap": "데이지 체인에 보낸 값이 엉뚱한 칸에 들어간다",
+   "why": "체인 전체가 하나의 긴 시프트 레지스터라 **먼저 보낸 바이트가 가장 멀리 간다.** 세 칸짜리 체인이면 첫 바이트가 MCU 에서 가장 먼 칩에 앉는다. 그림을 그리지 않고 짜면 거의 반드시 뒤집힌다",
+   "fix": "보낼 바이트 배열을 뒤집는다. 그리고 74HC595 라면 **래치(RCLK)를 모든 바이트를 다 민 뒤 딱 한 번만** 올린다 — 안 그러면 지나가는 중간 상태가 출력으로 새 나간다. TI 는 시프트 클럭과 래치 클럭을 묶어도 된다고 적으면서, 그러면 \"시프트 레지스터가 저장 레지스터보다 한 클럭 앞선다\"고 덧붙인다",
+   "sources": [
+    {
+     "title": "SNx4HC595 8-Bit Shift Registers With 3-State Output Registers (SCLS041J, 1982-12 / 2021-10 개정)",
+     "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+     "publisher": "Texas Instruments",
+     "kind": "datasheet",
+     "summary": "데이지 체인의 교과서적 부품. 시프트용 SRCLK 와 래치용 RCLK 가 따로 있고, 다음 칩으로 넘기는 직렬 출력 QH′ 가 있다"
+    }
+   ]
+  },
+  {
+   "trap": "\"SPI 는 표준이니까 라이브러리 기본값이면 되겠지\"",
+   "why": "**SPI 에는 표준 문서가 없다.** 1980년대 모토로라 M68HC11 의 관행이 굳은 사실상의 표준이라 RFC 도 IEEE 번호도 없고, 그래서 클럭 극성·위상·비트 순서·CS 처리·더미 값이 부품마다 다른 것이 정상이다. 라이브러리 기본값은 그 라이브러리를 만든 사람이 쓰던 부품의 값일 뿐이다",
+   "fix": "새 부품을 붙일 때마다 데이터시트의 SPI 절과 타이밍도를 **직접 연다.** 확인할 것은 다섯 줄이다 — 유휴 SCK 레벨, 래치 엣지, 최대 클럭, CS 를 언제 올리고 내리나, 비트 순서. 이 다섯 줄을 코드 주석에 옮겨 적어 두면 다음 사람이 같은 함정을 다시 밟지 않는다",
+   "sources": [
+    {
+     "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+     "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+     "publisher": "Motorola / Freescale (현 NXP)",
+     "kind": "datasheet",
+     "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+    },
+    {
+     "title": "W25Q128JV 3V 128M-bit Serial Flash Memory 데이터시트 (Revision H, 2021-03-10)",
+     "url": "https://www.winbond.com/resource-files/W25Q128JV%20RevH%2003102021%20Plus.pdf",
+     "publisher": "Winbond",
+     "kind": "datasheet",
+     "summary": "6.1절이 '모드 0 과 3 만 지원한다'고 못 박고 그 둘의 차이가 유휴 클럭 레벨뿐임을 적어 두었다"
+    },
+    {
+     "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+     "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+     "publisher": "Bosch Sensortec",
+     "kind": "datasheet",
+     "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+    }
+   ]
+  }
+ ],
+ "terms": [
+  {
+   "term": "MOSI / MISO",
+   "en": "Master Out Slave In / Master In Slave Out",
+   "what": "마스터가 내보내는 선과 받는 선. 이름이 방향을 그대로 적어 둔 것이라 MOSI 는 MOSI 끼리 잇는다(교차하지 않는다). 부품 쪽에서는 SDI/SDO, DI/DO, SI/SO 로도 적힌다"
+  },
+  {
+   "term": "SCK",
+   "en": "Serial Clock",
+   "what": "마스터가 만드는 클럭선. 이 선이 있어서 SPI 에는 보율 오차라는 개념이 없다"
+  },
+  {
+   "term": "CS / SS / NSS / CSB",
+   "en": "Chip Select / Slave Select",
+   "what": "말 걸 상대를 고르는 선. 장치마다 한 가닥씩 필요하고 거의 언제나 액티브 로다. 고르는 일 외에 거래의 시작·끝을 긋고 슬레이브의 비트 카운터를 리셋한다"
+  },
+  {
+   "term": "CPOL",
+   "en": "Clock Polarity",
+   "what": "SCK 가 아무 일도 안 할 때의 레벨. 0 이면 LOW, 1 이면 HIGH"
+  },
+  {
+   "term": "CPHA",
+   "en": "Clock Phase",
+   "what": "첫 번째 엣지에서 샘플링할지(0), 두 번째 엣지에서 할지(1). 실제 전송 형태를 가르는 것은 이쪽이다"
+  },
+  {
+   "term": "전이중",
+   "en": "full duplex",
+   "what": "보내는 것과 받는 것이 같은 순간에 흐르는 것. SPI 에서는 선택이 아니라 구조다 — 시프트 레지스터 둘이 고리를 이루기 때문이다"
+  },
+  {
+   "term": "더미 바이트",
+   "en": "dummy byte",
+   "what": "읽기 위해 어쩔 수 없이 내보내는 무의미한 바이트. 클럭을 만드는 유일한 방법이 데이터 레지스터에 쓰는 것이라서 생긴다"
+  },
+  {
+   "term": "데이지 체인",
+   "en": "daisy chain",
+   "what": "한 장치의 직렬 출력을 다음 장치의 직렬 입력에 이어, 전체를 하나의 긴 시프트 레지스터로 만드는 배선"
+  },
+  {
+   "term": "모드 폴트",
+   "en": "mode fault (MODF)",
+   "what": "마스터인데 자기 SS 가 눌린 것을 감지해 스스로 버스에서 빠지는 보호 동작. 충돌을 푸는 것이 아니라 손을 떼는 것이다"
+  },
+  {
+   "term": "사실상의 표준",
+   "en": "de facto standard",
+   "what": "표준화 기구가 정한 것이 아니라 널리 쓰여 표준처럼 굳은 것. SPI 가 정확히 이것이고, 그래서 규격서 대신 데이터시트를 읽는다"
+  },
+  {
+   "term": "하이임피던스",
+   "en": "high-Z / tri-state",
+   "what": "출력을 밀지도 당기지도 않고 손을 뗀 상태. 선택되지 않은 슬레이브가 MISO 에 대해 이 상태여야 여러 장치가 한 선을 나눠 쓸 수 있다"
+  }
+ ],
+ "drills": [
+  {
+   "task": "모드 0 과 모드 1 의 파형을 손으로 그린다. 바이트 `0x2A`(0010 1010)를 마스터가 MOSI 로 내보내는 그림에 SCK 8펄스를 그리고, 각 모드가 **몇 번째 엣지에서 샘플링하는지** 화살표로 표시한다. 그다음 **슬레이브는 모드 0 인데 마스터를 모드 1 로 설정했다고 치고**, 슬레이브가 실제로 읽게 되는 8비트를 적는다",
+   "done_when": "두 값이 어떻게 다른지(비트가 한 칸 밀리고 맨 앞에 쓰레기 비트가 들어온다) 스스로 계산했고, `모드 = (CPOL << 1) | CPHA` 와 \"0·3 은 상승에서, 1·2 는 하강에서 샘플링\"을 표를 안 보고 쓸 수 있다",
+   "why": "SPI 디버깅의 첫 질문은 언제나 \"모드가 맞나\"다. 종이에서 한 번 틀려 봐야 로직 분석기 화면에서 그 어긋남을 알아본다",
+   "no_hardware": "처음부터 장비가 필요 없다 — 종이와 연필이면 된다",
+   "hours": 1
+  },
+  {
+   "task": "부품 데이터시트에서 모드를 **역산**한다. W25Q128JV 나 BME280(링크는 이 문서 `sources`)을 열어 SPI 절과 타이밍도를 찾고, (a) 유휴 SCK 레벨 (b) 입력이 래치되는 엣지 (c) 출력이 바뀌는 엣지 — 세 줄을 원문 그대로 옮겨 적은 뒤 모드 번호를 계산한다. 그다음 ATmega128 데이터시트의 SPCR 절을 열어 그 모드를 만드는 `SPCR = ...` 한 줄을 쓴다",
+   "done_when": "그 부품이 지원하는 모드가 몇 개인지, **왜 하필 0 과 3 인지**(둘 다 상승 엣지에서 샘플링하고 유휴 레벨만 다르다) 설명할 수 있고, 비트 위치를 보지 않고 쓴 `SPCR` 값이 실제 배치(`SPIE SPE DORD MSTR CPOL CPHA SPR1 SPR0`)와 맞는다",
+   "why": "SPI 에는 규격 문서가 없으므로 **데이터시트를 읽어 모드를 역산하는 일 자체가 이 기술의 핵심 기능**이다. 라이브러리의 `SPI_MODE0` 상수를 고르는 손이 어디서 오는지가 여기다",
+   "no_hardware": "데이터시트 PDF 두 개면 끝난다. 장비가 필요 없는 실습이다",
+   "hours": 2
+  },
+  {
+   "task": "74HC595 세 개를 이어 24개 LED 를 다는 회로를 그린다(`SER`→`QH′`→`SER`). **맨 왼쪽 8개만 켜고 나머지를 끄려면** MCU 가 SPI 로 내보내야 하는 세 바이트를 순서까지 적고, `RCLK`(래치)를 언제 올릴지 표시한다",
+   "done_when": "먼저 보낸 바이트가 MCU 에서 **가장 먼 칩**에 앉는다는 것을 그림으로 설명할 수 있고, 래치를 24클럭이 다 끝난 뒤 한 번만 올려야 하는 이유(중간 상태가 LED 로 새 나간다)를 말할 수 있다",
+   "why": "데이지 체인이 CS 를 아끼는 대신 무엇을 요구하는지가 이 계산 하나에 다 들어 있다 — 순서 뒤집기, 모드 통일, 개별 접근 불가",
+   "needs": "실제로 돌리려면 74HC595 3개, MCU 보드, LED·저항",
+   "no_hardware": "계산과 그림만으로 끝난다. 검증하고 싶으면 파이썬 리스트로 체인을 흉내 낸다 — `bits.insert(0, in_bit)` 를 24번 돌리고 8개씩 잘라 어느 칩에 무엇이 앉았는지 본다",
+   "hours": 2
+  },
+  {
+   "task": "BME280 의 chip id 레지스터 `0xD0` 을 4-wire SPI 로 읽는 **바이트 시퀀스**를 적는다. 데이터시트의 규칙(\"레지스터 주소의 MSB 는 쓰지 않고 R/W 비트로 대신한다 — 읽기 1, 쓰기 0\")을 적용해 선로에 나가는 첫 바이트를 계산하고, 더미 바이트를 몇 개 보내야 하는지, CSB 를 언제 내리고 올리는지까지 그린다. 같은 레지스터에 **쓰기**라면 첫 바이트가 무엇이 되는지도 적는다",
+   "done_when": "읽기 첫 바이트가 `0xD0`, 쓰기 첫 바이트가 `0x50` 이 되는 이유를 7비트 주소 `0x50` 에서부터 계산해 설명할 수 있다",
+   "why": "\"SPI 에는 주소가 없다\"는 말이 실제로는 \"주소가 명령 바이트 안으로 들어갔다\"는 뜻임을 손으로 확인하는 자리다. I²C 의 7비트/8비트 혼동과 **정확히 대칭인 함정**이라, 둘을 같이 계산해 보면 둘 다 다시는 안 틀린다",
+   "no_hardware": "계산만으로 끝난다. 데이터시트 6.3절 하나면 된다",
+   "hours": 1
+  }
+ ],
+ "checks": [
+  "부품 데이터시트가 \"모드 0 과 3 을 지원한다\"처럼 늘 짝으로 적는 이유는? 그 둘의 실제 차이는 무엇 하나뿐인가?",
+  "마스터가 슬레이브에서 값을 \"읽기만\" 하는 것이 불가능한 이유는? 그래서 코드에 무엇이 반드시 들어가나?",
+  "CS 는 상대를 고르는 일 말고 무슨 일을 더 하나? I²C 의 무엇이 그 자리에 해당하나?",
+  "장치를 여섯 개 붙일 때 SPI 가 쓰는 핀 수는? 그 핀을 내주고 대신 무엇을 사는가?",
+  "데이지 체인에서 가장 먼저 보낸 바이트는 어느 장치에 앉나? 그렇게 되는 이유는?",
+  "SPI 에는 마스터가 \"못 알아들었다\"를 알 방법이 없다. 그 사실이 드라이버 코드에 무엇을 요구하나?",
+  "SPI 케이블을 3m 뽑으면 무엇이 먼저 깨지나? \"규격 문서가 없다\"는 사실이 이 문제와 어떻게 이어지나?",
+  "AVR 에서 마스터로 설정했는데 `MSTR` 비트가 저절로 지워질 수 있는 조건은? 왜 하드웨어가 그렇게 만들어졌나?"
+ ],
+ "evidence": [
+  {
+   "quote": "CAN, UART, RS-232/RS-485, SPI, I2C 등 범용 인터페이스 기반 컨트롤러 개발",
+   "from": "posting",
+   "where": "크래블 — 임베디드 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/372341",
+   "what_it_shows": "**성질이 전혀 다른 다섯 가지가 한 줄에 묶여 나온다.** RS-485 는 전기 규격이고, UART 는 프레임 약속이고, I²C 는 주소 버스이고, SPI 는 규격 문서조차 없는 관행이다. 이 문서들이 각각 따로 존재하는 이유가 이 한 줄이다"
+  },
+  {
+   "quote": "• SPI, I2C, LVDS 등 Interface 설계 경험",
+   "from": "posting",
+   "where": "그리드큐어 (점핏, 모집중)",
+   "url": "https://jumpit.saramin.co.kr/position/53987192",
+   "what_it_shows": "SPI 를 LVDS 와 나란히 두었다 — **속도 축에서 SPI 를 보는 자리**다. 이 공고는 펌웨어가 아니라 회로 `설계` 를 말하므로, 모드보다 배선 길이·스큐·setup/hold 가 먼저 걸리는 쪽이다"
+  },
+  {
+   "quote": "• Device Tree 구성, GPIO·I2C·SPI·MIPI 등 하드웨어 인터페이스 연동",
+   "from": "posting",
+   "where": "(주)디하이브 (사람인, 모집중)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54696256&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f61da5e1-6d14-4c08-aafa-40eadbae75fe",
+   "what_it_shows": "리눅스 Device Tree 에서 SPI 를 다룬다는 것은 **CS 를 어느 GPIO 에 뽑고 모드를 몇으로 적을지를 텍스트로 선언한다는 뜻**이다. 주소가 없는 버스라 배선 정보를 사람이 직접 써 줘야 한다는 사정이 여기서 드러난다"
+  },
+  {
+   "quote": "- STM32 기반 펌웨어 개발 (UART, I2C, SPI 통신 포함)",
+   "from": "posting",
+   "where": "재영솔루텍(주) (사람인, 모집중)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54748470&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=c3af596a-b86d-44a8-bf47-d333fd7d704f",
+   "what_it_shows": "세 이름이 특정 MCU 이름과 함께 나온다. **모드·CS 설정이 HAL 함수 인자로 감싸여 있어도 값은 결국 부품 데이터시트에서 나온다**는 것이 이 문서의 요지다"
+  },
+  {
+   "quote": "• Keycloak Realm 구성 및 커스터마이징 경험(SPI, Provider 등)이 있으신 분",
+   "from": "posting",
+   "where": "티오더 — 백엔드 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/364716",
+   "what_it_shows": "**같은 세 글자가 전혀 다른 뜻으로 쓰인다.** 여기서 SPI 는 자바의 Service Provider Interface 다. 반도체 검사 장비 공고의 SPI(솔더 페이스트 검사)까지 합치면, 모집중 공고에서 `SPI` 토큰이 잡힌 48건 중 3건은 이 문서와 무관하다 — 공고 데이터로 기술 수요를 셀 때 짧은 약어가 왜 위험한지의 사례다"
+  }
+ ],
+ "related": [
+  {
+   "slug": "i2c",
+   "how": "이 문서가 채우는 빈 열. 정확히 반대의 계산을 했다 — 선을 아끼고 규칙을 늘렸다. 주소 충돌·풀업 계산·클럭 스트레칭은 전부 그쪽에 있다"
+  },
+  {
+   "slug": "uart",
+   "how": "세 번째 선택 — 클럭선 자체를 없애고 양쪽 시계 정확도에 걸었다. 프레이밍·오버런·보율 오차 이야기가 거기 있다"
+  },
+  {
+   "slug": "rs485",
+   "how": "SPI 가 못 가는 거리로 나가는 길. 차동 전송·종단·유닛 로드 같은 전기 규격 층이 거기 있다 — SPI 에는 그 층 자체가 없다"
+  },
+  {
+   "slug": "pull-up-resistor",
+   "how": "SPI 가 풀업 없이 도는 이유. 오픈 드레인과 푸시풀의 차이가 왜 SPI 를 I²C 보다 빠르게 만드는지가 거기서 보인다"
+  },
+  {
+   "slug": "atmega128",
+   "how": "SPCR·SPSR·SPDR 로 이 프로토콜을 구현한 칩. 이 문서의 레지스터 표가 그 칩의 것이고, `SS` 함정도 그 칩 것이다"
+  },
+  {
+   "slug": "interrupt",
+   "how": "SPIF(전송 완료) 플래그와 SPI 인터럽트. ATmega 데이터시트가 \"ISR 에서 MSTR 비트를 매번 확인하라\"고 요구하는 이유가 이 문서의 함정 절에 있다"
+  },
+  {
+   "slug": "gpio-register",
+   "how": "CS 를 직접 흔드는 일은 결국 GPIO 레지스터에 비트를 쓰는 일이다. 원자적 쓰기(BSRR 류)가 CS 타이밍에 닿는다"
+  },
+  {
+   "slug": "stm32",
+   "how": "SPI 컨트롤러를 여러 개 가진 현대 MCU. 공고에 `STM32 기반 펌웨어 개발 (UART, I2C, SPI 통신 포함)` 처럼 늘 함께 나온다 (아직 문서 없음)"
+  },
+  {
+   "slug": "dma",
+   "how": "SD카드·디스플레이 프레임버퍼처럼 큰 블록을 SPI 로 옮길 때, CPU 가 바이트마다 붙어 있지 않게 하는 장치 (아직 문서 없음)"
+  }
+ ],
+ "open_questions": [
+  "`market` 은 비어 있다 — `tech_relations.json`(techs 60개, generated_at 2026-08-19)에 `SPI` 라는 이름이 없다. 하드웨어 인터페이스를 추적 기술로 세지 않기 때문이다(`I2C`·`UART` 도 없다). 대신 직접 셌다(2026-09-04): **모집중 공고 9,458건 중 `SPI` 토큰이 박힌 것이 48건**, 문맥을 보면 그중 **45건이 이 문서가 말하는 하드웨어 SPI** 다. 나머지 3건은 동음이의 — Keycloak 의 Service Provider Interface 1건, 반도체 검사 장비의 솔더 페이스트 검사(SPI) 2건. 그리고 45건 중 **35건은 UART·I²C·SPI 세 이름이 한 줄 안에** 함께 나온다",
+  "**W25Q128JV 데이터시트의 setup/hold 정확한 ns 값은 확정하지 못했다.** PDF 본문은 추출했고 모드 서술(6.1절)과 클럭 상한(133MHz / 2.7~3.0V 에서 104MHz / Read Data 03h 는 50MHz)은 원문 그대로 읽었지만, 9.6절 AC 표는 텍스트 추출에서 열이 어긋나 `tDVCH`(Data In Setup)·`tCHDX`(Data In Hold) 가 어느 숫자인지 확정할 수 없었다. 그래서 이 문서의 setup/hold 숫자는 **BME280 의 것(각 20 ns)** 만 썼다. W25Q 값이 필요하면 PDF 를 눈으로 열어 9.6절을 본다",
+  "**SN74HC595 의 최대 시프트 클럭 주파수도 같은 이유로 옮기지 않았다** — 6.6 Timing Requirements 표가 추출에서 열 어긋남이 났다. 그래서 데이지 체인 서술은 숫자 없이 구조만 다뤘다",
+  "**STM32 의 SPI 레지스터(CPOL·CPHA 가 어느 레지스터의 어느 비트인지)는 이번 사이클에 확인하지 못했다** — RM0090 PDF 다운로드가 시간 초과로 실패했다. 그래서 레지스터 표는 ATmega128 과 M68HC11 두 개만 대조했고, STM32 는 `related` 링크로만 걸었다",
+  "**\"SPI 에는 표준 문서가 없다\"는 것은 없음을 증명한 것이 아니라 못 찾은 것이다.** 근거는 셋이다 — (a) 1차 자료로 거슬러 올라가 닿는 가장 오래된 정의가 표준서가 아니라 모토로라 M68HC11 레퍼런스 매뉴얼 8장이라는 것, (b) 그 매뉴얼 스스로가 \"기존의 동기식 직렬 주변장치 거의 아무것에나 직접 붙이려고\" 네 모드를 두었다고 적은 것, (c) 실제 부품들이 지원 모드를 제각기 다르게 정해 두었다는 것(이 문서 `device-modes` 표). RFC·IEEE·JEDEC 번호가 붙은 SPI 규격은 이번 사이클에 찾지 못했다. 찾게 되면 이 문서의 `why` 절을 고쳐야 한다",
+  "데이지 체인이 되는 부품과 안 되는 부품을 가르는 것은 \"받은 것을 다음으로 흘려보내는 직렬 출력이 있는가\"인데, 이 문서는 **74HC595 하나만 1차 자료로 확인**했다. ADC·DAC 쪽의 daisy-chain 모드는 부품마다 조건이 다르므로 각각의 데이터시트로 받쳐야 한다",
+  "\"모드가 반 클럭 어긋나면 값이 한 비트 밀려 읽힌다\"는 `symptoms` 표의 진단은 **파형에서 따라 나오는 추론**이다. 실제 부품에서 어떤 값으로 나타나는지는 부품의 출력 타이밍에 따라 달라진다 — 그래서 그 표의 `confidence` 를 `inferred` 로 두었다"
+ ],
+ "sources": [
+  {
+   "title": "M68HC11 Reference Manual (M68HC11RM/D Rev. 6.1) — Section 8. Synchronous Serial Peripheral Interface",
+   "url": "https://www.nxp.com/docs/en/reference-manual/M68HC11RM.pdf",
+   "publisher": "Motorola / Freescale (현 NXP)",
+   "kind": "datasheet",
+   "summary": "SPI 를 처음 정의한 쪽의 문서. 표준 기구의 규격서가 아니라 한 회사의 레퍼런스 매뉴얼이라는 것 자체가 이 낱말의 성격이다"
+  },
+  {
+   "title": "ATmega128/128L 데이터시트 (doc2467, 2467X–AVR–06/11) — SPI 절",
+   "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+   "publisher": "Microchip (Atmel)",
+   "kind": "datasheet",
+   "summary": "SPCR·SPSR·SPDR 과 CPOL/CPHA 비트, 그리고 모드 0~3 대응표(Table 73)가 여기 있다"
+  },
+  {
+   "title": "W25Q128JV 3V 128M-bit Serial Flash Memory 데이터시트 (Revision H, 2021-03-10)",
+   "url": "https://www.winbond.com/resource-files/W25Q128JV%20RevH%2003102021%20Plus.pdf",
+   "publisher": "Winbond",
+   "kind": "datasheet",
+   "summary": "6.1절이 '모드 0 과 3 만 지원한다'고 못 박고 그 둘의 차이가 유휴 클럭 레벨뿐임을 적어 두었다"
+  },
+  {
+   "title": "BME280 Combined humidity and pressure sensor 데이터시트 (BST-BME280-DS001-24, rev 1.24) — 6.3 SPI interface",
+   "url": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+   "publisher": "Bosch Sensortec",
+   "kind": "datasheet",
+   "summary": "모드 '00'/'11' 자동 판별, 레지스터 주소의 MSB 를 R/W 비트로 대신 쓰는 규칙, SPI 타이밍(Table 34)이 여기 있다"
+  },
+  {
+   "title": "SNx4HC595 8-Bit Shift Registers With 3-State Output Registers (SCLS041J, 1982-12 / 2021-10 개정)",
+   "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+   "publisher": "Texas Instruments",
+   "kind": "datasheet",
+   "summary": "데이지 체인의 교과서적 부품. 시프트용 SRCLK 와 래치용 RCLK 가 따로 있고, 다음 칩으로 넘기는 직렬 출력 QH′ 가 있다"
+  },
+  {
+   "title": "UM10204 — I²C-bus specification and user manual",
+   "url": "https://www.nxp.com/docs/en/user-guide/UM10204.pdf",
+   "publisher": "NXP",
+   "kind": "standard",
+   "summary": "비교를 위해서만 인용한다 — I²C 에는 이런 규격 문서가 있고 SPI 에는 없다"
+  }
+ ]
+}

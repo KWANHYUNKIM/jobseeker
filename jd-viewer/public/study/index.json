@@ -92,6 +92,27 @@
    "updated_at": "2026-09-03"
   },
   {
+   "slug": "idempotency",
+   "title": "멱등성",
+   "category": "term",
+   "level": "core",
+   "status": "done",
+   "one_liner": "같은 요청을 두 번 보내든 열 번 보내든, 시스템에 남는 결과가 한 번 보낸 것과 같아지는 성질. 네트워크가 성공도 실패도 아닌 '모름'이라는 답을 주기 때문에 필요해진 말이다.",
+   "aliases": [
+    "멱등성",
+    "멱등",
+    "멱등성 보장",
+    "Idempotency",
+    "idempotent",
+    "멱등키",
+    "Idempotency-Key",
+    "아이뎀포턴시"
+   ],
+   "sections": 6,
+   "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
    "slug": "interrupt",
    "title": "인터럽트",
    "category": "firmware",
@@ -108,6 +129,23 @@
    ],
    "sections": 6,
    "drills": 3,
+   "updated_at": "2026-09-04"
+  },
+  {
+   "slug": "java",
+   "title": "Java",
+   "category": "language",
+   "level": "core",
+   "status": "done",
+   "one_liner": "짠 코드를 기계어가 아니라 중간 형식으로 만들어 두고, 컴퓨터마다 깔린 실행기(JVM)가 그걸 돌리는 언어다. 그 실행기가 메모리 정리까지 대신 맡는 대신, 언어 쪽은 **옛날에 컴파일된 코드를 깨뜨리지 않는다**는 약속을 30년째 지키느라 모양이 굳었다.",
+   "aliases": [
+    "Java",
+    "자바",
+    "JDK",
+    "JVM"
+   ],
+   "sections": 7,
+   "drills": 4,
    "updated_at": "2026-09-04"
   },
   {
@@ -194,6 +232,51 @@
     "TIA/EIA-485",
     "차동 전송",
     "멀티드롭"
+   ],
+   "sections": 7,
+   "drills": 4,
+   "updated_at": "2026-09-04"
+  },
+  {
+   "slug": "spi",
+   "title": "SPI",
+   "category": "firmware",
+   "level": "core",
+   "status": "done",
+   "one_liner": "장치마다 선을 한 가닥씩 더 뽑아 **말 걸 상대를 그 선으로 고르고**, 클럭에 맞춰 보내는 것과 받는 것을 같은 순간에 주고받는 방식이다. 주소도 응답도 없어 규칙이 거의 없고, 그 빈자리를 부품 데이터시트가 대신 채운다.",
+   "aliases": [
+    "SPI",
+    "Serial Peripheral Interface",
+    "직렬 주변장치 인터페이스",
+    "MOSI",
+    "MISO",
+    "SCK",
+    "CPOL",
+    "CPHA",
+    "SPI 모드"
+   ],
+   "sections": 6,
+   "drills": 4,
+   "updated_at": "2026-09-04"
+  },
+  {
+   "slug": "stm32",
+   "title": "STM32",
+   "category": "firmware",
+   "level": "core",
+   "status": "done",
+   "one_liner": "ST 가 만든 32비트 마이크로컨트롤러 제품군이다. 8비트 AVR 과 결정적으로 다른 점은 **전원이 들어와도 기능 블록 대부분이 꺼진 채로 깨어난다**는 것 — 그래서 핀 하나를 만지기 전에 그 블록에 클럭을 흘려보내는 일부터 해야 한다.",
+   "aliases": [
+    "STM32",
+    "STM32F1",
+    "STM32F4",
+    "Cortex-M",
+    "STM32Cube",
+    "CubeMX",
+    "STM32CubeMX",
+    "STM32 HAL",
+    "RCC",
+    "NVIC"
    ],
    "sections": 7,
    "drills": 4,

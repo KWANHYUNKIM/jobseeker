@@ -1,0 +1,1280 @@
+{
+ "slug": "java",
+ "title": "Java",
+ "title_en": "Java",
+ "aliases": [
+  "Java",
+  "자바",
+  "JDK",
+  "JVM"
+ ],
+ "category": "language",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-04",
+ "one_liner": "짠 코드를 기계어가 아니라 중간 형식으로 만들어 두고, 컴퓨터마다 깔린 실행기(JVM)가 그걸 돌리는 언어다. 그 실행기가 메모리 정리까지 대신 맡는 대신, 언어 쪽은 **옛날에 컴파일된 코드를 깨뜨리지 않는다**는 약속을 30년째 지키느라 모양이 굳었다.",
+ "summary": "Java 는 1995년에 나온 언어이고, 국내 채용 데이터에서 공고 **2,174건(전체의 23.0%)** 으로 Python 다음이다(2026-08-19 `tech_relations.json`). 이 문서가 다루는 것은 문법 목록이 아니라 **JVM 이라는 실행기가 언어에 남긴 자국**이다 — 제네릭이 런타임에 사라지는 것도, `int` 와 `Integer` 가 둘로 갈라져 있는 것도, 언어 명세가 스스로 밝히듯 '기존 코드와의 호환' 때문에 고른 결과다. 그 약속 덕분에 10년 전 jar 가 오늘도 돌지만, 대가로 회사들은 지원이 끝날 때까지 버전을 안 올리고 그 결정이 공고에 `Java 8 이상`, `Java 11 / 21` 같은 문장으로 남는다. 그래서 이 문서는 넷을 따라간다 — **하위 호환성, GC 와 힙, LTS 릴리스 정책, 그리고 같은 실행기 위에 올라온 Kotlin.** 어느 산업이 왜 Java 를 쓰는가는 언어의 성질이 아니므로 `java-in-finance` 에 따로 있다.",
+ "market": {
+  "tech": "Java",
+  "layer": "언어",
+  "postings": 2174,
+  "pct_jobs": 23.0,
+  "with": [
+   {
+    "name": "Spring",
+    "pct": 50.0,
+    "why": "국내에서 '자바 백엔드'는 사실상 Spring 을 뜻한다. 반대 방향이 더 세다 — Spring 공고(1,268건)의 85.6%에 Java 가 있다. Spring 없이 Java 를 뽑는 자리는 있어도, Java 없이 Spring 을 뽑는 자리는 거의 없다"
+   },
+   {
+    "name": "AWS",
+    "pct": 36.3,
+    "why": "자바 서비스의 3분의 1 이상이 이미 클라우드 위에 있다는 뜻이다. '자바 = 온프레미스'라는 인상은 이 숫자 앞에서 유지되기 어렵다"
+   },
+   {
+    "name": "Python",
+    "pct": 30.9,
+    "why": "한 팀이 둘 다 쓴다는 신호. 핵심 거래·배치는 자바, 데이터·ML·자동화는 파이썬으로 갈리는 구성이 흔하다"
+   },
+   {
+    "name": "Spring Boot",
+    "pct": 29.8,
+    "why": "Spring(50.0%)과 따로 세어진 값이다. 두 이름이 같은 공고에 함께 적히는 일이 많아, Spring 계열 요구는 실제로는 절반을 웃돈다고 보는 편이 맞다"
+   },
+   {
+    "name": "React",
+    "pct": 25.3,
+    "why": "백엔드 공고인데 프런트가 함께 적히는 자리 — 풀스택을 기대하거나, 한 제품의 앞뒤를 같은 팀이 맡는 구성이다"
+   },
+   {
+    "name": "Docker",
+    "pct": 25.2,
+    "why": "JVM 을 컨테이너에 넣어 돌리는 것이 표준이 됐다는 신호. 그래서 이 문서의 '컨테이너에서 힙을 명시하라'가 실무 항목이 된다"
+   },
+   {
+    "name": "MySQL",
+    "pct": 24.1,
+    "why": "관계형 트랜잭션이 중심인 도메인에 자바가 몰려 있다는 뜻이다"
+   },
+   {
+    "name": "Git",
+    "pct": 23.9,
+    "why": "기술 선택이라기보다 공고 작성 습관에 가깝다. 이 값은 자바의 성질을 말해 주지 않는다 — 동반 기술 목록을 읽을 때 걸러야 하는 종류의 항목이다"
+   }
+  ],
+  "as_of": "2026-08-19"
+ },
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 언어 하나가 아니라 '언어 + 실행기' 한 벌",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "javac 도구 레퍼런스 (JDK 25)",
+     "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "--release 는 그 릴리스의 언어 규칙과 그 릴리스의 API 로 컴파일한다"
+    },
+    {
+     "title": "Java Language Specification, SE 25 — Chapter 13. Binary Compatibility",
+     "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html",
+     "publisher": "Oracle",
+     "kind": "standard",
+     "summary": "이미 컴파일된 바이너리를 깨지 않고 할 수 있는 변경의 목록을 언어 명세가 직접 정의한다"
+    },
+    {
+     "title": "HotSpot Virtual Machine Garbage Collection Tuning Guide (JDK 25) — Ergonomics",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "기본 수집기(server-class 면 G1, 아니면 Serial)와 기본 힙(초기 1/64, 최대 1/4)"
+    }
+   ],
+   "body": "Java 를 배운다는 말은 사실 **세 겹**을 한꺼번에 배운다는 뜻이다. 이 셋을 구분하지 못하면 뒤에 나오는 이야기(버전, GC, Kotlin)가 전부 뭉개진다.\n\n```\n   .java  ──javac──▶  .class (바이트코드)  ──▶  JVM  ──JIT──▶  기계어\n   ┗━ 언어 ━┛          ┗━ 형식(class file) ━┛     ┗━━ 실행기(HotSpot) ━━┛\n```\n\n- **언어(Java)** — 문법. `record`, `sealed`, 람다 같은 것이 여기 산다.\n- **형식(class file)** — `javac` 가 뱉는 중간 산출물. 파일 안에 **major version** 이 박힌다.\n- **실행기(JVM)** — 그 파일을 읽어 돌리는 프로그램. 메모리 회수(GC)와 기계어 번역(JIT)이 여기 산다.\n\n`javac --release 17` 로 컴파일한 클래스를 `javap -v` 로 열어 보면 `major version: 61` 이 찍히고, `--release 8` 로 컴파일하면 `52` 가 찍힌다. 이 숫자 하나가 **\"이 파일을 어느 JVM 이 읽을 수 있는가\"** 를 결정한다. 낮은 버전으로 컴파일한 클래스는 높은 JVM 이 읽지만, 그 반대는 `UnsupportedClassVersionError` 로 막힌다.\n\n여기서 이 문서의 축이 나온다. **Java 라는 언어의 모양은 언어 설계자가 아니라 이 실행기가 정한 것이 많다.** 제네릭이 런타임에 사라지는 것도, 원시 타입과 객체가 둘로 갈라져 있는 것도, `int` 리스트를 못 만드는 것도, 전부 \"이미 돌고 있는 class 파일들을 깨지 않겠다\"는 결정에서 나왔다.\n\n그래서 이 문서는 문법 나열이 아니라 **JVM 이 언어에 남긴 자국** 넷을 따라간다 — 하위 호환성, GC 와 힙, LTS, 그리고 같은 실행기 위에 올라온 Kotlin.\n\n> 이 문서는 **언어와 런타임**만 다룬다. '왜 국내 금융권은 유독 Java 인가'(망분리·SI·도메인 사정)는 별도 문서 `java-in-finance` 에 있다."
+  },
+  {
+   "id": "compat",
+   "kind": "why",
+   "heading": "왜 이렇게 생겼나 — 하위 호환성이라는, 언어가 대신 낸 비용",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Java Language Specification, SE 25 — Chapter 13. Binary Compatibility",
+     "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html",
+     "publisher": "Oracle",
+     "kind": "standard",
+     "summary": "이미 컴파일된 바이너리를 깨지 않고 할 수 있는 변경의 목록을 언어 명세가 직접 정의한다"
+    },
+    {
+     "title": "Java Language Specification, SE 25 — Chapter 4 (Types, §4.6 Erasure, §4.7 Reifiable Types)",
+     "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html",
+     "publisher": "Oracle",
+     "kind": "standard",
+     "summary": "타입 소거의 정의와, 제네릭을 실체화하지 않은 이유가 '기존 코드와의 호환'이라는 서술"
+    },
+    {
+     "title": "Java Language Specification, SE 25 — §5.1.7 Boxing Conversion",
+     "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html",
+     "publisher": "Oracle",
+     "kind": "standard",
+     "summary": "상수식을 박싱할 때 -128~127 범위는 같은 객체가 보장된다는 규칙"
+    },
+    {
+     "title": "javac 도구 레퍼런스 (JDK 25)",
+     "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "--release 는 그 릴리스의 언어 규칙과 그 릴리스의 API 로 컴파일한다"
+    }
+   ],
+   "body": "다른 언어에서 \"메이저 버전을 올리면 코드를 고쳐야 한다\"는 흔한 일이다. Java 는 그 반대쪽 극단을 골랐고, **그 대가를 언어 문법으로 지불했다.** 이 절이 이 문서의 값이다.\n\n### 약속이 명세에 들어가 있다\n\n호환성이 Java 에서는 관행이 아니라 **명세의 한 장(chapter)** 이다. JLS 13장(Binary Compatibility)은 이렇게 시작한다.\n\n> \"This specification defines a set of changes that developers are permitted to make to a package or to a class or interface while preserving (not breaking) compatibility with pre-existing binaries.\"\n> — JLS SE 25, Chapter 13\n\n즉 \"필드를 추가해도 되나\", \"메서드를 상위 클래스로 올려도 되나\" 같은 질문의 답이 **언어 명세에 목록으로 적혀 있다.** 이미 컴파일된 남의 `.class` 를 다시 컴파일하지 않고도 계속 돌게 하는 것이 처음부터 설계 목표였다는 뜻이다.\n\n### 그 약속이 문법에 남긴 첫 번째 자국 — 제네릭 소거(type erasure)\n\n2004년 Java 5 가 제네릭을 넣을 때 선택지는 둘이었다.\n\n1. 런타임에도 타입 인자를 남긴다(**실체화, reification**) — 대신 기존 컬렉션 코드와 `.class` 가 전부 깨진다.\n2. 컴파일 때만 검사하고 런타임에는 지운다(**소거, erasure**) — 기존 코드가 그대로 돈다.\n\nJava 는 2번을 골랐고, JLS 는 그 이유를 숨기지 않는다.\n\n> \"The decision not to make all generic types reifiable is one of the most crucial, and controversial design decisions involving the type system... the most important motivation for this decision is **compatibility with existing code**.\"\n> — JLS SE 25, §4.7\n\n그래서 오늘도 `List<String>` 과 `List<Integer>` 는 **런타임에 같은 클래스**다. `new ArrayList<String>().getClass() == new ArrayList<Integer>().getClass()` 는 `true` 다. 결과로 이런 것들이 못 하게 됐다.\n\n```java\nif (x instanceof List<String>) { }   // 컴파일 에러 — 실체화되지 않는 타입\nT[] arr = new T[10];                 // 컴파일 에러 — 배열은 실체화되므로 T 를 모른다\nvoid f(List<String> a) {}            // 시그니처가 f(List) 로 소거돼\nvoid f(List<Integer> a) {}           // 같은 메서드가 둘이 된다 → 컴파일 에러\n```\n\n그리고 결정적으로, **타입 안전성이 컴파일 시점에만 있다.** 리플렉션으로 `List<String>` 에 `Integer` 를 밀어 넣으면 넣는 순간은 조용하고, **꺼내 쓰는 줄에서** `ClassCastException` 이 난다(뒤의 실습 3번이 이걸 손으로 확인하는 것이다).\n\n### 두 번째 자국 — 원시 타입과 박싱의 이원성\n\n`int` 와 `Integer` 가 따로 있는 것도 같은 계열의 결정이다. `int` 는 값 그 자체로 스택·배열에 눕고, `Integer` 는 힙에 놓인 객체다. 제네릭은 참조 타입만 받으므로 `List<int>` 는 만들 수 없고 `List<Integer>` 를 써야 한다 — 리스트 원소 하나마다 객체 하나와 포인터 하나가 더 생긴다.\n\n여기에 자동 박싱(autoboxing)이 겹치면 **직관과 어긋나는 지점**이 생긴다. JLS §5.1.7 은 상수식을 박싱할 때 `-128`~`127` 범위와 `boolean`, `'\\u0000'`~`'\\u007f'` 에 대해서만 **같은 객체가 됨을 보장**한다.\n\n```java\nInteger a = 127, b = 127;      // a == b  → true  (명세가 보장)\nInteger c = 128, d = 128;      // c == d  → 보장 없음 (대개 false)\n```\n\n`==` 가 값이 아니라 **객체 신원(identity)** 을 비교하기 때문이고, 신원이 있는 이유는 `Integer` 가 객체이기 때문이며, 객체여야 하는 이유는 제네릭이 소거되기 때문이다. 세 개가 한 줄로 이어져 있다.\n\nJEP 401(Value Objects)이 바로 이 이원성을 겨냥한 프리뷰 기능이고, \"모든 객체가 신원을 갖도록 요구하는 것이 성능의 걸림돌\"이라고 문제를 정의한다. **20년 뒤에야 손을 대고 있다는 사실 자체가** 하위 호환성의 값이 얼마나 비쌌는지를 보여 준다.\n\n### 그 대신 얻은 것\n\n대가만 있는 거래는 아니다. 이 약속 덕분에 Java 에는 다른 생태계에 없는 성질이 있다.\n\n- **10년 전에 빌드된 jar 가 오늘 JVM 에서 대체로 그냥 돈다.** 소스가 없어도 된다.\n- **`--release <n>`** 로 최신 JDK 하나만 깔고도 옛 릴리스의 API·문법 규칙에 맞춰 컴파일할 수 있다. javac 문서는 이 옵션이 \"그 릴리스의 언어 규칙에 따라 컴파일하고 그 릴리스를 타깃하는 class 파일을 만든다\"고 못 박는다.\n- 그래서 **라이브러리 생태계의 수명이 길다.** 이것이 뒤에 나올 LTS 이야기의 전제다."
+  },
+  {
+   "id": "gc",
+   "kind": "how",
+   "heading": "GC 와 힙 — 무엇이 언제 지워지고, 기본값이 무엇인가",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "HotSpot Virtual Machine Garbage Collection Tuning Guide (JDK 25) — Ergonomics",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "기본 수집기(server-class 면 G1, 아니면 Serial)와 기본 힙(초기 1/64, 최대 1/4)"
+    },
+    {
+     "title": "HotSpot GC Tuning Guide (JDK 25) — Available Collectors",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/available-collectors.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "Serial/Parallel/G1/Z 네 수집기와 각각을 고르는 기준"
+    },
+    {
+     "title": "JEP 248: Make G1 the Default Garbage Collector",
+     "url": "https://openjdk.org/jeps/248",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 9. server-class 기본 수집기를 Parallel 에서 G1 으로"
+    },
+    {
+     "title": "JEP 377: ZGC — A Scalable Low-Latency Garbage Collector (Production)",
+     "url": "https://openjdk.org/jeps/377",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 15. ZGC 를 실험 기능에서 제품 기능으로"
+    },
+    {
+     "title": "JEP 439: Generational ZGC",
+     "url": "https://openjdk.org/jeps/439",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 21. ZGC 에 세대 구분을 넣었다"
+    },
+    {
+     "title": "JEP 474: ZGC — Generational Mode by Default",
+     "url": "https://openjdk.org/jeps/474",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 23. -XX:+UseZGC 의 기본이 세대형이 됐다"
+    },
+    {
+     "title": "JEP 490: ZGC — Remove the Non-Generational Mode",
+     "url": "https://openjdk.org/jeps/490",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 24. 비세대형 ZGC 제거"
+    },
+    {
+     "title": "JEP 379: Shenandoah — A Low-Pause-Time Garbage Collector (Production)",
+     "url": "https://openjdk.org/jeps/379",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 15. Shenandoah 를 실험 기능에서 제품 기능으로"
+    },
+    {
+     "title": "JEP 363: Remove the Concurrent Mark Sweep (CMS) Garbage Collector",
+     "url": "https://openjdk.org/jeps/363",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 14. CMS 제거(JEP 291 로 JDK 9 에서 폐기 예고)"
+    }
+   ],
+   "body": "Java 개발자가 `free()` 를 안 쓰는 대신, **언제 멈출지를 고르는 일**을 한다. 그 고르는 법이 GC 튜닝이다.\n\n### 세대 구분(generational)이라는 전제\n\n수집기 대부분은 하나의 경험칙 위에 서 있다 — **대부분의 객체는 아주 빨리 죽는다.** 그래서 힙을 갈라 놓는다.\n\n```\n   ┌──────── Young ────────┐  ┌──────── Old ────────┐\n   │  Eden  │  S0  │  S1   │  │  오래 살아남은 객체   │\n   └───────────────────────┘  └─────────────────────┘\n     새 객체는 여기 태어난다      몇 번 살아남으면 승격(promotion)\n     자주·짧게 청소(minor GC)     드물게·길게 청소(major/full GC)\n```\n\nYoung 영역만 훑는 청소는 살아남은 것만 복사하면 되므로 **죽은 객체가 많을수록 싸다.** 반대로 Old 가 꽉 차서 도는 청소는 힙 전체를 상대하므로 길다. \"GC 가 튀었다\"는 대개 이쪽이다.\n\n주의할 점: 세대 구분은 **수집기의 구현 전략이지 언어의 약속이 아니다.** 실제로 ZGC 는 처음엔 세대 구분이 없었고, JDK 21 에 세대형이 들어왔으며(JEP 439), JDK 23 에서 그것이 기본이 됐고(JEP 474), JDK 24 에서 비세대형은 아예 제거됐다(JEP 490). **\"GC 는 이렇게 동작한다\"는 문장은 버전 없이는 틀린 문장이다.**\n\n### 지금 내 JVM 의 기본값은 무엇인가\n\nOracle 의 GC 튜닝 가이드(JDK 25)가 밝히는 기본값은 이렇다.\n\n- 기본 수집기: **server-class 머신이면 G1, 아니면 Serial.**\n- server-class 의 정의: **CPU 2개 이상 그리고 물리 메모리 1792 MB 이상.**\n- 기본 힙: **초기 = 물리 메모리의 1/64, 최대 = 물리 메모리의 1/4.**\n\nG1 이 기본이 된 것은 JDK 9(JEP 248)부터다 — 그 전 기본은 Parallel 이었다. 그리고 이 값들은 **추측할 게 아니라 물어보면 된다.**\n\n```\n$ java -XX:+PrintFlagsFinal -version | grep -E \"UseG1GC|MaxHeapSize\"\n   size_t MaxHeapSize   = 4211081216   {product} {ergonomic}\n     bool UseG1GC       = true         {product} {ergonomic}\n```\n\n오른쪽 `{ergonomic}` 이 **\"내가 준 게 아니라 JVM 이 정했다\"** 는 표시다. `-Xmx` 나 `-XX:+UseSerialGC` 를 주면 그 자리가 `{command line}` 으로 바뀐다. 실습 2번이 이걸 눈으로 보는 것이다.\n\n### 무엇을 언제 고르나\n\n수집기 비교는 아래 `gc-compare` 표에 있다. 고르는 순서만 여기 적는다.\n\n1. **아무것도 하지 않는다.** Oracle 가이드 자체가 \"먼저 VM 이 고르게 두고, 필요하면 힙 크기부터 조정하고, 수집기를 명시적으로 고르는 것은 그다음\"이라고 권한다.\n2. 문제가 **처리량**이면(배치·ETL) Parallel 을 본다.\n3. 문제가 **꼬리 지연(p99)** 이면 G1 의 `-XX:MaxGCPauseMillis` 를 먼저 만지고, 그래도 부족하면 ZGC 로 간다.\n4. **힙이 아니라 코드가 문제인 경우가 더 많다.** 큰 객체를 계속 만들고 있다면 수집기를 바꿔도 총량은 그대로다.\n\n### 사라진 수집기도 있다\n\nCMS 는 JDK 9 에서 폐기 예고(JEP 291)되고 **JDK 14 에서 제거됐다**(JEP 363). `-XX:+UseConcMarkSweepGC` 가 적힌 옛 운영 스크립트는 JDK 14 이상에서 그대로 실패한다. **JVM 옵션은 하위 호환성 약속의 바깥이다** — 언어와 class 파일은 지켜지지만 튜닝 플래그는 그렇지 않다. 버전을 올릴 때 실제로 사람을 붙잡는 것이 대개 이쪽이다."
+  },
+  {
+   "id": "lts",
+   "kind": "how",
+   "heading": "LTS — 6개월마다 새 버전이 나오는데 왜 회사는 Java 8 에 있나",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "OpenJDK — JDK Project (release schedule)",
+     "url": "https://openjdk.org/projects/jdk/",
+     "publisher": "OpenJDK",
+     "kind": "docs",
+     "summary": "\"a feature release every six months according to a strict, time-based model\" 과 릴리스별 GA 날짜"
+    },
+    {
+     "title": "Oracle Java SE Support Roadmap",
+     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "릴리스별 GA·Premier·Extended 지원 종료일 표. LTS 지정이 여기서 나온다"
+    },
+    {
+     "title": "javac 도구 레퍼런스 (JDK 25)",
+     "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "--release 는 그 릴리스의 언어 규칙과 그 릴리스의 API 로 컴파일한다"
+    },
+    {
+     "title": "JEP 182: Policy for Retiring javac -source and -target Options",
+     "url": "https://openjdk.org/jeps/182",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "javac 의 소스/타깃 옵션 유지 정책(\"one + three back\")"
+    }
+   ],
+   "body": "2017년(JDK 9) 이후 Java 의 릴리스 모델이 바뀌었다. OpenJDK 의 JDK 프로젝트는 스스로를 이렇게 설명한다 — **\"a feature release every six months according to a strict, time-based model.\"** 3월과 9월, 기능이 준비됐든 아니든 나간다.\n\n그래서 **버전 숫자는 더 이상 크기를 뜻하지 않는다.** JDK 22 와 23 의 차이는 옛날의 Java 7 → 8 같은 사건이 아니다. 대신 무게는 다른 곳으로 옮겨 갔다 — **몇 년 동안 보안 패치를 받느냐**, 즉 LTS 다.\n\n### LTS 는 언어의 성질이 아니라 지원 정책이다\n\n여기서 가장 자주 오해하는 것: **LTS 는 JDK 안에 든 기능이 아니다.** Oracle 이 자기 지원 계약의 기간을 표시하는 라벨이고, 어떤 릴리스를 LTS 로 지정할지도 Oracle 의 로드맵이 정한다. 자세한 날짜는 아래 `lts-table` 표에 있고, 그 표에서 읽을 것은 셋이다.\n\n- **비-LTS 는 6개월짜리다.** JDK 26 은 2026년 3월 GA, Premier 지원은 2026년 9월까지다. 다음 버전이 나오면 끝이다.\n- **LTS 간격이 3년에서 2년으로 좁혀졌다.** 8 → 11(3년) → 17(3년) → 21(2년) → 25(2년) → 29(2027년 9월 예정, 2년).\n- **Java 8 의 Extended 지원이 2030년 12월까지 있다.** 2014년에 나온 릴리스가 16년 넘게 살아 있는 것이다. 이 한 줄이 \"왜 아직 Java 8 공고가 있나\"의 절반을 설명한다.\n\n### 회사가 못 올리는 이유는 언어가 아니다\n\n앞 절에서 본 대로 **언어와 class 파일의 호환성은 지켜진다.** 그런데도 버전이 안 오른다. 걸리는 것은 언어 바깥이다.\n\n| 걸리는 곳 | 무슨 일이 나나 |\n|---|---|\n| **빌드·의존성** | 옛 라이브러리가 뱉은 class 파일의 major version, 또는 그 라이브러리가 JDK 내부 API 를 쓰던 자리 |\n| **JVM 플래그** | 위 절의 CMS 처럼 **제거된 옵션은 기동 자체를 실패시킨다** |\n| **런타임 동작 차이** | 기본 수집기·기본 힙·문자열 처리 등, 컴파일은 되는데 운영 지표가 달라진다 |\n| **검증 비용** | 금융·공공처럼 배포마다 검증 절차가 붙는 곳에서는 '되는지'가 아니라 '증명했는지'가 기준이다 |\n\n즉 버전 업그레이드는 **언어 마이그레이션이 아니라 운영 리스크 관리**다. 그래서 조직은 \"지원이 끝날 때까지 안 건드린다\"를 고르고, 그 결정이 채용 공고에 `Java 8 이상`, `Java 11 / 21`, `Spring Boot 2.7 / Java 11 기반 시스템의 점진적 현대화` 같은 문장으로 남는다(아래 `evidence`).\n\n### 지원 대상 릴리스로 컴파일하는 법\n\n낡은 런타임에 배포해야 한다면 **옛 JDK 를 깔 필요는 없다.** javac 의 `--release` 하나면 된다.\n\n```\n$ javac --release 8  -d out8  T.java     # Java 8 의 문법 + Java 8 의 API 로만 컴파일\n$ javac --release 17 -d out17 T.java\n```\n\n`--release 8` 은 `List.of(...)`(Java 9 추가) 같은 API 를 **컴파일 에러로 잡아 준다.** `-source`/`-target` 만 쓰면 문법과 class 버전만 맞추고 **API 는 최신 JDK 것을 참조**하므로, 빌드는 통과하고 운영에서 `NoSuchMethodError` 가 난다. 이 함정이 이 절에서 가장 실용적인 한 줄이다.\n\n단, **javac 가 받아 주는 릴리스 범위는 JDK 마다 다르다.** JEP 182 는 \"one + three back\" 정책을 적어 두었지만 실제 빌드는 그보다 훨씬 넓게 받아 주는 경우가 있다(손에 있는 JDK 17 의 `javac --help` 는 7~17 을 지원한다고 표시한다). **정책을 외우지 말고 `javac --help` 로 확인하라.**"
+  },
+  {
+   "id": "modern",
+   "kind": "extra",
+   "heading": "record · sealed · 가상 스레드 — 새 문법은 버전에 매여 있다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "JEP 395: Records",
+     "url": "https://openjdk.org/jeps/395",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 16 정식. JDK 14·15 프리뷰(JEP 359, 384)를 거쳤다"
+    },
+    {
+     "title": "JEP 409: Sealed Classes",
+     "url": "https://openjdk.org/jeps/409",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 17 정식. JDK 15·16 프리뷰(JEP 360, 397)를 거쳤다"
+    },
+    {
+     "title": "JEP 444: Virtual Threads",
+     "url": "https://openjdk.org/jeps/444",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 21 정식. 기존 java.lang.Thread API 를 그대로 쓰게 하는 것이 명시된 목표다"
+    },
+    {
+     "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+     "url": "https://openjdk.org/jeps/491",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 24. synchronized 블록 안에서 가상 스레드가 캐리어를 붙잡던 문제를 고쳤다"
+    },
+    {
+     "title": "JEP 401: Value Objects (Preview)",
+     "url": "https://openjdk.org/jeps/401",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 28 프리뷰 목표. 모든 객체가 신원(identity)을 갖는 요구가 성능의 걸림돌이라는 문제 제기"
+    }
+   ],
+   "body": "\"Java 는 장황하다\"는 평판은 대부분 **Java 8 의 Java** 를 말한다. 그 사이에 문법이 꽤 움직였고, 어느 것이 언제 들어왔는지가 곧 **당신 팀이 그걸 쓸 수 있는지**를 결정한다. 도입 시점은 아래 `feature-versions` 표에 있다.\n\n### 가상 스레드(virtual threads)가 이 문서의 축과 맞닿는 이유\n\nJEP 444(JDK 21 정식)의 목표 문장이 이 문서 전체의 요약이다.\n\n> \"enable server applications written in the simple thread-per-request style to scale with near-optimal hardware utilization\" — 그리고 기존 `java.lang.Thread` API 를 쓰는 코드가 **거의 고치지 않고** 가상 스레드를 쓸 수 있게 한다.\n\n다른 언어들은 같은 문제(요청당 스레드가 비싸다)를 **언어 문법을 바꿔서** 풀었다 — `async`/`await` 를 넣고, 그 색깔이 호출 스택 전체로 번지게 했다. Java 는 **런타임을 바꿔서** 풀었다. 스레드를 OS 가 아니라 JVM 이 스케줄링하게 만들고, API 는 그대로 뒀다.\n\n```java\n// 코드 모양이 안 바뀌는 것이 요점이다\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    executor.submit(() -> handle(request));   // 10만 개를 띄워도 OS 스레드는 몇 개\n}\n```\n\n- **캐리어 스레드(carrier thread)** — 가상 스레드가 실제로 올라타는 플랫폼 스레드. 블로킹 I/O 를 만나면 가상 스레드는 캐리어에서 내려오고(unmount), 캐리어는 다른 가상 스레드를 태운다.\n- **핀(pinning)** — 내려오지 못하고 캐리어를 붙잡는 상황. **JDK 21~23 에서는 `synchronized` 블록 안에서 블로킹하면 핀이 됐고**, JDK 24 의 JEP 491 이 이를 고쳐 `synchronized` 안에서도 내려올 수 있게 했다.\n\n즉 같은 \"가상 스레드를 씁니다\"라도 **JDK 21 과 24 는 다르게 동작한다.** 버전을 밝히지 않은 가상 스레드 조언은 믿지 말아야 한다는 뜻이고, 이것이 앞 절의 LTS 이야기와 정확히 이어진다.\n\n### record 와 sealed — 데이터를 표현하는 문법\n\n- **`record`** (JDK 16 정식) — \"불변 데이터의 투명한 운반체\". `equals`/`hashCode`/`toString` 과 접근자가 자동으로 생긴다. JDK 14·15 를 프리뷰로 거쳤다.\n- **`sealed`** (JDK 17 정식) — 상속할 수 있는 타입을 `permits` 로 **닫아 둔다.** JDK 15·16 프리뷰를 거쳤다.\n\n둘은 짝이다. sealed 로 경우의 수가 닫히면 `switch` 패턴 매칭에서 컴파일러가 **빠진 경우를 잡아 줄 수 있다.** 상속을 막는 문법이 오히려 표현력을 늘리는 자리다.\n\n### 아직 오지 않은 것\n\n`compat` 절에서 본 원시 타입/객체 이원성은 **JEP 401(Value Objects)** 이 겨냥하고 있고, 2026년 9월 현재 **JDK 28 프리뷰**로 잡혀 있다. 프리뷰는 정식이 아니다 — `--enable-preview` 가 필요하고 다음 릴리스에서 모양이 바뀔 수 있으며, **프리뷰로 컴파일한 class 파일은 정확히 그 버전의 JVM 에서만 돈다.** 운영 코드에 넣을 물건이 아니다."
+  },
+  {
+   "id": "kotlin",
+   "kind": "extra",
+   "heading": "Kotlin — 같은 실행기 위에서 언어만 갈면 무엇이 바뀌고 무엇이 안 바뀌나",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Kotlin Docs — Calling Java from Kotlin (Java interop)",
+     "url": "https://kotlinlang.org/docs/java-interop.html",
+     "publisher": "JetBrains",
+     "kind": "docs",
+     "summary": "플랫폼 타입(T!), 검사 예외 없음, SAM 변환 등 자바 상호운용 규칙"
+    },
+    {
+     "title": "Kotlin Docs — Inline functions (reified type parameters)",
+     "url": "https://kotlinlang.org/docs/inline-functions.html",
+     "publisher": "JetBrains",
+     "kind": "docs",
+     "summary": "inline + reified 로 호출 지점에 타입을 심어 소거를 우회한다"
+    },
+    {
+     "title": "Java Language Specification, SE 25 — Chapter 4 (Types, §4.6 Erasure, §4.7 Reifiable Types)",
+     "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html",
+     "publisher": "Oracle",
+     "kind": "standard",
+     "summary": "타입 소거의 정의와, 제네릭을 실체화하지 않은 이유가 '기존 코드와의 호환'이라는 서술"
+    }
+   ],
+   "body": "Kotlin 은 **JVM 을 그대로 두고 언어만 바꾼** 사례다. 그래서 \"런타임이 언어를 규정한다\"는 이 문서의 명제를 시험하기에 가장 좋은 대상이다. 항목별 대조는 아래 `java-kotlin` 표에 있고, 여기서는 **경계선**만 본다.\n\n### 바꿀 수 있었던 것 — 컴파일러가 혼자 할 수 있는 일\n\nKotlin 공식 문서는 설계 의도를 이렇게 적는다 — \"Existing Java code can be called from Kotlin in a natural way, and Kotlin code can be used from Java rather smoothly as well.\" 그 위에서 바뀐 것들은 대체로 **컴파일 시점에 끝나는 일**이다.\n\n- **null 안전** — `String` 과 `String?` 을 컴파일러가 구분한다. 다만 자바에서 넘어온 값은 컴파일러도 모르므로 **플랫폼 타입(`T!`)** 이라는 회색 지대가 된다. 문서의 표현대로 \"Any reference in Java may be `null`, which makes Kotlin's requirements of strict null-safety impractical for objects coming from Java.\" → **자바와 닿는 경계에서는 null 안전이 보장이 아니라 최선 노력이다.**\n- **검사 예외(checked exception) 없음** — Kotlin 은 모든 예외를 비검사로 다룬다. JVM 은 원래 검사 예외를 강제하지 않는다(강제하는 쪽은 javac 다). **언어가 뺄 수 있었던 이유가 바로 그것이다.**\n- **`data class`, 확장 함수, 기본 인자** — 전부 바이트코드를 만들어 내는 방식의 문제라 JVM 은 눈치채지 못한다.\n\n### 못 바꾼 것 — JVM 이 붙잡고 있는 것\n\n- **제네릭 소거는 그대로다.** Kotlin 도 런타임에는 타입 인자를 잃는다. 대신 `inline fun <reified T>` 라는 우회로를 뒀다 — 함수를 **호출 지점에 펼쳐 넣어** 그 자리에 구체 타입을 심는 방식이고, 문서 표현으로는 \"since the function is inlined, no reflection is needed.\" 소거를 없앤 게 아니라 **컴파일러가 피해 간 것**이다.\n- **GC·힙·JIT 는 완전히 동일하다.** Kotlin 으로 짰다고 GC 튜닝이 달라지지 않는다. `gc` 절의 모든 내용이 Kotlin 서비스에 그대로 적용된다.\n- **원시 타입/박싱 이원성도 그대로다.** `Int` 는 상황에 따라 `int` 또는 `Integer` 로 컴파일된다 — 감춰졌을 뿐 사라지지 않았다.\n- **자바에서 부르는 쪽의 불편은 남는다.** `@JvmStatic`, `@JvmOverloads` 같은 어노테이션이 존재한다는 사실 자체가, 두 언어가 같은 class 파일 형식을 공유하기 때문에 생긴 이음매다.\n\n### 그래서 고를 때 무엇을 보나\n\n**\"Kotlin 이 Java 보다 낫다\"는 이 문서의 문장이 아니다.** 볼 것은 하나다 — 바뀌는 것이 **컴파일러 수준**의 편의이고, 안 바뀌는 것이 **운영에서 문제가 되는 층**(GC·메모리·기동 시간)이라는 점. 그러므로 선택의 근거는 성능이 아니라 **누가 이 코드를 읽고 고칠 것인가**여야 한다. 채용 데이터도 같은 방향을 가리킨다 — Kotlin 공고 583건 중 **69.6%에 Java 가 함께 적혀 있다.** 대체가 아니라 **덧붙임**에 가깝다(2026-08-19 `tech_relations.json`)."
+  },
+  {
+   "id": "limits",
+   "kind": "limits",
+   "heading": "경계 — JVM 이 대신 내주는 것",
+   "confidence": "inferred",
+   "sources": [
+    {
+     "title": "HotSpot Virtual Machine Garbage Collection Tuning Guide (JDK 25) — Ergonomics",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "기본 수집기(server-class 면 G1, 아니면 Serial)와 기본 힙(초기 1/64, 최대 1/4)"
+    },
+    {
+     "title": "JEP 401: Value Objects (Preview)",
+     "url": "https://openjdk.org/jeps/401",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 28 프리뷰 목표. 모든 객체가 신원(identity)을 갖는 요구가 성능의 걸림돌이라는 문제 제기"
+    }
+   ],
+   "body": "만능인 런타임은 없다. Java 를 고르면 아래를 **대가로 지불한다.**\n\n**① 기동 시간과 상주 메모리.** JVM 은 뜨는 데 시간이 들고(클래스 로딩 + JIT 가 더워지는 시간), 힙 기본 최대치가 물리 메모리의 1/4 이다. 요청 한 번 받고 죽는 함수, 몇 초에 한 번 도는 사이드카, 램이 빠듯한 엣지 장비에서는 이 성질이 그대로 비용이다. 오래 떠서 더워질수록 유리한 런타임이므로, **짧게 살수록 손해가 커진다.**\n\n**② 메모리 레이아웃을 손으로 못 잡는다.** 객체 그래프가 힙 여기저기 흩어지는 것을 막을 문법이 아직 없다(그래서 JEP 401 이 프리뷰로 준비 중이다). 캐시 지역성이 지배하는 계산(수치 시뮬레이션, 저지연 매칭 엔진)에서는 이것이 실제 한계다. 저지연 팀들이 \"zero-allocation\" 같은 표현을 쓰는 이유가 여기 있다 — **GC 를 튜닝하는 게 아니라 GC 할 일을 안 만드는 쪽으로 코드를 비튼다.**\n\n**③ GC 는 지연을 없애지 못하고 옮긴다.** ZGC 가 pause 를 밀리초 아래로 눌러도 그 일은 사라진 게 아니라 **애플리케이션 스레드와 CPU 를 나눠 쓰는 형태**로 바뀐 것이다. 처리량과 지연은 여전히 맞바꾸는 관계다.\n\n**④ 튜닝 플래그와 운영 노하우는 하위 호환이 아니다.** `gc` 절의 CMS 가 그 예다. 언어는 안 깨지는데 운영 스크립트가 깨진다.\n\n**⑤ 그리고 이 문서가 다루지 않는 것.** 왜 특정 산업이 Java 를 쓰는가(발주 구조, 인력 시장, 규제)는 **언어의 성질이 아니라 제도의 성질**이고, 별도 문서 `java-in-finance` 의 몫이다. 이 문서는 언어와 실행기만 말한다."
+  }
+ ],
+ "tables": [
+  {
+   "id": "lts-table",
+   "kind": "spec",
+   "caption": "Java 릴리스와 Oracle 지원 종료일 (LTS 표시)",
+   "note": "**Oracle 의 지원 정책 표**다. 다른 배포판(Temurin, Corretto, Zulu 등)을 쓴다면 그 배포판의 지원 표를 따로 확인해야 한다. 2026-09-04 에 원문을 확인해 옮겼고, 비-LTS 구간은 원문이 묶어 놓은 대로 묶었다. 27·28·29 는 원문에 예정(planned)으로 표시된 값이다.",
+   "columns": [
+    "릴리스",
+    "GA",
+    "Premier 지원 종료",
+    "Extended 지원 종료",
+    "성격"
+   ],
+   "rows": [
+    [
+     "8 (LTS)",
+     "2014-03",
+     "2022-03",
+     "2030-12",
+     "가장 오래 살아남은 릴리스"
+    ],
+    [
+     "11 (LTS)",
+     "2018-09",
+     "2023-09",
+     "2032-01",
+     "모듈 시스템 이후 첫 LTS"
+    ],
+    [
+     "17 (LTS)",
+     "2021-09",
+     "2026-09 (예정)",
+     "2029-09 (예정)",
+     "sealed 정식"
+    ],
+    [
+     "21 (LTS)",
+     "2023-09",
+     "2028-09 (예정)",
+     "2031-09 (예정)",
+     "가상 스레드 정식"
+    ],
+    [
+     "25 (LTS)",
+     "2025-09",
+     "2030-09 (예정)",
+     "2033-09 (예정)",
+     "현재 최신 LTS"
+    ],
+    [
+     "26 (비-LTS)",
+     "2026-03",
+     "2026-09",
+     "없음",
+     "6개월짜리"
+    ],
+    [
+     "27 (비-LTS, 예정)",
+     "2026-09",
+     "2027-03",
+     "없음",
+     "6개월짜리"
+    ],
+    [
+     "29 (LTS, 예정)",
+     "2027-09",
+     "2032-09 (예정)",
+     "2035-09 (예정)",
+     "다음 LTS — 간격 2년"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Oracle Java SE Support Roadmap",
+     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "릴리스별 GA·Premier·Extended 지원 종료일 표. LTS 지정이 여기서 나온다"
+    },
+    {
+     "title": "OpenJDK — JDK Project (release schedule)",
+     "url": "https://openjdk.org/projects/jdk/",
+     "publisher": "OpenJDK",
+     "kind": "docs",
+     "summary": "\"a feature release every six months according to a strict, time-based model\" 과 릴리스별 GA 날짜"
+    }
+   ]
+  },
+  {
+   "id": "gc-compare",
+   "kind": "compare",
+   "caption": "GC 수집기 — 무엇을 언제 고르나",
+   "note": "'상태' 열의 버전은 그 수집기가 **제품 기능이 된 시점**이다(실험 기능으로 먼저 들어온 시점은 따로다). Oracle 의 GC 튜닝 가이드가 다루는 수집기는 Serial·Parallel·G1·Z 넷이고 Shenandoah 는 거기 없다 — **어떤 수집기가 들어 있는지는 배포판마다 다르므로** `java -XX:+PrintFlagsFinal -version` 으로 자기 JVM 에 무엇이 있는지 먼저 확인해야 한다.",
+   "columns": [
+    "수집기",
+    "플래그",
+    "이럴 때",
+    "대가",
+    "상태 (버전)"
+   ],
+   "rows": [
+    [
+     "Serial",
+     "-XX:+UseSerialGC",
+     "데이터가 작고(~100MB) CPU 가 하나이거나 컨테이너가 아주 작을 때",
+     "멈춤 시간이 힙에 비례해 길어진다",
+     "server-class 가 아니면 **기본**"
+    ],
+    [
+     "Parallel",
+     "-XX:+UseParallelGC",
+     "배치·ETL 처럼 **총 처리량**이 전부이고 1초대 멈춤도 괜찮을 때",
+     "꼬리 지연(p99)이 나쁘다",
+     "JDK 8 까지 기본 (JEP 248 로 9부터 G1 에 자리를 넘김)"
+    ],
+    [
+     "G1",
+     "-XX:+UseG1GC",
+     "일반적인 서버. 지연과 처리량을 함께 신경 쓸 때. `-XX:MaxGCPauseMillis` 로 목표를 준다",
+     "Parallel 보다 처리량이 약간 낮다",
+     "**JDK 9부터 server-class 기본** (JEP 248)"
+    ],
+    [
+     "ZGC",
+     "-XX:+UseZGC",
+     "p99 지연이 제품 요구사항일 때. 힙이 크고(수백 MB~TB) 멈춤이 힙 크기와 무관해야 할 때",
+     "처리량을 얼마간 내준다",
+     "JDK 15 제품화(JEP 377) → 21 세대형 추가(JEP 439) → 23 세대형 기본(JEP 474) → 24 비세대형 제거(JEP 490)"
+    ],
+    [
+     "Shenandoah",
+     "-XX:+UseShenandoahGC",
+     "저지연이 필요한데 쓰는 배포판에 들어 있을 때",
+     "배포판에 따라 아예 없다",
+     "JDK 15 제품화(JEP 379). Oracle GC 가이드에는 없음"
+    ],
+    [
+     "CMS",
+     "(제거됨)",
+     "쓰지 않는다",
+     "옛 스크립트에 남아 있으면 **기동이 실패한다**",
+     "JDK 9 폐기 예고(JEP 291) → **JDK 14 제거**(JEP 363)"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "HotSpot GC Tuning Guide (JDK 25) — Available Collectors",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/available-collectors.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "Serial/Parallel/G1/Z 네 수집기와 각각을 고르는 기준"
+    },
+    {
+     "title": "HotSpot Virtual Machine Garbage Collection Tuning Guide (JDK 25) — Ergonomics",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "기본 수집기(server-class 면 G1, 아니면 Serial)와 기본 힙(초기 1/64, 최대 1/4)"
+    },
+    {
+     "title": "JEP 248: Make G1 the Default Garbage Collector",
+     "url": "https://openjdk.org/jeps/248",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 9. server-class 기본 수집기를 Parallel 에서 G1 으로"
+    },
+    {
+     "title": "JEP 377: ZGC — A Scalable Low-Latency Garbage Collector (Production)",
+     "url": "https://openjdk.org/jeps/377",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 15. ZGC 를 실험 기능에서 제품 기능으로"
+    },
+    {
+     "title": "JEP 439: Generational ZGC",
+     "url": "https://openjdk.org/jeps/439",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 21. ZGC 에 세대 구분을 넣었다"
+    },
+    {
+     "title": "JEP 474: ZGC — Generational Mode by Default",
+     "url": "https://openjdk.org/jeps/474",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 23. -XX:+UseZGC 의 기본이 세대형이 됐다"
+    },
+    {
+     "title": "JEP 490: ZGC — Remove the Non-Generational Mode",
+     "url": "https://openjdk.org/jeps/490",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 24. 비세대형 ZGC 제거"
+    },
+    {
+     "title": "JEP 379: Shenandoah — A Low-Pause-Time Garbage Collector (Production)",
+     "url": "https://openjdk.org/jeps/379",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 15. Shenandoah 를 실험 기능에서 제품 기능으로"
+    },
+    {
+     "title": "JEP 363: Remove the Concurrent Mark Sweep (CMS) Garbage Collector",
+     "url": "https://openjdk.org/jeps/363",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 14. CMS 제거(JEP 291 로 JDK 9 에서 폐기 예고)"
+    }
+   ]
+  },
+  {
+   "id": "java-kotlin",
+   "kind": "compare",
+   "caption": "Java vs Kotlin — 같은 JVM 위에서 무엇이 갈리나",
+   "note": "맨 오른쪽 열이 이 표의 핵심이다. '런타임이 아는가'가 **아니오**인 줄은 컴파일러가 혼자 해결한 것이므로, 성능·운영 특성은 두 언어가 같다.",
+   "columns": [
+    "주제",
+    "Java",
+    "Kotlin",
+    "런타임(JVM)이 아는가"
+   ],
+   "rows": [
+    [
+     "null",
+     "타입에 표시 없음. `Optional` 은 반환값용 관례",
+     "`String` / `String?` 을 컴파일러가 구분",
+     "아니오 — 자바에서 온 값은 플랫폼 타입(`T!`)이라 보장이 끊긴다"
+    ],
+    [
+     "검사 예외",
+     "`throws` 를 강제한다(javac 가)",
+     "모든 예외가 비검사",
+     "아니오 — JVM 은 원래 강제하지 않는다"
+    ],
+    [
+     "데이터 홀더",
+     "`record` (JDK 16 정식)",
+     "`data class`",
+     "아니오 — 둘 다 평범한 class 로 컴파일된다"
+    ],
+    [
+     "제네릭 실체화",
+     "소거. `T` 를 런타임에 알 수 없다",
+     "역시 소거. `inline fun <reified T>` 로 호출 지점에 심어 우회",
+     "**예** — 소거는 JVM 쪽 성질이라 언어가 못 없앴다"
+    ],
+    [
+     "원시 타입",
+     "`int` / `Integer` 를 직접 쓴다",
+     "`Int` 하나로 쓰고 컴파일러가 고른다",
+     "**예** — 이원성은 그대로 남아 있다"
+    ],
+    [
+     "동시성",
+     "가상 스레드(JDK 21 정식) — API 는 기존 Thread 그대로",
+     "코루틴 — 언어·라이브러리 층에서 해결",
+     "**예** — 가상 스레드는 JVM 이 스케줄링한다"
+    ],
+    [
+     "GC·힙·JIT",
+     "동일",
+     "동일",
+     "**예** — 튜닝 지식이 그대로 통한다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Kotlin Docs — Calling Java from Kotlin (Java interop)",
+     "url": "https://kotlinlang.org/docs/java-interop.html",
+     "publisher": "JetBrains",
+     "kind": "docs",
+     "summary": "플랫폼 타입(T!), 검사 예외 없음, SAM 변환 등 자바 상호운용 규칙"
+    },
+    {
+     "title": "Kotlin Docs — Inline functions (reified type parameters)",
+     "url": "https://kotlinlang.org/docs/inline-functions.html",
+     "publisher": "JetBrains",
+     "kind": "docs",
+     "summary": "inline + reified 로 호출 지점에 타입을 심어 소거를 우회한다"
+    },
+    {
+     "title": "Java Language Specification, SE 25 — Chapter 4 (Types, §4.6 Erasure, §4.7 Reifiable Types)",
+     "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html",
+     "publisher": "Oracle",
+     "kind": "standard",
+     "summary": "타입 소거의 정의와, 제네릭을 실체화하지 않은 이유가 '기존 코드와의 호환'이라는 서술"
+    },
+    {
+     "title": "JEP 395: Records",
+     "url": "https://openjdk.org/jeps/395",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 16 정식. JDK 14·15 프리뷰(JEP 359, 384)를 거쳤다"
+    },
+    {
+     "title": "JEP 444: Virtual Threads",
+     "url": "https://openjdk.org/jeps/444",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 21 정식. 기존 java.lang.Thread API 를 그대로 쓰게 하는 것이 명시된 목표다"
+    }
+   ]
+  },
+  {
+   "id": "feature-versions",
+   "kind": "spec",
+   "caption": "최근 문법·런타임 기능이 정식이 된 버전",
+   "note": "**정식(final) 시점**만 적었다. 프리뷰로 먼저 들어온 릴리스는 비고에 있다. 프리뷰 기능으로 컴파일한 class 파일은 정확히 그 버전의 JVM 에서만 돌므로 운영에 쓰지 않는다.",
+   "columns": [
+    "기능",
+    "정식 버전",
+    "JEP",
+    "비고"
+   ],
+   "rows": [
+    [
+     "record",
+     "JDK 16",
+     "JEP 395",
+     "JDK 14·15 프리뷰(JEP 359, 384)"
+    ],
+    [
+     "sealed classes",
+     "JDK 17",
+     "JEP 409",
+     "JDK 15·16 프리뷰(JEP 360, 397)"
+    ],
+    [
+     "가상 스레드 (virtual threads)",
+     "JDK 21",
+     "JEP 444",
+     "기존 `java.lang.Thread` API 를 그대로 쓰게 하는 것이 명시된 목표"
+    ],
+    [
+     "`synchronized` 안에서 핀 제거",
+     "JDK 24",
+     "JEP 491",
+     "**JDK 21~23 에서는 `synchronized` 블록 안 블로킹이 캐리어를 붙잡았다**"
+    ],
+    [
+     "value objects",
+     "아직 아님",
+     "JEP 401",
+     "2026-09 기준 **JDK 28 프리뷰** 목표"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "JEP 395: Records",
+     "url": "https://openjdk.org/jeps/395",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 16 정식. JDK 14·15 프리뷰(JEP 359, 384)를 거쳤다"
+    },
+    {
+     "title": "JEP 409: Sealed Classes",
+     "url": "https://openjdk.org/jeps/409",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 17 정식. JDK 15·16 프리뷰(JEP 360, 397)를 거쳤다"
+    },
+    {
+     "title": "JEP 444: Virtual Threads",
+     "url": "https://openjdk.org/jeps/444",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 21 정식. 기존 java.lang.Thread API 를 그대로 쓰게 하는 것이 명시된 목표다"
+    },
+    {
+     "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+     "url": "https://openjdk.org/jeps/491",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 24. synchronized 블록 안에서 가상 스레드가 캐리어를 붙잡던 문제를 고쳤다"
+    },
+    {
+     "title": "JEP 401: Value Objects (Preview)",
+     "url": "https://openjdk.org/jeps/401",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 28 프리뷰 목표. 모든 객체가 신원(identity)을 갖는 요구가 성능의 걸림돌이라는 문제 제기"
+    }
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "새 JVM 백엔드를 시작하는데, 인원 교체가 잦고 코드를 넘겨받을 사람이 계속 바뀐다",
+   "pick": "Java (최신 LTS)",
+   "over": "Kotlin",
+   "why": "구할 수 있는 사람의 수와 '읽는 법이 하나뿐인 코드'가 이런 조직에서는 언어의 표현력보다 크게 작동한다. 채용 데이터에서도 Java 는 공고 2,174건(23.0%)인 반면 Kotlin 은 583건(6.2%)이고, 그 Kotlin 공고의 69.6%가 Java 를 함께 요구한다 — Kotlin 만 아는 사람을 뽑는 시장이 아직 얇다는 뜻이다(2026-08-19 tech_relations.json).",
+   "tradeoff": "null 처리와 보일러플레이트를 계속 손으로 낸다. `Optional` 관례와 코드 리뷰로 메워야 한다.",
+   "confidence": "inferred"
+  },
+  {
+   "situation": "팀이 고정돼 있고, 실제 버그의 상당수가 NPE 와 데이터 클래스 보일러플레이트에서 나온다",
+   "pick": "Kotlin",
+   "over": "Java",
+   "why": "컴파일러가 null 을 타입으로 잡아 주고 `data class`·확장 함수로 반복이 줄어든다. **런타임은 그대로이므로** 기존 Java 라이브러리·프레임워크·GC 튜닝 지식을 하나도 버리지 않는다.",
+   "tradeoff": "자바에서 넘어오는 값은 플랫폼 타입이라 null 안전이 경계에서 끊긴다. 빌드 시간과 자바 쪽 호출 편의를 위한 어노테이션(`@JvmStatic` 등)이 늘어난다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Kotlin Docs — Calling Java from Kotlin (Java interop)",
+     "url": "https://kotlinlang.org/docs/java-interop.html",
+     "publisher": "JetBrains",
+     "kind": "docs",
+     "summary": "플랫폼 타입(T!), 검사 예외 없음, SAM 변환 등 자바 상호운용 규칙"
+    }
+   ]
+  },
+  {
+   "situation": "요청 한 번 받고 죽는 함수, 몇 초마다 깨는 사이드카, 램이 빠듯한 장비 — 프로세스가 짧게 산다",
+   "pick": "Go · Node · 네이티브 이미지 같은 짧게 사는 런타임",
+   "over": "일반적인 JVM 프로세스",
+   "why": "JVM 은 클래스를 로딩하고 JIT 가 더워질수록 유리해지는 런타임이다. 기본 최대 힙이 물리 메모리의 1/4 로 잡히는 것도 '오래 살면서 힙을 쓰는' 전제 위의 값이다. 짧게 살면 그 준비 비용만 내고 이득은 못 받는다.",
+   "tradeoff": "Java 생태계의 라이브러리·프레임워크·사내 표준을 그 서비스에서만 버리게 된다. 스택이 둘로 갈라지는 운영 비용이 붙는다.",
+   "confidence": "inferred",
+   "sources": [
+    {
+     "title": "HotSpot Virtual Machine Garbage Collection Tuning Guide (JDK 25) — Ergonomics",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "기본 수집기(server-class 면 G1, 아니면 Serial)와 기본 힙(초기 1/64, 최대 1/4)"
+    }
+   ]
+  },
+  {
+   "situation": "운영 중인 서비스의 JDK 버전 정책을 정해야 한다",
+   "pick": "LTS 에 고정하고, LTS 가 새로 나오면 한 칸 올린다",
+   "over": "6개월마다 최신 릴리스를 따라가기",
+   "why": "비-LTS 는 Premier 지원이 6개월이라 다음 릴리스가 나오는 순간 보안 패치가 끊긴다. 즉 최신 추종은 '가끔 올린다'가 아니라 **6개월마다 반드시 올린다**는 상시 의무를 지는 선택이다.",
+   "tradeoff": "새 문법과 GC 개선을 몇 년 늦게 받는다. 그리고 한 번에 여러 버전을 건너뛰게 되어 업그레이드 한 번의 덩치가 커진다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Oracle Java SE Support Roadmap",
+     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "릴리스별 GA·Premier·Extended 지원 종료일 표. LTS 지정이 여기서 나온다"
+    },
+    {
+     "title": "OpenJDK — JDK Project (release schedule)",
+     "url": "https://openjdk.org/projects/jdk/",
+     "publisher": "OpenJDK",
+     "kind": "docs",
+     "summary": "\"a feature release every six months according to a strict, time-based model\" 과 릴리스별 GA 날짜"
+    }
+   ]
+  },
+  {
+   "situation": "GC 멈춤이 실제 지표로 잡힌다 — p99 응답이 GC 로그와 같이 튄다",
+   "pick": "ZGC (-XX:+UseZGC)",
+   "over": "기본값 G1",
+   "why": "ZGC 는 멈춤 시간을 밀리초 아래로 두는 것이 목표이고 그 시간이 힙 크기와 거의 무관하다. 힙이 커서 G1 의 목표 시간을 못 맞추는 구간에서 특히 갈린다.",
+   "tradeoff": "처리량을 얼마간 내준다. 그리고 **버전에 매인 선택**이다 — 세대형 ZGC 는 JDK 21 에 들어와 23 에서 기본이 됐으므로, JDK 17 의 ZGC 와 JDK 24 의 ZGC 는 다른 물건이다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "HotSpot GC Tuning Guide (JDK 25) — Available Collectors",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/available-collectors.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "Serial/Parallel/G1/Z 네 수집기와 각각을 고르는 기준"
+    },
+    {
+     "title": "JEP 439: Generational ZGC",
+     "url": "https://openjdk.org/jeps/439",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 21. ZGC 에 세대 구분을 넣었다"
+    },
+    {
+     "title": "JEP 474: ZGC — Generational Mode by Default",
+     "url": "https://openjdk.org/jeps/474",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 23. -XX:+UseZGC 의 기본이 세대형이 됐다"
+    }
+   ]
+  },
+  {
+   "situation": "낡은 런타임(예: Java 8)에 배포해야 하는데 개발은 최신 JDK 로 하고 싶다",
+   "pick": "`javac --release 8`",
+   "over": "`-source 8 -target 8`",
+   "why": "`--release` 는 문법뿐 아니라 **그 릴리스의 API 로** 컴파일하므로, `List.of(...)` 처럼 나중에 추가된 메서드를 컴파일 에러로 잡아 준다. `-source/-target` 은 최신 JDK 의 API 를 참조하므로 빌드는 통과하고 **운영에서 `NoSuchMethodError` 로 터진다.**",
+   "tradeoff": "그 릴리스의 API 안에 갇힌다. 그리고 javac 가 받아 주는 릴리스 범위는 JDK 마다 다르므로 `javac --help` 로 확인해야 한다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "javac 도구 레퍼런스 (JDK 25)",
+     "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "--release 는 그 릴리스의 언어 규칙과 그 릴리스의 API 로 컴파일한다"
+    },
+    {
+     "title": "JEP 182: Policy for Retiring javac -source and -target Options",
+     "url": "https://openjdk.org/jeps/182",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "javac 의 소스/타깃 옵션 유지 정책(\"one + three back\")"
+    }
+   ]
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "제네릭이 런타임에도 남아 있다고 믿고 `instanceof List<String>` 이나 `new T[10]` 을 쓴다",
+   "why": "소스에 `<String>` 이 적혀 있으니 실행할 때도 있을 것 같다. 하지만 컴파일이 끝나면 지워지고, `List<String>` 과 `List<Integer>` 는 런타임에 같은 클래스다.",
+   "fix": "런타임에 타입이 필요하면 **타입을 값으로 넘긴다** — `Class<T>` 토큰을 인자로 받거나, 라이브러리가 제공하는 슈퍼타입 토큰(예: Jackson 의 `TypeReference`)을 쓴다. 배열이 필요하면 `(T[]) Array.newInstance(clazz, n)` 처럼 클래스 객체로 만든다.",
+   "sources": [
+    {
+     "title": "Java Language Specification, SE 25 — Chapter 4 (Types, §4.6 Erasure, §4.7 Reifiable Types)",
+     "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html",
+     "publisher": "Oracle",
+     "kind": "standard",
+     "summary": "타입 소거의 정의와, 제네릭을 실체화하지 않은 이유가 '기존 코드와의 호환'이라는 서술"
+    }
+   ]
+  },
+  {
+   "trap": "`Integer` 를 `==` 로 비교했는데 작은 수에서는 맞고 큰 수에서는 틀린다",
+   "why": "박싱된 값은 객체이고 `==` 는 신원을 비교한다. JLS 는 상수식 박싱에서 `-128`~`127`(그리고 `boolean`, `'\\u0000'`~`'\\u007f'`)만 같은 객체가 됨을 **보장**한다. 그 밖은 구현에 달렸다.",
+   "fix": "박싱 타입은 언제나 `equals` 로 비교한다. 값 비교가 목적이면 애초에 원시 타입(`int`)으로 받거나 `intValue()` 로 풀어서 비교한다.",
+   "sources": [
+    {
+     "title": "Java Language Specification, SE 25 — §5.1.7 Boxing Conversion",
+     "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html",
+     "publisher": "Oracle",
+     "kind": "standard",
+     "summary": "상수식을 박싱할 때 -128~127 범위는 같은 객체가 보장된다는 규칙"
+    }
+   ]
+  },
+  {
+   "trap": "컨테이너에 올릴 때 힙 크기를 지정하지 않는다",
+   "why": "기본 최대 힙은 **물리 메모리의 1/4** 로 자동 결정된다. 게다가 컨테이너가 쓰는 메모리는 힙만이 아니다 — 메타스페이스, 스레드 스택, 네이티브 버퍼가 힙 바깥에 따로 붙는다. 그래서 '힙은 한도 안인데 컨테이너가 죽는' 일이 생긴다.",
+   "fix": "`-Xmx` 또는 `-XX:MaxRAMPercentage` 로 **명시한다.** 그리고 배포 전에 `java -XX:+PrintFlagsFinal -version | grep MaxHeapSize` 로 그 컨테이너 안에서 실제로 잡히는 값을 확인한다 — 값 옆이 `{ergonomic}` 이면 아무도 정해 주지 않았다는 뜻이다.",
+   "sources": [
+    {
+     "title": "HotSpot Virtual Machine Garbage Collection Tuning Guide (JDK 25) — Ergonomics",
+     "url": "https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "기본 수집기(server-class 면 G1, 아니면 Serial)와 기본 힙(초기 1/64, 최대 1/4)"
+    }
+   ]
+  },
+  {
+   "trap": "옛 JDK 로 배포하면서 `-source/-target` 만 지정하고 빌드가 통과했다고 안심한다",
+   "why": "`-source/-target` 은 문법과 class 파일 버전만 맞춘다. **API 는 빌드에 쓴 최신 JDK 것을 참조**하므로, 나중에 추가된 메서드를 써도 컴파일러가 막지 않는다.",
+   "fix": "`--release <n>` 을 쓴다. 이 옵션은 그 릴리스의 API 집합으로 컴파일하므로 존재하지 않는 메서드를 컴파일 시점에 잡아 준다. Maven 이라면 compiler plugin 의 `<release>`, Gradle 이라면 `options.release` 를 쓴다.",
+   "sources": [
+    {
+     "title": "javac 도구 레퍼런스 (JDK 25)",
+     "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
+     "publisher": "Oracle",
+     "kind": "docs",
+     "summary": "--release 는 그 릴리스의 언어 규칙과 그 릴리스의 API 로 컴파일한다"
+    }
+   ]
+  },
+  {
+   "trap": "블로그에서 본 GC 플래그를 그대로 운영에 붙인다",
+   "why": "GC 플래그는 **버전과 배포판에 매여 있다.** CMS 는 JDK 14 에서 제거됐고(그 플래그가 남아 있으면 기동 자체가 실패한다), ZGC 는 JDK 21~24 사이에 기본 동작이 바뀌었으며, Shenandoah 는 아예 없는 배포판이 있다.",
+   "fix": "플래그를 붙이기 전에 그 JDK 에서 무엇이 실재하는지부터 확인한다 — `java -XX:+PrintFlagsFinal -version` 으로 목록과 현재 값을 보고, 붙인 뒤에는 그 값이 `{command line}` 으로 바뀌었는지 다시 확인한다. 그리고 **어느 JDK 버전의 이야기인지 밝히지 않은 튜닝 글은 쓰지 않는다.**",
+   "sources": [
+    {
+     "title": "JEP 363: Remove the Concurrent Mark Sweep (CMS) Garbage Collector",
+     "url": "https://openjdk.org/jeps/363",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 14. CMS 제거(JEP 291 로 JDK 9 에서 폐기 예고)"
+    },
+    {
+     "title": "JEP 474: ZGC — Generational Mode by Default",
+     "url": "https://openjdk.org/jeps/474",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 23. -XX:+UseZGC 의 기본이 세대형이 됐다"
+    },
+    {
+     "title": "JEP 490: ZGC — Remove the Non-Generational Mode",
+     "url": "https://openjdk.org/jeps/490",
+     "publisher": "OpenJDK",
+     "kind": "standard",
+     "summary": "JDK 24. 비세대형 ZGC 제거"
+    }
+   ]
+  },
+  {
+   "trap": "Kotlin 을 얹었으니 null 이 안 난다고 생각한다",
+   "why": "Kotlin 의 null 검사는 **Kotlin 이 타입을 아는 값**에만 걸린다. 자바 라이브러리나 자바로 짠 모듈에서 넘어온 값은 플랫폼 타입(`T!`)이라 컴파일러가 통과시키고, 실제로 null 이면 그 자리에서 터진다.",
+   "fix": "자바와 닿는 경계에 **한 겹**을 둔다 — 넘어온 값을 즉시 `String?`/`String` 으로 명시해 받고, 자바 쪽에 `@Nullable`/`@NotNull` 어노테이션이 있으면 그것을 신뢰 근거로 삼는다. 경계 바깥은 검사 대상이 아니라는 것을 팀이 알고 있어야 한다.",
+   "sources": [
+    {
+     "title": "Kotlin Docs — Calling Java from Kotlin (Java interop)",
+     "url": "https://kotlinlang.org/docs/java-interop.html",
+     "publisher": "JetBrains",
+     "kind": "docs",
+     "summary": "플랫폼 타입(T!), 검사 예외 없음, SAM 변환 등 자바 상호운용 규칙"
+    }
+   ]
+  }
+ ],
+ "terms": [
+  {
+   "term": "바이트코드",
+   "en": "bytecode",
+   "what": "javac 가 만든 중간 형식. 기계어가 아니라 JVM 이 읽는 명령어이고, `.class` 파일 안에 major version 이 함께 박힌다"
+  },
+  {
+   "term": "JVM",
+   "en": "Java Virtual Machine",
+   "what": "바이트코드를 읽어 실행하는 프로그램. 메모리 회수(GC)와 기계어 번역(JIT)이 여기 산다. 대표 구현이 HotSpot"
+  },
+  {
+   "term": "JDK / JRE",
+   "en": "Java Development Kit / Runtime Environment",
+   "what": "JDK 는 컴파일러(javac)와 도구까지 든 개발용 한 벌, JRE 는 실행에 필요한 부분만. 요즘 배포판은 대개 JDK 하나로 배포한다"
+  },
+  {
+   "term": "JIT 컴파일",
+   "en": "just-in-time compilation",
+   "what": "자주 도는 바이트코드를 실행 중에 기계어로 번역해 두는 것. JVM 이 '더워질수록 빨라지는' 이유"
+  },
+  {
+   "term": "타입 소거",
+   "en": "type erasure",
+   "what": "컴파일이 끝나면 제네릭의 타입 인자가 지워지는 것. 기존 코드와의 호환을 위해 고른 방식이다"
+  },
+  {
+   "term": "박싱 / 언박싱",
+   "en": "boxing / unboxing",
+   "what": "`int` 같은 원시 값을 `Integer` 객체로 감싸거나 다시 꺼내는 것. 제네릭이 참조 타입만 받기 때문에 필요해진다"
+  },
+  {
+   "term": "Stop-the-world",
+   "en": "stop-the-world pause",
+   "what": "GC 가 일하는 동안 애플리케이션 스레드를 전부 멈추는 구간. '응답이 튀었다'의 흔한 정체"
+  },
+  {
+   "term": "세대 가설",
+   "en": "generational hypothesis",
+   "what": "대부분의 객체는 태어나자마자 죽는다는 경험칙. 힙을 Young/Old 로 가르는 근거"
+  },
+  {
+   "term": "캐리어 스레드",
+   "en": "carrier thread",
+   "what": "가상 스레드가 실제로 올라타는 OS 스레드. 가상 스레드가 여기서 내려오지 못하는 상태를 핀(pinning)이라 한다"
+  },
+  {
+   "term": "플랫폼 타입",
+   "en": "platform type (T!)",
+   "what": "Kotlin 이 자바에서 받은 값에 붙이는 회색 지대 타입. null 일 수도 아닐 수도 있어 컴파일러가 검사를 보류한다"
+  },
+  {
+   "term": "LTS",
+   "en": "Long-Term Support",
+   "what": "언어 기능이 아니라 **지원 기간 라벨**이다. 어떤 릴리스가 LTS 인지는 벤더의 로드맵이 정한다"
+  }
+ ],
+ "drills": [
+  {
+   "task": "파일 하나(`T.java`)를 만들어 `List.of(\"a\")` 를 쓰고, 같은 소스를 `javac --release 8` 과 `javac --release 17` 로 각각 컴파일해 본다. 성공한 쪽의 `.class` 를 `javap -v` 로 열어 `major version` 을 확인한다.",
+   "done_when": "`--release 8` 에서 `cannot find symbol: method of(String)` 이 나는 것을 보고 **왜 문법이 아니라 API 에서 걸렸는지** 설명할 수 있다. 그리고 `--release 8` 로 컴파일한 클래스는 `major version: 52`, `--release 17` 은 `61` 이 찍히는 것을 눈으로 확인한다.",
+   "why": "'하위 호환성'이라는 추상적인 말이 **class 파일 안의 숫자 하나**와 **API 집합**이라는 두 개의 구체물로 바뀐다. `-source/-target` 만 쓰면 이 에러가 안 난다는 것까지 직접 확인하면 앞의 지뢰 항목이 몸에 남는다.",
+   "needs": "JDK 17 이상 (`javac`, `javap`)",
+   "no_hardware": "로컬에 JDK 가 없으면 `docker run --rm -v \"$PWD\":/w -w /w eclipse-temurin:21-jdk javac --release 8 T.java` 처럼 컨테이너로 돌린다.",
+   "hours": 0.5
+  },
+  {
+   "task": "`java -XX:+PrintFlagsFinal -version` 을 돌려 `UseG1GC`, `UseSerialGC`, `InitialHeapSize`, `MaxHeapSize` 를 찾는다. 그다음 `-Xmx512m -XX:+UseSerialGC` 를 붙여 같은 명령을 다시 돌린다.",
+   "done_when": "값 오른쪽 표시가 `{ergonomic}` 에서 `{command line}` 으로 바뀌는 것을 확인하고, 아무 옵션 없이 나온 `MaxHeapSize` 가 **내 머신 물리 메모리의 약 1/4** 인지 계산해서 맞춰 본다.",
+   "why": "'기본값'이 어디서 오는지가 손에 잡힌다. 그리고 앞으로 어떤 GC 조언을 읽든 **내 JVM 에 그 플래그가 실재하는지 먼저 물어보는 습관**이 생긴다 — 이것이 CMS 류의 사고를 막는다.",
+   "needs": "아무 JDK 하나",
+   "hours": 0.5,
+   "no_hardware": "JDK 를 깔 수 없으면 OpenJDK 의 GC 튜닝 가이드에서 ergonomics 절을 읽고 이 기계의 코어 수·메모리로 기본 수집기와 힙 크기를 **먼저 예측해 적어 둔 뒤**, 나중에 JDK 가 생겼을 때 `-XX:+PrintFlagsFinal` 로 답을 맞춰 본다. 예측을 적는 것이 이 실습의 알맹이다."
+  },
+  {
+   "task": "`List<String>` 과 `List<Integer>` 를 만들어 `getClass()` 가 같은지 출력하고, 리플렉션(`List.class.getMethod(\"add\", Object.class).invoke(...)`)으로 `List<String>` 에 `Integer` 를 밀어 넣은 뒤 `String s = xs.get(0);` 를 실행해 본다.",
+   "done_when": "`getClass()` 비교가 `true` 로 나오는 것과, `ClassCastException` 이 **넣는 줄이 아니라 꺼내 쓰는 줄에서** 터지는 것을 확인한다. 스택 트레이스가 가리키는 줄 번호를 직접 읽는다.",
+   "why": "제네릭의 안전성이 **컴파일 시점에만 있다**는 사실을 문장이 아니라 예외 메시지로 갖게 된다. 왜 `instanceof List<String>` 이 컴파일 에러인지도 여기서 저절로 설명된다.",
+   "needs": "아무 JDK 하나",
+   "hours": 0.5,
+   "no_hardware": "JDK 없이도 확인된다 — `javap -c` 출력 대신 JLS §4.7(소거)의 정의를 읽고, `List<String>` 과 `List<Integer>` 가 컴파일 후 어떤 타입으로 남는지 손으로 적어라. 온라인 자바 실행기(설치 없이 도는 것들)로도 `getClass()` 비교까지는 그대로 재현된다."
+  },
+  {
+   "task": "같은 작업(예: 100ms 짜리 `Thread.sleep` 후 카운터 증가)을 10만 번, 한 번은 플랫폼 스레드(`new Thread(...)`)로, 한 번은 `Executors.newVirtualThreadPerTaskExecutor()` 로 띄워 비교한다.",
+   "done_when": "플랫폼 스레드 쪽이 메모리 부족이나 심한 지연으로 무너지고 가상 스레드 쪽은 완주하는 것을 확인한다. 그리고 `synchronized` 블록 안에서 잠들도록 바꿔 보고, 실행한 JDK 버전(21~23 인지 24 이상인지)에 따라 결과가 달라지는지 관찰한다.",
+   "why": "'런타임이 언어를 규정한다'의 최신 사례를 손으로 만진다. 특히 `synchronized` 변형은 **같은 코드가 JDK 버전에 따라 다르게 도는 것**을 직접 보여 준다(JEP 491).",
+   "needs": "JDK 21 이상. 가능하면 JDK 21 과 24 두 개",
+   "no_hardware": "JDK 를 두 벌 깔기 어려우면 `eclipse-temurin:21-jdk` 와 `eclipse-temurin:25-jdk` 컨테이너로 같은 파일을 각각 돌린다.",
+   "hours": 1.5
+  }
+ ],
+ "checks": [
+  "`List<String>` 과 `List<Integer>` 는 런타임에 같은 클래스인가? 그렇게 만든 결정의 이유는 무엇이었나?",
+  "`Integer a = 128, b = 128;` 에서 `a == b` 의 결과를 명세가 보장하는가? 127 이면 답이 달라지는 이유는?",
+  "지금 이 머신에서 아무 옵션 없이 `java` 를 띄우면 어떤 수집기가 붙고 최대 힙은 얼마인가? 그 값이 어디서 나왔는지 명령 한 줄로 보여 줄 수 있나?",
+  "LTS 는 JDK 안에 든 기능인가, 아닌가? Java 8 의 Oracle Extended 지원은 언제까지인가?",
+  "`-source 8 -target 8` 로 빌드가 통과한 코드가 Java 8 런타임에서 터질 수 있는 이유는 무엇이고, 무엇으로 바꿔야 하나?",
+  "Kotlin 으로 갈아타면 GC 튜닝 지식 중 무엇을 버려야 하나? 반대로 Kotlin 이 **못** 바꾼 JVM 의 성질 두 개를 들 수 있나?",
+  "가상 스레드를 쓴다는 코드를 리뷰할 때, 반드시 물어봐야 하는 버전 관련 질문은 무엇인가?"
+ ],
+ "evidence": [
+  {
+   "quote": "레거시 개선 및 이관 — Spring Boot 2.7 / Java 11 / JSP 기반 시스템의 점진적 현대화",
+   "from": "posting",
+   "url": "https://www.wanted.co.kr/wd/379528",
+   "where": "서스틴베스트 — 백엔드 개발자 (주요업무)",
+   "what_it_shows": "LTS 고정이 '보수적인 선택'이 아니라 **이미 벌어진 현실**이라는 것. 같은 공고의 자격요건은 `Java 11 / 21` 을 함께 요구한다 — 한 조직 안에 두 LTS 가 공존하고, 그 사이를 옮기는 일 자체가 채용 항목이 된다."
+  },
+  {
+   "quote": "Java 21+ 및 JVM 아키텍처에 대한 높은 이해와 Virtual Thread 기반 동시성 처리 경험이 있으신 분",
+   "from": "posting",
+   "url": "https://www.wanted.co.kr/wd/380508",
+   "where": "인피니티익스체인지코리아 — 백엔드 개발자 (자격요건)",
+   "what_it_shows": "가상 스레드가 이미 **버전을 명시한 채용 요건**으로 나온다는 것. 'Java 21+' 라고 못 박은 이유가 곧 JEP 444 의 정식화 시점이고, 이 문서가 버전을 밝히라고 요구하는 이유이기도 하다."
+  },
+  {
+   "quote": "Java/JVM 기반 서비스 운영 경험 (힙덤프 분석, GC 튜닝 포함)",
+   "from": "posting",
+   "url": "https://www.wanted.co.kr/wd/364922",
+   "where": "널리소프트 — [SSEM] 인프라 엔지니어 (Senior SRE) (자격요건)",
+   "what_it_shows": "GC 와 힙이 '알아 두면 좋은 이론'이 아니라 **운영 직무의 자격요건**이라는 것. 언어 문법이 아니라 런타임을 아는 사람을 따로 뽑는 자리가 존재한다."
+  },
+  {
+   "quote": "Java 1.6 이상의 JVM thread dump 분석이 가능하신 분",
+   "from": "posting",
+   "url": "https://www.wanted.co.kr/wd/367233",
+   "where": "이파피루스 — 백엔드 개발자 (Java/팀원) (우대사항)",
+   "what_it_shows": "2026년의 모집중 공고에 **`1.6` 이라는 표기가 그대로 살아 있다**는 것. 하위 호환성이 만든 세계에서는 옛 버전이 사라지지 않고 요구사항으로 남는다 — 이 문서의 LTS 절이 설명하려는 현상 그 자체다."
+  }
+ ],
+ "related": [
+  {
+   "slug": "java-in-finance",
+   "how": "이 문서가 일부러 안 쓴 절반. 여기는 '언어와 런타임이 왜 이렇게 생겼나'만 다루고, **왜 특정 산업이 이 언어를 고르는가**(망분리·차세대·발주 구조)는 그쪽에 있다. 그 문서가 `Java` 라는 alias 를 비워 두고 이 문서를 기다렸다"
+  },
+  {
+   "slug": "gil",
+   "how": "같은 축의 **반대 사례**. 파이썬은 런타임의 자물쇠 하나 때문에 '스레드를 늘려도 안 빨라지는' 언어가 됐고, 자바는 런타임을 고쳐(가상 스레드) 언어 문법을 지켰다. 런타임이 언어를 규정하는 두 가지 방식"
+  },
+  {
+   "slug": "python",
+   "how": "Java 공고의 30.9%에 함께 나오는 언어. 한 팀이 데이터·ML 은 파이썬, 핵심 서비스는 자바로 나눠 쓰는 구성이 흔하다. `market` 형식도 같은 `language` 카테고리라 나란히 읽으면 갈리는 지점이 보인다"
+  },
+  {
+   "slug": "spring",
+   "how": "아직 없는 문서. Java 공고의 **50.0%** 가 함께 요구하고, 반대로 Spring 공고의 85.6%에 Java 가 있다 — 국내에서 '자바 백엔드'는 사실상 Spring 을 뜻한다. 이 문서가 런타임까지만 다루고 멈춘 자리"
+  },
+  {
+   "slug": "kotlin",
+   "how": "아직 없는 문서. 이 문서의 `kotlin` 절은 **JVM 이 붙잡고 있는 것과 놓아 준 것**만 다뤘다. 코루틴·DSL·멀티플랫폼처럼 언어 자체의 이야기는 그쪽 몫이다"
+  },
+  {
+   "slug": "garbage-collection",
+   "how": "아직 없는 문서. 여기서는 자바의 수집기 고르는 법까지만 썼다. 세대 가설·쓰기 장벽·동시 표시 같은 **알고리즘 자체**는 언어와 무관한 낱말이라 따로 서야 한다"
+  }
+ ],
+ "open_questions": [
+  "`lts-table` 의 날짜는 **Oracle 배포판 기준**이다. 국내 현업에서 많이 쓰는 Temurin·Corretto·Zulu 등의 지원 종료일은 각 벤더가 따로 공표하며, 이 사이클에 그 표들을 1차 자료로 대조하지 못했다. 표의 날짜를 자기 배포판에 그대로 적용하면 안 된다.",
+  "JEP 182 는 javac 의 `-source/-target` 을 \"one + three back\" 으로 유지한다고 적었지만, 손에 있는 JDK 17 의 `javac --help` 는 7~17 을 지원한다고 표시한다. 정책 문서와 실제 구현이 어긋나 보이며 이 차이를 설명하는 1차 자료를 찾지 못했다. 그래서 본문에서는 구체적인 범위를 적지 않고 `javac --help` 로 확인하라고만 썼다.",
+  "Oracle 의 ergonomics 문서는 기본 힙을 \"physical memory\" 의 1/64·1/4 라고만 적는다. 컨테이너(cgroup) 메모리 한도를 언제부터, 어떤 조건에서 그 계산에 쓰는지를 이 사이클에 1차 자료로 확정하지 못했다. 그래서 지뢰 항목에서는 '명시하라'와 '컨테이너 안에서 직접 확인하라'로만 썼다.",
+  "국내 현업의 JDK 버전 분포(몇 %가 8·11·17·21 인가)를 보여 주는 공개 통계를 찾지 못했다. 이 문서의 `evidence` 는 공고에 박힌 문장일 뿐 분포가 아니며, 분포처럼 읽으면 안 된다.",
+  "어떤 배포판에 Shenandoah 가 포함되는지의 최신 목록을 배포사 1차 자료로 확인하지 못했다. 확인된 것은 JEP 379 로 JDK 15 에서 제품 기능이 됐다는 것과, Oracle 의 GC 튜닝 가이드가 다루는 수집기 목록에는 없다는 것뿐이다.",
+  "JEP 401(Value Objects)의 상태는 2026-09-04 에 JEP 원문에서 'JDK 28 프리뷰 목표'로 확인했다. 프리뷰 기능은 릴리스 전까지 목표 버전과 내용이 바뀔 수 있으므로 재방문 사이클에서 다시 확인해야 한다."
+ ],
+ "sources": [
+  {
+   "title": "Oracle Java SE Support Roadmap",
+   "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+   "publisher": "Oracle",
+   "kind": "docs",
+   "summary": "릴리스별 GA·Premier·Extended 지원 종료일 표. LTS 지정이 여기서 나온다"
+  },
+  {
+   "title": "OpenJDK — JDK Project (release schedule)",
+   "url": "https://openjdk.org/projects/jdk/",
+   "publisher": "OpenJDK",
+   "kind": "docs",
+   "summary": "\"a feature release every six months according to a strict, time-based model\" 과 릴리스별 GA 날짜"
+  },
+  {
+   "title": "Java Language Specification, SE 25 — Chapter 4 (Types, §4.6 Erasure, §4.7 Reifiable Types)",
+   "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html",
+   "publisher": "Oracle",
+   "kind": "standard",
+   "summary": "타입 소거의 정의와, 제네릭을 실체화하지 않은 이유가 '기존 코드와의 호환'이라는 서술"
+  },
+  {
+   "title": "Java Language Specification, SE 25 — §5.1.7 Boxing Conversion",
+   "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html",
+   "publisher": "Oracle",
+   "kind": "standard",
+   "summary": "상수식을 박싱할 때 -128~127 범위는 같은 객체가 보장된다는 규칙"
+  },
+  {
+   "title": "Java Language Specification, SE 25 — Chapter 13. Binary Compatibility",
+   "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html",
+   "publisher": "Oracle",
+   "kind": "standard",
+   "summary": "이미 컴파일된 바이너리를 깨지 않고 할 수 있는 변경의 목록을 언어 명세가 직접 정의한다"
+  },
+  {
+   "title": "HotSpot Virtual Machine Garbage Collection Tuning Guide (JDK 25) — Ergonomics",
+   "url": "https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html",
+   "publisher": "Oracle",
+   "kind": "docs",
+   "summary": "기본 수집기(server-class 면 G1, 아니면 Serial)와 기본 힙(초기 1/64, 최대 1/4)"
+  },
+  {
+   "title": "HotSpot GC Tuning Guide (JDK 25) — Available Collectors",
+   "url": "https://docs.oracle.com/en/java/javase/25/gctuning/available-collectors.html",
+   "publisher": "Oracle",
+   "kind": "docs",
+   "summary": "Serial/Parallel/G1/Z 네 수집기와 각각을 고르는 기준"
+  },
+  {
+   "title": "javac 도구 레퍼런스 (JDK 25)",
+   "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
+   "publisher": "Oracle",
+   "kind": "docs",
+   "summary": "--release 는 그 릴리스의 언어 규칙과 그 릴리스의 API 로 컴파일한다"
+  },
+  {
+   "title": "JEP 182: Policy for Retiring javac -source and -target Options",
+   "url": "https://openjdk.org/jeps/182",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "javac 의 소스/타깃 옵션 유지 정책(\"one + three back\")"
+  },
+  {
+   "title": "JEP 248: Make G1 the Default Garbage Collector",
+   "url": "https://openjdk.org/jeps/248",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 9. server-class 기본 수집기를 Parallel 에서 G1 으로"
+  },
+  {
+   "title": "JEP 363: Remove the Concurrent Mark Sweep (CMS) Garbage Collector",
+   "url": "https://openjdk.org/jeps/363",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 14. CMS 제거(JEP 291 로 JDK 9 에서 폐기 예고)"
+  },
+  {
+   "title": "JEP 377: ZGC — A Scalable Low-Latency Garbage Collector (Production)",
+   "url": "https://openjdk.org/jeps/377",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 15. ZGC 를 실험 기능에서 제품 기능으로"
+  },
+  {
+   "title": "JEP 379: Shenandoah — A Low-Pause-Time Garbage Collector (Production)",
+   "url": "https://openjdk.org/jeps/379",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 15. Shenandoah 를 실험 기능에서 제품 기능으로"
+  },
+  {
+   "title": "JEP 395: Records",
+   "url": "https://openjdk.org/jeps/395",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 16 정식. JDK 14·15 프리뷰(JEP 359, 384)를 거쳤다"
+  },
+  {
+   "title": "JEP 409: Sealed Classes",
+   "url": "https://openjdk.org/jeps/409",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 17 정식. JDK 15·16 프리뷰(JEP 360, 397)를 거쳤다"
+  },
+  {
+   "title": "JEP 439: Generational ZGC",
+   "url": "https://openjdk.org/jeps/439",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 21. ZGC 에 세대 구분을 넣었다"
+  },
+  {
+   "title": "JEP 444: Virtual Threads",
+   "url": "https://openjdk.org/jeps/444",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 21 정식. 기존 java.lang.Thread API 를 그대로 쓰게 하는 것이 명시된 목표다"
+  },
+  {
+   "title": "JEP 474: ZGC — Generational Mode by Default",
+   "url": "https://openjdk.org/jeps/474",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 23. -XX:+UseZGC 의 기본이 세대형이 됐다"
+  },
+  {
+   "title": "JEP 490: ZGC — Remove the Non-Generational Mode",
+   "url": "https://openjdk.org/jeps/490",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 24. 비세대형 ZGC 제거"
+  },
+  {
+   "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+   "url": "https://openjdk.org/jeps/491",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 24. synchronized 블록 안에서 가상 스레드가 캐리어를 붙잡던 문제를 고쳤다"
+  },
+  {
+   "title": "JEP 401: Value Objects (Preview)",
+   "url": "https://openjdk.org/jeps/401",
+   "publisher": "OpenJDK",
+   "kind": "standard",
+   "summary": "JDK 28 프리뷰 목표. 모든 객체가 신원(identity)을 갖는 요구가 성능의 걸림돌이라는 문제 제기"
+  },
+  {
+   "title": "Kotlin Docs — Calling Java from Kotlin (Java interop)",
+   "url": "https://kotlinlang.org/docs/java-interop.html",
+   "publisher": "JetBrains",
+   "kind": "docs",
+   "summary": "플랫폼 타입(T!), 검사 예외 없음, SAM 변환 등 자바 상호운용 규칙"
+  },
+  {
+   "title": "Kotlin Docs — Inline functions (reified type parameters)",
+   "url": "https://kotlinlang.org/docs/inline-functions.html",
+   "publisher": "JetBrains",
+   "kind": "docs",
+   "summary": "inline + reified 로 호출 지점에 타입을 심어 소거를 우회한다"
+  }
+ ]
+}

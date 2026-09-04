@@ -1,0 +1,1208 @@
+{
+ "slug": "stm32",
+ "title": "STM32",
+ "title_en": "STMicroelectronics STM32",
+ "aliases": [
+  "STM32",
+  "STM32F1",
+  "STM32F4",
+  "Cortex-M",
+  "STM32Cube",
+  "CubeMX",
+  "STM32CubeMX",
+  "STM32 HAL",
+  "RCC",
+  "NVIC"
+ ],
+ "category": "firmware",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-04",
+ "one_liner": "ST 가 만든 32비트 마이크로컨트롤러 제품군이다. 8비트 AVR 과 결정적으로 다른 점은 **전원이 들어와도 기능 블록 대부분이 꺼진 채로 깨어난다**는 것 — 그래서 핀 하나를 만지기 전에 그 블록에 클럭을 흘려보내는 일부터 해야 한다.",
+ "summary": "STM32 는 ST(STMicroelectronics)가 ARM 에서 산 Cortex-M 코어에 자기 주변장치를 붙여 만든 32비트 MCU 제품군이다. 국내 펌웨어 공고에 칩 이름으로 가장 자주 박히는 이름이고(2026-09-04 기준 모집중 9,458건 중 48건·회사 41곳), 그 문장들은 `MCU(ATmega/STM32 계열)`·`MCU(Cortex-M, STM32, ESP32 등)`처럼 대개 8비트 칩과 한 줄에 묶여 나온다 — 즉 **저쪽에서 이쪽으로 옮겨 오는 것이 전제**다. 옮길 때 실제로 걸리는 자리는 레지스터 이름이 아니라 그 위에 새로 생긴 층들이다: 클럭을 만들고 나눠 주고 **블록마다 껐다 켜는 RCC**, 같은 STM32 인데 레지스터가 갈리는 **시리즈 파편화**, HAL/LL/CubeMX 라는 **벤더 소프트웨어 층**, 그리고 우선순위를 두 겹으로 쪼개 놓은 **NVIC**. 이 문서는 그 넷을 다룬다. 핀을 켜고 끄는 레지스터 자체는 `gpio-register` 에, 인터럽트라는 개념 자체는 `interrupt` 에 있다.",
+ "market": null,
+ "sections": [
+  {
+   "id": "what",
+   "kind": "what",
+   "heading": "무엇인가 — 코어는 ARM 이 만들고, 나머지는 ST 가 붙인다",
+   "body": "STM32 는 하나의 칩이 아니라 **제품군**이다. 그 안의 구조는 두 겹으로 갈린다.\n\n- **코어** — ARM 이 설계한 Cortex-M(M0/M0+/M3/M4/M7/M33…). CPU 명령, 인터럽트 컨트롤러(NVIC), 시스템 타이머(SysTick), 예외 처리 방식이 여기 있다. **ST 가 만들지 않았다.**\n- **주변장치** — GPIO·USART·SPI·I²C·타이머·ADC·DMA·RCC. 이건 ST 가 만들었다.\n\n이 경계가 초보자가 가장 먼저 부딪히는 벽이다 — **찾는 것이 어느 문서에 있는지 모른다.** 두 겹이 두 권의 문서로 그대로 나뉘어 있기 때문이다.\n\n| 무엇을 찾나 | 어느 문서 | 예 |\n|---|---|---|\n| 주변장치 레지스터·비트 | **레퍼런스 매뉴얼(RM)** — ST | GPIO, RCC, USART, DMA |\n| 코어의 동작 | **프로그래밍 매뉴얼(PM)** — ARM 코어 설명 | NVIC 우선순위, SysTick, 벡터 테이블 |\n| 전기적 특성·핀 배치·패키지 | **데이터시트** | 전압 범위, 핀 번호, 소비 전류 |\n| 알려진 하드웨어 버그 | **errata sheet** | \"이 조건에서 이 비트가 안 지워진다\" |\n\n실제로 RM0090(STM32F4)의 머리말은 코어를 물어보면 `PM0214` 로, RM0008(STM32F1)은 `PM0056` 으로 넘긴다. **RM 번호가 다르면 PM 번호도 다르다** — F1 은 Cortex-M3, F4 는 FPU 가 붙은 Cortex-M4F 라 코어부터 다른 물건이기 때문이다.\n\n> AVR 을 하다 온 사람에게 이것이 낯선 이유는 분명하다. **ATmega128 은 데이터시트 한 권이 칩 전체였다.** 코어도 주변장치도 전기적 특성도 그 안에 있었다. STM32 에서는 그 한 권이 최소 네 권으로 흩어진다 — 그리고 그중 어느 것도 짧지 않다(RM0090 은 1,400쪽이 넘고, HAL 사용자 매뉴얼 UM1725 는 1,838쪽이다).\n\n이 문서가 다루는 것은 그 네 권을 요약하는 일이 아니라, **AVR 에는 아예 없던 네 가지**다 — 클럭을 켜는 일(RCC), 시리즈 파편화, HAL/LL/CubeMX 라는 층, 그리고 NVIC.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+    },
+    {
+     "title": "PM0214 — STM32 Cortex-M4 MCUs and MPUs programming manual",
+     "url": "https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "ARM 코어 쪽 문서. NVIC 우선순위·선점·그룹 우선순위와 벡터 테이블(VTOR)이 여기 있다 (본문 대조는 Rev 10 의 인터럽트 발췌본)"
+    },
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "kind": "why",
+   "heading": "왜 클럭부터 켜야 하나 — 기본값이 '꺼짐'이 된 이유",
+   "body": "STM32 를 처음 만진 사람이 가장 많이 밟는 자리는 이것이다. 레지스터에 값을 썼는데 **아무 일도 일어나지 않고, 오류도 나지 않고, 다시 읽으면 0** 이다.\n\n원인은 코드가 아니라 칩의 기본값에 있다. 두 레퍼런스 매뉴얼이 같은 문장으로 못 박아 둔다.\n\n> \"After each device reset, all peripheral clocks are disabled (except for the SRAM and Flash memory interface). Before using a peripheral you have to enable its clock in the RCC_AHBxENR or RCC_APBxENR register.\" — RM0090 §2.1.9 (RM0008 §3.1 도 같은 문장이다)\n\n**왜 그렇게 만들었나.** ST 는 이 기능에 이름을 붙여 두었다 — *peripheral clock gating*(주변장치 클럭 게이팅)이고, 목적을 문서에 그대로 적어 놓았다.\n\n> \"In Run mode, the HCLKx and PCLKx for individual peripherals and memories can be stopped at any time to reduce power consumption.\" — RM0090 §5.3.2\n\n디지털 회로는 **클럭이 흔들릴 때 전기를 쓴다.** 아무 일도 하지 않는 USB 컨트롤러라도 클럭이 들어가는 한 계속 전력을 먹는다. ATmega128 은 주변장치가 몇 개 안 되고 클럭도 최대 16MHz 라 이걸 껐다 켜서 얻는 이득이 작았지만, STM32F4 는 **최대 168MHz** 로 돌고 주변장치가 수십 개다. 그래서 ST 는 순서를 뒤집었다 — **쓰는 것만 켠다**를 기본값으로 삼은 것이다.\n\n그 결정의 대가가 초보자에게 그대로 넘어온다. **켜는 일이 사용자 몫이 됐고, 안 켰을 때 아무도 알려 주지 않는다.** 클럭이 없는 블록은 레지스터가 '없는' 것과 같아서, 버스는 쓰기를 조용히 흘려보내고 읽기에는 0 을 준다. 컴파일러도, 링커도, 런타임도 이 실수를 잡지 못한다.\n\n**두 번째 이유는 버스다.** STM32 의 주변장치는 속도에 따라 여러 버스에 나뉘어 매달려 있고(F4 는 AHB1/AHB2/AHB3, APB1/APB2), **버스마다 최대 주파수가 다르다** — F4 는 AHB 168MHz, APB2 84MHz, APB1 42MHz. 그래서 클럭을 켜는 레지스터도 버스마다 따로 있다(`RCC_AHB1ENR`, `RCC_APB1ENR`, `RCC_APB2ENR`…). **어느 블록이 어느 버스에 달렸는지를 모르면 어느 레지스터를 켜야 하는지도 모른다.**\n\n그리고 여기서 파편화가 시작된다. **같은 GPIO 포트 A 가 시리즈마다 다른 버스에 달려 있다.**\n\n```c\n// STM32F1 — GPIO 는 APB2 에 있다\nRCC->APB2ENR |= (1 << 2);   // IOPAEN (bit 2) : 포트 A 클럭\n\n// STM32F4 — GPIO 는 AHB1 로 옮겨 갔다\nRCC->AHB1ENR |= (1 << 0);   // GPIOAEN (bit 0) : 포트 A 클럭\n```\n\n레지스터 이름도, 비트 번호도 다르다. 인터넷 예제를 붙였을 때 \"컴파일은 되는데 아무 일도 안 일어나는\" 사고의 절반이 이 두 줄에서 난다.\n\n> **한 줄로**: AVR 은 *전원이 곧 준비*였고, STM32 는 *전원은 시작일 뿐*이다. 이 차이는 세련됨이 아니라 **전력 관리를 위해 기본값을 뒤집은 결과**이고, 그래서 STM32 코드의 첫 줄은 늘 RCC 다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+    },
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "비교 대상인 AVR 쪽 1차 자료. 퓨즈로 정하는 클럭원, 주소 순서로 고정된 인터럽트 우선순위가 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "clock-tree",
+   "kind": "how",
+   "heading": "클럭 계통 읽는 법 — HSI · HSE · PLL 이 만드는 계단",
+   "body": "RCC 가 하는 일은 세 가지다. **클럭을 어디서 가져올지 고르고**(클럭원), **필요하면 올리고**(PLL), **블록마다 나눠 주거나 끊는다**(분주·게이팅).\n\n**① 클럭원.** 둘 중 하나로 시작한다.\n\n- **HSI** (high-speed internal) — 칩 안에 있는 RC 발진기. F4 는 **16MHz**, F1 은 **8MHz**. 부품이 하나도 안 든다. 대신 정확도가 떨어진다 — ST 는 F4 의 HSI 를 *25℃ 에서 1% 정확도로 공장 보정한다*고 적어 두었고, 전압·온도가 바뀌면 그만큼 흔들린다.\n- **HSE** (high-speed external) — 밖에 붙이는 크리스탈/세라믹 발진자, 또는 외부에서 넣어 주는 클럭 신호(HSE bypass). F4 의 클럭 트리 기준 입력 범위는 **4~26MHz**, F1 의 외부 클럭은 최대 25MHz 다.\n\n**리셋 직후에는 HSI 다.** RM0090 이 한 문장으로 말한다 — *\"After a system reset, the HSI oscillator is selected as the system clock.\"* 즉 **전원을 넣은 STM32F4 는 168MHz 가 아니라 16MHz 로 돌고 있다.** 168MHz 는 내가 만들어야 하는 값이다. (`atmega128` 에서 \"크리스탈이 꽂혀 있어도 퓨즈가 안 가리키면 안 쓴다\"고 했던 것과 증상은 같지만, **원인이 다르다** — AVR 은 퓨즈라는 한 번 쓰는 설정이고, STM32 는 매 부팅 코드가 다시 하는 일이다.)\n\n**② PLL 로 올린다.** 클럭원을 정수비로 나눴다가 곱해 원하는 주파수를 만든다. F4 의 식은 RM0090 에 이렇게 적혀 있다.\n\n```\nf(VCO clock)          = f(PLL clock input) × (PLLN / PLLM)\nf(PLL general output) = f(VCO clock) / PLLP        ← 이게 SYSCLK 후보\n```\n\n여기 함정이 하나 숨어 있다. **`PLLM` 으로 나눈 VCO 입력이 1~2MHz 안에 들어와야 한다** — RM0090 이 `Caution` 으로 적어 두고 *\"2MHz 를 고르는 것을 권장한다(PLL 지터를 줄이려고)\"* 라고 덧붙인다. 8MHz 크리스탈이면 `PLLM = 4`, 25MHz 면 `PLLM = 25` 가 그래서 나온다.\n\n**③ 나눠 준다.** SYSCLK 이 정해지면 프리스케일러가 세 갈래로 나눈다 — `HCLK`(AHB, 코어·메모리·DMA·GPIO), `PCLK1`(APB1), `PCLK2`(APB2). 각 갈래의 상한이 다르므로(F4: 168 / 42 / 84MHz) **SYSCLK 을 올리면 APB 분주도 같이 손봐야 한다.**\n\n**④ 순서가 있다 — 플래시가 못 따라온다.** 코어가 빨라지면 플래시 메모리에서 명령을 읽는 데 걸리는 사이클(**wait state**)을 먼저 늘려야 한다. RM0090 은 리셋 직후 상태를 *\"the CPU clock frequency is 16 MHz and 0 wait state (WS) is configured\"* 라고 적고, 주파수를 올리는 절차를 못 박아 둔다.\n\n1. `FLASH_ACR` 의 `LATENCY` 에 **새 wait state 를 먼저 쓴다**\n2. `FLASH_ACR` 을 **다시 읽어** 반영됐는지 확인한다\n3. 그다음 `RCC_CFGR` 의 `SW` 로 클럭원을 바꾼다\n4. 필요하면 `HPRE` 로 AHB 분주를 바꾼다\n5. `SWS`·`HPRE` 를 읽어 실제로 바뀌었는지 확인한다\n\n2.7~3.6V 에서 168MHz 로 돌리려면 **5 WS** 가 필요하다(RM0090 Table 7). 이 순서를 뒤집으면 — 클럭부터 올리면 — 코어가 아직 0 WS 로 설정된 플래시에서 쓰레기를 읽고, 증상은 대개 **하드폴트이거나 그냥 죽은 보드**다.\n\n> 실무에서는 이 네 단계를 손으로 쓰지 않고 CubeMX 가 만든 `SystemClock_Config()` 를 쓴다. 그래도 **여기서 무엇이 일어나는지는 알아야 한다** — 클럭이 틀리면 UART 보율부터 타이머 주기까지 전부 같이 틀리고, 그때 열어 볼 함수가 저것이기 때문이다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+    }
+   ]
+  },
+  {
+   "id": "fragmentation",
+   "kind": "how",
+   "heading": "시리즈 파편화 — 같은 'STM32' 인데 레지스터가 다르다",
+   "body": "공고에도 그대로 나온다 — `STM32 계열 MCU 개발 경험 필수 (STM32F·STM32G·STM32H 등)`. **STM32 는 한 칩이 아니라 수십 개 제품군의 이름**이고, 그 사이의 차이는 '핀 수와 메모리 크기'에서 끝나지 않는다. 스케일을 재는 가장 쉬운 자료는 부트로더 애플리케이션 노트다 — **AN2606 Rev 61 은 품번 계열별 부트로더 장을 71개** 담고 있다. F4 시리즈 하나만 해도 F40x/41x, F401xB(C), F401xD(E), F410, F411, F412, F413/423, F42x/43x, F446, F469/479 로 갈린다.\n\n실무에서 이 파편화가 나타나는 방식은 하나다. **인터넷에서 찾은 예제가 컴파일조차 안 되거나, 컴파일은 되는데 아무 일도 안 한다.** 그래서 예제를 옮기기 전에 확인할 것은 코드가 아니라 **레퍼런스 매뉴얼 번호**다(F1 = RM0008, F4 = RM0090).\n\n무엇이 달라지는지는 규칙이 있다. F1(2007년경 설계, Cortex-M3)과 F4(Cortex-M4F)를 나란히 놓으면 **핀당 옵션이 늘면서 필드가 쪼개졌다**는 한 방향이 보인다.\n\n**F1 — 핀당 4비트에 다 몰아넣었다.** `GPIOx_CRL`(핀 0~7)·`GPIOx_CRH`(핀 8~15)에 핀당 `CNF[1:0]` + `MODE[1:0]` 가 있고, 놀랍게도 **방향과 출력 속도가 같은 필드**다.\n\n```\nMODE[1:0]  00 = 입력 (리셋 상태)\n           01 = 출력, 최대 10MHz\n           10 = 출력, 최대 2MHz\n           11 = 출력, 최대 50MHz\n```\n\n즉 F1 에서 \"출력으로 만든다\"는 **속도를 고르는 일과 분리할 수 없다.** 그리고 입력 풀업/풀다운을 켤 때는 `CNF=10` 으로 두고 **`ODR` 비트가 위/아래를 고른다** — `ODR` 이 출력값이면서 동시에 풀 방향인 것이다.\n\n**F4 — 질문마다 레지스터를 하나씩 줬다.** `MODER`(2비트) `OTYPER`(1) `OSPEEDR`(2) `PUPDR`(2) 로 갈라졌다. 대체 기능도 F1 에는 핀별 선택 레지스터가 아예 없어서 `AFIO_MAPR` 로 **핀 묶음을 통째로 리맵**하는 방식이었는데, F4 는 `AFRL`/`AFRH` 로 **핀마다 AF0~AF15 중 하나**를 고른다.\n\n> **옮길 때 손이 가는 순서** — ① 클럭을 켜는 버스와 비트가 바뀌었나 ② 설정 레지스터가 한 필드인가 네 레지스터인가 ③ 대체 기능이 '리맵'인가 '핀별 AF'인가 ④ F1 코드에만 있는 레지스터를 쓰고 있지 않나. ④번의 대표가 `GPIOx_BRR` 이다 — F1 에는 BSRR 말고 **리셋 전용 레지스터 `BRR`(오프셋 0x14)** 가 따로 있는데, **F4 의 GPIO 에는 BRR 이 없다**(MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR·LCKR·AFRL·AFRH 열 개가 전부다). F1 예제를 붙였다가 `BRR` 이 없다는 오류를 만나는 것이 흔한 통과의례다.\n\n그리고 **변하지 않는 것도 있다.** 코어(Cortex-M)의 NVIC·SysTick·예외 모델, `BSRR` 로 읽지 않고 비트만 바꾸는 발상, RCC 로 켜고 시작한다는 순서. 공고의 `NXP·TI 등 타 Cortex-M 경험자 동등 인정` 이라는 문장이 뜻하는 것이 정확히 이 경계다 — **코어 수준의 지식은 벤더를 건너 옮겨지고, 주변장치와 HAL 은 안 옮겨진다.**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "AN2606 — STM32 microcontroller system memory boot mode",
+     "url": "https://www.st.com/resource/en/application_note/an2606-stm32-microcontroller-system-memory-boot-mode-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "칩 안에 구워져 나오는 부트로더와 BOOT 핀 패턴. 품번별 장이 71개라는 사실 자체가 파편화의 그림이다 (본문 대조는 Rev 61)"
+    }
+   ]
+  },
+  {
+   "id": "layers",
+   "kind": "how",
+   "heading": "HAL · LL · CubeMX — 무엇이 무엇 위에 있나",
+   "body": "STM32 코드는 같은 일을 세 가지 높이에서 쓸 수 있다. 어느 층에 있는지 모른 채 예제를 섞으면 코드가 금방 이해 불가능해지므로, **먼저 지도부터 그린다.**\n\n```\n[ STM32CubeMX ]  ← 코드 생성기. 클릭해서 만든 설정을 C 코드로 뱉는다 (실행 시점엔 없다)\n        │ 생성\n        ▼\n[  HAL  ]  기능 중심 · 이식성 높음 · 입력값 런타임 검사 · 모든 주변장치\n[  LL   ]  레지스터 수준 · 가볍고 빠름 · 일부 주변장치만\n        │\n        ▼\n[ CMSIS 디바이스 헤더 ]  GPIOA->MODER 같은 이름과 주소 (stm32f4xx.h)\n        │\n        ▼\n[  레지스터  ]\n```\n\n**HAL 과 LL 은 위아래가 아니라 나란한 두 갈래다.** ST 가 UM1725 에서 직접 갈라 놓는다.\n\n> \"The HAL offers high-level and feature-oriented APIs, with a high-portability level. They hide the MCU and peripheral complexity to end-user.\"\n> \"The LL offers low-level APIs at registers level, with better optimization but less portability. They require deep knowledge of the MCU and peripherals specifications.\"\n\n같은 문서가 **HAL 이 값을 검사한다**는 것도 명시한다 — *\"The HAL driver layer implements run-time failure detection by checking the input values of all functions.\"* 그 검사가 곧 코드 크기이자 실행 시간이다. 반대로 LL 은 *\"do not require any additional memory resources to save their states\"* — 상태를 들고 있지 않고 레지스터만 건드린다. 그래서 UM1725 뒤쪽에는 **레지스터 이름 ↔ LL 함수** 대응표가 통째로 실려 있다(`AHB1ENR GPIOAEN → LL_AHB1_GRP1_EnableClock`, `MODER MODEy → LL_GPIO_SetPinMode`, `BSRR BSy → LL_GPIO_SetOutputPin`). **LL 은 사실상 이름 붙인 레지스터 쓰기다.**\n\nLL 이 모든 주변장치에 있지 않은 것도 우연이 아니다. ST 는 *\"the LL APIs are not provided for peripherals for which optimized access is not a key feature, or for those requiring heavy software configuration and/or complex upper level stack (such as FSMC, USB, SDMMC)\"* 라고 이유를 적어 두었다. **USB 를 LL 로 쓰고 싶어도 그런 게 없다.**\n\n**CubeMX 는 층이 아니라 생성기다.** 실행 중인 칩 안에는 존재하지 않는다. ST 의 설명대로 *\"Fast and easy configuration of the MCU pins, clock tree and operating modes\"* 를 GUI 로 받아 *\"Generation of a complete project with all the necessary libraries and initialization C code\"* 를 뱉는다. 클럭 트리는 레퍼런스 매뉴얼의 그림을 그대로 그려 주고, **잘못된 설정을 그 자리에서 표시해 준다** — 앞 절의 wait state·APB 상한 계산을 사람 대신 해 주는 것이 이 도구의 실제 값이다.\n\n대가는 하나뿐이지만 크다. **재생성이 내 코드를 덮는다.** ST 는 이렇게 적는다 — *\"The user can modify the generated source files by adding user-defined C code in user dedicated sections. STM32CubeMX ensures that the user C code is preserved upon next C code generation.\"* 뒤집으면, **`/* USER CODE BEGIN */ … /* USER CODE END */` 바깥에 쓴 것은 보장되지 않는다.**\n\n> 현실적인 선은 대개 이렇게 그어진다 — **초기화는 CubeMX + HAL 로, 뜨거운 구간(인터럽트 안, µs 단위 토글)만 LL 이나 레지스터로.** 이 문서의 목적은 셋 중 하나를 고르라는 것이 아니라, **지금 보고 있는 코드가 어느 층인지 아는 것**이다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    },
+    {
+     "title": "STM32CubeMX User Manual — Getting started with STM32CubeMX",
+     "url": "https://dev.st.com/stm32cube-docs/stm32cubemx/6.18.0/en/docs/markup/CubeMX_UserManual/chapters/02_2_getting_started_with_stm32cubemx.html",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "CubeMX 가 무엇을 생성하는가, 클럭 트리 그래픽 뷰가 잘못된 설정을 표시한다는 것, 사용자 코드 구역이 재생성에서 보존된다는 것"
+    }
+   ]
+  },
+  {
+   "id": "nvic",
+   "kind": "how",
+   "heading": "NVIC — 우선순위가 두 겹인 이유",
+   "body": "인터럽트가 무엇이고 ISR 안에서 무엇을 하면 안 되는지는 `interrupt` 문서의 자리다. **여기서 다루는 것은 컨트롤러 쪽** — 여러 인터럽트가 동시에 몰렸을 때 누가 이기는가를 STM32 가 정하는 방식이다.\n\nAVR 에서 그 답은 하드웨어에 박혀 있었다. **벡터 주소가 낮은 쪽이 이긴다.** 바꿀 수 없고, 실행 중인 ISR 은 (전역 인터럽트를 다시 켜지 않는 한) 어떤 인터럽트에도 끊기지 않는다.\n\nSTM32 의 NVIC 는 둘 다 바꾼다.\n\n**① 우선순위가 프로그래밍 가능하다.** RM0090 은 F4 의 NVIC 를 *\"82 maskable interrupt channels\"*(F405/07·F415/17 기준, F42x/43x 는 최대 86), *\"16 programmable priority levels (4 bits of interrupt priority are used)\"* 로 적는다. **코어가 8비트 우선순위 필드를 제공하지만 STM32 는 상위 4비트만 구현했다** — 그래서 실제 단계는 16개다.\n\n**② 숫자가 작을수록 높다.** PM0214 의 문장 그대로다 — *\"A lower priority value indicating a higher priority\"*, 그리고 *\"Configurable priority values are in the range 0-15\"*. Reset·Hard fault·NMI 만 고정된 음수 우선순위라 항상 이긴다. 직관과 반대라 처음에는 반드시 한 번 틀린다.\n\n**③ 그리고 그 4비트를 두 조각으로 자른다.** 이것이 AVR 에 없던 물건이다.\n\n> \"This divides each interrupt priority register entry into two fields: an upper field that defines the group priority, a lower field that defines a subpriority within the group.\"\n> \"**Only the group priority determines preemption of interrupt exceptions.** When the processor is executing an interrupt exception handler, another interrupt with the same group priority as the interrupt being handled does not preempt the handler.\" — PM0214\n\n즉 두 우선순위는 하는 일이 다르다.\n\n- **그룹(선점) 우선순위** — *돌고 있는 핸들러를 끊을 수 있는가.* 이것만 선점을 결정한다.\n- **서브 우선순위** — 이미 여러 개가 **대기(pending)** 중일 때 *누구부터 처리하는가.* 남의 핸들러를 끊지는 못한다.\n- 둘 다 같으면? *\"the interrupt with the lowest IRQ number is processed first\"* — 결국 AVR 과 같은 규칙(번호 순)으로 떨어진다.\n\n자르는 위치는 `AIRCR` 의 `PRIGROUP` 필드로 정하고, HAL 에서는 `HAL_NVIC_SetPriorityGrouping()` 에 `NVIC_PRIORITYGROUP_0`~`_4` 를 준다(아래 표). 여기서 나오는 대표적인 사고가 있다 — UM1725 가 경고까지 달아 둔다.\n\n> \"When the NVIC_PRIORITYGROUP_0 is selected, IRQ preemption is no more possible. The pending IRQ priority will be managed only by the sub priority.\"\n\n**선점 비트를 0개로 잘라 놓고 \"우선순위를 다르게 줬는데 왜 안 끊기지\"라고 묻는 상황**이 그것이다. 우선순위 숫자는 멀쩡히 달라도, 자른 자리가 잘못돼 있으면 전부 같은 그룹이다.\n\n**벡터 테이블도 자리를 옮길 수 있다.** PM0214 는 *\"On system reset, the vector table is fixed at address 0x00000000. Privileged software can write to the VTOR to relocate the vector table start address\"* 라고 적는다. 부트로더를 앞에 두고 애플리케이션을 뒤에 얹는 구조(펌웨어 무선 업데이트)가 이 한 레지스터 위에 서 있다. AVR 의 `IVSEL`(부트 영역으로 표 전체를 옮기는 비트)과 목적은 같고, **STM32 는 주소를 자유롭게 준다는 점이 다르다.**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "PM0214 — STM32 Cortex-M4 MCUs and MPUs programming manual",
+     "url": "https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "ARM 코어 쪽 문서. NVIC 우선순위·선점·그룹 우선순위와 벡터 테이블(VTOR)이 여기 있다 (본문 대조는 Rev 10 의 인터럽트 발췌본)"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    },
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "비교 대상인 AVR 쪽 1차 자료. 퓨즈로 정하는 클럭원, 주소 순서로 고정된 인터럽트 우선순위가 여기 있다"
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "kind": "limits",
+   "heading": "경계 — 옮겨 와서 얻는 것과, 새로 생기는 일",
+   "body": "**얻는 것은 분명하다.** 32비트 연산과 (F4 는) 부동소수점 유닛, 수십~수백 KB 의 SRAM, DMA, USB·이더넷 같은 큰 주변장치, 그리고 채용 수요. 모집중 공고에서 `STM32` 는 48건·41개 회사인데 `AVR` 은 8건·6개 회사다(2026-09-04 직접 집계).\n\n**대신 새로 생기는 일도 분명하다.**\n\n**① 문서가 늘어난다.** 앞에서 봤듯 최소 네 권(RM·PM·데이터시트·errata)이고, HAL 을 쓰면 다섯 번째(UM)가 붙는다. `atmega128` 에서 데이터시트 한 권을 통독하던 방식은 여기서 통하지 않는다 — **필요한 절만 찾아 읽는 기술**로 바뀐다.\n\n**② 켜는 순서가 코드가 된다.** 클럭원 선택 → PLL → wait state → 버스 분주 → 블록별 클럭 인에이블 → 핀을 AF 로. AVR 이라면 `DDRB = 0xFF;` 한 줄이던 자리 앞에 이 계단이 통째로 선다. 그래서 **STM32 프로젝트에서 '아무 반응 없음'의 1순위 용의자는 언제나 클럭이다.**\n\n**③ 사이클을 손으로 못 센다.** AVR 은 대부분의 명령이 1사이클이라 `_delay_us` 를 믿고 타이밍을 계산할 수 있었다. STM32 는 플래시 wait state, 프리페치, (F7·H7 부터는) 캐시, 버스 중재가 끼어들어 **같은 코드의 실행 시간이 조건에 따라 달라진다.** 하드한 타이밍이 필요하면 계산이 아니라 **핀 토글 + 오실로스코프/로직 애널라이저로 측정**하거나, 타이머 하드웨어에 맡긴다.\n\n**④ 벤더 종속이 코드에 스며든다.** Cortex-M 은 표준이지만 **HAL 은 ST 것**이다. NXP·TI·Renesas 도 Cortex-M 을 쓰지만 주변장치와 드라이버가 다르다. 그래서 공고의 `NXP·TI 등 타 Cortex-M 경험자 동등 인정` 은 관대해 보여도 정확한 말이다 — **옮겨지는 것은 코어 지식(NVIC·예외·SWD 툴체인)이고, HAL 코드는 안 옮겨진다.**\n\n**⑤ errata 를 읽는 습관이 필요해진다.** 규모가 커진 만큼 \"매뉴얼대로 했는데 안 되는\" 하드웨어 버그가 실재하고, ST 는 그것을 별도 문서로 낸다. AVR 에서는 거의 안 하던 일이다.\n\n**그리고 이 문서가 풀어 주지 않는 문제들이 있다.** 클럭을 아무리 잘 켜도 — 핀이 흔들리는 것은 풀업의 문제이고(→ `pull-up-resistor`), 바이트마다 인터럽트를 걸어 CPU 가 녹는 것은 DMA 의 문제이며(→ `dma`), 할 일이 여럿이라 우선순위가 얽히는 것은 RTOS 의 문제다(→ `rtos`). **RCC 는 시작 스위치이지 설계가 아니다.**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    },
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "비교 대상인 AVR 쪽 1차 자료. 퓨즈로 정하는 클럭원, 주소 순서로 고정된 인터럽트 우선순위가 여기 있다"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "avr-to-stm32",
+   "kind": "compare",
+   "caption": "AVR 에 없던 것들 — 옮겨 올 때 새로 배우는 축",
+   "note": "AVR 은 ATmega128(doc2467), STM32 는 F4 계열(RM0090·PM0214) 기준이다. **GPIO 레지스터 이름의 대응표는 여기 없다** — 그건 `gpio-register` 문서의 표다. 이 표는 그 아래·옆에 새로 생긴 층만 담는다",
+   "columns": [
+    "축",
+    "ATmega128 (AVR)",
+    "STM32 (F4)",
+    "처음 옮길 때 걸리는 지점"
+   ],
+   "rows": [
+    [
+     "주변장치를 쓰기 전 준비",
+     "없다 — 전원이 들어오면 바로 쓴다",
+     "**리셋 후 주변장치 클럭이 전부 꺼져 있다.** `RCC_AHBxENR`/`RCC_APBxENR` 로 먼저 켠다",
+     "안 켜도 오류가 없다. 쓰기는 삼켜지고 읽으면 0"
+    ],
+    [
+     "시스템 클럭을 정하는 곳",
+     "**퓨즈(CKSEL)** — 한 번 굽는 설정",
+     "**코드** — 매 부팅 RCC 를 프로그래밍한다",
+     "AVR 습관대로 '보드에 크리스탈이 있으니 되겠지' 하면 16MHz 로 안 돈다"
+    ],
+    [
+     "리셋 직후 클럭",
+     "퓨즈가 가리키는 것 (출고 기본은 내부 RC 약 1MHz)",
+     "**HSI 16MHz** (RM0090). 168MHz 는 내가 만든다",
+     "`SystemCoreClock` 값과 실제 클럭이 어긋나면 지연·보율이 전부 틀린다"
+    ],
+    [
+     "클럭을 올릴 때 같이 손볼 것",
+     "없음",
+     "**플래시 wait state 를 먼저 올린다** (`FLASH_ACR` 의 `LATENCY`)",
+     "순서를 뒤집으면 하드폴트로 죽는다"
+    ],
+    [
+     "버스 구조",
+     "하나 (모든 I/O 가 같은 공간)",
+     "**AHB1/2/3 · APB1 · APB2**. 버스마다 최대 주파수가 다르다 (168 / 42 / 84MHz)",
+     "'어느 버스인가'를 모르면 어느 ENR 을 켤지 모른다"
+    ],
+    [
+     "인터럽트 우선순위",
+     "**벡터 주소 순으로 고정.** 바꿀 수 없다",
+     "**NVIC 가 16단계로 프로그래밍 가능**, 게다가 선점/서브 두 겹",
+     "숫자가 작을수록 높다. 선점은 그룹 우선순위만 본다"
+    ],
+    [
+     "벡터 테이블 위치",
+     "플래시 앞. `IVSEL` 로 부트 영역으로만 이동",
+     "리셋 시 `0x00000000`, **`VTOR` 로 임의 주소로 이동**",
+     "부트로더 + 애플리케이션 구조가 여기서 나온다"
+    ],
+    [
+     "대체 기능(UART·SPI 를 핀에 붙이기)",
+     "핀마다 고정",
+     "F4 는 핀당 `AF0`~`AF15` 중 선택 (`AFRL`/`AFRH`)",
+     "핀을 AF 로 안 바꾸면 GPIO 인 채로 남아 통신이 안 뜬다"
+    ],
+    [
+     "벤더 소프트웨어 층",
+     "사실상 없다 (avr-libc + 직접 레지스터)",
+     "**HAL / LL / CubeMX** 세 겹",
+     "예제가 어느 층 것인지 모르고 섞으면 코드가 엉킨다"
+    ],
+    [
+     "굽고 디버그하기",
+     "ISP (PDI·PDO·SCK) / JTAG",
+     "**SWD 2선 + ST-LINK**, 또는 `BOOT0` 로 칩에 구워져 나온 부트로더",
+     "`BOOT0` 를 잘못 잡아 두면 애플리케이션이 아예 안 뜬다"
+    ],
+    [
+     "문서 분량",
+     "데이터시트 **한 권**",
+     "RM(1,400쪽+) + PM + 데이터시트 + errata (+ HAL UM 1,838쪽)",
+     "통독이 불가능하다. 찾아 읽는 방식으로 바꿔야 한다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "비교 대상인 AVR 쪽 1차 자료. 퓨즈로 정하는 클럭원, 주소 순서로 고정된 인터럽트 우선순위가 여기 있다"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "PM0214 — STM32 Cortex-M4 MCUs and MPUs programming manual",
+     "url": "https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "ARM 코어 쪽 문서. NVIC 우선순위·선점·그룹 우선순위와 벡터 테이블(VTOR)이 여기 있다 (본문 대조는 Rev 10 의 인터럽트 발췌본)"
+    },
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    },
+    {
+     "title": "AN2606 — STM32 microcontroller system memory boot mode",
+     "url": "https://www.st.com/resource/en/application_note/an2606-stm32-microcontroller-system-memory-boot-mode-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "칩 안에 구워져 나오는 부트로더와 BOOT 핀 패턴. 품번별 장이 71개라는 사실 자체가 파편화의 그림이다 (본문 대조는 Rev 61)"
+    }
+   ]
+  },
+  {
+   "id": "clock-tree-f4",
+   "kind": "spec",
+   "caption": "클럭 계통 — STM32F4 에서 168MHz 가 만들어지는 순서",
+   "note": "**RM0090(STM32F405/407/415/417/427/437/429/439) 기준이다.** F1(RM0008)은 숫자가 다르다 — HSI 8MHz, AHB·APB2 최대 72MHz, APB1 36MHz, HSI 를 PLL 입력으로 쓰면 SYSCLK 최대 64MHz. 시리즈가 바뀌면 이 표는 다시 만든다",
+   "columns": [
+    "단계",
+    "이름",
+    "무엇인가",
+    "값·제약 (F4)",
+    "어디서 정하나"
+   ],
+   "rows": [
+    [
+     "클럭원",
+     "**HSI**",
+     "칩 안의 RC 발진기. 부품이 필요 없다",
+     "**16MHz**. 공장에서 25℃ 1% 로 보정",
+     "`RCC_CR` 의 `HSION`"
+    ],
+    [
+     "클럭원",
+     "**HSE**",
+     "밖에 붙이는 크리스탈/발진자, 또는 외부 클럭 입력",
+     "클럭 트리 기준 **4~26MHz**",
+     "`RCC_CR` 의 `HSEON` / `HSEBYP`"
+    ],
+    [
+     "클럭원",
+     "LSI",
+     "저속 내부 RC. 독립 워치독(IWDG)을 돌린다",
+     "약 **32kHz**",
+     "`RCC_CSR` 의 `LSION`"
+    ],
+    [
+     "클럭원",
+     "LSE",
+     "저속 외부 크리스탈. RTC 용",
+     "**32.768kHz**",
+     "`RCC_BDCR`"
+    ],
+    [
+     "증배",
+     "**PLL**",
+     "클럭원을 나눴다 곱해 높은 주파수를 만든다",
+     "`f(VCO) = f(입력) × N/M`, `SYSCLK = f(VCO)/P`. **VCO 입력은 1~2MHz** (2MHz 권장)",
+     "`RCC_PLLCFGR` 의 `PLLM`·`PLLN`·`PLLP`·`PLLSRC`"
+    ],
+    [
+     "선택",
+     "**SYSCLK**",
+     "시스템 클럭. HSI·HSE·PLL 중 하나",
+     "**리셋 직후에는 HSI**",
+     "`RCC_CFGR` 의 `SW` (확인은 `SWS`)"
+    ],
+    [
+     "분주",
+     "**HCLK** (AHB)",
+     "코어·메모리·DMA·GPIO",
+     "최대 **168MHz**",
+     "`RCC_CFGR` 의 `HPRE`"
+    ],
+    [
+     "분주",
+     "**PCLK1** (APB1)",
+     "저속 주변장치",
+     "최대 **42MHz**",
+     "`RCC_CFGR` 의 `PPRE1`"
+    ],
+    [
+     "분주",
+     "**PCLK2** (APB2)",
+     "고속 주변장치",
+     "최대 **84MHz**",
+     "`RCC_CFGR` 의 `PPRE2`"
+    ],
+    [
+     "보정",
+     "플래시 wait state",
+     "코어가 플래시를 읽을 때 기다리는 사이클",
+     "리셋 시 **0 WS**(16MHz). 2.7~3.6V·168MHz 면 **5 WS**",
+     "`FLASH_ACR` 의 `LATENCY` — **클럭을 올리기 전에 먼저**"
+    ],
+    [
+     "게이팅",
+     "**블록별 클럭 인에이블**",
+     "쓸 블록만 켠다",
+     "**리셋 후 전부 꺼짐**",
+     "`RCC_AHB1ENR`(오프셋 0x30) 등. 포트 A 는 `GPIOAEN`, bit 0"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+    }
+   ]
+  },
+  {
+   "id": "f1-vs-f4",
+   "kind": "register",
+   "caption": "시리즈 파편화의 실제 모습 — STM32F1 vs STM32F4",
+   "note": "**같은 STM32 안에서의 비교다** — 다른 벤더 칩과의 대응표는 `gpio-register` 에 있다. F1 은 RM0008(Doc ID 13902 Rev 14), F4 는 RM0090(Doc ID 018909 Rev 4) 기준. 오프셋은 포트 기준 주소에서의 값이다",
+   "columns": [
+    "무엇을 정하나",
+    "STM32F1 (RM0008)",
+    "STM32F4 (RM0090)",
+    "옮길 때 실제로 하는 일"
+   ],
+   "rows": [
+    [
+     "코어",
+     "Cortex-M3 → 코어 문서는 **PM0056**",
+     "Cortex-M4F(FPU) → 코어 문서는 **PM0214**",
+     "NVIC 를 찾을 때 펴는 PDF부터 다르다"
+    ],
+    [
+     "GPIO 가 달린 버스",
+     "**APB2** — `RCC_APB2ENR` 의 `IOPAEN`(bit 2 = 포트 A)",
+     "**AHB1** — `RCC_AHB1ENR` 의 `GPIOAEN`(bit 0 = 포트 A)",
+     "클럭 켜는 줄을 통째로 다시 쓴다. 레지스터 이름도 비트 번호도 다르다"
+    ],
+    [
+     "핀 설정 레지스터",
+     "`GPIOx_CRL`(핀 0~7, 0x00) / `GPIOx_CRH`(핀 8~15, 0x04). **핀당 4비트** = `CNF[1:0]`+`MODE[1:0]`",
+     "`MODER`(2비트) `OTYPER`(1) `OSPEEDR`(2) `PUPDR`(2) 로 **분리**",
+     "한 필드에 뭉쳐 있던 것이 네 레지스터로 흩어졌다"
+    ],
+    [
+     "방향과 출력 속도",
+     "**같은 필드** — `MODE` 00=입력, 01=출력10MHz, 10=출력2MHz, 11=출력50MHz",
+     "`MODER`(방향)와 `OSPEEDR`(속도)로 **분리**",
+     "F1 에는 '속도를 안 고르고 출력으로만 만들기'가 없다"
+    ],
+    [
+     "입력 풀업/풀다운",
+     "`CNF=10` 으로 두고 **`ODR` 비트**가 풀업(1)/풀다운(0)을 고른다",
+     "`PUPDR` 로 직접 고른다",
+     "F1 에서 `ODR` 은 출력값이면서 동시에 풀 방향이다"
+    ],
+    [
+     "대체 기능 선택",
+     "핀별 선택 레지스터가 **없다.** `CNF` 로 AF 인지만 정하고, 어느 신호인지는 `AFIO_MAPR` 리맵으로 **묶음 단위** 이동",
+     "`AFRL`/`AFRH` 로 **핀마다 `AF0`~`AF15`** 중 하나 (핀당 4비트)",
+     "'이 핀 묶음을 옮긴다' → '이 핀에 이 기능' 으로 발상이 바뀐다"
+    ],
+    [
+     "원자적 비트 조작",
+     "`BSRR`(0x10) + **`BRR`(0x14, 리셋 전용)**",
+     "`BSRR` **하나뿐** — F4 GPIO 에 `BRR` 은 없다",
+     "F1 예제의 `GPIOx->BRR` 은 `BSRR` 상위 16비트로 옮긴다"
+    ],
+    [
+     "리셋 직후 핀 상태",
+     "입력 플로팅 (`CRL`/`CRH` 리셋값 `0x4444 4444`)",
+     "포트마다 다르다 (디버그 핀이 있는 포트는 예외)",
+     "F1 은 표에서 바로 읽히지만 F4 는 포트별로 확인한다"
+    ],
+    [
+     "최대 클럭",
+     "AHB·APB2 **72MHz** / APB1 **36MHz** (HSI 를 PLL 입력으로 쓰면 SYSCLK 최대 64MHz)",
+     "AHB **168MHz** / APB2 **84MHz** / APB1 **42MHz**",
+     "타이머·보율 분주값을 전부 다시 계산한다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    }
+   ]
+  },
+  {
+   "id": "layers-compare",
+   "kind": "compare",
+   "caption": "세 층 비교 — 레지스터 직접 / LL / HAL",
+   "note": "성질에 대한 서술(이식성·최적화·검사·적용 범위)은 UM1725(STM32F4)의 서술을 옮긴 것이다. **코드 예는 셋 다 같은 일을 한다** — 포트 A 클럭을 켜고, PA5 를 출력으로 만들고, HIGH 로 둔다. CubeMX 는 실행 시점의 층이 아니라 이 코드를 **만들어 주는 도구**다",
+   "columns": [
+    "",
+    "레지스터 직접 (CMSIS 헤더)",
+    "LL (Low-Layer)",
+    "HAL"
+   ],
+   "rows": [
+    [
+     "ST 의 정의",
+     "(라이브러리가 아니다 — 헤더가 주는 이름과 주소)",
+     "*\"fast light-weight expert-oriented layer which is closer to the hardware than the HAL\"*",
+     "*\"high-level and feature-oriented APIs, with a high-portability level\"*"
+    ],
+    [
+     "클럭 켜기",
+     "`RCC->AHB1ENR |= (1<<0);`",
+     "`LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);`",
+     "`__HAL_RCC_GPIOA_CLK_ENABLE();`"
+    ],
+    [
+     "핀을 출력으로",
+     "`GPIOA->MODER |= (0b01 << (5*2));`",
+     "`LL_GPIO_SetPinMode(GPIOA, LL_GPIO_PIN_5, LL_GPIO_MODE_OUTPUT);`",
+     "`HAL_GPIO_Init(GPIOA, &초기화구조체);`"
+    ],
+    [
+     "HIGH 로",
+     "`GPIOA->BSRR = (1<<5);`",
+     "`LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_5);`",
+     "`HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);`"
+    ],
+    [
+     "입력값 런타임 검사",
+     "없음",
+     "없음 (레지스터를 그대로 반영)",
+     "**있다** — 모든 함수의 입력값을 검사한다"
+    ],
+    [
+     "상태 보관",
+     "없음",
+     "**없음** — 별도 메모리를 쓰지 않는다",
+     "핸들 구조체(`PPP_HandleTypeDef`)를 들고 있다"
+    ],
+    [
+     "적용 범위",
+     "전부",
+     "**일부 주변장치만.** FSMC·USB·SDMMC 처럼 무거운 것은 제외",
+     "**모든 주변장치**"
+    ],
+    [
+     "이식성",
+     "시리즈가 바뀌면 다시 쓴다",
+     "*\"better optimization but less portability\"*",
+     "*\"ensuring maximized portability across the STM32 portfolio\"*"
+    ],
+    [
+     "언제 고르나",
+     "학습, 그리고 HAL 이 이상할 때 원인을 찾을 때",
+     "인터럽트 안·뜨거운 구간, 크기·지연이 걸릴 때",
+     "여러 시리즈 지원, 큰 주변장치(USB·이더넷), 팀 코드"
+    ],
+    [
+     "CubeMX 가 생성하나",
+     "생성 코드 안에 섞여 나온다 (`SystemClock_Config` 등)",
+     "**고를 수 있다** (프로젝트 설정에서 LL 선택 가능)",
+     "기본값"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    },
+    {
+     "title": "STM32CubeMX User Manual — Getting started with STM32CubeMX",
+     "url": "https://dev.st.com/stm32cube-docs/stm32cubemx/6.18.0/en/docs/markup/CubeMX_UserManual/chapters/02_2_getting_started_with_stm32cubemx.html",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "CubeMX 가 무엇을 생성하는가, 클럭 트리 그래픽 뷰가 잘못된 설정을 표시한다는 것, 사용자 코드 구역이 재생성에서 보존된다는 것"
+    }
+   ]
+  },
+  {
+   "id": "nvic-groups",
+   "kind": "spec",
+   "caption": "NVIC 우선순위 그룹 — 4비트를 어디서 자르나",
+   "note": "STM32 의 Cortex-M4 는 **우선순위 4비트만 구현**해 단계가 16개다(RM0090). 그룹 이름과 비트 배분은 UM1725 의 `HAL_NVIC_SetPriorityGrouping()` 설명 그대로다. **숫자가 작을수록 높은 우선순위**이고, **선점은 그룹(선점) 우선순위만 본다**",
+   "columns": [
+    "HAL 상수",
+    "선점 비트",
+    "서브 비트",
+    "선점 단계 수",
+    "서브 단계 수",
+    "무슨 뜻인가"
+   ],
+   "rows": [
+    [
+     "`NVIC_PRIORITYGROUP_0`",
+     "0",
+     "4",
+     "1",
+     "16",
+     "**선점이 아예 없다.** 어떤 인터럽트도 남의 핸들러를 끊지 못하고, 순서만 서브로 정해진다"
+    ],
+    [
+     "`NVIC_PRIORITYGROUP_1`",
+     "1",
+     "3",
+     "2",
+     "8",
+     "'끊을 수 있는 것'과 '없는 것' 두 부류로만 나눈다"
+    ],
+    [
+     "`NVIC_PRIORITYGROUP_2`",
+     "2",
+     "2",
+     "4",
+     "4",
+     "선점 4단계 · 각 단계 안에서 4개까지 순서를 준다"
+    ],
+    [
+     "`NVIC_PRIORITYGROUP_3`",
+     "3",
+     "1",
+     "8",
+     "2",
+     "선점을 촘촘히, 순서는 둘 중 하나로"
+    ],
+    [
+     "`NVIC_PRIORITYGROUP_4`",
+     "4",
+     "0",
+     "16",
+     "1",
+     "**서브가 없다.** 16단계 전부가 선점 단계 — 우선순위가 다르면 무조건 끊는다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    },
+    {
+     "title": "PM0214 — STM32 Cortex-M4 MCUs and MPUs programming manual",
+     "url": "https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "ARM 코어 쪽 문서. NVIC 우선순위·선점·그룹 우선순위와 벡터 테이블(VTOR)이 여기 있다 (본문 대조는 Rev 10 의 인터럽트 발췌본)"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    }
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "8비트 AVR 로 만들던 제품에 통신 스택(USB·이더넷·TCP/IP)이나 실수 연산, 또는 수십 KB 이상의 버퍼가 들어가기 시작했다",
+   "pick": "STM32 (Cortex-M 계열)",
+   "over": "ATmega128 같은 8비트 AVR 을 붙들고 외부 SRAM·소프트웨어 부동소수점으로 버티기",
+   "why": "SRAM 4KB 와 소프트웨어 float 로는 그 일이 안 된다. STM32 는 32비트 코어에 DMA·USB·이더넷 컨트롤러를 칩 안에 갖고 있어 회로와 코드가 함께 줄어든다. 채용 쪽 수요도 이쪽이다 — 모집중 공고에서 `STM32` 48건(41개 회사) vs `AVR` 8건(6개 회사)",
+   "tradeoff": "데이터시트 한 권으로 끝나던 세계가 RM+PM+데이터시트+errata(+HAL UM)로 늘어난다. `DDRB = 0xFF;` 앞에 클럭·버스·wait state 라는 계단이 통째로 선다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "ATmega128/128L 데이터시트 (doc2467)",
+     "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+     "publisher": "Microchip (Atmel)",
+     "kind": "datasheet",
+     "summary": "비교 대상인 AVR 쪽 1차 자료. 퓨즈로 정하는 클럭원, 주소 순서로 고정된 인터럽트 우선순위가 여기 있다"
+    }
+   ]
+  },
+  {
+   "situation": "핀 몇 개 읽고 릴레이 하나 켜는 장치이고, 전원은 벽에서 오고, 수량이 적으며, 기존 AVR 코드 자산이 있다",
+   "pick": "8비트 AVR 을 그대로 쓰기",
+   "over": "새 설계라는 이유만으로 STM32 로 옮기기",
+   "why": "이 규모에서는 부품 단가보다 **개발·검증 시간**이 크고, 한 권으로 끝나는 문서와 '전원이 곧 준비'인 초기화가 그 시간을 줄인다. 옮기면 클럭·버스·HAL 을 새로 검증해야 한다",
+   "tradeoff": "채용 시장과 신규 부품 조달은 반대 방향으로 간다. 학습 목적이라면 이 선택은 시간을 미루는 것일 수 있다",
+   "confidence": "inferred"
+  },
+  {
+   "situation": "여러 STM32 시리즈를 하나의 코드로 지원하고, USB·이더넷·SDMMC 같은 큰 주변장치가 들어간다",
+   "pick": "HAL",
+   "over": "LL 이나 레지스터 직접 제어",
+   "why": "ST 가 HAL 을 *\"maximized portability across the STM32 portfolio\"* 로 만들었고, 모든 주변장치에 API 가 있다. 그리고 **LL 은 FSMC·USB·SDMMC 처럼 무거운 주변장치에는 아예 제공되지 않는다** — 고를 수 있는 층이 하나뿐인 경우가 실제로 있다",
+   "tradeoff": "모든 함수가 입력값을 런타임에 검사하고 핸들 구조체를 들고 다닌다. 코드가 커지고 호출이 깊어지며, 문제가 나면 HAL 안쪽을 읽어야 한다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    }
+   ]
+  },
+  {
+   "situation": "인터럽트 핸들러 안이거나 µs 단위 타이밍이 걸린 구간에서 핀·레지스터를 만진다",
+   "pick": "LL, 또는 레지스터 직접",
+   "over": "HAL 함수 호출",
+   "why": "LL 은 ST 표현대로 *\"low-level APIs at registers level\"* 이고 상태를 저장하지 않는다 — UM1725 는 아예 레지스터↔LL 함수 대응표를 싣는다(`BSRR BSy → LL_GPIO_SetOutputPin`). 즉 이름만 붙은 레지스터 쓰기라 예측 가능한 시간에 끝난다",
+   "tradeoff": "*\"less portability\"* 이고 *\"require deep knowledge of the MCU and peripherals specifications\"* 다. 시리즈를 옮기면 이 구간을 다시 본다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    }
+   ]
+  },
+  {
+   "situation": "새 STM32 프로젝트를 시작하는데 클럭 트리(PLL 계수·APB 분주·wait state)를 손으로 계산할 자신이 없다",
+   "pick": "CubeMX 가 생성한 `SystemClock_Config()`",
+   "over": "레퍼런스 매뉴얼을 보며 RCC 초기화를 손으로 쓰기",
+   "why": "CubeMX 는 레퍼런스 매뉴얼의 클럭 트리를 그대로 그려 주고 *\"Invalid settings and limitations are highlighted\"* — APB 상한을 넘기거나 VCO 입력이 범위를 벗어나면 그 자리에서 표시된다. wait state 까지 함께 계산해 준다",
+   "tradeoff": "**생성된 파일의 `USER CODE BEGIN/END` 바깥에 쓴 코드는 재생성에서 보장되지 않는다.** 그리고 클럭이 어떻게 만들어졌는지 모른 채 넘어가면, 보율이 틀리거나 타이머 주기가 어긋났을 때 열어 볼 곳을 모른다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "STM32CubeMX User Manual — Getting started with STM32CubeMX",
+     "url": "https://dev.st.com/stm32cube-docs/stm32cubemx/6.18.0/en/docs/markup/CubeMX_UserManual/chapters/02_2_getting_started_with_stm32cubemx.html",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "CubeMX 가 무엇을 생성하는가, 클럭 트리 그래픽 뷰가 잘못된 설정을 표시한다는 것, 사용자 코드 구역이 재생성에서 보존된다는 것"
+    }
+   ]
+  },
+  {
+   "situation": "인터럽트가 여러 개인데 급한 것이 느린 핸들러를 반드시 끊고 들어와야 한다 (모터 정류, 과전류 차단)",
+   "pick": "`NVIC_PRIORITYGROUP_4` (선점 4비트 · 서브 0비트)",
+   "over": "`NVIC_PRIORITYGROUP_0` (선점 0비트) 또는 그룹 설정을 건드리지 않고 우선순위 숫자만 바꾸기",
+   "why": "선점을 결정하는 것은 **그룹(선점) 우선순위뿐**이다. 선점 비트가 0개면 UM1725 의 경고대로 *\"IRQ preemption is no more possible\"* — 우선순위 숫자를 아무리 벌려 놔도 서로 끊지 못한다",
+   "tradeoff": "서브 우선순위가 사라져, 같은 우선순위로 동시에 대기하는 인터럽트의 순서는 IRQ 번호로만 정해진다. 그리고 선점을 허용한다는 것은 **중첩(nesting)을 허용한다는 뜻**이라 스택 사용량이 늘고 공유 변수 보호가 까다로워진다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    },
+    {
+     "title": "PM0214 — STM32 Cortex-M4 MCUs and MPUs programming manual",
+     "url": "https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "ARM 코어 쪽 문서. NVIC 우선순위·선점·그룹 우선순위와 벡터 테이블(VTOR)이 여기 있다 (본문 대조는 Rev 10 의 인터럽트 발췌본)"
+    }
+   ]
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "레지스터에 값을 썼는데 아무 일도 안 일어나고, 다시 읽으면 0 이다. 오류도 경고도 없다",
+   "why": "**그 블록의 클럭이 꺼져 있다.** RM 이 못 박아 둔 기본값이다 — *\"After each device reset, all peripheral clocks are disabled… Before using a peripheral you have to enable its clock.\"* 클럭이 없는 블록의 레지스터는 존재하지 않는 것과 같아서 쓰기는 삼켜지고 읽기는 0 을 준다",
+   "fix": "`RCC` 로 먼저 켠다. **그런데 어느 레지스터인지는 시리즈마다 다르다** — 그 블록이 어느 버스에 달렸는지를 RM 의 메모리 맵에서 확인하고 해당 `ENR` 을 쓴다. GPIO 포트 A 는 F1 이 `RCC->APB2ENR` 의 bit 2(`IOPAEN`), F4 가 `RCC->AHB1ENR` 의 bit 0(`GPIOAEN`) 이다",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    },
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+    }
+   ]
+  },
+  {
+   "trap": "PLL 계수를 맞춰 168MHz 로 올렸더니 하드폴트가 나거나 보드가 그냥 죽는다",
+   "why": "**플래시 wait state 를 먼저 올리지 않았다.** 리셋 직후는 16MHz·0 WS 이고, 그 상태에서 코어만 빨라지면 플래시가 못 따라와 코어가 쓰레기 명령을 읽는다",
+   "fix": "RM0090 이 정해 둔 순서를 지킨다 — ① `FLASH_ACR` 의 `LATENCY` 를 먼저 쓰고 ② 다시 읽어 반영을 확인한 뒤 ③ `RCC_CFGR` 의 `SW` 로 클럭원을 바꾸고 ④ `HPRE` 를 손보고 ⑤ `SWS`/`HPRE` 를 읽어 확인한다. 2.7~3.6V·168MHz 는 5 WS 다",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    }
+   ]
+  },
+  {
+   "trap": "PLL 출력 주파수는 계산대로인데 UART 가 간헐적으로 깨지거나 타이밍이 미묘하게 흔들린다",
+   "why": "**VCO 입력 주파수가 권장 범위를 벗어났다.** RM0090 은 `PLLM` 으로 나눈 뒤의 값이 1~2MHz 여야 한다고 `Caution` 으로 적고, PLL 지터를 줄이려면 2MHz 를 고르라고 덧붙인다. 최종 SYSCLK 만 맞으면 되는 줄 알기 쉬운 자리다",
+   "fix": "`PLLM` 을 '입력 ÷ PLLM = 2MHz' 가 되게 고른다(8MHz 크리스탈이면 4, 25MHz 면 25). 그다음 `PLLN`·`PLLP` 로 원하는 SYSCLK 을 만든다",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    }
+   ]
+  },
+  {
+   "trap": "HSE 크리스탈을 쓰도록 바꿨더니 프로그램이 첫 줄도 못 가고 멈춘다. 크리스탈은 보드에 붙어 있다",
+   "why": "**HSE 가 안 뜨면 기다린다.** RM0090 은 `HSERDY` 에 대해 *\"At startup, the clock is not released until this bit is set by hardware\"*, 그리고 클럭 전환에 대해 *\"If a clock source that is not yet ready is selected, the switch occurs when the clock source is ready\"* 라고 적는다. 부하 커패시터 값이 안 맞거나 납땜이 나쁘면 그 순간이 영영 오지 않는다",
+   "fix": "`HSERDY` 를 **타임아웃과 함께** 폴링하고, 시간 안에 안 뜨면 HSI 로 되돌아가 최소한 부팅은 되게 한다(HSI 는 부품이 없어 항상 뜬다). 운영 중 크리스탈이 죽는 경우까지 막으려면 CSS(clock security system)를 켠다",
+   "sources": [
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    }
+   ]
+  },
+  {
+   "trap": "덜 급한 인터럽트에 큰 숫자를 줬는데 그쪽이 먼저 처리된다",
+   "why": "**숫자가 작을수록 높은 우선순위다.** PM0214 가 *\"A lower priority value indicating a higher priority\"* 로 못 박는다. 게다가 Reset·Hard fault·NMI 는 고정된 음수라 무엇을 해도 이길 수 없다",
+   "fix": "'급한 것 = 작은 숫자'로 뒤집어 외운다. 설정 가능한 값은 0~15 다. 코드에는 숫자 대신 `PRIO_MOTOR = 1` 처럼 이름을 붙여 두면 다음 사람이 덜 헷갈린다",
+   "sources": [
+    {
+     "title": "PM0214 — STM32 Cortex-M4 MCUs and MPUs programming manual",
+     "url": "https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "ARM 코어 쪽 문서. NVIC 우선순위·선점·그룹 우선순위와 벡터 테이블(VTOR)이 여기 있다 (본문 대조는 Rev 10 의 인터럽트 발췌본)"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    }
+   ]
+  },
+  {
+   "trap": "인터럽트 우선순위를 분명히 다르게 줬는데도 급한 쪽이 느린 핸들러를 끊고 들어오지 못한다",
+   "why": "**우선순위 그룹이 선점 비트를 안 남겨 뒀다.** 선점을 결정하는 것은 그룹 우선순위뿐이고, `NVIC_PRIORITYGROUP_0` 이면 선점 비트가 0개다 — UM1725 표현대로 *\"IRQ preemption is no more possible\"*. 우선순위 숫자는 멀쩡히 달라도 전부 같은 그룹이라 서로 못 끊는다",
+   "fix": "`HAL_NVIC_SetPriorityGrouping()` 에 준 값을 먼저 확인한다. 선점이 필요하면 선점 비트가 있는 그룹으로 바꾼다(예: `NVIC_PRIORITYGROUP_4`). 그리고 **프로젝트 전체에서 그룹 설정은 한 번만** 한다 — 중간에 바꾸면 이미 설정한 우선순위들의 해석이 통째로 달라진다",
+   "sources": [
+    {
+     "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+     "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+    },
+    {
+     "title": "PM0214 — STM32 Cortex-M4 MCUs and MPUs programming manual",
+     "url": "https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "ARM 코어 쪽 문서. NVIC 우선순위·선점·그룹 우선순위와 벡터 테이블(VTOR)이 여기 있다 (본문 대조는 Rev 10 의 인터럽트 발췌본)"
+    }
+   ]
+  },
+  {
+   "trap": "CubeMX 로 프로젝트를 다시 생성했더니 손으로 넣은 코드가 사라졌다",
+   "why": "**보존되는 것은 사용자 전용 구역 안뿐이다.** ST 는 *\"the user C code is preserved upon next C code generation\"* 이라고 적지만, 그 주어는 *\"user-defined C code in user dedicated sections\"* 다. `main.c` 의 초기화 사이나 `stm32f4xx_hal_msp.c` 에 그냥 끼워 넣은 줄은 그 구역 밖이다",
+   "fix": "손으로 쓰는 코드는 반드시 `/* USER CODE BEGIN … */` 와 `/* USER CODE END … */` 사이에만 넣는다. 생성 코드에서 벗어난 초기화가 필요하면 별도 `.c` 파일로 빼고 사용자 구역에서 호출만 한다. 그리고 **재생성 전에 커밋한다** — 무엇이 지워졌는지 diff 로 보는 것이 가장 빠른 복구다",
+   "sources": [
+    {
+     "title": "STM32CubeMX User Manual — Getting started with STM32CubeMX",
+     "url": "https://dev.st.com/stm32cube-docs/stm32cubemx/6.18.0/en/docs/markup/CubeMX_UserManual/chapters/02_2_getting_started_with_stm32cubemx.html",
+     "publisher": "STMicroelectronics",
+     "kind": "docs",
+     "summary": "CubeMX 가 무엇을 생성하는가, 클럭 트리 그래픽 뷰가 잘못된 설정을 표시한다는 것, 사용자 코드 구역이 재생성에서 보존된다는 것"
+    }
+   ]
+  },
+  {
+   "trap": "F1 예제를 F4 프로젝트에 붙였더니 `GPIOA->BRR` 이 없다는 컴파일 오류가 난다",
+   "why": "**F4 의 GPIO 에는 `BRR` 이 없다.** F1 은 `BSRR`(0x10) 말고 리셋 전용 `BRR`(0x14)을 따로 갖지만, F4 의 GPIO 레지스터는 `MODER·OTYPER·OSPEEDR·PUPDR·IDR·ODR·BSRR·LCKR·AFRL·AFRH` 열 개가 전부다",
+   "fix": "`GPIOA->BRR = (1<<n)` 을 `GPIOA->BSRR = (1<<(n+16))` 으로 바꾼다(BSRR 의 상위 16비트가 리셋이다). 더 근본적으로는, 예제를 붙이기 전에 **그 예제의 레퍼런스 매뉴얼 번호**를 먼저 확인한다",
+   "sources": [
+    {
+     "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+    },
+    {
+     "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+     "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+     "publisher": "STMicroelectronics",
+     "kind": "datasheet",
+     "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+    }
+   ]
+  }
+ ],
+ "terms": [
+  {
+   "term": "RCC",
+   "en": "Reset and Clock Control",
+   "what": "클럭원 선택·증배·분주·블록별 on/off 를 한자리에 모아 둔 STM32 의 주변장치. STM32 코드의 첫 줄이 여기서 나온다"
+  },
+  {
+   "term": "클럭 게이팅",
+   "en": "clock gating",
+   "what": "안 쓰는 블록에 클럭을 흘리지 않아 전력을 아끼는 것. 꺼진 블록의 레지스터는 써도 반응하지 않고 읽으면 0 이다"
+  },
+  {
+   "term": "HSI / HSE",
+   "en": "high-speed internal / external",
+   "what": "칩 안의 RC 발진기 / 밖에 붙이는 크리스탈·외부 클럭. 정확도와 부품 수가 맞바꿔진다"
+  },
+  {
+   "term": "PLL",
+   "en": "phase-locked loop",
+   "what": "낮은 주파수를 나눴다 곱해 높은 시스템 클럭을 만드는 회로. STM32 에서 최고 속도를 쓰려면 반드시 거친다"
+  },
+  {
+   "term": "AHB / APB",
+   "en": "Advanced High-performance Bus / Advanced Peripheral Bus",
+   "what": "주변장치가 매달린 내부 버스. 최대 주파수가 다르고, 어느 버스냐가 클럭을 켜는 레지스터 이름을 정한다"
+  },
+  {
+   "term": "wait state",
+   "en": "flash latency",
+   "what": "코어가 플래시에서 명령을 읽을 때 기다리는 사이클 수. 클럭을 올리기 **전에** 먼저 늘려야 한다"
+  },
+  {
+   "term": "레퍼런스 매뉴얼 (RM)",
+   "en": "reference manual",
+   "what": "ST 가 쓴 주변장치 문서. 시리즈마다 번호가 다르다 (F1=RM0008, F4=RM0090)"
+  },
+  {
+   "term": "프로그래밍 매뉴얼 (PM)",
+   "en": "programming manual",
+   "what": "ARM 코어 쪽 문서. NVIC·SysTick·예외·벡터 테이블이 여기 있다 (Cortex-M3=PM0056, M4=PM0214)"
+  },
+  {
+   "term": "CMSIS",
+   "en": "Cortex Microcontroller Software Interface Standard",
+   "what": "ARM 이 정한 Cortex-M 공통 소프트웨어 규약. `GPIOA->MODER` 처럼 레지스터를 구조체로 쓰는 벤더 헤더가 이 규약을 따라 나온다"
+  },
+  {
+   "term": "선점 우선순위 / 서브 우선순위",
+   "en": "preemption(group) priority / subpriority",
+   "what": "앞엣것만 '돌고 있는 핸들러를 끊을 수 있는가'를 정한다. 뒤엣것은 이미 대기 중인 것들의 처리 순서만 정한다"
+  },
+  {
+   "term": "VTOR",
+   "en": "vector table offset register",
+   "what": "인터럽트 벡터 표가 놓인 주소를 바꾸는 코어 레지스터. 부트로더 뒤에 애플리케이션을 얹는 구조가 이 위에 선다"
+  },
+  {
+   "term": "BOOT0",
+   "en": "boot pin",
+   "what": "리셋 순간의 전압으로 '플래시의 내 코드'와 '칩에 구워져 나온 ST 부트로더' 중 무엇으로 부팅할지 고르는 핀"
+  }
+ ],
+ "drills": [
+  {
+   "task": "\"포트 A 의 5번 핀을 출력으로 만들고 HIGH 로 둔다\" 를 **STM32F1 판과 STM32F4 판 두 벌**로 쓰고 한 표에 나란히 놓는다. 각 줄 옆에 그 값이 어느 레지스터의 몇 번 비트인지, 그리고 그 근거가 RM0008/RM0090 의 어느 절인지 적는다",
+   "done_when": "클럭 켜는 줄이 두 판에서 서로 다른 레지스터·다른 비트라는 것을 표에서 짚을 수 있고, F1 쪽 표에 `OSPEEDR` 에 해당하는 줄이 **없는** 이유(방향과 속도가 한 필드다)를 한 문장으로 말할 수 있다",
+   "why": "'시리즈가 다르다'는 말이 추상적인 경고가 아니라 **몇 줄이 어떻게 달라지는가**의 문제라는 걸 손에 넣는다. 이 표 하나가 인터넷 예제를 옮길 때의 체크리스트가 된다",
+   "no_hardware": "처음부터 장비가 필요 없다 — RM0008·RM0090 두 PDF 와 편집기면 된다. 컴파일도 필요 없다",
+   "hours": 2
+  },
+  {
+   "task": "RCC 를 안 켠 코드가 **어디서 조용해지는지** 추적한다. (1) `GPIOA->MODER` 에 값을 쓰고 바로 다시 읽어 출력하는 코드를 쓴다. (2) `RCC->AHB1ENR` 줄이 있는 판과 없는 판, 두 벌을 만든다. (3) 각각의 예상 출력을 **먼저 종이에 적고** 그 근거 문장을 RM0090 에서 찾아 인용한다",
+   "done_when": "클럭이 없을 때 읽히는 값이 0 이라는 것을 예측하고, 그 근거로 RM0090 의 두 문장(§2.1.9 의 '리셋 후 전부 꺼짐' 과 §5.3.2 의 '전력 절감을 위한 클럭 게이팅')을 댈 수 있다. 그리고 **왜 컴파일러가 이걸 못 잡는지** 설명할 수 있다",
+   "why": "STM32 에서 '아무 반응 없음'을 만났을 때 코드를 뒤지는 대신 **클럭을 먼저 의심하는 습관**이 이 실습에서 붙는다. 보드가 있으면 30분, 없어도 계산과 인용으로 끝난다",
+   "needs": "STM32 보드(Nucleo·Discovery 등)와 ST-LINK 가 있으면 실제 값을 눈으로 본다",
+   "no_hardware": "보드 없이도 (3)번까지는 그대로 할 수 있다 — 예측과 매뉴얼 인용이 이 실습의 알맹이다. 실행이 꼭 필요하면 QEMU 나 Renode 같은 무료 에뮬레이터에 Cortex-M 보드를 올려 같은 실험을 한다",
+   "hours": 2
+  },
+  {
+   "task": "CubeMX 가 생성한 프로젝트에서 **실제 레지스터 쓰기를 찾아낸다.** `SystemClock_Config()` 를 열고 ① 클럭원(HSI/HSE) 선택 ② PLL 의 `M`·`N`·`P` ③ AHB/APB 분주 ④ 플래시 wait state 네 곳을 찾아, 각각이 RM0090 의 어느 레지스터·어느 필드인지 이름을 적는다",
+   "done_when": "네 곳을 모두 짚고 레지스터 이름을 댈 수 있으며, **그 함수 안에서 wait state 가 클럭 전환보다 먼저 나오는지** 확인해 그 순서가 왜 그런지 설명할 수 있다",
+   "why": "HAL 을 쓰든 안 쓰든, 클럭이 틀리면 열어 볼 함수가 이것이다. '생성 코드는 블랙박스' 라는 감각을 여기서 한 번 깨 놓으면 나머지 HAL 코드도 읽히기 시작한다",
+   "needs": "STM32CubeMX 또는 STM32CubeIDE (무료)",
+   "no_hardware": "보드는 전혀 필요 없다 — 프로젝트를 **생성만** 하고 소스를 읽으면 된다. 설치조차 어렵다면 GitHub 에 공개된 CubeMX 생성 프로젝트에서 `SystemClock_Config()` 를 찾아 같은 네 곳을 짚는다",
+   "hours": 2
+  },
+  {
+   "task": "NVIC 우선순위 시나리오를 종이에 푼다. 인터럽트 A(선점 2, 서브 0)와 B(선점 2, 서브 1), C(선점 1, 서브 3)가 있다고 두고, 그룹 설정이 `NVIC_PRIORITYGROUP_2` 일 때와 `NVIC_PRIORITYGROUP_0` 일 때 각각 — (a) A 가 도는 중에 B 가 오면? (b) A 가 도는 중에 C 가 오면? (c) A·B 가 동시에 대기 중이면? — 세 질문에 답을 적는다",
+   "done_when": "여섯 칸(2가지 그룹 × 3질문)을 다 채우고, `PRIORITYGROUP_0` 열에서 선점이 한 번도 일어나지 않는 이유를 그룹 우선순위 비트 수로 설명할 수 있다",
+   "why": "이 표를 한 번 채우면 '우선순위를 다르게 줬는데 왜 안 끊기지' 라는 질문을 다시 하지 않게 된다. 실무에서 가장 비싼 인터럽트 버그가 여기서 나온다",
+   "no_hardware": "처음부터 장비가 필요 없다 — 종이와 PM0214 의 우선순위 그룹 절이면 된다",
+   "hours": 1
+  }
+ ],
+ "checks": [
+  "STM32 에서 레지스터에 썼는데 아무 반응이 없다. 이때 **오류가 안 났다는 사실 자체가 정상**인 이유는? 그 기본값은 무엇을 위해 그렇게 정해졌나?",
+  "전원을 넣은 STM32F4 는 지금 몇 MHz 로 돌고 있나? 168MHz 로 올리려면 무엇을, 어떤 순서로 해야 하나? 순서를 뒤집으면 무엇이 먼저 무너지나?",
+  "같은 GPIO 포트 A 의 클럭을 켜는데 F1 과 F4 가 서로 다른 레지스터를 쓰는 이유는? 새 칩을 만났을 때 그 정보를 어디서 확인하나?",
+  "HAL 과 LL 은 위아래 관계인가 나란한 관계인가? LL 이 모든 주변장치에 제공되지 않는 이유는?",
+  "선점 우선순위와 서브 우선순위 중 **돌고 있는 핸들러를 끊는** 것은 어느 쪽인가? 둘 다 같은 두 인터럽트가 동시에 대기하면 무엇이 순서를 정하나?",
+  "CubeMX 로 만든 프로젝트를 손으로 고친 뒤 다시 생성했다. 무엇이 남고 무엇이 사라지나?",
+  "레퍼런스 매뉴얼(RM)과 프로그래밍 매뉴얼(PM)에는 각각 무엇이 들어 있나? NVIC 우선순위를 찾으려면 어느 쪽을 펴나?"
+ ],
+ "evidence": [
+  {
+   "quote": "- STM32 계열 MCU 개발 경험 필수 (STM32F·STM32G·STM32H 등); NXP·TI 등 타 Cortex-M 경험자 동등 인정",
+   "from": "posting",
+   "where": "원익피앤이 — [충전기사업부문] 펌웨어 개발자 경력 채용 (점핏, 모집중)",
+   "url": "https://jumpit.saramin.co.kr/position/54507766",
+   "what_it_shows": "**한 줄에 이 문서의 두 축이 다 들어 있다.** `STM32F·STM32G·STM32H` 는 시리즈 파편화를, `타 Cortex-M 경험자 동등 인정` 은 옮겨지는 것이 **코어 지식이지 HAL 코드가 아니라는** 사실을 시장 쪽에서 확인해 준다"
+  },
+  {
+   "quote": "- MCU(ATmega/STM32 계열)",
+   "from": "posting",
+   "where": "가스디엔에이 — 펌웨어 개발 및 전자회로 설계 경력 (점핏, 모집중)",
+   "url": "https://jumpit.saramin.co.kr/position/54521111",
+   "what_it_shows": "8비트 AVR 과 STM32 를 **한 괄호 안에** 묶어 요구한다. 이 문서가 '옮겨 올 때 새로 생기는 것' 을 축으로 잡은 이유가 이것이다 — 실무는 둘 사이를 오간다"
+  },
+  {
+   "quote": "STM32 HAL Driver 개발 경험이 있는 분",
+   "from": "posting",
+   "where": "크래블 — 임베디드(펌웨어) 개발자 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/372341",
+   "what_it_shows": "같은 공고가 자격요건에 `STM32 또는 ARM Cortex-M 계열 MCU 개발 경험`, 주요업무에 `STM32 기반 Non-OS 펌웨어 개발` 을 함께 적는다. **HAL 이 '알면 좋은 도구'가 아니라 우대사항으로 이름이 박히는 층**이라는 뜻"
+  },
+  {
+   "quote": "• STM32 사용(EWARM, CubelDE)",
+   "from": "posting",
+   "where": "아세아텍 — 펌웨어/플랫폼 개발(경력3~9년) (점핏, 모집중)",
+   "url": "https://jumpit.saramin.co.kr/position/53828172",
+   "what_it_shows": "칩 이름 옆에 **툴체인이 함께 지정된다**(IAR EWARM / STM32CubeIDE). STM32 를 쓴다는 것이 칩만이 아니라 ST 의 소프트웨어 층 전체를 쓴다는 뜻임을 보여 준다"
+  },
+  {
+   "quote": "• 개발 도구: STM32CubeIDE, PlatformIO, GCC, GDB, JTAG/SWD",
+   "from": "posting",
+   "where": "디하이브 — 임베디드 펌웨어 시니어 개발자 (원티드, 모집중)",
+   "url": "https://www.wanted.co.kr/wd/366867",
+   "what_it_shows": "`SWD` 가 자격요건에 직접 등장한다. AVR 의 ISP 와 달리 **2선 디버그가 기본 전제**이고, 굽고 멈춰 세우는 층까지 요구 역량에 들어 있다"
+  },
+  {
+   "quote": "• C/C++ 기반의 MCU(Cortex-M, STM32, ESP32 등) 펌웨어 개발 가능자",
+   "from": "posting",
+   "where": "(주)그린솔루스 — 임베디드 펌웨어 및 하드웨어 개발자 채용 (사람인, 모집중)",
+   "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54248309&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=24de24b8-1be5-4461-a8b9-2d6cf06bb01e",
+   "what_it_shows": "`Cortex-M` 과 `STM32` 를 **나란히** 적는다 — 코어와 제품군이 다른 층의 이름이라는 것을 공고가 (의도했든 아니든) 드러낸다. 이 문서의 첫 절이 그 경계를 먼저 그리는 이유다"
+  }
+ ],
+ "related": [
+  {
+   "slug": "gpio-register",
+   "how": "핀을 켜고 끄는 레지스터 **자체**는 저쪽이다 — `MODER`·`BSRR` 의 비트 배치와 AVR·STM32·ESP32 대응표가 거기 있다. 이 문서는 그 레지스터에 손이 닿기 **전까지의 층**(RCC·버스·시리즈·HAL)을 맡는다"
+  },
+  {
+   "slug": "atmega128",
+   "how": "여기로 오기 직전의 자리. 클럭이 퓨즈 하나로 정해지고 주변장치가 늘 켜져 있던 세계 — 그 습관이 STM32 에서 무엇을 깨뜨리는지가 이 문서의 절반이다"
+  },
+  {
+   "slug": "interrupt",
+   "how": "인터럽트라는 개념, ISR 안에서 하면 안 되는 것, `volatile` 과 임계 구역은 저쪽이다. 이 문서의 NVIC 절은 그 위에서 **컨트롤러가 우선순위를 어떻게 두 겹으로 쪼개는가**만 다룬다"
+  },
+  {
+   "slug": "dma",
+   "how": "RCC 로 클럭을 켜야 하는 대표적인 다음 블록. `interrupt` 가 '바이트마다 인터럽트를 걸면 지는 싸움' 이라 부른 것의 반대편이고, 1차 자료가 이 문서와 같은 RM0090 이다"
+  },
+  {
+   "slug": "rtos",
+   "how": "인터럽트를 짧게 끝낸 다음 그 일을 넘기는 곳. **태스크 우선순위와 NVIC 우선순위는 서로 다른 물건인데** 실무에서 자주 섞여 쓰인다 — 그 경계가 저 문서의 자리다"
+  },
+  {
+   "slug": "uart",
+   "how": "STM32 에서 통신 하나를 살리는 순서가 이 문서 그대로다 — 버스 확인 → RCC 로 클럭 → 핀을 AF 로 → 보율 계산. 마지막 단계(보율 오차)의 본체는 저쪽에 있다"
+  },
+  {
+   "slug": "watchdog",
+   "how": "독립 워치독(IWDG)이 시스템 클럭이 아니라 **LSI(약 32kHz)** 로 도는 이유 — 클럭 계통이 통째로 무너져도 혼자 살아 있어야 하기 때문이다. 이 문서의 클럭 계통 표에 그 줄이 있다"
+  }
+ ],
+ "open_questions": [
+  "`market` 은 비어 있다. `tech_relations.json`(generated_at 2026-08-19, 추적 기술 60개)에 `STM32` 라는 name 이 **없어서** 옮겨 올 숫자가 없다 — 그 목록은 웹·클라우드 스택 위주라 MCU 계열을 세지 않는다. 대신 직접 집계한 값을 남긴다: 2026-09-04 기준 모집중 공고 9,458건 중 `STM32` 48건(41개 회사), `Cortex-M` 19건(16개 회사), `AVR` 8건(6개 회사), `ESP32` 14건, `FreeRTOS` 22건, `SWD` 2건. `CubeMX` 라는 표기는 0건이고 `STM32Cube`(CubeIDE 포함) 3건이었다 — **도구 이름은 공고에 잘 안 적힌다.**",
+  "NVIC 우선순위 그룹 표는 UM1725 의 `HAL_NVIC_SetPriorityGrouping()` 설명(선점/서브 비트 수)과 PM0214 의 그룹 우선순위 semantics 로 만들었다. **`AIRCR` 의 `PRIGROUP` 필드에 들어가는 raw 값(0b000~0b111)과 그 비트 배분의 대응표는 이번 사이클에 1차 자료로 확인하지 못했다** — st.com 이 자동 요청을 막아 PM0214 전문을 받지 못했고, 확보한 발췌본(Rev 10, 인터럽트 절)은 AIRCR 페이지를 포함하지 않았다. 그래서 표에는 HAL 상수 이름만 적고 raw `PRIGROUP` 값은 넣지 않았다.",
+  "`RCC` 로 주변장치 클럭을 켠 **직후** 그 블록의 레지스터에 바로 접근하면 실패할 수 있다는 이야기(그래서 HAL 매크로가 읽기를 한 번 끼워 넣는다는 것)는 널리 알려져 있지만, **이번에 확인한 RM0008·RM0090 본문에서는 그 문장을 찾지 못했다.** 시리즈별 errata sheet 쪽 내용으로 보이며, 확인하지 못했으므로 지뢰 항목에 넣지 않았다.",
+  "리셋 직후 F4 GPIO 의 `MODER` 리셋값은 포트마다 다르다(디버그 핀이 있는 포트가 예외다). 표에는 '포트마다 다르다' 까지만 적고 포트별 값은 옮기지 않았다 — 필요하면 RM0090 의 GPIO register map 을 직접 본다.",
+  "본문 대조에 쓴 판본이 ST 의 현행판과 다르다. RM0090 은 Doc ID 018909 **Rev 4**, RM0008 은 Doc ID 13902 **Rev 14**, PM0214 는 **Rev 10** 발췌본, UM1725 는 DocID025834 **Rev 5**, AN2606 은 **Rev 61** 로 확인했다(st.com 직접 다운로드가 막혀 대학·공개 미러를 썼다). `sources` 의 URL 은 ST 의 현행 배포처를 가리키므로, 인용한 절 번호와 표 번호가 최신판에서 이동했을 수 있다.",
+  "AVR 쪽 비교 항목(퓨즈로 정하는 클럭원, 벡터 주소 순 고정 우선순위, ISP 배선)은 `atmega128`·`interrupt` 문서가 이미 doc2467 로 확인해 둔 사실을 옮긴 것이다. 이번 사이클에 ATmega128 데이터시트를 다시 열어 대조하지는 않았다."
+ ],
+ "sources": [
+  {
+   "title": "RM0090 — STM32F405/415, F407/417, F427/437, F429/439 Reference manual",
+   "url": "https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+   "publisher": "STMicroelectronics",
+   "kind": "datasheet",
+   "summary": "STM32F4 의 RCC(클럭 트리·AHB1ENR)·GPIO·NVIC 절. 이 문서의 F4 숫자는 전부 여기서 왔다 (본문 대조는 Doc ID 018909 Rev 4 판)"
+  },
+  {
+   "title": "RM0008 — STM32F101/102/103/105/107 Reference manual",
+   "url": "https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf",
+   "publisher": "STMicroelectronics",
+   "kind": "datasheet",
+   "summary": "STM32F1 의 RCC(APB2ENR·IOPAEN)와 GPIO(CRL/CRH). F4 와 무엇이 어떻게 다른지의 근거 (본문 대조는 Doc ID 13902 Rev 14 판)"
+  },
+  {
+   "title": "PM0214 — STM32 Cortex-M4 MCUs and MPUs programming manual",
+   "url": "https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf",
+   "publisher": "STMicroelectronics",
+   "kind": "docs",
+   "summary": "ARM 코어 쪽 문서. NVIC 우선순위·선점·그룹 우선순위와 벡터 테이블(VTOR)이 여기 있다 (본문 대조는 Rev 10 의 인터럽트 발췌본)"
+  },
+  {
+   "title": "UM1725 — Description of STM32F4 HAL and low-layer drivers",
+   "url": "https://www.st.com/resource/en/user_manual/um1725-description-of-stm32f4-hal-and-lowlayer-drivers-stmicroelectronics.pdf",
+   "publisher": "STMicroelectronics",
+   "kind": "docs",
+   "summary": "HAL 과 LL 의 정의·차이, 레지스터↔LL 함수 대응표, NVIC_PRIORITYGROUP_x 의 비트 배분 (본문 대조는 DocID025834 Rev 5)"
+  },
+  {
+   "title": "STM32CubeMX User Manual — Getting started with STM32CubeMX",
+   "url": "https://dev.st.com/stm32cube-docs/stm32cubemx/6.18.0/en/docs/markup/CubeMX_UserManual/chapters/02_2_getting_started_with_stm32cubemx.html",
+   "publisher": "STMicroelectronics",
+   "kind": "docs",
+   "summary": "CubeMX 가 무엇을 생성하는가, 클럭 트리 그래픽 뷰가 잘못된 설정을 표시한다는 것, 사용자 코드 구역이 재생성에서 보존된다는 것"
+  },
+  {
+   "title": "AN2606 — STM32 microcontroller system memory boot mode",
+   "url": "https://www.st.com/resource/en/application_note/an2606-stm32-microcontroller-system-memory-boot-mode-stmicroelectronics.pdf",
+   "publisher": "STMicroelectronics",
+   "kind": "docs",
+   "summary": "칩 안에 구워져 나오는 부트로더와 BOOT 핀 패턴. 품번별 장이 71개라는 사실 자체가 파편화의 그림이다 (본문 대조는 Rev 61)"
+  },
+  {
+   "title": "ATmega128/128L 데이터시트 (doc2467)",
+   "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc2467.pdf",
+   "publisher": "Microchip (Atmel)",
+   "kind": "datasheet",
+   "summary": "비교 대상인 AVR 쪽 1차 자료. 퓨즈로 정하는 클럭원, 주소 순서로 고정된 인터럽트 우선순위가 여기 있다"
+  }
+ ]
+}

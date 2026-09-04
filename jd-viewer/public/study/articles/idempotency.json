@@ -1,0 +1,935 @@
+{
+ "slug": "idempotency",
+ "title": "멱등성",
+ "title_en": "Idempotency",
+ "aliases": [
+  "멱등성",
+  "멱등",
+  "멱등성 보장",
+  "Idempotency",
+  "idempotent",
+  "멱등키",
+  "Idempotency-Key",
+  "아이뎀포턴시"
+ ],
+ "category": "term",
+ "level": "core",
+ "status": "done",
+ "updated_at": "2026-09-04",
+ "one_liner": "같은 요청을 두 번 보내든 열 번 보내든, 시스템에 남는 결과가 한 번 보낸 것과 같아지는 성질. 네트워크가 성공도 실패도 아닌 '모름'이라는 답을 주기 때문에 필요해진 말이다.",
+ "summary": "멱등성(idempotency)은 같은 요청이 여러 번 처리돼도 시스템에 남는 결과가 한 번 처리한 것과 같아지는 성질이다. 이 말이 실무에 들어온 이유는 네트워크에 '성공'과 '실패' 말고 세 번째 답이 있기 때문이다 — 타임아웃은 실패가 아니라 **모름**이다. 응답을 못 받은 쪽이 재시도하면 결제가 두 번 될 수 있고, 재시도하지 않으면 결제가 아예 안 될 수 있다. HTTP 는 이 문제를 메서드 수준에서 먼저 갈랐고(RFC 9110 은 PUT·DELETE·안전한 메서드를 멱등으로 등록했다), POST 로만 할 수 있는 일(결제 생성 같은 것)에는 결제사들이 `Idempotency-Key` 헤더라는 관행을 얹었다. 지금은 결제·주문·메시징 공고의 자격요건에 정의 없이 등장하는 낱말이다.",
+ "market": null,
+ "sections": [
+  {
+   "id": "what",
+   "heading": "무엇인가 — '결과가 같다'는 무엇의 결과인가",
+   "kind": "what",
+   "body": "멱등성은 수학에서 온 말이다. 어떤 연산 f 를 두 번 적용해도 한 번 적용한 것과 같으면(`f(f(x)) = f(x)`) 그 연산은 멱등이다. `abs()`, `max(x, 5)`, `UPDATE account SET status = 'CLOSED' WHERE id = 1` 이 그렇고, `balance = balance + 1000` 은 그렇지 않다.\n\n실무로 옮길 때 사람들이 가장 자주 틀리는 지점은 **무엇이 같아야 하는가**다. 답은 **서버에 남는 상태**이지 **클라이언트가 받는 응답**이 아니다. RFC 9110 은 멱등을 이렇게 정의한다.\n\n> A request method is considered \"idempotent\" if the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request.\n> — RFC 9110, 9.2.2\n\n핵심 단어는 `intended effect on the server` 다. 그래서 다음 두 문장이 모두 참일 수 있다.\n\n- `DELETE /orders/42` 를 두 번 호출했다. 첫 번째는 `204`, 두 번째는 `404` 였다. **응답은 달랐다.**\n- 그래도 DELETE 는 멱등하다. **주문 42 가 없다는 서버 상태는 한 번 호출한 뒤나 두 번 호출한 뒤나 같다.**\n\n같은 이유로 **멱등 = 아무것도 안 바뀜**이 아니다. 첫 번째 호출은 당연히 상태를 바꾼다. 두 번째부터가 안 바뀌는 것이다.\n\n그리고 이 정의에는 조용히 큰 구멍이 하나 있다 — **무엇이 '같은 요청(identical request)'인가.** URL 과 메서드만 같으면 같은 요청인가, 본문까지 같아야 하나, 아니면 요청에 붙인 키 하나로 정하나. 메서드 수준 멱등성은 이 질문에 '메서드와 대상 자원'으로 답하고, 멱등키는 '내가 붙인 키'로 답한다. 이 낱말을 쓰는 설계 회의에서 실제로 정해야 하는 것의 절반이 이 질문이다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    }
+   ]
+  },
+  {
+   "id": "why-timeout",
+   "heading": "왜 생겼나 — 타임아웃은 실패가 아니라 '모름'이다",
+   "kind": "why",
+   "body": "요청 하나를 보내면 돌아올 수 있는 답은 셋이다.\n\n1. `200` — 성공했다. 확실하다.\n2. `400` 같은 명시적 거절 — 실패했다. 확실하다.\n3. **아무것도 안 온다.** 타임아웃, 커넥션 리셋, 게이트웨이 `504`, 앱이 꺼짐.\n\n세 번째가 이 낱말이 존재하는 이유 전부다. 3번은 **실패가 아니다.** 서버가 요청을 못 받았을 수도 있고, 받아서 카드 승인까지 끝내 놓고 응답만 유실됐을 수도 있다. **클라이언트 쪽에서는 이 둘이 구분되지 않는다.**\n\n```\n클라이언트 ──── 결제요청 ────▶ 서버\n                                 카드 승인 완료 (돈이 빠져나감)\n클라이언트 ◀──── 응답 ─╳ ────  (여기서 유실)\n\n클라이언트가 아는 것: '응답이 안 왔다'\n클라이언트가 모르는 것: 돈이 빠져나갔는가\n```\n\n여기서 딜레마가 갈린다.\n\n- **재시도하면** — 이미 승인됐던 경우 두 번 결제된다.\n- **재시도하지 않으면** — 서버에 안 닿았던 경우 사용자는 결제가 됐는지 안 됐는지 모른 채 남는다. 그리고 대개 새로고침을 눌러 스스로 재시도한다.\n\n둘 다 나쁘므로 답은 '재시도할지 말지'가 아니라 **'재시도해도 안전하게 만들어 두는 것'**이다. 그게 멱등성이다. RFC 9110 이 이 관계를 직접 말한다.\n\n> Idempotent methods are distinguished because the request can be repeated automatically if a communication failure occurs before the client is able to read the server's response. ... It knows that repeating the request will have the same intended effect, even if the original request succeeded, though the response might differ.\n> — RFC 9110, 9.2.2\n\n`even if the original request succeeded` 가 핵심이다. 표준은 '실패한 요청을 다시 보내라'가 아니라 **'성공했는지 모르는 요청을 다시 보내도 되게 하라'**고 쓴 것이다.\n\n같은 문제가 HTTP 바깥에도 그대로 있다. 메시지 큐는 대부분 **최소 한 번(at-least-once)** 전달이다 — 브로커도 컨슈머의 ack 를 못 받으면 같은 이유로 다시 보낸다.\n\n> Standard queues ensure at-least-once message delivery, but due to the highly distributed architecture, more than one copy of a message might be delivered, and messages may occasionally arrive out of order.\n> — Amazon SQS 표준 큐 문서\n\n그래서 이 낱말은 결제만의 말이 아니다. 웹훅 수신, 배치 재실행, 컨슈머 리밸런싱, 사용자의 더블클릭까지 **'같은 일이 두 번 도착할 수 있는 모든 자리'**의 공통 대책이다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    },
+    {
+     "title": "Amazon SQS standard queues",
+     "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html",
+     "publisher": "AWS",
+     "kind": "docs",
+     "summary": "표준 큐는 최소 한 번(at-least-once) 전달이고 메시지 사본이 두 번 올 수 있다고 명시한다"
+    }
+   ]
+  },
+  {
+   "id": "http-methods",
+   "heading": "HTTP 메서드의 멱등성 — safe 와 idempotent 는 다른 말이다",
+   "kind": "how",
+   "body": "면접에서 가장 자주 뭉개지는 구분이다. 두 낱말은 겹치지만 같지 않다.\n\n**안전(safe)** — RFC 9110 9.2.1:\n\n> Request methods are considered \"safe\" if their defined semantics are essentially read-only; i.e., the client does not request, and does not expect, any state change on the origin server as a result of applying a safe method to a target resource.\n\n**멱등(idempotent)** — 상태를 바꾸는 것은 허용한다. 여러 번 바꿔도 결과가 한 번과 같기만 하면 된다.\n\n그래서 포함 관계는 한 방향이다. **안전하면 반드시 멱등이다. 그 역은 아니다.** `PUT` 과 `DELETE` 는 상태를 바꾸므로 안전하지 않지만 멱등하다. 표는 `methods` 표(아래)에 있다.\n\n### 이건 성질이 아니라 약속이다\n\nRFC 는 **메서드의 의미(semantics)**를 정의할 뿐, 서버 구현이 그걸 지키게 만들 수는 없다. `GET /like?post=3` 이 좋아요 수를 올리는 API 는 '멱등하지 않은 GET' 이 아니라 **표준을 어긴 GET** 이다. RFC 9110 이 이 경우를 따로 경고한다 — 질의 파라미터로 동작을 고르게 만들었다면, 안전한 메서드로 접근했을 때 그 동작을 막는 것은 자원 소유자의 책임이라고 쓴다. 표준이 이걸 굳이 적어 둔 이유는 실제로 사고가 나기 때문이다: 프리페치·링크 검사·검색 색인 크롤러가 페이지의 모든 URL 에 GET 을 날린다.\n\n### DELETE 가 404 를 주는 것이 왜 모순이 아닌가\n\n`what` 절에서 본 그대로다. 멱등의 기준은 **서버 상태**이지 **상태 코드**가 아니다. 두 번째 DELETE 가 `404` 를 돌려줘도, '주문 42 가 없다'는 결과는 한 번 지운 뒤와 똑같다. RFC 의 `though the response might differ` 가 이 경우를 위해 붙어 있는 단서다.\n\n> 다만 클라이언트를 배려하려면 두 번째 DELETE 에 `404` 대신 `204` 를 주는 설계도 흔하다. 표준이 어느 한쪽을 강제하지 않으므로 **API 규격서에 어느 쪽인지 적어 두는 것**이 실무의 답이다.\n\n### POST 가 왜 예외인가\n\n`POST` 의 정의된 의미는 '이 자원에게 요청 본문을 처리시켜라'이고, 대개 **새 자원을 만드는 것**이다. 두 번 부르면 두 개가 생기는 것이 POST 의 정상 동작이다. 결제 생성·주문 생성이 전부 여기 걸린다. 그래서 멱등성이 문제가 되는 자리는 거의 항상 POST 위이고, 다음 절의 멱등키가 필요해지는 것도 그 때문이다.\n\nRFC 9110 은 그 문을 명시적으로 열어 뒀다.\n\n> A client SHOULD NOT automatically retry a request with a non-idempotent method unless it has some means to know that the request semantics are actually idempotent, regardless of the method, or some means to detect that the original request was never applied.\n> — RFC 9110, 9.2.2\n\n`regardless of the method` — **메서드가 아니라 요청의 의미가 멱등이면 재시도해도 된다**는 뜻이고, 그 '의미'를 만들어 주는 장치가 멱등키다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    },
+    {
+     "title": "RFC 5789: PATCH Method for HTTP",
+     "url": "https://www.rfc-editor.org/rfc/rfc5789.html",
+     "publisher": "IETF",
+     "date": "2010-03-01",
+     "kind": "standard",
+     "summary": "PATCH 는 안전하지도 멱등하지도 않다고 명시한다 (2절)"
+    }
+   ]
+  },
+  {
+   "id": "idempotency-key",
+   "heading": "멱등키 — 클라이언트가 이름을 붙이고 서버가 결과를 기억한다",
+   "kind": "how",
+   "body": "POST 를 멱등하게 만드는 방법은 하나뿐이다. **요청에 이름을 붙여, 서버가 그 이름으로 '이미 처리했다'를 기억하게 하는 것.** 그 이름이 멱등키(idempotency key)이고, 관행상 `Idempotency-Key` 헤더로 보낸다.\n\n```\nPOST /v1/payments\nIdempotency-Key: 9c3f1f4a-6b1e-4f3a-9d20-0f5d2b7a11c8\n\n{ \"orderId\": \"A-1024\", \"amount\": 39000 }\n```\n\n### 왜 클라이언트가 만드는가\n\n이게 이 구조의 전부다. **재시도하는 주체가 클라이언트이므로, '이건 아까 그 요청이다'라고 지목할 수 있는 것도 클라이언트뿐이다.** 서버가 키를 만들면 요청이 올 때마다 새 키가 생기고, 그러면 재시도와 새 요청이 구분되지 않는다 — 아무것도 막지 못한다.\n\n> How you create unique keys is up to you, but we suggest using V4 UUIDs, or another random string with enough entropy to avoid collisions.\n> — Stripe, Idempotent requests\n\n키를 어디에 매다는지도 설계 결정이다. UUID v4 처럼 **재시도 시점에 생성**하는 방식과, 장바구니 ID·주문번호처럼 **도메인 값에서 유도**하는 방식이 있다. 후자는 사용자의 더블클릭까지 같은 키로 묶어 준다.\n\n### 서버가 하는 일 (순서가 중요하다)\n\n```\n1. 키를 원자적으로 선점한다   INSERT INTO idem(key, state) VALUES(?, 'IN_PROGRESS')\n     └ 유니크 제약 위반 → 이미 있는 키다 → 3번으로\n2. 실제 작업을 하고, 응답(상태코드+본문)을 그 행에 저장한다  state='DONE'\n3. 이미 있는 키였다면\n     state='DONE'         → 저장해 둔 응답을 그대로 돌려준다 (재실행하지 않는다)\n     state='IN_PROGRESS'  → 409 로 거절한다 (아직 결과가 없다)\n```\n\n1번을 **조회 후 삽입**(`SELECT` 로 없으면 `INSERT`)으로 짜면 동시 요청 둘이 나란히 통과한다. 선점은 반드시 **유니크 제약이 걸린 한 번의 쓰기**여야 한다 — 여기서 다음 절의 'DB 유니크 제약'이 멱등키 구현의 바닥으로 들어온다.\n\n### 진행 중(in-flight)에 같은 키가 또 오면\n\n두 벤더 모두 답이 같다: **거절한다.** 아직 결과가 없는데 두 번째를 실행할 수도, 첫 번째 결과를 돌려줄 수도 없기 때문이다.\n\n- 토스페이먼츠: `409 - IDEMPOTENT_REQUEST_PROCESSING` — 문서는 \"이 에러가 돌아오면 다시 한번 요청해서 결과를 확인하세요\"라고 안내한다.\n- Stripe: HTTP `409 Conflict` — \"The request conflicts with another request (perhaps due to using the same idempotent key).\"\n\n### 같은 키에 다른 본문이 오면\n\n**벤더마다 답이 다르다. 합쳐서 외우면 틀린다.**\n\n- Stripe 는 파라미터를 비교해서 **에러를 낸다.** \"The idempotency layer compares incoming parameters to those of the original request and errors if they're not the same to prevent accidental misuse.\"\n- 토스페이먼츠는 식별 조합을 **멱등키 + API 키 + API 주소 + HTTP 메서드**로 명시한다. 이 조합에 **본문이 없다.**\n\n실무 규칙은 여기서 나온다. **요청 내용을 바꿨으면 키도 새로 만든다.** 같은 키를 유지해도 되는 것은 '토씨 하나 안 바꾼 그 요청을 다시 보낸다'일 때뿐이다.\n\n### 키의 수명 — 숫자는 벤더별로 따로 적는다\n\n`key-specs` 표에 출처별로 나열했다. 요약하면 Stripe 는 24시간, 토스페이먼츠는 15일이고, **이 둘을 평균 내거나 '보통 며칠'이라고 말할 근거는 없다.** 수명이 지난 뒤 같은 키로 요청하면 새 요청으로 처리된다 — 보호막에 시간 제한이 있다는 뜻이다.\n\n### 이건 표준이 아니다\n\n`Idempotency-Key` 헤더를 표준화하려는 IETF 인터넷 드래프트(`draft-ietf-httpapi-idempotency-key-header`)가 있지만, **드래프트는 표준이 아니고** 데이터트래커 기준 현재 상태는 `Expired Internet-Draft`(07판, 2026-04-18 만료)다. 헤더 이름이 사실상 굳은 것은 표준이 정해서가 아니라 결제 API 들이 같은 이름을 썼기 때문이다. 그러니 **연동할 상대의 문서를 읽는 것 말고 지름길이 없다.**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    },
+    {
+     "title": "Stripe Docs — Advanced error handling (Idempotency and retries)",
+     "url": "https://docs.stripe.com/error-low-level",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "500 의 결과도 캐시된다는 것, 429 는 멱등 계층보다 앞이라 결과가 달라질 수 있다는 것, Idempotent-Replayed 헤더"
+    },
+    {
+     "title": "멱등키 | 토스페이먼츠 개발자센터",
+     "url": "https://docs.tosspayments.com/reference/using-api/idempotency-key",
+     "publisher": "토스페이먼츠",
+     "kind": "docs",
+     "summary": "국내 결제 맥락의 Idempotency-Key 규격 — 300자, 15일, 식별 조합, 409 IDEMPOTENT_REQUEST_PROCESSING"
+    },
+    {
+     "title": "The Idempotency-Key HTTP Header Field (draft-ietf-httpapi-idempotency-key-header-07)",
+     "url": "https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/",
+     "publisher": "IETF httpapi WG",
+     "date": "2025-10-15",
+     "kind": "standard",
+     "summary": "표준이 아니다 — 데이터트래커 기준 'Expired Internet-Draft'(2026-04-18 만료). 헤더 이름이 관행으로 굳은 배경 자료로만 쓴다"
+    }
+   ]
+  },
+  {
+   "id": "key-vs-lock-vs-unique",
+   "heading": "멱등키냐 분산 락이냐 DB 유니크 제약이냐",
+   "kind": "how",
+   "body": "공고에는 이 셋이 한 줄에 나란히 등장한다 — `머니 트랜잭션(멱등성, 분산 락, 정합성 보장)`. 그런데 셋은 **다른 문제를 푸는 도구**다. 고르는 방법은 문제를 세 질문으로 쪼개는 것이다.\n\n1. **두 번째 요청에게 첫 번째의 답을 돌려줘야 하나?** → 그렇다면 멱등키다. 나머지 둘은 답을 기억하지 않는다.\n2. **두 실행이 시간적으로 겹치면 안 되나?** (겹치지만 않으면 여러 번 실행돼도 괜찮다) → 분산 락이다.\n3. **결과 데이터에 '같은 것은 하나만'이라는 규칙이 있나?** → DB 유니크 제약이다.\n\n### 분산 락에는 기억이 없다\n\n가장 자주 오해되는 지점이다. 락이 주는 것은 **상호배제(mutual exclusion)** 하나뿐이다. Redis 문서가 분산 락의 목표를 이렇게 적는다.\n\n> Safety property: Mutual exclusion. At any given moment, only one client can hold a lock.\n> — Distributed Locks with Redis\n\n**'지금 동시에 들어오지 마라'이지 '너 아까 왔었잖아'가 아니다.** 그래서 락만 걸어 둔 결제 API 는 첫 요청이 끝나고 락이 풀린 뒤 도착한 재시도를 그대로 통과시킨다 — 타임아웃 재시도는 대부분 **겹치지 않고 뒤늦게** 온다. 즉 이 문서가 다루는 문제(타임아웃 후 재시도)에는 락이 애초에 맞는 도구가 아니다.\n\n락에는 그 자체의 실패 모드도 있다. 락은 데드락을 피하려고 TTL 을 걸어 두는데, Redis 문서가 그 결과를 직접 말한다.\n\n> ... a client may acquire the lock, get blocked performing some operation for longer than the lock validity time (the time at which the key will expire), and later remove the lock, that was already acquired by some other client.\n> — Distributed Locks with Redis\n\n**작업이 아직 도는 중인데 락이 먼저 풀릴 수 있다.** 게다가 복제 기반 페일오버에서는 상호배제 자체가 깨질 수 있다고 같은 문서가 경고한다 (마스터가 키를 복제하기 전에 죽고 레플리카가 승격되면 두 클라이언트가 같은 락을 쥔다). 락은 '동시에 들어오는 것'을 줄여 주는 도구이지, **정확성을 최종 보증하는 도구가 아니다.**\n\n### 유니크 제약은 결과를 기억하지만 응답을 기억하지 않는다\n\n`UNIQUE(order_id)` 하나면 같은 주문의 결제 행이 두 개 생기는 일은 **DB 트랜잭션의 힘으로** 막힌다. 추가 인프라가 0 이고, 락처럼 만료되지도 않으며, 프로세스가 몇 개든 상관없다. 가장 싸고 가장 강한 방법이다.\n\n대신 두 번째 요청이 받는 것은 **유니크 위반 예외**이지 첫 번째의 응답이 아니다. 그걸 그대로 `500` 으로 흘려보내면 클라이언트 입장에서는 여전히 '모름'이다. 제약 위반을 잡아서 **기존 행을 조회해 첫 결과를 돌려주는 코드**를 붙이는 순간, 그건 사실상 멱등키 구현이 된다 — 실제로 앞 절의 멱등키 저장소가 하는 일이 정확히 이것이다.\n\n### 셋은 배타적이지 않다\n\n실무의 결제 핸들러는 대개 이렇게 겹쳐 쓴다.\n\n- **멱등키 테이블 + 그 위의 유니크 인덱스** — 재시도 방어와 원자적 선점을 한 번에.\n- **도메인 유니크 제약**(`UNIQUE(order_id, status)`) — 멱등키를 안 붙인 경로로 들어와도 최종 방어선이 남게.\n- **분산 락은 필요한 자리에만** — 재고 차감, 순번 발급처럼 **같은 자원을 여러 요청이 동시에 만지는** 구간.\n\n자세한 대비는 `three-ways` 표에 있다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Distributed Locks with Redis",
+     "url": "https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/",
+     "publisher": "Redis",
+     "kind": "docs",
+     "summary": "분산 락이 보장하려는 세 성질(상호배제·데드락 없음·내결함성)과, 락 유효시간을 넘겨 작업이 이어질 때 생기는 문제를 문서가 직접 말한다"
+    },
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "heading": "경계 — 멱등성은 '정확히 한 번'이 아니다",
+   "kind": "limits",
+   "body": "### exactly-once 는 마케팅 문구일 때가 많다\n\n전달 보장은 셋으로 갈린다.\n\n- **최대 한 번(at-most-once)** — 중복은 없지만 유실될 수 있다.\n- **최소 한 번(at-least-once)** — 유실은 없지만 중복이 올 수 있다. 실무 시스템 대부분이 여기다.\n- **정확히 한 번(exactly-once)** — 유실도 중복도 없다.\n\n정확한 구도는 이것이다.\n\n> **최소 한 번 전달 + 받는 쪽의 멱등 처리 = 실질적 한 번(effectively-once)**\n\n메시지는 두 번 왔다. 두 번 처리도 됐다. **다만 두 번째 처리가 아무 결과를 남기지 않았을 뿐이다.** '정확히 한 번 배달됐다'와 '두 번 배달됐지만 결과가 한 번짜리다'는 전혀 다른 이야기이고, 실무에서 얻을 수 있는 것은 뒤쪽이다.\n\n`exactly-once` 를 내건 시스템을 볼 때 되물어야 할 것은 **'어느 구간에서'**다. 예를 들어 Kafka 의 프로듀서 멱등 옵션은 이렇게 적혀 있다.\n\n> `enable.idempotence`: When set to 'true', the producer will ensure that exactly one copy of each message is written in the stream.\n> — Apache Kafka Producer Configs\n\n`written in the stream` — 보장 범위는 **프로듀서에서 브로커 로그까지**다. 컨슈머가 그 메시지를 읽어 외부 DB 에 쓰거나 결제 API 를 호출하는 구간은 이 옵션이 덮지 않는다. 그 끝단은 여전히 **받는 쪽이 멱등해야** 한다.\n\n### 부수 효과는 멱등해지지 않는다\n\n멱등키는 **내 시스템의 상태**를 지킨다. 나간 것은 못 되돌린다.\n\n- 이메일·SMS·푸시 — 이미 발송됐으면 두 번째 요청을 막아도 사용자는 두 통을 받는다.\n- 외부 API 호출 — 내 쪽에서 재시도를 막아도, 첫 시도에서 이미 상대 서버로 나갔을 수 있다.\n- 웹훅 발신 — 받는 쪽이 중복을 감당해야 한다.\n\nRFC 9110 도 같은 선을 긋는다.\n\n> Like the definition of safe, the idempotent property only applies to what has been requested by the user; a server is free to log each request separately, retain a revision control history, or implement other non-idempotent side effects for each idempotent request.\n> — RFC 9110, 9.2.2\n\n그래서 순서 규칙이 하나 생긴다. **상태를 먼저 확정하고, 부수 효과는 그 뒤에, 가능하면 발송 자체도 키로 한 번 더 막는다.** 외부 호출은 상대가 멱등키를 받아 주는지 확인하고, 안 받아 주면 그건 **연동 규격서에 남길 위험**이지 내 코드로 없앨 수 있는 것이 아니다.\n\n### 보호에는 시간 제한이 있다\n\n키 저장소는 영원히 자라지 않는다. Stripe 는 24시간 뒤 정리하고, 토스페이먼츠는 15일간 유효하다고 적는다. 그 기간이 지난 뒤 같은 키로 오는 요청은 **새 요청**이다. 며칠 뒤 배치가 실패 건을 다시 밀어 넣는 구조라면 멱등키만으로는 못 막고, 도메인 유니크 제약 같은 영구 장치가 필요하다.\n\n### '같은 요청'을 잘못 정의하면 진짜 사고가 난다\n\n키를 도메인 값에서 유도할 때 조합을 너무 넓게 잡으면(예: `사용자ID + 금액`), 같은 카페에서 같은 금액을 두 번 결제하려는 **정당한 두 번째 결제**가 막힌다. 멱등성의 위험은 대개 '못 막았다' 쪽이 아니라 **'막지 말아야 할 것을 막았다'** 쪽에서 조용히 온다.",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Apache Kafka Documentation — Producer Configs: enable.idempotence",
+     "url": "https://kafka.apache.org/41/configuration/producer-configs/",
+     "publisher": "Apache Kafka",
+     "kind": "docs",
+     "summary": "프로듀서 멱등 옵션이 무엇을 보장한다고 문서가 말하는지의 원문"
+    },
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    },
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    },
+    {
+     "title": "멱등키 | 토스페이먼츠 개발자센터",
+     "url": "https://docs.tosspayments.com/reference/using-api/idempotency-key",
+     "publisher": "토스페이먼츠",
+     "kind": "docs",
+     "summary": "국내 결제 맥락의 Idempotency-Key 규격 — 300자, 15일, 식별 조합, 409 IDEMPOTENT_REQUEST_PROCESSING"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "methods",
+   "kind": "spec",
+   "caption": "HTTP 메서드의 안전(safe) · 멱등(idempotent) 여부",
+   "note": "RFC 9110 18.2 'Method Registration'(Table 7)에서 필요한 행만 옮겼다. PATCH 는 RFC 9110 이 정의하지 않는 메서드라 RFC 5789 2절을 따로 근거로 단다. 여기서 '안전/멱등'은 **메서드에 정의된 의미**이지 특정 서버가 실제로 그렇게 구현했다는 보장이 아니다.",
+   "columns": [
+    "메서드",
+    "안전 (safe)",
+    "멱등 (idempotent)",
+    "근거"
+   ],
+   "rows": [
+    [
+     "GET",
+     "예",
+     "예",
+     "RFC 9110 Table 7"
+    ],
+    [
+     "HEAD",
+     "예",
+     "예",
+     "RFC 9110 Table 7"
+    ],
+    [
+     "OPTIONS",
+     "예",
+     "예",
+     "RFC 9110 Table 7"
+    ],
+    [
+     "TRACE",
+     "예",
+     "예",
+     "RFC 9110 Table 7"
+    ],
+    [
+     "PUT",
+     "아니오",
+     "예",
+     "RFC 9110 Table 7"
+    ],
+    [
+     "DELETE",
+     "아니오",
+     "예",
+     "RFC 9110 Table 7"
+    ],
+    [
+     "POST",
+     "아니오",
+     "아니오",
+     "RFC 9110 Table 7"
+    ],
+    [
+     "CONNECT",
+     "아니오",
+     "아니오",
+     "RFC 9110 Table 7"
+    ],
+    [
+     "PATCH",
+     "아니오",
+     "아니오",
+     "RFC 5789 2절 — \"PATCH is neither safe nor idempotent\""
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RFC 9110 전문 (텍스트) — Table 7: Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "메서드 × Safe × Idempotent 표의 원본"
+    },
+    {
+     "title": "RFC 5789: PATCH Method for HTTP",
+     "url": "https://www.rfc-editor.org/rfc/rfc5789.html",
+     "publisher": "IETF",
+     "date": "2010-03-01",
+     "kind": "standard",
+     "summary": "PATCH 는 안전하지도 멱등하지도 않다고 명시한다 (2절)"
+    }
+   ]
+  },
+  {
+   "id": "three-ways",
+   "kind": "compare",
+   "caption": "멱등키 vs 분산 락 vs DB 유니크 제약 — 같은 말을 하는 것 같지만 다른 문제를 푼다",
+   "note": "셋은 배타적이지 않다. 실무 결제 핸들러는 대개 멱등키 테이블(그 자체가 유니크 인덱스로 선점)을 쓰고, 자원 경합 구간에만 락을 덧댄다. 각 칸의 사실 근거는 sources 의 벤더·표준 문서이고, 셋을 나란히 놓은 구성 자체는 이 문서의 정리다.",
+   "columns": [
+    "",
+    "멱등키 (Idempotency Key)",
+    "분산 락 (distributed lock)",
+    "DB 유니크 제약 (unique index)"
+   ],
+   "rows": [
+    [
+     "무엇을 막나",
+     "같은 논리적 요청의 두 번째 **실행**",
+     "같은 자원에 대한 **동시** 실행",
+     "같은 값을 가진 행이 두 개 **생기는 것**"
+    ],
+    [
+     "첫 결과를 기억하나",
+     "예 — 응답(상태코드+본문)을 저장했다 그대로 재생한다",
+     "아니오 — 지금 누가 들어갔는지만 안다. 락이 풀린 뒤 오는 재시도는 그냥 통과한다",
+     "아니오 — 두 번째 삽입이 실패할 뿐. 첫 결과는 직접 조회해야 한다"
+    ],
+    [
+     "시간이 지나 도착한 재시도",
+     "막는다 (키 수명 안이라면)",
+     "**못 막는다** — 겹치지 않으므로",
+     "막는다 (행이 남아 있는 한)"
+    ],
+    [
+     "키를 누가 정하나",
+     "클라이언트가 만들어 헤더로 보낸다",
+     "서버가 자원 이름으로 만든다",
+     "도메인 값(주문번호 등)이 곧 키다"
+    ],
+    [
+     "필요한 것",
+     "키-결과 저장소(DB 테이블 또는 Redis 같은 K-V)",
+     "락 서버(Redis/ZooKeeper 등) + TTL 설계",
+     "이미 쓰고 있는 DB 하나. 추가 인프라 0"
+    ],
+    [
+     "시간이 지나면",
+     "키 수명이 끝나면 보호가 끝난다 (Stripe 24시간 / 토스페이먼츠 15일)",
+     "TTL 이 끝나면 락이 풀린다 — **작업이 아직 도는 중일 수 있다**",
+     "행이 남아 있는 한 영구히 막는다"
+    ],
+    [
+     "대표적인 실패 모드",
+     "조회-후-삽입으로 선점해 동시 요청 둘이 통과 / 같은 키에 다른 본문",
+     "락 만료 뒤 두 실행이 겹침, 페일오버 시 상호배제 위반(Redis 문서 명시)",
+     "유니크 위반 예외를 그대로 5xx 로 흘려보내 클라이언트가 '모름'에 남음"
+    ],
+    [
+     "여러 노드에 걸친 정확성",
+     "저장소의 쓰기가 원자적이면 성립",
+     "락 서버의 복제·페일오버에 달려 있다 — 문서가 안전성 위반 시나리오를 명시한다",
+     "DB 트랜잭션이 보장한다"
+    ],
+    [
+     "가장 잘 맞는 자리",
+     "결제 생성, 웹훅 수신, 외부 연동 POST",
+     "재고 차감, 순번 발급, 스케줄러 단일 실행",
+     "주문번호·거래번호처럼 도메인에 자연 키가 있는 경우"
+    ]
+   ],
+   "confidence": "inferred",
+   "sources": [
+    {
+     "title": "Distributed Locks with Redis",
+     "url": "https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/",
+     "publisher": "Redis",
+     "kind": "docs",
+     "summary": "분산 락이 보장하려는 세 성질(상호배제·데드락 없음·내결함성)과, 락 유효시간을 넘겨 작업이 이어질 때 생기는 문제를 문서가 직접 말한다"
+    },
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    },
+    {
+     "title": "멱등키 | 토스페이먼츠 개발자센터",
+     "url": "https://docs.tosspayments.com/reference/using-api/idempotency-key",
+     "publisher": "토스페이먼츠",
+     "kind": "docs",
+     "summary": "국내 결제 맥락의 Idempotency-Key 규격 — 300자, 15일, 식별 조합, 409 IDEMPOTENT_REQUEST_PROCESSING"
+    }
+   ]
+  },
+  {
+   "id": "retry-scenarios",
+   "kind": "compare",
+   "caption": "재시도 시나리오별 결과 — 클라이언트가 본 것 × 대응 방식",
+   "note": "'그냥 재시도'는 멱등 장치 없이 같은 POST 를 다시 보내는 경우다. 마지막 두 행의 동작(500 캐시, 429 예외)은 Stripe 문서가 자기 API 기준으로 명시한 것이며, 다른 벤더가 같다는 보장은 없다.",
+   "columns": [
+    "클라이언트가 본 것",
+    "서버에서 실제로 일어난 일",
+    "재시도 안 함",
+    "그냥 재시도",
+    "멱등키를 붙여 재시도"
+   ],
+   "rows": [
+    [
+     "200 OK",
+     "처리됨",
+     "정상",
+     "(재시도할 이유 없음)",
+     "(재시도할 이유 없음)"
+    ],
+    [
+     "타임아웃",
+     "요청이 서버에 닿기 전 끊김",
+     "**결제 누락** — 사용자는 실패로 알거나 다시 누른다",
+     "정상 1회 처리",
+     "정상 1회 처리"
+    ],
+    [
+     "타임아웃",
+     "처리 끝났는데 응답만 유실",
+     "정상 (운 좋게)",
+     "**이중 결제**",
+     "저장된 첫 응답을 재생 — 1회"
+    ],
+    [
+     "504 게이트웨이 타임아웃",
+     "백엔드는 처리 중이거나 처리함",
+     "불명인 채로 방치",
+     "**이중 처리 가능**",
+     "진행 중이면 409, 끝났으면 첫 응답 재생"
+    ],
+    [
+     "500",
+     "처리 여부 불명",
+     "불명인 채로 방치",
+     "이중 처리 가능",
+     "Stripe 기준: 500 응답도 캐시돼 같은 500 이 다시 돌아온다"
+    ],
+    [
+     "429 Too Many Requests",
+     "처리되지 않음 (레이트 리미터가 앞에서 잘랐다)",
+     "누락",
+     "백오프 후 재시도하면 정상",
+     "Stripe 기준: 레이트 리미터가 멱등 계층보다 앞이라 **같은 키로도 다른 결과가 나올 수 있다**"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Stripe Docs — Advanced error handling (Idempotency and retries)",
+     "url": "https://docs.stripe.com/error-low-level",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "500 의 결과도 캐시된다는 것, 429 는 멱등 계층보다 앞이라 결과가 달라질 수 있다는 것, Idempotent-Replayed 헤더"
+    },
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    }
+   ]
+  },
+  {
+   "id": "key-specs",
+   "kind": "spec",
+   "caption": "멱등키 규격 — 출처별로 나열 (평균 내지 않는다)",
+   "note": "벤더마다 값이 다르므로 합치지 않고 문서에 적힌 그대로 옮겼다. 연동 전에는 반드시 상대 벤더의 문서를 확인한다. 표에 없는 값은 그 문서가 말하지 않은 것이다.",
+   "columns": [
+    "항목",
+    "Stripe",
+    "토스페이먼츠"
+   ],
+   "rows": [
+    [
+     "헤더 이름",
+     "Idempotency-Key",
+     "Idempotency-Key"
+    ],
+    [
+     "적용 메서드",
+     "모든 POST. GET·DELETE 는 원래 멱등이라 키를 보내지 말라고 안내",
+     "모든 POST API. 다른 메서드는 자체적으로 멱등이며 GET 에 붙인 키는 무시된다"
+    ],
+    [
+     "키 최대 길이",
+     "255자",
+     "300자"
+    ],
+    [
+     "권장 생성 방식",
+     "UUID v4 등 충돌하지 않을 만큼 무작위한 문자열",
+     "UUID 같이 충분히 무작위적인 고유 값"
+    ],
+    [
+     "키 수명",
+     "**24시간** — 그 뒤 정리되며, 정리된 뒤 재사용하면 새 요청이 된다",
+     "**처음 요청한 날부터 15일**"
+    ],
+    [
+     "같은 요청인지 판정하는 기준",
+     "키 + 요청 파라미터 (파라미터가 다르면 에러)",
+     "멱등키 + API 키 + API 주소 + HTTP 메서드 조합 (**본문은 조합에 없다**)"
+    ],
+    [
+     "진행 중(in-flight)에 같은 키",
+     "409 Conflict",
+     "409 - IDEMPOTENT_REQUEST_PROCESSING"
+    ],
+    [
+     "기타 규격",
+     "재생된 응답에 Idempotent-Replayed: true 헤더. 500 결과도 캐시된다",
+     "키가 300자를 넘으면 400 - INVALID_IDEMPOTENCY_KEY. 저장소로 DB 테이블 또는 Redis 같은 K-V 저장소를 권한다"
+    ]
+   ],
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    },
+    {
+     "title": "Stripe Docs — Advanced error handling (Idempotency and retries)",
+     "url": "https://docs.stripe.com/error-low-level",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "500 의 결과도 캐시된다는 것, 429 는 멱등 계층보다 앞이라 결과가 달라질 수 있다는 것, Idempotent-Replayed 헤더"
+    },
+    {
+     "title": "멱등키 | 토스페이먼츠 개발자센터",
+     "url": "https://docs.tosspayments.com/reference/using-api/idempotency-key",
+     "publisher": "토스페이먼츠",
+     "kind": "docs",
+     "summary": "국내 결제 맥락의 Idempotency-Key 규격 — 300자, 15일, 식별 조합, 409 IDEMPOTENT_REQUEST_PROCESSING"
+    }
+   ]
+  }
+ ],
+ "when_to_use": [
+  {
+   "situation": "외부에서 들어오는 POST 요청(결제 생성, 주문 생성, 웹훅 수신)을 네트워크 장애 후 재시도로부터 지켜야 한다",
+   "pick": "멱등키 — 클라이언트가 만든 키로 결과를 저장했다 재생한다",
+   "over": "분산 락",
+   "why": "타임아웃 재시도는 대개 **첫 요청이 끝난 뒤** 온다. 락은 상호배제만 주므로 겹치지 않는 두 번째 요청을 통과시킨다. 게다가 재시도한 클라이언트가 필요로 하는 것은 '거절'이 아니라 **첫 요청의 결과**인데, 락은 그 결과를 기억하지 않는다",
+   "tradeoff": "키-결과 저장소가 하나 생기고, 저장한 응답의 보관 기간·정리 정책을 운영해야 한다. 클라이언트가 키를 제대로 붙여 준다는 전제도 필요하다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    },
+    {
+     "title": "Distributed Locks with Redis",
+     "url": "https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/",
+     "publisher": "Redis",
+     "kind": "docs",
+     "summary": "분산 락이 보장하려는 세 성질(상호배제·데드락 없음·내결함성)과, 락 유효시간을 넘겨 작업이 이어질 때 생기는 문제를 문서가 직접 말한다"
+    }
+   ]
+  },
+  {
+   "situation": "여러 인스턴스가 같은 자원을 동시에 만진다 — 재고 차감, 순번 발급, 같은 배치 잡이 두 노드에서 동시에 뜨는 것",
+   "pick": "분산 락",
+   "over": "멱등키",
+   "why": "여기서 막아야 할 것은 '두 번 실행'이 아니라 **'동시에 실행'**이다. 요청마다 정당한 별개의 요청이라 재시도를 식별할 키 자체가 없고, 필요한 것은 겹치는 구간의 직렬화다",
+   "tradeoff": "락 서버가 새 단일 장애점이 되고, TTL 을 짧게 잡으면 작업 중에 락이 풀리고 길게 잡으면 장애 시 회복이 느려진다. Redis 문서 기준으로 복제·페일오버 상황에서는 상호배제가 깨질 수 있으므로, **정확성의 최종 보증은 DB 제약 쪽에 한 겹 더 둔다**",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "Distributed Locks with Redis",
+     "url": "https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/",
+     "publisher": "Redis",
+     "kind": "docs",
+     "summary": "분산 락이 보장하려는 세 성질(상호배제·데드락 없음·내결함성)과, 락 유효시간을 넘겨 작업이 이어질 때 생기는 문제를 문서가 직접 말한다"
+    }
+   ]
+  },
+  {
+   "situation": "도메인에 이미 자연 키가 있다 — 주문번호당 결제 1건, 거래번호당 원장 1행처럼 '같은 것은 하나만'이 데이터 규칙으로 표현된다",
+   "pick": "DB 유니크 제약 (`UNIQUE(order_id)`)",
+   "over": "멱등키 저장소나 분산 락을 새로 들이는 것",
+   "why": "추가 인프라가 0 이고, 락처럼 만료되지 않으며, 프로세스가 몇 개든 DB 트랜잭션이 보장한다. 셋 중 가장 싸고 가장 오래 가는 방어선이다",
+   "tradeoff": "두 번째 요청이 받는 것은 유니크 위반 예외이지 첫 요청의 응답이 아니다. **제약 위반을 잡아 기존 행을 조회해 첫 결과를 돌려주는 코드**를 반드시 붙여야 하고, 그렇지 않으면 클라이언트는 여전히 '모름'에 남는다. 또 키가 도메인 값이므로 정당한 두 번째 거래까지 막지 않도록 조합을 신중히 잡아야 한다",
+   "confidence": "inferred"
+  },
+  {
+   "situation": "내가 API 를 설계하는 쪽이고, 이 동작을 어떤 메서드로 낼지 정한다",
+   "pick": "상태를 통째로 갈아 끼우는 의미면 PUT (`status`, `settings` 처럼 최종 상태를 그대로 싣는다)",
+   "over": "무조건 POST",
+   "why": "RFC 9110 기준 PUT 은 멱등으로 등록돼 있어서, 클라이언트와 중간 계층이 **통신 실패 후 자동 재시도해도 된다는 것을 알 수 있다**. 매번 멱등키 인프라를 얹지 않고도 재시도 안전성이 생긴다",
+   "tradeoff": "'자원 생성'처럼 서버가 식별자를 만드는 동작은 PUT 으로 표현하기 어렵고, 본문에 상대적 갱신(`amount += 1000`)이 한 줄이라도 들어가면 메서드가 PUT 이어도 멱등성은 깨진다. 그 경우엔 결국 멱등키가 필요하다",
+   "confidence": "confirmed",
+   "sources": [
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    }
+   ]
+  }
+ ],
+ "pitfalls": [
+  {
+   "trap": "\"PUT 이니까 멱등하다\"고 믿고 재시도를 자동으로 켰는데 잔액이 두 번 늘었다",
+   "why": "멱등성은 메서드 이름이 아니라 **본문이 표현하는 연산**에서 나온다. `PUT /accounts/1 {\"balanceDelta\": 1000}` 처럼 **상대적 갱신**을 실으면 두 번 적용될 때 결과가 달라진다. RFC 는 메서드에 정의된 의미를 말할 뿐, 그 의미를 지키는 것은 구현의 몫이다",
+   "fix": "PUT 의 본문에는 **최종 상태(절대값)**만 싣는다 — `{\"balance\": 51000}`. 증감이 본질인 동작이라면 PUT 으로 위장하지 말고 POST 로 두고 멱등키를 붙인다. 갱신 충돌이 걱정되면 `If-Match`(ETag) 로 조건부 요청을 만든다",
+   "sources": [
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    }
+   ]
+  },
+  {
+   "trap": "같은 멱등키로 다른 금액을 보냈는데, 이전 결제 결과가 그대로 돌아왔다 (또는 반대로 에러가 났다)",
+   "why": "벤더마다 '같은 요청'의 판정 기준이 다르다. Stripe 는 파라미터까지 비교해 다르면 에러를 내지만, 토스페이먼츠가 문서에 적은 식별 조합은 멱등키 + API 키 + API 주소 + HTTP 메서드로 **본문이 들어 있지 않다**. '어느 쪽이 표준인가'라는 질문에는 답이 없다 — 표준이 아니기 때문이다",
+   "fix": "**요청 내용이 바뀌면 키도 새로 만든다**를 클라이언트 규칙으로 못 박는다. 키를 도메인 값에서 유도한다면 `주문번호 + 금액 해시`처럼 내용까지 키에 반영한다. 내가 서버라면 키와 함께 **요청 본문의 해시를 저장해 두고, 다르면 명시적으로 409/422 를 돌려준다**. 조용히 옛 결과를 돌려주는 것이 가장 나쁘다",
+   "sources": [
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    },
+    {
+     "title": "멱등키 | 토스페이먼츠 개발자센터",
+     "url": "https://docs.tosspayments.com/reference/using-api/idempotency-key",
+     "publisher": "토스페이먼츠",
+     "kind": "docs",
+     "summary": "국내 결제 맥락의 Idempotency-Key 규격 — 300자, 15일, 식별 조합, 409 IDEMPOTENT_REQUEST_PROCESSING"
+    }
+   ]
+  },
+  {
+   "trap": "멱등키를 서버가 생성하도록 구현했는데 아무것도 막히지 않았다",
+   "why": "재시도의 주체가 클라이언트다. 서버가 요청을 받을 때마다 새 키를 만들면 **재시도와 새 요청이 구분되지 않는다.** 키의 존재 이유는 '이건 아까 그 요청이다'라고 지목하는 것인데, 지목할 수 있는 쪽은 아까 보냈던 쪽뿐이다",
+   "fix": "키는 **클라이언트가 만들어 헤더로 보낸다.** 그리고 재시도할 때 **같은 키를 다시 쓴다** — 재시도 루프 안에서 키를 새로 만들면 서버가 아무리 잘 짜여 있어도 무용지물이다. 클라이언트 SDK 를 쓴다면 자동 재시도가 키를 유지하는지 확인한다",
+   "sources": [
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    }
+   ]
+  },
+  {
+   "trap": "멱등키를 붙였는데도 사용자에게 알림 문자가 두 번 갔다",
+   "why": "멱등키가 지키는 것은 **내 시스템의 상태**다. 이미 바깥으로 나간 것(SMS, 이메일, 푸시, 외부 API 호출)은 되돌아오지 않는다. 첫 시도에서 문자 발송까지 끝낸 뒤 응답만 유실됐다면, 두 번째 요청을 막아도 문자는 이미 두 통이 아니라 한 통 나가 있고, 첫 시도에서 발송 직전에 죽었다면 재시도가 두 번째 발송을 만든다",
+   "fix": "순서를 고정한다 — **상태를 먼저 커밋하고 부수 효과는 그 뒤에.** 발송 자체도 `(수신자, 템플릿, 참조ID)` 같은 발송 키로 한 번 더 막는다. 외부 API 는 상대가 멱등키를 받아 주는지 확인하고, 안 받아 주면 그 위험을 연동 규격서에 남긴다. 여기는 코드로 완전히 없앨 수 있는 문제가 아니다",
+   "sources": [
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    }
+   ]
+  },
+  {
+   "trap": "멱등키 저장소를 `SELECT` 로 조회한 뒤 없으면 `INSERT` 하도록 짰는데, 동시에 들어온 두 요청이 나란히 통과했다",
+   "why": "조회와 삽입 사이에 틈이 있다. 두 요청이 같은 순간에 `SELECT` 해서 둘 다 '없다'를 보면 둘 다 진행한다. 멱등성 구현이 **경합 조건(race condition)** 위에서 무너지는 가장 흔한 형태다",
+   "fix": "선점을 **유니크 제약이 걸린 한 번의 쓰기**로 만든다 — `INSERT INTO idem(key, state) VALUES(?, 'IN_PROGRESS')` 가 성공하면 내가 처리하고, 유니크 위반이 나면 기존 행을 읽는다. Redis 라면 `SET key value NX`. 그리고 아직 결과가 없는 `IN_PROGRESS` 에는 옛 결과를 지어내지 말고 **409 로 거절한다** — 두 벤더가 모두 그렇게 한다",
+   "sources": [
+    {
+     "title": "멱등키 | 토스페이먼츠 개발자센터",
+     "url": "https://docs.tosspayments.com/reference/using-api/idempotency-key",
+     "publisher": "토스페이먼츠",
+     "kind": "docs",
+     "summary": "국내 결제 맥락의 Idempotency-Key 규격 — 300자, 15일, 식별 조합, 409 IDEMPOTENT_REQUEST_PROCESSING"
+    },
+    {
+     "title": "Stripe Docs — Advanced error handling (Idempotency and retries)",
+     "url": "https://docs.stripe.com/error-low-level",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "500 의 결과도 캐시된다는 것, 429 는 멱등 계층보다 앞이라 결과가 달라질 수 있다는 것, Idempotent-Replayed 헤더"
+    }
+   ]
+  },
+  {
+   "trap": "\"두 번째 DELETE 가 404 를 주니까 이건 멱등이 아니다\"라고 코드 리뷰에서 지적했다",
+   "why": "멱등성의 기준을 **응답**으로 착각한 것이다. 정의는 서버에 남는 상태(`intended effect on the server`)를 기준으로 하고, RFC 는 `though the response might differ` 라는 단서를 그 문장에 직접 달아 뒀다",
+   "fix": "판정 질문을 바꾼다 — \"응답이 같은가\"가 아니라 **\"한 번 부른 뒤와 두 번 부른 뒤의 서버 상태가 같은가\"**. 다만 클라이언트가 재시도 결과를 다루기 편하도록, 두 번째 DELETE 에 `404` 를 줄지 `204` 를 줄지를 **API 규격서에 명시**한다. 표준은 이걸 강제하지 않는다",
+   "sources": [
+    {
+     "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+     "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+     "publisher": "IETF",
+     "date": "2022-06-01",
+     "kind": "standard",
+     "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+    }
+   ]
+  },
+  {
+   "trap": "며칠 뒤 실패 건을 다시 밀어 넣는 재처리 배치를 돌렸더니, 멱등키를 붙였는데도 이중 처리가 났다",
+   "why": "키 저장소에는 수명이 있다. Stripe 는 24시간 뒤 키를 정리하고 정리된 뒤 재사용하면 새 요청으로 처리한다고 적고, 토스페이먼츠는 15일간 유효하다고 적는다. 그 창을 넘어가면 멱등키는 아무 보호도 주지 않는다",
+   "fix": "**시간에 매이지 않는 방어선을 한 겹 더 둔다.** 결과 테이블에 도메인 유니크 제약(`UNIQUE(order_id)`)을 걸거나, 처리 이력 테이블을 영구 보관해 재처리 전에 대조한다. 멱등키는 '수 분~수 시간짜리 재시도'를 위한 장치이지 '수 일 뒤 재처리'를 위한 장치가 아니다",
+   "sources": [
+    {
+     "title": "Stripe API Reference — Idempotent requests",
+     "url": "https://docs.stripe.com/api/idempotent_requests",
+     "publisher": "Stripe",
+     "kind": "docs",
+     "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+    },
+    {
+     "title": "멱등키 | 토스페이먼츠 개발자센터",
+     "url": "https://docs.tosspayments.com/reference/using-api/idempotency-key",
+     "publisher": "토스페이먼츠",
+     "kind": "docs",
+     "summary": "국내 결제 맥락의 Idempotency-Key 규격 — 300자, 15일, 식별 조합, 409 IDEMPOTENT_REQUEST_PROCESSING"
+    }
+   ]
+  }
+ ],
+ "terms": [
+  {
+   "term": "안전한 메서드",
+   "en": "safe method",
+   "what": "정의된 의미가 사실상 읽기 전용인 메서드. 안전하면 반드시 멱등이지만 그 역은 아니다"
+  },
+  {
+   "term": "멱등키",
+   "en": "idempotency key",
+   "what": "클라이언트가 요청 하나에 붙이는 고유한 이름. 서버가 이 이름으로 '이미 처리했다'와 그때의 응답을 기억한다"
+  },
+  {
+   "term": "최소 한 번 전달",
+   "en": "at-least-once delivery",
+   "what": "메시지가 유실되지는 않지만 같은 것이 두 번 이상 올 수 있는 전달 보장. 실무 큐 대부분이 여기 해당한다"
+  },
+  {
+   "term": "실질적 한 번",
+   "en": "effectively-once",
+   "what": "중복은 오지만 받는 쪽이 멱등해서 결과가 한 번짜리가 되는 상태. 실무에서 얻을 수 있는 것은 대개 이쪽이다"
+  },
+  {
+   "term": "진행 중 요청",
+   "en": "in-flight request",
+   "what": "첫 요청이 아직 처리 중인 상태. 이때 같은 키가 또 오면 돌려줄 결과가 없어서 409 로 거절한다"
+  },
+  {
+   "term": "경합 조건",
+   "en": "race condition",
+   "what": "두 실행의 순서에 따라 결과가 달라지는 상태. 조회-후-삽입으로 짠 멱등 검사가 깨지는 이유다"
+  }
+ ],
+ "drills": [
+  {
+   "task": "결제 API 를 흉내 낸 HTTP 핸들러를 하나 만든다(언어 무관, SQLite 로 충분). `POST /payments` 는 잔액을 깎고 결제 행을 만든다. 여기에 멱등키 저장소를 붙인다 — `INSERT` 로 키를 선점하고, 이미 있으면 저장해 둔 응답을 재생하고, `IN_PROGRESS` 면 409 를 준다. 그리고 **같은 키를 동시에 두 번** 던진다(`curl` 두 개를 `&` 로, 또는 스레드 2개).",
+   "done_when": "동시 요청 두 개 중 하나는 정상 응답, 다른 하나는 409 를 받고, 결제 행이 정확히 1개다. 그다음 선점을 일부러 `SELECT` 후 `INSERT` 로 바꿔 보고 **결제 행이 2개가 되는 것**을 재현해 로그로 보여 줄 수 있다.",
+   "why": "멱등성 구현이 무너지는 자리가 '키를 저장하느냐'가 아니라 **'어떻게 선점하느냐'**라는 것이 손에 남는다. 유니크 제약 위의 단일 쓰기와 조회-후-삽입의 차이가 눈으로 보인다.",
+   "needs": "언어 하나와 SQLite. 장비 불필요",
+   "hours": 3,
+   "no_hardware": "SQLite 도 못 깔면 파이썬 표준 라이브러리의 `sqlite3` 로 충분하다(별도 설치 없이 들어 있다). 언어조차 못 돌리는 환경이면, 키 저장소를 딕셔너리로 두고 요청 두 개를 손으로 번갈아 실행하는 종이 시뮬레이션으로도 '선점 → 재생' 과 '선점 → 진행 중' 두 갈래는 확인된다."
+  },
+  {
+   "task": "같은 API 를 **멱등키 없이 DB 유니크 제약만으로** 다시 구현한다. `payments` 테이블에 `UNIQUE(order_id)` 를 걸고, 유니크 위반 예외를 잡아 기존 행을 조회해 돌려준다. 두 구현에 같은 시나리오를 던져 비교표를 직접 채운다 — (1) 같은 주문의 재시도, (2) 다른 주문의 정상 요청, (3) 같은 주문에 **금액만 다른** 요청, (4) 하루 뒤 재처리(키 만료를 짧게 설정해 흉내 낸다).",
+   "done_when": "네 시나리오에서 두 구현의 응답이 어떻게 갈리는지 표로 적을 수 있고, (3)번과 (4)번에서 각각 어느 쪽이 이기는지 이유와 함께 말할 수 있다.",
+   "why": "'멱등키 vs 유니크 제약'은 글로 읽으면 같은 말처럼 들리지만, (3)번(같은 키·다른 내용)과 (4)번(수명 만료)에서 정반대로 갈린다. 이 문서의 핵심 대비를 손으로 확인하는 자리다.",
+   "needs": "위 drill 의 코드. 장비 불필요",
+   "hours": 2,
+   "no_hardware": "위 drill 을 못 돌렸다면, 두 구현의 차이는 SQL 로만 따져도 드러난다. `INSERT ... ON CONFLICT` 와 `UNIQUE` 위반 예외가 각각 어느 시점에 터지는지 문장으로 적고, 본문의 세 갈래 비교표(멱등키 · 분산 락 · 유니크 제약) 아홉 행을 직접 채워 보면 같은 결론에 닿는다."
+  },
+  {
+   "task": "**타임아웃 후 재시도로 이중 처리를 인위적으로 재현한다.** 멱등 장치를 끈 핸들러 앞에, 처리는 정상으로 통과시키되 **응답만 삼키고 커넥션을 끊는** 프록시를 하나 둔다(핸들러에 `?drop_response=1` 플래그를 두는 것으로도 충분하다). 클라이언트에 짧은 타임아웃과 자동 재시도 2회를 켜고 요청 하나를 보낸다.",
+   "done_when": "클라이언트 로그에는 '타임아웃 후 재시도, 최종 성공 1회'만 남았는데 DB 에는 결제 행이 **2개(또는 3개)** 쌓인 것을 보여 줄 수 있다. 그다음 멱등키를 켜고 같은 실험을 반복해 행이 1개로 유지되는 것을 확인한다.",
+   "why": "이 문서의 `why` 절을 눈으로 보는 실험이다. '타임아웃은 실패가 아니라 모름'이라는 문장은 이중 결제가 실제로 쌓인 테이블을 한 번 본 뒤에야 몸에 붙는다.",
+   "needs": "언어 하나. 장비 불필요 — 프록시 없이 핸들러 안에서 응답 직전에 프로세스를 끊는 것으로도 재현된다",
+   "hours": 2,
+   "no_hardware": "프로세스를 끊을 수 없는 환경이면 클라이언트 쪽 타임아웃만으로 재현된다 — 핸들러에 3초 `sleep` 을 넣고 클라이언트 타임아웃을 1초로 두면, 서버는 정상 처리하는데 클라이언트는 실패로 본다. 그 상태가 바로 '모름' 이고, 재시도가 이중 처리를 만드는 지점이다."
+  }
+ ],
+ "checks": [
+  "타임아웃이 왜 '실패'가 아니라 '모름'인지, 그 차이가 왜 재시도 결정을 바꾸는지 한 문단으로 설명할 수 있는가?",
+  "안전(safe)과 멱등(idempotent)의 차이를 각각의 예로 들어 말할 수 있는가? 둘의 포함 관계는 어느 방향인가?",
+  "DELETE 를 두 번 호출해 두 번째가 404 를 받았다. 이 메서드는 멱등한가? 판정 기준이 무엇이라고 답하겠는가?",
+  "멱등키를 서버가 생성하면 왜 아무것도 막지 못하는가?",
+  "같은 주문번호로 결제 요청이 (a) 동시에 두 개, (b) 3초 간격으로 두 개, (c) 사흘 뒤 다시 한 개 들어왔다. 각각 멱등키·분산 락·DB 유니크 제약 중 무엇이 막아 주고 무엇이 못 막는가?",
+  "'exactly-once 를 보장한다'는 시스템 설명을 봤을 때 무엇을 되물어야 하는가? 그 답이 '어느 구간'이어야 하는 이유는?",
+  "멱등키를 붙였는데도 사용자에게 알림이 두 번 갈 수 있는 이유를 설명할 수 있는가?"
+ ],
+ "evidence": [
+  {
+   "quote": "• 멱등성(Idempotency) 처리 설계 경험",
+   "from": "posting",
+   "url": "https://www.wanted.co.kr/wd/374927",
+   "where": "가이아코퍼레이션 「[가이아랩스] 백엔드 개발자」 자격요건 (2026-09-04 기준 모집중)",
+   "what_it_shows": "이 문서가 존재하는 이유 그 자체다. **자격요건 한 줄이 낱말 하나와 괄호 안의 영어 원어로 끝난다.** 무엇을 어떻게 설계하라는 설명이 없다 — 이미 아는 사람만 지원하라는 문장이다."
+  },
+  {
+   "quote": "• 금융/핀테크 또는 게임 플랫폼 서비스에서 실제 머니 트랜잭션(멱등성, 분산 락, 정합성 보장)을 다뤄보신 분",
+   "from": "posting",
+   "url": "https://www.wanted.co.kr/wd/370780",
+   "where": "앤서스랩코리아 「Platform Backend Engineer (Node.js)」 우대사항 (2026-09-04 기준 모집중)",
+   "what_it_shows": "이 문서의 중심 대비가 **공고에서는 쉼표 하나로 붙어 있다는 증거.** 멱등성과 분산 락은 나란히 놓인 동급의 도구처럼 읽히지만 서로 다른 문제를 푼다. 이 한 줄을 갈라 읽지 못하면 면접에서 '둘 중 무엇을 왜 골랐나'에 답할 수 없다."
+  },
+  {
+   "quote": "• 복식부기 스타일의 금융 Ledger 모델 , 트랜잭션 State Machine, Idempotency Key 등 정합성이 최우선인 모델을 책임집니다.",
+   "from": "posting",
+   "url": "https://www.wanted.co.kr/wd/320729",
+   "where": "티웨이브 「시니어 백엔드 개발자」 주요업무 (2026-09-04 기준 모집중)",
+   "what_it_shows": "`Idempotency Key` 가 설명 없이 **고유명사처럼** 쓰인다. 원장·상태 머신과 같은 층위의 '모델'로 나열된다는 것은, 이 회사에서 멱등키가 코드 한 줄이 아니라 **설계 산출물**로 다뤄진다는 뜻이다."
+  },
+  {
+   "quote": "• 멱등성·재시도·타임아웃 등 외부 연동의 실패 모드를 설계 단계에서 고려하시는 분",
+   "from": "posting",
+   "url": "https://www.wanted.co.kr/wd/377070",
+   "where": "사줘 「백엔드_Integration & Reliablity」 자격요건 (2026-09-04 기준 모집중)",
+   "what_it_shows": "이 문서의 `why` 절이 공고 문장으로 그대로 나온 사례다. 세 낱말이 **'실패 모드'라는 한 묶음**으로 붙어 있다 — 멱등성이 왜 타임아웃·재시도와 항상 같이 등장하는지가 이 배열에 다 들어 있다."
+  },
+  {
+   "quote": "Idempotency, retries, backpressure, timeouts, circuit breakers, and rate limiting as first-class design concerns.",
+   "from": "posting",
+   "url": "https://boards.greenhouse.io/cloudflare/jobs/8066589?gh_jid=8066589",
+   "where": "Cloudflare 「Distributed Systems Engineer」 주요업무 (2026-09-04 기준 모집중)",
+   "what_it_shows": "국내 결제 공고만의 말이 아니라는 근거. `first-class design concerns` — 나중에 붙이는 방어 코드가 아니라 **설계의 1급 관심사**로 분류된다."
+  },
+  {
+   "quote": "It knows that repeating the request will have the same intended effect, even if the original request succeeded, though the response might differ.",
+   "from": "standard",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+   "where": "RFC 9110, 9.2.2 Idempotent Methods",
+   "what_it_shows": "표준이 멱등성을 **재시도의 자격 조건**으로 정의한다는 것. 그리고 `though the response might differ` 한 구절이 'DELETE 두 번째의 404 는 모순인가'라는 흔한 질문을 그 자리에서 닫는다."
+  }
+ ],
+ "related": [
+  {
+   "slug": "asyncio",
+   "how": "취소와 타임아웃으로 요청을 중간에 끊는 쪽. 저쪽이 '어떻게 끊나'라면 이 문서는 '끊긴 뒤 다시 보내도 되는가'다. 두 문서가 정확히 맞물린다"
+  },
+  {
+   "slug": "java-in-finance",
+   "how": "배치 재실행과 결제 정합성이 왜 그 도메인의 중심인지가 거기 있고, '두 번 돌려도 같은가'의 본체가 여기다. 계정계·대사·전문 같은 배경 낱말은 그쪽에서 읽는다"
+  },
+  {
+   "slug": "distributed-lock",
+   "how": "이 문서가 세 번 대비시킨 상대. TTL 설계, 펜싱 토큰, Redlock 논쟁이 거기 있어야 한다 — 아직 없는 문서다"
+  },
+  {
+   "slug": "http",
+   "how": "safe/idempotent 는 HTTP 메서드 의미론의 일부일 뿐이다. 메서드·상태 코드·조건부 요청(ETag, If-Match)의 본체 — 아직 없는 문서다"
+  },
+  {
+   "slug": "kafka",
+   "how": "최소 한 번 전달과 컨슈머 멱등 처리. enable.idempotence 가 어느 구간까지 보장하는지, 트랜잭션이 그 위에 무엇을 더하는지 — 아직 없는 문서다"
+  },
+  {
+   "slug": "outbox-pattern",
+   "how": "DB 커밋과 메시지 발행을 한 트랜잭션으로 묶어 '부수 효과' 문제를 줄이는 패턴. 공고에서 idempotency 와 나란히 등장한다 — 아직 없는 문서다"
+  }
+ ],
+ "open_questions": [
+  "`market` 을 비웠다. `jd-viewer/public/tech_relations.json`(techs 60개, generated_at 2026-08-19)에는 `멱등성`/`idempotency` 가 없다 — 그 파일의 techs 는 언어·프레임워크·인프라 제품 이름만 담고 있어서, 이런 설계 용어는 애초에 세어지지 않는다. 대신 공고 원문을 직접 셌다: `all_jobs_enriched.json`(2026-09-04, 모집중 9,458건 / 마감 8,126건)에서 자격요건·우대사항·주요업무·전문 중 어디에든 `멱등|idempot` 가 있는 공고가 모집중 46건, 마감 10건. 함께 세면 `분산 락|distributed lock` 13건, `재시도|retry` 71건, `중복 (결제|요청|처리)` 8건, `정확히 한 번|exactly-once` 5건(모두 모집중 기준).",
+  "토스페이먼츠 문서는 **같은 멱등키에 다른 본문**이 왔을 때의 동작을 명시하지 않는다. 식별 조합(멱등키 + API 키 + API 주소 + HTTP 메서드)에 본문이 없다는 것만 적혀 있어 '첫 결과가 그대로 돌아온다'로 읽히지만, 그렇게 단정할 문장은 찾지 못했다. 국내 다른 PG 사(NHN KCP, 나이스페이먼츠 등)의 멱등키 규격도 확인하지 못했다 — 벤더별 표를 채우려면 각 문서를 직접 열어야 한다.",
+  "IETF `draft-ietf-httpapi-idempotency-key-header` 는 데이터트래커 기준 `Expired Internet-Draft`(07판, 최종 개정 2025-10-15, 2026-04-18 만료)다. 이후 RFC 로 승격되었거나 새 판이 올라왔는지는 다음 재방문 때 다시 확인해야 한다. **현재로서는 `Idempotency-Key` 헤더에 규범적 표준이 없다.**",
+  "'실질적 한 번(effectively-once)'이라는 용어 자체를 정의한 1차 자료는 찾지 못했다. 이 문서는 at-least-once(AWS SQS 문서)와 프로듀서 멱등 보장(Kafka 문서)이라는 두 1차 자료를 근거로 그 구도를 설명했고, 용어 자체는 업계 관용어로 취급했다.",
+  "멱등 저장소를 업무 DB와 **다른 트랜잭션 경계**(예: Redis)에 두었을 때 생기는 창 — 결제는 커밋됐는데 키 기록은 실패하는 경우 — 을 벤더 문서가 어떻게 다루는지는 확인하지 못했다. 이 문서에서는 다루지 않았다."
+ ],
+ "sources": [
+  {
+   "title": "RFC 9110: HTTP Semantics — 9.2.1 Safe Methods / 9.2.2 Idempotent Methods / 18.2 Method Registration",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods",
+   "publisher": "IETF",
+   "date": "2022-06-01",
+   "kind": "standard",
+   "summary": "safe(안전)와 idempotent(멱등)를 각각 정의하고, 메서드별 안전·멱등 여부를 표로 등록한 1차 자료"
+  },
+  {
+   "title": "RFC 9110 전문 (텍스트) — Table 7: Method Registration",
+   "url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+   "publisher": "IETF",
+   "date": "2022-06-01",
+   "kind": "standard",
+   "summary": "메서드 × Safe × Idempotent 표의 원본"
+  },
+  {
+   "title": "RFC 5789: PATCH Method for HTTP",
+   "url": "https://www.rfc-editor.org/rfc/rfc5789.html",
+   "publisher": "IETF",
+   "date": "2010-03-01",
+   "kind": "standard",
+   "summary": "PATCH 는 안전하지도 멱등하지도 않다고 명시한다 (2절)"
+  },
+  {
+   "title": "Stripe API Reference — Idempotent requests",
+   "url": "https://docs.stripe.com/api/idempotent_requests",
+   "publisher": "Stripe",
+   "kind": "docs",
+   "summary": "멱등키를 클라이언트가 만든다는 것, 최대 길이, 24시간 보관, 같은 키·다른 파라미터면 에러라는 규칙이 적혀 있다"
+  },
+  {
+   "title": "Stripe Docs — Advanced error handling (Idempotency and retries)",
+   "url": "https://docs.stripe.com/error-low-level",
+   "publisher": "Stripe",
+   "kind": "docs",
+   "summary": "500 의 결과도 캐시된다는 것, 429 는 멱등 계층보다 앞이라 결과가 달라질 수 있다는 것, Idempotent-Replayed 헤더"
+  },
+  {
+   "title": "멱등키 | 토스페이먼츠 개발자센터",
+   "url": "https://docs.tosspayments.com/reference/using-api/idempotency-key",
+   "publisher": "토스페이먼츠",
+   "kind": "docs",
+   "summary": "국내 결제 맥락의 Idempotency-Key 규격 — 300자, 15일, 식별 조합, 409 IDEMPOTENT_REQUEST_PROCESSING"
+  },
+  {
+   "title": "The Idempotency-Key HTTP Header Field (draft-ietf-httpapi-idempotency-key-header-07)",
+   "url": "https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/",
+   "publisher": "IETF httpapi WG",
+   "date": "2025-10-15",
+   "kind": "standard",
+   "summary": "표준이 아니다 — 데이터트래커 기준 'Expired Internet-Draft'(2026-04-18 만료). 헤더 이름이 관행으로 굳은 배경 자료로만 쓴다"
+  },
+  {
+   "title": "Distributed Locks with Redis",
+   "url": "https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/",
+   "publisher": "Redis",
+   "kind": "docs",
+   "summary": "분산 락이 보장하려는 세 성질(상호배제·데드락 없음·내결함성)과, 락 유효시간을 넘겨 작업이 이어질 때 생기는 문제를 문서가 직접 말한다"
+  },
+  {
+   "title": "Amazon SQS standard queues",
+   "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html",
+   "publisher": "AWS",
+   "kind": "docs",
+   "summary": "표준 큐는 최소 한 번(at-least-once) 전달이고 메시지 사본이 두 번 올 수 있다고 명시한다"
+  },
+  {
+   "title": "Apache Kafka Documentation — Producer Configs: enable.idempotence",
+   "url": "https://kafka.apache.org/41/configuration/producer-configs/",
+   "publisher": "Apache Kafka",
+   "kind": "docs",
+   "summary": "프로듀서 멱등 옵션이 무엇을 보장한다고 문서가 말하는지의 원문"
+  }
+ ]
+}
