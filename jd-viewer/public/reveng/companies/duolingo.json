@@ -129,7 +129,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "when-and-what-are-two-models"
+      ]
     },
     {
       "name": "에이전트를 한 번 정의해 여러 곳에 태운다",
@@ -251,15 +253,539 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "when-and-what-are-two-models",
+      "name": "언제 다시 보여 줄지와 무엇을 보여 줄지를 따로 푼다",
+      "domain": "언제 무엇을 다시 보여 줄지 고른다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**매일 5,870만 명이 들어와 문제를 푸는데 돈을 내는 건 1,270만 명이다.** 그러면 **한 사람당 계산이 아주 싸야 하고 동시에 내일 다시 오게 만들어야 한다.** 회사가 그 긴장을 직접 적는다 — 학습자는 `hesitant to jump out of their comfort zone to harder material` 인데 **최선의 학습은 익숙함과 새로움 사이**에 있다. ⚠️ **너무 쉬우면 배우는 게 없고 너무 어려우면 떠나는데, 떠나면 구독도 끝난다** — **머무르게 하는 일과 가르치는 일이 같은 손잡이에 달려 있는 자리다**(이 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "이 축에 걸린 매출",
+            "value": "2025년 매출 **10억 3,760만 달러(+39%)** 중 **약 86% 가 구독** — 유료 1,270만 명이 계속 남아야 하는 돈이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Duolingo Q2 2026 shareholder letter",
+                "url": "https://investors.duolingo.com/",
+                "publisher": "Duolingo IR",
+                "date": "2026",
+                "summary": "2025년 매출 10억 3,760만 달러(+39%), 구독이 약 86%. 2026년 2분기 매출 2억 9,850만 달러, 일간 활성 사용자 5,870만 명(+23%), 유료 구독자 1,270만 명(+17%)."
+              }
+            ]
+          },
+          {
+            "label": "모델이 먹는 양",
+            "value": "**하루 5억 개 이상의 연습** 결과가 들어간다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 개인화 범위 (2020년 10월 기준)",
+            "value": "`We're now personalizing over 20% of lessons` — **6년 전 수치이고 지금 값을 확인하지 못했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "label": "적용 시작",
+            "value": "**2020년 3월**부터 학습자가 이 모델로 배우기 시작했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "label": "확인 방식",
+            "value": "**A/B 테스트** — 학습자 수준에 맞춘 레슨이 `consistently helped our learners learn more` 라고 적는다(수치는 없다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "label": "회사가 낸 논문",
+            "value": "간격 반복 모델(**2016, ACL** — Settles & Meeder) · 제2언어 습득 모델링(**2018, NAACL-HLT**) · 기계학습 기반 언어 평가(**2020, TACL**)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Duolingo Research",
+                "url": "https://research.duolingo.com/",
+                "publisher": "Duolingo",
+                "date": "2026",
+                "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+              },
+              {
+                "title": "A Trainable Spaced Repetition Model for Language Learning",
+                "url": "https://aclanthology.org/P16-1174/",
+                "publisher": "ACL 2016",
+                "date": "2016",
+                "summary": "Burr Settles, Brendan Meeder. 회사가 자기 이름으로 낸 간격 반복 논문. ⚠️ 본문(PDF)을 두 번 시도해 두 번 다 파싱하지 못했다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "문제를 나눌 때",
+          "thought": "⚠️ **두 질문이 다르다는 것을 구조로 인정한다** — `언제 이 단어를 다시 보여 줄까` 와 `지금 이 사람에게 무엇을 보여 줄까` 는 재료도 답도 다르다. 그래서 Birdbrain 을 만들면서도 **기존 단어 단위 시스템을 걷어내지 않는다** — `This complements our other personalization system that figures out how well a learner knows each particular word.` **새것이 옛것을 대체하지 않고 옆에 서는 드문 경우다**(이 평가는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 배울지 정할 때",
+          "thought": "**사람과 문제를 동시에 배운다** — 회사가 `continuously studying both how much our learners know as well as the difficulty level of the different kinds of language material we teach` 라 적는다. ⚠️ **난이도를 사람이 매기지 않는다는 뜻이고**, 그래서 **콘텐츠가 늘어도 난이도표를 다시 만들 필요가 없다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디까지 밀어붙일지 정할 때",
+          "thought": "⚠️ **학습자의 본능과 반대로 가야 한다** — 편한 자리에 머물려는 것을 알면서 **일부러 어려운 쪽으로 민다.** 다만 방식이 조심스럽다 — 레슨 **마지막 몇 문제**만 조정하고, 새 내용은 **이미 배운 것 위에 얹는다**(스캐폴딩). **밀어내되 발판을 함께 준다**(이 표현은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "challenge response",
+            "what": "연습 하나에 대한 학습자의 응답. **하루 5억 개 이상**이 모델로 들어간다"
+          },
+          {
+            "name": "학습자 숙련도",
+            "what": "문법 개념별로 추정된다. **사람마다 다르고 계속 바뀐다**"
+          },
+          {
+            "name": "연습 난이도",
+            "what": "⚠️ **사람이 매기지 않고 데이터에서 배운다** — 같은 문제도 사람에 따라 다른 난이도다"
+          },
+          {
+            "name": "단어 단위 개인화",
+            "what": "⚠️ **Birdbrain 이 대체하지 않은 옛 시스템.** `언제 다시 보여 줄까` 를 담당한다"
+          },
+          {
+            "name": "스캐폴딩",
+            "what": "새 내용을 **이미 배운 것 위에 얹는** 방식 — `sentences that build directly on content you've already learned`"
+          }
+        ],
+        "invariants": [
+          "⚠️ **난이도는 사람이 매기는 값이 아니라 학습자별로 추정되는 값이다**",
+          "**새 내용은 이미 배운 것 위에 얹는다** — 발판 없이 밀지 않는다",
+          "⚠️ **레슨 전체가 아니라 마지막 몇 문제를 조정한다** — 흐름을 통째로 흔들지 않는다",
+          "**효과는 A/B 로 확인한다** — 좋아 보이는 것과 실제로 더 배우는 것은 다르다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**학습자가 레슨의 연습을 푼다**",
+            "why": "모든 판단의 재료가 여기서 나온다"
+          },
+          {
+            "step": "**응답 하나하나를 모델이 먹는다** — 하루 5억 개 이상",
+            "why": "개인의 이력이자 그 문제의 난이도 증거이기도 하다"
+          },
+          {
+            "step": "**문법 개념별 숙련도를 추정한다**",
+            "why": "단어 하나가 아니라 **언어의 여러 면**으로 넓힌다"
+          },
+          {
+            "step": "**그 레슨에서 가능한 연습 풀 중 이 사람에게 맞는 것을 고른다**",
+            "why": "같은 레슨이라도 사람마다 다른 문제가 나온다"
+          },
+          {
+            "step": "**레슨 도중 마지막 몇 문제의 난이도를 조정한다**",
+            "why": "⚠️ 처음부터가 아니라 **하는 것을 보고** 정한다"
+          },
+          {
+            "step": "**새 내용은 이미 배운 것 위에 얹는다**(스캐폴딩)",
+            "why": "밀어내되 발판을 준다"
+          },
+          {
+            "step": "**단어를 언제 다시 보여 줄지는 별도 시스템이 계속 담당한다**",
+            "why": "⚠️ **두 질문이 다르므로 두 시스템이다**"
+          },
+          {
+            "step": "**A/B 로 실제로 더 배웠는지 확인한다**",
+            "why": "개인화가 늘 이롭다고 가정하지 않는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "`언제` 와 `무엇` 을 한 모델로 풀 것인가",
+            "chosen": "**아니다 — 새 모델을 옆에 세운다**",
+            "alternatives": [
+              "기존 단어 단위 시스템을 대체하는 통합 모델"
+            ],
+            "tradeoff": "회사가 명시적으로 **보완**이라 적는다 — `This complements our other personalization system`. ⚠️ **대가는 두 시스템을 함께 유지하고 그 둘이 충돌할 때를 다뤄야 한다는 것이다** — 한쪽은 `이 단어를 지금 봐야 한다` 하고 다른 쪽은 `이 사람에겐 이 문제가 맞다` 할 수 있는데, **그 조정 방식이 글에 없다**(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "question": "연습의 난이도를 누가 정할 것인가",
+            "chosen": "**데이터가 정한다** — 학습자 숙련도와 함께 배운다",
+            "alternatives": [
+              "교육 전문가가 난이도를 매기기",
+              "고정된 커리큘럼 순서"
+            ],
+            "tradeoff": "콘텐츠가 늘어도 **난이도표를 다시 만들 필요가 없고**, 같은 문제도 사람에 따라 다른 난이도가 된다. ⚠️ **대가는 새 콘텐츠에 데이터가 없다는 것이다** — 처음 나온 문제의 난이도는 누가 정하는지 글에 없다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "question": "레슨의 어디를 조정할 것인가",
+            "chosen": "**마지막 몇 문제만** — 앞부분은 건드리지 않는다",
+            "alternatives": [
+              "레슨 전체를 개인화",
+              "시작 전에 난이도를 정하기"
+            ],
+            "tradeoff": "**하는 것을 보고 정할 수 있다.** ⚠️ 대가는 **조정의 폭이 좁다는 것**이고, 레슨 앞부분이 이미 안 맞으면 **그 사람은 끝까지 안 맞는 것을 푼다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping you at the frontier of learning with adaptive lessons",
+                "url": "https://blog.duolingo.com/keeping-you-at-the-frontier-of-learning-with-adaptive-lessons/",
+                "publisher": "Duolingo Blog",
+                "date": "2026",
+                "summary": "레슨 도중 마지막 몇 문제의 난이도를 실시간으로 조정한다. 이미 배운 것 위에 새 내용을 얹는 스캐폴딩을 쓰고, 새 레슨·골드 스킬 복습·실수 연습 세 곳에 적용한다."
+              }
+            ]
+          },
+          {
+            "question": "어려운 쪽으로 밀 것인가",
+            "chosen": "**민다 — 다만 발판을 함께 준다**(스캐폴딩)",
+            "alternatives": [
+              "학습자가 편한 수준에 맞추기"
+            ],
+            "tradeoff": "회사가 긴장을 그대로 적는다 — 학습자는 `hesitant to jump out of their comfort zone` 인데 **최선의 학습은 익숙함과 새로움 사이**다. ⚠️ **밀어내면 떠날 수 있고 떠나면 구독이 끝난다** — 그래서 새 내용을 `sentences that build directly on content you've already learned` 로만 넣는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping you at the frontier of learning with adaptive lessons",
+                "url": "https://blog.duolingo.com/keeping-you-at-the-frontier-of-learning-with-adaptive-lessons/",
+                "publisher": "Duolingo Blog",
+                "date": "2026",
+                "summary": "레슨 도중 마지막 몇 문제의 난이도를 실시간으로 조정한다. 이미 배운 것 위에 새 내용을 얹는 스캐폴딩을 쓰고, 새 레슨·골드 스킬 복습·실수 연습 세 곳에 적용한다."
+              }
+            ]
+          },
+          {
+            "question": "얼마나 빨리 전면 적용할 것인가",
+            "chosen": "**점진적으로** — 2020년 3월 시작해 그해 10월에 레슨의 20% 이상",
+            "alternatives": [
+              "전면 전환"
+            ],
+            "tradeoff": "**틀렸을 때 다치는 범위를 좁힌다.** ⚠️ 대가는 **두 방식이 오래 공존한다는 것**이고, 실제로 **6년 뒤 지금 비율이 얼마인지 이 사이트는 확인하지 못했다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "question": "개인화가 좋아졌는지 무엇으로 판단할 것인가",
+            "chosen": "**A/B 테스트** — 더 배웠는지를 본다",
+            "alternatives": [
+              "참여 지표만 보기",
+              "모델 정확도만 보기"
+            ],
+            "tradeoff": "⚠️ **더 오래 머무는 것과 더 배우는 것은 다른데, 이 회사는 둘 다 매출과 이어져 있다.** 회사는 `consistently helped our learners learn more` 라 적지만 **수치를 내놓지 않는다** — **얼마나 더 배웠는지가 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "question": "이 연구를 회사 안에만 둘 것인가",
+            "chosen": "**논문으로 낸다** — 2016 ACL · 2018 NAACL-HLT · 2020 TACL",
+            "alternatives": [
+              "비공개로 두기"
+            ],
+            "tradeoff": "**검증받고 사람을 모은다.** ⚠️ **대가는 경쟁자도 읽는다는 것이고**, 반대로 **논문이 곧 운영 시스템이라는 보장도 없다** — **논문의 모델이 앱에서 그대로 도는지 이 사이트는 확인하지 못했다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Duolingo Research",
+                "url": "https://research.duolingo.com/",
+                "publisher": "Duolingo",
+                "date": "2026",
+                "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Birdbrain (사내 ML 모델)",
+            "role": "학습자 숙련도와 연습 난이도를 함께 배워 **무엇을 보여 줄지** 고른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "tech": "단어 단위 개인화 시스템",
+            "role": "⚠️ **대체되지 않고 남은 쪽.** `언제 다시 보여 줄지` 를 담당한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "tech": "적응형 레슨 · 스캐폴딩",
+            "role": "레슨 마지막 몇 문제의 난이도를 조정하고, 새 내용을 배운 것 위에 얹는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping you at the frontier of learning with adaptive lessons",
+                "url": "https://blog.duolingo.com/keeping-you-at-the-frontier-of-learning-with-adaptive-lessons/",
+                "publisher": "Duolingo Blog",
+                "date": "2026",
+                "summary": "레슨 도중 마지막 몇 문제의 난이도를 실시간으로 조정한다. 이미 배운 것 위에 새 내용을 얹는 스캐폴딩을 쓰고, 새 레슨·골드 스킬 복습·실수 연습 세 곳에 적용한다."
+              }
+            ]
+          },
+          {
+            "tech": "A/B 테스트",
+            "role": "개인화가 실제로 더 배우게 했는지 확인한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "구독 (매출의 약 86%)",
+          "via": "머무르는 일",
+          "contract": "⚠️ **너무 어려우면 떠나고 떠나면 구독이 끝난다** — 난이도 판단이 곧 매출 판단인 자리다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Duolingo English Test",
+          "via": "평가 연구",
+          "contract": "**기계학습 기반 언어 평가 논문(2020, TACL)이 이 수익원 아래 있다.** ⚠️ 다만 **시험 채점은 학습 추천과 공정성 요구가 다른데** 그 차이를 확인하지 못했다",
+          "confidence": "inferred"
+        },
+        {
+          "to": "에이전트를 한 번 정의해 여러 곳에 태운다",
+          "via": "⚠️ 다른 종류의 AI",
+          "contract": "⚠️ **같은 회사가 두 종류의 AI 를 쓴다** — 학습 쪽은 **사내 모델로 사람을 추정**하고, 개발 쪽은 **외부 LLM 으로 코드를 만든다.** **믿는 방식도 다르다**(한쪽은 A/B 로, 한쪽은 사람 승인으로)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "하루 5억 개 이상의 연습",
+          "via": "응답 수집",
+          "contract": "**모든 판단의 재료가 여기서 나온다** — 개인의 이력이자 그 문제의 난이도 증거이기도 하다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "A Trainable Spaced Repetition Model for Language Learning",
+            "authors": "Burr Settles, Brendan Meeder",
+            "year": "2016",
+            "url": "https://aclanthology.org/P16-1174/",
+            "why": "**회사가 자기 이름으로 낸 간격 반복 논문이고, `언제 다시 보여 줄지` 를 다루는 쪽의 뿌리다.** 제목·저자·연도·학회는 회사 연구 페이지와 ACL Anthology 양쪽에서 확인했다.",
+            "takeaway": "⚠️ **본문을 읽지 못했다.** PDF 를 두 번 열었고 두 번 다 파싱하지 못했다(한 번은 그럴듯한 요약이 돌아왔는데 **두 번째 시도에서 같은 파일을 파싱할 수 없다고 해 그 요약을 근거로 쓰지 않았다**). **그래서 데이터 규모·기준선 대비 개선치·한계를 여기에 적지 않는다** — 지어내는 것보다 비워 두는 편이 낫다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Trainable Spaced Repetition Model for Language Learning",
+                "url": "https://aclanthology.org/P16-1174/",
+                "publisher": "ACL 2016",
+                "date": "2016",
+                "summary": "Burr Settles, Brendan Meeder. 회사가 자기 이름으로 낸 간격 반복 논문. ⚠️ 본문(PDF)을 두 번 시도해 두 번 다 파싱하지 못했다."
+              },
+              {
+                "title": "Duolingo Research",
+                "url": "https://research.duolingo.com/",
+                "publisher": "Duolingo",
+                "date": "2026",
+                "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+              }
+            ]
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "편안함과 도전이 같은 손잡이에 달려 있다",
+            "why_hard": "⚠️ **회사가 이 긴장을 직접 적는다** — 학습자는 `hesitant to jump out of their comfort zone to harder material` 인데 **최선의 학습은 익숙함과 새로움 사이**에 있다. 그리고 이 회사에서는 **떠나는 것이 곧 매출 손실**이라, **가르치려는 힘과 붙잡으려는 힘이 반대로 당길 수 있다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**마지막 몇 문제만 조정하고, 새 내용은 배운 것 위에 얹는 것**(스캐폴딩). ⚠️ **어느 쪽으로 얼마나 미는 것이 맞는지의 기준은 글에 없고, `더 배웠다` 는 주장에 수치가 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping you at the frontier of learning with adaptive lessons",
+                "url": "https://blog.duolingo.com/keeping-you-at-the-frontier-of-learning-with-adaptive-lessons/",
+                "publisher": "Duolingo Blog",
+                "date": "2026",
+                "summary": "레슨 도중 마지막 몇 문제의 난이도를 실시간으로 조정한다. 이미 배운 것 위에 새 내용을 얹는 스캐폴딩을 쓰고, 새 레슨·골드 스킬 복습·실수 연습 세 곳에 적용한다."
+              },
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          },
+          {
+            "problem": "새 콘텐츠에는 난이도 데이터가 없다",
+            "why_hard": "난이도를 사람이 매기지 않고 **데이터에서 배우기 때문에**, 방금 만든 문제는 **아무도 안 풀어 봐서 난이도를 모른다.** 콘텐츠가 계속 늘어나는 제품에서 이 공백은 계속 생긴다(이 문제 제기는 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **회사 자료에서 답을 찾지 못했다.** 비슷한 문제의 난이도를 물려받거나 초기에는 보수적으로 배치하는 방법이 업계에 있지만(추정) **이 회사가 무엇을 하는지 확인하지 못했다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Learning how to help you learn: Introducing Birdbrain!",
+                "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+                "publisher": "Duolingo Blog",
+                "date": "2020-10",
+                "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "두 질문이 다르므로 두 시스템이다",
+          "question": "다음에 보여 줄 것은 어떻게 정해지나",
+          "kind": "flow",
+          "code": "flowchart TD\n  L[\"<b>학습자</b><br/>• 일간 5,870만 명\"]:::accent --> E[\"<b>연습을 푼다</b><br/>• 하루 5억 개 이상의 응답\"]:::accent\n  E --> BB[\"<b>Birdbrain</b><br/>• 문법 개념별 숙련도 추정<br/>• <b>연습 난이도도 함께 배운다</b>\"]:::accent\n  E --> W[\"<b>단어 단위 시스템</b><br/>• <b>언제</b> 다시 보여 줄지<br/>⚠️ 대체되지 않고 남았다\"]:::accent\n  BB --> P[\"<b>레슨의 연습 풀에서 고른다</b><br/>• 같은 레슨도 사람마다 다르게\"]:::list\n  W --> P\n  P --> A[\"<b>마지막 몇 문제를 실시간 조정</b><br/>• 하는 것을 보고 정한다\"]:::accent\n  A --> S[\"<b>스캐폴딩</b><br/>• 새 내용은 배운 것 위에\"]:::list\n  S --> AB[\"<b>A/B 로 확인</b><br/>• 더 배웠는가\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "밀면 배우고, 너무 밀면 떠난다",
+          "question": "이 도메인이 어려운 이유와, 이 사이트가 확인하지 못한 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  T[\"<b>학습자의 본능</b><br/>• 편한 자리에 머물려 한다\"]:::gone --> B[\"<b>최선의 학습</b><br/>• 익숙함과 새로움 사이\"]:::accent\n  B --> P1[\"<b>민다</b>\"]:::accent\n  P1 --> G[\"<b>더 배운다</b>\"]:::list\n  P1 --> Q[\"⚠️ <b>떠난다</b><br/>• 떠나면 구독이 끝난다 (재구성)\"]:::gone\n  N[\"⚠️ <b>새 콘텐츠</b><br/>• 아무도 안 풀어 봤다<br/>• 난이도 데이터가 없다\"]:::gone\n  U[\"⚠️ <b>확인하지 못한 것</b><br/>• 논문 본문 (PDF 두 번 실패)<br/>• 지금 개인화 비율 (2020년 20%+)<br/>• 얼마나 더 배웠는지의 수치<br/>• 두 시스템이 충돌할 때\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Learning how to help you learn: Introducing Birdbrain!",
+          "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+          "publisher": "Duolingo Blog",
+          "date": "2020-10",
+          "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+        },
+        {
+          "title": "Keeping you at the frontier of learning with adaptive lessons",
+          "url": "https://blog.duolingo.com/keeping-you-at-the-frontier-of-learning-with-adaptive-lessons/",
+          "publisher": "Duolingo Blog",
+          "date": "2026",
+          "summary": "레슨 도중 마지막 몇 문제의 난이도를 실시간으로 조정한다. 이미 배운 것 위에 새 내용을 얹는 스캐폴딩을 쓰고, 새 레슨·골드 스킬 복습·실수 연습 세 곳에 적용한다."
+        },
+        {
+          "title": "Duolingo Research",
+          "url": "https://research.duolingo.com/",
+          "publisher": "Duolingo",
+          "date": "2026",
+          "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+        },
+        {
+          "title": "A Trainable Spaced Repetition Model for Language Learning",
+          "url": "https://aclanthology.org/P16-1174/",
+          "publisher": "ACL 2016",
+          "date": "2016",
+          "summary": "Burr Settles, Brendan Meeder. 회사가 자기 이름으로 낸 간격 반복 논문. ⚠️ 본문(PDF)을 두 번 시도해 두 번 다 파싱하지 못했다."
+        },
+        {
+          "title": "Duolingo Q2 2026 shareholder letter",
+          "url": "https://investors.duolingo.com/",
+          "publisher": "Duolingo IR",
+          "date": "2026",
+          "summary": "2025년 매출 10억 3,760만 달러(+39%), 구독이 약 86%. 2026년 2분기 매출 2억 9,850만 달러, 일간 활성 사용자 5,870만 명(+23%), 유료 구독자 1,270만 명(+17%)."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
-    "⚠️ **지금 무엇으로 다음 문제를 고르는지 1급 자료로 확인하지 못했다** — 확인한 것은 **2016년 간격 반복 논문**까지다. 3자 자료들은 이후의 딥러닝 기반 엔진을 말하지만 **회사 자료를 못 찾았다.** **매출의 86% 가 걸린 축인데 근거가 10년 전 논문이다.**",
+    "⚠️ **지금 개인화가 어디까지 갔는지 모른다** — 확인한 수치가 **2020년 10월의 `레슨의 20% 이상`** 이다. **6년이 지났고 지금 값을 회사 자료에서 찾지 못했다.**",
+    "⚠️ **2016년 논문 본문을 읽지 못했다** — PDF 를 두 번 열어 두 번 다 파싱에 실패했다. **한 번은 그럴듯한 요약(데이터 규모·개선치)이 돌아왔는데 두 번째 시도에서 같은 파일을 파싱할 수 없다고 해 그 요약을 근거로 쓰지 않았다.** 제목·저자·연도·학회만 1급으로 확인했다.",
+    "⚠️ **두 시스템이 충돌할 때를 모른다** — 단어 단위 시스템이 `이 단어를 지금 봐야 한다` 하고 Birdbrain 이 `이 사람에겐 이 문제가 맞다` 할 때 무엇이 이기는지 자료에 없다.",
     "**광고·인앱 구매·Duolingo English Test 의 비중을 모른다** — 구독이 약 86% 라는 것만 확인했다.",
     "⚠️ **연구와 운영 시스템의 거리를 모른다** — 논문의 모델이 앱에서 그대로 도는지, 얼마나 바뀌어 도는지가 어디에도 없다.",
     "**슬랙 에이전트의 진화에 연도가 붙어 있다**(로컬 MCP 2024-11 → 중앙 설정 생성기 2025-05 → HTTP MCP 서버 2025-08 → 슬랙 앱). **기능을 쓸 때 연표(history)를 세울 수 있다.**",
     "**SMS 서비스 성능 개선 글**(피크 CPU 포화 → 3.5%, 파드 32 → 8)은 자기 시스템이 맞지만 **버린 대안이 없어** 도메인으로 세우지 않았다. **보강 재료로는 쓸 수 있다.**",
-    "⚠️ **에이전트 플랫폼 글에 수치가 `몇 주 → 약 10분` 하나뿐이다** — 성공률·운영 규모·비용이 없다."
+    "⚠️ **에이전트 플랫폼 글에 수치가 `몇 주 → 약 10분` 하나뿐이다** — 성공률·운영 규모·비용이 없다.",
+    "**새 콘텐츠의 난이도를 어떻게 정하는지 모른다** — 난이도를 데이터에서 배우는데 방금 만든 문제는 데이터가 없다."
   ],
   "sources": [
     {
@@ -303,6 +829,27 @@
       "publisher": "Duolingo Blog",
       "date": "2026-06-22",
       "summary": "SMS 발송 서비스가 요청마다 새 세션을 만들어 매번 TCP·TLS 를 다시 맺었고 워커 스레드 10개가 전부 연결 수립에서 막혔다. 스레드 로컬 세션 재사용으로 피크 CPU 가 포화에서 3.5% 로, 파드가 32개에서 8개로 줄었다."
+    },
+    {
+      "title": "Learning how to help you learn: Introducing Birdbrain!",
+      "url": "https://blog.duolingo.com/learning-how-to-help-you-learn-introducing-birdbrain/",
+      "publisher": "Duolingo Blog",
+      "date": "2020-10",
+      "summary": "학습자의 지식수준과 콘텐츠 난이도를 함께 배우는 모델. 단어별 개인화 시스템을 대체하지 않고 보완한다. 2020년 3월부터 적용해 그해 10월 기준 레슨의 20% 이상을 개인화했다."
+    },
+    {
+      "title": "Keeping you at the frontier of learning with adaptive lessons",
+      "url": "https://blog.duolingo.com/keeping-you-at-the-frontier-of-learning-with-adaptive-lessons/",
+      "publisher": "Duolingo Blog",
+      "date": "2026",
+      "summary": "레슨 도중 마지막 몇 문제의 난이도를 실시간으로 조정한다. 이미 배운 것 위에 새 내용을 얹는 스캐폴딩을 쓰고, 새 레슨·골드 스킬 복습·실수 연습 세 곳에 적용한다."
+    },
+    {
+      "title": "A Trainable Spaced Repetition Model for Language Learning",
+      "url": "https://aclanthology.org/P16-1174/",
+      "publisher": "ACL 2016",
+      "date": "2016",
+      "summary": "Burr Settles, Brendan Meeder. 회사가 자기 이름으로 낸 간격 반복 논문. ⚠️ 본문(PDF)을 두 번 시도해 두 번 다 파싱하지 못했다."
     }
   ]
 }
