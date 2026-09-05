@@ -50,7 +50,8 @@
 `python -m semantic.search "재택 되는 백엔드"`, `python -m semantic.server`
 
 ## 로컬 서버 포트
-8765 stats(통계) / 8770 ops(크롤 운영) / 8771 search(검색 API) / 8910 admin(개인 이력, LAN 전용).
+8765 stats(통계) / 8770 ops(크롤 운영) / 8771 search(검색 API) / 8910 admin(개인 이력, LAN 전용)
+/ 8780 design-lab(채용 상세페이지 디자인 레퍼런스, 파이프라인과 분리된 실험용).
 검색 API 는 뷰어 nginx 가 `/api/` 로 프록시하므로 별도 터널이 필요 없다.
 
 ## 운영 주의

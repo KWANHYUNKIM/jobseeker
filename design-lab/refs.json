@@ -1,0 +1,180 @@
+{
+  "collected_at": "2026-09-05",
+  "source": "Instagram (#상세페이지디자인 / #채용포스터 / #recruitmentposter)",
+  "purpose": "채용 공고 상세페이지 디자인을 새로 짜기 전, 남들이 '상세'를 어떻게 접는지 먼저 본다.",
+  "families": {
+    "commerce": "커머스 상세페이지 — 설득의 순서를 배우는 쪽",
+    "hiring": "채용 포스터 — 한 장에 정보를 접는 법을 배우는 쪽",
+    "web": "채용 웹사이트 — 화면 구조를 그대로 참고하는 쪽"
+  },
+  "refs": [
+    {
+      "id": "detail-01",
+      "family": "commerce",
+      "title": "블로웨일 살균탈취제 상세페이지",
+      "account": "answer_kr",
+      "url": "https://www.instagram.com/p/DVvMsn5kZWJ/",
+      "tag": "상세페이지디자인",
+      "files": [
+        "instagram/posts/detail-01_answer_kr_DVvMsn5kZWJ_s1.jpg",
+        "instagram/posts/detail-01_answer_kr_DVvMsn5kZWJ_s2.jpg",
+        "instagram/posts/detail-01_answer_kr_DVvMsn5kZWJ_s3.jpg"
+      ],
+      "mood": ["임상적", "데이터", "딥네이비→화이트"],
+      "read": "이 수집물 중 유일하게 '왜 이렇게 만들었는지'를 슬라이드로 같이 올린 케이스다. 세 번째 슬라이드에 Deep Navy #000714 / Royal Blue #0a6977 / Light Blue #f2f7ff / Pure White 네 칸을 코드까지 박아 놨다. 살균이라는 눈에 안 보이는 효능을 파는데, 감성 사진 대신 99.9% 같은 수치와 그래프를 전면에 세웠다. 문제 제기 구간은 저명도로 깔고 해결 구간에서 고명도로 튀어오르게 하는, 명도 자체를 서사로 쓰는 방식.",
+      "steal": "명도로 단계를 나누는 것. 채용 상세에서도 '지금 네가 못 하는 것(자격요건)'은 눌러 깔고 '하게 되면 뭐가 되는지(성장/보상)'에서 밝기를 올리면 스크롤에 리듬이 생긴다. 그리고 팔레트를 4칸으로 못 박고 시작하는 습관.",
+      "drop": "수치 신뢰 연출은 제품 얘기다. 공고는 숫자로 증명할 게 연봉밴드 정도뿐이라 그대로 옮기면 허세가 된다."
+    },
+    {
+      "id": "detail-02",
+      "family": "commerce",
+      "title": "멜라셋 토닝 크리미 에센스",
+      "account": "studio_haso",
+      "url": "",
+      "tag": "상세페이지디자인",
+      "files": ["instagram/posts/detail-02_studio_haso_s1.jpg"],
+      "mood": ["레드/화이트", "약국st", "정보 밀도 높음"],
+      "read": "동국제약 자체 브랜드라 '제약'의 신뢰를 화장품 톤에 섞었다. 히어로 한 장 뒤로 섹션 카드가 같은 폭·같은 여백으로 계속 반복된다. 예쁘다기보다 지루할 정도로 규칙적인데, 그게 긴 페이지를 끝까지 읽히게 만드는 힘이다.",
+      "steal": "섹션 카드의 폭과 상하 여백을 하나로 고정하는 것. 지금 JobDetail 은 자격요건·우대사항·업무가 각기 다른 리듬으로 흘러서 어디가 끝인지 안 보인다.",
+      "drop": "빨강 강조는 커머스의 '지금 사라' 신호다. 채용에서 빨강은 마감 임박 말고는 쓸 데가 없다."
+    },
+    {
+      "id": "detail-03",
+      "family": "commerce",
+      "title": "려니유 참기름 상세페이지 (리터칭)",
+      "account": "chaedaon_studio",
+      "url": "",
+      "tag": "상세페이지디자인",
+      "files": ["instagram/posts/detail-03_chaedaon_studio_s1.jpg"],
+      "mood": ["웜톤", "크림/앰버", "한식 로컬"],
+      "read": "기존 디자인 흐름을 안 건드리고 이미지 교체·보정만으로 분위기를 올린 작업이라고 본인이 적어 뒀다. 구조는 손 안 대고 색감만 바꿔도 페이지가 산다는 증거. 뒤쪽은 제품고시 표 → 배송 안내로 아주 사무적으로 끝난다.",
+      "steal": "감성 구간과 사무 구간을 섞지 않고 끝에 몰아 두는 것. 채용도 마찬가지다 — 팀 소개·성장 이야기 다 하고, 접수기간·제출서류·전형절차는 맨 아래 표 한 덩어리로 몰아야 한다.",
+      "drop": "웜톤 팔레트 자체는 개발 채용과 안 맞는다."
+    },
+    {
+      "id": "detail-04",
+      "family": "commerce",
+      "title": "수제 그래놀라 상세페이지",
+      "account": "design_j_d",
+      "url": "https://www.instagram.com/p/C55DZl2r88L/",
+      "tag": "상세페이지디자인",
+      "files": ["instagram/posts/detail-04_design_j_d_C55DZl2r88L_s1.jpg"],
+      "mood": ["브라운/오트", "번호 섹션", "아이콘 4분할"],
+      "read": "Point.01 / 02 / 03 으로 번호를 매겨 섹션을 끊는다. 그 아래는 아이콘 + 짧은 라벨 4분할 스펙 블록. 정보량은 많은데 '지금 몇 번째를 읽고 있는지'가 항상 보여서 안 지친다.",
+      "steal": "번호 매기기. 공고 상세도 자격요건을 그냥 불릿으로 흘리지 말고 '이 자리가 요구하는 것 3가지' 로 번호를 박으면 읽는 사람이 자기 위치를 안다. 아이콘 4분할은 근무형태·경력·지역·고용형태 메타에 바로 쓸 수 있다.",
+      "drop": "없음. 이 구조는 거의 그대로 옮겨도 된다."
+    },
+    {
+      "id": "detail-05",
+      "family": "commerce",
+      "title": "더툴랩 스탬프 스킨핏 쿠션",
+      "account": "designyoon.kr",
+      "url": "",
+      "tag": "상세페이지디자인",
+      "files": ["instagram/posts/detail-05_designyoon.kr_s1.jpg"],
+      "mood": ["차분", "라이트블루", "강약조절"],
+      "read": "작업자가 '차분함과 강약이라는 상반된 요소를 한 페이지에 녹이는 게 숙제였다'고 직접 써 놨다. 해법은 배경을 끝까지 눌러 두고 USP 문장에서만 크기를 키우는 것. 컬러로 안 싸우고 타입 스케일로만 강약을 낸다.",
+      "steal": "타입 스케일로만 강약을 만드는 절제. 색을 늘리는 대신 24/18/14 세 단으로 끝내면 다크모드 대응도 같이 쉬워진다.",
+      "drop": "파스텔 블루의 화장품 톤."
+    },
+    {
+      "id": "detail-06",
+      "family": "commerce",
+      "title": "ARE-DESIGN 앰플 상세페이지",
+      "account": "are__design",
+      "url": "",
+      "tag": "상세페이지디자인",
+      "files": ["instagram/posts/detail-06_are__design_s1.jpg"],
+      "mood": ["브라운/베이지", "check point 배지", "카피 우선"],
+      "read": "'정보를 빠르게 취하길 원하는 소비자에게 필요한 특징 및 장점이 부각되는 디자인'이라고 목적을 명시했다. 원형 check point 배지로 스캔 지점을 만들어 두는 게 핵심 장치. 이미지가 예뻐도 배지 없으면 눈이 미끄러진다.",
+      "steal": "스캔 지점(anchor)을 의도적으로 심는 것. 긴 JD 에서 눈이 멈출 곳을 배지·라벨로 만들어 줘야 한다. 지금 뷰어의 study 하이라이트가 사실 이 역할인데, 시각적으로 너무 약하다.",
+      "drop": "제품 사진 연출 전체."
+    },
+    {
+      "id": "hire-01",
+      "family": "hiring",
+      "title": "ANU 사내공모전 신입사원 채용포스터",
+      "account": "anu_design_group_official",
+      "url": "",
+      "tag": "채용포스터",
+      "files": ["instagram/posts/hire-01_anu_design_group_s1.jpg"],
+      "mood": ["사내 참여형", "블루", "공모전"],
+      "read": "건축사사무소가 채용 포스터를 사내 공모전으로 돌려 45점을 받고 259명이 투표해서 뽑았다. 결과물 자체보다 '채용 포스터를 직원이 만든다'는 프로세스가 콘텐츠가 된 케이스. 포스터 여러 안을 나란히 보여 주는 화면 구성이 그 자체로 좋은 레이아웃 레퍼런스다.",
+      "steal": "한 공고의 여러 얼굴을 나란히 놓고 비교시키는 화면. 우리 뷰어에서도 같은 회사의 여러 포지션을 카드로 나란히 놓을 때 쓸 수 있다.",
+      "drop": "공모전 서사는 우리 쪽에 없다."
+    },
+    {
+      "id": "hire-02",
+      "family": "hiring",
+      "title": "열린치과병원 신입직원 채용공고",
+      "account": "yeolindentalhospital",
+      "url": "https://www.instagram.com/p/CUv86EahzcH/",
+      "tag": "채용포스터",
+      "files": ["instagram/posts/hire-02_yeolindentalhospital_CUv86EahzcH_s1.jpg"],
+      "mood": ["민트", "3D 클레이", "친근"],
+      "read": "민트 단색 배경에 3D 클레이 손이 폰을 들고 있고 화면에 QR. 오른쪽은 큰 타이포 3줄. 아래는 ■ 불릿 세 개 — 접수 / 제출서류 / 전형방법. 정보는 딱 그 셋뿐이다. 채용 한 장에 정말 필요한 게 뭔지에 대한 답을 아주 단호하게 내려 놨다.",
+      "steal": "'접수 / 제출서류 / 전형방법' 3블릿. 이게 지원자가 결정 직전에 확인하는 전부다. 채용 상세페이지 하단 고정 CTA 영역을 정확히 이 셋으로 짜면 된다.",
+      "drop": "클레이 3D와 민트는 병원 톤. 그리고 QR 은 웹 상세에선 무의미하다."
+    },
+    {
+      "id": "hire-03",
+      "family": "hiring",
+      "title": "IMAGO Recruitment 2026 — Graphic Designer / 3D Generalist",
+      "account": "imago.xyz",
+      "url": "https://www.instagram.com/p/DWxwfBTmVro/",
+      "tag": "recruitmentposter",
+      "files": ["instagram/posts/hire-03_imago.xyz_DWxwfBTmVro_s1.jpg"],
+      "mood": ["시네마틱", "블루 글로우", "직군명이 주인공"],
+      "read": "수집물 중 가장 세다. 상단에 'Open Positions.  ~26.08.02' 한 줄로 무엇/언제를 끝내고, 나머지 전부를 직군 이름 타이포에 준다. Graphic Designer. 3D Generalist. 마침표까지 찍어서 문장처럼 읽힌다. 배경은 흐릿한 인물 실루엣이라 정보를 안 방해한다. 회사 이름은 오른쪽에 작게. 즉 **회사가 아니라 자리를 주인공으로 세운 공고**다.",
+      "steal": "이게 채용 상세페이지 히어로의 정답에 가깝다. 지금 우리 JobDetail 은 회사명·직군·태그가 비슷한 크기로 붙어 있어 무엇을 뽑는 자리인지가 안 읽힌다. 직군명을 화면 절반 크기로 키우고 마감일 한 줄만 위에 얹는 구성으로 바꿔 볼 것.",
+      "drop": "시네마틱 배경 이미지. 우리는 공고마다 이미지가 없다 — 대신 회사 로고 마크를 크게 흐려서 깔면 같은 효과가 난다."
+    },
+    {
+      "id": "hire-04",
+      "family": "hiring",
+      "title": "디자인피버 JOB OPENING",
+      "account": "df.designfever",
+      "url": "",
+      "tag": "recruitmentposter",
+      "files": ["instagram/posts/hire-04_df.designfever_s1.jpg"],
+      "mood": ["극단적 여백", "흑백", "스위스st"],
+      "read": "화면의 90%가 흰 여백이다. 가운데 로고 하나, 위에 작은 'JOB OPENING', 아래에 '2026.06.23. — 07.31. 24:00' 과 'WEB PROJECT MANAGER / DIGITAL MARKETER', 오른쪽 끝에 'A DIFFERENCE THAT MATTERS'. 정보는 다 있는데 아무것도 소리치지 않는다. 자신 있는 회사만 할 수 있는 배짱.",
+      "steal": "메타 정보(기간·직군·슬로건)를 화면 네 귀퉁이에 흩어 두는 배치. 그리고 여백이 곧 브랜드라는 것. 목록에서 상세로 들어왔을 때 첫 화면을 이만큼 비워 두면 오히려 집중된다.",
+      "drop": "여백 90%는 공고가 스크롤 한 번이면 끝나는 경우에만 성립한다. 우리 JD 는 길다."
+    },
+    {
+      "id": "hire-05",
+      "family": "hiring",
+      "title": "대전지속가능발전협의회 2026 공개채용",
+      "account": "sddaejeon",
+      "url": "",
+      "tag": "recruitmentposter",
+      "files": ["instagram/posts/hire-05_sddaejeon_s1.jpg"],
+      "mood": ["플랫 일러스트", "블루/옐로우", "공공"],
+      "read": "정보 구조를 숨기지 않고 그대로 노출한다 — 채용직급 / 응시분야 / 지원자격 / 우대사항 / 지원일정. 각 항목이 소제목 + 불릿으로 딱딱 떨어지고, 오른쪽 절반은 일러스트가 먹는다. 좌: 텍스트 / 우: 그림 의 2단이 세로로 계속 유지된다.",
+      "steal": "**항목 이름을 그대로 쓰는 정직함**. 우리 데이터도 qualifications / preferences / tasks 로 이미 나뉘어 있으니, 예쁜 말로 바꾸지 말고 '지원자격 · 우대사항 · 담당업무' 그대로 소제목으로 세우는 게 맞다. 그리고 좌 텍스트 / 우 비주얼 2단 유지.",
+      "drop": "플랫 일러스트. 공고마다 그림을 만들 수 없다."
+    },
+    {
+      "id": "hire-06",
+      "family": "web",
+      "title": "Antixor — Recruitment & Staffing Agency Website Concept",
+      "account": "hammadpixeldesgin",
+      "url": "https://www.instagram.com/p/DaN2iL2oehJ/",
+      "tag": "recruitmentposter",
+      "files": ["instagram/posts/hire-06_hammadpixeldesgin_DaN2iL2oehJ_s1.jpg"],
+      "mood": ["퍼플 그라디언트", "SaaS", "카드 그리드"],
+      "read": "포스터가 아니라 채용 사이트 전체 컨셉이라 우리 목적에 제일 가깝다. 섹션 순서가 교과서적이다 — 히어로(카피+검색) → 왜 우리인가 → 전문 분야 아이콘 그리드 6칸 → 절차 3스텝 → 후기 카드 → 담당자 프로필 카드 → 인사이트 아티클 3장 → 문의 폼. 특히 '담당자 얼굴을 카드로 보여 주는' 섹션과 '인사이트 아티클' 섹션이 눈에 띈다.",
+      "steal": "두 가지. (1) 절차 3스텝을 아이콘 가로 배치로 — 우리 공고에도 전형절차가 있으면 이렇게 편다. (2) 인사이트 아티클 3장 — 이건 우리가 이미 갖고 있다. 기술 백과사전·기업 역설계 문서를 공고 하단에 '이 자리 준비하려면' 3장으로 붙이면 그대로 이 섹션이 된다.",
+      "drop": "퍼플 그라디언트와 스톡 사진. 에이전시 톤이라 신뢰가 아니라 영업처럼 보인다."
+    }
+  ],
+  "synthesis": {
+    "hero": "직군명이 주인공. 회사명·태그는 조연으로 내린다. (hire-03, hire-04)",
+    "sections": "'지원자격 · 우대사항 · 담당업무' 라벨을 그대로 쓰고, 번호를 매겨 위치를 알려 준다. (hire-05, detail-04)",
+    "rhythm": "섹션 카드의 폭·여백을 하나로 고정. 강약은 색이 아니라 타입 스케일 3단으로. (detail-02, detail-05)",
+    "anchors": "긴 본문에는 눈이 멈출 배지·라벨을 심는다. 지금의 study 하이라이트를 더 세게. (detail-06)",
+    "footer": "감성 다 끝내고 맨 아래에 '접수 / 제출서류 / 전형절차' 한 덩어리. (hire-02, detail-03)",
+    "extra": "하단에 '이 자리 준비하려면' 3장 — 백과사전·역설계 문서 재활용. (hire-06)"
+  }
+}
