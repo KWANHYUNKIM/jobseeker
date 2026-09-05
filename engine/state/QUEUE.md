@@ -20,9 +20,24 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Honeycomb** | US · SaaS(관측) | `honeycomb.io/blog` — 최신 **2026-09-02**, 인프라 글은 **2026-07-15** | ✅ WebFetch 로 목록·본문 모두 온다. ⚠️ **첫 화면은 AI·조직 글이라 인프라 글을 따로 찾아야 한다.** ⚠️ **슬러그를 추측하면 404 다** — 목록에서 URL 을 받아야 한다(`/blog/transforming-how-we-run-kafka-honeycomb`, `at-` 이 없다) | **`transforming-how-we-run-kafka-honeycomb`(2026-07-15) 전문을 읽었다 — 자기 프로덕션 Kafka 이전기다.** 자체 호스팅 Confluent Platform + ZooKeeper 에서 **오픈소스 Apache Kafka 4.1.1(KRaft 모드) + AWS EKS** 로 옮겼다. **버린 대안이 셋이고 이유가 다 다르다** — ① Confluent Warpstream(디스크리스 토픽)은 *"we can't trade higher latencies for more cost-effective data transfer"*(99.99% 가용성 SLO 때문), ② MirrorMaker 2 는 **오프셋 관리 구조와 비호환**, ③ EBS 대신 **NVMe 인스턴스 스토어**(지연 최소화). **대가를 명시적으로 받아들인다** — *"we accept a window of downtime between the producer cutover and the consumer cutover"*(데이터 안전을 위해). **⚠️ 그리고 자기 시스템이 나빠졌던 것을 적는다** — 브로커 교체가 몇 년 전 **8~12시간**에서 이전 직전 **48~72시간**으로 늘어 있었다(폐쇄 소스 계층 저장 문제). **수치** — 클러스터 **6개**(환경 3계층) · 이전 실행이 **4~5시간 → 2~3시간** · 초기에 **7개 팀 조율** · 롤백 테스트 **4시간 이상**. ⚠️ **빠진 수치도 있다** — 총 기간은 `several quarters` 로만, 처리량·비용·브로커 수는 없다. 축은 관측 벤더라 Datadog·Grafana 와 겹치지만 **이 글은 관측 제품이 아니라 그 밑의 Kafka 운영**이다 |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-06 열두 번째 후보 조사 — 새 이름으로 돌아와 하나를 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
+  **의심 목록이 끝나 미리 골라 둔 새 이름들을 두드렸다.**
+  - **✅ Honeycomb** — 위 대기 표로 올렸다. ⚠️ **첫 화면(AI·조직 글)만 봤으면 떨어뜨렸을 것이다.**
+  - **❌ Temporal** — `temporal.io/blog` 는 열리고 최신도 2026-09-04 인데 **첫 화면이 파트너십·
+    제품 발표**다. 첫 화면으로 판정하지 않는다는 규칙대로 **검색으로 심층 글을 찾아 본문을
+    열었다** — `higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer`.
+    **자기 시스템(Temporal Cloud) 이야기가 맞고** 세 기둥이 뚜렷하다(동적 샤딩 · **쓰기 선행
+    로그로 여러 갱신을 모아 한 번에 쓰기** · 워크플로 완료 시 이벤트 이력을 객체 저장소로
+    옮기는 계층 저장). **시끄러운 이웃 문제**를 푼 것도 밝힌다.
+    ⚠️ **그런데 버린 대안이 없고 수치가 없다** — `we saw an immediate impact` 수준이고
+    비교 벤치마크·지연 수치가 하나도 없다. **기준(버린 대안·대가·수치 중 둘) 미달이다.**
+    ⏳ **다만 `workflow-engine-principles` 는 안 읽었다** — 설계 원칙을 다루는 글이라 결이
+    다를 수 있다. **내구성 있는 실행 엔진은 이 엔진에 없는 축이라 다시 볼 값이 있다.**
 
 - **2026-09-06 열한 번째 후보 조사 — Capital One 판정을 끝냈다(❌ 유지). 큐는 그대로 0/3 이다.**
   **⚠️ 이번엔 세 편을 확인했다** — 앞선 판정이 첫 화면만 본 것이었기 때문이다.

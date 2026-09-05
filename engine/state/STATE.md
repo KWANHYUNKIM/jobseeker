@@ -8,30 +8,32 @@
 
 ## 지금 파는 중
 
-**없다.** 완료 **74곳** · ⚠️ **큐 0/3 — 이번 조사는 판정 하나로 끝났다.**
+**없다.** 완료 **74곳** · **큐 1/3**(Honeycomb) · 비교 문서 33편.
 
-### ⚠️ 의심 목록이 끝났다 — 다음 사이클부터는 새 이름이다
+**다음 사이클은 6순위(신규) — Honeycomb 이다.** PROMPT.md 3단계부터.
+⚠️ **첫 화면은 AI·조직 글이다 — 인프라 글 주소를 먼저 찾아 둔다.**
+이미 아는 것: `transforming-how-we-run-kafka-honeycomb`(2026-07-15, 전문 읽음).
+⚠️ **슬러그를 추측하지 말고 목록에서 URL 을 받는다**(`at-` 이 없어 404 를 한 번 받았다).
 
-Rightmove 에서 배운 `첫 화면으로 판정하지 않는다` 로 넷을 다시 봤고 **결산이 나왔다**:
-**Tailscale ✅ · Ably ✅ 뒤집힘 · ClickHouse ❌ · Capital One ❌**(각각 본문을 열어 판정).
-**되살리기의 수확률이 새 이름 찾기보다 높았지만**(넷 중 둘 + 되살릴 목록에서 둘),
-**이제 다시 볼 목록이 비었다.**
+### ⭐ Honeycomb 이 왜 좋은가 — 나빠졌던 것을 적는다
 
-### ⏳ 다음 조사에서 두드릴 새 이름 (미리 골라 둔다)
+브로커 교체가 몇 년 전 **8~12시간**에서 이전 직전 **48~72시간**으로 **늘어 있었다**고
+적는다(폐쇄 소스 계층 저장 문제). **좋아진 것만 적는 글이 대부분인데 이 회사는 자기
+시스템이 나빠진 구간을 남긴다.** 그리고 버린 대안 셋의 이유가 다 다르다(SLO · 구조
+비호환 · 지연), 대가도 명시적이다(*"we accept a window of downtime between the producer
+cutover and the consumer cutover"*).
 
-아직 안 본 **자체 호스팅 블로그**들이다. 축이 새로운 순으로:
-- **Temporal**(`temporal.io/blog`) — **내구성 있는 실행 엔진**. 이 엔진에 없는 축이다.
-- **Honeycomb**(`honeycomb.io/blog`) — 관측. Datadog·Grafana 와 겹치지만 **글의 깊이로 유명하다.**
-- **Sentry**(`blog.sentry.io`) — ⚠️ **목록은 열리는데 앞서 글 주소를 맞히다 404 를 받았다.**
-  **목록에서 URL 을 받아 오면 된다.**
-- **Wise**(UK 핀테크) · **HashiCorp** · **Fastly**.
+### ⚠️ Temporal 은 떨어뜨렸지만 완전히 닫지 않았다
 
-### ⚠️ Capital One 에서 배운 것 — 깊이와 자기 이야기는 다른 축이다
+자기 시스템 글이 있고 구조도 뚜렷한데(동적 샤딩 · WAL 로 갱신을 모아 한 번에 쓰기 ·
+완료된 워크플로 이력의 계층 저장) **버린 대안도 수치도 없다.**
+⏳ **`workflow-engine-principles` 는 안 읽었다** — **내구성 있는 실행 엔진은 이 엔진에
+없는 축이라** 그 한 편으로 판정이 뒤집힐 수 있다.
 
-`optimizing-opa-performance` 는 **수치가 훌륭한데**(26초 → 5ms) **가상 사례**였고,
-`transforming-vulnerability-management...` 는 **자기 시스템인데 대가가 없었다.**
-**후보를 볼 때 두 가지를 따로 본다 — ① 기술적으로 깊은가, ② 자기 시스템 이야기인가.**
-둘 다여야 이 엔진이 팔 수 있다.
+### ⏳ 아직 안 두드린 새 이름
+
+**Sentry**(`blog.sentry.io` — 목록은 열리니 **URL 을 목록에서 받아야 한다**) ·
+**Wise** · **HashiCorp** · **Fastly**.
 
 ## 지금의 진짜 상태
 
@@ -353,6 +355,8 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
+| `honeycomb.io/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면은 AI·조직 글** — 인프라 글은 따로 찾는다. ⚠️ **슬러그 추측 금지**(`...kafka-honeycomb`, `at-` 없음) |
+| `temporal.io/blog` | ⚠️ 열리지만 ❌ — 자기 시스템 글은 있는데 **버린 대안도 수치도 없다**(2026-09-06 본문 확인). `workflow-engine-principles` 는 미확인 |
 | `ably.com/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면과 `topic/` 은 일반 교육 글** — 심층 글은 검색으로 주소를 찾아야 한다 (2026-09-06 재확인, 판정 뒤집힘) |
 | `capitalone.com/tech/software-engineering/` | ⚠️ **심층 글은 여기 모여 있다**(첫 화면은 AI·연구 소식). 다만 ❌ — 기술적으로 깊은 글은 **가상 사례**이고, 자기 시스템 글은 **대가를 안 적는다** (2026-09-06 세 편 확인) |
 | `capitalone.com/software/blog/` | ⚠️ **`capitalonesoftware.com/blog` 로 301** — 별도 제품 사업부(Capital One Software)다. `/tech/blog/` 와 다른 곳 |
