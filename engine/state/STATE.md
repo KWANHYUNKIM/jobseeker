@@ -8,28 +8,27 @@
 
 ## 지금 파는 중
 
-**없다 — Tailscale 을 닫았다.** 완료 **73곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **73곳** · **큐 1/3**(Ably) · 비교 문서 33편.
 
-### ⚠️ 다음 사이클은 3순위(후보 조사) — 의심 목록이 아직 둘 남았다
+**다음 사이클은 6순위(신규) — Ably 다.** PROMPT.md 3단계부터.
+⚠️ **첫 화면과 `topic/` 은 일반 교육 글이다 — 심층 글 주소를 검색으로 먼저 찾아 둔다.**
+이미 아는 것: `engineering-dependability-and-fault-tolerance-in-a-distributed-system`(전문 요약 확보) ·
+`chat-architecture-reliable-message-ordering` · `8-fallacies-of-distributed-computing` ·
+`the-challenge-of-scaling-websockets`.
 
-**Rightmove 에서 배운 `첫 화면으로 판정하지 않는다` 로 Tailscale 을 되살렸다.**
-같은 목록에 **Capital One · Ably** 가 남아 있다. **거기부터 본다** —
-카테고리나 검색으로 심층 글 주소를 찾아 본문을 연다.
-그다음이 새 이름이다.
+### ⭐⭐ 같은 방법이 두 번 통했다
 
-### ⭐⭐ Tailscale 에서 남길 것 — 확률로 말하고 못 하는 것을 적는다
+Rightmove 에서 배운 **`첫 화면으로 블로그를 판정하지 않는다`** 로 **Tailscale 에 이어
+Ably 까지 되살렸다.** 의심 목록 넷 중 **둘이 뒤집혔다**(ClickHouse 는 본문을 열어 판정
+유지, Capital One 은 아직 진행 중). **떨어뜨린 판정을 다시 보는 것이 새 이름을 찾는 것보다
+수확률이 높다** — 되살릴 목록에서 Booking.com·Trainline 을 건진 것과 같은 패턴이다.
 
-이 회사 글의 결이 세 가지로 일관된다: **① 버린 길을 매번 적는다**(중앙 게이트웨이 ·
-DB 후보 넷 · 점진적 재작성 · libtailscale), **② 되냐 안 되냐가 아니라 확률로 말한다**
-(256회 64% … 2,048회 99.9%, 양쪽 hard 면 28분), **③ 못 하는 것을 못 한다고 적는다**
-(UDP 를 막는 방화벽 · 미완 기능 일곱 · 보안 감사 없음).
-**후보 조사에서 이 결을 만나면 바로 올린다.**
+### ⏳ Capital One — 다음 조사에서 결론을 낸다
 
-### ⭐ 같은 기준이 두 번 이긴 사례 (기록해 둘 값이 있다)
-
-**처음 20줄 지름길을 고른 이유가 `외부 의존 없는 테스트`** 였고, 나중에 **etcd 를 고른
-이유 중 하나도 테스트**다. 반대로 MySQL·PostgreSQL 은 **Docker 테스트 인프라 때문에**
-떨어졌다. **성능이 아니라 개발 고리의 길이가 아키텍처를 정했다.**
+경로가 갈린다: `/tech/blog/`(원래 본 곳)와 `capitalonesoftware.com/blog`(별도 사업부).
+⚠️ **검색에 걸린 제목이 좋다** — DynamoDB Streams `sandwich pattern` 의 **확장 한계·
+동시성·비용 대가**, **월 1,000억 건 이상**의 사내 토큰화 엔진, 클라우드 이전 회고
+(`Always do the hard things first`). **두 경로의 본문을 열어 판정한다.**
 
 ## 지금의 진짜 상태
 
@@ -351,6 +350,8 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
+| `ably.com/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면과 `topic/` 은 일반 교육 글** — 심층 글은 검색으로 주소를 찾아야 한다 (2026-09-06 재확인, 판정 뒤집힘) |
+| `capitalone.com/software/blog/` | ⚠️ **`capitalonesoftware.com/blog` 로 301** — 별도 제품 사업부(Capital One Software)다. `/tech/blog/` 와 다른 곳 |
 | `tailscale.com/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면은 제품 발표** — 심층 글은 검색으로 주소를 찾아야 한다 (2026-09-06 재확인, 판정 뒤집힘) |
 | `thenewstack.io` (재확인) | ❌ **브라우저로도 뉴스레터 폼만 온다** — 본문 추출 실패 |
 | `bytes.swiggy.com` (재확인) | ❌ **브라우저로도 로드되지 않는다** (세 번째 실패) |

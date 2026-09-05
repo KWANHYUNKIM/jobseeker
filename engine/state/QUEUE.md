@@ -20,9 +20,22 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Ably** | EU(UK) · SaaS(실시간 인프라) | `ably.com/blog` — 최신 **2026-07** | ✅ WebFetch 로 목록·본문 모두 온다. ⚠️ **첫 화면과 `topic/` 경로는 일반 교육 글이라 검색으로 심층 글을 찾아야 한다** | **⚠️ 다섯 사이클 전에 `열리는데 제품 발표` 로 떨어뜨렸던 곳이다. 본문을 열어 보니 판정이 뒤집혔다.** `engineering-dependability-and-fault-tolerance-in-a-distributed-system` 은 **자기 프로덕션 구조를 다룬다** — **버린 대안이 명시적이다**: *"Raft/Paxos... are not effective in networks spanning multiple regions because their efficiency breaks down if the latency becomes too high when communicating among peers"* → 그래서 **Gossip 프로토콜**을 쓴다. **대가를 셋으로 적는다** — *"The consequent trade-offs are among the following: Customer requirements for achieving high availability, Business operational cost, Real world engineering practicality of actually making it possible"*. **수치** — **eight 9s of reliability**(가용성 99.999999%)를 보장한다고 밝히고, 다중 AZ·다중 리전 배치와 **트랜잭션 방식의 다중 위치 기록**을 그 근거로 든다. ⚠️ **회고형은 아니다** — 일반 이론 틀에 자기 구조를 얹은 혼합형이라 `무엇이 한계에 닿아 바꿨나` 는 약할 수 있다. 축은 **실시간 메시징 인프라 벤더**로 Discord(메시징 제품)·Cloudflare 와 결이 다르다. 다른 글도 있다: `chat-architecture-reliable-message-ordering`(**순서 보장과 지연의 맞바꿈**) · `8-fallacies-of-distributed-computing` |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-06 열 번째 후보 조사 — 의심 목록에서 또 하나를 되살렸다.** 큐가 0/3 이라 3순위로 들어왔다.
+  **Tailscale 을 되살린 방법(`첫 화면으로 판정하지 않는다`)을 그대로 썼다.**
+  - **✅ Ably** — 위 대기 표로 올렸다. **판정이 뒤집혔다.** 첫 화면과 `topic/` 경로가 일반
+    교육 글이라 놓쳤는데, **검색으로 심층 글을 찾으니 자기 프로덕션 구조를 다룬다.**
+  - **⏳ Capital One — 아직 결론이 안 났다. 경로가 또 갈린다.**
+    `capitalone.com/software/blog/` 가 **`capitalonesoftware.com/blog` 로 301** 되는데,
+    그것은 **Capital One Software(별도 제품 사업부)** 다. 원래의 `/tech/blog/` 와 다른 곳이다.
+    ⚠️ **검색에 걸린 제목들은 결이 좋다** — DynamoDB Streams 의 `sandwich pattern` 을
+    **확장 한계·동시성 문제·비용 대가**와 함께 다루는 글, **월 1,000억 건 이상**을 처리하는
+    사내 토큰화 엔진, 클라우드 이전 회고(`Always do the hard things first`).
+    **다음 후보 조사에서 두 경로의 심층 글 본문을 열어 결론을 낸다.**
 
 - **2026-09-06 아홉 번째 후보 조사 — 떨어뜨렸던 판정을 뒤집어 하나를 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
   **⚠️ 이번 사이클의 교훈은 앞 사이클의 교훈을 실제로 써먹은 것이다** — Rightmove 에서
