@@ -1780,6 +1780,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "rest",
+      "title": "REST API",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**모두가 REST 라고 부르는 것과, REST 를 정의한 사람이 REST 라고 부르는 것이 다르다** — 그리고 그가 필수라고 못 박은 제약은 공고 3372건 중 **0건**에 나온다.",
+      "aliases": [
+        "REST",
+        "REST API",
+        "RESTful",
+        "RESTful API",
+        "HATEOAS",
+        "하이퍼미디어"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

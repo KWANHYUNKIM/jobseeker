@@ -1,0 +1,661 @@
+{
+  "slug": "rest",
+  "title": "REST API",
+  "title_en": "REST API",
+  "aliases": [
+    "REST",
+    "REST API",
+    "RESTful",
+    "RESTful API",
+    "HATEOAS",
+    "하이퍼미디어"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "**모두가 REST 라고 부르는 것과, REST 를 정의한 사람이 REST 라고 부르는 것이 다르다** — 그리고 그가 필수라고 못 박은 제약은 공고 3372건 중 **0건**에 나온다.",
+  "summary": "채용 데이터에서 `REST|RESTful` 은 **3372건(모집중 1157)** 으로 이 백과사전이 센 낱말 중 최대급이다. 그런데 REST 를 정의한 Roy Fielding 이 **필수 제약**이라고 한 하이퍼미디어(`HATEOAS`)는 **0건**이다.\n\n⭐⭐⭐ 그는 2008년에 직접 이렇게 적었다.\n\n> **\"I am getting frustrated by the number of people calling any HTTP-based interface a REST API. Today's example is the SocialSite REST API. That is RPC.\"**\n> **\"...if the engine of application state (and hence the API) is not being driven by hypertext, then it cannot be RESTful and cannot be a REST API. Period.\"**\n\n**그러면 3372건은 전부 틀린 이름인가.** 이 문서의 답은 \"이름은 그렇고, 하는 일은 아니다\"이다. ⭐⭐ 왜냐하면 **같은 사람이 논문에서 각 제약의 대가도 함께 적어 놨기** 때문이다 — 균일 인터페이스는 **\"degrades efficiency\"**, 무상태는 **\"may decrease network performance\"**.\n\n**실무가 중간에서 멈추는 것은 무지가 아니라 그 대가를 치르지 않겠다는 선택**이다. 문제는 멈춘 것이 아니라 **멈춘 자리를 원래 이름으로 부르는 것**이다.",
+  "market": {
+    "tech": "REST API",
+    "layer": "백엔드",
+    "postings": 572,
+    "pct_jobs": 7.9,
+    "with": [
+      {
+        "name": "React",
+        "pct": 43.2,
+        "why": "호출하는 쪽 — 프론트엔드"
+      },
+      {
+        "name": "AWS",
+        "pct": 43.0,
+        "why": "제공·배포하는 쪽"
+      },
+      {
+        "name": "Git",
+        "pct": 42.8,
+        "why": "거의 모든 공고에 붙는 공통 도구"
+      },
+      {
+        "name": "Java",
+        "pct": 42.1,
+        "why": "API 를 서빙하는 전통적 백엔드"
+      },
+      {
+        "name": "Docker",
+        "pct": 37.4,
+        "why": "배포 단위"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 여섯 개의 제약",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Architectural Styles and the Design of Network-based Software Architectures — Chapter 5: Representational State Transfer (REST)",
+          "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+          "publisher": "Roy T. Fielding (UC Irvine)",
+          "date": "2000",
+          "kind": "paper",
+          "summary": "REST 의 원전. 여섯 제약의 정의와 ⭐ **각 제약이 치르는 대가**가 함께 적혀 있다"
+        }
+      ],
+      "body": "REST 는 프로토콜도 표준도 아니고 **아키텍처 스타일**, 즉 **제약의 묶음**이다. Fielding 의 2000년 논문 5장이 그 제약들을 정의한다.\n\n| 제약 | 원문 |\n|---|---|\n| **client-server** | \"Separation of concerns is the principle behind the client-server constraints.\" |\n| **stateless** | \"communication must be stateless in nature ... **each request from client to server must contain all of the information necessary to understand the request**\" |\n| **cache** | \"Cache constraints require that the data within a response to a request be **implicitly or explicitly labeled as cacheable or non-cacheable**.\" |\n| ⭐ **uniform interface** | \"**The central feature that distinguishes the REST architectural style** from other network-based styles is its emphasis on a uniform interface between components\" |\n| **layered system** | \"layered system constraints ... **each component cannot see beyond the immediate layer**\" |\n| **code-on-demand** | \"REST allows client functionality to be extended by downloading and executing code\" — ⚠️ \"only an **optional** constraint within REST\" |\n\n⭐ **중심은 `uniform interface`** 다. 논문이 \"the central feature\"라고 직접 적는다 — 나머지 제약은 다른 스타일에도 있지만, **인터페이스를 균일하게 만드는 것**이 REST 를 REST 이게 한다.\n\n그리고 그 균일 인터페이스의 한 부분이 **하이퍼미디어**다 — 응답 안에 **다음에 갈 수 있는 곳**이 들어 있어야 한다는 것. 흔히 **HATEOAS**(Hypermedia As The Engine Of Application State)라고 부른다.\n\n> ⚠️⚠️ **그리고 그것이 이 문서의 출발점이다** — 공고 **3372건** 중 `HATEOAS` 가 나오는 것은 **0건**이다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 창시자가 직접 반박했다 — \"That is RPC\"",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "REST APIs must be hypertext-driven (Roy T. Fielding)",
+          "url": "https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven",
+          "publisher": "Roy T. Fielding",
+          "date": "2008-10",
+          "kind": "post",
+          "summary": "⭐⭐⭐ REST 를 정의한 사람이 \"HTTP 기반이면 다 REST 라고 부르는 것\"을 직접 반박한 글"
+        }
+      ],
+      "body": "2008년, Fielding 은 자기 블로그에 **\"REST APIs must be hypertext-driven\"** 이라는 글을 올렸다. 첫 문단이 이렇다.\n\n> ⭐⭐⭐ \"**I am getting frustrated by the number of people calling any HTTP-based interface a REST API. Today's example is the SocialSite REST API. That is RPC.**\"\n> (HTTP 기반 인터페이스면 무엇이든 REST API 라고 부르는 사람이 너무 많아 답답하다. 오늘의 예는 SocialSite REST API 다. **그건 RPC 다.**)\n\n그리고 무엇이 빠졌는지를 못 박는다.\n\n> ⭐⭐ \"**A REST API must not define fixed resource names or hierarchies** (an obvious coupling of client and server).\"\n> ⭐⭐ \"A REST API **should be entered with no prior knowledge beyond the initial URI** (bookmark) and set of standardized media types that are appropriate for the intended audience.\"\n\n**주소 목록을 문서로 미리 알려 주고 클라이언트가 그것을 하드코딩하는 방식** — 즉 우리가 API 문서를 보고 개발하는 그 방식 — 이 정확히 그가 아니라고 한 것이다. 응답 안에 다음 링크가 있어서 **초기 URI 하나만 알면 나머지를 따라갈 수 있어야** 한다는 것이 그의 요구다.\n\n> \"Failure here implies that **out-of-band information is driving interaction instead of hypertext**.\"\n\n**\"대역 밖 정보\"** — API 문서, 위키, 슬랙으로 주고받은 스펙. 그것이 상호작용을 이끌고 있으면 하이퍼텍스트가 아니라는 것이다.\n\n그리고 마지막이 유명하다.\n\n> ⭐⭐⭐ \"**if the engine of application state (and hence the API) is not being driven by hypertext, then it cannot be RESTful and cannot be a REST API. Period.**\"\n\n**\"Period.\"** 이 백과사전이 여러 번 만난 **\"제품이 스스로 그은 선\"** — RFC 8594 의 \"hints\", RFC 9309 의 \"not a form of access authorization\", WCAG 의 \"AAA 를 정책으로 요구하지 말라\" — 중에서도 **가장 강하다.** 앞의 것들이 *한계*를 적은 것이라면, 이건 **만든 사람이 자기 이름의 오용을 직접 반박**한 것이다.\n\n⭐ **그리고 셈이 그를 증명한다.** `REST|RESTful` 3372건 · `HATEOAS` **0건**. 이 백과사전이 만난 가장 극단적인 대비이고(`security-certification` 의 ISMS 582 vs FIPS140 1보다 크다), **한쪽이 아예 0**이라는 점에서 성격이 다르다."
+    },
+    {
+      "id": "ladder",
+      "kind": "how",
+      "heading": "그러면 실무는 어디에 있나",
+      "confidence": "inferred",
+      "body": "업계에는 REST 를 **단계로 나눠 보는 관습**이 있다(흔히 Richardson 성숙도 모델이라 부른다). ⚠️ **이 사이클에서 그 원문은 열지 못했으므로**, 아래는 널리 쓰이는 구분을 이 문서가 정리한 것이다.\n\n| 단계 | 무엇 | 실무에서 |\n|---|---|---|\n| **0** | 하나의 주소에 모든 것을 POST — 사실상 RPC | 레거시·일부 결제 연동 |\n| **1** | **자원마다 주소**가 있다 (`/users/1`) | 여기부터 \"REST 같다\"고 부른다 |\n| **2** | **HTTP 동사와 상태 코드**를 뜻대로 쓴다 (GET 조회, DELETE 삭제, 404·409) | ⭐ **대부분이 여기서 멈춘다** |\n| **3** | **응답에 다음 링크가 들어 있다**(하이퍼미디어) | ⚠️ 공고 3372건 중 `HATEOAS` **0건** |\n\n⭐⭐ **그러니까 우리가 \"REST API\"라고 부르는 것의 정체는 대개 2단계**다 — 자원마다 주소가 있고, HTTP 동사를 뜻대로 쓰고, 응답은 JSON 이고, **다음에 무엇을 할 수 있는지는 문서에 적혀 있다.**\n\n공고의 문장도 그 자리를 가리킨다.\n\n> `**RESTful API 설계** 및 DB 모델링, 캐시/트랜잭션 관리 등 **서버 기본기**가 탄탄하신 분` — 액션파워\n> `효율적인 데이터 구조 설계를 위한 **RESTful API 디자인** 및 데이터베이스(RDB/NoSQL) 최적화` — 동선컴퍼니\n\n⭐ **\"기본기\"** 라고 분류된다. 그리고 요구되는 것은 **자원을 어떻게 나누고 주소를 어떻게 지을 것인가**, 즉 **1~2단계의 설계**다. 하이퍼미디어를 요구하는 공고는 이 데이터에 없다.\n\n💡 그래서 실무에서 \"REST 를 잘한다\"는 대개 이런 뜻이다 — **자원의 경계를 잘 나눈다**(무엇이 `/orders` 이고 무엇이 `/orders/{id}/items` 인가), **동사와 상태 코드를 일관되게 쓴다**, **같은 규칙을 팀 전체가 지킨다.** 그것은 그것대로 어려운 일이고, 그 어려움이 3372건의 실체다."
+    },
+    {
+      "id": "fair",
+      "kind": "extra",
+      "heading": "⭐⭐⭐ 공정하게 — 창시자는 대가도 함께 적었다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Architectural Styles and the Design of Network-based Software Architectures — Chapter 5: Representational State Transfer (REST)",
+          "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+          "publisher": "Roy T. Fielding (UC Irvine)",
+          "date": "2000",
+          "kind": "paper",
+          "summary": "REST 의 원전. 여섯 제약의 정의와 ⭐ **각 제약이 치르는 대가**가 함께 적혀 있다"
+        }
+      ],
+      "body": "여기서 멈추면 이 문서는 **\"다들 REST 를 틀리게 쓴다\"는 훈계**가 된다. 그런데 원전을 더 읽으면 **같은 사람이 각 제약의 대가를 함께 적어 놨다.**\n\n> ⭐⭐⭐ **uniform interface**: \"a uniform interface **degrades efficiency**, since information is transferred in **a standardized form rather than one which is specific to an application's needs**.\"\n> ⭐⭐ **stateless**: \"it **may decrease network performance** by increasing the **repetitive data (per-interaction overhead)** sent in a series of requests.\"\n> **code-on-demand**: \"However, it also **reduces visibility**, and thus is **only an optional constraint** within REST.\"\n\n**논문이 제약을 소개하면서 그 비용을 같은 문단에서 인정한다.** 균일 인터페이스는 **애플리케이션에 딱 맞는 형태가 아니라 표준 형태로 주고받기 때문에 효율이 떨어진다** — 이건 REST 를 비판하는 사람의 말이 아니라 **REST 를 만든 사람의 말**이다.\n\n⭐⭐ **그러면 그림이 달라진다.** 실무가 2단계에서 멈추는 것은 **무지가 아니라 거래**다.\n\n- 하이퍼미디어를 넣으면 **클라이언트가 주소를 몰라도 되지만**, 응답이 커지고 클라이언트가 복잡해진다.\n- 안 넣으면 **문서를 보고 주소를 하드코딩**하게 되지만, 응답이 작고 클라이언트가 단순하다.\n- 그리고 대부분의 API 는 **클라이언트와 서버를 같은 회사가 함께 만든다** — Fielding 이 걱정한 \"클라이언트와 서버의 결합\"이 **그 경우에는 문제가 아니다.**\n\n⭐⭐⭐ **그래서 이 문서의 결론은 이것이다 — 문제는 2단계에서 멈춘 것이 아니라, 멈춘 자리를 원래 이름으로 부르는 것이다.** Fielding 의 불만도 정확히 그 지점이었다. 그는 \"HTTP+JSON 을 쓰지 마라\"고 하지 않았다. **\"그건 RPC 다\"** 라고 했을 뿐이다 — **이름이 틀렸다는 말이지 물건이 나쁘다는 말이 아니다.**\n\n💡 실용적인 태도는 이렇다.\n\n1. **우리가 만드는 것이 몇 단계인지 안다** — 대개 2단계이고, 그걸로 충분한 경우가 대부분이다.\n2. ⭐ **하이퍼미디어가 실제로 이득인 자리를 구분한다** — 클라이언트를 **남이** 만들고, **오래** 쓰이고, **주소 구조가 바뀔** 때. 공개 API·플랫폼이 그 자리다.\n3. **이름 때문에 싸우지 않는다** — \"이건 진짜 REST 가 아니다\"는 논쟁은 대개 **아무것도 개선하지 않는다.**"
+    },
+    {
+      "id": "instead",
+      "kind": "extra",
+      "heading": "REST 대신 무엇을 — 그리고 언제",
+      "confidence": "inferred",
+      "body": "셈에서 함께 나오는 것이 **GraphQL 370건**, **gRPC 243건**이다. 그리고 **한 공고가 셋의 자리를 한 줄로 나눈다.**\n\n> ⭐⭐ `**내부 마이크로서비스 간 통신에 gRPC, 외부 통신에 REST API와 GraphQL**을 사용합니다.` — 코리아포트원\n\n**경계가 명확하다 — 안쪽은 gRPC, 바깥쪽은 REST/GraphQL.** 이유를 풀면 이렇다.\n\n**gRPC (내부)** — 스키마에서 코드를 생성하고 바이너리로 주고받는다. **양쪽을 우리가 다 만들고**, **호출이 많고**, **속도가 중요할 때** 유리하다. 대신 브라우저에서 바로 부르기 어렵고 사람이 눈으로 읽기 어렵다(→ `grpc`).\n**REST (바깥)** — **누구나 curl 로 부를 수 있고**, HTTP 캐시·프록시·게이트웨이가 그대로 통한다. 그 **범용성**이 외부 공개의 이유다.\n**GraphQL (바깥, 클라이언트가 다양할 때)** — 클라이언트가 **필요한 필드만 골라** 받는다. 화면마다 필요한 데이터가 다른 프론트엔드에서 왕복 횟수를 줄인다.\n\n그리고 실무는 **둘을 함께** 쓴다.\n\n> `사용성 높은 **API(REST/GraphQL)** 설계가 가능하고` — 큐엠아이티\n> `**RESTful API 또는 GraphQL** 연동 경험이 있으신 분` — 알로카도스\n> `REST API 설계 및 **RPC Framework(gRPC 등)** 적용 경험` — 에이아이트릭스\n\n⭐ **`또는`·`/` 로 이어진다는 것**은 이 셋이 **경쟁이 아니라 선택지**로 다뤄진다는 뜻이다. ⚠️ 다만 `graphql` 은 이 백과사전에 아직 문서가 없다.\n\n📌 그리고 **REST 를 고른 뒤에 오는 문제들**은 이미 각각 문서가 있다 — 바꿔야 할 때는 `api-versioning`, 무엇을 주고받는지 적는 일은 `openapi`, 그것이 지켜지는지 검사하는 일은 `contract-testing`, 재시도해도 안전하게 만드는 일은 `idempotency`. **이 문서는 그 앞에 있다.**"
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 확인하지 못한 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️ 성숙도 모델의 원문을 열지 않았다.** `ladder` 절의 0~3단계 구분은 업계에서 널리 쓰이지만 **이 사이클에서 원 출처를 확인하지 않았고**, 그래서 그 절을 `confidence: inferred` 로 뒀다. 단계 이름과 경계는 자료마다 조금씩 다를 수 있다.\n\n**2. ⚠️ 셈의 두 숫자가 크게 다르다.** `market` 의 **572건(7.9%)** 은 `tech_relations.json` 이 **공고의 기술 태그**에서 센 것이고, 본문에서 `REST|RESTful` 을 직접 세면 **3372건**이다. ⭐ **태그로 세면 6분의 1** — 태그는 대표 기술만 달리고 REST 는 **본문에서 당연한 것처럼 언급**되기 때문으로 보인다. 이 문서는 **양쪽을 다 적었다**(`market` 은 규칙대로 그대로 옮기고, 본문의 셈은 직접 센 값).\n\n**3. HTTP 자체를 다루지 않는다.** 메서드의 의미, 상태 코드, 캐시 헤더, 조건부 요청은 **HTTP 의 규격**이고 이 문서는 그것을 전제한다. ⚠️ 이 백과사전에 `http` 문서가 아직 없다.\n\n**4. 자원 설계의 세부를 다루지 않는다.** \"무엇을 자원으로 볼 것인가\", \"중첩을 얼마나 깊게\", \"동작(예: 승인, 재발송)을 어떻게 자원으로 표현하나\" — 이건 실무에서 가장 시간을 많이 쓰는 부분인데 **원전이 답을 주지 않는다.** 이 문서는 그 질문이 존재한다는 것까지만 말한다.\n\n**5. GraphQL 을 비교 대상으로만 다뤘다.** 370건이나 되지만 문서가 없다 — `instead` 절에서 한 문단으로만 썼다.\n\n**6. 이 문서가 다루지 않는 것.** 바꾸는 문제는 `api-versioning`, 문서·계약은 `openapi`, 검사는 `contract-testing`, 내부 통신의 대안은 `grpc`, 재시도 안전성은 `idempotency` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "constraints",
+      "kind": "glossary",
+      "caption": "⭐ 여섯 제약 — Fielding 논문 5장",
+      "note": "Fielding 의 2000년 박사학위 논문 5장에서 옮겼다. ⚠️ 제약의 상세 논증은 원문에 있고, 여기는 정의 문장만 뽑았다.",
+      "columns": [
+        "제약",
+        "원문",
+        "한 줄"
+      ],
+      "rows": [
+        [
+          "client-server",
+          "\"Separation of concerns is the principle behind the client-server constraints.\"",
+          "관심사를 나눈다"
+        ],
+        [
+          "stateless",
+          "\"**each request from client to server must contain all of the information necessary to understand the request**\"",
+          "요청 하나에 필요한 정보가 다 들어 있다"
+        ],
+        [
+          "cache",
+          "\"the data within a response ... be **implicitly or explicitly labeled as cacheable or non-cacheable**\"",
+          "캐시 가능 여부를 표시한다"
+        ],
+        [
+          "⭐ uniform interface",
+          "\"**The central feature that distinguishes the REST architectural style** from other network-based styles\"",
+          "**중심** — 인터페이스를 균일하게"
+        ],
+        [
+          "layered system",
+          "\"**each component cannot see beyond the immediate layer**\"",
+          "바로 옆 층까지만 본다"
+        ],
+        [
+          "code-on-demand",
+          "\"client functionality to be extended by downloading and executing code\"",
+          "⚠️ \"only an **optional** constraint\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Architectural Styles and the Design of Network-based Software Architectures — Chapter 5: Representational State Transfer (REST)",
+          "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+          "publisher": "Roy T. Fielding (UC Irvine)",
+          "date": "2000",
+          "kind": "paper",
+          "summary": "REST 의 원전. 여섯 제약의 정의와 ⭐ **각 제약이 치르는 대가**가 함께 적혀 있다"
+        }
+      ]
+    },
+    {
+      "id": "fielding",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 창시자의 반박 (2008)",
+      "note": "Roy Fielding 의 블로그 글 \"REST APIs must be hypertext-driven\" 에서 옮겼다. ⚠️ 그가 부정한 것은 **이름**이지 그 방식의 유용성이 아니다 — 그 균형은 `fair` 절에서 다룬다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 불만",
+          "\"**I am getting frustrated by the number of people calling any HTTP-based interface a REST API.** Today's example is the SocialSite REST API. **That is RPC.**\""
+        ],
+        [
+          "⭐⭐ 금지",
+          "\"**A REST API must not define fixed resource names or hierarchies** (an obvious coupling of client and server).\""
+        ],
+        [
+          "⭐⭐ 요구",
+          "\"A REST API **should be entered with no prior knowledge beyond the initial URI** (bookmark) and set of standardized media types...\""
+        ],
+        [
+          "대역 밖 정보",
+          "\"Failure here implies that **out-of-band information is driving interaction instead of hypertext**.\" — API 문서·위키·슬랙 스펙이 그것"
+        ],
+        [
+          "⭐⭐⭐ 결론",
+          "\"if the engine of application state ... **is not being driven by hypertext, then it cannot be RESTful and cannot be a REST API. Period.**\""
+        ],
+        [
+          "⭐ 셈",
+          "공고 `REST|RESTful` **3372건** vs `HATEOAS` **0건**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "REST APIs must be hypertext-driven (Roy T. Fielding)",
+          "url": "https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven",
+          "publisher": "Roy T. Fielding",
+          "date": "2008-10",
+          "kind": "post",
+          "summary": "⭐⭐⭐ REST 를 정의한 사람이 \"HTTP 기반이면 다 REST 라고 부르는 것\"을 직접 반박한 글"
+        }
+      ]
+    },
+    {
+      "id": "cost",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 같은 논문이 적어 둔 대가 — 그래서 멈추는 것은 선택이다",
+      "note": "⭐ 이 표가 이 문서를 훈계에서 구한다. **제약의 비용을 적은 사람이 그 제약을 정의한 사람과 같다** — 전부 Fielding 논문 5장의 문장이다.",
+      "columns": [
+        "제약",
+        "얻는 것",
+        "⭐ 논문이 적은 대가"
+      ],
+      "rows": [
+        [
+          "uniform interface",
+          "어디서나 같은 방식으로 부를 수 있다",
+          "⭐⭐⭐ \"**a uniform interface degrades efficiency**, since information is transferred in **a standardized form rather than one which is specific to an application's needs**\""
+        ],
+        [
+          "stateless",
+          "서버를 늘리기 쉽고 장애에 강하다",
+          "⭐⭐ \"**may decrease network performance** by increasing the **repetitive data (per-interaction overhead)**\""
+        ],
+        [
+          "code-on-demand",
+          "클라이언트 기능을 나중에 확장할 수 있다",
+          "\"it also **reduces visibility**, and thus is **only an optional constraint**\""
+        ],
+        [
+          "⭐⭐ 하이퍼미디어",
+          "클라이언트가 주소를 몰라도 된다",
+          "응답이 커지고 클라이언트가 복잡해진다 (이 문서의 정리)"
+        ],
+        [
+          "⭐⭐⭐ 그래서",
+          "—",
+          "**2단계에서 멈추는 것은 무지가 아니라 거래다.** 문제는 멈춘 것이 아니라 **그 자리를 원래 이름으로 부르는 것**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Architectural Styles and the Design of Network-based Software Architectures — Chapter 5: Representational State Transfer (REST)",
+          "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+          "publisher": "Roy T. Fielding (UC Irvine)",
+          "date": "2000",
+          "kind": "paper",
+          "summary": "REST 의 원전. 여섯 제약의 정의와 ⭐ **각 제약이 치르는 대가**가 함께 적혀 있다"
+        }
+      ]
+    },
+    {
+      "id": "ladder",
+      "kind": "compare",
+      "caption": "실무는 어디에 있나",
+      "note": "⚠️ 이 단계 구분(흔히 Richardson 성숙도 모델)은 업계에서 널리 쓰이지만 **이 사이클에서 원문을 확인하지 않았다** — 그래서 `confidence: inferred` 다. 오른쪽 열의 셈만 직접 센 값이다.",
+      "columns": [
+        "단계",
+        "무엇",
+        "이 데이터에서"
+      ],
+      "rows": [
+        [
+          "0",
+          "한 주소에 전부 POST — 사실상 RPC",
+          "레거시·일부 연동"
+        ],
+        [
+          "1",
+          "**자원마다 주소**가 있다",
+          "여기부터 \"REST 같다\"고 부른다"
+        ],
+        [
+          "2",
+          "**HTTP 동사와 상태 코드**를 뜻대로 쓴다",
+          "⭐ **대부분이 여기서 멈춘다** — `REST|RESTful` 3372건의 실체"
+        ],
+        [
+          "3",
+          "**응답에 다음 링크**가 들어 있다 (하이퍼미디어)",
+          "⚠️⚠️ `HATEOAS` **0건**"
+        ],
+        [
+          "⭐ 공고의 표현",
+          "—",
+          "`RESTful API 설계 ... 등 **서버 기본기**`(액션파워) — **1~2단계 설계**를 뜻한다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때 — 태그로 세면 6분의 1",
+      "note": "⭐ `market` 의 572건과 본문의 3372건이 왜 다른지. 이 백과사전에서 **두 셈이 이만큼 벌어진 첫 사례**다.",
+      "columns": [
+        "",
+        "건수 / 뜻"
+      ],
+      "rows": [
+        [
+          "`tech_relations.json` (기술 태그)",
+          "**572건 (7.9%)** — `market` 에 그대로 옮긴 값"
+        ],
+        [
+          "본문 직접 셈",
+          "**3372건 (모집중 1157)** — `REST|RESTful` 로 본문 전체를 센 값"
+        ],
+        [
+          "⭐ 왜 다른가",
+          "태그에는 **대표 기술**만 달리고, REST 는 본문에서 **당연한 것처럼 언급**되기 때문으로 보인다"
+        ],
+        [
+          "세부",
+          "`RESTful` 1313 · `API 설계` 1691 · `GraphQL` 370 · `gRPC` 243 · **`HATEOAS` 0**"
+        ],
+        [
+          "⭐ 함께 나오는 것 (태그 기준)",
+          "React 43.2% · AWS 43.0% · Git 42.8% · Java 42.1% — **부르는 쪽과 제공하는 쪽이 함께** 잡힌다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "외부에 공개할 API 를 만든다",
+      "pick": "**REST(HTTP + JSON)**",
+      "over": "gRPC 같은 바이너리 RPC",
+      "why": "⭐ **누구나 `curl` 로 부를 수 있고**, HTTP 캐시·프록시·게이트웨이·브라우저가 그대로 통한다. 코리아포트원 공고가 그 경계를 그대로 적는다 — `내부 마이크로서비스 간 통신에 gRPC, **외부 통신에 REST API와 GraphQL**`",
+      "tradeoff": "표준 형태로 주고받으므로 효율이 떨어진다 — 논문이 인정하는 그 대가다(\"a uniform interface **degrades efficiency**\"). 외부 공개에서는 **범용성이 그 비용보다 크다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Architectural Styles and the Design of Network-based Software Architectures — Chapter 5: Representational State Transfer (REST)",
+          "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+          "publisher": "Roy T. Fielding (UC Irvine)",
+          "date": "2000",
+          "kind": "paper",
+          "summary": "REST 의 원전. 여섯 제약의 정의와 ⭐ **각 제약이 치르는 대가**가 함께 적혀 있다"
+        }
+      ]
+    },
+    {
+      "situation": "내부 서비스끼리 호출이 많고 지연이 중요하다",
+      "pick": "**gRPC**(→ `grpc`)",
+      "over": "REST",
+      "why": "양쪽을 우리가 다 만들면 **범용성의 이점이 거의 없고**, 스키마에서 코드를 생성해 바이너리로 주고받는 편이 빠르다. Fielding 이 걱정한 \"클라이언트와 서버의 결합\"도 **같은 팀이 만드는 경우에는 문제가 덜하다**",
+      "tradeoff": "브라우저에서 바로 부르기 어렵고 사람이 눈으로 읽기 어렵다. 그리고 도구 체계가 하나 더 늘어난다 — 팀이 작으면 그 비용이 크다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "화면마다 필요한 데이터가 크게 다르고 왕복이 많다",
+      "pick": "**GraphQL**",
+      "over": "화면마다 REST 엔드포인트를 늘리기",
+      "why": "클라이언트가 **필요한 필드만 골라** 받으므로 왕복과 과다 전송이 줄어든다. 공고에서도 `RESTful API 또는 GraphQL`(알로카도스)처럼 **선택지로** 다뤄진다",
+      "tradeoff": "⚠️ 캐시가 어려워지고(같은 URL 이 아니다) 서버 쪽 복잡도·비용 예측이 어려워진다. ⚠️ 그리고 **이 백과사전에 `graphql` 문서가 아직 없어** 이 항목은 얕다 — 실제 선택 전에는 별도 자료가 필요하다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "클라이언트를 남이 만들고 오래 쓰이며 주소 구조가 바뀔 수 있다",
+      "pick": "⭐ **하이퍼미디어(3단계)를 검토한다**",
+      "over": "주소 목록을 문서로만 알려 주기",
+      "why": "⭐⭐ 이것이 Fielding 이 말한 그 자리다 — \"A REST API **must not define fixed resource names or hierarchies** (an obvious coupling of client and server).\" 클라이언트가 주소를 하드코딩하면 **주소를 못 바꾸게 된다**. 응답에 링크가 있으면 서버가 구조를 바꿔도 클라이언트가 따라온다",
+      "tradeoff": "응답이 커지고 클라이언트 구현이 복잡해진다. 그리고 **대부분의 클라이언트는 링크를 따라가도록 만들어지지 않는다** — 이득을 보려면 **양쪽이 다 그 방식이어야** 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "REST APIs must be hypertext-driven (Roy T. Fielding)",
+          "url": "https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven",
+          "publisher": "Roy T. Fielding",
+          "date": "2008-10",
+          "kind": "post",
+          "summary": "⭐⭐⭐ REST 를 정의한 사람이 \"HTTP 기반이면 다 REST 라고 부르는 것\"을 직접 반박한 글"
+        }
+      ]
+    },
+    {
+      "situation": "팀에서 \"이건 진짜 REST 가 아니다\"라는 논쟁이 붙었다",
+      "pick": "**우리가 몇 단계인지 확인하고 이름 논쟁은 접는다**",
+      "over": "원전을 근거로 옳고 그름을 가리기",
+      "why": "⭐⭐ Fielding 이 부정한 것은 **이름**이지 방식의 유용성이 아니다 — \"That is RPC\" 는 **틀렸다는 말이 아니라 다른 이름이라는 말**이다. 그리고 그 자신이 각 제약의 대가를 논문에 적었다. **이름 논쟁은 대개 아무것도 개선하지 않는다**",
+      "tradeoff": "용어가 느슨해지고 신입에게 설명하기 어려워진다. 그래서 **문서에 한 줄 적어 두는 것**으로 대신한다 — \"우리 API 는 자원+HTTP 동사까지이고 하이퍼미디어는 쓰지 않는다\". ⭐ 그 한 줄이 논쟁을 끝낸다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "REST APIs must be hypertext-driven (Roy T. Fielding)",
+          "url": "https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven",
+          "publisher": "Roy T. Fielding",
+          "date": "2008-10",
+          "kind": "post",
+          "summary": "⭐⭐⭐ REST 를 정의한 사람이 \"HTTP 기반이면 다 REST 라고 부르는 것\"을 직접 반박한 글"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "URL 에 동사를 넣는다 (`/getUser`, `/createOrder`)",
+      "why": "함수 이름을 그대로 옮기는 것이 가장 자연스럽고, 프레임워크도 막지 않는다. 그런데 그러면 **주소가 자원이 아니라 동작**을 가리키게 되고, HTTP 동사와 의미가 겹치거나 어긋난다(`POST /getUser`). 그리고 **캐시·재시도 같은 HTTP 의 기본 동작을 못 쓰게** 된다",
+      "fix": "**주소는 명사(자원), 동작은 HTTP 동사**로 나눈다 — `GET /users/1`, `POST /orders`. ⚠️ 자원으로 표현하기 어려운 동작(승인·재발송·일괄처리)은 **억지로 맞추지 말고** 하위 자원으로 두거나(`POST /orders/1/cancellation`) **그 부분만 RPC 라고 인정**한다"
+    },
+    {
+      "trap": "모든 응답을 200 으로 주고 본문에 성공/실패를 담는다",
+      "why": "클라이언트가 한 곳만 보면 되고 프레임워크 예외 처리도 단순해진다. 그런데 **중간의 프록시·게이트웨이·모니터링이 전부 성공으로 본다** — 장애가 지표에 안 잡히고, 재시도 규칙도 못 건다",
+      "fix": "**상태 코드를 뜻대로 쓴다.** 최소한 4xx(클라이언트 잘못)와 5xx(서버 잘못)를 가르고, 본문에는 **사람이 고칠 수 있는 설명**을 담는다. 이미 200 으로 굳었다면 **새 엔드포인트부터** 바꾸고 옛것은 `api-versioning` 의 절차로 옮긴다"
+    },
+    {
+      "trap": "응답 형식을 엔드포인트마다 다르게 만든다",
+      "why": "각각을 만들 때 그 화면에 맞추는 것이 빠르다. 그런데 REST 의 중심이 **\"uniform interface\"** 이고, 그것이 주는 이득이 정확히 **어디서나 같은 방식으로 다룰 수 있다**는 것이다. 형식이 제각각이면 클라이언트가 엔드포인트마다 다른 코드를 갖는다",
+      "fix": "**목록·단건·오류의 봉투 형식을 팀 규칙으로 정하고 문서에 적는다.** 그리고 그 규칙을 `openapi` 로 적어 두면 **검사할 수 있게** 된다",
+      "sources": [
+        {
+          "title": "Architectural Styles and the Design of Network-based Software Architectures — Chapter 5: Representational State Transfer (REST)",
+          "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+          "publisher": "Roy T. Fielding (UC Irvine)",
+          "date": "2000",
+          "kind": "paper",
+          "summary": "REST 의 원전. 여섯 제약의 정의와 ⭐ **각 제약이 치르는 대가**가 함께 적혀 있다"
+        }
+      ]
+    },
+    {
+      "trap": "자원 중첩을 깊게 만든다 (`/users/1/orders/2/items/3/options/4`)",
+      "why": "도메인의 소유 관계를 그대로 옮기면 자연스러워 보인다. 그런데 **깊어질수록 URL 이 여러 개의 진실을 갖게** 되고(같은 항목을 여러 경로로 가리킴), 상위 자원이 바뀌면 하위 주소가 전부 흔들린다",
+      "fix": "**대개 두 단계까지만** 두고(`/orders/2/items`), 그 아래는 **독립 자원**으로 뺀다(`/items/3`). 판단 기준은 **\"상위 없이 이 항목을 가리킬 일이 있는가\"** 다 — 있으면 독립 자원이다"
+    },
+    {
+      "trap": "\"우리는 RESTful 하다\"고 적어 두고 무엇을 지키는지는 안 적는다",
+      "why": "관용적으로 쓰는 말이라 아무도 되묻지 않는다. 그런데 사람마다 떠올리는 단계가 다르고(1단계? 2단계? 3단계?), **리뷰에서 \"이건 REST 답지 않다\"는 지적이 근거 없이 오간다**",
+      "fix": "⭐ **한 줄로 못 박는다** — \"자원+HTTP 동사+표준 상태 코드까지 지키고, 하이퍼미디어는 쓰지 않는다\". 이름을 다투는 대신 **규칙을 적는 것**이 리뷰를 빠르게 만든다",
+      "sources": [
+        {
+          "title": "REST APIs must be hypertext-driven (Roy T. Fielding)",
+          "url": "https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven",
+          "publisher": "Roy T. Fielding",
+          "date": "2008-10",
+          "kind": "post",
+          "summary": "⭐⭐⭐ REST 를 정의한 사람이 \"HTTP 기반이면 다 REST 라고 부르는 것\"을 직접 반박한 글"
+        }
+      ]
+    },
+    {
+      "trap": "HATEOAS 를 이상으로 삼아 전면 도입한다",
+      "why": "원전이 그렇게 말하니 \"제대로 하자\"가 된다. 그런데 **이득을 보려면 클라이언트도 링크를 따라가도록 만들어져야** 하고, 대부분의 클라이언트는 그렇지 않다. 결국 **링크는 응답에 붙지만 아무도 안 쓰는** 상태가 된다",
+      "fix": "**이득이 나는 자리에만 쓴다** — 클라이언트를 남이 만들고, 오래 쓰이고, 주소 구조가 바뀔 API. 그리고 도입한다면 **클라이언트 쪽 규약을 먼저 정한다**(무슨 rel 을 어떻게 따라갈 것인가). 그 합의가 없으면 응답만 무거워진다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "REST",
+      "en": "Representational State Transfer",
+      "what": "프로토콜이 아니라 **아키텍처 스타일** — 여섯 제약의 묶음"
+    },
+    {
+      "term": "⭐ 균일 인터페이스",
+      "en": "uniform interface",
+      "what": "\"the central feature that distinguishes the REST architectural style\" — REST 를 REST 이게 하는 중심"
+    },
+    {
+      "term": "무상태",
+      "en": "stateless",
+      "what": "\"each request ... must contain all of the information necessary to understand the request\""
+    },
+    {
+      "term": "HATEOAS",
+      "en": "Hypermedia As The Engine Of Application State",
+      "what": "⭐⭐ 응답 안에 다음에 갈 곳이 들어 있어야 한다는 제약. **공고 3372건 중 0건**"
+    },
+    {
+      "term": "대역 밖 정보",
+      "en": "out-of-band information",
+      "what": "응답 밖에서 상호작용을 이끄는 것 — API 문서·위키·슬랙 스펙. Fielding 이 문제 삼은 것"
+    },
+    {
+      "term": "성숙도 단계",
+      "en": "maturity levels",
+      "what": "⚠️ 0(RPC) → 1(자원) → 2(HTTP 동사) → 3(하이퍼미디어). 널리 쓰이지만 이 문서는 원문을 확인하지 않았다"
+    },
+    {
+      "term": "RPC",
+      "en": "Remote Procedure Call",
+      "what": "함수 호출처럼 생긴 원격 호출. Fielding 이 \"That is RPC\" 라고 한 그것 (→ `grpc`)"
+    }
+  ],
+  "drills": [
+    {
+      "task": "자기 서비스(또는 아무 공개 API 문서)의 엔드포인트 **열 개**를 뽑아 각각이 **몇 단계인지** 표시한다 — 0(주소가 동작), 1(자원 주소), 2(동사·상태 코드까지), 3(응답에 링크).",
+      "done_when": "열 개의 단계가 매겨지고, **가장 낮은 것과 가장 높은 것**이 무엇인지 나온다. 그리고 우리 API 전체를 한 단계로 말할 수 있는지 판정한다.",
+      "why": "⭐⭐ 대부분 **2단계에 몰려 있고 몇 개가 0단계로 튄다**는 것을 보게 된다. 그리고 \"우리는 RESTful 하다\"가 **엔드포인트마다 다른 말**이었다는 것도 함께 드러난다.",
+      "no_hardware": "자기 API 가 없으면 아무 공개 API 문서(결제·지도·SNS)로 한다. 문서만 봐도 단계는 매길 수 있다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ 응답 하나를 골라 **하이퍼미디어를 붙인다면 어떤 모양일지** 설계해 본다 — 이 자원에서 다음에 갈 수 있는 곳이 무엇이고, 그것을 어떤 이름(rel)으로 부를지. 그리고 **클라이언트가 그것을 쓰려면 무엇을 바꿔야 하는지** 적는다.",
+      "done_when": "링크 목록이 나오고, ⭐ **클라이언트 쪽에서 바꿔야 할 것**이 최소 두 개 적힌다. 그리고 \"그래서 이득인가\"에 대한 자기 답이 한 줄로 나온다.",
+      "why": "⭐⭐ **왜 다들 3단계에서 멈추는지**가 이 실습으로 이해된다 — 서버에 링크를 붙이는 것은 쉬운데 **클라이언트가 그것을 따라가게 만드는 것**이 어렵다. 그리고 그 어려움이 Fielding 이 말한 결합(coupling)의 반대편 비용이다.",
+      "hours": 2
+    },
+    {
+      "task": "Fielding 논문 5장에서 **`degrades`·`decrease`·`reduces` 같은 낱말이 들어간 문장**을 찾아 세 개 옮겨 적는다. 각각이 **어떤 제약의 대가**인지 표시한다.",
+      "done_when": "세 문장과 해당 제약이 짝지어지고, 그중 하나에 대해 **우리 시스템이 그 대가를 치르고 있는지** 판정한다.",
+      "why": "⭐⭐⭐ 원전을 **\"무엇을 하라\"가 아니라 \"무엇을 잃는다\"로 읽는 연습**이다. 명세·논문·제품 문서에서 이런 문장을 먼저 찾는 습관이 붙으면, 그 기술을 언제 쓰지 말아야 하는지가 훨씬 빨리 보인다.",
+      "no_hardware": "논문 5장은 공개 HTML 이다 — 브라우저에서 열어 본문 검색으로 찾으면 된다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "REST 는 프로토콜인가 무엇인가? 여섯 제약 중 논문이 '중심'이라고 한 것은?",
+    "Fielding 은 HTTP 기반 인터페이스를 REST API 라고 부르는 것에 대해 뭐라고 했는가?",
+    "HATEOAS 가 요구하는 것은 무엇인가? 그것이 없으면 무엇이 상호작용을 이끄는가?",
+    "논문은 균일 인터페이스의 대가를 뭐라고 적는가? 무상태의 대가는?",
+    "실무가 2단계에서 멈추는 것이 왜 무지가 아니라 거래인가?",
+    "외부 공개 API 에 REST 를, 내부 통신에 gRPC 를 쓰는 이유를 각각 대보라."
+  ],
+  "evidence": [
+    {
+      "quote": "• RESTful API 설계 및 DB 모델링, 캐시/트랜잭션 관리 등 서버 기본기가 탄탄하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/335463",
+      "where": "액션파워",
+      "what_it_shows": "⭐ **`서버 기본기` 로 분류된다.** 그리고 요구되는 것은 하이퍼미디어가 아니라 **자원을 나누고 주소를 짓는 1~2단계 설계**다 — 3372건의 실체가 이것"
+    },
+    {
+      "quote": "• 내부 마이크로서비스 간 통신에 gRPC, 외부 통신에 REST API와 GraphQL을 사용합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/262804",
+      "where": "코리아포트원",
+      "what_it_shows": "⭐⭐ **셋의 자리를 한 줄로 나눈다** — 안쪽은 gRPC, 바깥쪽은 REST/GraphQL. `when_to_use` 의 `over` 가 이 문장에서 나왔다"
+    },
+    {
+      "quote": "• 사용성 높은 API(REST/GraphQL) 설계가 가능하고, PostgreSQL 등 RDBMS 최적화 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "where": "큐엠아이티",
+      "what_it_shows": "⭐ `REST/GraphQL` 이 **슬래시로 묶인다** — 경쟁이 아니라 **선택지**로 다뤄진다는 뜻"
+    },
+    {
+      "quote": "• REST API 설계 및 RPC Framekwork(gRPC 등) 적용 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372144",
+      "where": "에이아이트릭스(AITRICS)",
+      "what_it_shows": "⭐⭐ **`REST` 와 `RPC` 가 나란히** 요구된다. Fielding 이 \"That is RPC\" 라고 한 그 구분이 채용 요건에서는 **둘 다 할 줄 아는 사람**으로 나타난다"
+    },
+    {
+      "quote": "• 효율적인 데이터 구조 설계를 위한 RESTful API 디자인 및 데이터베이스(RDB/NoSQL) 최적화 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365927",
+      "where": "동선컴퍼니",
+      "what_it_shows": "`RESTful API 디자인` 이 **데이터 구조 설계와 한 묶음**이다 — 실무의 REST 가 '자원을 어떻게 나눌 것인가'의 문제라는 증거"
+    },
+    {
+      "quote": "• API 연동 : RESTful API, GraphQL / 타입 안전 API 레이어 (스키마 기반 타입 생성 · zod 런타임 검증 · MSW를 활용한 API 목킹으로 서버 없이도 개발·테스트)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378890",
+      "where": "아이알큐더스",
+      "what_it_shows": "⭐ **스키마에서 타입을 만들고 목킹으로 서버 없이 개발**한다 — Fielding 이 말한 \"out-of-band information\"(응답 밖의 스펙)이 **오히려 도구 체계의 중심**이 된 자리(→ `openapi`·`contract-testing`)"
+    },
+    {
+      "quote": "• API 설계 및 서드파티 연동(REST/GraphQL, OAuth, Webhook) 구현 경험 - 결제·지도·예약 등 외부 SDK 통합 포함",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/374271",
+      "where": "리아드코퍼레이션",
+      "what_it_shows": "**외부 연동의 기본 규약**으로 REST 가 놓인다 — `when_to_use` 의 '외부 공개에는 REST' 판단과 같은 자리"
+    },
+    {
+      "quote": "• RESTful API 또는 GraphQL 연동 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/368831",
+      "where": "알로카도스",
+      "what_it_shows": "`또는` — 클라이언트 쪽에서는 **둘 중 무엇이든 붙일 줄 알면 된다**는 요구. 3372건 중 상당수가 이런 '연동' 맥락이다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "api-versioning",
+      "how": "⭐ REST 를 고른 뒤에 오는 문제 — **바꿔야 할 때**. Fielding 의 '고정된 주소가 결합을 만든다'가 실제로 아픈 자리"
+    },
+    {
+      "slug": "openapi",
+      "how": "⭐⭐ Fielding 이 문제 삼은 **\"out-of-band information\"** 이 바로 이것이다 — 다만 실무는 그것을 없애는 대신 **기계가 읽을 수 있게** 만들었다"
+    },
+    {
+      "slug": "contract-testing",
+      "how": "응답 밖의 스펙이 실제로 지켜지는지 검사하는 일 — 하이퍼미디어 대신 **검사로** 결합을 관리하는 방식"
+    },
+    {
+      "slug": "grpc",
+      "how": "⭐ Fielding 이 \"That is RPC\" 라고 한 그것을 **제 이름으로** 하는 쪽. 내부 통신의 선택지"
+    },
+    {
+      "slug": "idempotency",
+      "how": "HTTP 동사를 뜻대로 쓰는 것의 핵심 — 재시도해도 안전한가"
+    },
+    {
+      "slug": "caching",
+      "how": "REST 의 `cache` 제약이 실제로 쓰이는 자리. '캐시 가능 여부를 표시한다'가 출발점"
+    },
+    {
+      "slug": "webhook",
+      "how": "방향이 반대인 통신 — 우리가 부르는 것이 아니라 남이 우리를 부른다"
+    },
+    {
+      "slug": "graphql",
+      "how": "⚠️ 아직 문서가 없다. **370건**이고 공고에서 REST 와 `또는`·`/` 로 계속 묶여 나온다 — `rest` 의 `when_to_use` 가 이 문서 없이는 얕다"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채운 오랜만의 문서다** — `tech_relations.json`(generated_at 2026-09-04)에 `REST API` 가 있어 규칙대로 그대로 옮겼다(572건 · 7.9% · React 43.2%/AWS 43.0%/Git 42.8%/Java 42.1%).",
+    "⚠️⚠️ **그런데 그 572건과 본문 직접 셈 3372건이 크게 다르다.** 태그에는 대표 기술만 달리고 REST 는 본문에서 당연한 것처럼 언급되기 때문으로 **보인다** — 이 해석은 표본을 읽고 추정한 것이지 검증한 것이 아니다. **두 숫자를 다 적고 출처를 밝혔다.**",
+    "⚠️ **성숙도 모델(0~3단계)의 원문을 확인하지 않았다.** 널리 쓰이는 구분이라 `ladder` 절과 표에 썼으나 `confidence: inferred` 로 두고 그 사실을 표의 `note` 에 적었다. **단계 이름과 경계는 자료마다 다를 수 있다.**",
+    "**`HATEOAS` 0건은 낱말의 부재이지 개념의 부재가 아닐 수 있다.** `하이퍼미디어`·`링크 기반` 같은 다른 표현으로 요구하는 공고가 있을 가능성을 배제하지 못했다 — 다만 그런 표현으로도 눈에 띄는 사례를 찾지 못했다.",
+    "⚠️ **`graphql` 문서가 없어 `instead` 절과 `when_to_use` 의 한 항목이 얕다.** 370건이나 되는데 비교 대상으로 한 문단만 썼다 — 큐에 올릴 후보다.",
+    "**HTTP 자체(메서드 의미·상태 코드·캐시 헤더)를 전제하고 썼다.** 이 백과사전에 `http` 문서가 없어서 그 층이 비어 있다.",
+    "**자원 설계의 세부는 원전이 답하지 않는다.** \"무엇을 자원으로 볼 것인가\", \"동작을 어떻게 자원으로 표현하나\"가 실무에서 가장 시간을 많이 쓰는 부분인데, Fielding 의 논문은 **스타일**을 정의할 뿐 그 방법론을 주지 않는다. 이 문서도 `pitfalls` 에서 경험칙으로만 다뤘다."
+  ],
+  "sources": [
+    {
+      "title": "Architectural Styles and the Design of Network-based Software Architectures — Chapter 5: Representational State Transfer (REST)",
+      "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+      "publisher": "Roy T. Fielding (UC Irvine)",
+      "date": "2000",
+      "kind": "paper",
+      "summary": "REST 의 원전. 여섯 제약의 정의와 ⭐ **각 제약이 치르는 대가**가 함께 적혀 있다"
+    },
+    {
+      "title": "REST APIs must be hypertext-driven (Roy T. Fielding)",
+      "url": "https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven",
+      "publisher": "Roy T. Fielding",
+      "date": "2008-10",
+      "kind": "post",
+      "summary": "⭐⭐⭐ REST 를 정의한 사람이 \"HTTP 기반이면 다 REST 라고 부르는 것\"을 직접 반박한 글"
+    }
+  ]
+}

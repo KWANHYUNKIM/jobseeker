@@ -4,55 +4,53 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `인가`(`authz`)를 끝냈다** — 절 6 · 표 5 · 실습 3 · 지뢰 6 · 근거 8.
-전체: **문서 98개**(전부 done) · 절 584 · 실습 294 · **오류 0 · 경고 0.**
+**직전 사이클에서 `REST API`(`rest`)를 끝냈다** — 절 6 · 표 5 · 실습 3 · 지뢰 6 · 근거 8.
+전체: **문서 99개**(전부 done) · 절 590 · 실습 297 · **오류 0 · 경고 0.**
+⭐ **오랜만에 `market` 을 채운 문서**다(`tech_relations.json` 에 `REST API` 가 있었다).
 
-**⭐⭐ 축 둘.** ① **인증과 인가는 붙어 다니지만 성격이 다르다** — 공고가 `인증·인가` 로 한 낱말처럼
-쓰는데, **인증은 라이브러리·프로토콜로 끝나고 인가는 도메인마다 새로 설계**한다. 모두싸인 공고가
-`Shared System(**인증, 인가, 조직**, 구독·결제, 알림, 감사 등)` 로 **쉼표로 나눠** 적는 것이 근거.
-② ⭐⭐⭐ **어디서 결정하나 — 특히 목록 조회.** 단건은 꺼내고 검사하면 되는데 **목록은 "볼 수 있는
-것만"이라 인가가 쿼리 안으로 들어간다.** 그러면 (a)인가가 두 곳에 존재해 어긋나고(목록엔 없는데
-주소로는 열린다) (b)정책을 밖으로 빼기 어려워지고 (c)**개수·검색·내보내기가 따로 샌다**.
-⭐ **이웃 문서 다섯 어디에도 없는 고유 자리**라 이 문서의 중심으로 삼았다.
+**⭐⭐⭐ 축: "창시자는 두 가지를 다 적었다."**
+(1) **Fielding 의 2008년 블로그**: **"I am getting frustrated by the number of people calling
+any HTTP-based interface a REST API. Today's example is the SocialSite REST API. **That is RPC.**"**
+그리고 **"...if the engine of application state ... is not being driven by hypertext, then it
+cannot be RESTful and cannot be a REST API. **Period.**"** — 이 백과사전이 모아 온 **"제품이
+스스로 그은 선"** 중 **가장 강하다**(만든 사람이 자기 이름의 오용을 직접 반박한다).
+(2) ⭐⭐⭐ **그런데 같은 사람이 논문에서 대가도 적었다** — uniform interface **"degrades
+efficiency"**, stateless **"may decrease network performance"**, code-on-demand **"reduces
+visibility, and thus is only an optional constraint"**.
+→ **그래서 결론이 훈계가 아니라 이렇게 됐다: 2단계에서 멈추는 것은 무지가 아니라 거래다.
+문제는 멈춘 것이 아니라 멈춘 자리를 원래 이름으로 부르는 것.**
 
-**⭐ OWASP Authorization Cheat Sheet 로 원칙을 받쳤다** — **"an application should be configured
-to deny access by default"** · **"Access control checks must be performed server-side"** ·
-최소 권한 **"minimum privileges necessary to complete their job"** · 거절을 구조화해 로그로.
-그리고 ⭐ **"ABAC and ReBAC should typically be preferred for application development"**.
+**⭐⭐ 셈이 그것을 증명한다 — `REST|RESTful` 3372건 vs `HATEOAS` 0건.** 이 백과사전 최대 대비이고
+**한쪽이 아예 0**이라는 점에서 성격이 다르다(`security-certification` 의 582 vs 1보다 크다).
 
-**⚠️⚠️ 1차 자료 두 건이 부분 실패했다.** (1) **OWASP Top 10 A01 의 순위·통계를 못 얻었다** —
-`owasp.org/Top10/A01_2021-...` 는 **리다이렉트 안내만**, GitHub 원문은 **404**. 셈 924건과 짝이
-될 숫자였는데 못 넣었고, 대신 같은 기관의 Cheat Sheet 로 갔다. (2) **NIST SP 800-162 는 초록만** —
-ABAC 정의는 얻었으나 **역할 폭발·정책 관리 비용은 본문 PDF 를 못 열어** 확인 못 했다.
+**⭐ `market` 과 본문 셈이 6배 차이 났다** — 태그 기준 572건 vs 본문 기준 3372건. **태그에는
+대표 기술만 달리고 REST 는 본문에서 당연한 것처럼 언급**되기 때문으로 보인다(추정임을 밝혔다).
+**두 숫자를 다 적고 출처를 나눴다.**
 
-**⭐⭐ 경계를 좁게 잡은 것이 이 사이클의 핵심 판단이다.** `rbac`·`abac`·`rebac`·`policy-engine`·
-`oauth2` **다섯이 이미 있어서**(큐에는 셋만 적혀 있었다) 모델 설명을 전부 빼고 **이정표 표**로
-대체했다. 안 그랬으면 여섯 문서가 함께 흐려졌을 것이다.
+**⚠️ 성숙도 모델(0~3단계)의 원문은 확인하지 못했다** — 널리 쓰이는 구분이라 쓰되
+`confidence: inferred` 로 두고 표 `note` 에 적었다.
 
-**⭐⭐ 그리고 큐가 말라서 후보 조사(사다리 6순위)를 했다** — `authz` 도 끊긴 링크를 하나도 안
-남겼다(`seo` 에 이어 **두 번째 연속**). `tech_relations.json` 의 60개 중 **문서 없는 48개**를
-공고 수로 줄 세워 `REST API` 를 골랐다.
-
-**다음 사이클 = QUEUE 맨 위 `REST API`(`rest`)** — 사다리 3순위. **대기 1개.**
+**다음 사이클 = QUEUE 맨 위 `GraphQL`(`graphql`)** — 사다리 3순위. **대기 1개.**
 ⚠️ **`--gaps` 출력이 대상을 정한다** — 이 메모가 큐와 어긋나면 큐가 맞다.
 
-## REST API 사이클 메모
+## GraphQL 사이클 메모
 
-- ⭐⭐⭐ **셈 대비가 이 백과사전 최대다: `REST` 3372건(모집중 1157) vs `HATEOAS` 0건.**
-  `RESTful` 1313 · `API 설계` 1691 · `GraphQL` 370 · `gRPC` 243.
-  **창시자가 필수 제약이라고 못 박은 것이 3372건 중 0건** — `security-certification`
-  (ISMS 582 vs FIPS140 1)보다 극단적이다.
-- ⭐⭐⭐ **축이 이미 서 있다**: "모두가 REST 라고 부르는데 **창시자는 그건 REST 가 아니라고 적었다**
-  — 그리고 셈이 그것을 증명한다." **"제품이 스스로 그은 선"의 가장 강한 형태**(만든 사람이 자기
-  이름의 오용을 직접 반박한다).
-- ⚠️⚠️ **경계 — 이웃 셋**: `api-versioning`(바꾸는 문제) · `openapi`(문서·계약) ·
-  `contract-testing`(검사). **이 문서는 그 셋의 아래에 서는 기본편.**
-  ⭐ `authz` 에서 배운 대로 **쓰기 전에 이웃 문서의 `one_liner` 를 먼저 읽고 경계를 정한다.**
-- ⭐ **공정하게 쓸 것**: 축 ④ — **"그래도 2단계(HTTP 동사까지)가 나쁜가"**. 왜 다들 거기서 멈추는지,
-  멈추는 것이 왜 대개 합리적인지도 적어야 한다. 안 그러면 **원전 근본주의 문서**가 된다.
-- ⭐ **1차 자료**: Fielding 논문 5장(uci.edu 공개 HTML) · ⭐⭐ Fielding 블로그
-  "REST APIs must be hypertext-driven"(2008, `roy.gbiv.com`) · Richardson Maturity Model.
-  ⚠️ 블로그가 안 열리면 논문 5장만으로도 축이 선다.
+- **`rest` 가 끊긴 링크로 남겼다** — 그 문서가 `instead` 절과 `when_to_use` 한 항목이
+  **GraphQL 문서가 없어 얕다**고 스스로 적었다. **370건(모집중 185).**
+- ⭐⭐⭐ **`rest` 와 같은 형태의 셈 대비가 또 있다: 370건 vs `N+1` 10건 · `DataLoader` 2건.**
+  **가장 유명한 함정과 그 표준 해법이 거의 안 불린다.** 둘째 사례이니 **우연이 아니라
+  낱말이 유행할 때 나타나는 형태**로 보인다 — 도입은 하는데 대가는 안 적는다.
+- ⚠️⚠️ **셈의 함정 — 스택 목록에 섞인다**(리빗 `기술 스택: React, Next.js, ... NestJS, GraphQL,
+  TypeORM, MySQL 등`). `data-migration` 규칙 그대로 **문장을 읽어 '설계·운영'과 '나열'을 가른다.**
+  생태계 낱말은 더 적다: `Apollo` 27 · `Relay` 13.
+- 축 다섯: ①⭐**왜 생겼나**(화면마다 필요한 데이터가 다르다 — REST 의 과다·과소 전송)
+  ②**스키마가 계약**(→ `openapi`·`data-contract`, 다만 **타입 시스템이 런타임에 산다**)
+  ③⭐⭐**대가: N+1 과 비용 예측 불가**(클라이언트가 질의를 정하면 **서버가 무엇을 계산할지 미리
+  모른다** → `rate-limit` 이 요청 수로는 안 통한다) ④**캐시가 어려워진다**(같은 URL 이 아니다 →
+  `caching` 과 정면 충돌) ⑤**언제 REST 대신**(→ `rest` 를 채워 주는 쪽).
+- ⭐ **1차 자료**: graphql.org 의 **Best Practices·Caching 절** — ⭐⭐ **특히 캐싱 문서가
+  "HTTP 캐시를 못 쓰는 이유"를 스스로 적는 자리**일 가능성이 높다. **DataLoader README**(N+1 을
+  전제로 만든 도구)도. ⚠️ **`rest` 처럼 원전 근본주의가 되지 않게** — 안 쓰는 이유도 공정하게.
 
 ## 후보 목록 (다음에 큐가 마르면 여기서)
 
@@ -61,15 +59,31 @@ ABAC 정의는 얻었으나 **역할 폭발·정책 관리 비용은 본문 PDF 
 
 | 후보 | 공고 | 이 엔진이 쓸 각도 |
 |---|---|---|
-| **REST API** | 572(관계표)/3372(직접셈) | ⭐ **이번에 큐로 올렸다** |
+| ~~REST API~~ | — | ✅ 썼다(99번째) |
+| **GraphQL** | 370 | ⭐ **이번에 큐로 올렸다** |
 | `PostgreSQL` vs `MySQL` | 673 / 649 | ⭐ **둘을 한 문서로** — "언제 그것 대신 저것" 이 저절로 선다 |
+| `HTTP` | (미측정) | ⭐⭐ **`rest` 가 전제하고 비워 둔 층.** 메서드·상태 코드·캐시 헤더 |
 | `Kotlin` | 464 | ⭐ "Java 가 있는데 왜" — `java` 문서가 이미 있어 이웃이 선다 |
-| `Redis` | 474 | ⚠️ `caching` 과 겹친다 — 겹치지 않을 각도(자료구조 서버·단일 스레드)를 먼저 정할 것 |
-| `GitHub Actions` | 314 | ⚠️ `ci-cd` 계열 문서가 있는지 먼저 확인 |
-| `Linux` · `Git` · `AWS` · `React` | 879 · 896 · 1966 · 1252 | ⚠️ **너무 넓다** — 통째로는 요약본이 된다. 좁은 낱말(예: 파일 디스크립터, rebase, IAM)로 쪼갤 때만 |
+| `Redis` | 474 | ⚠️ `caching` 과 겹친다 — 다른 각도(자료구조 서버·단일 스레드)를 먼저 정할 것 |
+| `Linux` · `Git` · `AWS` · `React` | 879 · 896 · 1966 · 1252 | ⚠️ **너무 넓다** — 좁은 낱말로 쪼갤 때만 |
 
 
 ## 배운 것
+
+- ⭐⭐⭐ **원전을 "무엇을 하라"가 아니라 "무엇을 잃는다"로 읽으면 문서가 공정해진다.**
+  `rest` 는 Fielding 의 **"Period."** 만 인용했으면 훈계가 됐을 텐데, 같은 논문에서
+  **`degrades efficiency`·`may decrease network performance`·`reduces visibility`** 를 찾아
+  붙이자 **"멈추는 것은 거래다"** 라는 결론이 나왔다. ⭐ **명세·논문·제품 문서를 열면 부정어
+  (degrades·decrease·reduces·not recommended·doesn't guarantee)를 먼저 검색한다** — 지금까지
+  찾은 "제품이 스스로 그은 선"이 전부 그 낱말들에 있었다. 실습으로도 넣었다.
+- ⭐⭐ **"큰 낱말 vs 그 낱말의 핵심 개념" 대비가 이제 셋째다.** `디자인 시스템` 528 vs `디자인
+  토큰` 18, `웹 접근성` 239 vs `WCAG` 27, 그리고 ⭐⭐⭐ **`REST` 3372 vs `HATEOAS` 0**(한쪽이
+  아예 0인 첫 사례). 큐에 올린 `GraphQL` 370 vs `N+1` 10 · `DataLoader` 2 까지 넷째다.
+  ⭐ **이건 이제 셈의 표준 절차로 삼을 만하다 — 큰 낱말을 세면 반드시 그 안의 핵심 개념·
+  대표 함정도 함께 센다.** 그 간극이 대개 문서의 축이 된다.
+- ⭐ **`market` 은 태그에서 오고 본문 셈은 텍스트에서 온다 — 6배까지 벌어질 수 있다.**
+  `rest` 에서 572 vs 3372 였다. 규칙대로 `market` 은 그대로 옮기되, **본문에서는 직접 센 값을
+  쓰고 두 숫자의 출처를 나눠 적는다.** 안 그러면 독자가 문서 안에서 모순을 본다.
 
 - ⭐⭐⭐ **쓰기 전에 이웃 문서의 `one_liner` 를 읽는다.** `authz` 는 큐에 이웃이 셋(`oauth2`·
   `policy-engine`·`rebac`)이라고 적혀 있었는데 **실제로는 `rbac`·`abac` 까지 다섯**이었다.
