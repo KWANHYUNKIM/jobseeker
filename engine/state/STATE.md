@@ -8,35 +8,44 @@
 
 ## 지금 파는 중
 
-**Honeycomb(US · SaaS—관측)** `in_progress` · **도메인 2 · 기능 0** —
-**75곳** · ⚠️ 큐 0/3.
+**Honeycomb(US · SaaS—관측)** `in_progress` · **도메인 2 · 기능 1** —
+75곳 · ⚠️ 큐 0/3.
 
-### ⭐⭐ 요금 구조가 기술 요구를 정한다 — 안 받는 쪽이 핵심이다
+방금 쓴 기능: **`column-store-no-indexes`(색인도 스키마도 없이 아무 필드나 훑게 만든다)**.
+결정 7개가 **전부 `confirmed`**.
 
-**좌석 무제한 · 쿼리 무제한**이고 **월 이벤트 수로만** 받는다. **관측 도구를 좌석으로
-팔면 볼 사람을 줄이게 되고 그러면 관측이 안 된다**(이 해석은 재구성이다). 대신
-**질의 비용을 회사가 떠안고**, 그것이 **자체 컬럼 저장소(Retriever)를 만든 이유**로
-이어진다. **Ably 와 좋은 대조다** — 저쪽은 연결·채널을 `분` 으로 팔고 이쪽은 이벤트로만
-받는다. **무엇을 안 받느냐가 무엇을 만들지를 정한다.**
+### ⭐⭐ 이 설계의 특징은 만든 것이 아니라 안 만든 것이다
 
-### 다음 사이클 — Kafka 이전 쪽이 자료가 확실하다
+**색인이 없다.** 색인은 `무엇을 자주 볼지 안다` 는 전제 위에 서는데 디버깅에서는
+그것을 모른다. 같은 이유로 **사전 집계도 버렸다**(`you cannot predict what dimensions
+you'll need to examine during debugging`). 행 지향 DB 를 버린 이유 넷도 **전부 같은
+축과 부딪힌다**(스키마 강제 · 비싼 이전 · 파일 재작성 · 색인 필요).
 
-**`transforming-how-we-run-kafka-honeycomb`**(전문 읽음) — 버린 대안 셋의 이유가 다 다르고
-(SLO · 오프셋 구조 비호환 · 지연), 대가가 명시적이며(*"we accept a window of downtime
-between the producer cutover and the consumer cutover"*), **자기 시스템이 나빠졌던 구간**을
-적는다(브로커 교체 **8~12시간 → 48~72시간**). **수치** — 클러스터 6개 · 이전 실행
-4~5시간 → 2~3시간 · 7개 팀 조율 · 롤백 테스트 4시간 이상.
+### ⭐ 그리고 감수한 것을 스스로 적는다
 
-Retriever 쪽은 **회사 자료 한 편으로만 봤다** — 세그먼트 규칙(**100만 이벤트 · 1GB ·
-12시간**)과 writer/reader 분리는 확인했지만 **질의 실행·분산 방식은 못 봤다.**
+컬럼 스토어는 `많은 행 × 적은 열` 에 강하지만 **한 행의 모든 열을 가져오는 데는 행
+저장소보다 못하다** — `a deliberate tradeoff`. **버린 셋과 감수한 하나**를 그림으로 그렸다.
 
-### ⏳ 안 읽은 글 중 결이 좋아 보이는 셋
+### ⭐⭐ 잘 만든 구조가 다른 축에서 무너진 사례
 
-- `solving-murder-mystery-columnar-datastore` — **자체 컬럼 저장소의 버그 추적 회고**
-- `incident-report-exercises-cleanups-and-evacuations` — **장애 보고서**
-- `virtualizing-storage-engine` — 저장 엔진 가상화
-⚠️ 그리고 `scaling-kafka-observability-pipelines`(예전 Kafka 글)를 2026년 글과 나란히
-놓으면 **연표가 나올 수 있다.**
+서비스가 수백~수천 개인 고객에서 **데이터의 양이 아니라 데이터셋 디렉터리와 파일의
+수**가 질의를 느리게 했다. 답은 **논리 단위와 물리 조직을 떼어 내는 것**(가상 데이터셋) —
+**중앙값 20초 → 약 0.2초**. `hard_problems` 로 세웠다.
+
+### 다음 사이클 — 남은 도메인
+
+**도는 채로 파이프라인 밑을 갈아 끼운다** — `transforming-how-we-run-kafka-honeycomb`
+(전문 읽음). 버린 대안 셋(SLO · 오프셋 구조 · 지연) · 받아들인 다운타임 창 ·
+**나빠졌던 구간**(브로커 교체 8~12시간 → 48~72시간) · 수치(클러스터 6개 · 이전 실행
+4~5시간 → 2~3시간 · 7개 팀 · 롤백 테스트 4시간+).
+여기까지 채우면 **완주 조건에 닿는다.**
+
+### ⏳ 안 읽은 글 (보강 사이클이 볼 것)
+
+`solving-murder-mystery-columnar-datastore`(자체 컬럼 저장소 버그 추적) ·
+`incident-report-exercises-cleanups-and-evacuations`(장애 보고서) ·
+`scaling-kafka-observability-pipelines`(예전 Kafka 글 — **2026년 글과 나란히 놓으면
+연표가 나올 수 있다**).
 
 ## 지금의 진짜 상태
 

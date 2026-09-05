@@ -896,7 +896,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "관측 도구를 파는 회사 — 좌석이 아니라 이벤트로 값을 매긴다",
       "updated_at": "2026-09-06",
       "domain": "honeycomb.io"

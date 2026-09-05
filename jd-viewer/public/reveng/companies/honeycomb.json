@@ -102,7 +102,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "column-store-no-indexes"
+      ]
     },
     {
       "name": "도는 채로 파이프라인 밑을 갈아 끼운다",
@@ -180,7 +182,423 @@
     "⚠️ **Retriever 의 세부를 회사 자료 한 편으로만 봤다** — 세그먼트 규칙과 writer/reader 분리는 확인했지만 **질의 실행·분산 방식은 확인하지 못했다.**",
     "**연표(eras)를 세울 자료를 아직 못 찾았다** — 다만 `scaling-kafka-observability-pipelines`(예전 글)와 2026년 이전 글을 나란히 놓으면 시간축이 나올 수 있다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "column-store-no-indexes",
+      "name": "색인도 스키마도 없이 아무 필드나 훑게 만든다",
+      "domain": "아무나 아무 때나 물어봐도 되게 만든다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **관측은 미리 정한 지표를 보는 일이 아니라 모르는 것을 되묻는 일이다.** 그래서 이 회사는 세 가지를 요구로 세운다 — **스키마를 미리 정하지 않을 것**(넓은 이벤트에 맥락을 실어야 하므로), **색인이 없을 것**(아무 필드나 빨라야 하므로), **원시 데이터를 질의할 것**(집계하지 않은 것을 아무 차원으로나). CTO 의 표현이 결론이다: **`You pretty much need to use a distributed column store in order to have observability.`** ⚠️ 그리고 **쿼리를 무제한으로 파는 요금 구조가 이 요구를 더 무겁게 만든다**(이 연결은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "가상 데이터셋 도입 효과",
+            "value": "다중 데이터셋 질의의 **중앙값 20초 → 약 0.2초** — **두 자릿수 배(two orders of magnitude)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Virtualizing Our Storage Engine",
+                "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
+                "publisher": "Honeycomb Blog",
+                "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "세그먼트 롤아웃 조건",
+            "value": "**100만 이벤트 · 1GB · 12시간** 중 하나에 닿으면 끊는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Distributed Column Store",
+                "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+                "publisher": "Honeycomb",
+                "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 문제가 드러난 규모",
+            "value": "**서비스가 수백~수천 개인 고객** — 그때 파일과 세그먼트 디렉터리 수 때문에 질의가 내부 SLI 를 어겼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Virtualizing Our Storage Engine",
+                "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
+                "publisher": "Honeycomb Blog",
+                "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 안 만들지 정할 때",
+          "thought": "⚠️ **이 설계의 특징은 만든 것이 아니라 안 만든 것이다** — **색인이 없다.** 색인은 `어떤 필드를 자주 볼지` 를 미리 안다는 전제 위에 서는데, 디버깅에서는 그것을 모른다. 같은 이유로 **사전 집계도 버렸다** — `you cannot predict what dimensions you'll need to examine during debugging`.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "행 저장소를 볼 때",
+          "thought": "행 지향 DB(MySQL·PostgreSQL)를 버린 이유가 넷이다 — **미리 정한 스키마가 필요**하고, 새 열이 생기면 **비싼 이전**이 필요하며, 스키마가 바뀌면 **파일 전체를 다시 써야 하고**, 쓸 만한 성능을 내려면 **색인이 필요하다.** ⚠️ **넷 다 `모르는 것을 되묻는 일` 과 정면으로 부딪힌다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "규모가 커진 뒤",
+          "thought": "⚠️ **잘 만든 구조가 다른 축에서 무너졌다** — 서비스가 수천 개인 고객에서는 **데이터셋마다 세그먼트 디렉터리가 생겨** 질의가 파일을 너무 많이 읽었다(`time spent reading a growing number files from a growing number of segment directories`). **데이터의 양이 아니라 조직 단위의 수가 문제였다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "이벤트",
+            "what": "넓은 필드를 가진 원시 기록. 스키마를 미리 정하지 않는다"
+          },
+          {
+            "name": "열 파일",
+            "what": "필드마다 따로 쓰는 파일. **적은 열에서 많은 행을 읽는 데** 유리하다"
+          },
+          {
+            "name": "세그먼트",
+            "what": "열 데이터의 덩어리. **타임스탬프 메타데이터**가 붙어 있어 범위 밖이면 안 읽고 건너뛴다"
+          },
+          {
+            "name": "데이터셋",
+            "what": "바깥에서는 서비스 단위로 보이는 것. ⚠️ **파일 시스템 조직과 같을 필요가 없다**"
+          },
+          {
+            "name": "가상 데이터셋 · `virtual_dataset` 열",
+            "what": "여러 서비스를 한 컨테이너 데이터셋으로 묶고, **합성 열로 소유를 추적**한다"
+          }
+        ],
+        "invariants": [
+          "**스키마를 미리 정하지 않는다** — 필드를 나중에 더할 수 있어야 한다",
+          "**색인을 만들지 않는다** — 무엇을 자주 볼지 모르기 때문이다",
+          "**원시 데이터를 질의한다** — 사전 집계하지 않는다",
+          "**세그먼트는 시간 메타데이터를 갖는다** — 안 읽고 건너뛰기 위해서다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "이벤트가 Kafka 를 거쳐 Retriever 노드에 닿는다",
+            "why": "수집과 저장을 파이프라인으로 가른다"
+          },
+          {
+            "step": "**필드마다 따로 파일에 쓴다**",
+            "why": "관측 질의는 **적은 열에서 많은 행**을 보는 모양이다"
+          },
+          {
+            "step": "**100만 이벤트 · 1GB · 12시간** 중 하나에 닿으면 세그먼트를 끊는다",
+            "why": "세 조건을 함께 둬서 양이 적어도 시간이 지나면 닫힌다"
+          },
+          {
+            "step": "질의가 오면 **세그먼트의 타임스탬프 메타데이터로 범위 밖을 건너뛴다**",
+            "why": "⚠️ **읽지 않는 것이 가장 빠른 읽기다** — 파일을 열지 않고 지나간다"
+          },
+          {
+            "step": "**남은 세그먼트를 기계에 나눠 병렬로 스캔하고 결과를 합친다**",
+            "why": "세그먼트가 분산의 단위다"
+          },
+          {
+            "step": "⚠️ **데이터셋을 파일 시스템 조직에서 떼어 낸다** — 여러 서비스를 컨테이너 데이터셋으로 묶는다",
+            "why": "서비스가 수천 개면 디렉터리와 파일 수가 질의를 느리게 한다"
+          },
+          {
+            "step": "**합성 열 `virtual_dataset` 으로 어느 서비스의 것인지 추적한다**",
+            "why": "묶어 놓고도 필요 없는 데이터를 거르지 않고 파일 수만 줄이기 위해서다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "행 지향 데이터베이스를 쓸 것인가",
+            "chosen": "**안 쓴다** — 분산 컬럼 스토어를 직접 만든다",
+            "alternatives": [
+              "MySQL · PostgreSQL 같은 행 지향 DB"
+            ],
+            "tradeoff": "⚠️ **버린 이유가 넷인데 전부 `모르는 것을 되묻는 일` 과 부딪힌다** — 미리 정한 스키마가 필요하고, 새 열마다 비싼 이전이 필요하며, 스키마가 바뀌면 파일 전체를 다시 쓰고, 성능을 내려면 색인이 필요하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why Observability Requires a Distributed Column Store",
+                "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+                "publisher": "Honeycomb Blog",
+                "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+              }
+            ]
+          },
+          {
+            "question": "색인을 만들 것인가",
+            "chosen": "**만들지 않는다**",
+            "alternatives": [
+              "자주 쓰는 필드에 색인을 걸기"
+            ],
+            "tradeoff": "⚠️ **색인은 무엇을 자주 볼지 안다는 전제 위에 선다.** 디버깅에서는 그것을 모르므로 **아무 필드나 빠른 쪽**을 골랐다 — 대신 **모든 질의가 실제로 데이터를 훑는다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why Observability Requires a Distributed Column Store",
+                "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+                "publisher": "Honeycomb Blog",
+                "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+              }
+            ]
+          },
+          {
+            "question": "미리 집계해 둘 것인가",
+            "chosen": "**안 한다** — 원시 데이터를 질의한다",
+            "alternatives": [
+              "사전 집계로 질의를 빠르게 하기"
+            ],
+            "tradeoff": "**이유가 한 줄이다** — `you cannot predict what dimensions you'll need to examine during debugging`. ⚠️ **집계로 얻을 수 있는 속도와 저장 절약을 통째로 포기한다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why Observability Requires a Distributed Column Store",
+                "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+                "publisher": "Honeycomb Blog",
+                "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+              }
+            ]
+          },
+          {
+            "question": "컬럼 스토어의 약점을 어떻게 볼 것인가",
+            "chosen": "**받아들인다** — 관측 워크로드에 맞는 맞바꿈이다",
+            "alternatives": [
+              "행 저장소와 섞어 쓰기"
+            ],
+            "tradeoff": "⚠️ **회사가 직접 적는 약점이다** — 컬럼 스토어는 `많은 행 × 적은 열` 에 강하지만 **한 행의 모든 열을 가져오는 데는 행 저장소보다 못하다.** `a deliberate tradeoff Honeycomb accepts`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why Observability Requires a Distributed Column Store",
+                "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+                "publisher": "Honeycomb Blog",
+                "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+              }
+            ]
+          },
+          {
+            "question": "질의를 어떻게 나눌 것인가",
+            "chosen": "**세그먼트를 단위로 기계에 나눈다.** 타임스탬프 메타데이터로 **범위 밖은 읽지 않는다**",
+            "alternatives": [
+              "전체를 훑고 필터링하기"
+            ],
+            "tradeoff": "**읽지 않는 것이 가장 빠른 읽기다.** ⚠️ 대신 **시간이 아닌 축으로 좁히는 질의는 이 지름길을 못 쓴다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why Observability Requires a Distributed Column Store",
+                "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+                "publisher": "Honeycomb Blog",
+                "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+              }
+            ]
+          },
+          {
+            "question": "서비스가 수천 개인 고객을 어떻게 감당할 것인가",
+            "chosen": "**데이터셋을 파일 시스템 조직에서 떼어 낸다** — 관련 서비스를 컨테이너 데이터셋으로 묶는 **가상 데이터셋**",
+            "alternatives": [
+              "서비스마다 디렉터리를 그대로 두고 질의를 최적화하기"
+            ],
+            "tradeoff": "**중앙값 20초가 약 0.2초가 됐다** — 두 자릿수 배다. ⚠️ 대신 **매핑 계층이 하나 생긴다** — 바깥이 보는 데이터셋과 안이 쓰는 조직이 달라진다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Virtualizing Our Storage Engine",
+                "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
+                "publisher": "Honeycomb Blog",
+                "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "묶은 뒤 소유를 어떻게 가릴 것인가",
+            "chosen": "**합성 열 `virtual_dataset` 을 둔다**",
+            "alternatives": [
+              "질의 때마다 필요 없는 데이터를 걸러 내기"
+            ],
+            "tradeoff": "⚠️ **저장에 열이 하나 더 든다.** 그 대신 **파일을 덜 열면서도 남의 데이터를 훑지 않는다** — 회사가 그 둘을 함께 얻었다고 적는다(뒤쪽 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Virtualizing Our Storage Engine",
+                "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
+                "publisher": "Honeycomb Blog",
+                "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Retriever — 자체 분산 컬럼 스토어",
+            "role": "Scuba 에서 영감을 받은 저장 엔진. 필드마다 파일을 나눈다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Distributed Column Store",
+                "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+                "publisher": "Honeycomb",
+                "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+              }
+            ]
+          },
+          {
+            "tech": "세그먼트 + 타임스탬프 메타데이터",
+            "role": "분산과 건너뛰기의 단위",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why Observability Requires a Distributed Column Store",
+                "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+                "publisher": "Honeycomb Blog",
+                "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+              }
+            ]
+          },
+          {
+            "tech": "가상 데이터셋 + `virtual_dataset` 합성 열",
+            "role": "데이터셋의 논리 단위와 파일 조직을 분리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Virtualizing Our Storage Engine",
+                "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
+                "publisher": "Honeycomb Blog",
+                "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 행 지향 DB · 색인 · 사전 집계",
+            "role": "⚠️ **전부 버린 쪽이다** — 각각 스키마 강제 · 예측 전제 · 차원 고정 때문에 관측과 안 맞는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why Observability Requires a Distributed Column Store",
+                "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+                "publisher": "Honeycomb Blog",
+                "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "도는 채로 파이프라인 밑을 갈아 끼운다",
+          "via": "Kafka 소비",
+          "contract": "**Retriever 노드가 Kafka 파티션을 소비해 로컬 디스크에 남긴다** — 저장 엔진은 그 파이프라인의 끝이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "이벤트 볼륨 구독 (수익원)",
+          "via": "쿼리 무제한",
+          "contract": "⚠️ **좌석과 쿼리를 무제한으로 팔기 때문에 질의 비용을 회사가 떠안는다** — 색인 없이 아무 필드나 훑는 구조가 그 약속의 기술적 실체다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "고객의 서비스들 (수백~수천 개)",
+          "via": "데이터셋",
+          "contract": "⚠️ **바깥에서 보는 데이터셋과 안에서 쓰는 파일 조직이 다르다** — 가상 데이터셋이 그 사이를 잇는다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Scuba: Diving into Data at Facebook",
+            "authors": "L. Abraham 외",
+            "year": "2013",
+            "venue": "VLDB",
+            "url": "https://research.facebook.com/publications/scuba-diving-into-data-at-facebook/",
+            "takeaway": "⚠️ **Retriever 가 영감을 받았다고 회사가 밝히는 시스템이다.** 스키마 없는 넓은 이벤트를 메모리 컬럼 스토어에서 임의 차원으로 훑는다는 발상이 그대로 이어진다 — **논문 출처는 이 사이트가 붙였다**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "데이터가 아니라 조직 단위의 수가 질의를 느리게 한다",
+            "why_hard": "⚠️ **잘 만든 구조가 다른 축에서 무너진 사례다** — 서비스가 수백~수천 개인 고객에서는 **데이터셋마다 세그먼트 디렉터리가 생겨** 질의가 파일을 너무 많이 열었다. **데이터 양이 아니라 디렉터리와 파일의 수**가 문제였다",
+            "current_best": "**논리 단위와 물리 조직을 떼어 내는 것** — 가상 데이터셋으로 **중앙값 20초를 0.2초**로 줄였다. ⚠️ 다만 **어떤 서비스를 어떻게 묶을지의 기준은 글에 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Virtualizing Our Storage Engine",
+                "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
+                "publisher": "Honeycomb Blog",
+                "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
+              }
+            ]
+          },
+          {
+            "problem": "색인을 안 만들면 모든 질의가 데이터를 훑는다",
+            "why_hard": "⚠️ **색인은 무엇을 자주 볼지 안다는 전제 위에 서는데 디버깅에서는 그것을 모른다.** 그래서 색인을 버렸는데, 그러면 **모든 질의가 실제로 데이터를 지나가야 한다**",
+            "current_best": "**읽지 않을 것을 빨리 정하는 것** — 세그먼트의 시간 메타데이터로 범위 밖을 열지도 않는다. ⚠️ **시간이 아닌 축으로 좁히는 질의는 이 지름길을 못 쓴다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why Observability Requires a Distributed Column Store",
+                "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+                "publisher": "Honeycomb Blog",
+                "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "읽지 않는 것이 가장 빠른 읽기다",
+          "question": "색인 없이 어떻게 빠른가",
+          "kind": "flow",
+          "code": "flowchart TD\n  E[\"<b>이벤트</b><br/>• 넓은 필드 · 스키마 없음\"]:::list --> W[\"<b>필드마다 따로 파일에 쓴다</b>\"]:::accent\n  W --> S[\"<b>세그먼트로 끊는다</b><br/>• 100만 이벤트 · 1GB · 12시간<br/>• 타임스탬프 메타데이터를 붙인다\"]:::accent\n  Q[\"<b>질의</b><br/>• 아무 필드나 · 아무 차원으로\"]:::list --> F{\"<b>세그먼트가 시간 범위 안인가</b>\"}\n  S -.-> F\n  F -->|밖| SK[\"<b>열지도 않는다</b>\"]:::soft\n  F -->|안| P[\"<b>기계에 나눠 병렬 스캔</b>\"]:::list --> M[\"<b>결과를 합친다</b>\"]:::list\n  V[\"<b>가상 데이터셋</b><br/>• 서비스 여럿을 한 데 묶고<br/>• virtual_dataset 열로 소유 추적\"]:::accent\n  V -.->|파일 수를 줄인다<br/>20초 → 0.2초| P\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "버린 셋과 감수한 하나",
+          "question": "관측을 위해 무엇을 포기했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  N[\"<b>관측의 요구</b><br/>• 스키마를 미리 못 정한다<br/>• 무엇을 볼지 모른다<br/>• 원시 데이터를 봐야 한다\"]:::accent\n  N --> R1[\"⚠️ <b>행 지향 DB</b><br/>• 스키마 필요 · 비싼 이전<br/>• 파일 전체 재작성 · 색인 필요\"]:::gone\n  N --> R2[\"⚠️ <b>색인</b><br/>• 무엇을 자주 볼지 안다는 전제\"]:::gone\n  N --> R3[\"⚠️ <b>사전 집계</b><br/>• 디버깅에 필요한 차원을<br/>  미리 예측할 수 없다\"]:::gone\n  R1 --> C[\"<b>분산 컬럼 스토어</b>\"]:::accent\n  R2 --> C\n  R3 --> C\n  C --> T[\"⚠️ <b>감수한 것</b><br/>• 한 행의 모든 열을 가져오는 질의는<br/>  행 저장소보다 느리다<br/>• a deliberate tradeoff\"]:::gone\n  C --> T2[\"⚠️ <b>나중에 드러난 것</b><br/>• 서비스가 수천 개면<br/>  파일 수가 질의를 느리게 한다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Why Observability Requires a Distributed Column Store",
+          "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+          "publisher": "Honeycomb Blog",
+          "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+        },
+        {
+          "title": "Virtualizing Our Storage Engine",
+          "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
+          "publisher": "Honeycomb Blog",
+          "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
+        },
+        {
+          "title": "Why We Built Our Own Distributed Column Store",
+          "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+          "publisher": "Honeycomb",
+          "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+        },
+        {
+          "title": "Honeycomb — 요금제",
+          "url": "https://www.honeycomb.io/pricing",
+          "publisher": "Honeycomb",
+          "summary": "월 이벤트 수로만 값을 매긴다. 좌석과 쿼리는 무제한."
+        },
+        {
+          "title": "Transforming How We Run Kafka at Honeycomb",
+          "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+          "publisher": "Honeycomb Blog",
+          "date": "2026-07-15",
+          "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "Transforming How We Run Kafka at Honeycomb",
@@ -200,6 +618,18 @@
       "url": "https://www.honeycomb.io/pricing",
       "publisher": "Honeycomb",
       "summary": "월 이벤트 수로만 값을 매긴다. 좌석과 쿼리는 무제한."
+    },
+    {
+      "title": "Why Observability Requires a Distributed Column Store",
+      "url": "https://www.honeycomb.io/blog/why-observability-requires-distributed-column-store",
+      "publisher": "Honeycomb Blog",
+      "summary": "관측에 왜 분산 컬럼 스토어가 필요한지, 행 지향 DB 와 사전 집계를 왜 버렸는지, 질의를 세그먼트로 어떻게 나누는지."
+    },
+    {
+      "title": "Virtualizing Our Storage Engine",
+      "url": "https://www.honeycomb.io/blog/virtualizing-storage-engine",
+      "publisher": "Honeycomb Blog",
+      "summary": "서비스가 수천 개인 고객에서 다중 데이터셋 질의가 파일 수 때문에 느려지자 데이터셋을 파일 시스템 조직에서 떼어 낸 기록. 중앙값 20초를 0.2초로 줄였다."
     }
   ]
 }
