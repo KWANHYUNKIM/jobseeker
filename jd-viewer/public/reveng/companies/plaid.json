@@ -4,7 +4,7 @@
   "name_en": "Plaid",
   "country": "US",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "plaid.com",
   "one_liner": "남의 은행 계좌에 안전하게 닿는 길을 파는 회사 — 그 길이 끊기면 위에 얹힌 앱들이 함께 멈춘다",
@@ -146,8 +146,86 @@
     {
       "name": "남의 은행 1만 2,000곳에 대신 닿는다",
       "why": "⚠️ **이 회사의 본체인데 아직 자료를 못 읽었다.** 금융기관 **1만 2,000곳 이상**에 연결하고 소비자 계좌 **5억 개 이상**에 닿는다 — **기관마다 인터페이스도 정책도 다르고, 어느 한 곳이 바뀌면 그 위에 얹힌 앱들이 함께 흔들린다**(이 정리는 이 사이트의 재구성이다). **그 연결을 어떻게 유지하고 어떻게 바뀌는 것을 따라가는지가 이 도메인의 질문이다.**",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "OAuth 2.0 + Link",
+          "solves": "사용자가 **은행 자신의 화면에서** 인증하고 권한을 준다 — Plaid 의 UI 에 자격증명을 넣지 않는다. **미국·EU·영국 연결에 필수**이고, 가동률과 연결 수명과 MFA 지원이 낫다.",
+          "limits": "⚠️ **자격증명이 없으니 끊긴 연결을 자동으로 다시 이을 수 없다** — `ITEM_LOGIN_REQUIRED` 가 되고 **사람이 update mode 로 다시 와야 한다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Link — OAuth guide",
+              "url": "https://plaid.com/docs/link/oauth/",
+              "publisher": "Plaid Docs",
+              "date": "2026",
+              "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+            }
+          ]
+        },
+        {
+          "tech": "Core Exchange (FDX 명세)",
+          "solves": "작은 기관과 핀테크가 **산업 표준**으로 붙는 길. **3,200곳 이상**, 설정 **24시간**. 디지털 뱅킹 플랫폼 통합으로 수천 개가 한 번에 들어온다.",
+          "limits": "⚠️ **남이 정한 명세에 묶인다** — FDX 가 못 담는 것은 Plaid 도 못 준다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+              "url": "https://plaid.com/blog/api-progress-update/",
+              "publisher": "Plaid",
+              "date": "2023-05-11",
+              "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+            }
+          ]
+        },
+        {
+          "tech": "동의 만료 웹훅 · update mode",
+          "solves": "연결이 끊기기 전에 알리고, 끊기면 사용자를 다시 데려가 잇는다.",
+          "limits": "⚠️ **마지막에는 사람이 필요하고 재연결 비율은 자료에 없다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Link — OAuth guide",
+              "url": "https://plaid.com/docs/link/oauth/",
+              "publisher": "Plaid Docs",
+              "date": "2026",
+              "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 기관별 예외 (문서에 적는 것)",
+          "solves": "Chase 의 동의 기간, Capital One 의 신선도 지정 같은 **은행별 규칙을 문서에 그대로** 적는다.",
+          "limits": "⚠️ **하나의 API 로 보이게 하는 것이 목표인데 완전히는 안 된다** — 감추면 런타임에 놀라고 다 노출하면 값이 사라진다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Link — OAuth guide",
+              "url": "https://plaid.com/docs/link/oauth/",
+              "publisher": "Plaid Docs",
+              "date": "2026",
+              "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 스크린 스크래핑 (줄이는 중)",
+          "solves": "API 가 없는 기관에 닿는 옛 방법.",
+          "limits": "⚠️ **2023년 5월 기준 75%가 API 라는 것은 나머지가 아직 이쪽이라는 뜻이다.** 미국·캐나다에 오픈 파이낸스 의무가 없어 **조율된 산업 노력**이 필요했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+              "url": "https://plaid.com/blog/api-progress-update/",
+              "publisher": "Plaid",
+              "date": "2023-05-11",
+              "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "absorb-every-banks-rules"
+      ]
     }
   ],
   "features": [
@@ -655,11 +733,504 @@
           "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
         }
       ]
+    },
+    {
+      "key": "absorb-every-banks-rules",
+      "name": "은행마다 다른 규칙을 대신 흡수하되, 새는 것을 문서에 적는다",
+      "domain": "남의 은행 1만 2,000곳에 대신 닿는다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 회사의 제품은 자기 시스템이 아니라 남의 시스템 위에 서 있다.** 금융기관 **1만 2,000곳 이상**과 소비자 계좌 **5억 개 이상**에 닿는데, **기관마다 인증 방식도 데이터 정책도 동의 기간도 다르다.** 파는 것은 그 차이를 **하나의 API 로 보이게 하는 일**이고, ⚠️ **그래서 이 도메인의 진짜 이야기는 `무엇을 만들었나` 가 아니라 `무엇을 흡수하고 무엇이 새어 나오나` 다**(이 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "닿는 범위",
+            "value": "금융기관 **1만 2,000곳 이상** · 소비자 계좌 **5억 개 이상**(미국·캐나다·영국·유럽)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Plaid revenue, valuation & funding",
+                "url": "https://sacra.com/c/plaid/",
+                "publisher": "Sacra",
+                "date": "2026",
+                "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ API 로 옮긴 비율",
+            "value": "**연결의 75% 가 API 로 처리된다** — 스크린 스크래핑 의존을 없애려는 산업 협력의 결과라고 적는다(2023년 5월 기준)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+                "url": "https://plaid.com/blog/api-progress-update/",
+                "publisher": "Plaid",
+                "date": "2023-05-11",
+                "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+              }
+            ]
+          },
+          {
+            "label": "큰 은행",
+            "value": "**상위 10개 은행 중 8곳**과 오픈 파이낸스 파트너십. **Capital One · JPMorgan Chase · USAA · Wells Fargo** 는 트래픽을 **100% API 로** 옮겼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+                "url": "https://plaid.com/blog/api-progress-update/",
+                "publisher": "Plaid",
+                "date": "2023-05-11",
+                "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+              }
+            ]
+          },
+          {
+            "label": "작은 기관을 위한 길",
+            "value": "**Core Exchange**(2022) — FDX 명세로 붙는다. **3,200곳 이상**이 접근하고 **설정에 24시간**이면 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+                "url": "https://plaid.com/blog/api-progress-update/",
+                "publisher": "Plaid",
+                "date": "2023-05-11",
+                "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 흡수가 새는 곳",
+            "value": "**Chase** 는 사용자가 동의 기간을 바꿀 수 있어 **기존 연결이 만료일을 얻고**, 만료되면 **토큰화된 계좌번호도 ACH 이체에 안 먹는다.** **Capital One** 은 잔액 조회에 **필요한 신선도를 지정**해야 하고 못 맞추면 호출이 실패한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "label": "이 연결이 받치는 사업",
+            "value": "2025년 ARR **5억 4,600만 달러(+40%)** · 기업 고객 **1,000곳 이상**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Plaid revenue, valuation & funding",
+                "url": "https://sacra.com/c/plaid/",
+                "publisher": "Sacra",
+                "date": "2026",
+                "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "자격증명을 받을지 말지",
+          "thought": "⚠️ **가장 큰 방향 전환은 `우리가 비밀번호를 받지 않는다` 였다.** OAuth 에서는 사용자가 **은행 자신의 화면에서** 인증하고 권한을 준 뒤 돌아온다 — Plaid 의 UI 에 자격증명을 넣지 않는다. 회사가 그 이점을 넷으로 적는다: **익숙하고 믿을 만한 경험**(전환율에 도움) · **연결 가동률이 높다**(연결 오류가 적다) · **연결이 더 오래 간다**(재인증 오류가 적다) · **MFA 지원이 낫다.** ⚠️ **대가는 기관이 준비돼 있어야 한다는 것**이고, 그래서 **산업 협력이 기술 과제가 됐다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "작은 기관을 어떻게 붙일지",
+          "thought": "**큰 은행과는 하나씩 협약을 맺을 수 있는데 작은 곳은 그럴 수 없다.** 그래서 **Core Exchange** 로 **FDX 라는 산업 표준 명세**에 맞추기만 하면 붙게 했다 — **설정에 24시간.** ⚠️ **표준을 만들어 파는 대신 이미 있는 표준에 붙는 길을 열었고**, Jack Henry·Alkami·Finastra·Q2 같은 **디지털 뱅킹 플랫폼과의 통합**으로 **수천 개 작은 은행과 신용조합이 한 번에** 들어온다(이 정리는 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "흡수가 안 되는 것을 볼 때",
+          "thought": "⚠️ **문서가 기관 이름을 적어 예외를 나열한다는 것이 이 도메인의 진실이다.** `Chase 는 …`, `Capital One 은 …` 처럼 **특정 은행의 규칙이 API 사용법으로 새어 나온다.** **하나의 API 로 보이게 하는 것이 목표인데 완전히는 안 되고, 회사는 그것을 감추는 대신 문서에 적는다**(이 평가는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Item",
+            "what": "⚠️ **한 사용자와 한 기관의 연결.** 동의가 만료되거나 끊기면 **`ITEM_LOGIN_REQUIRED`** 상태가 된다"
+          },
+          {
+            "name": "OAuth 리다이렉트",
+            "what": "사용자가 **은행 자신의 화면**으로 갔다가 돌아온다 — Plaid 의 UI 에 자격증명을 넣지 않는다"
+          },
+          {
+            "name": "리다이렉트 URI",
+            "what": "⚠️ **제약이 촘촘하다** — HTTPS 필수(샌드박스 localhost 만 예외), 커스텀 스킴 미지원, 서브도메인 와일드카드는 되지만 **Public Suffix List 도메인은 안 되고**, **해시 라우팅 미지원**"
+          },
+          {
+            "name": "동의 만료 웹훅",
+            "what": "동의가 끝나가는 것을 알린다 — **듣고 있으라고 문서가 권한다**"
+          },
+          {
+            "name": "update mode",
+            "what": "끊긴 연결을 **사용자를 다시 데려가 잇는** 흐름"
+          },
+          {
+            "name": "Core Exchange (FDX)",
+            "what": "작은 기관이 **산업 표준 명세**로 붙는 길. **3,200곳 이상**, 설정 **24시간**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **사용자의 은행 자격증명은 은행 화면에서만 입력된다** — OAuth 기관에서는 Plaid 를 거치지 않는다",
+          "**미국·EU·영국 연결에는 OAuth 지원이 필수다** — 유럽의 모든 기관, 미국의 큰 은행 다수",
+          "⚠️ **연결은 영구적이지 않다** — 동의가 만료되거나 철회되면 끊기고, 다시 이으려면 사용자가 필요하다",
+          "**기관별 예외는 감추지 않고 문서에 적는다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**사용자가 기관을 고른다**",
+            "why": "1만 2,000곳 이상 중에서"
+          },
+          {
+            "step": "**OAuth 기관이면 은행 화면으로 보낸다** — 사용자가 거기서 인증하고 권한을 준다",
+            "why": "⚠️ **자격증명이 Plaid 를 거치지 않는다**"
+          },
+          {
+            "step": "**돌아올 리다이렉트 URI 로 되돌아온다**",
+            "why": "⚠️ HTTPS 필수 · 커스텀 스킴 불가 · 해시 라우팅 불가 · 대시보드 허용 목록에 미리 등록"
+          },
+          {
+            "step": "**Plaid 가 인가 코드를 접근 토큰으로 바꾼다** — 그 사용자의 계좌에 한정된 토큰",
+            "why": "잔액·거래 내역·계좌 메타데이터를 읽는다"
+          },
+          {
+            "step": "**Item 이 만들어진다** — 한 사용자와 한 기관의 연결",
+            "why": "이후의 모든 호출이 이것을 통한다"
+          },
+          {
+            "step": "⚠️ **기관별 규칙이 여기서 새어 나온다** — Chase 는 사용자가 동의 기간을 바꿀 수 있고, Capital One 은 잔액 조회에 신선도를 지정해야 한다",
+            "why": "**흡수가 완전하지 않다**"
+          },
+          {
+            "step": "**동의 만료 웹훅을 듣고 철회를 관리한다**",
+            "why": "연결은 영구적이지 않다"
+          },
+          {
+            "step": "**끊기면 `ITEM_LOGIN_REQUIRED` 가 되고 update mode 로 사용자를 다시 데려간다**",
+            "why": "⚠️ **사람이 다시 와야 이어진다** — 자동으로 복구되지 않는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "사용자의 은행 자격증명을 받을 것인가",
+            "chosen": "⚠️ **받지 않는 쪽으로 옮긴다** — OAuth 로",
+            "alternatives": [
+              "스크린 스크래핑을 위한 자격증명 수집을 유지"
+            ],
+            "tradeoff": "이점을 넷으로 적는다 — **익숙한 경험**(은행 화면에서 인증하니 전환율에 도움) · **높은 가동률** · **더 오래 가는 연결** · **나은 MFA 지원**. ⚠️ **대가는 기관이 준비돼 있어야 한다는 것**이라, **기술 문제가 산업 협력 문제가 됐다** — 그래서 **75%** 라는 숫자가 성과로 발표된다(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              },
+              {
+                "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+                "url": "https://plaid.com/blog/api-progress-update/",
+                "publisher": "Plaid",
+                "date": "2023-05-11",
+                "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+              }
+            ]
+          },
+          {
+            "question": "작은 기관을 어떻게 붙일 것인가",
+            "chosen": "**산업 표준(FDX) 명세에 붙는 길을 연다** — Core Exchange",
+            "alternatives": [
+              "기관마다 개별 협약",
+              "자체 명세를 만들어 요구하기"
+            ],
+            "tradeoff": "**설정에 24시간**이면 되고 **3,200곳 이상**이 들어왔다. 디지털 뱅킹 플랫폼(Jack Henry·Alkami·Finastra·Q2)과의 통합으로 **수천 개 작은 은행이 한 번에** 붙는다. ⚠️ **대가는 남이 정한 명세에 묶인다는 것**이고, **FDX 가 못 담는 것은 Plaid 도 못 준다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+                "url": "https://plaid.com/blog/api-progress-update/",
+                "publisher": "Plaid",
+                "date": "2023-05-11",
+                "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+              }
+            ]
+          },
+          {
+            "question": "기관별 차이를 어디까지 감출 것인가",
+            "chosen": "⚠️ **감추되, 새는 것은 문서에 적는다**",
+            "alternatives": [
+              "완전히 균일한 추상화를 약속하기",
+              "기관별 API 를 그대로 노출하기"
+            ],
+            "tradeoff": "⚠️ **문서가 은행 이름을 적어 예외를 나열한다** — `Chase 는 사용자가 동의 기간을 바꿀 수 있다`, `Capital One 은 신선도를 지정해야 한다`. **하나의 API 로 보이게 하는 것이 목표인데 완전히는 안 되고, 감추면 개발자가 런타임에 놀란다.** **적어 두면 미리 대비할 수 있다**(이 평가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "question": "데이터의 신선도를 누가 정할 것인가",
+            "chosen": "⚠️ **호출하는 쪽이 지정한다**(Capital One 의 경우)",
+            "alternatives": [
+              "항상 최신을 가져오기",
+              "항상 캐시를 주기"
+            ],
+            "tradeoff": "**필요한 신선도를 지정하고, 그 요구를 만족하는 데이터가 없으면 호출이 실패한다** — 대신 **과금되지 않는다.** ⚠️ **`오래된 값을 주는 것보다 실패하는 것이 낫다` 는 판단이고**, 금융 데이터에서는 맞는 선택이다(이 해석은 이 사이트의 재구성이다). 대가는 **호출자가 그 판단을 매번 해야 한다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "question": "연결이 끊겼을 때 어떻게 할 것인가",
+            "chosen": "**`ITEM_LOGIN_REQUIRED` 로 알리고 update mode 로 사용자를 다시 데려간다**",
+            "alternatives": [
+              "자격증명을 저장해 두고 자동 재연결"
+            ],
+            "tradeoff": "⚠️ **자동 복구가 불가능한 구조다** — 자격증명을 갖고 있지 않으므로 **사람이 다시 와야 이어진다.** 그래서 **동의 만료 웹훅을 듣고 미리 알리라**고 문서가 권한다. **OAuth 를 고른 대가가 여기서 나타난다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "question": "리다이렉트 규칙을 얼마나 엄격히 할 것인가",
+            "chosen": "**엄격하게** — HTTPS 필수 · 커스텀 스킴 불가 · 해시 라우팅 불가 · 허용 목록 등록",
+            "alternatives": [
+              "느슨하게 두고 통합을 쉽게 하기"
+            ],
+            "tradeoff": "**금융 데이터의 인가 흐름이라 리다이렉트가 탈취되면 끝이다.** ⚠️ 그래서 **Public Suffix List 도메인의 와일드카드까지 막는다**(`https://*.co.uk/oauth.html` 는 안 된다). 대가는 **통합하는 쪽의 자유가 준다는 것**이고, 실제로 문서의 상당 부분이 이 규칙 설명이다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "question": "스크린 스크래핑을 없앨 것인가",
+            "chosen": "**없애는 쪽으로 간다** — 다만 산업 협력으로",
+            "alternatives": [
+              "스크래핑을 계속 주력으로"
+            ],
+            "tradeoff": "⚠️ **혼자 정할 수 없는 결정이다** — 미국·캐나다에 오픈 파이낸스 의무가 없어 **API 채택에는 조율된 산업 노력이 필요했다**고 회사가 적는다. **2023년 5월 기준 75%** 이고, 큰 은행 몇 곳은 **100% 이전**했다. **나머지는 여전히 스크래핑이라는 뜻이기도 하다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+                "url": "https://plaid.com/blog/api-progress-update/",
+                "publisher": "Plaid",
+                "date": "2023-05-11",
+                "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OAuth 2.0 (서버 대 서버)",
+            "role": "사용자가 **은행 화면에서** 인가하고, Plaid 가 인가 코드를 그 사용자 계좌에 한정된 토큰으로 바꾼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "tech": "Link (연결 흐름)",
+            "role": "기관 검색·인증·MFA·리다이렉트를 감싸고 마지막에 토큰을 넘긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "tech": "Core Exchange (FDX 명세)",
+            "role": "작은 기관과 핀테크가 **표준으로** 붙는 길. 3,200곳 이상, 설정 24시간",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+                "url": "https://plaid.com/blog/api-progress-update/",
+                "publisher": "Plaid",
+                "date": "2023-05-11",
+                "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+              }
+            ]
+          },
+          {
+            "tech": "동의 만료 웹훅 · update mode",
+            "role": "연결이 끊기기 전에 알리고, 끊기면 사용자를 다시 데려가 잇는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 스크린 스크래핑 (줄이는 중)",
+            "role": "⚠️ **2023년 5월 기준 연결의 25% 가 아직 이쪽이다**(75%가 API 라는 발표의 뒷면)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+                "url": "https://plaid.com/blog/api-progress-update/",
+                "publisher": "Plaid",
+                "date": "2023-05-11",
+                "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "fail-forward-not-back",
+          "via": "⚠️ 신뢰성 요구의 출처",
+          "contract": "⚠️ **위에 얹힌 앱들이 자기 사용자에게 SLA 를 약속하므로 이 회사는 DB 계층에 99.995% 를 건다** — **이 도메인의 성격이 저 도메인의 목표치를 정했다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "1만 2,000곳의 금융기관",
+          "via": "⚠️ 남의 규칙",
+          "contract": "⚠️ **기관마다 인증 방식·동의 기간·데이터 정책이 다르고, 한 곳이 바꾸면 그 위의 앱들이 흔들린다.** 문서가 은행 이름을 적어 예외를 나열하는 이유다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "핀테크 앱 (기업 고객 1,000곳 이상)",
+          "via": "하나의 API",
+          "contract": "**차이를 흡수해 하나로 보이게 하는 것이 파는 것이다** — 다만 **완전히는 안 되고 그것을 문서에 적는다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "FDX (산업 표준)",
+          "via": "Core Exchange",
+          "contract": "⚠️ **자체 명세를 요구하는 대신 이미 있는 표준에 붙는 길을 열었다** — 대가는 **남이 정한 명세에 묶인다는 것**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "남의 시스템 위에 서면 그 차이가 결국 새어 나온다",
+            "why_hard": "⚠️ **파는 것은 `하나의 API` 인데 뒤에는 1만 2,000곳의 서로 다른 규칙이 있다.** 문서가 은행 이름을 적어 예외를 나열하는 것이 그 증거다 — **Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고**(만료되면 토큰화된 계좌번호도 ACH 에 안 먹는다), **Capital One 은 잔액 조회에 신선도를 지정해야 하며 못 맞추면 호출이 실패한다.**",
+            "current_best": "**감추되 새는 것은 문서에 적는 것.** ⚠️ **감추면 개발자가 런타임에 놀라고, 다 노출하면 하나의 API 라는 값이 사라진다.** **그 사이를 문서로 메우는 것이 지금의 답이다**(이 정리는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          },
+          {
+            "problem": "자격증명을 갖지 않으면 자동으로 다시 이을 수 없다",
+            "why_hard": "⚠️ **OAuth 를 고른 대가다.** 비밀번호를 갖고 있지 않으므로 연결이 끊기면 **사람이 다시 와야 이어진다**(`ITEM_LOGIN_REQUIRED` → update mode). 그리고 **동의는 사용자가 은행 쪽에서 바꿀 수도, 철회할 수도 있다.**",
+            "current_best": "**동의 만료 웹훅을 듣고 미리 알리는 것** — 끊긴 뒤가 아니라 끊기기 전에. ⚠️ **그래도 마지막에는 사람이 필요하고**, 그 재연결 비율이 얼마인지는 자료에 없다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Link — OAuth guide",
+                "url": "https://plaid.com/docs/link/oauth/",
+                "publisher": "Plaid Docs",
+                "date": "2026",
+                "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "자격증명은 은행 화면에만 들어가고, 돌아오는 길은 엄격하다",
+          "question": "연결 하나가 만들어지는 길",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>사용자</b>\"]:::accent --> L[\"<b>Link</b><br/>• 기관 검색 · 흐름 관리\"]:::accent\n  L --> Q{\"<b>OAuth 기관인가</b>\"}\n  Q -->|\"예\"| B[\"<b>은행 자신의 화면</b><br/>• 여기서만 자격증명 입력<br/>• 인증 · 권한 부여 · MFA\"]:::accent\n  Q -->|\"아니오\"| S[\"⚠️ <b>스크래핑 경로</b><br/>• 2023년 5월 기준 약 25%\"]:::gone\n  B --> R[\"<b>리다이렉트 URI 로 복귀</b><br/>⚠️ HTTPS 필수 · 커스텀 스킴 불가<br/>⚠️ 해시 라우팅 불가 · 허용 목록\"]:::accent\n  R --> T[\"<b>인가 코드 → 접근 토큰</b><br/>• 그 사용자 계좌에 한정\"]:::list\n  T --> I[\"<b>Item</b><br/>• 한 사용자 · 한 기관의 연결\"]:::accent\n  I --> D[\"<b>잔액 · 거래 · 계좌 메타데이터</b>\"]:::list\n  E[\"⚠️ <b>기관별 규칙이 샌다</b><br/>• Chase: 동의 기간을 사용자가 바꾼다<br/>• Capital One: 신선도를 지정해야 한다\"]:::gone -.-> I\n  W[\"<b>동의 만료 웹훅</b>\"]:::list -.-> I\n  I -.->|\"끊기면\"| X[\"⚠️ <b>ITEM_LOGIN_REQUIRED</b><br/>• update mode 로 <b>사람이 다시 와야</b>\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "하나의 API 로 보이게 하는 일은 완전히는 안 된다",
+          "question": "무엇을 흡수하고 무엇이 새는가",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>파는 것: 하나의 API</b>\"]:::accent --> B[\"<b>뒤에 있는 것</b><br/>• 금융기관 1만 2,000곳<br/>• 인증 · 동의 기간 · 데이터 정책이<br/>  <b>제각각</b>\"]:::gone\n  B --> C1[\"⚠️ <b>Chase</b><br/>• 사용자가 동의 기간을 바꾼다<br/>• 만료되면 ACH 용 계좌번호도 멈춘다\"]:::gone\n  B --> C2[\"⚠️ <b>Capital One</b><br/>• 잔액에 신선도를 지정해야<br/>• 못 맞추면 호출 실패 (과금은 안 됨)\"]:::gone\n  C1 --> D[\"<b>답: 감추되 문서에 적는다</b><br/>• 감추면 런타임에 놀라고<br/>• 다 노출하면 하나의 API 가 아니다\"]:::accent\n  C2 --> D\n  E[\"⚠️ <b>OAuth 를 고른 대가</b><br/>• 자격증명이 없으니<br/>• <b>자동으로 다시 이을 수 없다</b><br/>• 사람이 다시 와야 한다\"]:::gone\n  F[\"⚠️ <b>혼자 정할 수 없는 것</b><br/>• 미국·캐나다에 오픈 파이낸스 의무가 없어<br/>• API 채택에 <b>조율된 산업 노력</b>이 필요했다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Link — OAuth guide",
+          "url": "https://plaid.com/docs/link/oauth/",
+          "publisher": "Plaid Docs",
+          "date": "2026",
+          "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
+        },
+        {
+          "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+          "url": "https://plaid.com/blog/api-progress-update/",
+          "publisher": "Plaid",
+          "date": "2023-05-11",
+          "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+        },
+        {
+          "title": "Plaid revenue, valuation & funding",
+          "url": "https://sacra.com/c/plaid/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
+        }
+      ]
     }
   ],
   "eras": [],
   "open_questions": [
-    "⚠️ **핵심 제품(계좌 연결)의 구조를 아직 못 읽었다** — **금융기관 1만 2,000곳에 어떻게 닿고 그 변화를 어떻게 따라가는지**가 이 회사의 본체인데 자료가 없다. **다음 사이클의 일이다.**",
+    "⚠️ **핵심 제품의 자료가 정책 글과 개발자 문서뿐이다** — 연결의 흐름과 기관별 제약은 확인했지만(OAuth·Core Exchange·동의 만료), **Plaid 자신이 1만 2,000곳의 변화를 어떻게 감지하고 따라가는지**를 다룬 **엔지니어링 회고를 못 찾았다.** **기관 한 곳이 바꾸면 무슨 일이 일어나는지가 이 회사의 가장 어려운 문제일 텐데 그 글이 없다.**",
+    "**재연결 비율을 모른다** — 연결이 끊기면 사람이 다시 와야 하는데, **얼마나 돌아오는지**가 자료에 없다. 이 사업의 핵심 지표일 텐데 공개하지 않는다.",
+    "**`75% 가 API` 는 2023년 5월 값이다** — 3년이 지났고 지금 값을 못 찾았다.",
     "⚠️ **접근 지도를 두 번 고쳐야 했다** — `engineering.plaid.com`(Medium, 목록이 비어 있다) 로 접었다가, `plaid.com/blog` 를 찾았는데 **그것도 Medium 개별 글로 리다이렉트된다.** **다만 개별 글은 브라우저로 전문이 읽힌다.**",
     "**사업 수치가 전부 3자 출처다**(Sacra 등) — ARR·밸류에이션·기관 수·계좌 수. **회사가 직접 밝힌 값을 못 찾았다.**",
     "**새 제품군(사기 탐지·신원 확인·결제 개시)의 기술을 모른다** — ARR 의 20% 이상이고 93% 자란다는 것만 3자 자료로 안다.",
@@ -681,6 +1252,20 @@
       "publisher": "Sacra",
       "date": "2026",
       "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
+    },
+    {
+      "title": "Building an Open Finance Future: Safe and Reliable Connectivity for All",
+      "url": "https://plaid.com/blog/api-progress-update/",
+      "publisher": "Plaid",
+      "date": "2023-05-11",
+      "summary": "산업 협력으로 스크린 스크래핑 의존을 줄여 연결의 75% 가 API 로 처리된다. 상위 10개 은행 중 8곳과 오픈 파이낸스 파트너십을 맺었고 Capital One·JPMorgan Chase·USAA·Wells Fargo 는 트래픽을 100% API 로 옮겼다. Core Exchange 로 3,200곳 이상이 FDX 명세를 통해 연결된다."
+    },
+    {
+      "title": "Link — OAuth guide",
+      "url": "https://plaid.com/docs/link/oauth/",
+      "publisher": "Plaid Docs",
+      "date": "2026",
+      "summary": "미국·EU·영국 연결에 OAuth 가 필수다. 기관별 예외를 문서가 그대로 적는다 — Chase 는 사용자가 동의 기간을 바꿀 수 있어 기존 연결이 만료일을 얻고, Capital One 은 잔액 조회 때 필요한 신선도를 지정해야 하며 못 맞추면 호출이 실패한다."
     }
   ]
 }
