@@ -180,7 +180,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "deploy-as-events"
+      ]
     },
     {
       "name": "관측 스택을 옮기고 나서야 진짜 비용을 만난다",
@@ -263,7 +265,8 @@
     "⚠️ **스택 소개 글에는 `무엇을 잃었나` 가 거의 없다** — 여섯 갈래 이전의 전후 수치는 다 있는데 대가가 없다. **개별 주제 글을 찾아야 대가 칸이 채워진다**(Mimir 압축 글이 그 예다).",
     "**`즉시 도착 65%` 를 무엇이 결정하는지 확인하지 못했다** — 각 나라 결제망 연동(InstaPay·Zengin·PIX)과의 관계가 기술 글에 자세히 없다.",
     "**Data Archives 가 1,000억 건 이상을 아카이브한다는 것 외에 그 구조를 모른다.**",
-    "**연표(eras)를 세울 자료를 아직 못 찾았다** — 다만 **2022년 스택 글**이 있다고 본문이 밝힌다. **2022 와 2025 를 나란히 놓으면 시간축이 나올 수 있다.**"
+    "**연표(eras)를 세울 자료를 아직 못 찾았다** — 다만 **2022년 스택 글**이 있다고 본문이 밝힌다. **2022 와 2025 를 나란히 놓으면 시간축이 나올 수 있다.**",
+    "⚠️ **CI/CD 에 대한 이전 글이 있다고 본문이 밝힌다**(`our earlier post about the state of our CI/CD pipeline`). **그 글을 찾으면 Octopus 를 버린 대가와 이전 비용이 나올 수 있다** — 지금은 얻은 것만 적혀 있다."
   ],
   "features": [
     {
@@ -693,6 +696,442 @@
           "question": "이 구조가 감수하는 것",
           "kind": "failure",
           "code": "flowchart TD\n  V[\"<b>플러그인 버전을 올린다</b>\"]:::accent --> G1[\"<b>좋을 때</b><br/>• SLSA 를 700개에 손쉽게\"]:::list\n  V --> G2[\"⚠️ <b>나쁠 때</b><br/>• 같은 통로로 실수도 700개에\"]:::gone\n  G2 --> Q[\"⚠️ <b>글에 없는 것</b><br/>• 단계적 롤아웃은 어떻게 하나<br/>• 되돌리는 경로는 무엇인가\"]:::gone\n  D[\"<b>기본값을 주는 대신</b>\"]:::accent --> D1[\"⚠️ <b>기본값 밖의 서비스</b><br/>• 이 이점을 못 받는다<br/>• 얼마나 되는지 글에 없다\"]:::gone\n  T[\"<b>템플릿이 아니라 의존성</b>\"]:::accent --> T1[\"⚠️ <b>샤시가 모든 서비스의 상류</b><br/>• 계속 유지해야 한다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Wise Tech Stack (2025 update)",
+          "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+          "publisher": "Wise Engineering",
+          "date": "2025-02-12",
+          "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+        },
+        {
+          "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+          "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+          "publisher": "Wise Engineering",
+          "date": "2025-01-15",
+          "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+        }
+      ]
+    },
+    {
+      "key": "deploy-as-events",
+      "name": "배포를 한 번의 거래가 아니라 지켜보는 흐름으로 바꾼다",
+      "domain": "배포를 거래가 아니라 사건의 흐름으로 본다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **돈을 옮기는 회사에서 나쁜 배포는 곧 사고다.** 그런데 서비스가 1,000개를 넘고 엔지니어가 850명이면 **배포는 계속 일어난다.** 이 회사는 그 문제를 도구 교체가 아니라 **관점 전환**으로 적는다 — **`a paradigm shift from viewing deployments as simple transactions to seeing them as orchestrated sequences of events`**. **배포를 사건의 흐름으로 보면 그 흐름 안에 검증과 되돌리기를 끼워 넣을 수 있다.**",
+        "metrics": [
+          {
+            "label": "카나리 규칙",
+            "value": "새 버전에 **트래픽 5%** · **30분** 동안 기술·비즈니스 지표 분석 · 이상이 크면 **자동 롤백**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 막아 낸 것",
+            "value": "**2024년 한 해에만 사고를 부를 뻔한 배포를 수백 건** 자동으로 막고 **엔지니어링 시간 수천 시간**을 아꼈다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "빌드",
+            "value": "자주 쓰는 컨테이너 캐시를 미리 채워 **빌드 15% 단축** — **월 50만 빌드** 규모에서 **월 1,000시간 이상** 절약",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "이전 진행",
+            "value": "글 시점에 **서비스의 절반 이상**이 Spinnaker 위에서 돌고 **2025년 중반 완전 이전** 예정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "도구를 바꾸는 일을 뭐라 부를지 정할 때",
+          "thought": "⚠️ **`도구 교체가 아니다` 라고 먼저 못 박는다** — `This wasn't just a tool swap`. **Octopus 는 배포를 한 번의 거래로 보고, Spinnaker 는 조율된 사건의 흐름으로 본다.** 흐름이 되면 중간에 **검증 단계를 끼워 넣을 자리**가 생긴다(뒤쪽 해석은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자기가 만든 것을 버릴 때",
+          "thought": "⚠️ **Octopus 는 사내 도구였다** — 만든 것을 버리고 오픈소스로 갔다. 회사가 그 이유를 성능이 아니라 **얻는 것**으로 적는다: 배포 관리에 드는 엔지니어링 시간이 줄고, 결함이 고객에 닿을 위험이 줄고, **품질과 안정성을 희생하지 않으면서** 속도가 올랐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "빌드를 빠르게 만들 때",
+          "thought": "⚠️ **개선이 측정에서 나왔다** — `By implementing detailed metrics tracking, we uncovered crucial insights into build performance.` 지표를 붙이기 전에는 **어디가 느린지 몰랐다**는 뜻이기도 하다. 그리고 답은 평범했다 — **자주 쓰는 컨테이너의 캐시를 미리 채우는 것.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "⚠️ Octopus",
+            "what": "⚠️ **버린 사내 배포 도구.** 배포를 한 번의 거래로 다뤘다"
+          },
+          {
+            "name": "Spinnaker",
+            "what": "배포를 **조율된 사건의 흐름**으로 다룬다. 그 흐름에 카나리가 끼어든다"
+          },
+          {
+            "name": "카나리 창",
+            "what": "새 버전에 트래픽 **5%** 를 주고 **30분** 동안 지켜보는 구간"
+          },
+          {
+            "name": "기술·비즈니스 지표",
+            "what": "⚠️ **둘 다 본다** — 기술 지표만이 아니라 사업 지표까지 분석한다"
+          },
+          {
+            "name": "빌드 캐시",
+            "what": "자주 쓰는 컨테이너를 미리 채워 두는 것. 월 50만 빌드에서 15%를 줄였다"
+          }
+        ],
+        "invariants": [
+          "**새 버전은 트래픽 5% 로 시작한다**",
+          "**30분 동안 지켜본다** — 기술 지표와 비즈니스 지표를 함께",
+          "**이상이 크면 사람을 기다리지 않고 되돌린다**",
+          "⚠️ **품질과 안정성을 속도와 맞바꾸지 않는다** — 회사가 그렇게 적는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**CI 가 GitHub Actions 에서 돈다** — CircleCI 에서 옮겼다",
+            "why": "이전이 최적화의 기회가 됐다"
+          },
+          {
+            "step": "⚠️ **빌드 성능에 세밀한 지표를 붙인다**",
+            "why": "어디가 느린지 알아야 고칠 수 있다"
+          },
+          {
+            "step": "**자주 쓰는 컨테이너의 캐시를 미리 채운다** — 빌드 15% 단축",
+            "why": "월 50만 빌드에서 월 1,000시간 이상이 된다"
+          },
+          {
+            "step": "**SLSA 를 언어별로 하나씩 적용한다**",
+            "why": "공급망 보안을 한 번에 다 하지 않는다"
+          },
+          {
+            "step": "**Spinnaker 가 배포를 사건의 흐름으로 조율한다**",
+            "why": "중간에 검증을 끼워 넣기 위해서다"
+          },
+          {
+            "step": "⚠️ **새 버전에 트래픽 5% 만 보낸다**",
+            "why": "틀렸을 때 닿는 범위를 5%로 묶는다"
+          },
+          {
+            "step": "**30분 동안 기술·비즈니스 지표를 분석한다**",
+            "why": "⚠️ **기술만 보면 사업이 망가진 것을 못 본다**(이 해석은 이 사이트의 재구성이다)"
+          },
+          {
+            "step": "**이상이 크면 자동으로 되돌린다**",
+            "why": "사람이 알아채기를 기다리지 않는다 — 2024년에만 수백 건을 이렇게 막았다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "사내 배포 도구를 계속 쓸 것인가",
+            "chosen": "**버린다** — 사내 도구 Octopus 에서 Spinnaker 로",
+            "alternatives": [
+              "Octopus 를 개선해 카나리를 붙이기"
+            ],
+            "tradeoff": "⚠️ **자기가 만든 것을 버리는 일이다.** 회사가 대가를 적지 않고 얻은 것만 적는다 — 배포 관리 시간 감소 · 결함이 고객에 닿을 위험 감소 · **품질과 안정성을 희생하지 않는 속도**. **버리는 비용은 이 글에 없다**(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "배포를 무엇으로 볼 것인가",
+            "chosen": "**조율된 사건의 흐름** — 한 번의 거래가 아니라",
+            "alternatives": [
+              "배포를 `보내고 끝나는 일` 로 두기"
+            ],
+            "tradeoff": "⚠️ **흐름으로 보면 관리할 단계가 늘어난다.** 그 대신 **중간에 검증과 되돌리기를 끼워 넣을 자리**가 생긴다 — 카나리가 그 자리에 들어갔다(이 대비는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "카나리에 트래픽을 얼마나 줄 것인가",
+            "chosen": "**5%**",
+            "alternatives": [
+              "더 큰 비율로 빨리 판단하기"
+            ],
+            "tradeoff": "⚠️ **틀렸을 때 닿는 범위를 5%로 묶는 대신 신호가 약해진다** — 적은 트래픽으로는 드문 문제가 안 보인다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "얼마나 오래 지켜볼 것인가",
+            "chosen": "**30분**",
+            "alternatives": [
+              "짧게 보고 빨리 넘기기"
+            ],
+            "tradeoff": "⚠️ **배포마다 최소 30분이 붙는다** — 안전을 속도와 맞바꾼 자리다. 그 값으로 **2024년에만 수백 건**을 막았다(앞쪽 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 보고 판단할 것인가",
+            "chosen": "**기술 지표와 비즈니스 지표를 함께**",
+            "alternatives": [
+              "오류율·지연 같은 기술 지표만 보기"
+            ],
+            "tradeoff": "⚠️ **사업 지표를 배포 판단에 넣으면 그 지표가 배포에 묶인다** — 무엇을 볼지 정하는 일이 커진다(이 대가는 이 사이트의 재구성이다). 그 대신 **기술은 멀쩡한데 사업이 망가진 배포**를 잡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "CI 를 옮길 것인가",
+            "chosen": "**옮긴다** — CircleCI 에서 GitHub Actions 로",
+            "alternatives": [
+              "CircleCI 를 유지하며 최적화"
+            ],
+            "tradeoff": "**이전이 최적화의 기회가 됐다** — 지표를 붙여 보니 **캐시를 미리 채우는 것만으로 15%** 가 나왔다. ⚠️ **이전 자체의 비용은 글에 없다**(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "공급망 보안을 어떻게 도입할 것인가",
+            "chosen": "**언어별로 하나씩** — SLSA 를 차례로",
+            "alternatives": [
+              "전 언어에 한 번에 적용"
+            ],
+            "tradeoff": "⚠️ **끝날 때까지 언어마다 상태가 다르다.** 그 대신 **한 번에 굴렸다 실패하지 않는다**(이 대가는 이 사이트의 재구성이다). ⭐ 그리고 이 도입이 **Gradle 플러그인 통로**를 타고 저장소 700개 이상에 닿았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Spinnaker + 자동 카나리 분석",
+            "role": "배포를 사건의 흐름으로 조율하고 5%·30분·자동 롤백을 그 안에 넣는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "GitHub Actions",
+            "role": "CI. 사내 Gradle 플러그인이 워크플로를 표준화한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "빌드 지표 추적 + 캐시 프리페치",
+            "role": "어디가 느린지 재고 자주 쓰는 컨테이너를 미리 채운다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "SLSA",
+            "role": "공급망 보안. 언어별로 하나씩 적용",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Octopus (사내 도구)",
+            "role": "⚠️ **버린 쪽** — 배포를 한 번의 거래로 다뤘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "standards-as-dependencies",
+          "via": "워크플로 표준화 플러그인",
+          "contract": "⚠️ **표준 통로가 깔려 있어서 이 이전이 굴러갔다** — GitHub Actions 워크플로를 플러그인이 표준화하고, SLSA 도입이 그 통로로 저장소 700개 이상에 닿았다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "관측 스택을 옮기고 나서야 진짜 비용을 만난다",
+          "via": "카나리가 보는 지표",
+          "contract": "⚠️ **카나리가 30분 동안 보는 것이 관측 스택에서 온다** — 그 스택이 흔들리면 배포 판단도 흔들린다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "송금 (수익원)",
+          "via": "배포 안전",
+          "contract": "⚠️ **돈을 옮기는 회사에서 나쁜 배포는 곧 사고다** — 2024년에만 수백 건을 자동으로 막았다",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "안전의 값이 시간으로 나온다",
+            "why_hard": "⚠️ **카나리는 30분을 쓴다.** 배포가 잦은 조직에서 그 시간은 누적된다 — 그런데 **줄이면 신호가 약해지고 늘리면 느려진다.** 트래픽 5% 도 같은 저울 위에 있다: **적게 보내면 드문 문제가 안 보인다**",
+            "current_best": "⚠️ **이 글에 답이 없다** — 5% 와 30분을 어떻게 정했는지, 예외를 두는지 나오지 않는다. **회사가 적는 것은 그 값으로 막아 낸 것뿐이다**(2024년 수백 건). 이 지적은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "problem": "측정하기 전에는 어디가 느린지 모른다",
+            "why_hard": "⚠️ **빌드 15% 개선의 출발점이 `지표를 붙였다` 였다** — `By implementing detailed metrics tracking, we uncovered crucial insights.` 바꿔 말하면 **그 전에는 월 50만 빌드가 어디서 시간을 쓰는지 몰랐다**",
+            "current_best": "**이전을 계기로 지표를 붙이는 것.** ⚠️ 그리고 답은 평범했다 — 자주 쓰는 컨테이너의 캐시를 미리 채우는 것. **어려운 것은 해법이 아니라 그것을 볼 눈이었다**(이 정리는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "5%에게 30분 동안 물어본다",
+          "question": "배포를 흐름으로 보면 무엇을 끼워 넣을 수 있나",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"<b>GitHub Actions</b><br/>• 캐시 프리페치로 빌드 15% ↓<br/>• 월 50만 빌드 · 월 1,000시간 절약\"]:::accent --> S[\"<b>Spinnaker</b><br/>• 배포를 사건의 흐름으로\"]:::accent\n  S --> K[\"<b>트래픽 5% 만 새 버전으로</b>\"]:::accent\n  K --> W[\"<b>30분 분석</b><br/>• 기술 지표<br/>• 비즈니스 지표\"]:::accent\n  W --> D{\"<b>이상이 큰가</b>\"}\n  D -->|아니다| F[\"<b>전량 전환</b>\"]:::list\n  D -->|맞다| R[\"<b>자동 롤백</b><br/>• 사람을 기다리지 않는다<br/>• 2024년에만 수백 건\"]:::accent\n  X[\"⚠️ <b>버린 쪽</b><br/>• 사내 도구 Octopus<br/>• 배포를 한 번의 거래로 봤다\"]:::soft\n  X -.-> S\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "두 숫자가 같은 저울 위에 있다",
+          "question": "5%와 30분을 어떻게 정했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  T[\"<b>트래픽 5%</b>\"]:::accent --> T1[\"<b>얻는 것</b><br/>• 틀렸을 때 닿는 범위가 작다\"]:::list\n  T --> T2[\"⚠️ <b>잃는 것</b><br/>• 신호가 약하다<br/>• 드문 문제가 안 보인다\"]:::gone\n  M[\"<b>30분</b>\"]:::accent --> M1[\"<b>얻는 것</b><br/>• 지표가 움직일 시간\"]:::list\n  M --> M2[\"⚠️ <b>잃는 것</b><br/>• 배포마다 30분이 붙는다\"]:::gone\n  T2 --> Q[\"⚠️ <b>글에 없는 것</b><br/>• 이 값들을 어떻게 정했는지<br/>• 예외를 두는지\"]:::gone\n  M2 --> Q\n  B[\"<b>회사가 적는 것</b><br/>• 그 값으로 막아 낸 것<br/>• 2024년 수백 건 · 수천 시간\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
         }
       ],
       "history": [],
