@@ -8,31 +8,32 @@
 
 ## 지금 파는 중
 
-**없다 — Rightmove 를 닫았다.** 완료 **72곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **72곳** · **큐 1/3**(Tailscale) · 비교 문서 33편.
 
-### ⚠️ 다음 사이클은 3순위(후보 조사)
+**다음 사이클은 6순위(신규) — Tailscale 이다.** PROMPT.md 3단계부터.
+⚠️ **첫 화면은 제품 발표다 — 심층 글 주소를 검색으로 먼저 찾아 둔다.**
+이미 아는 것: `tailscale-rs-rust-tsnet-library-preview`(2026-04, 전문 읽음) ·
+`an-unlikely-database-migration`(JSON 파일 → etcd) · `5-things-5-years` ·
+`how-nat-traversal-works` · `how-tailscale-works`.
 
-**⏳ 브라우저로 다시 볼 둘이 먼저다** — 앞 조사에서 남겨 뒀다:
-- **Supercell**(게임 축 — Roblox 하나뿐이다) — The New Stack `inside-supercells-minimalist-
-  massive-social-network`(2026-03-14). **서버 엔지니어 본인 이야기**를 정리한 것이고
-  `a mighty team of two` 로 수억 명을 잇는 소셜 플랫폼을 만들었다.
-  **WebFetch 로는 뉴스레터 폼만 온다 — 브라우저로 열 것.**
-- **Swiggy**(인도 배달) — `bytes.swiggy.com` 이 두 번 다 무응답. 브라우저로.
+### ⭐⭐ 앞 사이클의 교훈을 그대로 써서 판정을 뒤집었다
 
-**그다음은 `첫 화면만 보고 떨어뜨린` 넷을 다시 본다** — Capital One · Ably · ClickHouse ·
-Tailscale. **Rightmove 가 바로 그 함정이었다**(최신 3편이 디자인·커리어 글).
+Rightmove 에서 **`첫 화면으로 블로그를 판정하지 않는다`** 를 배웠고, 그 의심 목록
+(Capital One · Ably · ClickHouse · Tailscale)을 다시 봤다. **Tailscale 이 뒤집혔다** —
+`열리는데 마케팅` 으로 떨어뜨렸던 곳인데 심층 글에 **버린 대안이 셋**이나 있다.
+**엔진이 자기 판정을 다시 보는 고리가 처음으로 돌았다.**
 
-### ⭐⭐ Rightmove 에서 남길 것 — 사업 구조가 도메인 이름을 정한다
+### Tailscale 이 왜 좋은가 — 두 구현을 함께 이고 가기로 한 결정
 
-**트래픽의 85%가 자연 유입**이라는 사실 하나가 사이트맵을 매출 경로로 만든다. 그래서
-도메인 이름을 `자연 유입이 매출의 바탕이라 색인을 직접 관리한다` 로 잡았다.
-**같은 기술이라도 사업 구조에 따라 무게가 다르다** — 도메인 이름을 지을 때 이 각도를 본다.
+Go 를 Rust 로 다시 쓰면서 **점진적 in-place 재작성을 `the worst of all worlds` 라며
+버렸다.** 그리고 **자기 구현이 미완이라고 목록으로 밝힌다**(P2P · NAT 순회 · DNS ·
+exit node · SSH · Taildrop · 보안 감사). ⚠️ **수치는 거의 없다.**
 
-### ⚠️ 네 번째로 확인된 것 — 한 회사 안에서 글의 결이 갈린다
+### ⚠️ 두 번 이상 막힌 곳 (새 단서 없으면 안 두드린다)
 
-Nubank(지연 편 대 FinConnect) · Bolt(사기 검문 대 결제 대사) · Booking.com 에 이어
-**Rightmove 가 가장 극단적이다** — 사이트맵 글은 RFC 표까지 옮겨 적는데 프런트엔드
-글은 **수치가 하나도 없다.** **후보 조사에서 읽은 한 편으로 회사를 판단하지 않는다.**
+- **The New Stack** — WebFetch 도 브라우저도 뉴스레터 폼만. **Supercell 기사를 못 읽어
+  게임 축이 또 막혔다.**
+- **Swiggy** — `bytes.swiggy.com` 세 번째 실패.
 
 ## 지금의 진짜 상태
 
@@ -354,6 +355,9 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
+| `tailscale.com/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면은 제품 발표** — 심층 글은 검색으로 주소를 찾아야 한다 (2026-09-06 재확인, 판정 뒤집힘) |
+| `thenewstack.io` (재확인) | ❌ **브라우저로도 뉴스레터 폼만 온다** — 본문 추출 실패 |
+| `bytes.swiggy.com` (재확인) | ❌ **브라우저로도 로드되지 않는다** (세 번째 실패) |
 | `rightmove.blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면은 문화·디자인 글** — 기술 글은 `/category/software-engineering/` 에 있다 (2026-09-06 확인) |
 | `bytes.swiggy.com` | ❌ **두 번 다 응답이 없다**(WebFetch 무출력). 브라우저로는 열릴 수 있다 |
 | `thenewstack.io` | ⚠️ WebFetch 로는 **뉴스레터 폼만** 오고 본문이 안 온다. 브라우저로 시도할 것 |
