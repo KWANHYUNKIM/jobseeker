@@ -1348,6 +1348,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "replication",
+      "title": "복제 (레플리케이션)",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**같은 데이터를 여러 대에 베껴 두는 일.** `consistency-model`·`consensus`·`sharding`·`causal-consistency` 가 전부 이것을 전제하고 쓰였다 — **복제본이 있어서 생기는 문제들**의 원인이 여기다.",
+      "aliases": [
+        "복제",
+        "레플리케이션",
+        "replication",
+        "읽기 복제본",
+        "read replica"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
