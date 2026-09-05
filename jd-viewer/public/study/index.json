@@ -1115,6 +1115,24 @@
       "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "sso",
+      "title": "기업 SSO · OIDC/SAML",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**고객사의 계정 체계에 우리 제품을 꽂는 일**이다. 우리가 비밀번호를 갖는 것이 아니라 — **고객사가 신원의 주인이고, 우리는 그 판정을 믿는다.**",
+      "aliases": [
+        "SSO",
+        "싱글 사인온",
+        "SAML",
+        "SCIM",
+        "기업 SSO"
+      ],
+      "sections": 7,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
