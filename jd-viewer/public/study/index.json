@@ -1684,6 +1684,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "mydata",
+      "title": "마이데이터",
+      "category": "domain",
+      "level": "core",
+      "status": "done",
+      "one_liner": "흩어진 내 금융 정보를 한곳에서 보게 해 주는 서비스 — 그리고 그것을 위해 **남의 기관에서 데이터를 몰래 긁어 오던 방식이 \"요구하면 보내 준다\"는 규격으로 바뀐 제도.**",
+      "aliases": [
+        "마이데이터",
+        "MyData",
+        "본인신용정보관리업",
+        "전송요구권",
+        "정기전송"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
