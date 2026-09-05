@@ -4,52 +4,69 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `데이터 이관 (마이그레이션)`(`data-migration`)을 끝냈다** — 절 6 · 표 5 ·
-실습 3 · 지뢰 7 · 근거 8. 전체: **문서 79개**(전부 done) · 절 471 · 실습 237 ·
-**오류 0 · 경고 0.**
+**직전 사이클에서 `관계 기반 접근제어 (ReBAC)`(`rebac`)를 끝냈다** — 절 6 · 표 5 · 실습 3 ·
+지뢰 6 · 근거 7. 전체: **문서 80개**(전부 done) · 절 477 · 실습 240 · **오류 0 · 경고 0.**
 
-**⭐ 축이 또 셈에서 나왔다 — 두 사이클 연속이다.** `마이그레이션` 은 **두 개의 다른 일**을
-가리킨다: **스키마 마이그레이션**(Flyway·Alembic·Prisma 로 같은 DB 구조 변경)과 **데이터
-이관**(다른 시스템으로 옮기기). 좁은 패턴 285건(모집중 106) 중 **스키마 54 · 이관 82 ·
-둘 다 1 · 문맥 불명 148**. **불명이 절반이 넘는다는 것 자체가 첫 절의 근거**가 됐다
-(공고만 봐서는 모르니 이웃 낱말을 보라). 넓은 패턴은 846건이지만 코드·클라우드 이관이
-섞여 안 썼다.
+**`rbac`·`abac`·`policy-engine` 에 이은 네 번째 축을 채웠다.** 42dot 공고가 넷을 나란히 적은
+그 목록이 이제 다 있다.
 
-**⭐⭐ 문서의 진짜 축은 "다 옮겼다는 걸 어떻게 아느냐"** 다. AWS DMS 검증 문서가
-**자기가 못 하는 것을 스스로 적어 둔 자리**가 금광이었다 — **"Data validation requires that
-the table has a primary key or unique index."** · **"If one or more rows are being continuously
-modified during validation, then AWS DMS can't validate those rows."**(⭐ **가장 중요한 행이
-검증에서 빠진다**) · **"Validated—... If the table is updated, the status can change from
-Validated."**(⭐⭐ **검증은 상태가 아니라 순간이다**). 실패 유형 넷(`RECORD_DIFF`/
-`MISSING_SOURCE`/`MISSING_TARGET`/`TABLE_WARNING`)은 **나눠 세면 원인이 갈리는** 표가 됐다.
+**⭐ 가장 강한 근거는 모두싸인 공고**였다 — `RBAC 기반 레거시 권한 체계를 ReBAC 기반으로
+전환하여 **다양한 리소스간의 권한 상속이 가능하도록** 개선하고 있습니다`. OpenFGA 가
+RBAC 의 한계로 든 **"breaks down with hierarchy, sharing, or multi-tenancy"** 중 '계층'이
+**국내 회사의 진행 중인 과제**로 나타난 자리다.
 
-**⭐ 두 번째 금광은 PostgreSQL 논리 복제의 제약 목록** — **"Sequence data is not
-replicated."** 이 문서 최고의 지뢰다(전환 후 첫 INSERT 에서 PK 충돌, 읽기 전용일 땐 증상이
-없어 전환 전에 안 잡힌다). 그리고 **"applying additive schema changes to the subscriber
-first"** 는 `zero-downtime-deploy` 의 확장·수축과 **같은 규칙의 다른 얼굴**이었다.
+**⭐⭐ 문서의 축은 도입 후에 오는 대가에 뒀다 — "되나요?"는 쉬워지고 "제가 뭘 볼 수
+있나요?"가 어려워진다.** OpenFGA 가 ListObjects 를 **"small object collections"** 용으로
+스스로 좁혀 두었고, 전용 문서(`Search with Permissions`)가 **선택지 셋과 각각 깨지는 조건**을
+적어 뒀다 — 특히 **"A partial list from the API is not enough."**(부분 목록으로는 정렬을
+만들 수 없다)가 세 번째 방식을 통째로 탈락시킨다. Baseten 공고의 **"beyond a proof of
+concept"** 이 이 문서가 절반을 대가에 쓴 이유의 증거로 붙었다.
 
-**다음 사이클 = QUEUE 맨 위 `관계 기반 접근제어 (ReBAC)`(`rebac`)** — 사다리 3순위.
-(데이터 이관을 큐에서 지우고 **`스키마 마이그레이션`(`schema-migration`)을 새로 올렸다** —
-이 문서가 첫 절에서 갈라 놓고 넘긴 나머지 절반이다. **대기 2개**: ReBAC, 스키마 마이그레이션)
+**⭐ Zanzibar 초록이 준 뜻밖의 이음** — "respect **causal ordering** of user actions and thus
+provide **external consistency**". **권한 시스템이 일관성 모델을 요구 사항으로 내건다.**
+권한을 뺀 뒤 비밀을 올렸는데 복제 지연으로 아직 보이면 증상이 지연이 아니라 **정보 유출**이다.
+`causal-consistency`·`replication` 과 이었다. ⚠️ **논문은 초록만 읽었다**(PDF 제약 그대로).
 
-## ReBAC 사이클 메모
+**다음 사이클 = QUEUE 맨 위 `스키마 마이그레이션`(`schema-migration`)** — 사다리 3순위.
+(ReBAC 을 큐에서 지우고 **`감사 로그`(`audit-log`)를 새로 올렸다** — 이 문서가 끊긴 링크로
+남긴 자리이고 `policy-engine`·`zero-trust`·`data-governance` 도 언급만 하고 지나갔다.
+**대기 2개**: 스키마 마이그레이션, 감사 로그)
 
-- **`policy-engine` 이 끊긴 링크로 남긴 자리**이고 `rbac`·`abac` 에 이은 **빠진 세 번째
-  모델**이다. 공고가 셋을 나란히 적는다(42dot 의 `RBAC, ABAC, ReBAC, policy engine,
-  permission model`, 해외 공고의 `ReBAC and ABAC with policy engines (OPA, Cedar, OpenFGA,
-  or equivalent)` 두 건).
-- ⚠️ **이름으로 세면 한 자릿수다.** `OpenFGA|Zanzibar|SpiceDB|관계 기반|relationship-based|
-  공유 권한|폴더 상속` 처럼 **실물 이름과 증상으로 함께 센다**(`abac` 의 "개념어와 기능어를
-  함께 센다" 규칙).
-- 축 다섯: ①**"이 문서를 나와 공유한 사람"은 역할로도 속성으로도 못 자른다** ②**권한을
-  관계 그래프로 저장한다**(주체-관계-객체 튜플) ③**상속과 순회**(폴더 권한이 파일로 내려감)
-  ④**그래서 느리고 캐시가 어렵다**(→ `caching`) ⑤**"누가 이걸 볼 수 있나"를 역으로 묻기**.
-- ⭐ **1차 자료** — **OpenFGA 공식 문서**(관계 튜플, `check`/`list-objects`)가 공개 HTML.
-  ⚠️ **Zanzibar 논문은 USENIX 라 403 이었던 전력**이 있다 — HTML 판 없으면 OpenFGA·SpiceDB
-  문서로 받치고 밝힌다. ⚠️ `rbac`·`abac`·`policy-engine` 과 겹치지 않게.
+## 스키마 마이그레이션 사이클 메모
+
+- **`data-migration` 이 첫 절에서 갈라 놓고 넘긴 나머지 절반**이다(스키마 54 · 이관 82 ·
+  불명 148). ⚠️ **`data-migration` 과 겹치지 않게 — 시스템 간 이동은 그쪽, 여기는 같은 DB 의
+  구조 변경.** ⚠️ **`zero-downtime-deploy` 와도 겹친다** — 그쪽은 코드의 두 버전 공존,
+  여기는 **스키마의 두 버전 공존**.
+- 축 다섯: ①**버전 파일이 순서대로 쌓인다**(왜 체크섬·baseline 인가) ②**되돌릴 수 없는
+  변경**(컬럼 삭제 · down 마이그레이션의 거짓말) ③**배포와 마이그레이션의 순서**(확장·수축)
+  ④**큰 테이블의 ALTER 는 락을 잡는다**(온라인 DDL) ⑤**여러 인스턴스가 동시에 실행하면**
+  (→ `distributed-lock`).
+- ⭐ **1차 자료가 넘친다** — Flyway 공식 문서(버전 매김·체크섬·baseline), Alembic 문서
+  (리비전 그래프·autogenerate 의 한계), PostgreSQL/MySQL 의 ALTER TABLE 락 문서가 전부
+  공개 HTML. **'원리는 오픈소스 문서, 운영은 도구 문서'** 를 그대로 쓴다.
+- 공고 근거가 구체적이다: `Flyway를 이용한 데이터베이스 마이그레이션(Migration) 경험`(인터엑스),
+  `스키마 마이그레이션(Alembic 등)을 관리해보신 분`(큐피스트), `Prisma ORM을 활용한 PostgreSQL
+  데이터 모델링 및 마이그레이션 관리`(이지식스), `Room, Realm 등 로컬 DB 스키마 마이그레이션을
+  운영 환경에서`(마카롱팩토리 — **모바일 로컬 DB 라는 다른 계층**이 섞여 있으니 갈라 볼 것).
 
 
 ## 배운 것
+
+- ⭐ **1차 자료가 자기 기능의 적용 범위를 형용사 하나로 좁혀 둘 때가 있다.** OpenFGA 의
+  ListObjects 소개에 붙은 **"small object collections"** — 그 두 낱말이 이 문서 경계 절
+  전체의 씨앗이었다. `data-migration` 의 Limitations 절, `policy-engine` 의 "고려 사항" 문단에
+  이어 **세 사이클 연속으로 '제품이 스스로 그은 선'에서 문서의 심장이 나왔다.**
+  **기능 소개 문장의 수식어(small·basic·simple)를 그냥 지나치지 않는다.**
+- ⭐ **근거가 얇은 낱말을 (b) 유형으로 쓸 때의 처리가 정착됐다.** `rebac` 은 공고 7건뿐인데,
+  ① **왜 얇은지를 `open_questions` 에 숫자로 적고**(국내 2 · 해외 3 · 마감 1) ② **왜 그래도
+  쓰는지**(끊긴 링크 + 공고들이 RBAC·ABAC·ReBAC 를 나란히 적음)를 함께 적었다.
+  `saga`(19건 중 분산 맥락 4건)·`causal-consistency`(이름으로 0건)에 이은 세 번째이고,
+  이제 **얇은 근거 자체를 문서의 정직성으로 바꾸는 방법**으로 굳었다.
+- **논문 계열은 이제 '초록까지'가 기본값이다.** Raft(PDF 실패)·Sagas(ACM 403)에 이어
+  Zanzibar 도 **Google Research 의 HTML 소개 페이지에서 초록만** 얻었다. 다만 이번에는
+  **초록 한 문단이 문서에 새 절을 만들었다**(인과 순서 → `causal-consistency` 이음).
+  **논문을 큐에 올릴 때 '본문은 못 읽는다'를 전제하되, 초록에 무엇이 있는지는 반드시 본다.**
 
 - ⭐⭐ **"셈의 분류가 곧 문서의 축"이 두 사이클 연속 통했다 — 이제 기본 절차로 삼는다.**
   `policy-engine`(인가 11 vs 가드레일 32)에 이어 `data-migration`(스키마 54 vs 이관 82).

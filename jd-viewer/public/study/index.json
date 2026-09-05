@@ -1406,6 +1406,27 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "rebac",
+      "title": "관계 기반 접근제어 (ReBAC)",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "\"이 사람이 이 문서를 볼 수 있나\"를 직책이나 속성이 아니라 **사람과 물건 사이에 맺어진 관계**로 판단하는 방식 — 그리고 그 관계를 타고 위 폴더의 권한이 아래 문서로 내려온다.",
+      "aliases": [
+        "ReBAC",
+        "관계 기반 접근 제어",
+        "relationship-based access control",
+        "OpenFGA",
+        "Zanzibar",
+        "SpiceDB",
+        "FGA",
+        "Fine-Grained Authorization"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
