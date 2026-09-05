@@ -8,27 +8,29 @@
 
 ## 지금 파는 중
 
-**없다 — Booking.com 을 닫았다.** 완료 **70곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **70곳** · **큐 1/3**(Trainline) · 비교 문서 33편.
 
-### ⚠️ 다음 사이클은 3순위(후보 조사) — 되살릴 목록이 먼저다
+**다음 사이클은 6순위(신규) — Trainline 이다.** PROMPT.md 3단계부터.
+⚠️ **프로파일 전에 글 주소를 WebSearch 로 더 찾아 둔다** — 아래 제약 때문에 목록을 못 본다.
 
-**새 이름을 찾기 전에 `## 확인해 둔 후보` 의 되살릴 목록을 브라우저로 연다.**
-남은 것: **Trainline · Tokopedia · Dream11 · Meesho**
-(⚠️ Traveloka 는 2020~2022 에서 멈췄다). 앞의 두 조사가 그 차이를 보여 준다 —
-**새 이름을 여덟 곳 두드려 빈손**이었고, **되살릴 목록 맨 위를 한 곳 열어 한 곳을 얻었다.**
+### ⚠️ 새로 확인한 제약 — Medium 발행물 홈은 브라우저로도 목록이 안 온다
 
-### ⭐⭐ Booking.com 에서 남길 것 — 왜 안 고쳐졌는지를 적는 회사
+`medium.com/trainline` · `medium.com/tokopedia-engineering` 둘 다 **제목·팔로워 수·탭
+이름만** 오고 글 목록이 비어 있다(JS 렌더링). **개별 글 주소는 전문이 온다** — 그래서
+지금의 방법은 **WebSearch 로 글 주소를 찾아 브라우저로 여는 것**이다.
+⚠️ **그 대가로 "최신 글이 언제인지" 를 알 수 없다** — Trainline 도 읽은 글이 2024-01 인데
+블로그가 지금도 사는지 확인하지 못했다. **후보를 올릴 때 이 불확실성을 적어 둔다.**
 
-순환 의존성을 발견한 것이 아니라 **알고도 안 고쳤던 이유**를 적는다:
-`Of course this observation is not new` · 되돌아볼 시간이 늘 있지는 않다 ·
-**큰 계기가 왔을 때 고친다.** 그리고 품질 쪽에서는 **자기가 너무 엄했던 것**을 적는다.
-**두 글 다 "우리가 왜 그랬는지"를 쓰는 결이다** — 후보 조사에서 이런 결을 만나면 바로 올린다.
+### Trainline 이 왜 좋은가 — 작게만 시험한 대가를 적는다
 
-### 이 회사에서도 반복된 것 — 연표는 회사 단위로만 서고 기능 단위로는 못 선다
+`Most if not all of our testing was small-scale testing. This didn't allow us to see
+the bigger picture till the end.` 그리고 실제로 두 번 물렸다 — **리다이렉트 100개에서
+청구가 튀었고**(Lambda@Edge → CloudFront Functions), 그 대안도 **수천 개에서 타임아웃**이
+나 배포를 분리했다. **축도 새롭다** — 여행 중 **철도·버스 예약**이다.
 
-Kraken · Mercado Libre 에 이어 **네 번째다.** 온프렘 카탈로그 구조가 언제부터였는지가
-없어 `history` 를 버렸다(`Back when we adopted Bacula` 뿐이다).
-**글이 옛 글을 직접 인용할 때만 섰다**(Kraken 2016→2026, Bolt 2021→2025).
+### ⏳ 남은 되살릴 목록
+
+Tokopedia(Solr→ES 글 주소는 찾았으나 발행일 미확인) · Dream11 · Meesho.
 
 ## 지금의 진짜 상태
 
@@ -350,6 +352,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
+| **Medium 발행물 홈** (`medium.com/<pub>`) | ❌ **브라우저로도 목록이 안 온다** — 제목·팔로워 수·탭 이름만 오고 글이 비어 있다(JS 렌더링). **글 주소를 WebSearch 로 찾아 개별로 열어야 한다** ⚠️ 그래서 최신 글 날짜를 알 수 없다 (2026-09-06 확인) |
 | `medium.com/booking-com-development` | ✅ **브라우저로 전문이 온다** (2026-09-05 확인). 목록은 `blog.booking.com` 에서 WebFetch 로 |
 | `medium.com/*` | ⚠️ WebFetch 403 · **브라우저로는 전문이 온다 — 2026-09-05 에 `medium.com/mercadolibre-tech` 로 실제 확인했다.** 후보를 Medium 이라는 이유로 떨어뜨리지 않는다 |
 | ~~`bolt.eu/en/blog/category/tech-at-bolt/`~~ | ⚠️ **목록은 오는데 본문이 비어 온다**(JS 렌더링). `engineering.ramp.com` 과 같은 형태 — **브라우저 `get_page_text` 로 다시 볼 것** (2026-09-05) |

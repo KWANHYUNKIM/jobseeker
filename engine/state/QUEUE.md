@@ -20,9 +20,20 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Trainline** | EU(UK) · 커머스(철도·버스 예약) | `medium.com/trainline` — ⚠️ **읽은 글은 2024-01-09** | ⚠️ **개별 글은 브라우저로 전문이 오는데 목록이 안 온다**(Medium 발행물 홈이 JS 렌더링). 글 주소는 검색으로 찾았다 | **`how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline` 전문을 읽었다 — 실패를 두 개 적는 이전 회고다.** **⚠️ 작게만 시험한 대가를 그대로 밝힌다**: 리다이렉트 1개로 시험할 땐 쌌는데 **100개로 늘리자 청구가 튀었고**(Lambda@Edge → CloudFront Functions 로 옮김), 그 CloudFront Functions 도 **수천 개 리다이렉트에서 타임아웃**이 나 리다이렉트 배포를 따로 떼어 냈다. `Most if not all of our testing was small-scale testing. This didn't allow us to see the bigger picture till the end.` **회고 문장이 좋다** — `it was more like re-engineering the aeroplane while in flight` · `break down our CDN monolith into more manageable parts`. **수치** — 운영사 **270곳 이상 · 45개국 · 사용자 1억 이상** · 이전한 도메인 **300곳 이상** · 주 도메인 하나가 CDN 트래픽의 **70% 이상**이고 설정이 **JSON 8,500줄 이상** · **9개월 미만**(계획 6주, 엔지니어 6~8명 + 리드·EM·PM / 이전 4~6개월) · 가중 DNS 를 **5→10→25→50→75→100%** 로 · 롤백 위해 CNAME TTL 을 **5분**으로 미리 낮춤. **축이 새롭다** — 여행 중 **철도·버스 예약**이다(Booking 은 숙박, trivago 는 메타서치). ⚠️ **최신 글이 언제인지 모른다** — 목록이 안 열려 확인하지 못했다. 프로파일 전에 다른 글 주소를 검색으로 더 찾아 본다 |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-06 여섯 번째 후보 조사 — 되살릴 목록에서 하나를 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
+  - **✅ Trainline** — 위 대기 표로 올렸다. **세 사이클 전 `medium.com/trainline` 로 301 된다며 떨어뜨린 곳**이다.
+  - **⚠️ 새로 확인한 제약 — Medium 발행물 홈은 브라우저로도 목록이 안 온다.**
+    `medium.com/trainline` 과 `medium.com/tokopedia-engineering` 둘 다 **제목·팔로워 수·탭 이름만** 오고
+    글 목록이 비어 있다(JS 렌더링). **개별 글 주소는 전문이 온다** — 그래서 **글 주소를 WebSearch 로 찾아
+    브라우저로 여는 것**이 지금의 방법이다. ⚠️ **그 대가로 "최신 글이 언제인지" 를 알 수 없다.**
+  - **⏳ Tokopedia** — 목록이 안 와서 접었다. 검색으로 `learnings-from-migration-to-elastic-search`
+    (Solr → Elasticsearch) 를 찾았으나 **발행일을 확인하지 못했다.** 다음에 그 주소를 직접 열어 본다.
+  - **⏳ 남은 되살릴 목록** — Tokopedia · Dream11 · Meesho.
 
 - **2026-09-05 다섯 번째 후보 조사 — 한 곳을 열어 한 곳을 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
   **⚠️ 이번에는 새 이름을 찾지 않았다.** 앞 조사에서 *"Medium 이라 못 읽는다로 떨어뜨린 목록이
