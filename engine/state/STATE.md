@@ -8,39 +8,44 @@
 
 ## 지금 파는 중
 
-**Mercado Libre(기타/AR · 커머스)** `in_progress` · **연표 3시기 · 도메인 3 · 기능 1** —
+**Mercado Libre(기타/AR · 커머스)** `in_progress` · **연표 3시기 · 도메인 3 · 기능 2** —
 69곳 · ⚠️ 큐 0/3. **본문은 Medium 이라 브라우저(`get_page_text`)로만 읽힌다.**
 
-방금 쓴 기능: **`three-clicks-to-production`(세 번 눌러 앱이 뜨고, 커피 내리는 동안
-고쳐 본다)**. **이 기능은 앞 시대의 반작용이다** — `chaotic freedom` 을 되돌리려고
-만든 것이고, 그래서 목표가 지표가 아니라 **장면**으로 적혀 있다.
+방금 쓴 기능: **`stock-cells`(대륙 하나의 재고를 격벽 셋으로 나눈다)**.
+결정 8개가 **전부 `confirmed`** 다.
 
-### ⭐ 연표와 기능이 이어졌다
+### ⭐⭐ 이 기능의 가장 큰 벽은 데이터가 아니라 계약이었다
 
-`2015-fury` 시기의 `features` 에 이 기능을 걸어 뒀다. **연표의 한 시기가 실제 기능
-문서로 이어지는 첫 사례다** — 뷰어에서 시대를 누르면 그 시대에 만든 것을 볼 수 있다.
+수십 TB 를 옮기는 것보다 **라우팅 키가 없는 API 가 어려웠다.** 키를 넣으면
+`a cross-organizational migration — one far more disruptive than the architectural
+change we were trying to implement` 가 된다. 그래서 **둘을 함께 쓴다** —
+새 데이터는 **셀별 ID 범위**로(모양을 안 바꾸니 계약이 살아 있다),
+옛 데이터는 **브로드캐스트**로. 회사가 그 값을 먼저 말한다:
+`It's not the perfect architecture — broadcasting requests adds overhead — but it
+provided something more valuable: a safe migration path.`
 
-### ⚠️ 연도를 또 한 번 안 썼다
+### ⭐ 두 기능이 서로를 성립시킨다
 
-**인스턴스 기반 `Standard` → 관리형 쿠버네티스**는 명백한 세대 교체인데
-**언제 옮겼는지가 글에 없다.** Fury 의 첫 컴퓨팅 모델이니 2015년부터라고 **추론할 수는
-있지만 그건 추론이다** — 창업연도를 첫 시기에 갖다 붙이지 않는 것과 같은 자리다.
-`history` 를 비우고 **decisions 에 버린 이유 둘(레플리카와 인스턴스가 1:1 이라 비효율 ·
-클라우드 네이티브 기능 활용 제한)만 담았다.**
+셀 글이 **Fury 덕분에 가능했다**고 직접 적는다 — 셀이 저마다 설정·대시보드·배포 규칙을
+갖는 `its own isolated universe` 가 되는 것을 플랫폼이 막았다. `connections` 로 이었다.
 
-### 다음 사이클 — 남은 두 도메인
+### ⚠️ 연도를 세 번째로 못 썼다
 
-- **셀로 나눠 장애 반경을 줄인다** — `from-a-single-point-of-failure...`(전문 읽음).
-  **가장 단단하다**: 2024년 초 한계 · 수십 TB · **p95/p99 약 70% 감소** ·
-  브로드캐스트와 ID 범위 두 우회 · **의도적 모놀리스**.
-- **이미 있는 것을 고치지 않고 새 구조로 간다** — 셀 글 + 쿠버네티스 글
-  (6개월간 `AWS Batch → Lambda → ECS → Cloud Run → Anthos → Nomad` 를 차례로
-  떨어뜨린 기록, 교훈에 **`Do not buy the buzz`**).
+한계에 닿은 것이 `By early 2024` 이고 `A year after the migration` 이라 적지만
+**단일 MySQL 구조가 언제부터였는지가 없다.** `history` 를 비우고 `open_questions` 에 적었다.
+**이 회사에서 연표는 회사 단위(1999·2010·2015)로만 서고 기능 단위로는 못 서고 있다.**
+
+### 다음 사이클 — 마지막 도메인
+
+**이미 있는 것을 고치지 않고 새 구조로 간다** — 자료는 셀 글(읽음) + 쿠버네티스 글(읽음).
+6개월간 `AWS Batch → Lambda → ECS → Cloud Run → Anthos → Nomad` 를 **버린 이유를
+하나씩 적으며** 떨어뜨린 기록이고, 교훈에 **`Do not buy the buzz`** 가 있다.
+여기까지 채우면 **완주 조건에 닿는다** — 수익원이 기능과 이어지는지 함께 본다.
 
 ### 아직 못 잡은 것
 
 1. **매출·사업부별 비중** — 상장사라 **IR 을 열어 볼 값이 있다.**
-2. **쿠버네티스 전환 시점의 연도.**
+2. **쿠버네티스 전환 시점 · 단일 MySQL 시작 시점** 둘 다 연도가 없다.
 3. **Fury 연작에 안 읽은 편** — 트래픽 보안 · 비용 최적화 · 멀티클라우드 전략.
 
 ## 지금의 진짜 상태

@@ -171,7 +171,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "stock-cells"
+      ]
     },
     {
       "name": "이미 있는 것을 고치지 않고 새 구조로 간다",
@@ -334,7 +336,8 @@
         "이미 있는 것을 고치지 않고 새 구조로 간다"
       ],
       "features": [
-        "three-clicks-to-production"
+        "three-clicks-to-production",
+        "stock-cells"
       ],
       "stack_in": [
         "Fury (IDP)",
@@ -392,7 +395,8 @@
     "⚠️ **관리형 쿠버네티스로 옮긴 시점이 없다** — 평가에 `about six months` 가 걸렸다는 것과 글이 2025년 3월에 나왔다는 것만 안다. **그래서 `2015-fury` 시기 안의 사건으로만 적었다.**",
     "**Fury 연작에 아직 안 읽은 편이 있다** — 트래픽 보안 · 비용 최적화 · 멀티클라우드 전략. 회사가 후속으로 예고했다.",
     "**셀을 셋으로 가른 기준의 구체적인 내용**(어느 나라를 어디에 묶었는지)은 밝히지 않았다.",
-    "⚠️ **본문이 Medium 이라 브라우저(`get_page_text`)로만 읽힌다.**"
+    "⚠️ **본문이 Medium 이라 브라우저(`get_page_text`)로만 읽힌다.**",
+    "⚠️ **셀 이전의 시작 연도를 모른다.** 한계에 닿은 것이 `By early 2024` 이고 글이 2025년 12월에 나왔으며 `A year after the migration` 이라 적지만, **단일 MySQL 구조가 언제부터였는지는 없다.** 그래서 이 기능의 `history` 를 세우지 않았다."
   ],
   "features": [
     {
@@ -860,6 +864,498 @@
           "publisher": "Tecnología de Mercado Libre",
           "date": "2025-12-30",
           "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+        }
+      ]
+    },
+    {
+      "key": "stock-cells",
+      "name": "대륙 하나의 재고를 격벽 셋으로 나눈다",
+      "domain": "셀로 나눠 장애 반경을 줄인다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "⚠️ **라틴아메리카 물류가 데이터베이스 하나에 걸려 있었다.** 풀필먼트의 입고·출고·예약·창고 이동이 전부 단일 MySQL 클러스터를 썼다. **2024년 초** CPU 와 I/O 가 늘 최대였고, 임계 작업의 지연이 오르고, 성능 저하가 **예측 불가능하게** 튀었다. 무엇보다 **한 번의 장애가 여러 나라의 운영을 멈출 수 있었다.** 그런데 더 큰 인스턴스가 없었다 — `There were no larger flavours available.` **회사의 질문이 그 상황을 요약한다: 수직 확장이 더 이상 선택지가 아닐 때 무엇을 하는가.**",
+        "metrics": [
+          {
+            "label": "옮긴 규모",
+            "value": "**수십 테라바이트**를 독립된 **셀 셋**으로. 회사 **두 번째로 큰 MySQL 인스턴스**였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "지연",
+            "value": "**p95/p99 약 70% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "사라진 것",
+            "value": "**백업 창 때문에 반복되던 성능 저하가 없어졌다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "이후 1년",
+            "value": "**인프라 장애가 지속적으로 줄고 가용성이 뚜렷하게 좋아졌다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "복제 보장",
+            "value": "관리형 SQL 로 옮겨 **100ms 미만** 일관성 보장의 복제를 얻고 **주 인스턴스의 읽기를 없앴다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 이전 중 중단",
+            "value": "**읽기는 끊기지 않았고 쓰기만 짧고 통제된 창 동안 멈췄다** — 대부분의 흐름이 비동기라 최종 사용자 영향이 작았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "비유를 고를 때",
+          "thought": "회사가 이 구조를 **배의 격벽**으로 설명한다 — 선체를 방수 구획으로 나누면 **한 칸이 잠겨도 배는 간다.** 분산 시스템에서 같은 생각을 쓴다: 셀마다 자기 컴퓨트·DB·트래픽을 갖고, 하나가 죽어도 나머지가 응답한다. **`blast radius` 를 줄이는 것이 목적이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "쪼갤지 말지 정할 때",
+          "thought": "⚠️ **쪼개지 않는 쪽을 일부러 골랐다** — `Some teams would split everything into microservices, but our domain required: Extremely low latency ... High availability — logistics can't stop ... Strong inventory consistency.` 네트워크 홉과 실패 지점을 늘리면 이 제약이 더 어려워진다. 그래서 **의도적 모놀리스**를 핵심에 두고 **그 주위를 셀로 감쌌다.** 회사의 문장이 이 판단을 요약한다: `the key wasn't monolith versus microservices, but choosing the architecture the business needed.`",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "라우팅 키가 없다는 것을 알았을 때",
+          "thought": "⚠️ **가장 큰 벽은 데이터가 아니라 계약이었다.** 여러 API 에 **어느 셀인지 가릴 자연 키가 없었다.** 키를 새로 넣으면 기존 클라이언트와의 호환이 깨지고, 전사에서 쓰는 공개 계약을 바꿔야 하고, 수십 팀과 조율해야 한다 — **바꾸려던 아키텍처보다 그 이전이 더 큰 일이 된다.** 그래서 **인터페이스를 존중하는 해법**을 찾았다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "셀(cell)",
+            "what": "자기 컴퓨트·데이터베이스·트래픽을 갖는 자율 단위. 나라를 묶어 셋으로 만들었다"
+          },
+          {
+            "name": "재고 상태",
+            "what": "풀필먼트 센터별 재고 가용량 · 배송 예약 · 창고·판매자·목적지 사이의 물류 이동"
+          },
+          {
+            "name": "트래픽 층",
+            "what": "요청을 어느 셀로 보낼지 정하는 자리. 라우팅 키가 없으면 전부에 보낸다"
+          },
+          {
+            "name": "셀별 ID 범위",
+            "what": "새 엔티티에 주는 배타적 번호 구간. **ID 자체가 라우팅 키가 된다**"
+          },
+          {
+            "name": "의도적 모놀리스",
+            "what": "셀 안의 핵심 도메인. 쪼개지 않기로 한 자리다"
+          }
+        ],
+        "invariants": [
+          "**한 셀의 장애는 그 셀에 머문다** — `a problem in one cell stays in that cell`",
+          "**클라이언트는 셀의 존재를 몰라도 된다** — `Full transparency for clients`",
+          "**ID 범위는 셀마다 배타적이다** — 주 인스턴스가 여럿이어도 충돌이 생기지 않는다",
+          "**ID 의 모양은 바뀌지 않는다** — 공개 계약이라 형태를 바꿀 수 없다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 **트래픽 층**에 닿는다 — 클라이언트는 전과 똑같이 부른다",
+            "why": "`The client makes the same request as always (no changes required)`"
+          },
+          {
+            "step": "**새 데이터라면 ID 가 곧 라우팅 키다** — 그 ID 가 속한 범위의 셀로 보낸다",
+            "why": "셀마다 배타적 범위를 줬기에 결정적으로 정해진다"
+          },
+          {
+            "step": "⚠️ **옛 엔티티라면 모든 셀에 뿌린다** — 가진 셀이 답하고, 전부 404 면 정말 없는 것이다",
+            "why": "라우팅 키가 없는 API 를 **한 줄도 안 고치고** 셀로 넘기기 위한 우회"
+          },
+          {
+            "step": "셀 안에서는 **읽기와 쓰기를 가른다** — 쓰기는 엄격히 일관되게, 읽기는 복제본과 캐시로",
+            "why": "주 인스턴스에서 읽기를 걷어내 확장성을 크게 올렸다"
+          },
+          {
+            "step": "**Fury 로 셀마다 서비스·DB 를 같은 표준으로 만든다**",
+            "why": "⚠️ 안 그러면 셀이 저마다 설정·대시보드·배포 규칙이 다른 `its own isolated universe` 가 된다"
+          },
+          {
+            "step": "**이전은 셀마다 따로, 통제된 창에서** — DB 를 대상 셀로 복사하고, **쓰기만 잠깐 멈추고**, 읽기는 원본에서 계속 흘린다",
+            "why": "물류와 마켓플레이스 트래픽이 도는 채로 옮겨야 했다"
+          },
+          {
+            "step": "셀을 **단계적으로 연다** — 먼저 읽기를 켜고 임계 흐름을 검증한 뒤 쓰기를 허용한다",
+            "why": "쓰기에는 **셀 간 오염을 막는 가드레일**을 붙였다"
+          },
+          {
+            "step": "검증이 끝나면 **읽기 트래픽을 새 셀로 무중단 전환**한다",
+            "why": "각 셀이 자기 창에서 이 순서를 그대로 반복했다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수직 확장을 계속할 것인가",
+            "chosen": "**못 한다.** 아키텍처를 다시 생각하는 쪽으로 갔다",
+            "alternatives": [
+              "더 큰 인스턴스로 계속 올리기(수년간 통했던 방법)"
+            ],
+            "tradeoff": "⚠️ **선택지가 없어서 한 결정이다** — `There were no larger flavours available.` 게다가 트래픽이 용량보다 빨리 늘었고, **단일 MySQL 에 의존하는 것 자체가 시스템 위험**이 됐다. `Scaling was no longer about adding resources.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "이참에 마이크로서비스로 쪼갤 것인가",
+            "chosen": "**쪼개지 않는다 — 의도적 모놀리스를 핵심에 둔다**",
+            "alternatives": [
+              "모든 것을 마이크로서비스로 분해"
+            ],
+            "tradeoff": "⚠️ **핵심이 다시 커지면 같은 벽을 만난다** — 이번에 셀로 가른 것이 그 증거다(이 지적은 이 사이트의 재구성이다). 그래도 이 도메인은 **극히 낮은 지연·물류가 멈추지 않는 가용성·강한 재고 일관성**을 요구하고, 홉과 실패 지점을 늘리면 그 제약이 더 어려워진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 기준으로 셀을 가를 것인가",
+            "chosen": "**나라를 묶어 셋으로** — 트래픽 양 · 사업 중요도 · 장애 내성을 저울질했다",
+            "alternatives": [
+              "나라마다 하나씩",
+              "해시 기반 균등 분할"
+            ],
+            "tradeoff": "⚠️ **한 번 가르면 옮기기 어렵고, 기준을 사람이 정해야 한다.** 그리고 **어느 나라를 어디에 묶었는지는 글에 없다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "라우팅 키를 새로 넣을 것인가",
+            "chosen": "**넣지 않는다.** 기존 인터페이스를 존중하는 우회를 찾았다",
+            "alternatives": [
+              "API 에 셀 식별용 속성 추가"
+            ],
+            "tradeoff": "⚠️ **키를 넣는 쪽이 더 큰 이전이 된다** — 클라이언트 호환이 깨지고, 전사가 쓰는 공개 계약을 바꿔야 하고, 수십 팀과 조율해야 한다. 회사의 표현이 그대로다: `adding a routing key would have triggered a cross-organizational migration — one far more disruptive than the architectural change we were trying to implement.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "그러면 옛 엔티티는 어떻게 찾을 것인가",
+            "chosen": "**모든 셀에 요청을 뿌린다(브로드캐스트 게이트웨이).** 가진 셀이 답하고 전부 404 면 없는 것이다",
+            "alternatives": [
+              "옛 데이터에 키를 소급 부여",
+              "조회용 매핑 테이블 유지"
+            ],
+            "tradeoff": "**회사가 완벽하지 않다고 먼저 말한다** — `It's not the perfect architecture — broadcasting requests adds overhead — but it provided something more valuable: a safe migration path.` **오버헤드를 내고 안전한 이전 경로를 샀다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "새 데이터는 어떻게 라우팅할 것인가",
+            "chosen": "**셀마다 배타적 ID 범위를 준다** — ID 자체가 라우팅 키가 된다",
+            "alternatives": [
+              "ID 구조를 바꿔 셀 정보를 심기",
+              "중앙 채번 유지"
+            ],
+            "tradeoff": "⚠️ **옛 기록은 여전히 브로드캐스트로 찾아야 한다 — 두 방식을 함께 이고 간다.** 그 대신 세 가지를 지켰다: 주 인스턴스가 여럿이어도 **충돌이 없고**, **ID 모양이 그대로라 계약이 안 깨지며**, 클라이언트는 셀을 몰라도 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "물류를 세우지 않고 어떻게 옮길 것인가",
+            "chosen": "**셀마다 자기 창에서, 읽기는 흘린 채 쓰기만 잠깐 멈춘다**",
+            "alternatives": [
+              "전체를 한 번에 넘기기",
+              "읽기까지 멈추는 정지 이전"
+            ],
+            "tradeoff": "⚠️ **짧은 쓰기 중단은 감수한다** — 대신 그 영향이 작은 이유가 있다: `Because most workflows are asynchronous, this short write downtime had minimal impact on end clients.` **비동기 설계가 이전 방식을 가능하게 한 셈이다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "데이터베이스를 계속 직접 운영할 것인가",
+            "chosen": "**관리형 SQL 서비스로 옮긴다**",
+            "alternatives": [
+              "자체 운영을 유지하며 셀만 나누기"
+            ],
+            "tradeoff": "⚠️ **플랫폼에 더 기댄다.** 그 대신 전에 없던 것을 얻었다 — **100ms 미만 보장의 복제**, 자동 장애 전환과 복제본 관리. 팀이 **DB 유지 대신 재고 도메인을 발전시키는 데** 시간을 쓰게 됐다(종속이라는 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "셀 기반 아키텍처 (나라 묶음 셋)",
+            "role": "셀마다 컴퓨트·DB·트래픽을 따로 둬 장애 반경을 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "브로드캐스트 게이트웨이",
+            "role": "라우팅 키 없는 옛 API 를 모든 셀에 물어본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "셀별 ID 범위",
+            "role": "새 엔티티의 ID 를 결정적 라우팅 키로 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "관리형 SQL + 읽기 복제본",
+            "role": "100ms 미만 일관성 보장 복제, 자동 장애 전환. 주 인스턴스의 읽기를 없앴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Fury (사내 개발자 플랫폼)",
+            "role": "셀마다 서비스·DB 를 같은 표준으로 만들고 파이프라인·라우팅·관측을 재사용한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "three-clicks-to-production",
+          "via": "셀마다 같은 표준",
+          "contract": "⚠️ **플랫폼이 없었으면 이 전환이 성립하지 않았다** — 셀이 저마다 설정·대시보드·배포 규칙을 갖는 `its own isolated universe` 가 되는 것을 Fury 가 막았다. 회사가 교훈으로도 적는다: **강한 사내 플랫폼이 야심 찬 구조 변경을 반복 가능한 길로 바꾼다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "이미 있는 것을 고치지 않고 새 구조로 간다",
+          "via": "공개 API 계약",
+          "contract": "**이 기능의 가장 큰 제약이 그 도메인의 원칙이다** — 라우팅 키를 못 넣은 것도, ID 모양을 못 바꾼 것도 전부 `공개 계약을 안 깬다` 에서 나온다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "물류 운영 (Mercado Envíos 풀필먼트)",
+          "via": "재고 상태",
+          "contract": "⚠️ **입고·출고·예약·창고 이동이 전부 여기 걸려 있다.** 그래서 이전 중에도 읽기를 끊을 수 없었다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "마켓플레이스",
+          "via": "재고 가용량",
+          "contract": "이전 창 동안에도 마켓플레이스 트래픽이 원본에서 계속 읽었다 — **파는 일이 멈추면 안 된다**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "샤딩을 전제하지 않고 만든 API 를 나중에 샤딩하는 일",
+            "why_hard": "⚠️ **데이터를 나누는 것보다 계약을 나누는 것이 어렵다.** 여러 API 에 어느 셀인지 가릴 자연 키가 없었고, 키를 넣으면 **바꾸려던 구조 변경보다 더 큰 전사 이전**이 된다",
+            "current_best": "이 회사의 답은 **둘을 함께 쓰는 것**이다 — 새 데이터는 ID 범위로 결정적으로 보내고, 옛 데이터는 브로드캐스트로 찾는다. 회사가 남긴 교훈이 그 값을 말한다: **첫날부터 라우팅을 염두에 두고 설계하라 — 키 하나가 없으면 단순한 리팩터가 전사 이전이 된다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "순차 ID 가 공개 계약일 때",
+            "why_hard": "ID 가 **공개돼 있고, 단일 MySQL 이 순차로 채번했고, 아무 의미도 안 담고 있었다.** 그래서 주 인스턴스를 여럿 두면 충돌 위험이 생기고, **구조를 바꾸면 모든 클라이언트 연동이 깨진다**",
+            "current_best": "**모양을 그대로 두고 범위만 가르는 것.** 번호의 형태는 안 바뀌므로 계약이 살아 있고, 범위가 겹치지 않으므로 충돌이 없으며, 그 범위가 곧 라우팅 힌트가 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "같은 요청, 두 갈래 라우팅",
+          "question": "클라이언트를 한 줄도 안 고치고 어떻게 셀로 보내나",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"<b>클라이언트</b><br/>• 전과 똑같이 부른다\"]:::list --> T{\"<b>트래픽 층</b><br/>ID 로 셀을 알 수 있나\"}\n  T -->|새 데이터| R[\"<b>ID 범위로 결정</b><br/>• 셀마다 배타적 구간<br/>• ID 가 곧 라우팅 키\"]:::accent\n  T -->|옛 데이터| B[\"<b>모든 셀에 뿌린다</b><br/>• 가진 셀이 답한다<br/>• 전부 404 면 정말 없다\"]:::soft\n  R --> C1\n  B --> C1\n  B --> C2\n  B --> C3\n  C1[\"<b>셀 1</b><br/>• 컴퓨트 · DB · 트래픽\"]:::list\n  C2[\"<b>셀 2</b>\"]:::list\n  C3[\"<b>셀 3</b>\"]:::list\n  C1 --> RW[\"<b>셀 안에서</b><br/>• 쓰기: 엄격한 일관성<br/>• 읽기: 복제본과 캐시\"]:::list\n  F[\"<b>Fury 가 셀을 같은 모양으로</b><br/>• 표준 서비스 · DB<br/>• 셀별 배포 파이프라인\"]:::soft -.-> C1\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "물류를 세우지 않고 수십 테라바이트를 옮긴 순서",
+          "question": "멈출 수 없는 것을 어떻게 갈아 끼우나",
+          "kind": "failure",
+          "code": "flowchart TD\n  S[\"<b>셀 하나의 이전 창</b>\"]:::list --> A1[\"<b>1. DB 를 대상 셀로 복사</b>\"]:::list\n  A1 --> A2[\"<b>2. 쓰기만 잠깐 멈춘다</b><br/>• 일관성을 맞추려고\"]:::accent\n  A2 --> A3[\"<b>3. 읽기는 원본에서 계속</b><br/>• 마켓플레이스 · 물류 유지\"]:::list\n  A3 --> A4[\"<b>4. 읽기부터 켜고 검증</b>\"]:::list\n  A4 --> A5[\"<b>5. 쓰기 허용</b><br/>• 셀 간 오염 방지 가드레일\"]:::list\n  A5 --> A6[\"<b>6. 읽기 트래픽 무중단 전환</b>\"]:::list\n  W[\"⚠️ <b>감수한 것</b><br/>• 짧은 쓰기 중단<br/>• 대부분 흐름이 비동기라 영향 작음\"]:::gone\n  A2 -.-> W\n  O[\"⚠️ <b>남는 부담</b><br/>• 옛 데이터는 계속 브로드캐스트<br/>• 두 라우팅 방식을 함께 이고 간다\"]:::gone\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+          "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+          "publisher": "Tecnología de Mercado Libre",
+          "date": "2025-12-30",
+          "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+        },
+        {
+          "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+          "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+          "publisher": "Tecnología de Mercado Libre",
+          "date": "2024-02-23",
+          "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
         }
       ]
     }
