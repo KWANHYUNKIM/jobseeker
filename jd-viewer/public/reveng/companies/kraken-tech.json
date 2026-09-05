@@ -107,7 +107,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "ship-100-a-day"
+      ]
     },
     {
       "name": "1500만 줄에 타입을 뒤늦게 입힌다",
@@ -188,12 +190,594 @@
   "open_questions": [
     "**Octopus Energy 와의 관계를 1차 문장으로 확인하지 못했다.** `kraken.tech` 는 Octopus 를 **고객사(case study)로만** 적는다. 블로그의 옛 글(2015~2019)이 Octopus Energy 이름으로, 최근 글이 Kraken 이름으로 나오는 것으로 보아 같은 뿌리로 보이지만 **그렇게 말하는 문장을 못 찾았다.**",
     "**과금 방식·가격·매출이 공개돼 있지 않다.** 계정 수 기준인지 정액인지 알 수 없다.",
-    "⚠️ **파이썬 줄 수가 글마다 다르다** — 타입 글은 공백·주석 제외 `5 million`, 배포 글은 `nearly 15 million` 이다. **세는 방법이 다른 것으로 보이나 확인하지 못했다.**",
+    "⚠️ **파이썬 줄 수는 글마다 다른 게 아니라 자라고 있었다** — 400만(2024-01) → 600만(2024-08) → 900만(2025-02) → 1500만 가까이(2026-03). **2년에 약 3.7배다.** 다만 타입 글의 `5 million` 은 **공백·주석을 뺀 수**라 결이 달라 나란히 못 놓는다. **한 덩어리가 이 속도로 자라는데 쪼개지 않는다는 것**이 이 회사에서 가장 눈여겨볼 대목이다.",
     "**비동기 Django 이야기는 아직 결론이 없다** — 회사 스스로 평가를 `okay` 라 하고 `We've not really got to a stage yet where we're dealing with forms and views` 라 적는다. **수치가 하나도 없다.**",
-    "**연표(eras)를 쓸 자료를 아직 못 찾았다** — 연도가 붙은 회고를 확인하지 못했다."
+    "**연표(eras)를 쓸 자료를 아직 못 찾았다** — 연도가 붙은 회고를 확인하지 못했다.",
+    "**전 환경 동시 배포에서 '일부 먼저' 로 언제 바뀌었는지 모른다.** 2025년 2월 글은 pinning 되지 않은 모든 환경에 내보낸다고 적고, 2026년 3월 글은 `we now roll out to a subset first` 라 적는다 — **두 글 사이라는 것만 안다.** 연도를 모르니 `history` 로 세우지 않았고, 두 시점의 사실만 기능 본문에 남겼다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "ship-100-a-day",
+      "name": "승인 하나로 하루 백 번을 스물다섯 나라 환경에 내보낸다",
+      "domain": "한 덩어리로 두고 하루에 백 번 내보낸다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "이 회사가 파는 것은 **남의 전기 사업이 도는 자리**다. 고객사가 EDF·Origin·Tokyo Gas 처럼 나라도 규제도 다르고, 그 모두가 **하나의 모놀리스**를 공유한다. 그러면 선택지는 둘뿐이다 — 쪼개거나, **내보내는 일을 아주 잘하거나.** 이 회사는 뒤를 골랐다. **개발자 500명 이상이 같은 코드베이스를 만지면서 하루 100번 넘게 내보낸다.**",
+        "metrics": [
+          {
+            "label": "배포 빈도·범위",
+            "value": "**하루 100회 이상** · 환경 **25곳 이상** · **10개국 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "label": "배포 한 바퀴",
+            "value": "**30분 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "label": "매 버전마다 도는 테스트",
+            "value": "**10만 개 이상** (단위·통합·기능)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "label": "같은 코드베이스를 만지는 개발자",
+            "value": "**500명 이상** (2024년 1월 시점)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using formatters and linters to manage a large codebase",
+                "url": "https://engineering.kraken.tech/news/2024/01/05/linting-and-formatting.html",
+                "publisher": "Kraken Engineering",
+                "date": "2024-01-05",
+                "summary": "개발자 500명 이상이 같은 모놀리스를 만지게 하는 도구들. Black 도입 때의 대규모 일괄 변경과 그 시점의 값을 적었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 코드베이스가 자라는 속도",
+            "value": "**400만 줄(2024-01) → 600만(2024-08) → 900만(2025-02) → 1500만 가까이(2026-03)** — 2년에 약 3.7배다. ⚠️ 타입 글의 `5 million` 은 **공백·주석을 뺀 수**라 결이 다르다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using formatters and linters to manage a large codebase",
+                "url": "https://engineering.kraken.tech/news/2024/01/05/linting-and-formatting.html",
+                "publisher": "Kraken Engineering",
+                "date": "2024-01-05",
+                "summary": "개발자 500명 이상이 같은 모놀리스를 만지게 하는 도구들. Black 도입 때의 대규모 일괄 변경과 그 시점의 값을 적었다."
+              },
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              },
+              {
+                "title": "How we ship in 2026",
+                "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+                "publisher": "Kraken Engineering",
+                "date": "2026-03-09",
+                "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+              },
+              {
+                "title": "Static typing Python at scale - Our journey with mypy and Django",
+                "url": "https://engineering.kraken.tech/news/2026/02/16/static-typing-python-at-scale.html",
+                "publisher": "Kraken Engineering",
+                "date": "2026-02-16",
+                "summary": "500만 줄 파이썬에 2.5년에 걸쳐 정적 타입을 넣은 기록. mypy 종속을 인정하고 그 대신 얻은 것을 적었다."
+              }
+            ]
+          },
+          {
+            "label": "머지된 PR",
+            "value": "25만 건 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship in 2026",
+                "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+                "publisher": "Kraken Engineering",
+                "date": "2026-03-09",
+                "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "쪼갤지 말지 정할 때",
+          "thought": "⚠️ **쪼개지 않기로 한 것이 먼저이고, 배포를 잘하는 일은 그 값이다.** 회사가 이유를 적는다 — `A monolith with a trunk-based development workflow lets us move fast, share code easily and keep the system coherent.` 그리고 버린 쪽의 값도 적는다: `Microservices introduce distribution complexity, network latency and the overhead of coordinating releases across many independent services.`",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "되돌리는 방법을 정할 때",
+          "thought": "**롤백을 기본으로 두지 않았다** — `fix forward` 를 선호하고, 문제가 생긴 버전은 **환경을 pinning 해서 더 퍼지지 않게** 막는다. 그래서 **DB 마이그레이션이 앞뒤 모두 호환이어야 한다**는 규칙이 따라 나온다(`Must be backwards and forwards compatible`). **되돌리지 않기로 했으니 앞뒤 어느 쪽에서도 깨지면 안 된다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자기 약점을 적을 때",
+          "thought": "⚠️ 이 회사는 **자기 파이프라인의 구멍을 그대로 적는다** — 테스트 환경이 `not particularly representative of production` 이고, 규모 때문에 수동 테스트는 불가능하며, 기능 플래그는 `Easy to let unused flags languish` 이고, 도구를 붙였어도 **암묵적 머지 충돌은 여전히 남는다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "PR",
+            "what": "모든 변경의 단위. 다른 개발자 한 명의 승인을 받는다"
+          },
+          {
+            "name": "main 브랜치",
+            "what": "모든 변경이 곧장 들어가는 자리 — `every change merges directly into the main branch`"
+          },
+          {
+            "name": "버전",
+            "what": "머지가 만드는 산출물. 하루 100개 넘게 나온다"
+          },
+          {
+            "name": "환경",
+            "what": "고객사별 배포 대상. 25곳 이상, 10개국 이상. 문제가 생기면 **pinning** 해서 멈춘다"
+          },
+          {
+            "name": "기능 플래그",
+            "what": "두 종류 — 환경변수 기반(PR 승인 필요)과 DB 기반(거의 즉시 바뀐다)"
+          },
+          {
+            "name": "DB 마이그레이션",
+            "what": "배포의 일부로 돈다. **앞뒤 모두 호환이어야 한다**"
+          }
+        ],
+        "invariants": [
+          "**DB 마이그레이션은 앞뒤 모두 호환이어야 한다** — `Must be backwards and forwards compatible`. 롤링 업데이트라 **두 버전이 잠시 같이 돈다**",
+          "**승인 뒤에 diff 가 바뀌면 다시 본다** — `we also check that the diff has not changed (yet allowing for rebases)`",
+          "**새 기능에는 새 테스트가 있어야 한다** — `New tests are expected for any functionality added`",
+          "**예정된 업무 외 시간 배포는 없다** — 대신 follow-the-sun 으로 이어 받는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "PR 을 열고 **다른 개발자 한 명의 승인**을 받는다",
+            "why": "500명이 한 덩어리를 만지는데 관문은 하나다 — 속도를 위해 문턱을 낮게 둔다"
+          },
+          {
+            "step": "자동 테스트·서식·린트가 붙는다. **승인 뒤 diff 가 바뀌었는지도 검사한다**",
+            "why": "승인 후 몰래 바뀐 변경을 잡기 위해서다"
+          },
+          {
+            "step": "⚠️ 위험한 변경은 **개발자가 테스트 환경을 잡아** 손으로 확인하고 스크린샷·영상을 PR 에 남긴다",
+            "why": "선택이다 — 규모 때문에 모든 변경을 손으로 볼 수는 없다"
+          },
+          {
+            "step": "봇이 **리베이스를 강제한다** — 브랜치가 너무 뒤처지거나 깨는 변경이 들어오면",
+            "why": "`high watermark` 변경 위에서 **암묵적 충돌**이 생기는 것을 줄인다"
+          },
+          {
+            "step": "머지 후 **10만 개 이상의 테스트**가 그 버전에 대해 돈다",
+            "why": "하루 100번 넘게 내보내면서도 무너지지 않게 하는 값"
+          },
+          {
+            "step": "**쿠버네티스 롤링 업데이트**로 파드를 차례로 바꾼다 (blue-green 이 아니다)",
+            "why": "헬스체크가 깨진 파드의 배포를 막는다. ⚠️ **두 버전이 잠시 공존**하므로 마이그레이션 규칙이 여기서 나온다"
+          },
+          {
+            "step": "**DB 마이그레이션이 배포의 일부로 돈다**",
+            "why": "앞뒤 호환이어야 하고, 그래서 **한 변경이 여러 배포로 나뉜다**"
+          },
+          {
+            "step": "⚠️ **일부 환경에 먼저 내보내고 지켜본 뒤** 나머지로 간다",
+            "why": "`we now roll out to a subset first and watch for problems before continuing` — **2025년 2월 시점에는 모든 환경에 한꺼번에였다**"
+          },
+          {
+            "step": "문제가 나면 **되돌리지 않고 앞으로 고친다.** 급하면 환경을 pinning 해 그 버전이 더 안 퍼지게 막는다",
+            "why": "`fix forward` 가 기본 방침이다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "핵심 제품을 쪼갤 것인가",
+            "chosen": "**쪼개지 않는다** — `a well-structured monolith` 로 두고 트렁크 기반으로 간다",
+            "alternatives": [
+              "마이크로서비스로 나누기"
+            ],
+            "tradeoff": "**한 덩어리가 커질수록 도구가 대신 봐 줘야 한다** — 10만 개 테스트, 2.5년짜리 타입 작업, Import Linter, 500명이 쓰는 서식·린트 규칙이 전부 이 선택의 값이다. 회사가 버린 쪽의 값은 이렇게 적는다: `Microservices introduce distribution complexity, network latency and the overhead of coordinating releases across many independent services.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship in 2026",
+                "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+                "publisher": "Kraken Engineering",
+                "date": "2026-03-09",
+                "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+              },
+              {
+                "title": "Using formatters and linters to manage a large codebase",
+                "url": "https://engineering.kraken.tech/news/2024/01/05/linting-and-formatting.html",
+                "publisher": "Kraken Engineering",
+                "date": "2024-01-05",
+                "summary": "개발자 500명 이상이 같은 모놀리스를 만지게 하는 도구들. Black 도입 때의 대규모 일괄 변경과 그 시점의 값을 적었다."
+              }
+            ]
+          },
+          {
+            "question": "머지 관문을 몇 개 둘 것인가",
+            "chosen": "**개발자 한 명의 승인 하나.** 대신 승인 뒤 diff 가 바뀌었는지를 자동으로 검사한다",
+            "alternatives": [
+              "복수 승인·소유 팀 승인 같은 무거운 관문"
+            ],
+            "tradeoff": "⚠️ **관문이 얇으면 사람이 못 잡는 것이 늘어난다.** 그것을 10만 개 테스트와 봇으로 메운다. 그럼에도 회사가 인정한다 — **암묵적 머지 충돌은 도구를 붙여도 남는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "question": "blue-green 인가 롤링인가",
+            "chosen": "**쿠버네티스 롤링 업데이트** — 파드를 차례로 바꾼다",
+            "alternatives": [
+              "blue-green 배포"
+            ],
+            "tradeoff": "**두 버전이 잠시 같이 돈다.** 그래서 **모든 DB 마이그레이션이 앞뒤 호환이어야 하고**, 한 변경이 여러 배포 단계로 쪼개진다 — `Often require multiple deployment steps`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "question": "문제가 났을 때 되돌릴 것인가",
+            "chosen": "**되돌리지 않는다** — `fix forward` 를 선호하고, 급하면 환경 pinning 으로 확산만 막는다",
+            "alternatives": [
+              "이전 버전으로 롤백"
+            ],
+            "tradeoff": "⚠️ **고칠 때까지 나쁜 상태로 도는 시간이 생긴다.** 롤백이 기본이 아니므로 마이그레이션 규칙(앞뒤 호환)이 훨씬 엄해진다. **되돌릴 길을 포기한 대신 앞으로 가는 길을 항상 열어 둔 셈이다**(이 해석은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "question": "전 환경에 한꺼번에 내보낼 것인가",
+            "chosen": "**일부 먼저 내보내고 지켜본다** — `roll out to a subset first and watch for problems before continuing`",
+            "alternatives": [
+              "pinning 되지 않은 모든 환경에 동시 배포(2025년 2월 시점의 방식)"
+            ],
+            "tradeoff": "⚠️ **파이프라인이 느려지고 운영 부담이 는다.** 회사가 값을 그대로 인정한다 — `The operational overhead and the latency it adds to the deployment pipeline are real costs.` 25곳 넘는 환경이 **한동안 서로 다른 버전으로 돈다**는 뜻이기도 하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship in 2026",
+                "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+                "publisher": "Kraken Engineering",
+                "date": "2026-03-09",
+                "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+              },
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "question": "위험한 변경을 어떻게 켤 것인가",
+            "chosen": "**기능 플래그를 두 종류로 둔다** — 환경변수 기반(PR 승인 필요)과 DB 기반(거의 즉시)",
+            "alternatives": [
+              "플래그 없이 배포 자체로 켜고 끄기"
+            ],
+            "tradeoff": "⚠️ **플래그가 쌓인다.** 회사가 인정한다 — `Easy to let unused flags languish.` 켜고 끄는 자유의 값으로 **치우는 일**이 남는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "question": "새 구현이 옛 구현과 같은지 어떻게 확인할 것인가",
+            "chosen": "**프로덕션에서 둘을 나란히 돌려 비교한다** — 파이썬 `laboratory` 라이브러리",
+            "alternatives": [
+              "테스트 환경에서만 검증하고 넘기기"
+            ],
+            "tradeoff": "**두 구현을 동시에 돌리는 값을 낸다.** 그럴 만한 이유를 회사가 스스로 밝힌다 — 테스트 환경은 `not particularly representative of production` 이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "question": "변경 동결(change freeze)을 둘 것인가",
+            "chosen": "**두지 않는다.** 예정된 업무 외 시간 배포도 없고, 휴가철에는 **리뷰어를 늘린다**",
+            "alternatives": [
+              "연말·휴가철 배포 동결"
+            ],
+            "tradeoff": "⚠️ **사람으로 메운다** — 동결 대신 리뷰어를 늘리고 follow-the-sun 으로 이어 받는다. 전 세계에 팀이 없으면 못 고르는 방식이다(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "트렁크 기반 개발 + 리베이스 강제 봇",
+            "role": "모든 변경이 main 으로 곧장 들어가고, 뒤처진 브랜치는 봇이 리베이스시킨다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              },
+              {
+                "title": "How we ship in 2026",
+                "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+                "publisher": "Kraken Engineering",
+                "date": "2026-03-09",
+                "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "10만 개 이상의 자동 테스트 + 플레이키 탐지",
+            "role": "매 버전을 검사하고, 불안정한 테스트는 슬랙으로 담당자에게 알린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "tech": "쿠버네티스 롤링 업데이트 + 헬스체크",
+            "role": "파드를 차례로 바꾸고 깨진 파드의 배포를 막는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "tech": "기능 플래그 (환경변수 · DB)",
+            "role": "위험한 변경을 배포와 분리해 켠다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "tech": "laboratory (파이썬)",
+            "role": "프로덕션에서 옛 구현과 새 구현을 나란히 돌려 결과를 비교한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "tech": "Black · Ruff · mypy · Import Linter · Fixit 기반 사내 린터",
+            "role": "500명이 같은 코드베이스를 만져도 결이 흐트러지지 않게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using formatters and linters to manage a large codebase",
+                "url": "https://engineering.kraken.tech/news/2024/01/05/linting-and-formatting.html",
+                "publisher": "Kraken Engineering",
+                "date": "2024-01-05",
+                "summary": "개발자 500명 이상이 같은 모놀리스를 만지게 하는 도구들. Black 도입 때의 대규모 일괄 변경과 그 시점의 값을 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "1500만 줄에 타입을 뒤늦게 입힌다",
+          "via": "같은 선택의 값",
+          "contract": "⚠️ **쪼개지 않기로 한 결정이 타입 작업을 필수로 만든다.** 한 덩어리가 400만에서 1500만 줄로 자라는 동안 사람이 아니라 도구가 경계를 봐야 했다(이 인과는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "남의 전기 사업을 같은 코드 위에 올린다",
+          "via": "환경 25곳 이상",
+          "contract": "고객사마다 환경이 따로 있고 **문제가 나면 그 환경만 pinning 해서 멈춘다.** 한 덩어리를 공유하면서도 고객사 단위로 끊을 수 있는 지점이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "DB 마이그레이션",
+          "via": "배포의 일부",
+          "contract": "**앞뒤 모두 호환이어야 한다.** 롤링 업데이트와 fix-forward 방침이 함께 만든 규칙이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "고객사 운영 (EDF · Origin · Tokyo Gas 등)",
+          "via": "환경별 배포",
+          "contract": "⚠️ **남의 사업이 도는 중에 하루 100번 코드가 바뀐다.** 그래서 되돌리는 것보다 **퍼지지 않게 막는 것**(pinning)이 먼저다",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "테스트 환경은 프로덕션이 아니다",
+            "why_hard": "고객사 25곳 이상의 실제 데이터와 규모를 테스트 환경이 흉내 내지 못한다. 그런데 **규모 때문에 손으로 확인하는 것도 불가능**하다",
+            "current_best": "회사의 답은 **프로덕션에서 비교하는 것**이다 — `laboratory` 로 옛 구현과 새 구현을 나란히 돌린다. 회사가 한계를 그대로 적는다: 테스트 환경은 `not particularly representative of production`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          },
+          {
+            "problem": "암묵적 머지 충돌",
+            "why_hard": "코드가 겹치지 않아도 **의미가 충돌하는** 변경이 있다. 하루 100번 넘게 머지되면 그 사이를 사람이 못 본다",
+            "current_best": "리베이스 강제 봇과 `high watermark` 검사. ⚠️ **그럼에도 남는다고 회사가 인정한다** — 도구로 줄일 뿐 없애지 못하는 자리다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+                "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+                "publisher": "Kraken Engineering",
+                "date": "2025-02-07",
+                "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "승인 하나에서 스물다섯 나라까지 — 30분 안에",
+          "question": "관문을 하나만 두고도 어떻게 안 무너지나",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>PR</b><br/>• 개발자 한 명의 승인<br/>• 새 기능엔 새 테스트\"]:::list --> CK{\"<b>승인 뒤 diff 가<br/>바뀌었나</b>\"}\n  CK -->|바뀜| P\n  CK -->|그대로| RB[\"<b>리베이스 강제 봇</b><br/>• 뒤처진 브랜치<br/>• 깨는 변경이 들어올 때\"]:::list\n  RB --> MG[\"<b>main 에 곧장 머지</b><br/>• 트렁크 기반\"]:::accent\n  MG --> T[\"<b>테스트 10만 개 이상</b><br/>• 단위 · 통합 · 기능<br/>• 플레이키는 슬랙 알림\"]:::list\n  T --> K[\"<b>쿠버네티스 롤링</b><br/>• 파드를 차례로<br/>• 헬스체크가 막는다\"]:::list\n  K --> DB[\"<b>DB 마이그레이션</b><br/>• 앞뒤 모두 호환<br/>• 여러 배포로 쪼갠다\"]:::accent\n  DB --> S1[\"<b>일부 환경 먼저</b><br/>• 지켜본다\"]:::list\n  S1 --> S2[\"<b>나머지 환경</b><br/>• 25곳 이상 · 10개국 이상\"]:::list\n  FF[\"<b>기능 플래그</b><br/>• 환경변수 (PR 승인)<br/>• DB (거의 즉시)\"]:::soft -.-> S1\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "되돌리지 않기로 했을 때 남는 것들",
+          "question": "롤백을 안 하면 무엇이 대신 엄해지나",
+          "kind": "failure",
+          "code": "flowchart TD\n  X[\"<b>나쁜 버전이 나갔다</b>\"]:::list --> Q{\"어떻게 하나\"}\n  Q -->|안 고르는 쪽| RB[\"<b>롤백</b><br/>• 이전 버전으로 되돌리기\"]:::gone\n  Q -->|고른 쪽| FW[\"<b>fix forward</b><br/>• 앞으로 고친다\"]:::list\n  FW --> PIN[\"<b>환경 pinning</b><br/>• 그 버전이 더 안 퍼지게\"]:::list\n  FW --> C1[\"⚠️ <b>고칠 때까지 도는 시간</b>\"]:::gone\n  RB -.->|안 골랐기에| R1[\"<b>대신 엄해지는 것</b><br/>• 마이그레이션 앞뒤 호환 필수<br/>• 한 변경을 여러 배포로\"]:::accent\n  L[\"<b>회사가 인정하는 구멍</b><br/>• 테스트 환경 ≠ 프로덕션<br/>• 안 쓰는 플래그가 쌓인다<br/>• 암묵적 머지 충돌은 남는다\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+          "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+          "publisher": "Kraken Engineering",
+          "date": "2025-02-07",
+          "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+        },
+        {
+          "title": "How we ship in 2026",
+          "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+          "publisher": "Kraken Engineering",
+          "date": "2026-03-09",
+          "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+        },
+        {
+          "title": "Using formatters and linters to manage a large codebase",
+          "url": "https://engineering.kraken.tech/news/2024/01/05/linting-and-formatting.html",
+          "publisher": "Kraken Engineering",
+          "date": "2024-01-05",
+          "summary": "개발자 500명 이상이 같은 모놀리스를 만지게 하는 도구들. Black 도입 때의 대규모 일괄 변경과 그 시점의 값을 적었다."
+        },
+        {
+          "title": "Static typing Python at scale - Our journey with mypy and Django",
+          "url": "https://engineering.kraken.tech/news/2026/02/16/static-typing-python-at-scale.html",
+          "publisher": "Kraken Engineering",
+          "date": "2026-02-16",
+          "summary": "500만 줄 파이썬에 2.5년에 걸쳐 정적 타입을 넣은 기록. mypy 종속을 인정하고 그 대신 얻은 것을 적었다."
+        }
+      ]
+    }
+  ],
   "sources": [
+    {
+      "title": "How we ship over 100 versions a day to over 25 environments in more than 10 countries",
+      "url": "https://engineering.kraken.tech/news/2025/02/07/how-we-ship.html",
+      "publisher": "Kraken Engineering",
+      "date": "2025-02-07",
+      "summary": "배포 파이프라인 전체를 단계별로 적은 원편. 기능 플래그·마이그레이션 규칙·롤백 방침과 스스로 인정하는 약점까지 담았다."
+    },
+    {
+      "title": "Using formatters and linters to manage a large codebase",
+      "url": "https://engineering.kraken.tech/news/2024/01/05/linting-and-formatting.html",
+      "publisher": "Kraken Engineering",
+      "date": "2024-01-05",
+      "summary": "개발자 500명 이상이 같은 모놀리스를 만지게 하는 도구들. Black 도입 때의 대규모 일괄 변경과 그 시점의 값을 적었다."
+    },
     {
       "title": "Kraken — 제품 소개",
       "url": "https://kraken.tech/",
