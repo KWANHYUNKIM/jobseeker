@@ -1805,6 +1805,66 @@
       "read": "건축 직군만 다루는 잡보드의 자기 광고다. 위쪽은 `WORK FROM HOME / WE ARE HIRING / ARCHITECTS & DESIGNERS / Freelancers Welcome!` 로 **근무형태·직군·고용형태를 세 단으로** 쌓았고, 가운데는 혜택 4아이콘(자기 스케줄대로 / 어디서든 / 다양한 프로젝트 / 커뮤니티). 값어치는 맨 아래 띠다 — **플랫폼 지표 4칸: India's No.1 Architecture Jobs Platform / 30K+ Architects & Designers / Top Firms Hiring Across India / Post Your Job.** 서비스의 신뢰를 숫자와 지위로 말한다.",
       "steal": "**직군을 좁힌 잡보드가 자기를 소개하는 방식.** cn-04(HKIA, 항공 특화)·in-05(범용 포털)에 이어 세 번째인데, 여기는 **지표 네 칸으로 신뢰를 만든다.** 우리도 좁혔다 — 한국 개발 채용. 우리가 쓸 수 있는 숫자는 이미 있다: 수집 공고 수, 회사 수, 역설계·브리핑·백과사전 문서 수, 마감 재확인 건수. **'6,374건 · 61개 회사 역설계 · 기술 문서 N편' 같은 지표 줄이 첫 화면에 없다.** 그리고 '어디서든 일하기' 를 직군보다 위에 올린 순서 — 원격이 곧 상품인 시장에서는 근무형태가 헤드라인이다.",
       "drop": "AI 일러스트와 블루 그라디언트. 그리고 'India's No.1' 같은 자칭 1위 표현."
+    },
+    {
+      "id": "in-08",
+      "family": "hiring",
+      "country": "in",
+      "title": "MEGA JOB FAIR 2026 — 참가기업 로고 그리드 (인도 코임바토르)",
+      "account": "coimbatore___jobs",
+      "url": "",
+      "tag": "jobfair",
+      "files": [
+        "in/in-08_coimbatore___jobs_s1.jpg"
+      ],
+      "mood": [
+        "로고 그리드 40+",
+        "이벤트 3줄",
+        "QR"
+      ],
+      "read": "화면 아래 절반이 통째로 **참가 기업 로고 그리드**다 — Wipro·Accenture·Sutherland·Kotak·IDFC·SBI Life·Maruti Suzuki 등 마흔 개 남짓이 5열로 깔려 있다. 위쪽 왼쪽에는 셀링 포인트 세 개(50+ Companies from both IT and core sectors / Countless Opportunities / One Step Closer to Your Future Success), 오른쪽에는 **EVENT DETAILS 카드 — 캘린더·시계·핀 아이콘으로 DATE / TIME / VENUE 세 줄**, 그 아래 'SCAN TO REGISTER NOW!' QR.",
+      "steal": "**로고 그리드가 곧 신뢰 장치다.** in-07(지표 4칸)이 숫자로 하는 걸 여기는 이름으로 한다 — '50+ 기업' 이라는 숫자보다 Wipro·Accenture 로고 마흔 개가 훨씬 세다. **우리는 회사 로고 자산(CompanyMark)이 이미 있다.** 홈이나 목록 상단에 '이런 회사들의 공고가 있습니다' 로고 벽을 세우면, 검색어를 모르는 사람에게 첫 신뢰가 생긴다(in-05 의 카테고리 진입점과 같은 문제를 다른 방식으로 푼다). 그리고 **DATE / TIME / VENUE 3줄 아이콘 카드** — 확정된 단일 이벤트의 표준형이다.",
+      "drop": "무지개 그라디언트와 월계관 엠블럼. 그리고 로고를 무단으로 나열하는 건 우리가 따라 할 일이 아니다 — 실제 공고가 있는 회사만 써야 한다."
+    },
+    {
+      "id": "sea-12",
+      "family": "hiring",
+      "country": "sea",
+      "title": "JOB FAIR 2026 — 지표 3칸 + 준비물 체크 (인도네시아)",
+      "account": "trisaktitridarma",
+      "url": "",
+      "tag": "jobfair",
+      "files": [
+        "sea/sea-12_trisaktitridarma_s1.jpg"
+      ],
+      "mood": [
+        "지표 3칸",
+        "GRATIS 배지",
+        "준비물 체크"
+      ],
+      "read": "파란 띠 하나에 **지표 세 칸** — 🏢 30+ PERUSAHAAN TERKEMUKA(유명 기업 30곳 이상) / 💼 1000+ LOWONGAN PEKERJAAN(채용공고 1000건 이상) / ⭐ **GRATIS TANPA DIPUNGUT BIAYA APAPUN(무료, 어떤 비용도 받지 않음)**. 그 위에는 LOKASI / HARI·TANGGAL / WAKTU 세 칸. 오른쪽 상단에 만화풍 'GRATIS! 일반인 개방' 배지. 캡션에 **'Persiapkan dirimu(준비하세요): ✔ 최신 CV 지참 ✔ 단정하고 예의 있는 복장'**.",
+      "steal": "두 가지. (1) **지표 세 칸 중 하나가 '무료' 다** — sea-01·sea-02 에서 본 '채용 사기 경고' 와 같은 뿌리다. 비용을 요구하는 가짜가 많은 시장에서 '무료' 는 혜택이 아니라 **신뢰 표식**이다. 우리 상세에도 '이 공고는 원본 사이트 무료 지원' 같은 표식이 의미를 가질 수 있다(disclaim 결론과 짝). (2) **준비물 체크리스트** — ru-01(지원 시 보낼 것 4가지)의 오프라인판. 우리 상세의 제출서류 칸은 지금 목록인데, 체크박스로 만들면 지원자가 실제로 쓴다.",
+      "drop": "플랫 일러스트 군중과 만화 말풍선. 그리고 지원사 로고를 하단에 20개 깐 것."
+    },
+    {
+      "id": "latam-06",
+      "family": "hiring",
+      "country": "latam",
+      "title": "G4S Barbados JOB FAIR — 반복 일정 + 필수 증빙",
+      "account": "g4sbarbados",
+      "url": "https://www.instagram.com/p/Dc3jeCmDhbf/",
+      "tag": "jobfair",
+      "files": [
+        "latam/latam-06_g4sbarbados_Dc3jeCmDhbf_s1.jpg"
+      ],
+      "mood": [
+        "직군 5아이콘",
+        "반복 일정",
+        "필수 증빙 2개"
+      ],
+      "read": "흑백·레드 3색뿐이다. **AVAILABLE POSITIONS 다섯 개를 원형 아이콘 + 이름 2줄로** 가로 배치(금고 담당 / 항공 보안 / 회계 사무 / 미지급금 사무 / 보안 요원). 아래는 2열 — 왼쪽에 **'WALK IN WITH YOUR RESUME!'** 와 아이콘 3줄(**EVERY FRIDAY IN SEPTEMBER** / 9:00 AM – 2:00 PM / 본사 주소), 오른쪽에 **필수 증빙 두 개**(유효한 경찰 신원증명서 / 해당 직군은 보안요원 면허). 캡션은 'No appointment necessary'(예약 불필요) 를 덧붙인다.",
+      "steal": "두 가지. (1) **반복 일정 표기 — 'EVERY FRIDAY IN SEPTEMBER'.** 우리는 '상시채용' 을 마감일 없음으로만 처리하는데, 실제로는 반복 창구가 있는 경우가 있다. 마감일 원장(job_closures)이 날짜 하나만 다루니 이런 공고는 표현이 안 된다. (2) **필수 증빙 서류를 자격요건과 분리해 따로 세운 것** — '경력 3년' 같은 자격과 '면허·증명서' 는 성격이 다르다. 앞은 판단이고 뒤는 있거나 없거나다. 우리 제출서류 칸에 이 구분이 없다.",
+      "drop": "레드·블랙 보안업체 톤. 그리고 다섯 직군을 아이콘으로 나열하면 예쁘지만 각각의 조건은 하나도 안 보인다."
     }
   ],
   "synthesis": {
@@ -1855,7 +1915,9 @@
     "reality": "공고의 공식 서술과 실제의 간극은 댓글·후기에 남는다. '안정적인 급여' 옆에 '급여 지연' 반박이 붙는다. 상세 옆에 실제 근무·면접 후기를 붙일 자리가 있다. (ru-02)",
     "order": "히어로+본문 순서 — 직군(근무형태 괄호) → 급여 → 조건 아이콘 줄 → 업무/자격 2열 → 지원. 한 장에 다 조립된 사례가 있다. (af-04, sea-05, eu-10)",
     "boundary": "요약과 원문의 경계를 화면에 말해 준다 — '자세한 내용은 아래' 를 명시. 숨긴 게 아니라 접었다는 신호. (af-04, kr-26)",
-    "proof": "좁힌 서비스는 지표로 신뢰를 만든다. 우리 숫자는 이미 있다 — 수집 공고 수, 회사 수, 역설계·브리핑·백과사전 문서 수, 마감 재확인 건수. 첫 화면에 없다. (in-07, cn-04)"
+    "proof": "좁힌 서비스는 지표와 로고로 신뢰를 만든다. '50+ 기업' 이라는 숫자보다 로고 마흔 개가 세다. 우리 숫자와 CompanyMark 는 이미 있는데 첫 화면에 없다. (in-08, in-07, cn-04)",
+    "proofdoc": "증빙 서류(면허·자격증)를 자격요건과 분리한다. '경력 3년' 은 판단이고 '면허' 는 있거나 없거나다. 제출서류 칸은 체크박스로. (latam-06, sea-12, ru-01)",
+    "rolling": "'상시채용' 을 마감일 없음으로만 처리하지 않는다. '매주 금요일' 같은 반복 창구가 있다. 마감 원장이 날짜 하나만 다뤄서 표현이 안 된다. (latam-06)"
   },
   "crop_note": "files 는 인스타 UI 를 잘라낸 이미지 영역(instagram/crops/), files_raw 는 잘라내기 전 원본 캡처(instagram/posts/).",
   "countries": {
