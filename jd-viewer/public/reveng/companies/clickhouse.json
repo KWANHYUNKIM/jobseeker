@@ -141,7 +141,7 @@
         {
           "tech": "사내 데이터 창고 (2.1PB)",
           "solves": "회사의 분석 자료를 한곳에 모은다. **AWS EC2 위 PoC 로 시작해 구성요소를 도커로 옮겼다.**",
-          "limits": "⚠️ **초기 구조가 확장되지 않았다** — 시간당 적재 DAG 하나에 모든 원천을 매달았고, 원천이 늘자 **인서트가 너무 오래 걸렸다.**",
+          "limits": "⚠️ **초기 구조가 확장되지 않았다** — 시간당 적재 DAG 하나에 모든 원천을 매달았고, 원천이 늘자 **인서트가 너무 오래 걸리고 오류 하나가 전체 적재를 막았다.** 아홉으로 쪼개 고쳤다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -168,10 +168,10 @@
           ]
         },
         {
-          "tech": "⏳ 개선된 적재 구조",
-          "solves": "1년 뒤 글이 그 한계를 어떻게 넘었는지 다룬다.",
-          "limits": "⚠️ **아직 본문을 읽지 않았다** — 제목과 검색 요약으로만 확인했다. **다음 사이클의 첫 일이다.**",
-          "confidence": "inferred",
+          "tech": "Airflow · dbt · S3",
+          "solves": "원시 데이터를 S3 에 내려놓고 Airflow 가 **아홉 개 프로세스**로 적재하며 변환 로직은 dbt 에 모은다.",
+          "limits": "⚠️ **대부분의 작업이 매시간 돌아 서비스를 끌 수 없다** — `has to be running 24x7`. 저장과 컴퓨트를 따로 파는 제품에서 **주기가 곧 컴퓨트 비용이다**(재구성).",
+          "confidence": "confirmed",
           "sources": [
             {
               "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
@@ -183,7 +183,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "one-load-job-became-nine"
+      ]
     },
     {
       "name": "분석 일의 70% 를 AI 에 넘기고 30% 를 일부러 남긴다",
@@ -818,16 +820,489 @@
           "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
         }
       ]
+    },
+    {
+      "key": "one-load-job-became-nine",
+      "name": "하나로 굴리던 적재를 아홉으로 쪼갠다",
+      "domain": "자기 제품으로 자기 창고를 짓고 한계를 먼저 만난다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **분석 데이터베이스를 파는 회사가 자기 분석 창고를 자기 제품으로 짓는다.** 고른 이유를 직접 적는다 — 수백 테라바이트를 다룰 **`blazing-fast`** 한 것이 필요했고, **`As we have a great scalable and fast database, we don't need to perform ETL transformations outside of the database`** 이다. 즉 **변환을 밖으로 빼지 않기로 한 결정**이 창고 구조 전체를 정했다. **그리고 그 구조가 1년 만에 한 곳에서 무너졌다** — 모든 신규 데이터를 **시간당 적재 DAG 하나**에 매달아 둔 자리다.",
+        "metrics": [
+          {
+            "label": "처음",
+            "value": "원천 **약 10개** · 월 활성 사용자 **70명 이상** · **하루 약 4만 질의** · 비압축 **약 115TB / 약 150 테이블**(압축 약 13TB) · 인프라 비용 **월 약 $1,500** · **팀 3명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              }
+            ]
+          },
+          {
+            "label": "1년 뒤",
+            "value": "원시 원천 **19개** · 하루 **60억 행 · 50TB**(비압축) · 2년 누적 **470TB**(압축) · 최근 30일 **23% 증가** · 주간 고유 사용자 **약 70명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 한 테이블의 크기",
+            "value": "한 테이블만 하루 **약 40억 행**, 누적 **약 1조 행**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "label": "무너진 자리",
+            "value": "**시간당 적재 DAG 하나**가 모든 신규 데이터를 담당했다 → **작업 하나를 아홉 개 프로세스로 쪼갰다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 비용에서 빠진 것",
+            "value": "월 약 $1,500 은 **ClickHouse Cloud 를 뺀 값이다** — `excluding ClickHouse Cloud as internal service`. **자기 제품이라 가장 큰 항목이 장부에서 사라진다**(뒤쪽은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "자기 제품을 쓸지 정할 때",
+          "thought": "**자기 제품을 쓰는 것은 당연해 보이지만 근거를 따로 적는다** — `we researched competitors pricing and performance and believe that another cloud analytical database would be much more expensive in our case`. ⚠️ **`believe` 라고 쓴다** — 비교 결과를 수치로 내놓지는 않는다(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "변환을 어디서 할지 정할 때",
+          "thought": "⚠️ **이 결정이 창고 구조 전체를 정했다** — 데이터베이스가 충분히 빠르니 **밖에서 변환하지 않는다.** 그래서 S3 에는 원시 데이터만 두고 **모든 변환이 안에서 일어난다.** **밖으로 뺐다면 변환 실패와 적재 실패가 갈렸을 텐데, 안에 두었기에 하나의 DAG 로 묶기 쉬웠고 그것이 나중의 병목이 됐다**(이 연결은 이 사이트의 재구성이다).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "1년 뒤 돌아볼 때",
+          "thought": "⚠️ **회사가 실패를 두 갈래로 정확히 가른다** — `The insert job was taking too long to execute, and just one error would jeopardize insertion of all data because of dependencies among different data models`. **시간이 문제고, 결합이 문제다.** 앞의 것은 나눠서 풀 수 있고 뒤의 것은 **의존을 끊어야** 풀린다. **아홉으로 쪼갠 것이 둘 다에 듣는다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "원시 원천",
+            "what": "DocumentDB · AWS CUR · GCP Billing · Salesforce · M3ter 등. **약 10개에서 19개로 늘었다**"
+          },
+          {
+            "name": "S3 (중간 저장)",
+            "what": "원시 데이터가 잠시 머무는 곳. **변환은 여기서 하지 않는다**"
+          },
+          {
+            "name": "시간당 적재 DAG",
+            "what": "⚠️ **무너진 자리.** 모든 신규 데이터를 하나의 Airflow 작업이 담당했다"
+          },
+          {
+            "name": "데이터 모델 간 의존",
+            "what": "⚠️ **하나의 오류가 전체 적재를 위태롭게 만든 이유**"
+          },
+          {
+            "name": "dbt",
+            "what": "변환 로직을 모으는 곳. 1편에서는 **계획**이었고 2편에서 **도입됐다**"
+          }
+        ],
+        "invariants": [
+          "**변환은 데이터베이스 안에서 한다** — 밖에서 ETL 하지 않는다",
+          "⚠️ **한 작업의 실패가 다른 데이터의 적재를 막으면 안 된다** — 아홉으로 쪼갠 이유",
+          "⚠️ **대부분의 작업이 매시간 돌므로 서비스가 24x7 떠 있어야 한다** — `has to be running 24x7 to support insertion of new data`",
+          "**실시간 데이터는 덜 구조화된 채로 받는다** — 질의할 때 가볍게 처리한다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**커넥터가 원천에서 데이터를 끌어온다** — DocumentDB · AWS CUR · GCP Billing · Salesforce · M3ter 등",
+            "why": "사업 지표가 여러 SaaS 에 흩어져 있다"
+          },
+          {
+            "step": "**S3 에 원시 상태로 내려놓는다**",
+            "why": "중간 저장. 여기서 변환하지 않는다"
+          },
+          {
+            "step": "**ClickHouse Cloud 로 적재한다**",
+            "why": "⚠️ **처음에는 시간당 DAG 하나가 이 일을 전부 했다**"
+          },
+          {
+            "step": "⚠️ **원천이 늘고 지표가 복잡해지자 그 하나가 무너진다** — 인서트가 너무 오래 걸리고, **오류 하나가 전체 적재를 위태롭게 한다**",
+            "why": "데이터 모델 사이의 의존 때문"
+          },
+          {
+            "step": "**작업 하나를 아홉 개 프로세스로 쪼갠다**",
+            "why": "시간도 나누고 실패도 격리한다 — 신뢰성이 나아졌다고 적는다"
+          },
+          {
+            "step": "**변환 로직을 dbt 로 모은다** — 서로 다른 시각에 도착하는 데이터를 잇는 시간 함수, 외부 테이블 조건으로 거르는 윈도 함수·차분",
+            "why": "SQL 이 흩어지면 고치기 어렵다"
+          },
+          {
+            "step": "**보는 쪽도 바꾼다** — Superset SQL 클라이언트가 버그가 많아 **Cloud 네이티브 SQL 콘솔**로, A/B 테스트에는 Growthbook, 내보내기는 S3→Salesforce",
+            "why": "만드는 쪽만 고쳐서는 쓰는 사람이 못 쓴다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "자기 창고를 무엇 위에 지을 것인가",
+            "chosen": "**자기 제품(ClickHouse Cloud)**",
+            "alternatives": [
+              "다른 클라우드 분석 데이터베이스"
+            ],
+            "tradeoff": "이유를 적는다 — `we researched competitors pricing and performance and believe that another cloud analytical database would be much more expensive in our case`. ⚠️ **대가는 장부가 흐려진다는 것이다** — 인프라 비용을 **월 약 $1,500** 이라 적으면서 `excluding ClickHouse Cloud as internal service` 를 단다. **가장 큰 항목이 사내 서비스라는 이유로 빠진다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              }
+            ]
+          },
+          {
+            "question": "변환을 데이터베이스 밖에서 할 것인가",
+            "chosen": "**안 한다** — 전부 안에서",
+            "alternatives": [
+              "Spark 등 외부 처리 계층을 두기"
+            ],
+            "tradeoff": "`we don't need to perform ETL transformations outside of the database` — 빠른 DB 가 있으니 층을 하나 줄인다. ⚠️ **그런데 이 결정이 나중의 병목과 이어진다** — 밖으로 뺐다면 변환 실패와 적재 실패가 갈렸을 텐데, **안에 두었기에 하나의 DAG 로 묶기 쉬웠다**(이 연결은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              },
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "question": "적재를 몇 개의 작업으로 나눌 것인가",
+            "chosen": "**처음에는 하나 → 나중에 아홉 개**",
+            "alternatives": [
+              "처음부터 원천별로 나누기"
+            ],
+            "tradeoff": "⚠️ **하나로 두면 만들기 쉽고 의존 관리를 안 해도 된다.** 대가가 정확히 둘로 나타났다 — **인서트가 너무 오래 걸리고**, **오류 하나가 전체를 위태롭게 한다.** 아홉으로 쪼갠 뒤 신뢰성이 나아졌지만, **오케스트레이션할 것이 아홉 배가 됐다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "question": "변환 로직을 어디에 모을 것인가",
+            "chosen": "**dbt** — 1편에서는 계획이었고 2편에서 도입했다",
+            "alternatives": [
+              "Airflow 안의 SQL 로 계속 두기"
+            ],
+            "tradeoff": "서로 다른 시각에 도착하는 데이터를 잇는 시간 함수, 외부 테이블 조건으로 거르는 윈도 함수와 차분을 다루기 좋아진다. ⚠️ **대가는 도구가 하나 더 는다는 것**이고, **Airflow 와 dbt 의 책임 경계를 정해야 한다**(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              },
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "question": "실시간 데이터를 정제해서 넣을 것인가",
+            "chosen": "**아니다 — 덜 구조화된 채로 받고 질의할 때 가볍게 처리한다**",
+            "alternatives": [
+              "적재 시점에 정규화하기"
+            ],
+            "tradeoff": "⚠️ **사용자가 그 대가를 알고 받아들였다고 적는다** — 질의할 때 **JSON 컬럼에서 필드를 뽑는** 정도의 처리를 감수하는 대신 **값진 실시간 통찰**을 얻는다. **정제를 미루면 넣기는 쉽고 읽기는 번거로워진다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "question": "보는 도구를 무엇으로 할 것인가",
+            "chosen": "**Superset 의 SQL 클라이언트를 버리고 Cloud 네이티브 SQL 콘솔로**",
+            "alternatives": [
+              "Superset 을 계속 쓰기"
+            ],
+            "tradeoff": "이유를 짧게 적는다 — `we found Superset's SQL client to be buggy`. ⚠️ **여기서도 자기 제품으로 갈아탔다** — 대시보드는 남기고 질의 도구만 바꾼 것으로 보이는데, **그 경계가 글에 명확하지 않다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "question": "작업 주기를 어떻게 할 것인가",
+            "chosen": "**대부분 매시간**",
+            "alternatives": [
+              "일 단위 배치",
+              "스트리밍"
+            ],
+            "tradeoff": "⚠️ **회사가 이것을 제약으로 적는다** — `Most of these jobs still run every hour, meaning that our ClickHouse Cloud service has to be running 24x7`. **주기를 짧게 하면 신선도를 얻고 서비스를 끌 수 없게 된다** — 저장과 컴퓨트를 따로 파는 제품에서 **이것은 곧 컴퓨트 비용이다**(뒤쪽 연결은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ClickHouse Cloud",
+            "role": "창고 본체. **변환도 안에서 한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              }
+            ]
+          },
+          {
+            "tech": "AWS S3",
+            "role": "원시 데이터의 중간 저장소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              }
+            ]
+          },
+          {
+            "tech": "Airflow",
+            "role": "적재 오케스트레이션. ⚠️ **처음엔 DAG 하나, 뒤에 아홉 프로세스**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              },
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "tech": "dbt",
+            "role": "변환 로직을 모으는 곳. 1편의 계획이 2편에서 도입됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "tech": "Superset → Cloud SQL 콘솔 · Growthbook",
+            "role": "보는 쪽. SQL 클라이언트는 버그로 교체했고 A/B 테스트가 더해졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "updates-as-patches-not-rewrites",
+          "via": "자기 엔진",
+          "contract": "**이 창고가 그 엔진 위에 있다** — `인제스트가 무거우면 머지가 밀린다` 는 성질을 **하루 60억 행·50TB 를 넣으며 자기가 먼저 만난다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "분석 일의 70% 를 AI 에 넘기고 30% 를 일부러 남긴다",
+          "via": "같은 창고",
+          "contract": "**AI 어시스턴트가 붙은 곳이 바로 이 창고다** — 주간 사용자 약 70명이 쓰던 곳 위에 올렸다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "ClickHouse Cloud (수익원)",
+          "via": "24x7 가동",
+          "contract": "⚠️ **매시간 적재가 서비스를 끌 수 없게 만든다** — 저장과 컴퓨트를 따로 파는 제품에서 **주기가 곧 컴퓨트 비용이다**(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Salesforce · AWS CUR · GCP Billing · M3ter",
+          "via": "커넥터",
+          "contract": "**사업 지표가 여러 SaaS 에 흩어져 있어 원천이 19개까지 늘었다.** 되돌려 보내는 길도 있다 — S3 에서 Salesforce 로",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "의존이 있는 모델을 한 작업에 묶으면 실패가 번진다",
+            "why_hard": "⚠️ **회사가 두 갈래를 정확히 가른다** — `The insert job was taking too long to execute, and just one error would jeopardize insertion of all data because of dependencies among different data models`. **시간 문제는 나누면 되는데, 결합 문제는 의존을 끊어야 풀린다.** 그런데 데이터 모델 사이의 의존은 **업무 지표가 서로를 참조하기 때문에 생기는 것**이라 임의로 끊을 수 없다(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**하나를 아홉으로 쪼개고 변환 로직을 dbt 로 모으는 것.** ⚠️ **아홉이 맞는 수인지, 어떤 기준으로 갈랐는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          },
+          {
+            "problem": "자기 제품을 쓰면 그 비용이 장부에서 사라진다",
+            "why_hard": "⚠️ 인프라 비용을 **월 약 $1,500** 이라 적으면서 `excluding ClickHouse Cloud as internal service` 를 단다. **가장 큰 항목이 사내 서비스라는 이유로 빠지므로, 이 수치는 남이 같은 구조를 지을 때의 비용이 아니다.** 자기 제품을 쓰는 회사의 사례가 **얼마나 싼지를 증명하지 못하는 이유**가 여기 있다(이 지적은 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **글에 답이 없다.** 경쟁 제품 비교도 `we researched... and believe` 수준이고 수치가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built the Internal Data Warehouse at ClickHouse",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+                "publisher": "ClickHouse Blog",
+                "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "하나에 매달았다가 아홉으로 나눈다",
+          "question": "자기 창고는 어디서 무너지고 어떻게 고쳐졌나",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"<b>원천</b><br/>• DocumentDB · AWS CUR<br/>• GCP Billing · Salesforce · M3ter<br/>• <b>약 10개 → 19개</b>\"]:::accent --> S3[\"<b>S3 (원시 중간 저장)</b><br/>• 여기서 변환하지 않는다\"]:::list\n  S3 --> ONE[\"⚠️ <b>시간당 적재 DAG 하나</b><br/>• 모든 신규 데이터를 담당\"]:::gone\n  ONE --> F1[\"⚠️ <b>인서트가 너무 오래 걸린다</b>\"]:::gone\n  ONE --> F2[\"⚠️ <b>오류 하나가 전체 적재를 막는다</b><br/>• 데이터 모델 간 의존\"]:::gone\n  F1 --> NINE[\"<b>아홉 개 프로세스로 쪼갠다</b><br/>• 시간도 나누고 실패도 격리\"]:::accent\n  F2 --> NINE\n  NINE --> CH[\"<b>ClickHouse Cloud</b><br/>• <b>변환도 안에서 한다</b><br/>• 하루 60억 행 · 50TB\"]:::accent\n  DBT[\"<b>dbt</b><br/>• 변환 로직을 모은다\"]:::list -.-> CH\n  CH --> V[\"<b>보는 쪽</b><br/>• Cloud SQL 콘솔 (Superset 대체)<br/>• Growthbook · S3→Salesforce\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "자기 제품을 쓰면 사라지는 것들",
+          "question": "이 사례가 증명하지 못하는 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>자기 제품으로 자기 창고를</b>\"]:::accent --> A1[\"<b>고른 이유</b><br/>• 경쟁 제품이 훨씬 비쌌을 것<br/>⚠️ <b>believe · 수치 없음</b>\"]:::gone\n  A --> B[\"<b>인프라 비용 월 약 $1,500</b>\"]:::list\n  B --> B1[\"⚠️ <b>단, ClickHouse Cloud 제외</b><br/>• 사내 서비스라는 이유로<br/>• <b>가장 큰 항목이 장부에서 빠진다</b>\"]:::gone\n  C[\"<b>변환을 밖에서 안 한다</b>\"]:::accent --> C1[\"<b>층이 하나 줄어든다</b>\"]:::list\n  C --> C2[\"⚠️ <b>하나의 DAG 로 묶기 쉬웠다</b><br/>• 그것이 병목이 됐다 (재구성)\"]:::gone\n  D[\"<b>매시간 적재</b>\"]:::accent --> D1[\"⚠️ <b>서비스를 끌 수 없다</b><br/>• 24x7 가동<br/>• 주기가 곧 컴퓨트 비용 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How we built the Internal Data Warehouse at ClickHouse",
+          "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+          "publisher": "ClickHouse Blog",
+          "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+        },
+        {
+          "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+          "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+          "publisher": "ClickHouse Blog",
+          "date": "2026-03",
+          "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+        },
+        {
+          "title": "The AI-first data warehouse",
+          "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+          "publisher": "ClickHouse Blog",
+          "date": "2026",
+          "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+        }
+      ]
     }
   ],
   "eras": [],
   "open_questions": [
     "⚠️ **매출 수치가 출처마다 다르다** — 회사가 직접 밝힌 것은 **관리형 고객 3,000곳 이상**과 **ARR 250% 이상 성장**뿐이다. 3자 자료들은 ARR 을 **2억 5,000만~3억 5,000만 달러**로, 고객 수를 **4,000곳 이상**으로, 밸류에이션을 **약 150억 달러**로 말하는데 **1급 출처로 확인하지 못했다.**",
-    "⏳ **`A year later` 본문을 아직 안 읽었다** — 초기 적재 구조가 무너진 것까지는 확인했고 **어떻게 넘었는지가 남았다.** **다음 사이클의 첫 일이다.**",
+    "⚠️ **창고 크기가 자료마다 다르다** — AI 글은 **2.1PB** 라 하고, `A year later` 는 **2년 누적 470TB(압축)** 에 하루 **50TB(비압축)** 라 한다. **압축 기준의 차이인지 시점 차이인지 확인하지 못했다.**",
     "⚠️ **요금 단가를 얻지 못했다** — 요금 페이지가 **저장과 컴퓨트를 따로 판다는 철학만** 적고 숫자를 안 준다. **요금 단위가 아키텍처를 드러낸다는 규칙을 이 회사에서는 절반만 쓸 수 있다.**",
     "**Cloud 의 내부 구조를 모른다** — 저장·컴퓨트 분리가 실제로 어떻게 구현됐는지(공유 저장소·캐시·컴퓨트 격리) 자료를 아직 못 찾았다.",
     "**Langfuse 인수 뒤 통합이 어떻게 되는지 모른다** — 발표문의 한 문장(`LLM observability and evaluation is fundamentally a data problem`)뿐이다.",
-    "**연표(eras)를 세울 자료를 못 찾았다** — 다만 사내 창고 글이 **1편과 `A year later` 로 나뉘어 있어** 두 편을 나란히 놓으면 시간축이 나올 수 있다."
+    "**연표(eras)를 세울 자료를 못 찾았다** — 다만 사내 창고 글이 **1편과 `A year later` 로 나뉘어 있어** 두 편을 나란히 놓으면 시간축이 나올 수 있다.",
+    "**1편의 발행일을 확인하지 못했다** — 2편이 `A year later` 라 부르므로 약 1년 전이지만 **정확한 연도를 못 찾아 연표(history)를 세우지 않았다.**",
+    "**적재를 왜 아홉으로 갈랐는지 모른다** — 원천별인지 도메인별인지, 아홉이 맞는 수인지가 글에 없다."
   ],
   "sources": [
     {
@@ -841,7 +1316,6 @@
       "title": "How we built the Internal Data Warehouse at ClickHouse",
       "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
       "publisher": "ClickHouse Blog",
-      "date": "2023",
       "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
     },
     {

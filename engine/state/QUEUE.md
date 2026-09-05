@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **ClickHouse** | US · SaaS(분석 DB) | 프로파일 완료 · 도메인 3(갱신을 제자리에서 하지 않고 나중에 합친다[tech 4] / 자기 제품으로 자기 창고를 짓고 한계를 먼저 만난다[tech 2] / 분석 일의 70% 를 AI 에 넘기고 30% 를 일부러 남긴다[tech 3]) · **기능 1**(updates-as-patches-not-rewrites) |
+| **ClickHouse** | US · SaaS(분석 DB) | 프로파일 완료 · 도메인 3(갱신을 제자리에서 하지 않고 나중에 합친다[tech 4] / 자기 제품으로 자기 창고를 짓고 한계를 먼저 만난다[tech 2] / 분석 일의 70% 를 AI 에 넘기고 30% 를 일부러 남긴다[tech 3]) · **기능 2**(updates-as-patches-not-rewrites / one-load-job-became-nine) |
 
 ## 대기
 
