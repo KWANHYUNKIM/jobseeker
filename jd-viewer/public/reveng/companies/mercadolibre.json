@@ -4,7 +4,7 @@
   "name_en": "Mercado Libre",
   "country": "기타",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-05",
   "domain": "mercadolibre.com",
   "one_liner": "1999년 모놀리스에서 시작해 라틴아메리카의 상거래·금융·물류를 한 플랫폼 위에 올린 회사",
@@ -25,7 +25,8 @@
       "weight": "⚠️ 사업부별 비중은 확인하지 못했다",
       "domains": [
         "개발자가 인프라를 몰라도 되게 만든다",
-        "셀로 나눠 장애 반경을 줄인다"
+        "셀로 나눠 장애 반경을 줄인다",
+        "이미 있는 것을 고치지 않고 새 구조로 간다"
       ],
       "confidence": "confirmed",
       "sources": [
@@ -225,7 +226,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "six-months-of-saying-no"
+      ]
     }
   ],
   "eras": [
@@ -337,7 +340,8 @@
       ],
       "features": [
         "three-clicks-to-production",
-        "stock-cells"
+        "stock-cells",
+        "six-months-of-saying-no"
       ],
       "stack_in": [
         "Fury (IDP)",
@@ -1343,6 +1347,473 @@
       ],
       "history": [],
       "sources": [
+        {
+          "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+          "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+          "publisher": "Tecnología de Mercado Libre",
+          "date": "2025-12-30",
+          "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+        },
+        {
+          "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+          "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+          "publisher": "Tecnología de Mercado Libre",
+          "date": "2024-02-23",
+          "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+        }
+      ]
+    },
+    {
+      "key": "six-months-of-saying-no",
+      "name": "삼만 개를 다시 쓰게 하지 않는 것이 첫 관문이다",
+      "domain": "이미 있는 것을 고치지 않고 새 구조로 간다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "⚠️ **이 회사에는 이미 마이크로서비스 30,000개가 돌고 있고, 공개 API 계약이 전사에 퍼져 있다.** 그래서 무엇을 새로 고르든 첫 질문이 같다 — **남의 코드를 다시 쓰게 하는가.** 이 기능은 그 관문이 실제로 어떻게 작동했는지의 기록이다: 컴퓨팅 모델을 바꾸려고 **약 6개월** 동안 네 범주를 차례로 보고 **버린 이유를 하나씩 적었다.** 이유가 기술이 아닌 경우가 많았다 — `this would have required considerable rework on our development teams.`",
+        "metrics": [
+          {
+            "label": "평가에 든 것",
+            "value": "**약 6개월** · 여러 RFC 와 **지표가 담긴 상세 보고서**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "label": "지켜야 했던 것",
+            "value": "마이크로서비스 **30,000개** — 다시 쓰게 하면 안 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "label": "버린 후보",
+            "value": "AWS Batch · AWS Lambda · AWS ECS · Google Cloud Run · Cloud Run + Anthos · Knative · Nomad — **일곱**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "label": "바꾼 이유(첫 모델의 문제)",
+            "value": "앱 레플리카와 컴퓨팅 인스턴스가 **1:1 이라 효율이 낮았고**, 클라우드 제공자의 네이티브 기능을 제대로 못 썼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "후보를 좁힐 때",
+          "thought": "⚠️ **기술의 우열보다 이전 비용이 먼저 걸렸다.** FaaS 를 접은 결정적 이유가 성능이 아니다 — 30,000개 서비스를 고쳐야 한다는 것이었다. 그래서 **이미 컨테이너 위에 있다는 사실이 다음 범주를 정했다**: `Since our architecture was container-based, we decided to focus on Container-as-a-Service (CaaS) models.`",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "유행 앞에서",
+          "thought": "교훈 목록의 마지막이 이 회사의 태도다 — **`Do not buy the buzz.`** 남에게 맞는 해법이 우리 기준에 맞으리라는 보장이 없다고 적는다. ⚠️ **그런데 판단 기준을 어떻게 세우는지는 안 적는다** — 이 지적은 이 사이트의 재구성이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "고르고 나서",
+          "thought": "⚠️ **고른 것을 끝으로 두지 않는다** — 아키텍처를 **다른 오케스트레이터나 패러다임으로 최소한의 혼란으로 옮길 수 있게** 설계했다고 밝히고, 마지막 문장이 그것을 못 박는다: `at Mercado Libre, we're in a state of Continuous Beta.` **이번에 겪은 이전 비용을 다음번에는 덜 내려는 것으로 보인다**(이 해석은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "기존 자산",
+            "what": "마이크로서비스 30,000개와 전사가 쓰는 공개 API 계약. **모든 선택의 제약이자 기준**"
+          },
+          {
+            "name": "사이드카",
+            "what": "로깅·모니터링 같은 보조 서비스를 담는 컨테이너. **이 아키텍처의 필수 요소**다"
+          },
+          {
+            "name": "BigQueue",
+            "what": "클라우드 서비스 위에 만든 사내 메시징. 소비자가 **드문드문 오는 메시지를 기다리며 놀다가 몰려올 때 처리**한다"
+          },
+          {
+            "name": "컴퓨팅 모델",
+            "what": "Fury 와 클라우드 제공자 사이의 인터페이스. 첫 모델이 인스턴스 기반 `Standard` 였다"
+          },
+          {
+            "name": "RFC · POC",
+            "what": "판단의 근거를 남기는 장치. 6개월 동안 여러 편이 나왔다"
+          }
+        ],
+        "invariants": [
+          "**앱을 다시 쓰게 하는 선택지는 탈락한다** — 30,000개를 고칠 수 없다",
+          "**사이드카를 지원해야 한다** — 로깅·모니터링이 거기 얹혀 있다",
+          "**멀티클라우드로 갈 수 있어야 한다** — 한 제공자에 갇히지 않는다",
+          "⚠️ **다음 이전이 최소한의 혼란이어야 한다** — 지금 고른 것도 언젠가 바꿀 것으로 본다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**첫 모델의 문제를 잰다** — 레플리카와 인스턴스가 1:1 이라 효율이 낮고 네이티브 기능을 못 쓴다",
+            "why": "바꿀 이유를 수치로 세우는 단계"
+          },
+          {
+            "step": "**① 잡 워크로드부터 본다** — AWS Batch",
+            "why": "크론으로 도는 워크로드가 **인스턴스를 24시간 켜 두는** 낭비가 가장 눈에 띄었다"
+          },
+          {
+            "step": "⚠️ **버린다** — 시작·종료가 예측 가능한 잡에는 맞지만 **BigQueue 소비자처럼 언제 몰릴지 모르는 워크로드**에는 안 맞는다",
+            "why": "낮은 지연으로 가변 트래픽을 받아 내며 필요할 때 늘어나야 했다"
+          },
+          {
+            "step": "**② FaaS 를 본다** — AWS Lambda",
+            "why": "이벤트로 도는 코드에는 맞는다"
+          },
+          {
+            "step": "⚠️ **버린다** — **최대 15분 실행 제한**으로 장기 작업이 안 되고, Lambda 와 Batch 를 함께 쓰면 **모니터링·로깅·워크플로 조율이 복잡해진다.** 무엇보다 **30,000개 서비스의 대규모 리팩터링**이 필요하다",
+            "why": "⚠️ **여기서 이 도메인의 원칙이 결정적으로 작동한다**"
+          },
+          {
+            "step": "**③ 컨테이너 기반이므로 CaaS 로 좁힌다** — ECS · Cloud Run · Cloud Run + Anthos",
+            "why": "이미 컨테이너 위에 있다는 사실이 다음 범주를 정했다"
+          },
+          {
+            "step": "⚠️ **셋 다 버린다** — ECS 는 사이드카는 되지만 **멀티클라우드 유연성이 부족**하고, Cloud Run 은 **당시 사이드카를 지원하지 않았고**, Anthos 를 얹으면 **운영 복잡도가 늘었다**",
+            "why": "필수 요건(사이드카·멀티클라우드)이 걸러 냈다"
+          },
+          {
+            "step": "**④ 오케스트레이터를 본다** — Knative 는 **Fury 운영 요구와 안 맞고 기존 아키텍처와 충돌**해 일찍 뺐다",
+            "why": "쓰던 것을 다시 쓰게 하지 않는 것이 이상적 오케스트레이터의 조건이었다"
+          },
+          {
+            "step": "**팀을 나눠 Nomad 와 쿠버네티스로 각각 POC 를 돌린다** — Fury 의 워크로드를 흉내 내서",
+            "why": "Nomad 를 다른 프로젝트에서 써 본 경험이 있었다. **둘 다 결과가 좋았다**"
+          },
+          {
+            "step": "**클러스터 관리와 서비스 노출을 깊이 보고 쿠버네티스를 고른다**",
+            "why": "파드마다 IP 를 주는 단순한 구성 · 강력한 오토스케일링 · 제공자별 플러그인이 있는 커뮤니티. **Nomad 는 Consul 같은 보조 도구가 더 필요했고 쓰던 클라우드에 관리형 클러스터가 없었다**"
+          },
+          {
+            "step": "**관리형(EKS · GKE)을 고른다.** 그리고 다음 이전을 미리 준비한다",
+            "why": "`Our architecture is built to allow a transition to an alternative orchestrator or paradigm with minimal disruption`"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "크론으로 도는 잡의 유휴 비용을 AWS Batch 로 없앨 것인가",
+            "chosen": "**버린다**",
+            "alternatives": [
+              "AWS Batch 로 잡만 따로 처리"
+            ],
+            "tradeoff": "⚠️ **한 종류의 낭비를 없애려다 다른 워크로드를 못 담는다** — Batch 는 시작·종료가 예측 가능한 잡용이라, **드문드문 오다 몰리는** BigQueue 소비자에는 맞지 않았다. `we required a solution that could effectively manage variable message traffic with minimal latency and scale on demand`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "question": "FaaS(Lambda)로 갈 것인가",
+            "chosen": "**버린다** — 세 가지 이유로",
+            "alternatives": [
+              "Lambda 단독",
+              "Lambda + Batch 조합"
+            ],
+            "tradeoff": "⚠️ **기술 한계 하나와 조직 비용 둘이다** — ① **15분 실행 제한**으로 장기 작업 불가, ② 둘을 조합하면 **모니터링·로깅·조율의 운영 부담**이 는다, ③ **30,000개 서비스를 고쳐야 한다.** ③이 이 회사에서 가장 무거운 항목이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "question": "다음 범주를 무엇으로 정할 것인가",
+            "chosen": "**이미 컨테이너 기반이므로 CaaS 로 좁힌다**",
+            "alternatives": [
+              "패러다임을 가리지 않고 넓게 보기"
+            ],
+            "tradeoff": "⚠️ **더 나은 패러다임이 있어도 이 관문을 못 넘으면 못 고른다.** 기존 자산이 선택지를 좁힌 것이다. 회사는 대신 **다음번에 옮기기 쉽게** 설계했다고 밝힌다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "question": "AWS ECS 로 갈 것인가",
+            "chosen": "**버린다**",
+            "alternatives": [
+              "ECS 로 컨테이너 운영"
+            ],
+            "tradeoff": "⚠️ **사이드카는 되는데 멀티클라우드가 안 된다** — 이 아키텍처는 로깅·모니터링을 사이드카로 붙이므로 그 지원이 필수인데, ECS 는 **멀티클라우드 환경에서 필요한 유연성이 부족**했고 일부 기능을 기본 제공하지 않았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "question": "Google Cloud Run 은 어떤가",
+            "chosen": "**버린다** — 당시 **사이드카를 지원하지 않았다**",
+            "alternatives": [
+              "Cloud Run 단독",
+              "Cloud Run + Anthos"
+            ],
+            "tradeoff": "⚠️ **요건 하나가 안 맞으면 나머지 장점이 소용없다** — 자동 스케일과 서버리스는 매력적이었지만 사이드카가 `central to our system's design` 이었다. Anthos 를 얹어 멀티클라우드를 풀 수는 있었으나 **운영 복잡도가 늘어** 그것도 접었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "question": "Knative 를 볼 것인가",
+            "chosen": "**일찍 뺀다**",
+            "alternatives": [
+              "쿠버네티스 위에 Knative 를 얹어 서버리스까지"
+            ],
+            "tradeoff": "⚠️ **Fury 의 운영 방식과 안 맞고 기존 아키텍처와 충돌하는 기능을 들여온다.** 좋은 기능을 더하는 것이 아니라 **이미 있는 것과 싸우는 일**이 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "question": "Nomad 와 쿠버네티스 중 무엇으로 할 것인가",
+            "chosen": "**쿠버네티스(EKS · GKE)** — 팀을 나눠 둘 다 POC 를 돌린 뒤에",
+            "alternatives": [
+              "Nomad (다른 프로젝트에서 써 본 경험이 있었다)"
+            ],
+            "tradeoff": "⚠️ **둘 다 결과가 좋았다** — 갈린 것은 성능이 아니라 **운영**이다. 파드마다 IP 를 주는 단순한 구성·강력한 오토스케일링·제공자별 플러그인이 있는 커뮤니티가 우세했고, **Nomad 는 Consul 같은 보조 도구가 더 필요했으며 쓰던 클라우드에 관리형 클러스터가 없었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "question": "고른 것을 얼마나 오래 쓸 생각인가",
+            "chosen": "**언젠가 바꿀 것으로 보고 설계한다** — `a transition to an alternative orchestrator or paradigm with minimal disruption`",
+            "alternatives": [
+              "선택한 오케스트레이터에 깊이 최적화하기"
+            ],
+            "tradeoff": "⚠️ **깊이 파고들어 얻을 수 있는 것을 일부 포기한다.** 그 대신 이번 6개월 같은 비용을 다음번에는 덜 낸다. 회사가 그 태도를 이름 붙인다 — `we're in a state of Continuous Beta`(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "관리형 쿠버네티스 (EKS · GKE)",
+            "role": "고른 것. 파드별 IP·오토스케일링·플러그인 생태계",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ AWS Batch · Lambda · ECS · Cloud Run · Anthos · Knative · Nomad",
+            "role": "⚠️ **전부 버린 후보다.** 버린 이유가 각각 기록돼 있다 — 예측 불가 버스트 · 15분 제한과 3만 개 리팩터링 · 멀티클라우드 유연성 · 사이드카 미지원 · 운영 복잡도 · 기존 아키텍처와 충돌 · 보조 도구 필요",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "사이드카 컨테이너",
+            "role": "로깅·모니터링 같은 보조 서비스. **후보를 거르는 필수 요건이었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "브로드캐스트 게이트웨이 · 셀별 ID 범위",
+            "role": "⚠️ **같은 원칙의 다른 사례** — 공개 API 계약을 안 깨려고 라우팅 키 대신 고른 우회",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "stock-cells",
+          "via": "같은 관문",
+          "contract": "⚠️ **셀 전환에서 라우팅 키를 못 넣은 이유가 여기 원칙 그대로다** — `adding a routing key would have triggered a cross-organizational migration`. **한쪽은 컴퓨팅 모델에서, 한쪽은 데이터 라우팅에서 같은 벽을 만났다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "three-clicks-to-production",
+          "via": "컴퓨팅 모델",
+          "contract": "**이 선택의 결과가 플랫폼의 바닥이 된다** — 인스턴스 기반 `Standard` 를 대신해 관리형 쿠버네티스가 Fury 를 떠받친다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "개발 팀 (마이크로서비스 30,000개)",
+          "via": "이전 비용",
+          "contract": "⚠️ **이들에게 일을 시키지 않는 것이 선택의 첫 기준이다.** 회사가 교훈에도 적는다 — 코드 리팩터링을 예상하고 일정과 자원에 반영하라",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "클라우드 제공자 (AWS · GCP)",
+          "via": "관리형 클러스터",
+          "contract": "**둘 다 쓴다** — 관리형 쿠버네티스를 양쪽에서 받아 멀티클라우드를 유지한다. Nomad 가 걸린 자리도 여기였다(쓰던 클라우드에 관리형이 없었다)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "이미 있는 것의 무게가 선택을 정한다",
+            "why_hard": "⚠️ **가장 좋은 기술이 아니라 가장 적게 고쳐도 되는 기술이 이긴다.** 30,000개 서비스와 공개 계약이 있으면 **패러다임을 바꾸는 선택지는 사실상 열려 있지 않다.** 그런데 그 무게는 시간이 갈수록 늘기만 한다",
+            "current_best": "이 회사의 답은 **다음번을 준비하는 것**이다 — 지금 고른 것에서 다른 오케스트레이터로 최소한의 혼란으로 옮길 수 있게 설계했다고 밝힌다. ⚠️ **그 설계가 구체적으로 무엇인지는 글에 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "`유행을 사지 마라` 를 실제로 어떻게 지키나",
+            "why_hard": "교훈으로는 분명하다(`Do not buy the buzz`). 그런데 **어떤 기준으로 우리 것과 남의 것을 가르는지**가 어렵다 — 이 회사도 Nomad 와 쿠버네티스 둘 다 POC 가 좋게 나온 뒤에야 **클러스터 관리와 서비스 노출**이라는 축으로 갈랐다",
+            "current_best": "**RFC 와 지표가 담긴 보고서, 그리고 자기 워크로드를 흉내 낸 POC.** 6개월이 든 이유가 그것이다. ⚠️ **축을 어떻게 고르는지는 여전히 사람의 판단으로 남는다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "여섯 달 동안 무엇을 왜 버렸나",
+          "question": "관문 하나가 어떻게 후보를 걸러 내나",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>바꿔야 하는 이유</b><br/>• 레플리카 : 인스턴스 = 1:1<br/>• 네이티브 기능 활용 제한\"]:::accent --> A\n  A[\"<b>① 잡 워크로드</b><br/>AWS Batch\"]:::list --> A1[\"⚠️ <b>버림</b><br/>• 언제 몰릴지 모르는<br/>  BigQueue 소비자에 안 맞음\"]:::gone\n  A1 --> B[\"<b>② FaaS</b><br/>AWS Lambda\"]:::list --> B1[\"⚠️ <b>버림</b><br/>• 15분 실행 제한<br/>• 조합하면 운영 복잡<br/>• <b>3만 개 리팩터링</b>\"]:::gone\n  B1 --> C[\"<b>③ CaaS</b><br/>ECS · Cloud Run · +Anthos\"]:::list --> C1[\"⚠️ <b>버림</b><br/>• 멀티클라우드 유연성 부족<br/>• 사이드카 미지원<br/>• 운영 복잡도\"]:::gone\n  C1 --> D[\"<b>④ 오케스트레이터</b><br/>Knative · Nomad · 쿠버네티스\"]:::list\n  D --> D1[\"⚠️ Knative — 기존 아키텍처와 충돌\"]:::gone\n  D --> D2[\"⚠️ Nomad — Consul 등 보조 도구<br/>관리형 클러스터 없음\"]:::gone\n  D --> K[\"<b>관리형 쿠버네티스</b><br/>EKS · GKE\"]:::accent\n  G[\"<b>거르는 관문</b><br/>• 앱을 다시 쓰게 하는가<br/>• 사이드카가 되는가<br/>• 멀티클라우드가 되는가\"]:::soft\n  G -.-> A\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        },
+        {
+          "title": "같은 벽을 두 곳에서 만났다",
+          "question": "기존 자산을 안 건드린다는 원칙은 무엇을 포기하게 하나",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[\"<b>원칙</b><br/>• 마이크로서비스 3만 개<br/>• 공개 API 계약<br/>• 남의 코드를 안 건드린다\"]:::accent --> W1\n  R --> W2\n  W1[\"<b>컴퓨팅 모델에서</b><br/>• FaaS 를 버렸다\"]:::list --> L1[\"⚠️ <b>포기한 것</b><br/>• 이벤트 기반 서버리스의 이점<br/>• 더 나은 패러다임일 수 있어도\"]:::gone\n  W2[\"<b>데이터 라우팅에서</b><br/>• 라우팅 키를 안 넣었다\"]:::list --> L2[\"⚠️ <b>포기한 것</b><br/>• 결정적 라우팅<br/>• 대신 브로드캐스트 오버헤드\"]:::gone\n  L1 --> N[\"<b>대신 준비하는 것</b><br/>• 다음 이전을 최소 혼란으로<br/>• Continuous Beta\"]:::soft\n  L2 --> N\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+          "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+          "publisher": "Tecnología de Mercado Libre",
+          "date": "2025-03-08",
+          "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+        },
         {
           "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
           "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",

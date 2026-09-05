@@ -8,45 +8,32 @@
 
 ## 지금 파는 중
 
-**Mercado Libre(기타/AR · 커머스)** `in_progress` · **연표 3시기 · 도메인 3 · 기능 2** —
-69곳 · ⚠️ 큐 0/3. **본문은 Medium 이라 브라우저(`get_page_text`)로만 읽힌다.**
+**없다 — Mercado Libre 를 닫았다.** 완료 **69곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
 
-방금 쓴 기능: **`stock-cells`(대륙 하나의 재고를 격벽 셋으로 나눈다)**.
-결정 8개가 **전부 `confirmed`** 다.
+### ⚠️ 다음 사이클은 3순위(후보 조사)다 — 새 이름부터 찾지 않는다
 
-### ⭐⭐ 이 기능의 가장 큰 벽은 데이터가 아니라 계약이었다
+**바로 앞 조사(2026-09-05 네 번째)에서 배운 것을 그대로 쓴다** — 브라우저를 켜면
+**Medium 이 열린다.** 그래서 "Medium 이라 못 읽는다"로 떨어뜨린 목록이 **그대로 후보
+명단**이다:
 
-수십 TB 를 옮기는 것보다 **라우팅 키가 없는 API 가 어려웠다.** 키를 넣으면
-`a cross-organizational migration — one far more disruptive than the architectural
-change we were trying to implement` 가 된다. 그래서 **둘을 함께 쓴다** —
-새 데이터는 **셀별 ID 범위**로(모양을 안 바꾸니 계약이 살아 있다),
-옛 데이터는 **브로드캐스트**로. 회사가 그 값을 먼저 말한다:
-`It's not the perfect architecture — broadcasting requests adds overhead — but it
-provided something more valuable: a safe migration path.`
+- **Booking.com** — `medium.com/booking-com-development`. 목록(`blog.booking.com`)은
+  WebFetch 로 오고 제목이 회고형이다(**250개 이상 MySQL 클러스터의 백업 카탈로그를
+  AWS 로**, `A Migration Adventure`). **여기부터 보는 것이 가장 싸다.**
+- Trainline · Traveloka · Tokopedia · Dream11 · Meesho.
 
-### ⭐ 두 기능이 서로를 성립시킨다
+### ⭐⭐ Mercado Libre 에서 남길 것 — 같은 벽을 두 곳에서 만난 회사
 
-셀 글이 **Fury 덕분에 가능했다**고 직접 적는다 — 셀이 저마다 설정·대시보드·배포 규칙을
-갖는 `its own isolated universe` 가 되는 것을 플랫폼이 막았다. `connections` 로 이었다.
+**마이크로서비스 3만 개와 공개 API 계약**이 컴퓨팅 모델 선택(FaaS 탈락)과 데이터
+라우팅(라우팅 키 포기) **양쪽에서 똑같이 작동했다.** 그리고 그 대가를 회사가 먼저
+말한다(`broadcasting requests adds overhead`). **이렇게 원칙 하나가 여러 결정을 관통하는
+회사는 도메인을 그 원칙으로 세우면 잘 맞는다** — 이번에 세 번째 도메인을 그렇게 잡았다.
 
-### ⚠️ 연도를 세 번째로 못 썼다
+### ⚠️ 세 번 반복된 관찰 — 기능 단위 연표가 잘 안 선다
 
-한계에 닿은 것이 `By early 2024` 이고 `A year after the migration` 이라 적지만
-**단일 MySQL 구조가 언제부터였는지가 없다.** `history` 를 비우고 `open_questions` 에 적었다.
-**이 회사에서 연표는 회사 단위(1999·2010·2015)로만 서고 기능 단위로는 못 서고 있다.**
-
-### 다음 사이클 — 마지막 도메인
-
-**이미 있는 것을 고치지 않고 새 구조로 간다** — 자료는 셀 글(읽음) + 쿠버네티스 글(읽음).
-6개월간 `AWS Batch → Lambda → ECS → Cloud Run → Anthos → Nomad` 를 **버린 이유를
-하나씩 적으며** 떨어뜨린 기록이고, 교훈에 **`Do not buy the buzz`** 가 있다.
-여기까지 채우면 **완주 조건에 닿는다** — 수익원이 기능과 이어지는지 함께 본다.
-
-### 아직 못 잡은 것
-
-1. **매출·사업부별 비중** — 상장사라 **IR 을 열어 볼 값이 있다.**
-2. **쿠버네티스 전환 시점 · 단일 MySQL 시작 시점** 둘 다 연도가 없다.
-3. **Fury 연작에 안 읽은 편** — 트래픽 보안 · 비용 최적화 · 멀티클라우드 전략.
+Kraken(전 환경 동시 배포 → 일부 먼저) · Mercado Libre(쿠버네티스 전환 · 단일 MySQL 시작)
+에서 **바뀐 것은 분명한데 연도가 없어 `history` 를 버렸다.** 반대로 **글이 옛 글을 직접
+가리킬 때는 섰다**(Kraken 2016→2026, Bolt 2021→2025). **회고를 읽을 때 "이 글이 무엇을
+인용하는가"를 보는 것이 연표를 얻는 가장 확실한 방법이다.**
 
 ## 지금의 진짜 상태
 
