@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Sidebar } from './components/Sidebar'
 import { JobList } from './components/JobList'
 import { JobDetail } from './components/JobDetail'
@@ -149,6 +149,24 @@ function App() {
   }, [selected, tab, detail, route.path, route.seg, filter.query, isJobList])
   useSeo(seo)
 
+  // 화면이 아홉 개다. 가로로 늘어놓으면 좁은 창에서 잘리고, 그러면 뒤쪽 탭(역설계·
+  // 백과사전)은 있는 줄도 모르게 된다. 그래서 지금 보고 있는 화면 하나만 띄우고
+  // 나머지는 눌렀을 때 아래로 펼친다 — 목록은 순서를 고정해 둔다(자리를 외우게).
+  const navItems = useMemo<NavItem[]>(
+    () => [
+      { label: '잡 리스트', to: paths.jobs(), active: tab === 'jobs' },
+      { label: '기업 기술스택', to: paths.companies(), active: tab === 'companies' },
+      { label: '커리어 마인드맵', to: paths.mindmap(), active: tab === 'mindmap' },
+      { label: '기술 블로그', to: paths.blog(), active: tab === 'blog' || tab === 'radar' },
+      { label: '모집 캘린더', to: paths.calendar(), active: tab === 'calendar' },
+      { label: '재공고', to: paths.reposts(), active: tab === 'reposts' },
+      { label: '개발 트렌드', to: paths.trend(), active: tab === 'trend' && route.seg[0] !== 'wiki' },
+      { label: '기술 백과사전', to: paths.wiki(), active: route.seg[0] === 'wiki' },
+      { label: '기술 역설계', to: paths.reveng(), active: tab === 'reveng' },
+    ],
+    [tab, route.seg],
+  )
+
   return (
     <div className="flex flex-col h-screen">
       <nav className="flex items-center gap-3 px-4 sm:px-6 h-14 border-b border-(--color-border) bg-(--color-panel) sticky top-0 z-30">
@@ -156,35 +174,7 @@ function App() {
           <span className="text-lg font-extrabold text-(--color-accent) tracking-tight">JD</span>
           <span className="text-lg font-bold text-(--color-text) tracking-tight">Viewer</span>
         </a>
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar -mx-1 px-1">
-          <TabLink active={tab === 'jobs'} to={paths.jobs()}>
-            잡 리스트
-          </TabLink>
-          <TabLink active={tab === 'companies'} to={paths.companies()}>
-            기업 기술스택
-          </TabLink>
-          <TabLink active={tab === 'mindmap'} to={paths.mindmap()}>
-            커리어 마인드맵
-          </TabLink>
-          <TabLink active={tab === 'blog' || tab === 'radar'} to={paths.blog()}>
-            기술 블로그
-          </TabLink>
-          <TabLink active={tab === 'calendar'} to={paths.calendar()}>
-            모집 캘린더
-          </TabLink>
-          <TabLink active={tab === 'reposts'} to={paths.reposts()}>
-            재공고
-          </TabLink>
-          <TabLink active={tab === 'trend' && route.seg[0] !== 'wiki'} to={paths.trend()}>
-            개발 트렌드
-          </TabLink>
-          <TabLink active={route.seg[0] === 'wiki'} to={paths.wiki()}>
-            기술 백과사전
-          </TabLink>
-          <TabLink active={tab === 'reveng'} to={paths.reveng()}>
-            기술 역설계
-          </TabLink>
-        </div>
+        <NavMenu items={navItems} />
         <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
           <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
           <span className="hidden sm:inline"> · 필터 </span>
@@ -290,19 +280,75 @@ function App() {
 }
 
 // 탭은 진짜 링크다. 크롤러는 onClick 을 따라가지 않는다 — href 가 있어야 다음 페이지를 본다.
-function TabLink({ active, to, children }: { active: boolean; to: string; children: React.ReactNode }) {
+type NavItem = { label: string; to: string; active: boolean }
+
+/**
+ * 화면 고르개. 지금 보고 있는 화면을 버튼으로 띄우고, 누르면 그 아래로 전부 펼친다.
+ * 가로 탭 줄은 아홉 개를 감당하지 못했다 — 좁은 창에서 잘려서, 뒤쪽에 있던 화면은
+ * 스크롤해 본 사람만 알 수 있었다. 여기서는 어느 창 너비에서도 아홉 개가 다 보인다.
+ */
+function NavMenu({ items }: { items: NavItem[] }) {
+  const [open, setOpen] = useState(false)
+  const box = useRef<HTMLDivElement>(null)
+  const current = items.find((i) => i.active) ?? items[0]
+
+  // 바깥을 누르거나 Esc 를 누르면 닫는다. 열려 있을 때만 듣는다.
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
   return (
-    <a
-      href={to}
-      onClick={onLinkClick(to)}
-      className={`relative px-3 py-2 text-[15px] transition whitespace-nowrap shrink-0 after:absolute after:left-3 after:right-3 after:-bottom-px after:h-0.5 ${
-        active
-          ? 'text-(--color-accent) font-bold after:bg-(--color-accent)'
-          : 'text-(--color-muted) hover:text-(--color-text) after:bg-transparent'
-      }`}
-    >
-      {children}
-    </a>
+    <div ref={box} className="relative shrink-0">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[15px] font-bold text-(--color-text) hover:bg-(--color-band) transition"
+      >
+        <span className="whitespace-nowrap">{current.label}</span>
+        <span className={`text-(--color-muted) text-[11px] transition-transform ${open ? 'rotate-180' : ''}`}>▼</span>
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute left-0 top-full mt-1.5 min-w-52 py-1 rounded-xl border border-(--color-border) bg-(--color-panel) shadow-lg overflow-hidden"
+        >
+          {items.map((it) => (
+            <a
+              key={it.to}
+              href={it.to}
+              role="menuitem"
+              onClick={(e) => {
+                setOpen(false)
+                onLinkClick(it.to)(e)
+              }}
+              className={`flex items-center gap-2 px-3.5 py-2 text-[15px] whitespace-nowrap transition ${
+                it.active
+                  ? 'text-(--color-accent) font-bold bg-(--color-band)'
+                  : 'text-(--color-text) hover:bg-(--color-band)'
+              }`}
+            >
+              <span className={`w-3 shrink-0 ${it.active ? '' : 'opacity-0'}`}>·</span>
+              {it.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
 
