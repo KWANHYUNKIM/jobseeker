@@ -131,7 +131,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "workflows-as-graphs-not-code"
+      ]
     },
     {
       "name": "모델 배포를 넉 달에서 5분으로 줄인다",
@@ -253,7 +255,477 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "workflows-as-graphs-not-code",
+      "name": "고객마다 다른 규칙을 코드로 짜지 않고 그래프로 만든다",
+      "domain": "지출이 되는지를 그래프가 판정한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**이 회사가 파는 것은 카드가 아니라 `이 지출이 되는가` 를 판정하는 규칙이다.** ⚠️ **그런데 2022년 가을에 고객들이 초기 제품의 가정을 깨기 시작했다** — 승인 단계도 정책도 회사마다 달라서 **코드로 박아 둘 수가 없었다.** 그때 회사가 고른 길을 한 문장으로 적는다: **`We decided to slow down, in order to go fast`.** 기능 하나를 더 만드는 대신 **규칙을 표현하는 틀**을 만들었고, 그 위에서 승인·정책·필드 노출이 전부 돈다.",
+        "metrics": [
+          {
+            "label": "돌아간 양",
+            "value": "누적 **4,500만 건 이상** · **하루 100만 건 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "label": "실행 시간",
+            "value": "워크플로 하나 실행에 **평균 약 100ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "label": "쓰기 시간",
+            "value": "**20초 넘던 것이 200ms 미만으로**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ Celery 를 버린 근거",
+            "value": "**1만 개당 7개**의 작업이 실패했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 시작점",
+            "value": "**2022년 가을** — 고객들이 초기 제품의 가정을 깨기 시작했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "label": "이 판정이 지나는 돈",
+            "value": "총결제액 **570억 달러**(3자 추정)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Ramp revenue, valuation & funding",
+                "url": "https://sacra.com/c/ramp/",
+                "publisher": "Sacra",
+                "date": "2026",
+                "summary": "2026년 5월 연환산 매출 15억 달러(2025년 말 약 12억 달러). 총결제액 570억 달러(2023년 223억 달러). 미국 법인카드 시장의 1~2% 규모."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기능을 더 만들지 틀을 만들지 정할 때",
+          "thought": "⚠️ **회사가 그 선택을 문장으로 남긴다** — `We decided to slow down, in order to go fast`. **고객마다 규칙이 다르다는 것은 기능을 아무리 만들어도 끝나지 않는다는 뜻이고**, 그래서 **기능이 아니라 기능을 만드는 재료**를 만들었다(뒤쪽 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "첫 설계가 무너질 때",
+          "thought": "⚠️ **실패를 `안 돌아간다` 가 아니라 `더 이상 우아하지 않다` 로 적는다** — `no longer elegant`. 이유가 둘인데 **둘 다 표현의 문제**다: 선형으로 쓰는 논리를 규칙 형태로 옮기는 **번역 코드가 필요했고**, **액션과 액션 사이의 의존을 표현하기가 몹시 어려웠다**(새 간선을 두거나 `이 액션이 실행됐는가` 조건을 의존 트리에 넣어야 했다). **돌아가지 않아서가 아니라 계속 만들 수 없어서 갈아엎었다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디를 복잡하게 둘지 정할 때",
+          "thought": "**쓰기와 실행 중 하나는 복잡해진다.** 이 회사는 **실행을 단순하게** 골랐다 — `code that is easy to execute but difficult to create`. ⚠️ **하루 100만 건이 도는 쪽이 실행이므로 맞는 선택이지만**, 그 대가로 **쓰기가 한때 20초를 넘었다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "정점 (vertex)",
+            "what": "**실행 가능한 코드(액션)** 아니면 **불리언 식(조건)** 이다. 둘뿐이다"
+          },
+          {
+            "name": "간선 (edge)",
+            "what": "의존. **무엇이 먼저 끝나야 이것이 도는가**"
+          },
+          {
+            "name": "경계(frontier)",
+            "what": "위상 정렬 뒤 **지금 실행할 수 있는 노드들**"
+          },
+          {
+            "name": "AST",
+            "what": "⚠️ **포스트그레스에 저장되는 단순화된 추상 구문 트리** — 워크플로의 실체"
+          },
+          {
+            "name": "SDK",
+            "what": "사람이 쓰는 `if/elif/else` 를 **핵심 그래프 연산으로 컴파일**하는 층"
+          }
+        ],
+        "invariants": [
+          "**액션은 실행하면 방문 표시된다. 조건은 참일 때만 방문 표시된다** — 이 비대칭이 그래프 진행을 정한다",
+          "**실행이 단순해야 한다** — 하루 100만 건이 도는 쪽이라 평균 약 100ms 를 지킨다",
+          "⚠️ **작업은 성공이 확인될 때까지 자동으로 다시 시도된다** — Celery 를 버린 이유가 이것이다",
+          "**정점은 액션 아니면 조건, 둘뿐이다** — 새 개념을 늘리지 않는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**사람이 SDK 로 규칙을 쓴다** — `if/elif/else` 같은 익숙한 구문",
+            "why": "그래프를 직접 그리게 하지 않는다"
+          },
+          {
+            "step": "**SDK 가 그것을 중첩 조건으로 편다** — `if a / if !a && b / if !(a||b) && c ...`",
+            "why": "⚠️ **`elif` 는 그래프에 없는 개념이라 부정 조건을 겹쳐 만든다**"
+          },
+          {
+            "step": "**단순화된 AST 로 포스트그레스에 저장한다**",
+            "why": "쓰기를 복잡하게 만들고 실행을 단순하게 만드는 맞바꿈"
+          },
+          {
+            "step": "**실행할 때 그래프를 읽어 위상 정렬한다**",
+            "why": "무엇을 먼저 돌릴지 정한다"
+          },
+          {
+            "step": "**경계에 있는 노드를 실행한다** — 액션이면 코드를 돌리고, 조건이면 참인지 본다",
+            "why": "평균 약 100ms"
+          },
+          {
+            "step": "**액션은 실행 후 방문 표시하고, 조건은 참일 때만 방문 표시한다**",
+            "why": "⚠️ 거짓인 조건 뒤의 가지는 열리지 않는다"
+          },
+          {
+            "step": "**작업 실행은 포스트그레스 기반 큐가 받친다** — 성공이 확인될 때까지 자동 재시도",
+            "why": "⚠️ Celery 는 **1만 개당 7개**를 놓쳤다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "고객마다 다른 규칙을 어떻게 다룰 것인가",
+            "chosen": "**기능이 아니라 틀을 만든다** — `We decided to slow down, in order to go fast`",
+            "alternatives": [
+              "요구가 올 때마다 기능별 로직을 짜기"
+            ],
+            "tradeoff": "⚠️ **2022년 가을에 고객들이 초기 제품의 가정을 깨기 시작한 것이 계기다.** 기능별로 짜면 빠른 대신 **끝나지 않는다** — 고객 수만큼 규칙이 있다. 틀을 만들면 느린 대신 **그 뒤가 전부 데이터가 된다**(뒤쪽 정리는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "question": "규칙을 어떤 모양으로 저장할 것인가 (첫 시도)",
+            "chosen": "**액션·조건·의존 + 재귀적 불리언 식** — 그리고 버렸다",
+            "alternatives": [
+              "처음부터 그래프로"
+            ],
+            "tradeoff": "⚠️ **버린 이유가 둘 다 표현의 문제다** — 선형으로 쓰는 논리를 규칙 형태로 옮기는 **번역 코드가 필요했고**, **액션과 액션 사이의 의존**은 `exceedingly difficult to represent` 여서 새 간선을 두거나 `이 액션이 실행됐는가` 조건을 의존 트리에 넣어야 했다. **회사가 실패를 `no longer elegant` 라 적는다 — 안 돌아가서가 아니라 계속 만들 수 없어서다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "question": "그럼 무엇으로 바꿀 것인가",
+            "chosen": "**그래프** — 정점은 액션 아니면 조건, 간선은 의존",
+            "alternatives": [
+              "규칙 엔진 제품 도입",
+              "DSL 을 새로 설계"
+            ],
+            "tradeoff": "**개념이 둘뿐이라 늘릴 것이 없다.** 실행은 위상 정렬 뒤 경계 노드를 도는 일로 단순해진다. ⚠️ **대가는 사람이 그래프로 생각하지 않는다는 것**이고, 그래서 **SDK 층이 반드시 따라온다**(이 연결은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "question": "쓰기와 실행 중 어디를 복잡하게 둘 것인가",
+            "chosen": "**실행을 단순하게** — `code that is easy to execute but difficult to create`",
+            "alternatives": [
+              "만들기 쉬운 고차 워크플로를 그대로 저장하기"
+            ],
+            "tradeoff": "**하루 100만 건이 도는 쪽이 실행이라 맞는 선택이다**(평균 약 100ms). ⚠️ **대가가 실제로 나타났다 — 쓰기가 한때 20초를 넘었다.** 지금은 200ms 미만인데, **어떻게 줄였는지는 글에 없다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "question": "사람에게 그래프를 그리게 할 것인가",
+            "chosen": "**아니다 — SDK 가 `if/elif/else` 를 컴파일한다**",
+            "alternatives": [
+              "그래프 편집기를 주기",
+              "저수준 API 만 열기"
+            ],
+            "tradeoff": "`elif` 는 그래프에 없는 개념이라 **부정 조건을 겹쳐** 만든다(`if !a && b`, `if !(a||b) && c` …). ⚠️ **대가는 표현할 수 있는 것이 컴파일 대상에 묶인다는 것**이고, 실제로 **루프와 펍섭 트리거가 아직 없다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "question": "작업 큐를 무엇으로 할 것인가",
+            "chosen": "**Celery 를 버리고 포스트그레스 기반 큐를 직접 만든다**",
+            "alternatives": [
+              "Celery 유지",
+              "Redis·RabbitMQ 기반의 다른 큐"
+            ],
+            "tradeoff": "⚠️ **버린 근거가 아주 구체적이다 — 1만 개당 7개가 실패했다.** 대부분은 도는데 **드물게 조용히 빠지는 것**이 승인 시스템에서는 치명적이다(재구성). 새 큐는 **성공이 확인될 때까지 자동으로 다시 시도**하고, 그 효과가 **워크플로 밖의 회사 전체 작업 신뢰성**으로 번졌다. ⚠️ 대가는 **큐를 직접 유지해야 한다는 것**이고, **왜 그 7개가 빠졌는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 안 만들 것인가",
+            "chosen": "**루프와 펍섭 트리거를 미룬다** — `Deprioritized due to lack of demand`",
+            "alternatives": [
+              "완전한 표현력을 먼저 갖추기"
+            ],
+            "tradeoff": "**수요가 없어서 미뤘고, 필요해지면 쉽게 받칠 수 있다고 적는다.** ⚠️ **`쉽게 받칠 수 있다` 는 아직 해 보지 않은 주장이다** — 루프는 방향 비순환 그래프의 전제와 정면으로 부딪히므로 가장 어려운 축에 속한다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "방향 비순환 그래프 (액션 · 조건)",
+            "role": "워크플로의 핵심 모델. 위상 정렬 뒤 경계 노드를 실행한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "tech": "PostgreSQL (AST 저장)",
+            "role": "워크플로를 단순화된 추상 구문 트리로 담는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "tech": "SDK 컴파일 층",
+            "role": "`if/elif/else` 를 중첩 부정 조건으로 펴서 그래프 연산으로 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "tech": "포스트그레스 기반 작업 큐",
+            "role": "⚠️ **Celery(1만 개당 7개 실패)를 대체.** 성공 확인까지 자동 재시도하며 회사 전체 작업 신뢰성을 올렸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 루프 · 펍섭 트리거 (없다)",
+            "role": "⚠️ **아직 만들지 않았다** — 수요가 없어 미뤘다고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "모델 배포를 넉 달에서 5분으로 줄인다",
+          "via": "같은 태도",
+          "contract": "⚠️ **두 도메인이 같은 문장의 변주다** — 여기서는 승인 로직을 그래프로, 저기서는 ML 배포를 YAML 로 **추상화해서 시간을 산다.** 저쪽도 **표준·코드 리뷰로 다스리는 길을 명시적으로 버렸다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "카드 결제·청구서·조달·출장",
+          "via": "승인 판정",
+          "contract": "**지출이 나가는 모든 길목이 이 엔진 하나를 지난다** — 거래 승인·영수증·회계 필드·알림이 전부 여기 얹혀 있다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "회사 전체의 비동기 작업",
+          "via": "포스트그레스 큐",
+          "contract": "⚠️ **워크플로 때문에 만든 큐가 회사 전체 작업 신뢰성 문제를 풀었다** — 한 도메인의 해법이 밖으로 번진 경우다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "코딩 에이전트를 사서 쓰지 않고 직접 만든다",
+          "via": "이 엔진을 짓는 손",
+          "contract": "**병합되는 PR 의 약 30% 를 사내 에이전트가 쓴다** — 이 그래프 위의 코드도 그 안에 있을 것이다(추정)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "사람은 선형으로 쓰는데 기계는 그래프로 돈다",
+            "why_hard": "⚠️ **첫 설계가 죽은 자리가 정확히 여기다** — 선형 논리를 규칙 형태로 옮기는 **번역 코드**가 필요했고, **액션과 액션 사이의 의존**은 `exceedingly difficult to represent` 였다. **`elif` 조차 그래프에는 없는 개념이라 부정 조건을 겹쳐 만들어야 한다.**",
+            "current_best": "**저장은 그래프로 하고 입구에 SDK 를 두는 것** — 사람은 `if/elif/else` 를 쓰고 컴파일러가 편다. ⚠️ **대가는 표현력이 컴파일 대상에 묶인다는 것**이고, **루프는 방향 비순환 그래프의 전제와 부딪혀 아직 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          },
+          {
+            "problem": "드물게 조용히 빠지는 작업",
+            "why_hard": "⚠️ **1만 개당 7개.** 99.93% 는 도니까 지표로는 멀쩡해 보이는데, **승인 시스템에서 빠진 7개는 누군가의 지출이 영영 처리되지 않는 것**이다(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**성공이 확인될 때까지 자동으로 다시 시도하는 큐를 직접 만드는 것.** ⚠️ **왜 그 7개가 빠졌는지는 글에 없다** — 증상은 적고 진단은 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Abstraction Engineering",
+                "url": "https://engineering.ramp.com/post/workflows",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "사람은 if/elif 로 쓰고, 기계는 그래프로 돈다",
+          "question": "규칙 하나가 판정이 되기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  H[\"<b>사람이 SDK 로 쓴다</b><br/>• if / elif / else\"]:::accent --> C[\"<b>컴파일</b><br/>• if a<br/>• if !a && b<br/>• if !(a||b) && c\"]:::accent\n  C --> AST[\"<b>단순화된 AST</b><br/>• 포스트그레스에 저장<br/>• 쓰기 200ms 미만 (한때 20초+)\"]:::accent\n  AST --> LOAD[\"<b>실행 시 그래프를 읽는다</b>\"]:::list\n  LOAD --> TOP[\"<b>위상 정렬</b>\"]:::list\n  TOP --> FR{\"<b>경계 노드</b>\"}\n  FR -->|\"액션\"| A[\"<b>코드를 돌린다</b><br/>• 끝나면 방문 표시\"]:::list\n  FR -->|\"조건\"| B[\"<b>참인지 본다</b><br/>• <b>참일 때만</b> 방문 표시\"]:::list\n  A --> Q[\"<b>포스트그레스 큐</b><br/>• 성공 확인까지 자동 재시도\"]:::accent\n  B --> FR\n  A --> DONE[\"<b>판정</b><br/>• 평균 약 100ms<br/>• 하루 100만 건 이상\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "돌아가지 않아서가 아니라 계속 만들 수 없어서 갈아엎었다",
+          "question": "첫 설계는 왜 죽었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  S[\"<b>2022년 가을</b><br/>• 고객들이 초기 제품의<br/>  가정을 깨기 시작한다\"]:::accent --> D1[\"<b>첫 설계</b><br/>• 액션 · 조건 · 의존<br/>• 재귀적 불리언 식\"]:::gone\n  D1 --> P1[\"⚠️ <b>번역 코드가 필요하다</b><br/>• 선형 논리 → 규칙 형태\"]:::gone\n  D1 --> P2[\"⚠️ <b>액션-액션 의존이 어렵다</b><br/>• 새 간선을 두거나<br/>• '이 액션이 실행됐는가' 조건을<br/>  의존 트리에 넣어야 한다\"]:::gone\n  P1 --> X[\"⚠️ <b>no longer elegant</b><br/>• 안 돌아가서가 아니라<br/>• 계속 만들 수 없어서\"]:::gone\n  P2 --> X\n  X --> G[\"<b>그래프로 다시</b><br/>• 정점은 액션 아니면 조건<br/>• 개념이 둘뿐이라 늘릴 것이 없다\"]:::accent\n  CEL[\"⚠️ <b>Celery</b><br/>• 1만 개당 7개 실패\"]:::gone --> PQ[\"<b>포스트그레스 큐를 직접</b><br/>• 회사 전체 작업 신뢰성까지 올렸다\"]:::accent\n  MISS[\"⚠️ <b>아직 없는 것</b><br/>• 루프 · 펍섭 트리거<br/>• 수요가 없어 미뤘다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Abstraction Engineering",
+          "url": "https://engineering.ramp.com/post/workflows",
+          "publisher": "Ramp Builders Blog",
+          "date": "2026",
+          "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+        },
+        {
+          "title": "Ramp revenue, valuation & funding",
+          "url": "https://sacra.com/c/ramp/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2026년 5월 연환산 매출 15억 달러(2025년 말 약 12억 달러). 총결제액 570억 달러(2023년 223억 달러). 미국 법인카드 시장의 1~2% 규모."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **수익 구성을 확인하지 못했다** — 카드 인터체인지와 소프트웨어 구독의 비중을 밝힌 자료를 못 찾았다. **매출·고객·TPV·밸류에이션 수치도 전부 3자 출처다**(Sacra·CNBC).",
@@ -261,7 +733,7 @@
     "**Celery 가 1만 개당 7개를 놓친 원인을 모른다** — 증상만 적혀 있고 진단이 없다.",
     "**Inspect 의 실패율·비용·되돌린 비율을 모른다** — `병합 PR 의 약 30%` 외에 수치가 없다. **Duolingo 는 첫 시도 CI 통과율까지 적었다.**",
     "**Turbo 로 만든 모델이 실제로 어떤 판단을 하는지 모른다** — 신용 위험 모델이 승인 그래프와 어떻게 이어지는지 자료를 못 찾았다.",
-    "**연표(eras)를 세울 자료를 못 찾았다** — 다만 워크플로 글에 **첫 설계 → 지금 구조**의 두 시점이 있어 **연도를 확인하면 기능 안에 history 를 세울 수 있다.**"
+    "**연표(eras)를 세울 자료를 못 찾았다** — 워크플로 글에 **2022년 가을**(고객이 초기 가정을 깨기 시작한 시점)이 나오지만 **첫 설계가 언제 시작됐고 그래프로 언제 넘어갔는지는 없어** 기능 안에 history 를 세우지 않았다."
   ],
   "sources": [
     {
