@@ -1,0 +1,579 @@
+{
+  "slug": "seo",
+  "title": "SEO",
+  "title_en": "Search Engine Optimization",
+  "aliases": [
+    "SEO",
+    "검색엔진 최적화",
+    "search engine optimization",
+    "Core Web Vitals",
+    "sitemap",
+    "구조화 데이터"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "사람이 아니라 **기계에게 이 페이지가 무엇인지 말해 주는 일** — 그런데 기계는 **말해 준 대로 해 준다고 약속하지 않고**, 잘못 말하면 **아무 말도 안 한 것보다 나쁘다.**",
+  "summary": "채용 데이터에서 **301건(모집중 84)** 이다. `accessibility` 와 뿌리가 같다 — **둘 다 시맨틱 마크업에서 나오는데, 하나는 사람(보조기술)을 위해, 다른 하나는 기계(크롤러)를 위해** 한다. 그리고 `scraping` 과는 **같은 문제의 반대편**이다 — 그쪽이 긁는 쪽이면 여기는 **긁히고 싶은 쪽**이다.\n\n⭐⭐⭐ **축은 하나다: 기계에게 하는 말에서 거짓말은 침묵보다 나쁘다.**\n\n- Google 은 사이트맵에 대해 **\"it doesn't guarantee that all the items in your sitemap will be crawled and indexed\"** 라고 적는다 — **지시가 아니라 힌트**다.\n- 그리고 이 저장소의 프리렌더 코드는 그 반대편을 적어 놨다 — **\"틀린 도메인이 박힌 canonical 은 없는 것보다 나쁘다 — 검색엔진에 '정본은 저기'라고 잘못 알려주는 값이기 때문이다.\"**\n\n`accessibility` 의 **\"No ARIA is better than Bad ARIA\"** 와 **정확히 같은 구조**다. 기계에게 의미를 말해 주는 일에서는, **틀린 값이 빈 값보다 해롭다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 기계에게 말해 주는 일",
+      "confidence": "inferred",
+      "body": "`SEO|검색엔진 최적화|Core Web Vitals|구조화 데이터|sitemap|메타 태그|Lighthouse` 로 세면 **301건(모집중 84)** 이다.\n\n**하는 일의 성격은 하나로 요약된다** — 화면은 사람이 보라고 만들지만, **검색엔진·미리보기 봇·요즘은 생성형 AI 까지 기계가 먼저 읽는다.** 그 기계에게 **이 페이지가 무엇인지** 말해 주는 것이 이 낱말이다.\n\n말해 주는 방법은 층이 있다.\n\n- **시맨틱 마크업** — 제목은 `<h1>`, 본문은 `<article>`. ⭐ **`accessibility` 와 같은 뿌리**이고, 그래서 두 낱말이 공고에 늘 붙어 나온다(인티그레이션 `SSR, 반응형 웹, **웹 접근성, SEO**`, 취팡 `웹 성능·**SEO**·접근성 개선`).\n- **메타 태그** — 제목·설명·`canonical`·`og:` 계열. 검색결과와 채팅방 미리보기에 그대로 나간다.\n- **구조화 데이터**(schema.org) — \"이건 채용공고이고 회사는 여기, 마감은 언제\"처럼 **기계가 파싱할 수 있는 형태**로 다시 적는 것. 법무법인이엘 공고가 `Technical SEO / AEO 및 **Schema 구조화 데이터** 적용 경험` 이라고 적는다.\n- **사이트맵·robots** — 어디에 무엇이 있는지 알려 주는 안내(아래 `hint` 절).\n\n⭐ **그리고 낱말이 지금 늘어나는 중이다.** 다음 공고가 `검색엔진·답변엔진·생성형 AI 환경 최적화(**SEO·AEO·GEO**)에 대한 이해와 경험`, 서치오에스에이아이가 `**SEO/GEO** 에 대한 개념 이해` 라고 적는다. **검색 결과가 링크 목록에서 답변으로 바뀌는 중**이라 최적화의 대상도 갈라지고 있다는 신호다. ⚠️ 다만 이 문서는 그 새 낱말들의 1차 자료를 열지 못했다(아래 `limits`).\n\n> ⚠️⚠️ **셈의 함정 — `구조화 데이터` 는 대부분 SEO 가 아니다.** 이 낱말로 걸리는 공고를 읽으면 지신 `시계열 데이터와 **구조화 데이터**를 함께 다루는 스토리지`, S2W `비정형 문서를 **구조화 데이터**로 가공`, 두잇 `**구조화 데이터** 저장` 처럼 **그냥 '정형 데이터'라는 뜻**이 많다. schema.org 맥락은 소수다 — **`schema.org|Schema 구조화` 로 좁히거나 문장을 읽어 가른다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐ 왜 문제가 되나 — 내용이 자바스크립트 뒤에 있으면",
+      "confidence": "inferred",
+      "body": "예전 웹에서는 이 낱말이 지금만큼 큰 문제가 아니었다. 서버가 완성된 HTML 을 돌려줬으니 **크롤러가 받는 것과 사람이 보는 것이 같았다.**\n\nSPA(단일 페이지 앱)가 그것을 깼다. **이 저장소의 뷰어도 SPA 이고**, 그래서 프리렌더 스크립트를 붙였다. 그 파일의 머리말이 이유를 적어 놨다(`jd-viewer/scripts/prerender.mjs`).\n\n> ⭐⭐ **\"SPA 는 서버가 어떤 주소로 요청받든 같은 index.html 한 장을 돌려준다. 크롤러가 자바스크립트를 실행해 주기도 하지만, (1) 실행은 늦고 예산이 있고, (2) 카카오톡·슬랙·X 같은 미리보기 봇은 아예 실행하지 않는다.\"**\n\n**두 가지가 다른 문제**라는 점이 중요하다.\n\n**① 검색엔진은 실행해 주지만 늦고 아끼면서 한다.** \"실행은 늦고 **예산이 있고**\" — 크롤러는 무한정 기다려 주지 않는다. 그래서 JS 로만 그려지는 내용은 **언젠가는 색인되더라도 지금은 아닐 수** 있다.\n\n**② ⭐ 미리보기 봇은 아예 실행하지 않는다.** 카카오톡·슬랙에 링크를 붙였을 때 나오는 그 카드는 **HTML 을 한 번 받아 태그만 읽고 만든다.** 여기서 SEO 는 검색 순위가 아니라 **\"우리 링크가 채팅방에서 어떻게 보이는가\"** 의 문제가 된다 — 훨씬 즉각적이고, 훨씬 자주 눈에 띈다.\n\n💡 그래서 처방도 두 갈래다.\n\n- **서버 렌더링(SSR) 또는 프리렌더** — 기계가 받는 첫 HTML 에 내용을 넣는다. 이 저장소는 **빌드 때 주소별 정적 HTML 을 굽는** 쪽을 골랐다(공고·회사처럼 \"이건 한 장의 문서다\" 싶은 주소만).\n- **메타·구조화 데이터를 그 HTML 에 함께 박는다** — 제목·설명·본문 요약·JSON-LD.\n\n> ⚠️ **`SSR` 을 SEO 로 세면 안 된다.** 셈에서 `SSR` 은 218건이나 되지만 엘리스 `Micro-Frontend(Module Federation/iframe), 공통 모듈 NPM 배포, **Next.js SSR 최적화**` 처럼 **렌더링 전략 자체**를 말하는 줄이 많다. 겹치지만 다른 낱말이다."
+    },
+    {
+      "id": "hint",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 보장하지 않는다 — 그리고 잘못 말하면 침묵보다 나쁘다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Sitemaps overview (Google Search Central)",
+          "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐ 사이트맵의 정의와, 무엇보다 **보장하지 않는다**는 자기 선언"
+        }
+      ],
+      "body": "사이트맵은 **어디에 무엇이 있는지 알려 주는 파일**이다. Google 문서가 이렇게 정의한다.\n\n> \"A sitemap is a file where you provide information about the pages, videos, and other files on your site, and **the relationships between them**.\"\n\n그런데 바로 다음에 **자기 한계를 스스로 적는다.**\n\n> ⭐⭐⭐ \"A sitemap **helps search engines discover** URLs on your site, but **it doesn't guarantee that all the items in your sitemap will be crawled and indexed**.\"\n\n**돕지만 보장하지 않는다.** 사이트맵은 **지시가 아니라 힌트**이고, 이 백과사전이 여러 번 만난 **\"제품이 스스로 그은 선\"** 이다 — `sunset-header`(RFC 8594)가 자기를 \"hints\"라 부른 것, `scraping` 의 RFC 9309 가 **\"not a form of access authorization\"** 이라고 한 것과 같은 자리다.\n\n📌 같은 문서가 **언제 필요한지도 나눠 준다** — 페이지가 많거나(대략 500쪽 이상), 새 사이트라 외부 링크가 적거나, 비디오·이미지·뉴스가 많을 때. 반대로 **작고 내부 링크가 잘 연결된 사이트에는 없어도 된다.** ⭐ **\"일단 넣고 보는\" 물건이 아니다.**\n\n그리고 **반대 방향의 위험**이 있다. 이 저장소의 프리렌더 코드가 그것을 한 문단으로 적어 놨다.\n\n> ⭐⭐⭐ **\"오리진을 모르면 절대 URL 을 지어내지 않는다. 틀린 도메인이 박힌 canonical 은 없는 것보다 나쁘다 — 검색엔진에 '정본은 저기'라고 잘못 알려주는 값이기 때문이다.\"**\n> — `jd-viewer/scripts/prerender.mjs`\n\n`canonical` 은 **\"이 내용의 정본은 이 주소다\"** 라고 검색엔진에 말하는 태그다. 비워 두면 검색엔진이 알아서 판단하는데, **틀린 값을 넣으면 \"저쪽이 정본\"이라고 적극적으로 잘못 알려 준다.** 그래서 그 코드는 오리진을 확신할 수 없을 때 **`og:url`·`sitemap`·`robots` 를 아예 만들지 않는다.**\n\n⭐⭐ **`accessibility` 에서 본 문장과 정확히 같은 구조다.**\n\n| | 잘못된 신호가 왜 더 나쁜가 |\n|---|---|\n| **접근성** | \"**No ARIA is better than Bad ARIA**\" — \"버튼\"이라고 안내받고 눌렀는데 아무 일도 안 일어난다 |\n| **SEO** | **틀린 canonical 은 없는 것보다 나쁘다** — \"정본은 저기\"라고 검색엔진에 잘못 알려 준다 |\n\n💡 **기계에게 의미를 말해 주는 일에서는 거짓말이 침묵보다 해롭다.** 없으면 기계가 자기 판단으로 넘어가는데, 틀린 값이 있으면 **그 값을 믿고** 움직인다."
+    },
+    {
+      "id": "cwv",
+      "kind": "how",
+      "heading": "Core Web Vitals — 숫자와, 그 숫자를 어디서 재는가",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Web Vitals (web.dev)",
+          "url": "https://web.dev/articles/vitals",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "Core Web Vitals 세 지표의 정의·임계값·판정 퍼센타일, 그리고 실험실 측정의 한계"
+        }
+      ],
+      "body": "공고에서 SEO 옆에 가장 자주 붙어 나오는 것이 **Core Web Vitals** 다(계열 55건) — 헤렌 `Sentry 기반 에러 모니터링 체계 및 **Core Web Vitals 지표 관리**`, 컬리 `웹 표준, 브라우저 렌더링 파이프라인, **Core Web Vitals** 에 대한 깊이 있는 이해`.\n\n무엇인지부터 원문으로.\n\n> \"Core Web Vitals are **the subset of Web Vitals that apply to all web pages, should be measured by all site owners**, and will be surfaced across all Google tools.\"\n\n세 지표와 **좋음의 기준**은 이렇다.\n\n| 지표 | 무엇을 재나 | 좋음의 기준 |\n|---|---|---|\n| **LCP** (Largest Contentful Paint) | \"measures *loading* performance\" | \"LCP should occur within **2.5 seconds**\" |\n| **INP** (Interaction to Next Paint) | \"measures *interactivity*\" | \"pages should have a INP of **200 milliseconds** or less\" |\n| **CLS** (Cumulative Layout Shift) | \"measures *visual stability*\" | \"pages should maintain a CLS of **0.1** or less\" |\n\n⭐ **그런데 이 숫자보다 중요한 것이 판정 방법**이다.\n\n> \"To ensure you're hitting the recommended target for these metrics **for most of your users**, a good threshold to measure is the **75th percentile**.\"\n\n**평균이 아니라 75퍼센타일**이다 — **넷 중 셋이 그 안에 들어와야** 한다는 뜻이고, 평균으로 보면 느린 사용자들이 빠른 사용자들에 가려 사라진다(`slo` 의 꼬리 지연과 같은 논리).\n\n⭐⭐ **그리고 어디서 재느냐가 갈린다.**\n\n> \"The performance of a site can substantially vary based on **a user's device capabilities, their network conditions**, what other processes may be running on the device, and how they're interacting with the page... **Only field measurement can accurately capture the complete picture.**\"\n\n**실사용자 측정(field)만이 전체 그림을 정확히 담는다.** 그래서 공고에 자주 함께 나오는 `Lighthouse`(밀레니얼웍스 `**Lighthouse, Core Web Vitals** 등 성능 최적화 경험`, 위펀 `성능 측정 및 개선 경험(**Lighthouse, Core Web Vitals** 관점)`)는 **다른 층의 도구**다 — Lighthouse 는 **내 기계에서 한 번 재는 실험실 측정**이고, 판정은 **실사용자 데이터**로 난다.\n\n💡 실무에서 이 차이가 이렇게 나타난다 — **Lighthouse 점수는 90점인데 실사용자 지표는 나쁜** 상황. 내 노트북은 빠르고 네트워크도 좋기 때문이다. **개선은 lab 에서 하고 판정은 field 로 한다**가 순서다."
+    },
+    {
+      "id": "own",
+      "kind": "extra",
+      "heading": "⭐ 이 저장소의 사고 기록 — 도메인이 조용히 갈라졌다",
+      "confidence": "inferred",
+      "body": "`scraping` 에 이어 **이 절도 1차 자료가 자기 코드**다. `jd-viewer/scripts/prerender.mjs` 가 **실제로 겪은 사고**를 주석으로 남겨 놨다.\n\n> ⭐⭐ **\"예전에는 여기(SITE_URL)와 앱(VITE_SITE_URL)이 서로 다른 이름을 봐서, .env 한쪽만 고치면 화면은 새 도메인인데 sitemap·canonical 은 옛 도메인을 가리키는 상태가 조용히 만들어졌다.\"**\n\n**\"조용히 만들어졌다\"** 가 핵심이다. 빌드는 성공하고, 화면은 멀쩡하고, 에러도 없다. **기계가 보는 것만 틀렸고 사람은 모른다.** `scraping` 의 **조용한 0건**과 같은 계열의 사고다.\n\n같은 파일의 다른 줄이 그 사고에서 나온 규칙을 적는다.\n\n> **\"문구 규칙은 `src/lib/urls.ts`, 태그 조립 규칙은 `src/lib/seo.ts` 와 짝이다. 한쪽만 고치면 크롤러가 보는 메타와 사람이 보는 메타가 갈라진다.\"**\n\n⭐ **SEO 코드의 구조적 위험이 여기 있다** — 사람이 보는 화면과 기계가 보는 메타가 **다른 파일에서 만들어진다.** 둘이 갈라져도 화면은 정상이므로 **테스트가 잡아 주지 않는다.**\n\n그래서 이 저장소가 택한 처방은 셋이다.\n\n1. **오리진을 한 이름으로 묶는다** — 앱과 스크립트가 **같은 `.env` 를 같은 방식으로** 읽는다(`vite` 의 `loadEnv`).\n2. ⭐ **확신 없으면 안 만든다** — 오리진을 모르면 `canonical` 은 **상대경로**로 두고, 절대 URL 이 필수인 `og:url`·`sitemap`·`robots` 는 **아예 만들지 않는다.**\n3. **스니펫 규칙을 한곳에** — \"검색결과 스니펫에 그대로 나가는 문장\"을 자르는 함수가 `seo.ts` 의 것과 같은 규칙이라고 주석에 명시돼 있다.\n\n💡 일반화하면 이렇다 — **기계용 출력과 사람용 출력이 다른 코드에서 나오면, 둘을 잇는 단일 소스를 만들고 확신 없을 때는 비운다.** 이 문서의 `hint` 절 결론(틀린 값이 빈 값보다 나쁘다)의 실행 형태다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 순위는 남이 정한다",
+      "confidence": "inferred",
+      "body": "**1. ⭐ 순위 알고리즘을 이 문서는 모른다.** 그리고 아무도 전부는 모른다 — 공개되지 않고 계속 바뀐다. 이 문서가 다룬 것은 **기계가 읽을 수 있게 만드는 부분**(크롤·색인·메타·구조화 데이터·성능)까지이고, **그다음의 순위는 남이 정한다.** ⚠️ 이 성질 때문에 SEO 는 `slo` 와 반대다 — **목표를 우리가 정할 수 없고, 결과를 직접 통제할 수도 없다.** \"올리는 법\"을 파는 이야기를 조심해야 하는 이유이기도 하다.\n\n**2. ⚠️ AEO·GEO 는 낱말만 확인했다.** 다음 공고의 `검색엔진·답변엔진·생성형 AI 환경 최적화(SEO·**AEO·GEO**)`, 서치오에스에이아이의 `SEO/**GEO**`, 법무법인이엘의 `Technical SEO / **AEO**` 로 **그 말이 채용 시장에 도착했다는 것**까지는 확인했으나, **정의와 실무가 담긴 1차 자료는 열지 못했다.** 아직 표준도 합의된 정의도 없을 가능성이 높다 — **새 낱말은 근거가 쌓인 뒤에 쓴다.**\n\n**3. 구조화 데이터의 개별 타입을 다루지 않았다.** schema.org 에는 수백 개의 타입이 있고 각각 필수·권장 속성이 다르다. 이 문서는 **그런 것이 있다는 것**까지만 말한다 — 실제로 붙일 때는 **해당 타입의 문서와 검색엔진의 요구사항을 직접 확인**해야 한다.\n\n**4. 검색엔진은 Google 만이 아니다.** 이 문서의 1차 자료가 전부 Google 문서라 **그쪽 관점에 치우쳐 있다.** 국내에서는 네이버·다음의 비중이 크고 색인 방식도 다르지만, 이 사이클에서 그 자료는 열지 않았다. **비대칭을 그대로 밝혀 둔다.**\n\n**5. 이 문서가 다루지 않는 것.** 시맨틱 마크업을 사람 쪽에서 본 것은 `accessibility`, 긁는 쪽의 사정은 `scraping`, robots.txt 의 규범은 그 문서의 RFC 9309 절, 성능 목표를 우리가 정하는 이야기는 `slo` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "hint",
+      "kind": "glossary",
+      "caption": "⭐⭐ 사이트맵 — Google 이 스스로 적은 한계",
+      "note": "Google Search Central 의 Sitemaps overview 에서 옮겼다. ⚠️ 사이트맵 XML 의 형식·태그는 이 표에 없다 — 필요하면 같은 문서를 직접 연다.",
+      "columns": [
+        "",
+        "내용"
+      ],
+      "rows": [
+        [
+          "정의",
+          "\"A sitemap is a file where you provide information about the pages, videos, and other files on your site, and **the relationships between them**.\""
+        ],
+        [
+          "⭐⭐⭐ 보장하지 않는다",
+          "\"A sitemap **helps search engines discover** URLs on your site, but **it doesn't guarantee that all the items in your sitemap will be crawled and indexed**.\""
+        ],
+        [
+          "그래서 성격",
+          "**지시가 아니라 힌트** — RFC 8594 의 \"hints\", RFC 9309 의 \"not a form of access authorization\" 과 같은 자리"
+        ],
+        [
+          "필요한 경우",
+          "페이지가 많을 때(대략 500쪽 이상) · 새 사이트라 외부 링크가 적을 때 · 비디오·이미지·뉴스가 많을 때"
+        ],
+        [
+          "⭐ 필요 없는 경우",
+          "작고(500쪽 이하) **내부 링크가 잘 연결된** 사이트 — \"일단 넣고 보는\" 물건이 아니다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Sitemaps overview (Google Search Central)",
+          "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐ 사이트맵의 정의와, 무엇보다 **보장하지 않는다**는 자기 선언"
+        }
+      ]
+    },
+    {
+      "id": "cwv",
+      "kind": "spec",
+      "caption": "Core Web Vitals — 지표·임계값·판정 방법",
+      "note": "web.dev 의 Web Vitals 문서에서 옮겼다. ⚠️ **지표 구성과 임계값은 바뀐 전례가 있다**(과거 지표가 INP 로 교체됐다) — 실제로 쓸 때는 원문에서 현재 값을 다시 확인한다.",
+      "columns": [
+        "지표",
+        "무엇을 재나",
+        "좋음의 기준"
+      ],
+      "rows": [
+        [
+          "**LCP** (Largest Contentful Paint)",
+          "\"measures *loading* performance\"",
+          "\"LCP should occur within **2.5 seconds**\""
+        ],
+        [
+          "**INP** (Interaction to Next Paint)",
+          "\"measures *interactivity*\"",
+          "\"pages should have a INP of **200 milliseconds** or less\""
+        ],
+        [
+          "**CLS** (Cumulative Layout Shift)",
+          "\"measures *visual stability*\"",
+          "\"pages should maintain a CLS of **0.1** or less\""
+        ],
+        [
+          "⭐ 판정 지점",
+          "\"for **most of your users**\"",
+          "\"a good threshold to measure is the **75th percentile**\" — 평균이 아니다"
+        ],
+        [
+          "⭐⭐ 어디서 재나",
+          "기기 성능·네트워크·다른 프로세스에 따라 크게 달라진다",
+          "\"**Only field measurement can accurately capture the complete picture.**\""
+        ],
+        [
+          "📌 그래서",
+          "Lighthouse = **실험실(lab)**, 판정 = **실사용자(field)**",
+          "개선은 lab 에서, 판정은 field 로"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Web Vitals (web.dev)",
+          "url": "https://web.dev/articles/vitals",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "Core Web Vitals 세 지표의 정의·임계값·판정 퍼센타일, 그리고 실험실 측정의 한계"
+        }
+      ]
+    },
+    {
+      "id": "worse",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 기계에게 하는 말 — 틀린 값이 빈 값보다 나쁜 자리들",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 다만 각 줄의 인용은 원문·자기 코드에서 그대로 옮겼다. **세 낱말이 같은 구조를 공유한다**는 것이 요점.",
+      "columns": [
+        "어디",
+        "잘못된 신호",
+        "왜 침묵보다 나쁜가"
+      ],
+      "rows": [
+        [
+          "접근성 (`accessibility`)",
+          "`role=\"button\"` 인데 Enter 가 안 먹음",
+          "\"**No ARIA is better than Bad ARIA**\" — 안내받고 눌렀는데 아무 일도 안 일어난다"
+        ],
+        [
+          "⭐ SEO (이 문서)",
+          "틀린 도메인이 박힌 `canonical`",
+          "\"**없는 것보다 나쁘다** — 검색엔진에 '정본은 저기'라고 **잘못 알려주는 값**\" (`prerender.mjs`)"
+        ],
+        [
+          "크롤 (`scraping`)",
+          "선택자가 안 맞아 빈 결과",
+          "**조용한 0건** — 예외가 안 나므로 아무도 모른다"
+        ],
+        [
+          "⭐⭐ 공통 원리",
+          "—",
+          "**없으면 기계가 자기 판단으로 넘어가는데, 틀린 값이 있으면 그 값을 믿고 움직인다**"
+        ],
+        [
+          "그래서 실행 규칙",
+          "—",
+          "⭐ **확신 없으면 만들지 않는다** — 이 저장소는 오리진을 모르면 `og:url`·`sitemap`·`robots` 를 아예 안 만든다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "own",
+      "kind": "glossary",
+      "caption": "⭐ 이 저장소의 프리렌더 — 사고와 처방",
+      "note": "`jd-viewer/scripts/prerender.mjs` 의 주석과 코드에서 옮겼다. ⚠️ 공고 문장이 아니므로 `evidence` 가 아니라 여기서 밝히고 쓴다(`scraping` 과 같은 방식).",
+      "columns": [
+        "",
+        "내용"
+      ],
+      "rows": [
+        [
+          "왜 필요한가",
+          "\"SPA 는 서버가 어떤 주소로 요청받든 **같은 index.html 한 장**을 돌려준다\""
+        ],
+        [
+          "⭐ 크롤러의 사정",
+          "\"크롤러가 자바스크립트를 실행해 주기도 하지만, **(1) 실행은 늦고 예산이 있고**\""
+        ],
+        [
+          "⭐⭐ 미리보기 봇",
+          "\"**(2) 카카오톡·슬랙·X 같은 미리보기 봇은 아예 실행하지 않는다**\" — 검색 순위가 아니라 채팅방에서 어떻게 보이나의 문제"
+        ],
+        [
+          "⭐⭐ 겪은 사고",
+          "\".env 한쪽만 고치면 화면은 새 도메인인데 sitemap·canonical 은 옛 도메인을 가리키는 상태가 **조용히 만들어졌다**\""
+        ],
+        [
+          "구조적 위험",
+          "\"한쪽만 고치면 **크롤러가 보는 메타와 사람이 보는 메타가 갈라진다**\" — 갈라져도 화면은 정상이라 테스트가 안 잡는다"
+        ],
+        [
+          "⭐ 처방",
+          "오리진을 **한 이름으로 묶고**(같은 `.env`), **확신 없으면 안 만든다**(상대경로 `canonical`, `og:url`·`sitemap`·`robots` 생략)"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ 큐의 근거란에는 **454건**이라 적혀 있었는데 이번 셈은 **301건**이다 — `SSR` 을 뺐다. 큐의 숫자는 가설이고 사이클 첫 작업이 그것을 다시 세는 것이라는 규칙의 또 다른 사례(`accessibility` 에 이어 두 번째).",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "이번 셈",
+          "**301건 (모집중 84)** — `SEO|검색엔진 최적화|Core Web Vitals|구조화 데이터|sitemap|메타 태그|Lighthouse`"
+        ],
+        [
+          "`SEO` 단독",
+          "233건 · `검색엔진 최적화` 20 · `Core Web Vitals` 55 · `Lighthouse` 34 · `sitemap|사이트맵` 11"
+        ],
+        [
+          "⚠️⚠️ `구조화 데이터`(23건)",
+          "**대부분 SEO 가 아니다** — `시계열 데이터와 구조화 데이터`(지신), `비정형 문서를 구조화 데이터로`(S2W) 처럼 **그냥 '정형 데이터'** 를 뜻한다. `schema.org` 로 좁힌다"
+        ],
+        [
+          "⚠️⚠️ `SSR`(218건)",
+          "**렌더링 전략 자체**를 말하는 줄이 많다(엘리스 `Next.js SSR 최적화`) — 동반 셈으로만 쓴다"
+        ],
+        [
+          "⭐ 새로 나타나는 말",
+          "`AEO`·`GEO` — 다음 `검색엔진·답변엔진·생성형 AI 환경 최적화(SEO·AEO·GEO)`. ⚠️ 아직 1차 자료를 못 열었다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "SPA 로 만든 서비스에 검색 유입이 필요하다",
+      "pick": "**\"한 장의 문서\"인 주소만 골라 프리렌더/SSR 한다**",
+      "over": "전체를 SSR 로 바꾸거나, 그냥 두고 크롤러가 실행해 주길 기다리기",
+      "why": "크롤러는 JS 를 실행해 주기도 하지만 **\"실행은 늦고 예산이 있다\"**(`prerender.mjs`). 그리고 ⭐ **미리보기 봇은 아예 실행하지 않으므로** 채팅방 링크 카드가 계속 비어 보인다. 반대로 전체 SSR 은 아키텍처를 통째로 바꾸는 일이라 비용이 크다",
+      "tradeoff": "빌드 시간과 산출물 크기가 는다(이 저장소는 `PRERENDER_JOBS` 로 개수를 제한할 수 있게 해 뒀다). 그리고 **내용이 자주 바뀌는 페이지는 빌드 시점 스냅샷이 낡는다** — 그런 주소는 프리렌더 대상에서 뺀다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "canonical·og:url 같은 절대 URL 태그를 넣어야 하는데 배포 오리진이 확실하지 않다",
+      "pick": "⭐ **아예 만들지 않는다**(또는 상대경로로 둔다)",
+      "over": "기본값 도메인을 넣어 두고 나중에 고치기",
+      "why": "⭐⭐ **\"틀린 도메인이 박힌 canonical 은 없는 것보다 나쁘다 — 검색엔진에 '정본은 저기'라고 잘못 알려주는 값\"**(`prerender.mjs`). 비어 있으면 검색엔진이 자기 판단으로 넘어가는데, **틀린 값이 있으면 그 값을 믿는다**",
+      "tradeoff": "검사 도구가 \"canonical 없음\"을 경고한다. 그래도 **잘못된 canonical 의 피해가 훨씬 크다** — `accessibility` 의 \"No ARIA is better than Bad ARIA\" 와 같은 판단",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "성능 지표를 개선하라는 요구를 받았다",
+      "pick": "**실사용자 데이터(field)로 목표를 정하고, 개선은 Lighthouse(lab)로 반복**한다",
+      "over": "Lighthouse 점수만 올리기",
+      "why": "⭐ \"**Only field measurement can accurately capture the complete picture.**\" 성능은 기기·네트워크에 따라 크게 달라지고, 판정 기준은 **75퍼센타일**(넷 중 셋)이다. 내 노트북에서 90점이어도 실사용자 지표는 나쁠 수 있다",
+      "tradeoff": "실사용자 데이터는 **모으는 데 시간이 걸리고** 변경의 효과가 바로 안 보인다. 그래서 **개선 루프는 lab, 판정은 field** 로 나눠 쓴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Web Vitals (web.dev)",
+          "url": "https://web.dev/articles/vitals",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "Core Web Vitals 세 지표의 정의·임계값·판정 퍼센타일, 그리고 실험실 측정의 한계"
+        }
+      ]
+    },
+    {
+      "situation": "사이트맵을 만들지 말지 정해야 한다",
+      "pick": "**규모와 링크 구조를 보고 정한다**",
+      "over": "일단 만들어 두기",
+      "why": "Google 문서가 기준을 준다 — 페이지가 많거나(대략 500쪽 이상), 새 사이트라 외부 링크가 적거나, 비디오·이미지·뉴스가 많을 때 도움이 된다. 반대로 **작고 내부 링크가 잘 연결된 사이트는 없어도 된다.** 그리고 어차피 **\"doesn't guarantee that all the items ... will be crawled and indexed\"** 다",
+      "tradeoff": "만들어 두면 나중에 커졌을 때 이미 있다는 이점은 있다. 다만 **낡은 사이트맵**(없어진 URL, 틀린 도메인)은 이 문서가 말하는 '틀린 신호'가 되므로 **유지할 자신이 없으면 안 만드는 편**이 낫다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Sitemaps overview (Google Search Central)",
+          "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐ 사이트맵의 정의와, 무엇보다 **보장하지 않는다**는 자기 선언"
+        }
+      ]
+    },
+    {
+      "situation": "기계용 메타와 사람용 화면을 각각 다른 코드에서 만들고 있다",
+      "pick": "**문구·URL 규칙을 단일 소스로 묶는다**",
+      "over": "각자 편한 곳에서 문자열을 만들기",
+      "why": "⭐ **\"한쪽만 고치면 크롤러가 보는 메타와 사람이 보는 메타가 갈라진다\"**(`prerender.mjs`). 그리고 갈라져도 **화면은 정상이라 테스트가 안 잡는다** — 이 저장소는 실제로 그 사고를 겪었다(도메인이 조용히 갈라짐)",
+      "tradeoff": "공용 모듈이 하나 늘고 빌드 스크립트가 앱 코드에 의존하게 된다. 대신 **조용한 불일치**를 구조적으로 막는다 — `data-contract` 의 '이름이 계약이다'와 같은 자리",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "확실하지 않은 도메인으로 canonical·og:url 을 채운다",
+      "why": "검사 도구가 \"없음\"을 경고하니 뭐라도 넣고 싶어진다. 그런데 `canonical` 은 **\"이 내용의 정본은 저 주소\"** 라고 검색엔진에 적극적으로 알려 주는 값이다 — 틀리면 **우리 페이지 대신 엉뚱한 주소를 정본으로** 취급하게 만든다",
+      "fix": "⭐ **오리진을 모르면 만들지 않는다.** `canonical` 은 상대경로로 두고(문서 주소 기준으로 해석된다), 절대 URL 이 필수인 것들은 생략한다. 그리고 **오리진을 앱과 빌드 스크립트가 같은 한 곳에서 읽게** 묶는다"
+    },
+    {
+      "trap": "Lighthouse 점수를 Core Web Vitals 로 여긴다",
+      "why": "둘 다 같은 지표 이름을 쓰고 도구도 Google 것이라 같은 것처럼 보인다. 그런데 Lighthouse 는 **내 기계에서 한 번 재는 실험실 측정**이고, 실제 판정은 **실사용자 데이터의 75퍼센타일**로 난다. 내 노트북은 대개 사용자 평균보다 빠르다",
+      "fix": "**두 층을 나눠 쓴다** — 실사용자 데이터로 **목표와 현황**을 보고, Lighthouse 로 **고치는 동안 반복 측정**한다. 그리고 개선 후 실사용자 지표가 따라 움직이는지 **시차를 두고 확인**한다",
+      "sources": [
+        {
+          "title": "Web Vitals (web.dev)",
+          "url": "https://web.dev/articles/vitals",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "Core Web Vitals 세 지표의 정의·임계값·판정 퍼센타일, 그리고 실험실 측정의 한계"
+        }
+      ]
+    },
+    {
+      "trap": "사이트맵에 넣으면 색인된다고 생각한다",
+      "why": "\"알려 주는 파일\"이니 알려 주면 처리될 것 같다. 그런데 Google 문서가 직접 적는다 — **\"it doesn't guarantee that all the items in your sitemap will be crawled and indexed\"**. 사이트맵은 **발견을 돕는 힌트**이지 색인 요청이 아니다",
+      "fix": "**색인은 별개 문제로 다룬다** — 내부 링크로 실제로 도달 가능한지, 내용이 색인할 가치가 있는지, 중복이 아닌지. 그리고 **사이트맵을 최신으로 유지**한다(없어진 URL 이 남아 있으면 그 자체가 틀린 신호다)",
+      "sources": [
+        {
+          "title": "Sitemaps overview (Google Search Central)",
+          "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐ 사이트맵의 정의와, 무엇보다 **보장하지 않는다**는 자기 선언"
+        }
+      ]
+    },
+    {
+      "trap": "메타 태그를 사람이 보는 화면과 다른 코드에서 만든다",
+      "why": "메타는 빌드/서버 쪽, 화면은 앱 쪽에서 만드는 것이 구조상 자연스럽다. 그런데 두 곳의 문구 규칙이 갈라져도 **화면은 아무 이상이 없어서** 아무도 모른다. 이 저장소는 그렇게 **도메인이 조용히 갈라진** 적이 있다",
+      "fix": "**문구·URL 규칙을 한 모듈로 묶고 양쪽이 그것을 쓴다.** 이 저장소는 `src/lib/urls.ts`(문구)와 `src/lib/seo.ts`(태그 조립)를 프리렌더 스크립트와 짝으로 두고, 그 사실을 **주석에 명시**해 뒀다"
+    },
+    {
+      "trap": "`구조화 데이터` 라는 낱말로 SEO 경험을 판단한다",
+      "why": "공고에 그 말이 있으면 schema.org 를 다뤘다고 읽기 쉽다. 그런데 이번 셈에서 그 낱말은 **대부분 그냥 '정형 데이터'** 였다 — `시계열 데이터와 구조화 데이터를 함께 다루는 스토리지`(지신), `비정형 문서를 구조화 데이터로 가공`(S2W)",
+      "fix": "**`schema.org`·`JSON-LD`·`리치 결과` 처럼 그 맥락에서만 쓰는 말로 좁힌다.** 그리고 문장을 읽어 **저장 형식 이야기인지 검색엔진에 알려 주는 이야기인지** 가른다"
+    },
+    {
+      "trap": "순위를 목표로 잡는다",
+      "why": "요구가 대개 그렇게 온다(\"검색 1페이지에\"). 그런데 **순위는 남이 정하고, 알고리즘은 공개되지 않으며 계속 바뀐다.** 통제할 수 없는 것을 목표로 잡으면 **무엇을 해도 성공/실패를 귀속시킬 수 없다**",
+      "fix": "**통제 가능한 것으로 목표를 바꾼다** — 색인된 페이지 수, 크롤 오류 수, Core Web Vitals 의 field 지표, 구조화 데이터 유효성. 순위와 유입은 **결과 지표로 관찰**하되 목표로 걸지 않는다(`slo` 와 반대 방향의 판단)"
+    }
+  ],
+  "terms": [
+    {
+      "term": "색인",
+      "en": "indexing",
+      "what": "검색엔진이 페이지를 저장해 검색 대상으로 삼는 것. ⭐ 크롤됐다고 색인되는 것은 아니다"
+    },
+    {
+      "term": "canonical",
+      "en": "canonical URL",
+      "what": "\"이 내용의 정본은 이 주소\"라고 알리는 태그. ⚠️ 틀리면 없는 것보다 나쁘다"
+    },
+    {
+      "term": "구조화 데이터",
+      "en": "structured data",
+      "what": "schema.org 어휘로 페이지 내용을 기계가 파싱할 수 있게 다시 적은 것(대개 JSON-LD). ⚠️ 공고에서는 그냥 '정형 데이터'를 뜻할 때가 더 많다"
+    },
+    {
+      "term": "프리렌더",
+      "en": "prerendering",
+      "what": "빌드 때 주소별 HTML 을 미리 구워 두는 것. SSR 과 달리 요청 시점에 만들지 않는다"
+    },
+    {
+      "term": "LCP",
+      "en": "Largest Contentful Paint",
+      "what": "\"measures loading performance\" — 좋음의 기준 2.5초 이내"
+    },
+    {
+      "term": "INP",
+      "en": "Interaction to Next Paint",
+      "what": "\"measures interactivity\" — 좋음의 기준 200ms 이하"
+    },
+    {
+      "term": "CLS",
+      "en": "Cumulative Layout Shift",
+      "what": "\"measures visual stability\" — 좋음의 기준 0.1 이하"
+    },
+    {
+      "term": "field / lab",
+      "en": "field / lab data",
+      "what": "실사용자 측정 / 실험실 측정. ⭐ 판정은 field, 개선 루프는 lab"
+    }
+  ],
+  "drills": [
+    {
+      "task": "자기 서비스(또는 아무 사이트)의 페이지 하나를 골라 **자바스크립트를 끈 채로** 연다. 그리고 **HTML 소스만 보고** 이 페이지가 무엇에 관한 것인지 알 수 있는지 확인한다 — 제목·설명·본문·구조화 데이터가 거기 있는가.",
+      "done_when": "JS 없이 보이는 것과 보이는 화면의 차이가 적히고, **미리보기 봇이 받게 될 것**(제목·설명·이미지)이 무엇인지 정확히 말할 수 있다.",
+      "why": "⭐⭐ `why` 절의 \"미리보기 봇은 아예 실행하지 않는다\" 를 직접 확인한다. 그리고 **크롤러가 보는 것과 사람이 보는 것이 다르다**는 이 문서의 전제가 5분이면 몸에 들어온다.",
+      "no_hardware": "브라우저 설정에서 JS 를 끄거나, `curl <주소>` 로 원본 HTML 만 받아 봐도 된다.",
+      "hours": 1
+    },
+    {
+      "task": "자기 서비스의 링크를 **채팅앱(카카오톡·슬랙 등)에 붙여** 미리보기 카드가 어떻게 나오는지 본다. 제목·설명·이미지가 의도한 대로인지, **비어 있거나 엉뚱한 것이 나오는지** 확인한다.",
+      "done_when": "카드에 나온 문구가 **어느 태그에서 온 것인지** 소스에서 찾아 대응시킨다. 하나라도 어긋나면 그 원인을 적는다.",
+      "why": "⭐ SEO 의 효과 중 **가장 빨리 확인되는 것**이 이것이다(검색 순위는 몇 주가 걸린다). 그리고 카드가 비어 있으면 **SPA 문제이거나 메타가 갈라진 것**이라 이 문서의 두 절이 동시에 확인된다.",
+      "no_hardware": "자기 서비스가 없으면 아무 공개 사이트 링크 두세 개를 붙여 **잘 나오는 것과 안 나오는 것**을 비교한다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ 자기 코드에서 **사람이 보는 화면의 제목**과 **메타 태그의 제목**이 각각 어디서 만들어지는지 찾는다. 두 곳이 다르다면, **한쪽만 고쳤을 때 무슨 일이 생기는지** 적어 본다.",
+      "done_when": "두 출처의 파일 경로가 적히고, **둘을 잇는 단일 소스가 있는지 없는지** 판정된다. 없으면 어떻게 묶을지 한 줄로 설계한다.",
+      "why": "⭐⭐ 이 저장소가 실제로 겪은 사고다 — \"**.env 한쪽만 고치면 화면은 새 도메인인데 sitemap·canonical 은 옛 도메인을 가리키는 상태가 조용히 만들어졌다.**\" **화면이 정상이라 테스트가 안 잡는 종류의 버그**를 미리 보는 연습이다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "SPA 에서 SEO 가 문제가 되는 이유를 크롤러와 미리보기 봇으로 나눠 설명해 보라.",
+    "Google 은 사이트맵에 대해 무엇을 보장하지 않는다고 적는가?",
+    "틀린 canonical 이 없는 canonical 보다 나쁜 이유는? 접근성의 어떤 원리와 같은가?",
+    "Core Web Vitals 세 지표의 좋음 기준은? 그리고 그것을 몇 퍼센타일로 판정하는가?",
+    "Lighthouse 점수가 좋은데 실사용자 지표가 나쁠 수 있는 이유는?",
+    "SEO 에서 순위를 목표로 잡으면 안 되는 이유는? 대신 무엇을 목표로 두나?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 검색엔진·답변엔진·생성형 AI 환경 최적화(SEO·AEO·GEO)에 대한 이해와 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/384037",
+      "where": "다음",
+      "what_it_shows": "⭐⭐ **낱말이 지금 갈라지는 중이다.** 검색 결과가 링크 목록에서 답변으로 바뀌면서 최적화의 대상도 나뉜다 — ⚠️ 다만 이 문서는 AEO·GEO 의 1차 자료를 열지 못했다"
+    },
+    {
+      "quote": "• Technical SEO / AEO 및 Schema 구조화 데이터 적용 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/381656",
+      "where": "법무법인이엘",
+      "what_it_shows": "⭐ `**Schema** 구조화 데이터` — 이 문서의 셈 함정과 정확히 대비된다. **schema.org 맥락임을 밝힌 드문 예**이고, 대부분의 `구조화 데이터` 는 그냥 '정형 데이터'다"
+    },
+    {
+      "quote": "• 웹 표준, 브라우저 렌더링 파이프라인, Core Web Vitals에 대한 깊이 있는 이해",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356194",
+      "where": "컬리",
+      "what_it_shows": "**SEO 가 성능과 한 묶음으로 요구된다.** 렌더링 파이프라인 → Core Web Vitals 로 이어지는 순서가 실제 인과를 따른다"
+    },
+    {
+      "quote": "• Lighthouse, Core Web Vitals 등 성능 최적화 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/379531",
+      "where": "밀레니얼웍스",
+      "what_it_shows": "⚠️ **두 도구가 나란히 적혀 있지만 층이 다르다** — Lighthouse 는 실험실 측정이고 Core Web Vitals 의 판정은 실사용자 데이터로 난다(\"Only field measurement can accurately capture the complete picture\")"
+    },
+    {
+      "quote": "• 웹 접근성(WCAG) 준수와 렌더링 성능(Core Web Vitals 등) 최적화를 개발 프로세스에 내재화합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378890",
+      "where": "아이알큐더스",
+      "what_it_shows": "⭐ **접근성과 성능이 한 문장에** 있고 둘 다 `내재화` 로 표현된다 — 나중에 점검하는 것이 아니라는 뜻. `accessibility` 문서에서도 인용한 줄이다"
+    },
+    {
+      "quote": "• SSR, 반응형 웹, 웹 접근성, SEO에 대한 이해가 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/288127",
+      "where": "인티그레이션(메디스트림)",
+      "what_it_shows": "⭐⭐ **네 낱말이 한 줄에 붙어 있다.** SSR(내용을 HTML 에 넣는 방법) → 접근성·SEO(그 HTML 을 사람과 기계가 읽는 문제) 로 이어지는 이 문서의 구조가 공고 한 줄에 압축돼 있다"
+    },
+    {
+      "quote": "• Micro-Frontend(Module Federation/iframe), 공통 모듈 NPM 배포, Next.js SSR 최적화 경험이 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/229818",
+      "where": "엘리스",
+      "what_it_shows": "⚠️ **`SSR` 을 SEO 로 세면 안 되는 이유.** 이 줄의 SSR 은 검색 노출이 아니라 **렌더링 전략·프론트엔드 아키텍처** 이야기다 — 218건 중 상당수가 이 성격이다"
+    },
+    {
+      "quote": "• SEO/GEO에 대한 개념 이해",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372644",
+      "where": "서치오에스에이아이",
+      "what_it_shows": "`GEO` 가 **개념 이해** 수준으로 요구된다 — 아직 실무가 정립되지 않은 낱말이라는 신호이기도 하다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "accessibility",
+      "how": "⭐⭐ 이 문서를 큐에 올린 자리. **뿌리가 같다**(시맨틱 마크업) — 하나는 사람(보조기술), 하나는 기계(크롤러)를 위해. 그리고 **\"틀린 신호가 빈 신호보다 나쁘다\"** 는 원리를 공유한다"
+    },
+    {
+      "slug": "scraping",
+      "how": "⭐⭐ **같은 문제의 반대편** — 그쪽은 긁는 쪽, 여기는 **긁히고 싶은 쪽**이다. robots.txt 의 규범(RFC 9309)은 그 문서에 있다"
+    },
+    {
+      "slug": "slo",
+      "how": "⭐ **반대 방향의 판단** — 그쪽은 목표를 우리가 정하는데, 순위는 남이 정한다. 그래서 SEO 는 통제 가능한 것으로 목표를 바꿔야 한다"
+    },
+    {
+      "slug": "data-contract",
+      "how": "'이름이 계약이다' — 기계용 메타와 사람용 화면의 문구 규칙을 단일 소스로 묶는 이야기가 같은 자리"
+    },
+    {
+      "slug": "caching",
+      "how": "프리렌더는 빌드 시점의 스냅샷이다 — 내용이 바뀌면 낡는다는 점에서 캐시와 같은 문제를 갖는다"
+    },
+    {
+      "slug": "design-system",
+      "how": "시맨틱 마크업을 공통 컴포넌트에 한 번 넣으면 전사가 얻는 구조 — 접근성과 SEO 모두에 해당한다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `SEO`·`Core Web Vitals` 어느 이름도 없다. 직접 세면 **301건(모집중 84)** 이다.",
+    "⚠️⚠️ **1차 자료가 전부 Google 문서다.** Sitemaps overview 와 web.dev 의 Web Vitals 를 열었고, **네이버·다음 등 국내 검색엔진의 색인 방식·요구사항은 확인하지 않았다.** 국내 서비스에서는 그쪽 비중이 큰데도 이 문서는 **Google 관점에 치우쳐 있다** — 그 비대칭을 그대로 밝힌다.",
+    "⚠️ **AEO·GEO 는 낱말의 존재만 확인했다.** 다음·서치오에스에이아이·법무법인이엘 공고에 그 말이 나오는 것까지는 봤으나 **정의와 실무를 담은 1차 자료를 열지 못했다.** 아직 합의된 정의가 없을 가능성이 높아 본문에서도 '갈라지는 중'이라는 관찰까지만 적었다.",
+    "**순위 알고리즘은 이 문서의 범위 밖이다** — 공개되지 않고 계속 바뀐다. 다룬 것은 **기계가 읽을 수 있게 만드는 부분**까지이고, 그래서 `pitfalls` 에 '순위를 목표로 잡지 말라'를 넣었다.",
+    "⚠️ **Core Web Vitals 의 구성은 바뀐 전례가 있다.** 과거 지표 하나가 INP 로 교체됐다. 이 문서가 옮긴 세 지표와 임계값(2.5초 · 200ms · 0.1)은 **인용 시점의 원문 값**이고, 실제로 쓸 때는 **원문에서 현재 값을 다시 확인**해야 한다.",
+    "⭐ **자기 코드를 1차 자료로 쓴 둘째 문서다**(`scraping` 에 이어). `jd-viewer/scripts/prerender.mjs` 의 주석 — SPA 의 문제, 겪은 사고(도메인이 조용히 갈라짐), '확신 없으면 안 만든다'는 규칙 — 을 인용했다. ⚠️ 공고 문장이 아니므로 `evidence` 가 아니라 본문·표에서 출처를 밝히고 썼다.",
+    "**큐의 근거(454건)와 이번 셈(301건)이 다르다.** 큐를 채울 때 `SSR` 을 포함했기 때문이다. `accessibility`(451 → 267)에 이어 두 번째이고, **큐의 숫자는 가설**이라는 규칙이 다시 확인됐다."
+  ],
+  "sources": [
+    {
+      "title": "Sitemaps overview (Google Search Central)",
+      "url": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview",
+      "publisher": "Google",
+      "kind": "docs",
+      "summary": "⭐ 사이트맵의 정의와, 무엇보다 **보장하지 않는다**는 자기 선언"
+    },
+    {
+      "title": "Web Vitals (web.dev)",
+      "url": "https://web.dev/articles/vitals",
+      "publisher": "Google",
+      "kind": "docs",
+      "summary": "Core Web Vitals 세 지표의 정의·임계값·판정 퍼센타일, 그리고 실험실 측정의 한계"
+    }
+  ]
+}

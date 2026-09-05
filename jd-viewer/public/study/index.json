@@ -1741,6 +1741,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "seo",
+      "title": "SEO",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "사람이 아니라 **기계에게 이 페이지가 무엇인지 말해 주는 일** — 그런데 기계는 **말해 준 대로 해 준다고 약속하지 않고**, 잘못 말하면 **아무 말도 안 한 것보다 나쁘다.**",
+      "aliases": [
+        "SEO",
+        "검색엔진 최적화",
+        "search engine optimization",
+        "Core Web Vitals",
+        "sitemap",
+        "구조화 데이터"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
