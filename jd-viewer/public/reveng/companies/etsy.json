@@ -139,7 +139,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "coupled-anyway-despite-going-slow"
+      ]
     },
     {
       "name": "바꾸는 것마다 실험으로 켠다",
@@ -201,7 +203,568 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "coupled-anyway-despite-going-slow",
+      "name": "천천히 가려 해도 묶여 있는 것은 함께 움직인다",
+      "domain": "16년 된 샤딩을 데이터를 안 옮기고 갈아 끼운다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**2010년경에 고른 샤딩 구조가 16년 뒤에도 돌고 있다.** 자체 ORM 이 **shardifier id**(대부분 shop_id·user_id, **30가지 이상**)로 관련 데이터를 같은 샤드에 모으고, **매핑은 무작위로 정해 별도의 인덱스 데이터베이스에 저장**했다. 얻은 것은 분명했다 — 확장되고, **한 샤드가 죽어도 트래픽의 1/1000 만 잃는다.** ⚠️ **그런데 단점 셋이 자랐다** — 수평 확장이 **수동·복잡·수개월**, ⚠️ **인덱스 DB 가 단일 실패점**(죽으면 ORM 이 어느 샤드로도 질의를 못 보내 **전체 사이트 장애**), 그리고 **제품 개발자가 샤딩을 직접 이해하고 관리해야 했다.** **인덱스 DB 장애가 늘어나는 것을 보고 우선순위를 올렸다**고 회사가 적는다.",
+        "metrics": [
+          {
+            "label": "지금의 규모",
+            "value": "테이블 **약 1,000개** × 샤드 **약 1,000개** · **425TB 이상** · **초당 약 170만 요청**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "label": "들인 것",
+            "value": "**5년 · 약 2,500 PR · 6,000 질의**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 뜻밖의 결합",
+            "value": "**27개 모델(테이블의 3%)이 DB 트래픽의 1/3** 을 차지했고 **전부 트랜잭션으로 연결돼 있었다** — 한꺼번에 램프해야 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "label": "크로스샤드의 값",
+            "value": "한 모델의 질의 시간이 **약 2초 → 약 20ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "label": "얻은 것",
+            "value": "확장 작업이 **수개월 → 며칠** · **인덱스 DB 단일 실패점 제거** · 샤드가 개발자 시야에서 가려짐 · ⚠️ **성능은 거의 그대로라 사용자에게 변화가 안 보였다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "label": "이 데이터가 받치는 사업",
+            "value": "2026년 2분기 GMS **26억 달러** · 활성 구매자 **약 8,700만 명** · 판매자 **570만 명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Etsy Q2 2026 earnings",
+                "url": "https://investors.etsy.com/",
+                "publisher": "Etsy IR",
+                "date": "2026-08",
+                "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "어떤 vindex 를 쓸지 정할 때",
+          "thought": "⚠️ **기성품이 더 좋은데 못 썼다.** 해시 vindex 처럼 **알고리즘으로 샤드를 계산하는 것**이 인덱스 DB 의존을 없애 주니 가장 원하던 것인데, **ORM 의 기존 매핑이 무작위라 알고리즘이 아니다.** 그대로 쓰려면 **전 데이터를 리샤딩해야 하고 그것은 수동이라 수년**이 걸린다. **그래서 기성품을 포기하고 기존 로직을 이식한 커스텀 vindex 를 만들었다** — 데이터를 옮기는 복잡성과 위험 없이 vindex 가 이 환경에서 어떻게 도는지 시험하려고.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "질의를 어떻게 검증할지",
+          "thought": "⚠️ **10년 넘게 쌓인 질의를 전부 감사할 수 없었다** — ORM 에 `over a decade of queries with many different ways of accessing MySQL` 이 있었고, 테이블마다 데이터의 설계와 목적이 크게 달라 **변경을 시험할 맥락을 쌓는 것 자체가 어려웠다.** 그래서 **전수 검사 대신 테이블 하나씩** 가기로 했다 — **작게 시험하고, 천천히 안전하게 비호환을 드러내고, 큰 장애 없이 오류의 여지를 남기는 것.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "안전하게 나눴다고 믿을 때",
+          "thought": "⚠️ **이 기능의 이름이 여기서 나온다.** 테이블 하나씩 가는 것이 위험을 최소화하는 방법이었는데, **가장 복잡하고 중요한 모델들**(receipts·listings·transactions)을 준비하다 알아차렸다 — **27개 모델(테이블의 3%)이 DB 트래픽의 1/3 을 차지하고, 그것들이 전부 트랜잭션으로 연결돼 있었다.** 회사의 문장 그대로다: `Despite our best efforts to minimize risk by ramping table-by-table, **some of the riskiest changes were tightly coupled anyway**.` **나누는 전략은 나눠지는 것에만 통한다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "shardifier id",
+            "what": "샤드를 정하는 필드. **관련 데이터를 같은 샤드에 모으려고** 쓴다 — 한 상점·한 사용자의 기록이 한 샤드에. **30가지 이상**이 쓰인다"
+          },
+          {
+            "name": "⚠️ 인덱스 데이터베이스 (옛 구조)",
+            "what": "⚠️ **샤딩되지 않은 단일 DB.** 레코드마다 무작위로 정해진 샤드 매핑을 담았다 — **죽으면 전체 사이트 장애**"
+          },
+          {
+            "name": "vindex",
+            "what": "Vitess 안에서 **컬럼 값으로 샤드를 계산하는 규칙**"
+          },
+          {
+            "name": "SQLite lookup vindex",
+            "what": "⚠️ **옛 매핑을 담은 읽기 전용 SQLite** — 외부 호출의 지연과 의존을 피하려고 **각 Vitess 서버에 직접 복사**했다"
+          },
+          {
+            "name": "hybrid vindex",
+            "what": "⚠️ **임계 id 를 기준으로 둘을 가른다** — 위는 해시 vindex, 아래는 SQLite vindex"
+          },
+          {
+            "name": "scatter 질의",
+            "what": "shardifier id 없이 **1,000 샤드에 병렬로 보내 정렬해 하나로** 돌려주는 것. **기본적으로 꺼 두었다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **데이터를 옮기지 않는다** — 이 이전의 첫 제약이자 커스텀 vindex 를 만든 이유",
+          "⚠️ **한 트랜잭션에 쓰이는 테이블은 같은 연결을 써야 한다** — 원자성이 연결당 보장되기 때문",
+          "**Vitess 는 shardifier id 가 WHERE 절에 있어야 라우팅한다** — 옛 ORM 은 그것을 질의 밖에서 줬다",
+          "**scatter 는 기본적으로 금지** — 명시적으로 허용해야 쓴다",
+          "**언제든 0으로 되돌릴 수 있어야 한다** — 램프의 전제"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**ORM 의 샤드 할당 알고리즘을 Vitess 해시 vindex 알고리즘과 맞춘다**",
+            "why": "⚠️ 그 뒤로 만들어지는 **새 매핑은 인덱스 DB 조회가 필요 없어진다**"
+          },
+          {
+            "step": "**기존 매핑 전부를 읽기 전용 데이터베이스에 담는다** — SQLite",
+            "why": "낮은 지연과 작은 크기 — **각 Vitess 서버에 직접 복사**해 외부 호출을 없앤다"
+          },
+          {
+            "step": "**커스텀 SQLite lookup vindex 를 만든다**",
+            "why": "옛 매핑을 그 SQLite 에서 찾는다"
+          },
+          {
+            "step": "**커스텀 hybrid vindex 를 만든다** — 임계값은 **알고리즘을 바꾼 뒤 처음 만들어진 id**",
+            "why": "⚠️ 그보다 위는 해시로 계산하고 아래는 SQLite 로 찾는다 — **데이터를 하나도 안 옮기고 두 세계를 잇는다**"
+          },
+          {
+            "step": "**테이블 하나씩 코드베이스에 vindex 를 들인다**",
+            "why": "10년치 질의를 전부 감사할 수 없어 **작게 시험하며 비호환을 드러낸다**"
+          },
+          {
+            "step": "**실험 프레임워크로 트래픽 비율을 올린다** — 1% → 10% → 50% → 100%",
+            "why": "옛 방식과 성능을 비교하고 **문제가 나면 즉시 0으로**"
+          },
+          {
+            "step": "⚠️ **한 트랜잭션에 쓰이는 테이블들은 동시에 램프한다**",
+            "why": "⚠️ **원자성이 연결당 보장되는데 두 방식이 서로 다른 연결을 만든다**"
+          },
+          {
+            "step": "**scatter 를 기본적으로 끄고 ORM 으로 허용을 명시하게 한다**",
+            "why": "의도치 않은 비싼 질의가 1,000 샤드로 가면 곧 문제가 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "기성 vindex 를 쓸 것인가",
+            "chosen": "⚠️ **아니다 — 커스텀 vindex 를 만든다**",
+            "alternatives": [
+              "해시 vindex 를 쓰고 전 데이터를 리샤딩하기"
+            ],
+            "tradeoff": "⚠️ **원하던 것은 기성품이었다** — 알고리즘으로 샤드를 계산하면 별도 저장소 의존이 사라진다. **그런데 ORM 의 매핑이 무작위라 알고리즘이 아니고**, 그대로 쓰려면 **수동 리샤딩에 수년**이 걸린다. **커스텀을 고른 대가는 두 체계를 영원히 안고 간다는 것**이다 — 임계 id 아래의 옛 기록은 계속 SQLite 조회를 쓴다(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "question": "옛 매핑을 어디에 둘 것인가",
+            "chosen": "**읽기 전용 SQLite 를 각 Vitess 서버에 직접 복사한다**",
+            "alternatives": [
+              "외부 데이터베이스로 조회",
+              "인덱스 DB 를 그대로 두기"
+            ],
+            "tradeoff": "**낮은 지연과 작은 크기** 덕에 서버마다 복사할 수 있고, 그래서 **외부 호출의 지연과 의존이 사라진다** — 인덱스 DB 를 단일 실패점에서 내리는 핵심이다. ⚠️ **대가는 읽기 전용이라는 것**이고, 새 매핑은 알고리즘 쪽으로만 간다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "question": "옛것과 새것을 어떻게 가를 것인가",
+            "chosen": "**임계 id 하나로** — 알고리즘을 바꾼 뒤 처음 만들어진 id",
+            "alternatives": [
+              "테이블별 플래그",
+              "전부 마이그레이션"
+            ],
+            "tradeoff": "**id 하나로 두 세계가 갈리므로 규칙이 단순하다.** ⚠️ **대가는 그 임계값이 영구적이라는 것**이다 — 옛 기록이 남아 있는 한 하이브리드도 남는다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "question": "10년치 질의를 전부 감사할 것인가",
+            "chosen": "**아니다 — 테이블 하나씩 들인다**",
+            "alternatives": [
+              "전수 감사 후 한 번에 전환"
+            ],
+            "tradeoff": "ORM 에 `over a decade of queries` 가 있고 테이블마다 데이터의 설계와 목적이 달라 **맥락을 쌓는 것 자체가 어려웠다.** 점진 도입은 **작게 시험하고 천천히 비호환을 드러내며 큰 장애 없이 오류의 여지를 남긴다.** ⚠️ **대가는 수백 개 테이블에 같은 과정을 반복해야 한다는 것**이고, 그래서 **명확하고 반복 가능한 절차를 먼저 만들었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "question": "어떻게 켤 것인가",
+            "chosen": "**실험 프레임워크로 트래픽 비율을 올린다** — 1% → 10% → 50% → 100%",
+            "alternatives": [
+              "테이블 단위로 한 번에 전환"
+            ],
+            "tradeoff": "⚠️ **제품 실험 도구를 인프라 이전에 썼다.** 옛 방식과 **성능을 나란히 비교**할 수 있고 **문제가 나면 즉시 0으로 내린다.** 회사가 그 교환을 그대로 적는다 — **모든 질의를 미리 시험하지 않는 위험을, 작게 시작하고 빨리 되돌릴 수 있게 해서 상쇄한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "question": "트랜잭션이 걸린 테이블을 어떻게 할 것인가",
+            "chosen": "⚠️ **같은 트랜잭션에 쓰이는 테이블은 동시에 램프한다**",
+            "alternatives": [
+              "테이블 단위 원칙을 그대로 유지"
+            ],
+            "tradeoff": "⚠️ **두 방식이 서로 다른 연결을 만드는데 원자성은 연결당 보장된다.** 옛 ORM 은 샤드를 **여러 개의 별개 데이터베이스**로 보고 직접 질의했고, Vitess 는 **하나의 데이터베이스**처럼 질의한다. **데이터 무결성을 지키려면 함께 옮기는 수밖에 없었고**, 그래서 **가장 안전하려던 전략이 가장 위험한 묶음을 만들었다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "question": "크로스샤드 질의를 열어 둘 것인가",
+            "chosen": "**기본적으로 끈다** — ORM 에서 명시적으로 허용해야 쓴다",
+            "alternatives": [
+              "기본 허용",
+              "아예 금지"
+            ],
+            "tradeoff": "⚠️ **값이 크다** — 한 모델의 질의 시간이 **약 2초에서 약 20ms** 로 줄었고, 대량 기본키 조회에서 **샤드별 배치와 여러 질의를 하나로** 합쳤다. **그런데 의도치 않은 비싼 질의가 1,000 샤드로 동시에 가면 곧 문제가 된다.** **좋은 도구를 기본값에서 빼는 결정이다**(이 평가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "question": "성능을 얼마나 좋게 만들 것인가",
+            "chosen": "⚠️ **거의 그대로 두는 것을 목표로 했다** — `rendering the change invisible to our end users`",
+            "alternatives": [
+              "이전을 성능 개선의 기회로 삼기"
+            ],
+            "tradeoff": "⚠️ **인프라 교체에서 성능이 그대로인 것이 성공 기준이라는 점이 이 프로젝트의 성격을 말한다** — 얻으려던 것은 속도가 아니라 **단일 실패점 제거·확장 시간 단축·개발자 부담 감소**였다. **사용자에게 아무 일도 안 일어난 것처럼 보이는 것이 목표였다**(이 해석은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Vitess (2018년 도입) + vindex",
+            "role": "큰 MySQL 클러스터의 샤드 라우팅을 맡는다. 처음에는 ORM 이 샤드를 지정해 검증만 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "tech": "커스텀 SQLite lookup vindex",
+            "role": "⚠️ **옛 매핑을 담은 읽기 전용 SQLite 를 각 Vitess 서버에 복사** — 외부 호출을 없앤다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "tech": "커스텀 hybrid vindex",
+            "role": "임계 id 로 해시와 SQLite 를 가른다 — **데이터를 안 옮기고 두 세계를 잇는 장치**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "tech": "실험 프레임워크",
+            "role": "테이블마다 트래픽을 1%→10%→50%→100% 로 올리고 문제 시 즉시 0으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 인덱스 데이터베이스 (없앤 것)",
+            "role": "⚠️ **단일 실패점이었다** — 죽으면 전체 사이트 장애가 될 수 있었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "바꾸는 것마다 실험으로 켠다",
+          "via": "램프",
+          "contract": "⚠️ **제품 실험 도구가 인프라 이전의 안전장치가 됐다** — 테이블마다 트래픽 비율을 올리며 성능을 비교하고 즉시 되돌린다. **두 도메인이 같은 프레임워크를 공유한다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "결제 플랫폼 이전 (2020-12~2022-05)",
+          "via": "먼저 해 본 것",
+          "contract": "**샤딩되지 않은 결제 테이블들을 새 클러스터로 옮기며 기성 vindex 를 먼저 써 봤고, 그 성공이 이번 이전의 길을 열었다.** 질의 비호환을 찾아 고친 방법도 그쪽 3부에 있다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "제품 개발자",
+          "via": "가려진 샤드",
+          "contract": "**이전의 목표 중 하나가 개발자 시야에서 샤드를 감추는 것이었다** — 예전에는 데이터에 접근할 때마다 샤딩을 이해하고 관리해야 했다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "1,000개의 샤드",
+          "via": "scatter",
+          "contract": "⚠️ **한 질의가 1,000곳에 동시에 갈 수 있다** — 그래서 기본적으로 막아 두었다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "나누는 전략은 나눠지는 것에만 통한다",
+            "why_hard": "⚠️ **테이블 하나씩 가는 것이 위험을 줄이는 방법이었는데, 정작 가장 위험한 것들이 서로 묶여 있었다.** **27개 모델(테이블의 3%)이 DB 트래픽의 1/3** 을 차지하고 **전부 트랜잭션으로 연결돼 있어서** 함께 옮길 수밖에 없었다. 회사의 문장 그대로다 — `some of the riskiest changes were **tightly coupled anyway**`.",
+            "current_best": "**묶인 것을 인정하고 전사 협업으로 한꺼번에 옮기는 것.** ⚠️ **결합을 미리 알아내는 방법은 글에 없다** — 준비하다가 알아차렸다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "problem": "10년치 질의는 전수 검사할 수 없다",
+            "why_hard": "ORM 에 `over a decade of queries with many different ways of accessing MySQL` 이 쌓여 있고, **테이블마다 데이터의 설계와 목적이 크게 달라 변경을 시험할 맥락을 쌓는 것 자체가 어렵다.** 게다가 **Vitess 는 shardifier id 가 WHERE 절에 있어야 하는데 옛 ORM 은 그것을 질의 밖에서 줬으므로 많은 질의가 그 조건을 안 갖고 있었다.**",
+            "current_best": "**전수 검사 대신 점진 도입 + 즉시 되돌리기.** 작게 시작해 비호환을 천천히 드러낸다. ⚠️ **미리 다 시험하지 않는 위험을 롤백 속도로 상쇄하는 것이고, 회사가 그 교환을 그대로 적는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              },
+              {
+                "title": "Scaling Etsy Payments with Vitess: Part 3 – Reducing Cutover Risk",
+                "url": "https://www.etsy.com/codeascraft/scaling-etsy-payments-with-vitess-part-3--reducing-cutover-risk",
+                "publisher": "Etsy Code as Craft",
+                "date": "2023-02-22",
+                "summary": "2020년 12월부터 2022년 5월까지 결제 플랫폼을 Vitess 로 옮기며 컷오버 위험을 줄인 방법. 질의 비호환을 찾아 해결한 과정이 여기 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "임계 id 하나로 두 세계를 가른다",
+          "question": "데이터를 안 옮기고 어떻게 갈아 끼웠나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>ORM 의 샤드 할당을</b><br/><b>Vitess 해시 알고리즘에 맞춘다</b>\"]:::accent --> B[\"<b>이후의 새 매핑</b><br/>• 인덱스 DB 조회 불필요\"]:::list\n  C[\"<b>기존 매핑 전부</b>\"]:::accent --> D[\"<b>읽기 전용 SQLite</b><br/>• 낮은 지연 · 작은 크기<br/>• <b>각 Vitess 서버에 직접 복사</b>\"]:::accent\n  D --> E[\"<b>커스텀 SQLite lookup vindex</b>\"]:::list\n  B --> F{\"<b>hybrid vindex</b><br/>임계 id 로 가른다\"}\n  E --> F\n  F -->|\"임계값 <b>위</b>\"| H[\"<b>해시 vindex</b><br/>• 계산으로 샤드를 안다\"]:::list\n  F -->|\"임계값 <b>아래</b>\"| S[\"<b>SQLite vindex</b><br/>• 옛 매핑을 찾는다\"]:::list\n  H --> R[\"<b>샤드 약 1,000개</b>\"]:::accent\n  S --> R\n  RAMP[\"<b>실험 프레임워크로 램프</b><br/>• 1% → 10% → 50% → 100%<br/>• 문제 시 즉시 0\"]:::accent -.-> F\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "가장 안전하려던 전략이 가장 위험한 묶음을 만들었다",
+          "question": "천천히 가는 것으로 못 푸는 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[\"<b>테이블 하나씩 간다</b><br/>• 10년치 질의를 다 볼 수 없다<br/>• 작게 시험하고 천천히 드러낸다\"]:::accent --> T[\"⚠️ <b>트랜잭션 문제</b><br/>• 옛 ORM: 샤드를 별개 DB 로<br/>• Vitess: 하나의 DB 처럼<br/>• <b>연결이 다르고 원자성은 연결당</b>\"]:::gone\n  T --> M[\"⚠️ <b>같은 트랜잭션의 테이블은</b><br/>⚠️ <b>동시에 램프해야 한다</b>\"]:::gone\n  M --> D[\"⚠️ <b>27개 모델 (테이블의 3%)</b><br/>• <b>DB 트래픽의 1/3</b><br/>• receipts · listings · transactions<br/>• <b>전부 트랜잭션으로 연결</b>\"]:::gone\n  D --> Q[\"<b>전사 협업으로 한꺼번에</b>\"]:::accent\n  Q --> L[\"<b>tightly coupled anyway</b><br/>• 나누는 전략은<br/>  나눠지는 것에만 통한다 (재구성)\"]:::gone\n  SC[\"⚠️ <b>scatter 의 양면</b><br/>• 2초 → 20ms<br/>• 그러나 1,000 샤드에 동시에 가면<br/>• <b>기본값에서 빼 두었다</b>\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [
+        {
+          "version": "자체 ORM + 인덱스 데이터베이스",
+          "from": "2010",
+          "to": "2018",
+          "what": "자체 ORM 이 **shardifier id** 로 샤드를 정하고, 매핑을 **무작위로 정해 샤딩되지 않은 단일 인덱스 데이터베이스**에 저장했다. 질의할 때는 인덱스 DB 를 먼저 조회해 대상 샤드를 찾았다.",
+          "why_changed": "⚠️ **단점 셋이 자랐다** — 수평 확장이 **수동·복잡·수개월**, **인덱스 DB 가 단일 실패점**(죽으면 전체 사이트 장애), **제품 개발자가 샤딩을 직접 이해하고 관리해야 했다.** **그 장애가 늘어나는 것을 보고 우선순위를 올렸다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        },
+        {
+          "version": "Vitess 를 앞에 두되 샤드는 ORM 이 지정",
+          "from": "2018",
+          "to": "2026",
+          "what": "질의가 **Vitess 를 거쳐 MySQL 로** 가게 바꿨다. 다만 **어느 샤드인지는 여전히 ORM 이 알려 줬다** — 새 구성요소가 환경에서 도는지 먼저 검증하려고. 그 사이 **샤딩되지 않은 결제 테이블들을 새 클러스터로 옮기며 기성 vindex 를 먼저 써 봤다.**",
+          "why_changed": "**vindex 로 가려면 기성품을 쓸 수 없었다** — ORM 의 매핑이 무작위라 알고리즘이 아니고, 기성 해시 vindex 를 쓰려면 **전 데이터 리샤딩에 수년**이 걸린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        },
+        {
+          "version": "커스텀 vindex (SQLite + hybrid)",
+          "from": "2026",
+          "what": "**데이터를 하나도 옮기지 않고** 샤드 라우팅을 Vitess 로 넘겼다. 임계 id 위는 해시, 아래는 각 Vitess 서버에 복사된 읽기 전용 SQLite. **5년 · 약 2,500 PR · 6,000 질의**가 들었고 **확장이 수개월에서 며칠로**, **인덱스 DB 단일 실패점이 사라졌다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "title": "Migrating Etsy's database sharding to Vitess",
+          "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+          "publisher": "Etsy Code as Craft",
+          "date": "2026-03-19",
+          "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+        },
+        {
+          "title": "Scaling Etsy Payments with Vitess: Part 3 – Reducing Cutover Risk",
+          "url": "https://www.etsy.com/codeascraft/scaling-etsy-payments-with-vitess-part-3--reducing-cutover-risk",
+          "publisher": "Etsy Code as Craft",
+          "date": "2023-02-22",
+          "summary": "2020년 12월부터 2022년 5월까지 결제 플랫폼을 Vitess 로 옮기며 컷오버 위험을 줄인 방법. 질의 비호환을 찾아 해결한 과정이 여기 있다."
+        },
+        {
+          "title": "Etsy Q2 2026 earnings",
+          "url": "https://investors.etsy.com/",
+          "publisher": "Etsy IR",
+          "date": "2026-08",
+          "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **연표(eras)를 세울 연도는 많은데 내용을 아직 못 읽었다** — **2010년경 샤딩 시작** · **2018년 Vitess 도입** · **2020년 온프렘에서 GCP 이전 완료** · **2020-12~2022-05 결제 플랫폼 이전** · **2026년 vindex 이전 완료(5년 소요)**. **각 시기의 내용과 대가를 읽으면 회사 단위 연표가 설 수 있다.**",
