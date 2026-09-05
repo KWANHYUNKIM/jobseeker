@@ -36,7 +36,7 @@ async function loadRefs() {
   const dl = el('dl');
   const LABEL = { hero: '히어로', sections: '섹션', rhythm: '리듬', anchors: '앵커', footer: '푸터',
     extra: '덤', cut: '분량', color: '컬러', compare: '비교', counter: '반론', avoid: '하지 말 것',
-    balance: '주고받기', pay: '연봉', badge: '배지', source: '1차 출처', org: '조직', scam: '사기 경고', label: '라벨 정렬', hero3: '히어로 3줄', who: '누구를 부르나', gate: '문지기 조건', expect: '기대치', dash: '지표 4칸', dedupe: '중복 제거', chips: '역량 태그', blank: '빈칸 없애기', window: '게시~마감', mode: '근무형태', employ: '고용형태', schedule: '전형 일정', benefit: '복리후생', disclaim: '면책', missing: '우리에게 없는 것', tasks: '담당업무', quality: '공고 품질', resume: '이력 매칭', process: '전형 절차', fit: '인재상', template: '★ 카드 템플릿', summary: '요약 vs 원문', cluster: '한 회사 여러 자리' };
+    balance: '주고받기', pay: '연봉', badge: '배지', source: '1차 출처', org: '조직', scam: '사기 경고', label: '라벨 정렬', hero3: '히어로 3줄', who: '누구를 부르나', gate: '문지기 조건', expect: '기대치', dash: '지표 4칸', dedupe: '중복 제거', chips: '역량 태그', blank: '빈칸 없애기', window: '게시~마감', mode: '근무형태', employ: '고용형태', schedule: '전형 일정', benefit: '복리후생', disclaim: '면책', missing: '우리에게 없는 것', tasks: '담당업무', quality: '공고 품질', resume: '이력 매칭', process: '전형 절차', fit: '인재상', template: '★ 카드 템플릿', summary: '요약 vs 원문', cluster: '한 회사 여러 자리', nofit: '경력 무관' };
   Object.entries(data.synthesis || {}).forEach(([k, v]) => {
     dl.append(el('dt', null, LABEL[k] || k), el('dd', null, v));
   });
