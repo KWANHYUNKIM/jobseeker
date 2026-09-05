@@ -4,7 +4,7 @@
   "name_en": "Honeycomb",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "honeycomb.io",
   "one_liner": "관측 도구를 파는 회사 — 좌석이 아니라 이벤트로 값을 매기고 쿼리는 무제한으로 연다",
@@ -171,7 +171,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "swap-kafka-under-load"
+      ]
     }
   ],
   "eras": [],
@@ -595,6 +597,467 @@
           "publisher": "Honeycomb Blog",
           "date": "2026-07-15",
           "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+        }
+      ]
+    },
+    {
+      "key": "swap-kafka-under-load",
+      "name": "관측이 돌아가는 채로 그 밑의 카프카를 갈아 끼운다",
+      "domain": "도는 채로 파이프라인 밑을 갈아 끼운다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **Kafka 는 이 회사의 등뼈다** — 수집 서비스가 이벤트를 고객 데이터셋에 매핑된 파티션으로 보내고 그 반대편에서 Retriever 노드들이 소비해 로컬 디스크에 남긴다. **관측 도구가 멈추면 고객은 자기 장애를 못 본다.** 그런데 그 밑이 낡아 가고 있었다 — ⚠️ **브로커 하나를 교체하는 일이 몇 년 전 `8 to 12 hours` 였는데 이전 직전에는 `48 to 72 hours` 로 늘어 있었다**(폐쇄 소스 계층 저장 문제). **좋아진 것만 적는 글이 흔한데 이 회사는 자기 시스템이 나빠진 구간을 남긴다.**",
+        "metrics": [
+          {
+            "label": "⚠️ 나빠졌던 것",
+            "value": "브로커 교체가 **8~12시간 → 48~72시간** — 폐쇄 소스 계층 저장이 원인",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "범위",
+            "value": "환경 **3계층**에 걸친 **클러스터 6개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "이전 실행이 빨라진 정도",
+            "value": "**4~5시간 → 2~3시간** — 반복 연습의 결과",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "조율 범위",
+            "value": "초기에 **7개 팀** 조율이 필요했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "롤백 시험",
+            "value": "**4시간 이상** 걸리는 리허설을 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 빠진 수치",
+            "value": "총 기간은 `several quarters` 로만 적고 **처리량·비용·브로커 수는 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 먼저 지킬지 정할 때",
+          "thought": "⚠️ **무중단보다 데이터 안전을 앞에 뒀다** — `we accept a window of downtime between the producer cutover and the consumer cutover`. **끊기는 창을 받아들이고 대신 데이터를 잃지 않는 쪽**을 골랐다. 관측 회사가 자기 파이프라인에서 **잠깐 안 보이는 것보다 잘못 보이는 것을 더 무서워한 셈이다**(이 해석은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "비용 절감안을 볼 때",
+          "thought": "⚠️ **싼 길을 SLO 로 잘랐다** — Confluent Warpstream(디스크리스 토픽)은 데이터 전송 비용을 낮춰 주는데, **`we can't trade higher latencies for more cost-effective data transfer`** 라며 뺐다. **99.99% 가용성 약속이 있는 회사에서는 지연이 협상 대상이 아니다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "두려움을 다루는 방식",
+          "thought": "**반복해서 연습했다** — 이전 실행이 `four to five hours` 에서 `two to three hours` 로 줄어든 것이 그 증거다. 그리고 **롤백 시험에만 네 시간 이상**을 썼다. ⚠️ **큰 이전에서 가장 비싼 자원은 팀의 확신**이라는 것이 이 글의 태도다(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Kafka 클러스터",
+            "what": "환경 3계층에 걸쳐 **6개**. 관측 데이터 파이프라인의 등뼈"
+          },
+          {
+            "name": "생산자(수집 서비스)",
+            "what": "이벤트를 고객 데이터셋에 매핑된 파티션으로 보낸다"
+          },
+          {
+            "name": "소비자(Retriever 노드)",
+            "what": "파티션을 소비해 로컬 NVMe 디스크에 남긴다. **이중으로 붙는다**"
+          },
+          {
+            "name": "⚠️ 컷오버 창",
+            "what": "생산자 전환과 소비자 전환 사이의 **의도적으로 받아들인 다운타임**"
+          },
+          {
+            "name": "오프셋 관리",
+            "what": "⚠️ 이 회사의 방식이 MirrorMaker 2 와 맞지 않아 그 길을 막았다"
+          }
+        ],
+        "invariants": [
+          "**데이터 안전이 무중단보다 앞선다** — 그래서 컷오버 창을 받아들인다",
+          "**지연은 비용과 맞바꾸지 않는다** — 99.99% 가용성 SLO 가 있기 때문이다",
+          "**롤백 경로를 먼저 확인한다** — 리허설에만 네 시간 이상을 쓴다",
+          "**반복해서 연습한다** — 실행 시간이 절반 가까이 줄어든 이유다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**새 클러스터를 세운다** — 오픈소스 Apache Kafka **4.1.1(KRaft 모드)** on AWS EKS",
+            "why": "ZooKeeper 를 걷어내고 쿠버네티스 위로 옮긴다"
+          },
+          {
+            "step": "**저장은 NVMe 인스턴스 스토어로 간다** — EBS 를 버렸다",
+            "why": "지연을 줄이기 위해서다"
+          },
+          {
+            "step": "⚠️ **복제 도구로 옮기지 않는다** — MirrorMaker 2 를 뺐다",
+            "why": "이 회사의 **오프셋 관리 구조와 맞지 않았다**"
+          },
+          {
+            "step": "**생산자를 새 클러스터로 넘긴다**",
+            "why": "쓰는 쪽부터 옮긴다"
+          },
+          {
+            "step": "⚠️ **여기서 창이 생긴다** — 생산자 전환과 소비자 전환 사이의 다운타임을 받아들인다",
+            "why": "`to guarantee data safety` — 데이터를 잃지 않는 쪽을 골랐다"
+          },
+          {
+            "step": "**소비자(Retriever)를 새 클러스터로 넘긴다**",
+            "why": "읽는 쪽이 따라온다"
+          },
+          {
+            "step": "**리허설을 반복한다** — 실행이 4~5시간에서 2~3시간으로 줄었다",
+            "why": "⚠️ 클러스터가 6개라 같은 절차를 여러 번 밟는다 — **연습이 곧 준비다**"
+          },
+          {
+            "step": "**롤백을 따로 시험한다** — 네 시간 이상",
+            "why": "되돌릴 수 있다는 확신이 앞으로 가게 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "관리형(Confluent Platform)을 계속 쓸 것인가",
+            "chosen": "**떠난다** — 오픈소스 Apache Kafka 4.1.1 을 EKS 위에서 직접 돌린다",
+            "alternatives": [
+              "자체 호스팅 Confluent Platform + ZooKeeper 유지"
+            ],
+            "tradeoff": "⚠️ **운영 책임이 통째로 자기 것이 된다.** 그럼에도 떠난 이유가 수치로 남아 있다 — **브로커 교체가 8~12시간에서 48~72시간으로 늘어 있었고** 그 원인이 **폐쇄 소스 계층 저장**이었다. **고칠 수 없는 것을 계속 안고 갈 수 없었다**(뒤쪽 해석은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "데이터 전송 비용을 낮추는 길이 있는데",
+            "chosen": "**안 간다** — Confluent Warpstream(디스크리스 토픽)을 뺐다",
+            "alternatives": [
+              "Warpstream 으로 전송 비용 절감"
+            ],
+            "tradeoff": "⚠️ **싼 길을 SLO 가 잘랐다** — `we can't trade higher latencies for more cost-effective data transfer`. **99.99% 가용성을 약속한 회사에서는 지연이 협상 대상이 아니다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "클러스터 간 복제로 옮길 것인가",
+            "chosen": "**안 옮긴다** — MirrorMaker 2 를 뺐다",
+            "alternatives": [
+              "MirrorMaker 2 로 새 클러스터에 복제하며 전환"
+            ],
+            "tradeoff": "⚠️ **이 회사의 오프셋 관리 구조와 맞지 않았다** — 흔한 길이 자기 구조 때문에 막힌 사례다. 그래서 **컷오버 방식으로 갈 수밖에 없었고, 그것이 다운타임 창을 낳았다**(이 인과는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "저장을 무엇에 둘 것인가",
+            "chosen": "**NVMe 인스턴스 스토어** — EBS 를 버렸다",
+            "alternatives": [
+              "EBS 볼륨"
+            ],
+            "tradeoff": "**지연이 줄어든다.** ⚠️ 대신 **인스턴스가 사라지면 디스크도 사라진다** — 브로커 교체가 무거운 일이 되는 이유의 일부다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "무중단으로 갈 것인가",
+            "chosen": "**안 간다** — 생산자 컷오버와 소비자 컷오버 사이의 창을 받아들인다",
+            "alternatives": [
+              "무중단 전환을 설계하기"
+            ],
+            "tradeoff": "⚠️ **끊기는 시간을 받아들이고 데이터 안전을 얻었다** — `we accept a window of downtime between the producer cutover and the consumer cutover` (`to guarantee data safety`). **관측 회사가 잠깐 안 보이는 것보다 잘못 보이는 것을 더 무서워한 선택으로 읽힌다**(뒤쪽은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "두려운 절차를 어떻게 다룰 것인가",
+            "chosen": "**반복해서 연습한다** — 클러스터가 6개라 같은 절차를 여러 번 밟는다",
+            "alternatives": [
+              "한 번에 준비해 한 번에 실행하기"
+            ],
+            "tradeoff": "**실행이 4~5시간에서 2~3시간으로 줄었다.** ⚠️ 대신 **전체 기간이 길어진다** — 회사는 총 기간을 `several quarters` 로만 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "롤백을 어디까지 준비할 것인가",
+            "chosen": "**따로 시험한다** — 네 시간 이상 걸리는 리허설",
+            "alternatives": [
+              "롤백 계획만 문서로 두기"
+            ],
+            "tradeoff": "⚠️ **롤백 시험에만 반나절을 쓴다.** 그 대신 **되돌릴 수 있다는 확신**을 얻는다 — 이 회사가 강조하는 것이 `rollback safety` 다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Apache Kafka 4.1.1 (KRaft) on AWS EKS",
+            "role": "새 파이프라인. ZooKeeper 없이 돈다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "NVMe 인스턴스 스토어",
+            "role": "브로커의 저장. 지연을 위해 EBS 를 대신했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Confluent Platform + ZooKeeper (옛것)",
+            "role": "⚠️ **떠난 쪽** — 폐쇄 소스 계층 저장 때문에 브로커 교체가 48~72시간까지 늘었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Warpstream · MirrorMaker 2",
+            "role": "⚠️ **버린 후보** — 각각 지연(SLO)과 오프셋 관리 구조 비호환으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "column-store-no-indexes",
+          "via": "Kafka 소비",
+          "contract": "**Retriever 노드가 이 파이프라인의 끝에서 파티션을 소비해 로컬 디스크에 남긴다** — 저장 엔진과 파이프라인은 한 몸이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "이벤트 볼륨 구독 (수익원)",
+          "via": "수집 경로",
+          "contract": "⚠️ **이벤트 수로 값을 받는 회사에서 이 파이프라인은 매출이 지나가는 길이다** — 멈추면 고객이 자기 장애를 못 본다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "99.99% 가용성 SLO",
+          "via": "지연 제약",
+          "contract": "⚠️ **이 약속이 선택지를 잘랐다** — 비용을 낮추는 Warpstream 을 지연 때문에 못 골랐다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "7개 팀",
+          "via": "초기 조율",
+          "contract": "**이전이 조직 문제이기도 했다** — 초기에 일곱 팀의 조율이 필요했다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "관리형을 떠나면 운영이 자기 것이 된다",
+            "why_hard": "⚠️ **떠난 이유가 운영의 어려움이었는데 떠난 결과도 운영이다** — 폐쇄 소스 계층 저장 때문에 브로커 교체가 48~72시간까지 늘었지만, 오픈소스로 옮기면 그 시간을 **자기가 책임진다.** 게다가 NVMe 로컬 디스크를 골라 **브로커 교체 자체가 무거운 일**로 남는다",
+            "current_best": "⚠️ **이 글에 답이 없다** — 이전 이후의 브로커 교체 시간이 얼마인지 적지 않는다. **나빠졌던 수치는 남기고 좋아진 수치는 안 남긴 자리다**(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "흔한 이전 도구가 자기 구조 때문에 막힌다",
+            "why_hard": "MirrorMaker 2 는 클러스터 간 이전의 표준적인 답인데 **이 회사의 오프셋 관리 방식과 맞지 않았다.** 그래서 **컷오버로 갈 수밖에 없었고 그것이 다운타임 창을 낳았다**",
+            "current_best": "**컷오버 창을 받아들이고 데이터 안전을 지키는 것.** ⚠️ **오프셋 관리를 바꿔 도구에 맞추는 선택지는 검토했는지조차 나오지 않는다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming How We Run Kafka at Honeycomb",
+                "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+                "publisher": "Honeycomb Blog",
+                "date": "2026-07-15",
+                "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "끊기는 창을 받아들이고 데이터를 지킨다",
+          "question": "무중단을 포기하면 순서가 어떻게 되나",
+          "kind": "flow",
+          "code": "flowchart TD\n  N[\"<b>새 클러스터를 세운다</b><br/>• Kafka 4.1.1 (KRaft) on EKS<br/>• NVMe 인스턴스 스토어\"]:::accent --> P\n  P[\"<b>생산자 컷오버</b><br/>• 수집 서비스가 새 쪽으로\"]:::list --> W\n  W[\"⚠️ <b>다운타임 창</b><br/>• 의도적으로 받아들인다<br/>• to guarantee data safety\"]:::gone --> C\n  C[\"<b>소비자 컷오버</b><br/>• Retriever 노드가 새 쪽으로\"]:::list --> R\n  R[\"<b>클러스터 6개에 반복</b><br/>• 실행 4~5시간 → 2~3시간\"]:::accent\n  B[\"<b>롤백 리허설</b><br/>• 네 시간 이상\"]:::soft\n  B -.-> P\n  X[\"⚠️ <b>안 고른 길</b><br/>• MirrorMaker 2 (오프셋 구조 비호환)<br/>• 그래서 컷오버밖에 없었다\"]:::soft\n  X -.-> W\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        },
+        {
+          "title": "나빠진 것을 적고 떠났다",
+          "question": "무엇이 이 이전을 밀었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  O[\"<b>Confluent Platform + ZooKeeper</b>\"]:::gone --> D[\"⚠️ <b>브로커 교체 시간이 늘었다</b><br/>• 몇 년 전 8~12시간<br/>• 이전 직전 48~72시간\"]:::gone\n  D --> R[\"<b>원인</b><br/>• 폐쇄 소스 계층 저장\"]:::gone\n  R --> M[\"<b>떠나기로 한다</b>\"]:::accent\n  M --> A1[\"⚠️ <b>Warpstream 은 안 된다</b><br/>• 지연을 비용과 못 바꾼다<br/>• 99.99% SLO\"]:::gone\n  M --> A2[\"⚠️ <b>MirrorMaker 2 도 안 된다</b><br/>• 오프셋 관리 구조 비호환\"]:::gone\n  M --> A3[\"⚠️ <b>EBS 도 아니다</b><br/>• 지연 때문에 NVMe 로\"]:::gone\n  A1 --> F[\"<b>남은 길</b><br/>• 오픈소스 Kafka · 직접 운영<br/>• 컷오버 · 반복 연습\"]:::accent\n  A2 --> F\n  A3 --> F\n  F --> Q[\"⚠️ <b>글에 없는 것</b><br/>• 이전 뒤 브로커 교체 시간<br/>• 처리량 · 비용 · 브로커 수\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Transforming How We Run Kafka at Honeycomb",
+          "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+          "publisher": "Honeycomb Blog",
+          "date": "2026-07-15",
+          "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+        },
+        {
+          "title": "Why We Built Our Own Distributed Column Store",
+          "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+          "publisher": "Honeycomb",
+          "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+        },
+        {
+          "title": "Honeycomb — 요금제",
+          "url": "https://www.honeycomb.io/pricing",
+          "publisher": "Honeycomb",
+          "summary": "월 이벤트 수로만 값을 매긴다. 좌석과 쿼리는 무제한."
         }
       ]
     }
