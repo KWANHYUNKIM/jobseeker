@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Honeycomb** | US · SaaS(관측) | 프로파일 완료 · 도메인 2(아무나 아무 때나 물어봐도 되게 만든다[tech 4] / 도는 채로 파이프라인 밑을 갈아 끼운다[tech 4]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Honeycomb** | US · SaaS(관측) | `honeycomb.io/blog` — 최신 **2026-09-02**, 인프라 글은 **2026-07-15** | ✅ WebFetch 로 목록·본문 모두 온다. ⚠️ **첫 화면은 AI·조직 글이라 인프라 글을 따로 찾아야 한다.** ⚠️ **슬러그를 추측하면 404 다** — 목록에서 URL 을 받아야 한다(`/blog/transforming-how-we-run-kafka-honeycomb`, `at-` 이 없다) | **`transforming-how-we-run-kafka-honeycomb`(2026-07-15) 전문을 읽었다 — 자기 프로덕션 Kafka 이전기다.** 자체 호스팅 Confluent Platform + ZooKeeper 에서 **오픈소스 Apache Kafka 4.1.1(KRaft 모드) + AWS EKS** 로 옮겼다. **버린 대안이 셋이고 이유가 다 다르다** — ① Confluent Warpstream(디스크리스 토픽)은 *"we can't trade higher latencies for more cost-effective data transfer"*(99.99% 가용성 SLO 때문), ② MirrorMaker 2 는 **오프셋 관리 구조와 비호환**, ③ EBS 대신 **NVMe 인스턴스 스토어**(지연 최소화). **대가를 명시적으로 받아들인다** — *"we accept a window of downtime between the producer cutover and the consumer cutover"*(데이터 안전을 위해). **⚠️ 그리고 자기 시스템이 나빠졌던 것을 적는다** — 브로커 교체가 몇 년 전 **8~12시간**에서 이전 직전 **48~72시간**으로 늘어 있었다(폐쇄 소스 계층 저장 문제). **수치** — 클러스터 **6개**(환경 3계층) · 이전 실행이 **4~5시간 → 2~3시간** · 초기에 **7개 팀 조율** · 롤백 테스트 **4시간 이상**. ⚠️ **빠진 수치도 있다** — 총 기간은 `several quarters` 로만, 처리량·비용·브로커 수는 없다. 축은 관측 벤더라 Datadog·Grafana 와 겹치지만 **이 글은 관측 제품이 아니라 그 밑의 Kafka 운영**이다 |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

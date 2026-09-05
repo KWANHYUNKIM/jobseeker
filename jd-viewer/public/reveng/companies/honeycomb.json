@@ -1,0 +1,205 @@
+{
+  "slug": "honeycomb",
+  "name": "허니컴",
+  "name_en": "Honeycomb",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "honeycomb.io",
+  "one_liner": "관측 도구를 파는 회사 — 좌석이 아니라 이벤트로 값을 매기고 쿼리는 무제한으로 연다",
+  "business_model": "**월 이벤트 수로만 값을 매긴다.** Free 는 월 **2,000만 이벤트**, Pro 는 **월 $150부터 · 7.5억 이벤트**, Enterprise 는 연 **100억 이벤트** 기본에 별도 협의다. ⚠️ **핵심은 안 받는 쪽에 있다** — **좌석 무제한 · 쿼리 무제한**이고 사용자당 과금이 없다. **관측 도구를 좌석으로 팔면 볼 사람을 줄이게 되고, 그러면 관측이 안 된다**(이 해석은 이 사이트의 재구성이다). 대신 **아무나 아무 때나 물어봐도 되는 구조를 회사가 떠안는다** — 그것이 자체 저장 엔진을 만든 이유로 이어진다.",
+  "revenue_total": "⚠️ 확인하지 못했다 — 비상장이고 매출을 공개하지 않는다.",
+  "products": [
+    "Honeycomb — 분산 추적 기반 관측. BubbleUp · SLO · 트리거",
+    "Retriever — 자체 분산 컬럼 저장 엔진. 겉으로 파는 제품이 아니라 이 서비스의 바닥이다",
+    "OpenTelemetry 수집 경로 — 최근에는 컬렉터 쪽 샘플링까지 기여한다"
+  ],
+  "revenue_streams": [
+    {
+      "name": "이벤트 볼륨 구독",
+      "how": "월 이벤트 수로 등급이 갈린다. **좌석과 쿼리는 무제한** — 사용자를 늘려도 값이 안 오른다",
+      "weight": "⚠️ 확인하지 못했다",
+      "domains": [
+        "아무나 아무 때나 물어봐도 되게 만든다",
+        "도는 채로 파이프라인 밑을 갈아 끼운다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Honeycomb — 요금제",
+          "url": "https://www.honeycomb.io/pricing",
+          "publisher": "Honeycomb",
+          "summary": "월 이벤트 수로만 값을 매긴다. 좌석과 쿼리는 무제한."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Honeycomb 도메인 지도",
+    "question": "쿼리를 무제한으로 팔면 무엇을 직접 만들어야 하는가?",
+    "code": "flowchart TD\n  U[\"<b>고객</b><br/>• 월 이벤트 수로 낸다<br/>• 좌석 · 쿼리는 무제한\"]:::list --> I\n  I[\"<b>수집 서비스</b><br/>• 데이터셋을 Kafka 파티션에 매핑\"]:::list --> K\n  K[\"<b>Kafka</b><br/>• 관측 파이프라인의 등뼈\"]:::accent\n  K --> R[\"<b>Retriever 노드 (이중)</b><br/>• NVMe 로컬 디스크<br/>• 열별 파일로 기록\"]:::accent\n  R --> D1[\"<b>아무나 아무 때나<br/>물어봐도 되게 만든다</b><br/>• 자체 컬럼 저장소<br/>• writer / reader 분리\"]:::list\n  K --> D2[\"<b>도는 채로 파이프라인<br/>밑을 갈아 끼운다</b><br/>• Confluent → 오픈소스 Kafka<br/>• ZooKeeper → KRaft\"]:::list"
+  },
+  "domains": [
+    {
+      "name": "아무나 아무 때나 물어봐도 되게 만든다",
+      "why": "⚠️ **요금 구조가 기술 요구를 정한다** — 이 회사는 **좌석과 쿼리를 무제한**으로 열고 **이벤트 수로만** 받는다. 그러면 **질의 비용을 회사가 떠안는다.** 관측은 미리 정한 지표를 보는 일이 아니라 **모르는 것을 되묻는 일**이라 고카디널리티 필드를 임의 조합으로 훑어야 하는데, 일반적인 저장소로는 그 값을 감당하기 어렵다. 그래서 **Scuba 에서 영감을 받아 자체 분산 컬럼 저장소(Retriever)를 만들었다.**",
+      "tech": [
+        {
+          "tech": "Retriever — 자체 분산 컬럼 저장소",
+          "solves": "이벤트를 받아 **열마다 별도 파일로** 쓴다. 시계열 질의에 맞춰 디스크에 쓰고 되읽는다",
+          "limits": "⚠️ **자기가 만든 데이터베이스를 자기가 고쳐야 한다** — 이 회사가 컬럼 저장소의 버그를 추적한 회고(`solving-murder-mystery-columnar-datastore`)를 따로 쓴 것이 그 값이다(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why We Built Our Own Distributed Column Store",
+              "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+              "publisher": "Honeycomb",
+              "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+            }
+          ]
+        },
+        {
+          "tech": "writer / reader 프로세스 분리",
+          "solves": "쓰기는 들어오는 흐름을 디스크에 이어 붙이고, 읽기는 질의를 받아 디스크 위에서 집계한다. **두 일의 성질이 달라 프로세스를 가른다**",
+          "limits": "⚠️ **같은 디스크를 두 프로세스가 나눠 쓴다** — 한쪽의 부하가 다른 쪽에 닿는 자리가 남는다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why We Built Our Own Distributed Column Store",
+              "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+              "publisher": "Honeycomb",
+              "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+            }
+          ]
+        },
+        {
+          "tech": "세그먼트 롤아웃 규칙",
+          "solves": "**100만 이벤트 · 1GB · 12시간** 중 하나에 닿으면 세그먼트를 끊는다. 세 조건을 함께 두어 **양이 적어도 시간이 지나면** 닫힌다",
+          "limits": "⚠️ **조건이 셋이라 세그먼트 크기가 고르지 않다** — 트래픽이 적은 데이터셋은 12시간짜리 작은 세그먼트가 쌓인다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why We Built Our Own Distributed Column Store",
+              "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+              "publisher": "Honeycomb",
+              "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+            }
+          ]
+        },
+        {
+          "tech": "이중 Retriever 노드 + NVMe 로컬 디스크",
+          "solves": "같은 Kafka 파티션을 **두 노드가 나란히 소비해** 각자 로컬 디스크에 남긴다. 한쪽이 죽어도 질의가 된다",
+          "limits": "⚠️ **로컬 디스크에 기대므로 노드를 옮기는 일이 무겁다**(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why We Built Our Own Distributed Column Store",
+              "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+              "publisher": "Honeycomb",
+              "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "도는 채로 파이프라인 밑을 갈아 끼운다",
+      "why": "⚠️ **Kafka 는 이 회사의 등뼈다** — 수집 서비스가 이벤트를 고객 데이터셋에 매핑된 파티션으로 보내고, 그 반대편에서 Retriever 가 소비한다. **그 밑을 갈아야 했다.** 자체 호스팅 Confluent Platform + ZooKeeper 에서 **오픈소스 Apache Kafka 4.1.1(KRaft 모드) + AWS EKS** 로. ⚠️ **그리고 갈아야 했던 이유가 정직하다** — 브로커 교체가 몇 년 전 **8~12시간**이었는데 이전 직전에는 **48~72시간**으로 **늘어 있었다**(폐쇄 소스 계층 저장 문제).",
+      "tech": [
+        {
+          "tech": "오픈소스 Apache Kafka 4.1.1 (KRaft) on EKS",
+          "solves": "ZooKeeper 를 걷어내고 쿠버네티스 위로 옮긴다",
+          "limits": "⚠️ **운영 책임이 자기에게 온다** — 관리형이 아니다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming How We Run Kafka at Honeycomb",
+              "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+              "publisher": "Honeycomb Blog",
+              "date": "2026-07-15",
+              "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "NVMe 인스턴스 스토어",
+          "solves": "지연을 줄인다 — EBS 를 버린 이유가 그것이다",
+          "limits": "⚠️ **인스턴스가 사라지면 디스크도 사라진다** — 그래서 브로커 교체가 무거운 일이 된다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming How We Run Kafka at Honeycomb",
+              "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+              "publisher": "Honeycomb Blog",
+              "date": "2026-07-15",
+              "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ Confluent Warpstream (디스크리스 토픽) — 버린 쪽",
+          "solves": "⚠️ **고르지 않았다.** 데이터 전송 비용을 낮추는 대안이었다",
+          "limits": "⚠️ **지연을 비용과 맞바꿀 수 없었다** — `we can't trade higher latencies for more cost-effective data transfer` (99.99% 가용성 SLO 때문)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming How We Run Kafka at Honeycomb",
+              "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+              "publisher": "Honeycomb Blog",
+              "date": "2026-07-15",
+              "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ MirrorMaker 2 — 버린 쪽",
+          "solves": "⚠️ **고르지 않았다.** 클러스터 간 복제로 옮기는 흔한 방법이다",
+          "limits": "⚠️ **이 회사의 오프셋 관리 구조와 맞지 않았다**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming How We Run Kafka at Honeycomb",
+              "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+              "publisher": "Honeycomb Blog",
+              "date": "2026-07-15",
+              "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **매출·고객 수가 공개돼 있지 않다.** 요금 구조만 확인했다.",
+    "**Kafka 이전 글에 빠진 수치가 있다** — 총 기간은 `several quarters` 로만 적고 **처리량·비용·브로커 수**가 없다.",
+    "**아직 안 읽은 글이 많다** — `virtualizing-storage-engine`(저장 엔진 가상화) · `solving-murder-mystery-columnar-datastore`(**자체 컬럼 저장소의 버그 추적 회고**) · `incident-report-exercises-cleanups-and-evacuations`(**장애 보고서**) · `scaling-kafka-observability-pipelines`(예전 Kafka 글) · `why-observability-requires-distributed-column-store`. **이 중 앞의 셋은 결이 좋아 보인다.**",
+    "⚠️ **Retriever 의 세부를 회사 자료 한 편으로만 봤다** — 세그먼트 규칙과 writer/reader 분리는 확인했지만 **질의 실행·분산 방식은 확인하지 못했다.**",
+    "**연표(eras)를 세울 자료를 아직 못 찾았다** — 다만 `scaling-kafka-observability-pipelines`(예전 글)와 2026년 이전 글을 나란히 놓으면 시간축이 나올 수 있다."
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Transforming How We Run Kafka at Honeycomb",
+      "url": "https://www.honeycomb.io/blog/transforming-how-we-run-kafka-honeycomb",
+      "publisher": "Honeycomb Blog",
+      "date": "2026-07-15",
+      "summary": "자체 호스팅 Confluent + ZooKeeper 에서 오픈소스 Kafka 4.1.1(KRaft) + EKS 로 옮긴 기록. 버린 대안 셋과 받아들인 다운타임 창, 그리고 자기 시스템이 나빠졌던 구간까지 적는다."
+    },
+    {
+      "title": "Why We Built Our Own Distributed Column Store",
+      "url": "https://www.honeycomb.io/resources/why-we-built-our-own-distributed-column-store",
+      "publisher": "Honeycomb",
+      "summary": "자체 저장 엔진 Retriever 의 설계. Kafka 에서 이벤트를 받아 열별 파일로 쓰고, writer/reader 를 나누며, 세그먼트를 조건부로 롤아웃한다."
+    },
+    {
+      "title": "Honeycomb — 요금제",
+      "url": "https://www.honeycomb.io/pricing",
+      "publisher": "Honeycomb",
+      "summary": "월 이벤트 수로만 값을 매긴다. 좌석과 쿼리는 무제한."
+    }
+  ]
+}

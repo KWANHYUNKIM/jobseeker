@@ -888,6 +888,18 @@
       "one_liner": "실시간 메시지를 대신 날라 주는 인프라를 파는 회사",
       "updated_at": "2026-09-06",
       "domain": "ably.com"
+    },
+    {
+      "slug": "honeycomb",
+      "name": "허니컴",
+      "name_en": "Honeycomb",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "관측 도구를 파는 회사 — 좌석이 아니라 이벤트로 값을 매긴다",
+      "updated_at": "2026-09-06",
+      "domain": "honeycomb.io"
     }
   ],
   "domains": [
@@ -1129,7 +1141,9 @@
     "지름길로 시작한 저장소를 갈아 끼운다",
     "두 구현을 함께 이고 간다",
     "여러 곳이 한꺼번에 죽는다고 보고 배치한다",
-    "순서를 지키려면 속도를 내준다"
+    "순서를 지키려면 속도를 내준다",
+    "아무나 아무 때나 물어봐도 되게 만든다",
+    "도는 채로 파이프라인 밑을 갈아 끼운다"
   ],
   "countries": {
     "KR": "한국",

@@ -8,32 +8,35 @@
 
 ## 지금 파는 중
 
-**없다.** 완료 **74곳** · **큐 1/3**(Honeycomb) · 비교 문서 33편.
+**Honeycomb(US · SaaS—관측)** `in_progress` · **도메인 2 · 기능 0** —
+**75곳** · ⚠️ 큐 0/3.
 
-**다음 사이클은 6순위(신규) — Honeycomb 이다.** PROMPT.md 3단계부터.
-⚠️ **첫 화면은 AI·조직 글이다 — 인프라 글 주소를 먼저 찾아 둔다.**
-이미 아는 것: `transforming-how-we-run-kafka-honeycomb`(2026-07-15, 전문 읽음).
-⚠️ **슬러그를 추측하지 말고 목록에서 URL 을 받는다**(`at-` 이 없어 404 를 한 번 받았다).
+### ⭐⭐ 요금 구조가 기술 요구를 정한다 — 안 받는 쪽이 핵심이다
 
-### ⭐ Honeycomb 이 왜 좋은가 — 나빠졌던 것을 적는다
+**좌석 무제한 · 쿼리 무제한**이고 **월 이벤트 수로만** 받는다. **관측 도구를 좌석으로
+팔면 볼 사람을 줄이게 되고 그러면 관측이 안 된다**(이 해석은 재구성이다). 대신
+**질의 비용을 회사가 떠안고**, 그것이 **자체 컬럼 저장소(Retriever)를 만든 이유**로
+이어진다. **Ably 와 좋은 대조다** — 저쪽은 연결·채널을 `분` 으로 팔고 이쪽은 이벤트로만
+받는다. **무엇을 안 받느냐가 무엇을 만들지를 정한다.**
 
-브로커 교체가 몇 년 전 **8~12시간**에서 이전 직전 **48~72시간**으로 **늘어 있었다**고
-적는다(폐쇄 소스 계층 저장 문제). **좋아진 것만 적는 글이 대부분인데 이 회사는 자기
-시스템이 나빠진 구간을 남긴다.** 그리고 버린 대안 셋의 이유가 다 다르다(SLO · 구조
-비호환 · 지연), 대가도 명시적이다(*"we accept a window of downtime between the producer
-cutover and the consumer cutover"*).
+### 다음 사이클 — Kafka 이전 쪽이 자료가 확실하다
 
-### ⚠️ Temporal 은 떨어뜨렸지만 완전히 닫지 않았다
+**`transforming-how-we-run-kafka-honeycomb`**(전문 읽음) — 버린 대안 셋의 이유가 다 다르고
+(SLO · 오프셋 구조 비호환 · 지연), 대가가 명시적이며(*"we accept a window of downtime
+between the producer cutover and the consumer cutover"*), **자기 시스템이 나빠졌던 구간**을
+적는다(브로커 교체 **8~12시간 → 48~72시간**). **수치** — 클러스터 6개 · 이전 실행
+4~5시간 → 2~3시간 · 7개 팀 조율 · 롤백 테스트 4시간 이상.
 
-자기 시스템 글이 있고 구조도 뚜렷한데(동적 샤딩 · WAL 로 갱신을 모아 한 번에 쓰기 ·
-완료된 워크플로 이력의 계층 저장) **버린 대안도 수치도 없다.**
-⏳ **`workflow-engine-principles` 는 안 읽었다** — **내구성 있는 실행 엔진은 이 엔진에
-없는 축이라** 그 한 편으로 판정이 뒤집힐 수 있다.
+Retriever 쪽은 **회사 자료 한 편으로만 봤다** — 세그먼트 규칙(**100만 이벤트 · 1GB ·
+12시간**)과 writer/reader 분리는 확인했지만 **질의 실행·분산 방식은 못 봤다.**
 
-### ⏳ 아직 안 두드린 새 이름
+### ⏳ 안 읽은 글 중 결이 좋아 보이는 셋
 
-**Sentry**(`blog.sentry.io` — 목록은 열리니 **URL 을 목록에서 받아야 한다**) ·
-**Wise** · **HashiCorp** · **Fastly**.
+- `solving-murder-mystery-columnar-datastore` — **자체 컬럼 저장소의 버그 추적 회고**
+- `incident-report-exercises-cleanups-and-evacuations` — **장애 보고서**
+- `virtualizing-storage-engine` — 저장 엔진 가상화
+⚠️ 그리고 `scaling-kafka-observability-pipelines`(예전 Kafka 글)를 2026년 글과 나란히
+놓으면 **연표가 나올 수 있다.**
 
 ## 지금의 진짜 상태
 
