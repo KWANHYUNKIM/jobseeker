@@ -8,31 +8,30 @@
 
 ## 지금 파는 중
 
-**없다 — Ably 를 닫았다.** 완료 **74곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **74곳** · ⚠️ **큐 0/3 — 이번 조사는 판정 하나로 끝났다.**
 
-### ⚠️ 다음 사이클은 3순위(후보 조사) — Capital One 부터 결론을 낸다
+### ⚠️ 의심 목록이 끝났다 — 다음 사이클부터는 새 이름이다
 
-앞 조사에서 **판정을 못 끝낸 곳**이다. 경로가 갈린다:
-`capitalone.com/tech/blog/`(원래 본 곳)와 **`capitalonesoftware.com/blog`**(별도 제품 사업부).
-⚠️ **검색에 걸린 제목이 좋다** — DynamoDB Streams `sandwich pattern` 의 **확장 한계·
-동시성·비용 대가**, **월 1,000억 건 이상**의 사내 토큰화 엔진, 클라우드 이전 회고
-(`Always do the hard things first`). **두 경로의 본문을 열어 판정한다.**
-그다음이 새 이름이다.
+Rightmove 에서 배운 `첫 화면으로 판정하지 않는다` 로 넷을 다시 봤고 **결산이 나왔다**:
+**Tailscale ✅ · Ably ✅ 뒤집힘 · ClickHouse ❌ · Capital One ❌**(각각 본문을 열어 판정).
+**되살리기의 수확률이 새 이름 찾기보다 높았지만**(넷 중 둘 + 되살릴 목록에서 둘),
+**이제 다시 볼 목록이 비었다.**
 
-### ⭐⭐ 의심 목록 되짚기의 결산
+### ⏳ 다음 조사에서 두드릴 새 이름 (미리 골라 둔다)
 
-Rightmove 에서 배운 **`첫 화면으로 판정하지 않는다`** 로 넷을 다시 봤다 —
-**Tailscale ✅ · Ably ✅ 뒤집혔고, ClickHouse ❌ 는 본문을 열어 판정을 유지했으며,
-Capital One 은 진행 중**이다. **되살리기의 수확률이 새 이름 찾기보다 높다** —
-되살릴 목록(Booking.com · Trainline)과 의심 목록(Tailscale · Ably)에서 **넷을 건졌고**,
-새 이름으로는 여덟 곳을 두드려 빈손이던 사이클도 있었다.
+아직 안 본 **자체 호스팅 블로그**들이다. 축이 새로운 순으로:
+- **Temporal**(`temporal.io/blog`) — **내구성 있는 실행 엔진**. 이 엔진에 없는 축이다.
+- **Honeycomb**(`honeycomb.io/blog`) — 관측. Datadog·Grafana 와 겹치지만 **글의 깊이로 유명하다.**
+- **Sentry**(`blog.sentry.io`) — ⚠️ **목록은 열리는데 앞서 글 주소를 맞히다 404 를 받았다.**
+  **목록에서 URL 을 받아 오면 된다.**
+- **Wise**(UK 핀테크) · **HashiCorp** · **Fastly**.
 
-### ⚠️ Ably 에서 배운 것 — 안내서형 글의 한계
+### ⚠️ Capital One 에서 배운 것 — 깊이와 자기 이야기는 다른 축이다
 
-두 글 다 **회고가 아니라 안내서에 자기 구조와 주장을 얹은 형태**다. 원인과 방법별
-대가는 촘촘한데 **`우리가 실제로 어떻게 하는가` 가 빠진다.** 순서 쪽은 그 공백이 커서
-`stack` 에 **`Ably 의 실제 구현` 을 `unknown` 으로 넣어** 빈자리를 드러냈다.
-**이런 글은 도메인의 지형도를 얻는 데는 좋고 연표를 얻는 데는 못 쓴다.**
+`optimizing-opa-performance` 는 **수치가 훌륭한데**(26초 → 5ms) **가상 사례**였고,
+`transforming-vulnerability-management...` 는 **자기 시스템인데 대가가 없었다.**
+**후보를 볼 때 두 가지를 따로 본다 — ① 기술적으로 깊은가, ② 자기 시스템 이야기인가.**
+둘 다여야 이 엔진이 팔 수 있다.
 
 ## 지금의 진짜 상태
 
@@ -355,6 +354,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
 | `ably.com/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면과 `topic/` 은 일반 교육 글** — 심층 글은 검색으로 주소를 찾아야 한다 (2026-09-06 재확인, 판정 뒤집힘) |
+| `capitalone.com/tech/software-engineering/` | ⚠️ **심층 글은 여기 모여 있다**(첫 화면은 AI·연구 소식). 다만 ❌ — 기술적으로 깊은 글은 **가상 사례**이고, 자기 시스템 글은 **대가를 안 적는다** (2026-09-06 세 편 확인) |
 | `capitalone.com/software/blog/` | ⚠️ **`capitalonesoftware.com/blog` 로 301** — 별도 제품 사업부(Capital One Software)다. `/tech/blog/` 와 다른 곳 |
 | `tailscale.com/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면은 제품 발표** — 심층 글은 검색으로 주소를 찾아야 한다 (2026-09-06 재확인, 판정 뒤집힘) |
 | `thenewstack.io` (재확인) | ❌ **브라우저로도 뉴스레터 폼만 온다** — 본문 추출 실패 |
