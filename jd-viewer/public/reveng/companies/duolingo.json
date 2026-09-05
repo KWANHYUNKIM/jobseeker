@@ -1,0 +1,308 @@
+{
+  "slug": "duolingo",
+  "name": "Duolingo",
+  "name_en": "Duolingo",
+  "country": "US",
+  "category": "기타",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "duolingo.com",
+  "one_liner": "언어를 게임처럼 파는 회사 — 무엇을 언제 다시 보여 줄지가 곧 제품이다",
+  "business_model": "**앱은 공짜로 두고 구독을 판다.** 2025년 매출이 **10억 3,760만 달러(+39%)** 이고 그중 **약 86% 가 구독**이다. 나머지는 **광고 · 인앱 구매 · Duolingo English Test**(어학 시험)에서 나온다. 2026년 2분기 매출은 **2억 9,850만 달러**, **일간 활성 사용자 5,870만 명(+23%)**, **유료 구독자 1,270만 명(+17%)** 이다.\n\n⚠️ **무료 사용자가 압도적으로 많은 구조가 기술 요구를 정한다** — 5,870만 명이 매일 들어와 문제를 푸는데 그중 **약 1,270만 명만 돈을 낸다.** 그러면 **한 사람당 계산 비용이 아주 작아야 하고, 동시에 그 사람이 내일 다시 와야 한다.** **머무르게 하는 일이 곧 매출이라, 다음에 무엇을 보여 줄지 고르는 일이 이 회사의 심장이다**(이 정리는 이 사이트의 재구성이다).\n\n**연구를 회사 이름으로 낸다는 점도 이 회사의 성격이다** — 간격 반복 모델(2016, ACL) · 제2언어 습득 모델링(2018, NAACL-HLT) · 기계학습 기반 언어 평가(2020, TACL). 스스로 **`the world's largest collection of language-learning data`** 를 가졌다고 적는다.\n\n**그리고 2026년의 이 회사는 사내 개발 자체를 에이전트로 옮기고 있다** — 슬랙 안의 에이전트, 에이전트 플랫폼, iOS 테스트 생성 파이프라인이 모두 올해 글이다.",
+  "products": [
+    "Duolingo (언어 학습 앱)",
+    "Super · Max (유료 구독)",
+    "Duolingo English Test (어학 시험)",
+    "Duolingo ABC · Math · Music"
+  ],
+  "domain_map": {
+    "title": "Duolingo 도메인 지도",
+    "question": "매일 5,870만 명이 문제를 푸는 앱에서, 무엇을 보여 줄지와 그것을 만드는 일은 각각 어떻게 정해지는가?",
+    "code": "flowchart TD\n  U[\"<b>일간 활성 5,870만 명</b><br/>• 유료 1,270만 명\"]:::accent --> S[\"<b>다음 문제를 고른다</b><br/>• 언제 다시 보여 줄지<br/>• 무엇을 보여 줄지\"]:::accent\n  S --> R[\"<b>연구</b><br/>• 간격 반복 모델 (2016)<br/>• 언어 평가 (2020)\"]:::list\n  S --> REV[\"<b>구독 약 86%</b><br/>• 광고 · 인앱 · DET\"]:::list\n  DEV[\"<b>만드는 쪽</b>\"]:::accent --> AG[\"<b>에이전트 플랫폼</b><br/>• 한 번 정의하면 여러 표면에서\"]:::accent\n  AG --> SL[\"<b>슬랙 에이전트</b><br/>• 도구 200개 이상 · 주간 300명\"]:::list\n  AG --> TS[\"<b>iOS 테스트 생성</b><br/>• 17주 PR 250개\"]:::list\n  TS -.->|\"⚠️ 리뷰가 병목\"| H[\"⚠️ <b>사람</b>\"]:::gone\n  SL -.->|\"⚠️ 쓰기는 승인 버튼\"| H\n  classDef gone stroke-dasharray: 4 3"
+  },
+  "revenue_streams": [
+    {
+      "name": "구독 (Super · Max)",
+      "how": "매출의 **약 86%**. 2025년 총매출 10억 3,760만 달러(+39%) 중 대부분이고, 유료 구독자는 **1,270만 명(+17%)** 이다.",
+      "domains": [
+        "언제 무엇을 다시 보여 줄지 고른다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Duolingo Q2 2026 shareholder letter",
+          "url": "https://investors.duolingo.com/",
+          "publisher": "Duolingo IR",
+          "date": "2026",
+          "summary": "2025년 매출 10억 3,760만 달러(+39%), 구독이 약 86%. 2026년 2분기 매출 2억 9,850만 달러, 일간 활성 사용자 5,870만 명(+23%), 유료 구독자 1,270만 명(+17%)."
+        }
+      ]
+    },
+    {
+      "name": "광고 · 인앱 구매 · Duolingo English Test",
+      "how": "무료 사용자에게 붙는 광고, 앱 안의 개별 구매, 그리고 어학 시험. ⚠️ **각각의 비중은 확인하지 못했다** — 구독이 약 86% 라는 것만 확인했다.",
+      "domains": [
+        "언제 무엇을 다시 보여 줄지 고른다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Duolingo Q2 2026 shareholder letter",
+          "url": "https://investors.duolingo.com/",
+          "publisher": "Duolingo IR",
+          "date": "2026",
+          "summary": "2025년 매출 10억 3,760만 달러(+39%), 구독이 약 86%. 2026년 2분기 매출 2억 9,850만 달러, 일간 활성 사용자 5,870만 명(+23%), 유료 구독자 1,270만 명(+17%)."
+        },
+        {
+          "title": "Duolingo Research",
+          "url": "https://research.duolingo.com/",
+          "publisher": "Duolingo",
+          "date": "2026",
+          "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "언제 무엇을 다시 보여 줄지 고른다",
+      "why": "⚠️ **이 회사의 심장이다.** 매일 5,870만 명이 들어오는데 **그중 대부분은 돈을 내지 않으므로 한 사람당 계산이 아주 싸야 하고**, 동시에 **내일 다시 오게 만들어야 한다.** 그 둘을 한꺼번에 푸는 자리가 **다음 문제를 고르는 일**이다 — 너무 쉬우면 지루하고 너무 어려우면 떠난다(이 정리는 이 사이트의 재구성이다). 회사는 이 문제를 **논문으로 내는 방식**으로 다룬다.",
+      "tech": [
+        {
+          "tech": "간격 반복 모델 (2016, ACL — Settles & Meeder)",
+          "solves": "**언제 다시 보여 줄지**를 학습 데이터로 학습한다. `A Trainable Spaced Repetition Model for Language Learning` — 회사 이름으로 낸 논문이고 구현이 공개돼 있다.",
+          "limits": "⚠️ **10년 된 모델이다.** 이후 무엇으로 대체되거나 확장됐는지 **회사 자료로 확인하지 못했다** — 3자 자료들은 딥러닝 기반 후속 엔진을 말하지만 1급 출처를 못 찾았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Duolingo Research",
+              "url": "https://research.duolingo.com/",
+              "publisher": "Duolingo",
+              "date": "2026",
+              "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "제2언어 습득 모델링 (2018, NAACL-HLT)",
+          "solves": "학습자의 오답과 진도를 모델링하는 공개 과제(Shared Task)를 회사가 열고 논문을 냈다.",
+          "limits": "⚠️ **연구와 운영 시스템의 거리가 글에 없다** — 논문의 모델이 앱에서 그대로 도는지 알 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Duolingo Research",
+              "url": "https://research.duolingo.com/",
+              "publisher": "Duolingo",
+              "date": "2026",
+              "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "기계학습 기반 언어 평가 (2020, TACL)",
+          "solves": "**Duolingo English Test 의 채점**을 기계학습으로 다룬다 — 수익원 하나가 이 연구 위에 선다.",
+          "limits": "⚠️ **시험 채점은 공정성 요구가 학습 추천과 다르다** — 그 차이를 어떻게 다루는지 확인하지 못했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Duolingo Research",
+              "url": "https://research.duolingo.com/",
+              "publisher": "Duolingo",
+              "date": "2026",
+              "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "세계 최대 언어 학습 데이터",
+          "solves": "회사가 `the world's largest collection of language-learning data` 를 가졌다고 적는다 — 위 모델들의 재료다.",
+          "limits": "⚠️ **규모가 곧 품질은 아니다** — 데이터가 편중되면 모델도 편중되는데 그 논의를 찾지 못했다(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Duolingo Research",
+              "url": "https://research.duolingo.com/",
+              "publisher": "Duolingo",
+              "date": "2026",
+              "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "에이전트를 한 번 정의해 여러 곳에 태운다",
+      "why": "**에이전트를 팀마다 만들면 인프라를 팀마다 다시 만든다** — 회사가 그 상태를 `recreating all of this infrastructure across every project` 라 적는다. 그래서 **정의는 한 번, 실행은 여러 표면**으로 바꿨다. ⚠️ **그리고 그 길에 이르기까지 세 번 갈아엎었다** — 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버 → 슬랙 앱.",
+      "tech": [
+        {
+          "tech": "AgentDefinition 레지스트리",
+          "solves": "에이전트의 이름·시스템 프롬프트·필요한 도구(MCP 서버)·모델·출력 스키마를 **한 곳에 선언**한다.",
+          "limits": "⚠️ **선언 형식이 정해지면 그 밖의 모양은 만들기 어려워진다**(이 지적은 이 사이트의 재구성이다). 글에 대가가 적혀 있지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Making production-ready agents the default: building Duolingo's agent platform",
+              "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-08-04",
+              "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+            }
+          ]
+        },
+        {
+          "tech": "AgentWorkflow (Temporal)",
+          "solves": "인프라 준비·실행 환경 구성·에이전트 호출을 감춘다. **에이전트 하나 만드는 시간이 `몇 주` 에서 `약 10분` 으로.**",
+          "limits": "⚠️ **그 외의 수치가 없다** — 성공률도, 운영 규모도, 비용도 적히지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Making production-ready agents the default: building Duolingo's agent platform",
+              "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-08-04",
+              "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+            }
+          ]
+        },
+        {
+          "tech": "슬랙 에이전트 (@DuolingoAI)",
+          "solves": "Claude Agent SDK 와 Slack Bolt 로 만들어 **MCP 로 도구 200개 이상**(Honeycomb·Grafana·Sentry·PagerDuty·GitHub·Jenkins·Jira·AWS·BigQuery)에 닿는다. **주간 활성 약 300명(직원의 30%)**, 응답 **찬성률 약 80%**, 주당 수천 건.",
+          "limits": "⚠️ **쓰기 작업은 사람 승인 버튼을 거쳐야 한다**(PR·Jira 티켓). 역할 기반 허용 목록이 있고 DM·비공개 채널은 기록하지 않는다. **환각 대책은 검증 서브에이전트와 채널별 프롬프트뿐이다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Triage, ship, debug—all from Slack",
+              "url": "https://blog.duolingo.com/aislackbot/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-05-20",
+              "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+            }
+          ]
+        },
+        {
+          "tech": "다중 런타임 (Claude Agents SDK · Codex CLI · OpenAI Agents SDK)",
+          "solves": "에이전트 정의를 여러 런타임 위에서 돌린다.",
+          "limits": "⚠️ **런타임마다 능력이 다를 텐데 그 차이를 어떻게 흡수하는지 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Making production-ready agents the default: building Duolingo's agent platform",
+              "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-08-04",
+              "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "테스트를 사람이 아니라 파이프라인이 쓴다",
+      "why": "**테스트가 없는 코드는 고치기 무섭다.** 이 회사는 그 공백을 사람 대신 파이프라인으로 메웠다 — **17주 동안 PR 250개가 병합됐고 테스트 코드 약 85,000줄이 늘었다.** ⚠️ **그런데 이 도메인의 값은 성과가 아니라 부딪힌 벽에 있다** — **리뷰가 병목이 되고**, **린트를 못 돌려 실패율이 13.6% 이며**, **자동 수정 에이전트가 프로덕션 파일을 고친 사고**가 났다.",
+      "tech": [
+        {
+          "tech": "Temporal 워크플로 + S3 상태 저장소",
+          "solves": "라벨 트리거·주기적 백필·PR 생애주기 관리를 조율한다. **DynamoDB 를 고려했지만 가벼운 S3 기반 상태 저장소를 골랐다.**",
+          "limits": "⚠️ **Linux 워커라 빌드도 린트도 못 한다** — PR 을 열기 전에 검사할 수 없어 **SwiftLint 실패율이 13.6%** 다. Mac 인스턴스로 올릴 계획이라 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built an automated unit test generation pipeline for iOS",
+              "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-06-24",
+              "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+            }
+          ]
+        },
+        {
+          "tech": "라벨 트리거 · 주기적 백필",
+          "solves": "개발자가 PR 에 `trigger:write-tests` 를 붙이면 생성하고, **몇 시간마다 테스트 없는 파일을 찾아** 알아서 PR 을 연다.",
+          "limits": "⚠️ **파이프라인이 리뷰가 흡수할 수 있는 속도보다 빨리 PR 을 만든다** — `The pipeline can produce PRs faster than the existing review process can absorb them`.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built an automated unit test generation pipeline for iOS",
+              "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-06-24",
+              "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ CI 자동 수정 에이전트",
+          "solves": "CI 실패를 스스로 고치고 오래된 PR 을 닫는다.",
+          "limits": "⚠️ **사고가 났다 — 테스트 파일이 아니라 프로덕션 파일을 고쳤다.** 그 뒤 파일 접근 통제를 조였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built an automated unit test generation pipeline for iOS",
+              "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-06-24",
+              "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **지금 무엇으로 다음 문제를 고르는지 1급 자료로 확인하지 못했다** — 확인한 것은 **2016년 간격 반복 논문**까지다. 3자 자료들은 이후의 딥러닝 기반 엔진을 말하지만 **회사 자료를 못 찾았다.** **매출의 86% 가 걸린 축인데 근거가 10년 전 논문이다.**",
+    "**광고·인앱 구매·Duolingo English Test 의 비중을 모른다** — 구독이 약 86% 라는 것만 확인했다.",
+    "⚠️ **연구와 운영 시스템의 거리를 모른다** — 논문의 모델이 앱에서 그대로 도는지, 얼마나 바뀌어 도는지가 어디에도 없다.",
+    "**슬랙 에이전트의 진화에 연도가 붙어 있다**(로컬 MCP 2024-11 → 중앙 설정 생성기 2025-05 → HTTP MCP 서버 2025-08 → 슬랙 앱). **기능을 쓸 때 연표(history)를 세울 수 있다.**",
+    "**SMS 서비스 성능 개선 글**(피크 CPU 포화 → 3.5%, 파드 32 → 8)은 자기 시스템이 맞지만 **버린 대안이 없어** 도메인으로 세우지 않았다. **보강 재료로는 쓸 수 있다.**",
+    "⚠️ **에이전트 플랫폼 글에 수치가 `몇 주 → 약 10분` 하나뿐이다** — 성공률·운영 규모·비용이 없다."
+  ],
+  "sources": [
+    {
+      "title": "Duolingo Q2 2026 shareholder letter",
+      "url": "https://investors.duolingo.com/",
+      "publisher": "Duolingo IR",
+      "date": "2026",
+      "summary": "2025년 매출 10억 3,760만 달러(+39%), 구독이 약 86%. 2026년 2분기 매출 2억 9,850만 달러, 일간 활성 사용자 5,870만 명(+23%), 유료 구독자 1,270만 명(+17%)."
+    },
+    {
+      "title": "Duolingo Research",
+      "url": "https://research.duolingo.com/",
+      "publisher": "Duolingo",
+      "date": "2026",
+      "summary": "연구 분야와 논문 목록. 2016년 간격 반복 모델(Settles & Meeder, ACL), 2018년 제2언어 습득 모델링(NAACL-HLT), 2020년 기계학습 기반 언어 평가(TACL). 세계 최대 언어 학습 데이터를 가졌다고 적는다."
+    },
+    {
+      "title": "Triage, ship, debug—all from Slack",
+      "url": "https://blog.duolingo.com/aislackbot/",
+      "publisher": "Duolingo Blog",
+      "date": "2026-05-20",
+      "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+    },
+    {
+      "title": "Making production-ready agents the default: building Duolingo's agent platform",
+      "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+      "publisher": "Duolingo Blog",
+      "date": "2026-08-04",
+      "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+    },
+    {
+      "title": "How we built an automated unit test generation pipeline for iOS",
+      "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+      "publisher": "Duolingo Blog",
+      "date": "2026-06-24",
+      "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+    },
+    {
+      "title": "How a simple code change reduced CPU usage by 97%",
+      "url": "https://blog.duolingo.com/reduce-cpu-usage-97-percent/",
+      "publisher": "Duolingo Blog",
+      "date": "2026-06-22",
+      "summary": "SMS 발송 서비스가 요청마다 새 세션을 만들어 매번 TCP·TLS 를 다시 맺었고 워커 스레드 10개가 전부 연결 수립에서 막혔다. 스레드 로컬 세션 재사용으로 피크 CPU 가 포화에서 3.5% 로, 파드가 32개에서 8개로 줄었다."
+    }
+  ]
+}
