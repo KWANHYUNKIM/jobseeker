@@ -1043,6 +1043,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "gc",
+      "title": "GC · 메모리",
+      "category": "runtime",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**안 쓰는 메모리를 런타임이 대신 치워 주는 것**이다. 그런데 치우는 기준은 \"안 쓴다\"가 아니라 **\"닿을 수 없다\"** 여서 — **참조가 남아 있으면 GC 가 있어도 누수가 난다.**",
+      "aliases": [
+        "GC",
+        "가비지 컬렉션",
+        "메모리 누수",
+        "힙",
+        "JVM 메모리"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
