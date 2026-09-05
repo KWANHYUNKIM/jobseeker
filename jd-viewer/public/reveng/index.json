@@ -919,8 +919,8 @@
       "name_en": "Sentry",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "오류를 잡아 주는 회사가 자기 AI 에이전트를 감시하는 법",
       "updated_at": "2026-09-06",
       "domain": "sentry.io"
