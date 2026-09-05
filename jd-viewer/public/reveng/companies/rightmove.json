@@ -4,7 +4,7 @@
   "name_en": "Rightmove",
   "country": "EU",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "rightmove.co.uk",
   "one_liner": "영국 부동산 포털 — 매물을 파는 것이 아니라 중개사에게 광고 자리를 판다",
@@ -165,7 +165,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "unweave-java-from-html"
+      ]
     }
   ],
   "eras": [],
@@ -562,6 +564,414 @@
           "publisher": "Investegate 외",
           "date": "2026",
           "summary": "⚠️ 1차 IR 원문이 아니라 3자 매체가 정리한 수치다. 매출·중개 지점 수·ARPA·유지율·트래픽 점유를 담고 있다."
+        }
+      ]
+    },
+    {
+      "key": "unweave-java-from-html",
+      "name": "자바와 HTML 을 풀어 화면을 프런트엔드 사람 손에 돌려준다",
+      "domain": "자바와 HTML 이 얽힌 화면을 걷어낸다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 기술 부채는 성능이 아니라 사람 문제로 나타났다.** 옛 앱은 **JSP(Jakarta Server Pages)** 로 짜여 있었고, 회사의 설명이 문제를 그대로 말한다 — **`a pattern that interweaves Java code with HTML`**. 그래서 **화면 하나를 고치려면 자바를 알아야 했다.** 그 위에 셋이 더 얹혔다: 사내 React 컴포넌트 라이브러리를 **못 썼고**, 최신 사내 서비스와 **붙기 어려웠으며**, **온프렘 배포**라 CI/CD 유연성이 낮았다. ⚠️ **결과적으로 낡은 디자인이 새 기능을 막는 자리**가 됐다.",
+        "metrics": [
+          {
+            "label": "⚠️ 수치",
+            "value": "**거의 없다** — 개발 기간·성능 개선·사용자 수·비용이 글에 하나도 없다. 유일한 규모 표현이 대량 온보딩의 `thousands of users` 다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "label": "솔직함의 정도",
+            "value": "`it definitely wasn't smooth sailing the entire time` 이라고 적지만 **무엇이 얼마나 어긋났는지는 숫자로 말하지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "부채의 성격을 볼 때",
+          "thought": "⚠️ **이 부채의 비용은 느림이 아니라 좁음이다** — 자바와 HTML 이 얽혀 있으니 **화면을 만질 수 있는 사람이 줄어든다.** 그리고 사내 공통 컴포넌트를 못 쓰니 **다른 팀이 이미 만든 것을 다시 만들어야 한다.** 성능 수치가 없는 글인데도 재구축의 근거가 분명한 이유가 여기 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "PDF 를 만들 때",
+          "thought": "**서드파티 PDF 라이브러리의 제약을 피하려고 브라우저를 서버에 띄웠다** — Puppeteer 로 **정적 HTML 을 헤드리스 브라우저에 렌더링**한다. 그러면 CSS3 와 자바스크립트를 그대로 쓸 수 있다. **화면을 만드는 기술로 문서를 만든다**는 뒤집기다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어려웠던 곳을 돌아볼 때",
+          "thought": "⚠️ 회사가 어려움을 셋으로 적는데 **첫째가 자기 통제 밖이다** — `late evolutions to requirements that weren't in our control`. 나머지 둘은 **권한과 사용자 유형**, 그리고 **이전과 온보딩**이다. **재작성에서 늦게 드러나는 것이 대개 이 셋**이다(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "⚠️ 옛 JSP 앱",
+            "what": "자바 코드와 HTML 이 한 파일에서 얽힌 모놀리스. 온프렘에 배포됐다"
+          },
+          {
+            "name": "React 프런트엔드",
+            "what": "사내 컴포넌트 라이브러리를 쓸 수 있는 화면 층"
+          },
+          {
+            "name": "Express/Node BFF",
+            "what": "화면 전용 백엔드. 프런트엔드가 필요한 모양으로 데이터를 모아 준다"
+          },
+          {
+            "name": "보고서 서비스",
+            "what": "보고서 저장·조회를 맡는 새 백엔드 서비스"
+          },
+          {
+            "name": "PDF 서비스",
+            "what": "Puppeteer 로 정적 HTML 을 헤드리스 브라우저에 렌더링해 PDF 를 만든다"
+          }
+        ],
+        "invariants": [
+          "**화면은 프런트엔드 사람이 고칠 수 있어야 한다** — 이 재구축의 이유 전부다",
+          "**사내에 이미 있는 컴포넌트를 쓴다** — 다시 만들지 않는다",
+          "**핵심 사용자 여정은 테스트로 지킨다** — 재작성 중에도",
+          "**릴리스는 되돌릴 수 있어야 한다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**화면을 React 로 다시 만든다** — 사내 컴포넌트 라이브러리를 쓴다",
+            "why": "조직 전체와 구조를 맞추고 이미 있는 것을 재사용한다"
+          },
+          {
+            "step": "**Express/Node BFF 를 앞에 둔다**",
+            "why": "화면이 필요한 모양으로 데이터를 모아 준다"
+          },
+          {
+            "step": "**데이터 조회는 기존 GraphQL API 를 쓴다**",
+            "why": "⚠️ 새로 만들지 않는다 — 이미 있는 것에 붙는다"
+          },
+          {
+            "step": "**보고서 저장·조회는 새 백엔드 서비스로 뺀다**",
+            "why": "화면 층이 저장 책임까지 지지 않게 한다"
+          },
+          {
+            "step": "**PDF 는 Puppeteer 로 만든다** — 정적 HTML 을 헤드리스 브라우저에 렌더링",
+            "why": "서드파티 라이브러리의 제약 없이 **CSS3 와 자바스크립트를 쓴다**"
+          },
+          {
+            "step": "⚠️ **복잡한 것을 먼저 한다** — 권한과 사용자 유형 같은 것",
+            "why": "늦게 드러나면 되돌리기 어렵다"
+          },
+          {
+            "step": "**핵심 사용자 여정의 테스트 커버리지를 유지한 채** 되돌릴 수 있는 릴리스로 조금씩 낸다",
+            "why": "쓰는 사람의 흐름을 끊지 않는 것이 조건이었다"
+          },
+          {
+            "step": "**대량 온보딩 장치를 만든다** — 수천 명 규모",
+            "why": "손으로 옮길 수 없는 수다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "JSP 앱을 고칠 것인가 다시 지을 것인가",
+            "chosen": "**클라우드 위의 여러 마이크로서비스로 처음부터 다시 짓는다**",
+            "alternatives": [
+              "JSP 모놀리스를 유지하며 개선하기"
+            ],
+            "tradeoff": "⚠️ **재작성의 값을 그대로 치렀다** — 회사가 어려움 셋을 적는데 첫째가 **자기 통제 밖의 요구사항 변경**이다: `late evolutions to requirements that weren't in our control`. 그리고 `it definitely wasn't smooth sailing the entire time`. **⚠️ 다만 그 값이 얼마였는지는 숫자로 말하지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "question": "화면과 데이터를 어떻게 가를 것인가",
+            "chosen": "**React + Express/Node BFF**",
+            "alternatives": [
+              "서버가 HTML 을 그리는 방식 유지(JSP 가 그랬다)"
+            ],
+            "tradeoff": "⚠️ **한 덩어리였던 것이 프런트·BFF·보고서 서비스로 갈린다** — 배포와 운영 대상이 는다. 그 대신 **화면을 만질 수 있는 사람이 늘고** 사내 컴포넌트를 재사용한다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "question": "데이터 조회 계층을 새로 만들 것인가",
+            "chosen": "**이미 있는 GraphQL API 를 쓴다**",
+            "alternatives": [
+              "이 앱 전용 조회 API 를 새로 만들기"
+            ],
+            "tradeoff": "⚠️ **그 API 가 주는 모양에 묶인다** — 이 앱에만 필요한 것을 넣기 어려워진다. 그 대신 **또 하나의 조회 계층을 만들지 않는다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "question": "PDF 를 무엇으로 만들 것인가",
+            "chosen": "**Puppeteer 로 헤드리스 브라우저에 정적 HTML 을 렌더링한다**",
+            "alternatives": [
+              "서드파티 PDF 생성 라이브러리"
+            ],
+            "tradeoff": "**라이브러리의 제약을 피해 CSS3 와 자바스크립트를 그대로 쓴다.** ⚠️ 대신 **서버에서 브라우저를 돌리는 비용과 운영 부담**을 진다 — 이 대가는 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "question": "어려운 것을 언제 할 것인가",
+            "chosen": "**먼저 한다** — 복잡한 작업을 앞으로 당겼다",
+            "alternatives": [
+              "쉬운 것부터 내보내 진척을 보이기"
+            ],
+            "tradeoff": "⚠️ **초반에 눈에 보이는 진척이 적다.** 그 대신 **권한과 사용자 유형처럼 늦게 드러나면 되돌리기 어려운 것**을 앞에서 만난다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "question": "쓰던 사람들을 어떻게 옮길 것인가",
+            "chosen": "**대량 온보딩 장치를 만든다** — 수천 명 규모",
+            "alternatives": [
+              "사용자가 각자 새 앱으로 옮겨 오게 하기"
+            ],
+            "tradeoff": "**도구를 하나 더 만들어야 한다.** 그러나 **수천 명은 손으로 옮길 수 없는 수**라 선택지가 아니었다(이 판단은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "question": "내보내는 방식을 어떻게 할 것인가",
+            "chosen": "**되돌릴 수 있는 릴리스로 조금씩** — 핵심 사용자 여정의 테스트 커버리지를 유지한 채",
+            "alternatives": [
+              "다 만들고 한 번에 전환"
+            ],
+            "tradeoff": "⚠️ **두 앱이 한동안 공존한다** — 옛 것과 새 것을 함께 이고 간다. 그 대신 **쓰는 사람의 흐름이 안 끊긴다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "React (+ 사내 컴포넌트 라이브러리)",
+            "role": "화면. 다른 팀이 만든 것을 재사용한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "tech": "Express / Node (BFF)",
+            "role": "화면 전용 백엔드",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "tech": "기존 GraphQL API",
+            "role": "데이터 조회. 새로 만들지 않고 붙었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "tech": "Puppeteer (PDF 마이크로서비스)",
+            "role": "정적 HTML 을 헤드리스 브라우저에 렌더링해 PDF 를 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ JSP + 온프렘 (옛것)",
+            "role": "⚠️ **버린 쪽** — 자바와 HTML 이 얽혀 있고 온프렘 배포라 CI/CD 유연성이 낮았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "sitemap-by-events",
+          "via": "같은 회사의 두 레거시",
+          "contract": "⚠️ **같은 시기에 두 종류의 레거시를 걷어냈다** — 하나는 **밤마다 도는 배치**(회복력 문제), 하나는 **자바와 HTML 이 얽힌 화면**(사람 문제). **⚠️ 그런데 글의 결이 정반대다** — 사이트맵 글은 RFC 표와 수치를 다 적고, 이 글은 수치가 하나도 없다(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "중개 지점 (수익원)",
+          "via": "사내 도구",
+          "contract": "⚠️ 보고서·사용자 유형·권한·대량 온보딩이 나오는 것으로 보아 **중개사가 쓰는 도구**로 보인다. **다만 글이 앱의 이름을 밝히지 않아 확정하지 못했다**",
+          "confidence": "unknown"
+        },
+        {
+          "to": "사내 컴포넌트 라이브러리 · 최신 사내 서비스",
+          "via": "React · GraphQL",
+          "contract": "**옛 구조에서 못 붙던 두 곳에 붙는다** — 이 연결을 얻는 것이 재구축의 목적 중 하나였다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "재작성 중에 요구사항이 바뀐다",
+            "why_hard": "⚠️ **회사가 어려움의 첫째로 꼽은 것이 자기 통제 밖이다** — `late evolutions to requirements that weren't in our control`. 옛 앱을 그대로 옮기는 것이 목표인데 **옮기는 동안 목표가 움직인다**",
+            "current_best": "⚠️ **이 글에 답이 없다.** 어려웠다고 적을 뿐 어떻게 흡수했는지는 나오지 않는다 — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          },
+          {
+            "problem": "권한과 사용자 유형은 늦게 드러난다",
+            "why_hard": "화면과 데이터는 눈에 보이지만 **누가 무엇을 볼 수 있는가는 조합의 문제**라 재작성 후반에야 전모가 드러난다. 회사가 이것을 어려움의 둘째로 적는다(`complex pieces of work around permissions/user types`)",
+            "current_best": "**복잡한 것을 앞으로 당기는 것**이 이 회사의 답이다(이전 전략에 `prioritizing complex challenges early` 가 있다). ⚠️ 그럼에도 어려움 목록에 남았다는 것은 **앞으로 당기는 것만으로는 부족했다**는 뜻으로 보인다 — 이 해석은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+                "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-09-30",
+                "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 파일에 얽혀 있던 것을 층으로 가른다",
+          "question": "자바를 몰라도 화면을 고치게 하려면",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph BEFORE [\"그전 — JSP 모놀리스\"]\n    J[\"<b>JSP</b><br/>• 자바 코드와 HTML 이 한 파일에<br/>• 화면을 고치려면 자바를 알아야\"]:::gone\n    J --> J2[\"⚠️ <b>따라오는 것들</b><br/>• 사내 컴포넌트 못 씀<br/>• 최신 사내 서비스와 못 붙음<br/>• 온프렘이라 CI/CD 제약\"]:::gone\n  end\n  subgraph AFTER [\"지금 — 층으로 가른다\"]\n    R[\"<b>React</b><br/>• 사내 컴포넌트 재사용\"]:::accent --> B[\"<b>Express/Node BFF</b><br/>• 화면이 필요한 모양으로\"]:::list\n    B --> G[\"<b>기존 GraphQL API</b><br/>• 새로 만들지 않았다\"]:::list\n    B --> RP[\"<b>보고서 서비스</b><br/>• 저장 · 조회\"]:::list\n    P[\"<b>PDF 서비스 (Puppeteer)</b><br/>• 정적 HTML → 헤드리스 브라우저<br/>• CSS3 · JS 를 그대로\"]:::accent\n    R -.-> P\n  end\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "어려움 셋을 적었는데 숫자가 없다",
+          "question": "이 글이 말하지 않은 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  W[\"<b>회사가 적은 어려움 셋</b>\"]:::list\n  W --> W1[\"⚠️ <b>통제 밖의 요구사항 변경</b><br/>• late evolutions to requirements<br/>  that weren't in our control\"]:::gone\n  W --> W2[\"⚠️ <b>권한 · 사용자 유형</b><br/>• 조합의 문제라 늦게 드러난다\"]:::gone\n  W --> W3[\"⚠️ <b>이전과 온보딩</b><br/>• 수천 명 규모\"]:::gone\n  W1 --> M[\"<b>대응</b><br/>• 복잡한 것을 먼저<br/>• 되돌릴 수 있는 릴리스<br/>• 핵심 여정 테스트 유지<br/>• 대량 온보딩 장치\"]:::accent\n  W2 --> M\n  W3 --> M\n  N[\"⚠️ <b>글에 없는 것</b><br/>• 개발 기간 · 성능 · 비용<br/>• 사용자 수 (thousands 뿐)<br/>• 어떻게 흡수했는지\"]:::soft\n  M -.-> N\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+          "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+          "publisher": "Rightmove Tech Blog",
+          "date": "2025-09-30",
+          "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+        },
+        {
+          "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+          "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+          "publisher": "Rightmove Tech Blog",
+          "date": "2025-01-28",
+          "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
         }
       ]
     }
