@@ -120,7 +120,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "jumbo-frames-path"
+      ]
     }
   ],
   "eras": [],
@@ -521,6 +523,481 @@
           "publisher": "Oxide Computer Company",
           "date": "2026-06-18",
           "summary": "층을 다 갖는다는 것의 값어치를 한 문장으로 적은 글 — 드라이버가 자기 것이라 벤더에 티켓을 열지 않았다."
+        }
+      ]
+    },
+    {
+      "key": "jumbo-frames-path",
+      "name": "프레임을 키우려고 층마다 박힌 1500을 찾아낸다",
+      "domain": "랙의 모국어를 IPv6 로 정한다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "랙 하나 안에서 게스트끼리 주고받는 속도가 곧 제품의 성능이다. 그런데 **프레임 크기를 키우는 일은 한 곳의 설정을 바꾸는 일이 아니었다** — 게스트에게 값을 알리는 경로, 데이터 링크를 만드는 드라이버, 캡슐화하는 데이터 경로, 그리고 운영자가 켜는 스위치까지 **층마다 1500이 박혀 있었다.** 그것을 전부 파라미터로 바꿔야 비로소 숫자가 움직였다 — 외부 경로에서 **7.70 → 32.67Gbps** 다.",
+        "metrics": [
+          {
+            "label": "외부 경로 A→B (MTU 1500 → 8500)",
+            "value": "7.70 → 32.67Gbps (약 +324%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "내부 VPC A→B (MTU 1500 → 8500)",
+            "value": "52.44 → 55.73Gbps (약 +6%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "IPv4 대 IPv6 처리량",
+            "value": "34.5 대 34.9Gbps — 사실상 동등",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "단일 연결(VM 쌍) 천장",
+            "value": "약 60Gbps, 한 방향 — 스트림을 32·64·128로 늘려도 그대로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "슬레드 하나 합산(in+out)",
+            "value": "약 90Gbps",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "얼마로 키울지 정할 때",
+          "thought": "9000이 흔한 값인데 8500을 골랐다. 캡슐화 오버헤드의 **하한이 70~78바이트**인데 **`We reserve 500`** 한다 — 앞으로 들어올 Geneve 기능을 위한 여유다. 이유를 회사가 한 줄로 적는다: **`it is easy to grow later and very hard to shrink once customers build expectations around it.`**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디에 손잡이를 둘지 정할 때",
+          "thought": "업계 관행은 스위치 포트마다 MTU 를 잡는 것인데 그것을 버렸다. **`MTU is a property of a path, not of a port.`** 포트 하나가 **여러 상류 경로의 관문**일 수 있으므로 포트에 값을 박으면 애초에 틀린 모델이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "기대치를 관리할 때",
+          "thought": "⚠️ 회사가 먼저 못 박는다 — **`jumbo frames are not a network go-fast button`**. 실제로 내부 VPC 는 **+6%** 뿐이고 외부가 **+324%** 다. 이미 잘 도는 경로에서는 프레임을 키워도 별로 안 빨라진다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "게스트 프레임",
+            "what": "고객 VM 이 내보내는 원래 패킷. 이 크기가 MTU 로 제한된다"
+          },
+          {
+            "name": "Geneve 캡슐화 헤더",
+            "what": "게스트 프레임을 감싸는 Ethernet + IPv6 + UDP + Geneve. 하한 70~78바이트를 먹는다"
+          },
+          {
+            "name": "xde 데이터 링크",
+            "what": "설정된 MTU 로 만들어지는 링크. 이전에는 여기에 1500이 박혀 있었다"
+          },
+          {
+            "name": "함대 플래그 · 인스턴스 플래그",
+            "what": "Nexus 가 가진 두 개의 스위치. 운영자와 사용자가 각각 쥔다"
+          },
+          {
+            "name": "라우터 광고(RA)",
+            "what": "게스트가 IPv6 MTU 를 배우는 또 하나의 경로. OPTE 가 만든다"
+          }
+        ],
+        "invariants": [
+          "**MTU 는 경로의 성질이지 포트의 성질이 아니다** — `MTU is a property of a path, not of a port.` 이 규칙이 손잡이의 위치를 정했다",
+          "**게스트가 아는 MTU 는 두 경로로 전달되며 둘이 같아야 한다** — virtio(`VIRTIO_NET_F_MTU`)와 OPTE 가 만드는 IPv6 라우터 광고. 한쪽만 고치면 게스트가 서로 다른 값을 본다",
+          "**운영자와 사용자가 둘 다 켜야 켜진다** — `both required`. 사용자가 혼자 켤 수 없고, 운영자가 켜 뒀다고 자동으로 켜지지도 않는다",
+          "**캡슐화 오버헤드는 반드시 남겨 둔다** — 하한 70~78바이트에 500을 예비로"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "게스트가 virtio 로 버퍼를 넘긴다",
+            "why": "게스트는 자기가 아는 MTU 까지만 쓴다 — 그 값이 `VIRTIO_NET_F_MTU` 로 전달된다"
+          },
+          {
+            "step": "Propolis 가 viona 가 붙은 데이터 링크에서 MTU 를 끌어온다",
+            "why": "`Propolis derives from the data link viona attaches to` — 가상 NIC 이 값을 지어내지 않고 아래 링크를 따른다"
+          },
+          {
+            "step": "xde 드라이버가 **설정된 MTU 로** 데이터 링크를 만든다",
+            "why": "⚠️ 여기가 **이전에 1500이 하드코딩돼 있던 자리**다. `create-xde` ioctl 을 통과하는 파라미터로 바꿨다"
+          },
+          {
+            "step": "OPTE 가 게스트 프레임을 **Ethernet + IPv6 + UDP + Geneve** 로 감싼다",
+            "why": "랙의 언더레이가 IPv6 라 캡슐화도 IPv6 위에서 이뤄진다 — `every Geneve-encapsulated guest frame, rides IPv6 by default`"
+          },
+          {
+            "step": "OPTE 가 **라우터 광고**로 게스트에게 IPv6 MTU 를 알린다",
+            "why": "⚠️ 이 생성기에도 **1500이 하드코딩돼 있었다** — virtio 쪽만 고치면 게스트가 두 값을 보게 된다"
+          },
+          {
+            "step": "물리 패브릭(40G·100G)을 타고 목적지 슬레드로 간다",
+            "why": "슬레드 사이 홉도 IPv6 다"
+          },
+          {
+            "step": "목적지 물리 NIC 이 **큰 버퍼를 회선 크기 패킷으로 다시 자른다**",
+            "why": "`slices the big buffer back into wire-sized packets` — 큰 프레임의 이득은 소프트웨어 층의 처리 횟수를 줄이는 데서 나온다"
+          },
+          {
+            "step": "Nexus 의 **두 플래그가 모두 켜져야** 이 경로가 열린다",
+            "why": "주변 네트워크가 감당할 수 있는지 운영자가 확인한 뒤에만 사용자에게 능력이 생긴다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "MTU 를 얼마로 올릴 것인가 — 흔한 9000인가, 여유를 남긴 값인가",
+            "chosen": "**8500.** 캡슐화 오버헤드 하한(70~78바이트) 위에 **500바이트를 일부러 남긴다**",
+            "alternatives": [
+              "9000 (업계에서 흔히 쓰는 점보 프레임 값)",
+              "오버헤드만 딱 뺀 값"
+            ],
+            "tradeoff": "**지금 당장 쓸 수 있는 크기를 줄였다.** 그 대신 나중을 샀다 — `it is easy to grow later and very hard to shrink once customers build expectations around it.` 고객이 기대를 갖고 나면 줄이는 쪽이 훨씬 어렵다는 판단이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "MTU 손잡이를 어디에 둘 것인가 — 스위치 포트인가, 인스턴스인가",
+            "chosen": "**인스턴스에 붙이고, 운영자가 쥐는 함대 단위 스위치로 잠근다**",
+            "alternatives": [
+              "스위치 포트별 MTU 설정(업계 관행)"
+            ],
+            "tradeoff": "⚠️ **손잡이를 옮겼을 뿐 경로마다 MTU 가 다르다는 문제 자체는 남는다.** 그래서 아래의 블랙홀이 여전히 가능하다(이 인과는 이 사이트의 재구성이다). 회사가 적은 근거는 모델 쪽이다 — 포트 하나가 여러 상류 경로의 관문일 수 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "켜는 권한을 누구에게 줄 것인가",
+            "chosen": "**운영자 플래그와 사용자 플래그를 둘 다 요구한다** — `both required`",
+            "alternatives": [
+              "사용자가 스스로 켜기",
+              "운영자가 전역으로 켜면 모두 적용"
+            ],
+            "tradeoff": "**마찰이 생긴다** — 사용자가 원해도 운영자가 확인하기 전에는 못 켠다. 그 대신 `the capability exists for end users only once an operator has confirmed the surrounding network can take it` 이 보장된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "게스트에게 MTU 를 어떻게 알릴 것인가",
+            "chosen": "**두 경로 모두** — virtio(`VIRTIO_NET_F_MTU`)와 OPTE 가 만드는 IPv6 라우터 광고",
+            "alternatives": [
+              "virtio 한 경로만 쓰기"
+            ],
+            "tradeoff": "⚠️ **두 곳을 다 고쳐야 한다.** 실제로 라우터 광고 생성기에도 1500이 박혀 있었다 — `that generator hardcoded 1500 too`. 한쪽만 고치면 게스트가 서로 다른 값을 보게 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "층마다 박힌 1500을 어떻게 걷어낼 것인가",
+            "chosen": "**하드코딩을 파라미터로 바꿔 인터페이스를 관통시킨다** — `That became a parameter threaded through the create-xde ioctl`",
+            "alternatives": [
+              "각 층에서 상수만 바꿔 다시 빌드",
+              "링크 생성 후 사후 변경"
+            ],
+            "tradeoff": "**인터페이스가 늘어난다.** 값 하나를 위해 ioctl 시그니처와 그 위의 호출 경로가 전부 바뀐다 — 층을 다 가진 회사라 가능했던 방식이기도 하다(이 해석은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "큰 프레임을 어디에 기대할 것인가",
+            "chosen": "**외부 경로**에 기대한다. 내부 VPC 는 이미 최적화돼 있어 여지가 적다",
+            "alternatives": [
+              "모든 경로에서 고르게 개선될 것으로 보고 켜기"
+            ],
+            "tradeoff": "⚠️ **기대와 결과가 크게 갈린다** — 내부 VPC 는 `52.44 → 55.73Gbps`(+6%)인데 외부는 `7.70 → 32.67Gbps`(+324%)다. 그래서 회사가 먼저 못 박는다: `jumbo frames are not a network go-fast button`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "단일 연결의 천장을 어떻게 넘을 것인가",
+            "chosen": "**넘지 않는다.** 여러 개의 독립 연결로 나눠야 한다고 밝힌다",
+            "alternatives": [
+              "한 연결 안에서 스트림을 늘려 처리량을 올리기"
+            ],
+            "tradeoff": "⚠️ **연결 하나로는 약 60Gbps 에서 막힌다** — `Many of our tests on the 100G fabric reached that limit at around 60 Gbps, one way, per VM-pair, and it held steady whether we pushed 32, 64, or 128 streams through one connection.` **한 연결 안의 병렬화로는 안 넘는다**는 것이 이 문장의 뜻이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Propolis (가상 NIC) · viona",
+            "role": "게스트에게 virtio 로 MTU 를 알리고 버퍼를 받는다. 값은 붙은 데이터 링크에서 끌어온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "xde 드라이버",
+            "role": "설정된 MTU 로 데이터 링크를 만든다. 1500 하드코딩이 파라미터가 된 자리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "OPTE (데이터 경로)",
+            "role": "Geneve 캡슐화와 IPv6 라우터 광고 생성",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Geneve over IPv6/UDP",
+            "role": "게스트 프레임을 감싸는 캡슐화. 오버헤드 하한 70~78바이트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Nexus (컨트롤 플레인)",
+            "role": "함대 플래그와 인스턴스 플래그 두 개를 쥔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "40G·100G 물리 패브릭",
+            "role": "슬레드 사이 전송. 목적지 NIC 이 큰 버퍼를 회선 크기로 다시 자른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "service-processor",
+          "via": "같은 회사가 만든 층",
+          "contract": "직접 호출 관계가 아니라 **같은 원칙을 공유한다** — 드라이버가 자기 것이라 점보 경로 시제품에서 발견된 **가상 NIC 의 인터럽트 처리 문제**를 출시 전에 직접 고쳤다. 벤더 드라이버였다면 티켓을 여는 일이 됐을 자리다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Nexus (컨트롤 플레인)",
+          "via": "함대·인스턴스 플래그",
+          "contract": "운영자가 함대 플래그를 켜야 사용자에게 능력이 생기고, 사용자가 인스턴스 플래그를 켜야 실제로 적용된다. **둘 다 필요하다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "고객 게스트 VM",
+          "via": "virtio + IPv6 라우터 광고",
+          "contract": "게스트는 두 경로로 같은 MTU 를 받아야 한다. 값이 어긋나면 게스트가 잘못된 크기로 보낸다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "고객 네트워크(랙 밖)",
+          "via": "물리 업링크",
+          "contract": "⚠️ 랙 밖 경로에 더 작은 링크가 있으면 ICMP `fragmentation needed` 가 돌아와야 한다. **그것이 막히면 연결은 되고 데이터만 안 간다**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Geneve: Generic Network Virtualization Encapsulation",
+            "authors": "J. Gross, I. Ganga, T. Sridhar (Eds.)",
+            "year": "2020",
+            "venue": "RFC 8926",
+            "url": "https://www.rfc-editor.org/rfc/rfc8926.html",
+            "takeaway": "랙 안의 게스트 프레임을 감싸는 캡슐화가 이것이다. **오버헤드 하한 70~78바이트**와 `We reserve 500` 이라는 판단이 전부 이 헤더 구조에서 나온다 — ⚠️ **회사가 RFC 번호를 직접 언급하지는 않았다**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "경로 MTU 탐색이 막혔을 때의 **조용한 정지**",
+            "why_hard": "큰 패킷을 받은 중간 링크는 버리고 ICMP `fragmentation needed` 를 돌려보내야 하는데, **그 ICMP 가 막히면 보내는 쪽은 물러설 줄을 모른다.** 연결 자체는 성공하므로 증상이 '느림'이 아니라 '아무것도 안 감'이다",
+            "current_best": "회사의 서술이 곧 현재 수준이다 — `You get the classic black hole: the TCP handshake completes, and then the application stalls and transfers nothing.` 그래서 운영자 확인을 앞에 두는 이중 플래그로 **켜기 전에 주변 네트워크를 확인**하게 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "단일 연결의 처리량 천장",
+            "why_hard": "100G 패브릭에서도 **VM 쌍 하나·한 방향은 약 60Gbps 에서 멈춘다.** 그리고 한 연결 안에서 스트림을 32·64·128로 늘려도 값이 움직이지 않는다 — 병렬화의 자리가 연결 안이 아니라는 뜻이다",
+            "current_best": "독립된 연결을 여럿 여는 것. 회사도 그 이상을 제시하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Performance Has Layers",
+                "url": "https://oxide.computer/blog/performance-has-layers",
+                "publisher": "Oxide Computer Company",
+                "date": "2026-06-18",
+                "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "게스트 프레임이 지나는 층들 — 1500이 박혀 있던 자리",
+          "question": "MTU 하나를 올리는 데 왜 층마다 손을 대야 했나",
+          "kind": "flow",
+          "code": "flowchart TD\n  G[\"<b>고객 게스트</b><br/>• 아는 MTU 까지만 쓴다\"]:::list --> V\n  V[\"<b>Propolis · viona</b><br/>• virtio 로 MTU 통보<br/>• 값은 데이터 링크에서\"]:::list --> X\n  X[\"<b>xde 드라이버</b><br/>• 설정된 MTU 로 링크 생성<br/>• 여기 1500이 박혀 있었다\"]:::accent --> O\n  O[\"<b>OPTE</b><br/>• Geneve 캡슐화<br/>• Ethernet+IPv6+UDP+Geneve\"]:::list --> F\n  F[\"<b>물리 패브릭 40G·100G</b><br/>• 슬레드 사이 홉도 IPv6\"]:::list --> N\n  N[\"<b>목적지 물리 NIC</b><br/>• 큰 버퍼를 회선 크기로 자름\"]:::list --> G2\n  G2[\"<b>상대 게스트</b>\"]:::list\n  RA[\"<b>라우터 광고 생성기</b><br/>• 게스트의 IPv6 MTU<br/>• 여기에도 1500이 박혀 있었다\"]:::accent\n  O -.-> RA\n  RA -.-> G\n  NX[\"<b>Nexus 두 플래그</b><br/>• 운영자 · 사용자<br/>• 둘 다 켜져야 열린다\"]:::soft\n  NX -.-> X\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "연결은 되는데 아무것도 안 갈 때",
+          "question": "프레임을 키운 대가는 어디서 드러나나",
+          "kind": "failure",
+          "code": "flowchart TD\n  S[\"<b>큰 패킷을 보낸다</b><br/>• MTU 8500 기준\"]:::list --> L{\"경로 중간에<br/>더 작은 링크가 있다\"}\n  L -->|정상| I[\"<b>ICMP fragmentation needed</b><br/>• 링크가 버리고 알려 준다<br/>• 보내는 쪽이 물러선다\"]:::list --> OK[\"<b>전송 계속</b>\"]:::list\n  L -->|ICMP 가 막힘| B[\"<b>블랙홀</b><br/>• 알림이 안 돌아온다<br/>• 보내는 쪽은 모른다\"]:::gone\n  B --> R[\"<b>증상</b><br/>• TCP 핸드셰이크는 성공<br/>• 그다음 아무것도 안 간다\"]:::gone\n  R --> G[\"<b>막는 방법</b><br/>• 운영자 플래그로 먼저 확인<br/>• 주변 네트워크가 감당하는지\"]:::list\n  C[\"<b>또 하나의 천장</b><br/>• 단일 VM 쌍 약 60Gbps<br/>• 스트림 32·64·128 다 같음\"]:::soft\n  OK -.-> C\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Performance Has Layers",
+          "url": "https://oxide.computer/blog/performance-has-layers",
+          "publisher": "Oxide Computer Company",
+          "date": "2026-06-18",
+          "summary": "랙 안의 MTU 를 1500에서 8500으로 올리며 층마다 박힌 값을 찾아 고친 기록. 버린 대안과 남은 한계, 전후 수치를 함께 적었다."
         }
       ]
     }
