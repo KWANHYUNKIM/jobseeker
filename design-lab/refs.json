@@ -663,6 +663,106 @@
       "read": "이번 수집에서 제일 배울 게 많다. 왼쪽 위에 **네모 테두리 배지 두 개 — 新卒 / 中途**. 신입인지 경력인지를 그림 기호로 먼저 말하고, 그 아래 흰 산세리프 'STAFF WANTED' 두 줄, 얇은 선, 그리고 국문 격인 '空間デザイナー募集中'. 배경은 자기들이 만든 공간 사진. 더 중요한 건 캡션이다 — 募集要項을 폼이 아니라 **기사(記事) 형식**으로 썼고, '어떤 사람을 원하는지, 무엇을 얻을 수 있는지'와 자주 묻는 질문까지 담았다. 그리고 '이 글을 끝까지 읽은 사람은 채용 확률이 높다(=관심이 가까운 사람이다)'라고 적어 놨다.",
       "steal": "두 가지. (1) **新卒/中途 배지** — 신입/경력을 텍스트가 아니라 배지로 먼저 보여 준다. 우리 공고에도 경력 조건이 있으니 카드 좌상단에 `신입`/`경력` 배지를 박으면 목록에서 훑는 속도가 확 는다. (2) **긴 글이 필터라는 발상** — JD 를 짧게 줄이는 게 늘 옳은 게 아니다. 끝까지 읽은 사람이 곧 지원 의사가 있는 사람이다. 우리는 dwell 시간을 이미 재고 있으니, '오래 읽은 공고'를 추천의 신호로 쓰는 근거가 여기 있다.",
       "drop": "공간 사진 자체. 그리고 STAFF WANTED 라는 영문 관용구는 개발 채용에는 안 맞는다."
+    },
+    {
+      "id": "eu-01",
+      "family": "hiring",
+      "country": "eu",
+      "title": "Stiftung Deutsch-Israelisches Zukunftsforum — Referent*in (베를린)",
+      "account": "kultweet.de",
+      "url": "https://www.instagram.com/p/DbF4N-kjqyR/",
+      "tag": "stellenanzeige",
+      "files": [
+        "eu/eu-01_kultweet.de_DbF4N-kjqyR_s1.jpg"
+      ],
+      "mood": [
+        "문서 그대로",
+        "무디자인",
+        "공공재단"
+      ],
+      "read": "디자인이 아예 없다. 로고 하나 얹은 A4 문서를 그대로 이미지로 올렸다. 그런데 정보 구조는 이 수집물 중 가장 정확하다 — 'Stellenausschreibung' 제목 → 한 문단 도입 → **직군명과 근무비율(50%+50%)** → 근무지·주당 39시간·급여등급(TVöD 13 Bund) → 'Die Aufgaben umfassen u.a.:'(담당업무 7불릿) → 'Das bringst du mit:'(네가 가져올 것). 급여 등급을 공고 세 번째 줄에 그냥 박아 놓는다.",
+      "steal": "**급여를 숨기지 않는 것.** 독일 공공 공고는 TVöD 등급을 직군명 바로 아래 쓴다. 우리 guide-engine 이 연봉 밴드를 조사해 두고 있으니, 상세 히어로 바로 아래 밴드를 노출하는 게 맞다. 그리고 담당업무 소제목을 'Die Aufgaben umfassen u.a.'(업무는 대략 다음을 포함한다)처럼 **'대략/등'을 붙여 여지를 남기는 것** — 공고 문장이 계약서처럼 읽히지 않게 한다.",
+      "drop": "A4 문서를 이미지로 올리는 것. 웹에서는 그냥 텍스트다."
+    },
+    {
+      "id": "eu-02",
+      "family": "hiring",
+      "country": "eu",
+      "title": "ISOLDE Koblenz — WIR SUCHEN VERSTÄRKUNG",
+      "account": "isolde.koblenz",
+      "url": "",
+      "tag": "stellenanzeige",
+      "files": [
+        "eu/eu-02_isolde.koblenz_s1.jpg"
+      ],
+      "mood": [
+        "손글씨",
+        "du 호칭",
+        "주고받기 대칭"
+      ],
+      "read": "손글씨 'Jetzt bewerben!'(지금 지원해!) 아래 'WIR SUCHEN VERSTÄRKUNG!'. 핵심은 그 아래 두 소제목이다 — **'Was wir uns wünschen:'(우리가 바라는 것) / 'Wir bieten dir:'(우리가 너에게 주는 것).** 요구와 제공이 같은 형식·같은 크기로 마주 본다. 그리고 각 항목이 `굵은 라벨: 설명 문장` 꼴이다 — `Zuverlässigkeit: 토요일 근무가 너에게 문제가 아니다 — 한 달에 최소 2번, 더 자주면 좋고`. 조건을 명사로 끊지 않고 문장으로 푼다.",
+      "steal": "**요구와 제공을 같은 비중으로 마주 세우는 것.** 이 수집물의 한국·인도 공고는 예외 없이 자격요건만 길고 복리후생은 없거나 맨 밑 한 줄인데, 독일어권은 절반을 '우리가 주는 것'에 쓴다. 상세페이지를 좌우 2단으로 나눠 왼쪽 '이 자리가 원하는 것' / 오른쪽 '이 자리가 주는 것' 으로 짜면 그대로다. 그리고 `굵은 라벨: 설명 문장` 포맷 — 지금 우리 자격요건은 명사 나열이라 무슨 뜻인지 모를 때가 많다.",
+      "drop": "손글씨 폰트와 필터 먹인 인물 사진."
+    },
+    {
+      "id": "eu-03",
+      "family": "hiring",
+      "country": "eu",
+      "title": "Merzendorfer Reha-Technik — Verwaltung (뮌헨)",
+      "account": "merzendorfer.reha.technik",
+      "url": "",
+      "tag": "stellenanzeige",
+      "files": [
+        "eu/eu-03_merzendorfer.reha.technik_s1.jpg"
+      ],
+      "mood": [
+        "그린 단색",
+        "말풍선",
+        "혜택 4아이콘"
+      ],
+      "read": "초록 단색 배경에 흰 둥근 말풍선으로 직군명을 감쌌다 — 'Mitarbeiter/in (m/w/d) für die Verwaltung / in Vollzeit'. 오른쪽은 원형으로 잘라낸 **전 직원 단체 사진**. 아래 절반은 통째로 혜택 네 칸이다: Unbefristet(정규·무기한) / Attraktive Vergütung(좋은 보수) / Familienunternehmen(가족기업) / Sicherer Arbeitsplatz(안정된 일자리) / Herzliches Team. **자격요건은 이미지에 한 줄도 없다.**",
+      "steal": "**혜택만으로 한 장을 채우는 배짱.** 자격은 캡션에 '경험 있어도 되고 전직자여도 된다'고만 썼다. 우리 상세에서도 첫 화면을 자격요건이 아니라 '이 자리가 주는 것'으로 열어 보는 실험을 해 볼 만하다. 그리고 팀 단체 사진을 원형으로 잘라 쓰는 것 — 회사 화면에 공개 인물 정보가 있으니 같은 자리를 만들 수 있다.",
+      "drop": "단체 사진은 우리가 못 구한다. 그리고 '가족기업'은 한국에서 장점으로 안 읽힌다."
+    },
+    {
+      "id": "eu-04",
+      "family": "hiring",
+      "country": "eu",
+      "title": "Auto Eisner — Serviceassistenz (m/w/d) (오스트리아)",
+      "account": "eisnerauto_ktn",
+      "url": "",
+      "tag": "stellenanzeige",
+      "files": [
+        "eu/eu-04_eisnerauto_ktn_s1.jpg"
+      ],
+      "mood": [
+        "100주년 엠블럼",
+        "체크 아이콘",
+        "AI 생성 이미지"
+      ],
+      "read": "왼쪽 세로 절반이 정보, 오른쪽이 인물이다. 위에서부터 100주년 월계관 엠블럼 → 직군명 대문자 2줄 + **(m/w/d)** → 'WIR STELLEN EIN!' → 핀 아이콘 + 근무지 2곳 → 체크 아이콘 4개(안정된 일자리 / 유급 교육 / 팀 지향 환경 / 직원 할인). 맨 아래 아주 작게 'KI-generiertes Bild'(AI 생성 이미지) 라고 밝혀 놨다.",
+      "steal": "세 가지. (1) **(m/w/d)** — 성별 무관 표기를 직군명에 붙이는 관행. 우리도 직군명 옆에 `신입/경력` 같은 자격 표기를 괄호로 붙이면 같은 자리다. (2) 근무지를 핀 아이콘으로 먼저 말하는 것 — 우리는 지역 필터를 이미 만들었는데 상세에서는 지역이 잘 안 보인다. (3) **AI 이미지임을 밝히는 각주.** 우리가 생성물을 쓰게 되면 이 관행을 따르는 게 맞다.",
+      "drop": "AI 인물 사진 자체와 100주년 월계관."
+    },
+    {
+      "id": "eu-05",
+      "family": "hiring",
+      "country": "eu",
+      "title": "Hausmeisterservice LEIDI — WIR SUCHEN VERSTÄRKUNG (자를란트)",
+      "account": "leidi_hausmeisterservice",
+      "url": "https://www.instagram.com/p/DYPAGriMRp_/",
+      "tag": "stellenanzeige",
+      "files": [
+        "eu/eu-05_leidi_hausmeisterservice_DYPAGriMRp__s1.jpg"
+      ],
+      "mood": [
+        "급여 명시",
+        "3+3 아이콘",
+        "WhatsApp CTA"
+      ],
+      "read": "주고받기 대칭이 가장 노골적이다. **'DAS BIETEN WIR DIR:'(우리가 주는 것) 3아이콘 — 30일 유급휴가 / 회사 차량 / 공정한 보수 3000€–3500€ 브루토.** 바로 아래 **'DAS SOLLTEST DU MITBRINGEN:'(네가 가져올 것) 3아이콘 — 정원관리 경험 / 손재주 / B종 면허.** 위아래 3+3 대칭이고, **급여 구간이 아이콘 안에 숫자로 박혀 있다.** 맨 아래는 초록 WhatsApp 바에 전화번호 하나.",
+      "steal": "**이게 이번 사이클의 결론이다 — 주는 것 3개 / 가져올 것 3개를 위아래 대칭 아이콘으로.** 개수까지 맞춰 놓으니 '이 거래가 공정한가'를 눈으로 저울질하게 된다. 우리 데이터에도 재료가 있다: 주는 것은 guide-engine 의 연봉 밴드 + 공고의 복리후생 문장, 가져올 것은 자격요건 상위 3개. 그리고 **급여를 숫자로 박는 것** — eu-01 과 같은 결론이다. 하단 CTA 를 연락 수단 하나로 끝낸 것도 참고할 만하다.",
+      "drop": "그런지 브러시 텍스처와 초록 형광. 그리고 WhatsApp 은 국내 채용에 없다."
     }
   ],
   "synthesis": {
@@ -674,7 +774,10 @@
     "compare": "같은 회사 여러 자리는 라벨 콜론을 세로로 맞춰 비교 가능하게. 번호 시리즈(02 | 백엔드)로 묶는다. (hire-13, hire-10)",
     "counter": "지원자가 속으로 하는 질문을 소제목으로 세우고 답하는 섹션. (web-02)",
     "extra": "하단에 '이 자리 준비하려면' 3장 — 백과사전·역설계 문서 재활용. (hire-06)",
-    "avoid": "강조를 반복하면 강조가 죽는다. 직군명 없는 히어로는 아무리 커도 소용없다. (hire-12)"
+    "avoid": "강조를 반복하면 강조가 죽는다. 직군명 없는 히어로는 아무리 커도 소용없다. (hire-12)",
+    "balance": "요구와 제공을 같은 비중으로 마주 세운다 — '가져올 것 3개 / 주는 것 3개' 위아래 대칭. 독일어권은 절반을 복리후생에 쓴다. (eu-05, eu-02, eu-03)",
+    "pay": "연봉을 숨기지 않는다. 직군명 바로 아래 밴드를 숫자로. guide-engine 이 이미 조사한다. (eu-01, eu-05)",
+    "badge": "신입/경력 같은 자격 구분은 글이 아니라 배지로 먼저. (jp-02, eu-04)"
   },
   "crop_note": "files 는 인스타 UI 를 잘라낸 이미지 영역(instagram/crops/), files_raw 는 잘라내기 전 원본 캡처(instagram/posts/).",
   "countries": {

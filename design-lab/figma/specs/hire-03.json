@@ -7,7 +7,7 @@
   "w": 1080,
   "h": 1350
  },
- "font_note": "고대비 세리프. Instrument Serif 로 잡았다 — 원본 서체는 캡처만으로 확정 불가.",
+ "font_note": "Libre Baskerville 로 잡았다(자간 보정량 최소). 원본 서체는 캡처만으로 확정 불가.",
  "photo_note": "배경은 흐린 인물 사진이라 원본 소스가 없다. 8×10 격자의 중앙값 색을 방사형 그라디언트 타원으로 겹쳐 근사했다.",
  "layers": [
   {
@@ -17,15 +17,15 @@
    "y": 0,
    "w": 1080,
    "h": 1350,
-   "fill": "#04101d"
+   "fill": "#07426e"
   },
   {
    "type": "ellipse",
    "name": "배경 1-1",
    "cx": 67.5,
    "cy": 67.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -47,8 +47,8 @@
    "name": "배경 1-2",
    "cx": 202.5,
    "cy": 67.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -70,8 +70,8 @@
    "name": "배경 1-3",
    "cx": 337.5,
    "cy": 67.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -93,8 +93,8 @@
    "name": "배경 1-4",
    "cx": 472.5,
    "cy": 67.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -116,8 +116,8 @@
    "name": "배경 1-5",
    "cx": 607.5,
    "cy": 67.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -139,8 +139,8 @@
    "name": "배경 1-6",
    "cx": 742.5,
    "cy": 67.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -162,8 +162,8 @@
    "name": "배경 1-7",
    "cx": 877.5,
    "cy": 67.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -185,8 +185,8 @@
    "name": "배경 1-8",
    "cx": 1012.5,
    "cy": 67.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -208,8 +208,8 @@
    "name": "배경 2-1",
    "cx": 67.5,
    "cy": 202.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -231,8 +231,8 @@
    "name": "배경 2-2",
    "cx": 202.5,
    "cy": 202.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -254,8 +254,8 @@
    "name": "배경 2-3",
    "cx": 337.5,
    "cy": 202.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -277,8 +277,8 @@
    "name": "배경 2-4",
    "cx": 472.5,
    "cy": 202.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -300,8 +300,8 @@
    "name": "배경 2-5",
    "cx": 607.5,
    "cy": 202.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -323,8 +323,8 @@
    "name": "배경 2-6",
    "cx": 742.5,
    "cy": 202.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -346,8 +346,8 @@
    "name": "배경 2-7",
    "cx": 877.5,
    "cy": 202.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -369,8 +369,8 @@
    "name": "배경 2-8",
    "cx": 1012.5,
    "cy": 202.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -392,8 +392,8 @@
    "name": "배경 3-1",
    "cx": 67.5,
    "cy": 337.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -415,8 +415,8 @@
    "name": "배경 3-2",
    "cx": 202.5,
    "cy": 337.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -438,8 +438,8 @@
    "name": "배경 3-3",
    "cx": 337.5,
    "cy": 337.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -461,8 +461,8 @@
    "name": "배경 3-4",
    "cx": 472.5,
    "cy": 337.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -484,8 +484,8 @@
    "name": "배경 3-5",
    "cx": 607.5,
    "cy": 337.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -507,8 +507,8 @@
    "name": "배경 3-6",
    "cx": 742.5,
    "cy": 337.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -530,8 +530,8 @@
    "name": "배경 3-7",
    "cx": 877.5,
    "cy": 337.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -553,8 +553,8 @@
    "name": "배경 3-8",
    "cx": 1012.5,
    "cy": 337.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -576,8 +576,8 @@
    "name": "배경 4-1",
    "cx": 67.5,
    "cy": 472.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -599,8 +599,8 @@
    "name": "배경 4-2",
    "cx": 202.5,
    "cy": 472.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -622,8 +622,8 @@
    "name": "배경 4-3",
    "cx": 337.5,
    "cy": 472.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -645,8 +645,8 @@
    "name": "배경 4-4",
    "cx": 472.5,
    "cy": 472.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -668,8 +668,8 @@
    "name": "배경 4-5",
    "cx": 607.5,
    "cy": 472.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -691,8 +691,8 @@
    "name": "배경 4-6",
    "cx": 742.5,
    "cy": 472.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -714,8 +714,8 @@
    "name": "배경 4-7",
    "cx": 877.5,
    "cy": 472.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -737,8 +737,8 @@
    "name": "배경 4-8",
    "cx": 1012.5,
    "cy": 472.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -760,8 +760,8 @@
    "name": "배경 5-1",
    "cx": 67.5,
    "cy": 607.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -783,8 +783,8 @@
    "name": "배경 5-2",
    "cx": 202.5,
    "cy": 607.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -806,8 +806,8 @@
    "name": "배경 5-3",
    "cx": 337.5,
    "cy": 607.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -829,8 +829,8 @@
    "name": "배경 5-4",
    "cx": 472.5,
    "cy": 607.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -852,8 +852,8 @@
    "name": "배경 5-5",
    "cx": 607.5,
    "cy": 607.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -875,8 +875,8 @@
    "name": "배경 5-6",
    "cx": 742.5,
    "cy": 607.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -898,8 +898,8 @@
    "name": "배경 5-7",
    "cx": 877.5,
    "cy": 607.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -921,8 +921,8 @@
    "name": "배경 5-8",
    "cx": 1012.5,
    "cy": 607.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -944,8 +944,8 @@
    "name": "배경 6-1",
    "cx": 67.5,
    "cy": 742.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -967,8 +967,8 @@
    "name": "배경 6-2",
    "cx": 202.5,
    "cy": 742.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -990,8 +990,8 @@
    "name": "배경 6-3",
    "cx": 337.5,
    "cy": 742.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1013,8 +1013,8 @@
    "name": "배경 6-4",
    "cx": 472.5,
    "cy": 742.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1036,8 +1036,8 @@
    "name": "배경 6-5",
    "cx": 607.5,
    "cy": 742.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1059,8 +1059,8 @@
    "name": "배경 6-6",
    "cx": 742.5,
    "cy": 742.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1082,8 +1082,8 @@
    "name": "배경 6-7",
    "cx": 877.5,
    "cy": 742.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1105,8 +1105,8 @@
    "name": "배경 6-8",
    "cx": 1012.5,
    "cy": 742.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1128,8 +1128,8 @@
    "name": "배경 7-1",
    "cx": 67.5,
    "cy": 877.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1151,8 +1151,8 @@
    "name": "배경 7-2",
    "cx": 202.5,
    "cy": 877.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1174,8 +1174,8 @@
    "name": "배경 7-3",
    "cx": 337.5,
    "cy": 877.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1197,8 +1197,8 @@
    "name": "배경 7-4",
    "cx": 472.5,
    "cy": 877.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1220,8 +1220,8 @@
    "name": "배경 7-5",
    "cx": 607.5,
    "cy": 877.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1243,8 +1243,8 @@
    "name": "배경 7-6",
    "cx": 742.5,
    "cy": 877.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1266,8 +1266,8 @@
    "name": "배경 7-7",
    "cx": 877.5,
    "cy": 877.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1289,8 +1289,8 @@
    "name": "배경 7-8",
    "cx": 1012.5,
    "cy": 877.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1312,8 +1312,8 @@
    "name": "배경 8-1",
    "cx": 67.5,
    "cy": 1012.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1335,8 +1335,8 @@
    "name": "배경 8-2",
    "cx": 202.5,
    "cy": 1012.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1358,8 +1358,8 @@
    "name": "배경 8-3",
    "cx": 337.5,
    "cy": 1012.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1381,8 +1381,8 @@
    "name": "배경 8-4",
    "cx": 472.5,
    "cy": 1012.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1404,8 +1404,8 @@
    "name": "배경 8-5",
    "cx": 607.5,
    "cy": 1012.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1427,8 +1427,8 @@
    "name": "배경 8-6",
    "cx": 742.5,
    "cy": 1012.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1450,8 +1450,8 @@
    "name": "배경 8-7",
    "cx": 877.5,
    "cy": 1012.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1473,8 +1473,8 @@
    "name": "배경 8-8",
    "cx": 1012.5,
    "cy": 1012.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1496,8 +1496,8 @@
    "name": "배경 9-1",
    "cx": 67.5,
    "cy": 1147.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1519,8 +1519,8 @@
    "name": "배경 9-2",
    "cx": 202.5,
    "cy": 1147.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1542,8 +1542,8 @@
    "name": "배경 9-3",
    "cx": 337.5,
    "cy": 1147.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1565,8 +1565,8 @@
    "name": "배경 9-4",
    "cx": 472.5,
    "cy": 1147.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1588,8 +1588,8 @@
    "name": "배경 9-5",
    "cx": 607.5,
    "cy": 1147.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1611,8 +1611,8 @@
    "name": "배경 9-6",
    "cx": 742.5,
    "cy": 1147.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1634,8 +1634,8 @@
    "name": "배경 9-7",
    "cx": 877.5,
    "cy": 1147.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1657,8 +1657,8 @@
    "name": "배경 9-8",
    "cx": 1012.5,
    "cy": 1147.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1680,8 +1680,8 @@
    "name": "배경 10-1",
    "cx": 67.5,
    "cy": 1282.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1703,8 +1703,8 @@
    "name": "배경 10-2",
    "cx": 202.5,
    "cy": 1282.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1726,8 +1726,8 @@
    "name": "배경 10-3",
    "cx": 337.5,
    "cy": 1282.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1749,8 +1749,8 @@
    "name": "배경 10-4",
    "cx": 472.5,
    "cy": 1282.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1772,8 +1772,8 @@
    "name": "배경 10-5",
    "cx": 607.5,
    "cy": 1282.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1795,8 +1795,8 @@
    "name": "배경 10-6",
    "cx": 742.5,
    "cy": 1282.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1818,8 +1818,8 @@
    "name": "배경 10-7",
    "cx": 877.5,
    "cy": 1282.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1841,8 +1841,8 @@
    "name": "배경 10-8",
    "cx": 1012.5,
    "cy": 1282.5,
-   "rx": 155.2,
-   "ry": 155.2,
+   "rx": 236.2,
+   "ry": 236.2,
    "gradient": {
     "type": "radial",
     "stops": [
@@ -1863,71 +1863,120 @@
    "type": "text",
    "name": "Open Positions.",
    "text": "Open Positions.",
-   "x": 100,
-   "y": 199,
-   "size": 63,
-   "font": "Instrument Serif",
-   "fill": "#ffffff"
+   "x": 100.0,
+   "y": 195.0,
+   "size": 35.99,
+   "font": "Libre Baskerville",
+   "fill": "#ffffff",
+   "fit": {
+    "x": 100,
+    "y": 155,
+    "w": 478,
+    "h": 44
+   },
+   "tracking": 9.78
   },
   {
    "type": "text",
    "name": "마감일",
    "text": "~26.08.02",
-   "x": 681,
-   "y": 197,
-   "size": 63,
-   "font": "Instrument Serif",
-   "fill": "#ffffff"
+   "x": 681.0,
+   "y": 202.0,
+   "size": 30.43,
+   "font": "Libre Baskerville",
+   "fill": "#ffffff",
+   "fit": {
+    "x": 681,
+    "y": 155,
+    "w": 291,
+    "h": 38
+   },
+   "tracking": 6.6
   },
   {
    "type": "text",
    "name": "직군 1 — Graphic",
    "text": "Graphic",
    "x": 92,
-   "y": 428,
-   "size": 198,
-   "font": "Instrument Serif",
-   "fill": "#ffffff"
+   "y": 398,
+   "size": 112.1,
+   "font": "Libre Baskerville",
+   "fill": "#ffffff",
+   "fit": {
+    "x": 92,
+    "y": 289,
+    "w": 660,
+    "h": 139
+   },
+   "tracking": 28.27
   },
   {
    "type": "text",
    "name": "직군 1 — Designer.",
    "text": "Designer.",
    "x": 90,
-   "y": 607,
-   "size": 198,
-   "font": "Instrument Serif",
-   "fill": "#ffffff"
+   "y": 585,
+   "size": 120.16,
+   "font": "Libre Baskerville",
+   "fill": "#ffffff",
+   "fit": {
+    "x": 90,
+    "y": 468,
+    "w": 789,
+    "h": 149
+   },
+   "tracking": 23.59
   },
   {
    "type": "text",
    "name": "직군 2 — 3D",
    "text": "3D",
    "x": 108,
-   "y": 974,
-   "size": 198,
-   "font": "Instrument Serif",
-   "fill": "#ffffff"
+   "y": 944,
+   "size": 110.48,
+   "font": "Libre Baskerville",
+   "fill": "#ffffff",
+   "fit": {
+    "x": 108,
+    "y": 837,
+    "w": 223,
+    "h": 137
+   },
+   "tracking": 63.8
   },
   {
    "type": "text",
    "name": "회사명",
    "text": "imago pictures",
-   "x": 516,
-   "y": 880,
-   "size": 62,
-   "font": "Instrument Serif",
-   "fill": "#ffffff"
+   "x": 516.0,
+   "y": 884,
+   "size": 46.77,
+   "font": "Libre Baskerville",
+   "fill": "#ffffff",
+   "fit": {
+    "x": 516,
+    "y": 839,
+    "w": 456,
+    "h": 58
+   },
+   "tracking": 7.19
   },
   {
    "type": "text",
    "name": "직군 2 — Generalist.",
    "text": "Generalist.",
    "x": 92,
-   "y": 1171,
-   "size": 198,
-   "font": "Instrument Serif",
-   "fill": "#ffffff"
+   "y": 1140,
+   "size": 115.32,
+   "font": "Libre Baskerville",
+   "fill": "#ffffff",
+   "fit": {
+    "x": 92,
+    "y": 1028,
+    "w": 891,
+    "h": 143
+   },
+   "tracking": 23.46
   }
  ]
 }

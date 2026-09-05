@@ -35,7 +35,8 @@ async function loadRefs() {
   syn.append(el('h2', null, `수집물에서 뽑아낸 결론 — ${data.source || ''}`));
   const dl = el('dl');
   const LABEL = { hero: '히어로', sections: '섹션', rhythm: '리듬', anchors: '앵커', footer: '푸터',
-    extra: '덤', cut: '분량', color: '컬러', compare: '비교', counter: '반론', avoid: '하지 말 것' };
+    extra: '덤', cut: '분량', color: '컬러', compare: '비교', counter: '반론', avoid: '하지 말 것',
+    balance: '주고받기', pay: '연봉', badge: '배지' };
   Object.entries(data.synthesis || {}).forEach(([k, v]) => {
     dl.append(el('dt', null, LABEL[k] || k), el('dd', null, v));
   });

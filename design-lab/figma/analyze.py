@@ -18,7 +18,8 @@ from PIL import Image
 LAB_DIR = Path(__file__).resolve().parent.parent
 
 
-def mesh(src: Path, canvas_w: int, canvas_h: int, cols: int, rows: int) -> list[dict]:
+def mesh(src: Path, canvas_w: int, canvas_h: int, cols: int, rows: int,
+         spread: float = 1.7) -> list[dict]:
     im = Image.open(src).convert("RGB")
     W, H = im.size
     px = im.load()
@@ -36,8 +37,8 @@ def mesh(src: Path, canvas_w: int, canvas_h: int, cols: int, rows: int) -> list[
                 "name": f"배경 {r + 1}-{c + 1}",
                 "cx": round((c + 0.5) * cw / W * canvas_w, 1),
                 "cy": round((r + 0.5) * ch / H * canvas_h, 1),
-                "rx": round(cw / W * canvas_w * 1.15, 1),
-                "ry": round(ch / H * canvas_h * 1.15, 1),
+                "rx": round(cw / W * canvas_w * spread, 1),
+                "ry": round(ch / H * canvas_h * spread, 1),
                 "gradient": {
                     "type": "radial",
                     "stops": [
@@ -56,8 +57,11 @@ def main() -> None:
     ap.add_argument("--height", type=int, default=1350)
     ap.add_argument("--cols", type=int, default=7)
     ap.add_argument("--rows", type=int, default=9)
+    ap.add_argument("--spread", type=float, default=1.7,
+                    help="칸 반지름 배수. 클수록 더 흐리게 번진다")
     args = ap.parse_args()
-    layers = mesh(LAB_DIR / args.src, args.width, args.height, args.cols, args.rows)
+    layers = mesh(LAB_DIR / args.src, args.width, args.height, args.cols, args.rows,
+                  args.spread)
     print(json.dumps(layers, ensure_ascii=False))
 
 
