@@ -4,7 +4,7 @@
   "name_en": "Tailscale",
   "country": "CA",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "tailscale.com",
   "one_liner": "기기끼리 직접 잇는 사설망을 파는 회사 — 중앙 서버를 두되 그 서버가 트래픽을 못 보게 만들었다",
@@ -24,7 +24,8 @@
       "weight": "⚠️ 확인하지 못했다",
       "domains": [
         "중앙을 두되 그 중앙이 트래픽을 못 보게 한다",
-        "지름길로 시작한 저장소를 갈아 끼운다"
+        "지름길로 시작한 저장소를 갈아 끼운다",
+        "두 구현을 함께 이고 간다"
       ],
       "confidence": "confirmed",
       "sources": [
@@ -187,7 +188,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "two-implementations-on-purpose"
+      ]
     }
   ],
   "eras": [],
@@ -1106,6 +1109,419 @@
           "url": "https://tailscale.com/blog/an-unlikely-database-migration",
           "publisher": "Tailscale Blog",
           "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+        },
+        {
+          "title": "Tailscale: How it works",
+          "url": "https://tailscale.com/blog/how-tailscale-works",
+          "publisher": "Tailscale Blog",
+          "summary": "컨트롤 평면과 데이터 평면을 가르는 구조 설명. 코디네이션 서버가 무엇을 보고 무엇을 못 보는지를 밝힌다."
+        }
+      ]
+    },
+    {
+      "key": "two-implementations-on-purpose",
+      "name": "하나로 합치지 않고 둘을 나란히 둔다",
+      "domain": "두 구현을 함께 이고 간다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**tsnet 은 애플리케이션 안에 tailnet 을 직접 끼워 넣는 라이브러리다** — 별도 데몬 없이 프로그램이 그대로 사설망의 노드가 된다. 그런데 기존 C 라이브러리(`libtailscale`)는 **Go 런타임을 통째로 끼워 넣는다.** 그러면 호스트 프로그램과 **프로세스 생애주기가 충돌한다** — 회사가 예를 든다: **`mixing libtailscale with a Ruby VM is a quick way to end up with a crash.`** ⚠️ **더 많은 곳에 넣으려면 런타임을 안 끌고 오는 구현이 필요했다.**",
+        "metrics": [
+          {
+            "label": "⚠️ 수치",
+            "value": "**거의 없다** — 성능 측정도 비교 벤치마크도 없고, 일반적인 언급으로 `tens of gigabits/sec` 정도가 전부다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "지금 빠져 있는 것",
+            "value": "**일곱** — P2P 통신 · NAT 순회(지금은 **DERP 경유만**) · DNS 해석 · exit node · SSH · Taildrop · **보안 감사**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "단계",
+            "value": "**미리보기(early look)** — 회사가 완성품으로 내놓지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "언어를 고를 때",
+          "thought": "조건이 둘이었다 — **강제되는 의견 있는 런타임이 없을 것**, 그리고 **메모리 안전할 것.** C 계열을 뺀 이유가 단호하다: **`you need an overwhelmingly good reason to start writing new code in a language that lacks basic memory safety properties.`** ⚠️ **기본 안전성이 없는 언어로 새 코드를 쓰려면 압도적인 이유가 있어야 한다**는 기준을 먼저 세우고 골랐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "재작성 방식을 고를 때",
+          "thought": "⚠️ **가장 흔한 길을 가장 세게 버렸다** — Go 조각을 하나씩 Rust 로 바꾸는 점진적 in-place 재작성이 **`would be the worst of all worlds`** 다. 이유가 셋인데 **전부 사람과 속도 쪽이다**: 혼합 코드베이스가 출시 능력을 해치고, **관용적 Rust 를 기존 Go 구조에 맞춰 쓰기 어려워지고**, 안정성을 지키며 어려운 리팩터를 하는 것이 느려진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이 선택을 이름 붙일 때",
+          "thought": "⚠️ **회사가 먼저 못 박는다** — 여러 구현을 갖는 것은 **`a pragmatic choice with tradeoffs, rather than an ideological one`** 이다. **Rust 가 옳아서가 아니라 tsnet 을 더 많은 곳에 넣는 데 이 방법이 모두에게 고통이 가장 적어서**라고 적는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "tsnet",
+            "what": "애플리케이션에 tailnet 을 끼워 넣는 라이브러리. 프로그램 자체가 노드가 된다"
+          },
+          {
+            "name": "⚠️ libtailscale",
+            "what": "기존 C 라이브러리. **Go 런타임을 함께 끌고 온다** — 그것이 문제의 뿌리다"
+          },
+          {
+            "name": "tailscale-rs",
+            "what": "Rust 로 다시 쓴 tsnet. 미리보기 단계이고 기능이 일곱 개 빠져 있다"
+          },
+          {
+            "name": "Go 본체",
+            "what": "기존 구현. 그대로 남는다 — 대체가 아니라 병존이다"
+          },
+          {
+            "name": "⚠️ 점진적 in-place 재작성",
+            "what": "⚠️ **고르지 않은 길.** Go 조각을 하나씩 Rust 로 바꾸는 방식"
+          }
+        ],
+        "invariants": [
+          "**강제되는 런타임을 호스트 프로그램에 끼워 넣지 않는다** — 이 구현이 존재하는 이유다",
+          "**메모리 안전을 포기하지 않는다** — 기본 안전성이 없는 언어에는 `압도적인 이유` 가 필요하다",
+          "**이념이 아니라 실용으로 고른다** — `a pragmatic choice with tradeoffs, rather than an ideological one`",
+          "⚠️ **미완인 것은 미완이라고 목록으로 적는다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**애플리케이션이 tsnet 을 링크한다** — 별도 데몬 없이 그 프로그램이 tailnet 의 노드가 된다",
+            "why": "tsnet 이 파는 것이 이 형태다"
+          },
+          {
+            "step": "⚠️ **Go 구현을 끼우면 Go 런타임이 따라온다** — 호스트와 생애주기가 충돌한다",
+            "why": "`mixing libtailscale with a Ruby VM is a quick way to end up with a crash`"
+          },
+          {
+            "step": "**Rust 구현은 런타임을 안 끌고 온다**",
+            "why": "강제되는 의견 있는 런타임이 없으면서 메모리 안전한 언어를 골랐기 때문이다"
+          },
+          {
+            "step": "⚠️ **지금은 DERP 를 통해서만 통신한다** — NAT 순회가 아직 없다",
+            "why": "직접 연결 사다리(STUN·포트 매핑·생일 역설)가 통째로 빠져 있다"
+          },
+          {
+            "step": "**Go 본체는 그대로 둔다** — 대체가 아니라 병존이다",
+            "why": "점진적 재작성을 버렸기 때문에 두 벌이 나란히 간다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "tsnet 을 더 많은 곳에 넣으려면 무엇이 필요한가",
+            "chosen": "**Go 런타임을 안 끌고 오는 구현을 새로 만든다**",
+            "alternatives": [
+              "기존 `libtailscale`(C 래퍼)을 개선하기"
+            ],
+            "tradeoff": "⚠️ **구현이 둘이 된다.** 그럼에도 이 길을 고른 이유가 분명하다 — 런타임을 함께 끼우면 **호스트 프로그램과 프로세스 생애주기가 충돌한다**(`a quick way to end up with a crash`)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 언어로 쓸 것인가",
+            "chosen": "**Rust** — 강제되는 런타임이 없으면서 메모리 안전한 언어",
+            "alternatives": [
+              "C 나 C++ 같은 런타임 없는 전통적 선택"
+            ],
+            "tradeoff": "⚠️ **기준을 먼저 세우고 골랐다** — `you need an overwhelmingly good reason to start writing new code in a language that lacks basic memory safety properties`. **메모리 안전을 협상 대상에서 빼는 대신** Rust 생태계와 학습 비용을 진다(뒤쪽 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "Go 본체를 조금씩 Rust 로 바꿀 것인가",
+            "chosen": "**바꾸지 않는다** — `the worst of all worlds` 라며 버렸다",
+            "alternatives": [
+              "점진적 in-place 재작성(가장 흔히 권해지는 길)"
+            ],
+            "tradeoff": "⚠️ **이유 셋이 전부 사람과 속도 쪽이다** — ① 혼합 Go/Rust 코드베이스에서 일하면 **출시 능력이 상한다**, ② **관용적 Rust 를 기존 Go 구조에 맞춰 쓰기 어려워진다**, ③ 기존 사용자를 위해 안정성을 지키면서 어려운 리팩터를 하는 것이 **느려진다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "그러면 둘을 어떻게 다룰 것인가",
+            "chosen": "**나란히 둔다** — 대체가 아니라 병존",
+            "alternatives": [
+              "한쪽으로 수렴시키기"
+            ],
+            "tradeoff": "⚠️ **두 벌을 계속 맞춰야 한다**(이 대가는 이 사이트의 재구성이다). 회사의 근거는 고통의 총량이다 — 두 구현을 갖는 것이 **tsnet 을 더 많은 곳에 넣으면서 모두에게 고통이 가장 적은 길**이라고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "이 선택을 무엇이라 부를 것인가",
+            "chosen": "**실용적 선택** — `a pragmatic choice with tradeoffs, rather than an ideological one`",
+            "alternatives": [
+              "`Rust 로 다시 쓴다` 는 이야기로 내놓기"
+            ],
+            "tradeoff": "⚠️ **언어 논쟁으로 읽히는 것을 스스로 막는다.** 그 대신 **왜 그 자리에만 필요한지**를 설명해야 하는 부담을 진다(이 해석은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "완성되기 전에 내놓을 것인가",
+            "chosen": "**내놓는다. 대신 빠진 것을 목록으로 적는다** — 미리보기(early look)",
+            "alternatives": [
+              "기능이 갖춰질 때까지 공개하지 않기"
+            ],
+            "tradeoff": "⚠️ **일곱 개가 빠져 있다** — P2P · NAT 순회 · DNS · exit node · SSH · Taildrop · **보안 감사**. 특히 마지막은 **아직 프로덕션에 쓰지 말라는 신호**다(이 해석은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "NAT 순회 없이 어떻게 통신할 것인가",
+            "chosen": "**지금은 DERP 릴레이로만 간다**",
+            "alternatives": [
+              "NAT 순회를 먼저 구현하고 공개하기"
+            ],
+            "tradeoff": "⚠️ **본체의 가장 큰 자산을 못 쓴다** — 직접 연결 사다리(STUN · 포트 매핑 · 생일 역설 포트 예측)가 통째로 빠져 있어 **90% 이상이라는 직접 연결률이 이 구현에는 해당하지 않는다.** 지연과 대역폭을 릴레이에 맡긴다(이 대비는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              },
+              {
+                "title": "How NAT traversal works",
+                "url": "https://tailscale.com/blog/how-nat-traversal-works",
+                "publisher": "Tailscale Blog",
+                "summary": "방화벽·NAT 뒤의 기기끼리 직접 잇는 방법을 단계별로 설명한 장문. 각 방법의 한계와 확률, 그리고 아예 안 되는 경우를 함께 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Rust",
+            "role": "강제되는 런타임 없이 메모리 안전을 얻는다. 이 구현의 전제",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ libtailscale (C 래퍼, 기존)",
+            "role": "⚠️ **문제 쪽이다** — Go 런타임을 함께 끌고 와 호스트와 생애주기가 충돌한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "DERP 릴레이",
+            "role": "⚠️ 지금 이 구현의 **유일한 통신 경로**다 — NAT 순회가 아직 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              },
+              {
+                "title": "How NAT traversal works",
+                "url": "https://tailscale.com/blog/how-nat-traversal-works",
+                "publisher": "Tailscale Blog",
+                "summary": "방화벽·NAT 뒤의 기기끼리 직접 잇는 방법을 단계별로 설명한 장문. 각 방법의 한계와 확률, 그리고 아예 안 되는 경우를 함께 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Go 본체",
+            "role": "그대로 남는다. 대체 대상이 아니다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "direct-if-possible-relay-if-not",
+          "via": "빠진 기능",
+          "contract": "⚠️ **직접 연결 사다리가 통째로 빠져 있다** — STUN·포트 매핑·생일 역설이 없어 **DERP 를 통해서만** 통신한다. **본체의 90% 이상 직접 연결률이 이 구현에는 해당하지 않는다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "호스트 애플리케이션 (Ruby VM 등)",
+          "via": "라이브러리 링크",
+          "contract": "⚠️ **런타임을 끌고 오지 않는 것이 이 계약의 전부다** — Go 구현으로는 프로세스 생애주기가 충돌해 죽는다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Go 본체",
+          "via": "병존",
+          "contract": "**대체하지 않는다.** 점진적 재작성을 버렸으므로 두 벌이 나란히 유지된다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "두 구현은 갈라진다",
+            "why_hard": "⚠️ **같은 프로토콜의 구현이 둘이면 시간이 지날수록 어긋난다** — 한쪽에 들어간 기능이 다른 쪽에 없고, 버그 수정도 두 번 해야 한다. 이 회사는 **이미 일곱 개가 빠진 상태로 출발한다**",
+            "current_best": "회사의 답은 **범위를 좁히는 것**으로 보인다 — Rust 쪽은 본체 전체가 아니라 **tsnet(임베드용)** 만 맡는다. ⚠️ **어떻게 계속 맞출지는 글에 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          },
+          {
+            "problem": "재작성을 안에서 할 것인가 옆에서 할 것인가",
+            "why_hard": "점진적 in-place 재작성은 흔히 권해지는 길인데 **이 회사는 `the worst of all worlds` 라 부른다** — 혼합 코드베이스에서 일하는 부담, 관용적 코드를 못 쓰는 제약, 안정성을 지키며 리팩터하는 느림이 겹치기 때문이다",
+            "current_best": "**옆에 새로 짓고 범위를 좁히는 것.** ⚠️ 다만 이 답은 **대체가 목적이 아닐 때만 성립한다** — 본체를 정말로 갈아 치우려면 언젠가 합치는 문제가 돌아온다(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "An early look at tailscale-rs, a tsnet library in Rust",
+                "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+                "publisher": "Tailscale Blog",
+                "date": "2026-04",
+                "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "런타임을 끌고 오느냐가 갈랐다",
+          "question": "왜 구현이 둘이어야 했나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>애플리케이션</b><br/>• 예: Ruby VM\"]:::list --> Q{\"<b>tsnet 을 어떻게 끼우나</b>\"}\n  Q -->|기존 libtailscale| G[\"<b>Go 런타임이 따라온다</b>\"]:::gone\n  G --> C[\"⚠️ <b>생애주기 충돌</b><br/>• a quick way to end up<br/>  with a crash\"]:::gone\n  Q -->|tailscale-rs| R[\"<b>Rust 구현</b><br/>• 강제되는 런타임 없음<br/>• 메모리 안전\"]:::accent\n  R --> N[\"⚠️ <b>지금은 DERP 만</b><br/>• NAT 순회가 아직 없다\"]:::soft\n  GO[\"<b>Go 본체</b><br/>• 그대로 남는다<br/>• 대체가 아니라 병존\"]:::list\n  R -.->|나란히| GO\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        },
+        {
+          "title": "가장 흔한 길을 가장 세게 버렸다",
+          "question": "점진적 재작성을 왜 안 골랐나",
+          "kind": "failure",
+          "code": "flowchart TD\n  W[\"<b>Go 를 Rust 로 바꾸려면</b>\"]:::accent --> P[\"<b>점진적 in-place 재작성</b><br/>• 조각을 하나씩 바꾼다\"]:::gone\n  P --> R1[\"⚠️ <b>혼합 코드베이스</b><br/>• 출시 능력이 상한다\"]:::gone\n  P --> R2[\"⚠️ <b>관용적 Rust 를 못 쓴다</b><br/>• 기존 Go 구조에 맞춰야 한다\"]:::gone\n  P --> R3[\"⚠️ <b>느려진다</b><br/>• 안정성을 지키며 리팩터\"]:::gone\n  R1 --> V[\"<b>the worst of all worlds</b>\"]:::gone\n  R2 --> V\n  R3 --> V\n  V --> D[\"<b>고른 길 — 옆에 새로 짓는다</b><br/>• 범위는 tsnet 으로 좁힌다<br/>• 두 구현을 나란히\"]:::accent\n  D --> M[\"⚠️ <b>지금 빠진 일곱</b><br/>• P2P · NAT 순회 · DNS<br/>• exit node · SSH · Taildrop<br/>• 보안 감사\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "An early look at tailscale-rs, a tsnet library in Rust",
+          "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+          "publisher": "Tailscale Blog",
+          "date": "2026-04",
+          "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+        },
+        {
+          "title": "How NAT traversal works",
+          "url": "https://tailscale.com/blog/how-nat-traversal-works",
+          "publisher": "Tailscale Blog",
+          "summary": "방화벽·NAT 뒤의 기기끼리 직접 잇는 방법을 단계별로 설명한 장문. 각 방법의 한계와 확률, 그리고 아예 안 되는 경우를 함께 적는다."
         },
         {
           "title": "Tailscale: How it works",
