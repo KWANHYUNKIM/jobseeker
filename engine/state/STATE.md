@@ -8,35 +8,34 @@
 
 ## 지금 파는 중
 
-**Nubank(기타 BR · 핀테크)** `in_progress` · **도메인 3 · 기능 0** — 프로파일만 세웠다.
-완료 65곳 + Nubank = **66곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**Nubank(기타 BR · 핀테크)** `in_progress` · **도메인 3 · 기능 1** — 66곳 · ⚠️ 큐 0/3.
 
-**라틴아메리카 첫 회사다.** 축은 하나로 모인다 — **지점이 없으므로 소프트웨어가 지점이다.**
-지연 100ms 가 창구 대기줄이고, 나라를 넘는 일은 지점을 여는 게 아니라 그 나라 금융망에
-붙는 배선을 까는 일이다.
+방금 쓴 기능: **`one-gateway-many-countries`(나라마다 배선을 새로 깔던 일을 게이트웨이
+하나 뒤로 감춘다)**. 축은 성능이 아니라 **누가 무엇을 몰라도 되는가**다 —
+`software engineers are no longer required to understand the intricate networking
+protocols or disparate standards of various local financial systems.`
 
-### 다음 사이클 — 도메인 셋 중 아무거나 확장
+### ⚠️ 이 글은 대가를 하나도 안 적는다 — 그래서 결정 7개가 전부 `inferred` 다
 
-셋 다 기능이 0 이라 `--gaps` 가 2순위(확장)로 부를 것이다. **자료는 이미 다 읽어 뒀다:**
+개선 수치는 다섯인데(개통 50% · 맞춤 작업 70% · 환경 구성 60% · MTTI 50% · 복구 창
+40분→5분 미만 87%) **잃은 것은 한 줄도 없다.** 그래서 `tradeoff` 칸을 전부 재구성으로
+채우고 **칸마다 "이 대가는 이 사이트의 재구성이다"라고 밝혔다.** Monzo·GetYourGuide 를
+후보에서 떨어뜨린 바로 그 성질(결정은 있는데 대가가 없다)이 **이미 큐를 통과한 회사의
+다른 글에서도 나온다** — 후보 조사에서 읽은 한 편이 회사 전체를 대표하지 않는다.
+**Nubank 를 올릴 때 읽은 지연 76% 편은 대가를 직접 적었다.** 같은 회사, 다른 팀, 다른 결.
 
-- **나라마다 다른 금융망에 한 벌로 붙는다** — `finconnect`. **수치가 가장 세다**(개통
-  50%·맞춤 작업 70%·복구 창 40분→5분 미만 87%). 버린 대안 셋(수동 재해복구 · 시장마다
-  새로 만들기 · 지역별 감시 도구)도 뚜렷하다. **여기부터 파는 것이 가장 안전하다.**
+### 다음 사이클 — 남은 두 도메인 중 하나
+
 - **읽는 길에서 계산을 걷어낸다** — `how-we-reduced-critical-path-latency-by-76`.
-  대가를 회사가 직접 적는다(*"we accepted the cost of asynchronous aggregation, state
-  management, and monitoring in exchange for fast and reliable reads"*).
+  **대가를 회사가 직접 적은 글이라 이쪽이 더 단단하다.** 다음은 여기가 낫다.
 - **사람이 프롬프트를 쓰는 일을 그만둔다** — `building-ai-agents-for-131-million-customers`.
-  ⚠️ **이 도메인은 결이 다르다** — 상담이 아니라 **조작**을 한다(채무 재협상·카드 물류).
 
-### ⚠️ 이 회사에서 아직 못 잡은 것 둘
+### 아직 못 잡은 것 (앞 사이클에서 이어짐)
 
-1. **IR 을 못 읽는다** — `international.nubank.com.br` **403**, `investors.nu` **인증서
-   만료**. 그래서 수익 3갈래(이자·수수료·float)의 비중이 `inferred` 다. **3자 매체끼리도
-   숫자가 갈린다**(2026 2분기 매출 약 55억 vs 약 59억 달러).
-2. **Clojure·Datomic 의 실물을 아직 못 봤다.** 블로그에 Clojure 글이 여럿인데 열어 본
-   `designing-real-systems-with-immutable-data-in-clojure` 는 **컨퍼런스 참관기**였다.
-   **불변 데이터로 은행 원장을 다룬다는 것이 이 회사의 가장 큰 차별점일 텐데** 근거를 못
-   잡았다 — `Building AI agents in practice with Clojure`(2026-02-02)를 다음에 열어 본다.
+1. **IR 을 못 읽는다** — `international.nubank.com.br` 403, `investors.nu` 인증서 만료.
+   수익 3갈래 비중이 `inferred` 이고 3자 매체끼리 숫자가 갈린다(55억 vs 59억 달러).
+2. **Clojure·Datomic 의 실물을 아직 못 봤다** — `Building AI agents in practice with
+   Clojure`(2026-02-02)를 다음에 열어 본다.
 
 ## 지금의 진짜 상태
 

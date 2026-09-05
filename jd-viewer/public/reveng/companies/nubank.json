@@ -136,7 +136,9 @@
           "limits": "⚠️ **지역의 자율을 내줬다** — 나라별로 고르던 감시 도구를 하나로 모으는 일이라, 그 지역에만 필요한 관측은 표준 밖으로 밀린다."
         }
       ],
-      "features": []
+      "features": [
+        "one-gateway-many-countries"
+      ]
     },
     {
       "name": "읽는 길에서 계산을 걷어낸다",
@@ -235,7 +237,435 @@
     "**연표(eras)를 쓸 자료를 아직 못 찾았다** — 연도가 붙은 회고를 확인하지 못했다.",
     "투자·보험 등 상품 구성과 나라별 상품 차이를 확인하지 못했다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "one-gateway-many-countries",
+      "name": "나라마다 배선을 새로 깔던 일을 게이트웨이 하나 뒤로 감춘다",
+      "domain": "나라마다 다른 금융망에 한 벌로 붙는다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "지점이 없는 은행이 나라를 넘을 때 새로 여는 것은 창구가 아니라 **배선**이다. 그런데 그 배선이 나라마다 따로 자랐다 — `Different countries operated distinct network topologies, configurations, and monitoring tools.` 그 결과가 회사의 표현으로 **`inconsistent security standards`** 와 **운영 실수 확률의 증가**, 그리고 **5분을 넘는 서비스 중단**이었다. 이 기능이 없으면 회사는 **새 나라에 들어갈 때마다 연결을 처음부터 다시 만들어야 한다.**",
+        "metrics": [
+          {
+            "label": "새 나라 연결 개통 시간",
+            "value": "50% 단축 — `the time required to establish connectivity in new countries dropped by 50%`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "맞춤 엔지니어링 작업",
+            "value": "70% 감소 — `reduced custom engineering work by 70%`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "환경 구성 운영 부담",
+            "value": "60% 감소 — `a 60% reduction in operational overhead related to environment setup`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "장애 인지 시간(MTTI)",
+            "value": "50% 단축 — `single pane of glass` 로 모아서",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "label": "복구 창",
+            "value": "40분 → 5분 미만 (87% 감소) — `recovery windows drop from 40 minutes to under 5 minutes`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 감출지 정할 때",
+          "thought": "이 기능의 핵심 문장은 성능이 아니라 **누가 무엇을 몰라도 되는가**다 — `By communicating through a centralized gateway, software engineers are no longer required to understand the intricate networking protocols or disparate standards of various local financial systems.` **나라가 늘어도 엔지니어가 배워야 할 프로토콜 수는 늘지 않는다**는 것이 이 게이트웨이가 파는 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "단일 실패점을 다룰 때",
+          "thought": "손으로 넘기는 절차를 **없애는 쪽**을 골랐다 — `we eliminate single points of failure in the transport layer`. 복구가 40분에서 5분 미만이 된 것은 더 빨리 손을 쓴 게 아니라 **손을 쓸 일 자체를 줄인 것**이다(회사가 `87% reduction in manual effort` 라고 쓴다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "⚠️ 이 글을 읽는 자세",
+          "thought": "⚠️ **이 글은 대가를 하나도 적지 않는다.** 다섯 개의 개선 수치가 있고 잃은 것은 없다. 아래 결정들의 `무엇을 잃었나` 칸은 **대부분 이 사이트가 재구성한 것**이고 그렇게 표시했다 — 회사가 인정한 대가가 아니다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "중앙 게이트웨이",
+            "what": "모든 나라의 금융망으로 나가는 하나의 관문. 프로토콜 차이를 여기서 흡수한다"
+          },
+          {
+            "name": "표준 청사진",
+            "what": "나라마다 손으로 만들던 연동을 대체하는 하나의 형(型). 새 시장은 이것을 찍어 낸다"
+          },
+          {
+            "name": "전용 회선",
+            "what": "온프렘 데이터센터와 클라우드, 그리고 현지 금융망을 잇는 물리 회선. 이중으로 깐다"
+          },
+          {
+            "name": "전역 트래픽 관리(GTM)",
+            "what": "DNS 로 트래픽을 어느 경로로 보낼지 정한다. 사람이 넘기던 자리를 대신한다"
+          },
+          {
+            "name": "단일 관측 창",
+            "what": "나라별로 갈려 있던 감시 도구를 하나로 모은 것 — `single pane of glass`"
+          }
+        ],
+        "invariants": [
+          "**나라가 늘어도 엔지니어가 배우는 프로토콜 수는 늘지 않는다** — 게이트웨이가 파는 것이 이 계약이다",
+          "**전송 층에 단일 실패점을 두지 않는다** — `eliminate single points of failure in the transport layer`",
+          "**보안 표준은 나라마다 다르지 않다** — 흩어진 연동이 만든 `inconsistent security standards` 를 되돌리는 것이 목적이다",
+          "**장애는 한 창에서 본다** — 나라별 도구로 갈리면 인지 자체가 늦는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "서비스가 현지 금융망이 아니라 **게이트웨이**에 말을 건다",
+            "why": "프로토콜과 표준의 차이를 여기서 끊는다 — 엔지니어는 그 아래를 몰라도 된다"
+          },
+          {
+            "step": "게이트웨이가 **표준 청사진**에 따라 해당 나라의 형식으로 옮긴다",
+            "why": "나라별 맞춤 코드를 서비스 쪽에서 걷어내는 자리다 (맞춤 작업 70% 감소)"
+          },
+          {
+            "step": "**GTM(DNS)** 이 어느 경로로 나갈지 정한다",
+            "why": "경로 전환을 사람이 하지 않게 한다 — 복구 창이 40분에서 5분 미만으로 줄어든 지점"
+          },
+          {
+            "step": "**이중화된 전용 회선**을 타고 온프렘 데이터센터·클라우드를 거쳐 나간다",
+            "why": "금융망 접속은 공용 인터넷이 아니라 전용 회선이다. 하나가 끊겨도 다른 하나가 남는다"
+          },
+          {
+            "step": "현지 금융망(청산·결제·규제 시스템)에 닿는다",
+            "why": "⚠️ **여기서부터는 상대편의 가용성이다** — 회사가 통제하지 못하는 구간이 남는다(이 지적은 이 사이트의 재구성이다)"
+          },
+          {
+            "step": "모든 구간의 신호가 **하나의 관측 창**으로 모인다",
+            "why": "나라별 도구로 갈려 있으면 어디서 끊겼는지 아는 데만 시간이 든다 (MTTI 50% 단축)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "나라마다 다른 금융망에 어떻게 붙을 것인가",
+            "chosen": "**하나의 표준 청사진**으로 모으고, 새 시장은 그것을 찍어 낸다",
+            "alternatives": [
+              "시장마다 연동을 처음부터 새로 만들기(그전까지의 방식)"
+            ],
+            "tradeoff": "⚠️ **표준을 고치는 비용이 모두의 비용이 된다** — 한 나라의 특수한 규제를 담으려면 모든 나라가 쓰는 형을 건드려야 한다. 나라별로 만들 때는 그 나라만 흔들렸다. **이 대가는 이 사이트의 재구성이다** — 회사는 개선 수치만 적는다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "현지 프로토콜의 차이를 누가 감당할 것인가",
+            "chosen": "**중앙 게이트웨이가 감당하고 엔지니어는 모르게 한다** — `software engineers are no longer required to understand the intricate networking protocols or disparate standards`",
+            "alternatives": [
+              "각 서비스가 현지 규격을 직접 다루기"
+            ],
+            "tradeoff": "⚠️ **감춘 만큼 게이트웨이가 커지고, 아래가 안 보인다.** 나라별 특성이 문제를 일으킬 때 그것을 아는 사람이 게이트웨이 팀에만 남는다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "경로가 끊겼을 때 누가 넘길 것인가",
+            "chosen": "**DNS 기반 GTM 이 넘긴다** — 사람이 하던 재해복구·전환 절차를 없앤다",
+            "alternatives": [
+              "데이터센터 사이를 손으로 넘기는 절차 유지"
+            ],
+            "tradeoff": "⚠️ **DNS 전환은 즉시가 아니다** — 캐시된 응답이 만료될 때까지 옛 경로로 가는 구간이 남는다. **이 한계는 이 사이트의 재구성이다.** 회사가 적는 것은 얻은 쪽이다: 복구 창 40분 → 5분 미만",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "회선을 몇 벌 깔 것인가",
+            "chosen": "**이중으로 깐다** — `redundant high-performance circuits` 로 전송 층의 단일 실패점을 없앤다",
+            "alternatives": [
+              "단일 회선 + 장애 시 우회"
+            ],
+            "tradeoff": "⚠️ **평소에 노는 설비 값을 매달 낸다.** 금융망 접속은 전용 회선이라 값이 싸지 않다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "감시 도구를 나라별로 둘 것인가",
+            "chosen": "**하나의 창으로 모은다** — `single pane of glass`",
+            "alternatives": [
+              "지역별로 각자 고른 감시 도구 유지"
+            ],
+            "tradeoff": "⚠️ **그 지역에만 필요한 관측이 표준 밖으로 밀린다.** 인지 시간을 절반으로 줄인 대신 지역이 자기 도구를 고를 자유를 잃는다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "온프렘 데이터센터를 계속 안고 갈 것인가",
+            "chosen": "**안고 간다** — `dedicated circuits connecting our on-premises data centers to the cloud` 가 구조의 전제다",
+            "alternatives": [
+              "전부 클라우드로 옮기고 현지 접속도 클라우드에서"
+            ],
+            "tradeoff": "⚠️ **클라우드만 쓰는 회사가 지지 않는 짐을 진다** — 물리 설비와 회선을 계속 운영해야 한다. 현지 금융망이 전용 회선을 요구하는 한 피할 수 없는 자리로 보인다. **이 해석은 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "question": "보안 표준을 어떻게 맞출 것인가",
+            "chosen": "**하나로 맞춘다** — 흩어진 연동이 만든 `inconsistent security standards` 가 애초의 문제였다",
+            "alternatives": [
+              "나라별 규제에 맞춘 개별 기준 유지"
+            ],
+            "tradeoff": "⚠️ **가장 엄격한 나라에 맞추면 나머지에는 과잉이 된다** — 표준을 하나로 두는 일의 값이다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "중앙 게이트웨이",
+            "role": "현지 금융망 프로토콜·표준의 차이를 흡수하는 단일 관문",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "DNS 기반 전역 트래픽 관리(GTM)",
+            "role": "경로 전환을 자동화해 수동 재해복구를 없앤다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "이중화 전용 회선",
+            "role": "온프렘 DC ↔ 클라우드 ↔ 현지 금융망을 잇는 전송 층",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "통합 텔레메트리(single pane of glass)",
+            "role": "나라별로 갈린 감시를 한 창으로 모아 MTTI 를 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "읽는 길에서 계산을 걷어낸다 (결제 임계 경로)",
+          "via": "현지 금융망 접속",
+          "contract": "⚠️ **아무리 읽기를 빠르게 만들어도 이 배선이 끊기면 결제가 못 나간다.** 앞에서 줄인 밀리초와 여기서 줄인 40분은 **같은 화면의 두 층**이다",
+          "confidence": "inferred"
+        },
+        {
+          "to": "현지 금융망 (청산·결제·규제 시스템)",
+          "via": "전용 회선",
+          "contract": "게이트웨이가 표준 형식으로 옮겨 보내고 응답을 기다린다. **이 구간의 가용성은 상대편에 달려 있다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "온프렘 데이터센터 · 클라우드",
+          "via": "전용 회선",
+          "contract": "두 곳을 잇는 회선이 이 기능의 바닥이다. 클라우드만으로는 현지 금융망에 닿지 못한다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "신용·예금 상품 (수익원)",
+          "via": "연결의 가용성",
+          "contract": "이자·수수료·float 세 수익원이 전부 이 배선 위에서 일어난다. **연결이 끊긴 시간은 세 갈래가 동시에 멈추는 시간**이다",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "상대편의 가용성은 살 수 없다",
+            "why_hard": "회선을 이중으로 깔고 전환을 자동화해도 **현지 청산·결제망 자체가 멈추면 할 수 있는 일이 없다.** 회사가 통제하는 구간은 게이트웨이까지다",
+            "current_best": "⚠️ **이 글은 이 문제를 다루지 않는다.** 다섯 개의 개선 수치가 전부 자기 쪽 구간의 것이다 — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "표준 하나로 여러 규제를 담는 일",
+            "why_hard": "나라마다 규제가 다른데 청사진은 하나다. **어디까지를 표준에 담고 어디부터를 나라별 예외로 둘 것인가**는 새 시장이 늘 때마다 다시 물어야 하는 질문이다",
+            "current_best": "⚠️ 회사는 `canonical blueprint` 를 만들었다고만 적고 **예외를 어떻게 다루는지는 쓰지 않았다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+                "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-16",
+                "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "나라가 늘어도 배워야 할 프로토콜은 늘지 않는다",
+          "question": "게이트웨이 하나가 실제로 무엇을 감추나",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"<b>Nubank 서비스</b><br/>• 결제 · 대출 · 예금<br/>• 현지 규격을 모른다\"]:::list --> G\n  G[\"<b>중앙 게이트웨이</b><br/>• 프로토콜 차이를 흡수<br/>• 표준 청사진으로 변환\"]:::accent --> T\n  T{\"<b>GTM (DNS)</b><br/>어느 경로로 나갈까\"}:::list\n  T --> C1[\"<b>전용 회선 A</b><br/>• 온프렘 DC → 클라우드\"]:::list\n  T --> C2[\"<b>전용 회선 B</b><br/>• 이중화된 예비 경로\"]:::list\n  C1 --> B[\"<b>브라질 금융망</b>\"]:::list\n  C2 --> B\n  C1 --> M[\"<b>멕시코 금융망</b>\"]:::list\n  C1 --> CO[\"<b>콜롬비아 금융망</b>\"]:::list\n  O[\"<b>단일 관측 창</b><br/>• 나라별 도구를 하나로<br/>• MTTI 50% 단축\"]:::soft\n  G -.-> O\n  T -.-> O\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "끊겼을 때 — 사람이 넘기던 40분과 지금의 5분",
+          "question": "복구 창이 87% 줄었다는 말은 무엇이 사라졌다는 뜻인가",
+          "kind": "failure",
+          "code": "flowchart TD\n  X[\"<b>경로 하나가 끊긴다</b>\"]:::list --> Q{\"넘기는 일을<br/>누가 하나\"}\n  Q -->|그전| H[\"<b>사람이 넘긴다</b><br/>• 나라별로 다른 절차<br/>• 나라별로 다른 감시 도구\"]:::gone\n  H --> H2[\"<b>복구 창 약 40분</b><br/>• 어디서 끊겼는지 찾는 시간 포함\"]:::gone\n  Q -->|지금| A[\"<b>GTM 이 넘긴다</b><br/>• 예비 회선으로 전환\"]:::list\n  A --> A2[\"<b>복구 창 5분 미만</b><br/>• 수동 개입 87% 감소\"]:::list\n  A2 --> R[\"⚠️ <b>남는 구간</b><br/>• DNS 캐시가 만료될 때까지<br/>• 현지 금융망 자체의 장애\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "FinConnect: Building a standardized global connectivity platform for financial services",
+          "url": "https://building.nubank.com/finconnect-building-a-standardized-global-connectivity-platform-for-financial-services/",
+          "publisher": "Building Nubank",
+          "date": "2026-03-16",
+          "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "FinConnect: Building a standardized global connectivity platform for financial services",
