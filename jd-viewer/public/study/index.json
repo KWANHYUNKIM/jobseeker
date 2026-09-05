@@ -1098,6 +1098,23 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "webhook",
+      "title": "웹훅",
+      "category": "framework",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**남의 서버가 우리 서버를 부르는 것**이다. 받는 쪽이 브라우저가 아니라 서버라서 — **공개된 문을 열어 두고, 누가 두드렸는지 증명받고, 두 번 두드려도 한 번만 처리해야** 한다.",
+      "aliases": [
+        "웹훅",
+        "webhook",
+        "콜백 URL",
+        "서명 검증"
+      ],
+      "sections": 7,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
