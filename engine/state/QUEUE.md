@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Tailscale** | CA/US · SaaS(네트워킹) | 프로파일 완료 · 도메인 3(중앙을 두되 그 중앙이 트래픽을 못 보게 한다[tech 4] / 지름길로 시작한 저장소를 갈아 끼운다[tech 2] / 두 구현을 함께 이고 간다[tech 2]) · **기능 1**(direct-if-possible-relay-if-not) |
+| **Tailscale** | CA/US · SaaS(네트워킹) | 프로파일 완료 · 도메인 3(중앙을 두되 그 중앙이 트래픽을 못 보게 한다[tech 4] / 지름길로 시작한 저장소를 갈아 끼운다[tech 2] / 두 구현을 함께 이고 간다[tech 2]) · **기능 2**(direct-if-possible-relay-if-not / json-file-to-etcd) |
 
 ## 대기
 

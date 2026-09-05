@@ -148,7 +148,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "json-file-to-etcd"
+      ]
     },
     {
       "name": "두 구현을 함께 이고 간다",
@@ -686,6 +688,430 @@
           "publisher": "Tailscale Blog",
           "date": "2026-04",
           "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+        }
+      ]
+    },
+    {
+      "key": "json-file-to-etcd",
+      "name": "이십 줄짜리 지름길이 백오십 메가에 닿을 때까지 버틴다",
+      "domain": "지름길로 시작한 저장소를 갈아 끼운다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 회사의 첫 데이터베이스는 데이터베이스가 아니었다.** SQLite 기반 프로토타입을 접고, **전체 데이터를 뮤텍스로 감싼 구조체 하나**에 담아 **바뀔 때마다 `json.Marshal` 로 파일을 통째로 다시 썼다** — 20줄짜리 지름길이다. 컨트롤 평면이 **단일 Go 프로세스**라 그게 됐고, **외부 의존이 없어 테스트가 간단했다.** 회사가 그 거래를 이렇게 정리한다: 초기 스타트업에게 **단순함과 확장성 사이의 받아들일 만한 거래**였다. ⚠️ **그런데 그 파일이 150MB 가 됐다.**",
+        "metrics": [
+          {
+            "label": "파일 크기",
+            "value": "**150MB** — 그리고 `as quickly as the disk I/O would let us` 쓰고 있었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "쓰기 지연",
+            "value": "**거의 1초, 때로는 그 이상 → 밀리초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "처음 코드의 크기",
+            "value": "**20줄** 남짓의 지름길 — `AllTheData` 구조체 하나에 뮤텍스와 맵 둘",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "인덱스를 만드는 데 든 시간",
+            "value": "**2~3주** — etcd 에 SQL 의 인덱스 체계가 없어 직접 만들었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "버린 후보",
+            "value": "**넷** — MySQL · PostgreSQL · SQLite · CockroachDB",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "지름길을 고를 때",
+          "thought": "**SQLite 프로토타입을 접고 20줄로 돌아갔다.** 이유가 성능이 아니라 **속도와 단순함**이다 — 단일 프로세스라 메모리로 조율하면 됐고, **테스트에 외부 의존이 없었다.** ⚠️ **이것이 나중에 데이터베이스를 고르는 기준이 된다** — 그때도 `Go 로 쓰여 테스트에 직접 링크할 수 있는가` 가 결정적이었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "한계에 닿았을 때",
+          "thought": "⚠️ **먼저 쉬운 수를 써 봤다** — 파일을 **중요한 것과 임시(tmpfs) 것 둘로 갈랐다.** 그래도 안 됐다. 파일이 150MB 가 되자 **디스크 I/O 가 허락하는 최대 속도로 쓰고 있었고**, 쓰기 한 번이 거의 1초였다. **쪼개는 것으로는 못 넘는 벽이 있었다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "후보를 고를 때",
+          "thought": "⚠️ **네 후보를 버린 이유가 전부 운영과 시험 쪽이다** — 성능 비교가 아니다. MySQL·PostgreSQL 은 **Docker 같은 테스트 인프라**가 필요하고 HA 시맨틱이 트랜잭션 동작을 예측하기 어렵게 만든다. SQLite 는 창업자 본인이 **`couldn't bring myself to make an argument`** 라고 적는다. CockroachDB 는 **`relatively new for a database`** 였다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "⚠️ `AllTheData`",
+            "what": "옛 저장소의 전부. 뮤텍스 하나(`BigLock`)와 맵 둘(`Somethings`·`Widgets`)로 된 구조체"
+          },
+          {
+            "name": "전역 잠금",
+            "what": "바뀔 때마다 단일 프로세스 안에서 잡던 락. 그리고 파일을 통째로 다시 썼다"
+          },
+          {
+            "name": "etcd",
+            "what": "새 저장소. KV 모델이 이 회사의 데이터 모양과 맞았다"
+          },
+          {
+            "name": "인메모리 인덱스",
+            "what": "⚠️ **DB 에 저장하지 않는다.** 트랜잭션을 인식하도록 직접 만들었고 2~3주가 들었다"
+          },
+          {
+            "name": "Jepsen 리포트",
+            "what": "etcd 3.4.3 에 대한 긍정 평가. 고르는 근거 중 하나였다"
+          }
+        ],
+        "invariants": [
+          "**테스트에 외부 의존을 만들지 않는다** — 지름길을 고른 이유이자 etcd 를 고른 이유다",
+          "**바뀐 키만 I/O 한다** — 전체를 다시 쓰지 않는다",
+          "⚠️ **인덱스는 DB 에 저장하지 않는다** — 미래의 다중 프로세스 고가용성을 위해서다",
+          "**단일 Go 프로세스라는 전제가 옛 구조를 성립시켰다** — 그 전제가 흔들리면 구조도 흔들린다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "⚠️ **(옛 방식) 무언가 바뀌면 전역 락을 잡고 파일을 통째로 다시 쓴다**",
+            "why": "`whenever something changes, we grab a lock in our single process and rewrite out the file`"
+          },
+          {
+            "step": "⚠️ **(옛 방식) 파일을 둘로 갈라 본다** — 중요한 것과 임시(tmpfs) 것",
+            "why": "쉬운 수를 먼저 써 봤다. 그래도 나아지지 않았다"
+          },
+          {
+            "step": "**후보 넷을 놓고 고른다** — MySQL · PostgreSQL · SQLite · CockroachDB",
+            "why": "⚠️ **버린 이유가 전부 운영과 시험 쪽이다** — 성능 비교가 아니었다"
+          },
+          {
+            "step": "**etcd 를 고른다** — Jepsen 리포트(3.4.3) · **Go 로 쓰여 테스트에 직접 링크** · KV 패턴이 맞음",
+            "why": "세 번째 이유가 이 회사답다 — 처음 지름길을 고른 이유와 같다"
+          },
+          {
+            "step": "**바뀐 키만 쓴다**",
+            "why": "전체를 다시 쓰던 것이 사라지며 쓰기가 밀리초가 됐다"
+          },
+          {
+            "step": "⚠️ **인덱스를 직접 만든다** — 트랜잭션을 인식하는 인메모리 인덱스, 2~3주",
+            "why": "etcd 에는 SQL 의 인덱스 체계가 없다"
+          },
+          {
+            "step": "**그 인덱스를 DB 에 저장하지 않는다**",
+            "why": "⚠️ **미래에 여러 프로세스로 고가용성 배포를 하기 위한 준비다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "처음에 무엇으로 시작할 것인가",
+            "chosen": "**20줄짜리 JSON 파일 저장소** — SQLite 프로토타입을 접고",
+            "alternatives": [
+              "SQLite 기반 프로토타입을 이어 가기",
+              "처음부터 제대로 된 데이터베이스"
+            ],
+            "tradeoff": "**언젠가 갈아야 한다는 것을 알고 골랐다** — 회사가 그것을 **단순함과 확장성 사이의 받아들일 만한 거래**라 부른다. 얻은 것은 속도와 **외부 의존 없는 테스트**다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "느려졌을 때 먼저 무엇을 할 것인가",
+            "chosen": "**파일을 둘로 갈라 본다** — 중요한 것과 임시(tmpfs) 것",
+            "alternatives": [
+              "바로 데이터베이스로 옮기기"
+            ],
+            "tradeoff": "⚠️ **효과가 없었다.** 파일이 150MB 라 **디스크 I/O 가 허락하는 최대 속도**로 쓰고 있었기 때문이다 — **쪼개는 것으로는 못 넘는 벽**이었다(이 정리는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "관계형 데이터베이스로 갈 것인가",
+            "chosen": "**안 간다** — MySQL·PostgreSQL 을 뺐다",
+            "alternatives": [
+              "MySQL",
+              "PostgreSQL"
+            ],
+            "tradeoff": "⚠️ **이유가 성능이 아니라 시험과 운영이다** — **Docker 같은 복잡한 테스트 인프라**가 필요하고, **고가용성 시맨틱이 이 회사의 쓰임에서 트랜잭션 동작을 예측하기 어렵게** 만들었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "SQLite 로 돌아갈 것인가",
+            "chosen": "**안 간다**",
+            "alternatives": [
+              "SQLite"
+            ],
+            "tradeoff": "⚠️ **창업자 본인이 주장을 못 하겠다고 적는다** — 성장하는 서비스를 그 위에서 키우자는 말을 `couldn't bring myself to make an argument`. **처음 프로토타입을 접었던 것과 같은 판단이 반복된다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "CockroachDB 는 어떤가",
+            "chosen": "**뺀다**",
+            "alternatives": [
+              "CockroachDB"
+            ],
+            "tradeoff": "⚠️ **`relatively new for a database`** 이고 **이전 경로가 불확실**했다. 분산 SQL 이 주는 것을 포기한 대신 **모르는 위험을 안 진다**(이 대비는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "그래서 무엇을 고를 것인가",
+            "chosen": "**etcd** — 이유가 셋이다",
+            "alternatives": [
+              "앞의 네 후보"
+            ],
+            "tradeoff": "**① Jepsen 3.4.3 의 긍정 리포트, ② Go 로 쓰여 테스트에 직접 링크할 수 있음, ③ KV 패턴이 데이터 모양과 맞음.** ⚠️ **대가는 SQL 의 인덱스 체계가 없다는 것**이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "없는 인덱스를 어떻게 할 것인가",
+            "chosen": "**직접 만든다. 그리고 DB 에 저장하지 않는다** — 트랜잭션을 인식하는 인메모리 인덱스",
+            "alternatives": [
+              "인덱스를 etcd 에 함께 저장하기"
+            ],
+            "tradeoff": "⚠️ **2~3주가 들었다.** 그리고 프로세스마다 메모리를 쓴다(이 대가는 이 사이트의 재구성이다). 그럼에도 이 길을 고른 이유가 미래에 있다 — **여러 프로세스로 고가용성 배포를 하기 위해서다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "⚠️ JSON 파일 + `sync.Mutex` (옛것)",
+            "role": "⚠️ **버린 쪽** — 전체 데이터를 구조체 하나에 담고 바뀔 때마다 통째로 직렬화했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "etcd",
+            "role": "새 저장소. 바뀐 키만 I/O 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "트랜잭션 인식 인메모리 인덱스",
+            "role": "etcd 에 없는 인덱스를 대신한다. DB 에 저장하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Jepsen 리포트",
+            "role": "⚠️ 기술이 아니라 **판단의 근거**다 — 분산 시스템의 일관성을 외부에서 검증한 자료",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "direct-if-possible-relay-if-not",
+          "via": "컨트롤 평면의 상태",
+          "contract": "⚠️ **여기 담기는 것이 공개키와 ACL 정책이다** — 트래픽은 중앙을 안 지나가지만 **상태는 지나간다.** 이 저장소가 느리면 새 연결과 정책 반영이 느려진다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "미래의 다중 프로세스 고가용성",
+          "via": "인메모리 인덱스",
+          "contract": "**인덱스를 DB 에 저장하지 않기로 한 것이 그 준비다** — 회사가 그 이유를 명시한다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "테스트 환경",
+          "via": "외부 의존",
+          "contract": "⚠️ **이 회사의 데이터베이스 선택 기준 중 하나가 테스트다** — 지름길을 고른 이유(외부 의존 없음)와 etcd 를 고른 이유(Go 라 직접 링크)가 같다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Jepsen: etcd 3.4.3",
+            "authors": "Kyle Kingsbury (Jepsen)",
+            "year": "2020",
+            "venue": "Jepsen 분석 보고서",
+            "url": "https://jepsen.io/analyses/etcd-3.4.3",
+            "takeaway": "⚠️ **회사가 이 리포트를 고른 이유의 첫째로 든다.** 분산 시스템의 일관성 주장을 외부가 검증한 자료가 **선택의 근거가 된 드문 사례**다 — 성능 벤치마크가 아니라 **정확성 검증**이 결정을 움직였다",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "테스트 편의가 기술 선택을 정한다",
+            "why_hard": "⚠️ **이 회사에서 두 번 같은 기준이 이겼다** — 처음에 20줄 지름길을 고른 이유가 `외부 의존 없는 테스트` 였고, etcd 를 고른 이유 중 하나가 `Go 로 쓰여 테스트에 직접 링크` 다. 반대로 MySQL·PostgreSQL 은 **Docker 테스트 인프라가 필요해서** 떨어졌다. **성능이 아니라 개발 고리의 길이가 아키텍처를 정한 셈이다**",
+            "current_best": "이 회사의 답은 **그 기준을 인정하고 쓰는 것**이다. ⚠️ **다만 그렇게 고르면 후보가 크게 줄어든다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "지름길을 언제 갚을 것인가",
+            "why_hard": "20줄짜리 저장소는 **오래 잘 버텼다** — 단일 프로세스라는 전제가 살아 있는 동안은 옳은 선택이었다. **문제는 그 전제가 언제 무너지는지가 미리 안 보인다는 것**이다. 여기서는 **파일 150MB · 쓰기 1초**가 신호였다",
+            "current_best": "⚠️ **회사가 신호를 적어 두었을 뿐 기준을 세우지는 않는다.** 쪼개기를 먼저 시도했다가 실패한 것도 그 과정의 일부다 — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+                "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+                "publisher": "Tailscale Blog",
+                "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "전부 다시 쓰던 것에서 바뀐 키만 쓰는 것으로",
+          "question": "1초가 밀리초가 된 이유",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph BEFORE [\"그전 — 20줄 지름길\"]\n    C1[\"<b>무언가 바뀐다</b>\"]:::list --> L1[\"<b>전역 락을 잡는다</b><br/>• 단일 Go 프로세스\"]:::gone\n    L1 --> W1[\"<b>파일을 통째로 다시 쓴다</b><br/>• json.Marshal\"]:::gone\n    W1 --> P1[\"⚠️ <b>150MB · 쓰기 거의 1초</b><br/>• 디스크 I/O 한계 속도<br/>• 두 파일로 갈라도 그대로\"]:::gone\n  end\n  subgraph AFTER [\"지금 — etcd\"]\n    C2[\"<b>무언가 바뀐다</b>\"]:::list --> W2[\"<b>바뀐 키만 쓴다</b>\"]:::accent\n    W2 --> P2[\"<b>쓰기 밀리초</b>\"]:::list\n    IX[\"<b>인메모리 인덱스</b><br/>• 트랜잭션 인식 · 2~3주<br/>• ⚠️ DB 에 저장하지 않는다\"]:::accent\n    IX -.->|미래의 다중 프로세스 HA 를 위해| W2\n  end\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "넷을 버린 이유가 전부 성능이 아니다",
+          "question": "무엇이 데이터베이스를 고르게 했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[\"<b>무엇으로 갈아탈 것인가</b>\"]:::accent\n  Q --> A[\"<b>MySQL · PostgreSQL</b>\"]:::gone --> A1[\"⚠️ <b>Docker 테스트 인프라 필요</b><br/>• HA 시맨틱이 트랜잭션 동작을<br/>  예측하기 어렵게 만든다\"]:::gone\n  Q --> B[\"<b>SQLite</b>\"]:::gone --> B1[\"⚠️ <b>주장을 못 하겠다</b><br/>• couldn't bring myself<br/>  to make an argument\"]:::gone\n  Q --> C[\"<b>CockroachDB</b>\"]:::gone --> C1[\"⚠️ <b>데이터베이스치고 새롭다</b><br/>• 이전 경로가 불확실\"]:::gone\n  Q --> D[\"<b>etcd</b>\"]:::accent --> D1[\"<b>고른 이유 셋</b><br/>• Jepsen 3.4.3 긍정 리포트<br/>• Go 라 테스트에 직접 링크<br/>• KV 패턴이 맞는다\"]:::list\n  D1 --> D2[\"⚠️ <b>대가</b><br/>• SQL 의 인덱스 체계가 없다<br/>• 직접 만드는 데 2~3주\"]:::gone\n  N[\"<b>공통점</b><br/>• 버린 이유가 성능이 아니라<br/>  시험과 운영이다\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+          "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+          "publisher": "Tailscale Blog",
+          "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+        },
+        {
+          "title": "Tailscale: How it works",
+          "url": "https://tailscale.com/blog/how-tailscale-works",
+          "publisher": "Tailscale Blog",
+          "summary": "컨트롤 평면과 데이터 평면을 가르는 구조 설명. 코디네이션 서버가 무엇을 보고 무엇을 못 보는지를 밝힌다."
         }
       ]
     }
