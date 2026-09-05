@@ -1546,6 +1546,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "openapi",
+      "title": "OpenAPI (API 명세)",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "HTTP API 가 무엇을 받고 무엇을 돌려주는지를 **사람과 기계가 같이 읽을 수 있는 형식**으로 적어 둔 파일, 그리고 그 형식의 표준.",
+      "aliases": [
+        "OpenAPI",
+        "Swagger",
+        "OAS",
+        "API 명세",
+        "API 스펙",
+        "API 문서화"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

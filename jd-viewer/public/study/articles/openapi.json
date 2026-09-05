@@ -1,0 +1,617 @@
+{
+  "slug": "openapi",
+  "title": "OpenAPI (API 명세)",
+  "title_en": "OpenAPI Specification",
+  "aliases": [
+    "OpenAPI",
+    "Swagger",
+    "OAS",
+    "API 명세",
+    "API 스펙",
+    "API 문서화"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "HTTP API 가 무엇을 받고 무엇을 돌려주는지를 **사람과 기계가 같이 읽을 수 있는 형식**으로 적어 둔 파일, 그리고 그 형식의 표준.",
+  "summary": "OpenAPI 는 REST API 의 경로·파라미터·요청 본문·응답 스키마를 YAML/JSON 으로 기술하는 표준이다. 표준 원문은 이것이 **\"both humans and computers\"** 를 위한 것이라고 말하는데, 실무에서는 대개 앞의 절반만 쓴다 — **예쁜 API 문서를 만드는 도구**로.\n\n⭐ 채용 데이터도 그렇게 말한다. `OpenAPI|Swagger` 가 든 공고에서 문맥이 드러난 것을 세면 **문서화 57건 대 코드 생성 8건**이다. 그런데 이 명세의 값은 **기계가 읽는 쪽**에 있다 — 명세에서 클라이언트·서버·타입이 생성되는 순간 **명세가 문서가 아니라 진실**이 되고, 프론트와 백엔드가 같은 파일을 보게 된다.\n\n이 문서의 축은 그 갈림이다 — **문서로 쓸 것인가, 계약으로 쓸 것인가.** 그리고 그 결정이 나머지 전부(어디서 뽑을지, 언제 쓸지, 어긋났을 때 무엇이 이기는지)를 정한다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 표준이 스스로 말하는 것",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "OpenAPI Specification (latest)",
+          "url": "https://spec.openapis.org/oas/latest.html",
+          "publisher": "OpenAPI Initiative",
+          "kind": "standard",
+          "summary": "표준 원문. 정의와 최상위 객체의 필수 필드. 이 사이클에서 확인한 판은 3.2.0(2025-09-19)"
+        }
+      ],
+      "body": "표준 원문의 도입부가 정의를 준다.\n\n> \"The OpenAPI Specification (OAS) defines a standard, **language-agnostic** interface to HTTP APIs which allows **both humans and computers** to discover and understand the capabilities of the service **without access to source code, documentation, or through network traffic inspection**.\"\n\n세 가지가 들어 있다.\n\n**① 언어 중립.** 서버가 Java 든 Go 든 명세는 같은 형식이다.\n**② 사람과 기계 둘 다.** 이 문서의 축이 여기서 나온다.\n**③ 소스 코드 없이, 문서 없이, 트래픽을 들여다보지 않고.** — 이 세 부정이 **이 표준이 대신하려는 것들**이다. 명세가 없으면 API 를 이해하는 방법은 저 셋뿐이다.\n\n그리고 이어지는 문장이 '기계가 읽는다'는 말의 뜻을 정확히 한다.\n\n> \"When properly defined, a consumer can understand and interact with the remote service by **parsing and serializing HTTP messages to and from a data model** with a minimal amount of implementation logic.\"\n\n**\"최소한의 구현 로직으로\"** — 즉 명세가 제대로 있으면 **연동 코드를 거의 안 짜도 된다.** 이것이 코드 생성의 근거다.\n\n형식의 뼈대는 단순하다. 최상위 객체의 필수 필드가 `openapi`(버전)와 `info`(메타데이터) 둘뿐이고, 그다음 조건이 하나 붙는다.\n\n> \"In addition to the required fields, **at least one of the `components`, `paths`, or `webhooks` fields MUST be present.**\"\n\n⭐ `paths`(경로)만이 아니라 **`webhooks`(우리가 상대를 부르는 것)** 나 **`components`(재사용 스키마만 모아 둔 것)** 만으로도 유효한 문서가 된다. 즉 이 표준은 **요청-응답만의 것이 아니고**, 스키마 조각을 공유하는 용도로도 쓰인다.\n\n> 📌 `Swagger` 와 `OpenAPI` 는 같은 것을 가리키는 옛 이름과 지금 이름이다(도구 이름으로는 Swagger 계열이 여전히 살아 있다). 공고가 둘을 섞어 쓰는 것은 그 때문이고, 이 문서에서는 표준을 가리킬 때 OpenAPI 로 쓴다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐ 문서로 쓰나, 계약으로 쓰나 — 여기서 모든 것이 갈린다",
+      "confidence": "inferred",
+      "body": "표준은 \"사람과 기계 둘 다\"라고 하는데, 실무에서 쓰이는 방식을 세어 보면 한쪽으로 크게 기운다.\n\n`OpenAPI|Swagger|OAS|Redoc` 이 든 공고 **207건** 중 문맥이 드러난 것을 갈랐다.\n\n| 무엇을 말하는가 | 건수 |\n|---|---|\n| **문서화** (`문서 작성`·`문서 자동화`·`documentation`) | **57** |\n| **코드 생성·계약** (`Generator`·`코드 생성`·`계약`) | 8 |\n| 문맥이 갈리지 않음 (스택 나열 등) | 142 |\n\n**일곱 배다.** 공고의 전형적인 문장이 이렇다 — 빗썸 `OpenAPI/Swagger 기반 **문서화** 경험`, 휴톰 `API **문서**(OpenAPI/Swagger) 작성 및 유지 관리`, 에이비일팔공 `Postman, Swagger, Redoc 등 **API 문서화 도구**`.\n\n문서로 쓰는 것이 나쁘다는 말이 아니다. **그것만 하면 절반을 안 쓰는 것**이라는 말이다. 두 방식의 차이는 취향이 아니라 **명세와 코드 중 무엇이 진실인가**의 차이다.\n\n- **문서로 쓸 때** — 코드가 진실이고 명세는 그 그림자다. 코드에 주석을 달면 도구가 명세를 뽑아 준다. 편하고, 그래서 **명세는 언제나 코드보다 늦고 부정확할 수 있다.** 게다가 **아무도 안 읽으면 틀린 것도 모른다.**\n- **계약으로 쓸 때** — 명세가 진실이고 코드가 그것을 따른다. 명세에서 **클라이언트·서버 스텁·타입이 생성**되므로, 명세와 코드가 어긋나면 **컴파일이 안 되거나 타입이 안 맞는다.**\n\n⭐ 두 번째 방식의 예가 공고에 있다. 지로의 한 줄이 이 문서의 축을 그대로 적는다.\n\n> `**Swagger 기반 API 계약**으로 **프론트엔드 코드 생성까지** 잇는 개발 경험 구축`\n\n**\"계약\"** 이라는 낱말과 **\"코드 생성까지\"** 가 한 줄에 있다. 그리고 밀레니얼웍스·큐픽스가 `OpenAPI Generator` 를 스택에 적는다 — 프론트엔드 스택 나열에 그 이름이 있다는 것은 **프론트가 API 클라이언트를 손으로 안 짠다**는 뜻이다.\n\n💡 **그래서 이 낱말을 배우는 사람이 먼저 정해야 할 것은 도구가 아니라 이것이다** — 우리 팀에서 명세는 **참고 자료인가, 지켜야 하는 것인가.**"
+    },
+    {
+      "id": "codegen",
+      "kind": "how",
+      "heading": "코드 생성 — 명세가 진실이 되는 순간",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "OpenAPI Specification (latest)",
+          "url": "https://spec.openapis.org/oas/latest.html",
+          "publisher": "OpenAPI Initiative",
+          "kind": "standard",
+          "summary": "표준 원문. 정의와 최상위 객체의 필수 필드. 이 사이클에서 확인한 판은 3.2.0(2025-09-19)"
+        }
+      ],
+      "body": "표준이 \"minimal amount of implementation logic\" 이라고 적은 것이 여기서 현실이 된다. 명세 하나에서 나올 수 있는 것들:\n\n- **클라이언트 SDK** — 프론트엔드나 다른 서비스가 호출할 함수들. 경로 문자열을 손으로 안 쓴다.\n- **타입 정의** — 요청·응답의 타입. 필드 이름을 오타 내면 컴파일이 안 된다.\n- **서버 스텁** — 라우팅과 검증의 뼈대.\n- **목 서버** — 백엔드가 아직 없어도 프론트가 개발을 시작한다.\n- **요청 검증** — 들어온 요청이 명세와 다르면 거절.\n\n⭐ 이 중 **타입 생성 하나만으로도 팀의 협업 방식이 바뀐다.** \"응답 필드 이름이 `userName` 이었나 `user_name` 이었나\"를 물어보는 대화가 사라지고, 백엔드가 필드를 바꾸면 **프론트의 빌드가 깨져서** 알게 된다 — 배포 후 화면이 비는 대신에.\n\n그런데 이 이점은 **한 가지 조건 위에서만** 성립한다. **명세가 정확해야 한다.** 생성된 클라이언트는 명세를 믿고 만들어졌으므로, 명세가 실제 서버와 다르면 **틀린 코드가 자동으로 대량 생산된다.** 그래서 코드 생성을 쓰는 팀은 자연스럽게 다음 절의 질문에 답해야 한다 — **명세는 어디서 오는가.**\n\n> 📌 `grpc` 에서는 이 문제가 아예 없다. 거기서는 **정의 파일이 먼저 있고 코드가 거기서 나오는 것이 유일한 방식**이라, 명세와 구현이 어긋날 자리가 없다. **REST 는 반대다 — 코드가 먼저 있고 명세를 나중에 붙이는 것이 기본값**이고, 이 낱말의 어려움 대부분이 거기서 나온다."
+    },
+    {
+      "id": "first",
+      "kind": "extra",
+      "heading": "명세가 먼저냐 코드가 먼저냐 — 각각 다르게 실패한다",
+      "confidence": "inferred",
+      "body": "명세를 얻는 방법은 둘이고, 둘 다 흔하다.\n\n**① 코드 우선(code-first)** — 컨트롤러에 애너테이션·데코레이터를 달면 도구가 명세를 뽑는다. 에이든랩 공고의 `Swagger 기반 **API 문서 자동화** 경험`, 모두싸인의 `OpenAPI 기반의 **문서 자동화**` 가 이 방식이다.\n\n- **장점** — 명세를 따로 관리할 필요가 없고, 코드가 바뀌면 명세도 따라온다.\n- ⚠️ **실패 방식** — 애너테이션은 코드의 **일부만** 설명한다. 응답 예시, 에러 코드, 필드의 의미는 사람이 따로 적어야 하고 **그건 낡는다.** 그리고 **명세를 먼저 합의할 기회가 없다** — 코드를 다 짠 뒤에 프론트가 명세를 본다.\n\n**② 명세 우선(spec-first)** — 명세 파일을 사람이 먼저 쓰고, 거기서 서버 스텁과 클라이언트를 생성한다.\n\n- **장점** — **구현 전에 합의**가 된다. 젤리 공고의 `백엔드 개발자와 **API 스펙, 에러 코드, 데이터 구조, 예외 상황 등을 협의**` 가 이 시점의 대화이고, 이때 바꾸는 것이 가장 싸다.\n- ⚠️ **실패 방식** — 명세를 쓰는 것 자체가 일이고, **구현이 명세를 벗어나기 시작하면** 아무도 명세를 안 고친다. 그러면 ①보다 더 나쁜 상태(**틀린 명세를 다들 믿는 상태**)가 된다.\n\n💡 **어느 쪽을 고르든 결정적인 것은 하나다 — 어긋났을 때 무엇이 이기는가.**\n\n- 코드가 이긴다면 명세는 참고 자료다. 그러면 **생성된 클라이언트를 쓰면 안 된다**(틀린 코드가 대량 생산된다).\n- 명세가 이긴다면 **명세와 구현이 어긋나는 것을 CI 가 잡아야 한다** — 생성된 스텁을 쓰거나, 요청·응답을 명세로 검증하거나.\n\n**이 결정을 안 하고 둘 다 하는 상태가 가장 흔하고 가장 나쁘다.** 명세는 있는데 아무도 믿지 않고, 그래서 아무도 안 고치고, 그래서 더 틀려진다."
+    },
+    {
+      "id": "version",
+      "kind": "extra",
+      "heading": "버전 — 3.1 에서 JSON Schema 와 한 몸이 됐다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Migrating from OpenAPI 3.0 to 3.1.0",
+          "url": "https://www.openapis.org/blog/2021/02/16/migrating-from-openapi-3-0-to-3-1-0",
+          "publisher": "OpenAPI Initiative",
+          "date": "2021-02-16",
+          "kind": "post",
+          "summary": "3.1 이 JSON Schema 방언이 되면서 바뀐 것들 — nullable·exclusiveMinimum·examples"
+        },
+        {
+          "title": "OpenAPI Specification (latest)",
+          "url": "https://spec.openapis.org/oas/latest.html",
+          "publisher": "OpenAPI Initiative",
+          "kind": "standard",
+          "summary": "표준 원문. 정의와 최상위 객체의 필수 필드. 이 사이클에서 확인한 판은 3.2.0(2025-09-19)"
+        }
+      ],
+      "body": "이 표준은 조용히 낡는 종류라 **버전을 밝히고 써야** 한다. 이 사이클에서 확인한 표준 원문의 판은 **3.2.0(2025-09-19 공개)** 이다.\n\n실무에서 가장 크게 갈리는 지점은 **3.0 과 3.1** 사이다. 3.1 의 변화를 공식 안내가 이렇게 적는다.\n\n> \"OpenAPI is entirely compatible with JSON Schema because **it is now a JSON Schema dialect**.\"\n\n3.0 까지 OpenAPI 의 스키마는 JSON Schema 를 **닮았지만 다른 것**이었고, 그래서 JSON Schema 도구를 그대로 못 썼다. 3.1 에서 JSON Schema Draft 2020-12 와 정합되면서 그 벽이 없어졌다. 이유도 함께 적혀 있다 — 도구들이 파일을 다르게 처리할 수 있게 되어 \"you don't always need to make changes to all your models when upgrading OpenAPI versions in the future\".\n\n대가로 **문법이 몇 개 바뀌었다.** 3.0 문서를 그대로 3.1 이라고 선언하면 깨지는 자리들이다.\n\n| 3.0 | 3.1 |\n|---|---|\n| `type: string` + `nullable: true` | `type: [\"string\", \"null\"]` |\n| `minimum: 7` + `exclusiveMinimum: true` | `exclusiveMinimum: 7` |\n| `example: fedora` (스키마 안) | `examples: [fedora]` |\n\n두 번째가 특히 헷갈린다 — `exclusiveMinimum` 이 **불리언에서 값으로 바뀌었다.** 같은 이름의 필드가 뜻이 달라진 것이라 **조용히 잘못 해석될 수 있다.**\n\n⚠️ **그래서 명세 파일을 다룰 때는 `openapi:` 필드의 버전을 먼저 본다.** 도구가 지원하는 버전과 파일이 선언한 버전이 다르면, 오류가 나는 게 아니라 **일부 제약이 무시되는** 일이 생긴다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 명세가 표현하지 못하는 것들",
+      "confidence": "inferred",
+      "body": "**1. 순서와 상태 전이를 표현하지 못한다.** \"결제를 만들고 → 승인하고 → 취소한다\"에서 **취소는 승인 후에만 된다**는 규칙은 명세에 적을 자리가 없다. 각 엔드포인트의 모양만 있을 뿐이다. 이 빈칸을 메우는 것이 `contract-testing` — 소비자가 실제로 하는 호출의 **예시**로 계약을 만들기 때문이다.\n\n**2. 비즈니스 규칙을 표현하지 못한다.** `amount` 가 숫자라는 것은 적히지만 \"잔액보다 크면 안 된다\"는 적히지 않는다. 명세를 통과한 요청이 거절되는 것은 정상이고, **그래서 에러 응답의 설계가 명세의 진짜 어려운 부분**이다(젤리 공고가 `API 스펙, **에러 코드**, 데이터 구조, **예외 상황**` 을 함께 협의한다고 적은 이유).\n\n**3. 명세가 맞다는 것을 명세가 보장하지 않는다.** 이것이 이 낱말의 근본 한계다. 명세는 **약속을 적은 파일**일 뿐이고, 그 약속이 지켜지는지는 다른 장치가 봐야 한다 — 생성된 스텁, 요청·응답 검증, 계약 테스트.\n\n**4. 공개 API 에서는 이것이 사실상 유일한 수단이다.** `contract-testing` 이 밝혔듯 소비자를 개별 식별할 수 없으면 계약 테스트가 성립하지 않는다. 그때 남는 것은 **명세 + 버전 정책 + 폐기 예고**뿐이고, 그래서 **공개 API 일수록 명세의 정확성이 중요해진다.**\n\n**5. 문서 자동화가 곧 좋은 문서는 아니다.** 생성된 페이지에는 필드 목록이 있지만 **왜 이 API 가 있는지, 언제 쓰는지, 무엇과 함께 쓰는지**는 없다. 티맵모빌리티 공고가 `SDK API 문서화 및 **Sample App 개발**을 통해 외부 개발자 연동을 지원` 이라고 적은 것이 그 인식이다 — **예제가 명세를 대신할 수는 없지만, 명세도 예제를 대신하지 못한다.**\n\n**6. 이 문서가 다루지 않는 것.** 정의 파일에서 코드가 나오는 방식 자체는 `grpc`(IDL·필드 번호), 소비자 기대를 계약으로 만드는 쪽은 `contract-testing`, 데이터 스키마의 호환성 규칙은 `data-contract` 다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "doc-vs-contract",
+      "kind": "compare",
+      "caption": "⭐ 문서로 쓸 때와 계약으로 쓸 때",
+      "note": "건수는 all_jobs_enriched.json 을 2026-09-06 에 직접 센 것이다. `OpenAPI|Swagger|OAS|Redoc` 이 든 207건 중 문맥이 드러난 것을 분류: 문서화 57 · 코드 생성/계약 8 · 불명 142. 별도로 제품명 기준 171건(모집중 67), 한국어 표현(`API 명세·스펙·문서화`) 105건(모집중 29).",
+      "columns": [
+        "",
+        "문서로 쓴다",
+        "계약으로 쓴다"
+      ],
+      "rows": [
+        [
+          "무엇이 진실인가",
+          "코드. 명세는 그림자다",
+          "명세. 코드가 따라간다"
+        ],
+        [
+          "명세는 어디서 오나",
+          "코드의 애너테이션에서 뽑는다",
+          "사람이 먼저 쓴다"
+        ],
+        [
+          "어긋나면",
+          "아무 일도 안 일어난다",
+          "빌드가 깨지거나 요청이 거절된다"
+        ],
+        [
+          "프론트는",
+          "문서를 읽고 클라이언트를 손으로 짠다",
+          "생성된 클라이언트·타입을 쓴다"
+        ],
+        [
+          "합의 시점",
+          "구현이 끝난 뒤",
+          "구현 전 — 가장 싸게 바꿀 수 있을 때"
+        ],
+        [
+          "공고의 말",
+          "`API 문서화`·`문서 자동화` (57건)",
+          "`OpenAPI Generator`·`API 계약` (8건)"
+        ],
+        [
+          "⚠️ 최악의 상태",
+          "—",
+          "**둘 다 하는데 무엇이 이기는지 안 정한 상태** — 명세는 있고 아무도 안 믿는다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "object",
+      "kind": "glossary",
+      "caption": "명세 파일의 뼈대 (최상위 객체)",
+      "note": "OpenAPI Specification 원문 기준. 이 사이클에서 확인한 판은 3.2.0(2025-09-19). 필수 필드가 둘뿐이고 나머지는 '셋 중 하나 이상'이라는 점이 이 표준의 성격을 보여 준다.",
+      "columns": [
+        "필드",
+        "필수",
+        "무엇"
+      ],
+      "rows": [
+        [
+          "`openapi`",
+          "필수",
+          "명세의 버전. ⚠️ 도구 호환의 첫 갈림길이다"
+        ],
+        [
+          "`info`",
+          "필수",
+          "API 의 이름·버전·설명 등 메타데이터"
+        ],
+        [
+          "`paths`",
+          "셋 중 하나 이상",
+          "경로별 오퍼레이션 — 흔히 생각하는 그 부분"
+        ],
+        [
+          "`webhooks`",
+          "셋 중 하나 이상",
+          "⭐ **우리가 상대를 부르는 것.** 요청-응답만의 표준이 아니다"
+        ],
+        [
+          "`components`",
+          "셋 중 하나 이상",
+          "재사용 스키마·응답·파라미터. 이것만으로도 유효한 문서가 된다"
+        ],
+        [
+          "원문",
+          "—",
+          "\"In addition to the required fields, at least one of the `components`, `paths`, or `webhooks` fields **MUST** be present.\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "OpenAPI Specification (latest)",
+          "url": "https://spec.openapis.org/oas/latest.html",
+          "publisher": "OpenAPI Initiative",
+          "kind": "standard",
+          "summary": "표준 원문. 정의와 최상위 객체의 필수 필드. 이 사이클에서 확인한 판은 3.2.0(2025-09-19)"
+        }
+      ]
+    },
+    {
+      "id": "first",
+      "kind": "compare",
+      "caption": "명세는 어디서 오나 — 두 방식과 각각의 실패",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 공고의 표현을 각 방식의 예로 붙였다.",
+      "columns": [
+        "",
+        "코드 우선 (code-first)",
+        "명세 우선 (spec-first)"
+      ],
+      "rows": [
+        [
+          "방법",
+          "애너테이션·데코레이터에서 뽑는다",
+          "명세 파일을 먼저 쓰고 코드를 생성한다"
+        ],
+        [
+          "공고의 예",
+          "`Swagger 기반 API 문서 자동화`(에이든랩)",
+          "`Swagger 기반 API 계약으로 프론트엔드 코드 생성까지`(지로)"
+        ],
+        [
+          "장점",
+          "명세를 따로 관리 안 해도 코드를 따라온다",
+          "구현 전에 합의된다 — 바꾸는 비용이 가장 쌀 때"
+        ],
+        [
+          "⚠️ 실패 방식",
+          "응답 예시·에러·의미는 손으로 적고 **그건 낡는다**",
+          "구현이 벗어나기 시작하면 아무도 명세를 안 고친다"
+        ],
+        [
+          "그때 남는 것",
+          "코드는 맞고 문서는 조금씩 틀리다",
+          "**틀린 명세를 다들 믿는다** — 더 나쁘다"
+        ],
+        [
+          "⭐ 반드시 정할 것",
+          "어긋났을 때 무엇이 이기는가",
+          "같음"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "v31",
+      "kind": "spec",
+      "caption": "3.0 → 3.1 에서 바뀐 문법",
+      "note": "OpenAPI Initiative 의 마이그레이션 안내(2021-02-16)에서 옮겼다. 3.1 이 JSON Schema Draft 2020-12 와 정합되면서 생긴 변화이고, 3.0 파일의 버전 표기만 바꾸면 깨지는 자리들이다.",
+      "columns": [
+        "무엇",
+        "3.0",
+        "3.1"
+      ],
+      "rows": [
+        [
+          "널 허용",
+          "`type: string` + `nullable: true`",
+          "`type: [\"string\", \"null\"]`"
+        ],
+        [
+          "배타적 하한",
+          "`minimum: 7` + `exclusiveMinimum: true`",
+          "`exclusiveMinimum: 7` — ⚠️ **같은 이름이 불리언에서 값으로**"
+        ],
+        [
+          "예시",
+          "`example: fedora` (스키마 안)",
+          "`examples: [fedora]`"
+        ],
+        [
+          "근본 변화",
+          "JSON Schema 를 닮았지만 다른 것",
+          "\"it is now a **JSON Schema dialect**\" (Draft 2020-12)"
+        ],
+        [
+          "왜 바꿨나",
+          "—",
+          "\"you don't always need to make changes to all your models when upgrading OpenAPI versions in the future\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Migrating from OpenAPI 3.0 to 3.1.0",
+          "url": "https://www.openapis.org/blog/2021/02/16/migrating-from-openapi-3-0-to-3-1-0",
+          "publisher": "OpenAPI Initiative",
+          "date": "2021-02-16",
+          "kind": "post",
+          "summary": "3.1 이 JSON Schema 방언이 되면서 바뀐 것들 — nullable·exclusiveMinimum·examples"
+        }
+      ]
+    },
+    {
+      "id": "cant",
+      "kind": "glossary",
+      "caption": "명세가 표현하지 못하는 것과, 그 자리를 메우는 것",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 오른쪽 열이 이 백과사전의 다른 문서를 가리킨다.",
+      "columns": [
+        "표현 못 하는 것",
+        "예",
+        "무엇으로 메우나"
+      ],
+      "rows": [
+        [
+          "호출의 순서",
+          "취소는 승인 후에만",
+          "`contract-testing` — 소비자의 실제 호출을 예시로"
+        ],
+        [
+          "상태 전이",
+          "이미 취소된 건은 다시 취소 못 함",
+          "같음. 또는 상태 다이어그램을 문서에 별도로"
+        ],
+        [
+          "비즈니스 규칙",
+          "잔액보다 큰 금액은 거절",
+          "에러 응답의 설계 — 명세의 진짜 어려운 부분"
+        ],
+        [
+          "명세가 맞다는 보장",
+          "—",
+          "생성된 스텁 · 요청/응답 검증 · 계약 테스트"
+        ],
+        [
+          "왜 이 API 가 있는지",
+          "—",
+          "예제·가이드. `Sample App 개발`(티맵모빌리티)"
+        ],
+        [
+          "소비자가 실제로 무엇을 쓰는지",
+          "—",
+          "공개 API 라면 사용량 계측 + 폐기 예고"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "프론트엔드와 백엔드가 같은 조직이고 API 가 자주 바뀐다",
+      "pick": "명세를 계약으로 쓴다 — 명세에서 클라이언트와 타입을 생성",
+      "over": "명세를 문서로만 두고 클라이언트를 손으로 짜기",
+      "why": "타입 생성 하나만으로도 **필드 이름이 바뀌면 프론트의 빌드가 깨져서** 알게 된다 — 배포 후 화면이 비는 대신에. 표준이 말하는 \"minimal amount of implementation logic\" 이 이 자리다",
+      "tradeoff": "명세가 정확해야 한다는 조건이 붙는다. 부정확한 명세로 생성하면 **틀린 코드가 자동으로 대량 생산된다** — 문서로 둘 때보다 나쁘다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "OpenAPI Specification (latest)",
+          "url": "https://spec.openapis.org/oas/latest.html",
+          "publisher": "OpenAPI Initiative",
+          "kind": "standard",
+          "summary": "표준 원문. 정의와 최상위 객체의 필수 필드. 이 사이클에서 확인한 판은 3.2.0(2025-09-19)"
+        }
+      ]
+    },
+    {
+      "situation": "API 를 아직 안 만들었고 프론트·백엔드가 동시에 시작해야 한다",
+      "pick": "명세 우선 — 명세를 먼저 쓰고 목 서버를 띄운다",
+      "over": "백엔드가 먼저 만들고 그다음 프론트가 붙기",
+      "why": "명세만 있으면 목 서버가 나오므로 프론트가 기다리지 않는다. 그리고 **구현 전에 합의**가 된다 — 에러 코드·예외 상황까지 이때 정하는 것이 가장 싸다(젤리 공고가 협의 항목으로 적은 그것들)",
+      "tradeoff": "명세를 쓰는 것 자체가 일이고, 구현하다 보면 명세를 벗어난다. **명세를 고치는 규율**이 없으면 '틀린 명세를 다들 믿는' 상태가 된다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "이미 돌아가는 큰 API 가 있고 명세가 없다",
+      "pick": "코드 우선 — 애너테이션으로 뽑는 것부터 시작한다",
+      "over": "명세를 손으로 전부 쓰기",
+      "why": "손으로 쓴 명세는 처음부터 부정확하고, 검증할 방법도 없다. 코드에서 뽑으면 **적어도 경로와 타입은 맞는다.** 부족한 것(예시·에러·의미)은 그다음에 채운다",
+      "tradeoff": "뽑힌 명세를 계약으로 쓰기는 어렵다 — 애너테이션이 설명하지 않는 부분이 많기 때문이다. **참고 자료로 시작해 점진적으로 정확도를 올리는** 경로가 된다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "공개 API 여서 소비자가 누구인지 모른다",
+      "pick": "명세를 정확히 유지하고 버전·폐기 정책을 붙인다",
+      "over": "계약 테스트",
+      "why": "`contract-testing` 이 밝혔듯 소비자를 개별 식별할 수 없으면 그 방식은 성립하지 않는다. 남는 수단이 명세뿐이므로 **정확성이 곧 신뢰**가 된다 — 그리고 명세가 틀리면 남의 서비스가 깨진다",
+      "tradeoff": "명세가 맞다는 것을 명세가 보장하지 않으므로, 요청·응답을 명세로 검증하는 장치를 따로 둬야 한다. 그리고 소비자가 실제로 무엇을 쓰는지는 사용량 계측으로 따로 알아야 한다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "3.0 으로 쓰인 명세를 3.1 로 올려야 한다",
+      "pick": "`nullable`·`exclusiveMinimum`·`example` 세 자리를 먼저 훑는다",
+      "over": "`openapi:` 버전 표기만 바꾸기",
+      "why": "3.1 은 JSON Schema 방언이 되면서 이 셋의 문법이 바뀌었다. 특히 `exclusiveMinimum` 은 **같은 이름이 불리언에서 값으로** 바뀐 것이라 조용히 잘못 해석될 수 있다",
+      "tradeoff": "도구가 3.1 을 지원하는지 먼저 확인해야 한다. 지원하지 않으면 올린 뒤에 **제약이 무시되는데 오류는 안 나는** 상태가 된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Migrating from OpenAPI 3.0 to 3.1.0",
+          "url": "https://www.openapis.org/blog/2021/02/16/migrating-from-openapi-3-0-to-3-1-0",
+          "publisher": "OpenAPI Initiative",
+          "date": "2021-02-16",
+          "kind": "post",
+          "summary": "3.1 이 JSON Schema 방언이 되면서 바뀐 것들 — nullable·exclusiveMinimum·examples"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "명세를 만들어 두고 어긋났을 때 무엇이 이기는지 정하지 않는다",
+      "why": "둘 다 하는 것이 가장 자연스러워 보인다 — 명세도 쓰고 코드도 짜고. 그런데 규칙이 없으면 **명세를 고치는 사람이 아무도 없고**, 몇 달 뒤에는 '명세는 있는데 아무도 안 믿는' 상태가 된다. 그때부터 명세는 있으나 마나가 아니라 **적극적으로 해롭다**(새로 온 사람이 믿는다)",
+      "fix": "팀 규칙으로 한 문장을 정한다 — **\"명세가 이긴다\"** 또는 **\"코드가 이긴다\"**. 명세가 이긴다면 어긋남을 CI 가 잡게 하고(생성된 스텁·요청 검증), 코드가 이긴다면 **생성된 클라이언트를 쓰지 않는다**"
+    },
+    {
+      "trap": "부정확한 명세로 클라이언트를 생성한다",
+      "why": "코드 생성은 편해서 빨리 도입되는데, 그 편의는 **명세가 정확하다는 전제** 위에 있다. 애너테이션에서 대충 뽑은 명세로 생성하면 **틀린 함수 시그니처와 타입이 자동으로 대량 생산되고**, 그것을 믿고 짠 코드가 런타임에 깨진다",
+      "fix": "생성을 켜기 전에 **명세와 실제 응답을 대조하는 검증을 한 번 돌린다**(실 서버 응답을 명세로 검증). 그리고 생성을 쓰기로 했다면 **그 검증을 CI 에 상시로 둔다** — 생성은 명세의 정확도를 요구하는 대신 그것을 강제하는 장치이기도 하다"
+    },
+    {
+      "trap": "3.0 문서의 `openapi:` 표기만 3.1 로 바꾼다",
+      "why": "버전을 올리라는 말을 듣고 가장 먼저 하는 일이 그것이고, 대개 파일이 열리기는 한다. 그런데 `nullable: true` 는 3.1 에 없는 키가 되고, `exclusiveMinimum: true` 는 **불리언이 아니라 값으로 해석되어야 하는 자리**라 뜻이 달라진다",
+      "fix": "공식 안내의 세 자리를 먼저 훑는다 — `nullable` → `type: [\"...\", \"null\"]`, `exclusiveMinimum/Maximum` → 값, 스키마 안의 `example` → `examples`. 그리고 **쓰는 도구가 3.1 을 지원하는지 확인**한다(지원 안 하면 제약이 조용히 무시된다)",
+      "sources": [
+        {
+          "title": "Migrating from OpenAPI 3.0 to 3.1.0",
+          "url": "https://www.openapis.org/blog/2021/02/16/migrating-from-openapi-3-0-to-3-1-0",
+          "publisher": "OpenAPI Initiative",
+          "date": "2021-02-16",
+          "kind": "post",
+          "summary": "3.1 이 JSON Schema 방언이 되면서 바뀐 것들 — nullable·exclusiveMinimum·examples"
+        }
+      ]
+    },
+    {
+      "trap": "자동 생성된 문서 페이지를 '문서화 완료'로 친다",
+      "why": "필드 목록과 예시가 그럴듯하게 나오므로 다 된 것처럼 보인다. 그런데 거기에는 **왜 이 API 가 있는지, 언제 쓰는지, 무엇과 함께 쓰는지**가 없다. 외부 개발자는 그 셋을 알아야 연동을 시작한다",
+      "fix": "명세 옆에 **시작 가이드와 실제로 도는 예제**를 둔다. 티맵모빌리티 공고가 `API 문서화 및 **Sample App 개발**` 을 한 줄에 적은 것이 이 인식이다. 명세는 참조용이고, 사람은 예제로 시작한다"
+    },
+    {
+      "trap": "에러 응답을 명세에 안 적는다",
+      "why": "성공 응답은 자연스럽게 적히는데 에러는 '나중에'가 된다. 그리고 애너테이션 기반 생성에서는 **던지는 예외가 자동으로 명세에 안 들어간다.** 그런데 연동하는 쪽이 실제로 고생하는 것은 에러 처리다",
+      "fix": "**에러 코드 목록과 각각의 의미를 명세에 넣는 것**을 API 설계의 일부로 삼는다. 젤리 공고가 협의 항목으로 `API 스펙, **에러 코드**, 데이터 구조, **예외 상황**` 을 나란히 적은 것이 그 순서다 — 에러는 나중에 붙이는 게 아니라 함께 정하는 것이다"
+    },
+    {
+      "trap": "명세가 호출의 순서·상태 전이까지 지켜 줄 거라 기대한다",
+      "why": "명세가 꼼꼼할수록 '이대로만 부르면 된다'고 느껴진다. 그런데 명세에는 **각 엔드포인트의 모양만** 있고 \"취소는 승인 후에만\" 같은 규칙을 적을 자리가 없다",
+      "fix": "순서·상태 규칙은 **별도로 문서화하고**(상태 다이어그램), 실제로 지켜지는지는 다른 장치로 본다 — 소비자의 실제 호출 흐름을 예시로 만드는 `contract-testing` 이 그 자리다. 명세는 **모양의 계약**이지 **흐름의 계약**이 아니다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "OAS",
+      "en": "OpenAPI Specification",
+      "what": "이 표준의 정식 약칭. 공고에서 `OAS(Swagger)` 처럼 쓰이기도 한다"
+    },
+    {
+      "term": "Swagger",
+      "en": "Swagger",
+      "what": "이 표준의 옛 이름이자 지금은 도구 계열의 이름. 명세를 가리킬 땐 OpenAPI 가 맞다"
+    },
+    {
+      "term": "코드 우선",
+      "en": "code-first",
+      "what": "코드의 애너테이션에서 명세를 뽑는 방식"
+    },
+    {
+      "term": "명세 우선",
+      "en": "spec-first",
+      "what": "명세를 먼저 쓰고 코드를 생성하는 방식"
+    },
+    {
+      "term": "컴포넌트",
+      "en": "components",
+      "what": "재사용할 스키마·응답·파라미터를 모아 두는 자리. 이것만으로도 유효한 문서가 된다"
+    },
+    {
+      "term": "JSON Schema 방언",
+      "en": "JSON Schema dialect",
+      "what": "3.1 부터 OpenAPI 의 스키마가 JSON Schema 의 한 갈래가 됐다는 뜻"
+    }
+  ],
+  "drills": [
+    {
+      "task": "자기 팀 API 의 엔드포인트 하나를 골라 **명세를 손으로 쓴다**(경로·파라미터·요청 본문·성공 응답·**에러 응답 전부**). 다 쓴 뒤 실제 서버에 요청을 보내 **응답이 명세와 정확히 같은지** 필드 단위로 대조한다.",
+      "done_when": "명세와 실제 응답이 다른 지점을 최소 하나 찾아낸다(대개 널 허용 여부, 안 적힌 필드, 문서에 없는 에러 코드).",
+      "why": "'명세가 있다'와 '명세가 맞다'는 다른 상태라는 것을 30분 만에 확인한다. 그리고 **에러 응답을 다 적어 보면** 왜 그것이 명세의 진짜 어려운 부분인지 알게 된다.",
+      "hours": 1
+    },
+    {
+      "task": "그 명세에서 **클라이언트 코드나 타입을 생성**해 보고(OpenAPI Generator 등), 생성된 타입으로 실제 응답을 파싱해 본다. 그다음 **명세에서 필드 하나의 이름을 바꿔** 다시 생성하고 무슨 일이 일어나는지 본다.",
+      "done_when": "이름을 바꾼 뒤 **컴파일 오류나 타입 오류가 나는 것**을 확인한다 — 런타임까지 안 가고 잡힌다는 것을 눈으로 본다.",
+      "why": "'문서로 쓰는 것'과 '계약으로 쓰는 것'의 차이가 이 한 번의 실험에서 전부 드러난다. 그리고 **명세가 부정확하면 틀린 코드가 대량 생산된다**는 것도 같은 실험에서 확인된다.",
+      "no_hardware": "생성 도구를 못 쓰는 환경이면 손으로 대신한다 — 명세를 보고 타입 정의를 직접 쓴 뒤, 명세의 필드 이름을 바꾸고 **그 변경을 반영하려면 코드의 몇 곳을 고쳐야 하는지** 센다. 그 숫자가 곧 손으로 짤 때의 비용이다.",
+      "hours": 2
+    },
+    {
+      "task": "팀의 명세 파일에서 `openapi:` 버전을 확인하고, **3.0 이면 3.1 로 올릴 때 고쳐야 할 자리를 전부 찾는다** — `nullable`, `exclusiveMinimum`/`exclusiveMaximum`, 스키마 안의 `example`. 각각 몇 군데인지 세고 고친 버전을 만들어 도구로 열어 본다.",
+      "done_when": "세 종류의 개수가 나오고, 고친 파일이 3.1 지원 도구에서 오류 없이 열린다.",
+      "why": "버전에 매인 문장은 조용히 낡는다. 그리고 `exclusiveMinimum` 처럼 **같은 이름이 뜻만 바뀐 경우**는 오류가 안 나므로 직접 세어 보지 않으면 못 찾는다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "표준은 이 명세가 누구를 위한 것이라고 말하는가? 실무에서는 그중 어느 쪽을 주로 쓰는가?",
+    "명세와 코드가 어긋났을 때 무엇이 이기는지 정하지 않으면 무슨 일이 생기는가?",
+    "부정확한 명세로 클라이언트를 생성하면 왜 문서로만 둘 때보다 나쁜가?",
+    "`paths` 없이도 유효한 OpenAPI 문서가 될 수 있는가?",
+    "3.0 문서의 버전 표기만 3.1 로 바꾸면 어떤 자리가 조용히 잘못 해석되는가?",
+    "\"취소는 승인 후에만 가능하다\"는 규칙을 명세에 어떻게 적는가? 못 적는다면 무엇으로 지키는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Swagger 기반 API 계약으로 프론트엔드 코드 생성까지 잇는 개발 경험 구축",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371583",
+      "where": "지로",
+      "what_it_shows": "⭐⭐ **`계약` 과 `코드 생성까지` 가 한 줄에 있다.** 이 문서의 축(문서인가 계약인가)을 회사가 한 문장으로 적어 준 자리이고, 207건 중 이런 문장은 8건뿐이다"
+    },
+    {
+      "quote": "• API 문서화(Swagger/OpenAPI), 시스템 아키텍처 문서 작성 능력이 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/317126",
+      "where": "데일리펀딩",
+      "what_it_shows": "다수 용법의 전형 — **`문서 작성 능력`** 과 나란히 있다. 명세를 기계가 읽는 것이 아니라 **사람이 쓰는 문서**로 본다는 뜻이고, 57건이 이 형태다"
+    },
+    {
+      "quote": "• Frontend : TypeScript / React / Next.js / Zustand / TanStack Query / Tailwind CSS / i18n / OpenAPI Generator",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/379531",
+      "where": "밀레니얼웍스",
+      "what_it_shows": "⭐ **프론트엔드 스택 나열에 `OpenAPI Generator` 가 있다.** 프론트가 API 클라이언트를 손으로 안 짠다는 뜻이고, 명세가 계약으로 쓰이는 팀의 표시다"
+    },
+    {
+      "quote": "•백엔드 개발자와 API 스펙, 에러 코드, 데이터 구조, 예외 상황 등을 협의",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372883",
+      "where": "젤리",
+      "what_it_shows": "⭐ 협의 항목이 넷인데 **둘이 에러 쪽**(`에러 코드`·`예외 상황`)이다. 성공 응답보다 에러 설계가 실제로 어려운 부분이라는 것을 프론트 쪽 공고가 증언한다"
+    },
+    {
+      "quote": "• Swagger 기반 API 문서 자동화 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/368779",
+      "where": "에이든랩",
+      "what_it_shows": "코드 우선(code-first) 방식의 이름이 `문서 **자동화**` 다 — 코드가 진실이고 문서가 따라 나온다는 구조가 낱말에 그대로 드러난다"
+    },
+    {
+      "quote": "• 내부 SDK와 라이브러리를 설계하고 유지보수하며, OpenAPI 기반의 문서 자동화와 연동 가이드를 제공합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/383523",
+      "where": "모두싸인",
+      "what_it_shows": "`문서 자동화` **와 `연동 가이드`를 함께** 적는다. 생성된 문서만으로는 부족하다는 인식이 한 줄 안에 있다 — 이 문서 경계 5번의 근거"
+    },
+    {
+      "quote": "• SDK API 문서화 및 Sample App 개발을 통해 외부 개발자 연동을 지원합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378307",
+      "where": "티맵모빌리티",
+      "what_it_shows": "⭐ **`Sample App` 이 문서화와 같은 줄에 있다.** 외부 개발자를 상대할 때는 명세만으로 안 되고 도는 예제가 필요하다 — 공개 API 쪽의 실무 감각"
+    },
+    {
+      "quote": "The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to HTTP APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection.",
+      "from": "standard",
+      "url": "https://spec.openapis.org/oas/latest.html",
+      "where": "OpenAPI Specification 원문",
+      "what_it_shows": "**\"both humans and computers\"** — 표준이 스스로 두 용도를 나란히 든다. 실무의 57 대 8 이 그 절반만 쓰고 있다는 것을 보여 주는 대조점이다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "contract-testing",
+      "how": "⭐ 이 문서를 큐에 올린 자리. 그쪽의 `vs-spec` 표가 비워 둔 반대편이 여기다. 그리고 명세가 표현 못 하는 것(순서·상태 전이)을 그쪽이 메운다"
+    },
+    {
+      "slug": "grpc",
+      "how": "정의 파일에서 코드가 나오는 것이 **유일한 방식**인 경우. 그래서 명세와 구현이 어긋날 자리가 없다 — REST 와 정확히 반대다"
+    },
+    {
+      "slug": "data-contract",
+      "how": "호환성 규칙(무엇이 깨는 변경인가)이 그쪽에 있다. 여기서 정한 스키마를 바꿀 때 그 규칙이 필요해진다"
+    },
+    {
+      "slug": "webhook",
+      "how": "3.1 부터 `webhooks` 가 최상위 필드로 들어왔다 — 우리가 상대를 부르는 것도 같은 명세로 기술한다"
+    },
+    {
+      "slug": "zero-downtime-deploy",
+      "how": "명세를 바꾸는 것도 두 버전 공존 문제다. 필드 추가는 확장, 삭제는 수축"
+    },
+    {
+      "slug": "sse",
+      "how": "스트리밍 응답처럼 요청-응답 모델을 벗어나는 것은 이 명세로 기술하기 어렵다"
+    },
+    {
+      "slug": "api-versioning",
+      "how": "⚠️ 아직 문서가 없다. 공개 API 에서 계약 테스트를 못 쓸 때 남는 유일한 수단 — 버전 정책과 폐기 예고. `data-contract`·`contract-testing` 도 이 자리를 가리킨다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `OpenAPI`·`Swagger` 어느 이름도 없다. 직접 세면 제품명(`OpenAPI|Swagger|Redoc|Stoplight`)으로 **171건(모집중 67)**, 한국어 표현(`API 명세|API 스펙|API 문서화`)으로 **105건(모집중 29)** 이다.",
+    "⭐ **문서 대 계약을 갈라 센 것이 이 문서의 축이다.** `OpenAPI|Swagger|OAS|Redoc` 이 든 207건 중 **문서화 57 · 코드 생성/계약 8 · 불명 142**. 불명이 많은 이유는 대부분이 **기술 스택 나열**이기 때문이고(`schema-migration` 에서 확인한 그 함정), 그래서 이 비율은 '문맥이 드러난 것들 사이의 비율'로 읽어야 한다.",
+    "**`오픈 API`(공공데이터 개방)와의 충돌은 이번에는 없었다.** 큐에 올릴 때 우려했으나 실제로 세어 보니 의심 사례가 0건이었다 — 국내 공고에서 `OpenAPI` 는 대체로 이 표준을 뜻한다. **큐의 근거란에 적어 둔 우려가 셈으로 해소된 사례**로 기록해 둔다.",
+    "⚠️ **이 사이클에서 연 표준 원문은 3.2.0(2025-09-19)** 이었고, **3.1 이 JSON Schema 와 어떻게 관련되는지는 그 페이지에서 확인하지 못했다.** 그래서 그 사실은 OpenAPI Initiative 의 **마이그레이션 안내 글(2021-02-16)** 로 받쳤다 — 표준 원문이 아니라 같은 기관의 블로그 글이라는 점을 밝힌다. 3.2 에서 새로 바뀐 것은 확인하지 않았다.",
+    "**코드 생성 도구의 구체적 동작·품질은 확인하지 않았다.** `OpenAPI Generator` 등이 어떤 언어에서 어떤 코드를 내는지, 생성 코드의 알려진 한계는 이 사이클에서 열지 않았다. 본문은 **'생성이 가능하다'와 그 전제(명세의 정확성)** 까지만 다룬다.",
+    "**요청·응답을 명세로 검증하는 방법(런타임 검증 미들웨어 등)도 이름만 언급했다.** 경계 3번과 지뢰 2번의 해법으로 제시했으나 구체적 도구나 구현은 확인하지 않았다 — 보강한다면 그쪽이 다음 대상이다."
+  ],
+  "sources": [
+    {
+      "title": "OpenAPI Specification (latest)",
+      "url": "https://spec.openapis.org/oas/latest.html",
+      "publisher": "OpenAPI Initiative",
+      "kind": "standard",
+      "summary": "표준 원문. 정의와 최상위 객체의 필수 필드. 이 사이클에서 확인한 판은 3.2.0(2025-09-19)"
+    },
+    {
+      "title": "Migrating from OpenAPI 3.0 to 3.1.0",
+      "url": "https://www.openapis.org/blog/2021/02/16/migrating-from-openapi-3-0-to-3-1-0",
+      "publisher": "OpenAPI Initiative",
+      "date": "2021-02-16",
+      "kind": "post",
+      "summary": "3.1 이 JSON Schema 방언이 되면서 바뀐 것들 — nullable·exclusiveMinimum·examples"
+    }
+  ]
+}
