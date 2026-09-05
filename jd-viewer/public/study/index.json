@@ -1133,6 +1133,23 @@
       "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "capacity",
+      "title": "용량 계획",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**얼마나 준비해 둘 것인가**를 정하는 일이다. 재는 것(`load-test`)과 거절하는 것(`rate-limit`) 사이에서 — **여유를 얼마나 두고 그 값을 얼마에 살 것인가**를 고른다.",
+      "aliases": [
+        "용량 계획",
+        "용량 산정",
+        "capacity planning",
+        "오토스케일링"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
