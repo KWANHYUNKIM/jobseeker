@@ -964,12 +964,11 @@
         "시크릿 관리",
         "시크릿",
         "secrets management",
-        "Vault",
-        "KMS"
+        "Vault"
       ],
       "sections": 6,
       "drills": 3,
-      "updated_at": "2026-09-05"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "oncall",
@@ -1561,6 +1560,27 @@
         "API 명세",
         "API 스펙",
         "API 문서화"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "encryption",
+      "title": "암호화와 키 관리",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "데이터를 열쇠 없이는 못 읽게 바꿔 두는 일 — 그리고 그 순간 생기는 진짜 문제, **그 열쇠를 어디에 둘 것인가.**",
+      "aliases": [
+        "암호화",
+        "encryption",
+        "키 관리",
+        "key management",
+        "KMS",
+        "봉투 암호화",
+        "envelope encryption",
+        "HSM"
       ],
       "sections": 6,
       "drills": 3,

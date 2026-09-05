@@ -1,0 +1,646 @@
+{
+  "slug": "encryption",
+  "title": "암호화와 키 관리",
+  "title_en": "Encryption and Key Management",
+  "aliases": [
+    "암호화",
+    "encryption",
+    "키 관리",
+    "key management",
+    "KMS",
+    "봉투 암호화",
+    "envelope encryption",
+    "HSM"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "데이터를 열쇠 없이는 못 읽게 바꿔 두는 일 — 그리고 그 순간 생기는 진짜 문제, **그 열쇠를 어디에 둘 것인가.**",
+  "summary": "암호화 자체는 어렵지 않다. 라이브러리를 부르면 되고, 클라우드에서는 체크박스 하나다. 어려운 것은 그다음이다 — **데이터를 지키는 문제가 키를 지키는 문제로 바뀐다.** 그리고 키를 지키려고 키를 또 암호화하면 그 키를 지키는 문제가 생긴다. AWS KMS 문서가 이 후퇴를 한 문장으로 끝낸다: **\"eventually, one key must remain in plaintext.\"**\n\n그래서 이 낱말의 실무는 알고리즘 고르기가 아니라 **어디까지 후퇴하고 어디서 멈출 것인가**, 그리고 **멈춘 그 자리를 무엇으로 지킬 것인가**다. 봉투 암호화·HSM·키 교체가 전부 그 질문의 답이다.\n\n⚠️ 그리고 이 문서는 **저장 암호화가 실제로 무엇을 막는지**를 분명히 하는 데 한 절을 쓴다 — 디스크 암호화는 **정상 권한으로 접속한 애플리케이션에게는 아무 방어도 되지 않는다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 그리고 저장 암호화가 실제로 막는 것",
+      "confidence": "inferred",
+      "body": "암호화가 걸리는 자리는 셋이고, **각각 막는 것이 다르다.**\n\n**① 전송 중(in transit)** — TLS. 네트워크에서 엿듣거나 중간에 바꾸는 것을 막는다. 사내망이라고 안 걸면 **망 안에 들어온 사람에게 다 보인다.**\n\n**② 저장 시(at rest)** — 디스크·볼륨·백업 파일의 암호화. 클라우드에서는 대개 체크박스다.\n\n**③ 애플리케이션 레벨** — 특정 컬럼·필드만 애플리케이션이 암호화해서 저장한다. 비바리퍼블리카 공고의 `**개인정보 분리·암호화**` 가 이쪽이다.\n\n⭐ **여기서 가장 흔한 오해가 ②다.** \"RDS 암호화 켰으니 개인정보는 안전하다\"는 문장이 자주 나오는데, 저장 암호화가 막는 것은 **디스크가 물리적으로 빠져나가는 경우와 스냅샷·백업 파일이 새는 경우**다. 데이터베이스에 **정상적인 계정으로 접속한 사람이나 애플리케이션에게는 평문 그대로 보인다** — 그쪽 방어는 접근 제어(`rbac`·`abac`)와 기록(`audit-log`)의 몫이다.\n\n그래서 **무엇을 막으려는지 먼저 정해야 한다.**\n\n| 위협 | ① 전송 중 | ② 저장 시 | ③ 애플리케이션 |\n|---|---|---|---|\n| 네트워크 엿듣기 | **막는다** | 못 막는다 | 못 막는다(추가 방어는 됨) |\n| 디스크·백업 파일 유출 | 못 막는다 | **막는다** | 막는다 |\n| DB 계정을 얻은 공격자 | 못 막는다 | **못 막는다** | **막는다** |\n| 권한 있는 내부자 | 못 막는다 | 못 막는다 | 키가 분리돼 있으면 막는다 |\n\n③이 강한 대신 대가가 크다 — 암호화된 컬럼은 **검색도 정렬도 인덱스도 안 된다.** 그래서 실무에서는 `주민번호는 애플리케이션 암호화, 나머지는 저장 암호화` 같은 혼합이 된다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐ 왜 어려운가 — 암호화는 문제를 옮긴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS cryptography essentials — Envelope encryption",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "봉투 암호화의 정의와 '결국 하나의 키는 평문으로 남아야 한다'는 진술"
+        }
+      ],
+      "body": "AWS KMS 문서의 봉투 암호화 절이 이 낱말의 본질을 두 문장으로 연다.\n\n> \"When you encrypt your data, your data is protected, **but you have to protect your encryption key**. One strategy is to encrypt it.\"\n\n**데이터를 지키는 문제가 키를 지키는 문제가 됐다.** 그리고 그 답이 \"키를 암호화하자\"라면, 곧바로 다음 질문이 온다 — 그럼 그 키는?\n\n문서가 이 후퇴를 끝까지 밀어붙인 뒤 결론을 못 박는다.\n\n> ⭐⭐ \"You can even encrypt the data encryption key under another encryption key, and encrypt that encryption key under another encryption key. **But, eventually, one key must remain in plaintext** so you can decrypt the keys and your data. This top-level plaintext key encryption key is known as the *root key*.\"\n\n**결국 하나의 키는 평문으로 남아야 한다.** 암호화로는 이 문제를 없앨 수 없고, **다른 종류의 보호로 넘길 수만 있다.**\n\n그 마지막 키를 무엇으로 지키느냐가 갈림길이다.\n\n- **파일에 둔다** — 코드 저장소나 설정 파일. ⚠️ 그러면 **암호화를 안 한 것과 거의 같다**(데이터를 얻는 사람은 대개 그 파일도 얻는다).\n- **환경 변수·시크릿 저장소에 둔다** — 나아졌지만 여전히 **어딘가에는 평문으로 있다**(`secrets` 의 주제).\n- **전용 하드웨어에 가둔다** — 키가 그 장치 밖으로 평문으로 나오지 않게 한다. AWS KMS 가 파는 것이 이것이다 — 루트 키는 \"never leave the AWS KMS **FIPS 140-3 Security Level 3 validated hardware security modules** unencrypted\".\n\n💡 **그래서 \"암호화했나요?\"는 반쪽 질문이다.** 완전한 질문은 **\"키가 어디 있고, 데이터를 가져갈 수 있는 사람이 그 키도 가져갈 수 있나요?\"** 다. 답이 \"예\"면 그 암호화는 규정 문서를 채울 뿐이다."
+    },
+    {
+      "id": "envelope",
+      "kind": "how",
+      "heading": "봉투 암호화 — 큰 것은 싼 키로, 그 키는 비싼 키로",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS cryptography essentials — Envelope encryption",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "봉투 암호화의 정의와 '결국 하나의 키는 평문으로 남아야 한다'는 진술"
+        }
+      ],
+      "body": "정의는 한 줄이다.\n\n> \"*Envelope encryption* is the practice of **encrypting plaintext data with a data key, and then encrypting the data key under another key**.\"\n\n두 겹이다. **데이터는 데이터 키로, 데이터 키는 마스터 키로.** 구조를 식으로 적으면 문서의 표현대로 이렇다 — `ciphertext = Encrypt(msgKey, message)` 그리고 `encKey = Encrypt(k, msgKey)`, 이 둘 `(encKey, ciphertext)` 을 **한 덩어리로 묶어 저장**한다.\n\n왜 이렇게 하는가. 문서가 이점 셋을 든다.\n\n**① 데이터 키를 어디 둘지 고민할 필요가 없다.**\n> \"you don't have to worry about storing the encrypted data key, because the data key is **inherently protected by encryption**. You can safely **store the encrypted data key alongside the encrypted data**.\"\n\n⭐ **암호화된 데이터 키를 데이터 바로 옆에 둔다.** 이것이 봉투 구조의 실용적 핵심이다 — 별도의 키 저장소를 데이터마다 만들 필요가 없어진다.\n\n**② 같은 데이터를 여러 키로 보호할 때 싸다.**\n> \"Instead of re-encrypting raw data multiple times with different keys, you can **re-encrypt only the data keys**.\"\n\n⭐⭐ 이것이 **키 교체가 현실적으로 가능한 이유**다. 100TB 를 다시 암호화하는 것은 불가능에 가깝지만, **그 100TB 를 지키는 데이터 키 몇 개만 다시 감싸는 것**은 순식간이다.\n\n**③ 알고리즘의 강점을 합친다.**\n> \"symmetric key algorithms are faster and produce smaller ciphertexts ... But public key algorithms provide inherent separation of roles and easier key management.\"\n\n**큰 데이터는 빠른 대칭키로, 그 키의 전달은 공개키로.** TLS 가 하는 일도 구조적으로 같다.\n\n> 📌 이 구조를 쓰면 **평문 데이터 키가 잠깐 애플리케이션 메모리에 존재하는 순간**이 반드시 생긴다(암복호화를 하려면 필요하다). 그 시간을 짧게 유지하는 것이 구현의 규율이고, 이 문서는 그 이상은 다루지 않는다."
+    },
+    {
+      "id": "rotation",
+      "kind": "how",
+      "heading": "키 교체 — 안 하는 이유는 게을러서가 아니다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS — Concepts (KMS keys, key hierarchy)",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "키의 세 종류와 계층(도메인 키·HSM 백킹 키·파생 키·데이터 키), 그리고 교체 주기"
+        }
+      ],
+      "body": "\"키는 주기적으로 교체하라\"는 조언은 어디에나 있는데 실제로 하는 곳은 드물다. 이유가 있다 — **교체하면 옛 데이터를 못 읽게 될까 봐**다.\n\n그 걱정을 푸는 방식이 AWS KMS 문서에 정확히 적혀 있다.\n\n> ⭐⭐ \"When you want to rotate the KMS key ..., a new HBK is created and associated with the KMS key as the active HBK. **The older HBKs are preserved and can be used to decrypt and verify previously protected data. But only the active cryptographic key can be used to protect new information.**\"\n\n**옛 키는 버려지지 않는다.** 새 데이터만 새 키로 보호되고, 옛 데이터는 옛 키로 계속 읽힌다. 즉 **교체는 \"모든 데이터를 다시 암호화하는 일\"이 아니다** — 그 오해가 교체를 안 하는 가장 큰 이유다.\n\n그리고 키가 하나가 아니라 **계층**이라는 점이 이 구조를 떠받친다(아래 `hierarchy` 표). 도메인 키는 **매일**, HSM 백킹 키는 **매년** 돌고, 파생 키는 **암호화 한 번마다** 새로 만들어진다. 교체 주기가 층마다 다르고, **위층이 자주 돌수록 아래층이 오래 살아도 된다.**\n\n또 하나 실무에 중요한 것 — **키의 소유권에 따라 교체를 내가 정할 수 있는지가 달라진다.** 고객 관리 키는 선택이고, AWS 관리 키는 **연 1회 강제**이며(문서: \"Required. Every year (approximately 365 days).\"), AWS 소유 키는 서비스가 알아서 한다. ⚠️ 그리고 그 주기 자체도 바뀐다 — 문서가 밝히듯 **2022년 5월에 3년에서 1년으로 단축**됐다. **키 정책을 문서에 적을 때 '언제 확인한 값인지'를 함께 적어야 하는 이유**다.\n\n> 📌 그래서 교체 계획에서 진짜 질문은 \"몇 개월마다 돌리나\"가 아니라 **\"옛 키를 언제 지울 수 있나\"** 다. 옛 키를 지우는 순간 그 키로 암호화된 데이터는 **영원히 못 읽는다** — 경계 절에서 다시 본다."
+    },
+    {
+      "id": "korea",
+      "kind": "extra",
+      "heading": "국내 요건 — AES 만으로는 안 되는 자리가 있다",
+      "confidence": "inferred",
+      "body": "해외 자료만 읽으면 **AES 하나면 끝난 것처럼** 보인다. 그런데 국내 공공·금융 쪽 요건에는 **국산 표준 암호 알고리즘**이 등장한다.\n\n공고에서 이름 그대로 나온 문장이 있다.\n\n> `JWT/OAuth2.0, 암호화(**AES·SEED·ARIA**) 적용 경험` — 포밸류소프트(같은 문장이 코리아써치 공고에도 있다)\n\n**SEED 와 ARIA 는 국내 표준 블록 암호**이고, AES 와 나란히 적힌 것이 그 성격을 보여 준다 — **대체재가 아니라 함께 지원해야 하는 목록**이다.\n\n그리고 알고리즘보다 자주 나오는 것이 **인증 제도**다.\n\n> `보안 솔루션 연동: **KCMVP 암호모듈** 연동 또는 2FA/MFA 등 인증 체계 구축 경험` — 브레인다이브\n> `**KCMVP, CC** 등 다양한 보안 인증 업무 수행` — 아이씨티케이\n> `보안 인증 : **CC, KCMVP, FIPS 140** 등 보안 인증 획득 과정 참여` — 아이씨티케이\n\n마지막 줄이 특히 유용하다 — **국내 제도(KCMVP)와 국제 제도(CC, FIPS 140)를 한 줄에 나열**한다. 즉 이 분야에서는 **어느 나라에 파느냐에 따라 요구되는 인증이 다르고**, 그래서 제품이 여러 인증을 함께 받는다.\n\n⚠️ **이 절의 근거는 얇다.** `SEED`·`ARIA` 를 이름으로 적은 공고는 사실상 **두 곳(같은 문장)** 이고, `KCMVP` 계열이 8건이다. 그리고 **이 사이클에서 SEED·ARIA 규격 자체나 KCMVP 제도의 1차 자료를 확인하지 못했다** — 그래서 여기서는 **\"국내 공고에 이런 요구가 존재한다\"까지만** 말한다. 알고리즘의 사양이나 인증 요건이 필요하면 **소관 기관 문서를 직접 열어야 한다.**\n\n> 📌 그래도 이 절을 남기는 이유는 하나다 — **해외 자료를 아무리 읽어도 이 요구를 만나지 못한다.** 국내 취업을 준비하는 사람에게는 \"AES 면 충분하다\"가 틀린 답이 되는 자리가 있고, 그 사실을 아는 것 자체가 값이다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 키를 지우면 데이터를 지운 것이다",
+      "confidence": "inferred",
+      "body": "**1. ⚠️ 키 삭제는 데이터 삭제다.** 이것이 이 낱말에서 되돌릴 수 없는 유일한 사고다. 암호화된 데이터가 남아 있어도 키가 없으면 **영원히 못 읽는다.** 그래서 클라우드의 키 삭제에는 대기 기간이 붙어 있고, 백업·복제본이 여러 리전에 있다면 **각각이 어느 키에 묶여 있는지**를 알아야 한다.\n\n**2. 암호화된 컬럼은 검색·정렬·인덱스가 안 된다.** 애플리케이션 레벨 암호화의 진짜 비용이 여기다. `WHERE email = ?` 이 안 되므로 **결정적 암호화나 별도 해시 컬럼** 같은 우회가 필요해지고, 그 우회는 각각 보안을 조금씩 깎는다(같은 값이 같은 암호문이 되면 빈도 분석이 가능해진다). **무엇을 암호화할지 정할 때 그 컬럼으로 무엇을 조회하는지 먼저 봐야 한다.**\n\n**3. 저장 암호화는 정상 접속을 막지 못한다.** 첫 절의 표 그대로다. \"암호화했으니 유출돼도 안전하다\"는 **디스크가 통째로 나간 경우에만** 참이다. 애플리케이션 계정이 탈취된 경우에는 아무 방어도 되지 않는다.\n\n**4. 평문 키가 존재하는 순간은 반드시 있다.** \"eventually, one key must remain in plaintext.\" 그 자리를 없앨 수는 없고 **좁힐 수만** 있다 — 하드웨어에 가두거나, 메모리에 있는 시간을 줄이거나, 그 키를 쓸 수 있는 주체를 줄이거나. 그리고 **누가 그 키를 썼는지 기록**하는 것이 마지막 방어다(`audit-log`).\n\n**5. 이 문서가 다루지 않는 것.** 알고리즘의 내부 동작(AES 의 라운드, 타원곡선의 수학), 시크릿(비밀번호·API 키)을 어디에 보관할지는 `secrets`, 데이터를 아예 덜 위험하게 만드는 쪽은 `dlp`(비식별·가명화), TLS 의 핸드셰이크와 인증서는 `zero-trust` 쪽에서 일부 다룬다. 여기는 **키를 어디에 두는가**만 다룬다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "where",
+      "kind": "compare",
+      "caption": "세 자리의 암호화가 각각 막는 것",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). '무엇을 막으려는가'를 먼저 정하지 않으면 세 가지를 다 켜고도 엉뚱한 위협에 열려 있게 된다.",
+      "columns": [
+        "위협",
+        "전송 중(TLS)",
+        "저장 시(디스크·볼륨)",
+        "애플리케이션 레벨(컬럼)"
+      ],
+      "rows": [
+        [
+          "네트워크 엿듣기·변조",
+          "**막는다**",
+          "못 막는다",
+          "못 막는다"
+        ],
+        [
+          "디스크·스냅샷·백업 파일 유출",
+          "못 막는다",
+          "**막는다**",
+          "막는다"
+        ],
+        [
+          "DB 계정을 얻은 공격자",
+          "못 막는다",
+          "⚠️ **못 막는다**",
+          "**막는다**(키가 DB 밖에 있다면)"
+        ],
+        [
+          "권한 있는 내부자",
+          "못 막는다",
+          "못 막는다",
+          "키 접근을 분리하면 막는다"
+        ],
+        [
+          "대가",
+          "거의 없다",
+          "거의 없다 (클라우드는 체크박스)",
+          "⚠️ **검색·정렬·인덱스가 안 된다**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "envelope",
+      "kind": "glossary",
+      "caption": "봉투 암호화의 부품",
+      "note": "정의와 인용은 AWS KMS 문서에서 옮겼다. 구조는 KMS 만의 것이 아니라 TLS·디스크 암호화 등 여러 곳에서 같은 모양으로 나타난다.",
+      "columns": [
+        "부품",
+        "무엇",
+        "왜 필요한가"
+      ],
+      "rows": [
+        [
+          "데이터 키 (data key)",
+          "실제 데이터를 암호화하는 키",
+          "크고 빠른 대칭키 연산에 쓴다"
+        ],
+        [
+          "마스터 키 / 루트 키",
+          "데이터 키를 암호화하는 키",
+          "\"This top-level plaintext key encryption key is known as the **root key**.\""
+        ],
+        [
+          "암호화된 데이터 키",
+          "데이터 옆에 함께 저장",
+          "\"You can safely store the encrypted data key **alongside** the encrypted data.\""
+        ],
+        [
+          "⭐ 무한 후퇴의 끝",
+          "루트 키는 평문으로 남는다",
+          "\"eventually, **one key must remain in plaintext**\""
+        ],
+        [
+          "HSM",
+          "루트 키를 가두는 하드웨어",
+          "\"never leave the ... FIPS 140-3 Security Level 3 validated hardware security modules unencrypted\""
+        ],
+        [
+          "⭐ 키 교체가 싼 이유",
+          "데이터 키만 다시 감싼다",
+          "\"you can **re-encrypt only the data keys** that protect the raw data\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS cryptography essentials — Envelope encryption",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "봉투 암호화의 정의와 '결국 하나의 키는 평문으로 남아야 한다'는 진술"
+        }
+      ]
+    },
+    {
+      "id": "hierarchy",
+      "kind": "spec",
+      "caption": "키 계층과 교체 주기 (AWS KMS)",
+      "note": "AWS KMS 개발자 안내의 키 계층 표에서 옮겼다. ⚠️ **AWS KMS 의 구현 값**이지 암호화 일반의 규칙이 아니다 — 다른 제품은 계층도 주기도 다르다. 값은 2026-09-06 에 확인한 것이고, 문서 자체가 주기가 바뀐 이력을 밝히므로(아래 `keytypes` 표 참조) 인용 시점을 함께 적는다.",
+      "columns": [
+        "키",
+        "설명(원문)",
+        "교체 주기"
+      ],
+      "rows": [
+        [
+          "도메인 키 (Domain key)",
+          "\"A 256-bit AES-GCM key only in memory of an HSM used to wrap versions of the KMS keys\"",
+          "**매일** (문서 주석: 운영 사정에 따라 최대 주 1회로 완화될 수 있음)"
+        ],
+        [
+          "HSM 백킹 키 (HBK)",
+          "\"used to protect customer data and keys and stored encrypted under domain keys\"",
+          "**매년** (선택 설정)"
+        ],
+        [
+          "파생 암호화 키",
+          "\"Derived from an HBK for each encryption\"",
+          "**암호화 한 번마다** — 쓰고 버린다"
+        ],
+        [
+          "고객 데이터 키 (CDK)",
+          "\"Encrypted under an HSM backing key and returned to authorized users over TLS channel\"",
+          "애플리케이션이 정한다"
+        ],
+        [
+          "⭐ 교체의 성질",
+          "—",
+          "\"The older HBKs are **preserved** ... But only the **active** cryptographic key can be used to protect new information.\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS — Concepts (KMS keys, key hierarchy)",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "키의 세 종류와 계층(도메인 키·HSM 백킹 키·파생 키·데이터 키), 그리고 교체 주기"
+        }
+      ]
+    },
+    {
+      "id": "keytypes",
+      "kind": "compare",
+      "caption": "키를 누가 소유하나 — 통제와 편의의 거래",
+      "note": "AWS KMS 의 키 종류 비교표에서 이 문서에 필요한 행만 옮겼다. 다른 클라우드도 이름은 다르나 '내가 관리 / 서비스가 대신 관리 / 서비스가 소유'라는 세 갈래는 비슷하다.",
+      "columns": [
+        "",
+        "고객 관리 키",
+        "AWS 관리 키",
+        "AWS 소유 키"
+      ],
+      "rows": [
+        [
+          "키 정책",
+          "고객이 배타적으로 통제",
+          "서비스가 통제, 고객은 열람 가능",
+          "서비스만 통제·열람"
+        ],
+        [
+          "감사 기록",
+          "CloudTrail 로 볼 수 있다",
+          "볼 수 있다",
+          "⚠️ **고객이 볼 수 없다**"
+        ],
+        [
+          "교체",
+          "고객이 관리 (선택)",
+          "**연 1회 강제** (변경 불가)",
+          "서비스가 정한다"
+        ],
+        [
+          "비용",
+          "월 요금 + 사용 요금",
+          "월 요금 없음, 사용 요금",
+          "없음"
+        ],
+        [
+          "문서의 권고",
+          "\"Use customer managed keys when **control** is important\"",
+          "—",
+          "\"use AWS owned keys when **convenience** is most important\""
+        ],
+        [
+          "⚠️ 값이 바뀐 이력",
+          "—",
+          "\"In May 2022, AWS KMS changed the rotation schedule ... from every three years ... to every year\"",
+          "—"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS — Concepts (KMS keys, key hierarchy)",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "키의 세 종류와 계층(도메인 키·HSM 백킹 키·파생 키·데이터 키), 그리고 교체 주기"
+        }
+      ]
+    },
+    {
+      "id": "korea",
+      "kind": "glossary",
+      "caption": "국내에서 만나는 이름들 (⚠️ 근거가 얇다)",
+      "note": "⚠️ 이 표는 **공고에 그 이름이 나온다는 사실까지만** 옮긴 것이다. SEED·ARIA 의 규격이나 KCMVP 제도의 요건은 이 사이클에서 1차 자료로 확인하지 못했다 — 실제 적용이 필요하면 소관 기관 문서를 직접 열 것. 셈: `SEED`·`ARIA` 를 암호 맥락으로 적은 공고는 사실상 두 곳(같은 문장), `KCMVP` 계열 8건.",
+      "columns": [
+        "이름",
+        "공고에서 어떻게 나오나",
+        "무엇으로 보이나"
+      ],
+      "rows": [
+        [
+          "SEED · ARIA",
+          "`암호화(AES·SEED·ARIA) 적용 경험`(포밸류소프트·코리아써치)",
+          "AES 의 대체재가 아니라 **함께 지원해야 하는 목록**"
+        ],
+        [
+          "KCMVP",
+          "`KCMVP 암호모듈 연동`(브레인다이브) · `KCMVP, CC 등 보안 인증 업무`(아이씨티케이)",
+          "알고리즘보다 **제도·인증**으로 더 자주 등장한다"
+        ],
+        [
+          "CC · FIPS 140",
+          "`CC, KCMVP, FIPS 140 등 보안 인증 획득 과정 참여`(아이씨티케이)",
+          "⭐ **국내 제도와 국제 제도를 한 줄에** — 파는 시장이 인증을 정한다"
+        ],
+        [
+          "⚠️ 셈의 함정",
+          "`ARIA` 는 **웹 접근성(WAI-ARIA)** 로 훨씬 많이 나오고, `SEED` 는 **시드 투자**로 나온다",
+          "단어 경계를 걸어도 걸린다 — 문장을 읽어야 한다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "주민번호·계좌번호처럼 특정 컬럼만 강하게 지켜야 한다",
+      "pick": "애플리케이션 레벨 암호화 — 키는 DB 밖(KMS·시크릿 저장소)에 둔다",
+      "over": "저장(디스크) 암호화만 켜기",
+      "why": "저장 암호화는 **DB 계정을 얻은 공격자에게 아무 방어가 안 된다** — 디스크가 통째로 나가는 경우만 막는다. 컬럼 암호화는 키가 DB 밖에 있으므로 DB 만 털려서는 못 읽는다",
+      "tradeoff": "⚠️ **그 컬럼으로 검색·정렬·인덱스가 안 된다.** `WHERE email = ?` 이 필요하면 별도 해시 컬럼 같은 우회가 필요하고, 그 우회는 보안을 조금 깎는다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "큰 파일·대용량 데이터를 암호화해야 한다",
+      "pick": "봉투 암호화 — 데이터 키로 데이터를, 마스터 키로 데이터 키를",
+      "over": "관리 키(KMS 키)로 데이터를 직접 암호화",
+      "why": "데이터 키는 로컬에서 빠르게 쓸 수 있고, **암호화된 데이터 키를 데이터 옆에 그냥 두면 된다**(\"inherently protected by encryption\"). 그리고 나중에 키를 바꿀 때 **데이터 키만 다시 감싸면** 된다",
+      "tradeoff": "평문 데이터 키가 애플리케이션 메모리에 존재하는 순간이 생긴다. 그 시간을 짧게 유지하는 규율이 필요하다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS cryptography essentials — Envelope encryption",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "봉투 암호화의 정의와 '결국 하나의 키는 평문으로 남아야 한다'는 진술"
+        }
+      ]
+    },
+    {
+      "situation": "키를 누가 관리할지 정해야 한다",
+      "pick": "통제·감사가 필요하면 고객 관리 키",
+      "over": "서비스 소유 키(기본값)",
+      "why": "문서가 기준을 직접 준다 — \"Use customer managed keys when **control** is important, but use AWS owned keys when **convenience** is most important.\" 그리고 ⚠️ **서비스 소유 키는 감사 기록을 고객이 볼 수 없다** — 누가 그 키를 썼는지 물어야 하는 조직이라면 이것만으로 결정된다",
+      "tradeoff": "월 요금과 사용 요금이 붙고, 키 정책·교체·삭제를 직접 관리해야 한다. 잘못 지우면 데이터를 잃는다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS — Concepts (KMS keys, key hierarchy)",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "키의 세 종류와 계층(도메인 키·HSM 백킹 키·파생 키·데이터 키), 그리고 교체 주기"
+        }
+      ]
+    },
+    {
+      "situation": "키 교체를 하라는데 옛 데이터를 못 읽게 될까 봐 못 하고 있다",
+      "pick": "교체를 켠다 — 옛 키는 남고 새 데이터만 새 키로 보호된다",
+      "over": "교체를 미루고 하나의 키를 계속 쓰기",
+      "why": "문서가 그 걱정을 정면으로 푼다 — \"The older HBKs are **preserved** and can be used to decrypt and verify previously protected data. But only the active cryptographic key can be used to protect new information.\" **교체는 전량 재암호화가 아니다**",
+      "tradeoff": "옛 키가 계속 살아 있으므로 **키가 늘어나고**, '언제 옛 키를 지울 수 있나'라는 문제가 새로 생긴다 — 그리고 그 삭제는 되돌릴 수 없다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS KMS — Concepts (KMS keys, key hierarchy)",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "키의 세 종류와 계층(도메인 키·HSM 백킹 키·파생 키·데이터 키), 그리고 교체 주기"
+        }
+      ]
+    },
+    {
+      "situation": "공공·금융 대상 제품이고 국내 인증이 요구된다",
+      "pick": "요구되는 알고리즘·인증 목록을 **소관 기관 문서에서 직접 확인**하고 시작한다",
+      "over": "AES 로 구현하고 나중에 맞추기",
+      "why": "공고가 `암호화(AES·SEED·ARIA)` 처럼 **함께 지원할 목록**으로 적고, `KCMVP, CC, FIPS 140` 처럼 **인증 제도**를 나열한다. 이것들은 나중에 붙이기 어려운 종류다 — 검증된 모듈을 써야 하는 경우 구현 자체를 바꿔야 한다",
+      "tradeoff": "선택할 수 있는 라이브러리가 줄고 개발이 느려진다. ⚠️ 그리고 **이 문서는 그 요건을 1차 자료로 확인하지 않았다** — 근거로 삼지 말 것",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "\"저장 암호화 켰으니 개인정보는 안전하다\"고 보고한다",
+      "why": "체크박스 하나로 켜지고 콘솔에 '암호화됨'이라고 표시되므로 끝난 것처럼 보인다. 그런데 저장 암호화가 막는 것은 **디스크·스냅샷·백업 파일이 물리적으로 새는 경우**이고, **정상 계정으로 접속한 애플리케이션이나 사람에게는 평문 그대로** 보인다",
+      "fix": "보고서에 **무엇을 막는지 함께 적는다** — \"디스크·백업 유출은 막고, 계정 탈취는 막지 못한다\". 계정 탈취까지 막아야 하는 컬럼은 **애플리케이션 레벨 암호화 + DB 밖의 키**로 따로 처리하고, 나머지는 접근 제어와 감사 기록의 몫으로 남긴다"
+    },
+    {
+      "trap": "암호화 키를 데이터와 같은 저장소·같은 저장소 권한 안에 둔다",
+      "why": "가장 편한 자리이기 때문이다 — 설정 파일, 같은 DB 의 다른 테이블, 같은 버킷. 그런데 **데이터를 가져갈 수 있는 사람은 대개 그 키도 가져갈 수 있다.** 그러면 암호화는 규정 문서를 채울 뿐 아무것도 막지 못한다",
+      "fix": "**\"암호화했나요?\" 대신 \"키가 어디 있고, 데이터를 가져갈 수 있는 사람이 그 키도 가져갈 수 있나요?\"** 를 검토 질문으로 삼는다. 키는 다른 권한 경계(KMS·시크릿 저장소)에 두고, 그 키에 접근한 기록을 남긴다",
+      "sources": [
+        {
+          "title": "AWS KMS cryptography essentials — Envelope encryption",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "봉투 암호화의 정의와 '결국 하나의 키는 평문으로 남아야 한다'는 진술"
+        }
+      ]
+    },
+    {
+      "trap": "교체하면 옛 데이터를 못 읽게 될까 봐 키를 한 번도 안 바꾼다",
+      "why": "'교체 = 전량 재암호화'라는 오해 때문이다. 실제로는 그 반대이고 문서가 명시한다 — 옛 키는 보존되고 새 데이터만 새 키로 보호된다. 그리고 봉투 구조 덕분에 **데이터 키만 다시 감싸면** 되므로 비용도 작다",
+      "fix": "자동 교체를 켠다. 그리고 계획에서 진짜로 답해야 할 질문을 **\"몇 개월마다 돌리나\"가 아니라 \"옛 키를 언제 지울 수 있나\"** 로 바꾼다 — 그 답을 모르면 옛 키를 지우지 않는다",
+      "sources": [
+        {
+          "title": "AWS KMS — Concepts (KMS keys, key hierarchy)",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "키의 세 종류와 계층(도메인 키·HSM 백킹 키·파생 키·데이터 키), 그리고 교체 주기"
+        },
+        {
+          "title": "AWS KMS cryptography essentials — Envelope encryption",
+          "url": "https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "봉투 암호화의 정의와 '결국 하나의 키는 평문으로 남아야 한다'는 진술"
+        }
+      ]
+    },
+    {
+      "trap": "쓰지 않는 것 같아서 옛 키를 지웠다가 데이터를 영영 못 읽게 된다",
+      "why": "⚠️ **이 낱말에서 유일하게 되돌릴 수 없는 사고**다. 암호문이 남아 있어도 키가 없으면 끝이고, 백업에서 복구해도 마찬가지다. 그리고 오래된 백업·다른 리전의 복제본이 그 키에 묶여 있는 것을 잊기 쉽다",
+      "fix": "삭제 전에 **그 키로 암호화된 것의 목록**을 만든다 — 운영 데이터뿐 아니라 **백업·스냅샷·다른 리전·오래된 아카이브**까지. 클라우드가 제공하는 삭제 대기 기간을 최대로 잡고, 그 기간에 **복호화 요청이 오는지 감시**한다"
+    },
+    {
+      "trap": "암호화할 컬럼을 정할 때 그 컬럼으로 무엇을 조회하는지 안 본다",
+      "why": "보호 관점에서만 고르면 '민감한 것 전부'가 답이 된다. 그런데 암호화된 컬럼은 **검색·정렬·인덱스가 안 되므로**, 이메일로 사용자를 찾는 기능이 통째로 깨진다. 이 사실은 대개 구현 도중에 발견된다",
+      "fix": "암호화 대상을 정하기 전에 **그 컬럼이 쓰이는 질의를 전부 뽑는다.** 조회 키로 쓰이는 값은 **별도의 해시 컬럼**을 두는 식으로 우회하되, 그 우회가 보안을 얼마나 깎는지(같은 값 → 같은 해시 → 빈도 분석) 함께 적는다"
+    },
+    {
+      "trap": "해외 자료만 보고 'AES 면 충분하다'로 결론 낸다",
+      "why": "영어권 자료에는 국내 표준 알고리즘이나 인증 제도가 아예 나오지 않는다. 그런데 국내 공공·금융 대상 제품에는 `AES·SEED·ARIA` 를 함께 요구하거나 `KCMVP` 같은 인증을 요구하는 자리가 있다",
+      "fix": "⚠️ **대상 시장의 요건을 먼저 확인한다.** 공공·금융이면 발주 문서나 소관 기관 안내에서 **요구 알고리즘과 인증 목록**을 직접 뽑아 시작한다 — 나중에 붙이려면 라이브러리와 구현을 바꿔야 하는 종류다. (이 문서는 그 요건을 1차 자료로 확인하지 않았으므로 근거로 쓰지 말 것)"
+    }
+  ],
+  "terms": [
+    {
+      "term": "전송 중 암호화",
+      "en": "encryption in transit",
+      "what": "네트워크를 지나는 동안의 보호. 대개 TLS"
+    },
+    {
+      "term": "저장 시 암호화",
+      "en": "encryption at rest",
+      "what": "디스크·볼륨·백업에 쓰인 상태의 보호"
+    },
+    {
+      "term": "봉투 암호화",
+      "en": "envelope encryption",
+      "what": "데이터는 데이터 키로, 데이터 키는 마스터 키로 암호화하는 두 겹 구조"
+    },
+    {
+      "term": "데이터 키",
+      "en": "data key",
+      "what": "실제 데이터를 암호화하는 키. 암호화된 채로 데이터 옆에 저장된다"
+    },
+    {
+      "term": "루트 키",
+      "en": "root key",
+      "what": "최상위 평문 키. \"eventually, one key must remain in plaintext\" 의 그 키"
+    },
+    {
+      "term": "HSM",
+      "en": "Hardware Security Module",
+      "what": "키를 가두는 전용 하드웨어. 키가 평문으로 밖으로 나오지 않는다"
+    },
+    {
+      "term": "키 교체",
+      "en": "key rotation",
+      "what": "새 키로 갈아타는 것. 옛 키는 옛 데이터를 읽기 위해 보존된다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "봉투 암호화를 **30줄로 직접 구현한다** — ① 마스터 키(파일에 저장) ② 임의의 데이터 키 생성 ③ 데이터 키로 파일 암호화 ④ 마스터 키로 데이터 키 암호화 ⑤ `(암호화된 데이터 키 + 암호문)` 을 한 파일로 저장. 그다음 **마스터 키만 바꿔** 데이터 키를 다시 감싸고, 원본 파일은 건드리지 않은 채 복호화가 되는지 확인한다.",
+      "done_when": "마스터 키를 바꿨는데도 **원본 파일을 다시 암호화하지 않고** 복호화에 성공한다.",
+      "why": "\"키 교체가 왜 싼가\"를 손으로 확인한다 — 문서의 \"re-encrypt only the data keys\" 가 무슨 뜻인지 30줄이면 몸으로 안다. 그리고 마지막에 **마스터 키를 어디에 뒀는지** 다시 보게 되는데, 그것이 다음 실습의 질문이다.",
+      "hours": 2
+    },
+    {
+      "task": "위 실습의 마스터 키를 놓고 **\"데이터 파일을 가져갈 수 있는 사람이 이 키도 가져갈 수 있나\"** 에 답한다. 답이 '예'라면, 키를 다른 권한 경계로 옮기는 방법 세 가지를 적고 각각 **여전히 평문으로 남는 마지막 키가 무엇인지** 표시한다.",
+      "done_when": "세 방법 모두에서 '평문으로 남는 마지막 키'를 지목할 수 있고, 그 키가 무엇으로 보호되는지(파일 권한 / 프로세스 격리 / 하드웨어) 적힌다.",
+      "why": "이 낱말의 핵심 문장(\"eventually, one key must remain in plaintext\")이 추상적으로 읽히는데, 자기 구성에서 그 키를 **지목해 보면** 비로소 이해된다. 그리고 그 지점이 곧 보안 검토에서 가장 먼저 물어야 할 자리다.",
+      "hours": 1
+    },
+    {
+      "task": "지금 다루는 시스템에서 **암호화된 것의 목록**을 만든다 — 무엇이, 어느 자리에서(전송/저장/컬럼), **어느 키로** 암호화돼 있는지. 그리고 각 키에 대해 **그 키를 지우면 못 읽게 되는 것 전부**(운영 데이터·백업·스냅샷·다른 리전·아카이브)를 적는다.",
+      "done_when": "키 하나 이상에서 '이걸 지우면 무엇을 잃는지 모르겠다'가 나오고, 그것을 알아내는 방법이 한 줄 적힌다.",
+      "why": "키 삭제는 이 낱말에서 유일하게 되돌릴 수 없는 사고다. 그리고 대부분의 조직은 **어느 백업이 어느 키에 묶여 있는지** 모른다 — 이 목록이 없으면 키를 영원히 못 지우거나, 지우고 나서 알게 된다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "\"RDS 암호화를 켰다\"는 어떤 위협을 막고 어떤 위협을 못 막는가?",
+    "데이터를 암호화하고 나면 어떤 새 문제가 생기는가? 그 문제를 암호화로 풀면 어떻게 되는가?",
+    "봉투 암호화에서 암호화된 데이터 키는 어디에 저장하는가? 왜 거기 둬도 되는가?",
+    "키를 교체하면 옛 키로 암호화된 데이터는 어떻게 되는가?",
+    "100TB 를 지키는 키를 바꿔야 한다. 100TB 를 다시 암호화해야 하는가?",
+    "암호화할 컬럼을 정하기 전에 반드시 확인해야 하는 것은 무엇인가?"
+  ],
+  "evidence": [
+    {
+      "quote": "보안·인증 체계 (OAuth2.0, JWT, TLS, IAM Policy, KMS 등) 구축 및 검증",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/317608",
+      "where": "메디트(Medit)",
+      "what_it_shows": "`KMS` 가 인증·인가 도구들과 **나란히 한 묶음**으로 요구된다. 키 관리가 별도 전문 영역이 아니라 백엔드·플랫폼의 기본 소양으로 취급된다는 뜻"
+    },
+    {
+      "quote": "• 개인정보·신용정보가 포함된 시스템은 정보보호 정책을 반영하여 저장소 분리, KMS 키 분리, 네트워크 경계, 접근통제 및 감사로그 체계를 설계합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378758",
+      "where": "넥스트증권",
+      "what_it_shows": "⭐ **`KMS 키 분리`** 라는 표현이 이 문서의 결론과 정확히 만난다 — 암호화를 켜는 것이 아니라 **키를 무엇과 분리할 것인가**가 설계의 단위다. 그리고 `저장소 분리·네트워크 경계·접근통제·감사로그` 와 한 줄에 있다"
+    },
+    {
+      "quote": "• 보안에 대한 기본 이해 : 개인정보 보호, 인증·인가, 민감정보 암호화, 로그 마스킹 등 백엔드 보안 원칙을 이해하고 적용할 수 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/376799",
+      "where": "왓섭",
+      "what_it_shows": "`민감정보 암호화` 와 `로그 마스킹` 이 나란히 있다 — 이 문서(암호화)와 `dlp`(마스킹)가 실무에서는 한 묶음으로 요구된다는 것"
+    },
+    {
+      "quote": "• 대규모 데이터의 정합성 검증 자동화, 개인정보 분리·암호화, AI를 활용한 제품·도구 개발 등 다뤄본 경험이 있다면",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/377225",
+      "where": "비바리퍼블리카(토스)",
+      "what_it_shows": "⭐ **`분리·암호화`** 가 붙어 있다 — 개인정보를 따로 떼어 두고 암호화한다는 뜻으로, 이 문서의 세 번째 자리(애플리케이션 레벨 컬럼 암호화)의 실제 표현이다"
+    },
+    {
+      "quote": "• JWT/OAuth2.0, 암호화(AES·SEED·ARIA) 적용 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371489",
+      "where": "포밸류소프트",
+      "what_it_shows": "⭐⭐ **해외 자료가 절대 알려 주지 않는 자리.** 국내 표준 알고리즘 SEED·ARIA 가 AES 와 **나란히** 요구된다 — 대체재가 아니라 함께 지원할 목록이라는 뜻이다. ⚠️ 다만 이런 문장은 두 곳(같은 문구)뿐이다"
+    },
+    {
+      "quote": "• 보안 솔루션 연동: KCMVP 암호모듈 연동 또는 2FA/MFA 등 인증 체계 구축 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/338207",
+      "where": "브레인다이브",
+      "what_it_shows": "국내에서는 알고리즘 이름보다 **인증 제도(KCMVP)** 로 요구되는 일이 더 많다 — 검증된 모듈을 쓰라는 요구이므로 구현 선택 자체가 제한된다"
+    },
+    {
+      "quote": "- 보안 인증 : CC, KCMVP, FIPS 140 등 보안 인증 획득 과정 참여 또는 관련 지식 보유",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/366836",
+      "where": "아이씨티케이",
+      "what_it_shows": "⭐ **국내 제도(KCMVP)와 국제 제도(CC·FIPS 140)를 한 줄에** 나열한다. 파는 시장이 요구 인증을 정하고, 그래서 제품이 여러 인증을 함께 받는다"
+    },
+    {
+      "quote": "But, eventually, one key must remain in plaintext so you can decrypt the keys and your data. This top-level plaintext key encryption key is known as the root key.",
+      "from": "docs",
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html",
+      "where": "AWS KMS 공식 문서",
+      "what_it_shows": "⭐⭐ 이 문서의 심장. **암호화는 문제를 없애지 못하고 옮길 뿐**이며, 후퇴는 유한하다 — 그 마지막 자리를 무엇으로 지키느냐가 실무의 전부다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "secrets",
+      "how": "⭐ 짝 문서. '평문으로 남는 마지막 키'를 어디에 보관하나가 그쪽 주제이고, 여기는 데이터를 무엇으로 잠그나다. `KMS` 라는 이름은 이 문서로 넘어왔다"
+    },
+    {
+      "slug": "dlp",
+      "how": "이 문서를 큐에 올린 자리. 데이터를 덜 위험하게 만드는 세 번째 방법이 암호화다 — 비식별은 값을 바꾸고, 암호화는 열쇠로 잠근다"
+    },
+    {
+      "slug": "audit-log",
+      "how": "평문 키를 쓸 수 있는 순간을 없앨 수는 없으니 **누가 그 키를 썼는지 기록**하는 것이 마지막 방어다. 그리고 서비스 소유 키는 그 기록을 볼 수 없다"
+    },
+    {
+      "slug": "abac",
+      "how": "저장 암호화가 못 막는 것(정상 계정의 조회)을 막는 쪽. 열 마스크·행 필터가 그 수단이다"
+    },
+    {
+      "slug": "zero-trust",
+      "how": "전송 중 암호화(mTLS)가 그 문서의 부품 중 하나다. '사내망이니 안 걸어도 된다'를 부정하는 원칙"
+    },
+    {
+      "slug": "network-separation",
+      "how": "국내 규제 환경의 다른 축. 규정을 다룰 때의 처리 규칙(확인한 것과 못 한 것을 나눠 적기)을 그 문서에서 가져왔다"
+    },
+    {
+      "slug": "db-index",
+      "how": "암호화된 컬럼은 인덱스가 안 된다 — 무엇을 암호화할지가 곧 조회 성능의 결정이 되는 자리"
+    },
+    {
+      "slug": "data-migration",
+      "how": "이관 대상이 암호화돼 있으면 키도 함께 옮겨야 한다. 그리고 옛 키를 지우기 전에 이관된 사본을 확인해야 한다"
+    },
+    {
+      "slug": "kubernetes",
+      "how": "`secrets` 문서가 지적한 '기본은 평문' 문제가 이 문서의 관점에서는 '키가 데이터 옆에 있다'는 문제다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `암호화`·`KMS` 어느 이름도 없다. 직접 세면 `암호화|encryption|encrypt`(암호화폐 제외)로 **230건(모집중 90)**, `KMS|키 관리|HSM|Vault|봉투 암호화` 로 **183건(모집중 83)** 이다.",
+    "⚠️⚠️ **`SEED`·`ARIA` 셈에서 크게 물렸다.** 단어 경계 없이 세었더니 **798건**이 나왔는데, `ARIA` 가 **`MariaDB` 안에** 들어 있었기 때문이다(부분 문자열 매칭). 단어 경계를 걸어도 `ARIA` 14건 중 대부분이 **웹 접근성(WAI-ARIA)** 이고 `SEED` 6건 중 대부분이 **시드 투자**다. **암호 맥락은 사실상 두 곳(같은 문장)** 이고 `KCMVP` 계열이 8건이다. 이 백과사전의 오탐 사례 중 **가장 심한 것**으로 기록해 둔다.",
+    "⚠️ **국내 요건(`korea` 절과 표)은 1차 자료로 받치지 못했다.** SEED·ARIA 의 규격 문서, KCMVP 제도의 요건, 어떤 시스템에 어떤 알고리즘이 요구되는지는 이 사이클에서 확인하지 않았다. **공고에 그 이름이 나온다는 사실까지만** 썼고, 그 사실을 절·표·지뢰 세 곳에 밝혔다 — `network-separation` 의 처리 규칙을 따랐다. 실제 적용이 필요하면 소관 기관 문서를 직접 열 것.",
+    "**`hierarchy` 표의 값은 AWS KMS 의 구현이지 암호화 일반의 규칙이 아니다.** 도메인 키 일 단위·HBK 연 단위 같은 값은 그 제품의 것이고, 다른 클라우드나 자체 구현은 계층도 주기도 다르다. 그리고 문서 자체가 **2022년 5월에 AWS 관리 키의 교체 주기를 3년에서 1년으로 바꿨다**고 밝히므로, **이 표는 2026-09-06 에 확인한 값**임을 표의 `note` 에 적어 뒀다.",
+    "**Google Cloud KMS 를 겹쳐 읽지 못했다.** 큐의 메모에 보조 자료로 적어 두었으나 이 사이클에서 열지 않았다 — `causal-consistency`·`replication`·`audit-log` 에서 통한 '두 제품을 겹쳐 읽기'를 여기서는 못 했고, 그래서 **봉투 암호화가 AWS 만의 방식처럼 읽힐 위험**이 있다(실제로는 일반적인 구조다).",
+    "**애플리케이션 레벨 암호화의 우회 기법(결정적 암호화·블라인드 인덱스)은 이름만 언급했다.** 경계 2번과 지뢰 5번에서 '별도 해시 컬럼' 정도로 적었고, 각 기법이 정확히 무엇을 노출하는지는 확인하지 않았다. 그 부분을 쓰려면 별도 자료가 필요하다."
+  ],
+  "sources": [
+    {
+      "title": "AWS KMS cryptography essentials — Envelope encryption",
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/kms-cryptography.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "봉투 암호화의 정의와 '결국 하나의 키는 평문으로 남아야 한다'는 진술"
+    },
+    {
+      "title": "AWS KMS — Concepts (KMS keys, key hierarchy)",
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "키의 세 종류와 계층(도메인 키·HSM 백킹 키·파생 키·데이터 키), 그리고 교체 주기"
+    }
+  ]
+}
