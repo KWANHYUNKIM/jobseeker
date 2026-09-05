@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Kraken Technologies** | EU(UK) · 기타(에너지) | 프로파일 완료 · 도메인 3(한 덩어리로 두고 하루에 백 번 내보낸다[tech 4] / 1500만 줄에 타입을 뒤늦게 입힌다[tech 2] / 남의 전기 사업을 같은 코드 위에 올린다[tech 2]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Kraken Technologies** (옥토퍼스 에너지) | EU(UK) · 에너지 | `engineering.kraken.tech` — 최신 **2026-03-09** | ✅ WebFetch 로 목록·본문 모두 온다. 글 주소는 `/news/<연>/<월>/<일>/<슬러그>.html` | **에너지 축이 0곳이다** — 66곳에 전력·유틸리티가 하나도 없다. 게다가 **결이 특이하다**: 파이썬·Django 한 덩어리로 전력 소매를 돌리고 그 플랫폼(Kraken)을 다른 에너지 회사에 판다. **본문 두 편을 열어** 기준을 확인했다. `static-typing-python-at-scale`(2026-02-16)은 **버린 대안**(Django 모델 2000개를 손으로 주석 달기) · **인정한 대가**(*"This does lock us into mypy given it's currently the only static type checker for Python that supports plugins."*) · **수치**(파이썬 **500만 줄** · 모델 2000개 이상 · type ignore 5천 · **2.5년**)를 다 준다. `upgrading-rabbit-mq-without-breaking-celery-eta-tasks`(2026-01-09)도 제약과 수치가 뚜렷하다(무중단 SLA · 일 **800만 메시지** 정점 · 이전 **분당 34만 건**). 볼 만한 글: `how-we-ship-2026`(2026-03-09, **하루 100번 이상 · 환경 25곳 이상 배포**) · `using-django-async`(2026-01-12) |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

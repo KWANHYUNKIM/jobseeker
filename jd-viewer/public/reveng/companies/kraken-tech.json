@@ -1,0 +1,232 @@
+{
+  "slug": "kraken-tech",
+  "name": "크라켄 테크놀로지스",
+  "name_en": "Kraken Technologies",
+  "country": "EU",
+  "category": "기타",
+  "status": "in_progress",
+  "updated_at": "2026-09-05",
+  "domain": "kraken.tech",
+  "one_liner": "전력 회사가 쓰는 운영체제를 만들어 파는 회사 — 파이썬 한 덩어리로 15개국 9천만 계정을 돌린다",
+  "business_model": "**에너지 유틸리티에게 운영체제를 판다.** 고객 계정·청구·현장 작업·배전망·자산 최적화를 한 플랫폼에서 다룬다. 자기 소개 수치가 규모를 말한다 — `90m+ Customer accounts in 15+ countries`, `Up to 15GWh of energy managed daily`, `84% Client Net Promoter Score`. 고객사로 **EDF · Origin · E.ON Next · Tokyo Gas · National Grid · Good Energy · Portsmouth Water · Octopus Energy** 를 적는다. ⚠️ **과금 방식과 가격은 공개돼 있지 않다.** ⚠️ 그리고 **Octopus Energy 를 고객사(case study)로만 적고 소유 관계를 밝히지 않는다** — 블로그의 옛 글이 Octopus Energy 이름으로, 최근 글이 Kraken 이름으로 나오는 것으로 보아 **같은 뿌리로 보이나 1차 문장을 못 찾았다.**",
+  "revenue_total": "⚠️ 확인하지 못했다 — 매출을 공개하지 않는다. 공개된 것은 고객 성과 쪽이다: Origin 은 `Saving $170 million in cost to serve`, E.ON Next 는 `5.8 million customers`, Octopus Energy 는 `9 million customers`.",
+  "products": [
+    "Kraken Customer — 고객 계정·청구를 다루는 핵심 CRM. 잘 구조화된 모놀리스로 만든다",
+    "Kraken Flex — 자산 최적화 쪽. 확장 요구가 달라 마이크로서비스로 만든다",
+    "현장 작업(field operations)과 배전망 관리",
+    "시장 연동 — 나라별 전력 시장에 붙는 부분. 배포·규제 요구가 달라 떼어 놨다"
+  ],
+  "revenue_streams": [
+    {
+      "name": "유틸리티에 파는 플랫폼",
+      "how": "전력·수도 회사가 자기 고객을 이 플랫폼 위에서 돌린다. **자기가 쓰는 것을 판다** — Octopus Energy 900만 계정도 이 위에 있다. ⚠️ 과금 방식은 공개돼 있지 않다",
+      "weight": "⚠️ 매출을 공개하지 않는다",
+      "domains": [
+        "한 덩어리로 두고 하루에 백 번 내보낸다",
+        "남의 전기 사업을 같은 코드 위에 올린다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kraken — 제품 소개",
+          "url": "https://kraken.tech/",
+          "publisher": "Kraken Technologies",
+          "summary": "에너지 유틸리티용 운영체제로 자신을 소개한다. 고객 계정 9천만 이상·15개국 이상·하루 최대 15GWh 관리를 내세우고 EDF·Origin·E.ON Next·Tokyo Gas·National Grid 등을 고객사로 적는다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Kraken 도메인 지도",
+    "question": "남의 전기 사업을 대신 돌려 주는 회사는 무엇을 한 덩어리로 두고 무엇을 떼어 놓는가?",
+    "code": "flowchart TD\n  U[\"<b>유틸리티 고객사</b><br/>• EDF · Origin · Tokyo Gas<br/>• 15개국 이상 9천만 계정\"]:::list --> K\n  K[\"<b>Kraken 플랫폼</b><br/>• 계정 · 청구 · 현장 작업<br/>• 배전망 · 자산 최적화\"]:::list\n  K --> D1[\"<b>한 덩어리로 두고<br/>하루에 백 번 내보낸다</b><br/>• 잘 구조화된 모놀리스<br/>• 트렁크 기반 · 자동 테스트 10만\"]:::list\n  K --> D2[\"<b>1500만 줄에<br/>타입을 뒤늦게 입힌다</b><br/>• mypy · Django 스텁 플러그인<br/>• 2.5년\"]:::list\n  K --> D3[\"<b>남의 전기 사업을<br/>같은 코드 위에 올린다</b><br/>• 나라마다 다른 시장·규제<br/>• 요구가 다른 것만 떼어 낸다\"]:::list\n  D2 -.->|한 덩어리를 키우려면<br/>도구가 대신 봐 줘야 한다| D1\n  D3 -.->|떼어 낼 기준을<br/>배포·규제 요구로 정한다| D1"
+  },
+  "domains": [
+    {
+      "name": "한 덩어리로 두고 하루에 백 번 내보낸다",
+      "why": "이 회사의 중심 결정은 **쪼개지 않는 것**이다. 핵심 CRM 인 Kraken Customer 를 `a well-structured monolith` 로 두고 그 위에서 **하루 100번 이상, 환경 25곳 이상**으로 내보낸다. 이유를 회사가 적는다 — `A monolith with a trunk-based development workflow lets us move fast, share code easily and keep the system coherent.` **파이썬 1500만 줄과 머지된 PR 25만 건**이 그 한 덩어리 안에 있다.",
+      "tech": [
+        {
+          "tech": "잘 구조화된 모놀리스 + 트렁크 기반 개발",
+          "solves": "코드 공유와 일관성을 유지하면서 빠르게 움직인다. 쪼갰을 때 생기는 조율 비용을 안 낸다",
+          "limits": "⚠️ **한 덩어리가 커질수록 도구가 대신 봐 줘야 한다** — 그래서 타입 검사와 10만 개 테스트가 필수가 된다. 이 회사가 정적 타입에 2.5년을 쓴 이유가 여기 있다(이 인과는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we ship in 2026",
+              "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+              "publisher": "Kraken Engineering",
+              "date": "2026-03-09",
+              "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "매 머지마다 도는 자동 테스트 10만 개 이상",
+          "solves": "하루 100번 넘게 내보내면서도 무너지지 않게 한다. **속도의 값을 여기서 낸다**",
+          "limits": "⚠️ 테스트가 늘수록 도는 시간과 유지 비용이 는다 — 회사는 개수만 적고 소요 시간을 밝히지 않았다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we ship in 2026",
+              "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+              "publisher": "Kraken Engineering",
+              "date": "2026-03-09",
+              "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "쿠버네티스 · 25곳 이상의 환경",
+          "solves": "고객사마다 다른 환경으로 같은 코드를 내보낸다",
+          "limits": "⚠️ **단계적 배포(staggered deployment)는 아직 저울질 중이다** — 회사가 값을 인정한다: `The operational overhead and the latency it adds to the deployment pipeline are real costs.`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we ship in 2026",
+              "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+              "publisher": "Kraken Engineering",
+              "date": "2026-03-09",
+              "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "오래된 PR 자동 닫기",
+          "solves": "빠르게 움직이는 저장소에서 코드가 썩는 것을 막는다",
+          "limits": "⚠️ 느리게 익는 작업이 밀려날 수 있다 — 이 한계는 이 사이트의 재구성이다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we ship in 2026",
+              "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+              "publisher": "Kraken Engineering",
+              "date": "2026-03-09",
+              "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "1500만 줄에 타입을 뒤늦게 입힌다",
+      "why": "⚠️ **파이썬은 타입을 안 써도 도는 언어다.** 그런데 이 회사는 그 위에 전력 회사들의 청구와 계정을 올려 놨고, 한 덩어리로 두기로 했다. **처음부터 있던 것이 아니라 나중에 넣었다** — 목표(빠진 주석 0)에 닿는 데 **2.5년**이 걸렸고 마지막 구간이 가팔랐다(`steep slope at the end between Feb 2025 and Nov 2025`). ⚠️ **줄 수가 글마다 다르다** — 타입 글은 공백·주석을 뺀 `5 million lines of Python`, 배포 글은 `nearly 15 million lines` 라 적는다.",
+      "tech": [
+        {
+          "tech": "mypy + Django 스텁 플러그인",
+          "solves": "Django 모델의 복잡한 관계를 **손으로 주석 달지 않고** 플러그인이 추론하게 한다",
+          "limits": "⚠️ **종속을 인정하고 받아들였다** — `This does lock us into mypy given it's currently the only static type checker for Python that supports plugins.`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Static typing Python at scale - Our journey with mypy and Django",
+              "url": "https://engineering.kraken.tech/news/2026/02/16/static-typing-python-at-scale.html",
+              "publisher": "Kraken Engineering",
+              "date": "2026-02-16",
+              "summary": "500만 줄 파이썬에 2.5년에 걸쳐 정적 타입을 넣은 기록. mypy 종속을 인정하고 그 대신 얻은 것을 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "플러그인 대신 Pytest 로 하는 검사",
+          "solves": "뷰의 주석이 URL 과 맞는지를 **테스트로** 확인한다 — 플러그인 의존을 늘리지 않으려는 선택이다",
+          "limits": "⚠️ 검사 시점이 타입 검사에서 테스트 실행으로 밀린다 — 이 한계는 이 사이트의 재구성이다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Static typing Python at scale - Our journey with mypy and Django",
+              "url": "https://engineering.kraken.tech/news/2026/02/16/static-typing-python-at-scale.html",
+              "publisher": "Kraken Engineering",
+              "date": "2026-02-16",
+              "summary": "500만 줄 파이썬에 2.5년에 걸쳐 정적 타입을 넣은 기록. mypy 종속을 인정하고 그 대신 얻은 것을 적었다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "남의 전기 사업을 같은 코드 위에 올린다",
+      "why": "이 회사가 파는 것은 소프트웨어가 아니라 **남의 사업이 도는 자리**다. `90m+ Customer accounts in 15+ countries` 이고 고객사가 EDF·Tokyo Gas·National Grid 처럼 나라도 규제도 다르다. **그래서 무엇을 한 덩어리에 두고 무엇을 뗄지의 기준이 기술이 아니라 요구다** — 시장 연동은 `distinct deployment and compliance requirements` 때문에 떼어 냈고, Kraken Flex 는 확장 요구가 달라 마이크로서비스로 간다.",
+      "tech": [
+        {
+          "tech": "제품별로 다른 구조 (모놀리스 · 마이크로서비스 · 분리된 연동)",
+          "solves": "하나의 정답을 강요하지 않는다. **떼어 낼 기준을 배포·규제·확장 요구에 둔다**",
+          "limits": "⚠️ **구조가 여러 벌이면 아는 법도 여러 벌이어야 한다** — 팀이 옮겨 다닐 때 값이 든다. 이 한계는 이 사이트의 재구성이다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we ship in 2026",
+              "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+              "publisher": "Kraken Engineering",
+              "date": "2026-03-09",
+              "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "무중단을 전제로 한 기반 교체",
+          "solves": "고객사의 사업이 도는 중에 바닥을 간다 — RabbitMQ 를 올릴 때 `We had to do this with zero downtime per our SLAs` 였다. 일 **800만 메시지** 정점, 이전 **분당 34만 건**",
+          "limits": "⚠️ **방법과 속도가 제약에 묶인다** — 큐를 그 자리에서 바꾸지 못하고 별도 vhost 를 세워 옮겨야 했고, ETA 작업은 그냥 옮겨지지 않아 변환이 필요했다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Making a major RabbitMQ version upgrade without breaking Celery ETA tasks",
+              "url": "https://engineering.kraken.tech/news/2026/01/09/upgrading-rabbit-mq-without-breaking-celery-eta-tasks.html",
+              "publisher": "Kraken Engineering",
+              "date": "2026-01-09",
+              "summary": "무중단 제약 아래 RabbitMQ 를 올린 기록. 별도 vhost 로 quorum 큐를 세우고 ETA 작업을 옮긴 방법과 수치를 적었다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "**Octopus Energy 와의 관계를 1차 문장으로 확인하지 못했다.** `kraken.tech` 는 Octopus 를 **고객사(case study)로만** 적는다. 블로그의 옛 글(2015~2019)이 Octopus Energy 이름으로, 최근 글이 Kraken 이름으로 나오는 것으로 보아 같은 뿌리로 보이지만 **그렇게 말하는 문장을 못 찾았다.**",
+    "**과금 방식·가격·매출이 공개돼 있지 않다.** 계정 수 기준인지 정액인지 알 수 없다.",
+    "⚠️ **파이썬 줄 수가 글마다 다르다** — 타입 글은 공백·주석 제외 `5 million`, 배포 글은 `nearly 15 million` 이다. **세는 방법이 다른 것으로 보이나 확인하지 못했다.**",
+    "**비동기 Django 이야기는 아직 결론이 없다** — 회사 스스로 평가를 `okay` 라 하고 `We've not really got to a stage yet where we're dealing with forms and views` 라 적는다. **수치가 하나도 없다.**",
+    "**연표(eras)를 쓸 자료를 아직 못 찾았다** — 연도가 붙은 회고를 확인하지 못했다."
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Kraken — 제품 소개",
+      "url": "https://kraken.tech/",
+      "publisher": "Kraken Technologies",
+      "summary": "에너지 유틸리티용 운영체제로 자신을 소개한다. 고객 계정 9천만 이상·15개국 이상·하루 최대 15GWh 관리를 내세우고 EDF·Origin·E.ON Next·Tokyo Gas·National Grid 등을 고객사로 적는다."
+    },
+    {
+      "title": "How we ship in 2026",
+      "url": "https://engineering.kraken.tech/news/2026/03/09/how-we-ship-2026.html",
+      "publisher": "Kraken Engineering",
+      "date": "2026-03-09",
+      "summary": "하루 100번 이상·환경 25곳 이상으로 내보내는 방식과 그것을 떠받치는 모놀리스 선택을 적었다. 마이크로서비스를 안 고른 이유와 단계적 배포의 비용을 함께 밝힌다."
+    },
+    {
+      "title": "Static typing Python at scale - Our journey with mypy and Django",
+      "url": "https://engineering.kraken.tech/news/2026/02/16/static-typing-python-at-scale.html",
+      "publisher": "Kraken Engineering",
+      "date": "2026-02-16",
+      "summary": "500만 줄 파이썬에 2.5년에 걸쳐 정적 타입을 넣은 기록. mypy 종속을 인정하고 그 대신 얻은 것을 적었다."
+    },
+    {
+      "title": "Working with async Django: lessons learned",
+      "url": "https://engineering.kraken.tech/news/2026/01/12/using-django-async.html",
+      "publisher": "Kraken Engineering",
+      "date": "2026-01-12",
+      "summary": "LLM 에이전트를 여럿 돌리려고 Django 비동기를 쓴 기록. 트랜잭션·테스트·ORM 에서 걸린 곳을 적고 평가를 `okay` 로 맺는다."
+    },
+    {
+      "title": "Making a major RabbitMQ version upgrade without breaking Celery ETA tasks",
+      "url": "https://engineering.kraken.tech/news/2026/01/09/upgrading-rabbit-mq-without-breaking-celery-eta-tasks.html",
+      "publisher": "Kraken Engineering",
+      "date": "2026-01-09",
+      "summary": "무중단 제약 아래 RabbitMQ 를 올린 기록. 별도 vhost 로 quorum 큐를 세우고 ETA 작업을 옮긴 방법과 수치를 적었다."
+    }
+  ]
+}

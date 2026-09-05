@@ -792,6 +792,18 @@
       "one_liner": "지점 없이 1억 3천만 명을 받은 브라질 은행",
       "updated_at": "2026-09-05",
       "domain": "nubank.com.br"
+    },
+    {
+      "slug": "kraken-tech",
+      "name": "크라켄 테크놀로지스",
+      "name_en": "Kraken Technologies",
+      "country": "EU",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "전력 회사가 쓰는 운영체제를 만들어 파는 회사",
+      "updated_at": "2026-09-05",
+      "domain": "kraken.tech"
     }
   ],
   "domains": [
@@ -1014,7 +1026,10 @@
     "랙의 모국어를 IPv6 로 정한다",
     "나라마다 다른 금융망에 한 벌로 붙는다",
     "읽는 길에서 계산을 걷어낸다",
-    "사람이 프롬프트를 쓰는 일을 그만둔다"
+    "사람이 프롬프트를 쓰는 일을 그만둔다",
+    "한 덩어리로 두고 하루에 백 번 내보낸다",
+    "1500만 줄에 타입을 뒤늦게 입힌다",
+    "남의 전기 사업을 같은 코드 위에 올린다"
   ],
   "countries": {
     "KR": "한국",

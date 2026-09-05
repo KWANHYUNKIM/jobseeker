@@ -8,24 +8,34 @@
 
 ## 지금 파는 중
 
-**없다.** 완료 **66곳** · **큐 1/3**(Kraken Technologies) · 비교 문서 33편.
+**Kraken Technologies(EU/UK · 기타 — 에너지)** `in_progress` · **도메인 3 · 기능 0** —
+프로파일만 세웠다. **67곳** · ⚠️ 큐 0/3.
 
-**다음 사이클은 6순위(신규) — Kraken Technologies 다.** PROMPT.md 3단계(회사 프로파일)부터.
-읽을 글은 QUEUE 의 대기 행에 다 적어 뒀다.
+**에너지 축 첫 회사다.** 축은 하나다 — **쪼개지 않는다.** 핵심 CRM 을
+`a well-structured monolith` 로 두고 **파이썬 1500만 줄·PR 25만 건**을 그 안에 담은 채
+**하루 100번 이상, 환경 25곳 이상**으로 내보낸다. 그리고 그것을 **남의 전기 사업**
+(EDF·Origin·Tokyo Gas·National Grid, 15개국 9천만 계정) 위에서 한다.
 
-### Kraken 이 왜 값진가 — 에너지 축 첫 자리이고 결이 특이하다
+### 다음 사이클 — 도메인 셋 중 첫째부터
 
-66곳에 **전력·유틸리티가 하나도 없었다.** 게다가 이 회사는 **파이썬·Django 한 덩어리로
-전력 소매를 돌리고, 그 플랫폼을 다른 에너지 회사에 판다** — 자기가 쓰는 것을 파는 구조다.
-글도 그 결이다: **500만 줄 파이썬에 정적 타입을 2.5년에 걸쳐 넣은 이야기**가 나온다.
-**⚠️ `tech.octopus.energy` 가 아니라 `engineering.kraken.tech` 다.**
+- **한 덩어리로 두고 하루에 백 번 내보낸다** — `how-we-ship-2026`. **마이크로서비스를
+  안 고른 이유를 회사가 직접 적고**(`Microservices introduce distribution complexity,
+  network latency and the overhead of coordinating releases`), **단계적 배포의 값도
+  인정한다**(`The operational overhead and the latency it adds ... are real costs`).
+  ⚠️ **`how-we-ship-2026` 한 편으로 tech 4개를 채웠다** — 기능을 쓰려면 이 글을 다시
+  열어 배포 파이프라인의 실제 단계를 뽑아야 한다.
+- **1500만 줄에 타입을 뒤늦게 입힌다** — `static-typing-python-at-scale`. **mypy 종속을
+  인정하는 문장**이 있어 결정 칸이 단단하다.
+- **남의 전기 사업을 같은 코드 위에 올린다** — `upgrading-rabbit-mq...` + 제품 소개.
 
-### ⚠️ 이번 조사에서 확인한 벽 — 새 축일수록 블로그가 없다
+### ⚠️ 이 회사에서 조심할 것
 
-일곱 곳 중 여섯이 떨어졌는데 **403 은 하나도 없었다.** 떨어진 이유가 달라졌다 —
-**블로그가 아예 없거나(Flutterwave·Paystack), 열리는데 마케팅이다**(PingCAP·Ably·
-Capital One). **아프리카 둘째 · 중국 셋째 · 동남아 둘째 · 전통 대형은행 첫 자리를 다
-노렸는데 전부 이 이유로 못 채웠다.** 앞 조사(열한 곳 중 여섯이 403)와 벽의 종류가 다르다.
+1. **줄 수가 글마다 다르다** — 타입 글은 공백·주석 제외 `5 million`, 배포 글은
+   `nearly 15 million`. **세는 방법이 다른 것으로 보이나 확인하지 못했다.**
+   **둘 중 하나만 골라 쓰지 말고 두 수치를 다 적는다.**
+2. **Octopus Energy 와의 관계를 1차 문장으로 못 찾았다** — 제품 사이트는 Octopus 를
+   **고객사로만** 적는다. 같은 뿌리로 보이지만 그렇게 말하는 문장이 없다.
+3. **비동기 Django 글은 결론이 없다**(평가가 `okay`, 수치 0) — 기능 재료로 쓰기엔 얇다.
 
 ## 지금의 진짜 상태
 
