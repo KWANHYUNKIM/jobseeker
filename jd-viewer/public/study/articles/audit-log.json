@@ -1,0 +1,730 @@
+{
+  "slug": "audit-log",
+  "title": "감사 로그",
+  "title_en": "Audit Log",
+  "aliases": [
+    "감사 로그",
+    "감사로그",
+    "audit log",
+    "감사 추적",
+    "Audit Trail",
+    "CloudTrail",
+    "접근 이력"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "\"누가 언제 무엇에 무슨 짓을 했는가\"를 나중에 증명하기 위해 남기는 기록 — 그래서 지울 수 없어야 하고, 아무 일도 없었다는 것까지 말할 수 있어야 한다.",
+  "summary": "감사 로그는 시스템에서 일어난 행위를 **증거로 쓰기 위해** 남긴 기록이다. 디버깅용 로그와 형식은 비슷해 보이지만 요구가 다르다 — 지워지면 안 되고, 바뀌면 알아챌 수 있어야 하고, **\"그 기간에 아무 일도 없었다\"는 주장까지** 뒷받침해야 한다. 그리고 성공한 행위만이 아니라 **거부된 시도**를 남기는 것이 대개 더 중요하다.\n\n이 낱말이 어려운 이유는 기술이 아니라 **결정**에 있다. 무엇을 남길지(요청 본문까지? 응답 본문까지?), 얼마나 보관할지, 그리고 **그 기록을 누가 볼 수 있게 할지** — 마지막 것이 특히 고약하다. 응답 본문까지 남기는 순간 **감사 로그가 그 시스템에서 가장 민감한 데이터**가 되기 때문이다.\n\n⚠️ 공고에서 `감사`라는 낱말은 대부분 이 문서의 것이 아니다 — 보안 점검·회계 감사·인증 심사가 훨씬 많다. 첫 절이 그 구분이다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 일곱 개의 질문에 답하는 기록",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        },
+        {
+          "title": "CloudTrail record contents",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "감사 이벤트 한 건에 실제로 들어가는 필드들과 그 크기 제한"
+        }
+      ],
+      "body": "쿠버네티스 문서가 감사를 이렇게 정의한다.\n\n> \"Kubernetes *auditing* provides a **security-relevant, chronological set of records** documenting the sequence of actions in a cluster.\"\n\n그리고 곧바로 **그 기록이 답해야 할 질문 일곱 개**를 나열한다. 이 목록이 이 낱말의 실질적 정의다.\n\n> - what happened?\n> - when did it happen?\n> - who initiated it?\n> - on what did it happen?\n> - where was it observed?\n> - from where was it initiated?\n> - to where was it going?\n\n**뒤의 셋이 일반 로그와 갈리는 자리**다. `where was it observed`(어느 노드·리전에서 관측됐나), `from where was it initiated`(어느 IP·어느 클라이언트에서 왔나), `to where was it going`(어디로 향했나). 디버깅 로그는 대개 앞의 넷만 남긴다.\n\n다른 제품이 같은 목록을 필드로 구현해 둔 것을 보면 더 분명해진다. AWS CloudTrail 의 이벤트 레코드에는 `userIdentity`(누가) · `eventTime`(언제) · `eventName`(무엇을) · `resources`(무엇에) · `awsRegion`(어디서 관측) · `sourceIPAddress`·`userAgent`(어디서 왔나)가 **전부 필수 또는 준필수 필드**로 들어 있다(아래 `seven` 표가 둘을 나란히 놓은 것이다).\n\n그중 하나는 특별히 짚어야 한다.\n\n> `errorMessage` — \"If the request returns an error, the description of the error. **This message includes messages for authorization failures.**\"\n\n⭐ **거부된 요청도 남는다.** 감사 로그에서 값이 큰 쪽은 대개 성공이 아니라 **실패**다 — \"누가 들어오려다 막혔나\"가 침해 조사의 시작이기 때문이다. 디버깅 로그를 만들 때 우리는 보통 실패를 예외 처리로 삼키는데, 감사에서는 그것이 곧 증거의 소실이다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 일반 로그로는 안 되나 — 증거에는 세 가지 요구가 더 붙는다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Validating CloudTrail log file integrity",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+        }
+      ],
+      "body": "\"로그 다 남기고 있는데요\"가 감사 요구를 만났을 때 부족한 이유는 셋이다.\n\n**1) 지울 수 있으면 증거가 아니다.** 침해를 일으킨 사람이 가장 먼저 하는 일이 흔적을 지우는 것이다. 애플리케이션 로그는 그 애플리케이션의 권한으로 쓰이고, 대개 같은 권한으로 지울 수도 있다.\n\n**2) 바뀌었는지 알 수 없으면 증거가 아니다.** 한 줄을 고쳐도 아무도 모르는 파일은 법정에서든 감사에서든 아무것도 주장하지 못한다.\n\n**3) ⭐ \"아무 일도 없었다\"를 말할 수 없으면 증거가 아니다.** 이것이 가장 덜 알려진 요구인데, CloudTrail 문서가 이 용도를 명시적으로 든다.\n\n> \"The CloudTrail log file integrity validation process also lets you know if a log file has been deleted or changed, or **assert positively that no log files were delivered to your account during a given period of time**.\"\n\n**\"그 기간에 로그가 하나도 안 왔다\"를 적극적으로 주장할 수 있다.** 보통의 로그로는 이것이 불가능하다 — 아무것도 없는 것과 누군가 지운 것이 구별되지 않기 때문이다. 그런데 감사에서 오는 질문은 대개 이 모양이다: *\"3월 12일에 이 데이터에 접근한 사람이 없다는 것을 어떻게 압니까?\"*\n\n그래서 감사 로그는 **기록을 남기는 문제가 아니라 기록을 신뢰할 수 있게 만드는 문제**다. 다음 절이 그 방법이다.\n\n> 📌 이 셋 때문에 감사 로그는 **애플리케이션이 지울 수 없는 곳**에 가야 한다. 한화생명보험 공고가 그 요구를 한 줄로 적었다 — `접근통제(IAM 최소권한), **접속기록·감사로그 별도 보관 체계** 구성`. **'별도 보관'** 은 편의가 아니라 요건이다."
+    },
+    {
+      "id": "integrity",
+      "kind": "how",
+      "heading": "어떻게 지키나 — 해시하고, 이어 붙이고, 서명한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Validating CloudTrail log file integrity",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+        }
+      ],
+      "body": "CloudTrail 의 로그 파일 무결성 검증이 이 문제를 푸는 방식을 그대로 보여 준다. 부품이 넷이다.\n\n**① 파일마다 해시.**\n> \"When you enable log file integrity validation, CloudTrail creates a hash for every log file that it delivers.\"\n\n**② 그 해시들을 모은 다이제스트 파일.**\n> \"Every hour, CloudTrail also creates and delivers a file that references the log files for the last hour and contains a hash of each. This file is called a **digest file**.\"\n\n**③ ⭐ 다이제스트끼리 사슬로 묶는다.**\n> \"**Each digest file also contains the digital signature of the previous digest file if one exists.**\"\n\n이 한 줄이 핵심이다. 파일 하나를 지우면 그 파일의 해시가 다이제스트에 남고, 다이제스트를 지우면 **다음 다이제스트가 그 부재를 드러낸다.** 사슬을 통째로 다시 만들려면 서명 키가 있어야 한다.\n\n**④ 서명, 그리고 분리 보관.**\n> \"CloudTrail signs each digest file using the private key of a public and private key pair. After delivery, you can use the public key to validate the digest file.\"\n> \"The digest files are put into a **folder separate from the log files**. This separation of digest files and log files enables you to enforce granular security policies...\"\n\n문서는 결과를 이렇게 정리한다 — SHA-256 해시와 SHA-256 with RSA 서명을 써서 **\"computationally infeasible to modify, delete or forge CloudTrail log files without detection\"**.\n\n⚠️ **\"without detection\"** 을 놓치면 안 된다. **못 바꾸게 만드는 것이 아니라, 바꾸면 들키게 만드는 것**이다. 감사 로그의 변조 방지는 대체로 이 모양이다 — 물리적 불변이 아니라 **탐지 가능성**. 그래서 검증을 **주기적으로 실제로 돌리지 않으면** 이 장치는 아무 일도 하지 않는다(문서도 못 박는다: 검증을 켜면 다이제스트가 배달될 뿐 \"does not validate the integrity of the files\").\n\n💡 자체 시스템에 이 구조를 옮긴다면 최소 세 가지다 — **추가 전용 저장소**(애플리케이션 계정이 삭제 권한을 갖지 않는 곳), **앞 기록의 해시를 품는 체인**, 그리고 **검증을 정기적으로 돌리는 작업**. 셋째가 가장 자주 빠진다."
+    },
+    {
+      "id": "level",
+      "kind": "how",
+      "heading": "무엇을 어디까지 남기나 — 등급을 고르는 것이 곧 설계다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        },
+        {
+          "title": "CloudTrail record contents",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "감사 이벤트 한 건에 실제로 들어가는 필드들과 그 크기 제한"
+        }
+      ],
+      "body": "\"다 남기면 되지\"가 안 되는 이유는 셋이다 — 비용, 성능, 그리고 **감사 로그 자체가 민감해진다는 것**.\n\n쿠버네티스는 이 결정을 **네 등급**으로 강제한다. 정책 규칙 중 **처음 매칭된 것**이 등급을 정한다.\n\n> - `None` - don't log events that match this rule.\n> - `Metadata` - log events with metadata (requesting user, timestamp, resource, verb, etc.) but not request or response body.\n> - `Request` - log events with request metadata and body but not response body.\n> - `RequestResponse` - log events with request metadata, request body and response body.\n\n⭐ **`Request` 와 `RequestResponse` 사이에 선이 있다.** 요청 본문까지는 \"무엇을 하려 했나\"이고, 응답 본문까지 가면 **\"그래서 무엇을 봤나\"** 가 된다. 후자는 조회한 데이터가 통째로 감사 로그에 복사된다는 뜻이다 — 개인정보 조회 API 에 `RequestResponse` 를 걸면 **감사 로그가 개인정보 데이터베이스의 사본**이 된다.\n\n그리고 **언제 남길지**도 갈린다. 쿠버네티스는 네 단계를 정의한다.\n\n> - `RequestReceived` - ... as soon as the audit handler receives the request, and before it is delegated down the handler chain.\n> - `ResponseStarted` - Once the response headers are sent, but before the response body is sent. **This stage is only generated for long-running requests (e.g. watch).**\n> - `ResponseComplete` - The response body has been completed and no more bytes will be sent.\n> - `Panic` - Events generated when a panic occurred.\n\n⭐ **`RequestReceived` 가 따로 있다는 것**이 설계의 힌트다 — 요청이 **들어왔다는 사실 자체**를, 처리되기 전에 남긴다. 처리 중에 죽어도 시도의 기록은 남는다. 감사 로그를 직접 만들 때 가장 많이 빠뜨리는 것이 이것이다(대개 성공한 뒤에 한 번 남긴다).\n\n비용은 문서가 직접 경고한다.\n\n> \"The audit logging feature **increases the memory consumption of the API server** because some context required for auditing is stored for each request.\"\n\nCloudTrail 쪽에는 **크기 상한**이라는 다른 형태의 대가가 있다. `requestParameters`·`responseElements` 는 100KB, `userAgent`·`errorCode`·`errorMessage` 는 1KB 이고, 넘으면 **잘리거나 통째로 생략된다.** 그리고 이벤트가 상한을 넘으면 **정해진 순서대로 필드를 잘라 낸다**(`annotation` → `requestID` → `additionalEventData` → … → `requestParameters` → `errorMessage`). ⚠️ **감사 로그의 어떤 필드는 조용히 사라질 수 있다**는 뜻이고, 하필 큰 요청일수록 그렇다."
+    },
+    {
+      "id": "product",
+      "kind": "extra",
+      "heading": "감사 로그는 기능이다 — 팔리고, 요구되고, 규제된다",
+      "confidence": "inferred",
+      "body": "이 낱말이 다른 인프라 낱말과 다른 점은 **고객이 이름을 대고 요구한다**는 것이다.\n\n모두싸인 공고는 감사 로그를 **엔터프라이즈 기능 묶음**에 넣는다 — `B2B SaaS 엔터프라이즈 기능(SSO, 프로비저닝, 감사 로그) 개발 경험`. 코그넥스도 같은 묶음이다 — `Multi-tenant SaaS, subscription/quota, billing/usage tracking, authorization, audit log`. **SSO·프로비저닝과 나란히 있다**는 것이 이 셋의 성격을 말해 준다: 제품의 기능이 아니라 **계약을 통과하기 위한 기능**이다. 대기업 고객의 보안 검토 문항에 있기 때문에 만든다.\n\n규제 쪽은 더 직접적이다. 웰리시스 공고는 `미국 FDA, HIPAA, 유럽 CE 환경에서 요구되는 데이터 무결성, 접근 통제, **감사 추적(Audit Trail)**` 이라고 적고, 에버엑스는 `ISO/IEC 42001(AIMS)이 요구하는 ... 재현 가능성(reproducibility)과 **감사 추적성(auditability)** 을 시스템 수준에서 보장` 이라고 적는다. **문서가 아니라 파이프라인으로 충족시킨다**는 표현이 이 요구의 성격을 잘 보여 준다.\n\n그리고 새 자리가 하나 생겼다 — 랩씨드의 `**OpenTelemetry 기반 LLM 감사 로그**·Decision Record 설계 및 구현`. 모델이 무엇을 근거로 무엇을 답했는지를 남기는 것도 같은 문제의 한 형태다.\n\n> ⚠️ **이 문서는 특정 규정이 무엇을 요구하는지 말하지 않는다.** HIPAA·FDA 21 CFR Part 11·ISO/IEC 42001 의 조문은 확인하지 않았고, 규정은 개정된다. **인용이 필요하면 현행 조문을 직접 열어야 한다** — 이 백과사전이 `network-separation` 에서 세운 규칙과 같다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 가장 민감한 데이터를 만들어 놓고 아무도 안 본다",
+      "confidence": "inferred",
+      "body": "**1. ⭐ 감사 로그를 누가 볼 수 있나.** 전 직원의 모든 행위가, 경우에 따라 조회한 데이터까지 한곳에 모여 있다. **그 시스템에서 가장 민감한 데이터가 감사 로그가 되는 역설**이 여기서 나온다. 그런데 접근 제어는 대개 업무 데이터에만 걸려 있고 감사 저장소에는 \"보안팀 전원\" 같은 넓은 권한이 붙는다. **감사 로그에도 세분화된 권한과 — 그리고 감사 로그를 열람한 기록이 필요하다**(`rebac`·`abac` 이 다루는 그 문제가 여기에도 온다).\n\n**2. 남기기만 하고 안 본다.** 무결성 검증은 켜 두면 다이제스트가 쌓일 뿐 **자동으로 검증되지 않는다.** 마찬가지로 감사 로그도 사고가 나야 열어 본다. 마이리얼트립 공고가 요구하는 것은 남기는 능력이 아니라 **`보안 로그, 클라우드 감사 로그 등을 분석하여 위협을 탐지한 경험`** 이다 — 쌓기와 보기는 다른 일이고, 후자에는 대개 별도의 시스템이 붙는다.\n\n**3. 시각을 얼마나 믿을 수 있나.** CloudTrail 의 `eventTime` 은 \"comes from **the local host** that provides the service API endpoint\" 이고, 문서는 그래서 \"In general, AWS services use Network Time Protocol (NTP) to synchronize their system clocks\" 라고 덧붙인다. **여러 시스템의 감사 로그를 시간순으로 엮으려면 시계가 맞아야 한다.** 침해 조사에서 순서가 뒤집히면 결론도 뒤집힌다.\n\n**4. 기록이 늦거나 빠질 수 있다.** CloudTrail 은 아예 그것을 위한 필드를 둔다 — `addendum` 은 \"If an event delivery was delayed, or additional information about an existing event becomes available after the event is logged\" 일 때 그 **이유**(`DELIVERY_DELAY`·`UPDATED_DATA`·`SERVICE_OUTAGE`)를 적는다. ⭐ **성숙한 감사 시스템은 \"기록이 완전하지 않았다\"는 사실까지 기록한다.**\n\n**5. 이 문서가 다루지 않는 것.** 로그를 모아 검색·상관분석하는 쪽은 관측성과 보안 관제의 자리이고, 누가 무엇을 볼 수 있는지의 모델은 `rbac`·`abac`·`rebac`, 규칙을 어디서 평가하는지는 `policy-engine` 이다. 여기는 **행위를 증거로 남기는 것**만 다룬다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "seven",
+      "kind": "glossary",
+      "caption": "⭐ 감사가 답해야 할 일곱 질문과, 그것을 필드로 구현한 예",
+      "note": "질문 목록은 쿠버네티스 감사 문서, 필드는 AWS CloudTrail 이벤트 레코드 문서에서 각각 옮겼다. 두 제품이 서로를 참조하지 않는데도 같은 목록에 도달했다는 점이 이 표의 값이다. 자체 감사 로그를 설계할 때 이 왼쪽 열이 체크리스트가 된다.",
+      "columns": [
+        "질문 (Kubernetes)",
+        "CloudTrail 의 필드",
+        "놓치기 쉬운 이유"
+      ],
+      "rows": [
+        [
+          "what happened?",
+          "`eventName` · `eventSource`",
+          "보통 남긴다"
+        ],
+        [
+          "when did it happen?",
+          "`eventTime` — \"the date and time the request was **completed**\"",
+          "시작 시각인지 완료 시각인지 정해야 한다"
+        ],
+        [
+          "who initiated it?",
+          "`userIdentity` (Optional: False)",
+          "서비스 계정으로 통일되면 사람이 사라진다"
+        ],
+        [
+          "on what did it happen?",
+          "`resources` — ARN · 소유 계정 · 리소스 타입",
+          "'어느 테이블'까지만 남기고 '어느 행'을 안 남기면 쓸모가 준다"
+        ],
+        [
+          "where was it observed?",
+          "`awsRegion` · `recipientAccountId`",
+          "단일 리전일 땐 안 남기다가 확장하면 소급이 안 된다"
+        ],
+        [
+          "from where was it initiated?",
+          "`sourceIPAddress` · `userAgent` · `vpcEndpointId`",
+          "프록시 뒤에서는 원 IP 가 사라진다"
+        ],
+        [
+          "to where was it going?",
+          "`eventSource` · `tlsDetails.clientProvidedHostHeader`",
+          "가장 자주 빠지는 항목"
+        ],
+        [
+          "(질문 목록에 없지만) 실패했나?",
+          "`errorCode` · `errorMessage` — \"includes messages for **authorization failures**\"",
+          "⭐ 거부된 시도가 침해 조사의 시작이다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        },
+        {
+          "title": "CloudTrail record contents",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "감사 이벤트 한 건에 실제로 들어가는 필드들과 그 크기 제한"
+        }
+      ]
+    },
+    {
+      "id": "vs-log",
+      "kind": "compare",
+      "caption": "디버깅 로그와 감사 로그는 다른 물건이다",
+      "note": "형식이 비슷해 같은 파이프라인에 태우기 쉬운데, 요구가 다르므로 저장소와 권한을 분리하는 것이 보통이다. 오른쪽 열의 요구는 CloudTrail 무결성 검증 문서에서 확인한 것들이다.",
+      "columns": [
+        "",
+        "디버깅 로그",
+        "감사 로그"
+      ],
+      "rows": [
+        [
+          "누가 읽나",
+          "개발자, 대개 사고 직후",
+          "보안·감사·법무, 대개 몇 달 뒤"
+        ],
+        [
+          "지워도 되나",
+          "된다. 보통 며칠~몇 주 보관",
+          "안 된다. 지운 사실이 드러나야 한다"
+        ],
+        [
+          "바뀌면",
+          "알 수 없고, 대체로 문제도 안 된다",
+          "알아챌 수 있어야 한다 — 해시·서명·체인"
+        ],
+        [
+          "\"아무 일 없었다\"",
+          "증명 못 한다",
+          "⭐ \"assert positively that no log files were delivered ... during a given period\""
+        ],
+        [
+          "실패한 요청",
+          "자주 삼켜진다",
+          "실패가 더 중요하다(인가 거부)"
+        ],
+        [
+          "누가 볼 수 있나",
+          "팀 전체",
+          "제한해야 한다 — 가장 민감한 데이터가 될 수 있다"
+        ],
+        [
+          "저장 위치",
+          "애플리케이션이 쓰고 지우는 곳",
+          "⭐ 애플리케이션이 지울 수 없는 별도 저장소"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Validating CloudTrail log file integrity",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+        }
+      ]
+    },
+    {
+      "id": "levels",
+      "kind": "compare",
+      "caption": "무엇까지 남길 것인가 — 쿠버네티스의 네 등급",
+      "note": "쿠버네티스 감사 정책의 level 값이다(원문 유지). \"the first matching rule sets the audit level of the event\" — 규칙 순서가 결과를 정한다. 자체 시스템을 만들 때도 이 네 칸이 그대로 쓸 만한 분류다.",
+      "columns": [
+        "등급",
+        "원문",
+        "무엇이 남나 / 대가"
+      ],
+      "rows": [
+        [
+          "`None`",
+          "\"don't log events that match this rule.\"",
+          "건강 검사·조회 폭주처럼 시끄러운 것을 뺀다. ⚠️ 뺀 것은 영영 없다"
+        ],
+        [
+          "`Metadata`",
+          "\"log events with metadata (requesting user, timestamp, resource, verb, etc.) but not request or response body.\"",
+          "대부분의 기본값. 누가 무엇에 무엇을 했는지까지"
+        ],
+        [
+          "`Request`",
+          "\"log events with request metadata and body but not response body.\"",
+          "**무엇을 하려 했는지**까지. 변경 요청의 내용이 남는다"
+        ],
+        [
+          "`RequestResponse`",
+          "\"log events with request metadata, request body and response body.\"",
+          "⚠️ **무엇을 봤는지**까지. 조회 데이터가 감사 로그에 복사된다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        }
+      ]
+    },
+    {
+      "id": "stages",
+      "kind": "glossary",
+      "caption": "언제 남길 것인가 — 네 단계",
+      "note": "쿠버네티스 감사 문서의 stage 정의. 직접 감사 로그를 만들 때 대개 ResponseComplete 하나만 구현하는데, 나머지 셋이 왜 있는지가 설계의 힌트다.",
+      "columns": [
+        "단계",
+        "원문",
+        "왜 따로 있나"
+      ],
+      "rows": [
+        [
+          "`RequestReceived`",
+          "\"as soon as the audit handler receives the request, and before it is delegated down the handler chain\"",
+          "⭐ **처리 전에 시도를 남긴다.** 처리 중 죽어도 기록이 남는다"
+        ],
+        [
+          "`ResponseStarted`",
+          "\"Once the response headers are sent, but before the response body is sent. This stage is only generated for long-running requests (e.g. watch).\"",
+          "오래 걸리는 요청은 끝날 때까지 기다리면 늦다"
+        ],
+        [
+          "`ResponseComplete`",
+          "\"The response body has been completed and no more bytes will be sent.\"",
+          "가장 흔히 구현되는 하나"
+        ],
+        [
+          "`Panic`",
+          "\"Events generated when a panic occurred.\"",
+          "죽은 요청도 기록이 필요하다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        }
+      ]
+    },
+    {
+      "id": "integrity",
+      "kind": "glossary",
+      "caption": "변조를 '막는' 게 아니라 '들키게' 하는 부품들",
+      "note": "AWS CloudTrail 로그 파일 무결성 검증의 구성이다. 자체 시스템에 옮길 때의 최소 구성으로도 읽을 수 있다 — 다만 마지막 줄(검증 실행)이 가장 자주 빠진다.",
+      "columns": [
+        "부품",
+        "무엇을 하나",
+        "없으면"
+      ],
+      "rows": [
+        [
+          "파일별 해시",
+          "\"creates a hash for every log file that it delivers\"",
+          "파일 내용 변조를 못 잡는다"
+        ],
+        [
+          "다이제스트 파일",
+          "\"references the log files for the last hour and contains a hash of each\" (매시간)",
+          "파일 삭제를 못 잡는다"
+        ],
+        [
+          "⭐ 다이제스트 체인",
+          "\"Each digest file also contains the digital signature of the previous digest file if one exists.\"",
+          "다이제스트째로 지우면 흔적이 없다"
+        ],
+        [
+          "서명",
+          "\"signs each digest file using the private key ... you can use the public key to validate\"",
+          "사슬을 통째로 다시 만들면 그만이다"
+        ],
+        [
+          "분리 보관",
+          "\"The digest files are put into a folder separate from the log files.\"",
+          "같은 권한으로 둘 다 지울 수 있다"
+        ],
+        [
+          "삭제 보호",
+          "문서가 함께 권하는 Amazon S3 MFA Delete",
+          "권한이 털리면 보관 자체가 무의미"
+        ],
+        [
+          "⚠️ 검증 실행",
+          "\"Enabling log file integrity validation allows CloudTrail to deliver digest log files ..., but **does not validate the integrity of the files**.\"",
+          "장치는 있는데 아무도 안 본다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Validating CloudTrail log file integrity",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+        }
+      ]
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "엔터프라이즈 고객의 보안 검토를 통과해야 하고 '누가 무엇을 했는지' 화면이 필요하다",
+      "pick": "업무 이벤트를 감사 로그로 따로 설계한다 (사용자가 읽을 수 있는 행위 단위)",
+      "over": "기존 애플리케이션 로그를 검색해 보여 주기",
+      "why": "디버깅 로그는 개발자가 읽으려고 만든 것이라 행위 단위가 아니고, 형식이 배포마다 바뀐다. 고객에게 보여 줄 기록은 **스키마가 계약**이다. 모두싸인·코그넥스 공고가 감사 로그를 SSO·프로비저닝과 같은 묶음(엔터프라이즈 기능)으로 적는 이유다",
+      "tradeoff": "코드에 감사 이벤트를 남기는 지점을 일일이 넣어야 하고, 그 지점이 빠지면 조용히 기록이 없다. 대신 형식이 안정되어 고객에게 보여 줄 수 있다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "규제·계약이 '변조되지 않았음'을 요구한다",
+      "pick": "추가 전용 저장소 + 앞 기록의 해시를 품는 체인 + 정기 검증",
+      "over": "권한만 잠근 일반 로그 저장소",
+      "why": "권한은 털릴 수 있고, 털린 뒤에는 지워진 것과 원래 없던 것을 구별할 수 없다. 해시 체인은 \"computationally infeasible to modify, delete or forge ... **without detection**\" 을 만든다 — 그리고 **아무 일도 없었던 기간**까지 주장할 수 있게 해 준다",
+      "tradeoff": "저장소·키 관리·검증 작업이 늘고, 잘못 지운 기록을 정상적으로 정리할 방법이 없어진다(그것이 목적이지만 운영에서는 불편이다)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Validating CloudTrail log file integrity",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+        }
+      ]
+    },
+    {
+      "situation": "개인정보를 조회하는 API 의 감사 등급을 정해야 한다",
+      "pick": "`Metadata` 또는 `Request` 까지",
+      "over": "`RequestResponse` (응답 본문까지)",
+      "why": "응답 본문을 남기면 조회된 개인정보가 감사 로그에 그대로 복사된다 — **감사 로그가 개인정보 데이터베이스의 사본**이 되고, 보관 기간이 길어 원본보다 오래 남는다. '누가 무엇을 조회했나'는 대개 요청 쪽 정보로 답할 수 있다",
+      "tradeoff": "'그래서 무엇을 봤나'를 정확히 재구성할 수 없다. 그것이 꼭 필요한 소수 API 에만 등급을 올리고, 그 로그의 접근 권한을 따로 잠근다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        }
+      ]
+    },
+    {
+      "situation": "감사 로그의 양이 너무 많아 비용과 성능이 문제다",
+      "pick": "규칙 순서로 시끄러운 것부터 `None` 처리하고 나머지를 등급별로 나눈다",
+      "over": "보관 기간을 일괄로 줄이기",
+      "why": "보관 기간을 줄이면 **가장 오래된, 그래서 가장 조사에 필요한 기록**부터 사라진다. 반면 조회·헬스체크처럼 양이 많고 증거 가치가 낮은 것을 빼면 양만 준다. 쿠버네티스도 \"the first matching rule sets the audit level\" 로 이 방식을 강제한다",
+      "tradeoff": "⚠️ `None` 으로 뺀 것은 소급해서 복구할 수 없다. 빼는 규칙은 리뷰를 거치고, 뺐다는 사실 자체를 문서에 남긴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "감사 로그를 애플리케이션 로그와 같은 저장소·같은 권한으로 둔다",
+      "why": "파이프라인이 이미 있어서 가장 쉬운 길이고, 형식도 비슷해 보인다. 그런데 그러면 **애플리케이션 권한을 얻은 사람이 자기 흔적을 지울 수 있다** — 증거로서의 성질이 통째로 사라진다",
+      "fix": "감사 로그를 **애플리케이션이 삭제 권한을 갖지 않는 저장소**로 분리한다. CloudTrail 도 다이제스트를 \"a folder separate from the log files\" 에 두고 그 이유를 '세분화된 보안 정책을 걸 수 있게'라고 적는다. 한화생명 공고의 `접속기록·감사로그 별도 보관 체계` 가 이 요건이다",
+      "sources": [
+        {
+          "title": "Validating CloudTrail log file integrity",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+        }
+      ]
+    },
+    {
+      "trap": "무결성 검증을 켜 두고 한 번도 돌리지 않는다",
+      "why": "켜는 순간 무언가 보호되는 느낌이 든다. 그런데 문서가 명시한다 — 켜면 \"deliver digest log files to your Amazon S3 bucket, **but does not validate the integrity of the files**\". **검증은 별도 실행이다**",
+      "fix": "검증을 **정기 작업으로 돌리고 실패를 알림으로 받는다**(주 1회라도). 그리고 그 작업의 실행 기록 자체를 남긴다 — 검증을 안 돌린 기간이 있으면 그 기간의 주장도 약해진다",
+      "sources": [
+        {
+          "title": "Validating CloudTrail log file integrity",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+        }
+      ]
+    },
+    {
+      "trap": "성공한 행위만 남기고 거부된 시도를 안 남긴다",
+      "why": "코드에서 감사 이벤트는 대개 작업이 끝난 뒤 남긴다. 인가 거부는 그전에 예외로 빠져나가므로 자연스럽게 기록이 없다",
+      "fix": "**인가 실패·인증 실패를 감사 이벤트로 명시적으로 남긴다.** CloudTrail 의 `errorMessage` 가 \"includes messages for authorization failures\" 라고 적어 둔 것이 이 요구다. 그리고 쿠버네티스처럼 **요청을 받은 시점(`RequestReceived`)에 먼저 남기는** 구조면 처리 중 죽어도 시도가 남는다",
+      "sources": [
+        {
+          "title": "CloudTrail record contents",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "감사 이벤트 한 건에 실제로 들어가는 필드들과 그 크기 제한"
+        },
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        }
+      ]
+    },
+    {
+      "trap": "개인정보 조회 API 에 응답 본문까지 남기는 등급을 걸어 둔다",
+      "why": "\"증거는 자세할수록 좋다\"는 직관이 맞아 보이고, 조사할 때 편하다. 그런데 그 순간 **감사 로그가 그 시스템에서 가장 민감한 데이터**가 되고, 보관 기간 규칙 때문에 **원본보다 오래 남는다**",
+      "fix": "등급을 API 별로 정한다 — 기본은 `Metadata`, 변경 API 는 `Request`, `RequestResponse` 는 꼭 필요한 소수에만. 그리고 등급을 올린 API 목록을 문서로 관리하고, 그 로그에는 **더 좁은 접근 권한**을 건다",
+      "sources": [
+        {
+          "title": "Kubernetes — Auditing",
+          "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+          "publisher": "The Kubernetes Authors",
+          "kind": "docs",
+          "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+        }
+      ]
+    },
+    {
+      "trap": "감사 로그 저장소에 넓은 권한(예: 보안팀 전원, 운영팀 전원)을 준다",
+      "why": "조사할 사람이 봐야 하니 열어 두는 것이 합리적으로 보인다. 그런데 감사 로그에는 전 직원의 행위와, 등급에 따라 조회한 데이터까지 모여 있다 — **업무 데이터보다 민감한데 권한은 더 넓은** 상태가 된다",
+      "fix": "감사 저장소에도 **최소 권한과 세분화된 접근 제어**를 걸고, **감사 로그를 열람한 기록**을 다시 남긴다. '감사자를 감사한다'가 과해 보이지만, 내부자 조사에서 가장 먼저 묻는 질문이 그것이다",
+      "sources": [
+        {
+          "title": "Validating CloudTrail log file integrity",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+        }
+      ]
+    },
+    {
+      "trap": "여러 시스템의 감사 로그를 시간순으로 엮었는데 순서가 맞지 않는다",
+      "why": "각 기록의 시각은 **그 기록을 만든 호스트의 시계**에서 온다. CloudTrail 문서도 `eventTime` 이 \"comes from the local host that provides the service API endpoint\" 라고 밝히고 NTP 동기화를 전제로 든다. 시계가 몇 초만 어긋나도 인과가 뒤집힌다",
+      "fix": "모든 감사 기록 생산자에 **NTP 동기화를 강제**하고, 기록에 **시간대(UTC)를 명시**한다. 그리고 조사 시에는 시각 대신 **요청 ID·이벤트 ID 같은 식별자로 잇는 경로**를 함께 준비한다(CloudTrail 의 `requestID`·`eventID`·`sharedEventID` 가 그 용도다)",
+      "sources": [
+        {
+          "title": "CloudTrail record contents",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "감사 이벤트 한 건에 실제로 들어가는 필드들과 그 크기 제한"
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "감사 추적",
+      "en": "audit trail",
+      "what": "행위를 시간순으로 이어 붙여 재구성할 수 있게 만든 기록. 규제 문서에서 더 자주 쓰이는 표현"
+    },
+    {
+      "term": "다이제스트 파일",
+      "en": "digest file",
+      "what": "일정 기간의 로그 파일들과 각각의 해시를 모아 둔 파일. 앞 다이제스트의 서명을 품어 사슬이 된다"
+    },
+    {
+      "term": "추가 전용",
+      "en": "append-only",
+      "what": "쓰기만 되고 수정·삭제는 안 되는 저장 방식. 감사 로그의 기본 요구"
+    },
+    {
+      "term": "감사 등급",
+      "en": "audit level",
+      "what": "무엇까지 남길지의 단계. 쿠버네티스는 None/Metadata/Request/RequestResponse 넷"
+    },
+    {
+      "term": "감사 단계",
+      "en": "audit stage",
+      "what": "요청 처리의 어느 시점에 기록할지. 받은 즉시·응답 시작·응답 완료·패닉"
+    },
+    {
+      "term": "무결성 검증",
+      "en": "integrity validation",
+      "what": "기록이 배달된 뒤 바뀌거나 지워졌는지 확인하는 절차. 켜는 것과 돌리는 것이 다르다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "지금 만드는 서비스에서 **감사 이벤트를 남겨야 할 행위 열 개**를 고르고, 각각에 대해 `seven` 표의 일곱 질문 칸을 채운다. 채울 수 없는 칸에는 '지금 코드로는 알 수 없음'이라고 적는다.",
+      "done_when": "열 개 중 최소 셋에서 빈칸이 나오고(대개 `from where`·`to where`), 그 빈칸을 채우려면 코드의 어디를 고쳐야 하는지 한 줄씩 적힌다.",
+      "why": "감사 로그 설계는 '로그를 남기자'가 아니라 **'이 정보가 그 지점에 있는가'** 의 문제다. 요청의 원 IP 가 프록시 뒤에서 사라지고 있다는 것 같은 사실은 이 표를 채워 봐야 드러난다.",
+      "hours": 2
+    },
+    {
+      "task": "작은 추가 전용 감사 로그를 손으로 만든다 — 기록마다 `앞 기록의 해시 + 이번 내용`의 해시를 계산해 이어 붙인다(파일이나 테이블 하나면 된다). 기록 열 개를 넣은 뒤 **가운데 하나를 몰래 고치고**, 체인을 처음부터 다시 계산해 어디서 어긋나는지 찾는 검증 스크립트를 쓴다.",
+      "done_when": "변조한 지점부터 체인이 깨지는 것을 스크립트가 정확히 짚어 내고, 기록 하나를 **삭제**했을 때도 잡히는 것을 확인한다.",
+      "why": "'해시 체인'이 글로는 추상적인데 30줄 스크립트면 손에 들어온다. 그리고 **서명이 없으면 체인 전체를 다시 계산해 위조할 수 있다**는 것도 직접 확인하게 된다 — 그래서 CloudTrail 이 다이제스트에 서명을 하는 것이다.",
+      "hours": 2
+    },
+    {
+      "task": "팀의 로그 저장소에서 **감사 성격의 기록과 디버깅 기록이 섞여 있는지** 확인한다. 누가 삭제 권한을 갖는지, 보관 기간이 얼마인지, 누가 읽을 수 있는지를 표로 적고 `vs-log` 표의 일곱 줄과 대조한다.",
+      "done_when": "'애플리케이션 권한으로 감사 기록을 지울 수 있는가'에 예/아니오로 답할 수 있고, 답이 '예'라면 분리 계획이 한 문단으로 적힌다.",
+      "why": "이 문서의 지뢰 1번은 거의 모든 조직이 밟고 있다. 확인해 보기 전에는 '당연히 분리돼 있겠지'라고 생각하는데, 대개 같은 파이프라인에 태워져 있다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "감사 로그가 답해야 할 일곱 질문 중, 지금 우리 로그가 답하지 못하는 것은 무엇인가?",
+    "\"그 기간에 아무도 접근하지 않았다\"를 어떻게 증명하는가? 보통의 로그로 가능한가?",
+    "해시 체인만 있고 서명이 없으면 무엇을 막지 못하는가?",
+    "무결성 검증을 '켰다'는 것과 '돌렸다'는 것은 어떻게 다른가?",
+    "응답 본문까지 남기는 감사 등급을 걸면 무엇이 새로 위험해지는가?",
+    "성공한 행위와 거부된 시도 중 침해 조사에서 먼저 보는 것은 무엇인가? 우리 코드는 후자를 남기는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 접근통제(IAM 최소권한), 접속기록·감사로그 별도 보관 체계 구성",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/381858",
+      "where": "한화생명보험",
+      "what_it_shows": "⭐ **'별도 보관'** 이 요건으로 적혀 있다. CloudTrail 이 다이제스트를 \"a folder separate from the log files\" 에 두는 이유와 같은 요구가, 국내 금융권 공고에 한 줄로 나타난 자리"
+    },
+    {
+      "quote": "미국 FDA, HIPAA, 유럽 CE 환경에서 요구되는 데이터 무결성, 접근 통제, 감사 추적(Audit Trail)을 만족하는 의료용 웹 애플리케이션을 구축합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/335309",
+      "where": "웰리시스",
+      "what_it_shows": "감사 추적이 **규제가 이름을 대고 요구하는 것**임을 보여 준다. 그리고 `데이터 무결성 · 접근 통제 · 감사 추적` 셋이 늘 함께 온다 — 남긴 기록이 안 바뀌어야 하고, 아무나 못 봐야 한다"
+    },
+    {
+      "quote": "• B2B SaaS 엔터프라이즈 기능(SSO, 프로비저닝, 감사 로그) 개발 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/383523",
+      "where": "모두싸인",
+      "what_it_shows": "⭐ **감사 로그가 제품 기능**으로 분류된다. SSO·프로비저닝과 같은 묶음이라는 것은 '계약을 통과하기 위해 만드는 기능'이라는 뜻 — 대기업 고객의 보안 검토 문항에 있기 때문이다"
+    },
+    {
+      "quote": "• Multi-tenant SaaS, subscription/quota, billing/usage tracking, authorization, audit log 관련 개발 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/366442",
+      "where": "코그넥스코리아",
+      "what_it_shows": "같은 묶음이 해외 계열 회사 공고에도 나온다. `authorization` 바로 옆에 `audit log` 가 있다 — 권한을 걸었으면 그 권한이 어떻게 쓰였는지도 남겨야 한다는 짝"
+    },
+    {
+      "quote": "• 데이터 변경 이력, 감사로그, 접근권한 등 추적 가능한 데이터 관리 기능 개발",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375407",
+      "where": "베이글랩스",
+      "what_it_shows": "`변경 이력`·`감사로그`·`접근권한` 셋을 한 줄에 묶는다. **누가 볼 수 있나(권한) · 누가 봤나(감사) · 무엇이 바뀌었나(이력)** 가 하나의 요구로 온다는 것"
+    },
+    {
+      "quote": "• OpenTelemetry 기반 LLM 감사 로그·Decision Record 설계 및 구현",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365172",
+      "where": "랩씨드",
+      "what_it_shows": "⭐ 이 낱말의 **새 자리**. 모델이 무엇을 근거로 무엇을 답했는지를 남기는 것도 같은 문제의 형태이고, 관측성 표준(OpenTelemetry) 위에 얹으려는 시도가 나타난다"
+    },
+    {
+      "quote": "• 보안 로그, 클라우드 감사 로그 등을 분석하여 위협을 탐지한 경험을 보유하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/327277",
+      "where": "마이리얼트립",
+      "what_it_shows": "⭐ 요구가 '남기는 것'이 아니라 **'분석해서 탐지하는 것'** 이다. 쌓기와 보기는 다른 일이고, 이 문서의 경계 2번(남기기만 하고 안 본다)이 채용 요건으로 확인되는 자리"
+    },
+    {
+      "quote": "Each digest file also contains the digital signature of the previous digest file if one exists.",
+      "from": "docs",
+      "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+      "where": "AWS CloudTrail 공식 문서",
+      "what_it_shows": "감사 로그의 변조 방지가 **사슬**로 구현된다는 1차 자료의 진술. 파일 하나를 지우면 다음 기록이 그 부재를 드러낸다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "rebac",
+      "how": "이 문서를 큐에 올린 자리. '왜 볼 수 있었나'는 그쪽, **'누가 언제 그 권한을 줬나'** 는 여기다. 그리고 감사 로그 자체에도 세분화된 접근 제어가 필요하다는 역설이 그쪽 문제로 돌아온다"
+    },
+    {
+      "slug": "policy-engine",
+      "how": "인가 결정을 어디서 하느냐가 그쪽이고, 그 결정을 어떻게 남기느냐가 여기다. 거부된 요청의 기록이 정책 디버깅의 재료가 된다"
+    },
+    {
+      "slug": "zero-trust",
+      "how": "'모든 요청을 검증한다'의 다른 쪽 면 — 검증했다는 사실을 남기는 것. 그 문서의 부품 표에 이 문서가 들어간다"
+    },
+    {
+      "slug": "data-governance",
+      "how": "누가 어떤 데이터에 접근했는지의 기록이 거버넌스의 증거가 된다. 그쪽이 규칙을, 여기가 그 규칙이 지켜졌다는 증거를 다룬다"
+    },
+    {
+      "slug": "observability",
+      "how": "로그·지표·추적과 저장소를 공유하기 쉬운데, 요구가 달라 분리해야 한다. `vs-log` 표가 그 경계다"
+    },
+    {
+      "slug": "network-separation",
+      "how": "규제가 요구하는 통제의 다른 항목. 규정을 다룰 때 '확인한 것과 확인하지 못한 것을 나눠 적는다'는 규칙을 그 문서에서 가져왔다"
+    },
+    {
+      "slug": "secrets",
+      "how": "감사 로그에 비밀이 섞여 들어가는 사고가 흔하다 — 요청 본문을 남기는 등급에서 특히"
+    },
+    {
+      "slug": "caching",
+      "how": "보관 기간의 반대편 문제. 캐시는 '언제 버릴까'이고 감사 로그는 '언제까지 버리면 안 되나'다"
+    },
+    {
+      "slug": "siem",
+      "how": "⚠️ 아직 문서가 없다. 쌓인 감사·보안 로그를 모아 상관분석해 위협을 탐지하는 쪽 — 마이리얼트립·유모스원·서치독 공고가 가리키는 자리다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `감사 로그`·`CloudTrail` 어느 이름도 없다. 직접 세면 **214건(모집중 77)** 이다 — `감사 로그|감사로그|감사 추적|audit log|audit trail|접근 이력|감사 이력|CloudTrail|감사 기록` 으로 뽑고 문장을 읽어 확인했다.",
+    "⭐ **`감사` 라는 낱말의 87%는 이 문서의 것이 아니다.** 위 패턴에 걸리지 않으면서 `보안 감사|모의해킹|취약점 진단|스마트 컨트랙트 감사|회계|재무 감사|ISMS|ISO 27001|인증 심사` 에 걸리는 공고가 **1480건**이다(합치면 1694건 중 214건, 약 13%). **한글 낱말이 여러 산업의 서로 다른 일을 덮는 경우**이고, `MDM`·`리니지` 와 같은 계열이되 **약어가 아니라 평범한 한자어**라는 점이 다르다.",
+    "**규제 조문은 확인하지 않았다.** 공고에 HIPAA·FDA·ISO/IEC 42001 이 나오지만(웰리시스·에버엑스) **각 규정이 감사 로그에 대해 정확히 무엇을 요구하는지는 1차 자료로 열지 않았다.** 본문에서도 '규제가 요구한다'까지만 쓰고 조항 내용을 쓰지 않은 이유다 — `network-separation` 에서 세운 처리(확인한 것과 못 한 것을 나눠 적기)를 따랐다. 인용이 필요하면 현행 조문을 직접 열 것.",
+    "**FDA 21 CFR Part 11 은 이번 사이클에서 아예 찾지 않았다.** 큐의 메모에 후보로 적혀 있었으나, 규제 원문 확인은 한 사이클을 통째로 쓸 만한 일이라 판단해 미뤘다. 의료·제약 도메인 문서를 쓸 때 다시 볼 자리다.",
+    "**CloudTrail 의 다이제스트 파일 구조(어떤 필드가 들어가는지)는 확인하지 않았다.** 상위 개요 문서에서 '앞 다이제스트의 서명을 품는다'까지만 확인했고, `cloudtrail-log-file-validation-digest-file-structure` 페이지는 열지 않았다. 자체 구현의 참고가 필요하면 그 페이지가 다음 대상이다.",
+    "**추가 전용 저장소의 구체적 구현(S3 Object Lock, WORM, 데이터베이스의 append-only 패턴)은 다루지 않았다.** 본문의 '애플리케이션이 지울 수 없는 곳'은 원칙까지이고, 제품별 설정은 확인하지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "Kubernetes — Auditing",
+      "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/",
+      "publisher": "The Kubernetes Authors",
+      "kind": "docs",
+      "summary": "감사가 답해야 할 일곱 질문, 그리고 무엇을 어디까지 남길지의 네 등급"
+    },
+    {
+      "title": "Validating CloudTrail log file integrity",
+      "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "다이제스트 파일·해시 체인·서명으로 변조와 삭제를 잡는 방법"
+    },
+    {
+      "title": "CloudTrail record contents",
+      "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "감사 이벤트 한 건에 실제로 들어가는 필드들과 그 크기 제한"
+    }
+  ]
+}
