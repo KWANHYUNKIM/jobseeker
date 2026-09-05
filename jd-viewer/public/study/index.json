@@ -1240,6 +1240,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "consensus",
+      "title": "합의 알고리즘 (Raft)",
+      "category": "practice",
+      "level": "deep",
+      "status": "done",
+      "one_liner": "**여러 대가 하나처럼 굴게 만드는 법.** `two-phase-commit` 이 **전원 동의**를 요구하다 멈췄다면, 합의는 **과반만 살아 있으면 진행한다** — 그 한 글자 차이가 \"멈추는 시스템\"과 \"안 멈추는 시스템\"을 가른다.",
+      "aliases": [
+        "합의 알고리즘",
+        "Raft",
+        "consensus",
+        "쿼럼",
+        "quorum"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
