@@ -130,7 +130,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "updates-as-patches-not-rewrites"
+      ]
     },
     {
       "name": "자기 제품으로 자기 창고를 짓고 한계를 먼저 만난다",
@@ -236,7 +238,588 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "updates-as-patches-not-rewrites",
+      "name": "고치는 대신 무엇을 고쳤는지만 적어 둔다",
+      "domain": "갱신을 제자리에서 하지 않고 나중에 합친다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**컬럼 저장소는 읽기를 위해 만들어졌고, 그래서 한 줄을 고치는 일이 원래 비쌌다.** 2018년부터 쓰던 방식(클래식 뮤테이션)은 `ALTER TABLE ... UPDATE` 하나에 **영향받은 컬럼을 통째로 다시 썼고**, 문제가 셋이었다 — **무겁고**(`can be costly at scale`), **바뀐 것이 백그라운드 작업이 끝나야 보이고**, **앞선 머지·뮤테이션이 끝나야 시작됐다.** ⚠️ **이 회사가 고른 답은 갱신을 싸게 만드는 것이 아니라, 갱신을 아예 다른 것으로 바꾸는 것이었다** — **고치지 않고 `무엇을 고쳤는지` 만 적어 둔다.**",
+        "metrics": [
+          {
+            "label": "벤치마크 조건",
+            "value": "TPC-H `lineitem` SF100 — **6억 행 · 압축 약 30GiB**(비압축 약 60GiB), 단일 파트, m6i.8xlarge, 버전 25.7",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "label": "벌크 갱신이 보이기까지",
+            "value": "경량 업데이트가 클래식 뮤테이션 대비 **최대 1,700배 빠르다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "label": "단일 행 갱신",
+            "value": "클래식 **90~170초** → 경량 업데이트 **0.04~0.07초(최대 2,400배)** · ReplacingMergeTree 삽입 **0.03~0.04초(최대 4,700배)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 대가는 읽기로 간다",
+            "value": "물질화 전 최악 질의 오버헤드 — 경량 업데이트 **8~21%(평균 15.3%)**, **조인 폴백 39~121%**, on-the-fly 뮤테이션 **12~427%(평균 149%)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 단일 행에서 FINAL 의 값",
+            "value": "ReplacingMergeTree + `FINAL` 은 질의가 **21~550% 느려진다(평균 280%)** — 쓰기는 가장 빠른데 읽기는 가장 비싸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 회사가 그은 선",
+            "value": "`Use lightweight updates for small, frequent bulk changes (up to ~10% of the table)` — **테이블의 약 10% 까지**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "먼저 무엇으로 우회했나",
+          "thought": "**처음에는 엔진 선택으로 피했다** — ReplacingMergeTree 로 새 버전을 넣고 머지가 최신만 남기게 하거나, CollapsingMergeTree 로 `sign = -1` 행을 넣어 지운다. ⚠️ **그런데 이것은 사용자에게 부담을 넘긴 것이다** — `you have to model each update as a new row insert` 이고, 정렬 키가 바뀌면 **테이블을 다시 만들어야** 한다. **2편은 그 우회를 표준 SQL 뒤로 감춘 이야기다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "델타를 어디에 얹을지 정할 때",
+          "thought": "⚠️ **새 기계를 만들지 않고 이미 도는 기계에 얹었다** — 삽입이 원래 빠르고, **백그라운드 머지가 어차피 계속 돈다.** 그래서 패치를 **삽입으로 넣고 머지에 얹어** `with almost zero overhead` 로 처리한다. **모든 파트가 같은 키로 정렬돼 있어 머지가 한 번의 선형 스캔**이라는 성질이 여기서 값을 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "언제 보이게 할지 정할 때",
+          "thought": "**클래식 뮤테이션의 가장 큰 불만이 `언제 보이는지 모른다` 였다.** 그래서 패치는 **질의할 때 메모리에서 얹어 준다**(patch-on-read) — 즉시 보인다. ⚠️ **대신 아직 안 접힌 델타를 읽을 때마다 얹으므로 질의가 8~21% 느려진다.** **빨라진 것은 쓰기가 아니라 `보이기까지의 시간` 이고, 그 값을 읽기가 낸다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "패치 파트",
+            "what": "⚠️ **`이 행의, 이 컬럼만 바꿔라` 를 담은 작은 델타.** 바뀐 값과 원본 행을 찾을 메타(`_part`·`_part_offset`)와 `_data_version` 을 갖는다"
+          },
+          {
+            "name": "소스 파트 인덱스 · 역인덱스",
+            "what": "영향받은 파트를 데이터 버전 범위로 잇고, 패치 버전에서 파트를 되찾는 두 방향의 색인"
+          },
+          {
+            "name": "빠른 경로",
+            "what": "`_part_offset` 으로 **행을 직접 맞춘다** — 머지 때 한 번의 선형 통과"
+          },
+          {
+            "name": "⚠️ 폴백 경로",
+            "what": "파트가 먼저 머지된 경우. **`_block_number`·`_block_offset` 으로 해시 조인** — `slower and more memory-hungry` 이고 **패치가 메모리에 다 들어가야 한다**"
+          },
+          {
+            "name": "물질화 (APPLY PATCHES)",
+            "what": "델타를 원본에 실제로 접어 넣는 일. 하기 전까지는 읽을 때마다 얹는다"
+          }
+        ],
+        "invariants": [
+          "**모든 파트가 같은 컬럼으로 정렬돼 있다** — 그래서 머지가 `a single linear scan of both parts, no re-sorting, no random access` 다",
+          "⚠️ **갱신은 결국 일관적이다** — `merges may lag behind when ingest is heavy`",
+          "⚠️ **폴백 경로에서는 패치가 메모리에 전부 들어가야 한다** — 메모리에 안 묶이는 전체 머지 조인은 **아직 구현되지 않았다**",
+          "⚠️ **패치 파트도 파트로 센다** — `TOO_MANY_PARTS` 임계에 포함된다",
+          "**권장 범위는 테이블의 약 10% 까지의 작고 잦은 변경이다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**UPDATE 를 받으면 패치 파트를 즉시 만든다** — 머지를 기다리지 않는다",
+            "why": "클래식 뮤테이션은 앞선 머지·뮤테이션이 끝나야 시작됐다"
+          },
+          {
+            "step": "**바뀐 컬럼 값과 위치 메타만 담는다** — `_part` · `_part_offset` · `_data_version`",
+            "why": "⚠️ **컬럼을 다시 쓰지 않는 것이 이 설계의 전부다**"
+          },
+          {
+            "step": "**두 방향의 가벼운 색인을 만든다** — 소스 파트 인덱스와 역인덱스",
+            "why": "어느 패치가 어느 파트에 걸리는지 빨리 찾는다"
+          },
+          {
+            "step": "**질의할 때 메모리에서 얹어 준다**(patch-on-read) — 데이터 범위마다 병렬로 맞춘다",
+            "why": "즉시 보이게 하면서 **질의 병렬성을 깨지 않는다**"
+          },
+          {
+            "step": "**백그라운드 머지가 돌면서 패치를 원본에 접는다** — `with almost zero overhead`",
+            "why": "⚠️ **새 기계를 만들지 않고 이미 도는 기계에 얹었다**"
+          },
+          {
+            "step": "⚠️ **파트가 먼저 머지돼 위치가 어긋나면 폴백으로 간다** — `_block_number`·`_block_offset` 해시 조인",
+            "why": "느리고 메모리를 더 먹는다"
+          },
+          {
+            "step": "**패치끼리는 ReplacingMergeTree 방식으로 중복을 없앤다** — `_data_version` 을 버전 컬럼으로",
+            "why": "같은 행에 여러 번 갱신이 오면 최신만 남긴다"
+          },
+          {
+            "step": "**접히고 나면 패치는 자동으로 사라진다.** 원하면 `ALTER TABLE … APPLY PATCHES` 로 앞당긴다",
+            "why": "오버헤드를 언제 없앨지는 사용자가 정할 수 있다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "컬럼 저장소에서 갱신을 어떻게 다룰 것인가",
+            "chosen": "**제자리에서 고치지 않는다** — 새로 써 두고 나중에 합친다",
+            "alternatives": [
+              "행 저장소처럼 제자리 수정",
+              "갱신을 아예 지원하지 않기"
+            ],
+            "tradeoff": "쓰기 경로가 단순하고 빨라지는 대신 ⚠️ **읽는 쪽이 `아직 안 합쳐진 것` 을 알아야 한다.** 사용자는 **백그라운드 머지를 이해하고, `FINAL` 을 언제 쓸지 정하고, 맞는 엔진을 골라야 한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Updates in ClickHouse: purpose-built engines",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-1-purpose-built-engines",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "갱신을 제자리에서 하지 않고 새로 써 둔 뒤 백그라운드 머지로 합친다. 읽을 때 FINAL 을 쓸지 정해야 하고 인제스트가 무거우면 머지가 밀린다."
+              }
+            ]
+          },
+          {
+            "question": "엔진 선택으로 우회하는 것으로 충분한가",
+            "chosen": "**아니다 — 표준 SQL UPDATE 뒤로 감춘다**",
+            "alternatives": [
+              "ReplacingMergeTree·CollapsingMergeTree 를 계속 쓰게 두기"
+            ],
+            "tradeoff": "엔진 우회는 **사용자에게 모델링 부담을 넘긴다** — `you have to model each update as a new row insert` 이고, ReplacingMergeTree 는 **정렬 키가 바뀌면 테이블을 다시 만들어야** 한다. ⚠️ **감추면 쉬워지는 대신 무슨 일이 일어나는지 안 보이게 된다**(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Updates in ClickHouse: purpose-built engines",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-1-purpose-built-engines",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "갱신을 제자리에서 하지 않고 새로 써 둔 뒤 백그라운드 머지로 합친다. 읽을 때 FINAL 을 쓸지 정해야 하고 인제스트가 무거우면 머지가 밀린다."
+              },
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          },
+          {
+            "question": "클래식 뮤테이션을 고쳐 쓸 것인가",
+            "chosen": "**버리고 다시 만든다** — 패치 파트",
+            "alternatives": [
+              "뮤테이션 최적화",
+              "on-the-fly 뮤테이션(메모리 표현식)에 의존"
+            ],
+            "tradeoff": "뮤테이션의 문제 셋이 구조적이었다 — 컬럼 재작성 · **완료 전엔 안 보임** · 앞선 작업이 끝나야 시작. ⚠️ **on-the-fly 뮤테이션도 대안이었지만 질의 오버헤드가 12~427%(평균 149%)로 컸다** — 패치 파트는 같은 자리에서 **평균 15.3%** 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              },
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "question": "델타를 언제 적용할 것인가",
+            "chosen": "**읽을 때 메모리에서**(patch-on-read) — 물질화를 기다리지 않는다",
+            "alternatives": [
+              "먼저 물질화하고 나서 보여 주기"
+            ],
+            "tradeoff": "**즉시 보인다.** ⚠️ 대가는 **접히기 전까지 모든 질의가 8~21% 느려진다는 것**이고, 그래서 회사가 **테이블의 약 10% 까지**라는 선을 긋는다. **빨라진 것은 쓰기가 아니라 `보이기까지의 시간` 이고 그 값을 읽기가 낸다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              },
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "question": "원본 행을 어떻게 찾을 것인가",
+            "chosen": "**`_part_offset` 으로 직접 맞춘다** — 머지의 선형 통과에 얹어",
+            "alternatives": [
+              "항상 조인으로 맞추기"
+            ],
+            "tradeoff": "모든 파트가 같은 키로 정렬돼 있어 **한 번의 선형 통과로 끝난다.** ⚠️ **그런데 파트가 먼저 머지되면 위치가 어긋나 폴백으로 떨어진다** — `_block_number`·`_block_offset` 해시 조인은 `slower and more memory-hungry` 이고 **패치가 메모리에 다 들어가야 한다.** 그때 오버헤드가 **39~121%** 로 뛴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              },
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "question": "패치가 파트 수 한계를 밀어붙이는 문제를 어떻게 할 것인가",
+            "chosen": "**갱신된 컬럼 집합별로 별도 파티션에 담는다**",
+            "alternatives": [
+              "같은 파티션에 섞어 두기"
+            ],
+            "tradeoff": "⚠️ **패치 파트도 파트로 세어 `TOO_MANY_PARTS` 에 걸린다** — 갱신이 잦을수록 이 압력이 커진다. 컬럼 집합별로 갈라 두면 한계를 피하는 대신 **파티션이 늘고 관리 대상이 늘어난다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          },
+          {
+            "question": "동시에 들어오는 갱신을 어떻게 다룰 것인가",
+            "chosen": "**의존하는 컬럼이 겹치면 직렬화한다** — `update_parallel_mode = auto` 가 기본",
+            "alternatives": [
+              "항상 병렬 허용"
+            ],
+            "tradeoff": "**섞이면 결과가 달라지는 경우를 기본값으로 막는다.** ⚠️ 대가는 **잦은 갱신이 서로를 기다린다는 것**이고, 언제 병렬이 안전한지는 사용자가 판단해야 한다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          },
+          {
+            "question": "아직 못 하는 것을 밝힐 것인가",
+            "chosen": "**밝힌다** — 메모리 한계 · 서브쿼리와 비결정성 제한 · 실험적 단계",
+            "alternatives": [
+              "완성된 기능으로 발표하기"
+            ],
+            "tradeoff": "⚠️ **메모리에 안 묶이는 전체 머지 조인은 `not yet implemented` 이고**, 서브쿼리·비결정성 지원은 on-the-fly 뮤테이션보다 좁다. **25.7 에서 실험적, 25.8 베타 예정**이라고 적는다. **1,000배를 자랑하는 글이 못 하는 것도 같이 적는 것이 이 시리즈의 미덕이다**(이 평가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "패치 파트 (patch parts)",
+            "role": "바뀐 컬럼 값과 위치 메타만 담는 작은 델타. 즉시 생성된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          },
+          {
+            "tech": "백그라운드 머지",
+            "role": "⚠️ **이미 도는 기계.** 패치는 여기에 얹혀 `almost zero overhead` 로 접힌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          },
+          {
+            "tech": "`_part_offset` · `_block_number` · `_block_offset` · `_data_version`",
+            "role": "행을 찾고 버전을 가르는 시스템 컬럼들. 빠른 경로와 폴백 경로를 가른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          },
+          {
+            "tech": "ReplacingMergeTree (패치 중복 제거)",
+            "role": "패치끼리 겹치면 `_data_version` 기준으로 최신만 남긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          },
+          {
+            "tech": "`FINAL` · `APPLY PATCHES`",
+            "role": "읽을 때 접어 보는 것과, 실제로 접어 넣는 것",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Updates in ClickHouse: purpose-built engines",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-1-purpose-built-engines",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "갱신을 제자리에서 하지 않고 새로 써 둔 뒤 백그라운드 머지로 합친다. 읽을 때 FINAL 을 쓸지 정해야 하고 인제스트가 무거우면 머지가 밀린다."
+              },
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "ClickHouse Cloud",
+          "via": "저장·컴퓨트 분리",
+          "contract": "⚠️ **갱신을 읽기 쪽 비용으로 옮기면 컴퓨트가 더 든다** — 저장과 컴퓨트를 따로 파는 회사에서 이 설계는 **요금이 걷히는 쪽을 바꾼다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "자기 제품으로 자기 창고를 짓고 한계를 먼저 만난다",
+          "via": "사내 창고 2.1PB",
+          "contract": "**자기 창고가 이 엔진 위에 있다** — 인제스트가 무거우면 머지가 밀린다는 성질을 **자기가 먼저 만난다**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "분석 일의 70% 를 AI 에 넘기고 30% 를 일부러 남긴다",
+          "via": "질의 지연",
+          "contract": "⚠️ **접히기 전 8~21% 오버헤드가 사람이 아니라 에이전트의 질의에도 붙는다** — AI 가 질의를 늘릴수록 이 상수가 곱해진다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "PostgreSQL 등 행 저장소",
+          "via": "⚠️ 비교 주장",
+          "contract": "⚠️ **벌크 변경에서 `up to 4,000× faster than PostgreSQL` 이라 적는다** — **자기 벤치마크이고 조건이 다른 시스템 간 비교라 그대로 받지 않는다**(이 판단은 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "읽기 최적 저장소에서 쓰기를 싸게 만들면 비용이 읽기로 간다",
+            "why_hard": "⚠️ **이 도메인의 본질이다.** 제자리에서 안 고치면 쓰기는 빨라지지만 **아직 안 접힌 것을 읽을 때마다 얹어야 한다.** 벤치마크가 그 이동을 그대로 보여 준다 — 가시성은 **최대 1,700배** 빨라지는데 질의는 **8~21%** 느려지고, 폴백에서는 **39~121%** 다. **ReplacingMergeTree + `FINAL` 은 그 극단이다**(쓰기 4,700배 빠르고 읽기 평균 280% 느리다).",
+            "current_best": "**옮긴 비용의 크기를 재고 그 선을 문서에 적는 것** — `up to ~10% of the table`. ⚠️ **비용을 없애는 방법은 없고 언제 접을지를 고르게 할 뿐이다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+              }
+            ]
+          },
+          {
+            "problem": "델타는 위치에 기대는데 그 위치가 움직인다",
+            "why_hard": "빠른 경로는 `_part_offset` 으로 **행 위치를 직접 맞춘다.** ⚠️ **그런데 파트가 먼저 머지되면 그 위치가 사라진다.** 그래서 보존된 블록 좌표로 **해시 조인**하는 폴백이 필요하고, 그쪽은 **패치가 메모리에 다 들어가야** 한다.",
+            "current_best": "**두 경로를 두고 상황에 따라 떨어지게 하는 것.** ⚠️ **메모리에 묶이지 않는 전체 머지 조인은 `not yet implemented` 라고 회사가 직접 적는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+                "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쓰지 않고 적어 두었다가, 읽을 때 얹는다",
+          "question": "UPDATE 하나가 처리되는 두 경로",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>UPDATE</b>\"]:::accent --> P[\"<b>패치 파트를 즉시 만든다</b><br/>• 바뀐 컬럼 값만<br/>• _part · _part_offset · _data_version<br/>• <b>머지를 기다리지 않는다</b>\"]:::accent\n  P --> IDX[\"<b>두 방향 색인</b><br/>• 소스 파트 인덱스<br/>• 역인덱스\"]:::list\n  Q[\"<b>질의</b>\"]:::accent --> R[\"<b>읽을 때 메모리에서 얹는다</b><br/>• 범위마다 병렬로 맞춘다<br/>• <b>즉시 보인다</b>\"]:::accent\n  IDX -.-> R\n  R --> COST[\"⚠️ <b>질의 8~21% 느려진다</b><br/>• 평균 15.3%\"]:::gone\n  M[\"<b>백그라운드 머지</b><br/>• 이미 도는 기계에 얹는다<br/>• almost zero overhead\"]:::accent --> F[\"<b>패치가 원본에 접힌다</b>\"]:::list\n  F --> GONE[\"<b>패치는 자동으로 사라진다</b><br/>• APPLY PATCHES 로 앞당길 수 있다\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "빠른 길을 놓치면 값이 뛴다",
+          "question": "무엇이 이 설계를 무너뜨리나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>빠른 경로</b><br/>• _part_offset 으로 직접 맞춘다\"]:::accent --> A1[\"<b>질의 오버헤드 8~21%</b>\"]:::list\n  B[\"⚠️ <b>파트가 먼저 머지되면</b><br/>• 행 위치가 사라진다\"]:::gone --> C[\"⚠️ <b>폴백 · 해시 조인</b><br/>• _block_number · _block_offset<br/>• 느리고 메모리를 더 먹는다<br/>• <b>패치가 메모리에 다 들어가야 한다</b>\"]:::gone\n  C --> C1[\"⚠️ <b>오버헤드 39~121%</b>\"]:::gone\n  D[\"⚠️ <b>패치도 파트로 센다</b><br/>• TOO_MANY_PARTS 임계\"]:::gone --> D1[\"<b>갱신 컬럼 집합별 파티션</b><br/>• 한계는 피하고 파티션은 는다\"]:::list\n  E[\"⚠️ <b>아직 못 하는 것</b><br/>• 메모리에 안 묶이는 머지 조인<br/>• 서브쿼리 · 비결정성 제한<br/>• 25.7 실험적\"]:::gone\n  L[\"<b>회사가 그은 선</b><br/>• 테이블의 약 10% 까지의<br/>  작고 잦은 변경\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [
+        {
+          "from": "2018",
+          "what": "**클래식 뮤테이션** — `ALTER TABLE ... UPDATE` 가 영향받은 파트의 컬럼을 통째로 다시 썼다. 새 블록 번호를 받아 변경 컬럼을 재작성하고 나머지는 하드링크했다.",
+          "why_changed": "⚠️ **문제가 셋이었다** — 규모가 커지면 **비싸고**(`Heavyweight updates`), **백그라운드 작업이 끝나야 보이고**(`Delayed visibility`), **앞선 머지·뮤테이션이 끝나야 시작됐다.** 단일 행 갱신 하나가 **90~170초** 걸렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+              "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+            },
+            {
+              "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+              "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+            }
+          ],
+          "version": "클래식 뮤테이션",
+          "to": "2026"
+        },
+        {
+          "from": "2026",
+          "what": "**패치 파트** — `이 행의, 이 컬럼만` 을 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹고, 백그라운드 머지에 얹혀 접힌다. 표준 SQL `UPDATE` 문법 뒤에 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+              "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+            }
+          ],
+          "version": "패치 파트 (경량 업데이트)"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Updates in ClickHouse: purpose-built engines",
+          "url": "https://clickhouse.com/blog/updates-in-clickhouse-1-purpose-built-engines",
+          "publisher": "ClickHouse Blog",
+          "date": "2026",
+          "summary": "갱신을 제자리에서 하지 않고 새로 써 둔 뒤 백그라운드 머지로 합친다. 읽을 때 FINAL 을 쓸지 정해야 하고 인제스트가 무거우면 머지가 밀린다."
+        },
+        {
+          "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+          "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+          "publisher": "ClickHouse Blog",
+          "date": "2026",
+          "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+        },
+        {
+          "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+          "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+          "publisher": "ClickHouse Blog",
+          "date": "2026",
+          "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
+        },
+        {
+          "title": "The AI-first data warehouse",
+          "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+          "publisher": "ClickHouse Blog",
+          "date": "2026",
+          "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **매출 수치가 출처마다 다르다** — 회사가 직접 밝힌 것은 **관리형 고객 3,000곳 이상**과 **ARR 250% 이상 성장**뿐이다. 3자 자료들은 ARR 을 **2억 5,000만~3억 5,000만 달러**로, 고객 수를 **4,000곳 이상**으로, 밸류에이션을 **약 150억 달러**로 말하는데 **1급 출처로 확인하지 못했다.**",
@@ -288,6 +871,20 @@
       "publisher": "ClickHouse",
       "date": "2026",
       "summary": "저장과 컴퓨트를 따로 확장해 쓴 만큼 받는다. 컴퓨트를 예약하거나 오토스케일 상한을 걸 수 있다."
+    },
+    {
+      "title": "How we built fast UPDATEs for the ClickHouse column store – Part 2: SQL-style UPDATEs",
+      "url": "https://clickhouse.com/blog/updates-in-clickhouse-2-sql-style-updates",
+      "publisher": "ClickHouse Blog",
+      "date": "2026",
+      "summary": "2018년부터 쓰던 클래식 뮤테이션을 버리고 패치 파트를 만들었다. 바꾼 값만 담은 작은 델타를 즉시 쓰고, 질의할 때 메모리에서 얹어 준다."
+    },
+    {
+      "title": "How we made ClickHouse UPDATEs 1,000× faster (Part 3: Benchmarks)",
+      "url": "https://clickhouse.com/blog/updates-in-clickhouse-3-benchmarks",
+      "publisher": "ClickHouse Blog",
+      "date": "2026",
+      "summary": "TPC-H lineitem SF100(6억 행·압축 30GiB)에서 네 방식을 견줬다. 벌크 갱신 가시성이 최대 1,700배 빨라지고 질의 오버헤드는 평균 15.3% 다."
     }
   ]
 }
