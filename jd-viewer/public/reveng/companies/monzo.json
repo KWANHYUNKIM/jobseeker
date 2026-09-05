@@ -4,7 +4,7 @@
   "name_en": "Monzo",
   "country": "EU",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "monzo.com",
   "one_liner": "지점 없이 앱 하나로 은행을 하는 곳 — 서비스 3,000개가 그 앱 뒤에서 돈다",
@@ -263,7 +263,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "standards-in-ci-not-in-docs"
+      ]
     }
   ],
   "features": [
@@ -1264,6 +1266,477 @@
           "publisher": "Monzo Blog",
           "date": "2019-12-17",
           "summary": "신뢰 네트워크 방식을 버리고 Vault 로 카산드라 자격증명을 동적으로 발급한다. 카산드라를 쓰는 서비스 500개 이상, 클라이언트 2,300개 이상. 서비스마다 키스페이스가 다르고 일부는 다른 클러스터를 쓴다."
+        },
+        {
+          "title": "Monzo Annual Report 2025",
+          "url": "https://monzo.com/annual-report/2025",
+          "publisher": "Monzo",
+          "date": "2025",
+          "summary": "매출 12억 파운드(+48%), 조정 세전이익 1억 1,390만 파운드(8배), 신규 고객 240만으로 총 1,200만 이상, 고객 예금 166억 파운드(+48%)."
+        }
+      ]
+    },
+    {
+      "key": "standards-in-ci-not-in-docs",
+      "name": "자율을 두되 어기는 것만 자동으로 막는다",
+      "domain": "팀 100개가 만드는 데이터에 계약을 건다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**팀 100개 이상이 dbt 모델 12,000개 이상을 만들면 세 가지가 한꺼번에 나빠진다.** 회사가 증상을 그대로 적는다 — **창고 처리 비용과 데이터 도착 시간이 함께 올라가고**, 팀마다 `different conventions, styles and assumptions` 가 생기고, ⚠️ **한 팀의 스키마 변경이 남의 모델을 조용히 깨뜨린다**(`A schema change here broke downstream models there`). **그런데 이 회사가 고른 답은 중앙으로 되돌리는 것이 아니었다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**팀 100개 이상** · **dbt 모델 12,000개 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "label": "이전 진행",
+            "value": "⚠️ **전사 이전이 약 30% 시점**이다 — 회사가 `early days still` 과 `a long road ahead` 라 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "label": "지금까지의 값",
+            "value": "**일부 도메인에서 비용 약 40% 감소 · 랜딩 약 25% 단축.** 창고 비용 증가 추세가 **꺾였다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "label": "계약의 수",
+            "value": "**수백 개의 공식 데이터 공유 인터페이스**가 팀 간 공유를 규율한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 수치의 성격",
+            "value": "**전부 부분값이다** — `in some domains`, 30% 시점. **나머지 70% 에서 같은 값이 날지는 아직 모른다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "중앙으로 되돌릴지 정할 때",
+          "thought": "⚠️ **가장 쉬운 답을 명시적으로 거부한다** — `reverting to central ownership` 이 아니라 **분산 소유에 표준화된 가드레일**을 얹는 쪽을 골랐다. **중앙 데이터 팀은 일관성을 주지만 팀 100개의 속도를 못 따라간다**(이 대비는 이 사이트의 재구성이다). **자율과 일관성이 서로를 밀어내는 문제에서, 자율을 유지한 채 일관성을 사려 한 것이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "표준을 어떻게 지키게 할지",
+          "thought": "**원칙 세 줄이 이 기능 전체를 요약한다** — `Be opinionated: Fewer choices lead to better outcomes at scale` · **데이터 공유를 공식화한다** · **`Automate, don't gatekeep`.** ⚠️ **마지막 줄이 핵심이다** — 사람이 문지기가 되면 병목이 되고 규칙은 잊힌다. 그래서 **CI 가 PR 을 막는다.** 그러면 `New models are compliant from day one` 이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디까지 자동으로 만들지",
+          "thought": "⚠️ **자동화가 닿는 곳과 안 닿는 곳이 계층으로 갈린다** — 랜딩과 정규화는 짧은 YAML 에서 **수백 줄의 SQL 과 YAML 이 통째로 생성**되는데, **논리 계층은 사람이 쓴다**(`where most developer effort goes - pure business logic, not data wrangling`). **자동화의 값은 반복을 없애는 것이 아니라 사람의 시간을 업무 로직으로 몰아 주는 데 있다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "랜딩 계층",
+            "what": "**원시 이벤트 페이로드를 객체별 시간선으로 펼친다.** 완전 자동 — `no hand-written SQL`"
+          },
+          {
+            "name": "정규화 계층",
+            "what": "**한 개체의 속성과 생애주기**를 담는다(SCD Type-2 이력 · 현재 상태 · 불변 이벤트). 이것도 자동 생성"
+          },
+          {
+            "name": "논리 계층",
+            "what": "⚠️ **사람이 쓰는 유일한 곳.** 순수 업무 로직이고 데이터 손질이 아니다"
+          },
+          {
+            "name": "표현 계층",
+            "what": "대시보드·규제 보고·ML 특성용 소비자 맞춤 모델. ⚠️ **인터페이스가 될 수 없다** — `they're leaf nodes built for specific use cases`"
+          },
+          {
+            "name": "인터페이스",
+            "what": "**팀 간 소비를 위해 명시적으로 선언되고 규율되는 계약.** 정규화·논리 계층만 낼 수 있다"
+          },
+          {
+            "name": "Modelgen",
+            "what": "최소한의 YAML 설명에서 랜딩·정규화를 통째로 만드는 사내 도구"
+          }
+        ],
+        "invariants": [
+          "**새 모델은 첫날부터 표준을 지킨다** — `New models are compliant from day one`",
+          "⚠️ **표현 계층은 남이 쓸 수 없다** — 잎 노드이므로 계약의 출발점이 못 된다",
+          "⚠️ **백엔드가 정형화된 이벤트를 내보내야 1·2계층 자동화가 성립한다** — 이 전제가 없으면 구조 전체가 안 선다",
+          "**예외는 명시적으로 선언하고 정당화해야 한다** — 조용한 예외를 허용하지 않는다",
+          "**모델은 증분 처리여야 한다** — 명시적으로 면제받지 않는 한"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**마이크로서비스가 일관된 형식으로 이벤트를 내보낸다**",
+            "why": "⚠️ **이 전제가 나머지 전부를 가능하게 한다**"
+          },
+          {
+            "step": "**Modelgen 이 짧은 YAML 에서 랜딩·정규화 계층을 통째로 생성한다**",
+            "why": "수백 줄의 SQL·YAML 을 사람이 쓰지 않는다"
+          },
+          {
+            "step": "**사람은 논리 계층만 쓴다** — 순수 업무 로직",
+            "why": "손질이 아니라 뜻을 쓰는 데 시간을 몰아 준다"
+          },
+          {
+            "step": "**표현 계층은 소비자 모양으로 얇게 만든다** — 대시보드·규제 보고·ML 특성",
+            "why": "⚠️ 여기서 만든 것은 **남에게 계약으로 주지 않는다**"
+          },
+          {
+            "step": "**팀 간 공유는 정규화·논리 계층에서만, 인터페이스로 선언한다**",
+            "why": "암묵적 의존을 **명시적 계약**으로 바꾼다"
+          },
+          {
+            "step": "**PR 마다 CI 가 표준을 검사한다** — 고유 키 · 신선도 테스트 · 증분 처리 · 소유 팀 · 문서 · 이름 규칙",
+            "why": "`Automate, don't gatekeep` — 사람이 문지기가 되지 않게"
+          },
+          {
+            "step": "**어기면 PR 이 막힌다. 예외는 선언하고 정당화한다**",
+            "why": "조용히 어긋난 모델이 쌓이지 않는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "흩어진 소유권을 중앙으로 되돌릴 것인가",
+            "chosen": "**아니다 — 분산 소유를 유지하고 가드레일을 표준화한다**",
+            "alternatives": [
+              "중앙 데이터 팀이 모델을 소유"
+            ],
+            "tradeoff": "회사가 `reverting to central ownership` 을 명시적으로 거부한다. ⚠️ **대가는 일관성을 공짜로 못 얻는다는 것이다** — 중앙이면 규칙이 곧 사람의 판단인데, 분산에서는 **규칙을 코드로 만들어 심어야 하고 그 도구를 계속 유지해야 한다**(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "question": "표준을 무엇으로 지키게 할 것인가",
+            "chosen": "**CI 가 PR 을 막는다** — 문서나 리뷰가 아니라",
+            "alternatives": [
+              "가이드 문서와 코드 리뷰",
+              "중앙 팀의 승인"
+            ],
+            "tradeoff": "`Automate, don't gatekeep`. **사람이 문지기가 되면 병목이 되고 규칙은 잊힌다.** ⚠️ 대가는 **판정이 이분법이 된다는 것**이다 — 기계는 정황을 모르므로 정당한 예외까지 막고, 그래서 **예외를 선언하고 정당화하는 절차가 따로 필요해진다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "question": "선택지를 얼마나 줄일 것인가",
+            "chosen": "**과감하게 줄인다** — `Be opinionated: Fewer choices lead to better outcomes at scale`",
+            "alternatives": [
+              "팀마다 맞는 방식을 고르게 두기"
+            ],
+            "tradeoff": "⚠️ **선택지를 줄이는 것이 곧 팀 자율을 줄이는 것이다.** 회사는 소유권을 분산해 두고 **방법은 좁힌다** — `무엇을 만들지는 네가 정하고, 어떻게 만들지는 우리가 정한다` 에 가깝다(이 해석은 이 사이트의 재구성이다). 규모에서만 성립하는 맞바꿈이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "question": "어느 계층까지 자동으로 만들 것인가",
+            "chosen": "**랜딩·정규화까지** — 논리 계층은 사람이 쓴다",
+            "alternatives": [
+              "업무 로직까지 생성 시도",
+              "전부 손으로"
+            ],
+            "tradeoff": "짧은 YAML 에서 **수백 줄**이 나온다. ⚠️ **대가는 생성된 것의 모양을 개별 팀이 바꾸기 어렵다는 것**이고, **Modelgen 자체가 유지해야 할 자산이 된다**(이 대가는 이 사이트의 재구성이다). 그 대신 **사람의 시간이 업무 로직으로 몰린다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "question": "어느 계층이 팀 간 계약이 될 수 있는가",
+            "chosen": "**정규화·논리 계층만** — 표현 계층은 안 된다",
+            "alternatives": [
+              "어느 계층이든 공유 허용"
+            ],
+            "tradeoff": "표현 계층은 `leaf nodes built for specific use cases` 라 계약의 출발점이 못 된다. ⚠️ **대가는 중복이다** — 다른 팀이 비슷한 것을 원하면 **그 대시보드용 모델을 쓰는 대신 위층에서 다시 만들어야 한다**(이 지적은 이 사이트의 재구성이다). 그 대신 **소비자용 모델의 변경이 남을 깨뜨리지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "question": "팀 간 의존을 어떻게 다룰 것인가",
+            "chosen": "**명시적 계약(인터페이스)으로 바꾼다** — 문서화·테스트·안정성이 요구된다",
+            "alternatives": [
+              "지금처럼 암묵적으로 서로 참조하기"
+            ],
+            "tradeoff": "암묵적 의존에서는 **한 팀의 스키마 변경이 남의 모델을 조용히 깨뜨렸다.** ⚠️ **대가는 선언 비용과 경직성이다** — 계약이 되면 바꾸기 어려워지고, **수백 개**가 생기면 그 자체가 관리 대상이 된다(뒤쪽은 재구성이다). ⚠️ **강제 방식이 글에 없다** — 선언되지 않은 의존을 무엇이 막는지 적히지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "question": "이 구조가 무엇 위에 서는가",
+            "chosen": "**마이크로서비스가 일관된 형식으로 내보내는 이벤트 위에**",
+            "alternatives": [],
+            "tradeoff": "⚠️ **이것이 이 방법의 진짜 전제다** — `Monzo's data ingestion from the backend is designed: our microservices emit events in a consistent, well-structured format`. **이벤트가 제각각인 곳에서는 1·2계층 자동화가 통째로 성립하지 않는다.** **앞서 백엔드를 같은 모양으로 유지하려고 치른 값이 여기서 능력으로 돌아온다**(이 연결은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              },
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "dbt (모델 12,000개 이상)",
+            "role": "데이터 모델의 단위. 팀 100개 이상이 함께 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "tech": "Modelgen (사내)",
+            "role": "짧은 YAML 에서 랜딩·정규화 계층을 통째로 생성. **논리 계층은 만들지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "tech": "데이터 표준 + CI",
+            "role": "고유 키·신선도·증분·소유·문서·이름 규칙을 PR 마다 검사하고 어기면 막는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "tech": "인터페이스 (팀 간 계약)",
+            "role": "정규화·논리 계층에서만 나오는 공식 공유 지점. 수백 개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "tech": "정형화된 백엔드 이벤트",
+            "role": "⚠️ **자동 생성의 전제.** 이것이 없으면 구조가 안 선다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "one-team-drives-all-migrations",
+          "via": "CI 가 막는다는 같은 방법",
+          "contract": "⚠️ **한 회사가 같은 수법을 두 곳에 쓴다** — 이전에서는 `semgrep` 이 옛 라이브러리의 새 의존을 막고, 여기서는 표준이 PR 을 막는다. **자율을 두되 어기는 것만 자동으로 막는 모양이 이 회사의 서명이다**(이 관찰은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "one-node-test-hid-quorum-break",
+          "via": "이벤트",
+          "contract": "**같은 이벤트 흐름이 두 곳에서 쓰인다** — 장애 때는 **데이터베이스 밖에 저장해 둔 이벤트가 복구 수단**이었고, 여기서는 **랜딩 계층의 재료**다. **정형화가 두 번 값을 한다**(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "팀 100개의 대시보드·규제 보고·ML",
+          "via": "표현 계층",
+          "contract": "**소비자 모양의 모델은 여기서 끝난다** — 남에게 계약으로 주지 않으므로, 바꿔도 남이 안 깨진다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "창고 비용",
+          "via": "증분 처리 강제",
+          "contract": "**표준이 비용을 직접 건드린다** — 증분 처리를 기본으로 요구하고, 일부 도메인에서 **비용 약 40% 감소·랜딩 약 25% 단축**이 나왔다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "자율과 일관성이 서로를 밀어낸다",
+            "why_hard": "**팀 100개에게 소유권을 주면 속도는 나지만 방식이 갈리고, 중앙으로 모으면 일관되지만 그 팀이 병목이 된다.** 이 회사는 **중앙 회귀를 명시적으로 거부하고** 대신 **소유는 분산, 방법은 좁힘** 을 골랐다.",
+            "current_best": "**규칙을 사람이 아니라 CI 에 심는 것** — `Automate, don't gatekeep`. ⚠️ **대가는 규칙을 만들고 유지하는 일이 새로 생긴다는 것이고**, 기계는 정황을 모르므로 **예외 절차가 반드시 따라붙는다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          },
+          {
+            "problem": "자동화가 닿는 곳과 안 닿는 곳이 갈린다",
+            "why_hard": "랜딩·정규화는 **짧은 YAML 에서 수백 줄**이 나오는데, **논리 계층은 사람이 써야 한다.** 그리고 그 경계는 기술이 아니라 **업무 뜻이 시작되는 지점**이라 옮기기 어렵다(이 표현은 이 사이트의 재구성이다).",
+            "current_best": "**경계를 계층으로 못 박고, 사람의 시간을 논리 계층으로 몰아 주는 것.** ⚠️ **생성된 모델을 개별 팀이 바꾸고 싶을 때 어떻게 하는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A 'meshy' approach to Data",
+                "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+                "publisher": "Monzo Blog",
+                "date": "2026-04-22",
+                "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "두 층은 기계가 만들고, 한 층만 사람이 쓴다",
+          "question": "모델 12,000개를 팀 100개가 어떻게 함께 만드나",
+          "kind": "flow",
+          "code": "flowchart TD\n  E[\"<b>마이크로서비스 이벤트</b><br/>• 일관된 형식<br/>⚠️ <b>이 전제가 전부를 가능하게 한다</b>\"]:::accent --> L1[\"<b>① 랜딩</b><br/>• 원시 페이로드를 시간선으로<br/>• <b>완전 자동 · 손으로 쓴 SQL 없음</b>\"]:::accent\n  L1 --> L2[\"<b>② 정규화</b><br/>• 한 개체의 속성과 생애주기<br/>• <b>이것도 자동 생성</b>\"]:::accent\n  MG[\"<b>Modelgen</b><br/>• 짧은 YAML → 수백 줄\"]:::list -.-> L1\n  MG -.-> L2\n  L2 --> L3[\"<b>③ 논리</b><br/>⚠️ <b>사람이 쓰는 유일한 곳</b><br/>• 순수 업무 로직\"]:::accent\n  L3 --> L4[\"<b>④ 표현</b><br/>• 대시보드 · 규제 보고 · ML<br/>⚠️ <b>계약이 될 수 없다 (잎 노드)</b>\"]:::gone\n  L2 --> IF[\"<b>인터페이스</b><br/>• 팀 간 공식 계약 · 수백 개\"]:::list\n  L3 --> IF\n  CI[\"<b>CI 가 PR 을 막는다</b><br/>• 고유 키 · 신선도 · 증분<br/>• 소유 · 문서 · 이름 규칙\"]:::accent -.->|\"Automate, don't gatekeep\"| L3\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "중앙으로 되돌리지 않는 대신 치르는 것",
+          "question": "이 구조가 서기 위해 필요한 것과 잃는 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>제약 없는 성장</b><br/>• 팀 100개 · 모델 12,000개\"]:::gone --> A1[\"⚠️ <b>비용과 도착 시간이 함께 오른다</b>\"]:::gone\n  A --> A2[\"⚠️ <b>팀마다 다른 관례와 가정</b>\"]:::gone\n  A --> A3[\"⚠️ <b>한 팀의 스키마 변경이</b><br/>⚠️ <b>남의 모델을 조용히 깨뜨린다</b>\"]:::gone\n  B[\"<b>중앙 소유로 회귀</b>\"]:::gone --> B1[\"⚠️ <b>명시적으로 거부했다</b>\"]:::gone\n  C[\"<b>분산 소유 + 표준 가드레일</b>\"]:::accent --> C1[\"⚠️ <b>규칙을 코드로 만들고</b><br/>⚠️ <b>계속 유지해야 한다</b>\"]:::gone\n  C --> C2[\"⚠️ <b>기계는 정황을 모른다</b><br/>• 예외는 선언하고 정당화\"]:::gone\n  C --> C3[\"⚠️ <b>선택지를 줄이는 것이</b><br/>⚠️ <b>곧 자율을 줄이는 것</b>\"]:::gone\n  C --> C4[\"<b>일부 도메인 비용 약 40% ↓</b><br/>• 랜딩 약 25% 단축<br/>⚠️ <b>이전은 아직 30% 시점</b>\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "A 'meshy' approach to Data",
+          "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+          "publisher": "Monzo Blog",
+          "date": "2026-04-22",
+          "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+        },
+        {
+          "title": "How we run migrations across 2,800 microservices",
+          "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+          "publisher": "Monzo Blog",
+          "date": "2026",
+          "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
         },
         {
           "title": "Monzo Annual Report 2025",
