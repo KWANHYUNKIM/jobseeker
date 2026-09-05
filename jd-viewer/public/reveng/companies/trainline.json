@@ -4,7 +4,7 @@
   "name_en": "Trainline",
   "country": "EU",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "thetrainline.com",
   "one_liner": "유럽 45개국 270개 철도·버스 운영사의 표를 한 앱에서 파는 회사",
@@ -126,7 +126,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "cdn-in-flight"
+      ]
     }
   ],
   "eras": [],
@@ -137,7 +139,518 @@
     "**연표(eras)를 세울 자료를 아직 못 찾았다.**",
     "⚠️ **CDN 이전 전의 구조가 언제부터였는지 모른다** — 글은 이전 제공자를 `CDN X` 로만 부르고 시작 시점을 밝히지 않는다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "cdn-in-flight",
+      "name": "날고 있는 비행기의 배달망을 갈아 끼운다",
+      "domain": "45개국의 콘텐츠를 자기 손으로 배달한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**표를 파는 일은 하루도 멈출 수 없다** — 45개국 270곳 이상의 운영사에서 노선·가격·소요시간을 모아 24시간 판다. 그 앞단이 CDN 이고, 회사가 그 무게를 한 줄로 적는다: `such a system needs to always be highly available, easily scalable and our CDN game has to be strong!` 그런데 그 배달망이 **남의 것**이었고 설정이 한곳에 뭉쳐 있었다 — 주 도메인 하나가 CDN 트래픽의 **70% 이상**이면서 **JSON 설정이 8,500줄 이상**이다. ⚠️ **그래서 이 이전은 갈아 끼우기가 아니라 다시 짓기였다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "운영사 **270곳 이상 · 45개국** · 사용자 **1억 이상** · 24시간 운영",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "옮긴 것",
+            "value": "도메인 **300곳 이상** — 주 사이트와 유럽 사이트 전부",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "가장 큰 도메인",
+            "value": "CDN 트래픽의 **70% 이상**이고 **JSON 설정 8,500줄 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "기간과 사람",
+            "value": "전체 **9개월 미만** — 계획 **6주**(코어 엔지니어 6~8명 + 팀 리드·EM·PM 각 1) · 이전 **4~6개월**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "넘기는 방식",
+            "value": "가중 DNS 를 **5 → 10 → 25 → 50 → 75 → 100%** 로. 되돌릴 수 있게 CNAME TTL 을 **5분**으로 미리 낮췄다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 성과 수치",
+            "value": "**비용 절감·자동화·성능 개선을 봤다고만 적고 숫자가 없다** — `some cost savings ... improved site performance`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "이전의 성격을 이름 붙일 때",
+          "thought": "⚠️ **회사가 스스로 lift-and-shift 가 아니라고 못 박는다** — `This wasn't a mere lift-and-shift; it was more like re-engineering the aeroplane while in flight!` 그리고 무엇을 다시 지었는지도 적는다: **아키텍처를 다시 생각하고 CDN 모놀리스를 다룰 만한 조각으로 쪼갰다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "작게 시험하고 있을 때",
+          "thought": "⚠️ **이 글에서 가장 값진 한 문장이다** — `Most if not all of our testing was small-scale testing. This didn't allow us to see the bigger picture till the end.` **작은 시험은 옳고 그름은 보여 주지만 비용과 한계는 안 보여 준다.** 실제로 두 번 물렸다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "되돌릴 길을 준비할 때",
+          "thought": "**전환 한참 전에** 주 도메인의 CNAME TTL 을 **5분**으로 낮춰 뒀다. 회사가 그 효과를 이렇게 적는다 — `This safety net gave us the confidence to proceed.` **되돌릴 수 있다는 확신이 앞으로 갈 수 있게 했다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "배포(distribution)",
+            "what": "CDN 설정의 단위. **하나당 저장소 하나**를 두고 `cdn-distribution-<이름>` 규칙으로 만든다"
+          },
+          {
+            "name": "엣지 함수",
+            "what": "Lambda@Edge 와 CloudFront Functions. URL 재작성·쿠키·공통 헤더·리다이렉트를 엣지에서 처리한다"
+          },
+          {
+            "name": "원본(origin)",
+            "what": "AWS 의 ALB·백엔드·S3 버킷. S3 는 OAI 로, ALB 는 커스텀 헤더로 잠근다"
+          },
+          {
+            "name": "캐시 정책",
+            "what": "정적·동적·API 응답별로 다르게 잡는다. **앱이 `cache-control` 을 정하고** CDN 은 그것을 따른다"
+          },
+          {
+            "name": "프리뷰 도메인",
+            "what": "운영 설정을 실제로 시험해 보는 자리. ⚠️ 당시 AWS 에는 없어 **사내 솔루션**으로 만들었다"
+          }
+        ],
+        "invariants": [
+          "**사용자는 아무것도 안 바꾼다** — 전환은 DNS 뒤에서 일어난다",
+          "**`cache-control` 은 앱이 정한다** — CDN 레벨은 `s-maxage`, 브라우저까지는 `max-age`. S3 자원이면 **객체 자체에** 헤더를 건다",
+          "**원본이 헤더를 안 주면 캐시하지 않는다** — 기본 `max-age` 를 0 으로 둬 **민감한 데이터가 실수로 캐시되는 것**을 막는다",
+          "**되돌릴 길을 미리 열어 둔다** — 전환 한참 전에 TTL 을 5분으로 낮춘다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**6주 동안 조사하고 매핑한다** — 자산 목록과 엣지 규칙을 전부 카탈로그로 만들고, 옛 CDN 의 기능을 CloudFront 의 무엇에 대응시킬지 짝지운다",
+            "why": "캐시 정책 → CloudFront 캐싱 설정, 포워딩 규칙 → Lambda@Edge, WAF → AWS WAF"
+          },
+          {
+            "step": "**저트래픽 배포 하나로 개념 검증**을 하고, **프리뷰 배포**로 운영 설정을 미리 시험한다",
+            "why": "⚠️ 당시 AWS 에 그런 기능이 없어 **사내 솔루션을 만들었다**"
+          },
+          {
+            "step": "**배포마다 저장소를 따로 만든다** — 사내 스캐폴딩 도구가 저장소·Spacelift 스택·템플릿을 PR 로 만들어 준다",
+            "why": "변경과 배포를 독립적으로 다루고 세밀하게 통제하기 위해서다"
+          },
+          {
+            "step": "**cdn-staging 에 배포하고 통합 테스트를 돌린다** — Jest 로 원본을 모킹해 커밋마다 CI 에서",
+            "why": "의도한 동작과 정책이 맞는지 확인한다"
+          },
+          {
+            "step": "**비프로덕션 → 외부 테스트 → 프리뷰 도메인 → 프로덕션** 순으로 올린다",
+            "why": "단계마다 다른 종류의 위험을 걷어낸다"
+          },
+          {
+            "step": "**작은 도메인부터 옮긴다.** DNS 테스트는 Cloudflare 로, 관찰은 CloudFront 로그·Splunk·NewRelic 으로",
+            "why": "큰 것을 건드리기 전에 방식을 굳힌다"
+          },
+          {
+            "step": "⚠️ **큰 도메인은 Route 53 가중치로 조금씩** — 5 → 10 → 25 → 50 → 75 → 100%",
+            "why": "주 도메인 하나가 트래픽의 70% 이상이라 한 번에 넘길 수 없었다"
+          },
+          {
+            "step": "**전환 뒤 일주일 동안 지켜본다.** 문제가 나면 되돌린다",
+            "why": "TTL 을 5분으로 낮춰 둬 되돌리기가 빠르다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "CDN 을 왜 바꾸는가",
+            "chosen": "**손으로 하던 변경을 코드로 옮기고, 이미 쓰는 클라우드 쪽으로 붙인다** — CDN 변경 절차를 Terraform 자동화가 맡는다",
+            "alternatives": [
+              "기존 제공자(글에서 `CDN X`)를 계속 쓰기"
+            ],
+            "tradeoff": "⚠️ **새 플랫폼의 제약을 통째로 떠안는다.** 회사가 그 제약을 셋이나 적는다 — CloudFront 는 **파일 확장자로 캐시 정책을 못 걸고**, `같은 디렉터리 안에서 이건 캐시하고 저건 말고` 같은 규칙이 안 되며, 임의 헤더 존재 여부로 조건부 캐시하기도 어렵다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "어느 규모로 시험할 것인가",
+            "chosen": "**작게 시험했다. 그리고 그 대가를 치렀다**",
+            "alternatives": [
+              "처음부터 실제 규모에 가깝게 시험하기"
+            ],
+            "tradeoff": "⚠️ **이 글이 스스로 적는 가장 큰 교훈이다** — `Most if not all of our testing was small-scale testing. This didn't allow us to see the bigger picture till the end.` **작은 시험은 동작은 보여 주지만 비용과 한계는 안 보여 준다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "엣지 로직을 무엇으로 돌릴 것인가",
+            "chosen": "**Lambda@Edge 로 시작했다가 CloudFront Functions 로 옮겼다**",
+            "alternatives": [
+              "Lambda@Edge 유지"
+            ],
+            "tradeoff": "⚠️ **비용이 규모에서만 드러났다** — 리다이렉트가 **하나일 때는 쌌는데 100개로 늘리자 청구가 튀었다.** 그래서 옮겼는데, 옮겨 간 쪽도 완전하지 않았다(아래)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "수천 개의 리다이렉트를 어떻게 감당할 것인가",
+            "chosen": "**리다이렉트 배포를 자기 CloudFront 배포로 떼어 낸다**",
+            "alternatives": [
+              "한 배포 안에서 CloudFront Functions 로 전부 처리"
+            ],
+            "tradeoff": "⚠️ **CloudFront Functions 가 수천 개 리다이렉트의 부하에서 타임아웃이 났다.** 떼어 내면 다룰 만해지지만 **관리할 배포가 는다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "배포를 어떻게 관리할 것인가",
+            "chosen": "**배포 하나당 저장소 하나** — 스캐폴딩 도구가 새 배포를 PR 로 만들어 준다",
+            "alternatives": [
+              "한 저장소에 모든 CDN 설정을 모으기"
+            ],
+            "tradeoff": "⚠️ **저장소가 배포 수만큼 는다** — 300곳 이상을 옮겼다. 그 대신 **변경과 배포가 독립적**이고 격리가 된다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "주 도메인을 어떻게 넘길 것인가",
+            "chosen": "**가중 DNS 로 조금씩** — 5 → 10 → 25 → 50 → 75 → 100%",
+            "alternatives": [
+              "정해진 시각에 한 번에 전환"
+            ],
+            "tradeoff": "⚠️ **두 CDN 을 한동안 함께 운영해야 하고 전체가 길어진다.** 그 대신 트래픽의 70% 이상을 지고 있는 도메인을 **중단 없이** 넘긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "되돌릴 준비를 어떻게 할 것인가",
+            "chosen": "**전환 한참 전에 CNAME TTL 을 5분으로 낮춘다**",
+            "alternatives": [
+              "기본 TTL 을 유지하고 문제가 나면 그때 낮추기"
+            ],
+            "tradeoff": "⚠️ **TTL 을 낮추면 DNS 질의가 늘어난다**(이 대가는 이 사이트의 재구성이다). 그 대신 회사가 얻은 것은 심리적인 것이기도 하다 — `This safety net gave us the confidence to proceed.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "원본이 캐시 헤더를 안 주면 어떻게 할 것인가",
+            "chosen": "**기본 `max-age` 를 0 으로 둔다** — 캐시하지 않는다",
+            "alternatives": [
+              "CDN 이 적당한 기본값을 정해 캐시하기"
+            ],
+            "tradeoff": "⚠️ **캐시되지 않는 요청이 늘어 원본 부하가 는다**(이 대가는 이 사이트의 재구성이다). 그 대신 **민감한 데이터가 실수로 캐시되는 것**을 막는다 — 표를 파는 회사에서 이쪽이 더 비싼 실수다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "AWS CloudFront + Terraform 사내 모듈",
+            "role": "CDN 본체. 설정을 코드로 관리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Route 53 · Cloudflare",
+            "role": "DNS. 가중 레코드로 트래픽을 조금씩 옮기고, 시험 단계에서는 Cloudflare 로 라우팅했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Lambda@Edge · CloudFront Functions",
+            "role": "엣지 로직. ⚠️ **둘 다 한계를 만났다** — 비용과 타임아웃",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Spacelift · Terratest · OPA",
+            "role": "Terraform 상태 관리와 CI/CD, 모듈 자동 테스트, 컴플라이언스 검사",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "AWS Shield Advanced · WAF · DataDome",
+            "role": "DDoS 방어, 요율 기반 규칙, **행동 분석으로 나쁜 봇과 악성 IP 를 가린다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Splunk · NewRelic · CloudWatch · Kinesis",
+            "role": "관측과 경보. 로그는 S3 를 거쳐 Splunk 로 간다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "AWS ACM · OAI",
+            "role": "인증서 자동 갱신(TLS 1.2·1.3)과 S3 원본 접근 제한",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "티켓 판매 수수료 · B2B 유통 (수익원)",
+          "via": "앱과 웹의 앞단",
+          "contract": "⚠️ **이 배달망이 느려지거나 멈추면 표를 못 판다.** 24시간 도는 서비스에서 CDN 은 곁가지가 아니라 매출의 앞단이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "운영사 270곳 이상 (45개국)",
+          "via": "국가별 도메인",
+          "contract": "**300곳 이상의 도메인**이 유럽 전역에 걸쳐 있고 전부 옮겨야 했다. 나라가 늘면 도메인이 는다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "⚠️ Platform One (사내 플랫폼)",
+          "via": "⚠️ 확인하지 못함",
+          "contract": "⚠️ **표를 모으고 값을 매기는 쪽과 이 배달망이 어떻게 만나는지 자료를 못 찾았다** — 실적 각주에 이름만 나온다",
+          "confidence": "unknown"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "작은 시험은 비용과 한계를 안 보여 준다",
+            "why_hard": "⚠️ **동작이 맞는지는 하나로도 알 수 있지만, 얼마가 나오고 어디서 무너지는지는 규모에서만 드러난다.** 이 회사는 그것을 두 번 겪었다 — 리다이렉트 1개에서 100개로, 그리고 수천 개로 갈 때",
+            "current_best": "글이 남긴 답은 **구조를 나누는 것**이다(리다이렉트 배포를 격리). ⚠️ **어떻게 하면 미리 알 수 있었는지는 적지 않는다** — 교훈 목록에도 `Lambda@Edge 의 확장 모델을 이해하라` 정도로만 남는다. 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "새 플랫폼의 제약은 협상할 수 없다",
+            "why_hard": "옛 CDN 에서 되던 것이 새 곳에서 안 될 수 있다 — CloudFront 는 **파일 확장자 기반 캐시 정책**도, **같은 디렉터리 안의 선택적 캐시**도, **임의 헤더 조건부 캐시**도 어렵다. 8,500줄짜리 설정을 그대로 옮길 수 없다는 뜻이다",
+            "current_best": "회사의 답은 **캐시 책임을 앱으로 옮기는 것**이다 — 버전 붙은 자산명을 쓰고, `cache-control` 을 애플리케이션이 직접 걸고, S3 라면 객체에 헤더를 건다. **CDN 에서 규칙으로 풀던 것을 원본에서 선언으로 푼다**(이 정리는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+                "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+                "publisher": "The Trainline Blog",
+                "date": "2024-01-09",
+                "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "작은 도메인에서 트래픽 70%짜리까지",
+          "question": "멈추지 않고 넘기려면 무엇을 순서로 두나",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>계획 6주</b><br/>• 자산·엣지 규칙 카탈로그<br/>• 옛 CDN 기능 → CloudFront 매핑\"]:::accent --> T1\n  T1[\"<b>개념 검증</b><br/>• 저트래픽 배포 하나\"]:::list --> T2\n  T2[\"<b>프리뷰 배포</b><br/>• 사내 솔루션 (당시 AWS 엔 없었다)\"]:::list --> R\n  R[\"<b>배포당 저장소 하나</b><br/>• 스캐폴딩 도구가 PR 생성\"]:::list --> S1\n  S1[\"<b>cdn-staging</b><br/>• Jest 로 원본 모킹<br/>• 커밋마다 CI\"]:::list --> S2\n  S2[\"<b>비프로덕션 → 외부 테스트<br/>→ 프리뷰 도메인</b>\"]:::list --> S3\n  S3[\"<b>작은 도메인부터</b><br/>• DNS 는 Cloudflare 로 시험\"]:::list --> W\n  W[\"<b>가중 DNS</b><br/>• 5 → 10 → 25 → 50 → 75 → 100%\"]:::accent --> O\n  O[\"<b>일주일 관찰</b><br/>• Splunk · NewRelic · CloudWatch\"]:::list\n  B[\"<b>되돌릴 길</b><br/>• CNAME TTL 을 미리 5분으로\"]:::soft\n  B -.-> W\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "작게 시험한 대가는 두 번 왔다",
+          "question": "규모에서만 드러나는 것들",
+          "kind": "failure",
+          "code": "flowchart TD\n  T[\"<b>시험: 리다이렉트 1개</b><br/>• 잘 되고 싸다\"]:::list --> S1{\"규모를 올린다\"}\n  S1 -->|100개| F1[\"⚠️ <b>청구가 튄다</b><br/>• Lambda@Edge 비용\"]:::gone\n  F1 --> M1[\"<b>CloudFront Functions 로</b>\"]:::accent\n  M1 --> S2{\"더 올린다\"}\n  S2 -->|수천 개| F2[\"⚠️ <b>타임아웃</b><br/>• 함수가 부하를 못 견딘다\"]:::gone\n  F2 --> M2[\"<b>리다이렉트 배포를 격리</b><br/>• 다룰 만한 단위로 쪼갠다\"]:::accent\n  L[\"<b>남은 문장</b><br/>• 작은 시험은 동작은 보여 주지만<br/>  비용과 한계는 안 보여 준다\"]:::soft\n  C[\"⚠️ <b>협상 안 되는 제약</b><br/>• 확장자 기반 캐시 정책 불가<br/>• 같은 디렉터리 선택적 캐시 불가<br/>• 임의 헤더 조건부 캐시 어려움\"]:::gone\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+          "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+          "publisher": "The Trainline Blog",
+          "date": "2024-01-09",
+          "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+        },
+        {
+          "title": "Full year results FY2026",
+          "url": "https://www.trainlinegroup.com/investors/results-reports-and-presentations/full-year-results-fy2026/",
+          "publisher": "Trainline plc",
+          "date": "2026-05-06",
+          "summary": "2026년 2월 말 종료 회계연도 실적. 순 티켓 판매·매출·EBITDA 와 커미션율 변경, 활성 고객 수를 담고 있다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "How we migrated our CDN to AWS CloudFront at Trainline",

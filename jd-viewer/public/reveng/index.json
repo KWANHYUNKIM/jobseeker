@@ -847,8 +847,8 @@
       "name_en": "Trainline",
       "country": "EU",
       "category": "커머스",
-      "status": "in_progress",
-      "features_done": 0,
+      "status": "done",
+      "features_done": 1,
       "one_liner": "유럽 45개국 270개 철도·버스 운영사의 표를 한 앱에서 파는 회사",
       "updated_at": "2026-09-06",
       "domain": "thetrainline.com"
