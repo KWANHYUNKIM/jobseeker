@@ -1168,6 +1168,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "saga",
+      "title": "사가 · 보상 트랜잭션",
+      "category": "practice",
+      "level": "deep",
+      "status": "done",
+      "one_liner": "**여러 서비스에 걸친 작업에는 롤백이 없다.** 이미 남의 서비스에 나간 일은 취소할 수 없으니, **취소를 새 작업으로 실행**한다 — 그것이 보상이고, 그 연속이 사가다.",
+      "aliases": [
+        "사가",
+        "Saga",
+        "보상 트랜잭션",
+        "compensating transaction",
+        "사가 패턴"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
