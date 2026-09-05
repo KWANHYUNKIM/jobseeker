@@ -1,0 +1,734 @@
+{
+  "slug": "api-versioning",
+  "title": "API 버전 관리와 폐기",
+  "title_en": "API Versioning and Deprecation",
+  "aliases": [
+    "API 버전 관리",
+    "API versioning",
+    "하위 호환",
+    "backward compatibility",
+    "deprecation",
+    "폐기",
+    "Sunset 헤더"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "이미 남이 쓰고 있는 API 를 바꿔야 할 때, **버전을 올리지 않고 버티는 방법**과 **결국 올렸을 때 옛것을 어떻게 끄는가**에 관한 일.",
+  "summary": "API 버전 관리는 흔히 \"`/v2/` 를 붙이느냐 헤더를 쓰느냐\"의 문제로 소개되는데, 그건 가장 덜 중요한 부분이다. 실무의 순서는 이렇다 — **① 버전을 안 올리고 바꾸는 법**(무엇이 '깨는 변경'인지 미리 정해 두는 것), **② 그래도 올려야 할 때**(두 버전이 공존하는 기간을 어떻게 견디나), **③ 옛것을 끄는 법**(이게 제일 길다).\n\n⭐ 그중 첫 번째가 핵심이고, 요령은 **제공자가 \"이런 변경은 깨는 게 아니다\"를 먼저 선언하는 것**이다. Stripe 는 그 목록을 문서에 적어 두었다 — 응답에 필드 추가, **필드 순서 변경**, **ID 문자열의 길이·형식 변경**, 새 이벤트 타입 추가. 이것들을 견디도록 짜는 것은 소비자의 몫이고, 그 대가로 제공자는 버전을 안 올리고 계속 움직일 수 있다.\n\n그리고 폐기에는 표준 헤더까지 있다(RFC 8594 `Sunset`). 다만 그 표준이 스스로 말하듯 **그것은 힌트일 뿐이고, 안 읽는 클라이언트에게는 예고가 아예 없었던 것과 같다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 그리고 버전을 어디에 두나",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe API — Versioning",
+          "url": "https://docs.stripe.com/api/versioning",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "날짜+코드네임 버전, 계정에 고정, 월간 릴리스는 하위 호환만"
+        }
+      ],
+      "body": "이미 남이 쓰고 있는 API 를 바꾸는 일이다. 아무도 안 쓰면 버전은 필요 없다.\n\n버전을 표시하는 자리가 셋이고 각각 성질이 다르다(아래 `where` 표).\n\n**① URL 경로** — `/v2/users`. 가장 눈에 보이고 캐시·라우팅이 쉽다. 대신 **URL 이 리소스의 이름인데 거기에 버전이 섞인다**(같은 사용자가 두 개의 주소를 갖는다).\n\n**② 헤더** — `Accept: application/vnd.example.v2+json` 이나 전용 헤더. URL 이 깨끗하지만 **브라우저 주소창으로 시험할 수 없고** 잊기 쉽다.\n\n**③ 계정·클라이언트에 고정(pinning)** — 요청마다 버전을 안 보내도 **그 계정이 처음 쓴 버전으로 계속 응답**한다. Stripe 가 이 방식이다.\n\n> \"Your version gets set **the first time you make an API request**.\"\n> \"requests ... use your Stripe account's default API version ... unless you override it by setting the `Stripe-Version` header.\"\n\n⭐ 세 번째가 흥미로운 이유는 **소비자가 아무것도 안 해도 안 깨진다**는 것이다. 새 소비자는 최신을 받고, 옛 소비자는 옛것을 계속 받는다. 대신 제공자는 **수많은 버전을 동시에 살려 둬야** 한다.\n\n버전의 이름 짓기도 갈린다. Stripe 는 **날짜 + 코드네임**을 쓴다(`2026-08-26.dahlia` 형태). 그리고 릴리스를 두 종류로 나눈다.\n\n> \"Each major release ... includes changes that aren't backward-compatible with previous releases.\"\n> \"Each **monthly release includes only backward-compatible changes**, and uses the same name as the last major release. You can safely upgrade to a new monthly release without breaking any existing code.\"\n\n**월간은 안전, 메이저만 위험.** 이 구분이 있으면 소비자가 \"이번 것은 읽어야 하나\"를 판단할 수 있다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐ 최선은 버전을 안 올리는 것이다 — 그러려면 '깨는 변경'을 먼저 정의해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ],
+      "body": "버전을 올리는 순간 **두 벌의 코드, 두 벌의 테스트, 두 벌의 장애 조사**가 생기고 그것이 몇 년 간다. 그래서 성숙한 API 의 첫 번째 전략은 **버전을 안 올리고 바꾸는 것**이다.\n\n그게 가능하려면 **무엇이 깨는 변경이 아닌지를 제공자가 먼저 선언**해야 한다. Stripe 의 문서에 그 목록이 있다.\n\n> Stripe considers the following changes to be backward-compatible:\n> - \"Adding new API resources.\"\n> - \"Adding new optional request parameters to existing API methods.\"\n> - \"Adding new properties to existing API responses.\"\n> - ⭐ \"**Changing the order of properties** in existing API responses.\"\n> - ⭐ \"**Changing the length or format of opaque strings, such as object IDs**, error messages, and other human-readable strings.\"\n> - \"Adding new event types.\"\n\n**앞의 셋은 예상대로인데 뒤의 셋이 이 목록의 값이다.**\n\n**필드 순서**가 바뀌어도 깨는 변경이 아니라고 선언한다 — JSON 을 순서에 의존해 파싱하는 코드는 소비자 잘못이라는 뜻이다.\n\n**ID 의 길이와 형식**도 바뀔 수 있다고 못 박고, 문서가 **구체적인 대비까지 알려 준다.**\n\n> \"This includes **adding or removing fixed prefixes** (such as `ch_` on charge IDs).\"\n> \"Make sure that your integration can handle Stripe-generated object IDs, which **can contain up to 255 characters**. For example, if you're using MySQL, store the IDs in a `VARCHAR(255) COLLATE utf8_bin` column.\"\n\n⭐⭐ **\"우리 ID 는 언젠가 길어지고 접두사가 바뀔 수 있으니 `VARCHAR(255)` 로 저장해 두라\"** — 이것이 이 문서에서 가장 실용적인 문장이다. `ch_` 접두사로 타입을 판별하는 코드는 언젠가 깨지고, 그건 제공자가 미리 경고했으므로 소비자 잘못이 된다.\n\n**새 이벤트 타입**도 마찬가지다.\n\n> \"Make sure that your **webhook listener gracefully handles unfamiliar event types**.\"\n\n💡 **정리하면 이 절은 두 방향으로 읽힌다.**\n\n- **제공자라면** — 이 목록을 문서에 적어 둔다. 그러면 그 범위 안에서는 버전을 안 올리고 움직일 수 있다.\n- **소비자라면** — 상대의 목록을 읽고 **그것들을 견디도록 짠다.** 모르는 필드는 무시하고, 모르는 이벤트는 흘려보내고, ID 는 넉넉한 문자열로 저장한다. **읽지 않으면 남이 정당하게 한 변경에 우리가 깨진다.**"
+    },
+    {
+      "id": "how",
+      "kind": "how",
+      "heading": "그래도 올려야 할 때 — 그리고 되돌릴 창",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        },
+        {
+          "title": "Stripe API — Versioning",
+          "url": "https://docs.stripe.com/api/versioning",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "날짜+코드네임 버전, 계정에 고정, 월간 릴리스는 하위 호환만"
+        }
+      ],
+      "body": "목록으로 못 덮는 변경이 있다. 필드를 지우거나, 뜻을 바꾸거나, 필수 파라미터를 더하는 것. 그때 버전이 올라간다.\n\n올릴 때 정해야 하는 것이 셋이다.\n\n**1) 무엇에 영향이 가는가.** Stripe 는 이것을 목록으로 적어 둔다 — 헤더 없는 API 호출, 클라이언트 라이브러리가 받는 객체 구조, **웹훅으로 나가는 객체 구조**, 그리고 자동화된 청구 작업까지. ⭐ **버전 업그레이드가 요청·응답만의 일이 아니라는 것**을 보여 주는 목록이다.\n\n**2) 되돌릴 수 있는가.** Stripe 는 창을 명시한다.\n\n> \"**For 72 hours** after you've upgraded your API version, you can safely roll back to the version you were upgrading from.\"\n> \"After you've rolled back, **webhooks that were sent with the new object structure and failed will be retried with the old structure.**\"\n\n⭐ 뒷문장이 중요하다 — 되돌리면 **그동안 실패한 웹훅을 옛 구조로 다시 보내 준다.** 즉 되돌리기가 '설정 값을 바꾸는 것'이 아니라 **그 사이에 벌어진 일까지 수습하는 절차**로 설계돼 있다. 자체 API 를 만들 때도 **\"되돌리면 그 사이의 것은 어떻게 되나\"** 를 반드시 답해야 한다는 뜻이다.\n\n**3) 누가 버전을 정하는가.** Stripe 는 SDK 버전이 API 버전을 고정하는 방식으로 옮겨 갔다 — 강타입 언어(Java·Go·.NET)는 \"the requests you send align with the API version current at your version's release time\" 이고, 다른 언어도 최근 메이저부터 그렇다. ⭐ **라이브러리를 올리는 것이 곧 API 버전을 올리는 것**이 되어, 소비자가 '나도 모르게 옛 버전에 남아 있는' 상태를 줄인다.\n\n> 📌 그리고 권고가 하나 있다 — \"specify the API version that you're integrating against **in your code** instead of relying on your account's default API version.\" **기본값에 기대지 말고 코드에 박아라.** 기본값은 누군가 콘솔에서 바꿀 수 있기 때문이다."
+    },
+    {
+      "id": "webhook",
+      "kind": "extra",
+      "heading": "⭐ 웹훅의 버전 — 내가 부르는 게 아니라 상대가 부를 때",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe API — Versioning",
+          "url": "https://docs.stripe.com/api/versioning",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "날짜+코드네임 버전, 계정에 고정, 월간 릴리스는 하위 호환만"
+        },
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ],
+      "body": "API 버전 이야기는 대개 **내가 남을 부를 때**를 가정한다. 그런데 **상대가 나를 부르는 경우**(웹훅)에는 상황이 뒤집힌다 — 내가 요청 헤더를 붙일 기회가 없다.\n\nStripe 는 이 문제를 **엔드포인트마다 버전을 고정**하는 방식으로 푼다.\n\n> \"Webhook events use the API version that's **set during your webhook's endpoint creation**. Otherwise, they use your Stripe account's default API version.\"\n> \"if an endpoint has an explicit version set, it **always** uses that version.\"\n\n즉 **수신하는 쪽이 자기가 받고 싶은 버전을 미리 등록**해 둔다. 그러면 계정의 기본 버전을 올려도 그 엔드포인트로 오는 이벤트는 옛 구조 그대로다 — **수신기를 고칠 시간을 벌 수 있다.**\n\n그리고 문서가 하나를 더 경고한다.\n\n> \"The default API version of your account **at the time the event occurred** defines the resources inside of events retrieved from the API. If your code retrieves events created when your default API version was different, **it must account for any differences in the event versions**.\"\n\n⭐⭐ **지나간 이벤트를 다시 꺼내 읽으면 그때의 버전으로 온다.** 재처리·백필을 하는 시스템이라면 **여러 버전의 이벤트가 한 코드에 들어온다**는 뜻이고, 이건 `data-contract` 에서 본 전이성 문제(두 걸음 이상 건너뛴 옛 데이터)와 **정확히 같은 문제**다.\n\n> 📌 그래서 이벤트를 저장해 두는 시스템은 **저장할 때 그 이벤트의 버전을 함께 기록**해야 한다. 안 그러면 몇 달 뒤 재처리할 때 어느 파서를 써야 할지 알 수 없다."
+    },
+    {
+      "id": "sunset",
+      "kind": "how",
+      "heading": "끄는 법 — 표준 헤더가 있고, 그 표준이 자기 한계도 적어 뒀다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RFC 8594 — The Sunset HTTP Response Header Field",
+          "url": "https://www.rfc-editor.org/rfc/rfc8594.html",
+          "publisher": "IETF",
+          "date": "2019-05-01",
+          "kind": "standard",
+          "summary": "폐기 예고의 표준 헤더. 값은 HTTP-date 이고 '힌트'일 뿐이라고 못 박는다"
+        }
+      ],
+      "body": "버전을 올리는 것보다 긴 일이 **옛 버전을 끄는 것**이다. 그리고 여기에는 표준이 있다 — **RFC 8594, `Sunset` HTTP 응답 헤더**.\n\n> \"This specification defines the Sunset HTTP response header field, which indicates that **a URI is likely to become unresponsive at a specified point in the future**.\"\n\n값은 날짜다.\n\n```\nSunset: Sat, 31 Dec 2018 23:59:59 GMT\n```\n\n> \"The Sunset value is an HTTP-date timestamp, as defined in Section 7.1.1.1 of [RFC7231].\"\n\n그리고 그 날짜 이후에 무슨 일이 일어나는지도 적어 둔다.\n\n> \"After the Sunset time has arrived, it is likely that interactions with the resource will result in **client-side errors (HTTP 4xx)**, **redirect responses (HTTP 3xx)**, or **the client might not be able to interact with the resource at all**.\"\n\n⭐ 표준이 **결과를 셋으로 열어 둔다** — 끄는 방식이 하나가 아니라는 뜻이고, 그래서 예고할 때 **어떻게 끌 것인지도 함께 알려야** 한다.\n\n그런데 이 표준이 스스로 그은 선이 더 중요하다.\n\n> ⭐⭐ \"Clients **SHOULD treat Sunset timestamps as hints**: it is not guaranteed that the resource will, in fact, be available until that time and will not be available after that time.\"\n\n**힌트다.** 그 날까지 살아 있다는 보장도, 그 후에 죽는다는 보장도 아니다.\n\n> ⭐⭐⭐ \"Clients **not interpreting** an existing Sunset header field can operate as usual and simply may experience the resource becoming unavailable **without recognizing any notification about it beforehand**.\"\n\n**안 읽는 클라이언트에게는 예고가 없었던 것과 같다.** 이 한 문장이 폐기 계획의 현실을 다 말한다 — 헤더를 붙이는 것은 **필요조건이지 충분조건이 아니고**, 실제로 사람들이 옮기게 하려면 **다른 경로로 알려야** 한다(메일, 대시보드 경고, 담당자 연락).\n\n💡 그래서 실무의 폐기 절차는 다섯 단계가 된다(`steps` 표) — **예고 → 사용량 계측 → 경고 강화 → 간헐적 차단 → 종료.** 그중 **두 번째가 없으면 나머지가 다 무의미하다**: 누가 아직 쓰는지 모르면 끌 수 없기 때문이다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 클라이언트를 통제할 수 없을 때",
+      "confidence": "inferred",
+      "body": "**1. 누가 쓰는지 모르면 못 끈다.** 이것이 폐기가 미뤄지는 진짜 이유다. 사내 API 라면 호출 로그로 셀 수 있지만, 외부 공개 API 는 **호출자를 식별하는 수단**(API 키·클라이언트 ID)이 없으면 셈 자체가 안 된다. `contract-testing` 이 밝혔듯 **소비자를 개별 식별할 수 없으면** 계약도 폐기 관리도 성립하지 않는다.\n\n**2. 모바일 앱은 끌 수가 없다.** 서버 API 는 우리가 배포하지만 앱은 **사용자가 업데이트해야** 바뀐다. 그리고 업데이트를 안 하는 사용자는 늘 있다. 그래서 이 경우 남는 선택지가 **강제 업데이트**뿐인데, 그건 제품 결정이지 기술 결정이 아니다. ⚠️ **앱을 가진 서비스는 API 를 설계할 때부터 \"이 응답 구조를 5년 뒤에도 보내야 할 수 있다\"를 전제**해야 한다.\n\n**3. 두 버전 운영은 코드만 두 배가 아니다.** 테스트·모니터링·장애 조사·문서가 전부 두 배가 되고, **새 기능을 어느 쪽에 넣을지**가 매번 결정 사항이 된다. 그래서 버전을 올리기 전에 `why` 절의 목록으로 버틸 수 있는지 먼저 따져야 한다.\n\n**4. 공고에서 이 낱말은 API 보다 SDK 쪽에서 더 자주 나온다.** 직접 세어 보면 **118건(모집중 67)** 인데, `API 버전 관리`(왓섭·이너버스)보다 **`SDK/라이브러리 버저닝`**(클레온·그라비티·힐링페이퍼·리아드)이 더 눈에 띈다. 성질은 같다 — **내가 통제할 수 없는 소비자가 있다.** 다만 SDK 쪽에는 시맨틱 버저닝 같은 별도 관행이 있고, 그것은 이 문서의 범위 밖이다.\n\n**5. 이 문서가 다루지 않는 것.** 무엇이 깨는 변경인지의 데이터 쪽 규칙은 `data-contract`(BACKWARD/FORWARD), 명세를 어떻게 적는지는 `openapi`, 소비자의 기대를 검사하는 쪽은 `contract-testing`, 배포 중의 두 버전 공존은 `zero-downtime-deploy` 다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "where",
+      "kind": "compare",
+      "caption": "버전을 어디에 두나",
+      "note": "세 방식의 비교는 이 문서가 정리한 것이고(`confidence: inferred`), '계정 고정' 열의 인용은 Stripe 문서에서 가져왔다.",
+      "columns": [
+        "",
+        "URL 경로 `/v2/`",
+        "헤더",
+        "계정·클라이언트 고정"
+      ],
+      "rows": [
+        [
+          "소비자가 할 일",
+          "주소를 바꾼다",
+          "헤더를 붙인다",
+          "⭐ 아무것도 안 해도 된다"
+        ],
+        [
+          "브라우저로 시험",
+          "된다",
+          "어렵다",
+          "된다"
+        ],
+        [
+          "캐시·라우팅",
+          "쉽다",
+          "헤더까지 봐야 한다",
+          "쉽다"
+        ],
+        [
+          "문제",
+          "같은 리소스가 여러 주소를 갖는다",
+          "잊기 쉽고 안 보인다",
+          "제공자가 여러 버전을 오래 살려 둬야 한다"
+        ],
+        [
+          "Stripe 의 방식",
+          "—",
+          "`Stripe-Version` 로 덮어쓰기",
+          "\"Your version gets set **the first time** you make an API request.\""
+        ],
+        [
+          "권고",
+          "—",
+          "—",
+          "\"specify the API version that you're integrating against **in your code** instead of relying on your account's default\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe API — Versioning",
+          "url": "https://docs.stripe.com/api/versioning",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "날짜+코드네임 버전, 계정에 고정, 월간 릴리스는 하위 호환만"
+        },
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    },
+    {
+      "id": "compatible",
+      "kind": "glossary",
+      "caption": "⭐⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록 (Stripe)",
+      "note": "Stripe 의 API 업그레이드 문서에서 그대로 옮겼다. ⚠️ **이것은 Stripe 의 정의**이지 보편 규칙이 아니다 — 다른 API 는 다르게 정할 수 있다. 소비자라면 상대의 목록을 읽어야 하고, 제공자라면 이런 목록을 먼저 써 둬야 한다.",
+      "columns": [
+        "변경",
+        "소비자가 견뎌야 하는 것"
+      ],
+      "rows": [
+        [
+          "\"Adding new API resources.\"",
+          "모르는 리소스가 생겨도 무시"
+        ],
+        [
+          "\"Adding new optional request parameters to existing API methods.\"",
+          "안 보내면 그만"
+        ],
+        [
+          "\"Adding new properties to existing API responses.\"",
+          "**모르는 필드에서 오류를 내면 안 된다**(엄격한 역직렬화 금지)"
+        ],
+        [
+          "⭐ \"Changing the order of properties in existing API responses.\"",
+          "순서에 의존해 파싱하지 않기"
+        ],
+        [
+          "⭐ \"Changing the length or format of opaque strings, such as object IDs...\"",
+          "\"adding or removing fixed prefixes (such as `ch_`)\" — **접두사로 타입을 판별하지 않기**"
+        ],
+        [
+          "(ID 저장에 대한 구체 조언)",
+          "\"can contain **up to 255 characters** ... store the IDs in a `VARCHAR(255) COLLATE utf8_bin` column\""
+        ],
+        [
+          "\"Adding new event types.\"",
+          "\"Make sure that your webhook listener **gracefully handles unfamiliar event types**.\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    },
+    {
+      "id": "sunset",
+      "kind": "glossary",
+      "caption": "폐기 예고의 표준 — RFC 8594 `Sunset`",
+      "note": "IETF RFC 8594(2019) 원문에서 옮겼다. 표준이 스스로 '보장이 아니다'라고 적어 둔 부분이 이 표의 핵심이다.",
+      "columns": [
+        "",
+        "내용"
+      ],
+      "rows": [
+        [
+          "무엇",
+          "\"indicates that a URI is **likely to become unresponsive** at a specified point in the future\""
+        ],
+        [
+          "값",
+          "HTTP-date — 예: `Sunset: Sat, 31 Dec 2018 23:59:59 GMT`"
+        ],
+        [
+          "그날 이후",
+          "\"client-side errors (HTTP 4xx)\" 또는 \"redirect responses (HTTP 3xx)\" 또는 \"might not be able to interact with the resource at all\""
+        ],
+        [
+          "⭐ 보장 아님",
+          "\"Clients SHOULD treat Sunset timestamps as **hints**: it is not guaranteed that the resource will, in fact, be available until that time and will not be available after that time.\""
+        ],
+        [
+          "⭐⭐ 한계",
+          "\"Clients **not interpreting** an existing Sunset header field ... may experience the resource becoming unavailable **without recognizing any notification** about it beforehand.\""
+        ],
+        [
+          "그래서",
+          "헤더는 필요조건이지 충분조건이 아니다 — 메일·대시보드·담당자 연락이 함께 필요하다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RFC 8594 — The Sunset HTTP Response Header Field",
+          "url": "https://www.rfc-editor.org/rfc/rfc8594.html",
+          "publisher": "IETF",
+          "date": "2019-05-01",
+          "kind": "standard",
+          "summary": "폐기 예고의 표준 헤더. 값은 HTTP-date 이고 '힌트'일 뿐이라고 못 박는다"
+        }
+      ]
+    },
+    {
+      "id": "steps",
+      "kind": "glossary",
+      "caption": "끄는 절차 다섯 단계",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 2번이 없으면 나머지가 전부 무의미하다는 것이 요점이다.",
+      "columns": [
+        "단계",
+        "무엇",
+        "없으면"
+      ],
+      "rows": [
+        [
+          "1. 예고",
+          "`Sunset` 헤더 + 문서 + 메일·대시보드",
+          "안 읽는 클라이언트에게는 예고가 없었던 것과 같다"
+        ],
+        [
+          "⭐ 2. 사용량 계측",
+          "누가 아직 쓰는지 센다(호출자별)",
+          "**끌 수가 없다.** 폐기가 미뤄지는 진짜 이유"
+        ],
+        [
+          "3. 경고 강화",
+          "응답에 경고 헤더, 남은 호출자에게 직접 연락",
+          "마지막 날에 처음 알게 된다"
+        ],
+        [
+          "4. 간헐적 차단",
+          "정해진 시간대에만 잠깐 끊어 본다(brownout)",
+          "실제로 깨지는지 아무도 모른 채 종료일을 맞는다"
+        ],
+        [
+          "5. 종료",
+          "4xx 로 닫거나 새 버전으로 리다이렉트",
+          "—"
+        ],
+        [
+          "되돌리기",
+          "종료 후에도 잠깐 되돌릴 수 있게",
+          "Stripe 의 72시간 창과 '실패한 웹훅 재전송'이 그 본보기"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "upgrade-scope",
+      "kind": "glossary",
+      "caption": "버전을 올리면 무엇이 함께 바뀌나 (Stripe 의 목록)",
+      "note": "Stripe 문서가 '업그레이드가 영향을 주는 것'으로 나열한 항목이다. 요청·응답만의 일이 아니라는 것을 보여 주려고 옮겼다.",
+      "columns": [
+        "영향받는 것",
+        "비고"
+      ],
+      "rows": [
+        [
+          "버전 헤더 없는 API 호출",
+          "보낼 수 있는 파라미터와 응답 객체 구조가 바뀐다"
+        ],
+        [
+          "클라이언트 라이브러리가 받는 객체 구조",
+          "프론트엔드 SDK 포함"
+        ],
+        [
+          "⭐ 웹훅으로 나가는 객체 구조",
+          "\"However, if an endpoint has an explicit version set, it **always** uses that version.\""
+        ],
+        [
+          "자동화된 청구 작업",
+          "계정의 기본 버전을 따른다 — 사람이 부르지 않는 것까지 바뀐다"
+        ],
+        [
+          "⚠️ 지나간 이벤트 조회",
+          "\"The default API version of your account **at the time the event occurred** defines the resources inside of events retrieved from the API.\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "응답에 필드를 하나 추가해야 한다",
+      "pick": "버전을 올리지 않고 추가한다 — 대신 '이런 변경은 깨는 게 아니다'를 문서에 선언해 둔다",
+      "over": "새 버전을 내기",
+      "why": "Stripe 가 \"Adding new properties to existing API responses\" 를 하위 호환으로 분류하는 것이 이 근거다. 선언이 있으면 **모르는 필드에서 오류를 내는 소비자 쪽이 잘못**이 되고, 제공자는 계속 움직일 수 있다",
+      "tradeoff": "선언을 안 해 뒀다면 소비자들이 엄격한 역직렬화를 쓰고 있을 수 있다. 그때는 추가만으로도 깨지므로, **선언을 먼저 하고 유예 기간을 준 뒤** 그 규칙을 쓰기 시작해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    },
+    {
+      "situation": "소비자가 사내 팀 몇이고 우리가 배포 시점을 조율할 수 있다",
+      "pick": "URL 경로에 버전을 두고 두 벌을 잠깐 운영한다",
+      "over": "계정별 버전 고정 같은 정교한 장치",
+      "why": "소비자를 알고 연락할 수 있으면 **가장 단순한 방식이 가장 싸다.** 주소가 다르면 누가 어느 쪽을 쓰는지 로그로 바로 보이고, 끄는 것도 경로 하나를 닫으면 된다",
+      "tradeoff": "같은 리소스가 두 주소를 갖고, 두 벌의 코드·테스트가 생긴다. 그래서 **끄는 날짜를 처음부터 정해 두지 않으면** 두 벌이 영구화된다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "외부 고객이 우리 API 를 쓰고, 그들의 배포 일정을 통제할 수 없다",
+      "pick": "계정·클라이언트에 버전을 고정한다 (pinning)",
+      "over": "모두에게 최신 버전을 강제",
+      "why": "소비자가 아무것도 안 해도 안 깨진다 — Stripe 의 \"Your version gets set the first time you make an API request\" 가 그 방식이다. 외부 고객에게 \"다음 주까지 고치세요\"라고 할 수 없는 관계에서는 이것이 사실상 유일한 선택이다",
+      "tradeoff": "⚠️ **제공자가 여러 버전을 오랫동안 살려 둬야 한다.** 그래서 이 방식을 택하면 `why` 절의 하위 호환 선언이 **더** 중요해진다 — 안 그러면 버전이 무한히 쌓인다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe API — Versioning",
+          "url": "https://docs.stripe.com/api/versioning",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "날짜+코드네임 버전, 계정에 고정, 월간 릴리스는 하위 호환만"
+        }
+      ]
+    },
+    {
+      "situation": "옛 엔드포인트를 끄고 싶은데 아직 누가 쓰는지 모른다",
+      "pick": "먼저 호출자별 사용량 계측을 붙인다",
+      "over": "`Sunset` 헤더를 붙이고 날짜를 공지하기",
+      "why": "헤더는 **힌트일 뿐**이고 RFC 가 직접 말하듯 안 읽는 클라이언트는 \"without recognizing any notification about it beforehand\" 상태로 끊긴다. **누가 쓰는지 모르면 예고를 누구에게 보낼지도 모른다**",
+      "tradeoff": "계측을 붙이는 데 시간이 걸리고, 호출자를 식별할 수단이 없으면(공개 API) 애초에 셀 수가 없다. 그 경우 **간헐적 차단(brownout)** 으로 반응을 보는 방법이 남는다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RFC 8594 — The Sunset HTTP Response Header Field",
+          "url": "https://www.rfc-editor.org/rfc/rfc8594.html",
+          "publisher": "IETF",
+          "date": "2019-05-01",
+          "kind": "standard",
+          "summary": "폐기 예고의 표준 헤더. 값은 HTTP-date 이고 '힌트'일 뿐이라고 못 박는다"
+        }
+      ]
+    },
+    {
+      "situation": "웹훅을 받는 쪽이고 상대가 버전을 올린다고 한다",
+      "pick": "엔드포인트에 받고 싶은 버전을 명시적으로 고정한다",
+      "over": "계정 기본값에 맡기기",
+      "why": "Stripe 문서가 명시한다 — \"if an endpoint has an explicit version set, it **always** uses that version.\" 그러면 상대가 기본 버전을 올려도 **내 수신기를 고칠 시간을 벌 수 있다**",
+      "tradeoff": "고정해 둔 것을 잊으면 몇 년째 옛 구조를 받는다. 그리고 저장해 둔 이벤트를 재처리할 때 **여러 버전이 섞이므로** 이벤트마다 버전을 함께 기록해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe API — Versioning",
+          "url": "https://docs.stripe.com/api/versioning",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "날짜+코드네임 버전, 계정에 고정, 월간 릴리스는 하위 호환만"
+        },
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "응답의 모르는 필드에서 오류를 내는 엄격한 역직렬화를 쓴다",
+      "why": "타입 안전을 위해 '정의되지 않은 필드는 오류'로 설정하는 것이 좋은 습관처럼 보인다. 그런데 대부분의 제공자는 **필드 추가를 깨는 변경으로 치지 않는다** — Stripe 도 \"Adding new properties to existing API responses\" 를 하위 호환으로 분류한다. 즉 **상대가 정당하게 한 변경에 우리가 깨진다**",
+      "fix": "응답 파싱은 **모르는 필드를 무시**하도록 설정한다(대부분의 라이브러리에 옵션이 있다). 그리고 도입 전에 **상대의 하위 호환 목록을 읽고** 그 목록의 항목들을 견디는지 하나씩 확인한다",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    },
+    {
+      "trap": "ID 의 접두사나 길이에 의존하는 코드를 짠다",
+      "why": "`ch_` 로 시작하면 결제, `cus_` 면 고객 — 편리하고 실제로 잘 동작한다. 그런데 Stripe 는 **접두사의 추가·제거를 하위 호환 변경으로 명시**하고, ID 가 **최대 255자까지** 길어질 수 있다고 경고한다. 그리고 DB 컬럼을 `VARCHAR(50)` 으로 잡아 둔 것은 나중에 조용히 잘린다",
+      "fix": "**ID 를 불투명한 문자열로 취급한다** — 접두사로 타입을 판별하지 말고 별도 필드나 문맥으로 안다. 저장 컬럼은 문서가 권하는 대로 넉넉히 잡는다(`VARCHAR(255) COLLATE utf8_bin`)",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    },
+    {
+      "trap": "모르는 이벤트 타입이 오면 예외를 던지고 실패로 처리한다",
+      "why": "수신기를 `switch` 문으로 짜면 `default` 가 자연스럽게 예외가 된다. 그런데 **새 이벤트 타입 추가는 하위 호환 변경**이므로 상대는 예고 없이 새 타입을 보낸다. 그러면 웹훅이 실패하고 재시도가 쌓인다",
+      "fix": "문서가 그대로 권한다 — \"Make sure that your webhook listener **gracefully handles unfamiliar event types**.\" 모르는 타입은 **200 으로 받고 로그만 남긴다.** 실패로 처리하면 재시도 폭풍이 온다",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    },
+    {
+      "trap": "`Sunset` 헤더를 붙이고 공지를 올렸으니 예고는 끝났다고 생각한다",
+      "why": "표준까지 있는 방식이라 충분해 보인다. 그런데 RFC 8594 자신이 못 박는다 — 헤더를 **해석하지 않는 클라이언트**는 \"may experience the resource becoming unavailable **without recognizing any notification** about it beforehand\". **자동화된 통합은 대개 응답 헤더를 안 읽는다**",
+      "fix": "헤더는 **최소한**으로 두고, 실제 통지는 **사람에게 가는 경로**로 한다 — 호출자별로 담당자를 찾아 메일, 대시보드 배너, 그리고 마지막에 **간헐적 차단**으로 반응을 유도한다",
+      "sources": [
+        {
+          "title": "RFC 8594 — The Sunset HTTP Response Header Field",
+          "url": "https://www.rfc-editor.org/rfc/rfc8594.html",
+          "publisher": "IETF",
+          "date": "2019-05-01",
+          "kind": "standard",
+          "summary": "폐기 예고의 표준 헤더. 값은 HTTP-date 이고 '힌트'일 뿐이라고 못 박는다"
+        }
+      ]
+    },
+    {
+      "trap": "저장해 둔 이벤트를 몇 달 뒤 재처리했더니 파싱이 깨진다",
+      "why": "이벤트를 저장할 때 **그때의 버전을 함께 기록하지 않았기** 때문이다. Stripe 문서가 명시한다 — 지나간 이벤트는 \"the default API version of your account **at the time the event occurred**\" 로 구성되므로, 그 사이 버전을 올렸다면 **여러 버전이 섞여 있다**",
+      "fix": "이벤트를 저장할 때 **버전을 필드로 함께 남긴다.** 재처리 코드는 버전별 파서를 고르게 하고, 아주 오래된 버전은 **언제까지 지원할지**를 정해 둔다 — `data-contract` 의 전이성 문제와 같은 결정이다",
+      "sources": [
+        {
+          "title": "Stripe — API upgrades (Backward-compatible changes)",
+          "url": "https://docs.stripe.com/upgrades",
+          "publisher": "Stripe",
+          "kind": "docs",
+          "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+        }
+      ]
+    },
+    {
+      "trap": "버전을 올리고 두 벌을 운영하기 시작했는데 끄는 날짜를 안 정한다",
+      "why": "새 버전을 내는 일에는 마감이 있지만 **옛 버전을 끄는 일에는 아무 마감이 없다.** 그리고 끄는 것은 위험해 보이므로 계속 미뤄진다. 그렇게 몇 년이 지나면 새 기능을 어느 쪽에 넣을지가 매번 논쟁이 된다",
+      "fix": "**새 버전을 내는 계획서에 옛 버전의 종료 날짜와 종료 조건을 함께 적는다**(사용량이 몇 % 이하, 어느 고객이 옮긴 뒤). 그리고 그때까지의 단계(`steps` 표)를 일정에 넣는다 — `data-migration` 에서 '언제 옛것을 끄나'가 가장 오래 미뤄진 결정이었던 것과 같은 문제다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "하위 호환",
+      "en": "backward compatible",
+      "what": "옛 클라이언트가 계속 동작하는 변경. ⚠️ **무엇이 여기 해당하는지는 제공자가 정의한다**"
+    },
+    {
+      "term": "깨는 변경",
+      "en": "breaking change",
+      "what": "옛 클라이언트를 고쳐야 하는 변경. 버전이 올라가는 이유"
+    },
+    {
+      "term": "버전 고정",
+      "en": "pinning",
+      "what": "계정이나 클라이언트가 특정 버전에 묶여 그것으로 계속 응답받는 것"
+    },
+    {
+      "term": "폐기 예고",
+      "en": "deprecation",
+      "what": "아직 동작하지만 곧 없앨 것이라고 알리는 상태"
+    },
+    {
+      "term": "Sunset 헤더",
+      "en": "Sunset",
+      "what": "RFC 8594 의 응답 헤더. 이 URI 가 언제 응답을 멈출 것 같은지의 힌트"
+    },
+    {
+      "term": "간헐적 차단",
+      "en": "brownout",
+      "what": "종료 전에 짧게 끊어 봐서 아직 쓰는 곳의 반응을 유도하는 방법"
+    },
+    {
+      "term": "불투명 문자열",
+      "en": "opaque string",
+      "what": "내용을 해석하지 말고 그대로 보관·전달해야 하는 값. ID 가 대표적"
+    }
+  ],
+  "drills": [
+    {
+      "task": "우리가 쓰는 외부 API 하나를 골라 **그쪽의 '하위 호환 변경' 목록을 찾아 읽고**, 우리 코드가 그 항목들을 견디는지 하나씩 확인한다 — ① 모르는 응답 필드 ② 필드 순서 ③ ID 길이·접두사 ④ 모르는 이벤트 타입.",
+      "done_when": "네 항목 중 최소 하나에서 '지금은 깨진다'가 나오고(대개 엄격한 역직렬화나 짧은 ID 컬럼), 고칠 자리가 특정된다.",
+      "why": "이 낱말의 실무는 대부분 **소비자 쪽에서 미리 견디는 일**이다. 그리고 이 확인은 30분이면 되는데, 안 하면 상대가 정당하게 한 변경에 새벽에 깨진다.",
+      "hours": 1
+    },
+    {
+      "task": "자기 DB 에서 **외부 시스템의 ID 를 저장하는 컬럼**을 전부 찾아 길이와 타입을 적는다. `VARCHAR(50)` 처럼 짧게 잡힌 것이 있으면 그 ID 가 얼마나 길어질 수 있는지 상대 문서에서 확인한다.",
+      "done_when": "컬럼 목록이 나오고, 각각에 대해 '상대가 밝힌 최대 길이'와 '우리 컬럼 길이'가 나란히 적힌다.",
+      "why": "Stripe 는 최대 255자라고 **문서에 적어 뒀는데도** 사람들은 짧게 잡는다. 이 사고는 몇 년 뒤에 나고, 그때는 마이그레이션이 크다 — 지금 30분이면 확인된다.",
+      "hours": 1
+    },
+    {
+      "task": "팀이 운영하는 API 나 이벤트 중 **끄고 싶은데 못 끄고 있는 것**을 하나 고른다. `steps` 표의 다섯 단계를 그것에 대해 채우고, **2번(사용량 계측)에 답할 수 있는지** 확인한다 — 지금 누가 쓰는지 호출자별로 셀 수 있는가?",
+      "done_when": "2번에 예/아니오로 답할 수 있고, '아니오'라면 호출자를 식별하는 방법이 한 문단으로 적힌다.",
+      "why": "폐기가 미뤄지는 이유는 용기가 없어서가 아니라 **누가 쓰는지 몰라서**다. 그리고 그 계측은 폐기와 무관하게도 쓸모가 있다 — 어느 엔드포인트가 실제로 값을 하는지 알게 된다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "버전을 올리지 않고 API 를 바꾸려면 무엇을 먼저 해야 하는가?",
+    "응답 필드의 순서가 바뀌었다. 이것은 깨는 변경인가? 누구의 잘못인가?",
+    "외부 API 의 ID 를 저장할 컬럼 길이는 무엇을 보고 정하는가?",
+    "웹훅을 받는 쪽은 상대의 버전 업그레이드에 어떻게 대비하는가?",
+    "`Sunset` 헤더를 붙였는데도 예고가 전달되지 않는 경우는 언제인가? RFC 는 뭐라고 적는가?",
+    "옛 버전을 끄기 전에 반드시 있어야 하는 것은 무엇인가? 없으면 왜 못 끄는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 프론트엔드와 공유하는 API·스키마 계약의 하위 호환성을 관리하고, 여러 저장소에 걸친 변경을 안전하게 배포합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/376850",
+      "where": "인티그레이션(메디스트림)",
+      "what_it_shows": "⭐ **`하위 호환성을 관리`** 가 직무 기술로 적혀 있다. 그리고 `여러 저장소에 걸친 변경` 과 한 줄에 있는 것이 이 낱말의 성격을 말한다 — 한 저장소 안에서 끝나는 일이 아니다"
+    },
+    {
+      "quote": "• API 설계 및 개발 경험 : REST API를 설계하고 인증·인가, 예외 처리, 버전 관리 등을 고려하여 운영해 본 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/376799",
+      "where": "왓섭",
+      "what_it_shows": "`버전 관리` 가 **인증·인가·예외 처리와 같은 급의 기본 항목**으로 나열된다. API 를 만들면 자동으로 따라오는 문제라는 인식"
+    },
+    {
+      "quote": "• 버전 관리, 하위 호환성, 배포 및 마이그레이션 전략을 수립하고 운영해요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/382462",
+      "where": "딜라이트룸(Alarmy)",
+      "what_it_shows": "⭐ **버전 관리 · 하위 호환성 · 마이그레이션 전략이 한 줄에** 있다. 셋이 같은 문제의 세 국면이라는 것을 회사가 그렇게 묶어 적는다"
+    },
+    {
+      "quote": "• 외부 배포용 SDK/라이브러리 운영 경험 (버저닝, 하위 호환, ProGuard 규칙, 문서화)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/384172",
+      "where": "클레온",
+      "what_it_shows": "⭐ **`외부 배포용`** 이라는 말이 핵심이다 — 이 낱말이 어려워지는 조건은 **소비자를 통제할 수 없다**는 것 하나이고, SDK 는 그 조건이 가장 심한 자리다"
+    },
+    {
+      "quote": "• 플랫폼 버전 관리 및 하위 호환성 전략 수립",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/323962",
+      "where": "니어스랩",
+      "what_it_shows": "`전략 수립` 이라고 적힌다 — 구현이 아니라 **정책 결정**의 성격이 강하다는 뜻이고, 이 문서가 '어디에 버전을 두나'보다 '언제 올리나·언제 끄나'에 무게를 둔 이유다"
+    },
+    {
+      "quote": "기획/설계부터 개발, 운영, 안전한 종료(Deprecation/Migration)까지 전체 소프트웨어 생명 주기(SDLC)를 주도적으로 리드하고",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49590699?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=83&sc=630",
+      "where": "에스케이일렉링크㈜",
+      "what_it_shows": "⭐⭐ **`안전한 종료(Deprecation/Migration)`** 가 생명 주기의 한 단계로 명시된다. 대부분의 공고가 만드는 일까지만 적는데, **끄는 일을 이름으로 적은 드문 경우**다"
+    },
+    {
+      "quote": "• 고객사 시스템 변경(스키마 변경, API 버전업 등)에 유연하게 대응하는 Integration 구조 설계",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/370490",
+      "where": "비스텔리젼스",
+      "what_it_shows": "⚠️ **반대편의 시선.** 여기서는 우리가 제공자가 아니라 **남의 버전업을 견뎌야 하는 소비자**다 — 이 문서의 `why` 절이 두 방향으로 읽혀야 하는 이유"
+    },
+    {
+      "quote": "Make sure that your integration can handle Stripe-generated object IDs, which can contain up to 255 characters. For example, if you're using MySQL, store the IDs in a VARCHAR(255) COLLATE utf8_bin column.",
+      "from": "docs",
+      "url": "https://docs.stripe.com/upgrades",
+      "where": "Stripe 공식 문서",
+      "what_it_shows": "⭐⭐ **제공자가 소비자에게 DB 컬럼 타입까지 알려 준다.** '깨는 변경이 아니다'라고 선언한 것에는 이렇게 **구체적인 대비까지 함께 주는 것**이 짝이 된다 — 선언만 하고 대비를 안 알려 주면 소비자는 그냥 깨진다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "data-contract",
+      "how": "⭐ 같은 문제의 데이터 쪽. 그쪽은 호환성 유형(BACKWARD/FORWARD)으로 규칙을 정하고, 여기는 **깨야 할 때 어떻게 하나**를 다룬다. 그쪽이 남긴 자리다"
+    },
+    {
+      "slug": "openapi",
+      "how": "명세를 어떻게 적는가. 공개 API 에서 계약 테스트를 못 쓸 때 '명세 + 버전 정책 + 폐기 예고'가 남는데, 그 앞쪽이 그 문서다"
+    },
+    {
+      "slug": "contract-testing",
+      "how": "소비자를 식별할 수 있으면 계약 테스트가, 없으면 버전 정책이 답이다. 그 경계를 그 문서가 목록으로 적어 뒀다"
+    },
+    {
+      "slug": "webhook",
+      "how": "⭐ 상대가 나를 부르는 경우의 버전 문제. 엔드포인트마다 버전을 고정하는 방식이 그 답이다"
+    },
+    {
+      "slug": "zero-downtime-deploy",
+      "how": "확장·수축이 여기서는 '버전을 더하고 나중에 뺀다'로 나타난다. 수축(끄기)을 잊는 것도 같은 문제"
+    },
+    {
+      "slug": "lineage",
+      "how": "'누가 아직 쓰는가'에 답하는 사고방식. 데이터 쪽의 계보가 API 쪽에서는 호출자별 사용량 계측이다"
+    },
+    {
+      "slug": "feature-flag",
+      "how": "새 동작을 버전 없이 켜고 끄는 다른 방법. 다만 외부 소비자에게는 플래그를 쥐여 줄 수 없다"
+    },
+    {
+      "slug": "grpc",
+      "how": "필드 번호로 호환을 지키는 방식 — 버전을 올리지 않고 진화하는 또 하나의 설계"
+    },
+    {
+      "slug": "semantic-versioning",
+      "how": "⚠️ 아직 문서가 없다. SDK·라이브러리 쪽의 버전 규칙(MAJOR.MINOR.PATCH). 공고에서는 오히려 이쪽이 더 자주 나온다 — 클레온·그라비티·힐링페이퍼의 `버저닝` 이 그 자리다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 관련 이름이 없다. 직접 세면 **118건(모집중 67)** 이다 — `API 버전|버전 관리(API·호환 근처)|하위 호환|backward compat|deprecat|버저닝|versioning|breaking change|/v\\d/` 로 뽑고 **오탐 패턴을 문장 단위로 제외**했다(녹음 파일 폐기·재고 폐기·형상 관리 등, 그런 줄만 있던 공고 7건).",
+    "⭐ **공고에서는 API 버전보다 SDK·라이브러리 버저닝이 더 눈에 띈다.** 클레온·그라비티(`SDK 버전 관리, 하위 호환성`), 힐링페이퍼(`Monorepo release/versioning/changeset`), 리아드(`위젯 SDK 버저닝`). 성질은 같지만(소비자를 통제할 수 없다) **관행이 다르다**(시맨틱 버저닝) — 그래서 그쪽을 큐에 올렸고 이 문서는 API 쪽만 다뤘다.",
+    "⚠️ **`버저닝` 에는 데이터셋·모델 버저닝이 섞인다**(씨메스로보틱스 `Dataset, Data Format, Model Weight 및 Versioning`, 베이글코드 `모델 온보딩·버저닝·롤백`). 이번에는 문장을 읽어 걸렀으나 **오탐을 완전히 제거했다고 보장할 수 없다** — 118건을 하나씩 열어 확인하지는 않았다.",
+    "**Stripe 하나만 1차 자료로 썼다.** 큐 메모에는 **Stripe·GitHub·AWS 세 제품을 겹쳐 읽어 비교표를 만들자**고 적었으나, Stripe 문서에서 이미 하위 호환 목록·롤백 창·웹훅 버전 고정까지 나와 이 사이클은 거기서 멈췄다. **GitHub 의 헤더 방식과 AWS 의 서비스별 방식은 확인하지 않았고**, 그래서 `where` 표의 URL·헤더 열은 이 문서의 정리다(`confidence` 를 표 단위로 confirmed 로 두되 인용은 Stripe 것만 달았다). 보강한다면 그 둘이 다음 대상이다.",
+    "**`Deprecation` 헤더(RFC 9745)는 확인하지 않았다.** RFC 8594(`Sunset`)만 읽었고, 폐기를 알리는 다른 표준 헤더가 있는지는 이 사이클에서 조사하지 않았다.",
+    "**간헐적 차단(brownout)은 이 문서의 정리다.** `steps` 표 4번은 널리 쓰이는 관행이지만 1차 자료로 받치지 못했다(`confidence: inferred`). 표준이나 대형 제공자의 문서에서 그 절차를 명시한 곳을 찾으면 보강할 자리다."
+  ],
+  "sources": [
+    {
+      "title": "Stripe — API upgrades (Backward-compatible changes)",
+      "url": "https://docs.stripe.com/upgrades",
+      "publisher": "Stripe",
+      "kind": "docs",
+      "summary": "⭐ 제공자가 '깨는 변경이 아니다'라고 선언한 목록, 그리고 72시간 롤백"
+    },
+    {
+      "title": "Stripe API — Versioning",
+      "url": "https://docs.stripe.com/api/versioning",
+      "publisher": "Stripe",
+      "kind": "docs",
+      "summary": "날짜+코드네임 버전, 계정에 고정, 월간 릴리스는 하위 호환만"
+    },
+    {
+      "title": "RFC 8594 — The Sunset HTTP Response Header Field",
+      "url": "https://www.rfc-editor.org/rfc/rfc8594.html",
+      "publisher": "IETF",
+      "date": "2019-05-01",
+      "kind": "standard",
+      "summary": "폐기 예고의 표준 헤더. 값은 HTTP-date 이고 '힌트'일 뿐이라고 못 박는다"
+    }
+  ]
+}
