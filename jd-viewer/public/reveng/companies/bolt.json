@@ -86,7 +86,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "checkpoint-back-to-simple"
+      ]
     },
     {
       "name": "돈이 어디까지 왔는지 끝까지 센다",
@@ -201,7 +203,402 @@
     "**본문이 브라우저로만 온다** — `bolt.eu/en/blog/*` 는 WebFetch 로 목록만 오고 글은 비어 온다. 다음 사이클도 `get_page_text` 를 쓴다.",
     "아직 안 읽은 글이 있다 — `seeing-the-bigger-picture-with-event-storming` · `scaling-security-testing-bolt-bug-bounty` · `how-to-make-tests-ai-friendly` · 광고 증분 측정 연작 · BACA(자율 코딩 에이전트)."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "checkpoint-back-to-simple",
+      "name": "설정으로 다 되게 만들려다 되돌아온다",
+      "domain": "과잉설계했다고 적고 되돌아온다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "참여자가 넷인 거래(승객·기사·배달원·식당)가 **하루 수백만 건** 일어나고, 회사가 문제를 이렇게 연다 — `Wherever money moves, so does the risk of fraud.` 가짜 계정·도난 카드·다자 사기·프로모션 남용이 **가입·거래·배달 단계마다** 들어온다. 그래서 **검문(checkpoint)** 을 세운다: 활동을 평가해 **승인·거절·검토** 중 하나를 실시간으로 정하는 흐름이다. ⚠️ **이 기능이 다루는 것은 그 검문의 코드가 아니라, 그 코드가 8년 동안 네 번 모양을 바꾼 과정이다.**",
+        "metrics": [
+          {
+            "label": "검문 수와 기간",
+            "value": "**약 60개**를 **지난 8년**에 걸쳐. 검문마다 규칙이 수십 개씩 붙는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "label": "지키는 범위",
+            "value": "**50개국 이상** · 차량 호출 · 음식 배달 · 마이크로모빌리티 · **하루 수백만 거래**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 성과 수치",
+            "value": "**없다** — 탐지율·오탐률·처리 지연이 글에 하나도 없다. 이 글이 재는 것은 사기가 아니라 **엔지니어의 인지 부하**다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "설정 주도로 갈지 정할 때",
+          "thought": "논리가 흠잡을 데 없었다 — 검문을 설정으로 표현할 수 있으면 **복붙이 사라지고**, 규칙·임계값·행동을 바꿀 때 **재빌드도 재배포도 필요 없다.** 회사가 그 기대를 그대로 적는다: `In theory, this reduces engineering involvement for repetitive work and lowers long-term maintenance costs.` ⚠️ **`In theory` 라는 말이 이 글의 예고편이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "한동안 떠났다 돌아왔을 때",
+          "thought": "⚠️ **문제를 알아챈 계기가 '돌아옴'이다** — `Returning to the system after a break, we realised:` 그리고 셋을 적는다: **인지 부하가 곳곳에 있었고, 같은 일을 하는 어댑터가 여럿이었고, 온보딩이 고통스러웠다.** 매일 보던 사람은 못 보던 것이 떨어져 있다 오니 보였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇이 잘못됐는지 이름 붙일 때",
+          "thought": "⚠️ 회사가 한 문장으로 정리한다 — **`Ironically, the 'no-engineer config' idea had increased complexity.`** **엔지니어를 빼려던 설계가 엔지니어의 부담을 늘렸다.** 그리고 결론은 설정 주도를 부정하는 것이 아니라 **자리를 가리는 것**이다: `Flexibility is powerful — but only when applied to the right place.`",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "검문(checkpoint)",
+            "what": "거래·로그인·가입 같은 활동을 평가하는 흐름. 약 60개가 있다"
+          },
+          {
+            "name": "규칙(rule)",
+            "what": "검문 안에서 도는 동적 판단 조각. 검문마다 수십 개씩 붙고 **분석가가 직접 만진다**"
+          },
+          {
+            "name": "결정(decision)",
+            "what": "승인 · 거절 · 검토 셋 중 하나. **검문 작업의 1차 산출물이다**"
+          },
+          {
+            "name": "데이터 로더",
+            "what": "사업 엔티티 데이터·통계·ML 예측을 끌어오는 부분. 빌더에서 갈아 끼우는 자리"
+          },
+          {
+            "name": "감사 기록",
+            "what": "판단 근거를 남겨 나중에 보고 감시할 수 있게 하는 정보"
+          }
+        ],
+        "invariants": [
+          "**모든 검문은 결정 하나를 낸다** — 승인·거절·검토. 그것이 `a primary outcome of fraud checkpoint work` 다",
+          "**규칙은 분석가가, 생애주기는 엔지니어가 만진다** — 이 경계가 되돌아온 뒤에 남은 선이다",
+          "**모든 검문은 감사·모니터링용 정보를 남긴다**",
+          "⚠️ **유연함은 자리를 가려서 준다** — `Flexibility is powerful — but only when applied to the right place.`"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "활동이 들어온다 — 거래·로그인·가입",
+            "why": "돈이 움직이는 지점마다 검문이 선다"
+          },
+          {
+            "step": "**데이터를 더 모은다** — 사업 엔티티 데이터·통계·ML 예측",
+            "why": "판단에 필요한 재료를 이 단계에서 채운다"
+          },
+          {
+            "step": "**동적 규칙을 돌린다**",
+            "why": "⚠️ **여기가 분석가의 영역이다** — 엔지니어를 기다리지 않고 더하고 빼고 조율한다"
+          },
+          {
+            "step": "**결정을 낸다** — 승인 · 거절 · 검토",
+            "why": "검문의 1차 산출물"
+          },
+          {
+            "step": "**감사·모니터링용으로 남긴다**",
+            "why": "나중에 왜 그렇게 판단했는지 볼 수 있어야 한다"
+          },
+          {
+            "step": "⚠️ 그런데 이 흐름의 **틀 자체가 네 번 바뀌었다** — 맞춤 코드 → 빌더 패턴 → 설정 주도 ETL 프레임워크 → **다시 빌더 패턴**",
+            "why": "⚠️ **연도가 글에 없다** — `약 60개를 지난 8년에 걸쳐` 뿐이라 `history` 로 세우지 못했다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "두 번째 검문을 어떻게 만들 것인가",
+            "chosen": "**첫 번째를 복사해 고쳤다** — 그리고 세 번째도 그렇게 했다",
+            "alternatives": [
+              "처음부터 공통 부분을 뽑아 두기"
+            ],
+            "tradeoff": "⚠️ **곧 한계가 드러났다** — `It quickly became apparent that we needed to extract common parts.` 복붙은 빠르지만 **세 번째에서 값이 청구된다**. 회사는 이 단계를 실패로 적지 않고 **자연스러운 시작**으로 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "question": "공통을 어떻게 뽑을 것인가",
+            "chosen": "**빌더 패턴** — 갈아 끼우는 부분(데이터 로더·판단 로직·결과 기록)과 공유 부분(규칙 평가·흐름 조율)을 가른다",
+            "alternatives": [
+              "검문마다 전용 클래스 유지"
+            ],
+            "tradeoff": "**무엇을 갈아 끼우게 두고 무엇을 공유로 굳힐지**를 미리 정해야 한다. ⚠️ 이 경계가 뒤에 다시 문제가 된다 — 나중에 **경계를 너무 넓게 잡은 것**이 과잉설계로 이어졌다(이 인과는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "question": "규칙을 넣고 빼며 실험하려면",
+            "chosen": "**검문을 ETL 파이프라인으로 본다** — 그 관점에서 빌더를 확장했다",
+            "alternatives": [
+              "실험을 코드 분기로 처리"
+            ],
+            "tradeoff": "⚠️ **관점 하나가 추상화를 불렀다.** A/B 테스트라는 구체적 요구에서 출발했는데, 파이프라인으로 보고 나니 **도메인 무관 프레임워크**로 만들고 싶어졌다 — 그다음 단계가 그것이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "question": "검문을 설정으로 정의하게 할 것인가",
+            "chosen": "**했다. 그리고 되돌렸다.** DB 와 웹 폼으로 엔지니어 없이 구성할 수 있게 만들었다가 물렸다",
+            "alternatives": [
+              "코드로 정의하기(결국 돌아온 곳)"
+            ],
+            "tradeoff": "⚠️ **대가를 셋으로 적는다** — `Instead of classes and objects, engineers had to manipulate strings and flags.` · `Debugging became more challenging, as logic was spread across both code and database entries.` · `Complexity grew, and the original goal of simplicity drifted away.` **엔지니어를 빼려던 설계가 엔지니어의 부담을 늘렸다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "question": "그러면 설정화는 전부 실패였나",
+            "chosen": "**아니다 — 규칙에서는 성공했다.** 그 자리만 남기고 나머지를 되돌렸다",
+            "alternatives": [
+              "설정 주도를 전부 폐기",
+              "생애주기까지 설정 유지"
+            ],
+            "tradeoff": "**이 결정이 이 글의 핵심이다.** 규칙 유지를 분석가에게 넘긴 것은 `a significant win` 이었다 — 실험이 빨라지고 새 공격 패턴에 민첩해졌다. 반면 **데이터 보강·조율·판단 흐름까지 넓히자 `backfired`** 했다. ⚠️ 대신 **규칙 밖의 변경에는 여전히 엔지니어가 필요하다**(이 한계는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "question": "유연함과 개발자 경험 중 무엇을 우선할 것인가",
+            "chosen": "**개발자 경험(DX)** — `Prioritise Developer Experience (DX) over extreme flexibility.`",
+            "alternatives": [
+              "극단적 유연함을 유지"
+            ],
+            "tradeoff": "⚠️ **설정만으로 새 흐름을 만들 수 없게 됐다.** 그 대신 얻은 것을 셋으로 적는다 — 온보딩이 빨라지고, 어댑터가 줄고 API 가 하나가 되고, 유지비가 낮아졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "question": "되돌아갈 때 어디로 갈 것인가",
+            "chosen": "**빌더 패턴으로** — 처음 자리가 아니라 **두 번째 자리**로 돌아갔다",
+            "alternatives": [
+              "맞춤 코드로 완전히 회귀",
+              "현 상태에서 부분 수리"
+            ],
+            "tradeoff": "⚠️ **되돌아간 것이 아니라 어디까지 왔는지를 다시 고른 것이다.** 복붙 시절로 가지 않았고 추상화 자체를 버리지도 않았다 — **한 칸만 물렸다.** 이 해석은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "빌더 패턴 기반 검문 프레임워크",
+            "role": "데이터 로더·판단 로직·결과 기록을 갈아 끼우고, 규칙 평가와 흐름 조율은 공유 라이브러리가 맡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "tech": "분석가용 규칙 저장소(DB·웹 폼)",
+            "role": "⚠️ **설정 주도에서 유일하게 살아남은 부분** — 분석가가 규칙을 직접 더하고 빼고 조율한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "tech": "ML 예측 · 통계 데이터 로더",
+            "role": "판단에 쓸 재료를 검문 안으로 끌어온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "돈이 어디까지 왔는지 끝까지 센다",
+          "via": "어긋난 금액",
+          "contract": "⚠️ **정산 대사에서 예상과 실제가 어긋나는 것이 사기의 신호가 된다** — 결제 쪽 글이 그렇게 적는다: `discrepancies between expected and actual balances could indicate missing funds, integration errors, or fraud.` **한쪽은 세고 한쪽은 판단한다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "사기 분석가",
+          "via": "규칙 저장소",
+          "contract": "**분석가가 규칙을 소유한다.** 엔지니어를 기다리지 않고 새 공격 패턴에 대응한다 — 설정화가 성공한 유일한 자리다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "ML 예측 · 통계",
+          "via": "데이터 로더",
+          "contract": "검문이 판단 전에 재료를 끌어온다. 로더는 빌더에서 갈아 끼우는 부분이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "가입 · 거래 · 배달 흐름",
+          "via": "실시간 결정",
+          "contract": "**승인·거절·검토** 중 하나를 돌려준다. 이 결정이 사용자 흐름을 그 자리에서 가른다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "무엇을 설정으로 옮길 것인가에 일반해가 없다",
+            "why_hard": "같은 기법이 **한 자리에서는 성공하고 옆자리에서는 실패했다.** 규칙은 자주 바뀌고 도메인 지식이 필요해 분석가에게 맞았지만, 생애주기는 **구조 자체**라 설정으로 표현하자 문자열과 플래그가 됐다",
+            "current_best": "회사가 남긴 것은 원칙 한 줄이다 — `Flexibility is powerful — but only when applied to the right place.` ⚠️ **어느 자리가 '옳은 자리'인지 가리는 방법은 적지 않았다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          },
+          {
+            "problem": "복잡함이 늘어나는 것을 안에서는 못 본다",
+            "why_hard": "매일 그 코드를 보는 사람에게는 인지 부하가 서서히 는다. 회사가 알아챈 계기가 그것을 보여 준다 — **한동안 떠났다 돌아왔을 때** 비로소 보였다",
+            "current_best": "⚠️ **이 글에도 장치가 없다.** 온보딩의 고통·어댑터 중복 같은 **증상**을 나열할 뿐, 그것을 미리 재는 지표는 나오지 않는다 — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+                "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "검문 하나가 하는 일",
+          "question": "판단은 무엇을 먹고 무엇을 남기나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>활동</b><br/>• 거래 · 로그인 · 가입\"]:::list --> L\n  L[\"<b>데이터 수집</b><br/>• 사업 엔티티 · 통계<br/>• ML 예측\"]:::list --> R\n  R[\"<b>동적 규칙</b><br/>• 검문마다 수십 개<br/>• 분석가가 직접 만진다\"]:::accent --> D\n  D{\"<b>결정</b><br/>1차 산출물\"}:::list\n  D --> A1[\"<b>승인</b>\"]:::list\n  D --> A2[\"<b>거절</b>\"]:::list\n  D --> A3[\"<b>검토</b>\"]:::list\n  D --> S[\"<b>감사 · 모니터링 기록</b><br/>• 왜 그렇게 판단했나\"]:::soft\n  E[\"<b>약 60개의 검문</b><br/>• 8년에 걸쳐 쌓였다\"]:::soft -.-> A\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "엔지니어를 빼려던 설계가 엔지니어를 붙잡았다",
+          "question": "네 단계를 지나 어디로 돌아왔나",
+          "kind": "failure",
+          "code": "flowchart TD\n  P1[\"<b>1. 맞춤 코드</b><br/>• 검문 하나 = 클래스 하나<br/>• 복사해서 늘렸다\"]:::list --> P2\n  P2[\"<b>2. 빌더 패턴</b><br/>• 갈아 끼울 것과 공유할 것\"]:::accent --> P3\n  P3[\"<b>3. 설정 주도 ETL 프레임워크</b><br/>• DB · 웹 폼으로 구성<br/>• 엔지니어 없이 바꾼다\"]:::gone\n  P3 --> F1[\"⚠️ <b>객체 대신 문자열과 플래그</b>\"]:::gone\n  P3 --> F2[\"⚠️ <b>로직이 코드와 DB 로 흩어짐</b><br/>• 디버깅이 어려워졌다\"]:::gone\n  P3 --> F3[\"⚠️ <b>인지 부하 · 어댑터 중복</b><br/>• 온보딩이 고통스러웠다\"]:::gone\n  F1 --> P4\n  F2 --> P4\n  F3 --> P4\n  P4[\"<b>4. 다시 빌더 패턴</b><br/>• 한 칸만 물렸다<br/>• DX를 유연함보다 위에\"]:::accent\n  K[\"<b>살아남은 것</b><br/>• 규칙은 분석가가 소유<br/>• 여기서는 설정화가 통했다\"]:::list\n  P3 -.->|유일한 성공| K\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+          "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+          "publisher": "Bolt Tech Blog",
+          "date": "2026-06-15",
+          "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+        },
+        {
+          "title": "Tracking payments at scale",
+          "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+          "publisher": "Bolt Tech Blog",
+          "date": "2026-06-15",
+          "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
