@@ -1665,6 +1665,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "design-system",
+      "title": "디자인 시스템",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "버튼과 색을 모아 둔 라이브러리가 아니라, **디자이너와 개발자가 같은 것을 같은 이름으로 부르기로 한 약속**을 코드로 만든 것.",
+      "aliases": [
+        "디자인 시스템",
+        "design system",
+        "디자인 토큰",
+        "design token",
+        "Storybook",
+        "공통 컴포넌트"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
