@@ -1851,6 +1851,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "service-mesh",
+      "title": "서비스 메시",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "재시도·타임아웃·mTLS·관측을 **애플리케이션 코드가 아니라 옆에 붙인 프록시가** 하게 만드는 것 — **코드에서는 사라지지만 시스템에는 남는다.**",
+      "aliases": [
+        "서비스 메시",
+        "서비스 메쉬",
+        "service mesh",
+        "Istio",
+        "Linkerd",
+        "사이드카",
+        "sidecar"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
