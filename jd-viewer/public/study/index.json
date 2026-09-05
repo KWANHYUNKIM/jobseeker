@@ -1150,6 +1150,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "data-quality",
+      "title": "데이터 품질 검증",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**데이터는 조용히 틀린다** — 서버는 안 죽고 대시보드는 숫자를 잘 그린다. 그래서 **틀렸다는 것을 알려 주는 쿼리를 따로 짜 둬야** 한다. 그 쿼리가 검사다.",
+      "aliases": [
+        "데이터 품질 검증",
+        "데이터 품질",
+        "data quality",
+        "dbt test",
+        "데이터 신선도"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
