@@ -1204,6 +1204,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "two-phase-commit",
+      "title": "2단계 커밋 · 분산 트랜잭션",
+      "category": "practice",
+      "level": "deep",
+      "status": "done",
+      "one_liner": "**여러 DB 를 한 번에 커밋하는 진짜 방법.** 되기는 되는데 — **조정자가 죽으면 참여자들이 락을 쥔 채 멈춘다.** 그 한 줄 때문에 실무에서 밀려났고, 그 자리를 `saga` 가 받았다.",
+      "aliases": [
+        "2단계 커밋",
+        "two-phase commit",
+        "2PC",
+        "XA",
+        "전역 트랜잭션"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
