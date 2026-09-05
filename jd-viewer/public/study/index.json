@@ -1871,6 +1871,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "postgres-mysql",
+      "title": "PostgreSQL vs MySQL",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**공고는 둘을 구분하지 않는다** — `MySQL 또는 PostgreSQL` 로 묶어 쓴 공고가 **863건**이다. 갈리는 것은 대개 데이터베이스가 아니라 **그 옆에 무엇이 있느냐**(Python 이냐 Java 냐)이고, **그 밑에 깔린 것(페이지)은 양쪽이 같다.**",
+      "aliases": [
+        "PostgreSQL",
+        "Postgres",
+        "MySQL",
+        "RDBMS 선택",
+        "포스트그레스"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

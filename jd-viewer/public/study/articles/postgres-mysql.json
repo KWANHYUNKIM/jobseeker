@@ -1,0 +1,635 @@
+{
+  "slug": "postgres-mysql",
+  "title": "PostgreSQL vs MySQL",
+  "title_en": "PostgreSQL vs MySQL",
+  "aliases": [
+    "PostgreSQL",
+    "Postgres",
+    "MySQL",
+    "RDBMS 선택",
+    "포스트그레스"
+  ],
+  "category": "data",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "**공고는 둘을 구분하지 않는다** — `MySQL 또는 PostgreSQL` 로 묶어 쓴 공고가 **863건**이다. 갈리는 것은 대개 데이터베이스가 아니라 **그 옆에 무엇이 있느냐**(Python 이냐 Java 냐)이고, **그 밑에 깔린 것(페이지)은 양쪽이 같다.**",
+  "summary": "세면 **PostgreSQL 2081건(모집중 765) · MySQL 2030건(모집중 603)** 이고, ⭐⭐ **둘 다 언급하는 공고가 863건**이다. 그리고 그 863건의 문장이 하나같이 이렇다 — 액션파워 `**MySQL 또는 PostgreSQL**로 서비스를 운영해본 경험`, 마인드허브 `기본적인 RDBMS(**PostgreSQL, MySQL**) 쿼리 작성 능력`.\n\n**그러면 무엇이 다른가.** 이 문서의 답은 세 층이다.\n\n**① 밑은 같다** — 양쪽 한계 문서를 열어 보면 **둘 다 \"행이 페이지에 맞아야 한다\"** 는 같은 물리적 사실에 지배된다. 요구되는 능력도 같다(인덱스·쿼리 튜닝·트랜잭션).\n**② ⭐⭐⭐ 가운데는 어투가 다르다** — PostgreSQL 은 한계마다 **\"can be increased by recompiling PostgreSQL\"** 을 붙이고, MySQL 은 **\"hard limit\"** · **\"The limit is enforced regardless of storage engine\"** 이라고 적는다. **기능 비교표가 아니라 이 문장들이 두 프로젝트의 성격을 말한다.**\n**③ 위가 진짜로 갈린다** — 확장(`pgvector` **78건** · `PostGIS` 32건)과 동반 기술: **PostgreSQL 은 Python 47%, MySQL 은 Java 50% · Spring 41%.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 시장은 둘을 구분하지 않는다",
+      "confidence": "inferred",
+      "body": "셈부터 보자.\n\n| | 전체 | 모집중 |\n|---|---|---|\n| **PostgreSQL** | **2081** | 765 |\n| **MySQL** | **2030** | 603 |\n| ⭐ **둘 다 언급** | **863** | — |\n\n**거의 같은 크기**이고, **863건이 둘을 함께 적는다.** 그리고 그 문장을 읽으면 비교가 아니라 **묶음**이다.\n\n> `**MySQL 또는 PostgreSQL**로 서비스를 운영해본 경험이 있으신 분` — 액션파워\n> `**MySQL 또는 PostgreSQL** 등 관계형 DB 설계 및 쿼리 최적화 경험` — 고래사\n> `기본적인 RDBMS(**PostgreSQL, MySQL**) 쿼리 작성 능력` — 마인드허브\n> `**MySQL, PostgreSQL** 등 RDBMS를 활용하여 데이터베이스를 설계하고 상용 서비스로 운영해본 경험` — 바딧\n\n⭐ **`또는`·`등`** 으로 이어진다. 채용하는 쪽이 **\"둘 중 아무거나 해 봤으면 된다\"** 고 말하는 것이고, 이건 실제로 **대부분의 업무에서 둘이 바뀌어도 하는 일이 같다**는 뜻이다.\n\n그리고 요구하는 능력을 보면 **한쪽만 적은 공고도 요구가 같다.**\n\n> `RDBMS(**MySQL** 등) 설계 및 성능 튜닝 경험, 대용량 트랜잭션 처리 이해` — 에이치투오호스피탈리티\n> `**PostgreSQL** 등 관계형 데이터베이스의 스키마 설계, 쿼리 최적화, 인덱스 튜닝 경험` — 메이아이\n> `RDBMS(**MySQL, PostgreSQL** 등)의 특성을 이해하고, **트랜잭션·인덱스·쿼리 성능**을 고려한 설계 및 운영` — 아임웹\n\n**스키마 설계 · 쿼리 최적화 · 인덱스 튜닝 · 트랜잭션.** 셋 다 같은 목록이다.\n\n💡 **그래서 이 문서는 기능 비교표를 만들지 않는다.** \"어느 쪽이 더 좋은가\"는 대부분의 상황에서 **답이 없는 질문**이고, 진짜 질문은 **\"언제 갈리고, 갈릴 때 무엇 때문에 갈리나\"** 다."
+    },
+    {
+      "id": "same",
+      "kind": "how",
+      "heading": "⭐ 밑은 같다 — 둘 다 페이지에 지배된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Appendix K. PostgreSQL Limitations",
+          "url": "https://www.postgresql.org/docs/current/limits.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "⭐ 한계표 — 여러 항목에 **\"can be increased by recompiling PostgreSQL\"** 이 붙어 있다"
+        },
+        {
+          "title": "Limits on Table Column Count and Row Size (MySQL 8.0 Reference Manual)",
+          "url": "https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "⭐⭐ **\"hard limit\"**·**\"regardless of storage engine\"** — 엔진이 지원할 수 있어도 상위 층이 막는다"
+        }
+      ],
+      "body": "양쪽의 **한계 문서**를 열면 재미있는 것이 보인다. 숫자는 다른데 **제약의 성격이 같다.**\n\n**PostgreSQL** — 테이블당 컬럼 **1,600** 개인데, 그 옆에 단서가 붙는다.\n> \"columns per table: **1,600** — **further limited by tuple size fitting on a single page**\"\n\n문서가 예까지 든다 — **`int` 컬럼 1,600개는 6,400바이트라 맞는데, `bigint` 1,600개는 12,800바이트라 안 맞는다**(기본 페이지 8,192바이트).\n\n**MySQL** — 하드 리밋은 4,096인데 실제로는 훨씬 작다.\n> \"MySQL has **hard limit of 4096 columns per table**, but **the effective maximum may be less** for a given table.\"\n> \"**InnoDB has a limit of 1017 columns per table**\"\n> \"The maximum row size for an InnoDB table ... is **slightly less than half a page** for 4KB, 8KB, 16KB, and 32KB `innodb_page_size` settings. For example, the maximum row size is **slightly less than 8KB** for the default 16KB InnoDB page size.\"\n\n⭐⭐ **양쪽 다 \"한 행이 페이지에 들어가야 한다\"** 는 같은 물리적 사실에 묶여 있다. 이름과 숫자가 다를 뿐, **디스크를 고정 크기 블록으로 읽고 쓴다**는 전제가 같기 때문이다.\n\n💡 **그래서 실무의 감각도 같아진다** — 넓은 테이블은 양쪽에서 다 문제가 되고, 큰 텍스트는 양쪽에서 다 밖에 저장된다(MySQL 문서: \"BLOB and TEXT columns only contribute **9 to 12 bytes** toward the row size limit because their contents are **stored separately** from the rest of the row\").\n\n⭐ 이것이 앞 절의 셈을 설명한다 — **인덱스·튜닝·트랜잭션 감각은 옮겨 다닌다.** 한쪽을 제대로 해 본 사람이 다른 쪽에서 처음부터 배우지 않는 이유다."
+    },
+    {
+      "id": "docs",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 가운데는 어투가 다르다 — 한계 문서가 성격을 말한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Appendix K. PostgreSQL Limitations",
+          "url": "https://www.postgresql.org/docs/current/limits.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "⭐ 한계표 — 여러 항목에 **\"can be increased by recompiling PostgreSQL\"** 이 붙어 있다"
+        },
+        {
+          "title": "Limits on Table Column Count and Row Size (MySQL 8.0 Reference Manual)",
+          "url": "https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "⭐⭐ **\"hard limit\"**·**\"regardless of storage engine\"** — 엔진이 지원할 수 있어도 상위 층이 막는다"
+        }
+      ],
+      "body": "같은 종류의 문서인데 **문장의 태도가 다르다.** 그리고 그 차이가 기능 비교표보다 많은 것을 말한다.\n\n**PostgreSQL 의 한계표에는 이 문구가 반복된다.**\n> **\"can be increased by recompiling PostgreSQL\"**\n> — columns per index(32) · partition keys(32) · identifier length(63 bytes) · function arguments(100) 에 각각 붙어 있다.\n\n⭐⭐ **\"다시 컴파일하면 늘릴 수 있다\"** 를 공식 문서가 한계 옆에 적어 둔다. 이건 **소스를 고쳐 쓰는 것이 이상하지 않은 전제**에서 나오는 문장이다. 그리고 `database size: **unlimited**`, `indexes per table: **unlimited**` 처럼 **상한을 안 두는 항목**도 있다.\n\n**MySQL 의 문장은 반대 방향이다.**\n> **\"MySQL has hard limit of 4096 columns per table\"**\n> **\"The internal representation of a MySQL table has a maximum row size limit of 65,535 bytes, even if the storage engine is capable of supporting larger rows.\"**\n> ⭐⭐⭐ **\"The limit is enforced regardless of storage engine, even though the storage engine may be capable of supporting larger rows.\"**\n\n**\"엔진이 더 큰 행을 지원할 수 있어도\" 상위 층이 막는다.** 이 문장은 **스토리지 엔진이 여러 개이고 그 위에 공통 층이 있다**는 MySQL 의 구조에서만 나올 수 있다 — 그리고 그 구조 때문에 **엔진마다 한계가 또 다르다**(InnoDB 1017 컬럼).\n\n⭐ **정리하면 이렇다.**\n\n| | 한계를 어떻게 말하나 | 그 밑에 있는 것 |\n|---|---|---|\n| **PostgreSQL** | \"**recompiling** 하면 늘릴 수 있다\" · 일부는 **unlimited** | **하나의 엔진, 고칠 수 있는 소스** |\n| **MySQL** | \"**hard limit**\" · \"**regardless of storage engine**\" | **여러 엔진 위의 공통 층** |\n\n💡 이 차이가 실무에서 나타나는 방식이 **확장(extension)** 이다 — PostgreSQL 은 **소스에 손대는 것**을 전제하는 프로젝트라 밖에서 기능을 얹는 길이 넓고, 그것이 다음 절의 숫자로 나타난다.\n\n⚠️ **다만 이건 어느 쪽이 낫다는 이야기가 아니다.** \"막아 둔다\"는 것은 **예측 가능성**이기도 하고, \"고칠 수 있다\"는 것은 **고쳐야 할 수도 있다**는 뜻이기도 하다."
+    },
+    {
+      "id": "above",
+      "kind": "how",
+      "heading": "⭐⭐ 위가 진짜로 갈린다 — 확장, 그리고 옆에 있는 것",
+      "confidence": "inferred",
+      "body": "셈에서 **한쪽에만 붙는 낱말**을 찾으면 갈리는 자리가 보인다.\n\n| 낱말 | 건수 | 무엇 |\n|---|---|---|\n| ⭐⭐ **`pgvector`** | **78** | PostgreSQL 확장 — 벡터 검색 |\n| **`PostGIS`** | **32** | PostgreSQL 확장 — 공간 데이터 |\n| `Aurora` | 113 | AWS 의 관리형(양쪽 다 있다) |\n| ⚠️ `JSONB` | **1** | — |\n\n⭐⭐⭐ **`pgvector` 78건**이 이 문서에서 가장 또렷한 숫자다. **데이터베이스 자체가 아니라 그 위에 얹는 확장 하나** 때문에 PostgreSQL 이 선택되는 자리가 78건이나 있다는 뜻이다. LLM 관련 수요가 늘면서 생긴 것으로 보인다.\n\n⚠️⚠️ **그리고 `JSONB` 는 1건이다.** 흔히 PostgreSQL 의 대표 장점으로 이야기되는데 **채용 요건에는 사실상 없다.** 이 백과사전이 반복해 만난 형태다(`rest` 3372 vs `HATEOAS` 0, `graphql` 370 vs `DataLoader` 2) — ⭐ **교과서가 강조하는 것과 시장이 부르는 것이 다르다.**\n\n**그리고 더 큰 것이 하나 더 있다 — 옆에 무엇이 있느냐.** `tech_relations.json`(2026-09-04)의 동반 기술을 보면 갈린다.\n\n| | 1위 | 2위 | 3위 |\n|---|---|---|---|\n| **PostgreSQL**(673건·9.3%) | AWS 52.2% | ⭐ **Python 47.3%** | Docker 44.9% |\n| **MySQL**(649건·9.0%) | AWS 57.5% | ⭐ **Java 50.4%** | **Spring 40.5%** |\n\n⭐⭐⭐ **PostgreSQL 은 Python 과, MySQL 은 Java·Spring 과 붙는다.** 그리고 서로가 서로의 상위 동반이다(PostgreSQL 쪽에서 MySQL 37.0%, MySQL 쪽에서 PostgreSQL 38.4%) — 863건이 둘 다 언급한다는 셈과 정확히 맞는다.\n\n💡 **그러니까 실무에서 선택을 정하는 것은 대개 이 셋이다.**\n\n1. **팀이 이미 쓰는 것** — 새로 배우는 비용이 기술 차이보다 크다.\n2. **생태계** — Java·Spring 팀에는 MySQL 이, Python·데이터 팀에는 PostgreSQL 이 자연스럽게 따라온다.\n3. ⭐ **필요한 확장이 있는가** — `pgvector`·`PostGIS` 처럼 **한쪽에만 있는 것**이 있으면 그것이 결정한다.\n\n📌 그리고 관리형 서비스가 그 위에 한 겹 더 있다 — 지로 `**Aurora PostgreSQL** · ElastiCache · Elasticsearch`, 샤플앤컴퍼니 `**MySQL과 AWS Aurora**를 기반으로`, 피트인 `**RDS PostgreSQL**의 성능, 가용성 및 비용을 함께 최적화`. **실제로 운영하는 것은 원본이 아니라 관리형인 경우가 많다.**"
+    },
+    {
+      "id": "choose",
+      "kind": "extra",
+      "heading": "그래서 어떻게 고르나",
+      "confidence": "inferred",
+      "body": "앞의 셋을 순서로 정리하면 이렇다.\n\n**1. 한쪽에만 있는 것이 필요한가 — 그러면 끝났다.**\n벡터 검색을 DB 안에서 해야 하면 `pgvector`, 공간 데이터면 `PostGIS`. 이건 **기능의 문제**라 논쟁이 없다. ⚠️ 다만 **정말 DB 안에서 해야 하는지**는 따로 물어야 한다 — 별도 검색엔진이나 벡터 DB를 쓰는 길도 있다.\n\n**2. 팀이 이미 쓰는 것이 있는가 — 대개 그것이 답이다.**\n⭐ 새 데이터베이스를 도입하면 **쿼리 문법만 배우는 게 아니다.** 백업·복구 절차, 모니터링 지표, 장애 대응 요령, 커넥션 풀 설정, 마이그레이션 도구, 그리고 **\"이럴 때 이렇게 하면 된다\"는 팀의 기억**이 전부 새로 필요하다. 이 비용이 두 DB 의 기술적 차이보다 대개 크다.\n\n**3. 새로 시작하고 팀 색깔도 없다면 — 생태계를 따라간다.**\nJava·Spring 이면 MySQL 쪽 자료와 예제가 많고, Python·데이터 쪽이면 PostgreSQL 쪽이 많다. 위 동반 기술 숫자가 그 현실이다. **혼자 옳은 선택을 하는 것보다 남들이 밟은 길을 가는 것이 싸다.**\n\n⭐ **그리고 정하지 않아도 되는 것들이 있다.**\n\n- **표준 SQL 로 쓸 수 있는 부분** — 대부분의 CRUD 는 양쪽에서 같다.\n- **인덱스·트랜잭션의 감각** — `same` 절에서 본 대로 밑이 같다.\n- **스키마 변경 절차** — 도구는 달라도 원리는 같다(→ `schema-migration`).\n\n⚠️ **반대로 정말 옮길 때가 오면 그건 다른 문서의 일이다** — `data-migration` 이 그 어려움(옮기는 동안에도 원본이 바뀐다)을 다룬다. ⭐ **그리고 이 사실 자체가 선택의 근거가 된다: 나중에 바꾸는 것이 비싸다는 것을 알면, 지금 오래 고민하기보다 팀이 감당할 수 있는 쪽을 고르게 된다.**\n\n💡 실무에서 가장 흔한 실수는 **비교 기사를 읽고 고르는 것**이다. 그 기사들의 벤치마크는 **조건이 다르면 뒤집히고**, 출처가 대개 한쪽 편이다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 성능 벤치마크를 쓰지 않았다.** 의도적이다 — **조건에 따라 뒤집히고 출처가 대개 한쪽 편**이기 때문이다. `service-mesh` 에서 Istio 문서가 자기 숫자 앞에 **\"Different hardware will give different values\"** 를 먼저 적은 것과 같은 이유다. **성능이 걸린 결정이면 자기 워크로드로 재야 한다.**\n\n**2. ⚠️ 기능 비교표를 만들지 않았다.** 복제 방식, 격리 수준의 세부, 파티셔닝 문법, 전문 검색 같은 것은 **버전마다 바뀌고** 이 문서가 다루면 곧 낡는다. 확인한 것은 **양쪽 한계 문서**뿐이고, 그것도 **어투의 차이**를 보려고 열었다.\n\n**3. ⚠️ 인용한 한계 수치의 판이 다르다.** PostgreSQL 은 `docs/current`(판 미표기), MySQL 은 **8.0 매뉴얼**이다 — 8.4 경로(`/8.4/en/limits.html`)는 **404** 였다. **판이 다른 두 문서를 나란히 놓았다는 것**을 밝혀 둔다.\n\n**4. 다른 선택지를 다루지 않았다.** MariaDB(547건) · Oracle(941건) · SQLite · NoSQL 은 이 문서 밖이다. ⚠️ 특히 **Oracle 941건**은 적지 않은데 — 국내 금융·공공의 비중으로 보이고, 이 문서는 그쪽을 다루지 않는다.\n\n**5. ⚠️ 관리형 서비스의 차이를 다루지 않았다.** `Aurora` 113건이 나오는데, 관리형은 **원본과 동작이 다를 수 있고**(복제 방식·백업·장애 조치) 실제 운영 경험은 거기서 갈린다. 이 사이클에서 그 자료는 열지 않았다.\n\n**6. 이 문서가 다루지 않는 것.** 옮기는 문제는 `data-migration`, 구조 변경 절차는 `schema-migration`, 앞에 캐시를 두는 이야기는 `caching` 에 있다. ⚠️ 그리고 **`sql`·`index`·`transaction` 문서가 이 백과사전에 아직 없다** — `same` 절이 그 셋을 전제하고 쓰였다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "pg-limits",
+      "kind": "spec",
+      "caption": "PostgreSQL 의 한계 (Appendix K)",
+      "note": "PostgreSQL 공식 문서 `docs/current/limits.html` 에서 옮겼다. ⚠️ **판이 표기되지 않은 `current` 경로**이고, 아래 MySQL 표는 **8.0 매뉴얼**이라 **판이 서로 다르다.** ⭐ 표의 요점은 숫자가 아니라 **오른쪽 열의 단서**다.",
+      "columns": [
+        "항목",
+        "값",
+        "⭐ 단서"
+      ],
+      "rows": [
+        [
+          "database size",
+          "**unlimited**",
+          "—"
+        ],
+        [
+          "relation size",
+          "32 TB",
+          "\"with the default `BLCKSZ` of 8192 bytes\""
+        ],
+        [
+          "columns per table",
+          "1,600",
+          "\"**further limited by tuple size fitting on a single page**\""
+        ],
+        [
+          "field size",
+          "1 GB",
+          "—"
+        ],
+        [
+          "indexes per table",
+          "**unlimited**",
+          "\"constrained by maximum relations per database\""
+        ],
+        [
+          "⭐⭐ columns per index",
+          "32",
+          "**\"can be increased by recompiling PostgreSQL\"**"
+        ],
+        [
+          "⭐⭐ identifier length",
+          "63 bytes",
+          "**\"can be increased by recompiling PostgreSQL\"**"
+        ],
+        [
+          "예시",
+          "`int` 1,600개 = 6,400바이트 (맞음) · `bigint` 1,600개 = 12,800바이트 (**안 맞음**)",
+          "기본 페이지 8,192바이트"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Appendix K. PostgreSQL Limitations",
+          "url": "https://www.postgresql.org/docs/current/limits.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "⭐ 한계표 — 여러 항목에 **\"can be increased by recompiling PostgreSQL\"** 이 붙어 있다"
+        }
+      ]
+    },
+    {
+      "id": "mysql-limits",
+      "kind": "spec",
+      "caption": "MySQL 의 한계 (컬럼 수·행 크기)",
+      "note": "MySQL 8.0 레퍼런스 매뉴얼의 \"Limits on Table Column Count and Row Size\" 에서 옮겼다. ⚠️ 8.4 경로는 404 였다. ⭐ 여기서도 요점은 숫자가 아니라 **문장의 어투**다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐ 컬럼 수",
+          "\"MySQL has **hard limit of 4096 columns per table**, but **the effective maximum may be less** for a given table.\""
+        ],
+        [
+          "엔진별로 또",
+          "\"**InnoDB has a limit of 1017 columns per table**\""
+        ],
+        [
+          "⭐⭐ 행 크기",
+          "\"The internal representation of a MySQL table has a maximum row size limit of **65,535 bytes**, **even if the storage engine is capable of supporting larger rows**.\""
+        ],
+        [
+          "⭐⭐⭐ 그 성격",
+          "\"**The limit is enforced regardless of storage engine**, even though the storage engine may be capable of supporting larger rows.\""
+        ],
+        [
+          "InnoDB 와 페이지",
+          "\"the maximum row size is **slightly less than 8KB** for the default 16KB InnoDB page size\""
+        ],
+        [
+          "큰 값의 처리",
+          "\"BLOB and TEXT columns only contribute **9 to 12 bytes** toward the row size limit because their contents are **stored separately**\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Limits on Table Column Count and Row Size (MySQL 8.0 Reference Manual)",
+          "url": "https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "⭐⭐ **\"hard limit\"**·**\"regardless of storage engine\"** — 엔진이 지원할 수 있어도 상위 층이 막는다"
+        }
+      ]
+    },
+    {
+      "id": "tone",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 같은 종류의 문서인데 어투가 다르다",
+      "note": "⭐ 이 표가 이 문서의 중심이다. 기능 비교표 대신 **양쪽이 자기 한계를 어떻게 말하는가**를 놓았다 — 그 어투가 프로젝트의 구조에서 나온다.",
+      "columns": [
+        "",
+        "PostgreSQL",
+        "MySQL"
+      ],
+      "rows": [
+        [
+          "한계를 말하는 방식",
+          "**\"can be increased by recompiling PostgreSQL\"**(여러 항목에 반복)",
+          "**\"hard limit\"**"
+        ],
+        [
+          "상한이 없는 항목",
+          "database size · indexes per table = **unlimited**",
+          "(해당 표에 없음)"
+        ],
+        [
+          "⭐⭐ 층 구조가 드러나는 문장",
+          "—",
+          "**\"The limit is enforced regardless of storage engine, even though the storage engine may be capable of supporting larger rows.\"**"
+        ],
+        [
+          "그 밑에 있는 것",
+          "**하나의 엔진, 고칠 수 있는 소스**",
+          "**여러 엔진 위의 공통 층** (그래서 엔진마다 또 다르다 — InnoDB 1017)"
+        ],
+        [
+          "실무로 나타나는 방식",
+          "⭐ **확장 생태계** — `pgvector` 78건 · `PostGIS` 32건",
+          "엔진 선택과 그 위의 예측 가능한 규칙"
+        ],
+        [
+          "⚠️ 주의",
+          "\"고칠 수 있다\"는 **고쳐야 할 수도 있다**는 뜻",
+          "\"막아 둔다\"는 **예측 가능성**이기도 하다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Appendix K. PostgreSQL Limitations",
+          "url": "https://www.postgresql.org/docs/current/limits.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "⭐ 한계표 — 여러 항목에 **\"can be increased by recompiling PostgreSQL\"** 이 붙어 있다"
+        },
+        {
+          "title": "Limits on Table Column Count and Row Size (MySQL 8.0 Reference Manual)",
+          "url": "https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "⭐⭐ **\"hard limit\"**·**\"regardless of storage engine\"** — 엔진이 지원할 수 있어도 상위 층이 막는다"
+        }
+      ]
+    },
+    {
+      "id": "above",
+      "kind": "glossary",
+      "caption": "⭐⭐ 실제로 갈리는 자리 — 셈",
+      "note": "공고 본문 직접 셈(2026-09-06)과 `tech_relations.json`(generated_at 2026-09-04)의 동반 기술이다. ⭐ 이 표가 \"언제 갈리나\"의 데이터 답이다.",
+      "columns": [
+        "",
+        "숫자",
+        "무엇을 뜻하나"
+      ],
+      "rows": [
+        [
+          "⭐⭐ `pgvector`",
+          "**78건**",
+          "**확장 하나 때문에** PostgreSQL 이 선택되는 자리 — LLM 수요와 함께 늘어난 것으로 보인다"
+        ],
+        [
+          "`PostGIS`",
+          "32건",
+          "공간 데이터 — 같은 형태의 이유"
+        ],
+        [
+          "⚠️⚠️ `JSONB`",
+          "**1건**",
+          "교과서가 강조하는 대표 장점인데 **채용 요건에는 사실상 없다**"
+        ],
+        [
+          "⭐⭐⭐ PostgreSQL 의 동반",
+          "AWS 52.2% · **Python 47.3%** · Docker 44.9%",
+          "**Python 생태계**"
+        ],
+        [
+          "⭐⭐⭐ MySQL 의 동반",
+          "AWS 57.5% · **Java 50.4%** · **Spring 40.5%**",
+          "**Java·Spring 생태계**"
+        ],
+        [
+          "서로가 서로의 상위 동반",
+          "PG→MySQL 37.0% · MySQL→PG 38.4%",
+          "**863건이 둘 다 언급**하는 것과 맞는다"
+        ],
+        [
+          "`Aurora`",
+          "113건",
+          "⚠️ 실제로 운영하는 것은 **원본이 아니라 관리형**인 경우가 많다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ 이 백과사전에서 **두 낱말을 한 문서로 다룬 첫 사례**다 — 셈이 \"둘을 구분하지 않는다\"고 말했기 때문에 그렇게 했다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "PostgreSQL",
+          "**2081건 (모집중 765)** — `PostgreSQL|Postgres`"
+        ],
+        [
+          "MySQL",
+          "**2030건 (모집중 603)**"
+        ],
+        [
+          "⭐⭐ 둘 다 언급",
+          "**863건** — 그리고 그 문장이 `**또는**`·`등` 으로 묶는다"
+        ],
+        [
+          "다른 선택지",
+          "`Oracle` **941건** · `MariaDB` 547건 — ⚠️ 이 문서 밖이다"
+        ],
+        [
+          "⚠️ `market` 을 비운 이유",
+          "**두 기술을 한 문서로** 다루는데 `market.tech` 는 하나만 넣을 수 있다 — 양쪽 수치를 **본문과 표에** 적었다"
+        ],
+        [
+          "⚠️ 관리형이 섞인다",
+          "`Aurora` 113 · `RDS` — 원본과 동작이 다를 수 있다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "한쪽에만 있는 확장이 꼭 필요하다 (벡터 검색·공간 데이터)",
+      "pick": "**그 확장이 있는 쪽**(대개 PostgreSQL — `pgvector` 78건 · `PostGIS` 32건)",
+      "over": "익숙한 쪽을 쓰고 기능을 애플리케이션에서 만들기",
+      "why": "⭐ 이건 **기능의 문제라 논쟁이 없다.** 벡터 유사도나 공간 연산을 애플리케이션에서 구현하면 **인덱스를 못 쓰므로** 데이터가 조금만 커져도 무너진다",
+      "tradeoff": "⚠️ **정말 DB 안에서 해야 하는지**를 먼저 물어야 한다 — 별도 검색엔진이나 벡터 DB 를 쓰면 DB 선택은 자유로워진다. 대신 저장소가 하나 늘고 **둘 사이의 정합성**이 새 문제가 된다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "팀이 이미 한쪽을 운영하고 있다",
+      "pick": "⭐ **쓰던 것을 쓴다**",
+      "over": "기술 비교를 근거로 새것을 도입하기",
+      "why": "새 DB 를 들이면 **쿼리 문법만 배우는 게 아니다** — 백업·복구 절차, 모니터링 지표, 장애 대응 요령, 커넥션 풀 설정, 마이그레이션 도구, 그리고 **\"이럴 때 이렇게 하면 된다\"는 팀의 기억**이 전부 새로 필요하다. 그 비용이 두 DB 의 기술 차이보다 대개 크다",
+      "tradeoff": "쓰던 것의 한계를 계속 안고 간다. 그래도 **정말 막혔을 때 옮기는 것**이 낫다 — 그때는 이유가 분명해서 `data-migration` 의 어려움을 감수할 근거가 생긴다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "새로 시작하고 팀 색깔도 아직 없다",
+      "pick": "**생태계를 따라간다** — Java·Spring 이면 MySQL, Python·데이터면 PostgreSQL",
+      "over": "기능 비교표를 놓고 고르기",
+      "why": "⭐⭐ 동반 기술 숫자가 그 현실이다 — **MySQL 은 Java 50.4% · Spring 40.5%**, **PostgreSQL 은 Python 47.3%**. 자료·예제·라이브러리·사람이 그쪽에 몰려 있고, **남들이 밟은 길을 가는 것이 싸다**",
+      "tradeoff": "\"우리 상황에 최적\"은 아닐 수 있다. 그런데 대부분의 서비스는 **두 DB 의 차이가 병목이 되는 지점까지 가지 않는다** — 863건이 둘을 묶어 부르는 이유다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "성능이 걸린 결정이라 근거가 필요하다",
+      "pick": "⭐ **자기 워크로드로 잰다**",
+      "over": "비교 기사나 벤치마크 수치를 인용하기",
+      "why": "⚠️ 공개된 벤치마크는 **조건이 다르면 뒤집히고** 출처가 대개 한쪽 편이다. `service-mesh` 문서에서 본 대로, Istio 조차 자기 숫자 앞에 **\"Different hardware will give different values\"** 를 먼저 적는다 — **조건 없는 성능 숫자는 거짓말에 가깝다**",
+      "tradeoff": "재는 데 시간이 든다(데이터 준비·부하 생성·양쪽 튜닝). 그래도 **남의 숫자로 정한 결정은 문제가 생겼을 때 되돌릴 근거가 없다**",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "넓은 테이블(컬럼 수십~수백)을 설계하려 한다",
+      "pick": "**양쪽 모두에서 나누는 것을 검토한다**",
+      "over": "\"한계 안이니 괜찮다\"고 넘어가기",
+      "why": "⭐ **밑이 같다.** PostgreSQL 은 \"columns per table 1,600 — **further limited by tuple size fitting on a single page**\", MySQL InnoDB 는 \"maximum row size ... **slightly less than 8KB** for the default 16KB page size\". **한계 숫자보다 훨씬 먼저 페이지가 막는다**",
+      "tradeoff": "테이블을 나누면 조인이 늘고 쿼리가 복잡해진다. 그래도 **행이 페이지를 넘겨 큰 값이 밖에 저장되기 시작하면** 읽기 성능이 예측하기 어려워진다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Appendix K. PostgreSQL Limitations",
+          "url": "https://www.postgresql.org/docs/current/limits.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "⭐ 한계표 — 여러 항목에 **\"can be increased by recompiling PostgreSQL\"** 이 붙어 있다"
+        },
+        {
+          "title": "Limits on Table Column Count and Row Size (MySQL 8.0 Reference Manual)",
+          "url": "https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "⭐⭐ **\"hard limit\"**·**\"regardless of storage engine\"** — 엔진이 지원할 수 있어도 상위 층이 막는다"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "비교 기사를 읽고 고른다",
+      "why": "검색하면 \"PostgreSQL vs MySQL\" 글이 수없이 나오고 표까지 정리돼 있다. 그런데 그 표는 **버전마다 바뀌고**(양쪽 다 계속 기능을 따라잡는다), 벤치마크는 **조건이 다르면 뒤집히며**, 출처가 대개 한쪽 진영이다",
+      "fix": "⭐ **결정을 세 질문으로 좁힌다** — ①한쪽에만 있는 확장이 필요한가 ②팀이 이미 쓰는 것이 있는가 ③생태계(Java 냐 Python 이냐)가 어느 쪽인가. 이 셋이 실제 선택의 거의 전부다"
+    },
+    {
+      "trap": "넓은 테이블을 만들어 두고 한계 숫자만 확인한다",
+      "why": "\"MySQL 은 4096, PostgreSQL 은 1600 이니 우리 80개는 여유\"라고 생각하기 쉽다. 그런데 양쪽 문서가 모두 **더 이른 제약**을 적어 둔다 — MySQL 은 **행 65,535바이트**(엔진과 무관)에 InnoDB 는 **페이지의 절반 미만**, PostgreSQL 은 **한 페이지에 튜플이 들어가야** 한다",
+      "fix": "**컬럼 수가 아니라 행 크기로 본다.** 그리고 큰 텍스트·바이너리는 밖에 저장된다는 것을 전제로 설계한다 — MySQL 문서: \"BLOB and TEXT columns only contribute **9 to 12 bytes** toward the row size limit\"",
+      "sources": [
+        {
+          "title": "Appendix K. PostgreSQL Limitations",
+          "url": "https://www.postgresql.org/docs/current/limits.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "⭐ 한계표 — 여러 항목에 **\"can be increased by recompiling PostgreSQL\"** 이 붙어 있다"
+        },
+        {
+          "title": "Limits on Table Column Count and Row Size (MySQL 8.0 Reference Manual)",
+          "url": "https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "⭐⭐ **\"hard limit\"**·**\"regardless of storage engine\"** — 엔진이 지원할 수 있어도 상위 층이 막는다"
+        }
+      ]
+    },
+    {
+      "trap": "확장 때문에 DB 를 고르고, 그 확장의 운영은 생각하지 않는다",
+      "why": "`pgvector` 가 78건이나 나올 만큼 확장은 강력한 선택 이유다. 그런데 확장은 **DB 본체와 별도로 버전이 있고**, 관리형 서비스가 **그 확장을 지원하는지·어느 버전인지**가 또 다르다. 도입한 뒤에 \"우리 관리형에는 그 버전이 없다\"를 발견하면 늦다",
+      "fix": "**쓰려는 확장이 우리가 쓸 환경(관리형 포함)에서 지원되는지 먼저 확인**한다. 그리고 **DB 업그레이드 때 그 확장이 함께 올라가는지**도 본다 — 확장이 발목을 잡아 본체를 못 올리는 경우가 있다"
+    },
+    {
+      "trap": "둘 다 표준 SQL 이니 옮기기 쉽다고 생각한다",
+      "why": "CRUD 는 정말 비슷하고, ORM 을 쓰면 더 그렇게 보인다. 그런데 실제로 옮길 때 걸리는 것은 쿼리가 아니라 **그 밖의 전부**다 — 타입의 미세한 차이, 정렬·대소문자 규칙, 시퀀스/자동증가, 인덱스 종류, 그리고 **애플리케이션이 은근히 기대하고 있던 동작**",
+      "fix": "⚠️ 옮기는 일은 별도의 프로젝트로 다룬다(→ `data-migration`, `schema-migration`). ⭐ 그리고 **이 사실을 선택할 때 미리 안다** — 나중에 바꾸는 게 비싸다는 것을 알면, 지금 오래 고민하기보다 **팀이 감당할 수 있는 쪽**을 고르게 된다"
+    },
+    {
+      "trap": "원본 기준으로 판단하고 관리형에서 운영한다",
+      "why": "문서와 자료는 원본 기준으로 쓰여 있고, 실제 운영은 `Aurora`(113건)나 `RDS` 에서 한다. 그런데 관리형은 **복제 방식·백업·장애 조치·확장 지원 범위**가 원본과 다를 수 있다",
+      "fix": "**쓸 관리형 서비스의 문서를 따로 읽는다.** 특히 **어떤 파라미터를 바꿀 수 있는지**와 **어떤 확장이 지원되는지**를 확인한다 — 원본에서 되던 것이 안 되는 자리가 거기 있다"
+    },
+    {
+      "trap": "\"PostgreSQL 은 JSONB 가 좋아서\"를 선택 근거로 든다",
+      "why": "자주 인용되는 장점이라 자연스럽다. 그런데 ⚠️ 이 데이터에서 **`JSONB` 는 1건**이다 — 채용 요건에 사실상 없다. MySQL 도 JSON 타입을 갖고 있고, **애초에 관계형 DB 에 문서를 넣는 것이 좋은 선택인지**가 먼저 물어야 할 질문이다",
+      "fix": "**자기 데이터가 정말 스키마 없는 것인지** 먼저 본다. 대개는 **아직 스키마를 안 정한 것**이지 스키마가 없는 게 아니다. 정말 문서형이면 그때 **DB 선택이 아니라 저장소 종류**를 논의한다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "페이지",
+      "en": "page / block",
+      "what": "⭐ DB 가 디스크를 읽고 쓰는 고정 크기 단위. **양쪽의 한계가 여기서 나온다**(PG 기본 8KB, InnoDB 기본 16KB)"
+    },
+    {
+      "term": "튜플",
+      "en": "tuple",
+      "what": "PostgreSQL 에서 한 행. \"tuple size fitting on a single page\" 가 컬럼 수의 실제 제약"
+    },
+    {
+      "term": "스토리지 엔진",
+      "en": "storage engine",
+      "what": "⭐ MySQL 의 구조 — 저장 방식을 갈아 끼울 수 있다(InnoDB 등). 그래서 **엔진마다 한계가 또 다르다**"
+    },
+    {
+      "term": "확장",
+      "en": "extension",
+      "what": "⭐ PostgreSQL 에 기능을 얹는 것. `pgvector`(78건) · `PostGIS`(32건)"
+    },
+    {
+      "term": "pgvector",
+      "en": "pgvector",
+      "what": "벡터 유사도 검색 확장. **확장 하나가 DB 선택을 정하는** 대표 사례"
+    },
+    {
+      "term": "off-page 저장",
+      "en": "off-page storage",
+      "what": "큰 값(BLOB/TEXT)을 행 밖에 따로 두는 것. 양쪽 다 한다"
+    },
+    {
+      "term": "관리형",
+      "en": "managed service",
+      "what": "Aurora·RDS 등. ⚠️ **원본과 동작이 다를 수 있다**(113건)"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐ 자기 테이블 중 **가장 넓은 것**(컬럼이 가장 많은 것)을 찾아 **한 행의 대략적인 바이트 크기**를 계산한다. 그리고 그 값을 페이지 크기(PostgreSQL 8KB / InnoDB 16KB 의 절반 미만)와 비교한다.",
+      "done_when": "행 크기가 숫자로 나오고, **페이지 한도에 얼마나 가까운지**가 퍼센트로 나온다. 큰 텍스트 컬럼이 있으면 그것이 **행 안에 있는지 밖에 있는지**도 판정한다.",
+      "why": "⭐⭐ \"컬럼 수 한계\"보다 **행 크기가 먼저 막는다**는 것을 자기 데이터로 확인한다. 그리고 이 계산을 한 번 해 보면 **왜 양쪽 문서가 컬럼 수 옆에 페이지 이야기를 붙이는지**가 이해된다.",
+      "no_hardware": "실제 DB 가 없으면 상상한 테이블(컬럼 타입 목록)로 계산해도 된다 — `int` 4바이트, `bigint` 8바이트처럼 대략만 잡으면 충분하다.",
+      "hours": 1
+    },
+    {
+      "task": "양쪽 **한계 문서**를 나란히 열고, **\"can be increased\"·\"hard limit\"·\"regardless of\"** 같은 표현을 찾아 각각 세 개씩 적는다. 그리고 **그 어투가 무엇을 말해 주는지** 한 문단으로 쓴다.",
+      "done_when": "양쪽에서 세 문장씩 뽑히고, **어투의 차이에 대한 자기 해석**이 한 문단으로 나온다.",
+      "why": "⭐⭐⭐ 이 문서의 `docs` 절이 한 일을 직접 해 보는 것이다. **기능 비교표는 금방 낡지만 프로젝트의 성격은 잘 안 바뀐다** — 그리고 그 성격은 **한계를 말하는 방식**에 가장 잘 드러난다. 다른 기술을 고를 때도 쓸 수 있는 읽기법이다.",
+      "no_hardware": "양쪽 공식 문서 모두 공개 HTML 이다.",
+      "hours": 1
+    },
+    {
+      "task": "자기 팀이 지금 쓰는 DB 에 대해 **새 DB 로 바꾼다면 다시 만들어야 하는 것**을 목록으로 적는다 — 백업·복구 절차, 모니터링 지표, 장애 대응 문서, 커넥션 풀 설정, 마이그레이션 도구, 팀의 경험.",
+      "done_when": "목록이 여섯 줄 이상 나오고, ⭐ 그중 **문서로 남아 있지 않은 것**(사람 머릿속에만 있는 것)이 몇 개인지 센다.",
+      "why": "⭐⭐ \"DB 를 바꾸는 비용\"이 왜 쿼리 문법이 아닌지를 눈으로 확인한다. 그리고 **문서로 안 남은 것의 개수**가 그대로 **지금 팀의 위험**이기도 하다 — DB 를 안 바꿔도 사람이 바뀌면 같은 문제가 온다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "공고 863건이 둘을 함께 적는 것은 무엇을 뜻하는가?",
+    "양쪽 한계 문서가 공유하는 물리적 제약은 무엇인가?",
+    "PostgreSQL 한계표에 반복해서 붙는 문구는? 그것이 무엇을 전제하는가?",
+    "MySQL 문서의 \"regardless of storage engine\" 이라는 표현은 어떤 구조에서 나오는가?",
+    "이 데이터에서 실제로 선택을 가르는 것 셋은 무엇인가?",
+    "`JSONB` 가 1건뿐이라는 사실은 무엇을 시사하는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• MySQL 또는 PostgreSQL로 서비스를 운영해본 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/335463",
+      "where": "액션파워",
+      "what_it_shows": "⭐⭐ **`또는`** — 둘을 구분하지 않는다. 863건이 이런 모양이고, 이 문서의 축이 여기서 나왔다"
+    },
+    {
+      "quote": "• RDBMS(MySQL, PostgreSQL 등)의 특성을 이해하고, 트랜잭션·인덱스·쿼리 성능을 고려한 설계 및 운영해보신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359025",
+      "where": "아임웹",
+      "what_it_shows": "⭐ **요구하는 능력이 양쪽 공통**이다 — 트랜잭션·인덱스·쿼리 성능. `same` 절이 말하는 \"밑이 같다\"가 채용 요건에도 그대로 나타난다"
+    },
+    {
+      "quote": "• 기본적인 RDBMS(PostgreSQL, MySQL) 쿼리 작성 능력",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/313335",
+      "where": "마인드허브",
+      "what_it_shows": "**괄호 안에 나란히** 넣는다 — 둘을 `RDBMS` 라는 한 낱말의 예시로 취급하는 전형"
+    },
+    {
+      "quote": "• Drizzle ORM 기반 PostgreSQL — 복잡한 쿼리 작성 및 대규모 데이터 성능 최적화 (COUNT OVER 제거, MATERIALIZED CTE, 인덱스 설계 등)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371583",
+      "where": "지로",
+      "what_it_shows": "⭐ **드물게 구체적인 공고.** `MATERIALIZED CTE` 같은 것은 한쪽 문법인데, 요구의 본질은 여전히 **쿼리와 인덱스**다 — 갈리는 것은 문법이지 능력이 아니다"
+    },
+    {
+      "quote": "• Aurora PostgreSQL · ElastiCache · Elasticsearch(한국어 Nori) 기반 데이터·검색 처리",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371583",
+      "where": "지로",
+      "what_it_shows": "⚠️ **실제로 운영하는 것은 원본이 아니라 관리형**(`Aurora`)이다 — 113건. 그리고 검색은 별도 엔진으로 뺐다는 것도 보인다"
+    },
+    {
+      "quote": "• MySQL과 AWS Aurora를 기반으로 데이터 조회, 통계, 대량 처리 및 배치 기능을 개발합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/377565",
+      "where": "샤플앤컴퍼니",
+      "what_it_shows": "같은 형태가 MySQL 쪽에도 있다 — **원본 + 관리형**이 한 줄에. 그리고 이 회사의 다른 줄이 `MySQL 8, AWS Aurora, Redis, JPA, MyBatis, QueryDSL` 로 **Java 생태계**를 그대로 보여 준다"
+    },
+    {
+      "quote": "• RDS PostgreSQL의 성능, 가용성 및 비용을 함께 최적화한 경험이 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375612",
+      "where": "피트인",
+      "what_it_shows": "⭐ `**성능, 가용성 및 비용**` 이 한 줄에 — 관리형에서 운영한다는 것은 **비용이 튜닝 대상이 된다**는 뜻이기도 하다"
+    },
+    {
+      "quote": "• RDBMS(MySQL 등) 설계 및 성능 튜닝 경험, 대용량 트랜잭션 처리 이해",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371696",
+      "where": "에이치투오호스피탈리티",
+      "what_it_shows": "한쪽만 적은 공고인데 **요구는 위 아임웹(둘 다 적은 공고)과 같다** — 설계·튜닝·트랜잭션. 이름이 다를 뿐 찾는 사람은 같다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "data-migration",
+      "how": "⭐ 정말 옮길 때의 어려움 — 옮기는 동안에도 원본이 바뀐다. **이 문서는 '고르기'이고 그쪽이 '그다음'**이다"
+    },
+    {
+      "slug": "schema-migration",
+      "how": "구조 변경을 파일로 관리하는 방식 — 도구는 달라도 원리는 양쪽이 같다"
+    },
+    {
+      "slug": "caching",
+      "how": "DB 앞에 캐시를 두는 이야기. ⭐ 성능 문제의 상당수는 DB 선택이 아니라 여기서 풀린다"
+    },
+    {
+      "slug": "data-quality",
+      "how": "제약 조건을 DB 에 둘 것인가 애플리케이션에 둘 것인가 — 양쪽 공통의 결정"
+    },
+    {
+      "slug": "observability",
+      "how": "메이아이 공고의 `PostgreSQL 쿼리, 인덱스, DB 커넥션, **관측성 지표**를 기반으로 ... 장애 원인을 진단` — 운영의 실제"
+    },
+    {
+      "slug": "sql",
+      "how": "⚠️ 아직 문서가 없다. ⭐ 이 문서의 `same` 절이 **인덱스·트랜잭션 감각이 양쪽에 옮겨 다닌다**고 말하면서 그 감각 자체를 설명할 곳이 없다"
+    }
+  ],
+  "open_questions": [
+    "⚠️ **`market` 을 의도적으로 비웠다.** `tech_relations.json` 에 **PostgreSQL(673건·9.3%)과 MySQL(649건·9.0%)이 각각** 있는데, `market.tech` 는 **하나만** 넣을 수 있다. 두 기술을 한 문서로 다루므로 한쪽만 넣으면 오해를 부른다 — **양쪽 수치와 동반 기술을 본문·표에 다 적었다.**",
+    "⚠️⚠️ **인용한 두 한계 문서의 판이 다르다.** PostgreSQL 은 `docs/current`(판 미표기), MySQL 은 **8.0 매뉴얼**이다 — **8.4 경로(`/8.4/en/limits.html`)는 404** 였다. 나란히 놓은 표를 읽을 때 그 점을 감안해야 한다.",
+    "⚠️⚠️ **성능 벤치마크를 의도적으로 쓰지 않았다.** 조건에 따라 뒤집히고 출처가 대개 한쪽 편이기 때문이다(`service-mesh` 에서 Istio 가 자기 숫자 앞에 \"Different hardware will give different values\" 를 먼저 적은 것과 같은 이유). **성능이 걸린 결정이면 자기 워크로드로 재야 한다** — 이 문서는 그 방법도 주지 않는다.",
+    "**기능 비교표를 만들지 않았다.** 복제 방식·격리 수준의 세부·파티셔닝 문법·전문 검색은 **버전마다 바뀌므로** 이 문서가 다루면 곧 낡는다. 확인한 것은 양쪽 **한계 문서**뿐이고, 그것도 **어투의 차이**를 보려고 열었다.",
+    "⚠️ **관리형 서비스의 차이를 다루지 않았다.** `Aurora` 113건이 나오는데 관리형은 복제·백업·장애 조치·확장 지원 범위가 **원본과 다를 수 있다.** 이 사이클에서 그 자료는 열지 않았다.",
+    "**다른 선택지를 다루지 않았다** — `Oracle` **941건** · `MariaDB` 547건. ⚠️ 특히 Oracle 은 적지 않은 수인데(국내 금융·공공의 비중으로 보인다) 이 문서 밖이다.",
+    "⭐ **`pgvector` 78건에 대한 해석은 추정이다.** \"LLM 수요와 함께 늘었다\"고 적었으나, **시점별 추이를 보지 않았다** — 이 데이터는 한 시점의 스냅샷이다.",
+    "⚠️ **`sql`·`index`·`transaction` 문서가 없어 `same` 절이 그 셋을 전제하고 쓰였다.** \"인덱스·트랜잭션 감각이 양쪽에 옮겨 다닌다\"고 말하면서 **그 감각 자체를 설명할 곳이 없다.**"
+  ],
+  "sources": [
+    {
+      "title": "Appendix K. PostgreSQL Limitations",
+      "url": "https://www.postgresql.org/docs/current/limits.html",
+      "publisher": "PostgreSQL Global Development Group",
+      "kind": "docs",
+      "summary": "⭐ 한계표 — 여러 항목에 **\"can be increased by recompiling PostgreSQL\"** 이 붙어 있다"
+    },
+    {
+      "title": "Limits on Table Column Count and Row Size (MySQL 8.0 Reference Manual)",
+      "url": "https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html",
+      "publisher": "Oracle",
+      "kind": "docs",
+      "summary": "⭐⭐ **\"hard limit\"**·**\"regardless of storage engine\"** — 엔진이 지원할 수 있어도 상위 층이 막는다"
+    }
+  ]
+}
