@@ -36,7 +36,7 @@ async function loadRefs() {
   const dl = el('dl');
   const LABEL = { hero: '히어로', sections: '섹션', rhythm: '리듬', anchors: '앵커', footer: '푸터',
     extra: '덤', cut: '분량', color: '컬러', compare: '비교', counter: '반론', avoid: '하지 말 것',
-    balance: '주고받기', pay: '연봉', badge: '배지', source: '1차 출처', org: '조직', scam: '사기 경고', label: '라벨 정렬', hero3: '히어로 3줄', who: '누구를 부르나', gate: '문지기 조건', expect: '기대치' };
+    balance: '주고받기', pay: '연봉', badge: '배지', source: '1차 출처', org: '조직', scam: '사기 경고', label: '라벨 정렬', hero3: '히어로 3줄', who: '누구를 부르나', gate: '문지기 조건', expect: '기대치', dash: '지표 4칸' };
   Object.entries(data.synthesis || {}).forEach(([k, v]) => {
     dl.append(el('dt', null, LABEL[k] || k), el('dd', null, v));
   });
