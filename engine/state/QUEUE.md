@@ -20,9 +20,18 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Sentry** | US · SaaS(오류 추적·관측) | `blog.sentry.io` — 최신 **2026-09-01** | ✅ 목록·본문 모두 온다. ⚠️ **슬러그를 추측하면 404** — 목록에서 URL 을 받는다 | **`automated-debugging-workflow-sentry`(2026-08-06) 전문을 읽었다 — 자기 사내 워크플로 이야기다.** **두 단계를 자동화했다** — AI(Seer)가 이슈를 고치고, 그다음 사람 리뷰를 Claude 가 조율한다. **⚠️ 선을 그은 자리가 분명하다** — 완전 자율 병합은 거부하며 *"Your org might not be ready to trust the machines that far, and that's ok."* **수치가 있다** — PR 액션률 **+21%** · 48시간 응답률 **+13%** · **병합 없이 닫힌 PR +12.5%**. **⚠️ 그리고 마지막 수치를 변호한다** — 중복 수정이거나 엔지니어가 더 포괄적인 해법을 고른 경우라 **실패가 아니라 성공으로 본다**고 적는다. **한계도 스스로 적는다** — *"we only rolled this workflow out in mid-July, so we'll need to revisit it in a few months to really judge how it's working"* · *"This wasn't a one-shot setup. We spent a couple of weeks iterating on it."* ⚠️ **버린 대안은 약하다**(수동 트리아지가 지속 불가능했다는 암시 정도). **대가와 수치로 기준을 넘는다.** ⚠️ 축은 Honeycomb·Datadog·Grafana 와 겹치지만 **이 글의 축은 관측 제품이 아니라 `AI 가 고치고 사람이 판단하는 경계를 어디에 긋나` 다** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-06 열네 번째 후보 조사 — 새 이름에서 하나를 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
+  - **✅ Sentry** — 위 대기 표로 올렸다. **앞 사이클에서 URL 을 확보해 둔 덕에 바로 본문을 열었다.**
+  - **⏳ HashiCorp — 판정 보류.** `hashicorp.com/en/blog` 는 열리고 최신도 2026-09-03 인데
+    **첫 화면이 제품 발표·기능 업데이트**다(Boundary·Vault·HCP 관련). ⚠️ **그런데 첫 화면으로
+    판정하지 않는다는 규칙이 있고, 이번엔 심층 글 검색을 안 했다.** **다음 조사에서
+    검색으로 심층 글을 찾아 본문을 열고 결론을 낸다** — 인프라 도구 벤더는 이 엔진에 없는 축이다.
+  - **⏳ 아직 안 두드린 것** — **Wise · Fastly.**
 
 - **2026-09-06 열세 번째 후보 조사 — 남겨 둔 한 편으로 Temporal 을 되살렸다.** 큐가 0/3 이라 3순위로 들어왔다.
   - **✅ Temporal** — 위 대기 표로 올렸다. **앞 사이클에서 `버린 대안도 수치도 없다` 며

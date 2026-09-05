@@ -8,26 +8,31 @@
 
 ## 지금 파는 중
 
-**없다 — Temporal 을 닫았다.** 완료 **76곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **76곳** · **큐 1/3**(Sentry) · 비교 문서 33편.
 
-### ⚠️ 다음 사이클은 3순위(후보 조사)
+**다음 사이클은 6순위(신규) — Sentry 다.** PROMPT.md 3단계부터.
+⚠️ **슬러그를 추측하지 말고 목록에서 URL 을 받는다.**
+이미 아는 것: `automated-debugging-workflow-sentry`(2026-08-06, 전문 읽음) ·
+`metrics-caught-ai-size-estimate`(2026-09-01) · `claude-routines-agent-triage`(2026-08-13).
 
-**⏳ Sentry 는 URL 까지 확보해 뒀다** — `automated-debugging-workflow-sentry`(2026-08-06) ·
-`metrics-caught-ai-size-estimate`(2026-09-01). ⚠️ 축이 Honeycomb·Datadog·Grafana 와 겹친다.
-그 밖에 안 두드린 것: **Wise · HashiCorp · Fastly.**
+### Sentry 가 왜 좋은가 — 선을 그은 자리를 적는다
 
-### ⭐⭐ Temporal 에서 남길 것 — 제약을 먼저 말하는 회사
+AI 가 이슈를 고치고 사람 리뷰를 조율하게 하면서도 **완전 자율 병합은 거부한다** —
+`Your org might not be ready to trust the machines that far, and that's ok.`
+**수치도 있다**(PR 액션률 +21% · 48시간 응답률 +13% · 병합 없이 닫힌 PR +12.5%)
+그리고 **마지막 수치를 변호한다** — 중복이거나 더 나은 해법을 고른 경우라 **실패가 아니라
+성공으로 본다**고. ⚠️ **한계도 스스로 적는다**(7월 중순에 막 깔았으니 몇 달 뒤 다시 봐야
+한다). ⚠️ **버린 대안은 약하다.**
 
-**세 기능이 다 같은 모양이다**: ① 제약을 먼저 인정하고(샤드 밖에는 트랜잭션이 없다 ·
-데이터베이스는 급증에 못 붙는다 · 쓰기는 줄일 수 없다), ② **복잡한 정답 대신 단순한 우회**를
-고르고(Transfer Queue · WAL · 계층 저장), ③ **남는 대가를 적는다**(인덱스 지연 · 샤드 수
-고정 · 결정성 제약). **이 결을 만나면 후보 조사에서 바로 올린다.**
+### ⏳ HashiCorp — 다음 조사에서 결론을 낸다
 
-### ⚠️ 이 회사에서 두 번 배운 것 — 한 편으로 판단하지 않는다
+첫 화면이 제품 발표라 보류했는데, ⚠️ **`첫 화면으로 판정하지 않는다` 는 규칙을 이번엔
+끝까지 적용하지 않았다**(심층 글 검색을 안 했다). **Tailscale·Ably·Temporal 이 다 그
+검색에서 뒤집혔다** — 같은 절차를 밟아야 공정하다. **인프라 도구 벤더는 이 엔진에 없는 축이다.**
 
-**떨어뜨릴 때 `안 읽은 글` 을 적어 둔 덕에 되살렸고**(`workflow-engine-principles`),
-**수치가 없다고 적었다가 다른 글에서 수치를 찾아 정정했다**(`scaling-temporal-the-basics`).
-**같은 블로그 안에서 제품 홍보 글 · 설계 원칙 글 · 운영 수치 글의 결이 전부 다르다.**
+### ⏳ 아직 안 두드린 것
+
+**Wise**(핀테크 — 겹침) · **Fastly**(CDN — Cloudflare 겹침).
 
 ## 지금의 진짜 상태
 
@@ -350,6 +355,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
 | `honeycomb.io/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면은 AI·조직 글** — 인프라 글은 따로 찾는다. ⚠️ **슬러그 추측 금지**(`...kafka-honeycomb`, `at-` 없음) |
+| `hashicorp.com/en/blog` | ⏳ **판정 보류** — 첫 화면은 제품 발표. **심층 글 검색을 아직 안 했다**(2026-09-06) |
 | `blog.sentry.io` | ✅ 목록에서 **정확한 URL 을 받을 수 있다**(슬러그 추측은 404). 자체 시스템 글 둘을 확인해 뒀다 |
 | ~~`temporal.io/blog`~~ (판정 뒤집힘) | ✅ **판정 뒤집힘** — `workflow-engine-principles` 에 버린 대안과 대가가 있다(2026-09-06). ⚠️ 첫 화면은 제품 발표라 검색으로 찾는다 |
 | `ably.com/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면과 `topic/` 은 일반 교육 글** — 심층 글은 검색으로 주소를 찾아야 한다 (2026-09-06 재확인, 판정 뒤집힘) |
