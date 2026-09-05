@@ -1,0 +1,290 @@
+{
+  "slug": "monzo",
+  "name": "Monzo",
+  "name_en": "Monzo",
+  "country": "EU",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "monzo.com",
+  "one_liner": "지점 없이 앱 하나로 은행을 하는 곳 — 서비스 3,000개가 그 앱 뒤에서 돈다",
+  "business_model": "**예금을 받아 굴리고 그 위에 유료 서비스를 얹는다.** FY2025 매출은 **12억 파운드(+48%)** 로 처음 10억을 넘었고, 조정 세전이익은 **1억 1,390만 파운드**로 **여덟 배**가 됐다. 고객은 한 해에 **240만 명이 늘어 1,200만 명**을 넘겼고 예금은 **166억 파운드(+48%)** 다.\n\n⚠️ **이 회사의 기술 이야기가 다른 핀테크와 갈리는 지점은 규모가 아니라 성격이다** — 송금이나 결제 중개가 아니라 **은행 그 자체**라서, 시스템이 멈추면 사람들이 카드를 못 긋고 잔액을 못 본다. 2019년 장애 글이 그 목록을 그대로 적는다: 로그인 불가·카드 거래 실패·잔액과 거래내역 누락·고객 지원 채팅 중단. **가용성이 제품의 일부가 아니라 제품 자체인 자리다**(이 정리는 이 사이트의 재구성이다).\n\n그 위에서 회사가 고른 구조가 **서비스 3,000개 이상**이다. **작게 쪼개는 값을 치르기로 한 이상, 쪼갠 것들을 같은 모양으로 유지하는 일이 따로 하나의 제품이 된다** — 백엔드가 한 저장소에 모여 있고 플랫폼 팀이 도구를 서비스로 감싸 파는 이유가 그것이다.",
+  "products": [
+    "앱 은행 계좌 (현재 계좌·직불카드)",
+    "Instant Access Savings (저축)",
+    "대출",
+    "Monzo Business (사업자 계좌)",
+    "유료 구독 요금제"
+  ],
+  "domain_map": {
+    "title": "Monzo 도메인 지도",
+    "question": "서비스 3,000개가 은행 하나를 이루려면 무엇이 같아야 하고 무엇이 갈라져도 되는가?",
+    "code": "flowchart TD\n  U[\"고객 (1,200만 명)\"] --> APP[\"앱\"]\n  APP --> MS[\"<b>마이크로서비스 3,000개 이상</b><br/>• 한 저장소 · 같은 모양<br/>• Go\"]:::accent\n  PLAT[\"<b>플랫폼</b><br/>• 도구를 서비스로 감싼다<br/>• 작업에 다자 승인\"]:::accent -.->|\"같은 모양을 유지한다\"| MS\n  MS --> ST[\"<b>상태 저장</b><br/>• 카산드라 한 클러스터\"]:::accent\n  ST -.->|\"⚠️ 한 번의 변경이 전체에 닿는다\"| RISK[\"⚠️ <b>2019-07-29</b><br/>• 빈 서버 6대 · 약 2시간\"]:::gone\n  MS --> EV[\"이벤트\"] --> DATA[\"<b>데이터</b><br/>• dbt 모델 12,000개 이상<br/>• 팀 100개 이상\"]:::accent\n  DATA --> IF[\"<b>팀 간 계약</b><br/>• CI 가 어기면 막는다\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+  },
+  "revenue_streams": [
+    {
+      "name": "예금을 굴려 얻는 이자",
+      "how": "고객 예금 **166억 파운드(+48%)** 를 대출과 운용에 쓴다. 예금이 늘면 이 쪽이 커지는 구조다.",
+      "domains": [
+        "은행의 상태를 한 클러스터에 몰아 두고 그 대가를 치른다",
+        "서비스 3,000개를 한 저장소에서 같은 모양으로 굴린다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Monzo Annual Report 2025",
+          "url": "https://monzo.com/annual-report/2025",
+          "publisher": "Monzo",
+          "date": "2025",
+          "summary": "매출 12억 파운드(+48%), 조정 세전이익 1억 1,390만 파운드(8배), 신규 고객 240만으로 총 1,200만 이상, 고객 예금 166억 파운드(+48%)."
+        }
+      ]
+    },
+    {
+      "name": "계좌 위에 얹는 유료 서비스",
+      "how": "유료 구독 요금제와 사업자 계좌 등 계좌를 기반으로 파는 것들. ⚠️ **비중을 확인하지 못했다** — 연차보고서 요약 페이지가 매출을 총액으로만 적는다.",
+      "domains": [
+        "서비스 3,000개를 한 저장소에서 같은 모양으로 굴린다",
+        "팀 100개가 만드는 데이터에 계약을 건다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Monzo Annual Report 2025",
+          "url": "https://monzo.com/annual-report/2025",
+          "publisher": "Monzo",
+          "date": "2025",
+          "summary": "매출 12억 파운드(+48%), 조정 세전이익 1억 1,390만 파운드(8배), 신규 고객 240만으로 총 1,200만 이상, 고객 예금 166억 파운드(+48%)."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "서비스 3,000개를 한 저장소에서 같은 모양으로 굴린다",
+      "why": "**작게 쪼개기로 한 순간부터 진짜 일은 쪼갠 것들을 같은 모양으로 유지하는 쪽으로 옮겨 간다.** 서비스가 3,000개를 넘으면 **손으로 쓰는 런북은 반드시 틀리고**, 인프라를 깊이 아는 사람만 손댈 수 있는 작업은 **그 사람이 병목이 된다.** 그래서 플랫폼 팀이 도구를 그대로 주지 않고 **API 를 가진 서비스로 감싸 판다** — `treating platform tooling as a product`.",
+      "tech": [
+        {
+          "tech": "모노레포 (백엔드 전부)",
+          "solves": "모든 백엔드 서비스가 한 저장소에 있고 **만들고 배포하고 운영하는 방식이 같다** — `common patterns for how they're built, deployed and operated`. 그 균일함 덕에 플랫폼 서비스를 빨리 만들 수 있다.",
+          "limits": "⚠️ **균일함은 값이 아니라 비용을 미리 낸 것이다** — 한 저장소에 3,000개가 모이면 빌드·테스트·소유권 경계가 문제가 되는데 **글이 그 대가를 적지 않는다**(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Engineering Behind the Platform",
+              "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+              "publisher": "Monzo Blog",
+              "date": "2026-05-13",
+              "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+            }
+          ]
+        },
+        {
+          "tech": "도구를 감싼 자체 서비스 (Karpenter 서비스 · 마이그레이션 서비스)",
+          "solves": "오픈소스를 날것으로 노출하지 않고 **Monzo 전용 문제를 푸는 서비스**로 감싼다 — `we sometimes find that we need to write our own service to solve a problem specific to Monzo`. 마이그레이션 서비스는 **3,000개 이상의 서비스를 자체 호스팅 쿠버네티스에서 EKS 로 옮기며** 건강 검사와 되돌리기를 함께 돌렸다.",
+          "limits": "⚠️ **감쌀수록 안쪽 도구의 새 기능이 자동으로 오지 않는다** — 감싼 층을 계속 따라 올려야 한다(재구성). 글에는 이 비용이 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Engineering Behind the Platform",
+              "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+              "publisher": "Monzo Blog",
+              "date": "2026-05-13",
+              "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+            }
+          ]
+        },
+        {
+          "tech": "다자 승인 (multi-party authorization)",
+          "solves": "플랫폼 작업에 **2차 승인**을 걸어, 인프라를 깊이 모르는 엔지니어도 **미리 검증된 작업**을 안전하게 실행하게 한다.",
+          "limits": "⚠️ **승인자가 새 병목이 된다** — 그리고 검증된 목록 밖의 일은 여전히 아무나 못 한다(이 한계는 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Engineering Behind the Platform",
+              "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+              "publisher": "Monzo Blog",
+              "date": "2026-05-13",
+              "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+            }
+          ]
+        },
+        {
+          "tech": "Go",
+          "solves": "대부분의 애플리케이션 코드가 이 언어다 — 서비스가 많아도 **읽는 방식이 같다.**",
+          "limits": "⚠️ **회사 블로그에서 언어 선택의 대가를 확인하지 못했다** — 3자 기사에만 나온다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "The Engineering Behind the Platform",
+              "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+              "publisher": "Monzo Blog",
+              "date": "2026-05-13",
+              "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "은행의 상태를 한 클러스터에 몰아 두고 그 대가를 치른다",
+      "why": "**서비스는 3,000개인데 상태는 한 곳에 모여 있다.** 회사가 그 구조를 스스로 이렇게 적는다 — 단일 클러스터는 **운영이 단순한 대신 한 번의 변경이 전체에 닿는다.** ⚠️ **2019년 7월 29일에 그 대가를 정확히 치렀다** — 빈 서버 여섯 대가 즉시 요청을 받기 시작해 **약 두 시간** 동안 로그인·카드 거래·잔액·고객 지원이 무너졌다.",
+      "tech": [
+        {
+          "tech": "Apache Cassandra (단일 클러스터)",
+          "solves": "은행 상태 대부분을 담는다. 장애 시점에 **노드 21대 · 복제 3벌**이었다.",
+          "limits": "⚠️ **운영의 단순함과 장애 격리가 정반대로 놓인다** — 회사가 클러스터를 여러 개로 쪼개 **재발 가능성과 영향을 줄이겠다**고 적으면서, 그 대신 **운영 복잡도가 는다**는 것도 함께 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+              "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+              "publisher": "Monzo Blog",
+              "date": "2019-09-08",
+              "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ auto_bootstrap: false",
+          "solves": "새 서버가 합류할 때 데이터 스트리밍을 막으려고 켠 설정. 2018년 10월 확장 이후 그렇게 두고 있었다.",
+          "limits": "⚠️ **이 플래그가 하는 일이 하나가 아니었다** — 데이터 스트리밍만이 아니라 **새 서버가 활성 상태로 합류하는지도 함께 정했다.** 그래서 데이터가 없는 서버들이 곧바로 읽기·쓰기를 받아 **`not found` 를 돌려줬다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+              "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+              "publisher": "Monzo Blog",
+              "date": "2019-09-08",
+              "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+            }
+          ]
+        },
+        {
+          "tech": "런북과 알림 (사고 뒤에 만든 것)",
+          "solves": "카산드라 운영 결정을 문서로 남기고, **데이터 정합성 이상**(예: `row not found` 비율 변화)에 알림을 걸었다.",
+          "limits": "⚠️ **사고가 나고 나서 생긴 것들이다** — 그전에는 **1대로 시험한 절차를 6대에 그대로 적용**했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+              "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+              "publisher": "Monzo Blog",
+              "date": "2019-09-08",
+              "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "팀 100개가 만드는 데이터에 계약을 건다",
+      "why": "**dbt 모델이 12,000개를 넘고 그것을 만드는 팀이 100개를 넘는다.** 그러면 세 가지가 한꺼번에 나빠진다 — 창고 비용과 데이터 도착 시간이 오르고, 팀마다 모델링 방식이 갈리고, **한 팀의 스키마 변경이 남의 것을 조용히 깨뜨린다.** 그래서 팀 사이의 암묵적 의존을 **명시적 계약**으로 바꾸고, 그 계약을 **CI 가 지키게** 했다.",
+      "tech": [
+        {
+          "tech": "4계층 구조 (랜딩 · 정규화 · 논리 · 표현)",
+          "solves": "원시 이벤트를 자동으로 펼치고(랜딩), 한 개체를 객체지향적으로 모델링하고(정규화), 업무 로직을 얹고(논리), 소비자별 출력을 만든다(표현).",
+          "limits": "⚠️ **백엔드가 구조화된 이벤트를 내보내야 성립한다** — 이 전제가 없는 곳에서는 1·2계층 자동화가 안 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A 'meshy' approach to Data",
+              "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+              "publisher": "Monzo Blog",
+              "date": "2026-04-22",
+              "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+            }
+          ]
+        },
+        {
+          "tech": "Modelgen (사내 도구)",
+          "solves": "최소한의 YAML 설정만으로 **랜딩·정규화 계층을 자동 생성**한다. Monzo 의 정형화된 이벤트 형식이 그 재료다.",
+          "limits": "⚠️ **자동 생성은 정해진 모양 안에서만 된다** — 표현 계층처럼 사람이 정해야 하는 곳은 그대로 남는다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A 'meshy' approach to Data",
+              "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+              "publisher": "Monzo Blog",
+              "date": "2026-04-22",
+              "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+            }
+          ]
+        },
+        {
+          "tech": "데이터 표준 + CI 강제",
+          "solves": "고유 키·신선도 테스트·증분 처리·소유권·문서·이름 규칙을 요구하고 **어기면 PR 을 막는다** — `Automate, don't gatekeep`.",
+          "limits": "⚠️ **막는 것은 자동인데 정하는 것은 중앙이다** — 회사가 원칙으로 `Be opinionated: Fewer choices lead to better outcomes at scale` 를 내세운다. **선택지를 줄이는 것이 곧 팀 자율을 줄이는 것이다**(이 지적은 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A 'meshy' approach to Data",
+              "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+              "publisher": "Monzo Blog",
+              "date": "2026-04-22",
+              "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+            }
+          ]
+        },
+        {
+          "tech": "인터페이스 (팀 간 데이터 계약)",
+          "solves": "정규화·논리 계층에서만 팀 간 공유를 허용하고 **그 지점을 명시적으로 관리한다.** 암묵적 의존을 대체했다.",
+          "limits": "⚠️ **이전이 30% 진행된 시점의 보고다** — 비용 약 40% 감소·랜딩 약 25% 단축은 **일부 도메인의 값**이고, 나머지 70% 에서 같은 값이 날지는 아직 모른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A 'meshy' approach to Data",
+              "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+              "publisher": "Monzo Blog",
+              "date": "2026-04-22",
+              "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **매출 구성을 확인하지 못했다** — 연차보고서 요약 페이지가 **총액(12억 파운드)과 성장률만** 적는다. 이자 수익과 수수료·구독의 비중은 **PDF 본문을 열어야** 나온다.",
+    "⚠️ **2019년 장애 글은 7년 전 자료다** — 그때 노드 21대였고 회사는 **클러스터를 여러 개로 쪼개겠다**고 적었다. **그 계획이 실행됐는지, 지금 상태가 어떤지 확인하지 못했다.**",
+    "**서비스 수의 출처가 갈린다** — 플랫폼 글은 **3,000개 이상**이라 적고, 3자 자료들은 2019~2020년에 **1,500~1,600개**라 말한다. **회사 자료로 시계열을 잇지 못했다** — 이으면 연표가 나올 수 있다.",
+    "⚠️ **플랫폼 글에 버린 대안이 없다** — 모노레포도, 도구를 감싸는 방식도, 다자 승인도 **왜 다른 길이 아니었는지가 없다.** 이 회사에서 대가가 적힌 곳은 **장애 회고**와 **데이터 글의 전제** 쪽이다.",
+    "**AI 축을 아직 안 봤다** — `building-agent-chip`(사내 에이전트 도구)과 `engineering-the-future-of-customer-operations`(LLM 기반 운영 에이전트, **평가 체계를 만들었다**고 적는다) 두 편이 목록에 있다. **평가 체계 쪽은 Sentry 와 비교할 재료가 될 수 있다.**",
+    "**Kafka 와 쿠버네티스 네트워크 정책 이야기를 회사 자료로 확인하지 못했다** — 3자 기사(InfoQ)에만 있다."
+  ],
+  "sources": [
+    {
+      "title": "Monzo Annual Report 2025",
+      "url": "https://monzo.com/annual-report/2025",
+      "publisher": "Monzo",
+      "date": "2025",
+      "summary": "매출 12억 파운드(+48%), 조정 세전이익 1억 1,390만 파운드(8배), 신규 고객 240만으로 총 1,200만 이상, 고객 예금 166억 파운드(+48%)."
+    },
+    {
+      "title": "The Engineering Behind the Platform",
+      "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+      "publisher": "Monzo Blog",
+      "date": "2026-05-13",
+      "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+    },
+    {
+      "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+      "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+      "publisher": "Monzo Blog",
+      "date": "2019-09-08",
+      "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+    },
+    {
+      "title": "A 'meshy' approach to Data",
+      "url": "https://monzo.com/blog/a-meshy-approach-to-data",
+      "publisher": "Monzo Blog",
+      "date": "2026-04-22",
+      "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+    }
+  ]
+}
