@@ -8,31 +8,25 @@
 
 ## 지금 파는 중
 
-**없다.** 완료 **71곳** · ⚠️ **큐 0/3 — 이번 후보 조사가 빈손이다.**
+**없다.** 완료 **71곳** · **큐 1/3**(Rightmove) · 비교 문서 33편.
 
-### ⚠️ 되살릴 목록이 끝났다 — 다음 후보 조사는 새 이름으로 돌아간다
+**다음 사이클은 6순위(신규) — Rightmove 다.** PROMPT.md 3단계부터.
+⚠️ **기술 글은 `rightmove.blog/category/software-engineering/` 에 있다**(5페이지 분량).
 
-**Medium 이라 못 읽는다로 떨어뜨렸던 목록을 다 썼다.** 그 전략은 성공적이었다 —
-**Booking.com 과 Trainline 을 그 목록에서 건졌다.** 이제 남은 셋(Tokopedia · Dream11 ·
-Meesho)이 전부 떨어졌으니 **다음부터는 새 축을 찾는 조사로 돌아간다.**
+### ⚠️ 이번에 배운 것 — 첫 화면으로 블로그를 판정하지 않는다
 
-### ⚠️ 이번 사이클의 진짜 결과 — Medium 목록은 완전히 막혔다
+Rightmove 의 최신 3편은 **디자인·커리어 글**이다. 거기서 멈췄으면 떨어뜨렸을 텐데,
+**카테고리로 들어가니 회고형 기술 글이 나왔다.** 그중 하나는 RFC 로 대안을 **장단점 표**로
+놓고 고르며 **버린 쪽의 장점까지 적는다.**
+⚠️ **Capital One · Ably · ClickHouse · Tailscale 을 `열리는데 마케팅` 으로 떨어뜨렸는데
+같은 실수였을 수 있다** — 그 넷은 **첫 화면만 봤다.** 새 단서가 필요할 때 다시 볼 목록이다.
 
-홈 · `/tagged/<t>` · **`/archive`(→`/all`, `No stories found`)** 를 전부 시도했다.
-**개별 글 주소만 열린다.** 그래서 Medium 계열 후보는 **WebSearch 로 글 주소를 찾을 수
-있을 때만 평가할 수 있고, 최신 글이 언제인지는 영영 알 수 없다.**
-⚠️ **Tokopedia 가 그 함정을 보여 준다** — 검색에 잡힌 대표작이 **2018년 재게시이고
-원문은 2016년**이었다(글 끝에 회사가 직접 적어 뒀다). **날짜를 본문에서 확인하지 않으면
-10년 전 자료를 올릴 뻔했다.**
+### ⏳ 브라우저로 다시 볼 둘
 
-### ⏳ 판정이 뒤집힐 수 있는 둘 (새 단서가 생기면)
-
-- **Dream11** — 3자 자료(AWS·Aerospike)에 좋은 이야기가 있다: Redis→Aerospike,
-  Elasticsearch→OpenSearch(**피크 동시 쿼리 4만 · 10초 → 150ms**), 저수준 Kafka 컨슈머 자체 개발.
-  **회사가 직접 쓴 글의 주소**를 찾으면 다시 본다.
-- **Meesho** — `monolith → microservices → federated architecture` 진화와 **ML 플랫폼
-  1세대의 실패**(모델마다 맞춤 피처 로직 · DAG 가 빽빽해짐 · 비용 급증)가 결이 좋다.
-  **ScyllaDB 컨퍼런스 발표(2026-04) 자료의 주소**를 찾으면 다시 본다.
+- **Supercell**(게임 축 — Roblox 하나뿐이다) — The New Stack 의 2026-03-14 기사.
+  **서버 엔지니어 본인 이야기**를 정리한 것이고 `a mighty team of two` 로 수억 명을 잇는
+  소셜 플랫폼을 만들었다. **WebFetch 로는 뉴스레터 폼만 온다.**
+- **Swiggy**(인도 배달) — `bytes.swiggy.com` 이 두 번 다 무응답이다.
 
 ## 지금의 진짜 상태
 
@@ -354,6 +348,9 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
+| `rightmove.blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면은 문화·디자인 글** — 기술 글은 `/category/software-engineering/` 에 있다 (2026-09-06 확인) |
+| `bytes.swiggy.com` | ❌ **두 번 다 응답이 없다**(WebFetch 무출력). 브라우저로는 열릴 수 있다 |
+| `thenewstack.io` | ⚠️ WebFetch 로는 **뉴스레터 폼만** 오고 본문이 안 온다. 브라우저로 시도할 것 |
 | **Medium 목록 (전 경로)** | ❌ **어떤 경로로도 안 온다** — 홈 · `/tagged/<t>` · **`/archive`(→`/all` 리다이렉트, `No stories found`)** 를 전부 시도했다. **개별 글 주소만 열린다** → Medium 후보는 **WebSearch 로 글 주소를 찾을 수 있을 때만** 평가 가능 (2026-09-06 확정) |
 | ~~**Medium 발행물 홈** (`medium.com/<pub>`)~~ | ❌ **브라우저로도 목록이 안 온다** — 제목·팔로워 수·탭 이름만 오고 글이 비어 있다(JS 렌더링). **글 주소를 WebSearch 로 찾아 개별로 열어야 한다** ⚠️ 그래서 최신 글 날짜를 알 수 없다 (2026-09-06 확인) |
 | `medium.com/booking-com-development` | ✅ **브라우저로 전문이 온다** (2026-09-05 확인). 목록은 `blog.booking.com` 에서 WebFetch 로 |

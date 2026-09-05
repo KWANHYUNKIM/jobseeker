@@ -20,9 +20,26 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Rightmove** | EU(UK) · 커머스(부동산 포털) | `rightmove.blog` — 최신 **2026-06-24**, 기술 글은 **2025-09-30** | ✅ WebFetch 로 목록·본문 모두 온다. ⚠️ **첫 화면은 문화·디자인 글이라 `/category/software-engineering/` 로 들어가야 한다**(5페이지 분량) | **부동산 축이 0곳이다.** 본문 두 편을 열어 확인했다. `from-legacy-to-resilience...`(2025-01-28)가 **이 엔진이 찾는 결이다** — RFC 로 대안을 **장단점 표**로 놓고 고른다: 기존 배치 방식의 장점까지 적고(**추가 저장소 불필요 · 사내 기존 패턴 활용**) 그럼에도 버린 이유를 밝힌다(*"Not resilient: A single instance meant any failure disrupted the process."*). **대가도 인정한다** — *"Added complexity in maintaining local state and ensuring data consistency"* · 추가 저장소 필요. **수치** — 사이트맵 생성이 **5시간 → 30분** · **266,569개 지역** · REST 요청 **수십만 건** 제거. ⚠️ 다른 한 편(`monolith-to-microservice...`, 2025-09-30)은 **수치가 없고 성공 서사에 가깝다** — 어려움은 적지만(*"late evolutions to requirements that weren't in our control"*) 개발 기간·성능 수치가 없다. **한 회사 안에서 글의 결이 갈리는 또 하나의 사례다**(Nubank·Bolt 에 이어 세 번째) |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-06 여덟 번째 후보 조사 — 새 축으로 돌아와 하나를 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
+  **되살릴 목록이 끝나 새 이름을 찾는 조사다.** 노린 축: 인도 배달 · 게임 · 부동산.
+  - **✅ Rightmove**(UK · 부동산 포털) — 위 대기 표로 올렸다. **부동산 축 첫 자리다.**
+    ⚠️ **첫 화면만 보면 떨어뜨릴 뻔했다** — 최신 3편이 디자인·커리어 글이다.
+    **`/category/software-engineering/` 로 들어가야 기술 글이 나온다**(5페이지 분량).
+    **카테고리가 있는 블로그는 첫 화면으로 판정하지 않는다** — Capital One·Ably 를 그렇게
+    떨어뜨렸는데 같은 실수였을 수 있다.
+  - **❌ Swiggy**(IN · 배달) — `bytes.swiggy.com` 이 **두 번 다 응답이 없다**(WebFetch 무출력).
+    ⚠️ 브라우저로는 열릴 수 있다. 인도 배달 축이라 값이 있다.
+  - **⏳ Supercell**(핀란드 · 게임) — **회사 블로그가 아니라 3자 기사**를 찾았다:
+    The New Stack `inside-supercells-minimalist-massive-social-network`(2026-03-14).
+    **서버 엔지니어가 직접 이야기한 내용**을 매체가 정리한 것이고 *"a mighty team of two"* 로
+    수억 게이머를 잇는 소셜 플랫폼을 만든 이야기다. ⚠️ **WebFetch 로는 본문이 안 온다**
+    (뉴스레터 폼만). **브라우저로 다시 볼 값이 있다 — 게임 축이 Roblox 하나뿐이다.**
+  - **❌ King**(게임) — 전용 기술 블로그를 못 찾았다.
 
 - **2026-09-06 일곱 번째 후보 조사 — 되살릴 목록을 소진했고 빈손이다.** 큐가 0/3 이라 3순위로 들어왔다.
   **⚠️ 이 사이클의 결과는 후보가 아니라 두 가지 확정이다.**
