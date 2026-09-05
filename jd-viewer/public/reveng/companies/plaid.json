@@ -1,0 +1,177 @@
+{
+  "slug": "plaid",
+  "name": "Plaid",
+  "name_en": "Plaid",
+  "country": "US",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "plaid.com",
+  "one_liner": "남의 은행 계좌에 안전하게 닿는 길을 파는 회사 — 그 길이 끊기면 위에 얹힌 앱들이 함께 멈춘다",
+  "business_model": "**핀테크 앱과 은행이 소비자의 은행 계좌에 안전하게 닿게 해 주고 API 호출·연결마다 받는다.** 신원 확인, 계좌 자금 이동, 잔액 조회, 결제가 그 위에 얹힌다. **돈을 내는 쪽은 최종 사용자가 아니라 그 네트워크 위에 제품을 짓는 회사들**이다.\n\n2025년 ARR 이 **5억 4,600만 달러(+40%)** 이고 그해 **조정 EBITDA 흑자**가 됐다. 금융기관 **1만 2,000곳 이상**과 소비자 계좌 **5억 개 이상**(미국·캐나다·영국·유럽)에 닿는다. ⚠️ **밸류에이션은 2021년 134억 달러에서 2025년 61억으로 내려앉았다가 2026년 2월 80억**이다 — **이 회사의 기술 판단을 읽을 때 그 시기의 압박을 함께 봐야 한다**(이 지적은 이 사이트의 재구성이다).\n\n⚠️ **이 사업의 성격이 신뢰성 요구를 정한다** — 위에 얹힌 앱들이 **자기 사용자에게 SLA 를 약속**하므로, 이 회사는 **그보다 한 자리 더 엄격한 값**을 스스로에게 건다. 실제로 데이터베이스 계층에 **99.995%** 를 요구한다고 적는다(구글 SRE 관행대로 **9 를 하나 더** 붙인 것이다).",
+  "products": [
+    "계좌 연결 API (Auth · Balance · Identity)",
+    "Transactions (거래 내역)",
+    "Payments (결제 개시)",
+    "Signal · Beacon (사기 탐지)",
+    "Income · Assets (심사)"
+  ],
+  "domain_map": {
+    "title": "Plaid 도메인 지도",
+    "question": "남의 은행에 닿는 길을 파는 회사가, 그 길 아래의 저장소를 어떻게 갈아 끼우는가?",
+    "code": "flowchart TD\n  A[\"<b>핀테크 앱 · 은행</b><br/>• 기업 고객 1,000곳 이상\"]:::accent --> P[\"<b>Plaid API</b><br/>• 호출 · 연결마다 받는다\"]:::accent\n  P --> B[\"<b>금융기관 1만 2,000곳</b><br/>• 소비자 계좌 5억 개 이상\"]:::list\n  P --> S[\"<b>온라인 저장 스택</b><br/>• 약 800 서버 · 약 50만 QPS<br/>• 약 650TB · SLA 99.99%+\"]:::accent\n  S --> SQL[\"<b>SQL 플랫폼</b><br/>• 약 446 서버 · 약 14만 QPS\"]:::accent\n  SQL --> M[\"⚠️ <b>Aurora MySQL</b><br/>• 단일 라이터 · 약 12k writes/sec\"]:::gone\n  SQL --> T[\"<b>TiDB (자체 호스팅)</b><br/>• 약 160 서버 · 약 17만 QPS\"]:::accent\n  M -.->|\"2023~2025 이전\"| T\n  classDef gone stroke-dasharray: 4 3"
+  },
+  "revenue_streams": [
+    {
+      "name": "핵심 계좌 연결 API",
+      "how": "연결과 호출마다 받는다. 금융기관 **1만 2,000곳 이상**, 소비자 계좌 **5억 개 이상**. 2025년 ARR **5억 4,600만 달러(+40%)** 의 대부분.",
+      "domains": [
+        "관계형 저장소를 통째로 갈아 끼우되 2년을 넘기지 않는다",
+        "남의 은행 1만 2,000곳에 대신 닿는다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Plaid revenue, valuation & funding",
+          "url": "https://sacra.com/c/plaid/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
+        }
+      ]
+    },
+    {
+      "name": "새 제품군 (신원 확인 · 사기 탐지 · 결제 개시)",
+      "how": "⚠️ **ARR 의 20% 이상이고 전년 대비 93% 자란다** — 계좌 연결 위에 얹은 것들이다.",
+      "domains": [
+        "남의 은행 1만 2,000곳에 대신 닿는다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Plaid revenue, valuation & funding",
+          "url": "https://sacra.com/c/plaid/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "관계형 저장소를 통째로 갈아 끼우되 2년을 넘기지 않는다",
+      "why": "⚠️ **떠날 이유가 다섯이었다** — ① **신뢰성**: 앱 계층 SLA 가 DB 계층에 **99.995%** 를 요구하는데 **Aurora 의 단일 라이터가 단일 실패점**이고 설정 변경·확장·재시작·페일오버마다 다운타임이 생긴다. ② **개발 속도**: 큰 테이블에서 **약 12k writes/sec 병목**을 만났고, ⚠️ **매년 2 엔지니어-년을 Aurora 의 한계를 우회하는 설계에 썼다.** ③ 유지 부담. ④ 쓰기 확장의 한계. ⑤ **MySQL 5.7 지원 종료** — 5.7→8.0 업그레이드도 큰 일이 될 것이라(페이스북의 8.0 업그레이드를 보고 판단했다) **그 노력을 플랫폼 이전으로 돌렸다.** ⚠️ **그리고 설계 제약을 스스로 걸었다 — 전사적으로 2년을 넘기지 않는다.**",
+      "tech": [
+        {
+          "tech": "TiDB (자체 호스팅)",
+          "solves": "**자동 샤딩**으로 쓰기까지 수평 확장되고, **5TB+ 테이블·수백억 행에도 온라인 스키마 변경에 다운타임이 없다.** 현재 **약 160 서버 · 약 17만 QPS · 약 70TB · 약 700 vCPU**.",
+          "limits": "⚠️ **MySQL 과 다른 점들이 이전의 첫 관문이 됐다** — **SERIALIZABLE 격리가 없고**(SNAPSHOT ISOLATION 으로 맞춰야 한다), **auto-increment 가 전역 단조가 아니며**(여러 노드가 범위를 할당한다), **외래 키가 일부 도구에서 지원되지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+              "url": "https://plaid.com/blog/switching-to-tidb/",
+              "publisher": "Plaid Engineering",
+              "date": "2025-02-12",
+              "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ Aurora MySQL (떠난 쪽)",
+          "solves": "읽기는 아주 잘 확장된다. 관리형이라 운영 부담이 적다.",
+          "limits": "⚠️ **단일 라이터가 단일 실패점**이고, 큰 테이블에서 **약 12k writes/sec** 에 걸리며, 온라인 스키마 변경에 무거운 우회가 필요해 **팀들이 기존 테이블을 고치는 대신 새 테이블을 추가했다.** 업그레이드에는 **6 엔지니어링 개월과 수십 분의 다운타임**이 들었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+              "url": "https://plaid.com/blog/switching-to-tidb/",
+              "publisher": "Plaid Engineering",
+              "date": "2025-02-12",
+              "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "`mysql/tidb/rollback mysql` 컷오버 클라이언트",
+          "solves": "공유 데이터베이스 드라이버에 심은 **기능 플래그**로 트래픽을 멈추고 다른 엔드포인트로 돌린다. **원자적 전환**(쓰기 중단 → 복제 따라잡기 → 읽기 전환 → 검증 → 쓰기 전환)으로 **쓰기 다운타임 약 60초**.",
+          "limits": "⚠️ **두 데이터베이스에 동시에 읽고 쓰지 않는다** — 그 방식의 신뢰성·일관성 문제를 피하려고 일부러 순차적으로 간다(회사의 설명이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+              "url": "https://plaid.com/blog/switching-to-tidb/",
+              "publisher": "Plaid Engineering",
+              "date": "2025-02-12",
+              "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "롤백 MySQL 클러스터",
+          "solves": "⚠️ **같은 스냅샷으로 만든 세 번째 클러스터.** 전환 뒤 문제가 생기면 **뒤로 돌아가는 대신 앞으로 실패**한다.",
+          "limits": "⚠️ **세 클러스터 사이의 복제를 유지해야 한다** — 비용과 복잡도가 늘지만 되돌릴 길을 산다(뒤쪽은 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+              "url": "https://plaid.com/blog/switching-to-tidb/",
+              "publisher": "Plaid Engineering",
+              "date": "2025-02-12",
+              "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "동적 런북 (Deno · Jupyter · TypeScript)",
+          "solves": "⚠️ **문서와 실행을 한 곳에 둔다** — Markdown 설명과 TypeScript 코드를 노트북에 섞고, 내부 SDK 가 클러스터 개념을 추상화하며 **각 셀 실행을 슬랙에 로깅해 감사**한다. **컷오버 5배, 서비스 이전 3~4배 가속.**",
+          "limits": "⚠️ **표준적인 서비스(약 80%)에서 가장 큰 개선이 난다** — 나머지는 여전히 손이 간다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+              "url": "https://plaid.com/blog/switching-to-tidb/",
+              "publisher": "Plaid Engineering",
+              "date": "2025-02-12",
+              "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "남의 은행 1만 2,000곳에 대신 닿는다",
+      "why": "⚠️ **이 회사의 본체인데 아직 자료를 못 읽었다.** 금융기관 **1만 2,000곳 이상**에 연결하고 소비자 계좌 **5억 개 이상**에 닿는다 — **기관마다 인터페이스도 정책도 다르고, 어느 한 곳이 바뀌면 그 위에 얹힌 앱들이 함께 흔들린다**(이 정리는 이 사이트의 재구성이다). **그 연결을 어떻게 유지하고 어떻게 바뀌는 것을 따라가는지가 이 도메인의 질문이다.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **핵심 제품(계좌 연결)의 구조를 아직 못 읽었다** — **금융기관 1만 2,000곳에 어떻게 닿고 그 변화를 어떻게 따라가는지**가 이 회사의 본체인데 자료가 없다. **다음 사이클의 일이다.**",
+    "⚠️ **접근 지도를 두 번 고쳐야 했다** — `engineering.plaid.com`(Medium, 목록이 비어 있다) 로 접었다가, `plaid.com/blog` 를 찾았는데 **그것도 Medium 개별 글로 리다이렉트된다.** **다만 개별 글은 브라우저로 전문이 읽힌다.**",
+    "**사업 수치가 전부 3자 출처다**(Sacra 등) — ARR·밸류에이션·기관 수·계좌 수. **회사가 직접 밝힌 값을 못 찾았다.**",
+    "**새 제품군(사기 탐지·신원 확인·결제 개시)의 기술을 모른다** — ARR 의 20% 이상이고 93% 자란다는 것만 3자 자료로 안다.",
+    "**TiDB 이전이 끝났는지 모른다** — 글은 2025년 2월이고 **2025년 중반 완주가 목표**였다. 2024년 말 기준 **41개 서비스**를 옮겼다.",
+    "⚠️ **밸류에이션이 2021년 134억에서 2025년 61억으로 내려앉은 시기와 이 이전 기간이 겹친다** — 비용 압박이 판단에 어떻게 작용했는지는 글에 없다(이 지적은 이 사이트의 재구성이다)."
+  ],
+  "sources": [
+    {
+      "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+      "url": "https://plaid.com/blog/switching-to-tidb/",
+      "publisher": "Plaid Engineering",
+      "date": "2025-02-12",
+      "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+    },
+    {
+      "title": "Plaid revenue, valuation & funding",
+      "url": "https://sacra.com/c/plaid/",
+      "publisher": "Sacra",
+      "date": "2026",
+      "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
+    }
+  ]
+}
