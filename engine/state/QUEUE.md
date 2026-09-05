@@ -20,9 +20,22 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Temporal** | US · SaaS(내구성 있는 실행 엔진) | `temporal.io/blog` — 최신 **2026-09-04** | ✅ WebFetch 로 목록·본문 모두 온다. ⚠️ **첫 화면은 파트너십·제품 발표라 심층 글을 검색으로 찾아야 한다** | **⚠️ 한 사이클 전에 ❌ 로 떨어뜨렸다가 남겨 둔 한 편으로 판정이 뒤집혔다.** `workflow-engine-principles` 는 **설계 원칙과 그 제약을 함께 적는다**. **① 확장의 단위를 워크플로로 잡는다** — 개별 워크플로를 크게 키우는 대신 *"Every workflow should be limited in size, but we can infinitely scale out the number of workflows."* **② 제약을 먼저 인정한다** — *"as soon as queues live outside of core shards of workflow state, we don't have transactions across them anymore"*. **③ 그리고 복잡한 프로토콜을 피해 푼다** — Transfer Queues 로 *"we have transactional commits with a later transfer to the queueing subsystem... doesn't rely on complex two-phase commit protocols."* **④ 남는 지연도 적는다** — 가시성 인덱스는 *"always some time behind the actual update"*. ⚠️ **수치는 여전히 약하다** — 앞서 읽은 `...custom-persistence-layer` 글도 `we saw an immediate impact` 수준이었다. **버린 대안과 대가로 기준을 넘는다.** **축이 이 엔진에 없다** — **내구성 있는 실행(durable execution) 엔진**이다 |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-06 열세 번째 후보 조사 — 남겨 둔 한 편으로 Temporal 을 되살렸다.** 큐가 0/3 이라 3순위로 들어왔다.
+  - **✅ Temporal** — 위 대기 표로 올렸다. **앞 사이클에서 `버린 대안도 수치도 없다` 며
+    떨어뜨렸는데, 그때 `workflow-engine-principles 는 안 읽었다` 고 남겨 둔 것이 맞았다.**
+    ⚠️ **한 회사 안에서 글의 결이 갈리는 다섯 번째 사례다**(Nubank · Bolt · Booking.com ·
+    Rightmove 에 이어) — 같은 블로그에서 **제품 홍보 글과 설계 원칙 글이 완전히 다르다.**
+  - **⏳ Sentry — URL 을 확보했다. 다음 조사에서 본문을 연다.**
+    `blog.sentry.io` 목록은 열리고 **슬러그를 추측하면 404 지만 목록에서 URL 을 받으면 된다.**
+    자체 시스템으로 보이는 것 둘: `automated-debugging-workflow-sentry`(2026-08-06,
+    **사내 디버깅 자동화의 기술 구조**) · `metrics-caught-ai-size-estimate`(2026-09-01,
+    **애플리케이션 지표가 자기 도구의 버그를 잡아낸 이야기**).
+    ⚠️ 다만 축이 관측·오류 추적이라 **Honeycomb·Datadog·Grafana 와 겹친다.**
 
 - **2026-09-06 열두 번째 후보 조사 — 새 이름으로 돌아와 하나를 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
   **의심 목록이 끝나 미리 골라 둔 새 이름들을 두드렸다.**

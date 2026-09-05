@@ -8,28 +8,36 @@
 
 ## 지금 파는 중
 
-**없다 — Honeycomb 을 닫았다.** 완료 **75곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **75곳** · **큐 1/3**(Temporal) · 비교 문서 33편.
 
-### ⚠️ 다음 사이클은 3순위(후보 조사) — 새 이름이 남아 있다
+**다음 사이클은 6순위(신규) — Temporal 이다.** PROMPT.md 3단계부터.
+⚠️ **첫 화면은 파트너십·제품 발표다 — 심층 글 주소를 검색으로 먼저 찾아 둔다.**
+이미 아는 것: `workflow-engine-principles`(요약 확보) ·
+`higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer`(요약 확보) ·
+`scaling-temporal-the-basics`. **공식 문서(`docs.temporal.io/encyclopedia/architecture`)도
+있다** — 회사 자료이므로 구조를 채우는 데 쓸 수 있다.
 
-미리 골라 둔 것 중 안 두드린 것: **Sentry**(`blog.sentry.io` — ⚠️ **목록은 열리는데
-슬러그를 추측하면 404 다. 목록에서 URL 을 받는다**) · **Wise** · **HashiCorp** · **Fastly**.
-⏳ 그리고 **Temporal 의 `workflow-engine-principles`** 한 편 — **내구성 있는 실행 엔진은
-이 엔진에 없는 축이라** 그 글로 판정이 뒤집힐 수 있다.
+### ⭐⭐ 남겨 둔 한 편이 판정을 뒤집었다
 
-### ⭐⭐ Honeycomb 에서 남길 것 — 무엇을 안 받느냐가 무엇을 만들지를 정한다
+앞 사이클에서 Temporal 을 ❌ 로 놓으면서 **`workflow-engine-principles 는 안 읽었다`** 고
+적어 뒀는데, **그 한 편에 버린 대안과 대가가 다 있었다.**
+⚠️ **한 회사 안에서 글의 결이 갈리는 다섯 번째 사례다**(Nubank · Bolt · Booking.com ·
+Rightmove 에 이어). **떨어뜨릴 때 `무엇을 안 읽었는지` 를 반드시 적어 둔다** — 그것이
+다음 사이클의 입구가 된다.
 
-**좌석·쿼리 무제한 + 이벤트 과금**이 **색인 없는 컬럼 스토어**를 낳았다.
-**Ably 와 좋은 대조다** — 저쪽은 연결·채널을 `분` 으로 팔아 **동시성 유지가 원가**이고,
-이쪽은 이벤트로만 받아 **질의 비용을 회사가 떠안는다.**
-**요금 단위를 보면 그 회사가 무엇을 직접 만들어야 했는지가 보인다** — 프로파일 단계에서
-`business_model` 을 쓸 때 이 각도를 본다.
+### Temporal 이 왜 좋은가 — 제약을 먼저 말하고 단순하게 푼다
 
-### ⚠️ 이 회사에서 본 좋은 습관과 그 한계
+**확장의 단위를 워크플로로 잡는다**(`Every workflow should be limited in size, but we can
+infinitely scale out the number of workflows`). **제약을 먼저 인정하고**(큐가 워크플로
+상태의 핵심 샤드 밖에 있으면 **그 사이에 트랜잭션이 없다**), **2단계 커밋 같은 복잡한
+프로토콜을 피해** Transfer Queues 로 푼다. **남는 지연도 적는다**(가시성 인덱스는 항상
+실제 갱신보다 뒤에 있다). ⚠️ **수치는 약하다.**
 
-**나빠진 것을 적는다**(브로커 교체 8~12시간 → 48~72시간)는 드문 미덕인데,
-⚠️ **이전 뒤에 그 수치가 얼마가 됐는지는 안 적는다.** **나빠졌던 수치는 남기고 좋아진
-수치는 안 남긴 자리**가 그대로 `hard_problems` 가 됐다.
+### ⏳ 다음 후보 — Sentry 는 URL 까지 확보해 뒀다
+
+`automated-debugging-workflow-sentry`(2026-08-06) · `metrics-caught-ai-size-estimate`
+(2026-09-01). ⚠️ **축이 Honeycomb·Datadog·Grafana 와 겹친다.**
+그 밖에 안 두드린 것: **Wise · HashiCorp · Fastly.**
 
 ## 지금의 진짜 상태
 
@@ -352,7 +360,8 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
 | `honeycomb.io/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면은 AI·조직 글** — 인프라 글은 따로 찾는다. ⚠️ **슬러그 추측 금지**(`...kafka-honeycomb`, `at-` 없음) |
-| `temporal.io/blog` | ⚠️ 열리지만 ❌ — 자기 시스템 글은 있는데 **버린 대안도 수치도 없다**(2026-09-06 본문 확인). `workflow-engine-principles` 는 미확인 |
+| `blog.sentry.io` | ✅ 목록에서 **정확한 URL 을 받을 수 있다**(슬러그 추측은 404). 자체 시스템 글 둘을 확인해 뒀다 |
+| ~~`temporal.io/blog`~~ (판정 뒤집힘) | ✅ **판정 뒤집힘** — `workflow-engine-principles` 에 버린 대안과 대가가 있다(2026-09-06). ⚠️ 첫 화면은 제품 발표라 검색으로 찾는다 |
 | `ably.com/blog` | ✅ 목록·본문 모두 열린다. ⚠️ **첫 화면과 `topic/` 은 일반 교육 글** — 심층 글은 검색으로 주소를 찾아야 한다 (2026-09-06 재확인, 판정 뒤집힘) |
 | `capitalone.com/tech/software-engineering/` | ⚠️ **심층 글은 여기 모여 있다**(첫 화면은 AI·연구 소식). 다만 ❌ — 기술적으로 깊은 글은 **가상 사례**이고, 자기 시스템 글은 **대가를 안 적는다** (2026-09-06 세 편 확인) |
 | `capitalone.com/software/blog/` | ⚠️ **`capitalonesoftware.com/blog` 로 301** — 별도 제품 사업부(Capital One Software)다. `/tech/blog/` 와 다른 곳 |
