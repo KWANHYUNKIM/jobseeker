@@ -1721,6 +1721,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "scraping",
+      "title": "크롤링·스크래핑",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "남의 화면에서 데이터를 가져오는 일 — **한 번 가져오는 건 쉽고, 계속 가져오는 게 전부**다. 그리고 그것을 규율하는 규칙은 **있지만 강제가 아니라고 명세 스스로 적어 놨다.**",
+      "aliases": [
+        "크롤링",
+        "크롤러",
+        "스크래핑",
+        "스크래퍼",
+        "web crawling",
+        "web scraping",
+        "robots.txt"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
