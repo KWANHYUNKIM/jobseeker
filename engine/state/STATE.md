@@ -8,33 +8,36 @@
 
 ## 지금 파는 중
 
-**Tailscale(CA/US · SaaS—네트워킹)** `in_progress` · **도메인 3 · 기능 0** —
-**73곳** · ⚠️ 큐 0/3.
+**Tailscale(CA/US · SaaS—네트워킹)** `in_progress` · **도메인 3 · 기능 1** —
+73곳 · ⚠️ 큐 0/3.
 
-### ⭐⭐ 세 도메인이 다 `버린 길` 을 갖고 있다
+방금 쓴 기능: **`direct-if-possible-relay-if-not`(직접 잇되 안 되면 눈감은 릴레이로
+넘긴다)**. 결정 8개가 **전부 `confirmed`** 이고 **수치가 이 엔진에서 손꼽게 촘촘하다.**
 
-이 회사는 **고르지 않은 쪽을 매번 적는다** — 중앙 게이트웨이형 VPN, MySQL·PostgreSQL·
-SQLite·CockroachDB, 점진적 in-place 재작성, libtailscale. **후보 조사에서 이 결을 놓쳤던
-곳이라 더 값지다**(첫 화면만 보고 `마케팅` 으로 떨어뜨렸었다).
+### ⭐⭐ 이 글의 미덕 — 되냐 안 되냐가 아니라 확률로 말한다
 
-### 다음 사이클 — 저장소 이전이 가장 단단하다
+프로브 **256회 → 64%**, **1,024회 → 98%**, **2,048회 → 99.9%**(초당 100패킷이면 약 20초).
+그리고 **양쪽 다 hard NAT 이면 각 17만 회 · 28분**이라고 솔직히 적으면서
+**생일 역설이 없으면 1.2년**이라는 비교를 붙인다.
 
-**`an-unlikely-database-migration`**(전문 읽음) — **20줄짜리 JSON 파일 저장소**가
-**150MB** 에 닿을 때까지 버텼고, 버린 대안이 넷이며(MySQL/PostgreSQL 은 Docker 테스트
-인프라와 HA 시맨틱, SQLite 는 *"couldn't bring myself to make an argument"*,
-CockroachDB 는 *"relatively new for a database"*), 고른 이유도 셋이다(Jepsen 리포트 3.4.3 ·
-**Go 로 쓰여 테스트에 직접 링크** · KV 패턴이 맞음). **수치** — 쓰기 **1초(때론 그 이상)
-→ 밀리초** · 파일 **150MB** · 인메모리 인덱스를 만드는 데 **2~3주**.
-**인정한 대가** — etcd 에는 SQL 의 인덱스 체계가 없다.
+### ⭐⭐ 그리고 못 하는 것을 못 한다고 적는다
 
-나머지 둘도 자료를 읽어 뒀다 — `how-tailscale-works`(컨트롤/데이터 평면) ·
-`tailscale-rs-...`(두 구현).
+UDP 를 DNS 빼고 전부 막는 네트워크에서는 **`No amount of clever NAT tricks is going to
+get around the firewall eating your packets.`** 헤어핀 미지원 NAT, 이중 NAT 이 포트 매핑을
+깨뜨리는 것까지 나열한다. **모든 경우에 되는 하나의 방법을 찾는 대신 사다리를 만들고
+바닥(DERP)을 깔았다** — 이 정리를 실패 그림으로 그렸다.
 
-### 아직 못 잡은 것
+### ⭐ 중앙을 없애지 않고 무력하게 만들었다
 
-1. **매출·사용자 수 비공개** — 요금제 구조만 확인했다(좌석 단위, 기기는 무제한).
-2. ⚠️ **저장소 이전의 연도를 모른다** — etcd **3.4.3** 이라는 단서만 있다. `eras` 를 비웠다.
-3. **코디네이션 서버가 죽으면 무엇이 멈추는지 회사가 안 적는다.**
+컨트롤 평면은 허브-스포크인데 `it carries virtually no traffic` 이고, 개인키는
+`never, ever leaves its node` 이며, 릴레이는 `there is never a way ... to decrypt`.
+⚠️ **다만 중앙이 죽으면 무엇이 멈추는지는 회사가 안 적는다** — 재구성으로 표시했다.
+
+### 다음 사이클 — 남은 두 도메인
+
+- **지름길로 시작한 저장소를 갈아 끼운다** — `an-unlikely-database-migration`(전문 읽음).
+  **버린 대안 넷 · 고른 이유 셋 · 수치**(150MB · 1초→밀리초 · 인덱스에 2~3주).
+- **두 구현을 함께 이고 간다** — `tailscale-rs-...`(전문 읽음).
 
 ## 지금의 진짜 상태
 
