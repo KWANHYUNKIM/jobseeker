@@ -764,7 +764,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "1분 넘게 걸리던 것을 1~2초로 줄이려고 컨테이너도 합의도 버린 클라우드 — 무엇을 없앨지로 설계하는 회사다",
       "updated_at": "2026-09-05",
       "domain": "fly.io"

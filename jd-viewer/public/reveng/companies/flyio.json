@@ -92,7 +92,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "sprite-create"
+      ]
     },
     {
       "name": "합의를 버리고 상태를 퍼뜨린다",
@@ -142,7 +144,477 @@
     "Consul → attache → Corrosion 으로 이어진 서비스 카탈로그 변천의 **각 시점 연도**를 확인하지 못했다. 2022년 3월 글이 `until a couple months ago` 라는 상대 표현만 쓴다.",
     "Nomad 를 완전히 내린 시점은 확인하지 못했다 — 커뮤니티에 `Sunsetting Nomad` 글이 있으나 읽지 않았다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "sprite-create",
+      "name": "1~2초에 뜨는 컴퓨터 만들기 (Sprite create)",
+      "domain": "1분을 1~2초로 줄이려고 무엇을 버릴 것인가",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "Fly Machine 은 **`create` 가 1분 넘게 걸렸다.** 미리 만들어 두고 `stop`/`start` 로 껐다 켜는 쓰임에는 문제가 없지만, **에이전트가 코드를 짜다 컴퓨터 한 대를 그 자리에서 띄우는** 쓰임에서는 그 1분이 전부를 망친다. 사용자는 미리 할당해 두거나 느린 생성을 견뎌야 했고, 그 마찰이 저자가 말하는 **`ball-point disposable computers`**(볼펜처럼 쓰고 버리는 컴퓨터) 경험을 막고 있었다. Sprite 는 그 1분을 **`just a second or two`** 로 줄이려고 만든 것이다.",
+        "metrics": [
+          {
+            "label": "Sprite 생성 시간",
+            "value": "1~2초 (`They create in just a second or two`)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "label": "이전 세대(Fly Machine) 생성 시간",
+            "value": "1분 이상 (`can take over a minute`)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "label": "루트 파일시스템",
+            "value": "100GB (오브젝트 스토리지 기반)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "label": "비활성 상태 비용",
+            "value": "`practically nothing`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "1분을 줄일 방법을 찾을 때",
+          "thought": "더 빠르게 만드는 방법을 찾는 대신 **무엇이 느린지**를 먼저 물었다. 답이 컨테이너였다 — `Most of what's slow about creating a Fly Machine is containers`. 그러면 남는 선택지는 컨테이너를 빠르게 받는 게 아니라 **사용자가 이미지를 고르는 일 자체를 없애는 것**이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사용자 이미지를 없애기로 한 뒤",
+          "thought": "이미지가 하나로 고정되면 **모든 물리 워커가 다음에 뜰 컨테이너를 미리 안다.** 그러면 빈 Sprite 를 미리 만들어 세워 둘 수 있고, `create` 는 사실상 `start` 와 같은 일이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "저장소를 어디에 둘지 정할 때",
+          "thought": "로컬 NVMe 는 빠르지만 **워크로드를 특정 물리 장비에 묶는다**(`anchors workloads to specific physicals`). 그걸 풀어야 이사와 장애 복구가 쉬워지는데, 대신 성능을 내준다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 위한 컴퓨터인지 정할 때",
+          "thought": "모든 쓰임을 받으려 하지 않았다. 저자는 **`Sprites are optimized for a different kind of computing than Fly Machines`** 라고 못 박고, 프로토타입·수용 테스트는 Sprite 로 하고 **만족하면 컨테이너로 싸서 Fly Machine 으로 내보내라**고 권한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Sprite",
+            "what": "루트 권한이 주어지는 리눅스 가상 머신 하나. 쓰고 버리는 것을 전제로 만든다"
+          },
+          {
+            "name": "표준 컨테이너 이미지",
+            "what": "사용자가 고르지 않는, 모든 워커가 미리 아는 단 하나의 시작 이미지"
+          },
+          {
+            "name": "빈 Sprite 풀",
+            "what": "각 물리 워커가 미리 띄워 세워 두는 대기분. `create` 가 빨라지는 근거"
+          },
+          {
+            "name": "오브젝트 스토리지의 루트 파일시스템",
+            "what": "물리 장비가 아니라 S3 호환 저장소에 놓인 100GB 루트. 데이터 청크와 메타데이터 맵으로 나뉜다"
+          },
+          {
+            "name": "공개 URL",
+            "what": "이 Sprite 로 요청을 보내는 주소. 만들자마자 함대 전체에 퍼져야 쓸 수 있다"
+          }
+        ],
+        "invariants": [
+          "**사용자는 시작 이미지를 고르지 않는다** — 고르는 순간 워커가 다음에 뜰 컨테이너를 미리 알 수 없게 되고, 미리 세워 두기가 무너진다",
+          "**루트 저장소는 특정 물리 장비에 묶이지 않는다** — 그래야 이사와 장애 복구가 `trivially` 가능하다",
+          "**Sprite 를 바꾸는 일이 호스트를 흔들지 않는다** — `Changes to Sprites don't restart host components or muck with global state`. 영향 범위는 그 변경을 물고 새로 뜨는 VM 까지다",
+          "**공개 URL 은 만들어지는 즉시 함대 전체에서 라우팅 가능해야 한다** — 1~2초에 뜨는 컴퓨터인데 주소가 퍼지는 데 더 오래 걸리면 의미가 없다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 `sprite create <name>` 을 부른다",
+            "why": "이 한 번의 호출 안에서 끝나야 한다 — 미리 할당해 두는 절차를 없애는 것이 이 기능의 목적이다"
+          },
+          {
+            "step": "워커가 미리 세워 둔 **빈 Sprite** 를 꺼낸다",
+            "why": "`Every physical worker knows exactly what container the next Sprite is going to start with` 이므로 이미지를 받아 풀 필요가 없다"
+          },
+          {
+            "step": "표준 이미지로 VM 을 띄운다",
+            "why": "사용자 이미지를 받지 않으므로 `create` 가 `start` 와 같은 무게가 된다 — `basically just doing the stuff we do when we start a Fly Machine`"
+          },
+          {
+            "step": "루트 파일시스템의 **메타데이터 포인터**를 만든다",
+            "why": "실제 데이터는 오브젝트 스토리지에 있고 VM 은 그 지도만 들고 뜬다. 장비에 묶이지 않는 이유가 여기다"
+          },
+          {
+            "step": "루트 네임스페이스에서 **서비스 매니저와 로그**가 뜬다",
+            "why": "Sprite 가 다시 뜰 때 사용자 코드를 되살리는 일과 로그 수집을 VM 안에서 처리한다 — 호스트를 건드리지 않기 위해서다"
+          },
+          {
+            "step": "공개 URL 을 **Corrosion** 에 등록하고 함대로 퍼뜨린다",
+            "why": "`Sprites plug directly into Corrosion, our gossip-based service discovery system` — 합의를 기다리지 않고 퍼져야 1~2초 안에 쓸 수 있다"
+          },
+          {
+            "step": "사용자가 SSH 로 들어간다",
+            "why": "이미 존재하던 머신에 들어가는 것과 `identical` 하게 만들어, 빠르게 만든 대가가 사용 경험에서 드러나지 않게 했다"
+          },
+          {
+            "step": "쓰지 않으면 **싼 비활성 상태로 잠든다**",
+            "why": "쓰고 버리는 컴퓨터라 켜 둔 채 두는 시간이 길다. 비용이 `practically nothing` 이어야 그 쓰임이 성립한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "생성 속도를 어디서 벌 것인가 — 컨테이너를 더 빨리 받을 것인가, 사용자 컨테이너를 없앨 것인가",
+            "chosen": "**사용자용 컨테이너를 없앤다.** `Sprites get rid of the user-facing container`",
+            "alternatives": [
+              "이미지 캐시·지연 로딩으로 pull/unpack 을 빠르게",
+              "사용자가 고른 이미지를 워커마다 미리 당겨 두기"
+            ],
+            "tradeoff": "**사용자가 자기 이미지를 가져올 수 없다.** 그래서 `professional production apps ship out of CI/CD systems as OCI containers` 인 기존 워크플로가 그대로 올라오지 못한다 — 이 자리에서 Fly Machine 과 쓰임이 갈린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "question": "루트 저장소를 로컬 NVMe 에 둘 것인가, 오브젝트 스토리지에 둘 것인가",
+            "chosen": "**S3 호환 오브젝트 스토리지**를 루트 저장소로 쓴다",
+            "alternatives": [
+              "로컬 NVMe 볼륨(기존 Fly Machine 방식)"
+            ],
+            "tradeoff": "**성능을 내줬다.** 회사가 직접 적는다 — `the performance isn't adequate for a hot Postgres node in production`. 즉 프로덕션 데이터베이스는 이 위에 올리지 못한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "question": "저장소를 장비에서 떼면 무엇이 좋아지는가 — 그 자유를 어디에 쓸 것인가",
+            "chosen": "**이사와 장애 복구**에 쓴다 — `They migrate (or recover from failed physicals) trivially`",
+            "alternatives": [
+              "로컬 저장소를 유지하고 워크로드 이전을 따로 구현(Fly Machine 쪽에서 `3 years to get right` 였다)"
+            ],
+            "tradeoff": "내부 도구가 아직 초기라 그 자유를 다 쓰지 못한다 — `It's early days for our internal tooling`. 자유도는 생겼지만 그것을 다루는 손이 아직 덜 만들어졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "question": "관리 작업을 호스트에서 할 것인가, VM 안에서 할 것인가",
+            "chosen": "**VM 안**에서 한다 — `the most important orchestration and management work happens inside the VM`",
+            "alternatives": [
+              "호스트 쪽 오케스트레이터가 모든 VM 을 중앙에서 관리(기존 방식)"
+            ],
+            "tradeoff": "호스트가 가진 **전체 그림과 중앙 통제를 포기**했다. 대신 영향 범위가 좁아진다 — `The blast radius is just new VMs that pick up the change` (뒷문장은 회사 표현, 앞의 해석은 이 사이트의 재구성이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "question": "비활성 상태를 어떻게 다룰 것인가 — 따뜻하게 유지할 것인가, 적극적으로 재울 것인가",
+            "chosen": "**적극적으로 재운다.** 비활성 비용을 `practically nothing` 으로 만든다",
+            "alternatives": [
+              "항상 켜 두고 응답 지연을 없애기"
+            ],
+            "tradeoff": "**밀리초 응답을 요구하는 쓰임에는 맞지 않는다.** 회사가 예로 든다 — `e-commerce apps measure responsiveness in milliseconds and want their workloads kept warm`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "question": "공개 URL 을 함대에 어떻게 퍼뜨릴 것인가",
+            "chosen": "**Corrosion(가십 기반)** 에 바로 물린다",
+            "alternatives": [
+              "합의 기반 서비스 카탈로그(회사가 오랫동안 쓰던 Consul 방식)"
+            ],
+            "tradeoff": "전역 일관성 대신 **잠깐 어긋난 상태**를 받아들인다 — 이 회사가 `합의를 버리고 상태를 퍼뜨린다` 도메인에서 이미 치른 대가를 그대로 물려받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "question": "오브젝트 스토리지 위에 파일시스템을 어떻게 세울 것인가",
+            "chosen": "**데이터 청크와 메타데이터 맵을 나누는 방식**(JuiceFS 모델)을 따르고, 메타데이터 저장소는 **Litestream** 으로 오브젝트 스토리지 위에서 durable 하게 만든다",
+            "alternatives": [
+              "블록 장치를 통째로 원격에 두기",
+              "메타데이터를 중앙 데이터베이스에 두기"
+            ],
+            "tradeoff": "파일 하나를 읽는 데 **청크 조회와 메타데이터 조회가 겹친다** — 위의 `hot Postgres` 부적합이 이 구조에서 온다(이 인과는 이 사이트의 재구성이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "표준 컨테이너 이미지 + 워커별 빈 Sprite 풀",
+            "role": "`create` 에서 무거운 일을 없애는 장치. 이미지가 고정이라 미리 세워 둘 수 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "tech": "S3 호환 오브젝트 스토리지",
+            "role": "100GB 루트 파일시스템의 실제 저장소. 워크로드를 물리 장비에서 떼어 낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "tech": "JuiceFS 모델 (데이터 청크 + 메타데이터 맵)",
+            "role": "오브젝트 스토리지 위에 파일시스템을 세우는 방식",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "tech": "Litestream",
+            "role": "메타데이터 저장소를 오브젝트 스토리지 위에서 durable 하게 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "tech": "Corrosion (가십 기반 서비스 디스커버리)",
+            "role": "공개 URL 을 함대 전체에 퍼뜨린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "tech": "Fly.io HTTPS 프록시",
+            "role": "공개 URL 로 들어온 요청을 해당 Sprite 로 보낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "tech": "루트 네임스페이스의 서비스 매니저·로그",
+            "role": "Sprite 가 다시 뜰 때 사용자 코드를 되살리고 로그를 모은다. `*:8080` 을 밖으로 여는 것도 이 자리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Corrosion",
+          "via": "가십(SWIM 기반) 서비스 디스커버리",
+          "contract": "Sprite 가 만들어지면 공개 URL 을 등록하고, 함대의 프록시들이 그것을 받아 라우팅 표에 넣는다. 합의를 기다리지 않으므로 **잠깐 어긋난 상태**를 감수한다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Fly.io HTTPS 프록시(엣지)",
+          "via": "라우팅 표",
+          "contract": "공개 URL 로 들어온 요청을 해당 Sprite 로 보낸다. Sprite 가 잠들어 있으면 깨우는 일이 이 경로에 걸린다(뒷문장은 재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "오브젝트 스토리지(S3 호환)",
+          "via": "청크 읽기·쓰기 + 메타데이터 맵",
+          "contract": "VM 은 메타데이터 지도만 들고 뜨고, 실제 블록은 필요할 때 오브젝트 스토리지에서 가져온다. 장비 장애 시 다른 워커에서 같은 지도로 다시 뜬다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Fly Machines",
+          "via": "제품 경계(같은 인프라 위의 다른 쓰임)",
+          "contract": "프로토타입·수용 테스트는 Sprite 에서 하고, **만족하면 컨테이너로 싸서 Fly Machine 으로 옮긴다** — 회사가 권하는 이동 경로다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "원격 오브젝트 스토리지를 루트 파일시스템으로 쓰면서 로컬 디스크만큼의 지연을 내는 것",
+            "why_hard": "오브젝트 스토리지는 네트워크 너머에 있고 청크·메타데이터 조회가 겹친다. 로컬 NVMe 의 지연은 물리적으로 다른 층위다 — 캐시로 줄일 수는 있어도 없앨 수는 없다",
+            "current_best": "성능이 필요한 워크로드는 **로컬 볼륨을 쓰는 다른 제품으로 보낸다.** Fly.io 도 그렇게 갈랐다 — `the performance isn't adequate for a hot Postgres node in production` 이라고 밝히고, 프로덕션은 Fly Machine 쪽으로 권한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          },
+          {
+            "problem": "쓰고 버리는 컴퓨터를 싸게 유지하면서 즉시 응답하게 만드는 것",
+            "why_hard": "비용을 `practically nothing` 으로 만들려면 재워야 하고, 재우면 깨우는 시간이 생긴다. 둘은 같은 자원을 두고 반대로 당긴다",
+            "current_best": "쓰임을 갈라 놓는다 — 밀리초 응답이 필요한 쪽(`e-commerce apps measure responsiveness in milliseconds`)은 따뜻하게 유지하는 다른 제품으로 보내고, 여기서는 잠드는 쪽을 고른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Design & Implementation of Sprites",
+                "url": "https://fly.io/blog/design-and-implementation/",
+                "publisher": "The Fly Blog",
+                "date": "2026-01-14 (갱신 표기)",
+                "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "`sprite create` 가 1~2초인 이유",
+          "question": "1분 걸리던 일이 왜 1~2초가 됐나 — 그 사이에서 무엇이 사라졌나",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>sprite create</b><br/>• 사용자 호출<br/>• 이미지를 고르지 않는다\"]:::list --> W\n  W[\"<b>물리 워커</b><br/>• 다음에 뜰 컨테이너를 미리 안다<br/>• 빈 Sprite 를 세워 둔다\"]:::list --> B\n  B[\"<b>VM 부팅</b><br/>• 표준 이미지<br/>• create 가 start 와 같은 무게\"]:::list --> M\n  M[\"<b>메타데이터 포인터</b><br/>• 루트는 오브젝트 스토리지<br/>• 장비에 묶이지 않는다\"]:::list --> C\n  C[\"<b>Corrosion 등록</b><br/>• 공개 URL 을 가십으로 전파<br/>• 합의를 기다리지 않는다\"]:::list --> R\n  R[\"<b>사용 가능</b><br/>• SSH 는 기존 머신과 동일<br/>• 1~2초\"]:::list\n  X[\"<b>사라진 단계</b><br/>• 사용자 이미지 pull<br/>• unpack<br/>• 장비 배정 후 볼륨 부착\"]:::gone\n  X -.->|없앤 것| B\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "빠르게 만든 대가 — 무엇을 못 하게 됐나",
+          "question": "정상 경로가 아니라, 이 설계가 받아 주지 않는 요청은 어디로 가나",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[\"<b>들어온 요청</b>\"]:::list --> A{\"내 컨테이너<br/>이미지를 쓰고 싶다\"}\n  A -->|그렇다| F1[\"<b>Sprite 로는 안 된다</b><br/>• 사용자 컨테이너를 없앴다<br/>• CI/CD 가 내보내는 OCI 를 못 받는다\"]:::gone\n  A -->|아니다| B{\"프로덕션 DB 를<br/>올리고 싶다\"}\n  B -->|그렇다| F2[\"<b>성능이 모자란다</b><br/>• 루트가 오브젝트 스토리지<br/>• hot Postgres 부적합\"]:::gone\n  B -->|아니다| C{\"밀리초 응답을<br/>항상 유지해야 한다\"}\n  C -->|그렇다| F3[\"<b>재우는 설계와 어긋난다</b><br/>• 비활성 비용을 0에 가깝게<br/>• 커머스형 워크로드는 warm 요구\"]:::gone\n  C -->|아니다| OK[\"<b>Sprite 가 맞는 쓰임</b><br/>• 프로토타입·수용 테스트<br/>• 에이전트가 띄우는 일회용 컴퓨터\"]:::list\n  F1 --> M[\"<b>Fly Machine 으로</b><br/>• 컨테이너로 싸서 옮긴다<br/>• 회사가 권하는 경로\"]:::list\n  F2 --> M\n  F3 --> M\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "sources": [
+        {
+          "title": "The Design & Implementation of Sprites",
+          "url": "https://fly.io/blog/design-and-implementation/",
+          "publisher": "The Fly Blog",
+          "date": "2026-01-14 (갱신 표기)",
+          "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+        }
+      ]
+    }
+  ],
   "eras": [
     {
       "id": "2023-flyd",
