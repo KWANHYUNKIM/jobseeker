@@ -8,38 +8,24 @@
 
 ## 지금 파는 중
 
-**없다 — Nubank 를 닫았다.** 완료 **66곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **66곳** · **큐 1/3**(Kraken Technologies) · 비교 문서 33편.
 
-**다음 사이클은 3순위(후보 조사)다** — 큐가 비었다. 바로 앞 후보 조사(2026-09-05)에서
-**열한 곳을 두드려 하나(Nubank)만 건졌으니** 벽이 어디인지는 QUEUE 의 기록과 아래
-자료 접근 지도를 **먼저 읽고** 시작한다.
+**다음 사이클은 6순위(신규) — Kraken Technologies 다.** PROMPT.md 3단계(회사 프로파일)부터.
+읽을 글은 QUEUE 의 대기 행에 다 적어 뒀다.
 
-### Nubank 를 닫으며 — 완주 판정은 기능을 쓴 사이클에서 함께 한다
+### Kraken 이 왜 값진가 — 에너지 축 첫 자리이고 결이 특이하다
 
-Oxide 때는 완주 판정을 다음 사이클로 미뤘는데, **그러면 `--gaps` 가 그 일을 부르지
-않아 회사가 `in_progress` 로 떠 있게 된다.** PROMPT.md 6단계는 원래 그렇게 읽힌다 —
-**기능을 쓰고 나서 완주 기준에 닿았으면 그 자리에서 닫는다.** 이번엔 그렇게 했다.
+66곳에 **전력·유틸리티가 하나도 없었다.** 게다가 이 회사는 **파이썬·Django 한 덩어리로
+전력 소매를 돌리고, 그 플랫폼을 다른 에너지 회사에 판다** — 자기가 쓰는 것을 파는 구조다.
+글도 그 결이다: **500만 줄 파이썬에 정적 타입을 2.5년에 걸쳐 넣은 이야기**가 나온다.
+**⚠️ `tech.octopus.energy` 가 아니라 `engineering.kraken.tech` 다.**
 
-닫으면서 수익원 하나를 고쳤다 — **에이전트가 채무 재협상을 실제로 실행하므로**
-이자 수익원이 AI 도메인과도 이어진다. Oxide 에서 걸렸던 자리(수익원과 기능의 연결)를
-같은 방식으로 확인했다.
+### ⚠️ 이번 조사에서 확인한 벽 — 새 축일수록 블로그가 없다
 
-### ⚠️ 이 회사에서 배운 것 — 한 편으로 회사를 판단하지 않는다
-
-**같은 회사인데 글마다 결이 갈린다.** 지연 편과 에이전트 편은 버린 대안·인정한 대가를
-적는데 **FinConnect 편은 개선 수치 다섯에 잃은 것이 한 줄도 없다.** 후보 조사 때 읽은
-한 편(지연 76%)이 좋았다고 회사 전체가 그런 것이 아니다. **Monzo·GetYourGuide 를
-떨어뜨린 성질이 이미 큐를 통과한 회사의 다른 글에서 나온다.**
-
-### ⚠️ Nubank 에 남은 구멍 (보강 사이클이 볼 것)
-
-1. **Clojure·Datomic 의 실물을 못 봤다** — 블로그의 Clojure 글 **두 편이 다 컨퍼런스
-   참관기**였다. **불변 데이터로 은행 원장을 다룬다는 것이 이 회사의 가장 큰 차별점일
-   텐데 회사 블로그에 근거가 없다.** 발표 자료(Speaker Deck)·엔지니어 인터뷰 같은
-   **블로그 밖 경로**를 봐야 한다 — 프레시웍스에서 통했던 방법이다.
-2. **IR 을 못 읽는다** — 403 과 인증서 만료. 수익 3갈래 비중이 `inferred` 다.
-3. **에이전트 편에 성과 수치가 하나도 없다** — 해결률·정확도·비용 전부.
-4. **연표(eras)가 비었다.**
+일곱 곳 중 여섯이 떨어졌는데 **403 은 하나도 없었다.** 떨어진 이유가 달라졌다 —
+**블로그가 아예 없거나(Flutterwave·Paystack), 열리는데 마케팅이다**(PingCAP·Ably·
+Capital One). **아프리카 둘째 · 중국 셋째 · 동남아 둘째 · 전통 대형은행 첫 자리를 다
+노렸는데 전부 이 이유로 못 채웠다.** 앞 조사(열한 곳 중 여섯이 403)와 벽의 종류가 다르다.
 
 ## 지금의 진짜 상태
 
@@ -360,6 +346,12 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | **IR 보도자료(Q4 Inc 계열)** | ✅ **브라우저 `get_page_text` 로 전문이 온다** — `investors.<회사>.com/news/news-details/<연도>/<제목>/default.aspx`. WebFetch 는 빈 껍데기만 준다. Doximity 에서 표까지 통째로 받았다(사이클 211) |
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
+| `engineering.kraken.tech` | ✅ 목록·본문 모두 열린다 (2026-09-05 확인). 글 주소는 `/news/<연>/<월>/<일>/<슬러그>.html` |
+| `tech.octopus.energy` | ⚠️ **이전 안내 페이지만 뜬다** — `engineering.kraken.tech` 로 옮겼다 |
+| `www.pingcap.com/blog` · `ably.com/blog` · `www.capitalone.com/tech/blog` | ⚠️ 열리지만 **제품·마케팅 중심**이라 대가를 다루는 글이 없다 (2026-09-05 확인) |
+| `www.alibabacloud.com/blog` | ❌ 본문이 비어 온다(JS 렌더링으로 보인다). 브라우저로는 열릴 수 있다 |
+| `medium.com/traveloka-engineering` | ❌ Medium 이고 2020~2022 에서 멈췄다 |
+| Flutterwave · Paystack | ❌ **엔지니어링 블로그 자체가 없다** — 회사 블로그는 사업 소식이다 |
 | `building.nubank.com` | ✅ 목록·본문 모두 열린다 (2026-09-05 확인). `building.nubank.com.br` 은 `.com` 으로 301 |
 | `blog.booking.com` | ⚠️ **목록만 자체 도메인이고 본문은 `medium.com/booking-com-development`(403)** 로 간다. 목록에서 제목·날짜는 얻을 수 있다 |
 | `medium.com/mercadolibre-tech` · `medium.com/booking-com-development` · `medium.com/trainline` | ❌ 403 (Medium — 브라우저로는 열릴 수 있다) |

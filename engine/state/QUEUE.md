@@ -20,9 +20,31 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Kraken Technologies** (옥토퍼스 에너지) | EU(UK) · 에너지 | `engineering.kraken.tech` — 최신 **2026-03-09** | ✅ WebFetch 로 목록·본문 모두 온다. 글 주소는 `/news/<연>/<월>/<일>/<슬러그>.html` | **에너지 축이 0곳이다** — 66곳에 전력·유틸리티가 하나도 없다. 게다가 **결이 특이하다**: 파이썬·Django 한 덩어리로 전력 소매를 돌리고 그 플랫폼(Kraken)을 다른 에너지 회사에 판다. **본문 두 편을 열어** 기준을 확인했다. `static-typing-python-at-scale`(2026-02-16)은 **버린 대안**(Django 모델 2000개를 손으로 주석 달기) · **인정한 대가**(*"This does lock us into mypy given it's currently the only static type checker for Python that supports plugins."*) · **수치**(파이썬 **500만 줄** · 모델 2000개 이상 · type ignore 5천 · **2.5년**)를 다 준다. `upgrading-rabbit-mq-without-breaking-celery-eta-tasks`(2026-01-09)도 제약과 수치가 뚜렷하다(무중단 SLA · 일 **800만 메시지** 정점 · 이전 **분당 34만 건**). 볼 만한 글: `how-we-ship-2026`(2026-03-09, **하루 100번 이상 · 환경 25곳 이상 배포**) · `using-django-async`(2026-01-12) |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-05 두 번째 후보 조사 — 일곱 곳을 두드려 하나를 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
+  이번에는 **접근 지도에 없는 새 축만** 골랐다(에너지 · 아프리카 · 중국 · 통신 · 동남아 · 전통은행).
+  - **✅ Kraken Technologies**(옥토퍼스 에너지) — 위 대기 표로 올렸다. **에너지 축 첫 자리다.**
+    ⚠️ **`tech.octopus.energy` 는 이전 안내 페이지만 뜬다** — 실물은 `engineering.kraken.tech` 다.
+    앞의 글(2015~2019)은 Octopus Energy 이름으로, 최근은 Kraken 이름으로 나온다.
+  - **❌ Flutterwave · Paystack**(NG · 핀테크) — **엔지니어링 블로그 자체를 못 찾았다.**
+    `flutterwave.com/us/blog` 는 사업 소식(라이선스 취득·처리액 성장)이고 기술 글이 아니다.
+    아프리카 자리를 Moniepoint 하나로 두고 있었는데 **두 번째를 못 찾았다.**
+  - **❌ PingCAP / TiDB**(CN) — `pingcap.com/blog` 는 **열리고 최신도 2026-09-03** 인데
+    제목이 전부 **제품 활용·AI 마케팅**이다(서버리스 MySQL for AI Agents 류). 자기 설계의
+    대가를 다루는 글이 안 보인다. **중국 자리를 늘릴 후보였는데 결이 안 맞는다.**
+  - **❌ Ably**(UK · 실시간 인프라) — 열리지만 최신 글이 **제품 발표**다(tfgen · LiveObjects Java).
+    아키텍처 결정과 대가를 다루는 글이 목록에 안 보인다.
+  - **❌ Capital One**(US · 전통 대형은행) — `capitalone.com/tech/blog` 는 열리지만
+    **성과 홍보 중심**이다(*"hands-free security remediation without sacrificing development velocity"*).
+    **전통 대형은행 축이 비어 있어 아쉽다** — 카카오뱅크는 인터넷은행이라 결이 다르다.
+  - **❌ Alibaba Cloud**(CN) — `www.alibabacloud.com/blog` 가 **본문이 비어 온다**(JS 렌더링으로 보인다).
+    ⚠️ 브라우저로는 열릴 수 있다.
+  - **❌ Traveloka**(ID · 여행) — `medium.com/traveloka-engineering` **Medium** 이고
+    글이 **2020~2022 에서 멈췄다.** 동남아 자리(Grab 하나)를 늘릴 후보였다.
 
 - **2026-09-05 후보 조사 결과 — 열한 곳을 두드려 하나를 올렸다**(369 다음의 후보 조사다).
   큐가 0/3 이라 3순위로 들어왔다. **⚠️ 이번 수확률이 낮은 이유는 회사 탓이 아니라 벽 탓이다** —
