@@ -1,0 +1,251 @@
+{
+  "slug": "etsy",
+  "name": "Etsy",
+  "name_en": "Etsy",
+  "country": "US",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "etsy.com",
+  "one_liner": "똑같은 물건이 하나도 없는 시장 — 그래서 데이터도 검색도 하나로 묶이지 않는다",
+  "business_model": "**팔릴 때마다 몫을 받는다.** 2026년 2분기 마켓플레이스 총거래액(GMS)이 **26억 달러(+7.5%)**, 매출이 **6억 6,800만 달러**, **테이크레이트가 25.9%**(전년 대비 **130bp 상승**)다. 활성 구매자는 **약 8,700만 명**, 활성 판매자는 **570만 명(+5.9%)** 이고 조정 EBITDA 는 **1억 9,500만 달러**(마진 **29.2%**)다.\n\n⚠️ **이 시장의 성질이 기술을 정한다** — 리스팅이 **1억 개가 넘는데 하나하나가 수공예·빈티지라 서로 같지 않다.** 대량 생산 카탈로그처럼 **SKU 로 묶이지 않으므로**, 검색은 `비슷하지만 딱 맞지는 않은` 결과를 내기 쉽고 데이터도 한 덩어리로 다루기 어렵다(이 정리는 이 사이트의 재구성이다).\n\n**그리고 이 회사의 데이터는 오래됐다** — **2010년경부터 샤딩된 MySQL** 을 유지해 왔고, 지금 **테이블 약 1,000개가 샤드 약 1,000개에 흩어져 425TB 이상**을 담고 **초당 약 170만 요청**을 받는다. **16년 된 인프라를 사용자가 눈치채지 못하게 갈아 끼우는 일**이 최근 몇 년의 큰 과제였다.",
+  "products": [
+    "수공예·빈티지 마켓플레이스",
+    "Etsy Ads (판매자 광고)",
+    "Etsy Payments",
+    "모바일 앱",
+    "Depop · Reverb (인수)"
+  ],
+  "domain_map": {
+    "title": "Etsy 도메인 지도",
+    "question": "똑같은 물건이 하나도 없는 시장에서, 데이터는 어떻게 나뉘고 검색은 무엇을 근거로 하는가?",
+    "code": "flowchart TD\n  B[\"<b>구매자 약 8,700만 명</b>\"]:::accent --> S[\"<b>검색</b><br/>• 리스팅 1억 개 이상<br/>• 하나하나가 서로 다르다\"]:::accent\n  S --> L[\"<b>LLM 으로 뜻을 읽는다</b>\"]:::accent\n  B --> O[\"<b>주문 · 결제</b>\"]:::list\n  O --> DB[\"<b>샤딩 MySQL</b><br/>• 테이블 약 1,000 × 샤드 약 1,000<br/>• 425TB · 초당 170만 요청\"]:::accent\n  DB --> V[\"<b>Vitess vindex</b><br/>• 데이터를 안 옮기고 갈아 끼웠다\"]:::accent\n  E[\"<b>실험 프레임워크</b>\"]:::accent -.->|\"⚠️ 이전의 램프도 이걸로 했다\"| V\n  E -.-> S\n  classDef gone stroke-dasharray: 4 3"
+  },
+  "revenue_streams": [
+    {
+      "name": "거래 수수료 (마켓플레이스)",
+      "how": "팔릴 때마다 받는다. 2026년 2분기 GMS **26억 달러**에 테이크레이트 **25.9%**.",
+      "domains": [
+        "16년 된 샤딩을 데이터를 안 옮기고 갈아 끼운다",
+        "1억 개가 서로 다른 물건에서 원하는 것을 찾게 한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Etsy Q2 2026 earnings",
+          "url": "https://investors.etsy.com/",
+          "publisher": "Etsy IR",
+          "date": "2026-08",
+          "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+        }
+      ]
+    },
+    {
+      "name": "광고·결제 등 서비스",
+      "how": "판매자 광고(Etsy Ads)와 결제 처리 등. ⚠️ **테이크레이트가 오르는 이유를 이 사이트가 확인하지 못했다** — 수수료율 인상인지 서비스 비중 증가인지 나누지 못했다.",
+      "domains": [
+        "16년 된 샤딩을 데이터를 안 옮기고 갈아 끼운다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Etsy Q2 2026 earnings",
+          "url": "https://investors.etsy.com/",
+          "publisher": "Etsy IR",
+          "date": "2026-08",
+          "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "16년 된 샤딩을 데이터를 안 옮기고 갈아 끼운다",
+      "why": "⚠️ **2010년경에 고른 구조가 16년 뒤에도 돌고 있다.** 자체 ORM 이 **shardifier id**(대부분 shop_id·user_id, **30가지 이상**)로 관련 데이터를 같은 샤드에 모으고, **매핑은 별도의 인덱스 데이터베이스**에 무작위로 저장했다. 장점은 분명했다 — 확장되고, **한 샤드가 죽어도 트래픽의 1/1000 만 잃는다.** ⚠️ **그런데 단점 셋이 자랐다** — 수평 확장이 **수동·복잡·수개월**, **인덱스 DB 가 단일 실패점**(죽으면 전체 사이트 장애), 그리고 **제품 개발자가 샤딩을 직접 이해하고 관리해야 했다.**",
+      "tech": [
+        {
+          "tech": "자체 ORM + shardifier id + 인덱스 데이터베이스 (옛 구조)",
+          "solves": "관련 데이터를 같은 샤드에 모아 **한 질의가 여러 데이터베이스를 건드리지 않게** 한다. 매핑은 인덱스 DB 에서 조회한다.",
+          "limits": "⚠️ **인덱스 DB 가 단일 실패점이다** — 죽으면 ORM 이 어느 샤드로도 질의를 못 보내 **전체 사이트 장애**가 될 수 있다. 회사가 **그 장애가 늘어나는 것을 보고 우선순위를 올렸다**고 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        },
+        {
+          "tech": "Vitess (2018년 도입)",
+          "solves": "큰 MySQL 클러스터의 확장·배포·관리를 추상화한다. **처음에는 ORM 이 어느 샤드인지 알려 주게 해서** 새 구성요소가 환경에서 도는지 먼저 검증했다.",
+          "limits": "⚠️ **Vitess 는 shardifier id 가 SQL 의 WHERE 절에 있어야 라우팅한다** — 옛 ORM 은 그것을 질의 밖에서 따로 줬으므로 **많은 질의가 그 조건을 안 갖고 있었다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        },
+        {
+          "tech": "커스텀 vindex (SQLite lookup + hybrid)",
+          "solves": "⚠️ **데이터를 안 옮기려고 만든 것이다.** 기성 해시 vindex 를 쓰려면 **전 데이터를 리샤딩해야 하는데 수동이라 수년**이 걸린다. 그래서 ① ORM 의 샤드 할당을 **Vitess 해시 알고리즘과 맞추고** ② 기존 매핑을 **읽기 전용 SQLite** 에 담아 **각 Vitess 서버에 직접 복사**하고(외부 호출의 지연·의존 회피) ③ **임계 id 를 기준으로 위는 해시, 아래는 SQLite** 를 쓰는 하이브리드 vindex 를 만들었다.",
+          "limits": "⚠️ **두 체계를 영원히 함께 안고 간다** — 임계값 아래의 옛 id 는 계속 SQLite 조회를 쓴다(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        },
+        {
+          "tech": "scatter 질의 (기본값 끔)",
+          "solves": "shardifier id 가 없는 질의를 **1,000 샤드에 병렬로 보내 정렬해 하나로** 돌려준다 — 한 모델의 질의 시간이 **약 2초 → 약 20ms**.",
+          "limits": "⚠️ **의도치 않게 비싼 질의가 1,000 샤드로 가면 곧 문제가 된다** — 그래서 **기본적으로 꺼 두고** ORM 에서 명시적으로 허용하게 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        },
+        {
+          "tech": "실험 프레임워크 (이전 램프에 사용)",
+          "solves": "테이블마다 **vindex 라우팅을 쓰는 트래픽 비율을 1% → 10% → 50% → 100%** 로 올리며 옛 방식과 성능을 비교한다. 문제가 나면 **0으로 즉시 내린다.**",
+          "limits": "⚠️ **모든 질의를 미리 시험하지 않는 대신 위험을 작게 나눈 것이다** — 회사가 그 교환을 그대로 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "바꾸는 것마다 실험으로 켠다",
+      "why": "⚠️ **이 회사에서 실험은 제품 기능만의 도구가 아니다** — **데이터베이스 인프라 이전에도 같은 프레임워크를 썼다**(테이블마다 트래픽 비율을 올리며 성능을 비교하고, 문제가 나면 0으로 내렸다). 그리고 실험 자체의 정확도를 다루는 글이 여러 편이다 — 통제 변량으로 **실험 기간을 줄이는 법**, 실험자가 정의하는 세그먼트, **승자의 저주 완화**.",
+      "tech": [
+        {
+          "tech": "실험 프레임워크 (점진 램프)",
+          "solves": "변경을 **트래픽 비율로 나눠 켜고** 옛 것과 나란히 비교한다. **되돌리기가 즉시**다.",
+          "limits": "⚠️ **인프라 이전에 쓴 사례는 확인했지만 프레임워크 자체의 구조는 아직 못 읽었다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Etsy's database sharding to Vitess",
+              "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-03-19",
+              "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+            }
+          ]
+        },
+        {
+          "tech": "⏳ 통제 변량 · 승자의 저주 완화",
+          "solves": "실험 기간을 줄이고, **이긴 변형의 효과가 부풀려 보이는 문제**를 다룬다.",
+          "limits": "⚠️ **제목과 소개만 확인했다** — 본문을 읽지 않았다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Mitigating the winner's curse in online experiments",
+              "url": "https://www.etsy.com/codeascraft/mitigating-the-winners-curse-in-online-experiments",
+              "publisher": "Etsy Code as Craft",
+              "date": "2022-12-13",
+              "summary": "온라인 실험에서 이긴 변형의 효과가 부풀려 보이는 문제(승자의 저주)를 다룬다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "1억 개가 서로 다른 물건에서 원하는 것을 찾게 한다",
+      "why": "⚠️ **이 시장은 SKU 로 묶이지 않는다.** 리스팅이 **1억 개가 넘는데 하나하나가 수공예·빈티지라 서로 같지 않아**, 검색이 `비슷하지만 딱 맞지는 않은` 결과를 내기 쉽다. 회사가 그 문제를 그대로 적으며 LLM 을 붙인다.",
+      "tech": [
+        {
+          "tech": "⏳ LLM 기반 검색 관련성·재고 이해·구매자 프로파일",
+          "solves": "검색 관련성(2026-01) · 방대한 재고의 이해(2025-10) · 구매자 프로파일 구축(2025-09) 세 갈래로 붙였다.",
+          "limits": "⚠️ **세 편 다 제목과 소개만 확인했다** — 본문을 읽지 않았고 **수치도 대가도 아직 없다.**",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "How Etsy Uses LLMs to Improve Search Relevance",
+              "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-01-16",
+              "summary": "검색 결과가 '비슷하지만 딱 맞지는 않은' 문제를 LLM 으로 다룬다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **연표(eras)를 세울 연도는 많은데 내용을 아직 못 읽었다** — **2010년경 샤딩 시작** · **2018년 Vitess 도입** · **2020년 온프렘에서 GCP 이전 완료** · **2020-12~2022-05 결제 플랫폼 이전** · **2026년 vindex 이전 완료(5년 소요)**. **각 시기의 내용과 대가를 읽으면 회사 단위 연표가 설 수 있다.**",
+    "**결제 이전 3부작을 안 읽었다** — Part 1(데이터 모델) · Part 2(`The \"Seamless\" Migration`) · Part 3(`Reducing Cutover Risk`). **질의 비호환을 어떻게 찾아 고쳤는지가 Part 3 에 있다고 vindex 글이 가리킨다.**",
+    "**실험 프레임워크 자체의 구조를 모른다** — 인프라 이전에 썼다는 것은 확인했지만 어떻게 만들어졌는지는 못 봤다.",
+    "**LLM 세 편을 안 읽었다** — 검색 관련성·재고 이해·구매자 프로파일. **1억 개 리스팅이라는 조건이 어떤 설계를 낳았는지가 거기 있을 것이다.**",
+    "⚠️ **테이크레이트가 오르는 이유를 나누지 못했다** — 25.9%(+130bp)가 수수료율 인상인지 광고·결제 같은 서비스 비중 증가인지 확인하지 못했다.",
+    "**2020년 GCP 이전의 내용을 모른다** — 이전을 마쳤다는 것과 그 뒤 비용 관리 글(2024-06)이 있다는 것만 안다."
+  ],
+  "sources": [
+    {
+      "title": "Migrating Etsy's database sharding to Vitess",
+      "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+      "publisher": "Etsy Code as Craft",
+      "date": "2026-03-19",
+      "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+    },
+    {
+      "title": "Scaling Etsy Payments with Vitess: Part 3 – Reducing Cutover Risk",
+      "url": "https://www.etsy.com/codeascraft/scaling-etsy-payments-with-vitess-part-3--reducing-cutover-risk",
+      "publisher": "Etsy Code as Craft",
+      "date": "2023-02-22",
+      "summary": "2020년 12월부터 2022년 5월까지 결제 플랫폼을 Vitess 로 옮기며 컷오버 위험을 줄인 방법. 질의 비호환을 찾아 해결한 과정이 여기 있다."
+    },
+    {
+      "title": "Mitigating the winner's curse in online experiments",
+      "url": "https://www.etsy.com/codeascraft/mitigating-the-winners-curse-in-online-experiments",
+      "publisher": "Etsy Code as Craft",
+      "date": "2022-12-13",
+      "summary": "온라인 실험에서 이긴 변형의 효과가 부풀려 보이는 문제(승자의 저주)를 다룬다."
+    },
+    {
+      "title": "How Etsy Uses LLMs to Improve Search Relevance",
+      "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+      "publisher": "Etsy Code as Craft",
+      "date": "2026-01-16",
+      "summary": "검색 결과가 '비슷하지만 딱 맞지는 않은' 문제를 LLM 으로 다룬다."
+    },
+    {
+      "title": "Etsy Q2 2026 earnings",
+      "url": "https://investors.etsy.com/",
+      "publisher": "Etsy IR",
+      "date": "2026-08",
+      "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+    }
+  ]
+}

@@ -13,13 +13,14 @@
 
 ## 진행 중
 
-없다 — DoorDash 를 완주하고 비웠다.
+| 회사 | 국가·분류 | 상태 |
+|---|---|---|
+| **Etsy** | US · 커머스(수공예 마켓플레이스) | 프로파일 완료 · 도메인 3(16년 된 샤딩을 데이터를 안 옮기고 갈아 끼운다[tech 5] / 바꾸는 것마다 실험으로 켠다[tech 2] / 1억 개가 서로 다른 물건에서 원하는 것을 찾게 한다[tech 1]) · **기능 0** |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Etsy** | US · 커머스(수공예 마켓플레이스) | `etsy.com/codeascraft` | ⚠️ **WebFetch 는 403. 브라우저(`get_page_text`)로는 목록도 본문도 온다** | ⚠️ **403 이라 접었던 곳을 브라우저로 되살렸다.** **⭐⭐ 연도가 붙은 데이터베이스 역사가 있다** — `Migrating Etsy's database sharding to Vitess`(2026-03-19)가 **`Etsy has maintained a sharded MySQL architecture since around 2010`** 으로 시작한다. **16년치 샤딩 역사를 한 줄로 여는 글이다.** **⭐⭐ 결제 이전이 3부작이고 제목이 대가를 약속한다** — `Scaling Etsy Payments with Vitess` **Part 2 `The "Seamless" Migration`** · **Part 3 `Reducing Cutover Risk`**(둘 다 2023-02). 기간도 적혀 있다 — **2020년 12월부터 2022년 5월까지**, 결제 플랫폼·DB 신뢰성·데이터 접근 세 팀이 함께. **⭐ 클라우드 이전도 연도가 있다** — **2020년에 온프렘 데이터센터에서 GCP 로 이전을 마쳤고**, 그 뒤 `Enhancing Cloud Usage Forecasting, Monitoring & Optimizing`(2024-06)로 비용을 다룬다. **⭐ 실험 문화가 두껍다** — control variates(2021→2025 후속), **`Mitigating the winner's curse in online experiments`**(2022). **⭐ LLM 축도 있다**(검색 relevance 2026-01 · 재고 이해 2025-10 · 구매자 프로파일 2025-09). **규모** — 리스팅 **1억 개 이상** · 활성 판매자 **560만 명** · 구매자 **약 9,000만 명**. ⚠️ **커머스 축은 이미 여럿이지만**(쇼피파이·잘란도·알레그로·웨이페어·쿠팡·메르카도리브레·빈티드·bol) **2010년부터의 샤딩 역사와 실험 문화는 그 어느 곳에도 없다** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
