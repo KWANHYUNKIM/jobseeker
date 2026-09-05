@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "in_progress",
-  "updated_at": "2026-09-04",
+  "updated_at": "2026-09-05",
   "domain": "fly.io",
   "one_liner": "1분 넘게 걸리던 것을 1~2초로 줄이려고 컨테이너도 합의도 버린 클라우드 — 무엇을 없앨지로 설계하는 회사다",
   "business_model": "**개발자에게 앱이 돌아갈 컴퓨트를 판다.** 전 세계에 **\"thousands of high-powered servers around the world\"** 를 두고, **\"edge proxies from Tokyo to Amsterdam\"** 이 요청을 가장 가까운 고객 인스턴스로 보낸다. 과금은 사용량 기준이다 — Sprites 를 두고 **\"Sprites bill only for what you actually use\"** 라고 적는다.\n\n**⚠️ 이 회사는 매출·고객 수 같은 숫자를 내놓지 않는다.** 비상장 사기업이고 기술 글에도 규모 지표가 거의 없다. **그래서 이 파일의 `metrics` 는 대부분 비어 있고, 그것이 정상이다**(이 판단은 이 사이트의 것이다).\n\n**대신 이 회사가 공개하는 것은 '무엇을 버렸는가' 다.** 두 편의 글이 전부 그 형식이다 — Sprites 는 **사용자용 컨테이너·부착 스토리지·호스트 기반 오케스트레이션 셋을 버려서** 만들었고, Corrosion 은 **분산 합의를 버려서** 만들었다. 앞서 판 인프라 회사들과 자리가 다르다(아래 대비는 이 사이트의 정리다) — 클라우드플레어는 **엣지에서 무엇을 할 수 있는가**였고, 그라파나 랩스는 **시계열을 어떻게 담을 것인가**, 플래닛스케일은 **데이터베이스를 어떻게 나눌 것인가**였다. 여기는 **켜는 데 걸리는 시간과 상태를 퍼뜨리는 시간**이라는 두 개의 '기다림' 이 문제의 본체다.",
@@ -137,10 +137,91 @@
     "**Sprites 의 저장소 스택은 아직 굳지 않았다.** 저자가 **\"Because it's in flux, let's keep it simple\"** 이라며 설명을 줄인다. **지금 쓴 내용이 다음에 달라질 수 있다** — 재방문 사이클에서 먼저 볼 자리다.",
     "**`eras` 를 세우지 않았다.** 두 전환(Fly Machines → Sprites, Consul → Corrosion)이 모두 **세대 교체가 분명한데 연도가 없다.** Corrosion 글은 **\"For longer than we should have, we relied on HashiCorp Consul\"** 이라고만 하고, Sprites 글의 **\"It took 3 years to get workload migration right\"** 도 기간이지 연도가 아니다. 연도 없이 시대를 자르지 않는다(STYLE.md 8번).",
     "**Sprites 의 성능 수치가 없다.** 생성이 **\"just a second or two\"** 라는 것 말고 지연·처리량·비용 비교가 없고, 오브젝트 스토리지 디스크가 어느 정도로 느린지도 **\"not adequate for a hot Postgres node\"** 라는 말뿐이다.",
-    "**Corrosion 의 규모 수치가 얇다.** 노드 수는 **\"thousands\"**, 수렴은 **\"in seconds\"** 로만 적힌다 — 정확한 전파 지연·테이블 크기·갱신량이 없다."
+    "**Corrosion 의 규모 수치가 얇다.** 노드 수는 **\"thousands\"**, 수렴은 **\"in seconds\"** 로만 적힌다 — 정확한 전파 지연·테이블 크기·갱신량이 없다.",
+    "Nomad + Rust 프록시 구조가 **언제부터** 그랬는지는 확인하지 못했다 — 글이 `For the year following our launch` 라는 상대 표현만 쓴다. 그래서 그 이전을 별도 시기로 세우지 않고 `context` 에 넣었다.",
+    "Consul → attache → Corrosion 으로 이어진 서비스 카탈로그 변천의 **각 시점 연도**를 확인하지 못했다. 2022년 3월 글이 `until a couple months ago` 라는 상대 표현만 쓴다.",
+    "Nomad 를 완전히 내린 시점은 확인하지 못했다 — 커뮤니티에 `Sunsetting Nomad` 글이 있으나 읽지 않았다."
   ],
   "features": [],
-  "eras": [],
+  "eras": [
+    {
+      "id": "2023-flyd",
+      "from": "2023",
+      "to": "",
+      "title": "합의를 버리고 워커 하나하나를 진실의 출처로 삼은 시기",
+      "context": "그전까지 플랫폼은 **Rust 프록시와 Go 로 쓴 Nomad 드라이버**였고, 무엇이 어디서 도는지는 **Consul** 이 진실의 출처였다. ⚠️ 그 구조가 정확히 언제부터였는지는 글이 `For the year following our launch` 라는 상대 표현만 써서 알 수 없다. 다만 2022년 3월 시점에 Consul 은 이미 한계에 닿아 있었다 — 실제 데이터는 `다이얼업 모뎀에 들어갈 정도` 인데 함대 전체에서 **초당 10기가비트**의 Consul 트래픽이 오갔다.",
+      "what_changed": "2023년 한 해에 걸쳐 Nomad 를 자체 오케스트레이터 **flyd** 로 갈아 끼웠다(내부 이름 `AppsV2`). 글이 시점을 직접 말한다 — `If you're deploying an app in January of 2023, you're still using Nomad; if you're deploying one in December of 2023, you'll probably be interacting with flyd.` 전역 합의를 쓰지 않고 **워커마다 자기 상태의 진실의 출처**가 되게 했고(Nomad 가 메모리에 캐시하던 자원 현황을 flyd 는 디스크에서 그때그때 만들어 낸다), **스케줄러를 오케스트레이터 밖으로 꺼냈다.** 서비스 카탈로그도 같은 방향으로 갔다 — 합의 대신 가십으로 상태를 퍼뜨리는 Corrosion.",
+      "why": "Nomad 의 **엄격한 빈 패킹**이 플랫폼에 맞지 않았다 — 몇 대의 서버가 잡을 다 빨아들이는 `Katamari Damacy scheduling` 이 됐다. Fly 는 **하나의 전역 클러스터**를 굴리는데 `This isn't what Nomad expects.` 였다. 무엇보다 Nomad 의 스케줄링은 **비동기**라 `flyctl deploy` 에는 맞아도 **HTTP 요청을 받아 0에서 깨우는 일에는 쓸 수 없었다.**",
+      "tradeoff": "⚠️ **유연한 배치를 버렸다.** `If you ask for VMs in MAD, you're going to get VMs in MAD, or you're going to get nothing... You won't get VMs in FRA because the orchestrator has decided 'that's close enough.'` — 요청한 지역에 못 넣으면 가까운 곳으로 대신 넣어 주지 않고 실패한다. 그리고 복잡한 정책 판단을 오케스트레이터에서 **클라이언트(`flyctl`)로 옮겼다** — 복잡도가 사라진 게 아니라 자리를 옮겼다. 카탈로그 쪽에서는 **전역 일관성을 포기하고 오래된 정보를 받아들이기로** 했다: `We can make our routing resilient to stale health and load information`, 그리고 `No matter how we synchronize service catalogs, we're still beclowned by the speed of light.`",
+      "domains": [
+        "1분을 1~2초로 줄이려고 무엇을 버릴 것인가",
+        "합의를 버리고 상태를 퍼뜨린다"
+      ],
+      "features": [],
+      "stack_in": [
+        "flyd",
+        "flaps",
+        "Corrosion",
+        "SQLite (워커 로컬 상태)"
+      ],
+      "stack_out": [
+        "Nomad"
+      ],
+      "metrics": [
+        {
+          "label": "오케스트레이터가 다루는 잡",
+          "value": "단일 잡에서 수십만 개로",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Carving The Scheduler Out Of Our Orchestrator",
+              "url": "https://fly.io/blog/carving-the-scheduler-out-of-our-orchestrator/",
+              "publisher": "The Fly Blog",
+              "summary": "Nomad 를 자체 오케스트레이터 flyd 로 갈아 끼운 이유와 그때 버린 것들. 2023년 1월과 12월의 배포가 서로 다른 시스템을 탄다고 시점을 직접 밝힌다."
+            }
+          ]
+        },
+        {
+          "label": "함대 전체 Consul 트래픽",
+          "value": "초당 약 10기가비트",
+          "as_of": "2022-03",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Foolish Consistency: Consul at Fly.io",
+              "url": "https://fly.io/blog/a-foolish-consistency/",
+              "publisher": "The Fly Blog",
+              "date": "2022-03-29",
+              "summary": "서비스 카탈로그의 진실의 출처로 쓰던 Consul 이 초당 10기가비트를 내며 한계에 닿은 이야기. 전역 일관성 대신 오래된 정보를 감수하기로 한 판단이 적혀 있다."
+            }
+          ]
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Carving The Scheduler Out Of Our Orchestrator",
+          "url": "https://fly.io/blog/carving-the-scheduler-out-of-our-orchestrator/",
+          "publisher": "The Fly Blog",
+          "summary": "Nomad 를 자체 오케스트레이터 flyd 로 갈아 끼운 이유와 그때 버린 것들. 2023년 1월과 12월의 배포가 서로 다른 시스템을 탄다고 시점을 직접 밝힌다."
+        },
+        {
+          "title": "A Foolish Consistency: Consul at Fly.io",
+          "url": "https://fly.io/blog/a-foolish-consistency/",
+          "publisher": "The Fly Blog",
+          "date": "2022-03-29",
+          "summary": "서비스 카탈로그의 진실의 출처로 쓰던 Consul 이 초당 10기가비트를 내며 한계에 닿은 이야기. 전역 일관성 대신 오래된 정보를 감수하기로 한 판단이 적혀 있다."
+        },
+        {
+          "title": "Corrosion",
+          "url": "https://fly.io/blog/corrosion/",
+          "publisher": "The Fly Blog",
+          "date": "2025-10-22 (갱신 표기)",
+          "summary": "합의 대신 가십으로 상태를 퍼뜨리는 자체 서비스 카탈로그."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "The Design & Implementation of Sprites",
