@@ -1387,6 +1387,25 @@
       "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "data-migration",
+      "title": "데이터 이관 (마이그레이션)",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "돌아가고 있는 시스템의 데이터를 다른 시스템으로 옮기는 일 — 옮기는 동안에도 원본이 계속 바뀌기 때문에 복사가 아니라 따라잡기가 된다.",
+      "aliases": [
+        "데이터 이관",
+        "데이터 마이그레이션",
+        "Data Migration",
+        "DB 이관",
+        "AWS DMS",
+        "DMS"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

@@ -4,51 +4,72 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `정책 엔진 (Policy Engine, OPA)`(`policy-engine`)을 끝냈다** — 절 7 · 표 5 ·
-실습 3 · 지뢰 6 · 근거 7. 전체: **문서 78개**(전부 done) · 절 465 · 실습 234 ·
+**직전 사이클에서 `데이터 이관 (마이그레이션)`(`data-migration`)을 끝냈다** — 절 6 · 표 5 ·
+실습 3 · 지뢰 7 · 근거 8. 전체: **문서 79개**(전부 done) · 절 471 · 실습 237 ·
 **오류 0 · 경고 0.**
 
-**`abac` 이 "규칙을 어디에 두느냐가 진짜 주제"라며 범위 밖으로 넘긴 자리를 받았다.**
+**⭐ 축이 또 셈에서 나왔다 — 두 사이클 연속이다.** `마이그레이션` 은 **두 개의 다른 일**을
+가리킨다: **스키마 마이그레이션**(Flyway·Alembic·Prisma 로 같은 DB 구조 변경)과 **데이터
+이관**(다른 시스템으로 옮기기). 좁은 패턴 285건(모집중 106) 중 **스키마 54 · 이관 82 ·
+둘 다 1 · 문맥 불명 148**. **불명이 절반이 넘는다는 것 자체가 첫 절의 근거**가 됐다
+(공고만 봐서는 모르니 이웃 낱말을 보라). 넓은 패턴은 846건이지만 코드·클라우드 이관이
+섞여 안 썼다.
 
-**⭐⭐ 이 문서의 발견은 셈에서 나왔다 — "정책 엔진"은 두 자리를 가리킨다.**
-56건(모집중 31)을 문장을 읽고 갈랐더니 **배포 가드레일 32 · 런타임 인가 11 · 둘 다 2 ·
-분류 불가 11**. 즉 **독자가 `rbac`·`abac` 에서 기대하는 인가보다 admission control·IaC
-검증 쪽이 세 배 많다.** 이유는 **엔진을 꽂을 구멍이 이미 뚫려 있어서**다(쿠버네티스 어드미션
-웹훅, CI 의 Terraform 계획 검사). 두 자리는 **거절의 뜻이 다르다** — 인가에서 거절은 사용자
-한 명이 화면을 못 보는 것, 가드레일에서 거절은 **팀 하나의 배포가 멈추는 것**. 그래서 Gorgias
-공고가 **`guide teams without blocking them`** 이라고 적는다. 독자에게 준 요령: **같은 줄의
-이웃 낱말을 본다**(Keycloak·RBAC 이면 인가, Kyverno·Gatekeeper·Trivy 면 가드레일).
+**⭐⭐ 문서의 진짜 축은 "다 옮겼다는 걸 어떻게 아느냐"** 다. AWS DMS 검증 문서가
+**자기가 못 하는 것을 스스로 적어 둔 자리**가 금광이었다 — **"Data validation requires that
+the table has a primary key or unique index."** · **"If one or more rows are being continuously
+modified during validation, then AWS DMS can't validate those rows."**(⭐ **가장 중요한 행이
+검증에서 빠진다**) · **"Validated—... If the table is updated, the status can change from
+Validated."**(⭐⭐ **검증은 상태가 아니라 순간이다**). 실패 유형 넷(`RECORD_DIFF`/
+`MISSING_SOURCE`/`MISSING_TARGET`/`TABLE_WARNING`)은 **나눠 세면 원인이 갈리는** 표가 됐다.
 
-**⭐ 1차 자료의 값이 난 자리 셋** — (1) OPA `/docs/deploy` 가 **PDP/PEP 를 정의**하고
-**사이드카 vs 중앙 서비스 비교표**를 준다(`Higher latency, decisions involve network hops` ·
-`Failure point if not highly available`). (2) Rego 의 **undefined** — 규칙이 안 맞으면 false 가
-아니라 **없음**이고, 그래서 `default allow := false` 가 지뢰밭 첫 줄이 됐다. `opa test` 도 같은
-규칙을 쓴다(**undefined 면 FAIL**). (3) ⭐ **AWS Verified Permissions 가 명시한 경계** —
-**"Additional context, entities, and attributes are not retrieved by default with this service."**
-즉 **엔진은 당신의 DB 를 모른다.** 도입 비용의 대부분이 규칙 번역이 아니라 **input 계약 설계**에
-있다는 결론이 여기서 나왔다.
+**⭐ 두 번째 금광은 PostgreSQL 논리 복제의 제약 목록** — **"Sequence data is not
+replicated."** 이 문서 최고의 지뢰다(전환 후 첫 INSERT 에서 PK 충돌, 읽기 전용일 땐 증상이
+없어 전환 전에 안 잡힌다). 그리고 **"applying additive schema changes to the subscriber
+first"** 는 `zero-downtime-deploy` 의 확장·수축과 **같은 규칙의 다른 얼굴**이었다.
 
-**다음 사이클 = QUEUE 맨 위 `데이터 이관 (마이그레이션)`(`data-migration`)** — 사다리 3순위.
-(정책 엔진을 큐에서 지우고 **`관계 기반 접근제어 (ReBAC)`(`rebac`)를 새로 올렸다** —
-이 문서가 끊긴 `related` 로 남긴 자리이고 `rbac`·`abac` 에 이어 **빠진 세 번째 모델**이다.
-**대기 2개**: 데이터 이관, ReBAC)
+**다음 사이클 = QUEUE 맨 위 `관계 기반 접근제어 (ReBAC)`(`rebac`)** — 사다리 3순위.
+(데이터 이관을 큐에서 지우고 **`스키마 마이그레이션`(`schema-migration`)을 새로 올렸다** —
+이 문서가 첫 절에서 갈라 놓고 넘긴 나머지 절반이다. **대기 2개**: ReBAC, 스키마 마이그레이션)
 
-## 데이터 이관 사이클 메모
+## ReBAC 사이클 메모
 
-- ⚠️ **844건(모집중 355)이지만 `마이그레이션`은 넓다** — 코드/클라우드/프레임워크 이관이
-  섞여 있다. **문장을 읽고 데이터 이동만 갈라 센다**(이번 `policy-engine` 에서 인가/가드레일을
-  가른 것과 같은 방식이고, **그 분류 자체가 문서의 축이 될 수 있다**).
-- 축 다섯: ①**멈추고 옮기나, 켜 둔 채 옮기나** ②**따라잡기 → 전환 → 되돌리기**(세 단계와
-  각각의 판단 기준) ③**전후 검증**(건수·합계·표본 대조 → `data-quality` 의 검사가 값을 한다)
-  ④**되돌릴 수 있게 남겨 둔다**(역방향 복제·이중 쓰기) ⑤**언제 옛것을 끄나**.
-- ⭐ **1차 자료** — **AWS DMS 문서**(전체 적재 + CDC 단계, 데이터 검증 기능)가 "설정으로
-  노출된 자리"이고 **PostgreSQL 논리 복제 문서**가 원리 쪽이다. **이번 사이클에서 확인한
-  역할 분담**(원리는 오픈소스, 운영은 클라우드)을 그대로 쓴다.
-- ⚠️ **`zero-downtime-deploy` 와 겹치지 않게 — 코드 배포는 그쪽, 데이터 이동은 여기.**
-  ⚠️ `replication` 이 논리/물리 구분을 남겼으니 **그 위에서 시작**한다.
+- **`policy-engine` 이 끊긴 링크로 남긴 자리**이고 `rbac`·`abac` 에 이은 **빠진 세 번째
+  모델**이다. 공고가 셋을 나란히 적는다(42dot 의 `RBAC, ABAC, ReBAC, policy engine,
+  permission model`, 해외 공고의 `ReBAC and ABAC with policy engines (OPA, Cedar, OpenFGA,
+  or equivalent)` 두 건).
+- ⚠️ **이름으로 세면 한 자릿수다.** `OpenFGA|Zanzibar|SpiceDB|관계 기반|relationship-based|
+  공유 권한|폴더 상속` 처럼 **실물 이름과 증상으로 함께 센다**(`abac` 의 "개념어와 기능어를
+  함께 센다" 규칙).
+- 축 다섯: ①**"이 문서를 나와 공유한 사람"은 역할로도 속성으로도 못 자른다** ②**권한을
+  관계 그래프로 저장한다**(주체-관계-객체 튜플) ③**상속과 순회**(폴더 권한이 파일로 내려감)
+  ④**그래서 느리고 캐시가 어렵다**(→ `caching`) ⑤**"누가 이걸 볼 수 있나"를 역으로 묻기**.
+- ⭐ **1차 자료** — **OpenFGA 공식 문서**(관계 튜플, `check`/`list-objects`)가 공개 HTML.
+  ⚠️ **Zanzibar 논문은 USENIX 라 403 이었던 전력**이 있다 — HTML 판 없으면 OpenFGA·SpiceDB
+  문서로 받치고 밝힌다. ⚠️ `rbac`·`abac`·`policy-engine` 과 겹치지 않게.
 
 
 ## 배운 것
+
+- ⭐⭐ **"셈의 분류가 곧 문서의 축"이 두 사이클 연속 통했다 — 이제 기본 절차로 삼는다.**
+  `policy-engine`(인가 11 vs 가드레일 32)에 이어 `data-migration`(스키마 54 vs 이관 82).
+  **큰 낱말을 만나면 건수를 세기 전에 "이 낱말이 몇 가지 일을 가리키는가"를 먼저 묻고,
+  그 분류로 세어 표를 만든다.** 그 표가 독자에게 가장 쓸모 있는 물건이 된다(공고 읽는 요령).
+  그리고 **분류 불명이 많다는 것도 발견이다** — 이번엔 148건(52%)이 불명이었고, 그 비율이
+  "공고만 봐서는 모른다"는 첫 절의 근거가 됐다.
+- ⭐ **제품 문서의 Limitations 절이 문서의 심장이 될 수 있다.** `policy-engine` 에서
+  "What to consider 절을 읽으라"고 적었는데, 이번엔 **Limitations 절 하나로 절·표·지뢰가
+  전부 나왔다.** DMS 검증 문서는 **자기가 못 하는 것을 성실하게 적어 둔 드문 문서**이고,
+  거기서 "**가장 중요한 행이 검증에서 빠진다**"와 "**검증은 상태가 아니라 순간이다**"가
+  나왔다. **기능 설명은 어디에나 있지만 한계 목록은 1차 자료에만 있다.**
+- **같은 규칙이 다른 계층에서 같은 문장으로 나타나면 그것을 이어 준다.** PostgreSQL 의
+  "additive schema changes to the subscriber first" 는 `zero-downtime-deploy` 의 확장·수축과
+  **같은 규칙**이다. `table-format`(고유 ID ↔ `grpc` 필드 번호) 이후로 이런 이음이 네 번째인데,
+  **이번 것은 1차 자료가 그 규칙을 다른 맥락에서 독립적으로 재발견한 형태**라 더 강하다.
+- **세 글자 약어 규칙에 조건이 확인됐다.** `OPA`(오탐 0)와 `DMS`(오탐 있음 — 문서관리시스템·
+  광고분석시스템)가 한 사이클 차이로 나왔다. **차이는 이웃 낱말의 좁기**다. `OPA` 는 늘
+  Rego·Kyverno 옆에 있고 `DMS` 는 아무 데나 있다. **약어를 셀 때 '이 약어가 다른 산업에서도
+  흔한 조합인가'를 먼저 본다.**
 
 - ⭐ **셈의 분류가 곧 문서의 축이 된 두 번째 사례다.** `two-phase-commit` 은 "2PC 를 뜻하는
   공고가 0건"이라는 **부재**를 발견했는데, `policy-engine` 은 **비율의 뒤집힘**을 발견했다 —
