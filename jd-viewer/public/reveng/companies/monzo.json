@@ -177,9 +177,26 @@
               "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
             }
           ]
+        },
+        {
+          "tech": "다중 클러스터 (monzo.com/cluster)",
+          "solves": "쪼개기 계획의 실제 흔적. 서비스마다 키스페이스가 다르고 **일부는 다른 클러스터**를 쓴다 — 카산드라 클라이언트 **2,300개 이상**을 Vault 로 관리한다.",
+          "limits": "⚠️ **장애 뒤 계획한 `큰 클러스터 하나를 여러 개로` 가 어디까지 갔는지는 모른다** — 다중 클러스터가 존재한다는 것만 확인했다(2019-12).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "We secured thousands of Cassandra clients to keep Monzo's data safe",
+              "url": "https://monzo.com/blog/we-secured-thousands-of-cassandra-clients-to-keep-monzos-data-safe",
+              "publisher": "Monzo Blog",
+              "date": "2019-12-17",
+              "summary": "신뢰 네트워크 방식을 버리고 Vault 로 카산드라 자격증명을 동적으로 발급한다. 카산드라를 쓰는 서비스 500개 이상, 클라이언트 2,300개 이상. 서비스마다 키스페이스가 다르고 일부는 다른 클러스터를 쓴다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "one-node-test-hid-quorum-break"
+      ]
     },
     {
       "name": "팀 100개가 만드는 데이터에 계약을 건다",
@@ -761,12 +778,507 @@
           "summary": "매출 12억 파운드(+48%), 조정 세전이익 1억 1,390만 파운드(8배), 신규 고객 240만으로 총 1,200만 이상, 고객 예금 166억 파운드(+48%)."
         }
       ]
+    },
+    {
+      "key": "one-node-test-hid-quorum-break",
+      "name": "한 대로 시험한 것이 여섯 대에서는 다른 일이 된다",
+      "domain": "은행의 상태를 한 클러스터에 몰아 두고 그 대가를 치른다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**서비스는 수천 개인데 상태는 한 클러스터에 모여 있었다.** 회사가 그 구조의 장점을 먼저 적는다 — 엔지니어가 **어느 클러스터에 올릴지 고민하지 않아도 된다.** ⚠️ **그리고 2019년 7월 29일에 그 대가를 정확히 치렀다** — 데이터베이스를 늘리는 평범한 작업 하나가 **로그인·카드 거래·잔액·고객 지원을 두 시간 동안** 무너뜨렸다. **한 번의 변경이 회사 전체에 닿는다는 것이 단일 클러스터의 다른 이름이다.**",
+        "metrics": [
+          {
+            "label": "클러스터 규모",
+            "value": "**노드 21대에 6대를 더했다** — 복제는 **3벌**, 정족수는 **2벌 합의**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "label": "장애 길이",
+            "value": "**13:10 시작 → 15:08 대부분 정상**(약 2시간). 데이터 정합 복구는 **23:00 까지 약 8시간 더**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 진단이 늦은 시간",
+            "value": "**13:24 에 담당자가 관련 없다고 결론**했고, **14:13 에야** 불가능하다고 여긴 일이 실제로 일어났음을 확인했다 — **약 한 시간**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "label": "되돌리는 속도",
+            "value": "**노드 하나 제거에 8~10분.** 첫 노드를 뺀 14:28 에 404 가 즉시 줄기 시작했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 시험과 운영의 차이",
+            "value": "**시험은 1대, 운영은 6대.** 그 차이가 정족수 수학을 통째로 바꿨다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "label": "지금의 규모",
+            "value": "카산드라를 쓰는 서비스 **500개 이상** · 클라이언트 **2,300개 이상** · 서비스마다 다른 키스페이스",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We secured thousands of Cassandra clients to keep Monzo's data safe",
+                "url": "https://monzo.com/blog/we-secured-thousands-of-cassandra-clients-to-keep-monzos-data-safe",
+                "publisher": "Monzo Blog",
+                "date": "2019-12-17",
+                "summary": "신뢰 네트워크 방식을 버리고 Vault 로 카산드라 자격증명을 동적으로 발급한다. 카산드라를 쓰는 서비스 500개 이상, 클라이언트 2,300개 이상. 서비스마다 키스페이스가 다르고 일부는 다른 클러스터를 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "확장을 준비할 때",
+          "thought": "**1대로 시험하고 몇 시간을 지켜본 것은 이상한 판단이 아니다** — 새 서버를 데이터 없는 상태로 두고 아무 일도 안 일어나는지 본 것이다. ⚠️ **그런데 정족수는 대수가 아니라 다수결이라, 대수를 바꾸면 결과가 달라진다.** 1대일 때는 **나머지 두 대가 합의를 채워** 문제를 가려 준다 — `we'd have agreement from the other two servers in the cluster`. **테스트가 규모를 안 바꾸면 그 테스트는 다른 것을 시험한 것이다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "증상을 볼 때",
+          "thought": "⚠️ **가장 값진 대목은 담당자가 자기 작업을 배제한 순간이다** — 13:24 에 `All of these metrics appear normal and unaffected by the operation` 이라고 결론 내렸다. **지표가 정상이라는 것이 원인이 아니라는 뜻은 아니었다.** 그리고 13:48~13:57 에는 **모순된 증거**까지 나온다 — `we see successful read and writes to the configuration service, which is surprising given we've just seen it fail to retrieve data`. **어떤 키는 되고 어떤 키는 안 되는데, 그 이유가 파티션 재할당이라는 것을 알기 전에는 모순으로만 보인다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "왜 못 봤는지 돌아볼 때",
+          "thought": "**애플리케이션 증상은 보였는데 원인을 가리키는 지표가 없었다** — 설정값이 사라지는 것은 봤지만 `metrics showing Cassandra as a primary cause of the issue` 가 없었다. ⚠️ **Wise 의 압축 백로그와 같은 모양이다** — 증상은 여러 곳에 나타나는데 **원인 컴포넌트를 지목하는 신호가 없다.** 그래서 둘 다 사고 뒤에 그 알림을 만든다(이 대비는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "파티션과 토큰 소유권",
+            "what": "⚠️ **어느 노드가 어느 데이터를 책임지는가.** 새 노드가 합류하면 **이 배정이 옮겨진다** — 데이터가 옮겨지기 전에도"
+          },
+          {
+            "name": "정족수 (quorum)",
+            "what": "**3벌 중 2벌이 합의해야 읽기가 성립한다.** 데이터 없는 노드가 2벌 이상을 차지하면 **`없음` 이 다수가 된다**"
+          },
+          {
+            "name": "auto_bootstrap",
+            "what": "⚠️ **하는 일이 둘인 플래그.** 데이터 스트리밍 여부**와** 새 노드가 활성으로 합류하는지를 함께 정한다"
+          },
+          {
+            "name": "외부에 저장한 이벤트",
+            "what": "⚠️ **복구를 가능하게 한 것.** 장애 중 쓰인 데이터를 이것으로 되재생했다"
+          },
+          {
+            "name": "설정 서비스",
+            "what": "카산드라를 질의한다. **여기가 비면 내부 도구와 배포까지 함께 멈춘다**"
+          }
+        ],
+        "invariants": [
+          "**읽기는 3벌 중 2벌의 합의로 정해진다** — 합의한 다수가 `없음` 이면 데이터는 없는 것이다",
+          "⚠️ **노드 합류는 데이터 이동보다 먼저 일어날 수 있다** — 책임과 내용이 분리되는 순간이 존재한다",
+          "**은행이라 멈출 수 없다** — 되돌리는 동안에도 장애는 계속된다(노드당 8~10분)",
+          "⚠️ **한 클러스터에 모든 상태가 있으면 한 번의 변경이 전 영역에 닿는다** — 회사가 이것을 단점으로 직접 적는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**13:10 — 21대 클러스터에 새 서버 6대를 넣는다**",
+            "why": "평범한 확장 작업. 플래그가 새 서버를 비활성으로 둘 것이라 믿었다"
+          },
+          {
+            "step": "⚠️ **새 서버들이 파티션 책임을 넘겨받는다 — 데이터는 없는 채로**",
+            "why": "`auto_bootstrap` 이 활성 여부까지 정한다는 것을 몰랐다"
+          },
+          {
+            "step": "⚠️ **정족수가 뒤집힌다** — 파티션당 2~3벌이 빈 서버로 옮겨져 **`없음` 이 다수가 된다**",
+            "why": "3벌 중 2벌 합의라 **두 개가 비면 그 데이터는 없는 것이 된다**"
+          },
+          {
+            "step": "**13:14 — 증상이 흩어져 나타난다**: 카드 거래 일부 실패 · 고객 지원 도구 고장 · 이어서 내부 edge 404 · 앱 로그아웃",
+            "why": "설정값이 사라진 자리마다 다른 모양으로 터진다"
+          },
+          {
+            "step": "⚠️ **13:24 — 담당자가 자기 작업을 배제한다** (`metrics appear normal`)",
+            "why": "**지표가 정상인 것과 원인이 아닌 것은 다르다**"
+          },
+          {
+            "step": "**13:39 — 마스터카드 폴백으로 카드 거래부터 살린다**",
+            "why": "원인을 모르는 채로도 가장 아픈 증상은 먼저 덮는다"
+          },
+          {
+            "step": "**13:46~14:00 — 내부 edge 가 설정 서비스에, 설정 서비스가 카산드라에 걸려 있음을 따라간다**",
+            "why": "의존을 거슬러 올라가야 원인에 닿는다"
+          },
+          {
+            "step": "**14:13 — 불가능하다고 여긴 일이 실제로 일어났음을 확인한다**",
+            "why": "여기서 진단이 끝난다"
+          },
+          {
+            "step": "**14:18~15:08 — 새 노드를 하나씩 뺀다** (노드당 8~10분)",
+            "why": "첫 노드를 빼자마자 404 가 줄었다"
+          },
+          {
+            "step": "**15:08~23:00 — 데이터를 맞춘다** — **외부에 저장해 둔 이벤트를 재생**하고 내부 정합성 검사를 돌린다",
+            "why": "⚠️ **장애 중에도 쓰기가 계속 들어왔다.** 멈추는 것보다 이 뒤처리가 길었다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "확장을 어떻게 시험할 것인가",
+            "chosen": "**시험 환경에 1대를 넣고 데이터 없는 상태로 몇 시간 둔다**",
+            "alternatives": [
+              "운영과 같은 대수(6대)로 시험하기"
+            ],
+            "tradeoff": "⚠️ **이 결정 하나가 장애 전체를 낳았다.** 1대일 때는 **나머지 두 대가 정족수를 채워** 문제를 덮는다 — `we'd have agreement from the other two servers`. 6대를 넣으니 **파티션당 2~3벌이 옮겨져** 정족수가 깨졌다. **테스트가 규모를 안 바꾸면 그 테스트는 다른 것을 시험한 것이다**(뒤쪽 정리는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "question": "새 노드가 데이터를 받기 전에 무엇을 막을 것인가",
+            "chosen": "**`auto_bootstrap: false`** — 2018년 10월 확장 이후 그렇게 두고 있었다",
+            "alternatives": [
+              "기본값(true)으로 자동 스트리밍",
+              "합류 자체를 수동으로 통제"
+            ],
+            "tradeoff": "⚠️ **플래그가 하는 일이 하나가 아니었다** — 데이터 스트리밍만이 아니라 **새 노드가 활성으로 합류하는지도** 함께 정했다. **하나를 끄려고 켠 설정이 다른 하나까지 껐다**(정확히는 켰다). **설정 하나가 두 가지를 정할 때, 문서를 반만 읽으면 절반은 반대로 동작한다**(이 표현은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "question": "원인을 모르는 채 무엇을 먼저 할 것인가",
+            "chosen": "**가장 아픈 증상부터 덮는다** — 13:39 에 마스터카드 폴백을 배포해 카드 거래를 살렸다",
+            "alternatives": [
+              "원인을 찾을 때까지 기다리기"
+            ],
+            "tradeoff": "**원인을 모르는 채로도 사람들이 카드를 쓰게 만드는 것이 먼저다.** ⚠️ 대가는 **증상이 가려져 진단이 더 늦어질 수 있다는 것**이다 — 실제로 원인 확인은 그로부터 34분 뒤였다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "question": "어떻게 되돌릴 것인가",
+            "chosen": "**새 노드를 하나씩 빼낸다** — 노드당 8~10분",
+            "alternatives": [
+              "데이터를 새 노드로 밀어 넣어 정상화",
+              "클러스터 전체를 멈추고 복구"
+            ],
+            "tradeoff": "⚠️ **되돌리는 데만 50분이 걸렸고 그동안 장애는 계속됐다.** 그 대신 **첫 노드를 빼자마자 효과가 보였다**(14:28 에 404 감소) — **점진적으로 되돌릴 수 있다는 것이 이 선택의 값이다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "question": "장애 중에 쓰인 데이터를 어떻게 할 것인가",
+            "chosen": "**외부에 저장해 둔 이벤트를 재생하고 내부 정합성 검사를 돌린다** — 15:08부터 23:00까지",
+            "alternatives": [
+              "데이터베이스 백업에서 복원",
+              "불일치를 그대로 두기"
+            ],
+            "tradeoff": "⚠️ **이것이 가능했던 이유는 이벤트를 데이터베이스 밖에 따로 저장해 뒀기 때문이다** — 평소에는 비용이던 것이 **여기서 유일한 복구 수단이 됐다**(이 평가는 이 사이트의 재구성이다). 대가는 시간이다 — **정상화 뒤에도 8시간**이 더 걸렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "question": "같은 일이 다시 조용히 자라지 않게 무엇을 할 것인가",
+            "chosen": "**런북과 알림을 만든다** — 카산드라 설정 결정을 문서로 남기고 **`row not found` 같은 지표의 급변**에 알림을 건다",
+            "alternatives": [
+              "설정만 고치고 넘어가기"
+            ],
+            "tradeoff": "⚠️ **사고가 나고 나서 생긴 것들이다.** 그전에는 **애플리케이션 증상은 보이는데 원인을 지목하는 지표가 없었다.** **어떤 컴포넌트에 신호가 없는지 미리 아는 방법은 이 글에도 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "question": "단일 클러스터를 유지할 것인가",
+            "chosen": "**쪼갠다** — 큰 클러스터 하나를 작은 여러 개로",
+            "alternatives": [
+              "단일 클러스터 유지"
+            ],
+            "tradeoff": "단일 클러스터의 장점을 회사가 먼저 적는다 — **엔지니어가 어느 클러스터에 올릴지 고민하지 않아도 된다.** 대가는 `a single change can have a far-reaching impact` 다. **쪼개면 영향 범위가 줄고 운영 복잡도가 는다.** ✅ **그 방향으로 실제로 갔다** — 석 달 뒤 글에 `some need different Cassandra clusters too` 와 `monzo.com/cluster` 어노테이션이 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              },
+              {
+                "title": "We secured thousands of Cassandra clients to keep Monzo's data safe",
+                "url": "https://monzo.com/blog/we-secured-thousands-of-cassandra-clients-to-keep-monzos-data-safe",
+                "publisher": "Monzo Blog",
+                "date": "2019-12-17",
+                "summary": "신뢰 네트워크 방식을 버리고 Vault 로 카산드라 자격증명을 동적으로 발급한다. 카산드라를 쓰는 서비스 500개 이상, 클라이언트 2,300개 이상. 서비스마다 키스페이스가 다르고 일부는 다른 클러스터를 쓴다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Apache Cassandra (정족수 읽기)",
+            "role": "은행 상태의 대부분. 3벌 복제에 2벌 합의",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ auto_bootstrap",
+            "role": "⚠️ **이 사고의 방아쇠.** 데이터 스트리밍과 활성 합류를 함께 정한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "tech": "외부 이벤트 저장소",
+            "role": "⚠️ **복구의 유일한 수단.** 장애 중 쓰인 데이터를 재생했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "tech": "마스터카드 폴백",
+            "role": "원인 확인 전에 카드 거래부터 살린 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "tech": "다중 클러스터 (monzo.com/cluster)",
+            "role": "쪼개기의 실제 흔적. 서비스마다 키스페이스가 다르고 **일부는 다른 클러스터**를 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We secured thousands of Cassandra clients to keep Monzo's data safe",
+                "url": "https://monzo.com/blog/we-secured-thousands-of-cassandra-clients-to-keep-monzos-data-safe",
+                "publisher": "Monzo Blog",
+                "date": "2019-12-17",
+                "summary": "신뢰 네트워크 방식을 버리고 Vault 로 카산드라 자격증명을 동적으로 발급한다. 카산드라를 쓰는 서비스 500개 이상, 클라이언트 2,300개 이상. 서비스마다 키스페이스가 다르고 일부는 다른 클러스터를 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "one-team-drives-all-migrations",
+          "via": "되돌리는 속도",
+          "contract": "⚠️ **같은 회사가 두 곳에서 정반대의 되돌리기 속도를 갖는다** — 라이브러리 이전은 **설정 60초**로 되돌리고, 이 장애는 **노드당 8~10분**이 걸렸다. **상태를 가진 것은 빨리 되돌릴 수 없다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "설정 서비스 · 내부 edge",
+          "via": "카산드라 질의",
+          "contract": "⚠️ **설정 서비스가 카산드라에 걸려 있어서, 데이터가 사라지자 내부 도구와 배포까지 함께 멈췄다** — 고치러 들어가는 길이 같은 이유로 막힌다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "팀 100개가 만드는 데이터에 계약을 건다",
+          "via": "이벤트",
+          "contract": "**외부에 저장해 둔 이벤트가 복구를 가능하게 했다.** 같은 이벤트 흐름이 데이터 창고 쪽에서는 랜딩 계층의 재료가 된다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "고객의 돈",
+          "via": "가용성",
+          "contract": "**멈추면 카드가 안 긁히고 잔액이 안 보인다.** 예금 166억 파운드·고객 1,200만 명이 이 클러스터 뒤에 있다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "시험이 규모를 안 바꾸면 다른 것을 시험한 것이 된다",
+            "why_hard": "⚠️ **정족수는 대수가 아니라 다수결이라, 대수를 바꾸면 성질이 바뀐다.** 1대를 넣은 시험에서는 **나머지 두 대가 합의를 채워** 아무 일도 안 일어난다. 6대를 넣으면 **파티션당 2~3벌이 옮겨져** 같은 절차가 정반대 결과를 낸다. **시험이 통과한 것이 안전을 뜻하지 않는다.**",
+            "current_best": "**운영과 같은 대수로 시험하는 것.** ⚠️ **그런데 21대 클러스터에 6대를 더하는 상황을 시험 환경에서 그대로 만드는 비용은 이 글에 없다** — 이 지적은 이 사이트의 재구성이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          },
+          {
+            "problem": "증상은 여러 곳에 나타나는데 원인을 가리키는 신호가 없다",
+            "why_hard": "카드 거래·고객 지원·내부 edge·로그인이 **각각 다른 모양으로** 터졌고, 담당자는 지표가 정상이라 **자기 작업을 배제했다.** 그리고 중간에는 **모순된 증거**까지 나온다 — 같은 서비스에서 어떤 읽기는 성공하고 어떤 읽기는 실패한다(파티션 재할당이라는 것을 알기 전에는 설명이 안 된다).",
+            "current_best": "**사고 뒤에 그 신호를 만드는 것** — `row not found` 급변에 알림을 걸었다. ⚠️ **Wise 의 압축 백로그와 같은 결론에 이른다** — 겪기 전에는 **어떤 컴포넌트에 신호가 없는지 알 방법이 없다**(이 대비는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+                "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+                "publisher": "Monzo Blog",
+                "date": "2019-09-08",
+                "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "책임은 옮겨졌는데 데이터는 안 옮겨졌다",
+          "question": "평범한 확장이 어떻게 두 시간 장애가 됐나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>13:10 — 21대에 6대 추가</b><br/>• auto_bootstrap: false<br/>• 비활성으로 붙을 것이라 믿었다\"]:::accent --> B[\"⚠️ <b>새 노드가 파티션 책임을 받는다</b><br/>• 데이터는 없는 채로\"]:::gone\n  B --> C[\"⚠️ <b>정족수가 뒤집힌다</b><br/>• 3벌 중 2벌 합의<br/>• 빈 노드가 2벌을 차지하면<br/>  <b>없음이 다수가 된다</b>\"]:::gone\n  C --> D[\"<b>13:14 증상이 흩어진다</b><br/>• 카드 거래 실패 · 지원 도구 고장<br/>• 내부 edge 404 · 앱 로그아웃\"]:::gone\n  D --> E[\"⚠️ <b>13:24 담당자가 배제한다</b><br/>• 지표가 정상으로 보였다\"]:::gone\n  E --> F[\"<b>13:39 카드부터 살린다</b><br/>• 마스터카드 폴백\"]:::list\n  F --> G[\"<b>14:13 원인 확인</b><br/>• 불가능하다 여긴 일이 일어났다\"]:::accent\n  G --> H[\"<b>14:18~15:08 노드를 하나씩 뺀다</b><br/>• 노드당 8~10분\"]:::accent\n  H --> I[\"<b>15:08~23:00 데이터를 맞춘다</b><br/>• 외부 이벤트 재생<br/>• 내부 정합성 검사\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "1대에서는 안 보이고 6대에서는 보인다",
+          "question": "왜 시험이 통과했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  T[\"<b>시험 — 1대 추가</b>\"]:::accent --> T1[\"<b>빈 노드 1 + 정상 노드 2</b>\"]:::list\n  T1 --> T2[\"<b>정족수 성립</b><br/>• 나머지 두 대가 합의를 채운다<br/>• 아무 일도 안 일어난다\"]:::list\n  P[\"<b>운영 — 6대 추가</b>\"]:::gone --> P1[\"⚠️ <b>파티션당 2~3벌이 빈 노드로</b>\"]:::gone\n  P1 --> P2[\"⚠️ <b>정족수가 없음 쪽에 선다</b><br/>• 데이터가 사라진 것으로 보인다\"]:::gone\n  P2 --> P3[\"⚠️ <b>설정 서비스가 빈다</b>\"]:::gone\n  P3 --> P4[\"⚠️ <b>내부 edge 404</b><br/>• 배포도 고객 지원도 멈춘다<br/>• <b>고치러 가는 길이 같이 막힌다</b>\"]:::gone\n  M[\"⚠️ <b>모니터링</b><br/>• 애플리케이션 증상은 보인다<br/>• <b>카산드라를 지목하는 지표가 없다</b>\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "We had issues with Monzo on 29th July. Here's what happened, and what we did to fix it.",
+          "url": "https://monzo.com/blog/2019/09/08/why-monzo-wasnt-working-on-july-29th",
+          "publisher": "Monzo Blog",
+          "date": "2019-09-08",
+          "summary": "카산드라 21노드 클러스터에 빈 서버 6대를 넣었다가 약 2시간 장애. auto_bootstrap 플래그가 데이터 스트리밍만이 아니라 새 서버의 활성 여부까지 정한다는 것을 몰랐다."
+        },
+        {
+          "title": "We secured thousands of Cassandra clients to keep Monzo's data safe",
+          "url": "https://monzo.com/blog/we-secured-thousands-of-cassandra-clients-to-keep-monzos-data-safe",
+          "publisher": "Monzo Blog",
+          "date": "2019-12-17",
+          "summary": "신뢰 네트워크 방식을 버리고 Vault 로 카산드라 자격증명을 동적으로 발급한다. 카산드라를 쓰는 서비스 500개 이상, 클라이언트 2,300개 이상. 서비스마다 키스페이스가 다르고 일부는 다른 클러스터를 쓴다."
+        },
+        {
+          "title": "Monzo Annual Report 2025",
+          "url": "https://monzo.com/annual-report/2025",
+          "publisher": "Monzo",
+          "date": "2025",
+          "summary": "매출 12억 파운드(+48%), 조정 세전이익 1억 1,390만 파운드(8배), 신규 고객 240만으로 총 1,200만 이상, 고객 예금 166억 파운드(+48%)."
+        }
+      ]
     }
   ],
   "eras": [],
   "open_questions": [
     "⚠️ **매출 구성을 확인하지 못했다** — 연차보고서 요약 페이지가 **총액(12억 파운드)과 성장률만** 적는다. 이자 수익과 수수료·구독의 비중은 **PDF 본문을 열어야** 나온다.",
-    "⚠️ **2019년 장애 글은 7년 전 자료다** — 그때 노드 21대였고 회사는 **클러스터를 여러 개로 쪼개겠다**고 적었다. **그 계획이 실행됐는지, 지금 상태가 어떤지 확인하지 못했다.**",
+    "⚠️ **2019년 장애 글은 7년 전 자료다** — 회사는 **큰 클러스터 하나를 여러 개로 쪼개겠다**고 적었고, **석 달 뒤 글에 다중 클러스터의 흔적이 있다**(`some need different Cassandra clusters too` · `monzo.com/cluster`). **다만 그 쪼개기가 어디까지 갔는지, 지금 클러스터가 몇 개이고 노드가 몇 대인지는 확인하지 못했다.**",
     "**서비스 수의 출처가 갈린다** — 플랫폼 글은 **3,000개 이상**이라 적고, 3자 자료들은 2019~2020년에 **1,500~1,600개**라 말한다. **회사 자료로 시계열을 잇지 못했다** — 이으면 연표가 나올 수 있다.",
     "⚠️ **플랫폼 글에 버린 대안이 없다** — 모노레포도, 도구를 감싸는 방식도, 다자 승인도 **왜 다른 길이 아니었는지가 없다.** 이 회사에서 대가가 적힌 곳은 **장애 회고**와 **데이터 글의 전제** 쪽이다.",
     "**AI 축을 아직 안 봤다** — `building-agent-chip`(사내 에이전트 도구)과 `engineering-the-future-of-customer-operations`(LLM 기반 운영 에이전트, **평가 체계를 만들었다**고 적는다) 두 편이 목록에 있다. **평가 체계 쪽은 Sentry 와 비교할 재료가 될 수 있다.**",
@@ -814,6 +1326,13 @@
       "publisher": "Monzo Blog",
       "date": "2019",
       "summary": "서비스 1,500개·고유 연결 9,300개. rpcmap 으로 의존을 뽑아 발신 측이 규칙 파일로 선언하게 하고 쿠버네티스 NetworkPolicy 로 강제해, 평균 6개만 호출 가능하게 줄였다."
+    },
+    {
+      "title": "We secured thousands of Cassandra clients to keep Monzo's data safe",
+      "url": "https://monzo.com/blog/we-secured-thousands-of-cassandra-clients-to-keep-monzos-data-safe",
+      "publisher": "Monzo Blog",
+      "date": "2019-12-17",
+      "summary": "신뢰 네트워크 방식을 버리고 Vault 로 카산드라 자격증명을 동적으로 발급한다. 카산드라를 쓰는 서비스 500개 이상, 클라이언트 2,300개 이상. 서비스마다 키스페이스가 다르고 일부는 다른 클러스터를 쓴다."
     }
   ]
 }
