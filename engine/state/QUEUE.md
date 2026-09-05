@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Tailscale** | CA/US · SaaS(네트워킹) | 프로파일 완료 · 도메인 3(중앙을 두되 그 중앙이 트래픽을 못 보게 한다[tech 4] / 지름길로 시작한 저장소를 갈아 끼운다[tech 2] / 두 구현을 함께 이고 간다[tech 2]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Tailscale** | CA/US · SaaS(네트워킹) | `tailscale.com/blog` — 최신 **2026-08-31** | ✅ WebFetch 로 목록·본문 모두 온다. ⚠️ **첫 화면은 제품 발표라 글 주소를 검색으로 찾아야 한다** | **⚠️ 세 사이클 전에 `열리는데 마케팅` 으로 떨어뜨렸던 곳이다. 본문을 열어 보니 판정이 뒤집혔다.** `tailscale-rs-rust-tsnet-library-preview`(2026-04) 는 **Go 구현을 Rust 로 다시 쓰며 버린 대안을 셋이나 적는다**: ① C 계열 — *"you need an overwhelmingly good reason to start writing new code in a language that lacks basic memory safety properties"*, ② **점진적 in-place 재작성** — Go 를 조금씩 Rust 로 바꾸는 안을 *"would be the worst of all worlds"* 라며 버렸다(혼합 코드베이스가 출시 능력을 해치고, 관용적 Rust 를 기존 Go 구조에 맞춰야 하며, 안정성을 지키며 어려운 리팩터를 하는 것이 느려진다), ③ **기존 `libtailscale`** — Go 런타임을 끼워 넣으면 프로세스 생애주기가 충돌한다(*"mixing libtailscale with a Ruby VM is a quick way to end up with a crash"*). **그리고 자기 구현이 미완이라고 목록으로 밝힌다** — P2P · NAT 순회(지금은 DERP 경유) · DNS · exit node · SSH · Taildrop · 보안 감사가 아직 없다. ⚠️ **수치는 거의 없다**(`tens of gigabits/sec` 정도). 그래도 **버린 대안 셋 + 인정한 미완**으로 기준을 넘는다. 다른 회고도 있다: `an-unlikely-database-migration`(**JSON 파일 → etcd**) · `5-things-5-years`. ⚠️ 네트워킹 축은 Cloudflare·Fly.io·Oxide 와 겹치지만 **`두 구현을 함께 이고 가기로 한 결정`** 이라는 축은 새롭다 |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

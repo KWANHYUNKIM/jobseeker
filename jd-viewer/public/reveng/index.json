@@ -864,6 +864,18 @@
       "one_liner": "영국 부동산 포털 — 중개사에게 광고 자리를 판다",
       "updated_at": "2026-09-06",
       "domain": "rightmove.co.uk"
+    },
+    {
+      "slug": "tailscale",
+      "name": "테일스케일",
+      "name_en": "Tailscale",
+      "country": "CA",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "기기끼리 직접 잇는 사설망을 파는 회사",
+      "updated_at": "2026-09-06",
+      "domain": "tailscale.com"
     }
   ],
   "domains": [
@@ -1100,7 +1112,10 @@
     "품질을 마지막 관문이 아니라 생애주기로 옮긴다",
     "45개국의 콘텐츠를 자기 손으로 배달한다",
     "자연 유입이 매출의 바탕이라 색인을 직접 관리한다",
-    "자바와 HTML 이 얽힌 화면을 걷어낸다"
+    "자바와 HTML 이 얽힌 화면을 걷어낸다",
+    "중앙을 두되 그 중앙이 트래픽을 못 보게 한다",
+    "지름길로 시작한 저장소를 갈아 끼운다",
+    "두 구현을 함께 이고 간다"
   ],
   "countries": {
     "KR": "한국",

@@ -1,0 +1,225 @@
+{
+  "slug": "tailscale",
+  "name": "테일스케일",
+  "name_en": "Tailscale",
+  "country": "CA",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "tailscale.com",
+  "one_liner": "기기끼리 직접 잇는 사설망을 파는 회사 — 중앙 서버를 두되 그 서버가 트래픽을 못 보게 만들었다",
+  "business_model": "**좌석(seat) 단위로 판다.** Personal 은 **무료**(사용자 6명까지·기기 무제한·ACL 그룹 3개), Standard **월 $8/사용자**, Premium **월 $18/사용자**(ACL 그룹 300개·JIT 접근·고급 SSH·네트워크 흐름 로그), Enterprise 는 별도. **좌석은 처음 로그인한 뒤에야 차지하고 청구 기간 안에서 재사용된다.** ⚠️ **기기 수가 아니라 사람 수로 값을 매기는 것**이 이 회사의 선택이다 — 무료 등급도 **기기는 무제한**이다. ⚠️ **매출·사용자 수는 공개돼 있지 않다.**",
+  "revenue_total": "⚠️ 확인하지 못했다 — 비상장이고 매출을 공개하지 않는다.",
+  "products": [
+    "Tailscale — WireGuard 기반 메시 사설망(tailnet). 기기끼리 직접 잇는다",
+    "코디네이션 서버 — 공개키와 정책을 나눠 주는 중앙. 트래픽은 지나가지 않는다",
+    "DERP 릴레이 — 직접 연결이 안 될 때 암호화된 패킷을 그대로 넘겨 준다",
+    "tsnet — 애플리케이션에 tailnet 을 직접 끼워 넣는 라이브러리",
+    "⚠️ tailscale-rs — tsnet 의 Rust 구현. 미리보기 단계이고 기능이 여럿 빠져 있다"
+  ],
+  "revenue_streams": [
+    {
+      "name": "좌석 구독 (Standard · Premium · Enterprise)",
+      "how": "tailnet 의 좌석 수로 값을 매긴다. **사람 수로 세고 기기는 무제한**이다. 상위 등급은 ACL 그룹 수·JIT 접근·흐름 로그 같은 **통제 기능**으로 갈린다",
+      "weight": "⚠️ 확인하지 못했다",
+      "domains": [
+        "중앙을 두되 그 중앙이 트래픽을 못 보게 한다",
+        "지름길로 시작한 저장소를 갈아 끼운다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Tailscale — 요금제",
+          "url": "https://tailscale.com/pricing",
+          "publisher": "Tailscale",
+          "summary": "좌석(seat) 기준 요금제. Personal 무료 · Standard $8 · Premium $18 · Enterprise 별도."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Tailscale 도메인 지도",
+    "question": "중앙 서버를 두면서 그 서버를 못 믿게 만들려면 무엇을 나눠야 하는가?",
+    "code": "flowchart TD\n  U[\"<b>고객의 기기들 (tailnet)</b><br/>• 좌석 단위 과금 · 기기는 무제한\"]:::list --> D1\n  D1[\"<b>중앙을 두되 그 중앙이<br/>트래픽을 못 보게 한다</b><br/>• 컨트롤 평면 = 공개키 보관함<br/>• 데이터 평면 = 기기끼리 직접\"]:::accent\n  D1 --> D2[\"<b>지름길로 시작한 저장소를<br/>갈아 끼운다</b><br/>• JSON 파일 150MB → etcd<br/>• 쓰기 1초 → 밀리초\"]:::list\n  D1 --> D3[\"<b>두 구현을 함께 이고 간다</b><br/>• Go 본체 + Rust tsnet<br/>• 점진적 재작성을 버렸다\"]:::list"
+  },
+  "domains": [
+    {
+      "name": "중앙을 두되 그 중앙이 트래픽을 못 보게 한다",
+      "why": "**전통적인 VPN 은 모든 트래픽을 중앙 게이트웨이로 보낸다.** 그러면 관리는 쉽지만 중앙이 병목이자 감청 지점이 된다. 이 회사의 답은 **둘을 가르는 것**이다 — 컨트롤 평면은 허브-스포크로 두되 **`it carries virtually no traffic`**, 실제 트래픽은 기기끼리 WireGuard 터널로 직접 간다. ⚠️ **그래서 중앙이 있어도 중앙이 아무것도 못 본다** — 개인키는 `never, ever leaves its node` 다.",
+      "tech": [
+        {
+          "tech": "코디네이션 서버 (공개키 보관함)",
+          "solves": "공개키와 메타데이터를 권한 있는 노드끼리 나눠 주고, ACL 정책을 배포하며, 감사 로그를 비동기로 흘린다. 인증은 외부 OAuth2/OIDC 에 맡긴다",
+          "limits": "⚠️ **중앙이 죽으면 새 연결과 정책 변경이 막힌다**(기존 터널은 남는다) — 회사는 트래픽이 안 지나간다는 점을 강조할 뿐 이 한계는 적지 않는다(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Tailscale: How it works",
+              "url": "https://tailscale.com/blog/how-tailscale-works",
+              "publisher": "Tailscale Blog",
+              "summary": "컨트롤 평면과 데이터 평면을 가르는 구조 설명. 코디네이션 서버가 무엇을 보고 무엇을 못 보는지를 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "WireGuard 메시 (데이터 평면)",
+          "solves": "기기끼리 직접 암호화 터널을 만든다. 중앙 게이트웨이를 지나지 않아 지연이 줄고 병목이 없다",
+          "limits": "⚠️ **직접 연결이 늘 되는 것은 아니다** — 방화벽·NAT 뒤에서는 STUN·ICE 로 뚫어야 하고 그래도 안 되면 릴레이를 탄다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Tailscale: How it works",
+              "url": "https://tailscale.com/blog/how-tailscale-works",
+              "publisher": "Tailscale Blog",
+              "summary": "컨트롤 평면과 데이터 평면을 가르는 구조 설명. 코디네이션 서버가 무엇을 보고 무엇을 못 보는지를 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "DERP 릴레이",
+          "solves": "직접 연결이 실패할 때 **이미 암호화된 패킷을 눈감고 넘긴다** — `there is never a way for a DERP server to decrypt your traffic`",
+          "limits": "⚠️ **릴레이를 타면 직접 연결의 이점이 사라진다** — 실제로 `tailscale-rs` 는 아직 NAT 순회가 없어 **DERP 를 통해서만** 통신한다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Tailscale: How it works",
+              "url": "https://tailscale.com/blog/how-tailscale-works",
+              "publisher": "Tailscale Blog",
+              "summary": "컨트롤 평면과 데이터 평면을 가르는 구조 설명. 코디네이션 서버가 무엇을 보고 무엇을 못 보는지를 밝힌다."
+            },
+            {
+              "title": "An early look at tailscale-rs, a tsnet library in Rust",
+              "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+              "publisher": "Tailscale Blog",
+              "date": "2026-04",
+              "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "중앙 배포 · 로컬 집행 ACL",
+          "solves": "정책은 중앙에서 나눠 주되 **각 노드가 스스로 집행한다.** 중앙 방화벽 없이 제로 트러스트를 만든다",
+          "limits": "⚠️ **정책이 퍼지는 데 시간이 걸린다** — 중앙에서 바꾼 것이 모든 노드에 닿기까지의 창이 생긴다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Tailscale: How it works",
+              "url": "https://tailscale.com/blog/how-tailscale-works",
+              "publisher": "Tailscale Blog",
+              "summary": "컨트롤 평면과 데이터 평면을 가르는 구조 설명. 코디네이션 서버가 무엇을 보고 무엇을 못 보는지를 밝힌다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "지름길로 시작한 저장소를 갈아 끼운다",
+      "why": "⚠️ **이 회사의 첫 데이터베이스는 20줄짜리 지름길이었다** — SQLite 프로토타입을 접고, 전체 데이터를 뮤텍스로 감싼 구조체 하나에 담아 **바뀔 때마다 `json.Marshal` 로 파일을 통째로 다시 썼다.** 컨트롤 평면이 **단일 Go 프로세스**라 그게 됐고, 외부 의존이 없어 **테스트가 간단했다.** 그런데 파일이 **150MB** 에 닿았고 **디스크 I/O 가 허락하는 속도로** 쓰고 있었다 — 중요한 것과 임시(tmpfs) 것을 두 파일로 갈랐는데도 마찬가지였다.",
+      "tech": [
+        {
+          "tech": "⚠️ JSON 파일 + 전역 뮤텍스 (옛것)",
+          "solves": "⚠️ **버린 쪽이다.** 단일 프로세스에서 메모리로 조율하니 단순했고 **테스트에 외부 의존이 없었다.** 스타트업 초기에는 받아들일 만한 거래였다",
+          "limits": "⚠️ **파일이 150MB 가 되자 쓰기가 거의 1초, 때로는 그 이상** 걸렸다. 파일을 둘로 갈라도 나아지지 않았다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+              "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+              "publisher": "Tailscale Blog",
+              "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "etcd",
+          "solves": "**바뀐 키만 I/O** 를 한다. 쓰기가 **1초 → 밀리초**. Jepsen 리포트(3.4.3)가 있었고 **Go 로 쓰여 테스트에 직접 링크**할 수 있었으며 KV 패턴이 이 회사의 데이터 모양과 맞았다",
+          "limits": "⚠️ **SQL 의 인덱스 체계가 없다** — 그래서 **2~3주**를 들여 트랜잭션을 인식하는 **인메모리 인덱스**를 직접 만들었다(DB 에 저장하지 않는다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+              "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+              "publisher": "Tailscale Blog",
+              "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "두 구현을 함께 이고 간다",
+      "why": "tsnet 을 더 많은 곳에 넣으려면 **Go 런타임을 끼워 넣지 않는 구현**이 필요했다 — 기존 `libtailscale` 은 Go 런타임 때문에 프로세스 생애주기가 충돌한다(`mixing libtailscale with a Ruby VM is a quick way to end up with a crash`). ⚠️ **그렇다고 Go 본체를 조금씩 Rust 로 바꾸는 길은 `the worst of all worlds` 라며 버렸다.** 그래서 **두 구현을 나란히 두기로** 했다 — 회사가 그것을 `a pragmatic choice with tradeoffs, rather than an ideological one` 이라 부른다.",
+      "tech": [
+        {
+          "tech": "tailscale-rs (Rust tsnet)",
+          "solves": "강제되는 런타임 없이 메모리 안전을 지킨다. 애플리케이션에 끼워 넣기 좋다",
+          "limits": "⚠️ **의도적으로 미완이다** — P2P · NAT 순회(지금은 DERP 경유) · DNS 해석 · exit node · SSH · Taildrop · **보안 감사**가 아직 없다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "An early look at tailscale-rs, a tsnet library in Rust",
+              "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+              "publisher": "Tailscale Blog",
+              "date": "2026-04",
+              "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 점진적 in-place 재작성 (버린 길)",
+          "solves": "⚠️ **고르지 않은 쪽이다.** Go 조각을 하나씩 Rust 로 바꾸는 방식",
+          "limits": "⚠️ **세 가지 이유로 버렸다** — 혼합 코드베이스가 출시 능력을 해치고, 관용적 Rust 를 기존 Go 구조에 맞춰야 하며, 안정성을 지키며 어려운 리팩터를 하는 것이 느려진다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "An early look at tailscale-rs, a tsnet library in Rust",
+              "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+              "publisher": "Tailscale Blog",
+              "date": "2026-04",
+              "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **매출·사용자 수·기기 수가 공개돼 있지 않다.** 비상장이다. 요금제 구조만 확인했다.",
+    "⚠️ **`an-unlikely-database-migration` 의 연도를 확인하지 못했다** — 등장하는 etcd 버전이 **3.4.3**(Jepsen 리포트)이라는 단서만 있다. 그래서 `eras` 를 세우지 않았다.",
+    "**코디네이션 서버가 죽으면 무엇이 멈추는지 회사가 적지 않는다** — 트래픽이 안 지나간다는 점만 강조한다.",
+    "**아직 안 읽은 글이 있다** — `how-nat-traversal-works` · `5-things-5-years` · DERP 의 운영과 규모.",
+    "**연표(eras)를 세울 자료를 아직 못 찾았다.**"
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Tailscale: How it works",
+      "url": "https://tailscale.com/blog/how-tailscale-works",
+      "publisher": "Tailscale Blog",
+      "summary": "컨트롤 평면과 데이터 평면을 가르는 구조 설명. 코디네이션 서버가 무엇을 보고 무엇을 못 보는지를 밝힌다."
+    },
+    {
+      "title": "From JSON Files to etcd: A Tailscale Database Migration Story",
+      "url": "https://tailscale.com/blog/an-unlikely-database-migration",
+      "publisher": "Tailscale Blog",
+      "summary": "20줄짜리 JSON 파일 저장소가 150MB 에 닿을 때까지 버틴 이야기와 etcd 로 옮긴 기록. 버린 대안 넷과 인정한 대가를 적는다."
+    },
+    {
+      "title": "An early look at tailscale-rs, a tsnet library in Rust",
+      "url": "https://tailscale.com/blog/tailscale-rs-rust-tsnet-library-preview",
+      "publisher": "Tailscale Blog",
+      "date": "2026-04",
+      "summary": "Go 구현을 Rust 로 다시 쓰기로 한 이유와 버린 대안 셋. 자기 구현이 미완이라고 목록으로 밝힌다."
+    },
+    {
+      "title": "Tailscale — 요금제",
+      "url": "https://tailscale.com/pricing",
+      "publisher": "Tailscale",
+      "summary": "좌석(seat) 기준 요금제. Personal 무료 · Standard $8 · Premium $18 · Enterprise 별도."
+    }
+  ]
+}

@@ -8,32 +8,33 @@
 
 ## 지금 파는 중
 
-**없다.** 완료 **72곳** · **큐 1/3**(Tailscale) · 비교 문서 33편.
+**Tailscale(CA/US · SaaS—네트워킹)** `in_progress` · **도메인 3 · 기능 0** —
+**73곳** · ⚠️ 큐 0/3.
 
-**다음 사이클은 6순위(신규) — Tailscale 이다.** PROMPT.md 3단계부터.
-⚠️ **첫 화면은 제품 발표다 — 심층 글 주소를 검색으로 먼저 찾아 둔다.**
-이미 아는 것: `tailscale-rs-rust-tsnet-library-preview`(2026-04, 전문 읽음) ·
-`an-unlikely-database-migration`(JSON 파일 → etcd) · `5-things-5-years` ·
-`how-nat-traversal-works` · `how-tailscale-works`.
+### ⭐⭐ 세 도메인이 다 `버린 길` 을 갖고 있다
 
-### ⭐⭐ 앞 사이클의 교훈을 그대로 써서 판정을 뒤집었다
+이 회사는 **고르지 않은 쪽을 매번 적는다** — 중앙 게이트웨이형 VPN, MySQL·PostgreSQL·
+SQLite·CockroachDB, 점진적 in-place 재작성, libtailscale. **후보 조사에서 이 결을 놓쳤던
+곳이라 더 값지다**(첫 화면만 보고 `마케팅` 으로 떨어뜨렸었다).
 
-Rightmove 에서 **`첫 화면으로 블로그를 판정하지 않는다`** 를 배웠고, 그 의심 목록
-(Capital One · Ably · ClickHouse · Tailscale)을 다시 봤다. **Tailscale 이 뒤집혔다** —
-`열리는데 마케팅` 으로 떨어뜨렸던 곳인데 심층 글에 **버린 대안이 셋**이나 있다.
-**엔진이 자기 판정을 다시 보는 고리가 처음으로 돌았다.**
+### 다음 사이클 — 저장소 이전이 가장 단단하다
 
-### Tailscale 이 왜 좋은가 — 두 구현을 함께 이고 가기로 한 결정
+**`an-unlikely-database-migration`**(전문 읽음) — **20줄짜리 JSON 파일 저장소**가
+**150MB** 에 닿을 때까지 버텼고, 버린 대안이 넷이며(MySQL/PostgreSQL 은 Docker 테스트
+인프라와 HA 시맨틱, SQLite 는 *"couldn't bring myself to make an argument"*,
+CockroachDB 는 *"relatively new for a database"*), 고른 이유도 셋이다(Jepsen 리포트 3.4.3 ·
+**Go 로 쓰여 테스트에 직접 링크** · KV 패턴이 맞음). **수치** — 쓰기 **1초(때론 그 이상)
+→ 밀리초** · 파일 **150MB** · 인메모리 인덱스를 만드는 데 **2~3주**.
+**인정한 대가** — etcd 에는 SQL 의 인덱스 체계가 없다.
 
-Go 를 Rust 로 다시 쓰면서 **점진적 in-place 재작성을 `the worst of all worlds` 라며
-버렸다.** 그리고 **자기 구현이 미완이라고 목록으로 밝힌다**(P2P · NAT 순회 · DNS ·
-exit node · SSH · Taildrop · 보안 감사). ⚠️ **수치는 거의 없다.**
+나머지 둘도 자료를 읽어 뒀다 — `how-tailscale-works`(컨트롤/데이터 평면) ·
+`tailscale-rs-...`(두 구현).
 
-### ⚠️ 두 번 이상 막힌 곳 (새 단서 없으면 안 두드린다)
+### 아직 못 잡은 것
 
-- **The New Stack** — WebFetch 도 브라우저도 뉴스레터 폼만. **Supercell 기사를 못 읽어
-  게임 축이 또 막혔다.**
-- **Swiggy** — `bytes.swiggy.com` 세 번째 실패.
+1. **매출·사용자 수 비공개** — 요금제 구조만 확인했다(좌석 단위, 기기는 무제한).
+2. ⚠️ **저장소 이전의 연도를 모른다** — etcd **3.4.3** 이라는 단서만 있다. `eras` 를 비웠다.
+3. **코디네이션 서버가 죽으면 무엇이 멈추는지 회사가 안 적는다.**
 
 ## 지금의 진짜 상태
 
