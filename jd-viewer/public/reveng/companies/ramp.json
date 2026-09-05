@@ -4,7 +4,7 @@
   "name_en": "Ramp",
   "country": "US",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "ramp.com",
   "one_liner": "회사 돈이 나가는 길목마다 규칙을 세우는 곳 — 파는 것은 카드가 아니라 그 규칙이다",
@@ -254,7 +254,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "agent-borrows-your-identity"
+      ]
     }
   ],
   "features": [
@@ -1181,6 +1183,487 @@
           "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
         }
       ]
+    },
+    {
+      "key": "agent-borrows-your-identity",
+      "name": "에이전트에게 신원을 주지 않고 사람의 신원을 빌려 쓰게 한다",
+      "domain": "코딩 에이전트를 사서 쓰지 않고 직접 만든다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**기성 코딩 에이전트를 쓰지 않은 이유를 한 문장으로 적는다** — `Owning the tooling lets you build something significantly more powerful than an off-the-shelf tool will ever be. After all, **it only has to work on your code**.` 남의 코드까지 다뤄야 하는 제품과 달리 **자기 저장소만 상대하면 되므로** Sentry·Datadog·LaunchDarkly·Braintree·GitHub·Slack·Buildkite 를 자기 흐름에 맞춰 붙일 수 있다. ⚠️ **그리고 이 기능에서 가장 값진 결정은 성능이 아니라 신원에 있다** — **에이전트에게 자기 계정을 주지 않고, 시킨 사람의 GitHub 토큰을 빌려 쓰게 했다**(이 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "쓰이는 정도",
+            "value": "**프런트·백엔드 저장소에 병합되는 PR 의 약 30%** 를 Inspect 가 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "걸린 시간",
+            "value": "`It only took a couple months for us to reach this level of usage` — **강제 도입 없이** 슬랙에서 보이는 것만으로 퍼졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 저장소 신선도",
+            "value": "**최대 30분까지 낡는다** — 이미지를 30분마다 새로 굽는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "세션 상태",
+            "value": "세션마다 **자기 SQLite** — 토큰이 실시간으로 흐르면 **짧은 시간에 수백 건의 갱신**이 온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 수치",
+            "value": "**실패율·되돌린 비율·비용이 없다** — Duolingo 는 첫 시도 CI 통과율(76%)까지 적었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "살지 만들지 정할 때",
+          "thought": "**`it only has to work on your code`** 한 문장이 이 결정을 요약한다. 상용 제품은 **모든 고객의 코드에서 돌아야 하므로 일반적일 수밖에 없고**, 사내 도구는 **한 저장소만 상대하니 사내 도구들과 깊게 엮을 수 있다.** ⚠️ **대가는 그 도구를 계속 유지해야 한다는 것인데 글이 그 비용을 적지 않는다**(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "에이전트 본체를 고를 때",
+          "thought": "⚠️ **고른 이유 중 하나가 특이하다** — 오픈소스라서 **`If something is unclear from the documentation, you can simply ask the AI to read the code of OpenCode itself`** 다. **에이전트가 자기 자신의 동작을 문서가 아니라 소스로 확인할 수 있다** — 자기 행동에 대한 환각을 막는 자리다. **`understandable` 을 이유로 든 Fastly 와 같은 결의 판단이다**(이 대비는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "누가 병합을 승인하는지 정할 때",
+          "thought": "⚠️ **이 기능의 핵심이 여기 있다.** 앱이 자기 토큰으로 PR 을 만들면 편한데, 그러면 **`any user to approve their own changes`** 가 된다 — 모두가 같은 앱 신원을 쓰므로 **자기가 시킨 변경을 자기가 승인할 수 있다.** 그래서 **사용자의 GitHub 토큰으로** PR API 를 부르고, **`Each person's prompt that causes code changes should be attributed to them`** 을 지킨다. **새 문을 만들지 않고 이미 있는 코드 리뷰 체계를 그대로 쓰되, 그 문이 무의미해지지 않게 신원을 지킨 것이다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Modal 샌드박스",
+            "what": "클라우드의 완전한 개발 환경. **30분마다** 저장소 클론·의존성·셋업·빌드를 마친 이미지를 굽는다"
+          },
+          {
+            "name": "파일시스템 스냅샷",
+            "what": "**상태를 얼려 두었다가 되살린다** — 세션이 스냅샷에서 시작하므로 맞출 것이 30분어치뿐이다"
+          },
+          {
+            "name": "세션별 SQLite (Durable Objects)",
+            "what": "세션끼리 간섭하지 않게 한다. **토큰이 실시간으로 흐르면 짧은 시간에 수백 건의 갱신**이 온다"
+          },
+          {
+            "name": "⚠️ 사용자의 GitHub 토큰",
+            "what": "⚠️ **이 설계의 중심.** 에이전트가 아니라 **시킨 사람의 신원으로** PR 이 만들어진다"
+          },
+          {
+            "name": "저장소 분류기",
+            "what": "슬랙 메시지·스레드 맥락·채널 이름을 보고 **어느 저장소인지** 정한다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **코드 변경은 그것을 시킨 사람에게 귀속된다** — `Each person's prompt that causes code changes should be attributed to them`",
+          "⚠️ **앱이 아니라 사람의 토큰으로 PR 을 만든다** — 그러지 않으면 누구나 자기 변경을 자기가 승인하게 된다",
+          "**저장소는 최대 30분까지 낡을 수 있다**",
+          "**동기화가 끝나기 전에는 읽기만 되고 편집은 막힌다**",
+          "**후속 프롬프트는 끼어들지 않고 큐에 쌓인다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**30분마다 이미지를 새로 굽는다** — 저장소 클론·런타임 의존성·셋업·빌드를 미리 마쳐서",
+            "why": "세션을 열 때 할 일을 없앤다"
+          },
+          {
+            "step": "**세션은 파일시스템 스냅샷에서 즉시 시작한다**",
+            "why": "⚠️ 맞출 것이 **30분어치 변경**뿐이다"
+          },
+          {
+            "step": "**세 갈래로 부른다** — 슬랙(분류기가 저장소를 정한다) · 웹(**VS Code 내장 + 데스크톱 스트리밍**) · 크롬 확장(**비엔지니어가 React 화면을** DOM·React 내성으로 고친다)",
+            "why": "엔지니어만 쓰는 도구가 아니게 만든다"
+          },
+          {
+            "step": "**세션마다 자기 SQLite 에 상태를 담고 토큰을 실시간으로 흘린다**",
+            "why": "세션끼리 간섭하지 않는다"
+          },
+          {
+            "step": "⚠️ **git 동기화가 끝나기 전에는 읽기만 허용하고 편집을 막는다**",
+            "why": "낡은 상태 위에 쓰지 않게"
+          },
+          {
+            "step": "⚠️ **PR 은 사용자의 GitHub 토큰으로 만든다**",
+            "why": "앱 토큰이면 **누구나 자기 변경을 자기가 승인**하게 된다"
+          },
+          {
+            "step": "**그 뒤는 회사의 평소 코드 리뷰 흐름을 그대로 탄다**",
+            "why": "⚠️ **새 문을 만들지 않았다** — 에이전트가 쓴 코드도 사람이 쓴 코드와 같은 문을 지난다(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "코딩 에이전트를 사 올 것인가",
+            "chosen": "**직접 만든다** — `it only has to work on your code`",
+            "alternatives": [
+              "상용 코딩 에이전트 제품 도입"
+            ],
+            "tradeoff": "상용 제품은 **모든 고객의 코드에서 돌아야 하므로 일반적일 수밖에 없다.** 사내 도구는 한 저장소만 상대하니 Sentry·Datadog·LaunchDarkly·Braintree·GitHub·Slack·Buildkite 를 **자기 흐름에 맞춰 깊게** 엮는다. ⚠️ **대가는 그것을 계속 유지해야 한다는 것인데 글이 그 비용을 적지 않는다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트 본체를 무엇으로 할 것인가",
+            "chosen": "**OpenCode** — 서버 우선 구조 · **오픈소스** · 팀이 협업해 준다",
+            "alternatives": [
+              "다른 에이전트 프레임워크",
+              "직접 밑바닥부터"
+            ],
+            "tradeoff": "서버 우선이라 **클라이언트를 원하는 만큼 붙일 수 있고**(실제로 셋을 붙였다), 오픈소스라 **`ask the AI to read the code of OpenCode itself`** 로 **에이전트가 자기 동작을 문서가 아니라 소스로 확인한다.** ⚠️ 대가는 **남의 오픈소스에 묶인다는 것**이고, 그 프로젝트가 방향을 바꾸면 함께 흔들린다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "실행 환경을 어떻게 준비할 것인가",
+            "chosen": "**30분마다 이미지를 굽고 파일시스템 스냅샷에서 시작한다**",
+            "alternatives": [
+              "요청마다 처음부터 환경을 만들기",
+              "항상 최신으로 맞추기"
+            ],
+            "tradeoff": "**시작이 즉시가 된다.** ⚠️ **대가는 저장소가 최대 30분 낡는다는 것**이고, 그래서 **동기화가 끝나기 전에는 편집을 막는다**(읽기는 된다). **속도와 신선도를 맞바꾼 값을 회사가 숫자로 적는다**는 점이 좋다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "세션 상태를 어디에 둘 것인가",
+            "chosen": "**Cloudflare Durable Objects — 세션마다 자기 SQLite**",
+            "alternatives": [
+              "공유 데이터베이스",
+              "메모리"
+            ],
+            "tradeoff": "**토큰이 실시간으로 흐르면 짧은 시간에 수백 건의 갱신**이 오는데, 세션이 격리돼 있어 서로 간섭하지 않는다. ⚠️ **대가는 세션을 가로지르는 질의가 어려워진다는 것**이다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "어디에서 부르게 할 것인가",
+            "chosen": "**셋 다** — 슬랙 · 웹(VS Code 내장·데스크톱 스트리밍) · 크롬 확장",
+            "alternatives": [
+              "하나만 잘 만들기"
+            ],
+            "tradeoff": "슬랙은 **보이는 것 자체가 확산**을 만들고(`virality loop`), 웹은 **손으로 고치고 눈으로 확인**하게 하며, 크롬 확장은 **비엔지니어가 React 화면을** 스크린샷 대신 DOM·React 내성으로 고치게 한다. ⚠️ **대가는 유지할 표면이 셋이라는 것**이고 그 비용은 글에 없다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트에게 자기 계정을 줄 것인가",
+            "chosen": "⚠️ **아니다 — 시킨 사람의 GitHub 토큰으로 PR 을 만든다**",
+            "alternatives": [
+              "앱 토큰으로 PR 을 만들기"
+            ],
+            "tradeoff": "⚠️ **앱 토큰이 훨씬 편한데도 안 썼다.** 이유가 결정적이다 — 모두가 같은 신원을 쓰면 **`any user to approve their own changes`** 가 되어 **코드 리뷰가 형식이 된다.** 대가는 **사용자마다 인증을 받아야 하고 토큰을 다뤄야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트가 만든 코드의 책임을 어디에 둘 것인가",
+            "chosen": "**시킨 사람에게** — `Each person's prompt that causes code changes should be attributed to them`",
+            "alternatives": [
+              "에이전트 이름으로 남기기"
+            ],
+            "tradeoff": "⚠️ **누가 시켰는지가 남으므로 아무도 책임지지 않는 코드가 생기지 않는다.** 그리고 **새 승인 절차를 만들지 않아도 된다** — 회사의 평소 코드 리뷰 흐름이 그대로 작동한다(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "작업 중 들어온 후속 요청을 어떻게 할 것인가",
+            "chosen": "**끼어들게 하지 않고 큐에 쌓는다**",
+            "alternatives": [
+              "즉시 중단하고 새 지시를 반영"
+            ],
+            "tradeoff": "**하던 일이 일관되게 끝난다.** ⚠️ **대가는 급한 정정을 즉시 반영할 수 없다는 것**이다 — 잘못 가고 있는 것을 보고도 끝날 때까지 기다린다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OpenCode",
+            "role": "에이전트 본체. 서버 우선 구조라 클라이언트를 여럿 붙일 수 있고, 오픈소스라 자기 코드가 근거가 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "Modal 샌드박스",
+            "role": "30분마다 굽는 이미지와 파일시스템 스냅샷으로 즉시 시작",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "Cloudflare Durable Objects (세션별 SQLite)",
+            "role": "실시간 스트리밍과 여럿이 함께 보는 세션을 받친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "슬랙 봇 · 웹(VS Code·데스크톱 스트리밍) · 크롬 확장",
+            "role": "세 갈래 진입점. 비엔지니어까지 닿는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 사용자 GitHub 토큰",
+            "role": "⚠️ **이 설계의 중심.** 앱 신원 대신 사람의 신원으로 PR 을 만들어 코드 리뷰를 지킨다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "workflows-as-graphs-not-code",
+          "via": "이 그래프를 짓는 손",
+          "contract": "**병합되는 PR 의 약 30% 를 이 에이전트가 쓴다** — 워크플로 엔진 위의 코드도 그 안에 있을 것이다(추정)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "reproducibility-is-a-data-promise",
+          "via": "같은 회사의 세 번째 틀",
+          "contract": "⚠️ **세 도메인이 모두 `직접 짜지 말고 틀을 만들어라` 의 변주다** — 승인은 그래프로, ML 은 YAML 로, 코딩은 사내 에이전트로(이 정리는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "GitHub 의 코드 리뷰 체계",
+          "via": "사용자 토큰",
+          "contract": "⚠️ **새 문을 만들지 않고 이미 있는 문을 그대로 쓴다** — 대신 그 문이 형식이 되지 않게 **에이전트가 아니라 사람의 신원으로** PR 을 만든다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Sentry · Datadog · LaunchDarkly · Braintree · Slack · Buildkite",
+          "via": "사내 도구 연결",
+          "contract": "**자기 저장소만 상대하면 되므로 사내 도구들과 깊게 엮을 수 있다** — 이것이 사서 쓰지 않은 이유다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "에이전트가 코드를 쓰면 누가 그것을 승인하는가",
+            "why_hard": "⚠️ **앱 토큰으로 PR 을 만드는 것이 훨씬 편한데, 그러면 모두가 같은 신원을 쓰게 된다.** 회사가 그 결과를 정확히 적는다 — `any user to approve their own changes`. **자기가 시킨 변경을 자기가 승인할 수 있으면 코드 리뷰는 형식이 된다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**에이전트에게 신원을 주지 않고 사람의 신원을 빌려 쓰게 하는 것** — 사용자 GitHub 토큰으로 PR 을 만들고 **프롬프트를 그 사람에게 귀속**시킨다. **그러면 새 승인 절차를 만들지 않아도 기존 코드 리뷰가 그대로 작동한다.** ⚠️ 다만 **리뷰어가 에이전트가 쓴 코드를 사람이 쓴 것과 같은 눈으로 볼지는 다른 문제다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          },
+          {
+            "problem": "환경을 빨리 띄우는 일과 최신으로 맞추는 일이 반대로 당긴다",
+            "why_hard": "매번 처음부터 환경을 만들면 최신이지만 느리고, 스냅샷에서 시작하면 즉시 뜨지만 **낡은 상태 위에서 일하게 된다.**",
+            "current_best": "**낡음의 상한을 정해 두고 그것을 공개하는 것** — 30분. 그리고 **동기화가 끝나기 전에는 읽기만 허용하고 편집을 막는다.** ⚠️ **30분이 왜 맞는 값인지는 글에 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Why We Built Our Own Background Agent",
+                "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "에이전트는 신원을 갖지 않고 사람의 것을 빌린다",
+          "question": "프롬프트 하나가 PR 이 되기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>사람</b><br/>• 슬랙 · 웹 · 크롬 확장\"]:::accent --> C[\"<b>저장소 분류기</b><br/>• 메시지 · 스레드 · 채널 이름\"]:::list\n  C --> S[\"<b>Modal 샌드박스</b><br/>• 30분마다 굽는 이미지<br/>• 파일시스템 스냅샷에서 즉시 시작\"]:::accent\n  S --> D[\"<b>세션별 SQLite</b><br/>• Durable Objects<br/>• 실시간 토큰 스트리밍\"]:::accent\n  D --> W{\"<b>git 동기화</b>\"}\n  W -->|\"진행 중\"| RO[\"⚠️ <b>읽기만 · 편집 차단</b>\"]:::gone\n  W -->|\"끝\"| E[\"<b>코드를 고친다</b>\"]:::list\n  E --> T[\"⚠️ <b>사용자의 GitHub 토큰으로 PR</b><br/>• 앱 토큰이면 누구나 자기 변경을<br/>  자기가 승인하게 된다\"]:::accent\n  T --> R[\"<b>평소의 코드 리뷰</b><br/>• <b>새 문을 만들지 않았다</b><br/>• 병합 PR 의 약 30%\"]:::accent\n  Q[\"<b>후속 프롬프트</b><br/>• 끼어들지 않고 큐에 쌓인다\"]:::list -.-> D\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "편한 길을 알면서 안 갔다",
+          "question": "무엇을 내주고 무엇을 지켰나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>앱 토큰으로 PR 만들기</b><br/>• 훨씬 편하다\"]:::gone --> B[\"⚠️ <b>모두가 같은 신원</b>\"]:::gone\n  B --> C[\"⚠️ <b>자기 변경을 자기가 승인</b><br/>• 코드 리뷰가 형식이 된다\"]:::gone\n  D[\"<b>사용자 토큰 + 귀속</b>\"]:::accent --> E[\"<b>기존 리뷰가 그대로 작동</b>\"]:::list\n  D --> F[\"⚠️ <b>사용자마다 인증과 토큰 관리</b>\"]:::gone\n  G[\"<b>스냅샷에서 즉시 시작</b>\"]:::accent --> H[\"⚠️ <b>저장소가 최대 30분 낡는다</b><br/>• 왜 30분인지는 글에 없다\"]:::gone\n  I[\"<b>후속 프롬프트를 큐에\"]:::accent --> J[\"⚠️ <b>급한 정정을 즉시 못 넣는다</b><br/>• 잘못 가는 것을 보고도 기다린다\"]:::gone\n  K[\"⚠️ <b>없는 수치</b><br/>• 실패율 · 되돌린 비율 · 비용\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Why We Built Our Own Background Agent",
+          "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+          "publisher": "Ramp Builders Blog",
+          "date": "2026",
+          "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+        },
+        {
+          "title": "Abstraction Engineering",
+          "url": "https://engineering.ramp.com/post/workflows",
+          "publisher": "Ramp Builders Blog",
+          "date": "2026",
+          "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+        },
+        {
+          "title": "Turbo-Charging ML Development",
+          "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+          "publisher": "Ramp Builders Blog",
+          "date": "2026",
+          "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1188,7 +1671,7 @@
     "⚠️ **수익 구성을 확인하지 못했다** — 카드 인터체인지와 소프트웨어 구독의 비중을 밝힌 자료를 못 찾았다. **매출·고객·TPV·밸류에이션 수치도 전부 3자 출처다**(Sacra·CNBC).",
     "⚠️ **워크플로 엔진의 첫 설계가 왜 실패했는지는 적는데, 지금 구조가 그 문제를 어떻게 푸는지는 얇다** — 액션 사이의 의존을 그래프가 어떻게 우아하게 다루는지 더 봐야 한다.",
     "**Celery 가 1만 개당 7개를 놓친 원인을 모른다** — 증상만 적혀 있고 진단이 없다.",
-    "**Inspect 의 실패율·비용·되돌린 비율을 모른다** — `병합 PR 의 약 30%` 외에 수치가 없다. **Duolingo 는 첫 시도 CI 통과율까지 적었다.**",
+    "**Inspect 의 실패율·되돌린 비율·비용을 모른다** — `병합 PR 의 약 30%` 외에 수치가 없다. **Duolingo 는 첫 시도 CI 통과율(76%)까지 적었다.** ⚠️ **그리고 리뷰어가 에이전트가 쓴 코드를 사람이 쓴 것과 같은 눈으로 보는지도 알 수 없다.**",
     "**Turbo 로 만든 모델이 실제로 어떤 판단을 하는지 모른다** — 신용 위험 모델이 승인 그래프와 어떻게 이어지는지 자료를 못 찾았다.",
     "**연표(eras)를 세울 자료를 못 찾았다** — 워크플로 글에 **2022년 가을**(고객이 초기 가정을 깨기 시작한 시점)이 나오지만 **첫 설계가 언제 시작됐고 그래프로 언제 넘어갔는지는 없어** 기능 안에 history 를 세우지 않았다."
   ],
