@@ -1427,6 +1427,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "schema-migration",
+      "title": "스키마 마이그레이션",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "데이터베이스의 구조 변경을 손으로 치는 대신 번호 붙은 파일로 만들어 저장소에 쌓고, 어느 환경에 어디까지 적용됐는지를 DB 자신이 기록하게 하는 방식.",
+      "aliases": [
+        "스키마 마이그레이션",
+        "schema migration",
+        "Flyway",
+        "Liquibase",
+        "Alembic",
+        "DB 마이그레이션",
+        "스키마 변경"
+      ],
+      "sections": 7,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
