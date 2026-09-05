@@ -4,7 +4,7 @@
   "name_en": "Nubank (Nu Holdings)",
   "country": "기타",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-05",
   "domain": "nubank.com.br",
   "one_liner": "브라질에서 지점 없이 시작해 1억 3천만 명을 받은 은행 — 그 규모를 Clojure 와 불변 데이터로 떠받친다",
@@ -20,10 +20,11 @@
   "revenue_streams": [
     {
       "name": "신용에서 나오는 이자",
-      "how": "신용카드 리볼빙과 무담보 개인대출의 이자. 지점 없는 구조라 **심사·한도 판단이 전부 소프트웨어**다",
+      "how": "신용카드 리볼빙과 무담보 개인대출의 이자. 지점 없는 구조라 **심사·한도 판단이 전부 소프트웨어**다 — ⚠️ **에이전트가 채무 재협상을 실제로 실행한다**, 즉 이 수익원의 계약 조건을 소프트웨어가 바꾼다",
       "weight": "⚠️ 비중을 1차 자료로 확인하지 못했다",
       "domains": [
-        "나라마다 다른 금융망에 한 벌로 붙는다"
+        "나라마다 다른 금융망에 한 벌로 붙는다",
+        "사람이 프롬프트를 쓰는 일을 그만둔다"
       ],
       "confidence": "inferred",
       "sources": [
@@ -229,15 +230,18 @@
           "limits": "⚠️ **심판도 모델이다** — 모든 대화를 LLM 이 감사한다는 것은 **감사자의 오류를 누가 보는가**라는 질문을 남긴다(이 한계는 이 사이트의 재구성이다)."
         }
       ],
-      "features": []
+      "features": [
+        "agents-that-act"
+      ]
     }
   ],
   "eras": [],
   "open_questions": [
     "⚠️ **회사 IR 원문을 읽지 못했다.** `international.nubank.com.br` 은 **403**, `investors.nu` 는 **인증서 만료**다. 그래서 수익 3갈래의 비중을 `confirmed` 로 못 쓰고 `inferred` 로 남겼다. **게다가 3자 매체끼리 숫자가 갈린다** — 2026년 2분기 매출을 한 곳은 총수익 약 55억 달러로, 다른 요약은 약 59억 달러로 전한다(총수익과 gross revenue 의 정의 차이로 보이나 **확인하지 못했다**).",
-    "**Clojure·Datomic 을 실제로 어떻게 쓰는지 아직 못 읽었다.** 블로그에 Clojure 글이 여럿인데(`Designing real systems with immutable data in Clojure`, `Building AI agents in practice with Clojure`) 열어 본 한 편은 **컨퍼런스 참관기**라 이 회사의 구조를 말하지 않았다. **불변 데이터로 은행 원장을 다룬다는 것이 이 회사의 가장 큰 차별점일 텐데 그 근거를 아직 못 잡았다.**",
+    "**Clojure·Datomic 을 실제로 어떻게 쓰는지 끝내 못 잡았다.** 블로그의 Clojure 글 **두 편을 다 열어 봤는데 둘 다 컨퍼런스 참관기**였다 — `Designing real systems with immutable data in Clojure`(2026-01-19)도, `Building AI agents in practice with Clojure`(2026-02-02)도 발표 소개이고 **회사 내부 구조를 말하지 않는다.** ⚠️ **불변 데이터로 은행 원장을 다룬다는 것이 이 회사의 가장 큰 차별점일 텐데, 회사 블로그에 그 근거가 없다** — 컨퍼런스 발표 자료나 엔지니어 인터뷰 같은 블로그 밖 경로를 봐야 한다.",
     "**연표(eras)를 쓸 자료를 아직 못 찾았다** — 연도가 붙은 회고를 확인하지 못했다.",
-    "투자·보험 등 상품 구성과 나라별 상품 차이를 확인하지 못했다."
+    "투자·보험 등 상품 구성과 나라별 상품 차이를 확인하지 못했다.",
+    "**에이전트가 틀린 조작을 했을 때 되돌리는 절차와 사람에게 넘기는 기준을 확인하지 못했다.** 감사 축 셋(정확성·간결성·어조)은 전부 말의 품질이다."
   ],
   "features": [
     {
@@ -1111,6 +1115,455 @@
           "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
         }
       ]
+    },
+    {
+      "key": "agents-that-act",
+      "name": "상담이 아니라 조작을 시키려고 프롬프트를 사람 손에서 뗀다",
+      "domain": "사람이 프롬프트를 쓰는 일을 그만둔다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "⚠️ 이 회사의 에이전트는 **답을 찾아 주지 않고 실제로 손을 댄다** — 채무 재협상, 카드 물류, 사기 방지다. FAQ 검색이라면 틀려도 고객이 다시 물으면 그만이지만, **여기서 틀리면 돈이 잘못 움직인다.** 지점이 없는 은행에서 **상담 창구는 앱 하나**이고, 그 창구에 서는 것이 1억 3천만 명이다. 사람을 그만큼 늘릴 수 없으므로 **에이전트가 조작까지 해야** 창구가 성립한다.",
+        "metrics": [
+          {
+            "label": "에이전트가 상대하는 고객 규모",
+            "value": "약 1억 3100만 명 (글 제목이 그 숫자다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "프롬프트 최적화에 사람이 대는 것",
+            "value": "성공 기준 정의 + **고품질 trace 50~100건 라벨링**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 성과 수치",
+            "value": "**없다** — 해결률·정확도·비용·응답 시간이 글에 하나도 없다. 이 기능의 metrics 가 얇은 이유다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "프롬프트를 누가 쓸지 정할 때",
+          "thought": "결론이 세다 — 사람은 **`fundamentally bad at writing prompts for production`** 이다. 손으로 쓴 프롬프트는 `brittle` 하고 모델에 묶인다. ⚠️ 더 무서운 대목은 그다음이다: **더 똑똑한 모델로 옮기면 기존 에이전트가 깨진다** — `smarter models assume a lot less` 이기 때문이다. **모델이 좋아지는 것이 곧 위험**인 구조다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 LLM 에게 시킬지 가를 때",
+          "thought": "원칙 한 줄이 경계를 긋는다 — **`If it's deterministic, don't make the LLM do the work.`** 카드 배송에서 상태 확인 → 주소 검증 → 재발송을 **LLM 이 세 도구를 엮게 두지 않고** 하나의 결정적 API 안에서 끝냈다. **추론은 판단에만 쓰고 절차는 코드에 둔다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모델을 어디까지 손댈지 정할 때",
+          "thought": "파인튜닝을 **마지막 5%를 쫓을 때가 아니면 하지 않는다.** 이유가 경쟁력의 위치에 대한 판단이다 — 해자는 모델 가중치가 아니라 **데이터와 행동(Action) 층**에 있다고 본다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "프롬프트 (뇌)",
+            "what": "다음 단계를 정하는 추론 엔진 — `The reasoning engine that decides the next step`. ⚠️ 사람이 쓰지 않고 최적화기가 만든다"
+          },
+          {
+            "name": "도구 (손)",
+            "what": "결정적 행동. `check_delivery_status` · `trigger_debt_renegotiation` 같은 API"
+          },
+          {
+            "name": "데이터 (기억)",
+            "what": "RAG 층과 세션 문맥. 답을 고객 이력에 붙들어 맨다"
+          },
+          {
+            "name": "라벨된 trace",
+            "what": "최적화기가 딛는 재료. 사람이 50~100건을 좋은 품질로 만든다"
+          },
+          {
+            "name": "LLM 심판",
+            "what": "모든 대화를 정확성·간결성·어조로 감사하는 또 하나의 모델"
+          }
+        ],
+        "invariants": [
+          "**결정적인 일은 LLM 에게 시키지 않는다** — `If it's deterministic, don't make the LLM do the work.`",
+          "**프롬프트는 특정 모델 버전에 묶인다** — 최적화기가 `for that specific model version` 으로 만든다",
+          "**모든 대화가 감사된다** — 정확성(내부 지식과 모순되는가)·간결성·어조 정렬 세 축으로",
+          "**고객에게 나가기 전에 시뮬레이션과 레드팀을 지난다** — PII 유출과 금융 권한 이탈을 trace 단위로 본다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "고객이 앱에서 말을 건다",
+            "why": "지점이 없으므로 이 창구가 유일하다"
+          },
+          {
+            "step": "**프롬프트(뇌)** 가 다음 단계를 정한다",
+            "why": "판단만 맡는다 — 절차를 짜는 일이 아니다"
+          },
+          {
+            "step": "**데이터(기억)** 가 고객 이력과 세션 문맥을 붙인다",
+            "why": "RAG 층이 답을 그 사람의 사실에 묶는다"
+          },
+          {
+            "step": "**도구(손)** 를 부른다 — 결정적 API",
+            "why": "`trigger_debt_renegotiation` 처럼 **실제로 돈과 물건이 움직이는** 호출이다"
+          },
+          {
+            "step": "⚠️ 여러 단계가 필요한 일은 **도구 하나가 안에서 끝낸다**",
+            "why": "카드 배송 — 상태 확인·주소 검증·재발송을 LLM 이 엮지 않고 하나의 API 안에서 처리한다"
+          },
+          {
+            "step": "**LLM 심판이 모든 대화를 감사한다**",
+            "why": "정확성·간결성·어조. 여기에 거래 단위 만족도(TNPS)를 함께 본다"
+          },
+          {
+            "step": "출시 전에는 **자동 시뮬레이션과 레드팀**을 지난다",
+            "why": "LLM 메시지·입력·도구 호출까지 담긴 trace 전체를 보고 **PII 유출과 금융 권한 이탈**을 찾는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "프롬프트를 누가 쓸 것인가",
+            "chosen": "**사람이 쓰지 않는다.** DSPy 와 버클리의 Japa 최적화기가 모델 버전에 맞춰 프롬프트 문구를 반복해 만든다",
+            "alternatives": [
+              "엔지니어가 손으로 프롬프트를 쓰고 다듬기"
+            ],
+            "tradeoff": "**사람의 일이 사라진 게 아니라 옮겨 갔다** — 성공 기준을 정의하고 **고품질 trace 50~100건을 라벨링**해야 한다. 그리고 결과물은 `for that specific model version` 이라 **모델을 바꾸면 다시 돌려야 한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "더 좋은 모델이 나오면 어떻게 할 것인가",
+            "chosen": "**프롬프트를 그 모델 버전에 맞춰 다시 최적화한다**",
+            "alternatives": [
+              "모델만 갈아 끼우고 프롬프트는 그대로 두기"
+            ],
+            "tradeoff": "⚠️ **모델이 좋아지는 것이 곧 깨질 위험이다** — `Transitioning to newer models can break existing agents` 이고 이유가 반직관적이다: 똑똑한 모델일수록 **`assume a lot less`** 라 예전 프롬프트가 기대던 암묵적 가정이 사라진다. **업그레이드에 값이 붙는 구조**를 받아들였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "모델을 우리 데이터로 다시 학습시킬 것인가",
+            "chosen": "**하지 않는다** — 마지막 5%를 쫓는 때가 아니면 파인튜닝하지 않는다",
+            "alternatives": [
+              "자사 데이터로 파인튜닝해 성능을 끌어올리기"
+            ],
+            "tradeoff": "**마지막 5%를 포기한다.** 대신 드리프트·용량·유지보수를 안 진다. 근거는 경쟁력의 위치에 대한 판단이다 — 해자는 가중치가 아니라 **데이터와 행동 층**에 있다고 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "여러 단계짜리 일을 LLM 이 엮게 할 것인가",
+            "chosen": "**복합 도구로 만든다** — 카드 배송의 세 단계를 하나의 결정적 API 안에서 끝낸다",
+            "alternatives": [
+              "LLM 이 도구 셋을 차례로 호출하도록 두기"
+            ],
+            "tradeoff": "⚠️ **결정적인 절차마다 도구를 새로 만들어야 한다** — LLM 이 엮지 않게 한 대가로 **엮는 일을 사람이 미리 해 둬야 한다.** 새 상황이 생길 때마다 API 가 하나씩 는다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트를 무엇으로 잴 것인가",
+            "chosen": "**NPS 대신 TNPS(거래 단위)** 를 쓰고, 여기에 **LLM 심판이 모든 대화를 감사**한다",
+            "alternatives": [
+              "전통적인 NPS 로 만족도만 보기",
+              "사람이 표본을 뽑아 검수하기"
+            ],
+            "tradeoff": "⚠️ **심판도 모델이다** — 모든 대화를 자동으로 본다는 것은 **감사자의 오류를 누가 보는가**를 남긴다. 사람 표본 검수를 자동 전수 감사로 바꾼 값이다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "고객 앞에 내보내기 전에 무엇을 할 것인가",
+            "chosen": "**자동 시뮬레이션과 레드팀**을 통과시킨다 — trace 전체를 보고 PII 유출·금융 권한 이탈을 찾는다",
+            "alternatives": [
+              "소규모로 실제 고객에게 먼저 내보내며 관찰하기"
+            ],
+            "tradeoff": "⚠️ **시뮬레이션이 만들어 낸 상황만 걸러진다** — 실제 고객이 하는 말은 시뮬레이터가 다 짓지 못한다. 그래도 **돈이 움직이는 조작**을 다루므로 먼저 내보내는 쪽을 못 고른다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트를 어떤 층으로 나눌 것인가",
+            "chosen": "**뇌(프롬프트) · 손(도구) · 기억(데이터)** 셋으로 가른다",
+            "alternatives": [
+              "하나의 큰 프롬프트가 문맥과 절차를 모두 담기"
+            ],
+            "tradeoff": "⚠️ **층 사이의 계약을 관리해야 한다** — 도구가 늘고 기억이 바뀔 때마다 뇌가 아는 것과 실제가 어긋날 수 있다. 한 덩어리였다면 없었을 종류의 어긋남이다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "DSPy · Japa 최적화기 (버클리)",
+            "role": "모델 버전에 맞춰 프롬프트 문구를 반복 생성한다. 사람이 쓰던 자리를 대신한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "결정적 도구 API (복합 도구)",
+            "role": "`check_delivery_status`·`trigger_debt_renegotiation` 등. 절차는 여기 담는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "RAG + 세션 문맥",
+            "role": "답을 고객 이력에 붙들어 맨다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "LLM-as-a-judge · TNPS",
+            "role": "모든 대화를 정확성·간결성·어조로 감사하고 거래 단위 만족도를 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "자동 시뮬레이션 · 레드팀",
+            "role": "출시 전 trace 검사. PII 유출과 금융 권한 이탈을 찾는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Clojure",
+            "role": "⚠️ **회사가 에이전트를 Clojure 로 만든다는 근거는 아직 못 잡았다.** 같은 블로그의 Clojure 편은 **컨퍼런스 발표 참관기**이고 REPL·상호운용을 권하는 내용이라 내부 구조를 말하지 않는다",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "Building AI agents in practice with Clojure",
+                "url": "https://building.nubank.com/building-ai-agents-in-practice-with-clojure/",
+                "publisher": "Building Nubank",
+                "date": "2026-02-02",
+                "summary": "⚠️ 컨퍼런스 발표 참관기다. Clojure 의 REPL·상호운용을 에이전트 개발에 권하는 내용이고 회사 내부 구조는 나오지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "precompute-on-write",
+          "via": "고객 데이터 읽기",
+          "contract": "에이전트의 기억(데이터 층)이 딛는 것이 이런 읽기 경로다. ⚠️ **낡은 값을 읽으면 에이전트는 그것을 사실로 말한다** — 지연 쪽에서 받아들인 `defined bounds` 안의 낡음이 여기서는 잘못된 안내가 될 수 있다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "결정적 도구 API (채무 재협상 · 카드 물류 · 사기 방지)",
+          "via": "도구 호출",
+          "contract": "에이전트는 판단만 하고 **실행은 이 API 들이 한다.** 절차가 LLM 밖에 있다는 것이 이 계약의 핵심이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "신용 상품 (수익원)",
+          "via": "채무 재협상",
+          "contract": "⚠️ **에이전트가 이자 수익이 걸린 계약을 실제로 바꾼다.** 상담 품질 문제가 아니라 수익원에 직접 닿는 조작이다",
+          "confidence": "inferred"
+        },
+        {
+          "to": "LLM 심판 · 레드팀",
+          "via": "감사와 사전 검사",
+          "contract": "모든 대화가 감사되고, 출시 전 trace 가 검사된다. **이 그물이 에이전트의 유일한 안전장치로 보인다**(이 판단은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines",
+            "authors": "O. Khattab et al.",
+            "year": "2023",
+            "venue": "arXiv / ICLR 2024",
+            "url": "https://arxiv.org/abs/2310.03714",
+            "takeaway": "프롬프트를 사람이 쓰는 문자열이 아니라 **컴파일 대상**으로 보는 접근이다. 이 회사가 `Humans are fundamentally bad at writing prompts for production` 이라고 말할 수 있는 근거가 여기 있다 — ⚠️ **회사는 DSPy 라는 이름만 대고 논문을 인용하지 않았다**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "모델이 좋아지는 것이 위험이 되는 구조",
+            "why_hard": "보통은 더 나은 모델로 옮기면 좋아지는데 여기서는 **깨진다** — `smarter models assume a lot less` 라 예전 프롬프트가 기대던 암묵적 가정이 사라지기 때문이다. **업그레이드마다 값을 치러야 한다**",
+            "current_best": "모델 버전마다 프롬프트를 다시 최적화하는 것. ⚠️ **라벨된 trace 를 얼마나 다시 만들어야 하는지는 글에 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "돈이 움직이는 조작에서 오류를 누가 잡는가",
+            "why_hard": "감사자도 모델이고(LLM-as-a-judge), 사전 검사도 시뮬레이션이 지어낸 상황이다. **틀린 조작은 대화가 아니라 계좌에 남는다**",
+            "current_best": "⚠️ **이 글은 이 질문에 답하지 않는다.** 감사 축 셋(정확성·간결성·어조)은 전부 **말의 품질**이고, 조작이 틀렸을 때 되돌리는 절차나 사람에게 넘기는 기준은 나오지 않는다 — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Building AI agents for 131 million customers",
+                "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+                "publisher": "Building Nubank",
+                "date": "2026-03-23",
+                "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "판단은 모델에게, 절차는 코드에게",
+          "question": "결정적인 일을 LLM 에게 안 시킨다는 말은 무슨 뜻인가",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"<b>고객</b><br/>• 앱이 유일한 창구\"]:::list --> B\n  B[\"<b>프롬프트 (뇌)</b><br/>• 다음 단계를 정한다<br/>• 사람이 쓰지 않는다\"]:::accent\n  M[\"<b>데이터 (기억)</b><br/>• RAG + 세션 문맥<br/>• 고객 이력에 묶는다\"]:::list -.-> B\n  B --> T[\"<b>도구 (손)</b><br/>• 결정적 API<br/>• 절차는 여기 담는다\"]:::list\n  T --> A1[\"<b>채무 재협상</b>\"]:::list\n  T --> A2[\"<b>카드 물류</b><br/>• 상태·주소·재발송을<br/>• 한 API 안에서\"]:::accent\n  T --> A3[\"<b>사기 방지</b>\"]:::list\n  OPT[\"<b>DSPy · Japa</b><br/>• 모델 버전에 맞춰<br/>• 프롬프트를 만든다\"]:::soft -.-> B\n  H[\"<b>사람이 대는 것</b><br/>• 성공 기준<br/>• trace 50~100건 라벨\"]:::soft -.-> OPT\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "틀린 조작은 대화가 아니라 계좌에 남는다",
+          "question": "이 구조가 실제로 무엇을 막고 무엇을 못 막나",
+          "kind": "failure",
+          "code": "flowchart TD\n  X[\"<b>에이전트가 조작을 한다</b>\"]:::list --> G1{\"출시 전 그물\"}\n  G1 --> S1[\"<b>시뮬레이션 · 레드팀</b><br/>• trace 전체 검사<br/>• PII 유출 · 권한 이탈\"]:::list\n  S1 --> L1[\"⚠️ <b>못 잡는 것</b><br/>• 시뮬레이터가 짓지 못한 말\"]:::gone\n  X --> G2{\"운영 중 그물\"}\n  G2 --> S2[\"<b>LLM 심판 · TNPS</b><br/>• 정확성 · 간결성 · 어조\"]:::list\n  S2 --> L2[\"⚠️ <b>못 잡는 것</b><br/>• 감사 축이 전부 말의 품질이다<br/>• 심판도 모델이다\"]:::gone\n  L2 --> R[\"⚠️ <b>글에 없는 것</b><br/>• 틀린 조작을 되돌리는 절차<br/>• 사람에게 넘기는 기준\"]:::gone\n  U[\"<b>또 하나의 위험</b><br/>• 더 똑똑한 모델로 옮기면 깨진다<br/>• assume a lot less\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Building AI agents for 131 million customers",
+          "url": "https://building.nubank.com/building-ai-agents-for-131-million-customers/",
+          "publisher": "Building Nubank",
+          "date": "2026-03-23",
+          "summary": "FAQ 검색을 넘어 채무 재협상·카드 물류 같은 실제 조작을 하는 에이전트를 만든 기록. 사람이 프롬프트를 쓰는 방식을 버린 이유를 적었다."
+        },
+        {
+          "title": "Building AI agents in practice with Clojure",
+          "url": "https://building.nubank.com/building-ai-agents-in-practice-with-clojure/",
+          "publisher": "Building Nubank",
+          "date": "2026-02-02",
+          "summary": "⚠️ 컨퍼런스 발표 참관기다. Clojure 의 REPL·상호운용을 에이전트 개발에 권하는 내용이고 회사 내부 구조는 나오지 않는다."
+        }
+      ]
     }
   ],
   "sources": [
@@ -1141,6 +1594,13 @@
       "publisher": "Global Equity Briefing",
       "date": "2026-08",
       "summary": "Nu Holdings 2026년 2분기 실적 정리. ⚠️ 3자 매체이며 회사 IR 원문이 아니다."
+    },
+    {
+      "title": "Building AI agents in practice with Clojure",
+      "url": "https://building.nubank.com/building-ai-agents-in-practice-with-clojure/",
+      "publisher": "Building Nubank",
+      "date": "2026-02-02",
+      "summary": "⚠️ 컨퍼런스 발표 참관기다. Clojure 의 REPL·상호운용을 에이전트 개발에 권하는 내용이고 회사 내부 구조는 나오지 않는다."
     }
   ]
 }
