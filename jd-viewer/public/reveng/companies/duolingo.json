@@ -198,7 +198,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "convenience-decides-adoption"
+      ]
     },
     {
       "name": "테스트를 사람이 아니라 파이프라인이 쓴다",
@@ -771,6 +773,596 @@
           "publisher": "Duolingo IR",
           "date": "2026",
           "summary": "2025년 매출 10억 3,760만 달러(+39%), 구독이 약 86%. 2026년 2분기 매출 2억 9,850만 달러, 일간 활성 사용자 5,870만 명(+23%), 유료 구독자 1,270만 명(+17%)."
+        }
+      ]
+    },
+    {
+      "key": "convenience-decides-adoption",
+      "name": "세 번 갈아엎고 나서 편의가 이긴다는 것을 인정한다",
+      "domain": "에이전트를 한 번 정의해 여러 곳에 태운다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**사내에 도구가 200개가 넘는다**(Honeycomb·Grafana·Sentry·PagerDuty·GitHub·Jenkins·Jira·AWS·BigQuery). 그것들에 AI 를 붙이려는 시도를 **1년 사이에 네 번** 했고, **앞의 세 번은 기술이 아니라 채택에서 죽었다.** ⚠️ **회사가 그 결론을 한 문장으로 적는다 — `Convenience wins. A Slack App people can just @-mention is far more adoptable than any MCP-setup guide, no matter how polished.`** **아무리 잘 만든 설정 안내서도 @멘션 하나를 못 이긴다.**",
+        "metrics": [
+          {
+            "label": "쓰는 규모",
+            "value": "**주간 활성 약 300명 — 회사의 30%** · 주당 수천 건의 질의",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "label": "응답의 질",
+            "value": "**찬성률 약 80%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "label": "닿는 도구",
+            "value": "**200개 이상** — MCP 서버로 잇는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 앞선 시도들의 채택",
+            "value": "1단계(로컬 MCP)는 **`only a handful`** 만 썼다. 2·3단계도 마찰이 남아 주류가 되지 못했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "label": "플랫폼이 줄인 것",
+            "value": "에이전트 하나 만드는 시간이 **몇 주 → 약 10분**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Making production-ready agents the default: building Duolingo's agent platform",
+                "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-08-04",
+                "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 없는 수치",
+            "value": "**정확도·비용·실패율이 어느 글에도 없다** — 채택률과 찬성률뿐이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              },
+              {
+                "title": "Making production-ready agents the default: building Duolingo's agent platform",
+                "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-08-04",
+                "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "세 번 실패하고 나서",
+          "thought": "⚠️ **세 번의 실패가 전부 같은 원인이었다는 것을 마지막에야 인정한다** — 1단계는 설정이 고통스러웠고, 2단계는 취약했고, 3단계는 **한 번의 클릭이 남았다.** 회사가 그 지점에서 방향을 바꾼다: **`not every engineer wants to configure a local AI environment; most just want answers.`** **문제는 도구가 아니라 사람이 그 도구를 세팅해야 한다는 사실 자체였다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디에 둘지 정할 때",
+          "thought": "**사람을 오게 하는 대신 사람이 이미 있는 곳으로 갔다** — 슬랙이다. ⚠️ **그러자 성질이 하나 바뀐다** — 개인 편집기 안의 도구는 혼자 쓰는 것인데, **채널 안의 봇은 여러 사람이 보는 앞에서 답한다.** 그래서 헬프데스크·장애 대응 채널에 **자동으로 응답**하고 **채널마다 다른 맥락**을 갖는다(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "권한을 생각할 때",
+          "thought": "⚠️ **가장 조용한 위험을 한 문장으로 막는다** — `Engineers shouldn't gain access through the bot that they couldn't get directly`. **편의를 극단까지 밀면 봇이 권한 우회로가 된다** — 아무나 @멘션할 수 있는데 봇은 200개 도구에 닿기 때문이다. **역할 기반 허용 목록이 그 문을 닫는다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "MCP 서버",
+            "what": "도구 하나하나로 가는 통로. **200개 이상.** 3단계에서 **HTTP 호스팅·단일 인증 토큰·예측 가능한 URL** 로 표준화됐다"
+          },
+          {
+            "name": "슬랙 앱 (@DuolingoAI)",
+            "what": "사람이 이미 있는 곳의 입구. **설정이 필요 없다**"
+          },
+          {
+            "name": "승인 버튼",
+            "what": "⚠️ **쓰기 작업 앞의 문.** PR·Jira 티켓·CI 수정은 Approve/Cancel 을 거친다"
+          },
+          {
+            "name": "검증 서브에이전트",
+            "what": "⚠️ **답이 나가기 전에 링크와 이름을 교차 확인**한다 — 환각 대책"
+          },
+          {
+            "name": "역할 기반 허용 목록",
+            "what": "**봇을 통해 직접 못 얻는 권한을 얻지 못하게** 막는다"
+          },
+          {
+            "name": "AgentDefinition",
+            "what": "에이전트의 이름·프롬프트·필요한 도구·모델·출력 스키마를 한 번 선언하는 곳"
+          }
+        ],
+        "invariants": [
+          "⚠️ **봇을 통해 직접 못 얻는 권한을 얻어서는 안 된다**",
+          "**쓰기는 사람 승인을 거친다** — 읽기는 바로, 쓰기는 버튼 뒤에",
+          "**DM 과 비공개 채널의 내용은 기록하지 않는다**",
+          "⚠️ **설정이 필요하면 대부분은 안 쓴다** — 세 번의 실패가 증명한 것"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**채널에서 @멘션하거나, 헬프데스크·장애 대응 채널에서는 자동으로 응답한다**",
+            "why": "설정이 없다 — 그것이 이 설계의 전부다"
+          },
+          {
+            "step": "**채널별 시스템 프롬프트로 맥락을 잡는다**",
+            "why": "장애 채널과 헬프데스크는 같은 질문에 다른 답이 필요하다"
+          },
+          {
+            "step": "**Claude Agent SDK 가 스스로 도구를 고른다** — MCP 로 200개 이상에 닿는다",
+            "why": "사람이 어느 도구인지 몰라도 된다"
+          },
+          {
+            "step": "**역할 기반 허용 목록이 닿을 수 있는 도구를 자른다**",
+            "why": "⚠️ 봇이 권한 우회로가 되지 않게"
+          },
+          {
+            "step": "**검증 서브에이전트가 링크와 이름을 교차 확인한다**",
+            "why": "⚠️ 그럴듯한 링크와 이름이 환각의 주된 모양이다"
+          },
+          {
+            "step": "**읽기면 그대로 답한다. 쓰기면 Approve/Cancel 버튼을 띄운다**",
+            "why": "PR·Jira 티켓·CI 수정은 되돌리기 어렵다"
+          },
+          {
+            "step": "**승인되면 Temporal 워크플로가 샌드박스 Claude 에이전트를 띄워 코드를 쓰고 브랜치를 푸시한다**",
+            "why": "실행은 격리된 곳에서"
+          },
+          {
+            "step": "**같은 스레드에서 후속으로 고쳐 나간다**",
+            "why": "대화가 곧 작업 단위다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "엔지니어가 AI 에 도구를 붙이게 하려면",
+            "chosen": "**처음에는 각자 로컬에 MCP 를 설정하게 했다** (2024-11)",
+            "alternatives": [
+              "중앙에서 호스팅해 주기"
+            ],
+            "tradeoff": "가장 빨리 시작할 수 있다. ⚠️ **대가가 곧바로 드러났다** — `setup was painful: each one required hunting down the right config and credentials, and then hand-editing mcp.json` 이라 **소수만 썼다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "question": "설정을 쉽게 만들면 될 것인가",
+            "chosen": "**중앙 설정 페이지로 한 번의 클릭에 설정 조각을 만들어 줬다** (2025-05)",
+            "alternatives": [
+              "문서와 예제를 더 잘 쓰기"
+            ],
+            "tradeoff": "⚠️ **쉬워졌지만 깨졌다** — 서버마다 Node·Python·Go·Docker 에 전송 방식도 stdio·SSE·HTTP 로 제각각이라, **`mismatched npm versions, resource-hungry containers, and zombie processes`** 가 났다. **설정을 감춰도 그 밑의 다양성은 그대로 있었다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "question": "그 다양성을 어떻게 없앨 것인가",
+            "chosen": "**서버를 표준화한다** — HTTP 호스팅 · 단일 인증 토큰 · 예측 가능한 URL (2025-08)",
+            "alternatives": [
+              "런타임별로 계속 지원하기"
+            ],
+            "tradeoff": "**깨지는 원인이 사라졌다.** ⚠️ **그런데 채택은 여전히 안 늘었다** — `Configuration still required user action` 이었고, 회사가 그때 알아차린다: **`even one click is still too much`**. **기술 문제를 다 풀고 나서야 진짜 문제가 보였다**(이 정리는 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "question": "어디에 둘 것인가",
+            "chosen": "**슬랙 앱** — 사람이 이미 있는 곳으로 간다 (2025-09)",
+            "alternatives": [
+              "전용 웹 UI",
+              "편집기 확장"
+            ],
+            "tradeoff": "⚠️ **결론을 회사가 문장으로 적는다** — `Convenience wins. A Slack App people can just @-mention is far more adoptable than any MCP-setup guide, no matter how polished.` 대가는 **성질이 바뀐다는 것**이다 — 혼자 쓰던 도구가 **여러 사람이 보는 앞에서 답하게** 되고, 그래서 채널별 맥락과 권한 통제가 새로 필요해진다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "question": "쓰기 작업을 자동으로 할 것인가",
+            "chosen": "**아니다 — Approve/Cancel 버튼을 먼저 띄운다**",
+            "alternatives": [
+              "읽기처럼 바로 실행",
+              "전부 사람이 하게 두기"
+            ],
+            "tradeoff": "PR·Jira 티켓·CI 수정은 되돌리기 어렵다. **승인 뒤에는 Temporal 워크플로가 샌드박스 에이전트를 띄워 코드를 쓰고 브랜치를 푸시한다.** ⚠️ 대가는 **사람이 병목이 된다는 것**이고, **버튼을 습관처럼 누르면 통제가 아니라 형식이 된다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "question": "환각을 어떻게 다룰 것인가",
+            "chosen": "**검증 서브에이전트로 링크와 이름을 교차 확인한다** + 채널별 프롬프트",
+            "alternatives": [
+              "프롬프트로만 억제",
+              "사람이 전부 확인"
+            ],
+            "tradeoff": "⚠️ **그럴듯한 링크와 이름이 환각의 주된 모양이라 거기만 겨눈다.** 대가는 **그 밖의 틀린 내용은 못 잡는다는 것**이고, **검증도 모델이 한다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "question": "봇이 권한 우회로가 되는 것을 어떻게 막을 것인가",
+            "chosen": "**역할 기반 도구 허용 목록** — `Engineers shouldn't gain access through the bot that they couldn't get directly`",
+            "alternatives": [
+              "봇에게 넓은 권한을 주고 감사 로그로 사후 확인"
+            ],
+            "tradeoff": "**편의를 극단까지 밀면 봇이 문이 된다** — 아무나 @멘션할 수 있는데 봇은 200개 도구에 닿기 때문이다. ⚠️ 대가는 **사람마다 답이 달라진다는 것**이고, 권한이 없는 사람은 **왜 못 받는지 모를 수 있다**(이 지적은 재구성이다). 프라이버시 쪽도 함께 정한다 — **DM 과 비공개 채널은 기록하지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "question": "에이전트를 팀마다 만들 것인가",
+            "chosen": "**아니다 — 정의는 한 번, 실행은 여러 표면**(AgentDefinition + AgentWorkflow)",
+            "alternatives": [
+              "프로젝트마다 인프라를 다시 만들기"
+            ],
+            "tradeoff": "그 전에는 `recreating all of this infrastructure across every project` 였고, 지금은 **에이전트 하나 만드는 데 몇 주가 아니라 약 10분**이다. ⚠️ **대가는 선언 형식 밖의 모양을 만들기 어려워진다는 것**이고, **성공률·운영 규모·비용 수치가 하나도 없다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Making production-ready agents the default: building Duolingo's agent platform",
+                "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-08-04",
+                "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Claude Agent SDK · Slack Bolt",
+            "role": "도구를 스스로 고르는 에이전트와 슬랙 이벤트 처리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "tech": "MCP 서버 (200개 이상)",
+            "role": "Honeycomb·Grafana·Sentry·PagerDuty·GitHub·Jenkins·Jira·AWS·BigQuery 로 가는 통로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "tech": "Temporal",
+            "role": "⚠️ **승인 뒤의 실행을 맡는다** — 샌드박스 에이전트를 띄워 코드를 쓰고 브랜치를 푸시. 에이전트 플랫폼의 바닥이기도 하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              },
+              {
+                "title": "Making production-ready agents the default: building Duolingo's agent platform",
+                "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-08-04",
+                "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+              }
+            ]
+          },
+          {
+            "tech": "AgentDefinition · AgentWorkflow",
+            "role": "에이전트를 한 번 선언해 여러 런타임·표면에서 쓴다(Claude Agents SDK · Codex CLI · OpenAI Agents SDK)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Making production-ready agents the default: building Duolingo's agent platform",
+                "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-08-04",
+                "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+              }
+            ]
+          },
+          {
+            "tech": "검증 서브에이전트 · 역할 기반 허용 목록",
+            "role": "링크와 이름을 교차 확인하고, 봇을 통한 권한 상승을 막는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "테스트를 사람이 아니라 파이프라인이 쓴다",
+          "via": "Temporal 과 승인 구조",
+          "contract": "⚠️ **같은 바닥을 쓴다** — 두 시스템 다 Temporal 위에 있고, 둘 다 **사람이 마지막 문을 지킨다**(여기서는 승인 버튼, 저기서는 리뷰). **그리고 저쪽에서 그 문이 병목이 됐다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "언제 무엇을 다시 보여 줄지 고른다",
+          "via": "⚠️ 다른 종류의 AI",
+          "contract": "⚠️ **같은 회사가 두 종류의 AI 를 다르게 믿는다** — 학습 쪽은 **사내 모델을 A/B 로** 검증하고, 개발 쪽은 **외부 LLM 을 사람 승인으로** 막는다(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "사내 도구 200개 이상",
+          "via": "MCP",
+          "contract": "**표준화된 HTTP 호스팅·단일 인증 토큰·예측 가능한 URL** 위에서만 이 봇이 성립한다 — **3단계가 헛수고가 아니라 4단계의 바닥이었다**(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "엔지니어의 권한",
+          "via": "역할 기반 허용 목록",
+          "contract": "**봇을 통해 직접 못 얻는 권한을 얻을 수 없다** — 편의가 권한을 넓히지 않게 막는 선",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "설정 마찰이 채택을 죽이는데, 그 사실을 세 번 겪고서야 안다",
+            "why_hard": "⚠️ **세 번의 실패가 전부 같은 원인이었다.** 1단계는 설정이 고통스러웠고, 2단계는 감췄더니 밑의 다양성 때문에 깨졌고, 3단계는 그 다양성을 없앴는데도 **클릭 하나가 남았다.** 회사가 그때 알아차린다 — `not every engineer wants to configure a local AI environment; most just want answers`. **기술 문제를 다 풀고 나서야 진짜 문제가 보였다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**사람을 오게 하지 말고 사람이 있는 곳으로 가는 것** — `Convenience wins`. ⚠️ **다만 이것은 도구의 성질을 바꾼다** — 개인 도구가 공개된 자리의 도구가 되고, 그래서 채널별 맥락·권한 통제·프라이버시 규칙이 새로 필요해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          },
+          {
+            "problem": "편의를 극단까지 밀면 봇이 권한 우회로가 된다",
+            "why_hard": "**아무나 @멘션할 수 있는데 봇은 도구 200개 이상에 닿는다.** 설정이 필요 없다는 것은 곧 **누구에게나 같은 입구가 열려 있다**는 뜻이라, 봇의 권한이 곧 모두의 권한이 될 위험이 있다.",
+            "current_best": "**역할 기반 허용 목록** — `Engineers shouldn't gain access through the bot that they couldn't get directly`. ⚠️ **쓰기는 사람 승인으로 한 번 더 막지만, 버튼을 습관처럼 누르면 통제가 형식이 된다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Triage, ship, debug—all from Slack",
+                "url": "https://blog.duolingo.com/aislackbot/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-05-20",
+                "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "읽기는 바로, 쓰기는 버튼 뒤에",
+          "question": "@멘션 하나가 코드가 되기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>@DuolingoAI</b><br/>• 채널에서 멘션<br/>• 헬프데스크 · 장애 채널은 자동\"]:::accent --> C[\"<b>채널별 시스템 프롬프트</b>\"]:::list\n  C --> A[\"<b>Claude Agent SDK</b><br/>• 스스로 도구를 고른다\"]:::accent\n  A --> AL[\"<b>역할 기반 허용 목록</b><br/>• 닿을 수 있는 도구를 자른다\"]:::accent\n  AL --> T[\"<b>MCP 서버 200개 이상</b><br/>• Honeycomb · Grafana · Sentry<br/>• PagerDuty · GitHub · Jenkins<br/>• Jira · AWS · BigQuery\"]:::list\n  T --> V[\"<b>검증 서브에이전트</b><br/>• 링크와 이름을 교차 확인\"]:::accent\n  V --> R{\"<b>읽기인가 쓰기인가</b>\"}\n  R -->|\"읽기\"| ANS[\"<b>바로 답한다</b><br/>• 찬성률 약 80%\"]:::list\n  R -->|\"쓰기\"| B[\"⚠️ <b>Approve / Cancel</b><br/>• PR · Jira · CI 수정\"]:::gone\n  B --> W[\"<b>Temporal 워크플로</b><br/>• 샌드박스 에이전트가<br/>  코드를 쓰고 브랜치를 푸시\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "세 번의 실패가 전부 같은 원인이었다",
+          "question": "왜 슬랙이었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  S1[\"<b>2024-11 · 로컬 MCP</b><br/>• 각자 편집기에 설정\"]:::gone --> F1[\"⚠️ <b>설정이 고통스럽다</b><br/>• 설정과 자격증명 찾기<br/>• mcp.json 손으로 편집<br/>• <b>소수만 썼다</b>\"]:::gone\n  F1 --> S2[\"<b>2025-05 · 중앙 설정 페이지</b><br/>• 클릭 한 번에 설정 조각\"]:::gone\n  S2 --> F2[\"⚠️ <b>깨진다</b><br/>• Node · Python · Go · Docker<br/>• stdio · SSE · HTTP<br/>• npm 버전 불일치 · 좀비 프로세스\"]:::gone\n  F2 --> S3[\"<b>2025-08 · 표준화</b><br/>• HTTP · 단일 토큰 · 예측 URL\"]:::gone\n  S3 --> F3[\"⚠️ <b>깨지진 않는데 안 쓴다</b><br/>• 여전히 사용자 동작이 필요<br/>• <b>클릭 하나도 너무 많다</b>\"]:::gone\n  F3 --> S4[\"<b>2025-09 · 슬랙 앱</b><br/>• 설정 제로 · 주간 300명(30%)\"]:::accent\n  S4 --> W[\"<b>Convenience wins</b><br/>• 아무리 잘 만든 설정 안내서도<br/>  @멘션 하나를 못 이긴다\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [
+        {
+          "version": "로컬 MCP",
+          "from": "2024-11",
+          "to": "2025-05",
+          "what": "엔지니어가 각자 편집기에 MCP 서버를 손으로 설정했다.",
+          "why_changed": "⚠️ **설정이 고통스러웠다** — `setup was painful: each one required hunting down the right config and credentials, and then hand-editing mcp.json`. **소수만 채택했다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Triage, ship, debug—all from Slack",
+              "url": "https://blog.duolingo.com/aislackbot/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-05-20",
+              "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+            }
+          ]
+        },
+        {
+          "version": "중앙 설정 페이지",
+          "from": "2025-05",
+          "to": "2025-08",
+          "what": "웹 폼에서 MCP 서버를 고르면 바로 쓸 수 있는 설정 조각을 만들어 줬다.",
+          "why_changed": "⚠️ **설정을 감춰도 밑의 다양성은 그대로였다** — 서버마다 Node·Python·Go·Docker 에 전송 방식도 stdio·SSE·HTTP 로 제각각이라 **`mismatched npm versions, resource-hungry containers, and zombie processes`** 가 났다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Triage, ship, debug—all from Slack",
+              "url": "https://blog.duolingo.com/aislackbot/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-05-20",
+              "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+            }
+          ]
+        },
+        {
+          "version": "표준화된 HTTP MCP 서버",
+          "from": "2025-08",
+          "to": "2025-09",
+          "what": "모든 MCP 서버를 HTTP 호스팅·단일 인증 토큰·예측 가능한 URL 로 통일했다.",
+          "why_changed": "⚠️ **깨지는 원인은 사라졌는데 채택이 안 늘었다** — `Configuration still required user action` 이었고 **클릭 하나도 너무 많았다.** 그때 알아차린다: `not every engineer wants to configure a local AI environment; most just want answers`.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Triage, ship, debug—all from Slack",
+              "url": "https://blog.duolingo.com/aislackbot/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-05-20",
+              "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+            }
+          ]
+        },
+        {
+          "version": "슬랙 앱 (@DuolingoAI)",
+          "from": "2025-09",
+          "what": "설정이 필요 없는 슬랙 봇. Claude Agent SDK 와 Slack Bolt 로 도구 200개 이상에 닿고, 쓰기는 승인 버튼 뒤에 둔다. **2026년에는 그 위에 에이전트 플랫폼(AgentDefinition·AgentWorkflow)이 얹혔다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Triage, ship, debug—all from Slack",
+              "url": "https://blog.duolingo.com/aislackbot/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-05-20",
+              "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+            },
+            {
+              "title": "Making production-ready agents the default: building Duolingo's agent platform",
+              "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+              "publisher": "Duolingo Blog",
+              "date": "2026-08-04",
+              "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "title": "Triage, ship, debug—all from Slack",
+          "url": "https://blog.duolingo.com/aislackbot/",
+          "publisher": "Duolingo Blog",
+          "date": "2026-05-20",
+          "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+        },
+        {
+          "title": "Making production-ready agents the default: building Duolingo's agent platform",
+          "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+          "publisher": "Duolingo Blog",
+          "date": "2026-08-04",
+          "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
+        },
+        {
+          "title": "How we built an automated unit test generation pipeline for iOS",
+          "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+          "publisher": "Duolingo Blog",
+          "date": "2026-06-24",
+          "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
         }
       ]
     }
