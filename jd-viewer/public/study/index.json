@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-04",
+  "updated_at": "2026-09-05",
   "articles": [
     {
       "slug": "asyncio",
@@ -915,6 +915,24 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-04"
+    },
+    {
+      "slug": "feature-flag",
+      "title": "피처 플래그 · A/B 실험",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**코드를 바꾸지 않고 동작을 바꾸는 스위치**다. 이걸 두면 **배포와 공개가 갈린다** — 코드는 이미 나가 있고, 켜는 것은 나중에 따로 한다.",
+      "aliases": [
+        "피처 플래그",
+        "feature flag",
+        "feature toggle",
+        "A/B 테스트",
+        "실험 플랫폼"
+      ],
+      "sections": 7,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
