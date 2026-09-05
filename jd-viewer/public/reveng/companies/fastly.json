@@ -173,7 +173,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "simple-model-wins-on-rare-days"
+      ]
     },
     {
       "name": "남의 트래픽을 대신 받아 주되 안을 들여다보지 않는다",
@@ -714,6 +716,446 @@
           "publisher": "Fastly Blog",
           "date": "2026-06-24",
           "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+        }
+      ]
+    },
+    {
+      "key": "simple-model-wins-on-rare-days",
+      "name": "평상시를 잘 맞히는 모델을 버리고 드문 날을 고른다",
+      "domain": "행사가 오기 전에 어느 POP 이 먼저 무너질지 센다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**엣지 용량은 몇 달 전에 사야 한다.** 그런데 돈을 써야 할지 말지가 갈리는 날은 평상시가 아니라 **게임 출시·라이브 중계·큰 고객의 이전**처럼 트래픽 모양이 통째로 달라지는 날이다. ⚠️ **여기에 이 도메인의 함정이 있다** — 평상시를 잘 맞히는 모델은 표본이 많아 정확해 보이지만, **정작 판단이 필요한 드문 날에 빗나간다.** 회사가 정교한 모델을 줄줄이 버린 이유가 그것이다.",
+        "metrics": [
+          {
+            "label": "이 모델이 맞히는 폭",
+            "value": "실제 CPU 사용률의 **5% 이내** — `this simple model keeps within 5% of real CPU utilization`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 버린 모델들이 빗나가던 폭",
+            "value": "**25% 이상** — `more sophisticated models would often deviate by 25% or more`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "운영 기간",
+            "value": "**1년 넘게** 운영에 쓰고 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "label": "결정하는 대상",
+            "value": "**POP 약 83곳**(추가 예정 4곳)의 하드웨어 배치와 신설 · 연결 용량 622 Tbps",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 공개하지 않는 것",
+            "value": "**POP 수·트래픽 양·CPU 임계값이 글에 없다.** 사례로 든 EWR POP 도 그림 설명뿐이고 수치가 없다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "먼저 무엇을 해 봤나",
+          "thought": "⚠️ **정석을 다 해 보고 나서 버렸다** — `AutoML systems, neural nets, tree models, ensembles, regressions, specialized time-series prediction models, and even LLMs`. **LLM 까지 목록에 있다.** 그런데 이것들이 `struggled with the rare cases that matter most for capacity planning` 였다. **넓은 관계는 배웠는데 이 일에 필요한 세부를 못 배웠다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 척도로 삼을까",
+          "thought": "**`popular things cache well`** — 인기 있는 것은 캐시가 잘 된다는 한 문장이 이 모델의 토대다. 평상시에는 수천 고객이 조금씩 나눠 갖고, 행사 때는 몇몇이 독차지한다. **그 쏠림 정도를 하나의 수로 재면 캐시가 어떻게 될지 짐작할 수 있다** — 경제학의 불평등 지표를 그대로 가져왔다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "정확한 것과 알아볼 수 있는 것 사이에서",
+          "thought": "⚠️ **단순함을 타협이 아니라 성질로 적는다** — 이긴 모델은 `small, interpretable, and fast enough for interactive scenario analysis` 다. 복잡한 모델이 데이터가 충분하면 숨은 관계를 찾아낼 수 있다는 것도 인정하면서, **우리 문제는 `intermittent, heterogeneous, and operationally sensitive`** 라 그 이점이 안 온다고 못 박는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "지니 계수",
+            "what": "고객들 사이에서 트래픽이 얼마나 쏠려 있는지를 재는 한 개의 수. ⚠️ **캐시 적중률의 대리 지표로 쓴다**"
+          },
+          {
+            "name": "top-N 비중",
+            "what": "**가장 큰 고객 N 곳이 차지하는 트래픽 비율.** 다양성이 낮은 POP 에서 지니를 보완한다"
+          },
+          {
+            "name": "프런트엔드 캐시 적중률",
+            "what": "1단계의 결과이자 2단계의 입력. **두 도메인을 잇는 화폐다**"
+          },
+          {
+            "name": "CPU 사용률",
+            "what": "용량의 실질적 한계. 계획은 결국 이 수가 임계에 닿는 지점을 찾는 일이다"
+          },
+          {
+            "name": "여유(headroom)",
+            "what": "⚠️ **얼마나 더 받을 수 있는가.** 이진 탐색으로 CPU 임계 바로 아래의 트래픽 수준을 찾아 얻는다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **`popular things cache well`** — 이 가정이 무너지면 1단계 전체가 무너진다",
+          "**계획 결정은 상단 구간에서 일어난다** — 그래서 회귀를 맞출 때 **높은 CPU 표본에 가중치를 더 준다**(`the upper range is where planning decisions happen`)",
+          "**트래픽 모양에 대한 가정은 명시적이고 눈에 보여야 한다** — 이 모델을 고른 이유 자체가 그것이다",
+          "⚠️ **캐시가 구조적으로 안 되는 트래픽의 쏠림은 쏠림으로 세면 안 된다** — top-N 이 그 오해를 막는 자리다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**POP 별로 고객 트래픽의 쏠림을 잰다** — 지니 계수와 top-N 비중",
+            "why": "행사 날과 평상시는 쏠림 모양이 다르다"
+          },
+          {
+            "step": "**지니에 제곱근을 씌운다**",
+            "why": "⚠️ `Cache behavior did not appear to improve linearly with traffic inequality` — 낮고 중간인 구간을 늘리고 높은 구간을 눌러 둘을 맞춘다"
+          },
+          {
+            "step": "**① 캐시 적중률을 예측한다** — `predicted_cache_hit_ratio = a*sqrt(gini) + b*top_N_ratio + c`",
+            "why": "계수는 최근 이력에 대한 강건 회귀에서 나온다"
+          },
+          {
+            "step": "**② CPU 를 예측한다** — 트래픽 양·요청률·컴퓨트 작업량 + 예측한 캐시 적중률",
+            "why": "캐시가 빗나가면 CPU 가 오른다. 적중률이 두 단을 잇는다"
+          },
+          {
+            "step": "⚠️ **회귀를 맞출 때 높은 CPU 표본에 가중치를 더 준다**",
+            "why": "`because the upper range is where planning decisions happen` — 평균이 아니라 **결정이 일어나는 구간**을 맞힌다"
+          },
+          {
+            "step": "**③ 이진 탐색으로 여유를 찾는다** — 트래픽 배합을 키워 가며 CPU 한계 바로 아래 지점을 찾는다",
+            "why": "`얼마나 더 받을 수 있나` 에 답한다"
+          },
+          {
+            "step": "**그 답으로 움직인다** — 구형 하드웨어에 트래픽을 몰아 효율을 올리고, 게임 출시·POP 신설 시나리오를 돌리고, 잘 맞는 워크로드를 일부러 모은다",
+            "why": "모델의 값은 예측이 아니라 **살 것과 옮길 것을 정하는 데** 있다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "어떤 모델을 쓸 것인가",
+            "chosen": "**작고 해석 가능한 회귀** — 정교한 것들을 다 해 보고 버렸다",
+            "alternatives": [
+              "AutoML",
+              "신경망",
+              "트리 모델",
+              "앙상블",
+              "전문 시계열 예측 모델",
+              "LLM"
+            ],
+            "tradeoff": "⚠️ **평상시 정확도를 내주고 드문 날을 얻었다.** 버린 것들은 넓은 관계는 잘 배우는데 `struggled with the rare cases that matter most for capacity planning` 였다. 회사도 **데이터가 충분하면 복잡한 모델이 숨은 관계를 찾아낼 수 있다**고 인정하면서, 이 문제가 `intermittent, heterogeneous, and operationally sensitive` 라 그 이점이 오지 않는다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 무엇으로 예측할 것인가",
+            "chosen": "**트래픽 쏠림(지니 계수)** — `popular things cache well`",
+            "alternatives": [
+              "과거 적중률을 직접 외삽",
+              "콘텐츠 종류별 모델"
+            ],
+            "tradeoff": "**한 개의 수로 POP 의 성격을 요약하는 대신 그 수가 왜 그런지는 잃는다.** 그리고 **가정 하나에 1단계 전체가 걸린다** — 인기와 캐시성이 어긋나는 트래픽에서는 쏠림이 곧 적중률이 아니다(뒤쪽은 이 사이트의 재구성이며, 회사는 그 구멍을 top-N 으로 메운다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "지니를 그대로 넣을 것인가",
+            "chosen": "**제곱근을 씌운다**",
+            "alternatives": [
+              "원값 그대로",
+              "로그 등 다른 변환"
+            ],
+            "tradeoff": "`a small but important rescaling` — 캐시가 쏠림에 **선형으로 좋아지지 않아서** 낮고 중간인 구간을 늘리고 높은 구간을 눌렀다. ⚠️ **대가는 값의 뜻이 흐려지는 것이다** — 제곱근 지니는 더 이상 경제학의 그 지표가 아니다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "쏠림 하나로 충분한가",
+            "chosen": "**아니다 — top-N 비중을 함께 넣는다**",
+            "alternatives": [
+              "지니 하나만 쓰기"
+            ],
+            "tradeoff": "**다양성이 낮은 POP 에서 지니만으로는 구분이 안 된다.** 그리고 ⚠️ **구조적으로 캐시가 안 되는 워크로드가 몰린 것을 `쏠렸으니 캐시가 잘 되겠다` 로 잘못 읽지 않게** 막는 자리이기도 하다. 대신 **변수가 늘어 모델의 단순함을 조금 내준다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "회귀를 어디에 맞출 것인가",
+            "chosen": "**높은 CPU 표본에 가중치를 더 준다**",
+            "alternatives": [
+              "모든 구간을 고르게 맞추기"
+            ],
+            "tradeoff": "⚠️ **평균을 일부러 못 맞히기로 한 결정이다** — `the upper range is where planning decisions happen`. 낮은 구간의 오차를 감수하고 **결정이 일어나는 구간**을 산다. 그래서 이 모델을 평상시 정확도로 평가하면 저평가된다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "여유를 어떻게 구할 것인가",
+            "chosen": "**이진 탐색** — 트래픽을 키워 가며 CPU 임계 바로 아래를 찾는다",
+            "alternatives": [
+              "해석적으로 역산",
+              "시뮬레이션"
+            ],
+            "tradeoff": "**모델을 반복 호출해야 하므로 모델이 빨라야 성립한다** — 회사가 `fast enough for interactive scenario analysis` 를 성질로 꼽은 이유가 여기 있다. 복잡한 모델을 골랐다면 **이 탐색 자체가 비쌌을 것이다**(이 연결은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "question": "트래픽을 일부러 모을 것인가",
+            "chosen": "**모은다** — 잘 맞는 워크로드를 겹쳐 캐시 지역성을 올리고, 구형 하드웨어에도 몰아 효율을 낸다",
+            "alternatives": [
+              "고르게 퍼뜨려 위험을 분산"
+            ],
+            "tradeoff": "⚠️ **회사가 위험을 직접 적는다** — `Concentration has limits and risks. It can create hot spots, reduce failure isolation, or push a POP toward another constraint.` **캐시를 좋게 하는 바로 그 성질이 장애 격리를 나쁘게 한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "지니 계수 (제곱근 변환)",
+            "role": "POP 별 트래픽 쏠림을 한 수로 요약해 캐시 적중률을 예측하는 입력",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "top-N 고객 비중",
+            "role": "다양성이 낮은 POP 과 캐시 불가 워크로드에서 지니를 보완",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "강건 회귀 (최근 이력)",
+            "role": "두 단의 계수를 얻는다. **상단 표본에 가중치를 더 준다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "이진 탐색",
+            "role": "CPU 임계 바로 아래의 트래픽 수준을 찾아 여유를 구한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "purge-must-reach-everywhere",
+          "via": "캐시 적중률",
+          "contract": "⚠️ **두 도메인이 같은 화폐를 쓴다** — 퍼지가 잦으면 적중률이 내려가고, 적중률은 이쪽에서 **CPU 예측의 입력**이다. **지우는 일이 곧 용량 문제로 번진다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "하드웨어 구매·POP 신설",
+          "via": "여유(headroom)",
+          "contract": "**몇 달 전에 살 것을 정하는 근거가 이 모델의 출력이다.** 구형 하드웨어에 무엇을 몰지도 여기서 나온다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "트래픽 경로 위에서 공격을 걸러낸다",
+          "via": "트래픽 급증",
+          "contract": "⚠️ **행사와 공격은 모델 입장에서 닮았다** — 둘 다 평상시와 다른 모양으로 몰린다. **다만 공격 쪽 자료를 아직 못 읽어 이 연결은 확인되지 않았다**",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "중요한 날일수록 표본이 적다",
+            "why_hard": "⚠️ **이 문제의 본질이 여기 있다.** 용량 판단이 필요한 날은 게임 출시·중계처럼 드문 날인데, 학습할 자료는 평상시가 압도적으로 많다. 그래서 표본이 많은 쪽에 잘 맞는 모델이 **정작 결정이 필요한 곳에서 25% 이상 빗나갔다.**",
+            "current_best": "**결정이 일어나는 구간에 가중치를 몰아 주고, 나머지 정확도를 내주는 것.** ⚠️ **드문 사건 자체를 예측하는 방법은 이 글에 없다** — 모델은 `트래픽이 이렇게 몰리면 어떻게 되나` 에 답할 뿐 **그 트래픽이 올지는 사람이 넣는다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "캐시를 좋게 하는 성질이 장애 격리를 나쁘게 한다",
+            "why_hard": "**잘 맞는 워크로드를 한 POP 에 모으면 캐시 지역성이 올라간다.** 그런데 같은 집중이 **핫스팟을 만들고 장애 격리를 약화시키며 POP 을 다른 제약으로 민다** — 회사가 그대로 적는 위험 셋이다. **두 목표가 같은 손잡이를 반대로 당긴다.**",
+            "current_best": "**집중의 이득을 취하되 위험을 명시적으로 두는 것.** ⚠️ **어디까지 모아도 되는지의 기준은 글에 없다** — 이 지적은 이 사이트의 재구성이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using the Gini Coefficient to Plan Edge Capacity",
+                "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-24",
+                "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쏠림으로 캐시를, 캐시로 CPU 를, CPU 로 살 것을 정한다",
+          "question": "용량 판단은 어떤 순서로 만들어지나",
+          "kind": "flow",
+          "code": "flowchart TD\n  T[\"<b>POP 별 고객 트래픽</b>\"]:::accent --> G[\"<b>쏠림을 잰다</b><br/>• 지니 계수<br/>• top-N 고객 비중\"]:::list\n  G --> SQ[\"<b>제곱근을 씌운다</b><br/>• 캐시는 쏠림에 선형으로<br/>  좋아지지 않는다\"]:::accent\n  SQ --> C1[\"<b>① 캐시 적중률 예측</b><br/>a·√gini + b·topN + c\"]:::accent\n  C1 --> C2[\"<b>② CPU 예측</b><br/>• 트래픽 · 요청률 · 컴퓨트<br/>• + 예측 적중률\"]:::accent\n  W[\"⚠️ <b>높은 CPU 표본에 가중</b><br/>• 결정은 상단에서 일어난다\"]:::gone -.-> C2\n  C2 --> C3[\"<b>③ 이진 탐색</b><br/>• CPU 임계 바로 아래까지<br/>  트래픽을 키운다\"]:::accent\n  C3 --> A[\"<b>여유(headroom)</b>\"]:::list\n  A --> D1[\"구형 하드웨어에 몰기\"]:::list\n  A --> D2[\"게임 출시 · POP 신설 시나리오\"]:::list\n  A --> D3[\"잘 맞는 워크로드를 겹치기\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "정교한 모델이 무너지는 자리와, 집중이 되갚는 자리",
+          "question": "무엇이 이 방법을 어렵게 하나",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[\"<b>정교한 모델들</b><br/>• AutoML · 신경망 · 트리<br/>• 앙상블 · 시계열 · LLM\"]:::gone --> N[\"<b>평상시엔 잘 맞는다</b>\"]:::list\n  M --> R[\"⚠️ <b>드문 날에 빗나간다</b><br/>• 25% 이상<br/>• 그런데 결정은 그날 난다\"]:::gone\n  S[\"<b>작고 해석 가능한 모델</b>\"]:::accent --> OK[\"<b>실제 CPU 의 5% 이내</b>\"]:::list\n  S --> F[\"<b>빨라서 이진 탐색이 된다</b>\"]:::list\n  CC[\"<b>트래픽을 모은다</b>\"]:::accent --> GOOD[\"<b>캐시 지역성 ↑</b><br/>• 구형 하드웨어 효율 ↑\"]:::list\n  CC --> BAD[\"⚠️ <b>핫스팟</b><br/>⚠️ <b>장애 격리 약화</b><br/>⚠️ <b>다른 제약으로 밀림</b>\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Using the Gini Coefficient to Plan Edge Capacity",
+          "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+          "publisher": "Fastly Blog",
+          "date": "2026-06-24",
+          "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+        },
+        {
+          "title": "Fastly Network Map",
+          "url": "https://www.fastly.com/network-map",
+          "publisher": "Fastly",
+          "date": "2026-06-30",
+          "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
         }
       ]
     }

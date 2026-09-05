@@ -8,26 +8,24 @@
 
 ## 지금 파는 중
 
-**Fastly** (US · CDN·엣지) — 도메인 4개 · **기능 1개**(`purge-must-reach-everywhere`). 남은 도메인 셋.
+**Fastly** (US · CDN·엣지) — 도메인 4개 · **기능 2개**. 남은 도메인 둘(프록시 · **보안은 자료부터**).
 
-### 이번 사이클 — 퍼징 `지우는 일을 한 곳에 맡기지 않는다`
-
-**이 회사가 값을 받는 자리를 첫 기능으로 팠다.** 캐시에 넣는 일은 모든 CDN 이 하고, **83곳에 흩어진 사본을 동시에 없애는 일**이 갈림길이다.
+### 이번 사이클 — 용량 계획 `평상시를 잘 맞히는 모델을 버리고 드문 날을 고른다`
 
 건진 것 넷:
 
-- ⚠️ **고른 기준이 성능이 아니라 도달 가능성이다** — 중앙 큐는 쉬운 대신 **단일 장애점**이고 장애 때 `unable to communicate with some cache servers for an extended period of time` 가 된다. 분산은 `harder to build` 지만 **`available as long as a customer could reach any Fastly server`** 다. **퍼지는 못 받으면 옛 데이터가 계속 나가는 일이라, 느린 것보다 못 닿는 것이 나쁘다.**
-- ⚠️ **프로토콜을 만들지 않고 1999년 논문을 가져왔다** — Bimodal Multicast(Birman et al.). 고른 이유 넷 중 하나가 **`understandable`** 이다. **성능이 아니라 운영이 이해할 수 있는가가 선택 기준에 들어 있다.**
-- ⚠️ **논문이 견디도록 만들어진 조건과 이 회사의 지형이 크게 다르다** — 논문은 **손실 20%·프로세스 25% 장애**에서도 안정적이라 말하는데 여기 POP 간 손실률은 **0.1% 미만**이다. **험한 곳용을 순한 곳에 썼고, 그래서 방화벽 오설정과 DDoS 8분 장애를 지나올 수 있었다**(재구성).
-- ⚠️ **상한을 약속할 수 없어서 평균을 판다** — 중앙이 없으니 `모두가 받았다` 를 아는 곳이 없다. 회사가 내거는 값이 **평균 150ms 미만**이고, 회복은 **영향받은 서버와 안 받은 서버의 지연을 견주어** 잰다. **평균을 걸었기에 p95 가 10초·1분까지 벌어진 사고를 겪고도 약속이 깨지지 않는다.**
+- ⚠️ **정석을 다 해 보고 나서 버렸다** — `AutoML systems, neural nets, tree models, ensembles, regressions, specialized time-series prediction models, and even LLMs`. **LLM 까지 목록에 있다.** 버린 이유 한 줄이 이 도메인 전체를 설명한다 — `struggled with the rare cases that matter most for capacity planning`.
+- ⚠️ **평균을 일부러 못 맞히기로 한 결정이 있다** — 회귀를 맞출 때 **높은 CPU 표본에 가중치를 더 준다**(`the upper range is where planning decisions happen`). **낮은 구간의 오차를 감수하고 결정이 일어나는 구간을 산다.** 그래서 이 모델을 평상시 정확도로 재면 저평가된다(재구성).
+- **단순함을 타협이 아니라 성질로 적는다** — `small, interpretable, and fast enough for interactive scenario analysis`. 그리고 **빠르기 때문에 이진 탐색이 성립한다** — 복잡한 모델을 골랐다면 여유 탐색 자체가 비쌌을 것이다(재구성).
+- ⚠️ **캐시를 좋게 하는 성질이 장애 격리를 나쁘게 한다** — 회사가 직접 적는다: `Concentration has limits and risks. It can create hot spots, reduce failure isolation, or push a POP toward another constraint.` **두 목표가 같은 손잡이를 반대로 당긴다.**
 
-**한 가지가 비어 있다** — UDP 를 고른 이유를 글이 적지 않는다. 쓴다는 사실과 손실률이 낮다는 사실만 나란히 있다.
+**두 기능이 캐시 적중률로 이어졌다** — 퍼지가 잦으면 적중률이 내려가고, 적중률은 이쪽에서 CPU 예측의 입력이다. **지우는 일이 곧 용량 문제로 번진다**(재구성).
 
-### 다음 사이클 — 남은 도메인 셋
+### 다음 사이클 — 프록시, 그다음이 보안
 
-`--gaps` 가 다음 빈 도메인을 부른다. **자료가 있는 것은 둘**(용량 계획·프록시)이고, **보안은 여전히 자료부터 찾아야 한다**(매출 23%).
+`--gaps` 는 **남의 트래픽을 대신 받아 주되 안을 들여다보지 않는다**(프록시)를 부를 것이다. ⚠️ **그 글에는 수치가 하나도 없다** — 처리량·지연·채택 어느 것도 없이 `hundreds of millions of active users` 와 `modest adoption rates` 뿐이다. **결정과 대가로만 채워야 하고, 그것이 모자라면 자료를 더 찾아야 한다.**
 
-**용량 계획을 먼저 파는 것이 낫다**(추천) — 지니 계수 글에 **버린 대안(일반 ML)과 한계가 다 있고**, 이번 기능과 **캐시 적중률로 이어진다.** 프록시 글은 자기 시스템이 맞지만 **수치가 하나도 없다.**
+⚠️ **보안 도메인은 여전히 1차 자료가 없다**(매출 23%). **그 차례가 오면 기능을 쓰기 전에 자료부터 찾는다** — 못 찾으면 도메인을 접는 것이 아니라 `open_questions` 에 남기고 완주를 미룬다.
 
 ## 지금의 진짜 상태
 
