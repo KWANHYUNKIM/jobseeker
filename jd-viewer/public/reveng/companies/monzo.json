@@ -125,7 +125,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "one-team-drives-all-migrations"
+      ]
     },
     {
       "name": "은행의 상태를 한 클러스터에 몰아 두고 그 대가를 치른다",
@@ -247,7 +249,520 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "one-team-drives-all-migrations",
+      "name": "이전을 팀마다 맡기지 않고 한 팀이 전부 민다",
+      "domain": "서비스 3,000개를 한 저장소에서 같은 모양으로 굴린다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**서비스가 2,800개면 라이브러리 하나를 바꾸는 일이 조직 문제가 된다.** 팀마다 알아서 옮기게 두면 어떻게 되는지 회사가 직접 겪고 적는다 — `unfinished migrations and a lot of coordination effort`. ⚠️ **미완성 이전은 그냥 안 끝난 일이 아니라 두 벌을 영원히 함께 운영하는 일이다**(이 정리는 이 사이트의 재구성이다). 그래서 이 회사는 **한 팀이 전부 미는 쪽**을 골랐고, 그 팀이 치르는 값이 크다는 것도 함께 적는다.",
+        "metrics": [
+          {
+            "label": "옮긴 규모",
+            "value": "**마이크로서비스 2,800개** — OpenTracing SDK 에서 OpenTelemetry SDK 로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 되돌리는 속도의 차이",
+            "value": "**설정 갱신은 60초, 배포는 몇 분** — 그래서 켜고 끄는 일을 배포가 아니라 설정으로 옮겼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "label": "플랫폼이 다루는 서비스 수",
+            "value": "플랫폼 글 시점에 **3,000개 이상**을 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Engineering Behind the Platform",
+                "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+                "publisher": "Monzo Blog",
+                "date": "2026-05-13",
+                "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+              }
+            ]
+          },
+          {
+            "label": "이 구조가 만든 다른 결과",
+            "value": "네트워크 격리에서는 서비스 **1,500개 · 고유 연결 9,300개**를 훑어 **서비스당 평균 6개만 호출 가능**하게 줄였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We built network isolation for 1,500 services to make Monzo more secure",
+                "url": "https://monzo.com/blog/we-built-network-isolation-for-1-500-services",
+                "publisher": "Monzo Blog",
+                "date": "2019",
+                "summary": "서비스 1,500개·고유 연결 9,300개. rpcmap 으로 의존을 뽑아 발신 측이 규칙 파일로 선언하게 하고 쿠버네티스 NetworkPolicy 로 강제해, 평균 6개만 호출 가능하게 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "규모의 배경",
+            "value": "고객 **1,200만 명** · 예금 **166억 파운드** — 이 이전들이 무중단이어야 하는 이유다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monzo Annual Report 2025",
+                "url": "https://monzo.com/annual-report/2025",
+                "publisher": "Monzo",
+                "date": "2025",
+                "summary": "매출 12억 파운드(+48%), 조정 세전이익 1억 1,390만 파운드(8배), 신규 고객 240만으로 총 1,200만 이상, 고객 예금 166억 파운드(+48%)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "누가 옮길지 정할 때",
+          "thought": "⚠️ **중앙집중이 비싸다는 것을 알면서 골랐다** — `high price for one team` 을 치르고 **일관성과 완주**를 산다. 분산으로 해 봤더니 **끝나지 않은 이전들**이 남았기 때문이다. **한 팀이 다 하면 그 팀이 병목이지만, 팀마다 하면 아무도 안 끝낸다**(뒤쪽 대비는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "왜 전부 한꺼번에 배포해야 하나",
+          "thought": "⚠️ **의존 그래프가 부분 이전을 막는다** — `if a service has been migrated...then all services it might (transitively) call need to also support the new functionality`. **전이적으로** 라는 말이 핵심이다. 직접 호출만이 아니라 그 너머까지 새 기능을 알아야 하므로, **모든 서비스가 먼저 새 기능을 지원한 뒤에야 어느 하나를 켤 수 있다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "배포와 활성화를 어떻게 가를지",
+          "thought": "**배포는 코드가 도착하는 일이고 활성화는 동작이 바뀌는 일인데, 둘을 붙여 두면 되돌리는 속도가 배포 속도에 묶인다.** 그래서 새 구현을 **설정으로 꺼 둔 채** 병합해 두고, 켜고 끄는 것만 설정으로 한다 — **60초 대 몇 분**의 차이가 그대로 사고 대응 시간의 차이가 된다(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "모노레포",
+            "what": "백엔드 전부가 한 저장소에. **한 번의 커밋으로 대량 리팩터링**이 되고 **CI 로 특정 라이브러리 사용을 전사 강제**할 수 있다"
+          },
+          {
+            "name": "래퍼 라이브러리",
+            "what": "⚠️ **옛 구현과 새 구현을 함께 품는 중간층.** 어느 쪽을 쓸지는 **재배포 없이 설정으로** 정한다"
+          },
+          {
+            "name": "설정 서비스",
+            "what": "**모든 서비스가 60초마다 갱신한다.** 켜고 끄는 일이 여기서 일어난다"
+          },
+          {
+            "name": "서비스 티어",
+            "what": "중요도 표시. **덜 중요한 것부터** 배포하는 순서의 근거"
+          },
+          {
+            "name": "호출 그래프",
+            "what": "⚠️ **전이적 의존.** 하나를 켜려면 그것이 (전이적으로) 부를 수 있는 전부가 준비돼 있어야 한다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **이전된 서비스가 전이적으로 호출할 수 있는 모든 서비스가 새 기능을 지원해야 한다** — 그래서 부분 이전이 불가능하다",
+          "**모든 서비스가 60초마다 설정을 갱신한다** — 되돌리기의 상한이 여기서 정해진다",
+          "**무중단이어야 한다** — 은행이라 멈출 수 없다",
+          "⚠️ **이 방법은 모노레포와 일관된 스택 위에서만 선다** — 회사가 직접 그 한계를 적는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**① 제안을 슬랙에 올려 전사 의견을 받고, 논쟁적이거나 위험한 곳은 아키텍처 리뷰로 간다**",
+            "why": "`catch these surprises as early as possible` — 2,800개를 건드린 뒤에 놀라면 늦다"
+          },
+          {
+            "step": "**② 옛 라이브러리를 감싼다** — 재배포 없이 설정으로 갈아탈 수 있게",
+            "why": "⚠️ 새 API 가 많이 다른 곳은 **일부러 옛 인터페이스에 맞춰** 두었다"
+          },
+          {
+            "step": "**③ 호출부를 고친다** — 자주 쓰이는 함수는 `gopls`·`gorename` 으로 자동, **몇 군데서만 쓰이는 긴 꼬리는 손으로**",
+            "why": "80/20. 그리고 `semgrep` CI 로 **옛 라이브러리를 새로 쓰는 것을 막는다**"
+          },
+          {
+            "step": "**④ 새 구현을 넣되 설정으로 꺼 둔다**",
+            "why": "동작을 바꾸지 않고 master 에 병합할 수 있다"
+          },
+          {
+            "step": "**⑤ 모든 서비스를 대량 배포한다**",
+            "why": "⚠️ **전이적 호출 때문에 전부가 먼저 지원해야 한다.** 자동 롤백 검사를 걸고 **티어가 낮은 것부터** 내보낸다"
+          },
+          {
+            "step": "**⑥ 설정으로 조금씩 켠다** — 처음에는 **우리 팀이 소유한 API 엔드포인트에서만**, 확률을 올려 가며",
+            "why": "문제가 나면 **60초 안에** 되돌린다"
+          },
+          {
+            "step": "**⑦ 래퍼에서 옛 구현을 지운다**",
+            "why": "두 벌을 함께 운영하는 상태를 끝낸다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "이전을 누가 밀 것인가",
+            "chosen": "**한 팀이 전부 민다** — 팀마다 알아서 하게 두지 않는다",
+            "alternatives": [
+              "각 팀이 자기 서비스를 옮기는 분산 방식"
+            ],
+            "tradeoff": "분산으로 해 봤더니 `unfinished migrations and a lot of coordination effort` 가 남았다. 중앙 방식은 **`high price for one team`** 을 치른다 — ⚠️ **한 팀이 다 하면 그 팀이 병목이고, 팀마다 하면 아무도 안 끝낸다**(뒤쪽 대비는 이 사이트의 재구성이다). **이 회사는 병목 쪽을 골랐다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "question": "새 라이브러리로 바로 갈아탈 것인가",
+            "chosen": "**아니다 — 중간에 래퍼를 둔다**",
+            "alternatives": [
+              "호출부를 새 API 로 직접 고치기"
+            ],
+            "tradeoff": "래퍼가 있어야 **재배포 없이 설정만으로** 갈아탈 수 있다. ⚠️ **대가는 새 API 를 온전히 쓰지 못한다는 것이다** — 차이가 큰 곳은 `choosing to keep the interface similar to the old library`, 즉 **새 것의 이점 일부를 일부러 버렸다.** 그리고 두 구현을 한동안 함께 안고 간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "question": "호출부를 전부 자동으로 고칠 것인가",
+            "chosen": "**80/20 — 많이 쓰이는 것만 자동, 긴 꼬리는 손으로**",
+            "alternatives": [
+              "전부 자동화",
+              "전부 수동"
+            ],
+            "tradeoff": "`gopls`·`gorename` 으로 대부분을 처리하고 **몇 곳에서만 참조되는 함수·타입은 개별로** 다뤘다. ⚠️ **자동화는 엣지 케이스에서 수확이 급격히 준다** — 나머지 20% 를 자동화하려는 노력이 손으로 하는 것보다 비싸지는 지점이 있다(이 표현은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "question": "옛 것으로 되돌아가는 코드를 어떻게 막을 것인가",
+            "chosen": "**`semgrep` CI 검사로 옛 라이브러리의 새 의존을 차단한다**",
+            "alternatives": [
+              "문서와 리뷰로 알리기"
+            ],
+            "tradeoff": "**이전 중에도 사람들은 계속 코드를 쓰므로, 막지 않으면 고친 만큼 다시 생긴다.** ⚠️ 대가는 **정당한 예외까지 막힌다는 것**이고, 그 예외를 다루는 절차는 글에 없다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "question": "켜는 일을 배포로 할 것인가 설정으로 할 것인가",
+            "chosen": "**설정으로** — 새 구현은 꺼진 채로 배포해 둔다",
+            "alternatives": [
+              "배포할 때 함께 켜기"
+            ],
+            "tradeoff": "⚠️ **되돌리는 속도가 달라진다** — 설정은 **60초**, 배포는 **몇 분**. 은행에서 그 차이는 사고 시간의 차이다. 대신 **꺼진 코드가 한동안 운영에 떠 있고**, 무엇이 켜져 있는지가 코드가 아니라 설정에 있다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 순서로 내보낼 것인가",
+            "chosen": "**서비스 티어를 붙여 덜 중요한 것부터** — 자동 롤백 검사와 함께",
+            "alternatives": [
+              "한꺼번에",
+              "무작위 순서로"
+            ],
+            "tradeoff": "**틀렸을 때 다치는 곳을 고를 수 있다.** ⚠️ 대가는 **가장 중요한 서비스에서 나는 문제를 가장 늦게 만난다**는 것이다 — 앞의 성공이 뒤의 안전을 보장하지 않는다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "question": "일부만 먼저 옮길 수 있는가",
+            "chosen": "**없다 — 전부 먼저 지원하게 만든 뒤에 켠다**",
+            "alternatives": [
+              "서비스별로 순차 이전"
+            ],
+            "tradeoff": "⚠️ **의존 그래프가 정한 제약이라 선택의 여지가 없다** — `all services it might (transitively) call need to also support the new functionality`. **그래서 대량 배포 도구가 이 방식의 전제 조건이 된다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "question": "이 방법을 누구나 쓸 수 있는가",
+            "chosen": "**아니다 — 회사가 스스로 한계를 적는다**",
+            "alternatives": [],
+            "tradeoff": "⚠️ **모노레포와 일관된 기술 스택이 없으면 성립하지 않는다.** 한 커밋으로 대량 리팩터링이 되고 CI 로 전사 강제가 되는 것은 **그 두 전제가 만든 결과**다. **이 회사가 앞서 치른 비용이 여기서 능력으로 돌아온다**(뒤쪽 정리는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              },
+              {
+                "title": "The Engineering Behind the Platform",
+                "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+                "publisher": "Monzo Blog",
+                "date": "2026-05-13",
+                "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "모노레포 (Go)",
+            "role": "한 커밋으로 대량 리팩터링, CI 로 라이브러리 사용 전사 강제",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              },
+              {
+                "title": "The Engineering Behind the Platform",
+                "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+                "publisher": "Monzo Blog",
+                "date": "2026-05-13",
+                "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+              }
+            ]
+          },
+          {
+            "tech": "래퍼 라이브러리",
+            "role": "옛 구현과 새 구현을 함께 품고 설정으로 갈아탄다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "설정 서비스 (60초 갱신)",
+            "role": "켜고 끄는 일을 배포에서 떼어 낸다. 되돌리기의 상한",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "gopls · gorename",
+            "role": "자주 쓰이는 호출부의 자동 리팩터링",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "semgrep (CI)",
+            "role": "옛 라이브러리를 새로 쓰는 코드를 막는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "대량 배포 도구 · 서비스 티어",
+            "role": "전 서비스를 배치로 내보내되 덜 중요한 것부터. 자동 롤백 검사",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "팀 100개가 만드는 데이터에 계약을 건다",
+          "via": "CI 가 막는 표준",
+          "contract": "⚠️ **같은 방법이 두 도메인에 나타난다** — 여기서는 `semgrep` 이 옛 라이브러리를 막고, 저기서는 데이터 표준이 PR 을 막는다. **자율을 두되 어기는 것만 자동으로 막는 모양**이다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "은행의 상태를 한 클러스터에 몰아 두고 그 대가를 치른다",
+          "via": "무중단 요구",
+          "contract": "**이전이 무중단이어야 하는 이유가 저쪽에 있다** — 멈추면 카드가 안 긁힌다. 2019년 장애가 그 목록을 보여 준다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "네트워크 격리 (rpcmap · NetworkPolicy)",
+          "via": "호출 그래프",
+          "contract": "⚠️ **같은 그래프를 두 곳이 쓴다** — 이전은 **전이적 호출 때문에 전부를 먼저 준비**시켜야 하고, 격리는 **그 호출을 평균 6개로 줄인다.** 서비스 1,500개에 고유 연결 9,300개였다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "EKS 이전 (마이그레이션 서비스)",
+          "via": "같은 방식의 반복",
+          "contract": "**라이브러리 이전에서 만든 방법이 인프라 이전에도 쓰였다** — 하루치 목록을 받아 자동으로 옮기고 건강 검사와 되돌리기를 함께 돌려 **3,000개 이상**을 옮겼다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "의존 그래프가 부분 이전을 막는다",
+            "why_hard": "⚠️ **하나만 먼저 옮기는 것이 불가능하다** — `all services it might (transitively) call need to also support the new functionality`. **전이적**이라는 조건 때문에 사실상 **전 서비스가 준비된 뒤에야 첫 번째를 켤 수 있다.** 그래서 대량 배포 도구가 선택이 아니라 **전제**가 된다.",
+            "current_best": "**배포와 활성화를 갈라, 먼저 전부 배포하고 나중에 조금씩 켜는 것.** ⚠️ **그래프를 잘라 부분 이전을 가능하게 만드는 방법은 이 글에 없다** — 이 지적은 이 사이트의 재구성이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          },
+          {
+            "problem": "자동화의 긴 꼬리",
+            "why_hard": "**자주 쓰이는 함수는 도구로 고쳐지는데, 몇 군데서만 참조되는 것들이 길게 남는다.** 그 꼬리를 자동화하는 비용이 손으로 하는 비용을 넘는 지점이 있고, **어디가 그 지점인지는 해 보기 전에 모른다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**80/20 으로 자르고 나머지는 손으로.** 그리고 `semgrep` 으로 **꼬리가 다시 자라지 않게** 막는 것. ⚠️ 정당한 예외를 다루는 절차는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we run migrations across 2,800 microservices",
+                "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+                "publisher": "Monzo Blog",
+                "date": "2026",
+                "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "먼저 전부 배포하고, 나중에 조금씩 켠다",
+          "question": "서비스 2,800개의 라이브러리를 바꾸는 순서",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>① 제안 · 전사 의견</b><br/>• 위험한 곳은 아키텍처 리뷰\"]:::accent --> W1[\"<b>② 옛 라이브러리를 감싼다</b><br/>• 재배포 없이 설정으로 전환\"]:::accent\n  W1 --> C[\"<b>③ 호출부 수정</b><br/>• 자주 쓰는 것: gopls · gorename<br/>• 긴 꼬리: 손으로<br/>• semgrep 이 옛 의존을 막는다\"]:::accent\n  C --> W2[\"<b>④ 새 구현을 넣되 꺼 둔다</b>\"]:::accent\n  W2 --> D[\"<b>⑤ 전 서비스 대량 배포</b><br/>• 티어 낮은 것부터<br/>• 자동 롤백 검사\"]:::accent\n  T[\"⚠️ <b>전이적 호출</b><br/>• 전부가 먼저 지원해야<br/>  하나를 켤 수 있다\"]:::gone -.-> D\n  D --> R[\"<b>⑥ 설정으로 조금씩 켠다</b><br/>• 우리 팀 엔드포인트부터<br/>• 확률을 올려 가며\"]:::accent\n  R --> CL[\"<b>⑦ 옛 구현 삭제</b>\"]:::list\n  R -.->|\"문제가 나면 <b>60초</b>\"| BACK[\"<b>되돌린다</b>\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "되돌리는 속도와, 이 방법이 서지 않는 곳",
+          "question": "무엇을 내주고 무엇을 얻었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>분산 이전</b><br/>• 팀마다 알아서\"]:::gone --> A1[\"⚠️ <b>끝나지 않은 이전들</b><br/>⚠️ <b>많은 조율 비용</b>\"]:::gone\n  B[\"<b>중앙 이전</b><br/>• 한 팀이 전부 민다\"]:::accent --> B1[\"⚠️ <b>한 팀이 값을 크게 치른다</b>\"]:::gone\n  B --> B2[\"<b>일관성과 완주</b>\"]:::list\n  C1[\"<b>배포로 켠다</b>\"]:::gone --> C2[\"⚠️ <b>되돌리는 데 몇 분</b>\"]:::gone\n  D1[\"<b>설정으로 켠다</b>\"]:::accent --> D2[\"<b>되돌리는 데 60초</b>\"]:::list\n  E[\"⚠️ <b>이 방법의 전제</b><br/>• 모노레포<br/>• 일관된 기술 스택\"]:::gone --> E1[\"⚠️ <b>둘이 없으면 성립하지 않는다</b><br/>• 회사가 직접 적는다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How we run migrations across 2,800 microservices",
+          "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+          "publisher": "Monzo Blog",
+          "date": "2026",
+          "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+        },
+        {
+          "title": "The Engineering Behind the Platform",
+          "url": "https://monzo.com/blog/the-engineering-behind-the-platform",
+          "publisher": "Monzo Blog",
+          "date": "2026-05-13",
+          "summary": "백엔드 마이크로서비스 3,000개 이상을 한 저장소에서 같은 모양으로 굴린다. 오픈소스 도구를 그대로 노출하지 않고 자체 서비스로 감싸고, 플랫폼 작업에 다자 승인을 건다. 자체 호스팅 쿠버네티스에서 EKS 로 옮겼다."
+        },
+        {
+          "title": "We built network isolation for 1,500 services to make Monzo more secure",
+          "url": "https://monzo.com/blog/we-built-network-isolation-for-1-500-services",
+          "publisher": "Monzo Blog",
+          "date": "2019",
+          "summary": "서비스 1,500개·고유 연결 9,300개. rpcmap 으로 의존을 뽑아 발신 측이 규칙 파일로 선언하게 하고 쿠버네티스 NetworkPolicy 로 강제해, 평균 6개만 호출 가능하게 줄였다."
+        },
+        {
+          "title": "Monzo Annual Report 2025",
+          "url": "https://monzo.com/annual-report/2025",
+          "publisher": "Monzo",
+          "date": "2025",
+          "summary": "매출 12억 파운드(+48%), 조정 세전이익 1억 1,390만 파운드(8배), 신규 고객 240만으로 총 1,200만 이상, 고객 예금 166억 파운드(+48%)."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **매출 구성을 확인하지 못했다** — 연차보고서 요약 페이지가 **총액(12억 파운드)과 성장률만** 적는다. 이자 수익과 수수료·구독의 비중은 **PDF 본문을 열어야** 나온다.",
@@ -285,6 +800,20 @@
       "publisher": "Monzo Blog",
       "date": "2026-04-22",
       "summary": "dbt 모델 12,000개 이상과 팀 100개 이상. 4계층 구조와 사내 도구 Modelgen, CI 가 막는 데이터 표준, 팀 간 계약(interface). 이전 30% 시점에 일부 도메인 비용 약 40% 감소, 랜딩 약 25% 단축."
+    },
+    {
+      "title": "How we run migrations across 2,800 microservices",
+      "url": "https://monzo.com/blog/how-we-run-migrations-across-2800-microservices",
+      "publisher": "Monzo Blog",
+      "date": "2026",
+      "summary": "OpenTracing 에서 OpenTelemetry 로 서비스 2,800개를 옮긴 절차 일곱 단계. 중앙 한 팀이 몰고, 옛 라이브러리를 감싸 설정으로 전환하며, 설정 갱신 60초로 되돌린다."
+    },
+    {
+      "title": "We built network isolation for 1,500 services to make Monzo more secure",
+      "url": "https://monzo.com/blog/we-built-network-isolation-for-1-500-services",
+      "publisher": "Monzo Blog",
+      "date": "2019",
+      "summary": "서비스 1,500개·고유 연결 9,300개. rpcmap 으로 의존을 뽑아 발신 측이 규칙 파일로 선언하게 하고 쿠버네티스 NetworkPolicy 로 강제해, 평균 6개만 호출 가능하게 줄였다."
     }
   ]
 }
