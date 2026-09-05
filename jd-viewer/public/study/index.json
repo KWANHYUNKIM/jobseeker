@@ -1487,6 +1487,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "siem",
+      "title": "SIEM (보안 로그 분석)",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "여기저기 흩어진 로그를 한곳에 모아 형식을 통일하고, 여러 줄을 이어 붙여야만 보이는 **공격의 흔적**을 찾아내는 시스템.",
+      "aliases": [
+        "SIEM",
+        "SOAR",
+        "보안 관제",
+        "보안 로그 분석",
+        "위협 탐지",
+        "Security Hub",
+        "GuardDuty"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

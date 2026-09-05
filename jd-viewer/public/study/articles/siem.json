@@ -1,0 +1,615 @@
+{
+  "slug": "siem",
+  "title": "SIEM (보안 로그 분석)",
+  "title_en": "Security Information and Event Management",
+  "aliases": [
+    "SIEM",
+    "SOAR",
+    "보안 관제",
+    "보안 로그 분석",
+    "위협 탐지",
+    "Security Hub",
+    "GuardDuty"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "여기저기 흩어진 로그를 한곳에 모아 형식을 통일하고, 여러 줄을 이어 붙여야만 보이는 **공격의 흔적**을 찾아내는 시스템.",
+  "summary": "SIEM 은 서버·네트워크·클라우드·단말이 각자 남긴 로그를 모아 **적대적 행위를 찾는** 시스템이다. 관측성(`observability`)과 도구가 비슷해 보이지만 묻는 질문이 다르다 — 그쪽은 **\"우리가 고장 났나\"** 이고 여기는 **\"누가 우리를 노리나\"** 다.\n\n어려움은 세 겹이다. **① 로그 형식이 제품마다 다르다**(그래서 정규화 스키마가 있다). **② 한 줄로는 아무 뜻도 없다** — 로그인 실패 한 번은 오타이고, 열 번은 사고다. **③ ⭐ 오탐이 본질이다** — 탐지 도구조차 \"이 활동의 진짜 의도는 알 수 없다\"고 자기 문서에 적는다. 경보가 많아지면 아무도 안 보게 되고, 그 순간 시스템 전체가 무용해진다.\n\n⚠️ 이 문서는 `audit-log` 가 \"남기기만 하고 안 본다\"로 끝난 자리에서 시작한다 — **쌓는 것과 보는 것은 다른 일이다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 관측성과 같은 재료, 다른 질문",
+      "confidence": "inferred",
+      "body": "SIEM 의 재료는 관측성 시스템과 거의 같다 — 로그, 지표, 흐름 기록. 그런데 **묻는 것이 다르고, 그래서 저장 기간·검색 방식·경보 기준이 전부 달라진다.**\n\n| | 관측성 | SIEM |\n|---|---|---|\n| 묻는 것 | 우리가 고장 났나 | 누가 우리를 노리나 |\n| 상대 | 버그·과부하 (적의가 없다) | 사람 (숨으려 한다) |\n| 시간 | 지금·최근 몇 시간 | 몇 달 전까지 거슬러 |\n\n마지막 줄이 중요하다. **침해는 대개 한참 뒤에 발견된다.** 그래서 \"어제 로그로 충분한가\"라는 질문의 답이 두 시스템에서 다르고, 저장 비용의 성격도 달라진다.\n\n그리고 **상대에게 의도가 있다**는 것이 결정적이다. 버그는 숨지 않지만 공격자는 숨는다 — GuardDuty 의 위협 목적 분류에 **`Stealth`** 라는 항목이 있고 설명이 이렇다: *\"an adversary is actively trying to hide their actions. For example, they might use an anonymizing proxy server...\"* **관측성 도구에는 이런 범주가 없다.**\n\n공고는 이 시스템을 대체로 두 낱말로 부른다 — 모으는 쪽이 **SIEM**, 대응을 자동화하는 쪽이 **SOAR**. 서치독 공고가 둘을 나눠 적는다: `Detective Controls (탐지 통제) — GuardDuty, Security Hub, AWS Config, CloudTrail, Security Lake의 조직 단위 통합 운영, 위협 탐지·로그 중앙화 및 보안 가시성 확보` 와 `**SOAR 기반 인시던트 대응 플레이북 자동화** 및 위협 인텔리전스 연동`. **찾는 것과 대응하는 것**이다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 생겼나 — 한 줄로는 아무 뜻도 없기 때문이다",
+      "confidence": "inferred",
+      "body": "로그 한 줄을 놓고 \"이게 공격인가\"를 판단할 수 있는 경우는 거의 없다.\n\n- 로그인 실패 한 번 → 오타.\n- 같은 계정에 5분간 200번 → 무차별 대입.\n- 한 번 실패하고 **다른 IP 에서** 성공 → 훨씬 나쁘다.\n- 성공한 뒤 **평소 안 쓰던 API 를 호출** → 최악이다.\n\n**사건은 언제나 여러 줄에 걸쳐 있고, 그 줄들은 서로 다른 시스템의 로그에 흩어져 있다.** 방화벽 로그, 애플리케이션 로그인 기록, 클라우드 API 호출 기록이 각각 다른 곳에 다른 형식으로 남는다. 이어 붙이지 못하면 각각은 그냥 잡음이다.\n\n그래서 두 가지가 필요해진다.\n\n**① 한곳에 모은다.** 버킷플레이스 공고가 목적을 그대로 적는다 — `**SIEM 기반 로그 통합 및 분석**으로 전사 위협 가시성 확보`. '전사'라는 말이 핵심이다. 팀별로 잘 보고 있어도 **경계를 넘나드는 공격**은 아무도 못 본다.\n\n**② 형식을 통일한다.** 이게 생각보다 큰 일이다. AWS Security Hub 의 문서가 자기 존재 이유를 한 문장으로 적는다.\n\n> \"AWS Security Hub CSPM consumes and aggregates findings from integrated AWS services and third-party products. Security Hub CSPM processes these findings using a standard findings format called the *AWS Security Finding Format (ASFF)*, which **eliminates the need for time-consuming data conversion efforts**.\"\n\n⭐ **\"시간 잡아먹는 데이터 변환 작업을 없앤다\"** — 정규화가 부수 작업이 아니라 제품의 핵심 가치로 팔린다는 뜻이다. 형식이 다르면 **상관분석 자체가 불가능**하기 때문이다. 방화벽은 `src_ip`, 애플리케이션은 `client_addr`, 클라우드는 `sourceIPAddress` 라고 부르는데, 이걸 하나로 맞추지 않으면 \"같은 IP\"를 찾을 수가 없다.\n\n> 📌 이것은 `data-contract` 가 다룬 문제와 **같은 문제**다 — 서로 다른 생산자가 같은 것을 다른 이름으로 부를 때 어떻게 하나로 읽을 것인가. 다만 그쪽은 **생산자에게 규칙을 강제**하고, 여기는 **소비자가 변환해서 받아들인다.** 보안 제품 벤더에게 형식을 바꾸라고 할 수 없기 때문이다."
+    },
+    {
+      "id": "naming",
+      "kind": "how",
+      "heading": "경보에 이름을 붙이는 법 — 다섯 조각",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ],
+      "body": "모아서 이어 붙이면 **경보**가 나온다. 그런데 경보가 하루 수백 개면 사람이 못 읽고, 못 읽는 경보는 없는 것과 같다. 그래서 **이름을 어떻게 짓느냐가 실제로 중요한 설계 문제**다.\n\nGuardDuty 는 이 문제를 이름의 구조로 푼다.\n\n> \"One of the most useful pieces of information in the finding details is a **finding type**. The purpose of the finding type is to provide a **concise yet readable description** of the potential security issue.\"\n\n형식이 이렇다.\n\n```\nThreatPurpose : ResourceTypeAffected / ThreatFamilyName . DetectionMechanism ! Artifact\n```\n\n예를 들어 **`Recon:EC2/PortProbeUnprotectedPort`** 는 문서의 설명대로 *\"quickly informs you that somewhere in your AWS environment, an EC2 instance has an unprotected port that a potential attacker is probing\"* 다 — **이름만 읽고 무슨 일인지 안다.** 다섯 조각의 뜻은 아래 `naming` 표에 있다.\n\n두 가지가 배울 만하다.\n\n**① 맨 앞이 \"왜\"다.** 무엇이 탐지됐나(`PortProbe`)가 아니라 **공격의 어느 단계인가**(`Recon`)가 먼저 온다. 대응 우선순위는 기술적 현상이 아니라 **공격 단계**가 정하기 때문이다 — 정찰 단계와 유출 단계는 같은 밤에 깨울 일이 아니다.\n\n**② 탐지 방법을 이름에 넣는다.** `.Custom` 은 *\"GuardDuty detected the finding based on your custom threat lists\"*, `.Reputation` 은 *\"using a domain reputation score model\"*. ⭐ **어떻게 알아냈는지가 이름에 있으면 얼마나 믿을지도 이름에서 나온다** — 내가 등록한 목록에 걸린 것과 평판 점수 모델이 추정한 것은 신뢰도가 다르다.\n\n그리고 `ThreatPurpose` 값들은 **MITRE ATT&CK 전술과 정렬**돼 있다(문서가 `Impact`·`Discovery`·`Exfiltration` 등에서 그 사실을 밝힌다). 즉 **분류 체계를 직접 만들지 말고 있는 것을 쓰라**는 신호다."
+    },
+    {
+      "id": "fp",
+      "kind": "limits",
+      "heading": "⭐ 오탐이 본질이다 — 탐지 도구가 스스로 그렇게 적는다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ],
+      "body": "보안 탐지에서 가장 흔한 오해는 \"좋은 도구를 쓰면 오탐이 없다\"는 것이다. GuardDuty 문서의 `Pentest` 항목이 이 오해를 정면으로 부순다.\n\n> \"...some of the tools used by authorized pen testers are freely available and therefore can be used by unauthorized users or adversaries to run probing tests. **Although GuardDuty can't identify the true purpose behind such activity**, the `Pentest` value indicates that GuardDuty is detecting such activity, that it is similar to the activity generated by known pen testing tools, and that it **could** indicate malicious probing of your network.\"\n\n⭐⭐ **\"진짜 의도는 알 수 없다.\"** 같은 도구, 같은 트래픽인데 우리 팀의 모의해킹일 수도 있고 공격자일 수도 있다. **탐지는 원리적으로 판정이 아니라 신호**이고, 판정은 맥락을 아는 사람이 한다.\n\n`Behavior` 항목은 다른 각도에서 같은 말을 한다.\n\n> \"...activity or activity patterns that are **different from the established baseline** for the AWS resources involved.\"\n\n**기준선(baseline)에서 벗어난 것**을 잡는다는 뜻이다. 그러면 두 가지가 따라 나온다 — **① 기준선이 잡히기 전(도입 초기, 새 서비스 출시 직후)에는 오탐이 쏟아진다.** **② 평소에 늘 하던 나쁜 짓은 기준선에 포함되어 안 잡힌다.**\n\n그리고 `Policy` 항목은 아예 공격이 아니다.\n\n> \"...your AWS account is exhibiting behavior that goes against the **recommended security best practices**. For example, unintended modification of permission policies...\"\n\n⭐ **탐지 대상의 상당수는 공격이 아니라 우리 실수다.** 이것을 같은 경보 통로로 보내면 진짜 침해 신호가 설정 실수 더미에 묻힌다.\n\n💡 **그래서 SIEM 운영의 실제 일은 '탐지'가 아니라 '분류'다.** 무엇을 즉시 깨우고, 무엇을 아침에 보고, 무엇을 티켓으로만 남기고, 무엇을 아예 끌 것인가. 이 결정을 안 하면 `oncall` 문서가 경고한 그 상태 — 경보가 너무 많아 아무도 안 보는 상태 — 가 되고, **그때부터 SIEM 은 비용만 내는 시스템**이 된다."
+    },
+    {
+      "id": "pipeline",
+      "kind": "how",
+      "heading": "어떻게 도는가 — 수집 · 정규화 · 상관 · 경보 · 대응",
+      "confidence": "inferred",
+      "body": "실제 구성은 다섯 단계로 흐른다.\n\n**1) 수집.** 클라우드 감사 로그(`audit-log`), 방화벽·VPC 흐름 로그, 단말 보안(EDR), 애플리케이션 인증 기록. 의식주컴퍼니 공고가 소스 목록을 그대로 적는다 — `보안 이벤트 분석 : **GuardDuty, CloudTrail, VPC Flow Logs, CloudWatch** 등에서 탐지된 이벤트의 1차 분석과 영향 범위 확인`.\n\n**2) 정규화.** 형식을 하나로. ASFF 같은 스키마가 이 자리다.\n\n**3) 상관분석.** 여러 줄을 이어 사건을 만든다. \"같은 IP\", \"같은 사용자\", \"5분 안에\" 같은 규칙이 여기 산다.\n\n**4) 경보.** 사람에게 알린다. 위 `fp` 절의 분류가 이 단계의 전부다.\n\n**5) 대응(SOAR).** 정해진 절차를 자동으로 실행한다 — 계정 잠그기, IP 차단, 티켓 생성. 서치독 공고의 `SOAR 기반 **인시던트 대응 플레이북 자동화**` 가 이것이다. ⚠️ 자동 대응은 **오탐일 때 스스로 장애를 만든다**(멀쩡한 계정을 잠근다). 그래서 대개 위험이 낮은 동작(태그 붙이기·티켓 생성·격리)부터 자동화하고, 파괴적 동작은 사람 승인을 남긴다.\n\n제품 선택은 생각보다 넓다. 피아스페이스 공고가 후보군을 적어 준다 — `SIEM 또는 **로그 분석 플랫폼(ELK, OpenSearch, Loki, Quickwit 등)** 구축 경험`. ⭐ **전용 SIEM 제품이 아니라 로그 검색 엔진 위에 규칙을 얹는 구성**이 실무에서 흔하고, 미리디 공고의 `**OpenSearch SIEM**` 이 그 형태를 이름으로 보여 준다.\n\n> 📌 그래서 이 낱말을 준비할 때 **제품 이름을 외우는 것은 가장 덜 중요하다.** 소스에서 무엇이 나오는지(1), 그것을 어떻게 한 형식으로 맞추는지(2), 어떤 규칙이 사건을 만드는지(3)가 실제 일이다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 다 넣을 수도, 다 볼 수도 없다",
+      "confidence": "inferred",
+      "body": "**1. 비용이 설계를 정한다.** 대부분의 SIEM 은 **넣는 양이나 저장량으로 값을 받는다.** 그런데 침해는 몇 달 뒤 발견되므로 오래 갖고 있어야 한다. 이 둘이 정면으로 충돌하고, 그래서 실무의 답은 대개 **계층 분리**다 — 최근 것은 즉시 검색되는 곳에, 오래된 것은 싸고 느린 곳에. ⚠️ **\"조사할 때 꺼내면 되지\"의 함정**은 꺼내는 데 몇 시간이 걸리고 조사는 대개 급하다는 것이다.\n\n**2. 안 넣은 로그는 영영 없다.** 비용 때문에 뺀 소스는 **사고가 난 뒤에 소급할 수 없다.** `audit-log` 의 `None` 등급과 같은 성질이다. 그래서 무엇을 뺄지는 비용 담당이 아니라 **침해 시나리오를 아는 사람**이 정해야 한다.\n\n**3. 탐지 규칙은 조용히 낡는다.** 서비스 구조가 바뀌면 규칙이 못 잡거나 오탐을 낸다. 그런데 **규칙이 아무것도 안 잡고 있어도 아무 일도 일어나지 않으므로** 고장 난 것을 모른다. 주기적으로 **일부러 신호를 만들어 규칙이 실제로 울리는지 확인**하는 절차가 필요하다.\n\n**4. 사람이 없으면 아무 일도 안 일어난다.** 마이리얼트립 공고가 요구하는 것은 도구 운영이 아니라 `보안 로그, 클라우드 감사 로그 등을 **분석하여 위협을 탐지한 경험**` 이다. 그리고 그 사람이 밤에도 있어야 하는지, 즉 24시간 볼 것인지가 조직 규모의 결정이 된다(`oncall`).\n\n**5. 이 문서가 다루지 않는 것.** 증거로서의 기록을 남기는 쪽은 `audit-log`, 시스템 상태를 보는 쪽은 `observability`, 접근을 애초에 막는 쪽은 `zero-trust`·`policy-engine` 이다. 그리고 **개별 공격 기법과 탐지 규칙 작성법**은 이 문서의 범위 밖이다 — 여기는 **시스템이 왜 이런 모양인가**만 다룬다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "vs-obs",
+      "kind": "compare",
+      "caption": "관측성과 SIEM — 재료는 같고 질문이 다르다",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 다만 '상대가 숨는다'는 성질은 GuardDuty 의 위협 목적 분류에 `Stealth` 항목이 존재한다는 사실로 받쳤다.",
+      "columns": [
+        "",
+        "관측성 (`observability`)",
+        "SIEM"
+      ],
+      "rows": [
+        [
+          "묻는 것",
+          "우리가 고장 났나",
+          "누가 우리를 노리나"
+        ],
+        [
+          "상대",
+          "버그·과부하 — 숨지 않는다",
+          "사람 — \"actively trying to hide their actions\"(Stealth)"
+        ],
+        [
+          "시간 범위",
+          "지금·최근 몇 시간",
+          "몇 달 전까지 거슬러 (침해는 늦게 발견된다)"
+        ],
+        [
+          "신호의 단위",
+          "한 줄로도 뜻이 있다 (에러·지연)",
+          "여러 줄을 이어야 사건이 된다"
+        ],
+        [
+          "경보의 성격",
+          "고장은 사실이다",
+          "⭐ 탐지는 신호이지 판정이 아니다"
+        ],
+        [
+          "끄고 싶을 때",
+          "시끄러운 알림을 끈다",
+          "⚠️ 끄면 그 기간은 영영 못 본다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "naming",
+      "kind": "glossary",
+      "caption": "⭐ 경보 이름 다섯 조각 (GuardDuty)",
+      "note": "형식은 `ThreatPurpose:ResourceTypeAffected/ThreatFamilyName.DetectionMechanism!Artifact` 이고, Artifact 는 선택이다. 자체 탐지 규칙의 이름을 지을 때도 그대로 빌려 쓸 만한 구조라 옮겼다.",
+      "columns": [
+        "조각",
+        "문서의 설명",
+        "예 / 왜 필요한가"
+      ],
+      "rows": [
+        [
+          "ThreatPurpose",
+          "\"describes the primary purpose of a threat, an attack type or a stage of a potential attack\"",
+          "`Recon` — ⭐ 맨 앞이 '왜'다. 대응 우선순위를 공격 단계가 정한다"
+        ],
+        [
+          "ResourceTypeAffected",
+          "\"describes which AWS resource type is identified in this finding as the potential target\"",
+          "`EC2` — 누구를 노렸나"
+        ],
+        [
+          "ThreatFamilyName",
+          "\"describes the overall threat or potential malicious activity that GuardDuty is detecting\"",
+          "`PortProbeUnprotectedPort` — 무엇이 관찰됐나"
+        ],
+        [
+          "DetectionMechanism",
+          "\"describes the method in which GuardDuty detected the finding\"",
+          "⭐ `.Custom`(내가 등록한 목록) vs `.Reputation`(평판 점수 모델) — **얼마나 믿을지가 이름에 있다**"
+        ],
+        [
+          "Artifact (선택)",
+          "\"describes a specific resource that is owned by a tool that is used in the malicious activity\"",
+          "`!DNS` — 무엇을 통해 통신했나"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ]
+    },
+    {
+      "id": "purpose",
+      "kind": "glossary",
+      "caption": "위협 목적 중 성격이 다른 넷 — 왜 이것이 오탐 이야기인가",
+      "note": "GuardDuty 의 ThreatPurpose 값 중 '탐지는 판정이 아니다'를 보여 주는 항목만 골랐다. 전체 목록(Backdoor·CredentialAccess·Exfiltration·PrivilegeEscalation 등 다수)은 원문 참조. 값들은 MITRE ATT&CK 전술과 정렬돼 있다고 문서가 밝힌다.",
+      "columns": [
+        "값",
+        "문서의 말",
+        "그래서"
+      ],
+      "rows": [
+        [
+          "`Pentest`",
+          "⭐ \"Although GuardDuty **can't identify the true purpose** behind such activity ... it **could** indicate malicious probing\"",
+          "같은 트래픽이 우리 팀의 점검일 수도 공격일 수도 있다. 맥락은 사람이 안다"
+        ],
+        [
+          "`Behavior`",
+          "\"activity patterns that are **different from the established baseline**\"",
+          "기준선이 잡히기 전에는 오탐이 쏟아지고, 늘 하던 나쁜 짓은 기준선에 포함되어 안 잡힌다"
+        ],
+        [
+          "`Policy`",
+          "\"behavior that goes against the **recommended security best practices** ... unintended modification of permission policies\"",
+          "공격이 아니라 우리 실수다. 같은 통로로 보내면 진짜 신호가 묻힌다"
+        ],
+        [
+          "`Stealth`",
+          "\"an adversary is **actively trying to hide** their actions ... anonymizing proxy server\"",
+          "상대에게 의도가 있다는 것 — 관측성 도구에는 없는 범주"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ]
+    },
+    {
+      "id": "pipeline",
+      "kind": "glossary",
+      "caption": "다섯 단계와, 각 단계에서 실제로 하는 일",
+      "note": "단계 구분은 이 문서가 정리한 것이고, 각 줄의 예는 공고와 제품 문서에서 가져왔다.",
+      "columns": [
+        "단계",
+        "무엇",
+        "실무의 표현"
+      ],
+      "rows": [
+        [
+          "수집",
+          "여러 소스의 로그를 끌어온다",
+          "`GuardDuty, CloudTrail, VPC Flow Logs, CloudWatch 등에서 탐지된 이벤트`(의식주컴퍼니)"
+        ],
+        [
+          "정규화",
+          "형식을 하나로 맞춘다",
+          "ASFF — \"eliminates the need for time-consuming data conversion efforts\""
+        ],
+        [
+          "상관분석",
+          "여러 줄을 이어 사건을 만든다",
+          "같은 IP·같은 사용자·시간 창"
+        ],
+        [
+          "경보",
+          "사람에게 알린다",
+          "⭐ 실제 일은 탐지가 아니라 **분류**다(깨울까·아침에 볼까·티켓만·끌까)"
+        ],
+        [
+          "대응(SOAR)",
+          "정해진 절차를 자동 실행",
+          "`SOAR 기반 인시던트 대응 플레이북 자동화`(서치독). ⚠️ 오탐일 때 스스로 장애를 만든다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "words",
+      "kind": "compare",
+      "caption": "이 낱말을 셀 때 — 무엇으로 세면 안 되나",
+      "note": "건수는 all_jobs_enriched.json 을 2026-09-06 에 직접 센 것이다. 이 표는 문서의 내용이라기보다 근거의 성격을 밝히는 자리다.",
+      "columns": [
+        "무엇으로 세나",
+        "건수",
+        "문제"
+      ],
+      "rows": [
+        [
+          "`SIEM` 낱말 그대로",
+          "200 (모집중 75)",
+          "가장 믿을 만하다"
+        ],
+        [
+          "`SOAR`",
+          "64 (모집중 23)",
+          "대개 SIEM 과 함께 나온다"
+        ],
+        [
+          "`SIEM|SOAR|Splunk|Security Lake|Elastic Security`",
+          "257 (모집중 106)",
+          "이 문서가 쓰는 값"
+        ],
+        [
+          "`GuardDuty|Security Hub`",
+          "38 (모집중 15)",
+          "탐지 소스이지 SIEM 자체는 아니다"
+        ],
+        [
+          "⚠️ `관제`",
+          "1002",
+          "**물류·영상·로봇 관제**가 대부분이다. 쓰면 안 된다"
+        ],
+        [
+          "⚠️ `Sentinel`",
+          "28 (그중 위성 맥락 2)",
+          "Microsoft Sentinel·SentinelOne 이 대부분이나 **인공위성 Sentinel** 이 섞인다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "로그는 이미 다 모으고 있는데 '누가 우리를 노리나'에는 답하지 못한다",
+      "pick": "기존 로그 검색 플랫폼 위에 탐지 규칙과 정규화를 얹는다 (ELK·OpenSearch 등)",
+      "over": "전용 SIEM 제품 도입",
+      "why": "이미 있는 수집·저장을 다시 만들 필요가 없고, 실제로 부족한 것은 **정규화와 규칙**이다. 피아스페이스 공고가 `SIEM 또는 로그 분석 플랫폼(ELK, OpenSearch, Loki, Quickwit 등)` 을 나란히 적고 미리디 공고가 `OpenSearch SIEM` 이라고 부르는 것이 이 구성이다",
+      "tradeoff": "탐지 규칙·정규화·보존 계층을 직접 만들고 유지해야 한다. 규제 대응에 필요한 보고서 기능 같은 것도 직접 만들게 된다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "클라우드 계정이 여러 개이고 각 계정에서 따로 보안 경보가 나온다",
+      "pick": "정규화 스키마로 한곳에 모은다 (Security Hub/ASFF 같은 집계 계층)",
+      "over": "계정마다 콘솔을 열어 보기",
+      "why": "경계를 넘나드는 공격은 한 계정만 봐서는 안 보인다. 그리고 형식이 다르면 상관분석 자체가 불가능하다 — ASFF 가 파는 것이 정확히 \"eliminates the need for time-consuming data conversion efforts\" 다. 서치독 공고의 `조직 단위 통합 운영` 이 이 자리",
+      "tradeoff": "집계 계층이 하나 더 늘고 그 자체의 비용·권한·가용성을 관리해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "AWS Security Finding Format (ASFF)",
+          "url": "https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "서로 다른 제품의 탐지 결과를 한 형식으로 모으는 스키마 — 정규화의 실물"
+        }
+      ]
+    },
+    {
+      "situation": "경보가 하루 수백 건 나오는데 아무도 다 못 본다",
+      "pick": "경보를 등급으로 나누고 대부분을 '깨우지 않는' 통로로 보낸다",
+      "over": "탐지 규칙을 줄이거나 소스를 빼기",
+      "why": "규칙을 지우면 **그 종류는 영영 안 보이고**, 소스를 빼면 로그 자체가 없어져 소급도 안 된다. 반면 등급 분리는 **기록은 남기되 사람의 주의만 아낀다.** 특히 `Policy` 류(우리 실수)는 침해 경보와 통로를 나눠야 한다",
+      "tradeoff": "낮은 등급으로 보낸 것은 실제로 아무도 안 볼 가능성이 높다. 그래서 등급별로 **누가 언제 본다**를 함께 정해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ]
+    },
+    {
+      "situation": "보안 인력이 적어 밤에 볼 사람이 없다",
+      "pick": "자동 대응(SOAR)을 **위험이 낮은 동작부터** 붙인다 — 태그·티켓·격리",
+      "over": "모든 경보를 사람에게 보내기 또는 파괴적 동작까지 자동화",
+      "why": "사람이 없으면 경보는 아침까지 아무 일도 하지 않는다. 반대로 계정 잠금·IP 차단까지 자동화하면 **오탐이 곧 자체 장애**가 된다 — GuardDuty 문서가 `Pentest` 에서 밝히듯 도구는 의도를 모른다",
+      "tradeoff": "자동화한 만큼 절차가 코드가 되어 유지 대상이 된다. 그리고 자동 대응이 무엇을 했는지도 기록으로 남겨야 한다(`audit-log`)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "도입 직후 쏟아지는 경보를 보고 규칙이 잘못됐다고 판단해 대거 끈다",
+      "why": "행위 기반 탐지는 \"different from the established baseline\" 을 잡는데, **도입 초기에는 기준선 자체가 없다.** 새 서비스를 출시한 직후에도 같은 일이 생긴다. 이 시기의 경보 폭주는 규칙의 결함이 아니라 예상된 단계다",
+      "fix": "초기 몇 주는 **끄지 말고 등급만 낮춰** 관찰한다. 그리고 조용해진 뒤 남은 것들을 하나씩 판정한다. 끄기로 결정한 규칙은 **왜 껐는지를 기록**한다 — 안 그러면 다음 사람이 같은 규칙을 다시 켜고 같은 폭주를 겪는다",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ]
+    },
+    {
+      "trap": "우리 팀의 모의해킹·취약점 점검 때문에 야간 대응이 발동한다",
+      "why": "점검 도구는 공격 도구와 같은 트래픽을 만든다. GuardDuty 문서가 명시한다 — \"**Although GuardDuty can't identify the true purpose behind such activity**\". 도구는 우리 팀인지 남인지 모른다",
+      "fix": "점검을 **일정과 출발 IP·계정까지 사전 등록**하고, 그 조건에 맞는 탐지는 등급을 낮추는 규칙을 둔다. ⚠️ 다만 그 예외를 상시로 두면 **공격자가 그 조건을 흉내 내면 조용해진다** — 예외에는 반드시 기간을 붙인다",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ]
+    },
+    {
+      "trap": "공격 탐지와 설정 실수 경보를 같은 통로로 보낸다",
+      "why": "둘 다 '보안 경보'로 분류되기 때문이다. 그런데 GuardDuty 의 `Policy` 는 \"behavior that goes against the recommended security best practices\" — **공격이 아니라 우리 실수**이고, 양이 훨씬 많다. 진짜 침해 신호가 여기 묻힌다",
+      "fix": "**공격 신호와 설정 위반을 다른 통로로 나눈다.** 설정 위반은 티켓·주간 리포트로 보내고, 가능하면 애초에 배포 단계에서 막는다(`policy-engine` 의 가드레일 자리)",
+      "sources": [
+        {
+          "title": "GuardDuty finding format",
+          "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+        }
+      ]
+    },
+    {
+      "trap": "비용 때문에 로그 소스 몇 개를 안 넣기로 한다",
+      "why": "SIEM 은 대개 넣는 양·저장량으로 값을 받고, 큰 소스 하나를 빼면 비용이 눈에 띄게 준다. 그런데 **안 넣은 로그는 사고 뒤에 소급할 수 없다** — `audit-log` 의 `None` 등급과 같은 성질이다",
+      "fix": "빼는 결정을 **비용 담당이 아니라 침해 시나리오를 아는 사람**이 하게 한다. 그리고 빼는 대신 **싸고 느린 계층에 원본을 남기는** 선택지를 먼저 검토한다(즉시 검색은 안 되지만 조사 때 꺼낼 수는 있다)"
+    },
+    {
+      "trap": "탐지 규칙이 몇 달째 아무것도 안 잡는데 잘 돌고 있다고 생각한다",
+      "why": "규칙이 고장 나도(필드 이름이 바뀌거나 소스가 끊겨도) **아무 일도 일어나지 않는다.** 조용한 것과 고장 난 것이 겉으로 똑같다 — 감사 로그의 무결성 검증을 안 돌리는 것과 같은 종류의 실패다",
+      "fix": "**주기적으로 일부러 신호를 만들어 규칙이 울리는지 확인한다**(안전한 테스트 이벤트). 그리고 **소스별 유입량을 지표로 보고 급감하면 알림**을 건다 — 규칙보다 파이프라인이 먼저 끊긴다"
+    },
+    {
+      "trap": "자동 대응을 켰다가 오탐으로 멀쩡한 계정·IP 를 막아 장애를 만든다",
+      "why": "자동화는 사람이 없는 시간을 메우려고 켠다. 그런데 탐지가 신호일 뿐이라는 성질은 자동화해도 바뀌지 않고, **자동 대응은 그 신호를 판정처럼 취급한다**",
+      "fix": "자동화를 **되돌릴 수 있는 동작부터** 붙인다(태그·티켓·세션 종료·임시 격리). 계정 비활성화·IP 영구 차단처럼 되돌리기 어려운 것은 **사람 승인 단계**를 남긴다. 그리고 자동 대응이 한 일도 감사 기록으로 남긴다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "SIEM",
+      "en": "Security Information and Event Management",
+      "what": "여러 소스의 보안 로그를 모아 정규화·상관분석해 위협을 찾는 시스템"
+    },
+    {
+      "term": "SOAR",
+      "en": "Security Orchestration, Automation and Response",
+      "what": "탐지된 사건에 대한 대응 절차를 자동으로 실행하는 쪽"
+    },
+    {
+      "term": "정규화",
+      "en": "normalization",
+      "what": "제품마다 다른 로그 형식을 하나의 스키마로 맞추는 것. ASFF 같은 것"
+    },
+    {
+      "term": "상관분석",
+      "en": "correlation",
+      "what": "여러 줄·여러 소스의 기록을 이어 하나의 사건으로 만드는 것"
+    },
+    {
+      "term": "기준선",
+      "en": "baseline",
+      "what": "평소의 정상 패턴. 행위 기반 탐지는 여기서 벗어난 것을 잡는다"
+    },
+    {
+      "term": "위협 목적",
+      "en": "ThreatPurpose",
+      "what": "공격의 단계·유형 분류. GuardDuty 는 MITRE ATT&CK 전술과 정렬해 쓴다"
+    },
+    {
+      "term": "플레이북",
+      "en": "playbook",
+      "what": "사건 유형별로 미리 정해 둔 대응 절차. SOAR 가 이것을 실행한다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "로그인 실패·성공 기록만 가지고 **상관분석 규칙 세 개**를 SQL 이나 의사코드로 쓴다 — ① 같은 계정 5분간 N회 실패 ② 실패 후 **다른 IP**에서 성공 ③ 성공 후 평소 안 쓰던 동작. 각 규칙에 대해 **오탐이 나는 정상 상황**을 하나씩 적는다.",
+      "done_when": "세 규칙 모두에 '이런 정상 상황에서도 걸린다'가 구체적으로 적히고(예: VPN 전환, 출장, 배포 자동화 계정), 그 오탐을 줄이는 조건이 규칙에 반영된다.",
+      "why": "SIEM 의 일이 '탐지'가 아니라 '오탐과의 싸움'이라는 것을 30분 만에 체험한다. 그리고 규칙을 정교하게 만들수록 **놓치는 것도 함께 늘어난다**는 거래를 손으로 만나게 된다.",
+      "hours": 2
+    },
+    {
+      "task": "자기 팀의 보안 관련 경보(또는 알림 채널)를 일주일치 꺼내 `공격 신호 / 설정 위반 / 우리 실수 / 잡음` 넷으로 분류하고 건수를 센다. 그리고 각 분류에 **누가 언제 보는가**를 적는다.",
+      "done_when": "'공격 신호'가 아닌 것의 비율이 숫자로 나오고, 최소 한 분류에 대해 '아무도 안 본다'가 확인된다.",
+      "why": "경보 피로는 느낌이 아니라 비율이다. 이 숫자가 나오면 '규칙을 줄이자'가 아니라 '통로를 나누자'라는 옳은 결론에 도달하게 된다.",
+      "hours": 2
+    },
+    {
+      "task": "GuardDuty 의 이름 규칙(`ThreatPurpose:Resource/Family.Mechanism`)을 빌려 **자기 시스템의 탐지 규칙 다섯 개에 이름을 다시 붙인다.** 맨 앞은 반드시 공격 단계(정찰·초기침투·권한상승·유출·영향)로 시작한다.",
+      "done_when": "다섯 개 모두 이름만 읽고 '무슨 일이고 얼마나 급한가'를 옆 사람이 설명할 수 있다.",
+      "why": "경보 이름은 사소해 보이지만, 새벽 세 시에 읽히는 유일한 문장이다. 앞에 공격 단계를 두면 **우선순위가 이름에서 나온다** — 이 문서에서 가장 싸게 얻는 개선이다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "관측성 도구와 SIEM 은 같은 로그를 보는데 무엇이 다른가? 저장 기간이 왜 달라지는가?",
+    "로그인 실패 한 줄로는 왜 아무 판단도 못 하는가? 무엇을 더 봐야 하는가?",
+    "서로 다른 제품의 로그를 한 형식으로 맞추지 않으면 구체적으로 무엇을 못 하게 되는가?",
+    "GuardDuty 의 경보 이름에서 '얼마나 믿을 수 있는지'는 어느 조각에 들어 있는가?",
+    "탐지 도구가 '이 활동의 진짜 의도는 알 수 없다'고 적는 이유는 무엇인가? 그러면 판정은 누가 하는가?",
+    "비용 때문에 로그 소스를 빼기로 했다. 왜 그 결정이 되돌릴 수 없는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• SIEM 기반 로그 통합 및 분석으로 전사 위협 가시성 확보",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/355928",
+      "where": "버킷플레이스(오늘의집)",
+      "what_it_shows": "⭐ **'전사'** 라는 말이 이 시스템의 존재 이유다. 팀별로 잘 보고 있어도 **경계를 넘나드는 공격**은 아무도 못 본다"
+    },
+    {
+      "quote": "• Detective Controls (탐지 통제) — GuardDuty, Security Hub, AWS Config, CloudTrail, Security Lake의 조직 단위 통합 운영, 위협 탐지·로그 중앙화 및 보안 가시성 확보",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/364959",
+      "where": "서치독",
+      "what_it_shows": "**'탐지 통제(Detective Controls)'** 라는 범주 이름이 그대로 쓰인다 — 막는 통제(예방)와 찾는 통제(탐지)를 나누는 사고방식이고, 이 문서가 다루는 쪽은 후자다. 그리고 `조직 단위 통합` 이 다계정 집계의 자리"
+    },
+    {
+      "quote": "・ SOAR 기반 인시던트 대응 플레이북 자동화 및 위협 인텔리전스 연동",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/364959",
+      "where": "서치독",
+      "what_it_shows": "같은 공고가 **찾는 것(SIEM)과 대응하는 것(SOAR)을 다른 줄에 적는다.** 두 낱말이 붙어 다니지만 하는 일이 다르다는 증거"
+    },
+    {
+      "quote": "• 보안 이벤트 분석 : GuardDuty, CloudTrail, VPC Flow Logs, CloudWatch 등에서 탐지된 이벤트의 1차 분석과 영향 범위 확인",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375398",
+      "where": "의식주컴퍼니(런드리고)",
+      "what_it_shows": "수집 소스 목록이 그대로 적혀 있고, 일이 **'1차 분석'** 이라고 명시된다 — 탐지가 판정이 아니라 신호라는 이 문서의 결론이 직무 기술로 나타난 자리"
+    },
+    {
+      "quote": "• SIEM 또는 로그 분석 플랫폼(ELK, OpenSearch, Loki, Quickwit 등) 구축 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371213",
+      "where": "피아스페이스",
+      "what_it_shows": "⭐ **전용 SIEM 제품과 로그 검색 엔진을 같은 자리에 놓는다.** 실무에서 SIEM 이 제품 이름이 아니라 **구성의 이름**으로 쓰인다는 증거"
+    },
+    {
+      "quote": "- OpenSearch SIEM, AWS Secrets Manager",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/349603",
+      "where": "미리디",
+      "what_it_shows": "위 구성의 이름이 그대로 적힌 예 — 검색 엔진 위에 탐지를 얹은 형태를 회사가 `OpenSearch SIEM` 이라고 부른다"
+    },
+    {
+      "quote": "• EDR, WAF, SIEM, DLP 등 주요 보안 솔루션 운영 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/361617",
+      "where": "바로팜",
+      "what_it_shows": "SIEM 이 **솔루션 묶음의 한 칸**으로 요구되는 전형. 나머지 셋은 소스(EDR)·차단(WAF)·유출 방지(DLP)이고 SIEM 만 '모아서 보는' 자리다"
+    },
+    {
+      "quote": "3. APM, DORA, SIEM 등 모니터링 고도화 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/380517",
+      "where": "메디트(Medit)",
+      "what_it_shows": "⚠️ 반대 방향의 증거 — **SIEM 을 APM·DORA 와 같은 '모니터링' 묶음**에 넣는 회사도 있다. 이 문서 첫 절이 관측성과의 차이를 먼저 그은 이유다"
+    },
+    {
+      "quote": "Although GuardDuty can't identify the true purpose behind such activity, the Pentest value indicates that GuardDuty is detecting such activity...",
+      "from": "docs",
+      "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+      "where": "AWS GuardDuty 공식 문서",
+      "what_it_shows": "⭐⭐ **탐지 도구가 스스로 '의도는 모른다'고 적은 문장.** 이 문서의 `fp` 절 전체가 여기서 나왔다 — 탐지는 판정이 아니라 신호다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "audit-log",
+      "how": "이 문서를 큐에 올린 자리. 그 문서의 경계 2번('남기기만 하고 안 본다')이 곧 이 낱말이다 — 쌓는 것과 보는 것은 다른 일"
+    },
+    {
+      "slug": "observability",
+      "how": "⭐ 짝 문서. 재료는 같고 질문이 다르다 — 그쪽은 '우리가 고장 났나', 여기는 '누가 우리를 노리나'. 첫 절의 표가 그 경계다"
+    },
+    {
+      "slug": "oncall",
+      "how": "경보 피로의 원본. 그 문서의 '교대당 몇 건' 기준이 여기서는 탐지 등급을 나누는 근거가 된다"
+    },
+    {
+      "slug": "data-contract",
+      "how": "정규화가 같은 문제다. 다만 그쪽은 생산자에게 규칙을 강제하고, 여기는 소비자가 변환해서 받는다(벤더에게 형식을 바꾸라고 할 수 없으므로)"
+    },
+    {
+      "slug": "policy-engine",
+      "how": "설정 위반(`Policy` 류)은 탐지보다 **배포 단계에서 막는 것**이 낫다. 그 가드레일 자리가 그쪽 문서다"
+    },
+    {
+      "slug": "zero-trust",
+      "how": "예방 통제 쪽. 서치독 공고가 쓴 '탐지 통제(Detective Controls)'의 반대편이고, 둘 다 있어야 한다"
+    },
+    {
+      "slug": "network-separation",
+      "how": "국내 규제 환경에서 보안 관제가 요구되는 맥락. 폐쇄망에서는 로그 수집 경로 자체가 제약을 받는다"
+    },
+    {
+      "slug": "caching",
+      "how": "저장 계층 분리(뜨거운/차가운)의 사고방식이 같다. 여기서는 '조사 때 꺼내면 된다'가 왜 함정인지가 다르다"
+    },
+    {
+      "slug": "rate-limit",
+      "how": "무차별 대입 같은 공격은 탐지보다 차단이 먼저다. 탐지가 필요한 것은 차단을 피해 가는 느린 공격 쪽"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `SIEM`·`SOAR`·`Splunk` 어느 이름도 없다. 직접 세면 `SIEM` 낱말 그대로 **200건(모집중 75)**, `SOAR` 64건(모집중 23), `SIEM|SOAR|Splunk|Security Lake|Elastic Security` 로 **257건(모집중 106)** 이다.",
+    "⚠️⚠️ **`관제` 로 세면 안 된다 — 1002건이 나오는데 대부분 물류·영상·로봇 관제다.** 그리고 `Sentinel` 28건 중 2건은 **인공위성 Sentinel**(노바에어의 `인공위성 데이터(MODIS, Sentinel 등)`)이다. 앞 사이클의 `감사`(1694건 중 13%만 해당)에 이어 **한국어 보안 용어의 오탐률이 특히 높다**는 것이 확인됐다.",
+    "**ASFF 문서는 97KB 로 전문을 읽지 못했다.** 이 사이클에서 인용한 것은 **도입부 한 문단**(정규화의 목적)까지이고, 필수·선택 속성 목록(`asff-required-attributes`·`asff-top-level-attributes`)은 열지 않았다. **필드 수준의 이야기를 쓰지 않은 이유**다 — 자체 정규화 스키마를 설계할 때는 그 두 페이지가 다음 대상이다.",
+    "**MITRE ATT&CK 은 원문을 열지 않았다.** GuardDuty 문서가 자기 `ThreatPurpose` 값들이 ATT&CK 전술과 정렬된다고 밝힌 것까지만 확인했고, ATT&CK 자체의 전술 목록·정의는 확인하지 않았다. 본문에서 '정렬돼 있다'까지만 쓰고 전술 이름을 나열하지 않은 이유다.",
+    "**상관분석 규칙의 구체적 문법(Sigma, EQL 등)은 다루지 않았다.** OpenSearch Security Analytics 나 Sigma 규칙 형식은 이 사이클에서 열지 않았고, 실습도 의사코드 수준으로 뒀다. 규칙 작성법은 별도 사이클의 자리다.",
+    "**비용 구조(수집량 과금 vs 저장량 과금)의 실제 값은 확인하지 않았다.** 경계 1번의 '넣는 양이나 저장량으로 값을 받는다'는 일반적 서술이고 특정 제품의 가격표를 인용하지 않았다 — **숫자를 쓰지 않은 이유**이고, 도입 검토 시에는 쓰는 제품의 가격 문서를 직접 볼 것."
+  ],
+  "sources": [
+    {
+      "title": "AWS Security Finding Format (ASFF)",
+      "url": "https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "서로 다른 제품의 탐지 결과를 한 형식으로 모으는 스키마 — 정규화의 실물"
+    },
+    {
+      "title": "GuardDuty finding format",
+      "url": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "경보 이름을 다섯 조각으로 짓는 규칙과 위협 목적(ThreatPurpose) 분류"
+    }
+  ]
+}

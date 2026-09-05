@@ -4,54 +4,67 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `데이터 계약`(`data-contract`)을 끝냈다** — 절 6 · 표 5 · 실습 3 ·
-지뢰 6 · 근거 8. 전체: **문서 83개**(전부 done) · 절 496 · 실습 249 ·
+**직전 사이클에서 `SIEM (보안 로그 분석)`(`siem`)을 끝냈다** — 절 6 · 표 5 · 실습 3 ·
+지뢰 6 · 근거 9. 전체: **문서 84개**(전부 done) · 절 502 · 실습 252 ·
 **오류 0 · 경고 0.**
 
-**`schema-migration` 의 세 번째 방향(하류가 깨진다)을 팀 사이의 약속으로 만든 자리**를 받았다.
+**`audit-log` 의 경계 2번('남기기만 하고 안 본다')이 그대로 이 문서가 됐다.**
 
-**⭐ 축은 "검사할 수 있어야 계약이다"** — 규격이 파일로 있고, 깨는 변경이 정의돼 있고,
-**그 판정이 자동으로 돈다.** 셋째가 전부이고, 1·2 만 있으면 그건 문서다. 이것을 셈이
-받쳐 줬다: `API 규격|인터페이스 규격` 30건 중 **18건이 프론트엔드와의 협의**이고 데이터 계약
-맥락은 **1건**뿐 — **"규격을 협의한다"는 말은 흔한데 검사 가능한 계약은 드물다.**
+**⭐⭐ 문서의 심장은 GuardDuty 문서의 한 문장이었다** — `Pentest` 항목의
+**"Although GuardDuty **can't identify the true purpose** behind such activity ... it
+**could** indicate malicious probing"**. **탐지 도구가 스스로 '의도는 모른다'고 적는다** —
+즉 **탐지는 판정이 아니라 신호**이고 판정은 맥락을 아는 사람이 한다. 여기서 '오탐이 본질'
+절 전체가 나왔고, `Behavior`(기준선이 없으면 오탐 폭주) · `Policy`(공격이 아니라 우리 실수)
+· `Stealth`(상대에게 의도가 있다 — 관측성에는 없는 범주)가 그 절을 채웠다.
 
-**⭐⭐ 1차 자료의 핵심은 "호환성에 방향이 있고, 그 방향이 배포 순서를 정한다"** 였다.
-BACKWARD = **소비자 먼저**, FORWARD = **생산자 먼저**, FULL = **순서 없음**. 즉 유형 선택은
-기술 결정이 아니라 **조직 결정**이다(소비자를 통제 못 하면 BACKWARD 는 실행 불가능한 규칙).
-그리고 기본값의 이유가 한 문장에 있었다 — **"so that you can rewind consumers to the
-beginning of the topic."** ⭐ **되감기.** 과거를 다시 읽는 시스템이면 BACKWARD, 이것이
-전이성(`_TRANSITIVE`)이 필요한 이유로도 그대로 이어졌다.
+**⭐ 두 번째 재료는 경보 이름의 구조** — `ThreatPurpose:Resource/Family.Mechanism!Artifact`.
+**맨 앞이 '왜'(공격 단계)** 라서 우선순위가 이름에서 나오고, `.Custom`(내 목록) vs
+`.Reputation`(평판 모델)처럼 **얼마나 믿을지도 이름에 들어 있다.** 실습 3번을 이 구조를
+빌려 자기 규칙 이름을 다시 짓는 것으로 뒀다 — 가장 싸게 얻는 개선.
 
-**⭐ 허용 변경 목록의 대칭이 예뻤다** — BACKWARD 는 `Widen a scalar type`, FORWARD 는
-`Narrow a scalar type`, 나머지 셋은 공통이고 **전부 `optional`**. 그래서 결론이
-**"계약을 지키며 진화할 수 있느냐는 처음 스키마를 쓸 때 결정된다"**(필수 필드를 남발하면
-몇 달 뒤 아무 변경도 못 한다).
+**⭐ 정규화는 `data-contract` 와 같은 문제로 이었다.** ASFF 의
+**"eliminates the need for time-consuming data conversion efforts"** — 다만 그쪽은
+**생산자에게 규칙을 강제**하고 여기는 **소비자가 변환해 받는다**(벤더에게 형식을 바꾸라 할 수
+없으므로). 그리고 첫 절에서 `observability` 와 짝을 세웠다(우리가 고장 났나 vs 누가 노리나).
 
-**다음 사이클 = QUEUE 맨 위 `SIEM`(`siem`)** — 사다리 3순위.
-(데이터 계약을 큐에서 지우고 **`계약 테스트`(`contract-testing`)를 새로 올렸다** — 데이터가
-아니라 API 호출에 대해 같은 일을 하는 짝. **대기 2개**: SIEM, 계약 테스트)
+**다음 사이클 = QUEUE 맨 위 `계약 테스트`(`contract-testing`)** — 사다리 3순위.
+(SIEM 을 큐에서 지우고 **`데이터 유출 방지 (DLP)`(`dlp`)를 새로 올렸다** — `EDR·WAF·SIEM·DLP`
+묶음에서 **유출 방지만 백과사전에 없다.** **대기 2개**: 계약 테스트, DLP)
 
-## SIEM 사이클 메모
+## 계약 테스트 사이클 메모
 
-- **`audit-log` 의 경계 2번('남기기만 하고 안 본다')이 곧 이 낱말**이다. 공고가 '남기는
-  능력'이 아니라 **분석하는 능력**을 요구한다 — 마이리얼트립 `보안 로그, 클라우드 감사 로그
-  등을 분석하여 위협을 탐지한 경험`, 유모스원 `로그 분석·모니터링(CloudTrail, SIEM) 체계 구축`,
-  서치독 `Detective Controls (탐지 통제) — GuardDuty, Security Hub, AWS Config, CloudTrail,
-  Security Lake의 조직 단위 통합 운영`, 미리디 `OpenSearch SIEM`, 와탭랩스 `Siem 보안 로그 모니터링`.
-- ⚠️⚠️ **`관제` 로 세면 안 된다** — 1002건이 나오는데 **물류·영상·로봇 관제**가 대부분이다
-  (`audit-log` 의 '감사' 87% 오탐보다 더 심하다). 좁혀도 640건(모집중 214)이므로
-  **`SIEM|Splunk|Security Hub|GuardDuty|Wazuh|SOAR` 처럼 제품 이름 위주로 세고 문장을 읽는다.**
-- 축 다섯: ①**모으는 것과 보는 것은 다른 시스템**(→ `observability` 의 짝 — 그쪽은 우리가
-  고장 났나, 여기는 누가 공격하나) ②**상관분석**(한 줄은 뜻이 없고 여러 줄을 이어야 사건)
-  ③**오탐이 본질**(경보가 많으면 아무도 안 본다 → `oncall`) ④**정규화**(제품마다 다른 형식을
-  하나로 → `data-contract` 와 같은 문제) ⑤**보관 비용 vs 검색 가능성**.
-- ⭐ **1차 자료** — **AWS Security Hub 의 ASFF(AWS Security Finding Format)** 가 **정규화의
-  실물이 스키마로 노출된 자리**이고, **GuardDuty finding types** 가 **분류가 곧 결정인 표**를
-  준다. 보조로 **OpenSearch Security Analytics**(탐지 규칙·Sigma).
-  ⚠️ `observability` 와 겹치지 않게 — 수집·지표는 그쪽, 여기는 **적대적 행위를 찾는 것**.
+- **`data-contract` 이 끊긴 링크로 남긴 짝** — 데이터 스키마는 그쪽, 여기는 **API 호출**.
+- ⚠️ **근거가 얇다 — 6건(모집중 4), 그중 1건은 오탐.** 진짜는 코그넥스 `CI/CD, contract test,
+  integration test, load test, rollback strategy`, Bill.com `contract testing (Pact or similar)`,
+  Coursera `API testing frameworks (Postman, REST-assured, Pact)`, 와이즈플러스(마감)
+  `API Contract Test 또는 Simulator 개발 경험`. ⚠️⚠️ **`PACT` 는 학회 이름이기도 하다**
+  (피플뱅크의 `ASPLOS, HPDC, ISCA, Micro, **PACT**, PLDI, PPoPP, SC`).
+  **`rebac` 처럼 왜 얇은지를 숫자로 적고 쓴다.**
+- 축 다섯: ①**통합 테스트로는 왜 안 되나**(둘 다 띄워야 하고 느리고 남의 배포에 깨진다)
+  ②**소비자가 계약을 쓴다**(consumer-driven) ③**계약을 어디에 두나**(브로커 — 양쪽 CI 가 같은
+  것을 본다) ④⭐**`can-i-deploy`**(배포 전에 기계에 물어본다 — 가장 또렷한 실물)
+  ⑤**대체하지 못하는 것**(성능·인증·실제 데이터 → `load-test`).
+- ⭐ **1차 자료** — **docs.pact.io** 가 공개 HTML 이고 **"contract testing is not..."** 처럼
+  **스스로 경계를 그은 페이지**를 갖고 있다(이 엔진에서 네 번 통한 '제품이 스스로 그은 선').
+  Pact Broker 와 `can-i-deploy` 문서도 같은 사이트.
 
 
 ## 배운 것
+
+- ⭐⭐ **제품 문서가 자기 한계를 고백한 문장이 문서의 심장이 되는 일이 네 사이클 연속이다.**
+  `data-migration`(Limitations 절) → `rebac`("small object collections") → `data-contract`
+  ("왜 이것이 기본값인가") → `siem`("can't identify the true purpose"). 이제 **1차 자료를 열면
+  기능 설명보다 먼저 찾는 것**이 이것이다: **Limitations · Considerations · 기본값의 이유 ·
+  "이 도구가 못 하는 것"**. 기능 설명은 어디에나 있지만 이 문장들은 1차 자료에만 있고,
+  **독자가 실무에서 물리는 자리와 정확히 겹친다.**
+- ⭐ **한국어 보안 용어는 오탐률이 특히 높다.** `감사` 1694건 중 13% · `관제` 1002건 중
+  대부분이 물류·영상·로봇. 이번엔 `Sentinel` 에서 **인공위성**까지 나왔다(`Iceberg` 의 금융
+  주문 유형과 같은 형태). **보안 낱말을 셀 때는 처음부터 제품 이름으로 세고, 한국어 표현은
+  보조로만 쓴다** — 반대로 하면 오탐 더미에서 시작하게 된다.
+- **짝 문서를 세울 때 '재료는 같고 질문이 다르다'가 가장 강한 형태다.** `siem`↔`observability`
+  는 로그라는 같은 재료를 쓰는데 묻는 것이 달라 저장 기간·경보 기준·끄는 기준이 전부 갈렸다.
+  `olap`↔`db-index`(같은 데이터, 다른 접근)·`data-migration`↔`schema-migration`(같은 낱말,
+  다른 일)에 이은 형태이고, **표 첫 줄을 '묻는 것'으로 시작하면 나머지 줄이 저절로 따라온다.**
 
 - ⭐ **문서의 결론이 1차 자료의 '기본값 설명' 한 문장에 들어 있을 때가 있다.** Confluent 의
   **"The main reason that BACKWARD ... is so that you can rewind consumers to the beginning
