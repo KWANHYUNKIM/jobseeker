@@ -126,7 +126,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "standards-as-dependencies"
+      ]
     },
     {
       "name": "배포를 거래가 아니라 사건의 흐름으로 본다",
@@ -263,7 +265,455 @@
     "**Data Archives 가 1,000억 건 이상을 아카이브한다는 것 외에 그 구조를 모른다.**",
     "**연표(eras)를 세울 자료를 아직 못 찾았다** — 다만 **2022년 스택 글**이 있다고 본문이 밝힌다. **2022 와 2025 를 나란히 놓으면 시간축이 나올 수 있다.**"
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "standards-as-dependencies",
+      "name": "표준을 문서가 아니라 의존성으로 배포한다",
+      "domain": "서비스 천 개를 도구로 한 벌로 만든다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **엔지니어 850명 이상이 독립된 스쿼드와 트라이브로 일하고 서비스는 1,000개가 넘는다.** 회사가 그 조직을 이렇게 적는다 — `empowered to innovate and make decisions independently`. **그런데 독립성과 일관성은 서로를 밀어낸다.** 문서로 표준을 알리면 **지키는지 확인할 방법도, 한꺼번에 바꿀 방법도 없다.** 그래서 이 회사는 **표준을 도구에 넣고 버전으로 배포한다** — 지키라고 말하는 대신 **올리면 따라오게** 만든다(이 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "엔지니어 **850명 이상** · 서비스 **1,000개 이상** · Java 저장소 **700개 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "플러그인 하나가 닿는 범위",
+            "value": "GitHub Actions 워크플로 표준화 플러그인의 **버전만 올리면 조직 전체 워크플로가 바뀐다** — 그래서 **SLSA 도입을 Java 저장소 700개 이상에 손쉽게** 굴렸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "클러스터",
+            "value": "CRP 로 다시 쓰면서 **6개 → 20개 이상**으로 늘렸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "모바일 쪽 표준화의 예",
+            "value": "iOS 는 Xcode 모듈 **250개 이상**을 Xcodegen→Tuist · Cocoapods→SPM 으로 옮겨 **무변경 빌드 28초 → 2초**. Android 는 Gradle 모듈 **300개 이상 · 약 100만 줄**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "표준을 어떻게 알릴지 정할 때",
+          "thought": "⚠️ **문서로는 안 된다는 것이 전제다.** 서비스가 천 개면 **지키는지 확인할 수도, 한꺼번에 고칠 수도 없다.** 그래서 표준을 **아티팩트로 배포한다** — `shipped as an artifact`. **복사해서 시작하는 템플릿이 아니라 버전을 올리면 따라오는 의존성**이라는 것이 차이다(뒤쪽 해석은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "팀에게 무엇을 남길지 정할 때",
+          "thought": "**최소 설정 원칙**으로 만들고 보안·관측·데이터베이스 통신·Kafka 같은 공통 기능을 **권장 기본값**으로 채운다. 남는 것은 하나다 — `allowing teams to focus on business logic`. ⚠️ **자유를 주는 대신 기본값을 주는 쪽**을 골랐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "전사 변경을 굴릴 때",
+          "thought": "⚠️ **가장 세게 드러나는 자리다** — GitHub Actions 워크플로를 표준화하는 Gradle 플러그인이 있어서 **플러그인 버전만 올리면 조직 전체가 바뀐다.** 그 덕에 SLSA 같은 보안 도입을 **저장소 700개 이상에 `effortless`** 하게 굴렸다. **한 곳을 바꿔 전부를 바꾸는 통로를 미리 깔아 둔 셈이다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "마이크로서비스 샤시",
+            "what": "⚠️ **아티팩트로 배포되는 사내 프레임워크.** 최소 설정 원칙, 권장 기본값으로 보안·관측·DB·Kafka 를 구성한다"
+          },
+          {
+            "name": "Gradle 플러그인 모음",
+            "what": "빌드 파이프라인의 표준. **GitHub Actions 워크플로 표준화 플러그인**이 대표적이다"
+          },
+          {
+            "name": "자동화 서비스",
+            "what": "⚠️ **언어에 무관하다** — 코드베이스에 복잡한 변경을 대규모로 가하고 **소유 팀이 리뷰할 PR** 을 만든다"
+          },
+          {
+            "name": "중앙 자바 의존성 관리 플랫폼",
+            "what": "이미 있던 것. 자동화 서비스로 **업그레이드까지 자동화**했다"
+          },
+          {
+            "name": "CRP (컴퓨트 런타임 플랫폼)",
+            "what": "쿠버네티스 위의 사내 플랫폼. 팀이 인프라를 몰라도 앱을 올린다"
+          }
+        ],
+        "invariants": [
+          "**표준은 버전이 붙어 배포된다** — 문서가 아니라 아티팩트다",
+          "**설정은 최소로, 기본값은 권장값으로** — 팀은 비즈니스 로직에 집중한다",
+          "**대규모 변경은 자동으로 만들되 리뷰는 소유 팀이 한다**",
+          "⚠️ **한 곳을 바꿔 전부에 닿는 통로를 미리 만들어 둔다** — 플러그인 버전 하나가 저장소 700개에 닿는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**샤시 프레임워크를 아티팩트로 낸다** — 최소 설정 · 권장 기본값",
+            "why": "보안·관측·DB 통신·Kafka 를 매번 새로 짜지 않게 한다"
+          },
+          {
+            "step": "**서비스는 그것을 의존성으로 쓴다**",
+            "why": "⚠️ **복사해 시작하는 템플릿이었다면 시간이 지날수록 갈라진다** — 의존성이면 올려서 따라온다(이 대비는 이 사이트의 재구성이다)"
+          },
+          {
+            "step": "**빌드 파이프라인은 사내 Gradle 플러그인이 표준화한다**",
+            "why": "각 저장소가 워크플로를 따로 쓰지 않게 한다"
+          },
+          {
+            "step": "⚠️ **전사 변경은 플러그인 버전을 올려 굴린다** — SLSA 도입이 그 예다",
+            "why": "저장소 700개 이상에 한 번에 닿는다"
+          },
+          {
+            "step": "**더 복잡한 변경은 자동화 서비스가 만든다** — 언어에 무관하게",
+            "why": "코드베이스 전체를 손으로 고칠 수 없다"
+          },
+          {
+            "step": "⚠️ **그 변경은 PR 로 나오고 소유 팀이 리뷰한다**",
+            "why": "만드는 것은 자동이되 **병합은 사람이 한다**"
+          },
+          {
+            "step": "**자바 의존성 업그레이드를 그 위에서 자동화했다**",
+            "why": "이미 있던 중앙 의존성 관리 플랫폼을 한 걸음 더 밀었다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "표준을 어떻게 퍼뜨릴 것인가",
+            "chosen": "**아티팩트로 배포한다** — 문서나 템플릿이 아니라",
+            "alternatives": [
+              "가이드 문서로 알리기",
+              "시작용 템플릿을 복사하게 하기"
+            ],
+            "tradeoff": "⚠️ **복사한 템플릿은 시간이 지나면 갈라지고, 갈라진 것은 한꺼번에 못 고친다.** 아티팩트로 두면 **올려서 따라오게** 할 수 있다. **그 대신 샤시를 계속 유지해야 하고 그것이 모든 서비스의 상류가 된다**(이 대비와 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "팀에게 얼마나 고르게 할 것인가",
+            "chosen": "**최소 설정 + 권장 기본값** — 보안 · 관측 · DB 통신 · Kafka 를 미리 구성한다",
+            "alternatives": [
+              "각 팀이 필요한 것을 직접 고르게 하기"
+            ],
+            "tradeoff": "⚠️ **자유 대신 기본값을 준다.** 얻는 것은 하나다 — `allowing teams to focus on business logic`. **기본값에서 벗어나야 하는 서비스는 이 이점을 못 받는다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "전사 변경을 어떻게 굴릴 것인가",
+            "chosen": "**플러그인 버전을 올린다** — GitHub Actions 워크플로를 플러그인이 표준화한다",
+            "alternatives": [
+              "저장소마다 PR 을 열어 고치기"
+            ],
+            "tradeoff": "**SLSA 도입을 저장소 700개 이상에 `effortless` 하게 굴렸다.** ⚠️ 대신 **그 플러그인이 단일 지점이 된다** — 거기서 깨지면 700개가 함께 깨진다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "플러그인으로 안 되는 변경은 누가 하나",
+            "chosen": "**언어 무관 자동화 서비스가 만든다** — 복잡한 변경을 대규모로",
+            "alternatives": [
+              "각 팀에게 요청하고 기다리기"
+            ],
+            "tradeoff": "⚠️ **남의 코드를 고치는 일이므로 리뷰는 소유 팀에게 남긴다** — 자동화가 PR 을 만들고 **팀이 판단한다.** 만드는 속도와 병합의 속도가 달라진다(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "의존성 업그레이드를 자동화할 것인가",
+            "chosen": "**한다** — 이미 있던 중앙 자바 의존성 관리 플랫폼 위에서",
+            "alternatives": [
+              "팀이 각자 올리게 두기"
+            ],
+            "tradeoff": "**있던 것을 한 걸음 더 민다** — 새 시스템을 만드는 대신 **기존 플랫폼에 자동화를 얹었다**(이 평가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "클러스터 구성을 무엇으로 쓸 것인가",
+            "chosen": "**JSONNET 을 버리고 Helm 으로** — CRP 를 만들며 코드베이스를 처음부터 다시 썼다",
+            "alternatives": [
+              "2018년부터 쓰던 Terraform + JSONNET + ConcourseCI 를 유지"
+            ],
+            "tradeoff": "⚠️ **이유가 `유지보수성과 업스트림 호환` 이다** — 사내에서 만든 표현력을 **생태계와의 호환**과 맞바꿨다. 그 결과 **클러스터를 6개에서 20개 이상으로** 늘리면서도 유지보수를 감당한다(앞쪽 해석은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "모바일 빌드도 같은 방식으로 볼 것인가",
+            "chosen": "**본다** — iOS 는 Xcodegen→Tuist, Cocoapods→SPM 으로 옮겨 캐싱을 얻었다",
+            "alternatives": [
+              "기존 도구를 유지하며 부분 최적화"
+            ],
+            "tradeoff": "**무변경 빌드가 28초에서 2초가 됐다.** ⚠️ 대신 **모듈 250개 이상을 옮기는 일**을 해야 했다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "사내 마이크로서비스 샤시 (아티팩트)",
+            "role": "보안·관측·DB·Kafka 를 권장 기본값으로 구성한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "사내 Gradle 플러그인 모음",
+            "role": "빌드 파이프라인 표준화. **버전 하나로 전사 워크플로를 바꾼다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "언어 무관 자동화 서비스",
+            "role": "대규모 코드 변경을 만들고 PR 로 낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "CRP (Terraform · RKE2 · Rancher · Helm · ArgoCD)",
+            "role": "쿠버네티스 플랫폼. **JSONNET 을 Helm 이 대체했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "CRAB (Next.js 위의 사내 추상화)",
+            "role": "웹 쪽의 같은 발상 — 앱 40개가 같은 바탕을 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "Tuist · SPM (iOS) · Gradle 모듈 (Android)",
+            "role": "모바일 빌드의 표준화. 캐싱으로 빌드 시간을 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "배포를 거래가 아니라 사건의 흐름으로 본다",
+          "via": "표준 파이프라인",
+          "contract": "⚠️ **워크플로를 플러그인이 표준화해 두었기 때문에 배포 방식을 바꾸는 일도 굴릴 수 있다** — CircleCI→GitHub Actions 이전이 그 통로를 탔다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "관측 스택을 옮기고 나서야 진짜 비용을 만난다",
+          "via": "샤시의 관측 기본값",
+          "contract": "**샤시가 관측을 기본으로 구성한다** — 그래서 모든 서비스의 지표가 같은 스택으로 모이고, **그 스택의 병목이 전체에 닿는다**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "850명의 엔지니어 · 독립 스쿼드",
+          "via": "기본값",
+          "contract": "⚠️ **독립성을 주면서 일관성을 지키는 장치다** — 지키라고 말하는 대신 올리면 따라오게 한다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "표준을 지키는지 확인할 수 없다",
+            "why_hard": "⚠️ **서비스가 천 개를 넘으면 문서로 알린 표준은 검증할 방법이 없다.** 게다가 팀이 독립적으로 결정하는 조직에서는 **강제할 권한도 애매하다**",
+            "current_best": "**표준을 도구에 넣는 것** — 샤시는 기본값을 주고, 플러그인은 파이프라인을 고정하며, 자동화 서비스는 나머지를 PR 로 만든다. ⚠️ **기본값을 벗어난 서비스가 얼마나 되는지는 글에 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "problem": "한 곳을 바꿔 전부에 닿는다는 것은 양날이다",
+            "why_hard": "⚠️ **플러그인 버전 하나가 저장소 700개 이상에 닿는다** — SLSA 도입을 손쉽게 굴린 것이 그 힘이다. 그런데 **같은 통로로 실수도 700개에 닿는다**",
+            "current_best": "⚠️ **이 글에 답이 없다** — 플러그인 변경을 어떻게 단계적으로 굴리는지, 되돌리는 경로가 무엇인지 나오지 않는다. 이 지적은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "지키라고 말하지 않고 올리면 따라오게 한다",
+          "question": "표준이 서비스 천 개에 닿는 경로",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>플랫폼 팀</b>\"]:::accent --> C[\"<b>샤시 프레임워크</b><br/>• 아티팩트로 배포<br/>• 보안 · 관측 · DB · Kafka<br/>• 최소 설정 · 권장 기본값\"]:::accent\n  P --> G[\"<b>Gradle 플러그인 모음</b><br/>• GitHub Actions 워크플로 표준화\"]:::accent\n  P --> A[\"<b>언어 무관 자동화 서비스</b><br/>• 복잡한 변경을 대규모로\"]:::accent\n  C --> S[\"<b>서비스 1,000개 이상</b><br/>• 의존성을 올리면 따라온다\"]:::list\n  G --> R[\"<b>Java 저장소 700개 이상</b><br/>• 버전 하나로 전사 워크플로 변경<br/>• SLSA 도입도 이 통로로\"]:::list\n  A --> PR[\"<b>PR 을 만든다</b><br/>⚠️ 리뷰와 병합은 소유 팀이\"]:::list\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "같은 통로로 실수도 간다",
+          "question": "이 구조가 감수하는 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  V[\"<b>플러그인 버전을 올린다</b>\"]:::accent --> G1[\"<b>좋을 때</b><br/>• SLSA 를 700개에 손쉽게\"]:::list\n  V --> G2[\"⚠️ <b>나쁠 때</b><br/>• 같은 통로로 실수도 700개에\"]:::gone\n  G2 --> Q[\"⚠️ <b>글에 없는 것</b><br/>• 단계적 롤아웃은 어떻게 하나<br/>• 되돌리는 경로는 무엇인가\"]:::gone\n  D[\"<b>기본값을 주는 대신</b>\"]:::accent --> D1[\"⚠️ <b>기본값 밖의 서비스</b><br/>• 이 이점을 못 받는다<br/>• 얼마나 되는지 글에 없다\"]:::gone\n  T[\"<b>템플릿이 아니라 의존성</b>\"]:::accent --> T1[\"⚠️ <b>샤시가 모든 서비스의 상류</b><br/>• 계속 유지해야 한다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Wise Tech Stack (2025 update)",
+          "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+          "publisher": "Wise Engineering",
+          "date": "2025-02-12",
+          "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+        },
+        {
+          "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+          "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+          "publisher": "Wise Engineering",
+          "date": "2025-01-15",
+          "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "Wise Tech Stack (2025 update)",
