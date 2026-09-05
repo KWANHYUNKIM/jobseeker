@@ -1626,6 +1626,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "monorepo",
+      "title": "모노레포",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "여러 패키지·앱을 저장소 하나에 모아 두는 구조 — 그리고 그 순간부터 \"무엇을 함께 빌드하고, 함께 버전을 올리고, 함께 배포할 것인가\"를 매번 정해야 하는 일.",
+      "aliases": [
+        "모노레포",
+        "monorepo",
+        "Turborepo",
+        "Nx",
+        "pnpm workspace",
+        "Changesets"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

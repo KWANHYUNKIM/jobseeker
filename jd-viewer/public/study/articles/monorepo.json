@@ -1,0 +1,654 @@
+{
+  "slug": "monorepo",
+  "title": "모노레포",
+  "title_en": "Monorepo",
+  "aliases": [
+    "모노레포",
+    "monorepo",
+    "Turborepo",
+    "Nx",
+    "pnpm workspace",
+    "Changesets"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "여러 패키지·앱을 저장소 하나에 모아 두는 구조 — 그리고 그 순간부터 \"무엇을 함께 빌드하고, 함께 버전을 올리고, 함께 배포할 것인가\"를 매번 정해야 하는 일.",
+  "summary": "모노레포는 코드를 한곳에 두는 것이 전부처럼 보이지만, 실제 작업은 **모아 놓은 다음에** 시작된다. 공고가 그 정의를 직접 적는다 — 아이알큐더스는 `모노레포(**여러 패키지를 하나의 저장소에서 관리하는 구조**) 환경에서 **빌드·의존성·배포 파이프라인을 최적화**` 라고 쓴다. **모으는 것은 전제이고, 최적화가 일이다.**\n\n왜 최적화가 필요한가 — 모아 두면 **\"뭐가 바뀌었을 때 뭘 다시 해야 하나\"** 가 즉시 어려운 문제가 되기 때문이다. Nx 문서가 그 지점을 한 문장으로 적는다: **\"As your workspace grows, re-testing, re-building, and re-linting all projects becomes too slow.\"** 그래서 도구들이 **영향 범위 계산**과 **캐시**를 판다.\n\n⭐ 그리고 국내 공고에서 이 낱말은 **거의 프론트엔드의 것**이다 — 182건(모집중 67) 중 대부분이 디자인 시스템·공유 컴포넌트·멀티 앱 문맥이다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 모으는 것은 전제이고, 그다음이 일이다",
+      "confidence": "inferred",
+      "body": "정의는 공고가 괄호로 적어 준다.\n\n> `모노레포(**여러 패키지를 하나의 저장소에서 관리하는 구조**) 환경에서 **빌드·의존성·배포 파이프라인을 최적화**하여 확장 가능한 프론트엔드 인프라를 운영합니다` — 아이알큐더스\n\n앞 절반이 정의이고 **뒤 절반이 이 낱말의 실제 내용**이다. 저장소를 합치는 것은 `git mv` 몇 번이면 되고, 그 뒤에 남는 것이 빌드·의존성·배포다.\n\n국내 공고에서 이 낱말이 나오는 자리를 세어 보면 성격이 분명하다 — `monorepo|모노레포` 로 **182건(모집중 67)** 이고, 도구 이름(`Turborepo|pnpm workspace|Lerna|Changesets|yarn workspace|Bazel`)으로는 131건이다. 그리고 문장을 읽어 보면 **압도적으로 프론트엔드**다.\n\n- `모노레포 기반 멀티 앱 아키텍처에서 **공유 패키지** 및 내부 디자인 시스템 설계·운영` — 유모스원\n- `전사 공통 **디자인 시스템** 구축에 참여하거나 모노레포(Turborepo 등) 환경에서 **개발자 경험(DX)** 을 개선` — 케이티밀리의서재\n- `모노레포 및 **Micro-Frontend** 아키텍처 설계 및 운영 경험` — 컬리\n- `모노레포 환경에서 **웹·모바일 앱과 공용 패키지**를 구축해 본 경험` — 알챗\n\n⭐ **이유는 짐작이 간다.** 프론트엔드는 **여러 앱이 같은 컴포넌트를 쓰는 구조**가 되기 쉽고(웹·모바일·어드민이 같은 디자인 시스템을 본다), 그 공유물을 별도 저장소로 두면 **고칠 때마다 배포하고 버전을 올리고 설치해야** 한다. 모노레포는 그 왕복을 없앤다.\n\n> 📌 백엔드에도 있다 — 지로의 `NestJS 11 **멀티앱 모노레포**(Node 22, 100% TypeScript)`, 매니패스트의 `TypeScript 풀스택 모노레포`. 다만 **한 언어로 통일된 경우**가 대부분이고, 여러 언어가 섞인 대규모 모노레포(구글식)는 이 데이터에서 보이지 않는다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 어려워지나 — 모으는 순간 \"뭘 다시 해야 하나\"가 문제가 된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Nx — Affected",
+          "url": "https://nx.dev/ci/features/affected",
+          "publisher": "Nx",
+          "kind": "docs",
+          "summary": "바뀐 파일에서 프로젝트 그래프를 타고 '다시 돌려야 할 최소 집합'을 계산한다"
+        }
+      ],
+      "body": "저장소가 따로 있을 때는 이 질문이 없다. 저장소 A 를 고치면 A 만 빌드하고 A 만 테스트한다.\n\n합치면 그 경계가 사라진다. 파일 하나를 고쳤을 때 **무엇을 다시 빌드하고 무엇을 다시 테스트해야 하는가?** 가장 단순한 답은 \"전부\"인데, Nx 문서가 그 답의 유효기간을 적어 둔다.\n\n> ⭐ \"**As your workspace grows, re-testing, re-building, and re-linting all projects becomes too slow.**\"\n\n패키지가 다섯 개일 때는 전부 돌려도 된다. 서른 개가 되면 **PR 하나에 CI 가 40분**이 되고, 그때부터 사람들은 테스트를 건너뛸 방법을 찾는다.\n\n그래서 모노레포 도구가 파는 것은 사실상 두 가지다.\n\n**① 영향 범위 계산(affected)** — 바뀐 것과 그것에 의존하는 것만 고른다.\n**② 캐시** — 입력이 같으면 아예 다시 안 돌린다.\n\n둘 다 **저장소를 합쳤기 때문에 생긴 문제를 되돌리는 장치**다. 폴리레포에서는 저장소 경계가 그 일을 공짜로 해 주고 있었던 셈이고, 모노레포는 **그 경계를 의존성 그래프로 다시 그린다.**\n\n⚠️ 그래서 **도구 없이 모노레포를 하면 대개 실패한다.** 합치는 것은 쉽고 이득도 바로 보이는데(공유 코드를 즉시 고칠 수 있다), 비용은 몇 달 뒤에 CI 시간으로 온다. 공고가 `빌드 파이프라인 최적화`(컬리)·`빌드·의존성 관리 능력`(컬리)·`빌드·의존성·배포 파이프라인을 최적화`(아이알큐더스)를 요구하는 이유가 그것이다."
+    },
+    {
+      "id": "affected",
+      "kind": "how",
+      "heading": "영향 범위 — 바뀐 것과 그것에 기대는 것만",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Nx — Affected",
+          "url": "https://nx.dev/ci/features/affected",
+          "publisher": "Nx",
+          "kind": "docs",
+          "summary": "바뀐 파일에서 프로젝트 그래프를 타고 '다시 돌려야 할 최소 집합'을 계산한다"
+        }
+      ],
+      "body": "Nx 는 이 계산을 `affected` 라 부르고 목표를 명확히 적는다.\n\n> \"determines the **minimum set of projects that are affected by the change**\"\n\n계산은 세 걸음이다.\n\n> \"Use Git to determine the **files you changed** in your PR.\"\n> \"Use the **project graph** to determine which projects the files belong to.\"\n> \"Determine which projects **depend on** the projects you modified.\"\n\n**변경 → 프로젝트 → 그 프로젝트에 의존하는 것들.** 세 번째가 핵심이다 — 공유 유틸 하나를 고치면 그것을 쓰는 앱 전부가 대상이 되고, 아무도 안 쓰는 패키지를 고치면 그것 하나만 대상이 된다.\n\n명령은 단순하다.\n\n```shell\nnx affected -t <task>\n```\n\n그리고 이득도 명시돼 있다 — 영향받은 것만 돌리면 \"**drastically improve the speed of your CI and reduce the amount of compute needed**\".\n\n⭐ **여기서 배울 것은 도구가 아니라 전제다.** 이 계산이 성립하려면 **의존 관계가 기계가 읽을 수 있는 형태로 선언돼 있어야** 한다. `package.json` 의 의존성이든 프로젝트 설정이든, **암묵적 의존**(상대 경로로 남의 디렉터리를 직접 import 하는 것)이 있으면 그래프가 틀리고 **영향 범위 계산이 조용히 빠뜨린다.**\n\n💡 그래서 모노레포에서 가장 비싼 사고는 \"CI 는 통과했는데 배포하니 다른 앱이 깨졌다\"이고, 원인은 대개 **그래프에 없는 의존**이다.\n\n> 📌 그리고 기준(base)을 무엇으로 잡느냐가 결과를 바꾼다 — 어느 커밋과 비교하느냐에 따라 '바뀐 파일'이 달라진다. 이 문서는 그 설정까지 다루지 않는다."
+    },
+    {
+      "id": "cache",
+      "kind": "how",
+      "heading": "캐시 — 같은 입력이면 아예 안 돌린다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Turborepo — Caching",
+          "url": "https://turborepo.dev/docs/crafting-your-repository/caching",
+          "publisher": "Vercel",
+          "kind": "docs",
+          "summary": "입력을 해시해 결과를 재생하는 구조. 로그까지 복원하고 원격 캐시로 팀이 공유한다"
+        }
+      ],
+      "body": "영향 범위를 좁혀도, **같은 코드를 여러 번 빌드하는 낭비**는 남는다(PR 을 다시 밀 때, 다른 사람이 같은 브랜치를 받을 때). 캐시가 그것을 없앤다.\n\nTurborepo 의 방식은 **입력을 해시해 지문을 만드는 것**이다.\n\n> \"When your task is cacheable, Turborepo will restore the results of your task from cache using **a fingerprint from the first time the task ran**.\"\n> \"Under the hood, Turborepo creates **two hashes: a global hash and a task hash**. If either of the hashes change, the task will miss cache.\"\n\n두 겹인 이유는 짐작할 만하다 — 전역적인 것(환경 변수, 루트 설정)이 바뀌면 **모든 작업**이 캐시를 놓쳐야 하고, 그 작업의 입력만 바뀌면 **그 작업만** 놓쳐야 한다.\n\n캐시가 맞으면 무엇이 복원되는가.\n\n> \"Two outputs are cached: **Task outputs** ... and **Logs** — Turborepo always captures the terminal outputs of your tasks, **restoring those logs to your terminal** from the first time that the task ran.\"\n\n⭐ **로그까지 재생한다.** 결과 파일만 복원하면 터미널이 조용해져서 \"돌긴 한 건가\" 싶은데, 그때의 출력을 그대로 다시 보여 준다. 문서의 예시가 규모를 보여 준다 — **\"12 tasks ... in 3 packages\"** 가 **\">>> FULL TURBO\"** 로 끝나고 복원에 **80밀리초**가 걸린다.\n\n그리고 캐시를 팀이 공유할 수 있다.\n\n> \"If you run the same task on **a different machine** that is also authenticated to your Remote Cache, it will **hit cache the first time it runs the task**.\"\n\n⭐⭐ **다른 기계에서 처음 돌려도 캐시가 맞는다.** 이것이 CI 시간을 실제로 줄이는 지점이다 — 동료가 이미 빌드한 것을 CI 가 다시 빌드하지 않는다.\n\n⚠️ 대가도 분명하다. **해시에 안 들어간 입력이 결과를 바꾸면 캐시가 거짓말을 한다.** 환경 변수나 읽는 파일을 선언하지 않으면, 입력이 달라졌는데 지문은 같아서 **틀린 결과를 복원**한다. 그리고 그 증상은 \"내 로컬에서는 되는데\"의 가장 고약한 형태로 나타난다."
+    },
+    {
+      "id": "versioning",
+      "kind": "extra",
+      "heading": "함께 버전을 올리나 — fixed 와 independent",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Changesets — Fixed Packages",
+          "url": "https://github.com/changesets/changesets/blob/main/docs/fixed-packages.md",
+          "publisher": "Changesets",
+          "kind": "docs",
+          "summary": "함께 버전을 올릴 패키지 묶음. 안 바뀐 것도 함께 올라간다"
+        }
+      ],
+      "body": "빌드·테스트를 정리하고 나면 다음 질문이 온다 — **패키지들의 버전을 함께 올릴 것인가, 따로 올릴 것인가.**\n\nChangesets 는 이 결정을 설정으로 노출한다. 기본은 **따로**이고, 함께 묶고 싶으면 `fixed` 를 쓴다.\n\n> \"Fixed packages allow you to specify **a group or groups of packages that should be versioned and published together**.\"\n> ⭐ \"...all packages in the group of fixed packages will be **version-bumped and published together even when there are no changes done to some of the member packages**.\"\n\n**안 바뀐 패키지도 함께 올라간다.** 이것이 fixed 의 정의이자 대가다.\n\n두 방식의 성격이 갈린다.\n\n- **함께(fixed)** — 버전 하나로 \"이 묶음의 상태\"를 말할 수 있다. 디자인 시스템처럼 **여러 패키지가 사실상 한 제품**일 때 맞는다. 대신 **아무 변화 없는 패키지의 버전이 계속 올라가고**, 소비자는 무엇이 실제로 바뀌었는지 릴리스 노트를 봐야 안다.\n- **따로(independent)** — 바뀐 것만 올라가 이력이 정직하다. 대신 **어느 버전 조합이 서로 맞는지**를 소비자가 알기 어렵고, 그 조합을 검증하는 일이 새로 생긴다.\n\n💡 실무의 판단 기준은 **소비자가 이 패키지들을 함께 올리는가**다. 함께 올린다면 fixed 가 편하고, 하나만 골라 쓴다면 independent 가 정직하다.\n\n> 📌 여기서부터는 저장소 밖의 이야기가 시작된다 — 소비자에게 나가는 버전과 폐기는 `api-versioning` 의 자리다. **모노레포는 \"저장소 안에서 무엇을 함께 움직이나\"까지**이고, 그 경계를 넘으면 다른 문서다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 합치면 사라지는 것과 새로 생기는 것",
+      "confidence": "inferred",
+      "body": "**1. 저장소 경계가 하던 일을 대신 해야 한다.** 폴리레포에서는 **소유권·권한·CI 범위·릴리스 주기**가 저장소 단위로 자동으로 나뉜다. 합치면 그게 전부 사라지고 **코드 소유권 설정·경로별 리뷰 규칙·경로별 CI** 로 다시 만들어야 한다. 안 만들면 **누구나 남의 패키지를 고칠 수 있는 상태**가 된다 — 그게 장점인 조직도 있고 사고인 조직도 있다.\n\n**2. 암묵적 의존이 영향 범위를 무력화한다.** `affected` 절 그대로다. 상대 경로로 남의 디렉터리를 직접 가져다 쓰면 그래프에 안 잡히고, **CI 는 통과하는데 배포하면 깨진다.** 모노레포를 시작할 때 **패키지 경계를 넘는 import 를 린트로 막는 것**이 사실상 필수다.\n\n**3. 캐시는 선언한 입력만 안다.** 환경 변수·읽는 파일을 빠뜨리면 **틀린 결과를 복원**한다. 이상하면 캐시를 끄고 재현되는지부터 본다.\n\n**4. 저장소가 커진다.** 클론·체크아웃·IDE 인덱싱이 느려지고, 어느 시점부터는 그것 자체가 도구를 필요로 한다. ⚠️ 이 문서의 데이터에 보이는 국내 사례는 **한 언어(대개 TypeScript)로 통일된 중간 규모**이고, 여러 언어가 섞인 초대형 모노레포의 문제(빌드 시스템·부분 체크아웃)는 다루지 않는다.\n\n**5. 그래서 언제 쪼개나.** 명확한 답은 없지만 신호는 있다 — 릴리스 주기가 완전히 다른 패키지가 섞여 있을 때, 조직이 갈려 서로의 코드를 안 볼 때, 그리고 **도구를 넣었는데도 CI 가 계속 느려질 때**. 다만 쪼개면 `data-contract`·`api-versioning` 의 문제가 그 자리에 온다 — **경계를 없애면 조율이 늘고, 경계를 만들면 계약이 는다.**\n\n**6. 이 문서가 다루지 않는 것.** 소비자에게 나가는 버전·폐기는 `api-versioning`, 배포 중 두 버전 공존은 `zero-downtime-deploy`, 여러 서비스 사이의 계약은 `contract-testing`·`data-contract` 다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "three",
+      "kind": "compare",
+      "caption": "⭐ 무엇을 '함께' 할 것인가 — 세 겹의 결정",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 모노레포의 실제 작업이 '합치기'가 아니라 이 세 결정이라는 것이 요점이고, 세 번째는 이 문서의 범위 밖이다.",
+      "columns": [
+        "무엇을 함께",
+        "도구가 파는 것",
+        "안 정하면"
+      ],
+      "rows": [
+        [
+          "함께 빌드·테스트하나",
+          "영향 범위 계산(`affected`) + 캐시",
+          "\"all projects becomes too slow\" — PR 하나에 CI 가 수십 분"
+        ],
+        [
+          "함께 버전을 올리나",
+          "fixed vs independent (Changesets)",
+          "릴리스 때마다 사람이 판단하고, 조합이 맞는지 아무도 모른다"
+        ],
+        [
+          "함께 배포하나",
+          "(모노레포 밖의 문제)",
+          "→ `api-versioning` · `zero-downtime-deploy`"
+        ],
+        [
+          "⭐ 요점",
+          "—",
+          "저장소를 합치는 것은 쉽고, **합친 다음의 세 결정이 일이다**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "affected",
+      "kind": "glossary",
+      "caption": "영향 범위 계산 (Nx `affected`)",
+      "note": "Nx 공식 문서에서 옮겼다. 도구는 여럿이지만 '변경 → 프로젝트 → 의존하는 것'이라는 세 걸음은 공통이다.",
+      "columns": [
+        "",
+        "내용"
+      ],
+      "rows": [
+        [
+          "목표",
+          "\"determines the **minimum set of projects that are affected by the change**\""
+        ],
+        [
+          "1단계",
+          "\"Use **Git** to determine the files you changed in your PR.\""
+        ],
+        [
+          "2단계",
+          "\"Use the **project graph** to determine which projects the files belong to.\""
+        ],
+        [
+          "3단계",
+          "⭐ \"Determine which projects **depend on** the projects you modified.\""
+        ],
+        [
+          "명령",
+          "`nx affected -t <task>`"
+        ],
+        [
+          "왜",
+          "\"As your workspace grows, re-testing, re-building, and re-linting **all projects becomes too slow**.\""
+        ],
+        [
+          "⚠️ 전제",
+          "의존 관계가 **선언돼 있어야** 한다 — 암묵적 import 는 그래프에 안 잡히고 조용히 빠진다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Nx — Affected",
+          "url": "https://nx.dev/ci/features/affected",
+          "publisher": "Nx",
+          "kind": "docs",
+          "summary": "바뀐 파일에서 프로젝트 그래프를 타고 '다시 돌려야 할 최소 집합'을 계산한다"
+        }
+      ]
+    },
+    {
+      "id": "cache",
+      "kind": "glossary",
+      "caption": "캐시 (Turborepo)",
+      "note": "Turborepo 공식 문서에서 옮겼다. 인용된 숫자(80밀리초)는 문서의 예시이지 일반적인 기대치가 아니다.",
+      "columns": [
+        "",
+        "내용"
+      ],
+      "rows": [
+        [
+          "원리",
+          "\"restore the results of your task from cache using **a fingerprint from the first time the task ran**\""
+        ],
+        [
+          "두 겹의 해시",
+          "\"Turborepo creates two hashes: **a global hash and a task hash**. If either of the hashes change, the task will miss cache.\""
+        ],
+        [
+          "무엇이 복원되나",
+          "작업 산출물 + ⭐ **로그** — \"restoring those logs to your terminal from the first time that the task ran\""
+        ],
+        [
+          "예시",
+          "\"12 tasks ... in 3 packages\" → `>>> FULL TURBO`, 복원에 **80밀리초**"
+        ],
+        [
+          "⭐⭐ 원격 캐시",
+          "\"If you run the same task on **a different machine** ... it will **hit cache the first time** it runs the task.\""
+        ],
+        [
+          "⚠️ 대가",
+          "해시에 안 들어간 입력이 결과를 바꾸면 **틀린 결과를 복원한다**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Turborepo — Caching",
+          "url": "https://turborepo.dev/docs/crafting-your-repository/caching",
+          "publisher": "Vercel",
+          "kind": "docs",
+          "summary": "입력을 해시해 결과를 재생하는 구조. 로그까지 복원하고 원격 캐시로 팀이 공유한다"
+        }
+      ]
+    },
+    {
+      "id": "versioning",
+      "kind": "compare",
+      "caption": "함께 올리나, 따로 올리나 (Changesets)",
+      "note": "`fixed` 의 정의와 인용은 Changesets 문서에서 옮겼다. 오른쪽 두 열의 성격 비교는 그 정의에서 따라 나오는 것을 이 문서가 정리한 것이다.",
+      "columns": [
+        "",
+        "함께 (fixed)",
+        "따로 (independent)"
+      ],
+      "rows": [
+        [
+          "문서의 정의",
+          "\"a group or groups of packages that should be **versioned and published together**\"",
+          "기본 동작 — 바뀐 것만 올린다"
+        ],
+        [
+          "안 바뀐 패키지",
+          "⭐ \"version-bumped and published together **even when there are no changes**\"",
+          "안 올라간다"
+        ],
+        [
+          "버전 번호의 뜻",
+          "이 묶음 전체의 상태",
+          "각 패키지의 실제 변경 이력"
+        ],
+        [
+          "잘 맞는 경우",
+          "여러 패키지가 사실상 **한 제품**일 때(디자인 시스템)",
+          "소비자가 하나만 골라 쓸 때"
+        ],
+        [
+          "대가",
+          "이력이 부풀고, 무엇이 바뀌었는지는 릴리스 노트를 봐야 안다",
+          "**어느 조합이 서로 맞는지** 소비자가 알기 어렵다"
+        ],
+        [
+          "판단 기준",
+          "—",
+          "**소비자가 이것들을 함께 올리는가**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Changesets — Fixed Packages",
+          "url": "https://github.com/changesets/changesets/blob/main/docs/fixed-packages.md",
+          "publisher": "Changesets",
+          "kind": "docs",
+          "summary": "함께 버전을 올릴 패키지 묶음. 안 바뀐 것도 함께 올라간다"
+        }
+      ]
+    },
+    {
+      "id": "boundary",
+      "kind": "glossary",
+      "caption": "저장소 경계가 공짜로 해 주던 일들",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 모노레포로 옮길 때 '없어지는 것'을 미리 세어 보라는 취지다.",
+      "columns": [
+        "폴리레포에서 자동으로 되던 것",
+        "모노레포에서는",
+        "안 만들면"
+      ],
+      "rows": [
+        [
+          "CI 범위",
+          "경로별 트리거 + 영향 범위 계산",
+          "PR 하나에 전부 돌아간다"
+        ],
+        [
+          "소유권·권한",
+          "코드 소유자 설정(경로별 리뷰)",
+          "누구나 남의 패키지를 고친다"
+        ],
+        [
+          "릴리스 주기",
+          "fixed / independent 결정",
+          "릴리스 때마다 사람이 판단한다"
+        ],
+        [
+          "의존 방향",
+          "패키지 경계를 넘는 import 를 린트로 차단",
+          "⭐ 암묵적 의존이 생겨 **영향 범위가 조용히 틀린다**"
+        ],
+        [
+          "저장소 크기",
+          "(도구 필요)",
+          "클론·인덱싱이 느려진다"
+        ],
+        [
+          "⭐ 요약",
+          "—",
+          "**경계를 없애면 조율이 늘고, 경계를 만들면 계약이 는다**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "웹·모바일·어드민이 같은 컴포넌트와 타입을 쓰는데 지금은 저장소가 나뉘어 있다",
+      "pick": "모노레포로 합친다",
+      "over": "공유 패키지를 별도 저장소로 두고 npm 으로 배포",
+      "why": "별도 저장소면 공유물을 고칠 때마다 **배포 → 버전 올리기 → 각 앱에서 설치**의 왕복이 생긴다. 합치면 한 PR 로 끝나고, 그래서 공고들이 `공유 패키지`·`디자인 시스템`과 모노레포를 한 줄에 적는다(유모스원·엔닷라이트)",
+      "tradeoff": "저장소 경계가 하던 일(CI 범위·소유권·릴리스 주기)을 설정으로 다시 만들어야 한다. 그리고 도구(영향 범위·캐시) 없이 시작하면 몇 달 뒤 CI 시간으로 비용이 온다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "모노레포를 만들었는데 PR 하나에 CI 가 수십 분 걸린다",
+      "pick": "영향 범위 계산부터 붙인다 (`affected` 류)",
+      "over": "캐시를 먼저 도입하거나 테스트를 줄이기",
+      "why": "Nx 문서의 진단 그대로다 — \"re-testing, re-building, and re-linting **all projects** becomes too slow\". **안 돌려도 되는 것을 안 돌리는 것**이 가장 큰 절감이고, 캐시는 그다음이다. 테스트를 줄이는 것은 문제를 감추는 쪽이다",
+      "tradeoff": "의존 관계가 선언돼 있어야 계산이 맞는다. 암묵적 import 가 있으면 **빠뜨리고도 초록불**이 되므로, 경계 린트를 함께 넣어야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Nx — Affected",
+          "url": "https://nx.dev/ci/features/affected",
+          "publisher": "Nx",
+          "kind": "docs",
+          "summary": "바뀐 파일에서 프로젝트 그래프를 타고 '다시 돌려야 할 최소 집합'을 계산한다"
+        }
+      ]
+    },
+    {
+      "situation": "영향 범위를 좁혔는데도 같은 것을 반복해서 빌드한다 (PR 재푸시, 동료의 브랜치)",
+      "pick": "원격 캐시를 켠다",
+      "over": "로컬 캐시만 쓰기",
+      "why": "문서가 그 이득을 명시한다 — \"If you run the same task on **a different machine** ... it will hit cache **the first time** it runs the task.\" CI 가 동료의 빌드 결과를 그대로 받는다",
+      "tradeoff": "캐시 저장소와 인증이 필요하고, ⚠️ **해시에 안 들어간 입력이 있으면 틀린 결과가 팀 전체로 퍼진다.** 입력 선언을 먼저 점검한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Turborepo — Caching",
+          "url": "https://turborepo.dev/docs/crafting-your-repository/caching",
+          "publisher": "Vercel",
+          "kind": "docs",
+          "summary": "입력을 해시해 결과를 재생하는 구조. 로그까지 복원하고 원격 캐시로 팀이 공유한다"
+        }
+      ]
+    },
+    {
+      "situation": "패키지 여럿이 사실상 한 제품이다 (디자인 시스템의 코어·아이콘·테마)",
+      "pick": "fixed — 함께 버전을 올린다",
+      "over": "independent",
+      "why": "버전 하나로 \"이 묶음의 상태\"를 말할 수 있고, 소비자가 조합을 고민하지 않아도 된다. 소비자가 어차피 함께 올린다면 따로 매기는 것은 정보가 아니라 잡음이다",
+      "tradeoff": "문서가 밝히듯 \"even when there are no changes done to some of the member packages\" 함께 올라간다 — **이력이 부풀고** 무엇이 실제로 바뀌었는지는 릴리스 노트를 봐야 안다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Changesets — Fixed Packages",
+          "url": "https://github.com/changesets/changesets/blob/main/docs/fixed-packages.md",
+          "publisher": "Changesets",
+          "kind": "docs",
+          "summary": "함께 버전을 올릴 패키지 묶음. 안 바뀐 것도 함께 올라간다"
+        }
+      ]
+    },
+    {
+      "situation": "릴리스 주기가 완전히 다르고 팀도 갈려 서로의 코드를 안 본다",
+      "pick": "쪼갠다 (또는 애초에 합치지 않는다)",
+      "over": "모노레포를 유지하며 도구로 버티기",
+      "why": "모노레포의 이득은 **함께 움직일 때** 나온다. 함께 안 움직이는 것들을 한 저장소에 두면 **비용만 남는다** — 큰 저장소, 남의 CI 실패, 남의 리뷰 대기",
+      "tradeoff": "쪼개면 그 자리에 계약 문제가 온다 — 버전·호환·폐기(`api-versioning`)와 연동 검증(`contract-testing`). **경계를 없애면 조율이 늘고, 경계를 만들면 계약이 는다**",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "패키지 경계를 넘는 상대 경로 import 를 허용한다",
+      "why": "모노레포에서는 남의 코드가 바로 옆 디렉터리에 있어서 `../../other-app/utils` 가 그냥 된다. 편하고 즉시 동작한다. 그런데 **의존성 선언에는 안 잡히므로 프로젝트 그래프에 없다** — 영향 범위 계산이 그 관계를 모른다",
+      "fix": "**경계를 넘는 import 를 린트로 막는다**(패키지 이름으로만 가져오게). 이미 생긴 것은 목록을 뽑아 패키지 의존성으로 승격시킨다. 안 하면 \"CI 는 통과했는데 배포하니 다른 앱이 깨졌다\"가 반복된다",
+      "sources": [
+        {
+          "title": "Nx — Affected",
+          "url": "https://nx.dev/ci/features/affected",
+          "publisher": "Nx",
+          "kind": "docs",
+          "summary": "바뀐 파일에서 프로젝트 그래프를 타고 '다시 돌려야 할 최소 집합'을 계산한다"
+        }
+      ]
+    },
+    {
+      "trap": "캐시를 켜 두고 해시 입력을 선언하지 않는다",
+      "why": "캐시는 **선언된 입력만** 해시한다. 환경 변수나 설정 파일이 결과를 바꾸는데 입력에 없으면, 입력이 달라졌는데 **지문은 같아서 틀린 결과를 복원**한다. 그리고 로그까지 복원되므로 **성공한 것처럼 보인다**",
+      "fix": "작업마다 **무엇이 결과를 바꾸는지** 적어 입력에 넣는다(특히 환경 변수). 이상한 결과가 나오면 **캐시를 끄고 재현되는지부터** 확인한다 — 이 확인을 먼저 하지 않으면 며칠을 엉뚱한 곳에서 헤맨다",
+      "sources": [
+        {
+          "title": "Turborepo — Caching",
+          "url": "https://turborepo.dev/docs/crafting-your-repository/caching",
+          "publisher": "Vercel",
+          "kind": "docs",
+          "summary": "입력을 해시해 결과를 재생하는 구조. 로그까지 복원하고 원격 캐시로 팀이 공유한다"
+        }
+      ]
+    },
+    {
+      "trap": "저장소만 합치고 소유권·리뷰 규칙을 안 만든다",
+      "why": "합치는 작업은 파일을 옮기는 일이라 거기서 끝난 것처럼 느껴진다. 그런데 폴리레포에서 **저장소 권한이 하던 일**(누가 무엇을 고칠 수 있나, 누가 리뷰하나)이 통째로 사라진 상태다",
+      "fix": "경로별 코드 소유자와 리뷰 규칙을 **합치는 PR 과 같은 시점에** 만든다. 그리고 어느 팀이 어느 패키지를 소유하는지 문서에 적는다 — 모노레포에서 소유권은 자동으로 생기지 않는다"
+    },
+    {
+      "trap": "영향 범위 계산을 켜 놓고 기준(base)을 잘못 잡는다",
+      "why": "`affected` 는 **어느 커밋과 비교하느냐**에 따라 '바뀐 파일'이 달라진다. 기준이 너무 최근이면 빠뜨리고, 너무 오래되면 전부가 대상이 되어 이득이 사라진다. 그리고 둘 다 조용히 일어난다",
+      "fix": "CI 에서 기준 커밋을 **명시적으로 정하고**(대개 대상 브랜치의 병합 기점), 얕은 클론일 때 그 커밋이 실제로 있는지 확인한다. 그리고 **가끔은 전체를 돌려** 영향 범위가 빠뜨린 것이 없는지 검증한다",
+      "sources": [
+        {
+          "title": "Nx — Affected",
+          "url": "https://nx.dev/ci/features/affected",
+          "publisher": "Nx",
+          "kind": "docs",
+          "summary": "바뀐 파일에서 프로젝트 그래프를 타고 '다시 돌려야 할 최소 집합'을 계산한다"
+        }
+      ]
+    },
+    {
+      "trap": "모든 패키지를 fixed 로 묶어 버전을 통일한다",
+      "why": "버전이 하나면 깔끔해 보이고 릴리스도 단순하다. 그런데 문서가 밝히듯 **안 바뀐 패키지도 함께 올라가므로**, 소비자 입장에서는 **버전이 올라갔는데 아무것도 안 바뀐 일**이 반복된다. 그러면 버전 번호가 정보를 잃는다",
+      "fix": "**소비자가 함께 올리는 것끼리만** 묶는다. 디자인 시스템의 코어·아이콘·테마는 함께, 성격이 다른 도구 패키지는 따로. 묶음을 정할 때 기준은 저장소 구조가 아니라 **소비자의 사용 방식**이다",
+      "sources": [
+        {
+          "title": "Changesets — Fixed Packages",
+          "url": "https://github.com/changesets/changesets/blob/main/docs/fixed-packages.md",
+          "publisher": "Changesets",
+          "kind": "docs",
+          "summary": "함께 버전을 올릴 패키지 묶음. 안 바뀐 것도 함께 올라간다"
+        }
+      ]
+    },
+    {
+      "trap": "모노레포를 '큰 조직의 방식'이라 생각해 도구부터 크게 도입한다",
+      "why": "구글·메타 이야기가 먼저 떠오르고, 그래서 빌드 시스템까지 갖춰야 할 것 같다. 그런데 이 데이터의 국내 사례는 대부분 **한 언어(TypeScript)로 통일된 앱 서넛 + 공유 패키지** 규모다 — 매니패스트의 `모노레포 4개 앱`, 지로의 `NestJS 멀티앱 모노레포`",
+      "fix": "**워크스페이스 기능(pnpm/yarn)으로 시작**하고, CI 가 느려지는 것이 실제로 관찰될 때 영향 범위·캐시 도구를 넣는다. 순서를 뒤집으면 아무도 이해하지 못하는 설정만 남는다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "워크스페이스",
+      "en": "workspace",
+      "what": "패키지 매니저가 한 저장소의 여러 패키지를 함께 다루는 기능(pnpm/yarn/npm)"
+    },
+    {
+      "term": "프로젝트 그래프",
+      "en": "project graph",
+      "what": "어느 패키지가 어느 패키지에 기대는지의 관계도. 영향 범위 계산의 재료"
+    },
+    {
+      "term": "영향 범위",
+      "en": "affected",
+      "what": "바뀐 것과 그것에 의존하는 것들 — 다시 돌려야 할 최소 집합"
+    },
+    {
+      "term": "작업 해시",
+      "en": "task hash",
+      "what": "작업의 입력으로 만든 지문. 같으면 캐시에서 복원한다"
+    },
+    {
+      "term": "원격 캐시",
+      "en": "Remote Cache",
+      "what": "캐시를 팀·CI 가 공유하는 것. 다른 기계의 결과를 받아 쓴다"
+    },
+    {
+      "term": "fixed 패키지",
+      "en": "fixed packages",
+      "what": "버전을 함께 올리는 묶음. 안 바뀐 것도 함께 올라간다"
+    },
+    {
+      "term": "폴리레포",
+      "en": "polyrepo",
+      "what": "패키지마다 저장소를 따로 두는 반대편 방식"
+    }
+  ],
+  "drills": [
+    {
+      "task": "지금 다루는 저장소(또는 저장소 묶음)에서 **패키지 사이의 의존 관계를 그림으로 그린다.** 그다음 최근 PR 다섯 개를 골라, 각각이 **어느 패키지를 바꿨고 그것에 의존하는 것이 무엇인지** 표시한다.",
+      "done_when": "다섯 PR 중 '전부 다시 돌릴 필요가 없었던' 것이 몇 개인지 세어지고, 그 비율이 나온다.",
+      "why": "영향 범위 계산의 이득은 **자기 저장소의 그 비율**에 달려 있다. 대부분의 PR 이 공유 코어를 건드린다면 도구를 넣어도 별로 안 줄어든다 — 이 확인 없이 도구를 넣으면 기대와 다른 결과를 얻는다.",
+      "hours": 2
+    },
+    {
+      "task": "저장소에서 **패키지 경계를 넘는 상대 경로 import** 를 찾는다(`../../` 로 다른 패키지 디렉터리를 가리키는 것). 몇 건인지 세고, 그중 하나를 골라 **패키지 의존성으로 승격**시켜 본다.",
+      "done_when": "건수가 나오고, 그것들이 의존성 선언에 없다는 것을 확인한다 — 즉 **영향 범위 계산이 모르는 관계**임을 스스로 증명한다.",
+      "why": "모노레포에서 가장 비싼 사고(\"CI 는 통과했는데 배포하니 깨졌다\")의 원인이 대개 이것이다. 그리고 이 검색은 몇 분이면 되는데, 결과를 보면 경계 린트를 넣을지 말지가 바로 결정된다.",
+      "hours": 1
+    },
+    {
+      "task": "캐시를 쓰는 작업 하나를 골라 **해시 입력에 들어가지 않는데 결과를 바꿀 수 있는 것**을 찾는다 — 환경 변수, 설정 파일, 외부에서 읽는 데이터. 하나를 골라 값을 바꾸고 **캐시가 맞는지(잘못 복원되는지)** 확인한다.",
+      "done_when": "입력을 바꿨는데 캐시가 적중해 **옛 결과가 복원되는 것**을 직접 보거나, 반대로 모든 입력이 제대로 선언돼 있음을 확인한다.",
+      "why": "캐시의 위험은 느린 것이 아니라 **틀린 것을 빠르게 주는 것**이다. 그리고 그 증상은 '내 로컬에서는 되는데'의 가장 찾기 어려운 형태로 나타난다 — 한 번 재현해 보면 입력 선언을 소홀히 하지 않게 된다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "저장소를 합치는 것이 왜 이 낱말의 시작일 뿐인가? 그다음에 정해야 하는 세 가지는?",
+    "패키지가 늘어날수록 '전부 다시 빌드'가 왜 답이 아닌가? Nx 문서는 뭐라고 적는가?",
+    "영향 범위 계산은 무엇을 재료로 하는가? 그 재료가 틀리면 어떤 증상이 나오는가?",
+    "캐시가 '적중'했다는 것은 무엇이 복원됐다는 뜻인가? 결과 파일 말고 또 무엇이?",
+    "fixed 로 묶으면 안 바뀐 패키지는 어떻게 되는가? 그것이 왜 대가인가?",
+    "저장소를 합치면 무엇이 사라지는가? 그것을 무엇으로 다시 만드는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 모노레포(여러 패키지를 하나의 저장소에서 관리하는 구조) 환경에서 빌드·의존성·배포 파이프라인을 최적화하여 확장 가능한 프론트엔드 인프라를 운영합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378890",
+      "where": "아이알큐더스",
+      "what_it_shows": "⭐⭐ **정의와 실제 업무가 한 줄에** 있다. 괄호 안이 정의이고 그 뒤가 이 낱말의 내용 — **모으는 것은 전제이고 최적화가 일이다**라는 이 문서의 첫 결론이 공고 한 줄로 증명된다"
+    },
+    {
+      "quote": "• 모노레포 기반 멀티 앱 아키텍처에서 공유 패키지 및 내부 디자인 시스템 설계·운영",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373485",
+      "where": "유모스원",
+      "what_it_shows": "⭐ 국내 공고에서 이 낱말이 나오는 전형적 자리 — **멀티 앱 + 공유 패키지 + 디자인 시스템**. 182건 대부분이 이 형태이고, 그래서 이 낱말은 사실상 프론트엔드의 것이다"
+    },
+    {
+      "quote": "• Design System & DX: 전사 공통 디자인 시스템 구축에 참여하거나 모노레포(Turborepo 등) 환경에서 개발자 경험(DX)을 개선해 본 경험이 있으신 분을 찾고 있어요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365238",
+      "where": "케이티밀리의서재",
+      "what_it_shows": "모노레포가 **개발자 경험(DX)** 의 문제로 분류된다. 빌드 시간·설정·왕복을 줄이는 일이고, 그래서 이득이 사용자가 아니라 **팀에게** 돌아간다"
+    },
+    {
+      "quote": "• Nx / Turborepo 등 모노레포 환경에서의 빌드·의존성 관리 능력",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356194",
+      "where": "컬리",
+      "what_it_shows": "요구가 도구 사용이 아니라 **`빌드·의존성 관리 능력`** 이다 — 이 문서가 도구 설명이 아니라 '영향 범위'와 '캐시'라는 개념에 무게를 둔 이유"
+    },
+    {
+      "quote": "• 모노레포 4개 앱의 배포 체계 — Turborepo 기반 CI/CD, 브랜치별 preview 환경",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/367839",
+      "where": "매니패스트",
+      "what_it_shows": "⭐ **규모가 적혀 있다 — 앱 4개.** 국내 사례가 구글식 초대형이 아니라 **한 언어로 통일된 중간 규모**라는 것을 보여 주는 자리이고, 그래서 도구도 그 규모에 맞춰 고르면 된다"
+    },
+    {
+      "quote": "• 패키지 관리 : pnpm workspaces 기반 모노레포, 사내 npm 레지스트리(private registry)를 통한 컴포넌트 패키지 배포·버전 관리",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378890",
+      "where": "아이알큐더스",
+      "what_it_shows": "⭐ 모노레포 **안**의 관리와 **밖**으로 나가는 배포·버전이 한 줄에 있다. 이 문서가 '저장소 안에서 무엇을 함께 움직이나'까지만 다루고 나머지를 `api-versioning` 으로 넘긴 경계가 실무에서는 이어져 있다는 것"
+    },
+    {
+      "quote": "•모노레포 및 Micro-Frontend 아키텍처 설계 및 운영 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359782",
+      "where": "컬리",
+      "what_it_shows": "⚠️ 모노레포와 **마이크로 프론트엔드**를 한 줄에 적는다 — 둘은 반대 방향처럼 보이지만(합치기 vs 쪼개기) **코드는 함께 두고 배포는 나누는** 조합이 실재한다는 증거"
+    },
+    {
+      "quote": "As your workspace grows, re-testing, re-building, and re-linting all projects becomes too slow.",
+      "from": "docs",
+      "url": "https://nx.dev/ci/features/affected",
+      "where": "Nx 공식 문서",
+      "what_it_shows": "⭐ **'전부 다시 돌린다'의 유효기간을 도구 문서가 직접 적은 문장.** 모노레포 도구가 파는 것이 무엇인지, 그리고 왜 필요해지는지가 이 한 줄에 있다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "api-versioning",
+      "how": "⭐ 이 문서를 큐에 올린 자리(그쪽이 `semantic-versioning` 을 가리켰고 근거가 얇아 여기로 왔다). 저장소 안에서 무엇을 함께 움직이나가 여기, 소비자에게 나가는 버전이 그쪽"
+    },
+    {
+      "slug": "zero-downtime-deploy",
+      "how": "여러 패키지를 함께 릴리스할 때도 두 버전 공존 문제가 온다. 확장·수축이 패키지 단위로 나타난다"
+    },
+    {
+      "slug": "schema-migration",
+      "how": "'여러 저장소에 걸친 변경을 안전하게 배포한다'는 요구가 그 문서의 하류 문제와 만난다"
+    },
+    {
+      "slug": "contract-testing",
+      "how": "쪼개면 그 자리에 오는 것. 저장소 경계를 만들면 조율 대신 계약이 필요해진다"
+    },
+    {
+      "slug": "caching",
+      "how": "캐시의 일반 원리. 여기서는 '입력이 같으면 결과가 같다'는 가정이 깨질 때의 위험이 특히 크다"
+    },
+    {
+      "slug": "iac",
+      "how": "모노레포 설정(경로별 CI·소유권·린트 규칙)도 코드로 남겨야 재현된다"
+    },
+    {
+      "slug": "load-test",
+      "how": "CI 시간이 느려지는 것을 측정으로 확인하는 사고방식. 체감이 아니라 숫자로 도구 도입을 결정한다"
+    },
+    {
+      "slug": "design-system",
+      "how": "⚠️ 아직 문서가 없다. 이 낱말과 가장 자주 붙어 다니는 것 — 유모스원·케이티밀리의서재·딥아이·엔닷라이트 공고가 모노레포와 디자인 시스템을 한 줄에 적는다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `모노레포`·`Turborepo`·`Nx` 어느 이름도 없다. 직접 세면 `monorepo|모노레포` 로 **182건(모집중 67)**, 도구 이름(`Turborepo|pnpm workspace|Lerna|Changesets|yarn workspace|Bazel`)으로 131건이다.",
+    "⚠️ **`Nx` 로는 세지 않았다.** 앞 사이클에서 `\\bNx\\b` 가 대소문자 무시로 43건을 냈는데 상당수가 엉뚱한 맥락이었다(`ARIA`→`MariaDB` 와 같은 계열). 그래서 이 문서의 숫자는 **`monorepo|모노레포` 기준**이고, `Nx` 는 문장으로 확인된 것만 인용했다(아치서울·헤렌·컬리·위펀·다음).",
+    "⭐ **국내 사례는 프론트엔드에 크게 쏠려 있다.** 182건의 문장을 훑어 보면 디자인 시스템·공유 컴포넌트·멀티 앱·마이크로 프론트엔드가 대부분이고, 백엔드 사례는 **한 언어로 통일된 경우**(지로의 NestJS, 매니패스트의 TypeScript 풀스택)만 보인다. ⚠️ 다만 182건을 **모두 분류하지는 않았다** — 표본을 읽고 얻은 인상이므로 비율로 쓰지 않았다.",
+    "**여러 언어가 섞인 초대형 모노레포는 다루지 않았다.** 구글식 빌드 시스템(Bazel 류), 부분 체크아웃, 코드 검색 같은 문제는 이 데이터에 나타나지 않아 범위 밖으로 뒀다. `Bazel` 을 도구 셈에 넣었으나 그 문맥의 공고를 따로 확인하지는 않았다.",
+    "**영향 범위 계산의 기준 커밋(base) 설정은 원문으로 확인하지 못했다.** Nx 문서에서 확인한 것은 \"Git 으로 바뀐 파일을 정한다\"까지이고, 얕은 클론이나 병합 기점 선택 같은 실무 설정은 열지 않았다 — 지뢰 4번은 그 정의에서 따라 나온 추론이다(`confidence` 를 문장 단위로 표시하지 못했다).",
+    "**Changesets 의 `linked` 와 `fixed` 의 차이는 인용문 안에서만 언급했다.** 문서가 \"Unlike `linked packages`...\" 라고 대비하는데 `linked` 자체의 정의는 확인하지 않았다. 세 번째 방식이 존재한다는 것만 알아 두고, 실제 선택 시에는 원문을 볼 것."
+  ],
+  "sources": [
+    {
+      "title": "Nx — Affected",
+      "url": "https://nx.dev/ci/features/affected",
+      "publisher": "Nx",
+      "kind": "docs",
+      "summary": "바뀐 파일에서 프로젝트 그래프를 타고 '다시 돌려야 할 최소 집합'을 계산한다"
+    },
+    {
+      "title": "Turborepo — Caching",
+      "url": "https://turborepo.dev/docs/crafting-your-repository/caching",
+      "publisher": "Vercel",
+      "kind": "docs",
+      "summary": "입력을 해시해 결과를 재생하는 구조. 로그까지 복원하고 원격 캐시로 팀이 공유한다"
+    },
+    {
+      "title": "Changesets — Fixed Packages",
+      "url": "https://github.com/changesets/changesets/blob/main/docs/fixed-packages.md",
+      "publisher": "Changesets",
+      "kind": "docs",
+      "summary": "함께 버전을 올릴 패키지 묶음. 안 바뀐 것도 함께 올라간다"
+    }
+  ]
+}
