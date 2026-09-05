@@ -139,7 +139,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "fail-forward-not-back"
+      ]
     },
     {
       "name": "남의 은행 1만 2,000곳에 대신 닿는다",
@@ -148,7 +150,513 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "fail-forward-not-back",
+      "name": "되돌아가는 대신 앞으로 실패할 길을 미리 만든다",
+      "domain": "관계형 저장소를 통째로 갈아 끼우되 2년을 넘기지 않는다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **떠날 이유가 다섯인데 그중 하나가 `우리가 쓰는 시간` 이다** — **매년 2 엔지니어-년을 Aurora 의 한계를 우회하는 설계에 썼다**(특히 2~10TB 넘는 큰 테이블에서). 큰 테이블에서 **약 12k writes/sec 병목**을 만났고, 온라인 스키마 변경이 무거워 **팀들이 기존 테이블을 고치는 대신 새 테이블을 추가**했다. ⚠️ **그리고 결정적인 계기는 남의 일정이었다** — **MySQL 5.7 지원이 끝나** 5.7→8.0 업그레이드가 어차피 큰 일이 될 것이라(페이스북의 8.0 업그레이드를 보고 판단했다), **그 노력을 플랫폼 이전으로 돌렸다.** **어차피 치를 비용을 다른 곳에 쓴 것이다**(뒤쪽은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "전체 저장 스택",
+            "value": "**약 800 서버 · 약 50만 QPS · 약 650TB** · 내부 SLA **99.99%+**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "SQL 플랫폼",
+            "value": "**약 446 서버 · 약 14만 QPS · 약 40TB** — TiDB 부분은 **약 160 서버 · 약 17만 QPS · 약 70TB · 약 700 vCPU**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 사람",
+            "value": "**저장 팀 소프트웨어 엔지니어 6명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ Aurora 에 쓰던 시간",
+            "value": "**매년 2 엔지니어-년**을 한계 우회 설계에 썼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "업그레이드 비용의 변화",
+            "value": "Aurora 는 **6 엔지니어링 개월 + 수십 분 다운타임** → TiDB 는 **프로덕션 클러스터 6개를 일주일에 다운타임 0**(두 번째는 **이틀**)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "컷오버",
+            "value": "**3~4주 → 약 1주** · 쓰기 다운타임 **약 5분 → 60초 미만**. 내부 런북은 **약 200개 작업과 약 20개 하위 런북**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "진행",
+            "value": "2024년 말까지 **41개 서비스** 전환 — 2025년 중반 완주 목표",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기간을 정할 때",
+          "thought": "⚠️ **먼저 끝을 정하고 방법을 맞췄다** — `이 프로젝트는 전사적으로 2년을 넘길 수 없다` 는 **설계 제약**이었다. 그리고 시작도 잘라 두었다 — **분기 하나 연구, 분기 하나 프로토타이핑**, 그리고 **Amazon 의 MySQL 5.7 지원 종료 전에 완료.** **남의 일정(5.7 EOL)을 자기 마감으로 삼은 것이고, 그것이 범위와 방법을 전부 정했다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "되돌리기를 설계할 때",
+          "thought": "⚠️ **뒤로 가는 대신 앞으로 가는 길을 만들었다** — 원본 MySQL 을 같은 스냅샷으로 복제한 **롤백 클러스터**를 따로 두고, 전환 뒤 문제가 생기면 **거기로 `fail forward`** 한다. **되돌리기가 아니라 세 번째 목적지다.** 그래서 **두 데이터베이스에 동시에 읽고 쓰는 방식을 쓰지 않아도 됐다** — 회사가 그 방식의 **신뢰성과 일관성 문제를 피하려고** 순차 전환을 골랐다고 적는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "누가 일할지 정할 때",
+          "thought": "⚠️ **처음엔 클라이언트 팀에 일부를 맡겼다가 거뒀다** — `맥락 전환의 부담이 너무 컸다`. 저장 팀으로 옮기니 **클라이언트 팀이 복제나 환경 설정의 세부에서 자유로워졌고**, 반복 작업을 **한 가지 방식으로 자동화**할 수 있었다. **조직 효율이 오르고 클라이언트 팀의 불만이 줄었다** — **일을 나누는 것이 늘 효율적이지는 않다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "원본 Aurora MySQL",
+            "what": "떠나는 쪽. **단일 라이터**라 설정 변경·확장·재시작·페일오버마다 다운타임이 생긴다"
+          },
+          {
+            "name": "TiDB 클러스터",
+            "what": "가는 쪽. **자동 샤딩**으로 쓰기까지 수평 확장되고 **5TB+ 테이블에도 온라인 DDL 에 다운타임이 없다**"
+          },
+          {
+            "name": "⚠️ 롤백 MySQL 클러스터",
+            "what": "⚠️ **같은 스냅샷으로 만든 세 번째 클러스터.** 전환 뒤 문제가 생기면 **뒤가 아니라 여기로** 간다"
+          },
+          {
+            "name": "컷오버 클라이언트",
+            "what": "공유 데이터베이스 드라이버에 심은 **기능 플래그** — `mysql / tidb / rollback mysql` 셋 중 하나로 트래픽을 돌린다"
+          },
+          {
+            "name": "동적 런북",
+            "what": "⚠️ **Markdown 설명과 TypeScript 코드를 한 노트북에.** 내부 SDK 가 클러스터 개념을 추상화하고 **각 셀 실행을 슬랙에 로깅**한다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **두 데이터베이스에 동시에 읽고 쓰지 않는다** — 그 방식의 신뢰성·일관성 문제를 피한다",
+          "⚠️ **되돌릴 길이 항상 있어야 한다** — 다만 뒤가 아니라 앞으로",
+          "**검증은 모든 단계에서 반복하고, 속도보다 정확성이 앞선다** — `we prioritize correctness over velocity`",
+          "**전사적으로 2년을 넘기지 않는다** — 스스로 건 설계 제약"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**① 비호환을 없앤다** — 기본 키를 강제하고(TiCDC 가 요구한다), **외래 키를 없애고**(일부 도구가 지원 안 하고 분산에서 성능이 떨어진다 — 앱 계층에서 강제), **트랜잭션 격리를 감사하고**(TiDB 에 SERIALIZABLE 이 없다), **자동 증가 필드를 감사한다**",
+            "why": "⚠️ **TiDB 의 auto-increment 는 전역 단조가 아니다** — 여러 노드가 범위를 나눠 할당하기 때문"
+          },
+          {
+            "step": "**호환을 증명한다** — 자동 단위·통합 테스트를 TiDB 로 돌리고 **그 서비스의 스키마 이전을 잠근다**",
+            "why": "운영 전환까지 움직이는 표적이 없게"
+          },
+          {
+            "step": "**② 복제한다** — TiDB Lightning 으로 스냅샷을 넣고, **같은 스냅샷으로 롤백 클러스터를 만들고**, 셋 사이에 복제를 건다",
+            "why": "⚠️ **앞으로 실패할 길을 먼저 깐다**"
+          },
+          {
+            "step": "**③ 검증한다** — `sync-diff-inspector` 로 데이터 일치, **이중 쓰기·읽기로 정확성과 성능 비교**, 성능 벤치마크",
+            "why": "⚠️ **바이너리 기본 키와 타임스탬프 컬럼에서 엣지 케이스를 찾아 벤더 패치를 받았다**"
+          },
+          {
+            "step": "**④ 전환한다** — 쓰기 중단 → 복제 따라잡기 → **읽기를 TiDB 로** → 검증 → **쓰기를 TiDB 로**",
+            "why": "원자적이고, **쓰기 다운타임 약 60초**이며 읽기는 내내 살아 있다"
+          },
+          {
+            "step": "**문제가 생기면 롤백 클러스터로 앞으로 실패한다**",
+            "why": "뒤로 가지 않는다"
+          },
+          {
+            "step": "**일을 저장 팀으로 모은다**",
+            "why": "⚠️ 클라이언트 팀에 맡겼더니 **맥락 전환 비용이 너무 컸다**"
+          },
+          {
+            "step": "**동적 런북으로 반복을 자동화한다**",
+            "why": "**컷오버 5배, 서비스 이전 3~4배** 빨라졌다 — 표준적인 서비스(약 80%)에서 가장 크게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Aurora MySQL 을 계속 쓸 것인가",
+            "chosen": "**떠난다** — 이유를 다섯으로 적는다",
+            "alternatives": [
+              "Aurora 를 유지하며 5.7→8.0 업그레이드"
+            ],
+            "tradeoff": "신뢰성(**단일 라이터가 단일 실패점**) · 개발 속도(**약 12k writes/sec 병목**, 무거운 온라인 스키마 변경) · 유지 부담 · 쓰기 확장 한계 · **5.7 지원 종료**. ⚠️ **대가는 관리형을 버리고 자체 호스팅을 떠안는다는 것**이고, 실제로 **생태계 도구의 엣지 케이스 버그가 곧 자기 일이 됐다**(아래 난제 참조).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "어차피 해야 할 업그레이드를 어떻게 쓸 것인가",
+            "chosen": "⚠️ **업그레이드 노력을 플랫폼 이전으로 바꿔치기한다**",
+            "alternatives": [
+              "5.7→8.0 을 먼저 하고 나중에 이전을 검토"
+            ],
+            "tradeoff": "**5.7→8.0 도 큰 일이 될 것**이라 판단했고(페이스북의 8.0 업그레이드를 근거로 들었다), **그 비용을 한 번 더 치를 바에 다른 곳에 썼다.** ⚠️ **대가는 실패했을 때 돌아갈 곳도 없어진다는 것**이다 — 5.7 은 이미 지원이 끝나 있었다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "기간을 어떻게 정할 것인가",
+            "chosen": "⚠️ **먼저 끝을 정한다** — `전사적으로 2년을 넘길 수 없다`",
+            "alternatives": [
+              "필요한 만큼 시간을 쓰기"
+            ],
+            "tradeoff": "**분기 하나 연구, 분기 하나 프로토타이핑, 그리고 5.7 EOL 전 완료**로 시작을 잘랐다. ⚠️ **기간을 먼저 정하면 방법이 그것에 맞춰진다** — 실제로 **자동화(동적 런북)와 일의 중앙화가 그 제약에서 나왔다**(뒤쪽은 재구성이다). 대가는 **범위를 줄여야 할 때 무엇을 버릴지 미리 정해야 한다는 것**인데 그 논의는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "되돌리기를 어떻게 준비할 것인가",
+            "chosen": "⚠️ **롤백 MySQL 클러스터를 따로 세운다** — 뒤가 아니라 앞으로 실패한다",
+            "alternatives": [
+              "원본 Aurora 로 되돌리기",
+              "이중 쓰기로 양쪽을 살려 두기"
+            ],
+            "tradeoff": "**같은 스냅샷으로 만든 세 번째 클러스터**가 있으면 전환 뒤에도 갈 곳이 있다. ⚠️ **그래서 두 데이터베이스에 동시에 읽고 쓰는 방식을 안 써도 됐다** — 회사가 그 방식의 **신뢰성과 일관성 문제**를 피하려 했다고 적는다. 대가는 **세 클러스터의 복제를 유지하는 비용**이다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "전환을 어떻게 할 것인가",
+            "chosen": "**원자적으로, 순서대로** — 쓰기 중단 → 따라잡기 → 읽기 전환 → 검증 → 쓰기 전환",
+            "alternatives": [
+              "점진적 트래픽 이동",
+              "이중 쓰기 후 전환"
+            ],
+            "tradeoff": "**쓰기 다운타임 약 60초**를 받아들이는 대신 **읽기는 내내 살아 있고 일관성이 유지된다.** ⚠️ **60초의 쓰기 정지를 감수할 수 없는 서비스는 어떻게 하는지 글에 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "이전 작업을 누가 할 것인가",
+            "chosen": "⚠️ **저장 팀으로 모은다** — 처음엔 클라이언트 팀에 맡겼다가 거뒀다",
+            "alternatives": [
+              "각 서비스 팀이 자기 이전을 수행"
+            ],
+            "tradeoff": "`맥락 전환의 부담이 너무 컸다`. 중앙화하니 **클라이언트 팀이 복제와 환경 설정의 세부에서 자유로워졌고**, 반복 작업을 **한 가지 방식으로 자동화**할 수 있었다. ⚠️ **대가는 6명이 41개 서비스를 떠안는다는 것**이고, 그래서 **자동화가 선택이 아니라 필수가 됐다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "반복 작업을 어떻게 다룰 것인가",
+            "chosen": "⚠️ **동적 런북** — Markdown 설명과 TypeScript 코드를 한 노트북에(Deno·Jupyter)",
+            "alternatives": [
+              "구글 문서를 복제해 매번 고치기",
+              "셸 스크립트 모음"
+            ],
+            "tradeoff": "**문서와 실행이 한 곳에 있으니 버전 표류가 사라진다.** Deno 를 고른 이유도 적는다 — 팀의 TypeScript 숙련도 · **인라인 의존성 선언** · virtualenv 없음 · **6,000줄 넘는 런북 코드의 타입 안전성** · 셸 실행 래퍼. **각 셀 실행을 슬랙에 로깅해 감사**한다. **컷오버 5배, 서비스 이전 3~4배.** ⚠️ 대가는 **그 SDK 자체를 만들고 유지해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "TiDB 와 MySQL 의 차이를 어떻게 다룰 것인가",
+            "chosen": "**넷을 감사해 미리 없앤다** — 기본 키 · 외래 키 · 트랜잭션 격리 · 자동 증가",
+            "alternatives": [
+              "문제가 나면 그때 고치기"
+            ],
+            "tradeoff": "⚠️ **차이가 조용한 것들이다** — 외래 키는 **일부 도구에서 지원되지 않고 분산에서 성능을 떨어뜨리며**, **SERIALIZABLE 격리가 없고**, **auto-increment 가 전역 단조가 아니다**(여러 노드가 범위를 할당한다). **앱이 엄격히 증가하는 ID 에 기대고 있으면 ID 생성 자체를 다시 설계해야 한다.** 대가는 **이전 전에 애플리케이션을 고쳐야 한다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "TiDB (자체 호스팅)",
+            "role": "자동 샤딩으로 쓰기까지 확장하고 5TB+ 테이블에도 온라인 DDL 을 무중단으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "TiDB Lightning · TiCDC · DM",
+            "role": "스냅샷 임포트와 변경 데이터 캡처, 복제. ⚠️ **셋 다 엣지 케이스 버그로 패치가 필요했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "`mysql/tidb/rollback mysql` 컷오버 클라이언트",
+            "role": "공유 드라이버의 기능 플래그로 트래픽을 셋 중 하나로 돌린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "롤백 MySQL 클러스터",
+            "role": "⚠️ **앞으로 실패할 곳.** 같은 스냅샷으로 만들어 둔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "동적 런북 (Deno · Jupyter · 내부 SDK)",
+            "role": "문서와 실행을 한 곳에. 슬랙 로깅으로 감사. **컷오버 5배 가속**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "남의 은행 1만 2,000곳에 대신 닿는다",
+          "via": "⚠️ 이 저장소 위에 선다",
+          "contract": "**위에 얹힌 앱들이 자기 사용자에게 SLA 를 약속하므로 이 회사는 DB 계층에 99.995% 를 건다** — 구글 SRE 관행대로 **9 를 하나 더** 붙인 값이다. ⚠️ **핵심 제품의 구조는 아직 못 읽었다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "PingCAP (벤더)",
+          "via": "엣지 케이스 패치",
+          "contract": "⚠️ **자체 호스팅으로 옮기자 벤더의 버그가 자기 일이 됐다** — 바이너리 기본 키와 타임스탬프 컬럼에서 문제를 찾아 패치를 받았고, 회사는 그 지원을 높이 평가하면서도 **`각 버그가 분류와 테스트에 엔지니어링 시간을 먹었다`** 고 적는다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "각 서비스 팀",
+          "via": "⚠️ 애플리케이션 변경",
+          "contract": "⚠️ **이전 전에 앱을 고쳐야 했다** — 기본 키 추가, 외래 키 제거(앱 계층에서 강제), 격리 수준 조정, **엄격히 증가하는 ID 에 기대던 로직 재설계**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "MySQL 5.7 지원 종료",
+          "via": "⚠️ 남의 일정",
+          "contract": "⚠️ **외부 마감이 내부 마감이 됐다** — 어차피 치를 업그레이드 비용을 플랫폼 이전으로 돌렸다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "관리형을 떠나면 벤더의 버그가 내 일이 된다",
+            "why_hard": "⚠️ **회사가 `아쉬웠던 것` 다섯 중 첫째로 적는다** — 복제(DM·TiCDC)와 임포트(TiDB Lightning) 각각에 **엣지 케이스 버그**가 있어 패치가 필요했고, 벤더가 좋은 파트너였음에도 **`각 버그가 분류와 테스트에 엔지니어링 시간을 먹었다`.** 그리고 **자원 격리가 완벽하지 않고**, **설정 값들의 상호작용을 추론하기 어려워 소스 코드를 읽어야 했다.**",
+            "current_best": "**벤더와 가깝게 일하고, 검증을 모든 단계에서 반복하는 것** — `we prioritize correctness over velocity`. ⚠️ **관리형에서 자체 호스팅으로 갈 때 이 비용을 얼마로 잡아야 하는지는 글에 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "problem": "같은 SQL 이 다른 실행 계획으로 돈다",
+            "why_hard": "⚠️ **TiDB 가 Aurora 와 다른 계획을 고르는 일이 있었고, 일부 질의는 전체 테이블 스캔이 됐다.** 문법이 호환된다고 성능이 호환되는 것은 아니다 — **그리고 그것은 코드를 봐서는 안 보인다.**",
+            "current_best": "**이중 읽기로 발견하고 인덱스 힌트나 재작성으로 고치는 것.** ⚠️ **이중 쓰기·읽기 절차 자체가 이 문제 때문에 필요했다** — 검증 단계가 무거운 이유가 여기 있다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+                "url": "https://plaid.com/blog/switching-to-tidb/",
+                "publisher": "Plaid Engineering",
+                "date": "2025-02-12",
+                "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "뒤로 돌아가지 않고 세 번째 클러스터로 간다",
+          "question": "서비스 하나가 옮겨지는 네 단계",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>① 비호환 제거</b><br/>• 기본 키 강제 (TiCDC 요구)<br/>• 외래 키 제거 → 앱 계층에서<br/>• 격리 감사 (SERIALIZABLE 없음)<br/>• auto-increment 감사 (전역 단조 아님)\"]:::accent --> B[\"<b>② 복제</b><br/>• TiDB Lightning 으로 스냅샷<br/>• <b>같은 스냅샷으로 롤백 클러스터</b><br/>• 셋 사이 복제\"]:::accent\n  B --> C[\"<b>③ 검증</b><br/>• sync-diff-inspector<br/>• <b>이중 쓰기·읽기 비교</b><br/>• 성능 벤치마크\"]:::accent\n  C --> D[\"<b>④ 전환 (약 60초)</b><br/>• 쓰기 중단 → 따라잡기<br/>• 읽기를 TiDB 로 → 검증<br/>• 쓰기를 TiDB 로\"]:::accent\n  D -->|\"문제가 생기면\"| R[\"<b>롤백 MySQL 클러스터</b><br/>• <b>뒤가 아니라 앞으로 실패</b>\"]:::list\n  D --> OK[\"<b>완료</b><br/>• 컷오버 3~4주 → 약 1주\"]:::list\n  RB[\"<b>동적 런북 (Deno · Jupyter)</b><br/>• 문서와 실행이 한 곳에<br/>• 셀 실행을 슬랙에 로깅<br/>• <b>컷오버 5배 가속</b>\"]:::accent -.-> A\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "관리형을 떠나자 벤더의 버그가 내 일이 됐다",
+          "question": "무엇을 얻고 무엇을 떠안았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>Aurora 의 한계</b><br/>• 단일 라이터 = 단일 실패점<br/>• 약 12k writes/sec<br/>• <b>매년 2 엔지니어-년을 우회에</b>\"]:::gone --> M[\"<b>TiDB 로 이전</b>\"]:::accent\n  E[\"⚠️ <b>MySQL 5.7 지원 종료</b><br/>• 어차피 큰 업그레이드가 필요\"]:::gone --> M\n  M --> G1[\"<b>업그레이드 6개월 → 일주일</b><br/>• 다운타임 0\"]:::list\n  M --> G2[\"<b>5TB+ 테이블에도</b><br/><b>온라인 DDL 무중단</b>\"]:::list\n  M --> B1[\"⚠️ <b>생태계 도구의 엣지 케이스 버그</b><br/>• DM · TiCDC · Lightning<br/>• 분류와 테스트에 시간을 먹었다\"]:::gone\n  M --> B2[\"⚠️ <b>같은 SQL 이 다른 계획으로</b><br/>• 전체 테이블 스캔이 되기도<br/>• 이중 읽기로 발견 · 힌트로 완화\"]:::gone\n  M --> B3[\"⚠️ <b>자원 격리가 완벽하지 않다</b><br/>⚠️ <b>설정 상호작용을 알려고</b><br/>⚠️ <b>소스 코드를 읽어야 했다</b>\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Cutting over: Our journey from AWS Aurora MySQL to TiDB",
+          "url": "https://plaid.com/blog/switching-to-tidb/",
+          "publisher": "Plaid Engineering",
+          "date": "2025-02-12",
+          "summary": "2023년 1월 'Future of SQL' 프로젝트로 시작해 Aurora MySQL 에서 자체 호스팅 TiDB 로 옮긴 회고. 저장 팀 6명, 내부 런북 약 200단계, 컷오버가 3~4주에서 약 1주로, 쓰기 다운타임이 약 5분에서 60초 미만으로 줄었다."
+        },
+        {
+          "title": "Plaid revenue, valuation & funding",
+          "url": "https://sacra.com/c/plaid/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2025년 ARR 5억 4,600만 달러(+40%), 조정 EBITDA 흑자. 밸류에이션은 2021년 134억 달러에서 2025년 61억으로 조정됐다가 2026년 2월 80억. 금융기관 1만 2,000곳 이상, 소비자 계좌 5억 개 이상."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **핵심 제품(계좌 연결)의 구조를 아직 못 읽었다** — **금융기관 1만 2,000곳에 어떻게 닿고 그 변화를 어떻게 따라가는지**가 이 회사의 본체인데 자료가 없다. **다음 사이클의 일이다.**",
@@ -156,7 +664,8 @@
     "**사업 수치가 전부 3자 출처다**(Sacra 등) — ARR·밸류에이션·기관 수·계좌 수. **회사가 직접 밝힌 값을 못 찾았다.**",
     "**새 제품군(사기 탐지·신원 확인·결제 개시)의 기술을 모른다** — ARR 의 20% 이상이고 93% 자란다는 것만 3자 자료로 안다.",
     "**TiDB 이전이 끝났는지 모른다** — 글은 2025년 2월이고 **2025년 중반 완주가 목표**였다. 2024년 말 기준 **41개 서비스**를 옮겼다.",
-    "⚠️ **밸류에이션이 2021년 134억에서 2025년 61억으로 내려앉은 시기와 이 이전 기간이 겹친다** — 비용 압박이 판단에 어떻게 작용했는지는 글에 없다(이 지적은 이 사이트의 재구성이다)."
+    "⚠️ **밸류에이션이 2021년 134억에서 2025년 61억으로 내려앉은 시기와 이 이전 기간이 겹친다** — 비용 압박이 판단에 어떻게 작용했는지는 글에 없다(이 지적은 이 사이트의 재구성이다).",
+    "⚠️ **Aurora MySQL 을 언제부터 썼는지 모른다** — 떠난 시점(2023년 1월 프로젝트 시작)은 확실한데 **시작 연도가 글에 없어 연표(history)를 세우지 않았다.** 첫 시기의 시작을 지어내지 않는다."
   ],
   "sources": [
     {
