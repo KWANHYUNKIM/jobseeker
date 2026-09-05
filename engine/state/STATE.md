@@ -8,29 +8,38 @@
 
 ## 지금 파는 중
 
-**없다.** 완료 **67곳** · ⚠️ **큐 0/3 — 이번 후보 조사가 빈손으로 끝났다.**
+**없다.** 완료 **67곳** · **큐 2/3**(Bolt · Mercado Libre) · 비교 문서 33편.
 
-### ⚠️ 다음 사이클도 후보 조사다 — 그런데 같은 곳을 또 두드리면 안 된다
+**다음 사이클은 6순위(신규) — 대기 표 맨 위 Bolt 다.** PROMPT.md 3단계부터.
+⚠️ **본문은 브라우저로만 온다** — `get_page_text` 를 쓴다.
 
-**여덟 곳을 두드려 하나도 못 올렸다.** 노린 새 축(물류·부동산·보험·암호화폐·개발자도구)이
-전부 막혔다. **다음 사이클은 아래 두 갈래 중 하나로 시작한다 — 새 이름을 떠올리기 전에.**
+### ⭐⭐ 이번 사이클의 교훈은 회사가 아니라 도구다
 
-1. **⏳ Bolt 를 브라우저로 다시 본다** — 가장 가까이 갔던 곳이다.
-   `bolt.eu/en/blog/category/tech-at-bolt/` 는 **목록이 잘 오고 제목이 회고형**인데
-   (월 1000만 쿼리 Presto→Databricks 이전 · **과잉설계에서 단순함으로** 바꾼 사기 검문)
-   **본문만 JS 로 그려져 비어 온다.** `get_page_text` 로 열리면 바로 올릴 수 있다.
-2. **⚠️ 목록은 되는데 주소를 못 맞힌 곳을 마저 본다** — `blog.sentry.io` 는 목록에서
-   URL 을 받아 오면 읽힌다. 이번엔 주소를 추측하다 404 를 받았다.
+앞 사이클이 **여덟 곳을 두드려 빈손**으로 끝나며 *"Bolt 를 브라우저로 다시 본다"* 를
+적어 뒀다. 그대로 했더니 **첫 시도에 전문이 왔다.** 그 김에 **Medium 도 열어 봤더니
+그것도 전문이 온다** — 그래서 세 사이클 전에 떨어뜨렸던 **Mercado Libre** 를 같은
+사이클에 올렸다. **한 사이클에 둘, 그것도 전에 버린 곳에서 나왔다.**
 
-### 이번 조사에서 굳어진 것 — 벽이 세 종류다
+### ⚠️ 그러니 다음 후보 조사는 새 이름부터 찾지 않는다
 
-- **접근이 막힌다** — 403 · Medium · 인증서 만료 (앞 조사들)
-- **블로그가 없다** — 보험(Lemonade·Root·Hippo) · 게임 · Flutterwave·Paystack.
-  **후보 자체를 못 찾는 축이 있다.** 새 이름을 떠올려도 소용없으니 **구체적인 글 주소가
-  손에 들어오기 전에는 다시 두드리지 않는다.**
-- **열리는데 마케팅이다** — ClickHouse · Tailscale · PingCAP · Ably · Capital One.
-  ⚠️ **이건 회사가 아니라 첫 페이지의 문제일 수 있다** — 목록 앞쪽은 제품 발표가 차지한다.
-  **깊은 글의 주소를 특정할 수 있으면 판정이 뒤집힐 수 있다.**
+**"Medium 이라 못 읽는다"로 떨어뜨린 목록이 그대로 후보 명단이다** —
+**Booking.com**(`medium.com/booking-com-development`, 250개 이상 MySQL 클러스터의 백업
+카탈로그를 AWS 로 옮긴 회고 등) · Trainline · Traveloka · Tokopedia · Dream11 · Meesho.
+**접근 지도에는 `medium.com` 이 브라우저로 열린다고 진작 적혀 있었는데 후보 조사가 그걸
+안 썼다.** 원장을 읽고도 안 쓴 것이라, DoorDash 를 두 번 두드린 것과 같은 종류의 실수다.
+**큐가 빌 때마다 새 이름을 떠올릴 것이 아니라 이 목록을 브라우저로 여는 것이 훨씬 싸다.**
+
+### 두 후보가 왜 좋은가
+
+- **Bolt**(에스토니아) — **과잉설계를 스스로 인정하고 되돌아온 회고**가 있다.
+  설정 주도 프레임워크로 갔다가 되돌아오며 *"Ironically, the 'no-engineer config' idea
+  had increased complexity."* 라 적고, **어디까지는 통했는지도 가른다**(규칙 유지를
+  분석가에게 넘긴 것은 성공, 생애주기 전체를 설정화한 것은 실패).
+- **Mercado Libre**(아르헨티나 — **라틴 둘째 · 아르헨티나 첫 자리**) —
+  **연도가 1999·2010·2015·2018 로 다 붙어 있다.** 모놀리스(개발자 200명·주 1회 배포) →
+  MeliCloud → Fury(사내 개발자 플랫폼) → Release Process. 중간의 대가도 적는다:
+  마이크로서비스로 간 뒤를 **`chaotic freedom`** 이라 부른다.
+  **연표(eras)를 첫 사이클에 채울 수 있는 드문 회사다.**
 
 ## 지금의 진짜 상태
 
@@ -351,7 +360,9 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | **IR 보도자료(Q4 Inc 계열)** | ✅ **브라우저 `get_page_text` 로 전문이 온다** — `investors.<회사>.com/news/news-details/<연도>/<제목>/default.aspx`. WebFetch 는 빈 껍데기만 준다. Doximity 에서 표까지 통째로 받았다(사이클 211) |
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
-| `bolt.eu/en/blog/category/tech-at-bolt/` | ⚠️ **목록은 오는데 본문이 비어 온다**(JS 렌더링). `engineering.ramp.com` 과 같은 형태 — **브라우저 `get_page_text` 로 다시 볼 것** (2026-09-05) |
+| `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
+| `medium.com/*` | ⚠️ WebFetch 403 · **브라우저로는 전문이 온다 — 2026-09-05 에 `medium.com/mercadolibre-tech` 로 실제 확인했다.** 후보를 Medium 이라는 이유로 떨어뜨리지 않는다 |
+| ~~`bolt.eu/en/blog/category/tech-at-bolt/`~~ | ⚠️ **목록은 오는데 본문이 비어 온다**(JS 렌더링). `engineering.ramp.com` 과 같은 형태 — **브라우저 `get_page_text` 로 다시 볼 것** (2026-09-05) |
 | `clickhouse.com/blog` · `tailscale.com/blog` | ⚠️ 열리지만 **첫 페이지가 제품 발표·고객 사례**다. 깊은 글은 아카이브 안쪽에 있을 수 있다 |
 | `flexport.engineering` · `redfin.engineering` | ❌ **응답이 없고 검색에도 안 잡힌다** — 엔지니어링 서브도메인이 사라진 것으로 보인다 |
 | `blog.sentry.io` | ⚠️ 목록은 열린다. **글 주소를 맞히면 404** — 목록에서 URL 을 받아 써야 한다 |
