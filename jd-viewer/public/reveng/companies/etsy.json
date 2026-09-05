@@ -4,7 +4,7 @@
   "name_en": "Etsy",
   "country": "US",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "etsy.com",
   "one_liner": "똑같은 물건이 하나도 없는 시장 — 그래서 데이터도 검색도 하나로 묶이지 않는다",
@@ -209,22 +209,69 @@
       "why": "⚠️ **이 시장은 SKU 로 묶이지 않는다.** 리스팅이 **1억 개가 넘는데 하나하나가 수공예·빈티지라 서로 같지 않아**, 검색이 `비슷하지만 딱 맞지는 않은` 결과를 내기 쉽다. 회사가 그 문제를 그대로 적으며 LLM 을 붙인다.",
       "tech": [
         {
-          "tech": "⏳ LLM 기반 검색 관련성·재고 이해·구매자 프로파일",
-          "solves": "검색 관련성(2026-01) · 방대한 재고의 이해(2025-10) · 구매자 프로파일 구축(2025-09) 세 갈래로 붙였다.",
-          "limits": "⚠️ **세 편 다 제목과 소개만 확인했다** — 본문을 읽지 않았고 **수치도 대가도 아직 없다.**",
-          "confidence": "inferred",
+          "tech": "골든 라벨 + LLM 정렬",
+          "solves": "⚠️ **사람이 무엇이 좋은지 정하고 LLM 이 그것을 확장한다** — `LLMs do not replace human judgment, instead they align with and amplify it`. 관리자 2명이 라벨링하고 불일치율을 추적한다.",
+          "limits": "⚠️ **관련성의 뜻이 시간과 사회적 맥락에 따라 바뀐다** — `face masks` 가 2020년 전후로 다른 것을 뜻하게 됐다. **기준이 움직이면 시점 간 비교가 어려워진다**(재구성).",
+          "confidence": "confirmed",
           "sources": [
             {
               "title": "How Etsy Uses LLMs to Improve Search Relevance",
               "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
               "publisher": "Etsy Code as Craft",
               "date": "2026-01-16",
-              "summary": "검색 결과가 '비슷하지만 딱 맞지는 않은' 문제를 LLM 으로 다룬다."
+              "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+            }
+          ]
+        },
+        {
+          "tech": "3단 캐스케이드 증류 (o3 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)",
+          "solves": "정확도·지연·비용을 층마다 다르게 맞춘다. 교사는 **하루 수백만 쌍**, 학생은 **추가 지연 10ms 미만**.",
+          "limits": "⚠️ **회사가 운영 복잡도를 인정하고 단순화를 다음 숙제로 적는다** — `provides flexibility but adds operational complexity`.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Etsy Uses LLMs to Improve Search Relevance",
+              "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-01-16",
+              "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+            }
+          ]
+        },
+        {
+          "tech": "네 개의 투입점 (필터링·특성·손실 가중·부스팅)",
+          "solves": "측정에 그치지 않고 실시간 검색 결과를 바꾼다.",
+          "limits": "⚠️ **네 곳에 동시에 넣으면 어느 것이 무엇을 바꿨는지 가르기 어려워진다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Etsy Uses LLMs to Improve Search Relevance",
+              "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+              "publisher": "Etsy Code as Craft",
+              "date": "2026-01-16",
+              "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+            }
+          ]
+        },
+        {
+          "tech": "⏳ 상품 속성 추출 (LLM)",
+          "solves": "1억 개가 넘는 리스팅에서 속성을 뽑아 관련성 판단의 입력으로 쓴다.",
+          "limits": "⚠️ **본문을 읽지 않았다** — 관련성 글이 참조하는 것까지만 확인했다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Understanding Etsy's Vast Inventory with LLMs",
+              "url": "https://www.etsy.com/codeascraft/understanding-etsyas-vast-inventory-with-llms",
+              "publisher": "Etsy Code as Craft",
+              "date": "2025-10-13",
+              "summary": "1억 개가 넘는 리스팅에서 상품 속성을 뽑아내는 데 LLM 을 쓴다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "relevance-up-engagement-down"
+      ]
     }
   ],
   "features": [
@@ -1280,6 +1327,531 @@
           "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
         }
       ]
+    },
+    {
+      "key": "relevance-up-engagement-down",
+      "name": "인기를 지우고 뜻을 세우자 참여 지표가 흔들렸다",
+      "domain": "1억 개가 서로 다른 물건에서 원하는 것을 찾게 한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **검색 모델이 오랫동안 참여 신호(클릭·장바구니·구매)를 관련성의 대리 지표로 썼는데, 그것이 편향된다** — 회사가 그대로 적는다: `popular listings get more clicks, **even when they're not the best match for a specific query**`. **객관적인 신호가 객관적인 답을 주지 않는 자리다.** 그래서 **의미적 관련성**을 참여의 **보완 관점**으로 세웠다 — 리스팅이 **질의에 드러난 구매자의 의도**와 얼마나 맞는가. ⚠️ **이것은 검색 품질 문제이자 공정성 문제이기도 하다** — 인기 대신 관련성을 세우면 **아직 눈에 안 띄는 작은 판매자의 물건이 드러날 수 있고**, 이 회사 판매자의 **89%가 1인 사업**이다.",
+        "metrics": [
+          {
+            "label": "움직인 지표",
+            "value": "**완전히 관련된 리스팅의 비율이 58% → 62%**(2025년 8~10월)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 함께 본 것",
+            "value": "⚠️ **온라인 실험에서 의미적 관련성이 좋아지는데도 참여 지표가 떨어지는 것을 자주 본다** — 다른 이커머스 플랫폼도 지적한 패턴이라고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "label": "실시간 비용",
+            "value": "학생 모델을 넣고도 **추가 지연 10ms 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "label": "매일 처리량",
+            "value": "교사 모델이 **하루 수백만 건의 질의-리스팅 쌍**을 라벨링한다 — vLLM 으로 저비용 고처리량",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "label": "다루는 규모",
+            "value": "리스팅 **1억 개 이상** · 판매자 **500만 명 이상**(그중 **89%가 1인 사업**)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              },
+              {
+                "title": "Understanding Etsy's Vast Inventory with LLMs",
+                "url": "https://www.etsy.com/codeascraft/understanding-etsyas-vast-inventory-with-llms",
+                "publisher": "Etsy Code as Craft",
+                "date": "2025-10-13",
+                "summary": "1억 개가 넘는 리스팅에서 상품 속성을 뽑아내는 데 LLM 을 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "이 검색이 받치는 사업",
+            "value": "2026년 2분기 GMS **26억 달러** · 활성 구매자 **약 8,700만 명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Etsy Q2 2026 earnings",
+                "url": "https://investors.etsy.com/",
+                "publisher": "Etsy IR",
+                "date": "2026-08",
+                "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "참여 신호를 다시 볼 때",
+          "thought": "⚠️ **클릭은 객관적인데 관련성의 증거는 아니다.** 인기 있는 리스팅이 더 클릭받고, 그 클릭이 다시 그것을 위로 올린다 — **인기가 인기를 낳는 고리**를 참여 지표만 보면 알아챌 수 없다(뒤쪽 정리는 이 사이트의 재구성이다). 그래서 **참여를 버리지 않고 옆에 다른 축을 세웠다** — `semantic relevance as a **complementary** perspective to engagement`.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "LLM 을 심판으로 쓸지 정할 때",
+          "thought": "⚠️ **바로 쓰지 않았다.** LLM-as-a-judge 의 문제 둘을 적는다 — **도메인 시프트**(기성 LLM 은 Etsy 사용자의 어휘와 선호를 모른다)와 **성능-비용 맞바꿈**(큰 모델은 잘 추론하지만 대규모 추론에 비싸고, 작은 모델은 빠르고 싸지만 덜 정확하다). 그래서 **사람이 만든 골든 라벨을 먼저 두고 거기에 LLM 을 정렬했다** — **`humans define what good looks like, and LLMs help us scale it. LLMs do not replace human judgment, instead they align with and amplify it.`**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "관련성의 뜻이 변한다는 것을 알 때",
+          "thought": "⚠️ **가장 좋은 예가 마스크다** — **2020년 이전에 `face masks` 를 찾던 사람은 코스튬이나 패션용을 원했고, 그 뒤로는 보호용을 원했다.** 같은 질의의 뜻이 사회적 사건으로 바뀐다. 그래서 **라벨링 지침을 고정하지 않고 사용자 조사와 주석 피드백으로 계속 다듬는다.** **관련성은 정의해 두는 것이 아니라 계속 다시 정의하는 것이다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "관련성 3범주",
+            "what": "**관련**(질의의 모든 부분에 맞는다) · **부분 관련**(일부만 맞거나 주제만 관련) · **무관**(⚠️ **최상위에 있으면 검색이 고장 난 느낌을 준다**)"
+          },
+          {
+            "name": "골든 라벨",
+            "what": "⚠️ **사람이 만든 기준.** 관리자 **2명이 각 쌍을 라벨링**하고 검토로 동점을 푼다. **행 수준 불일치율**을 계속 추적한다"
+          },
+          {
+            "name": "LLM 주석자",
+            "what": "few-shot **사고 사슬** 프롬프트(o3, LangGraph) + **자기일관성 샘플링**. 제목·이미지·설명·속성·변형·추출 엔티티를 다 본다"
+          },
+          {
+            "name": "교사 모델",
+            "what": "미세조정한 작은 LLM(**Qwen 3 VL 4B**) — **하루 수백만 쌍**을 라벨링한다"
+          },
+          {
+            "name": "학생 모델",
+            "what": "경량 **BERT 기반 두 타워** — 실시간 추론용. **추가 지연 10ms 미만**"
+          },
+          {
+            "name": "라벨링 지침",
+            "what": "⚠️ **계속 진화하는 문서.** 관련성의 뜻이 시간과 사회적 맥락에 따라 바뀌기 때문"
+          }
+        ],
+        "invariants": [
+          "⚠️ **사람이 무엇이 좋은지 정하고 LLM 이 그것을 확장한다** — 대체가 아니라 정렬과 증폭",
+          "**세 모델 모두 같은 골든 데이터로 평가된다** — 추적 가능하고 사람 판단과 일관되게",
+          "⚠️ **관련성의 정의는 고정되지 않는다** — 사회적 맥락이 바뀌면 지침을 고친다",
+          "**실시간 검색에 붙는 것은 학생뿐이다** — 정확한 모델은 오프라인에만"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**사람이 골든 라벨을 만든다** — 관리자 2명이 각 쌍을, 검토로 동점 해소",
+            "why": "⚠️ **무엇이 좋은지의 기준이 여기서 나온다.** 불일치율을 추적해 품질을 본다"
+          },
+          {
+            "step": "**검색 로그에서 쌍을 뽑는다** — 무작위·계층 표본에 **어려운 사례 표적 표본**을 섞어",
+            "why": "넓은 범위와 까다로운 경우를 함께 본다"
+          },
+          {
+            "step": "**LLM 주석자를 골든 라벨에 맞춰 검증한다** — 사고 사슬 + 자기일관성",
+            "why": "사람 판단과 어긋나면 쓸 수 없다"
+          },
+          {
+            "step": "**검증된 주석자가 대규모 학습 데이터를 만든다**",
+            "why": "수동 라벨링과 자동 주석 사이의 다리"
+          },
+          {
+            "step": "**교사 모델을 그 데이터로 미세조정한다**(Qwen 3 VL 4B)",
+            "why": "⚠️ **하루 수백만 쌍**을 라벨링할 수 있게 — 정기 평가와 감시용"
+          },
+          {
+            "step": "**교사를 학생으로 증류한다**(BERT 두 타워)",
+            "why": "⚠️ 교사는 **실시간 검색에 쓰기엔 느리다.** 학생은 거의 같은 정확도로 **10ms 미만**"
+          },
+          {
+            "step": "**매일 표본을 떠 교사로 평가하고 지표를 본다.** 급락하면 진단한다",
+            "why": "관련성이 조용히 나빠지는 것을 잡는다"
+          },
+          {
+            "step": "**A/B 테스트에서도 관련성 지표를 확인하고**, 학생 모델을 실시간 검색에 **네 곳으로** 꽂는다 — 필터링 · 특성 강화 · 손실 가중 · 관련성 부스팅",
+            "why": "측정만 하지 않고 결과를 바꾼다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "참여 신호를 관련성의 대리 지표로 계속 쓸 것인가",
+            "chosen": "**버리지 않고 옆에 다른 축을 세운다** — 의미적 관련성",
+            "alternatives": [
+              "참여 신호만 계속 쓰기",
+              "참여를 버리고 관련성만 보기"
+            ],
+            "tradeoff": "참여 신호는 **객관적인데 편향된다** — `popular listings get more clicks, even when they're not the best match`. ⚠️ **대가는 두 축이 서로 다른 말을 할 때 무엇을 따를지 정해야 한다는 것**이고, **실제로 그런 일이 일어났다**(아래 결정 참조).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "LLM 을 바로 심판으로 쓸 것인가",
+            "chosen": "**아니다 — 사람이 만든 골든 라벨에 먼저 정렬한다**",
+            "alternatives": [
+              "기성 LLM 을 그대로 judge 로 쓰기",
+              "전부 사람이 라벨링하기"
+            ],
+            "tradeoff": "기성 LLM 은 **Etsy 사용자의 어휘와 선호를 모르고**(도메인 시프트), 큰 모델은 대규모 추론에 비싸다. 전부 사람이 하면 **시간과 비용이 감당이 안 된다.** ⚠️ **그래서 사람이 기준을 만들고 LLM 이 그것을 넓힌다** — `LLMs do not replace human judgment, instead they **align with and amplify** it`.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "관련성의 정의를 고정할 것인가",
+            "chosen": "⚠️ **아니다 — 지침을 계속 다시 쓴다**",
+            "alternatives": [
+              "한 번 정한 기준을 유지"
+            ],
+            "tradeoff": "⚠️ **예가 결정적이다** — **2020년 이전의 `face masks` 는 코스튬·패션이었고 그 뒤로는 보호용이었다.** 같은 질의의 뜻이 사회적 사건으로 바뀐다. **대가는 기준이 움직이므로 과거 평가와의 비교가 어려워진다는 것**이다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "정확도·지연·비용을 어떻게 맞출 것인가",
+            "chosen": "**3단 캐스케이드 증류** — 주석자 → 교사 → 학생",
+            "alternatives": [
+              "하나의 모델로 전부",
+              "큰 모델을 실시간에 직접"
+            ],
+            "tradeoff": "각 단이 다른 목적을 맡는다 — **주석자는 가장 정확하고 가장 비싸고**, **교사는 하루 수백만 쌍**을 처리하며, **학생은 10ms 미만**으로 실시간에 붙는다. ⚠️ **대가는 운영 복잡도이고 회사가 그것을 인정한다** — `provides flexibility but **adds operational complexity**`. **단순화를 다음 과제로 적는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "관련성 신호를 검색에 어떻게 넣을 것인가",
+            "chosen": "**네 곳에** — 필터링 · 특성 강화 · 손실 가중 · 관련성 부스팅",
+            "alternatives": [
+              "랭킹 특성으로만 쓰기"
+            ],
+            "tradeoff": "필터링은 **무관한 것을 랭킹 전에 제거**하고, 특성은 랭킹 모델에 점수를 주고, 손실 가중은 **랭킹 모델의 학습 자체를 기울이고**, 부스팅은 최종 결과에서 규칙으로 끌어올린다. ⚠️ **네 곳에 동시에 넣으면 어느 것이 무엇을 바꿨는지 가르기 어려워진다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "관련성이 좋아지는데 참여가 떨어지면 어떻게 할 것인가",
+            "chosen": "⚠️ **그 사실을 적고, 원인을 의심하고, 적응 전략을 계획한다**",
+            "alternatives": [
+              "참여가 떨어지면 되돌리기",
+              "관련성만 보고 밀어붙이기"
+            ],
+            "tradeoff": "⚠️ **이 기능에서 가장 값진 대목이다** — `In online experiments, we often observe **engagement metrics decline even as semantic relevance improves**`(다른 이커머스 플랫폼도 지적한 패턴이라 덧붙인다). **균일한 관련성 처치를 맥락 변화에도 똑같이 적용해서라고 의심**하고 **질의 유형별 적응 전략**을 다음으로 삼는다. **두 축이 어긋날 때 한쪽을 버리지 않고 어긋남 자체를 연구 대상으로 삼는 것이다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "3단 스택을 유지할 것인가",
+            "chosen": "⚠️ **단순화를 계획한다** — 층을 합칠 가능성까지 적는다",
+            "alternatives": [
+              "유연성을 위해 그대로 두기"
+            ],
+            "tradeoff": "**유연한 대신 운영이 복잡하다.** ⚠️ **성과를 발표하는 글에서 자기 구조의 복잡도를 다음 숙제로 적는 것은 드물다**(이 평가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "question": "사람의 라벨링 부담을 어떻게 줄일 것인가",
+            "chosen": "**LLM 의 자기일관성을 난이도 신호로 쓴다** — 쉬운 것은 LLM 에, 어려운 것에 사람을 모은다",
+            "alternatives": [
+              "모든 쌍을 사람이 검토",
+              "전부 LLM 에 맡기기"
+            ],
+            "tradeoff": "`When LLM judgments are self-consistent, they align better with human labels. This may indicate easier query-listing pairs.` ⚠️ **아직 계획 단계다** — `we are exploring` 이고, **자기일관성이 난이도의 좋은 대리 지표인지는 검증이 필요하다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "골든 라벨 (사람 2명 + 검토)",
+            "role": "⚠️ **모든 것의 기준.** 세 모델 전부 이것으로 평가된다. 행 수준 불일치율로 품질을 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "tech": "LLM 주석자 (o3 · LangGraph · 사고 사슬 · 자기일관성)",
+            "role": "가장 정확하고 가장 비싼 층. 대규모 학습 데이터를 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "tech": "교사 (Qwen 3 VL 4B, SFT)",
+            "role": "하루 수백만 쌍 라벨링. 정기 평가와 A/B 지표에 쓴다(vLLM 고처리량)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "tech": "학생 (BERT 두 타워)",
+            "role": "실시간 검색에 붙는 유일한 모델. **추가 지연 10ms 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          },
+          {
+            "tech": "네 개의 투입점",
+            "role": "필터링 · 특성 강화 · 손실 가중 · 관련성 부스팅",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "sum-of-parts-is-not-the-whole",
+          "via": "A/B 테스트",
+          "contract": "⚠️ **두 도메인이 같은 자리에서 만난다** — 관련성 지표를 **A/B 에서 확인하고 롤아웃을 정하는데**, 저쪽은 그 A/B 프레임워크가 **효과를 체계적으로 과대추정한다**고 인정한다. **관련성이 오르는데 참여가 떨어지는 관찰도 그 실험 위에서 나온다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "작거나 새 판매자",
+          "via": "관련성 대 인기",
+          "contract": "⚠️ **인기 대신 관련성을 세우면 아직 눈에 안 띄는 판매자의 물건이 드러날 수 있다** — 판매자의 **89%가 1인 사업**이다. **검색 품질 문제가 곧 공정성 문제인 자리다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "상품 속성 추출 (LLM)",
+          "via": "리스팅 이해",
+          "contract": "**추출된 엔티티가 관련성 판단의 입력으로 들어간다** — 제목·이미지·설명·속성·변형과 함께",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "참여 신호 (클릭 · 장바구니 · 구매)",
+          "via": "⚠️ 보완이자 갈등",
+          "contract": "⚠️ **버리지 않고 옆에 세웠는데 둘이 어긋난다** — 관련성이 좋아지는데 참여가 떨어지는 것을 자주 본다고 적는다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "관련성이 좋아지는데 참여가 떨어진다",
+            "why_hard": "⚠️ **두 축이 어긋나는데 어느 쪽이 옳은지 자명하지 않다.** 회사가 `we often observe engagement metrics decline even as semantic relevance improves` 라 적고 **다른 이커머스 플랫폼도 같은 패턴을 봤다**고 덧붙인다. **인기 있는 것을 덜 보여 주면 당장의 클릭은 줄 수 있는데, 그것이 나쁜 검색인지 좋은 검색인지는 짧은 실험으로 알 수 없다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**어긋남을 없애려 하지 않고 원인을 의심한다** — **균일한 관련성 처치를 맥락 변화에도 똑같이 적용해서**라고 보고 **질의 유형별 적응 전략**을 계획한다. ⚠️ **아직 계획이고, 실험 프레임워크 자체가 효과를 과대추정한다는 이 회사의 다른 인정과 겹쳐 읽어야 한다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              },
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "problem": "관련성의 뜻이 시간과 사회적 맥락에 따라 바뀐다",
+            "why_hard": "⚠️ **`face masks` 가 2020년을 전후로 완전히 다른 것을 뜻하게 됐다.** 질의는 그대로인데 의도가 바뀌면 **과거의 정답이 지금의 오답**이 된다. 기준이 움직이므로 **모델도 평가도 계속 따라가야 한다.**",
+            "current_best": "**라벨링 지침을 사용자 조사와 주석 피드백으로 계속 다듬는 것.** ⚠️ **대가는 시점 간 비교가 어려워진다는 것**이고, **언제 지침을 고쳐야 하는지 알아채는 방법은 글에 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Etsy Uses LLMs to Improve Search Relevance",
+                "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-01-16",
+                "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "사람이 기준을 만들고, 큰 모델이 넓히고, 작은 모델이 실시간에 선다",
+          "question": "의미적 관련성은 어떻게 만들어져 검색에 닿나",
+          "kind": "flow",
+          "code": "flowchart TD\n  H[\"<b>사람의 골든 라벨</b><br/>• 관리자 2명 · 검토로 동점 해소<br/>• 행 수준 불일치율 추적\"]:::accent --> V{\"<b>정렬 검증</b>\"}\n  A[\"<b>LLM 주석자</b><br/>• o3 · LangGraph<br/>• 사고 사슬 · 자기일관성<br/>• 제목 · 이미지 · 속성 · 엔티티\"]:::accent --> V\n  V --> T[\"<b>교사 (Qwen 3 VL 4B)</b><br/>• SFT<br/>• <b>하루 수백만 쌍</b>\"]:::accent\n  T --> S[\"<b>학생 (BERT 두 타워)</b><br/>• 증류<br/>• <b>추가 지연 10ms 미만</b>\"]:::accent\n  T --> E[\"<b>매일 평가 · A/B 지표</b><br/>• vLLM 고처리량 · 저비용\"]:::list\n  S --> P{\"<b>실시간 검색에 네 곳으로</b>\"}\n  P --> P1[\"필터링 — 무관한 것을 랭킹 전에 제거\"]:::list\n  P --> P2[\"특성 강화 — 랭킹 모델의 입력\"]:::list\n  P --> P3[\"손실 가중 — 랭킹 학습을 기울인다\"]:::list\n  P --> P4[\"관련성 부스팅 — 최종 결과에서\"]:::list\n  G[\"⚠️ <b>라벨링 지침은 계속 바뀐다</b><br/>• face masks 는 2020년 전후로<br/>  다른 것을 뜻하게 됐다\"]:::gone -.-> H\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "두 축이 어긋나는데 어느 쪽이 옳은지 자명하지 않다",
+          "question": "무엇이 남았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  E[\"<b>참여 신호</b><br/>• 클릭 · 장바구니 · 구매\"]:::accent --> E1[\"⚠️ <b>객관적인데 편향된다</b><br/>• 인기 있는 것이 더 클릭받는다<br/>• 최선의 매칭이 아니어도\"]:::gone\n  R[\"<b>의미적 관련성</b>\"]:::accent --> R1[\"<b>완전 관련 58% → 62%</b>\"]:::list\n  R --> R2[\"⚠️ <b>그런데 실험에서</b><br/>⚠️ <b>참여 지표가 떨어지는 것을 자주 본다</b><br/>• 다른 플랫폼도 같은 패턴\"]:::gone\n  R2 --> Q[\"<b>원인을 의심한다</b><br/>• 균일한 처치를 맥락 변화에도<br/>  똑같이 적용해서<br/>• 질의 유형별 적응 전략 (계획)\"]:::accent\n  C[\"⚠️ <b>겹쳐 읽어야 할 것</b><br/>• 이 회사의 A/B 프레임워크는<br/>  효과를 체계적으로 과대추정한다\"]:::gone\n  O[\"⚠️ <b>남은 숙제로 적은 것</b><br/>• 3단 스택의 운영 복잡도<br/>• 부분 관련의 세분화<br/>• 검색 상류(retrieval)로 올리기\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How Etsy Uses LLMs to Improve Search Relevance",
+          "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+          "publisher": "Etsy Code as Craft",
+          "date": "2026-01-16",
+          "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+        },
+        {
+          "title": "Understanding Etsy's Vast Inventory with LLMs",
+          "url": "https://www.etsy.com/codeascraft/understanding-etsyas-vast-inventory-with-llms",
+          "publisher": "Etsy Code as Craft",
+          "date": "2025-10-13",
+          "summary": "1억 개가 넘는 리스팅에서 상품 속성을 뽑아내는 데 LLM 을 쓴다."
+        },
+        {
+          "title": "Understanding the collective impact of experiments",
+          "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+          "publisher": "Etsy Code as Craft",
+          "date": "2022-12-07",
+          "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+        },
+        {
+          "title": "Etsy Q2 2026 earnings",
+          "url": "https://investors.etsy.com/",
+          "publisher": "Etsy IR",
+          "date": "2026-08",
+          "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1287,7 +1859,7 @@
     "⚠️ **연표(eras)를 세울 연도는 많은데 내용을 아직 못 읽었다** — **2010년경 샤딩 시작** · **2018년 Vitess 도입** · **2020년 온프렘에서 GCP 이전 완료** · **2020-12~2022-05 결제 플랫폼 이전** · **2026년 vindex 이전 완료(5년 소요)**. **각 시기의 내용과 대가를 읽으면 회사 단위 연표가 설 수 있다.**",
     "**결제 이전 3부작을 안 읽었다** — Part 1(데이터 모델) · Part 2(`The \"Seamless\" Migration`) · Part 3(`Reducing Cutover Risk`). **질의 비호환을 어떻게 찾아 고쳤는지가 Part 3 에 있다고 vindex 글이 가리킨다.**",
     "**실험 플랫폼의 구현을 모른다** — 팀이 스스로 설정하고 관리한다는 것, 트래픽 배분이 분기 전환을 매끄럽게 하도록 설계됐다는 것까지는 확인했지만 **어떻게 만들어졌는지는 못 봤다.** ⏳ **승자의 저주 완화 글과 통제 변량 글도 본문을 안 읽었다.**",
-    "**LLM 세 편을 안 읽었다** — 검색 관련성·재고 이해·구매자 프로파일. **1억 개 리스팅이라는 조건이 어떤 설계를 낳았는지가 거기 있을 것이다.**",
+    "**LLM 축에서 두 편이 남았다** — 검색 관련성은 읽었고 **재고 이해(2025-10)와 구매자 프로파일(2025-09)** 은 아직이다. ⏳ `Shaping Product Understanding with Contrastive Reinforcement Learning`(2026-05)과 `Making Ads Count: MMoE`(2026-03)도 있다.",
     "⚠️ **테이크레이트가 오르는 이유를 나누지 못했다** — 25.9%(+130bp)가 수수료율 인상인지 광고·결제 같은 서비스 비중 증가인지 확인하지 못했다.",
     "**2020년 GCP 이전의 내용을 모른다** — 이전을 마쳤다는 것과 그 뒤 비용 관리 글(2024-06)이 있다는 것만 안다."
   ],
@@ -1333,6 +1905,20 @@
       "publisher": "Etsy Code as Craft",
       "date": "2022-12-07",
       "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+    },
+    {
+      "title": "How Etsy Uses LLMs to Improve Search Relevance",
+      "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance",
+      "publisher": "Etsy Code as Craft",
+      "date": "2026-01-16",
+      "summary": "참여 신호가 인기에 치우치는 문제를 의미적 관련성으로 보완한다. 사람이 만든 골든 라벨에 LLM 을 정렬하고 3단 증류(LLM 주석자 → Qwen 3 VL 4B 교사 → BERT 두 타워 학생)로 실시간까지 내린다. 완전 관련 비율이 58%에서 62%로 올랐다."
+    },
+    {
+      "title": "Understanding Etsy's Vast Inventory with LLMs",
+      "url": "https://www.etsy.com/codeascraft/understanding-etsyas-vast-inventory-with-llms",
+      "publisher": "Etsy Code as Craft",
+      "date": "2025-10-13",
+      "summary": "1억 개가 넘는 리스팅에서 상품 속성을 뽑아내는 데 LLM 을 쓴다."
     }
   ]
 }
