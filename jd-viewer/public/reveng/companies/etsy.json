@@ -148,11 +148,18 @@
       "why": "⚠️ **이 회사에서 실험은 제품 기능만의 도구가 아니다** — **데이터베이스 인프라 이전에도 같은 프레임워크를 썼다**(테이블마다 트래픽 비율을 올리며 성능을 비교하고, 문제가 나면 0으로 내렸다). 그리고 실험 자체의 정확도를 다루는 글이 여러 편이다 — 통제 변량으로 **실험 기간을 줄이는 법**, 실험자가 정의하는 세그먼트, **승자의 저주 완화**.",
       "tech": [
         {
-          "tech": "실험 프레임워크 (점진 램프)",
-          "solves": "변경을 **트래픽 비율로 나눠 켜고** 옛 것과 나란히 비교한다. **되돌리기가 즉시**다.",
-          "limits": "⚠️ **인프라 이전에 쓴 사례는 확인했지만 프레임워크 자체의 구조는 아직 못 읽었다.**",
+          "tech": "사내 실험 플랫폼 (팀 자율)",
+          "solves": "각 팀이 스스로 A/B 테스트를 만들고 관리한다 — **조직 병목을 줄여 여러 팀이 나란히 결정한다.** ⚠️ **인프라 이전의 램프에도 같은 플랫폼을 썼다.**",
+          "limits": "⚠️ **자율이 상호작용을 낳는다** — 여러 팀이 같은 페이지에서 동시에 실험하므로 **개별 결과가 오해를 부를 수 있다.**",
           "confidence": "confirmed",
           "sources": [
+            {
+              "title": "Understanding the collective impact of experiments",
+              "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+              "publisher": "Etsy Code as Craft",
+              "date": "2022-12-07",
+              "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+            },
             {
               "title": "Migrating Etsy's database sharding to Vitess",
               "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
@@ -163,9 +170,24 @@
           ]
         },
         {
-          "tech": "⏳ 통제 변량 · 승자의 저주 완화",
-          "solves": "실험 기간을 줄이고, **이긴 변형의 효과가 부풀려 보이는 문제**를 다룬다.",
-          "limits": "⚠️ **제목과 소개만 확인했다** — 본문을 읽지 않았다.",
+          "tech": "지속 실험 (홀드아웃 약 8%) + 비교 기간",
+          "solves": "분기 내내 트래픽 일부를 떼어 두었다가 **분기 말에 그 절반에게 채택된 모든 처치의 조합**을 보여 **총 증분 효과**를 잰다.",
+          "limits": "⚠️ **8% 의 사용자가 분기 내내 개선을 못 받는다**(재구성). 그리고 **어느 해상도로 볼지에 정답이 없다** — 전사 하나는 신호가 희석되고 페이지별은 분석이 파편화된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Understanding the collective impact of experiments",
+              "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+              "publisher": "Etsy Code as Craft",
+              "date": "2022-12-07",
+              "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+            }
+          ]
+        },
+        {
+          "tech": "⏳ 승자의 저주 완화 (베이즈 통계)",
+          "solves": "보고된 상승폭을 **할인해** 과대추정을 상쇄한다.",
+          "limits": "⚠️ **본문을 읽지 않았다** — 소개만 확인했다.",
           "confidence": "inferred",
           "sources": [
             {
@@ -178,7 +200,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "sum-of-parts-is-not-the-whole"
+      ]
     },
     {
       "name": "1억 개가 서로 다른 물건에서 원하는 것을 찾게 한다",
@@ -763,13 +787,506 @@
           "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
         }
       ]
+    },
+    {
+      "key": "sum-of-parts-is-not-the-whole",
+      "name": "부분의 합이 전체가 아니라는 것을 분기마다 실제로 잰다",
+      "domain": "바꾸는 것마다 실험으로 켠다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**팀마다 자기 실험을 설계하고 돌린다** — 그것이 조직 병목을 없애고 여러 팀이 **동시에 배우고 결정하게** 한다. ⚠️ **그런데 그 자율이 복잡한 생태계를 만든다** — 여러 팀이 **같은 페이지, 밀접한 제품에서 동시에** 실험하므로 상호작용과 의존이 생기고, **개별 실험의 고립된 결과가 오해를 부를 수 있다.** 회사가 그것을 한 문장으로 적는다: **`It would be naive to assume that the impact of the whole was just the sum of the isolated parts.`**",
+        "metrics": [
+          {
+            "label": "떼어 두는 트래픽",
+            "value": "분기 내내 **약 8%** 를 **모든 실험에서 제외**한다 — 나머지 92% 에서 실험한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "label": "주기",
+            "value": "**분기마다** — 분기 말에 **비교 기간**을 몇 주 돌린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 자기 프레임워크의 알려진 한계",
+            "value": "`we are **systematically prone to overestimating** the impact sizes of treatments whose positive effects led us to select them` — **승자의 저주**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              },
+              {
+                "title": "Mitigating the winner's curse in online experiments",
+                "url": "https://www.etsy.com/codeascraft/mitigating-the-winners-curse-in-online-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-13",
+                "summary": "온라인 실험에서 이긴 변형의 효과가 부풀려 보이는 문제(승자의 저주)를 다룬다."
+              }
+            ]
+          },
+          {
+            "label": "쓰이는 곳",
+            "value": "분기마다의 **증분 사업 가치 추정** → **재무 계획과 전략 판단**의 근거",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "label": "이 실험이 다루는 규모",
+            "value": "활성 구매자 **약 8,700만 명** · 판매자 **570만 명** · 분기 GMS **26억 달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Etsy Q2 2026 earnings",
+                "url": "https://investors.etsy.com/",
+                "publisher": "Etsy IR",
+                "date": "2026-08",
+                "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 남은 물음",
+            "value": "**외적 타당도** — 시간(단기 실험으로 장기 영향 추론)과 공간(부분집단 → 전체) 양쪽의 외삽. 회사가 `million-dollar questions` 라 부른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "자율의 값을 셀 때",
+          "thought": "**자율이 속도를 주는 것은 분명하다** — 조직 병목을 줄여 여러 팀이 나란히 결정한다. ⚠️ **그런데 개별 실험은 자기 변경의 한계 기여만 잡는다.** 실험자에게는 그게 필요한 전부일 수 있지만, **회사로서는 팀들이 만드는 변경 전체가 같은 방향으로 당기는지 확인해야 한다.** **자율과 처리량이 클수록 그 확인이 더 절실해진다**(회사의 서술을 옮긴 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "상호작용을 볼 때",
+          "thought": "⚠️ **각각 좋은 것이 함께 나쁠 수 있다.** 회사가 든 예가 선명하다 — 내비게이션 바를 눈에 띄게 주황으로 바꾸는 처치와 장바구니 아이콘을 주황으로 만드는 처치는 **각각은 말이 되는데 함께 두면 장바구니를 찾기 어려워져** 구매를 포기하게 만들 수 있다. ⚠️ **그리고 소통으로 막을 수 있는 건 한계가 있다** — 검색·광고·추천이 **사용자의 제한된 주의를 두고 서로 트래픽을 잠식**하는 것은 **미리 예상하기도 수량화하기도 어렵다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자기 도구의 편향을 볼 때",
+          "thought": "⚠️ **가장 값진 문장은 자기 프레임워크의 한계를 적는 대목이다** — `we are systematically prone to overestimating the impact sizes of treatments whose positive effects led us to select them for deployment`. **좋아 보여서 골랐다는 사실 자체가 그 효과를 부풀린다**(승자의 저주). **자기 측정 도구가 자기에게 유리한 쪽으로 치우친다는 것을 공개한 것이다**(이 평가는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "홀드아웃 그룹",
+            "what": "⚠️ **분기 내내 어떤 처치도 안 받는 트래픽 약 8%.** 옛 상태를 그대로 유지한다"
+          },
+          {
+            "name": "지속 실험 (persistent experiment)",
+            "what": "분기 전체에 걸치는 특별한 실험. 업계에서는 holdback·universal holdout 이라 부르기도 한다"
+          },
+          {
+            "name": "비교 기간 (comparison period)",
+            "what": "⚠️ **분기 말에 홀드아웃의 절반에게 그 분기에 채택된 모든 처치의 조합을 몇 주간** 보여 준다"
+          },
+          {
+            "name": "중립적 처치",
+            "what": "⚠️ **지표에 잡히지 않는 변경들** — 디자인 리뷰·사용자 조사 같은 다른 근거로 채택되거나 **다음 개선의 디딤돌**인 것들"
+          },
+          {
+            "name": "해상도",
+            "what": "전사 하나로 볼지 페이지별로 쪼갤지 — **둘 다 대가가 있다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **홀드아웃 트래픽은 분기 내내 어떤 처치도 받지 않는다** — 그래야 옛 상태와 비교할 수 있다",
+          "**총 효과는 개별 효과의 합과 다르다** — 그 차이를 재는 것이 이 실험의 목적이다",
+          "⚠️ **다음 분기 실험이 비교 기간을 오염시키면 안 된다** — 트래픽 배분이 그것을 막게 설계돼 있다",
+          "**지속 실험에서 뺄 변경을 고를 수 있어야 한다** — 한 분기 내내 두 상태로 둘 수 없는 것들이 있다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**분기가 시작되면 트래픽의 약 8% 를 모든 실험에서 뺀다**",
+            "why": "⚠️ 그 8%는 **분기 내내 옛 상태로 남는다**"
+          },
+          {
+            "step": "**나머지 92% 에서 팀들이 각자 실험한다**",
+            "why": "자율이 속도를 준다"
+          },
+          {
+            "step": "**이긴 처치는 채택해 92% 전체로 넓히고, 진 것은 중단한다**",
+            "why": "각 처치마다 예상 재무 효과를 추정한다"
+          },
+          {
+            "step": "**분기가 끝나면 비교 기간을 돌린다** — 홀드아웃의 절반에게 **채택된 모든 처치의 조합**을 몇 주간",
+            "why": "⚠️ **지금의 Etsy 대 분기 시작 전의 Etsy** 를 재는 A/B 테스트다"
+          },
+          {
+            "step": "**총 증분 효과를 얻는다**",
+            "why": "분기 동안의 출시 전체가 실제로 만든 값"
+          },
+          {
+            "step": "⚠️ **총 효과와 개별 효과 합의 차이를 본다**",
+            "why": "**그 간극이 실험 관행의 결함을 드러낸다** — 부산물이 아니라 중요한 신호다"
+          },
+          {
+            "step": "**다음 분기 실험이 비교 기간을 오염시키지 않게 트래픽을 배분한다**",
+            "why": "팀들이 새 분기 시작과 함께 바로 실험할 수 있어야 한다"
+          },
+          {
+            "step": "**PM·엔지니어·분석가가 달력을 맞춘다**",
+            "why": "⚠️ 성수기에는 **사이트 전체 코드 프리즈**가 걸리기도 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "팀 자율 실험을 유지할 것인가",
+            "chosen": "**유지한다** — 각 팀이 스스로 설계하고 돌린다",
+            "alternatives": [
+              "중앙 팀이 실험을 조율·승인"
+            ],
+            "tradeoff": "**조직 병목을 줄여 여러 팀이 나란히 배우고 결정한다.** ⚠️ **대가는 같은 페이지에서 처치들이 상호작용한다는 것**이고, **자율과 처리량이 클수록 그 위험이 커진다** — 회사가 그것을 `we have to be more vigilant` 라 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "question": "상호작용을 소통으로 막을 것인가",
+            "chosen": "⚠️ **소통만으로는 안 된다** — 측정으로 잡는다",
+            "alternatives": [
+              "팀 간 조율 회의와 공지로 충돌 방지"
+            ],
+            "tradeoff": "`Sometimes negative interactions can be forestalled with more transparent communication between teams, **but that only goes so far**.` ⚠️ **검색·광고·추천이 사용자의 제한된 주의를 두고 서로 트래픽을 잠식하는 것은 미리 예상하기도 수량화하기도 어렵다.** 그래서 **막는 대신 재는 쪽으로 갔다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "question": "전체 효과를 어떻게 잴 것인가",
+            "chosen": "**분기 내내 약 8% 를 떼어 둔다** — 홀드아웃",
+            "alternatives": [
+              "개별 실험 결과를 합산",
+              "사후 관측 데이터로 추정"
+            ],
+            "tradeoff": "⚠️ **8% 의 사용자가 분기 내내 개선을 못 받는다** — 그것이 이 방법의 값이자 대가다(이 지적은 이 사이트의 재구성이다). 얻는 것은 **`지금의 Etsy` 대 `분기 시작 전의 Etsy`** 라는 깨끗한 비교이고, 그것이 **재무 계획과 전략 판단의 근거**가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "question": "어느 해상도로 볼 것인가",
+            "chosen": "⚠️ **정답이 없다고 적는다** — 전사 하나와 페이지별 사이의 문제",
+            "alternatives": [
+              "전사 단일 지속 실험",
+              "페이지마다 지속 실험"
+            ],
+            "tradeoff": "전사 하나는 **포괄적인 대신 신호가 희석된다**(일부 처치는 좁은 영역만 건드리고, 이질적 혼합이라 영향 판단이 어렵다 — 팀마다 목표 지표가 다르기 때문). 페이지별로 쪼개면 **묶음은 일관되지만 분석이 파편화된다.** ⚠️ **회사가 `어디까지 잘게 나눌 것인가` 를 답하지 않고 문제로 남겨 둔다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "question": "모든 변경을 지속 실험에 넣을 것인가",
+            "chosen": "**아니다 — 뺄 수 있게 한다**",
+            "alternatives": [
+              "전부 포함"
+            ],
+            "tradeoff": "**전 사용자에게 보여야 하는 변경**이 있고, **한 분기 내내 두 상태로 유지할 수 없는 구조적 코드**가 있으며, **사업 지표만으로 판단할 수 없는 사이트 전체 변경**이 있다. ⚠️ **대가는 측정에서 빠진 것들이 생긴다는 것**이고, 그만큼 총 효과가 실제 변화 전체를 담지 못한다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "question": "지표에 안 잡히는 변경을 어떻게 볼 것인가",
+            "chosen": "**채택은 하되 잡음이 된다는 것을 인정한다**",
+            "alternatives": [
+              "효과가 없으면 채택하지 않기"
+            ],
+            "tradeoff": "⚠️ **핵심 지표를 해치지 않는 한, 팀이 다른 근거(디자인 리뷰·사용자 조사)로 확신하면 채택하는 것이 드물지 않다.** 일부는 **다음 개선의 디딤돌**이다. **대가는 그런 중립적 처치가 많을수록 긍정적 처치의 신호에 잡음이 낀다는 것**이고, 회사가 그것을 그대로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "question": "자기 도구의 편향을 공개할 것인가",
+            "chosen": "⚠️ **공개한다** — `systematically prone to overestimating`",
+            "alternatives": [
+              "한계를 밝히지 않기"
+            ],
+            "tradeoff": "**좋아 보여서 골랐다는 사실 자체가 그 효과를 부풀린다**(승자의 저주). 회사는 이것을 **알려진 한계**로 적고 별도의 글에서 더 깊이 다룬다. ⚠️ **자기 측정 도구가 자기에게 유리한 쪽으로 치우친다는 것을 공개한 셈이다** — 그리고 **총 효과와 개별 합의 간극을 보는 일이 그 편향을 드러내는 장치가 된다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              },
+              {
+                "title": "Mitigating the winner's curse in online experiments",
+                "url": "https://www.etsy.com/codeascraft/mitigating-the-winners-curse-in-online-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-13",
+                "summary": "온라인 실험에서 이긴 변형의 효과가 부풀려 보이는 문제(승자의 저주)를 다룬다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "사내 실험 플랫폼",
+            "role": "팀이 스스로 A/B 테스트를 만들고 관리한다. **인프라 이전의 램프에도 쓰였다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              },
+              {
+                "title": "Migrating Etsy's database sharding to Vitess",
+                "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+                "publisher": "Etsy Code as Craft",
+                "date": "2026-03-19",
+                "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+              }
+            ]
+          },
+          {
+            "tech": "지속 실험 (홀드아웃 약 8%)",
+            "role": "분기 내내 어떤 처치도 안 받는 그룹을 유지한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "tech": "비교 기간",
+            "role": "⚠️ **분기 말에 홀드아웃의 절반에게 채택된 모든 처치의 조합**을 보여 총 증분 효과를 잰다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "tech": "⏳ 승자의 저주 완화 (베이즈 통계)",
+            "role": "보고된 상승폭을 **할인해** 과대추정을 상쇄한다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Mitigating the winner's curse in online experiments",
+                "url": "https://www.etsy.com/codeascraft/mitigating-the-winners-curse-in-online-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-13",
+                "summary": "온라인 실험에서 이긴 변형의 효과가 부풀려 보이는 문제(승자의 저주)를 다룬다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "coupled-anyway-despite-going-slow",
+          "via": "같은 실험 프레임워크",
+          "contract": "⚠️ **제품 실험 도구가 인프라 이전의 안전장치가 됐다** — 테이블마다 트래픽 비율을 1%→10%→50%→100% 로 올리며 옛 방식과 비교하고 즉시 되돌렸다. **두 도메인이 같은 플랫폼을 공유한다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "검색 · 광고 · 추천",
+          "via": "⚠️ 트래픽 잠식",
+          "contract": "⚠️ **셋이 사용자의 제한된 주의를 두고 서로 트래픽을 잠식한다** — 미리 예상하기도 수량화하기도 어렵고, 그래서 막는 대신 재기로 했다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "재무 계획 · 전략 판단",
+          "via": "증분 사업 가치",
+          "contract": "**분기마다의 총 효과 추정이 `X 에 얼마를 투자할까` 같은 판단의 근거가 된다** — 실험이 제품 도구를 넘어 경영 도구가 되는 자리다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "8% 의 사용자",
+          "via": "홀드아웃",
+          "contract": "⚠️ **분기 내내 개선을 받지 못한다** — 측정의 값을 위해 치르는 대가다(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "자율이 만드는 상호작용은 소통으로 못 막는다",
+            "why_hard": "⚠️ **각각 좋은 처치가 함께 나쁠 수 있다** — 회사의 예가 선명하다(내비바를 주황으로 + 장바구니를 주황으로 = 장바구니를 못 찾는다). **그런데 진짜 어려운 것은 그런 눈에 보이는 충돌이 아니다** — 검색·광고·추천이 **사용자의 제한된 주의를 두고 서로 트래픽을 잠식**하는 것은 `hard to anticipate and to quantify` 다.",
+            "current_best": "**막는 대신 재는 것** — 홀드아웃과 비교 기간으로 총 효과를 잡고, **개별 합과의 간극을 실험 관행의 결함을 찾는 신호로 쓴다.** ⚠️ **어떤 상호작용이 그 간극을 만들었는지는 이 방법으로 알 수 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          },
+          {
+            "problem": "어느 해상도로 볼지에 정답이 없다",
+            "why_hard": "**전사 하나로 보면 포괄적이지만 신호가 희석된다** — 일부 처치는 좁은 영역만 건드리고, 팀마다 목표 지표가 달라 **이질적 혼합**이 된다. **페이지별로 쪼개면 묶음은 일관되지만 분석이 파편화된다.** 회사가 `the question is how granular` 를 던지고 답하지 않는다.",
+            "current_best": "⚠️ **글에 답이 없다.** 그리고 더 큰 물음이 남는다 — **외적 타당도**, 즉 **시간(단기 실험으로 장기 영향 추론)과 공간(부분집단 → 전체) 양쪽의 외삽**. 회사가 이것을 `million-dollar questions` 라 부른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Understanding the collective impact of experiments",
+                "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+                "publisher": "Etsy Code as Craft",
+                "date": "2022-12-07",
+                "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "8% 를 떼어 두었다가 분기 끝에 한꺼번에 보여 준다",
+          "question": "분기 전체의 값을 어떻게 재나",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"<b>분기 시작</b>\"]:::accent --> H[\"<b>홀드아웃 약 8%</b><br/>• 분기 내내 어떤 처치도 안 받는다<br/>• <b>옛 상태 그대로</b>\"]:::accent\n  Q --> E[\"<b>나머지 92%</b><br/>• 팀들이 각자 실험한다\"]:::accent\n  E --> W{\"<b>실험 결과</b>\"}\n  W -->|\"이겼다\"| A[\"<b>채택 → 92% 전체로</b>\"]:::list\n  W -->|\"졌다\"| X[\"<b>중단</b>\"]:::gone\n  A --> C[\"<b>분기 말 · 비교 기간</b><br/>• 홀드아웃의 <b>절반</b>에게<br/>• <b>채택된 모든 처치의 조합</b>을<br/>• 몇 주간 보여 준다\"]:::accent\n  H --> C\n  C --> T[\"<b>총 증분 효과</b><br/>• 지금의 Etsy 대 분기 전의 Etsy\"]:::accent\n  T --> G[\"⚠️ <b>개별 합과의 간극을 본다</b><br/>• 실험 관행의 결함이 드러난다\"]:::accent\n  T --> F[\"<b>재무 계획 · 전략 판단</b>\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "자기 측정 도구가 자기에게 유리하게 치우친다",
+          "question": "이 회사가 공개한 자기 한계들",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>팀 자율 실험</b><br/>• 조직 병목을 없앤다\"]:::accent --> B[\"⚠️ <b>같은 페이지에서 상호작용</b>\"]:::gone\n  B --> B1[\"각각 좋은데 함께 나쁘다<br/>• 주황 내비바 + 주황 장바구니\"]:::gone\n  B --> B2[\"⚠️ <b>검색 · 광고 · 추천이</b><br/>⚠️ <b>서로 트래픽을 잠식한다</b><br/>• 예상도 수량화도 어렵다\"]:::gone\n  C[\"⚠️ <b>승자의 저주</b><br/>• 좋아 보여서 골랐다는 사실이<br/>  그 효과를 부풀린다\"]:::gone\n  D[\"⚠️ <b>중립적 처치가 잡음이 된다</b><br/>• 지표에 안 잡히는 변경이 많다<br/>• 디딤돌로 채택되는 것도 있다\"]:::gone\n  E[\"⚠️ <b>해상도에 정답이 없다</b><br/>• 전사 하나 → 신호 희석<br/>• 페이지별 → 분석 파편화\"]:::gone\n  F[\"⚠️ <b>남은 큰 물음</b><br/>• 외적 타당도<br/>• 시간과 공간의 외삽\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Understanding the collective impact of experiments",
+          "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+          "publisher": "Etsy Code as Craft",
+          "date": "2022-12-07",
+          "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
+        },
+        {
+          "title": "Mitigating the winner's curse in online experiments",
+          "url": "https://www.etsy.com/codeascraft/mitigating-the-winners-curse-in-online-experiments",
+          "publisher": "Etsy Code as Craft",
+          "date": "2022-12-13",
+          "summary": "온라인 실험에서 이긴 변형의 효과가 부풀려 보이는 문제(승자의 저주)를 다룬다."
+        },
+        {
+          "title": "Migrating Etsy's database sharding to Vitess",
+          "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess",
+          "publisher": "Etsy Code as Craft",
+          "date": "2026-03-19",
+          "summary": "2010년경부터 유지해 온 샤딩 MySQL(테이블 약 1,000개 × 샤드 약 1,000개, 425TB 이상, 초당 약 170만 요청)의 샤드 라우팅을 Vitess vindex 로 옮겼다. 데이터를 옮기지 않으려고 커스텀 vindex 를 만들었고 5년, 약 2,500 PR, 6,000 질의가 들었다."
+        },
+        {
+          "title": "Etsy Q2 2026 earnings",
+          "url": "https://investors.etsy.com/",
+          "publisher": "Etsy IR",
+          "date": "2026-08",
+          "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+        }
+      ]
     }
   ],
   "eras": [],
   "open_questions": [
     "⚠️ **연표(eras)를 세울 연도는 많은데 내용을 아직 못 읽었다** — **2010년경 샤딩 시작** · **2018년 Vitess 도입** · **2020년 온프렘에서 GCP 이전 완료** · **2020-12~2022-05 결제 플랫폼 이전** · **2026년 vindex 이전 완료(5년 소요)**. **각 시기의 내용과 대가를 읽으면 회사 단위 연표가 설 수 있다.**",
     "**결제 이전 3부작을 안 읽었다** — Part 1(데이터 모델) · Part 2(`The \"Seamless\" Migration`) · Part 3(`Reducing Cutover Risk`). **질의 비호환을 어떻게 찾아 고쳤는지가 Part 3 에 있다고 vindex 글이 가리킨다.**",
-    "**실험 프레임워크 자체의 구조를 모른다** — 인프라 이전에 썼다는 것은 확인했지만 어떻게 만들어졌는지는 못 봤다.",
+    "**실험 플랫폼의 구현을 모른다** — 팀이 스스로 설정하고 관리한다는 것, 트래픽 배분이 분기 전환을 매끄럽게 하도록 설계됐다는 것까지는 확인했지만 **어떻게 만들어졌는지는 못 봤다.** ⏳ **승자의 저주 완화 글과 통제 변량 글도 본문을 안 읽었다.**",
     "**LLM 세 편을 안 읽었다** — 검색 관련성·재고 이해·구매자 프로파일. **1억 개 리스팅이라는 조건이 어떤 설계를 낳았는지가 거기 있을 것이다.**",
     "⚠️ **테이크레이트가 오르는 이유를 나누지 못했다** — 25.9%(+130bp)가 수수료율 인상인지 광고·결제 같은 서비스 비중 증가인지 확인하지 못했다.",
     "**2020년 GCP 이전의 내용을 모른다** — 이전을 마쳤다는 것과 그 뒤 비용 관리 글(2024-06)이 있다는 것만 안다."
@@ -809,6 +1326,13 @@
       "publisher": "Etsy IR",
       "date": "2026-08",
       "summary": "2026년 2분기 마켓플레이스 GMS 26억 달러(+7.5%), 매출 6억 6,800만 달러, 테이크레이트 25.9%(+130bp), 활성 구매자 약 8,700만 명, 활성 판매자 570만 명(+5.9%), 조정 EBITDA 1억 9,500만 달러(마진 29.2%)."
+    },
+    {
+      "title": "Understanding the collective impact of experiments",
+      "url": "https://www.etsy.com/codeascraft/understanding-the-collective-impact-of-experiments",
+      "publisher": "Etsy Code as Craft",
+      "date": "2022-12-07",
+      "summary": "팀마다 자율로 실험하면 같은 페이지에서 처치들이 상호작용해 개별 결과가 오해를 부른다. 분기 내내 트래픽의 8% 를 모든 실험에서 빼 두었다가 분기 말에 그 절반에 채택된 모든 처치의 조합을 보여 총 증분 효과를 잰다."
     }
   ]
 }
