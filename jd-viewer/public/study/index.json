@@ -1080,6 +1080,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "outbox",
+      "title": "아웃박스 패턴",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**DB 에 쓰는 것과 메시지를 보내는 것이 한 트랜잭션이 아니라는 문제**를 푸는 방법이다. 보낼 메시지를 **같은 트랜잭션 안에서 테이블에 적어 두고**, 다른 프로세스가 그것을 읽어 보낸다.",
+      "aliases": [
+        "아웃박스",
+        "outbox",
+        "transactional outbox",
+        "이중 쓰기",
+        "dual write"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
