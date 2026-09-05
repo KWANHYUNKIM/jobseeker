@@ -1,0 +1,639 @@
+{
+  "slug": "bff",
+  "title": "BFF",
+  "title_en": "Backends For Frontends",
+  "aliases": [
+    "BFF",
+    "Backend For Frontend",
+    "Backends For Frontends",
+    "백엔드 포 프론트엔드"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "화면 하나를 위해 **여러 백엔드의 응답을 모아 주는 층** — 그리고 **몇 개를 둘지는 기술이 아니라 팀 구조가 정한다.**",
+  "summary": "채용 데이터에서 **33건(모집중 9)** 으로 얇다. 그런데 ⭐⭐ **한 공고에 정의가 통째로 들어 있다.**\n\n> `**BFF 레이어 직접 설계·구현** — 여러 백엔드 서비스의 응답을 **화면 요구에 맞게 조합**하고, **캐싱 전략과 응답 스펙을 스스로 정의**합니다` — ㈜시스템노바\n\n그리고 다른 공고 한 줄이 **생기는 동기**를 말한다 — `REST API 연동이나 **맘에 안들면 BFF 만들 수 있는 사람**을 찾아요.`\n\n⭐⭐⭐ **이 문서의 축은 \"누가 만드나\"다.** 셈에서 **같은 층을 양쪽이 서로 자기 일이라 부른다** — 더스윙은 `BFF 아키텍처 ... 등 **프론트엔드 설계**`, 로아이는 `SSR, BFF 등 **서버 사이드 개발**`. 그리고 패턴 이름을 퍼뜨린 Sam Newman 이 그 답을 적어 뒀다.\n\n> **\"BFFs work best when aligned around team boundaries, so **team structure should drive how many BFFs you have**.\"**\n\n**개수도 소유도 팀 구조가 정한다.** 그래서 이건 아키텍처 결정처럼 보이지만 **조직 결정**이다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 정의가 공고 안에 있다",
+      "confidence": "inferred",
+      "body": "`BFF|Backend For Frontend` 로 세면 **33건(모집중 9)** 이다. 이 백과사전에서 얇은 축에 속하는데(`rebac` 7 · `contract-testing` 8 이 하한선), ⭐ **문장의 밀도가 높다.**\n\n> ⭐⭐ `**BFF 레이어 직접 설계·구현** — 여러 백엔드 서비스의 응답을 **화면 요구에 맞게 조합**하고, **캐싱 전략과 응답 스펙을 스스로 정의**합니다` — ㈜시스템노바\n\n**정의·역할·경계가 한 줄에** 있다. 풀면 이렇다.\n\n1. **여러 백엔드의 응답을 모은다** — 주문 서비스, 상품 서비스, 리뷰 서비스를 따로 부르는 대신 한 번에.\n2. **화면 요구에 맞게 조합한다** — 도메인의 모양이 아니라 **화면의 모양**으로.\n3. **응답 스펙을 스스로 정의한다** — 뒤쪽 서비스의 응답을 그대로 흘리지 않는다.\n\n그리고 다른 공고 한 줄이 **생기는 동기**를 아주 솔직하게 말한다.\n\n> ⭐⭐ `REST API 연동이나 **맘에 안들면 BFF 만들 수 있는 사람**을 찾아요.`\n\n**남이 준 API 가 화면에 안 맞을 때** 만드는 것 — 이게 이 패턴이 실제로 태어나는 자리다.\n\n💡 **기술 스택이 유난히 일정하다는 것도 눈에 띈다.**\n\n> `**BFF: Node.js, NestJS**` — 커넥트웨이브 (마감)\n> `**NestJS 기반 BFF** 개발 경험이 있으신 분` — 컬리\n> `**Node.js 기반 BFF** 개발·운영 경험` — 네이버웹툰 (마감)\n> `BFF 또는 풀스택 개발 경험 (**Next.js API Routes** 포함)` — 엑스플랫 (마감)\n\n⭐ **거의 전부 Node.js 계열**이다. 뒤쪽 서비스가 Java 든 Go 든 상관없이 — **BFF 는 프론트엔드가 쓰는 언어로 만들어진다.** 이 사실 하나가 다음 절의 답을 미리 말해 준다.\n\n> ⚠️ **셈에 오탐이 하나 있다.** 아이피아 공고의 `**AI 서버**(Backend for Frontend) 개발 및 운영`은 이 패턴을 가리키는지 불분명하다 — 33건은 작은 수라 **한 건의 오탐도 비율로는 3%** 다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 생겼나 — 모바일은 다른 것을 원한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ],
+      "body": "BFF 라는 이름을 퍼뜨린 Sam Newman 의 글이 출발점을 이렇게 적는다.\n\n> ⭐ \"our mobile devices will want to make **different calls, fewer calls**, and will want to display **different (and probably less) data**\"\n\n**같은 서비스인데 웹과 모바일이 원하는 것이 다르다.** 모바일은 **호출 수가 적어야** 하고(네트워크가 느리고 배터리가 있다) **데이터가 적어야** 한다.\n\n그런데 백엔드 하나가 모두를 상대하면 어떻게 되나.\n\n> ⭐⭐ 단일 백엔드는 \"**bottleneck** when rolling out new delivery, as so many changes are trying to be made to the **same deployable artifact**\"\n\n**배포의 병목**이 된다. 웹 팀도 앱 팀도 파트너 팀도 **같은 배포 단위**를 고쳐야 하니, 서로의 일정이 서로를 막는다.\n\n그래서 나온 것이 **\"one backend per user experience\"** — 경험마다 백엔드를 따로 두는 것이다.\n\n💡 **여기에 마이크로서비스가 겹치면 문제가 더 커진다.** 백엔드는 **도메인으로** 쪼개지는데(주문·상품·리뷰) 화면은 **도메인을 가로지른다**(주문 상세 화면에 셋이 다 나온다). 그러면 클라이언트가 **세 번 부르고 직접 합쳐야** 하고, 그 조합 로직이 웹·앱·파트너 앱에 **각각 복제**된다.\n\n공고도 그 맥락을 그대로 보여 준다.\n\n> `**BFF 패턴이 포함된 MSA 환경**에서의 백엔드 개발 경험이 있는 분` — 젠틀파이 (마감)\n> `MSA 및 아키텍처 전환 경험: Module Federation 등을 활용한 **마이크로 프론트엔드 구축 및 BFF 설계** 경험` — 집닥 (마감)\n\n⭐ **BFF 는 마이크로서비스와 짝으로 온다.** 서비스를 잘게 쪼갠 대가를 **화면 쪽에서 치르지 않기 위해** 두는 층이다."
+    },
+    {
+      "id": "team",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 몇 개를 두나 — 답은 조직도에 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ],
+      "body": "BFF 를 도입하기로 하면 곧 질문이 온다 — **몇 개를 만드나.** 웹에 하나, 앱에 하나? iOS 와 안드로이드는 따로?\n\nNewman 의 답은 기술이 아니다.\n\n> ⭐⭐⭐ \"BFFs work best when **aligned around team boundaries**, so **team structure should drive how many BFFs you have**.\"\n> (BFF 는 **팀 경계에 맞춰졌을 때 가장 잘 동작**하므로, **팀 구조가 BFF 를 몇 개 둘지를 정해야** 한다.)\n\n원칙은 **\"one experience, one BFF\"** 이되, 판단은 이렇게 한다.\n\n> \"if the iOS and Android experiences are **very similar**, then it is easier to justify having a **single BFF**\"\n\n**경험이 비슷하면 하나로 묶는다.** 그리고 팀이 나뉘어 있으면 나눈다.\n\n⭐⭐ **그리고 이 데이터가 그 원칙을 다른 각도에서 증명한다 — 같은 층을 양쪽이 서로 자기 일이라 부른다.**\n\n| 어느 항목에 적혀 있나 | 공고 |\n|---|---|\n| **프론트엔드 설계** | `**BFF 아키텍처**나 전역 상태 관리 등 **프론트엔드 설계**에 대한 깊은 이해` — 더스윙 |\n| **프론트엔드 데이터 계층** | `데이터 관리와 API 통신: GraphQL, Relay, Tanstack Query, **BFF**` — 레브잇 |\n| **컴포넌트 설계와 함께** | `TypeScript 기반 **컴포넌트 설계 및 BFF 패턴 적용**` — 랭코드 (마감) |\n| **서버 사이드 개발** | `**SSR, BFF** 등 **서버 사이드 개발** 경험` — 로아이 |\n| **백엔드 개발** | `BFF 패턴이 포함된 MSA 환경에서의 **백엔드 개발** 경험` — 젠틀파이 (마감) |\n| ⭐ **양쪽 다** | `React/Next.js 기반 화면 개발 **또는** Node.js 기반 **API/BFF 개발** 경험` — 피코이노베이션 (마감) |\n\n**같은 것이 어떤 회사에서는 프론트엔드 직무이고 어떤 회사에서는 백엔드 직무**다. 그리고 앞 절에서 본 대로 **기술 스택은 거의 Node.js 계열**이니, 실제로는 **프론트엔드 팀이 서버를 갖는 형태**가 흔하다는 뜻이다.\n\n⭐ 그 경계가 가장 또렷하게 보이는 공고가 이것이다.\n\n> `React, TypeScript, Next.js(SSR) 기반으로 설계·개발·운영하며, **SSR 서버의 BFF 역할까지** 다룹니다.` — 네이버웹툰 (마감)\n\n**SSR 서버가 곧 BFF 가 된다.** 화면을 그리려고 이미 서버가 있으니, 데이터를 모으는 일도 거기서 하는 것이다.\n\n📌 `design-system` 이 \"두 직군 사이의 합의를 코드로 만든 것\"이었다면, **BFF 는 그 경계에 아예 서버 하나를 세우는 일**이다. 그래서 **누가 소유하나가 첫 결정**이고, 그것이 안 정해지면 이 층은 **아무도 안 고치는 코드**가 된다."
+    },
+    {
+      "id": "dup",
+      "kind": "how",
+      "heading": "⭐⭐ 중복을 허용한다 — 결합보다 낫기 때문에",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ],
+      "body": "BFF 를 둘 이상 만들면 곧 불편해진다 — **웹 BFF 와 앱 BFF 에 같은 코드가 생긴다.** 주문을 조회해 상품을 붙이는 로직이 양쪽에 똑같이 있다.\n\n자연스러운 반응은 **공용 라이브러리로 빼는 것**이다. 그런데 Newman 은 반대 방향을 말한다.\n\n> ⭐⭐⭐ \"extracting shared code to lead to **tight coupling** between services - something I am **more worried about than duplication**\"\n> (공유 코드를 추출하면 서비스 사이에 **강한 결합**이 생기는데, 나는 그것을 **중복보다 더 걱정한다**.)\n\n**중복보다 결합이 무섭다.** 공용 라이브러리가 생기면 웹 BFF 를 고치려다 앱 BFF 를 깨뜨리게 되고, **따로 배포하려고 나눈 것이 다시 함께 움직이게** 된다 — 애초에 BFF 를 만든 이유(배포 병목)를 되살리는 셈이다.\n\n그리고 언제 추출할지에 대한 경험칙도 준다.\n\n> \"creating an abstraction when you're about to implement something for the **3rd time** still feels like a **good rule of thumb**\"\n\n**세 번째에 추출한다.** 두 번은 참는다.\n\n💡 이 판단은 `monorepo` 의 fixed vs independent, `design-system` 의 '파편화' 와 정확히 반대편에서 만난다 — **그쪽은 갈라지는 것을 막는 이야기이고, 여기는 갈라지는 것을 허용하는 이야기**다. 차이는 **무엇이 더 비싼가**에 있다.\n\n- **공통 컴포넌트**(디자인 시스템): 갈라지면 **사용자가 보는 화면**이 달라진다 → 막는다.\n- **BFF 의 조합 로직**: 갈라져도 **각 화면은 정상**이고, 대신 **각자 자기 속도로 배포**할 수 있다 → 허용한다.\n\n⭐ **그래서 \"중복은 나쁘다\"는 반사적 반응이 여기서는 틀린 답이 된다.**"
+    },
+    {
+      "id": "boundary",
+      "kind": "limits",
+      "heading": "게이트웨이와 무엇이 다른가 — 그리고 무엇을 넣지 않나",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ],
+      "body": "공고에서 둘은 나란히 나온다.\n\n> `**API 게이트웨이/BFF** 운영 경험` — 아이모션 (마감)\n\n그런데 하는 일이 다르다. Newman 은 **일반적인 주변 관심사**(generic perimeter concerns) — 인증·로깅 같은 것 — 를 **전부 BFF 에 넣으면 복잡해진다**고 경고하고, 그런 것은 **별도 층(Nginx 등)으로 분리**하는 편이 낫다고 말한다.\n\n⭐ **그래서 경계는 이렇게 갈린다.**\n\n| | 무엇을 하나 | 몇 개 |\n|---|---|---|\n| **API 게이트웨이** | **모든 요청에 공통인 것** — 인증·비율 제한·라우팅·관측 | 대개 하나 |\n| ⭐ **BFF** | **이 화면을 위한 조합** — 여러 서비스 호출, 응답 재구성, 화면용 캐시 | **경험(팀)마다 하나** |\n\n**게이트웨이는 가로지르는 것(횡단 관심사), BFF 는 특정 클라이언트를 위한 것.** 게이트웨이에 화면 로직이 들어가기 시작하면 **모든 팀이 그 하나를 고쳐야** 하고, 그건 BFF 가 없애려던 병목이다.\n\n⚠️ 반대 방향의 실수도 있다 — **BFF 에 비즈니스 로직이 스며드는 것.** 응답을 조합하다 보면 \"여기서 계산하면 편한데\"가 쌓이고, 어느새 **도메인 규칙이 화면 층에** 산다. 그러면 웹과 앱의 계산 결과가 달라지기 시작한다.\n\n💡 판단 기준 하나 — **\"이 규칙이 화면과 무관하게 참인가?\"** 참이면 뒤쪽 서비스의 것이고, **\"이 화면에서만 이렇게 보이는가?\"** 면 BFF 의 것이다.\n\n📌 그리고 **GraphQL 과도 겹친다.** 레브잇 공고가 `GraphQL, Relay, Tanstack Query, **BFF**` 를 한 줄에 적는 것이 그 증거다 — **둘은 같은 문제를 다르게 푼다.** GraphQL 은 **질의 언어를 줘서 클라이언트가 직접 고르게** 하고, BFF 는 **서버가 미리 조합해서 준다.** 그래서 GraphQL 서버가 사실상 BFF 역할을 하는 경우도 흔하다(→ `graphql`)."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 얇은 낱말이고, 표준이 없다",
+      "confidence": "inferred",
+      "body": "**1. ⚠️ 표준도 명세도 없는 패턴 이름이다.** RFC 도 공식 문서도 없고, 이 문서의 1차 자료는 **Sam Newman 의 글 한 편**이다. 그래서 세부(무엇을 BFF 라고 부를지, 어디까지가 그 층인지)는 **팀마다 다르고**, 이 문서도 그 범위를 정해 주지 않는다.\n\n**2. ⚠️ 큐에 적어 둔 가정 하나가 틀렸다.** 이 낱말을 큐에 올릴 때 \"Netflix 기술 블로그의 초기 사례\"를 1차 자료 후보로 적었는데, **Newman 의 글은 REA 와 SoundCloud 사례를 다루고 Netflix 를 언급하지 않는다.** 확인한 것만 적는다.\n\n**3. ⚠️ 33건은 얇고, 그중 24건이 마감 공고다.** 모집중은 9건뿐이다. 그래서 이 문서는 **마감 공고를 근거로 많이 썼다** — 그것이 이 백과사전의 규칙이기도 하다(`evidence` 는 *그 말이 실무에 박혀 있다*는 증거이지 지원하라는 말이 아니다). ⚠️ 다만 **낱말이 지금 늘고 있는지 줄고 있는지는 이 데이터로 판단하지 않았다.**\n\n**4. 운영의 실제를 다루지 않았다.** BFF 를 여럿 두면 배포·모니터링·장애 대응 대상이 는다. 네이버웹툰 공고가 `사내 Docker 기반 클라우드 플랫폼에서 **배포와 모니터링**도` 라고 적는 그 부분인데, **이 사이클에서 그 운영 부담을 다룬 자료는 열지 않았다.**\n\n**5. 인증을 어디서 하나를 정하지 않았다.** 게이트웨이인지 BFF 인지는 실무의 큰 결정인데, 이 문서는 **\"공통인 것은 게이트웨이로\"** 라는 방향까지만 말한다 — 구체는 `authz` 와 `api-gateway`(⚠️ 아직 문서 없음)의 몫이다.\n\n**6. 이 문서가 다루지 않는 것.** 같은 문제의 질의 언어 판은 `graphql`, 뒤쪽 서비스와의 계약은 `contract-testing`·`openapi`, 화면용 캐시는 `caching`, 조합 중 일부가 실패할 때는 `saga` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "newman",
+      "kind": "glossary",
+      "caption": "⭐⭐ Sam Newman 의 원 글에서",
+      "note": "BFF 라는 이름을 퍼뜨린 글에서 옮겼다. ⚠️ **표준이 아니라 패턴 설명**이고, 이 낱말에 공식 명세는 없다. ⚠️ 그리고 이 글은 **REA·SoundCloud 사례**를 다룬다 — Netflix 는 언급되지 않는다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐ 왜",
+          "\"our mobile devices will want to make **different calls, fewer calls**, and will want to display **different (and probably less) data**\""
+        ],
+        [
+          "⭐⭐ 단일 백엔드의 문제",
+          "\"**bottleneck** when rolling out new delivery, as so many changes are trying to be made to the **same deployable artifact**\""
+        ],
+        [
+          "기본형",
+          "\"**one backend per user experience**\" · \"**one experience, one BFF**\""
+        ],
+        [
+          "⭐⭐⭐ 개수의 기준",
+          "\"BFFs work best when **aligned around team boundaries**, so **team structure should drive how many BFFs you have**.\""
+        ],
+        [
+          "묶어도 되는 때",
+          "\"if the iOS and Android experiences are **very similar**, then it is easier to justify having a **single BFF**\""
+        ],
+        [
+          "⭐⭐⭐ 중복 vs 결합",
+          "\"extracting shared code to lead to **tight coupling** between services - something I am **more worried about than duplication**\""
+        ],
+        [
+          "추출 시점",
+          "\"creating an abstraction when you're about to implement something for the **3rd time** still feels like a good rule of thumb\""
+        ],
+        [
+          "⭐ 넣지 말 것",
+          "인증·로깅 같은 **generic perimeter concerns** 를 전부 넣으면 복잡해진다 — 별도 층으로"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    },
+    {
+      "id": "who",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 같은 층을 양쪽이 서로 자기 일이라 부른다",
+      "note": "공고의 **어느 항목에 적혀 있는지**를 그대로 옮긴 것이다(`confidence: inferred`). ⭐ Newman 의 \"team structure should drive...\" 를 데이터 쪽에서 확인하는 표.",
+      "columns": [
+        "어느 항목",
+        "공고",
+        "무엇을 뜻하나"
+      ],
+      "rows": [
+        [
+          "**프론트엔드 설계**",
+          "`BFF 아키텍처나 전역 상태 관리 등 **프론트엔드 설계**에 대한 깊은 이해`(더스윙)",
+          "프론트 팀이 소유"
+        ],
+        [
+          "**프론트 데이터 계층**",
+          "`데이터 관리와 API 통신: GraphQL, Relay, Tanstack Query, **BFF**`(레브잇)",
+          "클라이언트 상태 관리와 한 묶음"
+        ],
+        [
+          "**서버 사이드 개발**",
+          "`**SSR, BFF** 등 서버 사이드 개발 경험`(로아이)",
+          "서버 쪽 일로 분류"
+        ],
+        [
+          "**백엔드 개발**",
+          "`BFF 패턴이 포함된 MSA 환경에서의 **백엔드 개발** 경험`(젠틀파이·마감)",
+          "백엔드 팀이 소유"
+        ],
+        [
+          "⭐ **양쪽 다**",
+          "`React/Next.js 기반 화면 개발 **또는** Node.js 기반 API/BFF 개발`(피코이노베이션·마감)",
+          "**둘 중 아무나**"
+        ],
+        [
+          "⭐⭐ 경계 그 자체",
+          "`Next.js(SSR) 기반으로 ... **SSR 서버의 BFF 역할까지** 다룹니다`(네이버웹툰·마감)",
+          "**SSR 서버가 곧 BFF**"
+        ],
+        [
+          "⭐ 기술 스택",
+          "`BFF: **Node.js, NestJS**`(커넥트웨이브·마감) · `**NestJS 기반**`(컬리) · `**Next.js API Routes**`(엑스플랫·마감)",
+          "**거의 전부 Node 계열** — 프론트가 쓰는 언어"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "vs",
+      "kind": "compare",
+      "caption": "BFF · API 게이트웨이 · GraphQL — 겹치지만 다르다",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 다만 '게이트웨이에 넣을 것'의 근거는 Newman 의 경고(generic perimeter concerns 를 BFF 에 다 넣지 말 것)다. ⚠️ `api-gateway` 는 아직 문서가 없다.",
+      "columns": [
+        "",
+        "무엇을 하나",
+        "몇 개",
+        "겹치는 자리"
+      ],
+      "rows": [
+        [
+          "**API 게이트웨이**",
+          "**모든 요청에 공통인 것** — 인증·비율 제한·라우팅·관측",
+          "대개 하나",
+          "여기에 화면 로직이 들어가면 **다시 병목**"
+        ],
+        [
+          "⭐ **BFF**",
+          "**이 화면을 위한 조합** — 여러 서비스 호출·응답 재구성·화면용 캐시",
+          "**경험(팀)마다 하나**",
+          "⚠️ 비즈니스 로직이 스며들면 웹과 앱의 계산이 갈린다"
+        ],
+        [
+          "**GraphQL**",
+          "**질의 언어를 줘서 클라이언트가 직접 고르게**",
+          "서버 하나(스키마 하나)",
+          "⭐ GraphQL 서버가 **사실상 BFF** 인 경우가 흔하다"
+        ],
+        [
+          "⭐ 판단 기준",
+          "—",
+          "—",
+          "**\"이 규칙이 화면과 무관하게 참인가?\"** → 참이면 뒤쪽 서비스의 것"
+        ],
+        [
+          "공고의 흔적",
+          "`**API 게이트웨이/BFF** 운영 경험`(아이모션·마감)",
+          "—",
+          "`GraphQL, Relay, Tanstack Query, **BFF**`(레브잇)"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "dup",
+      "kind": "glossary",
+      "caption": "⭐⭐ 중복을 허용하는 결정",
+      "note": "Newman 의 글에서 옮겼다. ⭐ **이 백과사전의 다른 문서들과 반대 방향의 판단**이라 따로 표로 뒀다 — `design-system` 은 갈라짐을 막고, 여기는 허용한다.",
+      "columns": [
+        "",
+        "내용"
+      ],
+      "rows": [
+        [
+          "문제",
+          "BFF 를 둘 이상 두면 **같은 조합 로직이 양쪽에** 생긴다"
+        ],
+        [
+          "자연스러운 반응",
+          "공용 라이브러리로 추출"
+        ],
+        [
+          "⭐⭐⭐ Newman 의 판단",
+          "\"extracting shared code to lead to **tight coupling** between services - something I am **more worried about than duplication**\""
+        ],
+        [
+          "왜",
+          "공용 라이브러리가 생기면 **따로 배포하려고 나눈 것이 다시 함께 움직인다** — BFF 를 만든 이유를 되살린다"
+        ],
+        [
+          "언제 추출하나",
+          "\"**3rd time**\" — 세 번째에. 두 번은 참는다"
+        ],
+        [
+          "⭐ 다른 문서와의 대비",
+          "`design-system` 의 **파편화는 막고**, BFF 의 **조합 로직 중복은 허용한다** — 갈라졌을 때 **사용자가 보는 것이 달라지는가**가 기준"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⚠️ 33건은 이 백과사전에서 얇은 축이다. 그런데 **문장의 밀도가 높아** 썼다 — 큐의 자격은 건수가 아니라 문장이 무엇을 말해 주는가다.",
+      "columns": [
+        "",
+        "내용"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**33건 (모집중 9)** — `BFF|Backend For Frontend`"
+        ],
+        [
+          "⚠️ 마감 비중",
+          "**24건이 마감** — 이 문서는 마감 공고를 근거로 많이 썼다(규칙상 문제없다)"
+        ],
+        [
+          "⚠️ 오탐",
+          "아이피아 `**AI 서버**(Backend for Frontend) 개발` — 이 패턴인지 불분명. **33건에서는 한 건도 3%**"
+        ],
+        [
+          "함께 나오는 것",
+          "`MSA`(젠틀파이·집닥) · `마이크로 프론트엔드`(집닥) · `SSR`(로아이·네이버웹툰) · `API 게이트웨이`(아이모션)"
+        ],
+        [
+          "⭐ 기술 스택",
+          "**Node.js·NestJS·Next.js API Routes** — 거의 전부 프론트가 쓰는 언어"
+        ],
+        [
+          "⭐ 이웃 셈",
+          "`API 게이트웨이` 132건 · `마이크로 프론트엔드` 29건 · `Next.js` 1289건"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "화면 하나를 그리려고 백엔드를 서너 번 부르고 있다",
+      "pick": "**BFF 층을 하나 만들어 조합을 옮긴다**",
+      "over": "클라이언트에서 계속 여러 번 부르고 합치기",
+      "why": "⭐ 마이크로서비스는 **도메인으로** 쪼개지는데 화면은 **도메인을 가로지른다**. 클라이언트에서 합치면 그 로직이 웹·앱·파트너 앱에 **각각 복제**되고, 모바일은 특히 비싸다 — Newman 의 표현대로 모바일은 \"**fewer calls**\"를 원한다",
+      "tradeoff": "⚠️ **배포·모니터링 대상이 하나 는다.** 그리고 **누가 소유할지 정하지 않으면** 이 층은 아무도 안 고치는 코드가 된다 — 그 결정이 기술 결정보다 먼저다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    },
+    {
+      "situation": "BFF 를 몇 개 둘지 정해야 한다",
+      "pick": "⭐ **팀 경계에 맞춘다**",
+      "over": "클라이언트 종류(iOS/안드로이드/웹)마다 기계적으로 하나씩",
+      "why": "⭐⭐⭐ \"BFFs work best when **aligned around team boundaries**, so **team structure should drive how many BFFs you have**.\" 그리고 \"iOS 와 안드로이드 경험이 **매우 비슷하면** 하나로 두는 편이 정당화하기 쉽다\" — **기술이 아니라 조직이 기준**이다",
+      "tradeoff": "팀이 재편되면 BFF 경계도 흔들린다. 그래도 **팀과 어긋난 경계**보다는 낫다 — 어긋나면 한 BFF 를 두 팀이 고치게 되고, 그게 배포 병목의 재현이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    },
+    {
+      "situation": "BFF 두 개에 같은 조합 로직이 생겼다",
+      "pick": "**두 번까지는 중복을 둔다**",
+      "over": "바로 공용 라이브러리로 추출하기",
+      "why": "⭐⭐ \"extracting shared code to lead to **tight coupling** between services - something I am **more worried about than duplication**\". 공용 라이브러리가 생기면 **따로 배포하려고 나눈 것이 다시 함께 움직인다.** 경험칙은 **\"3rd time\"**",
+      "tradeoff": "⚠️ 중복이 늘면 한쪽만 고쳐 **동작이 갈리는** 사고가 난다. 그래서 **갈라졌을 때 사용자가 보는 것이 달라지는 부분**(금액 계산 같은)은 중복 대상이 아니다 — 그건 뒤쪽 서비스로 보낸다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    },
+    {
+      "situation": "인증·비율 제한을 어디에 둘지 고민이다",
+      "pick": "**게이트웨이 같은 공통 층에 둔다**",
+      "over": "BFF 마다 각각 구현하기",
+      "why": "Newman 이 경고한다 — 인증·로깅 같은 **generic perimeter concerns** 를 전부 BFF 에 넣으면 복잡해지고, **별도 층으로 분리**하는 편이 낫다. BFF 가 여럿이면 그 구현도 여럿이 되고 **한 곳만 빠뜨리면 구멍**이다(→ `authz` 의 `deny by default`)",
+      "tradeoff": "공통 층이 단일 장애점이 되고 배포가 조심스러워진다. ⚠️ 그리고 **어디까지가 공통인지의 경계**를 계속 지켜야 한다 — 거기에 화면 로직이 스며들면 BFF 가 없애려던 병목이 돌아온다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    },
+    {
+      "situation": "이미 GraphQL 서버가 있는데 BFF 도 만들어야 하나",
+      "pick": "**대개 필요 없다 — GraphQL 서버가 그 역할을 한다**",
+      "over": "둘을 겹쳐 두기",
+      "why": "⭐ 둘은 **같은 문제(화면에 맞춰 데이터 모으기)를 다르게** 푼다 — GraphQL 은 클라이언트가 고르게 하고, BFF 는 서버가 미리 조합한다. 레브잇 공고가 `GraphQL, Relay, Tanstack Query, **BFF**` 를 한 줄에 적는 것도 **같은 층의 이야기**라서다",
+      "tradeoff": "⚠️ 다만 **팀 경계가 여럿이면** 스키마 하나를 여러 팀이 고치게 되어 다시 병목이 될 수 있다 — 그때는 GraphQL 서버를 팀별로 나누는(사실상 BFF 로 쓰는) 선택이 남는다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "누가 소유할지 안 정하고 BFF 를 만든다",
+      "why": "기술적으로는 서버 하나를 더 띄우는 일이라 **결정 없이도 시작된다.** 그런데 이 층은 프론트와 백엔드 **사이**에 있어서, 정하지 않으면 **양쪽 다 남의 코드로 여긴다** — 그리고 이 데이터가 그 모호함을 보여 준다(같은 층을 어떤 회사는 `프론트엔드 설계`로, 어떤 회사는 `백엔드 개발`로 적는다)",
+      "fix": "⭐ **팀 경계부터 정한다** — \"BFFs work best when **aligned around team boundaries**\". 실무에서는 **화면을 만드는 팀이 갖는** 경우가 많고, 이 데이터의 기술 스택(Node.js·NestJS·Next.js)도 그 편이다",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    },
+    {
+      "trap": "BFF 에 비즈니스 로직이 스며든다",
+      "why": "응답을 조합하다 보면 \"여기서 계산하면 편한데\"가 쌓인다 — 할인 금액, 배송 가능 여부, 상태 판정. 그런데 그러면 **웹 BFF 와 앱 BFF 의 계산 결과가 갈리기 시작**하고, 사용자는 화면마다 다른 숫자를 본다",
+      "fix": "⭐ 판단 기준 한 줄을 팀 규칙으로 둔다 — **\"이 규칙이 화면과 무관하게 참인가?\"** 참이면 **뒤쪽 서비스**의 것이다. BFF 에 남길 것은 **이 화면에서만 이렇게 보이는 것**(필드 이름 바꾸기, 정렬, 화면용 요약)뿐"
+    },
+    {
+      "trap": "중복을 없애려고 BFF 공용 라이브러리를 만든다",
+      "why": "같은 코드가 둘에 있으면 반사적으로 추출하게 된다. 그런데 Newman 은 그것을 **중복보다 더 걱정**한다 — 공용 라이브러리가 생기면 **따로 배포하려고 나눈 것이 다시 함께 움직이고**, BFF 를 만든 이유(배포 병목)가 돌아온다",
+      "fix": "**세 번째에 추출한다**(\"3rd time\"). 그리고 추출하더라도 **버전을 독립적으로 올릴 수 있게** 한다 — 라이브러리를 고치자마자 모든 BFF 를 함께 배포해야 한다면 이미 결합된 것이다(→ `monorepo` 의 fixed vs independent)",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    },
+    {
+      "trap": "게이트웨이에 화면별 조합을 넣는다",
+      "why": "이미 모든 요청이 지나는 자리가 있으니 거기서 합치면 될 것 같다. 그런데 게이트웨이는 **대개 하나**이므로, 화면 로직이 들어가면 **모든 팀이 그 하나를 고치게** 된다 — 정확히 BFF 가 없애려던 병목이다",
+      "fix": "**게이트웨이에는 가로지르는 것만**(인증·비율 제한·라우팅·관측), **화면별 조합은 BFF 로.** 경계가 흐려지기 시작하면 \"이걸 고칠 때 몇 팀이 관여하나\"를 물어본다 — 둘 이상이면 잘못된 자리에 있는 것이다"
+    },
+    {
+      "trap": "BFF 를 만들었는데 뒤쪽 응답을 그대로 흘린다",
+      "why": "조합만 해 주고 형태는 그대로 두는 것이 빠르고, 뒤쪽 스펙이 바뀌어도 자동으로 따라간다. 그런데 그러면 **뒤쪽 서비스의 변경이 클라이언트까지 그대로 전파**되고, BFF 는 아무것도 막아 주지 못하는 **비싼 프록시**가 된다",
+      "fix": "⭐ 시스템노바 공고의 표현대로 **\"응답 스펙을 스스로 정의\"** 한다. 뒤쪽이 바뀌어도 **BFF 안에서 흡수**하는 것이 이 층의 존재 이유이고, 그 계약을 검사하려면 `contract-testing` 이 필요하다"
+    },
+    {
+      "trap": "클라이언트 종류마다 기계적으로 BFF 를 하나씩 만든다",
+      "why": "\"one experience, one BFF\" 를 그대로 적용하면 그렇게 된다. 그런데 **iOS 와 안드로이드가 거의 같은 화면**이면 두 BFF 는 **같은 코드 두 벌**일 뿐이고, 배포와 모니터링 대상만 는다",
+      "fix": "Newman 의 단서를 함께 읽는다 — \"if the iOS and Android experiences are **very similar**, then it is easier to justify having a **single BFF**\". ⭐ **경험이 실제로 다른지, 팀이 실제로 나뉘어 있는지**를 보고 정한다",
+      "sources": [
+        {
+          "title": "Pattern: Backends For Frontends (Sam Newman)",
+          "url": "https://samnewman.io/patterns/architectural/bff/",
+          "publisher": "Sam Newman",
+          "kind": "post",
+          "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "BFF",
+      "en": "Backend For Frontend",
+      "what": "⭐ 화면(경험) 하나를 위해 여러 백엔드의 응답을 모아 주는 층"
+    },
+    {
+      "term": "경험",
+      "en": "user experience",
+      "what": "Newman 의 단위 — 웹·모바일 앱·파트너 앱처럼 **사용자가 만나는 한 갈래**"
+    },
+    {
+      "term": "횡단 관심사",
+      "en": "cross-cutting / perimeter concerns",
+      "what": "인증·로깅·비율 제한처럼 **모든 요청에 공통**인 것. ⭐ BFF 가 아니라 공통 층의 일"
+    },
+    {
+      "term": "응답 스펙",
+      "en": "response contract",
+      "what": "BFF 가 클라이언트에게 약속하는 형태. 뒤쪽 응답을 그대로 흘리지 않는 것이 요점"
+    },
+    {
+      "term": "⭐ 3rd time 규칙",
+      "en": "rule of three",
+      "what": "세 번째 구현할 때 추상화한다는 경험칙 — 두 번까지는 중복을 둔다"
+    },
+    {
+      "term": "마이크로 프론트엔드",
+      "en": "micro frontend",
+      "what": "화면 쪽도 조각으로 나누는 방식. 집닥 공고처럼 BFF 와 함께 나온다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "자기 서비스의 화면 **하나**를 골라, 그 화면을 그리기 위해 **클라이언트가 백엔드를 몇 번 부르는지** 센다. 그리고 그중 **순차적으로 기다려야 하는 호출**이 몇 개인지 따로 표시한다.",
+      "done_when": "호출 횟수와 **직렬 구간의 길이**가 숫자로 나오고, \"BFF 를 두면 몇 번으로 줄어드는가\"에 대한 예상 숫자가 하나 나온다.",
+      "why": "⭐ Newman 이 말한 **\"fewer calls\"** 가 왜 모바일에서 특히 중요한지는 **직렬 호출의 개수**를 세어 보면 안다. 그리고 그 숫자가 BFF 도입의 근거이자 반대 근거(줄어드는 게 한두 번이면 안 만든다)가 된다.",
+      "no_hardware": "자기 서비스가 없으면 브라우저 개발자 도구의 네트워크 탭으로 아무 서비스의 한 화면을 열어 세면 된다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ 지금 만들고 있는(또는 상상한) BFF 의 코드 조각 다섯 개를 골라 각각 **\"이 규칙이 화면과 무관하게 참인가?\"** 를 묻고 **BFF 의 것 / 뒤쪽 서비스의 것**으로 나눈다.",
+      "done_when": "다섯이 분류되고, ⭐ **뒤쪽으로 보내야 하는데 BFF 에 있는 것**이 최소 하나 발견된다(또는 없다는 판정이 근거와 함께 나온다).",
+      "why": "⭐⭐ BFF 의 가장 흔한 고장은 **비즈니스 로직이 스며드는 것**이고, 그건 한 번에 오지 않고 한 줄씩 쌓인다. 이 질문을 습관으로 만들어 두면 리뷰에서 바로 걸린다.",
+      "hours": 1
+    },
+    {
+      "task": "자기 조직에서 **BFF 를 만든다면 누가 소유할지** 한 줄로 정하고, 그 결정의 근거를 세 가지 적는다 — 팀 경계, 기술 스택, 배포 주기 중 무엇이 그렇게 말하는가.",
+      "done_when": "소유 팀이 정해지고 근거 셋이 적히며, ⭐ **그 팀이 서버를 운영해 본 적이 있는지**(배포·모니터링·장애 대응)에 대한 답이 함께 나온다.",
+      "why": "⭐⭐⭐ Newman 의 **\"team structure should drive how many BFFs you have\"** 를 자기 조직에 대입하는 연습이다. 그리고 마지막 질문이 중요하다 — **프론트 팀이 갖는 경우가 많은데, 서버 운영 경험이 없으면 그 층이 곧 방치된다.**",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "BFF 는 무엇을 하는 층인가? 공고 한 줄로 답해 보라.",
+    "Newman 은 BFF 를 몇 개 둘지 무엇이 정해야 한다고 적는가?",
+    "BFF 가 여럿일 때 중복 코드를 왜 바로 추출하지 말라고 하는가? 언제 추출하나?",
+    "API 게이트웨이와 BFF 의 경계는? 게이트웨이에 화면 로직이 들어가면 무엇이 돌아오는가?",
+    "BFF 에 비즈니스 로직이 스며들었는지 판단하는 질문 한 줄은?",
+    "GraphQL 서버가 이미 있으면 BFF 가 왜 대개 필요 없는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "BFF 레이어 직접 설계·구현 — 여러 백엔드 서비스의 응답을 화면 요구에 맞게 조합하고, 캐싱 전략과 응답 스펙을 스스로 정의합니다",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49770081?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=73&sc=630",
+      "where": "㈜시스템노바",
+      "what_it_shows": "⭐⭐⭐ **정의·역할·경계가 한 줄에** 있다. 특히 `**응답 스펙을 스스로 정의**` — 뒤쪽 응답을 그대로 흘리면 이 층은 비싼 프록시가 된다는 이 문서의 지뢰와 정확히 대응한다"
+    },
+    {
+      "quote": "REST API 연동이나 맘에 안들면 BFF 만들 수 있는 사람을 찾아요.",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49746662?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=66&sc=630",
+      "where": "(회사명 미상)",
+      "what_it_shows": "⭐⭐ **이 패턴이 실제로 태어나는 자리** — 남이 준 API 가 화면에 안 맞을 때. 격식 없는 문장이라 오히려 동기가 그대로 드러난다"
+    },
+    {
+      "quote": "• BFF 아키텍처나 전역 상태 관리 등 프론트엔드 설계에 대한 깊은 이해가 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372012",
+      "where": "더스윙",
+      "what_it_shows": "⭐⭐ **`프론트엔드 설계` 항목에** 들어 있다 — 전역 상태 관리와 나란히. 프론트 팀이 소유하는 쪽의 전형"
+    },
+    {
+      "quote": "• SSR, BFF 등 서버 사이드 개발 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/361516",
+      "where": "로아이",
+      "what_it_shows": "⭐⭐ **같은 것이 여기서는 `서버 사이드 개발`** 이다. 위 더스윙 공고와 나란히 놓으면 Newman 의 \"team structure should drive...\" 가 데이터로 보인다"
+    },
+    {
+      "quote": "- React, TypeScript, Next.js(SSR) 기반으로 설계·개발·운영하며, SSR 서버의 BFF 역할까지 다룹니다.",
+      "from": "posting",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54658654",
+      "where": "네이버웹툰(유) (마감)",
+      "what_it_shows": "⭐⭐ **SSR 서버가 곧 BFF 가 된다.** 화면을 그리려고 이미 서버가 있으니 데이터 조합도 거기서 한다 — 경계가 가장 또렷하게 보이는 자리"
+    },
+    {
+      "quote": "BFF: Node.js, NestJS",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/341130",
+      "where": "커넥트웨이브 (마감)",
+      "what_it_shows": "⭐ **기술 스택을 못 박은 줄.** 이 데이터의 BFF 는 거의 전부 Node 계열이다 — 뒤쪽이 무엇이든 **BFF 는 프론트가 쓰는 언어로 만들어진다**"
+    },
+    {
+      "quote": "• BFF 패턴이 포함된 MSA 환경에서의 백엔드 개발 경험이 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/361200",
+      "where": "젠틀파이 (마감)",
+      "what_it_shows": "**BFF 는 마이크로서비스와 짝으로 온다** — 서비스를 잘게 쪼갠 대가를 화면 쪽에서 치르지 않으려고 두는 층"
+    },
+    {
+      "quote": "ㆍAPI 게이트웨이/BFF 운영 경험",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49272123?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=16&sc=630",
+      "where": "아이모션 (마감)",
+      "what_it_shows": "⚠️ **둘이 슬래시로 묶여 있다** — 실무에서 자주 혼동되는 자리이고, 그래서 이 문서가 `boundary` 절을 따로 뒀다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "graphql",
+      "how": "⭐⭐ 이 문서를 큐에 올린 자리. **같은 문제를 다르게 푼다** — 그쪽은 질의 언어로, 여기는 서버 층으로. GraphQL 서버가 사실상 BFF 인 경우가 흔하다"
+    },
+    {
+      "slug": "rest",
+      "how": "BFF 가 뒤쪽 서비스를 부르는 방식이자, 클라이언트에게 주는 방식"
+    },
+    {
+      "slug": "design-system",
+      "how": "⭐ 같은 경계의 다른 층 — 그쪽은 두 직군의 합의를 **컴포넌트로**, 여기는 그 경계에 **서버를 세운다**. 그리고 중복에 대한 판단이 반대다"
+    },
+    {
+      "slug": "monorepo",
+      "how": "BFF 공용 코드를 추출할 때의 문제 — 함께 배포되면 나눈 의미가 사라진다(fixed vs independent)"
+    },
+    {
+      "slug": "contract-testing",
+      "how": "⭐ 뒤쪽 서비스가 바뀌어도 BFF 가 흡수하려면, 그 계약이 지켜지는지 검사해야 한다"
+    },
+    {
+      "slug": "caching",
+      "how": "시스템노바 공고의 `캐싱 전략` — 화면용 캐시가 이 층의 일이다"
+    },
+    {
+      "slug": "saga",
+      "how": "여러 서비스를 부르다 일부가 실패할 때 — 조합 층이 반드시 만나는 문제"
+    },
+    {
+      "slug": "api-gateway",
+      "how": "⚠️ 아직 문서가 없다(**132건**). ⭐ 이 문서의 `boundary` 절이 그쪽을 전제로 쓰였다 — **게이트웨이는 횡단 관심사, BFF 는 화면별 조합**"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `BFF` 가 없다. 직접 세면 **33건(모집중 9)** 이다.",
+    "⚠️⚠️ **큐에 적어 둔 가정 하나가 틀렸다.** 이 낱말을 큐에 올릴 때 1차 자료 후보로 \"Netflix 기술 블로그의 초기 사례\"를 적었는데, **Sam Newman 의 글은 REA 와 SoundCloud 사례를 다루고 Netflix 를 언급하지 않는다.** 확인한 것만 적었다.",
+    "⚠️ **1차 자료가 글 한 편뿐이다.** 표준도 명세도 없는 **패턴 이름**이라 RFC 나 공식 문서가 존재하지 않는다. 그래서 이 문서의 `confirmed` 는 전부 Newman 의 글에서 온 것이고, **다른 관점(반대 의견·실패 사례)은 확인하지 못했다.**",
+    "⚠️ **33건 중 24건이 마감 공고다.** 모집중은 9건뿐이라 마감 공고를 근거로 많이 썼다(규칙상 문제없다 — `evidence` 는 그 말이 실무에 박혀 있다는 증거다). ⚠️ 다만 **이 낱말이 지금 늘고 있는지 줄고 있는지는 이 데이터로 판단하지 않았다.**",
+    "**운영 부담을 다루지 않았다.** BFF 를 여럿 두면 배포·모니터링·장애 대응 대상이 는다. 네이버웹툰 공고가 `사내 Docker 기반 클라우드 플랫폼에서 **배포와 모니터링**도` 라고 적는 그 부분인데, **이 사이클에서 그 자료는 열지 않았다.** 실습 3번에 \"그 팀이 서버를 운영해 본 적이 있는가\"로만 남겼다.",
+    "⚠️ **`api-gateway` 문서가 없어 `boundary` 절이 한쪽 발로 서 있다.** 132건이나 되는 낱말이고, 이 문서가 그 경계를 정의하면서도 상대편을 가리킬 곳이 없다 — 큐에 함께 올려 뒀다.",
+    "**오탐 한 건을 배제하지 못했다.** 아이피아 공고의 `AI 서버(Backend for Frontend) 개발`이 이 패턴을 가리키는지 불분명하다. **33건에서는 한 건도 3%** 라 밝혀 둔다."
+  ],
+  "sources": [
+    {
+      "title": "Pattern: Backends For Frontends (Sam Newman)",
+      "url": "https://samnewman.io/patterns/architectural/bff/",
+      "publisher": "Sam Newman",
+      "kind": "post",
+      "summary": "⭐⭐ BFF 라는 이름을 퍼뜨린 글 — **몇 개를 둘지는 팀 구조가 정한다**는 것과 **중복을 허용하는 이유**가 여기 있다"
+    }
+  ]
+}

@@ -4,51 +4,57 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `GraphQL`(`graphql`)을 끝냈다 — ⭐⭐ 100번째 문서다.**
-절 6 · 표 5 · 실습 3 · 지뢰 6 · 근거 8. 전체: **문서 100개**(전부 done) · **절 596 · 실습 300** ·
-**오류 0 · 경고 0.**
+**직전 사이클에서 `BFF`(`bff`)를 끝냈다** — 절 6 · 표 5 · 실습 3 · 지뢰 6 · 근거 8.
+전체: **문서 101개**(전부 done) · 절 602 · 실습 303 · **오류 0 · 경고 0.**
 
-**⭐⭐⭐ 축: "이득도 대가도 같은 한 문장에서 나온다."** 명세의 설계 원칙이 그 문장이다.
-> **"Client-specified response — It is the client that is responsible for specifying exactly
-> how it will consume those published capabilities."**
-> **"Product-centric — GraphQL is *unapologetically* driven by the requirements of views and
-> the front-end engineers that write them."**
-⭐ **`unapologetically`** — 기술이 자기 편향을 이렇게 대놓고 적는 경우는 드물다.
-**클라이언트가 질의를 정하니 과다·과소 전송이 사라지고, 바로 그 때문에 서버는 자기가 무엇을
-계산할지 미리 모른다** → N+1 · 비용 예측 불가 · HTTP 캐시 상실이 전부 거기서 나온다.
-그리고 명세가 **"does not mandate a particular ... storage system"** 이라 **답을 줄 수도 없다.**
+**⭐⭐⭐ 축: "BFF 는 기술 결정이 아니라 팀 결정이다."** 1차 자료와 셈이 같은 곳을 가리켰다.
+- **Sam Newman**: **"BFFs work best when **aligned around team boundaries**, so **team structure
+  should drive how many BFFs you have**."** (원칙은 "one experience, one BFF" 이되,
+  "iOS 와 안드로이드 경험이 **매우 비슷하면** 하나로")
+- ⭐⭐ **셈이 그것을 다른 각도에서 증명한다 — 같은 층을 양쪽이 서로 자기 일이라 부른다.**
+  더스윙 `BFF 아키텍처 ... 등 **프론트엔드 설계**` vs 로아이 `SSR, BFF 등 **서버 사이드 개발**`,
+  그리고 피코이노베이션 `화면 개발 **또는** Node.js 기반 API/BFF 개발`.
+  ⭐ **기술 스택은 거의 전부 Node 계열**(NestJS·Next.js API Routes) — 실제로는 **프론트 팀이
+  서버를 갖는 형태**가 흔하다는 뜻이다. 네이버웹툰 `**SSR 서버의 BFF 역할까지**` 가 그 경계.
 
-**⭐⭐ DataLoader README 가 "제품이 스스로 그은 선"의 또 한 사례였다** —
-**"DataLoader caching does not replace Redis, Memcache, or any other shared application-level
-cache"**(한 요청 안에서만 유효하다), 그리고 ⚠️ **"Avoid multiple requests from different users
-using the DataLoader instance, which could result in cached data incorrectly appearing in each
-request"** — **성능 도구가 인가 사고가 되는 자리**라 지뢰 1번으로 올렸다.
+**⭐⭐ 둘째 축: 중복을 허용한다.** Newman — **"extracting shared code to lead to tight coupling
+between services - something I am **more worried about than duplication**"**, 추출은 **"3rd time"**.
+⭐ **`design-system`(파편화를 막는다)과 정확히 반대 방향**이라 표로 대비시켰다 — 기준은
+**갈라졌을 때 사용자가 보는 것이 달라지는가**.
 
-**⭐ 셈이 `rest` 와 같은 형태였다** — **370건 vs `N+1` 10건 · `DataLoader` 2건.**
-`Apollo` 27 · `Relay` 13 까지 보면 **깊이 쓰는 곳이 적다**는 해석이 그럴듯하다(추정임을 밝혔다).
-`market` 은 179건(2.5%)이라 본문 셈의 절반 — `rest`(6배)와 달리 **간극이 낱말마다 다르다.**
+**⭐ 공고 두 줄이 특히 좋았다** — ㈜시스템노바 `BFF 레이어 직접 설계·구현 — 여러 백엔드 서비스의
+응답을 **화면 요구에 맞게 조합**하고, **캐싱 전략과 응답 스펙을 스스로 정의**합니다`(정의·역할·경계가
+한 줄에), 그리고 회사명 없는 공고의 `REST API 연동이나 **맘에 안들면 BFF 만들 수 있는 사람**을
+찾아요.`(패턴이 태어나는 동기 그대로).
 
-**⚠️⚠️ `graphql.org` 가 403 이었다** — `/learn/caching/`·`/learn/best-practices/` 둘 다.
-`spec.graphql.org` 도 403 이라 **명세는 GitHub 원문(`graphql/graphql-spec`)에서** 읽었고
-**판을 특정하지 못했다.** 그래서 `cost` 절(N+1·비용·캐시)은 **명세의 원칙에서 따라 나온 정리**로
-두고 `confidence: inferred` 로 표시했다.
+**⚠️ 큐에 적어 둔 가정 하나가 틀렸다** — 1차 자료 후보로 "Netflix 기술 블로그"를 적었는데
+**Newman 의 글은 REA·SoundCloud 사례를 다루고 Netflix 를 언급하지 않는다.** 문서에 밝혔다.
+**⚠️ 33건 중 24건이 마감**이고, 오탐 1건(아이피아 `AI 서버(Backend for Frontend)`)도 적었다.
 
-**다음 사이클 = QUEUE 맨 위 `BFF`(`bff`)** — 사다리 3순위. **대기 2개**(BFF, API 게이트웨이).
+**⚠️ 그리고 실수를 하나 잡았다** — `evidence` 의 URL 네 개가 **셈 출력에서 잘린 채로** 들어갔다
+(`...view?view_type=search` 처럼). `validate.py` 는 URL 존재만 보므로 통과했다. 원본에서 다시
+뽑아 고쳤다(같은 커밋). ⭐ **`schema-migration` 때 세운 규칙(quote·where·url 을 같은 출력에서 한
+묶음으로 복사한다)의 변형된 위반**이다 — 이번엔 지어낸 게 아니라 **출력이 잘린 것을 그대로 복사**했다.
+
+**다음 사이클 = QUEUE 맨 위 `API 게이트웨이`(`api-gateway`)** — 사다리 3순위. **대기 1개.**
 ⚠️ **`--gaps` 출력이 대상을 정한다** — 이 메모가 큐와 어긋나면 큐가 맞다.
 
-## BFF 사이클 메모
+## API 게이트웨이 사이클 메모
 
-- **`graphql` 이 끊긴 링크로 남겼다.** 레브잇 공고의 `GraphQL, Relay, Tanstack Query, **BFF**` 가
-  우연이 아니다 — **같은 문제(화면에 맞춰 데이터 모으기)를 질의 언어로 푸느냐 서버 층으로 푸느냐.**
-- ⚠️ **33건(모집중 9)** 으로 얇다. 하한선(`rebac` 7 · `contract-testing` 8) 위이고,
-  ⭐⭐ **근거가 유난히 좋다 — 정의가 공고 안에 있다**: ㈜시스템노바 `**BFF 레이어 직접 설계·구현** —
-  여러 백엔드 서비스의 응답을 **화면 요구에 맞게 조합**하고, **캐싱 전략과 응답 스펙을 스스로 정의**합니다`.
-- ⭐⭐ **축은 "누가 만드나"** — 더스윙은 `**프론트엔드 설계**`로, 로아이는 `**서버 사이드 개발**`로
-  분류한다. **같은 층을 양쪽이 서로 자기 일이라 부른다**(`design-system` 의 '두 직군 사이의 계약'과
-  같은 형태 — 그때 셈으로 축을 잡았듯 여기서도 **문장의 소속 항목**을 보면 된다).
-- ⚠️ **1차 자료가 어려운 낱말이다** — 표준도 명세도 없는 **패턴 이름**이다. Sam Newman 의 원 글 ·
-  Netflix 기술 블로그 · ThoughtWorks Radar 가 후보. **다 안 되면 공고 문장이 곧 1차 자료**이고,
-  `network-separation` 처럼 **확보한 것과 못 한 것을 나눠 적는다.**
+- **`bff` 가 그 경계를 전제로 쓰였다** — 그 문서의 `boundary` 절이 **"게이트웨이는 횡단 관심사,
+  BFF 는 화면별 조합"** 이라고 정의해 놓고 **상대편을 가리킬 곳이 없다.** 여기가 그 짝이다.
+- **132건** — BFF(33건)의 네 배. ⚠️ **아직 셈만 했고 문장은 안 읽었다.** 사이클 첫 작업으로
+  **'진짜 게이트웨이 설계'와 'AWS API Gateway 를 써 봤다'를 갈라야** 한다
+  (`data-migration` 규칙: 도구 이름은 기능의 신호가 아니다).
+- ⚠️⚠️ **이웃이 많다**: `rate-limit`(제한) · `authz`(인가를 어디서) · `bff`(화면별 조합) · `rest`.
+  ⭐ **`authz` 에서 배운 대로 쓰기 전에 이웃들의 `one_liner` 를 먼저 읽고 고유 자리를 한 문장으로 정한다.**
+  경계 초안: **"모든 요청이 지나는 한 자리에서 무엇을 할 것인가"** — 그리고 **무엇을 하지 말 것인가.**
+- 축 후보: ①**왜 한 자리에 모으나**(서비스마다 하면 흩어진다 → `authz` 의 '어디서 결정하나')
+  ②⭐**모으면 생기는 것**(단일 장애점 · 배포 병목 · **비즈니스 로직이 스며든다** — `bff` 의 지뢰와 같은 형태)
+  ③**BFF 와의 경계** ④**서비스 메시와의 경계**(바깥쪽/안쪽).
+- ⭐ **1차 자료**: 클라우드 벤더 문서의 **할당량·한계 절**, Envoy·Kong 같은 구현체 문서의
+  **"무엇을 여기서 하지 말라"** 절. ⭐⭐ **`rest` 에서 배운 대로 부정어(doesn't·not recommended·
+  limits·avoid)를 먼저 검색한다.**
 
 ## 후보 목록 (다음에 큐가 마르면 여기서)
 
@@ -57,17 +63,33 @@ request"** — **성능 도구가 인가 사고가 되는 자리**라 지뢰 1�
 
 | 후보 | 공고 | 이 엔진이 쓸 각도 |
 |---|---|---|
-| ~~REST API~~ · ~~GraphQL~~ | — | ✅ 썼다(99·100번째) |
-| **BFF** · **API 게이트웨이** | 33 · 132 | ⭐ **이번에 둘 다 큐로 올렸다**(서로 짝이다) |
+| ~~REST~~ · ~~GraphQL~~ · ~~BFF~~ | — | ✅ 썼다(99·100·101번째) |
+| **API 게이트웨이** | 132 | ⭐ **큐에 있다 — 다음 차례** |
 | `HTTP` | (미측정) | ⭐⭐ **`rest` 가 전제하고 비워 둔 층.** 메서드·상태 코드·캐시 헤더 |
+| `마이크로 프론트엔드` | 29 | ⚠️ 얇지만 `bff`·`design-system` 과 이웃 — Module Federation |
 | `PostgreSQL` vs `MySQL` | 673 / 649 | ⭐ **둘을 한 문서로** — "언제 그것 대신 저것" 이 저절로 선다 |
-| `Kotlin` | 464 | ⭐ "Java 가 있는데 왜" — `java` 문서가 이미 있어 이웃이 선다 |
-| `Redis` | 474 | ⚠️ `caching` 과 겹친다 — 다른 각도(자료구조 서버·단일 스레드)를 먼저 정할 것 |
-| `Next.js` / SSR | 1289 | ⚠️ `seo` 가 일부 다뤘다 — 렌더링 전략 자체로 좁히면 설 수 있다 |
-| `Linux` · `Git` · `AWS` · `React` | 879 · 896 · 1966 · 1252 | ⚠️ **너무 넓다** — 좁은 낱말로 쪼갤 때만 |
+| `Kotlin` | 464 | ⭐ "Java 가 있는데 왜" |
+| `Redis` | 474 | ⚠️ `caching` 과 겹친다 — 다른 각도를 먼저 정할 것 |
+| `Next.js` / SSR | 1289 | ⚠️ `seo`·`bff` 가 일부 다뤘다 — 렌더링 전략으로 좁히면 설 수 있다 |
 
 
 ## 배운 것
+
+- ⚠️⚠️ **셈 출력이 잘린 것을 그대로 복사해 `evidence` URL 네 개가 불완전하게 들어갔다.**
+  터미널 폭에 맞추려고 `j.get('url')[:70]` 로 잘라 출력했는데 **그 잘린 문자열을 문서에 옮겼다.**
+  `validate.py` 는 URL 존재만 보므로 통과했고, 커밋 직전에 눈으로 발견해 원본에서 다시 뽑아 고쳤다.
+  ⭐ **규칙 보강** — `schema-migration` 때 "quote·where·url 을 같은 출력에서 한 묶음으로 복사한다"를
+  세웠는데, 그것으로 부족하다: **URL 은 출력에서 자르지 않는다.** 미리보기가 길어지는 게
+  잘린 링크보다 낫다. (지어낸 URL 은 검증 사이클에서 잡혔지만, **잘린 URL 은 아무 검사도 못 잡는다.**)
+- ⭐⭐ **큐에 적어 둔 1차 자료 후보가 틀릴 수 있다 — 그것도 문서에 적는다.** `bff` 를 큐에
+  올릴 때 "Netflix 기술 블로그의 초기 사례"를 적었는데, Newman 의 글은 **REA·SoundCloud** 를 다루고
+  Netflix 를 언급하지 않았다. **큐의 근거란은 가설**이라는 규칙(`security-certification` 에서 셈이
+  뒤집힌 것)이 **1차 자료 후보에도 그대로 적용**된다. ⭐ 틀린 가정을 조용히 지우지 말고
+  `open_questions` 에 남긴다 — 다음 사람이 같은 곳을 다시 뒤지지 않는다.
+- ⭐ **패턴 이름에는 명세가 없다 — 그때는 공고 문장이 1차 자료에 가장 가깝다.** `bff` 는
+  RFC 도 공식 문서도 없어서 `confirmed` 가 전부 글 한 편에서 나왔다. 대신 ㈜시스템노바 공고
+  한 줄이 **정의·역할·경계**를 다 담고 있었다. ⚠️ 그런 낱말은 **반대 의견·실패 사례를 못 찾는다**는
+  약점이 있으니 그것도 `open_questions` 에 적는다.
 
 - ⭐⭐ **100개를 넘겼다(2026-09-06).** 절 596 · 실습 300 · 오류 0 · 경고 0. 돌아보면 이 백과사전을
   남의 것과 가르는 것은 셋이다 — **①공고 셈으로 축을 잡는다**(문서를 쓰기 전에 낱말을 센다)

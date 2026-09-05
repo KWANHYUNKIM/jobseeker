@@ -1816,6 +1816,23 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "bff",
+      "title": "BFF",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "화면 하나를 위해 **여러 백엔드의 응답을 모아 주는 층** — 그리고 **몇 개를 둘지는 기술이 아니라 팀 구조가 정한다.**",
+      "aliases": [
+        "BFF",
+        "Backend For Frontend",
+        "Backends For Frontends",
+        "백엔드 포 프론트엔드"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
