@@ -1312,6 +1312,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "causal-consistency",
+      "title": "인과 일관성 · 세션 보장",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**전역으로 강할 필요는 없다 — 나에게만 일관되면 된다.** \"저장했는데 안 보여요\"의 대부분은 여기서 끝나고, **값은 최종 일관성과 비슷하다.**",
+      "aliases": [
+        "인과 일관성",
+        "causal consistency",
+        "세션 일관성",
+        "session consistency",
+        "자기 쓰기 읽기"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
