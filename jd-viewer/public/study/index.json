@@ -1507,6 +1507,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "contract-testing",
+      "title": "계약 테스트",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "두 서비스를 함께 띄워 보지 않고도 \"이 둘이 서로 말이 통하는가\"를 확인하는 방법 — 각자 혼자서, 합의된 예시를 지키는지만 검사한다.",
+      "aliases": [
+        "계약 테스트",
+        "contract testing",
+        "Pact",
+        "소비자 주도 계약",
+        "consumer-driven contract",
+        "Spring Cloud Contract"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

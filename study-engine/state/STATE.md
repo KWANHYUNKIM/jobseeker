@@ -4,52 +4,72 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `SIEM (보안 로그 분석)`(`siem`)을 끝냈다** — 절 6 · 표 5 · 실습 3 ·
-지뢰 6 · 근거 9. 전체: **문서 84개**(전부 done) · 절 502 · 실습 252 ·
+**직전 사이클에서 `계약 테스트`(`contract-testing`)를 끝냈다** — 절 6 · 표 5 · 실습 3 ·
+지뢰 6 · 근거 8. 전체: **문서 85개**(전부 done) · 절 508 · 실습 255 ·
 **오류 0 · 경고 0.**
 
-**`audit-log` 의 경계 2번('남기기만 하고 안 본다')이 그대로 이 문서가 됐다.**
+**`data-contract` 이 남긴 짝**(데이터 스키마 ↔ API 호출)을 채웠다. 방향이 반대라는 점이
+재미있었다 — 그쪽은 **스키마를 먼저 정하고**, 여기는 **테스트가 계약을 만든다**(code-first).
 
-**⭐⭐ 문서의 심장은 GuardDuty 문서의 한 문장이었다** — `Pentest` 항목의
-**"Although GuardDuty **can't identify the true purpose** behind such activity ... it
-**could** indicate malicious probing"**. **탐지 도구가 스스로 '의도는 모른다'고 적는다** —
-즉 **탐지는 판정이 아니라 신호**이고 판정은 맥락을 아는 사람이 한다. 여기서 '오탐이 본질'
-절 전체가 나왔고, `Behavior`(기준선이 없으면 오탐 폭주) · `Policy`(공격이 아니라 우리 실수)
-· `Stealth`(상대에게 의도가 있다 — 관측성에는 없는 범주)가 그 절을 채웠다.
+**⭐⭐ 이 사이클의 자료는 극단적이었다 — Pact 문서에 `What is Pact good for?` 라는 페이지가
+있고 잘 맞는 상황 **5개**와 안 맞는 상황 **11개**를 나란히 적어 뒀다.** 그 표를 전문으로
+옮겨 `fit` 표로 만들고 문서의 절반을 적용 조건에 썼다. **비대칭(5 vs 11) 자체가 이 도구의
+성격**이라 줄이지 않았다.
 
-**⭐ 두 번째 재료는 경보 이름의 구조** — `ThreatPurpose:Resource/Family.Mechanism!Artifact`.
-**맨 앞이 '왜'(공격 단계)** 라서 우선순위가 이름에서 나오고, `.Custom`(내 목록) vs
-`.Reputation`(평판 모델)처럼 **얼마나 믿을지도 이름에 들어 있다.** 실습 3번을 이 구조를
-빌려 자기 규칙 이름을 다시 짓는 것으로 뒀다 — 가장 싸게 얻는 개선.
+**⭐ 축은 "통과했다와 배포해도 된다는 다른 문장이다"** 로 잡았다. 통합 테스트의 진짜 비용이
+느림이 아니라 **배포가 묶이는 것**이라는 게 1차 자료에 있었다 — **"deploying sets of
+pre-tested applications together, **creating a bottleneck**."** 계약 테스트가 그 매듭을
+**검사를 쪼개서** 풀지만("checking each application in isolation"), 대가로 **"지금 운영에
+어느 버전이 떠 있나"** 라는 새 문제가 생기고 그것이 `can-i-deploy`(`Computer says yes \o/`,
+종료 코드로 답한다)를 낳았다.
 
-**⭐ 정규화는 `data-contract` 와 같은 문제로 이었다.** ASFF 의
-**"eliminates the need for time-consuming data conversion efforts"** — 다만 그쪽은
-**생산자에게 규칙을 강제**하고 여기는 **소비자가 변환해 받는다**(벤더에게 형식을 바꾸라 할 수
-없으므로). 그리고 첫 절에서 `observability` 와 짝을 세웠다(우리가 고장 났나 vs 누가 노리나).
+**⭐ 소비자 주도의 핵심 이점도 한 문장이었다** — **"only communication paths actually used by
+consumers get tested, meaning **unused provider behavior remains free to evolve**."**
+`data-contract` 의 `FULL` 호환이 사실상 optional 필드만 남기는 것과 **정확히 대비**된다.
 
-**다음 사이클 = QUEUE 맨 위 `계약 테스트`(`contract-testing`)** — 사다리 3순위.
-(SIEM 을 큐에서 지우고 **`데이터 유출 방지 (DLP)`(`dlp`)를 새로 올렸다** — `EDR·WAF·SIEM·DLP`
-묶음에서 **유출 방지만 백과사전에 없다.** **대기 2개**: 계약 테스트, DLP)
+**다음 사이클 = QUEUE 맨 위 `데이터 유출 방지 (DLP)`(`dlp`)** — 사다리 3순위.
+(계약 테스트를 큐에서 지우고 **`OpenAPI (API 명세)`(`openapi`)를 새로 올렸다** — `vs-spec` 표가
+비워 둔 반대편이고 **국내 수요는 오히려 이쪽이 압도적**이다(234건 vs 8건). **대기 2개**: DLP, OpenAPI)
 
-## 계약 테스트 사이클 메모
+## DLP 사이클 메모
 
-- **`data-contract` 이 끊긴 링크로 남긴 짝** — 데이터 스키마는 그쪽, 여기는 **API 호출**.
-- ⚠️ **근거가 얇다 — 6건(모집중 4), 그중 1건은 오탐.** 진짜는 코그넥스 `CI/CD, contract test,
-  integration test, load test, rollback strategy`, Bill.com `contract testing (Pact or similar)`,
-  Coursera `API testing frameworks (Postman, REST-assured, Pact)`, 와이즈플러스(마감)
-  `API Contract Test 또는 Simulator 개발 경험`. ⚠️⚠️ **`PACT` 는 학회 이름이기도 하다**
-  (피플뱅크의 `ASPLOS, HPDC, ISCA, Micro, **PACT**, PLDI, PPoPP, SC`).
-  **`rebac` 처럼 왜 얇은지를 숫자로 적고 쓴다.**
-- 축 다섯: ①**통합 테스트로는 왜 안 되나**(둘 다 띄워야 하고 느리고 남의 배포에 깨진다)
-  ②**소비자가 계약을 쓴다**(consumer-driven) ③**계약을 어디에 두나**(브로커 — 양쪽 CI 가 같은
-  것을 본다) ④⭐**`can-i-deploy`**(배포 전에 기계에 물어본다 — 가장 또렷한 실물)
-  ⑤**대체하지 못하는 것**(성능·인증·실제 데이터 → `load-test`).
-- ⭐ **1차 자료** — **docs.pact.io** 가 공개 HTML 이고 **"contract testing is not..."** 처럼
-  **스스로 경계를 그은 페이지**를 갖고 있다(이 엔진에서 네 번 통한 '제품이 스스로 그은 선').
-  Pact Broker 와 `can-i-deploy` 문서도 같은 사이트.
+- **`siem` 이 남긴 자리** — `EDR·WAF·SIEM·DLP` 묶음에서 **유출 방지만 백과사전에 없다.**
+  그리고 `audit-log`(응답 본문까지 남기면 감사 로그가 개인정보 DB 사본이 된다) ·
+  `abac`(PII 마스킹) · `network-separation`(망분리)이 전부 **데이터가 밖으로 나가는 문제**를
+  언급만 하고 지나갔다.
+- 근거: 바로팜 `EDR, WAF, SIEM, DLP 등 주요 보안 솔루션 운영 경험`, 버킷플레이스
+  `Endpoint 보안을 고도화하여 EDR, DLP 기반 단말 위협 탐지·차단 체계 구축`, 프라이빗테크놀로지
+  `제로트러스트, ZTNA, SASE, SWG, NAC, VPN, PAM, DLP, SIEM/SOAR`, 브레인크루 `PII 가명화`.
+- ⚠️ **`DLP` 는 세 글자다** — `OPA`(이웃이 좁아 안전) vs `DMS`(넓어 오탐) 판별을 먼저 한다.
+  ⚠️ **`유출` 은 한국어에서 넓다**(유출 사고 기사·개인정보 유출 대응) — `감사`·`관제` 규칙 그대로
+  **제품 이름으로 먼저 세고 한국어는 보조로.**
+- 축 다섯: ①**나가는 길을 세어 보면 다 막을 수 없다는 걸 안다**(메일·USB·클립보드·API·
+  스크린샷·사진) ②**분류가 먼저다**(무엇이 민감한지 모르면 못 막는다 → `data-governance`)
+  ③**탐지 대 차단**(오탐이 곧 업무 중단 → `siem` 의 그 거래) ④**가명화·마스킹은 유출을 막는 게
+  아니라 피해를 줄인다**(→ `abac` 의 열 마스크) ⑤**내부자가 전제다**(권한 있는 사람이 가져간다
+  → `rebac`·`audit-log`).
+- ⭐ **1차 자료 후보** — **Google Cloud Sensitive Data Protection** 문서의 **infoType 탐지기
+  목록**과 **de-identification 기법**(마스킹·토큰화·버킷팅·날짜 시프팅)이 **분류와 처리가
+  전부 스키마로 노출된 자리**, **AWS Macie** 도 후보. ⚠️ 국내 개인정보보호법 조문은
+  `network-separation` 의 처리 규칙(확인한 것/못 한 것 나눠 적기)을 따를 것.
 
 
 ## 배운 것
+
+- ⭐⭐ **"제품이 스스로 그은 선"이 다섯 사이클 연속이고, 이번 것이 가장 극단적이었다.**
+  Pact 는 아예 **`What is Pact good for?` 라는 페이지 하나를 그 목적에 쓴다**(맞는 상황 5 ·
+  안 맞는 상황 11). `data-migration`(Limitations) → `rebac`("small object collections") →
+  `data-contract`("왜 기본값인가") → `siem`("의도는 모른다") → `contract-testing`(전용 페이지).
+  **이제 1차 자료를 열 때 목차에서 이런 페이지를 먼저 찾는다** — 그리고 있으면 **문서의
+  절반을 거기에 쓴다.** 이것이 남의 소개글과 갈리는 가장 확실한 자리다.
+- **원문 목록의 비대칭은 줄이지 않는다.** `fit` 표는 왼쪽 5줄 · 오른쪽 11줄이라 빈칸(—)이
+  여섯 개 생겼다. 보기 좋게 맞추려고 항목을 합치거나 빼면 **"이 도구는 안 맞는 경우가 훨씬
+  많다"는 사실 자체가 사라진다.** 표의 모양이 곧 내용일 때가 있다.
+- **얇은 근거를 다루는 방식이 이제 세 단계로 굳었다.** ① **왜 얇은지를 숫자로**(8건 중 실제는
+  네 회사, 그중 둘이 해외) ② **오탐을 이름 붙여 배제**(`PACT` 학회, `OpenAPI 스펙 기반 개발`)
+  ③ **그래도 쓰는 이유**(끊긴 링크 + 증상은 흔하다). `saga`·`causal-consistency`·`rebac` 에
+  이어 네 번째이고, 이번엔 **오탐 줄 자체를 `evidence` 에 넣어 "이런 줄은 걸러야 한다"는
+  예시로 삼는** 방법을 처음 썼다.
 
 - ⭐⭐ **제품 문서가 자기 한계를 고백한 문장이 문서의 심장이 되는 일이 네 사이클 연속이다.**
   `data-migration`(Limitations 절) → `rebac`("small object collections") → `data-contract`
