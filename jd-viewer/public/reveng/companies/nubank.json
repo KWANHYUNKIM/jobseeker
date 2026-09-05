@@ -175,7 +175,9 @@
           "limits": "⚠️ **두 경로를 계속 살려 둬야 한다** — 폴백이 있다는 것은 옛 동기 흐름을 지우지 못한다는 뜻이고, 그쪽이 상하면 빠른 경로가 막혔을 때 함께 무너진다(이 한계는 이 사이트의 재구성이다)."
         }
       ],
-      "features": []
+      "features": [
+        "precompute-on-write"
+      ]
     },
     {
       "name": "사람이 프롬프트를 쓰는 일을 그만둔다",
@@ -662,6 +664,451 @@
           "publisher": "Building Nubank",
           "date": "2026-03-16",
           "summary": "나라마다 따로 자란 금융망 연동을 하나의 표준 연결 계층으로 모은 기록. 버린 대안과 개선 수치를 함께 적었다."
+        }
+      ]
+    },
+    {
+      "key": "precompute-on-write",
+      "name": "읽을 때 계산하지 않으려고 쓸 때 미리 접어 둔다",
+      "domain": "읽는 길에서 계산을 걷어낸다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "파트너가 붙는 **Payment Conditions API** 는 응답 기한이 계약으로 정해져 있다 — **P90 360ms**. 그런데 실제는 **P90 약 1200ms, P99 는 자주 1600ms 초과**였다. 한 번의 요청이 도메인을 넘나드는 `a long chain of services` 를 **동기로** 지나가기 때문이다. 지점이 없는 은행에서 **이 기한을 못 맞추면 파트너 연동 자체가 성립하지 않는다.**",
+        "metrics": [
+          {
+            "label": "P90 지연",
+            "value": "약 1200ms → **280ms** (76% 감소)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "P99 지연",
+            "value": "자주 1600ms 초과였다 — ⚠️ **개선 후 값은 글에 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "계약 기한(SLA)",
+            "value": "파트너 연동 기준 **P90 360ms** — 배포 후 여유 있게 충족",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "성공률",
+            "value": "five nines (99.999%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 받아들이고 무엇을 거부할지 정할 때",
+          "thought": "이 기능 전체를 한 문장이 요약한다 — **`Eventual consistency was acceptable within defined bounds, but unpredictable latency was not.`** 낡은 값은 범위 안에서 받아들이고 **예측할 수 없는 지연은 안 받아들인다.** 무엇을 포기할지 먼저 정했기 때문에 구조를 바꿀 수 있었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "구조를 건드리기 전",
+          "thought": "⚠️ **먼저 안 건드리고 되는 데까지 갔다** — `By exhausting tactical optimizations before introducing structural changes, we avoided unnecessary architectural complexity and gained confidence that each step addressed a real constraint.` **한계에 부딪혀 본 다음에야** 구조를 바꿨다는 순서가 이 글의 성격이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "고칠 수 없는 것을 만났을 때",
+          "thought": "꼬리 지연의 원인 하나는 자기 코드가 아니었다 — `many services run on the JVM and are deployed on AWS Spot Instances. Instance recycling, deployments, and JVM warm-up effects directly influenced tail latency.` **그래서 그것을 고치는 대신 임계 경로에서 빼 버렸다.** 원인을 없애는 대신 **원인이 닿지 않는 길을 새로 냈다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Payment Conditions API",
+            "what": "파트너가 부르는 결제 조건 조회 지점. P90 360ms 기한이 걸려 있다"
+          },
+          {
+            "name": "도메인 이벤트",
+            "what": "신용 한도 변경·잔액 변경 같은 상태 변화. 도메인 서비스가 내보낸다"
+          },
+          {
+            "name": "집계 서비스",
+            "what": "이벤트를 받아 정본 데이터를 끌어와 사업 규칙을 적용하고 완성된 표현을 저장한다"
+          },
+          {
+            "name": "영속 캐시",
+            "what": "완전히 실체화된 표현(`fully materialized representation`)이 든 저지연 저장소. ⚠️ **유일한 진실이 아니다**"
+          },
+          {
+            "name": "폴백 경로",
+            "what": "원래의 동기 흐름. 캐시가 없거나 신선도를 못 맞추면 여기로 간다"
+          }
+        ],
+        "invariants": [
+          "**캐시는 유일한 진실이 아니다** — `The persisted cache is not treated as the sole source of truth`",
+          "**폴백은 선택이 아니라 필수다** — 클라이언트가 `a mandatory fallback path` 를 구현한다",
+          "**최종 일관성은 정해진 범위 안에서만 받아들인다** — 범위를 벗어난 낡음은 폴백으로 간다",
+          "**읽기 경로에 하위 서비스가 없다** — `completely removing downstream services from the critical path`"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "도메인 서비스가 상태가 바뀔 때 **이벤트를 내보낸다**",
+            "why": "신용 한도·잔액 변경처럼 읽을 때 필요한 재료가 바뀌는 순간이다"
+          },
+          {
+            "step": "집계 서비스가 이벤트를 받아 **정본 데이터를 끌어오고 사업 규칙을 적용한다**",
+            "why": "계산을 읽는 쪽에서 쓰는 쪽으로 옮기는 자리"
+          },
+          {
+            "step": "완성된 표현을 **저지연 저장소에 영속한다**",
+            "why": "`a fully materialized representation` — 읽을 때 조립할 것이 남지 않게 한다"
+          },
+          {
+            "step": "파트너 요청이 오면 API 가 **단 한 번의 밀리초 단위 조회**를 한다",
+            "why": "`a single millisecond-scale lookup` — 하위 서비스가 임계 경로에서 사라진다"
+          },
+          {
+            "step": "⚠️ 캐시가 없거나 **신선도 기준을 못 맞추면** 원래의 동기 흐름으로 넘어간다",
+            "why": "`requests transparently fall back to the original synchronous flow` — 느려지더라도 틀리지 않는다"
+          },
+          {
+            "step": "**이벤트 소비 지연과 캐시 적중·실패 비율을 감시한다**",
+            "why": "낡음을 일찍 알아채기 위한 장치. 이것이 신선도 보장의 실체다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "구조를 바꿀 것인가, 먼저 안 건드리고 될 만큼 해 볼 것인가",
+            "chosen": "**전술적 최적화를 다 소진한 뒤에** 구조를 바꾼다",
+            "alternatives": [
+              "처음부터 비동기 구조로 다시 짜기"
+            ],
+            "tradeoff": "⚠️ **한 번 막다른 곳까지 가 봐야 한다** — 회사가 그 결과를 그대로 적는다: 두 최적화는 `effective and low risk` 였지만 **구조적 한계를 드러내는 데서 멈췄다.** 그 시간을 치른 대가로 얻은 것은 확신이다 — `each step addressed a real constraint`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "같은 데이터를 서비스마다 다시 가져오는 것을 어떻게 할 것인가",
+            "chosen": "**검증된 컨텍스트를 앞으로 전달한다** — 오케스트레이션 층을 고쳐 중복 호출을 줄였다",
+            "alternatives": [
+              "각 서비스가 신용 한도·계정 메타데이터를 독립적으로 조회·검증하기(그전 방식)"
+            ],
+            "tradeoff": "⚠️ **오케스트레이션 층이 더 많은 것을 알게 된다** — 각자 가져오던 때는 서비스가 독립적이었다. 전달받은 컨텍스트를 믿는다는 것은 **믿을 수 있게 검증할 책임이 한곳에 몰린다**는 뜻이다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "도메인 로직이 없는 중간 서비스를 어떻게 할 것인가",
+            "chosen": "**걷어내고 오케스트레이터가 목적지를 직접 호출한다** — `existed primarily as routing layers`",
+            "alternatives": [
+              "라우팅 층 유지"
+            ],
+            "tradeoff": "⚠️ **오케스트레이터가 목적지를 직접 알게 된다** — 중간 층은 값을 못 하고 있었지만 동시에 완충이기도 했다. 목적지가 바뀔 때 흔들리는 곳이 늘어난다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "느린 읽기를 캐시로 덮을 것인가",
+            "chosen": "**덮지 않는다.** 앞에 수동 캐시를 하나 두는 안을 명시적으로 버렸다",
+            "alternatives": [
+              "기존 흐름 앞에 패시브 캐시 추가"
+            ],
+            "tradeoff": "**손쉬운 수를 포기했다** — `Adding a passive cache in front of the existing flow would not fundamentally solve the issue.` 대신 쓰기 경로를 새로 만드는 훨씬 큰 일을 떠안았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "계산을 어느 쪽으로 옮길 것인가",
+            "chosen": "**쓰기 쪽으로 옮긴다** — 이벤트를 받아 미리 접어 두고 읽을 때는 조회만 한다",
+            "alternatives": [
+              "읽을 때 모아서 계산하기(그전 방식)"
+            ],
+            "tradeoff": "**복잡함이 사라진 게 아니라 자리를 옮겼다.** 회사가 직접 적는다 — `we accepted the cost of asynchronous aggregation, state management, and monitoring in exchange for fast and reliable reads`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 진실로 삼을 것인가",
+            "chosen": "**삼지 않는다.** 그리고 폴백을 **선택이 아니라 필수**로 만든다",
+            "alternatives": [
+              "캐시를 정본으로 두고 폴백 없이 운영"
+            ],
+            "tradeoff": "⚠️ **옛 동기 흐름을 영영 못 지운다.** 폴백이 필수라는 것은 **두 경로를 계속 살려 둬야 한다**는 뜻이고, 빠른 길을 만들었어도 느린 길의 유지 비용은 남는다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 포기하고 무엇은 포기하지 않을 것인가",
+            "chosen": "**낡음은 범위 안에서 받아들이고, 예측 못 하는 지연은 받아들이지 않는다**",
+            "alternatives": [
+              "강한 일관성을 지키고 지연을 감수하기"
+            ],
+            "tradeoff": "**읽는 값이 최신이 아닐 수 있다** — `Eventual consistency was acceptable within defined bounds, but unpredictable latency was not.` 그 범위를 지키는 장치가 이벤트 소비 지연·적중률 감시다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "JVM 예열과 Spot 인스턴스 회수가 만드는 꼬리 지연을 어떻게 할 것인가",
+            "chosen": "**고치지 않고 임계 경로에서 뺀다** — 읽기가 하위 서비스를 안 지나가면 그 영향도 안 받는다",
+            "alternatives": [
+              "예열·인스턴스 정책을 손봐 꼬리 지연 자체를 줄이기"
+            ],
+            "tradeoff": "⚠️ **원인은 그대로 남아 있다** — 그리고 **폴백 경로는 여전히 그 원인 위를 지나간다.** 캐시가 상해서 폴백으로 넘어가는 바로 그때, 옛 경로의 꼬리 지연을 다시 만난다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "도메인 이벤트 스트림",
+            "role": "신용 한도·잔액 변경을 집계 서비스로 흘린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "전용 집계 서비스",
+            "role": "이벤트를 받아 정본을 끌어오고 사업 규칙을 적용해 완성된 표현을 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "저지연 저장소 (영속 캐시)",
+            "role": "실체화된 표현을 담아 밀리초 단위 단일 조회를 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "JVM · AWS Spot 인스턴스",
+            "role": "⚠️ 해법이 아니라 **문제 쪽**이다 — 인스턴스 회수·배포·예열이 꼬리 지연에 직접 영향을 줬다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "소비 지연·적중률 감시",
+            "role": "낡음을 일찍 알아채는 장치. 신선도 보장의 실체다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "one-gateway-many-countries",
+          "via": "같은 결제 흐름의 두 층",
+          "contract": "⚠️ **여기서 줄인 밀리초와 저기서 줄인 40분은 같은 화면의 두 층이다.** 읽기를 아무리 빠르게 만들어도 현지 금융망으로 나가는 배선이 끊기면 결제가 못 나간다",
+          "confidence": "inferred"
+        },
+        {
+          "to": "파트너 (Payment Conditions API 이용자)",
+          "via": "응답 기한 계약",
+          "contract": "**P90 360ms 안에 답한다.** 이 숫자가 이 기능이 존재하는 이유 전부다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "도메인 서비스들 (신용 한도 · 계정)",
+          "via": "이벤트 발행",
+          "contract": "상태가 바뀔 때 이벤트를 낸다. **읽기 요청에는 더 이상 참여하지 않는다** — 임계 경로에서 빠졌다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "옛 동기 흐름 (폴백)",
+          "via": "필수 폴백 경로",
+          "contract": "캐시가 없거나 신선도를 못 맞추면 여기로 넘어간다. **느려지더라도 틀리지 않는다**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "신선도를 어떻게 **보장**하는가",
+            "why_hard": "쓰기 시점에 접어 두는 구조에서는 **이벤트가 늦으면 읽는 값이 조용히 낡는다.** 낡음 자체는 예상된 일이지만, **얼마나 낡았는지를 읽는 쪽이 알 수 없다**는 것이 어려운 자리다",
+            "current_best": "회사가 쓰는 방법은 **감시와 폴백** 두 겹이다 — 이벤트 소비 지연과 적중·실패 비율을 보고, 기준을 못 맞추면 동기 흐름으로 넘긴다. ⚠️ **`defined bounds` 가 구체적으로 몇 초인지는 글에 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "내 코드가 아닌 곳에서 오는 꼬리 지연",
+            "why_hard": "JVM 예열과 Spot 인스턴스 회수는 **애플리케이션 로직을 아무리 고쳐도 사라지지 않는다.** 평균은 멀쩡한데 꼬리만 길어지는 종류의 문제다",
+            "current_best": "이 회사의 답은 **원인을 없애는 것이 아니라 원인이 닿지 않는 경로를 새로 내는 것**이었다. ⚠️ 다만 **폴백 경로는 여전히 그 위를 지나간다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we reduced critical path latency by 76% at Nubank",
+                "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+                "publisher": "Building Nubank",
+                "date": "2026-01-12",
+                "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "긴 사슬을 지나가던 읽기가 한 번의 조회가 되기까지",
+          "question": "계산을 없앤 것이 아니라 어디로 옮긴 것인가",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph BEFORE [\"그전 — 읽을 때 계산한다\"]\n    P1[\"<b>파트너 요청</b>\"]:::list --> O1[\"<b>오케스트레이터</b>\"]:::list\n    O1 --> S1[\"<b>서비스 사슬</b><br/>• 각자 한도·메타데이터 조회<br/>• 동기 호출이 이어진다\"]:::gone\n    S1 --> R1[\"<b>P90 약 1200ms</b><br/>• P99 는 1600ms 초과\"]:::gone\n  end\n  subgraph AFTER [\"지금 — 쓸 때 접어 둔다\"]\n    E[\"<b>도메인 이벤트</b><br/>• 한도 변경 · 잔액 변경\"]:::list --> AG[\"<b>집계 서비스</b><br/>• 정본을 끌어와<br/>• 사업 규칙 적용\"]:::list\n    AG --> DB[\"<b>영속 캐시</b><br/>• 완성된 표현을 저장\"]:::accent\n    P2[\"<b>파트너 요청</b>\"]:::list --> API[\"<b>Payment Conditions API</b><br/>• 단 한 번의 조회\"]:::list\n    API --> DB\n    API --> R2[\"<b>P90 280ms</b><br/>• 기한 360ms 를 넘긴다\"]:::list\n  end\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "캐시를 못 믿는 순간 — 느려지더라도 틀리지 않는다",
+          "question": "빠른 길이 상했을 때 무엇이 남나",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[\"<b>파트너 요청</b>\"]:::list --> C{\"캐시가 있고<br/>신선도 기준을 맞추나\"}\n  C -->|맞춘다| F[\"<b>밀리초 단위 조회</b><br/>• 하위 서비스를 안 지나간다\"]:::list\n  C -->|없거나 낡았다| B[\"<b>필수 폴백</b><br/>• 원래의 동기 흐름으로<br/>• 투명하게 넘어간다\"]:::soft\n  B --> B2[\"⚠️ <b>옛 경로의 꼬리 지연을 다시 만난다</b><br/>• JVM 예열 · Spot 인스턴스 회수<br/>• 원인은 없앤 적이 없다\"]:::gone\n  M[\"<b>낡음을 일찍 보는 장치</b><br/>• 이벤트 소비 지연<br/>• 적중 · 실패 비율\"]:::soft\n  M -.-> C\n  N[\"<b>받아들인 것과 아닌 것</b><br/>• 범위 안의 낡음은 받아들인다<br/>• 예측 못 하는 지연은 아니다\"]:::soft\n  classDef soft stroke-dasharray: 4 3\n  classDef gone stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How we reduced critical path latency by 76% at Nubank",
+          "url": "https://building.nubank.com/how-we-reduced-critical-path-latency-by-76-at-nubank/",
+          "publisher": "Building Nubank",
+          "date": "2026-01-12",
+          "summary": "결제 임계 경로의 P90 지연을 1200ms 에서 280ms 로 줄인 기록. 수동 캐시를 버리고 쓰기 시점 집계로 옮긴 이유와 그 대가를 적었다."
         }
       ]
     }

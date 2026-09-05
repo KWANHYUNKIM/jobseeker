@@ -8,34 +8,39 @@
 
 ## 지금 파는 중
 
-**Nubank(기타 BR · 핀테크)** `in_progress` · **도메인 3 · 기능 1** — 66곳 · ⚠️ 큐 0/3.
+**Nubank(기타 BR · 핀테크)** `in_progress` · **도메인 3 · 기능 2** — 66곳 · ⚠️ 큐 0/3.
 
-방금 쓴 기능: **`one-gateway-many-countries`(나라마다 배선을 새로 깔던 일을 게이트웨이
-하나 뒤로 감춘다)**. 축은 성능이 아니라 **누가 무엇을 몰라도 되는가**다 —
-`software engineers are no longer required to understand the intricate networking
-protocols or disparate standards of various local financial systems.`
+방금 쓴 기능: **`precompute-on-write`(읽을 때 계산하지 않으려고 쓸 때 미리 접어 둔다)**.
+한 문장이 이 기능 전체를 요약한다 — **`Eventual consistency was acceptable within
+defined bounds, but unpredictable latency was not.`** **무엇을 포기할지 먼저 정했기
+때문에** 구조를 바꿀 수 있었다.
 
-### ⚠️ 이 글은 대가를 하나도 안 적는다 — 그래서 결정 7개가 전부 `inferred` 다
+**앞 기능과 결이 정반대다.** FinConnect 글은 대가를 한 줄도 안 적어 결정 7개가 전부
+재구성이었는데, 이 글은 **버린 대안·인정한 대가·순서까지 다 적는다.** 결정 8개 중
+**5개가 `confirmed`** 다. 같은 회사에서 이렇게 갈린다.
 
-개선 수치는 다섯인데(개통 50% · 맞춤 작업 70% · 환경 구성 60% · MTTI 50% · 복구 창
-40분→5분 미만 87%) **잃은 것은 한 줄도 없다.** 그래서 `tradeoff` 칸을 전부 재구성으로
-채우고 **칸마다 "이 대가는 이 사이트의 재구성이다"라고 밝혔다.** Monzo·GetYourGuide 를
-후보에서 떨어뜨린 바로 그 성질(결정은 있는데 대가가 없다)이 **이미 큐를 통과한 회사의
-다른 글에서도 나온다** — 후보 조사에서 읽은 한 편이 회사 전체를 대표하지 않는다.
-**Nubank 를 올릴 때 읽은 지연 76% 편은 대가를 직접 적었다.** 같은 회사, 다른 팀, 다른 결.
+### ⚠️ 이 회사에서 배운 것 — 고칠 수 없는 것은 피해 간다
 
-### 다음 사이클 — 남은 두 도메인 중 하나
+꼬리 지연의 원인이 자기 코드가 아니었다(`JVM ... AWS Spot Instances. Instance
+recycling, deployments, and JVM warm-up effects directly influenced tail latency`).
+**그래서 고치는 대신 임계 경로에서 빼 버렸다.** 다만 **폴백 경로는 여전히 그 위를
+지나간다** — 캐시가 상해 폴백으로 넘어가는 바로 그때 옛 꼬리 지연을 다시 만난다
+(이 지적은 이 사이트의 재구성이다).
 
-- **읽는 길에서 계산을 걷어낸다** — `how-we-reduced-critical-path-latency-by-76`.
-  **대가를 회사가 직접 적은 글이라 이쪽이 더 단단하다.** 다음은 여기가 낫다.
-- **사람이 프롬프트를 쓰는 일을 그만둔다** — `building-ai-agents-for-131-million-customers`.
+### 다음 사이클 — 마지막 도메인
 
-### 아직 못 잡은 것 (앞 사이클에서 이어짐)
+**사람이 프롬프트를 쓰는 일을 그만둔다** — `building-ai-agents-for-131-million-customers`.
+⚠️ **이 도메인은 결이 다르다** — 에이전트가 상담이 아니라 **조작**을 한다(채무 재협상·
+카드 물류·사기 방지). 회사의 결론이 세다: `Humans are fundamentally bad at writing
+prompts for production`. 여기까지 채우면 **Nubank 는 완주 조건에 닿는다** —
+그때 수익원 3갈래가 기능과 이어지는지도 함께 본다(Oxide 에서 걸렸던 자리다).
+
+### 아직 못 잡은 것
 
 1. **IR 을 못 읽는다** — `international.nubank.com.br` 403, `investors.nu` 인증서 만료.
    수익 3갈래 비중이 `inferred` 이고 3자 매체끼리 숫자가 갈린다(55억 vs 59억 달러).
 2. **Clojure·Datomic 의 실물을 아직 못 봤다** — `Building AI agents in practice with
-   Clojure`(2026-02-02)를 다음에 열어 본다.
+   Clojure`(2026-02-02)는 **다음 사이클의 자료와 같은 주제**라 그때 함께 열어 본다.
 
 ## 지금의 진짜 상태
 
