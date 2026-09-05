@@ -103,7 +103,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "assume-simultaneous-failure"
+      ]
     },
     {
       "name": "순서를 지키려면 속도를 내준다",
@@ -177,7 +179,439 @@
     "**median latency 6.5ms 가 어느 구간의 값인지 모른다**(엣지까지인지 종단 간인지).",
     "**아직 안 읽은 글이 있다** — `the-challenge-of-scaling-websockets` · `8-fallacies-of-distributed-computing` · Spaces/Chat 제품의 구조."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "assume-simultaneous-failure",
+      "name": "장애를 막는 장치도 장애 대상이라고 보고 배치한다",
+      "domain": "여러 곳이 한꺼번에 죽는다고 보고 배치한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 회사가 파는 것은 기능이 아니라 약속이다** — 실시간 메시지를 대신 날라 주면서 가동률과 전달을 계약으로 판다. 그러면 **장애가 곧 제품의 실패**다. 그래서 전제부터 다르다: `한 곳이 죽는다` 가 아니라 **`여러 곳이 동시에 죽는다`** 로 시작한다 — `multiple availability zones (AZs) do fail at the same time; sometimes there might be local connectivity issues making the region unreachable`. **그리고 그 전제는 장애 대응 장치 자신에게도 적용된다.**",
+        "metrics": [
+          {
+            "label": "약속하는 신뢰성",
+            "value": "내결함성 글에서 **`eight 9s of reliability`** 를 보장한다고 적는다. ⚠️ **채팅 글에는 `99.999% uptime SLA` 로 나온다 — 둘이 같은 것인지 확인하지 못했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              },
+              {
+                "title": "Designing chat architecture for reliable message ordering at scale",
+                "url": "https://ably.com/blog/chat-architecture-reliable-message-ordering",
+                "publisher": "Ably Blog",
+                "summary": "메시지 순서가 깨지는 이유들과 순서를 지키는 방법마다의 대가. 순서와 속도를 맞바꾸는 자리를 정리한다."
+              }
+            ]
+          },
+          {
+            "label": "기록 이중화",
+            "value": "메시지 수신을 **최소 두 개의 AZ** 에 기록한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 내결함성 기법의 비용",
+            "value": "단순한 기법은 **O(N²) 이상**으로 자원을 먹을 수 있다고 회사가 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "흔한 답을 볼 때",
+          "thought": "⚠️ **리전 간 로드밸런서를 그 자리에서 버린다** — `it doesn't make sense simply to have a load balancer distributing requests among regions; the load balancer itself exists in some region and could become unavailable.` **장애를 막으려고 둔 장치가 그 자신도 장애의 대상**이라는 것이 이 도메인 전체를 관통한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "합의 방식을 고를 때",
+          "thought": "**리전을 넘는 순간 교과서적 합의가 안 맞는다** — Raft/Paxos 는 `their efficiency breaks down if the latency becomes too high when communicating among peers` 다. 그래서 **최종 일관적이고 리전을 넘어 도는 Gossip** 을 골랐다. ⚠️ **강한 합의를 포기하는 것이 이 선택의 값이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "신뢰성을 숫자로 약속할 때",
+          "thought": "⚠️ **감으로 약속하지 않는다** — 노드 하나가 죽었을 때 **감지하고 합의하는 데 걸리는 시간**, 그 뒤 **역할을 옮기는 데 걸리는 시간**, 그리고 **각 AZ 의 실패율**을 알면 **복합 장애의 확률을 모델링할 수 있다**고 적는다. **약속의 근거가 측정과 확률이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자기 장치의 비용을 볼 때",
+          "thought": "⚠️ **가장 아픈 인정이다** — 내결함성 기법 자체가 자원을 쓴다. 그런데 **장애의 원인이 자원 고갈이면** 대응하려는 바로 그때 `CPU and memory` 가 없다. **고치려는 행동이 병을 키우는 자리**다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "가용 영역(AZ) · 리전",
+            "what": "용량을 흩어 두는 단위. ⚠️ **동시에 죽을 수 있다고 전제한다**"
+          },
+          {
+            "name": "상태 없는 처리",
+            "what": "부하·근접성 같은 최적화 기준으로 자리를 정할 수 있는 일"
+          },
+          {
+            "name": "상태 있는 처리 역할",
+            "what": "⚠️ **자리를 마음대로 못 정한다** — 관련된 모두가 그 위치에 합의해야 한다"
+          },
+          {
+            "name": "클러스터 발견 서비스",
+            "what": "**노드 건강과 해시링 멤버십에 대한 합의**를 준다. 일관 해싱이 그 위에 선다"
+          },
+          {
+            "name": "확률 모델",
+            "what": "감지·합의 시간 + 역할 재배치 시간 + AZ 실패율로 **복합 장애 확률**을 계산한다. 신뢰성 약속의 근거"
+          }
+        ],
+        "invariants": [
+          "**실패는 서로 독립적이어야 한다** — `to increase statistical independence of failures` 가 배치의 목적이다",
+          "⚠️ **장애 대응 장치도 장애 대상이다** — 리전 간 로드밸런서를 버린 이유",
+          "**쓰기는 명확히 성공하거나 명확히 실패한다** — `either not successful or unequivocally successful`",
+          "**내결함성 기법 자체의 자원 소비를 분석한다** — 단순한 기법이 O(N²) 이상으로 먹을 수 있다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**용량을 여러 AZ 와 여러 리전에 흩는다**",
+            "why": "실패의 통계적 독립성을 높이기 위해서다"
+          },
+          {
+            "step": "⚠️ **리전 간 라우팅에 로드밸런서를 두지 않는다**",
+            "why": "그 로드밸런서도 어느 리전에 살고 그 리전이 죽을 수 있다"
+          },
+          {
+            "step": "**클러스터 발견 서비스가 노드 건강과 해시링 멤버십에 합의한다**",
+            "why": "상태 있는 역할의 자리를 정하려면 모두가 같은 그림을 봐야 한다"
+          },
+          {
+            "step": "**상태 없는 일은 부하·근접성으로, 상태 있는 일은 일관 해싱으로 자리를 정한다**",
+            "why": "⚠️ 상태가 있으면 `모두가 그 위치에 동의` 해야 하므로 자유롭게 못 옮긴다"
+          },
+          {
+            "step": "**리전을 넘는 합의는 Gossip 으로 한다**",
+            "why": "Raft/Paxos 는 지연이 커지면 효율이 무너진다"
+          },
+          {
+            "step": "**메시지 수신을 최소 두 AZ 에 트랜잭션으로 기록한다**",
+            "why": "애매한 상태를 없앤다 — 성공이거나 실패다"
+          },
+          {
+            "step": "**감지·합의·재배치 시간과 AZ 실패율로 복합 장애 확률을 모델링한다**",
+            "why": "신뢰성 약속의 근거를 측정에서 만든다"
+          },
+          {
+            "step": "⚠️ **내결함성 기법 자체의 자원 소비를 분석한다**",
+            "why": "단순한 기법이 O(N²) 이상으로 자원을 먹으면 감당할 수 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "어느 리전에 기댈 것인가",
+            "chosen": "**어디에도 기대지 않는다** — 여러 AZ · 여러 리전에 흩는다",
+            "alternatives": [
+              "주 리전을 두고 보조를 준비하기"
+            ],
+            "tradeoff": "⚠️ **여러 AZ 가 동시에 죽는 일이 실제로 있다**고 전제한다. 흩는 만큼 **조율할 것이 늘고 리전 간 지연을 안고 간다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "리전 사이의 라우팅을 무엇으로 할 것인가",
+            "chosen": "**로드밸런서를 쓰지 않는다**",
+            "alternatives": [
+              "리전 간 로드밸런서로 요청을 분배하기(흔한 답)"
+            ],
+            "tradeoff": "⚠️ **이유가 이 도메인 전체를 요약한다** — `the load balancer itself exists in some region and could become unavailable`. **단순한 해법 하나를 버리는 대신 자신도 죽는 장치를 신뢰 경로에서 뺀다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "합의를 무엇으로 할 것인가",
+            "chosen": "**Gossip** — 최종 일관적이고 내결함성이 있으며 리전을 넘어 동작한다",
+            "alternatives": [
+              "Raft",
+              "Paxos"
+            ],
+            "tradeoff": "⚠️ **강한 합의를 포기한다.** 버린 이유가 분명하다 — 리전을 넘는 네트워크에서 `their efficiency breaks down if the latency becomes too high`. **일관성의 강도를 지연과 맞바꿨다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "상태 있는 일의 자리를 어떻게 정할 것인가",
+            "chosen": "**일관 해싱 + 클러스터 발견 서비스** — 노드 건강과 해시링 멤버십에 대한 합의 위에 세운다",
+            "alternatives": [
+              "상태 없는 일처럼 부하·근접성만 보고 배치하기"
+            ],
+            "tradeoff": "⚠️ **자유롭게 못 옮긴다** — `all concerned entities can agree on the specific location` 이 조건이라, 최적의 자리가 아니라 **합의된 자리**로 간다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "메시지를 어떻게 기록할 것인가",
+            "chosen": "**최소 두 AZ 에, 트랜잭션으로**",
+            "alternatives": [
+              "한 곳에 쓰고 비동기로 복제하기"
+            ],
+            "tradeoff": "**애매함이 사라진다** — `You come away knowing the writing of the message was either not successful or unequivocally successful.` ⚠️ **대신 쓰기가 무거워지고 지연이 는다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "신뢰성을 어떻게 약속할 것인가",
+            "chosen": "**확률로 모델링해서 약속한다** — 감지·합의 시간 + 역할 재배치 시간 + AZ 실패율",
+            "alternatives": [
+              "경험적으로 목표치를 정하기"
+            ],
+            "tradeoff": "⚠️ **모델의 가정에 기댄다** — 감지 시간이나 실패율이 가정과 다르면 약속도 흔들린다(이 대가는 이 사이트의 재구성이다). 그 대신 **약속에 근거가 생긴다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "내결함성 기법 자체의 비용을 어떻게 볼 것인가",
+            "chosen": "**분석 대상으로 삼는다** — 단순한 기법이 O(N²) 이상으로 자원을 먹을 수 있다",
+            "alternatives": [
+              "대응 기법을 넣기만 하고 비용은 따로 보지 않기"
+            ],
+            "tradeoff": "⚠️ **가장 아픈 인정이 여기 있다** — 장애의 원인이 자원 고갈이면 **대응하려는 그 순간 CPU 와 메모리가 없다.** 고치려는 행동이 병을 키우는 자리다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "다중 AZ · 다중 리전 배치",
+            "role": "실패의 통계적 독립성을 높인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Gossip 프로토콜",
+            "role": "리전을 넘는 최종 일관적 합의",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "일관 해싱 + 클러스터 발견 서비스",
+            "role": "상태 있는 역할의 자리를 정하고 노드 건강에 합의한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "트랜잭션 다중 AZ 기록",
+            "role": "메시지 수신을 두 곳 이상에 명확히 남긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Raft · Paxos",
+            "role": "⚠️ **버린 쪽** — 리전을 넘으면 지연 때문에 효율이 무너진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "순서를 지키려면 속도를 내준다",
+          "via": "리전 간 조율",
+          "contract": "⚠️ **같은 지연이 두 곳에서 값을 청구한다** — 합의를 리전 너머로 하면 느려지고(그래서 Gossip), **메시지 순서를 리전 너머로 맞춰도 느려진다**(`strict message order requires coordination... which may slow delivery times`)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "소비 기반 요금 (수익원)",
+          "via": "동시성 유지",
+          "contract": "⚠️ **연결과 채널을 `분` 단위로 판다** — 흩어 놓은 용량을 계속 살려 두는 것이 원가이자 매출의 단위다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "고객 애플리케이션",
+          "via": "가동률 약속",
+          "contract": "**약속이 제품이다** — 그래서 신뢰성을 확률로 모델링해 숫자로 내놓는다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "In Search of an Understandable Consensus Algorithm (Raft)",
+            "authors": "D. Ongaro · J. Ousterhout",
+            "year": "2014",
+            "venue": "USENIX ATC",
+            "url": "https://raft.github.io/raft.pdf",
+            "takeaway": "⚠️ **버린 쪽의 근거다.** 회사가 Raft 와 Paxos 를 이름으로 부르며 **리전을 넘는 네트워크에서는 지연 때문에 효율이 무너진다**고 적는다 — 알고리즘이 나빠서가 아니라 **전제하는 네트워크가 다르다**는 이야기다(RFC·논문 출처는 이 사이트가 붙였다)",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "내결함성 기법 자체가 자원을 먹는다",
+            "why_hard": "⚠️ **장애의 원인이 자원 고갈일 때 역설이 생긴다** — 그 장애를 처리하려면 바로 그 부족한 `CPU and memory` 가 필요하다. 게다가 **단순한 기법일수록 자원 소비가 O(N²) 이상**으로 튈 수 있다",
+            "current_best": "**기법의 자원 소비를 미리 분석하는 것**까지가 이 글의 답이다. ⚠️ **자원 고갈 상황에서 무엇을 먼저 포기할지는 나오지 않는다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "리전은 이분법으로 죽지 않는다",
+            "why_hard": "⚠️ `regions can often be in a partially degraded state where they're working some of the time` — **살아 있는지 죽었는지 판정할 수 없는 구간**이 있다. 죽었다고 보면 멀쩡한 용량을 버리고, 살았다고 보면 실패가 새어 나온다",
+            "current_best": "⚠️ **회사가 어려움으로 적을 뿐 판정 기준을 밝히지 않는다.** 확률 모델이 그 자리를 어떻게 다루는지도 나오지 않는다 — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Engineering a fault tolerant distributed system",
+                "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+                "publisher": "Ably Blog",
+                "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "자신도 죽는 장치를 신뢰 경로에서 뺀다",
+          "question": "흔한 답을 왜 버렸나",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>전제</b><br/>• 여러 AZ 가 동시에 죽는다<br/>• 리전이 통째로 안 닿을 수 있다\"]:::accent --> Q{\"<b>리전 간 라우팅을<br/>무엇으로 하나</b>\"}\n  Q -->|안 고른 길| LB[\"<b>리전 간 로드밸런서</b><br/>⚠️ 그 자신도 어느 리전에 산다\"]:::gone\n  Q -->|고른 길| G[\"<b>Gossip + 일관 해싱</b><br/>• 최종 일관 · 리전을 넘어 동작\"]:::accent\n  G --> D[\"<b>클러스터 발견 서비스</b><br/>• 노드 건강 합의<br/>• 해시링 멤버십 합의\"]:::list\n  D --> S1[\"<b>상태 없는 일</b><br/>• 부하 · 근접성으로 배치\"]:::list\n  D --> S2[\"<b>상태 있는 일</b><br/>⚠️ 모두가 자리에 합의해야 한다\"]:::list\n  W[\"<b>메시지 기록</b><br/>• 최소 두 AZ · 트랜잭션<br/>• 성공이거나 실패다\"]:::accent\n  S2 --> W\n  R[\"⚠️ <b>버린 쪽</b><br/>• Raft · Paxos<br/>• 리전을 넘으면 효율이 무너진다\"]:::soft\n  R -.-> G\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        },
+        {
+          "title": "고치려는 행동이 병을 키우는 자리",
+          "question": "내결함성이 스스로에게 걸리는 두 함정",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>장애가 났다</b>\"]:::list --> B{\"원인이 무엇인가\"}\n  B -->|자원 고갈| C[\"⚠️ <b>대응에도 CPU·메모리가 든다</b><br/>• 없어서 난 장애를<br/>  없는 것으로 고쳐야 한다\"]:::gone\n  C --> C2[\"⚠️ <b>단순한 기법일수록 위험</b><br/>• O(N²) 이상으로 자원을 먹을 수 있다\"]:::gone\n  B -->|리전 이상| D[\"⚠️ <b>부분 열화</b><br/>• working some of the time<br/>• 죽었다고도 살았다고도 못 한다\"]:::gone\n  D --> D2[\"⚠️ <b>양쪽 다 손해</b><br/>• 죽었다고 보면 멀쩡한 용량을 버린다<br/>• 살았다고 보면 실패가 새어 나온다\"]:::gone\n  C2 --> E[\"<b>회사의 답</b><br/>• 기법의 자원 소비를 미리 분석한다\"]:::accent\n  D2 --> F[\"⚠️ <b>글에 답이 없다</b><br/>• 판정 기준을 밝히지 않는다\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Engineering a fault tolerant distributed system",
+          "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+          "publisher": "Ably Blog",
+          "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+        },
+        {
+          "title": "Designing chat architecture for reliable message ordering at scale",
+          "url": "https://ably.com/blog/chat-architecture-reliable-message-ordering",
+          "publisher": "Ably Blog",
+          "summary": "메시지 순서가 깨지는 이유들과 순서를 지키는 방법마다의 대가. 순서와 속도를 맞바꾸는 자리를 정리한다."
+        },
+        {
+          "title": "Ably — 요금제",
+          "url": "https://ably.com/pricing",
+          "publisher": "Ably",
+          "summary": "소비 기반 요금. 메시지 건수와 연결·채널의 분 단위로 값을 매긴다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "Engineering a fault tolerant distributed system",
