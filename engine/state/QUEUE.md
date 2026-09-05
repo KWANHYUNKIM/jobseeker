@@ -15,7 +15,6 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Oxide Computer** | US · 기타(서버·하드웨어) | 프로파일 완료 · 도메인 2 · **기능 2**(service-processor / jumbo-frames-path) — 두 도메인이 다 찼다 |
 
 ## 대기
 
@@ -168,6 +167,8 @@
 | **bol.com** | EU(NL) · 커머스 | `techlab.bol.com/en` | ⏸️ **보류(사이클 226)** — **블로그 글이 2024-11-07 에서 멈췄다.** 목록 16페이지의 1페이지가 최신인데 2025·2026 글이 하나도 없고, 2026 항목 둘은 **경력 팟캐스트**(`/en/podcasts/`)다. 멈춘 블로그로는 도메인 두 개를 열 재료가 안 나온다. **새 글이 올라오면 다시 꺼낸다** — 확인해 둔 재료는 모놀리스 데이터 분리(4TB 중 3TB · 이관 잡 19~23시간 · 전체 2~3개월 · CPU 4%→약 15% · 버린 대안 셋) |
 
 ## 완료
+
+- **Oxide Computer** (US · 기타 — 서버·하드웨어) — 도메인 2개 · 기능 2개(`service-processor` 랙의 모든 층을 자기가 만든다 · `jumbo-frames-path` 프레임을 키우려고 층마다 박힌 1500을 찾아낸다). **⭐⭐ 이 회사의 출발점은 기술이 아니라 벤더에 티켓을 여는 일이다** — 펌웨어부터 컨트롤 플레인까지 한 벌로 만들어 파는 이유가 그것이고, 실제로 점보 프레임 시제품에서 **가상 NIC 의 인터럽트 문제를 출시 전에 직접 고쳤다**(벤더 드라이버였다면 티켓을 여는 자리다). **⭐⭐ MTU 를 올리는 일이 설정 변경이 아니었다** — xde 드라이버와 **OPTE 의 라우터 광고 생성기 둘 다**에 1500이 박혀 있었고(*"that generator hardcoded 1500 too"*), 게스트는 virtio 와 라우터 광고 **두 경로로** 값을 배우므로 한쪽만 고치면 서로 다른 값을 본다. **⭐ 지금 쓸 크기를 줄여 나중을 샀다** — 흔한 9000 대신 **8500**(500 예비)을 고르며 *"it is easy to grow later and very hard to shrink once customers build expectations around it."* **⭐ 업계 관행을 이유와 함께 버린다** — *"MTU is a property of a path, not of a port."* **⭐ 기대 관리를 회사가 먼저 한다** — *"jumbo frames are not a network go-fast button"*, 실제로 내부 VPC 는 **+6%**(52.44→55.73Gbps)인데 외부는 **+324%**(7.70→32.67Gbps). **수치** — 단일 VM 쌍 천장 약 60Gbps(스트림 32·64·128 다 같음) · 슬레드 합산 약 90Gbps · IPv4 34.5 대 IPv6 34.9. **⚠️ 자료의 성격이 등급을 갈랐다** — 설계 글(`hubris-and-humility`)은 고른 것만 적어 대가가 `inferred` 가 됐고, **사고 회고(`cosmo-sp`)와 성능 회고(`performance-has-layers`)에서만** `confirmed` 가 나왔다. **⚠️ 매출·출하 대수·가격이 전부 비공개다.** **⚠️ 연표를 못 썼다** — 연도가 붙은 회고를 찾지 못했다. **⚠️ 컨트롤 플레인(Nexus)·하이퍼바이저·스토리지 층은 아직 안 팠다.**
 
 - **Fly.io** (US · SaaS) — 도메인 2개 · 기능 2개(`sprite-create` 1~2초에 뜨는 컴퓨터 만들기 · `corrosion-state-sync` 합의 없이 라우팅 표 퍼뜨리기). **⭐⭐ 빠르게 만드는 방법이 더하는 것이 아니라 버리는 것이었다** — 사용자용 컨테이너·로컬 NVMe·호스트 오케스트레이션 셋을 없애 `create` 를 1분에서 1~2초로 줄였고, 그 대가를 회사가 하나씩 적는다(자기 이미지를 못 쓴다 · *"the performance isn't adequate for a hot Postgres node in production"* · 밀리초 응답을 요구하는 워크로드와 어긋난다). **⭐⭐ 실패를 가장 많이 적는 회사다** — Corrosion 편에서 **스스로 설계 실수를 인정한다**: *"In retrospect, our Corrosion rollout repeated a mistake we made with Consul: we built a single global state domain."* 여기에 RwLock 데드락(몇 초 만에 전 프록시 잠김) · nullable 컬럼 backfill(*"kryptonite to large Corrosion tables"*) · 백오프 루프가 Corrosion 쓰기를 불러 *"saturating our uplinks almost everywhere"* 까지 셋을 더 적는다. **⭐ 두 기능이 한 문장으로 이어진다** — 1~2초에 뜨는 컴퓨터가 성립하려면 공개 URL 전파가 합의를 기다리면 안 된다. **⭐ 연표는 2023년 하나** — `January of 2023` 은 Nomad, `December of 2023` 은 flyd 라고 글이 직접 못 박는다. **⚠️ 수치가 얇다** — 매출 비공개, Sprites·Corrosion 규모 수치가 거의 없어 `business.metrics` 를 시간·비용 위주로만 채웠다. **⚠️ Nomad 이전 구조의 시작 연도가 없어**(`For the year following our launch`) 그 시기는 세우지 않고 `context` 로 옮겼다.
 
