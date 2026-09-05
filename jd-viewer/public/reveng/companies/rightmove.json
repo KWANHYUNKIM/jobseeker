@@ -1,0 +1,201 @@
+{
+  "slug": "rightmove",
+  "name": "라이트무브",
+  "name_en": "Rightmove",
+  "country": "EU",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "rightmove.co.uk",
+  "one_liner": "영국 부동산 포털 — 매물을 파는 것이 아니라 중개사에게 광고 자리를 판다",
+  "business_model": "**집을 파는 것이 아니라 중개사에게 자리를 판다.** 중개 지점과 신축 개발사가 회비를 내고 매물을 올린다. ⚠️ 그래서 **이 회사의 매출은 거래 건수가 아니라 회원 수 × 단가**로 움직인다 — H1 2026 기준 중개 지점 **16,591곳**(+1%), **광고주당 평균 매출(ARPA) 1,726파운드**(+117파운드, 그중 **60%가 상위 상품 전환과 부가 상품 채택**), 유지율 **96%**. **⚠️ 그리고 이 사업은 검색 유입 위에 서 있다** — 포털 체류 시간 10분 중 **9분**을 가져가고 트래픽의 **85% 이상이 직접·자연 유입**이다. 광고를 사서 오는 손님이 아니라는 뜻이고, **그래서 색인이 곧 인프라다.**",
+  "revenue_total": "⚠️ **3자 매체 정리 기준** — H1 2026 그룹 매출 **2억 2,580만 파운드**(+7%), 중개 부문 **1억 6,390만**(+9%), 신축 부문 **3,820만**(+2%). 2026년 전체 가이던스는 매출 **8~10% 성장**. **1차 IR 원문은 읽지 않았다.**",
+  "products": [
+    "중개사용 매물 광고 — 지점 단위 회비. 상위 상품 전환이 ARPA 성장의 절반 이상",
+    "신축(New Homes) 개발사용 광고",
+    "임대·상업용 부동산 등 전략 성장 영역 — 13~30% 성장",
+    "중개사용 사내 도구 — 보고서 저장·조회, 사용자 유형과 권한, 대량 온보딩"
+  ],
+  "revenue_streams": [
+    {
+      "name": "중개 지점 회비 (Agency)",
+      "how": "지점마다 회비를 내고 매물을 올린다. **상위 상품으로 올리면 단가가 오른다** — ARPA 증가분의 60%가 그쪽이다",
+      "weight": "H1 2026 매출의 약 73%(1억 6,390만 / 2억 2,580만) — ⚠️ 3자 매체 수치로 계산했다",
+      "domains": [
+        "자연 유입이 매출의 바탕이라 색인을 직접 관리한다",
+        "자바와 HTML 이 얽힌 화면을 걷어낸다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Rightmove H1 2026 실적 (3자 매체 정리)",
+          "url": "https://www.investegate.co.uk/announcement/prn/rightmove--rmv/trading-statement/9558481",
+          "publisher": "Investegate 외",
+          "date": "2026",
+          "summary": "⚠️ 1차 IR 원문이 아니라 3자 매체가 정리한 수치다. 매출·중개 지점 수·ARPA·유지율·트래픽 점유를 담고 있다."
+        }
+      ]
+    },
+    {
+      "name": "신축 개발사 광고 (New Homes)",
+      "how": "개발사가 신축 물량을 광고한다",
+      "weight": "H1 2026 약 3,820만 파운드(+2%) — ⚠️ 3자 매체 수치",
+      "domains": [
+        "자연 유입이 매출의 바탕이라 색인을 직접 관리한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Rightmove H1 2026 실적 (3자 매체 정리)",
+          "url": "https://www.investegate.co.uk/announcement/prn/rightmove--rmv/trading-statement/9558481",
+          "publisher": "Investegate 외",
+          "date": "2026",
+          "summary": "⚠️ 1차 IR 원문이 아니라 3자 매체가 정리한 수치다. 매출·중개 지점 수·ARPA·유지율·트래픽 점유를 담고 있다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Rightmove 도메인 지도",
+    "question": "트래픽의 85%가 스스로 찾아오는 회사는 무엇을 지켜야 하는가?",
+    "code": "flowchart TD\n  S[\"<b>검색 엔진 · 직접 방문</b><br/>• 트래픽의 85% 이상<br/>• 포털 체류 10분 중 9분\"]:::accent --> P\n  P[\"<b>Rightmove 포털</b>\"]:::list --> A[\"<b>중개 지점 16,591곳</b><br/>• 회비를 낸다 (ARPA 1,726파운드)<br/>• 유지율 96%\"]:::list\n  P --> D1[\"<b>자연 유입이 매출의 바탕이라<br/>색인을 직접 관리한다</b><br/>• 해외 매물 지역 266,569개<br/>• 사이트맵 생성 5시간 → 30분\"]:::list\n  P --> D2[\"<b>자바와 HTML 이 얽힌<br/>화면을 걷어낸다</b><br/>• JSP 온프렘 앱을 다시 짓는다<br/>• React + BFF + GraphQL\"]:::list\n  D1 -.->|색인이 늦으면<br/>매물이 안 보인다| S"
+  },
+  "domains": [
+    {
+      "name": "자연 유입이 매출의 바탕이라 색인을 직접 관리한다",
+      "why": "⚠️ **이 회사에서 사이트맵은 잡무가 아니라 매출 경로다** — 트래픽의 **85% 이상이 직접·자연 유입**이기 때문이다. 그런데 해외 매물 사이트맵은 **지역 266,569개**를 다루면서 **레거시 모놀리스에 묶여** 있었다 — 야간 Spring Boot 배치가 **단일 인스턴스**로 돌았고, RX Java 로 병렬화와 캐시를 썼는데도 **최대 5시간**이 걸렸으며, **수십만 건의 REST 요청**으로 다른 서비스에 부하를 줬다. 무엇보다 **하나가 실패하면 전체가 멈췄다.**",
+      "tech": [
+        {
+          "tech": "이벤트 기반 생성 (Kafka)",
+          "solves": "지역·매물 마이크로서비스가 내보내는 이벤트를 받아 **바뀐 것만** 반영한다. 생성 시간이 **5시간 → 30분**",
+          "limits": "⚠️ **로컬 상태를 유지하는 복잡함과 데이터 일관성 문제가 생긴다** — 회사가 그대로 적는다: `Added complexity in maintaining local state and ensuring data consistency`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+              "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+              "publisher": "Rightmove Tech Blog",
+              "date": "2025-01-28",
+              "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "지역 ID 로 색인한 로컬 데이터베이스",
+          "solves": "이벤트 상태를 담아 매물 보관 처리와 지역 삭제를 그때그때 반영한다. **부수 효과로 사업 지표가 생긴다** — 지역별 실시간 매물 수 같은 것",
+          "limits": "⚠️ **추가 저장소가 필요하다** — 옛 방식의 장점(저장소가 필요 없다)을 버린 것이다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+              "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+              "publisher": "Rightmove Tech Blog",
+              "date": "2025-01-28",
+              "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 야간 Spring Boot 배치 + RX Java (옛 방식)",
+          "solves": "⚠️ **버린 쪽이다.** 그래도 장점을 회사가 적는다 — 추가 저장소 불필요 · 사내 기존 패턴 활용 · **디버깅이 쉽다**",
+          "limits": "⚠️ **단일 인스턴스라 회복력이 없고**(`a single instance meant any failure disrupted the process`), 다른 서비스에 부하를 주며, 수십만 건의 REST 요청으로 결합도가 높다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+              "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+              "publisher": "Rightmove Tech Blog",
+              "date": "2025-01-28",
+              "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "자바와 HTML 이 얽힌 화면을 걷어낸다",
+      "why": "옛 앱은 **JSP(Jakarta Server Pages)** 로 짜여 있었다 — 회사의 설명이 문제를 그대로 말한다: **`a pattern that interweaves Java code with HTML`**. 그래서 **화면을 고치려면 자바를 알아야 했고**, 사내 React 컴포넌트 라이브러리를 못 썼으며, 최신 사내 서비스와 붙기 어려웠고, **온프렘 배포라 CI/CD 유연성도 낮았다.** ⚠️ 즉 기술 부채가 **누가 이 화면을 고칠 수 있는가**의 문제로 나타났다.",
+      "tech": [
+        {
+          "tech": "React + Express/Node BFF",
+          "solves": "화면을 프런트엔드 사람이 고칠 수 있게 하고 사내 컴포넌트를 재사용한다. 조직 전체와 구조를 맞춘다",
+          "limits": "⚠️ **서비스가 늘어난다** — 한 덩어리였던 것이 프런트·BFF·보고서 서비스로 갈린다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+              "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+              "publisher": "Rightmove Tech Blog",
+              "date": "2025-09-30",
+              "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+            }
+          ]
+        },
+        {
+          "tech": "보고서 전용 백엔드 서비스 + 기존 GraphQL API",
+          "solves": "보고서 저장·조회를 떼어 내고 데이터 조회는 이미 있는 GraphQL 을 쓴다",
+          "limits": "⚠️ 기존 API 의 모양에 묶인다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+              "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+              "publisher": "Rightmove Tech Blog",
+              "date": "2025-09-30",
+              "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+            }
+          ]
+        },
+        {
+          "tech": "Puppeteer 기반 PDF 마이크로서비스",
+          "solves": "헤드리스 브라우저로 **정적 HTML 을 렌더링**해 PDF 를 만든다. 서드파티 라이브러리의 제약 없이 **CSS3 와 자바스크립트를 쓸 수 있다**",
+          "limits": "⚠️ **브라우저를 서버에서 돌리는 비용을 진다**(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+              "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+              "publisher": "Rightmove Tech Blog",
+              "date": "2025-09-30",
+              "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **재무 수치를 3자 매체로만 확인했다** — `plc.rightmove.co.uk` 의 1차 IR 을 읽지 않았다. 다음 사이클에서 열면 `confirmed` 로 올릴 수 있다.",
+    "⚠️ **두 글의 결이 크게 다르다** — 사이트맵 글은 RFC 의 장단점 표까지 옮겨 적는데, 프런트엔드 재구축 글은 **수치가 하나도 없고**(개발 기간·성능·사용자 수) 어려움도 한 문장으로만 적는다(`late evolutions to requirements that weren't in our control`). **한 회사 안에서 글의 결이 갈리는 세 번째 사례다**(Nubank·Bolt 에 이어).",
+    "**다시 지은 앱이 무엇인지 정확히 모른다** — 보고서·사용자 유형·권한·대량 온보딩이 나오는 것으로 보아 **중개사용 사내 도구**로 보이나 글이 이름을 밝히지 않는다.",
+    "**기술 글이 `/category/software-engineering/` 에 5페이지 분량 있다** — 두 편만 읽었다. 나머지에서 도메인이 더 나올 수 있다.",
+    "**연표(eras)를 세울 자료를 아직 못 찾았다.**"
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+      "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+      "publisher": "Rightmove Tech Blog",
+      "date": "2025-01-28",
+      "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+    },
+    {
+      "title": "Monolith to microservice – how we rebuilt a legacy frontend",
+      "url": "https://rightmove.blog/monolith-to-microservice-how-we-rebuilt-legacy-code/",
+      "publisher": "Rightmove Tech Blog",
+      "date": "2025-09-30",
+      "summary": "JSP 로 짠 온프렘 앱을 React + Express BFF + GraphQL 로 다시 지은 기록. ⚠️ 수치가 없고 성공 서사에 가깝다."
+    },
+    {
+      "title": "Rightmove H1 2026 실적 (3자 매체 정리)",
+      "url": "https://www.investegate.co.uk/announcement/prn/rightmove--rmv/trading-statement/9558481",
+      "publisher": "Investegate 외",
+      "date": "2026",
+      "summary": "⚠️ 1차 IR 원문이 아니라 3자 매체가 정리한 수치다. 매출·중개 지점 수·ARPA·유지율·트래픽 점유를 담고 있다."
+    }
+  ]
+}
