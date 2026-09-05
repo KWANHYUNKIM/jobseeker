@@ -140,7 +140,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "psp-reconciliation"
+      ]
     },
     {
       "name": "엔진을 하나로 모은다",
@@ -595,6 +597,458 @@
           "publisher": "Bolt Tech Blog",
           "date": "2026-06-15",
           "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+        }
+      ]
+    },
+    {
+      "key": "psp-reconciliation",
+      "name": "결제대행사마다 다른 보고서를 한 모양으로 만들고 은행 명세와 맞춰 본다",
+      "domain": "돈이 어디까지 왔는지 끝까지 센다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "⚠️ **앱에서 결제한 돈은 회사 계좌에 곧바로 오지 않는다.** 회사가 그 여정을 적는다 — 발급은행 → 카드망 → 매입은행 → **결제대행사(PSP) 잔고** → 주기적 배치로 회사 계좌. 그 사이 기관마다 몫을 떼고, **최종 입금은 이미 수수료가 빠진 금액**이다. 게다가 나라마다 PSP 가 달라 `different currencies, time zones, settlement schedules, billing structures, reporting formats, and potential remittance delays` 다. **이 기능이 없으면 회사는 자기 돈이 어디 있는지 모른다.**",
+        "metrics": [
+          {
+            "label": "⚠️ 규모 수치",
+            "value": "**없다** — PSP 몇 곳과 붙어 있는지, 대사율이 얼마인지, 하루 몇 건을 처리하는지가 **글에 하나도 없다.** 이 글이 파는 것은 규모가 아니라 구조다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "label": "지키는 등식",
+            "value": "`Payout Amount = Gross Volume - Deductions` — 검증 단계에 박아 둔 식",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "label": "대사 두 겹",
+            "value": "**거래 대사**(PSP 보고 ↔ 내부 결제 기록) · **정산 대사**(PSP 정산 ↔ 은행 입금)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "수집 단계를 설계할 때",
+          "thought": "**아무것도 고치지 않기로 했다** — `The philosophy that guides the data integration is that the job never does any cleaning or transformation to keep all raw files intact.` 중복까지 그대로 받는다(`We allow the job to load duplicate data`). **원본을 손대는 순간 무엇이 원본인지 알 수 없게 되기 때문**으로 보인다(이 해석은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어긋남을 무엇으로 볼지 정할 때",
+          "thought": "⚠️ **차이를 회계 문제가 아니라 신호로 읽는다** — `discrepancies between expected and actual balances could indicate missing funds, integration errors, or fraud` 이고, 금액 차이가 `data precision issues, technical failures, or missing transactions` 를 가리킬 수도 있다. **같은 증상에 원인이 넷이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "타입을 언제 정할지 고를 때",
+          "thought": "파싱 단계에서 **모든 열을 문자열로 강제**하고 형변환을 모델링으로 미룬다. 이유가 실용적이다 — `One common problem in this step is data type mismatch`. **읽히게 만드는 일과 옳게 만드는 일을 갈라 놨다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "거래 대사 보고서",
+            "what": "PSP 가 주는 정산 배치의 명세. 그 배치를 이루는 개별 거래·수수료·조정·총 지급액이 들어 있다"
+          },
+          {
+            "name": "크롤러 메타스토어",
+            "what": "이미 처리한 파일 목록. S3 에 있고, 새 파일·수정 파일만 골라내는 기준이다"
+          },
+          {
+            "name": "머천트 계정",
+            "what": "정산 배치가 붙는 단위. **계약상 특정 법인과 이어진다**"
+          },
+          {
+            "name": "표준 스키마",
+            "what": "PSP 마다 다른 형식을 하나로 모은 결과. `the exact same schema and identical interpretation` 이 목표다"
+          },
+          {
+            "name": "대사 결과",
+            "what": "맞은 것과 어긋난 것. 어긋남은 회계 범주 넷으로 분류된다"
+          }
+        ],
+        "invariants": [
+          "**원본은 손대지 않는다** — `downloaded as is, without any transformation or cleanups`. 중복도 그대로 받고 정리는 하류에서 한다",
+          "**`Payout Amount = Gross Volume - Deductions`** — 검증 단계에 박아 둔 등식",
+          "**모든 PSP 데이터는 같은 스키마·같은 해석으로 끝난다** — 그래야 하류가 PSP 를 안 가린다",
+          "**머천트 계정은 계약상 법인에 매핑된다** — 법인 매핑이 틀리면 회계가 틀린다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**Airflow 가 예약한 AWS Batch 작업**이 뜬다 — ECR 의 도커 이미지로",
+            "why": "수집 코드가 이미 들어 있는 이미지를 띄워 그때그때 처리한다"
+          },
+          {
+            "step": "**S3 의 크롤러 메타스토어**를 읽어 이미 처리한 파일을 확인한다",
+            "why": "새 파일·수정 파일만 가져오기 위한 기준점"
+          },
+          {
+            "step": "**SFTP** 는 프록시를 거쳐 접속해 디렉터리를 훑고, **API** 는 엔드포인트를 호출한다",
+            "why": "PSP 마다 주는 방식이 다르다. ⚠️ **이메일로 보내는 작은 PSP 는 이 글의 범위 밖**이다"
+          },
+          {
+            "step": "⚠️ **파일을 하나씩 직렬로** 내려받아 S3 에 올리고 **로컬 디스크를 비운다**",
+            "why": "`To avoid memory or storage problems in the batch job` — 인스턴스를 키우는 대신 외부 저장소를 쓴다"
+          },
+          {
+            "step": "**Delta 형식으로 파싱**하고 Glue 의 새 파티션으로 게시한다. ⚠️ **모든 열을 문자열로 강제**",
+            "why": "바로 질의할 수 있게 만드는 것이 목적이고, 타입 불일치는 뒤로 미룬다"
+          },
+          {
+            "step": "**dbt + Spark 로 정리한다** — 중복 제거·타입 캐스팅·열 이름 정리",
+            "why": "여기서 비로소 '옳은' 데이터가 된다"
+          },
+          {
+            "step": "**표준 스키마로 옮긴다** — 비정규화 · 용어 매핑 · 법인 매핑 · 거래 분해 · 검증",
+            "why": "⚠️ **PSP 는 `Payment`·`PaymentCapture`·`CaptureSettled` 라 부르고 회사는 `capture` 라 부른다.** 그 차이를 여기서 없앤다"
+          },
+          {
+            "step": "**대사 두 겹을 돌린다** — 거래 대사와 정산 대사",
+            "why": "각각 SQL 데이터 모델로 쓰고 dbt 가 관계를 정의하며 Spark 가 돌린다"
+          },
+          {
+            "step": "**대사율을 대시보드로 보고 임계 미만이면 경보를 보낸다**",
+            "why": "대사율이 떨어지는 것 자체가 기술·로직·운영 문제의 신호다"
+          },
+          {
+            "step": "**남은 차이를 회계 범주 넷으로 처리한다** — 비수수료 조정 · 대사 차이 · 청산 분개 · 수수료 배분",
+            "why": "장부가 현실과 맞아야 하고 회계 기준을 지켜야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "받은 파일을 정리해서 저장할 것인가",
+            "chosen": "**손대지 않고 그대로 저장한다.** 중복도 그대로 받는다",
+            "alternatives": [
+              "수집 단계에서 정리·중복 제거"
+            ],
+            "tradeoff": "⚠️ **중복 제거를 하류에서 반드시 해야 하고 저장이 는다.** 그 대신 원본이 남는다 — `keep all raw files intact` · `all deduplication will happen at a later, downstream stage`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "question": "배치 작업의 메모리·저장 한계를 어떻게 넘을 것인가",
+            "chosen": "**파일을 직렬로 처리하고 매번 로컬을 비운다.** 커지는 요구는 외부 저장소가 받는다",
+            "alternatives": [
+              "인스턴스를 키우기",
+              "병렬로 내려받기"
+            ],
+            "tradeoff": "⚠️ **병렬 처리를 포기해 느리다.** 그 대신 파일 수가 늘어도 작업 크기가 안 커진다 — `keeping the job size manageable`. 속도를 내주고 예측 가능성을 샀다(이 대비는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "question": "파싱할 때 타입을 정할 것인가",
+            "chosen": "**전부 문자열로 강제한다.** 형변환은 모델링 단계로 미룬다",
+            "alternatives": [
+              "파싱하며 타입 추론"
+            ],
+            "tradeoff": "⚠️ **잘못된 값이 늦게 드러난다** — 숫자여야 할 것이 문자열로 통과해 모델링까지 간다. 그 대신 **타입 불일치로 수집이 깨지는 일이 없다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "question": "PSP 마다 다른 용어를 어떻게 다룰 것인가",
+            "chosen": "**내부 용어로 매핑해 표준 스키마 하나로 모은다**",
+            "alternatives": [
+              "PSP 별로 하류 로직을 따로 두기"
+            ],
+            "tradeoff": "⚠️ **표준 밖의 개념은 표현되지 않는다** — 새 PSP 가 다른 구조를 들고 오면 매핑을 다시 짜야 한다. 그 대신 하류가 PSP 를 안 가린다: `It allows all downstream processing, like reconciliation or fee tracking, to have the exact same approach, scalable for all PSPs.` (한계는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "question": "거래를 어느 단위까지 쪼갤 것인가",
+            "chosen": "**가장 잘게** — 한 행에 뭉쳐 온 총액·인터체인지 수수료·스킴 수수료를 **각각 다른 행으로** 가른다",
+            "alternatives": [
+              "PSP 가 준 행 단위 그대로 두기"
+            ],
+            "tradeoff": "⚠️ **행 수가 크게 는다.** 그 대신 **수수료를 지역·사업부로 배분**할 수 있게 된다 — 뭉쳐 있으면 어느 사업이 얼마를 썼는지 못 가른다(이 인과는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "question": "자동으로 못 받는 PSP 는 어떻게 할 것인가",
+            "chosen": "**이 글에서 다루지 않는다** — `Some newer and smaller PSPs usually don't have this functionality and instead offer to send such data manually in emails, but we won't cover that case in this article.`",
+            "alternatives": [
+              "수동 경로까지 파이프라인에 넣기"
+            ],
+            "tradeoff": "⚠️ **자동화된 그림 밖에 손으로 처리하는 구멍이 남는다.** 회사가 그 존재를 밝히되 방법은 안 적는다 — **작은 PSP 와 붙을수록 이 구멍이 커진다**(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "question": "대사가 어긋나는 것을 어떻게 알아챌 것인가",
+            "chosen": "**대사율을 지표로 두고 임계 미만이면 운영팀에 경보를 보낸다**",
+            "alternatives": [
+              "건별로 즉시 알림",
+              "정기 수동 점검"
+            ],
+            "tradeoff": "⚠️ **비율이 눈에 띄게 떨어져야 안다** — 소수의 어긋남은 임계 아래로 안 내려가 묻힐 수 있다. 그 대신 경보가 쏟아지지 않는다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Apache Airflow + AWS Batch + ECR",
+            "role": "예약된 배치 작업이 도커 이미지로 떠서 수집을 돈다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "tech": "SFTP(프록시 경유) · REST API",
+            "role": "PSP 가 주는 두 가지 방식. 파일은 CSV 나 자체 형식",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "tech": "AWS S3 + 크롤러 메타스토어",
+            "role": "원본과 처리 이력을 담는다. 무엇을 이미 봤는지의 기준",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "tech": "Delta + AWS Glue",
+            "role": "컬럼 지향 저장과 파티션 게시. ACID 유사 트랜잭션·버전 관리·스키마 진화를 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "tech": "dbt + Apache Spark",
+            "role": "정리·표준화·대사를 SQL 모델로 정의하고 분산 처리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "tech": "BI 대시보드 + 임계 경보",
+            "role": "대사율 추이를 보고 떨어지면 운영팀을 부른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "checkpoint-back-to-simple",
+          "via": "어긋난 금액",
+          "contract": "⚠️ **여기서 나온 차이가 저기서 사기 신호가 된다** — `discrepancies between expected and actual balances could indicate missing funds, integration errors, or fraud`. **이쪽은 세고 저쪽은 판단한다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "결제대행사(PSP) · 은행",
+          "via": "정산 보고서와 은행 명세",
+          "contract": "⚠️ **형식도 주기도 상대가 정한다.** 회사가 할 수 있는 것은 받아서 맞추는 일뿐이고, 못 받는 곳은 손으로 처리한다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "재무 통제 · 회계",
+          "via": "회계 처리 네 범주",
+          "contract": "비수수료 조정 · 대사 차이(소수점 정밀도) · 청산 분개(법인·통화 간) · 수수료 배분. **장부가 현실과 맞게 하는 마지막 단계**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "사업부 · 지역 손익",
+          "via": "수수료 배분",
+          "contract": "PSP 가 뭉쳐 청구한 수수료를 **지역·사업부로 쪼개 각 단위의 수익성에 반영한다.** 거래를 잘게 쪼갠 이유가 여기 있다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "같은 증상에 원인이 넷이다",
+            "why_hard": "금액이 안 맞는다는 사실 하나가 **자금 누락 · 연동 오류 · 사기 · 소수점 정밀도 · 기술 실패** 중 무엇이든 가리킬 수 있다. **어긋남의 크기가 원인을 말해 주지 않는다**",
+            "current_best": "회사의 답은 **분류**다 — 회계 처리 단계에서 비수수료 조정 · 대사 차이 · 청산 분개 · 수수료 배분으로 나눈다. ⚠️ **어떤 기준으로 가르는지는 글에 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          },
+          {
+            "problem": "입력의 형식을 내가 못 정한다",
+            "why_hard": "PSP 마다 통화·시간대·정산 주기·청구 구조·보고 형식이 다르고 **송금이 늦기도 한다.** 이건 설계로 없앨 수 있는 복잡함이 아니라 **바깥에서 주어지는 복잡함**이다",
+            "current_best": "원본을 그대로 받아 두고 표준 스키마로 옮기는 것. ⚠️ 그런데 **자동 수집이 안 되는 PSP 는 그 그림 밖**이고, 회사도 그 경우는 다루지 않는다고 밝힌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Tracking payments at scale",
+                "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-06-15",
+                "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "돈의 여정과 데이터의 여정",
+          "question": "결제한 돈이 계좌에 오기까지, 그리고 그것을 어떻게 따라가나",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph MONEY [\"돈이 가는 길\"]\n    C[\"<b>승객 결제</b>\"]:::list --> IB[\"<b>발급은행</b>\"]:::list --> N[\"<b>카드망</b>\"]:::list --> AB[\"<b>매입은행</b>\"]:::list --> PS[\"<b>PSP 머천트 잔고</b>\"]:::list --> BK[\"<b>회사 계좌</b><br/>• 주기적 배치<br/>• 수수료가 빠진 금액\"]:::accent\n  end\n  subgraph DATA [\"데이터가 가는 길\"]\n    R[\"<b>거래 대사 보고서</b><br/>• SFTP 또는 API\"]:::list --> S3[\"<b>S3 원본</b><br/>• 손대지 않는다<br/>• 중복도 그대로\"]:::accent\n    S3 --> DL[\"<b>Delta 파싱</b><br/>• 모든 열을 문자열로\"]:::list\n    DL --> M[\"<b>dbt + Spark 정리</b><br/>• 중복 제거 · 타입 · 이름\"]:::list\n    M --> ST[\"<b>표준 스키마</b><br/>• 용어 · 법인 매핑<br/>• 거래를 가장 잘게 쪼갬\"]:::list\n    ST --> RC[\"<b>대사 두 겹</b><br/>• 거래 ↔ 내부 기록<br/>• 정산 ↔ 은행 입금\"]:::accent\n  end\n  PS -.->|보고서를 준다| R\n  BK -.->|은행 명세| RC"
+        },
+        {
+          "title": "안 맞을 때 그것이 뜻하는 것",
+          "question": "차이 하나가 왜 여러 가지를 가리키나",
+          "kind": "failure",
+          "code": "flowchart TD\n  X[\"<b>예상과 실제가 다르다</b>\"]:::list --> W{\"무엇을 뜻하나\"}\n  W --> C1[\"<b>자금 누락</b>\"]:::gone\n  W --> C2[\"<b>연동 오류</b>\"]:::gone\n  W --> C3[\"<b>사기</b>\"]:::gone\n  W --> C4[\"<b>소수점 정밀도</b>\"]:::list\n  W --> C5[\"<b>기술 실패 · 누락 거래</b>\"]:::gone\n  C1 --> T[\"<b>회계 처리 네 범주</b><br/>• 비수수료 조정<br/>• 대사 차이<br/>• 청산 분개<br/>• 수수료 배분\"]:::accent\n  C4 --> T\n  C3 -.->|사기 검문으로| F[\"<b>checkpoint-back-to-simple</b>\"]:::list\n  A[\"<b>알아채는 방법</b><br/>• 대사율 대시보드<br/>• 임계 미만이면 경보\"]:::soft\n  A -.-> X\n  L[\"⚠️ <b>그림 밖</b><br/>• 이메일로 보내는 작은 PSP<br/>• 회사도 다루지 않는다\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Tracking payments at scale",
+          "url": "https://bolt.eu/en/blog/tracking-payments-at-scale/",
+          "publisher": "Bolt Tech Blog",
+          "date": "2026-06-15",
+          "summary": "결제대행사(PSP)마다 다른 정산 보고서를 받아 표준화하고 내부 기록·은행 명세와 대사하는 재무 데이터 파이프라인."
+        },
+        {
+          "title": "Fraud checkpoints: from overengineering to simplicity — and where flexibility works",
+          "url": "https://bolt.eu/en/blog/how-bolt-simplified-fraud-checkpoints/",
+          "publisher": "Bolt Tech Blog",
+          "date": "2026-06-15",
+          "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
         }
       ]
     }

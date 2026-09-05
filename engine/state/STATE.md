@@ -8,36 +8,40 @@
 
 ## 지금 파는 중
 
-**Bolt(EU/에스토니아 · 모빌리티)** `in_progress` · **도메인 3 · 기능 1** —
+**Bolt(EU/에스토니아 · 모빌리티)** `in_progress` · **도메인 3 · 기능 2** —
 68곳 · 큐 1/3(Mercado Libre). ⚠️ **본문은 브라우저로만 온다**(`get_page_text`).
 
-방금 쓴 기능: **`checkpoint-back-to-simple`(설정으로 다 되게 만들려다 되돌아온다)**.
-**이 엔진에서 드문 종류의 기능이다** — 코드가 아니라 **판단이 8년 동안 네 번 모양을
-바꾼 과정**이 본체다. 결정 7개가 전부 `confirmed`.
+방금 쓴 기능: **`psp-reconciliation`(결제대행사마다 다른 보고서를 한 모양으로 만들고
+은행 명세와 맞춰 본다)**.
 
-### ⭐⭐ 이 글이 특별한 이유 셋
+### ⭐ 두 기능이 같은 사실의 두 얼굴이다
 
-1. **엔지니어를 빼려던 설계가 엔지니어를 붙잡았다** —
-   `Ironically, the 'no-engineer config' idea had increased complexity.`
-2. **전부를 부정하지 않고 자리를 가린다** — 규칙 설정화는 `a significant win`, 생애주기
-   설정화는 `backfired`. 결론이 `Flexibility is powerful — but only when applied to the
-   right place.` **⚠️ 다만 어느 자리가 옳은 자리인지 가리는 방법은 안 적는다.**
-3. **알아챈 계기가 '돌아옴'이다** — `Returning to the system after a break, we realised`.
-   **복잡함이 느는 것은 매일 보는 사람에게 안 보인다.** 이걸 `hard_problems` 로 세웠다.
+**결제 대사에서 나온 차이가 사기 검문에서 신호가 된다** —
+`discrepancies between expected and actual balances could indicate missing funds,
+integration errors, or fraud.` **이쪽은 세고 저쪽은 판단한다.** 두 기능의
+`connections` 가 서로를 가리키게 해 뒀다.
 
-### ⚠️ 되돌아간 곳이 처음이 아니다
+### 이 글에서 배울 것 — 읽히게 만드는 일과 옳게 만드는 일을 갈랐다
 
-맞춤 코드(1) → 빌더(2) → 설정 주도 ETL(3) → **다시 빌더(2)**. **복붙 시절로 가지
-않았고 추상화 자체를 버리지도 않았다 — 한 칸만 물렸다.** 이 해석은 재구성으로 표시했다.
+**원본은 손대지 않는다**(`without any transformation or cleanups`, 중복도 그대로 받는다).
+**파싱 때는 모든 열을 문자열로 강제**하고 형변환을 모델링으로 미룬다. **정리는 전부
+하류에서** 한다. 덕분에 수집이 타입 불일치로 안 깨지지만 ⚠️ **잘못된 값이 늦게 드러난다**.
 
-### 다음 사이클 — 남은 두 도메인
+### ⚠️ 이 글이 스스로 그은 범위
 
-- **돈이 어디까지 왔는지 끝까지 센다** — `tracking-payments-at-scale`(전문 읽음).
-  ⚠️ **규모 수치가 없다**(PSP 몇 곳인지·대사율·건수 전부). 대신 구조가 촘촘하다.
-- **엔진을 하나로 모은다** — `migrating-looker-to-databricks`(전문 읽음).
-  **수치가 가장 세고**(32PB · 월 1000만 쿼리 · 45% 빠르고 40% 저렴) **실패한 시도 둘**
-  (정규식 자리표시자 · LLM 변환)에 **연도까지 있다**(2021 설계 · 2025-02 POC · 11월 완료)
-  — **`history` 를 쓸 수 있는 유일한 도메인이다.**
+`Some newer and smaller PSPs ... send such data manually in emails, but we won't cover
+that case in this article.` **자동화된 그림 밖에 손으로 처리하는 구멍이 남아 있다고
+밝히되 방법은 안 적는다.** 실패 그림에 그 구멍을 그려 뒀다.
+**그리고 규모 수치가 하나도 없다** — PSP 수·대사율·건수 전부. metrics 에 그 사실을 적었다.
+
+### 다음 사이클 — 마지막 도메인이자 가장 센 자료
+
+**엔진을 하나로 모은다** — `migrating-looker-to-databricks`(전문 읽음).
+**수치**(32PB · 월 1000만 쿼리 · 사용자 3,000명 · 최종 45% 빠르고 40% 저렴, 7자리 절감) ·
+**실패한 시도 둘**(정규식 자리표시자 · LLM 변환) · **연도**(2021 설계 · 2025-02 POC 시작 ·
+11월 완료 · 엔지니어 1명 → 6명, 500줄 → 3,000줄)까지 다 있다.
+**Bolt 에서 `history` 를 쓸 수 있는 유일한 도메인이다.**
+여기까지 채우면 **완주 조건에 닿는다** — 수익원이 기능과 이어지는지 함께 본다.
 
 ## 지금의 진짜 상태
 
