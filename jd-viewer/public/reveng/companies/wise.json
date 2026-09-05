@@ -4,7 +4,7 @@
   "name_en": "Wise",
   "country": "EU",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "wise.com",
   "one_liner": "국경을 넘는 송금을 파는 회사 — 전송의 3분의 2가 즉시 도착하게 만드는 것이 제품이다",
@@ -256,7 +256,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "silent-compaction-backlog"
+      ]
     }
   ],
   "eras": [],
@@ -1149,6 +1151,487 @@
           "publisher": "Wise Engineering",
           "date": "2025-01-15",
           "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+        }
+      ]
+    },
+    {
+      "key": "silent-compaction-backlog",
+      "name": "성공한 이전 뒤에 조용히 자란 병목을 찾는다",
+      "domain": "관측 스택을 옮기고 나서야 진짜 비용을 만난다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **Thanos 에서 Mimir 로 옮긴 것은 성공이었다** — 관리할 컴포넌트가 줄어 운영이 단순해졌고 **피크 시 평균 질의 지연이 75% 줄었다.** **그런데 그 뒤에 병목이 조용히 자랐다.** 증상은 넷인데 흩어져 있었다: 긴 범위 질의의 **5XX 와 지연 증가**(광범위한 캐싱을 두고도), 읽기 경로(store-gateway·querier)의 **컴퓨트 요구 증가**, **AZ 간 전송 비용 상승**, **S3 저장 비용의 불균형한 증가**. ⚠️ **어느 것도 `압축(compaction)` 을 가리키지 않았고, 회사도 그것을 원인으로 떠올리지 못했다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "운영 Mimir 스택이 여러 테넌트에 걸쳐 **초당 약 600만 메트릭 샘플**을 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 쌓인 블록",
+            "value": "문제 시기에 **약 25만 개** — 공식 문서 기준으로 **`50K 도 보통 정상이 아니다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 백로그 기간",
+            "value": "**가장 큰 테넌트에서만** 압축이 못 따라가 **두 달 넘게** 쌓였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 메타데이터 동기화",
+            "value": "컴팩터가 시작할 때 모든 블록을 스캔하는데 **약 9시간**이 걸렸다 — 그래서 압축이 더 밀렸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "고친 뒤",
+            "value": "**S3 저장 70% 감소** · **AZ 간 전송 40% 감소** · **질의 지연 평균 90% 개선** · 읽기 경로 메모리 축소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "옮기며 얻었던 것",
+            "value": "피크 시 **평균 질의 지연 75% 감소**(압축 문제를 고치기 전에 이미 얻은 값)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "새 도구를 안정화할 때",
+          "thought": "⚠️ **회사가 자기 우선순위를 그대로 적는다** — 새 도구를 배우는 중이라 **쓰기와 읽기를 안정화하는 데 집중했고, 그 사이 컴팩터는 우선순위에서 뒤로 밀렸다.** `inadvertently leaving the compactor's optimisation lower on the priority list.` **새 도구를 들일 때 안 보이는 컴포넌트가 생긴다**는 것이 이 글의 첫 교훈이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "증상을 볼 때",
+          "thought": "⚠️ **네 가지 증상이 전부 다른 곳을 가리켰다** — 질의 오류, 컴퓨트 부족, 네트워크 비용, 저장 비용. **원인이 하나인데 증상이 흩어지면 그것을 하나로 묶는 일이 어렵다.** 전환점은 뜻밖의 곳에서 왔다 — **Mimir 깃허브 이슈에 달린 댓글 하나**였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "왜 몰랐는지 돌아볼 때",
+          "thought": "⚠️ **가장 아픈 인정이다** — Grafana 가 주는 **믹신 대시보드·알림·런북을 쓰고 있었는데** 압축기 저성능을 알리는 **알림이 없었고 대시보드도 단서를 안 줬다.** `This lack of direct signals meant we had to dig deeper.` **좋은 기본 도구가 모든 것을 알려 주지는 않는다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "블록",
+            "what": "인제스터 복제본이 객체 저장소로 보내는 데이터 덩어리. ⚠️ **계속 늘기만 하면 이상 신호다**"
+          },
+          {
+            "name": "컴팩터",
+            "what": "⚠️ **블록을 병합하고 중복을 제거하는 책임자.** 시작할 때 모든 블록을 스캔해 메타데이터를 동기화한다"
+          },
+          {
+            "name": "테넌트",
+            "what": "팀별 격리 단위. ⚠️ **작은 테넌트는 멀쩡했고 가장 큰 테넌트만 무너졌다**"
+          },
+          {
+            "name": "읽기 경로 (store-gateway · querier)",
+            "what": "압축되지 않은 블록을 그대로 읽느라 컴퓨트를 더 먹던 쪽"
+          },
+          {
+            "name": "믹신 대시보드·알림·런북",
+            "what": "Grafana 가 주는 기본 감시 도구. ⚠️ **이번 문제에는 신호를 주지 못했다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **블록 수는 늘었다 줄었다 해야 한다** — `A pattern of growth followed by compaction is normal` · 계속 늘기만 하면 이상이다",
+          "**기본 설정이 우리 규모에 맞는지 확인해야 한다** — 안 맞으면 일부 압축 작업이 조용히 건너뛰어진다",
+          "**스테이징에서 재현하고 검증한 뒤 운영으로 올린다**",
+          "⚠️ **감시 도구가 알려 주지 않는 컴포넌트가 있다** — 알림을 직접 만들어야 한다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "⚠️ **흩어진 증상 넷을 본다** — 긴 범위 질의의 5XX·지연 · 읽기 경로 컴퓨트 증가 · AZ 간 전송비 상승 · S3 저장비 증가",
+            "why": "어느 것도 압축을 가리키지 않는다"
+          },
+          {
+            "step": "**깃허브 이슈의 댓글에서 단서를 얻는다**",
+            "why": "⚠️ 회사가 그것을 전환점이라 적는다"
+          },
+          {
+            "step": "**store-gateway 를 통해 질의되는 비압축 데이터의 양을 그려 본다** — 약 25만 블록",
+            "why": "숫자를 보니 비정상이 드러났다"
+          },
+          {
+            "step": "**블록 수가 메트릭 양·인제스터 확장과 비례해 늘어난 추세를 확인한다**",
+            "why": "⚠️ **쓰기 처리량을 올리려 한 노력이 블록을 더 만들고 있었다**"
+          },
+          {
+            "step": "**공식 문서와 런북으로 압축 동작과 튜닝을 배운다**",
+            "why": "기준을 얻는다 — `50K blocks would generally not be normal`"
+          },
+          {
+            "step": "⚠️ **컴팩터 로그에서 메타데이터 동기화가 오래 걸리는 것을 본다** — 약 9시간",
+            "why": "백로그가 동기화를 늦추고, 늦은 동기화가 백로그를 키운다"
+          },
+          {
+            "step": "**고친다** — 컴팩터에 CPU·메모리 추가 · 압축 설정 튜닝 · **스테이징에서 시행착오** · 모니터하고 반복",
+            "why": "`After several days of careful adjustments and patient monitoring`"
+          },
+          {
+            "step": "**S3 의 블록 수가 줄다가 안정된 값에서 평평해진다**",
+            "why": "백로그가 잡혔다는 신호"
+          },
+          {
+            "step": "**알림을 만들고 런북을 자기 환경에 맞게 넓힌다**",
+            "why": "⚠️ 같은 일이 다시 조용히 자라지 않게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Thanos 를 계속 쓸 것인가",
+            "chosen": "**Mimir 로 옮긴다** — 이유가 셋이다",
+            "alternatives": [
+              "Thanos 를 유지하며 확장"
+            ],
+            "tradeoff": "**버린 이유가 구체적이다** — ① 메트릭이 늘면서 **컴포넌트를 관리하는 일이 복잡**해졌고, ② **압축과 보존 방식이 경직**돼 있었고, ③ 다중 테넌시·질의 최적화 같은 기능이 부족했다. ⚠️ **그런데 새 도구의 새 병목이 따라왔다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "새 도구에서 무엇을 먼저 안정화할 것인가",
+            "chosen": "**쓰기와 읽기** — 컴팩터는 뒤로 미뤘다",
+            "alternatives": [
+              "모든 컴포넌트를 균형 있게 보기"
+            ],
+            "tradeoff": "⚠️ **회사가 이것을 실수로 인정한다** — `inadvertently leaving the compactor's optimisation lower on the priority list.` 그리고 그 대가를 `highlighting the importance of a holistic approach when adopting new tools` 라 정리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "기본 설정을 쓸 것인가",
+            "chosen": "**썼는데 우리 규모에 안 맞았다**",
+            "alternatives": [
+              "처음부터 규모에 맞춰 튜닝하기"
+            ],
+            "tradeoff": "⚠️ **가장 조용한 실패다** — 설정이 안 맞아 **일부 압축 작업이 건너뛰어지고 있었다.** 오류가 아니라 **안 하는 것**이라 로그를 파기 전에는 안 보인다(뒤쪽 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "단서를 어디서 얻을 것인가",
+            "chosen": "**깃허브 이슈의 댓글** — 그것이 전환점이었다",
+            "alternatives": [
+              "자체 대시보드와 알림에 의존하기"
+            ],
+            "tradeoff": "⚠️ **자기 감시 도구가 못 준 답을 남의 토론에서 얻었다.** 회사가 그 사실을 숨기지 않고 링크까지 남긴다(이 평가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "어디서 고칠 것인가",
+            "chosen": "**스테이징에서 시행착오한 뒤 통하는 것만 운영으로**",
+            "alternatives": [
+              "운영에서 바로 조정하기"
+            ],
+            "tradeoff": "⚠️ **스테이징에도 같은 문제가 있었기 때문에 가능했다** — 재현되지 않는 문제였다면 못 썼을 방법이다(이 지적은 이 사이트의 재구성이다). 그 대신 **며칠이 걸렸다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "알림이 없다는 것을 어떻게 할 것인가",
+            "chosen": "**직접 만든다** — 그리고 런북을 자기 환경에 맞게 넓힌다",
+            "alternatives": [
+              "Grafana 의 기본 믹신에 계속 의존하기"
+            ],
+            "tradeoff": "⚠️ **좋은 기본 도구가 모든 것을 알려 주지는 않는다** — 믹신 대시보드·알림·런북을 쓰고 있었는데도 **압축기 저성능에 대한 신호가 없었다.** 그 공백을 겪고 나서야 알았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "배운 것을 어디까지 넓힐 것인가",
+            "chosen": "**같은 아키텍처의 다른 제품에도** — Loki · Tempo",
+            "alternatives": [
+              "Mimir 만 고치고 끝내기"
+            ],
+            "tradeoff": "**한 곳에서 겪은 것을 형제 제품에 미리 적용한다.** ⚠️ 다만 **그 작업이 끝났는지는 글에 없다** — `Future Actions` 로 적혀 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Grafana Mimir",
+            "role": "메트릭 저장·질의. 초당 약 600만 샘플을 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              },
+              {
+                "title": "Wise Tech Stack (2025 update)",
+                "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+                "publisher": "Wise Engineering",
+                "date": "2025-02-12",
+                "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "컴팩터",
+            "role": "⚠️ **이 이야기의 주인공** — 블록을 병합·중복 제거한다. 시작 시 전체 블록을 스캔한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "S3 (객체 저장소)",
+            "role": "블록이 쌓이는 곳. 압축이 밀리면 저장비와 AZ 간 전송비가 함께 오른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Grafana 믹신 대시보드·알림·런북",
+            "role": "⚠️ **평소에는 잘 쓰이는데 이번엔 신호를 못 줬다.** 런북 자체는 원인 파악에 결정적이었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Thanos",
+            "role": "⚠️ **버린 쪽** — 컴포넌트 관리 복잡도 · 압축·보존의 경직성 · 기능 부족",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "deploy-as-events",
+          "via": "카나리가 보는 지표",
+          "contract": "⚠️ **배포 판단이 이 스택 위에 선다** — 카나리가 30분 동안 보는 기술·비즈니스 지표가 여기서 온다. **관측이 흔들리면 배포 판단도 흔들린다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "standards-as-dependencies",
+          "via": "샤시의 관측 기본값",
+          "contract": "**샤시가 관측을 기본값으로 구성하므로 모든 서비스의 지표가 같은 스택으로 모인다** — 그래서 이 스택 하나의 병목이 전사에 닿는다",
+          "confidence": "inferred"
+        },
+        {
+          "to": "객체 저장소 비용 · AZ 간 네트워크 비용",
+          "via": "압축되지 않은 블록",
+          "contract": "⚠️ **압축이 밀리면 돈이 새는 곳이 둘이다** — S3 저장과 AZ 간 전송. 고친 뒤 각각 **70%·40%** 줄었다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Loki · Tempo",
+          "via": "같은 아키텍처",
+          "contract": "**여기서 배운 것을 형제 제품에 적용하겠다고 적는다** — 다만 `Future Actions` 다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "증상이 원인을 안 가리킨다",
+            "why_hard": "⚠️ **네 증상이 전부 다른 곳을 가리켰다** — 질의 오류·컴퓨트 부족·네트워크 비용·저장 비용. 회사가 그대로 적는다: `These symptoms did not initially suggest that Mimir compaction was the bottleneck, nor did it cross our minds as the likely cause.`",
+            "current_best": "⚠️ **전환점이 깃허브 이슈의 댓글이었다** — 자기 도구가 아니라 커뮤니티에서 왔다. **증상을 하나로 묶는 방법은 이 글에도 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "좋은 기본 도구가 모든 것을 알려 주지는 않는다",
+            "why_hard": "⚠️ Grafana 가 주는 **믹신 대시보드·알림·런북을 쓰고 있었는데** 압축기 저성능에는 **알림도 없고 대시보드 단서도 없었다.** **감시 도구를 쓴다는 것과 그 도구가 모든 컴포넌트를 본다는 것은 다르다**",
+            "current_best": "**공백을 겪고 나서 직접 알림을 만들고 런북을 넓히는 것.** ⚠️ **어떤 컴포넌트에 신호가 없는지 미리 아는 방법은 나오지 않는다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+                "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+                "publisher": "Wise Engineering",
+                "date": "2025-01-15",
+                "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쓰기를 키우려는 노력이 블록을 더 만들고 있었다",
+          "question": "조용한 병목은 어떻게 자랐나",
+          "kind": "flow",
+          "code": "flowchart TD\n  M[\"<b>Thanos → Mimir 이전</b><br/>• 컴포넌트 감소 · 운영 단순화<br/>• 피크 질의 지연 75% ↓\"]:::accent --> W[\"<b>쓰기·읽기 안정화에 집중</b>\"]:::list\n  W --> F[\"⚠️ <b>컴팩터는 우선순위 뒤로</b>\"]:::gone\n  I[\"<b>인제스터 확장 · 메트릭 증가</b>\"]:::list --> B[\"<b>블록이 늘어난다</b><br/>• 약 25만 개<br/>• 문서 기준 50K 도 비정상\"]:::gone\n  F --> B\n  B --> S[\"⚠️ <b>메타데이터 동기화 약 9시간</b><br/>• 시작할 때 전체 블록 스캔\"]:::gone\n  S --> B2[\"⚠️ <b>압축이 더 밀린다</b><br/>• 가장 큰 테넌트에 두 달치 백로그\"]:::gone\n  B2 -.->|되먹임| B\n  C[\"<b>고침</b><br/>• CPU·메모리 추가<br/>• 설정 튜닝<br/>• 스테이징에서 시행착오\"]:::accent --> R[\"<b>결과</b><br/>• S3 저장 70% ↓<br/>• AZ 간 전송 40% ↓<br/>• 질의 지연 90% ↓\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "네 증상이 모두 다른 곳을 가리켰다",
+          "question": "왜 늦게 알았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[\"<b>진짜 원인: 압축이 밀렸다</b>\"]:::accent --> S1[\"⚠️ <b>긴 범위 질의 5XX · 지연</b><br/>• 캐싱을 두고도\"]:::gone\n  P --> S2[\"⚠️ <b>읽기 경로 컴퓨트 증가</b>\"]:::gone\n  P --> S3[\"⚠️ <b>AZ 간 전송 비용 상승</b>\"]:::gone\n  P --> S4[\"⚠️ <b>S3 저장 비용 증가</b>\"]:::gone\n  S1 --> N[\"⚠️ <b>어느 것도 압축을 안 가리킨다</b><br/>• nor did it cross our minds\"]:::gone\n  S2 --> N\n  S3 --> N\n  S4 --> N\n  N --> A[\"⚠️ <b>알림도 없었다</b><br/>• 믹신 대시보드·알림을 쓰는데<br/>• 압축기 신호가 없었다\"]:::gone\n  A --> G[\"<b>전환점</b><br/>• 깃허브 이슈의 댓글 하나\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+          "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+          "publisher": "Wise Engineering",
+          "date": "2025-01-15",
+          "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+        },
+        {
+          "title": "Wise Tech Stack (2025 update)",
+          "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+          "publisher": "Wise Engineering",
+          "date": "2025-02-12",
+          "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
         }
       ]
     }
