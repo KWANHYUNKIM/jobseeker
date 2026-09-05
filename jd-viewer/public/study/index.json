@@ -1760,6 +1760,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "authz",
+      "title": "인가",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**누구인지 확인하는 일(인증)이 끝난 자리에서 시작하는, \"그래서 무엇을 할 수 있나\"의 문제** — 인증은 라이브러리로 끝나는데 **인가는 도메인마다 새로 설계**해야 한다.",
+      "aliases": [
+        "인가",
+        "인증과 인가",
+        "authorization",
+        "접근 제어",
+        "access control",
+        "최소 권한",
+        "least privilege"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
