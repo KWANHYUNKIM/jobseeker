@@ -1,0 +1,26 @@
+{
+  "_설명": "이 파일을 accounts.json 으로 복사해 채운다. accounts.json 은 커밋하지 않는다.",
+  "public_base_url": "https://<내도메인>/design-lab-out",
+
+  "instagram": {
+    "_필요": "인스타 프로 계정 + 연결된 페이스북 페이지 + Graph API 앱",
+    "_권한": "instagram_basic, instagram_content_publish, pages_read_engagement",
+    "ig_user_id": "",
+    "access_token": "",
+    "graph_version": "v21.0"
+  },
+  "facebook": {
+    "_필요": "페이지 액세스 토큰(사용자 토큰 아님)",
+    "_권한": "pages_manage_posts, pages_read_engagement",
+    "page_id": "",
+    "access_token": "",
+    "graph_version": "v21.0"
+  },
+  "linkedin": {
+    "_필요": "LinkedIn 앱 + 회사페이지 관리자",
+    "_권한": "w_member_social 또는 w_organization_social",
+    "author_urn": "urn:li:organization:00000000",
+    "access_token": "",
+    "api_version": "202405"
+  }
+}

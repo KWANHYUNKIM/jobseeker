@@ -1,0 +1,50 @@
+<!-- info_grid — hire-05(sddaejeon). 항목 이름을 그대로 세운다. 좌 텍스트 / 우 정보. -->
+<meta charset="utf-8">
+<title>{{company}} · {{role}}</title>
+<style>
+  :root{--u:min(1vw,1vh);--bg:{{palette.bg}};--ink:{{palette.ink}};--accent:{{palette.accent}};--soft:{{palette.soft}}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,'Apple SD Gothic Neo','Pretendard','Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased}
+  .canvas{width:100%;height:100%;padding:calc(6*var(--u));display:flex;flex-direction:column;gap:calc(4*var(--u))}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:calc(3*var(--u));
+    border-bottom:calc(.35*var(--u)) solid var(--accent);padding-bottom:calc(3*var(--u))}
+  .role{font-size:calc(5.6*var(--u));font-weight:800;letter-spacing:-.03em;line-height:1.06;max-width:20ch}
+  .who{text-align:right;display:flex;flex-direction:column;gap:calc(1*var(--u));flex:none}
+  .who .name{display:flex;align-items:center;gap:calc(1.6*var(--u));justify-content:flex-end;font-size:calc(3*var(--u));font-weight:600}
+  .who .mark{width:calc(6*var(--u));height:calc(6*var(--u));border-radius:calc(1.4*var(--u));background:var(--soft);
+    display:grid;place-items:center;font-weight:800;color:var(--accent);font-size:calc(3*var(--u));overflow:hidden}
+  .who .mark img{width:100%;height:100%;object-fit:cover}
+  .who .dl{font-size:calc(2.4*var(--u));color:var(--accent);letter-spacing:.06em}
+  /* 섹션 카드는 폭·여백을 하나로 고정한다(detail-02). 강약은 색이 아니라 타입 스케일. */
+  .body{flex:1;display:grid;gap:calc(3*var(--u));grid-template-columns:1fr;align-content:space-evenly;overflow:hidden}
+  .canvas[data-orient="landscape"] .body{grid-template-columns:1fr 1fr;column-gap:calc(5*var(--u));align-content:start}
+  section h2{font-size:calc(2.4*var(--u));letter-spacing:.12em;color:var(--accent);margin-bottom:calc(1.6*var(--u))}
+  section li{list-style:none;font-size:calc(2.7*var(--u));line-height:1.5;opacity:.92;
+    padding-left:calc(3*var(--u));position:relative;margin-bottom:calc(1*var(--u))}
+  section li::before{content:'';position:absolute;left:0;top:calc(1.1*var(--u));
+    width:calc(1.2*var(--u));height:calc(1.2*var(--u));background:var(--accent)}
+  /* 사무적인 정보는 감성 다 끝내고 맨 아래 한 덩어리로(hire-02). */
+  footer{border-top:1px solid color-mix(in srgb,var(--ink) 22%,transparent);padding-top:calc(2.6*var(--u));
+    display:flex;justify-content:space-between;align-items:center;font-size:calc(2.2*var(--u));opacity:.7}
+  footer .tags{display:flex;gap:calc(1.4*var(--u));flex-wrap:wrap}
+  footer .tags b{font-weight:500;color:var(--accent)}
+</style>
+<div class="canvas" data-orient="{{orient}}">
+  <header>
+    <h1 class="role">{{role}}</h1>
+    <div class="who">
+      <div class="name"><span class="mark">{{#if mark}}<img src="{{mark}}" alt="">{{/if}}{{#unless mark}}{{initial}}{{/unless}}</span>{{company}}</div>
+      {{#if deadline}}<div class="dl">{{deadline}}</div>{{/if}}
+    </div>
+  </header>
+  <div class="body">
+    {{#if tasks}}<section><h2>담당업무</h2><ul>{{#each tasks}}<li>{{.}}</li>{{/each}}</ul></section>{{/if}}
+    {{#if qualifications}}<section><h2>지원자격</h2><ul>{{#each qualifications}}<li>{{.}}</li>{{/each}}</ul></section>{{/if}}
+    {{#if preferences}}<section><h2>우대사항</h2><ul>{{#each preferences}}<li>{{.}}</li>{{/each}}</ul></section>{{/if}}
+  </div>
+  <footer>
+    <div class="tags">{{#each meta}}<span>{{.}}</span>{{/each}}{{#each stack}}<b>#{{.}}</b>{{/each}}</div>
+    <span>{{site}}</span>
+  </footer>
+</div>

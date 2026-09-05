@@ -1,0 +1,6 @@
+# 자격증명 — 절대 커밋하지 않는다
+config/accounts.json
+# 렌더 결과물과 큐 원장, 공고 색인은 만들어지는 것들
+out/
+state/
+assets/companies/

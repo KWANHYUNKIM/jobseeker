@@ -1,0 +1,59 @@
+<!-- role_hero — hire-03(imago.xyz). 직군명이 주인공, 마감 한 줄이 그 위에 얹힌다. -->
+<meta charset="utf-8">
+<title>{{company}} · {{role}}</title>
+<style>
+  :root{
+    --u: min(1vw, 1vh);
+    --bg: {{palette.bg}}; --ink: {{palette.ink}}; --accent: {{palette.accent}}; --soft: {{palette.soft}};
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,'Apple SD Gothic Neo','Pretendard','Noto Sans KR',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .canvas{position:relative;width:100%;height:100%;overflow:hidden;padding:calc(7*var(--u));display:flex;flex-direction:column;justify-content:space-between}
+  /* 배경 마크 — 공고마다 사진이 없으니 로고(또는 이니셜)를 크게 흐려 깐다. hire-03 의 실루엣 자리. */
+  .ghost{position:absolute;right:calc(-3*var(--u));bottom:calc(-5*var(--u));font-size:calc(42*var(--u));
+    font-weight:800;color:var(--soft);line-height:.8;letter-spacing:-.04em;user-select:none;opacity:.65}
+  .ghost img{width:calc(56*var(--u));height:auto;opacity:.16;filter:grayscale(1)}
+  .top{position:relative;display:flex;justify-content:space-between;align-items:baseline;
+    font-size:calc(2.4*var(--u));letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .top .right{color:var(--ink);opacity:.55;letter-spacing:.08em}
+  .mid{position:relative}
+  .kicker{font-size:calc(2.6*var(--u));letter-spacing:.2em;opacity:.5;margin-bottom:calc(3*var(--u))}
+  .role{font-size:calc(9.5*var(--u));font-weight:800;line-height:1.02;letter-spacing:-.03em;
+    max-width:16ch;text-wrap:balance}
+  .role::after{content:'.';color:var(--accent)}
+  .meta{display:flex;flex-wrap:wrap;gap:calc(1.6*var(--u));margin-top:calc(4*var(--u))}
+  .meta span{border:1px solid color-mix(in srgb, var(--ink) 28%, transparent);
+    border-radius:99px;padding:calc(1.1*var(--u)) calc(2.4*var(--u));font-size:calc(2.4*var(--u));opacity:.8}
+  .bottom{position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:calc(4*var(--u))}
+  .company{display:flex;align-items:center;gap:calc(2*var(--u));font-size:calc(3.4*var(--u));font-weight:600}
+  .company .mark{width:calc(7*var(--u));height:calc(7*var(--u));border-radius:calc(1.6*var(--u));
+    background:var(--soft);display:grid;place-items:center;font-size:calc(3.4*var(--u));font-weight:800;color:var(--accent);overflow:hidden}
+  .company .mark img{width:100%;height:100%;object-fit:cover}
+  .stack{display:flex;flex-wrap:wrap;gap:calc(1.2*var(--u));justify-content:flex-end;max-width:52%}
+  .stack b{font-weight:500;font-size:calc(2.2*var(--u));color:var(--accent);opacity:.9}
+  .stack b::before{content:'#'}
+</style>
+<div class="canvas">
+  <div class="ghost">{{#if mark}}<img src="{{mark}}" alt="">{{/if}}{{#unless mark}}{{initial}}{{/unless}}</div>
+  <div class="top">
+    <span>Open Position</span>
+    <span class="right">{{#if deadline}}{{deadline}}{{/if}}</span>
+  </div>
+  <div class="mid">
+    <div class="kicker">{{site}} 채용</div>
+    <h1 class="role">{{role}}</h1>
+    <div class="meta">{{#each meta}}<span>{{.}}</span>{{/each}}</div>
+  </div>
+  <div class="bottom">
+    <div class="company">
+      <span class="mark">{{#if mark}}<img src="{{mark}}" alt="">{{/if}}{{#unless mark}}{{initial}}{{/unless}}</span>
+      {{company}}
+    </div>
+    <div class="stack">{{#each stack}}<b>{{.}}</b>{{/each}}</div>
+  </div>
+</div>
