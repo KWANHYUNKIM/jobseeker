@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Fastly** | US · CDN·엣지 컴퓨트 | 프로파일 완료 · 도메인 4(캐시에 넣은 것을 전 세계에서 한꺼번에 지운다[tech 2] / 행사가 오기 전에 어느 POP 이 먼저 무너질지 센다[tech 2] / 남의 트래픽을 대신 받아 주되 안을 들여다보지 않는다[tech 2] / **트래픽 경로 위에서 공격을 걸러낸다[tech 0 — 자료 미확보]**) · **기능 2**(purge-must-reach-everywhere / simple-model-wins-on-rare-days) |
+| **Fastly** | US · CDN·엣지 컴퓨트 | 프로파일 완료 · 도메인 4(캐시에 넣은 것을 전 세계에서 한꺼번에 지운다[tech 2] / 행사가 오기 전에 어느 POP 이 먼저 무너질지 센다[tech 2] / 남의 트래픽을 대신 받아 주되 안을 들여다보지 않는다[tech 2] / **트래픽 경로 위에서 공격을 걸러낸다[tech 0 — 자료 미확보]**) · **기능 3**(purge-must-reach-everywhere / simple-model-wins-on-rare-days / structure-hides-content-policy-hides-rest) |
 
 ## 대기
 

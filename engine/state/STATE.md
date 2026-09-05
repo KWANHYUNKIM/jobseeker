@@ -8,24 +8,28 @@
 
 ## 지금 파는 중
 
-**Fastly** (US · CDN·엣지) — 도메인 4개 · **기능 2개**. 남은 도메인 둘(프록시 · **보안은 자료부터**).
+**Fastly** (US · CDN·엣지) — 도메인 4개 · **기능 3개**. **남은 것은 보안 하나이고, 그것이 완주를 막고 있다.**
 
-### 이번 사이클 — 용량 계획 `평상시를 잘 맞히는 모델을 버리고 드문 날을 고른다`
+### 이번 사이클 — 프록시 `구조가 막아 주는 데까지만 막고 나머지는 약속으로 메운다`
+
+⚠️ **수치가 하나도 없는 글로 기능을 썼다.** 앞 사이클에서 그것을 미리 알고 들어갔고, **결정과 대가, 그리고 표준 문서로 채웠다.**
 
 건진 것 넷:
 
-- ⚠️ **정석을 다 해 보고 나서 버렸다** — `AutoML systems, neural nets, tree models, ensembles, regressions, specialized time-series prediction models, and even LLMs`. **LLM 까지 목록에 있다.** 버린 이유 한 줄이 이 도메인 전체를 설명한다 — `struggled with the rare cases that matter most for capacity planning`.
-- ⚠️ **평균을 일부러 못 맞히기로 한 결정이 있다** — 회귀를 맞출 때 **높은 CPU 표본에 가중치를 더 준다**(`the upper range is where planning decisions happen`). **낮은 구간의 오차를 감수하고 결정이 일어나는 구간을 산다.** 그래서 이 모델을 평상시 정확도로 재면 저평가된다(재구성).
-- **단순함을 타협이 아니라 성질로 적는다** — `small, interpretable, and fast enough for interactive scenario analysis`. 그리고 **빠르기 때문에 이진 탐색이 성립한다** — 복잡한 모델을 골랐다면 여유 탐색 자체가 비쌌을 것이다(재구성).
-- ⚠️ **캐시를 좋게 하는 성질이 장애 격리를 나쁘게 한다** — 회사가 직접 적는다: `Concentration has limits and risks. It can create hot spots, reduce failure isolation, or push a POP toward another constraint.` **두 목표가 같은 손잡이를 반대로 당긴다.**
+- ⚠️ **두 종류의 `안 본다` 가 한 문단에 나란히 적힌다** — 평문을 못 보는 것은 **구조**다(TLS 악수가 클라이언트와 목적지 사이에서 직접 일어나므로 **마음을 바꿔도 못 본다**). 목적지 호스트명은 **알 수밖에 없고**, 안 남긴다는 것은 **약속**이라 이용자가 검증할 수 없다. **막는 방식이 다르면 믿는 방식도 달라야 한다**(재구성). **이 구분이 이번 기능의 축이다.**
+- ⚠️ **같은 회사가 한 네트워크 위에서 반대 약속을 둘 판다** — 보안 제품(매출 23%)은 **들여다보는 값**을 받고, 이쪽은 `Nor do we subject proxy traffic to deep packet inspection` 으로 **안 들여다보는 값**을 받는다.
+- **더 좋은 것을 알면서 덜 좋은 것으로 시작했다** — MASQUE 가 목표인데 `a deliberate, low-risk approach` 로 HTTP/2 CONNECT 를 먼저 냈다. **새 프로토콜과 새 제품을 동시에 걸지 않았다.**
+- ⚠️ **표준 문서를 열어야 지금 구조의 한계가 보였다** — RFC 9298(UDP)·9484(IP)를 보면 **현재 CONNECT 는 TCP 만 나른다.** 회사 글은 MASQUE 를 head-of-line 문제로만 설명하고 **무엇을 못 싣는지는 말하지 않는다.** **회사 자료만 읽으면 `이렇게 했다` 에서 끝난다는 STYLE 7번이 그대로 맞았다.**
 
-**두 기능이 캐시 적중률로 이어졌다** — 퍼지가 잦으면 적중률이 내려가고, 적중률은 이쪽에서 CPU 예측의 입력이다. **지우는 일이 곧 용량 문제로 번진다**(재구성).
+**가장 큰 공백은 남용이다** — 메타데이터를 공유하지 않는다면서 `beyond what is required for abuse prevention and network operations` 라는 **예외를 달고 그 범위를 적지 않는다.** 익명 출구는 반드시 남용되는데, **막으려면 알아야 하고 아는 순간 익명이 옅어진다.**
 
-### 다음 사이클 — 프록시, 그다음이 보안
+### 다음 사이클 — 보안 도메인, 기능보다 자료가 먼저다
 
-`--gaps` 는 **남의 트래픽을 대신 받아 주되 안을 들여다보지 않는다**(프록시)를 부를 것이다. ⚠️ **그 글에는 수치가 하나도 없다** — 처리량·지연·채택 어느 것도 없이 `hundreds of millions of active users` 와 `modest adoption rates` 뿐이다. **결정과 대가로만 채워야 하고, 그것이 모자라면 자료를 더 찾아야 한다.**
+⚠️ **매출의 23%(4,170만 달러·+43%)인데 1차 자료가 IR 숫자뿐이다.** `--gaps` 가 이 도메인을 부를 텐데, **기능을 쓰기 전에 자료를 찾는 것이 그 사이클의 일이다.**
 
-⚠️ **보안 도메인은 여전히 1차 자료가 없다**(매출 23%). **그 차례가 오면 기능을 쓰기 전에 자료부터 찾는다** — 못 찾으면 도메인을 접는 것이 아니라 `open_questions` 에 남기고 완주를 미룬다.
+찾을 곳: `fastly.com/blog` 의 **보안 카테고리**(첫 화면에 CVE 분석·봇 챌린지 글이 보였다 — `preserving-analytics-attribution-bot-challenges-fastly-vcl-ngwaf-deep-dive` 는 제목에 `deep dive` 가 붙어 있다) · `the-invisible-stadium`(대형 행사 트래픽) · `no-code-request-routing`.
+
+⚠️ **못 찾으면 도메인을 지우지 않는다.** 매출 23% 짜리 축을 숨기면 그림이 거짓이 된다 — **`open_questions` 에 남기고 완주를 미룬다.**
 
 ## 지금의 진짜 상태
 

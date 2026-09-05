@@ -212,7 +212,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "structure-hides-content-policy-hides-rest"
+      ]
     },
     {
       "name": "트래픽 경로 위에서 공격을 걸러낸다",
@@ -1158,6 +1160,518 @@
           "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
         }
       ]
+    },
+    {
+      "key": "structure-hides-content-policy-hides-rest",
+      "name": "구조가 막아 주는 데까지만 막고 나머지는 약속으로 메운다",
+      "domain": "남의 트래픽을 대신 받아 주되 안을 들여다보지 않는다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **CDN 은 원래 남의 콘텐츠를 들여다보는 장사다** — 캐시하려면 무엇인지 알아야 하고, WAF 로 걸러 주려면 더 깊이 봐야 한다. 그런데 **브라우저 내장 VPN 은 정반대를 요구한다**: 주소는 감춰 주되 **내용은 절대 보지 않는다.** 같은 네트워크 위에서 반대 성질의 제품을 파는 자리이고, 그래서 **이 기능의 본체는 무엇을 하느냐가 아니라 무엇을 안 하느냐**다(이 정리는 이 사이트의 재구성이다). Firefox 149 의 내장 VPN 이 이 위에서 돈다.",
+        "metrics": [
+          {
+            "label": "⚠️ 이 글에 수치가 없다",
+            "value": "처리량·지연·채택률 **어느 것도 없다.** `hundreds of millions of active users` 와 `modest adoption rates` 라는 말뿐이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "딛고 선 네트워크",
+            "value": "POP 약 83곳 · 연결 용량 **622 Tbps** — 규모 자체가 프라이버시의 재료다(많은 사람이 같은 출구를 쓸수록 섞인다, 재구성)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          },
+          {
+            "label": "시작 시점",
+            "value": "**Firefox 149**(2026-03-24) 에 실려 나갔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "label": "다음 단계",
+            "value": "**MASQUE over HTTP/3** 를 2026년 후반에 올린다고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 보지 않을지 정할 때",
+          "thought": "⚠️ **두 종류의 `안 본다` 가 섞여 있다.** 평문을 못 보는 것은 **구조가 막는 것**이다 — TLS 악수가 클라이언트와 목적지 사이에서 직접 일어나므로 `The proxy never sees the plaintext` 는 약속이 아니라 사실이다. 반면 **목적지 호스트명과 포트는 구조적으로 알 수밖에 없다** — 그것을 알아야 터널을 열어 주니까. 그래서 그쪽은 `We do not log the destinations of proxied requests` 라는 **정책**으로 메운다. **막는 방식이 다르면 믿는 방식도 달라야 한다**(이 구분은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "먼저 무엇으로 낼지 정할 때",
+          "thought": "**더 좋은 것을 알면서 덜 좋은 것으로 시작했다** — MASQUE 가 목표인데 초기 배포는 `standard HTTP CONNECT over HTTP/2` 다. 이유를 `a deliberate, low-risk approach` 라 적고, 그렇게 해서 **설계·실제 조건에서의 성능·사용자의 사용 방식**을 `all while operating at a significant scale` 확인했다고 말한다. **새 프로토콜과 새 제품을 동시에 걸지 않았다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "남용을 생각할 때",
+          "thought": "⚠️ **가장 큰 공백이 여기다.** 메타데이터를 공유하지 않는다면서 `beyond what is required for abuse prevention and network operations` 라는 예외를 단다. **그 예외가 무엇인지는 안 적는다.** 익명 출구는 반드시 남용되는데, **남용을 막으려면 무언가를 알아야 하고 아는 순간 익명이 옅어진다.** 이 긴장을 어떻게 다루는지가 글에 없다(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "CONNECT 터널",
+            "what": "프록시가 목적지까지 열어 주는 **날 것의 TCP 통로.** 열리고 나면 `the proxy becomes transparent and just passes bytes back and forth without understanding them`"
+          },
+          {
+            "name": "목적지 호스트명·포트",
+            "what": "⚠️ **프록시가 알 수밖에 없는 유일한 것.** 그것을 알아야 터널을 연다"
+          },
+          {
+            "name": "평문",
+            "what": "프록시가 **구조적으로 볼 수 없는 것.** TLS 악수가 클라이언트와 목적지 사이에서 직접 일어난다"
+          },
+          {
+            "name": "연결 메타데이터",
+            "what": "누가 언제 얼마나 썼는지. **Mozilla 나 제3자와 공유하지 않는다 — 남용 방지와 네트워크 운영에 필요한 만큼은 빼고**"
+          },
+          {
+            "name": "출구 IP",
+            "what": "방문한 사이트가 보게 되는 주소. 이용자의 주소를 대신한다"
+          }
+        ],
+        "invariants": [
+          "**프록시는 평문을 보지 못한다** — 정책이 아니라 구조다(`The proxy never sees the plaintext`)",
+          "**프록시는 목적지 호스트명과 포트를 안다** — 이것도 구조다. 감출 수 없다",
+          "**목적지를 기록하지 않고 심층 패킷 검사를 하지 않는다** — ⚠️ 이쪽은 구조가 아니라 **약속**이다",
+          "⚠️ **남용 방지와 네트워크 운영은 예외다** — 그 범위를 회사가 밝히지 않는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**브라우저가 프록시에 CONNECT 를 보낸다** — 목적지 호스트와 포트를 실어",
+            "why": "프록시가 어디로 통로를 열지 알아야 한다"
+          },
+          {
+            "step": "**프록시가 목적지까지 TCP 통로를 연다**",
+            "why": "`CONNECT tells the proxy to open a raw TCP tunnel to the destination`"
+          },
+          {
+            "step": "⚠️ **TLS 악수는 브라우저와 목적지가 직접 한다**",
+            "why": "**프록시를 지나가지만 프록시를 거치지는 않는다** — 그래서 평문이 안 보인다"
+          },
+          {
+            "step": "**프록시는 바이트를 그대로 옮긴다** — `just passes bytes back and forth without understanding them`",
+            "why": "이 지점부터 프록시는 투명해진다"
+          },
+          {
+            "step": "**목적지에는 이용자 주소 대신 출구 주소가 보인다**",
+            "why": "이것이 이용자가 사는 것이다"
+          },
+          {
+            "step": "⚠️ **목적지를 기록하지 않고 심층 패킷 검사도 하지 않는다**",
+            "why": "**CDN 본업에서 늘 하던 것을 여기서는 하지 않기로 한 것이다**(재구성)"
+          },
+          {
+            "step": "**나중에 MASQUE / HTTP3 로 옮긴다**",
+            "why": "QUIC 의 스트림 다중화로 한 스트림의 유실이 다른 스트림을 막지 않게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "어떤 방식으로 남의 트래픽을 날라 줄 것인가",
+            "chosen": "**HTTP CONNECT** — 목적지까지 날 것의 TCP 통로를 열고 비켜선다",
+            "alternatives": [
+              "프록시가 TLS 를 끊고 다시 맺어 안을 보는 방식(중간자)",
+              "심층 패킷 검사"
+            ],
+            "tradeoff": "**평문을 못 보게 되는 대신 아무것도 해 줄 수 없다** — 캐시도, 필터도, 최적화도 없다. **회사가 다른 모든 제품에서 하는 일을 여기서는 포기한 것이고**, 대신 목적지 호스트명과 포트는 **여전히 알 수밖에 없다**(뒤쪽 정리는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "MASQUE 로 바로 갈 것인가",
+            "chosen": "**아니다 — HTTP/2 위의 표준 CONNECT 로 먼저 낸다**",
+            "alternatives": [
+              "처음부터 MASQUE over HTTP/3"
+            ],
+            "tradeoff": "`a deliberate, low-risk approach` 로 **설계·실제 성능·이용자의 사용 방식을 상당한 규모에서 먼저 확인**했다. 대가는 두 가지다 — **HTTP/2 는 한 연결에서 패킷 하나가 밀리면 뒤가 다 밀리고**(회사가 MASQUE 의 이유로 드는 바로 그 문제), ⚠️ **CONNECT 는 TCP 만 나른다** — UDP·IP 를 나르는 것은 RFC 9298·9484 이후의 일이라, 지금 구조로는 QUIC 로 가는 트래픽을 그대로 실을 수 없다(뒤쪽은 표준 문서에 근거한 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              },
+              {
+                "title": "RFC 9298 — Proxying UDP in HTTP",
+                "url": "https://www.rfc-editor.org/rfc/rfc9298.html",
+                "publisher": "IETF",
+                "date": "2022-08",
+                "summary": "확장 CONNECT 로 UDP 를 HTTP 위에서 프록시한다. 목적지를 URI 템플릿으로 싣고 QUIC DATAGRAM 을 UDP 패킷에 대응시킨다."
+              },
+              {
+                "title": "RFC 9484 — Proxying IP in HTTP",
+                "url": "https://www.rfc-editor.org/rfc/rfc9484.html",
+                "publisher": "IETF",
+                "date": "2023-10",
+                "summary": "흐름 하나가 아니라 IP 계층 전체를 HTTP 데이터그램으로 나른다. TCP·UDP·ICMP 를 함께 지원하는 VPN 게이트웨이가 된다."
+              }
+            ]
+          },
+          {
+            "question": "목적지를 기록할 것인가",
+            "chosen": "**기록하지 않는다** — `We do not log the destinations of proxied requests`",
+            "alternatives": [
+              "운영·디버깅을 위해 남기기"
+            ],
+            "tradeoff": "⚠️ **이것은 구조가 아니라 약속이다.** 프록시는 목적지를 **알 수밖에 없고**, 안 남긴다는 것은 이용자가 검증할 수 없다. **평문을 못 보는 것과 목적지를 안 남기는 것은 믿음의 근거가 전혀 다른데 한 문단에 나란히 적힌다**(이 구분은 이 사이트의 재구성이다). 운영 쪽 대가도 있다 — 목적지 기록 없이 장애를 좁히기는 더 어렵다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "심층 패킷 검사를 할 것인가",
+            "chosen": "**하지 않는다** — `Nor do we subject proxy traffic to deep packet inspection`",
+            "alternatives": [
+              "보안 제품과 같은 파이프라인을 태우기"
+            ],
+            "tradeoff": "⚠️ **같은 회사의 다른 제품이 정확히 그 일을 판다**(WAF·Bot, 매출의 23%). **한 네트워크 위에서 한쪽은 들여다보는 값을 받고 한쪽은 안 들여다보는 값을 받는다** — 두 약속이 섞이지 않게 유지하는 비용이 있을 텐데 글에 없다(이 대비는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "Mozilla 와 무엇을 주고받을 것인가",
+            "chosen": "**최소한만** — `We do not share connection metadata with Mozilla or any third party`",
+            "alternatives": [
+              "운영 지표를 폭넓게 공유"
+            ],
+            "tradeoff": "⚠️ **문장 끝에 예외가 붙어 있다** — `beyond what is required for abuse prevention and network operations`. **그 범위가 무엇인지는 안 적는다.** 그리고 **Mozilla 쪽이 무엇을 아는지도 이 글에는 없다** — 이용자를 아는 쪽과 목적지를 아는 쪽이 갈려 있는 것이 이런 구조의 통상적인 안전장치인데(추정), 그 설명이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "남용을 어떻게 막을 것인가",
+            "chosen": "⚠️ **언급만 하고 방법을 적지 않는다**",
+            "alternatives": [
+              "익명 토큰으로 자격만 증명하기",
+              "출구별 평판 관리"
+            ],
+            "tradeoff": "⚠️ **익명 출구는 반드시 남용된다.** 그런데 **막으려면 무언가를 알아야 하고, 아는 순간 익명이 옅어진다.** 이 기능에서 가장 큰 공백이 여기다 — 예외 조항으로만 존재하고 **어떻게 재는지, 무엇을 보는지가 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "규모를 프라이버시의 재료로 쓸 것인가",
+            "chosen": "**같은 출구를 많은 사람이 함께 쓴다** — POP 약 83곳의 기존 네트워크 위에 얹었다",
+            "alternatives": [
+              "VPN 전용 출구를 따로 세우기"
+            ],
+            "tradeoff": "**기존 CDN 네트워크에 얹었기에 지역도 용량도 이미 있다.** 대가는 **같은 출구 주소를 웹이 CDN 트래픽으로 알고 있다는 것** — 차단·차별 대우의 표적이 될 수 있고, 반대로 **섞임이 많아 개인을 집어내기 어렵다.** 이 양면을 회사가 적지 않는다(이 항목 전체는 이 사이트의 재구성이다).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              },
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "HTTP CONNECT over HTTP/2",
+            "role": "현재 배포된 방식. 목적지까지 TCP 터널을 열고 프록시는 비켜선다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "MASQUE / QUIC (예정)",
+            "role": "스트림 다중화로 한 스트림의 유실이 다른 스트림을 막지 않게. 2026년 후반 예정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "Firefox 149 내장 VPN",
+            "role": "이 프록시를 쓰는 쪽. 2026-03-24 출시",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 심층 패킷 검사 (안 쓴다)",
+            "role": "⚠️ **같은 회사가 보안 제품에서는 파는 기술인데 여기서는 쓰지 않기로 했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "POP 약 83곳의 엣지 네트워크",
+          "via": "출구",
+          "contract": "**VPN 전용 출구를 새로 세우지 않고 기존 CDN 네트워크 위에 얹었다** — 지역과 용량을 그대로 쓴다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "트래픽 경로 위에서 공격을 걸러낸다",
+          "via": "⚠️ 정반대의 약속",
+          "contract": "⚠️ **한 네트워크가 두 약속을 동시에 판다** — 보안 제품은 들여다보는 값을 받고 이쪽은 **안 들여다보는 값**을 받는다. **두 파이프라인이 섞이지 않게 유지하는 비용**이 있을 텐데 자료를 못 찾았다",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Mozilla (Firefox)",
+          "via": "연결 메타데이터",
+          "contract": "**공유하지 않는다 — 남용 방지와 네트워크 운영에 필요한 만큼은 빼고.** ⚠️ 그 범위도, Mozilla 쪽이 무엇을 아는지도 글에 없다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "simple-model-wins-on-rare-days",
+          "via": "캐시되지 않는 트래픽",
+          "contract": "⚠️ **프록시 트래픽은 구조적으로 캐시가 안 된다** — 저쪽 모델이 `구조적으로 캐시가 안 되는 워크로드` 를 따로 보정하는 자리와 맞닿는다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "RFC 9298 — Proxying UDP in HTTP",
+            "authors": "IETF MASQUE WG",
+            "year": "2022",
+            "url": "https://www.rfc-editor.org/rfc/rfc9298.html",
+            "why": "**회사가 가겠다고 적은 곳이 여기다** — MASQUE 는 이 표준과 RFC 9484 를 묶어 부르는 이름이다.",
+            "takeaway": "⚠️ **지금과 나중의 차이가 표준 문서에서 선명해진다** — 현재 쓰는 CONNECT(HTTP/2)는 **TCP 흐름 하나**를 나르고, RFC 9298 은 **UDP 를** HTTP 위로 나른다. **QUIC 로 가는 트래픽이 늘수록 지금 구조로 실을 수 없는 것이 늘어난다**(이 대비는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RFC 9298 — Proxying UDP in HTTP",
+                "url": "https://www.rfc-editor.org/rfc/rfc9298.html",
+                "publisher": "IETF",
+                "date": "2022-08",
+                "summary": "확장 CONNECT 로 UDP 를 HTTP 위에서 프록시한다. 목적지를 URI 템플릿으로 싣고 QUIC DATAGRAM 을 UDP 패킷에 대응시킨다."
+              },
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "title": "RFC 9484 — Proxying IP in HTTP",
+            "authors": "IETF MASQUE WG",
+            "year": "2023",
+            "url": "https://www.rfc-editor.org/rfc/rfc9484.html",
+            "why": "흐름 하나가 아니라 **IP 계층 전체**를 나르는 쪽. 브라우저 안의 프록시가 **운영체제 수준 VPN 으로 넓어지는 경로**가 이 문서에 있다.",
+            "takeaway": "**TCP·UDP·ICMP 를 함께 실어 사실상 VPN 게이트웨이가 된다.** ⚠️ **회사 글은 여기까지 말하지 않는다** — `MASQUE over HTTP/3` 라고만 적어 두 표준 중 어디를 뜻하는지 불분명하다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RFC 9484 — Proxying IP in HTTP",
+                "url": "https://www.rfc-editor.org/rfc/rfc9484.html",
+                "publisher": "IETF",
+                "date": "2023-10",
+                "summary": "흐름 하나가 아니라 IP 계층 전체를 HTTP 데이터그램으로 나른다. TCP·UDP·ICMP 를 함께 지원하는 VPN 게이트웨이가 된다."
+              },
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "안 본다는 것은 증명할 수 없다",
+            "why_hard": "⚠️ **이 제품의 핵심 난제다.** 평문을 못 보는 것은 **구조가 보장**한다 — TLS 악수가 클라이언트와 목적지 사이에서 직접 일어나므로 프록시가 마음을 바꿔도 못 본다. 그런데 **목적지 호스트명은 알 수밖에 없고**, 그것을 안 남긴다는 것은 **정책일 뿐이라 이용자가 확인할 방법이 없다.** 두 종류의 보장이 한 문단에 나란히 적힌다.",
+            "current_best": "**구조로 막을 수 있는 것은 구조로 막고, 나머지는 명시적으로 약속하는 것.** ⚠️ **약속 쪽을 검증 가능하게 만드는 장치**(외부 감사·투명성 보고·이용자를 아는 쪽과 목적지를 아는 쪽의 분리)는 **이 글에 없다** — 이 지적은 이 사이트의 재구성이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          },
+          {
+            "problem": "남용을 막는 일과 익명으로 두는 일이 정면으로 부딪힌다",
+            "why_hard": "**익명 출구는 반드시 남용된다.** 그런데 막으려면 누가·무엇을·얼마나 하는지를 알아야 하고, **아는 순간 익명이 옅어진다.** 회사는 메타데이터를 공유하지 않는다면서 `beyond what is required for abuse prevention and network operations` 라는 예외를 달아 두는데, **그 범위를 적지 않는다.**",
+            "current_best": "⚠️ **글에 답이 없다.** 업계에는 익명 토큰처럼 **자격만 증명하고 신원은 안 남기는 방법**이 있지만(추정) **회사가 그것을 쓴다고 말하지 않는다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+                "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+                "publisher": "Fastly Blog",
+                "date": "2026-06-15",
+                "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "프록시가 아는 것과 모르는 것",
+          "question": "무엇이 구조로 막히고 무엇이 약속으로 막히나",
+          "kind": "flow",
+          "code": "flowchart TD\n  B[\"<b>Firefox 149</b><br/>내장 VPN 이용자\"]:::accent -->|\"CONNECT<br/>호스트 · 포트\"| P[\"<b>Fastly 프록시</b>\"]:::accent\n  P -->|\"날 것의 TCP 터널\"| DST[\"<b>목적지</b>\"]:::list\n  B -.->|\"<b>TLS 악수는 직접</b><br/>프록시를 지나가되 거치지 않는다\"| DST\n  K[\"<b>구조가 막는다</b><br/>• 평문을 볼 수 없다<br/>• 마음을 바꿔도 못 본다\"]:::accent -.-> P\n  K2[\"<b>구조가 못 막는다</b><br/>• 목적지 호스트명 · 포트는 안다<br/>• 알아야 터널을 연다\"]:::gone -.-> P\n  K3[\"⚠️ <b>약속이 막는다</b><br/>• 목적지를 기록하지 않는다<br/>• 심층 패킷 검사를 하지 않는다<br/>• 메타데이터를 공유하지 않는다\"]:::gone -.-> P\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "예외 조항 뒤에 무엇이 있는지 적지 않는다",
+          "question": "이 기능에서 확인되지 않은 자리",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>메타데이터를 공유하지 않는다</b>\"]:::accent --> E[\"⚠️ <b>단, 남용 방지와<br/>네트워크 운영에 필요한 만큼</b>\"]:::gone\n  E --> Q1[\"⚠️ <b>범위가 적혀 있지 않다</b>\"]:::gone\n  E --> Q2[\"⚠️ <b>남용 탐지 방법이 없다</b>\"]:::gone\n  E --> Q3[\"⚠️ <b>Mozilla 가 무엇을 아는지 없다</b>\"]:::gone\n  T[\"<b>익명 출구</b>\"]:::accent --> AB[\"<b>반드시 남용된다</b>\"]:::list\n  AB --> C[\"⚠️ <b>막으려면 알아야 하고</b><br/>⚠️ <b>아는 순간 익명이 옅어진다</b>\"]:::gone\n  H[\"<b>HTTP/2 CONNECT 로 먼저</b>\"]:::accent --> H1[\"⚠️ <b>한 연결에서 하나가 밀리면</b><br/>⚠️ <b>뒤가 다 밀린다</b>\"]:::gone\n  H --> H2[\"⚠️ <b>TCP 만 나른다</b><br/>• UDP · IP 는 RFC 9298 · 9484 이후\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "We Built the Proxy Behind Firefox's New Built-In VPN — Here's How It Works",
+          "url": "https://www.fastly.com/blog/we-built-proxy-behind-firefoxs-new-built-in-vpn-heres-how-it-works",
+          "publisher": "Fastly Blog",
+          "date": "2026-06-15",
+          "summary": "Firefox 149 내장 VPN 의 프록시. HTTP CONNECT over HTTP/2 로 시작해 MASQUE/HTTP3 로 간다. 프록시는 평문을 보지 않는다."
+        },
+        {
+          "title": "Fastly Network Map",
+          "url": "https://www.fastly.com/network-map",
+          "publisher": "Fastly",
+          "date": "2026-06-30",
+          "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+        },
+        {
+          "title": "RFC 9298 — Proxying UDP in HTTP",
+          "url": "https://www.rfc-editor.org/rfc/rfc9298.html",
+          "publisher": "IETF",
+          "date": "2022-08",
+          "summary": "확장 CONNECT 로 UDP 를 HTTP 위에서 프록시한다. 목적지를 URI 템플릿으로 싣고 QUIC DATAGRAM 을 UDP 패킷에 대응시킨다."
+        },
+        {
+          "title": "RFC 9484 — Proxying IP in HTTP",
+          "url": "https://www.rfc-editor.org/rfc/rfc9484.html",
+          "publisher": "IETF",
+          "date": "2023-10",
+          "summary": "흐름 하나가 아니라 IP 계층 전체를 HTTP 데이터그램으로 나른다. TCP·UDP·ICMP 를 함께 지원하는 VPN 게이트웨이가 된다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1211,6 +1725,20 @@
       "publisher": "Fastly IR",
       "date": "2026-08-05",
       "summary": "2026년 2분기 매출 1억 8,330만 달러(+23%). Network Services 1억 3,390만(73%·+17%), Security 4,170만(23%·+43%), 기타(컴퓨트·관측) 770만(+69%)."
+    },
+    {
+      "title": "RFC 9298 — Proxying UDP in HTTP",
+      "url": "https://www.rfc-editor.org/rfc/rfc9298.html",
+      "publisher": "IETF",
+      "date": "2022-08",
+      "summary": "확장 CONNECT 로 UDP 를 HTTP 위에서 프록시한다. 목적지를 URI 템플릿으로 싣고 QUIC DATAGRAM 을 UDP 패킷에 대응시킨다."
+    },
+    {
+      "title": "RFC 9484 — Proxying IP in HTTP",
+      "url": "https://www.rfc-editor.org/rfc/rfc9484.html",
+      "publisher": "IETF",
+      "date": "2023-10",
+      "summary": "흐름 하나가 아니라 IP 계층 전체를 HTTP 데이터그램으로 나른다. TCP·UDP·ICMP 를 함께 지원하는 VPN 게이트웨이가 된다."
     }
   ]
 }
