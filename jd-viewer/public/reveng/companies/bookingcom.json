@@ -92,7 +92,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "break-the-backup-loop"
+      ]
     },
     {
       "name": "품질을 마지막 관문이 아니라 생애주기로 옮긴다",
@@ -168,9 +170,505 @@
     "**Perl 모놀리스에서 Java·Kotlin 등으로 옮겨 가는 이전이 있다고 알려져 있으나 1차 자료로 확인하지 못했다.** 확인하면 `eras` 의 재료가 된다.",
     "**아직 안 읽은 글이 많다** — `A Migration Adventure`(저장소 수천 개를 SaaS 형상관리로) · `Kotlin Multiplatform in Production` · `Stability in Jetpack Compose` · `The Causality Gap`(자발적 채택의 진짜 효과 측정) · `Progressive Web Applications`.",
     "**연표(eras)를 세울 자료를 아직 못 찾았다** — 읽은 두 편은 특정 프로젝트의 기록이다.",
-    "⚠️ **본문은 브라우저(`get_page_text`)로만 온다** — `medium.com/booking-com-development`. 목록은 `blog.booking.com` 에서 WebFetch 로."
+    "⚠️ **본문은 브라우저(`get_page_text`)로만 온다** — `medium.com/booking-com-development`. 목록은 `blog.booking.com` 에서 WebFetch 로.",
+    "⚠️ **온프렘 카탈로그 구조가 언제부터였는지 모른다** — 글은 `Back when we adopted Bacula` 라고만 한다. 그래서 이 기능의 `history` 를 세우지 않았다. 이전 자체의 연도(2024 Q2 계획 · Q3 착수 · 2025 완료)만 본문에 담았다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "break-the-backup-loop",
+      "name": "백업을 지키는 카탈로그를 백업 대상 밖으로 꺼낸다",
+      "domain": "지키는 것 안에 지킬 수단을 두지 않는다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "⚠️ **재해가 나면 복구할 수단도 함께 사라지는 구조였다.** Bacula Director 가 복구 작업을 만들려면 **카탈로그**(어느 백업이 언제 어느 저장 서버에 있는지)가 있어야 하는데, 그 카탈로그가 **온프렘 MySQL 체인 `dbadb` 안의 한 스키마**로 살고 있었다. 그래서 랜섬웨어·자연재해·데이터 손상으로 `dbadb` 를 잃으면 **그것을 되살릴 자동 경로가 없다.** 회사는 수동 복구가 기술적으로 가능하다고 밝히면서도 `we treat this as our last resort` 라고 적는다 — 위험하고 복잡하며 다운타임이 길다.",
+        "metrics": [
+          {
+            "label": "지키는 대상",
+            "value": "MySQL 복제 체인 **250개 이상**의 일일 백업",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "label": "하루 생기는 백업",
+            "value": "두 주요 리전에서 일반·불변 백업을 떠 **약 1,000개**. 중요도에 따라 최소 7일 보관",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "label": "옮긴 스키마의 부하",
+            "value": "연결 약 **200** · 연결 스레드 약 **24** · 초당 쿼리 약 **92** — `moderate and predictable`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "label": "인스턴스 크기",
+            "value": "`db.r7g.2xlarge` 로 시작해 **2개월 뒤 `db.r7g.xlarge` 로 축소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "label": "기간",
+            "value": "계획은 **2024 Q2** 에 준비돼 **Q3 말** 실행 가능으로 표시됐고, 착수도 **2024 Q3**, 완료는 **2025년**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "고리를 발견했을 때",
+          "thought": "⚠️ **새로 안 사실이 아니라고 먼저 밝힌다** — `Of course this observation is not new`. 그리고 왜 안 고쳐졌는지를 적는다: 순환 의존성을 안고 사는 것은 **복잡함과 실용의 타협**이고, 시스템이 커지는 동안 **되돌아보고 다시 설계할 시간이 팀에 늘 있지는 않다.** 고치는 때는 **클라우드 이전 같은 큰 계기**가 왔을 때다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "첫 클라우드 이전 대상을 고를 때",
+          "thought": "**가장 급한 것이 아니라 가장 안전한 것을 골랐다** — 기준 셋이 명시적이다: **효과가 크고**(옮기면 회복력이 실제로 좋아진다), **패턴이 단순하고**(단일 스키마·단일 테넌트·낮은 연결률·예측 가능한 트래픽·저지연 불필요), **몇 시간의 다운타임을 견딜 수 있다.** 회사가 교훈으로도 남긴다: `Always choose a fairly simple service for your first cloud migration.`",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이전을 셋이나 겹치게 됐을 때",
+          "thought": "⚠️ **통념과 반대로 갔고 그 이유를 적는다** — 보통 이전은 겹치지 말라고 한다(시간이 늘고 실패 반경이 커지고 변수가 많아 디버깅이 어렵다). 그런데 **나란히 세우는 방식(side-by-side)이라면** OS·Bacula·DB 를 한 번에 새로 세우는 편이 **`intermediate hell` 을 피해 오히려 안전**했다. 대가는 하나다 — **전체가 더 오래 걸린다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Bacula Director",
+            "what": "백업·복구 작업을 만들고 스케줄하는 컨트롤러. **온프렘에 단일 인스턴스**로 돈다"
+          },
+          {
+            "name": "카탈로그(`bacula` 스키마)",
+            "what": "작업·클라이언트·파일 기록과 권한·날짜·**볼륨상 물리 저장 위치**. 없으면 복구를 시작할 수 없다"
+          },
+          {
+            "name": "`dbadb`",
+            "what": "DBA 관련 스키마들이 함께 사는 온프렘 MySQL 복제 체인. 유럽 3개 리전에 복제본이 있었다"
+          },
+          {
+            "name": "File Daemon · Storage Daemon",
+            "what": "백업 전용 복제본 안에서 데이터를 읽는 쪽과, **오프사이트에서 다른 매체·위치에 쓰는** 쪽"
+          },
+          {
+            "name": "DBA 컨트롤 플레인",
+            "what": "사내 도구. 이전을 위해 **여러 Bacula 클러스터를 동시에 다룰 수 있게** 확장했다"
+          }
+        ],
+        "invariants": [
+          "**지킬 수단은 지키는 대상의 실패 도메인 밖에 둔다** — `its failure domain lives outside the systems it protects`",
+          "**이전 중에도 250개 이상 체인의 일일 백업은 계속된다** — 규정 준수가 걸려 있다",
+          "⚠️ **다중 리전은 나중에 못 붙인다** — KMS 암호화 키는 **생성 시점에** 다중 리전으로 정해야 한다",
+          "**Day 1 에는 비용보다 신뢰성이 먼저다** — `reliability must always come first`"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**고리를 그린다** — Director → 카탈로그 → `dbadb` → (그 `dbadb` 를 복구하려면) Director",
+            "why": "무엇을 끊어야 하는지 정하는 단계"
+          },
+          {
+            "step": "**기준 셋으로 첫 대상을 고른다** — 효과 · 단순한 패턴 · 몇 시간 다운타임 허용",
+            "why": "처음이라 사업을 걸 수 없었다"
+          },
+          {
+            "step": "**① Oracle Linux 9 로 새 노드를 세운다**",
+            "why": "CentOS 8 이 EOL 이라 회사 전체가 옮겨야 했고, Bacula v12 RPM 이 OL9 에 없다"
+          },
+          {
+            "step": "**② Bacula v16 클러스터를 새로 만든다** — Director 2대(활성·대기)와 Storage Daemon 38대는 온프렘에 남는다",
+            "why": "⚠️ **카탈로그만 클라우드로 간다** — 나머지는 그대로다"
+          },
+          {
+            "step": "**③ Amazon RDS 인스턴스를 만든다** — 사내 얇은 Terraform 모듈이 회사 공용 모듈을 상속한다",
+            "why": "고객 팀이 쓰는 것과 같은 도구를 써 **고객의 아픔을 직접 겪는다**(도그푸딩)"
+          },
+          {
+            "step": "**④ DBA 컨트롤 플레인이 Director 를 여럿 알게 확장한다** — JSON 설정으로 리전·일반/불변·체인별로 어느 클러스터에 보낼지 나눈다",
+            "why": "⚠️ **옛 시스템과 새 시스템을 2~3주 함께 돌리며** 성공률과 RDS 상태를 지켜봤다"
+          },
+          {
+            "step": "**⑤ 두 번째 리전에 복제 인스턴스를 세운다**",
+            "why": "RDS 는 다중 AZ 만 기본 제공한다. ⚠️ **여기서 KMS 함정을 만나 클러스터를 다시 만들었다**"
+          },
+          {
+            "step": "**⑥ 체인을 가른다** — 옛 `bacula` 스키마를 스냅샷 뜨고 아카이브한 뒤, **소비자가 0인지 확인하고 드롭한다**",
+            "why": "이 이전의 진짜 목적이 이 단계다 — 카탈로그를 `dbadb` 밖으로 완전히 뺀다"
+          },
+          {
+            "step": "**⑦ 2개월간 지표를 모아 크기를 줄인다** — `2xlarge` → `xlarge`",
+            "why": "⚠️ 회사가 이것을 `Day 2` 최적화라 부른다 — 실제 기준선이 생긴 뒤에 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "첫 클라우드 이전 대상을 무엇으로 할 것인가",
+            "chosen": "**가장 안전한 것** — 단일 스키마·단일 테넌트·예측 가능한 트래픽에 **몇 시간 다운타임을 견디는** `bacula` 카탈로그",
+            "alternatives": [
+              "핵심 DBA 컨트롤 플레인이 기대는 복잡한 체인들"
+            ],
+            "tradeoff": "⚠️ **더 크고 급한 것은 미뤄진다.** 그래도 이 선택에는 특별한 값이 있었다 — 옮기는 것만으로 **오래된 순환 의존성이 끊긴다.** `we did not want to risk our business`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "question": "이전 셋(OS · Bacula · DB)을 겹칠 것인가",
+            "chosen": "**겹친다** — 나란히 새 스택을 세우는 `3-in-1`",
+            "alternatives": [
+              "하나씩 순차로 이전(통념)"
+            ],
+            "tradeoff": "⚠️ **전체가 더 오래 걸린다.** 그 대신 **`intermediate hell` 을 피한다** — 새 스택이 문제를 일으켜도 옛 운영 시스템은 손대지 않은 채 남는다. 회사가 통념을 알고도 갈랐다: `one should not combine migrations ... However, in this specific case the '3-in-1' migration made sense`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "question": "옛 카탈로그를 복제로 옮길 것인가",
+            "chosen": "**옮기지 않는다** — 두 시스템을 **보관 기간보다 오래** 병행해 새 시스템이 **스스로 이력을 쌓게** 한다",
+            "alternatives": [
+              "복제 기반 이전",
+              "데이터 임포트"
+            ],
+            "tradeoff": "**의도적으로 거부했다** — `we deliberately rejected a replication-based migration` (구·신 Bacula 스키마 충돌 + 온프렘→RDS 복제 구성의 마찰). ⚠️ 대신 **두 클러스터를 동시에 돌리는 컴퓨트·스토리지 비용**이 들어 인프라·스토리지 팀과 조율해야 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "question": "Aurora 로 갈 것인가",
+            "chosen": "**RDS 로 간다**",
+            "alternatives": [
+              "Amazon Aurora (다중 리전을 기본 제공해 온프렘 구성을 그대로 흉내 낼 수 있었다)"
+            ],
+            "tradeoff": "⚠️ **다중 리전을 손으로 만들어야 한다.** 그것을 알고도 골랐다 — `we deliberately chose to use Amazon RDS ... to align with our strategic priority of dogfooding our Amazon RDS Terraform module, gain operational experience ... while also keeping cloud costs lower.` **배움과 비용을 위해 편의를 포기했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "question": "리전 장애를 어떻게 견딜 것인가",
+            "chosen": "**두 번째 리전에 복제 인스턴스를 세운다** — 자동 백업의 교차 리전 복제만으로는 부족했다",
+            "alternatives": [
+              "교차 리전 스냅샷만 두고 필요할 때 복원"
+            ],
+            "tradeoff": "⚠️ **자동 장애 전환이 안 된다** — 수동 전환이 쉬워질 뿐이다. 다만 **오래된 스냅샷 대신 최신 데이터를 쥔 대기 primary** 를 갖는다. 회사가 조건을 밝힌다: **몇 시간 다운타임을 견딜 수 없는 시스템이라면 이 방식을 권하지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "question": "인스턴스 크기를 어떻게 정할 것인가",
+            "chosen": "**과다 프로비저닝하고 나중에 줄인다** — 온프렘 용량과 같게 시작했다",
+            "alternatives": [
+              "공격적으로 딱 맞춰 비용을 먼저 아끼기"
+            ],
+            "tradeoff": "⚠️ **초기 비용을 더 낸다.** 이유가 두 겹이다 — ① **스키마별 CPU·IOPS 를 잴 수 없었다**(공유 호스트라 호스트 단위로만 수집된다), ② `reliability must always come first`. 실제로 **2개월 뒤 한 단계 줄였다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "question": "Terraform 모듈을 어떻게 쓸 것인가",
+            "chosen": "**회사 공용 모듈을 상속한 얇은 사내 모듈**을 만들어 자기 손에 둔다",
+            "alternatives": [
+              "공용 모듈을 그대로 쓰기",
+              "전용 모듈을 처음부터 작성"
+            ],
+            "tradeoff": "**유지할 것이 하나 늘어난다.** 그 대신 고객 팀과 같은 도구를 써 **고객의 아픔을 직접 겪고** 그 경험으로 회사의 RDS 모듈을 더 단단하게 만들었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "question": "이전 중 백업을 어떻게 계속 돌릴 것인가",
+            "chosen": "**컨트롤 플레인이 Bacula 클러스터를 여럿 알게 하고, 설정으로 백업을 나눠 보낸다**",
+            "alternatives": [
+              "정해진 시점에 한 번에 넘기기"
+            ],
+            "tradeoff": "⚠️ **도구를 고쳐야 한다** — 지표에 클러스터 라벨을 붙이고 대시보드에 선택 변수를 넣는 일까지. 그 대신 **옛 시스템을 내리지 않은 채 새 시스템을 올려** 규정 준수를 위험에 빠뜨리지 않았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Bacula Enterprise v16 (Director 2 · Storage Daemon 38)",
+            "role": "백업 오케스트레이션. **온프렘에 남는다** — 카탈로그만 클라우드로 갔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "Amazon RDS MySQL (다중 AZ + 교차 리전 복제본)",
+            "role": "카탈로그의 새 집. 실패 도메인을 온프렘 밖으로 옮긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "Oracle Linux 9",
+            "role": "CentOS 8 EOL 의 후속. Bacula v12 RPM 이 없어 v16 업그레이드를 강제했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "사내 Terraform 모듈 (공용 모듈 상속)",
+            "role": "RDS 인스턴스·IAM·키·시크릿을 만든다. 도그푸딩의 도구",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "Booking Kubernetes Service 위의 복구 테스트",
+            "role": "백업이 **실제로 복구되는지** 자동 검증한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ AWS KMS 다중 리전 키",
+            "role": "⚠️ **함정이 있던 자리** — 생성 시에만 다중 리전으로 정할 수 있어 나중에 못 바꾼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "품질을 마지막 관문이 아니라 생애주기로 옮긴다",
+          "via": "작은 결함이 굳는 방식",
+          "contract": "⚠️ **같은 이야기의 두 규모다** — 데이터 쪽은 작은 결함이 하류로 번지는 것을 `깨진 유리창` 으로 설명하고, 여기는 그것이 **순환 의존성이라는 구조로 굳은** 사례다. 회사가 굳는 이유도 적는다: 되돌아볼 시간이 없었다고(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "MySQL 복제 체인 250개 이상",
+          "via": "일일 백업",
+          "contract": "⚠️ **이 카탈로그가 없으면 이 250개를 자동으로 복구할 수 없다.** 그 사실이 이 기능이 존재하는 이유 전부다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "DBA 컨트롤 플레인 · 사내 포털",
+          "via": "백업 작업 스케줄",
+          "contract": "개발자와 데이터 소유자가 **직접 백업을 뜨고 복구할 수 있다.** 이전을 위해 이 도구가 **여러 Bacula 클러스터를 알게** 확장됐다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "규정 준수 · 재해 복구",
+          "via": "오류 예산",
+          "contract": "백업 시스템은 **시간 단위의 다운타임을 견딜 수 있게** 오류 예산이 잡혀 있다. **그 여유가 이 이전 방식(수동 리전 전환 포함)을 가능하게 했다**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "공유 호스트에 얹힌 스키마의 자원 사용량을 잴 수 없다",
+            "why_hard": "⚠️ **디스크 용량은 스키마별로 모으는데 CPU·IOPS·메모리는 호스트 단위로만 모은다.** 게다가 **초당 쿼리 수가 자원으로 선형 변환되지 않는다** — 가벼운 쿼리 1만 개가 무거운 쿼리 1천 개보다 CPU 를 덜 쓸 수 있다. InnoDB 버퍼 풀도 호스트 단위다",
+            "current_best": "**보간하고, 의심스러우면 크게 잡는다.** 온프렘 용량과 같은 크기로 시작해 **2개월 뒤 실제 기준선으로 줄였다.** 회사가 그것을 원칙으로 적는다 — `don't try to over-optimize costs on Day 1`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          },
+          {
+            "problem": "순환 의존성은 왜 생기고 왜 안 고쳐지나",
+            "why_hard": "⚠️ **모르고 생기는 것이 아니다** — 회사가 `this observation is not new` 라고 먼저 밝힌다. 큰 시스템에서 그것을 안고 사는 것은 **복잡함과 실용 사이의 전략적 타협**이고, 되돌아보고 다시 설계할 시간이 팀에 늘 있지는 않다",
+            "current_best": "**큰 계기에 얹어 고친다** — 이 회사는 클라우드 이전이라는 계기에 이 고리를 함께 끊었다. ⚠️ **계기 없이 고치는 방법은 이 글에도 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+                "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-02-19",
+                "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "복구하려면 복구할 것이 필요했다",
+          "question": "고리는 어디서 끊겼나",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph BEFORE [\"그전 — 고리\"]\n    DR1[\"<b>Bacula Director</b><br/>• 복구 작업을 만든다\"]:::gone --> CAT1[\"<b>카탈로그</b><br/>• 어느 백업이 어디 있나\"]:::gone\n    CAT1 --> DB1[\"<b>dbadb (온프렘)</b><br/>• DBA 스키마들이 함께 산다\"]:::gone\n    DB1 -.->|이것을 복구하려면| DR1\n  end\n  subgraph AFTER [\"지금 — 끊김\"]\n    DR2[\"<b>Bacula v16 Director</b><br/>• 온프렘에 남는다\"]:::list --> CAT2[\"<b>카탈로그</b>\"]:::accent\n    CAT2 --> RDS[\"<b>Amazon RDS</b><br/>• 다중 AZ<br/>• 두 번째 리전에 복제본\"]:::accent\n    DB2[\"<b>dbadb</b><br/>• bacula 스키마를 드롭했다\"]:::list\n    RDS -.->|실패 도메인이<br/>지키는 대상 밖에| DB2\n  end\n  SD[\"<b>Storage Daemon 38대</b><br/>• 오프사이트 · 온프렘에 남는다\"]:::soft -.-> DR2\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        },
+        {
+          "title": "나중에 못 붙이는 것과, 잴 수 없는 것",
+          "question": "이 이전에서 실제로 아팠던 두 곳",
+          "kind": "failure",
+          "code": "flowchart TD\n  K[\"<b>다중 AZ RDS 를 먼저 만들었다</b><br/>• 교차 리전 복제본은 나중에\"]:::list --> K1{\"KMS 키가<br/>다중 리전인가\"}\n  K1 -->|아니다| K2[\"⚠️ <b>나중에 못 바꾼다</b><br/>• 생성 시점에만 정할 수 있다\"]:::gone\n  K2 --> K3[\"<b>다시 만든다</b><br/>• 새 다중 리전 키 생성<br/>• 스냅샷 → 복호화 → 재암호화\"]:::gone\n  K3 --> L1[\"<b>남은 교훈</b><br/>• 다중 리전은 처음부터<br/>• a quite painful lesson\"]:::accent\n  S[\"<b>크기를 얼마로 잡나</b>\"]:::list --> S1[\"⚠️ <b>잴 수가 없다</b><br/>• CPU · IOPS 는 호스트 단위<br/>• QPS 가 자원으로 선형 변환 안 됨\"]:::gone\n  S1 --> S2[\"<b>크게 잡고 나중에 줄인다</b><br/>• 2xlarge → 2개월 뒤 xlarge<br/>• reliability must always come first\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+          "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+          "publisher": "Booking.com Engineering",
+          "date": "2026-02-19",
+          "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+        },
+        {
+          "title": "Broken Windows of Data",
+          "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+          "publisher": "Booking.com Engineering",
+          "date": "2026-06-15",
+          "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
