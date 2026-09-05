@@ -140,7 +140,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "extract-function-not-code"
+      ]
     },
     {
       "name": "에이전트에게 노트북 대신 통제된 환경을 준다",
@@ -216,7 +218,506 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "extract-function-not-code",
+      "name": "코드를 옮기는 것과 기능을 옮기는 것은 다른 일이다",
+      "domain": "모놀리스를 쪼개되 코드가 아니라 기능을 옮긴다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**2013년에 Django 로 시작한 것이 2017년에 벽에 닿았고 2018년에는 신뢰성 위기로 코드 프리즈까지 갔다.** ⚠️ **그런데 회사가 그때를 이렇게 적는다 — 문제를 영역별로 고치기는 했지만 `왜 아키텍처가 그렇게 취약한지에 대한 분석은 포함되지 않았다`.** 그 분석이 2019년에야 시작됐고, **신규 기능 개발을 전면 중단**하고 재설계에 들어갔다. ⚠️ **그리고 회사가 가장 어려웠다고 꼽는 것이 기술이 아니다** — `define new interaction surfaces among the newly formed services and proceed with **extracting the functionality, as opposed to just extracting the code**`.",
+        "metrics": [
+          {
+            "label": "16개월 뒤",
+            "value": "마이크로서비스 **약 50개**, 그중 **20개가 크리티컬 패스**(실패하면 장애로 이어질 수 있는 것)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "label": "멈춘 것",
+            "value": "**2019년 말 신규 기능 개발 전면 중단** — `halt all new feature development in late 2019`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 그 전 한 해",
+            "value": "**2018년 신뢰성 위기 → 코드 프리즈 → 전사 대응.** 그런데 **원인 분석은 없었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "label": "확장이 막힌 자리",
+            "value": "복제본이 늘자 **쿠버네티스 클러스터가 용량 한계**에 닿고 캐시·DB 가 **연결 한계**에 걸려 **PgBouncer** 를 끼웠다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "label": "이 구조가 받치는 규모",
+            "value": "2026년 2분기 주문 **9억 7,000만 건(+27%)** · 총거래액 **331억 달러(+36%)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DoorDash Releases Second Quarter 2026 Financial Results",
+                "url": "https://ir.doordash.com/news/news-details/2026/DoorDash-Releases-Second-Quarter-2026-Financial-Results/default.aspx",
+                "publisher": "DoorDash IR",
+                "date": "2026-08-05",
+                "summary": "2026년 2분기 매출 45억 달러(+36%), 조정 EBITDA 9억 1,400만 달러(+40%), 주문 9억 7,000만 건(+27%), 마켓플레이스 총거래액 331억 달러(+36%). Deliveroo 인수분을 빼면 매출 +24%·총거래액 +23%."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 자료의 나이",
+            "value": "**회고는 2020년 12월 자료다** — 그 뒤 6년이 지났고 서비스 수도 구조도 달라졌을 것이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 옮기는지 다시 볼 때",
+          "thought": "⚠️ **이 기능의 이름이 여기서 나온다** — 회사가 가장 어려웠던 일로 꼽는 것이 **`extracting the functionality, as opposed to just extracting the code`** 다. **코드를 새 저장소로 옮기는 것은 파일 이동이고, 기능을 옮기는 것은 그 기능이 무엇이었는지를 다시 정의하는 일이다.** 그리고 그것을 **스택을 바꾸면서, 새 기능도 만들면서** 해야 했다 — 추출 기간 내내 코드 프리즈로 있을 수는 없었기 때문이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "팀을 설득할 때",
+          "thought": "⚠️ **가장 어려웠던 것이 기술이 아니라 사람이었다는 것을 이름까지 붙여 적는다** — 오래 만든 것에 애착이 생기는 **IKEA 효과**. 그래서 `disagree and commit` 으로 넘어갔고 **`new blood` 가 필요했다**고 쓴다. **자기 조직의 인지 편향을 회고에 적는 회사는 드물다**(이 평가는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "진행이 어긋날 때",
+          "thought": "⚠️ **안티패턴을 감수한 것을 그대로 적는다** — 도메인마다 추출 속도가 달라 **하류 API 가 아직 없으면 데이터베이스를 직접 봤다.** `이 안티패턴이 진행은 되게 했지만` **접근 패턴이 불명확해져 테이블 이전이 더 어려워졌고 기술 부채가 늘었다.** 임시 API 로 완화했지만 그것도 부채였다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "모놀리스",
+            "what": "2013년 Django 앱. **프런트엔드와 백엔드가 한 프레임워크·한 저장소·한 언어**, 데이터는 **PostgreSQL 한 인스턴스**"
+          },
+          {
+            "name": "위성 서비스",
+            "what": "⚠️ **2014~2019년에 방향 없이 떼어낸 것들.** 일부 기능을 맡았지만 **여전히 모놀리스에 기대** 워크플로를 돌리고 데이터를 읽었다 — **모놀리스가 흔들리면 함께 흔들렸다**"
+          },
+          {
+            "name": "5계층",
+            "what": "프런트엔드 · **BFF** · 백엔드 · 플랫폼 · 인프라. 각 층은 위층에 기능을 주고 아래층 기능을 쓴다"
+          },
+          {
+            "name": "BFF (Backend For Frontend)",
+            "what": "**프런트엔드를 백엔드에서 떼어 놓는 층** — 여러 백엔드 호출을 엮어 주고 뒤쪽 구조를 감춘다"
+          },
+          {
+            "name": "⚠️ 직접 DB 접근",
+            "what": "⚠️ **임시 안티패턴.** 하류 API 가 없을 때 데이터베이스를 그냥 봤다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **기능을 옮기는 것이지 코드를 옮기는 것이 아니다** — 회사가 가장 어려웠다고 꼽는 선",
+          "**서비스 하나의 실패가 시스템 전체의 실패가 되지 않아야 한다** — 재설계의 첫 이유가 사이트 안정화였다",
+          "**서비스 종류마다 다른 기술을 쓸 수 있어야 한다** — 프런트엔드·BFF·백엔드가 같은 스택일 필요가 없다",
+          "⚠️ **추출 중에도 사업은 돌아가야 한다** — 코드 프리즈로 계속 있을 수는 없었다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**Prehistory (2014~2019) — 방향 없이 떼어낸다**",
+            "why": "⚠️ 위성 서비스들이 **여전히 모놀리스에 기대** 있어 모놀리스가 흔들리면 함께 흔들렸다"
+          },
+          {
+            "step": "**Project Reach (2019) — 스택을 먼저 정한다**",
+            "why": "**Kotlin 을 백엔드 공통 언어로, gRPC 를 기본 호출 방식으로.** 일부는 PostgreSQL 에서 Cassandra 로"
+          },
+          {
+            "step": "**Project Metronome (2019 4분기) — 팀마다 대표 한 명을 붙인다**",
+            "why": "⚠️ **경영진 지원을 받아 4분기 전체를 추출에 썼다.** 기술 프로그램 관리가 이정표를 공식 추적했다"
+          },
+          {
+            "step": "**Project Phoenix — 남은 워크플로를 전부 식별하고 최종 구조를 정한다**",
+            "why": "서비스마다 상·하류 의존을 정의해 이해관계자와 함께 움직인다"
+          },
+          {
+            "step": "**이정표를 3단계로 나눠 우선순위를 매긴다**",
+            "why": "가장 중요한 워크플로부터"
+          },
+          {
+            "step": "⚠️ **하류 API 가 없으면 데이터베이스를 직접 본다**",
+            "why": "⚠️ **진행은 되지만 접근 패턴이 흐려져 테이블 이전이 더 어려워진다**"
+          },
+          {
+            "step": "**메인 데이터베이스에서 서비스별 데이터베이스로 데이터를 옮긴다**",
+            "why": "⚠️ 가장 복잡하고 파괴적일 수 있는 일이라 **첫 이전의 기반을 만드는 데만 여러 번 반복**했다"
+          },
+          {
+            "step": "**5계층으로 수렴한다** — 프런트엔드·BFF·백엔드·플랫폼·인프라",
+            "why": "작은 팀이 자기 도메인만 알고도 운영할 수 있게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "모놀리스를 계속 쓸 것인가",
+            "chosen": "**쪼갠다** — 이유를 다섯으로 적는다",
+            "alternatives": [
+              "모놀리스를 유지하며 모듈 경계를 세우기"
+            ],
+            "tradeoff": "이유는 **사이트 안정화 · 사업 라인 격리 · 개발 민첩성 · 플랫폼과 조직의 확장 · 서비스 종류마다 다른 스택 허용**이다. ⚠️ **대가는 모놀리스에서 공짜였던 것이 전부 비용이 된다는 것** — 내부 호출에 **네트워크 지연이 없었고**, API 하위 호환·재시도·서킷 브레이킹·부하 차단을 생각할 필요가 없었으며, **여러 도메인을 한 번의 질의로 집계**할 수 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "question": "백엔드 언어를 무엇으로 할 것인가",
+            "chosen": "**Kotlin** — Python 에서 옮긴다",
+            "alternatives": [
+              "Python 유지 + 타입 힌트",
+              "다른 JVM 언어"
+            ],
+            "tradeoff": "Python 의 **동적 타입** 때문에 변경이 런타임에 어떤 영향을 주는지 확인하기 어려웠고, **타입 힌트를 전 코드베이스에 도입하는 것은 규모 때문에 복잡**했다. ⚠️ **대가는 언어 전환이 기능 추출과 동시에 일어났다는 것**이고, 회사가 그것을 가장 어려운 조건으로 꼽는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "question": "서비스끼리 어떻게 부를 것인가",
+            "chosen": "**gRPC** — REST 대신",
+            "alternatives": [
+              "REST"
+            ],
+            "tradeoff": "⚠️ **판단 근거가 글에 없다.** `Python 대 JVM · REST 대 gRPC · RabbitMQ 대 Kafka/Cadence` 를 검토했다는 서술까지만 있고 **무엇을 견줘 왜 골랐는지가 빠져 있다** — **회고가 결정의 결과는 적는데 이유는 적지 않은 자리다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "question": "프런트엔드를 백엔드에 직접 붙일 것인가",
+            "chosen": "**아니다 — BFF 층을 둔다**",
+            "alternatives": [
+              "프런트엔드가 백엔드 서비스를 직접 호출"
+            ],
+            "tradeoff": "BFF 가 **여러 백엔드 호출을 엮어 주고 뒤쪽 구조를 감춘다** — 백엔드가 바뀌어도 프런트엔드가 안 깨진다. ⚠️ **대가는 층이 하나 더 늘고 그것도 유지해야 한다는 것**이다(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "question": "추출 중에 새 기능을 계속 만들 것인가",
+            "chosen": "⚠️ **2019년 말에는 전면 중단했다** — 그 뒤에는 병행",
+            "alternatives": [
+              "계속 만들면서 추출",
+              "끝까지 동결"
+            ],
+            "tradeoff": "`halt all new feature development in late 2019 so that the company could focus on building a reliable platform for the future`. ⚠️ **그러나 끝까지 동결할 수는 없었다** — 사업이 계속 커야 했기 때문이다. **그래서 스택을 바꾸고 기능을 추출하면서 새 기능도 만드는 상태가 이어졌고, 회사가 그것을 가장 어려운 조건으로 적는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 옮길 것인가 — 코드인가 기능인가",
+            "chosen": "⚠️ **기능** — `extracting the functionality, as opposed to just extracting the code`",
+            "alternatives": [
+              "코드를 그대로 새 서비스로 옮기기"
+            ],
+            "tradeoff": "⚠️ **이것이 이 기능의 축이다.** 코드를 옮기는 것은 파일 이동이고, **기능을 옮기는 것은 새로 생긴 서비스들 사이의 상호작용 면을 다시 정의하는 일**이다. **대가는 시간과 판단이고, 그래서 가장 어려웠다.** 반대로 **코드만 옮겼다면 모놀리스의 얽힘이 그대로 따라왔을 것이다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "question": "하류 API 가 아직 없을 때 어떻게 할 것인가",
+            "chosen": "⚠️ **데이터베이스를 직접 본다 — 안티패턴인 줄 알면서**",
+            "alternatives": [
+              "하류가 준비될 때까지 기다리기"
+            ],
+            "tradeoff": "⚠️ **회사가 이것을 안티패턴이라 부르며 그대로 적는다.** 진행은 됐지만 **접근 패턴이 불명확해져 테이블 이전이 더 어려워졌고 기술 부채가 늘었다.** 임시 API 로 완화했지만 **그것도 부채였다.** 그래서 **채택 상황을 계속 감시**해야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "question": "팀의 저항을 어떻게 다룰 것인가",
+            "chosen": "**`disagree and commit`** — 그리고 **새 피**",
+            "alternatives": [
+              "합의가 될 때까지 논의",
+              "기존 팀만으로 진행"
+            ],
+            "tradeoff": "⚠️ **회사가 인지 편향을 이름으로 부른다** — 오래 만든 것에 애착이 생기는 **IKEA 효과**. 그것이 `DoorDash needed new blood to execute this endeavor` 의 이유였다고 적는다. **대가는 조직이 흔들린다는 것**이고, 그 비용은 글에 없다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kotlin · gRPC",
+            "role": "백엔드 공통 언어와 기본 서비스 간 호출 방식",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "tech": "5계층 (프런트엔드 · BFF · 백엔드 · 플랫폼 · 인프라)",
+            "role": "각 층이 위층에 기능을 주고 아래층 기능을 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "tech": "Cassandra (일부)",
+            "role": "PostgreSQL 의 확장 한계를 피해 옮긴 곳",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "tech": "PgBouncer",
+            "role": "⚠️ **복제본이 늘어 연결 한계에 걸리자 끼운 연결 풀러** — 증상 완화책",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 직접 DB 접근 · 임시 API",
+            "role": "⚠️ **회사가 안티패턴이라 부르는 것.** 진행을 위해 감수했고 부채가 됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "에이전트에게 노트북 대신 통제된 환경을 준다",
+          "via": "⚠️ 같은 회사의 다른 시대",
+          "contract": "⚠️ **2019년에는 사람을 모아 코드를 옮겼고, 2026년에는 에이전트가 주당 코드 리뷰 2.5만 건을 돈다.** 같은 회사가 **일곱 해 만에 다른 방식으로 같은 문제(사람의 시간)를 푼다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "주문과 배차를 실시간으로 흘린다",
+          "via": "추출된 서비스들",
+          "contract": "**배차와 주문 전송이 초기 추출 대상에 들어 있었다**(결제·POS·주문 전송). ⚠️ **그 안의 구조는 아직 못 읽었다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "메인 PostgreSQL",
+          "via": "데이터 이전",
+          "contract": "⚠️ **가장 복잡하고 파괴적일 수 있는 일이었다** — 서비스별 데이터베이스로 옮기며 **첫 이전의 기반을 만드는 데만 여러 번 반복**했고, 결국 **주요 테이블 대부분을 빼내 병목을 없앴다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "주문 수수료 (매출)",
+          "via": "가용성",
+          "contract": "**서비스 하나의 실패가 전체 장애가 되지 않는 것**이 재설계의 첫 이유였다 — 2018년에 그 반대를 겪었다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "코드를 옮기는 것과 기능을 옮기는 것은 다른 일이다",
+            "why_hard": "⚠️ **회사가 가장 어려웠다고 꼽는 것이 이것이다** — `extracting the functionality, as opposed to just extracting the code`. **코드는 파일이라 옮기면 되는데, 기능은 새로 생긴 서비스들 사이의 상호작용 면을 다시 정의해야 한다.** 그리고 그 일을 **스택을 바꾸면서, 새 기능도 만들면서** 해야 했다 — 추출 기간 내내 동결할 수는 없었기 때문이다.",
+            "current_best": "**단계를 나누고**(Reach → Metronome → Phoenix) **이정표를 3단계 우선순위로 매기고**, **팀마다 대표를 붙여** 도메인별로 따라가는 것. ⚠️ **그럼에도 추출 속도가 도메인마다 달라 안티패턴을 감수해야 했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          },
+          {
+            "problem": "고치는 일과 원인을 묻는 일은 다르다",
+            "why_hard": "⚠️ **2018년에 신뢰성 위기를 겪고 코드 프리즈까지 했는데**, 회사가 그때를 이렇게 적는다 — 영역별 문제는 고쳤지만 **`왜 아키텍처가 그렇게 취약한지에 대한 분석은 포함되지 않았다`.** **증상이 사라지면 물음도 사라진다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**다음 해에 새 사람이 와서 세 축을 다시 묻는 것**(아키텍처·기술 스택·인프라). ⚠️ **원인을 묻게 만드는 장치는 글에 없다** — 사람이 바뀌어야 물음이 바뀌었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+                "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+                "publisher": "DoorDash Engineering",
+                "date": "2020-12-02",
+                "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "스택을 먼저 정하고, 팀마다 대표를 붙이고, 기능을 옮긴다",
+          "question": "모놀리스에서 서비스 50개까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>Prehistory (2014~2019)</b><br/>• 방향 없이 떼어낸 위성 서비스<br/>⚠️ 여전히 모놀리스에 기댄다\"]:::gone --> R[\"<b>Project Reach (2019)</b><br/>• <b>Kotlin · gRPC 를 표준으로</b><br/>• 일부는 Cassandra 로\"]:::accent\n  R --> M[\"<b>Project Metronome (2019 Q4)</b><br/>• 팀마다 대표 한 명<br/>• 이정표를 공식 추적\"]:::accent\n  M --> F[\"<b>Project Phoenix</b><br/>• 남은 워크플로 전부 식별<br/>• 최종 구조와 의존 정의\"]:::accent\n  F --> L[\"<b>5계층</b><br/>• 프런트엔드 → BFF → 백엔드<br/>• → 플랫폼 → 인프라\"]:::list\n  L --> O[\"<b>16개월 뒤</b><br/>• 마이크로서비스 약 50개<br/>• 그중 20개가 크리티컬 패스\"]:::accent\n  D[\"⚠️ <b>하류 API 가 없으면</b><br/>• 데이터베이스를 직접 본다\"]:::gone -.-> F\n  DB[\"<b>메인 DB → 서비스별 DB</b><br/>• 가장 복잡하고 파괴적일 수 있는 일<br/>• 기반을 만드는 데만 여러 번 반복\"]:::list -.-> O\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "모놀리스에서 공짜였던 것이 전부 비용이 된다",
+          "question": "무엇을 내주고 무엇을 얻었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[\"<b>모놀리스에서 공짜였던 것</b>\"]:::accent --> M1[\"내부 호출에 네트워크 지연 없음\"]:::list\n  M --> M2[\"API 하위 호환 걱정 없음\"]:::list\n  M --> M3[\"재시도 · 서킷 브레이킹 · 부하 차단 불필요\"]:::list\n  M --> M4[\"여러 도메인을 한 번의 질의로 집계\"]:::list\n  M1 --> C[\"⚠️ <b>전부 비용이 된다</b>\"]:::gone\n  M2 --> C\n  M3 --> C\n  M4 --> C\n  H[\"⚠️ <b>가장 어려웠던 것</b>\"]:::gone --> H1[\"코드가 아니라 <b>기능</b>을 옮기기\"]:::gone\n  H --> H2[\"스택을 바꾸면서 동시에\"]:::gone\n  H --> H3[\"새 기능도 만들면서\"]:::gone\n  H --> H4[\"<b>IKEA 효과</b> — 사람의 저항\"]:::gone\n  H --> H5[\"코로나로 주문량 급증 중\"]:::gone\n  A[\"⚠️ <b>감수한 안티패턴</b><br/>• 직접 DB 접근 · 임시 API<br/>• 테이블 이전이 더 어려워졌다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+          "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+          "publisher": "DoorDash Engineering",
+          "date": "2020-12-02",
+          "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+        },
+        {
+          "title": "Delegating Engineering Work To Cloud-Based Agents",
+          "url": "https://careersatdoordash.com/blog/delegating-engineering-work-to-cloud-based-agents/",
+          "publisher": "DoorDash Engineering",
+          "date": "2026-08-11",
+          "summary": "사내 에이전트 플랫폼 Flux. 2026년 한 달에 13만 건을 자동화했고 주당 코드 리뷰 2.5만 건, 플레이북 300개 이상, 호출 1만 건 이상. Firecracker microVM 샌드박스와 MCP 게이트웨이, 플레이북, 호출 표면 네 가지가 뼈대다."
+        },
+        {
+          "title": "DoorDash Releases Second Quarter 2026 Financial Results",
+          "url": "https://ir.doordash.com/news/news-details/2026/DoorDash-Releases-Second-Quarter-2026-Financial-Results/default.aspx",
+          "publisher": "DoorDash IR",
+          "date": "2026-08-05",
+          "summary": "2026년 2분기 매출 45억 달러(+36%), 조정 EBITDA 9억 1,400만 달러(+40%), 주문 9억 7,000만 건(+27%), 마켓플레이스 총거래액 331억 달러(+36%). Deliveroo 인수분을 빼면 매출 +24%·총거래액 +23%."
+        }
+      ]
+    }
+  ],
   "eras": [
     {
       "id": "2013-django",
@@ -320,7 +821,9 @@
       "domains": [
         "모놀리스를 쪼개되 코드가 아니라 기능을 옮긴다"
       ],
-      "features": [],
+      "features": [
+        "extract-function-not-code"
+      ],
       "stack_in": [
         "Kotlin",
         "gRPC",
