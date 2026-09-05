@@ -19,9 +19,17 @@
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Etsy** | US · 커머스(수공예 마켓플레이스) | `etsy.com/codeascraft` | ⚠️ **WebFetch 는 403. 브라우저(`get_page_text`)로는 목록도 본문도 온다** | ⚠️ **403 이라 접었던 곳을 브라우저로 되살렸다.** **⭐⭐ 연도가 붙은 데이터베이스 역사가 있다** — `Migrating Etsy's database sharding to Vitess`(2026-03-19)가 **`Etsy has maintained a sharded MySQL architecture since around 2010`** 으로 시작한다. **16년치 샤딩 역사를 한 줄로 여는 글이다.** **⭐⭐ 결제 이전이 3부작이고 제목이 대가를 약속한다** — `Scaling Etsy Payments with Vitess` **Part 2 `The "Seamless" Migration`** · **Part 3 `Reducing Cutover Risk`**(둘 다 2023-02). 기간도 적혀 있다 — **2020년 12월부터 2022년 5월까지**, 결제 플랫폼·DB 신뢰성·데이터 접근 세 팀이 함께. **⭐ 클라우드 이전도 연도가 있다** — **2020년에 온프렘 데이터센터에서 GCP 로 이전을 마쳤고**, 그 뒤 `Enhancing Cloud Usage Forecasting, Monitoring & Optimizing`(2024-06)로 비용을 다룬다. **⭐ 실험 문화가 두껍다** — control variates(2021→2025 후속), **`Mitigating the winner's curse in online experiments`**(2022). **⭐ LLM 축도 있다**(검색 relevance 2026-01 · 재고 이해 2025-10 · 구매자 프로파일 2025-09). **규모** — 리스팅 **1억 개 이상** · 활성 판매자 **560만 명** · 구매자 **약 9,000만 명**. ⚠️ **커머스 축은 이미 여럿이지만**(쇼피파이·잘란도·알레그로·웨이페어·쿠팡·메르카도리브레·빈티드·bol) **2010년부터의 샤딩 역사와 실험 문화는 그 어느 곳에도 없다** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-06 열아홉 번째 후보 조사 — 403 을 브라우저로 뚫어 Etsy 를 되살렸다. 한 곳만 올렸다.**
+  - **✅ Etsy (❌ → ✅)** — 앞 조사에서 **`etsy.com/codeascraft` 403** 으로 접었는데, **브라우저로는 목록도 본문도 온다.** ⚠️ **DoorDash 에서 배운 방법이 바로 다음 사이클에 값을 했다.**
+  - **❌ Vercel** — `vercel.com/blog/new-edge-dev-infrastructure` 를 열었더니 **2020년 7월 글**이고 **버린 대안 0 · 대가 0** 이다. 성능 주장만 있다(`up to 6x faster` · 주당 45억 요청). **발표문 성격이다.**
+  - **❌ Klarna** — **공식 엔지니어링 블로그 주소를 검색이 주지 않는다.** 3자 정리 글과 AI 에이전트 홍보만 나온다. **주소를 추측하지 않는다는 규칙대로 접는다.**
+  - **❌ HelloFresh (판정 강화)** — 앞서 **403** 으로 적어 뒀는데 **브라우저로는 열린다.** ⚠️ **그런데 열어 보니 Medium 커스텀 도메인이고 `This publication does not have any stories yet.` 이다.** **막힌 게 아니라 비어 있었다.**
+  - ⚠️ **이번 조사의 가장 값진 발견** — **접근 지도에서 `403` 으로 접은 곳들을 브라우저로 되짚을 수 있다.** 다만 **HelloFresh 가 보여 주듯 뚫린다고 내용이 있는 것은 아니다.** 되짚을 목록: `blog.paystack.com` · `www.scylladb.com/blog` · `www.meesho.io/blog` · `blog.zepto.com` · `engineering.plaid.com`.
 
 - **2026-09-06 열여덟 번째 후보 조사 — 남은 실마리가 소진돼 새 이름으로 갔고 두 곳을 올렸다.**
   - **✅ 1Password** — **보안 축 첫 자리.** ⚠️ **`아키텍처 때문에 우리도 못 읽는다` 는 제목이 곧 이 회사의 설계다.** 못 하는 기능을 목록으로 적는 글은 드물다.

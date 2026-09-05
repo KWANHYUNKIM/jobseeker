@@ -8,25 +8,26 @@
 
 ## 지금 파는 중
 
-**없다 — DoorDash 를 완주했다.** 큐가 **0/3** 이다.
+**없다 — 후보 조사 사이클이었다.** 큐를 **0/3 → 1/3** 으로 채웠다(**목표 미달, 한 곳만 올렸다**). 다음 사이클은 `--gaps` 가 **신규(6순위)**를 부른다 — 대기 맨 위는 **Etsy** 다.
 
-### 이번 사이클 — Iguazu `파이프라인을 종류마다 만들지 않고 이벤트마다 만든다` 와 완주
+### 이번 사이클 — 후보 조사 (열아홉 번째)
 
-⚠️ **예고한 대로 기능보다 자료를 먼저 찾았고 다섯 번째로 통했다**(Fastly 보안 · Monzo 플랫폼 · ClickHouse 엔진 · 1Password 프로비저닝에 이어). **주소는 검색으로 받고 본문은 브라우저로 열었다.**
+⚠️ **DoorDash 에서 배운 방법이 바로 다음 사이클에 값을 했다** — `careersatdoordash.com` 이 WebFetch 403 인데 브라우저로는 열린다는 것을 알고 나서, **403 이라 접었던 Etsy 를 브라우저로 되짚어 되살렸다.**
 
-- ⚠️ **레거시의 문제는 파이프라인의 수가 아니라 제각각이었다는 것이다** — 서로 다른 전송과 큐가 **관측 설계 없이 섞여** 운영이 어려웠다. 새 구조는 **이벤트마다 파이프라인이 있는데도** 운영이 줄었다. **같은 플랫폼 위에서 자동으로 찍히기 때문이다**(재구성).
-- ⚠️ **감수한 것을 숨기지 않는다** — 비동기 produce 는 `Kafka 가 불가능할 때 소량 손실` 을 낳는데 그 위험과 **상쇄 방법(프록시 재시도·면밀한 모니터링)을 함께 적는다.** 복제도 **3벌 대신 2벌**로 중복성을 내주고 **브로커 CPU 30~40%** 를 얻는다.
-- ⚠️ **IaC 가 자동화를 어렵게 만든 자리가 뜻밖이다** — Kafka 토픽부터 서비스 설정까지 **여러 terraform 저장소에 PR 이 필요해서** 추상화가 까다로웠다. **모든 것을 코드로 두면 모든 것이 사람의 승인을 거친다.** 답은 **승인 절차를 다시 짜고 GitHub App 으로 PR 을 자동화**하는 것이었다 — **자동화의 값이 코드가 아니라 절차를 고친 데서 나왔다.**
+- **✅ Etsy (❌ → ✅)** — ⚠️ **연도가 붙은 데이터베이스 역사가 있다**: `Etsy has maintained a sharded MySQL architecture since **around 2010**`. 결제 이전은 **3부작**이고 제목이 대가를 약속한다 — **`The "Seamless" Migration`** · **`Reducing Cutover Risk`**(2020-12~2022-05). **2020년 온프렘 → GCP 이전**과 그 뒤의 비용 관리 글도 있다. 실험 문화(`winner's curse`)와 LLM 축도 두껍다.
+- **❌ Vercel** — 2020년 7월 글이고 **버린 대안 0 · 대가 0.** 성능 주장만 있다.
+- **❌ Klarna** — **공식 엔지니어링 블로그 주소를 검색이 주지 않는다.** 추측하지 않는다는 규칙대로 접는다.
+- **❌ HelloFresh (판정 강화)** — ⚠️ **403 이라 적어 뒀는데 브라우저로는 열린다. 그런데 열어 보니 `This publication does not have any stories yet.` 이다.** **막힌 게 아니라 비어 있었다.**
 
-**두 플랫폼이 같은 모양이다** — Iguazu 는 **이벤트마다 파이프라인을**, Flux 는 **플레이북마다 샌드박스를** 찍는다. **둘 다 개별 격리를 얻으면서 운영이 늘지 않게 플랫폼을 먼저 만들었다.**
+### ⚠️ 이번에 얻은 것 — 접근 지도의 `403` 을 되짚을 수 있다
 
-**완주 판정**: 도메인 3/3 · 고아 없음 · 수익원 둘 다 연결. **경고도 2건에서 1건으로 줄었다.**
+**WebFetch 가 403 을 주는 곳도 브라우저로는 열린다.** 되짚을 목록이 접근 지도에 남아 있다 — `blog.paystack.com` · `www.scylladb.com/blog` · `www.meesho.io/blog` · `blog.zepto.com` · `engineering.plaid.com`(Plaid 는 내용이 좋아 보였는데 못 받았던 곳이다).
 
-### 다음 사이클 — 큐가 0/3 이라 후보 조사
+⚠️ **다만 HelloFresh 가 경고한다 — 뚫린다고 내용이 있는 것은 아니다.** **접근이 막힌 것과 자료가 없는 것은 여전히 다르고, 이제 그 둘을 실제로 가를 수 있게 됐다.**
 
-⚠️ **비교 문서는 여전히 사다리에 막혀 있다.** 이제 **AI 에이전트 축에 다섯 회사가 찼다**(Sentry · ClickHouse · Duolingo · Ramp · **DoorDash**). 초안 표는 앞 사이클 STATE 기록에 있다 — **사다리가 손질되면 바로 쓸 수 있다.**
+### 다음 사이클 — 신규(Etsy)
 
-⏳ **안 두드린 후보** — Deliveroo · Delivery Hero · Klarna · Vercel · Snyk/Okta(보안 둘째 자리) · Etsy(403 으로 접었다).
+**연표가 설 가능성이 높은 회사다** — 2010년 샤딩 시작 · 2020년 GCP 이전 완료 · 2020-12~2022-05 결제 이전 · 2026년 Vitess 이전. **DoorDash 에 이어 두 번째로 `eras` 를 세울 수 있을지 본다.**
 
 ## 지금의 진짜 상태
 
@@ -400,7 +401,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `www.reddit.com` | ❌ **Claude Code 가 아예 못 가져온다**(도메인 차단, 239) |
 | `linkedin.com/blog/engineering` | ⚠️ **글 본문은 URL 을 알면 열리는데 목록·분류 페이지는 안 열린다.** WebFetch 는 내비게이션만 주고(`/artificial-intelligence`·`/infrastructure`·`/search` 전부), **브라우저도 탭을 못 만들었다**(No tab available, 사이클 228). `/talent` 만 12편이 떴는데 대부분 경력 이야기다 — **글 편수를 셀 수 없다** |
 | `about.gitlab.com/blog/categories/engineering/` | ⚠️ **열리지만 날짜가 본문에 안 실리고 제품 홍보가 섞여 있다** — 넣으려면 심층 글을 먼저 확인해야 한다 |
-| `etsy.com/codeascraft` · `tech.groww.in` · `unity.com/blog` · `zillow.com/tech` | ❌ 전부 **403** |
+| `etsy.com/codeascraft` | ⚠️ **WebFetch 는 403 인데 브라우저(`get_page_text`)로는 목록도 본문도 온다**(사이클 열아홉). **403 은 브라우저로 되짚을 수 있다** |
 | `blog.wise.com` | ❌ **DNS 없음** |
 | `engineering.bolt.eu` | ❌ `bolt.eu/en/careers/...` 로 **301** — 블로그가 아니라 채용 페이지다 |
 | `blog.sentry.io/categories/engineering/` | ❌ **404**(다른 경로가 있을 수는 있다) |
@@ -431,6 +432,9 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `1password.com/blog` · `support.1password.com` | ✅ WebFetch 로 본문이 온다 |
 | `careersatdoordash.com/blog` | ⚠️ **WebFetch 는 403.** 검색으로 글 주소는 잘 나오지만 **본문은 브라우저(`get_page_text`)로만 온다** — 그쪽으로는 전문이 그대로 읽힌다(사이클 스물아홉). **주소가 나오는 것과 본문이 읽히는 것은 다른 문제다** |
 | `etsy.com/codeascraft` | ❌ **403**(사이클 열여덟). 다른 경로를 못 찾았다 |
+| **⚠️ `403` 전반** | ⚠️ **WebFetch 의 403 은 브라우저로 뚫리는 경우가 있다**(Etsy·DoorDash 에서 확인). 되짚을 목록 — `blog.paystack.com` · `www.scylladb.com/blog` · `www.meesho.io/blog` · `blog.zepto.com` · `engineering.plaid.com`. **다만 뚫린다고 내용이 있는 것은 아니다**(HelloFresh) |
+| `engineering.hellofresh.com` | ❌ **브라우저로는 열리는데 비어 있다** — Medium 커스텀 도메인이고 `This publication does not have any stories yet.`(사이클 열아홉). **막힌 게 아니라 없는 것이다** |
+| `vercel.com/blog` | ✅ WebFetch 로 본문이 온다. ⚠️ **다만 읽은 글은 발표문 성격이었다**(2020-07, 버린 대안 0·대가 0) |
 
 ### 큐에 넣기 전에 이미 판 회사인지 본다 — 사이클 226 에서 데였다
 
