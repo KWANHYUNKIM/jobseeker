@@ -8,32 +8,30 @@
 
 ## 지금 파는 중
 
-**없다 — Mercado Libre 를 닫았다.** 완료 **69곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **69곳** · **큐 1/3**(Booking.com) · 비교 문서 33편.
 
-### ⚠️ 다음 사이클은 3순위(후보 조사)다 — 새 이름부터 찾지 않는다
+**다음 사이클은 6순위(신규) — Booking.com 이다.** PROMPT.md 3단계부터.
+⚠️ **본문은 브라우저(`get_page_text`)로 `medium.com/booking-com-development` 를 연다.**
 
-**바로 앞 조사(2026-09-05 네 번째)에서 배운 것을 그대로 쓴다** — 브라우저를 켜면
-**Medium 이 열린다.** 그래서 "Medium 이라 못 읽는다"로 떨어뜨린 목록이 **그대로 후보
-명단**이다:
+### ⭐⭐ 앞 사이클의 메모가 그대로 통했다
 
-- **Booking.com** — `medium.com/booking-com-development`. 목록(`blog.booking.com`)은
-  WebFetch 로 오고 제목이 회고형이다(**250개 이상 MySQL 클러스터의 백업 카탈로그를
-  AWS 로**, `A Migration Adventure`). **여기부터 보는 것이 가장 싸다.**
-- Trainline · Traveloka · Tokopedia · Dream11 · Meesho.
+앞 조사에서 *"큐가 빌 때마다 새 이름을 찾을 것이 아니라 Medium 목록을 브라우저로 여는
+것이 훨씬 싸다"* 고 적어 뒀다. 이번에 **그 명단 맨 위를 열었더니 한 번에 됐다** —
+**여덟 곳을 두드려 빈손이던 조사와 한 곳을 열어 한 곳을 얻은 조사의 차이가 그 메모다.**
 
-### ⭐⭐ Mercado Libre 에서 남길 것 — 같은 벽을 두 곳에서 만난 회사
+### Booking.com 이 왜 좋은가 — 순환 의존성
 
-**마이크로서비스 3만 개와 공개 API 계약**이 컴퓨팅 모델 선택(FaaS 탈락)과 데이터
-라우팅(라우팅 키 포기) **양쪽에서 똑같이 작동했다.** 그리고 그 대가를 회사가 먼저
-말한다(`broadcasting requests adds overhead`). **이렇게 원칙 하나가 여러 결정을 관통하는
-회사는 도메인을 그 원칙으로 세우면 잘 맞는다** — 이번에 세 번째 도메인을 그렇게 잡았다.
+**백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 DB 안에 살고 있었다.**
+그 DB 를 잃으면 그것을 복구할 방법도 함께 잃는다. 회사가 그 구조를 그림까지 그려
+설명하고, **왜 그런 것이 생기는지도 적는다** — 시스템이 커지는 동안 되돌아볼 시간이
+없었기 때문이고, 클라우드 이전 같은 큰 계기가 있을 때 고친다고.
+**게다가 실패를 적는다** — KMS 키를 나중에 다중 리전으로 못 바꿔 클러스터를 다시 만들었다
+(*"a quite painful lesson"*).
 
-### ⚠️ 세 번 반복된 관찰 — 기능 단위 연표가 잘 안 선다
+### ⏳ 아직 남은 되살릴 목록
 
-Kraken(전 환경 동시 배포 → 일부 먼저) · Mercado Libre(쿠버네티스 전환 · 단일 MySQL 시작)
-에서 **바뀐 것은 분명한데 연도가 없어 `history` 를 버렸다.** 반대로 **글이 옛 글을 직접
-가리킬 때는 섰다**(Kraken 2016→2026, Bolt 2021→2025). **회고를 읽을 때 "이 글이 무엇을
-인용하는가"를 보는 것이 연표를 얻는 가장 확실한 방법이다.**
+Trainline · Tokopedia · Dream11 · Meesho (⚠️ Traveloka 는 2020~2022 에서 멈췄다).
+**큐가 빌 때 새 이름보다 여기가 먼저다.**
 
 ## 지금의 진짜 상태
 
@@ -355,6 +353,7 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
+| `medium.com/booking-com-development` | ✅ **브라우저로 전문이 온다** (2026-09-05 확인). 목록은 `blog.booking.com` 에서 WebFetch 로 |
 | `medium.com/*` | ⚠️ WebFetch 403 · **브라우저로는 전문이 온다 — 2026-09-05 에 `medium.com/mercadolibre-tech` 로 실제 확인했다.** 후보를 Medium 이라는 이유로 떨어뜨리지 않는다 |
 | ~~`bolt.eu/en/blog/category/tech-at-bolt/`~~ | ⚠️ **목록은 오는데 본문이 비어 온다**(JS 렌더링). `engineering.ramp.com` 과 같은 형태 — **브라우저 `get_page_text` 로 다시 볼 것** (2026-09-05) |
 | `clickhouse.com/blog` · `tailscale.com/blog` | ⚠️ 열리지만 **첫 페이지가 제품 발표·고객 사례**다. 깊은 글은 아카이브 안쪽에 있을 수 있다 |
