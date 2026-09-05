@@ -134,7 +134,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "purge-must-reach-everywhere"
+      ]
     },
     {
       "name": "행사가 오기 전에 어느 POP 이 먼저 무너질지 센다",
@@ -217,7 +219,505 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "purge-must-reach-everywhere",
+      "name": "지우는 일을 한 곳에 맡기지 않는다",
+      "domain": "캐시에 넣은 것을 전 세계에서 한꺼번에 지운다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**캐시에 넣는 일은 모든 CDN 이 한다.** 값이 갈리는 자리는 **넣은 것을 도로 없애는 일**이다 — 지우는 것이 느리거나 어디선가 빠지면 고객은 캐시 유효기간을 짧게 걸 수밖에 없고, **그러면 캐시가 캐시 노릇을 못 한다**(뒤쪽 정리는 이 사이트의 재구성이다). 그래서 회사는 이 지표를 네트워크 소개 첫 줄에 건다. ⚠️ **그런데 지우는 일에는 넣는 일에 없는 요구가 하나 붙는다 — 빠지는 곳이 하나도 없어야 한다.** 한 POP 만 옛 사본을 들고 있어도 그 지역 방문자는 지워진 것을 계속 본다.",
+        "metrics": [
+          {
+            "label": "회사가 내거는 값",
+            "value": "**전역 퍼지 평균 150ms 미만** — 네트워크 소개에 p99 TTFB(1ms 미만)와 나란히 걸려 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          },
+          {
+            "label": "닿아야 하는 범위",
+            "value": "**POP 약 83곳**(추가 예정 4곳) · 연결 용량 **622 Tbps**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          },
+          {
+            "label": "이 설계가 딛고 선 전제",
+            "value": "POP 간 패킷 손실률이 **보통 0.1% 를 넘지 않는다** — `typically low, rarely exceeding 0.1%`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 네트워크 분할에서",
+            "value": "방화벽 설정 오류로 격리됐을 때 **처리량은 그대로였고**, 회복까지 **p95 지연 약 10초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ DDoS 8분 장애에서",
+            "value": "**p95 지연이 1분을 넘은 적이 없고** 결국 모든 퍼지가 전파됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "label": "지역차",
+            "value": "미국 동부가 미국·유럽 양쪽에 가장 낮고 **아시아는 거리 때문에 높다** — 수치는 공개하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "중앙에 둘 것인가 나눠 둘 것인가",
+          "thought": "⚠️ **회사가 고른 기준이 성능이 아니라 도달 가능성이다** — 중앙 큐는 만들기 쉬운 대신 **단일 장애점**이고, 네트워크 장애 때 `unable to communicate with some cache servers for an extended period of time` 가 된다. 분산은 어렵지만 **`available as long as a customer could reach any Fastly server`** 다. **퍼지는 못 받으면 옛 데이터가 계속 나가는 일이라, 느린 것보다 못 닿는 것이 나쁘다**(이 대비는 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "프로토콜을 고를 때",
+          "thought": "**직접 만들지 않고 1999년 논문을 가져왔다** — Bimodal Multicast 를 고른 이유 넷을 그대로 적는다: `fast, understandable, guarantees that messages will be eventually delivered, and has been thoroughly tested`. ⚠️ **`understandable` 이 이유 목록에 들어 있다는 점이 특이하다** — 성능이 아니라 **운영이 이해할 수 있는가**를 선택 기준에 넣었다(이 지적은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "믿을 수 있는지 확인할 때",
+          "thought": "**Jepsen 으로 분할·패킷 손실·높은 지연을 흉내 냈고**(`the excellent Jepsen`) 가상 서버로 더 큰 규모도 돌렸다. ⚠️ **그런데 글에 적힌 두 실증은 시뮬레이션이 아니라 실제 사고다** — 방화벽 오설정과 DDoS. **모의로 만든 확신과 사고로 얻은 확신을 둘 다 적는다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "퍼지 메시지",
+            "what": "고객이 콘텐츠를 바꿨다는 사실. **아무 캐시 서버로나 들어올 수 있다**"
+          },
+          {
+            "name": "피어",
+            "what": "서로에게 메시지를 뿌리고 요약을 주고받는 다른 캐시 서버들"
+          },
+          {
+            "name": "요약(digest)",
+            "what": "⚠️ **지금까지 받은 메시지들의 목록.** 가십에서 오가는 것은 메시지가 아니라 이것이다"
+          },
+          {
+            "name": "가십 라운드",
+            "what": "**일정 주기마다 무작위로 고른 피어 하나**에게 요약을 보내는 일"
+          },
+          {
+            "name": "POP",
+            "what": "약 83곳. **패킷 손실이 낮다는 전제가 성립하는 단위**이자 분할이 일어나는 단위"
+          }
+        ],
+        "invariants": [
+          "**고객이 Fastly 서버 아무 곳에나 닿으면 퍼지는 접수된다** — 이 성질을 지키려고 중앙 큐를 버렸다",
+          "**메시지는 결국 모두에게 닿는다**(`guarantees that messages will be eventually delivered`)",
+          "⚠️ **언제 모두가 받았는지 아는 곳이 없다** — 중앙이 없으므로 확정 시점도 없다. 회사가 내거는 값도 상한이 아니라 **평균**이다(이 지적은 재구성이다)",
+          "⚠️ **브로드캐스트는 손실률이 낮다는 전제 위에 선다** — 0.1% 가 무너지면 메우는 쪽(가십)이 지연을 정한다(재구성)"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**퍼지 요청이 아무 캐시 서버에나 도착한다**",
+            "why": "고객이 닿을 수 있는 곳이면 어디든 입구가 된다"
+          },
+          {
+            "step": "**받은 서버가 곧바로 모든 피어에게 UDP 로 뿌린다** — `When a message first arrives at some server, the receiving server broadcasts the message to all its peers`",
+            "why": "가장 빠른 경로. 대부분은 여기서 끝난다"
+          },
+          {
+            "step": "**일정 주기마다, 각 서버가 무작위로 고른 피어 하나에게 지금까지 받은 메시지의 요약을 보낸다**",
+            "why": "⚠️ 뿌리기가 놓친 것을 찾아내는 유일한 장치"
+          },
+          {
+            "step": "**요약을 받은 피어가 자기 것과 견주어 빠진 것을 되묻는다** — `This peer then checks the summary and requests any messages they may have missed`",
+            "why": "메시지 전체가 아니라 **빠진 것만** 오간다"
+          },
+          {
+            "step": "**되받은 메시지를 적용해 캐시를 지운다**",
+            "why": "여기서 그 서버의 사본이 사라진다"
+          },
+          {
+            "step": "**영향받은 서버와 안 받은 서버의 지연을 견주어 회복을 잰다**",
+            "why": "중앙이 없으니 `다 됐다` 를 물을 곳이 없다 — **비교로 잰다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "퍼지를 한 곳에서 나눠 줄 것인가",
+            "chosen": "**아니다 — 캐시 서버들이 스스로 나눠 준다**",
+            "alternatives": [
+              "단일 큐가 퍼지를 받아 전 서버에 분배하는 중앙집중 구조"
+            ],
+            "tradeoff": "중앙집중은 **만들기 쉬운 대신 단일 장애점**이고, 네트워크 장애 때 일부 캐시 서버와 **오랫동안 연락이 끊긴다.** 분산은 그 반대다 — `harder to build` 지만 **고객이 아무 서버에나 닿기만 하면 살아 있다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "question": "전파 프로토콜을 직접 설계할 것인가",
+            "chosen": "**Bimodal Multicast 를 가져온다** — Birman 등의 1999년 논문",
+            "alternatives": [
+              "자체 설계",
+              "기존 메시지 큐·펍섭 제품"
+            ],
+            "tradeoff": "고른 이유를 넷으로 적는다 — 빠르고, **이해할 수 있고**, 결국 전달을 보장하고, 충분히 검증됐다. ⚠️ **대가는 맞춤이 아니라는 것이다** — 27년 된 일반 프로토콜이라 이 회사의 지형(POP 단위 손실률·지역차)에 맞춘 것이 아니다(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "question": "먼저 뿌릴 때 무엇을 쓸 것인가",
+            "chosen": "**UDP 브로드캐스트**",
+            "alternatives": [
+              "TCP 로 피어마다 연결을 맺고 확인받기"
+            ],
+            "tradeoff": "⚠️ **회사가 이유를 적지 않는다** — UDP 를 쓴다는 사실과 손실률이 낮다는 사실만 나란히 있다. **확인이 없으니 빠른 대신 도달을 모른다**, 그 공백을 메우려고 두 번째 장치가 필요해졌다(이 해석은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "question": "뿌리기가 놓친 것을 어떻게 찾을 것인가",
+            "chosen": "**가십** — 주기마다 무작위 피어 하나와 맞춰 본다",
+            "alternatives": [
+              "보낸 쪽이 확인을 모아 재전송",
+              "중앙이 미수신 목록을 관리"
+            ],
+            "tradeoff": "**무작위라 확실한 대신 언제 메워질지 모른다.** 회복이 확률적으로 수렴하므로 **지연에 상한이 없고**, 실제로 분할 때 **p95 약 10초**, DDoS 8분 장애 때 **p95 1분 미만**으로 벌어졌다. 그 대신 **보낸 쪽이 아무 상태도 들고 있지 않아도 된다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "question": "가십에 무엇을 실을 것인가",
+            "chosen": "**메시지가 아니라 요약(digest)** — 받은 쪽이 빠진 것만 되묻는다",
+            "alternatives": [
+              "받은 메시지 전체를 주기적으로 교환"
+            ],
+            "tradeoff": "**주기적으로 오가는 양이 메시지 수가 아니라 요약 크기에 묶인다.** 대신 **왕복이 한 번 더 생기고**(요약 → 되묻기 → 전송) 요약 자체가 커지면 그 이득이 줄어든다 — **요약을 얼마나 오래 들고 있는지는 글에 없다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "question": "믿을 수 있다는 것을 어떻게 보일 것인가",
+            "chosen": "**Jepsen 으로 분할·손실·지연을 흉내 내고** 가상 서버로 규모를 키워 돌린다",
+            "alternatives": [
+              "운영에 넣고 관찰하기"
+            ],
+            "tradeoff": "⚠️ **모의는 사고를 대신하지 못한다** — 글이 실제로 근거로 드는 두 장면은 시뮬레이션이 아니라 **방화벽 오설정으로 생긴 분할**과 **DDoS 8분 장애**다. **모의로 만든 확신과 사고로 얻은 확신을 둘 다 적는 것이 이 글의 미덕이다**(이 평가는 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "question": "고객에게 무엇을 약속할 것인가",
+            "chosen": "**평균 150ms 미만** — 상한이 아니라 평균을 건다",
+            "alternatives": [
+              "최악 지연의 상한을 약속하기"
+            ],
+            "tradeoff": "⚠️ **분산 설계에서는 상한을 약속할 수 없다.** 확정 시점을 아는 곳이 없고 회복이 확률적이라, 사고 때 p95 가 10초·1분까지 벌어진다. **평균을 걸었기에 그 사고들을 겪고도 약속이 깨지지 않는다**(이 해석은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              },
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Powderhorn",
+            "role": "자체 퍼징 시스템. 캐시 서버들이 스스로 무효화를 나눠 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "tech": "Bimodal Multicast (Birman et al., 1999)",
+            "role": "빠른 브로드캐스트와 느리지만 확실한 가십을 겹치는 두 겹 구조",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "tech": "UDP",
+            "role": "첫 뿌리기. 확인이 없어 빠르고, 확인이 없어 도달을 모른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          },
+          {
+            "tech": "Jepsen",
+            "role": "분할·패킷 손실·높은 지연을 만들어 검증하는 데 썼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "POP 약 83곳의 캐시",
+          "via": "무효화 메시지",
+          "contract": "**모든 캐시 서버가 결국 같은 메시지를 받아 같은 것을 지운다.** 확인은 오가지 않고 **결국 도달한다는 보장**만 있다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "행사가 오기 전에 어느 POP 이 먼저 무너질지 센다",
+          "via": "캐시 적중률",
+          "contract": "⚠️ **두 도메인이 같은 화폐를 쓴다** — 퍼지가 잦으면 적중률이 떨어지고, 적중률은 저쪽에서 **CPU 예측의 입력**이다. **지우는 일이 곧 용량 문제로 번진다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "고객의 오리진 서버",
+          "via": "캐시 유효기간",
+          "contract": "**퍼징이 빠를수록 고객은 유효기간을 길게 걸 수 있고, 그만큼 오리진에 덜 간다.** 지우는 속도를 파는 일이 곧 오리진 보호를 파는 일이다(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "트래픽 경로 위에서 공격을 걸러낸다",
+          "via": "같은 네트워크를 공유한다",
+          "contract": "⚠️ **DDoS 8분 장애를 이 시스템이 그대로 맞았다** — 보안 축이 막는 것과 이 시스템이 견디는 것이 같은 사건이다. **아직 그쪽 자료를 못 읽었다**",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Bimodal Multicast",
+            "authors": "Birman, Hayden, Ozkasap, Xiao, Budiu, Minsky",
+            "year": "1999",
+            "why": "⚠️ **회사가 프로토콜을 만들지 않고 이 논문을 가져왔다.** 고른 이유를 넷으로 적는데 그중 하나가 **`understandable`** 이다 — 성능이 아니라 **운영이 이해할 수 있는가**가 선택 기준에 들어 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              },
+              {
+                "title": "Bimodal multicast (ACM TOCS 17(2), 41-88)",
+                "url": "https://dl.acm.org/doi/10.1145/312203.312207",
+                "publisher": "ACM Transactions on Computer Systems",
+                "date": "1999-05",
+                "summary": "패킷 손실률이 20% 로 올라가고 참여 프로세스의 25% 가 일시적 성능 장애를 겪어도 신뢰성과 처리량이 안정적으로 유지된다고 보고한다."
+              }
+            ],
+            "url": "https://dl.acm.org/doi/10.1145/312203.312207",
+            "takeaway": "**두 겹 구조를 통째로 가져다 퍼징에 얹었다** — 빠른 브로드캐스트와, 유실을 줍는 가십. ⚠️ **논문이 자랑하는 조건과 이 회사의 지형이 크게 다르다** — 논문은 **패킷 손실 20%** 와 **참여 프로세스 25% 의 일시적 성능 장애**에서도 신뢰성과 처리량이 흔들리지 않는다고 말하는데, Fastly 의 POP 간 손실률은 **보통 0.1% 미만**이다. **훨씬 험한 곳을 견디도록 만든 것을 훨씬 순한 곳에 썼고, 그래서 방화벽 오설정과 DDoS 8분 장애를 지나올 수 있었다**(이 대비는 이 사이트의 재구성이다)."
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "전 지구에 흩어진 사본을 지우는 일에 완료 시점이 없다",
+            "why_hard": "⚠️ **중앙을 버린 대가가 여기 있다.** 어느 서버도 `모두가 받았다` 를 알지 못한다. 회사가 내거는 값이 **상한이 아니라 평균 150ms 미만**인 것이 그 결과이고, 회복은 **비교로 잰다**(영향받은 서버와 안 받은 서버의 지연을 견준다).",
+            "current_best": "**결국 도달한다는 보장**과 **평균에 대한 약속**을 함께 파는 것. ⚠️ **최악을 언제 닫을 수 있는지는 이 글에도 답이 없다** — 이 지적은 이 사이트의 재구성이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              },
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          },
+          {
+            "problem": "빠른 것과 확실한 것이 같은 장치로는 안 된다",
+            "why_hard": "**UDP 브로드캐스트는 빠른 대신 도달을 모르고, 가십은 확실한 대신 언제 닿을지 모른다.** 어느 하나만으로는 퍼징이 성립하지 않아 **두 겹으로 겹쳐야** 했다.",
+            "current_best": "**두 방식을 포개 서로의 약점을 덮는 것**(Bimodal Multicast). ⚠️ 다만 그 성립은 **POP 간 손실률 0.1% 미만**이라는 지형에 기대고 있다 — 손실이 커지면 느린 쪽이 전체 지연을 정한다(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a Fast and Reliable Purging System",
+                "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+                "publisher": "Fastly Blog",
+                "date": "2026",
+                "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "빠른 길로 먼저 뿌리고, 느린 길로 빠진 것을 줍는다",
+          "question": "퍼지 하나가 83곳에 닿기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"<b>고객이 콘텐츠를 바꾼다</b>\"]:::accent --> S[\"<b>아무 캐시 서버로나 접수</b><br/>• 닿을 수 있는 곳이면 입구가 된다\"]:::accent\n  S -->|\"<b>1차 · UDP 브로드캐스트</b>\"| P[\"<b>모든 피어</b><br/>• 빠르다<br/>• 확인이 없다\"]:::list\n  P -.->|\"⚠️ 손실 (보통 0.1% 미만)\"| M[\"⚠️ <b>못 받은 서버</b>\"]:::gone\n  G[\"<b>2차 · 가십</b><br/>• 주기마다 무작위 피어 하나에게<br/>• 받은 메시지의 <b>요약</b>을 보낸다\"]:::accent --> D{\"<b>요약을 견준다</b>\"}\n  D -->|\"빠진 것이 있다\"| R[\"<b>빠진 것만 되묻는다</b>\"]:::list\n  R --> M\n  M --> OK[\"<b>캐시를 지운다</b>\"]:::accent\n  P --> OK\n  OK --> V[\"<b>회복을 잰다</b><br/>• 영향받은 서버와 안 받은 서버의<br/>  지연을 견준다\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "끊겨도 멈추지 않는다 — 대신 느려진다",
+          "question": "분할과 DDoS 에서 무엇이 무너지고 무엇이 남았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  F1[\"<b>방화벽 오설정</b><br/>• 일부 서버가 격리됐다\"]:::gone --> A1[\"⚠️ <b>브로드캐스트가 안 닿는다</b>\"]:::gone\n  A1 --> B1[\"<b>POP 안의 가십이 메운다</b>\"]:::accent\n  B1 --> C1[\"<b>처리량은 그대로</b><br/>• p95 지연 <b>약 10초</b>\"]:::list\n  F2[\"<b>DDoS · 8분 네트워크 장애</b>\"]:::gone --> A2[\"⚠️ <b>전파가 밀린다</b>\"]:::gone\n  A2 --> B2[\"<b>가십이 계속 줍는다</b>\"]:::accent\n  B2 --> C2[\"<b>p95 지연이 1분을 넘지 않았다</b><br/>• 모든 퍼지가 결국 전파됐다\"]:::list\n  X[\"⚠️ <b>중앙이었다면</b><br/>• 단일 장애점<br/>• 일부 서버와 오래 연락 두절\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Building a Fast and Reliable Purging System",
+          "url": "https://www.fastly.com/blog/building-fast-and-reliable-purging-system",
+          "publisher": "Fastly Blog",
+          "date": "2026",
+          "summary": "자체 퍼징 시스템 Powderhorn. 중앙집중과 분산을 견주고 분산을 골랐다. Bimodal Multicast — UDP 브로드캐스트 위에 가십으로 유실을 메운다."
+        },
+        {
+          "title": "Fastly Network Map",
+          "url": "https://www.fastly.com/network-map",
+          "publisher": "Fastly",
+          "date": "2026-06-30",
+          "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+        },
+        {
+          "title": "Using the Gini Coefficient to Plan Edge Capacity",
+          "url": "https://www.fastly.com/blog/using-gini-coefficient-plan-edge-capacity",
+          "publisher": "Fastly Blog",
+          "date": "2026-06-24",
+          "summary": "트래픽 집중도(지니 계수)로 캐시 적중률을 예측하고 그것으로 CPU 를 예측한다. 일반 ML 모델을 버린 이유와 한계를 적는다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **보안 도메인의 1차 자료를 아직 안 읽었다** — 매출의 **23%**(4,170만 달러·+43%)인데 근거가 IR 숫자뿐이다. **DDoS·WAF·Bot 이 전달 경로 위에서 어떻게 도는지**를 다음 사이클이 찾는다.",
