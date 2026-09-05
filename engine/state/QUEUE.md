@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Trainline** | EU(UK) · 커머스(철도·버스 예약) | 프로파일 완료 · 도메인 1(45개국의 콘텐츠를 자기 손으로 배달한다[tech 4]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Trainline** | EU(UK) · 커머스(철도·버스 예약) | `medium.com/trainline` — ⚠️ **읽은 글은 2024-01-09** | ⚠️ **개별 글은 브라우저로 전문이 오는데 목록이 안 온다**(Medium 발행물 홈이 JS 렌더링). 글 주소는 검색으로 찾았다 | **`how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline` 전문을 읽었다 — 실패를 두 개 적는 이전 회고다.** **⚠️ 작게만 시험한 대가를 그대로 밝힌다**: 리다이렉트 1개로 시험할 땐 쌌는데 **100개로 늘리자 청구가 튀었고**(Lambda@Edge → CloudFront Functions 로 옮김), 그 CloudFront Functions 도 **수천 개 리다이렉트에서 타임아웃**이 나 리다이렉트 배포를 따로 떼어 냈다. `Most if not all of our testing was small-scale testing. This didn't allow us to see the bigger picture till the end.` **회고 문장이 좋다** — `it was more like re-engineering the aeroplane while in flight` · `break down our CDN monolith into more manageable parts`. **수치** — 운영사 **270곳 이상 · 45개국 · 사용자 1억 이상** · 이전한 도메인 **300곳 이상** · 주 도메인 하나가 CDN 트래픽의 **70% 이상**이고 설정이 **JSON 8,500줄 이상** · **9개월 미만**(계획 6주, 엔지니어 6~8명 + 리드·EM·PM / 이전 4~6개월) · 가중 DNS 를 **5→10→25→50→75→100%** 로 · 롤백 위해 CNAME TTL 을 **5분**으로 미리 낮춤. **축이 새롭다** — 여행 중 **철도·버스 예약**이다(Booking 은 숙박, trivago 는 메타서치). ⚠️ **최신 글이 언제인지 모른다** — 목록이 안 열려 확인하지 못했다. 프로파일 전에 다른 글 주소를 검색으로 더 찾아 본다 |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

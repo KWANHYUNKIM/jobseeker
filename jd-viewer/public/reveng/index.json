@@ -840,6 +840,18 @@
       "one_liner": "세계 최대의 숙박 예약 플랫폼",
       "updated_at": "2026-09-06",
       "domain": "booking.com"
+    },
+    {
+      "slug": "trainline",
+      "name": "트레인라인",
+      "name_en": "Trainline",
+      "country": "EU",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "유럽 45개국 270개 철도·버스 운영사의 표를 한 앱에서 파는 회사",
+      "updated_at": "2026-09-06",
+      "domain": "thetrainline.com"
     }
   ],
   "domains": [
@@ -1073,7 +1085,8 @@
     "셀로 나눠 장애 반경을 줄인다",
     "이미 있는 것을 고치지 않고 새 구조로 간다",
     "지키는 것 안에 지킬 수단을 두지 않는다",
-    "품질을 마지막 관문이 아니라 생애주기로 옮긴다"
+    "품질을 마지막 관문이 아니라 생애주기로 옮긴다",
+    "45개국의 콘텐츠를 자기 손으로 배달한다"
   ],
   "countries": {
     "KR": "한국",

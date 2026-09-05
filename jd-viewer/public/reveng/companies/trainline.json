@@ -1,0 +1,157 @@
+{
+  "slug": "trainline",
+  "name": "트레인라인",
+  "name_en": "Trainline",
+  "country": "EU",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "thetrainline.com",
+  "one_liner": "유럽 45개국 270개 철도·버스 운영사의 표를 한 앱에서 파는 회사",
+  "business_model": "**남의 표를 팔고 수수료를 받는다.** 매일 **45개국 270곳 이상**의 철도·버스 운영사에서 노선·가격·소요시간을 모아 한곳에서 판다. ⚠️ **이 사업의 특이한 점은 수수료율을 자기가 정하지 못한다는 것**이다 — FY2026 실적에 그 변화가 적혀 있다: 영국 B2C 온라인 판매의 기본 커미션이 **5% → 4.5%** 로 내려갔고(2025년 4월 발효, 2022년 3월에 예고됨), 중앙 산업 비용 제거로 일부 상쇄돼 **순 약 0.25% 감소**다. 그래서 **판매액이 커도 매출은 천천히 는다** — 순 티켓 판매는 **+7%(63억 파운드)** 인데 매출은 **+2%(4억 5,300만 파운드)** 다.",
+  "revenue_total": "**FY2026(2026년 2월 28일 종료)** — 순 티켓 판매 **63억 1,900만 파운드**(+7%) · 매출 **4억 5,300만 파운드**(+2%) · 조정 EBITDA **1억 7,700만 파운드**(+11%) · 영업이익 **1억 2,200만 파운드**(+43%).",
+  "products": [
+    "Trainline 앱·웹 — 유럽에서 가장 많이 내려받은 철도 앱, 활성 고객 2,700만",
+    "디지털 레일카드 — 영국에서 270만 명(+16%), 16~30세 레일카드 사용자의 45%",
+    "호텔 예약·보험 — 두 자릿수 성장",
+    "Trainline Solutions (B2B 유통) — 여행사가 유럽 철도표를 팔게 한다. 국제 B2B 유통 +58%",
+    "⚠️ Platform One — 실적 각주에 이름만 나온다. 국제 사업이 여기에 접근하며 내부 거래 수수료를 낸다. 기술 자료를 못 찾았다"
+  ],
+  "revenue_streams": [
+    {
+      "name": "티켓 판매 수수료 (B2C)",
+      "how": "운영사 대신 표를 팔고 수수료를 받는다. ⚠️ **요율이 산업 구조로 정해진다** — 영국 온라인 기본 요율이 5%에서 4.5%로 내려갔다",
+      "weight": "⚠️ B2C·B2B 비중은 이 자료로 가르지 못했다",
+      "domains": [
+        "45개국의 콘텐츠를 자기 손으로 배달한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Full year results FY2026",
+          "url": "https://www.trainlinegroup.com/investors/results-reports-and-presentations/full-year-results-fy2026/",
+          "publisher": "Trainline plc",
+          "date": "2026-05-06",
+          "summary": "2026년 2월 말 종료 회계연도 실적. 순 티켓 판매·매출·EBITDA 와 커미션율 변경, 활성 고객 수를 담고 있다."
+        }
+      ]
+    },
+    {
+      "name": "B2B 유통 (Trainline Solutions)",
+      "how": "여행사(TMC)가 유럽 전역의 철도표를 팔 수 있게 한다. **국제 B2B 유통 +58%**",
+      "weight": "⚠️ 확인하지 못했다",
+      "domains": [
+        "45개국의 콘텐츠를 자기 손으로 배달한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Full year results FY2026",
+          "url": "https://www.trainlinegroup.com/investors/results-reports-and-presentations/full-year-results-fy2026/",
+          "publisher": "Trainline plc",
+          "date": "2026-05-06",
+          "summary": "2026년 2월 말 종료 회계연도 실적. 순 티켓 판매·매출·EBITDA 와 커미션율 변경, 활성 고객 수를 담고 있다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Trainline 도메인 지도",
+    "question": "45개국 270개 운영사의 표를 한 앱에서 팔면 무엇이 기술 문제가 되는가?",
+    "code": "flowchart TD\n  O[\"<b>운영사 270곳 이상</b><br/>• 45개국 철도 · 버스\"]:::list --> T\n  T[\"<b>Trainline 앱 · 웹</b><br/>• 활성 고객 2,700만<br/>• 24시간 돌아간다\"]:::list\n  T --> D1[\"<b>45개국의 콘텐츠를<br/>자기 손으로 배달한다</b><br/>• 도메인 300곳 이상<br/>• CDN 을 통째로 옮겼다\"]:::list\n  M[\"⚠️ <b>아직 못 판 자리</b><br/>• Platform One (사내 플랫폼)<br/>• 표를 모으고 값을 매기는 쪽<br/>• 기술 자료를 못 찾았다\"]:::soft\n  T -.-> M\n  classDef soft stroke-dasharray: 4 3"
+  },
+  "domains": [
+    {
+      "name": "45개국의 콘텐츠를 자기 손으로 배달한다",
+      "why": "**24시간 돌아가고 사용자가 1억 명이 넘는 서비스**에서 콘텐츠 배달은 곁가지가 아니다 — 회사가 그렇게 적는다: `such a system needs to always be highly available, easily scalable and our CDN game has to be strong!` 그런데 그 배달망이 **남의 것**이었고, 설정이 한곳에 뭉쳐 있었다 — 주 도메인 하나가 CDN 트래픽의 **70% 이상**이면서 **JSON 설정이 8,500줄 이상**이었다. ⚠️ **그것을 옮기는 일은 갈아 끼우기가 아니라 다시 짓기였다**: `it was more like re-engineering the aeroplane while in flight!`",
+      "tech": [
+        {
+          "tech": "AWS CloudFront + Terraform 사내 모듈",
+          "solves": "CDN 변경을 **손으로 하던 절차에서 코드로** 옮긴다. 이미 AWS 위에 있어 원본(ALB·S3)과의 연결이 단순해졌고, 인증서 갱신도 ACM 이 맡는다",
+          "limits": "⚠️ **CloudFront 의 제약을 그대로 떠안는다** — 파일 확장자로 캐시 정책을 못 걸고, `같은 디렉터리 안에서 이건 캐시하고 저건 말고` 같은 규칙이 안 되며, 임의 헤더 존재 여부로 조건부 캐시하기도 어렵다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+              "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+              "publisher": "The Trainline Blog",
+              "date": "2024-01-09",
+              "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "배포 하나당 저장소 하나 + 스캐폴딩 도구",
+          "solves": "CDN 배포마다 저장소를 따로 둬 **변경과 배포를 독립적으로** 다룬다. 사내 도구가 새 배포의 저장소·Spacelift 스택·템플릿을 PR 로 만들어 준다",
+          "limits": "⚠️ 저장소가 배포 수만큼 는다(300곳 이상을 옮겼다) — 이 한계는 이 사이트의 재구성이다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+              "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+              "publisher": "The Trainline Blog",
+              "date": "2024-01-09",
+              "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "Route 53 가중 DNS + 짧은 TTL",
+          "solves": "큰 도메인은 **5→10→25→50→75→100%** 로 조금씩 넘긴다. 되돌릴 수 있게 CNAME TTL 을 **5분**으로 미리 낮춰 뒀다",
+          "limits": "⚠️ **DNS 전환은 즉시가 아니다** — TTL 을 낮춰 두는 준비가 필요하다는 사실 자체가 그 값이다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+              "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+              "publisher": "The Trainline Blog",
+              "date": "2024-01-09",
+              "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "Lambda@Edge · CloudFront Functions",
+          "solves": "URL 재작성·쿠키·공통 헤더 같은 것을 엣지에서 처리한다",
+          "limits": "⚠️ **둘 다 물렸다** — Lambda@Edge 는 리다이렉트가 100개로 늘자 **청구가 튀었고**, 옮겨 간 CloudFront Functions 는 **수천 개 리다이렉트에서 타임아웃**이 났다. 결국 리다이렉트 배포를 따로 떼어 냈다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+              "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+              "publisher": "The Trainline Blog",
+              "date": "2024-01-09",
+              "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **읽은 기술 글이 한 편뿐이고, 그마저 2024년 1월 것이다.** `medium.com/trainline` 은 **발행물 홈도 태그 경로도 목록이 안 온다**(JS 렌더링) — 브라우저로도 마찬가지다. 그래서 **블로그가 지금도 살아 있는지, 최신 글이 언제인지 확인하지 못했다.** 글 주소를 검색으로 더 찾으면 도메인을 늘릴 수 있다.",
+    "**Platform One 의 기술 자료를 못 찾았다.** FY2026 실적 각주에 이름만 나온다 — 국제 사업이 접근하며 내부 거래 수수료를 낸다는 것뿐이다. **표를 모으고 값을 매기고 재고를 다루는 쪽이 이 회사의 핵심일 텐데 그 자료가 없다.**",
+    "**B2C 와 B2B 의 매출 비중을 가르지 못했다.**",
+    "**연표(eras)를 세울 자료를 아직 못 찾았다.**",
+    "⚠️ **CDN 이전 전의 구조가 언제부터였는지 모른다** — 글은 이전 제공자를 `CDN X` 로만 부르고 시작 시점을 밝히지 않는다."
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "How we migrated our CDN to AWS CloudFront at Trainline",
+      "url": "https://medium.com/trainline/how-we-migrated-our-cdn-to-aws-cloudfront-at-trainline-6ea0a0a2fca6",
+      "publisher": "The Trainline Blog",
+      "date": "2024-01-09",
+      "summary": "CDN 을 9개월 미만에 통째로 옮긴 기록. 작게만 시험해서 놓친 것 둘(청구 급증·함수 타임아웃)을 그대로 적는다."
+    },
+    {
+      "title": "Full year results FY2026",
+      "url": "https://www.trainlinegroup.com/investors/results-reports-and-presentations/full-year-results-fy2026/",
+      "publisher": "Trainline plc",
+      "date": "2026-05-06",
+      "summary": "2026년 2월 말 종료 회계연도 실적. 순 티켓 판매·매출·EBITDA 와 커미션율 변경, 활성 고객 수를 담고 있다."
+    }
+  ]
+}
