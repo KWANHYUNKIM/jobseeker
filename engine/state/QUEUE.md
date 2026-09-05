@@ -24,6 +24,30 @@
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
+- **2026-09-06 일곱 번째 후보 조사 — 되살릴 목록을 소진했고 빈손이다.** 큐가 0/3 이라 3순위로 들어왔다.
+  **⚠️ 이 사이클의 결과는 후보가 아니라 두 가지 확정이다.**
+  - **① Medium 목록은 어떤 경로로도 안 온다.** 홈(`medium.com/<pub>`) · 태그(`/tagged/<t>`) ·
+    **아카이브(`/archive` → `/all` 로 리다이렉트)** 를 전부 시도했다. 마지막 것은
+    **`No stories found matching these filters`** 를 돌려준다. **개별 글 주소만 열린다** —
+    그래서 Medium 계열 후보는 **WebSearch 로 글 주소를 찾을 수 있을 때만** 평가할 수 있다.
+  - **② 되살릴 목록이 끝났다.** 남은 셋이 전부 떨어졌다:
+    - **❌ Tokopedia** — `learnings-from-migration-to-elastic-search` 를 열었다.
+      Medium 발행일이 **2018-07-18** 인데 글 끝에 **`This was posted on Tokopedia tech blog at 2016`**
+      이라고 적혀 있다. **10년 전 자료다.** 내용 자체는 좋다(Solr 커밋이 CPU 를 먹어 쿼리 캐시가
+      매번 날아갔고, 지연이 3초 → 300ms 로, 중첩 매핑·커스텀 토크나이저의 대가까지 적는다).
+      **하지만 이 글이 대표작으로 검색에 잡힌다는 것 자체가 블로그가 멈췄다는 신호다.**
+    - **❌ Dream11** — 새 도메인 `blog.dream11engineering.com` 도 **Medium 이고 목록이 비어 온다.**
+      `medium.com/dream11tech/archive` 는 `No stories found`. 자체 도메인 `tech.dream11.in` 은
+      **298 사이클에 이미 평가해 떨어뜨렸다**(최신 2024-10 · 버린 대안 0 · 대가 사실상 0).
+      ⚠️ 3자 자료(AWS·Aerospike 사례)에는 좋은 이야기가 있다 — Redis→Aerospike, Elasticsearch→
+      OpenSearch(피크 동시 쿼리 4만, 10초 → 150ms), 저수준 Kafka 컨슈머 자체 개발.
+      **회사가 직접 쓴 글의 주소를 찾으면 판정이 뒤집힐 수 있다.**
+    - **❌ Meesho** — **회사가 쓴 기술 글의 주소를 하나도 못 찾았다.** 검색에 잡히는 것은
+      3자 자료뿐이다(ScyllaDB 2026-04 발표 정리 · Confluent 고객 사례 · 개인 Medium 글).
+      ⚠️ 그중 **`monolith → microservices → high scale federated architecture`** 라는 진화와
+      ML 플랫폼 1세대의 실패(모델마다 맞춤 피처 로직 · DAG 가 빽빽해짐 · 비용 급증)는 결이 좋다 —
+      **회사 발표 자료(ScyllaDB 컨퍼런스)의 주소를 찾으면 다시 볼 값이 있다.**
+
 - **2026-09-06 여섯 번째 후보 조사 — 되살릴 목록에서 하나를 올렸다.** 큐가 0/3 이라 3순위로 들어왔다.
   - **✅ Trainline** — 위 대기 표로 올렸다. **세 사이클 전 `medium.com/trainline` 로 301 된다며 떨어뜨린 곳**이다.
   - **⚠️ 새로 확인한 제약 — Medium 발행물 홈은 브라우저로도 목록이 안 온다.**

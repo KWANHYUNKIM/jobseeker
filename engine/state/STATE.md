@@ -8,27 +8,31 @@
 
 ## 지금 파는 중
 
-**없다 — Trainline 을 닫았다.** 완료 **71곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
-**도메인 1개·기능 1개로 닫았다** — PayFit 에 이은 두 번째다. 자료가 한 편뿐이었다.
+**없다.** 완료 **71곳** · ⚠️ **큐 0/3 — 이번 후보 조사가 빈손이다.**
 
-### ⚠️ 다음 사이클은 3순위(후보 조사) — 되살릴 목록이 먼저다
+### ⚠️ 되살릴 목록이 끝났다 — 다음 후보 조사는 새 이름으로 돌아간다
 
-남은 것: **Tokopedia · Dream11 · Meesho**.
-⚠️ **다만 Medium 발행물은 목록이 안 오므로**(홈도 태그 경로도) **글 주소를 WebSearch 로
-먼저 찾아야 한다.** Tokopedia 는 `learnings-from-migration-to-elastic-search`
-(Solr → Elasticsearch) 주소를 이미 찾아 뒀다 — **발행일만 확인하면 된다.**
+**Medium 이라 못 읽는다로 떨어뜨렸던 목록을 다 썼다.** 그 전략은 성공적이었다 —
+**Booking.com 과 Trainline 을 그 목록에서 건졌다.** 이제 남은 셋(Tokopedia · Dream11 ·
+Meesho)이 전부 떨어졌으니 **다음부터는 새 축을 찾는 조사로 돌아간다.**
 
-### ⭐⭐ Trainline 에서 남길 것 — 작은 시험의 한계
+### ⚠️ 이번 사이클의 진짜 결과 — Medium 목록은 완전히 막혔다
 
-`Most if not all of our testing was small-scale testing.` **동작은 하나로도 알 수 있지만
-비용과 한계는 규모에서만 드러난다.** 리다이렉트 1개 → 100개(청구 급증) → 수천 개(타임아웃).
-**이 결이 좋은 회사는 후보 조사에서 바로 올린다.**
+홈 · `/tagged/<t>` · **`/archive`(→`/all`, `No stories found`)** 를 전부 시도했다.
+**개별 글 주소만 열린다.** 그래서 Medium 계열 후보는 **WebSearch 로 글 주소를 찾을 수
+있을 때만 평가할 수 있고, 최신 글이 언제인지는 영영 알 수 없다.**
+⚠️ **Tokopedia 가 그 함정을 보여 준다** — 검색에 잡힌 대표작이 **2018년 재게시이고
+원문은 2016년**이었다(글 끝에 회사가 직접 적어 뒀다). **날짜를 본문에서 확인하지 않으면
+10년 전 자료를 올릴 뻔했다.**
 
-### ⚠️ 자료가 한 편뿐인 회사를 어떻게 다룰 것인가
+### ⏳ 판정이 뒤집힐 수 있는 둘 (새 단서가 생기면)
 
-도메인 1개로 닫는 것이 정직하다(PayFit·Trainline 둘 다). **다만 못 판 자리를
-`domain_map` 에 점선으로 그려 두면** 나중에 자료가 생겼을 때 어디를 채울지 남는다 —
-Trainline 의 **Platform One** 을 그렇게 남겼다.
+- **Dream11** — 3자 자료(AWS·Aerospike)에 좋은 이야기가 있다: Redis→Aerospike,
+  Elasticsearch→OpenSearch(**피크 동시 쿼리 4만 · 10초 → 150ms**), 저수준 Kafka 컨슈머 자체 개발.
+  **회사가 직접 쓴 글의 주소**를 찾으면 다시 본다.
+- **Meesho** — `monolith → microservices → federated architecture` 진화와 **ML 플랫폼
+  1세대의 실패**(모델마다 맞춤 피처 로직 · DAG 가 빽빽해짐 · 비용 급증)가 결이 좋다.
+  **ScyllaDB 컨퍼런스 발표(2026-04) 자료의 주소**를 찾으면 다시 본다.
 
 ## 지금의 진짜 상태
 
@@ -350,7 +354,8 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
 | `bolt.eu/en/blog/*` | ⚠️ 목록은 WebFetch 로 오고 **본문은 브라우저 `get_page_text` 로 전문이 온다** (2026-09-05 확인) |
-| **Medium 발행물 홈** (`medium.com/<pub>`) | ❌ **브라우저로도 목록이 안 온다** — 제목·팔로워 수·탭 이름만 오고 글이 비어 있다(JS 렌더링). **글 주소를 WebSearch 로 찾아 개별로 열어야 한다** ⚠️ 그래서 최신 글 날짜를 알 수 없다 (2026-09-06 확인) |
+| **Medium 목록 (전 경로)** | ❌ **어떤 경로로도 안 온다** — 홈 · `/tagged/<t>` · **`/archive`(→`/all` 리다이렉트, `No stories found`)** 를 전부 시도했다. **개별 글 주소만 열린다** → Medium 후보는 **WebSearch 로 글 주소를 찾을 수 있을 때만** 평가 가능 (2026-09-06 확정) |
+| ~~**Medium 발행물 홈** (`medium.com/<pub>`)~~ | ❌ **브라우저로도 목록이 안 온다** — 제목·팔로워 수·탭 이름만 오고 글이 비어 있다(JS 렌더링). **글 주소를 WebSearch 로 찾아 개별로 열어야 한다** ⚠️ 그래서 최신 글 날짜를 알 수 없다 (2026-09-06 확인) |
 | `medium.com/booking-com-development` | ✅ **브라우저로 전문이 온다** (2026-09-05 확인). 목록은 `blog.booking.com` 에서 WebFetch 로 |
 | `medium.com/*` | ⚠️ WebFetch 403 · **브라우저로는 전문이 온다 — 2026-09-05 에 `medium.com/mercadolibre-tech` 로 실제 확인했다.** 후보를 Medium 이라는 이유로 떨어뜨리지 않는다 |
 | ~~`bolt.eu/en/blog/category/tech-at-bolt/`~~ | ⚠️ **목록은 오는데 본문이 비어 온다**(JS 렌더링). `engineering.ramp.com` 과 같은 형태 — **브라우저 `get_page_text` 로 다시 볼 것** (2026-09-05) |
