@@ -4,8 +4,8 @@
   "name_en": "Booking.com",
   "country": "EU",
   "category": "커머스",
-  "status": "in_progress",
-  "updated_at": "2026-09-05",
+  "status": "done",
+  "updated_at": "2026-09-06",
   "domain": "booking.com",
   "one_liner": "세계 최대의 숙박 예약 플랫폼 — 그리고 자기 백업이 자기 자신에게 묶여 있던 것을 글로 적어 낸 회사",
   "business_model": "**묵을 곳을 중개하고 그 거래에서 몫을 뗀다.** ⚠️ 공개 수치는 모회사 **Booking Holdings** 기준이다 — 2025년 **총 여행 예약액 1,861억 달러**(+12%), **객실 밤 12억**(+8%), 조정 EBITDA **99억 달러 초과**(+20%), 순이익률 **20.1%**. 220개국 이상에서 **소비자 브랜드 다섯**(Booking.com · Priceline · Agoda · KAYAK · OpenTable)으로 판다. ⚠️ **Booking.com 단독의 매출·수수료율은 이 자료에 없다.** 확실한 것은 규모다 — 숙소 약 **440만 곳**(대체 숙박 390만), 직원 **24,000명 이상**.",
@@ -161,7 +161,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "shift-left-dwh-quality"
+      ]
     }
   ],
   "eras": [],
@@ -665,6 +667,458 @@
           "publisher": "Booking.com Engineering",
           "date": "2026-06-15",
           "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+        }
+      ]
+    },
+    {
+      "key": "shift-left-dwh-quality",
+      "name": "품질을 마지막 리뷰 하나에 걸지 않고 생애주기로 흩는다",
+      "domain": "품질을 마지막 관문이 아니라 생애주기로 옮긴다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **사업부 여덟이 같은 웨어하우스를 쓴다.** 그러면 느슨하게 정의한 입도, 중복된 지표, 문서 없는 변환, `이번만` 건너뛴 리뷰가 **국소적으로 끝나지 않는다** — 하류 모델과 대시보드와 사업 로직으로 복사되어 되돌리기 어려워진다. 회사가 1982년의 **깨진 유리창** 이론을 렌즈로 빌려 요약한다: **작은 무질서를 방치하면 그것이 정상이라는 기대가 자리 잡는다.** 그리고 많은 조직이 품질을 **코드 리뷰 하나**에 몰아 두는데, 그것은 병목이면서 동시에 **훨씬 일찍 보였을 문제**를 늦게 잡는 자리다.",
+        "metrics": [
+          {
+            "label": "검사 대상",
+            "value": "dbt 모델 **약 1,000개**가 dbt-score 로 평가된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "점수",
+            "value": "검사 통과 **95% 초과** · 평균 **10점 만점에 9점 초과** · **약 85%가 Silver 또는 Gold** · **핵심 규칙은 99% 초과** 통과",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 속도는 오히려 빨라졌다",
+            "value": "7개월 동안 **머지된 MR 물량이 3배 이상**으로 늘었는데 **승인까지 중앙값이 2시간 미만**(2025년 말)에서 **1시간 미만**(2026년 4월)으로 줄었다. 첫 피드백까지도 1시간 훨씬 아래",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "범위",
+            "value": "사업부 **여덟**에 걸쳐 **40개 이상 사용 사례**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "약한 곳",
+            "value": "⚠️ **마트와 리포팅 층** — 사업 로직이 해석에 가깝고 공유 개념이 어긋나기 쉽다. **계약 강제(contract enforcement)가 가장 큰 공백**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "품질을 어디에 둘지 정할 때",
+          "thought": "⚠️ **가설이 명확하다** — 품질은 **마지막 체크포인트가 아니라 생애주기의 관심사**로 다뤄야 확장된다. 그리고 이유가 병목만이 아니다: 늦은 사람 리뷰에 **이미 훨씬 일찍 보였을 문제**(불분명한 개념, 나쁜 모델 경계, 일관성 없는 관례)를 잡으라고 맡기는 셈이기 때문이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "검사를 훈련으로 볼 때",
+          "thought": "**이 회사는 검사를 통제가 아니라 교육으로 읽는다** — 모델링 리뷰·로컬 검증·CI·리뷰어 피드백에 반복 노출되면 **만들면서 웨어하우스의 기준을 배운다.** 그래서 시간이 지나면 팀이 **게이트에 반응하는 것이 아니라 미리 예상하게** 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "너무 엄했다는 것을 알았을 때",
+          "thought": "⚠️ **초기에 지나치게 엄했고 그것이 역효과였다고 적는다** — 시작하는 문턱이 높게 느껴졌고 너무 이른 시점에 완전 준수를 요구해 부담이 됐다. 그래서 중간 길을 찾았다: **일부는 협상 불가로 두되 일부는 단계적으로**, 격차는 명시적으로 기록하고 기술부채 티켓을 만들어. 그 이유가 한 문장이다 — **웨어하우스가 개선하기보다 들어오기가 더 어려운 시스템이 되면 안 된다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "공유 웨어하우스",
+            "what": "⚠️ 중앙 한 팀이 다 만드는 것도, 도메인마다 기준을 따로 세우는 순수 데이터 메시도 아닌 **혼합**이다 — 도메인 팀이 데이터 제품을 만들고 소유하되 **공통 모델링 규칙·공유 엔티티·플랫폼 가드레일 안에서** 만든다"
+          },
+          {
+            "name": "층",
+            "what": "Raw(원천 노출) → Staging(정리·재구성) → Integration(**Data Vault** 로 이력 일관된 기반) → Dimensional marts(사업이 보는 소비 층)"
+          },
+          {
+            "name": "비즈니스 데이터 모델",
+            "what": "코드가 생기기 전의 개념·논리 구조. 나중에 Data Vault 와 차원 모델이 된다"
+          },
+          {
+            "name": "dbt-score",
+            "what": "dbt 프로젝트를 품질·거버넌스 규칙으로 평가하는 오픈소스 도구. **점수가 개선 대상과 폐기 후보를 함께 알려 준다**"
+          },
+          {
+            "name": "리뷰 단계들",
+            "what": "모델 리뷰 · 로컬 검사 · CI/CD · AI 사전 리뷰 · 사람 리뷰 · 배포 후 감시. **서로를 보강하는 순서**다"
+          }
+        ],
+        "invariants": [
+          "**작은 결함은 공유 웨어하우스에서 국소적으로 끝나지 않는다** — 하류 모델·대시보드·사업 로직으로 복사된다",
+          "**자동 검사는 형식화한 것만 잡는다** — `their weakness is that they only catch what has been formalised`",
+          "**사람 리뷰는 자동화가 답하기 어려운 것에만 쓴다** — 사업 로직이 말이 되는가, 구조에 맞는가, 유지보수가 되는가",
+          "⚠️ **표준 중 일부는 협상 불가, 일부는 단계적** — 들어오기가 개선하기보다 어려운 시스템이 되면 안 된다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**① 코드가 있기 전에 비즈니스 데이터 모델을 리뷰한다** — 개념·입도·소유·이름을 SQL 을 쓰기 전에 맞춘다",
+            "why": "⚠️ **가장 비싼 실수를 여기서 막는다** — 두 팀이 `order` 같은 핵심 개념에 서로 다른 차원을 만들면 웨어하우스를 믿기 어려워진다. `A process that is structurally wrong will not be saved by excellent SQL style later on`"
+          },
+          {
+            "step": "**② 로컬에서 같은 검사를 먼저 돌린다** — pre-commit · 서식 · dbt-score 스키마 검사 · 로컬 dbt 검증",
+            "why": "맥락이 아직 신선할 때 고치게 하고, **사람의 주의를 도구가 잡을 수 있는 것에 쓰지 않게** 한다"
+          },
+          {
+            "step": "**③ CI/CD 가 기준선을 일관되게 강제한다** — MR 검증 · dbt 컴파일·빌드 · 표적 테스트 · 구조 검사 · 모델 DAG 검증",
+            "why": "⚠️ **누가 리뷰하느냐에 따라 달라지지 않는 공통 기준선**을 만든다. 자동 검사는 지치거나 서두르거나 편향되지 않는다"
+          },
+          {
+            "step": "**④ AI 가 사람보다 먼저 MR 을 본다** — 사내 리뷰 지침을 대규모로 적용해 의심스러운 패턴과 관례 이탈을 짚는다",
+            "why": "사람이 반복 확인에 쓰는 시간을 줄여 **뒤의 사람 리뷰가 더 집중되게** 한다"
+          },
+          {
+            "step": "**⑤ 사람은 판단에 집중한다** — 사업 로직이 말이 되는가, 유지보수가 되는가, **이 패턴을 재사용 표준으로 승격할 것인가 예외로 둘 것인가**",
+            "why": "앞 단계들이 주의를 좁혀 준 뒤라야 이 질문에 시간을 쓸 수 있다"
+          },
+          {
+            "step": "**⑥ 배포 뒤에도 감시한다** — 참조 무결성 · 예상치 못한 중복 · 누락 레코드",
+            "why": "⚠️ **왼쪽으로 옮겼다고 품질이 끝나는 것이 아니다** — `shift-left does not mean 'quality solved earlier, therefore quality solved completely'`"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "품질을 어디에 걸 것인가",
+            "chosen": "**생애주기 전체로 흩는다** — 설계·개발·리뷰·배포 후로 책임을 나눈다",
+            "alternatives": [
+              "머지 시점의 코드 리뷰를 주된(때로는 유일한) 관문으로 두기"
+            ],
+            "tradeoff": "⚠️ **단계가 늘고 관리할 것이 는다.** 그 대신 병목이 사라지고, **늦은 사람 리뷰에 일찍 보였을 문제까지 떠맡기지 않게** 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "먼저 빨리 내보내고 부채는 나중에 갚을 것인가",
+            "chosen": "**아니다** — 앞에서 막는다",
+            "alternatives": [
+              "사후 정리(post-facto clean-up) — 빨리 쌓고 나중에 부채를 갚기"
+            ],
+            "tradeoff": "**회사가 그 대안이 언제 통하는지도 적는다** — 작고 느슨하게 연결된 환경에서는 한동안 통한다. 그러나 재사용이 늘어나는 공유 웨어하우스에서는 **`later` 가 한꺼번에 온다**: 깨진 신뢰, 값비싼 재작업, 분기마다 바꾸기 더 어려워지는 플랫폼",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "리뷰를 언제 시작할 것인가",
+            "chosen": "**코드가 생기기 전에** — 개념·입도·소유·이름부터",
+            "alternatives": [
+              "구현 뒤에 SQL 을 보며 논의하기"
+            ],
+            "tradeoff": "⚠️ **착수가 늦어지고 회의가 는다** — 40개 이상 사용 사례마다 여러 차례의 모델링 대화가 붙는다. 그 대신 **구조가 틀린 것을 훌륭한 SQL 로 구할 수는 없다**(이 대가의 표현은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "자동 검사를 어디까지 믿을 것인가",
+            "chosen": "**일관성을 얻되 한계를 명시한다**",
+            "alternatives": [
+              "자동 검사를 품질의 전부로 삼기"
+            ],
+            "tradeoff": "⚠️ **형식화한 것만 잡는다** — 회사가 강점과 약점을 나란히 적는다: 자동 검사는 지치지 않고 서두르지 않고 선별하지 않는다(강점), 그러나 `they only catch what has been formalised`(약점)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "AI 리뷰를 어디에 둘 것인가",
+            "chosen": "**사람 리뷰 앞에.** 대체가 아니라 보강이다 — `augment reviewers, do not replace them`",
+            "alternatives": [
+              "AI 리뷰로 사람 리뷰를 줄이거나 없애기"
+            ],
+            "tradeoff": "⚠️ **AI 도 형식화된 지침을 적용하는 층이라 새 종류의 문제는 못 본다**(이 지적은 이 사이트의 재구성이다). 회사가 밝히는 효과는 방향이 다르다 — **뒤의 사람 리뷰가 덜 중요해지는 것이 아니라 더 집중된다.** 승인 시간이 1시간 아래로 떨어진 것이 **AI 리뷰 도입과 겹친다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "표준을 얼마나 엄하게 밀 것인가",
+            "chosen": "**중간 길** — 일부는 협상 불가, 일부는 단계적으로 도입하고 **격차를 명시적으로 기록해 기술부채 티켓**을 만든다",
+            "alternatives": [
+              "처음부터 전부 엄격하게 강제(실제로 그렇게 시작했다)"
+            ],
+            "tradeoff": "⚠️ **지금 당장의 일관성을 일부 포기한다.** 그렇게 바꾼 이유가 실패 경험이다 — 처음엔 너무 엄해 **시작하는 문턱이 높게 느껴졌고** 너무 이른 완전 준수 요구가 부담이 됐다. **웨어하우스가 개선하기보다 들어오기가 더 어려운 시스템이 되면 안 된다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "점수를 무엇에 쓸 것인가",
+            "chosen": "**개선 대상만이 아니라 폐기 후보를 찾는 데도 쓴다**",
+            "alternatives": [
+              "점수를 준수율 지표로만 보기"
+            ],
+            "tradeoff": "**낮은 점수가 다 같은 뜻은 아니었다** — 어떤 모델은 준수가 나쁜 것이 아니라 **오래전에 진화를 멈춘 것**이었다. 그래서 점수가 **legacy 를 걷어낼 후보**를 짚어 줬다. ⚠️ 회사가 점수 자체를 자랑거리로 보지 않는다고 밝힌다: `that mattered less as a vanity score than as evidence that quality standards were not theoretical`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Snowflake · dbt · GitLab CI/CD · Airflow",
+            "role": "분석 엔진 · 변환 · 검증 · 오케스트레이션. 공유 스택이 공통 계약의 바탕이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "Data Vault (통합층)",
+            "role": "이력이 일관된 전사 기반을 만든다. 그 위에 차원 마트가 얹힌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "dbt-score · pre-commit",
+            "role": "모델을 품질·거버넌스 규칙으로 점수 매기고, 같은 검사를 로컬에서 먼저 돌린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "AI 사전 MR 리뷰",
+            "role": "사내 리뷰 플레이북을 대규모로 적용해 의심스러운 패턴을 먼저 짚는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "배포 후 감시",
+            "role": "참조 무결성·중복·누락 레코드처럼 앞 단계를 빠져나간 것을 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "break-the-backup-loop",
+          "via": "작은 결함이 굳는 방식",
+          "contract": "⚠️ **같은 이야기의 두 규모다** — 여기는 작은 결함이 하류로 번지는 것을 앞에서 막고, 저기는 그것이 **순환 의존성이라는 구조로 굳어 버린** 사례를 뒤늦게 끊는다. 두 글이 같은 말을 한다: **되돌아볼 시간이 없으면 타협이 구조가 된다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "사업부 여덟 · 도메인 팀",
+          "via": "공유 모델링 규칙",
+          "contract": "**팀이 데이터 제품을 만들고 소유하되 공통 규칙과 가드레일 안에서** 만든다. 중앙집중도 순수 데이터 메시도 아닌 자리다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "대시보드 · 사업 로직 (하류)",
+          "via": "복사된 모델",
+          "contract": "⚠️ **여기서 통과된 결함이 그대로 복사된다.** 그것이 이 기능이 앞단에 서는 이유다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Broken Windows",
+            "authors": "James Q. Wilson · George L. Kelling",
+            "year": "1982",
+            "venue": "The Atlantic",
+            "url": "https://www.theatlantic.com/magazine/archive/1982/03/broken-windows/304465/",
+            "takeaway": "**회사가 직접 인용하는 렌즈다.** 다만 회사가 쓰는 방식은 원문의 주장이 아니라 **복리 효과** 쪽이다 — 작은 무질서 하나가 큰 범죄를 부른다는 인과가 아니라, **방치가 무엇이 정상인지에 대한 기대를 바꾼다**는 부분을 빌린다. 회사도 `not as a literal comparison, but as a lens` 라고 못 박는다",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "엄격함의 수위에 정답이 없다",
+            "why_hard": "⚠️ **너무 엄하면 아무도 못 들어오고, 너무 느슨하면 결함이 정상이 된다.** 이 회사는 실제로 **엄한 쪽에서 시작했다가 마찰을 겪고** 되돌렸다 — 시작 문턱이 높게 느껴졌고 이른 완전 준수 요구가 부담이 됐다",
+            "current_best": "**규칙을 두 종류로 가르는 것** — 협상 불가와 단계적. 단계적인 쪽은 격차를 문서로 남기고 기술부채 티켓을 만들어 **가까운 미래에 채우기로 한다.** ⚠️ **어떤 규칙이 어느 쪽인지 가리는 기준은 글에 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "하류로 갈수록 표준화가 어렵다",
+            "why_hard": "원천·스테이징·통합층은 점수가 좋은데 **마트와 리포팅이 약하다** — 사업 로직이 **해석에 가깝고** 공유 개념이 어긋나기 쉬운 자리이기 때문이다. 가장 큰 공백은 **계약 강제**였다",
+            "current_best": "⚠️ **점수로 어디가 약한지 보이게 하는 것까지가 이 글의 답이다.** 해석이 들어가는 층을 어떻게 형식화할지는 다루지 않는다 — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broken Windows of Data",
+                "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+                "publisher": "Booking.com Engineering",
+                "date": "2026-06-15",
+                "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "관문 하나에서 그물 여섯으로",
+          "question": "품질을 흩는다는 말의 실체",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>① 코드가 있기 전</b><br/>• 개념 · 입도 · 소유 · 이름<br/>• 중복 개념을 막는다\"]:::accent --> B\n  B[\"<b>② 로컬 개발 중</b><br/>• pre-commit · 서식<br/>• dbt-score · 로컬 dbt 검증\"]:::list --> C\n  C[\"<b>③ CI/CD</b><br/>• MR 검증 · 빌드 · 테스트<br/>• 누가 보든 같은 기준선\"]:::list --> D\n  D[\"<b>④ AI 사전 리뷰</b><br/>• 사내 지침을 대규모 적용<br/>• 의심스러운 패턴을 짚는다\"]:::list --> E\n  E[\"<b>⑤ 사람 리뷰</b><br/>• 사업 로직이 말이 되나<br/>• 표준으로 승격할까 예외로 둘까\"]:::accent --> F\n  F[\"<b>⑥ 배포 후 감시</b><br/>• 참조 무결성 · 중복 · 누락\"]:::list\n  L[\"<b>층</b><br/>• Raw → Staging<br/>• Integration (Data Vault)<br/>• Dimensional marts\"]:::soft\n  L -.-> C\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "관문을 하나만 두거나, 너무 엄하게 두면",
+          "question": "양쪽 끝에서 각각 무엇이 무너지나",
+          "kind": "failure",
+          "code": "flowchart TD\n  X{\"<b>품질을 어디에 두나</b>\"}:::list\n  X -->|마지막 하나에| L1[\"<b>코드 리뷰가 유일한 관문</b>\"]:::gone\n  L1 --> L2[\"⚠️ <b>병목이 된다</b><br/>• 그리고 일찍 보였을 문제를<br/>  늦은 사람 리뷰가 떠맡는다\"]:::gone\n  L2 --> L3[\"⚠️ <b>결함이 하류로 복사된다</b><br/>• 모델 · 대시보드 · 사업 로직<br/>• 국소적 타협이 선례가 된다\"]:::gone\n  X -->|처음부터 아주 엄하게| R1[\"<b>완전 준수를 이른 시점에 요구</b><br/>• 실제로 이렇게 시작했다\"]:::gone\n  R1 --> R2[\"⚠️ <b>마찰</b><br/>• 시작 문턱이 높게 느껴진다<br/>• 개선보다 진입이 어려운 시스템\"]:::gone\n  R2 --> M[\"<b>고른 중간 길</b><br/>• 일부는 협상 불가<br/>• 일부는 단계적 + 기술부채 티켓\"]:::accent\n  L3 --> M2[\"<b>고른 길</b><br/>• 생애주기로 흩는다\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Broken Windows of Data",
+          "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+          "publisher": "Booking.com Engineering",
+          "date": "2026-06-15",
+          "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+        },
+        {
+          "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+          "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+          "publisher": "Booking.com Engineering",
+          "date": "2026-02-19",
+          "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
         }
       ]
     }

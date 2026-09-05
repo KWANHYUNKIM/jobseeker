@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05",
+  "updated_at": "2026-09-06",
   "companies": [
     {
       "slug": "toss",
@@ -835,10 +835,10 @@
       "name_en": "Booking.com",
       "country": "EU",
       "category": "커머스",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "세계 최대의 숙박 예약 플랫폼",
-      "updated_at": "2026-09-05",
+      "updated_at": "2026-09-06",
       "domain": "booking.com"
     }
   ],
