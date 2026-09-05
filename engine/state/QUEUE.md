@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Bolt** | EU(에스토니아) · 모빌리티 | 프로파일 완료 · 도메인 3(과잉설계했다고 적고 되돌아온다[tech 2] / 돈이 어디까지 왔는지 끝까지 센다[tech 3] / 엔진을 하나로 모은다[tech 3]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Bolt** | EU(에스토니아) · 모빌리티 | `bolt.eu/en/blog/category/tech-at-bolt/` — 최신 **2026-08-04** | ⚠️ **목록은 WebFetch 로 오는데 본문은 브라우저가 필요하다**(JS 렌더링). `get_page_text` 로 전문이 온다 | **과잉설계를 스스로 인정하고 되돌아온 회고가 있다** — `how-bolt-simplified-fraud-checkpoints`(2026-06-15) 전문을 브라우저로 읽었다. 설정 주도 ETL 프레임워크로 갔다가 **되돌아온** 이야기이고, 대가를 조목조목 적는다: *"Instead of classes and objects, engineers had to manipulate strings and flags."* · *"Debugging became more challenging, as logic was spread across both code and database entries."* · *"Ironically, the 'no-engineer config' idea had increased complexity."* 그리고 **어디까지는 통했는지도 가른다** — 규칙 유지를 분석가에게 넘긴 것은 성공, 체크포인트 생애주기 전체를 설정으로 만든 것은 실패. **수치** — 50개국 이상 · 체크포인트 **약 60개**를 **8년**에 걸쳐 · 하루 수백만 거래. 다른 글도 회고형이다: `migrating-looker-to-databricks`(2026-08-04, **월 1000만 쿼리** Presto→Databricks) · `tracking-payments-at-scale` · `scaling-security-testing-bolt-bug-bounty`. ⚠️ 모빌리티는 Uber·Grab·Careem 과 겹치지만 **유럽·아프리카 시장의 에스토니아 회사**이고, 이 글의 축(과잉설계 회고)은 겹치지 않는다 |
 | **Mercado Libre** | 기타(AR) · 커머스·핀테크 | `medium.com/mercadolibre-tech` — Fury 연작 | ⚠️ **Medium 이라 WebFetch 는 403 인데 브라우저로는 전문이 온다** | **연도가 붙은 연표가 통째로 들어 있다.** `the-technological-evolution-at-mercado-libre`(2024-02-23) 전문을 브라우저로 읽었다 — **1999** 모놀리스 첫 버전(물리 서버 수백 대 · 단일 Oracle DB · 저장소 하나 · 개발자 200명 · **주 1회 배포**) → **2010** MeliCloud(IaaS·마이크로서비스, 인스턴스 17,500 · 트래픽 풀 1,200 이상 · **하루 1,400 인스턴스 배포**) → **2015** 사내 개발자 플랫폼 **Fury** → **2018** Release Process(저장소 26,000곳 · 품질 검증 7종). **대가도 적는다** — 마이크로서비스로 간 뒤 *"Too much flexibility led to a complex scenario where our teams dedicated considerable time to resolving operational production issues instead of focusing on product improvement"* 이고 이 상태를 **`chaotic freedom`** 이라 부른다. **지금 규모** — 엔지니어 **15,000명** · 마이크로서비스 **30,000개** · 인스턴스 **100,000개**. **라틴아메리카 둘째 자리**이고(Nubank 뿐이다) **아르헨티나 첫 회사**다. 연작이라 더 팔 것이 남아 있다(트래픽 보안 · 비용 최적화 · 멀티클라우드 전략) |
 
 
