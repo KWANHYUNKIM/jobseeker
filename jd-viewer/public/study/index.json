@@ -1294,6 +1294,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "data-governance",
+      "title": "데이터 거버넌스",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**규칙집이 아니라 결정권의 배치다.** 이 백과사전의 데이터 문서 네 개가 전부 **\"소유자가 없으면 죽는다\"** 로 끝났는데, 그 소유자를 정하고 **시스템에 박아 넣는 일**이 이 낱말이다.",
+      "aliases": [
+        "데이터 거버넌스",
+        "data governance",
+        "Unity Catalog",
+        "데이터 정책",
+        "오너십"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
