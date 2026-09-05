@@ -1258,6 +1258,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "mdm",
+      "title": "기준정보 관리 (MDM)",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**같은 고객이 세 시스템에 세 번 있는데 그걸 아무도 못 알아본다.** 카탈로그가 \"이 말이 무슨 뜻인가\"였다면 여기는 **\"이 거래처가 저 거래처와 같은 곳인가\"** 다.",
+      "aliases": [
+        "기준정보",
+        "마스터 데이터 관리",
+        "MDM",
+        "master data",
+        "개체 해소"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
