@@ -967,8 +967,8 @@
       "name_en": "ClickHouse",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "분석용 데이터베이스를 오픈소스로 뿌리고 운영을 파는 회사 — 자기 창고도 자기 제품으로 짓는다",
       "updated_at": "2026-09-06",
       "domain": "clickhouse.com"

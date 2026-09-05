@@ -4,7 +4,7 @@
   "name_en": "ClickHouse",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "clickhouse.com",
   "one_liner": "분석용 데이터베이스를 오픈소스로 뿌리고 운영을 파는 회사 — 자기 창고도 자기 제품으로 짓는다",
@@ -237,7 +237,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "seventy-percent-to-ai-thirty-percent-kept"
+      ]
     }
   ],
   "features": [
@@ -1289,6 +1291,499 @@
           "publisher": "ClickHouse Blog",
           "date": "2026",
           "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+        }
+      ]
+    },
+    {
+      "key": "seventy-percent-to-ai-thirty-percent-kept",
+      "name": "무엇을 기계에 안 맡길지 먼저 정한다",
+      "domain": "분석 일의 70% 를 AI 에 넘기고 30% 를 일부러 남긴다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**사내 분석 요청이 데이터 팀의 시간을 먹는다** — 주간 사용자 약 70명이 쓰던 창고에서, **15~30분짜리 SQL 작업**이 계속 팀으로 흘러들어 왔다. 이 회사는 그 창고 위에 AI 어시스턴트를 올려 **분석 워크로드의 약 70%** 를 넘겼고 데이터 창고 팀의 지원 요청이 **50~70% 줄었다.** ⚠️ **그런데 이 기능의 본체는 넘긴 70% 가 아니라 남긴 30% 다** — **무엇을 기계에 안 맡길지를 먼저 정해 두었고**, 닿을 수 있는 데이터도 미리 잘라 두었다.",
+        "metrics": [
+          {
+            "label": "쓰는 규모",
+            "value": "**사용자 250명 이상** · **하루 200 메시지 이상** · **하루 대화 50~70건**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "넘긴 일",
+            "value": "**사내 분석 사례의 약 70%** — 15~30분 걸리던 SQL 작업이 즉시 끝난다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "줄어든 것",
+            "value": "데이터 창고 팀의 **지원 요청 50~70% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 남긴 30%",
+            "value": "**공인 재무 지표**(공식 승인이 필요한 것) · **실시간 운영 모니터링** · **반복되는 표준 보고**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 안 보여 주는 것",
+            "value": "**고객 PII**(이름·이메일·주소) · **고객 데이터 전체** · **민감한 내부 소통과 전략 정보**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "딛고 선 창고",
+            "value": "원시 원천 **19개** · 하루 **60억 행 · 50TB** · 2년 누적 **470TB**(압축)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+                "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+                "publisher": "ClickHouse Blog",
+                "date": "2026-03",
+                "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "시작하기 전",
+          "thought": "⚠️ **글쓴이가 자기 회의부터 적는다** — `With 15 years of experience in data warehousing, I had tried early LLMs with data sources and found the results disappointing and unreliable.` 이유 셋도 구체적이다: **환각 · 맥락 인식 부족 · 복잡한 업무 로직을 못 다룸.** **무엇이 달라져서 다시 해 볼 만해졌는지를 그 회의 위에 놓고 설명한다**(이 평가는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇이 진짜 문제인지 볼 때",
+          "thought": "**모델이 아니라 맥락이 문제였다** — 스키마만 줘서는 `이 필드가 무슨 뜻인지`, `어떤 업무 과정이 이 데이터를 만드는지`, `원천 시스템 사이에서 이 엔티티들이 어떻게 이어지는지` 를 알 수 없다. ⚠️ **그래서 사람이 쓴 위키가 이 시스템의 재료가 된다** — 기계를 붙이기 전에 **사람이 문서를 써야 했다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디까지 맡길지 정할 때",
+          "thought": "⚠️ **경계를 두 겹으로 그었다.** 하나는 **일의 종류**(공인 재무 지표·실시간 모니터링·표준 보고는 사람에게), 다른 하나는 **데이터 자체**(PII·고객 데이터·민감 소통은 아예 안 보여 준다). **그리고 세 번째 겹이 있다 — 출력만으로 중요한 결정을 못 하게 한다.** 중요한 판단이면 **주석 달린 SQL 을 받아 전통 도구에서 직접 확인**해야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "DWAINE",
+            "what": "사내 AI 어시스턴트. 자연어로 묻고 답을 받는다"
+          },
+          {
+            "name": "데이터 위키 (MDBook)",
+            "what": "⚠️ **사람이 쓴 맥락.** 데이터 마트의 주요 필드마다 **정의 · 업무 맥락 · 가능한 값과 범위 · 그 데이터를 만드는 업무 과정 · 원천 시스템 간 엔티티 관계**를 적는다"
+          },
+          {
+            "name": "MCP 서버들",
+            "what": "GitHub(dbt 모델·업무 용어집) · Filesystem(동적 컬럼 사전) · **자체 ClickHouse MCP 서버**"
+          },
+          {
+            "name": "허용된 데이터 마트",
+            "what": "**제한된 수의 주요 마트만** — 익명화된 서비스 사용 지표 · 크레딧 소비와 과금 · 내부 영업/운영 지표"
+          },
+          {
+            "name": "⚠️ 남긴 30%",
+            "what": "공인 재무 지표 · 실시간 운영 모니터링 · 반복 표준 보고. **전통 BI 로 그대로 둔다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **DWAINE 의 출력만으로 중요한 결정을 하지 않는다** — 주석 달린 SQL 을 받아 전통 도구에서 검증한다",
+          "⚠️ **PII·고객 데이터·민감한 내부 소통에는 닿지 않는다** — 접근 가능한 마트가 미리 잘려 있다",
+          "**맥락은 사람이 쓴 문서에서 온다** — 스키마만으로는 부족하다",
+          "**벤더에 묶이지 않는다** — 프런트도 통합도 오픈 표준으로 고른다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**사람이 데이터 위키를 쓴다** — 필드 정의·업무 맥락·값의 범위·그 데이터를 만드는 업무 과정·엔티티 관계",
+            "why": "⚠️ **기계를 붙이기 전에 해야 하는 일이다**"
+          },
+          {
+            "step": "**MCP 서버들이 맥락을 물어다 준다** — GitHub 에서 dbt 모델과 용어집, 파일시스템에서 동적 컬럼 사전",
+            "why": "벤더에 묶이지 않고 여러 원천에 구조적으로 닿는다"
+          },
+          {
+            "step": "**자체 ClickHouse MCP 서버로 데이터에 닿는다**",
+            "why": "자기 제품에 맞는 접근 계층을 직접 만들었다"
+          },
+          {
+            "step": "**허용된 마트로만 질의가 나간다** — 익명화된 사용 지표·과금·영업/운영",
+            "why": "⚠️ PII 와 고객 데이터는 **애초에 범위 밖이다**"
+          },
+          {
+            "step": "**LibreChat 화면에서 답과 시각 산출물을 받는다** — SSO 와 감사 로그가 붙어 있고 대화를 공유할 수 있다",
+            "why": "쓰는 사람이 여럿이고 결과를 함께 봐야 한다"
+          },
+          {
+            "step": "⚠️ **중요한 판단이면 주석 달린 SQL 을 요구한다** — 그것을 전통 도구에 가져가 논리를 확인한다",
+            "why": "**답을 믿는 대신 답의 근거를 검사한다**"
+          },
+          {
+            "step": "**공인 재무 지표·실시간 모니터링·표준 보고는 처음부터 이 경로로 안 온다**",
+            "why": "남긴 30% 는 사고가 아니라 설계다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "LLM 을 데이터 창고에 붙일 것인가",
+            "chosen": "**붙인다 — 다만 글쓴이는 회의적이었다고 먼저 적는다**",
+            "alternatives": [
+              "기존 BI 와 사람 분석가로 계속 가기"
+            ],
+            "tradeoff": "`I had tried early LLMs with data sources and found the results disappointing and unreliable` — **환각·맥락 인식 부족·복잡한 업무 로직**이 이유였다. ⚠️ **그 셋 중 무엇이 실제로 해결됐는지는 글이 나누어 말하지 않는다** — 맥락 문제는 위키와 MCP 로 다뤘지만 **환각에 대한 대책은 `검증하게 한다` 뿐이다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "모델을 잘 고르는 것이 핵심인가",
+            "chosen": "**아니다 — 맥락을 먹이는 것이 핵심이다.** 사람이 데이터 위키를 쓴다",
+            "alternatives": [
+              "스키마만 주고 모델이 알아서 하게 두기"
+            ],
+            "tradeoff": "필드마다 **정의·업무 맥락·값의 범위·그 데이터를 만드는 업무 과정·원천 간 관계**를 적는다. ⚠️ **대가는 그 문서를 쓰고 계속 맞춰야 한다는 것이다** — **문서가 낡으면 AI 가 낡은 뜻으로 답한다**(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "데이터와 도구를 어떻게 이을 것인가",
+            "chosen": "**MCP** — 그리고 **ClickHouse MCP 서버를 직접 만든다**",
+            "alternatives": [
+              "제공자별 전용 통합",
+              "자체 프로토콜"
+            ],
+            "tradeoff": "회사가 이것을 `our biggest challenge` 의 해법이라 적는다 — **벤더 종속 없이 여러 원천에 신뢰할 수 있는 구조적 접근**. ⚠️ **대가는 표준이 아직 어리다는 것이고**(2024년 11월 발표), **자기 서버를 직접 유지해야 한다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "화면을 무엇으로 할 것인가",
+            "chosen": "**LibreChat (오픈소스)**",
+            "alternatives": [
+              "상용 AI 채팅 제품"
+            ],
+            "tradeoff": "요구가 다섯이었다 — **여러 LLM 제공자 · MCP 통합 · SSO 와 감사 로그 · 시각 산출물 · 대화 공유.** 오픈소스라 `our principle of avoiding vendor lock-in` 에 맞는다. ⚠️ **대가는 자체 호스팅과 그 운영을 떠안는다는 것이고, 그 비용은 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "모델과 그 청구를 어떻게 다룰 것인가",
+            "chosen": "**Claude 4.0 을 AWS Bedrock 을 통해** — 과금 통합과 교차 지역 추론 때문",
+            "alternatives": [
+              "제공자에 직접 붙기"
+            ],
+            "tradeoff": "**한 곳에서 청구를 모으고 지역을 넘겨 쓸 수 있다.** ⚠️ 대가는 **중개 계층이 하나 늘고 그 계층의 제약을 함께 받는다는 것**이다(이 대가는 이 사이트의 재구성이다). 벤더 종속을 피한다면서 **모델 자체는 한 곳을 고른다**는 점도 그대로 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 데이터를 보여 줄 것인가",
+            "chosen": "**제한된 수의 주요 마트만** — PII·고객 데이터·민감한 내부 소통은 제외",
+            "alternatives": [
+              "창고 전체에 접근 허용"
+            ],
+            "tradeoff": "허용 범위가 **익명화된 서비스 사용 지표·크레딧 소비와 과금·내부 영업/운영 지표**다. ⚠️ **대가는 답할 수 없는 질문이 생긴다는 것이다** — 고객별 분석이 필요한 자리는 이 경로로 못 온다(이 지적은 이 사이트의 재구성이다). **막는 방식이 프롬프트가 아니라 접근 범위라는 점이 중요하다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "답을 어떻게 믿을 것인가",
+            "chosen": "**출력만으로 중요한 결정을 못 하게 한다** — 주석 달린 SQL 을 받아 전통 도구에서 검증",
+            "alternatives": [
+              "답을 그대로 쓰게 하기",
+              "자동 검증기를 붙이기"
+            ],
+            "tradeoff": "⚠️ **빠르지만 최종 근거가 되지는 못한다.** 대가는 **중요한 일일수록 절약이 줄어든다는 것**이고, **어떤 질문이 `중요한` 것인지는 사람이 판단한다**(뒤쪽은 재구성이다). 그 대신 **틀린 답이 결정으로 굳는 경로가 막힌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "전통 BI 를 걷어낼 것인가",
+            "chosen": "**아니다 — 30% 를 일부러 남긴다**",
+            "alternatives": [
+              "전부 AI 로 옮기기"
+            ],
+            "tradeoff": "남긴 셋이 각각 이유가 다르다 — **공인 재무 지표**는 공식 승인이 필요하고, **실시간 운영 모니터링**은 사람이 묻기 전에 알려야 하며, **반복 표준 보고**는 매번 새로 만들 이유가 없다. ⚠️ **대가는 두 체계를 함께 유지한다는 것이고**, **어느 질문이 어느 쪽인지 자동으로 갈리지 않는다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "LibreChat (자체 호스팅)",
+            "role": "화면. 여러 제공자·MCP·SSO·감사 로그·시각 산출물·대화 공유",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "MCP (GitHub · Filesystem · 자체 ClickHouse 서버)",
+            "role": "dbt 모델과 용어집, 동적 컬럼 사전, 데이터 접근을 표준 방식으로 잇는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "데이터 위키 (MDBook)",
+            "role": "⚠️ **사람이 쓰는 맥락.** 이 시스템의 진짜 재료",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "Claude 4.0 (AWS Bedrock)",
+            "role": "모델. 과금 통합과 교차 지역 추론 때문에 Bedrock 을 거친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 전통 BI (남긴 30%)",
+            "role": "⚠️ **걷어내지 않고 남긴 것.** 공인 재무 지표·실시간 모니터링·표준 보고",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "one-load-job-became-nine",
+          "via": "같은 창고",
+          "contract": "**이 어시스턴트가 붙은 곳이 그 창고다** — 주간 사용자 약 70명이 쓰던 위에 올렸고, **적재를 아홉으로 쪼개 신뢰성을 올린 뒤에야 그 위에 무언가를 얹을 수 있었다**(뒤쪽은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "updates-as-patches-not-rewrites",
+          "via": "질의 오버헤드",
+          "contract": "⚠️ **접히기 전 8~21% 오버헤드가 사람이 아니라 에이전트의 질의에도 붙는다** — 하루 200 메시지가 만드는 질의마다 이 상수가 곱해진다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Langfuse (LLM 관측)",
+          "via": "같은 문제를 제품으로",
+          "contract": "⚠️ **사내에서 LLM 을 굴리는 회사가 LLM 관측 회사를 샀다** — 인수 이유로 인용한 문장이 `LLM observability and evaluation is fundamentally a data problem` 이다. **자기가 겪는 문제와 파는 물건이 같은 방향이다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "허용된 데이터 마트",
+          "via": "접근 범위",
+          "contract": "**PII·고객 데이터·민감 소통은 아예 범위 밖이다** — 막는 방식이 프롬프트가 아니라 **접근 범위**다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "모델이 아니라 맥락이 부족하다",
+            "why_hard": "⚠️ **스키마는 이름과 타입만 말한다.** 그 필드가 무슨 뜻인지, 어떤 업무 과정이 그 데이터를 만드는지, 원천 시스템 사이에서 엔티티들이 어떻게 이어지는지는 **어디에도 적혀 있지 않다.** 그래서 **사람이 위키를 써야 기계가 답할 수 있다.** 그리고 큰 스키마는 그 자체로 문제가 된다 — `Large schemas require careful prompt engineering to maintain relevant context`.",
+            "current_best": "**사람이 쓴 문서를 MCP 로 물어다 주는 것.** ⚠️ **문서가 낡으면 AI 가 낡은 뜻으로 답하는데, 그 갱신을 어떻게 보장하는지는 글에 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          },
+          {
+            "problem": "어디까지 맡길지의 경계가 자동으로 갈리지 않는다",
+            "why_hard": "**남긴 30% 는 종류로 정의돼 있다**(공인 재무 지표·실시간 모니터링·표준 보고). 그런데 **들어온 질문이 어느 쪽인지는 사람이 판단해야 한다.** 마찬가지로 **`중요한 결정` 이라 SQL 로 검증해야 하는 질문인지도 사람이 정한다.**",
+            "current_best": "**경계를 세 겹으로 두는 것** — 일의 종류(30% 를 남긴다) · 데이터 범위(PII 제외) · 결론의 지위(출력만으로 결정 금지). ⚠️ **가운데 겹만이 기계가 강제한다** — 나머지 둘은 규칙이고 사람이 지킨다(이 구분은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The AI-first data warehouse",
+                "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+                "publisher": "ClickHouse Blog",
+                "date": "2026",
+                "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "사람이 쓴 맥락이 먼저 있고, 그다음에 기계가 있다",
+          "question": "질문 하나가 답이 되기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  W[\"<b>사람이 쓰는 데이터 위키</b><br/>• 필드 정의 · 업무 맥락<br/>• 값의 범위 · 만드는 업무 과정<br/>• 원천 간 엔티티 관계\"]:::accent --> MCP[\"<b>MCP 서버들</b><br/>• GitHub: dbt 모델 · 용어집<br/>• Filesystem: 동적 컬럼 사전<br/>• <b>자체 ClickHouse MCP</b>\"]:::accent\n  U[\"<b>사용자 250명 이상</b><br/>• 하루 200 메시지\"]:::accent --> LC[\"<b>LibreChat</b><br/>• SSO · 감사 로그 · 시각 산출물\"]:::accent\n  LC --> M[\"<b>Claude 4.0</b><br/>• AWS Bedrock 경유\"]:::list\n  MCP --> M\n  M --> Q[\"<b>허용된 마트로만 질의</b><br/>• 익명화 사용 지표 · 과금<br/>• 영업 · 운영 지표\"]:::list\n  X[\"⚠️ <b>범위 밖</b><br/>• 고객 PII<br/>• 고객 데이터<br/>• 민감한 내부 소통\"]:::gone -.-> Q\n  Q --> A[\"<b>답</b>\"]:::list\n  A --> V[\"⚠️ <b>중요한 결정이면</b><br/>• 주석 달린 SQL 을 받아<br/>• 전통 도구에서 검증\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "경계는 세 겹인데 기계가 강제하는 것은 한 겹이다",
+          "question": "무엇을 안 맡겼고, 무엇이 그것을 지키나",
+          "kind": "failure",
+          "code": "flowchart TD\n  T[\"<b>① 일의 종류</b><br/>• 남긴 30%\"]:::accent --> T1[\"공인 재무 지표<br/>실시간 운영 모니터링<br/>반복 표준 보고\"]:::list\n  T1 --> T2[\"⚠️ <b>어느 질문이 어느 쪽인지</b><br/>⚠️ <b>사람이 판단한다</b>\"]:::gone\n  D[\"<b>② 데이터 범위</b><br/>• PII · 고객 데이터 제외\"]:::accent --> D1[\"<b>기계가 강제한다</b><br/>• 접근 가능한 마트가 잘려 있다<br/>• 프롬프트가 아니라 범위\"]:::list\n  R[\"<b>③ 결론의 지위</b><br/>• 출력만으로 결정 금지\"]:::accent --> R1[\"⚠️ <b>사람이 지킨다</b><br/>• 무엇이 중요한 결정인지도<br/>  사람이 정한다\"]:::gone\n  H[\"⚠️ <b>남은 문제</b><br/>• 환각 대책은 검증하게 하는 것뿐<br/>• 위키가 낡으면 낡은 뜻으로 답한다<br/>• 큰 스키마와 컨텍스트 윈도\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "The AI-first data warehouse",
+          "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+          "publisher": "ClickHouse Blog",
+          "date": "2026",
+          "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+        },
+        {
+          "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+          "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+          "publisher": "ClickHouse Blog",
+          "date": "2026-03",
+          "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+        },
+        {
+          "title": "ClickHouse raises $400M Series D, acquires Langfuse, launches Postgres",
+          "url": "https://clickhouse.com/blog/clickhouse-raises-400-million-series-d-acquires-langfuse-launches-postgres",
+          "publisher": "ClickHouse",
+          "date": "2026",
+          "summary": "Dragoneer 주도 4억 달러 시리즈 D. 관리형 서비스 고객 3,000곳 이상, ARR 전년 대비 250% 이상 성장. Langfuse 인수(LLM 관측)와 네이티브 Postgres 서비스 출시, Iceberg·Delta Lake 호환."
         }
       ]
     }
