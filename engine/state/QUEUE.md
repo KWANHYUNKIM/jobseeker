@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Nubank** | 기타(BR) · 핀테크 | 프로파일 완료 · 도메인 3(나라마다 다른 금융망에 한 벌로 붙는다[tech 3] / 읽는 길에서 계산을 걷어낸다[tech 2] / 사람이 프롬프트를 쓰는 일을 그만둔다[tech 3]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Nubank** | BR · 핀테크 | `building.nubank.com` — 최신 **2026-09-04** | ✅ WebFetch 로 목록·본문 모두 온다 (`building.nubank.com.br` 은 `.com` 으로 301) | **라틴아메리카가 0곳이다** — 65곳에 브라질·아르헨티나·멕시코가 하나도 없다. `how-we-reduced-critical-path-latency-by-76-at-nubank`(2026-01-12) **본문을 열어** 세 가지를 다 확인했다: **버린 대안**(*"Adding a passive cache in front of the existing flow would not fundamentally solve the issue."*) · **대가**(*"we accepted the cost of asynchronous aggregation, state management, and monitoring in exchange for fast and reliable reads"*) · **수치**(P90 **1200 → 280ms**, 76% · 성공률 five nines). 게다가 **Clojure·Datomic 으로 은행을 만든 곳**이라 언어·저장소 축이 기존 65곳과 겹치지 않는다. 볼 만한 글: `finconnect`(2026-03-16, 나라별로 흩어진 연동을 한 층으로) · `designing-real-systems-with-immutable-data-in-clojure`(2026-01-19) |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

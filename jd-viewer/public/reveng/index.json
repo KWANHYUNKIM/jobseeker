@@ -780,6 +780,18 @@
       "one_liner": "벤더에 티켓을 열고 기다리지 않으려고 랙의 모든 층을 자기가 만든 회사 — 펌웨어부터 컨트롤 플레인까지 한 벌로 판다",
       "updated_at": "2026-09-05",
       "domain": "oxide.computer"
+    },
+    {
+      "slug": "nubank",
+      "name": "누방크",
+      "name_en": "Nubank (Nu Holdings)",
+      "country": "기타",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "지점 없이 1억 3천만 명을 받은 브라질 은행",
+      "updated_at": "2026-09-05",
+      "domain": "nubank.com.br"
     }
   ],
   "domains": [
@@ -999,7 +1011,10 @@
     "1분을 1~2초로 줄이려고 무엇을 버릴 것인가",
     "합의를 버리고 상태를 퍼뜨린다",
     "티켓을 열고 기다리지 않으려고 층을 다 갖는다",
-    "랙의 모국어를 IPv6 로 정한다"
+    "랙의 모국어를 IPv6 로 정한다",
+    "나라마다 다른 금융망에 한 벌로 붙는다",
+    "읽는 길에서 계산을 걷어낸다",
+    "사람이 프롬프트를 쓰는 일을 그만둔다"
   ],
   "countries": {
     "KR": "한국",
