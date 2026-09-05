@@ -15,15 +15,40 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Oxide Computer** | US · 기타(서버·하드웨어) | 프로파일 완료 · 도메인 2(티켓을 열고 기다리지 않으려고 층을 다 갖는다[tech 2] / 랙의 모국어를 IPv6 로 정한다[tech 2]) · 기능 0 |
+| **Oxide Computer** | US · 기타(서버·하드웨어) | 프로파일 완료 · 도메인 2 · **기능 2**(service-processor / jumbo-frames-path) — 두 도메인이 다 찼다 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
+| **Nubank** | BR · 핀테크 | `building.nubank.com` — 최신 **2026-09-04** | ✅ WebFetch 로 목록·본문 모두 온다 (`building.nubank.com.br` 은 `.com` 으로 301) | **라틴아메리카가 0곳이다** — 65곳에 브라질·아르헨티나·멕시코가 하나도 없다. `how-we-reduced-critical-path-latency-by-76-at-nubank`(2026-01-12) **본문을 열어** 세 가지를 다 확인했다: **버린 대안**(*"Adding a passive cache in front of the existing flow would not fundamentally solve the issue."*) · **대가**(*"we accepted the cost of asynchronous aggregation, state management, and monitoring in exchange for fast and reliable reads"*) · **수치**(P90 **1200 → 280ms**, 76% · 성공률 five nines). 게다가 **Clojure·Datomic 으로 은행을 만든 곳**이라 언어·저장소 축이 기존 65곳과 겹치지 않는다. 볼 만한 글: `finconnect`(2026-03-16, 나라별로 흩어진 연동을 한 층으로) · `designing-real-systems-with-immutable-data-in-clojure`(2026-01-19) |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-05 후보 조사 결과 — 열한 곳을 두드려 하나를 올렸다**(369 다음의 후보 조사다).
+  큐가 0/3 이라 3순위로 들어왔다. **⚠️ 이번 수확률이 낮은 이유는 회사 탓이 아니라 벽 탓이다** —
+  열 곳 중 **여섯이 403, 둘이 Medium, 둘이 도구가 아예 못 여는 호스트**였다.
+  - **✅ Nubank**(BR · 핀테크) — 위 대기 표로 올렸다. **라틴아메리카 첫 자리다.**
+  - **❌ Mercado Libre**(AR · 이커머스) — 회고 제목이 아주 좋다(`the-technological-evolution-at-mercado-libre`
+    — 모놀리스에서 멀티클라우드로, `from-a-single-point-of-failure-to-a-cell-based-architecture`).
+    그런데 **전부 `medium.com/mercadolibre-tech` 호스팅이고 403** 이다. 자체 도메인 블로그가 없다.
+    **⚠️ 브라우저로는 열릴 수 있다**(원장에 `medium.com` 이 그렇게 적혀 있다) — 라틴 자리가 급하면 다시 볼 값이 있다.
+  - **❌ Booking.com**(NL · 여행) — **목록(`blog.booking.com`)은 WebFetch 로 잘 열리고 최신도 2026-07-29** 인데,
+    **글 제목을 누르면 `medium.com/booking-com-development` 로 간다**(403). 목록만 자체 도메인이고 본문은 Medium 인
+    형태다 — **이 원장에 없던 새로운 종류의 벽**이라 따로 적어 둔다. `Breaking the Loop`(250개 이상 MySQL 클러스터의
+    백업 카탈로그를 AWS 로) 같은 회고가 여럿이라 아깝다.
+  - **❌ The New York Times**(`open.nytimes.com`) · **❌ The Guardian**(`theguardian.com/info/series/digital-blog`) —
+    **둘 다 도구가 그 호스트를 아예 못 연다**(*"Claude Code is unable to fetch from ..."*). 403 과는 다른 종류의
+    벽이라 재시도해도 같을 것이다. **미디어·뉴스 축은 이 도구로는 막혀 있다.**
+  - **❌ Khan Academy**(US · 교육) — `blog.khanacademy.org/engineering/` 는 **열리는데 최신이 2025-09** 이고,
+    목록이 색상 시스템·인턴 이야기·직무 소개라 **심도가 얕다.** Rakuten 과 같은 이유다(사실상 멈춘 블로그).
+  - **❌ Etsy**(`www.etsy.com/codeascraft`) · **❌ Delivery Hero**(`tech.deliveryhero.com`) ·
+    **❌ Bloomberg**(`www.techatbloomberg.com/blog`) — **셋 다 403.**
+  - **❌ Trainline**(UK · 철도) — `engineering.thetrainline.com` 이 **`medium.com/trainline` 으로 301** 된다.
+  - **⚠️ DoorDash 를 또 두드렸다** — `careersatdoordash.com/engineering-blog` 는 **이미 STATE.md 의 자료 접근
+    지도에 403 으로 적혀 있었다.** 원장을 먼저 읽었으면 아꼈을 한 번이다. **후보를 떠올린 다음, 두드리기 전에
+    접근 지도부터 본다.**
 
 - **369 후보 조사 결과 — 네 곳을 두드려 둘을 올렸다.** 큐가 0/3 이라 3순위(후보 조사)로 들어왔다.
   - **✅ Fly.io** — 위 대기 표로 올렸다. **363 에서 ⏳ 로 남긴 것을 이번에 확인했다.**

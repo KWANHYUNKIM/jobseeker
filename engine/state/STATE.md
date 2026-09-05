@@ -16,7 +16,12 @@
 축은 **MTU 하나를 올리는 일이 설정 변경이 아니라 층마다 박힌 상수를 걷어내는 일**이었다는
 것이다 — xde 드라이버와 **OPTE 의 라우터 광고 생성기 둘 다**에 1500이 있었다.
 
-### ⚠️ 다음 사이클은 Oxide 를 닫을지 판단한다
+### ⚠️ Oxide 를 닫는 판단이 아직 남아 있다
+
+**2026-09-05 사이클은 이 판단을 못 했다** — `--gaps` 가 사다리 3순위(후보 조사)를 지목했기
+때문이다. **Oxide 에 빈 도메인이 없어 2순위(확장)에 안 걸리고, 큐가 0 이라 곧장 3순위로
+내려간다.** 즉 **닫는 일은 `--gaps` 가 부르지 않는다** — 다음 사이클이 스스로 봐야 한다.
+
 
 완주 기준(PROMPT 212행)을 지금 상태로 재 보면:
 - **도메인마다 기능 1개 이상** — ✅ 둘 다 찼다
@@ -357,6 +362,13 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | **IR 보도자료(Q4 Inc 계열)** | ✅ **브라우저 `get_page_text` 로 전문이 온다** — `investors.<회사>.com/news/news-details/<연도>/<제목>/default.aspx`. WebFetch 는 빈 껍데기만 준다. Doximity 에서 표까지 통째로 받았다(사이클 211) |
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
+| `building.nubank.com` | ✅ 목록·본문 모두 열린다 (2026-09-05 확인). `building.nubank.com.br` 은 `.com` 으로 301 |
+| `blog.booking.com` | ⚠️ **목록만 자체 도메인이고 본문은 `medium.com/booking-com-development`(403)** 로 간다. 목록에서 제목·날짜는 얻을 수 있다 |
+| `medium.com/mercadolibre-tech` · `medium.com/booking-com-development` · `medium.com/trainline` | ❌ 403 (Medium — 브라우저로는 열릴 수 있다) |
+| `open.nytimes.com` · `www.theguardian.com` | ❌ **도구가 이 호스트를 아예 못 연다**(*"unable to fetch from"*). 403 과 다른 벽이라 재시도해도 같다 |
+| `www.etsy.com/codeascraft` · `tech.deliveryhero.com` · `www.techatbloomberg.com/blog` | ❌ 403 (2026-09-05 확인) |
+| `engineering.thetrainline.com` | ❌ `medium.com/trainline` 으로 301 |
+| `blog.khanacademy.org/engineering` | ⚠️ 열리지만 **최신이 2025-09** 이고 글이 얕다 |
 | `tech.target.com` · `techlab.bol.com/en` | ✅ 목록·본문 모두 열린다. Target 은 **한 페이지 15편 × 7페이지(약 100편)** 이고 분류 링크가 있다. bol.com 은 **최신 글이 2024-11** 이라 멈췄을 수 있다 |
 | `corporate.target.com` 보도자료·소개 | ✅ **WebFetch 로 실적 표까지 온다** — 브라우저가 필요 없었다(사이클 219). `investors.target.com` 은 **브라우저 권한이 막혀 있어** 시도하지 않는다 |
 | `www.backblaze.com/blog` | ⚠️ 열리지만 **데이터·홍보 성격** — Drive Stats 수치는 넘치는데 **의사결정과 대가가 없다** |
