@@ -952,6 +952,24 @@
       "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "secrets",
+      "title": "시크릿 관리",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**비밀번호·API 키·인증서를 어디에 두고 누가 꺼내 쓰게 할 것인가**의 문제다. 어려운 부분은 저장이 아니라 — **바꿀 수 있게 만드는 것**이다.",
+      "aliases": [
+        "시크릿 관리",
+        "시크릿",
+        "secrets management",
+        "Vault",
+        "KMS"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
