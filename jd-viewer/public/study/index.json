@@ -1186,6 +1186,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "lineage",
+      "title": "데이터 리니지",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**\"이 숫자 어디서 왔어?\"** 에 답하는 그래프다. 그리고 같은 그래프를 반대로 읽으면 **\"이거 지우면 뭐가 깨져?\"** 가 된다 — 리니지가 실제로 값을 하는 건 대개 두 번째 쪽이다.",
+      "aliases": [
+        "데이터 리니지",
+        "data lineage",
+        "데이터 계보",
+        "컬럼 리니지",
+        "OpenLineage"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
