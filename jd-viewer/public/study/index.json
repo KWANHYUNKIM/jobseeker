@@ -1645,6 +1645,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "personal-data-law",
+      "title": "개인정보·금융 법령 대응",
+      "category": "domain",
+      "level": "core",
+      "status": "done",
+      "one_liner": "내가 다루는 데이터에 법이 붙어 있을 때, 그 법이 아키텍처에 무엇을 요구하는지 — 그리고 **그 요구가 실제로 적혀 있는 곳은 법 조문이 아니라는 것.**",
+      "aliases": [
+        "개인정보보호법",
+        "GDPR",
+        "전자금융감독규정",
+        "정보통신망법",
+        "신용정보법",
+        "HIPAA",
+        "컴플라이언스"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
