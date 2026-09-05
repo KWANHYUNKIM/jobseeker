@@ -1,0 +1,253 @@
+{
+  "slug": "temporal",
+  "name": "템포럴",
+  "name_en": "Temporal",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "temporal.io",
+  "one_liner": "멈췄다 이어지는 실행을 파는 회사 — 코드의 상태를 이력으로 두고 재생해서 되살린다",
+  "business_model": "**액션 수와 저장량으로 판다.** Essentials **월 $100부터**(액션 100만 · 활성 저장 1GB · 보존 저장 40GB), Business **월 $500부터**(250만 · 2.5GB · 100GB), Enterprise 별도(1,000만 · 10GB · 400GB). 액션은 **100만 건 단위로 볼륨 할인**($50 → 200M 초과 시 $25), 저장은 **GB-시간**으로 받는다(활성 $0.042 · 보존 $0.00105). ⚠️ **요금 단위가 아키텍처를 그대로 드러낸다** — **액션**은 워크플로가 한 걸음 나아갈 때 세는 단위이고, **저장이 활성과 보존으로 갈린 것**은 **완료된 워크플로의 이벤트 이력을 객체 저장소로 옮기는 계층 저장**과 짝을 이룬다(이 연결은 이 사이트의 재구성이다). 등급 차이는 기능이 아니라 **지원 응답 시간**이기도 하다(P0 에 영업일 1일 · 2시간 · 30분).",
+  "revenue_total": "⚠️ 확인하지 못했다 — 비상장이고 매출을 공개하지 않는다.",
+  "products": [
+    "Temporal (오픈소스 서버) — Frontend · History · Matching · Worker 네 서비스로 이뤄진다",
+    "Temporal Cloud — 관리형. 영속 계층을 직접 만들어 얹었다",
+    "SDK — 애플리케이션 코드가 워크플로와 액티비티를 쓴다"
+  ],
+  "revenue_streams": [
+    {
+      "name": "Temporal Cloud 구독 (액션 · 저장)",
+      "how": "워크플로가 나아간 **액션 수**와 **활성·보존 저장량(GB-시간)** 으로 받는다. 용량은 온디맨드(최소 500 APS)나 예약(TRU) 중에 고른다",
+      "weight": "⚠️ 확인하지 못했다",
+      "domains": [
+        "상태를 이력으로 두고 재생해서 되살린다",
+        "관리형에서는 영속 계층을 직접 만든다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Temporal — 요금제",
+          "url": "https://temporal.io/pricing",
+          "publisher": "Temporal",
+          "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Temporal 도메인 지도",
+    "question": "멈췄다 이어지는 실행을 팔려면 무엇을 상태로 두어야 하는가?",
+    "code": "flowchart TD\n  A[\"<b>고객 애플리케이션</b><br/>• 워크플로 · 액티비티를 쓴다<br/>• 액션 수로 값을 낸다\"]:::list --> T\n  T[\"<b>Temporal 서버</b><br/>• Frontend · History<br/>• Matching · Worker\"]:::accent\n  T --> D1[\"<b>상태를 이력으로 두고<br/>재생해서 되살린다</b><br/>• 이벤트 이력이 진실<br/>• 결정성 · 멱등성 제약\"]:::list\n  T --> D2[\"<b>확장의 단위를<br/>워크플로 하나로 잡는다</b><br/>• 하나는 작게 · 개수는 무한히<br/>• Transfer Queues\"]:::list\n  T --> D3[\"<b>관리형에서는 영속 계층을<br/>직접 만든다</b><br/>• 동적 샤딩 · 쓰기 선행 로그<br/>• 완료 이력을 객체 저장소로\"]:::list\n  D2 -.->|샤드 밖 큐에는<br/>트랜잭션이 없다| D1"
+  },
+  "domains": [
+    {
+      "name": "상태를 이력으로 두고 재생해서 되살린다",
+      "why": "⚠️ **이 회사가 파는 것은 `멈췄다 이어지는 실행` 이다.** 프로세스가 죽어도 코드가 이어지려면 상태를 어딘가에 둬야 하는데, 이 회사의 답은 **이벤트 이력**이다 — `when an error or failure happens in your app, Temporal will recreate the state by parsing the Event History and replaying each step`. **상태를 저장하는 것이 아니라 상태에 이르는 길을 저장한다.** ⚠️ 그리고 그 대가로 **애플리케이션 코드에 제약이 걸린다.**",
+      "tech": [
+        {
+          "tech": "이벤트 이력(Event History) 재생",
+          "solves": "실패 뒤에 이력을 파싱해 각 단계를 다시 밟아 상태를 되살린다. **내구성의 바탕**이다",
+          "limits": "⚠️ **재생이 성립하려면 코드가 결정적이어야 한다** — 문서가 그것을 행동 요구로 못 박는다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Temporal architecture",
+              "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+              "publisher": "Temporal Documentation",
+              "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
+            }
+          ]
+        },
+        {
+          "tech": "결정성(워크플로) · 멱등성(액티비티) 제약",
+          "solves": "재생했을 때 같은 길을 밟게 하고, 다시 실행돼도 결과가 같게 한다",
+          "limits": "⚠️ **평범한 코드를 그대로 못 쓴다** — 시간·난수·외부 호출처럼 흔한 것들이 제약에 걸린다(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Temporal architecture",
+              "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+              "publisher": "Temporal Documentation",
+              "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
+            }
+          ]
+        },
+        {
+          "tech": "네 서비스 분리 (Frontend · History · Matching · Worker)",
+          "solves": "요청 접수 · 이력 관리 · 작업 배분 · 내부 작업을 갈라 놓는다",
+          "limits": "⚠️ 운영할 것이 넷이 된다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Temporal architecture",
+              "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+              "publisher": "Temporal Documentation",
+              "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
+            }
+          ]
+        },
+        {
+          "tech": "영속 계층 선택지 (Cassandra · MySQL · PostgreSQL · SQLite)",
+          "solves": "쓰던 데이터베이스 위에 얹을 수 있다",
+          "limits": "⚠️ **선택지가 넓다는 것은 어느 하나에 최적화하지 못한다는 뜻이기도 하다** — 관리형에서 자체 영속 계층을 만든 이유로 이어진다(이 인과는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Temporal architecture",
+              "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+              "publisher": "Temporal Documentation",
+              "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
+            },
+            {
+              "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+              "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+              "publisher": "Temporal Blog",
+              "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "확장의 단위를 워크플로 하나로 잡는다",
+      "why": "⚠️ **크게 만드는 대신 많이 만들기로 했다** — `Every workflow should be limited in size, but we can infinitely scale out the number of workflows.` 개별 워크플로를 무한히 키우는 길을 버리고 **하나는 작게 제한하되 개수를 늘리는 쪽**을 골랐다. **그 결정이 나머지 설계를 정한다** — 상태가 샤드에 묶이고, 샤드 밖으로 나가는 일에는 트랜잭션이 없어진다.",
+      "tech": [
+        {
+          "tech": "워크플로 상태의 핵심 샤드",
+          "solves": "상태를 샤드 안에 두어 트랜잭션 경계를 만든다",
+          "limits": "⚠️ **경계 밖에는 트랜잭션이 없다** — `as soon as queues live outside of core shards of workflow state, we don't have transactions across them anymore`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Workflow Engine Design Principles with Temporal",
+              "url": "https://temporal.io/blog/workflow-engine-principles",
+              "publisher": "Temporal Blog",
+              "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+            }
+          ]
+        },
+        {
+          "tech": "Transfer Queues",
+          "solves": "**샤드 안에서 트랜잭션으로 커밋한 뒤 나중에 큐 서브시스템으로 옮긴다** — `doesn't rely on complex two-phase commit protocols`",
+          "limits": "⚠️ **`나중에` 가 지연이다** — 커밋과 전달 사이의 창이 생긴다(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Workflow Engine Design Principles with Temporal",
+              "url": "https://temporal.io/blog/workflow-engine-principles",
+              "publisher": "Temporal Blog",
+              "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+            }
+          ]
+        },
+        {
+          "tech": "가시성 인덱스",
+          "solves": "워크플로를 검색·조회할 수 있게 한다",
+          "limits": "⚠️ **회사가 지연을 명시한다** — `This mechanism has an inherent delay, so the index is always some time behind the actual update.`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Workflow Engine Design Principles with Temporal",
+              "url": "https://temporal.io/blog/workflow-engine-principles",
+              "publisher": "Temporal Blog",
+              "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "관리형에서는 영속 계층을 직접 만든다",
+      "why": "오픈소스 서버는 **여러 데이터베이스 위에 얹힐 수 있게** 만들어져 있다. 그런데 **관리형 서비스에서는 남의 것을 그대로 쓰면 시끄러운 이웃 문제가 생긴다** — 트래픽이 큰 테넌트가 자원을 먹어 다른 테넌트가 느려진다. 그래서 Temporal Cloud 는 **영속 계층을 자기 것으로 만들었다.** ⚠️ **오픈소스와 관리형이 같은 바닥을 쓰지 않는다는 뜻이기도 하다**(이 지적은 이 사이트의 재구성이다).",
+      "tech": [
+        {
+          "tech": "동적 샤딩",
+          "solves": "**네임스페이스의 필요에 따라 데이터베이스를 더하고 크기를 따로 조절한다** — `We can dynamically add databases and resize them independently depending on the needs of different Namespaces.`",
+          "limits": "⚠️ **어떤 기준으로 나눌지는 밝히지 않는다**(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+              "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+              "publisher": "Temporal Blog",
+              "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+            }
+          ]
+        },
+        {
+          "tech": "쓰기 선행 로그(WAL)",
+          "solves": "**여러 갱신을 로그에 모아 두었다가 한 번에 묶어 데이터베이스에 쓴다** — 쓰기 횟수를 줄인다",
+          "limits": "⚠️ **모으는 만큼 반영이 늦어진다**(이 대가는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+              "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+              "publisher": "Temporal Blog",
+              "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+            }
+          ]
+        },
+        {
+          "tech": "계층 저장",
+          "solves": "**워크플로 실행이 끝나면 그 이벤트 이력을 객체 저장소로 옮긴다** — 뜨거운 저장에서 덜어 낸다",
+          "limits": "⚠️ **옮겨 간 이력을 다시 볼 때는 느리다**(이 대가는 이 사이트의 재구성이다). 요금이 **활성 저장과 보존 저장으로 갈린 것**이 이 구조와 짝을 이룬다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+              "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+              "publisher": "Temporal Blog",
+              "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+            },
+            {
+              "title": "Temporal — 요금제",
+              "url": "https://temporal.io/pricing",
+              "publisher": "Temporal",
+              "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **수치가 거의 없다.** 영속 계층 글은 `we saw an immediate impact` 수준이고 **비교 벤치마크·지연 수치가 하나도 없다.** 설계 원칙 글도 마찬가지다. **이 회사는 구조와 제약은 잘 적는데 결과를 숫자로 안 적는다.**",
+    "**매출·고객 수가 공개돼 있지 않다.** 요금 구조만 확인했다.",
+    "⚠️ **오픈소스 서버와 Temporal Cloud 가 어디까지 같고 어디부터 다른지 확인하지 못했다** — 영속 계층이 다르다는 것만 안다.",
+    "**동적 샤딩의 기준과 계층 저장의 조회 경로를 확인하지 못했다.**",
+    "**연표(eras)를 세울 자료를 아직 못 찾았다.**"
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Workflow Engine Design Principles with Temporal",
+      "url": "https://temporal.io/blog/workflow-engine-principles",
+      "publisher": "Temporal Blog",
+      "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+    },
+    {
+      "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+      "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+      "publisher": "Temporal Blog",
+      "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+    },
+    {
+      "title": "Temporal architecture",
+      "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+      "publisher": "Temporal Documentation",
+      "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
+    },
+    {
+      "title": "Temporal — 요금제",
+      "url": "https://temporal.io/pricing",
+      "publisher": "Temporal",
+      "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
+    }
+  ]
+}

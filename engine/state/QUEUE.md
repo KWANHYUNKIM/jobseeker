@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Temporal** | US · SaaS(내구성 있는 실행) | 프로파일 완료 · 도메인 3(상태를 이력으로 두고 재생해서 되살린다[tech 4] / 확장의 단위를 워크플로 하나로 잡는다[tech 3] / 관리형에서는 영속 계층을 직접 만든다[tech 3]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Temporal** | US · SaaS(내구성 있는 실행 엔진) | `temporal.io/blog` — 최신 **2026-09-04** | ✅ WebFetch 로 목록·본문 모두 온다. ⚠️ **첫 화면은 파트너십·제품 발표라 심층 글을 검색으로 찾아야 한다** | **⚠️ 한 사이클 전에 ❌ 로 떨어뜨렸다가 남겨 둔 한 편으로 판정이 뒤집혔다.** `workflow-engine-principles` 는 **설계 원칙과 그 제약을 함께 적는다**. **① 확장의 단위를 워크플로로 잡는다** — 개별 워크플로를 크게 키우는 대신 *"Every workflow should be limited in size, but we can infinitely scale out the number of workflows."* **② 제약을 먼저 인정한다** — *"as soon as queues live outside of core shards of workflow state, we don't have transactions across them anymore"*. **③ 그리고 복잡한 프로토콜을 피해 푼다** — Transfer Queues 로 *"we have transactional commits with a later transfer to the queueing subsystem... doesn't rely on complex two-phase commit protocols."* **④ 남는 지연도 적는다** — 가시성 인덱스는 *"always some time behind the actual update"*. ⚠️ **수치는 여전히 약하다** — 앞서 읽은 `...custom-persistence-layer` 글도 `we saw an immediate impact` 수준이었다. **버린 대안과 대가로 기준을 넘는다.** **축이 이 엔진에 없다** — **내구성 있는 실행(durable execution) 엔진**이다 |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

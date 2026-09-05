@@ -8,36 +8,35 @@
 
 ## 지금 파는 중
 
-**없다.** 완료 **75곳** · **큐 1/3**(Temporal) · 비교 문서 33편.
+**Temporal(US · SaaS—내구성 있는 실행)** `in_progress` · **도메인 3 · 기능 0** —
+**76곳** · ⚠️ 큐 0/3. **이 엔진에 없던 축이다.**
 
-**다음 사이클은 6순위(신규) — Temporal 이다.** PROMPT.md 3단계부터.
-⚠️ **첫 화면은 파트너십·제품 발표다 — 심층 글 주소를 검색으로 먼저 찾아 둔다.**
-이미 아는 것: `workflow-engine-principles`(요약 확보) ·
-`higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer`(요약 확보) ·
-`scaling-temporal-the-basics`. **공식 문서(`docs.temporal.io/encyclopedia/architecture`)도
-있다** — 회사 자료이므로 구조를 채우는 데 쓸 수 있다.
+### ⭐⭐ 요금 단위가 아키텍처를 드러낸다 (Honeycomb 에서 얻은 각도가 또 통했다)
 
-### ⭐⭐ 남겨 둔 한 편이 판정을 뒤집었다
+**액션**은 워크플로가 한 걸음 나아갈 때 세는 단위이고, **저장이 활성과 보존으로 갈린
+것**은 **완료된 워크플로의 이벤트 이력을 객체 저장소로 옮기는 계층 저장**과 짝을 이룬다.
+⚠️ 등급 차이가 기능이 아니라 **지원 응답 시간**(P0 에 영업일 1일 · 2시간 · 30분)인 것도
+특이하다.
 
-앞 사이클에서 Temporal 을 ❌ 로 놓으면서 **`workflow-engine-principles 는 안 읽었다`** 고
-적어 뒀는데, **그 한 편에 버린 대안과 대가가 다 있었다.**
-⚠️ **한 회사 안에서 글의 결이 갈리는 다섯 번째 사례다**(Nubank · Bolt · Booking.com ·
-Rightmove 에 이어). **떨어뜨릴 때 `무엇을 안 읽었는지` 를 반드시 적어 둔다** — 그것이
-다음 사이클의 입구가 된다.
+### ⭐⭐ 축은 하나로 모인다 — 상태가 아니라 상태에 이르는 길을 저장한다
 
-### Temporal 이 왜 좋은가 — 제약을 먼저 말하고 단순하게 푼다
+`Temporal will recreate the state by parsing the Event History and replaying each step.`
+그 대가로 **애플리케이션 코드에 제약이 걸린다** — 워크플로는 **결정적**이어야 하고
+액티비티는 **멱등적**이어야 한다. **평범한 코드를 그대로 못 쓴다**(시간·난수·외부 호출).
 
-**확장의 단위를 워크플로로 잡는다**(`Every workflow should be limited in size, but we can
-infinitely scale out the number of workflows`). **제약을 먼저 인정하고**(큐가 워크플로
-상태의 핵심 샤드 밖에 있으면 **그 사이에 트랜잭션이 없다**), **2단계 커밋 같은 복잡한
-프로토콜을 피해** Transfer Queues 로 푼다. **남는 지연도 적는다**(가시성 인덱스는 항상
-실제 갱신보다 뒤에 있다). ⚠️ **수치는 약하다.**
+### 다음 사이클 — 어디부터든 자료가 있다
 
-### ⏳ 다음 후보 — Sentry 는 URL 까지 확보해 뒀다
+- **확장의 단위를 워크플로 하나로 잡는다** — `workflow-engine-principles`.
+  **제약을 먼저 인정하고 단순하게 푸는 결이 가장 뚜렷하다**(샤드 밖 큐에는 트랜잭션이
+  없다 → Transfer Queues → 그래도 남는 인덱스 지연).
+- **상태를 이력으로 두고 재생해서 되살린다** — 공식 문서 + 원칙 글.
+- **관리형에서는 영속 계층을 직접 만든다** — `...custom-persistence-layer`.
 
-`automated-debugging-workflow-sentry`(2026-08-06) · `metrics-caught-ai-size-estimate`
-(2026-09-01). ⚠️ **축이 Honeycomb·Datadog·Grafana 와 겹친다.**
-그 밖에 안 두드린 것: **Wise · HashiCorp · Fastly.**
+### ⚠️ 이 회사에서 조심할 것
+
+**수치가 거의 없다.** 영속 계층 글은 `we saw an immediate impact` 수준이고 비교
+벤치마크가 하나도 없다. **구조와 제약은 잘 적는데 결과를 숫자로 안 적는 회사다** —
+`metrics` 를 억지로 채우지 말고 **그 사실 자체를 적는다.**
 
 ## 지금의 진짜 상태
 

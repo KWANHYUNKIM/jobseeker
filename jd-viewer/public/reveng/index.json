@@ -900,6 +900,18 @@
       "one_liner": "관측 도구를 파는 회사 — 좌석이 아니라 이벤트로 값을 매긴다",
       "updated_at": "2026-09-06",
       "domain": "honeycomb.io"
+    },
+    {
+      "slug": "temporal",
+      "name": "템포럴",
+      "name_en": "Temporal",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "멈췄다 이어지는 실행을 파는 회사",
+      "updated_at": "2026-09-06",
+      "domain": "temporal.io"
     }
   ],
   "domains": [
@@ -1143,7 +1155,10 @@
     "여러 곳이 한꺼번에 죽는다고 보고 배치한다",
     "순서를 지키려면 속도를 내준다",
     "아무나 아무 때나 물어봐도 되게 만든다",
-    "도는 채로 파이프라인 밑을 갈아 끼운다"
+    "도는 채로 파이프라인 밑을 갈아 끼운다",
+    "상태를 이력으로 두고 재생해서 되살린다",
+    "확장의 단위를 워크플로 하나로 잡는다",
+    "관리형에서는 영속 계층을 직접 만든다"
   ],
   "countries": {
     "KR": "한국",
