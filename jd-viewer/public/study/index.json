@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05",
+  "updated_at": "2026-09-06",
   "articles": [
     {
       "slug": "asyncio",
@@ -1222,6 +1222,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "data-catalog",
+      "title": "데이터 카탈로그",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "테이블이 3천 개면 **찾는 것보다 어느 것을 믿을지가 어렵다.** 카탈로그는 검색창이 아니라 **\"이 숫자를 써도 되나\"에 답하는 그릇**이고, 그 안에서 가장 어려운 칸은 **낱말의 뜻**이다.",
+      "aliases": [
+        "데이터 카탈로그",
+        "data catalog",
+        "DataHub",
+        "비즈니스 용어집",
+        "메타데이터 관리"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
