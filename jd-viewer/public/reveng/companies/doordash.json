@@ -4,7 +4,7 @@
   "name_en": "DoorDash",
   "country": "US",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "doordash.com",
   "one_liner": "음식이 식기 전에 도착하게 만드는 회사 — 주문 하나에 손님과 가게와 배달원 셋의 시간이 걸려 있다",
@@ -216,8 +216,86 @@
     {
       "name": "주문과 배차를 실시간으로 흘린다",
       "why": "⚠️ **이 회사의 본체인데 아직 자료를 못 읽었다.** 주문 하나에 **손님·가게·배달원 셋의 시간**이 동시에 걸려 있고, 배차가 늦으면 음식이 식는다. 2014년의 첫 마이크로서비스가 **물류 AI(Deep Red)** 였다는 것만 확인했다 — **Python 이 CPU 집약 작업에 안 맞아 Scala 로 썼다.** **이벤트 흐름과 배차 결정의 구조를 찾는 것이 다음 사이클의 일이다.**",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Kafka + Confluent REST Proxy",
+          "solves": "모든 서비스와 기기가 **HTTP 로** 이벤트를 낸다 — 모바일·웹은 Kafka 에 직접 못 붙고, 서비스마다 설정하게 하면 채택이 느려진다. 여러 앱에 걸쳐 배치가 묶여 브로커 CPU 가 준다.",
+          "limits": "⚠️ **비동기 produce 라 Kafka 가 불가능할 때 소량 유실이 가능하다** — 회사가 그것을 적고 **프록시 재시도와 모니터링으로 상쇄한다**고 밝힌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building scalable real time event processing with Kafka and Flink",
+              "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+              "publisher": "DoorDash Engineering",
+              "date": "2022-10-21",
+              "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+            }
+          ]
+        },
+        {
+          "tech": "Apache Flink (Data Stream API + SQL)",
+          "solves": "낮은 지연, **이벤트 시간 기반 처리**, 내결함성, 다양한 소스·싱크 통합. **YAML 로 선언하는 SQL** 덕에 분석가도 쓴다.",
+          "limits": "⚠️ **잡마다 별도 standalone 서비스로 띄운다** — 실패 격리와 독립 확장을 얻는 대신 **띄울 것이 많아진다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building scalable real time event processing with Kafka and Flink",
+              "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+              "publisher": "DoorDash Engineering",
+              "date": "2022-10-21",
+              "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+            }
+          ]
+        },
+        {
+          "tech": "S3 (Parquet) → Snowpipe → Snowflake",
+          "solves": "S3 한 단계가 **Snowflake 장애를 격리하고, 백필을 가능하게 하고, 데이터 레이크로 가는 길을 연다.** 이벤트마다 자기 Snowpipe 를 갖는다.",
+          "limits": "⚠️ **단계가 하나 늘어 지연이 붙는다**(재구성). 회사는 지연을 `시간이 아니라 분 단위` 로 말한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building scalable real time event processing with Kafka and Flink",
+              "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+              "publisher": "DoorDash Engineering",
+              "date": "2022-10-21",
+              "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+            }
+          ]
+        },
+        {
+          "tech": "빌드 타임 스키마 등록 (Protobuf → Avro)",
+          "solves": "CI 가 비호환 변경을 막고 CD 가 등록한다 — **런타임 등록의 요청 폭증과 런타임 오류를 피한다.**",
+          "limits": "⚠️ **중앙 Protobuf 저장소의 CI/CD 에 묶인다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building scalable real time event processing with Kafka and Flink",
+              "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+              "publisher": "DoorDash Engineering",
+              "date": "2022-10-21",
+              "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+            }
+          ]
+        },
+        {
+          "tech": "GitHub App + Cadence (온보딩 자동화)",
+          "solves": "여러 terraform 저장소에 걸친 PR 을 프로그램적으로 만들고 병합해 **며칠을 몇 분으로** 줄였다.",
+          "limits": "⚠️ **자동화의 값이 코드가 아니라 승인 절차를 고친 데서 나왔다** — 절차가 다시 굳으면 같은 문제가 돌아온다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building scalable real time event processing with Kafka and Flink",
+              "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+              "publisher": "DoorDash Engineering",
+              "date": "2022-10-21",
+              "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "one-pipeline-per-event-not-per-kind"
+      ]
     }
   ],
   "features": [
@@ -1210,6 +1288,505 @@
           "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
         }
       ]
+    },
+    {
+      "key": "one-pipeline-per-event-not-per-kind",
+      "name": "파이프라인을 종류마다 만들지 않고 이벤트마다 만든다",
+      "domain": "주문과 배차를 실시간으로 흘린다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 회사에서 이벤트는 분석 재료가 아니라 운영의 일부다.** 회사가 용도를 셋으로 적는다 — **배차 팀이 웨어하우스의 배차 데이터로 `배차 알고리즘의 버그를 찾고`**, **ML 플랫폼이 배달 이벤트로 `식당의 최근 평균 대기 시간` 같은 실시간 특성을 만들고**, 모바일 이벤트가 시계열 지표로 가서 **최신 앱 릴리스의 문제를 빨리 잡는다**(체크아웃 페이지 로드 오류 같은 것). **주문 하나에 손님·가게·배달원 셋의 시간이 걸려 있는 사업에서, 그 시간을 보는 눈이 이것이다**(뒤쪽 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**하루 수천억 이벤트** · 전달률 **99.99%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "label": "만든 기간",
+            "value": "**2년** — 레거시 파이프라인들을 대체하려고 시작했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 튜닝으로 얻은 것",
+            "value": "복제 2벌 · 리더만 확인 · sticky partitioner(linger 50~100ms) 로 **브로커 CPU 30~40% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "label": "온보딩",
+            "value": "새 이벤트를 붙이는 데 **며칠 걸리던 것이 몇 분으로**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 자료의 나이",
+            "value": "**2022년 10월 글이다** — 그 뒤 4년이 지났고 규모도 구조도 달라졌을 것이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "label": "이 흐름이 받치는 사업",
+            "value": "2026년 2분기 주문 **9억 7,000만 건** · 총거래액 **331억 달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DoorDash Releases Second Quarter 2026 Financial Results",
+                "url": "https://ir.doordash.com/news/news-details/2026/DoorDash-Releases-Second-Quarter-2026-Financial-Results/default.aspx",
+                "publisher": "DoorDash IR",
+                "date": "2026-08-05",
+                "summary": "2026년 2분기 매출 45억 달러(+36%), 조정 EBITDA 9억 1,400만 달러(+40%), 주문 9억 7,000만 건(+27%), 마켓플레이스 총거래액 331억 달러(+36%). Deliveroo 인수분을 빼면 매출 +24%·총거래액 +23%."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "레거시를 볼 때",
+          "thought": "⚠️ **문제가 규모가 아니라 모양이었다** — 파이프라인이 여럿인데 **각각 다르게 만들어졌고 한 종류의 이벤트만 처리했으며** 웨어하우스까지 **여러 홉**을 거쳤다. 비슷한 목적의 파이프라인을 여러 개 만드는 것은 **비용이 비효율적**이고, 서로 다른 전송과 큐를 **관측 설계 없이 섞으면 운영이 어려워진다.** **결과가 셋이었다 — 높은 지연, 큰 비용, 운영 부담**(회사의 서술 그대로다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇에 기댈지 정할 때",
+          "thought": "**전략을 바꿨다** — `AWS 와 3자 데이터 서비스에 크게 기대던 것에서 **오픈소스 프레임워크로**`. 이유가 시점에 있다 — Kafka 와 Flink 가 **지난 몇 년 사이 성숙해 채택하기 쉬워졌다**고 적는다. ⚠️ **`직접 만들 수 있는 좋은 블록` 이 생겼을 때 사서 쓰던 것을 되가져오는 판단이다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실패 격리를 어디까지 할지",
+          "thought": "⚠️ **이 기능의 이름이 여기서 나온다** — **이벤트마다 자기 스트림 처리 앱과 자기 Snowpipe 를 갖는다.** 레거시는 `한 종류의 이벤트만 처리하는 파이프라인들` 이 문제였는데, 새 구조는 **이벤트마다 파이프라인을 갖는다** — 겉보기에 같아 보이지만 **다르다.** 앞의 것은 **제각각 만들어진 파이프라인**이고 뒤의 것은 **같은 플랫폼 위에서 자동으로 찍히는 파이프라인**이다. **그래서 개별 확장과 실패 격리를 얻으면서도 운영이 늘지 않는다**(이 대비는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "이벤트 봉투(envelope)와 페이로드",
+            "what": "⚠️ **봉투에 맥락·메타데이터·스키마 참조가 들어가고 페이로드에 내용이 들어간다.** Kafka 에서는 **봉투가 레코드 헤더, 페이로드가 레코드 값**이다"
+          },
+          {
+            "name": "비스키마 JSON 구간",
+            "what": "⚠️ **봉투 안의 자유 영역** — 정식 스키마 진화 절차를 거치지 않아도 되는 변경을 여기에 담는다"
+          },
+          {
+            "name": "Kafka REST Proxy",
+            "what": "모든 서비스와 기기가 **HTTP 로 이벤트를 낸다.** 여러 클라이언트·앱에 걸쳐 배치가 묶인다"
+          },
+          {
+            "name": "Flink 잡",
+            "what": "**잡마다 별도의 standalone K8s 서비스** — 실패 격리와 독립 확장을 위해"
+          },
+          {
+            "name": "이벤트별 파이프라인",
+            "what": "⚠️ **이벤트 하나마다 자기 스트림 앱과 자기 Snowpipe.** 개별로 확장하고 개별로 실패한다"
+          }
+        ],
+        "invariants": [
+          "**모든 이벤트가 같은 봉투 형식을 쓴다** — 생산자와 소비자 사이의 규약이다",
+          "⚠️ **스키마는 런타임이 아니라 빌드 타임에 등록된다** — 비호환 변경은 CI 에서 막힌다",
+          "**내부 마이크로서비스의 잘못된 페이로드는 생산자 쪽에서 바로 버려진다**",
+          "⚠️ **이벤트마다 파이프라인이 따로 있다** — 하나가 죽어도 나머지는 돈다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**서비스와 기기가 HTTP 로 이벤트를 낸다** — Kafka REST Proxy 로",
+            "why": "⚠️ **모바일·웹은 Kafka 에 직접 붙을 수 없고**, 서비스마다 Kafka 설정을 하게 하면 채택이 느려진다"
+          },
+          {
+            "step": "**프록시가 검증하고 버퍼에 넣은 뒤 바로 응답한다** — 브로커 확인을 기다리지 않는다",
+            "why": "⚠️ **응답이 빨라지고 배치가 좋아진다.** 대신 Kafka 가 죽으면 소량 유실 가능"
+          },
+          {
+            "step": "**내부 서비스의 페이로드는 스키마로 검증되고 인코딩된다. 잘못된 것은 생산자 쪽에서 버려진다**",
+            "why": "⚠️ 모바일·웹의 raw JSON 은 **별도 스트림 앱이 검증·변환**한다"
+          },
+          {
+            "step": "**Kafka 가 받는다** — 복제 2벌, 리더만 확인, sticky partitioner(linger 50~100ms)",
+            "why": "**브로커 CPU 30~40% 감소**"
+          },
+          {
+            "step": "**Flink 잡이 소비한다** — Data Stream API 또는 **YAML 로 선언하는 Flink SQL**",
+            "why": "데이터 분석가도 인프라를 몰라도 쓸 수 있게"
+          },
+          {
+            "step": "**S3 에 Parquet 으로 올린다** — Flink StreamingFileSink, 체크포인트 시 **강한 일관성과 정확히 한 번**",
+            "why": "⚠️ **Snowflake 장애가 스트림 처리에 닿지 않게 하고, Kafka 보존이 짧아도 S3 에서 백필할 수 있게**"
+          },
+          {
+            "step": "**Snowpipe 가 S3 에서 Snowflake 로 옮긴다** — SQS 트리거로 파일이 생기는 대로",
+            "why": "복사 중 간단한 변환도 여기서"
+          },
+          {
+            "step": "⚠️ **이벤트마다 자기 스트림 앱과 자기 Snowpipe 를 갖는다**",
+            "why": "개별 확장과 실패 격리"
+          },
+          {
+            "step": "**새 이벤트 온보딩은 GitHub App 과 Cadence 워크플로가 자동으로 PR 을 만들고 병합한다**",
+            "why": "⚠️ **며칠에서 몇 분으로**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "이벤트 종류마다 파이프라인을 만들 것인가",
+            "chosen": "**플랫폼 하나를 만들고, 그 위에서 이벤트마다 파이프라인을 찍는다**",
+            "alternatives": [
+              "기존처럼 종류별로 따로 만들기"
+            ],
+            "tradeoff": "⚠️ **겉보기에 비슷하지만 다르다.** 레거시는 **제각각 만들어진 파이프라인**이라 비용이 비효율적이고 운영이 어려웠는데, 새 구조는 **같은 플랫폼 위에서 자동으로 찍히는 파이프라인**이라 **개별 확장과 실패 격리를 얻으면서 운영이 늘지 않는다.** 대가는 **플랫폼을 먼저 만들어야 한다는 것**이고 **2년이 걸렸다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "question": "3자 서비스에 계속 기댈 것인가",
+            "chosen": "**오픈소스로 옮긴다** — Kafka · Flink · Confluent REST Proxy · 스키마 레지스트리",
+            "alternatives": [
+              "AWS 와 3자 데이터 서비스에 계속 기대기"
+            ],
+            "tradeoff": "이유가 시점에 있다 — **Kafka 와 Flink 가 지난 몇 년 사이 성숙해 채택하기 쉬워졌다.** ⚠️ **대가는 운영을 떠안는다는 것**인데, 회사는 그것을 **`작은 팀이 운영할 수 있을 것`** 이라는 목표로 미리 못 박았다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "question": "서비스마다 Kafka 클라이언트를 붙일 것인가",
+            "chosen": "**아니다 — HTTP REST Proxy 한 겹을 둔다**",
+            "alternatives": [
+              "모든 서비스에 Kafka 클라이언트 통합"
+            ],
+            "tradeoff": "단점 셋을 적는다 — 서비스마다 **Kafka 연결 설정이 부담**이고(익숙하지 않은 팀은 문제를 겪고 채택이 느려진다), **설정을 통일해 최적화하기 어렵고**, ⚠️ **모바일·웹은 Kafka 에 직접 붙을 수 없다.** 프록시를 두면 **클라이언트와 조율하지 않고도 생산 기능을 개선**할 수 있고, **여러 클라이언트와 앱에 걸쳐 배치가 묶여** 브로커 CPU 가 준다. 대가는 **한 겹이 더 생긴다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "question": "브로커 확인을 기다린 뒤 응답할 것인가",
+            "chosen": "⚠️ **아니다 — 검증하고 버퍼에 넣은 즉시 응답한다**",
+            "alternatives": [
+              "동기 produce"
+            ],
+            "tradeoff": "⚠️ **회사가 위험을 명시적으로 적고 상쇄 방법까지 쓴다** — `이 옵션은 Kafka 가 불가능할 때 소량의 데이터 손실로 이어질 수 있는데, 그 위험은 **프록시 쪽 재시도와 브로커 확인의 면밀한 모니터링**으로 상쇄된다.` **응답 시간·배치·가용성을 얻고 유실 가능성을 감수한 것이고, 그 교환을 숨기지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "question": "Kafka 기본 설정을 쓸 것인가",
+            "chosen": "**아니다 — 처리량과 가용성 쪽으로 튜닝한다**",
+            "alternatives": [
+              "높은 일관성을 위한 기본 설정 유지"
+            ],
+            "tradeoff": "기본값은 **높은 일관성이 필요한 시스템에 맞고**, 비트랜잭션 이벤트 발행에는 비효율적이다. 그래서 **복제 3벌 대신 2벌**(최소 in-sync 1), **리더만 확인**, **linger 50~100ms 의 sticky partitioner** 로 바꿨다. ⚠️ **얻은 것은 브로커 CPU 30~40% 감소이고, 내준 것은 데이터 중복성이다** — 회사는 그것을 `여전히 적절한 중복성` 이라 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "question": "스키마를 언제 등록할 것인가",
+            "chosen": "⚠️ **빌드 타임에** — CI 가 검증하고 CD 가 등록한다",
+            "alternatives": [
+              "이벤트를 낼 때 런타임에 등록"
+            ],
+            "tradeoff": "런타임 등록의 문제 둘을 적는다 — **특정 시점에 스키마 갱신 요청이 폭증해 레지스트리가 버티기 어렵고**, **비호환 변경이 런타임 오류가 된다.** 빌드 타임으로 옮기면 **비호환 변경을 주기 초반에 잡고**, **배포된 Protobuf 클래스와 레지스트리의 스키마가 일치함을 보장한다.** ⚠️ 대가는 **중앙 Protobuf 저장소의 CI/CD 에 묶인다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "question": "웨어하우스에 바로 넣을 것인가",
+            "chosen": "**아니다 — S3 Parquet 을 사이에 둔다**",
+            "alternatives": [
+              "Flink 에서 Snowflake 로 직접"
+            ],
+            "tradeoff": "⚠️ **S3 한 단계가 세 가지를 준다** — **Snowflake 장애가 스트림 처리에 닿지 않고**, **Kafka 보존이 짧아도 백필이 되고**, **데이터 레이크(Trino)로 가는 길이 열린다.** StreamingFileSink 가 체크포인트로 **강한 일관성과 정확히 한 번**을 보장한다. 대가는 **단계가 하나 늘어 지연이 붙는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "question": "온보딩을 사람이 할 것인가",
+            "chosen": "**자동화한다** — GitHub App 이 PR 을 만들고 병합하며 Cadence 워크플로가 절차를 돌린다",
+            "alternatives": [
+              "요청마다 지원 인력이 처리"
+            ],
+            "tradeoff": "⚠️ **IaC 원칙 때문에 오히려 어려워진 자리다** — Kafka 토픽부터 서비스 설정까지 **여러 terraform 저장소에 PR 이 필요해서** 자동화와 추상화가 까다로웠다. 인프라 팀과 **승인 절차를 다시 짜고** 프로그램적으로 PR 을 만들게 해서 **며칠을 몇 분으로** 줄였다. **자동화의 값이 코드가 아니라 승인 절차를 고친 데서 나왔다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Apache Kafka (+ Confluent REST Proxy)",
+            "role": "이종 소스를 하나로 모으는 펍섭. HTTP 로 내고, 다중 클러스터·비동기 produce·헤더 지원을 덧붙였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "tech": "Apache Flink",
+            "role": "소비와 처리. **Data Stream API 와 Flink SQL** 두 층. 잡마다 별도 standalone K8s 서비스",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "tech": "Protobuf + Avro + Confluent 스키마 레지스트리",
+            "role": "중앙 저장소의 Protobuf 로 정의하고 **목적지에서는 Avro 로 변환**한다. 등록은 빌드 타임",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "tech": "S3 (Parquet) → Snowpipe → Snowflake",
+            "role": "⚠️ **S3 한 단계가 격리와 백필과 데이터 레이크를 준다.** 이벤트마다 자기 Snowpipe",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "tech": "GitHub App · Cadence · Retool",
+            "role": "온보딩 자동화와 셀프서비스 UI — 며칠을 몇 분으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "배차 알고리즘 · ML 특성 · 모니터링",
+          "via": "이벤트",
+          "contract": "⚠️ **세 소비자가 성격이 다르다** — 배차 팀은 **웨어하우스에서 알고리즘 버그를 찾고**, ML 플랫폼은 **실시간 특성**을 만들고(식당 최근 평균 대기 시간), 모니터링은 **최신 앱 릴리스의 오류**를 본다. **같은 흐름이 사후 분석·실시간 판단·경보를 함께 받친다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "extract-function-not-code",
+          "via": "마이크로서비스",
+          "contract": "**쪼갠 서비스들이 각자 이벤트를 낸다** — 프록시 한 겹이 그 이질성을 흡수한다. ⚠️ **모놀리스였다면 이 문제 자체가 없었을 것이고, 쪼갠 대가 중 하나가 여기 있다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "primitives-not-workflows",
+          "via": "⚠️ 같은 수법의 반복",
+          "contract": "⚠️ **두 플랫폼이 같은 모양이다** — Iguazu 는 **이벤트마다 파이프라인을 찍고**, Flux 는 **플레이북마다 샌드박스를 찍는다.** 둘 다 **개별 격리를 얻으면서 운영이 늘지 않게** 플랫폼을 먼저 만들었다(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Snowflake · Trino · Chronosphere",
+          "via": "목적지",
+          "contract": "**S3 Parquet 이 중간에 있어 목적지를 갈아 끼울 수 있다** — 데이터 레이크(Trino)로 가는 길도 여기서 열렸다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "비슷한 파이프라인을 여럿 만드는 것과 이벤트마다 파이프라인을 갖는 것은 다르다",
+            "why_hard": "⚠️ **말로는 둘 다 `파이프라인이 많다` 다.** 레거시의 문제는 수가 아니라 **제각각 만들어졌다는 것**이었다 — 서로 다른 전송과 큐가 **관측 설계 없이 섞여** 운영이 어려웠다. 새 구조는 **이벤트마다 파이프라인이 있는데도** 운영이 줄었다.",
+            "current_best": "**플랫폼을 먼저 만들고 그 위에서 파이프라인을 찍는 것** — 같은 봉투 형식, 같은 배포 방식, 자동 온보딩. ⚠️ **대가는 플랫폼을 만드는 데 2년이 걸린다는 것**이고, **그 사이에도 레거시는 돌아야 한다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          },
+          {
+            "problem": "인프라를 코드로 관리하면 자동화가 오히려 어려워지는 자리가 있다",
+            "why_hard": "⚠️ **회고에서 뜻밖의 대목이다** — IaC 원칙 때문에 **Kafka 토픽부터 서비스 설정까지 여러 terraform 저장소에 PR 이 필요했고**, 그것이 **자동화와 높은 추상화를 어렵게** 만들었다. **모든 것을 코드로 두면 모든 것이 사람의 승인을 거친다.**",
+            "current_best": "**승인 절차를 다시 짜고 GitHub App 으로 PR 을 프로그램적으로 만들고 병합하는 것** — Cadence 워크플로로 신뢰성 있게 돌린다. ⚠️ **자동화의 값이 코드가 아니라 승인 절차를 고친 데서 나왔다**(이 정리는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building scalable real time event processing with Kafka and Flink",
+                "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+                "publisher": "DoorDash Engineering",
+                "date": "2022-10-21",
+                "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "HTTP 로 내고, Flink 로 받고, S3 를 거쳐 창고로",
+          "question": "이벤트 하나가 흘러가는 길",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"<b>마이크로서비스 · 모바일 · 웹</b><br/>⚠️ 모바일은 Kafka 에 직접 못 붙는다\"]:::accent --> P[\"<b>Kafka REST Proxy</b><br/>• HTTP 로 낸다<br/>• 여러 앱에 걸쳐 배치가 묶인다<br/>• <b>검증 후 즉시 응답</b>(비동기)\"]:::accent\n  P --> K[\"<b>Kafka</b><br/>• 복제 2벌 · 리더만 확인<br/>• sticky partitioner (50~100ms)<br/>• <b>브로커 CPU 30~40% ↓</b>\"]:::accent\n  K --> F[\"<b>Flink 잡</b><br/>• 잡마다 별도 K8s 서비스<br/>• Data Stream API 또는 <b>YAML SQL</b>\"]:::accent\n  F --> S3[\"<b>S3 (Parquet)</b><br/>• StreamingFileSink<br/>• 강한 일관성 · 정확히 한 번\"]:::accent\n  S3 --> SP[\"<b>Snowpipe</b><br/>• SQS 트리거\"]:::list\n  SP --> SF[\"<b>Snowflake</b>\"]:::list\n  S3 -.->|\"백필 · 데이터 레이크\"| TR[\"<b>Trino</b>\"]:::list\n  F -.-> ML[\"<b>ML 실시간 특성</b><br/>• 식당 최근 평균 대기 시간\"]:::list\n  F -.-> MON[\"<b>Chronosphere</b><br/>• 앱 릴리스 오류 감시\"]:::list\n  E[\"<b>봉투 + 페이로드</b><br/>• 헤더에 봉투 · 값에 페이로드<br/>• 스키마는 <b>빌드 타임 등록</b>\"]:::list -.-> P\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "레거시의 문제는 수가 아니라 제각각이었다는 것",
+          "question": "무엇을 감수했고 무엇이 뜻밖이었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  L[\"<b>레거시 파이프라인들</b>\"]:::gone --> L1[\"⚠️ <b>각각 다르게 만들어졌다</b>\"]:::gone\n  L --> L2[\"⚠️ <b>한 종류 이벤트만 처리</b>\"]:::gone\n  L --> L3[\"⚠️ <b>웨어하우스까지 여러 홉</b>\"]:::gone\n  L1 --> R[\"⚠️ <b>높은 지연 · 큰 비용 · 운영 부담</b>\"]:::gone\n  L2 --> R\n  L3 --> R\n  N[\"<b>새 구조</b><br/>• <b>이벤트마다</b> 파이프라인\"]:::accent --> N1[\"<b>개별 확장 · 실패 격리</b><br/>• 그런데 운영은 안 는다\"]:::list\n  A[\"⚠️ <b>감수한 것</b>\"]:::gone --> A1[\"비동기 produce → <b>소량 유실 가능</b><br/>• 프록시 재시도와 모니터링으로 상쇄\"]:::gone\n  A --> A2[\"복제 3벌 → <b>2벌</b><br/>• 중복성을 내주고 CPU 를 얻는다\"]:::gone\n  I[\"⚠️ <b>뜻밖의 장애물</b><br/>• IaC 라 여러 저장소에 PR 이 필요<br/>• <b>모든 것을 코드로 두면</b><br/>  <b>모든 것이 승인을 거친다</b>\"]:::gone --> I1[\"<b>승인 절차를 다시 짜고</b><br/><b>GitHub App 으로 PR 자동화</b><br/>• 며칠 → 몇 분\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Building scalable real time event processing with Kafka and Flink",
+          "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+          "publisher": "DoorDash Engineering",
+          "date": "2022-10-21",
+          "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
+        },
+        {
+          "title": "Future-proofing: How DoorDash Transitioned from a Code Monolith to a Microservice Architecture",
+          "url": "https://careersatdoordash.com/blog/how-doordash-transitioned-from-a-monolith-to-microservices/",
+          "publisher": "DoorDash Engineering",
+          "date": "2020-12-02",
+          "summary": "2013년 Django 모놀리스로 시작해 2017년에 한계에 닿고 2018년 신뢰성 위기를 지나 2019년 재설계에 들어간 회고. Kotlin·gRPC 를 표준으로 정하고 네 단계 프로젝트로 기능을 추출했다. 16개월 뒤 마이크로서비스 약 50개, 그중 20개가 크리티컬 패스."
+        },
+        {
+          "title": "DoorDash Releases Second Quarter 2026 Financial Results",
+          "url": "https://ir.doordash.com/news/news-details/2026/DoorDash-Releases-Second-Quarter-2026-Financial-Results/default.aspx",
+          "publisher": "DoorDash IR",
+          "date": "2026-08-05",
+          "summary": "2026년 2분기 매출 45억 달러(+36%), 조정 EBITDA 9억 1,400만 달러(+40%), 주문 9억 7,000만 건(+27%), 마켓플레이스 총거래액 331억 달러(+36%). Deliveroo 인수분을 빼면 매출 +24%·총거래액 +23%."
+        }
+      ]
     }
   ],
   "eras": [
@@ -1355,7 +1932,8 @@
     }
   ],
   "open_questions": [
-    "⚠️ **배차와 주문 이벤트의 구조를 아직 못 읽었다** — **이 회사의 본체인데** 확인한 것은 2014년 첫 마이크로서비스가 물류 AI(Deep Red)였고 **Python 이 CPU 집약 작업에 안 맞아 Scala 로 썼다**는 것뿐이다. `Iguazu` 이벤트 플랫폼과 Kafka 관련 글이 있다고 검색에 나온다.",
+    "⚠️ **배차 알고리즘 자체는 여전히 못 봤다** — 이벤트가 **어떻게 흐르는지**는 확인했지만(Iguazu), **무엇을 보고 누구에게 배달을 맡기는지**는 자료를 못 찾았다. 2014년 첫 마이크로서비스가 물류 AI(Deep Red)였고 **Python 이 CPU 집약 작업에 안 맞아 Scala 로 썼다**는 것까지가 전부다.",
+    "⚠️ **Iguazu 글은 2022년 10월 자료다** — `하루 수천억 이벤트` 도 그때 값이고, 그 뒤 4년이 지났다. **검색에는 2026년 Kafka 아키텍처 글이 따로 있다고 나온다.**",
     "⚠️ **마이크로서비스 회고가 2020년 12월 자료다** — 그 뒤 6년이 지났고 서비스 수도 구조도 달라졌을 것이다. **서비스 메시(Linkerd→Envoy) 이전 글이 2025년에 있다**고 검색에 나오지만 아직 안 읽었다.",
     "**gRPC·Kotlin 을 무엇과 견줘 왜 골랐는지가 없다** — 검토했다는 서술까지만 있고 판단 근거가 빠져 있다.",
     "⚠️ **`careersatdoordash.com/blog` 는 WebFetch 가 403 을 준다** — **브라우저로는 전문이 읽힌다.** 이 회사의 자료는 브라우저로만 열린다.",
@@ -1383,6 +1961,13 @@
       "publisher": "DoorDash IR",
       "date": "2026-08-05",
       "summary": "2026년 2분기 매출 45억 달러(+36%), 조정 EBITDA 9억 1,400만 달러(+40%), 주문 9억 7,000만 건(+27%), 마켓플레이스 총거래액 331억 달러(+36%). Deliveroo 인수분을 빼면 매출 +24%·총거래액 +23%."
+    },
+    {
+      "title": "Building scalable real time event processing with Kafka and Flink",
+      "url": "https://careersatdoordash.com/blog/building-scalable-real-time-event-processing-with-kafka-and-flink/",
+      "publisher": "DoorDash Engineering",
+      "date": "2022-10-21",
+      "summary": "이벤트 처리 플랫폼 Iguazu. 2년 만에 하루 수천억 이벤트를 전달률 99.99% 로 처리한다. Kafka REST Proxy 로 생산을 단순화하고 Flink 로 소비하며, S3 Parquet 을 거쳐 Snowpipe 로 Snowflake 에 넣는다. 스키마는 빌드 타임에 등록한다."
     }
   ]
 }

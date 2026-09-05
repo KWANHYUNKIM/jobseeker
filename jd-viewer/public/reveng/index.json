@@ -1015,8 +1015,8 @@
       "name_en": "DoorDash",
       "country": "US",
       "category": "커머스",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "음식이 식기 전에 도착하게 만드는 회사 — 주문 하나에 손님과 가게와 배달원 셋의 시간이 걸려 있다",
       "updated_at": "2026-09-06",
       "domain": "doordash.com"
