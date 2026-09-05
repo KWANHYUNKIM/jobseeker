@@ -763,11 +763,23 @@
       "name_en": "Fly.io",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 2,
       "one_liner": "1분 넘게 걸리던 것을 1~2초로 줄이려고 컨테이너도 합의도 버린 클라우드 — 무엇을 없앨지로 설계하는 회사다",
       "updated_at": "2026-09-05",
       "domain": "fly.io"
+    },
+    {
+      "slug": "oxide",
+      "name": "Oxide Computer",
+      "name_en": "Oxide Computer Company",
+      "country": "US",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "벤더에 티켓을 열고 기다리지 않으려고 랙의 모든 층을 자기가 만든 회사 — 펌웨어부터 컨트롤 플레인까지 한 벌로 판다",
+      "updated_at": "2026-09-05",
+      "domain": "oxide.computer"
     }
   ],
   "domains": [
@@ -985,7 +997,9 @@
     "한 건이 아니라 순서를 본다",
     "빌려줄지 정하는 데 사람을 기다리게 하지 않는다",
     "1분을 1~2초로 줄이려고 무엇을 버릴 것인가",
-    "합의를 버리고 상태를 퍼뜨린다"
+    "합의를 버리고 상태를 퍼뜨린다",
+    "티켓을 열고 기다리지 않으려고 층을 다 갖는다",
+    "랙의 모국어를 IPv6 로 정한다"
   ],
   "countries": {
     "KR": "한국",

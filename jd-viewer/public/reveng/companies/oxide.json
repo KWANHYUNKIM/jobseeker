@@ -1,0 +1,147 @@
+{
+  "slug": "oxide",
+  "name": "Oxide Computer",
+  "name_en": "Oxide Computer Company",
+  "country": "US",
+  "category": "기타",
+  "status": "in_progress",
+  "updated_at": "2026-09-05",
+  "domain": "oxide.computer",
+  "one_liner": "벤더에 티켓을 열고 기다리지 않으려고 랙의 모든 층을 자기가 만든 회사 — 펌웨어부터 컨트롤 플레인까지 한 벌로 판다",
+  "business_model": "**랙 한 대를 통째로 판다.** 컴퓨트·스토리지·네트워킹·소프트웨어를 하나로 묶은 `Oxide Cloud Computer` 를 물리 장비로 넘기고, **구독이나 라이선스 비용을 받지 않는다** — `Zero subscription licensing`, `One-time purchase with no licensing fees`. 회사가 내세우는 비교는 두 방향이다: 전통적 온프렘은 `8+ vendors across compute, networking, storage, orchestration` 를 엮어야 하는데 여기는 `One integrated platform` 이고, 공용 클라우드는 `No ownership only rental, forever` 인데 여기는 소유한다. 값은 `Half the price of public cloud and traditional on-prem. No subscriptions, surprise bills, or egress fees` 라고 적는다. ⚠️ **구체적인 가격·매출·출하 대수는 공개돼 있지 않다.**",
+  "revenue_total": "⚠️ 확인하지 못했다 — 비상장이고 매출을 공개하지 않는다",
+  "products": [
+    "Oxide Cloud Computer (랙 단위로 파는 통합 시스템 — 컴퓨트 슬레드·NVMe 스토리지·프로그래머블 네트워킹)",
+    "랙에 얹혀 나가는 자체 소프트웨어 층 (하이퍼바이저 · 컨트롤 플레인 · 오픈소스 펌웨어)"
+  ],
+  "revenue_streams": [
+    {
+      "name": "랙 판매 (일회 구매)",
+      "how": "컴퓨트·스토리지·네트워킹·소프트웨어를 묶은 랙을 물리로 넘기고 값을 받는다. **구독·라이선스·이그레스 요금이 없다**는 것이 판매 논리의 핵심이다",
+      "weight": "⚠️ 비중을 확인할 자료가 없다",
+      "domains": [
+        "티켓을 열고 기다리지 않으려고 층을 다 갖는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Oxide Computer — 제품 소개",
+          "url": "https://oxide.computer/",
+          "publisher": "Oxide Computer Company",
+          "summary": "랙 하나로 컴퓨트·스토리지·네트워킹·소프트웨어를 통합해 파는 제품 설명. 구독 없는 일회 구매와 2시간 설치를 내세운다."
+        }
+      ]
+    },
+    {
+      "name": "⚠️ 그 밖의 수익원(지원·확장 랙 등)은 확인하지 못했다",
+      "how": "",
+      "weight": "",
+      "domains": [],
+      "confidence": "unknown",
+      "sources": []
+    }
+  ],
+  "domain_map": {
+    "title": "Oxide 도메인 지도",
+    "question": "랙 하나를 통째로 파는 회사가, 층을 다 갖는 대신 무엇을 짊어지는가?",
+    "code": "flowchart TD\n  C[\"<b>고객</b><br/>• 금융·공공·생명과학<br/>• 온프렘 소유를 원한다\"]:::list --> R\n  R[\"<b>Oxide 랙 한 대</b><br/>• 컴퓨트·스토리지·네트워킹<br/>• 소프트웨어까지 한 벌\"]:::list\n  R --> D1[\"<b>티켓을 열고 기다리지 않으려고<br/>층을 다 갖는다</b><br/>• 가상 NIC · 드라이버<br/>• 컨트롤 플레인 · 펌웨어\"]:::list\n  R --> D2[\"<b>랙의 모국어를 IPv6 로 정한다</b><br/>• 슬레드 간 통신<br/>• Geneve 캡슐화 · MTU\"]:::list\n  D2 -.->|같은 층을 함께 고쳐야<br/>성능이 나온다| D1"
+  },
+  "domains": [
+    {
+      "name": "티켓을 열고 기다리지 않으려고 층을 다 갖는다",
+      "why": "전통적 온프렘의 문제를 회사는 벤더 수로 말한다 — `8+ vendors across compute, networking, storage, orchestration`. 층이 갈리면 **문제가 층 사이에 떨어졌을 때 아무도 책임지지 않는다.** 이 회사가 층을 다 갖는 이유가 성능 글에 한 문장으로 나온다: 점보 프레임을 시험하다 가상 NIC 의 인터럽트 처리 문제를 만났는데 **`because the driver is ours, we tracked it down and fixed it before the feature shipped, rather than opening a ticket with a vendor and waiting`** 였다. **소유의 값어치가 기능이 아니라 고칠 수 있음에 있다**는 것이 이 도메인의 성격이다.",
+      "tech": [
+        {
+          "tech": "가상 NIC 과 데이터 경로를 직접 만든다 — Propolis · OPTE · xde 드라이버",
+          "solves": "게스트 프레임이 지나는 길을 자기 코드로 들고 있다. 그래서 오버사이즈 프레임이 들어올 때 생긴 **인터럽트 처리 문제를 출시 전에 직접 잡았다**. 벤더 드라이버였다면 티켓을 열고 기다리는 일이 됐을 자리다.",
+          "limits": "⚠️ **직접 만든 만큼 직접 짊어진다.** 성능 천장도 자기 몫이다 — 단일 연결은 **약 60Gbps** 에서 막히고, 그 위는 병렬로만 넘는다. 슬레드 하나의 합산은 **약 90Gbps** 다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Performance Has Layers",
+              "url": "https://oxide.computer/blog/performance-has-layers",
+              "publisher": "Oxide Computer Company",
+              "date": "2026-06-18",
+              "summary": "랙 안의 MTU 를 올리며 겪은 층별 조율. 버린 대안(9000·포트별 손잡이)과 그 이유, 그리고 단일 연결 약 60Gbps 천장 같은 한계를 함께 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "컨트롤 플레인(Nexus)과 오픈소스 펌웨어·하드웨어 신뢰 근원",
+          "solves": "프로비저닝을 공용 클라우드처럼 API 로 하면서도 **`Fully auditable security chain, with a hardware root of trust, open-source firmware`** 를 내세운다. 설치는 `2-hour setup` 이라고 적는다.",
+          "limits": "⚠️ **이 층들의 세부는 아직 확인하지 못했다.** 읽은 글이 네트워크 성능 한 편이라 컨트롤 플레인·펌웨어의 구조는 이 사이트가 아직 못 판 자리다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Oxide Computer — 제품 소개",
+              "url": "https://oxide.computer/",
+              "publisher": "Oxide Computer Company",
+              "summary": "랙 하나로 컴퓨트·스토리지·네트워킹·소프트웨어를 통합해 파는 제품 설명. 구독 없는 일회 구매와 2시간 설치를 내세운다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "랙의 모국어를 IPv6 로 정한다",
+      "why": "**`The rack's underlay is IPv6: every sled-to-sled hop, every Geneve-encapsulated guest frame, rides IPv6 by default.`** IPv4 를 기본으로 두고 IPv6 를 덧붙이는 흔한 방식과 반대다. 그리고 그 선택이 성능에서 손해가 아니라는 것을 숫자로 보인다 — **IPv4 34.5Gbps 대 IPv6 34.9Gbps**. 캡슐화(Geneve)를 전제로 랙 안의 주소 체계와 프레임 크기를 처음부터 다시 정한 것이 이 도메인이다.",
+      "tech": [
+        {
+          "tech": "MTU 를 9000 이 아니라 8500 으로 — 500바이트를 일부러 남긴다",
+          "solves": "캡슐화 오버헤드의 **하한이 70~78바이트**인데 **`We reserve 500`** 한다. 앞으로 들어올 Geneve 기능을 위한 여유다. 이유를 회사가 한 줄로 적는다 — **`it is easy to grow later and very hard to shrink once customers build expectations around it.`**",
+          "limits": "⚠️ **점보 프레임이 만능이 아니라고 회사가 먼저 못 박는다** — `jumbo frames are not a network go-fast button`. 그리고 경로 MTU 탐색이 막히면 **`the application stalls and transfers nothing`** 이다. 크게 만든 대가가 조용한 정지로 나타난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Performance Has Layers",
+              "url": "https://oxide.computer/blog/performance-has-layers",
+              "publisher": "Oxide Computer Company",
+              "date": "2026-06-18",
+              "summary": "랙 안의 MTU 를 올리며 겪은 층별 조율. 버린 대안(9000·포트별 손잡이)과 그 이유, 그리고 단일 연결 약 60Gbps 천장 같은 한계를 함께 적었다."
+            }
+          ]
+        },
+        {
+          "tech": "포트별 MTU 손잡이를 버리고 인스턴스에 붙인다",
+          "solves": "원칙을 한 문장으로 적는다 — **`MTU is a property of a path, not of a port.`** 스위치 포트 하나가 **여러 상류 경로의 관문**이 될 수 있으므로 포트에 값을 박으면 틀린다. 그래서 판단을 인스턴스로 옮기고 **운영자가 쥐는 함대 단위 스위치**로 잠갔다.",
+          "limits": "⚠️ 손잡이를 옮겼을 뿐 **경로마다 다른 MTU 라는 문제 자체는 남는다** — 그래서 위의 경로 MTU 탐색 실패가 여전히 조용한 정지로 이어진다(이 인과는 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Performance Has Layers",
+              "url": "https://oxide.computer/blog/performance-has-layers",
+              "publisher": "Oxide Computer Company",
+              "date": "2026-06-18",
+              "summary": "랙 안의 MTU 를 올리며 겪은 층별 조율. 버린 대안(9000·포트별 손잡이)과 그 이유, 그리고 단일 연결 약 60Gbps 천장 같은 한계를 함께 적었다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "**매출·출하 대수·가격이 공개돼 있지 않다.** `Half the price of public cloud and traditional on-prem` 같은 비교 문구만 있고 근거 수치가 없다.",
+    "컨트롤 플레인(Nexus)·하이퍼바이저·스토리지 층의 구조를 아직 안 팠다 — 읽은 글이 네트워크 성능 한 편이다.",
+    "**연표(eras)를 쓸 자료를 아직 못 찾았다.** 회사가 언제 무엇을 갈아엎었는지 연도가 붙은 회고를 확인하지 못했다 — 확장 사이클에서 다시 본다.",
+    "`2-hour setup` 이 무엇부터 무엇까지를 재는 시간인지 확인하지 못했다."
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Oxide Computer — 제품 소개",
+      "url": "https://oxide.computer/",
+      "publisher": "Oxide Computer Company",
+      "summary": "랙 하나로 컴퓨트·스토리지·네트워킹·소프트웨어를 통합해 파는 제품 설명. 구독 없는 일회 구매와 2시간 설치를 내세운다."
+    },
+    {
+      "title": "Performance Has Layers",
+      "url": "https://oxide.computer/blog/performance-has-layers",
+      "publisher": "Oxide Computer Company",
+      "date": "2026-06-18",
+      "summary": "랙 안의 MTU 를 올리며 겪은 층별 조율. 버린 대안(9000·포트별 손잡이)과 그 이유, 그리고 단일 연결 약 60Gbps 천장 같은 한계를 함께 적었다."
+    }
+  ]
+}

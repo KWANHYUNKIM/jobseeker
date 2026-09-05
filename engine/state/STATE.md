@@ -8,55 +8,34 @@
 
 ## 지금 파는 중
 
-**Fly.io(US · SaaS) — 회사 프로파일까지 썼다.** `in_progress` · **도메인 2 · 기능 0** ·
-도메인 `tech` 는 둘 다 채웠다(3 + 2).
-**완료 63곳 + Fly.io = 64곳 · 큐 대기 1(Oxide Computer) · 비교 문서 33편.**
+**Oxide Computer(US · 기타 — 서버·하드웨어) — 회사 프로파일까지 썼다.** `in_progress` ·
+**도메인 2 · 기능 0** · 도메인 `tech` 는 둘 다 채웠다(2 + 2).
+**완료 64곳(Fly.io 를 닫았다) + Oxide = 65곳 · ⚠️ 큐 대기 0 · 비교 문서 33편.**
 
-### 다음 사이클은 Fly.io 의 첫 기능이다
+### 다음 사이클은 Oxide 의 첫 기능이다
 
-`--gaps` 가 **확장 2순위**로 잡을 것이다. 빈 도메인이 둘인데 **먼저 걸리는 쪽부터** 판다.
-- **`1분을 1~2초로 줄이려고 무엇을 버릴 것인가`** — 자료는 이미 읽었다
-  (`fly.io/blog/design-and-implementation`). **버린 대안 셋**(사용자용 OCI 컨테이너 ·
-  NVMe 부착 스토리지 · 호스트 기반 오케스트레이션)이 결정의 뼈대가 된다.
-- **`합의를 버리고 상태를 퍼뜨린다`** — `fly.io/blog/corrosion` 도 읽었다. **Consul 을 버린
-  이유**(*"Consensus protocols like Raft break down over long distances"* ·
-  *"wasted time guaranteeing consensus for updates that couldn't conflict in the first place"*),
-  **겪은 사고 둘**(Rust `RwLock` 데드락으로 *"Within a few seconds every proxy in our fleet had
-  locked up"*, Consul mTLS 만료로 *"we're literally saturating our uplinks almost everywhere"*),
-  **스스로 인정한 설계 실수**(*"we built a single global state domain"*)가 다 있다.
+`--gaps` 가 **확장 2순위**로 잡는다. 먼저 걸리는 쪽은
+**`티켓을 열고 기다리지 않으려고 층을 다 갖는다`** 다.
 
-**⚠️ 수치가 얇은 회사다**(STATE 가 프로파일 전에 미리 경고했고 실제로 그랬다).
-`business.metrics` 를 억지로 채우지 않는다 — **없으면 비우고 `open_questions` 에 적는다.**
-프로파일에서 이미 그렇게 했다(비공개 매출 · Sprites 성능 수치 없음 · Corrosion 규모 수치 얇음).
+⚠️ **읽은 글이 한 편뿐이다**(`performance-has-layers`, 2026-06-18). 거기서 확인된 것:
+- **버린 대안 셋** — MTU 를 9000 이 아니라 **8500**(`We reserve 500`), **포트별 MTU 손잡이**를
+  버린 이유(`MTU is a property of a path, not of a port`), IPv6 를 덧붙임이 아니라
+  **언더레이의 모국어**로(`it is the rack's native tongue`).
+- **대가** — `jumbo frames are not a network go-fast button` · 경로 MTU 탐색이 막히면
+  `the application stalls and transfers nothing` · 단일 연결은 **약 60Gbps** 천장.
+- **수치** — 내부 VPC 52.44→55.73Gbps, 외부 7.70→32.67Gbps, 슬레드 하나 합산 약 90Gbps,
+  IPv4 34.5 대 IPv6 34.9Gbps.
+- **층 소유의 값어치가 한 문장에 있다** — `because the driver is ours, we tracked it down and
+  fixed it before the feature shipped, rather than opening a ticket with a vendor and waiting`.
 
-### ⚠️ 1분 크론이 폭주했다 — 루프 간격에 대한 기록
+**⚠️ 아직 안 판 층이 많다** — 컨트롤 플레인(Nexus)·하이퍼바이저·스토리지·펌웨어의 구조는
+확인하지 못했다. 기능을 쓰기 전에 `oxide.computer/blog` 에서 그 층의 글을 먼저 찾는다.
 
-**사용자가 1분 간격으로 이 사이클을 걸었는데, 한 사이클이 3~5분 걸려 130회 넘게 대기열에 쌓였다.**
-프로파일 사이클이 검증까지 끝나고 **커밋 전에 다음 발화가 밀려드는 상태**가 됐고, 결과적으로
-`flyio.json` 이 미커밋인 채로 한동안 남았다. **이 엔진의 사이클은 웹 페치가 2~5회 들어가므로
-1분 간격으로 돌릴 수 없다.** 다시 걸 때는 **최소 5분**, 웹 조사가 많은 후보 조사 사이클을
-고려하면 **10분**이 안전하다.
+**⚠️ 수치가 얇은 회사다** — 비상장이라 매출·출하 대수·가격이 없다. `business.metrics` 를
+억지로 채우지 않고 성능 수치 위주로만 쓴다(프로파일에서 이미 그렇게 했다).
 
-### 비교 문서 ② 를 쓸 수 있다 — 세 회사가 모였다
-
-**"정확도를 못 재는 것을 어떻게 믿는가"** — 카카오뱅크 FDS(t-SNE 군집) · ZOZO 애매한 검색
-(*"목시 평가"*) · 쏘카 예약 테트리스(*가상 예약*). **서로 답하지 않은 질문**: 대리 지표가
-실제 목표와 어긋나기 시작한 것을 무엇으로 아는가. ⚠️ **새 주장을 만들지 말고 각 회사 페이지의
-`confirmed` 만 엮는다.** 사다리상 **확장·신규가 비교 문서(8순위)보다 위**이므로 Fly.io 를 닫은 뒤다.
-
-### Fly.io 자료 접근 — 다음 실행이 헛돌지 않게
-
-- **`fly.io/blog` 는 WebFetch 로 목록과 본문이 다 열린다.** ⚠️ **목록에 날짜가 안 실린다** —
-  글을 열면 *"Last updated"* 표기가 있다.
-- **아직 안 읽은 글** — `litestream-vfs` · `litestream-writable-vfs`(SQLite 를 오브젝트
-  스토리지와 맞추는 이야기, Sprites 저장소 스택과 이어진다) · `building-agents-that-dont-break-themselves`.
-- **⚠️ `eras` 는 세우지 않았다.** 두 전환(Fly Machines → Sprites, Consul → Corrosion)이
-  세대 교체가 분명한데 **연도가 없다.** *"It took 3 years to…"* 는 기간이지 연도가 아니다.
-
-### ⚠️ 다른 세션과 같은 큐를 잡지 않는다
-
-`guide-engine`(쿠팡)·`study-engine`(OAuth 2.0) 둘 다 계속 커밋 중이다.
-**사이클 시작 전에 `git log --oneline -3` 을 보고, 커밋할 때 `git add -A` 를 쓰지 않는다.**
+**⚠️ 큐가 0/3 이다.** Oxide 를 다 판 뒤에는 사다리가 **3순위(후보 조사)** 로 내려간다 —
+바깥에서 새 회사를 가져오는 단이다.
 
 ## 지금의 진짜 상태
 

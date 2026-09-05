@@ -15,13 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Fly.io** | US · SaaS | 프로파일 완료(370) · 도메인 2(1분을 1~2초로 줄이려고 무엇을 버릴 것인가[tech 3] / 합의를 버리고 상태를 퍼뜨린다[tech 2]) · 기능 0 |
+| **Oxide Computer** | US · 기타(서버·하드웨어) | 프로파일 완료 · 도메인 2(티켓을 열고 기다리지 않으려고 층을 다 갖는다[tech 2] / 랙의 모국어를 IPv6 로 정한다[tech 2]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Oxide Computer** | US · 기타(서버·하드웨어) | `oxide.computer/blog` | WebFetch ✅ (최신 2026-08-28) | **63곳 중 하드웨어를 만드는 회사가 없다** — 랙을 직접 설계해 팔면서 하이퍼바이저·펌웨어·컨트롤 플레인까지 자기가 쓴다. `performance-has-layers`(2026-06-18)를 열어 확인했다: **버린 대안 셋**(게스트 MTU 를 9000 대신 **8500** 으로 — *"reserve 500. The extra is deliberate"*, 스위치식 **포트별 MTU 손잡이를 버린 이유** — *"MTU is a property of a path, not of a port"*, IPv6 를 **호환용 덧붙임이 아니라 언더레이의 모국어로** — *"it is the rack's native tongue"*), **대가 명시**(*"jumbo frames are not a network go-fast button"* · 경로 MTU 탐색이 막히면 *"the application stalls and transfers nothing"* · 단일 연결은 **약 60 Gbps** 에서 천장), **수치 표**(내부 VPC 52.44→55.73 Gbps, 외부 7.70→32.67 Gbps, 슬레드 하나 합산 약 90 Gbps). **셋을 다 갖춘 드문 글이다.** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
@@ -144,6 +143,8 @@
 | **bol.com** | EU(NL) · 커머스 | `techlab.bol.com/en` | ⏸️ **보류(사이클 226)** — **블로그 글이 2024-11-07 에서 멈췄다.** 목록 16페이지의 1페이지가 최신인데 2025·2026 글이 하나도 없고, 2026 항목 둘은 **경력 팟캐스트**(`/en/podcasts/`)다. 멈춘 블로그로는 도메인 두 개를 열 재료가 안 나온다. **새 글이 올라오면 다시 꺼낸다** — 확인해 둔 재료는 모놀리스 데이터 분리(4TB 중 3TB · 이관 잡 19~23시간 · 전체 2~3개월 · CPU 4%→약 15% · 버린 대안 셋) |
 
 ## 완료
+
+- **Fly.io** (US · SaaS) — 도메인 2개 · 기능 2개(`sprite-create` 1~2초에 뜨는 컴퓨터 만들기 · `corrosion-state-sync` 합의 없이 라우팅 표 퍼뜨리기). **⭐⭐ 빠르게 만드는 방법이 더하는 것이 아니라 버리는 것이었다** — 사용자용 컨테이너·로컬 NVMe·호스트 오케스트레이션 셋을 없애 `create` 를 1분에서 1~2초로 줄였고, 그 대가를 회사가 하나씩 적는다(자기 이미지를 못 쓴다 · *"the performance isn't adequate for a hot Postgres node in production"* · 밀리초 응답을 요구하는 워크로드와 어긋난다). **⭐⭐ 실패를 가장 많이 적는 회사다** — Corrosion 편에서 **스스로 설계 실수를 인정한다**: *"In retrospect, our Corrosion rollout repeated a mistake we made with Consul: we built a single global state domain."* 여기에 RwLock 데드락(몇 초 만에 전 프록시 잠김) · nullable 컬럼 backfill(*"kryptonite to large Corrosion tables"*) · 백오프 루프가 Corrosion 쓰기를 불러 *"saturating our uplinks almost everywhere"* 까지 셋을 더 적는다. **⭐ 두 기능이 한 문장으로 이어진다** — 1~2초에 뜨는 컴퓨터가 성립하려면 공개 URL 전파가 합의를 기다리면 안 된다. **⭐ 연표는 2023년 하나** — `January of 2023` 은 Nomad, `December of 2023` 은 flyd 라고 글이 직접 못 박는다. **⚠️ 수치가 얇다** — 매출 비공개, Sprites·Corrosion 규모 수치가 거의 없어 `business.metrics` 를 시간·비용 위주로만 채웠다. **⚠️ Nomad 이전 구조의 시작 연도가 없어**(`For the year following our launch`) 그 시기는 세우지 않고 `context` 로 옮겼다.
 
 - **PayFit** (EU · SaaS) — 도메인 1개 · 기능 1개(`name-it-before-you-cut` 자르기 전에 이름부터 맞춘다). **⭐⭐ 이 회사의 답은 코드가 아니라 이름이었다** — 급여 명세가 전에는 *"considered as an internal implementation detail"* 이었고, **무엇을 '내부 상세' 라 부르는 순간 그것은 경계 밖이 된다.** **⭐ 모델링을 엔지니어만 하지 않는다**(영업·고객지원·제품·디자인이 여러 나라에서 모였다). **⭐ JetLang 은 강점이자 짐이다** — 노동법을 담으려고 만든 로우코드가 풀코드와 동거하며 **책임을 흐리고 진실의 원천을 여럿으로 만들었다.** **규모** — 고객 10,000곳 · 종업원 200,000명 · 3개국 · 2023년 앱 성능 30퍼센트 개선. **⚠️ 이 회사의 글에는 대가가 거의 없다** — 네 편 중 대가를 적은 것은 DDD 편 하나뿐이고 그마저 성과 수치가 없다. **⚠️ 코드나 시스템이 어떻게 됐는지는 끝내 안 나온다.** **⚠️ JetLang 본문은 못 찾았다**(356 에서 WebSearch 예산 소진). **⚠️ 블로그가 얇고 2024-07 에서 멈췄다.**
 
