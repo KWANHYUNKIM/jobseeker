@@ -1605,6 +1605,27 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "security-certification",
+      "title": "보안 인증 제도",
+      "category": "domain",
+      "level": "core",
+      "status": "done",
+      "one_liner": "우리가 안전하다고 주장하는 대신 **제3자가 검사하고 증서를 주는 제도** — 그리고 그 증서를 받으려면 아키텍처가 먼저 바뀐다.",
+      "aliases": [
+        "보안 인증",
+        "ISMS",
+        "ISMS-P",
+        "ISO 27001",
+        "SOC 2",
+        "KCMVP",
+        "Common Criteria",
+        "FIPS 140"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
