@@ -989,6 +989,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-05"
+    },
+    {
+      "slug": "olap",
+      "title": "OLAP · 컬럼 지향",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**한 행을 찾는 대신 한 컬럼을 통째로 훑는 세계**다. 저장을 컬럼 단위로 바꾸면 읽을 양이 줄고, 같은 종류가 붙어 있어 압축이 잘 되며, 한 번에 여러 값을 계산할 수 있다.",
+      "aliases": [
+        "OLAP",
+        "컬럼 지향",
+        "컬럼 기반",
+        "ClickHouse",
+        "데이터 웨어하우스"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-05"
     }
   ],
   "categories": {
