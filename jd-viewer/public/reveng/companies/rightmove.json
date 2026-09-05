@@ -111,7 +111,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "sitemap-by-events"
+      ]
     },
     {
       "name": "자바와 HTML 이 얽힌 화면을 걷어낸다",
@@ -174,7 +176,396 @@
     "**기술 글이 `/category/software-engineering/` 에 5페이지 분량 있다** — 두 편만 읽었다. 나머지에서 도메인이 더 나올 수 있다.",
     "**연표(eras)를 세울 자료를 아직 못 찾았다.**"
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "sitemap-by-events",
+      "name": "밤새 다시 세던 것을 바뀔 때마다 고쳐 쓴다",
+      "domain": "자연 유입이 매출의 바탕이라 색인을 직접 관리한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 회사에서 사이트맵은 잡무가 아니다** — 트래픽의 **85% 이상이 직접·자연 유입**이고 포털 체류 시간 10분 중 **9분**을 가져간다. **검색 엔진이 페이지를 못 찾으면 매물이 안 팔리고, 매물이 안 팔리면 중개사가 회비를 낼 이유가 준다.** 그런데 해외 매물 사이트맵은 **지역 266,569개**를 다루면서 레거시 모놀리스에 묶여 있었고, 회사가 그 상태를 이렇게 적는다: `creating performance bottlenecks and operational risks`.",
+        "metrics": [
+          {
+            "label": "다루는 규모",
+            "value": "해외 매물 **지역 266,569개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "생성 시간",
+            "value": "**최대 5시간 → 30분**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "걷어낸 부하",
+            "value": "**수십만 건의 REST 요청**(`hundreds of thousands of REST requests`)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "label": "이 기능이 지키는 것",
+            "value": "트래픽의 **85% 이상**이 직접·자연 유입 · 포털 체류 시간의 **10분 중 9분** — ⚠️ 3자 매체 수치다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Rightmove H1 2026 실적 (3자 매체 정리)",
+                "url": "https://www.investegate.co.uk/announcement/prn/rightmove--rmv/trading-statement/9558481",
+                "publisher": "Investegate 외",
+                "date": "2026",
+                "summary": "⚠️ 1차 IR 원문이 아니라 3자 매체가 정리한 수치다. 매출·중개 지점 수·ARPA·유지율·트래픽 점유를 담고 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "대안을 고를 때",
+          "thought": "⚠️ **RFC 로 두 안을 놓고 골랐고, 버린 쪽의 장점까지 적는다** — 옛 배치 방식은 **추가 저장소가 필요 없고**, **사내에 이미 있는 패턴**이며, **디버깅이 쉽다.** 그럼에도 버린 이유가 하나로 모인다: `Not resilient: A single instance meant any failure disrupted the process.` **좋은 점이 셋인데 회복력 하나가 그것을 이겼다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇이 진짜 문제인지 가릴 때",
+          "thought": "**5시간이 걸린다는 것이 문제의 전부가 아니었다.** 병렬화(RX Java)와 캐시를 이미 쓰고 있었는데도 그랬고, 더 나쁜 것은 **그 5시간 동안 의존 서비스 중 하나라도 흔들리면 전체가 실패**한다는 점이었다. **시간이 길다는 것은 실패할 창이 길다는 뜻이기도 하다**(이 해석은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "부수 효과를 발견했을 때",
+          "thought": "로컬 상태를 갖게 되자 **원래 목적과 무관한 것이 딸려 왔다** — 지역별 **실시간 매물 수** 같은 사업 지표다. 회사가 그것을 장점 칸에 적는다(`additional business insights`). **상태를 갖는 대가를 치르면 상태로 할 수 있는 일이 생긴다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "사이트맵",
+            "what": "검색 엔진을 페이지로 안내하는 색인. 해외 매물은 지역 266,569개를 담는다"
+          },
+          {
+            "name": "지역(region)",
+            "what": "사이트맵의 단위. 로컬 데이터베이스가 **지역 ID 로 색인**된다"
+          },
+          {
+            "name": "도메인 이벤트",
+            "what": "지역 마이크로서비스와 매물 마이크로서비스가 Kafka 로 내보내는 변경"
+          },
+          {
+            "name": "로컬 상태",
+            "what": "이벤트로만 갱신되는 자체 데이터베이스. ⚠️ **원본이 아니라 사본이다**"
+          },
+          {
+            "name": "⚠️ 야간 배치(옛것)",
+            "what": "단일 인스턴스 Spring Boot 작업. RX Java 로 병렬화하고 캐시를 썼는데도 최대 5시간"
+          }
+        ],
+        "invariants": [
+          "**색인이 늦으면 매물이 안 보인다** — 자연 유입이 매출의 바탕이라 이 지연이 곧 사업 지연이다",
+          "**로컬 상태는 이벤트로만 갱신된다** — 더 이상 다른 서비스에 물어보지 않는다",
+          "**사라지는 것도 이벤트로 처리한다** — 매물 보관과 지역 삭제까지 반영해야 유령 항목이 안 남는다",
+          "⚠️ **로컬 상태는 사본이므로 원본과 어긋날 수 있다** — 그 어긋남을 관리하는 것이 이 구조의 값이다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**지역·매물 마이크로서비스가 변경을 이벤트로 내보낸다**",
+            "why": "바뀐 것만 흘리기 위해서다 — 전체를 다시 훑지 않는다"
+          },
+          {
+            "step": "**Kafka 로 그 이벤트를 받는다**",
+            "why": "발행하는 쪽과 받는 쪽을 떼어 놓는다"
+          },
+          {
+            "step": "**지역 ID 로 색인한 로컬 데이터베이스에 상태를 쌓는다**",
+            "why": "⚠️ **여기서 수십만 건의 REST 요청이 사라진다** — 물어보는 대신 갖고 있는다"
+          },
+          {
+            "step": "**매물 보관과 지역 삭제도 그때그때 반영한다**",
+            "why": "사라진 것을 안 지우면 사이트맵에 유령 항목이 남는다"
+          },
+          {
+            "step": "**그 상태로 사이트맵을 만든다** — 생성이 30분으로 줄었다",
+            "why": "모을 것이 이미 모여 있기 때문이다"
+          },
+          {
+            "step": "⚠️ **덤으로 사업 지표가 생긴다** — 지역별 실시간 매물 수",
+            "why": "상태를 갖게 되면 상태로 답할 수 있는 질문이 생긴다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "지금 구조를 그대로 옮길 것인가, 다시 지을 것인가",
+            "chosen": "**이벤트 기반으로 다시 짓는다** — RFC 에 두 안을 놓고 골랐다",
+            "alternatives": [
+              "기존 배치 아키텍처를 복제해 유지하기"
+            ],
+            "tradeoff": "⚠️ **버린 쪽의 장점이 셋이나 된다** — 추가 저장소 불필요 · 사내 기존 패턴 활용 · **디버깅이 쉽다.** 그럼에도 회복력 하나가 그것을 이겼다: `Not resilient: A single instance meant any failure disrupted the process.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "필요한 데이터를 어떻게 얻을 것인가",
+            "chosen": "**이벤트로 받아 로컬에 쌓는다** — 물어보지 않는다",
+            "alternatives": [
+              "실행 때마다 다른 서비스에 REST 로 물어보기(옛 방식)"
+            ],
+            "tradeoff": "**수십만 건의 REST 요청이 사라지고 결합도가 낮아진다.** ⚠️ 대신 **로컬 상태를 유지하는 복잡함과 데이터 일관성 문제**를 떠안는다 — 회사가 그대로 적는다: `Added complexity in maintaining local state and ensuring data consistency`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "저장소를 새로 둘 것인가",
+            "chosen": "**둔다** — 지역 ID 로 색인한 로컬 데이터베이스",
+            "alternatives": [
+              "상태 없이 매번 계산하기(옛 방식의 장점이었다)"
+            ],
+            "tradeoff": "⚠️ **`requires additional storage` 를 대가 칸에 그대로 적는다.** 그 대신 얻은 것이 생성 시간만이 아니다 — **지역별 실시간 매물 수 같은 사업 지표**가 딸려 온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "사라지는 것을 어떻게 다룰 것인가",
+            "chosen": "**매물 보관과 지역 삭제도 이벤트로 그때그때 반영한다**",
+            "alternatives": [
+              "주기적으로 전체를 다시 훑어 정리하기"
+            ],
+            "tradeoff": "⚠️ **삭제 이벤트를 놓치면 사이트맵에 유령 항목이 남는다** — 전체를 다시 훑는 방식에는 없던 실패 모드다. **이 대가는 이 사이트의 재구성이다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "디버깅의 편의를 포기할 것인가",
+            "chosen": "**포기한다** — 옛 방식의 장점 중 하나가 `easier debugging` 이었다",
+            "alternatives": [
+              "한곳에서 도는 배치를 유지해 추적을 쉽게 두기"
+            ],
+            "tradeoff": "⚠️ **문제가 나면 이벤트 흐름과 로컬 상태 양쪽을 봐야 한다.** 회사가 이 항목을 옛 방식의 장점으로 적어 두고 버렸다 — **버린 것을 장점 칸에 남겨 둔 것 자체가 이 글의 미덕이다**(이 평가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "question": "규모를 어떻게 감당할 것인가",
+            "chosen": "**바뀐 것만 처리한다** — 266,569개를 매번 다시 세지 않는다",
+            "alternatives": [
+              "병렬화와 캐시로 배치를 더 빠르게(이미 RX Java 로 하고 있었다)"
+            ],
+            "tradeoff": "**이미 병렬화와 캐시를 쓰고도 5시간이었다** — 즉 **같은 방식 안에서의 최적화로는 한계에 닿아 있었다.** 구조를 바꾸자 30분이 됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kafka",
+            "role": "지역·매물 마이크로서비스의 변경 이벤트를 나른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "지역 ID 색인 로컬 데이터베이스",
+            "role": "이벤트 상태를 담아 사이트맵 생성의 재료가 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ Spring Boot 야간 배치 + RX Java (옛것)",
+            "role": "⚠️ **버린 쪽** — 단일 인스턴스로 돌며 병렬화·캐시를 썼는데도 최대 5시간",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "검색 엔진",
+          "via": "사이트맵",
+          "contract": "⚠️ **이 계약이 매출의 앞단이다** — 트래픽의 85% 이상이 직접·자연 유입이라, 색인이 늦으면 매물이 안 보인다",
+          "confidence": "inferred"
+        },
+        {
+          "to": "지역 마이크로서비스 · 매물 마이크로서비스",
+          "via": "Kafka 이벤트",
+          "contract": "**바뀔 때 알려 준다.** 이전에는 사이트맵 쪽이 **수십만 건의 REST 로 물어봤다** — 그 방향이 뒤집혔다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "중개 지점 (수익원)",
+          "via": "매물 노출",
+          "contract": "⚠️ 중개사는 **매물이 보이라고** 회비를 낸다. 색인은 그 약속의 기술적 실체다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "사업 지표 (지역별 실시간 매물 수)",
+          "via": "로컬 상태",
+          "contract": "**의도하지 않은 산출물이다** — 상태를 갖게 되자 답할 수 있는 질문이 생겼다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "사본은 원본과 어긋난다",
+            "why_hard": "이벤트로 쌓은 로컬 상태는 **원본이 아니라 사본**이다. 이벤트가 늦거나 빠지면 사이트맵이 **없는 매물을 가리키거나 있는 매물을 빠뜨린다** — 그런데 그 어긋남은 조용하다",
+            "current_best": "회사가 대가 칸에 이 문제를 적어 둔 것까지가 이 글의 답이다 — `Added complexity in maintaining local state and ensuring data consistency`. ⚠️ **어떻게 맞추는지(재동기화·검증)는 나오지 않는다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "쉬운 디버깅을 내주고 나면 되찾기 어렵다",
+            "why_hard": "⚠️ 옛 배치의 장점 중 하나가 **`easier debugging`** 이었다. 한곳에서 순서대로 도는 것은 따라가기 쉽다. 이벤트와 로컬 상태로 갈라지면 **문제가 어디서 시작됐는지가 흐려진다**",
+            "current_best": "⚠️ **이 글에 답이 없다** — 장점 칸에 적어 두고 버렸을 뿐이다. 관측을 어떻게 보강했는지는 나오지 않는다. 이 지적은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+                "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+                "publisher": "Rightmove Tech Blog",
+                "date": "2025-01-28",
+                "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "물어보던 것을 받아 두는 것으로",
+          "question": "5시간이 30분이 된 이유는 빨라져서가 아니다",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph BEFORE [\"그전 — 밤마다 다시 센다\"]\n    B1[\"<b>야간 Spring Boot 배치</b><br/>• 단일 인스턴스<br/>• RX Java 병렬화 · 캐시\"]:::gone --> B2[\"<b>수십만 건의 REST 요청</b><br/>• 지역 · 매물 서비스에 물어본다\"]:::gone\n    B2 --> B3[\"<b>최대 5시간</b><br/>⚠️ 그 사이 하나라도 흔들리면<br/>전체가 실패\"]:::gone\n  end\n  subgraph AFTER [\"지금 — 바뀔 때 받아 둔다\"]\n    E1[\"<b>지역 · 매물 마이크로서비스</b><br/>• 변경을 이벤트로\"]:::list --> K[\"<b>Kafka</b>\"]:::list\n    K --> L[\"<b>로컬 DB (지역 ID 색인)</b><br/>• 보관 · 삭제도 반영\"]:::accent\n    L --> S2[\"<b>사이트맵 생성 30분</b><br/>• 지역 266,569개\"]:::list\n    L -.-> M[\"<b>덤으로 생긴 것</b><br/>• 지역별 실시간 매물 수\"]:::soft\n  end\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        },
+        {
+          "title": "장점 셋을 내주고 회복력 하나를 샀다",
+          "question": "RFC 의 표에 무엇이 적혀 있었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[\"<b>RFC — 두 안을 놓는다</b>\"]:::accent --> O\n  R --> N\n  O[\"<b>옛 배치를 복제</b>\"]:::gone\n  O --> OP[\"<b>장점</b><br/>• 추가 저장소 불필요<br/>• 사내 기존 패턴<br/>• 디버깅이 쉽다\"]:::list\n  O --> OC[\"⚠️ <b>단점</b><br/>• 단일 인스턴스 = 실패하면 전체 중단<br/>• 다른 서비스에 부하<br/>• REST 수십만 건으로 높은 결합\"]:::gone\n  N[\"<b>이벤트 기반</b>\"]:::accent\n  N --> NP[\"<b>장점</b><br/>• 서비스 분리 · 확장 가능<br/>• REST 요청 감소<br/>• 사업 지표가 덤으로\"]:::list\n  N --> NC[\"⚠️ <b>단점</b><br/>• 로컬 상태 유지의 복잡함<br/>• 데이터 일관성<br/>• 추가 저장소\"]:::gone\n  OC -.->|이 하나가| W[\"<b>결정</b><br/>• 장점 셋을 내주고<br/>• 회복력을 산다\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
+          "url": "https://rightmove.blog/from-legacy-to-resilience-how-event-driven-systems-improved-efficiency-at-rightmove/",
+          "publisher": "Rightmove Tech Blog",
+          "date": "2025-01-28",
+          "summary": "해외 매물 사이트맵 생성을 야간 배치에서 이벤트 기반으로 옮긴 기록. RFC 로 대안을 장단점 표로 놓고 골랐고 버린 쪽의 장점까지 적는다."
+        },
+        {
+          "title": "Rightmove H1 2026 실적 (3자 매체 정리)",
+          "url": "https://www.investegate.co.uk/announcement/prn/rightmove--rmv/trading-statement/9558481",
+          "publisher": "Investegate 외",
+          "date": "2026",
+          "summary": "⚠️ 1차 IR 원문이 아니라 3자 매체가 정리한 수치다. 매출·중개 지점 수·ARPA·유지율·트래픽 점유를 담고 있다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "From legacy to resilience: How event-driven systems improved efficiency at Rightmove",
