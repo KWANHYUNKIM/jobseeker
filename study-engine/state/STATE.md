@@ -4,71 +4,85 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `REST API`(`rest`)를 끝냈다** — 절 6 · 표 5 · 실습 3 · 지뢰 6 · 근거 8.
-전체: **문서 99개**(전부 done) · 절 590 · 실습 297 · **오류 0 · 경고 0.**
-⭐ **오랜만에 `market` 을 채운 문서**다(`tech_relations.json` 에 `REST API` 가 있었다).
+**직전 사이클에서 `GraphQL`(`graphql`)을 끝냈다 — ⭐⭐ 100번째 문서다.**
+절 6 · 표 5 · 실습 3 · 지뢰 6 · 근거 8. 전체: **문서 100개**(전부 done) · **절 596 · 실습 300** ·
+**오류 0 · 경고 0.**
 
-**⭐⭐⭐ 축: "창시자는 두 가지를 다 적었다."**
-(1) **Fielding 의 2008년 블로그**: **"I am getting frustrated by the number of people calling
-any HTTP-based interface a REST API. Today's example is the SocialSite REST API. **That is RPC.**"**
-그리고 **"...if the engine of application state ... is not being driven by hypertext, then it
-cannot be RESTful and cannot be a REST API. **Period.**"** — 이 백과사전이 모아 온 **"제품이
-스스로 그은 선"** 중 **가장 강하다**(만든 사람이 자기 이름의 오용을 직접 반박한다).
-(2) ⭐⭐⭐ **그런데 같은 사람이 논문에서 대가도 적었다** — uniform interface **"degrades
-efficiency"**, stateless **"may decrease network performance"**, code-on-demand **"reduces
-visibility, and thus is only an optional constraint"**.
-→ **그래서 결론이 훈계가 아니라 이렇게 됐다: 2단계에서 멈추는 것은 무지가 아니라 거래다.
-문제는 멈춘 것이 아니라 멈춘 자리를 원래 이름으로 부르는 것.**
+**⭐⭐⭐ 축: "이득도 대가도 같은 한 문장에서 나온다."** 명세의 설계 원칙이 그 문장이다.
+> **"Client-specified response — It is the client that is responsible for specifying exactly
+> how it will consume those published capabilities."**
+> **"Product-centric — GraphQL is *unapologetically* driven by the requirements of views and
+> the front-end engineers that write them."**
+⭐ **`unapologetically`** — 기술이 자기 편향을 이렇게 대놓고 적는 경우는 드물다.
+**클라이언트가 질의를 정하니 과다·과소 전송이 사라지고, 바로 그 때문에 서버는 자기가 무엇을
+계산할지 미리 모른다** → N+1 · 비용 예측 불가 · HTTP 캐시 상실이 전부 거기서 나온다.
+그리고 명세가 **"does not mandate a particular ... storage system"** 이라 **답을 줄 수도 없다.**
 
-**⭐⭐ 셈이 그것을 증명한다 — `REST|RESTful` 3372건 vs `HATEOAS` 0건.** 이 백과사전 최대 대비이고
-**한쪽이 아예 0**이라는 점에서 성격이 다르다(`security-certification` 의 582 vs 1보다 크다).
+**⭐⭐ DataLoader README 가 "제품이 스스로 그은 선"의 또 한 사례였다** —
+**"DataLoader caching does not replace Redis, Memcache, or any other shared application-level
+cache"**(한 요청 안에서만 유효하다), 그리고 ⚠️ **"Avoid multiple requests from different users
+using the DataLoader instance, which could result in cached data incorrectly appearing in each
+request"** — **성능 도구가 인가 사고가 되는 자리**라 지뢰 1번으로 올렸다.
 
-**⭐ `market` 과 본문 셈이 6배 차이 났다** — 태그 기준 572건 vs 본문 기준 3372건. **태그에는
-대표 기술만 달리고 REST 는 본문에서 당연한 것처럼 언급**되기 때문으로 보인다(추정임을 밝혔다).
-**두 숫자를 다 적고 출처를 나눴다.**
+**⭐ 셈이 `rest` 와 같은 형태였다** — **370건 vs `N+1` 10건 · `DataLoader` 2건.**
+`Apollo` 27 · `Relay` 13 까지 보면 **깊이 쓰는 곳이 적다**는 해석이 그럴듯하다(추정임을 밝혔다).
+`market` 은 179건(2.5%)이라 본문 셈의 절반 — `rest`(6배)와 달리 **간극이 낱말마다 다르다.**
 
-**⚠️ 성숙도 모델(0~3단계)의 원문은 확인하지 못했다** — 널리 쓰이는 구분이라 쓰되
-`confidence: inferred` 로 두고 표 `note` 에 적었다.
+**⚠️⚠️ `graphql.org` 가 403 이었다** — `/learn/caching/`·`/learn/best-practices/` 둘 다.
+`spec.graphql.org` 도 403 이라 **명세는 GitHub 원문(`graphql/graphql-spec`)에서** 읽었고
+**판을 특정하지 못했다.** 그래서 `cost` 절(N+1·비용·캐시)은 **명세의 원칙에서 따라 나온 정리**로
+두고 `confidence: inferred` 로 표시했다.
 
-**다음 사이클 = QUEUE 맨 위 `GraphQL`(`graphql`)** — 사다리 3순위. **대기 1개.**
+**다음 사이클 = QUEUE 맨 위 `BFF`(`bff`)** — 사다리 3순위. **대기 2개**(BFF, API 게이트웨이).
 ⚠️ **`--gaps` 출력이 대상을 정한다** — 이 메모가 큐와 어긋나면 큐가 맞다.
 
-## GraphQL 사이클 메모
+## BFF 사이클 메모
 
-- **`rest` 가 끊긴 링크로 남겼다** — 그 문서가 `instead` 절과 `when_to_use` 한 항목이
-  **GraphQL 문서가 없어 얕다**고 스스로 적었다. **370건(모집중 185).**
-- ⭐⭐⭐ **`rest` 와 같은 형태의 셈 대비가 또 있다: 370건 vs `N+1` 10건 · `DataLoader` 2건.**
-  **가장 유명한 함정과 그 표준 해법이 거의 안 불린다.** 둘째 사례이니 **우연이 아니라
-  낱말이 유행할 때 나타나는 형태**로 보인다 — 도입은 하는데 대가는 안 적는다.
-- ⚠️⚠️ **셈의 함정 — 스택 목록에 섞인다**(리빗 `기술 스택: React, Next.js, ... NestJS, GraphQL,
-  TypeORM, MySQL 등`). `data-migration` 규칙 그대로 **문장을 읽어 '설계·운영'과 '나열'을 가른다.**
-  생태계 낱말은 더 적다: `Apollo` 27 · `Relay` 13.
-- 축 다섯: ①⭐**왜 생겼나**(화면마다 필요한 데이터가 다르다 — REST 의 과다·과소 전송)
-  ②**스키마가 계약**(→ `openapi`·`data-contract`, 다만 **타입 시스템이 런타임에 산다**)
-  ③⭐⭐**대가: N+1 과 비용 예측 불가**(클라이언트가 질의를 정하면 **서버가 무엇을 계산할지 미리
-  모른다** → `rate-limit` 이 요청 수로는 안 통한다) ④**캐시가 어려워진다**(같은 URL 이 아니다 →
-  `caching` 과 정면 충돌) ⑤**언제 REST 대신**(→ `rest` 를 채워 주는 쪽).
-- ⭐ **1차 자료**: graphql.org 의 **Best Practices·Caching 절** — ⭐⭐ **특히 캐싱 문서가
-  "HTTP 캐시를 못 쓰는 이유"를 스스로 적는 자리**일 가능성이 높다. **DataLoader README**(N+1 을
-  전제로 만든 도구)도. ⚠️ **`rest` 처럼 원전 근본주의가 되지 않게** — 안 쓰는 이유도 공정하게.
+- **`graphql` 이 끊긴 링크로 남겼다.** 레브잇 공고의 `GraphQL, Relay, Tanstack Query, **BFF**` 가
+  우연이 아니다 — **같은 문제(화면에 맞춰 데이터 모으기)를 질의 언어로 푸느냐 서버 층으로 푸느냐.**
+- ⚠️ **33건(모집중 9)** 으로 얇다. 하한선(`rebac` 7 · `contract-testing` 8) 위이고,
+  ⭐⭐ **근거가 유난히 좋다 — 정의가 공고 안에 있다**: ㈜시스템노바 `**BFF 레이어 직접 설계·구현** —
+  여러 백엔드 서비스의 응답을 **화면 요구에 맞게 조합**하고, **캐싱 전략과 응답 스펙을 스스로 정의**합니다`.
+- ⭐⭐ **축은 "누가 만드나"** — 더스윙은 `**프론트엔드 설계**`로, 로아이는 `**서버 사이드 개발**`로
+  분류한다. **같은 층을 양쪽이 서로 자기 일이라 부른다**(`design-system` 의 '두 직군 사이의 계약'과
+  같은 형태 — 그때 셈으로 축을 잡았듯 여기서도 **문장의 소속 항목**을 보면 된다).
+- ⚠️ **1차 자료가 어려운 낱말이다** — 표준도 명세도 없는 **패턴 이름**이다. Sam Newman 의 원 글 ·
+  Netflix 기술 블로그 · ThoughtWorks Radar 가 후보. **다 안 되면 공고 문장이 곧 1차 자료**이고,
+  `network-separation` 처럼 **확보한 것과 못 한 것을 나눠 적는다.**
 
 ## 후보 목록 (다음에 큐가 마르면 여기서)
 
-`tech_relations.json`(60개) 중 **문서 없는 48개**를 공고 수로 줄 세운 상위. ⚠️ 그대로 쓰면
-**공식 문서 요약본**이 되기 쉬우니, **"왜 생겼나·언제 그것 대신 저것인가"가 서는 것**만 고른다.
+⚠️ 그대로 쓰면 **공식 문서 요약본**이 되기 쉬우니, **"왜 생겼나·언제 그것 대신 저것인가"가
+서는 것**만 고른다.
 
 | 후보 | 공고 | 이 엔진이 쓸 각도 |
 |---|---|---|
-| ~~REST API~~ | — | ✅ 썼다(99번째) |
-| **GraphQL** | 370 | ⭐ **이번에 큐로 올렸다** |
-| `PostgreSQL` vs `MySQL` | 673 / 649 | ⭐ **둘을 한 문서로** — "언제 그것 대신 저것" 이 저절로 선다 |
+| ~~REST API~~ · ~~GraphQL~~ | — | ✅ 썼다(99·100번째) |
+| **BFF** · **API 게이트웨이** | 33 · 132 | ⭐ **이번에 둘 다 큐로 올렸다**(서로 짝이다) |
 | `HTTP` | (미측정) | ⭐⭐ **`rest` 가 전제하고 비워 둔 층.** 메서드·상태 코드·캐시 헤더 |
+| `PostgreSQL` vs `MySQL` | 673 / 649 | ⭐ **둘을 한 문서로** — "언제 그것 대신 저것" 이 저절로 선다 |
 | `Kotlin` | 464 | ⭐ "Java 가 있는데 왜" — `java` 문서가 이미 있어 이웃이 선다 |
 | `Redis` | 474 | ⚠️ `caching` 과 겹친다 — 다른 각도(자료구조 서버·단일 스레드)를 먼저 정할 것 |
+| `Next.js` / SSR | 1289 | ⚠️ `seo` 가 일부 다뤘다 — 렌더링 전략 자체로 좁히면 설 수 있다 |
 | `Linux` · `Git` · `AWS` · `React` | 879 · 896 · 1966 · 1252 | ⚠️ **너무 넓다** — 좁은 낱말로 쪼갤 때만 |
 
 
 ## 배운 것
+
+- ⭐⭐ **100개를 넘겼다(2026-09-06).** 절 596 · 실습 300 · 오류 0 · 경고 0. 돌아보면 이 백과사전을
+  남의 것과 가르는 것은 셋이다 — **①공고 셈으로 축을 잡는다**(문서를 쓰기 전에 낱말을 센다)
+  **②1차 자료에서 "무엇을 잃는가"를 찾는다**(제품이 스스로 그은 선) **③확인 못 한 것을 적는다.**
+  ⭐ 세 번째가 가장 지키기 어렵고 가장 값어치가 크다 — `open_questions` 가 비어 있는 문서는
+  대개 안 찾아본 문서다.
+- ⭐⭐⭐ **1차 자료가 막혀도(403) 문서는 설 수 있다.** `graphql` 은 공식 사이트가 통째로 403 이었는데,
+  **명세를 GitHub 원문에서** 읽고 **DataLoader README** 로 대가 쪽을 받쳤다. ⭐ **막히면 같은 것의
+  다른 판본을 찾는다** — 공식 사이트 / GitHub 원문 / 저장소 README / 같은 기관의 다른 문서
+  (`authz` 에서 OWASP Top10 이 막히자 Cheat Sheet 로 간 것과 같다). **그리고 어느 판본을 읽었는지
+  반드시 적는다** — 판을 특정 못 했으면 그것도 적는다.
+- ⭐ **낱말이 얇아도(33건) 근거 한 줄이 좋으면 쓸 수 있다.** `bff` 를 큐에 올리며 확인한 것 —
+  ㈜시스템노바 공고 한 줄에 **정의·역할·경계가 다 들어 있다.** 반대로 건수가 많아도 전부
+  '스택 나열'이면 얇다(`graphql` 370건 중 다수가 그랬다). ⭐ **큐의 자격은 건수가 아니라
+  "문장이 무엇을 말해 주는가"** 다.
 
 - ⭐⭐⭐ **원전을 "무엇을 하라"가 아니라 "무엇을 잃는다"로 읽으면 문서가 공정해진다.**
   `rest` 는 Fielding 의 **"Period."** 만 인용했으면 훈계가 됐을 텐데, 같은 논문에서

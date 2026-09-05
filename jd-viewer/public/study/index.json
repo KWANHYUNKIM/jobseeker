@@ -1799,6 +1799,23 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "graphql",
+      "title": "GraphQL",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**클라이언트가 무엇을 받을지 직접 적는다** — 명세가 \"응답의 형태를 정할 책임은 클라이언트에 있다\"고 못 박는다. 그리고 이 기술의 이득도 대가도 **전부 그 한 문장에서** 나온다.",
+      "aliases": [
+        "GraphQL",
+        "그래프QL",
+        "DataLoader",
+        "N+1"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
