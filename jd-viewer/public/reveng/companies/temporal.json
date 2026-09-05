@@ -4,7 +4,7 @@
   "name_en": "Temporal",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "temporal.io",
   "one_liner": "멈췄다 이어지는 실행을 파는 회사 — 코드의 상태를 이력으로 두고 재생해서 되살린다",
@@ -216,7 +216,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "write-heavy-multi-tenant-persistence"
+      ]
     }
   ],
   "eras": [],
@@ -1134,6 +1136,426 @@
           "url": "https://temporal.io/pricing",
           "publisher": "Temporal",
           "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
+        }
+      ]
+    },
+    {
+      "key": "write-heavy-multi-tenant-persistence",
+      "name": "쓰기가 무거운 다중 테넌트에서 시끄러운 이웃을 바닥에서 막는다",
+      "domain": "관리형에서는 영속 계층을 직접 만든다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **오픈소스 서버는 여러 데이터베이스 위에 얹히도록 만들어졌는데, 관리형은 사정이 다르다** — `Temporal Cloud is multi-tenant` 이고 그 데이터베이스는 **여러 고객을 동시에, 공정하게, 높은 처리량과 낮은 지연으로** 받쳐야 한다. 게다가 이 제품은 **쓰기가 무거운 워크로드**다 — `changes in execution state are constantly written to the persistence layer`. **상태가 바뀔 때마다 쓴다는 것이 이 제품의 정의이므로 쓰기를 줄일 수가 없다**(이 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "⚠️ 수치",
+            "value": "**없다** — `we saw an immediate impact` · `significantly reduced both latency and the size of the databases` 뿐이고 **비교 벤치마크가 하나도 없다.** ⚠️ 같은 회사의 `scaling-temporal-the-basics` 에는 수치가 촘촘한 것과 대조된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              },
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "대비하는 상황",
+            "value": "**블랙 프라이데이 같은 고트래픽 이벤트** — 그때 네임스페이스를 키운다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "label": "요금이 드러내는 구조",
+            "value": "저장이 **활성 $0.042/GBh** 와 **보존 $0.00105/GBh** 로 갈린다 — **약 40배 차이**이고 계층 저장과 짝을 이룬다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Temporal — 요금제",
+                "url": "https://temporal.io/pricing",
+                "publisher": "Temporal",
+                "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "시끄러운 이웃을 어디서 막을지 정할 때",
+          "thought": "⚠️ **데이터베이스가 가장 어려운 자리라고 회사가 먼저 말한다** — `The noisy neighbor problem is especially difficult to address in the database. Because databases are stateful, and take longer to scale, capacity cannot be added quickly to handle spikes in load.` **상태가 있어서 느리고, 느려서 급증에 못 붙는다.** 애플리케이션 층은 늘리면 되지만 바닥은 안 그렇다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "쓰기를 줄일 수 있는지 볼 때",
+          "thought": "⚠️ **줄일 수 없다는 것이 전제다** — 실행 상태가 바뀔 때마다 쓰는 것이 이 제품의 정의이기 때문이다. 그래서 **횟수를 줄이는 대신 묶었다** — 추가 전용 로그에 모았다가 **한 번의 집계된 갱신**으로 내려보낸다. **쓰기를 없애는 대신 쓰기의 모양을 바꿨다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "끝난 것을 어떻게 할지 정할 때",
+          "thought": "**워크플로가 끝나면 그 이벤트 이력을 객체 저장소로 옮긴다** — 뜨거운 저장에서 덜어 내되 개발자는 계속 볼 수 있게. ⚠️ **요금표가 그 구조를 그대로 비춘다** — 활성 저장이 보존 저장보다 **약 40배 비싸다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "네임스페이스",
+            "what": "⚠️ **테넌트의 단위이자 샤딩의 단위.** 필요에 따라 데이터베이스를 더하고 크기를 조절한다"
+          },
+          {
+            "name": "쓰기 선행 로그(WAL)",
+            "what": "추가 전용 로그. **여러 갱신을 모아 한 번의 집계된 갱신**으로 데이터베이스에 내린다"
+          },
+          {
+            "name": "활성 저장 · 보존 저장",
+            "what": "⚠️ **요금이 갈리는 두 층** — 계층 저장의 앞뒤다"
+          },
+          {
+            "name": "객체 저장소",
+            "what": "완료된 워크플로의 이벤트 이력이 옮겨 가는 곳"
+          },
+          {
+            "name": "⚠️ 시끄러운 이웃",
+            "what": "⚠️ **한 테넌트의 급증이 다른 테넌트를 느리게 하는 것.** 데이터베이스에서 특히 어렵다"
+          }
+        ],
+        "invariants": [
+          "**여러 고객을 동시에, 공정하게 받쳐야 한다** — 다중 테넌트라서다",
+          "⚠️ **쓰기는 줄일 수 없다** — 실행 상태가 바뀔 때마다 쓰는 것이 제품의 정의다",
+          "**끝난 워크플로의 이력은 뜨거운 저장에서 뺀다**",
+          "**네임스페이스마다 따로 키울 수 있어야 한다** — 고트래픽 이벤트에 대비해서"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "⚠️ **실행 상태가 바뀔 때마다 쓴다** — 이 제품은 쓰기가 무거운 워크로드다",
+            "why": "`changes in execution state are constantly written to the persistence layer`"
+          },
+          {
+            "step": "**추가 전용 로그(WAL)에 먼저 쌓는다**",
+            "why": "바로 데이터베이스로 내리지 않는다"
+          },
+          {
+            "step": "**여러 갱신을 모아 한 번의 집계된 갱신으로 데이터베이스에 쓴다**",
+            "why": "⚠️ **쓰기를 없애는 대신 모양을 바꾼다** — 회사는 그 효과를 `지연과 데이터베이스 크기를 크게 줄였다` 고만 적는다"
+          },
+          {
+            "step": "**네임스페이스의 필요에 따라 데이터베이스를 더하고 크기를 따로 조절한다**",
+            "why": "⚠️ 블랙 프라이데이 같은 고트래픽 이벤트에 **그 네임스페이스만** 키운다"
+          },
+          {
+            "step": "**워크플로 실행이 끝나면 이벤트 이력을 객체 저장소로 옮긴다**",
+            "why": "뜨거운 저장에서 덜어 내되 개발자 접근은 유지한다"
+          },
+          {
+            "step": "**요금이 활성 저장과 보존 저장으로 갈린다**",
+            "why": "⚠️ 계층 저장이 그대로 청구서의 모양이 된다(이 연결은 이 사이트의 재구성이다)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "오픈소스가 쓰는 영속 계층을 관리형에도 그대로 쓸 것인가",
+            "chosen": "**직접 만든다**",
+            "alternatives": [
+              "오픈소스가 지원하는 Cassandra·MySQL·PostgreSQL 을 그대로 쓰기"
+            ],
+            "tradeoff": "⚠️ **오픈소스와 관리형이 같은 바닥을 쓰지 않게 된다** — 자체 호스팅과 클라우드의 성능·동작이 갈릴 수 있다(이 대가는 이 사이트의 재구성이다). 회사의 근거는 다중 테넌트다: 데이터베이스가 **여러 고객을 동시에 공정하게** 받쳐야 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              },
+              {
+                "title": "Temporal architecture",
+                "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+                "publisher": "Temporal Documentation",
+                "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
+              }
+            ]
+          },
+          {
+            "question": "시끄러운 이웃을 어디서 막을 것인가",
+            "chosen": "**데이터베이스에서 막는다** — 가장 어려운 자리라는 것을 알고도",
+            "alternatives": [
+              "애플리케이션 층에서 요청을 조절하기"
+            ],
+            "tradeoff": "⚠️ **회사가 그 어려움을 먼저 적는다** — `databases are stateful, and take longer to scale, capacity cannot be added quickly to handle spikes in load`. **상태가 있어서 느리고, 느려서 급증에 못 붙는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "question": "샤딩을 어떻게 할 것인가",
+            "chosen": "**동적으로** — 네임스페이스의 필요에 따라 데이터베이스를 더하고 크기를 따로 조절한다",
+            "alternatives": [
+              "고정된 샤드 배치"
+            ],
+            "tradeoff": "⚠️ **오픈소스 서버의 이력 샤드 수는 세운 뒤 못 바꾸는데**(같은 회사의 다른 글), 관리형의 데이터베이스 배치는 **동적으로 바꾼다.** 두 층의 성질이 다르다(이 대비는 이 사이트의 재구성이다). 얻는 것은 **고트래픽 이벤트에 그 네임스페이스만 키우는 것**이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              },
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "쓰기가 많은 것을 어떻게 감당할 것인가",
+            "chosen": "**모아서 한 번에 쓴다** — 추가 전용 로그에 쌓았다가 집계된 갱신으로",
+            "alternatives": [
+              "매 갱신을 그때그때 데이터베이스에 쓰기"
+            ],
+            "tradeoff": "⚠️ **모으는 만큼 데이터베이스 반영이 늦어진다**(이 대가는 이 사이트의 재구성이다). 회사가 적는 효과는 둘이다 — **지연이 줄고 데이터베이스 크기가 줄었다.** ⚠️ **얼마나 줄었는지는 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "question": "끝난 워크플로의 이력을 어디에 둘 것인가",
+            "chosen": "**객체 저장소로 옮긴다** — 실행이 완료되면",
+            "alternatives": [
+              "끝난 것도 같은 데이터베이스에 두기"
+            ],
+            "tradeoff": "⚠️ **옮겨 간 이력을 다시 볼 때는 느릴 것이다**(이 대가는 이 사이트의 재구성이다 — 회사는 `개발자 접근을 유지한다` 고만 적는다). 그 대신 뜨거운 저장의 부담이 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "question": "그 구조를 요금에 어떻게 반영할 것인가",
+            "chosen": "**활성 저장과 보존 저장을 나눠 받는다** — $0.042 대 $0.00105 (GB-시간)",
+            "alternatives": [
+              "저장을 한 가지 요율로 받기"
+            ],
+            "tradeoff": "**약 40배 차이가 계층 저장을 그대로 비춘다.** ⚠️ 고객 입장에서는 **오래 도는 워크플로가 비싸진다** — 끝나야 싼 층으로 내려가기 때문이다(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Temporal — 요금제",
+                "url": "https://temporal.io/pricing",
+                "publisher": "Temporal",
+                "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "자체 영속 계층 (Temporal Cloud)",
+            "role": "다중 테넌트를 공정하게 받치기 위해 직접 만들었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "tech": "동적 샤딩 (네임스페이스 단위)",
+            "role": "데이터베이스를 더하고 크기를 따로 조절한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "tech": "쓰기 선행 로그(WAL)",
+            "role": "갱신을 모아 한 번의 집계된 쓰기로 내린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "tech": "계층 저장 (객체 저장소)",
+            "role": "완료된 워크플로의 이벤트 이력을 옮긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 오픈소스 영속 계층 (Cassandra · MySQL · PostgreSQL · SQLite)",
+            "role": "⚠️ **자체 호스팅 쪽의 선택지** — 관리형은 이것을 쓰지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Temporal architecture",
+                "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+                "publisher": "Temporal Documentation",
+                "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
+              },
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "shard-count-is-forever",
+          "via": "지속성 병목",
+          "contract": "⚠️ **오픈소스 쪽에서 확인된 사실이 여기의 이유가 된다** — 확장의 병목이 데이터베이스이고(`DB CPU 80% 이하` 가 목표였다), 그래서 관리형은 **그 바닥을 자기 것으로** 만들었다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "replay-must-match",
+          "via": "이벤트 이력",
+          "contract": "⚠️ **이력이 곧 저장이다** — 상태 대신 단계를 남기는 설계라 저장이 계속 자라고, 그래서 **완료된 이력을 객체 저장소로 옮기는 계층 저장**이 필요해진다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "액션 · 저장 과금 (수익원)",
+          "via": "활성 · 보존 저장",
+          "contract": "**계층 저장이 그대로 청구서의 모양이 된다** — 활성이 보존보다 약 40배 비싸다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "고객 네임스페이스",
+          "via": "동적 샤딩",
+          "contract": "⚠️ **한 테넌트의 급증이 다른 테넌트에 닿지 않게 하는 것**이 이 계약의 핵심이다 — 블랙 프라이데이 같은 날을 회사가 예로 든다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "바닥은 빨리 못 늘린다",
+            "why_hard": "⚠️ **데이터베이스는 상태가 있어서 확장이 느리다** — `capacity cannot be added quickly to handle spikes in load`. 그런데 시끄러운 이웃은 **급증할 때** 생긴다. **가장 늦게 늘어나는 층에서 가장 급한 문제를 막아야 한다**",
+            "current_best": "**미리 나눠 두고 따로 키우는 것**(네임스페이스 단위 동적 샤딩)과 **쓰기를 모아 부담 자체를 줄이는 것**(WAL). ⚠️ **급증이 예고 없이 올 때 어떻게 하는지는 글에 없다** — 회사가 드는 예(블랙 프라이데이)는 **예고된 급증**이다. 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          },
+          {
+            "problem": "쓰기를 줄일 수 없는 제품이다",
+            "why_hard": "⚠️ **실행 상태가 바뀔 때마다 쓰는 것이 이 제품의 정의다** — 그것을 줄이면 내구성이 깨진다. 캐시로 미룰 수도, 샘플링할 수도 없다",
+            "current_best": "**모양을 바꾸는 것** — 추가 전용 로그에 모았다가 한 번에 내린다. ⚠️ **모으는 동안의 창을 어떻게 다루는지(그 사이 장애가 나면)는 글에 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+                "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+                "publisher": "Temporal Blog",
+                "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쓰기를 없애는 대신 모양을 바꾼다",
+          "question": "줄일 수 없는 쓰기를 어떻게 감당하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"<b>실행 상태가 바뀐다</b><br/>⚠️ 계속 · 줄일 수 없다\"]:::accent --> W[\"<b>추가 전용 로그(WAL)</b><br/>• 여러 갱신을 모은다\"]:::accent\n  W --> DB[\"<b>한 번의 집계된 갱신</b><br/>• 지연과 DB 크기가 줄었다\"]:::list\n  DB --> N[\"<b>네임스페이스별 데이터베이스</b><br/>• 더하고 크기를 따로 조절<br/>• 블랙 프라이데이에 그 네임스페이스만\"]:::accent\n  F[\"<b>워크플로가 끝난다</b>\"]:::list --> T[\"<b>이벤트 이력을 객체 저장소로</b><br/>• 뜨거운 저장에서 덜어 낸다\"]:::accent\n  T --> P[\"<b>요금이 갈린다</b><br/>• 활성 $0.042 / GBh<br/>• 보존 $0.00105 / GBh\"]:::soft\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "가장 늦게 늘어나는 층에서 가장 급한 문제를 막는다",
+          "question": "시끄러운 이웃이 왜 데이터베이스에서 어려운가",
+          "kind": "failure",
+          "code": "flowchart TD\n  N[\"<b>한 테넌트의 부하가 급증한다</b>\"]:::list --> Q{\"<b>어디서 막나</b>\"}\n  Q -->|애플리케이션 층| A[\"<b>늘리면 된다</b><br/>• 네 서비스는 수평 확장\"]:::list\n  Q -->|데이터베이스| D[\"⚠️ <b>여기가 어렵다</b>\"]:::gone\n  D --> D1[\"⚠️ <b>상태가 있다</b>\"]:::gone\n  D --> D2[\"⚠️ <b>확장이 느리다</b>\"]:::gone\n  D --> D3[\"⚠️ <b>급증에 용량을 못 붙인다</b>\"]:::gone\n  D1 --> M[\"<b>고른 답</b><br/>• 네임스페이스별 동적 샤딩<br/>• WAL 로 쓰기 부담 자체를 줄임\"]:::accent\n  D2 --> M\n  D3 --> M\n  M --> L[\"⚠️ <b>글에 없는 것</b><br/>• 예고 없는 급증은 어떻게 하나<br/>• (예로 든 것은 블랙 프라이데이)\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Faster Throughput & Lower Latency with Temporal Cloud's Custom Persistence Layer",
+          "url": "https://temporal.io/blog/higher-throughput-and-lower-latency-temporal-clouds-custom-persistence-layer",
+          "publisher": "Temporal Blog",
+          "summary": "관리형 서비스에서 영속 계층을 직접 만든 기록. 동적 샤딩·쓰기 선행 로그·계층 저장 세 기둥과 시끄러운 이웃 문제. ⚠️ 수치가 없다."
+        },
+        {
+          "title": "Scaling Temporal: The basics",
+          "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+          "publisher": "Temporal Blog",
+          "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+        },
+        {
+          "title": "Temporal — 요금제",
+          "url": "https://temporal.io/pricing",
+          "publisher": "Temporal",
+          "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
+        },
+        {
+          "title": "Temporal architecture",
+          "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+          "publisher": "Temporal Documentation",
+          "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
         }
       ]
     }

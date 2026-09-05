@@ -907,8 +907,8 @@
       "name_en": "Temporal",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "멈췄다 이어지는 실행을 파는 회사",
       "updated_at": "2026-09-06",
       "domain": "temporal.io"
