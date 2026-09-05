@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Ramp** | US · 핀테크(지출 관리) | 프로파일 완료 · 도메인 3(지출이 되는지를 그래프가 판정한다[tech 4] / 모델 배포를 넉 달에서 5분으로 줄인다[tech 3] / 코딩 에이전트를 사서 쓰지 않고 직접 만든다[tech 4]) · **기능 1**(workflows-as-graphs-not-code) |
+| **Ramp** | US · 핀테크(지출 관리) | 프로파일 완료 · 도메인 3(지출이 되는지를 그래프가 판정한다[tech 4] / 모델 배포를 넉 달에서 5분으로 줄인다[tech 3] / 코딩 에이전트를 사서 쓰지 않고 직접 만든다[tech 4]) · **기능 2**(workflows-as-graphs-not-code / reproducibility-is-a-data-promise) |
 
 ## 대기
 

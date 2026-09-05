@@ -185,7 +185,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "reproducibility-is-a-data-promise"
+      ]
     },
     {
       "name": "코딩 에이전트를 사서 쓰지 않고 직접 만든다",
@@ -722,6 +724,461 @@
           "publisher": "Sacra",
           "date": "2026",
           "summary": "2026년 5월 연환산 매출 15억 달러(2025년 말 약 12억 달러). 총결제액 570억 달러(2023년 223억 달러). 미국 법인카드 시장의 1~2% 규모."
+        }
+      ]
+    },
+    {
+      "key": "reproducibility-is-a-data-promise",
+      "name": "규제가 요구하는 재현성을 설정 파일로 사는데, 그 약속은 데이터에 걸려 있다",
+      "domain": "모델 배포를 넉 달에서 5분으로 줄인다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **금융 회사라 재현성과 설명 가능성이 취향이 아니라 요구다** — `the ability to reproduce our model outputs on demand is a requirement`. 그런데 **첫 신용 위험 모델은 배포에만 넉 달과 3,000줄**이 걸렸다. 문제가 셋이었다 — 새로 온 사람이 **남의 파이프라인을 물려받아 이해하기 어렵고**, 배포에 **엔지니어링 전문성이 필요해 속도가 묶이고**, **새 데이터로 다시 학습시키는 일이 비쌌다.** **모델을 잘 만드는 것보다 모델을 내보내는 일이 병목이었다**(이 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "배포 시간",
+            "value": "**넉 달 가까이 → 5분 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "label": "쓰는 양",
+            "value": "**3,000줄 넘던 코드 → YAML 약 40줄**(평균)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "label": "누가 쓰나",
+            "value": "**개발자 9명이 모델 약 20개**를 냈다 — ⚠️ **여럿은 모델을 학습시켜 본 적도, 운영에 내보내 본 적도 없었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 재현성의 조건",
+            "value": "`will produce the same results, as long as your data hasn't changed` — **6개월·1년·2년 뒤에도 같은 결과, 단 데이터가 안 바뀌었다면**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "label": "덮는 범위",
+            "value": "데이터 적재(Snowflake·S3) → 피처 엔지니어링(결측 대체·스케일링·원핫) → 학습·검증 분할 → 학습 → **모델 레지스트리 저장**까지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "추상 계층을 만들지 정할 때",
+          "thought": "⚠️ **안 만드는 길을 문장으로 적고 나서 버린다** — `We could solve all this without building an abstraction...we could create standards and templates to follow, enforcing these standards at review time and allowing each developer to code up their pipelines however they want.` **버린 이유가 셋인데 전부 사람 문제다** — 인수인계 때의 유지보수, 배포에 전문성이 필요해 생기는 속도 제약, 반복의 마찰. **표준은 지켜야 지켜지고, 틀은 안 지킬 수가 없다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 팔지 다시 볼 때",
+          "thought": "**이 회사가 워크플로에서 한 것과 같은 판단이다** — 거기서는 승인 로직을 그래프로, 여기서는 ML 파이프라인을 YAML 로 옮겼다. ⚠️ **두 번 다 `직접 짜게 두면 끝나지 않는다` 는 인식에서 출발한다**(이 대비는 이 사이트의 재구성이다).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "재현성을 약속할 때",
+          "thought": "⚠️ **약속의 조건을 스스로 적는다** — 같은 코드와 설정이 2년 뒤에도 같은 결과를 내되 **`데이터가 안 바뀌었다면`** 이다. **재현성이 코드가 아니라 상류 데이터에 걸려 있다는 뜻이고**, 금융 규제가 요구하는 것은 대개 **몇 년 전 판단의 재현**이라 이 조건이 가장 아픈 자리다(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "YAML 설정",
+            "what": "파이프라인 전체를 담는 것. **평균 약 40줄**"
+          },
+          {
+            "name": "JobSpec",
+            "what": "⚠️ **설정에서 파이썬 객체를 만들어 내고 외부 서비스와 이야기하는 자리**"
+          },
+          {
+            "name": "엔티티 · 애그리게이트 (Pydantic)",
+            "what": "객체지향 스타일로 구성된 도메인 조각들"
+          },
+          {
+            "name": "모델 레지스트리",
+            "what": "학습된 모델이 저장되는 끝점 — 파이프라인이 여기까지 덮는다"
+          },
+          {
+            "name": "⚠️ 상류 데이터",
+            "what": "⚠️ **재현성이 실제로 걸려 있는 것.** 설정과 코드가 같아도 이것이 바뀌면 결과가 달라진다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **모델 출력을 요구가 있을 때 재현할 수 있어야 한다** — 금융 회사의 규제 요구",
+          "**파이프라인은 설명 가능해야 한다**",
+          "**재학습이 싸야 한다** — `Re-training models on new data should be cheap`",
+          "⚠️ **같은 설정 + 같은 데이터 = 같은 결과** — 데이터가 바뀌면 이 약속은 성립하지 않는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**YAML 로 파이프라인을 적는다** — 평균 약 40줄",
+            "why": "코드가 아니라 설정이라 ML 경험이 없어도 쓸 수 있다"
+          },
+          {
+            "step": "**JobSpec 이 설정에서 파이썬 객체를 만든다**(Pydantic 엔티티·애그리게이트)",
+            "why": "타입이 붙은 객체로 만들어야 검증과 조립이 된다"
+          },
+          {
+            "step": "**데이터를 적재한다** — Snowflake · S3",
+            "why": "파이프라인의 시작"
+          },
+          {
+            "step": "**피처를 만든다** — 결측 대체 · 스케일링 · 원핫 인코딩",
+            "why": "손으로 짜던 부분이 설정 항목이 된다"
+          },
+          {
+            "step": "**학습·검증으로 나누고 모델을 학습시킨다**",
+            "why": "여기까지가 보통 사람이 신경 쓰는 부분"
+          },
+          {
+            "step": "**모델 레지스트리에 저장한다**",
+            "why": "⚠️ **끝까지 덮는 것이 핵심이다** — 배포가 병목이었기 때문"
+          },
+          {
+            "step": "**시계열 모델의 휴일 처리는 표준화된 방식을 쓴다**",
+            "why": "모델마다 다르게 다루던 것이 예측 불일치를 만들었다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "추상 계층을 만들 것인가",
+            "chosen": "**만든다** — 표준과 템플릿을 리뷰로 강제하는 길을 버렸다",
+            "alternatives": [
+              "표준·템플릿을 정하고 리뷰 때 강제하며 각자 원하는 대로 짜게 두기"
+            ],
+            "tradeoff": "⚠️ **버린 길을 회사가 직접 문장으로 적는다** — `We could solve all this without building an abstraction`. 버린 이유 셋이 전부 사람 문제다: **인수인계 때의 유지보수 · 배포에 전문성이 필요해 생기는 속도 제약 · 반복의 마찰.** 대가는 **틀 자체를 만들고 유지해야 한다는 것**이고, **틀이 못 덮는 요구가 오면 그때가 문제다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 파이프라인을 표현할 것인가",
+            "chosen": "**YAML 설정** — 평균 약 40줄",
+            "alternatives": [
+              "파이썬 DSL",
+              "노트북 템플릿",
+              "GUI"
+            ],
+            "tradeoff": "**코드가 아니라 설정이라 ML 경험이 없는 사람도 쓴다** — 실제로 개발자 9명이 모델 약 20개를 냈고 **여럿은 모델을 학습시켜 본 적도 없었다.** ⚠️ **대가는 설정이 표현할 수 있는 것에 묶인다는 것**이고, **틀 밖으로 나가야 하는 모델은 어떻게 하는지 글에 없다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "question": "설정을 무엇으로 실체화할 것인가",
+            "chosen": "**파이썬 + Pydantic** — 엔티티와 애그리게이트를 객체지향 스타일로, `JobSpec` 이 외부 서비스와 통신",
+            "alternatives": [
+              "설정을 그대로 해석해 실행하는 인터프리터"
+            ],
+            "tradeoff": "**타입이 붙은 객체가 되므로 검증과 조립이 쉬워진다.** ⚠️ **대가는 YAML 스키마와 파이썬 모델을 함께 진화시켜야 한다는 것**이고, 그 유지 비용은 글에 없다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "question": "어디까지 덮을 것인가",
+            "chosen": "**데이터 적재부터 모델 레지스트리 저장까지 끝까지**",
+            "alternatives": [
+              "학습까지만 덮고 배포는 따로"
+            ],
+            "tradeoff": "⚠️ **병목이 학습이 아니라 배포였기 때문에 끝까지 덮어야 값이 났다** — 넉 달이 걸린 것은 모델을 만드는 일이 아니라 내보내는 일이었다(이 해석은 이 사이트의 재구성이다). 대가는 **덮는 범위가 넓을수록 밖의 도구와 어긋날 자리가 는다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "question": "재현성을 무엇으로 보장할 것인가",
+            "chosen": "**같은 코드와 설정이면 몇 년 뒤에도 같은 결과** — 단 데이터가 안 바뀌었다면",
+            "alternatives": [
+              "데이터 스냅샷까지 함께 고정하기",
+              "실행 결과 자체를 보관하기"
+            ],
+            "tradeoff": "⚠️ **회사가 조건을 스스로 적는다** — `as long as your data hasn't changed`. **그런데 규제가 요구하는 것은 대개 몇 년 전 판단의 재현이고, 그때의 데이터가 지금도 그대로일 것을 이 시스템은 보장하지 않는다.** **재현성이 코드가 아니라 상류 데이터에 걸려 있다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "question": "시계열의 휴일을 각자 다루게 둘 것인가",
+            "chosen": "**표준화한다** — 모델 간 예측 불일치를 없앴다",
+            "alternatives": [
+              "모델마다 알맞게 다루기"
+            ],
+            "tradeoff": "**같은 회사의 예측들이 서로 어긋나지 않는다.** ⚠️ **대가는 예외를 두기 어려워진다는 것**이다 — 표준이 안 맞는 도메인이 생기면 틀을 고쳐야 한다(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "question": "누가 모델을 만들게 할 것인가",
+            "chosen": "**ML 경험이 없는 개발자도** — 9명이 약 20개",
+            "alternatives": [
+              "ML 전문 팀만 만들게 하기"
+            ],
+            "tradeoff": "**속도를 얻는다.** ⚠️ **대가는 만든 사람이 그 모델의 한계를 모를 수 있다는 것**이고, **금융 회사에서 그것은 설명 가능성 요구와 정면으로 부딪힐 수 있다** — 이 위험을 어떻게 다루는지가 글에 없다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Turbo (YAML 설정 프레임워크)",
+            "role": "파이프라인 전체를 설정 하나로. 평균 약 40줄",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "tech": "Pydantic · JobSpec",
+            "role": "설정에서 파이썬 객체를 만들고 외부 서비스와 통신한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "tech": "Snowflake · S3",
+            "role": "데이터 적재 원천",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "tech": "모델 레지스트리",
+            "role": "학습된 모델이 저장되는 끝점",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 표준·템플릿 + 리뷰 강제 (버린 쪽)",
+            "role": "⚠️ **명시적으로 버린 대안** — 인수인계·속도·반복 마찰을 못 푼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "workflows-as-graphs-not-code",
+          "via": "같은 태도",
+          "contract": "⚠️ **두 도메인이 같은 판단의 변주다** — 승인 로직은 그래프로, ML 파이프라인은 YAML 로. **두 번 다 `직접 짜게 두면 끝나지 않는다` 에서 출발한다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "지출이 되는지를 그래프가 판정한다",
+          "via": "신용 위험 모델",
+          "contract": "**첫 사례가 신용 위험 모델이었다** — 그 판단이 승인 흐름에 어떻게 들어가는지는 ⚠️ **자료를 못 찾았다**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "상류 데이터 (Snowflake · S3)",
+          "via": "⚠️ 재현성의 조건",
+          "contract": "⚠️ **재현 약속이 여기 걸려 있다** — `as long as your data hasn't changed`. **코드와 설정을 아무리 고정해도 이쪽이 흔들리면 약속이 깨진다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "코딩 에이전트를 사서 쓰지 않고 직접 만든다",
+          "via": "같은 회사의 세 번째 틀",
+          "contract": "**승인은 그래프로, ML 은 YAML 로, 코딩은 사내 에이전트로** — 세 도메인이 모두 `직접 짜지 말고 틀을 만들어라` 의 변주다(재구성)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "재현성은 코드가 아니라 데이터에 걸려 있다",
+            "why_hard": "⚠️ **이 도메인의 진짜 난제다.** 회사가 약속을 적으면서 조건을 함께 적는다 — `as long as your data hasn't changed`. **그런데 금융 규제가 요구하는 재현은 대개 몇 년 전 판단의 재현이고**, 그때의 상류 데이터가 지금도 그대로일 것을 이 시스템은 보장하지 않는다. **코드를 아무리 고정해도 데이터가 움직이면 같은 답이 안 나온다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**조건을 명시하는 것** — 회사는 약속과 그 한계를 함께 적는다. ⚠️ **데이터 스냅샷을 함께 고정하거나 실행 결과를 보관하는 방법이 업계에 있지만**(추정) **이 회사가 그것을 하는지는 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          },
+          {
+            "problem": "만들기 쉬워질수록 만든 사람이 한계를 모른다",
+            "why_hard": "⚠️ **모델을 학습시켜 본 적 없는 개발자도 5분이면 배포한다.** 속도는 얻었는데, **금융 회사가 요구받는 설명 가능성은 `이 모델이 왜 이렇게 판단했는가` 를 사람이 답하는 일**이다. **틀이 그 답까지 만들어 주지는 않는다**(이 문제 제기는 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **글에 답이 없다.** 재현성과 설명 가능성을 설계 동기로 적지만, **누가 그 설명을 하는가**는 다루지 않는다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Turbo-Charging ML Development",
+                "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+                "publisher": "Ramp Builders Blog",
+                "date": "2026",
+                "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "설정 40줄이 적재부터 레지스트리까지 덮는다",
+          "question": "모델 하나가 5분 만에 나가기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  Y[\"<b>YAML 설정</b><br/>• 평균 약 40줄<br/>• 예전엔 3,000줄 넘는 코드\"]:::accent --> JS[\"<b>JobSpec (Pydantic)</b><br/>• 설정 → 파이썬 객체<br/>• 외부 서비스와 통신\"]:::accent\n  JS --> L[\"<b>데이터 적재</b><br/>• Snowflake · S3\"]:::list\n  L --> F[\"<b>피처 엔지니어링</b><br/>• 결측 대체 · 스케일링 · 원핫\"]:::list\n  F --> S[\"<b>학습 · 검증 분할</b>\"]:::list\n  S --> T[\"<b>모델 학습</b>\"]:::list\n  T --> R[\"<b>모델 레지스트리 저장</b><br/>• <b>끝까지 덮는 것이 핵심</b>\"]:::accent\n  H[\"<b>표준화된 휴일 처리</b>\"]:::list -.-> F\n  R --> D[\"<b>배포</b><br/>• 넉 달 → 5분 미만<br/>• 개발자 9명이 모델 약 20개\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "약속에 조건이 붙어 있다",
+          "question": "이 틀이 보장하지 못하는 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>규제 요구</b><br/>• 요구가 있을 때 출력을 재현<br/>• 설명 가능한 파이프라인\"]:::accent --> B[\"<b>같은 코드 + 같은 설정</b><br/>• 6개월 · 1년 · 2년 뒤에도\"]:::accent\n  B --> C[\"⚠️ <b>단, 데이터가 안 바뀌었다면</b><br/>• as long as your data hasn't changed\"]:::gone\n  C --> D[\"⚠️ <b>규제가 묻는 것은 대개</b><br/>⚠️ <b>몇 년 전 판단이다</b> (재구성)\"]:::gone\n  E[\"<b>버린 길</b><br/>• 표준 · 템플릿 · 리뷰 강제\"]:::gone --> F[\"<b>버린 이유 셋</b><br/>• 인수인계 유지보수<br/>• 배포에 전문성이 필요<br/>• 반복의 마찰\"]:::list\n  G[\"<b>ML 경험 없는 개발자도 배포</b>\"]:::accent --> H[\"⚠️ <b>만든 사람이 한계를 모를 수 있다</b><br/>• 설명 가능성은 사람이 답하는 일<br/>• 틀이 그 답까지 만들지 않는다 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Turbo-Charging ML Development",
+          "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+          "publisher": "Ramp Builders Blog",
+          "date": "2026",
+          "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+        },
+        {
+          "title": "Abstraction Engineering",
+          "url": "https://engineering.ramp.com/post/workflows",
+          "publisher": "Ramp Builders Blog",
+          "date": "2026",
+          "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
         }
       ]
     }
