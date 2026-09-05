@@ -8,28 +8,29 @@
 
 ## 지금 파는 중
 
-**없다 — Kraken Technologies 를 닫았다.** 완료 **67곳** · ⚠️ **큐 0/3** · 비교 문서 33편.
+**없다.** 완료 **67곳** · ⚠️ **큐 0/3 — 이번 후보 조사가 빈손으로 끝났다.**
 
-**다음 사이클은 3순위(후보 조사)다.** ⚠️ 최근 두 번의 조사에서 **열여덟 곳을 두드려 둘만
-건졌다.** 벽의 종류가 갈린다 — 앞 조사는 **403 과 Medium**, 뒤 조사는 **블로그가 아예
-없거나 마케팅**이었다. **접근 지도와 QUEUE 의 '확인해 둔 후보' 를 먼저 읽고 시작한다.**
+### ⚠️ 다음 사이클도 후보 조사다 — 그런데 같은 곳을 또 두드리면 안 된다
 
-### ⭐ Kraken 에서 남길 것 하나 — 연표 재료를 기능 안에서 건졌다
+**여덟 곳을 두드려 하나도 못 올렸다.** 노린 새 축(물류·부동산·보험·암호화폐·개발자도구)이
+전부 막혔다. **다음 사이클은 아래 두 갈래 중 하나로 시작한다 — 새 이름을 떠올리기 전에.**
 
-`each-client-its-own-pipeline` 의 `history` 에 **2016 → 2026 세대 교체**를 썼다.
-2026년 글이 옛 글을 직접 가리켜서(`Back in 2016, we wrote about how we deploy Django
-applications using ELB health checks`) **`from` 이 확실했기 때문**이다. 같은 회사에서
-앞 사이클에는 연도를 몰라 `history` 를 통째로 버렸다(전 환경 동시 배포 → 일부 먼저).
-**차이는 하나다 — 글이 옛 글을 가리키느냐.** **회고를 찾을 때 '이 글이 무엇을 인용하는가'
-를 보면 연표가 나온다.**
+1. **⏳ Bolt 를 브라우저로 다시 본다** — 가장 가까이 갔던 곳이다.
+   `bolt.eu/en/blog/category/tech-at-bolt/` 는 **목록이 잘 오고 제목이 회고형**인데
+   (월 1000만 쿼리 Presto→Databricks 이전 · **과잉설계에서 단순함으로** 바꾼 사기 검문)
+   **본문만 JS 로 그려져 비어 온다.** `get_page_text` 로 열리면 바로 올릴 수 있다.
+2. **⚠️ 목록은 되는데 주소를 못 맞힌 곳을 마저 본다** — `blog.sentry.io` 는 목록에서
+   URL 을 받아 오면 읽힌다. 이번엔 주소를 추측하다 404 를 받았다.
 
-### ⚠️ Kraken 에 남은 구멍 (보강 사이클이 볼 것)
+### 이번 조사에서 굳어진 것 — 벽이 세 종류다
 
-1. **Octopus Energy 와의 관계**를 1차 문장으로 못 찾았다 — 제품 사이트가 고객사로만 적는다.
-2. **과금 방식·가격·매출 비공개.**
-3. **연표(eras) 가 비었다.** 블로그가 2015년부터 있고 `django-project-structure`(2018) ·
-   `python-interfaces-a-la-go`(2019) 같은 옛 글이 남아 있다 — **연표 사이클의 좋은 대상이다.**
-4. **RabbitMQ 이전의 구현 세부는 저자 개인 블로그(shtlrs.com)로 넘어간다** — 안 읽었다.
+- **접근이 막힌다** — 403 · Medium · 인증서 만료 (앞 조사들)
+- **블로그가 없다** — 보험(Lemonade·Root·Hippo) · 게임 · Flutterwave·Paystack.
+  **후보 자체를 못 찾는 축이 있다.** 새 이름을 떠올려도 소용없으니 **구체적인 글 주소가
+  손에 들어오기 전에는 다시 두드리지 않는다.**
+- **열리는데 마케팅이다** — ClickHouse · Tailscale · PingCAP · Ably · Capital One.
+  ⚠️ **이건 회사가 아니라 첫 페이지의 문제일 수 있다** — 목록 앞쪽은 제품 발표가 차지한다.
+  **깊은 글의 주소를 특정할 수 있으면 판정이 뒤집힐 수 있다.**
 
 ## 지금의 진짜 상태
 
@@ -350,6 +351,10 @@ CA·AU·SG·AE·NG 각 1) · 비교 문서 32편 · **운영 사실 58개.**
 | **IR 보도자료(Q4 Inc 계열)** | ✅ **브라우저 `get_page_text` 로 전문이 온다** — `investors.<회사>.com/news/news-details/<연도>/<제목>/default.aspx`. WebFetch 는 빈 껍데기만 준다. Doximity 에서 표까지 통째로 받았다(사이클 211) |
 | `press.doximity.com` · `sec.gov/Archives` | ❌ 앞은 본문이 비고, 뒤는 WebFetch 403 |
 | `engineering.ifood.com.br` · `engineering.rappi.com` · `careersatdoordash.com/engineering-blog` · `unrealengine.com/en-US/tech-blog` | ❌ 403 |
+| `bolt.eu/en/blog/category/tech-at-bolt/` | ⚠️ **목록은 오는데 본문이 비어 온다**(JS 렌더링). `engineering.ramp.com` 과 같은 형태 — **브라우저 `get_page_text` 로 다시 볼 것** (2026-09-05) |
+| `clickhouse.com/blog` · `tailscale.com/blog` | ⚠️ 열리지만 **첫 페이지가 제품 발표·고객 사례**다. 깊은 글은 아카이브 안쪽에 있을 수 있다 |
+| `flexport.engineering` · `redfin.engineering` | ❌ **응답이 없고 검색에도 안 잡힌다** — 엔지니어링 서브도메인이 사라진 것으로 보인다 |
+| `blog.sentry.io` | ⚠️ 목록은 열린다. **글 주소를 맞히면 404** — 목록에서 URL 을 받아 써야 한다 |
 | `engineering.kraken.tech` | ✅ 목록·본문 모두 열린다 (2026-09-05 확인). 글 주소는 `/news/<연>/<월>/<일>/<슬러그>.html` |
 | `tech.octopus.energy` | ⚠️ **이전 안내 페이지만 뜬다** — `engineering.kraken.tech` 로 옮겼다 |
 | `www.pingcap.com/blog` · `ably.com/blog` · `www.capitalone.com/tech/blog` | ⚠️ 열리지만 **제품·마케팅 중심**이라 대가를 다루는 글이 없다 (2026-09-05 확인) |
