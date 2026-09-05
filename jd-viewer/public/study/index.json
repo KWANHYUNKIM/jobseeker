@@ -1467,6 +1467,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "data-contract",
+      "title": "데이터 계약",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "내 데이터를 남이 읽고 있을 때, \"이건 안 바꾸겠다\"를 말이 아니라 **기계가 검사할 수 있는 형태**로 못 박아 둔 것.",
+      "aliases": [
+        "데이터 계약",
+        "data contract",
+        "스키마 레지스트리",
+        "Schema Registry",
+        "스키마 호환성",
+        "schema evolution",
+        "스키마 진화"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

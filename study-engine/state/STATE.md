@@ -4,57 +4,71 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `감사 로그`(`audit-log`)를 끝냈다** — 절 6 · 표 5 · 실습 3 · 지뢰 6 ·
-근거 8. 전체: **문서 82개**(전부 done) · 절 490 · 실습 246 · **오류 0 · 경고 0.**
+**직전 사이클에서 `데이터 계약`(`data-contract`)을 끝냈다** — 절 6 · 표 5 · 실습 3 ·
+지뢰 6 · 근거 8. 전체: **문서 83개**(전부 done) · 절 496 · 실습 249 ·
+**오류 0 · 경고 0.**
 
-**`rebac` 이 끊긴 링크로 남긴 자리**를 받았다.
+**`schema-migration` 의 세 번째 방향(하류가 깨진다)을 팀 사이의 약속으로 만든 자리**를 받았다.
 
-**⭐⭐ 축은 "로그와 감사 로그는 다르다 — 감사 로그는 증거다"** 이고, 그 차이를 **1차 자료가
-세 문장으로 줬다**. 특히 CloudTrail 의 **"assert positively that **no log files were
-delivered** to your account during a given period of time"** — **"아무 일도 없었다"를
-적극적으로 주장할 수 있어야 한다**는 요구는 보통의 로그로는 불가능하고, 감사에서 오는
-질문이 대개 그 모양이다.
+**⭐ 축은 "검사할 수 있어야 계약이다"** — 규격이 파일로 있고, 깨는 변경이 정의돼 있고,
+**그 판정이 자동으로 돈다.** 셋째가 전부이고, 1·2 만 있으면 그건 문서다. 이것을 셈이
+받쳐 줬다: `API 규격|인터페이스 규격` 30건 중 **18건이 프론트엔드와의 협의**이고 데이터 계약
+맥락은 **1건**뿐 — **"규격을 협의한다"는 말은 흔한데 검사 가능한 계약은 드물다.**
 
-**⭐ 두 제품을 겹쳐 읽어 표 하나를 만들었다** — 쿠버네티스 감사 문서의 **일곱 질문**
-(what/when/who/on what/where observed/from where/to where)에 CloudTrail 의 **필드**를
-나란히 놓았다. 서로 참조하지 않는 두 문서가 같은 목록에 도달했다는 것이 그 표의 값이고,
-**자체 감사 로그 설계의 체크리스트**가 됐다. 여기에 CloudTrail 의 `errorMessage` —
-**"includes messages for authorization failures"** 를 붙여 **거부된 시도가 더 중요하다**를
-세웠다.
+**⭐⭐ 1차 자료의 핵심은 "호환성에 방향이 있고, 그 방향이 배포 순서를 정한다"** 였다.
+BACKWARD = **소비자 먼저**, FORWARD = **생산자 먼저**, FULL = **순서 없음**. 즉 유형 선택은
+기술 결정이 아니라 **조직 결정**이다(소비자를 통제 못 하면 BACKWARD 는 실행 불가능한 규칙).
+그리고 기본값의 이유가 한 문장에 있었다 — **"so that you can rewind consumers to the
+beginning of the topic."** ⭐ **되감기.** 과거를 다시 읽는 시스템이면 BACKWARD, 이것이
+전이성(`_TRANSITIVE`)이 필요한 이유로도 그대로 이어졌다.
 
-**⭐ 변조 방지의 실물** — 파일별 해시 → 매시간 다이제스트 → **"Each digest file also
-contains the digital signature of the previous digest file"**(체인) → 서명 → **별도 폴더 보관**.
-그리고 ⚠️ **"켜는 것과 돌리는 것은 다르다"**("does not validate the integrity of the
-files"). 한화생명 공고의 `접속기록·감사로그 **별도 보관** 체계`가 이 요건과 정확히 만났다.
+**⭐ 허용 변경 목록의 대칭이 예뻤다** — BACKWARD 는 `Widen a scalar type`, FORWARD 는
+`Narrow a scalar type`, 나머지 셋은 공통이고 **전부 `optional`**. 그래서 결론이
+**"계약을 지키며 진화할 수 있느냐는 처음 스키마를 쓸 때 결정된다"**(필수 필드를 남발하면
+몇 달 뒤 아무 변경도 못 한다).
 
-**⭐ 쿠버네티스의 네 등급이 '분류가 곧 결정'의 또 한 사례** — `Request`와
-`RequestResponse` 사이에 선이 있다. 응답 본문까지 남기면 **감사 로그가 개인정보 DB 의
-사본**이 되고, 그래서 **감사 로그가 그 시스템에서 가장 민감한 데이터가 되는 역설**이
-경계 절의 첫 항목이 됐다.
+**다음 사이클 = QUEUE 맨 위 `SIEM`(`siem`)** — 사다리 3순위.
+(데이터 계약을 큐에서 지우고 **`계약 테스트`(`contract-testing`)를 새로 올렸다** — 데이터가
+아니라 API 호출에 대해 같은 일을 하는 짝. **대기 2개**: SIEM, 계약 테스트)
 
-**다음 사이클 = QUEUE 맨 위 `데이터 계약`(`data-contract`)** — 사다리 3순위.
-(감사 로그를 큐에서 지우고 **`SIEM`(`siem`)을 새로 올렸다** — 이 문서의 경계 2번
-'남기기만 하고 안 본다'가 곧 그 낱말이다. **대기 2개**: 데이터 계약, SIEM)
+## SIEM 사이클 메모
 
-## 데이터 계약 사이클 메모
-
-- **`schema-migration` 이 끊긴 링크로 남긴 자리** — 그 문서의 세 번째 방향(하류 소비자)을
-  **팀 사이의 약속으로 문서화한 것**. 마카롱팩토리의 `소스 팀과 스키마 변경 규칙을 맞춰`.
-- **낱말 그대로 나오는 공고가 있다** — 메이아이 `API - 집계 로직 - 데이터 운영 플랫폼 -
-  데이터 계약을 함께 설계하며`, 지신 `LLM Agent가 조회하고 활용할 수 있도록 데이터
-  계약(스키마)을 정의하고 변경 관리`, 에스티로직 `인터페이스 규격·데이터 계약을 협의하고 확정`.
-  실물 제품은 넥스트증권 `Confluent Platform(Schema Registry, KRaft, Cluster Linking)`.
-  계열 전체 38건(모집중 23). ⚠️ `Avro|Parquet` 는 포맷 얘기라 **문장을 읽고 갈라 센다.**
-- ⭐ **1차 자료** — **Confluent Schema Registry 의 호환성 유형 표**
-  (`BACKWARD`/`FORWARD`/`FULL`/`TRANSITIVE`/`NONE`)와 각 유형에서 허용/금지되는 변경,
-  그리고 **"누구를 먼저 업그레이드하나"** 까지 적혀 있다 — **'제품이 스스로 그은 선'** 그대로.
-- 축 다섯: ①**"안 깨뜨리겠다"를 검사 가능한 것으로 만들기** ②**호환성에 방향이 있다**
-  (누가 먼저 배포하느냐가 정한다) ③**깨는 변경을 막을까 예고할까** ④**계약은 누가 소유하나**
-  ⑤**계약이 없을 때의 대안**(→ `lineage` 로 사후 추적).
-  ⚠️ **Protobuf 필드 번호는 `grpc` 가 이미 다뤘다 — 링크로 넘긴다.**
+- **`audit-log` 의 경계 2번('남기기만 하고 안 본다')이 곧 이 낱말**이다. 공고가 '남기는
+  능력'이 아니라 **분석하는 능력**을 요구한다 — 마이리얼트립 `보안 로그, 클라우드 감사 로그
+  등을 분석하여 위협을 탐지한 경험`, 유모스원 `로그 분석·모니터링(CloudTrail, SIEM) 체계 구축`,
+  서치독 `Detective Controls (탐지 통제) — GuardDuty, Security Hub, AWS Config, CloudTrail,
+  Security Lake의 조직 단위 통합 운영`, 미리디 `OpenSearch SIEM`, 와탭랩스 `Siem 보안 로그 모니터링`.
+- ⚠️⚠️ **`관제` 로 세면 안 된다** — 1002건이 나오는데 **물류·영상·로봇 관제**가 대부분이다
+  (`audit-log` 의 '감사' 87% 오탐보다 더 심하다). 좁혀도 640건(모집중 214)이므로
+  **`SIEM|Splunk|Security Hub|GuardDuty|Wazuh|SOAR` 처럼 제품 이름 위주로 세고 문장을 읽는다.**
+- 축 다섯: ①**모으는 것과 보는 것은 다른 시스템**(→ `observability` 의 짝 — 그쪽은 우리가
+  고장 났나, 여기는 누가 공격하나) ②**상관분석**(한 줄은 뜻이 없고 여러 줄을 이어야 사건)
+  ③**오탐이 본질**(경보가 많으면 아무도 안 본다 → `oncall`) ④**정규화**(제품마다 다른 형식을
+  하나로 → `data-contract` 와 같은 문제) ⑤**보관 비용 vs 검색 가능성**.
+- ⭐ **1차 자료** — **AWS Security Hub 의 ASFF(AWS Security Finding Format)** 가 **정규화의
+  실물이 스키마로 노출된 자리**이고, **GuardDuty finding types** 가 **분류가 곧 결정인 표**를
+  준다. 보조로 **OpenSearch Security Analytics**(탐지 규칙·Sigma).
+  ⚠️ `observability` 와 겹치지 않게 — 수집·지표는 그쪽, 여기는 **적대적 행위를 찾는 것**.
 
 
 ## 배운 것
+
+- ⭐ **문서의 결론이 1차 자료의 '기본값 설명' 한 문장에 들어 있을 때가 있다.** Confluent 의
+  **"The main reason that BACKWARD ... is so that you can rewind consumers to the beginning
+  of the topic."** 가 이 사이클의 전부였다 — 왜 하필 그 기본값인지가 곧 **선택 기준**이고,
+  거기서 전이성 절까지 따라 나왔다. **제품 문서에서 "왜 이것이 기본값인가"를 적어 둔
+  자리를 찾는다** — 기능 설명보다 값이 크다(`secrets` 의 Caution 상자, `data-migration` 의
+  Limitations, `rebac` 의 "small object collections" 에 이은 네 번째 형태).
+- ⭐ **낱말이 같아도 '검사 가능한가'로 가르면 새 축이 생긴다.** `API 규격` 30건 중 18건은
+  사람끼리의 협의였고 검사 가능한 계약은 1건이었다. **`policy-engine`(인가 vs 가드레일)·
+  `data-migration`(스키마 vs 이관)·`schema-migration`(도구 나열 vs 실제 작업)에 이어 네 번째로
+  셈의 분류가 축이 됐다.** 다만 이번 분류 기준은 '무엇을 가리키나'가 아니라
+  **'같은 것을 얼마나 엄밀하게 하나'** 라 종류가 다르다.
+- **원문 표를 못 얻으면 '무엇으로 대신했는지'를 표의 note 와 open_questions 양쪽에 적는다.**
+  Confluent 의 호환성 요약표(Changes allowed / Upgrade first 열)를 두 번 시도해도 못 찾아,
+  **각 유형의 정의 문장 + 형식별 호환성 표**로 재구성하고 **'누구 먼저' 열은 정의를 배포
+  상황에 대입한 것**임을 두 곳에 밝혔다. `zanzibar`(초록만) · `network-separation`(조문
+  일부)과 같은 처리이나, **이번엔 표의 일부 열만 추론**이라 더 조심해서 적었다.
 
 - ⭐ **두 제품을 겹쳐 읽어 '체크리스트 표'를 만드는 방법이 정착됐다.** `causal-consistency`
   (MongoDB+Cosmos)·`replication`(PostgreSQL+RDS)에 이어 이번엔 **쿠버네티스의 질문 목록 +
