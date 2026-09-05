@@ -4,7 +4,7 @@
   "name_en": "Duolingo",
   "country": "US",
   "category": "기타",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "duolingo.com",
   "one_liner": "언어를 게임처럼 파는 회사 — 무엇을 언제 다시 보여 줄지가 곧 제품이다",
@@ -252,7 +252,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "pipeline-outruns-review"
+      ]
     }
   ],
   "features": [
@@ -1363,6 +1365,512 @@
           "publisher": "Duolingo Blog",
           "date": "2026-06-24",
           "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+        }
+      ]
+    },
+    {
+      "key": "pipeline-outruns-review",
+      "name": "파이프라인이 리뷰가 삼킬 수 있는 속도보다 빨리 만든다",
+      "domain": "테스트를 사람이 아니라 파이프라인이 쓴다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**테스트가 없는 코드는 고치기 무섭고, 그 공백은 사람이 시간을 내야만 메워진다.** 이 회사는 그 일을 파이프라인에 넘겨 **17주 만에 MVVM 커버리지를 9% 에서 30% 로** 올렸다. ⚠️ **그런데 이 기능의 값은 성과가 아니라 그 뒤에 생긴 문제에 있다** — **만드는 쪽이 검사하는 쪽보다 빨라졌다.** 회사가 그대로 적는다: `The pipeline can produce PRs faster than the existing review process can absorb them.` **병목이 옮겨 갔을 뿐 사라지지 않았다**(뒤쪽은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "17주 동안",
+            "value": "**PR 250개 병합** · 테스트 코드 **약 85,000줄** · 테스트 함수 **4,460개**(클래스 233개)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "label": "커버리지",
+            "value": "MVVM **9% → 30%**(240% 증가) · Repositories **352%** · ViewModels **203%** · DataSources **192%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "label": "만드는 속도",
+            "value": "**하루 약 20개**의 테스트 PR 을 자동으로 연다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "label": "첫 시도 통과",
+            "value": "병합된 PR 의 **76%** 가 처음에 CI 를 통과했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 사람이 한 일",
+            "value": "**250개 전부를 사람 엔지니어가 리뷰하고 승인했다** — `Each one of those 250 PRs was reviewed and approved by a human engineer before merging`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 못 하는 것",
+            "value": "Linux Temporal 워커라 **빌드도 린트도 못 한다** — PR 을 열기 전에 검사할 수 없어 **SwiftLint 실패율 13.6%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "시작할 때",
+          "thought": "**바로 자동화하지 않았다** — 먼저 로컬에서 Claude Code 를 돌려 **프롬프트를 다듬고 파일 선택 스크립트를 만들며 PR 약 30개를 손으로 병합**했다. **자동화할 값이 있는지, 무엇이 실패하는지를 손으로 먼저 확인한 것이다**(이 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "AI 가 못 쓰는 것을 만났을 때",
+          "thought": "⚠️ **프롬프트만 고치지 않고 코드베이스를 바꿨다.** 프레임워크를 명시하고(SwiftTesting 대 XCTest), Swift 6 을 위해 `@Sendable`·`@preconcurrency` 안내를 넣고, **구체 인스턴스 대신 프로토콜을 쓰도록 코드를 옮겼다.** **도구를 위해 제품 코드를 바꾼 것이고, 이것이 이 기능에서 가장 큰 대가다**(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디까지 자동으로 고치게 할지",
+          "thought": "⚠️ **CI 를 자동으로 고치게 했다가 사고가 났다** — `the CI auto-fix agent modified production source files in a test PR instead of limiting changes to test files`. **테스트를 쓰라고 만든 것이 제품 코드를 고쳤다.** 대응은 **파일 접근 규칙을 조이는 것**인데, 회사가 `We're actively adding guardrails` 라 적어 **아직 진행 중**이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "라벨 트리거",
+            "what": "개발자가 PR 에 `trigger:write-tests` 를 붙이면 웹훅이 Temporal 워크플로를 띄워 **초안 PR** 을 연다"
+          },
+          {
+            "name": "주기적 백필",
+            "what": "**몇 시간마다** 테스트 없는 파일을 찾아 알아서 PR 을 연다 — 하루 약 20개"
+          },
+          {
+            "name": "PR 생애주기 관리자",
+            "what": "리뷰어 배정 · CI 자동 치유 · 오래된 PR 닫기를 맡는 결정 트리"
+          },
+          {
+            "name": "S3 상태 저장소",
+            "what": "⚠️ **워크플로끼리 상태를 나누는 곳** — 생애주기가 5회 실패로 포기한 파일을 **백필이 다시 고르지 않게** 한다"
+          },
+          {
+            "name": "쿨다운",
+            "what": "실패한 파일에 **30일** 동안 다시 손대지 않는다"
+          },
+          {
+            "name": "⚠️ 사람 리뷰어",
+            "what": "⚠️ **마지막 문.** 250개 전부가 이 문을 지났고, **그래서 병목이 됐다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **사람이 승인하지 않은 PR 은 병합되지 않는다** — 250개 전부가 사람을 거쳤다",
+          "**실패한 파일은 30일 동안 다시 고르지 않는다** — 같은 벽을 반복해서 들이받지 않게",
+          "**한 파일에 열린 PR 이 이미 있으면 새로 만들지 않는다**",
+          "⚠️ **에이전트는 테스트 파일만 건드려야 한다** — 사고 뒤에 세우는 중인 규칙"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**① 손으로 먼저 해 본다** — 로컬에서 Claude Code 를 돌려 프롬프트를 다듬고 파일 선택 스크립트를 만들며 **PR 약 30개를 병합**한다",
+            "why": "자동화할 값이 있는지 먼저 확인한다"
+          },
+          {
+            "step": "**② 두 갈래로 시작시킨다** — 개발자가 `trigger:write-tests` 를 붙이거나, **몇 시간마다 백필이 알아서 고른다**",
+            "why": "사람이 원할 때와 아무도 안 볼 때 둘 다 메운다"
+          },
+          {
+            "step": "**③ 무엇을 쓸지 가중치로 고른다** — 파일 타입 **2.5x**(깔끔한 MVVM 상향) · 커버리지 공백 **0.5x** · 크기 **-0.3x**(작은 것 선호) · 모듈 우선순위 **0.5x**(Feature·Legacy 최고)",
+            "why": "⚠️ **AI 가 잘 쓸 수 있는 파일을 먼저 고른다** — 어려운 것부터가 아니다"
+          },
+          {
+            "step": "**④ 셋을 거른다** — 이미 열린 PR · 이미 있는 테스트 파일 · **30일 쿨다운**",
+            "why": "중복과 반복 실패를 막는다"
+          },
+          {
+            "step": "**⑤ Temporal 워크플로가 테스트를 생성해 초안 PR 을 연다**",
+            "why": "하루 약 20개"
+          },
+          {
+            "step": "**⑥ 생애주기 관리자가 결정 트리를 돈다** — 머지 충돌이면 즉시 닫고, **14일 넘으면 닫고 30일 쿨다운**, CI 초록이면 **git blame 으로 리뷰어를 배정하고 자동 병합을 켠다**",
+            "why": "리뷰어에게 맥락이 있는 사람을 붙인다"
+          },
+          {
+            "step": "**⑦ CI 가 빨갛면 `fix-ci` 라벨을 붙여 또 다른 워크플로가 로그를 가져와 고치는 커밋을 올린다.** 5회를 넘기면 닫고 30일 쿨다운",
+            "why": "⚠️ **여기서 사고가 났다** — 그 에이전트가 테스트가 아니라 **프로덕션 파일을 고쳤다**"
+          },
+          {
+            "step": "**⑧ 사람이 리뷰하고 승인해야 병합된다**",
+            "why": "⚠️ **그리고 이 문이 병목이 됐다** — 만드는 쪽이 더 빠르다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "바로 자동화할 것인가",
+            "chosen": "**아니다 — 로컬에서 손으로 약 30개를 먼저 병합해 본다**",
+            "alternatives": [
+              "설계부터 하고 파이프라인을 만들기"
+            ],
+            "tradeoff": "**무엇이 실패하는지를 먼저 안다.** 실제로 그 단계에서 실패 유형을 분류했고 그것이 프롬프트 규칙이 됐다. ⚠️ 대가는 **시작이 느리다는 것**이고, 손으로 한 30개는 **파이프라인의 성과에 안 들어간다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "question": "워크플로 사이의 상태를 어디에 둘 것인가",
+            "chosen": "**가벼운 S3 상태 저장소** — DynamoDB 를 고려했지만 안 썼다",
+            "alternatives": [
+              "DynamoDB",
+              "Temporal 안에서만 상태를 들고 있기"
+            ],
+            "tradeoff": "필요가 구체적이었다 — **생애주기 워크플로가 5회 실패로 포기한 파일을 백필이 다시 고르지 않게** 하는 것. 그 정도 조정에는 S3 로 충분했다. ⚠️ **대가는 질의가 안 된다는 것**이다 — 조건으로 찾아야 하는 상태가 생기면 다시 골라야 한다(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 파일부터 테스트를 붙일 것인가",
+            "chosen": "**AI 가 잘 쓸 수 있는 파일부터** — 파일 타입에 가장 큰 가중치(2.5x)",
+            "alternatives": [
+              "커버리지가 가장 낮은 곳부터",
+              "위험이 큰 코드부터"
+            ],
+            "tradeoff": "⚠️ **커버리지 공백(0.5x)보다 `깔끔한 MVVM 패턴`(2.5x)이 다섯 배 무겁다.** **성공률이 높은 곳부터 가는 선택이고**, 그래서 **가장 지저분하고 가장 테스트가 필요한 코드는 뒤로 밀린다**(이 지적은 이 사이트의 재구성이다). 크기도 작은 것을 선호한다(-0.3x).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "question": "AI 가 못 쓰는 코드를 만나면 무엇을 고칠 것인가",
+            "chosen": "⚠️ **프롬프트만이 아니라 코드베이스를 고친다** — 구체 인스턴스 대신 프로토콜을 쓰도록 옮겼다",
+            "alternatives": [
+              "프롬프트와 규칙만 다듬기",
+              "그런 파일은 건너뛰기"
+            ],
+            "tradeoff": "⚠️ **이 기능에서 가장 큰 대가다 — 도구를 위해 제품 코드를 바꿨다.** 프로토콜 기반이 그 자체로 좋은 설계라 해도, **바꾼 이유가 사람이 아니라 생성기였다**는 점은 남는다(이 평가는 이 사이트의 재구성이다). 프레임워크 선택(SwiftTesting 대 XCTest)과 Swift 6 대응(`@Sendable`·`@preconcurrency`)도 규칙으로 못 박았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "question": "CI 실패를 자동으로 고치게 할 것인가",
+            "chosen": "**고치게 한다** — `fix-ci` 라벨이 다른 워크플로를 띄워 로그를 읽고 커밋을 올린다",
+            "alternatives": [
+              "사람에게 넘기기",
+              "실패하면 그냥 닫기"
+            ],
+            "tradeoff": "⚠️ **사고가 났다** — `the CI auto-fix agent modified production source files in a test PR instead of limiting changes to test files`. **테스트를 쓰라고 만든 것이 제품 코드를 고쳤다.** 대응은 파일 접근 규칙을 조이는 것인데 `We're actively adding guardrails` 라 **아직 진행 중이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "question": "언제 포기할 것인가",
+            "chosen": "**5회 재시도 · 14일 경과 · 머지 충돌이면 닫고, 그 파일에 30일 쿨다운**",
+            "alternatives": [
+              "될 때까지 재시도",
+              "사람이 판단하게 두기"
+            ],
+            "tradeoff": "**같은 벽을 반복해서 들이받지 않는다.** ⚠️ 대가는 **어려운 파일이 계속 뒤로 밀린다는 것**이고, 30일 뒤에 다시 골라도 **조건이 안 바뀌었으면 또 실패한다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "question": "리뷰어를 어떻게 정할 것인가",
+            "chosen": "**git blame 이력으로** — 맥락이 있는 사람에게 붙인다",
+            "alternatives": [
+              "무작위 배정",
+              "팀 단위 큐"
+            ],
+            "tradeoff": "**그 코드를 아는 사람이 본다.** ⚠️ 대가는 **원저자에게 부담이 몰린다는 것**이고, 하루 20개가 쏟아지면 **특정 사람에게 계속 쌓일 수 있다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "question": "사람 리뷰를 뺄 것인가",
+            "chosen": "**아니다 — 250개 전부를 사람이 리뷰하고 승인했다**",
+            "alternatives": [
+              "자동 병합",
+              "샘플만 검사"
+            ],
+            "tradeoff": "⚠️ **그 결과 리뷰가 병목이 됐다** — `The pipeline can produce PRs faster than the existing review process can absorb them`. **회사의 답은 문을 여는 것이 아니라 앞을 거르는 것이다** — `a second reviewer agent that verifies each generated test before it reaches a human reviewer` 를 계획한다. **에이전트를 감시하는 에이전트를 두는 모양이고, 그러면 그것을 누가 보는가가 남는다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Temporal",
+            "role": "생성·생애주기·CI 수정을 각각의 워크플로로 돌린다. ⚠️ **Linux 워커라 빌드도 린트도 못 한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "tech": "S3 상태 저장소",
+            "role": "워크플로끼리 포기한 파일과 쿨다운을 나눈다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "tech": "Claude Code",
+            "role": "테스트를 실제로 쓰는 쪽. 로컬 검증 단계에서 프롬프트를 다듬었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "tech": "GitHub (웹훅·라벨·Action·blame)",
+            "role": "트리거와 리뷰어 배정, pre-commit 수정까지 여기서 일어난다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 사람 리뷰",
+            "role": "⚠️ **마지막 문이자 병목.** 계획은 그 앞에 **두 번째 리뷰어 에이전트**를 두는 것",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "convenience-decides-adoption",
+          "via": "Temporal 과 사람의 문",
+          "contract": "⚠️ **같은 바닥과 같은 구조인데 결과가 다르다** — 슬랙 봇은 **쓰기 앞에 승인 버튼**을 두고 잘 돌아가는데, 여기서는 **같은 사람 문이 병목이 됐다.** **차이는 양이다** — 봇은 사람이 물을 때만 움직이고 이쪽은 **하루 20개를 스스로 만든다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "iOS 앱의 프로덕션 코드",
+          "via": "⚠️ 프로토콜 전환",
+          "contract": "⚠️ **도구가 코드베이스를 바꿨다** — AI 가 테스트를 잘 쓰게 하려고 구체 인스턴스 대신 프로토콜을 쓰도록 옮겼다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "언제 무엇을 다시 보여 줄지 고른다",
+          "via": "⚠️ 다른 종류의 AI",
+          "contract": "⚠️ **같은 회사가 두 종류의 AI 를 다르게 믿는다** — 학습 쪽은 사내 모델을 **A/B 로** 재고, 개발 쪽은 외부 LLM 을 **사람 리뷰로** 막는다(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "리뷰어(사람)",
+          "via": "git blame",
+          "contract": "**맥락이 있는 사람에게 붙는다.** ⚠️ 그래서 원저자에게 부담이 몰릴 수 있다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "만드는 쪽이 검사하는 쪽보다 빨라진다",
+            "why_hard": "⚠️ **자동화가 성공할수록 병목이 사람 쪽으로 옮겨 간다.** 회사가 그대로 적는다 — `The pipeline can produce PRs faster than the existing review process can absorb them`. 그런데 **사람 리뷰를 빼면 이 파이프라인이 무엇을 만들었는지 아무도 모르게 된다**(250개 전부를 사람이 승인했다).",
+            "current_best": "**문을 여는 대신 앞을 거르는 것** — `a second reviewer agent that verifies each generated test before it reaches a human reviewer`. ⚠️ **에이전트를 감시하는 에이전트를 두는 모양이고, 그러면 그것을 누가 보는가가 남는다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          },
+          {
+            "problem": "자동 수정 에이전트는 고칠 권한이 있어야 하는데 그 권한이 곧 위험이다",
+            "why_hard": "⚠️ **CI 를 고치려면 파일을 고칠 수 있어야 하고, 고칠 수 있으면 잘못된 파일도 고칠 수 있다.** 실제로 **테스트 PR 에서 프로덕션 소스 파일을 고치는 사고**가 났다. **테스트를 쓰라고 만든 것이 제품 코드를 건드렸다.**",
+            "current_best": "**무엇을 만질 수 있는지의 규칙을 조이는 것** — 다만 회사가 `We're actively adding guardrails` 라 적어 **아직 진행 중이다.** ⚠️ **사고가 나고 나서 세우는 규칙이라는 점에서 Monzo·Wise 와 같은 모양이다**(이 대비는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built an automated unit test generation pipeline for iOS",
+                "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+                "publisher": "Duolingo Blog",
+                "date": "2026-06-24",
+                "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "만들고 고치고 닫는 일까지 자동인데, 마지막 문은 사람이다",
+          "question": "테스트 PR 하나의 생애",
+          "kind": "flow",
+          "code": "flowchart TD\n  T1[\"<b>라벨 트리거</b><br/>• trigger:write-tests\"]:::accent --> G\n  T2[\"<b>주기적 백필</b><br/>• 몇 시간마다\"]:::accent --> SEL[\"<b>파일 선택</b><br/>• 파일 타입 <b>2.5x</b><br/>• 커버리지 공백 0.5x<br/>• 크기 -0.3x · 모듈 0.5x\"]:::accent\n  SEL --> FIL[\"<b>거른다</b><br/>• 열린 PR · 기존 테스트<br/>• <b>30일 쿨다운</b>\"]:::list\n  FIL --> G[\"<b>Temporal 워크플로</b><br/>• 테스트 생성 → 초안 PR<br/>• 하루 약 20개\"]:::accent\n  G --> L{\"<b>생애주기 관리자</b>\"}\n  L -->|\"머지 충돌\"| X1[\"닫는다\"]:::gone\n  L -->|\"14일 초과\"| X2[\"닫고 30일 쿨다운\"]:::gone\n  L -->|\"CI 빨강\"| FX[\"<b>fix-ci</b><br/>• 로그를 읽고 커밋을 올린다\"]:::accent\n  FX -.->|\"⚠️ 프로덕션 파일을 고친 사고\"| INC[\"⚠️ <b>규칙을 조이는 중</b>\"]:::gone\n  FX --> L\n  L -->|\"5회 초과\"| X3[\"닫고 30일 쿨다운\"]:::gone\n  L -->|\"CI 초록\"| R[\"<b>git blame 으로 리뷰어 배정</b><br/>• 자동 병합 켬\"]:::list\n  R --> H[\"⚠️ <b>사람이 리뷰하고 승인</b><br/>• 250개 전부<br/>• <b>여기가 병목이다</b>\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "성공할수록 병목이 사람 쪽으로 옮겨 간다",
+          "question": "무엇을 얻고 무엇이 남았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>17주의 성과</b><br/>• PR 250개 · 약 85,000줄<br/>• MVVM 커버리지 9% → 30%\"]:::accent --> B[\"⚠️ <b>하루 20개를 만든다</b>\"]:::gone\n  B --> C[\"⚠️ <b>리뷰가 못 삼킨다</b><br/>• 만드는 쪽이 더 빠르다\"]:::gone\n  C --> D[\"<b>답은 문을 여는 것이 아니라</b><br/><b>앞을 거르는 것</b><br/>• 두 번째 리뷰어 에이전트(계획)\"]:::accent\n  D --> E[\"⚠️ <b>그러면 그것은 누가 보나</b><br/>• 재구성\"]:::gone\n  F[\"⚠️ <b>고칠 권한이 곧 위험이다</b><br/>• CI 를 고치려면 파일을 고쳐야 하고<br/>• 고칠 수 있으면 잘못된 파일도 고친다\"]:::gone\n  G[\"⚠️ <b>도구가 코드베이스를 바꿨다</b><br/>• 구체 인스턴스 대신 프로토콜로<br/>• 바꾼 이유가 사람이 아니라 생성기\"]:::gone\n  H[\"⚠️ <b>쉬운 파일부터 간다</b><br/>• 파일 타입 2.5x 대 커버리지 0.5x<br/>• 가장 지저분한 코드가 뒤로 밀린다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How we built an automated unit test generation pipeline for iOS",
+          "url": "https://blog.duolingo.com/ai-ios-unit-test-generation-pipeline/",
+          "publisher": "Duolingo Blog",
+          "date": "2026-06-24",
+          "summary": "Temporal 워크플로와 S3 상태 저장소로 Claude Code 를 굴려 iOS 단위 테스트를 생성한다. 17주간 PR 250개 병합, 테스트 코드 약 85,000줄. SwiftLint 실패율 13.6%, 리뷰가 병목, CI 자동 수정 에이전트가 프로덕션 파일을 고친 사고가 있었다."
+        },
+        {
+          "title": "Triage, ship, debug—all from Slack",
+          "url": "https://blog.duolingo.com/aislackbot/",
+          "publisher": "Duolingo Blog",
+          "date": "2026-05-20",
+          "summary": "Claude Agent SDK 와 Slack Bolt 로 만든 사내 에이전트. MCP 로 도구 200개 이상에 닿는다. 로컬 MCP → 중앙 설정 생성기 → HTTP MCP 서버를 거쳐 슬랙 앱에 이르렀다. 주간 활성 약 300명(직원 30%), 찬성률 약 80%."
+        },
+        {
+          "title": "Making production-ready agents the default: building Duolingo's agent platform",
+          "url": "https://blog.duolingo.com/production-ready-ai-agent-platform/",
+          "publisher": "Duolingo Blog",
+          "date": "2026-08-04",
+          "summary": "에이전트를 한 번 정의하면 여러 표면에서 쓰게 하는 사내 플랫폼. AgentDefinition 레지스트리와 Temporal 기반 AgentWorkflow. 에이전트 하나 만드는 시간이 몇 주에서 약 10분으로."
         }
       ]
     }
