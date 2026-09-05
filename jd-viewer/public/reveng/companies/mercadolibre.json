@@ -117,7 +117,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "three-clicks-to-production"
+      ]
     },
     {
       "name": "셀로 나눠 장애 반경을 줄인다",
@@ -331,7 +333,9 @@
         "셀로 나눠 장애 반경을 줄인다",
         "이미 있는 것을 고치지 않고 새 구조로 간다"
       ],
-      "features": [],
+      "features": [
+        "three-clicks-to-production"
+      ],
       "stack_in": [
         "Fury (IDP)",
         "컨테이너",
@@ -390,7 +394,476 @@
     "**셀을 셋으로 가른 기준의 구체적인 내용**(어느 나라를 어디에 묶었는지)은 밝히지 않았다.",
     "⚠️ **본문이 Medium 이라 브라우저(`get_page_text`)로만 읽힌다.**"
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "three-clicks-to-production",
+      "name": "세 번 눌러 앱이 뜨고, 커피 내리는 동안 고쳐 본다",
+      "domain": "개발자가 인프라를 몰라도 되게 만든다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "⚠️ **이 기능은 앞 시대의 반작용이다.** 마이크로서비스로 간 뒤 회사는 그 상태를 **`chaotic freedom`** 이라 불렀다 — 유연함이 지나쳐 **팀이 제품 개선 대신 운영 문제 해결에 시간을 쏟았다.** 환경과 설정이 많고, 개발·스테이지·운영이 크게 달랐으며, **인프라를 깊이 알아야 운영할 수 있었다.** 그래서 목표를 기술이 아니라 **사람의 동작**으로 세웠다 — `an application up and running in just three clicks`, 그리고 커피 한 잔 내리는 동안 받아서 고치고 시험할 수 있게.",
+        "metrics": [
+          {
+            "label": "이 플랫폼을 쓰는 사람",
+            "value": "엔지니어 **15,000명 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "떠받치는 규모",
+            "value": "마이크로서비스 **30,000개** · 인스턴스 **100,000개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "품질 검증이 걸린 범위",
+            "value": "저장소 **26,000곳 이상** · 검증 **일곱 종류** (2018년부터)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "쓰는 사업부",
+            "value": "마켓플레이스 · 핀테크 · 상점/ERP · 물류 · 광고 — **다섯이 같은 플랫폼을 쓴다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "목표를 정할 때",
+          "thought": "⚠️ **목표를 지표가 아니라 장면으로 적었다** — 세 번 눌러 앱이 뜨고, **커피 내리는 동안** 받아서 고치고 시험한다. `easy to run, easier to deploy to production` 이라는 문장이 순서까지 정한다 — **실행보다 배포를 더 쉽게** 만들겠다는 뜻이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 표준으로 굳힐지 고를 때",
+          "thought": "플랫폼이 파는 것은 편의가 아니라 **인지 부하의 감소**다 — `Fury relieves developers of the cognitive load associated with navigating multiple systems and processes.` ⚠️ **그 대가로 기술 스택·언어·프레임워크가 플랫폼이 정한 것으로 좁아진다**(`a defined technological stack, languages, frameworks, and tools`).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "배포 전략을 정할 때",
+          "thought": "⚠️ **하나로 정하지 않았다** — `there is no one-size-fits-all approach.` 위험도와 사업 영향으로 고르게 하고, **싼 전략의 값을 명시한다**: 인프라를 재사용하면 빠르고 싸지만 `difficult to roll back in case of errors, potentially causing downtime` 다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "애플리케이션",
+            "what": "Fury 프론트엔드에서 종류와 기술을 골라 만든다. 저장소·권한·CI/CD·스캐폴딩이 함께 생긴다"
+          },
+          {
+            "name": "스코프(Scope)",
+            "what": "버전·배포·분리를 다루는 단위. AWS·GCP 컨테이너 안에서 Fury 를 단순화해 나타낸 것"
+          },
+          {
+            "name": "Release Process",
+            "what": "2018년부터의 코드 통합 절차. 일곱 가지 품질 검증을 건다"
+          },
+          {
+            "name": "배포 전략",
+            "what": "인프라 재사용형과 blue-green 형. 위험도에 따라 개발자가 고른다"
+          },
+          {
+            "name": "모니터링",
+            "what": "CPU·메모리 같은 인프라부터 **결제 처리 정점 시각** 같은 사업 규칙까지"
+          }
+        ],
+        "invariants": [
+          "**개발자는 인프라를 몰라도 된다** — 그것이 이 플랫폼이 존재하는 이유다",
+          "**스코프를 만들면 인프라가 따라 생긴다** — 로드밸런서·오토스케일링 그룹·인스턴스·로그·지표·경보까지",
+          "**검증 일곱 중 하나라도 실패하면 흐름 전체가 멈춘다** — `If any check fails, the entire flow is interrupted until the issue is solved`",
+          "**개발자가 자기 앱을 완전히 소유한다** — 경보까지 스스로 맞춘다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Fury 프론트엔드에서 **앱 종류와 기술을 고른다**",
+            "why": "고를 수 있는 범위 자체가 플랫폼이 정한 표준이다"
+          },
+          {
+            "step": "⚠️ 뒤에서 **GitHub 저장소·팀 권한·CI/CD 파이프라인·컨테이너 스캐폴딩이 자동으로 생긴다**",
+            "why": "이 자동 생성이 '세 번 누르기'의 실체다"
+          },
+          {
+            "step": "**CLI 로 로컬에 받아** 돌리고 시험하고 배포용 버전을 만든다",
+            "why": "플랫폼의 일관성을 개발자의 노트북까지 잇는다"
+          },
+          {
+            "step": "**스코프를 만든다** — 개발·시연·운영",
+            "why": "스코프를 만들면 로드밸런서·오토스케일링 그룹·인스턴스가 자동 생성되고 트래픽이 흘러 들어간다"
+          },
+          {
+            "step": "⚠️ **중요한 앱은 스코프를 갈라 놓는다**",
+            "why": "`prevents any failure in one scope from affecting others` — 격리가 배포 단위에 들어 있다"
+          },
+          {
+            "step": "**Release Process 가 일곱 가지를 검사한다** — 의존성 · 브랜치 모델 · CI · 코드 커버리지 · 하드코딩된 자격증명 등",
+            "why": "저장소 26,000곳에 같은 문턱을 세운다"
+          },
+          {
+            "step": "**위험도에 맞는 배포 전략을 고른다** — 인프라 재사용형이냐 blue-green 이냐",
+            "why": "작은 변경과 결제 같은 운영 흐름을 같은 방식으로 내보내지 않는다"
+          },
+          {
+            "step": "**지표·로그·경보가 함께 돈다** — DataDog · NewRelic · Opsgenie",
+            "why": "CPU·메모리부터 결제 처리 정점 시각 같은 사업 규칙까지 본다"
+          },
+          {
+            "step": "플랫폼이 **인프라 비용을 보여 주고 자동 최적화**한다",
+            "why": "사업 필요에 따라 인스턴스를 늘리고 줄인다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "개발자에게 무엇을 감출 것인가",
+            "chosen": "**인프라 전부.** 인프라·빌드·배포·지표·서비스를 한 자리에 모으고 프런트엔드와 API 의 구분만 남긴다",
+            "alternatives": [
+              "팀마다 인프라를 직접 다루기(앞 시대의 방식)"
+            ],
+            "tradeoff": "⚠️ **기술 선택의 폭이 좁아진다** — `a defined technological stack, languages, frameworks, and tools tailored to our needs and quality standards`. **자유를 표준으로 바꾼 거래다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "앱을 만들 때 무엇까지 자동으로 만들 것인가",
+            "chosen": "**저장소·팀 권한·CI/CD·컨테이너 스캐폴딩까지 한 번에**",
+            "alternatives": [
+              "템플릿 문서를 주고 팀이 각자 설정하기"
+            ],
+            "tradeoff": "⚠️ **표준 밖의 구성을 하려면 플랫폼과 싸워야 한다** — 자동 생성은 '정해진 모양'을 전제한다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "플랫폼의 경험을 어디까지 확장할 것인가",
+            "chosen": "**개발자의 노트북까지** — CLI 로 받아서 돌리고 시험하고 버전을 만든다",
+            "alternatives": [
+              "웹 콘솔에서만 다루게 하기"
+            ],
+            "tradeoff": "**도구를 하나 더 만들어 유지해야 한다.** 그 대신 앞 시대의 문제 하나를 겨눈다 — 개발·스테이지·운영 환경의 큰 차이(이 연결은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "배포와 격리의 단위를 무엇으로 둘 것인가",
+            "chosen": "**스코프(Scope)** — 만들면 인프라가 따라 생기고, 중요한 앱은 스코프를 갈라 둔다",
+            "alternatives": [
+              "환경 이름만 두고 인프라는 따로 관리"
+            ],
+            "tradeoff": "⚠️ **어디를 갈라 놓을지는 사람이 판단해야 한다** — 잘못 가르면 격리가 안 된다. 그리고 스코프가 늘면 인프라도 는다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "배포 전략을 하나로 정할 것인가",
+            "chosen": "**정하지 않는다.** 위험도와 사업 영향에 따라 개발자가 고른다",
+            "alternatives": [
+              "전사 단일 전략(예: 항상 blue-green)"
+            ],
+            "tradeoff": "⚠️ **싼 전략의 값을 회사가 명시한다** — 인프라를 재사용하면 빠르고 싸지만 `difficult to roll back in case of errors, potentially causing downtime`. 그래서 그쪽은 **작은 변경과 낮은 위험도의 스코프**에만 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "품질 검증을 얼마나 엄하게 걸 것인가",
+            "chosen": "**일곱 가지를 걸고, 하나라도 실패하면 흐름 전체를 멈춘다**",
+            "alternatives": [
+              "경고만 띄우고 통과시키기"
+            ],
+            "tradeoff": "⚠️ **검증 하나가 막히면 배포가 막힌다** — 저장소 26,000곳에 같은 문턱을 세운다는 것은 **속도를 안전과 맞바꾼다**는 뜻이다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "첫 컴퓨팅 모델을 왜 버렸나",
+            "chosen": "**인스턴스 기반 `Standard` 를 버리고 관리형 쿠버네티스(EKS·GKE)로 옮겼다**",
+            "alternatives": [
+              "Standard 를 개선해 계속 쓰기"
+            ],
+            "tradeoff": "⚠️ **버린 이유가 둘이다** — 앱 레플리카와 컴퓨팅 인스턴스가 **1:1 이라 효율이 낮았고**, 클라우드 제공자의 네이티브 기능을 제대로 못 썼다. ⚠️ **언제 옮겼는지는 글에 없다** — 그래서 `history` 로 세우지 않았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Fury 프론트엔드 · CLI",
+            "role": "앱 생성과 로컬 개발을 잇는다. 저장소·권한·파이프라인·스캐폴딩을 자동 생성",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "스코프(Scopes)",
+            "role": "버전·배포·격리 단위. 만들면 LB·오토스케일링·인스턴스·로그·지표·경보가 따라 생긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "Release Process",
+            "role": "저장소 26,000곳에 일곱 가지 품질 검증. 하나라도 실패하면 중단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "관리형 쿠버네티스 (EKS · GKE)",
+            "role": "지금의 컴퓨팅 모델. 인스턴스 기반 `Standard` 의 1:1 비효율을 대체했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+                "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-03-08",
+                "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "DataDog · NewRelic · Opsgenie",
+            "role": "지표·로그·경보. 개발자가 자기 앱의 경보를 직접 맞춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "컨테이너 + 클라우드 추상화",
+            "role": "이식성과 멀티클라우드. 제공자를 감춰 어느 쪽 자원이든 쓰게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "셀로 나눠 장애 반경을 줄인다",
+          "via": "셀마다 같은 표준",
+          "contract": "⚠️ **플랫폼이 없었으면 셀 전환이 불가능했다** — 회사가 그렇게 적는다: 셀마다 설정·대시보드·배포 규칙이 제각각인 `its own isolated universe` 가 되는 것을 Fury 가 막았고, `Fury turned horizontal scaling into a repeatable, reliable process` 였다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "사업부 다섯 (마켓플레이스 · 핀테크 · 상점/ERP · 물류 · 광고)",
+          "via": "단일 플랫폼",
+          "contract": "**전부 이 위에서 만들고 운영한다.** ⚠️ 그래서 **바닥의 문제가 다섯 곳에 동시에 닿는다**(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "클라우드 제공자 (AWS · GCP)",
+          "via": "클라우드 추상화",
+          "contract": "제공자를 감춰 **어느 쪽 서비스든 골라 쓸 수 있게** 한다. 스코프가 그 위에서 실체가 된다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "자유를 얼마나 되찾아 갈 것인가",
+            "why_hard": "⚠️ 이 플랫폼은 **`chaotic freedom` 을 되돌리려고** 만들어졌다. 그런데 되돌리는 일은 곧 **선택지를 뺏는 일**이다 — 스택도, 프레임워크도, 도구도 플랫폼이 정한다. **어디까지 뺏어야 인지 부하가 줄고 어디부터 뺏으면 답답해지는지**에 일반해가 없다",
+            "current_best": "회사가 고른 선은 **배포 전략에서 자유를 돌려주는 것**으로 보인다 — 스택은 정하되 `there is no one-size-fits-all approach` 라며 전략은 고르게 한다. ⚠️ 이 해석은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              }
+            ]
+          },
+          {
+            "problem": "바닥이 하나면 바닥의 문제도 하나다",
+            "why_hard": "사업부 다섯이 같은 플랫폼을 쓴다는 것은 **플랫폼의 장애가 다섯 곳에 동시에 닿는다**는 뜻이다. 실제로 재고 DB 하나가 `a single failure could impact operations in multiple countries across the region` 였다",
+            "current_best": "⚠️ **스코프 분리와 셀 분할이 그 답이다** — 배포 단위에서 한 번, 데이터 단위에서 한 번 가른다. 다만 **플랫폼 자체의 장애를 어떻게 가르는지는 이 글들에 없다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+                "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2024-02-23",
+                "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+              },
+              {
+                "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+                "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+                "publisher": "Tecnología de Mercado Libre",
+                "date": "2025-12-30",
+                "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "세 번 누르면 뒤에서 무엇이 생기나",
+          "question": "인프라를 감춘다는 말의 실체",
+          "kind": "flow",
+          "code": "flowchart TD\n  D[\"<b>개발자</b><br/>• 앱 종류와 기술을 고른다\"]:::list --> F[\"<b>Fury 프론트엔드</b>\"]:::accent\n  F --> A1[\"<b>GitHub 저장소</b><br/>• 팀 권한까지\"]:::list\n  F --> A2[\"<b>CI/CD 파이프라인</b>\"]:::list\n  F --> A3[\"<b>컨테이너 스캐폴딩</b>\"]:::list\n  D --> CLI[\"<b>CLI</b><br/>• 받아서 돌리고 시험<br/>• 배포용 버전 생성\"]:::list\n  CLI --> S[\"<b>스코프 생성</b><br/>• 개발 · 시연 · 운영\"]:::accent\n  S --> I1[\"<b>로드밸런서</b>\"]:::list\n  S --> I2[\"<b>오토스케일링 · 인스턴스</b>\"]:::list\n  S --> I3[\"<b>로그 · 지표 · 경보</b>\"]:::list\n  RP[\"<b>Release Process</b><br/>• 검증 일곱 종류<br/>• 하나라도 실패하면 중단\"]:::accent -.-> S\n  K[\"<b>관리형 쿠버네티스</b><br/>• EKS · GKE\"]:::soft -.-> I2\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "싼 배포와 안전한 배포를 갈라 쓴다",
+          "question": "하나로 정하지 않은 대신 무엇을 감수하나",
+          "kind": "failure",
+          "code": "flowchart TD\n  C{\"<b>이 변경의 위험도는</b>\"}:::list\n  C -->|낮다| R[\"<b>인프라 재사용형</b><br/>• 빠르고 싸다\"]:::list\n  R --> RD[\"⚠️ <b>되돌리기 어렵다</b><br/>• 다운타임이 생길 수 있다<br/>• 작은 변경 · 저위험 스코프만\"]:::gone\n  C -->|높다| B[\"<b>blue-green</b><br/>• 새 환경을 세우고<br/>• 트래픽을 점진 전환\"]:::accent\n  B --> BD[\"<b>무중단 롤백</b><br/>• 트래픽을 보며 영향 최소화\"]:::list\n  G[\"<b>공통 관문</b><br/>• 검증 일곱 중 하나라도 실패하면<br/>• 흐름 전체가 멈춘다\"]:::soft\n  G -.-> C\n  SC[\"<b>또 하나의 격리</b><br/>• 중요한 앱은 스코프를 가른다<br/>• 한쪽 장애가 다른 쪽에 안 닿게\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
+          "url": "https://medium.com/mercadolibre-tech/the-technological-evolution-at-mercado-libre-fb269776a4e8",
+          "publisher": "Tecnología de Mercado Libre",
+          "date": "2024-02-23",
+          "summary": "1999년 모놀리스에서 MeliCloud(2010), Fury(2015), Release Process(2018)까지의 변천을 연도와 함께 적은 글. 마이크로서비스 전환 뒤의 운영 부담도 함께 밝힌다."
+        },
+        {
+          "title": "How Kubernetes became the right fit for Mercado Libre's internal developer platform",
+          "url": "https://medium.com/mercadolibre-tech/how-kubernetes-became-the-right-fit-for-mercado-libres-internal-developer-platform-fb02df289def",
+          "publisher": "Tecnología de Mercado Libre",
+          "date": "2025-03-08",
+          "summary": "약 6개월간 AWS Batch·Lambda·ECS·Cloud Run·Anthos·Nomad 를 차례로 떨어뜨리고 관리형 쿠버네티스를 고른 과정. 버린 이유를 하나씩 적는다."
+        },
+        {
+          "title": "From a single point of failure to a cell-based architecture: How we scaled Mercado Envíos' stock system",
+          "url": "https://medium.com/mercadolibre-tech/from-a-single-point-of-failure-to-a-cell-based-architecture-how-we-scaled-mercado-env%C3%ADos-stock-528f581fb71b",
+          "publisher": "Tecnología de Mercado Libre",
+          "date": "2025-12-30",
+          "summary": "라틴아메리카 재고를 떠받치던 단일 MySQL 을 셀 셋으로 나눈 기록. 라우팅 키가 없는 API 를 브로드캐스트로 우회한 이유와 그 부담을 함께 적었다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "The technological evolution at Mercado Libre: from the monolith to the multicloud platform",
