@@ -13,7 +13,7 @@ const api = async (path, body) => {
 };
 
 const state = {
-  refs: null, family: '', 
+  refs: null, family: '', country: '',
   meta: null,                 // 템플릿·포맷·팔레트
   jobs: [], job: null,
   template: 'role_hero', format: 'ig_portrait', palette: '',
@@ -34,7 +34,8 @@ async function loadRefs() {
   const syn = $('#synthesis');
   syn.append(el('h2', null, `수집물에서 뽑아낸 결론 — ${data.source || ''}`));
   const dl = el('dl');
-  const LABEL = { hero: '히어로', sections: '섹션', rhythm: '리듬', anchors: '앵커', footer: '푸터', extra: '덤' };
+  const LABEL = { hero: '히어로', sections: '섹션', rhythm: '리듬', anchors: '앵커', footer: '푸터',
+    extra: '덤', cut: '분량', color: '컬러', compare: '비교', counter: '반론', avoid: '하지 말 것' };
   Object.entries(data.synthesis || {}).forEach(([k, v]) => {
     dl.append(el('dt', null, LABEL[k] || k), el('dd', null, v));
   });
@@ -50,6 +51,27 @@ async function loadRefs() {
     });
     $('#ref-filters').append(c);
   });
+
+  // 나라별로도 나눠 본다. 같은 '채용 한 장'인데 나라마다 접는 법이 다르다.
+  const box = $('#country-filters') || (() => {
+    const d = el('div', 'filters');
+    d.id = 'country-filters';
+    $('#ref-filters').after(d);
+    return d;
+  })();
+  const counts = {};
+  data.refs.forEach((r) => { counts[r.country || 'global'] = (counts[r.country || 'global'] || 0) + 1; });
+  const countries = ['', ...Object.keys(data.countries || {}).filter((k) => counts[k])];
+  countries.forEach((k) => {
+    const c = el('button', 'chip' + (k === state.country ? ' on' : ''),
+      k ? `${data.countries[k]} ${counts[k]}` : `나라 전체 ${data.refs.length}`);
+    c.addEventListener('click', () => {
+      state.country = k;
+      box.querySelectorAll('.chip').forEach((x) => x.classList.toggle('on', x === c));
+      drawRefs();
+    });
+    box.append(c);
+  });
   drawRefs();
 }
 
@@ -57,7 +79,8 @@ function drawRefs() {
   const box = $('#refs');
   box.textContent = '';
   state.refs.refs
-    .filter((r) => !state.family || r.family === state.family)
+    .filter((r) => (!state.family || r.family === state.family)
+                && (!state.country || (r.country || 'global') === state.country))
     .forEach((r) => {
       const card = el('div', 'ref');
       const shots = el('div', 'shots');
@@ -75,7 +98,8 @@ function drawRefs() {
       const meat = el('div', 'meat');
       meat.append(el('h3', null, r.title));
       const who = el('div', 'who');
-      who.append(document.createTextNode(`@${r.account} · #${r.tag} · ${r.id}`));
+      const cname = (state.refs.countries || {})[r.country] || r.country || '';
+      who.append(document.createTextNode(`@${r.account} · #${r.tag} · ${r.id}${cname ? ' · ' + cname : ''}`));
       if (r.url) {
         who.append(document.createTextNode(' · '));
         const a = el('a', null, '원본');
@@ -164,14 +188,17 @@ async function pickJob(job) {
 }
 
 function refreshPreview() {
-  if (!state.job) return;
+  if (!state.job || !state.meta) return;
   const fmt = state.meta.formats.find((f) => f.id === state.format);
+  const wrap = document.querySelector('.canvas-wrap').getBoundingClientRect();
+  // 캔버스는 실제 픽셀(1080×1350)로 그리고, 화면에는 축소해서 보여 준다.
+  const scale = Math.min((wrap.width - 40) / fmt.w, (wrap.height - 40) / fmt.h, 1);
+  const holder = document.querySelector('.holder');
+  holder.style.width = `${fmt.w * scale}px`;
+  holder.style.height = `${fmt.h * scale}px`;
   const frame = $('#preview');
   frame.width = fmt.w; frame.height = fmt.h;
-  const wrap = $('.canvas-wrap').getBoundingClientRect();
-  const scale = Math.min((wrap.width - 40) / fmt.w, (wrap.height - 40) / fmt.h, 1);
   frame.style.transform = `scale(${scale})`;
-  frame.style.margin = `${(fmt.h * scale - fmt.h) / 2}px ${(fmt.w * scale - fmt.w) / 2}px`;
   frame.src = `/api/preview?job=${encodeURIComponent(state.job.key)}&template=${state.template}` +
               `&format=${state.format}&palette=${state.palette}`;
 }

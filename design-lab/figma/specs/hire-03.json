@@ -1,0 +1,1933 @@
+{
+ "id": "hire-03",
+ "title": "IMAGO Recruitment 2026 — Graphic Designer / 3D Generalist",
+ "account": "imago.xyz",
+ "source": "refs/instagram/crops/hire-03_imago.xyz_DWxwfBTmVro_s1.jpg",
+ "canvas": {
+  "w": 1080,
+  "h": 1350
+ },
+ "font_note": "고대비 세리프. Instrument Serif 로 잡았다 — 원본 서체는 캡처만으로 확정 불가.",
+ "photo_note": "배경은 흐린 인물 사진이라 원본 소스가 없다. 8×10 격자의 중앙값 색을 방사형 그라디언트 타원으로 겹쳐 근사했다.",
+ "layers": [
+  {
+   "type": "rect",
+   "name": "바탕",
+   "x": 0,
+   "y": 0,
+   "w": 1080,
+   "h": 1350,
+   "fill": "#04101d"
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 1-1",
+   "cx": 67.5,
+   "cy": 67.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0667ae",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0667ae",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 1-2",
+   "cx": 202.5,
+   "cy": 67.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0a5c98",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0a5c98",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 1-3",
+   "cx": 337.5,
+   "cy": 67.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#095084",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#095084",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 1-4",
+   "cx": 472.5,
+   "cy": 67.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#073b6a",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#073b6a",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 1-5",
+   "cx": 607.5,
+   "cy": 67.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#09304d",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#09304d",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 1-6",
+   "cx": 742.5,
+   "cy": 67.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#052949",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#052949",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 1-7",
+   "cx": 877.5,
+   "cy": 67.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#062748",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#062748",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 1-8",
+   "cx": 1012.5,
+   "cy": 67.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#072944",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#072944",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 2-1",
+   "cx": 67.5,
+   "cy": 202.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#005190",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#005190",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 2-2",
+   "cx": 202.5,
+   "cy": 202.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#084a7e",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#084a7e",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 2-3",
+   "cx": 337.5,
+   "cy": 202.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#134576",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#134576",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 2-4",
+   "cx": 472.5,
+   "cy": 202.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#114a91",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#114a91",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 2-5",
+   "cx": 607.5,
+   "cy": 202.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0d3b6c",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0d3b6c",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 2-6",
+   "cx": 742.5,
+   "cy": 202.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#093165",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#093165",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 2-7",
+   "cx": 877.5,
+   "cy": 202.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0b2f61",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0b2f61",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 2-8",
+   "cx": 1012.5,
+   "cy": 202.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0c2e5b",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0c2e5b",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 3-1",
+   "cx": 67.5,
+   "cy": 337.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#034f8b",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#034f8b",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 3-2",
+   "cx": 202.5,
+   "cy": 337.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#084874",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#084874",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 3-3",
+   "cx": 337.5,
+   "cy": 337.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#28456f",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#28456f",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 3-4",
+   "cx": 472.5,
+   "cy": 337.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#2967bc",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#2967bc",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 3-5",
+   "cx": 607.5,
+   "cy": 337.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#285688",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#285688",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 3-6",
+   "cx": 742.5,
+   "cy": 337.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#17325d",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#17325d",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 3-7",
+   "cx": 877.5,
+   "cy": 337.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#10396f",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#10396f",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 3-8",
+   "cx": 1012.5,
+   "cy": 337.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#093165",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#093165",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 4-1",
+   "cx": 67.5,
+   "cy": 472.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#074d81",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#074d81",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 4-2",
+   "cx": 202.5,
+   "cy": 472.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#053d6c",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#053d6c",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 4-3",
+   "cx": 337.5,
+   "cy": 472.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#234c7a",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#234c7a",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 4-4",
+   "cx": 472.5,
+   "cy": 472.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#b3c2c7",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#b3c2c7",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 4-5",
+   "cx": 607.5,
+   "cy": 472.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#778ca1",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#778ca1",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 4-6",
+   "cx": 742.5,
+   "cy": 472.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0d2f54",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0d2f54",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 4-7",
+   "cx": 877.5,
+   "cy": 472.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#15355b",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#15355b",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 4-8",
+   "cx": 1012.5,
+   "cy": 472.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0d2d60",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0d2d60",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 5-1",
+   "cx": 67.5,
+   "cy": 607.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#052f57",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#052f57",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 5-2",
+   "cx": 202.5,
+   "cy": 607.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#072331",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#072331",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 5-3",
+   "cx": 337.5,
+   "cy": 607.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#145484",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#145484",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 5-4",
+   "cx": 472.5,
+   "cy": 607.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#d1c5ad",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#d1c5ad",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 5-5",
+   "cx": 607.5,
+   "cy": 607.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#c8d0b8",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#c8d0b8",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 5-6",
+   "cx": 742.5,
+   "cy": 607.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#14171e",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#14171e",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 5-7",
+   "cx": 877.5,
+   "cy": 607.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0d2139",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0d2139",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 5-8",
+   "cx": 1012.5,
+   "cy": 607.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0c2b59",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0c2b59",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 6-1",
+   "cx": 67.5,
+   "cy": 742.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#071b24",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#071b24",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 6-2",
+   "cx": 202.5,
+   "cy": 742.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#071e26",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#071e26",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 6-3",
+   "cx": 337.5,
+   "cy": 742.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#104d7c",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#104d7c",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 6-4",
+   "cx": 472.5,
+   "cy": 742.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#c4aaab",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#c4aaab",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 6-5",
+   "cx": 607.5,
+   "cy": 742.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#c2a7a0",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#c2a7a0",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 6-6",
+   "cx": 742.5,
+   "cy": 742.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#1a354a",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#1a354a",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 6-7",
+   "cx": 877.5,
+   "cy": 742.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0a2957",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0a2957",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 6-8",
+   "cx": 1012.5,
+   "cy": 742.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#102749",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#102749",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 7-1",
+   "cx": 67.5,
+   "cy": 877.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#082338",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#082338",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 7-2",
+   "cx": 202.5,
+   "cy": 877.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#062128",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#062128",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 7-3",
+   "cx": 337.5,
+   "cy": 877.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#2b5786",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#2b5786",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 7-4",
+   "cx": 472.5,
+   "cy": 877.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#4076b6",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#4076b6",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 7-5",
+   "cx": 607.5,
+   "cy": 877.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#4e6ba5",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#4e6ba5",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 7-6",
+   "cx": 742.5,
+   "cy": 877.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#18477d",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#18477d",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 7-7",
+   "cx": 877.5,
+   "cy": 877.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#143057",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#143057",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 7-8",
+   "cx": 1012.5,
+   "cy": 877.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#062440",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#062440",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 8-1",
+   "cx": 67.5,
+   "cy": 1012.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#09274b",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#09274b",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 8-2",
+   "cx": 202.5,
+   "cy": 1012.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#071919",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#071919",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 8-3",
+   "cx": 337.5,
+   "cy": 1012.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#1a477e",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#1a477e",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 8-4",
+   "cx": 472.5,
+   "cy": 1012.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#6e6987",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#6e6987",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 8-5",
+   "cx": 607.5,
+   "cy": 1012.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#946960",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#946960",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 8-6",
+   "cx": 742.5,
+   "cy": 1012.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#142843",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#142843",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 8-7",
+   "cx": 877.5,
+   "cy": 1012.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#072144",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#072144",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 8-8",
+   "cx": 1012.5,
+   "cy": 1012.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#091d35",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#091d35",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 9-1",
+   "cx": 67.5,
+   "cy": 1147.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#062247",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#062247",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 9-2",
+   "cx": 202.5,
+   "cy": 1147.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#051515",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#051515",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 9-3",
+   "cx": 337.5,
+   "cy": 1147.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#1a3958",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#1a3958",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 9-4",
+   "cx": 472.5,
+   "cy": 1147.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#d1672d",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#d1672d",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 9-5",
+   "cx": 607.5,
+   "cy": 1147.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#d86e3a",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#d86e3a",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 9-6",
+   "cx": 742.5,
+   "cy": 1147.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#101823",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#101823",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 9-7",
+   "cx": 877.5,
+   "cy": 1147.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#08121e",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#08121e",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 9-8",
+   "cx": 1012.5,
+   "cy": 1147.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#061011",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#061011",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 10-1",
+   "cx": 67.5,
+   "cy": 1282.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#062855",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#062855",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 10-2",
+   "cx": 202.5,
+   "cy": 1282.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#061512",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#061512",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 10-3",
+   "cx": 337.5,
+   "cy": 1282.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#0a2f4a",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#0a2f4a",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 10-4",
+   "cx": 472.5,
+   "cy": 1282.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#ad6956",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#ad6956",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 10-5",
+   "cx": 607.5,
+   "cy": 1282.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#a06e65",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#a06e65",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 10-6",
+   "cx": 742.5,
+   "cy": 1282.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#040b15",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#040b15",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 10-7",
+   "cx": 877.5,
+   "cy": 1282.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#010d19",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#010d19",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "ellipse",
+   "name": "배경 10-8",
+   "cx": 1012.5,
+   "cy": 1282.5,
+   "rx": 155.2,
+   "ry": 155.2,
+   "gradient": {
+    "type": "radial",
+    "stops": [
+     {
+      "at": 0,
+      "color": "#050a10",
+      "opacity": 1
+     },
+     {
+      "at": 1,
+      "color": "#050a10",
+      "opacity": 0
+     }
+    ]
+   }
+  },
+  {
+   "type": "text",
+   "name": "Open Positions.",
+   "text": "Open Positions.",
+   "x": 100,
+   "y": 199,
+   "size": 63,
+   "font": "Instrument Serif",
+   "fill": "#ffffff"
+  },
+  {
+   "type": "text",
+   "name": "마감일",
+   "text": "~26.08.02",
+   "x": 681,
+   "y": 197,
+   "size": 63,
+   "font": "Instrument Serif",
+   "fill": "#ffffff"
+  },
+  {
+   "type": "text",
+   "name": "직군 1 — Graphic",
+   "text": "Graphic",
+   "x": 92,
+   "y": 428,
+   "size": 198,
+   "font": "Instrument Serif",
+   "fill": "#ffffff"
+  },
+  {
+   "type": "text",
+   "name": "직군 1 — Designer.",
+   "text": "Designer.",
+   "x": 90,
+   "y": 607,
+   "size": 198,
+   "font": "Instrument Serif",
+   "fill": "#ffffff"
+  },
+  {
+   "type": "text",
+   "name": "직군 2 — 3D",
+   "text": "3D",
+   "x": 108,
+   "y": 974,
+   "size": 198,
+   "font": "Instrument Serif",
+   "fill": "#ffffff"
+  },
+  {
+   "type": "text",
+   "name": "회사명",
+   "text": "imago pictures",
+   "x": 516,
+   "y": 880,
+   "size": 62,
+   "font": "Instrument Serif",
+   "fill": "#ffffff"
+  },
+  {
+   "type": "text",
+   "name": "직군 2 — Generalist.",
+   "text": "Generalist.",
+   "x": 92,
+   "y": 1171,
+   "size": 198,
+   "font": "Instrument Serif",
+   "fill": "#ffffff"
+  }
+ ]
+}
