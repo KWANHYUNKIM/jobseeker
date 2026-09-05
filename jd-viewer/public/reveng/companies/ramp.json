@@ -1,0 +1,303 @@
+{
+  "slug": "ramp",
+  "name": "Ramp",
+  "name_en": "Ramp",
+  "country": "US",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "ramp.com",
+  "one_liner": "회사 돈이 나가는 길목마다 규칙을 세우는 곳 — 파는 것은 카드가 아니라 그 규칙이다",
+  "business_model": "**법인카드를 주고 그 위에서 지출을 관리하게 한다.** 3자 자료 기준으로 연환산 매출이 **15억 달러**(2026년 5월, 2025년 말 약 12억), 고객은 **7만 곳 이상**, 총결제액(TPV)은 **570억 달러**(2023년 223억)다. 밸류에이션은 **440억 달러**(2026년 6월, 1년 전 160억). ⚠️ **수익 구성은 확인하지 못했다** — 카드 인터체인지와 소프트웨어 구독이 섞여 있을 텐데 **비중을 밝힌 1급 자료를 못 찾았다.**\n\n⚠️ **이 회사의 제품이 무엇인지가 기술 구조를 그대로 정한다** — 파는 것은 카드가 아니라 **`이 지출이 되는가` 를 판정하는 규칙**이다. 그래서 승인·정책·필드 노출이 전부 한 엔진 위에 서고, 그 엔진이 **하루 100만 건 이상**을 돈다. **고객마다 규칙이 다르므로 코드로 박을 수 없고, 그래서 그래프가 된다**(이 정리는 이 사이트의 재구성이다).\n\n**그리고 이 회사는 만드는 방식 자체에 같은 수법을 쓴다** — 승인 로직을 그래프로 추상화하듯, **ML 배포를 YAML 로**(첫 모델 4개월·3,000줄 → 5분 미만·약 40줄), **코딩을 사내 에이전트로**(병합 PR 의 약 30%) 옮겼다. **세 도메인이 모두 `직접 짜지 말고 틀을 만들어라` 는 한 문장의 변주다**(재구성).",
+  "products": [
+    "법인카드",
+    "지출·경비 관리",
+    "청구서 결제(AP) 자동화",
+    "조달(Procurement)",
+    "출장(Travel)"
+  ],
+  "domain_map": {
+    "title": "Ramp 도메인 지도",
+    "question": "회사 돈이 나가려 할 때 무엇이 그것을 막고, 그 막는 규칙은 누가 어떻게 만드는가?",
+    "code": "flowchart TD\n  S[\"<b>지출 시도</b><br/>• 카드 · 청구서 · 조달 · 출장\"]:::accent --> W[\"<b>워크플로 엔진</b><br/>• 액션과 조건의 그래프<br/>• 하루 100만 건 이상\"]:::accent\n  W --> Y[\"<b>승인</b>\"]:::list\n  W --> N[\"<b>반려 · 추가 정보 요구</b>\"]:::list\n  R[\"<b>ML 모델</b><br/>• 신용 위험 등\"]:::accent -.->|\"판단을 보탠다\"| W\n  T[\"<b>Turbo (YAML 설정)</b><br/>• 4개월 → 5분 미만\"]:::accent --> R\n  D[\"<b>만드는 쪽</b>\"]:::accent --> I[\"<b>Inspect (사내 코딩 에이전트)</b><br/>• 병합 PR 의 약 30%\"]:::accent\n  I -.->|\"이 모든 것을 짓는다\"| W\n  I -.-> T\n  classDef gone stroke-dasharray: 4 3"
+  },
+  "revenue_streams": [
+    {
+      "name": "카드 결제에서 나오는 몫 (인터체인지)",
+      "how": "총결제액 **570억 달러**(2023년 223억)가 이 회사를 지난다. 미국 법인카드 시장의 **1~2%** 규모라는 추정이 있다.",
+      "domains": [
+        "지출이 되는지를 그래프가 판정한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Ramp revenue, valuation & funding",
+          "url": "https://sacra.com/c/ramp/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2026년 5월 연환산 매출 15억 달러(2025년 말 약 12억 달러). 총결제액 570억 달러(2023년 223억 달러). 미국 법인카드 시장의 1~2% 규모."
+        }
+      ]
+    },
+    {
+      "name": "소프트웨어 (지출 관리·AP·조달·출장)",
+      "how": "카드 위에 얹는 유료 기능들. 고객 **7만 곳 이상**, 연환산 매출 **15억 달러**. ⚠️ **인터체인지와의 비중을 확인하지 못했다.**",
+      "domains": [
+        "지출이 되는지를 그래프가 판정한다",
+        "모델 배포를 넉 달에서 5분으로 줄인다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Ramp revenue, valuation & funding",
+          "url": "https://sacra.com/c/ramp/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2026년 5월 연환산 매출 15억 달러(2025년 말 약 12억 달러). 총결제액 570억 달러(2023년 223억 달러). 미국 법인카드 시장의 1~2% 규모."
+        },
+        {
+          "title": "Ramp hits $44 billion valuation as companies look to rein in AI spending",
+          "url": "https://www.cnbc.com/2026/06/04/ramp-valuation-funding-ai-spend.html",
+          "publisher": "CNBC",
+          "date": "2026-06-04",
+          "summary": "2026년 6월 기준 밸류에이션 440억 달러(2025년 6월 160억 달러). 고객 7만 곳 이상."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "지출이 되는지를 그래프가 판정한다",
+      "why": "⚠️ **이 회사가 파는 것은 카드가 아니라 `이 지출이 되는가` 를 판정하는 규칙이다.** 고객마다 승인 단계도 정책도 다르므로 **코드로 박을 수 없다.** 그래서 승인·정책·필드 노출을 **하나의 엔진** 위에 세웠고, 그것이 **누적 4,500만 건 이상, 하루 100만 건 이상**을 돈다. **회사가 그 결정을 한 문장으로 적는다 — `We decided to slow down, in order to go fast`.**",
+      "tech": [
+        {
+          "tech": "방향 비순환 그래프 (액션 · 조건 정점)",
+          "solves": "정점은 **실행 가능한 코드(액션)** 아니면 **불리언 식(조건)** 이고 간선이 의존이다. 위상 정렬로 **경계 노드부터** 실행한다.",
+          "limits": "⚠️ **첫 설계는 실패했다** — 액션·조건·의존을 재귀적 불리언 식으로 저장하는 방식이었는데, **선형 논리를 규칙 형태로 옮겨야 했고 액션 사이의 의존을 우아하게 표현하기 어려웠다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Abstraction Engineering",
+              "url": "https://engineering.ramp.com/post/workflows",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+            }
+          ]
+        },
+        {
+          "tech": "Postgres 에 저장하는 AST",
+          "solves": "워크플로를 **추상 구문 트리**로 저장한다 — **쓰기를 복잡하게 만들고 실행을 단순하게** 만드는 맞바꿈이다.",
+          "limits": "⚠️ **쓰기 쪽 복잡도를 떠안는다.** 쓰기가 한때 **20초를 넘었고** 지금은 **200ms 미만**이다 — 실행은 평균 **약 100ms**.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Abstraction Engineering",
+              "url": "https://engineering.ramp.com/post/workflows",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+            }
+          ]
+        },
+        {
+          "tech": "SDK 층 (if/elif/else)",
+          "solves": "사람이 쓰는 높은 수준의 구문을 **핵심 그래프 연산으로 컴파일**한다.",
+          "limits": "⚠️ **표현할 수 있는 것이 컴파일 대상에 묶인다** — 실제로 **루프와 펍섭 트리거는 뒤로 미뤘다**고 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Abstraction Engineering",
+              "url": "https://engineering.ramp.com/post/workflows",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+            }
+          ]
+        },
+        {
+          "tech": "Postgres 기반 큐 (Celery 대체)",
+          "solves": "작업 실행을 데이터베이스가 받친다.",
+          "limits": "⚠️ **Celery 를 버린 이유가 구체적이다 — 1만 개당 7개가 실패했다.** 대부분은 도는데 **드물게 조용히 빠지는 것**이 승인 시스템에서는 치명적이다(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Abstraction Engineering",
+              "url": "https://engineering.ramp.com/post/workflows",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "모델 배포를 넉 달에서 5분으로 줄인다",
+      "why": "⚠️ **금융 회사라 재현성과 설명 가능성이 규제 요구다.** 그런데 첫 신용 위험 모델은 **배포에만 넉 달과 3,000줄**이 걸렸다. 새로 온 사람은 남의 파이프라인을 물려받아 이해하기 어려웠고, 엔지니어는 **기능을 만드는 대신 배포에 시간을 썼으며**, 새 데이터로 다시 학습시키는 일이 비쌌다. **그래서 표준과 코드 리뷰로 다스리는 대신 추상 계층을 만들었다.**",
+      "tech": [
+        {
+          "tech": "Turbo (Pydantic 기반 YAML 설정)",
+          "solves": "데이터 적재부터 배포까지를 **설정 하나로** 다룬다. **3,000줄이 YAML 약 40줄**이 됐고 배포가 **넉 달 → 5분 미만**이다.",
+          "limits": "⚠️ **재현성이 데이터에 기댄다** — `will produce the same results, as long as your data hasn't changed`. **상류 데이터가 흔들리면 같은 설정이 다른 답을 낸다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Turbo-Charging ML Development",
+              "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+            }
+          ]
+        },
+        {
+          "tech": "표준화된 휴일 처리",
+          "solves": "시계열 모델들이 **휴일을 제각각 다루던 것을 통일**해 예측 불일치를 없앴다.",
+          "limits": "⚠️ **통일하면 예외를 두기 어려워진다**(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Turbo-Charging ML Development",
+              "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 표준·코드 리뷰로 다스리기 (버린 쪽)",
+          "solves": "규칙을 문서로 정하고 리뷰로 지키게 하는 방식.",
+          "limits": "⚠️ **버린 이유가 명시적이다** — 비공식적 방법으로는 **배포가 느려지고 팀을 가로질러 유지하기 어려워진다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Turbo-Charging ML Development",
+              "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "코딩 에이전트를 사서 쓰지 않고 직접 만든다",
+      "why": "**기성 에이전트를 쓰지 않은 이유를 한 문장으로 적는다 — `it only has to work on your code`.** 남의 코드까지 다뤄야 하는 제품과 달리 **자기 저장소만 상대하면 되므로, 직접 만들면 훨씬 맞출 수 있다.** 그 결과 **프런트·백엔드 저장소에 병합되는 PR 의 약 30%** 를 이 에이전트가 쓴다 — 몇 달 만에.",
+      "tech": [
+        {
+          "tech": "Modal 샌드박스",
+          "solves": "클라우드에 **완전한 개발 환경**을 띄운다. 이미지를 **30분마다 새로 구워** 두고 **파일시스템 스냅샷**으로 즉시 시작한다.",
+          "limits": "⚠️ **저장소 스냅샷이 최대 30분까지 낡는다** — 속도와 신선도를 맞바꾼 값이고, **동기화가 끝나기 전에는 읽기만 되고 편집이 막힌다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why We Built Our Own Background Agent",
+              "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+            }
+          ]
+        },
+        {
+          "tech": "Cloudflare Durable Objects (세션마다 SQLite)",
+          "solves": "세션별 데이터베이스로 **실시간 스트리밍과 여러 사람이 함께 보는 것**을 받친다.",
+          "limits": "⚠️ **여럿이 함께 쓰는 세션에는 GitHub 인증이 필요하다** — 리뷰 없는 코드가 병합되지 않게 막는 자리다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why We Built Our Own Background Agent",
+              "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+            }
+          ]
+        },
+        {
+          "tech": "여러 진입점 (슬랙 봇 · 웹 · 크롬 확장)",
+          "solves": "슬랙에서 부르고, 웹에서는 **VS Code 를 끼워 넣고 데스크톱을 스트리밍**하며, 크롬 확장으로 **React 화면을 눈으로 보며 고친다.**",
+          "limits": "⚠️ **진입점이 늘수록 유지할 표면이 는다** — 그 비용은 글에 없다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why We Built Our Own Background Agent",
+              "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+            }
+          ]
+        },
+        {
+          "tech": "OpenCode (에이전트 본체)",
+          "solves": "**서버 우선** 구조라 자체 클라이언트를 붙일 수 있고, **완전히 타입이 붙은 SDK** 와 플러그인 체계가 있으며, **오픈소스라 에이전트가 자기 코드를 근거로 삼는다.**",
+          "limits": "⚠️ **후속 프롬프트가 끼어들지 않고 큐에 쌓인다** — 의도한 선택이라 적지만, **급한 정정을 즉시 반영할 수 없다는 뜻이다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why We Built Our Own Background Agent",
+              "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+              "publisher": "Ramp Builders Blog",
+              "date": "2026",
+              "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **수익 구성을 확인하지 못했다** — 카드 인터체인지와 소프트웨어 구독의 비중을 밝힌 자료를 못 찾았다. **매출·고객·TPV·밸류에이션 수치도 전부 3자 출처다**(Sacra·CNBC).",
+    "⚠️ **워크플로 엔진의 첫 설계가 왜 실패했는지는 적는데, 지금 구조가 그 문제를 어떻게 푸는지는 얇다** — 액션 사이의 의존을 그래프가 어떻게 우아하게 다루는지 더 봐야 한다.",
+    "**Celery 가 1만 개당 7개를 놓친 원인을 모른다** — 증상만 적혀 있고 진단이 없다.",
+    "**Inspect 의 실패율·비용·되돌린 비율을 모른다** — `병합 PR 의 약 30%` 외에 수치가 없다. **Duolingo 는 첫 시도 CI 통과율까지 적었다.**",
+    "**Turbo 로 만든 모델이 실제로 어떤 판단을 하는지 모른다** — 신용 위험 모델이 승인 그래프와 어떻게 이어지는지 자료를 못 찾았다.",
+    "**연표(eras)를 세울 자료를 못 찾았다** — 다만 워크플로 글에 **첫 설계 → 지금 구조**의 두 시점이 있어 **연도를 확인하면 기능 안에 history 를 세울 수 있다.**"
+  ],
+  "sources": [
+    {
+      "title": "Abstraction Engineering",
+      "url": "https://engineering.ramp.com/post/workflows",
+      "publisher": "Ramp Builders Blog",
+      "date": "2026",
+      "summary": "승인·정책·필드 노출을 떠받치는 워크플로 엔진. 액션과 조건을 정점으로 두는 방향 비순환 그래프이고 AST 를 포스트그레스에 저장한다. 4,500만 워크플로 이상, 하루 100만 이상. 쓰기가 20초 넘던 것이 200ms 미만으로."
+    },
+    {
+      "title": "Turbo-Charging ML Development",
+      "url": "https://builders.ramp.com/post/turbo-ml-configuration-system",
+      "publisher": "Ramp Builders Blog",
+      "date": "2026",
+      "summary": "Pydantic 기반 YAML 설정으로 데이터 적재부터 배포까지 다루는 ML 프레임워크. 첫 신용 위험 모델은 4개월과 3,000줄이 걸렸는데 지금은 5분 미만과 YAML 약 40줄이다. 개발자 9명이 모델 약 20개를 냈다."
+    },
+    {
+      "title": "Why We Built Our Own Background Agent",
+      "url": "https://engineering.ramp.com/post/why-we-built-our-background-agent",
+      "publisher": "Ramp Builders Blog",
+      "date": "2026",
+      "summary": "사내 코딩 에이전트 Inspect. Modal 샌드박스에 30분마다 새로 굽는 이미지와 파일시스템 스냅샷, Cloudflare Durable Objects 로 세션마다 SQLite. 프런트·백엔드 저장소에 병합되는 PR 의 약 30% 를 쓴다."
+    },
+    {
+      "title": "Ramp hits $44 billion valuation as companies look to rein in AI spending",
+      "url": "https://www.cnbc.com/2026/06/04/ramp-valuation-funding-ai-spend.html",
+      "publisher": "CNBC",
+      "date": "2026-06-04",
+      "summary": "2026년 6월 기준 밸류에이션 440억 달러(2025년 6월 160억 달러). 고객 7만 곳 이상."
+    },
+    {
+      "title": "Ramp revenue, valuation & funding",
+      "url": "https://sacra.com/c/ramp/",
+      "publisher": "Sacra",
+      "date": "2026",
+      "summary": "2026년 5월 연환산 매출 15억 달러(2025년 말 약 12억 달러). 총결제액 570억 달러(2023년 223억 달러). 미국 법인카드 시장의 1~2% 규모."
+    }
+  ]
+}
