@@ -4,7 +4,7 @@
   "name_en": "Bolt",
   "country": "EU",
   "category": "모빌리티",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-05",
   "domain": "bolt.eu",
   "one_liner": "에스토니아에서 시작해 50개국에서 차·음식·킥보드를 함께 굴리는 회사 — 그리고 자기가 과잉설계했다고 글로 적는다",
@@ -24,7 +24,8 @@
       "weight": "⚠️ 확인하지 못했다",
       "domains": [
         "돈이 어디까지 왔는지 끝까지 센다",
-        "과잉설계했다고 적고 되돌아온다"
+        "과잉설계했다고 적고 되돌아온다",
+        "엔진을 하나로 모은다"
       ],
       "confidence": "confirmed",
       "sources": [
@@ -194,7 +195,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "one-engine-one-dialect"
+      ]
     }
   ],
   "eras": [],
@@ -1049,6 +1052,509 @@
           "publisher": "Bolt Tech Blog",
           "date": "2026-06-15",
           "summary": "사기 검문 구조가 맞춤 코드 → 빌더 → 설정 주도 ETL 프레임워크 → 다시 빌더로 돌아온 기록. 과잉설계를 스스로 인정하고 어디까지가 통했는지를 가른다."
+        }
+      ]
+    },
+    {
+      "key": "one-engine-one-dialect",
+      "name": "쓰는 엔진과 읽는 엔진이 달라 생긴 틈을 없앤다",
+      "domain": "엔진을 하나로 모은다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "분석 데이터 **32페타바이트 이상**, 쿼리 **월 1000만 건**, 쓰는 사람 **3,000명 이상**이 기술·비기술 직군에 걸쳐 있다. 그런데 **쓰는 엔진과 읽는 엔진이 달랐다** — Spark 가 Delta 로 쓰고 Presto 가 외부 Hive 테이블로 읽었다. ⚠️ **그 틈이 숫자를 흔들었다**: 매니페스트 생성이 실패하면 낡은 값이 나갔고, 같은 지표를 두 방언으로 두 번 쓰다 보니 **같은 개념이 다른 숫자를 냈다.** 회사가 그 결과를 이름 붙인다 — `Trust erosion`. **믿음이 무너지면 되돌리기 어렵다**(`once trust is gone, it is hard to rebuild`).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "분석 데이터 **32PB 이상** · 쿼리 **월 1000만 건** · 월간 활성 사용자 **3,000명 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "피크 부하",
+            "value": "쿼리·스캔 바이트·메모리·워커 노드가 비피크 대비 **4~7배**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "1차 POC (중간 규모, 피크일 3만 쿼리)",
+            "value": "**65% 빠르고 36% 저렴** — 한 달 운영. 최악 쿼리의 파생 테이블은 **24배** 빨랐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "2차 POC (가장 무거운 워크로드, 월 수백만 쿼리)",
+            "value": "**30% 빠르고 25% 저렴** — 또 한 달",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "최종",
+            "value": "쿼리 **45% 빠르고 비용 40% 절감** — 절감액 **7자리 규모**. 중단 없이 완료",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "label": "들어간 것",
+            "value": "**2025년 2월 → 11월** · 엔지니어 **1명 → 6명** · 스크립트 **500줄 → 3,000줄**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "시작할 때",
+          "thought": "⚠️ **위에서 시킨 일이 아니다** — `There was no top-down directive. My manager and I proposed a proof of concept, got the green light.` 게다가 **엔진을 소유한 팀이 아니었다**. 글쓴이는 그 거리가 오히려 도움이 됐다고 적는다 — 매일 한계를 느끼되 **다른 길을 볼 여유가 있었다**(`This gave us room to explore alternatives`).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "회의적인 반응을 만났을 때",
+          "thought": "1차 결과를 들고 갔더니 엔진 소유 팀이 **회의적이었고, 회사는 그것이 당연했다고 적는다** — `they were sceptical, and understandably so.` **중간 규모 한 달로는 가장 무거운 부하에서의 확장성과 회복력을 증명하지 못한다.** 그래서 같은 실험을 그 규모에서 한 번 더 했다. **논쟁을 말이 아니라 반복으로 끝냈다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Liquid 앞에서 두 번 막혔을 때",
+          "thought": "⚠️ **핵심 통찰이 실패 두 번 뒤에 나온다** — `Liquid is not a cosmetic decoration on top of SQL. It is structural and changes the SQL itself.` 자리표시자로 치우면 **없애도 되는 잡음**으로 다루는 것이고, 실제로는 **문법의 일부**였다. 교훈을 이렇게 적는다: `Treat mixed templating as a language problem, not a string problem.`",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "LookML 소스",
+            "what": "SQL 과 Liquid 템플릿이 **같은 파일 안에 뒤엉켜** 있다. 이전 대상"
+          },
+          {
+            "name": "Liquid 구문",
+            "what": "`{{ }}` 출력 · `{% if %}` 분기 · `{% condition %}` 필터 · `{% parameter %}` 입력 · `${TABLE}` 참조. 런타임에 SQL 모양을 바꾼다"
+          },
+          {
+            "name": "Liquid 인식 방언",
+            "what": "SQLGlot 의 토크나이저·파서·생성기를 상속해 만든 커스텀 방언. 표현식 **아홉 종류**를 정의했다"
+          },
+          {
+            "name": "파생 테이블(PDT)",
+            "what": "이전 뒤 Looker 재빌드를 걸어 SQL 이 실제로 도는지 확인하는 대상"
+          },
+          {
+            "name": "감사 층",
+            "what": "양쪽 엔진의 결과를 맞춰 보는 검사. 조용한 오역을 잡는 자리"
+          }
+        ],
+        "invariants": [
+          "**창고 하나 · 방언 하나** — `one warehouse, one query dialect, and no split-brain between Spark-written and Presto-read logic`",
+          "**Liquid 는 문자열이 아니라 문법이다** — `It is structural and changes the SQL itself`",
+          "**자동 변환에는 자동 검증이 따른다** — `A transpiler that produces valid SQL is not the same as a transpiler that produces correct results`",
+          "**이전 도구는 재실행해도 안전해야 한다** — 옮기는 동안에도 원본이 바뀌기 때문이다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**중간 규모 프로젝트로 POC 를 돌린다**(피크일 3만 쿼리) — 최악 쿼리부터 성능 시험",
+            "why": "파생 테이블이 24배 빨랐다. 실제 운영으로 넘길 근거를 만드는 단계"
+          },
+          {
+            "step": "**되돌릴 계획을 갖고 운영에 올려 한 달 지켜본다**",
+            "why": "65% 빠르고 36% 저렴 — 그래도 확장성은 아직 증명 못 했다"
+          },
+          {
+            "step": "⚠️ **가장 무거운 워크로드에서 같은 실험을 반복한다**",
+            "why": "회의적인 팀을 설득하는 유일한 방법이었다. 30% 빠르고 25% 저렴으로 결과가 유지됐다"
+          },
+          {
+            "step": "승인을 받고 **전담 팀을 꾸린다**(끝내 6명)",
+            "why": "질문이 `Should we?` 에서 `How do we implement it?` 로 바뀐 뒤의 단계"
+          },
+          {
+            "step": "**SQLGlot 으로 방언을 옮긴다** — `transpile(query, read=\"presto\", write=\"databricks\")` 가 약 70%",
+            "why": "나머지 30%는 함수 매핑(`JSON_EXTRACT_SCALAR`→`get_json_object`, `UNNEST`→`EXPLODE`)·타입 변환·스키마 재작성"
+          },
+          {
+            "step": "⚠️ **Liquid 에서 막힌다** — `{% if %}` 같은 것은 유효한 SQL 이 아니라 파서가 깨진다",
+            "why": "**한 소스에 두 언어가 엉켜 있는데 파서는 하나만 안다**"
+          },
+          {
+            "step": "**SQLGlot 을 확장해 Liquid 인식 방언을 만든다** — 토크나이저·파서·생성기 각각을 상속",
+            "why": "토크나이저는 `{% %}`·`{{ }}`·`${}` 를 토큰으로 인정하고, 파서는 AST 노드로 바꾸고, 생성기는 그 노드를 **그대로 내보내며** 둘러싼 SQL 만 번역한다"
+          },
+          {
+            "step": "**사용량 상위 대시보드를 양쪽 엔진에 돌려 결과를 맞춰 본다**",
+            "why": "문법 검사로는 안 잡히는 실패(반올림·타입 변화·캐스팅으로 행이 덜 잡힘)를 찾는다"
+          },
+          {
+            "step": "**파생 테이블은 Looker 재빌드를 걸어 확인한다**",
+            "why": "SQL 이 유효하고 실제로 도는지까지 본다"
+          },
+          {
+            "step": "되돌릴 준비를 하고 배포한다 — **실제로 되돌린 적은 없다**",
+            "why": "무중단이 조건이었다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "엔진을 바꾸자는 제안을 어떻게 시작할 것인가",
+            "chosen": "**밑에서 올린다** — 매니저와 함께 POC 를 제안해 승인받고 혼자 만들기 시작했다",
+            "alternatives": [
+              "엔진 소유 팀이 위에서 결정해 내려보내기"
+            ],
+            "tradeoff": "⚠️ **소유 팀의 회의를 데이터로 넘어야 한다** — `they were sceptical, and understandably so`. 그 대신 **다른 길을 볼 여유**가 있었다: 엔진을 소유하지 않은 팀이라 `This gave us room to explore alternatives`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "한 번의 좋은 결과로 결정할 것인가",
+            "chosen": "**가장 무거운 워크로드에서 한 번 더 한다** — 같은 실험을 또 한 달",
+            "alternatives": [
+              "중간 규모 POC 결과(65%·36%)로 밀어붙이기"
+            ],
+            "tradeoff": "⚠️ **시간이 두 배로 든다.** 그 대신 반박이 사라졌다 — 회사가 이유를 적는다: 중간 규모 한 달로는 `little about scalability and resilience under Bolt's heaviest workloads` 를 증명한다. 2차에서 30%·25% 로 **결과가 유지되자 논의가 바뀌었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "SQL 에 섞인 Liquid 를 어떻게 다룰 것인가 — 첫 번째 시도",
+            "chosen": "**UUID 자리표시자로 치환했다가 되돌리기.** ⚠️ **실패했다**",
+            "alternatives": [
+              "처음부터 문법으로 다루기(결국 간 곳)"
+            ],
+            "tradeoff": "⚠️ **간단한 파일에서만 통했다** — 중첩(`{% case %}` 안의 `{% if %}`)·SQL 키워드 사이에 낀 주석·부분 SQL 을 감싸는 분기에서 깨졌다. **가장 나쁜 것은 조용한 실패였다**: `The regex-based replacement left the output unpredictable and silently broke translations in certain cases, which the auditing layer caught.` **감사 층이 없었으면 몰랐을 것이다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "두 번째 시도 — 모델에게 맡길 것인가",
+            "chosen": "**LLM 변환을 시도했다. ⚠️ 실패했다**",
+            "alternatives": [
+              "규칙 기반으로 계속 밀기"
+            ],
+            "tradeoff": "⚠️ **환각이 결과를 바꿨다** — `It frequently hallucinated, making up function names, introducing illogical errors, and reordering joins, which changed the outcome for certain edge cases.` 그리고 **모델을 바꿔도 나아지지 않았다**: `The situation didn't change a lot even after the release of Claude Opus 4/GPT-5.` **조인 순서를 바꾸는 오류는 문법 검사로 안 잡힌다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "세 번째 — 도구를 우회할 것인가 확장할 것인가",
+            "chosen": "**확장한다** — SQLGlot 의 토크나이저·파서·생성기를 상속해 **Liquid 인식 Presto 방언**을 만들었다",
+            "alternatives": [
+              "SQLGlot 을 우회해 자체 파서 작성",
+              "자리표시자·LLM 을 다듬어 재시도"
+            ],
+            "tradeoff": "⚠️ **커스텀 방언을 직접 이고 가야 한다** — 표현식 아홉 종류(LiquidBlock·LiquidBranch·LiquidVariable 등)를 정의했고 출력 쪽 Databricks 생성기도 따로 손봤다. 그 대신 **각 층이 자기가 아는 것만 맡는다**(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "변환이 맞다는 것을 무엇으로 믿을 것인가",
+            "chosen": "**사용량 상위 대시보드를 양쪽 엔진에 돌려 결과를 맞춰 본다**",
+            "alternatives": [
+              "문법 검사와 실행 성공으로 갈음하기"
+            ],
+            "tradeoff": "⚠️ **검사한 대시보드만 확인된다**(사용량 순으로 골랐다고 밝힌다). 그래도 이 층이 필요한 이유가 분명하다 — 반올림·조용한 타입 변화·캐스팅으로 행이 덜 잡히는 실패는 **문법 검사에 안 걸리고 사용자의 믿음을 갉아먹는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "옮기는 동안 원본이 바뀌는 것을 어떻게 할 것인가",
+            "chosen": "**도구를 재실행 가능하게 만든다** — 바뀐 부분만 다시 처리한다",
+            "alternatives": [
+              "이전 기간 동안 소스를 얼리기"
+            ],
+            "tradeoff": "**진행 중인 일을 멈출 수 없었다**(`We could not pause the ongoing work`). 그래서 멱등성을 도구의 요구사항으로 삼았다 — 교훈에도 적는다: `Migration tooling must be safe to rerun.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "question": "일정을 어떻게 볼 것인가",
+            "chosen": "**마지막 10%가 일정을 지배한다고 가정한다**",
+            "alternatives": [
+              "변환율 70%를 진척률로 읽기"
+            ],
+            "tradeoff": "⚠️ **방언별 동작 차이는 끝이 없다** — `Covering all the edge cases will consume a lot of time. There are many unknown unknowns.` 실제로 **한 명의 500줄 노트북 스크립트가 여섯 명의 3,000줄 엔진**이 됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Databricks SQL Warehouse",
+            "role": "Presto 를 대신하는 단일 질의 엔진. 이미 가장 큰 ETL·데이터 사이언스 워크로드를 돌리고 있었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "SQLGlot + 커스텀 Liquid 방언",
+            "role": "Presto→Databricks 변환의 약 70%를 맡고, 상속으로 Liquid 를 문법으로 다룬다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Looker · LookML · Liquid",
+            "role": "이전 대상. 필터·파라미터에 따라 런타임에 쿼리 모양이 바뀐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Delta + Spark",
+            "role": "쓰기 쪽. 이전 전에는 여기서 쓴 것을 외부 Hive 테이블로 만들어 Presto 가 읽었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ LLM (Claude 3.7 Sonnet 등)",
+            "role": "⚠️ **해법이 아니라 버린 시도다** — 함수명 환각과 조인 순서 변경으로 결과가 달라졌고 모델을 올려도 마찬가지였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "psp-reconciliation",
+          "via": "같은 데이터 플랫폼",
+          "contract": "⚠️ **결제 대사도 dbt·Spark 위에서 돈다.** 지표가 엔진에 따라 다른 값을 내면 **대사율 같은 숫자부터 못 믿게 된다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "분석·데이터 사이언스·운영 팀 (3,000명 이상)",
+          "via": "대시보드",
+          "contract": "**이들이 매일 쓰는 숫자가 이 이전의 대상이다.** 중단 없이 옮기는 것이 조건이었다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "엔진 소유 팀",
+          "via": "두 번의 POC",
+          "contract": "⚠️ **승인이 아니라 반복으로 얻은 합의다.** 첫 결과에는 회의적이었고, 가장 무거운 워크로드에서 재현되자 논의가 `Should we?` 에서 `How do we implement it?` 으로 바뀌었다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "한 소스에 두 언어가 엉켜 있다",
+            "why_hard": "LookML 안에서 Liquid 는 SQL **옆에** 있는 것이 아니라 **안에** 있다. `{% if region == 'EU' %} SELECT a {% else %} SELECT b {% endif %}` 는 유효한 SQL 이 아니라 **파서가 깨진다.** 그런데 지우고 되돌리면 조용히 잘못된 번역이 나온다",
+            "current_best": "이 회사의 답은 **문법으로 승격**하는 것이다 — 토크나이저가 인정하고, 파서가 AST 노드로 만들고, 생성기가 그대로 내보낸다. 교훈 한 줄이 남는다: `Treat mixed templating as a language problem, not a string problem.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "맞는 SQL 이 맞는 결과를 뜻하지 않는다",
+            "why_hard": "문법적으로 옳은 쿼리도 **반올림 오차·조용한 타입 변화·캐스팅 엣지 케이스로 행이 덜 잡히면** 대시보드를 조용히 망가뜨린다. **이런 실패는 문법 검사에 안 걸리고 사용자의 믿음을 갉아먹는다**",
+            "current_best": "**자동 변환에는 자동 검증을 붙인다** — 양쪽 엔진에 같은 입력을 넣어 결과를 맞춰 보는 감사 층. 실제로 이 층이 자리표시자 방식의 조용한 오역을 잡아냈다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+                "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+                "publisher": "Bolt Tech Blog",
+                "date": "2026-08-04",
+                "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쓰는 엔진과 읽는 엔진이 갈렸을 때",
+          "question": "두 엔진 사이의 틈은 어디서 숫자를 흔드나",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph BEFORE [\"2021~ — 엔진 둘\"]\n    SP[\"<b>Spark</b><br/>• Delta 로 쓴다\"]:::list --> HV[\"<b>외부 Hive 테이블</b><br/>• 매니페스트로 동기화\"]:::gone\n    HV --> PR[\"<b>Presto</b><br/>• 대시보드 · API 로 읽는다\"]:::gone\n    HV -.->|매니페스트 실패| ST[\"⚠️ <b>낡은 값이 나간다</b>\"]:::gone\n    PR -.-> TR[\"⚠️ <b>같은 지표, 다른 숫자</b><br/>• 방언이 둘이라 두 번 쓴다\"]:::gone\n  end\n  subgraph AFTER [\"지금 — 엔진 하나\"]\n    SP2[\"<b>Spark</b>\"]:::list --> DB[\"<b>Databricks SQL Warehouse</b><br/>• 창고 하나 · 방언 하나\"]:::accent\n    DB --> U[\"<b>사용자 3,000명 이상</b><br/>• 45% 빠르고 40% 저렴\"]:::list\n  end\n  TP[\"<b>Liquid 인식 SQLGlot 방언</b><br/>• 토크나이저 · 파서 · 생성기 상속<br/>• 표현식 아홉 종류\"]:::accent\n  TP -.->|LookML 을 옮긴다| DB\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "두 번 틀리고 나서야 문법으로 다뤘다",
+          "question": "자리표시자와 LLM 은 왜 안 됐나",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[\"<b>SQL 안에 Liquid 가 섞여 있다</b><br/>• {% if %} 는 유효한 SQL 이 아니다\"]:::list --> A1\n  A1[\"<b>1차 — UUID 자리표시자</b><br/>• 지웠다가 되돌린다\"]:::gone --> F1[\"⚠️ <b>중첩 · 주석 · 부분 SQL 에서 깨짐</b><br/>• 조용히 잘못된 번역<br/>• 감사 층이 잡아냈다\"]:::gone\n  P --> A2[\"<b>2차 — LLM 변환</b>\"]:::gone --> F2[\"⚠️ <b>함수명 환각 · 조인 순서 변경</b><br/>• 모델을 올려도 그대로\"]:::gone\n  F1 --> A3\n  F2 --> A3\n  A3[\"<b>3차 — SQLGlot 확장</b><br/>• Liquid 를 문법으로 승격\"]:::accent --> OK[\"<b>남은 교훈</b><br/>• 문자열 문제가 아니라 언어 문제<br/>• 자동 변환엔 자동 검증<br/>• 도구는 재실행 안전하게<br/>• 마지막 10%가 일정을 지배한다\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [
+        {
+          "version": "Spark 가 쓰고 Presto 가 읽는 두 엔진",
+          "from": "2021",
+          "to": "2025",
+          "what": "2021년에 설계한 구조다 — Spark 가 Delta 형식으로 쓰고, 외부 Hive 테이블을 만들어 **Presto 가 그것을 읽어** 대시보드와 API 로 냈다. 두 엔진 사이는 **쓰기 뒤에 매니페스트 파일을 생성해** 이었다.",
+          "why_changed": "네 곳에서 한꺼번에 막혔다 — ① **피크에 모든 지표가 4~7배로 뛰는데 Presto 가 그 동시성을 못 받쳤다**, ② 스테이지 재시도가 없어 **쿼리 일부가 실패하면 처음부터 다시 돌았다**, ③ **매니페스트 생성이 실패하면 다음 실행까지 낡은 값이 나갔다**, ④ 같은 지표를 Spark 용과 리포팅용으로 두 번 쓰다 보니 **같은 개념이 다른 숫자를 냈다.** 회사가 이 마지막을 `Trust erosion` 이라 부른다. 2025년 2월에 POC 가 시작돼 **11월에 이전이 끝났다.**",
+          "tradeoff": "⚠️ 두 엔진 구조는 **레이아웃을 늘 한쪽에 맞춰 다른 쪽을 희생하게 했다** — Presto·Hive 는 수백 MB~1GB 의 작은 파티션을 선호하고 Databricks 는 1TB 전에는 파티션을 두지 말라고 권한다. 회사의 표현이 그대로다: `Tuning the layout to suit one engine meant a worse layout for the other, so we were always trading one off against the other.`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+              "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+              "publisher": "Bolt Tech Blog",
+              "date": "2026-08-04",
+              "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "title": "Migrating 10 million monthly queries: How Bolt moved Looker from Presto to Databricks",
+          "url": "https://bolt.eu/en/blog/migrating-looker-to-databricks/",
+          "publisher": "Bolt Tech Blog",
+          "date": "2026-08-04",
+          "summary": "월 1000만 쿼리를 Presto 에서 Databricks 로 옮긴 기록. 밑에서 올라온 실험이 플랫폼 전체 이전이 되기까지의 순서와 실패한 두 번의 시도를 적었다."
         }
       ]
     }
