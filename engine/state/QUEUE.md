@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Ably** | EU(UK) · SaaS(실시간 인프라) | 프로파일 완료 · 도메인 2(여러 곳이 한꺼번에 죽는다고 보고 배치한다[tech 4] / 순서를 지키려면 속도를 내준다[tech 4]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Ably** | EU(UK) · SaaS(실시간 인프라) | `ably.com/blog` — 최신 **2026-07** | ✅ WebFetch 로 목록·본문 모두 온다. ⚠️ **첫 화면과 `topic/` 경로는 일반 교육 글이라 검색으로 심층 글을 찾아야 한다** | **⚠️ 다섯 사이클 전에 `열리는데 제품 발표` 로 떨어뜨렸던 곳이다. 본문을 열어 보니 판정이 뒤집혔다.** `engineering-dependability-and-fault-tolerance-in-a-distributed-system` 은 **자기 프로덕션 구조를 다룬다** — **버린 대안이 명시적이다**: *"Raft/Paxos... are not effective in networks spanning multiple regions because their efficiency breaks down if the latency becomes too high when communicating among peers"* → 그래서 **Gossip 프로토콜**을 쓴다. **대가를 셋으로 적는다** — *"The consequent trade-offs are among the following: Customer requirements for achieving high availability, Business operational cost, Real world engineering practicality of actually making it possible"*. **수치** — **eight 9s of reliability**(가용성 99.999999%)를 보장한다고 밝히고, 다중 AZ·다중 리전 배치와 **트랜잭션 방식의 다중 위치 기록**을 그 근거로 든다. ⚠️ **회고형은 아니다** — 일반 이론 틀에 자기 구조를 얹은 혼합형이라 `무엇이 한계에 닿아 바꿨나` 는 약할 수 있다. 축은 **실시간 메시징 인프라 벤더**로 Discord(메시징 제품)·Cloudflare 와 결이 다르다. 다른 글도 있다: `chat-architecture-reliable-message-ordering`(**순서 보장과 지연의 맞바꿈**) · `8-fallacies-of-distributed-computing` |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

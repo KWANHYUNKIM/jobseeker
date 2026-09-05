@@ -8,27 +8,38 @@
 
 ## 지금 파는 중
 
-**없다.** 완료 **73곳** · **큐 1/3**(Ably) · 비교 문서 33편.
+**Ably(EU/UK · SaaS—실시간 인프라)** `in_progress` · **도메인 2 · 기능 0** —
+**74곳** · ⚠️ 큐 0/3.
 
-**다음 사이클은 6순위(신규) — Ably 다.** PROMPT.md 3단계부터.
-⚠️ **첫 화면과 `topic/` 은 일반 교육 글이다 — 심층 글 주소를 검색으로 먼저 찾아 둔다.**
-이미 아는 것: `engineering-dependability-and-fault-tolerance-in-a-distributed-system`(전문 요약 확보) ·
-`chat-architecture-reliable-message-ordering` · `8-fallacies-of-distributed-computing` ·
-`the-challenge-of-scaling-websockets`.
+### ⭐ 가격 단위가 아키텍처를 드러낸다
 
-### ⭐⭐ 같은 방법이 두 번 통했다
+메시지는 건수로 파는데 **연결과 채널은 `100만 분` 단위로 판다**($1.00, 볼륨 할인 시 $0.20).
+**동시성을 유지하는 것 자체가 원가**라는 뜻이다(이 해석은 재구성이다). 그리고 이 회사가
+파는 것은 기능이 아니라 **약속**이다 — `99.999% uptime SLA` · 순서 보장 · 정확히 한 번 전달.
 
-Rightmove 에서 배운 **`첫 화면으로 블로그를 판정하지 않는다`** 로 **Tailscale 에 이어
-Ably 까지 되살렸다.** 의심 목록 넷 중 **둘이 뒤집혔다**(ClickHouse 는 본문을 열어 판정
-유지, Capital One 은 아직 진행 중). **떨어뜨린 판정을 다시 보는 것이 새 이름을 찾는 것보다
-수확률이 높다** — 되살릴 목록에서 Booking.com·Trainline 을 건진 것과 같은 패턴이다.
+### ⭐⭐ 첫 도메인의 전제가 세다
 
-### ⏳ Capital One — 다음 조사에서 결론을 낸다
+`한 곳이 죽는다` 가 아니라 **`여러 곳이 동시에 죽는다`** 로 시작한다
+(`multiple availability zones (AZs) do fail at the same time`). 그래서 흔한 답인
+**리전 간 로드밸런서도 버린다** — `the load balancer itself exists in some region and
+could become unavailable`. **장애를 막는 장치가 그 자신도 장애의 대상**이라는 것이다.
 
-경로가 갈린다: `/tech/blog/`(원래 본 곳)와 `capitalonesoftware.com/blog`(별도 사업부).
-⚠️ **검색에 걸린 제목이 좋다** — DynamoDB Streams `sandwich pattern` 의 **확장 한계·
-동시성·비용 대가**, **월 1,000억 건 이상**의 사내 토큰화 엔진, 클라우드 이전 회고
-(`Always do the hard things first`). **두 경로의 본문을 열어 판정한다.**
+### 다음 사이클 — 첫 도메인이 훨씬 단단하다
+
+**`engineering-dependability-and-fault-tolerance...`**(전문 요약 확보) —
+**버린 대안이 명시적**이고(Raft/Paxos 가 리전을 넘으면 효율이 깨진다 → Gossip),
+**내결함성 자체의 비용**까지 적는다(장애 대응에도 CPU·메모리가 든다, 단순한 기법은
+**O(N²) 이상**으로 자원을 먹을 수 있다). **부분 열화**(`partially degraded state`)라는
+어려운 자리도 인정한다.
+
+### ⚠️ 이 회사에서 조심할 것
+
+1. **`eight 9s` 와 `99.999%` 가 같은 것인지 다른 것인지 모른다** — 앞은 내결함성 글,
+   뒤는 채팅 글의 표현이다. **여덟 개의 9 와 다섯 개의 9 는 크게 다르다.** 확인 전에는
+   둘을 나란히 쓰지 않는다.
+2. **읽은 글이 회고형이 아니다** — 일반 이론 틀에 자기 구조를 얹은 혼합형이라
+   `무엇이 한계에 닿아 바꿨나` 가 약하다. **연표는 못 세울 가능성이 높다.**
+3. **median latency 6.5ms 가 어느 구간인지 모른다.**
 
 ## 지금의 진짜 상태
 

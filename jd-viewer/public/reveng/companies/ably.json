@@ -1,0 +1,201 @@
+{
+  "slug": "ably",
+  "name": "에이블리",
+  "name_en": "Ably",
+  "country": "EU",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "ably.com",
+  "one_liner": "실시간 메시지를 대신 날라 주는 인프라를 파는 회사 — 순서와 전달을 계약으로 판다",
+  "business_model": "**실시간 메시징을 소비량으로 판다.** 무료(동시 연결 200 · 초당 500 메시지 · 월 600만), Standard **월 $29 + 사용량**, Pro **월 $399 + 사용량**, Enterprise 별도. ⚠️ **값을 매기는 단위가 아키텍처를 드러낸다** — 메시지는 **100만 건당 $2.50**(볼륨 할인 시 $0.50까지)이고, **연결과 채널은 `100만 분` 당 $1.00**(할인 시 $0.20)이다. **연결과 채널을 시간으로 판다는 것은 동시성 유지 자체가 원가라는 뜻**이다(이 해석은 이 사이트의 재구성이다). 그리고 이 회사가 파는 것은 기능이 아니라 **약속**이다 — `99.999% uptime SLA` 와 **순서 보장·정확히 한 번 전달**.",
+  "revenue_total": "⚠️ 확인하지 못했다 — 비상장이고 매출을 공개하지 않는다.",
+  "products": [
+    "Pub/Sub — 실시간 메시지 전달의 기본",
+    "Chat — 채팅용 상위 제품. 순서 보장과 정확히 한 번 전달을 내세운다",
+    "Spaces — 협업·멀티플레이어용",
+    "⚠️ 그 밖의 제품 구성은 자세히 확인하지 못했다"
+  ],
+  "revenue_streams": [
+    {
+      "name": "소비 기반 요금 (메시지 · 연결 분 · 채널 분)",
+      "how": "메시지는 건수로, **연결과 채널은 분 단위로** 값을 매긴다. 등급이 오르면 동시 연결·채널·초당 메시지 상한이 커진다",
+      "weight": "⚠️ 확인하지 못했다",
+      "domains": [
+        "여러 곳이 한꺼번에 죽는다고 보고 배치한다",
+        "순서를 지키려면 속도를 내준다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Ably — 요금제",
+          "url": "https://ably.com/pricing",
+          "publisher": "Ably",
+          "summary": "소비 기반 요금. 메시지 건수와 연결·채널의 분 단위로 값을 매긴다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Ably 도메인 지도",
+    "question": "실시간 전달을 계약으로 파는 회사는 무엇을 약속하고 무엇을 감수하는가?",
+    "code": "flowchart TD\n  C[\"<b>고객 애플리케이션</b><br/>• 채팅 · 협업 · 알림<br/>• 동시 연결과 채널을 분으로 산다\"]:::list --> A\n  A[\"<b>Ably 인프라</b><br/>• 99.999% 가동 SLA<br/>• 순서 보장 · 정확히 한 번\"]:::accent\n  A --> D1[\"<b>여러 곳이 한꺼번에 죽는다고<br/>보고 배치한다</b><br/>• 다중 AZ · 다중 리전<br/>• Gossip · 일관 해싱\"]:::list\n  A --> D2[\"<b>순서를 지키려면<br/>속도를 내준다</b><br/>• 시퀀스 · 타임스탬프 · 버퍼링<br/>• 조율이 곧 지연\"]:::list\n  D1 -.->|리전을 넘으면<br/>합의가 느려진다| D2"
+  },
+  "domains": [
+    {
+      "name": "여러 곳이 한꺼번에 죽는다고 보고 배치한다",
+      "why": "⚠️ **이 회사의 전제는 `한 곳이 죽는다` 가 아니라 `여러 곳이 동시에 죽는다` 이다** — `multiple availability zones (AZs) do fail at the same time; sometimes there might be local connectivity issues making the region unreachable`. 그래서 특정 리전에 기대는 것으로는 부족하다고 본다. **로드밸런서로 리전을 나누는 흔한 답도 버린다** — `the load balancer itself exists in some region and could become unavailable`. ⚠️ **장애를 막는 장치가 그 자신도 장애의 대상**이라는 것이 이 도메인의 출발점이다.",
+      "tech": [
+        {
+          "tech": "다중 AZ · 다중 리전 배치",
+          "solves": "실패의 **통계적 독립성**을 높인다 — `to increase statistical independence of failures, we place/distribute capacity in multiple availability zones and in multiple regions`",
+          "limits": "⚠️ **리전은 이분법으로 죽지 않는다** — `regions can often be in a partially degraded state where they're working some of the time` 라 **감지와 조치가 어려워진다**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Engineering a fault tolerant distributed system",
+              "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+              "publisher": "Ably Blog",
+              "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "Gossip 프로토콜 (합의 대신)",
+          "solves": "최종 일관적이고 내결함성이 있으며 **리전을 넘어 동작한다**",
+          "limits": "⚠️ **Raft/Paxos 를 버린 이유가 곧 이 선택의 성격이다** — `not effective in networks spanning multiple regions because their efficiency breaks down if the latency becomes too high`. 즉 **강한 합의를 포기하고 최종 일관성을 받는다**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Engineering a fault tolerant distributed system",
+              "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+              "publisher": "Ably Blog",
+              "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "일관 해싱 + 클러스터 발견 서비스",
+          "solves": "상태를 가진 역할의 자리를 정한다. 발견 서비스가 **노드 건강과 해시링 멤버십에 대한 합의**를 준다",
+          "limits": "⚠️ **상태 없는 일과 달리 자리를 마음대로 못 옮긴다** — `the placement of processing roles must take their stateful nature into account`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Engineering a fault tolerant distributed system",
+              "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+              "publisher": "Ably Blog",
+              "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "트랜잭션 방식의 다중 위치 기록",
+          "solves": "메시지 수신을 **최소 두 개의 AZ 에** 기록하되 그 쓰기가 트랜잭션이다 — `either not successful or unequivocally successful`",
+          "limits": "⚠️ **애매한 상태를 없앤 대신 쓰기가 무거워진다**(이 대가는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Engineering a fault tolerant distributed system",
+              "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+              "publisher": "Ably Blog",
+              "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "순서를 지키려면 속도를 내준다",
+      "why": "**채팅에서 메시지 순서는 기능이 아니라 신뢰다.** 그런데 순서는 여러 곳에서 깨진다 — **여러 홉을 거치는 지연**과 **서버의 처리 지체**, 지역마다 다른 네트워크 지연, 동시에 보낸 메시지의 타임스탬프 충돌, 그리고 **로드밸런싱된 두 큐 중 하나가 더 빨리 처리되는 것**. ⚠️ 회사가 이 도메인의 핵심을 한 줄로 적는다 — **`strict message order requires coordination... which may slow delivery times`**. **순서와 속도는 맞바꾸는 것이다.**",
+      "tech": [
+        {
+          "tech": "WebSocket",
+          "solves": "채팅에 맞는 전송 계층. MQTT 보다 낫다고 본다",
+          "limits": "⚠️ **그것만으로는 순서를 보장하지 못한다** — `it doesn't do the full job of guaranteeing message ordering` 라 애플리케이션 층의 처리가 필요하다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Designing chat architecture for reliable message ordering at scale",
+              "url": "https://ably.com/blog/chat-architecture-reliable-message-ordering",
+              "publisher": "Ably Blog",
+              "summary": "메시지 순서가 깨지는 이유들과 순서를 지키는 방법마다의 대가. 순서와 속도를 맞바꾸는 자리를 정리한다."
+            }
+          ]
+        },
+        {
+          "tech": "시스템 전역 시퀀스 번호",
+          "solves": "순서를 확실히 강제한다",
+          "limits": "⚠️ **지연이 생긴다** — 전역으로 번호를 매기려면 조율이 필요하다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Designing chat architecture for reliable message ordering at scale",
+              "url": "https://ably.com/blog/chat-architecture-reliable-message-ordering",
+              "publisher": "Ably Blog",
+              "summary": "메시지 순서가 깨지는 이유들과 순서를 지키는 방법마다의 대가. 순서와 속도를 맞바꾸는 자리를 정리한다."
+            }
+          ]
+        },
+        {
+          "tech": "타임스탬프 + 클라이언트 ID",
+          "solves": "더 단순하게 순서를 정한다",
+          "limits": "⚠️ **시계 표류(clock drift)** 문제를 만난다. 둘을 섞으면 `complex coordination, especially under high traffic` 이 된다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Designing chat architecture for reliable message ordering at scale",
+              "url": "https://ably.com/blog/chat-architecture-reliable-message-ordering",
+              "publisher": "Ably Blog",
+              "summary": "메시지 순서가 깨지는 이유들과 순서를 지키는 방법마다의 대가. 순서와 속도를 맞바꾸는 자리를 정리한다."
+            }
+          ]
+        },
+        {
+          "tech": "버퍼링과 윈도잉",
+          "solves": "순서를 지키면서 응답성을 관리한다",
+          "limits": "⚠️ **버퍼는 부하에 따라 동적으로 커져야 하고**, 윈도는 **응답성과 순서 사이에서 균형**을 잡아야 한다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Designing chat architecture for reliable message ordering at scale",
+              "url": "https://ably.com/blog/chat-architecture-reliable-message-ordering",
+              "publisher": "Ably Blog",
+              "summary": "메시지 순서가 깨지는 이유들과 순서를 지키는 방법마다의 대가. 순서와 속도를 맞바꾸는 자리를 정리한다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **매출·고객 수·처리량이 공개돼 있지 않다.** 요금 구조와 SLA 만 확인했다.",
+    "⚠️ **읽은 글이 회고형이 아니다** — 자기 프로덕션 구조를 다루지만 **일반 이론 틀에 얹은 혼합형**이라 `무엇이 한계에 닿아 무엇을 갈아엎었나` 가 약하다. **연표(eras)를 세울 자료를 못 찾았다.**",
+    "**`eight 9s of reliability` 와 `99.999% uptime SLA` 가 같은 것인지 다른 것인지 확인하지 못했다** — 앞은 내결함성 글의 표현이고 뒤는 채팅 글의 표현이다. **여덟 개의 9 와 다섯 개의 9 는 크게 다르다.**",
+    "**median latency 6.5ms 가 어느 구간의 값인지 모른다**(엣지까지인지 종단 간인지).",
+    "**아직 안 읽은 글이 있다** — `the-challenge-of-scaling-websockets` · `8-fallacies-of-distributed-computing` · Spaces/Chat 제품의 구조."
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Engineering a fault tolerant distributed system",
+      "url": "https://ably.com/blog/engineering-dependability-and-fault-tolerance-in-a-distributed-system",
+      "publisher": "Ably Blog",
+      "summary": "여러 AZ·리전이 동시에 죽는 것을 전제로 한 배치와 합의 방식. Raft/Paxos 를 왜 안 쓰는지와 내결함성 자체의 비용까지 적는다."
+    },
+    {
+      "title": "Designing chat architecture for reliable message ordering at scale",
+      "url": "https://ably.com/blog/chat-architecture-reliable-message-ordering",
+      "publisher": "Ably Blog",
+      "summary": "메시지 순서가 깨지는 이유들과 순서를 지키는 방법마다의 대가. 순서와 속도를 맞바꾸는 자리를 정리한다."
+    },
+    {
+      "title": "Ably — 요금제",
+      "url": "https://ably.com/pricing",
+      "publisher": "Ably",
+      "summary": "소비 기반 요금. 메시지 건수와 연결·채널의 분 단위로 값을 매긴다."
+    }
+  ]
+}
