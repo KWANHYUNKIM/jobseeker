@@ -1,0 +1,196 @@
+{
+  "slug": "bookingcom",
+  "name": "부킹닷컴",
+  "name_en": "Booking.com",
+  "country": "EU",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-05",
+  "domain": "booking.com",
+  "one_liner": "세계 최대의 숙박 예약 플랫폼 — 그리고 자기 백업이 자기 자신에게 묶여 있던 것을 글로 적어 낸 회사",
+  "business_model": "**묵을 곳을 중개하고 그 거래에서 몫을 뗀다.** ⚠️ 공개 수치는 모회사 **Booking Holdings** 기준이다 — 2025년 **총 여행 예약액 1,861억 달러**(+12%), **객실 밤 12억**(+8%), 조정 EBITDA **99억 달러 초과**(+20%), 순이익률 **20.1%**. 220개국 이상에서 **소비자 브랜드 다섯**(Booking.com · Priceline · Agoda · KAYAK · OpenTable)으로 판다. ⚠️ **Booking.com 단독의 매출·수수료율은 이 자료에 없다.** 확실한 것은 규모다 — 숙소 약 **440만 곳**(대체 숙박 390만), 직원 **24,000명 이상**.",
+  "revenue_total": "⚠️ **Booking.com 단독 수치는 확인하지 못했다.** 모회사 기준 2025년 총 여행 예약액 1,861억 달러 · 조정 EBITDA 99억 달러 초과.",
+  "products": [
+    "Booking.com — 숙박 예약. 숙소 약 440만 곳",
+    "⚠️ 모회사의 다른 브랜드 — Priceline · Agoda · KAYAK · OpenTable (이 문서는 Booking.com 만 다룬다)",
+    "사내 데이터 웨어하우스 — 여덟 개 사업부가 함께 쓰는 단일 진실 공급원",
+    "사내 DBA 컨트롤 플레인 — MySQL 250개 이상 클러스터의 백업·복구·장애 전환을 관리한다"
+  ],
+  "revenue_streams": [
+    {
+      "name": "숙박 예약 중개",
+      "how": "예약이 일어날 때 몫을 뗀다. ⚠️ **수수료 구조는 이 자료에 없다.** 규모만 공개돼 있다 — 모회사 기준 2025년 객실 밤 **12억**",
+      "weight": "⚠️ Booking.com 단독 비중을 확인하지 못했다",
+      "domains": [
+        "지키는 것 안에 지킬 수단을 두지 않는다",
+        "품질을 마지막 관문이 아니라 생애주기로 옮긴다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Booking Holdings — Factsheet",
+          "url": "https://www.bookingholdings.com/about/factsheet/",
+          "publisher": "Booking Holdings",
+          "summary": "모회사의 공개 지표. 2025년 총 여행 예약액·객실 밤 수·EBITDA 와 브랜드 구성을 담고 있다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Booking.com 도메인 지도",
+    "question": "여덟 사업부가 함께 쓰는 바닥에서, 작은 결함은 어디까지 번지는가?",
+    "code": "flowchart TD\n  B[\"<b>숙박 예약</b><br/>• 숙소 약 440만 곳<br/>• 객실 밤 12억 (모회사 기준)\"]:::list --> I\n  I[\"<b>사내 인프라</b><br/>• MySQL 클러스터 250개 이상<br/>• 사업부 여덟이 쓰는 DWH\"]:::list\n  I --> D1[\"<b>지키는 것 안에<br/>지킬 수단을 두지 않는다</b><br/>• 백업 카탈로그의 순환 의존성<br/>• 실패 도메인을 밖으로\"]:::list\n  I --> D2[\"<b>품질을 마지막 관문이 아니라<br/>생애주기로 옮긴다</b><br/>• 코드가 있기 전부터 검토<br/>• 작은 결함이 번지는 것을 막는다\"]:::list\n  D2 -.->|작은 결함이 쌓이면<br/>믿음이 무너진다| D1"
+  },
+  "domains": [
+    {
+      "name": "지키는 것 안에 지킬 수단을 두지 않는다",
+      "why": "⚠️ **백업 시스템이 자기 자신에게 묶여 있었다.** 백업 오케스트레이터(Bacula)의 **카탈로그**가 온프렘 MySQL 체인(`dbadb`) 안에 살았는데, **그 DB 를 잃으면 그것을 복구할 방법도 함께 잃는다** — 복구 작업을 만들려면 Bacula Director 가 필요하고, Director 는 그 카탈로그가 있어야 어느 백업이 어디 있는지 안다. 회사가 그 고리를 그림까지 그려 설명하고, **왜 그런 것이 생기는지도 적는다**: 시스템이 커지는 동안 되돌아볼 시간이 없었고, 클라우드 이전 같은 **큰 계기가 있을 때** 고친다고.",
+      "tech": [
+        {
+          "tech": "Bacula + 사내 DBA 컨트롤 플레인",
+          "solves": "MySQL 복제 체인 **250개 이상**의 일일 백업을 스케줄·관리한다. 두 리전에서 일반·불변 백업을 떠 **하루 약 1,000개**가 나오고 최소 7일 보관한다",
+          "limits": "⚠️ **상태를 어딘가에 둬야 한다** — 그 상태를 어디 두느냐가 이 도메인의 문제 전부다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+              "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+              "publisher": "Booking.com Engineering",
+              "date": "2026-02-19",
+              "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+            }
+          ]
+        },
+        {
+          "tech": "Amazon RDS MySQL (다중 AZ + 교차 리전 복제본)",
+          "solves": "카탈로그를 **온프렘 밖으로** 뺀다. 실패 도메인이 자기가 지키는 시스템 밖에 놓인다 — 온프렘이 통째로 무너져도 카탈로그는 살아 있다",
+          "limits": "⚠️ **RDS 는 다중 리전을 기본 제공하지 않는다**(다중 AZ 만). 두 번째 리전 인스턴스를 직접 세워 복제했고 **자동 장애 전환은 안 된다** — 수동 전환이 쉬워질 뿐이다. 회사가 조건을 밝힌다: 몇 시간의 다운타임을 견딜 수 있어야 이 방식이 성립한다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+              "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+              "publisher": "Booking.com Engineering",
+              "date": "2026-02-19",
+              "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+            }
+          ]
+        },
+        {
+          "tech": "복구 테스트 자동화 (Booking Kubernetes Service 위)",
+          "solves": "백업이 **실제로 복구되는지** 주기적으로 시험한다 — 3-2-1-1-0 규칙의 마지막 0(복구 시 오류 0)을 지키는 장치",
+          "limits": "⚠️ 시험한 것만 확인된다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+              "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+              "publisher": "Booking.com Engineering",
+              "date": "2026-02-19",
+              "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "품질을 마지막 관문이 아니라 생애주기로 옮긴다",
+      "why": "**사업부 여덟이 같은 데이터 웨어하우스를 쓴다.** 그러면 작은 결함이 국소적으로 끝나지 않는다 — 느슨하게 정의한 입도, 중복된 지표, 문서 없는 변환, `이번만` 건너뛴 리뷰가 **하류 모델과 대시보드와 사업 로직으로 복사되어** 되돌리기 어려워진다. 회사가 1982년의 **깨진 유리창** 이론을 렌즈로 빌려 이렇게 정리한다: **작은 무질서를 방치하면 그것이 정상이라는 기대가 자리 잡는다.**",
+      "tech": [
+        {
+          "tech": "공유 웨어하우스 (Snowflake · dbt · GitLab CI/CD · Airflow)",
+          "solves": "원천 → 스테이징 → **Data Vault 통합층** → 차원 마트로 층을 나누고, 도메인 팀이 데이터 제품을 만들되 **공통 모델링 규칙과 플랫폼 가드레일 안에서** 만들게 한다",
+          "limits": "⚠️ **순수 중앙집중도 순수 데이터 메시도 아닌 혼합이라** 경계 관리가 계속 필요하다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Broken Windows of Data",
+              "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+              "publisher": "Booking.com Engineering",
+              "date": "2026-06-15",
+              "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "dbt-score · pre-commit · CI 검증",
+          "solves": "약 **1,000개 dbt 모델**을 점수로 잰다. 검사 통과율 **95% 초과**, 평균 **10점 만점에 9점 초과**, **85%가 Silver·Gold**, 핵심 규칙은 **99% 초과** 통과",
+          "limits": "⚠️ **형식화한 것만 잡는다** — 회사가 그대로 적는다: 자동 검사는 지치지 않지만 `their weakness is that they only catch what has been formalised`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Broken Windows of Data",
+              "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+              "publisher": "Booking.com Engineering",
+              "date": "2026-06-15",
+              "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "코드가 있기 전의 모델 리뷰",
+          "solves": "SQL 을 쓰기 전에 **개념·입도·소유·이름**을 맞춘다. 두 팀이 `order` 같은 핵심 개념에 서로 다른 차원을 만드는 것을 막는다 — `A process that is structurally wrong will not be saved by excellent SQL style later on`",
+          "limits": "⚠️ **회의가 늘어난다** — 40개 이상 사용 사례마다 여러 차례의 모델링 대화가 붙는다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Broken Windows of Data",
+              "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+              "publisher": "Booking.com Engineering",
+              "date": "2026-06-15",
+              "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "AI 사전 리뷰 + 사람 리뷰",
+          "solves": "AI 가 사내 리뷰 지침을 대규모로 적용해 의심스러운 패턴을 먼저 짚고, **사람은 판단이 필요한 것에 집중한다**(사업 로직이 말이 되는가·유지보수가 되는가)",
+          "limits": "⚠️ **사람 리뷰를 대체하지 않는다는 것이 전제다** — `augment reviewers, do not replace them`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Broken Windows of Data",
+              "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+              "publisher": "Booking.com Engineering",
+              "date": "2026-06-15",
+              "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **Booking.com 단독의 매출·수수료 구조를 확인하지 못했다** — 공개 자료가 모회사(Booking Holdings) 기준이다.",
+    "**Perl 모놀리스에서 Java·Kotlin 등으로 옮겨 가는 이전이 있다고 알려져 있으나 1차 자료로 확인하지 못했다.** 확인하면 `eras` 의 재료가 된다.",
+    "**아직 안 읽은 글이 많다** — `A Migration Adventure`(저장소 수천 개를 SaaS 형상관리로) · `Kotlin Multiplatform in Production` · `Stability in Jetpack Compose` · `The Causality Gap`(자발적 채택의 진짜 효과 측정) · `Progressive Web Applications`.",
+    "**연표(eras)를 세울 자료를 아직 못 찾았다** — 읽은 두 편은 특정 프로젝트의 기록이다.",
+    "⚠️ **본문은 브라우저(`get_page_text`)로만 온다** — `medium.com/booking-com-development`. 목록은 `blog.booking.com` 에서 WebFetch 로."
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Breaking the Loop: How we migrated our backup catalog for 250+ MySQL clusters to AWS",
+      "url": "https://medium.com/booking-com-development/breaking-the-loop-how-we-migrated-our-backup-catalog-for-250-mysql-clusters-to-aws-6f5a53a519b9",
+      "publisher": "Booking.com Engineering",
+      "date": "2026-02-19",
+      "summary": "백업 오케스트레이터의 카탈로그가 자기가 지켜야 할 온프렘 DB 안에 있던 순환 의존성을 끊은 기록. 버린 대안과 실패한 시도를 함께 적는다. 2025-05-09 사내 발행분을 공개용으로 고쳐 썼다."
+    },
+    {
+      "title": "Broken Windows of Data",
+      "url": "https://medium.com/booking-com-development/broken-windows-of-data-7f7d12ce2cd0",
+      "publisher": "Booking.com Engineering",
+      "date": "2026-06-15",
+      "summary": "여러 팀이 함께 쓰는 데이터 웨어하우스에서 품질 검사를 마지막 관문이 아니라 생애주기 전체로 옮긴 기록. 너무 엄하게 시작해 마찰이 생겼던 것까지 적는다."
+    },
+    {
+      "title": "Booking Holdings — Factsheet",
+      "url": "https://www.bookingholdings.com/about/factsheet/",
+      "publisher": "Booking Holdings",
+      "summary": "모회사의 공개 지표. 2025년 총 여행 예약액·객실 밤 수·EBITDA 와 브랜드 구성을 담고 있다."
+    }
+  ]
+}
