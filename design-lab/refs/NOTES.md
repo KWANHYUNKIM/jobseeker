@@ -40,3 +40,7 @@
 
 카민디자인(hire-07)은 이 셋을 **가로 3열**로 폈고, 열린치과(hire-02)는 세로 3불릿으로
 쌓았다. 웹 상세페이지 하단 고정 바는 가로 3열이 맞다 — 좁아지면 세로로 접는다.
+
+## 중복 주의 (수집 시 건너뛸 것)
+- `@hammadpixeldesgin` Antixor 채용 사이트 컨셉 → 이미 `hire-06` 으로 있다.
+  `#recruitmentposter` 와 `#recruitmentwebsite` 두 태그에 같은 글이 올라와 있다.
