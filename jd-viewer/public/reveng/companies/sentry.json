@@ -1,0 +1,181 @@
+{
+  "slug": "sentry",
+  "name": "센트리",
+  "name_en": "Sentry",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "sentry.io",
+  "one_liner": "오류를 잡아 주는 회사가 자기 AI 에이전트를 감시하는 법을 글로 적는다",
+  "business_model": "**여러 종류의 볼륨을 각각 센다.** Developer 는 무료지만 **사용자 1명**(오류 5,000 · 로그 5GB · 스팬 500만 · 리플레이 50), Team **연간 기준 월 $26**(오류 50,000), Business **월 $80**, Enterprise 별도. ⚠️ **Developer 를 빼면 좌석이 무제한**이고 값은 **오류 · 스팬 · 세션 리플레이 · 로그** 각각의 할당량으로 갈린다(로그·지표는 초과 시 **GB당 $0.50**). **Honeycomb 과 같은 방향이되 더 잘게 나눈다** — 저쪽은 이벤트 하나로 세고 이쪽은 **네 가지를 따로 센다**(이 대비는 이 사이트의 재구성이다).",
+  "revenue_total": "⚠️ 확인하지 못했다 — 비상장이고 매출을 공개하지 않는다.",
+  "products": [
+    "오류 모니터링과 트레이싱 — 이 회사의 뿌리",
+    "세션 리플레이 · 로그 · 프로파일링 · 업타임·크론 모니터링",
+    "Seer — ⚠️ 사내에서 쓰고 제품으로도 파는 AI 에이전트. 이슈를 분석하고 고친다",
+    "Sentry MCP — 대화와 데이터를 끌어오고 거르는 연결 계층"
+  ],
+  "revenue_streams": [
+    {
+      "name": "볼륨 구독 (오류 · 스팬 · 리플레이 · 로그)",
+      "how": "네 가지를 각각의 할당량으로 세고 등급으로 묶는다. **좌석은 유료 등급에서 무제한**이다",
+      "weight": "⚠️ 확인하지 못했다",
+      "domains": [
+        "AI 가 고치고 사람이 판단하는 경계를 긋는다",
+        "자기 에이전트를 감시하는 에이전트를 둔다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Sentry — 요금제",
+          "url": "https://sentry.io/pricing/",
+          "publisher": "Sentry",
+          "summary": "오류·스팬·리플레이·로그를 각각의 할당량으로 세는 요금 구조. Developer 무료(1명) · Team $26 · Business $80(연간)."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Sentry 도메인 지도",
+    "question": "오류를 잡아 주는 회사는 자기 AI 의 오류를 어떻게 잡는가?",
+    "code": "flowchart TD\n  I[\"<b>들어온 이슈</b>\"]:::list --> S[\"<b>Seer (AI 에이전트)</b><br/>• 분석하고 고친다\"]:::accent\n  S --> D1[\"<b>AI 가 고치고 사람이<br/>판단하는 경계를 긋는다</b><br/>• PR 은 만들되<br/>• 자율 병합은 안 한다\"]:::list\n  S --> D2[\"<b>자기 에이전트를 감시하는<br/>에이전트를 둔다</b><br/>• 매일 밤 대화 약 800건<br/>• 오류율 21%\"]:::list\n  D2 -.->|성공한 대화도<br/>표본에 넣는다| D1"
+  },
+  "domains": [
+    {
+      "name": "AI 가 고치고 사람이 판단하는 경계를 긋는다",
+      "why": "⚠️ **이슈가 많으면 분류(트리아지) 자체가 일이 된다** — 회사가 Seer 를 들이는 이유를 그렇게 적는다(`which creates a lot of manual work in triage`). 그래서 두 단계를 자동화했다 — **AI 가 고치고**, 그다음 **사람 리뷰를 조율한다.** ⚠️ **그런데 마지막 한 걸음은 넘지 않는다** — 완전 자율 병합을 거부하며 **`Your org might not be ready to trust the machines that far, and that's ok.`** **경계를 어디에 긋느냐가 이 도메인의 전부다.**",
+      "tech": [
+        {
+          "tech": "Seer (이슈 분석·수정)",
+          "solves": "들어온 이슈를 AI 가 분석하고 고쳐 PR 로 만든다",
+          "limits": "⚠️ **병합까지는 안 간다** — 조직이 아직 그만큼 못 믿을 수 있다고 회사가 적는다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built an automated debugging workflow at Sentry",
+              "url": "https://blog.sentry.io/automated-debugging-workflow-sentry/",
+              "publisher": "Sentry Blog",
+              "date": "2026-08-06",
+              "summary": "AI(Seer)가 이슈를 고치고 사람 리뷰를 Claude 가 조율하는 사내 워크플로. 완전 자율 병합을 거부한 이유와 수치, 그리고 아직 판단하기 이르다는 한계를 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "Claude 루틴으로 리뷰 조율",
+          "solves": "사람 리뷰가 실제로 일어나게 밀어 준다. **PR 액션률 +21% · 48시간 응답률 +13%**",
+          "limits": "⚠️ **효과를 판단하기 이르다고 스스로 적는다** — `we only rolled this workflow out in mid-July, so we'll need to revisit it in a few months`",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built an automated debugging workflow at Sentry",
+              "url": "https://blog.sentry.io/automated-debugging-workflow-sentry/",
+              "publisher": "Sentry Blog",
+              "date": "2026-08-06",
+              "summary": "AI(Seer)가 이슈를 고치고 사람 리뷰를 Claude 가 조율하는 사내 워크플로. 완전 자율 병합을 거부한 이유와 수치, 그리고 아직 판단하기 이르다는 한계를 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "반복 조정",
+          "solves": "한 번에 세운 것이 아니라 **몇 주 동안 다듬었다** — `This wasn't a one-shot setup.`",
+          "limits": "⚠️ **세우는 데 드는 시간을 숨기지 않는다**(이 평가는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built an automated debugging workflow at Sentry",
+              "url": "https://blog.sentry.io/automated-debugging-workflow-sentry/",
+              "publisher": "Sentry Blog",
+              "date": "2026-08-06",
+              "summary": "AI(Seer)가 이슈를 고치고 사람 리뷰를 Claude 가 조율하는 사내 워크플로. 완전 자율 병합을 거부한 이유와 수치, 그리고 아직 판단하기 이르다는 한계를 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "자기 에이전트를 감시하는 에이전트를 둔다",
+      "why": "⚠️ **AI 를 들이면 AI 를 지켜보는 일이 새로 생긴다.** 그 전에는 에이전트가 잘 도는지 보려면 **일회성 흐름을 손으로 돌리고 JSON 을 눈으로 파싱**해야 했다(`a custom, one-off flow`). 자동화할 수 있었지만 **마찰 때문에 미뤄 왔다**고 회사가 적는다. 그래서 **매일 밤 대화 약 800건을 훑어 오류를 찾고 티켓을 여는 루틴**을 세웠다.",
+      "tech": [
+        {
+          "tech": "야간 자동 트리아지 루틴",
+          "solves": "매일 밤 **약 800건의 에이전트 대화**를 훑고 문제를 표시해 티켓을 만든다. 기존 도구(Linear·Slack)와 이어진다",
+          "limits": "⚠️ **표본이 전부는 아니다** — 표본 기간에 445~551건을 봤고 도구 호출 약 11,000건을 분석했다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Automated agent triage with Agent Tracing and Claude Routines",
+              "url": "https://blog.sentry.io/claude-routines-agent-triage/",
+              "publisher": "Sentry Blog",
+              "date": "2026-08-13",
+              "summary": "사내 AI 에이전트(Seer)의 대화를 매일 밤 자동으로 훑어 오류를 찾고 티켓을 여는 구조. 성공한 대화도 표본에 넣어야 하는 이유를 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 성공한 대화까지 표본에 넣기",
+          "solves": "**이 글의 핵심 발견이다** — `Sampling both success and failure conversations, not just the ones with tool errors, mattered more than expected.` **오류 없이 끝나도 잘못된 결론에 이를 수 있고, 그것은 추론을 검증해야만 보인다**",
+          "limits": "⚠️ **볼 것이 두 배가 된다** — 실패만 보면 놓치는 것이 있다는 대가다(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Automated agent triage with Agent Tracing and Claude Routines",
+              "url": "https://blog.sentry.io/claude-routines-agent-triage/",
+              "publisher": "Sentry Blog",
+              "date": "2026-08-13",
+              "summary": "사내 AI 에이전트(Seer)의 대화를 매일 밤 자동으로 훑어 오류를 찾고 티켓을 여는 구조. 성공한 대화도 표본에 넣어야 하는 이유를 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "Sentry MCP + Claude 역할 분리",
+          "solves": "**MCP 가 대화를 끌어오고 거르고, Claude 는 판단이 필요한 부분만 맡는다** — 데이터 조회와 분석을 갈라 놓으니 출력이 일관됐다",
+          "limits": "⚠️ **판단의 경계를 사람이 정해 줘야 한다**(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Automated agent triage with Agent Tracing and Claude Routines",
+              "url": "https://blog.sentry.io/claude-routines-agent-triage/",
+              "publisher": "Sentry Blog",
+              "date": "2026-08-13",
+              "summary": "사내 AI 에이전트(Seer)의 대화를 매일 밤 자동으로 훑어 오류를 찾고 티켓을 여는 구조. 성공한 대화도 표본에 넣어야 하는 이유를 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **매출·고객 수가 공개돼 있지 않다.** 요금 구조만 확인했다.",
+    "⚠️ **읽은 글 셋 중 하나는 자기 시스템이 아니었다** — `metrics-caught-ai-size-estimate`(2026-09-01)는 **개발자 개인의 오픈소스 프로젝트가 Sentry 제품을 쓴 사례**다(추정치보다 83% 큰 출력 파일을 지표가 잡아낸 이야기). **수치는 좋지만 이 회사의 시스템이 아니라 프로파일에 쓰지 않았다.** Capital One 에서 겪은 함정과 같다.",
+    "**Seer 의 내부 구조를 확인하지 못했다** — 이슈를 어떻게 분석하고 고치는지, 어떤 모델을 쓰는지가 읽은 글에 없다.",
+    "**오류 추적 제품 자체의 구조를 아직 안 팠다** — 이 회사의 뿌리인데 읽은 글이 전부 AI 워크플로 쪽이다. **오픈소스이므로 자료가 있을 것이다.**",
+    "**연표(eras)를 세울 자료를 아직 못 찾았다.**"
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "How we built an automated debugging workflow at Sentry",
+      "url": "https://blog.sentry.io/automated-debugging-workflow-sentry/",
+      "publisher": "Sentry Blog",
+      "date": "2026-08-06",
+      "summary": "AI(Seer)가 이슈를 고치고 사람 리뷰를 Claude 가 조율하는 사내 워크플로. 완전 자율 병합을 거부한 이유와 수치, 그리고 아직 판단하기 이르다는 한계를 적는다."
+    },
+    {
+      "title": "Automated agent triage with Agent Tracing and Claude Routines",
+      "url": "https://blog.sentry.io/claude-routines-agent-triage/",
+      "publisher": "Sentry Blog",
+      "date": "2026-08-13",
+      "summary": "사내 AI 에이전트(Seer)의 대화를 매일 밤 자동으로 훑어 오류를 찾고 티켓을 여는 구조. 성공한 대화도 표본에 넣어야 하는 이유를 적는다."
+    },
+    {
+      "title": "Sentry — 요금제",
+      "url": "https://sentry.io/pricing/",
+      "publisher": "Sentry",
+      "summary": "오류·스팬·리플레이·로그를 각각의 할당량으로 세는 요금 구조. Developer 무료(1명) · Team $26 · Business $80(연간)."
+    }
+  ]
+}

@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Sentry** | US · SaaS(오류 추적·관측) | 프로파일 완료 · 도메인 2(AI 가 고치고 사람이 판단하는 경계를 긋는다[tech 3] / 자기 에이전트를 감시하는 에이전트를 둔다[tech 3]) · 기능 0 |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Sentry** | US · SaaS(오류 추적·관측) | `blog.sentry.io` — 최신 **2026-09-01** | ✅ 목록·본문 모두 온다. ⚠️ **슬러그를 추측하면 404** — 목록에서 URL 을 받는다 | **`automated-debugging-workflow-sentry`(2026-08-06) 전문을 읽었다 — 자기 사내 워크플로 이야기다.** **두 단계를 자동화했다** — AI(Seer)가 이슈를 고치고, 그다음 사람 리뷰를 Claude 가 조율한다. **⚠️ 선을 그은 자리가 분명하다** — 완전 자율 병합은 거부하며 *"Your org might not be ready to trust the machines that far, and that's ok."* **수치가 있다** — PR 액션률 **+21%** · 48시간 응답률 **+13%** · **병합 없이 닫힌 PR +12.5%**. **⚠️ 그리고 마지막 수치를 변호한다** — 중복 수정이거나 엔지니어가 더 포괄적인 해법을 고른 경우라 **실패가 아니라 성공으로 본다**고 적는다. **한계도 스스로 적는다** — *"we only rolled this workflow out in mid-July, so we'll need to revisit it in a few months to really judge how it's working"* · *"This wasn't a one-shot setup. We spent a couple of weeks iterating on it."* ⚠️ **버린 대안은 약하다**(수동 트리아지가 지속 불가능했다는 암시 정도). **대가와 수치로 기준을 넘는다.** ⚠️ 축은 Honeycomb·Datadog·Grafana 와 겹치지만 **이 글의 축은 관측 제품이 아니라 `AI 가 고치고 사람이 판단하는 경계를 어디에 긋나` 다** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
