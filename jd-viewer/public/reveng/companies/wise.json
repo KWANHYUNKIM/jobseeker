@@ -1,0 +1,283 @@
+{
+  "slug": "wise",
+  "name": "와이즈",
+  "name_en": "Wise",
+  "country": "EU",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "wise.com",
+  "one_liner": "국경을 넘는 송금을 파는 회사 — 전송의 3분의 2가 즉시 도착하게 만드는 것이 제품이다",
+  "business_model": "**국경 간 송금과 그 인프라를 판다.** 2025 회계연도 기준 활성 고객 **1,560만**, **분기당 약 360억 파운드**를 국경 너머로 옮기며, ⚠️ **전송의 약 65%가 즉시 도착한다** — 이 비율 자체가 제품의 값이다. 개인 송금만이 아니라 **Wise Platform** 으로 은행·금융기관·기업의 결제도 대신 처리한다(공개 REST API · OAuth · **40개 이상 통화**). ⚠️ **`즉시` 를 만들려면 각 나라의 결제망에 직접 붙어야 한다** — 필리핀 InstaPay, 일본 Zengin, 브라질 PIX 에 차례로 들어갔고, 영국·헝가리·호주에는 **물리 데이터센터**가 필요하다(호주는 **AWS Outpost 서버의 초기 배포처 중 하나**였다).",
+  "revenue_total": "⚠️ 확인하지 못했다 — 기술 블로그만 읽었고 IR 자료를 보지 않았다. 규모 지표만 확인했다.",
+  "products": [
+    "송금 — 개인과 기업의 국경 간 이체. 약 65%가 즉시 도착",
+    "Wise Platform — 은행·금융기관이 쓰는 API. 40개 이상 통화와 여러 결제 경로",
+    "웹·모바일 앱 — 웹은 Next.js 위의 사내 추상화(CRAB)로 만든 40개 앱",
+    "⚠️ CRP(Compute Runtime Platform) — 파는 것이 아니라 사내 쿠버네티스 플랫폼"
+  ],
+  "revenue_streams": [
+    {
+      "name": "송금 수수료 (개인·기업)",
+      "how": "국경을 넘는 이체에서 받는다. **즉시성과 투명한 수수료**가 제품의 축이다",
+      "weight": "⚠️ 확인하지 못했다",
+      "domains": [
+        "서비스 천 개를 도구로 한 벌로 만든다",
+        "배포를 거래가 아니라 사건의 흐름으로 본다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Wise Tech Stack (2025 update)",
+          "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+          "publisher": "Wise Engineering",
+          "date": "2025-02-12",
+          "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+        }
+      ]
+    },
+    {
+      "name": "Wise Platform (B2B)",
+      "how": "은행·금융기관·기업이 Wise 의 결제망을 API 로 쓴다. 규정 준수 기능이 안에 들어 있다",
+      "weight": "⚠️ 확인하지 못했다",
+      "domains": [
+        "서비스 천 개를 도구로 한 벌로 만든다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Wise Tech Stack (2025 update)",
+          "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+          "publisher": "Wise Engineering",
+          "date": "2025-02-12",
+          "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "Wise 도메인 지도",
+    "question": "엔지니어 850명이 서비스 천 개를 만지는데 어떻게 한 벌로 유지하는가?",
+    "code": "flowchart TD\n  U[\"<b>고객 1,560만 명</b><br/>• 분기당 약 360억 파운드<br/>• 약 65%가 즉시 도착\"]:::list --> S\n  S[\"<b>서비스 1,000개 이상</b><br/>• 엔지니어 850명 이상<br/>• 독립된 스쿼드와 트라이브\"]:::accent\n  S --> D1[\"<b>서비스 천 개를<br/>도구로 한 벌로 만든다</b><br/>• 사내 마이크로서비스 샤시<br/>• Gradle 플러그인 · 자동 PR\"]:::list\n  S --> D2[\"<b>배포를 거래가 아니라<br/>사건의 흐름으로 본다</b><br/>• Octopus → Spinnaker<br/>• 자동 카나리 5% · 30분\"]:::list\n  S --> D3[\"<b>관측 스택을 옮기고 나서야<br/>진짜 비용을 만난다</b><br/>• Thanos → Mimir<br/>• 압축 병목이 조용히 자랐다\"]:::list"
+  },
+  "domains": [
+    {
+      "name": "서비스 천 개를 도구로 한 벌로 만든다",
+      "why": "⚠️ **엔지니어 850명 이상이 독립된 스쿼드로 일하면서 서비스 1,000개 이상을 만진다.** 그러면 **표준을 문서로 알릴 수 없다** — 지키는지 확인할 방법도, 한꺼번에 바꿀 방법도 없다. 그래서 이 회사는 **표준을 도구에 넣는다**: 기본값이 담긴 프레임워크로 배포하고, 빌드 파이프라인을 플러그인으로 통일하고, 코드베이스 전체를 바꾸는 일을 자동화 서비스가 대신 PR 로 만든다.",
+      "tech": [
+        {
+          "tech": "사내 마이크로서비스 샤시 프레임워크",
+          "solves": "**최소 설정** 원칙으로 아티팩트로 배포된다. 보안·관측·데이터베이스 통신·Kafka 같은 공통 기능을 **권장 기본값으로** 구성해 팀이 **비즈니스 로직에만 집중**하게 한다",
+          "limits": "⚠️ **기본값에서 벗어나는 서비스는 이 이점을 못 받는다**(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wise Tech Stack (2025 update)",
+              "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+              "publisher": "Wise Engineering",
+              "date": "2025-02-12",
+              "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+            }
+          ]
+        },
+        {
+          "tech": "사내 Gradle 플러그인 모음",
+          "solves": "⚠️ **GitHub Actions 워크플로를 표준화하는 플러그인**이 대표적이다 — **플러그인 버전만 올리면 조직 전체 워크플로가 바뀐다.** 그래서 SLSA 도입 같은 일을 **Java 저장소 700개 이상**에 손쉽게 굴렸다",
+          "limits": "⚠️ **플러그인이 곧 단일 지점이 된다** — 거기서 깨지면 700개가 함께 깨진다(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wise Tech Stack (2025 update)",
+              "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+              "publisher": "Wise Engineering",
+              "date": "2025-02-12",
+              "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+            }
+          ]
+        },
+        {
+          "tech": "언어 무관 자동화 서비스",
+          "solves": "코드베이스에 **복잡한 변경을 대규모로 가하고 소유 팀이 리뷰할 PR 을 만들어 준다.** 자바 의존성 업그레이드를 이 위에서 자동화했다",
+          "limits": "⚠️ **리뷰는 사람이 한다** — 만드는 것은 자동이지만 병합은 팀의 일이다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wise Tech Stack (2025 update)",
+              "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+              "publisher": "Wise Engineering",
+              "date": "2025-02-12",
+              "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+            }
+          ]
+        },
+        {
+          "tech": "CRP (쿠버네티스 컴퓨트 런타임 플랫폼)",
+          "solves": "2018년의 Terraform+JSONNET+ConcourseCI 를 **처음부터 다시 써서** RKE2·Rancher·**Helm**·ArgoCD 로 바꿨다. **클러스터 6개 → 20개 이상**으로 늘리면서도 유지보수를 감당한다",
+          "limits": "⚠️ **JSONNET 을 Helm 으로 바꾼 이유가 `유지보수성과 업스트림 호환` 이다** — 사내 표현력을 생태계 호환과 맞바꿨다(이 해석은 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wise Tech Stack (2025 update)",
+              "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+              "publisher": "Wise Engineering",
+              "date": "2025-02-12",
+              "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "배포를 거래가 아니라 사건의 흐름으로 본다",
+      "why": "⚠️ **사내 도구(Octopus)를 버리고 Spinnaker 로 갔는데, 회사가 그것을 도구 교체가 아니라 관점 전환이라 적는다** — `a paradigm shift from viewing deployments as simple transactions to seeing them as orchestrated sequences of events`. **배포를 사건의 흐름으로 보면 그 흐름 안에 자동 검증과 되돌리기를 끼워 넣을 수 있다.**",
+      "tech": [
+        {
+          "tech": "Spinnaker + 자동 카나리 분석",
+          "solves": "새 버전에 **트래픽 5%** 만 보내고 **30분 동안 기술·비즈니스 지표를 분석**하며, **이상이 크면 자동 롤백**한다. **2024년 한 해에만 사고를 부를 뻔한 배포를 수백 건 막았다**",
+          "limits": "⚠️ **배포마다 최소 30분이 걸린다** — 안전을 속도와 맞바꾼다(이 대가는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wise Tech Stack (2025 update)",
+              "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+              "publisher": "Wise Engineering",
+              "date": "2025-02-12",
+              "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+            }
+          ]
+        },
+        {
+          "tech": "GitHub Actions (CircleCI 에서 이전)",
+          "solves": "세밀한 지표 추적으로 빌드 성능을 들여다봤고, **자주 쓰는 컨테이너의 캐시를 미리 채워 빌드 시간을 15% 줄였다** — **월 50만 빌드** 규모에서 **월 1,000시간 이상** 절약",
+          "limits": "⚠️ **개선이 측정에서 나왔다** — 지표를 붙이기 전에는 어디가 느린지 몰랐다는 뜻이기도 하다(이 지적은 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wise Tech Stack (2025 update)",
+              "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+              "publisher": "Wise Engineering",
+              "date": "2025-02-12",
+              "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+            }
+          ]
+        },
+        {
+          "tech": "SLSA 공급망 보안",
+          "solves": "**언어별로 하나씩** 빌드 과정에 적용해 나간다",
+          "limits": "⚠️ **한 번에 못 한다** — `one language at a time` 이다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wise Tech Stack (2025 update)",
+              "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+              "publisher": "Wise Engineering",
+              "date": "2025-02-12",
+              "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "관측 스택을 옮기고 나서야 진짜 비용을 만난다",
+      "why": "⚠️ **Thanos 에서 Mimir 로 옮긴 것은 성공이었다** — 컴포넌트가 줄어 운영이 단순해졌고 **피크 시 평균 질의 지연이 75% 줄었다.** **그런데 그 뒤에 조용한 병목이 자랐다.** 증상은 흩어져 있었다: 긴 범위 질의의 5XX 와 지연, 읽기 경로의 컴퓨트 증가, **AZ 간 전송 비용 상승**, **S3 저장 비용의 불균형한 증가**. ⚠️ **어느 것도 `압축(compaction)` 을 가리키지 않았다.**",
+      "tech": [
+        {
+          "tech": "Grafana Mimir (Thanos 대체)",
+          "solves": "확장 시 컴포넌트 관리 복잡도, 압축·보존의 경직성, 부족한 기능을 풀었다. 다중 테넌시가 팀별 격리와 맞았고 **질의 지연이 75% 줄었다**",
+          "limits": "⚠️ **새 도구의 새 병목이 따라왔다** — 압축기가 가장 큰 테넌트를 못 따라가 **두 달치 블록이 쌓였다**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+              "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+              "publisher": "Wise Engineering",
+              "date": "2025-01-15",
+              "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "컴팩터 튜닝 (자원 + 설정)",
+          "solves": "CPU·메모리를 더 주고 압축 설정을 조정했다. **스테이징에서 시행착오한 뒤 운영으로** 올렸다",
+          "limits": "⚠️ **`며칠에 걸친 조정과 인내심 있는 관찰` 이 필요했다** — 한 번에 되는 일이 아니었다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+              "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+              "publisher": "Wise Engineering",
+              "date": "2025-01-15",
+              "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 없던 알림",
+          "solves": "⚠️ **이것이 문제의 절반이다** — Grafana 의 기본 믹신 대시보드·알림·런북을 쓰고 있었는데 **압축기 저성능을 알리는 알림이 없었다.** 지금은 그것을 만들고 런북을 자기 환경에 맞게 넓히는 중이다",
+          "limits": "⚠️ **좋은 기본 도구가 모든 것을 알려 주지는 않는다** — 이 회사는 그 공백을 겪고 나서야 알았다",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+              "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+              "publisher": "Wise Engineering",
+              "date": "2025-01-15",
+              "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "LGTM 스택 (Loki · Grafana · Tempo · Mimir)",
+          "solves": "관측을 한 벌로 통일했다. **초당 약 600만 메트릭 샘플**을 받고 최대 테넌트가 **1억 5천만 활성 시리즈**를 처리한다",
+          "limits": "⚠️ **한 벌로 묶으면 한 곳의 문제가 전체 관측에 닿는다**(이 한계는 이 사이트의 재구성이다)",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wise Tech Stack (2025 update)",
+              "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+              "publisher": "Wise Engineering",
+              "date": "2025-02-12",
+              "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+            },
+            {
+              "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+              "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+              "publisher": "Wise Engineering",
+              "date": "2025-01-15",
+              "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **매출·수수료 구조를 확인하지 못했다** — 기술 블로그만 읽었다. **상장사이므로 IR 을 열면 채울 수 있다.**",
+    "⚠️ **스택 소개 글에는 `무엇을 잃었나` 가 거의 없다** — 여섯 갈래 이전의 전후 수치는 다 있는데 대가가 없다. **개별 주제 글을 찾아야 대가 칸이 채워진다**(Mimir 압축 글이 그 예다).",
+    "**`즉시 도착 65%` 를 무엇이 결정하는지 확인하지 못했다** — 각 나라 결제망 연동(InstaPay·Zengin·PIX)과의 관계가 기술 글에 자세히 없다.",
+    "**Data Archives 가 1,000억 건 이상을 아카이브한다는 것 외에 그 구조를 모른다.**",
+    "**연표(eras)를 세울 자료를 아직 못 찾았다** — 다만 **2022년 스택 글**이 있다고 본문이 밝힌다. **2022 와 2025 를 나란히 놓으면 시간축이 나올 수 있다.**"
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Wise Tech Stack (2025 update)",
+      "url": "https://medium.com/wise-engineering/wise-tech-stack-2025-update-d0e63fe718c7",
+      "publisher": "Wise Engineering",
+      "date": "2025-02-12",
+      "summary": "사업 규모와 스택 전반을 정리한 글. 여섯 갈래의 이전을 전후 수치와 함께 적지만 대가는 거의 적지 않는다."
+    },
+    {
+      "title": "Grafana Mimir Compaction: From Bottleneck to Savings",
+      "url": "https://medium.com/wise-engineering/grafana-mimir-compaction-from-bottleneck-to-savings-b26c6b0125a6",
+      "publisher": "Wise Engineering",
+      "date": "2025-01-15",
+      "summary": "Thanos 에서 Mimir 로 옮긴 뒤 조용히 자란 압축 병목을 찾아 고친 기록. 왜 늦게 알았는지까지 적는다."
+    }
+  ]
+}
