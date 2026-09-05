@@ -131,7 +131,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "corrosion-state-sync"
+      ]
     }
   ],
   "open_questions": [
@@ -611,6 +613,456 @@
           "publisher": "The Fly Blog",
           "date": "2026-01-14 (갱신 표기)",
           "summary": "Fly Machine 생성이 1분 넘게 걸리던 것을 1~2초로 줄이려고 무엇을 버렸는지 — 사용자 컨테이너, 로컬 NVMe, 호스트 오케스트레이션 — 를 회사가 직접 적은 글."
+        }
+      ]
+    },
+    {
+      "key": "corrosion-state-sync",
+      "name": "합의 없이 라우팅 표 퍼뜨리기 (Corrosion)",
+      "domain": "합의를 버리고 상태를 퍼뜨린다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "엣지 프록시가 **도쿄에서 암스테르담까지** 정확한 라우팅 표를 들고 있어야 요청이 가장 가까운 고객 인스턴스로 간다. 그런데 중앙 데이터베이스(Consul·FoundationDB)로는 **수십 개 리전 규모에서 병목**이 된다 — 애초에 **`Consensus protocols like Raft break down over long distances`** 이고, 더 근본적으로는 **`wasted time guaranteeing consensus for updates that couldn't conflict in the first place`** 였다. 이 표가 멈추면 회사가 파는 것 자체가 멈춘다 — 실제로 한 사고에서는 **어떤 사용자 요청도 고객 앱에 닿지 못하는 구간**이 있었다.",
+        "metrics": [
+          {
+            "label": "수렴 시간",
+            "value": "수 초 (`converges quickly (in seconds)`)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "label": "전파 주기",
+            "value": "초당 여러 번 (`Several times a second… blasts updates`)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "label": "사고 시 확산 속도",
+            "value": "몇 초 만에 함대 전체 프록시가 잠김 (`Within a few seconds every proxy in our fleet had locked up`)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "Consul 이 한계에 닿았을 때",
+          "thought": "문제를 '합의가 느리다'가 아니라 **'합의가 필요 없는 것에까지 합의를 하고 있다'** 로 다시 봤다. 워커가 자기 워크로드의 진실의 출처라면 서로 다른 워커의 갱신은 **거의 부딪히지 않는다** — 그러면 잠금도 중앙 서버도 합의도 뺄 수 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어떤 모델을 빌려 올지 고를 때",
+          "thought": "발상을 라우팅 프로토콜에서 가져왔다. 각 라우터가 자기 링크를 소유하고 변경을 빠르게 퍼뜨리는 **link-state routing** 방식 — 워커를 라우터로 보면 같은 그림이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "돌려 놓고 나서",
+          "thought": "⚠️ **회사가 스스로 적은 후회다** — `In retrospect, our Corrosion rollout repeated a mistake we made with Consul: we built a single global state domain.` 합의는 없앴는데 **전역 상태를 하나로 두는 구조는 그대로 물려받았다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Fly Machine 레코드",
+            "what": "머신의 상태·설정과 `virtual service` 옵션. 프록시가 어디로 보낼지 정하는 근거"
+          },
+          {
+            "name": "앱↔리전 매핑",
+            "what": "어느 앱의 인스턴스가 어느 리전에 있는지"
+          },
+          {
+            "name": "워커 멤버십·하트비트",
+            "what": "누가 살아 있는지. SWIM 이 이 판단을 맡는다"
+          },
+          {
+            "name": "`crsql_changes`",
+            "what": "평범한 SQL 테이블의 변경을 CRDT 가 남기는 로그. 퍼뜨릴 것은 이 로그에서 뽑는다"
+          },
+          {
+            "name": "노드별 로컬 SQLite",
+            "what": "각 노드가 들고 있는 사본. 프록시는 이걸 읽어 라우팅한다"
+          }
+        ],
+        "invariants": [
+          "**모든 노드는 결국 같은 갱신 집합을 받는다** — `Every node in a Corrosion cluster will eventually receive the same set of updates, in some order.` **순서는 노드마다 다를 수 있다**",
+          "**워커가 자기 워크로드의 진실의 출처다** — `individual servers are the source of truth for their workloads`. 이 규칙이 깨지면 충돌이 잦아지고 합의를 뺀 근거가 무너진다",
+          "**충돌은 논리적 타임스탬프로 푼다** — `last-write-wins using logical timestamps (that is, causal ordering rather than wall-clock ordering)`. 벽시계가 아니라 인과 순서다",
+          "**잠금도 중앙 서버도 없다** — `no locking, no central servers, and no distributed consensus`"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "워커가 자기 상태를 로컬 SQL 테이블에 쓴다",
+            "why": "자기 것만 쓰므로 다른 워커와 부딪힐 일이 거의 없다 — 합의를 뺀 전제가 여기서 성립한다"
+          },
+          {
+            "step": "변경이 `crsql_changes` 에 쌓인다",
+            "why": "`As rows are updated in Corrosion's ordinary SQL tables, the resulting changes are collected from crsql_changes` — 앱 코드는 평범한 SQL 을 쓰고 CRDT 가 뒤에서 로그를 남긴다"
+          },
+          {
+            "step": "변경을 묶어 배치 패킷으로 만든다",
+            "why": "초당 여러 번 퍼뜨리므로 건건이 보내면 함대 전체가 메시지로 덮인다"
+          },
+          {
+            "step": "SWIM 가십으로 **무작위 부분집합**에 뿌린다",
+            "why": "`each step of the protocol, spam a random subset of nodes, not the whole set` — 전체에 보내지 않아야 노드 수가 늘어도 감당된다"
+          },
+          {
+            "step": "노드 사이 전송은 QUIC 로 한다",
+            "why": "`we run QUIC between nodes in the cluster to broadcast changes and reconcile state for new nodes` — 새로 들어온 노드가 따라잡는 일까지 같은 경로로 처리한다"
+          },
+          {
+            "step": "cr-sqlite 가 인과 순서 기준 last-write-wins 로 적용한다",
+            "why": "합의가 없으니 도착 순서가 노드마다 다르다. 규칙이 순서에 의존하지 않아야 결국 같은 곳에 모인다"
+          },
+          {
+            "step": "엣지 프록시가 로컬 SQLite 를 읽어 라우팅한다",
+            "why": "읽기가 네트워크를 타지 않아야 요청 경로가 빨라진다"
+          },
+          {
+            "step": "하트비트가 실패하면 노드를 `suspect` 로 표시하고 이웃에게 확인을 부탁한다",
+            "why": "한 노드가 잠깐 못 닿는 것과 정말 죽은 것을 가르기 위해서다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "라우팅 표를 합의로 맞출 것인가, 퍼뜨려서 수렴시킬 것인가",
+            "chosen": "**합의를 뺀다.** 가십 + CRDT 로 수렴시킨다",
+            "alternatives": [
+              "Raft 기반 합의(Consul)",
+              "중앙 데이터베이스(FoundationDB)"
+            ],
+            "tradeoff": "**잠깐 동안 노드마다 다른 것을 본다.** 보장은 `eventually … in some order` 로 약해진다 — 방금 만든 인스턴스가 어떤 프록시에는 아직 안 보이는 구간이 생긴다(이 문장은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "상태 도메인을 리전·용도별로 쪼갤 것인가, 하나로 둘 것인가",
+            "chosen": "**하나의 전역 상태 도메인**으로 뒀다",
+            "alternatives": [
+              "리전별·용도별로 나눈 여러 도메인"
+            ],
+            "tradeoff": "⚠️ **회사가 실수라고 적었다** — `In retrospect, our Corrosion rollout repeated a mistake we made with Consul: we built a single global state domain.` 그 결과 사고의 영향 범위가 함대 전체가 됐고, 한 사고에서는 **어떤 사용자 요청도 고객 앱에 닿지 못했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "충돌을 무엇으로 풀 것인가 — 벽시계인가 인과 순서인가",
+            "chosen": "**논리적 타임스탬프 기반 last-write-wins**",
+            "alternatives": [
+              "벽시계 타임스탬프",
+              "연산 기반 CRDT 로 병합 규칙을 값마다 다르게"
+            ],
+            "tradeoff": "**늦게 도착한 값이 이기지 않는다는 보장이 사람의 직관과 어긋난다** — 벽시계로 더 최근인 갱신이 인과 순서상 뒤로 밀릴 수 있다(이 해석은 이 사이트의 재구성이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "갱신을 증분으로 보낼 것인가, 데이터 전체를 다시 발행할 것인가",
+            "chosen": "**전체 재발행**으로 바꿨다 — cr-sqlite 의 중복 제거에 맡긴다",
+            "alternatives": [
+              "로컬 DB 를 고칠 때마다 같은 증분만 발행(이전 방식)"
+            ],
+            "tradeoff": "보내는 양이 늘어난다. 그럼에도 바꾼 이유는 증분 방식이 **버그를 만들었기** 때문이다 — `Until recently, any time a worker updated its local database, we published the same incremental update to Corrosion.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "CRDT 테이블의 스키마를 어떻게 바꿀 것인가",
+            "chosen": "바꾸되 **매우 조심해서** — 특히 nullable 컬럼 추가를 피한다",
+            "alternatives": [
+              "필요할 때 자유롭게 컬럼 추가",
+              "스키마를 아예 고정"
+            ],
+            "tradeoff": "⚠️ **합의를 없앤 대신 자료구조가 스키마 변경에 민감해졌다** — `New nullable columns are kryptonite to large Corrosion tables: cr-sqlite needs to backfill values for every row.` 실제로 전 세계 서버가 **화해 메시지의 합창**을 시작해 시스템이 녹아내렸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "프록시가 상태를 읽는 방식 — 원격 조회인가 로컬 사본인가",
+            "chosen": "**노드마다 로컬 SQLite 사본**을 두고 읽는다",
+            "alternatives": [
+              "중앙 저장소에 매 요청 조회",
+              "롱폴링으로 변경 구독(Consul 시절 방식)"
+            ],
+            "tradeoff": "읽기는 빨라지지만 **모든 노드가 전체 상태를 들고 있어야 한다** — 그래서 테이블이 커질수록 화해 비용과 스키마 변경 위험이 함께 커진다(이 인과는 이 사이트의 재구성이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "question": "쓰기를 유발하는 코드 경로를 어디까지 허용할 것인가",
+            "chosen": "머신 상태 갱신 경로가 **Corrosion 쓰기를 부르도록** 두었다",
+            "alternatives": [
+              "재시도·백오프 경로에서는 상태 발행을 생략",
+              "쓰기에 리전별 상한을 두기"
+            ],
+            "tradeoff": "⚠️ **재시도가 증폭기가 된다.** 인증서 만료로 백오프 루프가 돌자 `Each of those attempts re-invokes a code path to update Fly Machine state. That code path incurs a Corrosion write.` 가 되어 **`we're literally saturating our uplinks almost everywhere in our fleet`** 에 이르렀다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "SWIM 기반 가십",
+            "role": "멤버십 판단과 변경 전파. 매 단계 무작위 부분집합에만 보낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "QUIC",
+            "role": "노드 사이 변경 브로드캐스트와 새 노드의 상태 따라잡기",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "cr-sqlite (SQLite CRDT 확장)",
+            "role": "평범한 SQL 쓰기를 `crsql_changes` 로 남기고, 인과 순서 LWW 로 병합",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "SQLite",
+            "role": "노드마다 들고 있는 로컬 사본. 프록시의 읽기 대상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "오브젝트 스토리지",
+            "role": "복구용 체크포인트 백업 보관",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "엣지 프록시",
+          "via": "노드 로컬 SQLite 읽기",
+          "contract": "프록시는 라우팅 표를 원격 조회 없이 읽는다. 대신 **방금 바뀐 것이 아직 안 보일 수 있다** — 수렴은 수 초 단위다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "워커(Fly Machines)",
+          "via": "로컬 SQL 쓰기 → `crsql_changes` → 가십",
+          "contract": "워커는 **자기 워크로드의 상태만** 발행한다. 이 경계가 지켜져야 갱신이 서로 부딪히지 않는다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "sprite-create",
+          "via": "공개 URL 등록",
+          "contract": "Sprite 가 만들어지면 공개 URL 을 Corrosion 에 넣고, 함대의 프록시가 그것을 받아 라우팅한다 — **1~2초에 뜨는 컴퓨터가 성립하려면 이 전파가 합의를 기다리지 않아야 한다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Consul (레거시)",
+          "via": "대체",
+          "contract": "오랫동안 라우팅의 진실의 출처였다. Corrosion 이 그 자리를 가져갔으나 **전역 상태를 하나로 두는 구조는 그대로 물려받았다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "오브젝트 스토리지",
+          "via": "체크포인트 백업",
+          "contract": "복구를 위해 상태 스냅숏을 보관한다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "SWIM: Scalable Weakly-consistent Infection-style Process Group Membership Protocol",
+            "authors": "Abhinandan Das, Indranil Gupta, Ashish Motivala",
+            "year": "2002",
+            "venue": "DSN 2002",
+            "url": "https://www.cs.cornell.edu/projects/Quicksilver/public_pdfs/SWIM.pdf",
+            "takeaway": "Corrosion 의 멤버십과 전파가 여기서 왔다. 회사가 직접 SWIM 위에 세웠다고 적고, 논문의 핵심인 **무작위 부분집합에만 보내기**와 **suspect 상태를 이웃이 확인하기**를 그대로 쓴다",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "A comprehensive study of Convergent and Commutative Replicated Data Types",
+            "authors": "Marc Shapiro, Nuno Preguiça, Carlos Baquero, Marek Zawirski",
+            "year": "2011",
+            "venue": "INRIA RR-7506",
+            "url": "https://inria.hal.science/inria-00555588/document",
+            "takeaway": "합의 없이 결국 같은 상태로 모이게 하는 자료구조의 이론적 바탕. cr-sqlite 가 구현하는 CRDT 가 이 계열이다 — **회사가 이 논문을 직접 언급하지는 않았다**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "합의를 없앤 시스템에서 **영향 범위를 좁게 유지하는 것**",
+            "why_hard": "가십은 모든 노드를 같은 상태로 모으는 것이 목적이라, 잘못된 상태나 폭주하는 쓰기도 **똑같이 잘 퍼진다.** 빠른 전파와 좁은 영향 범위는 같은 성질의 앞뒤다",
+            "current_best": "상태 도메인을 쪼개는 것. Fly.io 는 그렇게 하지 않았고 스스로 실수라고 적었다 — `we built a single global state domain`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "CRDT 로 복제되는 큰 테이블의 **스키마를 바꾸는 것**",
+            "why_hard": "CRDT 는 모든 행의 모든 컬럼에 병합 메타데이터를 붙인다. 컬럼을 하나 더하면 **모든 행을 채워야** 하고, 그 화해 작업이 함대 전체에서 동시에 일어난다",
+            "current_best": "바꾸지 않거나, 바꾼다면 매우 조심한다. 회사의 표현이 그대로 경고다 — `New nullable columns are kryptonite to large Corrosion tables`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Corrosion",
+                "url": "https://fly.io/blog/corrosion/",
+                "publisher": "The Fly Blog",
+                "date": "2025-10-22 (갱신 표기)",
+                "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "워커의 상태 변경이 다른 대륙의 프록시에 닿기까지",
+          "question": "합의를 안 하면 라우팅 표는 어떻게 같아지나",
+          "kind": "flow",
+          "code": "flowchart TD\n  W[\"<b>워커</b><br/>• 자기 워크로드 상태만 쓴다<br/>• 평범한 SQL\"]:::list --> C\n  C[\"<b>crsql_changes</b><br/>• CRDT 가 변경을 로그로<br/>• 퍼뜨릴 것을 여기서 뽑는다\"]:::list --> B\n  B[\"<b>배치 패킷</b><br/>• 초당 여러 번<br/>• 묶어서 보낸다\"]:::list --> G\n  G[\"<b>SWIM 가십</b><br/>• 무작위 부분집합에만<br/>• 전체에 보내지 않는다\"]:::list --> Q\n  Q[\"<b>QUIC 전송</b><br/>• 변경 브로드캐스트<br/>• 새 노드 따라잡기\"]:::list --> A\n  A[\"<b>cr-sqlite 적용</b><br/>• 인과 순서 LWW<br/>• 도착 순서 무관\"]:::list --> P\n  P[\"<b>엣지 프록시</b><br/>• 로컬 SQLite 를 읽는다<br/>• 원격 조회 없음\"]:::list\n  N[\"<b>보장은 여기까지</b><br/>• eventually, in some order<br/>• 수렴 수 초\"]:::soft\n  A -.-> N\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "잘 퍼지는 것이 잘못 퍼질 때 — 회사가 적은 사고들",
+          "question": "합의를 없앤 대가는 어디서 드러났나",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[\"<b>단일 전역 상태 도메인</b><br/>• Consul 시절 실수를 반복<br/>• 영향 범위 = 함대 전체\"]:::gone\n  D1[\"<b>RwLock 데드락</b><br/>• if let 의 else 가 잠금 해제를 가정<br/>• 몇 초 만에 전 프록시 잠김\"]:::gone --> R\n  D2[\"<b>nullable 컬럼 추가</b><br/>• 모든 행 backfill 필요<br/>• 전 세계 서버가 화해 메시지 합창\"]:::gone --> R\n  D3[\"<b>인증서 만료 → 백오프 루프</b><br/>• 재시도마다 머신 상태 갱신<br/>• 갱신마다 Corrosion 쓰기\"]:::gone --> R\n  R --> O[\"<b>결과</b><br/>• 업링크 포화<br/>• 사용자 요청이 앱에 닿지 못하는 구간\"]:::gone\n  F[\"<b>남은 숙제</b><br/>• 상태 도메인을 쪼개기<br/>• 빠른 전파와 좁은 영향 범위는 앞뒤\"]:::list\n  O -.-> F\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Corrosion",
+          "url": "https://fly.io/blog/corrosion/",
+          "publisher": "The Fly Blog",
+          "date": "2025-10-22 (갱신 표기)",
+          "summary": "합의를 빼고 가십과 CRDT 로 라우팅 표를 퍼뜨리는 자체 상태 동기화 시스템. 설계뿐 아니라 그 때문에 겪은 사고 넷을 회사가 직접 적었다."
         }
       ]
     }
