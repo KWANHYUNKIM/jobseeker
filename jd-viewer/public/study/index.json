@@ -1833,6 +1833,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "api-gateway",
+      "title": "API 게이트웨이",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**모든 요청이 지나는 한 자리**를 만들어 서비스마다 따로 하던 일(인증·SSL·제한·로깅)을 거기로 모으는 것 — 그리고 **모으는 순간 그 자리가 모두의 것이 된다.**",
+      "aliases": [
+        "API 게이트웨이",
+        "API Gateway",
+        "게이트웨이",
+        "reverse proxy",
+        "리버스 프록시"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

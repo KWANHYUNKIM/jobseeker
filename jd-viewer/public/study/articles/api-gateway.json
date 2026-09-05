@@ -1,0 +1,669 @@
+{
+  "slug": "api-gateway",
+  "title": "API 게이트웨이",
+  "title_en": "API Gateway",
+  "aliases": [
+    "API 게이트웨이",
+    "API Gateway",
+    "게이트웨이",
+    "reverse proxy",
+    "리버스 프록시"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "**모든 요청이 지나는 한 자리**를 만들어 서비스마다 따로 하던 일(인증·SSL·제한·로깅)을 거기로 모으는 것 — 그리고 **모으는 순간 그 자리가 모두의 것이 된다.**",
+  "summary": "채용 데이터에서 **127건(모집중 63)** 이다. 그중 **설계·구축 문맥이 65건**이고, **AWS·Kong·Nginx 같은 도구 이름이 함께 나오는 것이 39건**이다.\n\n⭐⭐ **정의는 Azure 문서가 한 문장으로 준다** — **\"An API gateway provides a centralized entry point ... It acts as a reverse proxy ... It can also perform various cross-cutting tasks such as authentication, SSL termination, mutual TLS, and rate limiting.\"** 그리고 공고에도 그 낱말이 그대로 있다 — 토스플레이스 `**공통 관심사**의 플랫폼 서비스(**API Gateway**, Monitoring & Alert System 등)를 개발하고 운영해요.`\n\n**왜 모으나.** 같은 문서가 모으지 않았을 때를 적는다 — **\"Redundant handling of concerns: Each public-facing service must handle concerns such as authentication, SSL, and client rate limiting.\"** 서비스마다 하면 **빠뜨리는 곳이 생기고**, 빠뜨린 하나가 구멍이 된다.\n\n⭐⭐⭐ **그런데 모으면 그 자리가 모두의 것이 된다.** 같은 문서가 그 대가도 적는다 — **\"When you update services or add new ones, you might need to update the gateway routing rules.\"** **서비스가 늘 때마다 여기를 고쳐야** 하고, 여기를 고치려면 **모든 팀의 트래픽이 지나는 것을 건드려야** 한다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — \"공통 관심사\"라는 낱말이 공고에 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ],
+      "body": "Azure 의 아키텍처 문서가 정의를 한 문단으로 준다.\n\n> \"An API gateway provides a **centralized entry point** for managing interactions between clients and application services. It **acts as a reverse proxy** and routes clients requests to the appropriate services. It can also perform **various cross-cutting tasks** such as authentication, SSL termination, mutual TLS, and rate limiting.\"\n\n**중앙 진입점 · 리버스 프록시 · 횡단 관심사.** 셋이 전부다.\n\n⭐⭐ 그리고 **공고에 그 낱말이 그대로 있다.**\n\n> `토스플레이스에서 사용되는 **공통 관심사**의 플랫폼 서비스(**API Gateway**, Monitoring & Alert System 등)를 개발하고 운영해요.` — 토스플레이스\n\n**모니터링·알림 시스템과 같은 항목에** 묶여 있는 것이 정확하다 — 셋 다 **\"모든 서비스가 필요로 하는데 각자 만들면 안 되는 것\"** 이다.\n\n셈은 **127건(모집중 63)** 인데, 문장을 읽으면 성격이 갈린다.\n\n| | 건수 | 예 |\n|---|---|---|\n| **설계·구축·운영 문맥** | 65 | `**API Gateway 전략**을 수립합니다`(비상교육) |\n| **도구·벤더 이름 동반** | 39 | `**AWS Serverless (Lambda, DynamoDB, API Gateway)** 기반 구조 설계`(중고나라) |\n\n> ⚠️⚠️ **셈의 함정 — `API Gateway` 는 AWS 의 제품 이름이기도 하다.** 바딧 `Serverless 기반(**AWS Lambda, API Gateway** 등)`, 중고나라 `AWS Lambda, DynamoDB, API Gateway 등 **Serverless 아키텍처**` 처럼 **서버리스 스택의 한 조각**으로 나오는 줄이 적지 않다. 그건 **함수 앞에 붙이는 HTTP 진입점**이지 이 문서가 말하는 **여러 서비스를 가로지르는 층**과는 규모가 다르다. `data-migration`(TypeORM 289건 중 이관 문맥 11%)에서 세운 규칙 그대로 — **문장을 읽어 가른다.**\n\n⭐ 그리고 **새 용례가 나타나고 있다.**\n\n> `사내 **LLM API Gateway** 및 AI 보안·AIOps 파이프라인을 구축하고,` — 네이버페이\n\n**모델 호출 앞에도 같은 층을 둔다** — 키 관리·비용 집계·비율 제한이 필요한 것이 똑같기 때문이다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 모으나 — 모으지 않으면 여섯 가지가 생긴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ],
+      "body": "같은 문서가 **게이트웨이 없이 클라이언트가 서비스를 직접 부를 때** 생기는 것을 여섯으로 적는다.\n\n| | 원문 |\n|---|---|\n| **복잡한 클라이언트 코드** | \"Clients must **track multiple endpoints** and handle failures resiliently.\" |\n| ⭐ **강한 결합** | \"Clients need to **understand decomposition of individual services**, complicating service maintenance and refactoring.\" |\n| **지연 증가** | \"A single operation might require calls to multiple services. The result can be **multiple network round trips**\" |\n| ⭐⭐ **중복된 처리** | \"**Each public-facing service must handle concerns such as authentication, SSL, and client rate limiting.**\" |\n| **프로토콜 제약** | \"Services must expose a client-friendly protocol such as HTTP or WebSocket.\" |\n| ⭐ **넓어진 공격면** | \"**Public endpoints increase the potential attack surface** and require hardening.\" |\n\n⭐⭐ **네 번째가 이 낱말의 핵심**이다. 인증·SSL·비율 제한을 **서비스마다 각자** 하면, 서비스가 열 개일 때 그 코드가 열 벌 있고 — **하나만 빠뜨려도 그게 구멍**이 된다. `authz` 의 **\"deny by default\"** 가 지켜지려면 **한 자리에서 강제**하는 편이 훨씬 쉽다.\n\n그리고 두 번째(**강한 결합**)는 `bff` 와 같은 문제의 다른 층이다 — 클라이언트가 **서비스를 어떻게 쪼갰는지 알아야 한다**면, 쪼개는 방식을 바꿀 수 없다.\n\n💡 공고도 그 이유를 그대로 적는다.\n\n> `**MSA 기반의 기술 표준화**(API Gateway, Service Mesh 등)를 통한 **일관된 서비스 환경** 구축 및 운영` — 힐링페이퍼\n> `API 설계를 **표준화**하고, **API Gateway 전략**을 수립합니다.` — 비상교육\n\n⭐ **둘 다 \"표준화\"** 라고 적는다 — 게이트웨이는 성능 장치이기 전에 **일관성 장치**다."
+    },
+    {
+      "id": "three",
+      "kind": "how",
+      "heading": "⭐⭐ 세 가지 일 — 라우팅 · 집계 · 오프로딩",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ],
+      "body": "같은 문서가 게이트웨이가 하는 일을 **세 패턴**으로 나눈다. 이 구분이 유용한 것은, **셋 중 무엇을 하느냐에 따라 옆 낱말들과의 경계가 달라지기** 때문이다.\n\n**① Gateway routing** — 요청을 알맞은 서비스로 보낸다.\n> \"The API gateway uses **layer-7 routing** and provides a **single endpoint** for clients to use. Use API gateway routing when you want to **decouple clients from application services**.\"\n\n**② Gateway aggregation** — 여러 요청을 하나로 모은다.\n> \"aggregate **multiple client requests into a single request** ... the API gateway routes requests to the various services required for the operations. Finally, the API gateway **aggregates the results** and sends them back to the client. The aggregation helps **reduce chattiness** between the client and the application services.\"\n\n⚠️⚠️ **여기가 `bff` 와 정면으로 겹치는 자리다.** 둘 다 \"여러 서비스를 불러 합쳐 준다\". 차이는 **누구를 위해서인가** — 게이트웨이의 집계는 **모두를 위한 하나**이고, BFF 는 **경험(팀)마다 하나**다. ⭐ 그래서 **화면별로 다른 조합이 필요해지는 순간 게이트웨이에 넣으면 안 된다**(아래 `boundary` 절).\n\n**③ Gateway offloading** — 공통 기능을 서비스에서 걷어낸다.\n> \"provide cross-cutting functionality, **so individual services don't have to provide it**. It can be useful to **consolidate cross-cutting functionality into one place, rather than making every service responsible.**\"\n\n문서가 넘길 수 있는 것의 목록까지 준다 — **SSL termination · Mutual TLS · Authentication · IP allow list or block list · Client rate limiting (throttling) · Logging and monitoring · Response caching · Web application firewall · GZIP compression · Servicing static content.**\n\n💡 **목록의 공통점**을 보라 — 전부 **\"무엇을 하는 요청인지 몰라도 할 수 있는 일\"** 이다. 요청의 **내용**을 알아야 하는 것은 하나도 없다. ⭐ **그것이 게이트웨이에 넣어도 되는 것과 안 되는 것을 가르는 기준**이다.\n\n공고도 이 셋을 나눠 적는다.\n\n> `API Gateway(**Nginx Ingress, Kong**) 및 **OAuth2 / API Key 인증** 연동 경험` — 위밋모빌리티 (③)\n> `API Gateway, 서비스 간 연동 구조를 이해하고, **외부 트래픽 흐름에 맞춘 보안 정책 및 접근 제어 로직**을 개발합니다.` — 포티투닷 (③)\n> `**Service Mesh(Istio 등) 및 API Gateway(Spring Cloud Gateway 등)** 를 활용한 **트래픽 관리**` — 지바이크 (①)"
+    },
+    {
+      "id": "cost",
+      "kind": "limits",
+      "heading": "⭐ 모으면 그 자리가 모두의 것이 된다",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ],
+      "body": "⚠️ **먼저 밝힌다 — 이 절의 근거는 한쪽만 원문이다.** 인용한 문서에는 **\"단일 장애점\"이나 \"비즈니스 로직을 넣지 말라\"는 경고가 없다.** 아래는 **한 문장의 원문에서 따라 나오는 이 문서의 정리**다.\n\n그 한 문장은 이것이다.\n\n> ⭐ \"**Manage changes.** When you update services or add new ones, **you might need to update the gateway routing rules.** Implement processes or workflows to manage routing rules when adding or modifying services, SSL certificates, IP allow lists, and security configurations.\"\n\n**서비스가 늘거나 바뀔 때마다 게이트웨이를 고쳐야 한다.** 문서는 그것을 \"프로세스를 갖추라\"로 해결하려 하는데, 실무에서는 그 문장이 세 가지로 나타난다.\n\n**① 배포 병목** — 게이트웨이는 대개 하나다. 그러니 **모든 팀의 변경이 그 하나를 거친다.** `bff` 문서가 인용한 Sam Newman 의 표현으로는 \"so many changes are trying to be made to the **same deployable artifact**\" — 게이트웨이는 그 문제를 **클라이언트 쪽에서 없애고 자기 쪽에서 다시 만든다.**\n\n**② 단일 장애점** — 모든 요청이 지나므로 **여기가 죽으면 전부 죽는다.** 이건 게이트웨이의 결함이 아니라 **정의상 그렇다** — 그래서 이 층은 **가장 단순하고 가장 잘 감시되어야** 한다.\n\n**③ ⭐⭐ 로직이 스며든다** — 가장 조용히 온다. 라우팅 규칙에 조건이 하나 붙고, 응답을 조금 고치고, \"여기서 하면 편한데\"가 쌓인다. 그러면 **어떤 규칙이 어디에 있는지 아무도 모르게** 되고, 게이트웨이 설정을 못 건드리게 된다.\n\n⭐ **판단 기준은 앞 절의 목록에서 나온다** — 오프로딩 목록의 모든 항목이 **\"무엇을 하는 요청인지 몰라도 할 수 있는 일\"** 이었다. 그러니 이렇게 묻는다.\n\n> **\"이 규칙이 요청의 내용을 알아야 하는가?\"** 알아야 하면 게이트웨이의 것이 아니다.\n\n💡 그리고 문서가 도구 선택에 대해 적은 조언 하나가 이 대가를 줄여 준다.\n\n> \"**Prefer built-in offerings.** Use built-in API gateway and ingress solutions provided by your platform ... **Only use a custom gateway if the built-in options lack necessary flexibility.** Custom solutions require a **governance model**, such as GitOps, to manage its lifecycle effectively.\"\n\n**직접 만들면 거버넌스 모델까지 만들어야 한다.** 게이트웨이를 손으로 짜는 결정은 **코드가 아니라 운영 체계를 늘리는 결정**이다."
+    },
+    {
+      "id": "boundary",
+      "kind": "extra",
+      "heading": "⭐⭐ 경계 — BFF 와, 서비스 메시와",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ],
+      "body": "이 낱말은 옆에 있는 것들과 계속 헷갈린다. 공고에서도 그렇다 — 아이모션 `**API 게이트웨이/BFF** 운영 경험`, 지바이크 `**Service Mesh(Istio 등) 및 API Gateway**`.\n\n**① BFF 와의 경계 — 몇 개인가로 가른다.**\n\n둘 다 여러 서비스를 불러 합칠 수 있다(게이트웨이의 `aggregation` 패턴). 차이는 **누구를 위해서인가**다.\n\n- **게이트웨이의 집계**는 **모두를 위한 하나** — 웹도 앱도 파트너도 같은 것을 받는다.\n- **BFF 의 집계**는 **경험(팀)마다 하나** — `bff` 문서가 인용한 Newman 의 원칙이 \"**team structure should drive how many BFFs you have**\" 였다.\n\n⭐ **그래서 판단은 간단하다 — 화면마다 다른 조합이 필요해지는 순간 게이트웨이에서 빼낸다.** 안 그러면 모든 팀이 그 하나를 고치게 되고, 그게 `cost` 절의 배포 병목이다.\n\n**② 서비스 메시와의 경계 — 문서가 원문으로 적는다.**\n\n> ⭐⭐ \"If you already run a service mesh, the mesh's own **ingress gateway** is a candidate for your API gateway. Using it means **north-south traffic** enters the mesh dataplane immediately and participates in the same mTLS, workload identity, authorization policy, and telemetry as **east-west traffic**.\"\n\n**남북(north-south)은 바깥에서 안으로 들어오는 트래픽**이고, **동서(east-west)는 서비스끼리 주고받는 트래픽**이다. **게이트웨이는 남북, 메시는 동서**가 기본 구분이다.\n\n그리고 문서가 **메시 인그레스로 대신할 때의 한계**까지 적는다.\n\n> ⭐ \"**Mesh ingress gateways typically have weaker capabilities than dedicated API gateways** for **web application firewall (WAF), API productization, request transformation, and global routing**, so **pair them with or replace them** with Application Gateway, Front Door, or API Management when those capabilities are required.\"\n\n**메시의 인그레스는 전용 게이트웨이보다 약하다** — WAF·API 상품화·요청 변환·글로벌 라우팅에서. 그래서 그 기능이 필요하면 **함께 쓰거나 바꾼다.**\n\n💡 그리고 도구 하나가 전부를 하지도 않는다.\n\n> \"API Management **doesn't perform any load balancing**, so you should use it with a load balancer, such as Azure Application Gateway, or a reverse proxy.\"\n\n⚠️ **\"API 게이트웨이\" 라는 이름의 제품이 곧 이 문서가 말하는 층 전체는 아니다** — 무엇을 하고 무엇을 안 하는지 제품마다 다르다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 확인하지 못한 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 1차 자료가 한 곳이다(Microsoft).** 그래서 관점이 그쪽에 치우쳐 있고, 특히 **제품 목록 부분은 그대로 옮기지 않았다.** Kong·Envoy·Apigee 같은 다른 진영의 문서는 **이 사이클에서 열지 않았다** — 각 구현체가 \"여기서 하지 말라\"고 적은 것이 있는지는 확인하지 못했다.\n\n**2. ⚠️ `cost` 절의 셋 중 원문 근거가 있는 것은 하나뿐이다.** 인용한 문서에는 **단일 장애점 경고도, \"비즈니스 로직을 넣지 말라\"는 문장도 없다.** 있는 것은 \"Manage changes\"(서비스가 바뀌면 게이트웨이 규칙을 고쳐야 한다) 한 문장이고, 나머지는 **거기서 따라 나오는 정리**다. 그래서 그 절을 `confidence: inferred` 로 뒀다.\n\n**3. 성능·용량의 숫자를 다루지 않았다.** 게이트웨이 한 대가 얼마나 버티는지, 지연이 얼마나 붙는지는 **제품과 설정에 따라 다르고** 이 사이클에서 그 자료를 열지 않았다. ⭐ 이 엔진의 규칙대로 **숫자는 출처 없이 쓰지 않는다.**\n\n**4. 인증을 게이트웨이에서 어디까지 하나를 정하지 않았다.** 토큰 검증까지인지, 인가 판정까지인지는 큰 결정인데 이 문서는 **\"요청의 내용을 알아야 하면 게이트웨이의 것이 아니다\"** 라는 기준까지만 말한다 — 구체는 `authz` 의 몫이다.\n\n**5. ⚠️ 서비스 메시 문서가 없다.** `boundary` 절이 남북/동서 구분을 쓰면서 **상대편을 가리킬 곳이 없다** — `bff` 를 쓸 때 이 문서가 없었던 것과 같은 상황이라 큐에 올린다.\n\n**6. 이 문서가 다루지 않는 것.** 화면별 조합은 `bff`, 제한의 계산은 `rate-limit`, 인가의 설계는 `authz`, 클라이언트가 질의를 정하는 방식은 `graphql` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "without",
+      "kind": "glossary",
+      "caption": "⭐⭐ 게이트웨이가 없으면 — 문서가 적은 여섯",
+      "note": "Azure Architecture Center 의 API gateways 문서에서 옮겼다. ⭐ 여섯 중 **네 번째**가 이 낱말의 핵심이다 — 나머지는 편의의 문제인데 그것만 **구멍의 문제**다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "복잡한 클라이언트 코드",
+          "\"Clients must **track multiple endpoints** and handle failures resiliently.\""
+        ],
+        [
+          "⭐ 강한 결합",
+          "\"Clients need to **understand decomposition of individual services**, complicating service maintenance and refactoring.\""
+        ],
+        [
+          "지연 증가",
+          "\"A single operation might require calls to multiple services. The result can be **multiple network round trips**\""
+        ],
+        [
+          "⭐⭐ 중복된 처리",
+          "\"**Each public-facing service must handle concerns such as authentication, SSL, and client rate limiting.**\" — 열 개면 열 벌, **하나만 빠뜨려도 구멍**"
+        ],
+        [
+          "프로토콜 제약",
+          "\"Services must expose a **client-friendly protocol** such as HTTP or WebSocket.\""
+        ],
+        [
+          "⭐ 넓어진 공격면",
+          "\"**Public endpoints increase the potential attack surface** and require hardening.\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "id": "three",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 세 가지 일 — 그리고 각각이 어느 낱말과 겹치나",
+      "note": "패턴 이름과 인용은 같은 문서에서 옮겼고, 오른쪽 '겹치는 자리' 열은 이 문서가 붙인 것이다.",
+      "columns": [
+        "패턴",
+        "무엇",
+        "⚠️ 겹치는 자리"
+      ],
+      "rows": [
+        [
+          "**Gateway routing**",
+          "\"uses **layer-7 routing** and provides a **single endpoint**\" · \"when you want to **decouple clients from application services**\"",
+          "로드밸런서·인그레스"
+        ],
+        [
+          "⚠️ **Gateway aggregation**",
+          "\"aggregate **multiple client requests into a single request**\" · \"helps **reduce chattiness**\"",
+          "⭐⭐ **`bff` 와 정면으로 겹친다** — 차이는 **몇 개를 두느냐**"
+        ],
+        [
+          "⭐ **Gateway offloading**",
+          "\"provide cross-cutting functionality, **so individual services don't have to provide it**\"",
+          "`rate-limit` · `authz` · `caching`"
+        ],
+        [
+          "⭐⭐ 오프로딩 목록의 공통점",
+          "SSL termination · Mutual TLS · Authentication · IP allow/block list · Client rate limiting · Logging and monitoring · Response caching · WAF · GZIP · Static content",
+          "**전부 \"무엇을 하는 요청인지 몰라도 할 수 있는 일\"**"
+        ],
+        [
+          "⭐ 그래서 판단 기준",
+          "—",
+          "**\"이 규칙이 요청의 내용을 알아야 하는가?\"** 알아야 하면 게이트웨이의 것이 아니다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "id": "boundary",
+      "kind": "compare",
+      "caption": "⭐⭐ 게이트웨이 · BFF · 서비스 메시",
+      "note": "남북/동서 구분과 메시 인그레스의 한계는 같은 문서의 원문이다. BFF 쪽 기준은 `bff` 문서(Sam Newman)에서 왔다. ⚠️ `service-mesh` 는 아직 문서가 없다.",
+      "columns": [
+        "",
+        "무엇을 하나",
+        "몇 개",
+        "방향"
+      ],
+      "rows": [
+        [
+          "**API 게이트웨이**",
+          "**모두에게 공통인 것** — 라우팅·인증·SSL·제한·로깅",
+          "대개 하나",
+          "⭐ **남북(north-south)** — 바깥에서 안으로"
+        ],
+        [
+          "**BFF**",
+          "**이 화면을 위한 조합**",
+          "⭐ **경험(팀)마다 하나** — \"team structure should drive how many BFFs you have\"",
+          "남북"
+        ],
+        [
+          "**서비스 메시**",
+          "서비스끼리의 통신 — mTLS·재시도·관측",
+          "클러스터 단위",
+          "⭐ **동서(east-west)** — 안에서 안으로"
+        ],
+        [
+          "⭐ 메시 인그레스로 대신할 때",
+          "\"north-south traffic enters the mesh dataplane immediately and participates in the same **mTLS, workload identity, authorization policy, and telemetry** as east-west traffic\"",
+          "—",
+          "경계가 하나로 합쳐진다"
+        ],
+        [
+          "⚠️ 그 한계 (원문)",
+          "\"**Mesh ingress gateways typically have weaker capabilities than dedicated API gateways** for **WAF, API productization, request transformation, and global routing**\"",
+          "—",
+          "필요하면 **함께 쓰거나 바꾼다**"
+        ],
+        [
+          "⚠️ 제품이 곧 층은 아니다",
+          "\"API Management **doesn't perform any load balancing**, so you should use it with a load balancer\"",
+          "—",
+          "무엇을 하고 안 하는지 제품마다 다르다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "id": "cost",
+      "kind": "glossary",
+      "caption": "⭐ 모으면 생기는 것",
+      "note": "⚠️ **원문 근거가 있는 것은 첫 줄뿐이다.** 나머지는 그 문장에서 따라 나오는 이 문서의 정리이고(`confidence: inferred`), 인용한 문서에는 단일 장애점 경고도 \"비즈니스 로직을 넣지 말라\"는 문장도 없다.",
+      "columns": [
+        "",
+        "내용"
+      ],
+      "rows": [
+        [
+          "⭐ 원문",
+          "\"**Manage changes.** When you update services or add new ones, **you might need to update the gateway routing rules.**\""
+        ],
+        [
+          "① 배포 병목",
+          "게이트웨이는 대개 하나 → **모든 팀의 변경이 그 하나를 거친다**(`bff` 가 클라이언트 쪽에서 없앤 문제를 여기서 다시 만든다)"
+        ],
+        [
+          "② 단일 장애점",
+          "모든 요청이 지나므로 **여기가 죽으면 전부 죽는다** — 결함이 아니라 정의상 그렇다. 그래서 **가장 단순하고 가장 잘 감시되어야**"
+        ],
+        [
+          "③ ⭐⭐ 로직이 스며든다",
+          "가장 조용히 온다 — 조건이 하나 붙고, 응답을 조금 고치고… 결국 **아무도 못 건드리는 설정**이 된다"
+        ],
+        [
+          "⭐ 막는 질문",
+          "**\"이 규칙이 요청의 내용을 알아야 하는가?\"**"
+        ],
+        [
+          "⭐ 문서의 조언",
+          "\"**Prefer built-in offerings.** ... **Only use a custom gateway if the built-in options lack necessary flexibility.** Custom solutions require a **governance model**, such as GitOps\""
+        ]
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⚠️ `API Gateway` 는 **AWS 의 제품 이름이기도 하다** — 이 낱말의 가장 큰 함정이다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**127건 (모집중 63)** — `API 게이트웨이|API Gateway`"
+        ],
+        [
+          "설계·구축·운영 문맥",
+          "**65건**"
+        ],
+        [
+          "⚠️⚠️ 도구·벤더 이름 동반",
+          "**39건** — 그중 상당수가 `AWS Lambda, DynamoDB, **API Gateway**`(중고나라) 처럼 **서버리스 스택의 한 조각**이다. 함수 앞의 HTTP 진입점이지 여러 서비스를 가로지르는 층이 아니다"
+        ],
+        [
+          "⭐ 좋은 근거",
+          "토스플레이스 `**공통 관심사**의 플랫폼 서비스(API Gateway, Monitoring & Alert System 등)` — **정의가 공고 안에** 있다"
+        ],
+        [
+          "⭐ 새 용례",
+          "네이버페이 `사내 **LLM API Gateway** 및 AI 보안·AIOps 파이프라인` — 모델 호출 앞에도 같은 층을 둔다"
+        ],
+        [
+          "이웃 셈",
+          "`서비스 메시|Istio` · `BFF` 33건 · `Kong|Envoy|Nginx Ingress` 등 구현체"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "서비스가 여럿이고 각각이 인증·SSL·비율 제한을 따로 구현하고 있다",
+      "pick": "**게이트웨이로 걷어낸다**(gateway offloading)",
+      "over": "공용 라이브러리를 만들어 각 서비스가 쓰게 하기",
+      "why": "⭐⭐ \"**Each public-facing service must handle concerns such as authentication, SSL, and client rate limiting.**\" 라이브러리로 하면 **버전이 갈리고 빠뜨리는 서비스가 생긴다** — 그리고 빠뜨린 하나가 구멍이다. 게이트웨이는 **지나가지 않을 수 없는 자리**라 강제가 된다",
+      "tradeoff": "⚠️ 그 자리가 **단일 장애점이자 배포 병목**이 된다. 그래서 이 층은 가능한 한 **단순하게** 두고, 문서의 조언대로 **\"Prefer built-in offerings\"** — 직접 만들면 거버넌스 모델까지 만들어야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "situation": "화면마다 다른 조합이 필요해졌다",
+      "pick": "**BFF 로 뺀다**(→ `bff`)",
+      "over": "게이트웨이의 집계 규칙을 화면별로 늘리기",
+      "why": "⭐ 게이트웨이는 대개 하나라서 화면 로직이 들어가면 **모든 팀이 그 하나를 고치게** 된다. BFF 의 원칙은 반대다 — \"**team structure should drive how many BFFs you have**\". **몇 개를 두느냐가 둘을 가르는 기준**이다",
+      "tradeoff": "서버가 하나 더 늘고 배포·모니터링 대상이 는다. 그래도 **모든 팀이 한 파일을 두고 줄 서는 것**보다 낫다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "situation": "이미 서비스 메시를 쓰고 있다",
+      "pick": "**메시의 인그레스 게이트웨이를 먼저 검토한다**",
+      "over": "별도 API 게이트웨이를 바로 추가하기",
+      "why": "\"the mesh's own **ingress gateway** is a candidate ... **north-south traffic** enters the mesh dataplane immediately and participates in the **same mTLS, workload identity, authorization policy, and telemetry** as east-west traffic.\" **정책과 관측을 두 벌 관리하지 않아도 된다**",
+      "tradeoff": "⚠️ 문서가 한계를 적는다 — \"**Mesh ingress gateways typically have weaker capabilities** than dedicated API gateways for **WAF, API productization, request transformation, and global routing**\". 그 기능이 필요하면 **함께 쓰거나 바꾼다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "situation": "게이트웨이 제품을 고르고 있다",
+      "pick": "**플랫폼이 이미 주는 것을 먼저 쓴다**",
+      "over": "직접 만들거나 범용 프록시를 손으로 구성하기",
+      "why": "⭐ \"**Prefer built-in offerings.** ... **Only use a custom gateway if the built-in options lack necessary flexibility.** Custom solutions require a **governance model**, such as GitOps, to manage its lifecycle effectively.\" **코드가 아니라 운영 체계가 늘어나는 결정**이다",
+      "tradeoff": "제품이 하는 것만 할 수 있고, ⚠️ **제품마다 하는 일이 다르다** — \"API Management doesn't perform any load balancing, so you should use it with a load balancer\". **무엇을 안 하는지**를 먼저 확인해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "situation": "라우팅 규칙에 조건을 하나 더 붙이려 한다",
+      "pick": "⭐ **\"이 규칙이 요청의 내용을 알아야 하는가\"를 먼저 묻는다**",
+      "over": "편한 자리라서 게이트웨이에 넣기",
+      "why": "오프로딩 목록(SSL·인증·IP 목록·제한·로깅·캐시·WAF·압축·정적 파일)은 **전부 요청의 내용을 몰라도 할 수 있는 일**이다. 내용을 알아야 하는 규칙이 들어가기 시작하면 **어떤 규칙이 어디에 있는지 아무도 모르게** 되고, 결국 설정을 못 건드린다",
+      "tradeoff": "서비스 쪽에 코드를 넣어야 해서 당장은 손이 더 간다. 대신 **그 규칙의 주인이 분명해진다** — 게이트웨이에 있으면 주인이 없다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "게이트웨이에 화면별 조합 규칙을 넣는다",
+      "why": "이미 모든 요청이 지나는 자리가 있으니 거기서 합치면 될 것 같고, 실제로 `gateway aggregation` 이라는 이름의 패턴도 있다. 그런데 게이트웨이는 **대개 하나**라서, 화면 로직이 들어가면 **모든 팀이 그 하나를 고치게** 된다",
+      "fix": "**화면마다 다른 조합이 필요해지는 순간 BFF 로 뺀다**(→ `bff`). 판단은 개수로 한다 — **모두가 같은 것을 받으면 게이트웨이, 경험마다 달라지면 BFF**",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "trap": "라우팅 설정에 조건과 변환이 조금씩 쌓인다",
+      "why": "가장 조용히 오는 고장이다. \"이 경로만 헤더를 하나 더\", \"이 응답만 필드를 빼고\" — 각각은 사소하고 배포도 빠르다. 그런데 쌓이면 **어떤 규칙이 코드에 있고 어떤 규칙이 게이트웨이에 있는지 아무도 모르게** 되고, 그때부터 아무도 그 설정을 건드리지 않는다",
+      "fix": "⭐ **\"이 규칙이 요청의 내용을 알아야 하는가?\"** 를 리뷰 질문으로 둔다. 알아야 하면 서비스 쪽이다. 그리고 게이트웨이 설정을 **코드로 관리**해 변경 이력이 남게 한다(문서의 표현으로 \"a **governance model**, such as GitOps\")"
+    },
+    {
+      "trap": "게이트웨이를 두고도 서비스가 여전히 공개돼 있다",
+      "why": "기존 엔드포인트를 바로 닫으면 무언가 깨질까 봐 남겨 두고, 그 상태가 굳는다. 그러면 **게이트웨이를 우회하는 경로**가 남아 인증·제한이 통째로 무의미해진다 — 문서가 말한 \"**Public endpoints increase the potential attack surface**\" 가 그대로 남는 셈이다",
+      "fix": "**서비스가 게이트웨이를 통해서만 닿도록 네트워크에서 막는다.** 그리고 `authz` 의 원칙대로 **기본은 거부**로 두고, 우회 경로를 하나씩 닫으며 무엇이 깨지는지 본다 — 남겨 두면 영원히 남는다",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "trap": "제품 이름만 보고 그것이 층 전체를 해 준다고 여긴다",
+      "why": "\"API Gateway\" 라는 이름이 붙어 있으니 라우팅부터 인증·부하분산까지 다 될 것 같다. 그런데 문서가 직접 적는다 — \"API Management **doesn't perform any load balancing**, so you should use it with a load balancer\". **제품마다 하는 일이 다르다**",
+      "fix": "고르기 전에 **하지 않는 것의 목록**부터 확인한다(부하분산? WAF? 요청 변환? 글로벌 라우팅?). ⭐ 그리고 **부족한 부분을 무엇이 메울지**를 함께 정한다 — 나중에 알면 아키텍처가 한 번 더 바뀐다",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    },
+    {
+      "trap": "셈이나 이력서에서 \"API Gateway 경험\"을 같은 것으로 취급한다",
+      "why": "낱말이 같아서다. 그런데 `AWS Lambda, DynamoDB, **API Gateway**`(중고나라 공고) 는 **서버리스 함수 앞의 HTTP 진입점**이고, `**공통 관심사**의 플랫폼 서비스(API Gateway ...)`(토스플레이스) 는 **여러 서비스를 가로지르는 층**이다 — 규모도 하는 일도 다르다",
+      "fix": "**문장을 읽어 가른다.** 이 데이터에서는 127건 중 **설계·구축 문맥이 65건**, **도구 이름 동반이 39건**이었다. 이력서에 쓸 때도 **무엇을 했는지**(라우팅 규칙? 인증 오프로딩? 제품 설정?)를 적는 편이 정확하다"
+    },
+    {
+      "trap": "메시가 있는데 게이트웨이를 별도로 또 세운다",
+      "why": "각각 유명한 물건이라 둘 다 있어야 할 것 같다. 그런데 메시의 인그레스를 쓰면 **남북 트래픽이 동서와 같은 mTLS·워크로드 신원·인가 정책·텔레메트리에 참여**한다 — 따로 세우면 **정책과 관측을 두 벌** 관리하게 된다",
+      "fix": "**메시의 인그레스로 되는지 먼저 본다.** ⚠️ 다만 문서의 한계 문장을 함께 읽는다 — **WAF·API 상품화·요청 변환·글로벌 라우팅**이 필요하면 전용 게이트웨이와 **함께 쓰거나 바꾼다**",
+      "sources": [
+        {
+          "title": "API gateways (Azure Architecture Center)",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+          "publisher": "Microsoft",
+          "kind": "docs",
+          "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "API 게이트웨이",
+      "en": "API gateway",
+      "what": "\"a **centralized entry point** ... acts as a **reverse proxy** ... can also perform various **cross-cutting tasks**\""
+    },
+    {
+      "term": "횡단 관심사",
+      "en": "cross-cutting concerns",
+      "what": "⭐ 모든 요청에 공통인 것 — 인증·SSL·제한·로깅. 공고의 낱말로는 `공통 관심사`(토스플레이스)"
+    },
+    {
+      "term": "오프로딩",
+      "en": "gateway offloading",
+      "what": "\"provide cross-cutting functionality, **so individual services don't have to provide it**\""
+    },
+    {
+      "term": "집계",
+      "en": "gateway aggregation",
+      "what": "여러 요청을 하나로 — \"helps **reduce chattiness**\". ⚠️ `bff` 와 겹치는 자리"
+    },
+    {
+      "term": "⭐ 남북 트래픽",
+      "en": "north-south traffic",
+      "what": "바깥에서 안으로 들어오는 트래픽. 게이트웨이의 자리"
+    },
+    {
+      "term": "⭐ 동서 트래픽",
+      "en": "east-west traffic",
+      "what": "서비스끼리 주고받는 트래픽. 서비스 메시의 자리"
+    },
+    {
+      "term": "인그레스",
+      "en": "ingress",
+      "what": "클러스터 바깥에서 안으로 들어오는 입구. 메시의 인그레스가 게이트웨이 후보가 된다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "자기 시스템(또는 상상한 시스템)의 서비스 목록을 적고, 각 서비스가 **인증·SSL·비율 제한·로깅**을 각각 어디서 처리하는지 표로 만든다. 그리고 ⭐ **네 가지 중 하나라도 빠진 서비스**가 있는지 센다.",
+      "done_when": "표가 채워지고, **빠진 칸의 개수**가 숫자로 나온다. 하나라도 있으면 그것이 왜 빠졌는지 한 줄로 적는다.",
+      "why": "⭐⭐ 문서가 말하는 \"**Each public-facing service must handle concerns such as authentication, SSL, and client rate limiting**\" 이 무슨 뜻인지 자기 시스템으로 확인한다. **빠진 칸이 곧 구멍**이고, 대개 하나는 나온다.",
+      "hours": 2
+    },
+    {
+      "task": "게이트웨이 설정(또는 라우팅 규칙)이 있다면 열어서 **각 규칙에 대해 \"이 규칙이 요청의 내용을 알아야 하는가\"** 를 묻는다. 알아야 하는 규칙을 따로 목록으로 뽑는다.",
+      "done_when": "규칙이 두 무리로 나뉘고, ⭐ **\"내용을 알아야 하는\" 무리에 든 것**이 하나라도 나오면 그것이 원래 어디 있어야 하는지 적는다.",
+      "why": "⭐⭐ 오프로딩 목록(SSL·인증·IP·제한·로깅·캐시·WAF·압축·정적 파일)의 공통점이 **요청의 내용을 몰라도 할 수 있는 일**이라는 것 — 그 기준을 자기 설정에 대보는 연습이다. 로직이 스며드는 것은 한 번에 오지 않으므로 **주기적으로 하는 점검**이 맞다.",
+      "no_hardware": "자기 게이트웨이가 없으면 오픈소스 프로젝트의 Nginx·Kong 설정 예제를 읽고 같은 질문을 해 본다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ 우리 시스템에 게이트웨이가 **1분간 멈췄을 때** 무슨 일이 생기는지 적는다 — 무엇이 실패하고, 클라이언트는 무엇을 보고, 복구는 어떻게 되는가. 그리고 **그 자리를 지금 누가 감시하고 있는지** 확인한다.",
+      "done_when": "영향 범위가 목록으로 나오고, **감시하는 사람(또는 알림 채널)이 있는지 없는지** 판정된다.",
+      "why": "⭐⭐ 게이트웨이가 단일 장애점인 것은 결함이 아니라 **정의상 그렇다** — 모든 요청이 지나니까. 그러니 질문은 \"어떻게 없애나\"가 아니라 **\"그만큼 단순하고 그만큼 잘 감시되고 있나\"** 다. ⚠️ 대개 감시는 있는데 **누가 받는지가 없다.**",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "게이트웨이가 없을 때 생기는 여섯 중, 편의가 아니라 '구멍'의 문제인 것은?",
+    "게이트웨이의 세 패턴은 무엇인가? 그중 BFF와 겹치는 것은?",
+    "오프로딩 목록의 항목들에는 어떤 공통점이 있는가?",
+    "게이트웨이에 넣어도 되는지 판단하는 질문 한 줄은?",
+    "남북 트래픽과 동서 트래픽은 각각 무엇이고 누구의 자리인가?",
+    "메시의 인그레스로 게이트웨이를 대신할 때, 문서가 적은 약한 부분 넷은?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 토스플레이스에서 사용되는 공통 관심사의 플랫폼 서비스(API Gateway, Monitoring & Alert System 등)를 개발하고 운영해요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/347509",
+      "where": "토스플레이스",
+      "what_it_shows": "⭐⭐ **`공통 관심사` 라는 낱말이 공고에 그대로** 있다. 그리고 모니터링·알림과 같은 항목에 묶인 것이 정확하다 — 셋 다 **모든 서비스가 필요로 하는데 각자 만들면 안 되는 것**"
+    },
+    {
+      "quote": "• Service Mesh(Istio 등) 및 API Gateway(Spring Cloud Gateway 등)를 활용한 트래픽 관리 및 서비스 신뢰성 향상",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/343893",
+      "where": "지바이크(gbike)",
+      "what_it_shows": "⭐⭐ **둘이 나란히** 요구된다 — 이 문서의 `boundary` 절이 다루는 남북/동서 구분이 실제 직무에서는 **한 사람의 일**로 묶인다는 뜻"
+    },
+    {
+      "quote": "• MSA 기반의 기술 표준화(API Gateway, Service Mesh 등)를 통한 일관된 서비스 환경 구축 및 운영",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/281361",
+      "where": "힐링페이퍼(강남언니)",
+      "what_it_shows": "⭐ **`기술 표준화`·`일관된 서비스 환경`** — 게이트웨이는 성능 장치이기 전에 **일관성 장치**라는 이 문서의 관점과 같은 자리"
+    },
+    {
+      "quote": "• API Gateway, 서비스 간 연동 구조를 이해하고, 외부 트래픽 흐름에 맞춘 보안 정책 및 접근 제어 로직을 개발합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/352089",
+      "where": "포티투닷(42dot)",
+      "what_it_shows": "⭐ `**외부 트래픽 흐름**에 맞춘 보안 정책` — **남북 트래픽**의 자리를 공고의 말로 표현한 것. 그리고 `접근 제어`가 함께 오는 것이 오프로딩의 전형"
+    },
+    {
+      "quote": "• API Gateway(Nginx Ingress, Kong) 및 OAuth2 / API Key 인증 연동 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/384093",
+      "where": "위밋모빌리티",
+      "what_it_shows": "**구현체 이름과 인증 방식이 함께** 나온다 — 실무에서 게이트웨이 일의 상당 부분이 **인증 오프로딩**이라는 증거"
+    },
+    {
+      "quote": "• API 설계를 표준화하고, API Gateway 전략을 수립합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375022",
+      "where": "비상교육",
+      "what_it_shows": "⭐ **`전략을 수립`** — 도구를 붙이는 일이 아니라 **무엇을 여기서 하고 무엇을 하지 않을지 정하는 일**로 적혀 있다. 이 문서의 `cost` 절이 다루는 그 결정"
+    },
+    {
+      "quote": "•사내 LLM API Gateway 및 AI 보안·AIOps 파이프라인을구축하고,",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/374959",
+      "where": "네이버페이비상장",
+      "what_it_shows": "⭐ **새 용례** — 모델 호출 앞에도 같은 층을 둔다. 키 관리·비용 집계·비율 제한이 필요한 것이 똑같기 때문이고, **횡단 관심사라는 개념이 대상만 바꿔 재사용**되는 자리"
+    },
+    {
+      "quote": "• AWS Lambda, DynamoDB, API Gateway 등 Serverless 아키텍처 개발 경험이 있는 분이어야 해요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356894",
+      "where": "중고나라",
+      "what_it_shows": "⚠️⚠️ **셈의 함정 그 자체.** 여기서 `API Gateway` 는 **AWS 의 제품 이름**이고 **함수 앞의 HTTP 진입점**이다 — 위 토스플레이스 공고의 '여러 서비스를 가로지르는 층'과는 규모도 하는 일도 다르다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "bff",
+      "how": "⭐⭐ 이 문서를 큐에 올린 자리. **`gateway aggregation` 과 정면으로 겹친다** — 차이는 **몇 개를 두느냐**(모두를 위한 하나 vs 경험마다 하나)"
+    },
+    {
+      "slug": "rate-limit",
+      "how": "오프로딩 목록의 `Client rate limiting (throttling)` — 게이트웨이에서 하는 대표적인 일"
+    },
+    {
+      "slug": "authz",
+      "how": "⭐ 인증을 여기서 걷어내면 `deny by default` 를 **한 자리에서 강제**할 수 있다. 다만 **인가 판정까지 여기서 할지**는 별도 결정"
+    },
+    {
+      "slug": "caching",
+      "how": "오프로딩 목록의 `Response caching` — 화면용 캐시(`bff`)와는 층이 다르다"
+    },
+    {
+      "slug": "rest",
+      "how": "게이트웨이가 라우팅하는 대상. \"uses **layer-7 routing**\" 이 HTTP 를 전제한다"
+    },
+    {
+      "slug": "grpc",
+      "how": "⚠️ 문서가 적은 여섯 중 `Protocol limitations` — 게이트웨이가 없으면 서비스가 클라이언트 친화적 프로토콜만 노출하게 된다"
+    },
+    {
+      "slug": "observability",
+      "how": "오프로딩 목록의 `Logging and monitoring`, 그리고 단일 장애점인 이 층을 감시하는 문제"
+    },
+    {
+      "slug": "service-mesh",
+      "how": "⚠️ 아직 문서가 없다. ⭐ 이 문서의 `boundary` 절이 **남북/동서** 구분을 쓰면서 상대편을 가리킬 곳이 없다 — 지바이크·힐링페이퍼 공고가 둘을 나란히 요구한다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `API 게이트웨이`·`API Gateway` 어느 이름도 없다. 직접 세면 **127건(모집중 63)** 이다.",
+    "⚠️⚠️ **1차 자료가 한 곳(Microsoft)뿐이다.** Kong·Envoy·Apigee 같은 다른 진영의 문서는 **이 사이클에서 열지 않았다** — 각 구현체가 \"여기서 하지 말라\"고 적은 것이 있는지 확인하지 못했다. 그래서 관점이 한쪽에 치우쳐 있고, **제품 목록 부분은 그대로 옮기지 않았다.**",
+    "⚠️⚠️ **`cost` 절의 셋 중 원문 근거가 있는 것은 하나뿐이다.** 인용한 문서에는 **단일 장애점 경고도, \"비즈니스 로직을 넣지 말라\"는 문장도 없다.** 있는 것은 \"Manage changes\" 한 문장이고 나머지는 거기서 따라 나오는 정리다 — 그래서 그 절과 표를 `confidence: inferred` 로 뒀다. ⭐ **다른 진영의 문서에 그 경고가 있는지가 다음에 볼 것.**",
+    "**성능·용량의 숫자를 다루지 않았다.** 게이트웨이 한 대가 얼마나 버티는지, 지연이 얼마나 붙는지는 제품과 설정에 따라 다르고 이 사이클에서 자료를 열지 않았다.",
+    "**인증을 게이트웨이에서 어디까지 하나를 정하지 않았다.** 토큰 검증까지인지 인가 판정까지인지는 큰 결정인데, 이 문서는 **\"요청의 내용을 알아야 하면 게이트웨이의 것이 아니다\"** 라는 기준까지만 말한다.",
+    "⚠️ **`service-mesh` 문서가 없어 `boundary` 절이 한쪽 발로 서 있다.** `bff` 를 쓸 때 `api-gateway` 가 없었던 것과 같은 상황이고, 큐에 올렸다.",
+    "**`API Gateway` 가 AWS 제품 이름이라 셈이 오염된다.** 127건 중 도구·벤더 이름이 함께 나오는 39건의 상당수가 서버리스 스택의 한 조각이다 — **문장을 읽어 갈랐지만 그 분류 자체가 이 문서의 판단**이고 기계적 기준이 아니다."
+  ],
+  "sources": [
+    {
+      "title": "API gateways (Azure Architecture Center)",
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/microservices/design/gateway",
+      "publisher": "Microsoft",
+      "kind": "docs",
+      "summary": "⭐ 게이트웨이가 없을 때의 문제 여섯, 세 가지 패턴(routing·aggregation·offloading), 그리고 **서비스 메시 인그레스와의 경계**를 원문으로 적는다"
+    }
+  ]
+}
