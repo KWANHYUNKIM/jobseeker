@@ -81,7 +81,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "service-processor"
+      ]
     },
     {
       "name": "랙의 모국어를 IPv6 로 정한다",
@@ -128,7 +130,401 @@
     "**연표(eras)를 쓸 자료를 아직 못 찾았다.** 회사가 언제 무엇을 갈아엎었는지 연도가 붙은 회고를 확인하지 못했다 — 확장 사이클에서 다시 본다.",
     "`2-hour setup` 이 무엇부터 무엇까지를 재는 시간인지 확인하지 못했다."
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "service-processor",
+      "name": "BMC 를 다시 만들기 — 서비스 프로세서와 신뢰 근원 (Hubris)",
+      "domain": "티켓을 열고 기다리지 않으려고 층을 다 갖는다",
+      "updated_at": "2026-09-05",
+      "business": {
+        "why": "랙을 파는 회사는 **슬레드를 원격으로 켜고 끄고 상태를 보는 층**이 반드시 필요하다. 업계에서 그 자리는 벤더가 만든 **BMC** 인데, Oxide 는 그것을 **다시 생각하기로** 했다 — 회사가 내세우는 `Fully auditable security chain, with a hardware root of trust, open-source firmware` 를 팔려면 **이 층이 남의 것이면 안 되기** 때문이다. 감사 가능한 사슬은 맨 아래 한 칸이 블랙박스이면 거기서 끊긴다. 그래서 운영체제(Hubris)부터 직접 썼다.",
+        "metrics": [
+          {
+            "label": "사고 재현 주기(개선 전 → 후)",
+            "value": "24시간 이상 → 약 10~20분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A disappearing Service Processor",
+                "url": "https://oxide.computer/blog/cosmo-sp",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기존 RTOS 를 검토할 때",
+          "thought": "맞는 게 없었다기보다 **원하는 것이 그들이 주려는 것과 달랐다** — `what we wanted out of the existing operating systems wasn't necessarily what they offered (or even wanted to offer)`. 보안과 견고함을 이 정도로 밀면 기존 시스템은 **설계 중심 밖으로 끌려 나온다**고 봤다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "태스크 모델을 정할 때",
+          "thought": "동적 생성을 아예 없애면 **자원 고갈과 fork 폭탄 같은 부류가 사라진다.** 대신 실행 중에 구성을 바꿀 수 없게 되는데, 서비스 프로세서에서는 그 교환이 남는 장사라고 봤다(뒤 문장은 이 사이트의 재구성이다).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "디버거를 앞에 둘 때",
+          "thought": "운영체제를 만들면서 **디버거를 함께** 만들었다 — `I set to work writing the debugger that I felt that we would need — and that Hubris deserved`. 둘이 같이 가야 품질이 올라간다는 판단이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실제로 사고가 났을 때",
+          "thought": "⚠️ **그 디버거로도 못 본 것이 있었다.** 네트워크가 끊기면 `we have limited insight into the state of the SP itself` 이고, 프로브가 **CPU 를 멈추지 못했다.** 도구를 다 가졌는데도 눈이 감기는 자리가 남는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "서비스 프로세서(SP)",
+            "what": "슬레드를 켜고 끄고 상태를 읽는 작은 컴퓨터. Hubris 가 여기서 돈다"
+          },
+          {
+            "name": "하드웨어 신뢰 근원(RoT)",
+            "what": "부팅 때 **SP 플래시의 해시**를 뜨는 자리. 그 값이 상위 소프트웨어로 올라가 사슬이 된다"
+          },
+          {
+            "name": "Hubris 태스크",
+            "what": "드라이버와 서비스가 되는 단위. 서로 다른 보호 영역에 산다"
+          },
+          {
+            "name": "빌드 타임 이미지",
+            "what": "커널과 고른 태스크를 묶어 만든 **단일 이미지**. 실행 중에 늘지 않으므로 증명 가능하다"
+          }
+        ],
+        "invariants": [
+          "**태스크는 빌드 타임에 전부 정해진다** — `fully specify the tasks for a particular application at build time, with the build system then combining the kernel with the selected tasks to yield a single (attestable!) image`. 실행 중에 새로 만들지 않는다",
+          "**커널·태스크·드라이버가 서로 다른 보호 영역에 있다** — `memory-protected system, with tasks, the kernel, and drivers all in disjoint protection domains. (And yes, even in memory safe languages like Rust, memory protection is essential!)`",
+          "**태스크 하나가 죽어도 나머지는 돈다** — 죽은 것만 재시작한다",
+          "**부팅의 첫 걸음은 RoT 가 SP 플래시를 재는 것이다** — 이 순서가 깨지면 감사 사슬이 성립하지 않는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "전원이 들어오면 **RoT 가 SP 플래시의 해시를 뜬다**",
+            "why": "신뢰 사슬의 첫 마디다. 여기서 잰 값이 상위 소프트웨어까지 올라간다"
+          },
+          {
+            "step": "SP 에서 Hubris 가 부팅하고 **빌드 타임에 고정된 태스크들**이 뜬다",
+            "why": "실행 중 생성이 없으므로 무엇이 도는지가 이미지로 증명된다"
+          },
+          {
+            "step": "드라이버 태스크가 하드웨어와 대화한다 — 팬·LED·전원·FPGA",
+            "why": "드라이버를 커널 밖 별도 보호 영역에 두어 하나가 죽어도 커널이 살아 있게 한다"
+          },
+          {
+            "step": "태스크끼리는 **메시지로** 주고받는다",
+            "why": "시스템콜 대부분을 없애고 경계를 메시지로 통일했다"
+          },
+          {
+            "step": "SP 가 네트워크로 상태를 알리고, 상위 컨트롤 플레인이 슬레드를 제어한다",
+            "why": "랙 전체를 API 로 다루려면 각 슬레드에 이 통로가 있어야 한다"
+          },
+          {
+            "step": "태스크가 죽으면 **그 태스크만 재시작**한다",
+            "why": "드라이버 하나의 실패가 시스템 전체를 내리지 않게"
+          },
+          {
+            "step": "⚠️ 문제가 생기면 Humility 로 들여다본다 — 링버퍼·덤프",
+            "why": "운영체제와 함께 만든 디버거가 이 자리에서 유일한 눈이 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "서비스 프로세서의 운영체제를 기성품에서 고를 것인가, 직접 만들 것인가",
+            "chosen": "**직접 만든다(Hubris).** 마이크로커널 기반, 전부 러스트",
+            "alternatives": [
+              "기존 RTOS",
+              "전통적인 벤더 BMC 펌웨어"
+            ],
+            "tradeoff": "⚠️ **운영체제만 짊어지는 게 아니다** — 디버거까지 직접 만들어야 했다(Humility). 기성품이었다면 딸려 왔을 도구·문서·커뮤니티를 전부 자기 몫으로 가져온다(이 문장은 이 사이트의 재구성이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Hubris and Humility",
+                "url": "https://oxide.computer/blog/hubris-and-humility",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+              }
+            ]
+          },
+          {
+            "question": "태스크를 실행 중에 만들 수 있게 할 것인가, 빌드 타임에 고정할 것인가",
+            "chosen": "**빌드 타임에 완전히 고정**한다 — 커널과 태스크를 묶어 단일 이미지로",
+            "alternatives": [
+              "실행 중 동적 태스크 생성"
+            ],
+            "tradeoff": "**실행 중에 구성을 바꿀 수 없다.** 태스크 하나를 더하거나 빼려면 **이미지 전체를 다시 빌드해 올려야** 한다 — 증명 가능성(`attestable`)을 얻는 대신 유연성을 내줬다(대가 서술은 이 사이트의 재구성이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Hubris and Humility",
+                "url": "https://oxide.computer/blog/hubris-and-humility",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+              }
+            ]
+          },
+          {
+            "question": "태스크 모델을 비동기로 갈 것인가, 엄격한 동기로 갈 것인가",
+            "chosen": "**엄격한 동기 모델** — `strictly synchronous task model, allowing for it be easily developed and comprehended`",
+            "alternatives": [
+              "비동기·이벤트 루프 기반 모델"
+            ],
+            "tradeoff": "**긴 작업이 태스크를 붙잡고 있으면 그 태스크가 막힌다.** 이해하기 쉬운 대신 동시성을 태스크 분할로 풀어야 한다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Hubris and Humility",
+                "url": "https://oxide.computer/blog/hubris-and-humility",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+              }
+            ]
+          },
+          {
+            "question": "메모리 안전한 언어를 쓰면 메모리 보호를 생략해도 되는가",
+            "chosen": "**생략하지 않는다.** 커널·태스크·드라이버를 전부 다른 보호 영역에 둔다",
+            "alternatives": [
+              "러스트를 믿고 단일 주소 공간으로 두기"
+            ],
+            "tradeoff": "경계를 넘을 때마다 **메시지 전달 비용**이 들고, 마이크로컨트롤러의 보호 장치(MPU) 영역 수에 설계가 묶인다(이 대가는 이 사이트의 재구성이다). 회사는 이유만 적는다 — `even in memory safe languages like Rust, memory protection is essential!`",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Hubris and Humility",
+                "url": "https://oxide.computer/blog/hubris-and-humility",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+              }
+            ]
+          },
+          {
+            "question": "러스트 하나로 갈 것인가, 다른 런타임도 받을 것인가",
+            "chosen": "**전부 러스트** — `all-Rust system that was not distracting itself by accommodating other runtimes`",
+            "alternatives": [
+              "C 드라이버·기존 SDK 를 함께 받는 구조"
+            ],
+            "tradeoff": "**벤더가 주는 C 드라이버와 SDK 를 그대로 못 가져온다.** 칩마다 붙는 코드를 직접 쓰게 된다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Hubris and Humility",
+                "url": "https://oxide.computer/blog/hubris-and-humility",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+              }
+            ]
+          },
+          {
+            "question": "메모리 속성(캐시)을 커널과 태스크에서 어떻게 맞출 것인가",
+            "chosen": "⚠️ **처음에는 맞추지 못했다** — 커널은 ARM 기본 매핑(캐시되는 Normal memory), 태스크는 Device Memory(캐시 없음)를 썼다",
+            "alternatives": [
+              "FMC 의 베이스 주소를 옮겨 문제 구간을 피하기(칩이 지원한다)"
+            ],
+            "tradeoff": "⚠️ **이 불일치가 실제 사고를 만들었다.** 캐시 라이트백이 FMC 버스에 **잘못된 접근 크기**로 나가 FPGA 의 32비트 요구를 어겼다. 회사는 칩이 그 회피 수단을 지원한다는 것을 뒤늦게 적는다 — `likely to avoid the specific problem we were facing`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A disappearing Service Processor",
+                "url": "https://oxide.computer/blog/cosmo-sp",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "디버깅 도구를 어디까지 만들 것인가",
+            "chosen": "**전용 디버거(Humility)를 만든다.** 링버퍼와 전체 RAM 덤프, ARM 의 vector catch reset 을 쓴다",
+            "alternatives": [
+              "범용 디버그 프로브와 기성 도구만으로 버티기"
+            ],
+            "tradeoff": "⚠️ **만들어도 못 보는 자리가 남는다.** 네트워크가 끊기면 `without network access we have limited insight into the state of the SP itself` 이고, 프로브가 **CPU 를 halt 하지 못했으며**, 덤프는 캐시 때문에 `inconsistent` 했다. 캐시를 끄면 덤프는 일관됐지만 **그러면 문제가 재현되지 않았다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A disappearing Service Processor",
+                "url": "https://oxide.computer/blog/cosmo-sp",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Hubris (러스트 마이크로커널)",
+            "role": "서비스 프로세서와 신뢰 근원에서 도는 운영체제. 빌드 타임 태스크 고정·전면 메모리 보호·동기 메시지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Hubris and Humility",
+                "url": "https://oxide.computer/blog/hubris-and-humility",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+              }
+            ]
+          },
+          {
+            "tech": "Humility (전용 디버거)",
+            "role": "링버퍼 읽기와 덤프. 운영체제와 함께 만들어 같이 쓰인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Hubris and Humility",
+                "url": "https://oxide.computer/blog/hubris-and-humility",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+              },
+              {
+                "title": "A disappearing Service Processor",
+                "url": "https://oxide.computer/blog/cosmo-sp",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "하드웨어 신뢰 근원(RoT)",
+            "role": "부팅 시 SP 플래시의 해시를 떠 상위로 올린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Hubris and Humility",
+                "url": "https://oxide.computer/blog/hubris-and-humility",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+              }
+            ]
+          },
+          {
+            "tech": "SWD 디버그 헤더 · ARM vector catch reset",
+            "role": "네트워크가 끊긴 SP 에서 상태를 꺼내는 마지막 수단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A disappearing Service Processor",
+                "url": "https://oxide.computer/blog/cosmo-sp",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "FMC (Flexible Memory Controller) 버스",
+            "role": "SP 와 FPGA 를 잇는 통로. 접근 크기와 캐시 속성이 맞아야 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A disappearing Service Processor",
+                "url": "https://oxide.computer/blog/cosmo-sp",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "하드웨어 신뢰 근원(RoT)",
+          "via": "부팅 시 해시 측정",
+          "contract": "RoT 가 SP 플래시를 재고 그 값을 상위 소프트웨어가 쓴다 — **이 한 마디가 `fully auditable security chain` 의 시작점**이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "FPGA",
+          "via": "FMC 버스",
+          "contract": "SP 가 FPGA 와 주고받는다. **접근 크기가 32비트여야** 하고, 캐시 속성이 어긋나면 라이트백이 그 규칙을 깬다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "컨트롤 플레인(Nexus)",
+          "via": "네트워크",
+          "contract": "SP 가 슬레드 상태를 알리고 제어 명령을 받는다. **SP 가 네트워크에서 사라지면 그 슬레드는 보이지 않는다** — 사고의 증상이 정확히 그것이었다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "가상 NIC·데이터 경로(Propolis·OPTE)",
+          "via": "같은 회사가 만든 층",
+          "contract": "직접 관계보다 **같은 원칙을 공유한다** — 드라이버가 자기 것이라 `we tracked it down and fixed it before the feature shipped, rather than opening a ticket with a vendor and waiting`",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "디버거를 붙일 수 없는 자리에서 무엇이 잘못됐는지 알아내는 것",
+            "why_hard": "서비스 프로세서가 네트워크에서 사라지면 **밖에서 볼 통로가 없다.** 게다가 이 사고는 `This was not reproducible on a sled outside a rack` 라 **관찰하기 좋은 환경에서는 일어나지 않았다.** 관찰하려고 캐시를 끄면 문제도 함께 사라진다",
+            "current_best": "물리적으로 케이블을 붙이고(SWD), 리셋 순간을 잡아채고(vector catch), RAM 을 통째로 뜨는 것. 그래도 `The debug probe was unable to actually halt the CPU` 같은 벽이 남는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A disappearing Service Processor",
+                "url": "https://oxide.computer/blog/cosmo-sp",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+              }
+            ]
+          },
+          {
+            "problem": "작은 시스템에서 스택이 모자라는 것을 전부 잡아내는 것",
+            "why_hard": "마이크로컨트롤러에는 여유 메모리가 거의 없고, 넘치는 순간이 조용히 지나간다",
+            "current_best": "탐지를 개선하되 완전하지 않다고 회사가 직접 적는다 — `Our ability to detect undersized stacks has improved...but we can still hit some edge cases.`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A disappearing Service Processor",
+                "url": "https://oxide.computer/blog/cosmo-sp",
+                "publisher": "Oxide Computer Company",
+                "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "전원이 들어오고 슬레드가 보이기까지",
+          "question": "감사 가능한 사슬은 어디서 시작하고, 무엇이 그 위에 얹히는가",
+          "kind": "flow",
+          "code": "flowchart TD\n  PW[\"<b>전원</b>\"]:::list --> ROT\n  ROT[\"<b>신뢰 근원(RoT)</b><br/>• SP 플래시 해시 측정<br/>• 사슬의 첫 마디\"]:::list --> HB\n  HB[\"<b>Hubris 부팅</b><br/>• 빌드 타임 고정 태스크<br/>• 단일 attestable 이미지\"]:::list --> TK\n  TK[\"<b>드라이버 태스크</b><br/>• 팬 · LED · 전원 · FPGA<br/>• 각자 다른 보호 영역\"]:::list --> NET\n  NET[\"<b>네트워크 알림</b><br/>• 슬레드 상태 브로드캐스트\"]:::list --> CP\n  CP[\"<b>컨트롤 플레인</b><br/>• 랙을 API 로 다룬다\"]:::list\n  CR[\"<b>태스크 크래시</b><br/>• 그 태스크만 재시작<br/>• 커널은 계속 돈다\"]:::soft\n  TK -.-> CR\n  CR -.-> TK\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "서비스 프로세서가 사라졌을 때 — 무엇을 못 봤나",
+          "question": "층을 다 가진 회사도 눈이 감기는 자리가 있는가",
+          "kind": "failure",
+          "code": "flowchart TD\n  S[\"<b>증상</b><br/>• SP 가 네트워크에서 사라짐<br/>• 팬은 계속 높게 돎<br/>• LED 는 켜지거나 꺼진 채 멈춤\"]:::gone --> B1\n  B1[\"<b>막힌 곳 1</b><br/>• 네트워크가 없으니<br/>  SP 내부를 못 본다\"]:::gone\n  B1 --> B2[\"<b>막힌 곳 2</b><br/>• 프로브가 CPU 를<br/>  halt 하지 못한다\"]:::gone\n  B2 --> B3[\"<b>막힌 곳 3</b><br/>• 랙 밖 슬레드에서는<br/>  재현되지 않는다\"]:::gone\n  B3 --> B4[\"<b>막힌 곳 4</b><br/>• 캐시 때문에 덤프가 들쭉날쭉<br/>• 캐시를 끄면 문제도 사라진다\"]:::gone\n  B4 --> R[\"<b>찾아낸 원인</b><br/>• 커널은 캐시되는 Normal memory<br/>• 태스크는 Device memory<br/>• 라이트백이 FMC 에 잘못된 크기로\"]:::list\n  R --> F[\"<b>남은 한계</b><br/>• 스택 부족 탐지는 개선됐으나<br/>  we can still hit some edge cases\"]:::soft\n  classDef gone stroke-dasharray: 4 3\n  classDef soft stroke-dasharray: 2 2"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Hubris and Humility",
+          "url": "https://oxide.computer/blog/hubris-and-humility",
+          "publisher": "Oxide Computer Company",
+          "summary": "서비스 프로세서와 신뢰 근원에 쓸 운영체제를 직접 만든 이유와 설계 원칙. 빌드 타임 태스크 고정·엄격한 동기 모델·전면 메모리 보호를 든다."
+        },
+        {
+          "title": "A disappearing Service Processor",
+          "url": "https://oxide.computer/blog/cosmo-sp",
+          "publisher": "Oxide Computer Company",
+          "summary": "서비스 프로세서가 네트워크에서 사라지는 문제를 추적한 회고. 디버거를 붙일 수 없는 환경의 한계와 캐시 속성 불일치라는 진짜 원인이 적혀 있다."
+        },
+        {
+          "title": "Performance Has Layers",
+          "url": "https://oxide.computer/blog/performance-has-layers",
+          "publisher": "Oxide Computer Company",
+          "date": "2026-06-18",
+          "summary": "층을 다 갖는다는 것의 값어치를 한 문장으로 적은 글 — 드라이버가 자기 것이라 벤더에 티켓을 열지 않았다."
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "title": "Oxide Computer — 제품 소개",

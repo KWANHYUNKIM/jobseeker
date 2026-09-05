@@ -8,34 +8,33 @@
 
 ## 지금 파는 중
 
-**Oxide Computer(US · 기타 — 서버·하드웨어) — 회사 프로파일까지 썼다.** `in_progress` ·
-**도메인 2 · 기능 0** · 도메인 `tech` 는 둘 다 채웠다(2 + 2).
-**완료 64곳(Fly.io 를 닫았다) + Oxide = 65곳 · ⚠️ 큐 대기 0 · 비교 문서 33편.**
+**Oxide Computer(US · 기타 — 서버·하드웨어)** `in_progress` · **도메인 2 · 기능 1**.
+**완료 64곳 + Oxide = 65곳 · ⚠️ 큐 대기 0 · 비교 문서 33편.**
 
-### 다음 사이클은 Oxide 의 첫 기능이다
+방금 쓴 기능: **`service-processor`(BMC 를 다시 만들기 — 서비스 프로세서와 신뢰 근원)**.
+자료 두 편을 읽었다 — `hubris-and-humility`(설계)와 `cosmo-sp`(사고 회고).
 
-`--gaps` 가 **확장 2순위**로 잡는다. 먼저 걸리는 쪽은
-**`티켓을 열고 기다리지 않으려고 층을 다 갖는다`** 다.
+⚠️ **설계 글에는 대가가 없고 사고 회고에 다 있다.** `hubris-and-humility` 는 고른 것만
+적고 무엇을 잃었는지는 안 적어서, 결정 다섯 개의 `tradeoff` 를 **`inferred` 로 재구성**했다
+(그 사실을 각 칸에 밝혔다). 반면 `cosmo-sp` 는 **못 본 것을 네 겹으로** 적어서 두 결정을
+`confirmed` 로 채울 수 있었다 — 네트워크가 끊기면 내부를 못 보고, 프로브가 CPU 를 halt
+하지 못했고, **랙 밖에서는 재현되지 않았고**, 캐시를 끄면 덤프는 일관되지만 문제가 사라졌다.
 
-⚠️ **읽은 글이 한 편뿐이다**(`performance-has-layers`, 2026-06-18). 거기서 확인된 것:
-- **버린 대안 셋** — MTU 를 9000 이 아니라 **8500**(`We reserve 500`), **포트별 MTU 손잡이**를
-  버린 이유(`MTU is a property of a path, not of a port`), IPv6 를 덧붙임이 아니라
-  **언더레이의 모국어**로(`it is the rack's native tongue`).
-- **대가** — `jumbo frames are not a network go-fast button` · 경로 MTU 탐색이 막히면
-  `the application stalls and transfers nothing` · 단일 연결은 **약 60Gbps** 천장.
-- **수치** — 내부 VPC 52.44→55.73Gbps, 외부 7.70→32.67Gbps, 슬레드 하나 합산 약 90Gbps,
-  IPv4 34.5 대 IPv6 34.9Gbps.
-- **층 소유의 값어치가 한 문장에 있다** — `because the driver is ours, we tracked it down and
-  fixed it before the feature shipped, rather than opening a ticket with a vendor and waiting`.
+### 다음 사이클은 Oxide 의 남은 도메인이다
 
-**⚠️ 아직 안 판 층이 많다** — 컨트롤 플레인(Nexus)·하이퍼바이저·스토리지·펌웨어의 구조는
-확인하지 못했다. 기능을 쓰기 전에 `oxide.computer/blog` 에서 그 층의 글을 먼저 찾는다.
+`--gaps` 가 **`랙의 모국어를 IPv6 로 정한다`** 를 잡는다. 자료는 이미 읽었다
+(`performance-has-layers`, 2026-06-18) — **버린 대안 셋**(MTU 9000 대신 **8500**,
+포트별 MTU 손잡이 버림, IPv6 를 언더레이의 모국어로), **대가**(`jumbo frames are not a
+network go-fast button` · 경로 MTU 탐색이 막히면 `the application stalls and transfers
+nothing` · 단일 연결 약 **60Gbps** 천장), **수치**(내부 VPC 52.44→55.73Gbps, 외부
+7.70→32.67Gbps, 슬레드 합산 약 90Gbps, IPv4 34.5 대 IPv6 34.9Gbps).
 
-**⚠️ 수치가 얇은 회사다** — 비상장이라 매출·출하 대수·가격이 없다. `business.metrics` 를
-억지로 채우지 않고 성능 수치 위주로만 쓴다(프로파일에서 이미 그렇게 했다).
+**⚠️ 그 도메인을 채우면 Oxide 가 완주 조건에 닿는다** — 도메인 둘이 각각 기능 1개가 되고,
+`service-processor` 와 네트워크 기능이 **같은 원칙(층 소유)으로 이어진다.**
 
-**⚠️ 큐가 0/3 이다.** Oxide 를 다 판 뒤에는 사다리가 **3순위(후보 조사)** 로 내려간다 —
-바깥에서 새 회사를 가져오는 단이다.
+**⚠️ 큐가 0/3 이다.** Oxide 를 닫으면 사다리가 **3순위(후보 조사)** 로 내려간다 —
+바깥에서 새 회사를 가져오는 단이다. **연표(eras)는 아직 비어 있다** — 연도가 붙은
+회고를 못 찾았고, 확장 중에 걸리면 그때 채운다.
 
 ## 지금의 진짜 상태
 
