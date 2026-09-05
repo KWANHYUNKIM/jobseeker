@@ -1276,6 +1276,24 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "consistency-model",
+      "title": "일관성 모델",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**\"방금 쓴 걸 읽으면 나온다\"가 공짜가 아니다.** 그리고 대개 **기본값이 약한 쪽**이다 — 그것을 모르면 \"가끔 안 보여요\" 라는 버그를 영영 못 잡는다.",
+      "aliases": [
+        "일관성 모델",
+        "최종 일관성",
+        "eventual consistency",
+        "강한 일관성",
+        "선형화"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
