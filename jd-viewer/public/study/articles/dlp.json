@@ -1,0 +1,676 @@
+{
+  "slug": "dlp",
+  "title": "데이터 유출 방지 (DLP)",
+  "title_en": "Data Loss Prevention",
+  "aliases": [
+    "DLP",
+    "데이터 유출 방지",
+    "Data Loss Prevention",
+    "비식별화",
+    "가명처리",
+    "PII 마스킹",
+    "de-identification"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "민감한 데이터가 밖으로 나가는 것을 막고, 막지 못했을 때의 피해를 줄이기 위해 데이터 자체를 덜 위험하게 만들어 두는 일.",
+  "summary": "DLP 는 두 갈래로 갈린다. 하나는 **나가는 길을 막는 것** — 메일 첨부, USB, 클라우드 업로드를 검사해 차단한다. 다른 하나는 **나가도 덜 위험하게 만드는 것** — 이름을 지우고, 번호를 마스킹하고, 식별자를 가명으로 바꿔 둔다.\n\n⭐ **그런데 두 갈래를 부르는 낱말이 다르다.** 채용 데이터에서 `DLP` 라는 이름은 압도적으로 첫 번째(엔드포인트·네트워크 보안 솔루션)를 가리키고, 두 번째는 **`비식별화`·`가명처리`·`PII 마스킹`** 이라는 전혀 다른 낱말로 불린다. 같은 목표를 보안팀과 데이터팀이 각자의 말로 부르고 있는 셈이다.\n\n그리고 이 낱말의 두 축은 모두 **완벽할 수 없다**는 데서 출발한다 — 나가는 길은 다 셀 수 없고, 민감정보 탐지는 확률이며(구글 문서가 \"not a perfectly accurate detection method\" 라고 못 박는다), 비식별은 되돌릴 수 없는 상태가 아니라 **정도**다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "two-seats",
+      "kind": "what",
+      "heading": "⭐ 두 갈래인데, 부르는 낱말이 다르다",
+      "confidence": "inferred",
+      "body": "`DLP` 라는 낱말이 적힌 공고 **241건(모집중 73)** 의 문장을 읽어 갈라 봤다.\n\n| 무엇을 말하는가 | 건수 |\n|---|---|\n| **엔드포인트·네트워크 보안 솔루션** (EDR·백신·VPN·방화벽·DRM·매체제어와 함께) | **163** |\n| **데이터 레이어의 프라이버시 처리** (PII·비식별·가명화·거버넌스와 함께) | 15 |\n| 둘 다 | 1 |\n| 문맥이 갈리지 않음 | 62 |\n\n**`DLP` 라는 이름은 사실상 보안 솔루션 묶음의 한 칸**이다 — 에이비일팔공 공고의 `MDM, DLP, Antivirus, VPN, 방화벽 등 엔드포인트 보안 솔루션 운영` 이 전형이다.\n\n그런데 **데이터를 덜 위험하게 만드는 일**을 다른 낱말로 세면 숫자가 완전히 달라진다. `비식별|가명처리|가명화|익명화|PII 마스킹` 으로는 **71건(모집중 24)** 이 나오고, 그 공고들에는 `DLP` 라는 낱말이 거의 없다 — CJ올리브영의 `개인정보 비식별화·가명처리 등 컴플라이언스 대응 파이프라인 구축`, 넥스트증권의 `Unity Catalog 기반 데이터 접근 제어, **PII 마스킹/탐지**` 처럼.\n\n⭐ **같은 목표를 두 조직이 다른 말로 부른다.** 보안팀은 `DLP` 라 하고 데이터팀은 `비식별·가명처리` 라 한다. 그리고 실제로 하는 일도 갈린다 — 앞은 **나가는 순간을 잡고**, 뒤는 **애초에 위험한 값을 갖고 있지 않게 한다.**\n\n둘을 한 줄에 묶은 공고가 하나 있었다. 하이퍼커넥트의 컴플라이언스 엔지니어링 항목이다.\n\n> `수집 단계 차단 요구 정의, **익명화/가명화/집계 처리**, 구현, 탈퇴 이벤트, 정기 배치 삭제·익명화, **DLP(데이터 유출 방지) 정책의 데이터 레이어 적용**`\n\n**\"DLP 정책의 데이터 레이어 적용\"** — 단말에서 막는 정책을 데이터 파이프라인에도 적용한다는 뜻이고, 이 문서가 두 갈래를 한 문서에서 다루는 이유다.\n\n💡 **공고를 읽을 때**: `DLP` 옆에 `EDR·백신·VPN·매체제어` 가 있으면 보안 솔루션 운영 자리이고, `PII·가명화·Unity Catalog·파이프라인` 이 있으면 데이터 엔지니어링 자리다. **준비할 것이 완전히 다르다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 두 번째가 필요한가 — 나가는 길을 다 셀 수 없다",
+      "confidence": "inferred",
+      "body": "막는 쪽부터 생각해 보자. 데이터가 밖으로 나가는 길을 적어 보면 이렇다.\n\n메일 첨부 · 메신저 · USB · 개인 클라우드 업로드 · 개인 계정으로 로그인한 브라우저 동기화 · 인쇄 · API 호출 · 관리자 화면의 엑셀 내려받기 · 스크린샷 · **그리고 휴대폰으로 화면을 찍는 것.**\n\n⭐ **마지막 항목이 이 낱말의 성격을 정한다.** 앞의 것들은 기술로 막을 수 있지만 마지막은 못 막는다. 그리고 실제 유출 사고의 상당수가 **권한이 정상적으로 있는 사람**이 저지른다 — 접근을 막을 수가 없는 사람들이다.\n\n그래서 전략이 둘로 나뉜다.\n\n**① 나가는 길을 좁힌다.** 완전히 막을 수는 없지만 **쉬운 길과 실수를 없앤다.** 실수로 고객 명단을 외부에 메일로 보내는 것과, 작정하고 휴대폰으로 찍는 것은 빈도가 다르다. 무신사 공고가 이 일을 그대로 적는다 — `민감정보 유출 방지를 위한 **DLP 정책 운영 및 탐지/차단 정책을 최적화**합니다`. **'최적화'** 라는 말이 붙은 것에 주목할 만하다(다음 절의 오탐 문제다).\n\n**② 나가도 덜 위험하게 만든다.** 이쪽이 더 근본적이다. 분석용 데이터셋에 실명과 주민번호가 없으면, 그 파일이 통째로 나가도 피해가 다르다. 에비드넷 공고의 `민감 정보 비식별화 및 분석용 데이터셋 변환 자동화` 가 이 자리이고, 브레인크루의 `개인정보 비식별화·가명처리 관련 기능을 다뤄본 경험` 도 같다.\n\n⚠️ **두 번째가 첫 번째를 대체하지는 않는다.** 운영 DB 에는 여전히 진짜 값이 있어야 하고(청구서를 보내야 하니까), 그쪽은 막는 수밖에 없다. **덜 위험하게 만들 수 있는 것은 사본 쪽** — 분석용 데이터, 개발 환경, 로그, 리포트다. 그리고 **사고는 대개 사본에서 난다.**"
+    },
+    {
+      "id": "classify",
+      "kind": "how",
+      "heading": "분류가 먼저다 — 그리고 그 분류는 확률이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — InfoTypes and infoType detectors",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "민감정보 분류의 단위와 탐지 확신도 척도, 그리고 '완벽하지 않다'는 명시"
+        }
+      ],
+      "body": "막든 가리든, **무엇이 민감한지 모르면 아무것도 못 한다.** 그래서 이 계열 제품의 첫 화면은 언제나 **탐지기 목록**이다.\n\nGoogle Cloud 는 그 단위를 **infoType** 이라 부른다.\n\n> \"An infoType is a type of sensitive data, such as a name, email address, telephone number, identification number, credit card number, and so on.\"\n> \"An *infoType detector* is the corresponding detection mechanism that matches on an infoType's matching criteria.\"\n\n그리고 탐지 결과에 **확신도(likelihood)** 가 붙는다 — `VERY_UNLIKELY` · `UNLIKELY` · `POSSIBLE` · `LIKELY` · `VERY_LIKELY`. 어떻게 정해지는지가 흥미롭다.\n\n> \"a type may return a lower likelihood if it **only matches the pattern** and return a higher likelihood if it matches the pattern and has **positive context around it**.\"\n\n**패턴만 맞으면 낮게, 주변 맥락까지 맞으면 높게.** 열여섯 자리 숫자는 카드번호일 수도 주문번호일 수도 있는데, 옆에 `카드`·`CVC` 같은 낱말이 있으면 확신이 올라간다는 뜻이다.\n\n그리고 문서가 자기 한계를 못 박는다.\n\n> ⭐⭐ \"**Built-in infoType detectors are not a perfectly accurate detection method.** For example, they can't guarantee compliance with regulatory requirements.\"\n> \"**You must decide what data is sensitive and how to best protect it.** Google recommends that you test your settings to make sure that your configuration meets your requirements.\"\n\n**규제 준수를 보장하지 않는다**고 제품이 직접 적는다. 그리고 **무엇이 민감한지는 당신이 정하라**고 한다 — 회사마다 민감한 것이 다르기 때문이다(어떤 곳은 사번이, 어떤 곳은 좌표가 민감하다).\n\n💡 그래서 도입 순서가 **제품 선택이 아니라 목록 만들기**로 시작한다. 우리 데이터에서 무엇이 민감한지, 그것이 어느 테이블·어느 필드·어느 로그에 있는지의 목록. 이건 `data-governance` 의 분류 작업과 같은 것이고, 그쪽이 안 되어 있으면 여기도 안 된다.\n\n> 📌 **이 구조는 `siem` 에서 본 것과 똑같다** — 탐지는 판정이 아니라 확신도가 붙은 신호다. `mdm` 의 \"매칭은 정답이 아니라 확률\" 과도 같다. **이 백과사전에서 세 번째로 만나는 같은 모양**이고, 그때마다 결론도 같다: **오탐을 어떻게 다룰지가 시스템 설계의 절반이다.**"
+    },
+    {
+      "id": "deid",
+      "kind": "how",
+      "heading": "덜 위험하게 만드는 다섯 가지 방법",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+        }
+      ],
+      "body": "찾았으면 처리한다. Google Cloud 문서는 이 처리를 **비식별화(de-identification)** 라 부르고 정의는 단순하다.\n\n> \"De-identification is the process of **removing identifying information from data**.\"\n\n기법이 다섯이고, **뒤로 갈수록 데이터를 더 살려 둔다**(아래 `techniques` 표).\n\n**① 삭제(redaction)** — \"Redacts a given value by **removing it completely**.\" 가장 안전하고 가장 쓸모없다.\n\n**② 치환(replacement)** — \"replaces matched input values with a value you specify\". 이메일을 `[email-address]` 로. **여기 무언가 있었다는 사실**은 남는다.\n\n**③ 마스킹(masking)** — \"partially masks a string by replacing a given number of characters with a fixed character\". 뒤 네 자리만 남기는 그것이다. **사람이 확인용으로 쓸 수 있는 최소한**을 남긴다.\n\n**④ 암호 기반 가명화** — \"Performs pseudonymization on an input value by **generating a surrogate value using cryptographic hashing**\"(SHA-256 + 키, base64 출력). ⭐ **여기서 성질이 달라진다** — 같은 입력은 언제나 같은 가명이 되므로 **가명끼리 join 이 된다.** 같은 사람의 행동을 이어 볼 수 있으면서 그 사람이 누구인지는 모른다. **분석이 가능한 첫 단계**다.\n\n**⑤ 날짜 시프팅** — \"randomly shifts a set of dates but **preserves the sequence and duration** of a period of time.\" ⭐⭐ 가장 우아한 기법이다. 생일과 진료일을 통째로 며칠씩 밀되 **사람마다 다른 양으로, 그 사람 안에서는 같은 양으로** 민다. 그러면 **\"입원 후 며칠 만에 퇴원했나\"는 그대로 남고 \"언제 입원했나\"는 사라진다.**\n\n💡 **핵심은 \"무엇을 살려야 하는가\"를 먼저 정하는 것**이다. 지우는 것은 쉽다. 어려운 것은 **분석에 필요한 성질만 남기고 식별력만 없애는 것**이고, 위 넷째·다섯째가 그 방법이다. 이 결정을 안 하고 지우기부터 하면, 몇 달 뒤 \"이 데이터로는 아무것도 못 하겠는데요\"가 돌아온다."
+    },
+    {
+      "id": "risk",
+      "kind": "limits",
+      "heading": "⭐ 비식별은 이분법이 아니라 정도다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+        }
+      ],
+      "body": "\"비식별 처리했으니 이제 개인정보가 아니다\"는 이 분야에서 가장 위험한 문장이다.\n\n이름을 지워도 **`생년월일 + 성별 + 우편번호`** 만으로 상당수가 특정된다. 그리고 다른 데이터셋과 맞대면 더 좁혀진다 — **가진 데이터 하나만 보고 판단할 수 없다**는 뜻이다.\n\nGoogle Cloud 문서가 이 문제를 **측정 가능한 것**으로 다룬다. 재식별 위험 분석 지표로 **k-anonymity · l-diversity · k-map · δ-presence** 를 계산해 준다. 이름이 붙어 있다는 사실 자체가 중요하다 — **위험이 있다/없다가 아니라 몇인가**로 이야기한다는 뜻이다.\n\n대략의 감각만 잡아 두면 이렇다(정확한 정의는 원문과 각 지표의 원 논문을 볼 것).\n\n- **k-anonymity** — 같은 속성 조합을 가진 사람이 최소 k 명이어야 한다. k=1 이면 그 사람은 특정된다.\n- **l-diversity** — 그 k 명의 **민감 값이 서로 달라야** 한다. 열 명이 묶여 있어도 열 명 다 같은 병명이면 아무것도 못 숨긴 것이다.\n\n⚠️ 그래서 실무의 결론은 이렇다.\n\n1. **비식별 데이터도 여전히 관리 대상**이다. 접근 제어와 감사 기록을 빼지 않는다.\n2. **어떤 조합이 위험한지를 계산해 보고 판단**한다. 눈으로 \"이름 지웠으니 됐다\"가 아니다.\n3. **결합 가능성을 전제**한다. 우리 쪽에서 안전해 보여도 상대가 다른 조각을 갖고 있으면 합쳐진다.\n\n> 📌 국내에서는 **가명정보**와 **익명정보**가 법적으로 다르게 취급되고 처리 요건도 다르다. ⚠️ **이 문서는 그 조문을 확인하지 않았다** — 실제 처리 기준이 필요하면 현행 법령과 소관 기관의 안내를 직접 열어야 한다. `network-separation` 에서 세운 규칙과 같다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 오탐이 곧 업무 중단이다",
+      "confidence": "inferred",
+      "body": "**1. 차단은 오탐일 때 곧바로 업무를 멈춘다.** 탐지가 확률이라는 성질(위 `classify` 절)은 여기서 가장 비싸게 나타난다 — `siem` 의 경보는 사람을 귀찮게 하는 데서 끝나지만, **DLP 의 차단은 정상적인 메일이 안 나가게 만든다.** 그러면 사람들은 **우회로를 찾는다**(개인 메일, 메신저, 사진). ⚠️ **과한 차단은 통제를 강화하는 게 아니라 보이지 않는 곳으로 옮긴다.** 그래서 무신사 공고가 `탐지/차단 정책을 **최적화**` 라고 쓴 것이고, 실무의 순서는 언제나 **탐지 먼저, 차단은 나중**이다.\n\n**2. 규제 준수를 보장하지 않는다.** 제품 문서가 직접 적는다 — \"they **can't guarantee compliance with regulatory requirements**\". 도구는 재료이고, 무엇이 민감한지와 어디까지 해야 하는지는 조직이 정한다.\n\n**3. 지우기부터 하면 데이터가 죽는다.** `deid` 절의 결론이다. **무엇을 살려야 하는지 먼저 정하지 않으면** 안전하지만 아무 분석도 못 하는 데이터셋이 남는다.\n\n**4. 비식별 데이터를 관리 대상에서 빼면 안 된다.** `risk` 절 그대로다. \"비식별했으니 아무나 봐도 된다\"가 되는 순간 접근 제어·감사 기록이 사라지고, 재식별 위험은 그대로 남는다.\n\n**5. 두 팀이 다른 낱말을 쓴다.** 첫 절의 셈이 그것이다. 보안팀의 `DLP` 프로젝트와 데이터팀의 `가명처리` 프로젝트가 **같은 회사에서 서로 모른 채 진행되는** 일이 실제로 생긴다. 하이퍼커넥트 공고처럼 **한 직무가 둘을 함께 적는 것**이 오히려 드물다.\n\n**6. 이 문서가 다루지 않는 것.** 무엇이 민감한지 정하고 관리하는 체계는 `data-governance`, 누가 볼 수 있는지는 `abac`(행 필터·열 마스크)·`rebac`, 누가 봤는지는 `audit-log`, 유출 시도를 로그에서 찾는 쪽은 `siem`, 저장 시 암호화와 키 관리는 이 백과사전에 아직 없다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "two-seats",
+      "kind": "compare",
+      "caption": "⭐ 같은 목표, 두 갈래 — 그리고 부르는 낱말이 다르다",
+      "note": "건수는 all_jobs_enriched.json 을 2026-09-06 에 직접 센 것이다. `DLP` 낱말이 든 241건(모집중 73)을 문장을 읽어 분류: 엔드포인트 163 · 데이터 레이어 15 · 둘 다 1 · 불명 62. 별도로 `비식별|가명처리|가명화|익명화|PII 마스킹` 은 71건(모집중 24)이고 이쪽에는 DLP 라는 낱말이 거의 없다.",
+      "columns": [
+        "",
+        "나가는 길을 막는다",
+        "덜 위험하게 만든다"
+      ],
+      "rows": [
+        [
+          "공고에서 부르는 이름",
+          "**DLP** (163건)",
+          "**비식별화·가명처리·PII 마스킹** (71건)"
+        ],
+        [
+          "함께 나오는 낱말",
+          "EDR · 백신 · VPN · 방화벽 · DRM · 매체제어",
+          "PII · Unity Catalog · 파이프라인 · 거버넌스"
+        ],
+        [
+          "누가 하나",
+          "보안팀",
+          "데이터팀"
+        ],
+        [
+          "어디에 거나",
+          "단말 · 네트워크 · 메일 게이트웨이",
+          "데이터 파이프라인 · 웨어하우스 · 로그"
+        ],
+        [
+          "대상",
+          "운영 데이터 전부",
+          "주로 **사본** — 분석용·개발용·로그"
+        ],
+        [
+          "실패하면",
+          "유출된다",
+          "유출돼도 피해가 줄어든다"
+        ],
+        [
+          "대가",
+          "⚠️ 오탐이 곧 업무 중단",
+          "⚠️ 지나치면 분석이 불가능해진다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "paths",
+      "kind": "glossary",
+      "caption": "나가는 길 — 세어 보면 다 막을 수 없다는 걸 안다",
+      "note": "이 목록은 이 문서가 정리한 것이다(`confidence: inferred`). 요점은 완전한 목록을 만드는 것이 아니라 **마지막 줄이 존재한다는 사실**이다.",
+      "columns": [
+        "길",
+        "막을 수 있나",
+        "무엇으로"
+      ],
+      "rows": [
+        [
+          "메일 첨부 · 메신저",
+          "대체로 가능",
+          "메일 게이트웨이 · 메신저 DLP"
+        ],
+        [
+          "USB · 외장 매체",
+          "가능",
+          "매체 제어 · 엔드포인트 DLP"
+        ],
+        [
+          "개인 클라우드 업로드 · 브라우저 동기화",
+          "대체로 가능",
+          "SWG · 엔드포인트 정책"
+        ],
+        [
+          "관리자 화면의 내려받기",
+          "가능하나 자주 빠진다",
+          "권한 설계 · 대량 조회 탐지 · 감사 기록"
+        ],
+        [
+          "API 호출",
+          "가능하나 어렵다",
+          "비율 제한 · 응답 마스킹 · 이상 탐지"
+        ],
+        [
+          "인쇄 · 스크린샷",
+          "부분적",
+          "워터마크 · DRM"
+        ],
+        [
+          "⭐ 휴대폰으로 화면 촬영",
+          "**불가능**",
+          "→ 그래서 두 번째 전략(덜 위험하게 만들기)이 필요하다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "detect",
+      "kind": "glossary",
+      "caption": "탐지는 확률이다 (Google Cloud infoType)",
+      "note": "Google Cloud Sensitive Data Protection 의 infoType 개념 문서에서 옮겼다. 제품마다 이름은 다르지만 '분류 단위 + 확신도 + 완벽하지 않음'이라는 구조는 공통이다.",
+      "columns": [
+        "",
+        "문서의 말",
+        "그래서"
+      ],
+      "rows": [
+        [
+          "분류 단위",
+          "\"An infoType is a type of sensitive data, such as a name, email address, telephone number, identification number, credit card number\"",
+          "무엇이 민감한지를 **목록으로** 만들어야 시작된다"
+        ],
+        [
+          "탐지기",
+          "\"the corresponding detection mechanism that matches on an infoType's matching criteria\"",
+          "내장 탐지기 + 사전·정규식 기반 커스텀"
+        ],
+        [
+          "확신도",
+          "`VERY_UNLIKELY` · `UNLIKELY` · `POSSIBLE` · `LIKELY` · `VERY_LIKELY`",
+          "이진 판정이 아니다. 임계값을 정해야 한다"
+        ],
+        [
+          "확신도가 오르는 조건",
+          "\"lower likelihood if it **only matches the pattern**, higher if it matches the pattern and has **positive context around it**\"",
+          "맥락이 없는 숫자열은 확신이 낮게 나온다"
+        ],
+        [
+          "⭐ 한계",
+          "\"Built-in infoType detectors are **not a perfectly accurate** detection method. For example, they **can't guarantee compliance with regulatory requirements**.\"",
+          "도구는 재료다. 규제 대응을 제품이 대신해 주지 않는다"
+        ],
+        [
+          "⭐ 누가 정하나",
+          "\"**You must decide what data is sensitive** and how to best protect it.\"",
+          "분류는 조직의 일이다 — `data-governance` 가 안 되어 있으면 여기도 안 된다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — InfoTypes and infoType detectors",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "민감정보 분류의 단위와 탐지 확신도 척도, 그리고 '완벽하지 않다'는 명시"
+        }
+      ]
+    },
+    {
+      "id": "techniques",
+      "kind": "compare",
+      "caption": "비식별 기법 다섯 — 뒤로 갈수록 데이터를 더 살린다",
+      "note": "기법과 설명은 Google Cloud 의 비식별화 문서에서 옮겼다(영문 원문 유지). 오른쪽 두 열은 그 정의에서 따라 나오는 성질을 이 문서가 정리한 것이다.",
+      "columns": [
+        "기법",
+        "문서의 설명",
+        "분석에 남는 것"
+      ],
+      "rows": [
+        [
+          "삭제 (redaction)",
+          "\"Redacts a given value by **removing it completely**.\"",
+          "아무것도. 가장 안전하고 가장 쓸모없다"
+        ],
+        [
+          "치환 (replacement)",
+          "\"replaces matched input values with a value you specify\" (예: `[email-address]`)",
+          "**여기 무언가 있었다**는 사실"
+        ],
+        [
+          "마스킹 (masking)",
+          "\"partially masks a string by replacing a given number of characters with a fixed character\"",
+          "일부 자릿수 — 사람이 확인용으로 쓸 최소한"
+        ],
+        [
+          "⭐ 암호 기반 가명화",
+          "\"generating a surrogate value using **cryptographic hashing**\" (SHA-256 + 키, base64)",
+          "**같은 사람은 같은 가명** → 가명끼리 이어 볼 수 있다"
+        ],
+        [
+          "⭐⭐ 날짜 시프팅",
+          "\"randomly shifts a set of dates but **preserves the sequence and duration** of a period of time\"",
+          "**기간과 순서**는 그대로, 절대 시점만 사라진다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+        }
+      ]
+    },
+    {
+      "id": "risk",
+      "kind": "glossary",
+      "caption": "재식별 위험은 계산되는 값이다",
+      "note": "Google Cloud 문서가 재식별 위험 분석 지표로 드는 이름들이다. ⚠️ 각 지표의 정확한 정의와 임계값은 원문과 원 논문을 볼 것 — 이 표는 '이름이 붙은 측정 대상이 있다'는 사실까지만 옮긴다.",
+      "columns": [
+        "지표",
+        "대략의 뜻",
+        "왜 필요한가"
+      ],
+      "rows": [
+        [
+          "k-anonymity",
+          "같은 속성 조합을 가진 사람이 최소 k 명",
+          "k=1 이면 그 사람은 특정된다"
+        ],
+        [
+          "l-diversity",
+          "그 묶음 안의 민감 값이 최소 l 종류",
+          "열 명이 묶여도 병명이 다 같으면 숨긴 게 없다"
+        ],
+        [
+          "k-map · δ-presence",
+          "(문서가 함께 드는 지표)",
+          "외부 데이터와 맞댈 때의 위험을 다룬다"
+        ],
+        [
+          "⭐ 결론",
+          "위험은 있다/없다가 아니라 **몇인가**",
+          "\"비식별했으니 개인정보가 아니다\"는 성립하지 않는다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+        }
+      ]
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "분석·개발·리포트용으로 운영 데이터의 사본을 만들어야 한다",
+      "pick": "사본에 비식별 처리를 걸어 내보낸다 (가명화·마스킹·날짜 시프팅)",
+      "over": "접근 권한만 좁혀 원본 사본을 그대로 주기",
+      "why": "사고는 대개 사본에서 난다 — 사본은 복제되고, 노트북에 내려가고, 관리 대상에서 빠진다. 값이 애초에 위험하지 않으면 **막지 못했을 때의 피해가 달라진다**",
+      "tradeoff": "무엇을 살릴지 먼저 정해야 한다. 잘못 지우면 분석이 불가능해지고, 그 사실은 몇 달 뒤에 드러난다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "같은 사람의 행동을 이어 보되 그 사람이 누구인지는 몰라야 한다",
+      "pick": "암호 기반 가명화 (키를 쓴 해시로 대체값 생성)",
+      "over": "삭제하거나 무작위 값으로 치환",
+      "why": "문서가 말하듯 \"generating a surrogate value using cryptographic hashing\" 이므로 **같은 입력이 같은 가명**이 된다 — 가명끼리 join 이 되고 코호트 분석이 가능하다. 무작위 치환은 그 연결을 끊는다",
+      "tradeoff": "키를 가진 쪽은 되돌릴 수 있으므로 **키 관리가 곧 이 데이터의 보안**이 된다. 그리고 같은 가명이 반복되면 행동 패턴만으로 재식별될 수 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+        }
+      ]
+    },
+    {
+      "situation": "기간·간격이 분석의 핵심인데 날짜가 식별자가 된다 (진료·거래·접속 이력)",
+      "pick": "날짜 시프팅",
+      "over": "날짜를 지우거나 월 단위로 뭉개기",
+      "why": "\"randomly shifts a set of dates but preserves the sequence and duration of a period of time\" — **\"며칠 만에\"는 그대로 남고 \"언제\"만 사라진다.** 월 단위로 뭉개면 짧은 간격 분석이 통째로 죽는다",
+      "tradeoff": "사람마다 다른 양으로 밀되 한 사람 안에서는 같은 양이어야 하므로 **시프트 양 자체가 관리 대상**이 된다(그것이 새면 되돌릴 수 있다)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+        }
+      ]
+    },
+    {
+      "situation": "DLP 를 새로 도입하는데 어디까지 차단할지 정해야 한다",
+      "pick": "탐지만 켜고 몇 주 관찰한 뒤 차단으로 올린다",
+      "over": "처음부터 차단",
+      "why": "탐지는 확신도가 붙은 확률이라 오탐이 반드시 있고(\"not a perfectly accurate detection method\"), **차단의 오탐은 곧 업무 중단**이다. 그리고 막힌 사람들은 우회로를 찾으므로 **통제가 강화되는 게 아니라 보이지 않는 곳으로 옮겨 간다**",
+      "tradeoff": "관찰 기간 동안 실제 유출을 못 막을 수 있다. 그래서 위험이 가장 큰 몇 가지(주민번호·카드번호 대량 전송)만 처음부터 차단하고 나머지를 관찰하는 절충이 흔하다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — InfoTypes and infoType detectors",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "민감정보 분류의 단위와 탐지 확신도 척도, 그리고 '완벽하지 않다'는 명시"
+        }
+      ]
+    },
+    {
+      "situation": "어떤 데이터를 보호할지 목록이 아직 없다",
+      "pick": "민감 항목 목록과 그 소재(테이블·필드·로그)를 먼저 만든다",
+      "over": "제품을 먼저 도입하고 기본 정책으로 시작",
+      "why": "제품 문서가 직접 말한다 — \"**You must decide what data is sensitive** and how to best protect it.\" 내장 탐지기는 일반적인 것(이름·이메일·카드번호)만 알고, **우리 회사에서 민감한 것**(사번·좌표·내부 코드)은 모른다",
+      "tradeoff": "목록 만들기는 오래 걸리고 눈에 보이는 성과가 없다. 대신 그 목록이 `data-governance`·`abac`·`audit-log` 에서 그대로 재사용된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — InfoTypes and infoType detectors",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "민감정보 분류의 단위와 탐지 확신도 척도, 그리고 '완벽하지 않다'는 명시"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "처음부터 차단 모드로 켰다가 메일이 안 나가 업무가 멈춘다",
+      "why": "정책이 옳으니 막는 게 맞다고 생각한다. 그런데 탐지는 확률이고(\"not a perfectly accurate detection method\") 오탐률이 낮아도 **전사 메일 수에 곱하면 매일 여러 건**이다. 그리고 사람들은 막히면 **개인 메일·메신저·사진으로 우회**한다 — 통제가 사라지는 게 아니라 보이지 않게 된다",
+      "fix": "탐지 모드로 먼저 켜서 **무엇이 몇 건 걸리는지** 며칠 모은다. 위험이 가장 큰 항목(주민번호·카드번호 대량 전송)만 차단으로 올리고 나머지는 경고·승인 요청으로 둔다. 그리고 **차단됐을 때 사람이 정당한 사유로 내보낼 수 있는 정식 통로**를 반드시 함께 만든다",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — InfoTypes and infoType detectors",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "민감정보 분류의 단위와 탐지 확신도 척도, 그리고 '완벽하지 않다'는 명시"
+        }
+      ]
+    },
+    {
+      "trap": "\"비식별 처리했으니 이제 개인정보가 아니다\"라고 판단해 관리 대상에서 뺀다",
+      "why": "이름과 주민번호를 지우면 안전해 보인다. 그런데 **속성 조합만으로 특정될 수 있고**, 다른 데이터셋과 결합하면 더 좁혀진다. Google Cloud 가 재식별 위험을 **k-anonymity·l-diversity 같은 지표로 계산**해 주는 것 자체가 위험이 남아 있다는 뜻이다",
+      "fix": "비식별 데이터에도 **접근 제어와 감사 기록을 유지**한다. 그리고 내보내기 전에 **어떤 속성 조합이 위험한지 계산해 본다** — 눈으로 판단하지 않는다. 지표의 정확한 정의와 임계값은 원문을 확인할 것",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+        }
+      ]
+    },
+    {
+      "trap": "안전하게 하려고 다 지웠는데 나중에 \"이 데이터로는 아무것도 못 하겠다\"는 말을 듣는다",
+      "why": "삭제가 가장 쉽고 가장 안전해 보인다. 그래서 기본값이 되기 쉬운데, **분석에 필요한 성질까지 함께 사라진다** — 특히 날짜를 지우거나 월 단위로 뭉개면 간격 분석이 통째로 죽는다",
+      "fix": "**\"무엇을 살려야 하는가\"를 데이터를 쓰는 쪽과 먼저 합의**한다. 연결이 필요하면 가명화, 기간이 필요하면 날짜 시프팅, 확인만 필요하면 마스킹 — **필요한 성질에 따라 기법을 고르는 것**이지 안전한 순서대로 고르는 게 아니다",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+        }
+      ]
+    },
+    {
+      "trap": "내장 탐지기만 켜 두고 \"민감정보는 다 잡히고 있다\"고 생각한다",
+      "why": "내장 탐지기 목록이 길어서 충분해 보인다. 그런데 그것은 **일반적으로 민감한 것**(이름·이메일·카드번호)만 안다. 우리 회사에서만 민감한 것 — 사번, 내부 고객 코드, 장비 위치 좌표 — 은 아무도 안 잡는다",
+      "fix": "**커스텀 탐지기를 만든다**(사전·정규식). 그 전에 **무엇이 민감한지 목록부터** 만들고, 그 목록을 `data-governance` 의 분류 체계와 같은 것으로 유지한다. 목록이 두 벌이 되면 반드시 어긋난다",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — InfoTypes and infoType detectors",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "민감정보 분류의 단위와 탐지 확신도 척도, 그리고 '완벽하지 않다'는 명시"
+        }
+      ]
+    },
+    {
+      "trap": "보안팀의 DLP 프로젝트와 데이터팀의 가명처리 프로젝트가 서로 모른 채 따로 돈다",
+      "why": "두 갈래를 부르는 낱말이 다르기 때문이다 — 공고를 세어 봐도 `DLP` 는 163건이 엔드포인트 보안이고, 데이터 레이어 쪽은 `비식별·가명처리`(71건)라는 다른 낱말로 불린다. 두 팀이 같은 회의에 들어갈 이유가 없다",
+      "fix": "**민감 항목 목록을 한 벌로 공유한다.** 무엇이 민감한지에 대한 정의가 하나면 두 프로젝트가 자연히 이어진다. 하이퍼커넥트 공고처럼 **한 직무가 `수집 단계 차단`과 `익명화/가명화`를 함께 적는 형태**가 이상적이지만, 최소한 목록만이라도 같아야 한다"
+    },
+    {
+      "trap": "DLP 도구를 도입하면 규제 요건이 충족된다고 보고한다",
+      "why": "제품 소개가 규제 이름을 나열하므로 그렇게 읽힌다. 그런데 문서 자체가 부인한다 — \"they **can't guarantee compliance with regulatory requirements**\"",
+      "fix": "도구는 **요건을 이행하는 수단**으로 적고, 요건 자체는 조문에서 가져온다. 그리고 **무엇을 확인했고 무엇을 확인하지 못했는지**를 나눠 기록한다 — 규정은 개정되므로 인용이 필요하면 현행 조문을 직접 열어야 한다",
+      "sources": [
+        {
+          "title": "Google Cloud Sensitive Data Protection — InfoTypes and infoType detectors",
+          "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+          "publisher": "Google Cloud",
+          "kind": "docs",
+          "summary": "민감정보 분류의 단위와 탐지 확신도 척도, 그리고 '완벽하지 않다'는 명시"
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "비식별화",
+      "en": "de-identification",
+      "what": "\"the process of removing identifying information from data\" — 식별 정보를 없애는 처리 전반"
+    },
+    {
+      "term": "가명화",
+      "en": "pseudonymization",
+      "what": "식별자를 대체값으로 바꾸되 같은 입력은 같은 값이 되게 하는 것. 연결은 살아 있다"
+    },
+    {
+      "term": "익명화",
+      "en": "anonymization",
+      "what": "되돌릴 수 없게 만드는 것. ⚠️ 가명화와 법적 취급이 다르다(이 문서는 조문을 확인하지 않았다)"
+    },
+    {
+      "term": "infoType",
+      "en": "infoType",
+      "what": "민감정보의 분류 단위. 이름·이메일·카드번호처럼 '어떤 종류인가'"
+    },
+    {
+      "term": "확신도",
+      "en": "likelihood",
+      "what": "탐지 결과가 정말 그 종류일 가능성. VERY_UNLIKELY ~ VERY_LIKELY 다섯 단계"
+    },
+    {
+      "term": "날짜 시프팅",
+      "en": "date shifting",
+      "what": "날짜를 통째로 밀되 순서와 기간은 보존하는 기법"
+    },
+    {
+      "term": "재식별",
+      "en": "re-identification",
+      "what": "비식별 처리된 데이터에서 개인을 다시 특정해 내는 것. 위험은 지표로 계산된다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "자기 서비스에서 **데이터가 밖으로 나갈 수 있는 길을 열 개 이상** 적고, 각각에 '지금 막고 있나 / 막을 수 있나 / 막으면 누가 불편해지나'를 채운다.",
+      "done_when": "목록에 **막을 수 없는 길이 최소 하나** 들어 있고(대개 화면 촬영·정당한 권한자의 대량 조회), 그 사실에서 '그럼 무엇을 덜 위험하게 만들까'라는 다음 질문이 나온다.",
+      "why": "이 낱말의 첫 깨달음은 '다 막을 수 없다'이다. 목록을 채워 보면 차단 일변도의 계획이 왜 실패하는지가 스스로 드러나고, 두 번째 전략의 필요가 논리적으로 따라온다.",
+      "hours": 1
+    },
+    {
+      "task": "실제 데이터를 흉내 낸 표(이름·생년월일·성별·우편번호·진료일·진료과 20행)를 만들고 **네 가지 비식별본**을 손으로 만든다 — ① 이름만 삭제 ② 이름 삭제 + 생일을 연도만 ③ ②에 우편번호 앞 3자리만 ④ 이름 가명화 + 날짜 시프팅. 각 버전에서 **같은 속성 조합을 가진 사람이 몇 명인지**(k 값)와 **여전히 가능한 분석**을 적는다.",
+      "done_when": "①에서 대부분의 행이 k=1 이라는 것을 확인하고, ④가 k 를 키우면서도 '입원 기간' 분석을 남긴다는 것을 표로 보여 준다.",
+      "why": "\"이름 지웠으니 됐다\"가 왜 틀렸는지는 설명보다 **자기 손으로 센 k 값**이 훨씬 강하게 가르쳐 준다. 그리고 안전과 유용성이 이분법이 아니라 **기법 선택의 문제**라는 것을 함께 알게 된다.",
+      "hours": 2
+    },
+    {
+      "task": "우리 회사에서만 민감한 항목(사번·내부 고객 코드·장비 위치·계약 조건 등) **다섯 개**를 고르고, 각각에 대해 ① 어디에 저장돼 있나 ② 어떤 로그·리포트에 흘러가나 ③ 정규식이나 사전으로 탐지 가능한가 를 채운다.",
+      "done_when": "다섯 개 중 최소 하나가 '탐지 규칙을 만들기 어렵다'로 판정되고(형식이 일정하지 않은 값), 그 경우의 대안이 한 줄 적힌다.",
+      "why": "내장 탐지기는 우리 회사의 민감정보를 모른다 — \"You must decide what data is sensitive\". 그리고 이 목록은 `data-governance`·`abac`·`audit-log` 에서 그대로 다시 쓰이므로, 한 번 만들어 두면 여러 문서의 출발점이 된다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "데이터가 밖으로 나가는 길 중 기술로 막을 수 없는 것을 하나 대보라. 그러면 무엇을 해야 하는가?",
+    "탐지 결과에 확신도가 붙는 이유는 무엇인가? 같은 숫자열의 확신도가 달라지는 조건은?",
+    "삭제·마스킹·가명화·날짜 시프팅 중, 같은 사람의 행동을 이어 보려면 무엇을 쓰는가?",
+    "날짜 시프팅은 무엇을 지우고 무엇을 남기는가?",
+    "\"이름과 주민번호를 지웠으니 개인정보가 아니다\"가 왜 성립하지 않는가?",
+    "DLP 를 처음부터 차단 모드로 켜면 무슨 일이 생기는가? 사람들은 어떻게 반응하는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 컴플라이언스 엔지니어링 (프라이버시·DLP) 수집 단계 차단 요구 정의, 익명화/가명화/집계 처리, 구현, 탈퇴 이벤트, 정기 배치 삭제·익명화, DLP(데이터 유출 방지) 정책의 데이터 레이어 적용",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/367668",
+      "where": "하이퍼커넥트",
+      "what_it_shows": "⭐⭐ **두 갈래를 한 줄에 묶은 드문 공고.** `DLP 정책의 데이터 레이어 적용` 이라는 표현이 이 문서가 두 갈래를 한 문서에서 다루는 이유다 — 단말에서 막는 정책을 데이터 파이프라인에도 적용한다"
+    },
+    {
+      "quote": "• 민감정보 유출 방지를 위한 DLP 정책 운영 및 탐지/차단 정책을 최적화합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/366283",
+      "where": "무신사",
+      "what_it_shows": "⭐ **'최적화'** 라는 말이 붙어 있다. 켜 두면 끝이 아니라 **오탐과 미탐 사이를 계속 조정하는 일**이라는 것을 회사가 이미 안다는 뜻 — 이 문서 경계 1번의 근거"
+    },
+    {
+      "quote": "• MDM, DLP, Antivirus, VPN, 방화벽 등 엔드포인트 보안 솔루션 운영",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/374534",
+      "where": "에이비일팔공(AB180)",
+      "what_it_shows": "`DLP` 가 **엔드포인트 보안 솔루션 묶음의 한 칸**으로 쓰이는 전형. 241건 중 163건이 이 형태이고, 이것이 이 낱말의 다수 용법이다"
+    },
+    {
+      "quote": "• 데이터 거버넌스 및 규제 준수: Databricks Unity Catalog 기반 데이터 접근 제어, PII 마스킹/탐지, 금융 규제 준수를 위한 아카이빙 및 보안 아키텍처를 구현합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378013",
+      "where": "넥스트증권",
+      "what_it_shows": "⭐ **같은 목표의 다른 낱말.** 여기에는 `DLP` 가 없고 `PII 마스킹/탐지` 가 있다 — 데이터팀의 어휘다. 그리고 `탐지` 와 `마스킹` 이 붙어 있는 것이 분류→처리의 순서를 보여 준다"
+    },
+    {
+      "quote": "• 개인정보 비식별화·가명처리 등 컴플라이언스 대응 파이프라인 구축",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365647",
+      "where": "씨제이올리브영(CJ올리브영)",
+      "what_it_shows": "비식별을 **파이프라인**으로 만든다는 것 — 한 번 하고 끝나는 작업이 아니라 데이터가 흐를 때마다 적용되는 처리라는 뜻이다"
+    },
+    {
+      "quote": "의료 데이터 표준화: 의료 도메인 지식 기반 민감 정보 비식별화 및 분석용 데이터셋 변환 자동화",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359557",
+      "where": "에비드넷",
+      "what_it_shows": "⭐ **`분석용 데이터셋`** 이라는 말이 이 전략의 대상을 정확히 말한다 — 운영 데이터가 아니라 **사본**이고, 사고는 대개 사본에서 난다. 그리고 의료 데이터라 날짜 시프팅이 실제로 필요한 자리다"
+    },
+    {
+      "quote": "• 부서별 Budget 추적, PII 마스킹, 프롬프트 보안 등 AI 거버넌스 레이어 개발",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365172",
+      "where": "랩씨드",
+      "what_it_shows": "이 낱말의 **새 자리** — 모델에 보내는 프롬프트에서 개인정보를 걸러 내는 일. 나가는 길 목록에 'LLM API 호출'이 추가된 셈이다"
+    },
+    {
+      "quote": "Built-in infoType detectors are not a perfectly accurate detection method. For example, they can't guarantee compliance with regulatory requirements.",
+      "from": "docs",
+      "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+      "where": "Google Cloud 공식 문서",
+      "what_it_shows": "⭐⭐ **제품이 스스로 그은 선.** 탐지가 확률이라는 것과 규제 준수를 보장하지 않는다는 것을 함께 밝힌다 — `siem`(\"의도는 모른다\")·`mdm`(\"매칭은 확률\")과 같은 구조가 세 번째로 나타난 자리"
+    }
+  ],
+  "related": [
+    {
+      "slug": "siem",
+      "how": "이 문서를 큐에 올린 자리. `EDR·WAF·SIEM·DLP` 묶음의 마지막 칸이고, '탐지는 판정이 아니라 확률'이라는 구조를 공유한다"
+    },
+    {
+      "slug": "data-governance",
+      "how": "⭐ 전제 조건. \"You must decide what data is sensitive\" — 무엇이 민감한지의 분류가 없으면 이 문서의 어떤 일도 시작되지 않는다"
+    },
+    {
+      "slug": "abac",
+      "how": "열 마스크·행 필터가 여기서는 비식별의 실행 수단이 된다. 그쪽이 '누가 볼 수 있나', 여기가 '무엇으로 보이게 하나'"
+    },
+    {
+      "slug": "audit-log",
+      "how": "⚠️ 응답 본문까지 남기면 감사 로그가 개인정보 DB 의 사본이 된다 — 그 문서의 경고가 여기서는 DLP 대상이 하나 더 생긴다는 뜻이다"
+    },
+    {
+      "slug": "rebac",
+      "how": "내부자가 전제라는 성질을 공유한다. 권한이 정상적으로 있는 사람이 가져가는 경우, 막는 것은 권한 모델이 아니라 처리·탐지·기록이다"
+    },
+    {
+      "slug": "mdm",
+      "how": "'매칭은 정답이 아니라 확률'이 같은 구조다. 그리고 ⚠️ MDM 은 이 문맥에서 **모바일 단말 관리**를 뜻하는 경우가 많다(공고의 `MDM, DLP, Antivirus` 처럼) — 낱말 겹침"
+    },
+    {
+      "slug": "data-migration",
+      "how": "이관 대상 데이터에 민감정보가 섞여 있으면 이관 자체가 유출 경로가 된다. 개발 환경으로 복사할 때 특히"
+    },
+    {
+      "slug": "network-separation",
+      "how": "국내 규제 환경에서 유출 방지의 다른 축. 규정을 다룰 때의 처리 규칙(확인한 것과 못 한 것을 나눠 적기)을 그 문서에서 가져왔다"
+    },
+    {
+      "slug": "encryption",
+      "how": "⚠️ 아직 문서가 없다. 덜 위험하게 만드는 세 번째 방법 — 저장 시 암호화와 키 관리(KMS). 공고의 `민감정보 암호화`·`KMS 키 분리`·`RDS 암호화` 가 가리키는 자리다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `DLP`·`비식별` 어느 이름도 없다. 직접 세면 `DLP|Data Loss Prevention|데이터 유출 방지` 로 **241건(모집중 73)**, 별도로 `비식별|가명처리|가명화|익명화|PII 마스킹` 으로 **71건(모집중 24)** 이다.",
+    "⭐ **두 낱말을 갈라 센 것이 이 문서의 축이 됐다.** `DLP` 241건을 문장을 읽어 분류하니 **엔드포인트·네트워크 163 · 데이터 레이어 15 · 둘 다 1 · 불명 62** 였다. 즉 **같은 목표를 두 조직이 다른 낱말로 부른다.** 다만 불명 62건은 하나씩 열어 확인하지 않았으므로 163:15 는 '문맥이 드러난 것들 사이의 비율'이다.",
+    "⚠️ **`토큰화` 로는 세지 않았다.** 처음 셈에 넣었더니 **형태소 분석의 토큰화**(에이엑스지), **디자인 시스템 토큰**(젤리·풀림), **LLM 토크나이제이션**(팀워크)이 대량으로 걸렸다. `Sentinel`(인공위성)·`PACT`(학회)에 이은 오탐 사례이고, **비식별 기법 이름 중 일반 기술 용어와 겹치는 것은 셈에서 뺀다.**",
+    "⚠️ **국내 법령을 확인하지 않았다.** 가명정보와 익명정보의 법적 구분, 가명처리 시 준수해야 할 절차, 결합 전문기관 제도 등은 이 사이클에서 조문으로 확인하지 않았다. 본문에서 '법적으로 다르게 취급된다'까지만 쓰고 요건을 쓰지 않은 이유다 — `network-separation` 의 처리 규칙을 따랐다. **실제 처리 기준이 필요하면 현행 법령과 소관 기관 안내를 직접 열 것.**",
+    "**재식별 위험 지표의 정확한 정의는 확인하지 않았다.** k-anonymity·l-diversity·k-map·δ-presence 가 Google Cloud 문서에 지표로 나열된다는 것까지 확인했고, 각 지표의 수식·임계값·원 논문은 열지 않았다. `risk` 표에 '대략의 뜻'까지만 적고 원문 확인을 권한 이유다.",
+    "**엔드포인트 DLP 제품의 동작(에이전트가 무엇을 어떻게 검사하는지)은 1차 자료로 받치지 못했다.** 이 사이클의 1차 자료는 전부 데이터 레이어 쪽(Google Cloud Sensitive Data Protection)이고, 막는 쪽 절(`why`·`paths` 표)은 공고와 이 문서의 정리다(`confidence: inferred`). 보강한다면 특정 제품의 정책 문서가 다음 대상이다."
+  ],
+  "sources": [
+    {
+      "title": "Google Cloud Sensitive Data Protection — InfoTypes and infoType detectors",
+      "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/concepts-infotypes",
+      "publisher": "Google Cloud",
+      "kind": "docs",
+      "summary": "민감정보 분류의 단위와 탐지 확신도 척도, 그리고 '완벽하지 않다'는 명시"
+    },
+    {
+      "title": "Google Cloud Sensitive Data Protection — De-identifying sensitive data",
+      "url": "https://docs.cloud.google.com/sensitive-data-protection/docs/deidentify-sensitive-data",
+      "publisher": "Google Cloud",
+      "kind": "docs",
+      "summary": "삭제·치환·마스킹·암호 기반 가명화·날짜 시프팅 다섯 기법과 재식별 위험 지표"
+    }
+  ]
+}

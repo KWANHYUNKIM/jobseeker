@@ -1526,6 +1526,26 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "dlp",
+      "title": "데이터 유출 방지 (DLP)",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "민감한 데이터가 밖으로 나가는 것을 막고, 막지 못했을 때의 피해를 줄이기 위해 데이터 자체를 덜 위험하게 만들어 두는 일.",
+      "aliases": [
+        "DLP",
+        "데이터 유출 방지",
+        "Data Loss Prevention",
+        "비식별화",
+        "가명처리",
+        "PII 마스킹",
+        "de-identification"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
