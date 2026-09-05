@@ -159,7 +159,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "shard-count-is-forever"
+      ]
     },
     {
       "name": "관리형에서는 영속 계층을 직접 만든다",
@@ -219,7 +221,7 @@
   ],
   "eras": [],
   "open_questions": [
-    "⚠️ **수치가 거의 없다.** 영속 계층 글은 `we saw an immediate impact` 수준이고 **비교 벤치마크·지연 수치가 하나도 없다.** 설계 원칙 글도 마찬가지다. **이 회사는 구조와 제약은 잘 적는데 결과를 숫자로 안 적는다.**",
+    "⚠️ **수치가 글마다 크게 다르다** — 영속 계층 글은 `we saw an immediate impact` 수준인데, `scaling-temporal-the-basics` 에는 **샤드 권장값·락 지연·상태 전이·DB CPU 목표**가 다 있다. **한 편으로 회사를 판단하면 안 되는 사례가 이 회사에서도 나왔다.**",
     "**매출·고객 수가 공개돼 있지 않다.** 요금 구조만 확인했다.",
     "⚠️ **오픈소스 서버와 Temporal Cloud 가 어디까지 같고 어디부터 다른지 확인하지 못했다** — 영속 계층이 다르다는 것만 안다.",
     "**동적 샤딩의 기준과 계층 저장의 조회 경로를 확인하지 못했다.**",
@@ -671,6 +673,469 @@
           "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
         }
       ]
+    },
+    {
+      "key": "shard-count-is-forever",
+      "name": "하나를 키우지 않고 개수를 늘린다 — 대신 샤드 수는 처음에 정해야 한다",
+      "domain": "확장의 단위를 워크플로 하나로 잡는다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 회사는 확장의 방향을 처음에 정했다** — `For Temporal's target usecases, we decided not to design for scaling up a single workflow instance. Every workflow should be limited in size, but we can infinitely scale out the number of workflows.` **하나를 키우는 대신 개수를 늘린다.** 그래서 권하는 모양도 정해진다 — 백만 개의 일을 한 워크플로에 넣지 말고 **워크플로 하나가 자식 천 개를 낳고 각자 천 개를 맡게** 한다. ⚠️ **그리고 그 선택이 나머지를 정한다** — 상태가 샤드에 묶이고, 샤드 밖으로 나가는 일에는 트랜잭션이 없어진다.",
+        "metrics": [
+          {
+            "label": "⚠️ 샤드 수 권장값",
+            "value": "소규모 프로덕션에 **512**, 대규모도 **4,096을 넘는 일이 드물다**. 개발 기본값은 **4**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 바꿀 수 없는 설정",
+            "value": "**샤드 수는 클러스터를 세운 뒤 바꿀 수 없다** — `it is the one configuration setting which cannot (currently) be changed after the cluster is built`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "샤드를 늘렸을 때",
+            "value": "**샤드 락 지연이 약 50ms → 약 1ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "처리량",
+            "value": "상태 전이 **초당 150 → 1,350**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "병목과 목표",
+            "value": "**지속성 데이터베이스 CPU 를 80% 이하**로 두는 것이 목표였고 약 **79%** 에서 위 처리량을 냈다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "지연 목표",
+            "value": "요청 지연 SLO **150ms** 목표에 **50ms 미만** 달성 · Schedule-to-Start **150ms** · 폴 동기 매칭률 **99% 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "확장의 방향을 정할 때",
+          "thought": "⚠️ **`더 크게` 를 아예 설계 목표에서 뺐다** — `we decided not to design for scaling up a single workflow instance`. 대신 **작게 제한하고 많이 만든다.** 그래서 사용자에게 권하는 모양도 바뀐다: **백만 개를 한 워크플로에 넣지 말고 천 개의 자식 워크플로가 천 개씩 맡게 하라**는 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "⚠️ 되돌릴 수 없는 것을 만들 때",
+          "thought": "⚠️ **샤드 수는 클러스터를 세운 뒤 바꿀 수 없다** — 회사가 그것을 **유일하게 못 바꾸는 설정**이라고 못 박는다(`the one configuration setting which cannot (currently) be changed`). 그래서 권장값을 크게 잡는다 — **소규모 프로덕션에 512**, 대규모도 4,096을 잘 안 넘는다. **처음에 넉넉히 잡는 것 말고는 답이 없는 자리다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "분산 커밋 앞에서",
+          "thought": "**복잡한 프로토콜을 피했다** — Paxos 나 Raft 대신 **샤드가 상태와 로컬 큐를 함께 들고**, 데이터베이스에 **원자적으로 커밋한 뒤** 별도 스레드가 외부 큐 시스템으로 비동기 전달한다. `doesn't rely on complex two-phase commit protocols` — **트랜잭션 경계를 넓히는 대신 경계 안에서 끝내고 나중에 흘려보낸다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "워크플로",
+            "what": "⚠️ **크기가 제한된 단위.** 크게 키우지 않고 개수를 늘린다"
+          },
+          {
+            "name": "이력 샤드(history shard)",
+            "what": "⚠️ **워크플로 이력은 하나의 샤드에 속하고, 각 샤드는 하나의 History 파드가 관리한다.** 워크플로 ID 로 일관 해싱한다"
+          },
+          {
+            "name": "과다 할당된 파티션",
+            "what": "물리 호스트가 데이터를 직접 들지 않는다 — **필요에 따라 옮길 수 있게** 파티션을 넉넉히 잡아 둔다"
+          },
+          {
+            "name": "Transfer Queue",
+            "what": "샤드 안의 로컬 큐. 커밋 뒤 별도 스레드가 외부 큐 시스템으로 옮긴다"
+          },
+          {
+            "name": "타이머 서비스",
+            "what": "타이머를 내구성 있게 저장한다 — 오래 재우기와 각종 타임아웃의 바탕"
+          }
+        ],
+        "invariants": [
+          "**워크플로 하나의 크기는 제한된다** — 확장은 개수로 한다",
+          "**이력은 한 샤드에 속하고 그 샤드는 한 History 파드가 관리한다**",
+          "⚠️ **샤드 수는 클러스터를 세운 뒤 바꿀 수 없다**",
+          "**커밋됐다면 인덱스는 결국 갱신된다** — 전송 큐가 그것을 보장한다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**워크플로 ID 로 일관 해싱해 샤드를 정한다**",
+            "why": "이력이 한 샤드에 묶여야 트랜잭션 경계가 생긴다"
+          },
+          {
+            "step": "**각 샤드를 History 파드 하나가 맡는다**",
+            "why": "⚠️ 그래서 **샤드 락**이 생기고, 샤드가 적으면 그 락에서 줄을 선다"
+          },
+          {
+            "step": "**상태 갱신과 로컬 큐 쓰기를 한 트랜잭션으로 커밋한다**",
+            "why": "경계 안에서 원자적으로 끝낸다"
+          },
+          {
+            "step": "**별도 스레드가 로컬 큐의 메시지를 외부 큐 시스템으로 비동기 전달한다**",
+            "why": "⚠️ **2단계 커밋·Paxos·Raft 를 안 쓰기 위해서다**"
+          },
+          {
+            "step": "**타이머는 전용 서비스가 내구성 있게 들고 있는다**",
+            "why": "오래 재우기와 워크플로·태스크 타임아웃이 여기 걸린다"
+          },
+          {
+            "step": "⚠️ **가시성 인덱스는 뒤늦게 따라온다**",
+            "why": "`the index is always some time behind the actual update` — 다만 **커밋됐다면 결국 갱신된다는 보장**은 전송 큐가 준다"
+          },
+          {
+            "step": "**파티션은 과다 할당해 두고 필요할 때 옮긴다**",
+            "why": "물리 호스트에 직접 묶어 두지 않는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "워크플로 하나를 크게 키울 것인가",
+            "chosen": "**키우지 않는다** — 크기를 제한하고 개수를 늘린다",
+            "alternatives": [
+              "한 워크플로가 아주 많은 일을 담게 설계하기"
+            ],
+            "tradeoff": "⚠️ **사용자가 일을 쪼개야 한다** — 백만 개를 한 워크플로에 넣는 대신 **천 개의 자식 워크플로가 천 개씩** 맡는 모양으로 짜야 한다. 설계의 부담이 사용자에게 일부 넘어간다(이 대가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          },
+          {
+            "question": "상태를 어떻게 나눌 것인가",
+            "chosen": "**워크플로 ID 로 일관 해싱해 샤드에 배정한다.** 샤드 하나는 History 파드 하나가 맡는다",
+            "alternatives": [
+              "상태를 공유 저장소에 두고 아무 노드나 처리하기"
+            ],
+            "tradeoff": "⚠️ **샤드 락이 생긴다** — 샤드가 적으면 거기서 줄을 선다. 실제로 **샤드를 늘리자 락 지연이 약 50ms 에서 약 1ms 로** 떨어졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              },
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "샤드 수를 나중에 바꿀 수 있게 할 것인가",
+            "chosen": "⚠️ **못 바꾼다** — 클러스터를 세운 뒤에는 고정이다",
+            "alternatives": [
+              "운영 중 재샤딩을 지원하기"
+            ],
+            "tradeoff": "⚠️ **처음에 정해야 하는 유일한 설정이다** — `the one configuration setting which cannot (currently) be changed after the cluster is built`. 그래서 **넉넉히 잡으라고 권한다**(소규모 프로덕션 **512**, 대규모도 4,096 미만). **되돌릴 수 없는 결정을 시작 시점으로 밀어 놓은 셈이다**(이 평가는 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "파티션을 물리 호스트에 묶을 것인가",
+            "chosen": "**과다 할당해 두고 옮길 수 있게 한다**",
+            "alternatives": [
+              "호스트가 자기 데이터를 직접 들기"
+            ],
+            "tradeoff": "**옮기기 쉬워진다.** ⚠️ 대신 **파티션 수를 넉넉히 잡아야 하고 그 자체가 위 제약과 얽힌다**(이 연결은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          },
+          {
+            "question": "샤드 밖으로 나가는 일을 어떻게 할 것인가",
+            "chosen": "**Transfer Queues** — 샤드 안에서 원자적으로 커밋하고 별도 스레드가 나중에 외부 큐로 옮긴다",
+            "alternatives": [
+              "2단계 커밋",
+              "Paxos · Raft 같은 분산 합의"
+            ],
+            "tradeoff": "⚠️ **트랜잭션 경계를 넓히지 않는 대신 `나중에` 라는 창이 생긴다** — 커밋과 전달 사이다. 회사가 고른 이유는 단순함이다: `doesn't rely on complex two-phase commit protocols`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          },
+          {
+            "question": "가시성 인덱스의 지연을 어떻게 볼 것인가",
+            "chosen": "**받아들이되 최종 갱신을 보장한다**",
+            "alternatives": [
+              "동기적으로 인덱스를 갱신하기"
+            ],
+            "tradeoff": "⚠️ **인덱스는 항상 실제보다 뒤에 있다.** 그 대신 **커밋됐다면 결국 Elasticsearch 가 갱신된다는 보장**을 전송 큐가 준다 — 지연은 주되 유실은 안 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          },
+          {
+            "question": "어디가 병목이라고 볼 것인가",
+            "chosen": "**지속성 데이터베이스** — CPU 를 80% 이하로 두는 것을 목표로 잡았다",
+            "alternatives": [
+              "애플리케이션 서비스부터 늘리기"
+            ],
+            "tradeoff": "**네 서비스는 수평 확장되지만 데이터베이스가 한계를 정한다.** 실제로 약 **79%** 에서 상태 전이 **초당 1,350**을 냈다 — 시작은 초당 150 이었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "이력 샤드 + 일관 해싱",
+            "role": "워크플로 ID 로 상태를 나눈다. 샤드 하나 = History 파드 하나",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              },
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "Transfer Queue",
+            "role": "샤드 안에서 커밋하고 밖으로는 비동기 전달",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          },
+          {
+            "tech": "타이머 서비스",
+            "role": "타이머를 내구성 있게 저장한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          },
+          {
+            "tech": "Elasticsearch (가시성)",
+            "role": "⚠️ 항상 조금 뒤처지지만 결국 따라온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 2단계 커밋 · Paxos · Raft",
+            "role": "⚠️ **버린 쪽** — 복잡함을 피하려고 안 썼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "replay-must-match",
+          "via": "이력이 앉는 샤드",
+          "contract": "⚠️ **이력을 샤드에 두기로 한 것이 여기서 트랜잭션 경계를 만든다** — 그 밖으로 나가는 일에는 트랜잭션이 없어 Transfer Queue 가 필요해졌다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "관리형에서는 영속 계층을 직접 만든다",
+          "via": "지속성 병목",
+          "contract": "⚠️ **병목이 데이터베이스라는 사실이 관리형에서 자체 영속 계층을 만든 이유로 이어진다** — 동적 샤딩으로 `네임스페이스마다 데이터베이스를 더하고 크기를 조절` 하는 것이 그 답이다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "고객의 워크플로 설계",
+          "via": "크기 제한",
+          "contract": "⚠️ **일을 쪼개는 책임이 사용자에게 있다** — 천 개의 자식 워크플로가 천 개씩 맡는 모양으로 짜야 한다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "되돌릴 수 없는 결정을 시작 시점에 내려야 한다",
+            "why_hard": "⚠️ **샤드 수는 클러스터를 세운 뒤 바꿀 수 없다** — 그런데 그 수가 **락 지연과 처리량을 정한다**(샤드를 늘리자 락 지연이 약 50ms → 약 1ms). **아직 트래픽을 모르는 시점에 그 수를 정해야 한다**",
+            "current_best": "**넉넉히 잡는 것** — 소규모 프로덕션에 512, 대규모도 4,096 미만. ⚠️ **재샤딩 계획이 있는지는 이 글에 없고 `(currently)` 라는 단서만 붙는다** — 이 지적은 이 사이트의 재구성이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Temporal: The basics",
+                "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+                "publisher": "Temporal Blog",
+                "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+              }
+            ]
+          },
+          {
+            "problem": "경계 밖에는 트랜잭션이 없다",
+            "why_hard": "상태를 샤드에 묶어 트랜잭션을 얻었는데, **그 대가로 샤드 밖으로 나가는 일에는 트랜잭션이 없다** — `as soon as queues live outside of core shards of workflow state, we don't have transactions across them anymore`",
+            "current_best": "**Transfer Queue** — 경계 안에서 원자적으로 커밋하고 밖으로는 나중에 흘려보낸다. **2단계 커밋을 안 쓰는 대신 지연을 받아들인다.** ⚠️ 그 지연이 얼마인지는 글에 없다(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Workflow Engine Design Principles with Temporal",
+                "url": "https://temporal.io/blog/workflow-engine-principles",
+                "publisher": "Temporal Blog",
+                "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "경계 안에서 끝내고 밖으로는 나중에 흘린다",
+          "question": "2단계 커밋을 안 쓰고 어떻게 맞추나",
+          "kind": "flow",
+          "code": "flowchart TD\n  W[\"<b>워크플로 ID</b>\"]:::list --> H[\"<b>일관 해싱 → 이력 샤드</b><br/>• 샤드 하나 = History 파드 하나\"]:::accent\n  H --> T[\"<b>한 트랜잭션으로 커밋</b><br/>• 워크플로 상태<br/>• 샤드 안의 로컬 큐\"]:::accent\n  T --> A[\"<b>별도 스레드가 비동기 전달</b><br/>• 외부 큐 서브시스템으로\"]:::list\n  A --> M[\"<b>Matching · 타이머 서비스</b>\"]:::list\n  A --> E[\"<b>가시성 인덱스</b><br/>⚠️ 항상 조금 뒤처진다<br/>• 다만 결국 갱신된다\"]:::soft\n  X[\"⚠️ <b>안 쓴 것</b><br/>• 2단계 커밋<br/>• Paxos · Raft\"]:::soft\n  X -.-> A\n  classDef soft stroke-dasharray: 4 3"
+        },
+        {
+          "title": "처음에 정하면 못 바꾸는 것",
+          "question": "확장의 값을 어디서 내나",
+          "kind": "failure",
+          "code": "flowchart TD\n  S[\"<b>클러스터를 세운다</b>\"]:::accent --> N{\"<b>샤드 수를 정한다</b>\"}\n  N --> N1[\"<b>개발 기본값 4</b>\"]:::gone\n  N --> N2[\"<b>소규모 프로덕션 512</b>\"]:::list\n  N --> N3[\"<b>대규모도 4,096 미만</b>\"]:::list\n  N1 --> L[\"⚠️ <b>샤드 락에서 줄을 선다</b><br/>• 락 지연 약 50ms\"]:::gone\n  N2 --> L2[\"<b>락 지연 약 1ms</b>\"]:::list\n  L --> F[\"⚠️ <b>그런데 못 바꾼다</b><br/>• the one configuration setting<br/>  which cannot be changed\"]:::gone\n  L2 --> B[\"<b>다음 병목은 데이터베이스</b><br/>• CPU 80% 이하가 목표<br/>• 약 79% 에서 상태 전이 1,350/s\"]:::accent\n  B --> B2[\"<b>시작은 150/s 였다</b>\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Workflow Engine Design Principles with Temporal",
+          "url": "https://temporal.io/blog/workflow-engine-principles",
+          "publisher": "Temporal Blog",
+          "summary": "확장의 단위를 워크플로로 잡은 이유와 그로 인한 제약. 큐가 샤드 밖에 있으면 트랜잭션이 없다는 것을 먼저 인정하고 Transfer Queues 로 푼다."
+        },
+        {
+          "title": "Scaling Temporal: The basics",
+          "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+          "publisher": "Temporal Blog",
+          "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
+        },
+        {
+          "title": "Temporal architecture",
+          "url": "https://docs.temporal.io/encyclopedia/architecture/temporal-architecture",
+          "publisher": "Temporal Documentation",
+          "summary": "Frontend·History·Matching·Worker 네 서비스와 영속 계층, 그리고 이벤트 이력을 재생해 상태를 되살리는 방식."
+        },
+        {
+          "title": "Temporal — 요금제",
+          "url": "https://temporal.io/pricing",
+          "publisher": "Temporal",
+          "summary": "액션 수와 저장(활성·보존) GB-시간으로 값을 매긴다. Essentials $100~ · Business $500~ · Enterprise 별도."
+        }
+      ]
     }
   ],
   "sources": [
@@ -703,6 +1168,12 @@
       "url": "https://docs.temporal.io/workflow-definition",
       "publisher": "Temporal Documentation",
       "summary": "워크플로 코드가 지켜야 할 결정성의 정의와 금지 목록, 재생 시 커맨드 비교 방식, 비결정성 오류가 나는 경우."
+    },
+    {
+      "title": "Scaling Temporal: The basics",
+      "url": "https://temporal.io/blog/scaling-temporal-the-basics",
+      "publisher": "Temporal Blog",
+      "summary": "샤드 수·서비스별 확장·지속성 병목을 실제 수치와 함께 다룬 글. 샤드 수는 클러스터 구축 뒤 바꿀 수 없다는 제약을 밝힌다."
     }
   ]
 }
