@@ -4,7 +4,7 @@
   "name_en": "Fastly",
   "country": "US",
   "category": "기타",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "fastly.com",
   "one_liner": "남의 콘텐츠를 세계 83곳에 미리 갖다 놓고 파는 회사 — 그런데 파는 것은 놓는 속도가 아니라 지우는 속도다",
@@ -219,8 +219,71 @@
     {
       "name": "트래픽 경로 위에서 공격을 걸러낸다",
       "why": "⚠️ **매출의 23% 이고 본체보다 두 배 이상 빠르게 자라는 축인데, 이 사이트는 아직 그 안을 못 봤다.** 전달과 같은 경로 위에 얹히므로 **거르는 일이 늦으면 전달이 늦는다** — 그 제약이 설계를 어떻게 정했는지가 이 도메인의 질문이다. **자료를 찾는 것이 다음 사이클의 일이다.**",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Edge Rate Limiting (rate counter + penalty box)",
+          "solves": "클라이언트별 요청을 **엣지에서 세고** 한도를 넘기면 가둔다. 윈도우는 1·10·60초 중에 고른다.",
+          "limits": "⚠️ **계수가 POP 안에서만 공유되고 최대 10% 적게 잡힌다** — 100rps 한도가 실제 110rps 에서 걸릴 수 있고, **여러 POP 에 흩뿌린 공격은 어디서도 한도에 안 닿을 수 있다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "About rate limiting",
+              "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+              "publisher": "Fastly Documentation",
+              "date": "2026",
+              "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+            }
+          ]
+        },
+        {
+          "tech": "Adaptive Threat Engine",
+          "solves": "공격마다 이상 특징을 찾아 **고정 한도가 못 잡는 모양**을 잡는다.",
+          "limits": "⚠️ **판단 구조를 공개하지 않는다** — 무엇을 특징으로 삼는지, 오탐을 어떻게 다루는지가 자료에 없다.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "The Invisible Stadium",
+              "url": "https://www.fastly.com/blog/the-invisible-stadium",
+              "publisher": "Fastly Blog",
+              "date": "2026-08-13",
+              "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
+            }
+          ]
+        },
+        {
+          "tech": "Autopilot · Precision Path",
+          "solves": "전송 경로 건강도를 보고 **초당 수백만 건의 자율 라우팅 결정**으로 서브밀리초 우회한다.",
+          "limits": "⚠️ **월드컵 글의 서술이 전부다** — 판단 근거도 실패 시 동작도 수치도 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Invisible Stadium",
+              "url": "https://www.fastly.com/blog/the-invisible-stadium",
+              "publisher": "Fastly Blog",
+              "date": "2026-08-13",
+              "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
+            }
+          ]
+        },
+        {
+          "tech": "622 Tbps 네트워크",
+          "solves": "공격을 다른 데로 옮기지 않고 **들어온 자리에서 받아낸다.**",
+          "limits": "**용량은 그릇일 뿐 판단이 아니다** — 응용 계층 공격은 양이 아니라 모양으로 온다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Fastly Network Map",
+              "url": "https://www.fastly.com/network-map",
+              "publisher": "Fastly",
+              "date": "2026-06-30",
+              "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "count-fast-or-count-right"
+      ]
     }
   ],
   "features": [
@@ -1672,16 +1735,500 @@
           "summary": "흐름 하나가 아니라 IP 계층 전체를 HTTP 데이터그램으로 나른다. TCP·UDP·ICMP 를 함께 지원하는 VPN 게이트웨이가 된다."
         }
       ]
+    },
+    {
+      "key": "count-fast-or-count-right",
+      "name": "빨리 세는 것과 정확히 세는 것 중 하나를 고르게 한다",
+      "domain": "트래픽 경로 위에서 공격을 걸러낸다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "**매출의 23% 가 여기서 나오고 본체보다 두 배 이상 빠르게 자란다**(4,170만 달러·+43%). 그런데 이 축에는 전달에 없는 제약이 하나 붙는다 — **거르는 일이 전달 경로 위에 얹히므로, 거르느라 늦어지면 전달이 늦어진다.** 그래서 공격을 **중앙으로 끌고 가 씻는 대신 엣지에서 그 자리에서** 판단한다. ⚠️ **그런데 엣지에서 판단한다는 것은 곧 나눠서 센다는 뜻이고, 나눠서 세면 정확할 수 없다**(이 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "이 축의 크기",
+            "value": "2026년 2분기 **4,170만 달러(매출의 23%·+43%)** — 전달(+17%)보다 두 배 이상 빠르다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fastly Announces Second Quarter 2026 Financial Results",
+                "url": "https://investors.fastly.com/news-releases/news-release-details/fastly-announces-second-quarter-2026-financial-results",
+                "publisher": "Fastly IR",
+                "date": "2026-08-05",
+                "summary": "2026년 2분기 매출 1억 8,330만 달러(+23%). Network Services 1억 3,390만(73%·+17%), Security 4,170만(23%·+43%), 기타(컴퓨트·관측) 770만(+69%)."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 문서가 밝히는 오차",
+            "value": "**최대 10% 과소 계수.** 100rps 한도·10초 윈도우면 실제 100rps 가 **90rps 로 보일 수 있어 110rps 가 되어야 걸린다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "label": "고를 수 있는 윈도우",
+            "value": "**1초 · 10초 · 60초** — 짧으면 빠르고 부정확하며, 길면 느리고 정확하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "label": "세는 범위",
+            "value": "⚠️ **POP(또는 Metro POP) 안에서만 공유된다. POP 사이에는 공유되지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "label": "흡수할 그릇",
+            "value": "연결 용량 **622 Tbps** · POP 약 83곳 — 공격을 씻는 곳으로 끌고 가지 않고 **들어온 자리에서 받아낸다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          },
+          {
+            "label": "큰 행사에서",
+            "value": "39일 104경기 · 결승 **동시 시청 18억** · 게임 트래픽 **18~20% 하락** · 소셜 **약 25% 급증**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Invisible Stadium",
+                "url": "https://www.fastly.com/blog/the-invisible-stadium",
+                "publisher": "Fastly Blog",
+                "date": "2026-08-13",
+                "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "어디서 막을지 정할 때",
+          "thought": "**중앙 스크러빙 센터로 끌고 가는 방식을 버렸다** — 트래픽을 최적이 아닌 경로로 밀어 넣어 **지연을 만들기 때문이다.** ⚠️ **퍼징에서 중앙 큐를 버린 것과 같은 모양의 판단이다** — 이 회사는 반복해서 **중앙에 모으는 편의보다 그 자리에서 처리하는 성질**을 고른다(이 대비는 이 사이트의 재구성이다).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "셀 수 없다는 것을 알았을 때",
+          "thought": "⚠️ **가장 정직한 자리다.** 나눠서 세면 정확할 수 없다는 것을 **감추지 않고 한도로 적는다** — `may under-count by up to 10%` 라고 쓰고 **예시까지 든다.** 그리고 문서 끝에 못을 박는다: `No security product, such as a WAF or DDoS mitigation product...will detect or prevent all possible attacks or threats.` **보안 제품이 자기 문서에 못 막는다고 적는 일은 흔치 않다**(이 평가는 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "고객에게 무엇을 맡길지 정할 때",
+          "thought": "**탐지 속도와 정확도의 맞바꿈을 회사가 정하지 않고 고객에게 넘긴다** — 윈도우를 1·10·60초 중에 고르게 하고 **각각이 무엇을 잃는지 문서에 적는다.** ⚠️ **대신 고객이 그 선택의 뜻을 알아야 한다** — shielding 을 켜면 **두 번 세진다**는 것까지 고객이 알고 걸러야 하는 식이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "rate counter",
+            "what": "**클라이언트별 요청 수를 센다.** ⚠️ POP 안의 호스트들끼리만 공유되고 **POP 사이에는 공유되지 않는다**"
+          },
+          {
+            "name": "penalty box",
+            "what": "한도를 넘긴 클라이언트를 **기록하고 이후 요청을 막는 곳**"
+          },
+          {
+            "name": "윈도우",
+            "what": "세는 구간. **1초 · 10초 · 60초** 중 고른다 — 이 선택이 곧 속도와 정확도의 맞바꿈이다"
+          },
+          {
+            "name": "shield POP",
+            "what": "오리진 앞에 두는 두 번째 POP. ⚠️ **여기서 또 세므로 계수가 두 번 일어난다**"
+          },
+          {
+            "name": "Adaptive Threat Engine",
+            "what": "공격마다 이상 특징을 찾아내는 쪽. **경직된 속도 제한 정책보다 적응적**이라고 회사가 설명한다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **계수는 POP 안에서만 공유된다** — 전역으로 모으지 않는다",
+          "⚠️ **센 값은 실제보다 작을 수 있다** — 최대 10%. 그래서 한도는 실제보다 늦게 걸린다",
+          "**짧은 윈도우와 높은 정확도는 함께 못 얻는다** — 문서가 그 맞바꿈을 명시한다",
+          "**거르는 일은 전달 경로 위에 있다** — 늦어지면 정상 이용자도 늦어진다",
+          "⚠️ **모든 공격을 막지는 못한다** — 제품 문서가 직접 적는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**요청이 가장 가까운 POP 에 도착한다**",
+            "why": "공격도 정상 트래픽도 같은 문으로 들어온다"
+          },
+          {
+            "step": "**rate counter 가 클라이언트별로 센다** — POP 안의 호스트들이 값을 나눠 갖는다",
+            "why": "⚠️ 전역으로 모으면 정확하지만 그만큼 늦다"
+          },
+          {
+            "step": "**고른 윈도우(1·10·60초)로 잘라 한도와 견준다**",
+            "why": "짧으면 빨리 걸리고 부정확하며, 길면 늦게 걸리고 정확하다"
+          },
+          {
+            "step": "**넘기면 penalty box 에 넣는다** — 기록하고 이후 요청을 막는다",
+            "why": "차단 자체는 엣지에서 그 자리에 끝난다"
+          },
+          {
+            "step": "⚠️ **shielding 이 켜져 있으면 edge POP 과 shield POP 에서 두 번 세진다**",
+            "why": "`fastly.ff.visits_this_service` 로 걸러야 한 번만 센다 — **고객이 알아야 하는 함정이다**"
+          },
+          {
+            "step": "**규칙으로 안 잡히는 것은 Adaptive Threat Engine 이 공격별 특징으로 잡는다**",
+            "why": "고정 한도만으로는 모양이 바뀌는 공격을 못 따라간다"
+          },
+          {
+            "step": "**큰 행사에서는 예측된 용량 위에서 이 모든 것이 돈다**",
+            "why": "⚠️ **거르는 일과 용량 계획이 같은 사건을 다른 각도에서 본다**(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "공격을 어디서 막을 것인가",
+            "chosen": "**들어온 엣지에서 그 자리에** — 중앙으로 끌고 가지 않는다",
+            "alternatives": [
+              "중앙 스크러빙 센터로 트래픽을 우회시켜 씻기"
+            ],
+            "tradeoff": "중앙 방식은 **트래픽을 최적이 아닌 경로로 밀어 넣어 지연을 만든다** — 거르는 일이 전달 경로 위에 있으니 그 지연을 정상 이용자가 함께 문다. ⚠️ **대가는 판단이 흩어진다는 것이다** — 이 결정 하나가 아래의 계수 문제 전부를 낳는다(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          },
+          {
+            "question": "어디까지 함께 셀 것인가",
+            "chosen": "**POP(또는 Metro POP) 안에서만** — `Ratecounter data is shared within the hosts that comprise a POP or Metro POP but not between POPs`",
+            "alternatives": [
+              "전역 카운터를 두고 모든 POP 이 공유"
+            ],
+            "tradeoff": "**전역으로 모으면 정확하지만 그 합의 비용이 곧 지연이다.** 대가는 분명하다 — ⚠️ **여러 POP 에 고르게 흩뿌린 공격은 어느 POP 에서도 한도에 안 닿을 수 있다**(이 지적은 이 사이트의 재구성이다). 그래서 속도 제한만으로는 부족해지고 **적응형 탐지가 따로 필요해진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "question": "세는 구간을 얼마로 할 것인가",
+            "chosen": "**고객이 1초·10초·60초 중에 고른다** — 회사가 정하지 않는다",
+            "alternatives": [
+              "회사가 하나로 정해 주기"
+            ],
+            "tradeoff": "문서가 맞바꿈을 그대로 적는다 — `A shorter window results in a quicker detection time for attacks, but can come at the expense of accuracy. A longer window has a slower detection time, but higher accuracy.` **정답이 없으니 고르게 하는 대신, 고객이 그 뜻을 알아야 한다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "question": "정확하지 않다는 것을 어떻게 할 것인가",
+            "chosen": "**한도를 문서에 적는다** — `may under-count by up to 10%`, 예시까지 함께",
+            "alternatives": [
+              "오차를 밝히지 않기",
+              "보정해서 더 일찍 걸리게 하기"
+            ],
+            "tradeoff": "⚠️ **한도가 늦게 걸린다는 것을 고객이 알고 설정하게 된다** — 100rps 를 막고 싶으면 실제로는 110rps 에서 걸릴 수 있다. **보정해서 일찍 걸리게 하면 정상 이용자를 막는 쪽으로 기운다**(이 대안 평가는 이 사이트의 재구성이다). **오차를 숨기지 않는 대신 그 계산을 고객에게 넘긴다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "question": "shielding 과 겹치는 계수를 어떻게 할 것인가",
+            "chosen": "**두 번 세게 두고, 걸러내는 방법을 알려 준다** — `fastly.ff.visits_this_service` 확인",
+            "alternatives": [
+              "시스템이 알아서 한 번만 세기"
+            ],
+            "tradeoff": "⚠️ **기본값이 함정인 자리다.** shielding 을 켜면 edge POP 과 shield POP 에서 각각 세므로 **고객이 손대지 않으면 두 배로 센다.** 자동으로 처리하지 않는 이유는 글에 없다 — **엣지에서 그 자리에 끝내는 설계라 두 POP 이 서로를 모르기 때문일 것이다**(추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "question": "고정 한도만으로 충분한가",
+            "chosen": "**아니다 — Adaptive Threat Engine 을 함께 둔다**",
+            "alternatives": [
+              "속도 제한 정책만으로 대응"
+            ],
+            "tradeoff": "회사는 이것이 `rigid rate-limiting policies` 보다 적응적이라 설명한다. ⚠️ **그런데 그 판단 구조를 공개하지 않는다** — 무엇을 특징으로 삼는지, 오탐을 어떻게 다루는지가 없다. **적응형은 설명 가능성을 내주고 적응력을 얻는다**(이 대가는 이 사이트의 재구성이다).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "The Invisible Stadium",
+                "url": "https://www.fastly.com/blog/the-invisible-stadium",
+                "publisher": "Fastly Blog",
+                "date": "2026-08-13",
+                "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 약속하지 않을 것인가",
+            "chosen": "**모든 공격을 막는다고 말하지 않는다** — 제품 문서에 그대로 적는다",
+            "alternatives": [
+              "완전한 보호를 내세우기"
+            ],
+            "tradeoff": "`No security product, such as a WAF or DDoS mitigation product...will detect or prevent all possible attacks or threats.` ⚠️ **파는 쪽이 자기 문서에 못 막는다고 적는 일은 흔치 않다.** 대가는 영업이 무겁다는 것이고, 얻는 것은 **한도를 알고 쓰는 고객**이다(이 평가는 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Edge Rate Limiting (rate counter + penalty box)",
+            "role": "클라이언트별 요청을 세고 넘기면 가둔다. POP 안에서만 값을 공유한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "tech": "Adaptive Threat Engine",
+            "role": "공격마다 이상 특징을 찾아 고정 한도가 못 잡는 것을 잡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Invisible Stadium",
+                "url": "https://www.fastly.com/blog/the-invisible-stadium",
+                "publisher": "Fastly Blog",
+                "date": "2026-08-13",
+                "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
+              }
+            ]
+          },
+          {
+            "tech": "Autopilot · Precision Path",
+            "role": "전송 경로 건강도를 보고 **초당 수백만 건의 자율 라우팅 결정**을 내려 서브밀리초로 우회한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Invisible Stadium",
+                "url": "https://www.fastly.com/blog/the-invisible-stadium",
+                "publisher": "Fastly Blog",
+                "date": "2026-08-13",
+                "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
+              }
+            ]
+          },
+          {
+            "tech": "ContentGuard",
+            "role": "무단 배포 스트림을 **엣지에서 인라인으로** 거른다 — 정상 시청자에게 지연을 더하지 않고",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Invisible Stadium",
+                "url": "https://www.fastly.com/blog/the-invisible-stadium",
+                "publisher": "Fastly Blog",
+                "date": "2026-08-13",
+                "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
+              }
+            ]
+          },
+          {
+            "tech": "622 Tbps 네트워크",
+            "role": "공격을 다른 데로 옮기지 않고 **들어온 자리에서 받아내는** 그릇",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fastly Network Map",
+                "url": "https://www.fastly.com/network-map",
+                "publisher": "Fastly",
+                "date": "2026-06-30",
+                "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "simple-model-wins-on-rare-days",
+          "via": "트래픽 급증",
+          "contract": "⚠️ **행사와 공격이 같은 문으로 들어온다** — 월드컵 글에서 예측 용량 계획과 인라인 차단이 나란히 돈다. **용량이 모자라면 거르기도 늦고, 거르기가 늦으면 용량이 더 든다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "structure-hides-content-policy-hides-rest",
+          "via": "⚠️ 정반대의 약속",
+          "contract": "⚠️ **한 네트워크가 두 약속을 동시에 판다** — 이쪽은 **들여다보는 값**을 받고, 프록시는 `Nor do we subject proxy traffic to deep packet inspection` 으로 **안 들여다보는 값**을 받는다. **두 파이프라인을 섞지 않는 비용은 자료에 없다**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "purge-must-reach-everywhere",
+          "via": "중앙을 버린 같은 판단",
+          "contract": "**퍼징에서 중앙 큐를 버린 것과, 여기서 중앙 스크러빙을 버린 것이 같은 모양이다** — 모아서 정확해지는 편의보다 **그 자리에서 끝내는 성질**을 고른다(재구성). ⚠️ 대가도 같다 — **전역으로 아는 곳이 없다**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "고객의 오리진",
+          "via": "penalty box",
+          "contract": "**막힌 요청은 오리진에 닿지 않는다.** 거르는 일이 곧 오리진 보호이고, 그래서 전달과 같은 경로에 있어야 값이 난다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "나눠서 세면 정확할 수 없고, 모아서 세면 늦다",
+            "why_hard": "⚠️ **엣지에서 그 자리에 막기로 한 결정이 이 문제를 낳는다.** 계수는 **POP 안에서만** 공유되고 그마저 **최대 10% 적게** 잡힌다. 여러 POP 에 고르게 흩뿌린 공격은 **어느 한 곳에서도 한도에 안 닿을 수 있다**(이 시나리오는 이 사이트의 재구성이다).",
+            "current_best": "**오차를 숨기지 않고 한도로 적어 고객이 계산에 넣게 하고**, 고정 한도가 놓치는 것을 **적응형 탐지로 덮는 것.** ⚠️ **전역으로 세는 문제 자체를 푼 것은 아니다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          },
+          {
+            "problem": "탐지 속도와 정확도가 같은 손잡이에 달려 있다",
+            "why_hard": "**윈도우를 줄이면 빨리 걸리는 대신 정확도를 잃고, 늘리면 반대다.** 그리고 이 선택은 상황마다 답이 달라서 **회사가 하나로 정해 줄 수 없다.**",
+            "current_best": "**세 개(1·10·60초)로 좁혀 고객에게 넘기고, 각각이 무엇을 잃는지 문서에 적는 것.** ⚠️ **상황에 따라 자동으로 바꾸는 방법은 문서에 없다** — 이 지적은 이 사이트의 재구성이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "About rate limiting",
+                "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+                "publisher": "Fastly Documentation",
+                "date": "2026",
+                "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "들어온 자리에서 세고, 들어온 자리에서 막는다",
+          "question": "요청 하나가 걸러지기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  R[\"<b>요청</b><br/>정상도 공격도 같은 문으로\"]:::accent --> POP[\"<b>가장 가까운 POP</b><br/>622 Tbps · 약 83곳\"]:::accent\n  POP --> RC[\"<b>rate counter</b><br/>• 클라이언트별로 센다<br/>• POP 안에서만 공유\"]:::accent\n  RC --> W{\"<b>윈도우</b><br/>1s · 10s · 60s\"}\n  W -->|\"한도 안\"| PASS[\"<b>통과</b>\"]:::list\n  W -->|\"넘겼다\"| PB[\"<b>penalty box</b><br/>• 기록하고 이후 요청 차단\"]:::list\n  ATE[\"<b>Adaptive Threat Engine</b><br/>• 고정 한도가 못 잡는 모양\"]:::accent -.-> PB\n  PASS --> ORG[\"<b>오리진</b>\"]:::list\n  SH[\"⚠️ <b>shielding 을 켜면</b><br/>• edge POP 과 shield POP 에서<br/>  <b>두 번 세진다</b>\"]:::gone -.-> RC\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "세는 일이 틀릴 수 있다는 것을 문서에 적는다",
+          "question": "이 설계가 못 하는 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  D[\"<b>엣지에서 그 자리에 막는다</b><br/>• 중앙 스크러빙의 지연을 피한다\"]:::accent --> C[\"⚠️ <b>판단이 흩어진다</b>\"]:::gone\n  C --> C1[\"⚠️ <b>POP 사이에는 계수를 공유 안 함</b>\"]:::gone\n  C --> C2[\"⚠️ <b>최대 10% 과소 계수</b><br/>• 100rps 한도가 110rps 에서 걸릴 수 있다\"]:::gone\n  C1 --> A[\"⚠️ <b>여러 POP 에 흩뿌린 공격은</b><br/>⚠️ <b>어디서도 한도에 안 닿을 수 있다</b>\"]:::gone\n  W[\"<b>윈도우 선택</b>\"]:::accent --> W1[\"짧게 → 빠르고 부정확\"]:::gone\n  W --> W2[\"길게 → 느리고 정확\"]:::gone\n  DOC[\"<b>문서가 못 박는다</b><br/>• 어떤 보안 제품도 모든 공격을<br/>  탐지하거나 막지 못한다\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "About rate limiting",
+          "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+          "publisher": "Fastly Documentation",
+          "date": "2026",
+          "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+        },
+        {
+          "title": "The Invisible Stadium",
+          "url": "https://www.fastly.com/blog/the-invisible-stadium",
+          "publisher": "Fastly Blog",
+          "date": "2026-08-13",
+          "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
+        },
+        {
+          "title": "Fastly Network Map",
+          "url": "https://www.fastly.com/network-map",
+          "publisher": "Fastly",
+          "date": "2026-06-30",
+          "summary": "연결 용량 622 Tbps, POP 약 83곳(4곳 예정), p99 TTFB 1ms 미만, 전역 퍼지 평균 150ms 미만."
+        },
+        {
+          "title": "Fastly Announces Second Quarter 2026 Financial Results",
+          "url": "https://investors.fastly.com/news-releases/news-release-details/fastly-announces-second-quarter-2026-financial-results",
+          "publisher": "Fastly IR",
+          "date": "2026-08-05",
+          "summary": "2026년 2분기 매출 1억 8,330만 달러(+23%). Network Services 1억 3,390만(73%·+17%), Security 4,170만(23%·+43%), 기타(컴퓨트·관측) 770만(+69%)."
+        }
+      ]
     }
   ],
   "eras": [],
   "open_questions": [
-    "⚠️ **보안 도메인의 1차 자료를 아직 안 읽었다** — 매출의 **23%**(4,170만 달러·+43%)인데 근거가 IR 숫자뿐이다. **DDoS·WAF·Bot 이 전달 경로 위에서 어떻게 도는지**를 다음 사이클이 찾는다.",
+    "⚠️ **보안 축의 1차 자료가 제품 문서와 행사 후기뿐이다** — 속도 제한의 구조와 한계는 문서에서 확인했지만(계수 범위·10% 오차·윈도우 맞바꿈), **Adaptive Threat Engine 이 무엇을 특징으로 삼는지, 오탐을 어떻게 다루는지는 어디에도 없다.** **매출 23% 짜리 축인데 설계 회고 글을 찾지 못했다.**",
+    "⚠️ **`preserving-analytics-attribution-bot-challenges...` 는 자기 시스템 글이 아니었다** — 제목에 `deep dive` 가 붙어 있지만 **고객용 how-to 가이드**다(NGWAF 가 456 을 내면 VCL 이 챌린지 페이지를 합성하는 방법). **제목의 깊이와 글의 성격은 다르다.**",
     "**POP 총수를 회사가 한 줄로 적지 않는다** — 네트워크 지도의 도시를 세어 **약 83곳**(추가 예정 4곳)이 나왔다. **회사가 직접 밝힌 수가 아니다.**",
     "⚠️ **퍼징의 상한을 모른다** — 평균 150ms 미만은 있는데 **최악이 얼마인지, 언제 모두가 받았다고 말할 수 있는지**가 없다. 분산 설계라 확정 시점 자체가 없을 가능성이 높다(추정).",
     "**Firefox VPN 프록시에 수치가 하나도 없다** — 처리량·지연·채택 어느 것도 없이 `hundreds of millions of active users` 와 `modest adoption rates` 뿐이다.",
     "**엣지 컴퓨트(Compute)의 내부 구조를 아직 안 봤다** — 요금이 **vCPU 밀리초**로 매겨진다는 것은 실행 격리 방식을 드러내는데(추정), 그 글을 찾지 못했다.",
-    "**연표(eras)를 세울 자료를 못 찾았다** — Varnish 를 고쳐 쓴다는 것은 3자 자료에 나오지만 **회사 자료에서 연도와 함께 확인하지 못했다.**"
+    "**연표(eras)를 세울 자료를 못 찾았다** — Varnish 를 고쳐 쓴다는 것은 3자 자료에 나오지만 **회사 자료에서 연도와 함께 확인하지 못했다.**",
+    "**Autopilot · Precision Path 의 판단 근거를 모른다** — `초당 수백만 건의 자율 라우팅 결정` 이라는 서술만 있고 무엇을 보고 정하는지, 틀렸을 때 어떻게 되는지가 없다."
   ],
   "sources": [
     {
@@ -1739,6 +2286,20 @@
       "publisher": "IETF",
       "date": "2023-10",
       "summary": "흐름 하나가 아니라 IP 계층 전체를 HTTP 데이터그램으로 나른다. TCP·UDP·ICMP 를 함께 지원하는 VPN 게이트웨이가 된다."
+    },
+    {
+      "title": "About rate limiting",
+      "url": "https://www.fastly.com/documentation/guides/security/rate-limiting/about-rate-limiting/",
+      "publisher": "Fastly Documentation",
+      "date": "2026",
+      "summary": "엣지 속도 제한의 구조. 요청을 세는 rate counter 와 걸린 클라이언트를 가두는 penalty box. 윈도우는 1·10·60초, 계수는 POP 안에서만 공유되고 최대 10% 과소 계수될 수 있다."
+    },
+    {
+      "title": "The Invisible Stadium",
+      "url": "https://www.fastly.com/blog/the-invisible-stadium",
+      "publisher": "Fastly Blog",
+      "date": "2026-08-13",
+      "summary": "39일 104경기 월드컵 트래픽. 예측 용량 계획, Autopilot·Precision Path 의 자율 라우팅, Adaptive Threat Engine·ContentGuard 의 인라인 차단. 결승 동시 시청 18억."
     }
   ]
 }
