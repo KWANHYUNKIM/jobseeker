@@ -1702,6 +1702,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "accessibility",
+      "title": "웹 접근성",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "\"접근성을 지켜 주세요\"라는 요구는 흔한데 **무엇을 어디까지 하라는 건지**가 빠져 있다 — 그 빈칸을 명세가 이미 채워 뒀고, 그 명세는 **자기 최고 등급을 목표로 삼지 말라**고까지 적어 놨다.",
+      "aliases": [
+        "웹 접근성",
+        "접근성",
+        "web accessibility",
+        "WCAG",
+        "a11y",
+        "WAI-ARIA"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
