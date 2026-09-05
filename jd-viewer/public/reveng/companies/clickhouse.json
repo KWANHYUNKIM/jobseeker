@@ -1,0 +1,293 @@
+{
+  "slug": "clickhouse",
+  "name": "ClickHouse",
+  "name_en": "ClickHouse",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "clickhouse.com",
+  "one_liner": "분석용 데이터베이스를 오픈소스로 뿌리고 운영을 파는 회사 — 자기 창고도 자기 제품으로 짓는다",
+  "business_model": "**엔진은 오픈소스로 열어 두고 관리형 운영을 판다.** 회사가 직접 밝힌 것은 **관리형 서비스 고객 3,000곳 이상**과 **ARR 전년 대비 250% 이상 성장**, 그리고 **4억 달러 시리즈 D**(Dragoneer 주도)다.\n\n**요금의 축이 하나 있다 — 저장과 컴퓨트를 따로 판다.** 회사가 그것을 `due to our flexible architecture` 라 설명하고, 고객은 **컴퓨트를 예약하거나 오토스케일 상한을 걸어** 비용을 잡는다. ⚠️ **이 분리가 요금표의 편의가 아니라 아키텍처의 결과라는 점이 중요하다** — 저장과 컴퓨트가 붙어 있으면 늘리는 쪽이 늘 함께 늘어난다(이 정리는 이 사이트의 재구성이다).\n\n**회사가 넓히려는 방향도 자기 말로 적는다** — 트랜잭션과 분석을 함께 다루는 쪽(**네이티브 Postgres 서비스**로 트랜잭션 데이터를 동기화해 `up to 100X faster analytics`), 데이터 레이크 호환(Iceberg·Delta Lake), 그리고 **LLM 관측**(Langfuse 인수). 인수 이유를 인수된 쪽 대표의 말로 싣는다 — `LLM observability and evaluation is fundamentally a data problem`. 전략을 한 문장으로 요약한 것은 이쪽이다: **`as models become more capable, the bottleneck moves to data infrastructure`.**",
+  "products": [
+    "ClickHouse (오픈소스 분석 DB)",
+    "ClickHouse Cloud (관리형)",
+    "네이티브 Postgres 서비스",
+    "Langfuse (LLM 관측)",
+    "데이터 레이크 호환 (Iceberg · Delta Lake)"
+  ],
+  "domain_map": {
+    "title": "ClickHouse 도메인 지도",
+    "question": "분석 엔진을 파는 회사가 자기 데이터로는 무엇을 하고, 그 경험이 제품으로 어떻게 돌아오는가?",
+    "code": "flowchart TD\n  OSS[\"<b>오픈소스 엔진</b>\"]:::accent --> CLOUD[\"<b>ClickHouse Cloud</b><br/>• 고객 3,000곳 이상<br/>• 저장과 컴퓨트를 따로\"]:::accent\n  ENG[\"<b>갱신을 미뤄 두고 나중에 합친다</b><br/>• 제자리 수정 대신 새로 쓰기<br/>• 백그라운드 머지\"]:::accent --> OSS\n  OWN[\"<b>사내 데이터 창고 2.1PB</b><br/>• 자기 제품으로 짓는다\"]:::accent --> DW[\"⚠️ <b>한계를 먼저 만난다</b><br/>• 시간당 적재 DAG 하나가<br/>  확장되지 않았다\"]:::gone\n  DW -.->|\"겪은 것이 제품으로\"| OSS\n  OWN --> AI[\"<b>DWAINE</b><br/>• 분석 워크로드의 70%<br/>• 사용자 250명 이상\"]:::accent\n  AI --> KEEP[\"⚠️ <b>남긴 30%</b><br/>• 공인 재무 지표<br/>• 실시간 운영 모니터링<br/>• 반복 표준 보고\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+  },
+  "revenue_streams": [
+    {
+      "name": "ClickHouse Cloud (관리형 운영)",
+      "how": "오픈소스 엔진은 무료로 두고 **운영을 판다.** 관리형 고객 **3,000곳 이상**, ARR **전년 대비 250% 이상** 성장. 저장과 컴퓨트를 따로 계산한다.",
+      "domains": [
+        "갱신을 제자리에서 하지 않고 나중에 합친다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "ClickHouse raises $400M Series D, acquires Langfuse, launches Postgres",
+          "url": "https://clickhouse.com/blog/clickhouse-raises-400-million-series-d-acquires-langfuse-launches-postgres",
+          "publisher": "ClickHouse",
+          "date": "2026",
+          "summary": "Dragoneer 주도 4억 달러 시리즈 D. 관리형 서비스 고객 3,000곳 이상, ARR 전년 대비 250% 이상 성장. Langfuse 인수(LLM 관측)와 네이티브 Postgres 서비스 출시, Iceberg·Delta Lake 호환."
+        },
+        {
+          "title": "ClickHouse Cloud pricing",
+          "url": "https://clickhouse.com/pricing",
+          "publisher": "ClickHouse",
+          "date": "2026",
+          "summary": "저장과 컴퓨트를 따로 확장해 쓴 만큼 받는다. 컴퓨트를 예약하거나 오토스케일 상한을 걸 수 있다."
+        }
+      ]
+    },
+    {
+      "name": "주변으로 넓힌 제품 (Postgres · LLM 관측)",
+      "how": "트랜잭션 데이터를 동기화하는 네이티브 Postgres 서비스와 Langfuse(LLM 관측). ⚠️ **매출 기여는 확인하지 못했다** — 발표 시점의 제품이다.",
+      "domains": [
+        "갱신을 제자리에서 하지 않고 나중에 합친다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "ClickHouse raises $400M Series D, acquires Langfuse, launches Postgres",
+          "url": "https://clickhouse.com/blog/clickhouse-raises-400-million-series-d-acquires-langfuse-launches-postgres",
+          "publisher": "ClickHouse",
+          "date": "2026",
+          "summary": "Dragoneer 주도 4억 달러 시리즈 D. 관리형 서비스 고객 3,000곳 이상, ARR 전년 대비 250% 이상 성장. Langfuse 인수(LLM 관측)와 네이티브 Postgres 서비스 출시, Iceberg·Delta Lake 호환."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "갱신을 제자리에서 하지 않고 나중에 합친다",
+      "why": "**컬럼 저장소는 읽기를 위해 만들어졌고, 그래서 한 줄을 고치는 일이 비싸다.** 이 제품은 그 문제를 **고치지 않고 미루는 쪽**으로 푼다 — 새 상태를 따로 써 두고 **백그라운드 머지**가 나중에 합친다. ⚠️ **그 대가가 읽는 쪽으로 넘어간다** — 아직 안 합쳐진 것을 어떻게 읽을지를 **질의하는 사람이 알아야 한다.**",
+      "tech": [
+        {
+          "tech": "백그라운드 머지 (MergeTree 계열)",
+          "solves": "제자리 수정 대신 **새로 써 두고 나중에 합친다.** 쓰기 경로가 단순해지고 빨라진다.",
+          "limits": "⚠️ **인제스트가 무거우면 머지가 밀린다** — 합쳐지지 않은 조각이 쌓이면 읽기가 느려진다. **언제 합쳐지는지를 사용자가 통제하지 못한다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Updates in ClickHouse: purpose-built engines",
+              "url": "https://clickhouse.com/blog/updates-in-clickhouse-1-purpose-built-engines",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "갱신을 제자리에서 하지 않고 새로 써 둔 뒤 백그라운드 머지로 합친다. 읽을 때 FINAL 을 쓸지 정해야 하고 인제스트가 무거우면 머지가 밀린다."
+            }
+          ]
+        },
+        {
+          "tech": "목적별 엔진 (ReplacingMergeTree 등)",
+          "solves": "무엇을 남기고 무엇을 버릴지의 규칙을 **엔진 선택으로 정한다** — 갱신·중복 제거·집계가 각각 다른 엔진이다.",
+          "limits": "⚠️ **테이블을 만들 때 고른 것이 나중의 질의 방식을 정한다** — 뒤늦게 바꾸기 어렵고, **엔진의 동작을 이해해야 결과를 믿을 수 있다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Updates in ClickHouse: purpose-built engines",
+              "url": "https://clickhouse.com/blog/updates-in-clickhouse-1-purpose-built-engines",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "갱신을 제자리에서 하지 않고 새로 써 둔 뒤 백그라운드 머지로 합친다. 읽을 때 FINAL 을 쓸지 정해야 하고 인제스트가 무거우면 머지가 밀린다."
+            }
+          ]
+        },
+        {
+          "tech": "FINAL",
+          "solves": "읽을 때 **아직 안 합쳐진 것까지 합쳐서** 보게 한다.",
+          "limits": "⚠️ **언제 쓸지를 사람이 정해야 한다** — 쓰면 정확하고 느리며, 안 쓰면 빠르고 틀릴 수 있다. **정확성이 기본값이 아니라 선택지인 자리다**(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Updates in ClickHouse: purpose-built engines",
+              "url": "https://clickhouse.com/blog/updates-in-clickhouse-1-purpose-built-engines",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "갱신을 제자리에서 하지 않고 새로 써 둔 뒤 백그라운드 머지로 합친다. 읽을 때 FINAL 을 쓸지 정해야 하고 인제스트가 무거우면 머지가 밀린다."
+            }
+          ]
+        },
+        {
+          "tech": "저장·컴퓨트 분리 (Cloud)",
+          "solves": "둘을 따로 늘리고 따로 받는다. 컴퓨트 예약과 오토스케일 상한으로 비용을 잡는다.",
+          "limits": "⚠️ **구조와 요금이 얼마나 맞물려 있는지 확인하지 못했다** — 요금 페이지가 철학만 적고 **단가를 공개하지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ClickHouse Cloud pricing",
+              "url": "https://clickhouse.com/pricing",
+              "publisher": "ClickHouse",
+              "date": "2026",
+              "summary": "저장과 컴퓨트를 따로 확장해 쓴 만큼 받는다. 컴퓨트를 예약하거나 오토스케일 상한을 걸 수 있다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "자기 제품으로 자기 창고를 짓고 한계를 먼저 만난다",
+      "why": "⚠️ **분석 DB 를 파는 회사가 자기 분석 창고를 자기 제품으로 짓는다.** 그러면 **고객이 만나기 전에 자기가 먼저 벽에 부딪힌다.** 실제로 1년 뒤 회고에서 그것을 적는다 — **시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘자 확장되지 않았고, 인서트 작업이 너무 오래 걸렸다.** **자기 제품을 쓰는 회사의 값은 자랑이 아니라 이런 문장에 있다**(이 정리는 이 사이트의 재구성이다).",
+      "tech": [
+        {
+          "tech": "사내 데이터 창고 (2.1PB)",
+          "solves": "회사의 분석 자료를 한곳에 모은다. **AWS EC2 위 PoC 로 시작해 구성요소를 도커로 옮겼다.**",
+          "limits": "⚠️ **초기 구조가 확장되지 않았다** — 시간당 적재 DAG 하나에 모든 원천을 매달았고, 원천이 늘자 **인서트가 너무 오래 걸렸다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built the Internal Data Warehouse at ClickHouse",
+              "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+              "publisher": "ClickHouse Blog",
+              "date": "2023",
+              "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+            },
+            {
+              "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+              "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+              "publisher": "ClickHouse Blog",
+              "date": "2026-03",
+              "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+            },
+            {
+              "title": "The AI-first data warehouse",
+              "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+            }
+          ]
+        },
+        {
+          "tech": "⏳ 개선된 적재 구조",
+          "solves": "1년 뒤 글이 그 한계를 어떻게 넘었는지 다룬다.",
+          "limits": "⚠️ **아직 본문을 읽지 않았다** — 제목과 검색 요약으로만 확인했다. **다음 사이클의 첫 일이다.**",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+              "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+              "publisher": "ClickHouse Blog",
+              "date": "2026-03",
+              "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "분석 일의 70% 를 AI 에 넘기고 30% 를 일부러 남긴다",
+      "why": "**사내 분석 요청이 데이터 팀의 시간을 먹는다.** 이 회사는 사내 창고 위에 AI 어시스턴트를 올려 **분석 워크로드의 70% 를 그쪽으로 넘겼고**, 데이터 창고 팀의 지원 요청이 **50~70% 줄었다.** ⚠️ **그런데 이 도메인의 핵심은 넘긴 70% 가 아니라 남긴 30% 다** — 무엇을 기계에 안 맡길지를 **미리 정해 두었다.**",
+      "tech": [
+        {
+          "tech": "DWAINE (사내 AI 어시스턴트)",
+          "solves": "자연어로 물으면 답한다. **사용자 250명 이상 · 하루 200 메시지 · 대화 50~70건**, **15~30분 걸리던 SQL 작업이 즉시** 끝난다.",
+          "limits": "⚠️ **출력만으로 중요한 결정을 못 하게 막아 두었다** — 사용자는 전통 도구에서 **SQL 로 검증해야 한다.** 즉 **빠르지만 최종 근거가 되지는 못한다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The AI-first data warehouse",
+              "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 일부러 남긴 전통 BI (30%)",
+          "solves": "**공인 재무 지표**(공식 승인이 필요한 것) · **실시간 운영 모니터링** · **반복되는 표준 보고**를 그대로 둔다.",
+          "limits": "⚠️ **경계를 사람이 정한다** — 어느 질문이 어느 쪽인지 자동으로 갈리지 않는다(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The AI-first data warehouse",
+              "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+            }
+          ]
+        },
+        {
+          "tech": "LibreChat · MCP · AWS Bedrock (Claude)",
+          "solves": "**벤더 종속을 피하려 오픈소스 채팅 프런트를 쓰고**, 통합은 MCP 로 표준화하며, 자체 호스팅에 SSO 와 감사 로그를 건다.",
+          "limits": "⚠️ **자체 호스팅과 통합을 직접 떠안는다** — 그 운영 비용은 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The AI-first data warehouse",
+              "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+              "publisher": "ClickHouse Blog",
+              "date": "2026",
+              "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **매출 수치가 출처마다 다르다** — 회사가 직접 밝힌 것은 **관리형 고객 3,000곳 이상**과 **ARR 250% 이상 성장**뿐이다. 3자 자료들은 ARR 을 **2억 5,000만~3억 5,000만 달러**로, 고객 수를 **4,000곳 이상**으로, 밸류에이션을 **약 150억 달러**로 말하는데 **1급 출처로 확인하지 못했다.**",
+    "⏳ **`A year later` 본문을 아직 안 읽었다** — 초기 적재 구조가 무너진 것까지는 확인했고 **어떻게 넘었는지가 남았다.** **다음 사이클의 첫 일이다.**",
+    "⚠️ **요금 단가를 얻지 못했다** — 요금 페이지가 **저장과 컴퓨트를 따로 판다는 철학만** 적고 숫자를 안 준다. **요금 단위가 아키텍처를 드러낸다는 규칙을 이 회사에서는 절반만 쓸 수 있다.**",
+    "**Cloud 의 내부 구조를 모른다** — 저장·컴퓨트 분리가 실제로 어떻게 구현됐는지(공유 저장소·캐시·컴퓨트 격리) 자료를 아직 못 찾았다.",
+    "**Langfuse 인수 뒤 통합이 어떻게 되는지 모른다** — 발표문의 한 문장(`LLM observability and evaluation is fundamentally a data problem`)뿐이다.",
+    "**연표(eras)를 세울 자료를 못 찾았다** — 다만 사내 창고 글이 **1편과 `A year later` 로 나뉘어 있어** 두 편을 나란히 놓으면 시간축이 나올 수 있다."
+  ],
+  "sources": [
+    {
+      "title": "The AI-first data warehouse",
+      "url": "https://clickhouse.com/blog/ai-first-data-warehouse",
+      "publisher": "ClickHouse Blog",
+      "date": "2026",
+      "summary": "사내 데이터 창고 2.1PB 위에 AI 어시스턴트 DWAINE 을 올렸다. 사용자 250명 이상, 하루 200 메시지, 분석 워크로드의 70% 를 AI 가 처리하고 지원 요청이 50~70% 줄었다. 나머지 30% 는 일부러 전통 BI 로 남겼다."
+    },
+    {
+      "title": "How we built the Internal Data Warehouse at ClickHouse",
+      "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse",
+      "publisher": "ClickHouse Blog",
+      "date": "2023",
+      "summary": "AWS EC2 위에서 PoC 를 돌린 뒤 구성요소를 도커로 옮겨 사내 데이터 창고를 지었다."
+    },
+    {
+      "title": "How we built our Internal Data Warehouse at ClickHouse: A year later",
+      "url": "https://clickhouse.com/blog/building-a-data-warehouse-with-clickhouse-part-2",
+      "publisher": "ClickHouse Blog",
+      "date": "2026-03",
+      "summary": "1년 뒤 회고. 시간당 적재 DAG 하나로 굴리던 초기 구조가 데이터 원천이 늘면서 확장되지 않았고 인서트 작업이 너무 오래 걸렸다."
+    },
+    {
+      "title": "ClickHouse raises $400M Series D, acquires Langfuse, launches Postgres",
+      "url": "https://clickhouse.com/blog/clickhouse-raises-400-million-series-d-acquires-langfuse-launches-postgres",
+      "publisher": "ClickHouse",
+      "date": "2026",
+      "summary": "Dragoneer 주도 4억 달러 시리즈 D. 관리형 서비스 고객 3,000곳 이상, ARR 전년 대비 250% 이상 성장. Langfuse 인수(LLM 관측)와 네이티브 Postgres 서비스 출시, Iceberg·Delta Lake 호환."
+    },
+    {
+      "title": "Updates in ClickHouse: purpose-built engines",
+      "url": "https://clickhouse.com/blog/updates-in-clickhouse-1-purpose-built-engines",
+      "publisher": "ClickHouse Blog",
+      "date": "2026",
+      "summary": "갱신을 제자리에서 하지 않고 새로 써 둔 뒤 백그라운드 머지로 합친다. 읽을 때 FINAL 을 쓸지 정해야 하고 인제스트가 무거우면 머지가 밀린다."
+    },
+    {
+      "title": "ClickHouse Cloud pricing",
+      "url": "https://clickhouse.com/pricing",
+      "publisher": "ClickHouse",
+      "date": "2026",
+      "summary": "저장과 컴퓨트를 따로 확장해 쓴 만큼 받는다. 컴퓨트를 예약하거나 오토스케일 상한을 걸 수 있다."
+    }
+  ]
+}

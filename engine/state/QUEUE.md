@@ -13,13 +13,14 @@
 
 ## 진행 중
 
-없다 — Monzo 를 완주하고 비웠다.
+| 회사 | 국가·분류 | 상태 |
+|---|---|---|
+| **ClickHouse** | US · SaaS(분석 DB) | 프로파일 완료 · 도메인 3(갱신을 제자리에서 하지 않고 나중에 합친다[tech 4] / 자기 제품으로 자기 창고를 짓고 한계를 먼저 만난다[tech 2] / 분석 일의 70% 를 AI 에 넘기고 30% 를 일부러 남긴다[tech 3]) · **기능 0** |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **ClickHouse** | US · SaaS(분석 DB) | `clickhouse.com/blog` | ✅ WebFetch 로 본문이 온다 | ⚠️ **판정이 뒤집혔다** — 앞서 `updates-in-clickhouse-1-purpose-built-engines` 를 읽고 **일반론 교육 글**이라 떨어뜨리며 `ai-first-data-warehouse 는 결이 다를 수 있다` 고 남겨 뒀는데 **그게 맞았다.** **자기 내부 데이터 창고(2.1PB) 이야기**다. 사내 AI 어시스턴트 `DWAINE` 에 **사용자 250명 이상 · 하루 200 메시지 · 대화 50~70건**, **분석 워크로드의 70% 를 AI 가 처리**하고 DWH 팀 지원 요청이 **50~70% 줄었다**(15~30분 걸리던 SQL 작업이 즉시). **⭐ 남긴 30% 가 이 글의 핵심이다** — 공인 재무 지표·실시간 운영 모니터링·반복 표준 보고는 **일부러 전통 BI 로 남겼고**, 가드레일로 **DWAINE 출력만으로 중요 결정을 못 하게** 한다. 선택도 적는다 — Claude 4.0(AWS Bedrock) · **벤더 종속을 피하려 LibreChat** · MCP · 자체 호스팅 |
 | **Duolingo** | US · 교육 | `blog.duolingo.com/hub/engineering/` | ✅ WebFetch 로 본문이 온다 | ⚠️ **판정이 뒤집혔다 — 두 편을 읽고 `버린 대안이 없다` 며 떨어뜨렸는데, 안 읽은 두 편에 대가가 있었다.** `ai-ios-unit-test-generation-pipeline` 은 **Temporal 워크플로 + S3 상태 저장소**로 Claude Code 를 굴려 iOS 테스트를 생성한다. **버린 대안이 있다**(DynamoDB 대신 경량 S3 상태 저장소). **⭐⭐ 한계가 아주 구체적이다** — Linux Temporal 워커가 **빌드·린트를 못 해 SwiftLint 실패율 13.6%**, **리뷰가 병목**(`The pipeline can produce PRs faster than the existing review process can absorb them`), 그리고 **사고 하나 — CI 자동 수정 에이전트가 테스트가 아니라 프로덕션 파일을 고쳤다**(그 뒤 파일 접근을 조였다). **수치** — 17주간 PR **250개 병합** · 테스트 코드 **약 85,000줄** · 테스트 함수 **4,460개·클래스 233개** · 첫 시도 CI 통과 **76%** · MVVM 커버리지 **9% → 30%**. **교육 축 첫 자리다** |
 | **Ramp** | US · 핀테크(지출 관리 SaaS) | `engineering.ramp.com` · `builders.ramp.com` | ✅ WebFetch 로 본문이 온다 | ⚠️ **주소를 추측했다가 404 를 받고 검색으로 찾았다**(`ramp.com/blog/engineering` 은 없다). 사내 코딩 에이전트 **`Inspect`** 를 직접 만든 이야기다 — **왜 기성품을 안 썼는지 적는다**(`it only has to work on your code`). 구조가 구체적이다 — **Modal 샌드박스**(30분마다 새로 굽는 이미지 + 파일시스템 스냅샷으로 즉시 시작) · **Cloudflare Durable Objects 로 세션마다 SQLite** · Slack 봇·웹(VS Code 내장)·크롬 확장. **⭐ 대가를 적는다** — 스냅샷을 **최대 30분까지 낡게 두어 속도와 신선도를 맞바꾸고**, **동기화가 끝나기 전에는 읽기만 되고 편집이 막히며**, 후속 프롬프트는 **끼어들지 않고 큐에 쌓인다**. **수치** — 프런트·백엔드 저장소에 병합되는 **PR 의 약 30% 를 Inspect 가 쓴다**(몇 달 만에) |
 
