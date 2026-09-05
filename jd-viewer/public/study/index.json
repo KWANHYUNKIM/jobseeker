@@ -1366,6 +1366,27 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "policy-engine",
+      "title": "정책 엔진 (Policy Engine, OPA)",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "허용할지 말지를 프로그램 안에 흩어진 조건문으로 판단하는 대신, 규칙만 따로 적어 두고 \"이 요청 되나요\"를 물어보는 별도의 판단자.",
+      "aliases": [
+        "정책 엔진",
+        "Policy Engine",
+        "OPA",
+        "Open Policy Agent",
+        "Rego",
+        "Policy as Code",
+        "policy-as-code",
+        "Cedar"
+      ],
+      "sections": 7,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

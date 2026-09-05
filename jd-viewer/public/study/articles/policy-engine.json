@@ -1,0 +1,799 @@
+{
+  "slug": "policy-engine",
+  "title": "정책 엔진 (Policy Engine, OPA)",
+  "title_en": "Policy Engine",
+  "aliases": [
+    "정책 엔진",
+    "Policy Engine",
+    "OPA",
+    "Open Policy Agent",
+    "Rego",
+    "Policy as Code",
+    "policy-as-code",
+    "Cedar"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "허용할지 말지를 프로그램 안에 흩어진 조건문으로 판단하는 대신, 규칙만 따로 적어 두고 \"이 요청 되나요\"를 물어보는 별도의 판단자.",
+  "summary": "정책 엔진은 **판단을 하는 쪽**과 **그 판단을 집행하는 쪽**을 갈라 놓은 물건이다. 서비스는 요청 정보를 JSON 으로 실어 \"이거 되나요\"라고 묻고, 엔진은 따로 관리되는 규칙을 평가해 답을 돌려준다. 이렇게 하는 이유는 하나다 — 권한 규칙이 코드 안 `if` 문에 흩어져 있으면 규칙 한 줄을 바꾸는 데 재컴파일과 재배포가 필요하고, 여러 서비스가 같은 규칙을 각자 조금씩 다르게 갖게 되기 때문이다. 대표 구현이 OPA(Open Policy Agent)와 그 언어 Rego 이고, 관리형으로는 AWS 의 Cedar/Verified Permissions 가 있다.\n\n⚠️ **이 문서는 \"어떤 권한 모델을 쓸까\"를 다루지 않는다.** 역할로 자를지(`rbac`) 속성으로 자를지(`abac`)는 그쪽 문서의 주제이고, 여기는 **그 규칙을 어디에 두고 어디서 평가하느냐**만 다룬다. 그리고 이 문서의 핵심은 그다음이다 — **공고에서 \"정책 엔진\"은 두 개의 아주 다른 자리를 가리킨다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 묻는 쪽과 판단하는 쪽을 가른다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Open Policy Agent — Documentation (Introduction)",
+          "url": "https://www.openpolicyagent.org/docs",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "OPA 가 스스로를 정의하는 자리. 결정과 실행의 분리, 구조화된 입력·출력"
+        },
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ],
+      "body": "OPA 공식 문서는 자기를 이렇게 소개한다.\n\n> \"The Open Policy Agent (OPA, pronounced \"oh-pa\") is an open source, general-purpose policy engine that unifies policy enforcement across the stack.\"\n> \"OPA decouples policy decision-making from policy enforcement.\"\n\n마지막 문장이 이 낱말의 전부다. **결정(decision)과 집행(enforcement)은 다른 일이고, 그 둘을 다른 곳에 둔다.** 여기에 이름이 붙어 있다.\n\n> \"OPA is a Policy Decision Point (PDP) that is responsible for making decisions on behalf of applications (Policy Enforcement Points or PEPs).\"\n\n- **PEP(집행 지점)** — 요청을 실제로 막거나 통과시키는 자리. API 게이트웨이, 서비스의 미들웨어, 쿠버네티스의 어드미션 훅.\n- **PDP(결정 지점)** — 규칙을 평가해 답만 내는 자리. **아무것도 막지 않는다.** 막는 것은 언제나 PEP 다.\n\n동작은 단순하다.\n\n> \"When your software needs to make policy decisions it queries OPA and supplies structured data (e.g., JSON) as input.\"\n\n그리고 흔한 오해 하나를 문서가 먼저 부순다.\n\n> \"Policy decisions are not limited to simple yes/no or allow/deny answers. Like query inputs, your policies can generate arbitrary structured data as output.\"\n\n즉 정책 엔진의 답은 `true/false` 만이 아니다. **거부 사유 목록**, **볼 수 있는 행의 필터 조건**, **마스킹할 컬럼 이름**처럼 구조화된 값을 돌려줄 수 있다. `abac` 의 행 필터·열 마스크가 어디서 나오는지가 여기서 이어진다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 생겼나 — 규칙이 `if` 문에 흩어지면 바꿀 수가 없다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "OPA Philosophy — Policy Decoupling",
+          "url": "https://www.openpolicyagent.org/docs/philosophy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "왜 정책을 서비스에서 떼어내는가. '재컴파일·재배포 없이 언제든 갱신'"
+        },
+        {
+          "title": "What is Amazon Verified Permissions?",
+          "url": "https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/what-is-avp.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "Cedar 로 인가 로직을 업무 로직에서 떼어낸다. 외부 데이터는 요청에 실어 보내야 한다"
+        }
+      ],
+      "body": "정책 엔진이 없을 때 권한 규칙이 사는 곳은 하나다 — **코드 안의 조건문**.\n\n```python\nif user.role == \"admin\" or (user.team == doc.team and not doc.confidential):\n    return doc\n```\n\n처음엔 아무 문제가 없다. 문제는 이 줄이 **서른 개가 되고, 다섯 개 서비스에 흩어지고, 그중 셋만 갱신되었을 때** 시작된다.\n\n1. **규칙 한 줄을 바꾸려면 배포를 해야 한다.** \"이 팀은 예외로 해 주세요\"가 코드 리뷰 → 빌드 → 배포 사이클을 탄다.\n2. **같은 규칙이 서비스마다 조금씩 다르다.** 어느 쪽이 맞는지 아무도 모르고, 감사(audit)에 답할 수가 없다.\n3. **규칙을 아는 사람과 코드를 고치는 사람이 다르다.** 규칙은 보안·법무·플랫폼 팀이 정하는데 손은 개발자만 댈 수 있다.\n\nOPA 의 철학 문서가 이 셋을 한 문장으로 뒤집는다.\n\n> \"Software services should allow policies to be specified declaratively, updated at any time without recompiling or redeploying, and enforced automatically.\"\n\n**\"재컴파일도 재배포도 없이 언제든 갱신\"** — 이것이 정책 엔진이 파는 물건이다. 그리고 그 결과로 3번이 풀린다.\n\n> \"the people responsible for policy can read, write, analyze, version, distribute, and in general manage policy separate from the service itself.\"\n\nAWS 쪽도 같은 말을 다른 낱말로 한다.\n\n> \"Using Cedar, you can decouple your business logic from the authorization logic. In your application's code, you preface requests made to your operations with a call to the Cedar authorization engine, asking \"Is this request authorized?\".\"\n\n**\"이 요청 되나요\"를 물어보는 한 줄로 바뀐다**는 것이 코드 쪽에서 본 변화다. 조건문이 사라지는 게 아니라 **한 곳으로 모이고, 그 한 곳이 코드가 아니게 된다.**\n\n⚠️ 그래서 정책 엔진의 이득은 **규칙이 자주 바뀌거나 여러 곳이 같은 규칙을 쓸 때**만 생긴다. 규칙이 하나뿐이고 서비스도 하나면 `if` 문이 정답이다 — 아래 `when_to_use` 의 두 번째 항목이 그 자리다."
+    },
+    {
+      "id": "how",
+      "kind": "how",
+      "heading": "어떻게 도는가 — input 을 만들어 넘기고, 답을 받아 집행한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Policy Language (Rego)",
+          "url": "https://www.openpolicyagent.org/docs/policy-language",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "Rego 는 선언형. default 키워드와 정의되지 않음(undefined)"
+        },
+        {
+          "title": "Open Policy Agent — Documentation (Introduction)",
+          "url": "https://www.openpolicyagent.org/docs",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "OPA 가 스스로를 정의하는 자리. 결정과 실행의 분리, 구조화된 입력·출력"
+        }
+      ],
+      "body": "흐름은 네 걸음이다.\n\n1. **PEP 가 `input` 을 만든다.** 누가(주체), 무엇을(자원), 어떤 행동을, 어떤 맥락에서. 전부 JSON 한 덩어리.\n2. **PDP 가 규칙을 평가한다.** 규칙은 서비스 코드가 아니라 정책 파일에 있다.\n3. **PDP 가 결정을 돌려준다.** 불리언일 수도, 구조화된 값일 수도 있다.\n4. **PEP 가 집행한다.** 막거나, 통과시키거나, 받은 필터를 질의에 붙인다.\n\nOPA 의 언어는 Rego 다.\n\n> \"OPA is purpose built for policy evaluation and uses its declarative language Rego to reason about structured data like API requests, infrastructure-as-code files, and configuration data.\"\n> \"Rego is declarative so policy authors can focus on what queries should return rather than how queries should be executed.\"\n\n최소 형태는 이렇게 생겼다(아래 조각은 **이 문서가 만든 예시**이고, 쓰인 문법 규칙만 공식 문서에서 확인했다).\n\n```rego\npackage authz\n\ndefault allow := false\n\nallow if {\n    input.user == \"alice\"\n    input.method == \"GET\"\n}\n```\n\n여기서 **초보자가 가장 많이 물리는 자리가 `default` 한 줄**이다. Rego 에서 규칙은 참/거짓만이 아니라 **\"정의되지 않음(undefined)\"** 이라는 세 번째 상태를 가진다. 아무 규칙도 맞지 않으면 결과는 `false` 가 아니라 **없음**이다. 공식 문서가 이 때문에 `default` 를 둔다고 적는다 — \"having an undefined result for a document is not desirable\" 할 때 **\"policies can use the `default` keyword to provide a fallback value\"**.\n\n즉 `default allow := false` 를 빼면 결정이 `false` 가 아니라 **빈 값**으로 나가고, PEP 가 그 빈 값을 어떻게 읽느냐에 따라 **막아야 할 요청이 통과한다.** 이 문서의 지뢰밭 첫 줄이 그것이다.\n\n> 📌 `input` 의 모양은 엔진이 정해 주지 않는다. **무엇을 실어 보낼지는 PEP 가 설계한다** — 경계 절에서 다시 다룬다."
+    },
+    {
+      "id": "two-seats",
+      "kind": "extra",
+      "heading": "⭐ 같은 엔진이 두 자리에 놓인다 — 그리고 공고는 두 번째를 더 많이 부른다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ],
+      "body": "`rbac`·`abac` 을 읽고 여기 온 사람은 정책 엔진을 **런타임 인가**의 도구로 기대한다. 그런데 이 저장소의 채용 데이터를 세어 보면 그 기대가 절반도 안 맞는다.\n\n`OPA · Rego · policy engine · 정책 엔진 · policy-as-code · Cedar · Kyverno · Casbin · OpenFGA` 로 걸린 공고 **56건(모집중 31건)** 을 문장을 읽고 갈랐더니:\n\n| 무엇을 말하는 공고인가 | 건수 |\n|---|---|\n| 배포·인프라 **가드레일** (admission control, IaC 검증, DevSecOps) | **32** |\n| 런타임 **인가** (RBAC/ABAC/ReBAC, 인가 시스템 구축) | 11 |\n| 둘 다 | 2 |\n| 문맥이 갈리지 않음 (\"정책 엔진 개발\" 등) | 11 |\n\n**가드레일 쪽이 인가 쪽의 세 배다.** 이유는 짐작이 간다 — 쿠버네티스가 어드미션 웹훅이라는 자리를 표준으로 열어 두었고(`OPA Gatekeeper`·`Kyverno`), Terraform 계획을 배포 전에 검사하는 자리(`Conftest`·`Checkov`)가 CI 안에 이미 있기 때문이다. **엔진을 꽂을 구멍이 이미 뚫려 있는 쪽**으로 채용이 몰린다.\n\n두 자리는 같은 엔진을 쓰지만 **거의 모든 운영 조건이 다르다** — 아래 `seats` 표가 그 차이다. 특히 **거절의 뜻이 다르다**: 인가에서 거절은 *사용자 한 명이 화면을 못 보는 것*이고, 가드레일에서 거절은 *팀 하나의 배포가 멈추는 것*이다. 그래서 가드레일 쪽 공고는 차단이 아니라 **안내**를 요구하기까지 한다 — Gorgias 는 `guardrails and policy enforcement (OPA, Kyverno, or similar) that guide teams without blocking them` 이라고 적었다.\n\n💡 **면접·공고 읽기 요령**: \"정책 엔진 경험\"이라고만 적힌 줄을 보면 **같은 줄의 이웃 낱말**을 본다. `RBAC·ABAC·Keycloak·IdP` 가 옆에 있으면 인가 자리이고, `Kyverno·Gatekeeper·Trivy·Terraform·SBOM` 이 옆에 있으면 가드레일 자리다. 준비할 것이 완전히 다르다."
+    },
+    {
+      "id": "where",
+      "kind": "how",
+      "heading": "어디서 평가하나 — 이 결정이 지연과 가용성을 정한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ],
+      "body": "정책 엔진을 도입하기로 정한 다음의 진짜 결정은 **엔진을 어디에 두느냐**다. OPA 문서가 원칙을 한 줄로 준다.\n\n> \"OPA is generally best located as close as possible to the PEPs it is making decisions for.\"\n\n**집행하는 곳 가까이.** 이유는 아래 `where` 표에 그대로 있다 — 중앙에 한 대 두면 \"Higher latency, decisions involve network hops\" 이고 \"Failure point if not highly available\" 이다.\n\n이 문장이 무섭게 읽혀야 하는 이유가 있다. **정책 엔진은 요청 경로(request path) 위에 있다.** 모든 요청이 결정을 기다리므로:\n\n- 엔진이 **느리면** 서비스 전체가 그만큼 느려진다. 캐시로 가릴 수도 없다 — 사용자·자원마다 답이 다르기 때문이다.\n- 엔진이 **죽으면** 서비스가 결정을 못 받는다. 그때 열 것인가 닫을 것인가를 **미리 정해 두어야** 한다. 열면 사고이고 닫으면 장애다.\n\n사이드카(또는 노드 에이전트)가 이 둘을 한꺼번에 푼다 — 결정이 로컬이라 \"Very Low, decisions are local\" 이고, \"works without network connectivity\" 다. 대신 대가가 명시돼 있다: **\"Higher, OPA runs per instance\"** — 인스턴스마다 엔진이 하나씩 뜬다.\n\n> 📌 여기서 정책이 **어떻게 사이드카까지 가느냐**가 다음 질문이고, 그 답이 아래 `policy-as-code` 절이다. 정책은 요청 때 가져오는 게 아니라 **미리 배포되어 있어야** 로컬 평가가 성립한다."
+    },
+    {
+      "id": "policy-as-code",
+      "kind": "extra",
+      "heading": "정책도 코드다 — 그러니 테스트가 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Policy Testing",
+          "url": "https://www.openpolicyagent.org/docs/policy-testing",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "opa test 규약 — test_ 접두, undefined 면 FAIL, coverage"
+        },
+        {
+          "title": "Implementing a PDP by using Amazon Verified Permissions",
+          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/saas-multitenant-api-access-authorization/avp.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "PDP 를 구현한다는 말의 뜻과 policy decoupling"
+        }
+      ],
+      "body": "공고가 이 낱말을 부를 때 쓰는 말은 대체로 **\"정책 엔진\"이 아니라 \"Policy as Code\"** 다(위 셈에서 20건). 그 말의 뜻은 정확히 이것이다 — **정책 파일을 저장소에 넣고, 리뷰를 받고, 버전을 매기고, 파이프라인으로 배포하고, 테스트한다.** `iac` 가 인프라에 한 일을 규칙에 하는 것이다.\n\n마지막 항목이 남들이 잘 안 하는 자리다. OPA 는 테스트 러너를 내장한다.\n\n> \"To exercise the policy, run the `opa test` command in the directory containing the files.\"\n\n규약이 셋이다.\n\n- 테스트는 **`_test` 접미가 붙은 패키지**에 두는 것이 관례다(\"a good practice ... but not a requirement\").\n- 테스트 규칙 이름은 **`test_` 로 시작**한다.\n- ⚠️ **\"If the test rule is undefined or generates a non-`true` value the test result is reported as `FAIL`.\"** — 앞 절의 `undefined` 가 여기서도 나온다. **정의되지 않으면 실패**다.\n\n실행 결과는 이렇게 생겼다.\n\n```\n$ opa test . -v\ndata.authz_test.test_post_allowed: PASS (1.417µs)\ndata.authz_test.test_get_anonymous_denied: PASS (426ns)\ndata.authz_test.test_get_user_allowed: PASS (367ns)\ndata.authz_test.test_get_another_user_denied: PASS (320ns)\nPASS: 4/4\n```\n\n네 개 중 **둘이 `denied` 테스트**라는 점을 보라. 정책 테스트에서 값이 나오는 쪽은 **거부 케이스**다 — 허용은 대체로 저절로 되고, 사고는 언제나 \"막혔어야 하는데 통과한 것\"에서 난다.\n\n`opa test` 는 커버리지도 낸다 — \"can also report _coverage_ for the policies under test\", \"all of the lines evaluated and not evaluated in the Rego files provided\". **평가된 적 없는 규칙 줄**을 보여 주므로, 규칙이 수백 줄로 자란 뒤 \"이 줄이 아직도 살아 있나\"를 묻는 데 쓴다.\n\nAWS 쪽 권고도 같은 방향이다 — \"you should use a continuous integration and continuous deployment (CI/CD) pipeline to administer, modify, and track policy versions\". 다만 이어서 **\"application logic doesn't inherently perform this functionality. To support these capabilities in your application, you must explicitly design your application to implement this functionality.\"** 라고 못 박는다. **정책을 관리한다는 일은 엔진을 켠다고 딸려 오지 않는다.**"
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 엔진은 판단만 하고, 나머지는 전부 당신 몫이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "What is Amazon Verified Permissions?",
+          "url": "https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/what-is-avp.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "Cedar 로 인가 로직을 업무 로직에서 떼어낸다. 외부 데이터는 요청에 실어 보내야 한다"
+        },
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ],
+      "body": "**1. 엔진은 데이터를 대신 가져다주지 않는다.** 이것이 도입 후 가장 크게 물리는 자리이고, AWS 문서가 드물게 명시해 둔 문장이다.\n\n> \"If it's necessary to provide external data from other sources to reach an authorization decision, this data must be retrieved and provided to Verified Permissions as part of the authorization request. Additional context, entities, and attributes are not retrieved by default with this service.\"\n\n\"이 문서의 소유자가 요청자와 같은 팀인가\"를 판단하려면 **소유자와 팀 정보가 `input` 안에 이미 들어 있어야 한다.** 엔진은 당신의 DB 를 모른다. 그래서 정책 엔진 도입은 규칙을 옮기는 일이 아니라 **\"판단에 필요한 사실을 어떻게 모아 실어 보낼 것인가\"를 설계하는 일**이고, 여기서 비용의 대부분이 나온다. (OPA 는 데이터를 미리 밀어 넣어 두는 길도 있지만, 그 순간 **\"그 데이터가 언제 갱신되나\"** 라는 문제가 새로 생긴다 — `caching` 의 그 문제다.)\n\n**2. 요청 경로 위에 새 의존이 하나 생긴다.** 위 `where` 절 그대로다. 중앙 배치는 \"Failure point if not highly available\" 이고, **엔진이 답을 못 줄 때 열 것인지 닫을 것인지**를 코드에 적어 두지 않으면 그 결정은 예외 처리 코드가 우연히 하게 된다.\n\n**3. 언어를 하나 더 배워야 한다.** Rego 는 선언형이고 절차형 언어의 직관이 잘 안 통한다(특히 `undefined`). 규칙이 늘면 **왜 막혔는지 사람이 못 읽는** 상태가 오는데, 이것은 `abac` 이 이미 경고한 대가와 같은 것이다 — 표현력을 얻고 설명 가능성을 잃는다. 완화책은 두 개뿐이다: **결정에 사유를 함께 돌려주기**(구조화된 출력이 가능하다는 것이 여기서 값을 한다)와 **테스트**.\n\n**4. 이 문서가 답하지 않는 것.** 어떤 권한 모델을 고를지는 `rbac`·`abac` 이고, 규칙에 쓰이는 신원이 어디서 오는지는 `sso`·`oauth2` 다. 정책 엔진은 **그 셋이 정해진 다음에 놓이는 물건**이다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "pdp-pep",
+      "kind": "glossary",
+      "caption": "결정과 집행을 가르는 낱말",
+      "note": "PDP/PEP 는 OPA 문서와 AWS 문서가 같은 뜻으로 쓴다. 이 구분을 모르면 '엔진이 막아 준다'고 오해하게 된다 — 엔진은 절대 막지 않는다.",
+      "columns": [
+        "낱말",
+        "무엇을 하나",
+        "이 저장소의 다른 문서에서는"
+      ],
+      "rows": [
+        [
+          "PEP (Policy Enforcement Point)",
+          "실제로 막거나 통과시킨다. input 을 모아 PDP 에 묻는다",
+          "API 게이트웨이(`rate-limit`), 쿠버네티스 어드미션(`kubernetes`), 서비스 미들웨어"
+        ],
+        [
+          "PDP (Policy Decision Point)",
+          "규칙을 평가해 결정만 낸다. 아무것도 막지 않는다",
+          "OPA · Cedar/Verified Permissions · Casbin"
+        ],
+        [
+          "정책(policy)",
+          "선언형으로 적힌 규칙. 코드와 따로 버전 관리된다",
+          "`iac` 가 인프라에 한 일과 같은 형태"
+        ],
+        [
+          "input",
+          "판단에 필요한 사실을 담은 JSON. **PEP 가 만든다**",
+          "엔진이 대신 조회해 주지 않는다 — 경계 1번"
+        ],
+        [
+          "결정(decision)",
+          "답. 불리언만이 아니라 구조화된 값일 수 있다",
+          "`abac` 의 행 필터·열 마스크가 이 형태로 나온다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        },
+        {
+          "title": "Open Policy Agent — Documentation (Introduction)",
+          "url": "https://www.openpolicyagent.org/docs",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "OPA 가 스스로를 정의하는 자리. 결정과 실행의 분리, 구조화된 입력·출력"
+        }
+      ]
+    },
+    {
+      "id": "seats",
+      "kind": "compare",
+      "caption": "⭐ '정책 엔진'이 가리키는 두 자리",
+      "note": "건수는 이 저장소의 all_jobs_enriched.json 을 2026-09-06 에 직접 센 것이다(정규식으로 후보를 뽑고 문장을 읽어 분류). 전체 56건(모집중 31건) 중 가드레일 32 · 인가 11 · 둘 다 2 · 분류 불가 11. tech_relations.json 에는 이 낱말이 없어 market 이 비어 있다.",
+      "columns": [
+        "",
+        "런타임 인가",
+        "배포 가드레일"
+      ],
+      "rows": [
+        [
+          "언제 묻나",
+          "요청이 올 때마다",
+          "배포·머지 시점에 한 번"
+        ],
+        [
+          "누가 묻나(PEP)",
+          "API 게이트웨이·서비스 미들웨어",
+          "쿠버네티스 어드미션 웹훅 · CI 파이프라인"
+        ],
+        [
+          "거절되면",
+          "사용자 한 명이 화면을 못 본다",
+          "팀 하나의 배포가 멈춘다"
+        ],
+        [
+          "지연 요구",
+          "밀리초. 요청 경로 위에 있다",
+          "초 단위도 견딘다"
+        ],
+        [
+          "대표 도구",
+          "OPA · Cedar · Casbin · OpenFGA",
+          "OPA Gatekeeper · Kyverno · Conftest · Checkov"
+        ],
+        [
+          "이 백과사전에서",
+          "`rbac` · `abac` · `sso`",
+          "`iac` · `kubernetes` · `zero-trust`"
+        ],
+        [
+          "공고 건수(직접 셈)",
+          "11",
+          "32"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ]
+    },
+    {
+      "id": "where",
+      "kind": "compare",
+      "caption": "엔진을 어디에 두나 — OPA 공식 문서의 비교",
+      "note": "OPA 공식 배포 문서의 비교표를 그대로 옮겼다(영문 원문 유지). 원칙 문장은 같은 페이지의 \"OPA is generally best located as close as possible to the PEPs it is making decisions for.\"",
+      "columns": [
+        "",
+        "Sidecar or VM Node Agent",
+        "Centralized OPA Service"
+      ],
+      "rows": [
+        [
+          "Latency",
+          "Very Low, decisions are local",
+          "Higher latency, decisions involve network hops"
+        ],
+        [
+          "Scalability",
+          "Scales with application instances",
+          "May require additional scaling for high traffic"
+        ],
+        [
+          "Fault Tolerance",
+          "More fault tolerant, works without network connectivity",
+          "Failure point if not highly available"
+        ],
+        [
+          "Total Resource Usage",
+          "Higher, OPA runs per instance",
+          "Lower, data and resources are shared"
+        ],
+        [
+          "Use Cases",
+          "Containers, Service Mesh, Authorizing Proxy/Gateway, IoT/Edge",
+          "Large data volumes, Serverless, Batch/CI Jobs"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ]
+    },
+    {
+      "id": "rego-traps",
+      "kind": "glossary",
+      "caption": "Rego 를 처음 읽을 때 걸리는 세 가지",
+      "note": "문법 규칙은 OPA 공식 문서에서 확인한 것이고, 예시 조각은 이 문서가 만든 최소 형태다.",
+      "columns": [
+        "무엇",
+        "공식 문서가 말하는 것",
+        "그래서 실무에서"
+      ],
+      "rows": [
+        [
+          "undefined(정의되지 않음)",
+          "규칙이 맞지 않으면 결과는 false 가 아니라 '없음'이다",
+          "PEP 가 빈 값을 허용으로 읽으면 사고. `default` 로 막는다"
+        ],
+        [
+          "default 키워드",
+          "\"policies can use the `default` keyword to provide a fallback value\"",
+          "`default allow := false` 를 첫 줄에 둔다"
+        ],
+        [
+          "선언형(declarative)",
+          "\"policy authors can focus on what queries should return rather than how queries should be executed\"",
+          "절차형처럼 읽으면 안 맞는다. '무엇이 참인가'의 나열로 읽는다"
+        ],
+        [
+          "테스트 실패 조건",
+          "\"If the test rule is undefined or generates a non-`true` value the test result is reported as `FAIL`.\"",
+          "테스트도 undefined 면 실패다 — 오타 난 테스트가 조용히 통과하지 않는다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Policy Language (Rego)",
+          "url": "https://www.openpolicyagent.org/docs/policy-language",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "Rego 는 선언형. default 키워드와 정의되지 않음(undefined)"
+        },
+        {
+          "title": "Policy Testing",
+          "url": "https://www.openpolicyagent.org/docs/policy-testing",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "opa test 규약 — test_ 접두, undefined 면 FAIL, coverage"
+        }
+      ]
+    },
+    {
+      "id": "testing",
+      "kind": "glossary",
+      "caption": "정책 테스트 규약 (`opa test`)",
+      "note": "OPA 공식 Policy Testing 문서. 커버리지는 '평가된 줄과 평가되지 않은 줄'을 보고한다.",
+      "columns": [
+        "항목",
+        "규약",
+        "왜 그렇게"
+      ],
+      "rows": [
+        [
+          "실행",
+          "`opa test` 를 정책 파일이 있는 디렉터리에서 실행",
+          "별도 러너 설치가 없다 — 바이너리에 들어 있다"
+        ],
+        [
+          "패키지 이름",
+          "`_test` 접미가 관례(필수는 아님)",
+          "정책과 테스트가 같은 저장소에 섞여도 구분된다"
+        ],
+        [
+          "규칙 이름",
+          "`test_` 접두 필수",
+          "이름으로 테스트를 찾는다"
+        ],
+        [
+          "실패 조건",
+          "undefined 이거나 true 가 아닌 값이면 FAIL",
+          "'아무것도 안 나왔다'를 통과로 치지 않는다"
+        ],
+        [
+          "커버리지",
+          "`opa test` 가 평가된/안 된 줄을 보고",
+          "규칙이 수백 줄로 자란 뒤 죽은 규칙을 찾는 유일한 수단"
+        ],
+        [
+          "먼저 쓸 것",
+          "거부(denied) 케이스",
+          "사고는 '막혔어야 하는데 통과한 것'에서 난다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Policy Testing",
+          "url": "https://www.openpolicyagent.org/docs/policy-testing",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "opa test 규약 — test_ 접두, undefined 면 FAIL, coverage"
+        }
+      ]
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "같은 권한 규칙을 여러 서비스가 쓰고, 그 규칙이 분기마다 바뀐다",
+      "pick": "정책 엔진(OPA/Cedar)으로 규칙을 밖으로 뺀다",
+      "over": "각 서비스 코드 안의 조건문",
+      "why": "규칙을 재컴파일·재배포 없이 갱신할 수 있고(OPA 철학 문서), 어느 서비스가 무슨 규칙을 쓰는지 한 곳에서 답할 수 있다",
+      "tradeoff": "요청 경로 위에 의존이 하나 늘고, 판단에 필요한 사실을 input 으로 모아 보내는 일을 새로 설계해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "OPA Philosophy — Policy Decoupling",
+          "url": "https://www.openpolicyagent.org/docs/philosophy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "왜 정책을 서비스에서 떼어내는가. '재컴파일·재배포 없이 언제든 갱신'"
+        }
+      ]
+    },
+    {
+      "situation": "규칙이 서너 줄이고 한 서비스만 쓰며, 반년째 안 바뀌었다",
+      "pick": "코드 안의 조건문 그대로 둔다",
+      "over": "정책 엔진 도입",
+      "why": "정책 엔진이 파는 것은 '규칙을 코드와 따로 바꿀 수 있음'인데, 바꿀 일이 없으면 그 값이 0 이다. 대신 언어 하나·배포 대상 하나·장애 지점 하나가 늘어난다",
+      "tradeoff": "나중에 규칙이 늘면 흩어진 조건문을 걷어내는 비용을 그때 낸다. 조건문을 한 함수에 모아 두면 그 비용이 작아진다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "막고 싶은 것이 사용자 요청이 아니라 '이상한 매니페스트·이상한 테라폼 계획'이다",
+      "pick": "어드미션 컨트롤·CI 검사 자리의 가드레일(OPA Gatekeeper·Kyverno·Conftest)",
+      "over": "런타임 인가 엔진",
+      "why": "묻는 시점이 배포 때 한 번이라 지연 요구가 느슨하고, PEP 자리가 쿠버네티스·CI 에 이미 표준으로 뚫려 있다. 공고 수도 이쪽이 세 배다(56건 중 32)",
+      "tradeoff": "거절이 '팀의 배포 중단'이라 반발이 크다. 처음에는 차단이 아니라 경고 모드로 켜고, 위반 건수를 보여 준 뒤 조인다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ]
+    },
+    {
+      "situation": "모든 API 요청이 정책 판단을 거쳐야 하고 p99 지연 예산이 빡빡하다",
+      "pick": "사이드카·노드 에이전트(또는 Go 라이브러리로 인프로세스)",
+      "over": "중앙 정책 서비스 한 대",
+      "why": "OPA 문서가 중앙 배치를 \"Higher latency, decisions involve network hops\" · \"Failure point if not highly available\" 로 적는다. 결정이 로컬이면 네트워크가 끊겨도 판단이 선다",
+      "tradeoff": "\"Higher, OPA runs per instance\" — 인스턴스마다 엔진이 뜨고, 정책을 모든 인스턴스에 배포·동기화하는 문제가 새로 생긴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ]
+    },
+    {
+      "situation": "인가 엔진을 직접 운영할 사람이 없고 AWS 위에 있다",
+      "pick": "Cedar/Amazon Verified Permissions 같은 관리형",
+      "over": "OPA 자체 운영",
+      "why": "정책 저장·평가·버전 관리를 서비스가 맡는다. 정책 언어(Cedar)도 RBAC·ABAC 를 함께 표현하도록 만들어져 있다",
+      "tradeoff": "평가가 원격 호출이라 지연이 붙고(사이드카의 반대편), 요청마다 필요한 엔티티·속성을 전부 실어 보내야 한다 — 문서가 명시적으로 경고한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "What is Amazon Verified Permissions?",
+          "url": "https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/what-is-avp.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "Cedar 로 인가 로직을 업무 로직에서 떼어낸다. 외부 데이터는 요청에 실어 보내야 한다"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "`default allow := false` 를 안 적고, 아무 규칙도 안 맞았을 때 통과시킨다",
+      "why": "절차형 언어의 직관으로는 '조건이 안 맞으면 false' 인데, Rego 에서 규칙이 안 맞으면 결과는 **정의되지 않음(undefined)** 이다. PEP 쪽 코드가 `if result.allow:` 처럼 짜여 있으면 빈 값이 거짓으로 읽혀 우연히 막히지만, `if not result.deny:` 류로 짜여 있으면 그대로 통과한다",
+      "fix": "정책 파일 첫 줄에 `default allow := false` 를 둔다. 그리고 **PEP 쪽에서도** 응답에 결정 키가 없으면 거부로 처리하도록 명시한다 — 두 곳 다 막아야 한다",
+      "sources": [
+        {
+          "title": "Policy Language (Rego)",
+          "url": "https://www.openpolicyagent.org/docs/policy-language",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "Rego 는 선언형. default 키워드와 정의되지 않음(undefined)"
+        }
+      ]
+    },
+    {
+      "trap": "엔진이 필요한 데이터를 알아서 조회해 줄 거라 생각하고 설계한다",
+      "why": "\"이 문서 소유자와 같은 팀인가\" 같은 규칙을 쓰다 보면 엔진이 DB 를 볼 수 있다고 착각하기 쉽다. 실제로는 AWS 문서가 못 박듯 \"Additional context, entities, and attributes are not retrieved by default with this service\" 다",
+      "fix": "도입 첫 주에 **`input` 계약을 문서로 먼저 쓴다** — 어떤 사실이 필요하고, 누가 그것을 어디서 조회하며, 그 조회가 요청 지연에 몇 ms 를 더하는지. 조회가 무거우면 그 사실을 엔진에 미리 밀어 넣는 방식을 검토하되 갱신 지연을 함께 정한다",
+      "sources": [
+        {
+          "title": "What is Amazon Verified Permissions?",
+          "url": "https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/what-is-avp.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "Cedar 로 인가 로직을 업무 로직에서 떼어낸다. 외부 데이터는 요청에 실어 보내야 한다"
+        }
+      ]
+    },
+    {
+      "trap": "중앙에 정책 서비스 한 대를 띄우고 모든 서비스가 요청마다 호출하게 한다",
+      "why": "운영이 편해 보이고 규칙도 한 곳에 모인다. 그런데 이것은 **모든 요청 경로에 네트워크 홉과 단일 장애점을 하나 추가**하는 일이다. OPA 문서가 그대로 적어 뒀다 — \"decisions involve network hops\", \"Failure point if not highly available\"",
+      "fix": "엔진은 PEP 가까이 둔다(사이드카·노드 에이전트·인프로세스). 중앙 서비스는 문서가 적은 용도 — \"Large data volumes, Serverless, Batch/CI Jobs\" — 로 쓴다. 중앙으로 갈 수밖에 없다면 **엔진이 죽었을 때 열지 닫을지**를 코드와 문서에 먼저 적는다",
+      "sources": [
+        {
+          "title": "How to Deploy OPA",
+          "url": "https://www.openpolicyagent.org/docs/deploy",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+        }
+      ]
+    },
+    {
+      "trap": "정책을 저장소에 넣는 것까지만 하고 테스트는 안 쓴다",
+      "why": "'코드로 관리한다'가 곧 '리뷰와 버전'까지만 뜻하는 것으로 읽히기 때문이다. 규칙이 수십 줄일 때는 눈으로 읽히지만, 예외가 쌓이면 **왜 막혔는지 아무도 설명 못 하는** 상태가 온다 — `abac` 이 경고한 그 대가다",
+      "fix": "`opa test` 로 **거부 케이스부터** 쓴다(`test_` 접두, undefined 면 FAIL). 정책 변경 PR 에 테스트를 필수로 걸고, 커버리지로 평가된 적 없는 규칙 줄을 주기적으로 본다",
+      "sources": [
+        {
+          "title": "Policy Testing",
+          "url": "https://www.openpolicyagent.org/docs/policy-testing",
+          "publisher": "Open Policy Agent",
+          "kind": "docs",
+          "summary": "opa test 규약 — test_ 접두, undefined 면 FAIL, coverage"
+        }
+      ]
+    },
+    {
+      "trap": "배포 가드레일을 처음부터 '차단'으로 켠다",
+      "why": "정책이 옳으니 막는 게 맞다고 생각하지만, 기존 워크로드 상당수가 그 정책을 이미 위반하고 있다. 켜는 순간 배포가 멈추고 정책 팀이 신뢰를 잃는다",
+      "fix": "경고(audit/dryrun) 모드로 먼저 켜서 **위반 건수와 위반한 팀 목록**을 며칠 모은다. 그 숫자를 근거로 예외 기간을 합의한 뒤 차단으로 올린다. Gorgias 공고의 \"guide teams without blocking them\" 이 이 순서를 말한다"
+    },
+    {
+      "trap": "`rbac`·`abac` 을 읽고 와서 '정책 엔진 = 인가'라고 준비한다",
+      "why": "백과사전과 교과서는 인가에서 이 낱말을 소개하는데, 실제 공고는 배포 가드레일 쪽이 세 배 많다(56건 중 32 대 11)",
+      "fix": "공고에서 정책 엔진을 만나면 **같은 줄의 이웃 낱말**을 본다. `Keycloak·RBAC·ABAC·IdP` 면 인가 자리, `Kyverno·Gatekeeper·Terraform·Trivy·SBOM` 이면 가드레일 자리다. 지원 전에 어느 쪽인지 정하고 준비한다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "정책 결정 지점",
+      "en": "Policy Decision Point (PDP)",
+      "what": "규칙을 평가해 결정만 내는 자리. 아무것도 막지 않는다"
+    },
+    {
+      "term": "정책 집행 지점",
+      "en": "Policy Enforcement Point (PEP)",
+      "what": "실제로 막거나 통과시키는 자리. input 을 모아 PDP 에 묻는다"
+    },
+    {
+      "term": "Rego",
+      "en": "Rego",
+      "what": "OPA 의 선언형 정책 언어. '어떻게 계산할지'가 아니라 '무엇이 참인지'를 적는다"
+    },
+    {
+      "term": "정의되지 않음",
+      "en": "undefined",
+      "what": "Rego 에서 어떤 규칙도 맞지 않았을 때의 결과. false 가 아니다"
+    },
+    {
+      "term": "어드미션 컨트롤",
+      "en": "admission control",
+      "what": "쿠버네티스가 객체를 저장하기 전에 외부에 물어보는 자리. 배포 가드레일의 대표적 PEP"
+    },
+    {
+      "term": "정책 디커플링",
+      "en": "policy decoupling",
+      "what": "규칙을 서비스에서 떼어내 따로 관리·갱신하는 것. 이 낱말이 파는 물건 그 자체"
+    }
+  ],
+  "drills": [
+    {
+      "task": "코드에 흩어진 인가 조건문 다섯 개를 골라 Rego 파일 하나로 옮긴다. `default allow := false` 를 첫 줄에 두고, 각 조건을 `allow if { ... }` 규칙으로 쓴다. `opa eval` 로 허용/거부 input 을 각각 넣어 결과를 확인한다.",
+      "done_when": "같은 input 다섯 쌍에 대해 원래 코드와 Rego 의 결정이 전부 일치하고, **어떤 규칙도 안 맞는 input** 을 넣었을 때 `false` 가 나온다(빈 값이 아니라).",
+      "why": "정책 엔진 도입의 실제 작업량이 '규칙 번역'이 아니라 **input 을 무엇으로 채울 것인가**에 있다는 것을 손으로 알게 된다. 조건문 안에서 `db.query()` 를 부르고 있던 줄이 나오면 그게 경계 1번이다.",
+      "needs": "OPA 바이너리(단일 실행 파일)",
+      "no_hardware": "설치 없이 Rego Playground(play.openpolicyagent.org)에서 브라우저로 같은 일을 할 수 있다. 정책과 input JSON 을 붙여 넣고 평가 결과를 본다.",
+      "hours": 2
+    },
+    {
+      "task": "위에서 만든 정책에 `opa test` 를 붙인다. **거부되어야 하는 케이스 세 개를 먼저** `test_` 규칙으로 쓰고, 그중 하나가 실제로 통과해 버리도록 정책을 일부러 틀리게 고친 뒤 테스트가 FAIL 을 내는지 확인한다. 마지막으로 커버리지를 켜 평가되지 않은 줄을 본다.",
+      "done_when": "틀린 정책에서 FAIL, 고친 뒤 PASS 가 나오고, 커버리지 출력에서 한 번도 평가되지 않은 규칙 줄을 하나 이상 찾아낸다.",
+      "why": "'정책도 코드'라는 말이 리뷰·버전까지가 아니라 **테스트까지**라는 것을 확인한다. 그리고 테스트 규칙 이름에 오타를 내 보면 `test_` 규약이 왜 있는지 바로 안다.",
+      "needs": "OPA 바이너리",
+      "no_hardware": "Playground 는 테스트 러너를 제공하지 않으므로, 대신 거부 케이스 세 개의 input JSON 과 기대 결과를 표로 적고 하나씩 평가해 대조한다 — 손으로 하는 테스트 스위트다.",
+      "hours": 2
+    },
+    {
+      "task": "지금 다니는(또는 지원하려는) 조직의 배포 파이프라인에서 **정책 엔진을 꽂을 수 있는 자리 세 곳**을 찾아 표로 적는다. 각 자리마다 PEP 가 무엇인지, 거절되면 누가 막히는지, 지연 예산이 얼마인지, 실패했을 때 열지 닫을지를 채운다.",
+      "done_when": "세 자리 모두에 대해 '엔진이 죽으면 어떻게 되나' 칸이 '모르겠다'가 아닌 값으로 채워진다.",
+      "why": "이 낱말의 어려움은 문법이 아니라 배치다. 이 표를 채워 보면 **런타임 인가와 배포 가드레일이 왜 다른 물건인지**가 자기 조직의 말로 설명된다 — 면접에서 그대로 쓸 수 있는 형태다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "정책 엔진은 요청을 막는가, 안 막는가? 막는 것은 누구인가?",
+    "Rego 에서 어떤 규칙도 맞지 않으면 결과는 무엇인가? 그것이 왜 위험한가?",
+    "정책 엔진을 중앙 서비스 한 대로 두면 무엇을 얻고 무엇을 잃는가? OPA 문서는 어디에 두라고 하는가?",
+    "'이 문서의 소유자가 요청자와 같은 팀인가'를 판단하려면 엔진에 무엇을 넘겨야 하는가? 엔진이 대신 조회해 주는가?",
+    "공고에서 '정책 엔진 경험'이라는 줄을 봤을 때, 그것이 런타임 인가인지 배포 가드레일인지 어떻게 구분하는가?",
+    "정책에 테스트를 쓴다면 허용 케이스와 거부 케이스 중 어느 쪽을 먼저 쓰는가? 왜인가?"
+  ],
+  "evidence": [
+    {
+      "quote": "OPA(Rego), Keycloak, Polaris Catalog를 활용해 정책 중심의 권한 관리 시스템을 구축·운영합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/339242",
+      "where": "미리비트",
+      "what_it_shows": "런타임 인가 자리의 전형. 정책 엔진(OPA)이 신원 공급자(Keycloak, → `sso`)와 **짝으로** 요구된다 — 엔진은 '누구인지'를 모르므로 IdP 가 반드시 옆에 온다"
+    },
+    {
+      "quote": "• Casbin, OPA, Cedar 등 정책 엔진 실전 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/369738",
+      "where": "국내 플랫폼 공고 (Keycloak·OpenBao 와 함께 요구한 곳)",
+      "what_it_shows": "'정책 엔진'이 특정 제품이 아니라 **낱말 하나로 묶인 범주**로 쓰인다는 증거. 셋 중 무엇을 써 봤는지보다 PDP/PEP 구조를 이해했는지를 묻는 자리다"
+    },
+    {
+      "quote": "• OPA/Rego, Kyverno, Gatekeeper 등 policy-as-code로 Kubernetes admission control과 배포 가드레일을 설계합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/325525",
+      "where": "다키클라우드코리아 계열 공고",
+      "what_it_shows": "⭐ 같은 엔진의 **두 번째 자리**. 여기서 OPA 는 사용자 인가와 아무 상관이 없고 '이 매니페스트를 클러스터에 넣어도 되나'를 판단한다. 공고 56건 중 32건이 이쪽이다"
+    },
+    {
+      "quote": "- Design secure-by-default platforms — build guardrails and policy enforcement (OPA, Kyverno, or similar) that guide teams without blocking them",
+      "from": "posting",
+      "url": "https://jobs.ashbyhq.com/gorgias/a3d44fe3-ccbc-49f4-bd48-b0ccb81bbc2b",
+      "where": "Gorgias",
+      "what_it_shows": "가드레일 자리에서 **거절의 값이 다르다**는 것을 회사가 직접 적은 문장. '막지 말고 안내하라'는 요구는 런타임 인가에는 없다 — 지뢰밭 다섯 번째 항목의 근거다"
+    },
+    {
+      "quote": "Fine-grained authorization. ReBAC and ABAC with policy engines (OPA, Cedar, OpenFGA, or equivalent), and a working understanding of how agents acquire tokens, call APIs, and delegate.",
+      "from": "posting",
+      "url": "https://boards.greenhouse.io/embed/job_app?for=gemini&token=7905052&gh_jid=7905052",
+      "where": "해외 공고 (fine-grained authorization 직무)",
+      "what_it_shows": "**모델(ReBAC·ABAC)과 엔진(OPA·Cedar·OpenFGA)을 나란히, 그러나 따로 적는다.** 이 문서가 `rbac`·`abac` 과 축을 가른 이유가 공고 한 줄로 증명된다"
+    },
+    {
+      "quote": "ㆍ데이터 거버넌스/카탈로그 : Ranger 또는 OPA, Gravitino, Openmetadata 또는 Datahub",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49490337",
+      "where": "CJ대한통운㈜",
+      "what_it_shows": "세 번째 자리 — **데이터 접근 통제**. `data-governance` 가 Unity Catalog 의 `GRANT` 로 다룬 그 문제를, 이 공고는 정책 엔진(Ranger/OPA)으로 푼다고 적는다"
+    },
+    {
+      "quote": "OPA decouples policy decision-making from policy enforcement.",
+      "from": "docs",
+      "url": "https://www.openpolicyagent.org/docs",
+      "where": "OPA 공식 문서",
+      "what_it_shows": "이 낱말의 정의가 '규칙을 쓰는 도구'가 아니라 **'두 가지 일을 갈라 놓는 것'** 이라는 1차 자료의 진술"
+    }
+  ],
+  "related": [
+    {
+      "slug": "abac",
+      "how": "속성으로 권한을 자르는 **모델**. 그 문서가 '규칙을 어디에 두느냐가 진짜 주제'라며 넘긴 자리가 이 문서다. 반대로 이 문서의 '구조화된 결정'이 그쪽의 행 필터·열 마스크로 이어진다"
+    },
+    {
+      "slug": "rbac",
+      "how": "역할로 권한을 자르는 **모델**. 모델을 고르는 것과 그것을 어디서 평가할지는 다른 결정이라는 것이 이 문서의 전제다"
+    },
+    {
+      "slug": "iac",
+      "how": "'정책도 코드다'의 원본. 인프라에 한 일(버전·리뷰·파이프라인)을 규칙에 하는 것이 policy-as-code 이고, IaC 계획 자체가 정책 엔진의 검사 대상이기도 하다"
+    },
+    {
+      "slug": "kubernetes",
+      "how": "배포 가드레일의 PEP 자리(어드미션 웹훅)를 표준으로 열어 둔 곳. 공고에서 정책 엔진이 가장 많이 불리는 이유다"
+    },
+    {
+      "slug": "zero-trust",
+      "how": "'모든 요청마다 검증한다'는 원칙이 실물로 내려오면 요청 경로 위의 PDP 가 된다. 그 문서의 부품 표에 이 문서가 들어간다"
+    },
+    {
+      "slug": "sso",
+      "how": "엔진은 '누구인지'를 모른다. 신원은 IdP 가 확인하고 정책은 그 결과를 input 으로 받는다 — 미리비트 공고가 Keycloak 과 OPA 를 붙여 적은 이유"
+    },
+    {
+      "slug": "data-governance",
+      "how": "데이터 접근 통제도 같은 구조다. 카탈로그의 GRANT 로 풀 수도, 정책 엔진(Ranger/OPA)으로 풀 수도 있다"
+    },
+    {
+      "slug": "multi-tenancy",
+      "how": "테넌트별로 다른 규칙을 두어야 할 때 정책 엔진이 가장 자주 불린다. AWS 문서가 '테넌트별 커스텀 역할'을 이 방식의 이점으로 든다"
+    },
+    {
+      "slug": "caching",
+      "how": "판단에 필요한 데이터를 엔진에 미리 밀어 넣으면 '그 데이터가 언제 갱신되나'가 새 문제로 생긴다 — 경계 1번의 뒷면"
+    },
+    {
+      "slug": "rebac",
+      "how": "⚠️ 아직 문서가 없다. 공고가 `RBAC, ABAC, ReBAC` 를 나란히 적고 OpenFGA·Zanzibar 계열을 함께 요구한다 — 이 백과사전에서 빠진 세 번째 모델이다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `OPA`·`Policy Engine`·`Cedar`·`Kyverno` 어느 이름도 없다. 그래서 이 문서의 숫자는 전부 `all_jobs_enriched.json` 을 2026-09-06 에 직접 센 것이다 — 정규식(`OPA|Rego|policy engine|정책 엔진|policy-as-code|Cedar|Kyverno|Casbin|OpenFGA`)으로 후보를 뽑고 **문장을 읽어** 인가/가드레일로 분류했다. 집계 범위(`full_jd` 포함, 마감 공고 포함)가 `tech_relations` 와 다르므로 두 숫자를 섞어 쓰면 안 된다.",
+    "**`OPA` 는 세 글자 약어인데 오탐이 하나도 없었다.** 24건을 전부 읽었으나 다른 뜻으로 쓰인 줄이 없었다(`XA`·`MDM`·`RTO`·`OOM` 과 대조된다). 대문자 고정 표기이고 늘 `Rego`·`Kyverno`·`Gatekeeper`·`policy-as-code` 옆에 붙어 다니기 때문으로 보인다 — 다만 이것은 이 데이터셋에서 확인한 사실이지 일반 규칙은 아니다.",
+    "**`/docs/deployments` 는 404 다.** 현행 경로는 `/docs/deploy`(배포 모델 비교표)와 `/docs/integration`(Go SDK·REST API)로 나뉘어 있다. 예전 URL 을 인용한 글이 많으니 다음 사이클이 헛수고하지 않도록 적어 둔다.",
+    "**`/docs/integration` 에는 PDP/PEP 정의가 없다.** 그 정의는 `/docs/deploy` 에만 있었다. 또한 그 페이지에서 확인한 것은 \"Running OPA locally on the same host as your application or service helps ensure policy decisions are fast and highly-available\" 한 문장까지이고, 번들 배포의 비동기 특성은 원문으로 확인하지 못해 본문에 쓰지 않았다.",
+    "**본문의 Rego 조각은 이 문서가 만든 최소 예시다.** `default` 키워드의 용도와 undefined 의 의미, `opa test` 규약은 공식 문서 문장으로 확인했으나, 예시 코드 자체는 공식 문서에서 그대로 옮긴 것이 아니다. 버전에 따라 `allow if { }` 의 `if` 키워드 요구가 달라질 수 있으므로 실행 전 사용 중인 OPA 버전 문서를 확인할 것.",
+    "**Kubernetes 어드미션 웹훅의 동작(타임아웃·failurePolicy 기본값)은 이 사이클에서 1차 자료로 확인하지 않았다.** 가드레일 자리의 '엔진이 죽으면 열까 닫을까'는 그 설정이 정하므로, `kubernetes` 문서를 보강하거나 별도 사이클에서 다룰 자리다."
+  ],
+  "sources": [
+    {
+      "title": "Open Policy Agent — Documentation (Introduction)",
+      "url": "https://www.openpolicyagent.org/docs",
+      "publisher": "Open Policy Agent",
+      "kind": "docs",
+      "summary": "OPA 가 스스로를 정의하는 자리. 결정과 실행의 분리, 구조화된 입력·출력"
+    },
+    {
+      "title": "OPA Philosophy — Policy Decoupling",
+      "url": "https://www.openpolicyagent.org/docs/philosophy",
+      "publisher": "Open Policy Agent",
+      "kind": "docs",
+      "summary": "왜 정책을 서비스에서 떼어내는가. '재컴파일·재배포 없이 언제든 갱신'"
+    },
+    {
+      "title": "How to Deploy OPA",
+      "url": "https://www.openpolicyagent.org/docs/deploy",
+      "publisher": "Open Policy Agent",
+      "kind": "docs",
+      "summary": "PDP/PEP 정의와 사이드카 vs 중앙 서비스 비교표"
+    },
+    {
+      "title": "Policy Testing",
+      "url": "https://www.openpolicyagent.org/docs/policy-testing",
+      "publisher": "Open Policy Agent",
+      "kind": "docs",
+      "summary": "opa test 규약 — test_ 접두, undefined 면 FAIL, coverage"
+    },
+    {
+      "title": "Policy Language (Rego)",
+      "url": "https://www.openpolicyagent.org/docs/policy-language",
+      "publisher": "Open Policy Agent",
+      "kind": "docs",
+      "summary": "Rego 는 선언형. default 키워드와 정의되지 않음(undefined)"
+    },
+    {
+      "title": "What is Amazon Verified Permissions?",
+      "url": "https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/what-is-avp.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "Cedar 로 인가 로직을 업무 로직에서 떼어낸다. 외부 데이터는 요청에 실어 보내야 한다"
+    },
+    {
+      "title": "Implementing a PDP by using Amazon Verified Permissions",
+      "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/saas-multitenant-api-access-authorization/avp.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "PDP 를 구현한다는 말의 뜻과 policy decoupling"
+    }
+  ]
+}
