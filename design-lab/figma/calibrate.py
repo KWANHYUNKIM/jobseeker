@@ -7,129 +7,192 @@
     자간  ← 남는/모자란 폭을 글자 사이에 나눈다  (서체 폭 차이를 흡수)
     x, y ← 잉크 왼쪽 위 모서리를 원본에 붙인다
 
-서체 후보 중에서는 **자간을 가장 적게 건드려도 되는 것**을 고른다. 자간을 크게
-벌려야 맞는다는 건 그 서체가 원본보다 좁다는 뜻이니까.
+서체 후보는 두 가지로 점수를 매긴다.
+    자간 보정량  — 크게 벌려야 맞는다는 건 그 서체가 원본보다 좁다는 뜻이다.
+    획 굵기      — 가로로 훑어 잉크가 이어지는 길이. 세로획 두께가 여기서 갈린다.
+굵기를 더 무겁게 본다. 폭은 자간으로 흡수되지만 굵기는 흡수가 안 되기 때문이다.
+
+측정은 브라우저가 아니라 폰트 파일에서 직접 한다 — SVG `getBBox()` 는 잉크가 아니라
+em 상자를 돌려줘서 크기가 계속 어긋난다.
 
     python figma/calibrate.py hire-03                 # 지금 서체로 보정
     python figma/calibrate.py hire-03 --pick-font     # 후보를 다 재 보고 고른 뒤 보정
+    python figma/calibrate.py hire-03 --verify        # 실제로 그려서 남은 오차 보고
 """
 from __future__ import annotations
 
 import argparse
-import base64
 import json
 import sys
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+from PIL import Image, ImageDraw, ImageFont
 
 FIG_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(FIG_DIR))
 SPECS = FIG_DIR / "specs"
-FONTS = FIG_DIR / "fonts"       # 미리보기·측정용 사본. Figma 쪽은 같은 이름 서체를 쓴다
+FONTS = FIG_DIR / "fonts"       # 측정·미리보기용 사본. Figma 는 같은 이름 서체를 쓴다
 
 
-def _font_css() -> str:
-    faces = []
-    for f in sorted(FONTS.glob("*.ttf")) if FONTS.is_dir() else []:
-        b64 = base64.b64encode(f.read_bytes()).decode()
-        faces.append(f"@font-face{{font-family:'{f.stem}';"
-                     f"src:url(data:font/ttf;base64,{b64}) format('truetype');}}")
-    return "".join(faces)
+def _font(family: str, size: float) -> ImageFont.FreeTypeFont:
+    path = FONTS / f"{family}.ttf"
+    if not path.is_file():
+        raise FileNotFoundError(f"{family} 폰트 파일이 없습니다: {path}")
+    return ImageFont.truetype(str(path), max(int(round(size)), 1))
 
 
-def _page_html(spec: dict) -> tuple[str, int, int]:
-    from redraw import build
-    body, defs = build(spec)
-    w = spec["canvas"]["w"] * 2 + 120
-    h = spec["canvas"]["h"]
-    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
-           f' width="{w}" height="{h}" viewBox="0 0 {w} {h}">'
-           f'<defs>{"".join(defs)}</defs>{body}</svg>')
-    return f"<!doctype html><meta charset=utf-8><style>{_font_css()}html,body{{margin:0}}</style>{svg}", w, h
+def ink(text: str, family: str, size: float, tracking: float = 0.0) -> tuple[float, float, float, float]:
+    """기준선 원점에서 잰 잉크 상자 (x0, y0, w, h). y0 는 기준선 위쪽이라 음수."""
+    f = _font(family, size)
+    x0, y0, x1, y1 = f.getbbox(text, anchor="ls")
+    w = (x1 - x0) + tracking * max(len(text) - 1, 0)
+    return x0, y0, w, y1 - y0
 
 
-def _measure(page, spec: dict) -> dict[str, dict]:
-    html, w, h = _page_html(spec)
-    page.set_viewport_size({"width": min(w, 3000), "height": min(h, 3000)})
-    page.set_content(html, wait_until="load")
-    page.wait_for_timeout(250)
-    return page.evaluate("""() => {
-      const out = {};
-      for (const t of document.querySelectorAll('text')) {
-        const bb = t.getBBox();      // 로컬 좌표계 — 프레임 이동값은 안 들어간다
-        out[t.id] = {x: bb.x, y: bb.y, w: bb.width, h: bb.height};
-      }
-      return out;
-    }""")
+def fit_layer(layer: dict, family: str, rounds: int = 6) -> float:
+    """한 줄을 원본 상자에 맞춘다. 돌려주는 값은 크기 대비 자간(서체 적합도)."""
+    fit, text = layer["fit"], layer["text"]
+    size = layer.get("size") or 100.0
+    for _ in range(rounds):                      # 잉크 높이는 크기에 딱 비례하지 않는다
+        _, _, _, h = ink(text, family, size)
+        if h <= 0:
+            break
+        size = size * fit["h"] / h
+    x0, y0, w0, _ = ink(text, family, size)
+    gaps = max(len(text) - 1, 1)
+    tracking = (fit["w"] - w0) / gaps
+    layer.update({
+        "font": family,
+        "size": round(size, 2),
+        "tracking": round(tracking, 2),
+        "x": round(fit["x"] - x0, 1),
+        "y": round(fit["y"] - y0, 1),            # SVG 의 y 는 기준선
+    })
+    return abs(tracking) / size
 
 
-def _fit_round(spec: dict, boxes: dict) -> float:
-    """한 번 되돌리고, 필요한 자간의 평균 절대값(서체 적합도)을 돌려준다."""
-    tracks = []
-    for layer in spec["layers"]:
-        fit = layer.get("fit")
-        if layer["type"] != "text" or not fit:
-            continue
-        box = boxes.get(layer["name"])
-        if not box or box["w"] <= 0 or box["h"] <= 0:
-            continue
-        layer["size"] = round(layer["size"] * fit["h"] / box["h"], 2)
-        gaps = max(len(layer["text"]) - 1, 1)
-        layer["tracking"] = round(layer.get("tracking", 0)
-                                  + (fit["w"] - box["w"]) / gaps, 2)
-        layer["x"] = round(layer["x"] + (fit["x"] - box["x"]), 1)
-        layer["y"] = round(layer["y"] + (fit["y"] - box["y"]), 1)
-        tracks.append(abs(layer["tracking"]) / layer["size"])   # 크기 대비 자간
-    return round(sum(tracks) / len(tracks), 4) if tracks else 0.0
+def _stem_of_image(img: Image.Image, thr: int) -> float:
+    """가로로 훑어 잉크가 끊기지 않고 이어지는 평균 길이 ÷ 상자 높이 = 획 굵기."""
+    px = img.load()
+    runs = []
+    for y in range(0, img.height, 2):
+        run = 0
+        for x in range(img.width):
+            if px[x, y] >= thr:
+                run += 1
+            elif run:
+                if run < img.width * 0.5:      # 배경 덩어리는 획이 아니다
+                    runs.append(run)
+                run = 0
+    if not runs:
+        return 0.0
+    runs.sort()
+    return runs[len(runs) // 2] / max(img.height, 1)
 
 
-def run(spec_id: str, *, rounds: int = 3, pick_font: bool = False) -> dict:
+def _density_of(text: str, family: str, size: float, tracking: float,
+                box: dict) -> float:
+    """그려 본 글자의 획 굵기."""
+    img = Image.new("L", (int(box["w"]) + 40, int(box["h"]) + 40), 0)
+    draw = ImageDraw.Draw(img)
+    f = _font(family, size)
+    x0, y0, _, _ = ink(text, family, size)
+    x, y = 20 - x0, 20 - y0
+    for ch in text:
+        draw.text((x, y), ch, font=f, fill=255, anchor="ls")
+        x += draw.textlength(ch, font=f) + tracking
+    return _stem_of_image(img, 128)
+
+
+def _source_density(spec: dict, layer: dict, thr: int = 190) -> float | None:
+    """원본 캡처의 같은 자리에서 잰 획 굵기."""
+    src = FIG_DIR.parent / spec["source"]
+    if not src.is_file():
+        return None
+    im = Image.open(src).convert("L")
+    s = im.width / spec["canvas"]["w"]
+    fit = layer["fit"]
+    box = (max(int((fit["x"] - 20) * s), 0), max(int((fit["y"] - 20) * s), 0),
+           min(int((fit["x"] + fit["w"] + 20) * s), im.width),
+           min(int((fit["y"] + fit["h"] + 20) * s), im.height))
+    crop = im.crop(box)
+    if crop.width < 4 or crop.height < 4:
+        return None
+    return _stem_of_image(crop, thr)
+
+
+def run(spec_id: str, *, pick_font: bool = False) -> dict:
     path = SPECS / f"{spec_id}.json"
     spec = json.loads(path.read_text(encoding="utf-8"))
-    scores = {}
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
+    texts = [l for l in spec["layers"] if l["type"] == "text" and l.get("fit")]
+    scores: dict[str, float] = {}
 
-        if pick_font:
-            candidates = sorted(f.stem for f in FONTS.glob("*.ttf"))
-            best, best_score, best_spec = None, 1e9, None
-            for fam in candidates:
-                trial = json.loads(json.dumps(spec))
-                for layer in trial["layers"]:
-                    if layer["type"] == "text" and layer.get("fit"):
-                        layer["font"] = fam
-                        layer["tracking"] = 0
-                for _ in range(rounds):
-                    score = _fit_round(trial, _measure(page, trial))
-                scores[fam] = score
-                if score < best_score:
-                    best, best_score, best_spec = fam, score, trial
-            spec = best_spec
-            spec["font_note"] = (f"{best} 로 잡았다(자간 보정량 최소). "
-                                 f"원본 서체는 캡처만으로 확정 불가.")
-        else:
-            for _ in range(rounds):
-                _fit_round(spec, _measure(page, spec))
-        browser.close()
+    if pick_font:
+        want = [(l, _source_density(spec, l)) for l in texts]
+        for family in sorted(f.stem for f in FONTS.glob("*.ttf")):
+            track_pen, dens_pen, n = 0.0, 0.0, 0
+            for layer, want_d in want:
+                trial = json.loads(json.dumps(layer))
+                track_pen += fit_layer(trial, family)
+                if want_d is not None:
+                    got = _density_of(trial["text"], family, trial["size"],
+                                      trial["tracking"], trial["fit"])
+                    dens_pen += abs(got - want_d) / max(want_d, 1e-6)
+                n += 1
+            scores[family] = round((track_pen / n) + 2.0 * (dens_pen / n), 4)
+        family = min(scores, key=scores.get)
+        spec["font_note"] = (f"{family} 로 잡았다(자간·획굵기 오차 최소 {scores[family]}). "
+                             "원본 서체는 캡처만으로 확정 불가.")
+    else:
+        family = texts[0].get("font", "Libre Baskerville")
 
+    for layer in texts:
+        fit_layer(layer, family)
     path.write_text(json.dumps(spec, ensure_ascii=False, indent=1), encoding="utf-8")
-    return {"scores": dict(sorted(scores.items(), key=lambda kv: kv[1])),
-            "picked": spec.get("font_note", "")}
+    return {"family": family, "scores": dict(sorted(scores.items(), key=lambda kv: kv[1]))}
+
+
+def verify(spec_id: str) -> list[dict]:
+    """실제로 글자를 찍어 보고 원본 상자와의 남은 오차를 잰다(픽셀 기준)."""
+    spec = json.loads((SPECS / f"{spec_id}.json").read_text(encoding="utf-8"))
+    W, H = spec["canvas"]["w"], spec["canvas"]["h"]
+    canvas = Image.new("L", (W, H), 0)
+    draw = ImageDraw.Draw(canvas)
+    rows = []
+    for layer in spec["layers"]:
+        if layer["type"] != "text" or not layer.get("fit"):
+            continue
+        f = _font(layer["font"], layer["size"])
+        x = layer["x"]
+        for ch in layer["text"]:                 # 자간은 직접 벌려 가며 찍는다
+            draw.text((x, layer["y"]), ch, font=f, fill=255, anchor="ls")
+            x += draw.textlength(ch, font=f) + layer["tracking"]
+        box = canvas.getbbox()
+        fit = layer["fit"]
+        rows.append({
+            "이름": layer["name"],
+            "dx": round(box[0] - fit["x"], 1), "dy": round(box[1] - fit["y"], 1),
+            "dw": round((box[2] - box[0]) - fit["w"], 1),
+            "dh": round((box[3] - box[1]) - fit["h"], 1),
+        })
+        canvas.paste(0, (0, 0, W, H))
+    return rows
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("spec_id")
-    ap.add_argument("--rounds", type=int, default=3)
     ap.add_argument("--pick-font", action="store_true")
+    ap.add_argument("--verify", action="store_true")
     args = ap.parse_args()
-    out = run(args.spec_id, rounds=args.rounds, pick_font=args.pick_font)
+    if args.verify:
+        for r in verify(args.spec_id):
+            print(f"  {r['이름']:<24} dx={r['dx']:<7} dy={r['dy']:<7} dw={r['dw']:<7} dh={r['dh']}")
+        return
+    out = run(args.spec_id, pick_font=args.pick_font)
     for fam, score in out["scores"].items():
         print(f"  {fam:<22} 자간보정량 {score}")
-    if out["picked"]:
-        print("→", out["picked"])
+    print("→ 서체:", out["family"])
 
 
 if __name__ == "__main__":

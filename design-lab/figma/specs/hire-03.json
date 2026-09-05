@@ -7,7 +7,7 @@
   "w": 1080,
   "h": 1350
  },
- "font_note": "Libre Baskerville 로 잡았다(자간 보정량 최소). 원본 서체는 캡처만으로 확정 불가.",
+ "font_note": "Noto Serif 로 잡았다(자간·획굵기 오차 최소 0.6013). 원본 서체는 캡처만으로 확정 불가.",
  "photo_note": "배경은 흐린 인물 사진이라 원본 소스가 없다. 8×10 격자의 중앙값 색을 방사형 그라디언트 타원으로 겹쳐 근사했다.",
  "layers": [
   {
@@ -1863,10 +1863,10 @@
    "type": "text",
    "name": "Open Positions.",
    "text": "Open Positions.",
-   "x": 100.0,
-   "y": 195.0,
-   "size": 35.99,
-   "font": "Libre Baskerville",
+   "x": 100,
+   "y": 188,
+   "size": 44.04,
+   "font": "Noto Serif",
    "fill": "#ffffff",
    "fit": {
     "x": 100,
@@ -1874,16 +1874,16 @@
     "w": 478,
     "h": 44
    },
-   "tracking": 9.78
+   "tracking": 11.07
   },
   {
    "type": "text",
    "name": "마감일",
    "text": "~26.08.02",
-   "x": 681.0,
-   "y": 202.0,
-   "size": 30.43,
-   "font": "Libre Baskerville",
+   "x": 681,
+   "y": 193,
+   "size": 51.2,
+   "font": "Noto Serif",
    "fill": "#ffffff",
    "fit": {
     "x": 681,
@@ -1891,16 +1891,16 @@
     "w": 291,
     "h": 38
    },
-   "tracking": 6.6
+   "tracking": 8.25
   },
   {
    "type": "text",
    "name": "직군 1 — Graphic",
    "text": "Graphic",
    "x": 92,
-   "y": 398,
-   "size": 112.1,
-   "font": "Libre Baskerville",
+   "y": 395,
+   "size": 138.61,
+   "font": "Noto Serif",
    "fill": "#ffffff",
    "fit": {
     "x": 92,
@@ -1908,16 +1908,16 @@
     "w": 660,
     "h": 139
    },
-   "tracking": 28.27
+   "tracking": 22.17
   },
   {
    "type": "text",
    "name": "직군 1 — Designer.",
    "text": "Designer.",
    "x": 90,
-   "y": 585,
-   "size": 120.16,
-   "font": "Libre Baskerville",
+   "y": 581,
+   "size": 149.48,
+   "font": "Noto Serif",
    "fill": "#ffffff",
    "fit": {
     "x": 90,
@@ -1925,16 +1925,16 @@
     "w": 789,
     "h": 149
    },
-   "tracking": 23.59
+   "tracking": 17.75
   },
   {
    "type": "text",
    "name": "직군 2 — 3D",
    "text": "3D",
    "x": 108,
-   "y": 944,
-   "size": 110.48,
-   "font": "Libre Baskerville",
+   "y": 972,
+   "size": 185.75,
+   "font": "Noto Serif",
    "fill": "#ffffff",
    "fit": {
     "x": 108,
@@ -1942,16 +1942,16 @@
     "w": 223,
     "h": 137
    },
-   "tracking": 63.8
+   "tracking": -16.0
   },
   {
    "type": "text",
    "name": "회사명",
    "text": "imago pictures",
-   "x": 516.0,
+   "x": 516,
    "y": 884,
-   "size": 46.77,
-   "font": "Libre Baskerville",
+   "size": 58.21,
+   "font": "Noto Serif",
    "fill": "#ffffff",
    "fit": {
     "x": 516,
@@ -1959,16 +1959,16 @@
     "w": 456,
     "h": 58
    },
-   "tracking": 7.19
+   "tracking": 3.54
   },
   {
    "type": "text",
    "name": "직군 2 — Generalist.",
    "text": "Generalist.",
    "x": 92,
-   "y": 1140,
-   "size": 115.32,
-   "font": "Libre Baskerville",
+   "y": 1169,
+   "size": 184.45,
+   "font": "Noto Serif",
    "fill": "#ffffff",
    "fit": {
     "x": 92,
@@ -1976,7 +1976,7 @@
     "w": 891,
     "h": 143
    },
-   "tracking": 23.46
+   "tracking": -5.2
   }
  ]
 }
