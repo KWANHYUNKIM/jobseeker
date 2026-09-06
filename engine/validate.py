@@ -49,6 +49,14 @@ MIRRORED = ("name", "name_en", "country", "category", "status", "updated_at")
 # --gaps 가 대상 하나 말고 몇 건을 더 보여줄지. 루프의 맥락을 아끼려고 짧게 끊는다.
 SHOW_NEXT = 5
 
+# 본문 1000자당 강조 기호(⭐·⚠️)가 이 값을 넘으면 문체 빚으로 본다.
+#
+# STYLE.md 6번의 기준 문서는 baemin.json 이고 그 밀도가 0.03 이다. 초반에 쓴 회사들
+# (토스·네이버·쿠팡·스트라이프)도 전부 0.5 아래에 있다. 그 뒤로 ⚠️ 가 들어오고 ⭐ 까지
+# 붙으면서 절반 넘는 회사가 2.0 을 넘겼는데, 그 기호를 따라 눈이 튀어서 문장이 이어지지
+# 않는다. 말로 된 규칙은 흐르므로 숫자로 잡는다.
+STYLE_MARK_PER_KB = 0.5
+
 # 이 날수가 지난 회사는 다시 들여다볼 때가 된 것으로 본다.
 #
 # 이 단이 있어야 루프가 루프다. 나머지 단은 전부 유한한 목록을 줄이는 일이라
@@ -65,6 +73,32 @@ STALE_DAYS = 14
 QUEUE_TARGET = 3
 QUEUE_MD = ROOT / "engine" / "state" / "QUEUE.md"
 TIMELINE_LEDGER = ROOT / "engine" / "state" / "timeline.json"
+
+
+def _style_debt(companies: list) -> list:
+    """STYLE.md 6번의 문체 기준에서 벗어난 회사를 무거운 순으로 돌려준다.
+
+    도해(``code``)는 빼고 센다. 머메이드 라벨의 기호는 문장을 끊는 것과 다른 문제라
+    같은 자로 재면 그림이 많은 회사가 억울하게 무거워진다.
+    """
+    def _body(obj) -> str:
+        if isinstance(obj, dict):
+            return "".join(_body(v) for k, v in obj.items() if k != "code")
+        if isinstance(obj, list):
+            return "".join(_body(x) for x in obj)
+        return obj if isinstance(obj, str) else ""
+
+    out = []
+    for slug, doc in companies:
+        body = _body(doc)
+        if not body:
+            continue
+        marks = body.count("\u2b50") + body.count("\u26a0\ufe0f")
+        per_kb = marks / (len(body) / 1000)
+        if per_kb >= STYLE_MARK_PER_KB:
+            out.append((slug, round(per_kb, 2), marks))
+    out.sort(key=lambda x: -x[1])
+    return out
 
 
 def _queue_depth() -> int | None:
@@ -115,6 +149,8 @@ class Report:
         self.wip: list[tuple[str, str]] = []
         # 다시 들여다볼 때가 된 회사 — (slug, updated_at, 지난 날수)
         self.stale: list[tuple[str, str, int]] = []
+        # STYLE.md 6번의 문체 기준을 벗어난 회사 — (slug, 1000자당 기호, 기호 수)
+        self.style: list[tuple[str, float, int]] = []
         # 지금 검사 중인 회사가 보류 상태인가. gap() 이 이 값을 보고 걸러 낸다.
         self._held = False
 
@@ -664,6 +700,29 @@ def _print_gaps(r: Report) -> int:
             print(f"  참고: 다시 볼 때가 된 회사도 {len(r.stale)}곳 있다(재방문, 그 아래 단).")
         return 1 if r.errors else 0
 
+    # 문체 보수 — 재방문보다 위에 둔다.
+    #
+    # 재방문은 바깥이 변해서 도는 무한 루프이고 이 단은 유한한 목록을 줄이는 일이라,
+    # 끝나는 일을 먼저 끝낸다. 그리고 여기 쌓인 회사들은 이미 판 것이라 새로 조사할
+    # 필요가 없다 — 읽고 다시 쓰기만 하면 된다.
+    if r.style:
+        slug, per_kb, marks = r.style[0]
+        print("### 이번 사이클의 대상 — 문체 보수 (사다리 3순위)")
+        print(f"  [문체] {slug} — 본문 1000자당 강조 기호 {per_kb}개 (총 {marks}개)")
+        print("  할 일: STYLE.md 6번대로 `baemin.json` 문체에 맞춘다. 새 조사는 하지 않는다.")
+        print("         · ⭐ ⚠️ 를 본문에서 걷어내고 중요한 것은 문장의 자리로 드러낸다")
+        print("         · 백틱 인용을 풀어 쓴다 — 원문은 sources[].summary 한 줄에만 둔다")
+        print("         · 앞선 회사와 견주는 문장을 넣는다(이미 판 회사를 끌어온다)")
+        print("         · 도메인 경계를 왜 그렇게 잡았는지 한 줄 적는다")
+        if len(r.style) > 1:
+            print()
+            print(f"  문체 빚이 남은 회사 {len(r.style)}곳 중 가장 무거운 것이다:")
+            for s2, p2, m2 in r.style[1:1 + SHOW_NEXT]:
+                print(f"    · {s2} — {p2}개/1000자 ({m2}개)")
+            if len(r.style) > 1 + SHOW_NEXT:
+                print(f"    … 외 {len(r.style) - 1 - SHOW_NEXT}곳")
+        return 1 if r.errors else 0
+
     # 재방문 — 진행 중인 회사가 없을 때 사다리의 다음 단.
     # 이 단만이 바깥을 본다. 나머지는 전부 이미 가진 것을 정리하는 일이다.
     if r.stale:
@@ -819,6 +878,7 @@ def main() -> int:
         return _print_timeline(companies)
 
     if want_gaps:
+        r.style = _style_debt(sorted(companies.items()))
         return _print_gaps(r)
 
     for line in r.warnings:
