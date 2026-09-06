@@ -448,9 +448,9 @@
         "회로 차단기",
         "Resilience4j"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "rag",
@@ -691,9 +691,9 @@
         "observability",
         "o11y"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "network-separation",
@@ -747,9 +747,9 @@
         "오류 예산",
         "error budget"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "distributed-lock",
@@ -985,9 +985,9 @@
         "장애 회고",
         "인시던트"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-05"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "olap",
