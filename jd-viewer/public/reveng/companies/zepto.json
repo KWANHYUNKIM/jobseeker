@@ -1,0 +1,141 @@
+{
+  "slug": "zepto",
+  "name": "Zepto",
+  "name_en": "Zepto",
+  "country": "IN",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "zeptonow.com",
+  "one_liner": "인도에서 10분 안에 배달하는 퀵커머스 — 재고가 계속 바뀐다는 것을 전제로 시스템을 짠다",
+  "business_model": "**도시 곳곳의 다크스토어에서 10분 안에 배달한다.** **1,139개 다크스토어 · 66개 도시 · 연간 거래 사용자 4,797만 명**이고 **2026년 3월 분기에 하루 평균 233만 건**을 배달했다. **FY26 매출 ₹22,624 Cr(+103.6%)** 인데 **손실도 ₹5,905 Cr** 이다. ⚠️ **가장 빨리 크는 것은 배달이 아니라 광고다** — **2026년 6월 기준 1억 7,100만 달러(+151%).** 식료품에서 시작해 **약국 · 생활용품 · 다크스토어 안의 조리 식품(Zepto Café)** 으로 넓혔는데, **각 품목이 주문 빈도와 매장 활용률을 올리도록 설계됐다.**\n\n⚠️ **이 회사의 기술 문제는 전부 `10분` 이라는 한 줄에서 나온다.** 회사의 문장 — **전통적인 검색에서는 `상품이 있거나 없거나` 인데, 이곳의 재고는 **`주문이 들어올 때마다 계속 바뀐다`.** **그 한 줄이 표준적인 설계 가정을 무효로 만든다**(뒤쪽은 이 사이트의 재구성이다).",
+  "products": [
+    "Zepto (10분 배달 앱)",
+    "Zepto Café (다크스토어 내 조리 식품)",
+    "광고 (브랜드 대상)",
+    "약국 · 생활용품"
+  ],
+  "domain_map": {
+    "title": "10분이라는 한 줄이 모든 시스템의 전제를 바꾼다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  U[\"<b>사용자 4,797만 명</b><br/>• 하루 233만 건\"]:::list --> Q[\"⚠️ <b>재고가 계속 바뀌는 검색</b><br/>• 분당 100만 요청<br/>• 200ms 미만\"]:::accent\n  Q --> ST[\"<b>다크스토어 1,139개</b><br/>• 66개 도시\"]:::list\n  ST --> DL[\"<b>10분 배달</b><br/>• 경로 · 인력 배치\"]:::quiet\n  ST --> AD2[\"<b>광고</b><br/>• 하루 10억 이벤트<br/>• 가장 빨리 크는 매출\"]:::quiet\n  DL --> R[\"<b>버는 곳</b><br/>• 배달 · 품목 확장<br/>• 광고 (+151%)\"]:::list\n  AD2 --> R"
+  },
+  "revenue_streams": [
+    {
+      "name": "배달 (다크스토어 커머스)",
+      "how": "**다크스토어 1,139개 · 66개 도시 · 하루 평균 233만 건**(2026년 3월 분기). FY26 매출 **₹22,624 Cr(+103.6%)**. 약국·생활용품·조리 식품으로 넓혀 **주문 빈도와 매장 활용률**을 올린다.",
+      "domains": [
+        "재고가 계속 바뀌는 시장에서 검색한다",
+        "10분을 지키려고 사람과 경로를 배치한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+          "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+          "publisher": "MoneyFlow India",
+          "date": "2026",
+          "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+        }
+      ]
+    },
+    {
+      "name": "광고 (브랜드 대상)",
+      "how": "⚠️ **가장 빨리 크는 매출원** — 2026년 6월 기준 **1억 7,100만 달러(+151%)**. 회사가 **하루 10억 이벤트** 규모의 광고 분석을 글로 냈다.",
+      "domains": [
+        "광고를 팔려면 하루 10억 이벤트를 세야 한다",
+        "재고가 계속 바뀌는 시장에서 검색한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+          "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+          "publisher": "MoneyFlow India",
+          "date": "2026",
+          "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+        },
+        {
+          "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+          "url": "https://blog.zepto.com/",
+          "publisher": "Zepto TechXPress",
+          "date": "2026-07-27",
+          "summary": "하루 10억 이벤트 규모의 광고 분석. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "재고가 계속 바뀌는 시장에서 검색한다",
+      "why": "⚠️ **전통적인 검색은 `상품이 있거나 없거나` 를 전제하는데 여기서는 재고가 주문마다 바뀐다.** 게다가 **인도 구어를 라틴 문자로 적은 질의**를 알아들어야 하고, **분당 100만 요청 이상**을 **200ms 미만**에 답해야 한다. ✅ **본문 확인함**(2026-06-11). ⏳ 의미 검색 글(2026-02-09)이 하나 더 있다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "10분을 지키려고 사람과 경로를 배치한다",
+      "why": "**10분은 약속이자 제약이다.** 회사가 글 둘을 냈다 — **`Route IQ: 잡음 섞인 GPS 에서 배달 경로를 복원한다`(2026-08-24)** 와 **`알맞은 사람을 알맞은 교대에 알맞은 시간에`(2026-09)**. ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "광고를 팔려면 하루 10억 이벤트를 세야 한다",
+      "why": "⚠️ **광고가 가장 빨리 크는 매출원(+151%)인데 광고는 센 숫자만큼만 팔린다**(재구성). 회사가 **`하루 10억 이벤트: 실제로 작동하는 광고 분석을 만들었다`(2026-07-27)** 를 냈다. ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **도메인 셋 중 둘이 아직 본문 미독이다** — 배달·인력 배치와 광고 분석. **제목과 목록으로만 도메인을 세웠다.**",
+    "⚠️ **다크스토어 안의 재고 시스템을 아직 못 봤다** — 검색 글은 **재고가 계속 바뀐다는 사실**을 전제로 쓰지만, **그 재고를 무엇이 어떻게 관리하는지**는 다루지 않는다.",
+    "⚠️ **적자 규모가 크다**(FY26 손실 ₹5,905 Cr) — **기술 선택이 원가에 어떻게 걸리는지**를 다룬 자료를 아직 못 찾았다.",
+    "⚠️ **10분이라는 약속의 실제 달성률을 모른다** — 공개 자료에서 배달 시간 분포를 못 찾았다.",
+    "⚠️ **연표(eras)를 못 세웠다.** 2021년 창업과 2022년 품목 확장은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다. ⏳ `성능 엔지니어링 2부`(2025-12-15)가 단서일 수 있다."
+  ],
+  "sources": [
+    {
+      "title": "Building Search for a 10-Minute World",
+      "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+      "publisher": "Zepto TechXPress",
+      "date": "2026-06-11",
+      "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+    },
+    {
+      "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+      "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+      "publisher": "MoneyFlow India",
+      "date": "2026",
+      "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+    },
+    {
+      "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+      "url": "https://blog.zepto.com/",
+      "publisher": "Zepto TechXPress",
+      "date": "2026-08-24",
+      "summary": "잡음 섞인 GPS 에서 실제 배달 경로를 복원한다. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+    },
+    {
+      "title": "Right People, Right Shift, Right Time: Optimizing Workforce Planning at Zepto",
+      "url": "https://blog.zepto.com/",
+      "publisher": "Zepto TechXPress",
+      "date": "2026-09",
+      "summary": "교대 인력 배치 최적화. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+    },
+    {
+      "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+      "url": "https://blog.zepto.com/",
+      "publisher": "Zepto TechXPress",
+      "date": "2026-07-27",
+      "summary": "하루 10억 이벤트 규모의 광고 분석. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+    },
+    {
+      "title": "How We Built High-Precision, Low-Latency Semantic Search in Production",
+      "url": "https://blog.zepto.com/",
+      "publisher": "Zepto TechXPress",
+      "date": "2026-02-09",
+      "summary": "프로덕션 의미 검색. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+    }
+  ]
+}

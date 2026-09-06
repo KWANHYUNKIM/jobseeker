@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "zepto",
+      "name": "Zepto",
+      "name_en": "Zepto",
+      "country": "IN",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "인도에서 10분 안에 배달하는 퀵커머스 — 재고가 계속 바뀐다는 것을 전제로 시스템을 짠다",
+      "updated_at": "2026-09-06",
+      "domain": "zeptonow.com"
+    },
+    {
       "slug": "meesho",
       "name": "Meesho",
       "name_en": "Meesho",
@@ -1367,7 +1379,10 @@
     "판매자에게 언제 얼마를 왜 주는지 설명한다",
     "주소를 못 쓰는 나라에서 배달지를 찾는다",
     "사기 네트워크를 실시간으로 끊는다",
-    "10억 대 기기의 인터넷에 물건을 보여 준다"
+    "10억 대 기기의 인터넷에 물건을 보여 준다",
+    "재고가 계속 바뀌는 시장에서 검색한다",
+    "10분을 지키려고 사람과 경로를 배치한다",
+    "광고를 팔려면 하루 10억 이벤트를 세야 한다"
   ],
   "countries": {
     "KR": "한국",
