@@ -1627,8 +1627,8 @@
       "name_en": "Railway",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "하이퍼스케일러를 떠나 랙부터 직접 세운 배포 플랫폼 — 쿠버네티스도 남의 CDN 도 안 쓰고 아래층을 통째로 자기 것으로 바꿨다",
       "updated_at": "2026-09-07",
       "domain": "railway.com"
