@@ -192,7 +192,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "layered-guest-isolation"
+      ]
     },
     {
       "name": "한 코어를 여럿에게 판다",
@@ -810,6 +812,534 @@
           "summary": "독일 리전 기준으로 표준 VM 은 2코어 8GB 40GB 가 분당 0.00104달러(월 41.89달러)부터 30코어 120GB 600GB 가 분당 0.01559달러(월 628.42달러)까지다. 버스터블은 1코어 2GB 10GB 가 분당 0.00026달러(월 10.47달러), 2코어 4GB 20GB 가 분당 0.00052달러(월 20.95달러)다. 깃허브 액션 러너는 x64 표준이 2코어 분당 0.00125달러에서 30코어 0.01875달러, 프리미엄이 2코어 0.002달러에서 30코어 0.030달러이고 arm64 는 표준과 같은 값이다. 관리형 포스트그레스는 hobby-1 이 월 19.54달러, standard-2 가 78달러, standard-4 가 156달러다. 그 밖에 공인 IPv4 주소가 월 3달러, 머신 이미지 저장이 GiB·월 약 0.15달러, 송신 초과가 TB 당 3달러이며(2코어당 월 0.625TB 포함) 수신과 리전 내 통신은 받지 않는다."
         }
       ]
+    },
+    {
+      "key": "layered-guest-isolation",
+      "name": "재일러를 새로 만들지 않고 리눅스에 있는 것을 겹친다",
+      "domain": "남의 코드를 남의 기계 위에 가둔다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "빌린 베어메탈 한 대 위에 여러 손님의 VM 을 올려 판다. 그러면 옆 손님의 코드가 이쪽으로 넘어오지 않는다는 것이 상품의 조건이 된다 — 값이 싼 것은 그다음 이야기다.\n\n하이퍼스케일러는 전용 하드웨어와 자체 카드로 이 문제를 푼다. 남의 기계를 빌려 쓰는 쪽에는 그 길이 없어서, **리눅스에 이미 있는 격리 수단을 겹쳐 쌓는 것**이 유일한 답이 된다(재구성).",
+        "metrics": [
+          {
+            "label": "고른 VMM",
+            "value": "클라우드 하이퍼바이저 — 파이어크래커와 QEMU 를 물리고",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "label": "격리의 겹",
+            "value": "일반 사용자로 실행 · systemd 권한 제한 · 네트워크 네임스페이스 · nftables · 파일 권한",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "label": "안 켠 방어",
+            "value": "seccomp-bpf 는 내장돼 있으나 아직 켜지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "label": "게스트에 주는 것",
+            "value": "파일시스템이 아니라 블록 장치만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              },
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "VMM",
+            "what": "게스트의 장치를 흉내 내고 VM 을 만드는 사용자 공간 프로세스. 여기서는 클라우드 하이퍼바이저다"
+          },
+          {
+            "name": "재일러",
+            "what": "그 프로세스를 가두는 층. 남들은 따로 만들었고 여기서는 리눅스 기본 수단으로 대신한다"
+          },
+          {
+            "name": "네트워크 네임스페이스",
+            "what": "tap 장치가 들어앉는 칸. 손님마다 네트워크를 가른다"
+          },
+          {
+            "name": "nftables 규칙",
+            "what": "패킷을 거르고 나누는 자리"
+          },
+          {
+            "name": "시스템콜 표면",
+            "what": "게스트에서 호스트 커널로 닿을 수 있는 넓이. 줄이는 것이 목표다"
+          }
+        ],
+        "invariants": [
+          "하이퍼바이저는 루트가 아닌 일반 사용자로 돈다",
+          "게스트에 파일시스템을 노출하지 않는다",
+          "손님의 네트워크는 네임스페이스로 갈린다",
+          "격리는 한 겹이 아니라 여러 겹이다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "세 스택을 나란히 놓으면",
+          "question": "남들은 무엇으로 가두고 우리는 무엇으로 가두나",
+          "kind": "flow",
+          "code": "flowchart TD\n  RH[\"<b>레드햇 계열</b><br/>• KVM + QEMU<br/>• libvirt 가 SELinux·파일 권한으로 가둔다\"]:::list\n  FC[\"<b>파이어크래커</b><br/>• 러스트 VMM 으로 QEMU 를 대체<br/>• 자체 재일러: chroot · PID/네트워크 네임스페이스 · seccomp-bpf\"]:::list\n  UB[\"<b>유비클라우드</b><br/>• 클라우드 하이퍼바이저<br/>• 일반 사용자 + systemd 권한 제한<br/>• 네트워크 네임스페이스 + nftables\"]:::list\n  RH --> P[\"<b>공통점</b><br/>• 사용자 공간 VMM 을 가둔다<br/>• 블록만 주고 파일시스템은 안 준다\"]:::list\n  FC --> P\n  UB --> P"
+        },
+        {
+          "title": "게스트에서 호스트까지 몇 겹인가",
+          "question": "한 겹이 뚫리면 다음은 무엇인가",
+          "kind": "flow",
+          "code": "flowchart LR\n  G[\"<b>손님 코드</b>\"]:::list --> V[\"<b>클라우드 하이퍼바이저</b><br/>• virtio 로만 말한다<br/>• 파일시스템 없음, 블록만\"]:::list\n  V --> U[\"<b>일반 리눅스 사용자</b><br/>• 루트가 아니다\"]:::list\n  U --> SD[\"<b>systemd 권한 제한 + 파일 권한</b>\"]:::list\n  V --> NS[\"<b>네트워크 네임스페이스</b><br/>• tap 이 그 안에 있다\"]:::list --> NF[\"<b>nftables</b><br/>• 패킷을 거른다\"]:::list\n  V -.->|\"내장됐으나 안 켬\"| SC[\"<b>seccomp-bpf</b>\"]:::list"
+        },
+        {
+          "title": "이 격리가 무는 값",
+          "question": "일반 목적 VMM 을 고른 대가는 어디서 나오나",
+          "kind": "failure",
+          "code": "flowchart TD\n  C[\"<b>일반 목적 VMM 을 골랐다</b><br/>• 윈도우 · GPU 패스스루 · vhost-user\"]:::list --> W[\"<b>표면이 넓어진다</b><br/>• 파이어크래커의 최소 장치 모델과 반대(재구성)\"]:::list\n  S1[\"<b>seccomp-bpf 미적용</b>\"]:::list --> S2[\"<b>있는 방어와 켠 방어가 다르다</b><br/>• 프로젝트가 표면에 민감하다는 것이 근거\"]:::list\n  W --> R[\"<b>남는 겹에 기댄다</b><br/>• 일반 사용자 · systemd · 네임스페이스\"]:::list\n  S2 --> R\n  V[\"<b>vhost-user 로 백엔드를 뺐다</b>\"]:::list --> VP[\"<b>프로세스 경계가 하나 더</b><br/>• 지켜야 할 것도 하나 더(재구성)\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라우드 하이퍼바이저를 일반 리눅스 사용자로 띄운다",
+            "why": "루트로 돌리면 뚫렸을 때 남는 겹이 없다"
+          },
+          {
+            "step": "systemd 권한 제한과 파일 권한으로 닿을 수 있는 것을 좁힌다",
+            "why": "libvirt 나 자체 재일러를 만드는 대신 이미 있는 관리 체계를 쓴다"
+          },
+          {
+            "step": "tap 장치를 네트워크 네임스페이스 안에 만든다",
+            "why": "손님의 네트워크를 커널 수준에서 가른다"
+          },
+          {
+            "step": "nftables 로 패킷을 거르고 분류한다",
+            "why": "네임스페이스가 가른 뒤에도 오가는 것을 규칙으로 막는다"
+          },
+          {
+            "step": "저장소는 블록 장치로만 준다 — SPDK 로",
+            "why": "파일시스템은 코드가 크고 복잡해서 블록만 주면 호스트 커널 표면의 상당 부분이 지켜진다"
+          },
+          {
+            "step": "virtio 백엔드를 vhost-user 로 별도 프로세스에 둔다",
+            "why": "장치 처리를 하이퍼바이저 프로세스 밖으로 뺄 수 있다"
+          },
+          {
+            "step": "게스트 메모리를 huge page 로 받친다",
+            "why": "페이지 테이블 부담을 줄여 큰 게스트의 성능을 올린다(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "VMM 을 무엇으로 할 것인가",
+            "chosen": "클라우드 하이퍼바이저. 고를 당시 얻는 것이 넷이었다 — 리눅스와 윈도우, vhost-user, GPU PCI 패스스루, huge page 받침",
+            "alternatives": [
+              "AWS 파이어크래커",
+              "QEMU(레드햇 계열)"
+            ],
+            "tradeoff": "파이어크래커가 노린 셋(오버헤드·부팅 시간·공격 표면)을 그만큼은 못 가져온다 — 일반 목적이라는 말이 곧 표면이 넓다는 말이다(재구성). 대신 윈도우와 GPU 를 파는 길이 열린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "question": "재일러를 직접 만들 것인가",
+            "chosen": "만들지 않는다. 일반 사용자로 돌리고 systemd 권한 제한과 파일 권한, 네트워크 네임스페이스를 건다",
+            "alternatives": [
+              "libvirt 처럼 SELinux 로 가두기",
+              "파이어크래커처럼 chroot·네임스페이스·seccomp 를 묶은 자체 재일러를 만들기"
+            ],
+            "tradeoff": "남들이 재일러 하나에 모아 둔 것을 여러 설정에 흩어 두는 셈이라 빠뜨리기 쉽다(재구성). 대신 만들 것도 유지할 것도 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "question": "seccomp-bpf 를 켤 것인가",
+            "chosen": "아직 켜지 않는다. 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하다는 것이 이유다",
+            "alternatives": [
+              "기본으로 켜기",
+              "자체 필터를 만들기"
+            ],
+            "tradeoff": "있는 방어와 켜 둔 방어가 다르다 — 이것을 글에 그대로 적는다. 파이어크래커가 재일러에 seccomp 를 넣어 두는 것과 갈리는 자리다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "question": "게스트에 저장소를 어떻게 줄 것인가",
+            "chosen": "블록 장치만 준다. 파일시스템 패스스루를 쓰지 않는다",
+            "alternatives": [
+              "호스트 디렉터리를 파일시스템으로 노출",
+              "게스트가 네트워크 파일시스템을 쓰게 하기"
+            ],
+            "tradeoff": "블록 계층을 직접 다뤄야 해서 저장소 쪽 일이 늘어난다. 대신 파일시스템은 코드가 크고 복잡해서 블록만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다 — 파이어크래커도 같은 이유를 든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              },
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "네트워크를 어떻게 가를 것인가",
+            "chosen": "tap 장치를 네트워크 네임스페이스에 넣고 nftables 로 거른다",
+            "alternatives": [
+              "브리지 하나에 다 붙이고 규칙으로만 가르기",
+              "사용자 공간 네트워크 스택"
+            ],
+            "tradeoff": "격리가 커널 기능의 정확한 사용에 달린다 — 설정 하나가 어긋나면 겹이 사라진다(재구성). 대신 커널이 이미 하는 일이라 성능을 따로 사지 않아도 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "question": "장치 백엔드를 어디서 돌릴 것인가",
+            "chosen": "vhost-user 로 virtio 백엔드를 별도 프로세스에 둔다",
+            "alternatives": [
+              "하이퍼바이저 안에서 처리",
+              "커널 쪽 백엔드"
+            ],
+            "tradeoff": "프로세스가 늘고 그 경계도 지켜야 한다(재구성). 대신 SPDK 같은 사용자 공간 저장소를 그대로 붙일 수 있다 — 앞 도메인의 선택이 이 결정에 기대고 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              },
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "게스트 메모리를 어떻게 받칠 것인가",
+            "chosen": "huge page 로 받친다",
+            "alternatives": [
+              "보통 페이지로 두기"
+            ],
+            "tradeoff": "미리 잡아 두는 메모리가 생겨 배치가 빡빡해진다(재구성). 대신 큰 게스트에서 주소 변환 부담이 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "클라우드 하이퍼바이저",
+            "role": "러스트로 쓰인 VMM. 코드 일부가 파이어크래커에서 왔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "tech": "네트워크 네임스페이스 + tap",
+            "role": "손님 네트워크를 커널 수준에서 가른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "tech": "nftables",
+            "role": "패킷을 거르고 분류한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "tech": "systemd 권한 제한 + 일반 사용자",
+            "role": "재일러를 만드는 대신 쓰는 격리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "tech": "vhost-user / huge page",
+            "role": "장치 백엔드를 별도 프로세스로, 게스트 메모리를 큰 페이지로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "bdev-ubi-copy-on-access",
+          "via": "블록만 주기로 한 결정이 낳은 일",
+          "contract": "파일시스템을 안 주기로 했으므로 블록 계층을 직접 만들어야 한다. 격리를 위해 고른 것이 저장소의 숙제가 되고, vhost-user 가 그 둘을 잇는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "한 코어를 여럿에게 판다",
+          "via": "같은 호스트를 나눠 쓰는 두 방식",
+          "contract": "네트워크와 프로세스는 네임스페이스와 권한으로 가르고, CPU 는 cgroups 슬라이스로 가른다. 격리의 단위가 자원마다 다르다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "베어메탈 값과 클라우드 값의 차이를 판다",
+          "via": "전용 하드웨어를 안 사는 대신 커널을 쓴다",
+          "contract": "하이퍼스케일러가 자체 카드로 푸는 자리를 리눅스 기능으로 대신하기 때문에 값이 싸진다. 격리의 질이 커널 기능의 조합에 달리는 것이 그 값이다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Firecracker: Lightweight Virtualization for Serverless Applications",
+            "authors": "Alexandru Agache 외 (AWS)",
+            "year": "2020",
+            "venue": "NSDI 2020",
+            "url": "https://www.usenix.org/conference/nsdi20/presentation/agache",
+            "takeaway": "QEMU 를 최소 장치 모델의 러스트 VMM 으로 갈아 끼워 오버헤드·부팅 시간·공격 표면 셋을 한꺼번에 줄인 설계다. 이 회사가 물린 대안이자 클라우드 하이퍼바이저의 코드가 나온 곳이라, 무엇을 포기하고 무엇을 얻었는지의 기준선이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "title": "seccomp BPF — Linux kernel documentation",
+            "authors": "Linux kernel",
+            "year": "2024",
+            "venue": "커널 문서",
+            "url": "https://docs.kernel.org/userspace-api/seccomp_filter.html",
+            "takeaway": "프로세스가 부를 수 있는 시스템콜을 필터로 줄이는 얼개다. 이 회사가 내장된 것을 아직 켜지 않았다고 적는 대상이 정확히 이것이고, 그래서 남은 겹이 무엇인지가 중요해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "title": "vhost-user Protocol / virtio Specification",
+            "authors": "OASIS / QEMU 프로젝트",
+            "year": "2022",
+            "venue": "명세",
+            "url": "https://www.qemu.org/docs/master/interop/vhost-user.html",
+            "takeaway": "장치 백엔드를 VMM 밖의 프로세스로 빼서 공유 메모리와 큐로 잇는 규약이다. SPDK 저장소를 하이퍼바이저에 붙이는 길이 여기서 나온다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "있는 방어와 켜 둔 방어는 다르다",
+            "why_hard": "기능이 내장돼 있다는 것과 그것이 지금 돌고 있다는 것은 별개인데, 문서만 보면 구분이 안 된다.",
+            "current_best": "안 켰다고 글에 적는 것. 근거(프로젝트가 시스템콜 표면에 이미 민감하다)까지 함께 밝히면 읽는 쪽이 스스로 판단할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "problem": "일반 목적과 최소 표면은 같이 못 간다",
+            "why_hard": "윈도우를 올리고 GPU 를 통과시키려면 장치가 늘고, 장치가 늘면 게스트에서 닿을 수 있는 코드가 는다. 파이어크래커가 줄인 바로 그것이다.",
+            "current_best": "넓힌 만큼 바깥 겹(일반 사용자·systemd·네임스페이스)으로 받치는 것. 다만 그 겹들이 재일러 하나에 모여 있지 않다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+                "date": "2025-01-24"
+              }
+            ]
+          },
+          {
+            "problem": "격리를 커널 기능의 조합에 맡기면 설정이 곧 보안이다",
+            "why_hard": "네임스페이스·nftables·권한이 각각 맞아야 한 겹이 성립한다. 코드가 아니라 배치와 설정에서 틀리는 종류의 실패다.",
+            "current_best": "같은 수단을 레드햇도 파이어크래커도 쓴다는 것 — 다만 그들은 그 조합을 재일러라는 한 덩어리로 묶어 뒀다(재구성).",
+            "confidence": "inferred"
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "파이어크래커를 볼 때",
+          "thought": "가볍고 표면이 좁다. 그런데 우리는 윈도우도 올리고 GPU 도 통과시켜야 한다 — 그 요구가 최소 장치 모델과 정면으로 부딪힌다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "재일러를 만들지 정할 때",
+          "thought": "libvirt 도 파이어크래커도 자기 재일러가 있다. 우리는 일반 사용자와 systemd 로 같은 자리를 메운다 — 만들 것이 없다는 건 유지할 것도 없다는 뜻이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "seccomp 를 켜지 않기로 하며",
+          "thought": "내장돼 있는데 안 켠다. 그 사실을 감추지 않고 이유와 함께 적는다 — 프로젝트 자체가 시스템콜 표면에 민감하다는 것이 지금의 근거다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "저장소를 어떻게 줄지 볼 때",
+          "thought": "파일시스템은 코드가 크고 복잡하다. 블록만 주면 호스트 커널의 상당 부분이 게스트에서 안 보인다 — 대신 그 블록 계층을 우리가 만들어야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+          "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+          "publisher": "Ubicloud",
+          "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+          "date": "2025-01-24"
+        },
+        {
+          "title": "Building Block Storage for the Cloud with SPDK",
+          "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+          "publisher": "Ubicloud",
+          "date": "2024-01-05",
+          "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+        },
+        {
+          "title": "Ubicloud — Pricing",
+          "url": "https://www.ubicloud.com/docs/about/pricing",
+          "publisher": "Ubicloud",
+          "summary": "독일 리전 기준으로 표준 VM 은 2코어 8GB 40GB 가 분당 0.00104달러(월 41.89달러)부터 30코어 120GB 600GB 가 분당 0.01559달러(월 628.42달러)까지다. 버스터블은 1코어 2GB 10GB 가 분당 0.00026달러(월 10.47달러), 2코어 4GB 20GB 가 분당 0.00052달러(월 20.95달러)다. 깃허브 액션 러너는 x64 표준이 2코어 분당 0.00125달러에서 30코어 0.01875달러, 프리미엄이 2코어 0.002달러에서 30코어 0.030달러이고 arm64 는 표준과 같은 값이다. 관리형 포스트그레스는 hobby-1 이 월 19.54달러, standard-2 가 78달러, standard-4 가 156달러다. 그 밖에 공인 IPv4 주소가 월 3달러, 머신 이미지 저장이 GiB·월 약 0.15달러, 송신 초과가 TB 당 3달러이며(2코어당 월 0.625TB 포함) 수신과 리전 내 통신은 받지 않는다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -831,7 +1361,8 @@
       "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
       "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
       "publisher": "Ubicloud",
-      "summary": "하이퍼바이저로 파이어크래커나 QEMU 가 아니라 클라우드 하이퍼바이저를 고른 이유를 적는다 — 더 일반적인 VMM 이라 리눅스와 윈도우를 다 올릴 수 있고, GPU PCI 패스스루를 포함해 장치 지원이 넓으며, vhost-user 로 virtio 백엔드를 별도 프로세스로 뺄 수 있고, 게스트를 huge page 로 받칠 수 있다. 둘 다 러스트로 쓰였고 클라우드 하이퍼바이저의 코드 일부는 파이어크래커에서 왔다. 격리는 여러 겹이다 — tap 장치를 네트워크 네임스페이스 안에 넣고, nftables 로 패킷을 거르며, 클라우드 하이퍼바이저에 들어 있는 seccomp-bpf 로 시스템콜을 거르되 아직 기본으로 켜지 않았고, 하이퍼바이저를 일반 리눅스 사용자로 돌리며 systemd 권한 제한과 파일 권한을 건다. 저장소는 파일시스템 패스스루 대신 SPDK 블록 저장소를 쓴다 — 파일시스템은 코드가 크고 복잡하다는 이유다. 부팅 시간 수치나 가격, 베어메탈 원가 비교는 이 글에 없고 Hetzner 위에서 돌린다는 언급만 있다."
+      "summary": "공동창업자 오즈군 에르도안이 2025년 1월 24일에 쓴 글로, 남들의 가상화 스택을 늘어놓고 자기 것을 그 옆에 세운다. 레드햇 계열은 셋을 겹친다 — 하드웨어 가상화를 맡는 커널 쪽 KVM, 디스크·네트워크·GPU 를 흉내 내고 VM 을 만드는 사용자 공간 QEMU, 그리고 SELinux 와 파일 권한으로 QEMU 프로세스를 가두는 libvirt 다. AWS 파이어크래커는 QEMU 를 러스트로 쓴 가벼운 VMM 으로 갈아 끼워 셋을 노린다: 오버헤드를 줄이고, QEMU 가 몇 초씩 걸리던 부팅을 거의 즉시로 만들고, 공격 표면을 줄이는 것이다. 네트워크와 블록에 virtio 를 쓰고 tap 을 네트워크 네임스페이스 안에 두며, 파일시스템 패스스루 없이 블록 입출력만 주고, chroot 와 PID·네트워크 네임스페이스와 seccomp-bpf 를 묶은 자체 재일러로 가둔다 — 파일시스템은 코드가 크고 복잡해서 블록 입출력만 주는 것이 호스트 커널 표면의 상당 부분을 지킨다고 적는다. 유비클라우드는 파이어크래커 대신 클라우드 하이퍼바이저를 골랐다. 고를 당시 얻은 것으로 리눅스와 윈도우를 다 올릴 수 있다는 점, virtio 백엔드를 별도 프로세스로 빼는 vhost-user, GPU 를 위한 PCI 패스스루, 게스트 메모리를 huge page 로 받치는 것을 든다. 격리는 클라우드 하이퍼바이저를 일반 리눅스 사용자로 돌리고 systemd 권한 제한과 네트워크 네임스페이스를 거는 방식이며, 저장소는 파일시스템 접근 대신 SPDK 블록 저장소다. seccomp-bpf 에 대해서는 클라우드 하이퍼바이저에 내장돼 있고 프로젝트가 이미 시스템콜 표면에 민감하기 때문에 아직 켜지 않았다고 밝힌다. VM 하나에 systemd 유닛을 어떻게 붙이는지, cloud-init 을 쓰는지, 방화벽 규칙을 언제 거는지 같은 부팅 절차는 글에 없다.",
+      "date": "2025-01-24"
     },
     {
       "title": "Building Burstables: CPU Slicing with cgroups",
