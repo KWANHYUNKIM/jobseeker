@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Inngest** | US · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 중단된 자리에서 이어 붙인다(요금 페이지: 실행 = 함수 실행 + 각 단계) · 함수마다 자기 큐를 준다(`fairness-multi-tenancy` 2024-01-22) · 큐의 바닥을 갈아 끼운다(`migration-to-foundationdb-part-1` 2026-08-24). 다음은 기능 하나 — 공정 큐가 가장 두껍고 Chroma 에서 보류한 자리와 겹친다. 안 읽은 것 — `announcing-the-constraint-api` · `redis-stateful-caching`(읽기 67% 감소) · `Accidentally Quadratic`. FDB 이전 1부에는 수치가 없다. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Inngest** | US · SaaS | 지속 실행(durable execution) 축이라 이 엔진의 Temporal 과 정면으로 붙는다. `inngest.com/blog` 최신 심층 글 2026-08-24 `migration-to-foundationdb-part-1`. 개별 글을 열어 확정했다 — Valkey 가 천장이 된 이유를 셋으로 적는다: 메모리가 바닥나면 **한 테넌트가 아니라 클러스터 전체가 죽고**, 단일 실행 스레드라 계정·함수·큐 항목의 일부만 훑을 수 있어 공정 분배가 안 되며, 영속성이 복제 구성에 달려 있어 정전이나 노드 장애에서 데이터를 잃을 수 있다. 두 해 동안 시도한 우회(수평 샤드와 동적 리스, 제약 강제를 별도 서비스로 빼기, 키별 다중 버전 공정성)가 같은 벽에 부딪혔다고 적는다 — 보장을 더할 때마다 이미 메모리와 단일 스레드에 묶인 데이터베이스에 연산이 늘었다. ⚠️ 이 1부에는 수치가 없다. 다른 글에는 있다 — `redis-stateful-caching`(읽기 67% 감소) · `announcing-the-constraint-api`(초당 수백만 요청 흐름 제어) · `building-the-inngest-queue-pt-i-fairness-multi-tenancy`. FoundationDB 축에서 Tigris 와, 공정 큐에서 Chroma 의 보류한 자리와 이어진다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
