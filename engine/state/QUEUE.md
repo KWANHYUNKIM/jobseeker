@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **PostHog** | US · SaaS | 프로파일만 씀(2026-09-07). 도메인 셋 다 비어 있다 — 쏟아지는 이벤트를 잃지 않고 받는다(적재 핸드북 확보) · 워크로드마다 클러스터를 가른다(클러스터 핸드북 확보) · 한 데이터베이스로 안 되는 것을 옆에 둔다(`duckdb-vs-clickhouse` 2026-05-01 확보). 안 읽은 것 — `why-we-rebuilt-our-data-warehouse` · 클릭하우스 대 빅쿼리 · 운영 문서. 값 페이지에 단위당 값이 없다. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **PostHog** | US · SaaS | 제품 분석 인프라를 쓰는 쪽 축이 없다(ClickHouse 는 만드는 쪽으로 이미 있다). `posthog.com/blog` 의 `DuckDB vs ClickHouse: Why we use both at PostHog`(2026-05-01, 매튜 프레가센)이 자기 구조를 적는다 — ClickHouse 가 데이터 웨어하우스 용도로는 모든 고객에게 안 맞아 DuckDB 를 옆에 두고 Duckgres 라는 포스트그레스 호환 감싸개를 만들었으며, 작거나 중간 데이터의 콜드 질의에서는 DuckDB 가 망 왕복이 없어 앞서지만 큰 데이터에 구체화 뷰와 색인을 다듬으면 ClickHouse 가 늘 앞선다고 적는다. 수평 확장 대 단일 노드, 조율 복잡도 대 개발 편의라는 대가를 이름 대어 가른다. 핸드북(`/handbook/engineering/clickhouse/*`)에 클러스터 운영과 카프카 기반 적재도 공개돼 있다. |
 | **Val Town** | US · SaaS | 남의 코드를 대신 돌려 주는 축(런타임 격리)이 Depot·Ubicloud 와 다른 결로 있다. `blog.val.town` 에 자기 구조 글이 있다 — `The first four Val Town runtimes`(2024-02-08, vm 에서 vm2, 워커, 프로세스로 옮겨 온 기록) · `New HTTP Val Runtime in Preview`(2024-07-17) · `How we lock your dependencies`(2024-08-23) · 데이터베이스·블롭 저장소·커넥션 풀 장애의 사후 기록 여러 편. ⚠️ **최신성이 약하다** — 심층 글이 2023~2024년에 몰려 있고 2026년 글은 제품 공지 위주다. 팔 때 그 사정을 프로파일에 적는다(백블레이즈의 볼트 글과 같은 취급). |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
