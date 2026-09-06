@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Feldera** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 어떤 SQL 이든 증분으로 바꾼다(`zset-incrementalization`). 빈 도메인 둘 — 유지해야 할 상태를 무엇에 어떻게 담을지 정한다(`nobody-ever-got-fired-for-using-a-struct` 2026-03-02, 읽었다) · 파이프라인이 어디서 느린지 보이게 만든다(`introducing-feldera-s-visual-profiler` · `making-samply-profiles-even-more-useful` · `turns-out-we-didnt-need-that-second-index`, 주소 확보). |
+| **Feldera** | US · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 어떤 SQL 이든 증분으로 바꾼다(`zset-incrementalization`) · 유지해야 할 상태를 무엇에 어떻게 담을지 정한다(`state-layout`). 빈 도메인 하나 — 파이프라인이 어디서 느린지 보이게 만든다(`introducing-feldera-s-visual-profiler` · `making-samply-profiles-even-more-useful`, 주소 확보). |
 
 ## 대기
 
