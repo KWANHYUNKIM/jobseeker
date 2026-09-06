@@ -4,40 +4,67 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **성능 최적화**(`performance`)를 완성했다 — **129번째 문서**.
+**없음.** 직전 사이클에서 **프로파일링**(`profiling`)을 완성했다 — **130번째 문서**.
 
-### 직전 사이클 (성능 최적화)
+### 직전 사이클 (프로파일링)
 
-⭐⭐⭐ **축: "고치라는 말 2976번, 재라는 말 180번."**
+⭐⭐⭐ **축: "도구 이름은 9건, 그림 이름은 2건."**
 
-> ⭐⭐⭐ **"For every resource, check utilization, saturation, and errors."**
-> ⭐⭐⭐ **"It begins by posing questions, and then seeks answers, instead of beginning
->   with given metrics (partial answers) and trying to work backwards."**
-> ⭐⭐⭐ (포화) "extra work which it **can't service, often queued**" ·
->   **"any degree of saturation can be a problem (non-zero)"**
-> ⭐⭐ (스스로 적은 한계) "There are **many problem types it doesn't solve**" — 80%/5%
+> ⭐⭐⭐ (만든 이유) 기존 프로파일러가 **"walls of text"** 를 뱉었다 — **데이터가 없어서가
+>   아니라 읽을 수 없어서**였고, 그래서 해법이 **새 측정법이 아니라 새 그림**이다
+> ⭐⭐⭐ **"The x-axis shows the stack profile population, sorted alphabetically
+>   (it is not the passage of time)"**
+> ⭐⭐⭐ "**The wider a frame is, the more often it was present in the stacks.**"
+> ⭐⭐ (표본인 이유) 직접 추적은 오버헤드가 "too high" 하고 대상을 "**perturb**" 한다
+> ⭐⭐ (그 대가) "since the function flow is no longer known (**sampling has gaps**)"
 
-⭐⭐⭐ **셈: `모니터링|APM` 4091 · `성능 최적화` 2976 · `프로파일링` 180 · `p99` 23.**
-💡 **구체적이 될수록 줄어들고, 맨 위의 도구가 가장 크다** — ⭐ `documentation` 의
-`위키` 1133 대 `README` 20 과 **정확히 같은 형태**다.
+⭐⭐⭐ **셈: `프로파일링` 180 · 도구 이름 9 · `플레임 그래프` 2 · `CPU 사용률` 0.**
+⚠️ 그런데 **APM 제품 이름은 566건** — `performance` 의 형태가 한 층 더 내려와 반복됐다.
 
-⚠️ **Knuth 인용은 1차 자료로 확인하지 못했다**(원 논문을 못 열었다). 2차 자료들이
-일치되게 인용하는 전문을 옮기고 그 사실을 본문에 밝혔다 — 잘린 뒷문장은
-**"Yet we should not pass up our opportunities in that critical 3%."**
+⭐⭐ **오염을 두 번 다뤘다 — 한 번은 취소했고 한 번은 잡았다.**
+⚠️ **취소**: `데이터|고객 프로파일링` 이 섞여 보였는데 **세어 보니 5건**(`kafka` 규칙).
+⚠️⚠️ **잡음**: `메모리 누수|memory leak|OOM` **392건 @ 67%** 가 **`OOM` ← `Zoom`·`Room`**
+오염이었다(정확히는 **30건 + 11건**). **두 번째 형태와 여섯 번째 형태가 겹친 경우.**
 
-⚠️ **오염 의심 둘을 근거로 안 썼다** — `응답 시간|레이턴시` 532 @ **69%**,
-`TPS|처리량` 268 @ **71%**.
+⭐ **네 번째 alias 이전**: `performance` → `profiling`(`프로파일링`·`profiling`).
 
 ### 다음
 
-**프로파일링**(`profiling`) — QUEUE 맨 위.
+**애자일 / 스크럼**(`agile`) — QUEUE 맨 위.
 
-⭐⭐⭐ **`performance` 가 스스로 "다음의 가장 큰 빈자리"라고 적었다**(세 사이클 연속
-`open_questions` 가 큐를 먹였다). ⚠️ **셈은 180건으로 작고**, ⚠️ **같은 저자·같은 층이
-두 사이클 연속**이 된다 — 그래도 **사다리 2순위를 우선한다.**
-1차 자료는 **`Flame Graphs`**. ⚠️ **못 열면 `애자일|스크럼`(662건)으로 바꾼다.**
+⭐⭐⭐ **층을 바꾼다**(성능 둘 → **프로세스**, 130개 중 통째로 빈 층). 셈 **662건**.
+축은 **선언문의 잘린 마지막 줄** — "while there is **value in the items on the right**,
+we value the items on the left more." ⭐ **`performance` 의 Knuth 잘림과 같은 형태**다.
+⚠️ **못 열면 `온보딩`(749건)이나 `코드 품질`(651건)로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **오염은 "잡는 것"만이 아니라 "취소하는 것"도 절차다.** 이번 사이클에서 둘 다 했다.
+  ⚠️ `프로파일링` 180건에 데이터 품질 진단·고객 프로파일링이 섞여 보였는데 — **세어 보니
+  5건**이라 **오염 주장 자체를 취소**했다. ⚠️⚠️ 반대로 `메모리 누수|memory leak|OOM` 은
+  **392건 @ 67%** 로 튀었고 **`OOM` 이 `Zoom`·`Room` 에 걸린 것**이었다(실제 30 + 11).
+  📌 ⭐⭐ **`kafka` 규칙("끊긴 링크라고 적기 전에 센다")의 오염판이다 — 오염이라고 적는
+  것에도 근거가 필요하다.** ⭐ 그리고 **짧은 약자는 경계와 대소문자를 둘 다 지켜 센다.**
+
+- ⭐⭐⭐ **오용의 계보가 네 개로 늘었고, 형태가 매번 다르다.**
+  `refactoring`(낱말이 다른 일에 잘못 붙음) → `documentation`(한 낱말이 네 일을 정당하게
+  덮어 어느 것인지 안 밝힘) → `performance`(인용이 잘려 뜻이 뒤집힘) →
+  **`profiling`(그림을 잘못 읽음 — 가로축이 시간이 아니다)**.
+  ⭐⭐ **넷 다 "1차 자료가 그 오해를 직접 지목한다"는 공통점**이 있다 — Fowler 는 글을
+  따로 썼고, Diátaxis 는 "가장 흔한 혼동"이라 이름 붙였고, Gregg 는 **괄호로 못 박았다**.
+  📌 **1차 자료에서 괄호·따로 쓴 글·"most common" 같은 표시를 찾으면 그게 축이다.**
+
+- ⭐⭐ **"도구는 부르고 방법은 안 부른다"가 세 사이클 연속 나왔다.**
+  `documentation` 위키 1133 : README 20 → `performance` APM 4091 : 프로파일링 180 : p99 23
+  → `profiling` APM 제품 566 : 프로파일러 이름 9 : 플레임 그래프 2.
+  ⭐⭐⭐ **한 층 더 내려갈 때마다 같은 형태가 반복된다** — 💡 **이건 낱말의 문제가 아니라
+  시장이 실천을 요구하는 방식 자체**로 보인다. 📌 **다음 실천 낱말에서도 네 층(그릇 / 하라
+  / 방법 / 판정)을 세우고, 이 관찰이 또 성립하는지 확인한다.**
+
+- ⭐ **1차 자료가 "왜 이 방식을 택했나"를 적으면 한계도 함께 나온다.**
+  Gregg 는 직접 추적이 대상을 "perturb" 해서 표본으로 갔다고 적고 — ⭐ **그 선택의 대가가
+  곧 "sampling has gaps"** 다. 💡 **선택 이유와 한계가 같은 문장에서 나온다.**
+  📌 **1차 자료를 읽을 때 "왜 다른 길을 안 갔나"를 찾으면 한계를 따로 물을 필요가 없다.**
 
 - ⭐⭐⭐ **"도구는 갖췄고 무엇을 볼지는 안 정했다"가 두 사이클 연속 나왔다.**
   `documentation` 은 `위키|Notion` **1133** 대 `README` **20**, `performance` 는

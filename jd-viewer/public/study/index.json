@@ -2352,11 +2352,27 @@
       "aliases": [
         "성능 최적화",
         "performance",
-        "프로파일링",
-        "profiling",
         "병목",
         "bottleneck",
         "USE Method"
+      ],
+      "sections": 4,
+      "drills": 3,
+      "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "profiling",
+      "title": "프로파일링 — 도구 이름은 9건, 그림 이름은 2건",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **앞 문서가 세운 순서(질문 → 자원 → 세 지표)의 다음 칸이다 — 코드 단위로 내려간다.** ⚠️ 그런데 가장 흔한 오독이 그림 자체에 있다: **가로축은 시간이 아니다.** 공고는 `프로파일링` 을 **180번** 부르는데 도구 이름은 **9건**, `플레임 그래프` 는 **2건**.",
+      "aliases": [
+        "프로파일링",
+        "profiling",
+        "플레임 그래프",
+        "flame graph",
+        "샘플링 프로파일러"
       ],
       "sections": 4,
       "drills": 3,
