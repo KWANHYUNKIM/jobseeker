@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Inngest** | US · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 중단된 자리에서 이어 붙인다(요금 페이지: 실행 = 함수 실행 + 각 단계) · 함수마다 자기 큐를 준다(`fairness-multi-tenancy` 2024-01-22) · 큐의 바닥을 갈아 끼운다(`migration-to-foundationdb-part-1` 2026-08-24). 다음은 기능 하나 — 공정 큐가 가장 두껍고 Chroma 에서 보류한 자리와 겹친다. 안 읽은 것 — `announcing-the-constraint-api` · `redis-stateful-caching`(읽기 67% 감소) · `Accidentally Quadratic`. FDB 이전 1부에는 수치가 없다. |
+| **Inngest** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 중단된 자리에서 이어 붙인다(`step-memoization`). 빈 도메인 둘 — 함수마다 자기 큐를 준다(`fairness-multi-tenancy` 읽어 뒀다) · 큐의 바닥을 갈아 끼운다(`foundationdb-part-1` 읽어 뒀다). 안 읽은 것 — `announcing-the-constraint-api` · `redis-stateful-caching` · `Accidentally Quadratic` · 버전 처리 문서. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
