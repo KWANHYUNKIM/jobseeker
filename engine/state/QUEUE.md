@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Chroma** | US · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 색인을 객체 저장소 위에 올린다(`/engineering/serverless` 읽었다) · 쓰기 로그도 객체 저장소 위에 짓는다(`/engineering/wal3` 읽었다) · 색인 수백만 개를 테넌트별로 다룬다(같은 글 + 제품 페이지). 다음은 기능 하나 — wal3 가 거절한 대안이 이름까지 있어 가장 두껍다. 안 읽은 것 — `/engineering/execution-engine` · `/engineering/distributed-chroma-byoc` · `/engineering/transactions` · `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
+| **Chroma** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`, `serverless`+`execution-engine` 을 함께 읽었다). 빈 도메인 둘 — 쓰기 로그도 객체 저장소 위에 짓는다(`/engineering/wal3` 읽어 뒀다) · 색인 수백만 개를 테넌트별로 다룬다. 안 읽은 것 — `/engineering/distributed-chroma-byoc` · `/engineering/transactions` · `/engineering/billing`. ⚠️ 글에 발행일이 없다(저작권 표기 2026).|
 
 ## 대기
 
