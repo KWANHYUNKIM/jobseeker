@@ -2341,6 +2341,26 @@
       "sections": 4,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "performance",
+      "title": "성능 최적화 — 고치라는 말 2976번, 재라는 말 180번",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **1차 자료의 요점은 도구가 아니라 순서다 — \"질문을 먼저 던지고 답을 찾는다, 주어진 지표에서 거꾸로 올라가지 말고.\"** ⚠️ 공고는 성능을 고치라고 **2976번** 말하는데 `프로파일링` 은 **180건**, `p99` 는 **23건**이다. 그런데 `모니터링|APM` 은 **4091건**.",
+      "aliases": [
+        "성능 최적화",
+        "performance",
+        "프로파일링",
+        "profiling",
+        "병목",
+        "bottleneck",
+        "USE Method"
+      ],
+      "sections": 4,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

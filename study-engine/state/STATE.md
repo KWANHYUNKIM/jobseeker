@@ -4,41 +4,68 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **문서화**(`documentation`)를 완성했다 — **128번째 문서**.
+**없음.** 직전 사이클에서 **성능 최적화**(`performance`)를 완성했다 — **129번째 문서**.
 
-### 직전 사이클 (문서화)
+### 직전 사이클 (성능 최적화)
 
-⭐⭐⭐ **축: "2174번 요구하고 어느 문서인지는 안 말한다."**
+⭐⭐⭐ **축: "고치라는 말 2976번, 재라는 말 180번."**
 
-> ⭐⭐⭐ **"A tutorial serves the needs of the user who is at study. A how-to guide
->   serves the needs of the user who is at work."**
-> ⭐⭐⭐ **"the single most common conflation made in software product documentation
->   is that between the tutorial and the how-to guide."**
-> ⭐⭐⭐ (튜토리얼) "**It doesn't offer choices or alternatives.**" · "**eliminates the unexpected**"
-> ⭐⭐⭐ (하우투) **"A how-to guide cannot promise safety."**
-> ⭐⭐⭐ 섞이면 — "**will not bring them to success**"
+> ⭐⭐⭐ **"For every resource, check utilization, saturation, and errors."**
+> ⭐⭐⭐ **"It begins by posing questions, and then seeks answers, instead of beginning
+>   with given metrics (partial answers) and trying to work backwards."**
+> ⭐⭐⭐ (포화) "extra work which it **can't service, often queued**" ·
+>   **"any degree of saturation can be a problem (non-zero)"**
+> ⭐⭐ (스스로 적은 한계) "There are **many problem types it doesn't solve**" — 80%/5%
 
-⭐⭐⭐ **셈: 2174 대 20**(`README`). ⭐⭐ 그리고 **`위키|Notion|Confluence` 1133건** —
-**둘 곳은 정하고 무엇을 쓸지는 안 정한다.**
+⭐⭐⭐ **셈: `모니터링|APM` 4091 · `성능 최적화` 2976 · `프로파일링` 180 · `p99` 23.**
+💡 **구체적이 될수록 줄어들고, 맨 위의 도구가 가장 크다** — ⭐ `documentation` 의
+`위키` 1133 대 `README` 20 과 **정확히 같은 형태**다.
 
-⭐⭐⭐ **뜻밖의 발견**: 이 백과사전 자신이 **네 칸 중 둘을 이미 채우고 있었다** —
-`openapi`(레퍼런스, 문서화 17회) · `oncall`(하우투, 런북 18회). ⚠️ **그런데 "문서화"
-자체를 다루는 문서는 127개 중 하나도 없었다** — 공고 2174건과 정확히 같은 모양이다.
+⚠️ **Knuth 인용은 1차 자료로 확인하지 못했다**(원 논문을 못 열었다). 2차 자료들이
+일치되게 인용하는 전문을 옮기고 그 사실을 본문에 밝혔다 — 잘린 뒷문장은
+**"Yet we should not pass up our opportunities in that critical 3%."**
 
-⚠️⚠️ **첫 페이지(diataxis.fr)를 제대로 못 열었다** — 네 종류의 **이름**까지만 확인했고
-정의와 두 축은 못 얻었다. **`javascript`·`aws` 규칙대로 본문에도 밝혔다.**
+⚠️ **오염 의심 둘을 근거로 안 썼다** — `응답 시간|레이턴시` 532 @ **69%**,
+`TPS|처리량` 268 @ **71%**.
 
 ### 다음
 
-**성능 최적화**(`performance`) — QUEUE 맨 위.
+**프로파일링**(`profiling`) — QUEUE 맨 위.
 
-⭐⭐⭐ **층이 통째로 비어 있다** — `caching`·`db-index`·`load-test`·`gc` 가 **수단**은
-다루는데 **"언제·무엇을 고치나"라는 본체가 없다.** 셈 **2725건**(`문서화`보다 크다).
-⚠️ **관련 셈이 전부 미확인이다 — 세고 나서 축을 정한다.**
-축 후보는 **Knuth 인용의 잘린 뒷문장**("Yet we should not pass up our opportunities in
-that critical 3%") 또는 **Gregg 의 USE Method**. ⚠️ **못 열면 `온보딩`(749건)으로 바꾼다.**
+⭐⭐⭐ **`performance` 가 스스로 "다음의 가장 큰 빈자리"라고 적었다**(세 사이클 연속
+`open_questions` 가 큐를 먹였다). ⚠️ **셈은 180건으로 작고**, ⚠️ **같은 저자·같은 층이
+두 사이클 연속**이 된다 — 그래도 **사다리 2순위를 우선한다.**
+1차 자료는 **`Flame Graphs`**. ⚠️ **못 열면 `애자일|스크럼`(662건)으로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **"도구는 갖췄고 무엇을 볼지는 안 정했다"가 두 사이클 연속 나왔다.**
+  `documentation` 은 `위키|Notion` **1133** 대 `README` **20**, `performance` 는
+  `모니터링|APM` **4091** 대 `프로파일링` **180** 대 `p99` **23**.
+  ⭐⭐ **둘 다 위에서 아래로 구체적이 될수록 줄어든다.** 💡 📌 **이제 이건 셈의 표준
+  형태다** — 큰 실천 낱말을 만나면 **①담는 그릇 ②하라는 말 ③방법 ④판정 기준**을
+  네 층으로 세운다. ⭐ **아래 두 층이 비어 있으면 그 실천은 이름만 있는 것**이다.
+
+- ⭐⭐ **1차 자료가 자기 한계를 적으면 그것이 그 자료의 자리를 알려 준다.**
+  USE Method 는 **"many problem types it doesn't solve"** 와 **"80%를 5%의 노력으로"**
+  를 함께 적는다 — ⭐ 그래서 **정확한 진단법이 아니라 싸고 빠른 첫 훑기**라는 것이
+  분명해지고, **그다음 칸(프로파일링)이 어디인지도 저절로 나온다.**
+  📌 `hexagonal-architecture` 가 대가를 안 적어서 제동 장치를 직접 만들어야 했던 것과
+  정반대다. ⭐ **한계를 적는 자료는 다음 문서까지 알려 준다.**
+
+- ⭐⭐ **세 번째 오용 형태 — 인용의 앞부분만 남는다.**
+  `refactoring`(낱말이 다른 일에 잘못 붙음) → `documentation`(한 낱말이 네 일을 덮음)
+  → **`performance`(인용이 잘려 뜻이 뒤집힘)**. ⚠️ "premature optimization is the root
+  of all evil" 만 남으면 **"최적화하지 마라"** 가 되는데, 뒤가 붙으면
+  **"어느 3%인지 알아내라"** 가 된다 — ⭐ **정반대 지시**다.
+  📌 **유명한 인용을 만나면 전문을 확인한다.** ⚠️ 그리고 **원문을 못 열면 그 사실을 적는다**
+  (이번엔 2차 자료 여럿이 일치되게 인용하는 것만 옮겼다).
+
+- ⭐ **오염 의심을 만나면 "쓰지 않았다"고 적는 것으로 충분하다.**
+  `응답 시간|레이턴시` 532 @ 69%, `TPS|처리량` 268 @ 71% — ⚠️ **원인을 밝히지 못했지만
+  근거로 쓰지 않았고 그 사실을 표와 `open_questions` 에 남겼다.**
+  📌 **매번 오염의 정체까지 밝힐 필요는 없다** — **비율이 이상하면 쓰지 않고, 안 썼다고
+  적는다.** ⭐ 그게 여섯 가지 오염 형태를 찾는 것만큼 중요하다.
 
 - ⭐⭐⭐ **이 백과사전 자신이 공고와 같은 실수를 하고 있었다.** `openapi` 는 레퍼런스 칸을,
   `oncall` 은 하우투 칸을 이미 채우고 있었는데 — **"문서화"가 네 칸으로 나뉜다는 사실을
