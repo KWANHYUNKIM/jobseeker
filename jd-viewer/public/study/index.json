@@ -2020,7 +2020,7 @@
         "타입 소거",
         "any"
       ],
-      "sections": 5,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -2039,7 +2039,7 @@
         "Annex B",
         "don't break the web"
       ],
-      "sections": 5,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -2058,7 +2058,7 @@
         "process.nextTick",
         "논블로킹"
       ],
-      "sections": 6,
+      "sections": 8,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -2076,7 +2076,7 @@
         "Hooks",
         "useEffect"
       ],
-      "sections": 5,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
