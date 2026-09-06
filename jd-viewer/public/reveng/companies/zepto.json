@@ -69,8 +69,86 @@
     {
       "name": "재고가 계속 바뀌는 시장에서 검색한다",
       "why": "⚠️ **전통적인 검색은 `상품이 있거나 없거나` 를 전제하는데 여기서는 재고가 주문마다 바뀐다.** 게다가 **인도 구어를 라틴 문자로 적은 질의**를 알아들어야 하고, **분당 100만 요청 이상**을 **200ms 미만**에 답해야 한다. ✅ **본문 확인함**(2026-06-11). ⏳ 의미 검색 글(2026-02-09)이 하나 더 있다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "질의 이해 (Llama 3-8B + RAG · KNN 의도)",
+          "solves": "**발음으로 흔들리는 구어 질의**를 알아듣고 의도를 L1/L2/L3 로 잡는다. ⚠️ **카테고리가 개편돼도 재학습이 필요 없다.**",
+          "limits": "⚠️ **롱테일의 완전한 실시간 이해는 미완성**이라 **가장 가까운 상위 질의로 빌려 쓴다** — 흔치 않은 의도가 흔한 의도로 뭉개진다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building Search for a 10-Minute World",
+              "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-06-11",
+              "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+            }
+          ]
+        },
+        {
+          "tech": "어휘 + 의미 병렬 검색 (OpenSearch · 자체 bi-encoder)",
+          "solves": "표기와 뜻을 각각 잡아 후보를 만든다. **각 경로가 exploit 와 explore 를 함께 낸다.**",
+          "limits": "⚠️ **의미 검색은 `가장 큰 투자 중 하나` 였고 외부 모델로 부트스트랩해야 했다.** 두 색인을 나란히 유지하는 비용이 남는다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building Search for a 10-Minute World",
+              "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-06-11",
+              "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+            }
+          ]
+        },
+        {
+          "tech": "city-pvid 색인 (매장 메타데이터 중첩)",
+          "solves": "**다크스토어 1,139개를 허브마다 복제하지 않고** 초지역 필터링을 한다.",
+          "limits": "⚠️ **질의마다 중첩 필터가 붙는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building Search for a 10-Minute World",
+              "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-06-11",
+              "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+            }
+          ]
+        },
+        {
+          "tech": "MoE 랭킹 + 피처 스토어 + 후처리 규칙",
+          "solves": "1차 랭킹 뒤 **매장-상품·질의-도시 신호**로 재랭킹하고 관련성 버킷으로 묶는다.",
+          "limits": "⚠️ **후처리 규칙 계층은 아직 운영자 설정에 기댄다** — 회사가 이 구조를 **`진행 중인 진화의 한 지점`** 이라 부른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building Search for a 10-Minute World",
+              "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-06-11",
+              "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+            }
+          ]
+        },
+        {
+          "tech": "Product Assortment Service",
+          "solves": "⚠️ **색인이 못 하는 일** — 재고·가격의 권위 있는 최종 확인과 배달 허브 결정.",
+          "limits": "⚠️ **사용자가 본 목록과 최종 목록이 다를 수 있다** — 재고가 계속 바뀌므로 이 간극 자체는 없앨 수 없다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building Search for a 10-Minute World",
+              "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-06-11",
+              "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "inventory-changes-so-nothing-caches"
+      ]
     },
     {
       "name": "10분을 지키려고 사람과 경로를 배치한다",
@@ -85,7 +163,520 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "inventory-changes-so-nothing-caches",
+      "name": "재고가 계속 바뀌므로 결과를 통째로 캐시할 수 없다",
+      "domain": "재고가 계속 바뀌는 시장에서 검색한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 회사가 자기 문제를 정의하는 문장이 곧 이 기능의 전제다** — 보통의 검색에서는 **`상품이 있거나 없거나`** 인데, 여기 재고는 **`주문이 들어올 때마다 계속 바뀐다`.** **그 한 줄이 표준적인 설계 가정을 통째로 무효로 만든다.** 게다가 **인도 구어를 라틴 문자로 적은 질의**를 알아들어야 하고, **배달 허브마다 다른 실시간 재고**를 반영해야 하며, **분당 100만 요청 이상**을 **200ms 미만**에 답해야 한다. 회사의 표현대로 **`질의가 도착한다. 시계가 시작된다`** — 그리고 **사용자가 손가락을 떼기 전에** 의도 해석부터 재고 확인까지 끝나야 한다.",
+        "metrics": [
+          {
+            "label": "⚠️ 규모와 예산",
+            "value": "**분당 100만 요청 이상**을 **200ms 미만** 예산 안에서 처리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "label": "질의의 성질",
+            "value": "**인도 구어를 라틴 문자로 적은 것**(발음 기반) — **편집 거리 교정기로는 안 된다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 색인이 말하지 못하는 것",
+            "value": "**재고와 가격은 색인에 초~분 단위의 지연을 안고 실려 있다** — 그래서 **권위 있는 최종 확인이 따로 있다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "label": "이 검색이 받치는 규모",
+            "value": "**다크스토어 1,139개 · 66개 도시** · 하루 평균 **233만 건**(2026년 3월 분기) · 연간 거래 사용자 **4,797만 명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+                "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+                "publisher": "MoneyFlow India",
+                "date": "2026",
+                "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 회사가 밝힌 미완성",
+            "value": "**롱테일 질의의 완전한 실시간 이해는 아직 미완성**이고, **후처리 규칙 계층은 여전히 운영자 설정에 기댄다.** 회사가 이 구조를 **`진행 중인 진화의 한 지점`** 이라 부른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "결과를 캐시할까 생각할 때",
+          "thought": "⚠️ **검색에서 가장 큰 이득은 결과 페이지를 통째로 캐시하는 것인데 그 길이 막혀 있다.** **재고 상태 · 개인화 · 세션 신호 · 실험 배정**이 겹치면 **한 요청당 유효한 변형이 너무 많아진다.** **캐시가 안 되는 대신 단계마다 미리 계산할 수 있는 것을 찾아 나간다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "색인이 재고를 말하게 할지 정할 때",
+          "thought": "⚠️ **색인에 재고를 실으면 빠르지만 틀린다** — 초~분 단위로 뒤처지기 때문이다. 그렇다고 매번 재고를 물으면 **200ms 예산이 무너진다.** 그래서 **검색은 후보를 좁히는 데까지만 쓰고, 마지막에 권위 있는 확인을 한 번 건다.** **빠른 곳과 정확한 곳을 나눈다**(뒤쪽 정리는 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 보여 줄지 정할 때",
+          "thought": "⚠️ **잘 팔리는 것만 올리면 그것만 더 팔린다.** 회사가 그 동학을 이름 붙여 적는다 — **순수 exploit 검색은 `부익부(rich-get-richer)` 동학을 만들어 신상품을 굶긴다.** 그래서 **탐색(explore)을 선택 기능이 아니라 검색 단계의 기본 흐름으로** 넣었다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "질의 이해",
+            "what": "**교정(Llama 3-8B + RAG 그라운딩) → 의도 예측(KNN 벡터, L1/L2/L3 계층) → 분절(브랜드·상품 유형·속성)**"
+          },
+          {
+            "name": "검색 플랫폼 (search-platform)",
+            "what": "⚠️ **순수 검색 서비스다** — 회사의 문장: **`사용자에 대해 아무것도 모른다.`** 어휘 검색과 의미 검색을 **병렬로** 돌린다"
+          },
+          {
+            "name": "exploit / explore 후보 흐름",
+            "what": "⚠️ **두 흐름이 각각 나온다** — exploit 만 쓰면 **부익부가 되어 신상품이 굶는다**"
+          },
+          {
+            "name": "검색 오케스트레이션",
+            "what": "**MoE 1차 랭킹 → 피처 스토어 신호로 2차 재랭킹 → 후처리 규칙 → 관련성 버킷 구성**"
+          },
+          {
+            "name": "Product Assortment Service",
+            "what": "⚠️ **권위 있는 최종 확인** — 재고를 아는 상태에서 마지막으로 거르고 **배달 허브를 정한다**"
+          },
+          {
+            "name": "city-pvid 색인",
+            "what": "**도시 단위 색인에 매장 메타데이터를 중첩**한다 — 허브마다 복제하지 않으면서 초지역 필터링을 할 수 있다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **결과 페이지는 통째로 캐시되지 않는다** — 유효한 변형이 너무 많다",
+          "⚠️ **색인은 재고의 최종 근거가 아니다** — 마지막에 권위 있는 확인이 온다",
+          "**검색은 사용자를 모른다** — 개인화는 랭킹의 일이다",
+          "⚠️ **탐색(explore)은 선택이 아니라 기본 흐름이다** — 없으면 신상품이 굶는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**질의를 교정한다** — Llama 3-8B 에 RAG 그라운딩을 걸어서",
+            "why": "⚠️ **인도 구어를 라틴 문자로 적은 질의에는 편집 거리 교정기가 안 통한다.** 그라운딩은 **없는 상품을 지어내지 않게** 막는다"
+          },
+          {
+            "step": "**의도를 예측한다** — KNN 벡터 분류(L1/L2/L3)",
+            "why": "⚠️ **새 상품이 들어오거나 분류가 개편돼도 재학습이 필요 없다**"
+          },
+          {
+            "step": "**질의를 분절한다** — 브랜드·상품 유형·속성",
+            "why": "이후 필터와 랭킹이 쓸 구조를 만든다"
+          },
+          {
+            "step": "⚠️ **머리 질의는 미리 계산된 이해를 쓰고, 롱테일은 가장 가까운 상위 질의로 의미 매핑한다**",
+            "why": "**200ms 안에 모든 질의를 실시간으로 이해할 수는 없다**"
+          },
+          {
+            "step": "**어휘 검색과 의미 검색을 병렬로 돌린다** — OpenSearch 커스텀 스코어링 + 자체 bi-encoder 벡터 검색",
+            "why": "**표기와 뜻은 다른 것을 잡아낸다**(재구성)"
+          },
+          {
+            "step": "⚠️ **각 경로가 exploit 와 explore 후보를 함께 낸다**",
+            "why": "⚠️ **exploit 만으로는 부익부가 되어 신상품이 굶는다**"
+          },
+          {
+            "step": "**MoE 로 1차 랭킹하고, 피처 스토어 신호로 2차 재랭킹한다**",
+            "why": "매장-상품·질의-도시 신호가 여기서 들어온다"
+          },
+          {
+            "step": "**후처리 규칙을 적용하고 관련성 버킷으로 묶는다**",
+            "why": "⚠️ **이 계층은 아직 운영자 설정에 기댄다**고 회사가 밝힌다"
+          },
+          {
+            "step": "⚠️ **Product Assortment Service 가 재고를 아는 상태에서 최종 확인하고 배달 허브를 정한다**",
+            "why": "⚠️ **색인의 재고·가격은 초~분 단위로 뒤처져 있다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "결과 페이지를 캐시할 것인가",
+            "chosen": "⚠️ **아니다** — 통째 캐싱을 버렸다",
+            "alternatives": [
+              "결과 페이지 전면 캐싱",
+              "짧은 TTL 캐시"
+            ],
+            "tradeoff": "버린 이유가 카디널리티다 — **재고 상태 · 개인화 · 세션 신호 · 실험 배정**이 겹쳐 **한 요청당 유효한 변형이 너무 많다.** ⚠️ **대가는 분당 100만 요청이 전부 실제 계산을 지난다는 것**이고, 그래서 **단계마다 미리 계산할 수 있는 것**(머리 질의의 이해, 임베딩)을 찾아 예산을 맞춘다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "question": "재고를 색인이 답하게 할 것인가",
+            "chosen": "⚠️ **아니다 — 마지막에 권위 있는 확인을 따로 둔다**",
+            "alternatives": [
+              "색인의 재고 필드를 그대로 신뢰",
+              "매 단계에서 재고를 조회"
+            ],
+            "tradeoff": "**색인은 재고와 가격을 싣고 있지만 초~분 단위의 지연이 본래 있다.** 그대로 믿으면 **품절된 상품을 보여 주고**, 매번 물으면 **200ms 예산이 무너진다**(재구성). 그래서 **검색은 후보를 좁히는 데까지, 확인은 Product Assortment Service 한 번**으로 갈랐다. ⚠️ **대가는 사용자가 본 목록과 최종 목록이 다를 수 있다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "question": "검색 서비스가 사용자를 알아야 하는가",
+            "chosen": "⚠️ **모른다** — **`search-platform 은 순수 검색 서비스다. 사용자에 대해 아무것도 모른다.`**",
+            "alternatives": [
+              "검색 단계에서 개인화까지 처리",
+              "사용자 신호를 색인에 반영"
+            ],
+            "tradeoff": "끊어 놓은 값은 **검색 로직과 랭킹 로직을 따로 진화시킬 수 있다는 것**이다. ⚠️ **대가는 개인화가 후보 집합을 좁히지 못한다는 것** — 검색이 사용자를 모르니 **불필요한 후보까지 가져와 랭킹이 걸러야 한다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "question": "오타·발음 교정을 무엇으로 할 것인가",
+            "chosen": "**LLM(Llama 3-8B) + RAG 그라운딩** — 편집 거리 교정기를 버렸다",
+            "alternatives": [
+              "편집 거리 기반 교정",
+              "사전 기반 매핑"
+            ],
+            "tradeoff": "⚠️ **인도 구어를 라틴 문자로 적은 질의는 철자가 아니라 발음으로 흔들려** 편집 거리로는 못 잡는다. LLM 은 그것을 알아듣지만 ⚠️ **없는 상품을 지어낼 위험**이 따라온다 — 그래서 **RAG 로 실제 카탈로그에 묶었다.** **대가는 교정 단계에 모델 호출이 들어간다는 것**이고, 그래서 **머리 질의는 미리 계산해 둔다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "question": "의도 분류를 어떻게 할 것인가",
+            "chosen": "⚠️ **KNN 벡터 검색** — 정적 분류기를 버렸다",
+            "alternatives": [
+              "지도학습 분류기",
+              "규칙 기반 분류"
+            ],
+            "tradeoff": "이유가 운영에 있다 — **새 상품이 추가되거나 카테고리가 개편돼도 의도 모델을 재학습할 필요가 없다.** ⚠️ **퀵커머스는 카탈로그가 계속 바뀌는 곳이라 재학습 주기가 곧 제품 속도의 상한이 된다**(재구성). **대가는 벡터 색인을 따로 유지해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "question": "어휘 검색과 의미 검색 중 무엇을 쓸 것인가",
+            "chosen": "**둘을 병렬로** — 도시 단위 색인에 동시에 건다",
+            "alternatives": [
+              "어휘 검색만",
+              "의미 검색만",
+              "순차 폴백"
+            ],
+            "tradeoff": "어휘(OpenSearch 커스텀 스코어링)와 의미(자체 bi-encoder)가 서로 다른 것을 잡는다. ⚠️ **의미 검색은 회사가 `가장 큰 투자 중 하나` 라고 부를 만큼 비쌌고, 자체 bi-encoder 를 학습하기 전에 외부 모델로 부트스트랩해야 했다.** **대가는 두 색인을 나란히 유지하는 비용**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "question": "잘 팔리는 것만 보여 줄 것인가",
+            "chosen": "⚠️ **아니다 — explore 를 검색 단계의 기본 흐름으로 둔다**",
+            "alternatives": [
+              "exploit 만으로 최적화",
+              "랭킹 단계에서만 다양성 주입"
+            ],
+            "tradeoff": "회사가 동학을 이름 붙여 적는다 — **순수 exploit 검색은 `부익부` 를 만들어 신상품을 굶긴다.** ⚠️ **그래서 발견(discovery)을 부가 기능이 아니라 토대로 다룬다.** **대가는 후보 집합이 커지고 단기 전환율을 일부 내준다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "question": "색인을 매장마다 만들 것인가",
+            "chosen": "**도시(city-pvid) 단위 색인에 매장 메타데이터를 중첩한다**",
+            "alternatives": [
+              "허브마다 별도 색인",
+              "전국 단일 색인"
+            ],
+            "tradeoff": "⚠️ **다크스토어가 1,139개인데 허브마다 색인을 두면 같은 상품이 그 수만큼 복제된다.** 도시 단위로 묶고 매장 정보를 중첩하면 **복제 없이 초지역 필터링**이 된다. **대가는 질의마다 중첩 필터가 붙는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              },
+              {
+                "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+                "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+                "publisher": "MoneyFlow India",
+                "date": "2026",
+                "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Llama 3-8B + RAG 그라운딩",
+            "role": "질의 교정 — **발음으로 흔들리는 구어 질의**를 알아듣되 **없는 상품을 지어내지 않게** 묶는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "tech": "KNN 벡터 의도 분류 (L1/L2/L3)",
+            "role": "⚠️ **카테고리가 개편돼도 재학습이 필요 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "tech": "OpenSearch (커스텀 스코어링)",
+            "role": "어휘 검색 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "tech": "자체 bi-encoder 벡터 검색",
+            "role": "의미 검색 경로 — **가장 큰 투자 중 하나**였고 외부 모델로 부트스트랩했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "tech": "Mixture of Experts 랭킹 + 피처 스토어",
+            "role": "1차 랭킹 뒤 **매장-상품·질의-도시 신호**로 2차 재랭킹",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "tech": "Product Assortment Service",
+            "role": "⚠️ **재고·가격의 권위 있는 최종 확인**과 배달 허브 결정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "다크스토어 재고 시스템",
+          "via": "권위 있는 최종 확인",
+          "contract": "⚠️ **색인은 초~분 뒤처진 재고를 들고 있고, 진짜 답은 Product Assortment Service 가 준다** — **빠른 곳과 정확한 곳을 나눈 계약이다**(뒤쪽은 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "검색 오케스트레이션 (랭킹)",
+          "via": "후보 집합",
+          "contract": "⚠️ **검색은 사용자를 모르고 랭킹만 안다** — 그래서 개인화가 후보를 좁히지 못한다(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "광고를 팔려면 하루 10억 이벤트를 세야 한다",
+          "via": "검색 결과 지면",
+          "contract": "**검색 결과가 광고가 붙는 자리이고 광고는 가장 빨리 크는 매출원이다**(+151%). ⏳ **다만 두 도메인이 만나는 지점의 자료를 아직 못 읽었다**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "운영 조직 (후처리 규칙)",
+          "via": "수동 설정",
+          "contract": "⚠️ **후처리 규칙 계층은 아직 완전 자동이 아니라 운영자 설정에 기댄다**고 회사가 밝힌다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 롱테일 질의를 실시간으로 이해하지 못한다",
+            "why_hard": "⚠️ **머리 질의는 미리 계산해 두면 되지만 롱테일은 그 수가 곧 무한이다.** 지금은 **가장 가까운 상위 질의로 의미 매핑**해 때우는데, **회사가 완전한 실시간 롱테일 이해는 아직 미완성이라고 밝힌다.** **200ms 예산 안에서 모델 호출을 늘릴 수 없다는 것이 이 벽의 본체다**(뒤쪽은 재구성이다).",
+            "current_best": "**머리/롱테일을 가르고, 롱테일은 가장 가까운 상위 질의의 이해를 빌려 쓰는 것.** ⚠️ **대가는 흔치 않은 의도가 흔한 의도로 뭉개진다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          },
+          {
+            "problem": "빠른 답과 정확한 답이 같은 곳에서 나오지 않는다",
+            "why_hard": "⚠️ **색인은 빠르지만 초~분 뒤처지고, 재고 시스템은 정확하지만 매번 물을 수 없다.** 그래서 **검색이 보여 준 것과 최종 확인이 남긴 것이 다를 수 있고**, 그 간극은 **주문이 몰리는 시간대에 더 벌어진다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**후보를 좁히는 일과 확정하는 일을 나누고, 확인을 마지막 한 번으로 모으는 것.** ⚠️ **간극 자체를 없애는 방법은 이 구조에 없다** — 재고가 계속 바뀌기 때문이다(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Building Search for a 10-Minute World",
+                "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-06-11",
+                "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "질의가 도착하면 시계가 시작된다",
+          "question": "200ms 안에 무엇이 순서대로 일어나나",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"<b>질의</b><br/>• 구어를 라틴 문자로\"]:::list --> C[\"<b>교정 (Llama 3-8B + RAG)</b><br/>• 없는 상품을 지어내지 않게\"]:::list\n  C --> I[\"<b>의도 (KNN 벡터)</b><br/>• L1 / L2 / L3<br/>• 재학습이 필요 없다\"]:::list\n  I --> H{\"<b>머리 질의인가</b>\"}\n  H -->|\"그렇다\"| PC[\"<b>미리 계산된 이해</b>\"]:::list\n  H -->|\"⚠️ 롱테일\"| NN[\"<b>가장 가까운 상위 질의로 매핑</b><br/>• 완전 실시간은 미완성\"]:::gone\n  PC --> R[\"<b>검색 (도시 단위 색인)</b><br/>• 어휘 (OpenSearch)<br/>• 의미 (자체 bi-encoder)\"]:::accent\n  NN --> R\n  R --> EE[\"⚠️ <b>exploit + explore</b><br/>• exploit 만이면 신상품이 굶는다\"]:::accent\n  EE --> K[\"<b>MoE 랭킹 → 피처 스토어 재랭킹</b><br/>• 후처리 규칙 (운영자 설정)\"]:::list\n  K --> A[\"⚠️ <b>Product Assortment Service</b><br/>• 재고 · 가격의 권위 있는 확인<br/>• 배달 허브 결정\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "캐시할 수 없고 색인을 믿을 수 없다",
+          "question": "보통의 검색 설계가 여기서 왜 안 되나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>결과 페이지 통째 캐싱</b>\"]:::gone --> A1[\"<b>변형이 너무 많다</b><br/>• 재고 상태 · 개인화<br/>• 세션 신호 · 실험 배정\"]:::gone\n  B[\"⚠️ <b>색인의 재고를 믿기</b>\"]:::gone --> B1[\"<b>초~분 뒤처진다</b><br/>• 품절된 상품을 보여 준다\"]:::gone\n  C[\"⚠️ <b>매번 재고를 묻기</b>\"]:::gone --> C1[\"<b>200ms 예산이 무너진다</b> (재구성)\"]:::gone\n  D[\"⚠️ <b>편집 거리 교정</b>\"]:::gone --> D1[\"<b>발음으로 흔들리는 구어에<br/>  안 통한다</b>\"]:::gone\n  E[\"⚠️ <b>순수 exploit</b>\"]:::gone --> E1[\"<b>부익부 — 신상품이 굶는다</b>\"]:::gone\n  A1 --> F[\"<b>고른 길</b><br/>• 단계마다 미리 계산<br/>• 후보 좁히기와 확정을 나눈다<br/>• explore 를 기본 흐름으로\"]:::accent\n  B1 --> F\n  C1 --> F\n  D1 --> F\n  E1 --> F\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Building Search for a 10-Minute World",
+          "url": "https://blog.zepto.com/building-search-for-a-10-minute-world-43b1992f5dca",
+          "publisher": "Zepto TechXPress",
+          "date": "2026-06-11",
+          "summary": "질의 이해 → 검색(어휘+의미 병렬) → 랭킹(MoE) → 재고 권위 확인의 4단계. 재고가 주문마다 계속 바뀌기 때문에 결과 페이지 전체 캐싱을 버렸고, 검색 플랫폼은 사용자를 전혀 모르는 순수 검색 서비스로 떼어 놨다. 분당 100만 요청 이상, 200ms 미만 예산."
+        },
+        {
+          "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+          "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+          "publisher": "MoneyFlow India",
+          "date": "2026",
+          "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **도메인 셋 중 둘이 아직 본문 미독이다** — 배달·인력 배치와 광고 분석. **제목과 목록으로만 도메인을 세웠다.**",
