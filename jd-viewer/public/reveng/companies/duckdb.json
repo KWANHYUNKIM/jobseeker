@@ -70,9 +70,26 @@
               "summary": "설계 목표를 스스로 적은 문서. 별도 프로세스로 돌지 않고 호스트 프로세스 안에 완전히 박혀 돌기 때문에 데이터를 주고받는 속도가 빠르고, 판다스 데이터프레임 같은 외부 자료구조를 옮겨 담지 않고 그대로 질의할 수 있다. 실행은 컬럼형 벡터화다 — 질의는 여전히 해석되지만 값을 한 벌(벡터) 단위로 처리해 행 단위로 도는 PostgreSQL·MySQL·SQLite 의 오버헤드를 줄인다. 겨냥하는 것은 분석 질의(OLAP)이고 트랜잭션 처리는 아니라고 밝힌다. 컴파일 때도 실행 때도 외부 의존성이 없어 헤더와 구현 파일 두 개로 합칠 수 있고, 작은 엣지 기기부터 수 테라바이트 메모리 서버까지 배포된다. 연구 시제품으로 만든 적이 없다고 적으며 테스트 스위트에 수백만 개의 질의가 있다고 밝힌다."
             }
           ]
+        },
+        {
+          "tech": "자체 클라이언트·서버 프로토콜 Quack — HTTP 전송 + 내부 WAL 직렬화",
+          "solves": "여러 프로세스가 같은 데이터베이스에 동시에 쓰지 못하는 한계를 서버 모드로 푼다. 6천만 행 76GB 전송이 4.94초로 Arrow Flight(17.40초)와 PostgreSQL(158.37초)보다 빠르다.",
+          "limits": "형식이 자체라 남의 클라이언트가 붙지 못한다. 병렬 삽입은 8스레드에서 정체하고 그 위는 PostgreSQL 이 앞선다 — 프로토콜이 아니라 엔진의 한계다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Quack: The DuckDB Client-Server Protocol",
+              "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+              "publisher": "DuckDB",
+              "date": "2026-05-12",
+              "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "quack-protocol"
+      ]
     },
     {
       "name": "네트워크 너머를 로컬 파일처럼 읽는다",
@@ -149,7 +166,472 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "quack-protocol",
+      "name": "프로세스 밖으로 나가되 형식은 우리 것으로",
+      "domain": "호스트 프로세스 안에 산다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "이 프로젝트의 전제는 서버가 되지 않는 것인데, 그 전제가 깨지는 자리가 하나 있다. 같은 데이터베이스 파일에 여러 프로세스가 동시에 쓰려는 순간이다 — 텔레메트리를 계속 받아 넣으면서 대시보드가 같은 파일을 읽는 식의 일이 그렇다.\n\n그래서 이 기능은 새 능력을 더하는 것이 아니라 **전제를 어디까지 물릴지 정하는 일**이다. 프로세스 밖으로 나가되 남의 형식에 묶이지 않겠다는 선택이 그 답이고, 그 선택 하나가 이득과 대가를 동시에 만든다(재구성).",
+        "metrics": [
+          {
+            "label": "대량 전송 (6천만 행 76GB CSV)",
+            "value": "Quack 4.94초 · Arrow Flight 17.40초 · PostgreSQL 158.37초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "병렬 삽입",
+            "value": "8스레드에서 초당 5,434 트랜잭션 (PostgreSQL 4,320). 그 위에서는 정체하고 PostgreSQL 이 앞선다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "시험 환경",
+            "value": "AWS m8g.2xlarge, 왕복 지연 약 0.280ms",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "기본 포트",
+            "value": "9494 — 넷스케이프 내비게이터가 나온 해",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "연결",
+            "what": "토큰으로 인증된 대화 한 벌. 기본 토큰은 서버가 시작할 때 무작위로 만든다"
+          },
+          {
+            "name": "요청·응답",
+            "what": "HTTP 위에 얹힌 한 쌍. 몸통은 application/duckdb 라는 자체 MIME 타입이다"
+          },
+          {
+            "name": "결과 청크",
+            "what": "큰 결과를 나눠 받는 단위. 클라이언트가 뒤이은 fetch 메시지로 가져가며 여러 스레드로 병렬로 받는다"
+          },
+          {
+            "name": "인증 콜백",
+            "what": "토큰을 무엇으로 검사할지 갈아 끼우는 자리 — LDAP·파일·SQL 매크로"
+          }
+        ],
+        "invariants": [
+          "대화는 언제나 클라이언트가 이끈다. 서버가 먼저 말을 걸지 않는다",
+          "작은 질의는 연결 뒤 왕복 한 번으로 끝난다",
+          "서버는 기본으로 로컬호스트에만 붙는다. 인터넷에 열려면 앞에 리버스 프록시를 둔다",
+          "몸통의 직렬화는 새로 만들지 않고 WAL 이 쓰던 내부 형식을 그대로 쓴다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "질의 한 번이 오가는 길",
+          "question": "프로세스 밖으로 나가면서 왕복을 어떻게 줄였나",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant C as 클라이언트\n  participant S as Quack 서버 (포트 9494)\n  participant D as DuckDB 인스턴스\n  C->>S: 연결 요청 + 토큰\n  S-->>C: 세션 확립\n  C->>S: 질의 (application/duckdb)\n  S->>D: 실행\n  D-->>S: 결과\n  S-->>C: 작은 결과는 여기서 끝 (왕복 1회)\n  loop 결과가 클 때\n    C->>S: fetch (여러 스레드 병렬)\n    S-->>C: 다음 청크\n  end"
+        },
+        {
+          "title": "버린 프로토콜과 버린 이유",
+          "question": "이미 있는 것을 두고 왜 새로 만들었나",
+          "kind": "flow",
+          "code": "flowchart TD\n  N[\"<b>원격에서 쓰고 싶다</b><br/>• 여러 프로세스가 같은 파일에\"]:::list --> PG{\"포스트그레스 와이어\"}\n  PG -->|\"행 단위 전송\"| PGX[\"<b>버린다</b><br/>• 76GB 에 158.37초<br/>• 대량 전송에 가망 없다고 적는다\"]:::list\n  N --> AF{\"Arrow Flight SQL\"}\n  AF -->|\"질의마다 왕복 최소 2회\"| AFX[\"<b>버린다</b><br/>• 밖에서 통제하는 형식에<br/>  묶일 수 없다고 적는다\"]:::list\n  N --> Q[\"<b>Quack</b><br/>• 전송은 HTTP<br/>• 형식은 내부 WAL 직렬화<br/>• 76GB 에 4.94초\"]:::list\n  Q -.->|\"내준 것\"| I[\"<b>상호운용성</b><br/>• 남의 클라이언트가 못 붙는다\"]:::list"
+        },
+        {
+          "title": "스레드를 늘리면 어디서 멈추나",
+          "question": "프로토콜을 고쳐도 안 풀리는 것은 무엇인가",
+          "kind": "failure",
+          "code": "flowchart TD\n  T1[\"<b>1~8 스레드</b><br/>• 초당 5,434 트랜잭션까지<br/>• PostgreSQL 4,320 을 넘는다\"]:::list -->|\"더 늘리면\"| T8[\"<b>8스레드 이후</b><br/>• 정체한다<br/>• PostgreSQL 이 앞선다\"]:::list\n  T8 --> WHY[\"<b>프로토콜이 아니라 엔진</b><br/>• 코어의 동시 삽입 한계<br/>• 회사가 그렇게 적는다\"]:::list\n  WHY --> LATER[\"<b>남겨 둔 일</b><br/>• 8 넘는 병렬 삽입은<br/>  구조를 더 손봐야 한다\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 토큰을 들고 연결을 연다",
+            "why": "기본 토큰은 서버가 시작할 때 무작위로 만든다. 검사 방식은 콜백으로 갈아 끼운다"
+          },
+          {
+            "step": "질의를 보내면 작은 것은 그 왕복 한 번으로 끝난다",
+            "why": "질의마다 왕복이 둘 이상 필요한 설계를 물린 이유가 지연이었다"
+          },
+          {
+            "step": "결과가 크면 클라이언트가 뒤이은 fetch 메시지를 보낸다. 여러 스레드로 동시에 받는다",
+            "why": "대화를 클라이언트가 이끄는 구조라 받는 쪽이 자기 속도로 병렬화할 수 있다"
+          },
+          {
+            "step": "몸통은 application/duckdb — 내부 직렬화 원시 연산을 그대로 쓴다",
+            "why": "WAL 파일에서 수년간 돌아 검증된 것이라 새로 만들 이유가 없었다고 적는다"
+          },
+          {
+            "step": "서버 한 대가 여러 클라이언트의 쓰기를 받는다",
+            "why": "프로세스마다 파일을 잠그는 대신 쓰기를 한 인스턴스로 모으는 것이 이 모드의 목적이다"
+          },
+          {
+            "step": "인터넷에 열 때는 앞에 리버스 프록시를 세운다",
+            "why": "기본은 로컬호스트 바인딩이고 로컬에서는 SSL 을 걸지 않는다. TLS 와 인증서는 프록시에 맡긴다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "이미 있는 데이터베이스 프로토콜을 쓸 것인가",
+            "chosen": "포스트그레스 와이어 프로토콜을 쓰지 않는다. 행 단위 전송이라 대량 데이터에는 가망이 없다고 적는다",
+            "alternatives": [
+              "포스트그레스 호환 프로토콜을 구현해 기존 드라이버를 그대로 받기"
+            ],
+            "tradeoff": "수많은 기존 클라이언트와 도구를 그대로 얻을 기회를 버린다. 대신 같은 76GB 전송이 158.37초에서 4.94초가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "분석용 표준인 Arrow Flight SQL 을 쓸 것인가",
+            "chosen": "쓰지 않는다. 이유가 둘이다 — 질의마다 왕복이 최소 둘이고, 밖에서 통제하는 형식에 스스로를 묶을 수 없다는 것",
+            "alternatives": [
+              "Arrow Flight SQL 을 그대로 채택",
+              "Arrow 형식만 빌려 오기"
+            ],
+            "tradeoff": "상호운용성을 내준다. 남이 만든 Flight 클라이언트가 붙지 못하고, 이 프로토콜을 쓰려면 이쪽 구현이 있어야 한다. 회사는 그것을 혁신 속도와 바꿨다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "전송 계층을 무엇으로 할 것인가",
+            "chosen": "HTTP over TCP",
+            "alternatives": [
+              "자체 TCP 프로토콜",
+              "gRPC"
+            ],
+            "tradeoff": "HTTP 의 머리말 오버헤드를 받아들이는 대신 로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "몸통의 직렬화 형식을 새로 만들 것인가",
+            "chosen": "WAL 파일이 쓰던 내부 직렬화를 그대로 쓴다. MIME 타입은 application/duckdb",
+            "alternatives": [
+              "Arrow IPC 채택",
+              "새 형식 설계"
+            ],
+            "tradeoff": "형식이 우리 것이라 버전 호환을 스스로 져야 하고 외부 도구가 읽지 못한다. 대신 이미 수년간 실전에서 돌아 검증된 코드를 다시 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "대화를 누가 이끌 것인가",
+            "chosen": "언제나 클라이언트. 작은 질의는 왕복 한 번, 큰 결과는 클라이언트가 fetch 를 여러 스레드로 보낸다",
+            "alternatives": [
+              "서버가 결과를 밀어 주는 스트리밍"
+            ],
+            "tradeoff": "큰 결과에서는 왕복이 늘어난다. 대신 받는 쪽이 자기 형편대로 병렬화하고 흐름을 조절한다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "보안 기본값을 어디에 둘 것인가",
+            "chosen": "로컬호스트에만 붙고 로컬 통신에는 SSL 을 걸지 않는다. 인터넷 노출은 리버스 프록시에 맡긴다",
+            "alternatives": [
+              "기본으로 TLS 를 켜기",
+              "모든 인터페이스에 바인딩"
+            ],
+            "tradeoff": "로컬에서 쓸데없는 값을 안 치르는 대신, 밖으로 여는 사람이 프록시와 인증서를 스스로 챙겨야 한다. 인가도 기본이 허용이라 여럿이 쓰는 자리에서는 손을 대야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "인증을 어떻게 붙일 것인가",
+            "chosen": "시작할 때 만드는 무작위 토큰이 기본이고, 콜백으로 LDAP·파일·SQL 매크로까지 갈아 끼운다",
+            "alternatives": [
+              "사용자·비밀번호 체계를 데이터베이스 안에 만들기"
+            ],
+            "tradeoff": "인증 체계를 안 만드는 대신 그 책임을 배포하는 쪽에 넘긴다. 임베디드 데이터베이스가 사용자 관리를 들이지 않으려는 선택으로 읽힌다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "HTTP over TCP",
+            "role": "전송 계층. 기존 네트워크 인프라를 그대로 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "application/duckdb (내부 WAL 직렬화)",
+            "role": "요청과 응답의 몸통 형식",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "토큰 인증 + 콜백",
+            "role": "연결 인증. LDAP·파일·SQL 매크로로 바꿔 끼운다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "병렬 fetch",
+            "role": "큰 결과를 여러 스레드가 나눠 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "임베디드 실행 모델",
+          "via": "전제를 물리는 자리",
+          "contract": "프로세스 안에 사는 것이 기본이고 이 모드는 그 전제가 깨질 때만 쓴다. 같은 파일에 여러 프로세스가 쓰려는 상황이 그 경계다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "DuckDB 코어의 동시 삽입 한계",
+          "via": "프로토콜이 못 넘는 벽",
+          "contract": "8스레드까지는 초당 5,434 트랜잭션으로 PostgreSQL 을 넘지만 그 위에서 정체한다. 프로토콜을 아무리 고쳐도 여기부터는 엔진을 손봐야 한다고 회사가 적는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "리버스 프록시 (nginx·Let's Encrypt)",
+          "via": "보안을 밖에 맡기는 계약",
+          "contract": "TLS 와 인증서는 서버가 아니라 앞단이 맡는다. 데이터베이스가 들지 않기로 한 짐이 배포자의 짐이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "원격으로 DuckDB 를 파는 제품들",
+          "via": "같은 문제의 다른 답",
+          "contract": "프로세스 안에 사는 엔진을 원격에서 쓰게 하는 일은 재단 회원사들의 사업과 겹친다. 이 프로토콜이 그 자리에 어떤 영향을 주는지는 글에 없다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Don't Hold My Data Hostage — A Case For Client Protocol Redesign",
+            "authors": "Mark Raasveldt, Hannes Mühleisen",
+            "year": "2017",
+            "venue": "VLDB 2017",
+            "url": "https://www.vldb.org/pvldb/vol10/p1022-muehleisen.pdf",
+            "takeaway": "이 프로토콜을 만든 두 사람이 그전에 쓴 논문이다. 기존 데이터베이스 클라이언트 프로토콜이 대량 결과 전송에서 얼마나 값을 치르는지를 재고 다시 설계해야 한다고 주장했다. Quack 은 그 주장을 자기 제품에 적용한 결과로 읽힌다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Apache Arrow Flight SQL",
+            "authors": "Apache Arrow",
+            "year": "2022",
+            "venue": "Apache Arrow 명세",
+            "url": "https://arrow.apache.org/docs/format/FlightSql.html",
+            "takeaway": "이 분야의 표준 후보이고 이 회사가 이름을 대며 물린 대안이다. 표준을 쓰면 남의 클라이언트를 얻지만 형식의 통제권을 내준다는 교환이 여기서 드러난다.",
+            "confidence": "inferred"
+          },
+          {
+            "title": "PostgreSQL Frontend/Backend Protocol",
+            "authors": "PostgreSQL Global Development Group",
+            "year": "2024",
+            "venue": "PostgreSQL 문서",
+            "url": "https://www.postgresql.org/docs/current/protocol.html",
+            "takeaway": "행 단위 전송이라는 성질이 대량 분석 결과를 옮길 때 어떤 값을 치르는지가 이 프로토콜을 물린 근거였다. 76GB 전송에서 158.37초 대 4.94초가 그 차이다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "동시 쓰기는 프로토콜로 풀리지 않는다",
+            "why_hard": "여러 클라이언트의 쓰기를 한 서버로 모아도 그 서버 안의 엔진이 동시 삽입을 받아 내야 한다. 분석용으로 설계된 엔진은 짧은 갱신을 많이 받는 데 맞춰져 있지 않다.",
+            "current_best": "8스레드까지 받아 내고 그 위는 정체한다는 것을 그대로 적고, 더 늘리려면 구조를 손봐야 한다고 남겨 두는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "형식을 스스로 들면 생태계가 안 붙는다",
+            "why_hard": "프로토콜의 값어치는 구현 수에서 나오는데, 자체 형식은 그 수를 스스로 늘려야 한다. 표준을 쓰면 남의 클라이언트를 얻지만 형식이 바뀔 때 끌려다닌다.",
+            "current_best": "상호운용성을 혁신 속도와 바꾸겠다고 밝히는 것. 대신 전송은 표준(HTTP)에 얹어 인프라만큼은 얻는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Quack: The DuckDB Client-Server Protocol",
+                "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+                "publisher": "DuckDB",
+                "date": "2026-05-12",
+                "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "임베디드 데이터베이스는 사용자 관리를 들이고 싶어 하지 않는다",
+            "why_hard": "프로세스 안에 살 때는 호스트 프로그램이 이미 권한을 다 다뤘다. 서버가 되는 순간 인증·인가가 생기는데 그것을 엔진 안에 넣으면 임베디드에서 짐이 된다.",
+            "current_best": "토큰 하나를 기본으로 두고 검사 방식을 콜백으로 빼는 것. 인가는 기본 허용이라 여럿이 쓰는 자리에서는 배포하는 쪽이 채워야 한다(재구성).",
+            "confidence": "inferred"
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "서버 모드를 붙일지 정할 때",
+          "thought": "프로세스 안에 산다는 것이 이 프로젝트의 정체성인데 서버를 붙이면 그것을 스스로 무르는 셈이다. 그래도 같은 파일에 여러 프로세스가 쓰려는 상황은 실제로 있고, 그때는 임베디드가 답이 아니다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "표준을 쓸지 고를 때",
+          "thought": "Arrow Flight 를 쓰면 남의 클라이언트를 그냥 얻는다. 그런데 형식이 밖에 있으면 우리 자료형이 바뀔 때마다 남의 일정에 맞춰야 한다 — 밖에서 통제하는 형식에 묶일 수 없다고 회사가 그렇게 적는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "직렬화를 새로 만들까 하다가",
+          "thought": "이미 WAL 이 몇 년째 이 형식으로 디스크에 쓰고 있다. 프로토콜을 위해 형식을 새로 만들면 검증을 처음부터 다시 해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "벤치마크가 8스레드에서 꺾인 것을 보고",
+          "thought": "프로토콜을 아무리 다듬어도 여기부터는 우리 문제가 아니다. 감추지 않고 정체한다고 적고 다음 일로 남겨 뒀다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Quack: The DuckDB Client-Server Protocol",
+          "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+          "publisher": "DuckDB",
+          "date": "2026-05-12",
+          "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
+        },
+        {
+          "title": "Why DuckDB",
+          "url": "https://duckdb.org/why_duckdb",
+          "publisher": "DuckDB",
+          "summary": "설계 목표를 스스로 적은 문서. 별도 프로세스로 돌지 않고 호스트 프로세스 안에 완전히 박혀 돌기 때문에 데이터를 주고받는 속도가 빠르고, 판다스 데이터프레임 같은 외부 자료구조를 옮겨 담지 않고 그대로 질의할 수 있다. 실행은 컬럼형 벡터화다 — 질의는 여전히 해석되지만 값을 한 벌(벡터) 단위로 처리해 행 단위로 도는 PostgreSQL·MySQL·SQLite 의 오버헤드를 줄인다. 겨냥하는 것은 분석 질의(OLAP)이고 트랜잭션 처리는 아니라고 밝힌다. 컴파일 때도 실행 때도 외부 의존성이 없어 헤더와 구현 파일 두 개로 합칠 수 있고, 작은 엣지 기기부터 수 테라바이트 메모리 서버까지 배포된다. 연구 시제품으로 만든 적이 없다고 적으며 테스트 스위트에 수백만 개의 질의가 있다고 밝힌다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "DuckDB Labs 의 사업 내용을 확인하지 못했다. duckdblabs.com 이 ducklabs.com 으로 옮겨 갔는데 그 주소가 403 을 돌려준다. 회사 사정이 아니라 도구의 한계다 — 재단 회비 말고 어떤 수익원이 있는지가 여기에 걸려 있다.",
     "MotherDuck 과의 관계를 재단 문서의 골드 회원 목록으로만 확인했다. 상업 클라우드 제품과 이 프로젝트 사이의 경계가 어떻게 그어져 있는지는 못 봤다.",
@@ -182,6 +664,13 @@
       "publisher": "DuckDB",
       "date": "2026-08-20",
       "summary": "2018년부터 쓰던 PostgreSQL 유래의 YACC/Bison 파서를 PEG 파서로 바꿨다. LALR(1) 파서는 shift/reduce·reduce/reduce 충돌이 잦아 GROUP BY ALL 같은 작은 문법 추가가 기존 규칙과 얽힌다. PEG 는 대안의 순서를 명시적으로 적으므로 그런 충돌이 없고 문법을 늘리기 쉬우며 서드파티 확장이 실행 중에 문법을 더할 길도 열린다(다만 그 API 는 아직 프리뷰이고 v2.0 전에 바뀔 수 있다). 대가도 적는다 — 괄호가 짝이 안 맞는 잘못된 질의에서 되돌아가기가 반복돼 지수적으로 느려졌고, 팩랫 파싱(메모이제이션)으로 괄호 19개짜리가 10.6초에서 0.001초가 됐다. 메모리를 더 쓰는 대신 지수적 폭발을 막은 것이다. 새 파서는 같은 AST 를 내놓아 질의 동작은 그대로다."
+    },
+    {
+      "title": "Quack: The DuckDB Client-Server Protocol",
+      "url": "https://duckdb.org/2026/05/12/quack-remote-protocol.html",
+      "publisher": "DuckDB",
+      "date": "2026-05-12",
+      "summary": "프로세스 안에서만 돌던 데이터베이스에 클라이언트·서버 모드를 붙인 기록. 같은 파일에 여러 프로세스가 동시에 쓰지 못하는 것이 계기다. 포스트그레스 와이어 프로토콜은 행 단위라 대량 전송에 가망이 없다고 적고, Arrow Flight SQL 은 질의마다 왕복이 최소 둘이며 밖에서 통제하는 형식에 묶일 수 없다는 이유로 물린다. 전송은 HTTP over TCP 를 쓰고(로드밸런서·방화벽·침입 탐지 같은 수십 년치 인프라를 그대로 얻는다), 직렬화는 WAL 파일에서 수년간 검증된 내부 형식을 재사용하며 MIME 타입은 application/duckdb 다. 상호작용은 언제나 클라이언트가 이끌고 작은 질의는 왕복 한 번에 끝나며, 결과가 크면 뒤이은 fetch 메시지를 여러 스레드로 병렬로 받는다. 인증은 시작할 때 만드는 무작위 토큰이 기본이고 콜백으로 LDAP·파일·SQL 매크로까지 바꿔 끼운다. 기본 포트는 9494(넷스케이프 내비게이터가 나온 해)이고 기본은 로컬호스트 바인딩에 로컬 SSL 없음, 인터넷에 열려면 리버스 프록시를 권한다. 수치(AWS m8g.2xlarge, 핑 약 0.280ms) — 6천만 행 76GB CSV 전송이 Quack 4.94초, Arrow Flight 17.40초, PostgreSQL 158.37초. 병렬 삽입은 8스레드에서 초당 5,434 트랜잭션으로 PostgreSQL 의 4,320을 넘지만 그 위에서 정체하고 그다음부터는 PostgreSQL 이 앞선다 — 엔진 자체의 한계라고 적는다."
     }
   ]
 }

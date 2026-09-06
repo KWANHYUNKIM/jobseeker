@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **DuckDB** | EU · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 호스트 프로세스 안에 산다(`Why DuckDB`) · 네트워크 너머를 로컬 파일처럼 읽는다(`Asynchronous I/O`) · 문법을 계속 고칠 수 있게 만든다(`PEG parser`). 다음은 기능 하나. 안 읽은 것 — `Redesigning Sort, Again`(2025-09-24) · `Data-at-Rest Encryption`(2025-11-19) · `Quack` 프로토콜(2026-05-12) · `Recursive CTEs`(2026-08-25). DuckDB Labs 사이트는 403 이다. |
+| **DuckDB** | EU · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 호스트 프로세스 안에 산다(`quack-protocol`). 빈 도메인 둘 — 네트워크 너머를 로컬 파일처럼 읽는다(`Asynchronous I/O`) · 문법을 계속 고칠 수 있게 만든다(`PEG parser`). 안 읽은 것 — `Redesigning Sort, Again`(2025-09-24) · `Data-at-Rest Encryption`(2025-11-19) · `Recursive CTEs`(2026-08-25). DuckDB Labs 사이트는 403 이다. |
 
 ## 대기
 

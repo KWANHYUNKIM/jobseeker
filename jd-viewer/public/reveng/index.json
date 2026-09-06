@@ -1412,7 +1412,7 @@
       "country": "EU",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "호스트 프로그램 안에 박혀 도는 분석 데이터베이스 — 데이터를 엔진으로 옮기는 대신 엔진이 데이터가 있는 프로세스로 들어간다",
       "updated_at": "2026-09-07",
       "domain": "duckdb.org"
