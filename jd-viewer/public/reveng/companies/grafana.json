@@ -1,0 +1,121 @@
+{
+  "slug": "grafana",
+  "name": "Grafana Labs",
+  "name_en": "Grafana Labs",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "grafana.com",
+  "one_liner": "오픈소스 관측 도구를 만들고 그 운영을 파는 회사 — 남이 만든 데이터베이스 수를 늘릴수록 자기 저장 비용이 문제가 된다",
+  "business_model": "**오픈소스 관측 스택을 만들고 그것을 대신 굴려 주는 Grafana Cloud 로 번다.** 스택이 LGTM 으로 불린다 — **Grafana(시각화) · Loki(로그) · Tempo(추적) · Mimir(메트릭)**, 그리고 **k6(부하 시험) · Alloy(OpenTelemetry 수집기) · Pyroscope(연속 프로파일링) · OnCall.** **2026년 8월 기준 고객 1만 곳 이상 · ARR 6억 달러 이상**(2025년 9월에 4억 달러·7,000곳이었다). **엔지니어링 자원의 약 80% 를 오픈소스에 쓴다**고 밝힌다.\n\n⚠️ **이 회사의 기술 문제는 자기 사업 모델에서 곧장 나온다.** **100개가 넘는 데이터 소스를 지원하는 `큰 천막(big tent)` 전략**으로 사용자를 모으고, **그 사용자들의 텔레메트리를 대신 저장해 준다.** **그러면 저장 비용이 곧 마진이 된다** — 그래서 **Mimir 의 차세대 아키텍처 이야기가 성능이 아니라 총소유비용(TCO)으로 시작한다**(이 정리는 이 사이트의 재구성이다).",
+  "products": [
+    "Grafana (시각화)",
+    "Mimir (메트릭)",
+    "Loki (로그)",
+    "Tempo (추적)",
+    "Grafana Cloud (관리형)"
+  ],
+  "domain_map": {
+    "title": "남의 데이터를 대신 저장해 주는 값이 곧 원가다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  U[\"<b>사용자 · 고객 1만 곳 이상</b><br/>• 데이터 소스 100개 이상\"]:::list --> T[\"<b>텔레메트리</b><br/>• 메트릭 · 로그 · 추적\"]:::list\n  T --> M[\"⚠️ <b>메트릭을 싸게 오래 둔다</b><br/>• Mimir · 활성 시계열 수십억\"]:::accent\n  T --> L[\"<b>로그를 싸게 다룬다</b><br/>• Loki (⏳ 미독)\"]:::quiet\n  M --> C[\"<b>Grafana Cloud</b><br/>• ARR 6억 달러 이상\"]:::list\n  L --> C\n  M --> R[\"⚠️ <b>줄인 것이 곧 번 것</b><br/>• TCO 25% 감소\"]:::accent"
+  },
+  "revenue_streams": [
+    {
+      "name": "Grafana Cloud (관리형 관측)",
+      "how": "오픈소스 스택을 **대신 굴려 주고** 받는다. **고객 1만 곳 이상 · ARR 6억 달러 이상**(2026년 8월). 2025년 9월에는 4억 달러·7,000곳이었다.",
+      "domains": [
+        "메트릭을 오래, 그리고 싸게 저장한다",
+        "로그를 색인 없이 다룬다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Grafana Labs Crosses 10,000-Customer Milestone as AI Adoption Accelerates Growth Across the Platform",
+          "url": "https://grafana.com/press/2026/08/26/grafana-labs-crosses-10000-customer-milestone-as-ai-adoption-accelerates-growth-across-the-platform/",
+          "publisher": "Grafana Labs",
+          "date": "2026-08-26",
+          "summary": "고객 1만 곳을 넘고 ARR 6억 달러를 넘어섰다. Grafana Cloud 확장과 AI 기능(Grafana Assistant, Adaptive Telemetry)이 성장을 이끌었다."
+        },
+        {
+          "title": "Grafana Labs Surpasses $400M ARR and 7,000 Customers",
+          "url": "https://grafana.com/press/2025/09/30/grafana-labs-surpasses-400m-arr-and-7000-customers-gains-new-investors-to-accelerate-global-expansion/",
+          "publisher": "Grafana Labs",
+          "date": "2025-09-30",
+          "summary": "ARR 4억 달러와 고객 7,000곳을 넘었다."
+        }
+      ]
+    },
+    {
+      "name": "⚠️ 저장 비용이 곧 마진이다",
+      "how": "⚠️ **남의 텔레메트리를 대신 저장하는 사업이라 인프라 원가가 그대로 손익에 걸린다.** 그래서 **Mimir 재설계의 목표가 성능이 아니라 총소유비용이었고, 결과도 `TCO 25% 감소` 로 발표한다**(이 정리는 이 사이트의 재구성이다).",
+      "domains": [
+        "메트릭을 오래, 그리고 싸게 저장한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+          "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+          "publisher": "Grafana Labs Blog",
+          "date": "2026-01-02",
+          "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "메트릭을 오래, 그리고 싸게 저장한다",
+      "why": "⚠️ **옛 구조가 카산드라에서 온 것이었다** — **복제 계수 3 + 쿼럼 읽기·쓰기.** 회사가 그 대가를 적는다: **`복제 계수 3은 비싸다. 수집 경로에서 각 데이터의 사본 셋을 들고 있어야 한다.`** 그리고 더 아픈 것이 **결합**이었다 — **`인제스터가 과부하되면 수집 경로, 즉 쓰기 경로도 영향을 받는다.`** ✅ **본문 확인함**(2026-01-02).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "로그를 색인 없이 다룬다",
+      "why": "**Loki 는 로그 본문을 색인하지 않는 것으로 알려진 시스템이고**, **Grafana 13 에서 수집 계층을 Kafka 기반으로 재설계**했다. 기존 구조는 **들어오는 로그 줄마다 인제스터 셋에 보내 고가용성을 얻고 파일 이름으로 중복을 제거**했다. ⏳ **본문은 아직 안 읽었다.** ⚠️ **Mimir 와 같은 방향(복제에서 로그로)의 변화라 나란히 볼 자리다**(재구성).",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **`10년의 아키텍처 진화` 라는 말이 나오는데 연도가 없다** — Mimir 글이 그 표현을 쓰지만 **어느 구조가 언제부터였는지**를 밝히지 않아 **연표(eras)를 못 세웠다.** ⚠️ **이번 세션에서 네 번째다**(GeoIndia · Flink→ClickHouse · Snyk 에 이어).",
+    "⚠️ **Loki 재설계의 본문을 아직 못 읽었다** — 2차 자료(InfoQ)로 방향만 확인했다.",
+    "⚠️ **Tempo · Pyroscope · Alloy 를 안 봤다** — 스택이 넓은데 이번엔 메트릭·로그만 도메인으로 세웠다. **자료를 읽고 새 도메인이 보이면 확장 사이클에서 더한다.**",
+    "⚠️ **오픈소스와 클라우드의 경계를 모른다** — **엔지니어링 자원의 약 80% 를 오픈소스에 쓴다**고 밝히는데, **Mimir 차세대 구조가 오픈소스에도 그대로 가는지, 클라우드 전용인지**가 글에 없다. **WarpStream 은 별도 제품이라 특히 그렇다.**",
+    "⚠️ **AI 기능(Grafana Assistant · Adaptive Telemetry)의 구조를 모른다** — 성장의 원인으로 보도자료가 꼽는데 기술 자료를 아직 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+      "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+      "publisher": "Grafana Labs Blog",
+      "date": "2026-01-02",
+      "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+    },
+    {
+      "title": "Grafana Labs Crosses 10,000-Customer Milestone as AI Adoption Accelerates Growth Across the Platform",
+      "url": "https://grafana.com/press/2026/08/26/grafana-labs-crosses-10000-customer-milestone-as-ai-adoption-accelerates-growth-across-the-platform/",
+      "publisher": "Grafana Labs",
+      "date": "2026-08-26",
+      "summary": "고객 1만 곳을 넘고 ARR 6억 달러를 넘어섰다. Grafana Cloud 확장과 AI 기능(Grafana Assistant, Adaptive Telemetry)이 성장을 이끌었다."
+    },
+    {
+      "title": "Grafana Labs Surpasses $400M ARR and 7,000 Customers",
+      "url": "https://grafana.com/press/2025/09/30/grafana-labs-surpasses-400m-arr-and-7000-customers-gains-new-investors-to-accelerate-global-expansion/",
+      "publisher": "Grafana Labs",
+      "date": "2025-09-30",
+      "summary": "ARR 4억 달러와 고객 7,000곳을 넘었다."
+    },
+    {
+      "title": "Grafana Rearchitects Loki with Kafka and Ships a CLI to Bring Observability into Coding Agents",
+      "url": "https://www.infoq.com/news/2026/04/grafana-loki-ai-agents/",
+      "publisher": "InfoQ",
+      "date": "2026-04",
+      "summary": "Grafana 13 에서 Loki 의 수집 계층을 Kafka 기반으로 재설계했다. 기존 Loki 는 들어오는 로그 줄마다 인제스터 셋에 보내 고가용성을 얻고 파일 이름으로 중복을 제거했다. ⏳ 본문은 아직 읽지 않았다."
+    }
+  ]
+}

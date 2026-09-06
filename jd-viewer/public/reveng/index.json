@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "grafana",
+      "name": "Grafana Labs",
+      "name_en": "Grafana Labs",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "오픈소스 관측 도구를 만들고 그 운영을 파는 회사 — 남이 만든 데이터베이스 수를 늘릴수록 자기 저장 비용이 문제가 된다",
+      "updated_at": "2026-09-06",
+      "domain": "grafana.com"
+    },
+    {
       "slug": "snyk",
       "name": "Snyk",
       "name_en": "Snyk",
@@ -1396,7 +1408,9 @@
     "10분을 지키려고 사람과 경로를 배치한다",
     "광고를 팔려면 하루 10억 이벤트를 세야 한다",
     "취약점을 찾는 것이 아니라 고치는 것을 판다",
-    "기계가 고친 것을 믿어도 되는지 잰다"
+    "기계가 고친 것을 믿어도 되는지 잰다",
+    "메트릭을 오래, 그리고 싸게 저장한다",
+    "로그를 색인 없이 다룬다"
   ],
   "countries": {
     "KR": "한국",
