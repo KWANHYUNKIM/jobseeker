@@ -1889,6 +1889,27 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "load-balancer",
+      "title": "로드밸런서",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "여러 서버에 요청을 나눠 주는 것 — 그런데 ⭐ **어려운 쪽은 나누는 게 아니라 \"죽은 곳에 안 보내는 것\"** 이다. AWS 문서의 핵심 문장도 분배가 아니라 **\"routes traffic only to the healthy targets\"** 다.",
+      "aliases": [
+        "로드밸런서",
+        "로드 밸런싱",
+        "load balancer",
+        "load balancing",
+        "L4",
+        "L7",
+        "ALB",
+        "NLB"
+      ],
+      "sections": 7,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

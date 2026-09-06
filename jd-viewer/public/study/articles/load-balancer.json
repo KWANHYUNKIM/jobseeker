@@ -1,0 +1,642 @@
+{
+  "slug": "load-balancer",
+  "title": "로드밸런서",
+  "title_en": "Load Balancer",
+  "aliases": [
+    "로드밸런서",
+    "로드 밸런싱",
+    "load balancer",
+    "load balancing",
+    "L4",
+    "L7",
+    "ALB",
+    "NLB"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "여러 서버에 요청을 나눠 주는 것 — 그런데 ⭐ **어려운 쪽은 나누는 게 아니라 \"죽은 곳에 안 보내는 것\"** 이다. AWS 문서의 핵심 문장도 분배가 아니라 **\"routes traffic only to the healthy targets\"** 다.",
+  "summary": "세면 **213건(모집중 101)** 이다 — `ALB|NLB|ELB` 78 · `L4|L7` **93** · `로드 밸런` 60 · `헬스 체크` 40 · `HAProxy` 19.\n\n⭐⭐ **같은 낱말이 두 세계에 있다.** 한쪽에서는 **네트워크 장비**다 — 씨제이올리브영 `네트워크 장비(스위치, 라우터, 방화벽, **L4/L7 로드밸런서** 등) 운영`, 파이오링크 `**ADC(L4-L7 스위치)** 가상화 솔루션 개발`. 다른 쪽에서는 **클라우드 제품**이다 — 티오더 `AWS 기반 서비스 인프라(EKS, EC2, RDS, **ALB**, CloudFront 등)`, 쏘카 `**ALB/NLB**, AWS VPN, Transit Gateway(TGW), **GWLB**`.\n\n⭐⭐⭐ **그리고 이 낱말의 핵심은 \"안 보내기\"에 있다.** NGINX 문서가 그 어려움을 스스로 적는다.\n\n> **\"If there is only a single server in a group, the `max_fails`, `fail_timeout`, and `slow_start` parameters ... are ignored, and the server is never considered unavailable.\"**\n\n**그룹에 서버가 하나뿐이면 죽어도 죽었다고 치지 않는다.** 보낼 곳이 없으니까 — **\"건강함\"의 판정 자체가 대안의 존재를 전제한다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 같은 낱말이 두 세계에 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "What is Elastic Load Balancing? (AWS)",
+          "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐ 정의와 이점 — **\"routes traffic only to the healthy targets\"** 가 핵심 문장"
+        }
+      ],
+      "body": "AWS 문서가 정의를 한 문단으로 준다.\n\n> \"Elastic Load Balancing **automatically distributes your incoming traffic across multiple targets**, such as EC2 instances, containers, and IP addresses, **in one or more Availability Zones**. It **monitors the health of its registered targets, and routes traffic only to the healthy targets.**\"\n\n**나눠 주고, 건강을 살피고, 건강한 곳에만 보낸다.** 세 번째가 이 문서의 중심이다(아래 `health` 절).\n\n같은 문서가 이점도 적는다 — \"**increases the availability and fault tolerance**\", 그리고 \"You can add and remove compute resources ... **without disrupting the overall flow of requests**\". ⭐ **서버를 넣고 빼는 일이 요청 흐름을 끊지 않는다**는 것이 무중단 배포의 토대다.\n\n**셈은 213건(모집중 101)** 인데, 문장을 읽으면 **두 세계로 갈린다.**\n\n**① 네트워크 장비의 세계**\n> `네트워크 장비(스위치, 라우터, 방화벽, **L4/L7 로드밸런서** 등) 운영 및 전용선/회선 사업자 연동 경험` — 씨제이올리브영\n> `커널5팀 [ **ADC(L4-L7 스위치)** 가상화 솔루션 개발 ]` — 파이오링크\n> `Linux 시스템 운영 및 **네트워크 기초 지식(TCP/IP, VLAN, L4/L7)**이 탄탄하신 분` — 에이아이트릭스\n\n**② 클라우드 제품의 세계**\n> `AWS 기반 서비스 인프라(EKS, EC2, RDS, **ALB**, CloudFront 등)의 아키텍처 설계, 구축, 운영` — 티오더\n> `Multi-VPC 환경 보안, Security Group, **ALB/NLB**, AWS VPN, Transit Gateway(TGW), **GWLB**` — 쏘카\n> `**Ingress, Load Balancer, Route53 PHZ, 서비스 디스커버리** 체계를 설계·운영` — 넥스트증권\n\n⭐ **같은 것을 한쪽은 \"장비\"로, 한쪽은 \"제품\"으로 부른다.** 그리고 **`L4|L7` 93건**이 두 세계를 잇는 낱말이다 — 장비 쪽은 그것으로 제품군을 나누고, 클라우드 쪽은 그것으로 ALB 와 NLB 를 가른다.\n\n> ⚠️⚠️ **셈의 함정 — `Nginx` 를 넣으면 안 된다.** `Nginx` 는 **307건**이나 되지만 웹서버·리버스프록시·인그레스로도 쓰여 **대부분이 로드밸런싱 문맥이 아니다.** `api-gateway` 에서 `API Gateway` 가 AWS 제품명이라 39건이 섞인 것과 같은 형태이고, `data-migration`(TypeORM 289건 중 이관 문맥 11%)에서 세운 규칙 그대로 **기능 낱말로 세고 도구는 동반 셈으로만** 쓴다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐ 왜 필요한가 — 그리고 그 이유가 뒤집혔다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "What is Elastic Load Balancing? (AWS)",
+          "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐ 정의와 이점 — **\"routes traffic only to the healthy targets\"** 가 핵심 문장"
+        }
+      ],
+      "body": "서버 한 대로 안 되는 이유는 둘이다.\n\n**① 용량** — 한 대가 감당 못 하는 트래픽이 온다.\n**② 죽음** — ⭐ **한 대는 반드시 죽는다.**\n\n오래된 순서는 ①이 먼저였다. 트래픽이 커져서 서버를 늘리고, 늘렸으니 나눠 줄 것이 필요했다. 그런데 **클라우드에서는 순서가 뒤집혔다** — 서버 한 대를 크게 만드는 것은 이제 쉽고(인스턴스 타입만 바꾸면 된다), 어려운 것은 **그 한 대가 죽었을 때**다.\n\nAWS 문서가 이점을 적는 순서도 그렇다.\n\n> \"Using a load balancer **increases the availability and fault tolerance** of your applications.\"\n\n**가용성과 장애 감내가 먼저** 나온다. 성능이 아니다.\n\n⭐⭐ **그리고 \"죽음\"에는 계획된 죽음도 들어간다.**\n\n> \"You can **add and remove compute resources** from your load balancer as your needs change, **without disrupting the overall flow of requests** to your applications.\"\n\n**서버를 넣고 빼는 일이 요청 흐름을 끊지 않는다** — 이것이 무중단 배포의 토대다. 새 버전을 띄우고, 로드밸런서에 넣고, 옛 버전을 빼면 된다. **배포는 계획된 서버 죽음**이고, 로드밸런서가 그것을 사용자에게 안 보이게 만든다.\n\n💡 그래서 이 낱말은 **혼자 오지 않는다.**\n\n> `대규모 트래픽 대응을 위한 **오토스케일링, 로드밸런싱** 인프라를 설계하고 운영합니다.` — 비상교육\n\n오토스케일링이 서버를 늘리고 줄이면 **그때마다 로드밸런서에 넣고 빼야** 하는데, AWS 문서가 그것이 자동이라고 적는다 — Auto Scaling 이 띄운 인스턴스는 \"**automatically registered** with the load balancer\", 종료된 것은 자동 해제. **둘이 한 벌로 설계되는 이유**다.\n\n📌 **그리고 이 절의 결론이 다음 절들로 이어진다.** 목적이 \"용량\"이면 **잘 나누는 것**이 중요하지만, 목적이 \"죽음을 견디는 것\"이면 **죽은 것을 알아내는 것**이 중요하다 — 그것이 `health` 절이고, 이 문서가 **\"보내는 것은 쉽고 안 보내는 것이 어렵다\"** 고 말하는 이유다."
+    },
+    {
+      "id": "layer",
+      "kind": "how",
+      "heading": "L4 와 L7 — 어디까지 열어 보느냐",
+      "confidence": "inferred",
+      "body": "공고에서 **`L4|L7` 이 93건**으로 이 낱말의 세부 중 가장 많이 불린다. 무엇을 나누는 말인가.\n\n**요청은 겹겹이 싸여 있다.** 밖에서부터 — IP 주소와 포트(4계층, TCP/UDP), 그 안에 HTTP 요청(7계층: 메서드·경로·헤더·쿠키).\n\n- **L4** — **IP 와 포트만 보고** 어디로 보낼지 정한다. 안을 열지 않으므로 **빠르고, HTTP 가 아니어도 된다.**\n- **L7** — **HTTP 를 해석해서** 경로·호스트·헤더를 보고 정한다. `/api/*` 는 이쪽, `/static/*` 은 저쪽 같은 것이 가능해진다.\n\n⭐⭐ **그리고 이 차이가 할 수 있는 일을 전부 정한다.**\n\n| | L4 | L7 |\n|---|---|---|\n| 보는 것 | IP · 포트 | 경로 · 호스트 · 헤더 · 쿠키 |\n| 경로 기반 라우팅 | ✗ | ○ |\n| 쿠키로 세션 고정 | ✗ | ○ |\n| HTTP 가 아닌 것 | ○ (아무 TCP/UDP) | ✗ |\n| 비용 | 낮다 | **연결을 끊고 다시 맺는다** |\n\n💡 **L7 은 사실상 요청을 대신 받아 다시 보낸다.** 그래서 TLS 를 여기서 풀 수 있고 — AWS 문서의 표현으로 \"**offload the work of encryption and decryption to your load balancer so that your compute resources can focus on their main work**\" — 대신 **연결이 두 개**가 되고 지연과 자원이 붙는다.\n\n📌 그래서 실무의 선택은 대개 이렇다. **HTTP 서비스면 L7**(경로 라우팅·TLS 종료가 필요하니까), **HTTP 가 아니거나 극단적으로 빨라야 하면 L4.** 쏘카 공고의 `**ALB/NLB**` 가 나란히 있는 것이 그 현실이다 — **한 회사가 둘 다 쓴다.**\n\n> ⚠️ **AWS 각 제품이 정확히 몇 계층인지는 이 사이클에서 원문으로 확인하지 않았다.** 인용한 개요 문서는 제품별 상세를 **별도 사용 설명서로 링크**만 한다. 위 표는 **L4/L7 이라는 일반 구분**을 정리한 것이고, 제품을 고를 때는 **해당 제품 문서를 직접 봐야** 한다."
+    },
+    {
+      "id": "health",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 어려운 쪽은 \"안 보내기\"다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "What is Elastic Load Balancing? (AWS)",
+          "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐ 정의와 이점 — **\"routes traffic only to the healthy targets\"** 가 핵심 문장"
+        },
+        {
+          "title": "HTTP Load Balancing (NGINX Admin Guide)",
+          "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+          "publisher": "F5 NGINX",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+        }
+      ],
+      "body": "나누는 것은 쉽다 — 돌아가며 보내면 된다. **어려운 것은 죽은 곳에 안 보내는 것**이고, AWS 문서의 정의도 거기에 방점이 있다.\n\n> \"It **monitors the health of its registered targets**, and **routes traffic only to the healthy targets**.\"\n> \"You can configure health checks, which monitor the health of the compute resources, **so that the load balancer sends requests only to the healthy ones**.\"\n\n그런데 **\"건강하다\"를 판정하는 일이 생각보다 까다롭다.** NGINX 문서가 그 까다로움을 자기 제한으로 적어 둔다.\n\n> ⭐⭐⭐ \"**If there is only a single server in a group, the `max_fails`, `fail_timeout`, and `slow_start` parameters ... are ignored, and the server is never considered unavailable.**\"\n\n**그룹에 서버가 하나뿐이면, 실패를 몇 번 하든 \"사용 불가\"로 치지 않는다.** 당연하다 — **뺄 수가 없으니까.** 뺐다가는 보낼 곳이 아예 없다.\n\n⭐⭐ **여기서 이 낱말의 성격이 드러난다: \"건강함\"은 절대적 상태가 아니라 대안이 있을 때만 성립하는 판정이다.** 그리고 실무의 함정이 바로 여기 있다 — **개발·스테이징에서 서버 하나로 테스트하면 헬스 체크가 도는 것처럼 보이지만 실제로는 아무것도 판정하지 않는다.**\n\n그리고 제한이 지켜지지 않을 수 있다는 것도 적어 둔다.\n\n> ⭐⭐ \"**The `max_conns` limit is ignored if there are idle keepalive connections opened in other worker processes.** As a result, **the total number of connections to the server might exceed the `max_conns` value.**\"\n\n**설정한 최대 연결 수를 넘길 수 있다.** 워커 프로세스가 여럿이고 각자 유휴 연결을 들고 있기 때문이다. ⭐ 이 백과사전이 모아 온 **\"제품이 스스로 그은 선\"** 의 한 형태이고 — RFC 9309 의 \"not a form of access authorization\", WCAG 의 \"AAA 를 정책으로 요구하지 말라\", Google 의 \"doesn't guarantee\" 와 같은 자리다. **여기서는 \"내 제한이 항상 지켜지지는 않는다\"** 는 고백이다.\n\n💡 **그래서 헬스 체크를 설계할 때 물어야 할 것들.**\n\n1. **무엇을 확인하나** — 포트가 열려 있는 것? HTTP 200? **DB 까지 닿는 것?** 얕으면 죽은 걸 못 잡고, 깊으면 **DB 가 흔들릴 때 전 서버가 동시에 빠진다.**\n2. **몇 번 실패하면 빼나** — 너무 민감하면 일시적 지연에 서버가 출렁이고, 너무 둔하면 죽은 곳으로 계속 보낸다.\n3. **돌아올 때는 어떻게** — 막 살아난 서버에 트래픽을 한꺼번에 주면 다시 죽는다(NGINX 의 `slow_start` 가 그 문제를 다루지만 ⚠️ **상용판 전용**이다).\n4. ⭐ **서버가 하나면 이 모든 게 무의미하다.**"
+    },
+    {
+      "id": "algo",
+      "kind": "how",
+      "heading": "어떻게 나누나 — 그리고 세션 고정의 값",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "HTTP Load Balancing (NGINX Admin Guide)",
+          "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+          "publisher": "F5 NGINX",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+        }
+      ],
+      "body": "NGINX 문서가 분배 방식을 정리해 둔다.\n\n| 방식 | 원문 |\n|---|---|\n| **Round Robin** (기본) | \"Requests are **distributed evenly** across the servers, with server weights taken into consideration.\" |\n| **Least Connections** | \"A request is sent to the server with the **least number of active connections**.\" |\n| **IP Hash** | \"determined from the **client IP address** ... guarantees that requests from the same address get to the same server **unless it is not available**.\" |\n| **Generic Hash** | \"determined from a **user-defined key** ... **If an upstream server is added to or removed from an upstream group, only a few keys are remapped.**\" |\n| **Least Time** | \"selects the server with the **lowest average latency and the lowest number of active connections**.\" ⚠️ 상용판 |\n\n⭐ **`Generic Hash` 의 단서가 특히 중요하다** — \"서버가 추가·제거되어도 **일부 키만 재배치된다**\". 단순 해시(`서버 수로 나눈 나머지`)는 서버 하나가 빠지면 **거의 모든 키가 옮겨 가는데**, 그러면 캐시가 통째로 무효가 된다(→ `caching`). 그것을 피하는 방식이 있다는 뜻이다.\n\n**그리고 세션 고정.**\n\n> \"Session persistence means that **NGINX Plus identifies user sessions and routes all requests in a given session to the same upstream server**.\"\n\n⚠️ **상용판 전용**이고(무료판은 `ip_hash` 로 비슷하게 흉내 낸다), 방식이 셋이다(쿠키·라우트·학습).\n\n💡 **그런데 세션 고정은 되도록 안 쓰는 것이 낫다.** 이유가 셋이다.\n\n1. **서버가 빠지면 그 세션들이 다 끊긴다** — 고정했으니 다른 데로 못 간다.\n2. **부하가 고르지 않게 된다** — 무거운 사용자가 한 서버에 몰릴 수 있다.\n3. ⭐ **애초에 필요한 이유가 대개 \"서버가 상태를 들고 있어서\"** 다 — 세션을 밖으로(Redis·DB·토큰) 빼면 고정이 필요 없어진다.\n\n📌 그래서 **세션 고정은 상태를 밖으로 못 뺄 때의 임시 방편**으로 본다. `stateless` 하게 만드는 것이 정공법이고, 그건 `rest` 문서가 인용한 Fielding 의 제약(**\"each request from client to server must contain all of the information necessary\"**)과 같은 이야기다."
+    },
+    {
+      "id": "boundary",
+      "kind": "extra",
+      "heading": "경계 — 게이트웨이·메시·인그레스와",
+      "confidence": "inferred",
+      "body": "이 층은 옆의 것들과 계속 겹친다. 그리고 **`api-gateway` 문서가 인용한 한 문장**이 그 경계를 가장 또렷하게 보여 준다.\n\n> ⭐ \"**API Management doesn't perform any load balancing**, so you should use it with a load balancer, such as Azure Application Gateway, or a reverse proxy.\" — Azure Architecture Center\n\n**게이트웨이 제품이 자기가 부하 분산을 안 한다고 적는다.** 둘이 다른 일이라는 뜻이다.\n\n⭐⭐ **가르는 질문은 이것이다 — \"무엇을 할까\"인가 \"어디로 보낼까\"인가.**\n\n| | 무엇을 하나 | 방향 |\n|---|---|---|\n| **로드밸런서** (이 문서) | ⭐ **어디로 보낼까** — 건강한 것 중에서 고른다 | 남북 |\n| **API 게이트웨이** | **무엇을 할까** — 인증·제한·라우팅 규칙·변환 | 남북 |\n| **서비스 메시** | 서비스끼리의 통신 — 재시도·mTLS·관측 | ⭐ **동서** |\n| **인그레스** | 클러스터 바깥→안의 입구 (대개 위 둘의 역할을 겸한다) | 남북 |\n\n⚠️ **실제 제품은 이 칸을 넘나든다.** L7 로드밸런서는 경로 라우팅을 하니 게이트웨이의 일부를 하고, 게이트웨이 제품도 대개 뒤쪽 인스턴스를 여러 개 두고 고른다. **`service-mesh` 문서가 인용한 대로** 메시의 인그레스가 게이트웨이 자리를 대신할 수도 있다.\n\n💡 그래서 실무에서는 **제품 이름이 아니라 \"우리 시스템에서 이 일을 누가 하나\"** 로 정리하는 편이 낫다 — 헬스 체크는 누가? 경로 라우팅은? TLS 종료는? 비율 제한은? ⭐ **답이 비어 있는 칸이 대개 사고가 나는 자리다.**\n\n📌 그리고 공고가 이 겹침을 그대로 보여 준다.\n\n> `**Ingress, Load Balancer, Route53 PHZ, 서비스 디스커버리** 체계를 설계·운영합니다` — 넥스트증권\n> `**Service Mesh (Istio, Linkerd), Ingress Controller (Nginx, Envoy), API Gateway** 등을 다뤄본 경험` — 엘리스\n\n**한 사람이 이 넷을 다 다룬다.**"
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 확인하지 못한 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ AWS 제품별 계층·특성을 원문으로 확인하지 않았다.** 인용한 개요 문서는 ALB·NLB·GWLB 를 **별도 사용 설명서로 링크**만 하고 각각이 몇 계층인지 본문에 적지 않는다. `layer` 절의 표는 **L4/L7 이라는 일반 구분**을 이 문서가 정리한 것이고(`confidence: inferred`), **제품 선택 전에는 해당 문서를 직접 봐야** 한다.\n\n**2. ⚠️ NGINX 쪽 인용은 상용판(NGINX Plus) 기능이 섞여 있다.** `least_time`·`slow_start`·세션 고정 세 방식·`random` 이 **상용판 전용**이라고 문서가 명시한다. **무료판으로 같은 것을 기대하면 안 된다** — 본문에 표시했지만 각 항목의 정확한 가용 범위는 버전에 따라 다를 수 있다.\n\n**3. 성능·용량의 숫자를 주지 않았다.** \"L7 이 L4 보다 얼마나 느린가\"는 **제품·설정·요청 크기에 따라 다르고** 이 사이클에서 그 자료를 열지 않았다. ⭐ 이 엔진의 규칙대로 **숫자는 출처 없이 쓰지 않는다.**\n\n**4. 전역 분산(GSLB·애니캐스트·CDN)을 다루지 않았다.** 여러 지역에 걸친 분배는 DNS 나 애니캐스트가 하는 일이고 이 문서 밖이다 — AWS 문서에 `Global Accelerator` 가 \"distribute traffic across **multiple load balancers in one or more AWS Regions**\" 로 언급되는 것까지만 확인했다.\n\n**5. 알고리즘의 실제 선택 기준을 숫자로 주지 않았다.** \"언제 least_conn 이 round robin 보다 나은가\"는 **요청 처리 시간의 분포**에 달렸는데, 그 판단 기준을 담은 자료를 찾지 못했다 — 본문은 **각 방식이 무엇을 보는가**까지만 말한다.\n\n**6. 이 문서가 다루지 않는 것.** 무엇을 할지 정하는 층은 `api-gateway`, 서비스끼리의 통신은 `service-mesh`, 제한의 계산은 `rate-limit`, 실패한 상대를 끊는 원리는 `circuit-breaker`, 캐시 키가 재배치되는 문제는 `caching` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "elb",
+      "kind": "glossary",
+      "caption": "⭐ 로드밸런서가 하는 일 — AWS 문서의 정의",
+      "note": "AWS Elastic Load Balancing 사용 설명서의 개요에서 옮겼다. ⚠️ **제품별(ALB·NLB·GWLB) 특성은 별도 문서로 링크만 되어 있어 이 표에 없다.**",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "나눈다",
+          "\"automatically **distributes your incoming traffic across multiple targets** ... in one or more **Availability Zones**\""
+        ],
+        [
+          "⭐⭐ 골라 보낸다",
+          "\"It **monitors the health of its registered targets**, and **routes traffic only to the healthy targets**.\""
+        ],
+        [
+          "왜",
+          "\"increases the **availability and fault tolerance** of your applications\""
+        ],
+        [
+          "⭐ 무중단의 토대",
+          "\"add and remove compute resources ... **without disrupting the overall flow of requests**\""
+        ],
+        [
+          "오프로딩",
+          "\"**offload the work of encryption and decryption** to your load balancer so that your compute resources can **focus on their main work**\""
+        ],
+        [
+          "자동 확장과의 연동",
+          "Auto Scaling 이 띄운 인스턴스는 \"**automatically registered** with the load balancer\", 종료된 것은 자동 해제"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "What is Elastic Load Balancing? (AWS)",
+          "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐ 정의와 이점 — **\"routes traffic only to the healthy targets\"** 가 핵심 문장"
+        }
+      ]
+    },
+    {
+      "id": "health",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ \"안 보내기\"가 어려운 이유 — NGINX 가 적은 것",
+      "note": "NGINX Admin Guide 의 HTTP Load Balancing 에서 옮겼다. ⭐ **제품이 자기 판정과 제한의 한계를 스스로 적는 자리**라 따로 표로 뒀다.",
+      "columns": [
+        "",
+        "원문 / 뜻"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 서버가 하나면",
+          "\"**If there is only a single server in a group, the `max_fails`, `fail_timeout`, and `slow_start` parameters ... are ignored, and the server is never considered unavailable.**\""
+        ],
+        [
+          "뜻",
+          "**뺄 수가 없으니 죽었다고 치지 않는다** — \"건강함\"은 **대안이 있을 때만 성립하는 판정**"
+        ],
+        [
+          "⚠️ 실무의 함정",
+          "개발·스테이징에서 **서버 하나로 테스트하면** 헬스 체크가 도는 것처럼 보이지만 **아무것도 판정하지 않는다**"
+        ],
+        [
+          "⭐⭐ 제한이 안 지켜질 수 있다",
+          "\"**The `max_conns` limit is ignored if there are idle keepalive connections opened in other worker processes.** As a result, the total number of connections **might exceed** the `max_conns` value.\""
+        ],
+        [
+          "돌아올 때",
+          "막 살아난 서버에 몰아 주면 다시 죽는다 — `slow_start` 가 그 문제를 다루지만 ⚠️ **상용판 전용**"
+        ],
+        [
+          "⭐ 설계 질문 넷",
+          "**무엇을 확인하나**(포트? 200? DB 까지?) · **몇 번 실패하면 빼나** · **돌아올 때는** · **서버가 하나면 무의미**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "HTTP Load Balancing (NGINX Admin Guide)",
+          "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+          "publisher": "F5 NGINX",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+        }
+      ]
+    },
+    {
+      "id": "algo",
+      "kind": "compare",
+      "caption": "어떻게 나누나 — NGINX 의 분배 방식",
+      "note": "NGINX Admin Guide 에서 옮겼다. ⚠️ **상용판(NGINX Plus) 전용 표시가 붙은 것들이 있다** — 무료판으로 같은 것을 기대하면 안 된다.",
+      "columns": [
+        "방식",
+        "원문",
+        "무엇을 보나"
+      ],
+      "rows": [
+        [
+          "**Round Robin** (기본)",
+          "\"Requests are **distributed evenly** across the servers, with server weights taken into consideration.\"",
+          "순서"
+        ],
+        [
+          "**Least Connections**",
+          "\"sent to the server with the **least number of active connections**\"",
+          "현재 붙어 있는 연결 수"
+        ],
+        [
+          "**IP Hash**",
+          "\"determined from the **client IP address** ... **unless it is not available**\"",
+          "클라이언트 IP — 세션 고정 흉내"
+        ],
+        [
+          "⭐ **Generic Hash**",
+          "\"determined from a **user-defined key** ... **only a few keys are remapped**\" (서버가 늘거나 줄 때)",
+          "정한 키 — ⭐ **재배치가 적다**(→ `caching`)"
+        ],
+        [
+          "**Least Time** ⚠️상용",
+          "\"lowest **average latency** and the lowest number of active connections\"",
+          "응답 시간까지"
+        ],
+        [
+          "⚠️ 상용판 전용",
+          "`slow_start` · `random` · **세션 고정 세 방식**(쿠키·라우트·학습)",
+          "—"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "HTTP Load Balancing (NGINX Admin Guide)",
+          "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+          "publisher": "F5 NGINX",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+        }
+      ]
+    },
+    {
+      "id": "worlds",
+      "kind": "compare",
+      "caption": "⭐⭐ 두 세계 — 같은 것을 다르게 부른다",
+      "note": "공고 문장을 그대로 갈라 놓은 것이다(`confidence: inferred`). ⭐ 이력서나 면접에서 \"로드밸런서 경험\"이 서로 다른 것을 뜻할 수 있는 자리.",
+      "columns": [
+        "",
+        "네트워크 장비의 세계",
+        "클라우드 제품의 세계"
+      ],
+      "rows": [
+        [
+          "부르는 말",
+          "**L4/L7 로드밸런서** · **ADC(L4-L7 스위치)**",
+          "**ALB / NLB / GWLB** · **Ingress**"
+        ],
+        [
+          "공고",
+          "`네트워크 장비(스위치, 라우터, 방화벽, **L4/L7 로드밸런서** 등) 운영`(씨제이올리브영)",
+          "`AWS 기반 서비스 인프라(EKS, EC2, RDS, **ALB**, CloudFront 등)`(티오더)"
+        ],
+        [
+          "",
+          "`커널5팀 [ **ADC(L4-L7 스위치)** 가상화 솔루션 개발 ]`(파이오링크)",
+          "`Security Group, **ALB/NLB**, AWS VPN, TGW, **GWLB**`(쏘카)"
+        ],
+        [
+          "함께 나오는 것",
+          "전용선·회선 사업자·DR·VLAN",
+          "VPC·Auto Scaling·Route53·서비스 디스커버리"
+        ],
+        [
+          "⭐ 잇는 낱말",
+          "**`L4|L7` 93건** — 장비는 제품군을 나누고, 클라우드는 ALB/NLB 를 가른다",
+          "같음"
+        ],
+        [
+          "⚠️ 셈에서",
+          "`ALB\\|NLB\\|ELB` 78 · `HAProxy` 19",
+          "⚠️ **`Nginx` 307건은 넣지 않았다**(웹서버·프록시·인그레스 오염)"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⚠️ 이 낱말의 가장 큰 함정은 **`Nginx`** 다 — `api-gateway` 의 `API Gateway`(AWS 제품명), `data-migration` 의 `TypeORM` 과 같은 형태.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "좁은 셈",
+          "**213건 (모집중 101)** — `로드 밸런서|로드 밸런싱|Load Balanc|ALB|NLB|ELB|HAProxy|L4 스위치`"
+        ],
+        [
+          "세부",
+          "`L4\\|L7` **93** · `ALB\\|NLB\\|ELB` 78 · `Load Balanc` 62 · `로드 밸런` 60 · `헬스 체크` 40 · `HAProxy` 19"
+        ],
+        [
+          "⚠️⚠️ 안 넣은 것",
+          "**`Nginx` 307건** — 웹서버·리버스프록시·인그레스로도 쓰인다. 넣으면 셈이 두 배가 되고 문맥은 대부분 다른 것"
+        ],
+        [
+          "함께 나오는 것",
+          "`오토스케일링` 79 — 비상교육 `대규모 트래픽 대응을 위한 **오토스케일링, 로드밸런싱** 인프라`"
+        ],
+        [
+          "⭐ 읽을 것",
+          "**`L4|L7` 이 93건으로 가장 많다** — 이 낱말의 실무가 **계층 구분에서 시작**한다는 뜻"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "HTTP 서비스 앞에 무엇을 둘지 정한다",
+      "pick": "**L7**",
+      "over": "L4",
+      "why": "⭐ **경로·호스트로 나눠 보낼 수 있고**(`/api/*` 와 `/static/*` 을 다른 곳으로), **TLS 를 여기서 끝낼 수 있다** — AWS 문서의 표현으로 \"**offload the work of encryption and decryption** to your load balancer so that your compute resources can focus on their main work\"",
+      "tradeoff": "⚠️ **연결을 끊고 다시 맺으므로** 지연과 자원이 붙는다. 그리고 HTTP 를 해석하는 만큼 **설정이 늘고 그 설정이 로직이 되기 쉽다**(→ `api-gateway` 의 지뢰)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "What is Elastic Load Balancing? (AWS)",
+          "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐ 정의와 이점 — **\"routes traffic only to the healthy targets\"** 가 핵심 문장"
+        }
+      ]
+    },
+    {
+      "situation": "HTTP 가 아니거나 극단적으로 빨라야 한다",
+      "pick": "**L4**",
+      "over": "L7",
+      "why": "IP 와 포트만 보고 넘기므로 **안을 열지 않는다** — 그래서 빠르고, **아무 TCP/UDP 에 쓸 수 있다**(데이터베이스·게임·MQTT 같은 것). 쏘카 공고의 `**ALB/NLB**` 처럼 **한 회사가 둘 다 쓰는** 것이 보통이다",
+      "tradeoff": "⚠️ **경로 기반 라우팅도 쿠키 기반 세션 고정도 못 한다.** 그리고 TLS 를 여기서 못 끝내므로 **뒤쪽 서버가 각자 처리**해야 한다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "헬스 체크를 무엇으로 할지 정한다",
+      "pick": "⭐ **서비스가 실제로 일할 수 있는지를 확인하되, 의존 대상까지 끌어들이지는 않는다**",
+      "over": "포트가 열려 있는지만 보기 / DB 까지 확인하기",
+      "why": "포트만 보면 **프로세스는 살아 있는데 일은 못 하는 상태**를 못 잡는다. 반대로 **DB 까지 확인하면 DB 가 흔들릴 때 전 서버가 동시에 빠진다** — 한 대의 문제가 아닌데 전부 빠지면 서비스가 통째로 죽는다",
+      "tradeoff": "경계가 애매해서 팀마다 다르게 정한다. ⭐ **기준 하나** — \"이 서버만 빼면 해결되는 문제인가?\" 그렇다면 헬스 체크에 넣고, **모든 서버가 함께 겪는 문제**면 넣지 않는다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "세션이 서버에 붙어 있어 세션 고정이 필요하다",
+      "pick": "⭐ **세션을 밖으로 뺀다**(Redis·DB·토큰)",
+      "over": "세션 고정(sticky)을 켜기",
+      "why": "고정하면 **그 서버가 빠질 때 세션들이 다 끊기고**, 부하가 고르지 않게 되며, **무중단 배포가 어려워진다.** 그리고 `rest` 문서가 인용한 Fielding 의 무상태 제약이 정확히 이 이야기다 — **\"each request from client to server must contain all of the information necessary to understand the request\"**",
+      "tradeoff": "세션 저장소가 하나 늘고 그것이 새 단일 장애점이 된다. ⚠️ 그래도 **고정은 서버 교체를 영원히 불편하게** 만든다 — 당장 못 빼면 고정을 임시로 쓰되 **빼는 것을 과제로 남긴다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "HTTP Load Balancing (NGINX Admin Guide)",
+          "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+          "publisher": "F5 NGINX",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+        }
+      ]
+    },
+    {
+      "situation": "캐시를 서버별로 들고 있는데 서버가 늘거나 줄어든다",
+      "pick": "**키 기반 해시로 나눈다**(재배치가 적은 방식)",
+      "over": "단순히 서버 수로 나눈 나머지 쓰기",
+      "why": "⭐ NGINX 문서가 그 차이를 적는다 — 키 기반 해시는 \"**If an upstream server is added to or removed from an upstream group, only a few keys are remapped.**\" 단순 나머지 연산은 서버 하나가 빠지면 **거의 모든 키가 옮겨 가고**, 그 순간 **캐시가 통째로 무효**가 된다(→ `caching`)",
+      "tradeoff": "⚠️ 그래도 **일부는 옮겨 간다** — 완전 무결이 아니다. 그리고 키를 잘못 고르면(예: 값이 몇 개 안 되는 것) **부하가 한쪽으로 쏠린다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "HTTP Load Balancing (NGINX Admin Guide)",
+          "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+          "publisher": "F5 NGINX",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "서버 한 대로 헬스 체크를 시험하고 \"잘 된다\"고 판단한다",
+      "why": "개발·스테이징은 대개 한 대이고, 설정을 넣으면 체크가 도는 것이 로그에 보인다. 그런데 NGINX 문서가 적는다 — **\"If there is only a single server in a group ... the server is never considered unavailable.\"** **뺄 곳이 없으니 판정 자체를 안 한다** — 시험한 것이 아무것도 없다",
+      "fix": "⭐ **최소 두 대로 시험한다.** 한 대를 일부러 죽여 **정말 빠지는지**, 그리고 **살아났을 때 다시 들어오는지** 본다. 그 두 가지를 눈으로 보지 않았다면 헬스 체크는 아직 설정만 있는 상태다",
+      "sources": [
+        {
+          "title": "HTTP Load Balancing (NGINX Admin Guide)",
+          "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+          "publisher": "F5 NGINX",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+        }
+      ]
+    },
+    {
+      "trap": "헬스 체크에 DB 등 공유 의존을 넣는다",
+      "why": "\"진짜 일할 수 있는지\"를 확인하려면 끝까지 봐야 할 것 같다. 그런데 **DB 가 흔들리면 모든 서버가 동시에 실패로 판정**되고, 로드밸런서는 **보낼 곳이 없어진다** — DB 는 잠깐 느렸을 뿐인데 서비스가 통째로 죽는다",
+      "fix": "**\"이 서버만 빼면 해결되는가\"** 를 기준으로 삼는다. 공유 의존의 문제는 **헬스 체크가 아니라 알림과 회로 차단기**의 일이다(→ `circuit-breaker`). 정 필요하면 **의존 확인은 별도 엔드포인트**로 두고 헬스 체크와 분리한다"
+    },
+    {
+      "trap": "세션 고정을 켜 두고 그대로 산다",
+      "why": "당장 로그인이 풀리는 문제가 사라지니 해결처럼 보인다. 그런데 그 순간부터 **서버를 뺄 때마다 그 서버에 붙은 사용자들이 끊기고**, 무중단 배포가 어려워지며, 부하가 고르지 않게 된다",
+      "fix": "⭐ **세션을 밖으로 빼는 것을 과제로 남긴다**(Redis·DB·토큰). 그리고 그때까지는 **고정이 켜져 있다는 사실을 배포 문서에 적어** 둔다 — 안 적으면 다음 사람이 \"왜 배포할 때마다 로그아웃 신고가 오지\"를 처음부터 조사한다"
+    },
+    {
+      "trap": "설정한 최대 연결 수를 절대적인 상한으로 믿는다",
+      "why": "숫자를 넣었으니 지켜질 것 같다. 그런데 NGINX 문서가 직접 적는다 — **\"The `max_conns` limit is ignored if there are idle keepalive connections opened in other worker processes. As a result, the total number of connections to the server might exceed the `max_conns` value.\"**",
+      "fix": "**뒤쪽 서버가 자기 한계를 스스로 지키게** 한다(연결 풀·큐 길이·거절). 로드밸런서의 제한은 **보조 수단**이지 보증이 아니다 — `rate-limit` 이 다루는 그 문제와 같은 자리다",
+      "sources": [
+        {
+          "title": "HTTP Load Balancing (NGINX Admin Guide)",
+          "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+          "publisher": "F5 NGINX",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+        }
+      ]
+    },
+    {
+      "trap": "이력서·면접에서 \"로드밸런서 경험\"을 한 가지로 말한다",
+      "why": "낱말이 하나라서다. 그런데 이 데이터에는 **두 세계**가 있다 — `네트워크 장비(스위치, 라우터, 방화벽, **L4/L7 로드밸런서**)`(씨제이올리브영)와 `AWS ... **ALB**, CloudFront`(티오더). **장비를 운영한 경험과 콘솔에서 대상 그룹을 만든 경험은 다른 일**이다",
+      "fix": "**무엇을 했는지로 적는다** — 계층은? 헬스 체크는 무엇으로? 알고리즘은 왜 그것으로? 무중단 배포와 어떻게 엮였나? ⭐ 이 넷에 답할 수 있으면 어느 세계든 통한다"
+    },
+    {
+      "trap": "L7 에 라우팅 규칙과 변환을 계속 얹는다",
+      "why": "이미 HTTP 를 해석하고 있으니 \"여기서 헤더 하나 더 붙이자\"가 자연스럽다. 그런데 그렇게 쌓이면 **어떤 규칙이 로드밸런서에 있고 어떤 규칙이 코드에 있는지 아무도 모르게** 된다 — `api-gateway` 문서의 지뢰와 똑같은 형태다",
+      "fix": "⭐ `api-gateway` 에서 세운 질문을 그대로 쓴다 — **\"이 규칙이 요청의 내용을 알아야 하는가?\"** 그리고 로드밸런서에는 **\"어디로 보낼까\"** 만 남긴다. 나머지는 게이트웨이나 애플리케이션의 일이다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "로드밸런서",
+      "en": "load balancer",
+      "what": "\"distributes your incoming traffic across multiple targets ... **routes traffic only to the healthy targets**\""
+    },
+    {
+      "term": "⭐ L4",
+      "en": "layer 4",
+      "what": "IP·포트만 보고 넘긴다. 빠르고 HTTP 가 아니어도 된다"
+    },
+    {
+      "term": "⭐ L7",
+      "en": "layer 7",
+      "what": "HTTP 를 해석해 경로·호스트·헤더로 정한다. 사실상 **대신 받아 다시 보낸다**"
+    },
+    {
+      "term": "헬스 체크",
+      "en": "health check",
+      "what": "⭐ 건강한 대상만 고르기 위한 확인. **서버가 하나면 판정 자체를 안 한다**"
+    },
+    {
+      "term": "세션 고정",
+      "en": "session persistence / sticky",
+      "what": "같은 사용자를 같은 서버로. ⚠️ 상태를 못 뺐을 때의 임시 방편"
+    },
+    {
+      "term": "TLS 종료",
+      "en": "TLS termination",
+      "what": "암복호화를 로드밸런서가 대신하는 것 — \"offload the work of encryption and decryption\""
+    },
+    {
+      "term": "ADC",
+      "en": "Application Delivery Controller",
+      "what": "장비 쪽에서 L4-L7 로드밸런서를 부르는 이름(파이오링크 공고)"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **서버 두 대**로 로드밸런서를 세우고(로컬 컨테이너면 충분하다) **한 대를 죽인다.** ①트래픽이 정말 그쪽으로 안 가는지 ②몇 초 만에 빠지는지 ③다시 살렸을 때 언제 돌아오는지를 **눈으로 확인한다.**",
+      "done_when": "세 가지가 각각 **초 단위 숫자**로 기록되고, 죽인 뒤에도 **일부 요청이 그쪽으로 갔다면 몇 개였는지**가 나온다.",
+      "why": "⭐⭐⭐ NGINX 문서의 **\"서버가 하나면 절대 unavailable 로 치지 않는다\"** 가 왜 중요한지는 **두 대로 해 봐야** 안다. 그리고 \"빠지는 데 걸리는 시간\" 동안 **사용자가 오류를 본다**는 것도 숫자로 보인다.",
+      "no_hardware": "도커 컨테이너 두 개와 Nginx 하나로 된다. 그마저 어려우면 **설정 파일에 `max_fails`·`fail_timeout` 을 적어 보고 그 값이 초 단위로 무엇을 뜻하는지** 문서에서 확인하는 것까지만 한다.",
+      "hours": 3
+    },
+    {
+      "task": "자기 서비스의 헬스 체크 엔드포인트가 **무엇을 확인하는지** 코드로 열어 본다. 그리고 각 확인 항목에 대해 ⭐ **\"이 서버만 빼면 해결되는 문제인가?\"** 를 묻는다.",
+      "done_when": "확인 항목이 목록으로 나오고, **\"모든 서버가 함께 겪는 문제\"에 해당하는 것**이 있는지 판정된다. 있으면 그것을 뺐을 때 무엇을 잃는지 한 줄로 적는다.",
+      "why": "⭐⭐ **DB 를 헬스 체크에 넣으면 DB 가 흔들릴 때 전 서버가 동시에 빠진다** — 이 사고는 실제로 흔하고, 한 번 겪으면 원인을 찾기 어렵다(로드밸런서 로그에는 \"전부 unhealthy\"만 남는다). 미리 물어 두는 것이 훨씬 싸다.",
+      "hours": 1
+    },
+    {
+      "task": "자기 시스템에서 **①헬스 체크 ②경로 라우팅 ③TLS 종료 ④비율 제한**을 각각 **누가 하는지** 표로 적는다 — 로드밸런서? 게이트웨이? 인그레스? 메시? 애플리케이션?",
+      "done_when": "네 칸이 채워지고, ⭐ **비어 있거나 \"모르겠다\"인 칸**이 몇 개인지 나온다.",
+      "why": "⭐ 이 층들은 이름이 겹쳐서 **제품 이름으로는 정리가 안 된다.** \"우리 시스템에서 이 일을 누가 하나\"로 적어 보면 **답이 비어 있는 칸**이 드러나는데, 그 칸이 대개 사고가 나는 자리다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "AWS 문서의 정의에서 '나눈다' 말고 더 중요한 동작은 무엇인가?",
+    "L4 와 L7 은 각각 무엇을 보고 판단하는가? L7 이 할 수 있고 L4 가 못 하는 것 둘은?",
+    "그룹에 서버가 하나뿐일 때 헬스 체크는 어떻게 되는가? 왜 그런가?",
+    "헬스 체크에 DB 확인을 넣으면 무엇이 위험한가?",
+    "세션 고정을 되도록 안 쓰는 것이 좋은 이유 셋은?",
+    "키 기반 해시가 단순 나머지 연산보다 나은 점은? 무엇과 관련이 있나?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 네트워크 장비(스위치, 라우터, 방화벽, L4/L7 로드밸런서 등) 운영 및 전용선/회선 사업자 연동 경험이 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372964",
+      "where": "씨제이올리브영(CJ올리브영)",
+      "what_it_shows": "⭐⭐ **네트워크 장비의 세계.** 스위치·라우터·방화벽과 같은 항목에 있고, 전용선·회선 사업자가 함께 나온다 — 클라우드 쪽 공고와 **같은 낱말인데 다른 일**이다"
+    },
+    {
+      "quote": "커널5팀 [ ADC(L4-L7 스위치) 가상화 솔루션 개발 ]",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/350925",
+      "where": "파이오링크",
+      "what_it_shows": "⭐ **`ADC(L4-L7 스위치)`** — 장비 쪽에서 부르는 이름. 그리고 이 회사는 그것을 **만드는** 쪽이라, 같은 낱말의 셋째 자리(사용자·운영자·제조사)가 있다는 것도 보여 준다"
+    },
+    {
+      "quote": "• AWS 기반 서비스 인프라(EKS, EC2, RDS, ALB, CloudFront 등)의 아키텍처 설계, 구축, 운영 및 개선 방향 수립",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359937",
+      "where": "티오더",
+      "what_it_shows": "⭐⭐ **클라우드 제품의 세계.** `ALB` 가 EKS·EC2·RDS 와 나란히 **인프라 구성 요소**로 나열된다 — 장비가 아니라 **콘솔에서 만드는 것**"
+    },
+    {
+      "quote": "• AWS 멀티 계정/VPC 보안 아키텍처 리드: IAM 권한 최소화 관리, Multi-VPC 환경 보안, Security Group, ALB/NLB, AWS VPN, Transit Gateway(TGW), GWLB 등 클라우드 네트워크 보안 설계 및 직접 운영",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/379700",
+      "where": "쏘카(SOCAR)",
+      "what_it_shows": "⭐ **`ALB/NLB` 와 `GWLB` 가 함께** 나온다 — **한 회사가 세 종류를 다 쓴다.** L4/L7 선택이 양자택일이 아니라 **용도별 배치**라는 증거"
+    },
+    {
+      "quote": "• Linux 시스템 운영 및 네트워크 기초 지식(TCP/IP, VLAN, L4/L7)이 탄탄하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/374421",
+      "where": "에이아이트릭스(AITRICS)",
+      "what_it_shows": "⭐ **`L4/L7` 이 \"네트워크 기초 지식\"으로** 분류된다 — 제품 사용법이 아니라 **계층을 이해하는 것**이 요구의 본질이라는 뜻. `L4|L7` 이 93건으로 이 낱말의 세부 중 가장 많은 이유"
+    },
+    {
+      "quote": "• 대규모 트래픽 대응을 위한 오토스케일링, 로드밸런싱 인프라를 설계하고 운영합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375025",
+      "where": "비상교육",
+      "what_it_shows": "**오토스케일링과 한 묶음**이다 — AWS 문서가 적는 대로 Auto Scaling 이 띄운 인스턴스는 \"automatically registered with the load balancer\" 이므로 **둘은 함께 설계된다**"
+    },
+    {
+      "quote": "· 서비스 트래픽 수용 및 라우팅: 네트워크팀이 TGW Hub에서 제어하는 외부 연동 트래픽(코스콤, 예탁원, 제휴사 등)이 워크로드 VPC 및 서비스까지 안정적으로 도달하도록 Ingress, Load Balancer, Route53 PHZ, 서비스 디스커버리 체계를 설계·운영합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/355991",
+      "where": "넥스트증권",
+      "what_it_shows": "⭐⭐ **`Ingress, Load Balancer, Route53, 서비스 디스커버리` 가 한 체계**로 묶인다 — 이 문서의 `boundary` 절이 말하는 겹침이 실제 직무에서는 **한 사람의 일**이다"
+    },
+    {
+      "quote": "• 클라우드-IDC 전용선 네트워크 연동을 설계, 운영하며 L3 이상의 스위칭/라우팅 환경과 방화벽, 로드밸런서 등 네트워크 장비를 운영하고 DR 계획을 수립합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372964",
+      "where": "씨제이올리브영(CJ올리브영)",
+      "what_it_shows": "`**L3 이상**` 이라는 표현이 계층으로 말하는 세계를 보여 준다. 그리고 **DR(재해 복구)** 과 한 줄에 있는 것이 이 층의 목적을 말한다 — 가용성"
+    }
+  ],
+  "related": [
+    {
+      "slug": "api-gateway",
+      "how": "⭐⭐ 이 문서를 큐에 올린 자리. 그 문서가 인용한 **\"API Management doesn't perform any load balancing\"** 이 경계를 그어 준다 — **게이트웨이는 \"무엇을 할까\", 여기는 \"어디로 보낼까\"**"
+    },
+    {
+      "slug": "service-mesh",
+      "how": "⭐ 남북/동서 — 여기는 바깥에서 들어오는 것, 그쪽은 서비스끼리"
+    },
+    {
+      "slug": "circuit-breaker",
+      "how": "⭐ 헬스 체크에 공유 의존을 넣으면 안 되는 이유가 여기 있다 — 그건 회로 차단기의 일이다"
+    },
+    {
+      "slug": "rate-limit",
+      "how": "NGINX 의 `max_conns` 가 지켜지지 않을 수 있다는 것 — 제한은 **뒤쪽이 스스로 지켜야** 한다"
+    },
+    {
+      "slug": "caching",
+      "how": "⭐ 키 기반 해시의 \"only a few keys are remapped\" 가 캐시 무효화와 직결된다"
+    },
+    {
+      "slug": "rest",
+      "how": "세션 고정을 안 쓰려면 무상태여야 한다 — Fielding 의 제약이 그 이야기"
+    },
+    {
+      "slug": "observability",
+      "how": "\"전부 unhealthy\" 가 되었을 때 원인을 가리는 문제"
+    },
+    {
+      "slug": "kubernetes",
+      "how": "⭐ 인그레스가 이 층의 클러스터 판이다 — 넥스트증권 공고가 `Ingress, Load Balancer` 를 한 줄에 적는다"
+    }
+  ],
+  "open_questions": [
+    "**`market` 을 채울 수 없다.** `tech_relations.json`(generated_at 2026-09-04)에 `로드밸런서`·`ALB`·`HAProxy` 어느 이름도 없다. 직접 세면 **213건(모집중 101)** 이다.",
+    "⚠️⚠️ **AWS 제품별(ALB·NLB·GWLB) 계층과 특성을 원문으로 확인하지 않았다.** 인용한 개요 문서는 각각을 **별도 사용 설명서로 링크**만 하고 본문에 계층을 적지 않는다. `layer` 절의 표는 **L4/L7 이라는 일반 구분**을 이 문서가 정리한 것이고(`inferred`), **제품 선택 전에는 해당 문서를 직접 봐야 한다.**",
+    "⚠️⚠️ **NGINX 인용에 상용판(NGINX Plus) 전용 기능이 섞여 있다.** `least_time`·`slow_start`·`random`·세션 고정 세 방식이 그렇다고 문서가 명시한다 — **본문과 표에 표시했지만 각 항목의 정확한 가용 범위는 버전에 따라 다를 수 있다.**",
+    "**성능 숫자를 주지 않았다.** \"L7 이 L4 보다 얼마나 느린가\"는 제품·설정·요청 크기에 따라 다르고 이 사이클에서 자료를 열지 않았다 — **숫자는 출처 없이 쓰지 않는다.**",
+    "**알고리즘 선택의 기준을 숫자로 주지 않았다.** \"언제 `least_conn` 이 라운드 로빈보다 나은가\"는 **요청 처리 시간의 분포**에 달렸는데 그 판단 기준을 담은 자료를 찾지 못했다 — 각 방식이 **무엇을 보는가**까지만 적었다.",
+    "**전역 분산(GSLB·애니캐스트·CDN)을 다루지 않았다.** AWS 문서에 `Global Accelerator` 가 \"distribute traffic across **multiple load balancers in one or more AWS Regions**\" 로 언급되는 것까지만 확인했다.",
+    "⭐ **1차 자료가 벤더 둘(AWS·NGINX)이다.** HAProxy(19건)·Envoy 등 다른 구현체는 열지 않았고, **하드웨어 장비(ADC) 쪽 자료는 전혀 열지 않았다** — `worlds` 표의 왼쪽 세계는 **공고 문장으로만** 받쳐져 있다."
+  ],
+  "sources": [
+    {
+      "title": "What is Elastic Load Balancing? (AWS)",
+      "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "⭐ 정의와 이점 — **\"routes traffic only to the healthy targets\"** 가 핵심 문장"
+    },
+    {
+      "title": "HTTP Load Balancing (NGINX Admin Guide)",
+      "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/",
+      "publisher": "F5 NGINX",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ 분배 알고리즘과 세션 고정, 그리고 **자기 제한이 안 지켜질 수 있다고 적는 자리**"
+    }
+  ]
+}
