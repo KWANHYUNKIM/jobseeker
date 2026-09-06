@@ -4,40 +4,72 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **프로파일링**(`profiling`)을 완성했다 — **130번째 문서**.
+**없음.** 직전 사이클에서 **애자일**(`agile`)을 완성했다 — **131번째 문서**.
 
-### 직전 사이클 (프로파일링)
+### 직전 사이클 (애자일)
 
-⭐⭐⭐ **축: "도구 이름은 9건, 그림 이름은 2건."**
+⭐⭐⭐ **축: "이름을 버리고 가치를 지키라 — 시장은 반대로 한다."**
 
-> ⭐⭐⭐ (만든 이유) 기존 프로파일러가 **"walls of text"** 를 뱉었다 — **데이터가 없어서가
->   아니라 읽을 수 없어서**였고, 그래서 해법이 **새 측정법이 아니라 새 그림**이다
-> ⭐⭐⭐ **"The x-axis shows the stack profile population, sorted alphabetically
->   (it is not the passage of time)"**
-> ⭐⭐⭐ "**The wider a frame is, the more often it was present in the stacks.**"
-> ⭐⭐ (표본인 이유) 직접 추적은 오버헤드가 "too high" 하고 대상을 "**perturb**" 한다
-> ⭐⭐ (그 대가) "since the function flow is no longer known (**sampling has gaps**)"
+> ⭐⭐⭐ (네 줄) "**Individuals and interactions** over processes and tools / **Working
+>   software** over comprehensive documentation / **Customer collaboration** over
+>   contract negotiation / **Responding to change** over following a plan"
+> ⭐⭐⭐ (잘리는 줄) **"That is, while there is value in the items on the right,
+>   we value the items on the left more."**
+> ⭐⭐⭐ (원칙 10) "Simplicity--the art of **maximizing the amount of work not done**"
+> ⭐⭐⭐ (원칙 11) "The best architectures ... **emerge from self-organizing teams**"
+> ⭐⭐⭐ (작성자 본인) **"Developers should detach their thinking from any particular
+>   named 'Agile' method."** 그러면서 **"the values and principles ... still offer the
+>   best way I know to build software"**
+> ⭐⭐⭐ "When 'Agile' ideas are applied poorly, they often lead to **more interference
+>   with developers, less time to do the work, higher pressure, and demands to 'go faster'**."
+> ⭐⭐⭐ 남는 두 줄 — **"Produce running, tested, working, integrated software every two
+>   weeks, every week."** · **"Keep the design of that software clean."**
 
-⭐⭐⭐ **셈: `프로파일링` 180 · 도구 이름 9 · `플레임 그래프` 2 · `CPU 사용률` 0.**
-⚠️ 그런데 **APM 제품 이름은 566건** — `performance` 의 형태가 한 층 더 내려와 반복됐다.
+⭐⭐⭐ **셈: 이름 690 대 가치 106**(`개인과 상호작용` **0** · `작동하는 소프트웨어` 13 ·
+`고객과의 협력` 61 · `변화에 대응` 32). ⚠️ **그런데 `자율적|수평적` 은 2213건** —
+**원칙 5·11번을 이름 없이 부르는 것**으로 보인다(⚠️ 이 문서에서 가장 근거가 약한 자리).
 
-⭐⭐ **오염을 두 번 다뤘다 — 한 번은 취소했고 한 번은 잡았다.**
-⚠️ **취소**: `데이터|고객 프로파일링` 이 섞여 보였는데 **세어 보니 5건**(`kafka` 규칙).
-⚠️⚠️ **잡음**: `메모리 누수|memory leak|OOM` **392건 @ 67%** 가 **`OOM` ← `Zoom`·`Room`**
-오염이었다(정확히는 **30건 + 11건**). **두 번째 형태와 여섯 번째 형태가 겹친 경우.**
-
-⭐ **네 번째 alias 이전**: `performance` → `profiling`(`프로파일링`·`profiling`).
+⭐⭐⭐ **실패 사례가 다섯 사이클 만에 1차급으로 나왔다** — **선언문 작성자 본인의 글**이
+그 자리를 채웠다. **비판이 1차 자료인 드문 경우.**
 
 ### 다음
 
-**애자일 / 스크럼**(`agile`) — QUEUE 맨 위.
+**스크럼**(`scrum`) — QUEUE 맨 위.
 
-⭐⭐⭐ **층을 바꾼다**(성능 둘 → **프로세스**, 130개 중 통째로 빈 층). 셈 **662건**.
-축은 **선언문의 잘린 마지막 줄** — "while there is **value in the items on the right**,
-we value the items on the left more." ⭐ **`performance` 의 Knuth 잘림과 같은 형태**다.
+⭐⭐⭐ **`agile` 이 스스로 "다루지 않았다(178건)"고 적었다**(네 사이클 연속 `open_questions`
+가 큐를 먹였다). ⚠️ **셈은 178건으로 작고 층도 두 사이클 연속**이다 — 그래도 **바로 이어지는
+자리**라 우선한다. 1차 자료는 **scrumguides.org**.
 ⚠️ **못 열면 `온보딩`(749건)이나 `코드 품질`(651건)로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **다섯 사이클 만에 실패 사례가 1차급으로 나왔다 — 그리고 그 자리가 특별했다.**
+  `hexagonal`·`refactoring`·`documentation`·`performance`·`profiling` 은 검색해도
+  **2차 자료(개인 블로그·Medium)뿐**이었는데, `agile` 에서는 **선언문에 서명한 사람이
+  직접 쓴 비판**이 나왔다 — "Developers Should Abandon Agile".
+  ⭐⭐ **즉 비판 자체가 1차 자료인 경우가 있다.** 📌 **다음부터 실패 사례를 찾을 때
+  "그 방식을 만든 사람이 나중에 무엇을 썼나"를 먼저 검색한다** — 남의 후기보다
+  **만든 사람의 후회**가 훨씬 강한 근거다.
+
+- ⭐⭐⭐ **오용 계보가 다섯이 됐고, 두 번째로 "잘림"이 나왔다.**
+  낱말이 잘못 붙음(`refactoring`) → 한 낱말이 네 일을 덮음(`documentation`) →
+  **인용이 잘림**(`performance`) → 그림을 잘못 읽음(`profiling`) →
+  **선언의 단서 조항이 잘림**(`agile`).
+  ⭐⭐ **잘림이 두 번 나온 이유가 보인다** — **앞부분은 짧고 외워지는데 단서는 길고
+  안 외워진다.** 💡 Knuth 는 "97%" 앞부분이, 선언문은 "네 줄"이 외워진다.
+  📌 **짧고 인상적인 문구를 만나면 그 뒤에 단서가 붙어 있는지 먼저 확인한다.**
+
+- ⭐⭐ **"이름은 690, 가치는 106, 그런데 내용은 2213" — 세 층짜리 대비를 처음 만났다.**
+  지금까지의 대비는 **두 층**이었다(이름 대 내용: `스트랭글러` 1 : `점진적` 397).
+  ⚠️ 여기는 **절차 이름(690)이 크고, 가치 이름(106)이 작고, 가치의 내용(2213)이 가장 크다.**
+  ⭐⭐⭐ **가운데만 비어 있다** — 💡 **일은 하고 절차도 부르는데 그 사이를 잇는 말이 없다.**
+  📌 **다음부터 대비를 적을 때 "이름 / 내용" 두 칸으로 끝내지 말고 세 칸을 세워 본다.**
+
+- ⚠️ **근거가 약한 자리를 문서 안에 명시하는 것이 이번에 특히 필요했다.**
+  `자율적|수평적` **2213건**이 원칙 5·11번과 이어진다는 것은 **이 문서의 해석**이지
+  1차 자료가 말한 것이 아니다 — ⭐ 그래서 **`limits` 에 "이 문서에서 가장 근거가 약한
+  자리"라고 적었다.** 📌 **큰 셈일수록 해석이 세지고, 셀수록 그럴듯해진다** —
+  **그럴 때 스스로 표시해 두지 않으면 다음 사이클이 그것을 사실로 이어받는다.**
 
 - ⭐⭐⭐ **오염은 "잡는 것"만이 아니라 "취소하는 것"도 절차다.** 이번 사이클에서 둘 다 했다.
   ⚠️ `프로파일링` 180건에 데이터 품질 진단·고객 프로파일링이 섞여 보였는데 — **세어 보니
