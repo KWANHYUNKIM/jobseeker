@@ -7,8 +7,8 @@
       "name_en": "Coinbase",
       "country": "US",
       "category": "핀테크",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "암호자산 거래소이자 보관소 — 거래 수수료만큼을 구독·서비스에서 번다",
       "updated_at": "2026-09-06",
       "domain": "coinbase.com"
