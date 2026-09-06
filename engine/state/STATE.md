@@ -8,30 +8,32 @@
 
 ## 지금 파는 중
 
-**Neon** (US · SaaS) — 도메인 2개 · **기능 1개**(`log-is-the-database`). 남은 하나는 **`쓰지 않을 때 0 으로 내린다`**(미독)다. 회사 106개 · 큐 1/3.
+**없다 — Neon 을 완주했다.** 도메인 2개 · 기능 2개. 회사 **106개.** 큐 **1/3**.
 
-### 이번 사이클 — `로그가 데이터베이스이고 파일은 그 캐시다`
+### 이번 사이클 — `크기를 미리 고르는 것은 낡은 패턴이다`
 
-⭐ **뒤집기 하나에서 전부가 나온다** — **`로그를 데이터베이스로 만들고, 데이터 파일은 그것의 파생된 캐시된 표현으로 만든다.`** ⚠️ **보통은 반대다** — 데이터 파일이 진실이고 WAL 은 그것을 지키는 보조 장치다(재구성).
+⭐ **회사가 관행 자체를 낡았다고 부르고, 그 주장을 숫자 하나가 떠받친다** — **`워크로드를 알기 전에 데이터베이스 인스턴스 크기를 고르는 것은 낡은 구축 패턴이다`** 이고 **`Neon 의 평균 운영 데이터베이스는 한 달에 32,016번 컴퓨트 크기를 바꾼다 — 약 81초에 한 번.`** ⚠️ **81초마다 바뀌는 값을 사람이 미리 고를 수 있다는 생각 자체가 성립하지 않는다**(재구성).
 
 건진 것 넷:
 
-- ⭐ **연쇄가 아름답다**(재구성) — 로그가 진실이면 **역사가 저절로 남고**, 역사가 남으면 **브랜치가 복사가 아니라 포인터**가 된다(**`특정 LSN 을 가리키는 포인터를 만들고 거기서부터 copy-on-write 로 갈라진다`**). ⚠️ **다만 전제가 하나 있다 — 과거 읽기가 싸야 한다.**
-- ⚠️ **뒤집기의 값이 읽기로 온다** — **`읽기는 키와 LSN 을 대고, 저장 시스템은 그 LSN 이거나 그 이전에 그 키를 덮는 가장 가까운 레이어를 찾아야 한다. 그건 기하 문제이고, 수천만 개 레이어에 걸쳐 어떻게 푸는지가 자명하지 않다.`**
-- ⭐ **왜 안 맞는지까지 적는 드문 글이다** — **`R-트리는 「이 점 아래 첫 번째 레이어」 가 아니라 포함 질의에 답하고, 세그먼트 트리는 레이어 수가 아니라 좌표 공간의 크기에 따라 확장한다.`** ⚠️ **문제의 모양이 표준 도구들과 미묘하게 어긋난다** — 포함이 아니라 `아래에서 가장 가까운`, 좌표가 아니라 레이어가 많다(재구성). ⭐ **이 엔진에서 대개는 무엇을 골랐는지만 적는데 여기는 왜 다른 것이 안 되는지를 적는다.**
-- ⭐ **답이 영속 자료구조다** — 삽입 때 **`노드를 복사하고 원본은 손대지 않아`** **`옛 루트가 삽입 전의 트리를 정확히 그대로 기술하므로 이전 LSN 에 대한 유효한 커버리지로 남는다`** → **과거 읽기가 현재 읽기와 같은 비용.**
+- ⚠️ **최댓값을 쓴다** — **`goalCU = max(cpuGoalCU, memGoalCU, lfcGoalCU)`**. ⭐ **평균을 쓰면 하나가 부족한데 다른 둘이 넉넉해서 가려진다**(재구성) — **가장 목마른 것에 맞춘다.**
+- ⚠️ **세 번째 신호가 특이하다** — **컴퓨트 캐시 워킹셋 크기**(`lfcGoalCU`). **캐시에 다 안 들어가서 느려지는 경우는 CPU·메모리 사용률만 봐서는 안 보인다**(재구성).
+- ⭐ **신호의 성질에 관측 주기를 맞췄다** — CPU·메모리 지표는 **5초**, Postgres 메모리는 **100밀리초**, 워킹셋은 **20초**. **주기가 200배 차이 난다** — 메모리는 갑자기 터지고 워킹셋은 천천히 변하니까(재구성).
+- ⭐ **수요의 모양이 바뀌어서 0 이 필요해졌다** — **`현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구한다`** 이고 **`이것은 일이 멈추면 컴퓨트가 정지하기 때문에만 감당 가능하다`**. 사용자의 말 — **`하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다.`** 에이전트는 **`아마도 1000배 더 많은 인스턴스`** 를 요구할 수 있다.
 
-⭐ **그리고 이것이 사업과 이어진다** — **프로비저닝의 80% 이상을 에이전트가 하는 세계에서, 만드는 일이 포인터 하나라는 것이 곧 제품이다**(재구성). **S3 가 `역사를 보관할 만큼 싸게` 만들고, 인수 뒤 저장 단가가 GB-월 1.75달러 → 0.35달러로 내렸다** — **역사를 다 남기는 설계는 저장이 쌀 때만 성립한다**(재구성).
+⚠️ **정면 대가인 콜드 스타트가 끝내 안 나온다** — 두 글이 대는 수치(**웜 18.6ms 대 옛 GIN 방식 19.5초**)는 **검색 기능의 것이지 정지된 데이터베이스가 깨어나는 시간이 아니다**(재구성). ⭐ **이 도메인에서 가장 궁금한 숫자가 비어 있다.**
 
-### ⚠️ 이번에 내가 배운 것 — 제목만 보고 없다고 적었다
+### 완주하며 본 것 — 두 도메인이 하나의 연쇄다
 
-**프로파일에 `브랜칭의 기술 자료를 못 봤다` 고 적었는데 이 글 안에 있었다.** ⚠️ **제목만 보고 도메인을 세우면 안에 무엇이 있는지 모른다**(재구성). **open_question 을 고쳤다.**
+⭐ **저장 구조가 `0 으로 내려가는 것` 의 전제다** — **로그가 진실이고 S3 에 있으니 컴퓨트를 꺼도 잃을 것이 없다**(재구성). 그리고 그 위에서 **브랜치가 포인터 하나**가 되고, **프로비저닝의 80% 이상을 에이전트가 하는 세계**가 감당된다. ⭐ **뒤집기 하나(`로그를 데이터베이스로`)에서 제품 전체가 따라 나온다**(재구성).
 
-⚠️ **후보 조사에서 적어 둔 약점이 네 번째로 맞았다** — **이 글에 수치 트레이드오프가 하나도 없다.** 구조 원리만 있고 **밀리초·메모리·비용 비교가 없다.**
+⚠️ **두 기능 모두 수치의 성격이 한쪽으로 쏠려 있다** — 구조 원리와 규모 수치는 있는데 **트레이드오프 수치가 없다**(노드 복사의 메모리 값, 콜드 스타트, 무엇을 언제 지우는지).
 
-### 다음 사이클 — 확장(2순위)
+### 다음 사이클 — 신규(6순위)
 
-`--gaps` 가 **`쓰지 않을 때 0 으로 내린다`** 를 부를 것이다. ⏳ **미독 · 주소 확보** — `Autoscaling Lakebase Postgres`(2026-08-31) · `Building patterns unlocked by scale to zero`(2026-09-01). **이걸 쓰면 Neon 완주다.** ⭐ **연결 재료가 이미 있다** — **로그가 진실이고 S3 에 있으니 컴퓨트를 꺼도 잃을 것이 없다**(재구성).
+**큐 1/3.** `--gaps` 가 **대기 맨 위(Vercel)를 `in_progress` 로 만들고 3단계부터** 를 부를 것이다. ⚠️ **그 뒤에 후보 조사가 걸린다.**
+
+⏳ **Neon 보강 거리** — 브랜칭 심화 · Neon Labs · 토큰 경제 비교 글.
 
 ⏳ **Atlassian 보강 거리** — Events Rail · 실시간 PWA · AI 시대의 번역 · 마케팅 예산 배분 ML.
 
@@ -41,7 +43,7 @@
 
 ### ⚠️ 절차 (이 세션에 실수로 배운 것)
 
-**후보 조사는 `name_en` 목록 출력으로 시작한다.** **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(⭐ 네 번 연속 오류 0). **`git add -A` 를 쓰지 않는다.** **슬러그를 추측하지 않는다.** **첫 화면으로 회사를 판정하지 않는다.** ⚠️ **제목만 보고 `자료가 없다` 고 적지 않는다** — 본문에 들어 있을 수 있다(이번에 겪었다).
+**후보 조사는 `name_en` 목록 출력으로 시작한다.** **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(⭐ 네 번 연속 오류 0). **`git add -A` 를 쓰지 않는다.** **슬러그를 추측하지 않는다.** **첫 화면으로 회사를 판정하지 않는다.** ⚠️ **제목만 보고 `자료가 없다` 고 적지 않는다** — 본문에 들어 있을 수 있다.
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
@@ -49,17 +51,17 @@
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ `자기 성과를 어디까지 주장하나` 14곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / **Neon**(⚠️ **수치 트레이드오프가 하나도 없다 — 구조 원리만**).
+**③ `자기 성과를 어디까지 주장하나` 14곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / **Neon**(⚠️ **구조 원리와 규모 수치는 있는데 트레이드오프 수치가 없다 — 콜드 스타트가 끝내 안 나온다**).
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
 **⑤ `한 코어에 하나씩인가, 여러 코어가 나눠 쓰나`** — ScyllaDB / ClickHouse / Grafana Labs / VictoriaMetrics.
 
-**⑥ ⭐⭐ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream / Trendyol / Atlassian / **Neon**(⭐ **가장 극단이다 — `로그를 데이터베이스로 만들고 데이터 파일은 그 캐시로`**).
+**⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream / Trendyol / Atlassian / **Neon**(가장 극단).
 
 **⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / Trendyol.
 
-**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics / Atlassian / **Neon**(⚠️ **뒤집기의 값을 읽기에서 갚는다**).
+**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics / Atlassian / Neon.
 
 **⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 9곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol / Atlassian / ⏳ Vercel.
 
@@ -69,7 +71,7 @@
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
-**⑬ `애매할 때 어느 쪽으로 넘어지나` 12곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / ⏳ Vercel.
+**⑬ `애매할 때 어느 쪽으로 넘어지나` 13곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / **Neon**(⚠️ **max 를 쓴다 — 하나라도 모자라면 안 되는 쪽으로**) / ⏳ Vercel.
 
 **⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest / ⏳ Trendyol.
 
@@ -77,17 +79,17 @@
 
 **⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz / Atlassian(반대).
 
-**⑰ ⭐ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics / Trendyol / **Neon**(⭐ **역사를 다 기억한다 — 그리고 그것이 가능한 이유가 S3 가 싸기 때문이라고 적는다**).
+**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics / Trendyol / Neon(역사를 다 기억한다).
 
-**⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest / Trendyol / Atlassian / ⏳ Duolingo · DoorDash.
+**⑱ ⭐ `무엇을 최적화할지를 바꾼 순간`** — Pinterest(참여 → 유지) / Trendyol(해결 → 진단) / Atlassian(빠르게 → 의도적으로 느리게) / **Neon**(⭐ **`크기를 잘 고르기` 에서 `크기를 고르지 않기` 로**) / ⏳ Duolingo · DoorDash.
 
 **⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / Coinbase / ⏳ Plaid · Snyk.
 
-**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크) / Wiz(에이전트) / ⏳ Neon(쓰지 않을 때의 컴퓨트) / ⏳ TigerBeetle · Oxide Computer.
+**⑳ ⭐ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크) / Wiz(에이전트) / **Neon**(⭐ **쓰지 않을 때의 컴퓨트를 0 으로 — 그리고 `인스턴스 크기` 라는 개념 자체를**) / ⏳ TigerBeetle · Oxide Computer.
 
-**㉑ ⭐ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / **Neon**(⭐ **영속 자료구조를 쓰면서 R-트리·세그먼트 트리가 왜 안 맞는지를 적는다 — 논문을 대지는 않지만 그 자리의 서술이다**) / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
+**㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / Neon(자료구조를 이름 대며 거절한다) / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
-**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / Trendyol / Atlassian / **Neon**(⭐ **아무것도 덮어쓰지 않으니 되돌릴 것이 늘 있다**).
+**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / Trendyol / Atlassian / Neon(아무것도 덮어쓰지 않는다).
 
 **㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / Trendyol / Coinbase / ⏳ Pinterest.
 
@@ -97,7 +99,7 @@
 
 **㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / Trendyol / Coinbase / Atlassian / ⏳ Airbnb · Pinterest.
 
-**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream / Twilio / Neon(Databricks — 이름도 가격도 바뀌었다) / ⏳ Trendyol · PlanetScale · Snyk.
+**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream / Twilio / Neon(Databricks — 이름도 가격도) / ⏳ Trendyol · PlanetScale · Snyk.
 
 **㉘ `맞았는지 어떻게 아나`** — Wiz / Flipkart / Snyk / Trendyol(반대) / Coinbase / ⏳ Duolingo.
 
@@ -107,15 +109,15 @@
 
 **㉛ `남이 주는 신호를 어떻게 다루나`** — Trendyol(DCP) / ⏳ Plaid · Paystack · Razorpay.
 
-**㉜ `흔들리는 매출과 안 흔들리는 매출`** — Coinbase / Twilio / VictoriaMetrics / Atlassian / ⏳ Neon / ⏳ Adyen · Stripe.
+**㉜ ⭐ `흔들리는 매출과 안 흔들리는 매출`** — Coinbase / Twilio / VictoriaMetrics / Atlassian(NRR 120%+) / **Neon**(⭐ **컴퓨트가 0 이면 요금도 0 — 매출이 고객의 사용에 그대로 따라 흔들린다**, 재구성) / ⏳ Adyen · Stripe.
 
-**㉝ `무엇이라 부르느냐가 요구 사항을 정한다`** — Coinbase / Trendyol / **Neon**(⭐ **`로그를 데이터베이스라고 부르는` 순간 파일이 캐시가 된다**) / ⏳ Plaid · Etsy.
+**㉝ `무엇이라 부르느냐가 요구 사항을 정한다`** — Coinbase / Trendyol / Neon(로그를 데이터베이스라 부르면 파일이 캐시가 된다) / ⏳ Plaid · Etsy.
 
 **㉞ `비용을 옮기면 위험도 옮겨 간다`** — Atlassian / WarpStream / Razorpay·Airbnb / ⏳ Zepto.
 
-**㉟ `무엇이 제품이고 무엇이 구현 세부인가`** — Atlassian / WarpStream / Coinbase / **Neon**(⭐ **로그가 제품이고 데이터 파일이 세부다**) / ⏳ Plaid.
+**㉟ `무엇이 제품이고 무엇이 구현 세부인가`** — Atlassian / WarpStream / Coinbase / Neon(로그가 제품, 데이터 파일이 세부) / ⏳ Plaid.
 
-**㊱ ⭐ `고객이 사람이 아닐 때`** — **Neon**(⭐ **프로비저닝의 80% 이상을 에이전트가 한다 — 그래서 만드는 일이 포인터 하나여야 했다**) / WarpStream·Vercel / Coinbase·Atlassian / ⏳ Temporal.
+**㊱ ⭐ `고객이 사람이 아닐 때`** — **Neon**(⭐ **프로비저닝의 80% 이상 · 에이전트는 1000배의 인스턴스를 요구한다 · 그래서 만드는 일이 포인터 하나여야 했다**) / WarpStream·Vercel / Coinbase·Atlassian / ⏳ Temporal.
 
 ## 지금의 진짜 상태
 

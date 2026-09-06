@@ -4,7 +4,7 @@
   "name_en": "Neon",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "neon.com",
   "one_liner": "쓰지 않으면 0 이 되는 Postgres — 데이터베이스를 사람이 아니라 에이전트가 만드는 시대를 겨냥한다",
@@ -142,9 +142,72 @@
     },
     {
       "name": "쓰지 않을 때 0 으로 내린다",
-      "why": "⭐ **이 회사의 정의적인 기능이다** — **기본 5분 유휴 뒤 컴퓨트가 정지하고 저장만 과금된다.** ⚠️ **프로비저닝의 80% 이상을 에이전트가 하는 세계에서는, 켜 둔 채 안 쓰는 데이터베이스가 대부분일 수밖에 없다**(재구성). ⏳ **`Autoscaling Lakebase Postgres`(2026-08-31)와 `Building patterns unlocked by scale to zero`(2026-09-01) 둘 다 미독.**",
-      "tech": [],
-      "features": []
+      "why": "⭐ **회사가 관행 자체를 낡았다고 부른다** — **`워크로드를 알기 전에 데이터베이스 인스턴스 크기를 고르는 것은 낡은 구축 패턴이다.`** 근거가 관찰이다 — **`평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다.`** ✅ **본문 확인함**(2026-08-31 · 2026-09-01).",
+      "tech": [
+        {
+          "tech": "세 신호 + goalCU = max",
+          "solves": "⭐ **CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋**을 각각 재고 **`goalCU = max(cpuGoalCU, memGoalCU, lfcGoalCU)`** — **평균을 쓰면 하나가 부족한데 다른 둘이 넉넉해서 가려진다**(재구성). ⚠️ **세 번째 신호가 특이하다** — 캐시에 다 안 들어가서 느려지는 경우는 CPU·메모리만 봐서는 안 보인다(재구성).",
+          "limits": "⚠️ **워킹셋 추정 자체가 어림이고, 한 신호의 잘못된 급등이 그대로 확장을 부른다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Autoscaling Lakebase Postgres",
+              "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+              "publisher": "Neon",
+              "date": "2026-08-31",
+              "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+            }
+          ]
+        },
+        {
+          "tech": "신호별 관측 주기 (100ms ~ 20초)",
+          "solves": "**5초마다 CPU·메모리 지표, 100밀리초마다 Postgres 메모리, 20초마다 워킹셋 추정** — ⭐ **신호의 성질에 관측 주기를 맞췄다**(메모리는 갑자기 터지고 워킹셋은 천천히 변한다, 재구성).",
+          "limits": "⚠️ **주기가 200배 차이 나고 관측 자체의 비용과 복잡도가 든다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Autoscaling Lakebase Postgres",
+              "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+              "publisher": "Neon",
+              "date": "2026-08-31",
+              "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+            }
+          ]
+        },
+        {
+          "tech": "무중단 VM 자원 조정",
+          "solves": "**도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다** — **한 달에 32,016번 바뀌므로 무중단이 선택이 아니라 전제다**(재구성).",
+          "limits": "⚠️ **VM 수준에서 자원을 실시간 조정하는 기반을 직접 만들어야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Autoscaling Lakebase Postgres",
+              "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+              "publisher": "Neon",
+              "date": "2026-08-31",
+              "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+            }
+          ]
+        },
+        {
+          "tech": "⭐ scale to zero",
+          "solves": "⭐ **`현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구한다`** 이고 **`이것은 일이 멈추면 컴퓨트가 정지하기 때문에만 감당 가능하다`**. 사용자의 말 — **`하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다.`**",
+          "limits": "⚠️ **정면 대가인 콜드 스타트를 두 글 다 정면으로 다루지 않는다** — 대는 수치(**웜 18.6ms 대 옛 GIN 방식 19.5초**)는 **검색 기능의 것이지 데이터베이스 재개 시간 일반이 아니다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building patterns unlocked by scale to zero",
+              "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+              "publisher": "Neon",
+              "date": "2026-09-01",
+              "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "sizing-is-an-old-pattern"
+      ]
     }
   ],
   "features": [
@@ -672,6 +735,519 @@
           "summary": "사용량 기반 과금 — 컴퓨트는 CU-시간(1 CU = 1 vCPU + 4GB RAM), 저장은 별도. 인수 뒤 컴퓨트 단가를 15~25% 내리고 저장을 GB-월 1.75달러에서 0.35달러로 낮췄으며 무료 플랜의 컴퓨트를 월 50 CU-시간에서 100 으로 늘렸다. 기본 5분 유휴 뒤 컴퓨트가 0 으로 내려가고 저장만 과금된다."
         }
       ]
+    },
+    {
+      "key": "sizing-is-an-old-pattern",
+      "name": "크기를 미리 고르는 것은 낡은 패턴이다",
+      "domain": "쓰지 않을 때 0 으로 내린다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⭐ **회사가 관행 자체를 낡았다고 부른다** — **`워크로드를 알기 전에 데이터베이스 인스턴스 크기를 고르는 것은 낡은 구축 패턴이다. 그 과정은 대체로 이상하고, 컴퓨트를 아주 낭비하는 느낌이다.`** ⭐ **그리고 그 주장을 숫자 하나가 떠받친다** — **`Neon 의 평균 운영 데이터베이스는 한 달에 32,016번 컴퓨트 크기를 바꾼다 — 약 81초에 한 번.`** ⚠️ **81초마다 바뀌는 값을 사람이 미리 고를 수 있다는 생각 자체가 성립하지 않는다**(재구성). ⭐ **그리고 요구가 더 커진다** — **`현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구한다`** 이고 에이전트는 **`아마도 1000배 더 많은 데이터베이스 인스턴스`** 를 요구할 수 있다.",
+        "metrics": [
+          {
+            "label": "⭐ 관행을 낡았다고 부른다",
+            "value": "**`워크로드를 알기 전에 데이터베이스 인스턴스 크기를 고르는 것은 낡은 구축 패턴이다. 그 과정은 대체로 이상하고, 컴퓨트를 아주 낭비하는 느낌이다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 그 주장을 떠받치는 숫자",
+            "value": "**`Neon 의 평균 운영 데이터베이스는 한 달에 32,016번 컴퓨트 크기를 바꾼다 — 약 81초에 한 번.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "label": "신호 셋과 합치는 법",
+            "value": "**CPU 부하(`cpuGoalCU`) · 메모리 사용(`memGoalCU`) · 컴퓨트 캐시 워킹셋 크기(`lfcGoalCU`)** → **`goalCU = max(cpuGoalCU, memGoalCU, lfcGoalCU)`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "label": "보는 주기",
+            "value": "**5초마다** CPU 1분 부하 평균 · **5초마다** VM 전체 메모리 지표 · **100밀리초마다** vm-monitor 가 Postgres 가 쓰는 메모리 · **20초마다** 1~60분 창의 워킹셋 추정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 왜 0 이 필요한가",
+            "value": "**`현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구한다.`** — **`이것은 일이 멈추면 컴퓨트가 정지하기 때문에만 감당 가능하다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building patterns unlocked by scale to zero",
+                "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+                "publisher": "Neon",
+                "date": "2026-09-01",
+                "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+              }
+            ]
+          },
+          {
+            "label": "사용자의 말",
+            "value": "**`우리는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다.`** 에이전트는 **`아마도 1000배 더 많은 데이터베이스 인스턴스`** 를 요구할 수 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building patterns unlocked by scale to zero",
+                "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+                "publisher": "Neon",
+                "date": "2026-09-01",
+                "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 콜드 스타트 수치",
+            "value": "**`Lakebase Search 로 웜 약 18.6ms, 옛 콜드 스타트 GIN 방식은 약 19.5초 — 1,000배 개선`** ⚠️ **다만 이건 검색 기능의 수치이지 데이터베이스 재개 시간 일반이 아니다**(재구성)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building patterns unlocked by scale to zero",
+                "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+                "publisher": "Neon",
+                "date": "2026-09-01",
+                "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "인스턴스 크기를 물을 때",
+          "thought": "⭐ **물음 자체를 낡았다고 부른다** — **`워크로드를 알기 전에 데이터베이스 인스턴스 크기를 고르는 것은 낡은 구축 패턴이다.`** ⚠️ **그리고 근거가 관찰이다** — **`평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다.`** ⭐ **81초마다 바뀌는 값을 사람이 미리 고를 수 있다는 생각 자체가 성립하지 않는다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "신호를 어떻게 합칠지 정할 때",
+          "thought": "⚠️ **최댓값을 쓴다** — **`goalCU = max(cpuGoalCU, memGoalCU, lfcGoalCU)`**. ⭐ **평균이나 가중합이 아니다** — **셋 중 하나라도 모자라면 느려지니까, 가장 목마른 것에 맞춘다**(재구성). ⚠️ **그리고 세 번째 신호가 특이하다** — **컴퓨트 캐시 워킹셋 크기**(`lfcGoalCU`)로 **`캐시에 다 안 들어가서 느려지는` 경우를 CPU·메모리와 별개로 본다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "왜 0 까지 내려야 하는지 물을 때",
+          "thought": "⭐ **수요의 모양이 바뀌었기 때문이다** — **`현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구한다`** 이고 **`이것은 일이 멈추면 컴퓨트가 정지하기 때문에만 감당 가능하다`**. ⚠️ **`산발적으로` 가 핵심이다** — 대부분의 시간에 아무 일도 안 하는 데이터베이스가 수천 개라면, 켜 두는 값이 곧 전체 비용이 된다(재구성). ⭐ **그리고 앞 기능이 이것을 가능하게 한다** — 로그가 진실이고 S3 에 있으니 컴퓨트를 꺼도 잃을 것이 없다(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "⚠️ 인스턴스 크기 (버린 개념)",
+            "what": "⚠️ **`워크로드를 알기 전에 고르는 것은 낡은 구축 패턴`** — **한 달에 32,016번 바뀌는 값이다**"
+          },
+          {
+            "name": "세 신호",
+            "what": "**CPU 부하(`cpuGoalCU`) · 메모리 사용(`memGoalCU`) · 컴퓨트 캐시 워킹셋 크기(`lfcGoalCU`)**"
+          },
+          {
+            "name": "⭐ goalCU",
+            "what": "⭐ **`goalCU = max(cpuGoalCU, memGoalCU, lfcGoalCU)`** — 평균이 아니라 최댓값"
+          },
+          {
+            "name": "autoscaler-agent",
+            "what": "**5초마다 CPU 1분 부하 평균과 VM 전체 메모리 지표**, **20초마다 1~60분 창의 워킹셋 추정**을 읽는다"
+          },
+          {
+            "name": "vm-monitor",
+            "what": "⚠️ **100밀리초마다 Postgres 가 쓰는 메모리를 본다** — 다른 신호보다 50배 자주"
+          },
+          {
+            "name": "0 으로 내려간 컴퓨트",
+            "what": "**`일이 멈추면 컴퓨트가 정지한다`** — 저장만 남는다"
+          }
+        ],
+        "invariants": [
+          "⭐ **크기를 미리 정하지 않는다** — 81초마다 바뀐다",
+          "⚠️ **가장 목마른 신호에 맞춘다** — max 이지 평균이 아니다",
+          "**Postgres 를 끊지 않고 조정한다**",
+          "⭐ **일이 없으면 컴퓨트는 0 이다** — 저장만 과금"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**autoscaler-agent 가 5초마다 VM 의 1분 CPU 부하 평균을 읽는다**",
+            "why": "**`cpuGoalCU`** 를 정한다"
+          },
+          {
+            "step": "**5초마다 VM 의 전체 메모리 지표를 읽는다**",
+            "why": "**`memGoalCU`** 를 정한다"
+          },
+          {
+            "step": "⚠️ **vm-monitor 가 100밀리초마다 Postgres 가 쓰는 메모리를 본다**",
+            "why": "⚠️ **다른 신호보다 50배 자주 본다** — 메모리는 갑자기 터지는 쪽이라 그렇다(재구성)"
+          },
+          {
+            "step": "**20초마다 1분에서 60분까지의 창에 대한 워킹셋 추정을 모은다**",
+            "why": "**`lfcGoalCU`** — **캐시에 다 안 들어가서 느려지는 경우를 따로 본다**(재구성)"
+          },
+          {
+            "step": "⭐ **`goalCU = max(cpuGoalCU, memGoalCU, lfcGoalCU)` 로 목표를 정한다**",
+            "why": "⭐ **셋 중 하나라도 모자라면 느려지니 가장 목마른 것에 맞춘다**(재구성)"
+          },
+          {
+            "step": "**도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다**",
+            "why": "**크기 변경이 한 달에 32,016번이라 끊기면 안 된다**(재구성)"
+          },
+          {
+            "step": "⭐ **일이 멈추면 컴퓨트를 0 으로 내린다 — 저장만 남긴다**",
+            "why": "⭐ **`수천 개의 산발적으로 쓰이는 데이터베이스`** 를 감당하려면 이것뿐이다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "인스턴스 크기를 고르게 할 것인가",
+            "chosen": "⭐ **아니다 — 그 관행을 낡았다고 부른다**",
+            "alternatives": [
+              "사용자가 인스턴스 크기 선택",
+              "수동 스케일 업/다운"
+            ],
+            "tradeoff": "⭐ **`워크로드를 알기 전에 데이터베이스 인스턴스 크기를 고르는 것은 낡은 구축 패턴이다. 그 과정은 대체로 이상하고, 컴퓨트를 아주 낭비하는 느낌이다.`** ⭐ **근거가 관찰이다** — **`평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다.`** ⚠️ **81초마다 바뀌는 값을 사람이 미리 고를 수 있다는 생각 자체가 성립하지 않는다**(재구성). **대가는 예측 가능성을 잃는다는 것**이고, **사용량 과금이라 청구서도 흔들린다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 신호로 볼 것인가",
+            "chosen": "**세 가지 — CPU · 메모리 · 캐시 워킹셋**",
+            "alternatives": [
+              "CPU 만",
+              "연결 수나 QPS"
+            ],
+            "tradeoff": "**`cpuGoalCU` · `memGoalCU` · `lfcGoalCU`** 셋을 본다. ⚠️ **세 번째가 특이하다** — **컴퓨트 캐시의 워킹셋 크기**로 **`캐시에 다 안 들어가서 느려지는` 경우를 CPU·메모리와 별개로 잡는다**(재구성). **데이터베이스에서는 이것이 체감 성능을 가르는데 CPU 나 메모리 사용률만 봐서는 안 보인다**(재구성). **대가는 워킹셋 추정 자체가 어림이라는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "question": "세 신호를 어떻게 합칠 것인가",
+            "chosen": "⭐ **최댓값 — 평균이 아니라**",
+            "alternatives": [
+              "가중 평균",
+              "우선순위 규칙"
+            ],
+            "tradeoff": "⭐ **`goalCU = max(cpuGoalCU, memGoalCU, lfcGoalCU)`** ⚠️ **평균을 쓰면 하나가 부족한데 다른 둘이 넉넉해서 가려진다**(재구성) — **셋 중 하나라도 모자라면 느려지니 가장 목마른 것에 맞춘다**(재구성). **대가는 한 신호의 잘못된 급등이 그대로 확장을 부른다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "question": "얼마나 자주 볼 것인가",
+            "chosen": "⚠️ **신호마다 다르게 — 100ms 에서 20초까지**",
+            "alternatives": [
+              "모두 같은 주기로",
+              "한 주기로 통일"
+            ],
+            "tradeoff": "**5초마다 CPU 부하 평균과 VM 메모리 지표**, **100밀리초마다 vm-monitor 가 Postgres 메모리**, **20초마다 1~60분 창의 워킹셋 추정.** ⚠️ **주기가 200배 차이 난다** — **메모리는 갑자기 터지는 쪽이고 워킹셋은 천천히 변하는 쪽이라 그렇다**(재구성). ⭐ **신호의 성질에 관측 주기를 맞춘 것이다**(재구성). **대가는 관측 자체의 비용과 복잡도**다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "question": "조정할 때 끊을 것인가",
+            "chosen": "**끊지 않는다 — 도는 VM 을 그대로**",
+            "alternatives": [
+              "재시작 후 새 크기로",
+              "새 인스턴스로 전환"
+            ],
+            "tradeoff": "**도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다.** ⚠️ **한 달에 32,016번 바뀌는데 매번 끊으면 81초마다 끊기는 셈이다**(재구성) — **무중단이 선택이 아니라 전제다.** **대가는 VM 수준에서 자원을 실시간 조정하는 기반을 직접 만들어야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "question": "0 까지 내릴 것인가",
+            "chosen": "⭐ **내린다 — 수요의 모양이 바뀌었으므로**",
+            "alternatives": [
+              "최소 인스턴스 유지",
+              "유휴 시 축소만"
+            ],
+            "tradeoff": "⭐ **`현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구한다`** 이고 **`이것은 일이 멈추면 컴퓨트가 정지하기 때문에만 감당 가능하다`**. 사용자의 말이 그것을 확인한다 — **`우리는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다.`** ⭐ **앞 기능이 이것을 가능하게 한다** — 로그가 진실이고 S3 에 있으니 컴퓨트를 꺼도 잃을 것이 없다(재구성). **대가는 다시 켜는 시간**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building patterns unlocked by scale to zero",
+                "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+                "publisher": "Neon",
+                "date": "2026-09-01",
+                "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+              },
+              {
+                "title": "WAL + S3: Lakebase storage for the era of agents",
+                "url": "https://neon.com/blog/wal-s3-lakebase-storage-for-the-era-of-agents",
+                "publisher": "Neon",
+                "date": "2026-08-24",
+                "summary": "읽기가 키와 LSN 을 대면 저장 시스템이 그 시점에 그 키를 덮는 가장 가까운 레이어를 찾아야 하는데, 수천만 개 레이어에서 그건 기하 문제다. 선형 스캔은 너무 느리고 R-트리는 포함 질의에 답하며 세그먼트 트리는 좌표 공간 크기에 따라 확장해 맞지 않았다. 각 LSN 의 과거 루트를 유지하는 영속 이진 탐색 트리를 써서 현재 읽기와 과거 읽기가 같은 비용을 갖게 했다."
+              }
+            ]
+          },
+          {
+            "question": "다시 켜는 값을 어떻게 다룰 것인가",
+            "chosen": "**줄인다 — 다만 이 글의 수치는 검색 쪽이다**",
+            "alternatives": [
+              "항상 켜 두기",
+              "예열된 풀 유지"
+            ],
+            "tradeoff": "글이 대는 수치는 **`Lakebase Search 로 웜 약 18.6ms, 옛 콜드 스타트 GIN 방식은 약 19.5초 — 1,000배 개선`** 이다. ⚠️ **다만 이건 검색 기능의 수치이지 데이터베이스 재개 시간 일반이 아니다**(재구성). ⭐ **`0 으로 내려가는 것` 의 정면 대가인 콜드 스타트를 두 글 다 정면으로 다루지 않는다** — **이 도메인에서 가장 궁금한 숫자가 비어 있다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building patterns unlocked by scale to zero",
+                "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+                "publisher": "Neon",
+                "date": "2026-09-01",
+                "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "autoscaler-agent",
+            "role": "**5초마다 CPU 1분 부하 평균과 VM 메모리 지표**, **20초마다 1~60분 창의 워킹셋 추정**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "tech": "vm-monitor",
+            "role": "⚠️ **100밀리초마다 Postgres 가 쓰는 메모리** — 다른 신호보다 50배 자주",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "tech": "⭐ goalCU = max(세 신호)",
+            "role": "⭐ **가장 목마른 신호에 맞춘다** — 평균이 아니라 최댓값",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "tech": "무중단 VM 자원 조정",
+            "role": "**도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고** — **한 달에 32,016번**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "tech": "scale to zero",
+            "role": "⭐ **`일이 멈추면 컴퓨트가 정지한다`** — **`수천 개의 산발적으로 쓰이는 데이터베이스`** 를 감당하는 유일한 길",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building patterns unlocked by scale to zero",
+                "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+                "publisher": "Neon",
+                "date": "2026-09-01",
+                "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "log-is-the-database",
+          "via": "⭐ 0 이 가능한 이유",
+          "contract": "⭐ **로그가 진실이고 S3 에 있으니 컴퓨트를 꺼도 잃을 것이 없다** — **저장 구조가 `0 으로 내려가는 것` 의 전제다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "⭐ AI 에이전트 (고객)",
+          "via": "1000배의 인스턴스",
+          "contract": "⭐ **에이전트는 `아마도 1000배 더 많은 데이터베이스 인스턴스` 를 요구할 수 있다** — **`수천 개의 산발적으로 쓰이는 데이터베이스`** 가 그 모양이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "사용량 과금 (매출)",
+          "via": "⚠️ 쓴 만큼만",
+          "contract": "**컴퓨트가 0 이면 컴퓨트 요금도 0 이다** — ⚠️ **매출이 고객의 사용에 그대로 따라 흔들린다는 뜻이기도 하다**(뒤쪽은 재구성)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⭐ 81초마다 바뀌는 값을 사람이 미리 고를 수는 없다",
+            "why_hard": "⭐ **관찰이 관행을 무너뜨린다** — **`Neon 의 평균 운영 데이터베이스는 한 달에 32,016번 컴퓨트 크기를 바꾼다 — 약 81초에 한 번.`** 그래서 회사는 **`워크로드를 알기 전에 데이터베이스 인스턴스 크기를 고르는 것은 낡은 구축 패턴이다`** 라고 적는다. ⚠️ **미리 고르면 크게 잡아 낭비하거나 작게 잡아 느려지는 둘 중 하나다**(재구성).",
+            "current_best": "⚠️ **세 신호를 성질에 맞는 주기로 보고 가장 목마른 것에 맞추는 것** — **CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋**을 **5초 / 100밀리초 / 20초** 주기로 읽어 **`goalCU = max(cpuGoalCU, memGoalCU, lfcGoalCU)`**. **조정은 도는 VM 에서 Postgres 를 끊지 않고** 한다 — **81초마다 끊을 수는 없으니 무중단이 전제다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Autoscaling Lakebase Postgres",
+                "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+                "publisher": "Neon",
+                "date": "2026-08-31",
+                "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+              }
+            ]
+          },
+          {
+            "problem": "⭐ 대부분의 시간에 아무 일도 안 하는 데이터베이스가 수천 개",
+            "why_hard": "⭐ **수요의 모양이 바뀌었다** — **`현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구한다`** 이고, 에이전트는 **`아마도 1000배 더 많은 데이터베이스 인스턴스`** 를 요구할 수 있다. ⚠️ **`산발적으로` 가 핵심이다** — 대부분의 시간에 놀고 있는 것이 수천 개면 켜 두는 값이 곧 전체 비용이 된다(재구성).",
+            "current_best": "⭐ **일이 멈추면 컴퓨트를 0 으로 내리는 것** — **`이것은 일이 멈추면 컴퓨트가 정지하기 때문에만 감당 가능하다`** 이고 사용자의 말이 확인한다: **`우리는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다.`** ⚠️ **정면 대가인 콜드 스타트를 두 글 다 정면으로 다루지 않는다** — 대는 수치는 **`Lakebase Search 로 웜 약 18.6ms 대 옛 콜드 스타트 GIN 방식 약 19.5초`** 인데 **이건 검색 기능의 수치이지 데이터베이스 재개 시간 일반이 아니다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building patterns unlocked by scale to zero",
+                "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+                "publisher": "Neon",
+                "date": "2026-09-01",
+                "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "가장 목마른 신호에 맞춘다",
+          "question": "크기를 어떻게 정하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>autoscaler-agent</b>\"]:::list --> C[\"<b>CPU 1분 부하 평균</b><br/>• 5초마다<br/>• cpuGoalCU\"]:::accent\n  A --> M[\"<b>VM 전체 메모리 지표</b><br/>• 5초마다<br/>• memGoalCU\"]:::accent\n  A --> W[\"<b>워킹셋 추정</b><br/>• 20초마다 · 1~60분 창<br/>• lfcGoalCU\"]:::accent\n  V[\"<b>vm-monitor</b><br/>• 100밀리초마다<br/>• Postgres 가 쓰는 메모리\"]:::accent --> M\n  C --> G[\"⭐ <b>goalCU = max(셋)</b><br/>• 평균이 아니다<br/>• 하나라도 모자라면 느려진다\"]:::accent\n  M --> G\n  W --> G\n  G --> R[\"<b>도는 VM 의 CPU·메모리 조정</b><br/>• Postgres 를 끊지 않고<br/>• 한 달에 32,016번 (81초마다)\"]:::list\n  R --> Z[\"⭐ <b>일이 멈추면 0 으로</b><br/>• 저장만 남는다\"]:::accent"
+        },
+        {
+          "title": "수요의 모양이 바뀌었다",
+          "question": "왜 0 까지 내려야 했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>워크로드를 알기 전에<br/>  인스턴스 크기를 고른다</b>\"]:::gone --> B[\"⚠️ <b>낡은 구축 패턴이다</b><br/>• 대체로 이상하고<br/>• 컴퓨트를 아주 낭비하는 느낌\"]:::gone\n  B --> C[\"⭐ <b>근거: 81초에 한 번 바뀐다</b><br/>• 한 달에 32,016번\"]:::accent\n  D[\"⭐ <b>수천 개의 산발적으로<br/>  쓰이는 데이터베이스</b><br/>• 에이전트는 1000배를<br/>  요구할 수 있다\"]:::accent --> E[\"⚠️ <b>켜 두면 그게 전체 비용이 된다</b><br/>  (재구성)\"]:::gone\n  E --> F[\"⭐ <b>답: 일이 멈추면 컴퓨트 정지</b><br/>• 하루 수천 개를 배포해도<br/>  비용이 통제를 벗어나지 않는다\"]:::accent\n  G[\"⚠️ <b>두 글 다 안 다루는 것</b><br/>• 데이터베이스 재개 시간 일반<br/>• 대는 수치는 검색 기능 쪽이다<br/>  (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Autoscaling Lakebase Postgres",
+          "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+          "publisher": "Neon",
+          "date": "2026-08-31",
+          "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
+        },
+        {
+          "title": "Building patterns unlocked by scale to zero",
+          "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+          "publisher": "Neon",
+          "date": "2026-09-01",
+          "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
+        },
+        {
+          "title": "WAL + S3: Lakebase storage for the era of agents",
+          "url": "https://neon.com/blog/wal-s3-lakebase-storage-for-the-era-of-agents",
+          "publisher": "Neon",
+          "date": "2026-08-24",
+          "summary": "읽기가 키와 LSN 을 대면 저장 시스템이 그 시점에 그 키를 덮는 가장 가까운 레이어를 찾아야 하는데, 수천만 개 레이어에서 그건 기하 문제다. 선형 스캔은 너무 느리고 R-트리는 포함 질의에 답하며 세그먼트 트리는 좌표 공간 크기에 따라 확장해 맞지 않았다. 각 LSN 의 과거 루트를 유지하는 영속 이진 탐색 트리를 써서 현재 읽기와 과거 읽기가 같은 비용을 갖게 했다."
+        },
+        {
+          "title": "Databricks Agrees to Acquire Neon to Deliver Serverless Postgres for Developers + AI Agents",
+          "url": "https://www.prnewswire.com/news-releases/databricks-agrees-to-acquire-neon-to-deliver-serverless-postgres-for-developers--ai-agents-302454992.html",
+          "publisher": "Databricks (PR Newswire)",
+          "date": "2025-05",
+          "summary": "Databricks 가 약 10억 달러에 Neon 인수를 합의했다. Neon 의 내부 텔레메트리에서 그 플랫폼에 프로비저닝된 데이터베이스의 80% 이상이 사람이 아니라 AI 에이전트에 의해 자동으로 만들어졌다는 것이 확인됐다."
+        },
+        {
+          "title": "Neon's New Pricing, Explained: Usage-Based, No Minimum",
+          "url": "https://neon.com/blog/new-usage-based-pricing",
+          "publisher": "Neon",
+          "date": "2026",
+          "summary": "사용량 기반 과금 — 컴퓨트는 CU-시간(1 CU = 1 vCPU + 4GB RAM), 저장은 별도. 인수 뒤 컴퓨트 단가를 15~25% 내리고 저장을 GB-월 1.75달러에서 0.35달러로 낮췄으며 무료 플랜의 컴퓨트를 월 50 CU-시간에서 100 으로 늘렸다. 기본 5분 유휴 뒤 컴퓨트가 0 으로 내려가고 저장만 과금된다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -681,7 +1257,8 @@
     "⚠️ **`0 으로 내려가는 것` 의 대가를 아직 못 읽었다** — **콜드 스타트가 얼마인지**, 그 사이 오는 질의가 어떻게 되는지가 비어 있다. ⏳ **오토스케일링 글이 그 답일 수 있다.**",
     "⭐ **Databricks 인수(2025-05) 뒤 `Lakebase` 로 이름이 바뀌었다** — ⚠️ **제품이 어떻게 재편됐는지, Neon 이라는 이름이 어디까지 남는지**를 다룬 기술 글이 없다. **㉗축의 재료.**",
     "⚠️ **`80% 이상이 에이전트` 라는 수치의 출처가 인수 보도자료다** — **회사의 기술 글이 그 숫자를 다시 설명하지 않는다**(재구성).",
-    "⚠️ **이 글에 수치 트레이드오프가 하나도 없다** — 구조 원리만 있고 **밀리초·메모리·비용 비교가 없다.** ⭐ **후보 조사에서 적어 둔 약점 그대로였다**(네 번째로 맞았다). **노드 복사의 메모리 값, 언제 무엇을 지우는지, 브랜치가 많아질 때의 정리도 없다.**"
+    "⚠️ **이 글에 수치 트레이드오프가 하나도 없다** — 구조 원리만 있고 **밀리초·메모리·비용 비교가 없다.** ⭐ **후보 조사에서 적어 둔 약점 그대로였다**(네 번째로 맞았다). **노드 복사의 메모리 값, 언제 무엇을 지우는지, 브랜치가 많아질 때의 정리도 없다.**",
+    "⚠️ **`0 으로 내려가는 것` 의 정면 대가인 콜드 스타트가 끝내 안 나온다** — 두 글이 대는 수치(**웜 18.6ms 대 옛 GIN 방식 19.5초, 1,000배**)는 **검색 기능의 것이지 정지된 데이터베이스가 다시 깨어나는 시간이 아니다**(재구성). ⭐ **이 도메인에서 가장 궁금한 숫자가 비어 있다.**"
   ],
   "sources": [
     {
@@ -696,14 +1273,14 @@
       "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
       "publisher": "Neon",
       "date": "2026-08-31",
-      "summary": "인스턴스 크기를 정하는 일 자체가 필요 없어지게 만드는 오토스케일링. ⏳ 본문 미독."
+      "summary": "워크로드를 알기 전에 인스턴스 크기를 고르는 것은 낡은 패턴이라며, CPU 부하·메모리 사용·컴퓨트 캐시 워킹셋 세 신호의 최댓값으로 목표 CU 를 정해 도는 VM 의 CPU 와 메모리를 Postgres 를 끊지 않고 조정한다. 평균 운영 데이터베이스가 한 달에 32,016번, 약 81초에 한 번 컴퓨트 크기를 바꾼다."
     },
     {
       "title": "Building patterns unlocked by scale to zero",
       "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
       "publisher": "Neon",
       "date": "2026-09-01",
-      "summary": "컴퓨트가 0 으로 내려갈 수 있을 때 비로소 가능해지는 개발 패턴들. ⏳ 본문 미독."
+      "summary": "현대의 많은 구축 패턴이 수천 개의 산발적으로 쓰이는 데이터베이스를 요구하는데, 일이 멈추면 컴퓨트가 정지하기 때문에만 그것이 감당 가능해진다. 한 사용자는 하루에 수천 개의 새 데이터베이스를 배포하면서도 비용이 통제를 벗어나지 않는다고 말한다. 에이전트는 1000배 더 많은 인스턴스를 요구할 수 있다."
     },
     {
       "title": "Databricks Agrees to Acquire Neon to Deliver Serverless Postgres for Developers + AI Agents",
