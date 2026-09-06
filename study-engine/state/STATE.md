@@ -4,69 +4,48 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `Kotlin`(`kotlin`)을 끝냈다** — 절 6 · 표 5 · 실습 3 · 지뢰 6 · 근거 8.
-전체: **문서 106개**(전부 done) · 절 633 · 실습 318 · **오류 0 · 경고 0.**
-⭐ **`market` 을 채웠다**(Kotlin 464건 · 6.4%).
+**없음.** 직전 사이클에서 **Android**(`android`)를 완성했다 — **107번째 문서**, 모바일 층의 **첫 문서**다.
 
-**⭐⭐⭐ 축: "컴파일러가 막아 주는데, 자바와 만나는 자리에서 그 보장이 자바 수준으로 내려간다."**
-1차 자료 둘이 그 양쪽을 줬다.
-- **Null safety**: **"designed to significantly reduce the risk of null references, also known as
-  **The Billion-Dollar Mistake**"** · **"catching potential null-related issues **at compile time
-  rather than runtime**"** — 그리고 ⭐⭐⭐ **"The only possible causes of an NPE in Kotlin are:"**
-  로 넷을 나열한다(`throw` · **`!!`** · 초기화 불일치 · **자바 상호운용**). ⚠️ 넷째 항목의 마지막이
-  **"Other issues caused by external Java code"** 로 **열려 있다** — 다 셀 수 없다는 인정.
-- **Java interop**: ⭐⭐⭐ **"Any reference in Java may be `null`, which makes Kotlin's requirements
-  of strict null-safety **impractical** for objects coming from Java."** · **"Null-checks are
-  relaxed for such types, so that **safety guarantees for them are the same as in Java**."**
-  그리고 **"platform types can't be mentioned explicitly in the program"** — **코드를 읽어서는
-  어디가 플랫폼 타입인지 알 수 없다.** 설계 의도는 **"막는 게 아니라 빨리 터뜨리는 것"**
-  ("does its best to **prevent nulls from propagating far**").
+### 직전 사이클 (Android)
 
-**⭐⭐ 셈이 그 아이러니를 완성했다** — **1072건(모집중 448)** 인데 **`널 안전|NPE` 는 7건(모집중 0)**,
-그리고 **함께 나오는 1위가 Java 62.5%**. **널 안전의 보장이 가장 약해지는 환경이 이 언어의 가장 흔한
-환경**이다. 공고도 `**Java / Kotlin**`(빗썸) · `**Kotlin (또는 Java)**`(인터엑스) · `**하나 이상**의
-서버 개발 언어`(디써클)로 **둘을 가르지 않는다.**
+⭐⭐⭐ **축: "웹과 다른 것은 언어가 아니라 배포다."** 큐가 축까지 좁혀 놓은 덕에 1345건짜리 넓은 낱말이 요약본이 되지 않았다.
 
-**⚠️ 검사가 또 하나 잡았다 — alias `코루틴` 이 `asyncio` 와 충돌.** 이 문서는 코루틴을 **셈(108건)까지만**
-다뤘으므로 **alias 를 내주고** `related` 에서 그쪽을 가리켰다(⭐ `design-system`→`encryption` 때 세운
-**"전용 문서가 있으면 그쪽이 갖는다"** 규칙의 반대 방향 적용).
+**1차 자료 하나로 `why`·`old` 를 받쳤다** — Google Play `Meet Google Play's target API level requirement`.
+- **"Starting August 31 2026: New apps and app updates must target Android 16 (API level 36) or higher to be submitted"** — 마감·레벨·강제가 한 문장에 있다.
+- ⭐⭐⭐ **"Out-of-date apps are unavailable to new users of devices that run newer versions of Android."** — **벌이 삭제가 아니다.** 기존 사용자는 그대로, **새 사용자만 못 받는다.**
+- ⭐⭐ **"Some of these changes only apply to apps that explicitly declare support through their `targetSdkVersion`"** — **선언하지 않으면 OS 가 바뀌어도 옛 동작이 유지된다.** 이 한 문장이 `old` 절 전체의 근거다.
 
-**다음 사이클 = QUEUE 맨 위 `Android`(`android`)** — 사다리 3순위. **대기 1개.**
-⚠️ **`--gaps` 출력이 대상을 정한다** — 이 메모가 큐와 어긋나면 큐가 맞다.
+**셈이 축을 확인했다**: `앱 출시|배포|런칭` **643건(모집중 208)** vs ⚠️ `타겟 SDK|API 레벨` **6건**. 그리고 **크로스플랫폼 동반 442건(33%)** — "안드로이드 개발"이 곧 네이티브가 아니다.
 
-## Android 사이클 메모
+**예상 못 한 것**: 뷰노 `의료기기·측정장비 등 **Android 기반 장비 SW**`, 유피소프트 `**Windows 및 Android OS 환경**` — **스토어와 무관한 안드로이드**가 있다. `device` 절을 따로 뒀다.
 
-- **`kotlin` 이 끊긴 링크로 남겼다** — 그 문서가 동반 기술의 **33.8%가 안드로이드**인데 한 문단으로만
-  다뤘다고 스스로 적었다. ⭐⭐ **그리고 106개 문서에 모바일 층이 통째로 비어 있다**(`iOS`·`Swift` 도 없다).
-- ⭐ **셈: Android 1345건(모집중 464) · iOS 1117건(모집중 408).**
-- ⚠️⚠️ **그대로 쓰면 실패한다** — "안드로이드 개발"은 너무 넓어 **공식 문서 요약본**이 된다.
-  ⭐⭐⭐ **축을 좁힌다: "웹과 다른 것은 언어가 아니라 배포다."** 셈이 그 자리를 가리킨다 —
-  `Play 스토어` **160** · `앱 심사|리젝` **33** · `ANR` 25 · `Jetpack Compose` 79.
-  **웹은 내가 배포하면 끝인데, 앱은 (1)남의 심사를 받고 (2)사용자가 업데이트를 안 하면 옛 버전이 남는다.**
-- ⭐ **`api-versioning`("옛것을 어떻게 끄나")·`feature-flag`(원격으로 끄기)와 정면으로 이어진다** —
-  그리고 **이 백과사전의 어느 문서도 아직 그 자리를 안 다룬다.**
-- ⚠️ **`생명주기` 575건은 오염이 크다**(데이터 생명주기 등) — 문장을 읽어 가른다.
-- ⭐ **1차 자료**: Android Developers 의 배포·버전 정책 · Play Console 정책 · ⭐⭐ **최소 지원 API
-  레벨 정책**(구글이 **언제부터 무엇을 막는지 스스로 적는 자리**). **부정어(can't·not allowed·rejected·
-  deprecated·required by)를 먼저 검색한다.** ⚠️ **iOS 는 범위 밖**으로 두되 비교가 필요하면 한 줄만.
+### 다음
 
-## 후보 목록 (다음에 큐가 마르면 여기서)
-
-⚠️⚠️ **큐에 올리기 전에 반드시 `aliases` 로 검색한다.** 그리고 ⚠️ **넓은 낱말은 축을 먼저 좁힌다.**
-
-| 후보 | 공고(본문 셈) | 이 엔진이 쓸 각도 | 층 |
-|---|---|---|---|
-| ~~REST~~ · ~~GraphQL~~ · ~~BFF~~ · ~~API GW~~ · ~~서비스 메시~~ · ~~로드밸런서~~ | — | ✅ 99~105 | API·인프라 |
-| ~~PostgreSQL vs MySQL~~ · ~~인덱스(보수)~~ · ~~Kotlin~~ | — | ✅ 104 · 보수 · 106 | 데이터·언어 |
-| **Android** | **1345** | ⭐ **큐에 있다 — 축을 "배포와 파편화"로 좁혔다** | 모바일 |
-| `iOS` | 1117 | ⚠️ 모바일 층이 비어 있다 — Android 를 쓴 뒤 **다른 각도**로 | 모바일 |
-| `Redis` | 474 | ⚠️ `caching` 과 겹친다 — 다른 각도(자료구조 서버·단일 스레드) | 데이터 |
-| `HTTP` | (미측정) | ⭐ `rest` 가 전제하고 비워 둔 층 | API |
-| `Oracle` | 941 | ⚠️ 국내 금융·공공 — `java-in-finance` 와 이웃 | 데이터 |
-| `마이크로 프론트엔드` | 29 | ⚠️ 얇지만 `bff`·`design-system` 과 이웃 | 프론트 |
-
+**iOS**(`ios`) — QUEUE 맨 위. ⚠️⚠️ **`android` 의 축을 베끼면 두 번째 요약본이 된다.** 큐에 새 축을 적어 뒀다: **"두 스토어가 같은 문제를 다르게 푼다"** — 구글은 **날짜로 제출을 막고**, 애플은 **가이드라인으로 심사에서 거른다**(기계 판정 vs 사람 판정).
 
 ## 배운 것
+
+- ⭐⭐⭐ **정책 문서에서 가장 중요한 문장은 "벌의 모양"이다.** Google Play 는 요구를 못 맞춘 앱을
+  **내리지 않는다** — "Out-of-date apps are **unavailable to new users**". 기존 사용자는 그대로라
+  **지표가 서서히만 나빠지고, 그래서 원인을 엉뚱한 데서 찾는다.** ⭐ 규칙을 읽을 때는 **"무엇을
+  요구하나"보다 "안 지키면 무엇이 어떻게 일어나나"** 를 먼저 찾는다 — 그쪽이 훨씬 자주 비어 있고,
+  적혀 있으면 그것이 문서의 축이 된다. (`scraping` 의 '조용한 0건', `seo` 의 '조용히 갈라진
+  도메인' 과 같은 종류다 — ⭐ **이 백과사전이 반복해 만나는 형태: 실패가 조용하다.**)
+
+- ⭐⭐ **큐가 축을 좁혀 두면 넓은 낱말도 쓸 수 있다.** Android 는 1345건짜리 낱말이라 그냥 쓰면
+  요약본이 될 것이 뻔했는데, **앞 사이클이 큐에 "웹과 다른 것은 배포다"를 못 박아 둔 덕에**
+  이번 사이클은 셈으로 그 축을 확인하고 1차 자료 하나만 열면 됐다. ⭐ **이제 이것을 규칙으로
+  삼는다 — 넓은 낱말은 축 없이 큐에 올리지 않는다.** (지난 사이클에 세운 것을 이번에 검증했다.)
+
+- ⭐⭐ **앞 문서와 이웃한 낱말을 큐에 올릴 때는 "축이 겹치지 않는가"를 먼저 본다.** iOS 를 올리며
+  `android` 의 축을 그대로 쓰면 **같은 문서를 두 번 쓰는 것**이다. 그래서 큐에 **다른 축**을
+  적었다("두 스토어가 같은 문제를 **다르게** 푼다 — 기계 판정 vs 사람 판정"). ⚠️ 그리고
+  **"축이 안 서면 미룬다"**고 함께 적었다 — **겹치는 문서를 쓰느니 안 쓰는 게 낫다.**
+
+- ⭐ **하나의 낱말 안에 다른 세계가 섞여 있는지 본다.** `Android` 1345건 안에 **스토어 앱**과
+  **장비 위의 OS**(뷰노 의료기기, 유피소프트 `Windows 및 Android OS 환경`)가 함께 있었다.
+  전자는 심사·파편화가 문제이고 후자는 **하드웨어와 인증**이 문제다 — **전제가 통째로 다르다.**
+  ⭐ 셈만 하면 안 보이고 **공고 문장을 읽어야 보인다.**
 
 - ⭐⭐⭐ **명세가 "예외의 원인"을 스스로 나열하면 그것이 문서의 뼈대가 된다.** Kotlin 문서의
   **"The only possible causes of an NPE in Kotlin are:"** 네 항목을 그대로 표로 옮기고 **성격으로

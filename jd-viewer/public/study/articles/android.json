@@ -1,0 +1,603 @@
+{
+  "slug": "android",
+  "title": "Android — 배포와 파편화",
+  "title_en": "Android: Distribution and Fragmentation",
+  "aliases": [
+    "Android",
+    "안드로이드",
+    "앱 배포",
+    "Play 스토어",
+    "타겟 SDK",
+    "target SDK"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐ **웹과 다른 것은 언어가 아니라 배포다** — 내보내는 것을 **남이 심사하고**, 내보낸 뒤에도 **사용자가 안 올리면 옛 버전이 그대로 남는다.** 그래서 서버가 그 빚을 떠안는다.",
+  "summary": "세면 **1345건(모집중 464)** 이다. 그런데 이 문서는 \"안드로이드 개발\"을 다루지 않는다 — 그건 공식 문서가 훨씬 잘 한다. **웹 개발자가 처음 앱을 만들 때 놀라는 자리**만 다룬다.\n\n⭐⭐ **셈이 그 자리를 가리킨다** — `앱 출시|배포|런칭` **643건(모집중 208)** 인데 ⚠️⚠️ **`타겟 SDK|API 레벨` 은 6건**이다. **배포를 요구하면서 구글이 정한 배포 조건의 이름은 부르지 않는다.**\n\n그 조건은 이렇게 생겼다.\n\n> **\"Starting August 31 2026: New apps and app updates must target Android 16 (API level 36) or higher to be submitted to Google Play\"**\n> **\"Existing apps must target Android 15 (API level 35) or higher to remain available to new users on devices running Android OS higher than your app's target API level\"**\n\n⭐⭐⭐ **그리고 벌이 흥미롭다 — 앱을 지우는 게 아니다.**\n\n> **\"Out-of-date apps are unavailable to new users of devices that run newer versions of Android.\"**\n\n**이미 깔린 사람에게는 그대로 있고, 새 사용자만 못 받는다.** 앱은 죽는 게 아니라 **조용히 말라 간다.**",
+  "market": {
+    "tech": "Android",
+    "layer": "모바일",
+    "postings": 430,
+    "pct_jobs": 6.0,
+    "with": [
+      {
+        "name": "iOS",
+        "pct": 61.4,
+        "why": "⭐⭐ **셋 중 둘이 양쪽을 함께** 요구한다 — 이 문서가 크로스플랫폼을 다루는 이유"
+      },
+      {
+        "name": "Kotlin",
+        "pct": 36.5,
+        "why": "현재 표준 언어 (→ `kotlin`)"
+      },
+      {
+        "name": "React",
+        "pct": 29.1,
+        "why": "React Native 문맥이 섞인다"
+      },
+      {
+        "name": "Java",
+        "pct": 28.6,
+        "why": "⚠️ 아직 남아 있다 — 점진 전환 중"
+      },
+      {
+        "name": "Swift",
+        "pct": 18.8,
+        "why": "iOS 쪽 언어"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 셈이 가리키는 자리 — 배포는 643건, 그 조건은 6건",
+      "confidence": "inferred",
+      "body": "`Android|안드로이드` 는 **1345건(모집중 464)** 이다. ⭐ 그리고 이 백과사전에 **모바일 문서가 하나도 없었다**(106개 중 0개) — 이 문서가 그 층의 첫 문서다.\n\n**그런데 \"안드로이드 개발\"을 통째로 다루면 공식 문서 요약본이 된다.** 그래서 셈을 먼저 보고 자리를 좁혔다.\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `Android\\|안드로이드` | **1345** | (모집중 464) |\n| ⭐ `앱 출시\\|앱 배포\\|런칭` | **643** | (모집중 208) |\n| `React Native` | 592 | |\n| `Flutter` | 473 | |\n| `웹뷰` | 308 | |\n| `크래시\\|Crashlytics` | 139 | |\n| `파편화` | 75 | |\n| ⚠️⚠️ `타겟 SDK\\|API 레벨` | **6** | (모집중 2) |\n\n⭐⭐⭐ **`앱 출시|배포` 643건 대 `타겟 SDK` 6건.** 배포를 요구하는데 **구글이 정한 배포의 조건은 이름으로 안 불린다.** 이 백과사전이 반복해 만난 형태이고(`rest` 3372 vs `HATEOAS` 0, `kotlin` 1072 vs `널 안전` 7), **여덟째 사례**다.\n\n**그리고 또 하나 — \"안드로이드 개발\"이 곧 네이티브가 아니다.**\n\n1345건 중 **크로스플랫폼 낱말(Flutter·React Native·Capacitor·NativeScript 등)이 함께 나오는 것이 442건(33%)** 이다. 공고의 모양도 그렇다.\n\n> `**Flutter**를 활용한 모바일 앱(iOS/Android) 또는 데스크톱 앱 개발 경험` — 띵킹프렌즈\n> `**Capacitor·React Native** 등 하이브리드/크로스플랫폼 **앱 배포 경험**, 안드로이드 태블릿 대응 경험` — 아치서울\n> `**Nativescript-Vue or ReactNative** 를 이용하여 하이브리드 앱 런칭 (iOS, Android) 및 운영 경험` — 스콘에이아이\n\n그리고 `market` 의 동반 1위가 **iOS 61.4%** 다 — **셋 중 둘이 양쪽을 함께** 요구한다.\n\n💡 **그래서 이 문서의 대상은 \"안드로이드 개발자\"가 아니라 \"앱을 내보내야 하게 된 사람\"** 이다. 네이티브든 크로스플랫폼이든, 웹만 하던 사람이 앱을 맡으면 **같은 자리에서 놀란다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 웹과 다른 것은 언어가 아니라 배포다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **구글이 언제부터 무엇을 막는지 날짜와 함께 스스로 적는 문서** — 그리고 벌이 '삭제'가 아니라 '새 사용자에게 안 보이게'다"
+        }
+      ],
+      "body": "웹에서는 배포가 이렇다 — **내가 올리면 끝.** 다음 요청부터 모두가 새 버전을 본다. 문제가 있으면 **되돌리면 되고**, 되돌린 것도 즉시 반영된다.\n\n**앱은 그 세 가지가 전부 다르다.**\n\n**① 내보내는 것을 남이 허락한다.** 스토어에 올리면 심사를 거치고, 그 시간과 결과를 우리가 정하지 못한다. `앱 심사|리젝` 이 공고에 33건 나오는 것이 그 일이 존재한다는 증거다.\n\n**② 조건이 날짜와 함께 밖에서 정해진다.** Google Play 문서가 그것을 직접 적는다.\n\n> ⭐⭐ **\"Starting August 31 2026: New apps and app updates must target Android 16 (API level 36) or higher to be submitted to Google Play\"**\n> **\"Existing apps must target Android 15 (API level 35) or higher to remain available to new users on devices running Android OS higher than your app's target API level\"**\n\n**\"제출하려면 반드시\"** 다. 그리고 시한이 있고, 연장을 신청할 수 있다고까지 적혀 있다 — \"you'll be able to **request an extension to November 1, 2026**\".\n\n⚠️ **우리 일정과 무관하게 오는 마감**이고, 이건 `mydata` 문서에서 본 것과 같은 형태다 — **요건이 밖에서 정해져 코드로 내려온다.** 다만 그쪽은 감독기관이고 여기는 **플랫폼 사업자**다.\n\n**③ ⭐⭐⭐ 되돌릴 수 없다.** 그리고 **벌의 모양이 특이하다.**\n\n> **\"Apps that target Android 14 (API level 34) or lower ... will only be available on devices running Android OS that are the same or lower than your app's target API level.\"**\n> ⭐⭐⭐ **\"Out-of-date apps are unavailable to new users of devices that run newer versions of Android.\"**\n\n**앱을 내리지 않는다. 새 사용자에게 안 보이게 할 뿐이다.**\n\n💡 이것이 왜 무서운가 — **아무 일도 안 일어난 것처럼 보이기** 때문이다. 기존 사용자는 그대로 쓰고, 지표도 당장은 안 떨어진다. **신규 설치만 조용히 줄어든다.** `scraping` 의 \"조용한 0건\", `seo` 의 \"조용히 갈라진 도메인\" 과 같은 종류의 사고이고 — ⭐ **이 백과사전이 계속 만나는 그 형태**다.\n\n📌 그리고 문서가 **왜 이 정책이 있는지**도 적는다.\n\n> \"Every new Android version introduces changes that bring **security and performance improvements** ... Some of these changes **only apply to apps that explicitly declare support through their `targetSdkVersion` manifest attribute**.\"\n\n⭐⭐ **마지막 문장이 다음 절의 전부다** — **앱이 선언하지 않으면 OS 가 바뀌어도 옛 동작이 유지된다.**"
+    },
+    {
+      "id": "old",
+      "kind": "how",
+      "heading": "⭐⭐ 옛 버전이 사라지지 않는다 — 그리고 서버가 그 빚을 진다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **구글이 언제부터 무엇을 막는지 날짜와 함께 스스로 적는 문서** — 그리고 벌이 '삭제'가 아니라 '새 사용자에게 안 보이게'다"
+        }
+      ],
+      "body": "앞 절의 마지막 문장을 다시 본다.\n\n> \"Some of these changes **only apply to apps that explicitly declare support** through their `targetSdkVersion` manifest attribute.\"\n\n**OS 는 바뀌었는데 앱이 \"나는 그 버전을 지원한다\"고 선언하지 않으면 옛 동작 그대로** 돈다. 이건 호환성을 위한 배려이지만, 뒤집으면 **앱을 안 고치면 아무 일도 안 일어난다**는 뜻이다.\n\n⭐ **그리고 사용자 쪽에도 같은 성질이 있다.** 앱은 사용자 기기에 **설치된 채로** 있다. 자동 업데이트가 꺼져 있거나, 저장 공간이 없거나, 그냥 안 올리면 — **1년 전 버전이 지금도 서버를 부른다.**\n\n💡 **그래서 앱을 가진 팀은 웹에 없는 결정을 하나 안고 산다.**\n\n| | 강제 업데이트 | 하위 호환 |\n|---|---|---|\n| **하는 일** | 옛 버전을 막고 스토어로 보낸다 | 옛 버전도 계속 받아 준다 |\n| **대가** | 사용자를 쫓아낸다(특히 네트워크가 나쁠 때) | ⭐ **서버가 옛 API 를 영원히 유지**한다 |\n| **언제** | 보안 문제, 프로토콜이 깨졌을 때 | 그 밖의 거의 모든 경우 |\n\n⭐⭐⭐ **그리고 여기가 이 문서의 핵심이다 — 앱의 배포 문제가 서버의 API 문제가 된다.**\n\n`api-versioning` 문서가 다루는 **\"이미 남이 쓰고 있는 API 를 어떻게 바꾸나\"** 가 여기서는 **가장 가혹한 형태**로 온다. 웹 프론트엔드는 배포하면 다 같이 바뀌지만, **앱은 클라이언트 버전이 수십 개로 살아 있다.** 그러니 서버는 **가장 오래된 살아 있는 버전**을 기준으로 움직여야 한다.\n\n📌 **그래서 앱을 가진 팀이 반드시 갖춰야 하는 것 셋.**\n\n1. **버전별 사용자 분포를 본다** — \"지금 가장 오래된 버전은 무엇이고 몇 명이 쓰나\". 이 숫자 없이는 무엇도 끌 수 없다.\n2. ⭐ **서버에서 끌 수 있게 만든다**(→ `feature-flag`) — 앱을 다시 배포하지 않고 기능을 끄는 길이 없으면, **문제가 생겼을 때 심사를 기다려야** 한다.\n3. **강제 업데이트 장치를 미리 넣어 둔다** — 쓸 일이 없기를 바라되, **넣는 것 자체가 배포를 필요로 하므로** 나중에는 못 넣는다."
+    },
+    {
+      "id": "frag",
+      "kind": "limits",
+      "heading": "파편화 — 그리고 그것을 피하려다 만나는 것",
+      "confidence": "inferred",
+      "body": "공고에 **`파편화` 가 75건** 나오고, 그중 한 줄이 그 성격을 정확히 적는다.\n\n> ⭐⭐ `**iOS/Android 웹뷰 렌더링 차이** 등 **모바일 디바이스별 파편화**에 대한 이해도가 있으신 분` — 르몽\n\n**기기·OS·화면·제조사 커스터마이징**이 전부 다르다. 웹의 브라우저 호환성 문제와 같은 형태인데 **더 길다** — 브라우저는 대개 자동 업데이트되지만, **안 팔린 지 3년 된 기기의 OS 는 안 올라간다.**\n\n⭐ **그래서 두 가지 회피 전략이 생기고, 각각 다른 값을 치른다.**\n\n**① 웹뷰 — 308건**\n\n앱 껍데기 안에 웹을 띄운다. 화면을 한 번만 만들면 되고 **배포도 웹처럼** 된다(서버만 바꾸면 되니까). ⚠️ 그런데 르몽 공고가 지적하듯 **웹뷰 자체가 플랫폼마다 다르고**, 기기 기능에 닿기 어려우며, **네이티브다운 감각이 안 난다.**\n\n**② 크로스플랫폼 — 442건(33%)**\n\nFlutter(473건)·React Native(592건)로 한 코드베이스에서 양쪽을 만든다. ⭐ `market` 에서 **iOS 가 61.4%로 동반 1위**인 것이 그 수요다 — 어차피 둘 다 만들어야 한다.\n\n⚠️ **그런데 방향이 한쪽만은 아니다.**\n\n> ⭐ `심전도 측정 의료기기 애플리케이션을 **Flutter에서 Android Native(Kotlin) 기반으로 전환**하고, 이후 운영·고도화를 리드` — 뷰노\n\n**크로스플랫폼에서 네이티브로 돌아오는 사례**가 공고에 있다. 의료기기라는 맥락(정밀한 하드웨어 접근·인증)이 이유일 수 있다.\n\n그리고 레브잇 공고가 **경계에서 벌어지는 일**을 적는다.\n\n> `iOS/Android **Native Module** 또는 React Native **브릿지** 관련 경험이 있는 분을 선호합니다.`\n\n⭐ **크로스플랫폼을 써도 결국 네이티브를 만나는 자리가 생긴다** — 그것을 잇는 코드를 쓸 사람이 필요하고, 그 사람은 **양쪽을 다 알아야** 한다.\n\n💡 **정리하면 파편화를 피하는 값은 이렇게 치러진다** — 웹뷰는 **감각과 기능**을, 크로스플랫폼은 **경계의 복잡도**를, 네이티브는 **두 벌의 코드**를 낸다. ⚠️ 그리고 **어느 쪽을 골라도 앞 절의 배포 문제는 그대로다.**"
+    },
+    {
+      "id": "device",
+      "kind": "extra",
+      "heading": "⭐ 앱이 아닌 안드로이드 — 장비 위의 OS",
+      "confidence": "inferred",
+      "body": "셈에 예상 못 한 것이 하나 섞여 있다.\n\n> ⭐⭐ `**의료기기·측정장비 등 Android 기반 장비 SW** 개발` — 뷰노\n> `**Windows 및 Android OS 환경**에서의 개발 경험이 있으신 분` — 유피소프트\n\n**스토어에 올리는 앱이 아니라 장비에 얹는 OS** 로서의 안드로이드다. 키오스크·POS·측정장비·차량 단말이 그것이고, 이때는 **이 문서의 전제가 통째로 바뀐다.**\n\n| | 스토어 앱 | 장비 위의 안드로이드 |\n|---|---|---|\n| 배포 | 심사를 거친다 | ⭐ **우리가 직접** (또는 기업 배포) |\n| 기기 | 수천 종 | **정해진 한 종** |\n| OS 버전 | 사용자마다 다르다 | ⭐ **우리가 고정한다** |\n| 옛 버전 | 안 사라진다 | 관리 대상이라 통제된다 |\n\n⭐ **파편화도 심사도 없다** — 대신 **하드웨어와 인증이 온다.** 뷰노 공고의 맥락이 **의료기기**인 것이 그 예이고, `security-certification` 이 다루는 종류의 심사가 스토어 심사 자리를 대신한다.\n\n💡 **그래서 \"안드로이드 경험\"이라는 말이 이력서에서 갈린다.**\n\n- **스토어 앱** — 배포·심사·파편화·버전 분포를 안다.\n- **장비 SW** — 하드웨어 접근·부팅·전원 관리·인증을 안다.\n\n⭐ **둘은 겹치는 부분이 생각보다 적고**, 공고를 읽을 때 **어느 쪽인지 먼저 가려야** 한다. ⚠️ 이 문서는 **앞쪽(스토어 앱)** 을 다뤘다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ \"안드로이드 개발\"을 다루지 않았다.** 액티비티·프래그먼트·생명주기·수명주기 스코프·Compose·의존성 주입 같은 것은 **공식 문서와 교재가 훨씬 잘** 하고, 옮기면 요약본이 된다(`postgres-mysql`·`kotlin` 에서 세운 규칙). ⚠️ 특히 **생명주기는 셈에서 575건**이나 나오지만 **데이터 생명주기 등 오염이 커서** 이 문서의 셈에 넣지 않았다.\n\n**2. ⚠️ 1차 자료가 하나다.** Google Play 의 target API level 요구사항 문서 하나로 `why`·`old` 절을 받쳤다. **심사 정책·거절 사유·배포 트랙(내부·비공개·단계적 출시) 문서는 열지 않았다** — `앱 심사|리젝` 33건이 가리키는 그 영역이 비어 있다.\n\n**3. ⚠️ 인용한 날짜와 API 레벨은 인용 시점의 값이다.** \"Starting August 31 2026 ... Android 16 (API level 36)\" 는 **정책이 매년 갱신되는 종류**다 — **실제로 쓸 때는 반드시 원문에서 현재 값을 확인해야** 한다.\n\n**4. iOS 를 다루지 않았다.** `market` 의 동반 1위가 iOS 61.4% 이고 셈으로도 1117건인데, **이 문서는 안드로이드만 본다.** 앱 스토어의 심사·정책은 성격이 또 다르고, 둘을 한 문서에 넣으면 흐려진다 — **`ios` 는 별도 낱말이다.**\n\n**5. 버전 분포를 보는 방법을 다루지 않았다.** `old` 절이 \"버전별 사용자 분포를 본다\"고 말하면서 **그것을 어디서 어떻게 보는지는 적지 않았다**(Play Console 의 해당 화면 문서를 열지 않았다).\n\n**6. 이 문서가 다루지 않는 것.** 언어는 `kotlin`, 옛 클라이언트를 서버가 떠안는 문제는 `api-versioning`, 서버에서 기능을 끄는 것은 `feature-flag`, 공통 컴포넌트는 `design-system`, 장비 쪽 인증은 `security-certification` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "policy",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ Google Play 의 target API level 요구사항",
+      "note": "⚠️ **인용 시점의 값이다.** 이 정책은 **매년 갱신**되므로 실제로 쓸 때는 원문에서 현재 날짜·레벨을 확인해야 한다. ⭐ 이 표의 요점은 숫자가 아니라 **강제의 구조**(마감·제출 차단·조용한 소멸)다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐ 새 앱·업데이트",
+          "\"Starting **August 31 2026**: New apps and app updates **must target Android 16 (API level 36) or higher to be submitted** to Google Play\""
+        ],
+        [
+          "기존 앱",
+          "\"Existing apps **must target Android 15 (API level 35) or higher to remain available to new users** on devices running Android OS higher than your app's target API level\""
+        ],
+        [
+          "⭐⭐⭐ 못 맞추면",
+          "\"Apps that target Android 14 (API level 34) or lower ... **will only be available on devices running Android OS that are the same or lower than your app's target API level**\""
+        ],
+        [
+          "⭐⭐⭐ 그래서",
+          "\"**Out-of-date apps are unavailable to new users of devices that run newer versions of Android.**\" — **앱을 내리는 게 아니라 새 사용자에게 안 보이게 한다**"
+        ],
+        [
+          "연장",
+          "\"you'll be able to **request an extension to November 1, 2026**\""
+        ],
+        [
+          "⭐⭐ 왜 그런가",
+          "\"Some of these changes **only apply to apps that explicitly declare support through their `targetSdkVersion`** manifest attribute.\" — **선언하지 않으면 옛 동작이 유지된다**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **구글이 언제부터 무엇을 막는지 날짜와 함께 스스로 적는 문서** — 그리고 벌이 '삭제'가 아니라 '새 사용자에게 안 보이게'다"
+        }
+      ]
+    },
+    {
+      "id": "web",
+      "kind": "compare",
+      "caption": "⭐⭐ 웹과 무엇이 다른가",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 오른쪽 열의 근거는 위 `policy` 표의 원문이다. ⭐ **언어나 프레임워크가 아니라 이 세 줄이 앱 개발의 성격을 정한다.**",
+      "columns": [
+        "",
+        "웹",
+        "앱"
+      ],
+      "rows": [
+        [
+          "내보내기",
+          "**내가 올리면 끝**",
+          "⭐ **남이 심사한다** (`앱 심사|리젝` 33건)"
+        ],
+        [
+          "조건",
+          "우리가 정한다",
+          "⭐⭐ **날짜와 함께 밖에서 온다** — \"must target ... to be submitted\""
+        ],
+        [
+          "되돌리기",
+          "즉시",
+          "**다시 심사** — 그동안 나쁜 버전이 살아 있다"
+        ],
+        [
+          "⭐⭐⭐ 옛 버전",
+          "다음 요청부터 사라진다",
+          "**사용자가 안 올리면 영원히 남는다**"
+        ],
+        [
+          "⚠️ 실패의 모양",
+          "오류가 보인다",
+          "**조용히 신규 설치만 줄어든다** — `scraping` 의 '조용한 0건'과 같은 종류"
+        ],
+        [
+          "⭐ 그래서 서버가",
+          "프론트와 함께 움직인다",
+          "**가장 오래된 살아 있는 버전**을 기준으로 (→ `api-versioning`)"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "old",
+      "kind": "compare",
+      "caption": "옛 버전을 어떻게 하나",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). ⭐ 웹에는 없는 결정이고, **앱을 가진 팀은 이 둘 중 하나를 반드시 고른다.**",
+      "columns": [
+        "",
+        "강제 업데이트",
+        "하위 호환"
+      ],
+      "rows": [
+        [
+          "하는 일",
+          "옛 버전을 막고 스토어로 보낸다",
+          "옛 버전도 계속 받아 준다"
+        ],
+        [
+          "⚠️ 대가",
+          "**사용자를 쫓아낸다** (네트워크가 나쁘거나 저장 공간이 없으면 못 올린다)",
+          "⭐ **서버가 옛 API 를 유지**한다 → `api-versioning`"
+        ],
+        [
+          "언제",
+          "보안 문제 · 프로토콜이 깨졌을 때",
+          "그 밖의 거의 모든 경우"
+        ],
+        [
+          "⭐ 전제",
+          "**장치를 미리 넣어 둬야 한다** — 넣는 것 자체가 배포다",
+          "**버전별 사용자 분포**를 봐야 한다"
+        ],
+        [
+          "⭐⭐ 셋째 길",
+          "—",
+          "**서버에서 끄기**(→ `feature-flag`) — 앱 배포 없이 기능을 내린다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "escape",
+      "kind": "compare",
+      "caption": "파편화를 피하는 값",
+      "note": "셈(2026-09-06)과 공고 문장에서 정리했다(`confidence: inferred`). ⭐ **어느 쪽을 골라도 배포 문제는 그대로**라는 것이 요점.",
+      "columns": [
+        "",
+        "무엇",
+        "건수",
+        "치르는 값"
+      ],
+      "rows": [
+        [
+          "**웹뷰**",
+          "앱 껍데기 안에 웹",
+          "**308**",
+          "⚠️ 웹뷰도 플랫폼마다 다르다 — 르몽 `**iOS/Android 웹뷰 렌더링 차이** 등 모바일 디바이스별 **파편화**`"
+        ],
+        [
+          "**크로스플랫폼**",
+          "한 코드베이스로 양쪽",
+          "**442** (33%)",
+          "**경계의 복잡도** — 레브잇 `Native Module 또는 React Native **브릿지**`"
+        ],
+        [
+          "",
+          "`React Native` 592 · `Flutter` 473",
+          "—",
+          "⭐ `market` 에서 **iOS 61.4%** 가 동반 1위인 이유"
+        ],
+        [
+          "**네이티브**",
+          "각각 따로",
+          "(네이티브 낱말 동반 887)",
+          "**두 벌의 코드**"
+        ],
+        [
+          "⚠️ 역방향도 있다",
+          "—",
+          "—",
+          "뷰노 `**Flutter에서 Android Native(Kotlin) 기반으로 전환**`"
+        ],
+        [
+          "⭐ 공통",
+          "—",
+          "—",
+          "**어느 쪽을 골라도 심사·옛 버전·정책 마감은 그대로**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ `앱 출시|배포` 643 대 `타겟 SDK|API 레벨` 6 — **요구는 흔한데 그 조건의 이름은 안 불린다.** `rest`(3372 vs 0) 이래 여덟째 형태.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**1345건 (모집중 464)** — 태그 기준으로는 430건(6.0%)"
+        ],
+        [
+          "⭐ `앱 출시\\|앱 배포\\|런칭`",
+          "**643 (모집중 208)** — 이 문서가 자리를 여기로 좁힌 근거"
+        ],
+        [
+          "⚠️⚠️ `타겟 SDK\\|API 레벨`",
+          "**6 (모집중 2)**"
+        ],
+        [
+          "크로스플랫폼 동반",
+          "**442 (33%)** — `React Native` 592 · `Flutter` 473"
+        ],
+        [
+          "그 밖",
+          "`웹뷰` 308 · `크래시` 139 · `파편화` 75 · `앱 심사\\|리젝` 33 · `ANR` 25"
+        ],
+        [
+          "⚠️ 안 넣은 것",
+          "**`생명주기` 575건** — 데이터 생명주기 등 오염이 커서 뺐다(`load-balancer` 의 `Nginx`, `api-gateway` 의 `API Gateway` 와 같은 형태)"
+        ],
+        [
+          "⚠️ 섞이는 것",
+          "**장비 위의 안드로이드**(뷰노 `Android 기반 장비 SW`, 유피소프트 `Windows 및 Android OS 환경`) — 전제가 통째로 다르다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "앱과 서버를 함께 만드는 팀이 API 를 바꾸려 한다",
+      "pick": "⭐ **가장 오래된 살아 있는 앱 버전을 기준으로 정한다**",
+      "over": "최신 앱만 보고 바꾸기",
+      "why": "⭐⭐ **앱은 사용자가 안 올리면 옛 버전이 영원히 남는다.** 웹 프론트는 배포하면 다 같이 바뀌지만 앱은 클라이언트가 수십 버전으로 살아 있다 — 그래서 **`api-versioning` 의 문제가 가장 가혹한 형태**로 온다",
+      "tradeoff": "⚠️ 서버가 옛 계약을 오래 들고 있어야 하고, 코드가 분기로 지저분해진다. 그래도 **옛 앱을 깨뜨리면 사용자는 그 사실조차 모른 채 앱이 고장 났다고 생각한다** — 그리고 고치려면 심사를 기다려야 한다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "앱에 새 기능을 넣는다",
+      "pick": "⭐ **서버에서 끌 수 있게 만든다**(→ `feature-flag`)",
+      "over": "앱 코드에만 넣고 문제 생기면 다시 배포하기",
+      "why": "⭐⭐ 앱은 **되돌리기가 즉시가 아니다** — 다시 심사를 받아야 하고, 그동안 나쁜 버전이 살아 있으며, **사용자가 업데이트를 받아야** 고쳐진다. 서버 스위치가 있으면 **몇 분 만에 끌 수 있다**",
+      "tradeoff": "플래그 관리 비용이 늘고, 안 지운 플래그가 쌓인다. 그래도 **앱에서 이 장치의 값은 웹보다 훨씬 크다** — 웹은 되돌리면 되지만 앱은 못 되돌린다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "강제 업데이트 장치를 넣을지 정한다",
+      "pick": "⭐ **쓸 일이 없어도 미리 넣어 둔다**",
+      "over": "필요해지면 그때 넣기",
+      "why": "⭐⭐⭐ **넣는 것 자체가 배포를 필요로 한다.** 정말 필요한 순간(보안 문제·프로토콜 파손)에는 **이미 나간 버전에 그 장치가 없고**, 넣으려면 심사를 거쳐 배포한 뒤 **사용자가 그것을 받기를 기다려야** 한다 — 즉 늦는다",
+      "tradeoff": "⚠️ 잘못 쓰면 사용자를 쫓아낸다(네트워크가 나쁘거나 저장 공간이 없으면 업데이트를 못 한다). 그래서 **장치는 넣되 기준을 엄격하게** 두고, **경고 → 권장 → 강제**의 단계를 만든다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "한 서비스를 iOS 와 안드로이드 양쪽에 내려 한다",
+      "pick": "**크로스플랫폼을 먼저 검토한다**",
+      "over": "처음부터 네이티브 두 벌",
+      "why": "이 데이터에서 **iOS 가 동반 1위(61.4%)** 이고 크로스플랫폼 낱말이 **442건(33%)** 함께 나온다 — **어차피 둘 다 만들어야 하는 것이 대부분**이고, 시장도 그 길을 많이 간다",
+      "tradeoff": "⚠️ **경계의 복잡도**가 온다 — 레브잇 공고의 `Native Module 또는 React Native **브릿지**` 가 그 일이다. 그리고 **역방향 사례도 있다**(뷰노 `Flutter에서 Android Native(Kotlin) 기반으로 전환`) — 하드웨어 접근·인증이 걸리면 네이티브로 돌아온다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "안드로이드 공고를 읽거나 이력서를 쓴다",
+      "pick": "⭐ **스토어 앱인지 장비 SW 인지 먼저 가른다**",
+      "over": "\"안드로이드 경험\"으로 뭉뚱그리기",
+      "why": "⭐ 뷰노 `**의료기기·측정장비 등 Android 기반 장비 SW** 개발`, 유피소프트 `**Windows 및 Android OS 환경**` 처럼 **스토어와 무관한 안드로이드**가 있다. 그쪽은 **심사도 파편화도 없고 대신 하드웨어와 인증**이 온다 — **겹치는 부분이 생각보다 적다**",
+      "tradeoff": "구분해 적으면 지원 가능한 공고가 줄어 보인다. 그래도 **면접에서 서로 다른 것을 기대하다 어긋나는 것**보다 낫다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "target API level 마감을 달력에 넣지 않는다",
+      "why": "평소에는 아무 문제가 없고, 정책 문서를 볼 일도 없다. 그런데 마감이 지나면 **업데이트 제출 자체가 막히고** — 그 시점에 급한 버그 수정이 있으면 **먼저 target 을 올려야** 한다. 올리는 일은 대개 **동작 변경을 동반**해서 하루에 안 끝난다",
+      "fix": "⭐ **정책 문서의 날짜를 팀 달력에 넣고 여유를 둔다.** 문서가 연장 신청도 언급하지만(\"request an extension\") **그것도 미리 해야 한다.** ⚠️ 그리고 **인용된 날짜·레벨은 매년 갱신되므로 원문에서 현재 값을 확인**한다",
+      "sources": [
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **구글이 언제부터 무엇을 막는지 날짜와 함께 스스로 적는 문서** — 그리고 벌이 '삭제'가 아니라 '새 사용자에게 안 보이게'다"
+        }
+      ]
+    },
+    {
+      "trap": "신규 설치가 줄어드는 것을 마케팅 문제로 본다",
+      "why": "⭐⭐ **벌의 모양이 그렇게 생겼다.** 앱이 내려가는 게 아니라 **\"Out-of-date apps are unavailable to new users of devices that run newer versions of Android\"** — 기존 사용자는 그대로라 **지표가 서서히만 나빠진다.** 그래서 원인을 엉뚱한 데서 찾는다",
+      "fix": "**target API level 상태를 정기 점검 항목에 넣는다.** 그리고 신규 설치가 이유 없이 줄면 **먼저 그것부터 확인**한다 — `scraping` 의 '조용한 0건', `seo` 의 '조용히 갈라진 도메인' 과 같은 종류의 사고다",
+      "sources": [
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **구글이 언제부터 무엇을 막는지 날짜와 함께 스스로 적는 문서** — 그리고 벌이 '삭제'가 아니라 '새 사용자에게 안 보이게'다"
+        }
+      ]
+    },
+    {
+      "trap": "서버 API 를 바꾸며 앱 최신 버전만 확인한다",
+      "why": "개발 기기에는 최신 앱이 깔려 있고, 테스트도 그것으로 한다. 그런데 **사용자 기기에는 수십 버전이 살아 있다** — 그리고 옛 앱이 깨져도 **그 사용자는 앱이 고장 났다고 생각할 뿐 우리에게 알려 주지 않는다**",
+      "fix": "⭐ **버전별 사용자 분포를 먼저 본다.** \"가장 오래된 살아 있는 버전\"을 정하고 **그것을 기준으로** 바꾼다. 그리고 옛 버전을 끊어야 한다면 `api-versioning` 의 절차(예고·기한·모니터링)를 그대로 밟는다"
+    },
+    {
+      "trap": "기능을 앱 코드에만 넣는다",
+      "why": "가장 단순하고, 웹에서 하던 대로다. 그런데 **앱은 되돌릴 수 없다** — 문제가 생기면 고쳐서 심사를 받고, 통과해도 **사용자가 업데이트를 받아야** 반영된다. 그동안 나쁜 버전이 계속 돈다",
+      "fix": "**위험한 기능은 서버 스위치 뒤에 둔다**(→ `feature-flag`). ⭐ 앱에서는 이 장치의 값이 웹보다 훨씬 크다 — **웹은 되돌리면 되지만 앱은 못 되돌린다**"
+    },
+    {
+      "trap": "`생명주기` 같은 낱말로 안드로이드 수요를 센다",
+      "why": "안드로이드의 핵심 개념이라 셈에 넣고 싶어진다. 그런데 이 데이터에서 `생명주기` 는 **575건**이나 되는데 **데이터 생명주기·고객 생명주기** 등이 대부분이다 — `load-balancer` 의 `Nginx`(307건), `api-gateway` 의 `API Gateway`(AWS 제품명)와 같은 형태",
+      "fix": "⭐ **플랫폼 고유 낱말로 좁힌다**(`Jetpack Compose`·`ANR`·`Play 스토어`·`앱 심사`). 그리고 **문장을 읽어 가른다** — 이 백과사전이 반복해 세운 규칙이다"
+    },
+    {
+      "trap": "\"안드로이드 개발\" 공고를 다 같은 것으로 본다",
+      "why": "낱말이 하나라서다. 그런데 **1345건 안에 최소 셋이 섞여 있다** — 스토어 앱(네이티브), 크로스플랫폼(442건), 그리고 **장비 위의 안드로이드**(뷰노 `Android 기반 장비 SW`). 셋은 **하는 일도 배우는 것도 다르다**",
+      "fix": "공고를 읽을 때 **①스토어에 올리는가 ②크로스플랫폼인가 ③하드웨어를 만지는가** 를 먼저 가른다. 이력서에도 그렇게 적는다 — ⭐ \"앱 출시 경험\"과 \"장비 SW 경험\"은 서로를 대체하지 않는다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐ target API level",
+      "en": "targetSdkVersion",
+      "what": "앱이 \"이 안드로이드 버전을 지원한다\"고 선언하는 값. **선언하지 않으면 OS 가 바뀌어도 옛 동작이 유지된다**"
+    },
+    {
+      "term": "⭐⭐ 조용한 소멸",
+      "en": "—",
+      "what": "\"Out-of-date apps are **unavailable to new users**\" — 앱이 내려가는 게 아니라 **새 사용자에게만 안 보인다**"
+    },
+    {
+      "term": "파편화",
+      "en": "fragmentation",
+      "what": "기기·OS·화면·제조사 커스터마이징이 제각각인 것. 공고 75건"
+    },
+    {
+      "term": "웹뷰",
+      "en": "WebView",
+      "what": "앱 안에 웹을 띄우는 것(308건). ⚠️ 웹뷰 자체도 플랫폼마다 다르다"
+    },
+    {
+      "term": "브릿지",
+      "en": "bridge / native module",
+      "what": "크로스플랫폼에서 네이티브 기능에 닿는 통로. **경계의 복잡도**가 여기 모인다"
+    },
+    {
+      "term": "강제 업데이트",
+      "en": "force update",
+      "what": "옛 버전을 막고 스토어로 보내는 장치. ⭐ **미리 넣어 두지 않으면 나중에 못 쓴다**"
+    },
+    {
+      "term": "ANR",
+      "en": "Application Not Responding",
+      "what": "앱이 일정 시간 응답을 못 해 시스템이 띄우는 것(공고 25건)"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐ 자기(또는 아무) 앱의 **target API level 정책 문서를 열고 현재 마감 날짜와 요구 레벨을 확인**한다. 그리고 **그 마감까지 남은 개월 수**를 적는다.",
+      "done_when": "현재 요구 레벨과 날짜가 적히고, ⭐ **인용된 값이 이 문서의 값과 같은지 다른지**가 확인된다(정책은 매년 갱신된다).",
+      "why": "⭐⭐ 이 문서가 인용한 \"August 31 2026 / API level 36\" 은 **인용 시점의 값**이다. **직접 확인하는 습관**이 이 낱말에서 특히 중요하다 — 마감을 놓치면 **업데이트 제출 자체가 막힌다.**",
+      "no_hardware": "앱이 없어도 된다 — 정책 문서를 읽는 것만으로 충분하다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ 앱을 가진 팀이라면 **버전별 사용자 분포**를 뽑는다 — 가장 오래된 살아 있는 버전은 무엇이고 몇 %인가. 없다면 상상해서 적되, **\"이 숫자를 어디서 볼 수 있나\"** 를 찾아 적는다.",
+      "done_when": "버전 목록과 비율이 나오고, ⭐ **가장 오래된 버전이 몇 개월 전 것인지**가 나온다. 그리고 \"그 버전을 끊으면 몇 명이 영향받나\"에 답할 수 있다.",
+      "why": "⭐⭐⭐ `api-versioning` 의 모든 판단이 이 숫자에서 시작한다. **이 숫자 없이는 무엇도 끊을 수 없고**, 대부분의 팀이 필요해진 순간에야 찾기 시작한다.",
+      "no_hardware": "앱이 없으면 **서버 로그의 User-Agent 나 클라이언트 버전 헤더**로 같은 것을 만들 수 있는지 확인해 본다 — 그 헤더가 없다면 그것부터가 과제다.",
+      "hours": 2
+    },
+    {
+      "task": "자기 앱(또는 아무 앱)에 **서버에서 끌 수 있는 기능이 몇 개인지** 센다. 그리고 **최근에 문제가 생겼던 기능**을 하나 골라, 그때 **되돌리는 데 며칠이 걸렸는지** 적는다.",
+      "done_when": "서버 스위치가 있는 기능의 개수가 나오고, **되돌리기에 걸린 시간**이 기록된다. ⭐ 스위치가 하나도 없으면 \"그때 무엇을 했나\"를 적는다.",
+      "why": "⭐⭐ 웹에서는 되돌리기가 몇 분이라 이 장치의 값이 잘 안 보인다. **앱에서 며칠이 걸린 경험**을 숫자로 적어 보면, `feature-flag` 가 왜 앱 팀에게 훨씬 중요한지가 분명해진다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "앱 배포가 웹 배포와 다른 세 가지는?",
+    "target API level 요구를 못 맞추면 앱에 무슨 일이 생기는가? 왜 그것이 알아채기 어려운가?",
+    "OS 가 바뀌어도 앱의 옛 동작이 유지되는 이유는? 문서의 어느 문장이 그것을 말하는가?",
+    "앱을 가진 팀이 옛 버전에 대해 고르는 두 가지 길과 각각의 대가는?",
+    "강제 업데이트 장치를 미리 넣어 둬야 하는 이유는?",
+    "\"안드로이드 경험\"이 서로 다른 것을 뜻하는 세 갈래는?"
+  ],
+  "evidence": [
+    {
+      "quote": "• iOS/Android 웹뷰 렌더링 차이 등 모바일 디바이스별 파편화에 대한 이해도가 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/354891",
+      "where": "르몽",
+      "what_it_shows": "⭐⭐ **`파편화` 라는 낱말이 공고에 그대로** 있다(75건). 그리고 **웹뷰조차 플랫폼마다 다르다**는 것 — 파편화를 피하려고 고른 수단에서 다시 파편화를 만난다"
+    },
+    {
+      "quote": "• Capacitor·React Native 등 하이브리드/크로스플랫폼 앱 배포 경험, 안드로이드 태블릿 대응 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/382436",
+      "where": "아치서울",
+      "what_it_shows": "⭐ `**앱 배포 경험**` 이 요구 사항으로 적힌다 — 643건이 이런 모양이다. 그리고 `태블릿 대응` 이 파편화의 한 얼굴"
+    },
+    {
+      "quote": "• iOS/Android Native Module 또는 React Native 브릿지 관련 경험이 있는 분을 선호합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/377536",
+      "where": "레브잇",
+      "what_it_shows": "⭐⭐ **크로스플랫폼을 써도 네이티브를 만나는 자리가 생긴다** — 그것을 잇는 사람이 따로 필요하고, 그 사람은 양쪽을 다 알아야 한다"
+    },
+    {
+      "quote": "심전도 측정 의료기기 애플리케이션을 Flutter에서 Android Native(Kotlin) 기반으로 전환하고, 이후 운영·고도화를 리드하는 역할입니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/384295",
+      "where": "뷰노",
+      "what_it_shows": "⭐ **역방향 전환** — 크로스플랫폼에서 네이티브로 돌아온다. 의료기기라는 맥락(하드웨어 접근·인증)이 이유일 수 있다"
+    },
+    {
+      "quote": "1) 의료기기·측정장비 등 Android 기반 장비 SW 개발",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/384295",
+      "where": "뷰노",
+      "what_it_shows": "⭐⭐ **스토어 앱이 아니라 장비 위의 OS.** 심사도 파편화도 없고 대신 하드웨어와 인증이 온다 — **\"안드로이드 경험\"이 갈리는 자리**"
+    },
+    {
+      "quote": "• Windows 및 Android OS 환경에서의 개발 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/370517",
+      "where": "유피소프트",
+      "what_it_shows": "`Android **OS 환경**` — 윈도우와 나란히 적힌다. 앱 플랫폼이 아니라 **운영체제**로 다뤄지는 또 하나의 예"
+    },
+    {
+      "quote": "• Nativescript-Vue or ReactNative를 이용하여 하이브리드 앱 런칭 (iOS, Android) 및 운영 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372316",
+      "where": "스콘에이아이(SconAI)",
+      "what_it_shows": "⭐ `**런칭 및 운영**` — 만드는 것과 **내보내고 유지하는 것**을 함께 요구한다. 이 문서가 배포로 자리를 좁힌 이유"
+    },
+    {
+      "quote": "하나의 제품을 웹·iOS·Android·백엔드·QA·PD가 한 스쿼드로 만듭니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/336266",
+      "where": "헤렌",
+      "what_it_shows": "⭐ **앱은 혼자 오지 않는다.** 웹·백엔드와 한 팀이고, 그래서 **앱의 배포 제약이 서버의 API 결정으로 번진다**(→ `api-versioning`)"
+    }
+  ],
+  "related": [
+    {
+      "slug": "kotlin",
+      "how": "⭐ 이 문서를 큐에 올린 자리. 그쪽은 **언어**, 여기는 **배포와 파편화** — 동반 기술에서 Kotlin 36.5%"
+    },
+    {
+      "slug": "api-versioning",
+      "how": "⭐⭐ **앱의 배포 문제가 서버의 API 문제가 되는 자리.** 클라이언트 버전이 수십 개로 살아 있어 가장 가혹한 형태로 온다"
+    },
+    {
+      "slug": "feature-flag",
+      "how": "⭐⭐ **앱에서 값이 가장 큰 장치** — 되돌리기가 심사를 거치므로, 서버 스위치가 유일한 빠른 길이다"
+    },
+    {
+      "slug": "design-system",
+      "how": "헤렌 공고의 `XML / Jetpack Compose` — 공통 컴포넌트를 만드는 자리, 그리고 전환기"
+    },
+    {
+      "slug": "security-certification",
+      "how": "⭐ 장비 위의 안드로이드에서는 **스토어 심사 자리를 기기 인증이 대신한다**(뷰노 공고의 의료기기)"
+    },
+    {
+      "slug": "observability",
+      "how": "`크래시|Crashlytics` 139건 — 사용자 기기에서 일어난 일을 우리가 알아내는 문제"
+    },
+    {
+      "slug": "ios",
+      "how": "⚠️ 아직 문서가 없다(**1117건**, 동반 **61.4%**). 앱 스토어의 심사·정책은 성격이 또 달라 **별도 낱말**이다"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `Android`(430건 · 6.0%)를 그대로 옮겼다. ⚠️ 본문 직접 셈은 **1345건**으로 세 배 이상 차이가 난다(`rest` 572 vs 3372 와 같은 형태) — 두 숫자를 다 적었다.",
+    "⚠️⚠️ **인용한 날짜와 API 레벨은 인용 시점의 값이다.** \"Starting August 31 2026 ... Android 16 (API level 36)\" 는 **매년 갱신되는 정책**이다 — **실제로 쓸 때는 반드시 원문에서 현재 값을 확인해야 한다.** 실습 1번을 그 확인으로 뒀다.",
+    "⚠️ **1차 자료가 하나다.** target API level 요구사항 문서 하나로 `why`·`old` 절을 받쳤고, **심사 정책·거절 사유·배포 트랙(내부·비공개·단계적 출시) 문서는 열지 않았다** — `앱 심사|리젝` 33건이 가리키는 영역이 비어 있다.",
+    "**버전 분포를 보는 방법을 다루지 않았다.** `old` 절이 \"버전별 사용자 분포를 본다\"고 하면서 **어디서 어떻게 보는지는 적지 않았다**(Play Console 의 해당 문서를 열지 않았다).",
+    "⚠️ **\"안드로이드 개발\"을 의도적으로 다루지 않았다.** 생명주기·Compose·의존성 주입 같은 것은 공식 문서가 훨씬 잘 하고 옮기면 요약본이 된다. ⚠️ 특히 **`생명주기` 575건은 오염이 커서**(데이터 생명주기 등) 셈에서도 뺐다.",
+    "**iOS 를 다루지 않았다.** 동반 1위(61.4%)이고 셈으로 1117건인데 이 문서는 안드로이드만 본다 — **앱 스토어의 심사·정책은 성격이 또 다르고**, 둘을 한 문서에 넣으면 흐려진다.",
+    "⭐ **`escape` 표의 '치르는 값'은 이 문서의 정리다.** 웹뷰·크로스플랫폼·네이티브의 트레이드오프를 담은 **1차 자료는 열지 않았고**, 셈과 공고 문장에서 추론했다."
+  ],
+  "sources": [
+    {
+      "title": "Meet Google Play's target API level requirement",
+      "url": "https://developer.android.com/google/play/requirements/target-sdk",
+      "publisher": "Google",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **구글이 언제부터 무엇을 막는지 날짜와 함께 스스로 적는 문서** — 그리고 벌이 '삭제'가 아니라 '새 사용자에게 안 보이게'다"
+    }
+  ]
+}

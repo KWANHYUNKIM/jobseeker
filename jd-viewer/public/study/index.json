@@ -1928,6 +1928,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "android",
+      "title": "Android — 배포와 파편화",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐ **웹과 다른 것은 언어가 아니라 배포다** — 내보내는 것을 **남이 심사하고**, 내보낸 뒤에도 **사용자가 안 올리면 옛 버전이 그대로 남는다.** 그래서 서버가 그 빚을 떠안는다.",
+      "aliases": [
+        "Android",
+        "안드로이드",
+        "앱 배포",
+        "Play 스토어",
+        "타겟 SDK",
+        "target SDK"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
