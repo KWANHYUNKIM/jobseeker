@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Railway** | US · SaaS | 프로파일만 씀(2026-09-07). 도메인 셋 다 비어 있다 — 랙과 전원부터 직접 세운다(`data-center-build-part-one` 2025-01-17 확보) · 쿠버네티스 없이 자기 것으로 돌린다(자료 부족, 오케스트레이터 내부 미독) · 엣지도 남의 것을 안 쓴다(`railway-cdn` 2026-06-04 확보). 안 읽은 것 — 데이터센터 2부 · eBPF 네트워크 관측 · Metal Gen 2 · `datacenter-no-mistakes` · 빌더 세부. ⚠️ 블로그 주소는 `blog.railway.com` 이다. |
+| **Railway** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 랙과 전원부터 직접 세운다(`zero-touch-provisioning`). 빈 도메인 둘 — 쿠버네티스 없이 자기 것으로 돌린다(오케스트레이터 내부 자료 없음) · 엣지도 남의 것을 안 쓴다(`railway-cdn` 확보). 안 읽은 것 — eBPF 네트워크 관측 · Metal Gen 2 · `datacenter-no-mistakes` · 빌더 세부. ⚠️ 블로그 주소는 `blog.railway.com` 이다. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
