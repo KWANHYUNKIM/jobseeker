@@ -4,43 +4,66 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **헥사고날 / 클린 아키텍처**(`hexagonal-architecture`)를
-완성했다 — **126번째 문서**.
+**없음.** 직전 사이클에서 **리팩터링**(`refactoring`)을 완성했다 — **127번째 문서**.
 
-### 직전 사이클 (헥사고날 / 클린 아키텍처)
+### 직전 사이클 (리팩터링)
 
-⭐⭐⭐ **축: "이름은 174번, 규칙은 3번."**
+⭐⭐⭐ **축: "753번 부르고 정의는 0번."**
 
-> ⭐⭐⭐ (Cockburn 의도) "Allow an application to equally be driven by users, programs,
->   **automated test** or batch scripts, and to be **developed and tested in isolation
->   from its eventual run-time devices and databases**."
-> ⭐⭐⭐ (문제) "**infiltration of business logic into the user interface code**" ·
->   "When the **database server goes down** ... **the programmers can't work**" ·
->   근본 원인은 "**entanglement**"
-> ⭐⭐⭐ (규칙) "**source code dependencies can only point inwards**" ·
->   "the **name** of something declared in an outer circle **must not be mentioned**"
-> ⭐⭐⭐ "**The Web is a detail. The database is a detail.**"
-> ⭐⭐ (육각형인 이유) "to **get away from the one-dimensional layered picture**" ·
->   "**not a hexagon because the number six is important**"
+> ⭐⭐⭐ **"If somebody talks about a system being broken for a couple of days while
+>   they are refactoring, you can be pretty sure they are not refactoring."**
+> ⭐⭐⭐ "your system **should not be broken for more than a few minutes at a time**" ·
+>   "I don't see how you do it on something that **doesn't have a well defined behavior**"
+> ⭐⭐⭐ **"There may be other good techniques for restructuring, but they are different.
+>   I'd like us to be clear about what we mean when we use this word."**
+> ⭐⭐⭐ "without changing its **observable behavior**" ·
+>   **"Refactoring isn't another word for cleaning up code"**
 
-⭐⭐⭐ **셈: 174 대 3**(`의존성 역전`). 그리고 **`클린 아키텍처` 162 대 `헥사고날` 22** —
-Uncle Bob 자신은 "**They all have the same objective**" 라고 적는다.
-⚠️ 공고는 **`MVVM, MVI, Clean Architecture 중 하나 이상`**(헤렌)처럼 **UI 패턴과 나란히**
-놓는다 — 같은 회사의 다른 줄은 **`MVVM + Clean Architecture`** 라고 함께 적는데도.
+⭐⭐⭐ **셈: 753 대 0**(`동작을 바꾸지|외부 동작|기능 변경 없이`). **다섯 번째 완전한 0**인데
+⚠️ **성격이 다르다** — 앞의 넷은 **개념의 이름**이 안 불린 것이고 여기는 **정의 자체**다.
 
-⭐⭐⭐ **실패 사례 검색 규칙을 여섯 사이클 만에 처음 지켰다.** 결과는 **2차 자료의
-일반론뿐**이었고, **근거로 쓰지 않고 그 사실을 `open_questions` 에 남겼다.**
+⭐⭐ 그 밖: `유지보수` **4146** · `레거시` 766 · `구조 개선` 387 · **AI 도구와 함께 145** ·
+⚠️ `재작성|전면 개편` **26건뿐** — **거의 다 "리팩터링"으로 불린다.**
+
+⭐ **alias 이전 세 번째**: `technical-debt` → `refactoring`(`리팩터링`·`리팩토링`).
+⚠️ `레거시` 는 충돌이 나서 **`technical-debt` 에 그대로 뒀다**(그쪽이 `레거시` 766 대
+`부채` 227 대비를 이미 다뤘다).
 
 ### 다음
 
-**리팩터링**(`refactoring`) — QUEUE 맨 위.
+**문서화**(`documentation`) — QUEUE 맨 위.
 
-⭐⭐⭐ **층을 바꾼다**(설계 세 연속 → 실천/품질) **그리고 사슬을 닫는다** —
-`testing`→`technical-debt`→`code-review`→**`refactoring`**. 셈 **753건(모집중 256)**.
-축은 **`RefactoringMalapropism`** — **원저자가 이 낱말의 오용에 이름을 붙여 항의했다.**
-⚠️ **못 열면 `문서화`(2037건)나 `성능 최적화`(2725건)로 바꾼다.**
+⭐⭐⭐ **층이 통째로 비어 있다**(127개 중 문서화를 다루는 것이 없다) **그리고 2037건**이다.
+축은 **Diátaxis** — 문서를 넷으로 가르고 **섞으면 넷 다 실패한다**고 말한다.
+⚠️ **못 열면 `성능 최적화`(2725건)로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **완전한 0에도 두 종류가 있다 — 개념의 이름이 없는 것과 정의가 없는 것.**
+  `HATEOAS`·`공유 책임`·`유비쿼터스 언어`·`애그리거트` 는 **개념의 이름**이 안 불린 것이라
+  "몰라도 대충 굴러간다"가 성립했다. ⚠️⚠️ **그런데 `동작을 바꾸지 않는다` 0건은 다르다** —
+  그건 **리팩터링을 리팩터링이게 하는 유일한 조건**이고, 없으면 **그 낱말이 다른 일을
+  가리키게 된다.** 📌 **0을 만나면 "이게 이름인가 정의인가"를 먼저 가른다.**
+
+- ⭐⭐⭐ **"스스로 그은 선" 계보에 세 번째 주체가 생겼다 — 낱말의 뜻.**
+  제품이 자기 기능에(`redis`), 주창자가 자기 방식에(`microservices`), 그리고
+  **저자가 자기 낱말의 뜻에**(`refactoring`). ⭐⭐ **그리고 어조가 중요하다** —
+  "other **good** techniques ... but they are **different**. I'd like us to be **clear**".
+  📌 **금지가 아니라 구분을 요구한다.** 이유가 실용적이다: **같은 낱말로 다른 일을 부르면
+  그 일의 위험도 함께 뭉개진다** — 리팩터링은 언제든 멈출 수 있지만 restructuring 은
+  중간에 멈추면 아무것도 안 남는다.
+
+- ⭐⭐ **셈의 짝을 보면 "무엇이 안 불리나"가 더 정확해진다.**
+  `리팩터링` 753 옆에 `재작성|전면 개편` **26건**을 세워 보니, **며칠 깨질 일들이
+  갈 데가 없어서 전부 "리팩터링"으로 불린다**는 것이 보였다.
+  📌 **큰 낱말을 셀 때 "그 낱말이 아닌 것의 이름"도 함께 센다** — 그게 0이거나 아주
+  작으면, **그 일들이 큰 낱말 안으로 흡수되고 있다는 뜻**이다.
+
+- ⭐ **alias 이전이 세 번째다** — `react`→`state-management`, `git`→`code-review`,
+  `technical-debt`→`refactoring`. ⚠️ **이번엔 충돌이 났다**(`레거시`를 양쪽이 원했다).
+  ⭐ **판정 기준은 "어느 문서가 그 낱말로 셈을 했나"** 였다 — `technical-debt` 가
+  `레거시` 766 대 `부채` 227 대비를 이미 썼으므로 그쪽에 남겼다.
+  📌 **alias 는 이름이 아니라 그 문서가 실제로 다룬 셈을 따라간다.**
 
 - ⭐⭐⭐ **"자기 대가를 적는가"가 1차 자료를 가르는 새 축이 됐다.** `microservices` 는
   "shouldn't"·Microservice Premium, `cqrs` 는 "위험한 복잡성", `redis` 는 "we discourage it",

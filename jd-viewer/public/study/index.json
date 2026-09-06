@@ -2184,8 +2184,6 @@
         "기술 부채",
         "technical debt",
         "레거시",
-        "리팩터링",
-        "리팩토링",
         "legacy"
       ],
       "sections": 4,
@@ -2303,6 +2301,23 @@
         "포트와 어댑터",
         "ports and adapters",
         "의존성 역전"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "refactoring",
+      "title": "리팩터링 — 753번 부르고 정의는 0번",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **정의가 전부 한 조건에 있다 — \"관찰 가능한 동작을 바꾸지 않는다.\"** 그래서 며칠씩 깨져 있었다면 **그건 리팩터링이 아니었다**(원저자가 그 오용에 이름까지 붙였다). ⚠️ 공고는 이 낱말을 **753번** 부르는데, 그 조건을 말한 곳은 **0건**.",
+      "aliases": [
+        "리팩터링",
+        "리팩토링",
+        "refactoring",
+        "behavior-preserving"
       ],
       "sections": 5,
       "drills": 3,

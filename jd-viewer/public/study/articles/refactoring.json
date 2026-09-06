@@ -1,0 +1,621 @@
+{
+  "slug": "refactoring",
+  "title": "리팩터링 — 753번 부르고 정의는 0번",
+  "title_en": "Refactoring: Named 753 Times, Defined Zero",
+  "aliases": [
+    "리팩터링",
+    "리팩토링",
+    "refactoring",
+    "behavior-preserving"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **정의가 전부 한 조건에 있다 — \"관찰 가능한 동작을 바꾸지 않는다.\"** 그래서 며칠씩 깨져 있었다면 **그건 리팩터링이 아니었다**(원저자가 그 오용에 이름까지 붙였다). ⚠️ 공고는 이 낱말을 **753번** 부르는데, 그 조건을 말한 곳은 **0건**.",
+  "summary": "⭐ 이 백과사전의 네 문서가 같은 것을 물어 왔다 — `testing`(\"움직일 수 있는가\"), `technical-debt`(이자 = 바꿀 때 드는 추가 노력), `code-review`, 그리고 `hexagonal-architecture`(\"매 커밋마다 지켜야 한다\"). **실제로 움직이는 행위가 여기다.**\n\n**정의는 짧고, 조건이 하나 붙어 있다.**\n\n> ⭐⭐⭐ (명사) \"a change made to the internal structure of software to make it **easier to understand and cheaper to modify** without changing its **observable behavior**\"\n> ⭐⭐⭐ \"Refactoring **isn't another word for cleaning up code** — it specifically defines **one** technique for improving the health of a code-base.\"\n\n💡 ⭐⭐⭐ **그리고 원저자가 이 낱말의 오용에 이름을 붙여 따로 글을 썼다** — `RefactoringMalapropism`(말을 잘못 씀).\n\n> ⭐⭐⭐ **\"If somebody talks about a system being broken for a couple of days while they are refactoring, you can be pretty sure they are not refactoring.\"**\n> ⭐⭐⭐ \"If you are doing refactoring your system **should not be broken for more than a few minutes at a time**, and I don't see how you do it on something that **doesn't have a well defined behavior**.\"\n> ⭐⭐ \"There may be **other good techniques for restructuring, but they are different.** I'd like us to be **clear about what we mean when we use this word**.\"\n\n📌 ⚠️⚠️ **셈이 그 걱정을 그대로 확인해 준다.** `리팩[터토]링|refactor` **753건**(모집중 256)인데, **`동작을 바꾸지|외부 동작|기능 변경 없이` 는 0건**이다.\n\n⭐⭐⭐ **이름은 753번 불리고, 그 이름의 정의를 이루는 유일한 조건은 0번 불린다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 753 대 0 — 그리고 유지보수 4146",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| ⭐⭐ `유지보수\\|maintainab` | **4146** | (모집중 1210) |\n| `레거시\\|legacy` | **766** | (모집중 280) |\n| ⭐ `리팩[터토]링\\|refactor` | **753** | (모집중 256) |\n| `코드 품질\\|code quality` | 651 | (모집중 291) |\n| `테스트 코드\\|단위 테스트` | 572 | (모집중 199) |\n| `구조 개선\\|점진적 개선` | 387 | (모집중 114) |\n| `기술 부채` | 227 | (모집중 110) |\n| `현대화\\|modernization` | 155 | (모집중 62) |\n| ⭐ `AI·Copilot·Claude·Cursor 와 함께` | **145** | (모집중 47) |\n| `가독성` | 79 | (모집중 38) |\n| ⚠️ `재작성\\|전면 개편\\|rewrite\\|갈아엎` | **26** | (모집중 18) |\n| ⚠️⚠️ **`동작을 바꾸지\\|외부 동작\\|기능 변경 없이`** | **0** | (모집중 **0**) |\n\n⭐⭐⭐ **753 대 0.** 이 백과사전의 다섯 번째 완전한 0이다(`HATEOAS`·`공유 책임`·`유비쿼터스 언어`·`애그리거트`에 이어).\n\n💡 ⚠️ **그런데 이번 0은 성격이 다르다.** 앞의 넷은 **개념의 이름**이 안 불린 것이었는데, 여기는 **정의 자체**가 안 불린다. ⭐ **\"관찰 가능한 동작을 바꾸지 않는다\"는 리팩터링의 부속 조건이 아니라 리팩터링을 리팩터링이게 하는 유일한 조건**이다.\n\n📌 ⭐⭐ **위쪽 숫자들이 그 이유를 짐작하게 한다.** `유지보수` **4146건**, `레거시` **766건** — **손봐야 할 코드가 있다는 인식은 아주 넓다.** ⚠️ 그런데 **손보는 방법의 구분은 없다**: `재작성|전면 개편` 은 **26건**뿐이다.\n\n💡 ⭐⭐⭐ **1차 자료의 구분으로 보면 이 26건과 753건 사이가 비어 있다.** 원문은 **리팩터링(behavior-preserving, 몇 분 단위)** 과 **restructuring(더 넓은 재배치)** 을 갈라 놓는데, 공고에는 **거의 전부가 \"리팩터링\"으로 적힌다.**\n\n> ⭐⭐⭐ `기존 레거시 시스템을 꾸준히 리팩토링하여 **최신 기술로의 전환**을 이끌어 가고 있습니다.` — 더스윙\n> ⭐⭐ `**레거시 시스템 리팩터링 또는 데이터 마이그레이션** 경험이 있으신 분` — 워드바이스\n\n⚠️ **\"최신 기술로의 전환\"은 원문 기준으로 리팩터링이 아니라 restructuring 이다** — ⭐ 나쁘다는 게 아니라 **다른 일**이고, `migration` 문서가 그쪽을 다룬다.\n\n📌 ⭐ **구분해 적은 곳도 있었다.**\n\n> ⭐⭐ `레거시 코드의 **현대화(Modernization) 및 리팩터링**을 주도하며` — 케이티밀리의서재\n\n⭐ **둘을 `및` 로 나란히 적었다** — `현대화` 는 **155건**이고, ⚠️ **둘을 나눠 부르는 공고는 드물다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 원저자가 낱말을 지키려고 글을 따로 썼다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RefactoringMalapropism",
+          "url": "https://martinfowler.com/bliki/RefactoringMalapropism.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **낱말의 뜻을 지키려고 쓴 글** — \"If somebody talks about a system being **broken for a couple of days** while they are refactoring, you can be pretty sure **they are not refactoring**\""
+        },
+        {
+          "title": "Refactoring — refactoring.com",
+          "url": "https://refactoring.com/",
+          "publisher": "Martin Fowler",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 정의와 절차 — \"without changing its **observable behavior**\" · \"Refactoring **isn't another word for cleaning up code**\""
+        }
+      ],
+      "body": "⭐ **이 백과사전은 \"스스로 그은 선\"을 모아 왔다** — 제품이 자기 기능에(`redis`), 주창자가 자기 방식에(`microservices`). **여기는 또 다른 자리다: 저자가 자기 낱말의 뜻에 그었다.**\n\n💡 ⭐⭐⭐ **글의 제목 자체가 그 항의다 — `Refactoring Malapropism`**(말을 잘못 씀).\n\n> ⭐⭐⭐ **\"If somebody talks about a system being broken for a couple of days while they are refactoring, you can be pretty sure they are not refactoring.\"**\n\n⚠️⚠️ **\"며칠 깨져 있었다\"는 것만으로 판정이 끝난다.** ⭐ 의도가 좋았는지, 결과가 나았는지는 묻지 않는다.\n\n> ⭐⭐⭐ \"If you are doing refactoring your system **should not be broken for more than a few minutes at a time**, and I don't see how you do it on something that **doesn't have a well defined behavior**.\"\n\n💡 **두 조건이 한 문장에 있다** — ①**몇 분 이상 깨져 있으면 안 된다** ②**동작이 명확히 정의돼 있어야 한다.** ⭐ 뒤쪽이 그래서 `testing` 과 직접 이어진다: **동작이 뭔지 모르면 \"안 바꿨다\"를 확인할 방법이 없다.**\n\n📌 **그리고 다른 예도 든다.**\n\n> ⭐⭐ \"If someone talks about **refactoring a document**, then that's not refactoring. **Both of these are restructuring**.\"\n\n⚠️ **문서를 정리하는 것도 리팩터링이 아니다** — ⭐ **코드가 아니어서가 아니라 \"동작 보존\"을 확인할 대상이 없어서**다.\n\n💡 ⭐⭐⭐ **그런데 이 글의 어조가 중요하다 — 다른 방식을 나쁘다고 하지 않는다.**\n\n> ⭐⭐⭐ **\"There may be other good techniques for restructuring, but they are different. I'd like us to be clear about what we mean when we use this word.\"**\n\n⭐⭐ **\"다른 좋은 기법들이 있을 것이다, 다만 그것들은 다른 것이다.\"** 📌 **금지가 아니라 구분을 요구한다** — 그리고 그 이유는 실용적이다: **같은 낱말로 다른 일을 부르면 그 일의 위험도 함께 뭉개진다.**\n\n📌 ⭐⭐ **refactoring.com 도 같은 선을 한 줄로 긋는다.**\n\n> ⭐⭐⭐ **\"Refactoring isn't another word for cleaning up code — it specifically defines *one* technique for improving the health of a code-base.\"**\n\n💡 ⚠️ **\"코드 정리\"의 다른 말이 아니다** — ⭐ 그런데 공고에서 이 낱말은 대개 그 자리에 온다.\n\n> `**Clean Code 원칙**에 따라 기존 코드 리팩토링을 진행하고, 팀의 코드 품질 기준을 함께 세워갑니다.` — 큐엠아이티\n> `코드 리팩토링과 유지보수를 통해 **개발 생산성과 코드 품질을 개선**해요.` — 러쉬에잇"
+    },
+    {
+      "id": "how",
+      "kind": "how",
+      "heading": "⭐⭐ 무엇으로 확인하나 — 작은 단계와 테스트",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Refactoring — refactoring.com",
+          "url": "https://refactoring.com/",
+          "publisher": "Martin Fowler",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 정의와 절차 — \"without changing its **observable behavior**\" · \"Refactoring **isn't another word for cleaning up code**\""
+        },
+        {
+          "title": "RefactoringMalapropism",
+          "url": "https://martinfowler.com/bliki/RefactoringMalapropism.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **낱말의 뜻을 지키려고 쓴 글** — \"If somebody talks about a system being **broken for a couple of days** while they are refactoring, you can be pretty sure **they are not refactoring**\""
+        }
+      ],
+      "body": "⭐ **정의가 조건이라면, 그 조건을 지키는 방법이 절차다.**\n\n> ⭐⭐⭐ \"Refactoring is a very specific technique, founded on using **small behavior-preserving transformations** (themselves called refactorings).\"\n> ⭐⭐ \"**Each transformation does little**, but a sequence of these transformations can produce a significant restructuring. **Since each refactoring is small, it's less likely to go wrong.**\"\n\n💡 ⭐⭐⭐ **큰 변화를 안 하는 게 아니라, 큰 변화를 작은 것들의 연속으로 만든다.** ⚠️ 그리고 **각 단계가 작으니 틀릴 확률이 낮다** — 📌 **이것이 `migration` 의 무화과와 같은 구조**다(가장자리부터 조금씩).\n\n> ⭐⭐ \"The system is **kept fully working after each refactoring**, reducing the chances that a system can get **seriously broken** during the restructuring.\"\n\n⭐⭐ **매 단계 뒤에 시스템이 완전히 동작한다** — 그래서 **\"몇 분 이상 깨져 있으면 안 된다\"** 가 결과로 따라 나온다.\n\n📌 ⭐⭐⭐ **그럼 \"안 바뀌었다\"를 무엇으로 아나 — 테스트다.** ⚠️ 그리고 원문의 두 번째 조건이 그것이다: **\"something that doesn't have a well defined behavior\"** 에는 리팩터링을 할 수 없다.\n\n💡 ⭐ **공고 셈이 그 짝을 보여 준다** — `테스트 코드|단위 테스트` **572건**, `리팩터링` **753건**. ⚠️ **어느 쪽이 먼저인지를 적은 공고는 못 찾았다.**\n\n📌 ⭐⭐ **언제 하는가에도 이름이 붙어 있다.**\n\n| | 무엇인가 |\n|---|---|\n| ⭐⭐⭐ **Preparatory Refactoring** | **기능을 넣기 전에 먼저 정리해서 그 기능 추가가 쉬워지게 한다** — 그다음 기능을 **별개의 단계로** 넣는다 |\n| ⭐⭐ 이해를 위한 리팩터링 | \"**I refactor it so I won't have to struggle again next time I look at it.**\" |\n\n⭐⭐⭐ **앞의 것이 핵심이다** — **리팩터링과 기능 추가를 섞지 않는다.** 💡 그러면 **문제가 생겼을 때 어느 쪽 때문인지 알 수 있고**, 리뷰하는 사람도 둘을 따로 볼 수 있다(→ `code-review`).\n\n⚠️ **공고에서 그 순서를 적은 곳은 없었다.** ⭐ 대신 이렇게 적는다.\n\n> ⭐⭐ `주어지는 과제를 단순 구현하는 것을 넘어, **문제의 근본 원인을 분석하고 리팩토링이나 구조 개선으로 해결**해 보신 분` — 네이버페이\n> ⭐ `기존 서비스의 기술적 문제를 발견하고 **지속적인 리팩토링 및 구조 개선**` — 매일새옷\n\n📌 ⭐ **`구조 개선` 이 387건인데 리팩터링과 거의 항상 붙어 나온다** — ⚠️ 1차 자료 기준으로는 **restructuring 과 refactoring 이 갈리는 자리**인데, **공고에서는 한 덩어리로 쓰인다.**"
+    },
+    {
+      "id": "ai",
+      "kind": "extra",
+      "heading": "⭐⭐ AI 와 함께 부르는 145건",
+      "confidence": "inferred",
+      "body": "⚠️ **이 절은 셈과 공고에서 관찰한 것이다** — **1차 자료는 AI 를 다루지 않는다.**\n\n⭐⭐ **`리팩터링` 이 AI 도구 이름과 함께 나오는 공고가 145건(모집중 47)이다.**\n\n> ⭐⭐⭐ `코드: **Claude Code, Codex를 활용해 보일러플레이트, 리팩토링, 테스트 작성까지 일상적으로 위임**합니다. 개발자의 시간은 타이핑이 아니라 판단과 설계에 사용합니다.` — 헤렌\n> ⭐⭐ `AI가 생성한 코드와 구성을 그대로 사용하는 데서 그치지 않고, **리뷰, 디버깅, 리팩토링, 테스트 자동화를 통해 품질**을 높입니다.` — 제논\n> ⭐ `AI Agent 및 자동화 툴을 적극 도입하여 **테스트 자동화, 레거시 리팩토링**, 배포 파이프라인 등 end-to-end 개발 프로세스를 효율화` — 큐픽스\n> `요구사항 분석부터 설계, 구현, 테스트, 디버깅, 코드 리뷰, **리팩터링까지 개발 라이프사이클 전반에서 AI를 활용**` — 와이케이기획\n\n💡 ⭐⭐⭐ **원문의 두 조건을 여기 대 보면 질문이 분명해진다.**\n\n| 원문의 조건 | AI 에게 맡길 때 |\n|---|---|\n| ⭐⭐⭐ \"**small** behavior-preserving transformations\" | ⚠️ **한 번에 큰 덩어리를 바꾸기 쉽다** |\n| ⭐⭐⭐ \"should **not be broken for more than a few minutes**\" | ⚠️ 되돌릴 단위가 크면 그만큼 오래 깨져 있다 |\n| ⭐⭐⭐ \"doesn't have a **well defined behavior**\" 면 못 한다 | ⚠️ **동작을 무엇으로 확인하나** |\n\n⭐⭐ **세 조건 다 \"누가 하느냐\"와 무관하다** — **사람이 하든 도구가 하든 같은 조건이 걸린다.** 📌 그래서 이 절이 새 규칙을 만들지 않는다. **원문의 조건을 그대로 적용할 뿐이다.**\n\n⚠️⚠️ **다만 이 문서는 AI 리팩터링의 실제 결과를 확인할 1차 자료를 찾지 못했다.** ⭐ 검색은 했고 **2차 자료(개인 블로그·Medium)만 나왔다** — 그중에는 AI 에게 레거시 리팩터링을 맡겼다가 대량의 버그가 생겼다는 기록도 제목에 있었으나, **1차 자료가 아니므로 근거로 쓰지 않는다**(`open_questions`).\n\n📌 ⭐ **대신 원문이 이미 준 확인 방법을 그대로 쓴다** — **되돌릴 단위가 몇 분인가, 그리고 동작이 무엇인지 적혀 있나.** 💡 ⚠️ **헤렌 공고의 문장이 그 답의 한쪽을 이미 갖고 있다**: 리팩토링과 **테스트 작성**을 함께 위임한다고 적는다.\n\n⭐ 그리고 `AI 로 리팩터링` **145건** 중 **모집중은 47건(32%)** 이라 — ⚠️ **이 표현이 최근에만 나타난 것은 아니다**(모집중 비율이 전체 34% 와 거의 같다)."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 리팩터링 기법 목록을 다루지 않았다.** Extract Function·Move Method 같은 **개별 변환을 하나도 안 썼다** — ⭐ 그것들은 `refactoring.com` 의 카탈로그에 이름과 절차가 다 있다. 📌 **이 문서는 \"무엇이 리팩터링인가\"와 \"무엇으로 확인하나\" 둘만 준다.**\n\n**2. ⚠️ 원저 책을 읽지 않았다.** 1차 자료는 **Fowler 의 bliki 한 편과 refactoring.com** 이다. ⭐ `두 개의 모자`(리팩터링 모자와 기능 추가 모자) 같은 개념은 **책에 있는데 이 문서가 원문으로 확인하지 못했다** — 대신 웹의 \"기능 추가 전에 먼저 정리하고, 그다음 별개 단계로 넣는다\" 서술로만 적었다.\n\n**3. ⚠️⚠️ 실패 사례를 찾았지만 이번에도 1차급 기록을 못 찾았다.** ⭐⭐ **두 사이클 연속 규칙은 지켰다**(1차 자료 여는 호출에 검색을 함께 넣는 방식이 통한다). ⚠️ 결과는 **전부 개인 블로그·Medium** 이었다 — 큰 재작성 실패, 15년 된 코드를 손대다 깨뜨린 기록, **AI 에게 맡겼다가 대량의 버그가 났다는 기록**. 📌 **근거로 쓰지 않았다.** ⭐ **다만 마지막 것은 `ai` 절의 셈(145건)과 정확히 겹치는 자리라 여기 남긴다.**\n\n**4. ⚠️ 성능 개선이 리팩터링인지 판정하지 않았다.** 공고에 `리팩토링을 통해 **성능 최적화**`(큐빅) 같은 표현이 있는데, ⭐ **응답 시간이 \"observable behavior\" 에 드는지는 원문에서 확인하지 못했다.** 📌 **원문은 성능을 별도 주제로 다루는 것으로 보이나 그 문서를 안 열었다.**\n\n**5. ⚠️ `구조 개선`(387건)과 `현대화`(155건)를 원문 기준으로 갈라 세지 못했다.** ⭐ 1차 자료는 refactoring 과 restructuring 을 가르는데, **공고 문장에서 그 둘을 기계적으로 갈라내는 방법을 찾지 못했다.**\n\n**6. ⭐ `market` 이 없다** — `tech_relations.json` 에 `리팩터링` 이름이 **없다.** 태그 목록에 안 들어가는 낱말이라 **비우는 것이 정상**이고 `evidence` 로 대신했다.\n\n**7. ⭐ `technical-debt` 에서 `리팩터링`·`리팩토링` alias 를 가져왔다.** ⚠️ 그 문서는 이 낱말을 **\"부채의 이자를 갚는 행위\"로 언급만** 했고 정의도 절차도 다루지 않았다 — 📌 `state-management`(`react` 에서)·`code-review`(`git` 에서) 때와 같은 이전이다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 원문",
+      "note": "⭐ 위 넷은 **`RefactoringMalapropism`**, 아래 다섯은 **refactoring.com** 이다. 📌 **요점은 마지막 줄** — **금지가 아니라 구분을 요구한다.**",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 판정",
+          "**\"If somebody talks about a system being broken for a couple of days while they are refactoring, you can be pretty sure they are not refactoring.\"**"
+        ],
+        [
+          "⭐⭐⭐ 두 조건",
+          "\"your system **should not be broken for more than a few minutes at a time**\" · \"I don't see how you do it on something that **doesn't have a well defined behavior**\""
+        ],
+        [
+          "⭐⭐ 다른 예",
+          "\"If someone talks about **refactoring a document**, then that's not refactoring. **Both of these are restructuring.**\""
+        ],
+        [
+          "⭐⭐⭐ 어조",
+          "**\"There may be other good techniques for restructuring, but they are different. I'd like us to be clear about what we mean when we use this word.\"**"
+        ],
+        [
+          "⭐⭐⭐ 정의(명사)",
+          "\"a change made to the internal structure of software to make it **easier to understand and cheaper to modify** without changing its **observable behavior**\""
+        ],
+        [
+          "⭐⭐ 정의(동사)",
+          "\"to restructure software by **applying a series of refactorings** without changing its observable behavior\""
+        ],
+        [
+          "⭐⭐⭐ 아닌 것",
+          "**\"Refactoring isn't another word for cleaning up code — it specifically defines *one* technique for improving the health of a code-base.\"**"
+        ],
+        [
+          "⭐⭐ 작은 단계",
+          "\"**Each transformation does little** ... **Since each refactoring is small, it's less likely to go wrong.**\""
+        ],
+        [
+          "⭐⭐ 늘 돌아간다",
+          "\"The system is **kept fully working after each refactoring**, reducing the chances that a system can get **seriously broken**\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RefactoringMalapropism",
+          "url": "https://martinfowler.com/bliki/RefactoringMalapropism.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **낱말의 뜻을 지키려고 쓴 글** — \"If somebody talks about a system being **broken for a couple of days** while they are refactoring, you can be pretty sure **they are not refactoring**\""
+        },
+        {
+          "title": "Refactoring — refactoring.com",
+          "url": "https://refactoring.com/",
+          "publisher": "Martin Fowler",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 정의와 절차 — \"without changing its **observable behavior**\" · \"Refactoring **isn't another word for cleaning up code**\""
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️ 이 낱말을 셀 때",
+      "note": "⭐⭐⭐ **753 대 0** — 다섯 번째 완전한 0이다. ⚠️ **그런데 앞의 넷과 성격이 다르다**: 앞은 **개념의 이름**이 안 불렸고, 여기는 **정의 자체**가 안 불린다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "⭐⭐ `유지보수\\|maintainab`",
+          "**4146 (모집중 1210)** — **손봐야 한다는 인식은 아주 넓다**"
+        ],
+        [
+          "`레거시\\|legacy`",
+          "766 (모집중 280)"
+        ],
+        [
+          "⭐ `리팩[터토]링\\|refactor`",
+          "**753 (모집중 256 = 34%)**"
+        ],
+        [
+          "`코드 품질`",
+          "651 (모집중 291)"
+        ],
+        [
+          "`테스트 코드\\|단위 테스트`",
+          "572 (모집중 199) — ⭐ **동작 보존을 확인하는 수단**"
+        ],
+        [
+          "`구조 개선\\|점진적 개선`",
+          "387 (모집중 114) — ⚠️ 리팩터링과 거의 붙어 나온다"
+        ],
+        [
+          "`기술 부채`",
+          "227 (모집중 110) — → `technical-debt`"
+        ],
+        [
+          "`현대화\\|modernization`",
+          "155 (모집중 62)"
+        ],
+        [
+          "⭐ AI 도구와 함께",
+          "**145 (모집중 47 = 32%)** — ⚠️ 전체 비율(34%)과 거의 같다"
+        ],
+        [
+          "⚠️ `재작성\\|전면 개편\\|rewrite`",
+          "**26 (모집중 18)** — ⭐ **거의 다 \"리팩터링\"으로 불린다**"
+        ],
+        [
+          "⚠️⚠️ **`동작을 바꾸지\\|외부 동작\\|기능 변경 없이`**",
+          "**0 (모집중 0)**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "line",
+      "kind": "compare",
+      "caption": "⭐⭐ 누가 무엇에 선을 그었나",
+      "note": "각 인용은 해당 문서의 1차 자료다. ⭐ **줄 세운 것은 이 백과사전의 관점**(`confidence: inferred`). 📌 **마지막 줄이 새 형태** — 기능도 방식도 아니라 **낱말의 뜻**에 그었다.",
+      "columns": [
+        "문서",
+        "무엇에 긋나",
+        "표현"
+      ],
+      "rows": [
+        [
+          "`redis`",
+          "제품이 **자기 기능**에",
+          "\"we discourage it\""
+        ],
+        [
+          "`aws`",
+          "제품이 **책임**에",
+          "⚠️ **부정어 없이 긍정형 배정**"
+        ],
+        [
+          "`microservices`",
+          "주창자가 **자기 방식**에",
+          "\"shouldn't start a new project with microservices\""
+        ],
+        [
+          "`bounded-context`",
+          "저자가 **가능성**에",
+          "\"not feasible or cost-effective\""
+        ],
+        [
+          "⭐⭐⭐ **`refactoring`**",
+          "**저자가 자기 낱말의 뜻에**",
+          "⭐⭐⭐ **\"you can be pretty sure they are not refactoring\"** — 그리고 **\"they are different. I'd like us to be clear\"**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "notref",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 원문 기준으로 리팩터링이 아닌 것",
+      "note": "⚠️ 왼쪽은 **원문의 판정 기준**(`confirmed`), 오른쪽 공고 대응은 **이 문서의 관찰**(`inferred`). ⭐ **나쁘다는 뜻이 아니다** — \"other good techniques ... but they are **different**\".",
+      "columns": [
+        "",
+        "왜 아닌가",
+        "공고에서"
+      ],
+      "rows": [
+        [
+          "며칠 깨져 있었다",
+          "\"should **not be broken for more than a few minutes** at a time\"",
+          "⚠️ 판정할 정보가 공고에 없다"
+        ],
+        [
+          "동작이 정의돼 있지 않다",
+          "\"I don't see how you do it on something that **doesn't have a well defined behavior**\"",
+          "⭐ `테스트 코드` **572건**이 그 자리"
+        ],
+        [
+          "문서를 정리했다",
+          "\"that's not refactoring. **Both of these are restructuring**\"",
+          "—"
+        ],
+        [
+          "⭐ 기술 전환·현대화",
+          "**restructuring** 쪽",
+          "⚠️ `꾸준히 리팩토링하여 **최신 기술로의 전환**`(더스윙) · `현대화` 155건"
+        ],
+        [
+          "⭐ 그냥 코드 정리",
+          "\"**isn't another word for cleaning up code**\"",
+          "⚠️ `Clean Code 원칙에 따라 ... 리팩토링`(큐엠아이티)"
+        ],
+        [
+          "⭐ 전면 재작성",
+          "**restructuring** 쪽",
+          "`재작성\\|전면 개편` **26건** — 대부분 \"리팩터링\"으로 불린다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ 관찰 가능한 동작",
+      "en": "observable behavior",
+      "what": "**바꾸지 않기로 한 것.** 정의의 전부다 — \"without changing its **observable behavior**\". ⚠️⚠️ **공고 0건**"
+    },
+    {
+      "term": "⭐⭐⭐ 동작 보존 변환",
+      "en": "behavior-preserving transformation",
+      "what": "\"**small** behavior-preserving transformations (themselves called refactorings)\" — ⭐ **작다는 것이 정의에 들어 있다**"
+    },
+    {
+      "term": "⭐⭐⭐ Refactoring Malapropism",
+      "en": "—",
+      "what": "**낱말을 잘못 씀.** ⭐ 원저자가 그 오용에 이름을 붙여 글을 따로 썼다 — **금지가 아니라 구분을 요구한다**"
+    },
+    {
+      "term": "⭐⭐ restructuring",
+      "en": "—",
+      "what": "**더 넓은 재배치.** \"other **good** techniques ... but they are **different**\" — ⚠️ **나쁜 게 아니라 다른 일**이다(→ `migration`)"
+    },
+    {
+      "term": "⭐⭐⭐ Preparatory Refactoring",
+      "en": "—",
+      "what": "**기능을 넣기 전에 먼저 정리해서 그 추가가 쉬워지게 한다.** 그다음 기능은 **별개 단계**로 넣는다 — ⭐ 섞지 않는 것이 요점"
+    },
+    {
+      "term": "⭐ 이해를 위한 리팩터링",
+      "en": "—",
+      "what": "\"**I refactor it so I won't have to struggle again next time I look at it.**\""
+    },
+    {
+      "term": "⚠️ 몇 분",
+      "en": "a few minutes",
+      "what": "⭐ **판정 기준이 시간으로 적혀 있다** — 며칠 깨져 있었으면 \"you can be pretty sure they are **not** refactoring\""
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "기능을 추가해야 하는데 그 자리 코드가 지저분하다",
+      "pick": "⭐⭐⭐ **먼저 정리하고, 그다음 기능을 별개 단계로 넣는다**",
+      "over": "기능을 넣으면서 같이 정리하기",
+      "why": "⭐⭐ **Preparatory Refactoring** — 기능 추가가 쉬워지도록 먼저 구조를 바꾼 뒤, **기능은 따로 넣는다.** 💡 섞으면 **문제가 생겼을 때 어느 쪽 때문인지 알 수 없고**, 리뷰하는 사람도 둘을 갈라 볼 수 없다(→ `code-review`)",
+      "tradeoff": "⚠️ **커밋이 둘로 늘고 당장은 느려 보인다.** ⭐ 그래도 **되돌릴 때 갈라서 되돌릴 수 있다** — 그리고 그것이 \"**kept fully working after each refactoring**\" 이 주는 값이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Refactoring — refactoring.com",
+          "url": "https://refactoring.com/",
+          "publisher": "Martin Fowler",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 정의와 절차 — \"without changing its **observable behavior**\" · \"Refactoring **isn't another word for cleaning up code**\""
+        }
+      ]
+    },
+    {
+      "situation": "\"리팩터링 좀 하겠습니다\"라는 계획이 올라왔다",
+      "pick": "⭐⭐ **\"중간에 며칠 깨져 있나\"를 묻는다**",
+      "over": "기간과 범위만 확인하기",
+      "why": "⭐⭐⭐ **원문이 그 한 질문으로 판정한다** — \"a system being **broken for a couple of days** ... you can be pretty sure **they are not refactoring**\". 💡 **깨져 있다면 그건 restructuring 이고, 위험도 절차도 다른 일**이다(→ `migration`: \"go down in flames most of the time\")",
+      "tradeoff": "⚠️ **말꼬리처럼 들릴 수 있다.** ⭐ 그래서 **금지가 아니라 구분으로 묻는다** — 원문의 어조가 그렇다: \"other **good** techniques ... but they are **different**\". 📌 이름이 갈리면 **필요한 안전장치도 갈린다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RefactoringMalapropism",
+          "url": "https://martinfowler.com/bliki/RefactoringMalapropism.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **낱말의 뜻을 지키려고 쓴 글** — \"If somebody talks about a system being **broken for a couple of days** while they are refactoring, you can be pretty sure **they are not refactoring**\""
+        }
+      ]
+    },
+    {
+      "situation": "손댈 코드에 테스트가 없다",
+      "pick": "⭐⭐ **먼저 동작을 고정할 테스트를 만든다**",
+      "over": "조심해서 고치기",
+      "why": "⭐⭐⭐ 원문의 두 번째 조건이다 — \"I don't see how you do it on something that **doesn't have a well defined behavior**.\" ⚠️ **동작이 무엇인지 적혀 있지 않으면 \"안 바꿨다\"를 확인할 수단이 없고**, 그러면 정의상 리팩터링을 할 수 없다",
+      "tradeoff": "⚠️ **레거시일수록 테스트를 붙이기 어렵다** — 그게 손대기 어려운 이유이기도 하다. ⭐ 그래도 **바깥에서 감싸는 테스트 몇 개만으로도 조건이 생긴다.** 📌 `테스트 코드|단위 테스트` 가 공고에 **572건** 나오고 `리팩터링` 은 **753건**이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RefactoringMalapropism",
+          "url": "https://martinfowler.com/bliki/RefactoringMalapropism.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **낱말의 뜻을 지키려고 쓴 글** — \"If somebody talks about a system being **broken for a couple of days** while they are refactoring, you can be pretty sure **they are not refactoring**\""
+        }
+      ]
+    },
+    {
+      "situation": "AI 도구에 리팩터링을 맡긴다",
+      "pick": "⭐⭐ **되돌릴 단위를 몇 분짜리로 자른다**",
+      "over": "한 번에 큰 범위를 맡기기",
+      "why": "⭐⭐⭐ **원문의 조건은 누가 하느냐와 무관하다** — \"**small** behavior-preserving transformations\", \"should **not be broken for more than a few minutes**\". 💡 ⚠️ **도구는 큰 덩어리를 한 번에 바꾸기 쉬운데**, 그러면 되돌릴 단위가 커지고 깨져 있는 시간이 길어진다",
+      "tradeoff": "⚠️ **작게 자르면 도구의 이점이 준다.** ⭐ 그래도 **원문이 준 두 조건은 그대로 남는다** — 📌 공고 **145건이 AI 와 함께 이 낱말을 쓰고**, 헤렌 공고는 **리팩토링과 테스트 작성을 함께** 위임한다고 적는다. ⚠️ **이 문서는 AI 리팩터링의 결과를 1차 자료로 확인하지 못했다**",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "\"리팩터링 경험\"을 이력서에 적는다",
+      "pick": "⭐ **동작이 안 바뀌었다는 것을 무엇으로 확인했는지 적는다**",
+      "over": "레거시 코드를 리팩터링했다고 적기",
+      "why": "⭐⭐ `리팩터링` 은 **753건이 적는다** — ⚠️ **흔하다.** 그런데 **`동작을 바꾸지|외부 동작` 은 0건**이다. ⭐ **정의를 아는 사람이 드물고**, 그 정의는 **확인 수단을 반드시 요구한다**",
+      "tradeoff": "길어진다. ⭐ 그래도 **\"레거시를 리팩터링했다\"는 무엇을 했는지 안 알려 주고**, **\"바깥 동작을 테스트로 고정한 뒤 하루 단위로 쪼개 옮겼다\"는 방법을 알려 준다.** 📌 그리고 **며칠 깨져 있었다면 그건 다른 일의 이름으로 적는 편이 정확하다**",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐⭐ 며칠 깨뜨려 놓고 리팩터링이라 부른다",
+      "why": "⭐⭐⭐ **원저자가 바로 그 경우에 이름을 붙였다** — \"a system being **broken for a couple of days** ... you can be pretty sure **they are not refactoring**\". ⚠️⚠️ 문제는 낱말 취향이 아니다 — **같은 이름으로 부르면 그 일의 위험도 함께 뭉개진다.** 💡 리팩터링은 언제든 멈출 수 있지만 **restructuring 은 중간에 멈추면 아무것도 안 남는다**",
+      "fix": "⭐ **이름을 갈라 부른다** — 며칠 깨질 일이면 `구조 전환`·`재작성`이라 부르고, **그에 맞는 절차를 쓴다**(→ `migration`, 무화과처럼 조금씩). 📌 원문의 어조를 따른다: **\"other good techniques ... but they are different\"** — **금지가 아니라 구분**",
+      "sources": [
+        {
+          "title": "RefactoringMalapropism",
+          "url": "https://martinfowler.com/bliki/RefactoringMalapropism.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **낱말의 뜻을 지키려고 쓴 글** — \"If somebody talks about a system being **broken for a couple of days** while they are refactoring, you can be pretty sure **they are not refactoring**\""
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐ \"코드 정리\"의 다른 말로 쓴다",
+      "why": "⭐⭐⭐ **refactoring.com 이 그 문장을 직접 부정한다** — \"Refactoring **isn't another word for cleaning up code** — it specifically defines ***one*** technique\". ⚠️ 정리는 목적이고 **리팩터링은 그 목적을 이루는 특정 기법**이다: **작은 동작 보존 변환의 연속**",
+      "fix": "⭐ **두 조건으로 확인한다** — ①**각 단계가 작은가** ②**매 단계 뒤 시스템이 돌아가는가**. 📌 둘 다 아니면 정리는 맞지만 리팩터링은 아니고, ⚠️ **그러면 테스트 없이 해도 되는 일이 아니게 된다**",
+      "sources": [
+        {
+          "title": "Refactoring — refactoring.com",
+          "url": "https://refactoring.com/",
+          "publisher": "Martin Fowler",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 정의와 절차 — \"without changing its **observable behavior**\" · \"Refactoring **isn't another word for cleaning up code**\""
+        }
+      ]
+    },
+    {
+      "trap": "리팩터링과 기능 추가를 한 커밋에 섞는다",
+      "why": "⚠️ **문제가 생겼을 때 어느 쪽 때문인지 알 수 없다.** ⭐ 원문은 순서를 나눠 적는다 — **먼저 정리(Preparatory Refactoring)**, **그다음 기능을 별개 단계로**. 💡 그리고 리뷰하는 사람도 **구조 변경 100줄과 기능 5줄이 섞이면 뒤를 못 본다**(→ `code-review`)",
+      "fix": "⭐ **커밋을 나눈다** — 정리 커밋은 **동작이 안 바뀌므로 테스트가 그대로 통과해야 한다**(그 자체가 검사다). 📌 기능 커밋만 새 테스트를 동반한다",
+      "sources": [
+        {
+          "title": "Refactoring — refactoring.com",
+          "url": "https://refactoring.com/",
+          "publisher": "Martin Fowler",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ 정의와 절차 — \"without changing its **observable behavior**\" · \"Refactoring **isn't another word for cleaning up code**\""
+        }
+      ]
+    },
+    {
+      "trap": "⭐ 테스트 없는 코드에 리팩터링을 시작한다",
+      "why": "⭐⭐⭐ 원문이 **할 수 없다고 적는다** — \"I don't see how you do it on something that **doesn't have a well defined behavior**.\" ⚠️ **동작이 정의돼 있지 않으면 \"안 바꿨다\"가 확인 불가능**하고, 그러면 남는 것은 **희망**뿐이다",
+      "fix": "⭐ **바깥에서 감싸는 테스트 몇 개를 먼저 만든다** — 전부일 필요 없고 **손댈 부분의 동작만** 고정하면 된다. 📌 ⚠️ 그것조차 어려우면 **그 사실이 지금 코드 상태에 대한 답**이다(→ `technical-debt`, `testing`)",
+      "sources": [
+        {
+          "title": "RefactoringMalapropism",
+          "url": "https://martinfowler.com/bliki/RefactoringMalapropism.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **낱말의 뜻을 지키려고 쓴 글** — \"If somebody talks about a system being **broken for a couple of days** while they are refactoring, you can be pretty sure **they are not refactoring**\""
+        }
+      ]
+    },
+    {
+      "trap": "⭐ AI 에게 큰 범위를 한 번에 맡긴다",
+      "why": "⭐⭐ **원문의 조건은 누가 하느냐와 무관하다** — \"**small** behavior-preserving transformations\", \"**not be broken for more than a few minutes**\". ⚠️ **도구는 큰 덩어리를 한 번에 바꾸기 쉽고**, 그러면 **되돌릴 단위가 커진다.** 📌 공고 **145건이 AI 와 함께 이 낱말을 쓴다**",
+      "fix": "⭐ **되돌릴 단위를 몇 분짜리로 자르고, 각 단계마다 테스트를 돌린다.** 📌 헤렌 공고처럼 **리팩토링과 테스트 작성을 함께** 다루는 것이 그 방향이다. ⚠️ **이 문서는 AI 리팩터링의 결과를 1차 자료로 확인하지 못했다** — 조건만 그대로 적용했다"
+    },
+    {
+      "trap": "이 문서를 읽고 기법을 안다고 여긴다",
+      "why": "⚠️⚠️ **개별 리팩터링 기법을 하나도 안 썼다** — Extract Function·Move Method 등. ⭐ 이 문서는 **\"무엇이 리팩터링인가\"와 \"무엇으로 확인하나\"** 둘만 준다",
+      "fix": "⭐ **기법 목록은 `refactoring.com` 의 카탈로그에 이름과 절차가 다 있다.** 📌 그리고 **왜 그 구조로 가는지는 `hexagonal-architecture`·`bounded-context`**, **왜 지금 해야 하는지는 `technical-debt`** 에 있다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐⭐ **최근 자기(또는 팀의) 커밋 중 \"리팩터링\"이라고 적힌 것을 다섯 개 찾아, 각각 원문의 두 조건으로 판정해 본다** — ①중간에 몇 분 이상 깨져 있었나 ②동작이 안 바뀌었다는 것을 무엇으로 확인했나.",
+      "done_when": "⭐ **다섯 개가 각각 리팩터링인지 restructuring 인지 갈렸고**, ⚠️ **동작 보존을 확인한 수단이 있었는지** 말할 수 있다.",
+      "why": "⭐⭐⭐ 원저자가 글을 따로 쓴 이유가 이것이다 — \"I'd like us to be **clear about what we mean when we use this word**\". 💡 ⚠️ **대개 몇 개는 아니다.** ⭐ 그리고 **그게 나쁘다는 뜻이 아니라 다른 일이었다는 뜻**이다.",
+      "no_hardware": "자기 커밋이 없으면 **공개 저장소의 \"refactor:\" 커밋** 몇 개로 같은 판정을 한다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **작은 함수 하나를 골라 Preparatory Refactoring 을 해 본다** — 먼저 기능 추가가 쉬워지도록 정리하고(테스트는 그대로 통과해야 한다), **그다음 별개 커밋으로 기능을 넣는다.**",
+      "done_when": "⭐ **커밋이 둘로 나뉘었고**, 첫 커밋에서 **테스트를 하나도 안 고쳤다.**",
+      "why": "⭐⭐⭐ **첫 커밋에서 테스트를 안 고쳤다는 것이 곧 \"동작을 안 바꿨다\"의 증거**다. 💡 ⭐ 이게 이 기법이 주는 가장 실용적인 것 — **정리가 맞았는지 그 자리에서 확인된다.** ⚠️ 테스트를 고쳐야 했다면 **동작을 바꾼 것이다.**",
+      "no_hardware": "코드가 없으면 **작은 오픈소스 저장소**를 받아 같은 일을 한다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐ **테스트가 없는 코드 한 조각을 골라, 손댈 부분의 동작만 고정하는 테스트를 세 개 써 본다.** 그리고 **그게 얼마나 어려웠는지** 한 줄 적는다.",
+      "done_when": "⭐ 테스트 셋이 돌고, ⚠️ **어려웠다면 무엇이 막았는지**(전역 상태? 시간? 외부 호출?) 이름으로 적혔다.",
+      "why": "⭐⭐⭐ 원문의 조건 — \"doesn't have a **well defined behavior**\" 면 리팩터링을 할 수 없다. 💡 ⭐ **테스트를 붙이기 어려운 정도가 곧 지금 코드 상태의 측정치**이고, 📌 막은 것들의 이름이 그대로 **`hexagonal-architecture` 가 말한 entanglement 의 목록**이 된다.",
+      "no_hardware": "공개 저장소 아무거나면 된다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "리팩터링의 정의를 원문으로 답하라. 바꾸지 않기로 한 것은 무엇인가?",
+    "며칠 깨져 있었다면 그것은 무엇이었나? 원저자는 그것을 나쁘다고 하는가?",
+    "동작이 명확히 정의돼 있지 않은 것에 리팩터링을 할 수 없는 이유는?",
+    "Preparatory Refactoring 의 순서는? 왜 섞지 않는가?",
+    "\"코드 정리\"와 리팩터링의 관계를 원문으로 답하라",
+    "공고에서 `리팩터링` 753건인데 `동작을 바꾸지` 0건인 것은 무엇을 뜻하는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "기존 레거시 시스템을 꾸준히 리팩토링하여 최신 기술로의 전환을 이끌어 가고 있습니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372012",
+      "where": "더스윙",
+      "what_it_shows": "⭐⭐⭐ **원문 기준으로는 restructuring 이다** — \"최신 기술로의 전환\"은 동작 보존 변환의 연속이 아니다. ⚠️ **나쁘다는 뜻이 아니라 다른 일**이고, 절차도 다르다(→ `migration`)"
+    },
+    {
+      "quote": "• 엔지니어링 엑설런스(Engineering Excellence): 레거시 코드의 현대화(Modernization) 및 리팩터링을 주도하며, 팀 전체의 코드 품질과 유지보수 효율성을 개선해요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365238",
+      "where": "케이티밀리의서재",
+      "what_it_shows": "⭐⭐ **둘을 `및` 로 나란히 적은 드문 공고** — `현대화` 155건. ⚠️ 대부분은 **한 낱말로 뭉친다**"
+    },
+    {
+      "quote": "• 코드: Claude Code, Codex를 활용해 보일러플레이트, 리팩토링, 테스트 작성까지 일상적으로 위임합니다. 개발자의 시간은 타이핑이 아니라 판단과 설계에 사용합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372622",
+      "where": "헤렌",
+      "what_it_shows": "⭐⭐⭐ **AI 와 함께 쓰는 145건의 전형** — ⭐ **리팩토링과 테스트 작성을 함께 위임**한다고 적은 것이 눈에 띈다(원문의 두 번째 조건이 그 자리다)"
+    },
+    {
+      "quote": "• Clean Code 원칙에 따라 기존 코드 리팩토링을 진행하고, 팀의 코드 품질 기준을 함께 세워갑니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "where": "큐엠아이티",
+      "what_it_shows": "⚠️ **\"코드 정리\"의 자리에 이 낱말이 온다** — 원문은 \"**isn't another word for cleaning up code**\" 라고 직접 부정한다"
+    },
+    {
+      "quote": "• 주어지는 과제를 단순 구현하는 것을 넘어, 문제의 근본 원인을 분석하고 리팩토링이나 구조 개선으로 해결해 보신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/380884",
+      "where": "네이버페이비상장",
+      "what_it_shows": "⭐ **`리팩토링이나 구조 개선`** — ⚠️ 1차 자료가 가르는 두 가지를 **선택지로 나란히** 놓는다(`구조 개선` 387건)"
+    },
+    {
+      "quote": "• 레거시 시스템 리팩터링 또는 데이터 마이그레이션 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378073",
+      "where": "워드바이스",
+      "what_it_shows": "⭐ **마이그레이션과 나란히 놓인다** — ⚠️ 그쪽 1차 자료는 한 번에 갈아엎는 계획이 \"**go down in flames most of the time**\" 이라고 적는다"
+    },
+    {
+      "quote": "• 기술 부채나 리팩터링 아이디어도 자유롭게 제안 가능",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/348913",
+      "where": "애쉬코어테크놀로지스",
+      "what_it_shows": "⭐ **`technical-debt` 와 붙어 나온다**(227건) — ⭐⭐ 이 문서가 그쪽에서 `리팩터링` alias 를 가져온 이유이기도 하다"
+    },
+    {
+      "quote": "• 코드 리뷰 문화를 지향하고, 지속적인 리팩토링을 통해 코드 품질을 높이는 데 관심이 많으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/370109",
+      "where": "띵킹프렌즈",
+      "what_it_shows": "⭐ **`code-review` 와 한 줄에 있다** — ⭐⭐ 리팩터링과 기능 추가를 나눠 커밋하면 **리뷰하는 쪽이 둘을 갈라 볼 수 있다**"
+    },
+    {
+      "quote": "3 기존 코드베이스 리팩토링을 통해 성능 최적화 및 코드 품질을 향상시킵니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/367785",
+      "where": "큐빅",
+      "what_it_shows": "⚠️ **응답 시간이 \"observable behavior\" 에 드는지 이 문서는 확인하지 못했다**(`open_questions`). ⭐ 원문이 성능을 별도 주제로 다루는 것으로 보이나 그 문서를 안 열었다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "technical-debt",
+      "how": "⭐⭐⭐ **이자를 갚는 행위가 여기다.** ⭐ 그 문서에서 `리팩터링`·`리팩토링` alias 를 가져왔다 — 그쪽은 **언급만** 했다"
+    },
+    {
+      "slug": "testing",
+      "how": "⭐⭐⭐ **두 번째 조건이 사는 곳** — \"doesn't have a **well defined behavior**\" 면 리팩터링을 할 수 없다"
+    },
+    {
+      "slug": "code-review",
+      "how": "⭐⭐ **정리와 기능을 나눠 커밋해야 리뷰가 가능하다** — 섞이면 뒤를 못 본다"
+    },
+    {
+      "slug": "migration",
+      "how": "⭐⭐⭐ **며칠 깨질 일은 이쪽이다.** \"other good techniques ... but they are **different**\" 의 그 다른 기법"
+    },
+    {
+      "slug": "hexagonal-architecture",
+      "how": "⭐ **테스트를 붙이기 어렵게 만드는 것들의 이름** — entanglement. 그리고 \"매 커밋마다 지켜야 한다\"가 여기서 실행된다"
+    },
+    {
+      "slug": "bounded-context",
+      "how": "어디로 옮길지의 기준 — 말이 갈리는 자리"
+    },
+    {
+      "slug": "git",
+      "how": "커밋을 나누는 도구 쪽 이야기"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **개별 리팩터링 기법을 하나도 안 다뤘다** — Extract Function·Move Method 등. ⭐ `refactoring.com` 의 카탈로그에 이름과 절차가 다 있는데 **이 문서는 \"무엇이 리팩터링인가\"와 \"무엇으로 확인하나\" 둘만** 준다.",
+    "⚠️ **원저 책을 읽지 않았다.** 1차 자료는 **bliki 한 편과 refactoring.com** 이다. ⭐ `두 개의 모자` 같은 개념은 **책에 있는데 원문으로 확인하지 못했고**, 웹의 서술로만 적었다.",
+    "⚠️⚠️ **실패 사례를 찾았지만 이번에도 1차급 기록을 못 찾았다.** ⭐⭐ **두 사이클 연속 규칙은 지켰다.** ⚠️ 결과는 **전부 개인 블로그·Medium** 이었다 — 큰 재작성 실패, 오래된 코드를 손대다 깨뜨린 기록, **AI 에게 맡겼다가 대량의 버그가 났다는 기록.** 📌 **근거로 쓰지 않았다.** ⭐ 다만 마지막 것은 **`ai` 절의 셈(145건)과 정확히 겹치는 자리**라 남긴다.",
+    "⚠️ **성능 개선이 리팩터링인지 판정하지 않았다.** 공고에 `리팩토링을 통해 **성능 최적화**`(큐빅)가 있는데, ⭐ **응답 시간이 \"observable behavior\" 에 드는지 원문에서 확인하지 못했다.**",
+    "⚠️ **`구조 개선`(387건)·`현대화`(155건)를 원문 기준으로 갈라 세지 못했다.** ⭐ 1차 자료는 refactoring 과 restructuring 을 가르는데, **공고 문장에서 기계적으로 갈라내는 방법을 찾지 못했다.**",
+    "⚠️ **AI 리팩터링의 실제 결과를 1차 자료로 확인하지 못했다**(`AI 도구와 함께` **145건**). ⭐ **원문의 조건은 누가 하느냐와 무관하므로 그대로 적용했을 뿐**이고, **새 규칙을 만들지 않았다.**",
+    "⭐ **`market` 이 없다** — `tech_relations.json` 에 `리팩터링` 이름이 **없다.** 태그 목록에 안 들어가는 낱말이라 비우는 것이 정상이고 `evidence` 로 대신했다.",
+    "⭐ **`technical-debt` 에서 `리팩터링`·`리팩토링` alias 를 가져왔다** — 그 문서는 이 낱말을 **\"이자를 갚는 행위\"로 언급만** 했다. 📌 `state-management`·`code-review` 때와 같은 이전이다.",
+    "⭐ **`레거시` alias 는 `technical-debt` 에 그대로 뒀다** — 그 문서가 **`레거시` 766 대 `부채` 227** 대비(같은 것을 두 이름으로 부를 때 어느 쪽을 쓰느냐)를 이미 다뤘다. ⚠️ 여기서 가져온 것은 **`리팩터링`·`리팩토링`** 둘뿐이다."
+  ],
+  "sources": [
+    {
+      "title": "RefactoringMalapropism",
+      "url": "https://martinfowler.com/bliki/RefactoringMalapropism.html",
+      "publisher": "Martin Fowler",
+      "kind": "article",
+      "summary": "⭐⭐⭐ **낱말의 뜻을 지키려고 쓴 글** — \"If somebody talks about a system being **broken for a couple of days** while they are refactoring, you can be pretty sure **they are not refactoring**\""
+    },
+    {
+      "title": "Refactoring — refactoring.com",
+      "url": "https://refactoring.com/",
+      "publisher": "Martin Fowler",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ 정의와 절차 — \"without changing its **observable behavior**\" · \"Refactoring **isn't another word for cleaning up code**\""
+    }
+  ]
+}
