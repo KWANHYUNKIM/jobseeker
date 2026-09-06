@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Zed** | US · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 에이전트에게 무엇을 허락할 것인가(`Sandboxing`) · 다음 편집을 미리 맞힌다(`Zeta2`) · 글자를 무엇에 담을 것인가(`Rope & SumTree`). 다음은 기능 하나. 안 읽은 것 — `Introducing Delta`(에이전트 여럿) · GPUI·Metal(화면) · CRDT(협업). |
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Zed** | US · SaaS | ⭐ **Cursor 와 정면으로 대비되는 에디터다.** `zed.dev/blog` 최신 **2026-09-01**. ⭐ **`Zed Decoded` 기술 연작이 있다** — `Rope & SumTree`, `Text Coordinate Systems` 같은 자료구조 밑바닥 글. 최근에는 **`Sandboxing`**(2026-08-05) · **`Introducing Delta`**(2026-08-12) · **`Xanadu Was Waiting for Agents`**(2026-09-01) · **`We Rebuilt Zeta from the Training Data Up`**·**`How We Developed Zeta2`**(자체 모델). ⚠️ **팁·게스트 글이 섞여 있어 심층 글을 골라야 한다.** ⭐ **러스트·GPUI·CRDT 협업 축이라 `AI 가 코드를 쓴다`(Cursor)와 다른 답을 줄 가능성이 크다.** |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
