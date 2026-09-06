@@ -4,7 +4,7 @@
   "name_en": "Materialize",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-07",
   "domain": "materialize.com",
   "one_liner": "SQL 뷰를 늘 최신으로 유지하는 데이터베이스 — 값을 다시 계산하지 않는 대신 그 상태를 메모리에 들고 있어야 한다",
@@ -140,6 +140,9 @@
             }
           ]
         }
+      ],
+      "features": [
+        "ivm-replica"
       ]
     }
   ],
@@ -704,6 +707,473 @@
           "confidence": "confirmed"
         }
       ]
+    },
+    {
+      "key": "ivm-replica",
+      "name": "읽기 복제본을 늘리는 대신 뷰를 유지한다",
+      "domain": "일을 쓰는 쪽에서 할 것인가 읽는 쪽에서 할 것인가",
+      "business": {
+        "why": "무거운 읽기가 원본 데이터베이스를 누를 때 흔한 답은 읽기 복제본을 늘리는 것이다. 그런데 회사가 그 답의 한계를 구조로 적는다 — **복제본은 원본과 같은 구조와 같은 데이터 배치를 그대로 물려받는다.** 그러니 복잡한 읽기는 복제본에서도 여전히 지연이 높고 처리량이 낮다.\n\n그래서 늘리는 것으로는 안 풀린다고 말한다. 복제본을 키우고 늘릴 수는 있지만 **구조 문제의 뿌리를 건드리지 않으므로 서비스 원가만 치솟는다.** 이 회사가 파는 자리가 정확히 거기다 — 읽는 쪽을 복제하는 대신 **읽을 것을 미리 만들어 두는 것**으로 바꾼다(재구성).\n\n값어치를 두 수치로 든다. 읽기 위주 워크로드에서 1000배, 그리고 사례 하나에서 **큰 읽기 복제본 여덟 대를 훨씬 작은 것 하나로 줄이며 비용을 90% 낮췄다**고 적는다. 두 수치 다 회사가 고른 사례의 것이라 일반화할 수 없다는 것을 함께 적어 둔다(재구성).\n\n이 엔진에서 원본 데이터베이스를 지키려던 회사들과 견주면 자리가 다르다. SmartHR 은 쪼개지 않고 앞에 커넥션 풀러를 세워 버텼고, Monzo 는 상태를 한 클러스터에 모아 둔 값을 장애로 치르고 쪼갰다. **여기는 읽기 자체를 다른 엔진으로 옮긴다** — 원본은 쓰기만 하게 두고, 읽을 답은 옆에서 미리 만들어 둔다(재구성).",
+        "metrics": [
+          {
+            "label": "읽기 위주 워크로드",
+            "value": "복제본 대비 1000배 성능이라고 적는다 — 회사의 주장이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "label": "사례 하나의 비용",
+            "value": "큰 읽기 복제본 여덟 대 → 훨씬 작은 증분 뷰 유지 복제본 하나, 비용 90% 감소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "label": "신선도",
+            "value": "Aurora 복제본의 지연이 100밀리초보다 훨씬 낮은데, 그에 맞먹거나 낫다고 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "label": "에이전트 쪽의 기준선",
+            "value": "쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Context Graphs at Agent Scale: Happy Writers, Happy Readers",
+                "url": "https://materialize.com/blog/happy-writers-happy-readers/",
+                "publisher": "Materialize",
+                "date": "2026-07-13",
+                "summary": "쓰는 쪽을 섬기는 관계형 DB 와 읽는 쪽을 섬기는 검색 색인 사이에서 일을 어디서 할 것이냐를 묻는 글. 쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다고 적는다."
+              }
+            ]
+          }
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Incremental View Maintenance Replicas",
+            "url": "https://materialize.com/blog/ivm-database-replica/",
+            "publisher": "Materialize",
+            "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+          },
+          {
+            "title": "Context Graphs at Agent Scale: Happy Writers, Happy Readers",
+            "url": "https://materialize.com/blog/happy-writers-happy-readers/",
+            "publisher": "Materialize",
+            "date": "2026-07-13",
+            "summary": "쓰는 쪽을 섬기는 관계형 DB 와 읽는 쪽을 섬기는 검색 색인 사이에서 일을 어디서 할 것이냐를 묻는 글. 쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다고 적는다."
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "복제 슬롯",
+            "what": "원본 Postgres·MySQL 이 변경을 흘려보내는 자리. 읽기 복제본이 붙는 곳에 똑같이 붙는다 — 원본 쪽에서 보면 복제본 하나가 더 붙은 것과 같다."
+          },
+          {
+            "name": "유지되는 뷰",
+            "what": "SQL 로 정의해 두면 상류가 바뀔 때마다 바뀐 만큼만 반영되는 결과. 주기적으로 새로 고치는 머티리얼라이즈드 뷰와 달리 계속 최신이다."
+          },
+          {
+            "name": "색인(인덱싱) 깊이",
+            "what": "어디까지 미리 만들어 둘지를 정하는 손잡이. 깊이 만들수록 지연이 줄고 메모리와 값이 는다."
+          },
+          {
+            "name": "질의의 모양",
+            "what": "이 구조가 잘 받는 것과 못 받는 것을 가르는 기준. 웹 서비스나 운영 대시보드처럼 모양이 예측 가능한 질의가 맞는 자리다."
+          }
+        ],
+        "invariants": [
+          "원본에는 쓰기만 남긴다 — 무거운 읽기가 원본의 자원을 쓰지 않는다.",
+          "결과는 강하게 일관된다 — 주기적으로 새로 고쳐 낡아 있는 뷰와 다른 점이 여기다.",
+          "미리 만들어 두는 만큼 상태를 들고 있어야 한다 — 색인을 깊이 할수록 메모리가 는다.",
+          "탐색적 질의는 이 계약 밖이다 — 원시 데이터를 아무렇게나 뒤지는 일에는 창고가 맞다고 회사가 적는다."
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Incremental View Maintenance Replicas",
+            "url": "https://materialize.com/blog/ivm-database-replica/",
+            "publisher": "Materialize",
+            "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "복제본을 늘리는 길과 뷰를 유지하는 길",
+          "question": "같은 복제 슬롯에 붙는데 무엇이 다른가",
+          "kind": "flow",
+          "code": "flowchart TD\n  DB[\"<b>원본 데이터베이스</b><br/>• Postgres · MySQL<br/>• 복제 슬롯을 연다\"]:::list\n  DB -->|\"같은 구조를 복제\"| RR[\"<b>읽기 복제본</b><br/>• 원본과 같은 데이터 배치<br/>• 복잡한 읽기는 여전히 느리다\"]:::list\n  DB -->|\"변경만 흘려보낸다\"| IVM[\"<b>증분 뷰 유지</b><br/>• SQL 로 뷰를 정의<br/>• 바뀐 만큼만 반영\"]:::list\n  RR --> APP1[\"읽는 쪽<br/>• 매번 조인·집계\"]:::list\n  IVM --> APP2[\"읽는 쪽<br/>• 이미 끝나 있는 답\"]:::list\n  IVM -. 들고 있는 상태 .-> MEM[\"<b>메모리</b><br/>• 색인을 깊이 할수록 는다\"]:::list"
+        },
+        {
+          "title": "일이 어디서 이뤄지나",
+          "question": "쓰는 쪽과 읽는 쪽 사이 어디에 일을 둘 것인가",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 쓰는쪽에서: 관계형 DB\n  쓰는쪽에서 --> 읽는쪽에서: 검색 색인 · 문서 저장소\n  읽는쪽에서 --> 사이에서: 증분 변환 층\n  사이에서 --> 사이에서: 상류가 바뀔 때마다\n  쓰는쪽에서: 한 사실을 한 곳에\\n대신 읽을 때 조인한다\n  읽는쪽에서: 읽기는 빠르다\\n대신 파이프라인을 계속 손본다\n  사이에서: 미리 만들어 둔다\\n대신 상태를 들고 있는다"
+        },
+        {
+          "title": "이 구조가 안 맞는 자리",
+          "question": "언제 이것 말고 다른 것을 써야 하나",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q{\"질의의 모양이<br/>예측 가능한가\"}\n  Q -->|\"그렇다\"| OK[\"<b>맞는 자리</b><br/>• 웹 서비스<br/>• 운영 대시보드\"]:::list\n  Q -->|\"아니다\"| NO[\"<b>안 맞는 자리</b><br/>• 원시 데이터의 탐색적 질의<br/>• 그때는 창고가 맞다고 적는다\"]:::list\n  OK --> D{\"색인을 얼마나<br/>깊이 할 것인가\"}\n  D -->|\"깊게\"| L[\"지연이 준다<br/>메모리와 값이 는다\"]:::list\n  D -->|\"얕게\"| F[\"질의의 자유가 는다<br/>지연이 는다\"]:::list"
+        }
+      ],
+      "thinking": [
+        {
+          "at": "복제본을 늘릴지 말지 정할 때",
+          "thought": "늘리는 것이 왜 답이 아닌지를 성능이 아니라 **구조로 적는다** — 복제본은 원본과 같은 데이터 배치를 물려받으므로 복잡한 읽기는 거기서도 느리다. 그러니 늘려도 뿌리가 그대로이고 원가만 는다(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디서 일할지 고를 때",
+          "thought": "모든 시스템은 일이 어디서 이뤄질지를 고른다 — 쓰는 시점인가, 읽는 시점인가, 그 사이 어딘가인가. 관계형 DB 는 쓰는 쪽을 섬기고 검색 색인은 읽는 쪽을 섬기는데, **이 회사의 답은 그 사이에 증분 변환 층을 두는 것이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "안 맞는 자리를 밝힐 때",
+          "thought": "파는 쪽이 **자기 물건이 안 맞는 자리를 먼저 적는 일이 드물다**(재구성) — 원시 데이터를 아무렇게나 뒤지는 탐색적 질의에는 창고가 맞다고 못 박는다. 모양이 예측 가능한 질의를 겨냥한 물건이라는 뜻이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "얼마나 미리 만들어 둘지 정할 때",
+          "thought": "색인 깊이가 질의의 자유와 속도를 맞바꾸는 손잡이가 된다. 그리고 깊이 할수록 메모리가 느는데, **그 메모리가 곧 앞 도메인의 원가다** — 이 회사에서 두 도메인은 같은 손잡이의 양쪽이다(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "원본 Postgres·MySQL 의 복제 슬롯에 붙는다 — 읽기 복제본이 붙는 그 자리다",
+            "why": "원본 쪽에서 보면 특별할 것이 없어야 도입이 쉽다"
+          },
+          {
+            "step": "SQL 로 유지할 뷰를 정의한다",
+            "why": "새 언어나 파이프라인을 배우지 않고 쓰던 것으로 정의하게 한다"
+          },
+          {
+            "step": "상류의 변경이 들어오면 전체가 아니라 바뀐 만큼만 흘려 결과를 갱신한다",
+            "why": "다시 계산하지 않는 것이 이 제품의 값어치다"
+          },
+          {
+            "step": "색인 깊이를 정해 어디까지 미리 만들어 둘지 고른다",
+            "why": "질의의 자유와 속도를 맞바꾸는 자리다"
+          },
+          {
+            "step": "읽는 쪽은 이미 끝나 있는 답을 받는다",
+            "why": "무거운 조인·집계가 요청 경로에서 사라진다"
+          },
+          {
+            "step": "원본에는 무거운 읽기가 남지 않는다",
+            "why": "원본을 지키는 것이 이 기능을 들이는 첫 이유다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "원본의 읽기 부하를 어떻게 덜 것인가",
+            "chosen": "읽기를 증분으로 유지되는 뷰로 옮긴다",
+            "alternatives": [
+              "읽기 복제본을 키우고 늘린다"
+            ],
+            "tradeoff": "복제본은 원본과 같은 구조를 물려받아 복잡한 읽기가 여전히 느리다. 옮기는 쪽은 그 구조를 바꾸는 대신 **유지할 상태를 새로 떠안는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "question": "신선도를 어디까지 포기할 것인가",
+            "chosen": "포기하지 않는다 — 계속 최신으로 유지하고 강한 일관성을 지킨다",
+            "alternatives": [
+              "주기적으로 새로 고치는 머티리얼라이즈드 뷰",
+              "창고로 옮겨 ETL 로 만든다"
+            ],
+            "tradeoff": "주기적 갱신은 지연은 낮지만 낡은 답을 주고, 창고는 원본 부담이 적은 대신 몇 분에서 몇 시간의 지체가 생긴다. 계속 유지하는 쪽은 그 둘을 다 피하는 대신 **상태를 계속 들고 있어야 한다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 언어로 정의하게 할 것인가",
+            "chosen": "SQL — 복제 슬롯에 붙여 놓고 쓰던 문법으로 뷰를 만든다",
+            "alternatives": [
+              "전용 스트림 처리 프레임워크"
+            ],
+            "tradeoff": "배울 것을 줄이는 대신 SQL 로 표현되는 모양 안에 갇힌다(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "question": "얼마나 미리 만들어 둘 것인가",
+            "chosen": "색인 깊이를 고르게 한다",
+            "alternatives": [
+              "항상 최대한 깊게",
+              "항상 얕게"
+            ],
+            "tradeoff": "깊이 하면 지연이 줄지만 메모리와 값이 늘고, 얕게 하면 질의의 자유가 는 대신 느려진다. **이 손잡이가 앞 도메인의 원가와 직접 이어진다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 질의까지 받을 것인가",
+            "chosen": "모양이 예측 가능한 질의 — 웹 서비스와 운영 대시보드",
+            "alternatives": [
+              "원시 데이터의 탐색적 질의까지"
+            ],
+            "tradeoff": "탐색적 질의는 이 구조에 맞지 않으므로 그때는 창고가 낫다고 회사가 스스로 적는다. **파는 쪽이 자기 물건이 안 맞는 자리를 먼저 적는 드문 자리다**(뒤쪽은 재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "question": "성과를 무엇으로 보일 것인가",
+            "chosen": "성능 배수와 함께 사례 하나의 비용 절감을 든다",
+            "alternatives": [
+              "성능 수치만"
+            ],
+            "tradeoff": "읽기 위주에서 1000배, 사례 하나에서 복제본 여덟 대를 하나로 줄여 90% 절감. 다만 **둘 다 회사가 고른 사례의 수치라 일반화할 수 없다**(뒤쪽은 재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "복제 슬롯(Postgres·MySQL)",
+            "role": "상류의 변경을 받아 오는 입구. 읽기 복제본과 같은 자리에 붙어 도입 문턱을 낮춘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "tech": "차분 데이터플로 기반 증분 유지",
+            "role": "바뀐 만큼만 흘려 뷰를 갱신하는 엔진. 조인·집계·재귀까지 표준 SQL 위에서 유지된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Context Graphs at Agent Scale: Happy Writers, Happy Readers",
+                "url": "https://materialize.com/blog/happy-writers-happy-readers/",
+                "publisher": "Materialize",
+                "date": "2026-07-13",
+                "summary": "쓰는 쪽을 섬기는 관계형 DB 와 읽는 쪽을 섬기는 검색 색인 사이에서 일을 어디서 할 것이냐를 묻는 글. 쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다고 적는다."
+              },
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "tech": "색인(인덱싱)",
+            "role": "어디까지 미리 만들어 둘지를 정하는 손잡이. 지연과 메모리를 맞바꾼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          }
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Incremental View Maintenance Replicas",
+            "url": "https://materialize.com/blog/ivm-database-replica/",
+            "publisher": "Materialize",
+            "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "tag-byte-dictionary",
+          "via": "같은 손잡이의 양쪽",
+          "contract": "여기서 색인을 깊이 할수록 들고 있어야 할 상태가 늘고, 그 상태의 바이트를 깎는 것이 저쪽 기능이다. **이쪽이 원가를 만들고 저쪽이 그 원가를 깎는다**(재구성).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Incremental View Maintenance Replicas",
+              "url": "https://materialize.com/blog/ivm-database-replica/",
+              "publisher": "Materialize",
+              "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+            }
+          ]
+        },
+        {
+          "to": "원본 데이터베이스 (Postgres · MySQL)",
+          "via": "복제 슬롯",
+          "contract": "읽기 복제본과 같은 자리에 붙어 변경을 받는다. 원본은 쓰기만 하게 두고 무거운 읽기를 이쪽이 받는 것이 계약의 핵심이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Incremental View Maintenance Replicas",
+              "url": "https://materialize.com/blog/ivm-database-replica/",
+              "publisher": "Materialize",
+              "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+            }
+          ]
+        },
+        {
+          "to": "데이터 창고 (다른 제품)",
+          "via": "안 맞는 자리를 넘긴다",
+          "contract": "원시 데이터의 탐색적 질의는 이 구조가 받지 않는다고 회사가 먼저 적는다. 경계를 스스로 그은 자리다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Incremental View Maintenance Replicas",
+              "url": "https://materialize.com/blog/ivm-database-replica/",
+              "publisher": "Materialize",
+              "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+            }
+          ]
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Differential Dataflow",
+            "url": "https://www.cidrdb.org/cidr2013/Papers/CIDR13_Paper111.pdf",
+            "authors": "F. McSherry, D. Murray, R. Isaacs, M. Isard",
+            "year": "2013",
+            "takeaway": "입력의 변경분을 출력의 변경분으로 옮기는 연산자를 쌓아 결과를 증분으로 유지하는 방법. 이 회사가 제품의 바탕으로 가져다 쓴 것이 이것이고, **읽기 복제본과 다른 답을 낼 수 있는 근거가 여기 있다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Context Graphs at Agent Scale: Happy Writers, Happy Readers",
+                "url": "https://materialize.com/blog/happy-writers-happy-readers/",
+                "publisher": "Materialize",
+                "date": "2026-07-13",
+                "summary": "쓰는 쪽을 섬기는 관계형 DB 와 읽는 쪽을 섬기는 검색 색인 사이에서 일을 어디서 할 것이냐를 묻는 글. 쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다고 적는다."
+              }
+            ]
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "미리 만들어 둘수록 빨라지는데 들고 있어야 할 것도 늘어난다",
+            "why_hard": "색인을 깊이 하면 지연이 줄지만 메모리와 값이 는다. 그런데 이 회사에서 메모리는 곧 컴퓨트 크레딧이라, **빠르게 만드는 결정과 싸게 만드는 결정이 같은 손잡이의 양쪽에 있다**(재구성).",
+            "current_best": "색인 깊이를 고객이 고르게 하고, 들고 있는 상태의 바이트는 따로 깎는다(사전 압축). 어디까지가 옳은 깊이인지에 대한 답은 자료에 없다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          },
+          {
+            "problem": "예측 가능한 모양의 질의만 받는다면 그 경계는 누가 긋나",
+            "why_hard": "회사는 탐색적 질의를 창고에 넘기라고 적지만, 실제 서비스의 질의는 시간이 지나며 모양이 변한다. 어느 시점에 이 구조 밖으로 나갔는지를 알아차리는 방법은 자료에 없다(재구성).",
+            "current_best": "운영 대시보드와 웹 서비스처럼 모양이 굳은 자리에 쓰는 것 — 경계를 사람이 판단한다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Incremental View Maintenance Replicas",
+                "url": "https://materialize.com/blog/ivm-database-replica/",
+                "publisher": "Materialize",
+                "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+              }
+            ]
+          }
+        ],
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Incremental View Maintenance Replicas",
+            "url": "https://materialize.com/blog/ivm-database-replica/",
+            "publisher": "Materialize",
+            "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+          }
+        ]
+      },
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Incremental View Maintenance Replicas",
+          "url": "https://materialize.com/blog/ivm-database-replica/",
+          "publisher": "Materialize",
+          "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
+        },
+        {
+          "title": "Context Graphs at Agent Scale: Happy Writers, Happy Readers",
+          "url": "https://materialize.com/blog/happy-writers-happy-readers/",
+          "publisher": "Materialize",
+          "date": "2026-07-13",
+          "summary": "쓰는 쪽을 섬기는 관계형 DB 와 읽는 쪽을 섬기는 검색 색인 사이에서 일을 어디서 할 것이냐를 묻는 글. 쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다고 적는다."
+        }
+      ]
     }
   ],
   "sources": [
@@ -737,7 +1207,7 @@
       "title": "Incremental View Maintenance Replicas",
       "url": "https://materialize.com/blog/ivm-database-replica/",
       "publisher": "Materialize",
-      "summary": "읽기 복제본을 늘려 버티던 것을 증분 뷰 유지로 바꾼 사례. 큰 읽기 복제본 여덟 대를 하나로 줄이며 비용을 90% 낮췄다고 적는다."
+      "summary": "읽기 복제본은 원본과 같은 구조·같은 데이터 배치를 그대로 물려받아 복잡한 읽기가 여전히 느리다는 데서 출발한다. 복제 슬롯에 붙어 SQL 로 뷰를 정의하고 증분으로 유지하는 쪽을 대안으로 내놓는다. 읽기 위주 워크로드에서 1000배, 여덟 대의 큰 읽기 복제본을 하나로 줄여 비용 90% 절감 사례를 든다. 다만 원시 데이터의 탐색적 질의에는 맞지 않는다고 못 박는다."
     }
   ]
 }
