@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "razorpay",
+      "name": "Razorpay",
+      "name_en": "Razorpay",
+      "country": "IN",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "인도 온라인 결제의 절반을 처리하는 게이트웨이 — 규모가 커지자 결제보다 자기 관측과 빌드의 비용이 이야깃거리가 됐다",
+      "updated_at": "2026-09-06",
+      "domain": "razorpay.com"
+    },
+    {
       "slug": "cygames",
       "name": "Cygames",
       "name_en": "Cygames",
@@ -1426,7 +1438,10 @@
     "카드 게임의 판정을 클라이언트에서 서버로 옮긴다",
     "출시일의 트래픽 급증을 무중단으로 넘긴다",
     "게임 만드는 일에 LLM 을 넣는다",
-    "로그 수집·저장"
+    "로그 수집·저장",
+    "관측을 싸게 유지한다",
+    "빌드 파이프라인을 싼 자원 위에 올린다",
+    "사람의 조사 시간을 AI 로 줄인다"
   ],
   "countries": {
     "KR": "한국",

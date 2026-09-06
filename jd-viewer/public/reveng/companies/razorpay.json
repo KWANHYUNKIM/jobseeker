@@ -1,0 +1,125 @@
+{
+  "slug": "razorpay",
+  "name": "Razorpay",
+  "name_en": "Razorpay",
+  "country": "IN",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "razorpay.com",
+  "one_liner": "인도 온라인 결제의 절반을 처리하는 게이트웨이 — 규모가 커지자 결제보다 자기 관측과 빌드의 비용이 이야깃거리가 됐다",
+  "business_model": "**사업체가 온라인으로 돈을 받게 해 주고 거래마다 몫을 받는다.** 그 위에 **RazorpayX(지급·뱅킹) · Capital(운전자금 대출) · Payroll(급여)** 을 얹어 **결제로 들어온 가맹점이 나머지를 쓰게** 만든다. **연환산 총결제액 약 1,500억~1,800억 달러**, **가맹점 1,200만 곳 이상**, **인도 온라인 결제 게이트웨이 시장의 약 55%**, **누적 거래 74억 건**, **가맹점 유지율 94%**. **밸류에이션 92억 달러**이고 **2026년 IPO 를 준비 중**이다.\n\n⚠️ **이 회사의 공개 기술 이야기는 결제 자체가 아니라 자기 비용과 사내 도구다**(2026년 글 기준). **메트릭 비용 62% 절감 · CI 를 스팟 인스턴스로 · 데이터 웨어하우스 갱신 10배 · 보안 트리아지 750시간을 2시간으로.** ⚠️ **결제 규모가 커질수록 결제를 받치는 것들의 비용이 문제가 된다** — 그 순서가 이 블로그에 그대로 드러난다(이 정리는 이 사이트의 재구성이다).",
+  "products": [
+    "Payment Gateway (결제 수납)",
+    "RazorpayX (지급·뱅킹)",
+    "Razorpay Capital (대출)",
+    "Razorpay Payroll (급여)"
+  ],
+  "domain_map": {
+    "title": "결제가 커지자 결제를 받치는 것들의 비용이 문제가 됐다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  M[\"<b>가맹점 1,200만 곳 이상</b><br/>• 인도 게이트웨이 시장 약 55%\"]:::list --> P[\"<b>결제 수납</b><br/>• 연환산 TPV 약 1,500억 달러\"]:::list\n  P --> X[\"<b>RazorpayX · Capital · Payroll</b><br/>• 결제로 들어와 나머지를 쓴다\"]:::list\n  P --> O[\"⚠️ <b>이것을 관측하는 비용</b><br/>• 하루 샘플 4,500억 → 1,700억\"]:::accent\n  P --> C[\"<b>이것을 만드는 비용</b><br/>• CI 를 스팟으로 (⏳ 미독)\"]:::quiet\n  P --> A[\"<b>사람의 조사 시간</b><br/>• 보안 트리아지 750h → 2h (⏳ 미독)\"]:::quiet"
+  },
+  "revenue_streams": [
+    {
+      "name": "결제 수수료",
+      "how": "**연환산 총결제액 약 1,500억~1,800억 달러** · 가맹점 **1,200만 곳 이상** · 인도 온라인 결제 게이트웨이 시장의 **약 55%** · 누적 거래 **74억 건** · 유지율 **94%**.",
+      "domains": [
+        "관측을 싸게 유지한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Razorpay Surpasses $150 Billion TPV Milestone",
+          "url": "https://razorpay.com/newsroom/razorpay-surpasses-150-billion-tpv-milestone-unveils-payment-gateway-3-0-forays-into-marketing-stack-with-engage-and-introduces-the-fintech-world-to-ai-assistant-ray/",
+          "publisher": "Razorpay Newsroom",
+          "date": "2026",
+          "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
+        }
+      ]
+    },
+    {
+      "name": "RazorpayX · Capital · Payroll",
+      "how": "**결제로 들어온 가맹점이 지급·운전자금·급여까지 쓰게 하는 묶음 전략.** Capital 은 **누적 6억 2,000만 달러 이상**을 대출했고 Payroll 은 **4만 곳 이상**이 쓴다.",
+      "domains": [
+        "관측을 싸게 유지한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Razorpay Surpasses $150 Billion TPV Milestone",
+          "url": "https://razorpay.com/newsroom/razorpay-surpasses-150-billion-tpv-milestone-unveils-payment-gateway-3-0-forays-into-marketing-stack-with-engage-and-introduces-the-fintech-world-to-ai-assistant-ray/",
+          "publisher": "Razorpay Newsroom",
+          "date": "2026",
+          "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "관측을 싸게 유지한다",
+      "why": "⚠️ **결제 규모가 커지면 그것을 지켜보는 비용도 함께 커진다.** **하루 샘플이 약 4,500억 개**였고 메트릭 청구서가 문제가 됐다. ⚠️ **이 회사의 답이 특이하다 — 줄이기 전에 `아무도 안 쓰더라` 를 확인했다.** **경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 봤고 하나도 없었다.** ✅ **본문 확인함**(2026-08-24).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "빌드 파이프라인을 싼 자원 위에 올린다",
+      "why": "**`CI 는 온디맨드가 필요 없다`** 며 빌드 파이프라인을 **스팟 인스턴스**로 옮겼다(2026-08-05). ⏳ **본문은 아직 안 읽었다.** ⚠️ **관측 비용과 같은 결이지만 문제의 경계가 다르다** — 하나는 지켜보는 비용, 하나는 만드는 비용이다(재구성).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "사람의 조사 시간을 AI 로 줄인다",
+      "why": "**보안 트리아지 `750시간에서 2시간으로`**, **조사 `30분에서 90초로`**, 그리고 **망에서 격리된 사내 AI `Hermes`**(2026-07-22). ⏳ **본문은 아직 안 읽었다.** ⚠️ **`AI 를 어디까지 믿나` 축에서 금융 규제 아래의 회사가 어떻게 격리하는지가 새 자리다**(재구성).",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **결제 시스템 자체의 기술 자료를 아직 못 찾았다** — **인도 온라인 결제의 절반을 처리하는데** 2026년 블로그의 시스템 글은 **관측·CI·데이터·AI** 쪽이다. **결제 규모가 커질수록 결제를 받치는 것들의 비용이 이야깃거리가 된다는 뜻일 수 있다**(재구성). ⏳ **Payment Gateway 3.0 과 UPI 처리 구조를 다룬 글을 찾아본다.**",
+    "⚠️ **도메인 셋 중 둘이 미독이다** — CI 스팟 이전과 AI 조사 도구.",
+    "⚠️ **RazorpayX·Capital 의 기술을 모른다** — **대출은 결제와 다른 위험 판단이 필요한데**(재구성) 그 자료를 못 찾았다.",
+    "⚠️ **연표(eras)를 못 세웠다** — 2014년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다.",
+    "⚠️ **사업 수치의 출처가 회사 뉴스룸과 3자 자료다** — IPO 를 준비 중이라 **DRHP 에 더 정확한 수치가 있을 것이다.**"
+  ],
+  "sources": [
+    {
+      "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+      "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+      "publisher": "Razorpay Engineering",
+      "date": "2026-08-24",
+      "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+    },
+    {
+      "title": "Razorpay Surpasses $150 Billion TPV Milestone",
+      "url": "https://razorpay.com/newsroom/razorpay-surpasses-150-billion-tpv-milestone-unveils-payment-gateway-3-0-forays-into-marketing-stack-with-engage-and-introduces-the-fintech-world-to-ai-assistant-ray/",
+      "publisher": "Razorpay Newsroom",
+      "date": "2026",
+      "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
+    },
+    {
+      "title": "CI Doesn't Need On-Demand: Moving Our Build Pipelines to Spot Instances",
+      "url": "https://engineering.razorpay.com/ci-doesnt-need-on-demand-moving-our-build-pipelines-to-spot-instances-6fff1cd92ba8",
+      "publisher": "Razorpay Engineering",
+      "date": "2026-08-05",
+      "summary": "빌드 파이프라인을 스팟 인스턴스로 옮겼다. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+    },
+    {
+      "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+      "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+      "publisher": "Razorpay Engineering",
+      "date": "2026-07-22",
+      "summary": "망에서 격리된 사내 AI 도구 Hermes. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+    },
+    {
+      "title": "How We Refresh Razorpay's Data Warehouse 10x Faster with Graphs and Indexes",
+      "url": "https://engineering.razorpay.com/how-we-refresh-razorpays-data-warehouse-10x-faster-with-graphs-and-indexes-538abc244703",
+      "publisher": "Razorpay Engineering",
+      "date": "2026-07-14",
+      "summary": "데이터 웨어하우스 갱신을 그래프와 인덱스로 10배 빠르게 만들었다. ⏳ 본문은 아직 읽지 않았다."
+    }
+  ]
+}
