@@ -1985,6 +1985,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "github-actions",
+      "title": "GitHub Actions — 우리 비밀이 남의 코드와 함께 도는 자리",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **CI 한 곳에 세 가지가 모여 있다** — 배포 자격증명, 저장소 쓰기 권한, 그리고 **남이 보낸 코드.** 공고 2795건이 이걸 요구하면서 **셋이 한자리에 있다는 말은 안 한다.**",
+      "aliases": [
+        "GitHub Actions",
+        "CI/CD",
+        "CI",
+        "파이프라인",
+        "워크플로",
+        "공급망"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

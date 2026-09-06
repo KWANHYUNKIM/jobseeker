@@ -4,30 +4,52 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **Redis**(`redis`)를 완성했다 — **109번째 문서**.
+**없음.** 직전 사이클에서 **GitHub Actions**(`github-actions`)를 완성했다 — **110번째 문서**.
 
-### 직전 사이클 (Redis)
+### 직전 사이클 (GitHub Actions)
 
-⭐⭐⭐ **축: "Redis 는 메모리에 있다 — 그런데 다들 잃지 않는 것처럼 쓴다."** 큐가 확인해 둔 대로 `caching`·`distributed-lock` 과 겹치지 않았다(그쪽엔 `AOF`·`RDB` 가 0회).
+⚠️ **먼저 `secrets` 와 겹치는지 셌다** — `GitHub Actions`·`pull_request_target`·`서드파티`·`SHA`·`공급망` 이 **전부 0회**였다. 축이 안 겹친다(저쪽은 **비밀을 어디 두나**, 여기는 **그 비밀이 어디서 도나**).
 
-**1차 자료 둘 다 손실을 숫자로 적는다.**
-- RDB: **"you should be prepared to lose the latest minutes of data"**
-- AOF `everysec`(기본): **"you may lose 1 second of data if there is a disaster"**
-- 복제: ⭐⭐ **"acknowledged writes can still be lost during a failover"** — `WAIT` 를 써도 그렇다
-- ⭐⭐⭐ **"use both persistence methods if you want a degree of data safety comparable to what PostgreSQL can provide you"**
-- ⭐⭐⭐ **"In general bound data loss is better than unbound one."**
+⭐⭐⭐ **축: "CI 한 곳에 셋이 모여 있다"** — 배포 자격증명 + 저장소 쓰기 권한 + **바깥에서 온 코드.** 셋 중 둘까지는 흔한데 **셋이 모인 곳은 CI 뿐이다.**
 
-**최악의 사고를 문서가 번호까지 매겨 적는다** — 영속성 끈 마스터가 자동 재시작하면 빈 채로 돌아오고 **"Nodes B and C ... they'll effectively destroy their copy of the data"**. ⚠️ 그리고 `market` 이 그 조건을 갖춘다(Docker 50.6% · K8s 42.2%).
+**1차 자료가 자기 기능을 아주 센 말로 경고한다.**
+- ⭐⭐⭐ **"Self-hosted runners should almost never be used for public repositories ... any user can open pull requests against the repository and compromise the environment."**
+- ⭐⭐ **"do not have guarantees around running in ephemeral clean virtual machines, and can be persistently compromised"**
+- ⭐⭐⭐ **"there is risk to this approach even if you trust the author, because a tag can be moved or deleted"**
+- ⭐⭐ **"automatic redaction is not guaranteed"** → **"delete the log and rotate the secret"**
 
-**셈**: `Redis` **1247건** vs `영속성|AOF|RDB` **30건**(아홉째 형태). ⭐ 그리고 공고가 Redis 를 **큐·세션 스토어·저장소·데이터베이스**로 부른다 — **전부 잃으면 곤란한 것.**
+**셈**: `CI/CD` **2795건(모집중 1168)** · `GitHub Actions` 727 · `Jenkins` 669 · ⚠️ `self-hosted` 38.
 
 ### 다음
 
-**GitHub Actions**(`github-actions`) — QUEUE 맨 위. ⭐ `redis` 도 끊긴 링크를 안 남겨 **또 층을 바꿨다**(데이터 → CI/배포).
+**TypeScript**(`typescript`) — QUEUE 맨 위. ⭐ `github-actions` 도 끊긴 링크를 안 남겨 **세 번째로 층을 바꿨다**(CI → 언어).
 
-⭐⭐⭐ **`CI/CD` 는 2795건(모집중 1168)** 인데 문서가 없다. ⚠️ 그대로 쓰면 요약본이므로 축을 못 박아 뒀다: **"우리 비밀을 들고 남의 코드를 실행하는 자리."** ⚠️ **`secrets` 문서와 축이 겹치는지 먼저 세고, 겹치면 미룬다.**
+⭐⭐⭐ **2678건(모집중 1034)인데 `타입 안전` 26건 · `strict` 3건** — 열째 형태. 축을 못 박아 뒀다: **"타입이 맞다는 건 증명됐다는 뜻이 아니다."** TypeScript **Design Goals 의 Non-goals** 가 그것을 직접 적는다. ⚠️ **`kotlin` 과 축이 겹치지 않게 조심한다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **말의 강도가 위험의 크기를 알려 준다.** GitHub 문서가 같은 문단에서 강도를 나눠 쓴다 —
+  `pull_request_target` 트리거는 **"Avoid using ... if it's not necessary"**(권고)인데, 그것으로
+  남의 코드를 체크아웃하는 것은 **"must not"**(금지)이다. 셀프호스트 러너에는 **"should almost
+  never"** 를 쓴다. 💡 **문서를 읽을 때 "무엇을 하지 말라"뿐 아니라 "얼마나 세게 말하나"를 본다**
+  — ⭐ **강도가 갈리는 자리가 그 기술의 진짜 경계**다.
+
+- ⭐⭐⭐ **"저자를 믿어도 위험하다"** — 공급망 문제의 형태를 한 문장이 정리한다.
+  **"there is risk to this approach even if you trust the author, because a tag can be moved
+  or deleted."** ⭐ **믿음의 문제가 아니라 구조의 문제**이고, 그래서 해법도 사람이 아니라 구조다
+  (SHA 고정). 📌 **"믿을 만한 곳인가"로 푸는 문제와 "바뀔 수 있나"로 푸는 문제를 구분한다.**
+
+- ⭐⭐⭐ **공고 문장이 전부 도구 나열일 때, 진짜 정보는 `market` 의 동반 기술에 있다.** `CI/CD`
+  2795건을 훑었는데 **문장은 다 `GitHub Actions, Jenkins 등 CI/CD 파이프라인 구축 경험` 모양**
+  이었다 — 권한도 러너도 공급망도 이름이 안 불린다. ⚠️ 그런데 **동반 기술이 말해 줬다**:
+  **AWS 70.1%**(클라우드 자격증명을 들고 있다) · **Terraform 38.9%**(인프라 자체를 바꾼다) ·
+  K8s 49.7%. ⭐⭐ **지금까지의 형태("큰 낱말 vs 안 불리는 개념")와 다른 새 형태다** — 문장이
+  아무 정보를 안 줄 때 **`tech_relations.json` 의 동반 비율이 그 자리를 대신한다.**
+
+- ⭐ **세 사이클 연속 끊긴 링크가 없었다**(`ios`·`redis`·`github-actions`). 💡 이제 이게 기본이라고
+  본다 — **110개면 새 문서가 가리키는 곳이 대개 이미 있다.** ⭐ **그래서 큐는 매번 "층이 통째로
+  빈 곳"을 셈으로 찾는 일이 됐다**(사다리 6순위가 사실상 상시 경로). 이번에 찾은 것: **언어·
+  프론트엔드 층** — `TypeScript` **2678** · `JavaScript` **2397** · `React` 1252 가 전부 문서 없음.
 
 - ⭐⭐⭐ **제품이 자기 안전 수준을 다른 제품에 견주면, 그 문장이 문서의 축이다.** Redis 문서가
   **"a degree of data safety comparable to what PostgreSQL can provide you"** 라고 쓴다 —

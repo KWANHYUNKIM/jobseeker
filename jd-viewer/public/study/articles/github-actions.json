@@ -1,0 +1,727 @@
+{
+  "slug": "github-actions",
+  "title": "GitHub Actions — 우리 비밀이 남의 코드와 함께 도는 자리",
+  "title_en": "GitHub Actions: Where Your Secrets Meet Someone Else's Code",
+  "aliases": [
+    "GitHub Actions",
+    "CI/CD",
+    "CI",
+    "파이프라인",
+    "워크플로",
+    "공급망"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **CI 한 곳에 세 가지가 모여 있다** — 배포 자격증명, 저장소 쓰기 권한, 그리고 **남이 보낸 코드.** 공고 2795건이 이걸 요구하면서 **셋이 한자리에 있다는 말은 안 한다.**",
+  "summary": "⭐⭐⭐ **`CI/CD` 는 2795건(모집중 1168)** 이다 — 이 백과사전이 만난 낱말 중 손꼽히게 크다. 그런데 공고 문장은 전부 **도구 나열**이다.\n\n> `GitHub Actions, Jenkins 등 **CI/CD 파이프라인 구축 경험**` · `**jenkins, github actions, kubernetes 중 하나 이상**` · `CI/CD: **GitHub Actions, Argo CD**`\n\n⚠️ **\"구축·운영\"까지고, 그 안에서 무슨 일이 벌어지는지는 아무도 안 적는다.**\n\n**그런데 GitHub 자신은 적어 놓았다.** 그것도 아주 센 말로.\n\n> ⭐⭐⭐ \"Self-hosted runners **should almost never be used** for public repositories on GitHub, because **any user can open pull requests against the repository and compromise the environment**.\"\n> ⭐⭐ \"Workflows that use these triggers **must not** explicitly check out untrusted code, including from pull request forks\"\n> ⭐⭐ \"Because there are multiple ways a secret value can be transformed, **automatic redaction is not guaranteed**.\"\n\n💡 **왜 이렇게까지 경고하나.** CI 는 **평범한 서버가 아니다** — 배포 자격증명(`market` 동반 **AWS 70.1%**)과 저장소 쓰기 권한을 들고, **바깥에서 온 코드를 실행하는** 곳이다. ⭐ **셋 중 둘까지는 흔한데, 셋이 한자리에 있는 곳은 여기뿐이다.**\n\n⚠️ **이 문서는 `secrets` 와 겹치지 않는다** — 저 문서에 `GitHub Actions`·`pull_request_target`·`서드파티`·`SHA`·`공급망` 이 **전부 0회**다. 저쪽은 **\"비밀을 어디 두고 어떻게 바꾸나\"**, 여기는 **\"그 비밀이 어디서 도나\"** 다.",
+  "market": {
+    "tech": "GitHub Actions",
+    "layer": "인프라/클라우드",
+    "postings": 314,
+    "pct_jobs": 4.4,
+    "with": [
+      {
+        "name": "AWS",
+        "pct": 70.1,
+        "why": "⭐⭐⭐ **열에 일곱.** CI 러너가 **클라우드 자격증명을 들고 있다**는 뜻이다 — 이 문서의 위험이 왜 큰지의 근거"
+      },
+      {
+        "name": "Kubernetes",
+        "pct": 49.7,
+        "why": "⭐ 배포 대상 — CI 가 **클러스터를 바꿀 권한**까지 갖는다"
+      },
+      {
+        "name": "Docker",
+        "pct": 47.5,
+        "why": "이미지를 빌드하고 레지스트리에 민다"
+      },
+      {
+        "name": "TypeScript",
+        "pct": 39.8,
+        "why": "앱 코드 쪽"
+      },
+      {
+        "name": "Terraform",
+        "pct": 38.9,
+        "why": "⭐⭐ **CI 가 인프라 자체를 바꾼다** — 디플라이어 `Terraform, GitHub Actions 등 인프라 자동화`"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 2795건이 요구하는데, 그 안의 낱말은 아무도 안 부른다",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| ⭐⭐⭐ `CI/CD\\|지속적 통합\\|지속적 배포` | **2795** | (모집중 1168) |\n| `GitHub Actions` | **727** | (모집중 322) |\n| `Jenkins` | 669 | (모집중 218) |\n| ⚠️ `공급망\\|supply chain\\|SBOM` | 227 | (모집중 109) |\n| `시크릿\\|Secrets 관리\\|Vault` | 123 | (모집중 60) |\n| ⚠️⚠️ `self-hosted\\|셀프 호스트` | **38** | (모집중 29) |\n\n⭐ **`CI/CD` 2795건은 이 백과사전이 만난 낱말 중 손꼽히게 크다.** 그런데 문장을 읽으면 전부 같은 모양이다.\n\n> `GitHub Actions, Jenkins 등 **CI/CD 파이프라인 구축 경험**` — 위레이저\n> `CI/CD 구축 및 운영이 가능하신 분(**jenkins, github actions, kubernetes 중 하나 이상**)` — 와따에이아이\n> `Kubernetes, Docker, GitHub Actions 등 **컨테이너 / CI/CD 환경 구축 및 운영**` — 베이글코드\n\n⚠️⚠️ **\"구축·운영\"에서 멈춘다.** 그리고 공고를 훑어 **보안·권한·러너·공급망을 CI 문맥에서 이름으로 대는 문장을 찾았는데 사실상 없었다.** (`공급망` 227건은 대부분 **보안 직군의 일반 표현**이지 CI 문맥이 아니다.)\n\n💡 **그런데 CI 가 무엇을 들고 있는지는 `market` 이 말해 준다.**\n\n| 동반 | 비율 | 뜻 |\n|---|---|---|\n| ⭐⭐⭐ **AWS** | **70.1%** | **클라우드 자격증명을 들고 있다** |\n| ⭐ **Kubernetes** | 49.7% | **클러스터를 바꿀 권한** |\n| **Docker** | 47.5% | 레지스트리에 밀 권한 |\n| ⭐⭐ **Terraform** | 38.9% | **인프라 자체를 바꾼다** |\n\n> ⭐ `**Terraform, GitHub Actions** 등 인프라 자동화와 CI/CD 경험` — 디플라이어\n> ⭐ `CI/CD 파이프라인 구축 및 배포 자동화 경험 (Fastlane·GitHub Actions·**App Distribution**)` — 헤렌\n\n⭐⭐ **헤렌 공고는 CI 가 앱 서명·배포까지 한다는 뜻이다**(→ `android`·`ios`). **CI 를 쥔 사람은 프로덕션 전체를 쥔다.**\n\n📌 **그리고 이 문서는 `secrets` 와 겹치지 않는다.** 그 문서를 세어 봤다 — `GitHub Actions` **0회**, `pull_request_target` **0회**, `서드파티` **0회**, `SHA` **0회**, `공급망` **0회**. ⭐ 저쪽은 **비밀을 어디 두고 어떻게 바꾸나**, 여기는 **그 비밀이 어디서 도나** 다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 왜 CI 만 특별히 위험한가 — 셋이 한자리에 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ],
+      "body": "CI 는 그냥 자동화 서버 같아 보인다. ⚠️ **그런데 세 가지가 동시에 있는 곳은 여기뿐이다.**\n\n| | 무엇 | 다른 곳은? |\n|---|---|---|\n| **①** | **배포 자격증명** (AWS 70.1% · Terraform 38.9%) | 프로덕션 서버도 갖는다 |\n| **②** | **저장소 쓰기 권한** | 개발자 노트북도 갖는다 |\n| ⭐⭐⭐ **③** | **바깥에서 온 코드를 실행한다** | **여기뿐이다** |\n\n**GitHub 문서가 ①②③이 만나는 지점을 정확히 적는다.**\n\n> ⭐⭐⭐ \"These workflows are **privileged**, which means they share the same cache of the main branch with other privileged workflow triggers, and **may have repository write access and access to referenced secrets**.\"\n\n💡 **그래서 CI 를 뚫는 것이 프로덕션을 뚫는 것과 같아진다.** 서버를 뚫으려면 서버를 공격해야 하지만, **CI 는 \"풀 리퀘스트를 하나 보내는 것\"으로 시작할 수 있다.**\n\n> ⭐⭐⭐ \"Self-hosted runners should almost never be used for public repositories on GitHub, because **any user can open pull requests against the repository and compromise the environment**.\"\n\n**\"any user can open pull requests\"** — ⚠️ **공격의 입구가 열려 있는 것이 아니라, 그게 이 제품의 정상 기능이다.**\n\n📌 **그리고 CI 의 위험에는 다른 시스템에 없는 성질이 하나 더 있다 — 조용하다.**\n\n앱은 심사에서 걸리고(→ `ios`), 서버는 로그가 남고(→ `observability`), Redis 는 데이터가 없어진 게 보인다(→ `redis`). ⚠️ **그런데 CI 에서 비밀이 한 번 빠져나가는 것은 아무 흔적도 남기지 않는다** — **빌드는 초록색으로 통과한다.**\n\n⭐⭐ **문서가 그 조용함을 인정하는 문장도 있다.**\n\n> \"Because there are multiple ways a secret value can be transformed, **automatic redaction is not guaranteed**.\"\n> \"If an unredacted secret is sent to a workflow run log, you should **delete the log and rotate the secret**.\"\n\n**로그에서 비밀을 가려 주는 기능이 있지만 \"보장되지 않는다\"** 고 적는다. ⭐ 그리고 처방이 **\"로그를 지우고 비밀을 바꿔라\"** 다 — **이미 나갔다고 보고 움직이라는 뜻**이고, 그것이 `secrets` 문서가 말하는 **회전(rotation)** 이 왜 필요한지의 가장 구체적인 예다."
+    },
+    {
+      "id": "fork",
+      "kind": "how",
+      "heading": "⭐⭐ 포크에서 온 PR — 문서가 \"must not\" 이라고 쓰는 자리",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ],
+      "body": "오픈소스든 사내든, **남이 보낸 브랜치를 CI 가 빌드한다.** 여기서 GitHub 은 안전한 기본값을 둔다 — **포크에서 온 PR 의 워크플로는 시크릿에 못 닿는다.**\n\n⚠️ **그런데 그것이 불편하다.** 포크 PR 에도 통합 테스트를 돌리고 싶고, 리뷰 코멘트를 자동으로 달고 싶다. **그래서 사람들이 `pull_request_target` 을 쓴다** — 이 트리거는 **권한을 가진 채로** 돈다.\n\n**문서가 그 조합을 이렇게 적는다.**\n\n> ⭐⭐⭐ \"The `pull_request_target` and `workflow_run` workflow triggers, when used with the checkout of an untrusted pull request, **expose the repository to security compromises**.\"\n> ⭐⭐ \"These workflows are **privileged** ... and **may have repository write access and access to referenced secrets**.\"\n\n**그리고 처방이 두 문장인데, 강도가 다르다.**\n\n> \"**Avoid using** the `pull_request_target` workflow trigger if it's not necessary.\"\n> ⭐⭐⭐ \"Workflows that use these triggers **must not** explicitly check out untrusted code, including from pull request forks\"\n\n💡 ⭐⭐ **\"쓰지 마라\"는 권고(avoid)인데, \"신뢰할 수 없는 코드를 체크아웃하지 마라\"는 금지(must not)다.** 문서가 **강도를 구분해서 썼다** — 트리거 자체는 쓸 수 있지만, **그 트리거로 남의 코드를 가져오는 순간이 선을 넘는 자리**다.\n\n📌 **왜 체크아웃이 결정적인가.** `pull_request_target` 은 **기본 브랜치의 워크플로 정의**로 돈다 — 즉 **우리가 검토한 코드**다. 그런데 그 워크플로가 **PR 브랜치를 체크아웃해서 빌드하면**, 그 안의 빌드 스크립트·의존성 설치 훅·테스트 코드는 **남이 쓴 것**이고 **권한을 가진 환경에서 실행된다.**\n\n⭐ **그리고 문서가 캐시까지 언급하는 것이 중요하다** — \"they **share the same cache of the main branch**\". **비밀을 안 꺼내도, 캐시를 오염시켜 다음 정상 빌드에 심을 수 있다.** 흔적은 남지 않는다.\n\n📌 **실무 정리.**\n\n1. **포크 PR 에는 기본 트리거(`pull_request`)를 쓴다** — 시크릿이 없으니 안전하다.\n2. ⭐ **시크릿이 꼭 필요하면 두 단계로 나눈다** — 빌드는 권한 없이 하고, **결과물만** 권한 있는 워크플로가 받는다.\n3. ⚠️ **`pull_request_target` 을 쓴다면 남의 코드를 절대 체크아웃하지 않는다**(라벨 붙이기·코멘트 달기처럼 **PR 메타데이터만** 다루는 일에 쓴다)."
+    },
+    {
+      "id": "action",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 서드파티 액션 — \"저자를 믿어도\" 위험하다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ],
+      "body": "워크플로 한 줄이면 남의 액션을 가져다 쓴다. `uses: someone/some-action@v3` — ⚠️ **그 순간 남의 코드가 우리 CI 안에서, 우리 비밀 옆에서 돈다.**\n\n**문서가 유일한 안전 방법을 명시한다.**\n\n> ⭐⭐ \"**Pin actions to a full-length commit SHA is currently the only way** to use an action as an **immutable release**.\"\n\n**\"유일한 방법\"** 이다. 그리고 **왜 태그로는 안 되는지**를 적는데, 이 문장이 이 절의 전부다.\n\n> ⭐⭐⭐ \"Although pinning to a commit SHA is the most secure option, specifying a tag is more convenient... **there is risk to this approach even if you trust the author**, because **a tag can be moved or deleted** if a bad actor gains access to the repository storing the action.\"\n\n💡 ⭐⭐⭐ **\"저자를 믿어도 위험하다.\"** 이것이 공급망 문제의 핵심이고, 이 백과사전이 계속 만나는 형태다 — **믿음의 문제가 아니라 구조의 문제.**\n\n**`@v3` 는 이름이지 내용이 아니다.** 저자가 나쁜 마음을 먹지 않아도, **저자의 계정이 뚫리면 `@v3` 가 가리키는 것이 바뀐다.** 우리는 워크플로를 한 글자도 안 고쳤는데 **다음 빌드부터 다른 코드가 돈다.**\n\n📌 **그래서 실무는 이렇게 한다.**\n\n| | 쓰는 법 | |\n|---|---|---|\n| ⚠️ `@v3` | 태그 | **옮겨 달 수 있다** |\n| ⚠️ `@main` | 브랜치 | **매번 바뀐다** — 최악 |\n| ⭐ `@a1b2c3...`(전체 SHA) | 커밋 | **바뀌지 않는다** — 문서가 말하는 유일한 방법 |\n\n⚠️ **대가가 있다.** SHA 로 고정하면 **보안 패치도 자동으로 안 들어온다** — 사람이 올려야 한다. ⭐ 그래서 실무에서는 **의존성 업데이트 봇에게 SHA 갱신을 맡기고**, 그 PR 을 사람이 검토한다. **자동으로 바뀌는 것과, 바뀌는 것을 사람이 보는 것의 차이**다.\n\n📌 **그리고 인젝션이 하나 더 있다.** PR 제목·브랜치 이름·이슈 본문 같은 **남이 쓴 문자열**을 워크플로가 셸 명령에 끼워 넣으면, 그 문자열이 **명령이 된다.** 문서의 처방은 이렇다.\n\n> \"The value of the expression is **stored in memory and used as a variable**, and **doesn't interact with the script generation process**.\"\n\n⭐ **환경변수로 받으면 셸 스크립트를 만드는 과정에 끼어들지 않는다.** ⚠️ **핵심은 \"위험한 문자를 거른다\"가 아니라 \"문자열이 코드가 되는 경로 자체를 끊는다\"** — `authz`·`scraping` 에서 본 것과 같은 종류의 해법이다."
+    },
+    {
+      "id": "runner",
+      "kind": "limits",
+      "heading": "⭐⭐ 셀프호스트 러너 — \"한 번 뚫리면 계속 남는다\"",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ],
+      "body": "공고에 `self-hosted|셀프 호스트` 가 **38건(모집중 29)** 나온다. 적지만 **모집중 비율이 76%** 로 높다 — 최근에 늘고 있다는 뜻일 수 있다(비용·사내망 접근이 이유다).\n\n⚠️ **그런데 GitHub 이 이것에 대해 가장 센 말을 쓴다.**\n\n> ⭐⭐⭐ \"Self-hosted runners **should almost never be used** for public repositories on GitHub, because **any user can open pull requests against the repository and compromise the environment**.\"\n\n**\"almost never\"** 다. 이 백과사전이 모아 온 **\"제품이 스스로 그은 선\"** 중에서도 강한 축에 든다(`kotlin` 의 \"impractical\", `redis` 의 \"we discourage it\" 과 같은 계열이고 **더 세다**).\n\n**그리고 왜 그런지가 다음 문장에 있다.**\n\n> ⭐⭐⭐ \"Self-hosted runners for GitHub **do not have guarantees around running in ephemeral clean virtual machines**, and can be **persistently compromised** by untrusted code in a workflow.\"\n\n💡 ⭐⭐ **두 낱말이 전부다 — `ephemeral`(일회용) 이 아니라는 것, 그래서 `persistently`(계속) 남는다는 것.**\n\n| | GitHub 호스팅 러너 | 셀프호스트 러너 |\n|---|---|---|\n| 실행 환경 | **매번 새 가상 머신** | ⚠️ **우리 기계, 계속 같은 것** |\n| 나쁜 코드가 돌면 | 빌드 끝나면 **환경째 사라진다** | ⭐⭐ **남는다** — 다음 빌드에도, 그 다음에도 |\n| 볼 수 있는 것 | 그 빌드의 것만 | ⚠️ **사내망·다른 빌드의 흔적·캐시** |\n\n⚠️⚠️ **셀프호스트 러너는 대개 사내망 안에 있다** — 그러라고 두는 것이다(사내 레지스트리·DB·배포 대상에 닿아야 하니까). ⭐ **그러면 CI 를 뚫은 사람이 사내망 안에 자리를 잡는다.**\n\n📌 **그래서 이렇게 판단한다.**\n\n1. ⭐ **public 레포에는 쓰지 않는다** — 문서의 \"almost never\" 를 그대로 따른다.\n2. **private 레포라도 \"누가 PR 을 보낼 수 있나\"를 센다** — 조직이 크면 그것도 신뢰 경계다.\n3. ⭐⭐ **쓴다면 일회용으로 만든다** — 빌드마다 새 인스턴스를 띄우고 끝나면 버린다. 문서가 없다고 지적한 그 `ephemeral` 성질을 **우리가 만들어 붙이는 것**이다.\n4. **러너가 닿을 수 있는 범위를 좁힌다** — 사내망 전체가 아니라 필요한 것만."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ CI/CD 를 다루지 않았다.** `CI/CD` 는 **2795건**이고, 파이프라인 설계·테스트 전략·배포 전략(블루그린·카나리)·빌드 캐시·모노레포 분할 빌드는 **아무것도 안 썼다.** ⭐ **의도한 것이다** — 그것까지 넣으면 2795건짜리 요약본이 된다. 이 문서는 **\"셋이 한자리에 있다\"** 하나만 다뤘다.\n\n**2. ⚠️ 워크플로 문법을 다루지 않았다.** `on`·`jobs`·`steps`·매트릭스·재사용 워크플로·컨텍스트 표현식 — **공식 문서가 훨씬 잘** 한다.\n\n**3. ⚠️ 권한 모델을 얕게만 다뤘다.** `GITHUB_TOKEN` 의 **기본 권한이 무엇이고 어떻게 좁히는지**(`permissions:` 블록), OIDC 로 클라우드에 **장기 키 없이** 붙는 방법 — ⭐ **후자는 이 문서의 주제와 정면으로 이어지는데**(AWS 70.1%!) 해당 문서를 열지 않았다. **가장 큰 빈자리다.**\n\n**4. ⚠️ Jenkins 를 다루지 않았다.** **669건**으로 GitHub Actions(727건)와 거의 같은데, 이 문서의 1차 자료가 GitHub 것이라 **한쪽만 봤다.** ⭐ 셀프호스트가 기본인 Jenkins 에서는 `runner` 절의 위험이 **기본값**일 수 있다 — 확인하지 않았다.\n\n**5. ⚠️ 실제 사고 사례를 쓰지 않았다.** 공급망 공격은 **공개된 사고가 여럿 있는 영역**인데, 이 문서는 **GitHub 자신의 경고 문서 하나만** 읽었다. ⭐ 사고 보고서를 읽으면 \"어떻게 발견됐나\"를 알 수 있고, 그게 `why` 절이 말한 **\"조용함\"** 의 반대편이다.\n\n**6. ⚠️ `공급망` 227건의 문맥을 검증하지 못했다.** CI 문맥인지 보안 직군의 일반 표현인지 **문장을 다 읽지 않았고**, 본문에서는 **후자로 추정**하고 넘어갔다.\n\n**7. 이 문서가 다루지 않는 것.** 비밀을 어디 두고 어떻게 바꾸나는 `secrets`, 서버에서 기능을 끄는 것은 `feature-flag`, 앱 배포의 반대편은 `android`·`ios`, 무슨 일이 일어났는지 알아내는 것은 `observability` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "warn",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ GitHub 이 자기 기능에 대해 쓰는 말",
+      "note": "전부 **원문**이다. ⭐ 이 표의 요점은 개별 조언이 아니라 **말의 강도**다 — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"even if you trust the author\"**. 플랫폼이 이 정도로 쓰는 문서는 드물다.",
+      "columns": [
+        "무엇에 대해",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 셀프호스트 러너",
+          "\"Self-hosted runners **should almost never be used** for public repositories on GitHub, because **any user can open pull requests against the repository and compromise the environment**.\""
+        ],
+        [
+          "⭐⭐ 그 이유",
+          "\"**do not have guarantees around running in ephemeral clean virtual machines**, and can be **persistently compromised** by untrusted code in a workflow\""
+        ],
+        [
+          "⭐⭐ `pull_request_target`",
+          "\"The `pull_request_target` and `workflow_run` workflow triggers, when used with the checkout of an untrusted pull request, **expose the repository to security compromises**.\""
+        ],
+        [
+          "그 워크플로가 가진 것",
+          "\"These workflows are **privileged** ... they **share the same cache of the main branch** ... and **may have repository write access and access to referenced secrets**\""
+        ],
+        [
+          "⭐ 강도의 차이",
+          "\"**Avoid using** the `pull_request_target` workflow trigger if it's not necessary.\" (권고) vs \"Workflows that use these triggers **must not** explicitly check out untrusted code\" (금지)"
+        ],
+        [
+          "⭐⭐⭐ 서드파티 액션",
+          "\"**Pin actions to a full-length commit SHA is currently the only way** to use an action as an **immutable release**.\""
+        ],
+        [
+          "⭐⭐⭐ 왜 태그가 안 되나",
+          "\"there is risk to this approach **even if you trust the author**, because **a tag can be moved or deleted** if a bad actor gains access to the repository storing the action\""
+        ],
+        [
+          "⭐⭐ 로그 마스킹",
+          "\"Because there are multiple ways a secret value can be transformed, **automatic redaction is not guaranteed**.\" · \"you should **delete the log and rotate the secret**\""
+        ],
+        [
+          "인젝션 처방",
+          "\"The value of the expression is **stored in memory and used as a variable**, and **doesn't interact with the script generation process**\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "id": "three",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 왜 CI 만 특별한가 — 셋이 한자리에",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). ⭐ 비율은 `market` 의 동반 기술에서 그대로 옮겼다. **셋 중 둘까지는 흔한데, 셋이 모인 곳은 CI 뿐이다.**",
+      "columns": [
+        "",
+        "무엇",
+        "근거",
+        "다른 데도 있나"
+      ],
+      "rows": [
+        [
+          "①",
+          "**배포 자격증명**",
+          "⭐⭐ AWS **70.1%** · Terraform 38.9% · K8s 49.7%",
+          "프로덕션 서버도 갖는다"
+        ],
+        [
+          "②",
+          "**저장소 쓰기 권한**",
+          "\"may have **repository write access**\"",
+          "개발자 노트북도 갖는다"
+        ],
+        [
+          "⭐⭐⭐ ③",
+          "**바깥에서 온 코드를 실행**",
+          "\"**any user can open pull requests**\"",
+          "⭐ **여기뿐이다**"
+        ],
+        [
+          "그래서",
+          "**CI 를 뚫는 것 = 프로덕션을 뚫는 것**",
+          "헤렌 `Fastlane·GitHub Actions·**App Distribution**` — 앱 서명·배포까지",
+          "—"
+        ],
+        [
+          "⚠️ 게다가",
+          "**조용하다**",
+          "빌드는 **초록색으로 통과**한다",
+          "앱은 심사에서 걸리고 서버는 로그가 남는다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "pin",
+      "kind": "compare",
+      "caption": "⭐⭐ 서드파티 액션을 어떻게 부르나",
+      "note": "⭐ 위험도는 GitHub 문서의 원문 근거를 따르고, 표의 구성은 이 문서의 정리다. **핵심은 \"믿음\"이 아니라 \"바뀔 수 있나\"** — \"even if you trust the author\".",
+      "columns": [
+        "쓰는 법",
+        "무엇",
+        "위험",
+        "보안 패치"
+      ],
+      "rows": [
+        [
+          "`@main`",
+          "브랜치",
+          "⚠️⚠️ **매번 바뀐다** — 최악",
+          "자동으로 들어온다 (⚠️ 나쁜 것도)"
+        ],
+        [
+          "`@v3`",
+          "태그",
+          "⚠️ \"**a tag can be moved or deleted**\"",
+          "자동으로 들어온다"
+        ],
+        [
+          "⭐ `@a1b2c3…`",
+          "**전체 커밋 SHA**",
+          "**바뀌지 않는다** — \"the **only way** to use an action as an **immutable release**\"",
+          "⚠️ **사람이 올려야 한다**"
+        ],
+        [
+          "⭐⭐ 실무",
+          "SHA 고정 + 업데이트 봇",
+          "봇이 SHA 갱신 PR 을 올리고 **사람이 검토**",
+          "**자동으로 바뀌는 것**과 **바뀌는 걸 사람이 보는 것**의 차이"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "id": "runner",
+      "kind": "compare",
+      "caption": "러너 두 종류",
+      "note": "왼쪽 열의 근거는 GitHub 문서 원문(\"do not have guarantees around running in **ephemeral clean virtual machines**\")이고, 표의 구성은 이 문서의 정리다.",
+      "columns": [
+        "",
+        "GitHub 호스팅",
+        "셀프호스트"
+      ],
+      "rows": [
+        [
+          "실행 환경",
+          "**매번 새 가상 머신**",
+          "⚠️ **우리 기계 — 계속 같은 것**"
+        ],
+        [
+          "⭐⭐ 나쁜 코드가 돌면",
+          "빌드가 끝나면 **환경째 사라진다**",
+          "\"can be **persistently compromised**\" — **남는다**"
+        ],
+        [
+          "볼 수 있는 것",
+          "그 빌드의 것만",
+          "⚠️ **사내망 · 다른 빌드의 흔적 · 캐시**"
+        ],
+        [
+          "왜 쓰나",
+          "—",
+          "비용 · **사내망 접근** (공고 38건, ⭐ 모집중 비율 **76%**)"
+        ],
+        [
+          "⭐ 문서의 권고",
+          "—",
+          "\"**should almost never be used** for **public** repositories\""
+        ],
+        [
+          "⭐⭐ 쓴다면",
+          "—",
+          "**일회용으로 만든다** — 빌드마다 새로 띄우고 버린다(문서가 없다고 한 그 성질을 우리가 붙인다)"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ 이번엔 형태가 조금 다르다 — 앞선 문서들처럼 \"큰 낱말 대 안 불리는 개념\"이 아니라, **큰 낱말 안의 문장이 전부 도구 나열**이다. **위험을 이름으로 대는 문장이 사실상 없다.**",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ `CI/CD\\|지속적 통합\\|지속적 배포`",
+          "**2795 (모집중 1168)** — 이 백과사전이 만난 낱말 중 손꼽히게 크다"
+        ],
+        [
+          "`GitHub Actions`",
+          "**727 (모집중 322)** — 태그 기준으로는 314건(4.4%)"
+        ],
+        [
+          "`Jenkins`",
+          "**669 (모집중 218)** — ⚠️ 이 문서가 다루지 않았다"
+        ],
+        [
+          "⚠️ `공급망\\|supply chain\\|SBOM`",
+          "227 (모집중 109) — ⚠️ **CI 문맥인지 검증하지 못했다.** 보안 직군의 일반 표현으로 **추정**"
+        ],
+        [
+          "`시크릿\\|Vault`",
+          "123 (모집중 60) — `secrets` 의 영역"
+        ],
+        [
+          "⚠️⚠️ `self-hosted\\|셀프 호스트`",
+          "**38 (모집중 29)** — ⭐ **모집중 비율 76%.** 적지만 최근에 늘고 있을 수 있다"
+        ],
+        [
+          "⭐ 문장의 모양",
+          "전부 **도구 나열**이다 — `jenkins, github actions, kubernetes **중 하나 이상**`(와따에이아이). **셋을 대체 가능한 것으로 본다**"
+        ],
+        [
+          "⭐⭐ 진짜 정보는 `market` 에",
+          "**AWS 70.1%** · Kubernetes 49.7% · Docker 47.5% · **Terraform 38.9%** — **CI 가 무엇을 들고 있는지**는 공고 문장이 아니라 동반 기술이 말해 준다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐ `pull_request_target`",
+      "en": "—",
+      "what": "기본 브랜치의 워크플로 정의로 **권한을 가진 채** 도는 트리거. ⚠️ 여기서 남의 코드를 체크아웃하는 것이 선을 넘는 자리"
+    },
+    {
+      "term": "⭐⭐⭐ SHA 고정",
+      "en": "pin to a full-length commit SHA",
+      "what": "\"**the only way** to use an action as an **immutable release**\" — 태그는 옮겨 달 수 있다"
+    },
+    {
+      "term": "⭐⭐ ephemeral",
+      "en": "—",
+      "what": "**일회용.** 빌드마다 새 환경을 쓰고 버리는 성질. 셀프호스트 러너에는 \"**no guarantees**\" 다"
+    },
+    {
+      "term": "⭐ persistently compromised",
+      "en": "—",
+      "what": "**한 번 뚫리면 계속 남는다.** 셀프호스트 러너의 위험이 이 한 낱말에 있다"
+    },
+    {
+      "term": "스크립트 인젝션",
+      "en": "script injection",
+      "what": "PR 제목·브랜치 이름 같은 **남이 쓴 문자열**이 셸 명령이 되는 것. 처방은 **환경변수로 받기**"
+    },
+    {
+      "term": "⭐ redaction",
+      "en": "—",
+      "what": "로그에서 시크릿을 가리는 것. ⚠️ \"**not guaranteed**\" — 그래서 새면 **로그를 지우고 비밀을 바꾼다**"
+    },
+    {
+      "term": "공급망 공격",
+      "en": "supply chain attack",
+      "what": "우리 코드가 아니라 **우리가 가져다 쓰는 것**을 통해 들어오는 공격. ⭐ 그래서 \"**저자를 믿어도**\" 위험하다"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "포크에서 온 PR 에도 통합 테스트를 돌리고 싶다",
+      "pick": "⭐⭐ **빌드는 권한 없이 하고, 결과물만 권한 있는 워크플로가 받는다**",
+      "over": "`pull_request_target` 으로 PR 브랜치를 체크아웃해 빌드하기",
+      "why": "⭐⭐⭐ 문서가 강도를 나눠 쓴다 — 트리거 사용은 \"**Avoid** using ... if it's not necessary\"(권고)인데, **체크아웃은 \"must not explicitly check out untrusted code\"(금지)** 다. 그 워크플로는 \"**repository write access and access to referenced secrets**\" 를 가진다",
+      "tradeoff": "⚠️ 두 단계로 나누면 워크플로가 복잡해지고, 결과물을 주고받는 장치가 필요하다. 그래도 **한 단계로 합치는 순간 문서가 금지한 그 형태가 된다** — 그리고 ⭐ **캐시 오염**은 비밀을 안 꺼내도 가능하다(\"share the same cache of the main branch\")",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "situation": "서드파티 액션을 워크플로에 넣는다",
+      "pick": "⭐ **전체 커밋 SHA 로 고정하고, 갱신은 봇 PR 로 받아 사람이 검토한다**",
+      "over": "`@v3` 같은 태그로 부르기",
+      "why": "⭐⭐⭐ \"Pin actions to a full-length commit SHA is currently **the only way** to use an action as an **immutable release**\" 이고, 태그는 \"**a tag can be moved or deleted**\" 다. ⭐ 결정적으로 **\"even if you trust the author\"** — **믿음의 문제가 아니라 구조의 문제**다",
+      "tradeoff": "⚠️ **보안 패치가 자동으로 안 들어온다** — 사람이 올려야 하고, 방치하면 낡은 채로 굳는다. 그래서 **업데이트 봇을 함께 붙인다**: 자동으로 바뀌는 것과 **바뀌는 것을 사람이 보는 것**의 차이가 요점이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "situation": "비용이나 사내망 접근 때문에 셀프호스트 러너를 검토한다",
+      "pick": "⭐⭐ **private 레포에만, 그리고 빌드마다 새로 띄워 버린다**",
+      "over": "상시 켜 둔 서버 하나를 러너로 등록하기",
+      "why": "⭐⭐⭐ 문서가 \"**should almost never be used** for **public** repositories\" 라고 못 박고, 이유가 \"**do not have guarantees around running in ephemeral clean virtual machines**, and can be **persistently compromised**\" 다. ⭐ **일회용이 아니라는 것이 위험의 전부**이므로, 일회용으로 만들면 그 위험이 줄어든다",
+      "tradeoff": "⚠️ 매번 띄우면 느리고(캐시가 없다) 관리 비용이 든다. 그리고 ⭐ **private 레포라도 조직이 크면 \"누가 PR 을 보낼 수 있나\"가 신뢰 경계**다 — 사내라서 안전한 것이 아니다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "situation": "워크플로에서 PR 제목·브랜치 이름 같은 값을 쓴다",
+      "pick": "⭐ **환경변수로 받아 쓴다**",
+      "over": "`${{ }}` 로 셸 명령 안에 직접 끼워 넣기",
+      "why": "⭐⭐ 그 값들은 **남이 쓴 문자열**이고, 셸 명령에 직접 들어가면 **명령이 된다.** 문서의 처방은 값을 \"**stored in memory and used as a variable**\" 로 두는 것 — \"**doesn't interact with the script generation process**\"",
+      "tradeoff": "한 줄이 두 줄이 된다. ⭐ **요점은 위험한 문자를 거르는 게 아니라 문자열이 코드가 되는 경로 자체를 끊는 것** — 거르기는 언제나 빠뜨리는 것이 생긴다(`authz`·`scraping` 에서 본 것과 같은 해법)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "situation": "시크릿이 빌드 로그에 찍힌 것 같다",
+      "pick": "⭐ **로그를 지우고 그 비밀을 바꾼다**",
+      "over": "로그만 지우고 넘어가기",
+      "why": "⭐⭐ 문서의 지시가 그대로다 — \"If an unredacted secret is sent to a workflow run log, you should **delete the log and rotate the secret**.\" **마스킹은 \"not guaranteed\"** 이므로, 찍혔다면 **이미 나갔다고 보고 움직인다**",
+      "tradeoff": "⚠️ 비밀을 바꾸는 것은 귀찮고, 바꿀 수 없게 만들어 둔 경우 더 귀찮다. 그래서 ⭐ **바꿀 수 있게 만들어 두는 것**이 먼저다 — `secrets` 문서의 회전(rotation) 절이 그 이야기이고, **이 상황이 그것이 필요한 가장 구체적인 예**다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "CI 를 \"그냥 자동화 서버\"로 여긴다",
+      "why": "⭐⭐⭐ **셋이 한자리에 있다는 것을 못 본다** — 배포 자격증명(AWS **70.1%**), 저장소 쓰기 권한, 그리고 **바깥에서 온 코드.** 서버를 뚫으려면 서버를 공격해야 하지만, **CI 는 풀 리퀘스트 하나로 시작할 수 있다** — \"**any user can open pull requests**\"",
+      "fix": "⭐ **CI 의 권한을 프로덕션 서버와 같은 급으로 취급한다.** 누가 워크플로 파일을 고칠 수 있나, 그 토큰이 무엇을 할 수 있나를 **한 번은 적어 본다**. ⚠️ 특히 Terraform 이 함께 있으면(38.9%) **CI 가 인프라 자체를 바꾼다**",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "trap": "빌드가 초록색이면 아무 일도 없었다고 여긴다",
+      "why": "⭐⭐ **CI 사고는 조용하다.** 앱은 심사에서 걸리고 서버는 로그가 남는데, **비밀이 한 번 빠져나가는 것은 흔적을 안 남기고 빌드는 통과한다.** 게다가 캐시를 오염시키면 **다음 정상 빌드가 그것을 집어 간다**",
+      "fix": "**\"성공했나\"가 아니라 \"무엇이 실행됐나\"를 본다** — 워크플로 파일의 변경을 코드 리뷰 대상으로 삼고, ⭐ **서드파티 액션이 늘어난 PR 은 따로 본다.** 그리고 로그에 시크릿이 찍히면 **로그 삭제 + 회전**이다(\"automatic redaction is **not guaranteed**\")",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐ 액션을 `@v3` 같은 태그로 부른다",
+      "why": "⭐⭐⭐ **가장 흔하고, 가장 안 보이는 위험이다.** 문서가 못 박는다 — \"there is risk to this approach **even if you trust the author**, because **a tag can be moved or deleted**\". **저자가 나쁜 마음을 안 먹어도 계정이 뚫리면** `@v3` 가 가리키는 것이 바뀐다. ⚠️ **우리는 한 글자도 안 고쳤는데 다음 빌드부터 다른 코드가 돈다**",
+      "fix": "⭐ **전체 커밋 SHA 로 고정한다** — \"the **only way** to use an action as an **immutable release**\". 그리고 **업데이트 봇에게 SHA 갱신 PR 을 맡기고 사람이 검토**한다(⚠️ 고정만 하고 방치하면 보안 패치가 안 들어온다)",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "trap": "편하다고 `pull_request_target` 으로 포크 PR 을 빌드한다",
+      "why": "⭐ **막힌 것을 뚫으려다 그렇게 된다** — 포크 PR 에 시크릿이 없어서 통합 테스트가 안 도니까. 그런데 그 트리거의 워크플로는 \"**privileged**\" 이고 \"may have **repository write access and access to referenced secrets**\" 다",
+      "fix": "⭐⭐ **`pull_request_target` 은 PR 메타데이터만 다루는 일(라벨·코멘트)에 쓰고, 남의 코드를 체크아웃하지 않는다** — 문서의 \"**must not**\" 이 그 자리다. 통합 테스트가 필요하면 **빌드와 권한을 두 워크플로로 나눈다**",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "trap": "셀프호스트 러너를 상시 켜 둔 서버 하나로 만든다",
+      "why": "⭐⭐ 가장 자연스러운 구성이라서다(비용도 아끼고 사내망에도 닿는다). ⚠️ 그런데 그것이 정확히 문서가 경고하는 형태다 — \"**do not have guarantees around running in ephemeral clean virtual machines**, and can be **persistently compromised**\". **한 번 뚫리면 그 기계에 남고**, 그 기계는 대개 **사내망 안**에 있다",
+      "fix": "⭐ **빌드마다 새로 띄우고 끝나면 버린다** — 문서가 없다고 지적한 `ephemeral` 성질을 **우리가 만들어 붙이는 것**이다. 그리고 **러너가 닿을 수 있는 범위를 필요한 것만으로 좁힌다.** ⚠️ **public 레포에는 \"almost never\"** 다",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    },
+    {
+      "trap": "PR 제목이나 브랜치 이름을 셸 명령에 그대로 끼워 넣는다",
+      "why": "⚠️ 워크플로 안에서는 그것들이 **그냥 변수처럼 보인다.** 그런데 **값을 쓴 사람은 우리가 아니다** — 문자열이 셸 스크립트를 만드는 과정에 들어가면 **명령이 된다**",
+      "fix": "⭐ **환경변수로 받아 쓴다** — \"the value ... is **stored in memory and used as a variable**, and **doesn't interact with the script generation process**\". ⚠️ **위험한 문자를 거르는 방식으로 풀지 않는다** — 언제나 빠뜨리는 것이 생긴다",
+      "sources": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+        }
+      ]
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **자기(또는 아무 공개) 저장소의 워크플로 파일을 열고 `uses:` 줄을 전부 센다.** 그중 **전체 SHA 로 고정된 것이 몇 개**인지, **태그·브랜치로 부른 것이 몇 개**인지 적는다.",
+      "done_when": "두 숫자가 나오고, ⭐ **태그로 부른 액션 중 우리가 만들지 않은 것(서드파티)이 몇 개**인지 답할 수 있다. 그 수가 **우리 CI 안에서 도는 남의 코드의 개수**다.",
+      "why": "⭐⭐⭐ \"even if you trust the author\" 를 글로 읽는 것과, **우리 저장소에 그런 줄이 열두 개 있다는 걸 세어 보는 것**은 다르다. 대부분의 팀이 이 숫자를 모른다.",
+      "no_hardware": "자기 저장소가 없으면 **아무 인기 오픈소스의 `.github/workflows/` 를 열어** 같은 것을 센다 — ⭐ 유명한 프로젝트가 어떻게 하는지 보는 것이 오히려 공부가 된다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ **`Security hardening for GitHub Actions` 문서를 열고 \"almost never\"·\"must not\"·\"not guaranteed\"·\"do not\" 을 검색**해 몇 번 나오는지 센다. 그리고 **각각이 무엇에 대한 말인지** 한 줄씩 적는다.",
+      "done_when": "목록이 만들어지고, ⭐ **가장 강한 말이 무엇에 붙어 있는지**에 답할 수 있다. 그리고 그중 **우리 저장소에 해당하는 것**을 고를 수 있다.",
+      "why": "⭐⭐ 이 백과사전이 계속 하는 일 — **부정어를 먼저 찾는다.** 플랫폼 문서에서 가장 중요한 정보는 \"이렇게 하세요\"가 아니라 **\"이건 하지 마세요\"** 쪽에 있고, 말의 강도가 위험의 크기를 알려 준다.",
+      "no_hardware": "웹에서 읽을 수 있는 문서 하나면 된다 — 저장소도 계정도 필요 없다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **자기 팀의 CI 가 무엇을 할 수 있는지 목록으로 적는다** — 어떤 클라우드 계정에 닿나, 어떤 저장소에 쓸 수 있나, 어떤 배포를 실행할 수 있나. 그리고 **\"이 토큰을 가진 사람이 할 수 있는 최악의 일\"** 을 한 줄로 적는다.",
+      "done_when": "목록이 나오고, 마지막 한 줄이 적힌다. ⭐ 그리고 **그 목록에서 지금 당장 지워도 되는 권한이 있는지** 표시된다.",
+      "why": "⭐⭐⭐ `market` 이 말해 준다 — **AWS 70.1% · Terraform 38.9%.** 열에 일곱이 클라우드 자격증명을 CI 에 두고, 넷 중 하나 이상이 **인프라 자체를 CI 로 바꾼다.** ⚠️ 그런데 공고 2795건 중 **그 사실을 이름으로 대는 문장은 사실상 없었다.**",
+      "no_hardware": "운영 중인 CI 가 없으면 **아무 공개 저장소의 워크플로에서 `permissions:` 블록과 `secrets.` 참조를 세어** 같은 질문을 해 본다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "CI 에 동시에 존재하는 세 가지는? 그중 다른 곳에는 없는 것은?",
+    "`pull_request_target` 이 위험해지는 정확한 지점은? 문서는 어디에 \"must not\" 을 쓰는가?",
+    "액션을 태그로 부르면 왜 위험한가? \"저자를 믿는다\"가 왜 답이 아닌가?",
+    "셀프호스트 러너의 위험을 두 낱말로 말하면?",
+    "시크릿이 로그에 찍혔을 때 문서의 지시는? 왜 로그 삭제만으로는 안 되는가?",
+    "CI 사고가 다른 시스템의 사고와 다른 점 한 가지는?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Terraform, GitHub Actions 등 인프라 자동화와 CI/CD 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378475",
+      "where": "디플라이어",
+      "what_it_shows": "⭐⭐⭐ **CI 가 인프라 자체를 바꾼다** — `market` 의 Terraform 38.9% 가 이 모양이다. **CI 를 쥔 사람이 클라우드 전체를 쥔다**"
+    },
+    {
+      "quote": "- CI/CD 파이프라인 구축 및 배포 자동화 경험 (Fastlane·GitHub Actions·App Distribution)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372622",
+      "where": "헤렌",
+      "what_it_shows": "⭐⭐ **앱 서명·배포까지 CI 가 한다**(→ `android`·`ios`). 스토어에 올릴 자격증명이 CI 안에 있다는 뜻"
+    },
+    {
+      "quote": "• CI/CD 구축 및 운영이 가능하신 분(jenkins, github actions, kubernetes 중 하나 이상)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372230",
+      "where": "와따에이아이",
+      "what_it_shows": "⭐ **`중 하나 이상`** — 회사가 셋을 **대체 가능한 도구**로 본다. ⚠️ 그런데 셋의 **기본 신뢰 모델은 서로 다르다**(특히 Jenkins 는 셀프호스트가 기본)"
+    },
+    {
+      "quote": "• GitHub Actions, Jenkins 등 CI/CD 파이프라인 구축 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/231846",
+      "where": "위레이저",
+      "what_it_shows": "⚠️⚠️ **2795건이 이 모양이다** — `구축 경험` 에서 멈춘다. **그 안에서 무엇이 도는지는 아무도 안 적는다**"
+    },
+    {
+      "quote": "• Kubernetes, Docker, GitHub Actions 등 컨테이너 / CI/CD 환경 구축 및 운영 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/259710",
+      "where": "베이글코드",
+      "what_it_shows": "`market` 의 Kubernetes 49.7% · Docker 47.5% 가 이 문장 모양이다 — ⭐ **CI 가 클러스터를 바꿀 권한을 갖는다**"
+    },
+    {
+      "quote": "CI/CD: GitHub Actions, Argo CD",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/339834",
+      "where": "레브잇",
+      "what_it_shows": "**빌드에서 배포까지 한 줄에** 적힌다 — CI 와 CD 가 붙어 있으면 **CI 를 뚫는 것이 곧 배포를 뚫는 것**이다"
+    },
+    {
+      "quote": "- pytest 기반 테스트 작성, GitHub Actions / diff-cover 운영",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/343902",
+      "where": "미켈로로보틱스",
+      "what_it_shows": "⭐ **CI 를 테스트 도구로만 보는 문장.** 727건 중 다수가 이쪽이고, **권한 이야기는 여전히 없다**"
+    },
+    {
+      "quote": "• Docker·Redis·Celery·SQS·GitHub Actions 등 운영 환경 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375407",
+      "where": "베이글랩스",
+      "what_it_shows": "⚠️ **도구 목록의 한 항목**으로 적힌다 — Redis·SQS 와 나란히. **CI 가 다른 도구들과 다른 성질을 갖는다는 것이 이 나열에서는 안 보인다**"
+    }
+  ],
+  "related": [
+    {
+      "slug": "secrets",
+      "how": "⭐⭐ **정면 이웃 — 축이 다르다.** 저쪽은 **비밀을 어디 두고 어떻게 바꾸나**, 여기는 **그 비밀이 어디서 도나**. ⭐ 저 문서의 '회전' 절이 필요한 **가장 구체적인 예**가 이 문서의 로그 유출이다"
+    },
+    {
+      "slug": "android",
+      "how": "⭐ 헤렌 `Fastlane·GitHub Actions·App Distribution` — **CI 가 앱 서명키를 들고 스토어에 올린다**. 배포의 반대편 끝"
+    },
+    {
+      "slug": "ios",
+      "how": "같은 자리 — 심사에 올리는 것도 CI 가 한다"
+    },
+    {
+      "slug": "observability",
+      "how": "⚠️ `why` 절의 **\"조용함\"** 문제 — 빌드가 초록색인데 무엇이 일어났는지 어떻게 아나"
+    },
+    {
+      "slug": "authz",
+      "how": "⭐ 인젝션의 해법이 같은 종류다 — **거르는 게 아니라 경로를 끊는다**"
+    },
+    {
+      "slug": "feature-flag",
+      "how": "배포를 되돌리는 다른 길 — CI 가 뚫렸을 때가 아니라 배포가 잘못됐을 때"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `GitHub Actions`(314건 · 4.4%)를 그대로 옮겼다. ⚠️ 본문 직접 셈은 **727건**이고, 상위 낱말인 `CI/CD` 는 **2795건**이다 — 셋을 다 적었다.",
+    "⚠️⚠️ **`GITHUB_TOKEN` 의 권한 모델과 OIDC 를 다루지 않았다.** `permissions:` 로 토큰을 좁히는 법, 그리고 **장기 클라우드 키 없이 붙는 OIDC** — ⭐ **후자는 `market` 의 AWS 70.1% 와 정면으로 이어지는데** 해당 문서를 열지 않았다. **이 문서의 가장 큰 빈자리다.**",
+    "⚠️ **Jenkins 를 다루지 않았다**(669건, GitHub Actions 727건과 거의 같다). 1차 자료가 GitHub 것이라 한쪽만 봤다. ⭐ **셀프호스트가 기본인 Jenkins 에서는 `runner` 절의 위험이 기본값**일 수 있는데 확인하지 않았다.",
+    "⚠️ **실제 사고 사례를 읽지 않았다.** 공급망 공격은 공개된 사고 보고서가 여럿 있는 영역인데 **GitHub 자신의 경고 문서 하나만** 읽었다. ⭐ 사고 보고서는 **\"어떻게 발견됐나\"** 를 알려 주고, 그것이 `why` 절의 \"조용함\"의 반대편이다.",
+    "⚠️ **`공급망` 227건의 문맥을 검증하지 못했다.** CI 문맥인지 보안 직군의 일반 표현인지 문장을 다 읽지 않았고, **후자로 추정**하고 넘어갔다 — 추정임을 밝힌다.",
+    "⚠️ **CI/CD 자체(2795건)를 의도적으로 비웠다.** 파이프라인 설계·테스트 전략·배포 전략(블루그린·카나리)·빌드 캐시 — 넣으면 요약본이 된다는 판단이었다. ⭐ **다만 2795건짜리 낱말에 이 문서 하나뿐이라는 것은 큐가 기억해야 한다.**",
+    "⭐ **`three` 표의 \"셋이 한자리에\"는 이 문서의 정리다.** GitHub 문서가 그렇게 묶어 말한 것이 아니라, **인용한 문장들과 `market` 동반 비율에서 추론**했다. `confidence` 는 인용 부분만 `confirmed` 다."
+  ],
+  "sources": [
+    {
+      "title": "Security hardening for GitHub Actions",
+      "url": "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions",
+      "publisher": "GitHub",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **플랫폼이 자기 기능의 위험을 스스로 경고하는 자리** — \"almost never\", \"must not\", \"not guaranteed\", 그리고 **\"저자를 믿어도 위험하다\"**"
+    }
+  ]
+}
