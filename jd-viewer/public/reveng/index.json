@@ -1639,8 +1639,8 @@
       "name_en": "Jane Street",
       "country": "US",
       "category": "핀테크",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "자기 컴파일러를 실서비스에 쓰는 트레이딩 회사 — 언어와 커널까지 고쳐 쓰는 쪽으로 성능을 만든다",
       "updated_at": "2026-09-07",
       "domain": "janestreet.com"
