@@ -1555,8 +1555,8 @@
       "name_en": "Depot",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "빌드와 CI 를 남의 러너에서 자기 기계로 옮긴 회사 — 값이 시간 단위라 기다림을 줄이는 일이 곧 제품이다",
       "updated_at": "2026-09-07",
       "domain": "depot.dev"
