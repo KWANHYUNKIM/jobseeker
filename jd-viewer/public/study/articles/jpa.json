@@ -1,26 +1,37 @@
 {
   "slug": "jpa",
   "title": "JPA",
-  "title_en": "Jakarta Persistence (formerly Java Persistence API)",
+  "title_en": "Jakarta Persistence (Java Persistence API)",
   "aliases": [
     "JPA",
+    "Jakarta Persistence",
+    "Java Persistence API",
+    "Spring Data JPA",
     "Hibernate",
-    "영속성 컨텍스트",
-    "ORM"
+    "ORM",
+    "객체 관계 매핑",
+    "영속성 컨텍스트"
   ],
   "category": "framework",
   "level": "core",
   "status": "done",
   "updated_at": "2026-09-06",
-  "one_liner": "객체와 테이블을 잇는 **사양**이다(구현은 Hibernate 등). 진짜 알맹이는 SQL 자동 생성이 아니라 **영속성 컨텍스트** — 언제 SQL 이 나가는지를 이것이 정한다.",
-  "summary": "JPA 는 `spring` 문서가 \"N+1·영속성 컨텍스트·지연 로딩의 본체\"라며 넘긴 자리다. 먼저 정리할 것이 하나 있다 — **JPA 는 인터페이스 사양이고 Hibernate 는 그 구현체다.** 공고가 `JVM 생태계(Java, Kotlin, Spring, JPA)` 처럼 적을 때 실제로 쓰는 것은 대개 **Spring Data JPA → JPA 사양 → Hibernate** 세 겹이고, 문제가 생기면 **어느 층인지** 가려야 한다. 그리고 이 기술을 어렵게 만드는 것은 매핑 애너테이션이 아니라 **영속성 컨텍스트**다. 트랜잭션 동안 엔티티를 들고 있으면서 **같은 것을 두 번 조회해도 같은 객체를 주고**(1차 캐시), **필드를 바꾸면 알아서 UPDATE 를 만들고**(변경 감지), **SQL 을 모아 두었다가 정해진 시점에 내보낸다**(쓰기 지연). `save()` 를 안 불렀는데 값이 바뀌고, 트랜잭션 밖에서 연관을 읽으면 터지고, 벌크 업데이트 뒤 조회하면 옛 값이 나오는 것이 전부 여기서 나온다. **그래서 ORM 을 쓴다고 SQL 을 안 봐도 되는 것이 아니다 — 오히려 언제 어떤 SQL 이 나가는지를 알아야 쓸 수 있다.**",
+  "one_liner": "자바에서 객체와 데이터베이스 테이블을 이어 주는 ORM 표준. 객체는 객체대로, 테이블은 테이블대로 설계해 두고 그 사이의 번역을 프레임워크에 맡긴다.",
+  "summary": "JPA(Java Persistence API, 지금 이름은 Jakarta Persistence)는 자바 진영의 ORM 표준이다. 여기서 표준이라는 말은 문자 그대로여서, JPA 자체는 SQL 을 한 줄도 만들지 않는다 — 매핑 방식과 API 를 정의한 사양이고, 실제 SQL 을 만드는 것은 Hibernate 같은 구현체다. 이 기술이 나온 이유는 JDBC 로 짤 때 코드의 대부분이 같은 모양의 반복이었다는 것, 그리고 더 깊게는 객체와 테이블이 서로 다른 원리로 설계된다는 것(패러다임 불일치)이다. 그런데 실무에서 JPA 를 어렵게 만드는 것은 매핑 애너테이션이 아니라 영속성 컨텍스트다 — save() 를 부르지 않았는데 값이 저장되고, 트랜잭션 밖에서 연관을 읽으면 예외가 나고, 벌크 수정 뒤 조회하면 옛 값이 나오는 일이 전부 여기서 나온다. 그래서 ORM 을 쓴다고 SQL 을 안 봐도 되는 것이 아니라, 언제 어떤 SQL 이 나가는지를 알아야 쓸 수 있다.",
   "market": null,
   "sections": [
     {
-      "id": "what",
+      "id": "what-is-orm",
+      "heading": "먼저 ORM 부터 — 객체와 테이블은 서로 모른다",
       "kind": "what",
-      "heading": "무엇인가 — 사양과 구현, 그리고 그 위의 층",
-      "body": "**JPA 는 사양이다.** \"객체를 어떻게 테이블에 매핑하고 어떤 API 로 다루는가\"를 정의한 인터페이스 묶음이고, 실제로 SQL 을 만들고 실행하는 것은 **구현체**다.\n\n```\n@Entity·@Id·EntityManager·JPQL        ← 사양 (Jakarta Persistence)\n      ↑ 구현\nHibernate · EclipseLink               ← 구현체 (실제 SQL 생성·캐시·플러시)\n      ↑ 감싼다\nSpring Data JPA (Repository 인터페이스) ← 편의 층\n```\n\n실무에서 쓰는 것은 대개 맨 위층이다.\n\n```java\ninterface OrderRepository extends JpaRepository<Order, Long> {\n    List<Order> findByCustomerId(Long customerId);   // 메서드 이름으로 쿼리가 만들어진다\n}\n```\n\n**세 층을 구분해야 하는 이유는 문제가 생겼을 때다.** \"메서드 이름 규칙\"은 Spring Data 의 기능이고, \"지연 로딩이 왜 그때 터지나\"는 사양과 구현의 이야기이며, \"이 SQL 이 왜 이렇게 나오나\"는 Hibernate 쪽이다. **검색어를 층에 맞춰 골라야** 답이 나온다.\n\n**이름도 한 번 바뀌었다.** 예전 이름은 Java Persistence API(JPA)였고 지금 공식 명칭은 **Jakarta Persistence** 다. 패키지도 `javax.persistence` 에서 `jakarta.persistence` 로 옮겨 갔는데, 이것이 **Spring Boot 3 의 `jakarta` 전환**과 같은 뿌리다(→ `spring`). 사람들은 여전히 JPA 라고 부른다.",
+      "body": "자바로 애플리케이션을 짜면 데이터는 객체로 들고 다닌다. `Order` 가 `Member` 를 필드로 가지고 그 안에 다시 `Address` 가 들어 있는 식이다. 그런데 그것을 저장하는 곳은 관계형 데이터베이스이고, 거기서 데이터는 행과 열, 그리고 외래 키로 이어진 테이블이다.\n\n두 세계는 설계 원칙이 다르다. 객체는 상속과 참조로 짜는 것이 자연스럽고, 테이블은 정규화와 조인으로 짜는 것이 자연스럽다. 그래서 둘을 억지로 같은 모양으로 맞추려 들면 한쪽이 망가진다. 객체를 테이블처럼 납작하게 만들거나, 테이블을 객체 흉내 내느라 이상하게 쪼개거나.\n\nORM(Object-Relational Mapping, 객체 관계 매핑)의 발상은 그 반대다.\n\n> 객체는 객체대로 설계하고, 관계형 DB 는 관계형 DB 대로 설계한다. 그리고 그 사이의 번역을 프레임워크가 맡는다.\n\n개발자는 객체를 ORM 프레임워크에 넘기기만 한다. 그러면 프레임워크가 SQL 을 만들어 DB 에 반영하고, 반대로 조회한 행을 다시 객체에 채워 준다. 이 발상은 자바만의 것이 아니어서, 널리 쓰이는 언어에는 대개 ORM 이 하나씩 자리 잡고 있다.\n\n| 언어 | 대표 ORM |\n|---|---|\n| Java | JPA / Hibernate |\n| Python | SQLAlchemy, Django ORM |\n| Ruby | Active Record |\n| JavaScript · TypeScript | TypeORM, Prisma, MikroORM |\n| PHP | Doctrine |\n| C# | Entity Framework |\n\n그중 자바 진영에서 표준의 자리를 차지한 것이 JPA 다. 그런데 여기서 말하는 표준은 \"다들 이걸 쓴다\"는 뜻이 아니라 훨씬 문자 그대로의 뜻이다. 그것부터 정리하고 넘어가자.",
+      "confidence": "inferred"
+    },
+    {
+      "id": "spec-and-impl",
+      "heading": "JPA 는 구현체가 아니라 표준이다",
+      "kind": "what",
+      "body": "JPA 는 라이브러리가 아니라 사양(specification)이다. 객체를 어떻게 테이블에 매핑하고 어떤 API 로 저장하고 조회하는가를 인터페이스와 애너테이션으로 정의해 둔 문서이고, 실제로 SQL 을 만들어 실행하는 일은 구현체가 한다. 사양 페이지에 버전별 문서와 호환 제품 목록이 따로 있는 것이 그 증거다.\n\n실무에서 쓰는 스택은 대개 세 겹이다.\n\n```\n@Entity · @Id · EntityManager · JPQL      <- 사양 (Jakarta Persistence)\n        ^ 구현\nHibernate · EclipseLink                    <- 구현체 (실제 SQL 생성 · 캐시 · 플러시)\n        ^ 감싼다\nSpring Data JPA (Repository 인터페이스)     <- 편의 층\n```\n\n우리가 실제로 손대는 것은 대개 맨 위층이다. 인터페이스만 선언하면 구현체는 만들어 주지 않아도 된다.\n\n```java\ninterface OrderRepository extends JpaRepository<Order, Long> {\n    List<Order> findByCustomerId(Long customerId);\n}\n```\n\n메서드를 하나도 구현하지 않았는데 `findByCustomerId` 가 동작한다. 메서드 이름을 파싱해 쿼리를 만들어 주는 것은 Spring Data JPA 의 기능이고, 그 결과를 JPQL 로 바꿔 SQL 로 내리는 것은 사양과 구현체의 몫이다.\n\n세 겹을 구분해 두는 이유는 문제가 생겼을 때다. \"메서드 이름 규칙이 왜 이렇게 동작하지\"는 Spring Data 의 문서를 봐야 하고, \"지연 로딩이 왜 하필 여기서 터지지\"는 사양의 이야기이며, \"이 SQL 이 왜 이런 모양으로 나가지\"는 Hibernate 의 이야기다. 층을 못 가리면 엉뚱한 문서를 오래 뒤지게 된다.\n\n이름 이야기도 한 줄 필요하다. 원래 이름은 Java Persistence API 였는데, 자바 EE 가 Eclipse Foundation 으로 넘어가면서 Jakarta Persistence 로 바뀌었다. 3.0(Jakarta EE 9)부터 패키지 이름이 `javax.persistence` 에서 `jakarta.persistence` 로 바뀌었고, Spring Boot 3 로 올릴 때 임포트를 전부 고쳐야 했던 것이 이것 때문이다. 사람들은 여전히 JPA 라고 부른다.\n\n그럼 이런 걸 표준까지 만들어 가며 왜 만들었나.",
       "confidence": "confirmed",
       "sources": [
         {
@@ -28,38 +39,46 @@
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         },
         {
           "title": "Jakarta Persistence 3.1",
           "url": "https://jakarta.ee/specifications/persistence/3.1/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "3.1 사양 페이지. 호환 구현체로 Hibernate ORM 6·EclipseLink 가 올라 있어 '사양과 구현'의 관계를 그대로 보여 준다"
+          "summary": "3.1 사양 페이지. Jakarta EE 10 에 대응하는 판이다"
         }
       ]
     },
     {
       "id": "why",
+      "heading": "왜 만들었나 — SQL 중심 개발이 아팠던 자리",
       "kind": "why",
-      "heading": "왜 생겼나 — 반복 코드와 벤더 종속, 그리고 남은 진짜 문제",
-      "body": "JDBC 로 직접 짜면 코드의 대부분이 **같은 모양의 반복**이다.\n\n```java\nps = conn.prepareStatement(\"SELECT id, name, ... FROM orders WHERE id = ?\");\nps.setLong(1, id);\nrs = ps.executeQuery();\nwhile (rs.next()) { o.setId(rs.getLong(\"id\")); o.setName(rs.getString(\"name\")); ... }\n```\n\n컬럼이 스무 개면 스무 줄이고, 컬럼 하나를 추가하면 여러 곳을 고쳐야 한다. **ORM 은 이 반복을 매핑 선언으로 대신한다.** 그리고 사양(JPA)으로 만든 덕에 **구현체를 갈아 끼울 수 있게** 됐다 — 실제로 사양 페이지에는 호환 구현체가 여럿 올라 있다.\n\n**그런데 반복 제거가 이 기술의 본체가 아니다.** 진짜 어려운 문제는 **객체와 테이블의 성질이 다르다**는 것이다.\n\n- 객체는 **참조로** 다른 객체를 가리키고, 테이블은 **외래 키로** 다른 행을 가리킨다.\n- 객체 그래프는 메모리에서 자유롭게 타고 다닐 수 있지만, DB 는 **탈 때마다 쿼리**다.\n- 같은 행을 두 번 조회하면 객체가 둘이 되어 **동일성이 깨진다.**\n\nJPA 의 답이 **영속성 컨텍스트**다. 트랜잭션 동안 엔티티를 한곳에 모아 두고 **같은 행은 같은 객체로 돌려주며**(동일성), **바뀐 것을 추적해 SQL 을 대신 만들고**(변경 감지), **쓰기를 모았다가 한 번에 내보낸다**(쓰기 지연).\n\n**이 편의가 곧 난이도다.** 내가 SQL 을 쓰지 않으니 **언제 어떤 SQL 이 나가는지가 안 보이고**, 그 시점을 모르면 N+1·`LazyInitializationException`·벌크 연산 불일치 같은 문제가 전부 \"이유를 모르겠는 버그\"가 된다. **그래서 다음 절이 이 문서의 본체다.**",
-      "confidence": "confirmed",
+      "body": "JDBC 로 직접 짜 보면 코드의 대부분이 같은 모양의 반복이라는 것이 금방 드러난다.\n\n```java\nString sql = \"SELECT id, name, status, created_at FROM orders WHERE id = ?\";\nPreparedStatement ps = conn.prepareStatement(sql);\nps.setLong(1, id);\nResultSet rs = ps.executeQuery();\nif (rs.next()) {\n    Order o = new Order();\n    o.setId(rs.getLong(\"id\"));\n    o.setName(rs.getString(\"name\"));\n    o.setStatus(rs.getString(\"status\"));\n    o.setCreatedAt(rs.getTimestamp(\"created_at\").toLocalDateTime());\n    ...\n}\n```\n\n같은 코드가 매핑 선언 하나로 줄어드는 것이 ORM 이 처음 파는 물건이다.\n\n```java\n@Entity\nclass Order {\n    @Id @GeneratedValue Long id;\n    String name;\n    String status;\n    LocalDateTime createdAt;\n}\n```\n\n여기까지가 흔히 말하는 생산성이다. 하지만 반복 제거만이 이유였다면 매핑 라이브러리 하나로 끝났지 표준까지 갈 일은 아니었다. 실제로 아팠던 자리는 넷이다.\n\n**첫째, SQL 이 코드를 붙잡는다.** 컬럼을 하나 추가하면 그 테이블을 건드리는 SELECT, INSERT, UPDATE 를 전부 찾아 고쳐야 한다. 객체에 필드를 하나 넣는 일이 SQL 문자열 수십 개를 뒤지는 일이 되면, 개발자는 결국 SQL 을 기준으로 생각하게 된다. 이것이 SQL 중심 개발이고, JPA 가 하려는 일은 그 축을 객체 쪽으로 돌리는 것이다.\n\n**둘째, 패러다임 불일치다.** 이것이 가장 깊은 이유이고, 반복 코드보다 훨씬 고치기 어려운 문제다.\n\n- 상속. 객체에는 상속이 있지만 테이블에는 없다. `Item` 을 상속한 `Book`, `Album` 을 저장하려면 테이블을 어떻게 나눌지부터 정해야 한다.\n- 연관. 객체는 참조로 다른 객체를 가리키고(`order.getMember()`), 테이블은 외래 키로 다른 행을 가리킨다(`ORDER.MEMBER_ID`). 방향도 다르다 — 참조는 한쪽에서만 갈 수 있고 외래 키는 조인으로 양쪽 다 갈 수 있다.\n- 객체 그래프 탐색. 메모리에서는 `order.getMember().getTeam()` 처럼 마음대로 타고 다닐 수 있지만, DB 에서는 탈 때마다 쿼리다. 처음 SQL 이 무엇을 조인해 왔느냐에 따라 갈 수 있는 데가 정해진다.\n- 비교. 같은 행을 두 번 조회해 `==` 로 비교하면 JDBC 에서는 다른 객체라 `false` 가 나온다. 자바 컬렉션에서 같은 것을 두 번 꺼냈다면 `true` 였을 것이다.\n\n**셋째, 벤더 종속이다.** 페이징 하나만 봐도 문법이 DB 마다 다르다. MySQL 은 `LIMIT`, Oracle 은 `ROWNUM` 이나 `FETCH FIRST` 다. SQL 을 코드에 직접 박으면 DB 를 바꾸는 순간 쿼리를 다 뒤져야 한다. JPA 는 그 차이를 방언(dialect) 설정 뒤로 숨기고, 사양이 여러 구현체를 인정하기 때문에 구현체 자체도 갈아 끼울 수 있다. 데이터 접근을 추상화한다는 말이 뜻하는 것이 이것이다.\n\n**넷째, 그전 표준이 너무 무거웠다.** 자바 진영에도 원래 컨테이너가 관리하는 영속성이 있었지만(EJB 2.x 의 엔티티 빈) 배우기 어렵고 테스트도 어려웠다. 그 대안으로 나온 Hibernate 같은 경량 ORM 이 실무에서 자리를 잡았고, 그 방식을 표준으로 흡수한 것이 JPA 1.0 이다. JPA 1.0 은 EJB 3.0(JSR 220)과 함께 2006년 5월에 나왔는데, 그 JSR 이 스스로 밝힌 목표가 \"개발자 관점에서 EJB 아키텍처의 복잡성을 줄이는 것\"이다. 지금의 Jakarta Persistence 는 그 계보의 연장이다.\n\n여기에 다섯째로 성능을 이유로 드는 설명을 자주 보는데, 이건 조심해서 읽어야 한다. JPA 가 손으로 쓴 SQL 보다 빠른 것이 아니다. 같은 트랜잭션 안에서 같은 데이터를 두 번 읽지 않게 해 주고, 쓰기를 모아서 한 번에 내보내 주는 장치가 있을 뿐이다. 그리고 그 장치는 모르고 쓰면 오히려 쿼리를 폭발시킨다.\n\n그 장치의 이름이 영속성 컨텍스트다. 여기서부터가 이 기술의 본체다.",
+      "confidence": "inferred",
       "sources": [
+        {
+          "title": "JSR 220: Enterprise JavaBeans 3.0",
+          "url": "https://jcp.org/en/jsr/detail?id=220",
+          "publisher": "Java Community Process",
+          "date": "2006-05-11",
+          "kind": "standard",
+          "summary": "JPA 1.0 이 함께 나온 JSR. 목표를 '개발자 관점에서 EJB 아키텍처의 복잡성을 줄이는 것'이라고 적고 있다"
+        },
         {
           "title": "Jakarta Persistence — 사양 목록 (Jakarta EE)",
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
     {
-      "id": "context",
+      "id": "persistence-context",
+      "heading": "그래서 어떻게 도는가 — 영속성 컨텍스트",
       "kind": "how",
-      "heading": "영속성 컨텍스트 — 언제 SQL 이 나가나",
-      "body": "**엔티티는 네 상태를 오간다.**\n\n```\n비영속(new)  ──persist()──▶  영속(managed)  ──트랜잭션 종료/detach──▶  준영속(detached)\n                                  │\n                              remove()  ──▶  삭제(removed)\n```\n\n**영속 상태의 엔티티만 특별하다.** 컨텍스트가 들고 있으면서 세 가지를 해 준다.\n\n**① 1차 캐시.** 같은 트랜잭션 안에서 같은 ID 를 두 번 조회하면 **쿼리가 한 번만 나가고 같은 객체**가 돌아온다.\n\n**② 변경 감지(dirty checking).** 조회한 엔티티의 필드를 바꾸면 **`save()` 를 부르지 않아도** 트랜잭션이 끝날 때 UPDATE 가 나간다. 컨텍스트가 조회 시점의 스냅샷을 들고 있다가 비교하기 때문이다.\n\n```java\n@Transactional\nvoid rename(Long id, String name) {\n    Order o = repo.findById(id).orElseThrow();\n    o.setName(name);          // 여기서 끝. save() 를 부르지 않는다\n}                             // ← 트랜잭션 종료 시 UPDATE\n```\n\n**③ 쓰기 지연.** `persist()` 를 불러도 INSERT 가 즉시 나가지 않는다. SQL 을 모아 두었다가 **플러시 시점에 한꺼번에** 내보낸다.\n\n**그래서 \"언제 SQL 이 나가나\"의 답이 플러시다.** 세 경우에 일어난다.\n\n1. **트랜잭션 커밋 직전** — 가장 흔한 경우.\n2. **JPQL 등 쿼리를 실행하기 직전** — 아직 DB 에 없는 변경이 쿼리 결과에 빠지면 안 되므로, 구현체가 먼저 밀어낸다.\n3. **명시적으로 `flush()` 를 부를 때.**\n\n**이 규칙을 알면 헷갈리던 것들이 정리된다** — 왜 `save()` 없이 저장되는지, 왜 로그에 SQL 이 한참 뒤에 몰려 찍히는지, 왜 중간에 조회 쿼리를 넣으면 그 앞의 INSERT 가 먼저 나가는지.",
+      "body": "영속성 컨텍스트(persistence context)는 트랜잭션 동안 엔티티를 담아 두는 공간이다. 애플리케이션과 DB 사이에 한 겹 더 있다고 생각하면 된다. 엔티티는 이 공간을 기준으로 네 상태를 오간다.\n\n```\n비영속(new) --persist()--> 영속(managed) --트랜잭션 종료 / detach()--> 준영속(detached)\n                              |\n                          remove() --> 삭제(removed)\n```\n\n이 중 특별한 것은 영속 상태 하나뿐이다. 컨텍스트가 그 객체를 들고 있는 동안 세 가지 일이 자동으로 일어난다.\n\n**1차 캐시.** 같은 트랜잭션 안에서 같은 ID 를 두 번 조회하면 쿼리는 한 번만 나가고, 두 번 다 같은 객체가 돌아온다. 앞 절에서 본 비교 문제 — 같은 행을 두 번 읽었는데 `==` 가 `false` 이던 문제 — 가 여기서 풀린다.\n\n**변경 감지(dirty checking).** 조회한 엔티티의 필드를 바꾸면 저장 메서드를 부르지 않아도 트랜잭션이 끝날 때 UPDATE 가 나간다. 컨텍스트가 조회 시점의 스냅샷을 들고 있다가 커밋 직전에 지금 값과 비교하기 때문이다.\n\n```java\n@Transactional\nvoid rename(Long id, String name) {\n    Order o = repo.findById(id).orElseThrow();\n    o.setName(name);\n    // save() 를 부르지 않는다. 여기서 끝이다.\n}\n```\n\n처음 보면 버그처럼 보이는 코드다. 하지만 이것이 정상 동작이고, 오히려 `save()` 를 습관적으로 부르는 쪽이 나중에 문제를 만든다. 뒤에서 볼 `merge` 이야기가 그것이다.\n\n**쓰기 지연.** `persist()` 를 부른 그 자리에서 INSERT 가 나가지 않는다. SQL 은 컨텍스트 안에 모였다가 정해진 순간에 한꺼번에 나간다. 그 순간을 플러시(flush)라고 하고, 세 경우에 일어난다 — 트랜잭션 커밋 직전, JPQL 쿼리 실행 직전, 그리고 `flush()` 를 직접 부를 때다.\n\n두 번째가 헷갈리기 쉬운 자리다. 아직 DB 에 안 들어간 변경이 있는데 쿼리를 날리면 그 변경이 결과에서 빠지므로, 구현체가 먼저 플러시하고 쿼리를 보낸다. 조회 한 줄을 중간에 끼워 넣었더니 앞의 INSERT 가 먼저 나가는 것이 이 때문이다.\n\n세 가지를 한 문장으로 묶으면 이렇게 된다. 영속성 컨텍스트는 트랜잭션 동안 DB 를 대신하는 작업 공간이고, 실제 DB 반영은 플러시 시점으로 미뤄진다. 그래서 \"언제 SQL 이 나가나\"라는 질문의 답이 곧 JPA 를 아는 것의 절반이다.\n\n그런데 이 공간은 트랜잭션과 함께 닫힌다. 닫힌 뒤의 엔티티는 어떻게 되나.",
       "confidence": "confirmed",
       "sources": [
         {
@@ -67,15 +86,15 @@
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
     {
       "id": "detached",
+      "heading": "컨텍스트를 벗어난 엔티티 — 준영속과 merge",
       "kind": "how",
-      "heading": "준영속과 merge — 컨텍스트 밖의 엔티티",
-      "body": "트랜잭션이 끝나면 엔티티는 **준영속(detached)** 이 된다. 겉모습은 같은 객체인데 **컨텍스트가 더 이상 추적하지 않는다.**\n\n**여기서 두 가지가 생긴다.**\n\n**① 바꿔도 저장되지 않는다.** 변경 감지는 영속 상태에서만 동작한다. 컨트롤러에서 받은 엔티티(또는 트랜잭션 밖에서 들고 있던 것)를 고쳐도 아무 일이 없다.\n\n**② 지연 로딩이 실패한다.** 연관을 아직 안 읽었는데 컨텍스트가 닫혔으면, 그 시점에 쿼리를 낼 수 없다 — 이것이 `LazyInitializationException` 이다.\n\n**준영속 엔티티를 다시 반영하는 방법이 `merge` 다.** 다만 동작이 직관과 다르다.\n\n```\nmerge(detachedEntity)\n  → 컨텍스트에 같은 ID 의 영속 엔티티가 있으면 그것에 값을 복사\n  → 없으면 DB 에서 읽어와 복사\n  → **복사된 '그 영속 객체'를 반환한다** (인자로 넘긴 객체는 여전히 준영속)\n```\n\n**즉 `merge` 는 원본을 영속으로 바꿔 주지 않는다.** 반환값을 쓰지 않고 원본을 계속 고치면 반영되지 않는다 — 흔한 함정이다.\n\n**그리고 `merge` 는 값을 통째로 덮는다.** 준영속 객체의 어떤 필드가 `null` 이면 그 `null` 이 그대로 반영될 수 있다. 화면에서 넘어온 일부 필드만 수정하려고 `merge` 를 쓰면 **나머지가 지워지는 사고**가 여기서 난다.\n\n> **그래서 실무의 정석은 `merge` 를 피하는 쪽이다** — 트랜잭션 안에서 **ID 로 조회한 뒤 필요한 필드만 수정**하면 변경 감지가 알아서 UPDATE 를 만든다. 이 방식이 의도한 필드만 바뀌는 것을 보장한다.",
+      "body": "트랜잭션이 끝나면 그 안에 있던 엔티티는 준영속(detached) 상태가 된다. 겉모습은 아까와 똑같은 객체인데 컨텍스트가 더 이상 추적하지 않는다. 그냥 자바 객체다.\n\n여기서 두 가지 증상이 나온다.\n\n**바꿔도 저장되지 않는다.** 변경 감지는 영속 상태에서만 동작한다. 컨트롤러에서 받은 객체나 트랜잭션 밖에서 들고 있던 객체를 고쳐 봐야 아무 일도 일어나지 않는다.\n\n**지연 로딩이 실패한다.** 아직 안 읽은 연관을 그때 가서 읽으려면 쿼리를 내야 하는데, 컨텍스트가 이미 닫혀 낼 수가 없다. 이때 나오는 것이 `LazyInitializationException` 이다. 엔티티를 그대로 JSON 으로 직렬화하다 예외가 터지는 흔한 사고가 이 경로다.\n\n준영속 엔티티를 다시 반영하는 수단이 `merge` 인데, 동작이 직관과 다르다.\n\n```\nmerge(detached)\n  -> 컨텍스트에 같은 ID 의 영속 엔티티가 있으면 거기에 값을 복사\n  -> 없으면 DB 에서 읽어 온 뒤 값을 복사\n  -> 그 영속 객체를 반환한다 (인자로 넘긴 객체는 여전히 준영속이다)\n```\n\n즉 `merge` 는 넘긴 객체를 영속으로 바꿔 주지 않는다. 반환값을 버리고 원본을 계속 고치면 아무것도 반영되지 않는다. 그리고 값을 통째로 덮기 때문에, 화면에서 안 넘어와 `null` 인 필드가 그대로 DB 를 덮어 기존 값을 지운다. 데이터가 조용히 사라지는 사고라 한참 뒤에 발견된다.\n\n그래서 수정의 정석은 `merge` 가 아니라 이것이다. 트랜잭션 안에서 ID 로 다시 조회하고, 바꿔야 할 필드만 바꾼다. 변경 감지가 나머지를 한다.\n\n여기까지가 컨텍스트의 동작이다. 그런데 이 모든 편의에도 불구하고, 실무에서 JPA 를 쓰는 사람은 SQL 로그를 켜 놓고 산다. 왜 그런가.",
       "confidence": "confirmed",
       "sources": [
         {
@@ -83,28 +102,30 @@
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
     {
-      "id": "sql",
-      "kind": "how",
-      "heading": "그래도 SQL 을 봐야 하는 이유",
-      "body": "**ORM 은 SQL 을 없애 주지 않는다. 보이지 않게 할 뿐이다.** 그래서 실무에서는 **생성된 SQL 을 로그로 켜 두는 것이 기본 설정**이다.\n\n확인해야 하는 것 셋.\n\n**① 쿼리 개수.** N+1 은 코드에 반복문 하나뿐이라 읽어서는 안 보인다(→ `spring`). 요청 하나에 쿼리가 몇 번 나가는지 세는 습관이 유일한 방어다.\n\n**② 쿼리 모양.** 메서드 이름으로 만들어진 쿼리가 의도한 조인·조건인지, 필요 없는 컬럼까지 가져오는지. 복잡한 조회는 **JPQL·QueryDSL 로 직접 쓰거나 DTO 로 필요한 것만** 뽑는 편이 낫다. 공고에 `MariaDB, Redis, JPA, QueryDSL, Liquibase` 처럼 QueryDSL 이 함께 나오는 것이 그 이유다.\n\n**③ 벌크 연산의 예외.** JPQL 로 한 번에 UPDATE·DELETE 를 날리는 **벌크 연산은 영속성 컨텍스트를 거치지 않고 DB 로 직행한다.**\n\n```java\n@Modifying\n@Query(\"update Order o set o.status = 'DONE' where o.id in :ids\")\nint bulkDone(@Param(\"ids\") List<Long> ids);\n```\n\n이 쿼리가 나간 뒤에도 **컨텍스트 안의 엔티티는 옛 값을 들고 있다.** 그 상태에서 조회하면 1차 캐시가 옛 객체를 돌려주고, 변경 감지가 옛 값으로 다시 UPDATE 를 날릴 수도 있다. **그래서 벌크 연산 뒤에는 컨텍스트를 비우는 것**(`clear`)이 정석이고, Spring Data 에는 그 동작을 켜는 옵션이 있다.\n\n> **정리하면 — ORM 을 쓰는 사람은 SQL 을 덜 쓰는 대신 더 읽어야 한다.** 쓰지 않은 SQL 이 언제 어떤 모양으로 나가는지가 성능과 정합성을 정하기 때문이다."
+      "id": "sql-still",
+      "heading": "그래도 SQL 을 봐야 한다",
+      "kind": "limits",
+      "body": "ORM 은 SQL 을 없애 주지 않는다. 보이지 않게 할 뿐이다. 그래서 생성된 SQL 을 로그로 켜 두는 것이 개발 환경의 기본 설정이고, 확인해야 하는 것은 셋이다.\n\n**쿼리 개수.** 목록을 조회한 뒤 반복문에서 각 항목의 연관을 읽으면, 목록 조회 한 번에 항목 수만큼의 추가 쿼리가 따라 나간다. 이것이 N+1 이다. 코드에는 반복문 하나밖에 없어서 읽어서는 절대 안 보이고, 로그에서 같은 모양의 SELECT 가 줄줄이 찍히는 것으로만 드러난다. 요청 하나에 쿼리가 몇 번 나가는지 세는 습관이 사실상 유일한 방어다.\n\n**쿼리 모양.** 메서드 이름으로 만들어진 쿼리가 의도한 조인과 조건인지, 화면에 필요 없는 컬럼까지 다 끌어오는지 확인한다. 조회가 복잡해지면 JPQL 이나 QueryDSL 로 직접 쓰거나, 아예 필요한 컬럼만 담은 DTO 로 뽑는 편이 낫다.\n\n**벌크 연산.** JPQL 로 한 번에 UPDATE 나 DELETE 를 날리는 벌크 연산은 영속성 컨텍스트를 거치지 않고 DB 로 직행한다.\n\n```java\n@Modifying\n@Query(\"update Order o set o.status = 'DONE' where o.id in :ids\")\nint bulkDone(@Param(\"ids\") List<Long> ids);\n```\n\nDB 의 행은 바뀌었는데 컨텍스트 안의 엔티티는 여전히 옛 상태이고, 같은 트랜잭션에서 다시 조회하면 1차 캐시가 그 옛 객체를 돌려준다. 앞 절에서 편의였던 1차 캐시가 여기서는 함정이 된다. 벌크 연산 뒤에는 컨텍스트를 비우거나, 아예 별도 트랜잭션으로 떼어 놓아야 한다.\n\n셋을 관통하는 말은 하나다. JPA 는 SQL 을 안 봐도 되게 해 주는 도구가 아니라, 언제 어떤 SQL 이 나가는지를 아는 사람이 코드를 줄이려고 쓰는 도구다.\n\n그럼 아예 JPA 로 하면 안 되는 자리는 어디인가.",
+      "confidence": "inferred"
     },
     {
       "id": "limits",
+      "heading": "JPA 로 하면 아픈 것, 그리고 그 자리를 메운 이름들",
       "kind": "limits",
-      "heading": "경계 — JPA 로 하면 아픈 것",
-      "body": "**복잡한 조회·통계는 SQL 이 낫다.** 여러 테이블을 조인하고 집계·윈도 함수를 쓰는 리포팅 쿼리를 JPQL 로 옮기면 읽기도 어렵고 성능도 나빠지기 쉽다. **네이티브 쿼리나 별도의 조회 전용 계층**을 두는 것이 흔한 선택이다.\n\n**대량 배치에 그대로 쓰면 메모리가 터진다.** 수십만 건을 `persist` 하면 영속성 컨텍스트가 그 전부를 들고 있는다. **일정 건수마다 플러시하고 비우거나**, 아예 JDBC 배치·벌크 연산으로 내려가는 것이 맞다 — 금융권의 정산·마감 배치가 이 판단을 자주 만난다(→ `java-in-finance`).\n\n**스키마 자동 생성은 개발용이다.** 엔티티에서 테이블을 만들어 주는 기능은 편하지만, 운영에서는 **마이그레이션 도구**(Flyway·Liquibase)로 명시적으로 관리한다. 공고의 스택 목록에 Liquibase 가 함께 있는 이유다.\n\n**동시 수정 문제는 별개다.** 두 트랜잭션이 같은 행을 고칠 때 무엇이 이기는지는 **격리 수준과 잠금**의 영역이고, JPA 는 그 위에 **낙관적 잠금**(버전 컬럼) 같은 도구를 얹어 줄 뿐이다. 공고가 `JPA / Hibernate 프레임워크 및 트랜잭션, 동시성 처리에 대한 이해` 를 함께 묻는 것이 그 층이다(→ `transaction-isolation`).\n\n**그리고 학습 비용이 크다.** 매핑·컨텍스트·플러시·지연 로딩·캐시가 서로 얽혀 있어, **원리를 모르면 마법처럼 보이고 문제가 나면 손을 못 댄다.** \"ORM 을 쓰면 SQL 을 몰라도 된다\"는 기대가 이 기술을 가장 어렵게 만드는 오해다.\n\n---\n\n⭐⭐⭐ **이 기술의 한계는 하나에서 다 나온다 — \"객체와 테이블은 원래 안 맞는다\"** (임피던스 불일치). 💡 **맞추려고 넣은 장치가 그대로 함정이 된다.**\n\n| 한계 | ⚠️ 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **N+1 쿼리** | 지연 로딩이 접근할 때마다 쿼리 | ⭐ **fetch join·`@EntityGraph`·배치 크기** — ⚠️ **셈은 11건뿐** |\n| ⭐⭐⭐ **복잡한 조회는 SQL 이 낫다** | JPQL 로 집계·윈도 함수가 안 편하다 | ⭐⭐ **`QueryDSL`(100건)·네이티브 쿼리·조회 전용 계층** → `cqrs` 의 씨앗 |\n| ⭐⭐⭐ **대량 배치에서 메모리가 터진다** | 영속성 컨텍스트가 다 들고 있다 | ⭐ **`clear()`·JDBC 배치·별도 배치 도구** |\n| ⭐⭐ **언제 쿼리가 나가는지 안 보인다** | 쓰기 지연·플러시 시점 | ⭐ **SQL 로그를 켠다** → `observability` |\n| ⭐⭐ **아예 SQL 을 직접 쓰겠다** | 매핑을 안 믿는다 | ⭐⭐ **`MyBatis`(310건)** — ⚠️ **한국에서 특히 크다** |\n| ⭐⭐ **스키마가 바뀌면 엔티티도 바뀐다** | 둘이 붙어 있다 | ⭐ **`ddl-auto` 를 운영에서 끈다** → `schema-migration` |\n\n⭐⭐⭐ **둘째 줄이 큰 것을 낳았다** — 💡 **\"쓰기는 엔티티로, 읽기는 따로\"가 커지면 그게 `cqrs`** 다. 📌 **`cqrs` 문서가 \"원저자의 경고가 정의보다 길다\"고 적은 그 패턴의 실무 입구가 여기**다.\n\n⭐⭐ **다섯째 줄이 한국 시장의 특징이다** — **`MyBatis` 310건 : `Hibernate` 156건 — 2배**다. 💡 **JPA 를 안 쓰고 SQL 을 직접 쓰는 쪽이 여전히 크다**(→ 아래 절).\n\n⚠️⚠️ **그리고 이 문서에서 가장 큰 셈은 `영속성 컨텍스트` 1건**이다 — **`JPA` 474 대 1, 474배.** 💡 **이 기술의 심장인 개념인데 시장은 그 말을 안 쓴다.**"
+      "body": "만능인 기술은 없고, 한계는 대개 다음 도구의 이름을 부른다. JPA 도 그렇다.\n\n**복잡한 조회와 통계는 SQL 이 낫다.** 여러 테이블을 조인하고 집계와 윈도 함수를 쓰는 리포팅 쿼리를 JPQL 로 옮기면 읽기도 어렵고 성능도 나빠지기 쉽다. 문자열로 쓰는 JPQL 은 컴파일 시점에 오타를 잡아 주지도 않는다. 그 틈에서 나온 것이 QueryDSL 이고 — 쿼리를 자바 코드로 쓰게 해 타입 검사를 받는다 — 조회 경로를 아예 따로 떼는 데까지 밀고 가면 CQRS 가 된다.\n\n**대량 배치에 그대로 쓰면 메모리가 터진다.** 수십만 건을 `persist` 하면 컨텍스트가 그 전부를 들고 있고, 변경 감지를 위한 스냅샷까지 함께 갖는다. 일정 건수마다 플러시하고 비우거나, 아예 JDBC 배치나 벌크 연산으로 내려가는 것이 맞다. 정산이나 마감 배치를 돌리는 금융권 시스템이 이 판단을 자주 만난다.\n\n**스키마 자동 생성은 개발용이다.** 엔티티에서 테이블을 만들어 주는 기능은 편하지만 운영에서 쓸 물건이 아니다. 운영 스키마는 Flyway 나 Liquibase 같은 마이그레이션 도구로 버전을 매겨 관리한다.\n\n**동시 수정은 JPA 가 푸는 문제가 아니다.** 두 트랜잭션이 같은 행을 고칠 때 무엇이 이기는지는 DB 의 격리 수준과 잠금이 정한다. JPA 는 그 위에 낙관적 잠금(버전 컬럼) 같은 도구를 얹어 줄 뿐이고, 경합이 심하면 비관적 잠금이나 다른 설계로 가야 한다.\n\n**그리고 매핑 자체가 항상 답은 아니다.** 조회가 압도적으로 많고 SQL 을 세밀하게 다뤄야 하는 시스템에서는 SQL 을 직접 쓰는 매퍼(MyBatis 같은)를 고르는 팀도 많다. ORM 이 SQL 을 대체한 것이 아니라, 두 접근이 같은 시장에 공존한다.\n\n한계를 다 적고 나면 남는 질문은 하나다. 그래서 이 기술은 지금 어디에 얹혀 있나.",
+      "confidence": "inferred"
     },
     {
-      "id": "in-market",
+      "id": "where",
+      "heading": "지금 어디에 쓰이나",
       "kind": "extra",
-      "heading": "⭐⭐ 시장에서 — 474건, 그런데 MyBatis 가 310건",
-      "confidence": "inferred",
-      "body": "⚠️ **`market` 이 없다** — 기술 태그 목록에 없다(`spring` 에는 있다).\n\n⭐ **셈**(2026-09-06).\n\n| 낱말 | 건수 | 모집중 | |\n|---|---|---|---|\n| ⭐⭐ **`JPA`** | **474** | 122 | 이 문서 |\n| ⭐⭐ `ORM` | 318 | 89 | 개념 |\n| ⭐⭐ **`MyBatis\\|iBatis`** | **310** | 66 | ⚠️ **안 쓰는 쪽** |\n| ⭐ `Hibernate` | 156 | 42 | 구현체 |\n| ⭐ `QueryDSL` | 100 | 29 | 둘째 한계의 답 |\n| ⚠️ `N+1` | **11** | 3 | ⭐ 가장 유명한 함정 |\n| ⚠️⚠️ **`영속성 컨텍스트\\|Persistence Context`** | **1** | 1 | ⭐⭐⭐ **이 기술의 심장** |\n\n💡 ⭐⭐⭐ **`JPA` 474 대 `영속성 컨텍스트` 1 — 474배.** ⚠️ **이 백과사전에서 지금까지 잰 것 중 `Kubernetes` : `리소스 제한`(678배) 다음으로 큰 격차**다. 📌 **JPA 를 아는 것과 영속성 컨텍스트를 아는 것은 다른데, 공고는 앞의 것만 적는다** — ⭐ **면접에서 갈리는 자리가 정확히 거기**라는 뜻으로 읽힌다(⚠️ 이 해석은 추론이다).\n\n⭐⭐ **`MyBatis` 310건이 이 문서의 진짜 경쟁자다** — **`Hibernate` 156건의 2배**다. 💡 **한국 시장은 SQL 을 직접 쓰는 쪽이 여전히 크다** — 📌 ⭐ **`java-in-finance` 와 이어지는 자리**로 **금융·SI 쪽에서 특히 그렇다**는 통념이 있으나 ⚠️ **이 문서는 그 갈래별 셈을 확인하지 않았다.**\n\n⚠️ **`N+1` 11건도 작다** — 💡 **가장 많이 회자되는 함정인데 공고에는 안 적힌다**(→ `db-index` 의 `B-tree` 3건과 같은 자리).\n\n📌 ⭐ **어디에 얹혀 있나**: **Spring Boot 백엔드**(→ `spring`, **2955건**) · **Kotlin 서버**(**1110건**) · **MySQL·PostgreSQL 위**(→ `postgres-mysql`) · **조회는 QueryDSL 로**(→ `cqrs`).\n\n⭐ **이 백과사전 안에서의 자리**: **위는 `spring`**, **아래는 `postgres-mysql`·`db-index`**, **반대쪽은 MyBatis(문서 없음)**, **커지면 `cqrs`**, **스키마는 `schema-migration`**."
+      "body": "JPA 는 자바로 짠 서버의 데이터 접근 층에 얹힌다. 특히 Spring Boot 로 시작한 서비스에서는 Spring Data JPA 가 사실상 기본 선택이라, 채용 공고에서도 언어와 프레임워크와 한 묶음으로 묶여 나온다.\n\n- `JVM 생태계(Java, Kotlin, Spring, JPA)에 대한 경험 및 이해` — 언어, 프레임워크, 영속성이 한 줄로 붙어 있다.\n- `JPA / Hibernate 프레임워크 및 트랜잭션, 동시성 처리에 대한 이해` — 사양과 구현체를 함께 적고, 앞 절에서 본 잠금과 격리 수준까지 묶는다.\n- `MariaDB, Redis, JPA, QueryDSL, Liquibase` — 이 문서의 결론 둘이 그대로 스택 목록이 된 사례다. 복잡한 조회는 QueryDSL 로 직접 쓰고, 스키마는 Liquibase 로 고정한다.\n\n주변에 함께 자란 것도 이름이 있다. 조회를 보조하는 QueryDSL, 스키마를 관리하는 Flyway 와 Liquibase, 매핑을 검증하는 테스트 지원(`@DataJpaTest`), 그리고 코틀린에서 엔티티를 다루기 위한 관례들이다.\n\n같은 발상은 언어를 넘어서도 이어진다. 한 공고가 `MikroORM, JPA 등 ORM 활용 경험` 이라고 묶어 적는 것처럼, 영속성 컨텍스트에 해당하는 장치는 다른 언어의 ORM 에도 대개 대응물이 있다(SQLAlchemy 의 세션이 그렇다). 그래서 이 문서에서 손에 남겨야 할 것은 애너테이션 목록이 아니라 하나다 — 객체를 고치는 코드와 SQL 이 나가는 시점은 다르고, 그 사이를 관리하는 공간이 있다는 것.",
+      "confidence": "inferred"
     }
   ],
   "tables": [
@@ -112,7 +133,7 @@
       "id": "states",
       "kind": "spec",
       "caption": "엔티티의 네 상태 — 무엇이 자동으로 되나",
-      "note": "**영속 상태에서만** 변경 감지와 1차 캐시가 동작한다. 트랜잭션이 끝나면 준영속이 되고, 그때부터는 그냥 자바 객체다",
+      "note": "영속 상태에서만 변경 감지와 1차 캐시가 동작한다. 트랜잭션이 끝나면 준영속이 되고, 그때부터는 그냥 자바 객체다",
       "columns": [
         "상태",
         "컨텍스트가 아는가",
@@ -124,25 +145,25 @@
           "비영속 (new)",
           "모른다",
           "아무 일 없음",
-          "—"
+          "해당 없음"
         ],
         [
-          "**영속 (managed)**",
-          "**안다**",
-          "**트랜잭션 끝에 UPDATE (변경 감지)**",
-          "**된다**"
+          "영속 (managed)",
+          "안다",
+          "트랜잭션 끝에 UPDATE (변경 감지)",
+          "된다"
         ],
         [
           "준영속 (detached)",
           "더 이상 추적 안 함",
-          "**아무 일 없음**",
-          "**실패** (`LazyInitializationException`)"
+          "아무 일 없음",
+          "실패 (LazyInitializationException)"
         ],
         [
           "삭제 (removed)",
           "안다 (삭제 예정)",
-          "—",
-          "—"
+          "해당 없음",
+          "해당 없음"
         ]
       ],
       "confidence": "confirmed",
@@ -152,7 +173,7 @@
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
@@ -160,7 +181,7 @@
       "id": "flush",
       "kind": "spec",
       "caption": "플러시 — SQL 이 실제로 나가는 시점",
-      "note": "`persist()` 를 부른 시점이 아니라 **아래 세 순간에** SQL 이 나간다. 로그에 SQL 이 몰려 찍히는 이유이고, 중간에 조회를 넣으면 순서가 바뀌는 이유이기도 하다",
+      "note": "persist() 를 부른 자리가 아니라 아래 세 순간에 SQL 이 나간다. 로그에 SQL 이 몰려 찍히는 이유이고, 중간에 조회를 넣으면 순서가 바뀌는 이유이기도 하다",
       "columns": [
         "언제",
         "왜",
@@ -168,18 +189,18 @@
       ],
       "rows": [
         [
-          "**트랜잭션 커밋 직전**",
+          "트랜잭션 커밋 직전",
           "모아 둔 쓰기를 반영해야 하므로",
           "메서드가 끝날 때 INSERT·UPDATE 가 몰려 나간다"
         ],
         [
-          "**쿼리 실행 직전**",
+          "JPQL 쿼리 실행 직전",
           "아직 반영 안 된 변경이 결과에서 빠지면 안 되므로",
           "조회 한 줄을 넣었더니 그 앞의 INSERT 가 먼저 나간다"
         ],
         [
-          "`flush()` 호출",
-          "직접 시점을 정할 때",
+          "flush() 직접 호출",
+          "시점을 직접 정할 때",
           "생성된 ID 를 즉시 써야 하거나 예외를 빨리 보고 싶을 때"
         ]
       ],
@@ -190,7 +211,7 @@
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
@@ -198,27 +219,27 @@
       "id": "save-ways",
       "kind": "compare",
       "caption": "저장하는 세 가지 방법 — 무엇이 안전한가",
-      "note": "**실무 정석은 세 번째다** — 트랜잭션 안에서 조회한 뒤 필요한 필드만 바꾸면 의도한 것만 UPDATE 된다",
+      "note": "대부분의 수정은 세 번째로 한다. 트랜잭션 안에서 조회한 뒤 필요한 필드만 바꾸면 의도한 것만 UPDATE 된다",
       "columns": [
-        "",
+        "방법",
         "언제 쓰나",
         "주의"
       ],
       "rows": [
         [
-          "`persist(new)`",
+          "persist(new)",
           "새 엔티티를 처음 저장할 때",
           "쓰기 지연 — INSERT 는 플러시 때 나간다"
         ],
         [
-          "`merge(detached)`",
+          "merge(detached)",
           "컨텍스트 밖 엔티티를 반영할 때",
-          "**반환값이 영속 객체다**(인자는 여전히 준영속). 그리고 **값을 통째로 덮어** null 이 반영될 수 있다"
+          "반환값이 영속 객체다(인자는 여전히 준영속). 값을 통째로 덮으므로 null 이 기존 값을 지울 수 있다"
         ],
         [
-          "**조회 후 필드 수정**",
-          "**대부분의 수정 작업**",
-          "변경 감지가 UPDATE 를 만든다. `save()` 를 부를 필요가 없다"
+          "조회 후 필드 수정",
+          "대부분의 수정 작업",
+          "변경 감지가 UPDATE 를 만든다. 저장 메서드를 부를 필요가 없다"
         ]
       ],
       "confidence": "confirmed",
@@ -228,110 +249,17 @@
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
-      ]
-    },
-    {
-      "id": "versions",
-      "kind": "spec",
-      "caption": "이름과 버전 — `javax` 에서 `jakarta` 로",
-      "note": "패키지 전환이 **Spring Boot 3 의 jakarta 전환과 같은 뿌리**다(→ `spring`). 라이브러리를 올릴 때 두 가지가 함께 움직인다",
-      "columns": [
-        "시기",
-        "이름 / 패키지",
-        "메모"
-      ],
-      "rows": [
-        [
-          "예전",
-          "Java Persistence API (JPA) · `javax.persistence`",
-          "사람들은 지금도 JPA 라고 부른다"
-        ],
-        [
-          "**전환 후**",
-          "**Jakarta Persistence · `jakarta.persistence`**",
-          "Spring Boot 3 의 전환과 함께 움직였다"
-        ],
-        [
-          "3.1",
-          "사양 버전",
-          "호환 구현체로 Hibernate ORM 6 · EclipseLink 가 올라 있다"
-        ],
-        [
-          "3.2 (현재)",
-          "사양 버전",
-          "호환 구현체로 Hibernate ORM 7 · EclipseLink 5"
-        ]
-      ],
-      "confidence": "confirmed",
-      "sources": [
-        {
-          "title": "Jakarta Persistence — 사양 목록 (Jakarta EE)",
-          "url": "https://jakarta.ee/specifications/persistence/",
-          "publisher": "Eclipse Foundation",
-          "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
-        },
-        {
-          "title": "Jakarta Persistence 3.1",
-          "url": "https://jakarta.ee/specifications/persistence/3.1/",
-          "publisher": "Eclipse Foundation",
-          "kind": "standard",
-          "summary": "3.1 사양 페이지. 호환 구현체로 Hibernate ORM 6·EclipseLink 가 올라 있어 '사양과 구현'의 관계를 그대로 보여 준다"
-        }
-      ]
-    },
-    {
-      "id": "symptoms",
-      "kind": "glossary",
-      "caption": "증상 → 먼저 의심할 것",
-      "note": "JPA 의 문제는 대개 **'언제 SQL 이 나가나'와 '이 엔티티가 어느 상태인가'** 둘로 환원된다",
-      "columns": [
-        "증상",
-        "먼저 의심할 것",
-        "확인·조치"
-      ],
-      "rows": [
-        [
-          "`save()` 를 안 했는데 값이 바뀌어 저장됐다",
-          "**변경 감지** — 설계된 동작이다",
-          "의도가 아니면 조회를 읽기 전용으로 하거나 DTO 로 받는다"
-        ],
-        [
-          "엔티티를 고쳤는데 저장이 안 된다",
-          "**준영속 상태**",
-          "트랜잭션 안에서 다시 조회해 수정한다"
-        ],
-        [
-          "트랜잭션 밖에서 연관을 읽다 예외",
-          "지연 로딩 + 컨텍스트 종료",
-          "필요한 것을 안에서 로딩하거나 DTO 로 변환해 내보낸다"
-        ],
-        [
-          "요청 하나에 쿼리가 수십 번",
-          "**N+1**",
-          "SQL 로그로 세고 페치 조인·엔티티 그래프로 묶는다 (→ `spring`)"
-        ],
-        [
-          "벌크 UPDATE 뒤 조회하면 옛 값이 나온다",
-          "**벌크 연산이 컨텍스트를 우회했다**",
-          "실행 후 컨텍스트를 비운다(`clear`). Spring Data 에는 그 옵션이 있다"
-        ],
-        [
-          "일부 필드만 수정했는데 나머지가 null 이 됐다",
-          "**`merge` 가 값을 통째로 덮었다**",
-          "조회 후 필요한 필드만 수정하는 방식으로 바꾼다"
-        ]
       ]
     }
   ],
   "when_to_use": [
     {
-      "situation": "엔티티 한 건을 수정한다",
-      "pick": "**트랜잭션 안에서 조회한 뒤 필드만 바꾸기** (변경 감지)",
-      "over": "`merge` 로 통째로 덮기",
-      "why": "변경 감지는 **바뀐 필드만** UPDATE 에 넣는다. `merge` 는 준영속 객체의 값을 통째로 복사하므로, 화면에서 안 넘어온 필드가 `null` 로 지워질 수 있다",
+      "situation": "엔티티 한 건의 몇몇 필드를 수정한다",
+      "pick": "트랜잭션 안에서 ID 로 조회한 뒤 필드만 바꾼다 (변경 감지에 맡긴다)",
+      "over": "준영속 객체를 merge 로 통째로 덮는다",
+      "why": "변경 감지는 스냅샷과 비교해 바뀐 필드만 UPDATE 에 넣는다. merge 는 넘긴 객체의 값을 통째로 복사하므로, 화면에서 안 넘어와 null 인 필드가 기존 값을 지운다",
       "tradeoff": "조회 쿼리가 한 번 더 나간다. 대신 의도하지 않은 덮어쓰기가 없다",
       "confidence": "confirmed",
       "sources": [
@@ -340,23 +268,23 @@
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
     {
       "situation": "여러 테이블을 조인하는 통계·리포팅 화면을 만든다",
-      "pick": "네이티브 SQL 또는 QueryDSL/JPQL 로 **DTO 를 직접 조회**",
-      "over": "엔티티를 그래프로 타고 다니며 조립하기",
-      "why": "집계·윈도 함수가 섞인 쿼리는 엔티티 매핑으로 표현하기 어렵고, 그래프를 타면 N+1 이 된다. 화면에 필요한 컬럼만 뽑는 편이 읽기도 성능도 낫다",
-      "tradeoff": "쿼리를 직접 관리해야 하고 타입 안전성이 떨어진다(QueryDSL 이 그 틈을 메운다)"
+      "pick": "QueryDSL·JPQL·네이티브 SQL 로 DTO 를 직접 조회한다",
+      "over": "엔티티를 그래프로 타고 다니며 화면 데이터를 조립한다",
+      "why": "집계와 윈도 함수가 섞인 쿼리는 엔티티 매핑으로 표현하기 어렵고, 그래프를 타면 N+1 이 된다. 화면에 필요한 컬럼만 뽑는 편이 읽기도 성능도 낫다",
+      "tradeoff": "쿼리를 직접 관리해야 하고, JPQL 은 문자열이라 타입 검사를 못 받는다(그 틈을 QueryDSL 이 메운다)"
     },
     {
       "situation": "수십만 건을 저장·수정하는 배치를 돌린다",
-      "pick": "일정 건수마다 **플러시 + 컨텍스트 비우기**, 또는 JDBC 배치·벌크 연산",
-      "over": "반복문에서 계속 `persist` 하기",
-      "why": "영속성 컨텍스트가 저장한 엔티티 전부를 들고 있어 메모리가 선형으로 늘고, 변경 감지 비교 비용도 함께 는다",
-      "tradeoff": "벌크 연산은 컨텍스트를 우회하므로 **실행 뒤 캐시 불일치**를 관리해야 한다(→ 지뢰)",
+      "pick": "일정 건수마다 플러시하고 컨텍스트를 비우거나, JDBC 배치·벌크 연산으로 내려간다",
+      "over": "반복문에서 계속 persist 한다",
+      "why": "컨텍스트가 처리한 엔티티를 전부 들고 있어 메모리가 선형으로 늘고, 변경 감지 비교 비용도 함께 는다",
+      "tradeoff": "벌크 연산은 컨텍스트를 우회하므로 실행 뒤 캐시 불일치를 직접 관리해야 한다",
       "confidence": "confirmed",
       "sources": [
         {
@@ -364,104 +292,119 @@
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
     {
-      "situation": "화면에 필요한 데이터만 내보낸다 (API 응답)",
-      "pick": "**DTO 로 변환해 반환**",
-      "over": "엔티티를 그대로 직렬화",
-      "why": "엔티티를 그대로 내보내면 트랜잭션 밖에서 지연 로딩이 터지거나, 의도치 않은 연관까지 딸려 나가 쿼리가 폭발한다. 내부 필드가 노출되는 문제도 있다(→ `fastapi` 의 `response_model` 과 같은 발상)",
+      "situation": "API 응답으로 데이터를 내보낸다",
+      "pick": "DTO 로 변환해 반환한다",
+      "over": "엔티티를 그대로 직렬화해 내보낸다",
+      "why": "직렬화가 지연 로딩 연관을 건드리면 컨텍스트가 닫힌 뒤 예외가 나거나, 의도치 않은 연관까지 딸려 나가 쿼리가 폭발한다. 내부 필드가 그대로 노출되는 문제도 있다",
       "tradeoff": "변환 코드가 늘어난다. 조회 전용 DTO 쿼리로 아예 처음부터 뽑는 방법도 있다"
     },
     {
       "situation": "두 사용자가 같은 데이터를 동시에 수정할 수 있다",
-      "pick": "**낙관적 잠금(버전 컬럼)** 을 먼저 검토",
-      "over": "아무 대책 없이 변경 감지에 맡기기",
-      "why": "변경 감지는 '내가 읽은 뒤 남이 바꿨는지'를 모른다. 마지막에 쓴 사람이 이기고 앞의 수정이 조용히 사라진다. 버전 컬럼을 두면 충돌을 예외로 잡을 수 있다",
-      "tradeoff": "충돌 시 재시도 흐름을 만들어야 한다. 경합이 심하면 비관적 잠금이나 다른 설계가 필요하다(→ `transaction-isolation`)"
+      "pick": "버전 컬럼을 두고 낙관적 잠금을 먼저 검토한다",
+      "over": "아무 대책 없이 변경 감지에 맡긴다",
+      "why": "변경 감지는 내가 읽은 뒤 남이 바꿨는지를 모른다. 마지막에 쓴 사람이 이기고 앞의 수정이 조용히 사라진다. 버전 컬럼이 있으면 충돌을 예외로 잡을 수 있다",
+      "tradeoff": "충돌 시 재시도 흐름을 만들어야 한다. 경합이 심하면 비관적 잠금이나 다른 설계가 필요하다"
     }
   ],
   "pitfalls": [
     {
       "trap": "엔티티 필드를 바꿨는데 UPDATE 가 안 나간다",
-      "why": "**준영속 상태**다. 트랜잭션이 이미 끝났거나 컨텍스트 밖에서 만든 객체라 변경 감지가 동작하지 않는다",
-      "fix": "트랜잭션 안에서 **ID 로 다시 조회해** 수정한다. `merge` 는 값을 통째로 덮으므로 부분 수정에는 적합하지 않다",
+      "why": "준영속 상태다. 트랜잭션이 이미 끝났거나 컨텍스트 밖에서 만든 객체라 변경 감지가 동작하지 않는다",
+      "fix": "트랜잭션 안에서 ID 로 다시 조회해 수정한다. merge 는 값을 통째로 덮으므로 부분 수정에는 맞지 않는다",
       "sources": [
         {
           "title": "Jakarta Persistence — 사양 목록 (Jakarta EE)",
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
     {
-      "trap": "`merge` 를 썼는데 반영이 안 되거나 다른 필드가 지워졌다",
-      "why": "**반환값이 영속 객체**인데 인자로 넘긴 원본을 계속 고쳤거나, 준영속 객체의 `null` 필드가 그대로 복사됐다",
-      "fix": "`merged = em.merge(x)` 처럼 **반환값을 쓰고**, 부분 수정은 조회 후 필드 수정 방식으로 바꾼다",
+      "trap": "merge 를 썼는데 반영이 안 되거나 다른 필드가 지워졌다",
+      "why": "merge 의 반환값이 영속 객체인데 인자로 넘긴 원본을 계속 고쳤거나, 준영속 객체의 null 필드가 그대로 복사됐다",
+      "fix": "merged = em.merge(x) 처럼 반환값을 쓰고, 부분 수정은 조회 후 필드 수정 방식으로 바꾼다",
       "sources": [
         {
           "title": "Jakarta Persistence — 사양 목록 (Jakarta EE)",
           "url": "https://jakarta.ee/specifications/persistence/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+          "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
         }
       ]
     },
     {
       "trap": "벌크 UPDATE 를 실행한 뒤 조회하니 옛 값이 나온다",
-      "why": "**벌크 연산은 영속성 컨텍스트를 거치지 않고 DB 로 직행한다.** 컨텍스트 안의 엔티티는 여전히 옛 상태이고, 1차 캐시가 그것을 돌려준다",
-      "fix": "벌크 연산 뒤 컨텍스트를 비운다(`clear`). Spring Data 에서는 그 동작을 켜는 옵션이 있다. 더 안전한 것은 **벌크 연산을 별도 트랜잭션·별도 흐름으로 분리**하는 것이다"
+      "why": "벌크 연산은 영속성 컨텍스트를 거치지 않고 DB 로 직행한다. 컨텍스트 안의 엔티티는 여전히 옛 상태이고 1차 캐시가 그것을 돌려준다",
+      "fix": "벌크 연산 뒤 컨텍스트를 비운다. Spring Data 에는 그 동작을 켜는 옵션이 있다. 더 안전한 것은 벌크 연산을 별도 트랜잭션으로 분리하는 것이다"
+    },
+    {
+      "trap": "목록 화면 하나에 쿼리가 수백 번 나간다",
+      "why": "N+1 이다. 목록을 조회한 뒤 반복문에서 각 항목의 연관을 읽으면 항목 수만큼 쿼리가 더 나간다. 코드에는 반복문 하나뿐이라 읽어서는 보이지 않는다",
+      "fix": "SQL 로그를 켜고 요청당 쿼리 수를 센다. 그다음 필요한 연관을 한 번에 가져오도록 조인해 가져오거나, 화면에 맞춘 DTO 조회로 바꾼다"
     },
     {
       "trap": "컨트롤러에서 엔티티를 JSON 으로 내보내다 예외가 났다",
-      "why": "직렬화가 지연 로딩 연관을 건드렸는데 **컨텍스트가 이미 닫혔다**",
-      "fix": "**DTO 로 변환해** 내보낸다. 컨텍스트를 뷰까지 열어 두는 설정(OSIV)은 문제를 미루면서 커넥션 점유 시간을 늘린다"
+      "why": "직렬화가 지연 로딩 연관을 건드렸는데 컨텍스트가 이미 닫혔다",
+      "fix": "DTO 로 변환해 내보낸다. 컨텍스트를 뷰까지 열어 두는 설정(OSIV)은 문제를 미루면서 커넥션 점유 시간을 늘린다"
     },
     {
       "trap": "배치가 돌수록 메모리가 늘다가 죽는다",
-      "why": "영속성 컨텍스트가 처리한 엔티티를 **전부 들고 있다.** 변경 감지를 위해 스냅샷도 함께 갖는다",
-      "fix": "일정 건수마다 `flush()` + `clear()`. 아예 JDBC 배치나 벌크 연산으로 내려가는 것도 방법이다"
+      "why": "영속성 컨텍스트가 처리한 엔티티를 전부 들고 있고, 변경 감지를 위해 스냅샷까지 함께 갖는다",
+      "fix": "일정 건수마다 flush() 하고 clear() 한다. 규모가 크면 JDBC 배치나 벌크 연산으로 내려가는 것도 방법이다"
     },
     {
       "trap": "테스트에서는 되는데 운영에서 다른 SQL 이 나간다",
-      "why": "**구현체·방언(dialect)·설정 차이**다. JPA 는 사양이고 실제 SQL 은 구현체가 만든다 — 버전이 다르면 생성 SQL 도 달라질 수 있다",
-      "fix": "구현체와 버전을 환경 간에 맞추고, **생성된 SQL 을 로그로 확인**하는 습관을 둔다. 스키마는 자동 생성 대신 마이그레이션 도구로 고정한다",
+      "why": "구현체·방언·설정 차이다. JPA 는 사양이고 실제 SQL 은 구현체가 만든다. 버전이 다르면 생성되는 SQL 도 달라질 수 있다",
+      "fix": "구현체와 버전을 환경 간에 맞추고, 생성된 SQL 을 로그로 확인하는 습관을 둔다. 스키마는 자동 생성 대신 마이그레이션 도구로 고정한다",
       "sources": [
         {
           "title": "Jakarta Persistence 3.1",
           "url": "https://jakarta.ee/specifications/persistence/3.1/",
           "publisher": "Eclipse Foundation",
           "kind": "standard",
-          "summary": "3.1 사양 페이지. 호환 구현체로 Hibernate ORM 6·EclipseLink 가 올라 있어 '사양과 구현'의 관계를 그대로 보여 준다"
+          "summary": "3.1 사양 페이지. Jakarta EE 10 에 대응하는 판이다"
         }
       ]
     }
   ],
   "terms": [
     {
+      "term": "ORM",
+      "en": "Object-Relational Mapping",
+      "what": "객체와 관계형 DB 를 각각 제 원리대로 설계해 두고 그 사이를 프레임워크가 매핑하는 방식"
+    },
+    {
       "term": "JPA / Jakarta Persistence",
       "en": "Jakarta Persistence",
-      "what": "객체–관계 매핑의 **사양**. 구현체가 아니다"
+      "what": "자바 진영의 ORM 표준. 사양이지 구현체가 아니다"
     },
     {
       "term": "Hibernate",
       "en": "Hibernate ORM",
-      "what": "가장 널리 쓰이는 JPA 구현체. 실제 SQL 생성·캐시·플러시를 담당한다"
+      "what": "가장 널리 쓰이는 JPA 구현체. 실제 SQL 생성과 캐시·플러시를 담당한다"
+    },
+    {
+      "term": "패러다임 불일치",
+      "en": "paradigm mismatch",
+      "what": "상속·연관·그래프 탐색·비교에서 객체와 테이블이 어긋나는 문제. ORM 이 풀려는 본 문제다"
     },
     {
       "term": "영속성 컨텍스트",
       "en": "persistence context",
-      "what": "트랜잭션 동안 엔티티를 관리하는 공간. 1차 캐시·변경 감지·쓰기 지연이 여기서 나온다"
+      "what": "트랜잭션 동안 엔티티를 담아 두는 공간. 1차 캐시·변경 감지·쓰기 지연이 여기서 나온다"
     },
     {
       "term": "1차 캐시",
       "en": "first-level cache",
-      "what": "같은 트랜잭션 안에서 같은 ID 조회 시 같은 객체를 돌려주는 성질"
+      "what": "같은 트랜잭션 안에서 같은 ID 를 조회하면 같은 객체를 돌려주는 성질"
     },
     {
       "term": "변경 감지",
@@ -476,7 +419,7 @@
     {
       "term": "플러시",
       "en": "flush",
-      "what": "모아 둔 변경을 DB 로 내보내는 동작. 커밋 직전·쿼리 직전·명시적 호출 때 일어난다"
+      "what": "모아 둔 변경을 DB 로 내보내는 동작. 커밋 직전·쿼리 직전·직접 호출 때 일어난다"
     },
     {
       "term": "준영속",
@@ -484,49 +427,75 @@
       "what": "컨텍스트가 더 이상 추적하지 않는 상태. 변경 감지도 지연 로딩도 안 된다"
     },
     {
+      "term": "JPQL",
+      "en": "Jakarta Persistence Query Language",
+      "what": "테이블이 아니라 엔티티를 대상으로 쓰는 질의 언어. 구현체가 SQL 로 번역한다"
+    },
+    {
+      "term": "N+1",
+      "en": "N+1 problem",
+      "what": "목록 조회 한 번 뒤에 항목 수만큼 쿼리가 더 나가는 현상"
+    },
+    {
       "term": "벌크 연산",
       "en": "bulk operation",
-      "what": "JPQL 로 한 번에 UPDATE·DELETE 하는 것. **컨텍스트를 우회한다**"
+      "what": "JPQL 로 한 번에 UPDATE·DELETE 하는 것. 컨텍스트를 우회한다"
     },
     {
       "term": "낙관적 잠금",
       "en": "optimistic locking",
-      "what": "버전 컬럼으로 '내가 읽은 뒤 남이 바꿨는지'를 확인하는 방식"
+      "what": "버전 컬럼으로 내가 읽은 뒤 남이 바꿨는지를 확인하는 방식"
+    },
+    {
+      "term": "방언",
+      "en": "dialect",
+      "what": "DB 마다 다른 SQL 문법 차이를 구현체가 흡수하는 설정"
     }
   ],
   "drills": [
     {
-      "task": "**SQL 이 나가는 시점을 예측하고 맞춰 본다.** 트랜잭션 하나 안에 ① `persist` ② 필드 수정 ③ JPQL 조회 ④ 커밋 을 섞은 코드를 쓰고, **각 줄 옆에 '여기서 어떤 SQL 이 나갈까'를 먼저 적는다.** 그다음 SQL 로그를 켜고 실제 순서와 대조한다",
+      "task": "SQL 이 나가는 시점을 예측하고 맞춰 본다. 트랜잭션 하나 안에 (1) persist (2) 필드 수정 (3) JPQL 조회 (4) 커밋 을 섞은 코드를 쓰고, 각 줄 옆에 '여기서 어떤 SQL 이 나갈까'를 먼저 적는다. 그다음 SQL 로그를 켜고 실제 순서와 대조한다",
       "done_when": "쿼리 실행 직전에 플러시가 일어나는 것을 로그로 확인했고, 예측과 어긋난 줄이 왜 그런지 설명할 수 있다",
-      "why": "'언제 SQL 이 나가나'가 이 기술의 절반이다. 한 번 맞춰 보면 로그를 읽는 눈이 생긴다",
+      "why": "언제 SQL 이 나가나가 이 기술의 절반이다. 한 번 맞춰 보면 로그를 읽는 눈이 생긴다",
       "needs": "로컬 DB (H2 인메모리로 충분)",
-      "no_hardware": "환경이 없으면 **플러시 규칙 세 가지로 코드 각 줄 옆에 예상 SQL 을 적는 것**까지만 해도 절반은 남는다",
+      "no_hardware": "환경이 없으면 플러시 세 시점만 놓고 코드 각 줄 옆에 예상 SQL 을 적는 것까지만 해도 절반은 남는다",
       "hours": 2
     },
     {
-      "task": "**준영속 함정을 재현한다.** ① 트랜잭션 안에서 조회해 수정(반영됨) ② 트랜잭션 밖에서 같은 객체를 수정(반영 안 됨) ③ `merge` 로 반영하되 **일부 필드를 null 로 둔 준영속 객체**를 넘겨 다른 값이 지워지는 것을 확인한다",
-      "done_when": "세 경우의 결과를 표로 적을 수 있고, 실무에서 왜 '조회 후 필드 수정'이 정석인지 설명할 수 있다",
-      "why": "`merge` 사고는 데이터가 조용히 지워지는 형태라 뒤늦게 발견된다. 한 번 재현해 두면 코드 리뷰에서 눈에 들어온다",
+      "task": "N+1 을 만들어 보고 로그로 잡는다. 일대다 연관이 있는 엔티티를 열 건쯤 만들고, 목록을 조회한 뒤 반복문에서 연관을 읽는 코드를 쓴다. 로그에 찍힌 SELECT 개수를 센 다음, 연관을 한 번에 가져오는 조회로 바꿔 개수가 어떻게 변하는지 본다",
+      "done_when": "쿼리가 1 + N 번 나가는 것을 로그에서 직접 셌고, 바꾼 뒤 몇 번으로 줄었는지 숫자로 말할 수 있다",
+      "why": "N+1 은 코드를 읽어서는 안 보인다. 한 번 로그로 본 사람만 코드 리뷰에서 알아본다",
       "needs": "로컬 DB",
-      "no_hardware": "H2 로 충분하다. 그마저 어려우면 **세 경우의 상태 전이를 그림으로** 그려 (영속/준영속) 표시한다",
+      "no_hardware": "H2 로 충분하다. 그마저 어려우면 목록 10건 기준으로 나갈 쿼리를 손으로 나열해 1 + N 을 세어 본다",
       "hours": 2
     },
     {
-      "task": "**벌크 연산과 캐시 불일치를 확인한다.** ① 엔티티 몇 건을 조회해 컨텍스트에 올려 두고 ② JPQL 벌크 UPDATE 를 실행한 뒤 ③ 같은 ID 를 다시 조회해 **옛 값이 나오는 것**을 확인한다. 그다음 `clear()` 를 넣어 결과가 달라지는 것을 본다",
+      "task": "준영속 함정을 재현한다. (1) 트랜잭션 안에서 조회해 수정 (2) 트랜잭션 밖에서 같은 객체를 수정 (3) 일부 필드를 null 로 둔 준영속 객체를 merge 로 넘기기 — 세 경우의 결과를 각각 DB 에서 확인한다",
+      "done_when": "세 경우의 결과를 표로 적을 수 있고, 실무에서 왜 조회 후 필드 수정이 정석인지 설명할 수 있다",
+      "why": "merge 사고는 데이터가 조용히 지워지는 형태라 뒤늦게 발견된다. 한 번 재현해 두면 리뷰에서 눈에 들어온다",
+      "needs": "로컬 DB",
+      "no_hardware": "H2 로 충분하다. 그마저 어려우면 세 경우의 상태 전이를 그림으로 그려 영속·준영속을 표시한다",
+      "hours": 2
+    },
+    {
+      "task": "벌크 연산과 캐시 불일치를 확인한다. (1) 엔티티 몇 건을 조회해 컨텍스트에 올려 두고 (2) JPQL 벌크 UPDATE 를 실행한 뒤 (3) 같은 ID 를 다시 조회해 옛 값이 나오는 것을 확인한다. 그다음 clear() 를 넣어 결과가 달라지는 것을 본다",
       "done_when": "1차 캐시가 옛 객체를 돌려주는 순간을 관측했고, 벌크 연산 뒤 컨텍스트를 비워야 하는 이유를 설명할 수 있다",
-      "why": "이 불일치는 '데이터가 이상하다'로만 보여 원인을 찾기 어렵다. 규칙을 아는 것이 유일한 예방이다",
+      "why": "이 불일치는 데이터가 이상하다는 증상으로만 보여 원인을 찾기 어렵다. 규칙을 아는 것이 유일한 예방이다",
       "needs": "로컬 DB",
-      "no_hardware": "환경이 없으면 **컨텍스트·DB 두 칸을 그려** 각 단계에서 값이 어떻게 갈라지는지 표시한다",
+      "no_hardware": "환경이 없으면 컨텍스트와 DB 두 칸을 그려 각 단계에서 값이 어떻게 갈라지는지 표시한다",
       "hours": 1
     }
   ],
   "checks": [
-    "JPA 와 Hibernate 의 관계를 한 문장으로 말할 수 있나?",
-    "`save()` 를 부르지 않았는데 값이 저장되는 이유는?",
+    "ORM 이 객체와 테이블 사이에서 정확히 무엇을 대신해 주는지 한 문장으로 말할 수 있나?",
+    "JPA 와 Hibernate 와 Spring Data JPA 는 각각 어느 층인가?",
+    "패러다임 불일치의 네 가지 항목을 예를 들어 설명할 수 있나?",
+    "save() 를 부르지 않았는데 값이 저장되는 이유는?",
     "SQL 이 실제로 나가는 세 시점은?",
     "엔티티를 고쳤는데 반영이 안 된다면 어떤 상태를 의심하나?",
-    "`merge` 가 위험한 두 가지 이유는?",
-    "벌크 UPDATE 뒤에 컨텍스트를 비워야 하는 이유는?"
+    "merge 가 위험한 두 가지 이유는?",
+    "벌크 UPDATE 뒤에 컨텍스트를 비워야 하는 이유는?",
+    "복잡한 통계 조회를 JPQL 로 짜지 말라고 하는 이유와, 그 자리에 오는 도구 이름은?"
   ],
   "evidence": [
     {
@@ -534,66 +503,78 @@
       "from": "posting",
       "where": "큐엠아이티 (원티드, 모집중)",
       "url": "https://www.wanted.co.kr/wd/356935",
-      "what_it_shows": "**JPA 가 언어·프레임워크와 한 묶음으로 요구된다** — 이 스택에서 데이터 접근 층을 모르면 반쪽이라는 뜻이다"
+      "what_it_shows": "JPA 가 언어·프레임워크와 한 묶음으로 요구된다. 이 스택에서 데이터 접근 층을 모르면 반쪽이라는 뜻이다"
     },
     {
       "quote": "• JPA / Hibernate 프레임워크 및 트랜잭션, 동시성 처리에 대한 이해를 갖추신 분",
       "from": "posting",
       "where": "인터엑스 (원티드, 모집중)",
       "url": "https://www.wanted.co.kr/wd/328449",
-      "what_it_shows": "**사양(JPA)과 구현(Hibernate)을 함께 적고 트랜잭션·동시성까지 묶는다** — 이 문서의 마지막 절이 가리키는 층이 그것이다"
+      "what_it_shows": "사양(JPA)과 구현(Hibernate)을 함께 적고 트랜잭션·동시성까지 묶는다. 이 문서의 마지막 두 절이 가리키는 층이 그것이다"
     },
     {
       "quote": "• MariaDB, Redis, JPA, QueryDSL, Liquibase",
       "from": "posting",
       "where": "헤렌 (원티드, 모집중)",
       "url": "https://www.wanted.co.kr/wd/373691",
-      "what_it_shows": "**QueryDSL 과 Liquibase 가 함께 있다** — 복잡한 조회는 직접 쓰고(QueryDSL) 스키마는 마이그레이션으로 고정한다(Liquibase)는 이 문서의 두 결론이 스택 목록으로 나타난 것"
+      "what_it_shows": "QueryDSL 과 Liquibase 가 함께 있다. 복잡한 조회는 직접 쓰고 스키마는 마이그레이션으로 고정한다는 이 문서의 두 결론이 스택 목록으로 나타난 것이다"
     },
     {
       "quote": "• JPA 사용 경험",
       "from": "posting",
       "where": "마인드허브 (원티드, 모집중)",
       "url": "https://www.wanted.co.kr/wd/313335",
-      "what_it_shows": "같은 공고가 `Java(Spring/Spring Boot) 기반의 백엔드 개발 경험` 도 요구한다 — Spring·JPA 가 한 자리의 기본 요구라는 근거"
+      "what_it_shows": "같은 공고가 Java(Spring/Spring Boot) 기반 백엔드 경험도 함께 요구한다. Spring 과 JPA 가 한 자리의 기본 요구라는 근거다"
     },
     {
       "quote": "• MikroORM, JPA 등 ORM 활용 경험이 있으신 분",
       "from": "posting",
       "where": "큐엠아이티 (원티드, 모집중)",
       "url": "https://www.wanted.co.kr/wd/356935",
-      "what_it_shows": "**ORM 을 언어를 넘어 하나의 개념으로 묻는다**(JS 진영의 MikroORM 과 나란히). 영속성 컨텍스트 같은 개념은 도구가 달라도 대응물이 있다"
+      "what_it_shows": "ORM 을 언어를 넘어 하나의 개념으로 묻는다(JS 진영의 MikroORM 과 나란히). 영속성 컨텍스트 같은 장치는 도구가 달라도 대응물이 있다"
     }
   ],
   "related": [
     {
       "slug": "spring",
-      "how": "이 기술을 실제로 쓰는 자리. `@Transactional` 프록시와 N+1 의 해법 이름이 거기 있고, 여기서는 컨텍스트의 동작을 다뤘다"
+      "how": "JPA 를 실제로 쓰는 자리. @Transactional 프록시가 컨텍스트의 수명을 정하고, N+1 의 해법도 거기서 다룬다"
     },
     {
       "slug": "java",
-      "how": "런타임 쪽 배경. `jakarta` 네임스페이스 전환이 Boot 3·JPA 3.0 과 같은 뿌리다"
+      "how": "런타임 쪽 배경. javax 에서 jakarta 로의 네임스페이스 전환이 Boot 3·Jakarta Persistence 3.0 과 같은 뿌리다"
+    },
+    {
+      "slug": "db-index",
+      "how": "생성된 SQL 이 결국 어떤 인덱스를 타는가. 쿼리 모양을 확인하라는 절의 다음 걸음이다"
+    },
+    {
+      "slug": "transaction-isolation",
+      "how": "동시 수정에서 무엇이 이기는가. JPA 의 낙관적 잠금은 그 위에 얹힌 도구일 뿐이다"
+    },
+    {
+      "slug": "cqrs",
+      "how": "복잡한 조회는 SQL 이 낫다는 한계를 구조로 밀고 간 결과. 조회 경로를 아예 분리한다"
     },
     {
       "slug": "java-in-finance",
       "how": "대량 배치와 정합성이 실제 요구가 되는 도메인. 컨텍스트를 비우며 도는 배치 이야기가 거기서 값을 한다"
     },
     {
-      "slug": "transaction-isolation",
-      "how": "동시 수정에서 무엇이 이기는가 — 격리 수준과 잠금. JPA 의 낙관적 잠금이 그 위에 얹힌 도구다"
+      "slug": "data-migration",
+      "how": "스키마 자동 생성 대신 마이그레이션 도구를 쓰라는 절의 뒷이야기"
     },
     {
       "slug": "fastapi",
-      "how": "엔티티 대신 DTO 를 내보내는 발상의 다른 판본 — `response_model` 이 같은 문제를 푼다"
+      "how": "엔티티 대신 DTO 를 내보내는 발상의 다른 판본. response_model 이 같은 문제를 푼다"
     }
   ],
   "open_questions": [
-    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `limits` 에 표를 덧붙이고 **시장에서** 절(`in-market`)을 새로 만들었다. ⚠️⚠️ **`JPA` 474 대 `영속성 컨텍스트` 1 — 474배**로, 이 백과사전에서 `Kubernetes`:`리소스 제한`(678배) 다음으로 큰 격차다. ⭐⭐ **`MyBatis` 310 > `Hibernate` 156(2배)** — **한국 시장은 SQL 을 직접 쓰는 쪽이 여전히 크다**(⚠️ 갈래별 셈은 확인 못 했다). ⭐ **둘째 한계(복잡한 조회는 SQL 이 낫다)가 `cqrs` 의 실무 입구**다.",
-    "**Hibernate 공식 사용자 가이드의 URL 은 이번 사이클에 확인하지 못했다.** 그래서 사양 쪽(Jakarta Persistence 사양 페이지)만 근거로 걸었고, 구현체 고유 동작(예: 특정 플러시 모드의 세부, 배치 설정 이름)은 문서에 적지 않았다. `fix(study)` 로 Hibernate 문서 URL 을 확인해 보강할 여지가 있다",
-    "**`spring` 문서의 JPA 절은 여전히 `inferred` 다.** 이 문서가 사양 URL 을 확보했으므로 그 절을 소급해 받칠 수 있다 — 다만 한 사이클에 두 낱말을 쓰지 않는 규칙에 따라 **별도 `fix(study)` 사이클**로 돈다",
-    "플러시 모드(AUTO·COMMIT)와 그에 따른 동작 차이는 다루지 않았다. 이 문서는 기본 모드를 전제로 '커밋 직전·쿼리 직전·명시적 호출' 세 시점만 적었다",
-    "2차 캐시(공유 캐시)와 그 무효화 전략은 범위 밖으로 뒀다 — 도입 사례가 갈리고 구현체 의존이 크다",
-    "`market` 은 비어 있다. `tech_relations.json` 은 JPA 를 추적 기술로 세지 않는다(확인함) — 대신 모집중 공고 5건을 `evidence` 로 받쳤다. 수요 맥락은 `spring`(공고 834건)과 `java` 문서에 있다"
+    "강의체로 전면 재작성했다(2026-09-06). 통계 대비를 늘어놓던 '시장에서' 절을 없애고, ORM 정의와 패러다임 불일치를 앞에 두어 문서가 처음부터 끝까지 이어지게 했다. 공고 수 대비(JPA 474건 대 MyBatis 310건 같은 셈)는 본문에서 뺐다 — 그 숫자는 tech_relations 쪽 화면의 몫이고, 여기서는 두 접근이 공존한다는 문장으로만 받쳤다.",
+    "JPA 1.0 이 EJB 3.0(JSR 220)에 포함되어 나왔다는 계보는 JSR 페이지에서 날짜와 목표 문장까지만 확인했다. JSR 상세 페이지가 Java Persistence API 를 항목으로 따로 적고 있지는 않아 해당 절은 inferred 로 두었다. 사양 문서 본문에서 확인되면 confirmed 로 올린다.",
+    "Hibernate 공식 사용자 가이드의 URL 은 이번에도 확인하지 못했다. 그래서 근거는 Jakarta Persistence 사양 쪽만 걸었고, 구현체 고유 동작(플러시 모드 세부, 배치 설정 이름)은 본문에 적지 않았다.",
+    "플러시 모드(AUTO·COMMIT)의 차이는 다루지 않았다. 이 문서는 기본 모드를 전제로 세 시점만 적었다.",
+    "2차 캐시(공유 캐시)와 무효화 전략은 범위 밖으로 뒀다. 도입 사례가 갈리고 구현체 의존이 크다.",
+    "market 은 비어 있다. tech_relations.json 이 JPA 를 추적 기술로 세지 않는다(확인함). 대신 모집중 공고 다섯 건을 evidence 로 받쳤고, 수요 맥락은 spring·java 문서에 있다."
   ],
   "sources": [
     {
@@ -601,14 +582,22 @@
       "url": "https://jakarta.ee/specifications/persistence/",
       "publisher": "Eclipse Foundation",
       "kind": "standard",
-      "summary": "JPA 는 구현체가 아니라 **사양**이라는 사실의 1차 자료. 버전별 문서와 호환 구현체 목록이 여기 있다"
+      "summary": "JPA 가 구현체가 아니라 사양이라는 사실의 1차 자료. 2.2부터 4.0까지 버전별 문서가 여기 있다"
     },
     {
       "title": "Jakarta Persistence 3.1",
       "url": "https://jakarta.ee/specifications/persistence/3.1/",
       "publisher": "Eclipse Foundation",
       "kind": "standard",
-      "summary": "3.1 사양 페이지. 호환 구현체로 Hibernate ORM 6·EclipseLink 가 올라 있어 '사양과 구현'의 관계를 그대로 보여 준다"
+      "summary": "3.1 사양 페이지. Jakarta EE 10 에 대응하는 판이다"
+    },
+    {
+      "title": "JSR 220: Enterprise JavaBeans 3.0",
+      "url": "https://jcp.org/en/jsr/detail?id=220",
+      "publisher": "Java Community Process",
+      "date": "2006-05-11",
+      "kind": "standard",
+      "summary": "JPA 1.0 이 함께 나온 JSR. 목표를 '개발자 관점에서 EJB 아키텍처의 복잡성을 줄이는 것'이라고 적고 있다"
     }
   ]
 }

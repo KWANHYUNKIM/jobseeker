@@ -197,15 +197,19 @@
       "category": "framework",
       "level": "core",
       "status": "done",
-      "one_liner": "객체와 테이블을 잇는 **사양**이다(구현은 Hibernate 등). 진짜 알맹이는 SQL 자동 생성이 아니라 **영속성 컨텍스트** — 언제 SQL 이 나가는지를 이것이 정한다.",
+      "one_liner": "자바에서 객체와 데이터베이스 테이블을 이어 주는 ORM 표준. 객체는 객체대로, 테이블은 테이블대로 설계해 두고 그 사이의 번역을 프레임워크에 맡긴다.",
       "aliases": [
         "JPA",
+        "Jakarta Persistence",
+        "Java Persistence API",
+        "Spring Data JPA",
         "Hibernate",
-        "영속성 컨텍스트",
-        "ORM"
+        "ORM",
+        "객체 관계 매핑",
+        "영속성 컨텍스트"
       ],
-      "sections": 7,
-      "drills": 3,
+      "sections": 8,
+      "drills": 4,
       "updated_at": "2026-09-06"
     },
     {
