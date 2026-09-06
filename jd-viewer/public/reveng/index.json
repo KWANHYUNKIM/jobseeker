@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "cygames",
+      "name": "Cygames",
+      "name_en": "Cygames",
+      "country": "JP",
+      "category": "게임",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "일본의 모바일 게임 개발사 — 오래 운영할 것을 전제로 짓기 때문에 판정을 클라이언트에서 서버로 옮긴다",
+      "updated_at": "2026-09-06",
+      "domain": "cygames.co.jp"
+    },
+    {
       "slug": "scylladb",
       "name": "ScyllaDB",
       "name_en": "ScyllaDB",
@@ -1424,7 +1436,10 @@
     "메트릭을 오래, 그리고 싸게 저장한다",
     "로그를 색인 없이 다룬다",
     "아무것도 공유하지 않고 코어마다 하나씩 둔다",
-    "남의 API 를 그대로 받아 주면서 그 아래를 다시 짓는다"
+    "남의 API 를 그대로 받아 주면서 그 아래를 다시 짓는다",
+    "카드 게임의 판정을 클라이언트에서 서버로 옮긴다",
+    "출시일의 트래픽 급증을 무중단으로 넘긴다",
+    "게임 만드는 일에 LLM 을 넣는다"
   ],
   "countries": {
     "KR": "한국",

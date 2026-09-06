@@ -1,0 +1,134 @@
+{
+  "slug": "cygames",
+  "name": "Cygames",
+  "name_en": "Cygames",
+  "country": "JP",
+  "category": "게임",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "cygames.co.jp",
+  "one_liner": "일본의 모바일 게임 개발사 — 오래 운영할 것을 전제로 짓기 때문에 판정을 클라이언트에서 서버로 옮긴다",
+  "business_model": "**스마트폰 게임을 만들어 운영한다.** 대표작이 **우마무스메 프리티 더비 · 그랑블루 판타지 · 섀도우버스**다. **사이버에이전트의 스마트폰 게임·엔터테인먼트 부문(SGE)** 에 속하고 그 부문은 **Cygames 와 여섯 자회사를 합쳐 5,000명이 넘는다.** ⚠️ **2021년 출시한 우마무스메가 성장의 축이고 2025년 6월 영문판 이후 해외 매출이 크게 늘었다.**\n\n⚠️ **이 회사의 기술 결정에는 `오래 운영한다` 는 전제가 계속 나타난다.** 카드 로직을 클라이언트에서 서버로 옮긴 근거가 **장기 유지 비용과 기능 확장**이었고, 데이터베이스를 고른 근거도 **게임 데이터베이스의 전통적인 샤딩 복잡도를 피하는 것**이었다. **한 번 내고 끝나는 제품이 아니라 몇 년을 굴릴 제품의 설계다**(이 정리는 이 사이트의 재구성이다).\n\n⚠️ **그리고 자회사를 도구 회사로 두고 그 도구를 쓴다** — 실시간 통신을 **Cysharp 의 MagicOnion** 으로 했다.",
+  "products": [
+    "우마무스메 프리티 더비",
+    "그랑블루 판타지",
+    "Shadowverse: Worlds Beyond",
+    "MagicOnion (자회사 Cysharp)"
+  ],
+  "domain_map": {
+    "title": "오래 굴릴 것을 전제로 짓는다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  P[\"<b>플레이어</b>\"]:::list --> C[\"<b>클라이언트 (C#)</b><br/>• 파크 + 배틀 동시 렌더링\"]:::list\n  C -->|\"MagicOnion (gRPC)\"| S[\"⚠️ <b>서버가 판정한다</b><br/>• 카드 로직을 옮겨 왔다<br/>• 장기 유지비 · 확장성\"]:::accent\n  S --> DB[\"⚠️ <b>TiDB</b><br/>• 샤딩 복잡도를 피한다<br/>• 출시일 50만 QPS\"]:::accent\n  DB --> R[\"<b>몇 년을 굴리는 운영</b>\"]:::list\n  T[\"<b>만드는 쪽의 도구</b><br/>• LLM 코드 리뷰 · 시나리오 (⏳ 미독)\"]:::quiet --> R"
+  },
+  "revenue_streams": [
+    {
+      "name": "스마트폰 게임 운영",
+      "how": "**우마무스메 · 그랑블루 판타지 · Shadowverse** 등. **SGE 부문이 Cygames 와 여섯 자회사를 합쳐 5,000명 이상**이고 **우마무스메 영문판(2025년 6월) 이후 해외 매출이 크게 늘었다.**",
+      "domains": [
+        "카드 게임의 판정을 클라이언트에서 서버로 옮긴다",
+        "출시일의 트래픽 급증을 무중단으로 넘긴다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Game Business | CyberAgent Integrated Report",
+          "url": "https://report.cyberagent.co.jp/en/game/",
+          "publisher": "CyberAgent",
+          "date": "2026",
+          "summary": "사이버에이전트의 스마트폰 게임·엔터테인먼트 부문(SGE)이 Cygames 와 여섯 자회사를 포함해 5,000명이 넘는 규모다. 2021년 출시한 우마무스메가 주된 성장 동력이고 해외 매출이 크게 늘었다."
+        }
+      ]
+    },
+    {
+      "name": "⚠️ 오래 굴리는 것 자체가 수익 구조다",
+      "how": "⚠️ **몇 년을 운영하는 라이브 게임이라 장기 유지 비용이 곧 손익이다** — 그래서 **카드 로직을 서버로 옮긴 근거도, 데이터베이스를 고른 근거도 `오래 굴릴 수 있는가` 였다**(이 정리는 이 사이트의 재구성이다).",
+      "domains": [
+        "카드 게임의 판정을 클라이언트에서 서버로 옮긴다",
+        "게임 만드는 일에 LLM 을 넣는다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+          "url": "https://tech.cygames.co.jp/archives/3706/",
+          "publisher": "Cygames Engineers' Blog",
+          "date": "2025-12",
+          "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+        },
+        {
+          "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+          "url": "https://tech.cygames.co.jp/archives/3695/",
+          "publisher": "Cygames Engineers' Blog",
+          "date": "2025-10-03",
+          "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "카드 게임의 판정을 클라이언트에서 서버로 옮긴다",
+      "why": "⚠️ **전작의 성공 요인이던 `카드를 다루는 감촉` 을 지키면서 판정을 서버로 옮겨야 했다.** 근거는 **장기 운영 지속 가능성** — 클라이언트에 로직이 있으면 **유지 비용이 오래 쌓이고 기능 확장이 어렵다.** ⚠️ **대가는 즉시 나타난다** — **서버 검증이 통신 지연을 만들어 UX 우려가 있었다.** ✅ **본문 확인함**(U/Day Tokyo 2025).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "출시일의 트래픽 급증을 무중단으로 넘긴다",
+      "why": "⚠️ **게임의 출시일은 트래픽이 예측 불가능하게 몰리는 날이다.** **초당 50만 질의로 시작해 피크 65만**까지 갔는데 **서비스 중단도 점검 시간도 없이** 넘겼고, **40만 QPS 가 도는 중에 TiKV 노드를 롤링 업데이트**했다. **전통적인 게임 데이터베이스 샤딩의 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에** 얻으려고 TiDB 를 골랐다. ✅ **본문 확인함**(2025-10-03). ⚠️ **다만 컨퍼런스 후속 요약이라 얕다.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "게임 만드는 일에 LLM 을 넣는다",
+      "why": "**CEDEC 2026 에서 낸 글이 셋이다** — **LLM 코드 리뷰 지원 도구** · **게임 시나리오 작가용 AI 도구** · **게임 개발에서의 LLM 활용**. ⏳ **본문은 아직 안 읽었다.** ⚠️ **`AI 를 어디까지 믿나` 축에서 앞의 일곱 곳과 다른 자리다 — 여기서는 창작 공정에 들어간다**(재구성).",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **자료가 전부 컨퍼런스 후속 요약이다** — U/Day Tokyo·TiDB User Day·CEDEC 발표를 정리한 글이라 **본격적인 기술 회고보다 얕다.** **수치는 있는데 구조의 세부가 적다.**",
+    "⚠️ **도메인 셋 중 하나가 미독이다** — LLM 도구 셋.",
+    "⚠️ **우마무스메의 기술 자료를 못 찾았다** — 이 회사 성장의 축인데 **블로그의 시스템 글이 Shadowverse 쪽에 몰려 있다.**",
+    "⚠️ **Shadowverse 원작이 2026년 6월 30일 서비스를 종료했다** — **후속작(Worlds Beyond)의 아키텍처를 다룬 자료를 읽었는데, 원작에서 무엇을 배웠는지를 다룬 회고는 못 찾았다.**",
+    "⚠️ **연표(eras)를 못 세웠다** — 2011년 창업과 대표작 출시 연도는 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+      "url": "https://tech.cygames.co.jp/archives/3706/",
+      "publisher": "Cygames Engineers' Blog",
+      "date": "2025-12",
+      "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+    },
+    {
+      "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+      "url": "https://tech.cygames.co.jp/archives/3695/",
+      "publisher": "Cygames Engineers' Blog",
+      "date": "2025-10-03",
+      "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+    },
+    {
+      "title": "Game Business | CyberAgent Integrated Report",
+      "url": "https://report.cyberagent.co.jp/en/game/",
+      "publisher": "CyberAgent",
+      "date": "2026",
+      "summary": "사이버에이전트의 스마트폰 게임·엔터테인먼트 부문(SGE)이 Cygames 와 여섯 자회사를 포함해 5,000명이 넘는 규모다. 2021년 출시한 우마무스메가 주된 성장 동력이고 해외 매출이 크게 늘었다."
+    },
+    {
+      "title": "LLM を用いたコードレビュー支援ツールの開発 (CEDEC 2026)",
+      "url": "https://tech.cygames.co.jp/archives/11637/",
+      "publisher": "Cygames Engineers' Blog",
+      "date": "2026",
+      "summary": "LLM 을 쓴 코드 리뷰 지원 도구 개발. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 연도만 확인했다."
+    },
+    {
+      "title": "ゲームシナリオライター向け AI ツール (CEDEC 2026)",
+      "url": "https://tech.cygames.co.jp/archives/77178/",
+      "publisher": "Cygames Engineers' Blog",
+      "date": "2026",
+      "summary": "게임 시나리오 작가를 위한 AI 도구. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 연도만 확인했다."
+    }
+  ]
+}
