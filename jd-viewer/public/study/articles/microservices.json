@@ -1,0 +1,601 @@
+{
+  "slug": "microservices",
+  "title": "마이크로서비스 — 퍼뜨린 사람이 먼저 그은 선",
+  "title_en": "Microservices: The Line Its Own Advocate Drew First",
+  "aliases": [
+    "마이크로서비스",
+    "MSA",
+    "microservices",
+    "모놀리스",
+    "monolith",
+    "MonolithFirst"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 직접 말한다 — \"새 프로젝트를 마이크로서비스로 시작하지 마라.\"** 잘된 사례는 **거의 다 모놀리스에서 쪼개져 나왔고**, 처음부터 쪼개 만든 것은 **거의 다 심각한 곤경에 빠졌다.** ⚠️ 이유는 하나 — **경계**. 공고 1060건 중 그 낱말은 **12건**.",
+  "summary": "⭐ **`MSA|마이크로서비스` 는 1060건(모집중 447)** 이다. 그런데 셈이 두 가지를 더 말한다.\n\n⚠️⚠️ **`바운디드 컨텍스트` 는 12건**이고, ⚠️ **`모놀리[스식]|monolith` 는 79건**이다.\n\n⭐⭐⭐ **그 두 낱말이 이 방식의 핵심인데 거의 안 불린다.** 1차 자료를 보면 왜 그게 문제인지가 바로 나온다.\n\n> ⭐⭐⭐ **\"you shouldn't start a new project with microservices, even if you're sure your application will be big enough to make it worthwhile.\"**\n> ⭐⭐⭐ **\"Almost all the successful microservice stories have started with a monolith that got too big and was broken up\"**\n> ⭐⭐⭐ **\"Almost all the cases where I've heard of a system that was built as a microservice system from scratch, it has ended up in serious trouble.\"**\n\n💡 **이유는 하나다.**\n\n> ⭐⭐⭐ \"they **only work well if you come up with good, stable boundaries** between the services\"\n> ⭐⭐⭐ \"**even experienced architects working in familiar domains have great difficulty getting boundaries right at the beginning**.\"\n\n⚠️ **그리고 잘못 그은 경계는 고치기 어렵다** — \"Any **refactoring of functionality between services is much harder** than it is in a monolith.\"\n\n📌 ⭐⭐ **이 백과사전이 모아 온 \"스스로 그은 선\" 계보에서 이건 다른 자리다.** 앞의 아홉은 **제품이 자기 기능에** 그은 선이었는데, 여기는 **방식을 퍼뜨린 사람이 그 방식에** 그었다 — 그리고 **가장 세다**(\"almost all ... serious trouble\").",
+  "market": {
+    "tech": "MSA",
+    "layer": "기타",
+    "postings": 189,
+    "pct_jobs": 2.6,
+    "with": [
+      {
+        "name": "AWS",
+        "pct": 59.8,
+        "why": "⭐⭐ **직전 문서와 이어진다** — 서비스가 여러 개면 **책임의 선도 여러 개**가 된다(→ `aws`)"
+      },
+      {
+        "name": "Java",
+        "pct": 57.1,
+        "why": "⭐ 절반 이상 — `java`·`java-in-finance`"
+      },
+      {
+        "name": "Spring",
+        "pct": 52.9,
+        "why": "⭐ 사실상 한 쌍으로 요구된다"
+      },
+      {
+        "name": "Kubernetes",
+        "pct": 38.1,
+        "why": "⭐⭐ **전제조건 셋 중 둘(빠른 프로비저닝·빠른 배포)을 대신 해 주는 층**"
+      },
+      {
+        "name": "Docker",
+        "pct": 37.6,
+        "why": "실행 단위"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 1060 대 12 — 그리고 79",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| ⭐ `MSA\\|마이크로서비스\\|microservice` | **1060** | (모집중 447) |\n| — `MSA` 만 | 604 | (모집중 186 = **31%**) |\n| — `마이크로서비스\\|microservice` 만 | 507 | (모집중 252 = **50%**) |\n| `모듈화\\|모듈 분리\\|모듈 설계` | 210 | (모집중 87) |\n| ⚠️ `모놀리[스식]\\|monolith` | **79** | (모집중 35) |\n| `서비스 간 통신\\|inter-service` | 43 | (모집중 21) |\n| `분산 트랜잭션` | 15 | (모집중 7) |\n| ⚠️⚠️ **`바운디드\\|bounded context`** | **12** | (모집중 6) |\n\n⭐⭐⭐ **1060 대 12.** 이 백과사전이 만난 큰 대비 중 하나다(`rest` 3372 vs `HATEOAS` 0, `aws` 4787 vs 0 에 이어).\n\n💡 ⭐⭐⭐ **그런데 이번 것은 앞의 둘과 성격이 다르다.** `HATEOAS`·`공유 책임` 은 **몰라도 대충 굴러가는 이름**이었다. 하지만 **경계는 이 방식이 굴러가는 조건 자체**다 — 1차 자료가 \"**only work well if** you come up with good, stable boundaries\" 라고 못 박는다.\n\n📌 ⚠️ **그리고 반대말도 거의 안 불린다** — `모놀리스` **79건**. ⭐ **선택지로 제시하는 공고는 사실상 한 곳뿐이었다.**\n\n> ⭐⭐⭐ `**모놀리식 vs MSA**, REST vs Event-driven, 동기 vs 비동기 등` — 크로스이엔에프\n\n💡 **나머지 1000건 남짓은 \"MSA 경험\"을 요구할 뿐 대안을 적지 않는다.**\n\n📌 ⭐ **셈에서 하나 더 나왔다** — **`MSA`(604, 모집중 31%)와 `마이크로서비스`(507, 모집중 50%)의 모집중 비율이 다르다.** ⚠️ **원인은 확인하지 못했다**(`open_questions`). 다만 `git`·`code-review` 사이클에서 세운 관찰과 같은 자리다 — **같은 것을 두 이름으로 부를 때 어느 쪽을 쓰느냐가 정보다.**\n\n⚠️⚠️ **이 사이클에서 오염을 하나 더 잡았다.** `SOLID` 를 대소문자 무시로 세면 **342건에 모집중 82%** 로 튄다 — ⭐ **소문자 `solid`(\"solid experience\") 121건이 89%** 였기 때문이다. **대문자만 세면 15건**, `SOLID 원칙` 은 **9건**, `단일 책임` 은 **1건**이다. 📌 **여섯 번째 오염 형태: 대소문자를 무시했다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 퍼뜨린 사람이 먼저 그었다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MonolithFirst",
+          "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 자기 방식에 그은 선** — \"you **shouldn't** start a new project with microservices\""
+        }
+      ],
+      "body": "⭐ **이 백과사전은 \"제품이 스스로 그은 선\"을 모아 왔다** — `redis` 의 \"we discourage it\", `github-actions` 의 \"almost never\", `git` 의 복구 절차, `aws` 의 책임 그림. **여기는 그 계보의 다른 자리다**: 선을 그은 것이 **제품이 아니라 그 방식을 퍼뜨린 사람**이고, ⭐⭐⭐ **표현이 가장 세다.**\n\n> ⭐⭐⭐ **\"you shouldn't start a new project with microservices, even if you're sure your application will be big enough to make it worthwhile.\"**\n\n💡 **뒷부분이 중요하다** — \"**크게 될 게 확실해도**\". ⚠️ **\"나중에 커질 테니 미리 쪼개 두자\"** 가 가장 흔한 논거인데, **그 논거를 이름으로 지목해 부정한다.**\n\n**그리고 근거는 주장이 아니라 관찰이다.**\n\n| | 원문 |\n|---|---|\n| ⭐⭐⭐ 잘된 쪽 | \"**Almost all the successful** microservice stories **have started with a monolith** that got too big and was broken up\" |\n| ⭐⭐⭐ 안된 쪽 | \"**Almost all the cases** where I've heard of a system that was **built as a microservice system from scratch**, it has **ended up in serious trouble**.\" |\n\n⭐⭐ **두 문장이 짝이다.** 한쪽은 **거의 다 성공했고**, 다른 쪽은 **거의 다 곤경에 빠졌다.** 💡 그리고 **가른 것은 규모도 기술도 아니라 \"어디서 시작했나\"** 다.\n\n📌 ⭐⭐⭐ **이유는 하나로 모인다 — 경계다.**\n\n> ⭐⭐⭐ \"they **only work well if you come up with good, stable boundaries** between the services\"\n> ⭐⭐⭐ \"**even experienced architects working in familiar domains have great difficulty getting boundaries right at the beginning**.\"\n\n⚠️ **\"경험 많은 아키텍트가 익숙한 도메인에서도 어렵다\"** — 이 문장이 **\"우리는 잘 알아서 괜찮다\"는 반박을 미리 막는다.**\n\n**그리고 틀린 경계는 되돌리기 어렵다.**\n\n> ⭐⭐ \"Any **refactoring of functionality between services is much harder** than it is in a monolith.\"\n\n💡 ⭐⭐⭐ **그래서 순서가 뒤집힌다.** 모놀리스에서는 경계를 **틀리게 그어도 옮길 수 있으니**, **먼저 만들어 보고 어디가 실제로 갈라지는지 배운 다음** 쪼갠다. ⚠️ **처음부터 쪼개면 배우기 전에 굳힌다.**\n\n📌 ⭐ **비용 쪽 이름도 있다 — `Microservice Premium`.** \"**the cost of managing a suite of services, will slow down a team**, favoring a monolith for simpler applications.\" ⚠️ **작은 애플리케이션에서는 값이 이득보다 크다.**\n\n💡 ⭐ **그리고 대안을 준다 — 버릴 각오로 짓는 것**(`Sacrificial Architecture`): \"**Don't be afraid of building a monolith that you will discard**.\" 📌 **`migration` 문서의 무화과와 정확히 이어진다** — 가장자리부터 조금씩 떼어 낸다."
+    },
+    {
+      "id": "prereq",
+      "kind": "how",
+      "heading": "⭐⭐ 하기 전에 갖춰야 할 것 셋",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MicroservicePrerequisites",
+          "url": "https://martinfowler.com/bliki/MicroservicePrerequisites.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐ **하기 전에 갖춰야 할 것 셋** — rapid provisioning · basic monitoring · rapid application deployment"
+        }
+      ],
+      "body": "⭐ **같은 저자가 별도 글로 전제 조건을 적어 뒀다.** 셋이다.\n\n| | 원문 | 무엇인가 |\n|---|---|---|\n| ⭐ 1 | **\"Rapid provisioning\"** | 새 서버를 **몇 시간 안에** 띄울 수 있다 |\n| ⭐⭐ 2 | **\"Basic Monitoring\"** | 기술적 문제(에러·가용성)와 **비즈니스 문제**를 감지한다 |\n| ⭐ 3 | **\"Rapid application deployment\"** | 배포가 **몇 시간 안에** 끝난다 |\n\n⭐⭐⭐ **그리고 없으면 하지 말라고 쓴다.**\n\n> ⭐⭐⭐ \"**you shouldn't consider using the microservice style**\"\n> ⭐ \"if you don't have these capabilities now, you should ensure you **develop them so they are ready by the time you put a microservice system into production**\"\n\n💡 **왜 하필 이 셋인가에도 답이 있다.**\n\n> ⭐⭐⭐ \"with **many loosely-coupled services collaborating in production**, things are **bound to go wrong in ways that are difficult to detect in test environments**\"\n\n⚠️⚠️ **테스트 환경에서 안 잡히는 방식으로 고장 난다** — 그래서 **운영 중에 보는 능력(모니터링)** 과 **운영 중에 고치는 능력(빠른 배포·프로비저닝)** 이 필수가 된다. ⭐ 그리고 그것은 조직 문제이기도 하다 — \"close collaboration between developers and operations: the **DevOpsCulture**\".\n\n📌 ⭐⭐⭐ **그리고 공고 하나가 이 셋을 거의 그대로 적었다.**\n\n> ⭐⭐⭐ `**MSA 환경에서의 서비스 개발, 배포 자동화, 모니터링 및 트러블슈팅 능력**` — 컬리\n\n💡 **\"배포 자동화, 모니터링, 트러블슈팅\"** — 전제조건 세 개 중 둘을 이름으로 부르고 나머지 하나(빠른 대응)를 \"트러블슈팅\"으로 적었다. ⭐ **이 셋을 함께 적는 공고는 드물다.**\n\n📌 ⭐⭐ **그리고 `market` 이 그 셋을 누가 대신 해 주는지 보여 준다** — **Kubernetes 38.1% · Docker 37.6% · AWS 59.8%.** 💡 **\"빠른 프로비저닝\"과 \"빠른 배포\"를 도구가 떠맡은 것**이고, 그래서 **오늘날 진짜 관문은 두 번째(모니터링)** 다 — ⚠️ 그리고 그건 **도구를 깔아서 되는 일이 아니다**(→ `observability`)."
+    },
+    {
+      "id": "boundary",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 경계 — 이름은 12건인데 문제는 1060건에 있다",
+      "confidence": "inferred",
+      "body": "⭐ **1차 자료가 \"경계가 전부\"라고 했는데**(\"only work well if...\"), **공고에서 `바운디드 컨텍스트` 는 12건**이고 `서비스 분리|도메인 분리|경계 설정` 은 **24건**이다.\n\n💡 ⭐⭐ **대신 공고는 경계의 \"결과\"를 요구한다.**\n\n> ⭐⭐ `MSA 환경에서의 **분산 트랜잭션 관리 및 데이터 정합성 유지** 경험이 있으신 분` — 빗썸\n> ⭐⭐ `MSA 기반 **서비스 간 통신 구조 설계**` — 액션파워\n> `MSA 구조에서 **Micro Service 간의 문제를 해결한** 경험이 있으신 분` — 워드바이스\n\n⚠️⚠️ **분산 트랜잭션·서비스 간 통신·서비스 간 문제 — 셋 다 \"경계를 잘못 그었을 때 커지는 일\"이다.** ⭐ **한 트랜잭션이 여러 서비스를 가로지른다는 것은 그 경계가 업무 단위를 자르고 있다는 뜻**이고, 그러면 `saga`·`outbox` 같은 장치로 메워야 한다.\n\n💡 ⭐⭐⭐ **이것이 이 백과사전의 두 번째 대비 형태다** — **증상은 이름을 얻었는데 원인은 못 얻었다**(`react` 의 `렌더링 최적화` 397 vs `useEffect` 4 와 같은 모양).\n\n| | 이름을 부르나 | 건수 |\n|---|---|---|\n| ⚠️ 원인 (경계) | 거의 안 부른다 | **12** |\n| 증상 (서비스 간 통신) | 부른다 | 43 |\n| 증상 (분산 트랜잭션) | 부른다 | 15 |\n| ⭐ 그 증상을 메우는 장치 | **이 백과사전에 문서가 여럿 있다** | `saga`·`outbox`·`cqrs`·`dlq`·`distributed-lock`·`circuit-breaker` |\n\n📌 ⭐⭐⭐ **이 문서를 쓴 이유가 거기 있다.** `saga`·`outbox`·`cqrs`·`service-mesh`·`api-gateway`·`bff`·`circuit-breaker` 는 **전부 \"서비스가 여러 개\"라는 전제 위에 서 있는데, 그 전제를 다루는 문서가 없었다.** ⚠️ **그리고 그 장치들은 대개 경계가 어긋난 자리를 메우는 데 쓰인다.**\n\n💡 ⭐⭐ **그래서 실무의 질문 순서가 바뀐다.** \"이 문제를 무슨 패턴으로 풀까\" 이전에 **\"이 경계가 맞나\"** 를 먼저 묻는다 — ⚠️ 다만 **경계를 옮기는 것이 훨씬 비싸므로**(\"much harder than in a monolith\") **답이 \"아니오\"여도 대개 못 옮긴다.** ⭐ **그것이 처음부터 쪼개지 말라는 이유이기도 하다.**\n\n📌 ⭐ **한편 실제로 그 경로를 밟은 곳도 있다.**\n\n> ⭐⭐⭐ `**Monolithic 서비스를 Microservice 구조로 이관해본 경험**이 있는 분` — 바딧\n> `MSA를 위한 서비스 **Re-Architecting**` — 이그나이트\n\n⭐⭐ **1차 자료가 말한 \"잘된 쪽\"의 모양 그대로다** — **모놀리스가 너무 커져서 쪼갰다.** ⚠️ 다만 **이런 문장은 79건 쪽에 속하는 소수**다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ \"어떻게 쪼개나\"를 다루지 않았다.** 도메인 주도 설계(`DDD|도메인 주도` **112건**)·`클린 아키텍처|헥사고날` **174건** 을 **1차 자료로 열지 않았다.** ⭐ 이 문서는 **\"언제 하지 말아야 하나\"와 \"왜 경계가 어려운가\"** 만 다뤘다.\n\n**2. ⚠️ 서비스 간 통신·데이터 일관성을 다루지 않았다** — **의도한 것이다.** `saga`·`outbox`·`cqrs`·`dlq`·`distributed-lock`·`circuit-breaker`·`api-gateway`·`service-mesh`·`bff` 가 이미 각각 다뤘다.\n\n**3. ⚠️⚠️ 반대편 주장을 읽지 않았다.** \"모놀리스 먼저\"에 대한 반론(처음부터 서비스로 시작해 성공한 사례를 드는 쪽)이 있는데 **하나도 안 봤다.** ⭐ **1차 자료 자신도 이것이 관찰이지 증명이 아님을 인정하는 어조**인데, 이 문서는 **한쪽만 읽었다.**\n\n**4. ⚠️ `MSA` 와 `마이크로서비스` 의 모집중 비율 차이(31% vs 50%)의 원인을 확인하지 못했다.** ⭐ 표기 선호가 시기에 따라 달라진 것인지, 업종이 다른 것인지 **세지 않았다.**\n\n**5. ⚠️ 실패 사례를 읽지 않았다** — ⭐⭐⭐ **직전 사이클에서 \"다음부터는 사례를 하나 찾는다\"고 규칙으로 적었는데**(`github-actions`·`migration`·`aws` 에 이어 네 번째 지적이었다), **1차 자료가 \"almost all ... serious trouble\" 이라고 말하는 이 문서에서도 못 지켰다.** ⚠️⚠️ **규칙을 적는 것으로는 안 고쳐진다는 것이 이번에 드러났다.**\n\n**6. ⭐ `market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `MSA`(189건 · 2.6% · 층 \"기타\"). ⚠️ **본문 직접 셈은 1060건**으로 크게 다르다 — 태그가 `MSA` 표기만 잡기 때문으로 보인다.\n\n**7. ⭐ 마이크로 프론트엔드를 다루지 않았다** — 공고에 나온다(다음 `MSA 또는 **마이크로프론트엔드** 환경에서 서비스·모듈을 연동한 경험`). ⚠️ **1차 자료를 안 봤다.**"
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 퍼뜨린 사람이 그은 선 — 원문",
+      "note": "⭐ 위 넷은 **`MonolithFirst`**, 아래 넷은 **`MicroservicePrerequisites`** 원문이다. ⚠️ **두 글 다 부정어로 시작한다** — `aws` 문서와 정반대 자리다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 권고",
+          "**\"you shouldn't start a new project with microservices, even if you're sure your application will be big enough to make it worthwhile.\"**"
+        ],
+        [
+          "⭐⭐⭐ 잘된 쪽",
+          "\"**Almost all the successful** microservice stories **have started with a monolith** that got too big and was broken up\""
+        ],
+        [
+          "⭐⭐⭐ 안된 쪽",
+          "\"**Almost all the cases** where I've heard of a system that was **built as a microservice system from scratch**, it has **ended up in serious trouble**.\""
+        ],
+        [
+          "⭐⭐⭐ 이유",
+          "\"they **only work well if you come up with good, stable boundaries**\" · \"**even experienced architects working in familiar domains have great difficulty getting boundaries right at the beginning**\""
+        ],
+        [
+          "⭐⭐ 되돌리기",
+          "\"Any **refactoring of functionality between services is much harder** than it is in a monolith.\""
+        ],
+        [
+          "⭐ 값",
+          "**Microservice Premium** — \"the cost of managing a suite of services, **will slow down a team**, favoring a monolith for simpler applications\""
+        ],
+        [
+          "⭐⭐⭐ 전제 셋",
+          "**\"Rapid provisioning\"** · **\"Basic Monitoring\"** · **\"Rapid application deployment\"** — 없으면 \"**you shouldn't consider using the microservice style**\""
+        ],
+        [
+          "⭐⭐⭐ 왜 그 셋인가",
+          "\"with **many loosely-coupled services collaborating in production**, things are **bound to go wrong in ways that are difficult to detect in test environments**\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MonolithFirst",
+          "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 자기 방식에 그은 선** — \"you **shouldn't** start a new project with microservices\""
+        },
+        {
+          "title": "MicroservicePrerequisites",
+          "url": "https://martinfowler.com/bliki/MicroservicePrerequisites.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐ **하기 전에 갖춰야 할 것 셋** — rapid provisioning · basic monitoring · rapid application deployment"
+        }
+      ]
+    },
+    {
+      "id": "who",
+      "kind": "compare",
+      "caption": "⭐⭐ 누가 선을 그었나 — 이 백과사전의 계보에서",
+      "note": "각 인용은 해당 문서의 1차 자료다. ⭐ **줄 세운 것은 이 백과사전의 관점**(`confidence: inferred`). 📌 요점은 마지막 줄 — **여기서는 제품이 아니라 주창자가 그었고, 표현이 가장 세다.**",
+      "columns": [
+        "문서",
+        "누가 긋나",
+        "표현"
+      ],
+      "rows": [
+        [
+          "`redis`",
+          "제품이 자기 기능에",
+          "\"we discourage it\""
+        ],
+        [
+          "`github-actions`",
+          "제품이 자기 기능에",
+          "\"should almost never be used\""
+        ],
+        [
+          "`typescript`",
+          "제품이 자기 범위에",
+          "**Non-goals** 목록"
+        ],
+        [
+          "`javascript`",
+          "규격이 자기 과거에",
+          "\"would be removed from this specification\""
+        ],
+        [
+          "`git`",
+          "도구가 자기 절차에",
+          "`RECOVERING FROM UPSTREAM REBASE`"
+        ],
+        [
+          "⭐ `aws`",
+          "제품이 책임에",
+          "**긍정형 배정 — 부정어가 없다**"
+        ],
+        [
+          "⭐⭐⭐ **`microservices`**",
+          "**방식을 퍼뜨린 사람이 그 방식에**",
+          "⭐⭐⭐ **\"shouldn't\" · \"almost all ... serious trouble\"**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️ 이 낱말을 셀 때",
+      "note": "⭐⭐⭐ **1060 대 12** — 그런데 앞의 큰 대비들과 성격이 다르다. `HATEOAS`·`공유 책임` 은 **몰라도 굴러가는 이름**이었지만, **경계는 이 방식이 굴러가는 조건 자체**다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**1060 (모집중 447)** — ⚠️ `tech_relations` 태그는 `MSA` 189건(2.6%)만 잡는다"
+        ],
+        [
+          "`MSA` 만",
+          "604 (모집중 **31%**)"
+        ],
+        [
+          "`마이크로서비스\\|microservice` 만",
+          "507 (모집중 **50%**) — ⚠️ **비율이 다르다. 원인 미확인**"
+        ],
+        [
+          "`모듈화\\|모듈 분리`",
+          "210 (모집중 87)"
+        ],
+        [
+          "⚠️ `모놀리[스식]\\|monolith`",
+          "**79 (모집중 35)** — **반대말을 거의 안 부른다**"
+        ],
+        [
+          "`서비스 간 통신`",
+          "43 (모집중 21) — ⭐ **증상 쪽**"
+        ],
+        [
+          "`분산 트랜잭션`",
+          "15 (모집중 7) — ⭐ **증상 쪽**"
+        ],
+        [
+          "⚠️⚠️ **`바운디드\\|bounded context`**",
+          "**12 (모집중 6)** — ⭐⭐⭐ **원인 쪽인데 안 불린다**"
+        ],
+        [
+          "⚠️⚠️ **`SOLID` (대소문자 무시)**",
+          "**342인데 모집중 82%** — ⭐ **소문자 `solid`(\"solid experience\") 121건이 89%**. **대문자만 15건**, `SOLID 원칙` 9건, `단일 책임` **1건**. 📌 **여섯 번째 오염 형태: 대소문자를 무시했다**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ MonolithFirst",
+      "en": "—",
+      "what": "**\"새 프로젝트를 마이크로서비스로 시작하지 마라\"** — 크게 될 게 확실해도. ⭐ 근거는 관찰이다: **잘된 건 거의 다 모놀리스에서 쪼개졌고, 처음부터 쪼갠 건 거의 다 곤경에 빠졌다**"
+    },
+    {
+      "term": "⭐⭐⭐ 경계",
+      "en": "boundaries",
+      "what": "이 방식이 굴러가는 조건. \"**only work well if you come up with good, stable boundaries**\". ⚠️ **경험 많은 아키텍트도 처음엔 어렵다**"
+    },
+    {
+      "term": "⭐⭐ Microservice Premium",
+      "en": "—",
+      "what": "**여러 서비스를 관리하는 값** — \"will **slow down a team**\". ⚠️ 작은 애플리케이션에서는 **값이 이득보다 크다**"
+    },
+    {
+      "term": "⭐ Sacrificial Architecture",
+      "en": "—",
+      "what": "**버릴 각오로 짓는 것** — \"Don't be afraid of building a monolith that you will **discard**\". 📌 `migration` 의 무화과와 이어진다"
+    },
+    {
+      "term": "⭐⭐ 전제 셋",
+      "en": "prerequisites",
+      "what": "**Rapid provisioning · Basic Monitoring · Rapid application deployment.** ⚠️ 없으면 \"**you shouldn't consider using the microservice style**\""
+    },
+    {
+      "term": "⚠️ 바운디드 컨텍스트",
+      "en": "bounded context",
+      "what": "경계를 부르는 이름. ⭐ 공고에 **12건**뿐이다 — ⚠️ 이 문서는 그 개념의 1차 자료(DDD)를 **열지 않았다**"
+    },
+    {
+      "term": "⚠️ SOLID 오염",
+      "en": "—",
+      "what": "⭐ 대소문자를 무시하면 **\"solid experience\"** 가 걸린다(342 → **대문자만 15**). **여섯 번째 오염 형태**"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "새 서비스를 처음부터 만든다",
+      "pick": "⭐⭐⭐ **모놀리스로 시작한다**",
+      "over": "처음부터 서비스로 쪼개기",
+      "why": "⭐⭐⭐ **\"you shouldn't start a new project with microservices, even if you're sure your application will be big enough\"** — 근거는 관찰이다: **잘된 사례는 거의 다 모놀리스에서 쪼개졌고, 처음부터 쪼갠 것은 거의 다 곤경에 빠졌다.** ⚠️ **이유는 경계** — \"even experienced architects working in familiar domains have great difficulty getting boundaries right at the beginning\"",
+      "tradeoff": "⚠️ **나중에 쪼개는 일이 남는다.** ⭐ 그래도 **모놀리스 안에서는 경계를 옮길 수 있고**(\"refactoring between services is much harder\"), **먼저 만들어 봐야 어디가 실제로 갈라지는지 알게 된다.** 📌 **모듈 경계를 의식하며 짓되 프로세스는 하나로 둔다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MonolithFirst",
+          "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 자기 방식에 그은 선** — \"you **shouldn't** start a new project with microservices\""
+        }
+      ]
+    },
+    {
+      "situation": "팀이 마이크로서비스를 하자고 한다",
+      "pick": "⭐⭐ **전제 세 가지가 있는지 먼저 본다**",
+      "over": "아키텍처 그림부터 그리기",
+      "why": "⭐⭐⭐ **Rapid provisioning · Basic Monitoring · Rapid application deployment** — 없으면 \"**you shouldn't consider using the microservice style**\". ⚠️ 이유는 **테스트에서 안 잡히는 방식으로 고장 나기 때문**이다(\"bound to go wrong in ways that are difficult to detect in test environments\")",
+      "tradeoff": "⚠️ 판단이 늦어지고 \"우린 이미 다 있다\"는 반론이 나온다. ⭐ 그때 **두 번째(모니터링)를 구체적으로 묻는다** — Kubernetes·Docker 가 1·3번을 대신 해 주지만(동반 38.1%·37.6%) **모니터링은 도구를 깔아서 되는 일이 아니다**(→ `observability`)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MicroservicePrerequisites",
+          "url": "https://martinfowler.com/bliki/MicroservicePrerequisites.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐ **하기 전에 갖춰야 할 것 셋** — rapid provisioning · basic monitoring · rapid application deployment"
+        }
+      ]
+    },
+    {
+      "situation": "모놀리스가 너무 커졌다",
+      "pick": "⭐⭐ **가장자리부터 조금씩 떼어 낸다**",
+      "over": "전체를 새로 설계해 한 번에 옮기기",
+      "why": "⭐⭐⭐ **1차 자료가 말한 \"잘된 쪽\"의 모양이 이것이다** — \"a monolith that got too big and **was broken up**\". 📌 **`migration` 문서의 무화과와 같은 절차**이고, 그쪽 자료는 한 번에 갈아엎는 계획이 \"**go down in flames most of the time**\" 이라고 적는다",
+      "tradeoff": "⚠️ **오래 걸리고 두 구조를 동시에 운영해야 한다.** ⭐ 그래도 **떼어 낸 조각마다 경계가 맞는지 확인할 기회가 생긴다** — 그게 처음부터 쪼갤 때 없는 것이다. 📌 공고에도 그 경로가 있다: 바딧 `Monolithic 서비스를 Microservice 구조로 이관해본 경험`",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MonolithFirst",
+          "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 자기 방식에 그은 선** — \"you **shouldn't** start a new project with microservices\""
+        }
+      ]
+    },
+    {
+      "situation": "서비스 간 분산 트랜잭션이 자꾸 나온다",
+      "pick": "⭐⭐ **패턴을 고르기 전에 경계를 의심한다**",
+      "over": "곧바로 saga·2PC 같은 장치 도입하기",
+      "why": "⭐⭐⭐ **한 업무가 여러 서비스를 가로지른다는 것은 경계가 업무 단위를 자르고 있다는 신호**다. ⚠️ 그리고 1차 자료가 \"**only work well if you come up with good, stable boundaries**\" 라고 못 박는다 — 장치는 어긋난 경계를 메울 뿐 고치지 못한다",
+      "tradeoff": "⚠️⚠️ **경계를 옮기는 값이 훨씬 크다**(\"much harder than in a monolith\") — 그래서 **의심해도 대개 못 옮기고 장치로 간다.** ⭐ 그래도 **왜 이 장치가 필요한지 기록해 두면** 다음 경계 결정이 나아진다. 📌 장치 자체는 `saga`·`outbox`·`two-phase-commit` 에 있다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "\"MSA 경험\"을 이력서에 적는다",
+      "pick": "⭐ **어디서 어떻게 잘랐는지 적는다**",
+      "over": "MSA 환경에서 개발했다고 적기",
+      "why": "⭐⭐ **`MSA|마이크로서비스` 는 1060건이 다 적는다.** ⚠️ 그런데 **`바운디드 컨텍스트` 는 12건**이고 **`모놀리스` 는 79건**이다 — **경계를 말할 줄 아는 사람이 드물다.** ⭐ 그리고 **경계를 정한 경험이 곧 이 방식을 아는 것**이다",
+      "tradeoff": "길어진다. ⭐ 그래도 **\"MSA 환경에서 개발했다\"와 \"주문과 결제를 왜 갈랐고 어디서 후회했는지\"** 는 다른 문장이고, ⚠️ **후회한 쪽이 대개 더 신뢰를 준다** — 1차 자료도 **경계는 처음엔 틀리는 것이 정상**이라고 말한다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐ \"나중에 커질 테니 미리 쪼개 두자\"",
+      "why": "⭐⭐⭐ **1차 자료가 이 논거를 이름으로 지목해 부정한다** — \"you shouldn't start a new project with microservices, **even if you're sure your application will be big enough to make it worthwhile**\". ⚠️ **미리 쪼개면 경계를 배우기 전에 굳히고**, 굳은 경계는 옮기기 훨씬 어렵다",
+      "fix": "⭐ **모듈 경계를 의식하며 모놀리스로 짓는다.** 📌 그리고 **버릴 각오를 한다** — \"Don't be afraid of building a monolith that you will **discard**\". ⚠️ **커지면 쪼개는 것이 잘된 사례의 실제 경로**다(\"got too big and was broken up\")",
+      "sources": [
+        {
+          "title": "MonolithFirst",
+          "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 자기 방식에 그은 선** — \"you **shouldn't** start a new project with microservices\""
+        }
+      ]
+    },
+    {
+      "trap": "\"우리는 도메인을 잘 아니까 경계를 맞게 그을 수 있다\"",
+      "why": "⭐⭐⭐ **그 반박을 1차 자료가 미리 막아 둔다** — \"**even experienced architects working in familiar domains** have great difficulty getting boundaries right at the beginning.\" ⚠️ **경험도 익숙함도 충분조건이 아니라고 명시**한다",
+      "fix": "⭐ **경계를 가설로 다룬다** — 지금 그은 선이 **왜 여기인지 한 줄 적어 두고**, 나중에 **분산 트랜잭션이나 서비스 간 잦은 호출이 생기면 그 기록을 다시 본다.** 📌 그게 다음 경계 결정의 재료가 된다",
+      "sources": [
+        {
+          "title": "MonolithFirst",
+          "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 자기 방식에 그은 선** — \"you **shouldn't** start a new project with microservices\""
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐ 전제 조건 없이 시작한다",
+      "why": "⭐⭐⭐ \"**you shouldn't consider using the microservice style**\" — **Rapid provisioning · Basic Monitoring · Rapid application deployment** 가 없으면. ⚠️⚠️ 이유는 **\"many loosely-coupled services collaborating in production\" 이 테스트 환경에서 안 잡히는 방식으로 고장 나기 때문**이다",
+      "fix": "⭐ **셋을 시간으로 물어 확인한다** — 서버 하나 띄우는 데 몇 시간? 배포 한 번에 몇 시간? ⭐⭐ **그리고 \"장애가 났을 때 어느 서비스인지 몇 분 만에 아나\"** 를 묻는다. 📌 Kubernetes·Docker 가 1·3번을 대신 해 주지만 **2번은 남는다**(→ `observability`)",
+      "sources": [
+        {
+          "title": "MicroservicePrerequisites",
+          "url": "https://martinfowler.com/bliki/MicroservicePrerequisites.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐ **하기 전에 갖춰야 할 것 셋** — rapid provisioning · basic monitoring · rapid application deployment"
+        }
+      ]
+    },
+    {
+      "trap": "장치로 경계 문제를 메운다",
+      "why": "⚠️ 분산 트랜잭션이 나오면 `saga`, 호출이 많으면 `api-gateway`·`service-mesh`, 실패하면 `circuit-breaker`·`dlq` 를 넣는다. ⭐ **각각은 옳지만, 다 합치면 \"경계가 어긋나 있다\"는 신호**다 — 1차 자료가 \"**only work well if** ... good, stable boundaries\" 라고 못 박은 그 조건이 안 맞는 것이다",
+      "fix": "⭐ **장치를 넣을 때마다 \"이건 어느 경계를 메우는가\"를 한 줄 적는다.** 📌 같은 경계에 장치가 두세 개 붙으면 **그 선이 잘못된 자리일 가능성이 높다.** ⚠️ 옮기는 값이 크니 당장은 못 고쳐도, **다음 서비스를 자를 때 근거가 된다**"
+    },
+    {
+      "trap": "⚠️ `SOLID` 로 설계 역량 수요를 센다",
+      "why": "⭐⭐ **이 사이클이 걸렸다.** 대소문자를 무시하면 **342건에 모집중 82%** 로 튄다 — **소문자 `solid`(\"solid experience\", \"solid understanding\") 121건이 89%** 였다. ⚠️ **대문자만 세면 15건**이고 `SOLID 원칙` 은 **9건**, `단일 책임` 은 **1건**이다",
+      "fix": "⭐ **약자로 된 낱말은 대소문자를 지켜 센다.** 📌 **여섯 번째 오염 형태**다 — 앞의 다섯: ①경계 밖 잡음(`Go`) ②부분 문자열(`rebase`←Firebase) ③영문 낱말의 다른 뜻(`coverage`) ④같은 약자의 다른 뜻(`E2E`) ⑤같은 이름의 다른 기술(`Lambda`). ⭐ **여섯 다 모집중 비율이 먼저 알려 줬다**"
+    },
+    {
+      "trap": "이 문서를 읽고 \"쪼개는 법\"을 안다고 여긴다",
+      "why": "⚠️⚠️ **이 문서는 \"어떻게 쪼개나\"를 다루지 않았다.** 도메인 주도 설계(`DDD` 112건)·`클린 아키텍처|헥사고날`(174건)의 1차 자료를 **열지 않았다**",
+      "fix": "⭐ **이 문서는 \"언제 하지 말아야 하나\"와 \"왜 경계가 어려운가\" 둘만 준다.** 📌 서비스 간 통신·일관성은 **`saga`·`outbox`·`cqrs`·`dlq`**, 트래픽은 **`api-gateway`·`service-mesh`·`bff`**, 장애 격리는 **`circuit-breaker`** 에 있다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **지금 아는 시스템(또는 만들고 싶은 것)에서 서비스 경계를 세 개 그어 보고, 각 선마다 \"왜 여기인가\"를 한 줄씩 적는다.** 그다음 **그 경계를 가로지르는 업무 흐름이 있는지** 찾는다.",
+      "done_when": "⭐ 경계를 가로지르는 흐름이 **하나 이상 나왔고**, 그것이 **경계를 옮겨서 없앨 수 있는지 아니면 `saga` 같은 장치가 필요한지** 답할 수 있다.",
+      "why": "⭐⭐⭐ **\"only work well if you come up with good, stable boundaries\"** 를 손으로 확인하는 실습이다. 💡 그리고 **대개 첫 시도에서 가로지르는 흐름이 나온다** — ⭐ 1차 자료가 말한 **\"경험 많은 아키텍트도 처음엔 어렵다\"** 가 그 뜻이다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐ **전제 세 가지를 자기 팀(또는 아는 팀) 기준으로 시간으로 답해 본다** — ①새 서버 하나 띄우는 데 몇 시간 ②장애가 어느 서비스인지 몇 분 만에 아나 ③배포 한 번에 몇 시간.",
+      "done_when": "⭐ **세 답이 다 숫자로 나왔고**, ⚠️ 그중 **가장 나쁜 것이 무엇인지** 안다.",
+      "why": "⭐⭐⭐ \"**you shouldn't consider using the microservice style**\" 의 조건을 자기 상황으로 확인한다. 💡 ⭐ **대개 ②가 가장 나쁘다** — Kubernetes·Docker 가 ①③을 대신 해 주지만(동반 38.1%·37.6%) **모니터링은 도구를 깔아서 되는 일이 아니다.**",
+      "no_hardware": "팀이 없으면 **공고 하나를 골라** 거기 적힌 기술 스택으로 세 질문에 답해 본다 — 컬리 공고가 셋을 거의 그대로 적었다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **`MonolithFirst` 를 열고 반대 의견을 하나 찾아 본다** — 검색으로든 그 글이 인용한 링크로든. 그리고 **어느 쪽이 더 설득력 있는지 한 줄로 적는다.**",
+      "done_when": "⭐ 반론을 **하나 이상 읽었고**, ⚠️ **1차 자료의 근거가 \"관찰\"이지 \"증명\"이 아니라는 점**을 자기 말로 설명할 수 있다.",
+      "why": "⭐⭐⭐ **이 문서가 못 한 일이다**(`open_questions` 3번). 💡 \"Almost all the cases **where I've heard of**\" — **들은 사례**이고 표본이 어떻게 모였는지는 적혀 있지 않다. ⭐ **강한 주장일수록 근거의 종류를 확인한다**, 그게 이 백과사전이 하려는 일이다.",
+      "no_hardware": "웹 페이지 몇 개면 된다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "새 프로젝트를 마이크로서비스로 시작하면 안 되는 이유는? 원문으로 답하라",
+    "잘된 사례와 안된 사례를 가른 것은 무엇인가?",
+    "경계를 미리 정하기 어려운 이유를 원문이 어떻게 막아 두는가?",
+    "전제 세 가지는? 왜 하필 그 셋인가?",
+    "공고에서 `바운디드 컨텍스트` 가 12건인데 `분산 트랜잭션` 이 15건인 것은 무엇을 뜻하는가?",
+    "`SOLID` 로 세면 왜 안 되는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Monolithic 서비스를 Microservice 구조로 이관해본 경험이 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/348612",
+      "where": "바딧",
+      "what_it_shows": "⭐⭐⭐ **1차 자료가 말한 \"잘된 쪽\"의 모양 그대로** — \"a monolith that got too big and **was broken up**\". ⚠️ 다만 `모놀리스` 를 이름으로 부르는 공고는 **79건**뿐이다"
+    },
+    {
+      "quote": "• 모놀리식 vs MSA, REST vs Event-driven, 동기 vs 비동기 등",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356348",
+      "where": "크로스이엔에프",
+      "what_it_shows": "⭐⭐⭐ **선택지로 제시하는 사실상 유일한 공고.** 나머지 1000건 남짓은 **\"MSA 경험\"을 요구할 뿐 대안을 적지 않는다**"
+    },
+    {
+      "quote": "• MSA 환경에서의 서비스 개발, 배포 자동화, 모니터링 및 트러블슈팅 능력",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356194",
+      "where": "컬리",
+      "what_it_shows": "⭐⭐⭐ **전제조건을 거의 그대로 적은 드문 공고** — `Rapid application deployment`(배포 자동화) · `Basic Monitoring`(모니터링) · 빠른 대응(트러블슈팅)"
+    },
+    {
+      "quote": "• MSA 환경에서의 분산 트랜잭션 관리 및 데이터 정합성 유지 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373382",
+      "where": "빗썸",
+      "what_it_shows": "⭐⭐ **증상 쪽은 이름을 얻었다**(`분산 트랜잭션` 15건). ⚠️ **한 업무가 여러 서비스를 가로지른다는 신호**이고, 원인 쪽(`바운디드 컨텍스트` 12건)은 안 불린다"
+    },
+    {
+      "quote": "• MSA 기반 서비스 간 통신 구조 설계",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/368135",
+      "where": "액션파워",
+      "what_it_shows": "⭐ `서비스 간 통신` **43건** — **경계를 그은 뒤에 남는 일**이 요구 사항이 된다"
+    },
+    {
+      "quote": "• MSA 구조에서 Micro Service 간의 문제를 해결한 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378073",
+      "where": "워드바이스",
+      "what_it_shows": "⭐ **\"서비스 간의 문제\"** 라는 표현 자체가 이 방식의 값이다 — ⚠️ 모놀리스에는 없던 문제 범주다"
+    },
+    {
+      "quote": "• Kubernetes 환경 기반의 마이크로서비스 설계 및 구축",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373999",
+      "where": "로앤컴퍼니(lawtalk)",
+      "what_it_shows": "⭐⭐ **`market` 의 Kubernetes 38.1% 가 이 모양** — **전제조건 ①빠른 프로비저닝·③빠른 배포를 도구가 떠맡았다.** ⚠️ ②모니터링은 남는다"
+    },
+    {
+      "quote": "• MSA 또는 마이크로프론트엔드 환경에서 서비스·모듈을 연동한 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/384037",
+      "where": "다음",
+      "what_it_shows": "⭐ **같은 발상이 프론트엔드로 옮겨 간 자리** — ⚠️ **이 문서는 마이크로 프론트엔드의 1차 자료를 안 봤다**"
+    },
+    {
+      "quote": "- MSA를 위한 서비스 Re-Architecting",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/307033",
+      "where": "이그나이트",
+      "what_it_shows": "⭐ **쪼개는 일 자체가 직무가 된다** — `migration` 문서의 무화과 절차와 같은 자리"
+    }
+  ],
+  "related": [
+    {
+      "slug": "migration",
+      "how": "⭐⭐⭐ **가장 가까운 문서.** 스트랭글러 무화과의 원래 문맥이 **모놀리스 → 마이크로서비스**였고, 그쪽 자료는 한 번에 갈아엎는 계획이 \"go down in flames most of the time\" 이라고 적는다"
+    },
+    {
+      "slug": "saga",
+      "how": "⭐⭐ **경계를 가로지르는 트랜잭션을 메우는 장치**(`분산 트랜잭션` 15건). ⚠️ 장치가 필요하다는 것 자체가 경계 신호일 수 있다"
+    },
+    {
+      "slug": "outbox",
+      "how": "⭐ 서비스 사이로 이벤트를 빠뜨리지 않고 보내는 법"
+    },
+    {
+      "slug": "observability",
+      "how": "⭐⭐⭐ **전제조건 두 번째(Basic Monitoring)가 사는 곳.** ⚠️ Kubernetes·Docker 가 나머지 둘을 대신 해 주므로 **오늘날 진짜 관문**이다"
+    },
+    {
+      "slug": "kubernetes",
+      "how": "⭐⭐ 동반 **38.1%** — 전제조건 ①③(빠른 프로비저닝·배포)을 떠맡은 층"
+    },
+    {
+      "slug": "api-gateway",
+      "how": "서비스가 여러 개일 때 바깥에서 보는 창구"
+    },
+    {
+      "slug": "service-mesh",
+      "how": "서비스 사이의 통신을 코드 밖으로 뺀 층"
+    },
+    {
+      "slug": "circuit-breaker",
+      "how": "⭐ 한 서비스의 실패가 옆으로 번지지 않게 하는 장치 — **모놀리스에는 없던 문제**"
+    },
+    {
+      "slug": "cqrs",
+      "how": "읽기와 쓰기를 나누는 방식 — 서비스 경계와 자주 함께 논의된다"
+    },
+    {
+      "slug": "bff",
+      "how": "화면마다 다른 조합이 필요할 때 앞단에 두는 층"
+    },
+    {
+      "slug": "aws",
+      "how": "⭐⭐ 동반 **59.8%** — 서비스가 여러 개면 **책임의 선도 여러 개**가 된다"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **\"어떻게 쪼개나\"를 다루지 않았다.** `DDD|도메인 주도` **112건**, `클린 아키텍처|헥사고날|포트-어댑터` **174건** 의 1차 자료를 **열지 않았다.** ⭐ 이 문서는 **\"언제 하지 말아야 하나\"와 \"왜 경계가 어려운가\"** 만 다뤘다 — **가장 큰 빈자리**다.",
+    "⚠️ **서비스 간 통신·데이터 일관성을 다루지 않았다** — **의도한 것이다.** `saga`·`outbox`·`cqrs`·`dlq`·`distributed-lock`·`circuit-breaker`·`api-gateway`·`service-mesh`·`bff` 가 이미 각각 다뤘다.",
+    "⚠️⚠️ **반대편 주장을 읽지 않았다.** ⭐ 1차 자료의 근거는 \"Almost all the cases **where I've heard of**\" — **들은 사례**이고 표본이 어떻게 모였는지 적혀 있지 않다. **강한 주장인데 한쪽만 읽었다.**",
+    "⚠️ **`MSA`(604, 모집중 31%)와 `마이크로서비스`(507, 모집중 50%)의 비율 차이 원인을 확인하지 못했다.** ⭐ 표기 선호가 시기에 따라 달라진 것인지, 업종이 다른 것인지 **세지 않았다.**",
+    "⚠️⚠️ **실패 사례를 읽지 않았다.** ⭐⭐⭐ **직전 사이클(`aws`)에서 \"다음부터는 1차 자료가 실패를 말하면 그 자리에서 사례를 찾는다\"고 규칙으로 적었는데**, **\"almost all ... serious trouble\" 이라고 말하는 이 문서에서 바로 어겼다.** ⚠️ **네 번째 지적이고, 규칙을 적는 것으로는 안 고쳐진다는 것이 드러났다.**",
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `MSA`(189건 · 2.6% · 층 \"기타\"). ⚠️ **본문 직접 셈은 1060건**으로 크게 다르다(태그가 `MSA` 표기만 잡는 것으로 보인다).",
+    "⚠️ **마이크로 프론트엔드를 다루지 않았다** — 공고에 나오는데(다음) **1차 자료를 안 봤다.**",
+    "⭐ **`who` 표(누가 선을 그었나)는 이 문서의 관점이다.** 각 인용은 해당 문서의 1차 자료지만, **줄 세운 것은 이 백과사전이 쌓아 온 관찰**이다."
+  ],
+  "sources": [
+    {
+      "title": "MonolithFirst",
+      "url": "https://martinfowler.com/bliki/MonolithFirst.html",
+      "publisher": "Martin Fowler",
+      "kind": "article",
+      "summary": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 자기 방식에 그은 선** — \"you **shouldn't** start a new project with microservices\""
+    },
+    {
+      "title": "MicroservicePrerequisites",
+      "url": "https://martinfowler.com/bliki/MicroservicePrerequisites.html",
+      "publisher": "Martin Fowler",
+      "kind": "article",
+      "summary": "⭐⭐ **하기 전에 갖춰야 할 것 셋** — rapid provisioning · basic monitoring · rapid application deployment"
+    }
+  ]
+}

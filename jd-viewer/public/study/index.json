@@ -2248,6 +2248,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "microservices",
+      "title": "마이크로서비스 — 퍼뜨린 사람이 먼저 그은 선",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **이 방식을 퍼뜨린 사람이 직접 말한다 — \"새 프로젝트를 마이크로서비스로 시작하지 마라.\"** 잘된 사례는 **거의 다 모놀리스에서 쪼개져 나왔고**, 처음부터 쪼개 만든 것은 **거의 다 심각한 곤경에 빠졌다.** ⚠️ 이유는 하나 — **경계**. 공고 1060건 중 그 낱말은 **12건**.",
+      "aliases": [
+        "마이크로서비스",
+        "MSA",
+        "microservices",
+        "모놀리스",
+        "monolith",
+        "MonolithFirst"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

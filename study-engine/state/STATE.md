@@ -4,34 +4,65 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **AWS**(`aws`)를 완성했다 — **123번째 문서**.
+**없음.** 직전 사이클에서 **마이크로서비스**(`microservices`)를 완성했다 — **124번째 문서**.
 
-### 직전 사이클 (AWS)
+### 직전 사이클 (마이크로서비스)
 
-⭐⭐⭐ **축: "선을 그렸는데, 부정어로 긋지 않았다."**
+⭐⭐⭐ **축: "퍼뜨린 사람이 먼저 그은 선."**
 
-> ⭐⭐⭐ **"Security and Compliance is a shared responsibility between AWS and the customer."**
-> ⭐⭐ AWS 몫 — "AWS is responsible for **protecting the infrastructure that runs all of the services**"
-> ⭐⭐⭐ 고객 몫 — "Customer responsibility will be **determined by the AWS Cloud services that a customer selects**"
-> ⭐⭐⭐ "Customer responsibility **varies based on many factors**"
+> ⭐⭐⭐ **"you shouldn't start a new project with microservices, even if you're sure your
+>   application will be big enough to make it worthwhile."**
+> ⭐⭐⭐ "**Almost all the successful** microservice stories **have started with a monolith**"
+> ⭐⭐⭐ "**Almost all the cases** ... **built as a microservice system from scratch**, it has
+>   **ended up in serious trouble**."
+> ⭐⭐⭐ "they **only work well if you come up with good, stable boundaries**" ·
+>   "**even experienced architects working in familiar domains** have great difficulty
+>   getting boundaries right at the beginning"
+> ⭐⭐ 전제 셋 — Rapid provisioning · Basic Monitoring · Rapid application deployment.
+>   없으면 "**you shouldn't consider using the microservice style**"
 
-⭐⭐⭐ **발견은 없는 것이었다** — 이 문서에는 **"AWS is not responsible" 같은 부정어가 거의 없다.**
-각자의 몫을 **긍정형으로 배정**할 뿐이다. 💡 앞의 여덟(`redis` "we discourage it",
-`git` "a bad idea" …)은 **읽으면 걸리는데**, 이건 **안 읽으면 아무 경고도 없다.**
+⭐⭐⭐ **셈: 1060 대 12**(`바운디드 컨텍스트`) **대 79**(`모놀리스`). ⚠️ 그런데 앞의 큰 대비들과
+성격이 다르다 — `HATEOAS`·`공유 책임` 은 **몰라도 굴러가는 이름**이었지만 **경계는 이 방식이
+굴러가는 조건 자체**다("only work well if...").
 
-⭐⭐⭐ **셈이 그 결과다 — 4787 대 0.** `공유 책임|shared responsibility` **0건**
-(`HATEOAS` 이래 두 번째 완전한 0, 격차는 최대). ⚠️ 그런데 **`비용 최적화` 는 401건**이다.
+⚠️⚠️ **여섯 번째 오염 형태**: `SOLID` 342 @ 82% → **소문자 `solid`("solid experience") 121건
+@ 89%**. **대문자만 15건**, `단일 책임` **1건**.
 
 ### 다음
 
-**마이크로서비스**(`microservices`) — QUEUE 맨 위.
+**바운디드 컨텍스트 / 도메인 주도 설계**(`bounded-context`) — QUEUE 맨 위.
 
-⭐⭐⭐ **사다리 2순위에 가장 가깝다** — `saga`·`cqrs`·`outbox`·`service-mesh`·`bff`·
-`api-gateway`·`circuit-breaker` 가 **전부 이걸 전제하는데 본체 문서가 없다.**
-⭐⭐⭐ **1060 대 12**(`바운디드 컨텍스트`). 축: **주창자가 자기 방식에 그은 선** —
-Fowler 의 **`MonolithFirst`**: **"you shouldn't start a new project with microservices"**.
+⭐⭐⭐ **`microservices` 가 스스로 "가장 큰 빈자리"라고 적은 자리**(사다리 2순위).
+그쪽은 **"왜 경계가 어려운가"에서 멈췄고**, **"그럼 어디서 자르나"** 가 여기다.
+1차 자료는 Fowler 의 **`BoundedContext`** bliki. ⚠️ **못 열면 `리팩터링`(753건)으로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **여섯 번째 오염 형태 — 대소문자를 무시했다.** `SOLID` 를 대소문자 무시로 세면
+  **342건에 모집중 82%** 인데, **소문자 `solid`("solid experience", "solid understanding")가
+  121건에 89%** 였다. **대문자만 세면 15건**, `SOLID 원칙` 9건, `단일 책임` **1건**.
+  📌 **앞의 다섯**: ①경계 밖 잡음(`Go`) ②부분 문자열(`rebase`←Firebase) ③영문 낱말의 다른
+  뜻(`coverage`) ④같은 약자의 다른 뜻(`E2E`) ⑤같은 이름의 다른 기술(`Lambda`).
+  ⭐ **여섯 다 모집중 비율이 먼저 알려 줬다** — 이제 이건 완전히 굳은 절차다.
+
+- ⭐⭐⭐ **큰 대비를 만나면 "몰라도 굴러가나"를 묻는다.** `HATEOAS` 0 · `공유 책임` 0 ·
+  `바운디드 컨텍스트` 12 — 셋 다 "이름이 안 불린다"는 같은 모양이지만 **무게가 다르다.**
+  ⭐ 앞의 둘은 **몰라도 대충 굴러가는 이름**이고, **경계는 그 방식이 굴러가는 조건 자체**다
+  (1차 자료가 "**only work well if** you come up with good, stable boundaries" 라고 못 박는다).
+  📌 **다음부터 큰 대비를 적을 때 "이름을 몰라서 무엇이 실제로 깨지나"를 함께 적는다** —
+  안 그러면 대비 자체가 수사가 된다.
+
+- ⭐⭐ **"스스로 그은 선" 계보에 새 축이 생겼다 — 누가 긋느냐.** 앞의 아홉은 전부
+  **제품이 자기 기능에** 그었는데, 여기는 **방식을 퍼뜨린 사람이 그 방식에** 그었다.
+  💡 ⭐ **그리고 표현이 가장 세다** — "almost all ... ended up in serious trouble".
+  📌 **파는 사람이 직접 쓴 경고는 그 자체가 근거의 등급**이다.
+
+- ⚠️⚠️ **직전 사이클에서 세운 규칙을 바로 다음 사이클에서 어겼다.** `aws` 에서
+  "**다음부터 1차 자료가 실패를 말하면 그 자리에서 사례를 하나 찾는다**"고 적었는데,
+  "almost all ... serious trouble" 이라고 말하는 `microservices` 에서 **또 안 찾았다**
+  (네 번째다: `github-actions`·`migration`·`aws`·`microservices`).
+  ⭐⭐⭐ **규칙을 적는 것으로는 안 고쳐진다는 것이 이번에 증명됐다.** 📌 **다음 사이클에서는
+  1차 자료를 여는 그 호출에 사례 검색을 함께 넣는다** — 나중에 하기로 미루면 안 한다.
 
 - ⭐⭐⭐ **"부정어가 없다"도 발견이다.** 이 백과사전은 늘 **부정어를 먼저 찾는다** —
   그런데 AWS 의 `Shared Responsibility Model` 에는 **"AWS 는 이것을 책임지지 않는다"가 없다.**
