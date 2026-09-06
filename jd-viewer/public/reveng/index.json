@@ -1519,8 +1519,8 @@
       "name_en": "Cerebras",
       "country": "US",
       "category": "기타",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "웨이퍼 한 장을 칩 하나로 쓰는 회사 — 가중치를 옮기지 않는 것을 성능의 정의로 삼는다",
       "updated_at": "2026-09-07",
       "domain": "cerebras.ai"
