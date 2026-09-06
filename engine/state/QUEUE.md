@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Signal** | US · 비영리 | 프로파일만 씀(2026-09-07). 도메인 넷 다 비어 있다 — 세션 열쇠를 계속 갈아 끼운다(`spqr` 2025-10-02 확보) · 키가 바뀐 것을 몰래 못 하게 한다(`automatic-key-verification` 2026-08-11 확보) · 서버가 알면 안 되는 것을 서버에 맡긴다(자료 부족, 백업·ORAM 글 미독) · 비용이 곧 원칙이다(`signal-is-expensive` 2023-11-16 확보). 주소 주의 — 블로그 목록의 href 가 `/blog/automatic-key-verification/` 이다(제목대로 추측하면 404). |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Signal** | US · 비영리 | 암호 프로토콜과 메타데이터 최소화 축이 이 엔진에 없다. `signal.org/blog` 에 자기 프로토콜 설계 글이 이어진다 — `Introducing Automatic Key Verification`(2026-08-11, 세션에 제3자가 없음을 확인하는 절차를 자동화) · `Signal Protocol and Post-Quantum Ratchets`(2025-10-02, 희소 후양자 래칫) · `Introducing Signal Secure Backups`(2025-09-08, 선택형 암호화 백업) · `Technology Deep Dive: Building a Faster ORAM Layer`(2022-08-19, 엔클레이브 위 비공개 연락처 탐색). 비영리라 회사는 아니지만 레이디버드·덕DB 재단 전례가 있다. 정책·옹호 글이 섞여 있으므로 팔 때 기술 글만 고른다. |
 | **Backblaze** | US · SaaS | 저가 하드웨어로 내구성을 만드는 축과 **디스크가 실제로 얼마나 죽는가**라는 공개 데이터가 이 엔진에 없다. `backblaze.com/blog` 에 분기마다 드라이브 통계가 나온다 — `Backblaze Drive Stats for Q1 2026`(2026-07-09) · `How an Open Dataset Powers Academic and AI/ML Research`(2026-08-13) · `Network Stats for Q2 2026`(2026-07-23) · `B2 To Encrypt New Uploads by Default`(2026-08-27). ⚠️ 최근 목록에 AI·워크플로 마케팅 글이 섞여 있고 볼트·소거 부호 구조 글은 옛것이다 — 팔 때 그 구조 글의 날짜를 개별로 확인한다. |
 | **Rerun** | EU · 오픈소스/SaaS | 로보틱스·다중모달 데이터를 시간축으로 다루는 축이 없다. `rerun.io/blog` 에 자기 저장 구조 글이 있다 — 열 청크로 바꿔 **적재 100배, 메모리 35배**를 얻고 그 대가로 질의 속도를 내준 기록(2.25M 스칼라 점·9개 그래프 기준, 압축과 캐시로 상쇄한다고 적는다) · `How we sped up time series by 20-30x` · `Real-time kHz time series in a multimodal visualizer` · `Why Rust?`. ⚠️ 목록에 날짜가 없고 개별 글도 상대 날짜로만 보인다 — 팔 때 날짜를 못 박는 절차가 필수다. |
 
