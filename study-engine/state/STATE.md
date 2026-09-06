@@ -4,29 +4,51 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **기술 부채**(`technical-debt`)를 완성했다 — **120번째 문서**.
+**없음.** 직전 사이클에서 **테스트**(`testing`)를 완성했다 — **121번째 문서**.
 
-### 직전 사이클 (기술 부채)
+### 직전 사이클 (테스트)
 
-⚠️⚠️ **큐가 적어 준 축을 못 썼다.** Ward Cunningham 이 자기 비유의 오해를 바로잡은 자료를 1차 자료로 삼으려 했는데 **c2.com 이 자바스크립트 위키라 내용이 안 왔다.** Fowler 의 글에도 그 해명은 참고 문헌으로만 있다. ⭐ **확인 못 한 것으로 축을 세우지 않고 바꿨다.**
+⭐⭐⭐ **축: "커버리지는 좋은지를 말해 주지 않는다."**
 
-⭐⭐⭐ **바꾼 축: "부채인지는 코드가 정하지 않는다 — 고칠 일이 정한다."** Fowler 의 글에서 나왔다.
+> ⭐⭐⭐ **"Test coverage is a useful tool for finding untested parts of a codebase. Test coverage is of little use as a numeric statement of how good your tests are."**
+> ⭐⭐⭐ **"If you make a certain level of coverage a target, people will try to attain it."** · (Marick) "**too easy to reach with low quality testing**"
+> ⭐ "I would be **suspicious of anything like 100%**" · "Coverage is of **little value to management**"
+> ⭐⭐⭐ **대안 둘** — "You **rarely get bugs that escape into production**" · "You are **rarely hesitant to change some code** for fear it will cause production bugs"
 
-> ⭐⭐⭐ **"it's not a problem if I don't have to modify it"**
-> ⭐⭐ "The extra effort that it takes to add new features is the **interest** paid on the debt."
-> ⭐⭐⭐ "Teams who do this end up **maxing out all their credit cards**, but still **delivering later than they would have done**"
+⭐⭐⭐ **둘째 대안이 세 문서를 한 줄로 이었다** — `testing`(주저하지 않는가) → `technical-debt`(안 고치면 이자가 는다) → `code-review`("never submit an improvement ... never improves"). **셋 다 "완벽"이 아니라 "움직일 수 있는가"를 본다.**
 
-⭐⭐ **셈의 대비가 종류가 달랐다** — 앞선 열넷은 "큰 낱말 vs 안 불리는 개념"이었는데, 여기는 **같은 일을 가리키는 두 낱말 중 하나만 쓴다**: `레거시` **766** vs `기술 부채` **227**. 그리고 공고의 낱말이 태도를 담는다 — `해소`(컬리·패스트파이브) vs ⭐ **`관리`**(와트니).
+⚠️⚠️ **셈 오염을 또 잡았다(세 번째 형태)** — `커버리지|coverage` **461건 모집중 83%**. 갈라 보니 **영문 `coverage` 만 414건에 87%** 였다(**영문 안내문의 다른 뜻** — 보장·적용 범위. `보장 범위|insurance` 류가 870건). ⭐ 쓸 수 있는 값은 `테스트 커버리지|코드 커버리지` **69건**.
 
-⚠️ `고도화|점진적 개선` **3425건**은 너무 넓어 쓰지 않았다.
+**셈**: `테스트 코드|단위 테스트` **570** vs ⚠️ `테스트 전략` **41** · `테스트 문화` **3**.
 
 ### 다음
 
-**테스트**(`testing`) — QUEUE 맨 위. ⭐ `technical-debt` 가 남긴 **끊긴 링크**다(사슬이 이어졌다).
+**마이그레이션**(`migration`) — QUEUE 맨 위. ⭐ `technical-debt` 가 "별도 낱말로 남긴다"고 적은 자리(**760건**).
 
-⚠️⚠️ **셈에 함정이 둘 있다**: `테스트` 만으로는 **3964건**(너무 넓다), 그리고 ⭐⭐⭐ **`커버리지|coverage` 461건인데 모집중 83%** — **오염 신호다. 반드시 경계를 넣어 다시 센다.** 축: **"커버리지는 테스트가 좋은지의 척도가 아니다"**(Fowler `TestCoverage`) — ⚠️ **확인 못 하면 축을 바꾼다.**
+⚠️⚠️ **`testing` 이 지목한 "테스트 피라미드"는 미룸으로 보냈다** — `테스트 피라미드` **2건**이고, `E2E` 로 세면 **1582건에 모집중 65%** 로 **또 오염**이었다("End-to-End로 설계" 같은 업무 범위 표현 — ⭐ **네 번째 오염 형태: 같은 약자의 다른 뜻**). **`testing` 의 보강 사이클로 처리한다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **문서 셋이 한 줄로 이어졌다 — 백과사전이 자란다는 것의 구체적 모습.**
+  `testing` 의 대안 기준 둘째("**rarely hesitant to change some code**")가
+  `technical-debt` 의 이자("고칠 때 더 드는 시간")로 이어지고, 그것이 `code-review` 의
+  **"If you never submit an improvement to the codebase, then the codebase never improves"**
+  로 닫힌다. 💡 **셋 다 "완벽한가"가 아니라 "움직일 수 있는가"를 본다.**
+  📌 **문서를 쓸 때 앞선 문서의 인용을 다시 꺼내 이어 보면, 그 자체가 새로운 발견이 된다** —
+  이번 `chain` 표가 그렇게 나왔다.
+
+- ⭐⭐ **셈 오염의 세 번째와 네 번째 형태를 한 사이클에 만났다.**
+  ③ **영문 낱말의 다른 뜻** — `coverage` 461건 중 영문 414건이 보장·적용 범위 문맥이었다.
+  ④ **같은 약자의 다른 뜻** — `E2E` 1582건(모집중 65%)에 "End-to-End로 설계" 같은 **업무 범위**
+  표현이 섞였다. ⭐ 앞의 둘(① 경계 밖 잡음 `Go`, ② 부분 문자열 `Firebase`)과 합쳐 **네 형태**다.
+  📌 **진단은 언제나 모집중 비율로 시작한다**(정상 30~40%). 그다음 **한글 낱말과 붙여 좁히거나,
+  반대쪽을 세어 차이가 떨어지는지 본다.**
+
+- ⭐⭐ **셈이 없으면 별도 낱말로 만들지 않고 보강으로 돌린다.** `testing` 이 "가장 큰 빈자리"라고
+  적은 **테스트 피라미드**는 정작 **2건**이었다. ⚠️ 문서가 지목했다고 바로 큐 맨 위에 올리는 것이
+  아니라 **셈으로 확인한다** — 없으면 **미룸에 "보강 사이클로"** 로 보낸다(`시맨틱 버저닝` 3건
+  때와 같은 판단). ⭐ **다만 1차 자료가 확실하고 앞 문서가 축을 세워 뒀으면 셈 없이 보강할 수
+  있다** — 그 조건을 미룸 칸에 함께 적어 뒀다.
 
 - ⭐⭐⭐ **큐가 적어 준 축이라도, 1차 자료를 못 열면 바꾼다.** 이번엔 **Ward Cunningham 의
   해명**을 축으로 잡아 두었는데 **c2.com 이 자바스크립트 위키라 안 열렸다.** ⚠️ 그 상태로

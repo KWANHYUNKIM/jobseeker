@@ -1,0 +1,565 @@
+{
+  "slug": "testing",
+  "title": "테스트 — 커버리지는 좋은지를 말해 주지 않는다",
+  "title_en": "Testing: Coverage Doesn't Tell You If They're Good",
+  "aliases": [
+    "테스트",
+    "testing",
+    "단위 테스트",
+    "테스트 코드",
+    "커버리지",
+    "TDD"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **\"Test coverage is of little use as a numeric statement of how good your tests are.\"** 빈 곳은 찾아 주지만 **좋은지는 모른다.** 그리고 목표로 삼는 순간 — **\"people will try to attain it\"**.",
+  "summary": "⭐ **`테스트 코드|단위 테스트` 는 570건(모집중 185)** 이다. 그런데 ⚠️ `테스트 커버리지|코드 커버리지` 는 **69건**, `테스트 전략` 은 **41건**, `테스트 문화` 는 **3건**이다.\n\n**즉 \"테스트를 쓰라\"는 흔한데 \"어떻게 판단하나\"는 드물다.** 그리고 판단에 가장 흔히 쓰이는 숫자에 대해, Fowler 가 이렇게 적는다.\n\n> ⭐⭐⭐ **\"Test coverage is a useful tool for finding untested parts of a codebase. Test coverage is of little use as a numeric statement of how good your tests are.\"**\n\n💡 **두 문장이 한 지표의 앞뒤다** — **빈 곳을 찾는 데는 쓸모 있고, 좋은지를 말하는 데는 거의 쓸모없다.**\n\n⚠️ **그리고 목표로 삼으면 어떻게 되는지도 적는다.**\n\n> ⭐⭐⭐ **\"If you make a certain level of coverage a target, people will try to attain it.\"**\n> ⭐⭐ Brian Marick 인용 — high coverage numbers are \"**too easy to reach with low quality testing**\"\n> ⭐ \"I would be **suspicious of anything like 100%**\"\n\n📌 **그러면 무엇으로 판단하나.** 문서가 대안을 두 줄로 준다 — ⭐ **숫자가 아니라 결과다.**\n\n> ⭐⭐⭐ \"You **rarely get bugs that escape into production**, and\"\n> ⭐⭐⭐ \"You are **rarely hesitant to change some code for fear it will cause production bugs**.\"",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 셈에서 오염을 또 잡았다 — `coverage` 461건 중 대부분이 테스트가 아니다",
+      "confidence": "inferred",
+      "body": "⚠️ **이 낱말은 셈이 두 번 막혔다.**\n\n**첫째, `테스트` 만으로는 3964건**이 나온다 — 면접 테스트·QA·A/B 테스트가 다 걸린다. ⭐ `기술 부채` 사이클의 `고도화`(3425건)와 같은 형태로 **너무 넓어 못 쓴다.**\n\n**둘째, ⭐⭐⭐ `커버리지|coverage` 가 461건인데 모집중 비율이 83%** 다. 이 데이터의 정상은 30~40%이므로 **오염 신호**다(`go`·`git` 에서 세운 규칙). **갈라 세어 봤다.**\n\n| 패턴 | 건수 | 모집중 비율 |\n|---|---|---|\n| `커버리지\\|coverage` | 461 | ⚠️⚠️ **83%** |\n| `coverage`(영문, 경계) | 414 | ⚠️⚠️ **87%** |\n| `커버리지`(한글만) | **47** | 47% |\n| ⭐ `테스트 커버리지\\|코드 커버리지\\|test coverage` | **69** | 62% |\n\n⭐⭐ **영문 `coverage` 414건이 오염원이다** — 영문 안내문의 다른 뜻(보장·적용 범위 등)이 걸린다. ⚠️ 참고로 `보장 범위|insurance` 류가 **870건**이나 된다.\n\n📌 **그래서 쓸 수 있는 숫자만 남기면 이렇다.**\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `테스트 코드\\|단위 테스트` | **570** | (모집중 185) |\n| `테스트 자동화` | 473 | (모집중 172) |\n| `통합 테스트\\|E2E` | 419 | (모집중 169) |\n| `Jest\\|pytest\\|JUnit\\|Playwright\\|Cypress` | 400 | (모집중 150) |\n| ⚠️ `TDD\\|테스트 주도` | **109** | (모집중 35) |\n| ⚠️ `테스트 커버리지\\|코드 커버리지` | **69** | (모집중 43) |\n| ⚠️ `테스트 전략` | **41** | (모집중 14) |\n| ⚠️⚠️ `테스트 문화` | **3** | (모집중 1) |\n\n⭐⭐⭐ **570 대 41.** \"테스트 코드를 쓰라\"는 흔한데 **\"어떤 전략으로\"는 41건**이고, **\"문화\"는 3건**이다.\n\n📌 **그런데 전략을 이름으로 대는 곳의 문장은 확연히 다르다.**\n\n> ⭐⭐ `**Unit Test, Integration Test, E2E Test 로 구성된 테스트 피라미드**를 설계하고, 테스트 커버리지와 **신뢰도**를 높입니다.` — 레브잇\n> ⭐ `Unit/Integration/E2E **테스트 전략**을 설계하고 **테스트 문화를 조직에 정착**시켜본 경험` — 레브잇\n> `**테스트 전략 수립** 및 자동화 경험 (Jest, React Testing Library, Playwright 등)` — 컬리\n> `코드 리뷰 가이드, 템플릿, **테스트 전략** 등 개발 기준을 팀 단위로 정리한 경험` — 네이버페이\n\n⭐ **\"설계\"·\"수립\"·\"정착\"** — **쓰는 일이 아니라 정하는 일**로 적는다. 💡 그리고 레브잇 공고가 **`커버리지`와 `신뢰도`를 나란히** 놓는데, ⭐⭐ **이 문서의 주제가 정확히 그 둘의 관계**다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 빈 곳은 찾아 주지만, 좋은지는 모른다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ],
+      "body": "커버리지는 **테스트가 실행한 코드의 비율**이다. 재기 쉽고 숫자로 나와서 **가장 흔히 쓰이는 지표**가 됐다.\n\n**Fowler 의 문장이 그 지표의 앞뒤를 한 문단에 담는다.**\n\n> ⭐⭐⭐ **\"Test coverage is a useful tool for finding untested parts of a codebase. Test coverage is of little use as a numeric statement of how good your tests are.\"**\n\n💡 **두 문장이 같은 무게로 있다.**\n\n| 커버리지가 | |\n|---|---|\n| ⭐ **할 수 있는 것** | \"finding **untested parts** of a codebase\" — **어디가 안 돌았는지** 찾아 준다 |\n| ⚠️⚠️ **못 하는 것** | \"of little use as a **numeric statement of how good your tests are**\" |\n\n⭐⭐ **왜 못 하나.** 커버리지는 **그 줄이 실행됐는지**만 본다. ⚠️ **실행됐는데 아무것도 검사하지 않았어도 커버리지는 오른다** — 함수를 호출하고 결과를 안 보면 그 줄은 \"커버\"된다.\n\n**그래서 문서가 다른 사람의 말을 빌려 못 박는다.**\n\n> ⭐⭐ Brian Marick 인용 — high coverage numbers are \"**too easy to reach with low quality testing**\"\n> ⭐ \"**High numbers don't necessarily mean much**\" · \"I would be **suspicious of anything like 100%**\"\n\n⚠️⚠️ **\"100% 같은 건 의심스럽다\"** — 대개 그 숫자를 맞추려고 **검사하지 않는 테스트**가 들어가 있다는 뜻이다.\n\n📌 ⭐ **그리고 관리 쪽 쓰임도 잘라 낸다.**\n\n> \"**Coverage is of little value to management**\"\n\n💡 **이것이 이 지표의 가장 흔한 오용**이다 — 팀 밖에서 숫자로 보고받는 순간, 다음 절의 일이 일어난다."
+    },
+    {
+      "id": "target",
+      "kind": "limits",
+      "heading": "⭐⭐⭐ 목표로 삼는 순간 — \"people will try to attain it\"",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ],
+      "body": "이 문서에서 가장 짧고 가장 센 문장이다.\n\n> ⭐⭐⭐ **\"If you make a certain level of coverage a target, people will try to attain it.\"**\n\n💡 **당연한 말인데, 그게 문제라는 뜻이다.** ⚠️ **사람들은 목표를 달성한다** — 그리고 **커버리지는 달성하기 쉬운 목표**다.\n\n> ⭐⭐ high coverage numbers are \"**too easy to reach with low quality testing**\"\n\n📌 **어떻게 쉬운가.** 검사 없이 실행만 해도 오르기 때문이다.\n\n| 목표가 생기면 | 무슨 일이 |\n|---|---|\n| 80% 를 채워야 한다 | ⚠️ **안 도는 줄을 도는 테스트**를 쓴다 — 결과는 안 본다 |\n| 숫자가 떨어지면 안 된다 | ⚠️ **테스트하기 어려운 코드를 안 건드린다** |\n| 100% 를 자랑한다 | ⚠️ \"I would be **suspicious of anything like 100%**\" |\n\n⭐⭐⭐ **그리고 이 함정의 성격이 이 백과사전이 계속 만난 것과 같다 — 조용하다.** 숫자는 올라가고, 대시보드는 초록색이고, **아무도 나빠졌다고 말하지 않는다.** ⚠️ 그런데 **버그는 그대로 나간다.**\n\n📌 ⭐ **그러면 커버리지를 어떻게 쓰나.** 문서가 인정한 쓸모 하나만 쓴다.\n\n**\"finding untested parts of a codebase\"** — ⭐ **숫자가 아니라 목록으로 본다.** \"78%\"가 아니라 **\"이 파일들이 한 번도 안 돌았다\"** 로 읽고, 그 목록을 보며 **\"여기 테스트가 없어도 되나\"** 를 판단한다.\n\n💡 ⭐⭐ **그리고 그 판단은 `technical-debt` 의 질문과 같다** — **\"앞으로 여기를 얼마나 고칠 건가\"**. 안 고칠 곳은 테스트가 없어도 된다."
+    },
+    {
+      "id": "enough",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 그러면 무엇으로 판단하나 — 숫자가 아니라 결과 둘",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ],
+      "body": "문서가 대안을 **두 줄**로 준다. ⭐ **숫자가 아니라 관찰 가능한 결과**다.\n\n> ⭐⭐⭐ \"You **rarely get bugs that escape into production**, and\"\n> ⭐⭐⭐ \"You are **rarely hesitant to change some code for fear it will cause production bugs**.\"\n\n💡 **첫째는 예상대로인데 둘째가 뜻밖이다.**\n\n**둘째는 코드가 아니라 사람의 상태를 본다** — **\"고치기를 주저하는가\".** ⭐⭐ 테스트의 값이 **버그를 잡는 것만이 아니라 마음 놓고 고치게 하는 것**이라는 뜻이다.\n\n📌 ⭐⭐⭐ **그리고 이것이 `technical-debt` 와 정확히 이어진다.**\n\n저 문서에서 **이자는 \"고칠 때 더 드는 시간\"** 이었다. ⚠️ **그런데 주저해서 아예 안 고치면?** 그건 이자를 안 내는 게 아니라 **개선이 멈추는 것**이고, `code-review` 의 문장이 그 결과를 적는다 — **\"If you never submit an improvement to the codebase, then the codebase never improves\"**.\n\n⭐ **즉 세 문서가 한 줄로 이어진다.**\n\n| 문서 | 무엇을 말하나 |\n|---|---|\n| `testing` | ⭐ **테스트가 없으면 고치기를 주저한다** |\n| `technical-debt` | 안 고치면 부채가 쌓이고 이자가 는다 |\n| `code-review` | 개선이 안 들어가면 코드베이스는 안 나아진다 |\n\n📌 **공고도 그 낱말을 쓴다.**\n\n> ⭐ `단위 테스트(Jest, Vitest 등)로 **코드 신뢰성**을 높여 보신 분` — 위펀\n> ⭐⭐ `테스트 피라미드를 설계하고, 테스트 커버리지와 **신뢰도**를 높입니다` — 레브잇\n\n⭐ **\"신뢰도\"** 는 커버리지와 나란히 적히는데, **Fowler 의 기준으로 보면 신뢰도 쪽이 목표이고 커버리지는 도구**다. ⚠️ (다만 `신뢰도|신뢰성` 은 **638건**이고 대부분 서비스 안정성 문맥이라 **테스트 문맥만 가려내지 못했다**.)\n\n📌 ⭐⭐ **실무로 옮기면 질문이 둘이다.**\n\n1. **최근 프로덕션에 나간 버그 중, 테스트로 잡을 수 있었던 것이 몇 건인가?** — 그것이 첫째 기준의 실제 측정이다.\n2. ⭐⭐⭐ **\"이 코드 고치기 무서운가?\"** — 팀에 물어보면 된다. **무섭다고 답하는 자리가 테스트가 부족한 자리**다.\n\n💡 **둘 다 숫자가 아니고, 둘 다 커버리지보다 알기 어렵다.** ⚠️ **그래서 커버리지가 쓰이는 것**이고, 문서가 경고하는 것이 정확히 그 대체다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 테스트를 어떻게 쓰는지 다루지 않았다.** 무엇을 단위로 잡나, 무엇을 흉내(mock) 내나, 무엇을 검사하나 — **테스트의 실제 내용**을 한 줄도 안 썼다. ⭐ 이 문서는 **\"잘하고 있는지 어떻게 아나\"** 하나만 다뤘다.\n\n**2. ⚠️⚠️ 테스트 피라미드를 다루지 않았다.** 레브잇 공고가 이름을 대고(`Unit/Integration/E2E 로 구성된 **테스트 피라미드**`) `통합 테스트|E2E` 가 **419건**인데, ⭐ **Fowler 의 `TestPyramid` 를 열지 않았다.** **가장 큰 빈자리다.**\n\n**3. ⚠️ TDD 를 다루지 않았다**(**109건**). 큐엠아이티·유모스원·한솔피엔에스가 이름을 대는데 **1차 자료를 안 봤다** — ⭐ 그리고 TDD 는 \"테스트를 어떻게 쓰나\"가 아니라 **\"언제 쓰나\"** 의 문제라 축이 또 다르다.\n\n**4. ⚠️ 도구를 다루지 않았다**(`Jest|pytest|JUnit|Playwright|Cypress` **400건**). ⭐ 의도한 것이다 — 도구는 공식 문서가 낫다.\n\n**5. ⚠️ `신뢰도|신뢰성` 638건을 테스트 문맥으로 가려내지 못했다.** `enough` 절이 그 낱말을 쓰면서 **대부분이 서비스 안정성 문맥일 것**이라고 밝혔다 — **숫자를 근거로 쓰지 않았다.**\n\n**6. ⚠️ 커버리지를 재는 도구와 종류를 다루지 않았다.** 줄·분기·조건 커버리지의 차이, JaCoCo·Istanbul 같은 도구 — ⭐ 공고에도 나오는데(`SonarQube + JaCoCo(커버리지)`) **확인하지 않았다.**\n\n**7. ⭐ `market` 을 비웠다.** `테스트` 는 `tech_relations.json` 의 기술 이름이 아니다 — **비우는 것이 정상**이고(`PROMPT.md`), 대신 `evidence` 를 공고에서 뽑았다.\n\n**8. 이 문서가 다루지 않는 것.** 개선이 들어가는 문턱은 `code-review`, 안 고치면 쌓이는 것은 `technical-debt`, 테스트가 도는 자리는 `github-actions`, 타입 검사가 잡는 것은 `typescript` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 널리 쓰이는 지표에 대해 원문이 적는 것",
+      "note": "전부 **Fowler 의 `TestCoverage` 원문**이다. ⭐ 요점은 커버리지를 **버리라는 게 아니라 용도를 자르라**는 것 — 빈 곳 찾기에는 쓰고, 좋은지 판단에는 쓰지 않는다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 용도의 앞뒤",
+          "**\"Test coverage is a useful tool for finding untested parts of a codebase. Test coverage is of little use as a numeric statement of how good your tests are.\"**"
+        ],
+        [
+          "⭐⭐⭐ 목표로 삼으면",
+          "**\"If you make a certain level of coverage a target, people will try to attain it.\"**"
+        ],
+        [
+          "⭐⭐ 왜 쉬운가",
+          "(Brian Marick 인용) high coverage numbers are \"**too easy to reach with low quality testing**\""
+        ],
+        [
+          "⭐ 100%",
+          "\"I would be **suspicious of anything like 100%**\" · \"**High numbers don't necessarily mean much**\""
+        ],
+        [
+          "⭐ 보고용으로는",
+          "\"**Coverage is of little value to management**\""
+        ],
+        [
+          "⭐⭐⭐ 대안 ①",
+          "\"You **rarely get bugs that escape into production**, and\""
+        ],
+        [
+          "⭐⭐⭐ 대안 ②",
+          "\"You are **rarely hesitant to change some code for fear it will cause production bugs**.\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ]
+    },
+    {
+      "id": "use",
+      "kind": "compare",
+      "caption": "⭐⭐ 커버리지를 쓰는 법과 안 쓰는 법",
+      "note": "왼쪽의 근거는 `quotes` 표의 원문이고, 구성은 이 문서의 정리다(`confidence: inferred`). ⭐ **숫자가 아니라 목록으로 읽는다**는 것이 요점.",
+      "columns": [
+        "",
+        "⭐ 이렇게 쓴다",
+        "⚠️ 이렇게 쓰지 않는다"
+      ],
+      "rows": [
+        [
+          "무엇으로",
+          "**목록** — \"이 파일들이 한 번도 안 돌았다\"",
+          "⚠️ **숫자** — \"78%\""
+        ],
+        [
+          "근거",
+          "\"a useful tool for **finding untested parts**\"",
+          "\"**of little use** as a numeric statement of how good your tests are\""
+        ],
+        [
+          "⭐⭐ 목표로",
+          "**삼지 않는다**",
+          "⚠️ \"**people will try to attain it**\""
+        ],
+        [
+          "누구에게",
+          "팀 안에서 빈 곳을 보는 데",
+          "⚠️ \"Coverage is of **little value to management**\""
+        ],
+        [
+          "빈 곳을 보면",
+          "⭐ **\"여기 테스트가 없어도 되나\"** 를 묻는다",
+          "숫자를 채운다"
+        ],
+        [
+          "⭐ 그 판단은",
+          "**`technical-debt` 의 질문과 같다** — \"앞으로 여기를 얼마나 고칠 건가\"",
+          "—"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "chain",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 세 문서가 한 줄로 이어진다",
+      "note": "각 문서의 1차 자료 인용에서 왔고, 한 줄로 세운 것은 이 문서의 관점이다(`confidence: inferred`). ⭐ **둘째 기준(\"주저하는가\")이 그 연결고리다.**",
+      "columns": [
+        "문서",
+        "원문",
+        "무엇을 말하나"
+      ],
+      "rows": [
+        [
+          "⭐ `testing`",
+          "\"You are **rarely hesitant to change some code** for fear it will cause production bugs\"",
+          "**테스트가 없으면 고치기를 주저한다**"
+        ],
+        [
+          "`technical-debt`",
+          "\"it's **not a problem if I don't have to modify it**\" · \"the **interest** paid on the debt\"",
+          "주저해서 안 고치면 **개선이 멈춘다**"
+        ],
+        [
+          "`code-review`",
+          "\"If you **never submit an improvement** to the codebase, then the **codebase never improves**\"",
+          "**들어가지 않으면 나아지지 않는다**"
+        ],
+        [
+          "⭐⭐ 공통",
+          "—",
+          "**세 문서 다 \"완벽\"이 아니라 \"움직일 수 있는가\"를 본다**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️⚠️ 이 낱말을 셀 때 — 오염을 또 잡았다",
+      "note": "⭐⭐ `go`(모집중 비율)·`git`(부분 문자열)에서 세운 두 진단법이 **세 번째로 작동했다.** 이번에는 **영문 낱말의 다른 뜻**이다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "⚠️⚠️ `테스트` 만",
+          "**3964** — 면접 테스트·QA·A/B 테스트가 다 걸린다. **너무 넓어 못 쓴다**"
+        ],
+        [
+          "⚠️⚠️ `커버리지\\|coverage`",
+          "**461 (모집중 83%)** — ⭐ **오염 신호.** `coverage`(영문)만 **414건에 87%** 다"
+        ],
+        [
+          "⭐ 쓸 수 있는 값",
+          "`테스트 커버리지\\|코드 커버리지\\|test coverage` **69 (모집중 43)** · `커버리지`(한글) **47 (22)**"
+        ],
+        [
+          "`테스트 코드\\|단위 테스트`",
+          "**570 (모집중 185)**"
+        ],
+        [
+          "`테스트 자동화`",
+          "473 (모집중 172)"
+        ],
+        [
+          "`통합 테스트\\|E2E`",
+          "419 (모집중 169) — ⚠️ 이 문서가 다루지 않았다"
+        ],
+        [
+          "도구",
+          "`Jest\\|pytest\\|JUnit\\|Playwright\\|Cypress` 400 (모집중 150)"
+        ],
+        [
+          "⚠️ `TDD\\|테스트 주도`",
+          "**109 (모집중 35)**"
+        ],
+        [
+          "⚠️ `테스트 전략`",
+          "**41 (모집중 14)** — ⭐ **570 대 41**"
+        ],
+        [
+          "⚠️⚠️ `테스트 문화`",
+          "**3 (모집중 1)**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ 커버리지",
+      "en": "test coverage",
+      "what": "테스트가 **실행한** 코드의 비율. ⚠️ **실행했을 뿐 검사하지 않아도 오른다**"
+    },
+    {
+      "term": "⭐⭐ finding untested parts",
+      "en": "—",
+      "what": "문서가 인정하는 **유일한 쓸모** — ⭐ **숫자가 아니라 목록으로** 본다"
+    },
+    {
+      "term": "⭐⭐⭐ people will try to attain it",
+      "en": "—",
+      "what": "목표로 삼으면 사람들은 달성한다. ⚠️ **커버리지는 달성하기 쉬운 목표**다"
+    },
+    {
+      "term": "⭐ suspicious of 100%",
+      "en": "—",
+      "what": "\"I would be **suspicious of anything like 100%**\" — 대개 **검사하지 않는 테스트**가 들어 있다"
+    },
+    {
+      "term": "⭐⭐⭐ hesitant to change",
+      "en": "—",
+      "what": "대안 기준 둘째. **코드가 아니라 사람의 상태**를 본다 — \"이 코드 고치기 무서운가\""
+    },
+    {
+      "term": "⚠️ 테스트 전략",
+      "en": "—",
+      "what": "무엇을 어느 층에서 테스트할지 정하는 일. ⭐ **공고에 41건**(`테스트 코드` 570건 대비)"
+    },
+    {
+      "term": "테스트 피라미드",
+      "en": "test pyramid",
+      "what": "단위·통합·E2E 의 비율에 관한 비유(레브잇 공고). ⚠️ **이 문서가 다루지 않았다**"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "팀에 커버리지 목표를 세울지 정한다",
+      "pick": "⭐⭐ **목표로 삼지 않고, 빈 곳 목록으로만 쓴다**",
+      "over": "\"80% 이상 유지\" 같은 기준 세우기",
+      "why": "⭐⭐⭐ **\"If you make a certain level of coverage a target, people will try to attain it.\"** — 그리고 그 목표는 \"**too easy to reach with low quality testing**\" 이다. ⚠️ **숫자는 오르고 버그는 그대로 나가는데, 아무도 나빠졌다고 말하지 않는다**",
+      "tradeoff": "⚠️ 숫자 목표가 없으면 **관리가 어렵다고 느껴진다.** ⭐ 그래서 대신 **결과 기준 둘**을 본다 — \"프로덕션 버그가 드문가\", \"고치기를 주저하지 않는가\". 📌 문서도 관리용으로는 잘라 낸다: \"Coverage is of **little value to management**\"",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ]
+    },
+    {
+      "situation": "커버리지 리포트를 열었다",
+      "pick": "⭐ **퍼센트가 아니라 \"한 번도 안 돈 파일\" 목록부터 본다**",
+      "over": "전체 수치의 변화를 추적하기",
+      "why": "⭐⭐ 문서가 인정하는 쓸모가 그것 하나다 — \"a useful tool for **finding untested parts** of a codebase\". ⚠️ 전체 수치는 **좋아졌는지 나빠졌는지를 말해 주지 않는다**(검사 없는 테스트로도 오르니까)",
+      "tradeoff": "목록은 길고 퍼센트는 한 줄이라 **보고하기 불편하다.** ⭐ 그래도 목록을 봐야 **\"여기 테스트가 없어도 되나\"** 라는 진짜 질문에 닿는다 — 그리고 그 판단은 `technical-debt` 의 질문과 같다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ]
+    },
+    {
+      "situation": "테스트가 충분한지 판단해야 한다",
+      "pick": "⭐⭐ **\"이 코드 고치기 무서운가?\"를 팀에 물어본다**",
+      "over": "커버리지 수치를 보기",
+      "why": "⭐⭐⭐ 문서의 대안 기준 둘째가 그것이다 — \"You are **rarely hesitant to change some code for fear it will cause production bugs**.\" ⭐ **테스트의 값은 버그를 잡는 것만이 아니라 마음 놓고 고치게 하는 것**이고, **무섭다고 답하는 자리가 부족한 자리**다",
+      "tradeoff": "⚠️ 주관적이고, 사람마다 답이 다르다. ⭐ 그래도 **커버리지보다 훨씬 정확하다** — 그리고 첫째 기준(\"프로덕션 버그가 드문가\")은 **실제로 셀 수 있다**: 최근 버그 중 테스트로 잡을 수 있었던 것이 몇 건인가",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ]
+    },
+    {
+      "situation": "테스트가 없는 코드를 발견했다",
+      "pick": "⭐ **\"앞으로 여기를 얼마나 고칠 건가\"부터 묻는다**",
+      "over": "발견한 순서대로 채우기",
+      "why": "⭐⭐ `technical-debt` 의 기준과 같다 — \"it's **not a problem if I don't have to modify it**\". ⚠️ **안 건드릴 코드에 테스트를 넣으면** 그 테스트를 유지하는 비용만 생긴다",
+      "tradeoff": "⚠️ 로드맵을 알아야 답할 수 있다. ⭐ 그래도 그것이 사실이고, **커버리지 목록을 그 질문의 입력으로 쓰는 것**이 이 문서가 권하는 유일한 사용법이다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "\"테스트 경험\"을 이력서에 적는다",
+      "pick": "⭐ **전략을 정해 본 경험으로 적는다**",
+      "over": "\"테스트 코드 작성 경험\" 한 줄",
+      "why": "⭐⭐ 셈이 그 자리를 보여 준다 — `테스트 코드` **570** vs `테스트 전략` **41**. ⚠️ **쓰는 사람은 많고 정하는 사람은 적다.** 그리고 그 41건의 문장은 다르다: 레브잇 `**테스트 전략을 설계**하고 **테스트 문화를 조직에 정착**시켜본 경험`, 네이버페이 `테스트 전략 등 개발 기준을 **팀 단위로 정리**한 경험`",
+      "tradeoff": "경험이 없으면 못 적는다. ⭐ 그래도 **\"왜 이 층에 이만큼 테스트를 뒀나\"** 를 설명할 수 있으면 그것이 전략이다 — 규모와 무관하다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐ 커버리지 목표를 세운다",
+      "why": "⭐⭐⭐ **\"If you make a certain level of coverage a target, people will try to attain it.\"** ⚠️ 그리고 그 목표는 **검사 없는 테스트로도 달성된다** — \"**too easy to reach with low quality testing**\". 💡 **이 함정은 조용하다**: 숫자는 오르고, 대시보드는 초록색이고, **버그는 그대로 나간다**",
+      "fix": "⭐ **목표를 없애고 목록으로 바꾼다.** \"78%\" 대신 **\"이 파일들이 한 번도 안 돌았다\"** 를 본다. 📌 그리고 판단 기준을 **결과 둘**로 옮긴다 — 프로덕션 버그가 드문가, 고치기를 주저하지 않는가",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ]
+    },
+    {
+      "trap": "100% 커버리지를 자랑한다",
+      "why": "⭐ 눈에 보이는 성취라 자랑하고 싶어진다. ⚠️ 그런데 Fowler 는 **\"I would be suspicious of anything like 100%\"** 라고 적는다 — 대개 **그 숫자를 맞추려고 검사하지 않는 테스트**가 들어가 있다",
+      "fix": "⭐ **높은 숫자를 보면 표본을 열어 본다** — 그 테스트가 **실제로 무엇을 검사하는지.** 📌 `assert` 가 없거나, 있어도 **뻔한 것만 보는** 테스트가 있으면 숫자는 이미 의미를 잃었다",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ]
+    },
+    {
+      "trap": "커버리지를 팀 밖에 보고한다",
+      "why": "⚠️ 숫자라서 보고하기 좋고, 그래서 **관리 지표가 된다.** 문서는 그것을 직접 자른다 — **\"Coverage is of little value to management\"**. 💡 보고 지표가 되는 순간 앞의 함정(\"people will try to attain it\")이 **팀 전체에 걸린다**",
+      "fix": "⭐⭐ **밖에는 결과로 말한다** — \"최근 분기 프로덕션 버그 N 건\", \"배포 후 롤백 N 회\". 📌 그것이 문서의 첫째 대안 기준(\"rarely get bugs that escape into production\")의 실제 형태다",
+      "sources": [
+        {
+          "title": "TestCoverage — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/TestCoverage.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+        }
+      ]
+    },
+    {
+      "trap": "안 건드릴 코드에 테스트를 채운다",
+      "why": "⭐ 커버리지 목록을 보면 **빈 곳을 다 채우고 싶어진다.** ⚠️ 그런데 `technical-debt` 의 기준이 여기서도 통한다 — \"it's **not a problem if I don't have to modify it**\". **안 고칠 코드의 테스트는 유지 비용만 남긴다**",
+      "fix": "⭐ **빈 곳 목록을 \"채울 목록\"이 아니라 \"판단할 목록\"으로 읽는다.** 각각에 대해 **\"앞으로 여기를 얼마나 고칠 건가\"** 를 묻고, 안 고칠 곳은 **의식적으로 비워 둔다**(그 사실을 적어 두면 다음 사람이 안 헷갈린다)"
+    },
+    {
+      "trap": "⚠️⚠️ `coverage` 로 시장 수요를 센다",
+      "why": "⭐⭐ **이 사이클이 실제로 걸렸다.** `커버리지|coverage` 로 세면 **461건**인데 **모집중 비율 83%** 다(정상 30~40%). ⚠️ 영문 `coverage` 만 **414건에 87%** 로, **영문 안내문의 다른 뜻**(보장·적용 범위)이 걸린다 — 참고로 `보장 범위|insurance` 류가 **870건**이다",
+      "fix": "⭐ **한글 낱말과 붙여 센다** — `테스트 커버리지|코드 커버리지|test coverage` 로 좁히면 **69건**이다. 📌 `go`(모집중 비율)·`git`(부분 문자열)에 이은 **세 번째 오염 형태**이고, 이번 것은 **영문 낱말의 다른 뜻**이다"
+    },
+    {
+      "trap": "이 문서를 읽고 테스트를 안다고 여긴다",
+      "why": "⚠️ **이 문서는 테스트를 어떻게 쓰는지 한 줄도 다루지 않았다** — 무엇을 단위로 잡나, 무엇을 mock 하나, 무엇을 검사하나. ⭐ 그리고 **테스트 피라미드도 안 다뤘다**(레브잇 공고가 이름을 대고 `통합 테스트|E2E` 가 419건인데)",
+      "fix": "⭐ **이 문서는 \"잘하고 있는지 어떻게 아나\" 하나만 준다.** 📌 나머지는 각 도구의 문서와 Fowler 의 `TestPyramid` 에 있고, **이 백과사전에는 아직 없다**"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **자기 프로젝트의 커버리지 리포트를 열고 퍼센트를 가린 채 \"한 번도 안 돈 파일\" 목록만 본다.** 그리고 각각에 **\"앞으로 6개월간 여기를 고칠 것 같은가\"** 를 예/아니오로 표시한다.",
+      "done_when": "목록이 나오고, ⭐ **\"예\"인 파일이 몇 개인지** 답할 수 있다. 그것이 **실제로 테스트가 필요한 목록**이고, 나머지는 **의식적으로 비워 두는 목록**이다.",
+      "why": "⭐⭐⭐ 문서가 인정하는 커버리지의 유일한 쓸모가 \"**finding untested parts**\" 인데, 💡 **퍼센트를 보는 순간 그 쓸모가 사라지고 목표가 된다.** 가리고 보는 것이 이 실습의 전부다.",
+      "no_hardware": "리포트가 없으면 **테스트 파일이 없는 소스 파일 목록**을 손으로 만들어도 같다 — ⭐ 정밀하지 않아도 판단은 시작된다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐⭐ **팀원 세 명에게 \"우리 코드에서 고치기 가장 무서운 곳이 어디냐\"고 물어본다.** 답을 적고 **겹치는 곳**을 찾는다.",
+      "done_when": "세 답이 모이고, ⭐ **겹치는 자리가 있는지** 확인했다. 그리고 그 자리의 **커버리지 수치가 실제로 낮은지** 비교해 본다.",
+      "why": "⭐⭐⭐ 문서의 둘째 기준이 **\"rarely hesitant to change some code for fear it will cause production bugs\"** 다 — **코드가 아니라 사람의 상태**를 본다. 💡 그리고 **커버리지가 높은데 무서운 자리**가 있으면, 그것이 이 문서 전체의 증거다.",
+      "no_hardware": "팀이 없으면 **자기 코드에서 가장 손대기 싫은 파일**을 세 개 적고, 왜 그런지 한 줄씩 적는다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ **최근 프로덕션에 나간 버그 다섯 건을 골라, 각각 \"테스트로 잡을 수 있었나\"를 판정**한다. 그리고 **잡을 수 있었던 것들의 공통점**을 한 줄 적는다.",
+      "done_when": "다섯 건의 판정이 나오고, ⭐ **잡을 수 있었던 비율**이 나온다. 공통점이 보이면(어느 층인지, 어떤 종류인지) 그것이 **다음에 어디에 테스트를 둘지**의 답이다.",
+      "why": "⭐⭐ 문서의 첫째 기준이 **\"You rarely get bugs that escape into production\"** 인데, 💡 **\"드물다\"를 판단하려면 실제로 세어 봐야** 한다. ⭐ 그리고 이 숫자는 **팀 밖에 보고할 수 있는 형태**이기도 하다 — 커버리지와 달리.",
+      "no_hardware": "버그 기록이 없으면 **최근 급하게 고친 것 다섯 개**를 떠올려 같은 판정을 한다. ⭐ 기록이 없다는 것 자체가 결과다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "커버리지가 할 수 있는 것과 못 하는 것은? 원문으로 답하라",
+    "커버리지를 목표로 삼으면 무슨 일이 생기는가? 왜 달성하기 쉬운가?",
+    "문서가 주는 대안 기준 둘은? 둘째가 왜 뜻밖인가?",
+    "커버리지 리포트를 어떻게 읽어야 하는가?",
+    "테스트가 없는 코드를 발견했을 때 첫 질문은?",
+    "이 낱말을 셀 때 `coverage` 로 세면 왜 안 되는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Unit Test, Integration Test, E2E Test로 구성된 테스트 피라미드를 설계하고, 테스트 커버리지와 신뢰도를 높입니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/377536",
+      "where": "레브잇",
+      "what_it_shows": "⭐⭐⭐ **`커버리지`와 `신뢰도`를 나란히** 놓는다 — 이 문서의 주제가 정확히 그 둘의 관계다. ⭐ Fowler 의 기준으로 보면 **신뢰도가 목표이고 커버리지는 도구**다"
+    },
+    {
+      "quote": "• Unit/Integration/E2E 테스트 전략을 설계하고 테스트 문화를 조직에 정착시켜본 경험이 있는 분을 선호합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/377536",
+      "where": "레브잇",
+      "what_it_shows": "⭐⭐ **`설계`·`정착`** — 쓰는 일이 아니라 **정하는 일**로 적는다. ⚠️ `테스트 전략` 은 **41건**, `테스트 문화` 는 **3건**뿐이다"
+    },
+    {
+      "quote": "•테스트 전략 수립 및 자동화 경험이 있으신 분 (Jest, React Testing Library, Playwright 등)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359782",
+      "where": "컬리",
+      "what_it_shows": "⭐ **`전략 수립`이 도구 목록 앞에 온다** — 순서가 그 회사의 관점이다"
+    },
+    {
+      "quote": "• 코드 리뷰 가이드, 템플릿, 테스트 전략 등 개발 기준을 팀 단위로 정리한 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/358718",
+      "where": "네이버페이",
+      "what_it_shows": "⭐⭐ **코드 리뷰 가이드와 테스트 전략이 한 줄에** — 둘 다 **개선이 들어가는 문턱**을 정하는 일이다(→ `code-review`)"
+    },
+    {
+      "quote": "• 단위 테스트(Jest, Vitest 등)로 코드 신뢰성을 높여 보신 분.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/382962",
+      "where": "위펀(스낵24)",
+      "what_it_shows": "⭐ **`신뢰성`** — 테스트의 목적을 숫자가 아니라 상태로 적는다. ⚠️ 다만 `신뢰도|신뢰성` 638건은 **대부분 서비스 안정성 문맥**이라 가려내지 못했다"
+    },
+    {
+      "quote": "• TDD 기반 프론트엔드 테스트 환경(단위/통합/E2E) 구성 및 운영 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373485",
+      "where": "유모스원",
+      "what_it_shows": "⚠️ `TDD` **109건**의 전형 — **환경 구성과 함께** 온다. ⭐ TDD 는 \"어떻게 쓰나\"가 아니라 **\"언제 쓰나\"** 라 축이 또 다르다(이 문서가 안 다뤘다)"
+    },
+    {
+      "quote": "• Vitest 기반 테스트 커버리지 확장 (현재 부분 도입 함께 넓혀가는 단계)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371583",
+      "where": "지로",
+      "what_it_shows": "⭐ **`확장`·`부분 도입`** — 목표 숫자가 아니라 **진행 상태**로 적는다. ⚠️ 이 형태가 \"목표로 삼는 것\"으로 바뀌는 순간 문서의 경고가 걸린다"
+    },
+    {
+      "quote": "• TDD, OOP, Clean Architecture 등 유지보수가 용이한 코드를 작성하기 위한 고민을 지속하시는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "where": "큐엠아이티",
+      "what_it_shows": "⭐ **`유지보수가 용이한`** — TDD 를 **고치기 쉬움**의 수단으로 적는다. ⭐⭐ 그것이 Fowler 의 둘째 기준(\"고치기를 주저하지 않는다\")과 같은 자리다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "technical-debt",
+      "how": "⭐⭐⭐ **정면의 짝.** 저쪽의 \"안 고치면 부채가 아니다\"가 여기의 \"어디에 테스트를 둘까\"의 기준이고, 여기의 \"주저하지 않는가\"가 저쪽의 이자다"
+    },
+    {
+      "slug": "code-review",
+      "how": "⭐⭐ **개선이 들어가는 문턱** — \"If you never submit an improvement ... the codebase never improves\". 네이버페이 공고가 둘을 한 줄에 적는다"
+    },
+    {
+      "slug": "github-actions",
+      "how": "⭐ 테스트가 실제로 도는 자리 — ⚠️ 그리고 `typescript` 에서 본 것처럼 **번들러가 타입을 안 보듯, CI 가 테스트를 안 돌릴 수도 있다**"
+    },
+    {
+      "slug": "typescript",
+      "how": "⭐ **타입 검사가 잡는 것은 테스트가 안 봐도 된다** — 두 안전망의 역할이 겹치는 자리"
+    },
+    {
+      "slug": "git",
+      "how": "변경 빈도를 이력에서 뽑으면 **어디에 테스트가 필요한지**의 입력이 된다"
+    },
+    {
+      "slug": "observability",
+      "how": "⭐ 첫째 기준(\"프로덕션 버그가 드문가\")을 **실제로 세려면** 그쪽 장치가 필요하다"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **테스트 피라미드를 다루지 않았다.** 레브잇 공고가 이름을 대고(`Unit/Integration/E2E 로 구성된 **테스트 피라미드**`) `통합 테스트|E2E` 가 **419건**인데 **Fowler 의 `TestPyramid` 를 열지 않았다.** ⭐ **가장 큰 빈자리다.**",
+    "⚠️⚠️ **테스트를 어떻게 쓰는지 다루지 않았다.** 무엇을 단위로 잡나, 무엇을 mock 하나, 무엇을 검사하나 — **한 줄도 안 썼다.** 이 문서는 **\"잘하고 있는지 어떻게 아나\"** 하나만 다뤘다.",
+    "⚠️ **TDD 를 다루지 않았다**(**109건**). 큐엠아이티·유모스원·한솔피엔에스가 이름을 대는데 1차 자료를 안 봤다 — ⭐ TDD 는 **\"언제 쓰나\"** 의 문제라 축이 또 다르다.",
+    "⚠️ **커버리지의 종류와 도구를 확인하지 않았다.** 줄·분기·조건 커버리지의 차이, JaCoCo·Istanbul 등 — ⭐ 공고에도 나오는데(`SonarQube + JaCoCo(커버리지)`) 안 봤다.",
+    "⚠️ **`신뢰도|신뢰성` 638건을 테스트 문맥으로 가려내지 못했다.** `enough` 절이 그 낱말을 쓰면서 **대부분 서비스 안정성 문맥일 것**이라고 밝혔고, **숫자를 근거로 쓰지 않았다.**",
+    "⭐ **`market` 을 비웠다** — `테스트` 는 `tech_relations.json` 의 기술 이름이 아니라서 **비우는 것이 정상**이다(`PROMPT.md`).",
+    "⚠️ **`테스트 커버리지` 69건의 모집중 비율 62%도 정상 범위보다 높다.** ⭐ 표본이 작아 해석하지 않았지만, **더 좁힌 패턴에도 잔여 오염이 있을 수 있다** — 다음에 이 영역을 다룰 때 다시 확인한다."
+  ],
+  "sources": [
+    {
+      "title": "TestCoverage — Martin Fowler",
+      "url": "https://martinfowler.com/bliki/TestCoverage.html",
+      "publisher": "Martin Fowler",
+      "kind": "blog",
+      "summary": "⭐⭐⭐ **널리 쓰이는 지표를 \"목표로 삼지 말라\"고 적는 글** — \"of little use as a numeric statement of how good your tests are\", 그리고 **대안 기준 둘**을 준다"
+    }
+  ]
+}
