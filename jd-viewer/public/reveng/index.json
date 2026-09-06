@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "twilio",
+      "name": "Twilio",
+      "name_en": "Twilio",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "통신을 API 로 파는 회사 — 자기 시스템에서는 한쪽을 쪼개고 다른 쪽을 다시 합쳤다",
+      "updated_at": "2026-09-06",
+      "domain": "twilio.com"
+    },
+    {
       "slug": "flipkart",
       "name": "Flipkart",
       "name_en": "Flipkart",
@@ -1456,7 +1468,9 @@
     "사람의 조사 시간을 AI 로 줄인다",
     "광고 예산을 초당 100만 이벤트에서 지킨다",
     "검색이 무엇을 관련 있다고 할지 정한다",
-    "5억 고객의 공급망을 계획한다"
+    "5억 고객의 공급망을 계획한다",
+    "알림을 보내는 시스템을 책임별로 쪼갠다",
+    "쪼개진 콘솔을 다시 하나로 합친다"
   ],
   "countries": {
     "KR": "한국",

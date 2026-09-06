@@ -1,0 +1,112 @@
+{
+  "slug": "twilio",
+  "name": "Twilio",
+  "name_en": "Twilio",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "twilio.com",
+  "one_liner": "통신을 API 로 파는 회사 — 자기 시스템에서는 한쪽을 쪼개고 다른 쪽을 다시 합쳤다",
+  "business_model": "**메시지·음성·이메일 같은 통신을 API 로 팔고 쓴 만큼 받는다.** 그 위에 **고객 데이터 플랫폼 Segment**(2020년 32억 달러에 인수)와 **컨택센터 Flex** 가 얹혀 있다. **2026년 1분기 매출 14억 달러(전년 대비 +20%)**, **2025년에 40만 2,000곳이 넘는 활성 고객 계정을 통해 2조 5,000억 건이 넘는 고객 상호작용**을 처리했다(⚠️ **2026년 1분기부터 활성 고객 계정 공시를 중단했다**). 지난 1년간 고객들이 **거의 10조 행의 데이터**를 Snowflake·BigQuery 같은 웨어하우스로 동기화했다.\n\n⚠️ **이 회사의 공개된 자기 시스템 이야기 둘이 서로 반대 방향이다** — **Segment 의 알림 서비스는 모놀리스를 세 책임으로 쪼갰고**(2025), **콘솔은 마이크로 프론트엔드를 모놀리식 Jamstack 으로 합쳤다**(2021). **둘 다 `한 번에 갈아엎지 않는다` 는 같은 방법을 쓰면서 반대 방향으로 갔다**(이 정리는 이 사이트의 재구성이다).",
+  "products": [
+    "Programmable Messaging · Voice",
+    "Twilio Segment (CDP)",
+    "Twilio Flex (컨택센터)",
+    "SendGrid (이메일)"
+  ],
+  "domain_map": {
+    "title": "한쪽은 쪼개고 다른 쪽은 합친다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  C[\"<b>고객 40만 계정 이상</b><br/>• 상호작용 2조 5천억 건 이상\"]:::list --> A[\"<b>통신 API</b><br/>• 메시지 · 음성 · 이메일\"]:::list\n  A --> S[\"⚠️ <b>알림 서비스를 쪼갠다</b><br/>• 모놀리스 → 세 책임<br/>• Strangler Fig · 이중 쓰기\"]:::accent\n  A --> F[\"⚠️ <b>콘솔을 다시 합친다</b><br/>• 마이크로 프론트엔드 →<br/>  모놀리식 Jamstack (2021)\"]:::accent\n  S --> R[\"<b>공통점: 한 번에 안 바꾼다</b><br/>• 한 조각씩 · 되돌릴 수 있게\"]:::list\n  F --> R"
+  },
+  "revenue_streams": [
+    {
+      "name": "통신 API (쓴 만큼)",
+      "how": "메시지·음성·이메일. **2026년 1분기 매출 14억 달러(+20%)** · **2025년 상호작용 2조 5,000억 건 이상.**",
+      "domains": [
+        "알림을 보내는 시스템을 책임별로 쪼갠다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Twilio Q1 2026 Earnings Results",
+          "url": "https://investors.twilio.com/static-files/3b37c9fd-2d31-408b-975e-2736a99239a5",
+          "publisher": "Twilio Investor Relations",
+          "date": "2026-04-30",
+          "summary": "2026년 1분기 매출 14억 달러로 전년 대비 20% 성장. 2025년에 40만 2,000곳이 넘는 활성 고객 계정을 통해 2조 5,000억 건이 넘는 고객 상호작용을 처리했다. 2026년 1분기부터 활성 고객 계정 공시를 중단했다."
+        }
+      ]
+    },
+    {
+      "name": "Segment (CDP) · Flex",
+      "how": "**2020년 32억 달러에 인수한 고객 데이터 플랫폼**과 컨택센터. 고객들이 **거의 10조 행**을 웨어하우스로 동기화했다.",
+      "domains": [
+        "알림을 보내는 시스템을 책임별로 쪼갠다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Twilio Q1 2026 Earnings Results",
+          "url": "https://investors.twilio.com/static-files/3b37c9fd-2d31-408b-975e-2736a99239a5",
+          "publisher": "Twilio Investor Relations",
+          "date": "2026-04-30",
+          "summary": "2026년 1분기 매출 14억 달러로 전년 대비 20% 성장. 2025년에 40만 2,000곳이 넘는 활성 고객 계정을 통해 2조 5,000억 건이 넘는 고객 상호작용을 처리했다. 2026년 1분기부터 활성 고객 계정 공시를 중단했다."
+        },
+        {
+          "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+          "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+          "publisher": "Twilio Blog",
+          "date": "2025-09-22",
+          "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "알림을 보내는 시스템을 책임별로 쪼갠다",
+      "why": "⚠️ **하나의 모놀리식 알림 서비스가 세 가지 다른 일을 함께 하고 있었다** — **API 운영**(사용자 설정과 알림 구성) · **이벤트 처리**(Kafka 에서 실시간으로) · **작업 스케줄링**(시간 기반 발송). **성격이 다른 셋이 묶여 있으면 하나의 부하가 나머지를 흔든다**(재구성). ⚠️ **그런데 한 번에 다시 쓰지 않았다** — **Strangler Fig** 로 점진 교체하며 **레거시와 새 시스템에 이중 쓰기**를 유지했다. ✅ **본문 확인함**(2025-09-22).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "쪼개진 콘솔을 다시 하나로 합친다",
+      "why": "⚠️ **방향이 반대인 이야기다.** 팀 간 결합을 풀려고 **마이크로 프론트엔드와 프록시 기반 서버 렌더링**을 썼는데, **그 프록시가 성능 문제와 파편화를 낳았다** — **최악의 경우 첫 바이트까지 1초**가 걸렸다. 그래서 **모놀리식 Jamstack 으로 합치되 전면 재작성 대신 페이지 라우트 하나씩** 옮겼다. ✅ **본문 확인함**. ⚠️ **다만 2021년 4월 글이라 낡았다** — 그 뒤가 어떻게 됐는지 모른다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **통신 API 본체의 기술 자료를 아직 못 찾았다** — **2조 5,000억 건의 상호작용을 어떻게 처리하는지**가 비어 있다. ⚠️ **회사 블로그의 대부분이 고객용 아키텍처 가이드라 자기 시스템 글을 검색으로 골라내야 한다.**",
+    "⚠️ **콘솔 글이 2021년 4월이라 낡았다** — **마이크로 프론트엔드에서 모놀리식 Jamstack 으로 간 뒤 어떻게 됐는지** 모른다. **5년이 지났다.**",
+    "⚠️ **Segment 인수 이후의 통합을 모른다** — 2020년에 32억 달러로 샀는데 **두 회사의 시스템이 어떻게 합쳐졌는지**를 다룬 글을 못 찾았다.",
+    "⚠️ **알림 아키텍처 글에 수치가 없다** — 결정과 대가는 명확한데 **처리량·지연·이전 기간이 하나도 없다.**",
+    "⚠️ **연표(eras)를 못 세웠다** — 2008년 창업과 2020년 Segment 인수는 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+      "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+      "publisher": "Twilio Blog",
+      "date": "2025-09-22",
+      "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+    },
+    {
+      "title": "Bridging Legacy and Future Platforms",
+      "url": "https://twilio.com/en-us/blog/bridging-legacy-and-future-platforms",
+      "publisher": "Twilio Blog",
+      "date": "2021-04-07",
+      "summary": "마이크로 프론트엔드와 프록시 기반 서버 렌더링으로 굴리던 콘솔을 모놀리식 Jamstack 으로 옮겼다. 팀 간 결합을 풀려고 도입한 프록시가 성능 문제와 파편화를 낳았고, 최악의 경우 첫 바이트까지 1초가 걸렸다. 전면 재작성 대신 페이지 라우트 하나씩 옮기게 했다."
+    },
+    {
+      "title": "Twilio Q1 2026 Earnings Results",
+      "url": "https://investors.twilio.com/static-files/3b37c9fd-2d31-408b-975e-2736a99239a5",
+      "publisher": "Twilio Investor Relations",
+      "date": "2026-04-30",
+      "summary": "2026년 1분기 매출 14억 달러로 전년 대비 20% 성장. 2025년에 40만 2,000곳이 넘는 활성 고객 계정을 통해 2조 5,000억 건이 넘는 고객 상호작용을 처리했다. 2026년 1분기부터 활성 고객 계정 공시를 중단했다."
+    }
+  ]
+}
