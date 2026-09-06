@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **CedarDB** | EU · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 트랜잭션과 분석을 한 엔진에 둔다(`HTAP 계보` 글) · 바이트를 줄이는 것과 질의를 빠르게 하는 것을 가른다(`Encoding or Compression`) · 하드웨어에 맞춰 실행을 짠다(이름만 확인). 다음은 기능 하나 — 인코딩/압축 글이 수치가 가장 두껍다. 안 읽은 것 — `Fast Compilation or Fast Execution`(목록에 있는데 주소를 확인 못 했다) · `Why Trees Without Branches Grow Faster` · `Simple, Efficient, and Robust Hash Tables`. 가격과 성능 주장의 조건은 비공개다. |
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **CedarDB** | EU · SaaS | 시스템 내부만 파는 블로그다. `cedardb.com/blog` 최신 2026-08-04 `Encoding or Compression: Why not both?` 이고 목록의 70% 가량이 질의 컴파일·버퍼 관리·저장 배치·동시성 글이다 — `Fast Compilation or Fast Execution` · `Why Trees Without Branches Grow Faster` · `Simple, Efficient, and Robust Hash Tables`. 학술 배경 각도(Materialize·DuckDB 에서 통한 것)의 세 번째 후보로 보이는데 계보는 아직 확인하지 않았다. HTAP 을 표방하므로 분석과 트랜잭션 사이의 경계 결정이 나올 가능성이 크다. |
 | **QuestDB** | EU · SaaS | 시계열 데이터베이스인데 밑바닥 글을 쓴다. `questdb.com/blog` 심층 글 최신 2026-08-17 `QWP: QuestDB 자체 이진 와이어 프로토콜`. **이 엔진의 프로토콜 축에 세 번째 답이 된다** — DuckDB 는 자체 프로토콜(Quack), Dolt 는 남의 프로토콜 흉내, 여기는 수집과 질의를 위한 자기 프로토콜이다. JVM 밑바닥 글도 있다 — `The Most Expensive Instruction Might Be… cmov`(2026-07-15) · `HotSpot JIT 이 비트를 추론하는 법`(2026-07-02) · `WINDOW JOIN 을 병렬·벡터화한 방법`(2026-05-12) · `코드 리뷰가 3배 속도 향상을 8.9배로 만들었다`(2026-04-21, off-heap HdrHistogram). 자바로 저지연을 만드는 축은 이 엔진에 없다. |
 | **Feldera** | US · SaaS | 증분 뷰 유지가 제품이라 **Materialize 와 정면으로 대비된다**. `feldera.com/blog` — 개별 글을 열어 날짜를 확인했다(`Can your incremental compute engine do this?` 2026-02-04). 그 글의 벤치가 구체적이다 — 입력 61테이블·출력 33뷰, 조인 217개(다수가 left join)·집계 27개·선형 연산자 287개짜리 실제 SQL 프로그램을 16코어 한 대에서 돌려 델타 레이크에서 200GB(2.5억 행)를 넣고 입력이 바뀌면 약 200ms 만에 모든 출력을 갱신하며 피크 30GB·정상 15GB 메모리를 쓴다. 다른 글도 대가를 적는다 — `Nobody ever got fired for using a struct`(넓은 테이블의 저장 최적화, 저장 비용 두 배) · `Turns out we didn't need that second index` · `samply 프로파일`(백필 20시간 → 4시간). ⚠️ 목록 페이지에 날짜가 없어 최신 글 시점을 못 봤고, 위 벤치 글은 한계를 적지 않는다. |
 
