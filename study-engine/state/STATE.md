@@ -4,33 +4,51 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **상태 관리**(`state-management`)를 완성했다 — **117번째 문서**.
+**없음.** 직전 사이클에서 **Git**(`git`)을 완성했다 — **118번째 문서**.
 
-### 직전 사이클 (상태 관리)
+### 직전 사이클 (Git)
 
-⚠️ **먼저 겹침을 셌다** — `caching` 에 `서버 상태`·`Redux`·`Zustand`·`React Query` 가 **전부 0회**, `react` 에는 `Redux` 9·`Zustand` 12 가 있지만 **`서버 상태`·`전역` 은 0회**(이름만 나열). ⭐ **그래서 `상태 관리` alias 를 `react` 에서 가져왔다**(`kotlin`→`asyncio` 의 `코루틴` 이관과 같은 규칙의 역방향). `react` 의 `aliases`·`index.json`·`open_questions` 를 함께 고쳤다.
+⭐⭐⭐ **축: "이미 나간 것은 못 고친다."** 매뉴얼이 `rebase` 의 실제 동작을 적는데, **고치는 게 아니었다.**
 
-⭐⭐⭐ **축: "한 낱말이 두 물건을 가리킨다."**
+> ⭐⭐⭐ "**Replay the commits, one by one, in order. This is similar to running `git cherry-pick` for each commit.**" · "Update your branch to **point to** the final commit"
+> ⭐⭐⭐ "Rebasing (or any other form of rewriting) a branch that others have based work on is **a bad idea**: **anyone downstream of it is forced to manually fix their history**."
+> ⭐⭐⭐ "This becomes a **ripple effect**: anyone downstream ... **forced to rebase too, and so on!**"
+> ⭐⭐ "The real fix, however, would be to **avoid rebasing the upstream in the first place.**"
 
-> ⭐⭐⭐ **"server state is totally different"**
-> "Is persisted remotely in a location **you may not control or own**"
-> ⭐⭐⭐ "Implies **shared ownership** and can be **changed by other people without your knowledge**"
-> "Can potentially become **'out of date'**..."
-> ⭐⭐ "most traditional state management libraries are great for working with client state, they are **not so great at working with async or server state**"
+⭐ **`api-versioning`·`android`·`javascript` 가 다룬 주제의 가장 일상적인 형태**다 — 이미 나간 것.
 
-⭐⭐ **공고 한 줄이 축을 그대로 적고 있었다** — 아치서울 `상태 관리(Zustand 등)와 **서버 상태**(TanStack Query 등)를 **구분해 다룰 수 있는 분**`.
+⚠️⚠️ **이 사이클의 진짜 수확은 셈 사고 두 건이다.**
+1. ⭐⭐⭐ **`rebase|리베이스` 230건이 전부 `Firebase` 였다**(`Fire`+`base`). 경계를 넣으니 **2건(모집중 0)**, `Firebase` 는 **228건** — **230−2=228 로 정확히 맞았다.**
+2. `커밋|commit` 1158건은 **모집중 비율 88%** — `go` 에서 세운 규칙대로 오염으로 보고 안 썼다.
 
-**셈**: `상태 관리` **788** vs `서버 상태` **69** · `전역 상태` **20**. ⭐ 그리고 `React Query|TanStack` **393** ≈ `Zustand` **391** > `Redux` **243**.
-
-⚠️⚠️ **가장 약한 곳**: Redux·Zustand·Jotai 의 **공식 문서를 하나도 안 열었다.** 1차 자료가 TanStack Query Overview 하나뿐이다.
+**셈**: `Git|버전 관리` **3397** · `코드 리뷰|PR` **1610** · `Git 기반` **1008** vs ⚠️ `rebase` **2** · `커밋 컨벤션` **4**.
 
 ### 다음
 
-**Git**(`git`) — QUEUE 맨 위. ⭐ 또 층을 바꿨다(프론트엔드 → **협업/도구, 통째로 비어 있다**).
+**코드 리뷰**(`code-review`) — QUEUE 맨 위. ⭐ `git` 이 스스로 "가장 큰 빈자리"라고 적은 자리(**1610건**).
 
-⭐⭐ **3086건(모집중 963)** · `코드 리뷰|PR` **1634** 인데 ⚠️ `커밋 컨벤션` **4건**. 축을 못 박아 뒀다: **"이미 나간 것은 못 고친다"** — `api-versioning`·`android`·`javascript` 가 다룬 주제의 **가장 일상적인 형태**다. 1차 자료는 `git rebase` 매뉴얼의 **`RECOVERING FROM UPSTREAM REBASE`** 절.
+⚠️⚠️ **alias 이관 필요** — `코드 리뷰` 를 `git` 이 갖고 있다. `state-management`←`react` 와 같은 절차(세 곳을 함께 고친다). 축: **"리뷰의 기준은 '완벽한가'가 아니다"**, 1차 자료는 Google `Code Review Developer Guide` 의 `The Standard of Code Review`.
 
 ## 배운 것
+
+- ⭐⭐⭐ **부분 문자열 오염 — 셈이 틀리는 새로운 형태를 하나 더 얻었다.** `rebase|리베이스` 로
+  세면 **230건**이 나오는데 **전부 `Firebase`** 였다(`Fire`+`base`). ⚠️ `go` 의 `\bGo\b`("Go to")는
+  **경계 밖의 잡음**이었는데, 이건 **다른 낱말 안에 통째로 숨어 있는** 형태다.
+  ⭐⭐ **확인법이 중요하다 — 의심되면 반대쪽을 세어 본다.** 경계를 넣은 값(**2건**)과 `Firebase`
+  (**228건**)를 각각 세니 **230−2=228** 로 정확히 맞았다. 📌 **차이가 딱 떨어지면 오염이 확정**이고,
+  안 떨어지면 다른 원인이 더 있다는 뜻이다.
+
+- ⭐⭐ **`go` 에서 세운 진단법이 다른 낱말에서 또 작동했다.** `커밋|commit` 이 1158건인데
+  **모집중 비율 88%**(정상은 30~40%) — 영문 안내문의 "committed to" 류였다. 💡 **한 사이클에서
+  두 번 다른 방식으로 오염을 잡았다는 것**이, 이 두 진단법(경계·비율)이 이제 **표준 절차**가
+  됐다는 뜻이다. 📌 **셈을 표로 옮기기 전에 두 가지를 본다: 경계가 필요한 영단어인가, 비율이
+  정상 범위인가.**
+
+- ⭐⭐ **"제품이 스스로 그은 선"에 새 형태가 또 생겼다 — 복구 절차를 매뉴얼에 넣어 둔다.**
+  `git-rebase` 매뉴얼에는 **`RECOVERING FROM UPSTREAM REBASE` 라는 절이 통째로** 있다.
+  💡 앞의 여섯(문장·목록·문서·못 고침·Q&A)과 달리, 여기는 **"이 기능은 사고를 만든다"를 전제하고
+  그 뒤처리를 적어 둔 것**이다. ⭐ 그리고 그 절의 결론이 복구법이 아니라 **"avoid ... in the
+  first place"** 다 — 📌 **복구 절차가 있는 기능을 볼 때는 그 절의 마지막 문장을 먼저 읽는다.**
 
 - ⭐⭐⭐ **한 낱말이 두 물건을 가리키고 있으면, 그 사실 자체가 문서의 축이다.** TanStack Query
   문서의 첫 수는 정의가 아니라 **분리**였다 — **"server state is totally different"**. 그리고

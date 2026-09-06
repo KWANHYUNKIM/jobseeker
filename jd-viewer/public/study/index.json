@@ -2135,6 +2135,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "git",
+      "title": "Git — 이미 나간 것은 못 고친다",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **커밋은 고쳐지지 않는다 — 새로 만들고 가리키는 것을 옮길 뿐이다.** 그래서 남이 그 위에 쌓았으면 \"**a bad idea**\" 가 되고, 매뉴얼이 **복구 절차를 따로 적어 둔다.**",
+      "aliases": [
+        "Git",
+        "깃",
+        "버전 관리",
+        "브랜치",
+        "rebase",
+        "코드 리뷰"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

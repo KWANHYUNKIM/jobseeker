@@ -1,0 +1,563 @@
+{
+  "slug": "git",
+  "title": "Git — 이미 나간 것은 못 고친다",
+  "title_en": "Git: You Can't Fix What's Already Out",
+  "aliases": [
+    "Git",
+    "깃",
+    "버전 관리",
+    "브랜치",
+    "rebase",
+    "코드 리뷰"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **커밋은 고쳐지지 않는다 — 새로 만들고 가리키는 것을 옮길 뿐이다.** 그래서 남이 그 위에 쌓았으면 \"**a bad idea**\" 가 되고, 매뉴얼이 **복구 절차를 따로 적어 둔다.**",
+  "summary": "⭐ **`Git|버전 관리` 는 3397건(모집중 1059)** 이다. 이 백과사전에서 가장 큰 축에 든다. 그런데 공고가 요구하는 것은 도구가 아니다.\n\n> `**Git 기반 브랜치 전략 및 코드 리뷰** 경험이 있으신 분` — 컬리\n> `**Git 기반 협업 경험** (브랜치 전략, PR 작성 경험)` — 애쉬코어테크놀로지스\n> `**Git 기반 팀 협업**(코드리뷰/브랜치 전략)에 익숙한 분` — 위펀\n\n⭐⭐ **`Git 기반...` 이 1008건**이고, `코드 리뷰|Pull Request` 가 **1610건**이다. **명령어가 아니라 팀의 계약을 묻는다.**\n\n💡 **그 계약이 왜 필요한가.** 매뉴얼이 한 문장으로 답한다.\n\n> ⭐⭐⭐ **\"Rebasing (or any other form of rewriting) a branch that others have based work on is a bad idea: anyone downstream of it is forced to manually fix their history.\"**\n\n**그리고 그것이 번진다.**\n\n> ⭐⭐⭐ \"This becomes a **ripple effect**: anyone downstream from *topic* is **forced to rebase too, and so on!**\"\n\n⚠️⚠️ **그런데 이 낱말의 셈에서 사고가 하나 나왔다** — `rebase|리베이스` 가 **230건**으로 나왔는데, **전부 `Firebase`** 였다(경계를 넣으면 **2건**, Firebase 는 228건). ⭐ **진짜 `rebase` 를 이름으로 대는 공고는 2건(모집중 0)** 이다.",
+  "market": {
+    "tech": "Git",
+    "layer": "협업/도구",
+    "postings": 896,
+    "pct_jobs": 12.4,
+    "with": [
+      {
+        "name": "Python",
+        "pct": 43.2,
+        "why": "⭐ 동반 1위가 언어다"
+      },
+      {
+        "name": "AWS",
+        "pct": 41.4,
+        "why": "인프라"
+      },
+      {
+        "name": "Docker",
+        "pct": 40.0,
+        "why": "컨테이너"
+      },
+      {
+        "name": "Java",
+        "pct": 34.9,
+        "why": "또 다른 언어"
+      },
+      {
+        "name": "React",
+        "pct": 31.6,
+        "why": "⭐⭐ **동반이 전부 다른 층이다** — 언어·인프라·프론트엔드. **Git 은 층이 없다. 모두가 쓴다**"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 셈이 사고를 하나 냈다 — `rebase` 230건은 전부 Firebase 였다",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06). ⚠️ **이 표를 만드는 과정에서 오염을 두 번 잡았다.**\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `Git\\|버전 관리` | **3397** | (모집중 1059) |\n| `Git` 만 | 3076 | (모집중 947) |\n| ⭐ `코드 리뷰\\|Pull Request` | **1610** | (모집중 561) |\n| ⭐ `Git 기반\\|Git Flow` | **1008** | (모집중 277) |\n| `브랜치 전략\\|Git Flow` | 129 | (모집중 36) |\n| ⚠️⚠️ `rebase\\|리베이스` | **2** | (모집중 **0**) |\n| ⚠️⚠️ `커밋 컨벤션\\|커밋 메시지` | **4** | (모집중 0) |\n| ⚠️ `머지 충돌\\|conflict` | 14 | (모집중 12) |\n\n⭐⭐⭐ **첫 번째 오염이 이 문서에서 가장 재미있는 발견이다.**\n\n`rebase|리베이스` 로 세면 **230건**이 나온다. 그런데 목록을 보니 **Firebase 공고**들이었다 — **`Fire`+`base`** 가 걸린 것이다. ⭐ **경계를 넣어 다시 세니 2건**이고, `Firebase` 는 **228건**이다. **230 − 2 = 228, 정확히 맞아떨어진다.**\n\n💡 ⭐⭐ **`go` 문서에서 배운 것과 같은 형태다** — 그쪽은 `\\bGo\\b` 가 \"Go to\"를 잡았고 **모집중 비율 65%** 가 신호였다. **여기는 부분 문자열이 다른 낱말 안에 숨어 있었다.**\n\n**두 번째 오염도 같은 진단법으로 잡았다.** `커밋|commit` 은 **1158건**인데 ⚠️ **모집중 비율이 88%(1016건)** 다 — 이 데이터의 정상은 30~40%다. ⭐ 영문 안내문의 \"committed to\" 류가 걸린 것이라 **쓰지 않았다.**\n\n📌 **그래서 진짜 숫자로 보면 이렇다.**\n\n⭐⭐ **`Git` 3397건 · `코드 리뷰` 1610건**은 이 백과사전 최대급인데, ⚠️ **`rebase` 2건 · `커밋 컨벤션` 4건 · `머지 충돌` 14건**이다. **도구는 모두가 요구하고, 그 도구가 만드는 사고의 이름은 아무도 안 부른다.**\n\n📌 **그리고 공고가 요구하는 것의 모양이 일정하다.**\n\n> `Git 기반 **브랜치 전략 및 코드 리뷰** 경험` — 컬리\n> `Git 기반 **협업 경험** (브랜치 전략, PR 작성 경험)` — 애쉬코어테크놀로지스\n> `Git / Bitbucket : **브랜치 전략 기반의 코드 관리 및 협업**` — 아이알큐더스\n> `**Git Flow 등 버전 관리 시스템**을 활용한 효율적인 코드 관리 능력` — 컬리\n\n⭐⭐ **전부 \"협업\"이다.** `Git 기반...` 이 **1008건** — **명령어를 아느냐가 아니라 여럿이 같은 저장소를 쓸 때의 규칙을 아느냐**를 묻는다.\n\n📌 이 문서는 `github-actions` 와 겹치지 않는다. 세어 봤다 — 그 문서에 `Git` 이 45회 나오지만 **`rebase`·`머지`·`버전 관리` 는 0회**, `코드 리뷰` 는 1회다. ⭐ 저쪽은 **CI 의 보안**, 여기는 **이력을 어떻게 다루나**."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 커밋은 고쳐지지 않는다 — 새로 만들고 가리키는 것을 옮긴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "git-rebase — Git 매뉴얼",
+          "url": "https://git-scm.com/docs/git-rebase",
+          "publisher": "Git",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **도구가 자기 기능이 만드는 사고와 복구 절차를 매뉴얼에 통째로 적어 둔 자리** — `RECOVERING FROM UPSTREAM REBASE` 라는 절 이름 자체가 경고다"
+        }
+      ],
+      "body": "\"커밋을 수정한다\"·\"이력을 정리한다\"는 말을 매일 쓴다. ⚠️ **그런데 Git 은 커밋을 고치지 않는다.**\n\n**매뉴얼이 `rebase` 가 실제로 하는 일을 네 단계로 적는다.**\n\n> 1. \"Make a list of all commits on your current branch since it branched off from *<upstream>* that do not have an equivalent commit in *<upstream>*.\"\n> 2. \"Check out *<upstream>* with the equivalent of `git checkout --detach` *<upstream>*.\"\n> ⭐⭐⭐ 3. \"**Replay the commits, one by one, in order. This is similar to running `git cherry-pick` *<commit>* for each commit.**\"\n> ⭐⭐ 4. \"Update your branch to **point to** the final commit...\"\n\n💡 ⭐⭐⭐ **3번과 4번이 전부다.**\n\n- **커밋을 고치는 게 아니라 \"다시 재생\"한다** — 매뉴얼이 그것을 `cherry-pick` 에 비유한다. **새 커밋이 만들어진다.**\n- **브랜치는 \"가리키는 것\"이다** — 4번의 \"point to\". ⭐ **브랜치를 옮긴다는 건 포인터를 옮기는 것**이고, **옛 커밋은 그 자리에 그대로 있다.**\n\n📌 **그래서 \"이력을 고쳤다\"는 말의 실제 뜻은 이렇다.**\n\n| 우리가 하는 말 | 실제로 일어난 일 |\n|---|---|\n| \"커밋 메시지를 고쳤다\" | ⭐ **같은 내용의 새 커밋을 만들고 브랜치가 그것을 가리키게 했다** |\n| \"커밋을 합쳤다\" | 새 커밋 하나를 만들었다 |\n| \"이력을 정리했다\" | **새 이력을 만들고 옛것에서 눈을 뗐다** |\n\n⚠️⚠️ **여기서 문제가 나온다 — 내 저장소에서만 눈을 뗄 수 있다.**\n\n**남이 이미 그 커밋을 받아 갔으면**, 그 사람 저장소에는 **옛 커밋이 그대로 있고 그 위에 자기 작업이 쌓여 있다.** ⭐ 내가 만든 것은 **\"고쳐진 이력\"이 아니라 \"두 번째 이력\"** 이다.\n\n📌 ⭐⭐ **그리고 이것이 이 백과사전이 계속 만난 주제다.**\n\n| 문서 | 이미 나간 것 |\n|---|---|\n| `api-versioning` | 남이 쓰고 있는 API |\n| `android`·`ios` | 사용자 기기에 깔린 앱 |\n| `javascript` | 이미 배포된 웹 페이지 |\n| ⭐ **`git`** | **남이 받아 간 커밋** |\n\n⭐⭐⭐ **여기가 그중 가장 일상적이다** — 하루에 몇 번씩 만나고, **되돌릴 수 없다는 성질은 똑같다.**"
+    },
+    {
+      "id": "ripple",
+      "kind": "limits",
+      "heading": "⭐⭐ \"a bad idea\" — 그리고 그것이 번진다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "git-rebase — Git 매뉴얼",
+          "url": "https://git-scm.com/docs/git-rebase",
+          "publisher": "Git",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **도구가 자기 기능이 만드는 사고와 복구 절차를 매뉴얼에 통째로 적어 둔 자리** — `RECOVERING FROM UPSTREAM REBASE` 라는 절 이름 자체가 경고다"
+        }
+      ],
+      "body": "매뉴얼에 **`RECOVERING FROM UPSTREAM REBASE`** 라는 절이 통째로 있다. ⭐ **절 이름 자체가 경고다** — 이 기능이 사고를 만든다는 것을 전제하고, **거기서 빠져나오는 법**을 적는다.\n\n**그 서두 한 문장.**\n\n> ⭐⭐⭐ **\"Rebasing (or any other form of rewriting) a branch that others have based work on is a bad idea: anyone downstream of it is forced to manually fix their history.\"**\n\n💡 **두 부분으로 나눠 읽는다.**\n\n- ⭐ **\"a bad idea\"** — 도구 매뉴얼이 자기 기능의 한 쓰임을 그렇게 부른다.\n- ⭐⭐⭐ **\"anyone downstream of it is **forced to manually fix** their history\"** — **강제되고, 손으로 해야 한다.** 자동으로 안 된다.\n\n**그리고 그것이 한 사람에서 안 끝난다.**\n\n> ⭐⭐⭐ \"the commits from *subsystem* will remain **duplicated forever**... Such duplicates are generally **frowned upon because they clutter up history, making it harder to follow**. To clean things up, you need to transplant the commits ... **This becomes a ripple effect: anyone downstream from *topic* is forced to rebase too, and so on!**\"\n\n⚠️⚠️ **\"duplicated forever\"** 와 **\"ripple effect ... and so on!\"** — 정리하지 않으면 **중복이 영원히 남고**, 정리하면 **그 아래 사람들이 전부 같은 일을 해야 한다.**\n\n📌 ⭐⭐ **그래서 매뉴얼의 결론이 복구법이 아니라 예방이다.**\n\n> ⭐⭐⭐ **\"The real fix, however, would be to avoid rebasing the upstream in the first place.\"**\n\n💡 **\"진짜 해결책은 애초에 그러지 않는 것\"** — ⭐ 이 백과사전이 모아 온 **\"제품이 스스로 그은 선\"** 계보에 또 한 칸이고, 형태가 새롭다.\n\n| 문서 | 형태 |\n|---|---|\n| `kotlin`·`redis`·`github-actions` | 문장 하나로 선을 긋는다 |\n| `typescript` | 비목표 **목록** |\n| `react` | **문서 한 편**으로 설득 |\n| `javascript` | 잘못인데 **못 고친다**고 인정 |\n| `go` | **없는 것을 Q&A 로 해명** |\n| ⭐⭐⭐ **`git`** | **자기 기능이 만드는 사고의 복구 절차를 매뉴얼에 넣어 둔다** |\n\n📌 **실무 규칙은 하나로 모인다 — 선은 \"push 했나\"다.**\n\n- ⭐ **내 로컬에만 있는 커밋**: 얼마든지 다시 쓴다. 아무도 모른다.\n- ⚠️ **이미 push 해서 남이 받아 갔을 수 있는 커밋**: **다시 쓰지 않는다.** 되돌리려면 **취소하는 새 커밋**을 얹는다(이력을 지우지 않고 더한다).\n- ⭐⭐ **그 선이 흐린 브랜치**(공유 개발 브랜치 등)는 **팀이 명시적으로 정해 둔다** — 매뉴얼이 말하는 \"avoid ... in the first place\" 가 그 합의다."
+    },
+    {
+      "id": "team",
+      "kind": "how",
+      "heading": "⭐ 그래서 공고는 명령어가 아니라 협업을 묻는다",
+      "confidence": "inferred",
+      "body": "`Git 기반...` 이 **1008건**, `코드 리뷰|Pull Request` 가 **1610건**이다. ⭐ **후자가 이 낱말 안에서 가장 큰 조각**이고, 문장을 보면 늘 같은 자리에 있다.\n\n> `Git 기반 **브랜치 전략 및 코드 리뷰** 경험이 있으신 분` — 컬리\n> `Git 기반 **팀 협업(코드리뷰/브랜치 전략)**에 익숙한 분` — 위펀\n> `Git 기반 **협업 경험** (브랜치 전략, **PR 작성 경험**)` — 애쉬코어테크놀로지스\n\n⭐⭐ **`브랜치 전략` 과 `코드 리뷰` 가 거의 항상 붙어 다닌다.** 우연이 아니다 — **둘 다 \"남이 내 커밋 위에 쌓기 전에 무엇을 하나\"** 를 정하는 규칙이다.\n\n💡 **`why` 절의 성질에서 그 이유가 나온다.**\n\n- 커밋이 **한번 공유되면 못 고치므로**, ⭐ **공유되기 전에 보는 자리**가 필요하다 → **코드 리뷰**.\n- 그리고 **어디부터가 \"공유된 것\"인지** 팀이 알아야 한다 → **브랜치 전략**.\n\n⭐⭐⭐ **즉 이 둘은 \"좋은 습관\"이 아니라 `why` 절의 제약에서 나온 장치다.**\n\n📌 **그리고 한 공고가 그 앞단을 더 당겨 놨다.**\n\n> ⭐⭐ `CI/CD : ... **Git Hook(커밋 전 자동 검증) 기반 로컬 게이트**, 코드화된 품질 게이트(정적 분석·타입 검사·테스트·접근성·번들 사이즈)` — 아이알큐더스\n\n**\"커밋 전\"** 이다 — ⭐ **커밋이 만들어지기도 전에 거른다.** 이력에 남기 전이니 **고칠 필요조차 없다.** `github-actions` 가 다룬 CI 는 그 뒤에 있고, 여기는 **그보다 앞**이다.\n\n📌 ⚠️ **그런데 정작 커밋 자체의 규칙은 이름이 거의 안 불린다** — `커밋 컨벤션|커밋 메시지` **4건(모집중 0)**.\n\n⭐ **이 저장소가 그 드문 예다.** `CLAUDE.md` 에 규칙이 박혀 있다 — **Conventional Commits 형식(`type(scope): subject`)**, **명령형·50자 이내·마침표 없음**, **한 커밋은 하나의 논리적 변경**, 그리고 **`git push` 는 사용자가 명시할 때만**. 💡 ⭐⭐ **마지막 줄이 `ripple` 절과 정확히 이어진다** — **push 가 곧 \"되돌릴 수 없어지는 순간\"** 이므로, 그 문턱을 사람이 지키게 해 둔 것이다.\n\n⚠️ 그리고 `머지 충돌|conflict` 이 **14건**뿐인데 ⭐ **모집중 비율이 86%(12건)** 다 — 적지만 **최근 공고에 몰려 있다**. 표본이 작아 해석하지 않는다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ Git 사용법을 다루지 않았다.** `add`·`commit`·`merge`·`stash`·`reflog`·`bisect`, 그리고 **충돌 해결 절차** — **공식 문서와 교재가 훨씬 잘** 한다. ⭐ 이 문서는 **\"왜 이력을 함부로 못 고치나\"** 하나만 다뤘다. 3397건짜리 낱말이라 그 선을 안 지키면 사용법 요약본이 된다.\n\n**2. ⚠️ 브랜치 전략을 다루지 않았다**(`브랜치 전략|Git Flow` **129건**). Git Flow·트렁크 기반 개발의 **차이와 고르는 기준**을 안 썼다 — ⭐ `team` 절이 \"왜 필요한가\"까지만 갔고 **무엇을 고를지는 비웠다.**\n\n**3. ⚠️ 코드 리뷰를 다루지 않았다**(**1610건**, 이 낱말 안 최대 조각). ⭐ **무엇을 보나·어떻게 쓰나·리뷰가 병목이 될 때** — 전부 안 썼다. **별도 낱말로 두는 것이 맞아 보이지만, 그만큼 큰 빈자리다.**\n\n**4. ⚠️ 매뉴얼의 나머지를 안 읽었다.** 1차 자료는 `git-rebase` 매뉴얼의 **`RECOVERING FROM UPSTREAM REBASE` 절과 동작 설명**뿐이다. ⭐ **그 절이 제시하는 실제 복구 절차**(`--onto` 를 쓰는 방법 등)는 인용하지 않았다 — 명령을 옮기려면 전문을 정확히 읽어야 하는데 그러지 않았다.\n\n**5. ⚠️ `git reset`·`revert`·`reflog` 매뉴얼을 열지 않았다.** `ripple` 절이 \"취소하는 새 커밋을 얹는다\"고 처방하면서 **해당 문서를 확인하지 않았다** — 일반적으로 알려진 사실에 기댔다.\n\n**6. ⚠️ 이 저장소의 `CLAUDE.md` 를 인용한 것은 1차 자료가 아니다.** `team` 절이 그것을 예로 들었는데, **이 프로젝트의 규칙일 뿐 업계 표준의 증거는 아니다.** ⭐ 다만 `scraping`·`seo` 사이클처럼 **자기 레포를 자료로 쓸 때의 방식**은 지켰다 — 출처를 밝히고 일반화하지 않는다.\n\n**7. 이 문서가 다루지 않는 것.** CI 의 보안은 `github-actions`, 이미 나간 API 는 `api-versioning`, 이미 깔린 앱은 `android`·`ios`, 못 고치는 언어 표준은 `javascript` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "manual",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 매뉴얼이 자기 기능에 대해 적는 것",
+      "note": "전부 **`git-rebase` 매뉴얼의 원문**이다. ⭐ 요점은 개별 조언이 아니라 **매뉴얼에 `RECOVERING FROM UPSTREAM REBASE` 라는 절이 통째로 있다는 사실** — 도구가 자기 기능이 만드는 사고를 전제하고 복구법을 적어 둔다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 하지 말라는 것",
+          "\"Rebasing (or any other form of rewriting) a branch that others have based work on is **a bad idea**: **anyone downstream of it is forced to manually fix their history**.\""
+        ],
+        [
+          "⭐⭐⭐ 번진다",
+          "\"This becomes a **ripple effect**: anyone downstream from *topic* is **forced to rebase too, and so on!**\""
+        ],
+        [
+          "⚠️ 안 정리하면",
+          "\"the commits from *subsystem* will remain **duplicated forever** ... **frowned upon because they clutter up history, making it harder to follow**\""
+        ],
+        [
+          "⭐⭐ 진짜 해결책",
+          "\"The real fix, however, would be to **avoid rebasing the upstream in the first place.**\""
+        ],
+        [
+          "⭐⭐⭐ 무엇을 하나 (3단계)",
+          "\"**Replay the commits, one by one, in order. This is similar to running `git cherry-pick` *<commit>* for each commit.**\""
+        ],
+        [
+          "⭐ 무엇을 하나 (4단계)",
+          "\"Update your branch to **point to** the final commit...\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "git-rebase — Git 매뉴얼",
+          "url": "https://git-scm.com/docs/git-rebase",
+          "publisher": "Git",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **도구가 자기 기능이 만드는 사고와 복구 절차를 매뉴얼에 통째로 적어 둔 자리** — `RECOVERING FROM UPSTREAM REBASE` 라는 절 이름 자체가 경고다"
+        }
+      ]
+    },
+    {
+      "id": "already",
+      "kind": "compare",
+      "caption": "⭐⭐ 이 백과사전이 계속 만나는 것 — 이미 나간 것",
+      "note": "각 문서의 1차 자료 인용에서 왔고, 한 줄로 세운 것은 이 문서의 관점이다(`confidence: inferred`). ⭐ **`git` 이 그중 가장 일상적이다** — 하루에 몇 번씩 만난다.",
+      "columns": [
+        "문서",
+        "이미 나간 것",
+        "되돌릴 수 없는 이유"
+      ],
+      "rows": [
+        [
+          "`api-versioning`",
+          "남이 쓰고 있는 API",
+          "우리가 못 고치는 클라이언트가 있다"
+        ],
+        [
+          "`android`·`ios`",
+          "사용자 기기에 깔린 앱",
+          "\"사용자가 업데이트를 안 하면 옛 버전이 남는다\""
+        ],
+        [
+          "`javascript`",
+          "이미 배포된 웹 페이지",
+          "\"in the absence of legacy usage **would be removed**\""
+        ],
+        [
+          "⭐ **`git`**",
+          "**남이 받아 간 커밋**",
+          "\"anyone downstream ... **forced to manually fix their history**\""
+        ],
+        [
+          "⭐⭐ 공통",
+          "—",
+          "**고치는 게 아니라 새로 만들고, 옛것은 남의 손에 그대로 있다**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "line",
+      "kind": "compare",
+      "caption": "선은 \"push 했나\"다",
+      "note": "이 표는 이 문서가 `manual` 표의 원문에서 정리한 것이다(`confidence: inferred`). ⚠️ `git revert`·`reflog` 매뉴얼은 확인하지 않았다(`open_questions`).",
+      "columns": [
+        "",
+        "내 로컬에만 있다",
+        "⚠️ 이미 push 했다"
+      ],
+      "rows": [
+        [
+          "다시 쓸 수 있나",
+          "⭐ **얼마든지** — 아무도 모른다",
+          "⚠️ **안 된다** — \"a bad idea\""
+        ],
+        [
+          "누가 영향받나",
+          "나만",
+          "\"**anyone downstream**\" — 그리고 그 아래까지"
+        ],
+        [
+          "되돌리려면",
+          "자유롭게 고친다",
+          "⭐ **취소하는 새 커밋을 얹는다** (이력을 지우지 않고 더한다)"
+        ],
+        [
+          "⭐ 선이 흐릴 때",
+          "—",
+          "**팀이 명시적으로 정해 둔다** — \"avoid ... **in the first place**\""
+        ],
+        [
+          "⭐⭐ 그래서",
+          "—",
+          "**코드 리뷰(1610건)와 브랜치 전략(129건)이 그 앞에 선다**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️⚠️ 이 낱말을 셀 때 — 오염을 두 번 잡았다",
+      "note": "⭐⭐⭐ **이 표가 이 문서의 부산물이자 방법론이다.** `go` 사이클에서 세운 진단법(**모집중 비율이 튀면 오염**)이 또 작동했고, **부분 문자열 오염**이라는 새 형태를 하나 더 얻었다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**3397건 (모집중 1059)** — 태그 기준으로는 896건(12.4%, 층 \"협업/도구\")"
+        ],
+        [
+          "⭐ `코드 리뷰\\|Pull Request`",
+          "**1610 (모집중 561)** — 이 낱말 안 최대 조각. ⚠️ 이 문서가 다루지 않았다"
+        ],
+        [
+          "⭐ `Git 기반\\|Git Flow`",
+          "**1008 (모집중 277)** — **협업으로 요구한다**"
+        ],
+        [
+          "`브랜치 전략`",
+          "129 (모집중 36)"
+        ],
+        [
+          "⚠️⚠️ **`rebase\\|리베이스`**",
+          "~~230~~ → **2 (모집중 0)**. ⭐⭐⭐ **`Fire`+`base` 였다** — `Firebase` 가 **228건**이고 230−2=228 로 정확히 맞는다. **경계(`(?<![A-Za-z])rebase`)를 넣어야 한다**"
+        ],
+        [
+          "⚠️⚠️ `커밋\\|commit`",
+          "1158건이지만 **모집중 비율 88%** — 영문 안내문의 \"committed to\" 류. ⭐ **비율이 튀면 오염**(`go` 에서 세운 규칙). **쓰지 않았다**"
+        ],
+        [
+          "⚠️ `커밋 컨벤션\\|커밋 메시지`",
+          "**4 (모집중 0)**"
+        ],
+        [
+          "`머지 충돌\\|conflict`",
+          "14 (모집중 12) — ⚠️ 모집중 86%지만 **표본이 작아 해석하지 않았다**"
+        ],
+        [
+          "⭐⭐ `market` 이 말해 주는 것",
+          "동반이 **Python 43.2 · AWS 41.4 · Docker 40.0 · Java 34.9 · React 31.6** — **전부 다른 층이다. Git 은 층이 없다**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ a bad idea",
+      "en": "—",
+      "what": "매뉴얼이 **남이 쌓은 브랜치를 다시 쓰는 것**에 붙인 말. 도구가 자기 기능의 한 쓰임을 그렇게 부른다"
+    },
+    {
+      "term": "⭐⭐⭐ ripple effect",
+      "en": "—",
+      "what": "\"anyone downstream ... **forced to rebase too, and so on!**\" — **한 사람의 정리가 아래로 번진다**"
+    },
+    {
+      "term": "⭐⭐ replay",
+      "en": "—",
+      "what": "rebase 가 실제로 하는 일. \"similar to running `git cherry-pick` for each commit\" — **고치는 게 아니라 새로 만든다**"
+    },
+    {
+      "term": "⭐ point to",
+      "en": "—",
+      "what": "브랜치는 **가리키는 것**이다. 옮겨도 **옛 커밋은 그 자리에 있다**"
+    },
+    {
+      "term": "upstream",
+      "en": "—",
+      "what": "내가 갈라져 나온 쪽. ⚠️ **그것을 다시 쓰면** `RECOVERING FROM UPSTREAM REBASE` 가 필요해진다"
+    },
+    {
+      "term": "⚠️ duplicated forever",
+      "en": "—",
+      "what": "정리하지 않으면 남는 것. \"clutter up history, making it **harder to follow**\""
+    },
+    {
+      "term": "⚠️ Firebase 오염",
+      "en": "—",
+      "what": "⭐ `rebase` 로 세면 **Fire**base** 가 걸린다(230건 중 228건). **경계를 넣어야 2건**"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "이미 push 한 커밋의 메시지를 고치고 싶다",
+      "pick": "⭐ **혼자 쓰는 브랜치면 고치고, 아니면 그냥 둔다**",
+      "over": "공유 브랜치에서 다시 쓰고 강제 push 하기",
+      "why": "⭐⭐⭐ \"Rebasing (or any other form of rewriting) a branch that others have based work on is **a bad idea**: **anyone downstream of it is forced to manually fix their history**.\" ⚠️ **메시지 한 줄을 고치려고 남의 이력을 손보게 만드는 값**이고, 그것이 \"**ripple effect ... and so on!**\" 으로 번진다",
+      "tradeoff": "⚠️ 잘못된 메시지가 이력에 영원히 남는다. ⭐ 그래도 **읽기 불편한 이력**과 **남이 손으로 고쳐야 하는 이력** 중에는 앞이 낫다. 📌 정말 중요하면 **팀에 알리고 시각을 맞춰서** 한다 — 매뉴얼이 말하는 건 \"불가능\"이 아니라 \"값이 크다\"다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "git-rebase — Git 매뉴얼",
+          "url": "https://git-scm.com/docs/git-rebase",
+          "publisher": "Git",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **도구가 자기 기능이 만드는 사고와 복구 절차를 매뉴얼에 통째로 적어 둔 자리** — `RECOVERING FROM UPSTREAM REBASE` 라는 절 이름 자체가 경고다"
+        }
+      ]
+    },
+    {
+      "situation": "공유 브랜치의 잘못된 커밋을 되돌려야 한다",
+      "pick": "⭐⭐ **취소하는 새 커밋을 얹는다**",
+      "over": "그 커밋을 이력에서 지우기",
+      "why": "⭐ **이력을 지우면 그 커밋을 받아 간 사람들의 이력과 갈라진다.** 새 커밋을 얹으면 **모두가 그냥 받으면 되고**, \"무엇을 왜 되돌렸는지\"가 이력에 남는다 — ⭐ 그게 나중에 더 쓸모 있다",
+      "tradeoff": "⚠️ 이력이 길어지고 \"실수한 커밋\"이 그대로 보인다. ⭐ 그런데 그건 단점이라기보다 **사실의 기록**이다. ⚠️ **이 문서는 `git revert` 매뉴얼을 확인하지 않았다**(`open_questions`) — 명령의 정확한 동작은 각자 확인한다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "팀의 브랜치 규칙을 정한다",
+      "pick": "⭐⭐ **\"어디부터가 공유된 것인가\"를 먼저 못 박는다**",
+      "over": "Git Flow 같은 이름부터 고르기",
+      "why": "⭐⭐⭐ **`why` 절의 제약이 규칙의 이유다** — 공유된 커밋은 못 고치므로, **어디부터 공유인지 모두가 알아야** 한다. 매뉴얼의 결론도 그것이다: \"avoid rebasing the upstream **in the first place**\". ⭐ 이름(Git Flow·트렁크)은 그다음이다",
+      "tradeoff": "⚠️ 이름을 고르는 것보다 합의가 오래 걸린다. ⭐ 그래도 **이름만 정하면 \"이 브랜치는 되나\"를 매번 다시 묻게 된다** — 공고가 `브랜치 전략`(129건)과 `코드 리뷰`(1610건)를 늘 붙여 적는 이유다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "git-rebase — Git 매뉴얼",
+          "url": "https://git-scm.com/docs/git-rebase",
+          "publisher": "Git",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **도구가 자기 기능이 만드는 사고와 복구 절차를 매뉴얼에 통째로 적어 둔 자리** — `RECOVERING FROM UPSTREAM REBASE` 라는 절 이름 자체가 경고다"
+        }
+      ]
+    },
+    {
+      "situation": "커밋 품질을 높이고 싶다",
+      "pick": "⭐ **커밋 전에 거르는 장치를 둔다**",
+      "over": "나중에 이력을 정리하기",
+      "why": "⭐⭐ **이력에 남기 전이면 고칠 필요조차 없다.** 아이알큐더스 공고가 그 자리에 이름을 붙인다 — `**Git Hook(커밋 전 자동 검증) 기반 로컬 게이트**`. ⚠️ 나중에 정리하는 길은 `ripple` 절의 위험으로 이어진다",
+      "tradeoff": "⚠️ 커밋이 느려지고, 급할 때 우회하고 싶어진다. ⭐ 그래서 **로컬 게이트는 가볍게**(포맷·린트) 두고 무거운 검사는 CI 로 미룬다(→ `github-actions`) — **둘은 경쟁이 아니라 앞뒤다**",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "\"Git 경험\"을 이력서에 적는다",
+      "pick": "⭐ **협업 규칙을 어떻게 다뤘는지 적는다**",
+      "over": "\"Git 사용 가능\" 한 줄",
+      "why": "⭐⭐ **공고가 이미 그렇게 적는다** — `Git 기반 **협업** 경험(브랜치 전략, PR 작성)`(애쉬코어), `Git 기반 팀 협업(**코드리뷰**/브랜치 전략)`(위펀). `Git 기반...` 이 **1008건**, `코드 리뷰` 가 **1610건**이다. **명령어를 아느냐를 묻는 곳은 거의 없다**",
+      "tradeoff": "구체적으로 쓰려면 팀 규칙을 설명해야 해서 길어진다. ⭐ 그래도 **\"push 한 커밋은 다시 쓰지 않는다\"는 규칙을 왜 두는지 아는 것**은 짧게 적어도 티가 난다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐ 공유 브랜치를 rebase 하고 강제 push 한다",
+      "why": "⭐⭐⭐ **매뉴얼이 이것 하나를 위해 절을 통째로 만들어 뒀다** — `RECOVERING FROM UPSTREAM REBASE`. \"**a bad idea**: anyone downstream of it is **forced to manually fix their history**\" 이고, \"**ripple effect** ... and so on!\" 으로 번진다. ⚠️ **내 화면에서는 이력이 깔끔해 보이는 것**이 함정이다",
+      "fix": "⭐ **선을 하나로 정한다 — push 했으면 다시 쓰지 않는다.** 되돌릴 것은 **취소하는 새 커밋**으로 얹는다. 📌 그리고 **어느 브랜치가 공유인지 팀이 명시**해 둔다 — 매뉴얼의 \"avoid ... **in the first place**\" 가 그 합의다",
+      "sources": [
+        {
+          "title": "git-rebase — Git 매뉴얼",
+          "url": "https://git-scm.com/docs/git-rebase",
+          "publisher": "Git",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **도구가 자기 기능이 만드는 사고와 복구 절차를 매뉴얼에 통째로 적어 둔 자리** — `RECOVERING FROM UPSTREAM REBASE` 라는 절 이름 자체가 경고다"
+        }
+      ]
+    },
+    {
+      "trap": "\"커밋을 고쳤다\"고 생각한다",
+      "why": "⭐⭐ **Git 은 커밋을 고치지 않는다.** 매뉴얼이 적는 실제 동작은 \"**Replay** the commits ... similar to running `git cherry-pick`\" 과 \"Update your branch to **point to** the final commit\" 이다 — **새 커밋을 만들고 포인터를 옮긴다.** ⚠️ 옛 커밋은 **남의 저장소에 그대로 있다**",
+      "fix": "⭐ **\"고쳤다\" 대신 \"새 이력을 만들었다\"로 생각한다.** 그러면 다음 질문이 저절로 나온다 — **\"옛 이력을 가진 사람이 있나?\"** 그 질문의 답이 곧 해도 되는지의 답이다",
+      "sources": [
+        {
+          "title": "git-rebase — Git 매뉴얼",
+          "url": "https://git-scm.com/docs/git-rebase",
+          "publisher": "Git",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **도구가 자기 기능이 만드는 사고와 복구 절차를 매뉴얼에 통째로 적어 둔 자리** — `RECOVERING FROM UPSTREAM REBASE` 라는 절 이름 자체가 경고다"
+        }
+      ]
+    },
+    {
+      "trap": "⚠️⚠️ `rebase` 로 시장 수요를 센다",
+      "why": "⭐⭐⭐ **이 사이클이 실제로 걸렸다.** `rebase|리베이스` 로 세면 **230건**이 나오는데 **전부 `Firebase`** 다(`Fire`+`base`). 경계를 넣으면 **2건**이고 `Firebase` 는 **228건** — 230−2=228 로 정확히 맞는다",
+      "fix": "⭐ **영어 낱말은 경계를 넣어 센다**(`(?<![A-Za-z])rebase`). 📌 그리고 **의심되면 반대쪽을 세어 본다** — 여기서는 `Firebase` 를 세자 답이 나왔다. ⚠️ `go` 의 `\\bGo\\b`(\"Go to\")와 같은 부류이고, **두 글자·짧은 영단어는 언제나 의심**한다"
+    },
+    {
+      "trap": "모집중 비율을 안 보고 셈을 믿는다",
+      "why": "⭐⭐ **이 사이클에서 두 번째 오염을 그것으로 잡았다.** `커밋|commit` 이 1158건인데 **모집중 비율 88%** — 이 데이터의 정상은 30~40%다. 영문 안내문의 \"committed to\" 류가 걸린 것이고, ⚠️ **건수만 보면 알 수 없다**",
+      "fix": "⭐ **셈을 할 때 건수와 모집중 비율을 함께 본다.** 비율이 정상 범위(30~40%)를 크게 벗어나면 **그 패턴은 쓰지 않는다**(`go` 사이클에서 세운 규칙)"
+    },
+    {
+      "trap": "브랜치 전략의 이름부터 고른다",
+      "why": "⭐ Git Flow·트렁크 기반 같은 이름을 고르면 정한 것 같지만, ⚠️ **정작 필요한 합의는 \"어디부터가 공유된 것인가\"** 다. 그게 없으면 이름을 정해도 **\"이 브랜치는 rebase 해도 되나\"를 매번 다시 묻는다**",
+      "fix": "⭐⭐ **공유의 선을 먼저 문장으로 적는다** — 예: \"`main` 과 `develop` 은 절대 다시 쓰지 않는다, 개인 브랜치는 자유\". 이름은 그다음이다. 📌 공고가 `브랜치 전략`(129)과 `코드 리뷰`(1610)를 늘 붙여 적는 것이 그 신호다"
+    },
+    {
+      "trap": "이 문서를 읽고 Git 을 안다고 여긴다",
+      "why": "⚠️ **이 문서는 사용법을 한 줄도 다루지 않았다** — 충돌 해결도, `reflog` 도, 브랜치 전략의 선택 기준도, **1610건짜리 코드 리뷰도** 안 썼다. 1차 자료도 **`git-rebase` 매뉴얼의 한 절**뿐이다",
+      "fix": "⭐ **이 문서는 \"왜 함부로 못 고치나\" 한 가지만 준다.** 나머지는 공식 문서와 교재가 훨씬 낫고, 📌 **특히 `RECOVERING FROM UPSTREAM REBASE` 절의 실제 복구 절차는 전문을 직접 읽어야 한다** — 여기서는 인용하지 않았다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **연습용 저장소에서 커밋을 세 개 만들고, `rebase` 로 이력을 바꾼 뒤 옛 커밋 해시가 아직 살아 있는지 확인**한다(`git reflog` 로 찾을 수 있다).",
+      "done_when": "⭐ **바꾸기 전후의 해시가 전부 다르다는 것**을 확인했고, **옛 커밋이 사라진 게 아니라 아무도 안 가리킬 뿐**이라는 걸 눈으로 봤다.",
+      "why": "⭐⭐⭐ 매뉴얼의 \"**Replay** the commits\" 와 \"**point to**\" 가 무슨 뜻인지는 **해시를 비교해 봐야** 와닿는다. 💡 그리고 **\"고친 게 아니라 새로 만들었다\"** 는 것을 한 번 보면, 공유 브랜치에서 그 일을 하는 것이 왜 위험한지가 저절로 이해된다.",
+      "no_hardware": "Git 만 있으면 된다 — 원격 저장소도 필요 없다. `git init` 으로 만든 빈 폴더면 충분하다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ **`git-rebase` 매뉴얼에서 `RECOVERING FROM UPSTREAM REBASE` 절을 찾아 끝까지 읽고**, 거기 적힌 **복구 절차를 자기 말로 세 줄** 적는다.",
+      "done_when": "세 줄이 나오고, ⭐ **\"그래서 애초에 하지 말라\"는 결론이 왜 나오는지** 설명할 수 있다.",
+      "why": "⭐⭐ **이 문서는 그 절의 서두와 경고만 인용했고, 실제 복구 절차는 옮기지 않았다**(`open_questions`). 💡 **도구 매뉴얼에 복구 절이 통째로 있다는 사실 자체**가 이 기능의 성격을 말해 주는데, 그것을 직접 확인하는 것이 이 실습이다.",
+      "no_hardware": "웹 페이지 하나면 된다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **자기 팀(또는 아무 오픈소스)의 저장소에서 \"어느 브랜치가 공유된 것인지\" 규칙이 어디에 적혀 있는지 찾는다.** 없으면 **한 문장으로 적어 본다.**",
+      "done_when": "규칙의 위치를 찾았거나, ⭐ **\"어느 브랜치는 절대 다시 쓰지 않는다\"** 를 한 문장으로 적었다. 그리고 **지금 그것을 어기고 있는 사람이 있는지** 답할 수 있다.",
+      "why": "⭐⭐⭐ `ripple` 절의 사고는 **그 선이 흐릴 때** 일어난다. 💡 그리고 대부분의 팀이 **암묵적으로만 알고 있어서**, 새로 온 사람이 모르고 밟는다 — `브랜치 전략` 이 공고에 129건 나오는 이유다.",
+      "no_hardware": "코드 없이 팀 위키·README 를 뒤지면 된다. ⭐ 없다는 것을 확인하는 것도 결과다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "`rebase` 가 실제로 하는 일을 매뉴얼의 표현으로 두 가지 말하면?",
+    "\"커밋을 고쳤다\"가 왜 부정확한 말인가?",
+    "매뉴얼이 \"a bad idea\" 라고 부르는 상황은? 그 결과는?",
+    "ripple effect 가 무엇인가? 왜 한 사람에서 안 끝나는가?",
+    "다시 써도 되는 커밋과 안 되는 커밋을 가르는 선은?",
+    "이 낱말을 셀 때 `rebase` 로 세면 왜 안 되는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "•Git 기반 브랜치 전략 및 코드 리뷰 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359779",
+      "where": "컬리",
+      "what_it_shows": "⭐⭐⭐ **`브랜치 전략` 과 `코드 리뷰` 가 붙어 다닌다** — 둘 다 \"남이 내 커밋 위에 쌓기 전에 무엇을 하나\"를 정하는 장치이기 때문이다"
+    },
+    {
+      "quote": "• Git 기반 협업 경험 (브랜치 전략, PR 작성 경험)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/348913",
+      "where": "애쉬코어테크놀로지스",
+      "what_it_shows": "⭐⭐ **`Git 기반 협업`** — 이 표현이 **1008건**이다. **명령어가 아니라 팀의 계약을 묻는다**"
+    },
+    {
+      "quote": "• Git 기반 팀 협업(코드리뷰/브랜치 전략)에 익숙한 분.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/382962",
+      "where": "위펀(스낵24)",
+      "what_it_shows": "⭐ **같은 짝이 또** — `코드 리뷰|Pull Request` **1610건**이 이 낱말 안 최대 조각이다"
+    },
+    {
+      "quote": "• CI/CD : Jenkins 파이프라인, Git Hook(커밋 전 자동 검증) 기반 로컬 게이트, 코드화된 품질 게이트(정적 분석·타입 검사·테스트·접근성·번들 사이즈)로 재현 가능한 배포 프로세스 운영",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378890",
+      "where": "아이알큐더스",
+      "what_it_shows": "⭐⭐⭐ **`커밋 전 자동 검증`** — **이력에 남기 전에 거른다.** 고칠 필요조차 없게 만드는 자리이고, `github-actions` 의 CI 보다 **한 단계 앞**이다"
+    },
+    {
+      "quote": "• Git Flow 등 버전 관리 시스템을 활용한 효율적인 코드 관리 능력",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356194",
+      "where": "컬리",
+      "what_it_shows": "⭐ **`Git Flow` 를 \"버전 관리 시스템\"이라고 부른다** — 브랜치 전략과 도구를 한 덩어리로 본다는 뜻(`브랜치 전략|Git Flow` 129건)"
+    },
+    {
+      "quote": "• Git 기반 협업 및 배포 환경 경험: Git Flow 기반 협업 및 Docker 또는 CI/CD 환경에서의 개발·배포 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/374289",
+      "where": "인이지",
+      "what_it_shows": "⭐ **협업과 배포가 한 줄에** — `market` 의 Docker 40.0% 가 이 모양이다. **Git 은 배포 파이프라인의 입구**다"
+    },
+    {
+      "quote": "• Git / Bitbucket : 브랜치 전략 기반의 코드 관리 및 협업",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378890",
+      "where": "아이알큐더스",
+      "what_it_shows": "⭐ **GitHub 이 아닌 호스팅도 있다**(Bitbucket) — ⚠️ 그래서 `Git` 을 셀 때 `GitHub` 과 구분해야 한다"
+    },
+    {
+      "quote": "TypeScript, React, React Native, Firebase, GitHub",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/352883",
+      "where": "타인에이아이",
+      "what_it_shows": "⚠️⚠️ **이 사이클의 셈 사고를 보여 주는 증거다** — `Firebase` 가 `rebase` 로 걸렸다. **228건이 이런 모양**이고, 진짜 `rebase` 는 **2건**뿐이다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "github-actions",
+      "how": "⭐ **축이 다르다**(그 문서에 `rebase`·`머지`·`버전 관리` 0회). 저쪽은 **CI 의 보안**, 여기는 **이력을 어떻게 다루나**. ⚠️ 그리고 커밋 전 게이트는 **여기가 앞**이다"
+    },
+    {
+      "slug": "api-versioning",
+      "how": "⭐⭐ **같은 주제의 다른 층** — 이미 남이 쓰고 있는 것을 어떻게 바꾸나"
+    },
+    {
+      "slug": "android",
+      "how": "⭐ 같은 주제 — 이미 깔린 앱. \"사용자가 업데이트를 안 하면 옛 버전이 남는다\""
+    },
+    {
+      "slug": "javascript",
+      "how": "⭐ 같은 주제의 가장 큰 규모 — **언어 표준이 못 고쳐진다**"
+    },
+    {
+      "slug": "monorepo",
+      "how": "저장소를 어떻게 나누나 — 브랜치 전략과 맞닿는다"
+    },
+    {
+      "slug": "go",
+      "how": "⭐ **셈 진단법을 빌려 왔다** — \"모집중 비율이 튀면 오염\". 이 사이클에서 두 번 작동했다"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `Git`(896건 · 12.4% · 층 \"협업/도구\")를 그대로 옮겼다. ⚠️ 본문 직접 셈은 **3397건**이다 — 두 숫자를 다 적었다.",
+    "⚠️⚠️ **코드 리뷰를 다루지 않았다**(**1610건**, 이 낱말 안 최대 조각). 무엇을 보나·어떻게 쓰나·리뷰가 병목이 될 때 — 전부 안 썼다. ⭐ **별도 낱말로 두는 것이 맞아 보이지만 그만큼 큰 빈자리다.**",
+    "⚠️ **매뉴얼의 실제 복구 절차를 인용하지 않았다.** `RECOVERING FROM UPSTREAM REBASE` 절의 서두와 경고만 옮겼고, **`--onto` 를 쓰는 구체적 절차는 안 봤다** — 명령을 옮기려면 전문을 정확히 읽어야 하는데 그러지 않았다. 실습 2번을 그 확인으로 뒀다.",
+    "⚠️ **`git revert`·`reset`·`reflog` 매뉴얼을 열지 않았다.** `ripple` 절과 `when_to_use` 가 \"취소하는 새 커밋을 얹는다\"고 처방하면서 **일반적으로 알려진 사실에 기댔다.**",
+    "⚠️ **브랜치 전략을 다루지 않았다**(129건). Git Flow·트렁크 기반의 차이와 고르는 기준을 안 썼다 — `team` 절이 \"왜 필요한가\"까지만 갔다.",
+    "⭐ **이 저장소의 `CLAUDE.md` 를 예로 든 것은 1차 자료가 아니다.** `team` 절이 그 커밋 규칙을 인용했는데 **이 프로젝트의 규칙일 뿐 업계 표준의 증거는 아니다** — `scraping`·`seo` 사이클처럼 출처를 밝히고 일반화하지 않았다.",
+    "⚠️ **`머지 충돌` 14건의 모집중 비율(86%)을 해석하지 않았다.** 표본이 작아 신호인지 잡음인지 모른다 — **숫자만 적고 뜻은 붙이지 않았다.**"
+  ],
+  "sources": [
+    {
+      "title": "git-rebase — Git 매뉴얼",
+      "url": "https://git-scm.com/docs/git-rebase",
+      "publisher": "Git",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **도구가 자기 기능이 만드는 사고와 복구 절차를 매뉴얼에 통째로 적어 둔 자리** — `RECOVERING FROM UPSTREAM REBASE` 라는 절 이름 자체가 경고다"
+    }
+  ]
+}
