@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06",
+  "updated_at": "2026-09-07",
   "companies": [
     {
       "slug": "cursor",
@@ -1380,6 +1380,18 @@
       "one_liner": "테스트 스위트를 물려받을 수 없어서 데이터베이스를 통째로 다시 썼다 — 그리고 이번엔 재현을 설계에 넣었다",
       "updated_at": "2026-09-06",
       "domain": "turso.tech"
+    },
+    {
+      "slug": "materialize",
+      "name": "Materialize",
+      "name_en": "Materialize",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "SQL 뷰를 늘 최신으로 유지하는 데이터베이스 — 값을 다시 계산하지 않는 대신 그 상태를 메모리에 들고 있어야 한다",
+      "updated_at": "2026-09-07",
+      "domain": "materialize.com"
     }
   ],
   "domains": [
@@ -1736,7 +1748,9 @@
     "전역 조율 없이 스케줄한다",
     "서버를 사용자 옆으로 옮긴다",
     "재현을 설계로 만든다",
-    "동기 인터페이스를 비동기로 연다"
+    "동기 인터페이스를 비동기로 연다",
+    "미리 계산해 둔 상태를 메모리에 들고 있는다",
+    "일을 쓰는 쪽에서 할 것인가 읽는 쪽에서 할 것인가"
   ],
   "countries": {
     "KR": "한국",

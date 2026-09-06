@@ -1,0 +1,185 @@
+{
+  "slug": "materialize",
+  "name": "Materialize",
+  "name_en": "Materialize",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-07",
+  "domain": "materialize.com",
+  "one_liner": "SQL 뷰를 늘 최신으로 유지하는 데이터베이스 — 값을 다시 계산하지 않는 대신 그 상태를 메모리에 들고 있어야 한다",
+  "business_model": "SQL 뷰를 결과가 아니라 살아 있는 상태로 파는 회사다. 데이터가 바뀔 때마다 뷰를 처음부터 다시 계산하지 않고 바뀐 만큼만 반영해 두고, 질의가 오면 이미 끝나 있는 답을 돌려준다.\n\n과금 단위가 그 구조를 그대로 드러낸다 — **컴퓨트 크레딧**이다(크레딧당 1.50달러). 클러스터 크기마다 시간당 크레딧이 붙고(작은 것 6, 가장 큰 것 96) 스토리지와 네트워킹이 따로 붙는다. 자체 호스팅은 메모리 24GiB·디스크 48GiB 까지 무료이고 그 위는 연간 라이선스다. 매출·고객 수는 공개돼 있지 않아 비워 둔다.\n\n**과금 단위가 크레딧이라는 것이 이 회사의 기술 문제를 정한다**(재구성). 뷰를 미리 계산해 두는 대가는 그 중간 상태를 계속 들고 있어야 한다는 것이고, 들고 있는 것은 곧 메모리다. 그래서 이 회사의 공개 기술 글이 유난히 **바이트를 줄이는 이야기**에 몰려 있다 — 레코드당 오버헤드를 96바이트에서 0~16바이트로 줄인 기록이 있고, 그다음이 사전 압축이다.\n\n이 엔진에서 값을 어디에 미리 쌓아 두느냐를 다룬 회사들과 자리가 다르다. 누방크는 읽기를 싸게 하려고 쓸 때 접어 뒀고 ClickHouse 는 쓰기를 싸게 하려고 값을 질의하는 쪽에 넘겼는데, **Materialize 는 미리 계산해 두는 것 자체가 제품이라 그 값을 옮길 데가 없다**(재구성).",
+  "revenue_total": "확인하지 못했다 — 매출·고객 수를 공개하지 않는다. 공개된 것은 요금 구조뿐이다.",
+  "products": [
+    "Materialize Cloud (컴퓨트 크레딧으로 파는 관리형 서비스)",
+    "Self-Managed Materialize (24GiB 메모리·48GiB 디스크까지 무료인 커뮤니티 라이선스와 연간 엔터프라이즈 라이선스)"
+  ],
+  "revenue_streams": [
+    {
+      "name": "컴퓨트 크레딧",
+      "how": "클러스터 크기마다 시간당 크레딧이 붙고 크레딧당 1.50달러를 받는다. 뷰를 최신으로 유지하는 일이 곧 도는 시간이라, 상태를 작게 만드는 일이 그대로 고객의 청구서를 줄인다(재구성).",
+      "weight": "비중을 확인할 자료가 없다",
+      "domains": [
+        "미리 계산해 둔 상태를 메모리에 들고 있는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Materialize — Pricing",
+          "url": "https://materialize.com/pricing/",
+          "publisher": "Materialize",
+          "summary": "컴퓨트 크레딧 단위 과금($1.50/크레딧). 클러스터 크기별로 시간당 크레딧이 붙고(M.1-small 6, M.1-8xlarge 96), 스토리지와 네트워킹이 따로 붙는다. 자체 호스팅은 24GiB 메모리·48GiB 디스크까지 무료, 그 위는 연간 라이선스."
+        }
+      ]
+    },
+    {
+      "name": "스토리지·네트워킹과 자체 호스팅 라이선스",
+      "how": "GB·시간 단위 스토리지와 GB 단위 네트워킹이 따로 붙고, 자체 호스팅은 무료 한도를 넘으면 연간 라이선스를 받는다.",
+      "weight": "비중을 확인할 자료가 없다",
+      "domains": [
+        "미리 계산해 둔 상태를 메모리에 들고 있는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Materialize — Pricing",
+          "url": "https://materialize.com/pricing/",
+          "publisher": "Materialize",
+          "summary": "컴퓨트 크레딧 단위 과금($1.50/크레딧). 클러스터 크기별로 시간당 크레딧이 붙고(M.1-small 6, M.1-8xlarge 96), 스토리지와 네트워킹이 따로 붙는다. 자체 호스팅은 24GiB 메모리·48GiB 디스크까지 무료, 그 위는 연간 라이선스."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "caption": "이 회사의 도메인 셋이 한 줄로 이어진다 — 무엇을 미리 계산해 둘 것인가(쓰는 쪽과 읽는 쪽 사이), 그것을 무엇에 담을 것인가(메모리), 그리고 그 상태를 누가 감당할 것인가(고객의 크레딧).",
+    "code": "flowchart LR\n  W[쓰는 쪽\\n원본 변경] --> IVM[증분 뷰 유지\\n바뀐 만큼만 반영]\n  IVM --> S[살아 있는 상태\\n메모리 + 로컬 SSD]\n  S --> R[읽는 쪽\\n이미 끝나 있는 답]\n  S -. 크레딧 .-> B[청구서]"
+  },
+  "domains": [
+    {
+      "name": "미리 계산해 둔 상태를 메모리에 들고 있는다",
+      "why": "뷰를 다시 계산하지 않는 대신 중간 상태를 계속 들고 있어야 한다. 그래서 이 회사에서 메모리는 성능 문제가 아니라 원가 문제다 — 회사가 그것을 직접 적는다. 제공하는 값어치는 새 데이터를 얼마나 빨리 비추느냐에서 오고, 드는 값은 그것을 해내는 데 필요한 컴퓨터 자원에서 온다.\n\n이 도메인을 저장이 아니라 들고 있는다로 이름 붙인 이유가 거기 있다 — 넣고 꺼내는 문제가 아니라 계속 붙들고 있는 값의 문제이기 때문이다(재구성).",
+      "tech": [
+        {
+          "tech": "레코드당 오버헤드 깎기 — (time, diff) 반복 제거·Row 표현 축소·u32 오프셋·스트라이드 인코딩",
+          "solves": "중간 레코드 하나당 약 96바이트이던 오버헤드를 데이터 모양에 따라 0~16바이트까지 줄인다. 많은 사용자의 메모리 요구가 거의 절반이 됐다고 적는다.",
+          "limits": "데이터 모양에 기댄다 — 고정 폭 컬럼과 순차적인 키에서 가장 크게 줄고, 그렇지 않으면 덜 줄어든다. 그리고 이 단계에서 사전·컬럼 압축은 CPU 오버헤드를 이유로 미뤘다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Materialize and Memory",
+              "url": "https://materialize.com/blog/materialize-and-memory/",
+              "publisher": "Materialize",
+              "summary": "레코드당 약 96바이트이던 오버헤드를 0~16바이트로 줄인 기록. (time, diff) 반복 제거, Row 표현 32바이트→8바이트, 오프셋 usize→u32, 스트라이드 인코딩, 로컬 SSD 로의 페이징을 차례로 넣었다. 컬럼·사전 압축은 CPU 오버헤드를 이유로 그때는 미뤘다고 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "쓰이지 않던 태그 바이트를 사전으로 쓰기 + Misra-Gries 요약",
+          "solves": "행 표현이 값마다 태그 한 바이트를 붙이는데 256개 중 약 128개만 쓰고 있었다. 남는 태그를 자주 나오는 값에 배정해 반복되는 문자열을 한 바이트로 줄인다. 어떤 값이 자주 나오는지는 적재 중에 Misra-Gries 요약으로 찾는다.",
+          "limits": "압축률의 천장이 낮다 — 컬럼 엔진이 쓰는 순차 압축만큼은 못 줄인다고 회사가 먼저 적는다. 그리고 데이터가 변하면 압축 효율이 달라지는데 그때 어떻게 드러나는지를 스스로 열린 문제로 남긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Dictionary Compression in Materialize",
+              "url": "https://materialize.com/blog/dictionary-compression-in-materialize/",
+              "publisher": "Materialize",
+              "date": "2026-08-03",
+              "summary": "쓰이지 않던 태그 바이트 약 128개를 자주 나오는 컬럼 값에 배정해 압축한다. Misra-Gries 요약으로 적재 중에 인기 값을 찾고, LSM 트리 수명주기에 맞춰 다시 인코딩한다. 약 1TB 상태에서 피크 메모리 981.0 GiB → 428.4 GiB(56% 감소), 하이드레이션 시간은 2708.6초 → 2665.6초. 절반으로 더 줄인 400cc 에서는 OOM 루프에 빠졌다."
+            }
+          ]
+        },
+        {
+          "tech": "로컬 SSD 로 페이징",
+          "solves": "접근이 순차적인 성질을 이용해 이진 데이터를 임시 로컬 SSD 로 내린다. 최고 응답성을 얼마간 내주고 값을 줄인다.",
+          "limits": "갱신량이 적어야 성립한다 — 로컬 SSD 접근이 제때 답하는 것을 막지 않을 만큼이어야 한다고 조건을 함께 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Materialize and Memory",
+              "url": "https://materialize.com/blog/materialize-and-memory/",
+              "publisher": "Materialize",
+              "summary": "레코드당 약 96바이트이던 오버헤드를 0~16바이트로 줄인 기록. (time, diff) 반복 제거, Row 표현 32바이트→8바이트, 오프셋 usize→u32, 스트라이드 인코딩, 로컬 SSD 로의 페이징을 차례로 넣었다. 컬럼·사전 압축은 CPU 오버헤드를 이유로 그때는 미뤘다고 적는다."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "일을 쓰는 쪽에서 할 것인가 읽는 쪽에서 할 것인가",
+      "why": "이 회사가 파는 것을 한 문장으로 줄이면 그 선택이다 — 모든 시스템은 일이 어디서 이뤄질지를 골라야 한다. 쓰는 시점인가, 읽는 시점인가, 아니면 그 사이 어딘가인가.\n\n관계형 데이터베이스는 쓰는 쪽을 섬기고(한 사실을 한 곳에), 검색 색인과 문서 저장소는 읽는 쪽을 섬긴다(대신 파이프라인을 계속 손봐야 한다). 이 회사의 답은 그 사이에 증분 변환 층을 두는 것이고, 그 값어치를 지연으로 적는다 — 쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다.\n\n앞 도메인이 그렇게 만든 상태를 무엇에 담느냐라면 여기는 애초에 무엇을 미리 만들어 둘 것이냐라 경계를 갈랐다(재구성).",
+      "tech": [
+        {
+          "tech": "증분 뷰 유지(차분 데이터플로)",
+          "solves": "입력이 바뀌면 전체 관계가 아니라 변경분만 흘려 결과를 갱신한다. 조인·집계·재귀까지 표준 SQL 문법 위에서 유지된다.",
+          "limits": "유지할 뷰가 늘어날수록 들고 있어야 할 상태가 늘어난다 — 앞 도메인의 원가가 여기서 결정된다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Context Graphs at Agent Scale: Happy Writers, Happy Readers",
+              "url": "https://materialize.com/blog/happy-writers-happy-readers/",
+              "publisher": "Materialize",
+              "date": "2026-07-13",
+              "summary": "쓰는 쪽을 섬기는 관계형 DB 와 읽는 쪽을 섬기는 검색 색인 사이에서 일을 어디서 할 것이냐를 묻는 글. 쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다고 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "읽기 복제본 대신 증분 뷰 유지 복제본",
+          "solves": "원본 데이터베이스에 붙어 있던 무거운 읽기를 대신 받는다. 큰 읽기 복제본 여덟 대를 하나로 줄이며 비용을 90% 낮춘 사례를 회사가 든다.",
+          "limits": "이 수치는 회사가 고른 사례의 것이라 일반화할 수 없다(재구성). 그리고 복제본을 줄인 만큼 그 일을 이쪽 상태가 떠안는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Incremental View Maintenance Replicas",
+              "url": "https://materialize.com/blog/ivm-database-replica/",
+              "publisher": "Materialize",
+              "summary": "읽기 복제본을 늘려 버티던 것을 증분 뷰 유지로 바꾼 사례. 큰 읽기 복제본 여덟 대를 하나로 줄이며 비용을 90% 낮췄다고 적는다."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "매출·고객 수·직원 수를 공개하지 않는다. 확인한 것은 요금 구조뿐이라 사업 쪽 수치를 비워 뒀다.",
+    "시대 구분(eras)을 아직 안 세웠다. 단일 바이너리에서 컴퓨트·스토리지를 가른 클라우드 네이티브 전환이 있었다는 3자 자료가 있지만, 회사 자료에서 연도와 무엇을 내줬는지를 함께 확인하지 못했다. 연도를 모르면 쓰지 않는다는 규칙대로 비워 둔다.",
+    "기능을 아직 하나도 안 썼다 — 이번은 회사 프로파일 사이클이다. 다음 사이클의 첫 대상은 사전 압축 편이다(태그 바이트 재사용 + Misra-Gries). 버린 대안과 한계와 수치가 다 있는 글이다.",
+    "차분 데이터플로·타임리 데이터플로 논문을 아직 안 걸었다. 이 회사는 학술 배경이 뚜렷한 쪽이라 기능을 쓸 때 research 칸이 채워질 가능성이 크다.",
+    "압축 효율이 데이터 변화에 따라 나빠질 때 어떻게 드러나는지를 회사가 열린 문제로 남긴다. 400cc 에서 OOM 루프에 빠진 것이 그 방향의 첫 증거다."
+  ],
+  "features": [],
+  "sources": [
+    {
+      "title": "Dictionary Compression in Materialize",
+      "url": "https://materialize.com/blog/dictionary-compression-in-materialize/",
+      "publisher": "Materialize",
+      "date": "2026-08-03",
+      "summary": "쓰이지 않던 태그 바이트 약 128개를 자주 나오는 컬럼 값에 배정해 압축한다. Misra-Gries 요약으로 적재 중에 인기 값을 찾고, LSM 트리 수명주기에 맞춰 다시 인코딩한다. 약 1TB 상태에서 피크 메모리 981.0 GiB → 428.4 GiB(56% 감소), 하이드레이션 시간은 2708.6초 → 2665.6초. 절반으로 더 줄인 400cc 에서는 OOM 루프에 빠졌다."
+    },
+    {
+      "title": "Materialize and Memory",
+      "url": "https://materialize.com/blog/materialize-and-memory/",
+      "publisher": "Materialize",
+      "summary": "레코드당 약 96바이트이던 오버헤드를 0~16바이트로 줄인 기록. (time, diff) 반복 제거, Row 표현 32바이트→8바이트, 오프셋 usize→u32, 스트라이드 인코딩, 로컬 SSD 로의 페이징을 차례로 넣었다. 컬럼·사전 압축은 CPU 오버헤드를 이유로 그때는 미뤘다고 적는다."
+    },
+    {
+      "title": "Materialize — Pricing",
+      "url": "https://materialize.com/pricing/",
+      "publisher": "Materialize",
+      "summary": "컴퓨트 크레딧 단위 과금($1.50/크레딧). 클러스터 크기별로 시간당 크레딧이 붙고(M.1-small 6, M.1-8xlarge 96), 스토리지와 네트워킹이 따로 붙는다. 자체 호스팅은 24GiB 메모리·48GiB 디스크까지 무료, 그 위는 연간 라이선스."
+    },
+    {
+      "title": "Context Graphs at Agent Scale: Happy Writers, Happy Readers",
+      "url": "https://materialize.com/blog/happy-writers-happy-readers/",
+      "publisher": "Materialize",
+      "date": "2026-07-13",
+      "summary": "쓰는 쪽을 섬기는 관계형 DB 와 읽는 쪽을 섬기는 검색 색인 사이에서 일을 어디서 할 것이냐를 묻는 글. 쓰기에서 맥락까지의 지연이 한 자릿수 초로 떨어지면 에이전트가 대화형이 된다고 적는다."
+    },
+    {
+      "title": "Incremental View Maintenance Replicas",
+      "url": "https://materialize.com/blog/ivm-database-replica/",
+      "publisher": "Materialize",
+      "summary": "읽기 복제본을 늘려 버티던 것을 증분 뷰 유지로 바꾼 사례. 큰 읽기 복제본 여덟 대를 하나로 줄이며 비용을 90% 낮췄다고 적는다."
+    }
+  ]
+}
