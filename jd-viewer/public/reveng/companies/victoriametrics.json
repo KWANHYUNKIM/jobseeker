@@ -1,0 +1,105 @@
+{
+  "slug": "victoriametrics",
+  "name": "VictoriaMetrics",
+  "name_en": "VictoriaMetrics",
+  "country": "기타",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "victoriametrics.com",
+  "one_liner": "메트릭을 더 싸게 오래 두는 시계열 DB — 비용을 짓누르는 것이 샘플 양이 아니라 카디널리티라고 말한다",
+  "business_model": "**세 갈래로 판다** — **영원히 무료인 오픈소스**(단일 노드·클러스터) · **재해 복구·멀티테넌시·이상 탐지를 얹은 상용 엔터프라이즈** · **완전 관리형 SaaS 인 VictoriaMetrics Cloud.** **Prometheus 와 관리형 시계열 DB 의 더 싼 대안**을 자처하고, **Prometheus·Graphite·OpenTSDB·InfluxDB·CSV 수집 프로토콜을 받는다.**\n\n⚠️ **파는 것이 압축이다** — **더 나은 압축으로 같은 디스크·RAM 에 훨씬 많은 데이터를 담게 하는 것**이 곧 비용 절감이고 그게 제품 설명의 첫 줄에 온다(재구성).\n\n⭐ **이미 판 두 회사가 이 회사의 도구를 골랐다** — **Airbnb 와 Razorpay 가 둘 다 `vmagent` 를 썼다**(그 회사들의 관측 비용 절감 이야기에 나온다). **관측을 사는 쪽과 파는 쪽을 양쪽에서 볼 수 있게 됐다**(재구성).",
+  "products": [
+    "VictoriaMetrics (오픈소스 · 엔터프라이즈)",
+    "VictoriaMetrics Cloud",
+    "vmagent · VictoriaLogs · 이상 탐지"
+  ],
+  "domain_map": {
+    "title": "무엇이 비용을 짓누르는지가 이 회사의 문제다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  S[\"<b>수집</b><br/>• Prometheus · Graphite<br/>• OpenTSDB · InfluxDB · CSV\"]:::list --> M[\"⚠️ <b>메트릭을 저장하고 찾는다</b><br/>• TSID 정렬 · 역색인 · LSM<br/>• 컬럼 압축 · 다운샘플링<br/>• ✅ 본문 확인\"]:::accent\n  M --> C[\"<b>비용</b><br/>• 같은 디스크에 더 많이\"]:::list\n  C --> B[\"<b>세 갈래로 판다</b><br/>• 오픈소스 · 엔터프라이즈 · Cloud\"]:::list\n  O[\"<b>오픈소스를 사업으로 만든다</b><br/>• ⏳ 미독\"]:::quiet --> B"
+  },
+  "revenue_streams": [
+    {
+      "name": "엔터프라이즈 · Cloud",
+      "how": "오픈소스는 **영원히 무료**로 두고, **재해 복구·멀티테넌시·이상 탐지·자동 백업·우선 지원**을 상용으로 판다. **완전 관리형 Cloud** 도 따로 있다.",
+      "domains": [
+        "메트릭을 저장하고 찾는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "VictoriaMetrics Pricing & Review: Open Source, Enterprise, and Cloud Plans Compared",
+          "url": "https://cubeapm.com/blog/victoriametrics-pricing-review/",
+          "publisher": "CubeAPM",
+          "date": "2026",
+          "summary": "세 갈래로 판다 — 영원히 무료인 오픈소스(단일 노드·클러스터), 재해 복구와 멀티테넌시·이상 탐지를 얹은 상용 엔터프라이즈, 그리고 완전 관리형 SaaS 인 VictoriaMetrics Cloud."
+        }
+      ]
+    },
+    {
+      "name": "오픈소스 자체",
+      "how": "⚠️ **회사가 `오픈소스는 좋은 마케팅이다` 라는 제목의 글을 쓴다** — **무료 배포가 비용이 아니라 판로라는 입장으로 보인다**(재구성). ⏳ **본문 미독.**",
+      "domains": [
+        "오픈소스를 사업으로 만든다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Open Source Is Good Marketing",
+          "url": "https://victoriametrics.com/blog/",
+          "publisher": "VictoriaMetrics",
+          "date": "2026",
+          "summary": "오픈소스를 사업으로 만드는 관점의 글. ⏳ 본문 미독 — 목록에서 제목만 확인했고 개별 주소를 받지 못했다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "메트릭을 저장하고 찾는다",
+      "why": "⚠️ **이 회사의 전부가 여기서 나온다** — **파는 것이 압축이고**, 압축이 곧 비용이다(재구성). ⭐ **그런데 회사가 비용의 정체를 다르게 짚는다** — **`태어나는 것이 이 메트릭 생애에서 비싼 부분이고 자라는 것은 싸다 … 원시 샘플 양이 아니라 카디널리티가 시계열 DB 를 짓누른다.`** ✅ **본문 확인함**(`The Life of a Metric`, v1.147.0 기준).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "오픈소스를 사업으로 만든다",
+      "why": "**회사가 `Open Source Is Good Marketing` 이라는 글을 쓴다.** ⚠️ **오픈소스를 영원히 무료로 두면서 엔터프라이즈와 Cloud 를 파는 구조인데, 무엇을 무료에 남기고 무엇을 상용으로 올릴지가 이 회사의 실제 결정이다**(재구성). ⏳ **본문 미독 — 목록에서 제목만 확인했고 개별 주소를 못 받았다.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **이 회사는 자기 시스템 글보다 Go 런타임 해설을 더 많이 쓴다** — `Go 1.24 가 맵 런타임을 Swiss Tables 로 바꿨다` · `sync.Map 을 API 에서 해시 트라이까지` · `Go 1.27 둘러보기`. ⚠️ **재미있지만 이 회사가 무엇을 어떻게 만들었는지는 말하지 않는다.** ⏳ **다만 시계열 DB 의 성능이 맵과 GC 에 달려 있다는 점에서 왜 이 회사가 거기를 파는지는 짐작이 간다**(재구성) — **자기 시스템과 이어 말하는 글을 찾으면 그때 도메인을 세운다.**",
+    "⚠️ **후보 조사 때 적어 둔 위험이 현실이 됐다** — **`이 글 하나는 확실하지만 두 번째 기능에서 자료가 마를 수 있다`** 고 썼는데, 실제로 **도메인을 둘밖에 못 세웠고 그중 하나는 미독**이다. **억지로 늘리지 않았다.**",
+    "⚠️ **`The Life of a Metric` 에 발행일이 없다** — URL 타임스탬프가 2026-09-03 으로 보이지만 **본문이 밝히는 것은 `v1.147.0 기준` 뿐이다.** **연도를 지어내지 않는다.**",
+    "⚠️ **`vmagent` 자체의 설계 글을 못 찾았다** — **Airbnb 와 Razorpay 가 둘 다 그것을 골랐는데**(`작은 코드베이스라 필요하면 이해하고 고치기 쉽다` 가 Airbnb 의 이유였다) **만든 쪽의 설명이 없다.**",
+    "⚠️ **비용 주장의 근거를 회사 밖에서 확인하지 못했다** — **`모니터링 비용 5배 절감`** 은 회사 보도자료다.",
+    "⚠️ **본사 소재를 확정하지 못해 `country` 를 `기타` 로 뒀다** — 창업자들이 동유럽 출신이고 회사가 여러 곳에 흩어져 있다는 것까지만 안다. **지어내지 않는다.**"
+  ],
+  "sources": [
+    {
+      "title": "The Life of a Metric",
+      "url": "https://victoriametrics.com/blog/the-life-of-a-metric/",
+      "publisher": "VictoriaMetrics",
+      "date": "2026",
+      "summary": "메트릭 하나가 프로세스 안에서 태어나 네트워크를 건너고 디스크에 압축되어 앉았다가 질의되고 해상도를 잃고 결국 지워지기까지를 따라간다. TSID 정렬·역색인·LSM 트리·컬럼 압축·다운샘플링을 훑으며, 카디널리티가 원시 샘플 양보다 시계열 DB 를 짓누른다는 점을 짚는다. v1.147.0 기준."
+    },
+    {
+      "title": "Open Source Is Good Marketing",
+      "url": "https://victoriametrics.com/blog/",
+      "publisher": "VictoriaMetrics",
+      "date": "2026",
+      "summary": "오픈소스를 사업으로 만드는 관점의 글. ⏳ 본문 미독 — 목록에서 제목만 확인했고 개별 주소를 받지 못했다."
+    },
+    {
+      "title": "VictoriaMetrics Pricing & Review: Open Source, Enterprise, and Cloud Plans Compared",
+      "url": "https://cubeapm.com/blog/victoriametrics-pricing-review/",
+      "publisher": "CubeAPM",
+      "date": "2026",
+      "summary": "세 갈래로 판다 — 영원히 무료인 오픈소스(단일 노드·클러스터), 재해 복구와 멀티테넌시·이상 탐지를 얹은 상용 엔터프라이즈, 그리고 완전 관리형 SaaS 인 VictoriaMetrics Cloud."
+    }
+  ]
+}

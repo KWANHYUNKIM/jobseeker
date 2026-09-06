@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "victoriametrics",
+      "name": "VictoriaMetrics",
+      "name_en": "VictoriaMetrics",
+      "country": "기타",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "메트릭을 더 싸게 오래 두는 시계열 DB — 비용을 짓누르는 것이 샘플 양이 아니라 카디널리티라고 말한다",
+      "updated_at": "2026-09-06",
+      "domain": "victoriametrics.com"
+    },
+    {
       "slug": "warpstream",
       "name": "WarpStream",
       "name_en": "WarpStream",
@@ -1515,7 +1527,9 @@
     "인프라 자원을 안전하게 내준다",
     "디스크 없이 스트리밍한다",
     "다른 Kafka 에서 옮겨 온다",
-    "클러스터 안에서 무슨 일이 있었는지 본다"
+    "클러스터 안에서 무슨 일이 있었는지 본다",
+    "메트릭을 저장하고 찾는다",
+    "오픈소스를 사업으로 만든다"
   ],
   "countries": {
     "KR": "한국",
