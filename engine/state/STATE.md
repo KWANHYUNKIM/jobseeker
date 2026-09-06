@@ -8,36 +8,27 @@
 
 ## 지금 파는 중
 
-**없다 — Pinterest 를 완주했다.** 도메인 3개 · 기능 3개. 회사 **99개**(완주 기준 셋 모두 충족).
+**없다 — 후보 조사 사이클이었다.** 큐 **2/3**. 회사 99개.
 
-⚠️ **큐가 0/3 이다. 다음 사이클은 후보 조사(3순위)다.**
+### 이번 사이클 — 후보 조사(3순위). ⭐ 각도를 바꾼 것이 통했다
 
-### 이번 사이클 — `코드가 자기 권한을 스스로 정하게 두지 않는다`
+**올린 두 곳** — **WarpStream**(Kafka 호환 스트리밍) · **VictoriaMetrics**(시계열 DB·관측).
 
-⚠️ **자료가 얇아 두 번 캤다** — 첫 요약으로는 결정이 넷뿐이라 **같은 글에 두 번째 질문(역할 연쇄·OIDC 조건·backend 검증이 막는 것·승인자·워크스페이스 분할)을 던져** 인용을 받아 여덟으로 채웠다. **일곱 번 넘게 통한 방법이 또 통했다** — 다만 이번엔 새 자료가 아니라 **같은 자료를 다른 각도로 다시 물은 것**이다.
+⭐ **둘 다 `이미 판 회사의 글이 언급하는 회사` 각도로 걸렸다** — **Grafana Labs 가 교차 AZ 비용 비교로 WarpStream 을 들었고**, **Airbnb 와 Razorpay 가 둘 다 `vmagent` 를 골랐다.** 지난 사이클에 "다음엔 다른 각도를 쓴다"고 적어 둔 그대로 했고, 그게 이번 수확의 전부다.
 
-건진 것 넷:
+⚠️ **각도마다 타율이 확연히 다르다** — **언급 각도는 던진 넷 중 둘**(WarpStream ✅ · VictoriaMetrics ✅ · PingCAP ❌ · Character.AI ❌), **`없는 축을 검색으로 찾기` 는 세 번째로 전멸**(산업/제조: Rivian·Zipline·Anduril·John Deere → Rivian 만 걸렸고 그것도 자체 채널이 아니다), **컨퍼런스 각도는 목록조차 못 받았다**(SREcon26). **다음 조사는 언급 각도를 먼저 쓴다** — **99개 회사의 글에 남의 이름이 계속 나온다.**
 
-- ⚠️ **기능의 이름이 backend 블록에서 나왔다** — **테라폼의 `backend` 는 코드 안에 있어서 어느 상태를 건드릴지를 코드가 스스로 신고한다. 그리고 코드는 고칠 수 있다**(재구성). 그래서 **실행 디렉터리와 대조한다** — **`workspace1 의 디렉터리 안에서 workspace2 를 가리키면 검증 로직이 불일치를 잡아 빌드를 즉시 실패시킨다.`**
-- ⚠️ **실수와 공격이 같은 모양이다** — 글이 **`실수로 코드를 복사하거나 backend 블록을 고쳐`** 라고 둘을 한 문장에 넣는다. **구별할 수 없으니 둘 다 막는다**(재구성).
-- ⚠️ **강제하는 자리가 CI 가 아니라 클라우드다** — **`사전 승인된 특정 GitHub 워크플로에서만 맡을 수 있고, 클라우드 제공자 계층에서 GitHub OIDC 토큰 검증으로 엄격히 강제된다.`** **CI 설정은 코드를 고칠 수 있는 사람이 고칠 수 있지만 클라우드 쪽 신뢰 정책은 아니다**(재구성).
-- ⚠️ **중앙화가 답이면서 위험이다** — **`광범위한 취약점이 생기면 수백 개의 레포를 고치는 대신 한 곳에서 고칠 수 있다`** 인데 **같은 성질이 반대로도 작동한다.** **회사는 운영 의존을 인정하되 대가를 수치로 밝히지 않는다**(재구성).
+⚠️ **언급 각도가 늘 통하는 것은 아니다** — **PingCAP 은 Cygames 가 TiDB 를 쓰는데도 블로그가 제품 마케팅이다.** **쓰는 쪽이 아니라 파는 쪽이면 글의 성격이 다르다.** Character.AI 도 WarpStream 고객 사례로 따라갔는데 제품 발표뿐이었다.
 
-### 완주하며 본 것 — 세 도메인이 한 문장으로 모인다
+⚠️ **VictoriaMetrics 는 위험을 안고 올렸다** — `The Life of a Metric` 은 확실하지만(TSID 정렬 근거 · **`zstd 가 최소 약 10% 를 줄이지 못하면 델타 인코딩 평문을 그대로 둔다`** · **`원시 샘플 양이 아니라 카디널리티가 시계열 DB 를 짓누른다`**) **블로그의 나머지가 제품 발표 위주다.** 두 번째 기능에서 마르면 Go 내부 글로 내려간다.
 
-⚠️ **셋 다 `무엇을 근거로 정할지` 를 다시 정한 이야기다** — 검색은 **사용자 하나를 벡터 하나로 요약하지 않기로**, 사용자 이해는 **카탈로그의 분류가 아니라 그 사람의 목표를 단위로**, 인프라는 **코드가 신고한 것을 믿지 않고 실행 위치로**. **셋 다 `기본값으로 주어진 표현`을 거부하고 다른 것을 근거로 세웠다**(재구성).
+⛔ **Gojek 되짚기 실패** — `r.jina.ai` 로도 **429**(Vercel 보안 체크포인트). **도구 한계라 `blocked` 다.**
 
-⚠️ **한 회사 안에서 자기 성과 주장이 갈린다** — 검색 글은 **`7자리 비용 절감 · p90 85% 감소`**, UIC 글은 **수치 0**, RPP 글은 **수치 대신 `수백 개 레포` 같은 규모만.** ⭐ **③축의 좋은 사례다 — 회사가 아니라 글의 종류가 숫자를 가른다**(재구성).
+### 다음 사이클 — 신규(6순위)
 
-### 다음 사이클 — ⚠️ 후보 조사 (3순위)
+**큐가 2/3 이라 목표에 못 미치지만, 사다리는 `큐가 비었다` 일 때만 후보 조사를 부른다.** `--gaps` 가 **대기 맨 위(WarpStream)를 `in_progress` 로 만들고 3단계부터** 를 부를 것이다.
 
-**큐가 0/3 이라 `--gaps` 가 후보 조사를 부른다. 목표 3곳.**
-
-⚠️ **지난 조사에서 3곳을 못 채웠다.** 헬스케어·물류 B2B·산업/제조·통신 인프라는 **검색으로 두 번 실패했다.** **다음엔 각도를 바꾼다** — **컨퍼런스 발표 목록**이나 **이미 판 회사의 글이 언급하는 다른 회사**. ⚠️ **후보 대조는 slug 가 아니라 `name_en` 으로 한다**(중복 등록 사고).
-
-⏳ **보강 거리 넷** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · **Pinterest 2부(예측 UIC)**.
-
-⏳ **Pinterest 의 남은 구멍** — **광고 시스템 기술 자료를 끝내 못 찾았다**(매출의 전부인데) · **시각 검색 자료 없음** · **`AI 팀이 된다`(2026-09) 미독** · **연표 없음**.
+⏳ **보강 거리 넷** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부(예측 UIC).
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
@@ -45,39 +36,39 @@
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ ⭐ `자기 성과를 어디까지 주장하나` 7곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / **Pinterest**(⚠️ **한 회사 세 글이 갈린다** — 7자리 절감 / 수치 0 / 규모만).
+**③ `자기 성과를 어디까지 주장하나` 7곳 + ⏳ WarpStream** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest(한 회사 세 글이 갈린다). ⏳ **WarpStream 이 `40배를 기대했는데 P99 3배` 라고 적는다 — 제목과 결과가 다른 것을 스스로 밝히는 드문 사례다.**
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
 **⑤ `한 코어에 하나씩인가, 여러 코어가 나눠 쓰나`** — ScyllaDB / ClickHouse / Grafana Labs.
 
-**⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs.
+**⑥ ⭐ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / ⏳ **WarpStream**(같은 교차 AZ 비용 문제의 반대편 당사자다).
 
 **⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack.
 
-**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest.
+**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / ⏳ **WarpStream**(비싼 버킷에 먼저 앉히고 몇 분 뒤 싼 데로 옮긴다).
 
-**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가`** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / **Pinterest**(모노레포 통합을 기다리지 않고 다리를 놨다).
+**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가`** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest.
 
-**⑩ `관측 비용을 어디까지 줄이나`** — Razorpay · Airbnb(사는 쪽) / Grafana Labs · Honeycomb(파는 쪽).
+**⑩ ⭐ `관측 비용을 어디까지 줄이나`** — Razorpay · Airbnb(사는 쪽) / Grafana Labs · Honeycomb · ⏳ **VictoriaMetrics**(파는 쪽). ⚠️ **Airbnb 와 Razorpay 가 고른 도구를 만든 회사가 이제 큐에 있다 — 양쪽을 다 볼 수 있게 됐다.**
 
-**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / **Pinterest**(GitHub 을 신뢰의 뿌리로).
+**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest.
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
-**⑬ `애매할 때 어느 쪽으로 넘어지나` 6곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / **Pinterest**(⚠️ **실수와 공격을 구별할 수 없으니 둘 다 막는다**).
+**⑬ `애매할 때 어느 쪽으로 넘어지나` 6곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest.
 
-**⑭ ⭐ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / **Pinterest**(카탈로그의 분류가 아니라 그 사람의 목표).
+**⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest.
 
-**⑮ `언제 쪼개고 언제 합치나`** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / **Pinterest**(⚠️ **모델은 합치고 실행은 워크스페이스별로 쪼갠다 — 같은 회사가 양쪽을 한다**).
+**⑮ `언제 쪼개고 언제 합치나`** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest.
 
-**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / **Pinterest**(자체 테라폼 실행 엔진).
+**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest.
 
-**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest(20GB 테이블 → 시맨틱 ID) / Zepto / Grafana Labs.
+**⑰ ⭐ `기억시킬 것인가 압축할 것인가`** — Pinterest(20GB 테이블 → 시맨틱 ID) / Zepto / Grafana Labs / ⏳ **VictoriaMetrics**(**`zstd 가 최소 약 10% 를 못 줄이면 압축하지 않는다`** — **압축을 언제 포기할지의 임계값을 숫자로 박았다**).
 
-**⑱ `무엇을 최적화할지를 바꾼 순간`** — **Pinterest**(참여 → 유지) / ⏳ Duolingo · DoorDash(확인 필요). ⚠️ **지표를 바꾸면 시스템 다섯 계층이 따라 바뀐다는 것이 이 축의 값이다.**
+**⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest(참여 → 유지) / ⏳ Duolingo · DoorDash(확인 필요).
 
-⏳ **⑲ 새로 보인다 — `신뢰의 뿌리를 어디에 두나`** — **Pinterest**(GitHub OIDC, 클라우드 계층에서 강제) / **Plaid**(⏳ 확인 필요) / **Snyk**(⏳ 확인 필요).
+**⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest(GitHub OIDC, 클라우드 계층에서 강제) / ⏳ Plaid · Snyk(확인 필요).
 
 ## 지금의 진짜 상태
 
