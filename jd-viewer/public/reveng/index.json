@@ -1400,7 +1400,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "러스트로 밑바닥부터 다시 쓴 코드 편집기 — 편집기 자체는 공짜로 주고 그 안에서 에이전트가 하는 일을 판다",
       "updated_at": "2026-09-07",
       "domain": "zed.dev"
