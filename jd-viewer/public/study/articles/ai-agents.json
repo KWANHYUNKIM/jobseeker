@@ -1,0 +1,646 @@
+{
+  "slug": "ai-agents",
+  "title": "AI 에이전트 — 아예 안 만드는 것일 수도 있다",
+  "title_en": "AI Agents: This Might Mean Not Building Them at All",
+  "aliases": [
+    "AI 에이전트",
+    "AI agent",
+    "에이전틱",
+    "agentic",
+    "멀티 에이전트",
+    "MCP"
+  ],
+  "category": "ai",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **복잡도 사다리의 맨 위 칸이다** — 단일 호출 → 검색·예시를 붙인 호출 → 워크플로(코드가 경로를 정한다) → **에이전트(모델이 경로를 정한다)**. ⚠️ 만든 쪽이 먼저 적는다: **\"가장 단순한 해법을 찾아라, 그건 아예 안 만드는 것일 수도 있다.\"** 공고는 에이전트를 **2552번** 부르는데 그것을 멈추는 말은 **120건**이다.",
+  "summary": "⭐ `ai-coding` 이 도구 이름 1802건을 기준으로 삼고 **`AI 에이전트` 2552건은 갈라 세지 못했다**고 남겼다. 여기가 그 자리다.\n\n**1차 자료는 권하는 대신 말린다.**\n\n> ⭐⭐⭐ **\"We recommend finding the simplest solution possible, and only increasing complexity when needed.\"**\n> ⭐⭐⭐ **\"This might mean not building agentic systems at all.\"**\n> ⭐⭐ \"For many applications, however, **optimizing single LLM calls with retrieval and in-context examples is usually enough**.\"\n\n💡 ⭐⭐⭐ **이 백과사전이 모아 온 계보에 그대로 들어간다** — `microservices`(주창자가 \"shouldn't\"), `cqrs`(\"위험한 복잡성\"), `redis`(\"we discourage it\"). ⭐ **만든 쪽이 자기 것의 복잡도에 선을 긋는다.**\n\n**그리고 구분을 준다.**\n\n> ⭐⭐⭐ \"**Workflows** are systems where LLMs and tools are orchestrated through **predefined code paths**.\"\n> ⭐⭐⭐ \"**Agents** ... are systems where LLMs **dynamically direct their own processes and tool usage**, maintaining control over how they accomplish tasks.\"\n> ⭐⭐⭐ \"**workflows offer predictability and consistency** for well-defined tasks, whereas agents are the better option when **flexibility and model-driven decision-making** are needed\"\n> ⭐⭐⭐ \"Agentic systems often **trade latency and cost for better task performance**, and you should consider **when this tradeoff makes sense**.\"\n\n📌 ⚠️⚠️ **그런데 셈이 그 판단의 재료를 안 부른다.** `AI 에이전트|에이전틱` **2552건** · `멀티 에이전트` **327건** 인데 — **`사람 승인|human-in-the-loop` 120건**, **`권한 제한|샌드박스` 86건**이다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 2552 대 120 — 그리고 권한은 86",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| ⚠️ `워크플로\\|workflow` | 2416 | (모집중 **1364 = 56%**) |\n| ⭐ `AI 에이전트\\|AI Agent\\|에이전틱` | **2552** | (모집중 1225) |\n| — `에이전트` 넓게 | 2935 | (모집중 1212) |\n| `오케스트레이션` | 1040 | (모집중 580) |\n| 에이전트를 **만드는 쪽** 문맥 | 933 | (모집중 354) |\n| `자율적으로\\|autonomous` | 738 | (모집중 431) |\n| ⭐ `MCP\\|Model Context Protocol` | **635** | (모집중 317) |\n| `도구 호출\\|tool calling\\|function calling` | 333 | (모집중 158) |\n| `멀티 에이전트` | 327 | (모집중 128) |\n| `가드레일` | 245 | (모집중 172) |\n| ⚠️⚠️ `사람 승인\\|검토\\|human-in-the-loop` | **120** | (모집중 73) |\n| ⚠️⚠️ **`권한 제한\\|분리\\|최소\\|샌드박스`** | **86** | (모집중 55) |\n\n⭐⭐⭐ **아래 두 줄이 이 문서의 축이다.** 💡 **에이전트를 2552번 부르는데, 그것이 무엇을 할 수 있는지 제한하는 말은 86건**이다.\n\n📌 ⭐⭐ **1차 자료가 사람의 개입을 이름으로 든다.**\n\n> ⭐⭐ \"Agents can then **pause for human feedback at checkpoints** or when encountering blockers.\"\n\n⚠️ **그 이름을 부르는 공고는 120건**이다 — ⭐ `가드레일` 245건이 그보다 많은 것도 눈에 띈다(막는 쪽이 멈추는 쪽보다 이름을 더 얻었다).\n\n💡 ⭐⭐⭐ **그리고 정의 그대로인 공고가 있었다.**\n\n> ⭐⭐⭐ `자체 구축한 딥 에이전트 아키텍처 기반으로, **에이전트가 계획 수립부터 도구 실행, 결과 검증까지 수행하는 멀티 에이전트 시스템**으로 동작합니다.` — 코나체인\n\n⭐ **\"LLM 이 자기 절차와 도구 사용을 스스로 지휘한다\"** 는 1차 자료의 에이전트 정의와 정확히 겹친다.\n\n📌 ⭐⭐ **그리고 둘을 함께 쓰는 곳도 있다.**\n\n> ⭐⭐⭐ `특히 다양한 **멀티스텝 Agent Workflow, Multi-agent 시스템, MCP**(Model Context Protocol) 기반 시스템 연동, RAG 파이프라인 등 AI Agent 백엔드 영역을 본격적으로 확장해 나가고 있어요.` — 액션파워\n> ⭐⭐ `AI Platform Interest Areas: **AI Agent Workflow, Evaluation Harness**, 운영 자동화 경험` — 베이글코드\n\n⭐ **\"Agent Workflow\"** 라는 표현이 1차 자료의 두 낱말을 붙여 쓴다 — 📌 ⚠️ **원문은 그 둘을 가르는데** 공고에서는 한 덩어리다.\n\n⚠️ **셈 주의 둘.** `워크플로` **2416건은 모집중 56%** 로 튀는데 — ⭐ **CI 워크플로**(→ `github-actions`, 그 문서가 `워크플로` 를 alias 로 갖는다)와 **업무 워크플로**가 섞이기 때문이라 **에이전트 문맥의 값으로 쓰지 않았다.** 그리고 `에이전트` 를 넓게 세면 2935건인데 **부동산·보험 에이전트** 같은 다른 뜻이 섞일 수 있어 **`AI 에이전트|AI Agent|에이전틱` 2552건을 기준**으로 삼았다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 그리고 만든 쪽이 \"안 만드는 것일 수도 있다\"고 적는다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ],
+      "body": "⭐⭐⭐ **에이전트는 갑자기 나온 것이 아니라 복잡도 사다리의 맨 위 칸이다.** 1차 자료가 그 사다리를 순서대로 적는다 — **아래 칸으로 되면 위로 올라가지 말라**는 형태로.\n\n| 칸 | 무엇인가 | 원문 |\n|---|---|---|\n| ⭐ ① **단일 LLM 호출** | 한 번 묻고 한 번 받는다 | — |\n| ⭐⭐ ② **검색·예시를 붙인 단일 호출** | 넣을 것을 골라 준다 | \"optimizing single LLM calls with **retrieval and in-context examples** is **usually enough**\" |\n| ⭐⭐⭐ ③ **워크플로** | **코드가 경로를 미리 정한다** | \"orchestrated through **predefined code paths**\" |\n| ⭐⭐⭐ ④ **에이전트** | **모델이 경로를 정한다** | \"LLMs **dynamically direct their own processes and tool usage**\" |\n\n💡 ⭐⭐ **②가 이 백과사전의 `rag` 와 `prompting`** 이다 — 📌 **그 둘로 되면 ③④는 필요 없다**고 원문이 적는다.\n\n⭐⭐⭐ **그리고 만든 쪽이 그 사다리를 오르지 말라고 먼저 말한다.**\n\n> ⭐⭐⭐ **\"We recommend finding the simplest solution possible, and only increasing complexity when needed.\"**\n> ⭐⭐⭐ **\"This might mean not building agentic systems at all.\"**\n\n⚠️ **이 백과사전이 모아 온 계보에서 앞쪽에 놓인다** — `redis`(\"we discourage it\"), `cqrs`(\"위험한 복잡성\"), `microservices`(주창자가 \"shouldn't\"). ⭐ **여기는 자기 제품 범주를 안 쓰는 선택지를 명시한다.**\n\n📌 ⭐⭐⭐ **왜 이런 물건이 필요해졌나 — 아팠던 것은 \"단계 수를 미리 못 세는 일\"이다.**\n\n> ⭐⭐ \"Agents can be used for **open-ended problems** where it's **difficult or impossible to predict the required number of steps**\"\n\n⭐ **미리 셀 수 있으면 코드로 적으면 된다**(워크플로). ⚠️ **못 세는 일**(자료를 찾아 가며 답을 좁혀 가는 조사, 고쳐 보고 실패하면 다른 길로 가는 디버깅)은 **코드 경로로 적을 수가 없어서** 이 물건이 나왔다.\n\n💡 ⭐⭐⭐ **대가도 이름으로 적는다.**\n\n> ⭐⭐⭐ **\"Agentic systems often trade latency and cost for better task performance, and you should consider when this tradeoff makes sense.\"**\n\n⭐ **성능을 지연과 비용으로 산다** — 📌 `prompting` 의 가이드가 **\"지연과 비용은 모델을 바꾸는 편이 쉽다\"** 고 한 것과 **정반대 방향**이다.\n\n📌 ⭐⭐ **프레임워크에도 선을 긋는다.**\n\n> ⭐⭐ \"they often create **extra layers of abstraction that can obscure the underlying prompts and responses, making them harder to debug**.\"\n\n⚠️ ⭐ **`hexagonal-architecture` 와 반대 방향이다** — 거기서는 추상이 **바깥을 격리해서** 좋았고, 여기서는 **안을 가려서** 나쁘다. 💡 **차이는 \"무엇을 보아야 하는가\"** 이고, ⚠️ **LLM 시스템에서는 프롬프트와 응답을 봐야 한다.**\n\n⚠️ 그런데 공고는 프레임워크를 이름으로 요구한다 — `**LangChain 등 AI 에이전트 프레임워크** 실무 경험자`(디피플래닝). ⭐ **틀렸다는 게 아니라 그 경고를 읽었는지가 갈린다.**"
+    },
+    {
+      "id": "two",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 워크플로인가 에이전트인가",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ],
+      "body": "⭐ **1차 자료의 구분이 한 문장씩이다.**\n\n| | 원문 |\n|---|---|\n| ⭐⭐⭐ **워크플로** | \"systems where LLMs and tools are orchestrated through **predefined code paths**\" |\n| ⭐⭐⭐ **에이전트** | \"systems where LLMs **dynamically direct their own processes and tool usage**, maintaining control over **how they accomplish tasks**\" |\n\n💡 ⭐⭐ **가르는 것은 \"경로를 누가 정하나\"** 다 — **미리 코드로 정해 두었으면 워크플로**, **모델이 그때그때 정하면 에이전트**.\n\n📌 ⭐⭐⭐ **그리고 어느 쪽을 고르는지에 대한 답도 짧다.**\n\n> ⭐⭐⭐ **\"workflows offer predictability and consistency for well-defined tasks, whereas agents are the better option when flexibility and model-driven decision-making are needed\"**\n> ⭐⭐ \"Agents can be used for **open-ended problems** where it's **difficult or impossible to predict the required number of steps**\"\n\n⭐ **단계 수를 미리 알 수 있으면 워크플로**, 💡 ⚠️ **몇 단계가 필요한지 예측이 어렵거나 불가능하면 에이전트**다.\n\n📌 ⭐⭐ **그러면 판단 기준이 하나로 정리된다.**\n\n| 물음 | 워크플로 | 에이전트 |\n|---|---|---|\n| 단계 수를 미리 아나 | ⭐ **안다** | ⚠️ **모른다** |\n| 무엇을 얻나 | **예측 가능성·일관성** | **유연성·모델의 판단** |\n| ⚠️ 무엇을 내주나 | 유연성 | ⭐ **지연과 비용** |\n\n💡 ⭐⭐⭐ **공고에서는 이 구분이 잘 안 보인다** — `Agent Workflow`(액션파워·베이글코드)처럼 **두 낱말이 붙어 쓰인다.** ⚠️ `워크플로` 자체는 2416건이지만 **CI 워크플로가 섞여** 에이전트 문맥으로 갈라 세지 못했다.\n\n📌 ⭐⭐ **사람이 들어가는 자리도 원문에 있다.**\n\n> ⭐⭐ \"Agents can then **pause for human feedback at checkpoints** or when encountering blockers.\"\n\n⚠️ **\"체크포인트에서 멈춘다\"** — ⭐ **에이전트가 스스로 경로를 정하므로 멈출 지점을 사람이 정해 둬야 한다**는 뜻으로 읽힌다. 💡 ⚠️ **그런데 공고에서 `사람 승인|human-in-the-loop` 는 120건**이고 `권한 제한|샌드박스` 는 **86건**이다.\n\n⭐ **보안을 이름으로 든 공고가 있었다.**\n\n> ⭐⭐ `**개인정보 유출 방지 보안**을 고려한 AI Agent 설계 경험` — 골든플래닛\n> ⭐ `부서별 Budget 추적, PII 마스킹, 프롬프트 보안 등 **AI 거버넌스 레이어** 개발` — 랩씨드(`prompting` 사이클에서 인용)\n\n📌 ⭐ **연결 규격도 이름을 얻었다** — `MCP` **635건**.\n\n> ⭐⭐ `**MCP 기반 외부 연동 및 Tool Calling 구조 구축**` — 액션파워\n> `**MCP 기반 시스템 연동 구조**를 설계/적용해본 경험이 있으신 분` — 액션파워\n\n⚠️ **이 문서는 그 규격의 1차 자료를 열지 않았다**(`open_questions`)."
+    },
+    {
+      "id": "nextgen",
+      "kind": "limits",
+      "heading": "⭐⭐ 이 물건의 한계 — 그리고 그 한계에서 나온 것들",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ],
+      "body": "⭐ **에이전트의 한계는 정의에서 곧바로 나온다.** **모델이 경로를 정한다**는 것이 장점이자 한계다 — 💡 **경로를 미리 못 보므로 무엇을 할지도 미리 못 본다.**\n\n| 한계 | 원문 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **예측 불가능** | 워크플로가 주는 \"**predictability and consistency**\" 를 내준다 | ⭐ **체크포인트** — \"pause for **human feedback at checkpoints**\" (공고 **120건**) |\n| ⭐⭐ **느리고 비싸다** | \"**trade latency and cost** for better task performance\" | ⭐ 값싼 칸으로 되돌아가기 — **워크플로**·**단일 호출**(→ `rag`·`prompting`) |\n| ⭐⭐ **무엇에 닿을지 모른다** | 모델이 도구를 스스로 고른다 | ⭐ **권한 제한·샌드박스**(공고 **86건**) · **가드레일**(**245건**) → `authz` |\n| ⭐⭐ **도구를 붙일 방법이 제각각** | — | ⭐ **MCP** 같은 연결 규격(공고 **635건**) |\n| ⭐⭐ **맞았는지 판정하기 어렵다** | 경로가 매번 달라 결과도 달라진다 | ⭐ **평가 하네스** — 베이글코드 `AI Agent Workflow, **Evaluation Harness**` |\n| ⚠️ **프레임워크가 속을 가린다** | \"obscure the underlying prompts and responses\" | ⭐ **프롬프트·응답 로깅**(→ `observability`) |\n\n⭐⭐⭐ **표의 오른쪽 열이 이 낱말의 생태계다** — 💡 **한계 하나마다 이름이 하나씩 붙었고**, 📌 **공고의 셈이 그 이름들을 실제로 부른다**(`MCP` 635 · `가드레일` 245 · `사람 승인` 120 · `권한 제한` 86).\n\n⚠️⚠️ **다만 오른쪽 열의 셈이 왼쪽보다 훨씬 작다** — `AI 에이전트` 는 **2552건**인데 **가장 큰 대응물인 MCP 가 635건**이고 **가장 작은 권한 제한은 86건**이다. 💡 ⭐ **한계를 메우는 것들이 아직 덜 불린다**는 뜻으로 읽힌다(⚠️ 이 해석은 추론이다).\n\n📌 ⭐⭐ **그리고 아직 이름이 안 붙은 자리도 있다.** ⚠️ **여러 단계를 거칠 때 결과가 어떻게 되는지**에 대한 **1차급 자료를 이 문서는 찾지 못했다** — 검색에서 나온 것은 전부 2차였다(`open_questions`). ⭐ **그 자리는 아직 비어 있다.**"
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 그리고 주변에 무엇이 생겼나",
+      "confidence": "inferred",
+      "body": "⚠️ **이 절은 공고와 셈에서 관찰한 것이다.**\n\n⭐⭐ **공고에서 에이전트가 실제로 얹혀 있는 자리들.**\n\n| 어디 | 무엇을 하나 | 공고 |\n|---|---|---|\n| ⭐ **사내 데이터 조회·분석** | ERP 데이터를 자연어로 묻고 시각화 | 코나체인 `대체투자 AI 에이전트 ... **ERP 데이터를 기반으로 의사결정을 지원**` |\n| ⭐ **검색** | 문서를 찾아 답한다 | 골든플래닛 `**RAG 를 사용한 검색용 AI Agent** 구현` |\n| ⭐ **개발 자체** | 요구사항 분석·구현·검증 | 베이글코드 `AI Agent를 **요구사항 분석, 설계, 구현, 테스트, 리뷰, 문서화** 과정에 연결` |\n| ⭐ **음성·통화** | 통화 라이프사이클을 태운다 | 플릭 `**프롬프트와 플로우 오케스트레이션, 도구 호출, 통화 라이프사이클 관리**` |\n| ⭐ **기존 업무 전산화의 다음 칸** | 엑셀·수기 → 웹 → 에이전트 | 고래사 `엑셀 및 수기로 운영해온 업무 ... 통합 웹 시스템으로 이관하고 나아가 **Agentic AI를 활용한 업무 진행**` |\n\n💡 ⭐⭐⭐ **마지막 줄이 이 낱말의 위치를 보여 준다** — **전산화의 끝이 아니라 그다음 칸**으로 놓인다.\n\n📌 ⭐⭐ **주변에 함께 생긴 것들**(셈).\n\n| | 건수 | 무엇인가 |\n|---|---|---|\n| `오케스트레이션` | **1040** | 여러 단계·여러 에이전트를 엮는 층 |\n| ⭐ `MCP` | **635** | **도구를 붙이는 연결 규격** |\n| `도구 호출\\|tool calling` | 333 | 모델이 함수를 부르는 방식 |\n| `멀티 에이전트` | 327 | 에이전트를 여럿 두는 구성 |\n| `가드레일` | 245 | 막는 층 |\n| ⚠️ `사람 승인\\|human-in-the-loop` | **120** | 멈추는 층 |\n| ⚠️ `권한 제한\\|샌드박스` | **86** | 닿는 범위를 좁히는 층 |\n\n⭐ **위 넷은 \"더 하게 하는 것\"이고 아래 셋은 \"덜 하게 하는 것\"** 이다 — 💡 ⚠️ **위가 훨씬 크다.**\n\n📌 ⭐ **그리고 이 백과사전 안에서의 자리**: **아래 칸은 `rag`·`prompting`**(원문이 \"usually enough\" 라고 한 것), **옆은 `ai-coding`**(도구로 쓰는 쪽 1802건), **밑은 `authz`**(무엇에 닿을 수 있나)."
+    },
+    {
+      "id": "limits",
+      "kind": "extra",
+      "heading": "이 문서의 경계 — 다루지 않은 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 에이전트 패턴들을 다루지 않았다.** ⭐ 1차 자료는 **여러 워크플로 패턴**(체이닝·라우팅·병렬화·오케스트레이터 등)을 이름과 그림으로 설명하는데 — 📌 **이 문서는 \"워크플로냐 에이전트냐\"라는 갈림길 하나만** 다뤘다. ⚠️ **가장 큰 빈자리다.**\n\n**2. ⚠️⚠️ MCP 를 다루지 않았다**(**635건**). ⭐ 공고에서 이름을 얻은 규격인데 **1차 자료를 열지 않았다.** 📌 **다음 후보로 크다.**\n\n**3. ⚠️⚠️ 다단계 실패에 관한 1차급 자료를 못 찾았다.** ⭐⭐ **규칙대로 검색했다.** ⚠️ 나온 것은 **개인 블로그·컨설팅 글**이었고 — **단계가 늘수록 성공률이 곱해진다는 산술**과 **데모가 그것을 가린다**는 주장, **프로젝트 취소 전망** 같은 것들이었다. 📌 **전부 2차라 근거로 쓰지 않았다.** ⭐ 다만 **1차 자료의 \"trade latency and cost\"·\"predictability and consistency\" 와 방향이 같다**는 것만 적어 둔다.\n\n**4. ⚠️ `워크플로` 2416건을 갈라 세지 못했다** — ⭐ **CI 워크플로**(→ `github-actions` 가 `워크플로` 를 alias 로 갖는다)와 **업무·에이전트 워크플로**가 섞여 **모집중 56%** 로 튄다. 📌 **그래서 에이전트 문맥의 값으로 쓰지 않았다.**\n\n**5. ⚠️ `에이전트` 2935건에 다른 뜻이 섞였을 수 있다** — ⭐ 부동산·보험 등. 📌 **`AI 에이전트|AI Agent|에이전틱` 2552건을 기준**으로 삼았고 **그 차이(383건)는 확인하지 않았다.**\n\n**6. ⚠️ 만드는 쪽과 쓰는 쪽을 완전히 가르지 못했다.** ⭐ **에이전트를 개발·구현·설계하는 문맥이 933건**으로 나왔으나 — ⚠️ **나머지 1600건 남짓이 무엇인지는 세지 않았다.** 📌 `ai-coding` 이 남긴 숙제를 **절반만** 풀었다.\n\n**7. ⚠️ 평가를 다루지 않았다** — ⭐ 베이글코드 공고가 `AI Agent Workflow, **Evaluation Harness**` 를 함께 적는데, 📌 **평가는 `prompting` 이 다뤘고**(그쪽 `eval` 113건) **에이전트 특유의 평가는 안 봤다.**\n\n**8. ⭐ 겹침을 확인했다** — `ai-coding` 이 `에이전트` 를 9회, `rag` 가 3회 언급하지만 **정의도 구분도 다루지 않는다.** ⚠️ `워크플로` alias 는 **`github-actions` 가 갖고 있어 가져오지 않았다.**\n\n**9. ⭐ `market` 이 없다** — `tech_relations.json` 에 `에이전트` 이름이 **없다**(`LangChain` 206건이 있으나 그건 프레임워크이고, ⚠️ **1차 자료가 경고한 쪽**이다)."
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 원문",
+      "note": "⭐ 전부 **`Building effective agents`** 원문이다. 📌 **첫 두 줄이 이 문서의 축** — 만든 쪽이 **안 만드는 선택지**를 명시한다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 권고",
+          "**\"We recommend finding the simplest solution possible, and only increasing complexity when needed.\"**"
+        ],
+        [
+          "⭐⭐⭐ 그 뜻",
+          "**\"This might mean not building agentic systems at all.\"**"
+        ],
+        [
+          "⭐⭐ 대안",
+          "\"For many applications, however, **optimizing single LLM calls with retrieval and in-context examples is usually enough**.\""
+        ],
+        [
+          "⭐⭐⭐ 워크플로",
+          "\"systems where LLMs and tools are orchestrated through **predefined code paths**\""
+        ],
+        [
+          "⭐⭐⭐ 에이전트",
+          "\"systems where LLMs **dynamically direct their own processes and tool usage**, maintaining control over how they accomplish tasks\""
+        ],
+        [
+          "⭐⭐⭐ 어느 쪽인가",
+          "**\"workflows offer predictability and consistency for well-defined tasks, whereas agents are the better option when flexibility and model-driven decision-making are needed\"**"
+        ],
+        [
+          "⭐⭐⭐ 대가",
+          "**\"Agentic systems often trade latency and cost for better task performance, and you should consider when this tradeoff makes sense.\"**"
+        ],
+        [
+          "⭐⭐ 언제 에이전트",
+          "\"**open-ended problems** where it's **difficult or impossible to predict the required number of steps**\""
+        ],
+        [
+          "⭐⭐ 프레임워크 경고",
+          "\"they often create **extra layers of abstraction that can obscure the underlying prompts and responses, making them harder to debug**\""
+        ],
+        [
+          "⭐⭐ 사람의 자리",
+          "\"Agents can then **pause for human feedback at checkpoints** or when encountering blockers.\""
+        ],
+        [
+          "⭐⭐ 도구도 프롬프트다",
+          "**\"Tool definitions and specifications should be given just as much prompt engineering attention as your overall prompts.\"**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️ 이 낱말을 셀 때",
+      "note": "⭐⭐⭐ **2552 대 120 대 86.** 📌 **에이전트가 무엇을 할 수 있는지 제한하는 말이 가장 작다.** ⚠️ `워크플로` 2416건은 **CI 문맥이 섞여** 에이전트 값으로 쓰지 않았다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "⚠️ `워크플로\\|workflow`",
+          "2416인데 **모집중 56%** — ⭐ **CI 워크플로가 섞인다**(→ `github-actions`). **쓰지 않았다**"
+        ],
+        [
+          "⭐ `AI 에이전트\\|AI Agent\\|에이전틱`",
+          "**2552 (모집중 1225)** — ⭐ **이 문서의 기준**"
+        ],
+        [
+          "⚠️ `에이전트` 넓게",
+          "2935 — ⚠️ **다른 분야의 에이전트가 섞일 수 있다**(차이 383건 미확인)"
+        ],
+        [
+          "`오케스트레이션`",
+          "1040 (모집중 580)"
+        ],
+        [
+          "에이전트를 **만드는 쪽** 문맥",
+          "933 (모집중 354) — ⚠️ **나머지는 세지 못했다**"
+        ],
+        [
+          "`자율적으로\\|autonomous`",
+          "738 (모집중 431)"
+        ],
+        [
+          "⭐ `MCP\\|Model Context Protocol`",
+          "**635 (모집중 317)** — ⚠️ **다루지 못했다**"
+        ],
+        [
+          "`도구 호출\\|tool calling`",
+          "333 (모집중 158)"
+        ],
+        [
+          "`멀티 에이전트`",
+          "327 (모집중 128)"
+        ],
+        [
+          "`가드레일`",
+          "245 (모집중 172) — ⭐ **사람 개입보다 많다**"
+        ],
+        [
+          "⚠️⚠️ `사람 승인\\|human-in-the-loop`",
+          "**120 (모집중 73)**"
+        ],
+        [
+          "⚠️⚠️ **`권한 제한\\|분리\\|최소\\|샌드박스`**",
+          "**86 (모집중 55)**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "pick",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 워크플로인가 에이전트인가",
+      "note": "⭐ 전부 원문에서 왔다(`confirmed`). 📌 **가르는 것은 \"경로를 누가 정하나\"** 이고, **판단 기준은 \"단계 수를 미리 아는가\"** 다.",
+      "columns": [
+        "",
+        "워크플로",
+        "에이전트"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 경로",
+          "\"orchestrated through **predefined code paths**\"",
+          "\"LLMs **dynamically direct their own processes and tool usage**\""
+        ],
+        [
+          "⭐⭐ 단계 수",
+          "**미리 안다**",
+          "\"**difficult or impossible to predict** the required number of steps\""
+        ],
+        [
+          "⭐⭐⭐ 얻는 것",
+          "\"**predictability and consistency** for well-defined tasks\"",
+          "\"**flexibility and model-driven decision-making**\""
+        ],
+        [
+          "⭐⭐⭐ 내주는 것",
+          "유연성",
+          "**\"trade latency and cost\"**"
+        ],
+        [
+          "⭐ 사람의 자리",
+          "코드 경로에 이미 있다",
+          "\"**pause for human feedback at checkpoints**\" — ⚠️ 공고 **120건**"
+        ],
+        [
+          "⚠️ 공고에서는",
+          "`워크플로` 2416(CI 섞임)",
+          "⭐ **`Agent Workflow` 처럼 붙여 쓴다**(액션파워·베이글코드)"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "id": "line",
+      "kind": "compare",
+      "caption": "⭐⭐ 만든 쪽이 자기 것에 그은 선 — 계보에서",
+      "note": "각 인용은 해당 문서의 1차 자료다. ⭐ **줄 세운 것은 이 백과사전의 관점**(`confidence: inferred`). 📌 **마지막 줄이 가장 세다** — **자기 제품 범주를 안 쓰는 선택지를 명시한다.**",
+      "columns": [
+        "문서",
+        "무엇에 긋나",
+        "표현"
+      ],
+      "rows": [
+        [
+          "`redis`",
+          "자기 기능에",
+          "\"we discourage it\""
+        ],
+        [
+          "`cqrs`",
+          "자기 패턴에",
+          "\"위험한 복잡성\" · \"바운디드 컨텍스트에만\""
+        ],
+        [
+          "`microservices`",
+          "자기 방식에",
+          "\"you **shouldn't** start a new project with microservices\""
+        ],
+        [
+          "`prompting`",
+          "자기 기능의 범위에",
+          "\"**Not every** ... is best solved by prompt engineering\""
+        ],
+        [
+          "⭐⭐⭐ **`ai-agents`**",
+          "**자기 제품 범주에**",
+          "⭐⭐⭐ **\"This might mean not building agentic systems at all.\"**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ 가장 단순한 해법",
+      "en": "simplest solution possible",
+      "what": "\"**finding the simplest solution possible, and only increasing complexity when needed**\" — ⚠️ 그것이 **\"에이전트 시스템을 아예 안 만드는 것\"** 일 수도 있다"
+    },
+    {
+      "term": "⭐⭐⭐ 워크플로",
+      "en": "workflow",
+      "what": "\"orchestrated through **predefined code paths**\" — ⭐ **경로를 코드가 미리 정한다.** 얻는 것은 **예측 가능성과 일관성**"
+    },
+    {
+      "term": "⭐⭐⭐ 에이전트",
+      "en": "agent",
+      "what": "\"LLMs **dynamically direct their own processes and tool usage**\" — ⭐ **모델이 그때그때 경로를 정한다.** ⚠️ 대가는 **지연과 비용**"
+    },
+    {
+      "term": "⭐⭐ 열린 문제",
+      "en": "open-ended problems",
+      "what": "\"**difficult or impossible to predict the required number of steps**\" — ⭐ **단계 수를 미리 못 세면 에이전트의 자리**다"
+    },
+    {
+      "term": "⭐⭐ 체크포인트",
+      "en": "human feedback at checkpoints",
+      "what": "에이전트가 **멈춰 사람의 피드백을 받는 지점.** ⚠️ 공고에서 `사람 승인|human-in-the-loop` 는 **120건**"
+    },
+    {
+      "term": "⚠️ 프레임워크의 대가",
+      "en": "—",
+      "what": "\"**extra layers of abstraction that can obscure the underlying prompts and responses, making them harder to debug**\" — ⭐ **`hexagonal-architecture` 와 반대 방향**이다"
+    },
+    {
+      "term": "⭐⭐ 도구 정의",
+      "en": "tool definitions",
+      "what": "**\"should be given just as much prompt engineering attention as your overall prompts\"** — 💡 **도구 설명도 프롬프트다**(→ `prompting`)"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "에이전트를 만들지 정한다",
+      "pick": "⭐⭐⭐ **단계 수를 미리 셀 수 있는지 묻는다**",
+      "over": "에이전트 프레임워크부터 고르기",
+      "why": "⭐⭐⭐ 1차 자료가 그것으로 가른다 — 워크플로는 \"**predefined code paths**\", 에이전트는 \"**difficult or impossible to predict the required number of steps**\" 인 열린 문제. 💡 그리고 **\"finding the simplest solution possible\"** 이 먼저이고 — ⚠️ **\"This might mean not building agentic systems at all.\"**",
+      "tradeoff": "⚠️ **워크플로는 유연하지 않아 새 경우마다 코드를 고쳐야 한다.** ⭐ 그래도 **얻는 것이 예측 가능성과 일관성**이고, 📌 **에이전트는 그것을 지연과 비용으로 바꾼다**(\"trade latency and cost\")",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "situation": "에이전트를 만들기로 했다",
+      "pick": "⭐⭐ **멈출 지점을 먼저 정한다**",
+      "over": "끝까지 자율로 돌리고 결과만 보기",
+      "why": "⭐⭐ 원문이 그 자리를 든다 — \"Agents can then **pause for human feedback at checkpoints** or when encountering blockers.\" 💡 ⭐ **모델이 스스로 경로를 정하므로 멈출 지점은 사람이 정해 둬야 한다.** ⚠️ 공고에서 `사람 승인|human-in-the-loop` 는 **120건**, `권한 제한|샌드박스` 는 **86건**뿐이다",
+      "tradeoff": "⚠️ **멈추면 느려지고, 사람이 붙어 있어야 한다** — 에이전트를 쓰는 이유와 부딪힌다. ⭐ 그래도 **되돌릴 수 없는 일**(외부 전송·결제·삭제) 앞에는 필요하고, 📌 **`refactoring` 의 조건과 같은 발상**이다: **되돌릴 단위를 작게**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "situation": "에이전트 프레임워크를 도입한다",
+      "pick": "⭐ **밑에 깔린 프롬프트와 응답을 볼 수 있는지 확인한다**",
+      "over": "기능이 많은 것을 고르기",
+      "why": "⭐⭐ 1차 자료가 경고한다 — \"they often create **extra layers of abstraction that can obscure the underlying prompts and responses, making them harder to debug**.\" ⚠️ **LLM 시스템에서 봐야 할 것이 바로 그 둘**이라, 📌 **가려지면 무엇이 틀렸는지 알 수 없다**",
+      "tradeoff": "⚠️ **직접 만들면 시간이 든다.** ⭐ 그래도 **로그로 프롬프트와 응답을 남길 수 있으면 프레임워크를 써도 된다** — 📌 공고는 프레임워크를 이름으로 요구한다(디피플래닝 `LangChain 등 AI 에이전트 프레임워크`), ⚠️ **그 경고를 읽었는지가 갈릴 뿐이다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "situation": "도구를 붙인다",
+      "pick": "⭐ **도구 설명을 프롬프트처럼 다듬는다**",
+      "over": "함수 시그니처만 넘기기",
+      "why": "⭐⭐ **\"Tool definitions and specifications should be given just as much prompt engineering attention as your overall prompts.\"** 💡 ⭐ **모델은 그 설명을 읽고 언제 쓸지 정한다** — ⚠️ 설명이 모호하면 **엉뚱한 때 부른다**",
+      "tradeoff": "⚠️ **도구가 많아질수록 손이 많이 간다.** ⭐ 그래서 **도구 수를 줄이는 것이 먼저**이고, 📌 그건 다시 **\"가장 단순한 해법\"** 으로 돌아간다. ⚠️ 공고에서 `도구 호출` 은 333건인데 **도구 \"설계\"를 이름으로 든 곳은 드물다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "situation": "\"AI 에이전트 경험\"을 이력서에 적는다",
+      "pick": "⭐ **왜 워크플로가 아니라 에이전트였는지 적는다**",
+      "over": "에이전트 시스템을 개발했다고 적기",
+      "why": "⭐⭐ `AI 에이전트` 는 **2552건이 적는다** — ⚠️ **흔하다.** 그런데 **단계 수를 미리 못 세는 문제였는지**를 말할 수 있는 사람은 드물다. 💡 그리고 1차 자료의 첫 권고가 **\"안 만드는 것일 수도 있다\"** 이므로 — ⭐ **만들기로 한 이유가 곧 판단력의 증거**다",
+      "tradeoff": "길어진다. ⭐ 그래도 **\"에이전트를 만들었다\"는 무엇을 했는지 안 알려 주고**, **\"단계 수를 예측할 수 없어서 워크플로를 포기했다\"는 판단을 알려 준다.** 📌 ⚠️ **멈출 지점과 권한 제한을 함께 적으면 더 드물다**(120건·86건)",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐⭐ 에이전트부터 만든다",
+      "why": "⭐⭐⭐ **1차 자료의 첫 권고가 정반대다** — \"finding the **simplest solution possible**, and **only increasing complexity when needed**\", 그리고 **\"This might mean not building agentic systems at all.\"** ⚠️ 대안도 구체적이다: \"**optimizing single LLM calls with retrieval and in-context examples is usually enough**\"",
+      "fix": "⭐ **검색과 예시를 붙인 단일 호출부터 해 본다** — 📌 그 둘이 **`rag` 와 `prompting`** 이다. ⚠️ **그것으로 안 되는 것이 확인된 뒤에** 복잡도를 올린다",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐ 워크플로로 될 일에 에이전트를 쓴다",
+      "why": "⭐⭐⭐ **\"workflows offer predictability and consistency for well-defined tasks\"** — ⚠️ 그리고 에이전트는 **\"trade latency and cost for better task performance\"** 다. 💡 **단계 수를 미리 셀 수 있는 일에 에이전트를 쓰면 예측 가능성을 잃고 값만 치른다**",
+      "fix": "⭐ **\"이 일은 몇 단계인가\"를 먼저 답해 본다.** 📌 답이 나오면 **코드 경로로 고정**하고, 안 나오면 그때가 에이전트의 자리다. ⚠️ 공고에서 `Agent Workflow` 처럼 **둘이 붙어 쓰이는데**, **원문은 그 둘을 가른다**",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐ 멈출 지점 없이 자율로 돌린다",
+      "why": "⚠️⚠️ **에이전트는 정의상 스스로 경로를 정한다**(\"dynamically direct their own processes and tool usage\") — ⭐ 그래서 **어디서 멈출지는 사람이 정해 둬야 한다.** 💡 원문이 그 자리를 든다: \"**pause for human feedback at checkpoints** or when encountering blockers\". ⚠️ 그런데 공고에서 그 이름은 **120건**, 권한 제한은 **86건**이다",
+      "fix": "⭐ **되돌릴 수 없는 일 앞에 체크포인트를 둔다** — 외부 전송·결제·삭제·배포. 📌 그리고 **에이전트가 쓸 수 있는 도구와 권한을 먼저 좁힌다**(→ `authz`). ⚠️ **`가드레일` 은 245건인데 `사람 승인` 은 120건**이다",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "trap": "프레임워크가 프롬프트와 응답을 가린다",
+      "why": "⭐⭐ 원문이 직접 경고한다 — \"**extra layers of abstraction that can obscure the underlying prompts and responses, making them harder to debug**\". ⚠️ **LLM 시스템에서 봐야 할 것이 그 둘**인데 가려진다. 💡 ⭐ **`hexagonal-architecture` 와 반대 방향**이다: 거기서는 추상이 **바깥을 격리해서** 좋았다",
+      "fix": "⭐ **최종 프롬프트와 원 응답을 로그로 남긴다.** 📌 그러면 프레임워크를 써도 된다 — ⚠️ **못 남기는 프레임워크라면 그 경고가 그대로 적용된다.** ⭐ 공고는 프레임워크를 이름으로 요구한다(디피플래닝)"
+    },
+    {
+      "trap": "도구 설명을 대충 적는다",
+      "why": "⭐⭐ **\"Tool definitions and specifications should be given just as much prompt engineering attention as your overall prompts.\"** ⚠️ **모델은 그 설명만 보고 언제 어떤 도구를 쓸지 정한다** — 💡 설명이 모호하면 **엉뚱한 때 부르거나 아예 안 부른다**",
+      "fix": "⭐ **도구 설명을 프롬프트처럼 시험한다** — 📌 `prompting` 의 전제가 그대로 걸린다: **성공 기준과 시험 방법.** ⚠️ 그리고 **도구 수를 줄이는 것이 먼저**다",
+      "sources": [
+        {
+          "title": "Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "publisher": "Anthropic",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+        }
+      ]
+    },
+    {
+      "trap": "⚠️ `워크플로` 로 에이전트 수요를 센다",
+      "why": "⭐⭐ **이 사이클이 걸렸다.** `워크플로|workflow` 는 **2416건인데 모집중 56%** 로 튄다 — ⚠️ **CI 워크플로**(→ `github-actions`, 그 문서가 `워크플로` 를 alias 로 갖는다)와 **업무·에이전트 워크플로**가 섞이기 때문이다",
+      "fix": "⭐ **`AI 에이전트|AI Agent|에이전틱` 로 좁혀 센다**(2552건). 📌 ⚠️ **`에이전트` 만으로도 안 된다** — 2935건에는 **다른 분야의 에이전트**가 섞일 수 있다(차이 383건)"
+    },
+    {
+      "trap": "이 문서를 읽고 에이전트를 만들 수 있다고 여긴다",
+      "why": "⚠️⚠️ **패턴들을 하나도 다루지 않았다.** ⭐ 1차 자료는 **여러 워크플로 패턴**(체이닝·라우팅·병렬화·오케스트레이터 등)을 설명하는데 — 📌 **이 문서는 \"워크플로냐 에이전트냐\" 갈림길 하나만** 다뤘다. ⚠️ 그리고 **MCP(635건)도 안 봤다**",
+      "fix": "⭐ **원문이 짧다** — 패턴은 거기서 직접 읽는다. 📌 이 문서가 주는 것은 **\"안 만드는 선택지\"와 \"경로를 누가 정하나\"** 둘이다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐⭐ **에이전트로 만들려는(또는 만든) 일을 하나 골라, 그 일이 몇 단계인지 세어 본다.** 셀 수 있으면 그 단계를 코드 경로로 적어 본다.",
+      "done_when": "⭐ **단계 수를 셀 수 있는지 없는지**가 갈렸고, ⚠️ 셀 수 있다면 **왜 에이전트여야 하는지** 답할 수 있다(또는 답할 수 없다는 것을 안다).",
+      "why": "⭐⭐⭐ 1차 자료가 그것으로 가른다 — 에이전트는 \"**difficult or impossible to predict the required number of steps**\" 인 열린 문제의 것이다. 💡 ⚠️ **대개 셀 수 있고**, ⭐ 그러면 **워크플로가 예측 가능성과 일관성을 준다.**",
+      "no_hardware": "모델 접근이 없어도 된다 — **종이에 단계를 적어 보는 것으로 충분하다.**",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **에이전트가 할 수 있는 일의 목록을 적고, 그중 되돌릴 수 없는 것에 표시한다.** 그리고 **그 앞에 체크포인트가 있는지** 확인한다.",
+      "done_when": "⭐ **되돌릴 수 없는 일이 몇 개인지** 나왔고, ⚠️ 그중 **사람의 승인 없이 실행되는 것**이 있는지 안다.",
+      "why": "⭐⭐ 원문이 그 자리를 든다 — \"**pause for human feedback at checkpoints**\". 💡 ⚠️ **에이전트는 정의상 스스로 경로를 정하므로** 멈출 지점은 사람이 정해 둬야 한다. 📌 ⭐ 공고에서 그 이름은 **120건**, `권한 제한|샌드박스` 는 **86건**뿐이다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ **쓰는(또는 쓰려는) 에이전트 프레임워크에서 최종 프롬프트와 원 응답을 볼 수 있는지 확인해 본다.**",
+      "done_when": "⭐ **볼 수 있는지 없는지** 확인했고, ⚠️ 못 본다면 **무엇을 디버깅할 수 없게 되는지** 말할 수 있다.",
+      "why": "⭐⭐ 원문의 경고가 그것이다 — \"**obscure the underlying prompts and responses, making them harder to debug**\". 💡 ⭐ **LLM 시스템에서 봐야 할 것이 그 둘**이고, 📌 못 보면 **`prompting` 이 요구한 \"실증적 시험\"도 못 한다.**",
+      "no_hardware": "프레임워크 문서에서 **로깅·트레이싱 항목**을 찾아보는 것으로도 된다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "1차 자료의 첫 권고는? 그것이 뜻할 수 있는 극단은?",
+    "워크플로와 에이전트를 가르는 기준은? 원문으로 답하라",
+    "에이전트가 성능과 바꾸는 것 두 가지는?",
+    "프레임워크에 대한 경고는 무엇이며, 왜 LLM 시스템에서 특히 문제인가?",
+    "도구 정의를 어떻게 다루라고 하는가?",
+    "공고에서 에이전트 2552건인데 `권한 제한` 86건인 것은 무엇을 뜻하는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "두 서비스는 자체 구축한 딥 에이전트 아키텍처 기반으로, 에이전트가 계획 수립부터 도구 실행, 결과 검증까지 수행하는 멀티 에이전트 시스템으로 동작합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/364042",
+      "where": "코나체인",
+      "what_it_shows": "⭐⭐⭐ **1차 자료의 에이전트 정의 그대로** — \"LLMs **dynamically direct their own processes and tool usage**\". ⭐ 계획·실행·검증을 스스로 한다"
+    },
+    {
+      "quote": "특히 다양한 멀티스텝 Agent Workflow, Multi-agent 시스템, MCP(Model Context Protocol) 기반 시스템 연동, RAG 파이프라인 등 AI Agent 백엔드 영역을 본격적으로 확장해 나가고 있어요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/368135",
+      "where": "액션파워",
+      "what_it_shows": "⭐⭐⭐ **`Agent Workflow` 로 두 낱말을 붙여 쓴다** — ⚠️ **원문은 그 둘을 가른다**(경로를 코드가 정하나 모델이 정하나)"
+    },
+    {
+      "quote": "• MCP 기반 외부 연동 및 Tool Calling 구조 구축",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/368135",
+      "where": "액션파워",
+      "what_it_shows": "⭐⭐ **`MCP` 635건 · `도구 호출` 333건의 자리** — ⚠️ **이 문서는 MCP 의 1차 자료를 열지 않았다**"
+    },
+    {
+      "quote": "• AI Platform Interest Areas: AI Agent Workflow, Evaluation Harness, 운영 자동화 경험 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/259710",
+      "where": "베이글코드(Bagelcode)",
+      "what_it_shows": "⭐⭐ **평가 하네스를 함께 적는다** — ⭐ `prompting` 이 요구한 **\"empirically test\"** 의 에이전트판. ⚠️ **이 문서는 에이전트 특유의 평가를 안 다뤘다**"
+    },
+    {
+      "quote": "• 개인정보 유출 방지 보안을 고려한 AI Agent 설계 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/345428",
+      "where": "골든플래닛",
+      "what_it_shows": "⭐⭐ **에이전트가 무엇에 닿을 수 있나를 이름으로 든 드문 공고** — ⚠️ `권한 제한|샌드박스` 는 **86건**뿐이다"
+    },
+    {
+      "quote": "○ LangChain 등 AI 에이전트 프레임워크 실무 경험자",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/367806",
+      "where": "디피플래닝",
+      "what_it_shows": "⚠️⚠️ **1차 자료가 경고한 쪽이 채용 요건이 된다** — \"extra layers of abstraction that can **obscure the underlying prompts and responses**\". ⭐ 틀렸다는 게 아니라 **그 경고를 읽었는지가 갈린다**"
+    },
+    {
+      "quote": "• 에이전트 오케스트레이션, 프롬프트 엔지니어링, 도구 설계, 스킬 개발 등 에이전틱 AI 시스템의 핵심 레이어를 설계 및 개선합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/364042",
+      "where": "코나체인",
+      "what_it_shows": "⭐⭐ **`도구 설계` 를 이름으로 든 드문 공고** — 원문이 **\"도구 정의도 프롬프트만큼 공들이라\"** 고 적는 그 자리다"
+    },
+    {
+      "quote": "AI 에이전트는 문서 분석, 데이터 조회, 리서치, 문서 작성 등을 자율적으로 수행하여 실제 업무를 직접 처리하며, 자연어 질의 기반으로 ERP 데이터를 분석하고 시각화하여 실시간 인사이트를 제공합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/364042",
+      "where": "코나체인",
+      "what_it_shows": "⭐ **`자율적으로` 738건의 전형** — ⚠️ 그런데 **어디서 멈추는지**(`사람 승인` 120건)는 대개 안 적힌다"
+    },
+    {
+      "quote": "• AI 에이전트를 업무에 능동적으로 활용하며, 적절한 컨텍스트 제공을 통해 결과물의 품질을 끌어낼 수 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "where": "큐엠아이티",
+      "what_it_shows": "⭐ **쓰는 쪽의 요구** — ⚠️ 이 문서는 **만드는 쪽(933건)과 쓰는 쪽을 완전히 가르지 못했다**"
+    }
+  ],
+  "related": [
+    {
+      "slug": "prompting",
+      "how": "⭐⭐⭐ **원문이 대안으로 든 둘 중 하나** — \"optimizing single LLM calls with **in-context examples**\". 그리고 **도구 정의도 프롬프트만큼 공들이라**고 한다"
+    },
+    {
+      "slug": "rag",
+      "how": "⭐⭐⭐ **대안의 나머지 하나** — \"single LLM calls with **retrieval**\". 📌 **에이전트를 만들기 전에 여기부터**"
+    },
+    {
+      "slug": "ai-coding",
+      "how": "⭐⭐ **에이전트를 쓰는 쪽** — 도구 이름 1802건. ⚠️ 그 문서가 이 셈(2552건)을 갈라 세지 못했다고 남겼다"
+    },
+    {
+      "slug": "authz",
+      "how": "⭐⭐ **에이전트가 무엇을 할 수 있나** — ⚠️ `권한 제한|샌드박스` **86건**"
+    },
+    {
+      "slug": "hexagonal-architecture",
+      "how": "⭐⭐ **추상에 대한 정반대 평가** — 거기서는 추상이 **바깥을 격리해서** 좋고, 여기서는 **안을 가려서** 나쁘다"
+    },
+    {
+      "slug": "observability",
+      "how": "⭐ 최종 프롬프트와 원 응답을 남기는 일 — 프레임워크 경고에 대한 답"
+    },
+    {
+      "slug": "microservices",
+      "how": "⭐ **같은 계보** — 주창자가 \"shouldn't start a new project with\" 라고 적는다"
+    }
+  ],
+  "open_questions": [
+    "⭐⭐ **이 문서는 `PROMPT.md` 를 고친 뒤 그 뼈대로 다시 쓴 첫 문서다**(2026-09-06) — **왜 생겼나(무엇에서 갈라졌나) / 어떻게 도는가 / 한계와 그 한계에서 나온 것 / 어디에 쓰이나.** ⚠️ **앞선 135개 문서는 `limits` 절을 \"기술의 한계\"가 아니라 \"이 문서가 안 다룬 것\"으로 쓰고 있어 보수 사이클이 필요하다.**",
+    "⚠️⚠️ **에이전트 패턴들을 다루지 않았다.** ⭐ 1차 자료는 **여러 워크플로 패턴**(체이닝·라우팅·병렬화·오케스트레이터 등)을 이름과 그림으로 설명하는데 — **이 문서는 \"워크플로냐 에이전트냐\" 갈림길 하나만** 다뤘다. 📌 **가장 큰 빈자리다.**",
+    "⚠️⚠️ **MCP 를 다루지 않았다**(**635건**). ⭐ 공고에서 이름을 얻은 규격인데 **1차 자료를 열지 않았다.** 📌 **다음 후보로 크다.**",
+    "⚠️⚠️ **다단계 실패에 관한 1차급 자료를 못 찾았다.** ⭐⭐ **규칙대로 검색했다.** ⚠️ 나온 것은 **개인 블로그·컨설팅 글**뿐이었고 — 단계가 늘수록 성공률이 곱해진다는 산술, 데모가 그것을 가린다는 주장, 프로젝트 취소 전망 등. 📌 **전부 2차라 근거로 쓰지 않았다.** ⭐ 다만 **1차 자료의 \"trade latency and cost\"·\"predictability and consistency\" 와 방향이 같다.**",
+    "⚠️ **`워크플로` 2416건을 갈라 세지 못했다** — **CI 워크플로**(→ `github-actions` 가 alias 로 갖는다)와 섞여 **모집중 56%** 로 튄다. **에이전트 문맥의 값으로 쓰지 않았다.**",
+    "⚠️ **`에이전트` 2935건에 다른 분야가 섞였을 수 있다** — **`AI 에이전트|AI Agent|에이전틱` 2552건을 기준**으로 삼았고 **차이 383건은 확인하지 않았다.**",
+    "⚠️ **만드는 쪽과 쓰는 쪽을 완전히 가르지 못했다** — 개발·구현·설계 문맥이 **933건**으로 나왔으나 **나머지가 무엇인지는 세지 않았다.** 📌 `ai-coding` 이 남긴 숙제를 **절반만** 풀었다.",
+    "⚠️ **에이전트 특유의 평가를 안 봤다** — 베이글코드 공고가 `AI Agent Workflow, **Evaluation Harness**` 를 함께 적는데, 평가는 `prompting` 이 다뤘고(그쪽 `eval` 113건) **에이전트 쪽은 확인하지 못했다.**",
+    "⭐ **겹침을 확인했다** — `ai-coding` 이 `에이전트` 를 9회, `rag` 가 3회 언급하지만 **정의도 구분도 다루지 않는다.** ⚠️ `워크플로` alias 는 **`github-actions` 가 갖고 있어 가져오지 않았다.**",
+    "⭐ **`market` 이 없다** — `tech_relations.json` 에 `에이전트` 이름이 **없다**(`LangChain` 206건이 있으나 프레임워크이고 ⚠️ **1차 자료가 경고한 쪽**이다)."
+  ],
+  "sources": [
+    {
+      "title": "Building effective agents",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "publisher": "Anthropic",
+      "kind": "article",
+      "summary": "⭐⭐⭐ **만든 쪽이 자기 제품의 복잡도에 선을 긋는다** — \"We recommend finding the **simplest solution possible**, and only increasing complexity when needed.\" · **\"This might mean not building agentic systems at all.\"**"
+    }
+  ]
+}
