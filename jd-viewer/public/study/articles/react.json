@@ -648,6 +648,14 @@
     {
       "slug": "android",
       "how": "⚠️ **셈이 섞이는 자리** — `React` 3713건 안에 React Native 문맥이 있다"
+    },
+    {
+      "slug": "state-management",
+      "how": "React 가 안 정해 주는 것 — 상태를 어디 둘지. 본문 `limits` 가 여기를 가리킨다"
+    },
+    {
+      "slug": "nextjs",
+      "how": "React 위에 얹힌 층 — 라우팅·렌더 위치를 정해 준다(공고에서 Next.js 의 90.2% 가 React 를 함께 부른다)"
     }
   ],
   "open_questions": [

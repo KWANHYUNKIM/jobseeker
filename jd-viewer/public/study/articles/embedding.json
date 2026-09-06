@@ -620,6 +620,10 @@
     {
       "slug": "python",
       "how": "`mat @ query_vec` 한 줄(NumPy)이 반복문보다 압도적으로 빠른 이유가 그 문서의 몫이다. 정규화해 둔 벡터라 그 한 줄이 곧 전체 코사인 유사도가 된다"
+    },
+    {
+      "slug": "full-text-search",
+      "how": "맞바꿈 상대 — 철자냐 뜻이냐. 정확한 이름·코드는 저쪽이 낫다"
     }
   ],
   "open_questions": [

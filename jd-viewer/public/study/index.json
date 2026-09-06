@@ -1830,7 +1830,7 @@
         "Backends For Frontends",
         "백엔드 포 프론트엔드"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1848,7 +1848,7 @@
         "reverse proxy",
         "리버스 프록시"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1868,7 +1868,7 @@
         "사이드카",
         "sidecar"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1907,7 +1907,7 @@
         "ALB",
         "NLB"
       ],
-      "sections": 7,
+      "sections": 8,
       "drills": 3,
       "updated_at": "2026-09-06"
     },

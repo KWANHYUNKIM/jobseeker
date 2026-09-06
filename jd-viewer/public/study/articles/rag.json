@@ -691,6 +691,14 @@
     {
       "slug": "idempotency",
       "how": "색인 파이프라인은 **몇 번 돌려도 같은 결과여야 한다.** 이 저장소가 `content_hash` 로 중복 임베딩을 막는 방식이 곧 멱등한 적재의 한 형태다"
+    },
+    {
+      "slug": "vector-db",
+      "how": "검색한 조각을 어디에 두나 — 이 파이프라인의 저장소"
+    },
+    {
+      "slug": "full-text-search",
+      "how": "뜻 대신 철자로 찾는 반대편 — 실무에서는 둘을 섞는다"
     }
   ],
   "open_questions": [
