@@ -4,33 +4,50 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **Next.js**(`nextjs`)를 완성했다 — **115번째 문서**.
+**없음.** 직전 사이클에서 **Go**(`go`)를 완성했다 — **116번째 문서**.
 
-### 직전 사이클 (Next.js)
+### 직전 사이클 (Go)
 
-⚠️ **`seo`·`caching` 과 겹치는지 셌다** — `seo` 에 `SSR` 이 18회 있지만 `서버 컴포넌트`·`하이드레이션`·`use client`·`App Router` 는 **0회**, `caching` 에는 `Next.js`·`ISR` 이 **0회**. 축이 안 겹친다.
+⭐⭐⭐ **축: "뺀 것으로 만든 언어."** 그리고 **뺀 이유가 하나도 성능이 아니었다.**
 
-⭐⭐⭐ **축: "코드가 어디서 도는지 우리가 정하는데, 그 경계가 눈에 안 보인다."**
+> ⭐⭐⭐ **"Programming had become too difficult ... One had to choose either efficient compilation, efficient execution, or ease of programming; all three were not available in the same mainstream language."**
+> **예외** — "coupling exceptions to a control structure ... **results in convoluted code**" · "encourage programmers to **label too many ordinary errors, such as failing to open a file, as exceptional**"
+> ⭐⭐⭐ **어서션** — "programmers use them as **a crutch to avoid thinking about proper error handling**" · "**servers continue to operate instead of crashing after a non-fatal error**"
+> **제네릭** — "come at a **cost in complexity**" · "value **proportionate to the complexity**"
+> **상속** — "reducing the **bookkeeping**"
 
-> ⭐⭐⭐ **"Server Components are not sent to the browser, so they cannot use interactive APIs like `useState`."**
-> ⭐⭐ **"the bundle does not include the expensive libraries needed to render the static content"** — 문서 예제로 **약 75K(gzip)**
-> ⭐⭐ **"Server Components can run once at build time ... or ... for each request"**
+⚠️⚠️ **직접 셈을 아예 못 쓴 첫 낱말이다.** `\bGo\b` 가 "Go to"·회사명에 걸려 1414건(**모집중 65%**)이 나왔고, `채널` 은 채널톡·유통 채널로 완전히 오염됐다. **`market` 의 848건에 기댔다.**
 
-⭐ **이 낱말은 공고가 구체적이었다** — `App Router` **116건** · `RSC` **71건**(모집중 비율 63%). ⚠️ 그런데 **경계가 실제로 일어나는 자리인 `하이드레이션` 은 4건**이다.
+⭐⭐⭐ 대신 **`고루틴|goroutine` 1건(모집중 0)** — 이 백과사전 최대 대비. 그리고 공고가 Go 를 부르는 방식이 **"중 1개 이상"** 이다.
 
-⭐ 그리고 **같은 데이터에 두 시대가 있었다** — `SPA/SSR`(큐빅·인터웍스미디어)과 `App Router, RSC`(밀리의서재·랭디).
-
-⚠️⚠️ **가장 큰 약점**: **Next.js 문서를 한 페이지도 안 열었다.** 1차 자료가 React 쪽 Server Components 문서 하나뿐이다.
+⚠️⚠️ **스스로 밝힌 두 구멍**: **동시성 모델을 한 줄도 못 썼고**(미룸에 보강 자리로 올렸다), **반론 자료를 하나도 안 읽었다**(`distributed-lock` 은 Redlock 논쟁 양쪽을 실었는데).
 
 ### 다음
 
-**Go**(`go`) — QUEUE 맨 위. ⭐ 또 층을 바꿨다(프론트엔드 두 번 연속 → 언어).
+**상태 관리**(`state-management`) — QUEUE 맨 위(이미 올려 둔 둘째 줄이 올라왔다). `react` 가 "가장 큰 빈자리"라고 적은 자리, **990건(모집중 313)**.
 
-⭐⭐⭐ **`고루틴|goroutine` 이 1건(모집중 0)** — 계보의 가장 극단이다. 축: **"뺀 것으로 만든 언어"**, 1차 자료는 **Go FAQ 의 `Why does Go not have X?` 절들**. ⚠️⚠️ **`채널` 889건은 오염이 극심해 쓰지 말 것**(채널톡·유통 채널).
-
-**둘째 줄**에 **상태 관리**(`state-management`)를 올려 뒀다 — `react` 가 "가장 큰 빈자리"라고 적은 자리. ⚠️ **alias 를 `react` 가 갖고 있어 옮겨 오는 절차가 필요하다.**
+⚠️⚠️ **alias 이관 절차가 필요하다** — `상태 관리` 를 **`react` 가 갖고 있는데 그 문서는 1차 자료로 다루지 않았다.** 새 문서가 가져오고 **`react` 의 `aliases` 와 `index.json` 을 함께 고친다.** ⚠️ **축이 안 서면 미룬다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **제품이 그은 선의 근거가 기술이 아니라 사람일 때가 있다.** Go FAQ 가 기능을 뺀 이유는
+  하나도 "느려서"가 아니었다 — 예외는 **"convoluted code"**, 어서션은 **"a crutch to avoid
+  thinking"**, 상속은 **"bookkeeping"**. ⭐ **전부 "사람이 그 기능과 함께 무엇을 하게 되는가"**
+  에 관한 판단이다. ⚠️ **그래서 동의하지 않을 수 있고**, 실제로 이견이 많다. 📌 **그런 선을
+  옮길 때는 반론도 함께 읽어야 한다** — `distributed-lock` 은 Redlock 논쟁의 양쪽(Kleppmann과
+  antirez)을 다 실었는데, **이번엔 한쪽만 읽었고 그 사실을 문서에 밝혔다.**
+
+- ⭐⭐⭐ **모집중 비율이 튀면 셈이 오염된 것이다 — 새 진단법.** `\bGo\b` 가 1414건인데
+  **모집중 비율이 65%** 였다(이 데이터에서 정상은 **30~40%**). ⚠️ "Go to"·회사명·영문 안내문이
+  걸린 것이고, **그런 잡음은 공고의 신선도와 무관하게 고르게 퍼져 있어 비율을 끌어올린다.**
+  💡 **앞으로 셈을 할 때 건수만 보지 말고 모집중 비율을 함께 본다** — ⭐ **비율이 정상 범위를
+  벗어나면 그 패턴은 못 쓴다.** (이 낱말은 결국 `tech_relations.json` 태그 값에 기댔다 —
+  **직접 셈을 아예 못 쓴 첫 사례**다.)
+
+- ⭐⭐ **문서가 못 한 것은 큐가 아니라 문서 안에도 남긴다.** `go` 는 **고루틴·채널을 한 줄도
+  못 썼다**(셈이 없어서). ⭐ 그것을 `open_questions` 와 `limits` 에 적고 **동시에 QUEUE 의 미룸에
+  보강 자리로 올렸다.** 💡 **`open_questions` 는 읽는 사람에게 하는 고백이고, QUEUE 는 다음
+  사이클에게 하는 지시다** — 같은 사실이라도 **두 곳 다 적어야 둘 다 작동한다.**
 
 - ⭐⭐⭐ **한 사실에서 능력과 제약이 동시에 나오는 문장을 찾는다.** React 문서의
   **"Server Components are not sent to the browser, **so** they cannot use interactive APIs

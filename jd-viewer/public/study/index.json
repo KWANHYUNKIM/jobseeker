@@ -2099,6 +2099,24 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "go",
+      "title": "Go — 뺀 것으로 만든 언어",
+      "category": "language",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **공식 FAQ 가 \"왜 X 가 없나\"를 하나씩 답하는 언어다** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다: 예외는 \"convoluted code\" 를 만들고, 어서션은 \"**a crutch**\" 가 된다.",
+      "aliases": [
+        "Go",
+        "Golang",
+        "고랭",
+        "고루틴",
+        "goroutine"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

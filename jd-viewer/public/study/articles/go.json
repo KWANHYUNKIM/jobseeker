@@ -1,0 +1,591 @@
+{
+  "slug": "go",
+  "title": "Go — 뺀 것으로 만든 언어",
+  "title_en": "Go: A Language Defined by What It Left Out",
+  "aliases": [
+    "Go",
+    "Golang",
+    "고랭",
+    "고루틴",
+    "goroutine"
+  ],
+  "category": "language",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **공식 FAQ 가 \"왜 X 가 없나\"를 하나씩 답하는 언어다** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다: 예외는 \"convoluted code\" 를 만들고, 어서션은 \"**a crutch**\" 가 된다.",
+  "summary": "⭐ **`market` 기준 848건(11.8%)** 이다. ⚠️⚠️ **직접 셈은 못 쓴다** — `\\bGo\\b` 로 세면 \"Go to\"·회사명이 걸려 1414건이 나오고, 그중 모집중 비율이 65%로 비정상이다.\n\n⭐⭐⭐ **그런데 진짜 숫자는 이것이다 — `고루틴|goroutine` 1건(모집중 0).** 이 언어의 가장 상징적인 기능이고, **이 백과사전이 모아 온 대비 중 가장 극단**이다(`rest` 3372 vs `HATEOAS` 0 이래).\n\n**그리고 공고가 Go 를 부르는 방식이 특이하다.**\n\n> `TypeScript, JavaScript, Java, Kotlin, **Go 등 하나 이상**의 서버 개발 언어에 능숙하신 분` — 베이글코드\n> `Python, **Golang**, Java **중 1개 이상**의 언어 사용 가능자` — 에이엑스지\n> `Java / Kotlin / JavaScript / TypeScript / Python / **Go 등 하나 이상**` — 디써클\n\n⭐⭐ **\"이 중 하나\"** 다. **대체 가능한 것으로 취급된다.**\n\n**그런데 Go 자신은 대체재로 만들어지지 않았다.** FAQ 의 첫 답이 그것이다.\n\n> ⭐⭐⭐ \"Programming had become **too difficult** ... One had to choose **either efficient compilation, efficient execution, or ease of programming**; **all three were not available in the same mainstream language**.\"\n\n⭐ **셋 중 하나를 고르던 문제를 셋 다 가지려고 만든 언어**이고, 그러기 위해 **많은 것을 뺐다.**",
+  "market": {
+    "tech": "Go",
+    "layer": "언어",
+    "postings": 848,
+    "pct_jobs": 11.8,
+    "with": [
+      {
+        "name": "Python",
+        "pct": 58.5,
+        "why": "⭐⭐ **둘 중 하나 이상.** 공고에서 **나란한 선택지로 적히는 그 짝**이다 — 에이엑스지 `Python, Golang, Java 중 1개 이상`"
+      },
+      {
+        "name": "AWS",
+        "pct": 42.9,
+        "why": "배포처"
+      },
+      {
+        "name": "Kubernetes",
+        "pct": 40.0,
+        "why": "⭐⭐⭐ **인프라 도구의 언어.** K8s·Docker 자체가 Go 로 쓰였다 — 이 낱말이 어디서 쓰이는지의 답"
+      },
+      {
+        "name": "Java",
+        "pct": 25.4,
+        "why": "⭐ 서버 언어 목록에 함께 적힌다"
+      },
+      {
+        "name": "GCP",
+        "pct": 22.8,
+        "why": "만든 회사의 클라우드"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ \"이 중 하나\"로 불리는 언어, 그리고 고루틴 1건",
+      "confidence": "inferred",
+      "body": "⚠️⚠️ **이 낱말은 셈부터 조심해야 한다.** `\\bGo(lang)?\\b` 로 세면 **1414건**이 나오는데, **\"Go to\"·회사명·영문 안내문**이 잔뜩 걸린다. ⭐ **모집중 비율이 65%** 로 나오는 것이 그 신호다(다른 낱말은 대개 30~40%). 그래서 **`market` 의 848건(11.8%)** 을 쓴다.\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `Go` (태그 기준) | **848** | (11.8%, 층 \"언어\") |\n| `gRPC` | **243** | (모집중 126) |\n| `에러 처리\\|error handling` | 148 | (모집중 66) |\n| `제네릭\\|generics` | 12 | (모집중 4) |\n| ⚠️⚠️ **`고루틴\\|goroutine`** | **1** | (모집중 **0**) |\n| ⚠️⚠️ `채널\\|channel` | ~~889~~ | **쓸 수 없다** — 채널톡·유통 채널·마케팅 채널 |\n\n⭐⭐⭐ **`고루틴` 1건.** 이 언어를 아는 사람이면 누구나 먼저 떠올리는 낱말이고, **채용 데이터 전체에 한 건**이다.\n\n💡 **그리고 Go 가 불리는 방식이 그 이유를 설명한다.**\n\n> `TypeScript, JavaScript, Java, Kotlin, **Go 등 하나 이상**의 서버 개발 언어` — 베이글코드\n> `Python, **Go**, Java, Node.js 등 **하나 이상**의 언어로 견고한 서버 사이드 개발 역량` — 크로스이엔에프\n> `Java, **Golang**, Kotlin **중 1개 이상**의 주요 언어 활용이 능숙하신 분` — 드림어스컴퍼니\n> `필요시 **Golang**, Typescript, Rust 등 다양한 언어를 다룰 수 있는 **의지**` — 딥오토\n\n⭐⭐ **\"중 1개 이상\"·\"등 하나 이상\"·\"다룰 수 있는 의지\"** — 회사가 **언어를 대체 가능한 것으로 본다.** 그러면 **그 언어 고유의 낱말(고루틴)을 물을 이유가 없다.**\n\n📌 **반면 Go 를 지목해서 쓰는 곳도 있고, 문장이 확연히 다르다.**\n\n> ⭐⭐ `**동시성 문제**를 분산 백엔드(**Go, gRPC/protobuf**)에서 스펙 수준부터 정의하고 해결합니다` — 크립토랩\n> `**Go/Gin** 기반 **고성능** 백엔드 API 및 내부 서비스 개발` — 에이티씨아이\n> `AWS Lambda, Serverless와 nodejs, python, **golang** 등의 언어로 **마이크로 서비스**를 개발` — 채널코퍼레이션\n\n⭐ **동시성·고성능·마이크로서비스** — 지목할 때는 **이유가 함께 온다.** 그리고 `market` 의 **Kubernetes 40.0%** 가 결정적이다: **K8s·Docker 자체가 Go 로 쓰였다.**\n\n📌 이 문서는 `asyncio` 와 겹치지 않는다. 세어 봤다 — 그 문서에 `Go`·`고루틴`·`채널`·`CSP` 가 **전부 0회**다(파이썬 문서). ⚠️ **다만 동시성 모델 자체는 이 문서가 깊이 다루지 않았다**(`limits`)."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 뺀 이유가 전부 사람에 관한 것이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ],
+      "body": "Go 의 공식 FAQ 에는 **\"Why does Go not have X?\"** 형태의 절이 줄줄이 있다. ⭐ **없는 것을 하나씩 해명하는 문서**이고, 그것 자체가 이 언어의 성격이다.\n\n**먼저 왜 만들었는지부터.**\n\n> ⭐⭐⭐ \"Programming had become **too difficult** and the choice of languages was partly to blame. One had to choose **either efficient compilation, efficient execution, or ease of programming**; **all three were not available in the same mainstream language**.\"\n\n**셋 중 하나를 골라야 했다** — 빨리 컴파일되거나, 빨리 돌거나, 쓰기 쉽거나. ⭐ **셋 다 가지려면 무언가를 포기해야 했고, 포기한 것이 기능이었다.**\n\n💡 ⭐⭐⭐ **그런데 뺀 이유를 읽어 보면 놀랍다 — 성능 이야기가 아니다.**\n\n**예외를 왜 뺐나.**\n\n> ⭐⭐⭐ \"We believe that **coupling exceptions to a control structure**, as in the `try-catch-finally` idiom, **results in convoluted code**. It also tends to **encourage programmers to label too many ordinary errors, such as failing to open a file, as exceptional**.\"\n\n⭐ **\"파일을 못 여는 것 같은 평범한 오류를 예외적인 일로 표시하게 만든다\"** — **사람이 어떻게 생각하게 되는가**의 문제다.\n\n**어서션을 왜 뺐나.**\n\n> ⭐⭐⭐ \"Our experience has been that **programmers use them as a crutch to avoid thinking about proper error handling and reporting**. **Proper error handling means that servers continue to operate instead of crashing after a non-fatal error.**\"\n\n⚠️⚠️ **`a crutch`(목발).** 기능이 나빠서가 아니라 **사람이 그것에 기대어 생각을 안 하게 되니까** 뺐다고 적는다.\n\n**제네릭은 왜 오래 안 넣었나.**\n\n> ⭐⭐ \"Generics are convenient but they **come at a cost in complexity in the type system and run-time**. It took a while to develop a design that we believe **gives value proportionate to the complexity**.\"\n\n⭐ **\"복잡도에 비례하는 값어치\"** — 편리함만으로는 부족하다는 기준이다.\n\n**상속은 왜 없나.**\n\n> ⭐⭐ \"Rather than requiring the programmer to **declare ahead of time that two types are related**, in Go a type **automatically satisfies any interface that specifies a subset of its methods**. Besides **reducing the bookkeeping**, this approach has real advantages.\"\n\n⭐ **\"미리 선언하게 하는 것\"과 \"장부 정리(bookkeeping)\"** — 또 사람이 하는 일 이야기다.\n\n📌 ⭐⭐⭐ **네 개를 나란히 놓으면 한 가지가 보인다.**\n\n| 뺀 것 | 이유 | 무엇에 관한 이야기인가 |\n|---|---|---|\n| 예외 | \"**convoluted code**\" | **읽는 사람** |\n| 어서션 | \"**a crutch** to avoid thinking\" | **쓰는 사람의 습관** |\n| 제네릭(오래) | \"cost in **complexity**\" | **언어를 배우는 비용** |\n| 상속 | \"reducing the **bookkeeping**\" | **선언하는 수고** |\n\n💡 ⭐⭐ **뺀 이유가 하나도 \"느려서\"가 아니다.** 전부 **사람이 그 기능과 함께 무엇을 하게 되는가**에 관한 판단이고, ⚠️ **그래서 동의하지 않을 수도 있는 종류의 판단**이다 — **취향 논쟁이 이 언어에 유난히 많은 이유이기도 하다.**\n\n📌 **그리고 이 백과사전의 계보에 또 한 칸이 생겼다.**\n\n| 문서 | 형태 |\n|---|---|\n| `kotlin`·`redis`·`github-actions` | **문장** 하나로 선을 긋는다 |\n| `typescript` | **비목표 목록** |\n| `react` | **문서 한 편**으로 설득한다 |\n| `javascript` | 잘못인데 **못 고친다**고 인정 |\n| ⭐⭐⭐ **`go`** | **없는 것을 하나씩 해명하는 Q&A** |"
+    },
+    {
+      "id": "error",
+      "kind": "how",
+      "heading": "⭐⭐ 예외를 뺀 자리 — 에러가 값이 된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ],
+      "body": "예외가 없으면 오류를 어떻게 다루나. ⭐ **답은 \"그냥 값으로\"** 다 — 함수가 결과와 오류를 **함께 돌려준다.**\n\n**FAQ 의 두 문장이 그 설계의 전부를 설명한다.**\n\n> ⭐⭐ 예외는 \"tends to **encourage programmers to label too many ordinary errors, such as failing to open a file, as exceptional**\"\n> ⭐⭐⭐ 어서션은 \"a **crutch** to avoid thinking about proper error handling ... **Proper error handling means that servers continue to operate instead of crashing after a non-fatal error.**\"\n\n💡 **두 문장의 공통점 — \"평범한 오류\"와 \"치명적이지 않은 오류\"를 계속 이야기한다.** ⭐ **파일을 못 여는 것, 네트워크가 끊기는 것은 예외가 아니라 그냥 일어나는 일**이고, **서버는 그것 때문에 죽으면 안 된다**는 것이 이 언어의 전제다.\n\n📌 **그래서 코드의 모양이 이렇게 된다.**\n\n- 함수를 부를 때마다 **오류를 받아서 그 자리에서 처리한다.**\n- ⚠️ **그 검사가 코드에 계속 보인다** — Go 코드가 장황해 보이는 가장 큰 이유이고, **가장 자주 비판받는 지점**이다.\n- ⭐ **대신 어디서 무엇이 잘못될 수 있는지가 코드에 그대로 드러난다.** 예외는 **어디서 튀어나올지 코드에 안 보인다.**\n\n💡 ⭐⭐ **이건 `asyncio` 문서의 \"양보 지점(`await`)이 코드에 보이는 것이 장점이자 함정\"과 같은 형태의 맞바꿈**이다 — **숨기면 짧아지고, 드러내면 길어진다.**\n\n📌 **공고에 `에러 처리` 가 148건 나오는데**, ⚠️ **Go 문맥인지는 가르지 않았다**(`open_questions`). 다만 이 언어를 지목하는 공고들이 무엇을 말하는지는 분명하다.\n\n> ⭐ `**동시성 문제**를 분산 백엔드(**Go, gRPC/protobuf**)에서 **스펙 수준부터 정의하고 해결**합니다` — 크립토랩\n\n⭐⭐ **\"스펙 수준부터 정의\"** — **무엇이 잘못될 수 있는지 미리 정하는 일**이고, 에러를 값으로 다루는 언어와 성격이 맞는다.\n\n📌 ⚠️ **다만 이 언어에도 예외 비슷한 것이 있다** — `panic`/`recover`. ⭐ **FAQ 가 그것을 \"정말 예외적인 상황\"용으로 둔다**고 적는다. 즉 **평범한 오류와 진짜 비상사태를 문법으로 갈라 놓은 것**이지, 예외를 통째로 없앤 것이 아니다."
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐ 어디에 쓰이나 — 인프라 도구의 언어",
+      "confidence": "inferred",
+      "body": "`market` 의 동반 기술이 이 낱말의 자리를 알려 준다.\n\n| 동반 | 비율 |\n|---|---|\n| **Python** | **58.5%** |\n| AWS | 42.9% |\n| ⭐⭐ **Kubernetes** | **40.0%** |\n| Java | 25.4% |\n| GCP | 22.8% |\n\n⭐⭐⭐ **Kubernetes 40.0% 가 결정적이다** — **K8s 도 Docker 도 Go 로 쓰였다.** 이 백과사전이 다룬 `service-mesh`·`api-gateway`·`load-balancer` 의 구현체 상당수가 그렇다. ⭐ **인프라를 만드는 사람들이 고른 언어**이고, 그 이유가 `why` 절의 셋(빠른 컴파일·빠른 실행·쓰기 쉬움)과 맞는다.\n\n**그리고 `gRPC` 가 243건이다.**\n\n> ⭐ `분산 백엔드(**Go, gRPC/protobuf**)` — 크립토랩\n> `**Go/Gin** 기반 **고성능** 백엔드 API 및 내부 서비스 개발` — 에이티씨아이\n\n⭐ **서비스 사이를 잇는 자리**에 자주 온다(→ `service-mesh`·`api-gateway`).\n\n💡 ⚠️ **그런데 `Python` 58.5% 가 1위인 것이 이 낱말의 진짜 모양을 보여 준다.** 공고에서 둘은 **경쟁이 아니라 나란한 선택지**로 적힌다.\n\n> `**Python, Golang, Java 중 1개 이상**의 언어 사용 가능자` — 에이엑스지\n> `AWS Lambda, Serverless와 **nodejs, python, golang** 등의 언어로 마이크로 서비스` — 채널코퍼레이션\n\n⭐⭐ **한 회사가 여러 언어를 함께 쓴다**는 뜻이고, 그러면 **\"Go 개발자\"라는 자리보다 \"서버 개발자 중 Go 도 쓰는 사람\"** 이 흔하다. **`what` 절의 \"중 1개 이상\" 이 그 모양이다.**\n\n📌 ⭐ **그래서 이 언어를 배우는 값이 다르게 계산된다.**\n\n- ⚠️ **\"Go 만 하는 자리\"를 노리면 좁다** — 대부분 목록의 한 항목이다.\n- ⭐ **대신 진입 비용이 낮다** — `why` 절의 \"뺀 것들\" 덕에 **문법이 작다.** 이미 서버를 아는 사람이 **하나 더 얹기 쉬운 언어**로 설계됐다.\n- ⭐⭐ **그리고 인프라 도구를 읽을 수 있게 된다** — K8s 40.0% 가 그 값이다. **남의 코드를 읽는 능력**이 이 언어의 실질적인 수익이다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 동시성 모델을 다루지 않았다.** 고루틴·채널·`select`·CSP — **이 언어의 가장 상징적인 부분인데 안 썼다.** ⭐ 이유는 둘이다: **셈이 `고루틴` 1건 · `채널` 은 오염으로 못 씀**이라 근거가 없었고, **`asyncio` 가 \"한 스레드/이벤트 루프\" 모델을 이미 썼다**(다만 그쪽에 `Go` 는 0회라 **겹치지는 않는다**). ⚠️ **비어 있다는 사실을 그대로 남긴다 — 이 문서의 가장 큰 구멍이다.**\n\n**2. ⚠️ FAQ 의 다른 절들을 안 봤다.** 이 문서가 인용한 것은 **다섯 절**이다(목적·예외·어서션·제네릭·상속). ⭐ FAQ 에는 **훨씬 많은 \"Why does Go not have X?\"** 가 있고, **가비지 컬렉션·포인터 연산·연산자 오버로딩** 등은 확인하지 않았다.\n\n**3. ⚠️ 문법과 표준 라이브러리를 다루지 않았다.** 인터페이스·구조체·`defer`·모듈 — **공식 튜토리얼과 `Effective Go` 가 훨씬 잘** 한다. ⭐ 이 문서는 **\"왜 이렇게 생겼나\"** 만 다뤘다.\n\n**4. ⚠️⚠️ 셈을 직접 못 했다.** `\\bGo\\b` 가 **\"Go to\"·회사명**에 걸려 쓸 수 없었고(1414건, 모집중 65%), **`채널` 은 채널톡·유통 채널로 완전히 오염**됐다. ⭐ **`market` 의 848건에 기댔고**, 그 사실을 표에 적었다. ⚠️ **`에러 처리` 148건도 Go 문맥인지 가르지 않았다.**\n\n**5. ⚠️ 제네릭 이후를 확인하지 않았다.** FAQ 가 \"It took a while to develop a design\" 이라고 적는데, **실제로 언제 어떤 형태로 들어갔고 무엇이 달라졌는지**는 확인하지 않았다 — ⭐ **공고에 `제네릭` 이 12건뿐이라 근거가 약했다.**\n\n**6. ⚠️ \"뺀 것\"들에 대한 반론을 담지 않았다.** `why` 절이 인용한 판단들은 **동의하지 않을 수 있는 종류**인데(특히 에러 처리의 장황함), **비판 쪽 자료를 읽지 않았다.** ⭐ **제품이 그은 선을 옮길 때 그 선에 대한 반론도 함께 읽어야 한다** — 이 문서는 한쪽만 읽었다.\n\n**7. 이 문서가 다루지 않는 것.** 동시성 모델 일반론은 `asyncio`(파이썬), 이 언어로 쓰인 것들은 `service-mesh`·`api-gateway`·`load-balancer`, 배포는 `kubernetes`·`docker` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "faq",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ FAQ 가 \"왜 X 가 없나\"에 답하는 것",
+      "note": "전부 **Go 공식 FAQ 의 원문**이다. ⭐ 이 표의 요점은 개별 답이 아니라 **답의 종류** — **하나도 \"느려서\"가 아니고, 전부 사람이 그 기능과 함께 무엇을 하게 되는가**에 관한 판단이다.",
+      "columns": [
+        "무엇에 대해",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 왜 만들었나",
+          "\"Programming had become **too difficult** ... One had to choose **either efficient compilation, efficient execution, or ease of programming**; **all three were not available in the same mainstream language**.\""
+        ],
+        [
+          "⭐⭐⭐ 예외가 없는 이유",
+          "\"We believe that **coupling exceptions to a control structure**, as in the `try-catch-finally` idiom, **results in convoluted code**. It also tends to **encourage programmers to label too many ordinary errors, such as failing to open a file, as exceptional**.\""
+        ],
+        [
+          "⭐⭐⭐ 어서션이 없는 이유",
+          "\"programmers use them as **a crutch to avoid thinking about proper error handling** and reporting. **Proper error handling means that servers continue to operate instead of crashing after a non-fatal error.**\""
+        ],
+        [
+          "⭐⭐ 제네릭이 늦은 이유",
+          "\"Generics are convenient but they **come at a cost in complexity in the type system and run-time**. It took a while to develop a design that we believe **gives value proportionate to the complexity**.\""
+        ],
+        [
+          "⭐⭐ 상속이 없는 이유",
+          "\"Rather than requiring the programmer to **declare ahead of time that two types are related** ... a type **automatically satisfies any interface that specifies a subset of its methods**. Besides **reducing the bookkeeping** ...\""
+        ],
+        [
+          "⭐ 그래서",
+          "**뺀 이유가 하나도 성능이 아니다** — \"convoluted code\" · \"a crutch\" · \"complexity\" · \"bookkeeping\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ]
+    },
+    {
+      "id": "kind",
+      "kind": "compare",
+      "caption": "⭐⭐ \"제품이 스스로 그은 선\" — 일곱 번째 형태",
+      "note": "이 백과사전이 모아 온 인용들이다(각 문서의 1차 자료 원문). ⭐ **여기는 형태가 또 다르다 — 없는 것을 Q&A 로 하나씩 해명한다.**",
+      "columns": [
+        "문서",
+        "원문 / 형태"
+      ],
+      "rows": [
+        [
+          "`kotlin`",
+          "\"**impractical**\" — 문장 하나"
+        ],
+        [
+          "`redis`",
+          "\"**we discourage it**\" — 문장 하나"
+        ],
+        [
+          "`github-actions`",
+          "\"**almost never**\" — 문장 하나"
+        ],
+        [
+          "`typescript`",
+          "**Non-goals** — 번호 매긴 목록"
+        ],
+        [
+          "`react`",
+          "**\"You Might Not Need an Effect\"** — 문서 한 편으로 설득"
+        ],
+        [
+          "`javascript`",
+          "\"**would be removed** from this specification\" — 잘못인데 못 고친다"
+        ],
+        [
+          "⭐⭐⭐ **`go`**",
+          "**\"Why does Go not have X?\"** — **없는 것을 하나씩 해명하는 Q&A**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️ 이 낱말을 셀 때 — 직접 셈이 안 되는 드문 경우",
+      "note": "⚠️⚠️ **이 백과사전에서 직접 셈을 아예 못 쓴 첫 낱말이다.** ⭐ 두 글자 영단어가 이름이면 셀 수 없다 — **그 사실 자체를 기록해 둔다.**",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "⭐ 전체 (태그 기준)",
+          "**848건 (11.8%, 층 \"언어\")** — `tech_relations.json` 값을 쓴다"
+        ],
+        [
+          "⚠️⚠️ 직접 셈",
+          "`\\bGo(lang)?\\b` → **1414건**인데 **\"Go to\"·회사명·영문 안내문**이 걸린다. ⭐ **모집중 비율 65%** 가 그 신호(다른 낱말은 30~40%)"
+        ],
+        [
+          "⚠️⚠️ `채널\\|channel`",
+          "~~889건~~ — **채널톡·유통 채널·마케팅 채널.** **완전히 못 쓴다**"
+        ],
+        [
+          "`gRPC`",
+          "**243 (모집중 126)** — 서비스 사이를 잇는 자리"
+        ],
+        [
+          "`에러 처리`",
+          "148 (모집중 66) — ⚠️ **Go 문맥인지 안 갈랐다**"
+        ],
+        [
+          "`제네릭`",
+          "12 (모집중 4)"
+        ],
+        [
+          "⭐⭐⭐ `고루틴\\|goroutine`",
+          "**1 (모집중 0)** — **이 백과사전 최대 대비**"
+        ],
+        [
+          "⭐ 공고의 모양",
+          "**\"중 1개 이상\"·\"등 하나 이상\"** — 베이글코드·크로스이엔에프·디써클·에이엑스지·드림어스. **대체 가능한 것으로 취급된다**"
+        ],
+        [
+          "⭐⭐ `market` 이 말해 주는 것",
+          "**Kubernetes 40.0%** — **K8s·Docker 자체가 Go 로 쓰였다.** 이 낱말이 어디 있는지의 답"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "tradeoff",
+      "kind": "compare",
+      "caption": "에러를 값으로 다루면",
+      "note": "이 표는 이 문서가 FAQ 인용에서 정리한 것이다(`confidence: inferred`). ⭐ `asyncio` 의 \"양보 지점이 보이는 것이 장점이자 함정\"과 같은 형태의 맞바꿈이다.",
+      "columns": [
+        "",
+        "예외(try-catch)",
+        "값으로 돌려주기(Go)"
+      ],
+      "rows": [
+        [
+          "코드 길이",
+          "⭐ **짧다**",
+          "⚠️ **길다** — 부를 때마다 검사가 보인다"
+        ],
+        [
+          "⭐ 어디서 터지나",
+          "⚠️ **코드에 안 보인다**",
+          "⭐ **그 자리에 보인다**"
+        ],
+        [
+          "FAQ 의 평가",
+          "\"**convoluted code**\" · \"label too many **ordinary errors** ... as **exceptional**\"",
+          "—"
+        ],
+        [
+          "전제",
+          "비정상은 위로 던진다",
+          "⭐ \"**servers continue to operate instead of crashing after a non-fatal error**\""
+        ],
+        [
+          "⚠️ 진짜 비상사태는",
+          "같은 문법",
+          "**`panic`/`recover` 로 갈라 놓았다**"
+        ],
+        [
+          "⭐ 같은 형태",
+          "—",
+          "`asyncio` 의 `await` — **숨기면 짧아지고 드러내면 길어진다**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ a crutch",
+      "en": "—",
+      "what": "**목발.** 어서션을 뺀 이유 — \"programmers use them as **a crutch to avoid thinking** about proper error handling\""
+    },
+    {
+      "term": "⭐⭐ convoluted code",
+      "en": "—",
+      "what": "예외를 뺀 이유. **제어 구조에 예외를 묶으면 코드가 꼬인다**는 판단"
+    },
+    {
+      "term": "⭐ bookkeeping",
+      "en": "—",
+      "what": "상속을 뺀 이유에 나오는 낱말 — **\"두 타입이 관련 있다\"고 미리 선언하는 수고**"
+    },
+    {
+      "term": "⭐⭐ 셋 중 하나",
+      "en": "—",
+      "what": "\"either **efficient compilation**, **efficient execution**, or **ease of programming**\" — 이 언어가 풀려던 문제"
+    },
+    {
+      "term": "고루틴",
+      "en": "goroutine",
+      "what": "⚠️⚠️ **공고에 1건.** 이 언어의 상징인데 시장이 이름을 안 부른다. ⭐ **이 문서도 다루지 못했다**(근거 없음)"
+    },
+    {
+      "term": "`panic` / `recover`",
+      "en": "—",
+      "what": "⭐ **진짜 예외적인 상황용.** 평범한 오류와 비상사태를 **문법으로 갈라 놓은 것**"
+    },
+    {
+      "term": "⚠️ \"중 1개 이상\"",
+      "en": "—",
+      "what": "이 낱말이 공고에서 불리는 전형적 방식 — **대체 가능한 목록의 한 항목**"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "서버 언어를 하나 더 배울지 정한다",
+      "pick": "⭐ **Go 를 배우되 \"Go 자리\"를 노리지 않는다**",
+      "over": "\"Go 개발자\" 채용을 기대하고 배우기",
+      "why": "⭐⭐ 공고가 거의 전부 **\"중 1개 이상\"** 이다(베이글코드·크로스이엔에프·디써클·에이엑스지·드림어스). ⚠️ **Go 만 요구하는 자리는 드물다.** ⭐ 대신 **`market` 의 Kubernetes 40.0%** 가 진짜 값이다 — **K8s·Docker 를 읽을 수 있게 된다**",
+      "tradeoff": "\"이 언어 전문가\"라는 정체성을 얻기는 어렵다. ⭐ 그래도 **문법이 작아 진입 비용이 낮고**(`why` 절의 뺀 것들 덕이다), **남의 인프라 코드를 읽는 능력**은 다른 언어로 대체가 안 된다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "오류 처리 방식을 정하는 팀 규칙을 만든다",
+      "pick": "⭐⭐ **\"평범한 오류\"와 \"진짜 비상사태\"를 먼저 가른다**",
+      "over": "전부 예외로 던지고 위에서 잡기",
+      "why": "⭐⭐⭐ Go FAQ 의 진단이 언어를 가리지 않는다 — 예외는 \"encourage programmers to **label too many ordinary errors, such as failing to open a file, as exceptional**\". ⚠️ **파일을 못 여는 것은 예외가 아니라 그냥 일어나는 일**이고, \"**servers continue to operate instead of crashing after a non-fatal error**\" 가 목표다",
+      "tradeoff": "⚠️ 가르는 기준을 정하는 데 시간이 들고, 사람마다 생각이 다르다. ⭐ 그래도 **한 번 정해 두면 리뷰에서 취향 논쟁이 사라진다** — 기준 없이 하면 매번 다시 싸운다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ]
+    },
+    {
+      "situation": "어서션(또는 그 언어의 비슷한 장치)을 쓰려 한다",
+      "pick": "⭐ **\"이걸로 무엇을 생각 안 하고 넘어가려는가\"를 먼저 묻는다**",
+      "over": "방어적으로 일단 넣기",
+      "why": "⭐⭐⭐ FAQ 의 표현이 정확하다 — \"programmers use them as **a crutch to avoid thinking about proper error handling and reporting**\". ⚠️ **어서션이 나쁜 게 아니라, 그 자리에 있어야 할 진짜 처리를 미루게 된다**는 지적이다",
+      "tradeoff": "⚠️ 개발 중에 빨리 터뜨려 잡는 값은 실제로 있다. ⭐ 그래서 규칙은 \"쓰지 마라\"가 아니라 **\"운영 코드에서 사용자 입력·외부 응답에는 쓰지 마라\"** — 그건 **일어날 수 있는 일**이지 프로그래머의 실수가 아니다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ]
+    },
+    {
+      "situation": "언어나 프레임워크에 기능을 추가할지 논의한다",
+      "pick": "⭐⭐ **\"복잡도에 비례하는 값어치인가\"로 묻는다**",
+      "over": "\"있으면 편하니까\"로 정하기",
+      "why": "⭐⭐ Go FAQ 의 제네릭 답변이 그 기준을 준다 — \"Generics are **convenient** but they **come at a cost in complexity** ... a design that we believe **gives value proportionate to the complexity**\". ⭐ **편리함은 근거가 아니다** — 값어치와 복잡도를 함께 놓아야 판단이 된다",
+      "tradeoff": "⚠️ 이 기준은 **느리다.** Go 는 제네릭에 십 년 넘게 썼고, 그동안 사람들이 불편을 겪었다. ⭐ 대신 **한 번 들어간 것은 되돌릴 수 없다**(→ `javascript` 의 \"고칠 수 없는 언어\")",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ]
+    },
+    {
+      "situation": "인프라 도구의 동작이 궁금해 소스를 열어야 한다",
+      "pick": "⭐ **Go 를 읽을 수 있게 해 둔다**",
+      "over": "문서만 읽고 추측하기",
+      "why": "⭐⭐⭐ **`market` 의 Kubernetes 40.0%** 가 그 이유다 — **K8s·Docker 를 비롯해 이 백과사전이 다룬 `service-mesh`·`api-gateway`·`load-balancer` 의 구현체 상당수가 Go 로 쓰였다.** ⭐ 그리고 `service-mesh` 문서가 배운 것처럼, **숫자 앞에 무엇이 적혀 있는지는 소스에만 있는 경우가 있다**",
+      "tradeoff": "쓰지도 않을 언어를 배우는 것처럼 느껴진다. ⭐ 그런데 **읽기만 하는 데는 문법이 작은 것이 유리하고**, 그게 이 언어의 설계 목표 중 하나였다(\"ease of programming\")",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⚠️⚠️ `Go` 를 정규식으로 세어 시장 수요를 판단한다",
+      "why": "⭐ **이 백과사전에서 직접 셈을 아예 못 쓴 첫 낱말이다.** `\\bGo\\b` 는 **\"Go to\"·회사명·영문 안내문**을 전부 잡아 **1414건**을 만든다. ⚠️ **모집중 비율이 65%로 튀는 것**이 신호였다(다른 낱말은 30~40%)",
+      "fix": "⭐ **`Golang|고랭` 으로 좁히거나 `tech_relations.json` 의 태그 값을 쓴다**(848건). 그리고 **두 글자 영단어가 이름인 기술(`R`·`C`·`Go`)은 셈을 의심부터 한다.** 📌 **못 센 것을 밝히는 것도 데이터다** — 이 문서의 `counting` 표가 그렇게 했다"
+    },
+    {
+      "trap": "⚠️⚠️ `채널` 로 Go 관련 수요를 센다",
+      "why": "**889건이 나온다.** ⚠️ 그런데 **채널톡(회사)·유통 채널·마케팅 채널·알림 채널**이 대부분이다 — `load-balancer` 의 `Nginx`(307건), `android` 의 `생명주기`(575건)와 같은 형태",
+      "fix": "⭐ **플랫폼 고유 낱말과 함께 세거나(`고루틴`·`goroutine`), 문장을 읽어 가른다.** ⚠️ **이 문서는 못 갈라서 아예 쓰지 않았고**, 그 사실을 표에 적었다"
+    },
+    {
+      "trap": "에러 검사가 장황하다고 무시하거나 뭉갠다",
+      "why": "⭐ Go 코드에서 가장 자주 비판받는 지점이고, **`_` 로 무시하거나 한 곳에서 뭉뚱그리고 싶어진다.** ⚠️ 그런데 그러면 이 언어가 그 방식을 고른 이유가 사라진다 — \"**servers continue to operate instead of crashing after a non-fatal error**\"",
+      "fix": "⭐ **무시할 거면 왜 무시해도 되는지 한 줄 적는다.** 그리고 **정말 뭉칠 수 있는 것만 뭉친다** — ⚠️ **장황함은 이 설계의 부작용이 아니라 대가**다. 대가를 안 치르려면 언어를 바꿔야 한다",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ]
+    },
+    {
+      "trap": "\"뺀 것\"들을 결함으로 여기고 흉내로 채운다",
+      "why": "⭐ 다른 언어에서 오면 상속·예외·제네릭이 없는 것이 불편하고, **그것들을 흉내 내는 코드를 쓰게 된다.** ⚠️ 그러면 **언어가 얻으려던 것(작은 문법·읽기 쉬움)을 잃으면서 원래 기능의 편리함도 못 얻는다**",
+      "fix": "⭐ **FAQ 의 해당 절을 먼저 읽는다** — \"왜 없나\"에 답이 적혀 있고, **대개 대안도 함께 적혀 있다**(상속 대신 인터페이스 만족, 예외 대신 다중 반환). ⚠️ **읽고도 동의가 안 되면 그건 정당한 이견**이다 — 다만 **흉내로 푸는 것과는 다르다**",
+      "sources": [
+        {
+          "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+          "url": "https://go.dev/doc/faq",
+          "publisher": "Go (Google)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+        }
+      ]
+    },
+    {
+      "trap": "\"Go 개발자\" 자리를 기대하고 배운다",
+      "why": "⭐ 공고 문장이 거의 전부 **\"중 1개 이상\"·\"등 하나 이상\"** 이다. ⚠️ **회사가 언어를 대체 가능한 것으로 본다**는 뜻이고, 그래서 **`고루틴` 같은 고유 낱말이 1건**인 것이다",
+      "fix": "⭐ **\"서버 개발자인데 Go 도 읽고 쓴다\"로 자리를 잡는다.** 그리고 **`market` 의 Kubernetes 40.0%** 를 근거로 삼는다 — **인프라 도구를 읽을 수 있다는 것**이 이 언어의 실질적인 값이다"
+    },
+    {
+      "trap": "이 문서만 읽고 이 언어의 판단에 동의해 버린다",
+      "why": "⚠️ **`why` 절이 인용한 것들은 전부 한쪽 주장이다** — \"convoluted code\", \"a crutch\" 는 **관찰이 아니라 판단**이고, 동의하지 않는 사람도 많다(특히 에러 처리의 장황함에 대해). ⭐ **이 문서는 반론 자료를 읽지 않았다**",
+      "fix": "⭐ **제품이 그은 선을 옮길 때는 그 선에 대한 반론도 함께 찾는다.** 📌 이 백과사전의 다른 문서들이 그렇게 했다 — `distributed-lock` 은 **Redlock 논쟁의 양쪽**(Kleppmann 과 antirez)을 다 실었다. **여기는 못 했고, 그 사실을 밝힌다**"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **Go FAQ 를 열고 \"Why does Go not have\" 로 검색해 절이 몇 개인지 센다.** 그리고 **각 답변이 \"성능 때문\"인지 \"사람 때문\"인지** 분류한다.",
+      "done_when": "절의 개수가 나오고, ⭐ **두 분류의 비율**이 나온다. 그리고 **그중 자기가 동의하지 않는 것 하나**를 골라 이유를 적는다.",
+      "why": "⭐⭐⭐ 이 문서가 인용한 것은 **다섯 절뿐**이고, FAQ 에는 더 많다. 💡 **직접 세어 보면 \"이 언어는 뺀 것으로 정의된다\"는 말이 인상이 아니라 사실이 된다.** 그리고 ⭐ **동의하지 않는 것을 고르는 단계가 중요하다** — 이 문서가 못 한 일이다.",
+      "no_hardware": "Go 를 깔 필요가 없다 — **웹 페이지 하나**다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ **자기가 주로 쓰는 언어의 코드에서 `try/catch`(또는 그에 해당하는 것)를 하나 골라**, 그 안에서 잡는 오류가 **\"평범한 오류\"인지 \"진짜 비상사태\"인지** 가른다. 그리고 **평범한 쪽이 몇 개인지** 센다.",
+      "done_when": "목록이 나오고, ⭐ **\"파일을 못 여는 것 같은 평범한 오류\"가 예외로 처리되고 있는 자리**를 하나 이상 찾았다.",
+      "why": "⭐⭐⭐ FAQ 의 진단(\"label too many **ordinary errors** ... as **exceptional**\")은 **Go 를 안 써도 통하는 지적**이다. 💡 **자기 코드에서 그 사례를 찾는 순간** 이 문서의 `error` 절이 남의 언어 이야기가 아니게 된다.",
+      "no_hardware": "어떤 언어든 된다 — Go 가 필요 없다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **Kubernetes(또는 Docker) 저장소에서 아무 파일이나 열어 30분 읽어 본다.** 그리고 **읽을 수 있었던 것과 막힌 것**을 각각 적는다.",
+      "done_when": "⭐ **문법 때문에 막혔는지, 도메인 지식 때문에 막혔는지**를 가를 수 있다. 그리고 **에러 처리가 코드에서 어떻게 보이는지** 한 예를 옮겨 적었다.",
+      "why": "⭐⭐⭐ `market` 의 **Kubernetes 40.0%** 가 이 언어의 실질적인 값이다 — **인프라 도구를 읽는 능력.** 💡 그리고 **문법이 작다는 것이 무슨 뜻인지**는 남의 코드를 읽어 봐야 안다. ⭐ 대개 막히는 것은 문법이 아니라 도메인이고, **그 사실을 확인하는 것이 이 실습의 목적**이다.",
+      "no_hardware": "클론할 필요 없이 웹에서 읽으면 된다. ⭐ 처음이면 **`cmd/` 아래의 짧은 파일**부터.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "Go 는 어떤 문제를 풀려고 만들어졌는가? 원문의 세 가지는?",
+    "예외를 뺀 이유는? 어서션을 뺀 이유는? 두 답의 공통점은?",
+    "제네릭을 오래 안 넣은 기준은? \"편리하다\"가 왜 근거가 안 되는가?",
+    "에러를 값으로 다루면 무엇을 얻고 무엇을 잃는가?",
+    "이 낱말을 셀 때 왜 직접 셈을 못 쓰는가?",
+    "공고에서 Go 가 불리는 전형적인 방식은? 그것이 뜻하는 바는?"
+  ],
+  "evidence": [
+    {
+      "quote": "• TypeScript, JavaScript, Java, Kotlin, Go 등 하나 이상의 서버 개발 언어에 능숙하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/259710",
+      "where": "베이글코드(Bagelcode)",
+      "what_it_shows": "⭐⭐⭐ **이 낱말이 불리는 전형적 방식 — \"등 하나 이상\".** 회사가 언어를 **대체 가능한 것으로 본다**. 그래서 `고루틴` 같은 고유 낱말이 **1건**이다"
+    },
+    {
+      "quote": "• Python, Golang, Java 중 1개 이상의 언어 사용 가능자",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373814",
+      "where": "에이엑스지(axz)",
+      "what_it_shows": "⭐ **`market` 의 Python 58.5%** 가 이 모양이다 — **경쟁이 아니라 나란한 선택지**"
+    },
+    {
+      "quote": "• 필요시 Golang, Typescript, Rust 등 다양한 언어를 다룰 수 있는 의지",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/361662",
+      "where": "딥오토",
+      "what_it_shows": "⭐⭐ **`다룰 수 있는 의지`** — 경험이 아니라 **의지**를 묻는다. 언어가 **바꿔 낄 수 있는 것**이라는 전제가 가장 노골적으로 드러난 문장"
+    },
+    {
+      "quote": "여러 서버에 나뉘어 저장된 데이터를 안전하게 합치고 재배치하는 과정에서 생기는 동시성 문제를 분산 백엔드(Go, gRPC/protobuf)에서 스펙 수준부터 정의하고 해결합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/376950",
+      "where": "크립토랩",
+      "what_it_shows": "⭐⭐⭐ **지목해서 쓰는 곳은 이유가 함께 온다** — `동시성 문제`·`스펙 수준부터 정의`. 그리고 `gRPC`(243건)가 짝으로 나온다"
+    },
+    {
+      "quote": "Go/Gin 기반 고성능 백엔드 API 및 내부 서비스 개발",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/310318",
+      "where": "에이티씨아이",
+      "what_it_shows": "⭐ **`고성능`** 이 붙는다 — FAQ 의 \"efficient execution\" 이 시장에서 불리는 이름"
+    },
+    {
+      "quote": "• AWS Lambda, Serverless와 nodejs, python, golang 등의 언어로 마이크로 서비스를 개발 합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/222071",
+      "where": "채널코퍼레이션",
+      "what_it_shows": "⭐ **한 회사가 여러 언어를 함께 쓴다** — 그래서 \"Go 개발자\"보다 **\"서버 개발자 중 Go 도 쓰는 사람\"** 이 흔하다"
+    },
+    {
+      "quote": "• Rust, Golang 개발 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/272016",
+      "where": "블록체인랩스",
+      "what_it_shows": "⭐ **Rust 와 짝지어진다** — 성능이 중요한 자리에서 함께 후보에 오른다"
+    },
+    {
+      "quote": "C/C++, Golang, Typescript/Javascript(react) 언어로 개발합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/368114",
+      "where": "체크멀",
+      "what_it_shows": "⚠️ **C/C++ 와 한 줄에** — FAQ 가 지목한 그 언어들(\"efficient compilation, efficient execution\" 을 함께 못 주던)과 나란히 적힌다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "asyncio",
+      "how": "⚠️ **동시성 모델 일반론은 그쪽에 있다**(파이썬). ⭐ **축은 안 겹치지만**(그 문서에 `Go`·`고루틴` 0회) **이 문서가 고루틴을 다루지 못해 빈자리가 남았다**"
+    },
+    {
+      "slug": "kubernetes",
+      "how": "⭐⭐⭐ **동반 40.0%** — **K8s 자체가 Go 로 쓰였다.** 이 언어를 배우는 실질적인 값"
+    },
+    {
+      "slug": "service-mesh",
+      "how": "⭐ 이 언어로 쓰인 것들 — Envoy 주변 도구들"
+    },
+    {
+      "slug": "api-gateway",
+      "how": "같은 자리"
+    },
+    {
+      "slug": "typescript",
+      "how": "⭐⭐ **계보의 이웃** — 저쪽은 **Non-goals 목록**, 여기는 **\"왜 없나\" Q&A**"
+    },
+    {
+      "slug": "javascript",
+      "how": "⭐ **정반대의 사례** — 저쪽은 **못 고쳐서 쌓였고**, 여기는 **안 넣어서 작다**"
+    },
+    {
+      "slug": "distributed-lock",
+      "how": "⭐ **논쟁의 양쪽을 다 싣는 법**을 그 문서가 보여 준다 — ⚠️ 이 문서는 못 했다"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **동시성 모델을 다루지 못했다.** 고루틴·채널·`select`·CSP — **이 언어의 가장 상징적인 부분**인데 안 썼다. ⭐ 이유는 **셈이 없어서**다(`고루틴` 1건, `채널` 은 오염으로 사용 불가). ⚠️ **`asyncio` 와 겹치지도 않는데**(그쪽에 `Go` 0회) 비웠다 — **이 문서의 가장 큰 구멍이고, 다음 사이클이 채울 자리다.**",
+    "⚠️⚠️ **직접 셈을 아예 못 썼다** — 이 백과사전에서 **처음**이다. `\\bGo\\b` 가 \"Go to\"·회사명에 걸려 1414건(모집중 65%)이 나왔고, `채널` 은 채널톡·유통 채널로 완전히 오염됐다. ⭐ **`market` 의 848건에 기댔고**, `counting` 표에 그 사실을 적었다.",
+    "⚠️ **FAQ 의 다섯 절만 읽었다**(목적·예외·어서션·제네릭·상속). ⭐ **\"Why does Go not have X?\" 절이 더 있고**, 가비지 컬렉션·포인터 연산·연산자 오버로딩 등은 확인하지 않았다 — **실습 1번을 그 확인으로 뒀다.**",
+    "⚠️⚠️ **반론을 읽지 않았다.** `why` 절이 인용한 것들(\"convoluted code\", \"a crutch\")은 **관찰이 아니라 판단**이고 이견이 많은 영역인데, **비판 쪽 자료를 하나도 안 읽었다.** ⭐ `distributed-lock` 은 Redlock 논쟁의 양쪽을 다 실었는데 **여기는 한쪽만 읽었다.**",
+    "⚠️ **제네릭 이후를 확인하지 않았다.** FAQ 가 \"It took a while to develop a design\" 이라고만 적고, **실제로 언제 어떤 형태로 들어갔고 무엇이 달라졌는지**는 안 봤다(공고 근거도 12건뿐이라 약했다).",
+    "⚠️ **`에러 처리` 148건이 Go 문맥인지 가르지 않았다.** 어느 언어의 이야기인지 문장을 읽지 않았고, 본문에서는 **참고 수치로만** 썼다.",
+    "⭐ **`tradeoff` 표는 이 문서의 정리다.** FAQ 가 그렇게 표로 말한 것이 아니라, **인용한 두 문장(예외·어서션)에서 추론**했다. `confidence` 는 인용 부분만 `confirmed` 다."
+  ],
+  "sources": [
+    {
+      "title": "Frequently Asked Questions (FAQ) — The Go Programming Language",
+      "url": "https://go.dev/doc/faq",
+      "publisher": "Go (Google)",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **\"왜 X 가 없나\"를 하나씩 답하는 문서** — 그리고 답이 전부 **성능이 아니라 사람**에 관한 것이다(\"convoluted code\", \"a crutch\", \"bookkeeping\")"
+    }
+  ]
+}
