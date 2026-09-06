@@ -1,0 +1,584 @@
+{
+  "slug": "scrum",
+  "title": "스크럼 — 불완전한데 전체로만 존재한다",
+  "title_en": "Scrum: Purposefully Incomplete, Yet Only in Its Entirety",
+  "aliases": [
+    "스크럼",
+    "scrum",
+    "스프린트",
+    "스크럼 마스터",
+    "프로덕트 오너",
+    "백로그"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **가이드가 두 가지를 함께 말한다 — \"의도적으로 불완전하다\"와 \"전체로만 존재한다.\"** 밖으로는 방법을 안 정하고, 안으로는 정한 것을 다 요구한다. ⚠️ 그런데 공고는 스크럼을 **178번** 부르면서 **`스크럼 마스터` 는 2건**이고 **`프로덕트 오너|PO` 는 351건**이다.",
+  "summary": "⭐ 직전 문서(`agile`)가 **\"이름 붙은 방법론에서 생각을 떼라\"** 는 작성자의 글을 옮기고, **스크럼 자체는 안 다뤘다고** 적었다. 여기가 그 자리다.\n\n**가이드는 짧고, 자기를 두 번 규정한다.**\n\n> ⭐⭐⭐ **\"The Scrum framework is purposefully incomplete, only defining the parts required to implement Scrum theory.\"**\n> ⭐⭐⭐ **\"Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.\"**\n\n💡 ⭐⭐⭐ **두 문장이 반대처럼 보이는데 방향이 다르다.** ⭐ **밖으로는 불완전하다** — 어떻게 개발하고 어떻게 추정하고 어떻게 배포하는지 **안 정한다.** ⭐⭐ **안으로는 전체다** — **정해 놓은 요소는 빼면 안 된다.**\n\n> ⭐⭐ \"**Rather than provide people with detailed instructions**, the rules of Scrum **guide their relationships and interactions**.\"\n> ⭐⭐ \"Scrum is **simple**. **Try it as is** and determine if its philosophy, theory, and structure help to achieve goals and create value.\"\n\n📌 ⚠️⚠️ **그런데 셈이 \"전체\"가 아니라고 말한다.** `스크럼` **178건**인데 —\n\n| 역할 | 건수 |\n|---|---|\n| ⭐ `프로덕트 오너\\|PO` | **351** |\n| Developers | (직무 자체) |\n| ⚠️⚠️ **`스크럼 마스터`** | **2** (모집중 **0**) |\n\n⭐⭐⭐ **세 역할 중 하나는 독립 직무가 됐고 하나는 사실상 없다.** 💡 그리고 가이드는 **스크럼 마스터가 \"establishing Scrum as defined in the Scrum Guide\" 에 책임진다**고 적는다 — ⚠️ **그 역할이 없으면 \"가이드대로 세우는 일\"을 아무도 맡지 않는다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 178 대 2 — 그리고 PO 는 351",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| ⚠️ `투명성\\|transparency` | 491 | (모집중 **324 = 66%**) |\n| ⭐⭐ `프로덕트 오너\\|product owner\\|PO` | **351** | (모집중 169) |\n| ⚠️ `번다운\\|벨로시티\\|velocity` | 216 | (모집중 **190 = 88%**) |\n| ⭐ `스크럼\\|scrum` | **178** | (모집중 72) |\n| `스프린트\\|sprint` | 130 | (모집중 70) |\n| `스토리 포인트\\|플래닝 포커\\|추정` | 102 | (모집중 49) |\n| `증분\\|인크리먼트\\|increment` | 73 | (모집중 56) |\n| `백로그\\|backlog` | 60 | (모집중 40) |\n| `데일리 스크럼\\|스탠드업` | 42 | (모집중 32) |\n| `자기 조직화\\|self-managing` | 39 | (모집중 36) |\n| ⚠️ `스프린트 리뷰\\|스프린트 계획` | **19** | (모집중 11) |\n| ⚠️⚠️ `완료의 정의\\|Definition of Done` | **10** | (모집중 3) |\n| ⚠️⚠️ **`스크럼 마스터\\|scrum master`** | **2** | (모집중 **0**) |\n\n⭐⭐⭐ **178 대 2.** 그리고 **PO 는 351건으로 스크럼 자체의 두 배**다.\n\n💡 ⭐⭐ **`프로덕트 오너` 는 스크럼과 떨어져 독립 직무가 됐다.**\n\n> `[채용 포지션 : 풀스택 **프로덕트 오너(PO)**]` — 와이텐플러스\n> `더 나은 유저 경험을 위해 **프로덕트 오너(PO)**, 디자이너, 백엔드 개발자와의 긴밀한 협업` — 아르템코퍼레이션\n> `**프로덕트 오너**·디자이너와 함께 문제 정의부터 스펙 설계, 출시, 지표 검증까지` — 지바이크\n\n⭐ **셋 다 스크럼을 언급하지 않는다** — 📌 **역할 이름만 남고 프레임워크는 떨어져 나갔다.**\n\n⚠️⚠️ **반대로 스크럼 마스터는 2건이고 모집중은 0건이다.** ⭐ 가이드는 그 역할이 **\"establishing Scrum as defined in the Scrum Guide\"** 에 책임진다고 적는데 — 💡 **그 일을 맡는 자리가 시장에 없다.**\n\n📌 ⭐⭐ **이벤트와 산출물도 이름이 작다** — `스프린트 리뷰|스프린트 계획` **19건**, `완료의 정의` **10건**(모집중 3). ⚠️ **`스프린트` 는 130건인데 그 안의 이벤트 이름은 19건**이다.\n\n💡 ⭐⭐⭐ **그리고 `agile` 사이클에서 본 것이 여기서도 나온다 — `스크럼` 이 팀 이름이 됐다.**\n\n> ⭐⭐ `포트원의 Backend Engineer는 아래 **두 스크럼 중 한 곳에 소속**되어` · `**One Payment Infra 스크럼**은 ... **B2B 스크럼**은 ...` — 코리아포트원\n\n⚠️ **프레임워크 이름이 조직 단위의 이름이 됐다** — 📌 **그러면 그 방식을 바꾸는 일이 조직 개편이 된다.**\n\n⚠️ **셈 주의 둘.** `투명성` **491건 @ 66%** 와 `번다운|벨로시티` **216건 @ 88%** 는 오염 신호(정상 30~40%)라 **근거로 쓰지 않았다** — ⭐ 앞은 **기업 문화 문구**, 뒤는 **`velocity` 의 다른 뜻**으로 보이지만 **확인하지 않았다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 밖으로는 불완전하고 안으로는 전체다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ],
+      "body": "⭐ **가이드는 자기가 무엇인지보다 무엇이 아닌지를 먼저 정한다.**\n\n> ⭐⭐⭐ **\"The Scrum framework is purposefully incomplete, only defining the parts required to implement Scrum theory.\"**\n\n💡 ⭐⭐ **\"의도적으로 불완전하다\"** — ⚠️ **결함이 아니라 설계**라고 명시한다. ⭐ 그래서 **어떻게 개발할지, 어떻게 추정할지, 어떻게 배포할지는 안 정한다.**\n\n> ⭐⭐ \"**Rather than provide people with detailed instructions**, the rules of Scrum **guide their relationships and interactions**.\"\n\n⭐⭐⭐ **\"자세한 지시 대신 관계와 상호작용을 안내한다\"** — 📌 **`agile` 선언문의 첫 줄(Individuals and interactions)이 여기 그대로 있다.**\n\n💡 ⭐⭐⭐ **그런데 같은 문서가 반대 방향으로도 못 박는다.**\n\n> ⭐⭐⭐ **\"Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.\"**\n\n⚠️ **부분만 하면 스크럼이 아니다.** ⭐ **두 문장이 모순처럼 보이는데 방향이 다르다.**\n\n| | 무엇에 대해 | 무엇이라 하나 |\n|---|---|---|\n| ⭐⭐⭐ **밖** | 개발 방법·추정·도구·배포 | **안 정한다** — \"purposefully incomplete\" |\n| ⭐⭐⭐ **안** | 정해 놓은 역할·이벤트·산출물 | **빼면 안 된다** — \"only in its entirety\" |\n\n💡 ⭐⭐ **그리고 그 요구가 가능한 이유는 정한 것이 아주 적기 때문**이다 — \"Scrum is **simple**\", \"a **lightweight** framework\".\n\n📌 ⭐⭐⭐ **여기가 `agile` 문서와 정면으로 만나는 자리다.**\n\n| | 무엇을 말하나 |\n|---|---|\n| `agile`(선언문 작성자 중 한 사람) | **\"Developers should detach their thinking from any particular named 'Agile' method.\"** |\n| ⭐ **이 문서(스크럼 가이드)** | **\"Scrum exists only in its entirety.\"** |\n\n⚠️⚠️ **두 1차 자료가 서로 다른 답을 준다** — 💡 ⭐ **이 백과사전에서 드문 일이라 그대로 적어 둔다.** 📌 **다만 부딪히는 지점이 좁다**: 앞쪽은 **잘못 적용된 것**을 겨냥하고, 뒤쪽은 **그 잘못 적용이 곧 \"부분만 하는 것\"** 이라고 답한다. ⭐ **그러면 셈이 판정에 쓰일 수 있다** — **`스크럼 마스터` 2건**은 **한 역할이 통째로 빠졌다**는 뜻이고, 가이드 기준으로 **그것은 스크럼이 아니다.**\n\n📌 ⭐ **그리고 가이드가 권하는 시작 방식도 짧다.**\n\n> ⭐⭐ \"Scrum is simple. **Try it as is** and determine if its philosophy, theory, and structure **help to achieve goals and create value**.\"\n\n💡 **\"있는 그대로 해 보고 도움이 되는지 판단하라\"** — ⚠️ **맞춰 고치고 시작하지 말라는 뜻**으로 읽힌다."
+    },
+    {
+      "id": "roles",
+      "kind": "how",
+      "heading": "⭐⭐ 세 역할 — 하나만 팔렸다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ],
+      "body": "⭐ **가이드는 세 역할을 \"책임진다\"(accountable)로 정의한다.**\n\n| | 원문 | 공고 |\n|---|---|---|\n| ⭐⭐ **Product Owner** | \"accountable for **maximizing the value of the product** resulting from the work of the Scrum Team\" | ⭐ **351건** |\n| **Developers** | \"the people in the Scrum Team that are **committed to creating any aspect of a usable Increment each Sprint**\" | (직무 자체) |\n| ⚠️⚠️ **Scrum Master** | \"accountable for **establishing Scrum as defined in the Scrum Guide**\" · \"accountable for the **Scrum Team's effectiveness**\" | ⚠️ **2건** (모집중 **0**) |\n\n⭐⭐⭐ **가운데 열을 보면 왜 그렇게 됐는지 짐작이 간다.** 💡 **PO 의 책임은 제품 가치**이고 — ⭐ 그건 **스크럼이 없어도 필요한 일**이라 떨어져 나가 독립 직무가 됐다.\n\n⚠️⚠️ **반면 스크럼 마스터의 책임은 \"가이드대로 스크럼을 세우는 것\"** 이다 — 📌 **스크럼을 안 하면 존재 이유가 없는 역할**이고, **그래서 이름이 안 팔린다.**\n\n💡 ⭐⭐⭐ **그런데 두 번째 책임이 남는다 — \"the Scrum Team's effectiveness\".** ⚠️ **그 일은 스크럼과 무관하게 필요한데**, 공고에서 그 이름은 **2건**이다.\n\n📌 ⭐ **이벤트와 산출물도 마찬가지다.**\n\n| | 건수 |\n|---|---|\n| `스프린트` | 130 |\n| ⚠️ `스프린트 리뷰\\|스프린트 계획` | **19** |\n| `백로그` | 60 |\n| ⚠️ `완료의 정의\\|Definition of Done` | **10** (모집중 3) |\n\n⭐⭐ **큰 그릇의 이름은 부르고 그 안의 요소는 안 부른다** — 💡 📌 **`documentation`(위키 1133 : README 20)·`performance`(APM 4091 : p99 23)·`profiling`(APM 566 : 플레임 그래프 2)에서 네 사이클 연속 본 형태**이고, ⚠️ **여기서는 그 형태가 곧 가이드 위반의 증거가 된다** — \"Scrum exists **only in its entirety**\".\n\n📌 ⭐ **세 기둥과 다섯 가치도 원문에 있다.**\n\n> ⭐⭐ 세 기둥 — \"empirical Scrum pillars of **transparency, inspection, and adaptation**\"\n> ⭐⭐ 다섯 가치 — \"Successful use of Scrum **depends on people becoming more proficient in living five values**: **Commitment, Focus, Openness, Respect, and Courage**\"\n\n⚠️ **다섯 가치 쪽 문장이 세다** — ⭐ **\"성공적인 사용은 사람들이 이 가치들을 살아 내는 데 능숙해지는 것에 달려 있다\"**. 💡 📌 **절차가 아니라 사람의 몸에 붙는 것이라고 적는다** — 그래서 **절차만 도입하면 안 되는 이유가 가이드 안에 있다.**\n\n⚠️ **셈으로 확인하려 했으나 못 했다** — `투명성` 은 **491건이지만 모집중 66%** 로 오염 신호가 떠서 **쓰지 않았다**(기업 문화 문구로 보이나 확인하지 않았다)."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 이벤트의 절차를 다루지 않았다.** 스프린트 계획·데일리 스크럼·스프린트 리뷰·회고가 각각 **얼마나 걸리고 무엇을 하는지** — ⭐ 가이드에 다 적혀 있는데 **이 문서는 이름과 셈만** 다뤘다. 📌 **\"전체로만 존재한다\"를 말하면서 그 전체를 안 적은 것이 이 문서의 가장 큰 빈자리다.**\n\n**2. ⚠️ 만든 사람의 후속 발언을 1차 자료로 못 읽었다.** ⭐⭐⭐ **직전 사이클에서 세운 규칙(\"그 방식을 만든 사람이 나중에 무엇을 썼나\")을 적용해 검색했고**, ⭐ **본인 블로그가 후보로 나왔다.** ⚠️ **그런데 열지 않았다** — 검색 결과의 2차 요약만 보았고, **근거로 쓰지 않았다.** 📌 **`agile` 에서 그 규칙이 통했는데 여기서는 한 걸음을 덜 갔다.**\n\n**3. ⚠️ 규모 확장 프레임워크를 다루지 않았다.** ⭐ 여러 팀에 스크럼을 얹는 방식들이 있는데 **1차 자료를 안 봤다.** ⚠️ 그리고 가이드는 **\"lightweight\"** 를 반복하므로 **그쪽과 긴장이 있을 텐데** 확인하지 못했다.\n\n**4. ⚠️⚠️ 오염 의심 둘을 근거로 쓰지 않았다.** `투명성` **491건 @ 모집중 66%**(기업 문화 문구로 보인다), `번다운|벨로시티` **216건 @ 88%**(`velocity` 의 다른 뜻으로 보인다) — ⭐ **둘 다 확인하지 않았다.** 📌 세 기둥의 첫째(transparency)를 셈으로 확인하려던 시도가 그래서 막혔다.\n\n**5. ⚠️ `프로덕트 오너` 351건을 갈라 세지 못했다.** ⭐ **스크럼 문맥의 PO 와 그냥 기획 직무로서의 PO** 가 섞여 있을 텐데 **나누지 않았다.** ⚠️ 다만 인용한 세 공고는 **스크럼을 언급하지 않는다.**\n\n**6. ⭐ 두 1차 자료가 부딪히는 것을 판정하지 않았다.** ⭐⭐⭐ `agile` 쪽은 **\"이름 붙은 방법론에서 생각을 떼라\"**, 여기는 **\"전체로만 존재한다\"** — 📌 **어느 쪽이 옳은지 이 문서는 정하지 않았고**, **부딪히는 지점이 좁다는 것만** 적었다.\n\n**7. ⭐ `agile` 에서 `스크럼`·`scrum`·`스프린트` alias 를 가져왔다** — 그 문서는 **선언문과 그 오해까지만** 다뤘고 **역할·이벤트·산출물은 0회**였다. 📌 **다섯 번째 alias 이전이다.**\n\n**8. ⭐ `market` 이 없다** — 기술 태그가 아니라 실천이라 `tech_relations.json` 에 이름이 없다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 원문",
+      "note": "⭐ 전부 **Scrum Guide** 원문이다. 📌 **첫 두 줄이 서로를 당긴다** — 밖으로는 안 정하고 안으로는 다 요구한다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 밖으로는",
+          "**\"The Scrum framework is purposefully incomplete, only defining the parts required to implement Scrum theory.\"**"
+        ],
+        [
+          "⭐⭐⭐ 안으로는",
+          "**\"Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.\"**"
+        ],
+        [
+          "⭐⭐ 무엇인가",
+          "\"Scrum is a **lightweight framework** that helps people, teams and organizations **generate value through adaptive solutions for complex problems**.\""
+        ],
+        [
+          "⭐⭐⭐ 어떻게 안내하나",
+          "**\"Rather than provide people with detailed instructions, the rules of Scrum guide their relationships and interactions.\"**"
+        ],
+        [
+          "⭐⭐ 어떻게 시작하나",
+          "\"Scrum is **simple**. **Try it as is** and determine if its philosophy, theory, and structure help to achieve goals and create value.\""
+        ],
+        [
+          "⭐⭐ Scrum Master",
+          "\"accountable for **establishing Scrum as defined in the Scrum Guide**\" · \"accountable for the **Scrum Team's effectiveness**\""
+        ],
+        [
+          "⭐ Product Owner",
+          "\"accountable for **maximizing the value of the product** resulting from the work of the Scrum Team\""
+        ],
+        [
+          "Developers",
+          "\"**committed to creating any aspect of a usable Increment each Sprint**\""
+        ],
+        [
+          "⭐⭐ 세 기둥",
+          "\"empirical Scrum pillars of **transparency, inspection, and adaptation**\""
+        ],
+        [
+          "⭐⭐⭐ 다섯 가치",
+          "\"Successful use of Scrum **depends on people becoming more proficient in living five values**: **Commitment, Focus, Openness, Respect, and Courage**\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️ 이 낱말을 셀 때",
+      "note": "⭐⭐⭐ **178 대 2 — 그리고 PO 는 351.** 📌 **큰 그릇의 이름은 부르고 그 안의 요소는 안 부른다**(`스프린트` 130 : `스프린트 리뷰|계획` 19). ⚠️ 여기서는 그 형태가 곧 **\"only in its entirety\" 위반의 증거**가 된다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "⚠️ `투명성\\|transparency`",
+          "491인데 **모집중 66%** — **오염 신호, 근거로 쓰지 않았다**(기업 문화 문구로 보인다)"
+        ],
+        [
+          "⭐⭐ `프로덕트 오너\\|PO`",
+          "**351 (모집중 169)** — ⚠️ **스크럼의 두 배.** 갈라 세지 못했다"
+        ],
+        [
+          "⚠️ `번다운\\|벨로시티\\|velocity`",
+          "216인데 **모집중 88%** — **오염 신호, 쓰지 않았다**(`velocity` 의 다른 뜻)"
+        ],
+        [
+          "⭐ `스크럼\\|scrum`",
+          "**178 (모집중 72)** — ⚠️ **팀 이름으로도 쓰인다**(코리아포트원)"
+        ],
+        [
+          "`스프린트\\|sprint`",
+          "130 (모집중 70)"
+        ],
+        [
+          "`스토리 포인트\\|플래닝 포커\\|추정`",
+          "102 (모집중 49)"
+        ],
+        [
+          "`증분\\|인크리먼트`",
+          "73 (모집중 56)"
+        ],
+        [
+          "`백로그`",
+          "60 (모집중 40)"
+        ],
+        [
+          "`데일리 스크럼\\|스탠드업`",
+          "42 (모집중 32)"
+        ],
+        [
+          "`자기 조직화\\|self-managing`",
+          "39 (모집중 36)"
+        ],
+        [
+          "⚠️ `스프린트 리뷰\\|스프린트 계획`",
+          "**19 (모집중 11)** — ⭐ `스프린트` 130건 안의 이벤트 이름"
+        ],
+        [
+          "⚠️⚠️ `완료의 정의\\|Definition of Done`",
+          "**10 (모집중 3)**"
+        ],
+        [
+          "⚠️⚠️ **`스크럼 마스터\\|scrum master`**",
+          "**2 (모집중 0)**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "three",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 세 역할 — 왜 하나만 팔렸나",
+      "note": "⭐ 왼쪽 두 열은 원문(`confirmed`), 오른쪽은 셈과 관찰(`inferred`). 📌 **책임의 성격이 시장 수요를 가른 것으로 보인다** — 제품 가치는 스크럼 없이도 필요하고, \"가이드대로 세우기\"는 스크럼이 없으면 존재 이유가 없다.",
+      "columns": [
+        "역할",
+        "무엇에 책임지나",
+        "공고"
+      ],
+      "rows": [
+        [
+          "⭐ **Product Owner**",
+          "\"**maximizing the value of the product**\"",
+          "⭐⭐ **351건** — 스크럼을 언급하지 않고 독립 직무로"
+        ],
+        [
+          "**Developers**",
+          "\"creating any aspect of a **usable Increment each Sprint**\"",
+          "직무 자체"
+        ],
+        [
+          "⚠️⚠️ **Scrum Master**",
+          "\"**establishing Scrum as defined in the Scrum Guide**\" · \"the Scrum Team's **effectiveness**\"",
+          "⚠️ **2건**(모집중 **0**)"
+        ],
+        [
+          "⭐ 가이드의 요구",
+          "**\"Scrum exists only in its entirety.\"**",
+          "⚠️ **한 역할이 통째로 빠져 있다**"
+        ],
+        [
+          "⭐ 남는 물음",
+          "두 번째 책임(**팀의 효과성**)은 **스크럼과 무관하게 필요하다**",
+          "⚠️ 그 이름도 **2건**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ]
+    },
+    {
+      "id": "clash",
+      "kind": "compare",
+      "caption": "⭐⭐ 두 1차 자료가 다른 답을 준다",
+      "note": "⭐ 양쪽 인용 모두 각 문서의 1차 자료다. ⚠️ **어느 쪽이 옳은지 이 문서는 정하지 않았다** — 📌 **부딪히는 지점이 좁다는 것만** 적는다.",
+      "columns": [
+        "",
+        "무엇을 말하나",
+        "무엇을 겨냥하나"
+      ],
+      "rows": [
+        [
+          "⭐ `agile`(선언문 작성자 중 한 사람)",
+          "**\"Developers should detach their thinking from any particular named 'Agile' method.\"**",
+          "**잘못 적용된 것** — \"Faux Agile\"·\"Dark Agile\""
+        ],
+        [
+          "⭐ **이 문서**(스크럼 가이드)",
+          "**\"Scrum exists only in its entirety.\"**",
+          "⭐ **그 잘못 적용이 곧 \"부분만 하는 것\"** 이라는 답"
+        ],
+        [
+          "⭐⭐ 셈이 판정에 쓰일 수 있다",
+          "`스크럼 마스터` **2건**(모집중 0)",
+          "⚠️ **한 역할이 통째로 빠지면 가이드 기준으로 스크럼이 아니다**"
+        ],
+        [
+          "⚠️ 다만",
+          "가이드는 **\"purposefully incomplete\"** 라고도 한다",
+          "⭐ **밖(방법)은 안 정하고 안(요소)은 다 요구한다** — 모순이 아니다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ purposefully incomplete",
+      "en": "—",
+      "what": "**의도적으로 불완전하다.** ⭐ 결함이 아니라 설계 — \"only defining the parts required to implement Scrum theory\". 📌 개발 방법·추정·도구·배포는 **안 정한다**"
+    },
+    {
+      "term": "⭐⭐⭐ only in its entirety",
+      "en": "—",
+      "what": "**\"Implementing only parts of Scrum is possible, but the result is not Scrum.\"** ⚠️ **정해 놓은 요소는 빼면 안 된다** — 그리고 정한 것이 적어서 그 요구가 가능하다"
+    },
+    {
+      "term": "⭐⭐ Scrum Master",
+      "en": "—",
+      "what": "\"accountable for **establishing Scrum as defined in the Scrum Guide**\" 그리고 \"the Scrum Team's **effectiveness**\". ⚠️⚠️ **공고 2건, 모집중 0건**"
+    },
+    {
+      "term": "⭐ Product Owner",
+      "en": "—",
+      "what": "\"accountable for **maximizing the value of the product**\". ⭐ **스크럼 없이도 필요한 일**이라 떨어져 나가 **독립 직무(351건)** 가 됐다"
+    },
+    {
+      "term": "⭐⭐ 세 기둥",
+      "en": "transparency, inspection, adaptation",
+      "what": "경험적 프로세스의 세 기둥. ⚠️ `투명성` 은 **491건이지만 모집중 66%** 로 오염 신호라 셈으로 확인하지 못했다"
+    },
+    {
+      "term": "⭐⭐⭐ 다섯 가치",
+      "en": "—",
+      "what": "**Commitment, Focus, Openness, Respect, Courage.** ⭐ \"Successful use of Scrum **depends on people becoming more proficient in living** five values\" — 💡 **절차가 아니라 사람의 몸에 붙는 것**이라고 적는다"
+    },
+    {
+      "term": "⭐ Try it as is",
+      "en": "—",
+      "what": "\"Scrum is simple. **Try it as is** and determine if ... help to achieve goals and create value.\" — ⚠️ **맞춰 고치고 시작하지 말라는 뜻**으로 읽힌다"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "스크럼을 도입하자는 말이 나왔다",
+      "pick": "⭐⭐ **역할 셋이 다 있는지 먼저 확인한다**",
+      "over": "이벤트(스프린트·데일리)부터 시작하기",
+      "why": "⭐⭐⭐ **\"Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.\"** — ⚠️ 그리고 **가장 흔히 빠지는 것이 스크럼 마스터**다(공고 **2건**, 모집중 **0**). 💡 그 역할이 **\"establishing Scrum as defined in the Scrum Guide\"** 에 책임지므로, **없으면 가이드대로 세우는 일을 아무도 안 맡는다**",
+      "tradeoff": "⚠️ **전담 인원을 두기 어려운 조직이 많다.** ⭐ 그러면 **그 책임을 누가 지는지 이름을 붙이거나**, 📌 **\"우리는 스크럼이 아니라 우리 방식을 한다\"고 말하는 편이 정직하다** — ⚠️ 이름을 붙이고 부분만 하면 **문제가 생겼을 때 무엇이 원인인지 알 수 없다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ]
+    },
+    {
+      "situation": "스크럼을 우리 상황에 맞춰 고치려 한다",
+      "pick": "⭐⭐ **먼저 있는 그대로 해 보고 판단한다**",
+      "over": "도입 전에 우리에게 맞게 조정하기",
+      "why": "⭐⭐ 가이드가 그렇게 권한다 — \"Scrum is simple. **Try it as is** and determine if its philosophy, theory, and structure **help to achieve goals and create value**.\" 💡 ⭐ 정한 것이 적어서(\"lightweight\") **그대로 해 보는 값이 크지 않다**",
+      "tradeoff": "⚠️ **처음 몇 번은 어색하고 낭비처럼 느껴진다.** ⭐ 그래도 **도입 전에 고치면 무엇이 안 맞았는지 알 수 없다** — 📌 그리고 가이드는 **방법·도구·추정 방식은 원래 안 정한다**(\"purposefully incomplete\"), **그쪽은 마음껏 맞춰도 된다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ]
+    },
+    {
+      "situation": "프로덕트 오너를 뽑는다",
+      "pick": "⭐ **스크럼 문맥인지 아닌지 먼저 정한다**",
+      "over": "PO 라는 이름만 붙이기",
+      "why": "⭐⭐ **`프로덕트 오너|PO` 는 351건**으로 **스크럼(178건)의 두 배**이고, ⚠️ **인용한 공고들은 스크럼을 언급하지 않는다.** 💡 ⭐ **역할 이름만 남고 프레임워크는 떨어져 나갔다** — 그러면 **가이드가 정한 책임(백로그·가치 극대화)과 실제 기대가 다를 수 있다**",
+      "tradeoff": "⚠️ **이름이 이미 널리 쓰여서 바꾸기 어렵다.** ⭐ 그래도 **\"이 자리가 백로그의 순서를 최종 결정하나\"** 하나만 확인해도 갈린다 — 📌 ⚠️ **이 문서는 351건을 갈라 세지 못했다**",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "절차는 도입했는데 잘 안 굴러간다",
+      "pick": "⭐⭐ **다섯 가치 쪽을 본다**",
+      "over": "이벤트를 더 늘리거나 도구를 바꾸기",
+      "why": "⭐⭐⭐ 가이드가 세게 적는다 — \"Successful use of Scrum **depends on people becoming more proficient in living five values**: Commitment, Focus, Openness, Respect, and Courage.\" 💡 ⭐ **절차가 아니라 사람의 몸에 붙는 것**이라고 하므로, ⚠️ **절차만 늘리면 안 되는 이유가 가이드 안에 있다**",
+      "tradeoff": "⚠️ **가치는 측정하기 어렵고 회의에서 다루기 민망하다.** ⭐ 그래도 **`agile` 사이클의 작성자가 지적한 증상**(\"more interference, less time, higher pressure, demands to go faster\")이 보이면 **그건 절차 문제가 아니다.** 📌 그리고 그것을 다루는 책임이 **스크럼 마스터의 두 번째 책임**(\"the Scrum Team's effectiveness\")이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ]
+    },
+    {
+      "situation": "\"스크럼 경험\"을 이력서에 적는다",
+      "pick": "⭐ **어느 요소를 실제로 했는지 적는다**",
+      "over": "스크럼 환경에서 일했다고 적기",
+      "why": "⭐⭐ `스크럼` 은 **178건이 적는다.** ⚠️ 그런데 `스프린트 리뷰|계획` 은 **19건**, `완료의 정의` 는 **10건**(모집중 3)이다. ⭐ **요소를 이름으로 말할 줄 아는 사람이 드물고**, 💡 **가이드 기준으로는 요소가 다 있어야 스크럼이다**",
+      "tradeoff": "길어진다. ⭐ 그래도 **\"스크럼 환경에서 일했다\"는 팀 이름일 수 있고**(코리아포트원 공고처럼 `스크럼` 이 조직 단위다), **\"완료의 정의를 팀과 합의해 유지했다\"는 실제로 한 일**이다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐⭐ 이벤트만 도입하고 역할은 안 둔다",
+      "why": "⭐⭐⭐ **가이드가 부분 도입을 이름으로 부정한다** — \"Implementing only parts of Scrum is possible, but **the result is not Scrum**.\" ⚠️⚠️ 그리고 **가장 흔히 빠지는 것이 스크럼 마스터**다(**2건**, 모집중 **0**). 💡 그 역할이 **\"establishing Scrum as defined in the Scrum Guide\"** 와 **\"the Scrum Team's effectiveness\"** 에 책임지므로, **없으면 절차만 남는다**",
+      "fix": "⭐ **두 책임을 누가 지는지 이름을 붙인다** — 전담이 아니어도 된다. 📌 **아무도 안 지면 \"우리는 스크럼이 아니라 우리 방식을 한다\"고 부르는 편이 낫다.** ⚠️ 이름이 틀리면 **문제가 생겼을 때 원인을 잘못 짚는다**",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐ \"purposefully incomplete\" 를 \"마음대로 고쳐도 된다\"로 읽는다",
+      "why": "⚠️ **두 문장이 방향이 다르다.** ⭐ **밖으로는** 개발 방법·추정·도구를 **안 정하지만**, ⭐⭐ **안으로는** \"Scrum exists **only in its entirety**\" 다. 💡 **불완전하다는 것은 빈칸을 채우라는 뜻이지 정해진 것을 빼도 된다는 뜻이 아니다**",
+      "fix": "⭐ **고치기 전에 그것이 \"가이드가 정한 것\"인지 \"안 정한 것\"인지 확인한다.** 📌 **역할·이벤트·산출물은 정한 쪽**이고, **추정 방법·개발 방식·도구는 안 정한 쪽**이다 — ⚠️ 뒤쪽은 마음껏 맞춰도 된다",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ]
+    },
+    {
+      "trap": "⭐ 프레임워크 이름을 조직 단위의 이름으로 쓴다",
+      "why": "⚠️ 공고에 실제로 있다 — `**두 스크럼 중 한 곳에 소속**되어`, `**One Payment Infra 스크럼**은 ...`(코리아포트원). ⭐ **`agile` 사이클에서도 같은 것을 봤다.** 💡 **방법의 이름이 조직의 이름이 되면 그 방법을 바꾸는 일이 조직 개편이 된다**",
+      "fix": "⭐ **팀 이름과 일하는 방식의 이름을 갈라 둔다.** 📌 이미 붙어 있으면 **적어도 \"이 방식이 지금 우리에게 맞나\"를 물을 자리를 따로 만든다** — ⚠️ 가이드의 세 기둥 중 **inspection·adaptation** 이 그 자리다"
+    },
+    {
+      "trap": "절차를 늘려서 문제를 푼다",
+      "why": "⭐⭐⭐ 가이드는 반대로 적는다 — \"**Rather than provide people with detailed instructions**, the rules of Scrum **guide their relationships and interactions**.\" ⚠️ 그리고 성공은 \"**people becoming more proficient in living five values**\" 에 달려 있다고 한다. 💡 **절차가 아니라 사람 쪽**이다",
+      "fix": "⭐ **절차를 늘리기 전에 다섯 가치 중 무엇이 막혔는지 본다** — Commitment, Focus, Openness, Respect, Courage. 📌 ⚠️ `agile` 사이클의 증상(\"more **interference**, **less time**, **higher pressure**\")이 보이면 **절차를 더 늘리는 것은 정확히 반대 방향**이다",
+      "sources": [
+        {
+          "title": "The Scrum Guide",
+          "url": "https://scrumguides.org/scrum-guide.html",
+          "publisher": "Ken Schwaber & Jeff Sutherland",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+        }
+      ]
+    },
+    {
+      "trap": "⚠️ `벨로시티` 나 `투명성` 으로 스크럼 수요를 센다",
+      "why": "⭐⭐ **이 사이클이 걸렸다.** `번다운|벨로시티|velocity` 는 **216건에 모집중 88%**, `투명성|transparency` 는 **491건에 66%** 로 튄다 — ⚠️ 정상(30~40%)에서 크게 벗어난다. 💡 `velocity` 는 다른 뜻(속도), `투명성` 은 기업 문화 문구로 보이지만 **확인하지 않았다**",
+      "fix": "⭐ **비율이 이상하면 쓰지 않고, 안 썼다고 적는다.** 📌 **매번 오염의 정체까지 밝힐 필요는 없다** — ⚠️ 다만 **세 기둥의 첫째(transparency)를 셈으로 확인하려던 시도가 그래서 막혔다는 것**은 적어 둔다"
+    },
+    {
+      "trap": "이 문서를 읽고 스크럼을 할 수 있다고 여긴다",
+      "why": "⚠️⚠️ **이벤트의 절차를 다루지 않았다** — 스프린트 계획·데일리·리뷰·회고가 각각 얼마나 걸리고 무엇을 하는지. ⭐ **가이드에 다 적혀 있는데 이 문서는 이름과 셈만** 다뤘다. 📌 **\"전체로만 존재한다\"를 말하면서 그 전체를 안 적었다**",
+      "fix": "⭐ **가이드가 짧다** — 직접 읽는 것이 이 문서를 읽는 것보다 빠르다. 📌 이 문서가 주는 것은 **두 문장의 긴장**(불완전한데 전체다)과 **셈**(178 대 2)이다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐⭐ **아는 팀(또는 공고 하나)에서 가이드가 정한 요소를 체크리스트로 만들어 표시해 본다** — 역할 셋, 이벤트 넷, 산출물 셋. **없는 것에 표시한다.**",
+      "done_when": "⭐ **없는 것이 무엇인지** 나왔고, ⚠️ 가이드 기준으로 **그것이 스크럼인지 아닌지** 말할 수 있다.",
+      "why": "⭐⭐⭐ **\"Implementing only parts of Scrum is possible, but the result is not Scrum.\"** 를 손으로 확인한다. 💡 ⚠️ **대개 몇 개는 빠져 있고**, ⭐ **가장 자주 빠지는 것이 스크럼 마스터**다(공고 **2건**). 📌 그리고 **빠졌다고 나쁜 게 아니라, 그러면 다른 이름으로 불러야 한다**는 것이 요점이다.",
+      "no_hardware": "팀이 없으면 **공고 하나를 골라** 거기 적힌 문장으로 같은 체크리스트를 채운다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **가이드에서 \"정한 것\"과 \"안 정한 것\"을 각각 다섯 개씩 적어 본다.**",
+      "done_when": "⭐ 두 목록이 나왔고, ⚠️ 자기 팀이 **고친 것이 어느 쪽에 있는지** 안다.",
+      "why": "⭐⭐⭐ **\"purposefully incomplete\" 와 \"only in its entirety\" 가 모순이 아니라는 것**을 손으로 확인한다. 💡 ⭐ **밖(방법·추정·도구)은 비어 있고 안(역할·이벤트·산출물)은 다 차 있어야 한다** — 📌 **고칠 자리는 앞쪽**이다.",
+      "no_hardware": "가이드 한 편이면 된다 — **아주 짧다**.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ **다섯 가치 중 지금 팀에서 가장 약한 것을 하나 고르고, 그것이 약해서 생긴 일을 한 가지 적어 본다.**",
+      "done_when": "⭐ 가치 하나와 **구체적인 사건 하나**가 짝지어졌고, ⚠️ 그것이 **절차로 풀리는 문제인지 아닌지** 말할 수 있다.",
+      "why": "⭐⭐⭐ 가이드가 **\"Successful use of Scrum depends on people becoming more proficient in living five values\"** 라고 적는다. 💡 ⭐ **절차가 아니라 사람 쪽**이라는 뜻이고, 📌 그래서 **절차를 늘려도 안 풀리는 문제가 있다.** ⚠️ `agile` 사이클의 증상들이 여기 해당한다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "가이드가 자기를 규정하는 두 문장은? 왜 모순이 아닌가?",
+    "가이드가 정하지 않는 것 세 가지를 대라",
+    "스크럼 마스터는 무엇에 책임지는가? 원문으로 답하라",
+    "부분만 도입하면 어떻게 되는가? 원문으로 답하라",
+    "다섯 가치는? 가이드는 그것을 어떻게 표현하는가?",
+    "공고에서 `스크럼` 178건인데 `스크럼 마스터` 2건인 것은 무엇을 뜻하는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "포트원의 Backend Engineer는 아래 두 스크럼 중 한 곳에 소속되어, Backend, Frontend, QA, PO, 디자이너 등 다양한 직군의 동료들과 협업하게 됩니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/262804",
+      "where": "코리아포트원",
+      "what_it_shows": "⭐⭐ **`스크럼` 이 조직 단위의 이름이 됐다** — ⚠️ **방법의 이름이 조직의 이름이 되면 그 방법을 바꾸는 일이 조직 개편이 된다.** ⭐ `agile` 사이클에서도 같은 것을 봤다"
+    },
+    {
+      "quote": "[채용 포지션 : 풀스택 프로덕트 오너(PO)]",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356139",
+      "where": "와이텐플러스",
+      "what_it_shows": "⭐⭐⭐ **PO 가 독립 직무로 떨어져 나갔다**(351건) — ⚠️ **스크럼을 언급하지 않는다.** 가이드에서 PO 는 스크럼 팀의 한 역할이다"
+    },
+    {
+      "quote": "• 더 나은 유저 경험을 위해 프로덕트 오너(PO), 디자이너, 백엔드 개발자와의 긴밀한 협업",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372136",
+      "where": "아르템코퍼레이션",
+      "what_it_shows": "⭐ **PO 가 협업 상대의 직함으로만 나온다** — ⚠️ 여기도 스크럼 언급이 없다"
+    },
+    {
+      "quote": "- 프로덕트 오너·디자이너와 함께 문제 정의부터 스펙 설계, 출시, 지표 검증까지 제품 사이클 전반에 주도적으로 참여합니다",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/380454",
+      "where": "지바이크(gbike)",
+      "what_it_shows": "⭐ **가이드의 PO 책임(\"maximizing the value of the product\")과 겹치는 일**을 적는데 — ⚠️ **스크럼이라는 낱말은 없다**"
+    },
+    {
+      "quote": "• 애자일 및 스크럼 프레임워크 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/341010",
+      "where": "타이드풀(TIDEPOOL)",
+      "what_it_shows": "⚠️⚠️ **178건의 전형** — **이름만 있고 어느 요소를 했는지는 없다.** ⭐ 가이드 기준으로는 **요소가 다 있어야 스크럼**이다"
+    },
+    {
+      "quote": "애자일(Scrum) 환경에서 다양한 직군과 협업하며 프로젝트를 리딩한 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365596",
+      "where": "씨제이올리브영(CJ올리브영)",
+      "what_it_shows": "⭐ **`애자일` 과 `스크럼` 을 같은 것으로 묶는다** — ⚠️ `agile` 사이클의 1차 자료는 **\"named 'Agile' method\"에서 생각을 떼라**고 하고, 이쪽 가이드는 **\"전체로만 존재한다\"**고 한다"
+    },
+    {
+      "quote": "• 의미있는 피드백을 위한 팀 스크럼 운영",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/229818",
+      "where": "엘리스",
+      "what_it_shows": "⭐ **\"팀 스크럼\"이 회의 이름으로 쓰인다** — ⚠️ 가이드에서 **데일리 스크럼은 이벤트 하나**이고 스크럼은 프레임워크 전체다"
+    },
+    {
+      "quote": "• 유저 테스트시에는 사용자와의 소통을 담당하고, 평시에는 스프린트 리뷰와 제품 기획/디자인을 진행합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/246909",
+      "where": "액트노바",
+      "what_it_shows": "⭐⭐ **이벤트 이름을 부른 드문 공고** — `스프린트 리뷰|스프린트 계획` 은 **19건**뿐이다(`스프린트` 는 130건인데)"
+    },
+    {
+      "quote": "• Scrum 기반 애자일 프로젝트에 참여해 보신 분.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/382962",
+      "where": "위펀(스낵24)",
+      "what_it_shows": "⭐ **\"Scrum 기반\"이라는 표현** — ⚠️ 가이드는 **기반이 되는 것이 아니라 전체로 존재한다**고 적는다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "agile",
+      "how": "⭐⭐⭐ **바로 앞 문서이자 부딪히는 자리.** 그쪽 1차 자료는 **\"named 'Agile' method\"에서 생각을 떼라**고 하고, 여기는 **\"전체로만 존재한다\"**고 한다. ⭐ `스크럼`·`스프린트` alias 도 그쪽에서 가져왔다"
+    },
+    {
+      "slug": "oncall",
+      "how": "⭐ **회고를 57회 다룬다** — ⚠️ 다만 **장애 회고**이고, 스크럼의 회고는 **일하는 방식**을 다룬다"
+    },
+    {
+      "slug": "documentation",
+      "how": "⭐ **`완료의 정의` 10건이 사는 자리** — 무엇을 어디까지 적을지의 합의"
+    },
+    {
+      "slug": "code-review",
+      "how": "가이드가 안 정하는 쪽 — **개발 방법은 팀이 정한다**(\"purposefully incomplete\")"
+    },
+    {
+      "slug": "testing",
+      "how": "⭐ **\"usable Increment each Sprint\" 를 실제로 가능하게 하는 것** — 매 스프린트 쓸 수 있는 것이 나오려면"
+    },
+    {
+      "slug": "technical-debt",
+      "how": "매 스프린트 쓸 수 있는 것을 내다 보면 무엇이 쌓이나"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **이벤트의 절차를 다루지 않았다** — 스프린트 계획·데일리 스크럼·스프린트 리뷰·회고가 각각 얼마나 걸리고 무엇을 하는지. ⭐ **가이드에 다 적혀 있는데 이름과 셈만** 다뤘다. 📌 **\"전체로만 존재한다\"를 말하면서 그 전체를 안 적은 것이 가장 큰 빈자리다.**",
+    "⚠️⚠️ **만든 사람의 후속 발언을 1차 자료로 못 읽었다.** ⭐⭐⭐ **직전 사이클에서 세운 규칙(\"그 방식을 만든 사람이 나중에 무엇을 썼나\")을 적용해 검색했고 본인 블로그가 후보로 나왔다.** ⚠️ **그런데 열지 않았다** — 검색 결과의 2차 요약만 보았고 **근거로 쓰지 않았다.** 📌 **`agile` 에서 통한 규칙인데 여기서는 한 걸음을 덜 갔다.**",
+    "⚠️ **규모 확장 프레임워크를 다루지 않았다.** ⭐ 가이드가 **\"lightweight\"** 를 반복하므로 그쪽과 긴장이 있을 텐데 **1차 자료를 안 봤다.**",
+    "⚠️⚠️ **오염 의심 둘을 근거로 쓰지 않았다.** `투명성` **491건 @ 66%**(기업 문화 문구로 보인다), `번다운|벨로시티` **216건 @ 88%**(`velocity` 의 다른 뜻으로 보인다) — **둘 다 확인하지 않았다.** 📌 **세 기둥의 첫째를 셈으로 확인하려던 시도가 그래서 막혔다.**",
+    "⚠️ **`프로덕트 오너` 351건을 갈라 세지 못했다** — **스크럼 문맥의 PO 와 그냥 기획 직무로서의 PO** 가 섞여 있을 텐데 나누지 않았다. ⭐ 다만 인용한 세 공고는 **스크럼을 언급하지 않는다.**",
+    "⭐ **두 1차 자료가 부딪히는 것을 판정하지 않았다.** ⭐⭐⭐ `agile` 쪽은 **\"이름 붙은 방법론에서 생각을 떼라\"**, 여기는 **\"전체로만 존재한다\"** — 📌 **어느 쪽이 옳은지 정하지 않았고 부딪히는 지점이 좁다는 것만** 적었다.",
+    "⭐ **`agile` 에서 `스크럼`·`scrum`·`스프린트` alias 를 가져왔다** — 그 문서는 **선언문과 그 오해까지만** 다뤘고 **역할·이벤트·산출물은 0회**였다. **다섯 번째 alias 이전이다.**",
+    "⭐ **`market` 이 없다** — 기술 태그가 아니라 실천이라 `tech_relations.json` 에 이름이 없다."
+  ],
+  "sources": [
+    {
+      "title": "The Scrum Guide",
+      "url": "https://scrumguides.org/scrum-guide.html",
+      "publisher": "Ken Schwaber & Jeff Sutherland",
+      "kind": "standard",
+      "summary": "⭐⭐⭐ **두 문장이 서로를 당긴다** — \"The Scrum framework is **purposefully incomplete**\" 그리고 \"**Implementing only parts of Scrum is possible, but the result is not Scrum. Scrum exists only in its entirety.**\""
+    }
+  ]
+}

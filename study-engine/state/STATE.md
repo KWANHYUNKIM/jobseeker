@@ -4,44 +4,78 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **애자일**(`agile`)을 완성했다 — **131번째 문서**.
+**없음.** 직전 사이클에서 **스크럼**(`scrum`)을 완성했다 — **132번째 문서**.
 
-### 직전 사이클 (애자일)
+### 직전 사이클 (스크럼)
 
-⭐⭐⭐ **축: "이름을 버리고 가치를 지키라 — 시장은 반대로 한다."**
+⭐⭐⭐ **축: "불완전한데 전체로만 존재한다."**
 
-> ⭐⭐⭐ (네 줄) "**Individuals and interactions** over processes and tools / **Working
->   software** over comprehensive documentation / **Customer collaboration** over
->   contract negotiation / **Responding to change** over following a plan"
-> ⭐⭐⭐ (잘리는 줄) **"That is, while there is value in the items on the right,
->   we value the items on the left more."**
-> ⭐⭐⭐ (원칙 10) "Simplicity--the art of **maximizing the amount of work not done**"
-> ⭐⭐⭐ (원칙 11) "The best architectures ... **emerge from self-organizing teams**"
-> ⭐⭐⭐ (작성자 본인) **"Developers should detach their thinking from any particular
->   named 'Agile' method."** 그러면서 **"the values and principles ... still offer the
->   best way I know to build software"**
-> ⭐⭐⭐ "When 'Agile' ideas are applied poorly, they often lead to **more interference
->   with developers, less time to do the work, higher pressure, and demands to 'go faster'**."
-> ⭐⭐⭐ 남는 두 줄 — **"Produce running, tested, working, integrated software every two
->   weeks, every week."** · **"Keep the design of that software clean."**
+> ⭐⭐⭐ **"The Scrum framework is purposefully incomplete, only defining the parts
+>   required to implement Scrum theory."**
+> ⭐⭐⭐ **"Implementing only parts of Scrum is possible, but the result is not Scrum.
+>   Scrum exists only in its entirety."**
+> ⭐⭐ **"Rather than provide people with detailed instructions, the rules of Scrum
+>   guide their relationships and interactions."**
+> ⭐⭐ (Scrum Master) "accountable for **establishing Scrum as defined in the Scrum
+>   Guide**" · "the Scrum Team's **effectiveness**"
+> ⭐⭐⭐ (다섯 가치) "Successful use of Scrum **depends on people becoming more
+>   proficient in living five values**"
 
-⭐⭐⭐ **셈: 이름 690 대 가치 106**(`개인과 상호작용` **0** · `작동하는 소프트웨어` 13 ·
-`고객과의 협력` 61 · `변화에 대응` 32). ⚠️ **그런데 `자율적|수평적` 은 2213건** —
-**원칙 5·11번을 이름 없이 부르는 것**으로 보인다(⚠️ 이 문서에서 가장 근거가 약한 자리).
+💡 **두 문장이 모순이 아니다** — **밖(방법·추정·도구)은 안 정하고 안(역할·이벤트·산출물)은
+다 요구한다.**
 
-⭐⭐⭐ **실패 사례가 다섯 사이클 만에 1차급으로 나왔다** — **선언문 작성자 본인의 글**이
-그 자리를 채웠다. **비판이 1차 자료인 드문 경우.**
+⭐⭐⭐ **셈: `스크럼` 178 대 `스크럼 마스터` 2**(모집중 **0**). ⚠️ 그런데 **`프로덕트 오너|PO`
+는 351건** — **스크럼의 두 배**이고 인용한 공고들은 **스크럼을 언급하지 않는다.**
+💡 **세 역할 중 하나는 독립 직무가 됐고 하나는 사실상 없다.**
+
+⭐⭐ **두 1차 자료가 부딪혔다** — `agile` 은 "이름 붙은 방법론에서 생각을 떼라", 여기는
+"전체로만 존재한다". **어느 쪽이 옳은지 판정하지 않고 그대로 적었다.**
+
+⚠️ **오염 둘을 안 썼다** — `투명성` 491 @ **66%**, `번다운|벨로시티` 216 @ **88%**.
+⭐ **다섯 번째 alias 이전**: `agile` → `scrum`.
 
 ### 다음
 
-**스크럼**(`scrum`) — QUEUE 맨 위.
+**AI 코딩 도구**(`ai-coding`) — QUEUE 맨 위.
 
-⭐⭐⭐ **`agile` 이 스스로 "다루지 않았다(178건)"고 적었다**(네 사이클 연속 `open_questions`
-가 큐를 먹였다). ⚠️ **셈은 178건으로 작고 층도 두 사이클 연속**이다 — 그래도 **바로 이어지는
-자리**라 우선한다. 1차 자료는 **scrumguides.org**.
-⚠️ **못 열면 `온보딩`(749건)이나 `코드 품질`(651건)로 바꾼다.**
+⭐⭐⭐ **층을 완전히 바꾼다**(프로세스 셋 → 도구/AI) **그리고 132개 중 통째로 빈 층이다** —
+`rag`·`embedding`·`vector-db` 는 **AI 를 만드는 쪽**이고 **AI 로 개발하는 쪽**은 없다.
+⭐ 이미 확인된 셈: **`AI 도구와 함께 리팩터링` 145건**.
+축은 **"제품이 스스로 적은 한계"** — ⚠️ **부정어가 없으면 그 사실 자체를 축으로 쓴다**(`aws` 방법).
+⚠️⚠️ **1차 자료를 못 찾으면 미루고 `온보딩`(749건)으로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **두 1차 자료가 서로 다른 답을 줄 때는 판정하지 않고 그대로 적는다.**
+  `agile` 의 작성자는 **"named 'Agile' method 에서 생각을 떼라"** 하고, 스크럼 가이드는
+  **"Scrum exists only in its entirety"** 한다. ⭐⭐ **둘 다 1차 자료다.**
+  💡 그래서 `clash` 표를 만들어 **부딪히는 지점이 좁다는 것만** 적었다 —
+  앞쪽은 **잘못 적용된 것**을 겨냥하고, 뒤쪽은 **그 잘못 적용이 곧 "부분만 하는 것"**
+  이라고 답한다. 📌 ⭐ **그리고 셈이 판정에 쓰였다**: `스크럼 마스터` **2건**이면
+  **한 역할이 통째로 빠진 것**이고, 가이드 기준으로 그것은 스크럼이 아니다.
+  ⚠️ **어느 쪽이 옳은지는 여전히 안 정했다** — 그게 맞다.
+
+- ⭐⭐⭐ **"큰 그릇은 부르고 안의 요소는 안 부른다"가 다섯 사이클 연속이다.**
+  `documentation`(위키 1133 : README 20) → `performance`(APM 4091 : p99 23) →
+  `profiling`(APM 제품 566 : 플레임 그래프 2) → `agile`(이름 690 : 가치 106) →
+  **`scrum`(스프린트 130 : 스프린트 리뷰·계획 19, 스크럼 178 : 스크럼 마스터 2)**.
+  ⭐⭐ **그런데 이번엔 그 형태가 곧 규격 위반의 증거였다** — 가이드가 **"only in its
+  entirety"** 라고 적으므로, **요소가 빠졌다는 셈이 곧 "그건 스크럼이 아니다"** 가 된다.
+  📌 **1차 자료가 전체성을 요구하는 규격이면, 이 셈 형태는 관찰이 아니라 판정이 된다.**
+
+- ⚠️ **직전 사이클에서 세운 규칙을 반만 지켰다.** `agile` 에서 **"그 방식을 만든 사람이
+  나중에 무엇을 썼나를 먼저 검색한다"** 를 세웠고, `scrum` 에서 그대로 검색해
+  **본인 블로그를 후보로 찾았다** — ⚠️⚠️ **그런데 열지 않았다.**
+  ⭐ **찾는 것과 여는 것은 다른 단계**이고, **찾기만 하면 2차 요약을 읽게 된다.**
+  📌 **다음부터 후보가 나오면 그 자리에서 연다** — 나중에 하기로 미루면 안 한다
+  (`aws` 사이클에서 배운 것과 같은 실패다).
+
+- ⭐⭐ **역할의 이름이 팔리는지 아닌지는 그 책임이 프레임워크에 매여 있는지로 갈린다.**
+  PO 의 책임은 **"제품 가치를 극대화한다"** 로 **스크럼 없이도 필요한 일**이라 떨어져 나가
+  **351건짜리 독립 직무**가 됐고, 스크럼 마스터의 첫 책임은 **"가이드대로 스크럼을 세운다"**
+  라 **스크럼을 안 하면 존재 이유가 없어** **2건**이다. 💡 ⭐ **그런데 그 두 번째 책임
+  ("팀의 효과성")은 프레임워크와 무관하게 필요한데 그 이름도 2건이다.**
+  📌 **역할 셈이 이상하면 "그 책임이 프레임워크에 매여 있나"를 먼저 본다.**
 
 - ⭐⭐⭐ **다섯 사이클 만에 실패 사례가 1차급으로 나왔다 — 그리고 그 자리가 특별했다.**
   `hexagonal`·`refactoring`·`documentation`·`performance`·`profiling` 은 검색해도
