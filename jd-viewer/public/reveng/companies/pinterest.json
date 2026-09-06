@@ -143,9 +143,87 @@
     },
     {
       "name": "사용자를 어떤 쓰임새로 이해할지 정한다",
-      "why": "**`Pinner Progression: 더 나은 쓰임새 표현이 주간 활성 사용자 성장을 이끈다`**(2026-07-27, 2부작 중 1부). ⚠️ **사람을 `누구인가` 가 아니라 `무엇을 하러 왔는가` 로 표현하려는 시도로 보인다**(재구성). ⏳ **본문은 아직 안 읽었다.**",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **`참여와 유지는 다른 것이다`** — **`사용자가 오늘 사워도우 레시피 열 개를 저장하고도 다음 달에 이탈할 수 있다.`** 추천이 **이미 좋아하는 것을 더 보여 주는 데는 뛰어났지만 오래 남게 할 새 관심사를 찾아 주지는 못했다.** ⚠️ **그리고 관계가 비선형이다** — **`유지 이득이 최상위 십분위에서 가파르게 가속된다`.** ✅ **본문 확인함**(2026-07-27, 2부작 중 1부).",
+      "tech": [
+        {
+          "tech": "UIC (쓰임새 클러스터)",
+          "solves": "⚠️ **`각 클러스터는 사용자가 실제로 추구하고 있는 쓰임새에 대응하지, 전역 콘텐츠 카탈로그의 한 영역이 아니다`** — 사람의 목표가 단위다.",
+          "limits": "⚠️ **사람마다 표현의 크기가 달라 하류 시스템이 가변 길이를 다뤄야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+              "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-07-27",
+              "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+            }
+          ]
+        },
+        {
+          "tech": "완전 연결 군집화 + OmniSage",
+          "solves": "**최근 500개 참여 행동**에서 **`모든 점이 모든 점과 충분히 유사할 때만`** 병합해 일관성을 지킨다. OmniSage 는 **`근접성이 기능적 효용을 인코딩한다`**(등산화와 트레일 믹스 바).",
+          "limits": "⚠️ **보수적이라 클러스터가 잘게 쪼개질 수 있고**, 임계 τ 와 최대 개수가 그 균형을 잡는다(재구성). **사용자마다 군집화를 돌려야 한다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+              "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-07-27",
+              "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+            }
+          ]
+        },
+        {
+          "tech": "생애주기 메타데이터 + 프런티어 샘플링",
+          "solves": "최근성·빈도로 관심사의 단계를 표시하고, **`클러스터 경계에서 메도이드로부터 가장 먼`** 랜드마크를 뽑아 **탐색과 활용의 균형**을 잡는다.",
+          "limits": "⚠️ **회사가 한계로 적는다** — **`스쳐 가는 호기심과 진짜 떠오르는 습관을 구별하는 어려운 문제를 완전히 풀지는 못한다.`** 경계가 잡음일 수도 있다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+              "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-07-27",
+              "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+            }
+          ]
+        },
+        {
+          "tech": "UIC 중복 할인 · UIC 인지 다양성",
+          "solves": "⚠️ **`이미 잘 표현된 UIC 를 중복하는 핀은 할인된 점수를 받아 덜 표현된 관심사가 나아갈 자리를 준다`** — 그리고 **`시각적으로는 다양한데 한 범주가 지배하는`** 상태를 막는다.",
+          "limits": "⚠️ **한 곳만 고치면 다른 곳에서 되돌아와 네 계층을 함께 바꿔야 했다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+              "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-07-27",
+              "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+            }
+          ]
+        },
+        {
+          "tech": "공유 피처 저장소",
+          "solves": "UIC 를 개별 모델에 묶지 않아 **`퍼널의 모든 후보에 대한 UIC 주석이 한 번만 일어나면 되어 불필요한 지연을 줄인다`**.",
+          "limits": "⚠️ **`의미 있는 인프라 비용 절감` 이라고만 하고 수치가 없다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+              "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-07-27",
+              "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "engagement-is-not-retention"
+      ]
     },
     {
       "name": "인프라 자원을 안전하게 내준다",
@@ -649,6 +727,533 @@
           "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
         }
       ]
+    },
+    {
+      "key": "engagement-is-not-retention",
+      "name": "참여와 유지는 다른 것이다",
+      "domain": "사용자를 어떤 쓰임새로 이해할지 정한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 글의 첫 문장이 문제의 전부다** — **`참여와 유지는 다른 것이다.`** 회사가 예로 든 장면이 선명하다: **`사용자가 오늘 사워도우 레시피 열 개를 저장하고도 다음 달에 이탈할 수 있다.`** 추천 시스템은 **이미 좋아하는 것을 더 보여 주는 데는 뛰어났지만**, **오래 남게 할 새 관심사를 찾아 주지는 못했다.** ⚠️ **그리고 둘의 관계가 비선형이다** — **쓰임새 채택과 유지의 관계에서 `유지 이득이 최상위 십분위에서 가파르게 가속된다`.** **하나를 깊게 파는 것보다 여러 개를 지속하는 것이 남게 만든다**(뒤쪽은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "⚠️ 문제 정의",
+            "value": "**`참여와 유지는 다른 것이다`** — **`사용자가 오늘 사워도우 레시피 열 개를 저장하고도 다음 달에 이탈할 수 있다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "label": "비선형 관계",
+            "value": "쓰임새 채택과 유지 사이에서 **`유지 이득이 최상위 십분위에서 가파르게 가속된다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "label": "UIC 구성",
+            "value": "**최근 500개 참여 행동**에 **완전 연결 응집 계층 군집화** — 유사도가 임계 τ 아래로 떨어지거나 최대 클러스터 수에 닿으면 멈춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 클러스터 수는 동적이다",
+            "value": "**`처음 온 사용자는 두 개일 수 있고, 결혼식을 준비하고 부엌을 고치고 마라톤을 훈련하는 파워 유저는 열다섯 개일 수 있다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 이 글에는 수치가 없다",
+            "value": "**정성적 결과만 적는다** — **`의미 있는 참여 증가, 상호작용한 콘텐츠의 훨씬 큰 다양성, 더 긴 세션의 증가`**. **`의미 있는 인프라 비용 절감`** 도 수치 없이 언급된다(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "label": "이 표현이 닿는 규모",
+            "value": "월간 활성 사용자 **6억 4,000만 명(+11%)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinterest (PINS) Q2 2026 earnings report",
+                "url": "https://www.cnbc.com/2026/08/04/pinterest-pins-q2-earnings-report-2026.html",
+                "publisher": "CNBC",
+                "date": "2026-08",
+                "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 최적화할지 다시 물을 때",
+          "thought": "⚠️ **참여를 잘 맞히는 시스템이 유지를 못 만든다** — **`사용자가 오늘 사워도우 레시피 열 개를 저장하고도 다음 달에 이탈할 수 있다.`** **좋아하는 것을 더 주는 일과 오래 남게 하는 일은 다른 문제이고, 앞의 것을 잘할수록 뒤의 것이 저절로 되지는 않는다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사용자를 어떻게 표현할지 정할 때",
+          "thought": "⚠️ **하나의 전역 임베딩이 아니라 클러스터의 집합으로 본다.** 정의가 핵심을 담는다 — **`각 클러스터는 사용자가 실제로 추구하고 있는 쓰임새에 대응하지, 전역 콘텐츠 카탈로그의 한 영역이 아니다.`** **같은 핀도 사람마다 다른 뜻을 갖는다** — 결혼 준비 중인 사람의 꽃 사진과 원예를 배우는 사람의 꽃 사진은 다른 쓰임새다(뒤쪽 예는 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "기존 조건의 결함을 볼 때",
+          "thought": "⚠️ **`팔로우한 관심사` 를 조건으로 쓰던 것이 문제였다** — **`지배적 관심사 쪽으로 크게 치우쳐, 잘 확립된 범주에서는 많은 후보를 가져오면서 작거나 떠오르는 관심사에는 표현이 거의 남지 않았다.`** **큰 관심사가 작은 관심사를 굶기는 구조였고, 그것이 곧 `여러 개를 지속하게 하는 일` 을 막고 있었다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "UIC (사용자 관심 클러스터)",
+            "what": "⚠️ **`각 클러스터는 사용자가 실제로 추구하고 있는 쓰임새에 대응하지, 전역 콘텐츠 카탈로그의 한 영역이 아니다`** — 결혼 준비 · 아파트 꾸미기 · 레시피 발견 같은"
+          },
+          {
+            "name": "완전 연결 병합",
+            "what": "⚠️ **`병합은 클러스터 A 의 모든 점이 클러스터 B 의 모든 점과 충분히 유사할 때만 허용된다`** — 가장 안 닮은 쌍으로 재는 보수적인 방식"
+          },
+          {
+            "name": "OmniSage 임베딩",
+            "what": "⚠️ **`근접성이 시각적 유사성만이 아니라 기능적 효용을 인코딩한다. 등산화와 트레일 믹스 바가 이웃인 것은 「하이킹 여행」 보드에 함께 큐레이션되기 때문이다.`**"
+          },
+          {
+            "name": "생애주기 메타데이터",
+            "what": "**최근성과 빈도** — **스쳐 가는 호기심과 떠오르는 습관을 가르려는 것**"
+          },
+          {
+            "name": "프런티어 샘플링",
+            "what": "⚠️ **`클러스터 경계에서 메도이드로부터 가장 먼` 랜드마크를 고른다** — 최근성 가중에서 옮겨 왔다"
+          },
+          {
+            "name": "UIC 중복 할인",
+            "what": "⚠️ **`이미 잘 표현된 UIC 를 중복하는 핀은 할인된 점수를 받아 덜 표현된 관심사가 나아갈 자리를 준다`**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **클러스터는 사용자가 참여한 것들 안에서만 만들어진다** — 전역 카탈로그가 아니라",
+          "⚠️ **클러스터 수는 사람마다 다르다** — 둘일 수도 열다섯일 수도 있다",
+          "**병합은 모든 점이 충분히 유사할 때만 한다** — 이질적인 것이 섞이지 않게",
+          "⚠️ **잘 표현된 관심사는 할인된다** — 큰 것이 작은 것을 굶기지 않게"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**최근 500개 참여 행동을 모은다**",
+            "why": "**그 사람이 실제로 만진 것만으로 표현을 만든다**"
+          },
+          {
+            "step": "⚠️ **전역 공간이 아니라 그 사용자가 참여한 핀만으로 군집화한다**",
+            "why": "⚠️ **그래야 클러스터가 의미적으로 일관되고 그 사람에게 뜻이 있다**"
+          },
+          {
+            "step": "**OmniSage 임베딩의 코사인 유사도로 탐욕적으로 병합한다** — 완전 연결",
+            "why": "⚠️ **`모든 점이 모든 점과 충분히 유사할 때만` 합쳐 이질적인 것이 섞이지 않게 한다**"
+          },
+          {
+            "step": "**임계 τ 아래로 떨어지거나 최대 클러스터 수에 닿으면 멈춘다**",
+            "why": "⚠️ **클러스터 수를 미리 정하지 않는다** — 사람마다 다르다"
+          },
+          {
+            "step": "**각 클러스터에 최근성·빈도 같은 생애주기 메타데이터를 붙인다**",
+            "why": "**스쳐 가는 호기심과 떠오르는 습관을 가르려고**"
+          },
+          {
+            "step": "⚠️ **UIC 를 공유 피처 저장소에 내보낸다** — 개별 모델에 묶지 않고",
+            "why": "⚠️ **`퍼널의 모든 후보에 대한 UIC 주석이 한 번만 일어나면 되어 불필요한 지연을 줄인다`**"
+          },
+          {
+            "step": "**검색의 조건을 `팔로우한 관심사` 에서 UIC 로 바꾼다** — 랜드마크는 클러스터 경계에서 고른다",
+            "why": "⚠️ **팔로우한 관심사는 지배적인 것 쪽으로 크게 치우쳤다**"
+          },
+          {
+            "step": "**L1 에서 이미 잘 표현된 UIC 를 할인하고, 랭킹에서 생애주기 단계별로 신호를 다르게 보고, 다양성 계층에서 UIC 를 인지한다**",
+            "why": "⚠️ **표현만 바꿔서는 안 되고 그것을 쓰는 다섯 계층이 함께 바뀌어야 한다**(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 최적화할 것인가",
+            "chosen": "⚠️ **유지** — 참여가 아니라",
+            "alternatives": [
+              "참여 지표(클릭·저장·클로즈업) 계속 최적화"
+            ],
+            "tradeoff": "**`참여와 유지는 다른 것이다`** — **`사용자가 오늘 사워도우 레시피 열 개를 저장하고도 다음 달에 이탈할 수 있다.`** ⚠️ **참여를 잘 맞히는 시스템이 유지를 못 만든다**(재구성). **근거는 데이터에 있다** — 쓰임새 채택과 유지가 비선형이고 **`유지 이득이 최상위 십분위에서 가파르게 가속된다`.** **대가는 단기 참여 지표가 흔들릴 수 있다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "question": "사용자를 무엇으로 표현할 것인가",
+            "chosen": "⚠️ **쓰임새 클러스터의 집합(UIC)** — 하나의 전역 임베딩이 아니라",
+            "alternatives": [
+              "단일 사용자 임베딩",
+              "팔로우한 관심사 목록"
+            ],
+            "tradeoff": "정의가 결정을 담는다 — **`각 클러스터는 사용자가 실제로 추구하고 있는 쓰임새에 대응하지, 전역 콘텐츠 카탈로그의 한 영역이 아니다.`** ⚠️ **카탈로그의 분류가 아니라 그 사람의 목표가 단위다** — 결혼 준비, 부엌 고치기, 마라톤 훈련(재구성). **대가는 사람마다 표현의 크기가 달라 시스템이 그것을 감당해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "question": "어느 공간에서 군집화할 것인가",
+            "chosen": "⚠️ **전역 임베딩 공간이 아니라 그 사용자가 참여한 핀들 안에서**",
+            "alternatives": [
+              "전역 콘텐츠 공간에서 군집화 후 매핑"
+            ],
+            "tradeoff": "**`전역 임베딩 공간에서 군집화하는 대신 사용자가 참여한 핀들만으로 군집화한다`** — 그래야 **의미적으로 일관되고 개인적으로 뜻이 있다.** ⚠️ **같은 핀도 사람마다 다른 쓰임새에 속한다**(재구성). **대가는 사용자마다 군집화를 돌려야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 병합 기준을 쓸 것인가",
+            "chosen": "**완전 연결** — 가장 안 닮은 쌍으로 잰다",
+            "alternatives": [
+              "단일 연결",
+              "평균 연결",
+              "k-means"
+            ],
+            "tradeoff": "**`병합은 클러스터 A 의 모든 점이 클러스터 B 의 모든 점과 충분히 유사할 때만 허용된다`** — 보수적인 방식이라 **의미적 일관성을 지키고 이질적인 콘텐츠가 억지로 묶이는 것을 막는다.** ⚠️ **대가는 클러스터가 잘게 쪼개질 수 있다는 것**이고, **임계 τ 와 최대 클러스터 수가 그 균형을 잡는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "question": "클러스터 수를 정할 것인가",
+            "chosen": "⚠️ **정하지 않는다 — 사람마다 다르다**",
+            "alternatives": [
+              "고정된 관심사 개수",
+              "상위 N개만 유지"
+            ],
+            "tradeoff": "**`처음 온 사용자는 두 개일 수 있고, 결혼식을 준비하고 부엌을 고치고 마라톤을 훈련하는 파워 유저는 열다섯 개일 수 있다.`** ⚠️ **고정하면 신규 사용자에게는 억지 클러스터가 생기고 파워 유저의 관심사는 잘려 나간다**(재구성). **대가는 하류 시스템이 가변 길이를 다뤄야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "question": "검색의 조건을 무엇으로 바꿀 것인가",
+            "chosen": "⚠️ **`팔로우한 관심사` 에서 UIC 로**",
+            "alternatives": [
+              "팔로우한 관심사 유지",
+              "둘을 함께 쓰기"
+            ],
+            "tradeoff": "기존 조건의 결함이 명확하다 — **`지배적 관심사 쪽으로 크게 치우쳐, 잘 확립된 범주에서는 많은 후보를 가져오면서 작거나 떠오르는 관심사에는 표현이 거의 남지 않았다.`** ⚠️ **큰 관심사가 작은 관심사를 굶기는 구조였고, 그것이 곧 `여러 개를 지속하게 하는 일` 을 막고 있었다**(재구성). ⭐ **앞 기능(조건부 학습 검색)의 `조건이 무엇인가` 에 대한 답이 여기 있다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              },
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "question": "클러스터에서 무엇을 대표로 뽑을 것인가",
+            "chosen": "⚠️ **프런티어 샘플링** — 최근성 가중 랜드마크에서 옮겼다",
+            "alternatives": [
+              "최근성 가중 랜드마크",
+              "메도이드(중심)"
+            ],
+            "tradeoff": "**`클러스터 경계에서 메도이드로부터 가장 먼` 랜드마크를 고른다** — **탐색과 활용의 균형을 잡으려고.** ⚠️ **중심을 뽑으면 이미 아는 것을 더 주게 되고, 경계를 뽑으면 그 관심사가 자랄 방향이 나온다**(재구성). **대가는 경계가 잡음일 수도 있다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "question": "큰 관심사가 피드를 독점하는 것을 어떻게 막을 것인가",
+            "chosen": "⚠️ **네 계층에서 동시에** — L1 할인 · 생애주기별 랭킹 · UIC 인지 다양성 · 공유 피처 저장소",
+            "alternatives": [
+              "검색 단계에서만 다양성 보장",
+              "사후 필터로 섞기"
+            ],
+            "tradeoff": "**L1 은 `이미 잘 표현된 UIC 를 중복하는 핀에 할인된 점수를 줘 덜 표현된 관심사가 나아갈 자리를 준다`.** **랭킹은 `막 탐색을 시작한 초기 관심사에는 호기심 신호(클릭·클로즈업)가 헌신 신호(저장)보다 중요하고, 성숙하고 안정된 관심사에는 그 반대` 로 신호를 다르게 본다.** **다양성 계층(SSD)은 `시각적으로는 다양한데 여전히 하나의 관심 범주가 지배하는`**(열 개의 시각적으로 다른 아파트 꾸미기 핀) 상태를 막는다. ⚠️ **표현만 바꿔서는 안 되고 그것을 쓰는 계층이 함께 바뀌어야 한다**(재구성). **그리고 UIC 를 개별 모델이 아니라 공유 피처 저장소에 두어 `퍼널의 모든 후보에 대한 주석이 한 번만 일어나게` 했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "완전 연결 응집 계층 군집화",
+            "role": "⚠️ **최근 500개 참여 행동**에 대해 **`모든 점이 모든 점과 충분히 유사할 때만`** 병합한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "tech": "OmniSage 임베딩",
+            "role": "⚠️ **`근접성이 기능적 효용을 인코딩한다`** — 등산화와 트레일 믹스 바가 이웃이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "tech": "생애주기 메타데이터 (최근성·빈도)",
+            "role": "**스쳐 가는 호기심과 떠오르는 습관을 가르려는 장치**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "tech": "프런티어 샘플링",
+            "role": "⚠️ **클러스터 경계에서 메도이드로부터 가장 먼 랜드마크** — 탐색과 활용의 균형",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "tech": "UIC 중복 할인 (L1) · UIC 인지 SSD",
+            "role": "**잘 표현된 관심사를 깎아 작은 관심사에 자리를 준다** — 시각적 다양성만으로는 부족하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "tech": "공유 피처 저장소",
+            "role": "⚠️ **UIC 주석이 퍼널에서 한 번만 일어나게** 해 지연을 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "one-user-many-intents",
+          "via": "⚠️ 조건의 정체",
+          "contract": "⚠️ **앞 기능이 `사용자 타워를 명시적인 검색 맥락으로 조건화한다` 고 했는데, 그 조건이 무엇인지의 답이 여기 있다** — **정적인 `팔로우한 관심사` 를 동적인 UIC 로 바꿨다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "홈피드 랭킹 · 다양성 계층",
+          "via": "UIC 인지",
+          "contract": "**랭킹은 생애주기 단계별로 신호를 다르게 보고, 다양성 계층은 `시각적으로는 다양한데 한 범주가 지배하는` 상태를 막는다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "공유 피처 저장소",
+          "via": "한 번만 주석",
+          "contract": "⚠️ **개별 모델에 묶지 않아 `퍼널의 모든 후보에 대한 UIC 주석이 한 번만 일어나면 된다`** — 불필요한 지연을 줄인다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "유지 (사업 지표)",
+          "via": "⚠️ 비선형 관계",
+          "contract": "⚠️ **`유지 이득이 최상위 십분위에서 가파르게 가속된다`** — **하나를 깊게 파는 것보다 여러 개를 지속하는 것이 남게 만든다**(재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 스쳐 가는 호기심과 떠오르는 습관을 가를 수 없다",
+            "why_hard": "⚠️ **회사가 한계로 직접 적는다** — 생애주기 메타데이터를 붙였지만 **`스쳐 가는 호기심과 진짜 떠오르는 습관을 구별하는 어려운 문제를 완전히 풀지는 못한다`.** **둘은 초기에 똑같이 보이고, 시간이 지나야 갈리는데 그때는 이미 자원을 썼거나 놓쳤다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**최근성과 빈도를 메타데이터로 붙이고 생애주기 단계별로 신호를 다르게 보는 것**(초기에는 호기심 신호, 성숙하면 헌신 신호). ⏳ **회사가 다음 단계로 `시간적 동학(감쇠 포함)을 보존하면서도 효율적인, 압축적이고 정보 밀도 높은 긴 시퀀스 표현` 을 예고한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          },
+          {
+            "problem": "큰 관심사가 작은 관심사를 굶긴다",
+            "why_hard": "⚠️ **참여가 많은 관심사가 더 많은 후보를 만들고 그것이 다시 참여를 만든다** — **`팔로우한 관심사` 를 조건으로 쓸 때 `지배적 관심사 쪽으로 크게 치우쳐 작거나 떠오르는 관심사에는 표현이 거의 남지 않았다`.** ⚠️ **그런데 유지를 만드는 것은 바로 그 작은 관심사들이 자라는 일이다**(재구성) — **참여 최적화가 유지를 갉는 고리다.**",
+            "current_best": "**네 계층에서 동시에 막는 것** — 검색 조건을 UIC 로, L1 에서 **`이미 잘 표현된 UIC 를 중복하는 핀에 할인`**, 랭킹에서 생애주기별 신호, 다양성 계층에서 **`시각적으로는 다양한데 한 범주가 지배하는`** 상태 차단. ⚠️ **한 곳만 고치면 다른 곳에서 되돌아온다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+                "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-07-27",
+                "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "그 사람이 만진 것 안에서 쓰임새를 찾는다",
+          "question": "UIC 가 어떻게 만들어지고 어디에 쓰이나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>최근 500개 참여 행동</b>\"]:::list --> B[\"⚠️ <b>그 사용자가 참여한 핀만으로</b><br/>• 전역 공간이 아니라\"]:::accent\n  B --> C[\"<b>완전 연결 병합</b><br/>• 모든 점이 모든 점과<br/>  충분히 유사할 때만<br/>• OmniSage 코사인 유사도\"]:::accent\n  C --> D[\"⚠️ <b>UIC — 쓰임새 클러스터</b><br/>• 결혼 준비 · 부엌 고치기 · 마라톤<br/>• 수는 사람마다 (2 ~ 15)<br/>• 최근성 · 빈도 메타데이터\"]:::accent\n  D --> S[\"<b>공유 피처 저장소</b><br/>• 주석은 퍼널에서 한 번만\"]:::list\n  S --> R1[\"<b>검색 조건</b><br/>• 팔로우한 관심사를 대신<br/>• 프런티어 샘플링\"]:::list\n  S --> R2[\"<b>L1 유틸리티</b><br/>• 잘 표현된 UIC 는 할인\"]:::list\n  S --> R3[\"<b>랭킹</b><br/>• 초기엔 호기심 신호<br/>• 성숙하면 헌신 신호\"]:::list\n  S --> R4[\"<b>다양성 (SSD)</b><br/>• 시각적 다양성만으로는 부족\"]:::list"
+        },
+        {
+          "title": "참여를 잘 맞히면 유지가 갉힌다",
+          "question": "왜 지표를 바꿔야 했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>참여에 최적화</b><br/>• 클릭 · 저장 · 클로즈업\"]:::accent --> B[\"⚠️ <b>이미 좋아하는 것을 더 준다</b>\"]:::gone\n  B --> C[\"⚠️ <b>지배적 관심사가<br/>  후보를 독점한다</b><br/>• 작거나 떠오르는 관심사는<br/>  표현이 거의 남지 않는다\"]:::gone\n  C --> D[\"⚠️ <b>사워도우 레시피 열 개를 저장하고도<br/>  다음 달에 이탈한다</b>\"]:::gone\n  D --> E[\"<b>답: 지표를 유지로</b><br/>• 유지 이득은 최상위 십분위에서<br/>  가파르게 가속된다\"]:::accent\n  E --> F[\"<b>답: 표현을 UIC 로</b><br/>• 그리고 네 계층을 함께 바꾼다\"]:::accent\n  G[\"⚠️ <b>남은 문제</b><br/>• 스쳐 가는 호기심과<br/>  떠오르는 습관을 완전히<br/>  가르지는 못한다 (회사가 적는다)\"]:::gone\n  H[\"⚠️ <b>이 글에는 수치가 없다</b><br/>• 정성적 결과만 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+          "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+          "publisher": "Pinterest Engineering",
+          "date": "2026-07-27",
+          "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
+        },
+        {
+          "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+          "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+          "publisher": "Pinterest Engineering",
+          "date": "2026-08-26",
+          "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+        },
+        {
+          "title": "Pinterest (PINS) Q2 2026 earnings report",
+          "url": "https://www.cnbc.com/2026/08/04/pinterest-pins-q2-earnings-report-2026.html",
+          "publisher": "CNBC",
+          "date": "2026-08",
+          "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -658,7 +1263,9 @@
     "⚠️ **`AI 팀이 된다`(2026-09)는 조직 이야기라 도메인으로 세우지 않았다** — ⏳ 다만 **`AI 를 어디까지 믿나` 축의 재료가 될 수 있어 나중에 읽는다.**",
     "⚠️ **시각 검색(이미지로 찾기)의 자료를 못 봤다** — 이 회사의 상징적인 기능인데 최근 글에 없다.",
     "⚠️ **연표(eras)를 못 세웠다** — 2010년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다.",
-    "⚠️ **조건이 무엇인지의 목록을 모른다** — **관심사와 보드가 예로 나오지만 전체 조건 유형과 그것을 어떻게 고르는지**가 이 글에 없다. ⏳ **`사용자를 어떤 쓰임새로 이해할지` 도메인의 자료가 그 답일 수 있다.**"
+    "⚠️ **조건이 무엇인지의 목록을 모른다** — **관심사와 보드가 예로 나오지만 전체 조건 유형과 그것을 어떻게 고르는지**가 이 글에 없다. ⏳ **`사용자를 어떤 쓰임새로 이해할지` 도메인의 자료가 그 답일 수 있다.**",
+    "⚠️ **이 글에는 수치가 하나도 없다** — **`의미 있는 참여 증가, 상호작용한 콘텐츠의 훨씬 큰 다양성, 더 긴 세션의 증가`** 라는 정성적 결과만 있고 **유지 개선도 비용 절감도 숫자가 없다.** ⚠️ **`유지 이득이 최상위 십분위에서 가파르게 가속된다` 는 관찰이 이 일의 근거인데 그 곡선도 수치로 제시되지 않는다.**",
+    "⏳ **2부가 예고돼 있다** — **`사용자가 새로 생긴 관심사를 명시적으로 신호하기 전에 미래 좌표를 생성하는` 예측 UIC**(기하학적 예측 · 모델 기반 세렌디피티 · LLM 기반 추론). ⭐ **`AI 를 어디까지 믿나` 축의 재료가 될 수 있다.**"
   ],
   "sources": [
     {
@@ -680,7 +1287,7 @@
       "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
       "publisher": "Pinterest Engineering",
       "date": "2026-07-27",
-      "summary": "사용자를 쓰임새로 표현해 주간 활성 사용자 성장을 이끈 이야기(2부작 중 1부). ⏳ 본문은 아직 읽지 않았다."
+      "summary": "추천이 참여(클릭·저장)에 최적화돼 있었지 유지에 최적화돼 있지 않았다. 사용자를 하나의 전역 임베딩이 아니라 관심사 클러스터(UIC)의 집합으로 표현해, 사용자가 참여한 핀만으로 완전 연결 계층 군집화를 하고 클러스터 수를 동적으로 둔다. 검색·L1 유틸리티·랭킹·다양성·피처 저장소 다섯 계층에 그 표현을 넣었다."
     },
     {
       "title": "Pinterest (PINS) Q2 2026 earnings report",
