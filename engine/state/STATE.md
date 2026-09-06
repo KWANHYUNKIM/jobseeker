@@ -8,39 +8,37 @@
 
 ## 지금 파는 중
 
-**없다 — 후보 조사 사이클이었다.** 큐 **2/3**. 회사 101개.
+**Wiz** (US 뉴욕, 이스라엘 창업 · SaaS — 클라우드 보안) — **프로파일까지 썼다**. 도메인 3개 · 기능 0. 회사 **102개** · 큐 1/3.
 
-### ⚠️⚠️ 이번 사이클에서 내가 한 실수 — 이미 판 회사를 후보로 던졌다
+### ⭐ 절차로 바꾼 것이 곧바로 값을 했다
 
-**Datadog 과 TigerBeetle 을 언급 각도로 골라 블로그를 열었는데 둘 다 index 에 이미 있다.** ⚠️ **`후보 대조는 slug 가 아니라 name_en 으로` 를 STATE 에 적어 놓고 이번엔 대조 자체를 건너뛰었다.**
+**앞 사이클에 `새 회사 프로파일을 쓸 때는 country·category 를 schema 허용값과 먼저 대조한다` 고 절차에 박아 뒀고, 이번엔 쓰기 전에 확인했다 — 오류 0.** ⚠️ **앞 두 회사에서는 같은 자리에서 두 번 걸렸다**(`인프라` · `다국적`). **적어 두는 것과 실행 순서에 넣는 것이 다르다는 것이 실제로 확인됐다.**
 
-⭐ **패턴이 보인다 — 이 세션에서 같은 종류의 실수를 세 번 했다**: 슬러그 추측(두 번) · schema 허용값 미확인(`category`·`country` 두 번) · 후보 중복 대조 생략(이번). **셋 다 규칙이 STATE 에 적혀 있었다.** ⚠️ **적어 두는 것과 실행 순서에 넣는 것이 다르다.**
+### 이번 사이클 — 신규(6순위)
 
-⭐ **그래서 절차로 바꾼다** — **후보 조사 사이클은 반드시 이 명령으로 시작한다:**
+⚠️ **이 회사는 기술 선택이 곧 영업 속도였다** — 워크로드마다 에이전트를 심는 대신 **클라우드 API 로 발견하고 임시 읽기 전용 스냅숏으로 훑어서**, **보안 팀이 계정을 연결하기만 하면 몇 시간 안에 우선순위가 매겨진 위험 그래프를 본다.** **배포할 것이 없다는 게 도입 장벽을 없앴다**(재구성).
+
+**성장** — ARR **1억 달러까지 18개월** · 2023년 말 **3억 5,000만** · 2024년 중반 **5억** · 인수 시점 **10억 달러 돌파** · **포천 100대 기업의 50%**. ⚠️ **소유가 바뀌었다** — **2025년 3월 구글이 320억 달러 전액 현금 인수 합의**, **2026년 3월 11일 완료**(2025년 예상 ARR 의 **약 32배**).
+
+### 다음 사이클 — 확장(2순위)
+
+`--gaps` 가 **`민감 데이터를 찾는다`** 를 부를 것이다. **자료를 이미 읽었으니 바로 기능을 쓴다.** ⭐ **①축(`AI 에이전트를 어디까지 믿나`)에 드문 답이 들어온다 — 넣었다가 다시 뺀 이야기다.**
+
+⚠️ **이 회사의 정체성인 `에이전트 없이` 도메인이 본문 미독이다** — 회사 글이 있는데 **발행일조차 확인 못 했다.** 지금 근거는 3자 정리뿐이다.
+
+⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
+
+### ⚠️ 후보 조사 사이클은 이 명령으로 시작한다
 
 ```
 python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(' | '.join(sorted((c.get('name_en') or c['name']) for c in i['companies'])))"
 ```
 
-**그리고 새 회사 프로파일을 쓸 때는 `country`·`category` 를 schema 허용값과 먼저 대조한다**(`country: KR|US|CN|JP|EU|기타` + ISO 2글자 / `category: 핀테크|커머스|소셜|메시징|스트리밍|검색|광고|모빌리티|게임|SaaS|기타`).
-
-### 이번 사이클 — 후보 조사(3순위). ⭐ 지역 축이 통했다
-
-**올린 두 곳** — **Wiz**(이스라엘 · 클라우드 보안) · **Trendyol**(튀르키예 · 커머스).
-
-⭐ **Wiz 가 `AI 를 어디까지 믿나` 축에 새로운 답을 준다 — 넣었다가 다시 뺀다.** **`결정론적 로직을 AI 계층에서 완전히 빼내고, 맥락 이해가 진짜로 필요한 작업에만 AI 를 남겼다.`** 초기 대가도 그대로 적는다 — **`느리고 비쌌다. 하지만 기존 스캐너가 완전히 놓치던 민감 데이터를 찾아냈다.`**
-
-⚠️ **언급 각도가 마르고 있다** — 101개 회사가 언급하는 이름들이 대부분 **이미 판 회사이거나**(Datadog·TigerBeetle·Stripe·Uber) **파는 쪽이라 글이 마케팅이다**(PingCAP·**Confluent** — 두 번째 확인). ⭐ **대신 `지역 축` 이 통했다.** ⚠️ **다만 동남아·브라질은 블로그가 묵어서 실패했다**(Tokopedia 2023-08 · Traveloka 2023-07 · iFood 2025-09 · Rappi 404 · Shopee 블로그 없음). **`지역 축` 은 그 지역 회사의 블로그가 아직 살아 있을 때만 통한다.**
-
-### 다음 사이클 — 신규(6순위)
-
-`--gaps` 가 **대기 맨 위(Wiz)를 `in_progress` 로 만들고 3단계부터** 를 부를 것이다. ⚠️ **`Wix`(이미 있음)와 다른 회사다.**
-
-⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
+**새 회사 프로파일 전에는 schema 허용값 대조** — `country: KR|US|CN|JP|EU|기타` + ISO 2글자 / `category: 핀테크|커머스|소셜|메시징|스트리밍|검색|광고|모빌리티|게임|SaaS|기타`.
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① ⭐ `AI 에이전트를 어디까지 믿나` 9곳 + ⏳ Wiz · Pinterest 2부 · WarpStream MCP** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay. ⏳ **Wiz 가 `넣었다가 다시 뺐다` 는 드문 답을 준다.**
+**① ⭐ `AI 에이전트를 어디까지 믿나` 9곳 + ⏳ Wiz · Pinterest 2부 · WarpStream MCP** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay. ⏳ **Wiz 가 `넣었다가 다시 뺐다` 는 드문 답을 준다** — 다음 사이클에 들어온다.
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
@@ -52,11 +50,11 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream.
 
-**⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack.
+**⑦ ⭐ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / ⏳ **Wiz**(에이전트를 없앤 대신 스냅숏이 무엇을 못 보는지).
 
 **⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics.
 
-**⑨ ⭐ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 7곳 + ⏳ Trendyol** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream. ⏳ **Trendyol 이 NoSQL 문서에서 정규화된 PostgreSQL 로 갔다.**
+**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 7곳 + ⏳ Trendyol** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream.
 
 **⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics.
 
@@ -78,7 +76,7 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / ⏳ Plaid · Snyk.
 
-**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream / ⏳ TigerBeetle · Oxide Computer.
+**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크) / ⏳ **Wiz**(에이전트) / ⏳ TigerBeetle · Oxide Computer. ⭐ **Wiz 가 이 축에 정확히 들어온다 — 없앤 것이 곧 제품의 이름이 됐다**(재구성).
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
@@ -90,7 +88,9 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / ⏳ Etsy · Plaid.
 
-**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics(판로라고 직접 말한다) / ScyllaDB / Grafana Labs · Honeycomb / ⏳ Airbnb · Pinterest.
+**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics(판로라고 직접 말한다) / ScyllaDB / Grafana Labs · Honeycomb / ⏳ Airbnb · Pinterest / ⏳ **Wiz**(⚠️ **자기 시스템 글이 2026년에 셋뿐이고 나머지는 제품 발표와 위협 연구다** — 보안 회사는 위협 연구가 곧 마케팅이다, 재구성).
+
+⏳ **㉗ 새로 보인다 — `인수된 뒤에 무엇이 달라지나`** — **Wiz**(2026-03-11 구글) / **WarpStream**(2024-09 Confluent → 2026-03-17 IBM) / **Twilio**(Segment 2020) / **PlanetScale·Snyk**(⏳ 확인 필요). ⚠️ **멀티 클라우드를 보는 회사가 한 클라우드에 속하면 어떻게 되나 같은 물음이 여기 걸린다**(재구성).
 
 ## 지금의 진짜 상태
 

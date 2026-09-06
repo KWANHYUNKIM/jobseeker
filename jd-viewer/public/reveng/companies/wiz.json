@@ -1,0 +1,138 @@
+{
+  "slug": "wiz",
+  "name": "Wiz",
+  "name_en": "Wiz",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "wiz.io",
+  "one_liner": "워크로드마다 에이전트를 심지 않고 클라우드 API 와 스냅숏만으로 위험을 그려 내는 보안 플랫폼",
+  "business_model": "**클라우드 보안을 판다 — 다만 들어가는 방식이 다르다.** ⚠️ **워크로드마다 에이전트를 심는 대신 클라우드 API 로 자원을 발견하고 임시 읽기 전용 스냅숏으로 훑는다**(3자 정리). ⭐ **그 차이가 곧 영업 속도였다** — **보안 팀이 클라우드 계정을 연결하기만 하면 몇 시간 안에 우선순위가 매겨진 위험 그래프를 볼 수 있고, 워크로드마다 소프트웨어를 배포할 필요가 없다**(재구성이 아니라 3자 정리).\n\n**성장** — ARR **1억 달러까지 18개월**, 2023년 말 **3억 5,000만**, 2024년 중반 **5억**, 인수 완료 시점 **10억 달러 돌파**. **포천 100대 기업의 50%** 가 쓴다.\n\n⚠️ **소유가 바뀌었다** — **2025년 3월 구글이 320억 달러 전액 현금 인수에 합의**하고 **2026년 3월 11일 완료**했다(**2025년 예상 ARR 의 약 32배**). 본사는 **뉴욕**이다.",
+  "products": [
+    "Wiz (CNAPP · 클라우드 보안 플랫폼)",
+    "데이터 발견 (맥락 엔진)",
+    "코드 보안 (에이전틱 스캐닝)"
+  ],
+  "domain_map": {
+    "title": "에이전트를 안 심는 대신 무엇으로 아나",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  C[\"<b>고객 클라우드 계정</b>\"]:::list --> A[\"⚠️ <b>에이전트 없이 들여다본다</b><br/>• API 기반 자원 발견<br/>• 임시 읽기 전용 스냅숏<br/>• ⏳ 회사 글 미독\"]:::quiet\n  A --> G[\"<b>위험 그래프</b><br/>• 연결만 하면 몇 시간 안에\"]:::list\n  D[\"⚠️ <b>민감 데이터를 찾는다</b><br/>• 멀티 에이전트 파이프라인<br/>• ✅ 본문 확인\"]:::accent --> G\n  S[\"<b>코드를 훑는다</b><br/>• 속도 · 깊이 · 비용의 균형<br/>• ⏳ 미독\"]:::quiet --> G\n  G --> R[\"<b>매출</b><br/>• ARR 10억 달러 돌파<br/>• 포천 100 의 50%\"]:::list"
+  },
+  "revenue_streams": [
+    {
+      "name": "클라우드 보안 플랫폼 (CNAPP)",
+      "how": "**ARR 1억 달러까지 18개월 · 인수 시점 10억 달러 돌파 · 포천 100대 기업의 50%.** ⚠️ **에이전트를 안 심는다는 것이 기술 선택이자 영업 속도였다**(재구성).",
+      "domains": [
+        "에이전트 없이 클라우드를 들여다본다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Wiz revenue, valuation & funding",
+          "url": "https://sacra.com/c/wiz/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "ARR 1억 달러까지 18개월, 2023년 말 3억 5,000만, 2024년 중반 5억, 인수 완료 시점에 10억 달러를 넘겼다. 320억 달러라는 값은 2025년 예상 ARR 의 약 32배였다."
+        },
+        {
+          "title": "Google completes $32B acquisition of Wiz",
+          "url": "https://www.cybersecuritydive.com/news/google-32-billion-acquisition-wiz/814437/",
+          "publisher": "Cybersecurity Dive",
+          "date": "2026-03",
+          "summary": "2025년 3월 합의한 320억 달러 전액 현금 인수를 2026년 3월 11일 완료했다. 뉴욕에 본사를 둔 클라우드 보안 플랫폼이 구글 클라우드 포트폴리오로 들어갔다."
+        }
+      ]
+    },
+    {
+      "name": "데이터·코드 보안 확장",
+      "how": "**민감 데이터 발견**(맥락 엔진)과 **코드 보안**(에이전틱 스캐닝)으로 플랫폼을 넓힌다. ⚠️ **둘 다 2026년에 AI 를 쓰는 방식으로 새로 만들었다.**",
+      "domains": [
+        "민감 데이터를 찾는다",
+        "코드를 훑는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "From Concept to Context Engine: How Wiz Built AI-Powered Data Discovery",
+          "url": "https://www.wiz.io/blog/bucket-scanner-to-context-engine",
+          "publisher": "Wiz",
+          "date": "2026-08-27",
+          "summary": "버킷 스캐너를 맥락 엔진으로 바꾼 이야기. 분석 파이프라인의 단계마다 다른 전문 하위 에이전트를 두고 각 단계에 맞는 모델 등급을 짝지었다. 초기 시제품은 느리고 비쌌지만 기존 스캐너가 놓치던 것을 찾아냈고, 운영에 올리면서 결정론적 로직을 AI 계층에서 완전히 빼내 맥락 이해가 진짜 필요한 곳에만 AI 를 남겼다."
+        },
+        {
+          "title": "Rethinking Scanning for the AI Era: Wiz's Agentic Code Security System",
+          "url": "https://www.wiz.io/blog/agentic-code-security",
+          "publisher": "Wiz",
+          "date": "2026-07-30",
+          "summary": "기업용 AI 애플리케이션 보안은 강력한 모델만으로 되지 않고 속도·깊이·비용의 균형을 잡는 시스템이 필요하다는 이야기. ⏳ 본문 미독 — 목록에서 제목·날짜·URL 만 확인했다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "민감 데이터를 찾는다",
+      "why": "⭐ **이 회사가 AI 를 어디까지 쓸지 실제로 시험하고 조정한 이야기다** — 버킷 스캐너를 맥락 엔진으로 바꾸면서 **`분석 파이프라인의 단계마다 다른 전문 하위 에이전트를 두고 각 단계에 가장 알맞은 모델 등급과 짝지었다`**. ⚠️ **그리고 운영에 올리며 되돌렸다** — **`결정론적 로직을 AI 계층에서 완전히 빼냈다`**. ✅ **본문 확인함**(2026-08-27).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "에이전트 없이 클라우드를 들여다본다",
+      "why": "⚠️ **이 회사의 정체성이자 성장의 이유다** — 워크로드마다 소프트웨어를 심지 않고 **클라우드 API 로 발견하고 임시 읽기 전용 스냅숏으로 훑는다**. **연결만 하면 몇 시간 안에 위험 그래프가 나온다**는 것이 채택을 밀었다. ⏳ **회사 글(`Wiz's agentless approach to cloud-native vulnerability management`)을 아직 못 읽었고 발행일도 확인 못 했다** — 지금 근거는 3자 정리다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "코드를 훑는다",
+      "why": "**`AI 시대를 위해 스캐닝을 다시 생각한다: Wiz 의 에이전틱 코드 보안 시스템`**(2026-07-30) — 기업용 AI 애플리케이션 보안이 **`강력한 모델 이상을 요구한다. 속도·깊이·비용의 균형을 잡는 시스템이 필요하다`**. ⏳ **본문 미독.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **도메인 셋 중 둘이 본문 미독이다** — 에이전트 없는 스캐닝(회사 글의 발행일조차 확인 못 했다)과 코드 보안. ⚠️ **특히 앞의 것이 이 회사의 정체성인데 지금 근거가 3자 정리뿐이다.**",
+    "⚠️ **이 블로그는 대부분이 제품 발표와 위협 연구다** — 자기 시스템을 말하는 글은 2026년에 셋뿐이다(맥락 엔진 · 에이전틱 코드 보안 · 클로즈드 루프 교정). **후보 조사에서 첫 화면으로 판정하지 않고 글 하나를 열어 확정한 것이 옳았다.**",
+    "⚠️ **구글 인수(2026-03-11) 이후의 변화를 모른다** — **구글 클라우드와 어떻게 합쳐지는지, 다른 클라우드 지원이 어떻게 되는지**를 말하는 기술 자료를 못 찾았다. ⭐ **`멀티 클라우드를 보는 회사가 한 클라우드에 속하면` 이라는 물음이 남는다**(재구성).",
+    "⚠️ **에이전트 없는 방식의 한계를 회사 밖 시각으로 확인하지 못했다** — 스냅숏 기반이면 **실행 중인 것을 실시간으로 보지 못한다**는 지적이 있을 법한데(재구성), 그 논의를 담은 자료를 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "From Concept to Context Engine: How Wiz Built AI-Powered Data Discovery",
+      "url": "https://www.wiz.io/blog/bucket-scanner-to-context-engine",
+      "publisher": "Wiz",
+      "date": "2026-08-27",
+      "summary": "버킷 스캐너를 맥락 엔진으로 바꾼 이야기. 분석 파이프라인의 단계마다 다른 전문 하위 에이전트를 두고 각 단계에 맞는 모델 등급을 짝지었다. 초기 시제품은 느리고 비쌌지만 기존 스캐너가 놓치던 것을 찾아냈고, 운영에 올리면서 결정론적 로직을 AI 계층에서 완전히 빼내 맥락 이해가 진짜 필요한 곳에만 AI 를 남겼다."
+    },
+    {
+      "title": "Rethinking Scanning for the AI Era: Wiz's Agentic Code Security System",
+      "url": "https://www.wiz.io/blog/agentic-code-security",
+      "publisher": "Wiz",
+      "date": "2026-07-30",
+      "summary": "기업용 AI 애플리케이션 보안은 강력한 모델만으로 되지 않고 속도·깊이·비용의 균형을 잡는 시스템이 필요하다는 이야기. ⏳ 본문 미독 — 목록에서 제목·날짜·URL 만 확인했다."
+    },
+    {
+      "title": "Wiz's agentless approach to cloud-native vulnerability management",
+      "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+      "publisher": "Wiz",
+      "date": "",
+      "summary": "에이전트 없는 취약점 관리 방식에 대한 회사 글. ⏳ 본문 미독이고 발행일도 확인하지 못했다."
+    },
+    {
+      "title": "Google completes $32B acquisition of Wiz",
+      "url": "https://www.cybersecuritydive.com/news/google-32-billion-acquisition-wiz/814437/",
+      "publisher": "Cybersecurity Dive",
+      "date": "2026-03",
+      "summary": "2025년 3월 합의한 320억 달러 전액 현금 인수를 2026년 3월 11일 완료했다. 뉴욕에 본사를 둔 클라우드 보안 플랫폼이 구글 클라우드 포트폴리오로 들어갔다."
+    },
+    {
+      "title": "Wiz revenue, valuation & funding",
+      "url": "https://sacra.com/c/wiz/",
+      "publisher": "Sacra",
+      "date": "2026",
+      "summary": "ARR 1억 달러까지 18개월, 2023년 말 3억 5,000만, 2024년 중반 5억, 인수 완료 시점에 10억 달러를 넘겼다. 320억 달러라는 값은 2025년 예상 ARR 의 약 32배였다."
+    }
+  ]
+}

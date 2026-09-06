@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "wiz",
+      "name": "Wiz",
+      "name_en": "Wiz",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "워크로드마다 에이전트를 심지 않고 클라우드 API 와 스냅숏만으로 위험을 그려 내는 보안 플랫폼",
+      "updated_at": "2026-09-06",
+      "domain": "wiz.io"
+    },
+    {
       "slug": "victoriametrics",
       "name": "VictoriaMetrics",
       "name_en": "VictoriaMetrics",
@@ -1529,7 +1541,10 @@
     "다른 Kafka 에서 옮겨 온다",
     "클러스터 안에서 무슨 일이 있었는지 본다",
     "메트릭을 저장하고 찾는다",
-    "오픈소스를 사업으로 만든다"
+    "오픈소스를 사업으로 만든다",
+    "민감 데이터를 찾는다",
+    "에이전트 없이 클라우드를 들여다본다",
+    "코드를 훑는다"
   ],
   "countries": {
     "KR": "한국",
