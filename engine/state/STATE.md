@@ -8,26 +8,30 @@
 
 ## 지금 파는 중
 
-**Atlassian** (AU · SaaS) — 도메인 3개 · **기능 2개**. 남은 하나는 **AI(Rovo)** 다. 회사 105개 · 큐 2/3.
+**없다 — Atlassian 을 완주했다.** 도메인 3개 · 기능 3개. 회사 **105개.** 큐 **2/3**.
 
-### 이번 사이클 — `원격은 비용을 줄이고 로컬은 충격을 흡수한다`
+### 이번 사이클 — `샌드박스가 죽어도 대화는 산다`
 
-⭐ **여섯 개 장애를 다 적는 아주 정직한 글이다** — 브로커 네트워크 포화 · S3 오프로드 지연 · **보존 변경(7→21→7일) 중 S3 요청 속도 제한** · 저장 확장 쿨다운 · AZ 장애로 제어 평면 가시성 저하 · **확장 작업이 사고 대응에 쓰기엔 너무 느림**.
+⭐ **요구를 문장으로 못 박고 구조를 거기 맞췄다** — **`샌드박스가 실패해도 대화는 계속되어야 한다 … 샌드박스 실패는 사용자가 인지하는 영향 없이 복구 가능해야 한다.`** ⚠️ **사용자에게 대화는 제품이고 샌드박스는 구현 세부인데, 한 프로세스에 묶여 있으면 세부의 실패가 제품의 실패가 된다**(재구성).
 
 건진 것 넷:
 
-- ⭐ **세 병목이 다른 문제처럼 보이지만 하나였다** — **성장이 그대로 비용이 되는 구조**다(재구성). **`샤드마다 인그레스 1MB/초, 이그레스 2MB/초 한계 … 월 클라우드 청구가 트래픽에 선형으로 자랐다`** · 컨슈머 그룹 추가에도 비용 · **`24시간을 넘겨 보관하려면 비싼 연장 보존 부가 옵션이 필요했다`**(7일이 필요했는데). ⭐ **`더 쓰면 더 낸다` 가 아니라 `자라면 벌받는다` 였다**(재구성).
-- ⭐ **비용이 줄었다고 로컬을 없애지 않았다** — **`Tiered Storage 는 저장 비용을 극적으로 줄였지만 강한 로컬 브로커 용량의 필요를 없애지는 않았다 … 원격 저장소는 정상 상태 비용을 줄여야 하고, 로컬 저장소는 운영상의 충격 흡수를 제공해야 한다.`** ⚠️ **비용 최적화가 곧 여유의 제거이고, 급증·장애·복구는 전부 비정상 상태에서 일어난다**(재구성).
-- ⚠️ **비용을 옮긴 자리에 위험도 옮겨 갔다** — **`S3 오프로드가 무거운 인제스트에서 뒤처지고`**, **보존을 바꾸는 동안 S3 요청 속도 제한**에 걸렸다. **설정 변경이 새 부하를 만든 것이다**(재구성).
-- ⚠️ **고치는 수단이 사고 중에는 못 쓰는 수단이었다** — 겪은 장애에 **`확장 작업이 사고 대응에 쓰기엔 너무 느림`** 이 있다. ⭐ **그래서 `시험된 복구 경로` 라는 말이 붙는다**(재구성).
+- ⭐ **평면을 나눈 이유가 셋이다** — **`각각을 독립적으로 확장하고, 회복력을 높이고, 각각의 신뢰성을 보장할 수 있게`**. 밀도 이점도 따로 — **`제어 평면을 분리해 두면 확장된 서비스 하나가 수백만 사용자의 이벤트를 처리한다`**. ⚠️ **모놀리식도 검토했지만 `분산 환경에서는 그게 더 복잡해진다` 며 접었다** — **모놀리식이 단순한 것은 한 대에서 돌 때뿐이다**(재구성).
+- ⭐ **모델에게 코드가 할 일을 시키고 있었다** — **`LLM 이 도구를 순차적으로 호출하고 큰 데이터셋의 페이지네이션을 처리하게 하는 것은 믿을 수 없이 비효율적이다.`** 샌드박스가 필요한 이유도 같다 — **`샌드박스 없이는 우리가 모델의 능력에 갇힌다 … 분석, 결정론, 그리고 컴퓨터 사용의 새로운 세계를 연다.`** ⭐ **`결정론` 이 핵심이다** — 코드는 같은 입력에 같은 출력을 내지만 모델은 아니다(재구성). 효과: **지연 50%+ 감소 · 토큰 55% 감소 · 정확도 30% 향상**(웜 스타트 100ms 미만).
+- ⭐ **하위 에이전트를 `호출` 이 아니라 `대화` 로 구현했다** — **`내구성 있는 핸들로 뒷받침되는 숨겨진 Rovo Chat 대화`**. 전에는 **`일회용 하위 에이전트를 동기로 돌렸고 분리하거나 상태를 지속시킬 방법이 없었다`**. ⭐ **대화로 만들면 이력과 상태가 자연히 남고, 이미 있는 인프라를 재사용한 것이기도 하다**(재구성).
+- ⭐ **①축에서 갈리는 지점이 보인다** — Coinbase 는 **`사람을 루프 안에 둔다 — 의도적으로`** 라며 사람을 설계로 남기는데, Atlassian 은 같은 자리에서 **`현재의 자기 진화 흐름은 여전히 사람의 입력을 요구하지만, 이 플라이휠을 만들어 가는 것이 결정적으로 중요해진다`** 며 **사람을 빼는 쪽을 목표로 말한다**(재구성). ⚠️ **같은 구조에 정반대 방향의 의도가 붙어 있다.**
 
-⭐ **결론이 `조합` 이라는 단어로 끝난다** — **`이 규모에서의 신뢰성은 하나의 기능이나 하나의 서비스가 아니다. 보수적인 용량 계획, 명시적인 폭발 반경 통제, 시험된 복구 경로, 그리고 모든 실패에서 배우려는 의지의 조합이다.`** ⚠️ **여섯 번의 장애를 다 적고 나서 내린 결론이라 무게가 다르다**(재구성).
+### 완주하며 본 것 — 세 기능이 같은 손버릇을 보인다
 
-⚠️ **다만 각 장애의 영향 범위와 지속 시간은 없다** — 몇 분이었는지, 얼마나 많은 이벤트가 지연됐는지(재구성).
+⭐ **전부 `나눠서 각각 다르게 다루는` 이야기다** — 색인 이전은 **샤드 로컬과 색인 수준 두 역할**, 스트리밍은 **원격(정상 상태 비용)과 로컬(운영상 충격 흡수)**, AI 는 **데이터 평면과 제어 평면**. ⚠️ **그리고 셋 다 실패가 일어난다는 전제에서 시작한다** — 되돌릴 것을 안 만들고, 장애 여섯을 다 적고, 샌드박스가 죽어도 대화가 살게 한다(재구성).
 
-### 다음 사이클 — 확장(2순위)
+⚠️ **셋의 성과 서술이 다르다** — 색인 이전은 **사용자가 보는 값만**(쓰기 차단 2~5초, 총 소요는 없다), 스트리밍은 **장애를 다 적지만 각 장애의 영향 범위는 없다**, AI 는 **내부 평가 수치**(어떤 질의 집합인지 안 밝힌다). ⭐ **③축에서 한 회사 안의 편차로 쓸 수 있다.**
 
-`--gaps` 가 **`AI 를 제품에 넣는다`**(Rovo 에이전트 하네스)를 부를 것이다. ⏳ **미독이고 주소를 못 받았다** — **검색으로 받는다**(네 번 연속 통했다). **이걸 쓰면 Atlassian 완주다.**
+### 다음 사이클 — 신규(6순위)
+
+**큐 2/3.** `--gaps` 가 **대기 맨 위(Neon)를 `in_progress` 로 만들고 3단계부터** 를 부를 것이다.
+
+⏳ **Atlassian 보강 거리** — Events Rail(웹훅 전달) · 실시간 PWA · AI 시대의 번역 · 마케팅 예산 배분 ML.
 
 ⏳ **Trendyol 보강 거리가 두껍게 남았다** — Helyx 4편 · SRE AI 에이전트 · 다중 리전 K8s 장애 · 벡터 검색 v9 등.
 
@@ -35,31 +39,31 @@
 
 ### ⚠️ 절차 (이 세션에 실수로 배운 것)
 
-**후보 조사는 `name_en` 목록 출력으로 시작한다.** **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(⭐ 세 번 연속 오류 0). **`git add -A` 를 쓰지 않는다.** **슬러그를 추측하지 않는다** — 못 받으면 검색으로(⭐ **네 번 연속 통했다**). **첫 화면으로 회사를 판정하지 않는다.**
+**후보 조사는 `name_en` 목록 출력으로 시작한다.** **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(⭐ 세 번 연속 오류 0). **`git add -A` 를 쓰지 않는다.** **슬러그를 추측하지 않는다** — 못 받으면 검색으로(⭐ **다섯 번 연속 통했다**). **첫 화면으로 회사를 판정하지 않는다.**
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① `AI 에이전트를 어디까지 믿나` 12곳 + ⏳ Atlassian(Rovo) · Vercel** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / Trendyol / Coinbase.
+**① ⭐⭐ `AI 에이전트를 어디까지 믿나` 13곳** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / Trendyol / Coinbase / **Atlassian**. ⭐ **Coinbase 와 Atlassian 이 정반대다** — 전자는 **`사람을 루프 안에 둔다 — 의도적으로`**, 후자는 **`여전히 사람의 입력을 요구하지만 이 플라이휠을 만들어 가는 것이 결정적으로 중요해진다`**. **같은 구조에 반대 방향의 의도.**
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ ⭐ `자기 성과를 어디까지 주장하나` 13곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / **Atlassian**(⭐ **겪은 장애 여섯 개를 다 적는다 — 이 축에서 가장 정직한 쪽이다. 다만 각 장애의 영향 범위와 지속 시간은 없다**).
+**③ ⭐ `자기 성과를 어디까지 주장하나` 13곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / **Atlassian**(⭐ **한 회사 안에서 셋이 다르다** — 사용자가 보는 값만 / 장애를 다 적되 영향 범위는 없이 / 내부 평가 수치).
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
 **⑤ `한 코어에 하나씩인가, 여러 코어가 나눠 쓰나`** — ScyllaDB / ClickHouse / Grafana Labs / VictoriaMetrics.
 
-**⑥ ⭐ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream / Trendyol / **Atlassian**(⭐ **원격과 로컬의 역할을 문장으로 못 박는다**) / ⏳ Neon.
+**⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream / Trendyol / Atlassian / ⏳ Neon.
 
 **⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / Trendyol.
 
-**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics / Atlassian(시간으로 갚는다).
+**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics / Atlassian.
 
-**⑨ ⭐ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 9곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol / **Atlassian**(색인 이전은 제품으로, 스트리밍은 다년간의 이전으로 — **한 회사가 두 가지 이전을 다 적는다**) / ⏳ Vercel.
+**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 9곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol / Atlassian(두 가지 이전) / ⏳ Vercel.
 
 **⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics / ⏳ Trendyol.
 
-**⑪ ⭐ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / Trendyol / **Atlassian**(⚠️ **관리형(MSK)을 골라 운영 부담을 줄인 대가로 `저장 확장 쿨다운` 과 `AZ 장애 시 제어 평면 가시성` 을 겪는다**) / ⏳ Vercel.
+**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / Trendyol / Atlassian(MSK) / ⏳ Vercel.
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
@@ -67,13 +71,13 @@
 
 **⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest / ⏳ Trendyol.
 
-**⑮ `언제 쪼개고 언제 합치나` 11곳** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / Wiz / Trendyol / Coinbase / Atlassian.
+**⑮ ⭐⭐ `언제 쪼개고 언제 합치나` 11곳** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / Wiz / Trendyol / Coinbase / **Atlassian**(⭐ **세 기능이 전부 이 축이다 — 샤드/색인, 원격/로컬, 데이터/제어 평면**).
 
-**⑯ ⭐ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz / **Atlassian**(⚠️ **반대다 — Kinesis 에서 Kafka 로 가면서도 직접 운영하지 않고 MSK 를 골랐다**).
+**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz / Atlassian(반대 — MSK 를 골랐다).
 
 **⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics / Trendyol / ⏳ Neon.
 
-**⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest / Trendyol / **Atlassian**(빠르게 → 의도적으로 느리게, 회사가 `뒤집혔다` 를 직접 쓴다) / ⏳ Duolingo · DoorDash.
+**⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest / Trendyol / Atlassian(빠르게 → 의도적으로 느리게) / ⏳ Duolingo · DoorDash.
 
 **⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / Coinbase / ⏳ Plaid · Snyk.
 
@@ -81,13 +85,13 @@
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / ⏳ Neon · ScyllaDB · TigerBeetle · ClickHouse.
 
-**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / Trendyol / **Atlassian**(되돌릴 것을 안 만든다). ⭐ **세 가지 답으로 갈렸다** — 롤백을 만든다 / 지점을 표시한다 / 필요 없게 만든다.
+**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / Trendyol / Atlassian(되돌릴 것을 안 만든다).
 
 **㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / Trendyol / Coinbase / ⏳ Pinterest.
 
 **㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / ⏳ Grafana Labs · ClickHouse · Snyk · Neon · Vercel.
 
-**㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / Wiz / Coinbase / Atlassian / ⏳ Etsy · Plaid.
+**㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / Wiz / Coinbase / Atlassian(하위 에이전트를 기존 대화 인프라로) / ⏳ Etsy · Plaid.
 
 **㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / Trendyol / Coinbase / Atlassian(독자를 가른다) / ⏳ Airbnb · Pinterest.
 
@@ -105,7 +109,9 @@
 
 **㉝ `무엇이라 부르느냐가 요구 사항을 정한다`** — Coinbase / Trendyol / ⏳ Plaid · Etsy.
 
-⏳ **㉞ 새로 보인다 — `비용을 옮기면 위험도 옮겨 간다`** — **Atlassian**(⭐ **Tiered Storage 로 EBS 비용을 S3 로 옮겼더니 S3 오프로드 지연과 요청 속도 제한이 새 장애가 됐다**) / **WarpStream**(디스크를 없앤 대가가 지연) / **Razorpay·Airbnb**(관측 비용을 줄인 대가) / ⏳ Zepto. ⚠️ **⑧축이 `제약을 못 없앨 때` 라면 이 축은 `없앤 줄 알았을 때` 다**(재구성).
+**㉞ `비용을 옮기면 위험도 옮겨 간다`** — Atlassian(EBS → S3, 새 장애 둘) / WarpStream / Razorpay·Airbnb / ⏳ Zepto.
+
+⏳ **㉟ 새로 보인다 — `무엇이 제품이고 무엇이 구현 세부인가`** — **Atlassian**(⭐ **대화는 제품, 샌드박스는 세부 — 그래서 세부가 죽어도 제품은 산다**) / **WarpStream**(오프셋은 계약, 시퀀싱 시점은 세부) / **Coinbase**(감사 기록은 제품의 일부) / ⏳ Plaid. ⚠️ **경계를 어디 긋느냐가 무엇이 죽어도 되는지를 정한다**(재구성).
 
 ## 지금의 진짜 상태
 
