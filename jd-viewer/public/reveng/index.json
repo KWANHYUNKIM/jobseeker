@@ -7,8 +7,8 @@
       "name_en": "Vercel",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "프런트엔드를 배포하던 회사가 에이전트가 코드를 돌리는 자리를 판다",
       "updated_at": "2026-09-06",
       "domain": "vercel.com"
