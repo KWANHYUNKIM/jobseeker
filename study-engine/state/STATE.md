@@ -4,37 +4,70 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **바운디드 컨텍스트**(`bounded-context`)를 완성했다 — **125번째 문서**.
+**없음.** 직전 사이클에서 **헥사고날 / 클린 아키텍처**(`hexagonal-architecture`)를
+완성했다 — **126번째 문서**.
 
-### 직전 사이클 (바운디드 컨텍스트)
+### 직전 사이클 (헥사고날 / 클린 아키텍처)
 
-⭐⭐⭐ **축: "같은 낱말이 다른 뜻일 때."** `microservices` 가 "경계가 전부인데 처음엔
-틀린다"에서 멈춘 자리를 이어받아 **무엇으로 긋는지**를 채웠다.
+⭐⭐⭐ **축: "이름은 174번, 규칙은 3번."**
 
-> ⭐⭐⭐ **"total unification of the domain model for a large system will not be
->   feasible or cost-effective"** — ⭐ **가능성과 비용을 나눠서 부정한다**
-> ⭐⭐⭐ "DDD **divides up a large system into Bounded Contexts, each of which can
->   have a unified model**" — ⭐ 통일을 포기하는 게 아니라 **성립하는 크기로 쪼갠다**
-> ⭐⭐⭐ "the word **'meter' meant subtly different things to different parts of the
->   organization**" · "**Time and time again I see this confusion recur with polysemes
->   like 'Customer' and 'Product'**"
-> ⭐⭐⭐ "you need a **different model when the language changes**" — **경계는 말에 있다**
-> ⭐⭐⭐ **"software doesn't cope well with ambiguity"**
+> ⭐⭐⭐ (Cockburn 의도) "Allow an application to equally be driven by users, programs,
+>   **automated test** or batch scripts, and to be **developed and tested in isolation
+>   from its eventual run-time devices and databases**."
+> ⭐⭐⭐ (문제) "**infiltration of business logic into the user interface code**" ·
+>   "When the **database server goes down** ... **the programmers can't work**" ·
+>   근본 원인은 "**entanglement**"
+> ⭐⭐⭐ (규칙) "**source code dependencies can only point inwards**" ·
+>   "the **name** of something declared in an outer circle **must not be mentioned**"
+> ⭐⭐⭐ "**The Web is a detail. The database is a detail.**"
+> ⭐⭐ (육각형인 이유) "to **get away from the one-dimensional layered picture**" ·
+>   "**not a hexagon because the number six is important**"
 
-⭐⭐⭐ **셈: `도메인 지식` 633 · `도메인 전문가/기획자` 889 인데 `유비쿼터스 언어` 0 ·
-`애그리거트` 0 · `바운디드 컨텍스트` 12 · `용어집` 34.** ⚠️ 그리고 커넥트웨이브 공고가
-**`통합 커머스 API` + `도메인 모델 표준화`** — 1차 자료가 "not feasible" 이라고 적은
-바로 그 시도의 이름이다.
+⭐⭐⭐ **셈: 174 대 3**(`의존성 역전`). 그리고 **`클린 아키텍처` 162 대 `헥사고날` 22** —
+Uncle Bob 자신은 "**They all have the same objective**" 라고 적는다.
+⚠️ 공고는 **`MVVM, MVI, Clean Architecture 중 하나 이상`**(헤렌)처럼 **UI 패턴과 나란히**
+놓는다 — 같은 회사의 다른 줄은 **`MVVM + Clean Architecture`** 라고 함께 적는데도.
+
+⭐⭐⭐ **실패 사례 검색 규칙을 여섯 사이클 만에 처음 지켰다.** 결과는 **2차 자료의
+일반론뿐**이었고, **근거로 쓰지 않고 그 사실을 `open_questions` 에 남겼다.**
 
 ### 다음
 
-**헥사고날 / 클린 아키텍처**(`hexagonal-architecture`) — QUEUE 맨 위.
+**리팩터링**(`refactoring`) — QUEUE 맨 위.
 
-⭐⭐⭐ **`bounded-context` 가 스스로 "다음의 가장 큰 빈자리"라고 적었다**(두 사이클 연속
-사다리 2순위). **174건으로 `DDD` 88건보다 많다.** 1차 자료는 **원저자 Alistair Cockburn**.
-⚠️ **못 열면 `리팩터링`(753건)으로 바꾼다.**
+⭐⭐⭐ **층을 바꾼다**(설계 세 연속 → 실천/품질) **그리고 사슬을 닫는다** —
+`testing`→`technical-debt`→`code-review`→**`refactoring`**. 셈 **753건(모집중 256)**.
+축은 **`RefactoringMalapropism`** — **원저자가 이 낱말의 오용에 이름을 붙여 항의했다.**
+⚠️ **못 열면 `문서화`(2037건)나 `성능 최적화`(2725건)로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **"자기 대가를 적는가"가 1차 자료를 가르는 새 축이 됐다.** `microservices` 는
+  "shouldn't"·Microservice Premium, `cqrs` 는 "위험한 복잡성", `redis` 는 "we discourage it",
+  `bounded-context` 는 "not feasible or **cost-effective**" 로 **자기 방식의 값을 적는다.**
+  ⚠️⚠️ **그런데 헥사고날/클린 아키텍처의 원문 두 편에는 명시적 비용 문장이 없다** —
+  **174건이 요구하는 구조인데 제동 장치가 원문에 없다.**
+  📌 **다음부터 1차 자료를 읽을 때 "이 글이 자기 대가를 적는가"를 항목으로 확인한다.**
+  ⭐ 안 적으면, **제동 장치를 읽는 사람이 직접 만들어야 한다는 뜻**이다.
+
+- ⭐⭐⭐ **실패 사례 검색 규칙을 여섯 사이클 만에 처음 지켰다 — 방법이 통했다.**
+  ⭐ **1차 자료를 여는 그 호출에 검색 도구 로드를 함께 넣었다**(나중에 하기로 미루지 않았다).
+  ⚠️ 결과는 **2차 자료(블로그)의 일반론뿐**이었고 — **근거로 쓰지 않고 `open_questions` 에
+  "찾았는데 없었다"를 적었다.** 📌 ⭐⭐ **"찾았는데 없었다"는 "안 찾았다"와 완전히 다르다** —
+  전자는 자료의 성격에 관한 정보이고 후자는 이쪽의 결함이다.
+
+- ⭐⭐ **공고가 두 낱말을 "또는"으로 묶으면, 둘이 답하는 질문이 같은지 확인한다.**
+  `MVVM, MVI, Clean Architecture 중 하나 이상`(헤렌) — ⚠️ 앞의 둘은 **화면과 상태**,
+  뒤는 **의존성 방향**이다. ⭐ **결정적 증거는 같은 회사의 다른 줄에 있었다**:
+  `**MVVM + Clean Architecture**`. 📌 **"또는"과 "+"가 같은 공고에 함께 있으면 그 회사도
+  실은 알고 있는 것**이고, 그게 이 백과사전이 쓸 수 있는 가장 좋은 evidence 다.
+
+- ⭐⭐ **폴더로 따라 할 수 있는 것과 매 커밋마다 지켜야 하는 것을 갈라 적는다.**
+  `domain/`·`application/`·`infrastructure/` 를 만드는 데는 몇 분이면 되지만,
+  **`domain/` 안에서 바깥 이름을 안 부르는 일은 매 커밋마다 지켜야 한다.**
+  ⭐ 그래서 **확인 방법이 하나로 정해졌다** — "the **name** ... must not be mentioned" 가
+  그대로 **안쪽 폴더에서 바깥 이름 검색**이라는 검사 항목이 된다.
+  📌 **구조를 다루는 문서는 "무엇으로 확인하나"를 반드시 준다** — 없으면 폴더 이야기로 끝난다.
 
 - ⭐⭐⭐ **"완전한 0"이 한 낱말에서 두 개 나오면, 0 자체가 아니라 그 위층을 봐야 한다.**
   `유비쿼터스 언어` 0 · `애그리거트` 0 은 그 자체로는 "아무도 안 부른다"일 뿐인데,

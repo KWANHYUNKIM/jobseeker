@@ -2287,6 +2287,26 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "hexagonal-architecture",
+      "title": "헥사고날 / 클린 아키텍처 — 이름은 174번, 규칙은 3번",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **이 구조가 지키려는 것은 딱 한 줄이다 — \"소스 코드 의존성은 안쪽으로만 향한다.\"** 그런데 공고는 **이름을 174번 부르고 그 규칙은 3번 부른다.** ⚠️ 더 나아가 `MVVM, MVI, Clean Architecture 중 하나`처럼 **UI 패턴과 나란히 골라지는 것**으로 취급된다.",
+      "aliases": [
+        "헥사고날",
+        "hexagonal architecture",
+        "클린 아키텍처",
+        "clean architecture",
+        "포트와 어댑터",
+        "ports and adapters",
+        "의존성 역전"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
