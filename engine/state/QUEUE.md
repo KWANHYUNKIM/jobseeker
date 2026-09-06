@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Polar Signals** | EU · SaaS | 프로파일만 씀(2026-09-07). 도메인 셋 다 비어 있다 — 호출 스택을 되짚는다(`call-stacks-and-unwinding-101` 2026-02-19 확보) · 언제 찍을지 커널에게 맡긴다(`profiling-internals-hardware-timers-and-ebpf` 2026-03-25 확보) · 남기는 양이 곧 값이다(요금표). 안 읽은 것 — V8·파이썬 제브라 스택·CUDA 연작(도메인 하나가 더 설 자리). Dash0 합류 발표(2026-08-17)는 출처 재확인 필요. |
+| **Polar Signals** | EU · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 호출 스택을 되짚는다(`eh-frame-unwinding`). 빈 도메인 둘 — 언제 찍을지 커널에게 맡긴다(`profiling-internals-hardware-timers-and-ebpf` 확보) · 남기는 양이 곧 값이다(요금표). 안 읽은 것 — V8·파이썬 제브라 스택·CUDA 연작(도메인 하나가 더 설 자리). Dash0 합류 발표(2026-08-17)는 출처 재확인 필요. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기

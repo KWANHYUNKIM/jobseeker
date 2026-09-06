@@ -1580,7 +1580,7 @@
       "country": "EU",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "프로파일러를 상시로 켜 두고 파는 회사 — 디버깅 때 잠깐 켜던 도구를 늘 돌아가는 관측으로 바꿨다",
       "updated_at": "2026-09-07",
       "domain": "polarsignals.com"
