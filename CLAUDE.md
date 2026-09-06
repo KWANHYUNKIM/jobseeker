@@ -43,6 +43,11 @@
   대기열은 `tech_relations.json`(수요 큰데 문서 없는 기술) + 이미 쓴 문서의 끊긴
   `related` 링크에서 나온다. 모든 문서는 실제 공고 문장(`evidence`)과 실습(`drills`)으로
   끝난다 — 읽고 끝나는 문서는 완성으로 치지 않는다.
+- `design-lab/` : 공고 한 건을 한 장의 이미지로 접어 소셜에 올리는 실험실(8780).
+  인스타에서 모은 상세페이지·채용포스터 캡처(`refs.json` — 읽은 것/훔칠 것/버릴 것)를
+  템플릿으로 옮겨 놨다. `poster/`(공고 색인 → 원고 → HTML → Playwright 렌더) →
+  `publish/`(인스타·페북·링크드인 어댑터 + 발행 큐 원장). 발행은 언제나 dry-run 이
+  기본이고 `--live` 를 줘야 실제로 나간다. 자세한 건 랩 README.
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
 `python -m pipeline.aggregate 개발자`, `python -m pipeline.close_check --limit 300`, `python -m monitoring.health report`,
@@ -51,7 +56,7 @@
 
 ## 로컬 서버 포트
 8765 stats(통계) / 8770 ops(크롤 운영) / 8771 search(검색 API) / 8910 admin(개인 이력, LAN 전용)
-/ 8780 design-lab(채용 상세페이지 디자인 레퍼런스, 파이프라인과 분리된 실험용).
+/ 8780 design-lab(레퍼런스·포스터 렌더·소셜 발행, 파이프라인과 분리된 실험용).
 검색 API 는 뷰어 nginx 가 `/api/` 로 프록시하므로 별도 터널이 필요 없다.
 
 ## 운영 주의
