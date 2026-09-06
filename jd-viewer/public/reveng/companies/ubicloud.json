@@ -127,7 +127,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "bdev-ubi-copy-on-access"
+      ]
     },
     {
       "name": "남의 코드를 남의 기계 위에 가둔다",
@@ -294,7 +296,522 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "bdev-ubi-copy-on-access",
+      "name": "다 복사하지 않고 처음 만나는 블록만 옮긴다",
+      "domain": "손님 디스크를 1초 안에 만든다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "깃허브 액션 러너를 팔려면 VM 이 15~30초 안에 떠야 한다. 그런데 디스크를 만드는 방식이 OS 이미지를 통째로 복사하는 것이면 그 한 단계에만 4~5분이 든다 — 제품이 성립하지 않는다.\n\n**손님이 실제로 만지는 것은 이미지의 일부뿐**이라는 관찰이 답이 된다. 85GB 짜리 러너 이미지에서 보통의 워크플로가 바꾸는 것은 4GB 남짓이다.",
+        "metrics": [
+          {
+            "label": "통째로 복사하던 시절",
+            "value": "디스크 생성에 4~5분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "지금",
+            "value": "1초 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "요구",
+            "value": "러너 VM 이 15~30초 안에 떠야 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "실제로 만지는 양",
+            "value": "85GB 이미지에서 보통 4GB 정도",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "갈아엎은 횟수",
+            "value": "네 판 — v0.1 · v1.0 · v2.0 · v3.0",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "바탕 이미지",
+            "what": "손님들이 공유하는 원본. 깃허브 러너라면 우분투 22.04 이미지다"
+          },
+          {
+            "name": "손님 이미지",
+            "what": "그 VM 만의 디스크. 처음 만진 블록부터 여기에 쌓인다"
+          },
+          {
+            "name": "블록",
+            "what": "복사의 단위. 처음 읽힐 때 옮겨진다 — 조각 크기는 글에 없다"
+          },
+          {
+            "name": "bdev",
+            "what": "SPDK 의 블록 장치 계층. 암호화·AIO·bdev_ubi 가 이 모양으로 쌓인다"
+          },
+          {
+            "name": "virtio 큐",
+            "what": "게스트가 저장소와 말하는 통로"
+          }
+        ],
+        "invariants": [
+          "손님이 만지지 않은 블록은 옮기지 않는다",
+          "디스크 생성은 1초 안에 끝난다",
+          "손님끼리 바탕 이미지를 공유하되 쓰기는 각자에게 쌓인다",
+          "암호화는 저장 계층 안에 남는다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "처음 읽는 블록과 그다음",
+          "question": "복사를 안 했는데 어떻게 읽히나",
+          "kind": "flow",
+          "code": "flowchart TD\n  R[\"<b>게스트가 블록을 읽는다</b>\"]:::list --> Q{\"이미 옮겨 왔나\"}\n  Q -->|\"처음이다\"| B[\"<b>바탕 이미지에서 가져온다</b><br/>• 우분투 22.04 러너 이미지\"]:::list --> C[\"<b>손님 이미지에 쌓는다</b>\"]:::list\n  Q -->|\"옮겨 왔다\"| O[\"<b>손님 이미지에서 읽고 쓴다</b>\"]:::list\n  C --> O\n  N[\"<b>85GB 중 보통 4GB</b><br/>• 나머지는 영영 안 만진다\"]:::list -.->|\"그래서 값이 싸다\"| Q"
+        },
+        {
+          "title": "네 판을 갈아엎으며 무엇을 주고받았나",
+          "question": "왜 지금 모양이 되었나",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> v01\n  v01: v0.1 하이퍼바이저 내장 virtio\\n확장 API 가 없다\n  v01 --> v10: 고쳐 볼 여지가 필요하다\n  v10: v1.0 SPDK + 암호화 + ext4\\n생성 4~5분\n  v10 --> v20: 러너가 15~30초 안에 떠야 한다\n  v20: v2.0 btrfs reflink\\n생성 1초 미만\\n암호화 상실 · 처리량 1/3\n  v20 --> v30: 잃은 것을 되찾아야 한다\n  v30: v3.0 bdev_ubi copy-on-access\\n빠름 + 암호화 + 성능 회복\n  v30 --> [*]"
+        },
+        {
+          "title": "이 방식이 무는 값",
+          "question": "안 복사한 대가는 어디서 치르나",
+          "kind": "failure",
+          "code": "flowchart TD\n  F[\"<b>처음 만지는 블록</b>\"]:::list --> L[\"<b>그 순간 바탕에서 가져온다</b><br/>• 첫 접근이 느리다<br/>• 지연 수치는 글에 없다\"]:::list\n  D[\"<b>바탕 이미지에 문제가 생기면</b>\"]:::list --> M[\"<b>그것을 쓰는 VM 이 다 걸린다</b><br/>• 여럿이 한 원본을 본다(재구성)\"]:::list\n  N[\"<b>복제하지 않는다</b><br/>• 제목에 적혀 있다\"]:::list --> W[\"<b>디스크가 죽으면 무엇이 남나</b><br/>• 글이 답하지 않는다\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "VM 을 만들 때 디스크를 통째로 복사하지 않는다",
+            "why": "복사하는 순간 4~5분이 든다 — 15~30초 요구와 맞지 않는다"
+          },
+          {
+            "step": "SPDK 스택에 bdev_ubi 를 얹는다",
+            "why": "블록 장치 계층을 사용자 공간에 두면 커널을 건드리지 않고 고쳐 볼 수 있다"
+          },
+          {
+            "step": "게스트가 처음 만지는 블록을 그때 바탕 이미지에서 가져온다",
+            "why": "실제로 만지는 양이 85GB 중 4GB 정도라 나머지를 옮길 이유가 없다"
+          },
+          {
+            "step": "그다음부터는 손님 자신의 이미지에서 읽고 쓴다",
+            "why": "한 번 옮긴 블록을 다시 바탕에서 찾지 않게 한다"
+          },
+          {
+            "step": "암호화 bdev 를 그 위에 쌓는다",
+            "why": "btrfs 로 갔던 판에서 잃었던 것을 저장 계층 안에서 되찾는다"
+          },
+          {
+            "step": "virtio 큐로 클라우드 하이퍼바이저에 붙인다",
+            "why": "게스트에는 평범한 블록 장치로 보여야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "디스크를 어떻게 만들 것인가",
+            "chosen": "복사하지 않고 접근할 때 옮긴다(copy-on-access). 자체 SPDK 모듈 bdev_ubi 로 만든다",
+            "alternatives": [
+              "spdk_dd 로 이미지를 통째로 복사(v1.0)",
+              "btrfs 의 cp --reflink=auto(v2.0)",
+              "하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 쓰기(v0.1)"
+            ],
+            "tradeoff": "처음 만지는 블록은 그 순간 바탕에서 가져오므로 첫 접근이 느리다 — 얼마나 느린지는 글에 없다. 대신 생성이 1초 미만이 되고 손님이 안 만지는 85GB 중 81GB 를 옮기지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "파일시스템의 기능을 빌릴 것인가",
+            "chosen": "빌리지 않는다. 파일시스템을 거치지 않고 블록 계층에서 직접 한다",
+            "alternatives": [
+              "btrfs 의 reflink 를 계속 쓰기",
+              "다른 CoW 파일시스템으로 갈아타기"
+            ],
+            "tradeoff": "직접 만든 모듈을 스스로 유지해야 한다. 대신 btrfs 로 갔을 때 치른 값을 안 문다 — 그때 암호화를 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "이 계층을 커널에 둘 것인가 사용자 공간에 둘 것인가",
+            "chosen": "SPDK 로 호스트 OS 의 사용자 공간에 둔다",
+            "alternatives": [
+              "커널 쪽 블록 계층을 쓰거나 고치기",
+              "클라우드 하이퍼바이저를 포크해 저장소를 넣기"
+            ],
+            "tradeoff": "커널 안에 있을 때만큼 짧은 경로는 아니다(재구성). 대신 빠르게 고쳐 볼 수 있어 하이퍼바이저를 포크하지 않고 네 판을 갈아엎었다 — 그 반복 속도가 이 설계의 실제 이득이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "암호화를 어디에 둘 것인가",
+            "chosen": "SPDK 스택 안의 암호화 bdev 로 둔다",
+            "alternatives": [
+              "파일시스템에 맡기기",
+              "게스트가 알아서 하게 두기"
+            ],
+            "tradeoff": "저장 계층이 그만큼 두꺼워진다(재구성). 대신 파일시스템을 바꿔도 암호화가 딸려 사라지지 않는다 — v2.0 에서 딱 그 일이 났다. 키를 어떻게 다루는지는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "게스트에 무엇으로 보일 것인가",
+            "chosen": "virtio 큐로 클라우드 하이퍼바이저에 붙여 평범한 블록 장치로 보인다",
+            "alternatives": [
+              "파일시스템 패스스루로 호스트 디렉터리를 노출"
+            ],
+            "tradeoff": "블록 계층을 직접 다뤄야 한다. 대신 파일시스템을 게스트에 노출하지 않는다 — 파일시스템은 코드가 크고 복잡하다는 것이 이 회사가 든 이유다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "하이퍼바이저로 파이어크래커나 QEMU 가 아니라 클라우드 하이퍼바이저를 고른 이유를 적는다 — 더 일반적인 VMM 이라 리눅스와 윈도우를 다 올릴 수 있고, GPU PCI 패스스루를 포함해 장치 지원이 넓으며, vhost-user 로 virtio 백엔드를 별도 프로세스로 뺄 수 있고, 게스트를 huge page 로 받칠 수 있다. 둘 다 러스트로 쓰였고 클라우드 하이퍼바이저의 코드 일부는 파이어크래커에서 왔다. 격리는 여러 겹이다 — tap 장치를 네트워크 네임스페이스 안에 넣고, nftables 로 패킷을 거르며, 클라우드 하이퍼바이저에 들어 있는 seccomp-bpf 로 시스템콜을 거르되 아직 기본으로 켜지 않았고, 하이퍼바이저를 일반 리눅스 사용자로 돌리며 systemd 권한 제한과 파일 권한을 건다. 저장소는 파일시스템 패스스루 대신 SPDK 블록 저장소를 쓴다 — 파일시스템은 코드가 크고 복잡하다는 이유다. 부팅 시간 수치나 가격, 베어메탈 원가 비교는 이 글에 없고 Hetzner 위에서 돌린다는 언급만 있다."
+              },
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "복제할 것인가",
+            "chosen": "하지 않는다. 글 제목이 복제하지 않는 구성임을 밝힌다",
+            "alternatives": [
+              "블록을 여러 호스트에 복제",
+              "원격 블록 저장소를 쓰기"
+            ],
+            "tradeoff": "디스크가 죽었을 때 무엇이 남는지를 글이 답하지 않는다. 복제를 붙이면 지연과 원가가 늘어나는데, 베어메탈 위에서 값으로 싸우는 회사라 그 값을 안 내기로 한 것으로 보인다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "직접 만든 모듈을 공개할 것인가",
+            "chosen": "공개한다. bdev_ubi 를 오픈소스로 냈다",
+            "alternatives": [
+              "내부에만 두기"
+            ],
+            "tradeoff": "경쟁자도 쓸 수 있게 된다. 대신 열려 있고 옮길 수 있는 클라우드를 짓는다는 이 회사의 판매 문구가 코드로 뒷받침된다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "SPDK",
+            "role": "사용자 공간 블록 장치 계층. bdev 를 쌓아 저장소를 조립한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "bdev_ubi",
+            "role": "자체 모듈. 처음 만지는 블록만 바탕 이미지에서 옮긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "암호화 bdev",
+            "role": "저장 계층 안에서 암호화를 맡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "virtio",
+            "role": "게스트와 저장소를 잇는 통로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              },
+              {
+                "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+                "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+                "publisher": "Ubicloud",
+                "summary": "하이퍼바이저로 파이어크래커나 QEMU 가 아니라 클라우드 하이퍼바이저를 고른 이유를 적는다 — 더 일반적인 VMM 이라 리눅스와 윈도우를 다 올릴 수 있고, GPU PCI 패스스루를 포함해 장치 지원이 넓으며, vhost-user 로 virtio 백엔드를 별도 프로세스로 뺄 수 있고, 게스트를 huge page 로 받칠 수 있다. 둘 다 러스트로 쓰였고 클라우드 하이퍼바이저의 코드 일부는 파이어크래커에서 왔다. 격리는 여러 겹이다 — tap 장치를 네트워크 네임스페이스 안에 넣고, nftables 로 패킷을 거르며, 클라우드 하이퍼바이저에 들어 있는 seccomp-bpf 로 시스템콜을 거르되 아직 기본으로 켜지 않았고, 하이퍼바이저를 일반 리눅스 사용자로 돌리며 systemd 권한 제한과 파일 권한을 건다. 저장소는 파일시스템 패스스루 대신 SPDK 블록 저장소를 쓴다 — 파일시스템은 코드가 크고 복잡하다는 이유다. 부팅 시간 수치나 가격, 베어메탈 원가 비교는 이 글에 없고 Hetzner 위에서 돌린다는 언급만 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "남의 코드를 남의 기계 위에 가둔다",
+          "via": "게스트에 무엇을 보여 줄 것인가",
+          "contract": "파일시스템을 노출하지 않고 블록 장치만 주기로 한 결정이 이 도메인의 일을 늘린다 — 격리를 위해 고른 것이 저장소의 숙제가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "베어메탈 값과 클라우드 값의 차이를 판다",
+          "via": "안 옮긴 81GB 가 곧 원가",
+          "contract": "손님마다 85GB 를 복사했다면 저장 용량과 시간이 그대로 값에 실린다. 만지는 4GB 만 옮기는 구조라서 분당 0.00104달러 같은 값이 성립한다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "한 코어를 여럿에게 판다",
+          "via": "같은 전략의 다른 자원",
+          "contract": "디스크에서 안 만지는 것을 안 주듯 CPU 에서도 안 쓰는 것을 나눠 판다. 자원마다 과다할당의 모양이 다를 뿐 원리는 하나다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "SPDK: Storage Performance Development Kit",
+            "authors": "Ziye Yang 외 (Intel)",
+            "year": "2017",
+            "venue": "오픈소스 프로젝트 / HotStorage 관련 발표",
+            "url": "https://spdk.io/",
+            "takeaway": "저장 스택을 사용자 공간으로 끌어올려 폴링과 무잠금 설계로 다루는 얼개다. 이 회사가 커널을 안 건드리고 네 판을 갈아엎을 수 있었던 것이 이 선택의 실제 이득이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "title": "Slacker: Fast Distribution with Lazy Docker Containers",
+            "authors": "Tyler Harter 외",
+            "year": "2016",
+            "venue": "FAST 2016",
+            "url": "https://www.usenix.org/conference/fast16/technical-sessions/presentation/harter",
+            "takeaway": "이미지의 대부분이 시작에 쓰이지 않는다는 측정이다. 85GB 중 4GB 만 만진다는 이 회사의 관찰과 같은 말이고, 답도 같다 — 다 옮기지 말고 만날 때 가져온다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "The Linux device mapper — dm-snapshot / dm-clone",
+            "authors": "Linux kernel",
+            "year": "2024",
+            "venue": "커널 문서",
+            "url": "https://docs.kernel.org/admin-guide/device-mapper/dm-clone.html",
+            "takeaway": "바탕 장치에서 필요한 영역만 옮기며 쓰는 커널 쪽 답이다. 같은 문제를 커널에서 푸는 길이 있는데도 사용자 공간을 고른 것이 이 회사의 갈림길이었다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "빠른 생성과 지켜야 할 보장이 자주 맞바꿔진다",
+            "why_hard": "파일시스템의 CoW 를 빌리면 생성은 1초 미만이 되지만 암호화가 딸려 사라지고 처리량이 3분의 1이 됐다. 빌린 기능의 조건까지 함께 받는다.",
+            "current_best": "빌리지 않고 블록 계층에서 직접 만드는 것 — 그 대신 그 코드를 스스로 유지한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "problem": "처음 만지는 블록의 값은 사라지지 않고 미뤄진다",
+            "why_hard": "생성이 1초 미만이라는 말은 복사를 안 했다는 뜻이지 일이 없어졌다는 뜻이 아니다. 그 값은 첫 접근마다 조금씩 나뉘어 치러진다.",
+            "current_best": "실제로 만지는 양이 작다는 데 거는 것 — 85GB 중 4GB. 다만 첫 접근 지연 수치는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          },
+          {
+            "problem": "복제하지 않기로 하면 내구성을 누가 지키나",
+            "why_hard": "복제를 붙이면 지연과 원가가 늘고, 안 붙이면 디스크 하나의 고장이 그대로 손님에게 간다. 값으로 싸우는 회사에는 이 선택이 사업 조건이다.",
+            "current_best": "안 하기로 하고 제목에 밝히는 것. 그럼 무엇이 남는지는 이 글이 답하지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building Block Storage for the Cloud with SPDK",
+                "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+                "publisher": "Ubicloud",
+                "date": "2024-01-05",
+                "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "러너 요구를 받았을 때",
+          "thought": "15~30초 안에 떠야 하는데 디스크 만드는 데만 4~5분이다. 이건 조금 줄일 문제가 아니라 복사를 하느냐 마느냐의 문제다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "btrfs 로 갈아탄 뒤",
+          "thought": "1초 미만이 됐다. 그런데 암호화를 잃었고 처리량이 3분의 1이다 — 파일시스템의 기능을 빌리면 그 조건까지 같이 받는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이미지 사용량을 볼 때",
+          "thought": "85GB 짜리 러너 이미지에서 워크플로가 실제로 바꾸는 건 4GB 남짓이다. 나머지 81GB 를 손님마다 복사해 왔다는 뜻이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "네 판째를 쓰며",
+          "thought": "사용자 공간에 둔 덕에 여기까지 왔다. 커널이나 하이퍼바이저를 포크했으면 네 번을 갈아엎지 못했을 것이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Building Block Storage for the Cloud with SPDK",
+          "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
+          "publisher": "Ubicloud",
+          "date": "2024-01-05",
+          "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
+        },
+        {
+          "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
+          "url": "https://www.ubicloud.com/blog/cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals",
+          "publisher": "Ubicloud",
+          "summary": "하이퍼바이저로 파이어크래커나 QEMU 가 아니라 클라우드 하이퍼바이저를 고른 이유를 적는다 — 더 일반적인 VMM 이라 리눅스와 윈도우를 다 올릴 수 있고, GPU PCI 패스스루를 포함해 장치 지원이 넓으며, vhost-user 로 virtio 백엔드를 별도 프로세스로 뺄 수 있고, 게스트를 huge page 로 받칠 수 있다. 둘 다 러스트로 쓰였고 클라우드 하이퍼바이저의 코드 일부는 파이어크래커에서 왔다. 격리는 여러 겹이다 — tap 장치를 네트워크 네임스페이스 안에 넣고, nftables 로 패킷을 거르며, 클라우드 하이퍼바이저에 들어 있는 seccomp-bpf 로 시스템콜을 거르되 아직 기본으로 켜지 않았고, 하이퍼바이저를 일반 리눅스 사용자로 돌리며 systemd 권한 제한과 파일 권한을 건다. 저장소는 파일시스템 패스스루 대신 SPDK 블록 저장소를 쓴다 — 파일시스템은 코드가 크고 복잡하다는 이유다. 부팅 시간 수치나 가격, 베어메탈 원가 비교는 이 글에 없고 Hetzner 위에서 돌린다는 언급만 있다."
+        },
+        {
+          "title": "Ubicloud — Pricing",
+          "url": "https://www.ubicloud.com/docs/about/pricing",
+          "publisher": "Ubicloud",
+          "summary": "독일 리전 기준으로 표준 VM 은 2코어 8GB 40GB 가 분당 0.00104달러(월 41.89달러)부터 30코어 120GB 600GB 가 분당 0.01559달러(월 628.42달러)까지다. 버스터블은 1코어 2GB 10GB 가 분당 0.00026달러(월 10.47달러), 2코어 4GB 20GB 가 분당 0.00052달러(월 20.95달러)다. 깃허브 액션 러너는 x64 표준이 2코어 분당 0.00125달러에서 30코어 0.01875달러, 프리미엄이 2코어 0.002달러에서 30코어 0.030달러이고 arm64 는 표준과 같은 값이다. 관리형 포스트그레스는 hobby-1 이 월 19.54달러, standard-2 가 78달러, standard-4 가 156달러다. 그 밖에 공인 IPv4 주소가 월 3달러, 머신 이미지 저장이 GiB·월 약 0.15달러, 송신 초과가 TB 당 3달러이며(2코어당 월 0.625TB 포함) 수신과 리전 내 통신은 받지 않는다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "시대 구분(eras)을 세우지 않았다. 블록 저장소 글이 v0.1 부터 v3.0 까지 네 판을 적지만 각 판의 연도가 아니라 글 발행일(2024-01-05)만 있다 — 판별 연도가 붙은 자료를 찾으면 그때 세운다.",
     "아직 안 읽은 글 — `postgresql-and-the-oom-killer-why-we-use-strict-memory-overcommit`(관리형 포스트그레스) · `virtualizing-nvidia-hgx-b200-gpus-with-open-source`(2026, GPU) · `ubicloud-premium-runners-...` · `ubicloud-price-adjustment-2026`.",
@@ -308,7 +825,7 @@
       "url": "https://www.ubicloud.com/blog/building-block-storage-for-cloud-with-spdk-non-replicated",
       "publisher": "Ubicloud",
       "date": "2024-01-05",
-      "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다."
+      "summary": "블록 저장소를 네 판 갈아엎은 기록이다. v0.1 은 클라우드 하이퍼바이저 내장 virtio 장치가 VM 파일을 직접 읽고 썼는데 확장 API 가 없어 유연하지 않았다. v1.0 에서 SPDK 를 넣고 ext4 위 AIO bdev 에 암호화 bdev 를 얹었는데, 디스크를 만들 때 spdk_dd 로 OS 이미지를 복사하느라 4~5분이 걸렸다. v2.0 은 호스트 파일시스템을 btrfs 로 바꿔 cp --reflink=auto 로 1초 미만까지 줄였다 — 깃허브 액션 러너가 15~30초 안에 떠야 해서 필요한 변화였다. 대가는 명시돼 있다: 암호화 지원을 잃었고 디스크 처리량이 ext4 의 약 3분의 1로 떨어졌다. v3.0 은 bdev_ubi 라는 자체 SPDK 모듈로 파일시스템을 거치지 않고 copy-on-access 를 해서 암호화를 되찾고 v2.0 보다 성능을 올렸다. SPDK 를 고른 이유는 호스트 OS 의 사용자 공간에 있어 커널이 아니라 빠르게 고쳐 볼 수 있기 때문이고, 실제로 하이퍼바이저를 포크하지 않고 네 번 갈아엎었다. bdev_ubi 는 오픈소스로 공개했고, 열려 있고 옮길 수 있는 클라우드를 짓는다는 말로 맺는다. copy-on-access 의 동작도 한 줄 적는다 — 게스트가 어떤 블록을 처음 만지면 그때 바탕 이미지(여기서는 깃허브의 우분투 22.04 이미지)에서 그 블록을 가져오고, 그다음부터는 손님 자신의 이미지에서 읽고 쓴다. 85GB 짜리 깃허브 러너 이미지에서 보통의 워크플로가 실제로 바꾸는 것은 4GB 정도라고 적는다. 다만 조각 크기, 어떤 블록을 이미 옮겼는지 적어 두는 방식, 배경 복사 여부, 게스트에 붙는 정확한 virtio 방식, 지연·처리량 수치, 암호화 키를 어떻게 다루는지는 글에 없다. NVMe 디스크를 직접 할당하는 것은 앞으로 할 일로만 적혀 있다."
     },
     {
       "title": "Cloud Virtualization: Red Hat, AWS Firecracker, and Ubicloud Internals",
