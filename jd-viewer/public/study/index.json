@@ -1681,7 +1681,7 @@
         "Storybook",
         "공통 컴포넌트"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1757,7 +1757,7 @@
         "sitemap",
         "구조화 데이터"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -2095,7 +2095,7 @@
         "use client",
         "하이드레이션"
       ],
-      "sections": 5,
+      "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -2132,7 +2132,7 @@
         "Redux",
         "Zustand"
       ],
-      "sections": 5,
+      "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
