@@ -1,0 +1,681 @@
+{
+  "slug": "kotlin",
+  "title": "Kotlin",
+  "title_en": "Kotlin",
+  "aliases": [
+    "Kotlin",
+    "코틀린",
+    "널 안전",
+    "null safety",
+    "플랫폼 타입"
+  ],
+  "category": "language",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "**컴파일러가 널을 막아 주는 JVM 언어** — 그런데 ⭐ **자바와 만나는 자리에서 그 보장이 자바 수준으로 내려가고**, 명세가 그것을 먼저 적는다. 그리고 이 언어 공고의 **62.5%가 자바를 함께 요구한다.**",
+  "summary": "세면 **1072건(모집중 448)** 이다. 그런데 ⚠️⚠️ 이 언어의 대표 특징인 **널 안전은 7건(모집중 0)**, 코루틴은 108건이다.\n\n⭐⭐ **그리고 공고는 자바와 코틀린을 가르지 않는다** — 빗썸 `**Java / Kotlin** 기반 Spring Boot 서비스 개발 경험`, 인터엑스 `**Kotlin (또는 Java)** 및 SpringBoot 기반의 백엔드 개발`, 디써클 `**Java / Kotlin** / JavaScript / TypeScript / Python / Go 등 **하나 이상**의 서버 개발 언어`. 기술 태그로 봐도 **함께 나오는 1위가 Java 62.5%** 다.\n\n⭐⭐⭐ **그 사실이 이 문서의 축이다.** Kotlin 문서는 널 안전을 이렇게 설명한다 — **\"Null safety is a Kotlin feature designed to significantly reduce the risk of null references, also known as The Billion-Dollar Mistake\"**, 그리고 **\"catching potential null-related issues at compile time rather than runtime\"**.\n\n그런데 같은 문서가 **NPE 가 나는 경우를 스스로 네 가지로 나열**하고, 그중 하나가 **자바 상호운용**이다. 그리고 상호운용 문서가 더 직설적이다 — **\"Null-checks are relaxed for such types, so that safety guarantees for them are the same as in Java.\"** **자바에서 온 값에는 보장이 자바와 같아진다.**",
+  "market": {
+    "tech": "Kotlin",
+    "layer": "언어",
+    "postings": 464,
+    "pct_jobs": 6.4,
+    "with": [
+      {
+        "name": "Java",
+        "pct": 62.5,
+        "why": "⭐⭐ **셋 중 둘이 자바를 함께 요구한다** — 이 문서의 축이 데이터로 보이는 자리"
+      },
+      {
+        "name": "AWS",
+        "pct": 47.8,
+        "why": "배포 환경"
+      },
+      {
+        "name": "Spring",
+        "pct": 41.4,
+        "why": "서버 쪽 — 프레임워크는 자바 시절 그대로다"
+      },
+      {
+        "name": "Android",
+        "pct": 33.8,
+        "why": "셋 중 하나는 모바일 — 나머지는 서버"
+      },
+      {
+        "name": "Python",
+        "pct": 33.2,
+        "why": "다른 언어와 함께 나열되는 공고가 많다"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 공고는 자바와 코틀린을 가르지 않는다",
+      "confidence": "inferred",
+      "body": "`Kotlin|코틀린` 으로 세면 **1072건(모집중 448)** 이다. 이웃을 함께 세면 이렇다.\n\n| | 건수 |\n|---|---|\n| Java | 4612 |\n| Spring | 2787 |\n| Android | 1345 |\n| **Kotlin** | **1072** |\n| `코루틴` | 108 |\n| ⚠️⚠️ `널 안전\\|null safe\\|NPE` | **7 (모집중 0)** |\n\n⭐ **이 언어의 존재 이유가 7건**이다. 이 백과사전이 반복해 만난 형태이고(`rest` 3372 vs `HATEOAS` 0, `graphql` 370 vs `DataLoader` 2, `service-mesh` 163 vs `사이드카` 2), **일곱째 사례**다.\n\n**그리고 문장을 읽으면 더 또렷하다 — 자바와 묶여 있다.**\n\n> `**Java / Kotlin** 기반 Spring Boot 서비스 개발 경험을 보유하신 분` — 빗썸\n> `**Kotlin (또는 Java)** 및 SpringBoot 기반의 백엔드 개발 경험이 있으신 분` — 인터엑스\n> `**JVM 생태계(Java, Kotlin, Spring, JPA)** 에 대한 경험 및 이해가 있으신 분` — 큐엠아이티\n> `**Java / Kotlin** / JavaScript / TypeScript / Python / Go 등 **하나 이상**의 서버 개발 언어에 능숙하신 분` — 디써클\n\n⭐⭐ 마지막 줄이 특히 그렇다 — **\"하나 이상\"** 이다. 여섯 언어를 **대체 가능한 것**으로 늘어놓는다.\n\n그리고 **기술 태그로 봐도 같다.** `tech_relations.json`(2026-09-04)에서 Kotlin 과 함께 나오는 1위가 **Java 62.5%** 다 — **코틀린 공고 셋 중 둘이 자바를 함께 요구한다.** 그다음이 AWS 47.8% · Spring 41.4% · **Android 33.8%**.\n\n💡 **이 숫자들이 이 문서의 지도를 그려 준다.**\n\n- **셋 중 하나는 안드로이드**(33.8%) — 헤렌 `**Kotlin, XML, Jetpack Compose**`, 뷰노 `**Kotlin 기반 Android 애플리케이션** 개발 및 운영`.\n- **나머지는 서버**이고, 거기서는 **Spring 과 함께** 온다(41.4%) — 프레임워크는 자바 시절 그대로다.\n- ⭐⭐ **그리고 어느 쪽이든 자바가 옆에 있다**(62.5%). **그것이 다음 절들의 전제다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 생겼나 — 십억 달러짜리 실수를 컴파일 시점으로",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Null safety (Kotlin Docs)",
+          "url": "https://kotlinlang.org/docs/null-safety.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐ 널 안전의 목적과, **그럼에도 NPE 가 나는 경우를 명세가 스스로 네 가지로 나열한다**"
+        }
+      ],
+      "body": "Kotlin 문서가 이 언어의 대표 기능을 이렇게 소개한다.\n\n> ⭐⭐ \"**Null safety is a Kotlin feature designed to significantly reduce the risk of null references, also known as The Billion-Dollar Mistake.**\"\n\n**\"십억 달러짜리 실수\"** — 널 참조를 만든 사람이 나중에 자기 발명을 그렇게 부른 데서 온 말이다. 그리고 문제를 구체적으로 적는다.\n\n> \"One of the most common pitfalls in many programming languages, **including Java**, is that accessing a member of a null reference results in a null reference exception. In Java, this would be the equivalent of a **`NullPointerException`**, or an NPE for short.\"\n\n**해법은 타입 시스템에 넣는 것**이다.\n\n> ⭐⭐⭐ \"Kotlin **explicitly supports nullability as part of its type system**, meaning you can explicitly declare which variables or properties are allowed to be `null`. Also, when you declare non-null variables, **the compiler enforces that these variables cannot hold a `null` value, preventing an NPE**.\"\n\n```kotlin\nvar a: String = \"abc\"\na = null   // 컴파일 에러 — 컴파일러가 막는다\n\nvar b: String? = \"abc\"\nb = null   // 허용 — 타입에 ? 가 붙었으니까\n```\n\n⭐ **이 차이가 언제 알게 되느냐를 바꾼다.**\n\n> \"Kotlin's null safety ensures safer code by **catching potential null-related issues at compile time rather than runtime**.\"\n\n**런타임이 아니라 컴파일 시점.** 자바에서는 배포 뒤에 로그로 알게 되던 것을, 여기서는 **빌드가 실패하면서** 알게 된다.\n\n그리고 널 가능 값을 다루는 문법이 붙는다 — **안전 호출** `?.`(\"if the object is `null`, the `?.` operator **simply returns `null`**\")과 **엘비스** `?:`(\"If the expression to the left of `?:` is not `null`, ... returns it. Otherwise, ... the expression to the right\").\n\n📌 **그래서 이 언어의 값은 문법의 편의가 아니라 \"컴파일러가 막아 준다\"는 보장에 있다.** ⚠️ 그런데 그 보장에 구멍이 있고, **명세가 그것을 스스로 나열한다** — 다음 절이다."
+    },
+    {
+      "id": "npe",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 그럼에도 NPE 가 나는 네 가지 — 명세가 직접 나열한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Null safety (Kotlin Docs)",
+          "url": "https://kotlinlang.org/docs/null-safety.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐ 널 안전의 목적과, **그럼에도 NPE 가 나는 경우를 명세가 스스로 네 가지로 나열한다**"
+        }
+      ],
+      "body": "같은 문서가 이렇게 적는다.\n\n> ⭐⭐⭐ **\"The only possible causes of an NPE in Kotlin are:\"**\n\n**\"유일하게 가능한 원인들\"** 이라고 못 박고 넷을 든다.\n\n| | 원문 |\n|---|---|\n| ① | \"An explicit call to **`throw NullPointerException()`**\" |\n| ⭐ ② | \"Usage of the **not-null assertion operator `!!`**\" |\n| ③ | \"**Data inconsistency during initialization**\" — 생성자에서 초기화 안 된 `this` 가 새어 나가거나(\"leaking `this`\"), 상위 생성자가 `open` 멤버를 부르는데 그 구현이 초기화 안 된 상태를 쓰는 경우 |\n| ⭐⭐⭐ ④ | **\"Java interoperation\"** — \"Attempts to access a member of a `null` reference of a **platform type**\" · \"Nullability issues with **generic types**. For example, a piece of Java code adding `null` into a Kotlin `MutableList<String>`, which would require `MutableList<String?>` to handle it properly\" · \"Other issues caused by **external Java code**\" |\n\n⭐⭐ **넷을 성격으로 묶으면 둘이 된다.**\n\n- **①②③ — 우리가 자초한 것.** 명시적으로 던지거나, `!!` 로 **\"내가 책임진다\"고 선언하거나**, 초기화 순서를 꼬았거나.\n- ⭐⭐⭐ **④ — 자바와 만난 것.** 우리가 아무 잘못을 안 해도 난다.\n\n💡 그리고 ②의 `!!` 가 실무에서 가장 자주 보이는데, **그것이 나오는 이유가 대개 ④** 다 — 자바 API 가 널을 줄지 안 줄지 모르니 `!!` 로 눌러 버린다. **두 원인이 사실은 한 원인**인 셈이다.\n\n⚠️ **그리고 ④의 세 번째 항목이 무섭다** — **\"Other issues caused by external Java code.\"** 목록의 마지막이 **\"그 밖에 외부 자바 코드가 일으키는 것들\"** 로 열려 있다. 명세가 **다 셀 수 없다고 인정**한 것이다.\n\n📌 그러니 **첫 절의 숫자를 다시 보게 된다** — 코틀린 공고의 **62.5%가 자바를 함께 요구한다.** **널 안전의 보장이 가장 약해지는 환경이 이 언어의 가장 흔한 환경**이다."
+    },
+    {
+      "id": "platform",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 플랫폼 타입 — 보장이 자바 수준으로 내려간다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Calling Java from Kotlin — Null-safety and platform types",
+          "url": "https://kotlinlang.org/docs/java-interop.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **자바에서 온 것에는 널 검사가 완화되고, 보장이 자바와 같아진다**"
+        }
+      ],
+      "body": "앞 절 ④의 핵심이 **플랫폼 타입**이고, 상호운용 문서가 그것을 정면으로 설명한다.\n\n> ⭐⭐⭐ \"**Any reference in Java may be `null`**, which makes **Kotlin's requirements of strict null-safety impractical** for objects coming from Java. Types of Java declarations are treated in Kotlin as **non-denotable and called platform types**.\"\n\n**자바의 모든 참조는 널일 수 있으므로, 자바에서 온 객체에 엄격한 널 안전을 요구하는 것은 비현실적이다.** — 명세가 자기 대표 기능을 **\"비현실적\"** 이라고 적는 자리다.\n\n그래서 어떻게 하는가.\n\n> ⭐⭐⭐ \"**Null-checks are relaxed for such types, so that safety guarantees for them are the same as in Java.**\"\n\n**널 검사가 완화되고, 안전 보장이 자바와 같아진다.** 즉 **보장이 없어진다.**\n\n> ⭐⭐ \"When you call methods on variables of platform types, **Kotlin does not issue nullability errors at compile time**, but **the call may fail at runtime**, because of a null-pointer exception...\"\n\n**컴파일 시점에 아무 말도 안 하고, 런타임에 터진다.** `why` 절이 말한 이 언어의 값(\"compile time rather than runtime\")이 **여기서 정확히 뒤집힌다.**\n\n그리고 이 타입은 **이름조차 없다.**\n\n> ⭐ \"**platform types can't be mentioned explicitly in the program**, so there's no syntax for them in the language.\"\n\n소스에 적을 수 없고, IDE 나 오류 메시지에서 **`T!`** 로만 보인다. ⚠️ **그래서 코드를 읽어서는 어디가 플랫폼 타입인지 알 수 없다.**\n\n💡 **그러면 무엇을 할 수 있나.** 문서가 설계 의도를 적는다.\n\n> \"If you choose a **non-nullable type**, the compiler will **emit an assertion upon assignment**. This prevents Kotlin's non-nullable variables from holding nulls... **the compiler does its best to prevent nulls from propagating far** through the program, although **sometimes this is impossible to eliminate entirely, because of generics**.\"\n\n**자바에서 받은 값을 널 불가 타입으로 선언하면, 대입하는 자리에서 검사가 들어간다.** 널이면 거기서 터진다 — ⭐ **더 멀리 퍼지기 전에.** 그것이 이 설계의 목표다: **막는 것이 아니라 빨리 터뜨리는 것.**\n\n⚠️ 그리고 마지막 단서가 정직하다 — **\"제네릭 때문에 완전히 없애는 것은 때때로 불가능하다.\"**\n\n⭐⭐ **그래서 실무의 태도가 정해진다.**\n\n1. **자바 경계에서 널 여부를 결정한다** — 받자마자 널 가능/불가를 정해 **경계 안쪽은 코틀린의 보장이 통하게** 한다.\n2. **`!!` 는 그 결정을 미루는 것**이다 — 미룰수록 터지는 자리가 원인에서 멀어진다.\n3. ⭐ **자바 쪽에 널 애너테이션이 있으면** 코틀린이 그것을 읽는다 — **자바 코드를 고칠 수 있으면 거기가 가장 싼 자리다.**"
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "어디서 쓰이나 — 안드로이드 셋 중 하나, 나머지는 서버",
+      "confidence": "inferred",
+      "body": "`market` 의 동반 기술이 이 언어의 두 자리를 보여 준다 — **Android 33.8%**, **Spring 41.4%**.\n\n**① 안드로이드**\n\n> `**Kotlin 기반 Android 앱 개발** 경험` · `**Kotlin, XML, Jetpack Compose**` — 헤렌\n> `**Kotlin 기반 Android 애플리케이션** 개발 및 운영` — 뷰노\n> `Kotlin, **Jetpack Compose**` — 리브리티\n\n⭐ **`Jetpack Compose` 가 79건**으로 함께 나온다(`XML` 과 나란히 적히기도 한다 — 헤렌 공고). 화면을 만드는 방식이 바뀌는 중이라는 뜻이고, `design-system` 문서가 인용한 **헤렌의 `공통 UI 컴포넌트 및 디자인 시스템 설계·운영 (XML / Jetpack Compose)`** 이 그 전환기의 모습이다.\n\n그리고 **전환 사례**가 공고에 있다.\n\n> ⭐ `심전도 측정 의료기기 애플리케이션을 **Flutter에서 Android Native(Kotlin) 기반으로 전환**하고, 이후 운영·고도화를 리드하는 역할입니다.` — 뷰노\n\n**② 서버**\n\n나머지 셋 중 둘은 서버이고, 거기서는 **Spring 과 함께** 온다 — 빗썸 `Java / Kotlin 기반 **Spring Boot**`, 큐엠아이티 `MSA 아키텍처 기반 NestJS (TypeScript), **Spring Boot (Kotlin)**`. ⭐ **프레임워크는 자바 시절 그대로**이고 언어만 바뀐다.\n\n**③ 코루틴 — 108건**\n\n비동기를 다루는 방식이고 이 언어의 둘째 특징인데 **108건**이다(널 안전 7건보다는 많지만 1072건에 비하면 10%). ⚠️ **이 사이클에서 코루틴의 1차 자료는 열지 않았다** — 그래서 이 문서는 **그런 것이 있다는 것과 셈**까지만 말한다.\n\n📌 그리고 **코루틴이라는 낱말 자체는 이 백과사전의 다른 문서가 다룬다** — `asyncio` 가 그것이다. ⭐ **같은 개념이 언어마다 다른 이름과 다른 규칙으로 나타나는 자리**이고, 그래서 이 문서는 `코루틴` 을 alias 로 갖지 않는다(⭐ 전용 문서가 있으면 그쪽이 갖는다).\n\n💡 **정리하면 이 언어의 자리는 \"자바가 있던 곳\"이다.** 안드로이드는 구글이 공식 언어로 정하며 자바를 대체했고, 서버는 Spring 위에서 언어만 갈아 끼운다. ⚠️ **어느 쪽이든 기존 자바 코드가 옆에 있고**, 그것이 `platform` 절의 문제를 늘 데려온다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 확인하지 못한 것과 이웃들",
+      "confidence": "inferred",
+      "body": "**1. ⚠️ 코루틴을 셈까지만 다뤘다.** 108건이고 이 언어의 둘째 특징인데 **1차 자료를 열지 않았다.** 구조적 동시성·취소·디스패처 같은 것은 별도 주제다. ⭐ **그리고 그 낱말은 `asyncio` 문서가 이미 갖고 있다** — 이 문서는 `코루틴` 을 alias 로 갖지 않고 그쪽을 가리킨다.\n\n**2. ⚠️ 문법을 다루지 않았다.** 데이터 클래스·확장 함수·스코프 함수·`when` 같은 것은 **공식 문서가 훨씬 잘 설명하고**, 옮기면 요약본이 된다(`postgres-mysql` 에서 세운 규칙). 이 문서가 다룬 것은 **타입 시스템의 선택 하나**다.\n\n**3. ⚠️ 안드로이드 쪽을 얕게 다뤘다.** 33.8%나 되는데 `where` 절 한 문단이다 — **`android` 문서가 이 백과사전에 없고**(1345건), 그쪽을 제대로 하려면 별도 낱말이 필요하다.\n\n**4. 성능을 다루지 않았다.** \"코틀린이 자바보다 느린가\"는 **같은 바이트코드로 컴파일되므로** 대개 무의미한 질문이지만, 인라인·리플렉션·컬렉션 사용에 따라 차이가 나는 자리가 있다고 알려져 있다 — **이 사이클에서 그 자료를 열지 않았다.** ⭐ 숫자는 출처 없이 쓰지 않는다.\n\n**5. ⚠️ 멀티플랫폼(KMP)을 다루지 않았다.** `Compose Multiplatform` 을 포함해 79건으로 잡히지만 대부분 안드로이드 문맥이고, **그 방향의 자료는 열지 않았다.**\n\n**6. 이웃 넷과의 경계.** JVM 과 바이트코드는 `java`, 왜 금융권이 자바에 머무는지는 `java-in-finance`, 컨테이너와 프록시는 `spring`, 메모리 회수는 `gc`. ⭐ **이 문서는 그 넷 옆에서 \"같은 JVM 위에서 왜 갈리나\"만 다룬다** — 그리고 답은 **타입 시스템, 그리고 그 보장이 자바 경계에서 어떻게 되는가**였다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "nullsafety",
+      "kind": "glossary",
+      "caption": "⭐⭐ 널 안전 — Kotlin 문서가 적는 것",
+      "note": "Kotlin 공식 문서의 Null safety 페이지에서 옮겼다. ⭐ 요점은 문법이 아니라 **\"언제 알게 되는가\"** 가 바뀐다는 것.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "무엇을 줄이나",
+          "\"designed to **significantly reduce the risk of null references**, also known as **The Billion-Dollar Mistake**\""
+        ],
+        [
+          "무엇이 문제였나",
+          "\"accessing a member of a null reference results in a null reference exception. **In Java, this would be the equivalent of a `NullPointerException`**\""
+        ],
+        [
+          "⭐⭐ 어떻게",
+          "\"Kotlin **explicitly supports nullability as part of its type system** ... **the compiler enforces that these variables cannot hold a `null` value**\""
+        ],
+        [
+          "⭐⭐⭐ 그래서 바뀌는 것",
+          "\"catching potential null-related issues **at compile time rather than runtime**\""
+        ],
+        [
+          "안전 호출 `?.`",
+          "\"if the object is `null`, the `?.` operator **simply returns `null`**\""
+        ],
+        [
+          "엘비스 `?:`",
+          "\"If the expression to the left of `?:` is not `null`, ... returns it. Otherwise, ... the expression to the right\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Null safety (Kotlin Docs)",
+          "url": "https://kotlinlang.org/docs/null-safety.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐ 널 안전의 목적과, **그럼에도 NPE 가 나는 경우를 명세가 스스로 네 가지로 나열한다**"
+        }
+      ]
+    },
+    {
+      "id": "npe",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ \"The only possible causes of an NPE in Kotlin are\"",
+      "note": "같은 문서가 **NPE 의 원인을 스스로 나열한다.** ⭐ 넷을 성격으로 묶으면 **\"우리가 자초한 것 셋\"과 \"자바와 만난 것 하나\"** 다 — 그리고 마지막 항목이 **열려 있다.**",
+      "columns": [
+        "",
+        "원문",
+        "성격"
+      ],
+      "rows": [
+        [
+          "①",
+          "\"An explicit call to **`throw NullPointerException()`**\"",
+          "자초"
+        ],
+        [
+          "⭐ ②",
+          "\"Usage of the **not-null assertion operator `!!`**\"",
+          "자초 — **\"내가 책임진다\"는 선언**"
+        ],
+        [
+          "③",
+          "\"**Data inconsistency during initialization**\" (leaking `this`, 상위 생성자가 `open` 멤버 호출)",
+          "자초 — 초기화 순서"
+        ],
+        [
+          "⭐⭐⭐ ④",
+          "\"**Java interoperation**\" — **platform type** 의 널 참조 접근 · 제네릭 널 가능성(자바가 `MutableList<String>` 에 `null` 을 넣는 것)",
+          "**자바와 만난 것**"
+        ],
+        [
+          "⚠️ ④의 마지막",
+          "\"**Other issues caused by external Java code.**\"",
+          "**목록이 열려 있다** — 다 셀 수 없다는 인정"
+        ],
+        [
+          "⭐ 실무의 관찰",
+          "②가 가장 자주 보이는데 **그 이유가 대개 ④** 다 — 자바 API 가 널을 줄지 몰라 `!!` 로 누른다",
+          "**둘이 사실 한 원인**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Null safety (Kotlin Docs)",
+          "url": "https://kotlinlang.org/docs/null-safety.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐ 널 안전의 목적과, **그럼에도 NPE 가 나는 경우를 명세가 스스로 네 가지로 나열한다**"
+        }
+      ]
+    },
+    {
+      "id": "platform",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 플랫폼 타입 — 보장이 자바 수준으로",
+      "note": "Calling Java from Kotlin 의 \"Null-safety and platform types\" 절에서 옮겼다. ⭐ **명세가 자기 대표 기능을 \"impractical\" 이라고 적는 자리**라 따로 표로 뒀다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 왜 생겼나",
+          "\"**Any reference in Java may be `null`**, which makes **Kotlin's requirements of strict null-safety impractical** for objects coming from Java.\""
+        ],
+        [
+          "무엇인가",
+          "\"Types of Java declarations are treated in Kotlin as **non-denotable and called platform types**.\""
+        ],
+        [
+          "⭐⭐⭐ 보장은",
+          "\"**Null-checks are relaxed for such types, so that safety guarantees for them are the same as in Java.**\""
+        ],
+        [
+          "⭐⭐ 언제 터지나",
+          "\"Kotlin **does not issue nullability errors at compile time**, but the call **may fail at runtime**\""
+        ],
+        [
+          "⚠️ 이름이 없다",
+          "\"**platform types can't be mentioned explicitly in the program**, so there's no syntax for them\" — IDE·오류 메시지에서 `T!` 로만 보인다"
+        ],
+        [
+          "⭐ 그래서 설계는",
+          "\"If you choose a non-nullable type, the compiler will **emit an assertion upon assignment** ... **does its best to prevent nulls from propagating far**\" — **막는 게 아니라 빨리 터뜨린다**"
+        ],
+        [
+          "⚠️ 한계",
+          "\"sometimes this is **impossible to eliminate entirely, because of generics**\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Calling Java from Kotlin — Null-safety and platform types",
+          "url": "https://kotlinlang.org/docs/java-interop.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **자바에서 온 것에는 널 검사가 완화되고, 보장이 자바와 같아진다**"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "compare",
+      "caption": "⭐⭐ 셈 — 존재 이유가 7건이다",
+      "note": "본문 직접 셈(2026-09-06)과 `tech_relations.json`(2026-09-04) 태그 셈이다. ⭐ 두 줄이 이 문서의 축을 그대로 보여 준다.",
+      "columns": [
+        "",
+        "건수",
+        "무엇을 뜻하나"
+      ],
+      "rows": [
+        [
+          "`Kotlin|코틀린`",
+          "**1072** (모집중 448)",
+          "태그 기준으로는 464건(6.4%) — **본문 셈이 두 배 이상**"
+        ],
+        [
+          "⭐⭐ 함께: `Java`",
+          "**62.5%** (태그)",
+          "**셋 중 둘이 자바를 함께 요구한다**"
+        ],
+        [
+          "`Spring` / `Android`",
+          "41.4% / **33.8%**",
+          "**셋 중 하나가 모바일, 나머지는 서버**"
+        ],
+        [
+          "`코루틴`",
+          "108",
+          "둘째 특징 — ⚠️ 이 문서는 셈까지만 다뤘다"
+        ],
+        [
+          "⚠️⚠️ `널 안전\\|null safe\\|NPE`",
+          "**7 (모집중 0)**",
+          "**이 언어의 존재 이유가 7건** — `rest`(3372 vs HATEOAS 0) 이래 일곱째 형태"
+        ],
+        [
+          "⭐ 읽을 것",
+          "—",
+          "**널 안전의 보장이 가장 약해지는 환경(자바 옆)이 이 언어의 가장 흔한 환경**이다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "boundary",
+      "kind": "compare",
+      "caption": "이웃 넷과의 경계",
+      "note": "이 백과사전에 `java`·`java-in-finance`·`spring`·`gc` 가 이미 있다. ⭐ 이 문서는 그 넷 옆에서 **\"같은 JVM 위에서 왜 갈리나\"** 만 다룬다.",
+      "columns": [
+        "문서",
+        "그쪽이 다루는 것",
+        "여기와의 관계"
+      ],
+      "rows": [
+        [
+          "`java`",
+          "바이트코드·JVM·JIT·가상 스레드",
+          "**같은 바이트코드로 컴파일된다** — 실행 층은 공유"
+        ],
+        [
+          "`java-in-finance`",
+          "망분리·20년치 코드 자산·발주 구조",
+          "⭐ **\"자바가 안 바뀌는 이유\"** — 코틀린이 못 들어가는 자리의 설명"
+        ],
+        [
+          "`spring`",
+          "컨테이너·프록시·`@Transactional`",
+          "서버 공고의 41.4% — **프레임워크는 자바 시절 그대로**"
+        ],
+        [
+          "`gc`",
+          "닿을 수 없는 메모리 회수",
+          "언어와 무관하게 같다"
+        ],
+        [
+          "⭐ 이 문서",
+          "**타입 시스템의 선택, 그리고 자바 경계에서 그 보장이 어떻게 되는가**",
+          "—"
+        ],
+        [
+          "⚠️ 비어 있는 이웃",
+          "`android`(1345건)",
+          "안드로이드 쪽은 `where` 절 한 문단으로만 다뤘다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "자바 서버 프로젝트에 코틀린을 넣을지 정한다",
+      "pick": "**새 코드부터 코틀린으로 쓰되 자바 경계를 명시적으로 관리한다**",
+      "over": "기존 자바를 한꺼번에 옮기기",
+      "why": "⭐ 같은 바이트코드로 컴파일되므로 **섞어 쓸 수 있는 것이 이 언어의 전제**다. 다만 자바에서 받는 값은 **플랫폼 타입**이라 \"safety guarantees for them are **the same as in Java**\" — **경계를 정해 두지 않으면 코틀린 쪽 코드에서도 보장이 새어 나간다**",
+      "tradeoff": "⚠️ 빌드가 복잡해지고(두 언어), 팀에 두 언어의 관례가 생긴다. 그리고 **한꺼번에 옮기는 것은 더 나쁘다** — 검증할 것이 한 번에 쏟아지고, 옮기는 동안 두 벌을 유지해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Calling Java from Kotlin — Null-safety and platform types",
+          "url": "https://kotlinlang.org/docs/java-interop.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **자바에서 온 것에는 널 검사가 완화되고, 보장이 자바와 같아진다**"
+        }
+      ]
+    },
+    {
+      "situation": "자바 API 에서 받은 값을 어떻게 선언할지 정한다",
+      "pick": "⭐ **받자마자 널 가능/불가를 결정한다**",
+      "over": "플랫폼 타입 그대로 흘려보내기",
+      "why": "⭐⭐ 문서가 그 설계를 적는다 — 널 불가로 선언하면 \"the compiler will **emit an assertion upon assignment**\" 이고, 그래서 \"**does its best to prevent nulls from propagating far** through the program\". **널이면 받는 자리에서 터진다** — 원인에서 가까운 곳에서",
+      "tradeoff": "⚠️ **거기서 터지는 것을 감수해야** 한다. 그런데 대안은 **훨씬 나중에, 원인과 먼 곳에서** 터지는 것이고 — 그때는 어느 자바 호출이 널을 줬는지 찾는 데 시간이 다 간다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Calling Java from Kotlin — Null-safety and platform types",
+          "url": "https://kotlinlang.org/docs/java-interop.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **자바에서 온 것에는 널 검사가 완화되고, 보장이 자바와 같아진다**"
+        }
+      ]
+    },
+    {
+      "situation": "자바 API 가 널을 주는지 확실치 않다",
+      "pick": "⭐ **자바 쪽에 널 애너테이션을 붙인다**(고칠 수 있다면)",
+      "over": "코틀린 쪽에서 `!!` 로 누르기",
+      "why": "애너테이션이 있으면 **코틀린이 그것을 읽어** 플랫폼 타입 대신 제대로 된 타입으로 취급한다 — **한 번 붙이면 그 API 를 쓰는 모든 자리가 이득**을 본다. 반면 `!!` 는 **호출하는 자리마다 반복**되고 아무것도 알려 주지 않는다",
+      "tradeoff": "자바 코드를 고칠 권한이 필요하고(외부 라이브러리면 불가능하다), 애너테이션을 잘못 붙이면 **틀린 보장**이 된다. 그때는 **경계에서 한 번 감싸는 래퍼**가 차선이다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "`!!` 를 쓰고 싶은 자리를 만났다",
+      "pick": "**왜 널이 아닌지를 코드나 주석으로 남긴다** — 아니면 안전 호출·엘비스로 바꾼다",
+      "over": "그냥 `!!` 를 붙이고 넘어가기",
+      "why": "⭐ 명세가 `!!` 를 **NPE 의 원인 목록 ②번**으로 직접 올려 뒀다. 그리고 그것은 **\"내가 책임진다\"는 선언**인데, 대개 **책임질 근거 없이** 쓰인다 — 컴파일러를 조용히 시키려고",
+      "tradeoff": "안전 호출로 바꾸면 널일 때의 처리를 **매번 정해야** 해서 코드가 길어진다. ⭐ 그래도 **`?:` 로 기본값을 주는 것**이 대개 가능하고, 그러면 **터지지 않으면서 의도가 코드에 남는다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Null safety (Kotlin Docs)",
+          "url": "https://kotlinlang.org/docs/null-safety.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐ 널 안전의 목적과, **그럼에도 NPE 가 나는 경우를 명세가 스스로 네 가지로 나열한다**"
+        }
+      ]
+    },
+    {
+      "situation": "안드로이드 앱을 새로 시작한다",
+      "pick": "**코틀린**",
+      "over": "자바",
+      "why": "이 데이터에서 안드로이드 문맥의 공고는 사실상 전부 코틀린이다 — 헤렌 `**Kotlin 기반 Android 앱 개발**`, 뷰노 `**Kotlin 기반 Android 애플리케이션** 개발 및 운영`. 그리고 `Jetpack Compose`(79건)가 함께 온다",
+      "tradeoff": "⚠️ **이 문서는 안드로이드 쪽을 얕게 다뤘다**(`android` 문서가 없다). 프레임워크·수명주기·빌드 도구의 사정은 별도로 봐야 하고, ⭐ 기존 앱이 자바면 **플랫폼 타입 문제가 그대로 온다**",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "자바에서 받은 값을 그대로 흘려보낸다",
+      "why": "컴파일러가 아무 말을 안 하니 문제가 없어 보인다. 그런데 그것이 **플랫폼 타입**이고, 문서의 표현으로 **\"Null-checks are relaxed ... safety guarantees for them are the same as in Java\"** 다 — **코틀린으로 썼는데 보장은 자바 수준**이다. 그리고 코드에 `T!` 같은 표시가 없어 **읽어서는 알 수 없다**",
+      "fix": "⭐ **자바 경계에서 널 여부를 결정한다.** 받자마자 널 불가로 선언하면 대입 자리에서 검사가 들어가 **원인 가까운 곳에서 터진다**. 그리고 IDE 가 `T!` 로 보여 주므로 **경계 코드를 리뷰할 때 그것을 본다**",
+      "sources": [
+        {
+          "title": "Calling Java from Kotlin — Null-safety and platform types",
+          "url": "https://kotlinlang.org/docs/java-interop.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **자바에서 온 것에는 널 검사가 완화되고, 보장이 자바와 같아진다**"
+        }
+      ]
+    },
+    {
+      "trap": "컴파일러가 널을 지적하면 `!!` 로 넘긴다",
+      "why": "가장 빠르고, 대개 실제로 널이 아니라 동작한다. 그런데 명세가 `!!` 를 **NPE 원인 ②번**으로 올려 뒀고 — **\"내가 책임진다\"는 선언인데 책임질 근거가 없는 경우**가 대부분이다. 그리고 널이 되는 날, **왜 널이 아니라고 생각했는지 아무 기록이 없다**",
+      "fix": "**`?:` 로 기본값을 주거나 `?.` 로 안전 호출**한다. 정말 `!!` 가 맞다면 **왜 널이 아닌지를 한 줄로 남긴다** — 그 한 줄을 못 쓰겠으면 널일 수 있다는 뜻이다",
+      "sources": [
+        {
+          "title": "Null safety (Kotlin Docs)",
+          "url": "https://kotlinlang.org/docs/null-safety.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐ 널 안전의 목적과, **그럼에도 NPE 가 나는 경우를 명세가 스스로 네 가지로 나열한다**"
+        }
+      ]
+    },
+    {
+      "trap": "\"코틀린이니까 NPE 는 없다\"고 여긴다",
+      "why": "이 언어의 대표 홍보 문구가 그렇고, 실제로 순수 코틀린 코드에서는 거의 안 난다. 그런데 명세가 **원인 넷을 직접 나열**하고 그중 하나가 자바 상호운용이며, ⚠️ 그 항목의 마지막이 **\"Other issues caused by external Java code\"** 로 **열려 있다** — 다 셀 수 없다는 뜻이다",
+      "fix": "**자바가 옆에 있는 한 NPE 는 온다는 전제로 짠다.** 그리고 이 데이터에서 **코틀린 공고의 62.5%가 자바를 함께 요구**하므로, **자바가 옆에 없는 경우가 오히려 드물다**"
+    },
+    {
+      "trap": "제네릭 컬렉션을 자바와 주고받으며 안심한다",
+      "why": "`MutableList<String>` 이라고 타입에 적혀 있으니 널이 안 들어올 것 같다. 그런데 문서가 그 예를 직접 든다 — \"a piece of **Java code adding `null` into a Kotlin `MutableList<String>`**, which would require `MutableList<String?>` to handle it properly\". 자바에는 그 제약이 없다",
+      "fix": "**자바와 주고받는 컬렉션은 경계에서 복사하며 검사**한다. ⚠️ 그리고 문서의 마지막 단서를 기억한다 — **\"impossible to eliminate entirely, because of generics\"** — 완전히 막을 수는 없다",
+      "sources": [
+        {
+          "title": "Null safety (Kotlin Docs)",
+          "url": "https://kotlinlang.org/docs/null-safety.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐ 널 안전의 목적과, **그럼에도 NPE 가 나는 경우를 명세가 스스로 네 가지로 나열한다**"
+        },
+        {
+          "title": "Calling Java from Kotlin — Null-safety and platform types",
+          "url": "https://kotlinlang.org/docs/java-interop.html",
+          "publisher": "JetBrains",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **자바에서 온 것에는 널 검사가 완화되고, 보장이 자바와 같아진다**"
+        }
+      ]
+    },
+    {
+      "trap": "자바를 코틀린으로 한꺼번에 옮긴다",
+      "why": "IDE 가 자동 변환을 해 주고, 섞여 있는 상태가 지저분해 보인다. 그런데 **변환된 코드는 플랫폼 타입 문제를 그대로 안고** 오고(어디가 널일 수 있는지 원본이 몰랐으니까), **한 번에 검증할 것이 쏟아진다**",
+      "fix": "⭐ **새 코드부터, 그리고 경계가 명확한 모듈부터** 옮긴다. 옮길 때는 **자동 변환 결과의 `!!` 를 전부 검토**한다 — 변환기는 모를 때 `!!` 를 붙이므로, 그 자리가 곧 **원본이 널 여부를 안 적어 둔 자리**다"
+    },
+    {
+      "trap": "코틀린을 도입하며 프레임워크·빌드도 같이 바꾼다",
+      "why": "\"이왕 바꾸는 김에\"가 자연스럽다. 그런데 이 데이터에서 서버 코틀린은 **Spring 과 함께**(41.4%) 오고, **프레임워크는 자바 시절 그대로**다 — 빗썸 `Java / Kotlin 기반 **Spring Boot**`, 큐엠아이티 `**Spring Boot (Kotlin)**`",
+      "fix": "**언어만 바꾼다.** 문제가 생겼을 때 **언어 때문인지 프레임워크 때문인지**를 가릴 수 있어야 하고, 팀이 배울 것도 하나씩이 낫다. ⚠️ 다만 `spring` 문서가 다루는 **프록시 함정**은 언어를 바꿔도 그대로 온다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "널 안전",
+      "en": "null safety",
+      "what": "⭐ 널 가능 여부를 **타입 시스템에 넣어** 컴파일 시점에 막는 것"
+    },
+    {
+      "term": "널 가능 타입",
+      "en": "nullable type",
+      "what": "`String?` — 널을 담을 수 있다고 선언한 타입"
+    },
+    {
+      "term": "⭐⭐ 플랫폼 타입",
+      "en": "platform type",
+      "what": "자바에서 온 타입. **널 검사가 완화되고 보장이 자바와 같아진다.** 코드에 쓸 수 없고 `T!` 로만 보인다"
+    },
+    {
+      "term": "`!!`",
+      "en": "not-null assertion",
+      "what": "⚠️ \"널이 아니다\"라고 단언하는 연산자. **명세가 NPE 원인 ②번으로 올려 뒀다**"
+    },
+    {
+      "term": "안전 호출 `?.`",
+      "en": "safe call",
+      "what": "\"if the object is `null`, the `?.` operator simply returns `null`\""
+    },
+    {
+      "term": "엘비스 `?:`",
+      "en": "Elvis operator",
+      "what": "왼쪽이 널이면 오른쪽을 준다 — 기본값을 주는 흔한 방법"
+    },
+    {
+      "term": "코루틴",
+      "en": "coroutine",
+      "what": "⚠️ 이 언어의 둘째 특징(108건). **이 문서는 셈까지만 다뤘다**"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐ 자바 클래스 하나와 코틀린 파일 하나를 만들어, **자바 메서드가 널을 반환하게** 하고 코틀린에서 받아 본다. ①플랫폼 타입 그대로 쓸 때 ②널 불가(`String`)로 선언할 때 ③널 가능(`String?`)으로 선언할 때 — **각각 어디서 터지는지** 확인한다.",
+      "done_when": "세 경우의 **터지는 위치(줄 번호)와 예외 종류**가 기록되고, ⭐ **②가 ①보다 원인에 가까운 곳에서 터진다는 것**이 확인된다.",
+      "why": "⭐⭐⭐ 문서의 **\"the compiler will emit an assertion upon assignment ... does its best to prevent nulls from propagating far\"** 가 무슨 뜻인지 **줄 번호로** 안다. 그리고 ①에서 컴파일 경고가 **하나도 없다**는 것을 보면 플랫폼 타입이 왜 위험한지가 남는다.",
+      "no_hardware": "IDE 없이도 된다 — `kotlinc` 와 `javac` 만 있으면 파일 두 개로 재현된다.",
+      "hours": 2
+    },
+    {
+      "task": "자기 코드(또는 아무 코틀린 프로젝트)에서 **`!!` 를 전부 찾는다.** 각각에 대해 ⭐ **\"왜 널이 아닌가\"를 한 줄로 쓸 수 있는지** 시도한다.",
+      "done_when": "`!!` 의 개수가 나오고, **한 줄로 설명 못 하는 것이 몇 개인지** 센다. 그중 하나를 골라 `?:` 나 `?.` 로 바꿔 본다.",
+      "why": "⭐⭐ 명세가 `!!` 를 **NPE 원인 ②번**으로 올려 둔 이유를 자기 코드로 확인한다. 대개 **설명 못 하는 것이 절반 이상**이고, 그것들이 **자바 경계에서 온 것**이라는 공통점도 보인다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ 쓰고 있는 자바 라이브러리 하나를 골라, **그 API 의 반환값이 널일 수 있는지** 문서에서 확인해 본다. 그리고 **널 애너테이션(`@Nullable`/`@NotNull`)이 붙어 있는지** 소스나 IDE 로 확인한다.",
+      "done_when": "메서드 세 개에 대해 **문서가 널 여부를 말하는지**, **애너테이션이 있는지**가 각각 표시된다. ⭐ 둘 다 없는 것이 하나라도 나오면, 그것을 우리 코드에서 어떻게 다루고 있는지 확인한다.",
+      "why": "⭐ 플랫폼 타입 문제의 뿌리가 **자바 쪽이 널 여부를 안 적어 둔 것**이라는 걸 확인한다. 그리고 **애너테이션이 있으면 코틀린이 읽는다**는 것을 알면, **자바 코드를 고칠 수 있을 때 거기가 가장 싼 자리**라는 판단이 선다.",
+      "no_hardware": "IDE 에서 자바 메서드에 커서를 두면 코틀린이 추론한 타입(`T!`)을 보여 준다 — 그것으로도 확인된다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "코틀린의 널 안전은 무엇을 언제로 옮기는가?",
+    "명세가 나열한 NPE 의 원인 넷은? 그중 성격이 다른 하나는?",
+    "플랫폼 타입이란 무엇이고, 그것에 대한 안전 보장은 어느 수준인가?",
+    "플랫폼 타입을 코드에서 알아볼 수 없는 이유는?",
+    "자바에서 받은 값을 널 불가 타입으로 선언하면 무슨 일이 생기는가? 왜 그것이 나은가?",
+    "이 데이터에서 코틀린 공고의 몇 %가 자바를 함께 요구하는가? 그것이 왜 중요한가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Java / Kotlin 기반 Spring Boot 서비스 개발 경험을 보유하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373382",
+      "where": "빗썸",
+      "what_it_shows": "⭐⭐ **`Java / Kotlin` 이 슬래시로 묶인다** — 둘을 가르지 않는다. 그리고 프레임워크는 **Spring Boot 그대로**다"
+    },
+    {
+      "quote": "• Kotlin (또는 Java) 및 SpringBoot 기반의 백엔드 개발 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/328449",
+      "where": "인터엑스",
+      "what_it_shows": "⭐ **`(또는 Java)`** — 코틀린을 앞에 두면서도 자바를 괄호로 받아 준다. **대체 가능한 것**으로 다뤄진다는 뜻"
+    },
+    {
+      "quote": "• JVM 생태계(Java, Kotlin, Spring, JPA)에 대한 경험 및 이해가 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "where": "큐엠아이티",
+      "what_it_shows": "⭐⭐ **`JVM 생태계` 라는 한 낱말**로 넷을 묶는다 — 이 문서가 `boundary` 표에서 `java`·`spring`·`gc` 를 이웃으로 두는 이유가 시장의 인식과 같다"
+    },
+    {
+      "quote": "• Java / Kotlin / JavaScript / TypeScript / Python / Go 등 하나 이상의 서버 개발 언어에 능숙하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/367980",
+      "where": "디써클",
+      "what_it_shows": "⚠️ **`하나 이상`** — 여섯 언어를 **대체 가능한 것**으로 늘어놓는다. `널 안전` 이 7건인 이유가 여기 있다: **언어의 특징이 아니라 \"쓸 줄 아는가\"를 묻는다**"
+    },
+    {
+      "quote": "MSA 아키텍처 기반 NestJS (TypeScript), Spring Boot (Kotlin)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "where": "큐엠아이티",
+      "what_it_shows": "⭐ `**Spring Boot (Kotlin)**` — **프레임워크가 주어이고 언어가 괄호**다. 서버 쪽 코틀린의 자리를 정확히 보여 준다"
+    },
+    {
+      "quote": "• Kotlin, XML, Jetpack Compose",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372622",
+      "where": "헤렌",
+      "what_it_shows": "⭐ **안드로이드의 전환기** — `XML`(옛 방식)과 `Jetpack Compose`(새 방식)가 나란히 있다. `design-system` 문서가 인용한 같은 회사의 줄과 짝이다"
+    },
+    {
+      "quote": "심전도 측정 의료기기 애플리케이션을 Flutter에서 Android Native(Kotlin) 기반으로 전환하고, 이후 운영·고도화를 리드하는 역할입니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/384295",
+      "where": "뷰노",
+      "what_it_shows": "⭐ **전환의 방향이 적힌 드문 공고** — 크로스플랫폼에서 **네이티브(코틀린)로** 돌아온다. 의료기기라는 맥락이 그 판단의 이유일 수 있다"
+    },
+    {
+      "quote": "• TypeScript, JavaScript, Java, Kotlin, Go 등 하나 이상의 서버 개발 언어에 능숙하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/259710",
+      "where": "베이글코드(Bagelcode)",
+      "what_it_shows": "위 디써클 공고와 **거의 같은 문장**이다 — **이 형식이 널리 쓰인다**는 뜻이고, 1072건의 상당수가 이런 나열이라는 것을 보여 준다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "java",
+      "how": "⭐ **같은 바이트코드로 컴파일된다** — 실행 층(JVM·JIT)은 그대로 공유한다"
+    },
+    {
+      "slug": "java-in-finance",
+      "how": "⭐ **자바가 안 바뀌는 이유** — 코틀린이 못 들어가는 자리의 설명(망분리·코드 자산·발주 구조)"
+    },
+    {
+      "slug": "spring",
+      "how": "서버 공고의 41.4% — **언어만 바뀌고 프레임워크는 그대로**다. 프록시 함정도 그대로 온다"
+    },
+    {
+      "slug": "gc",
+      "how": "메모리 회수는 언어와 무관하게 같다"
+    },
+    {
+      "slug": "asyncio",
+      "how": "⭐ **코루틴이라는 낱말은 그쪽이 갖는다.** 이 문서는 셈(108건)까지만 다뤘다 — 같은 개념이 언어마다 다른 이름·규칙으로 나타나는 자리"
+    },
+    {
+      "slug": "design-system",
+      "how": "헤렌 공고의 `XML / Jetpack Compose` — 안드로이드에서 공통 컴포넌트를 만드는 자리"
+    },
+    {
+      "slug": "data-contract",
+      "how": "⭐ 자바 경계에서 널 여부를 정하는 것은 '이름이 계약이다'와 같은 자리 — **경계에서 약속을 명시한다**"
+    },
+    {
+      "slug": "android",
+      "how": "⚠️ 아직 문서가 없다(**1345건**). 이 문서는 안드로이드를 `where` 절 한 문단으로만 다뤘다"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(generated_at 2026-09-04)의 `Kotlin`(464건 · 6.4%)을 그대로 옮겼다. ⚠️ 그런데 **본문 직접 셈은 1072건**으로 **두 배 이상** 차이가 난다(`rest` 에서 572 vs 3372, `graphql` 179 vs 370 과 같은 형태) — **두 숫자를 다 적고 출처를 나눴다.**",
+    "⚠️ **코루틴을 셈까지만 다뤘다.** 108건이고 이 언어의 둘째 특징인데 **1차 자료를 열지 않았다** — 구조적 동시성·취소·디스패처는 별도 주제다.",
+    "⚠️ **안드로이드를 얕게 다뤘다.** 동반 기술의 33.8%인데 `where` 절 한 문단이다. **`android` 문서가 이 백과사전에 없고**(1345건), 제대로 하려면 별도 낱말이 필요하다.",
+    "**성능을 다루지 않았다.** \"코틀린이 자바보다 느린가\"는 같은 바이트코드로 컴파일되므로 대개 무의미하지만, 인라인·리플렉션·컬렉션에서 차이가 나는 자리가 있다고 알려져 있다 — **이 사이클에서 그 자료를 열지 않았다.**",
+    "⚠️ **멀티플랫폼(KMP)을 다루지 않았다.** `Jetpack Compose|Compose Multiplatform` 로 79건이 잡히지만 대부분 안드로이드 문맥이고, 그 방향의 자료는 열지 않았다.",
+    "**문법을 의도적으로 다루지 않았다.** 데이터 클래스·확장 함수·스코프 함수는 공식 문서가 훨씬 잘 설명하고, 옮기면 요약본이 된다(`postgres-mysql` 에서 세운 규칙). **이 문서가 다룬 것은 타입 시스템의 선택 하나**다.",
+    "⭐ **\"`!!` 가 나오는 이유가 대개 자바 경계\"라는 관찰은 이 문서의 정리다.** 명세는 `!!` 와 자바 상호운용을 **별개 항목**으로 나열할 뿐 둘을 잇지 않는다 — 실무에서 흔한 경로이지만 **원문 근거는 없다.**"
+  ],
+  "sources": [
+    {
+      "title": "Null safety (Kotlin Docs)",
+      "url": "https://kotlinlang.org/docs/null-safety.html",
+      "publisher": "JetBrains",
+      "kind": "docs",
+      "summary": "⭐⭐ 널 안전의 목적과, **그럼에도 NPE 가 나는 경우를 명세가 스스로 네 가지로 나열한다**"
+    },
+    {
+      "title": "Calling Java from Kotlin — Null-safety and platform types",
+      "url": "https://kotlinlang.org/docs/java-interop.html",
+      "publisher": "JetBrains",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **자바에서 온 것에는 널 검사가 완화되고, 보장이 자바와 같아진다**"
+    }
+  ]
+}

@@ -1910,6 +1910,24 @@
       "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "kotlin",
+      "title": "Kotlin",
+      "category": "language",
+      "level": "core",
+      "status": "done",
+      "one_liner": "**컴파일러가 널을 막아 주는 JVM 언어** — 그런데 ⭐ **자바와 만나는 자리에서 그 보장이 자바 수준으로 내려가고**, 명세가 그것을 먼저 적는다. 그리고 이 언어 공고의 **62.5%가 자바를 함께 요구한다.**",
+      "aliases": [
+        "Kotlin",
+        "코틀린",
+        "널 안전",
+        "null safety",
+        "플랫폼 타입"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
