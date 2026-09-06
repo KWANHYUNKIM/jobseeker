@@ -1,0 +1,114 @@
+{
+  "slug": "snyk",
+  "name": "Snyk",
+  "name_en": "Snyk",
+  "country": "EU",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "snyk.io",
+  "one_liner": "개발자가 쓰는 자리에서 보안 취약점을 찾아 고쳐 주는 회사 — 찾는 것보다 고치는 것이 어렵다",
+  "business_model": "**개발자 도구의 자리에서 보안 취약점을 찾아 주고 구독료를 받는다.** 제품이 여섯이다 — **Snyk Code(SAST) · Snyk Open Source(SCA) · Snyk Container · Snyk IaC · Snyk API & Web(DAST) · AI 코드용 Snyk Studio.** **2026년 2월 기준 ARR 약 3억 2,600만 달러**, **고객 약 5,000곳**, **개발자 250만 명 이상**이고 **Snyk Code 하나가 ARR 1억 달러를 넘었다.**\n\n⚠️ **이 회사의 기술 이야기에서 축은 `찾기` 가 아니라 `고치기` 다.** 스캐너는 이미 시장에 많고, **문제를 목록으로 돌려주는 것과 그 문제를 실제로 없애는 코드를 써 주는 것은 다른 일이다**(이 정리는 이 사이트의 재구성이다). ⚠️ **그리고 그 둘 사이에 이 회사가 놓은 것이 자기 데이터베이스다** — **전문가가 쓴 실제 수정 3만 5천 건 이상.**\n\n⚠️ **`AI 를 어디까지 믿나` 축에서 이 회사의 자리는 앞의 여섯 곳과 다르다** — 다른 곳들은 **에이전트가 만든 코드를 어떻게 감독할까**를 묻는데, **여기서는 AI 가 고치는 대상이 보안 취약점 자체**다(이 대비는 이 사이트의 재구성이다).",
+  "products": [
+    "Snyk Code (SAST)",
+    "Snyk Open Source (SCA)",
+    "Snyk Container · IaC",
+    "Snyk API & Web (DAST)",
+    "Agent Fix (자동 수정)"
+  ],
+  "domain_map": {
+    "title": "찾는 것과 고치는 것 사이에 자기 데이터베이스를 놓는다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  C[\"<b>개발자의 코드</b><br/>• 개발자 250만 명 이상\"]:::list --> S[\"<b>스캔 (Snyk Code · SCA 등)</b><br/>• ARR 1억 달러 이상\"]:::list\n  S --> V[\"<b>취약점</b>\"]:::list\n  V --> F[\"⚠️ <b>고친다 (Agent Fix)</b><br/>• 동적 few-shot<br/>• 전문가 수정 3.5만 건 이상\"]:::accent\n  F --> T{\"⚠️ <b>고쳐졌나</b><br/>보안 + 기능 두 관문\"}\n  T -->|\"실패\"| R[\"<b>오류를 되먹여 다시</b><br/>• agentic retries\"]:::list\n  R --> F\n  T -->|\"통과\"| P[\"<b>개발자에게 수정 제안</b>\"]:::list\n  B[\"<b>Golden Test 벤치마크</b><br/>• 약 150개 표본<br/>• 테스트는 안 보여 준다\"]:::accent --> T"
+  },
+  "revenue_streams": [
+    {
+      "name": "개발자 보안 플랫폼 구독",
+      "how": "**여섯 제품**(Code · Open Source · Container · IaC · API & Web · Studio). **ARR 약 3억 2,600만 달러 · 고객 약 5,000곳 · 개발자 250만 명 이상**이고 **Snyk Code 만으로 ARR 1억 달러 이상**.",
+      "domains": [
+        "취약점을 찾는 것이 아니라 고치는 것을 판다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Snyk revenue, valuation & funding",
+          "url": "https://sacra.com/c/snyk/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2026년 2월 기준 ARR 약 3억 2,600만 달러, 고객 약 5,000곳, 개발자 250만 명 이상. Snyk Code(SAST)만 ARR 1억 달러를 넘었다."
+        }
+      ]
+    },
+    {
+      "name": "⚠️ 자기 데이터베이스가 해자다",
+      "how": "⚠️ **전문가가 쓴 실제 수정 3만 5천 건 이상**을 추론 시점에 근거로 넣는다. **프론티어 모델은 누구나 부를 수 있지만 이 데이터는 아니다** — 그래서 **같은 모델에 이 데이터를 붙였을 때의 차이(74.6% → 85.4%)가 곧 파는 것의 값이다**(이 정리는 이 사이트의 재구성이다).",
+      "domains": [
+        "취약점을 찾는 것이 아니라 고치는 것을 판다",
+        "기계가 고친 것을 믿어도 되는지 잰다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "New Agentic Architecture for Snyk Agent Fix",
+          "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+          "publisher": "Snyk Blog",
+          "date": "2026-04-27",
+          "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+        },
+        {
+          "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+          "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+          "publisher": "Snyk Blog",
+          "date": "2026",
+          "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "취약점을 찾는 것이 아니라 고치는 것을 판다",
+      "why": "⚠️ **버린 방식이 명시적이다** — 예전에는 **새 언어나 새 보안 규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝 과정**이 필요했다. 지금은 **추론 시점에 그 CWE 가 예전에 어떻게 고쳐졌는지를 넣어 주는 동적 few-shot** 으로 바꿔 **Snyk Code 가 지원하는 모든 언어를 덮는다**(자바·파이썬부터 Apex·Go 까지). ✅ **본문 확인함**(2026-04-27).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "기계가 고친 것을 믿어도 되는지 잰다",
+      "why": "⚠️ **보안 수정에는 관문이 둘이다** — 회사의 문장: **`대부분의 코드 벤치마크는 코드가 도는지, 버그 리포트를 해결하는지를 본다. 보안 수정에는 둘 다 부족하다. 보안 기준과 기능 기준을 동시에 넘어야 하기 때문이다.`** **SQL 주입을 없앴는데 질의 결과가 달라졌다면 해결이 아니고, 깨끗해 보이는데 취약점이 남아 있다면 오히려 해롭다.** ✅ **본문 확인함**.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **스캔 엔진(Snyk Code) 자체의 구조를 아직 못 봤다** — **ARR 1억 달러를 넘는 제품인데** 어떻게 분석하는지를 다룬 기술 글을 아직 찾지 못했다.",
+    "⚠️ **`3만 5천 건의 전문가 수정` 이 어떻게 만들어지고 유지되는지 모른다** — 이 회사의 해자인데 **누가 언제 어떻게 쓰고 검수하는지**가 글에 없다.",
+    "⚠️ **동적 few-shot 의 검색 부분을 모른다** — **`그 CWE 에 가장 관련 있는 사례` 를 무엇으로 고르는지**(임베딩인지 규칙인지)가 밝혀져 있지 않다.",
+    "⚠️ **비용 이야기가 없다** — 프론티어 모델을 추론에 쓰고 실패하면 재시도까지 하는데 **한 건의 수정에 드는 비용이나 지연**이 어느 글에도 없다.",
+    "⚠️ **연표(eras)를 못 세웠다.** **StarCoder 기반 → 프론티어 모델 + 인텔리전스** 라는 세대 교체는 벤치마크 표에서 분명한데 **연도가 없다.** ⚠️ **연도를 모르면 쓰지 않는다는 규칙대로 비웠다**(STYLE 8번) — Meesho·Zepto 에 이어 **세 번째 사례다.**"
+  ],
+  "sources": [
+    {
+      "title": "New Agentic Architecture for Snyk Agent Fix",
+      "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+      "publisher": "Snyk Blog",
+      "date": "2026-04-27",
+      "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+    },
+    {
+      "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+      "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+      "publisher": "Snyk Blog",
+      "date": "2026",
+      "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+    },
+    {
+      "title": "Snyk revenue, valuation & funding",
+      "url": "https://sacra.com/c/snyk/",
+      "publisher": "Sacra",
+      "date": "2026",
+      "summary": "2026년 2월 기준 ARR 약 3억 2,600만 달러, 고객 약 5,000곳, 개발자 250만 명 이상. Snyk Code(SAST)만 ARR 1억 달러를 넘었다."
+    }
+  ]
+}

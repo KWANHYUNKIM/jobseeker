@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "snyk",
+      "name": "Snyk",
+      "name_en": "Snyk",
+      "country": "EU",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "개발자가 쓰는 자리에서 보안 취약점을 찾아 고쳐 주는 회사 — 찾는 것보다 고치는 것이 어렵다",
+      "updated_at": "2026-09-06",
+      "domain": "snyk.io"
+    },
+    {
       "slug": "zepto",
       "name": "Zepto",
       "name_en": "Zepto",
@@ -1382,7 +1394,9 @@
     "10억 대 기기의 인터넷에 물건을 보여 준다",
     "재고가 계속 바뀌는 시장에서 검색한다",
     "10분을 지키려고 사람과 경로를 배치한다",
-    "광고를 팔려면 하루 10억 이벤트를 세야 한다"
+    "광고를 팔려면 하루 10억 이벤트를 세야 한다",
+    "취약점을 찾는 것이 아니라 고치는 것을 판다",
+    "기계가 고친 것을 믿어도 되는지 잰다"
   ],
   "countries": {
     "KR": "한국",
