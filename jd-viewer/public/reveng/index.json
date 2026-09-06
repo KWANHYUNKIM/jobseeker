@@ -1508,7 +1508,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 2,
+      "features_done": 3,
       "one_liner": "AI 검색을 객체 저장소 위에 올린 데이터베이스 — 지연을 내주고 값을 산 쪽이다",
       "updated_at": "2026-09-07",
       "domain": "trychroma.com"
@@ -1900,7 +1900,8 @@
     "남의 API 를 그대로 받아 옮겨 오게 만든다",
     "색인을 객체 저장소 위에 올린다",
     "쓰기 로그도 객체 저장소 위에 짓는다",
-    "색인 수백만 개를 테넌트별로 다룬다"
+    "색인 수백만 개를 테넌트별로 다룬다",
+    "여럿이 동시에 고칠 때 되돌리지 않는다"
   ],
   "countries": {
     "KR": "한국",
