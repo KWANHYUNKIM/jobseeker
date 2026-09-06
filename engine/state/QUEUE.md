@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **CedarDB** | EU · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 트랜잭션과 분석을 한 엔진에 둔다(`colibri`). 빈 도메인 둘 — 바이트를 줄이는 것과 질의를 빠르게 하는 것을 가른다(`Encoding or Compression`, 수치가 두껍다) · 하드웨어에 맞춰 실행을 짠다(`/blog/compilation/` 2025-04-02 · `/blog/reducing_branches/` 2025-01-29 · `/blog/simple_efficient_hash_tables/` 2024-06-05 — 주소를 목록에서 받아 뒀다). 가격과 성능 주장의 조건은 비공개다. |
+| **CedarDB** | EU · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 트랜잭션과 분석을 한 엔진에 둔다(`colibri`) · 바이트를 줄이는 것과 질의를 빠르게 하는 것을 가른다(`encode-always-compress-sometimes`). 빈 도메인 하나 — 하드웨어에 맞춰 실행을 짠다(`/blog/compilation/` 2025-04-02 · `/blog/reducing_branches/` 2025-01-29 · `/blog/simple_efficient_hash_tables/` 2024-06-05). 가격과 성능 주장의 조건은 비공개다. |
 
 ## 대기
 
