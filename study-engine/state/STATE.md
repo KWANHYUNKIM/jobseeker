@@ -4,35 +4,48 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **코드 리뷰**(`code-review`)를 완성했다 — **119번째 문서**.
+**없음.** 직전 사이클에서 **기술 부채**(`technical-debt`)를 완성했다 — **120번째 문서**.
 
-### 직전 사이클 (코드 리뷰)
+### 직전 사이클 (기술 부채)
 
-⭐⭐⭐ **축: "기준은 완벽이 아니다."** Google 이 자기 리뷰 기준을 공개해 뒀고 첫 문장이 이것이다.
+⚠️⚠️ **큐가 적어 준 축을 못 썼다.** Ward Cunningham 이 자기 비유의 오해를 바로잡은 자료를 1차 자료로 삼으려 했는데 **c2.com 이 자바스크립트 위키라 내용이 안 왔다.** Fowler 의 글에도 그 해명은 참고 문헌으로만 있다. ⭐ **확인 못 한 것으로 축을 세우지 않고 바꿨다.**
 
-> ⭐⭐⭐ **"There is no such thing as 'perfect' code—there is only better code."**
-> ⭐⭐⭐ "reviewers should **favor approving** a CL once it is in a state where it **definitely improves the overall code health**"
-> ⭐⭐⭐ **"If you never submit an improvement to the codebase, then the codebase never improves."**
-> ⭐⭐ "if a reviewer makes it **very difficult for any change to go in**, then developers are **disincentivized to make improvements in future**."
-> ⭐⭐ "Any purely style point ... **not in the style guide** is a matter of **personal preference**."
+⭐⭐⭐ **바꾼 축: "부채인지는 코드가 정하지 않는다 — 고칠 일이 정한다."** Fowler 의 글에서 나왔다.
 
-⭐⭐⭐ **그리고 더 뜻밖인 것이 `Speed` 문서에 있었다 — 직관과 반대다.**
+> ⭐⭐⭐ **"it's not a problem if I don't have to modify it"**
+> ⭐⭐ "The extra effort that it takes to add new features is the **interest** paid on the debt."
+> ⭐⭐⭐ "Teams who do this end up **maxing out all their credit cards**, but still **delivering later than they would have done**"
 
-> ⭐⭐⭐ "When reviews are slow, there is **increased pressure to allow developers to submit CLs that are not as good as they could be**."
-> **"The velocity of the team as a whole is decreased."** · **"One business day is the maximum time it should take to respond"**
-> ⭐ "If you are in the middle of a focused task ... **don't interrupt yourself**"
+⭐⭐ **셈의 대비가 종류가 달랐다** — 앞선 열넷은 "큰 낱말 vs 안 불리는 개념"이었는데, 여기는 **같은 일을 가리키는 두 낱말 중 하나만 쓴다**: `레거시` **766** vs `기술 부채` **227**. 그리고 공고의 낱말이 태도를 담는다 — `해소`(컬리·패스트파이브) vs ⭐ **`관리`**(와트니).
 
-**셈**: `코드 리뷰|PR` **1610** vs ⚠️ `리뷰 문화|리뷰어` **188**. 공고는 `문화`·`적극적`·`건강하게 토론`·`기준 정립`을 말하는데 **그 기준이 무엇인지는 안 적는다.**
-
-⚠️ **alias 이관 두 번째** — `코드 리뷰` 를 `git` 에서 가져왔다(세 곳을 함께 고쳤다).
+⚠️ `고도화|점진적 개선` **3425건**은 너무 넓어 쓰지 않았다.
 
 ### 다음
 
-**기술 부채**(`technical-debt`) — QUEUE 맨 위. ⭐ `code-review` 가 "별도 낱말로 남긴다"고 적은 자리이고 **`code health` 와 정면으로 이어진다.**
+**테스트**(`testing`) — QUEUE 맨 위. ⭐ `technical-debt` 가 남긴 **끊긴 링크**다(사슬이 이어졌다).
 
-⭐⭐ **셈이 뜻밖이다**: `기술 부채` **227** vs `레거시` **766** vs `리팩터링` **753** — **회사는 "부채"라고 안 부른다.** 축: **"만든 사람이 자기 비유의 오용을 반박한다"**(Ward Cunningham) — ⭐ **`rest` 의 Fielding 과 같은 형태**이므로 **그 문서를 먼저 열어 서술이 겹치지 않게 한다.**
+⚠️⚠️ **셈에 함정이 둘 있다**: `테스트` 만으로는 **3964건**(너무 넓다), 그리고 ⭐⭐⭐ **`커버리지|coverage` 461건인데 모집중 83%** — **오염 신호다. 반드시 경계를 넣어 다시 센다.** 축: **"커버리지는 테스트가 좋은지의 척도가 아니다"**(Fowler `TestCoverage`) — ⚠️ **확인 못 하면 축을 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **큐가 적어 준 축이라도, 1차 자료를 못 열면 바꾼다.** 이번엔 **Ward Cunningham 의
+  해명**을 축으로 잡아 두었는데 **c2.com 이 자바스크립트 위키라 안 열렸다.** ⚠️ 그 상태로
+  "만든 사람이 오용을 반박했다"고 쓰면 **그 반박의 내용을 지어내게 된다.**
+  ⭐ 대신 열린 자료(Fowler)에서 **예상과 반대인 문장**을 찾아 축을 다시 세웠다 —
+  **"it's not a problem if I don't have to modify it"**. 📌 **큐의 지시보다 자료가 우선한다**,
+  그리고 **축을 바꿨으면 왜 바꿨는지 `open_questions` 에 적는다** — 다음 사이클이 그 자료를
+  다시 시도할 수 있게.
+
+- ⭐⭐ **같은 일을 두 낱말로 부를 때, 어느 쪽을 쓰느냐가 정보다.** `레거시`(**766**)는 **상태**를
+  말하고 `기술 부채`(**227**)는 **관계**를 말한다 — 그리고 "레거시"라고 부르면 **원인과 갚을
+  사람이 사라진다.** 같은 문서 안에서 `해소`(끝이 있는 일)와 `관리`(데리고 사는 일)도 갈렸다.
+  💡 **지금까지의 대비가 "큰 낱말 vs 안 불리는 개념"이었다면, 이건 새 형태다: 두 이름 중 하나만
+  쓰는 것.** 📌 **셈을 할 때 유의어를 함께 세고, 어느 쪽이 많은지를 정보로 읽는다.**
+
+- ⭐ **`code-review` 에서 세운 규칙이 바로 다음 사이클에서 또 작동했다.** "예상과 반대인 문장을
+  찾으면 그것이 심장이다" — 이번에는 **"안 고치면 부채가 아니다"** 였고, 그 한 줄이 문서 전체
+  (판단 기준·표·실습)를 바꿨다. 💡 **규칙이 두 번 연속 통하면 그건 이제 절차다** — 1차 자료를
+  읽을 때 **예상과 반대인 문장부터 표시**한다.
 
 - ⭐⭐⭐ **직관과 반대인 문장을 찾으면 그것이 문서의 심장이다.** `Speed of Code Reviews` 의
   **"When reviews are slow, there is increased pressure to allow developers to submit CLs
