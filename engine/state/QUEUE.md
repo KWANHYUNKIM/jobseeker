@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Flipkart** | IN · 커머스 | 도메인 3(광고 예산을 초당 100만 이벤트에서 지킨다[tech 4] / 검색이 무엇을 관련 있다고 할지 정한다[tech 0 · ⏳ 미독] / 5억 고객의 공급망을 계획한다[tech 0 · ⏳ 미독]) · **기능 1**(at-least-once-then-reconcile) · ⚠️ **WebFetch 403 — `r.jina.ai` 를 앞에 둔다.** ✅ **첫 확장에서 도메인 이름이 본문과 맞았다** |
+| **Flipkart** | IN · 커머스 | 도메인 3(광고 예산을 초당 100만 이벤트에서 지킨다[tech 4] / 검색이 무엇을 관련 있다고 할지 정한다[tech 5] / **5억 고객의 공급망을 계획한다[tech 0 · ⏳ 미독, 글 2편]**) · **기능 2**(at-least-once-then-reconcile · learn-the-majority-then-pass-it) · ⚠️ **WebFetch 403 — `r.jina.ai` 를 앞에 둔다** |
 
 ## 대기
 
