@@ -4,32 +4,55 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **Git**(`git`)을 완성했다 — **118번째 문서**.
+**없음.** 직전 사이클에서 **코드 리뷰**(`code-review`)를 완성했다 — **119번째 문서**.
 
-### 직전 사이클 (Git)
+### 직전 사이클 (코드 리뷰)
 
-⭐⭐⭐ **축: "이미 나간 것은 못 고친다."** 매뉴얼이 `rebase` 의 실제 동작을 적는데, **고치는 게 아니었다.**
+⭐⭐⭐ **축: "기준은 완벽이 아니다."** Google 이 자기 리뷰 기준을 공개해 뒀고 첫 문장이 이것이다.
 
-> ⭐⭐⭐ "**Replay the commits, one by one, in order. This is similar to running `git cherry-pick` for each commit.**" · "Update your branch to **point to** the final commit"
-> ⭐⭐⭐ "Rebasing (or any other form of rewriting) a branch that others have based work on is **a bad idea**: **anyone downstream of it is forced to manually fix their history**."
-> ⭐⭐⭐ "This becomes a **ripple effect**: anyone downstream ... **forced to rebase too, and so on!**"
-> ⭐⭐ "The real fix, however, would be to **avoid rebasing the upstream in the first place.**"
+> ⭐⭐⭐ **"There is no such thing as 'perfect' code—there is only better code."**
+> ⭐⭐⭐ "reviewers should **favor approving** a CL once it is in a state where it **definitely improves the overall code health**"
+> ⭐⭐⭐ **"If you never submit an improvement to the codebase, then the codebase never improves."**
+> ⭐⭐ "if a reviewer makes it **very difficult for any change to go in**, then developers are **disincentivized to make improvements in future**."
+> ⭐⭐ "Any purely style point ... **not in the style guide** is a matter of **personal preference**."
 
-⭐ **`api-versioning`·`android`·`javascript` 가 다룬 주제의 가장 일상적인 형태**다 — 이미 나간 것.
+⭐⭐⭐ **그리고 더 뜻밖인 것이 `Speed` 문서에 있었다 — 직관과 반대다.**
 
-⚠️⚠️ **이 사이클의 진짜 수확은 셈 사고 두 건이다.**
-1. ⭐⭐⭐ **`rebase|리베이스` 230건이 전부 `Firebase` 였다**(`Fire`+`base`). 경계를 넣으니 **2건(모집중 0)**, `Firebase` 는 **228건** — **230−2=228 로 정확히 맞았다.**
-2. `커밋|commit` 1158건은 **모집중 비율 88%** — `go` 에서 세운 규칙대로 오염으로 보고 안 썼다.
+> ⭐⭐⭐ "When reviews are slow, there is **increased pressure to allow developers to submit CLs that are not as good as they could be**."
+> **"The velocity of the team as a whole is decreased."** · **"One business day is the maximum time it should take to respond"**
+> ⭐ "If you are in the middle of a focused task ... **don't interrupt yourself**"
 
-**셈**: `Git|버전 관리` **3397** · `코드 리뷰|PR` **1610** · `Git 기반` **1008** vs ⚠️ `rebase` **2** · `커밋 컨벤션` **4**.
+**셈**: `코드 리뷰|PR` **1610** vs ⚠️ `리뷰 문화|리뷰어` **188**. 공고는 `문화`·`적극적`·`건강하게 토론`·`기준 정립`을 말하는데 **그 기준이 무엇인지는 안 적는다.**
+
+⚠️ **alias 이관 두 번째** — `코드 리뷰` 를 `git` 에서 가져왔다(세 곳을 함께 고쳤다).
 
 ### 다음
 
-**코드 리뷰**(`code-review`) — QUEUE 맨 위. ⭐ `git` 이 스스로 "가장 큰 빈자리"라고 적은 자리(**1610건**).
+**기술 부채**(`technical-debt`) — QUEUE 맨 위. ⭐ `code-review` 가 "별도 낱말로 남긴다"고 적은 자리이고 **`code health` 와 정면으로 이어진다.**
 
-⚠️⚠️ **alias 이관 필요** — `코드 리뷰` 를 `git` 이 갖고 있다. `state-management`←`react` 와 같은 절차(세 곳을 함께 고친다). 축: **"리뷰의 기준은 '완벽한가'가 아니다"**, 1차 자료는 Google `Code Review Developer Guide` 의 `The Standard of Code Review`.
+⭐⭐ **셈이 뜻밖이다**: `기술 부채` **227** vs `레거시` **766** vs `리팩터링` **753** — **회사는 "부채"라고 안 부른다.** 축: **"만든 사람이 자기 비유의 오용을 반박한다"**(Ward Cunningham) — ⭐ **`rest` 의 Fielding 과 같은 형태**이므로 **그 문서를 먼저 열어 서술이 겹치지 않게 한다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **직관과 반대인 문장을 찾으면 그것이 문서의 심장이다.** `Speed of Code Reviews` 의
+  **"When reviews are slow, there is increased pressure to allow developers to submit CLs
+  that are not as good as they could be"** — **꼼꼼히 오래 보면 품질이 올라갈 것 같은데
+  문서는 반대를 적는다.** 💡 그리고 그 한 문장이 `when_to_use` 와 `pitfalls` 를 통째로 낳았다.
+  📌 **1차 자료를 읽을 때 "내가 예상한 것과 반대인 문장"을 표시해 두고, 있으면 그것을 축으로
+  올린다** — 예상대로인 문장은 문서로 쓸 값이 적다.
+
+- ⭐⭐ **"하지 말라"가 유난히 많은 문서는, 그 일이 안 해서가 아니라 과해서 실패한다는 뜻이다.**
+  `The Standard of Code Review` 에는 리뷰어에게 하는 금지가 몰려 있다 — 완벽을 요구하지 마라,
+  취향을 요구로 만들지 마라, 세워 두지 마라. ⭐ **리뷰의 실패는 대개 "안 봐서"가 아니라
+  "과하게 봐서"** 생긴다는 진단이고, 그 진단이 곧 문서의 구조가 된다. 📌 **부정어를 찾을 때
+  그것이 누구에게 하는 말인지도 함께 본다** — 사용자에게 하는 금지와 **운영자에게 하는 금지**는
+  뜻이 다르다.
+
+- ⭐⭐ **alias 이관이 두 번째다 — 절차가 굳었다.** `상태 관리`(`react`→`state-management`)에
+  이어 `코드 리뷰`(`git`→`code-review`). 💡 **두 번 다 같은 모양이었다**: 원문서가 그 낱말을
+  **이름으로만 언급**하고 `open_questions` 에 **"가장 큰 빈자리"** 라고 적어 뒀다.
+  ⭐ **그러니 이제 이건 규칙이다 — 문서를 쓸 때 "이름만 대고 못 다룬 것"을 `open_questions` 에
+  정직하게 적으면, 그것이 다음 문서의 큐이자 alias 이관의 근거가 된다.**
 
 - ⭐⭐⭐ **부분 문자열 오염 — 셈이 틀리는 새로운 형태를 하나 더 얻었다.** `rebase|리베이스` 로
   세면 **230건**이 나오는데 **전부 `Firebase`** 였다(`Fire`+`base`). ⚠️ `go` 의 `\bGo\b`("Go to")는

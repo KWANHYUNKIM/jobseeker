@@ -2148,8 +2148,26 @@
         "깃",
         "버전 관리",
         "브랜치",
-        "rebase",
-        "코드 리뷰"
+        "rebase"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "code-review",
+      "title": "코드 리뷰 — 기준은 완벽이 아니다",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **\"There is no such thing as 'perfect' code—there is only better code.\"** 그리고 더 뜻밖인 것 — **리뷰가 느리면 코드 품질이 올라가는 게 아니라 내려간다.**",
+      "aliases": [
+        "코드 리뷰",
+        "code review",
+        "리뷰",
+        "Pull Request",
+        "리뷰어",
+        "LGTM"
       ],
       "sections": 5,
       "drills": 3,

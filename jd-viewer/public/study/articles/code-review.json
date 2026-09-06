@@ -1,0 +1,586 @@
+{
+  "slug": "code-review",
+  "title": "코드 리뷰 — 기준은 완벽이 아니다",
+  "title_en": "Code Review: The Standard Is Not Perfection",
+  "aliases": [
+    "코드 리뷰",
+    "code review",
+    "리뷰",
+    "Pull Request",
+    "리뷰어",
+    "LGTM"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **\"There is no such thing as 'perfect' code—there is only better code.\"** 그리고 더 뜻밖인 것 — **리뷰가 느리면 코드 품질이 올라가는 게 아니라 내려간다.**",
+  "summary": "⭐ **`코드 리뷰|Pull Request` 는 1610건(모집중 561)** 이다. `git`(3397건) 안에서 가장 큰 조각이고, **그 문서가 한 줄도 못 써서 \"가장 큰 빈자리\"라고 적어 둔 자리**다.\n\n**공고가 요구하는 것은 기술이 아니라 태도다.**\n\n> `코드 리뷰와 피드백을 **성장의 발판**으로 삼으며, 동료와 **논리적이고 건강하게 토론**할 수 있는 분` — 큐엠아이티\n> `코드 리뷰 **문화 구축** 및 주니어 개발자 온보딩 경험자` — 디피플래닝\n> `[코드 리뷰 / 설계 리뷰를 통한 **기준 정립**]` — 헤렌\n\n⭐ **`문화`·`기준`·`토론`** — 그런데 ⚠️ **그 기준이 무엇인지는 아무도 안 적는다**(`리뷰 문화|리뷰어` **188건**).\n\n**Google 이 자기 기준을 공개해 뒀고, 첫 문장이 이것이다.**\n\n> ⭐⭐⭐ **\"There is no such thing as 'perfect' code—there is only better code.\"**\n> ⭐⭐⭐ \"reviewers should **favor approving** a CL once it is in a state where it **definitely improves the overall code health** of the system\"\n\n💡 **기준은 \"완벽한가\"가 아니라 \"전보다 나아지나\"** 다. 그리고 그 이유를 한 줄로 적는다.\n\n> ⭐⭐⭐ **\"If you never submit an improvement to the codebase, then the codebase never improves.\"**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 1610건이 \"문화\"를 요구하는데, 기준은 188건",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| ⭐ `코드 리뷰\\|Pull Request` | **1610** | (모집중 561) |\n| `기술 부채\\|리팩터링` | 835 | (모집중 262) |\n| `테스트 코드\\|단위 테스트` | 570 | (모집중 185) |\n| `린트\\|정적 분석` | 229 | (모집중 105) |\n| ⚠️ `리뷰 문화\\|리뷰어` | **188** | (모집중 69) |\n| `페어 프로그래밍` | 61 | (모집중 26) |\n\n⭐⭐ **1610 대 188.** 이 백과사전이 **열네 번째로 만나는 형태**인데, 이번엔 갈리는 자리가 특이하다 — **\"리뷰를 한다\"는 흔한데 \"리뷰어\"라는 역할과 \"리뷰 문화\"라는 낱말은 드물다.**\n\n📌 **공고 문장을 보면 요구하는 것이 일정하다.**\n\n> `코드 리뷰와 피드백을 **성장의 발판**으로 삼으며, 동료와 **논리적이고 건강하게 토론**할 수 있는 분` — 큐엠아이티\n> `코드 리뷰에 **적극적**이며, 복잡한 비즈니스 요구사항을 깔끔하고 읽기 쉬운 코드로 단순화할 수 있는 분` — 동선컴퍼니\n> `코드 리뷰 등 **피드백 문화**에 익숙하신 분` — 키즈노트\n> `Git 기반 협업 및 **코드 리뷰 문화**에 익숙하신 분` — 에비드넷\n\n⭐ **`문화`·`적극적`·`건강하게 토론`** — **기술이 아니라 태도를 묻는다.**\n\n⚠️ **그런데 태도만으로는 판단이 안 된다.** \"이 PR 을 승인할까 말까\"는 매일 수십 번 생기는 결정이고, **\"적극적으로 하라\"는 말은 그 순간에 아무 답도 주지 않는다.** 💡 **필요한 것은 기준**이고, 그것을 이름으로 대는 곳이 **188건**이다.\n\n📌 **그리고 몇몇 공고는 리뷰를 조직의 일로 적는다.**\n\n> ⭐ `코드 리뷰 **운영** 및 주니어 개발자 성장 지원` · `코드 리뷰 **문화 구축** 및 주니어 개발자 **온보딩**` — 디피플래닝\n> ⭐ `[코드 리뷰 / 설계 리뷰를 통한 **기준 정립**]` — 헤렌\n\n**\"운영\"·\"구축\"·\"기준 정립\"** — ⭐⭐ **리뷰를 제도로 본다.** 그러면 **그 제도의 기준이 무엇인지**가 이 문서의 질문이 된다.\n\n📌 ⚠️ **`코드 리뷰` alias 를 `git` 에서 가져왔다.** 그 문서는 리뷰를 **1차 자료로 다루지 않았고**(그쪽 1차 자료는 `git-rebase` 매뉴얼) 스스로 `open_questions` 에 **\"가장 큰 빈자리\"** 라고 적었다 — `state-management` 가 `react` 에서 `상태 관리` 를 가져온 것과 같은 절차다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 기준은 \"완벽한가\"가 아니라 \"전보다 나아지나\"",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Standard of Code Review — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **회사가 자기 리뷰 기준을 공개하면서, 그 기준이 \"완벽\"이 아니라고 못 박는 자리** — \"There is no such thing as 'perfect' code\""
+        }
+      ],
+      "body": "Google 이 자기 리뷰 기준을 문서로 공개해 뒀다. ⭐ **회사가 내부 기준을 공개하는 것 자체가 드문데**, 더 드문 것은 그 기준의 내용이다.\n\n> ⭐⭐⭐ **\"There is no such thing as 'perfect' code—there is only better code.\"**\n\n💡 **완벽한 코드는 없다고 먼저 못 박는다.** 그러면 리뷰어가 무엇을 기준으로 판단하나.\n\n> ⭐⭐⭐ \"reviewers should **favor approving** a CL once it is in a state where it **definitely improves the overall code health** of the system\"\n\n⭐ **\"favor approving\"** — **승인 쪽으로 기울라**고 한다. 조건은 하나: **전체 코드 건강이 확실히 나아지는 상태인가.**\n\n**그리고 왜 그래야 하는지가 다음 한 줄이다.**\n\n> ⭐⭐⭐ **\"If you never submit an improvement to the codebase, then the codebase never improves.\"**\n\n💡 ⭐⭐ **완벽을 기다리면 아무것도 안 들어가고, 아무것도 안 들어가면 아무것도 나아지지 않는다.** 당연해 보이는데, ⚠️ **리뷰를 하다 보면 정확히 그 반대로 하게 된다** — 눈에 보이는 개선점을 다 적고, 다 고쳐질 때까지 기다린다.\n\n**문서가 그것을 직접 막는다.**\n\n> ⭐⭐ \"Reviewers **should not require the author to polish every tiny piece** of a CL before granting approval.\"\n> ⭐⭐⭐ \"if a reviewer makes it **very difficult for any change to go in**, then developers are **disincentivized to make improvements in future**.\"\n\n⚠️⚠️ **둘째 문장이 무섭다 — 까다로운 리뷰어는 사람들이 개선을 아예 시도하지 않게 만든다.** 코드 품질을 지키려는 행동이 **품질을 지키려는 의욕을 없앤다.**\n\n📌 **그리고 취향과 기준을 가르는 선도 적혀 있다.**\n\n> ⭐⭐ \"Any purely style point (whitespace, etc.) that is **not in the style guide** is a matter of **personal preference**.\"\n\n⭐ **스타일 가이드에 없으면 취향이다.** 취향은 요구가 아니라 제안이고, **그것으로 승인을 막지 않는다.** ⚠️ 그래서 **팀에 스타일 가이드가 있느냐**가 리뷰의 질을 크게 좌우한다 — 없으면 **모든 스타일 지적이 취향 논쟁**이 된다.\n\n> \"**Don't let a CL sit around** because the author and the reviewer can't come to an agreement.\"\n\n📌 ⭐⭐⭐ **이 백과사전의 계보에 또 한 칸이다.**\n\n| 문서 | 형태 |\n|---|---|\n| `kotlin`·`redis`·`github-actions` | 문장 하나로 선을 긋는다 |\n| `typescript` | 비목표 목록 |\n| `react` | 문서 한 편으로 설득 |\n| `javascript` | 잘못인데 못 고친다 |\n| `go` | 없는 것을 Q&A 로 해명 |\n| `git` | 사고 복구 절차를 매뉴얼에 |\n| ⭐⭐⭐ **`code-review`** | **회사가 내부 기준을 공개하고, 그 기준이 \"완벽\"이 아니라고 못 박는다** |"
+    },
+    {
+      "id": "speed",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 느린 리뷰는 품질을 떨어뜨린다 — 직관과 반대다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Speed of Code Reviews — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/speed.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **느린 리뷰가 코드 품질을 떨어뜨린다고 적는 문서** — 직관과 반대다"
+        }
+      ],
+      "body": "\"꼼꼼히 오래 보면 품질이 올라간다\" 가 자연스러운 생각이다. ⚠️ **문서는 반대를 적는다.**\n\n> ⭐⭐⭐ \"Code health can be impacted. When reviews are slow, there is **increased pressure to allow developers to submit CLs that are not as good as they could be**.\"\n\n💡 ⭐⭐ **왜 그런가.** 리뷰가 느리면 **기다리는 것이 비싸진다.** 그러면 팀은 **덜 좋은 코드라도 통과시키는 쪽**으로 압력을 받는다 — 리뷰를 느리게 해서 품질을 지키려던 것이 **품질을 깎는다.**\n\n**그리고 손해가 개인이 아니라 팀 전체다.**\n\n> ⭐⭐⭐ **\"The velocity of the team as a whole is decreased.\"**\n\n📌 **기준도 숫자로 준다.**\n\n> ⭐⭐⭐ **\"One business day is the maximum time it should take to respond to a code review request\"**\n\n⭐ **\"응답까지 최대 하루\"** — 승인이 아니라 **응답**이다. \"보고 있다\", \"이건 이래서 못 하겠다\" 도 응답이다.\n\n⚠️ **그렇다고 하던 일을 멈추라는 것은 아니다.** 문서가 균형도 적는다.\n\n> ⭐ \"If you are in the middle of a focused task, such as writing code, **don't interrupt yourself** to do a code review.\"\n\n💡 **집중을 깨지 말고, 대신 하루를 넘기지 마라** — 이 둘이 함께 있어야 규칙이 된다. ⚠️ **앞만 있으면 영원히 안 보게 되고, 뒤만 있으면 아무도 집중을 못 한다.**\n\n📌 ⭐⭐ **그리고 `git` 문서와 정면으로 이어진다.**\n\n저 문서의 축은 **\"공유되면 못 고친다\"** 였고, 그래서 **공유되기 전에 보는 자리**가 필요하다고 했다 — 그게 리뷰다. ⚠️ **그런데 그 자리가 막히면** 사람들은 **더 큰 덩어리로 모아서** 보내거나(한 번에 리뷰받으려고), **아예 안 거치는 길**을 찾는다.\n\n⭐ **즉 리뷰의 속도는 편의가 아니라 `git` 이 만든 제약이 실제로 작동하느냐의 문제**다."
+    },
+    {
+      "id": "who",
+      "kind": "extra",
+      "heading": "⭐ 리뷰어라는 역할, 그리고 기계가 보는 리뷰",
+      "confidence": "inferred",
+      "body": "⚠️ `리뷰 문화|리뷰어` 가 **188건**뿐이다. **1610건이 리뷰를 요구하면서 리뷰하는 쪽의 이름은 거의 안 부른다.**\n\n💡 **그런데 몇몇 공고는 그것을 정면으로 적는다.**\n\n> ⭐ `코드 리뷰 **운영** 및 주니어 개발자 성장 지원` — 디피플래닝\n> ⭐ `코드 리뷰를 통해 **팀의 코드 품질을 높여본 경험**이 있으신 분` — 액션파워\n> `코드 품질과 구조에 대한 **판단력**을 바탕으로 코드 리뷰 및 기술적 의사결정에 참여` — 타인에이아이\n\n⭐⭐ **\"운영\"·\"높여본 경험\"·\"판단력\"** — **리뷰를 받는 쪽이 아니라 하는 쪽의 일**로 적는다. 그리고 `why` 절의 기준이 **정확히 그 판단을 위한 것**이다: 완벽을 요구할 것인가, 나아지면 승인할 것인가.\n\n📌 ⚠️ **주니어 온보딩과 붙어 다니는 것도 눈에 띈다.**\n\n> `코드 리뷰 **문화 구축** 및 주니어 개발자 **온보딩** 경험자` — 디피플래닝\n> `코드 리뷰와 피드백을 **성장의 발판**으로` — 큐엠아이티\n\n⭐ **리뷰가 교육의 자리로 쓰인다.** ⚠️ 그런데 `why` 절의 기준과 긴장이 있다 — **가르치려면 더 많이 지적하게 되고, 그것이 \"polish every tiny piece\" 로 가기 쉽다.** 💡 **문서의 처방은 그 지적을 \"제안\"으로 표시하는 것**이다(취향과 요구를 가르는 선).\n\n📌 **그리고 이 데이터에 새로운 것이 하나 들어와 있다.**\n\n> ⭐⭐⭐ `AI agent를 업무에 적극 활용하며 ... **모든 PR은 Claude의 자동 코드 리뷰를 거치고**, 개발자 각자가 AI를 도구로 삼아 더 빠르고 깊게 일합니다.` — 지로\n\n⭐⭐ **\"모든 PR\"이 기계 리뷰를 거친다**고 공고에 적는다. 💡 **`speed` 절의 관점에서 보면 이건 속도 문제의 한 해법**이다 — 사람이 하루 안에 응답하지 못하는 부분을 기계가 먼저 본다.\n\n⚠️ **다만 이 문서는 그것을 판단할 자료가 없다.** 공고 한 건이고, **기계 리뷰가 `why` 절의 기준(\"전체 코드 건강이 나아지나\")을 판단할 수 있는지**는 확인하지 않았다 — ⭐ **그 판단은 \"이 변경이 이 시스템에 무엇을 뜻하나\"를 아는 일**이고, 그것이 사람 리뷰의 핵심이기 때문이다.\n\n📌 ⭐ **그래서 이 낱말의 층이 이렇게 보인다.**\n\n| 무엇이 보나 | 무엇을 |\n|---|---|\n| 린트·정적 분석 (229건) | 스타일·명백한 오류 — ⭐ **취향 논쟁을 없앤다** |\n| 기계 리뷰 (지로) | 그 위의 패턴 — ⚠️ **범위를 이 문서는 모른다** |\n| ⭐⭐ **사람** | **\"이 변경이 시스템을 나아지게 하나\"** — `why` 절의 기준 |"
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️ 가이드의 나머지를 안 읽었다.** 1차 자료는 **`The Standard of Code Review` 와 `Speed of Code Reviews` 두 절**이다. ⭐ 그 가이드에는 **무엇을 보나(What to look for)**, **어떻게 쓰나(How to write comments)**, **작성자 쪽 안내(CL author's guide)** 가 따로 있는데 **열지 않았다.**\n\n**2. ⚠️⚠️ \"무엇을 보나\"를 다루지 않았다.** 설계·기능·복잡도·테스트·이름·주석 — **리뷰의 실제 내용**이다. ⭐ 이 문서는 **\"언제 승인하나\"와 \"얼마나 빨리\"** 만 다뤘다. **가장 큰 빈자리다.**\n\n**3. ⚠️ 리뷰 코멘트 쓰는 법을 다루지 않았다.** 큐엠아이티 공고의 `**논리적이고 건강하게 토론**` 이 가리키는 자리이고, 가이드에도 절이 따로 있는데 **안 봤다.**\n\n**4. ⚠️ `기술 부채|리팩터링` 835건을 다루지 않았다.** ⭐ `why` 절의 \"code health\" 와 정면으로 이어지는 낱말인데(**리뷰가 부채를 막는 자리**), **별도 낱말로 남긴다.**\n\n**5. ⚠️ 기계 리뷰를 판단하지 못했다.** 지로 공고 **한 건**이고, ⭐ **그것이 `why` 절의 기준을 판단할 수 있는지 확인할 자료가 없다.** 세지도 않았다(`AI 코드 리뷰` 를 별도로 세지 않았다).\n\n**6. ⚠️ Google 의 기준이 모든 팀에 맞는지 확인하지 않았다.** ⭐ 그 문서는 **한 회사의 규모와 문화**를 전제한다 — \"one business day\" 도 그 조직의 값이다. ⚠️ **다른 규모에서 같은 숫자가 맞는지는 이 문서가 모른다.**\n\n**7. ⚠️ `market` 을 비웠다.** `코드 리뷰` 는 `tech_relations.json` 의 기술 이름이 아니다 — **비우는 것이 정상**이고(`PROMPT.md`), 대신 `evidence` 를 공고에서 뽑았다.\n\n**8. 이 문서가 다루지 않는 것.** 왜 공유 전에 봐야 하나는 `git`, 자동 검사는 `github-actions`, 컴포넌트 계약은 `design-system` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "standard",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 기준 — Google 이 공개한 문서의 원문",
+      "note": "전부 **`The Standard of Code Review` 의 원문**이다. ⭐ 요점은 **기준이 \"완벽\"이 아니라는 것**, 그리고 **까다로운 리뷰가 개선 의욕 자체를 없앤다**는 경고다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 전제",
+          "**\"There is no such thing as 'perfect' code—there is only better code.\"**"
+        ],
+        [
+          "⭐⭐⭐ 승인 기준",
+          "\"reviewers should **favor approving** a CL once it is in a state where it **definitely improves the overall code health** of the system\""
+        ],
+        [
+          "⭐⭐⭐ 왜",
+          "**\"If you never submit an improvement to the codebase, then the codebase never improves.\"**"
+        ],
+        [
+          "⭐⭐ 하지 말 것",
+          "\"Reviewers **should not require the author to polish every tiny piece** of a CL before granting approval.\""
+        ],
+        [
+          "⭐⭐⭐ 까다로우면",
+          "\"if a reviewer makes it **very difficult for any change to go in**, then developers are **disincentivized to make improvements in future**.\""
+        ],
+        [
+          "⭐⭐ 취향과 기준",
+          "\"Any purely style point (whitespace, etc.) that is **not in the style guide** is a matter of **personal preference**.\""
+        ],
+        [
+          "막히면",
+          "\"**Don't let a CL sit around** because the author and the reviewer can't come to an agreement.\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Standard of Code Review — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **회사가 자기 리뷰 기준을 공개하면서, 그 기준이 \"완벽\"이 아니라고 못 박는 자리** — \"There is no such thing as 'perfect' code\""
+        }
+      ]
+    },
+    {
+      "id": "speed",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 속도 — 느리면 품질이 내려간다",
+      "note": "전부 **`Speed of Code Reviews` 의 원문**이다. ⚠️ **직관과 반대인 문장이 첫 줄**이다 — 오래 볼수록 좋아질 것 같지만 문서는 반대를 적는다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 느리면",
+          "\"Code health can be impacted. When reviews are slow, there is **increased pressure to allow developers to submit CLs that are not as good as they could be**.\""
+        ],
+        [
+          "⭐⭐⭐ 누가 손해",
+          "**\"The velocity of the team as a whole is decreased.\"**"
+        ],
+        [
+          "⭐⭐⭐ 기준",
+          "**\"One business day is the maximum time it should take to respond to a code review request\"**"
+        ],
+        [
+          "⭐ 그렇다고",
+          "\"If you are in the middle of a focused task, such as writing code, **don't interrupt yourself** to do a code review.\""
+        ],
+        [
+          "⭐ 둘이 함께여야",
+          "**앞만 있으면 영원히 안 보고, 뒤만 있으면 아무도 집중을 못 한다**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Speed of Code Reviews — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/speed.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **느린 리뷰가 코드 품질을 떨어뜨린다고 적는 문서** — 직관과 반대다"
+        }
+      ]
+    },
+    {
+      "id": "line",
+      "kind": "compare",
+      "caption": "⭐⭐ 요구할 수 있는 것과 없는 것",
+      "note": "왼쪽의 근거는 `standard` 표의 원문이고, 표의 구성은 이 문서의 정리다(`confidence: inferred`). ⭐ **스타일 가이드가 있으면 오른쪽이 왼쪽으로 옮겨 간다** — 그것이 가이드를 두는 이유다.",
+      "columns": [
+        "",
+        "요구(승인 보류)",
+        "제안(승인하고 남긴다)"
+      ],
+      "rows": [
+        [
+          "기준",
+          "⭐ **코드 건강을 나아지게 하지 않는다**",
+          "\"a matter of **personal preference**\""
+        ],
+        [
+          "예",
+          "버그 · 설계 문제 · 테스트 없음",
+          "⚠️ 스타일 가이드에 없는 공백·이름 취향"
+        ],
+        [
+          "⭐⭐ 판단",
+          "\"definitely **improves the overall code health**\" 인가",
+          "**아니면 요구가 아니다**"
+        ],
+        [
+          "⚠️ 착각하면",
+          "—",
+          "\"**polish every tiny piece**\" 로 간다 → **개선 의욕이 사라진다**"
+        ],
+        [
+          "⭐ 팀이 할 일",
+          "—",
+          "**스타일 가이드를 만든다** — 그러면 취향 논쟁이 규칙 확인이 된다"
+        ],
+        [
+          "막혔을 때",
+          "—",
+          "\"**Don't let a CL sit around**\" — 합의가 안 되면 **에스컬레이션**하고 세워 두지 않는다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ **1610 대 188** — 열넷째 형태인데 갈리는 자리가 특이하다: **\"리뷰를 한다\"는 흔한데 \"리뷰어\"라는 역할은 드물다.**",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "⭐ `코드 리뷰\\|Pull Request`",
+          "**1610 (모집중 561)** — `git`(3397) 안 최대 조각"
+        ],
+        [
+          "`기술 부채\\|리팩터링`",
+          "835 (모집중 262) — ⚠️ **`code health` 와 정면으로 이어지는데 이 문서가 안 다뤘다**"
+        ],
+        [
+          "`테스트 코드\\|단위 테스트`",
+          "570 (모집중 185)"
+        ],
+        [
+          "`린트\\|정적 분석`",
+          "229 (모집중 105) — ⭐ **취향 논쟁을 없애는 자리**"
+        ],
+        [
+          "⚠️ `리뷰 문화\\|리뷰어`",
+          "**188 (모집중 69)**"
+        ],
+        [
+          "`페어 프로그래밍`",
+          "61 (모집중 26)"
+        ],
+        [
+          "⭐ 공고가 쓰는 말",
+          "**`문화`·`적극적`·`건강하게 토론`·`기준 정립`·`운영`** — 기술이 아니라 **태도와 제도**를 묻는다"
+        ],
+        [
+          "⭐⭐ 새로 보이는 것",
+          "지로 — `**모든 PR은 Claude의 자동 코드 리뷰를 거치고**`. ⚠️ **한 건이라 세지 않았다**"
+        ],
+        [
+          "⚠️ `market`",
+          "**비웠다** — `코드 리뷰` 는 `tech_relations.json` 의 기술 이름이 아니다(정상)"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ code health",
+      "en": "—",
+      "what": "승인의 기준. \"definitely **improves the overall code health** of the system\" — **완벽이 아니라 나아짐**"
+    },
+    {
+      "term": "⭐⭐ favor approving",
+      "en": "—",
+      "what": "**승인 쪽으로 기울라**는 지침. 조건은 \"코드 건강이 확실히 나아지는가\" 하나"
+    },
+    {
+      "term": "⭐⭐⭐ no such thing as 'perfect' code",
+      "en": "—",
+      "what": "\"—there is only **better code**\" — 이 문서 전체의 전제"
+    },
+    {
+      "term": "⭐⭐ personal preference",
+      "en": "—",
+      "what": "\"Any purely style point that is **not in the style guide**\" — ⭐ **요구가 아니라 제안**이다"
+    },
+    {
+      "term": "⭐ disincentivized",
+      "en": "—",
+      "what": "까다로운 리뷰의 대가. 사람들이 **개선을 아예 시도하지 않게** 된다"
+    },
+    {
+      "term": "⭐⭐⭐ one business day",
+      "en": "—",
+      "what": "응답까지의 **최대** 시간. 승인이 아니라 **응답**이다"
+    },
+    {
+      "term": "velocity",
+      "en": "—",
+      "what": "\"The velocity of the **team as a whole** is decreased\" — 리뷰 지연의 손해는 **개인이 아니라 팀**의 것"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "PR 을 보는데 개선점이 여러 개 보인다",
+      "pick": "⭐⭐ **\"전보다 나아지나\"로 판단하고, 나머지는 제안으로 남긴 뒤 승인한다**",
+      "over": "전부 고쳐질 때까지 보류하기",
+      "why": "⭐⭐⭐ \"reviewers should **favor approving** a CL once it is in a state where it **definitely improves the overall code health**\" 이고, \"Reviewers **should not require the author to polish every tiny piece**\" 다. ⚠️ 그리고 그 반대의 대가가 적혀 있다 — \"developers are **disincentivized to make improvements in future**\"",
+      "tradeoff": "⚠️ 덜 다듬어진 코드가 들어간다. ⭐ 그래도 **\"If you never submit an improvement to the codebase, then the codebase never improves\"** — 완벽을 기다린 결과는 개선이 아니라 **정지**다. 📌 남긴 제안은 **다음 PR 로 잇는다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Standard of Code Review — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **회사가 자기 리뷰 기준을 공개하면서, 그 기준이 \"완벽\"이 아니라고 못 박는 자리** — \"There is no such thing as 'perfect' code\""
+        }
+      ]
+    },
+    {
+      "situation": "스타일이 마음에 안 든다",
+      "pick": "⭐ **스타일 가이드에 있으면 요구, 없으면 제안으로 표시한다**",
+      "over": "둘 다 같은 무게로 코멘트하기",
+      "why": "⭐⭐ \"Any purely style point (whitespace, etc.) that is **not in the style guide** is a matter of **personal preference**.\" ⚠️ 가이드가 없으면 **모든 스타일 지적이 취향 논쟁**이 되고, 그 논쟁이 PR 을 세운다 — \"**Don't let a CL sit around**\"",
+      "tradeoff": "⚠️ 가이드를 만드는 데 시간이 든다. ⭐ 그래도 **한 번 만들면 취향 논쟁이 규칙 확인으로 바뀐다** — 그리고 그 앞단은 자동화할 수 있다(`린트|정적 분석` **229건**)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Standard of Code Review — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **회사가 자기 리뷰 기준을 공개하면서, 그 기준이 \"완벽\"이 아니라고 못 박는 자리** — \"There is no such thing as 'perfect' code\""
+        }
+      ]
+    },
+    {
+      "situation": "리뷰 요청이 왔는데 지금 집중해서 코드를 쓰고 있다",
+      "pick": "⭐ **하던 것을 끝내되, 하루를 넘기지 않는다**",
+      "over": "즉시 멈추고 보거나, 여유 생길 때까지 미루기",
+      "why": "⭐⭐⭐ 문서가 둘을 함께 적는다 — \"If you are in the middle of a focused task ... **don't interrupt yourself**\" 와 \"**One business day is the maximum time** it should take to **respond**\". ⚠️ **앞만 지키면 영원히 안 보게 되고, 뒤만 지키면 아무도 집중을 못 한다**",
+      "tradeoff": "하루가 긴 팀도 있고 짧은 팀도 있다. ⭐ **숫자보다 중요한 것은 \"응답\"이 승인이 아니라는 것** — \"오늘 오후에 보겠다\", \"이건 이래서 못 하겠다\" 도 응답이다. ⚠️ **이 숫자는 Google 조직의 값이고 다른 규모에서 맞는지는 확인하지 않았다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Speed of Code Reviews — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/speed.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **느린 리뷰가 코드 품질을 떨어뜨린다고 적는 문서** — 직관과 반대다"
+        }
+      ]
+    },
+    {
+      "situation": "리뷰가 팀의 병목이 됐다",
+      "pick": "⭐⭐ **먼저 \"품질이 내려가고 있지 않나\"를 본다**",
+      "over": "리뷰를 더 꼼꼼히 해서 만회하기",
+      "why": "⭐⭐⭐ 직관과 반대의 문장이 있다 — \"When reviews are slow, there is **increased pressure to allow developers to submit CLs that are not as good as they could be**.\" ⚠️ **느림이 품질을 지키는 게 아니라 깎는다.** 그리고 \"The **velocity of the team as a whole** is decreased\"",
+      "tradeoff": "⚠️ 빨리 보면 놓치는 것이 생긴다. ⭐ 그래서 **기계가 볼 수 있는 것을 먼저 걷어낸다**(린트·정적 분석 229건, 지로의 `모든 PR은 Claude의 자동 코드 리뷰를 거치고`) — 사람은 **\"이 변경이 시스템에 무엇을 뜻하나\"** 에 시간을 쓴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Speed of Code Reviews — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/speed.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **느린 리뷰가 코드 품질을 떨어뜨린다고 적는 문서** — 직관과 반대다"
+        }
+      ]
+    },
+    {
+      "situation": "주니어의 PR 을 리뷰하며 가르치고 싶다",
+      "pick": "⭐ **가르치는 코멘트를 \"제안\"으로 표시하고 승인은 기준대로 한다**",
+      "over": "배울 때까지 승인을 미루기",
+      "why": "⭐⭐ 공고가 그 자리를 이름으로 댄다 — 디피플래닝 `코드 리뷰 **문화 구축** 및 주니어 개발자 **온보딩**`, 큐엠아이티 `피드백을 **성장의 발판**으로`. ⚠️ 그런데 **가르치려 하면 지적이 늘고**, 그것이 \"polish every tiny piece\" 로 간다",
+      "tradeoff": "⚠️ 제안으로만 남기면 안 고치고 넘어갈 수 있다. ⭐ 그래서 **중요한 것 두세 개만 고르고**, 나머지는 **다음에 같이 보자**로 미룬다 — **한 PR 에 다 가르치려는 것이 병목의 흔한 원인**이다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐ 완벽해질 때까지 승인을 미룬다",
+      "why": "⭐⭐⭐ **선의에서 나오고, 그래서 고치기 어렵다.** 개선점이 보이는데 승인하는 것이 직무유기처럼 느껴진다. ⚠️ 그런데 문서가 그 결과를 적는다 — \"if a reviewer makes it **very difficult for any change to go in**, then developers are **disincentivized to make improvements in future**\". **품질을 지키려는 행동이 품질을 지킬 의욕을 없앤다**",
+      "fix": "⭐ **기준을 문장으로 외운다 — \"전보다 나아지나?\"** 나아지면 승인하고, 남은 것은 **제안으로 적어 다음으로 잇는다.** 📌 \"There is **no such thing as 'perfect' code**—there is only **better code**\"",
+      "sources": [
+        {
+          "title": "The Standard of Code Review — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **회사가 자기 리뷰 기준을 공개하면서, 그 기준이 \"완벽\"이 아니라고 못 박는 자리** — \"There is no such thing as 'perfect' code\""
+        }
+      ]
+    },
+    {
+      "trap": "리뷰를 느리게 해서 품질을 지키려 한다",
+      "why": "⭐⭐⭐ **직관과 정반대인데 문서가 명확하다** — \"When reviews are slow, there is **increased pressure to allow developers to submit CLs that are not as good as they could be**.\" ⚠️ 기다림이 비싸지면 **팀이 덜 좋은 것도 통과시키게** 된다. 그리고 손해는 **\"the team as a whole\"** 의 것이다",
+      "fix": "⭐ **응답 시한을 정한다** — 문서의 기준은 \"**One business day** ... to **respond**\". ⚠️ **승인이 아니라 응답**이다. 그리고 **기계가 볼 수 있는 것**(린트·정적 분석)을 먼저 걷어 사람의 시간을 아낀다",
+      "sources": [
+        {
+          "title": "Speed of Code Reviews — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/speed.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **느린 리뷰가 코드 품질을 떨어뜨린다고 적는 문서** — 직관과 반대다"
+        }
+      ]
+    },
+    {
+      "trap": "취향을 요구처럼 적는다",
+      "why": "⭐ 코멘트에는 무게 표시가 없어서, **\"이렇게 하면 어때요\"와 \"이건 고쳐야 합니다\"가 같은 줄로 보인다.** ⚠️ 작성자는 전부 고쳐야 하는 줄 알고, **PR 이 세워진다**",
+      "fix": "⭐⭐ **스타일 가이드에 있으면 요구, 없으면 제안**이라고 문서가 선을 긋는다 — \"a matter of **personal preference**\". 📌 실무에서는 **코멘트 앞에 표시를 붙인다**(`[제안]`·`[필수]` 같은 것) — 한 글자로 논쟁 하나가 사라진다",
+      "sources": [
+        {
+          "title": "The Standard of Code Review — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **회사가 자기 리뷰 기준을 공개하면서, 그 기준이 \"완벽\"이 아니라고 못 박는 자리** — \"There is no such thing as 'perfect' code\""
+        }
+      ]
+    },
+    {
+      "trap": "합의가 안 되는 PR 을 그대로 둔다",
+      "why": "⚠️ 작성자도 리뷰어도 물러서지 않으면 **아무도 닫지 않은 채 며칠이 간다.** 그동안 그 브랜치는 낡아 가고, **머지할 때 충돌이 커진다**",
+      "fix": "⭐ 문서의 지시가 짧다 — \"**Don't let a CL sit around** because the author and the reviewer can't come to an agreement.\" 📌 **에스컬레이션 경로를 미리 정해 둔다**(팀 리드·설계 리뷰 자리). ⚠️ **정해 두지 않으면 미루는 것이 기본값**이 된다",
+      "sources": [
+        {
+          "title": "The Standard of Code Review — Google Engineering Practices",
+          "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **회사가 자기 리뷰 기준을 공개하면서, 그 기준이 \"완벽\"이 아니라고 못 박는 자리** — \"There is no such thing as 'perfect' code\""
+        }
+      ]
+    },
+    {
+      "trap": "한 PR 에 다 가르치려 한다",
+      "why": "⭐ 주니어 온보딩과 리뷰가 붙어 다니는데(디피플래닝·큐엠아이티), **가르칠 것이 많이 보이면 코멘트가 스무 개가 된다.** ⚠️ 받는 쪽은 **무엇이 중요한지 모르고**, 고치는 데 며칠이 간다",
+      "fix": "⭐⭐ **중요한 것 두세 개만 고르고 나머지는 다음으로 미룬다.** 그리고 **왜 그것이 중요한지**를 함께 적는다 — 큐엠아이티 공고의 `**논리적이고 건강하게 토론**` 이 그 자리다"
+    },
+    {
+      "trap": "이 문서의 기준을 그대로 자기 팀에 옮긴다",
+      "why": "⚠️ **Google 의 문서는 그 조직의 규모와 문화를 전제한다.** \"one business day\" 도 그 조직의 값이고, ⭐ **이 문서는 다른 규모에서 그 숫자가 맞는지 확인하지 않았다**",
+      "fix": "⭐ **기준(완벽이 아니라 개선)은 가져오되 숫자는 팀에서 정한다.** 📌 그리고 정할 때 **\"느리면 품질이 내려간다\"는 사실을 근거로 쓴다** — 숫자보다 그 인과가 중요하다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **최근 자기 팀(또는 아무 오픈소스)의 PR 다섯 개를 열어, 각 코멘트를 \"요구\"와 \"제안\"으로 분류**한다. 그리고 **요구 중 스타일 가이드에 근거가 있는 것이 몇 개**인지 센다.",
+      "done_when": "두 숫자가 나오고, ⭐ **근거 없는 요구가 몇 %인지** 답할 수 있다. 그리고 **그중 PR 을 실제로 지연시킨 것**을 하나 찾았다.",
+      "why": "⭐⭐⭐ \"Any purely style point that is **not in the style guide** is a matter of **personal preference**\" — 이 문장은 **자기 팀 코멘트로 세어 봐야** 뜻이 산다. 💡 그리고 대부분의 팀이 **근거 없는 요구의 비율을 모른다.**",
+      "no_hardware": "자기 팀이 없으면 **아무 인기 오픈소스의 최근 PR** 을 본다 — ⭐ 공개 리뷰가 어떤 말투를 쓰는지 보는 것도 배울 점이다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐ **자기 팀의 PR 이 열린 뒤 첫 응답까지 걸린 시간을 최근 열 건에 대해 재고**, 중간값과 최댓값을 적는다. 그리고 **하루를 넘긴 것이 몇 건**인지 센다.",
+      "done_when": "세 숫자가 나오고, ⭐ **하루를 넘긴 PR 들에 공통점이 있는지**(큰 변경? 특정 리뷰어? 특정 요일?) 한 줄 적었다.",
+      "why": "⭐⭐ \"**One business day is the maximum time** it should take to **respond**\" 는 기준인데, **자기 팀의 실제 값을 모르면 비교할 수 없다.** 💡 그리고 \"느리면 품질이 내려간다\"는 주장을 **팀에 설득할 때 필요한 것이 이 숫자**다.",
+      "no_hardware": "측정 도구가 없으면 **최근 PR 열 개를 눈으로 열어** 생성 시각과 첫 코멘트 시각을 적으면 된다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **`The Standard of Code Review` 를 열고 \"should not\"·\"don't\"·\"never\"·\"no such thing\" 을 검색**해 각각이 무엇에 붙어 있는지 적는다. 그리고 **그중 자기가 어긴 적 있는 것**을 하나 고른다.",
+      "done_when": "목록이 만들어지고, ⭐ **고른 항목에 대해 \"그때 무슨 일이 있었나\"** 를 한 줄 적었다.",
+      "why": "⭐⭐ 이 백과사전이 계속 하는 일 — **부정어를 먼저 찾는다.** 💡 그리고 이 문서는 **리뷰어에게 하지 말라는 것**이 유난히 많다: 완벽 요구 금지, 취향을 요구로 만들지 말 것, 세워 두지 말 것. ⭐ **리뷰의 실패는 대개 안 해서가 아니라 과해서 생긴다**는 뜻이다.",
+      "no_hardware": "웹 페이지 하나면 된다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "리뷰어의 승인 기준을 원문으로 말하면? 그것이 \"완벽\"이 아닌 이유는?",
+    "까다로운 리뷰의 대가를 문서는 뭐라고 적는가?",
+    "요구와 제안을 가르는 선은? 그 선이 흐릴 때 팀이 할 일은?",
+    "리뷰가 느리면 코드 품질에 무슨 일이 생기는가? 왜 직관과 반대인가?",
+    "응답 시한의 기준은? '응답'이 무엇을 뜻하는가?",
+    "집중을 깨지 말라는 지침과 하루 기준은 왜 함께 있어야 하는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 코드 리뷰와 피드백을 성장의 발판으로 삼으며, 동료와 논리적이고 건강하게 토론할 수 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "where": "큐엠아이티",
+      "what_it_shows": "⭐⭐ **기술이 아니라 태도를 묻는다** — `성장의 발판`·`건강하게 토론`. ⚠️ 그런데 **그 토론의 기준이 무엇인지는 안 적는다**(`리뷰 문화|리뷰어` 188건)"
+    },
+    {
+      "quote": "○ 코드 리뷰 문화 구축 및 주니어 개발자 온보딩 경험자",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/367806",
+      "where": "디피플래닝",
+      "what_it_shows": "⭐⭐ **`문화 구축`·`온보딩`** — 리뷰를 **제도이자 교육의 자리**로 본다. ⚠️ 그리고 그것이 `why` 절의 기준과 긴장한다(가르치려면 지적이 는다)"
+    },
+    {
+      "quote": "[코드 리뷰 / 설계 리뷰를 통한 기준 정립]",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372622",
+      "where": "헤렌",
+      "what_it_shows": "⭐⭐⭐ **`기준 정립`** — 이 문서가 하려는 말 그대로다. Google 이 공개한 것이 바로 **그 기준**이고, 첫 문장이 \"완벽한 코드는 없다\"이다"
+    },
+    {
+      "quote": "AI agent를 업무에 적극 활용하며 효율을 높이는 것은 최근 지로 개발팀의 가장 중요한 목표 중 하나예요. 모든 PR은 Claude의 자동 코드 리뷰를 거치고, 개발자 각자가 AI를 도구로 삼아 더 빠르고 깊게 일합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371583",
+      "where": "지로",
+      "what_it_shows": "⭐⭐⭐ **`모든 PR은 자동 코드 리뷰를 거치고`** — `speed` 절의 관점에서는 **속도 문제의 한 해법**이다. ⚠️ **한 건이라 세지 않았고**, 기계가 `code health` 를 판단할 수 있는지는 이 문서가 모른다"
+    },
+    {
+      "quote": "• 코드 리뷰를 통해 팀의 코드 품질을 높여본 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/368135",
+      "where": "액션파워",
+      "what_it_shows": "⭐ **`높여본 경험`** — 받는 쪽이 아니라 **하는 쪽의 일**로 적는다. `리뷰어` 를 이름으로 대는 188건의 성격"
+    },
+    {
+      "quote": "• 코드 리뷰에 적극적이며, 복잡한 비즈니스 요구사항을 깔끔하고 읽기 쉬운 코드로 단순화할 수 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365927",
+      "where": "동선컴퍼니",
+      "what_it_shows": "⭐ `적극적` — ⚠️ **적극성만으로는 \"승인할까 말까\"에 답이 안 된다.** 그 순간에 필요한 것이 기준이다"
+    },
+    {
+      "quote": "• Git 기반 협업 및 코드 리뷰 문화에 익숙하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375155",
+      "where": "에비드넷",
+      "what_it_shows": "⭐⭐ **`Git 기반 협업`과 `코드 리뷰 문화`가 한 줄에** — `git` 문서의 축(\"공유되면 못 고친다\")이 리뷰를 낳는다는 것을 회사가 붙여서 적는다"
+    },
+    {
+      "quote": "• 테스트, 코드 리뷰, 모니터링을 통한 서비스 품질과 운영 안정성 개선",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378475",
+      "where": "디플라이어",
+      "what_it_shows": "⭐ **테스트·리뷰·모니터링을 한 묶음으로** 본다 — 각각 **사전·중간·사후**의 장치다(→ `observability`)"
+    }
+  ],
+  "related": [
+    {
+      "slug": "git",
+      "how": "⭐⭐⭐ **정면의 짝.** 저 문서의 축(\"공유되면 못 고친다\")이 **리뷰가 필요한 이유**다. ⚠️ `코드 리뷰` alias 를 그 문서에서 가져왔다 — 저쪽은 1차 자료로 다루지 않고 \"가장 큰 빈자리\"라고 적었다"
+    },
+    {
+      "slug": "github-actions",
+      "how": "⭐ **기계가 보는 부분** — 린트·정적 분석(229건)을 CI 로 돌리면 **취향 논쟁이 사라지고** 사람은 `code health` 에 집중한다"
+    },
+    {
+      "slug": "design-system",
+      "how": "⭐ 리뷰가 **컴포넌트 계약을 지키는 자리** — 저 문서의 '조직의 계약'과 이어진다"
+    },
+    {
+      "slug": "observability",
+      "how": "디플라이어 공고의 `테스트, 코드 리뷰, 모니터링` — **사전·중간·사후**의 셋"
+    },
+    {
+      "slug": "typescript",
+      "how": "⭐ 기계가 먼저 걸러 주는 것의 다른 예 — 타입 검사가 잡는 것은 리뷰에서 안 봐도 된다"
+    },
+    {
+      "slug": "monorepo",
+      "how": "저장소 구조가 리뷰 범위를 정한다"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **\"무엇을 보나\"를 다루지 않았다.** 설계·기능·복잡도·테스트·이름·주석 — **리뷰의 실제 내용**이고 가이드에 절이 따로 있는데 **열지 않았다.** 이 문서는 **\"언제 승인하나\"와 \"얼마나 빨리\"** 만 다뤘다. **가장 큰 빈자리다.**",
+    "⚠️ **리뷰 코멘트 쓰는 법을 다루지 않았다.** 큐엠아이티 공고의 `논리적이고 건강하게 토론` 이 가리키는 자리이고 가이드에 절이 있는데 안 봤다.",
+    "⚠️ **작성자 쪽 가이드를 안 읽었다.** 같은 문서 모음에 `CL author's guide` 가 있는데 **리뷰어 쪽 두 절만** 읽었다 — ⭐ **PR 을 작게 만드는 법**은 `speed` 절의 처방과 직결되는데 비었다.",
+    "⚠️⚠️ **Google 의 기준이 다른 규모에 맞는지 확인하지 않았다.** \"one business day\" 는 **그 조직의 값**이다. ⭐ 기준(완벽이 아니라 개선)은 규모와 무관해 보이지만 **숫자는 그렇지 않을 수 있다** — `pitfalls` 에 규칙으로 적었다.",
+    "⚠️ **기계 리뷰를 판단하지 못했다.** 지로 공고 **한 건**이고 별도로 세지도 않았다. ⭐ **그것이 `code health` 를 판단할 수 있는지**는 자료가 없다 — 그 판단은 \"이 변경이 이 시스템에 무엇을 뜻하나\"를 아는 일이기 때문이다.",
+    "⚠️ **`기술 부채|리팩터링` 835건을 다루지 않았다.** `code health` 와 정면으로 이어지는 낱말인데 **별도 낱말로 남겼다.**",
+    "⭐ **`market` 을 비웠다** — `코드 리뷰` 는 `tech_relations.json` 의 기술 이름이 아니라서 **비우는 것이 정상**이다(`PROMPT.md`). 대신 `evidence` 를 공고에서 뽑았다.",
+    "⭐ **alias 를 옮겼다** — `코드 리뷰` 를 `git` 에서 이 문서로. 근거: 그 문서는 리뷰를 **1차 자료로 다루지 않았고** 스스로 빈자리라고 적었다. `state-management`←`react` 와 같은 절차이고, **세 곳(원문서 `aliases`·`index.json`·원문서 `open_questions`)을 함께 고쳤다.**"
+  ],
+  "sources": [
+    {
+      "title": "The Standard of Code Review — Google Engineering Practices",
+      "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+      "publisher": "Google",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **회사가 자기 리뷰 기준을 공개하면서, 그 기준이 \"완벽\"이 아니라고 못 박는 자리** — \"There is no such thing as 'perfect' code\""
+    },
+    {
+      "title": "Speed of Code Reviews — Google Engineering Practices",
+      "url": "https://google.github.io/eng-practices/review/reviewer/speed.html",
+      "publisher": "Google",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **느린 리뷰가 코드 품질을 떨어뜨린다고 적는 문서** — 직관과 반대다"
+    }
+  ]
+}
