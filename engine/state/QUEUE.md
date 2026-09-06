@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Tigris Data** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 메타데이터를 한 트랜잭션으로 묶는다(`fdb-metadata`). 빈 도메인 둘 — 어디에 두고 어디서 읽을지 정한다 · 남의 API 를 그대로 받아 옮겨 오게 만든다. ⚠️ 심층 글이 `fdb-krea-talk`(2026-08-18) 하나뿐이고 블로그 목록도 그것만 온다. 나머지 두 도메인은 같은 글에서 뽑을 수 있는 만큼만 남았으므로, 자료를 더 못 찾으면 `hold_reason` 을 달고 다음으로 넘어간다. 수치·요율·빠진 S3 API 는 비공개다. |
+| **Tigris Data** | US · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 메타데이터를 한 트랜잭션으로 묶는다(`fdb-metadata`) · 어디에 두고 어디서 읽을지 정한다(`push-metadata-pull-data`). 빈 도메인 하나 — 남의 API 를 그대로 받아 옮겨 오게 만든다. 블로그 목록이 WebFetch 로는 글 하나만 오지만 **검색으로 더 나온다** — `global-replication`(2025-04-01) · `multi-region-dual-region-buckets`(2026-03-24) · `antithesis`(안티테시스로 카오스 시험) · 문서(`/docs/objects/caching`, `/docs/concepts/architecture`). 안티테시스 글은 이 엔진의 회사가 남의 글에 고객으로 등장하는 자리다. |
 
 ## 대기
 
