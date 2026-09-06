@@ -1,0 +1,649 @@
+{
+  "slug": "react",
+  "title": "React — 탈출구라고 불리는 훅",
+  "title_en": "React: The Hook Its Own Docs Call an Escape Hatch",
+  "aliases": [
+    "React",
+    "리액트",
+    "훅",
+    "Hooks",
+    "useEffect",
+    "상태 관리"
+  ],
+  "category": "framework",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **공식 문서가 `useEffect` 를 \"escape hatch\"(탈출구)라고 부르고, 제목에서부터 쓰지 말라고 한다** — 그리고 불필요한 Effect 를 지우는 것이 **가장 큰 렌더링 최적화**다. 공고는 `렌더링 최적화` 397건을 요구하면서 그 이름은 4건만 부른다.",
+  "summary": "⭐ **`React` 는 3713건(모집중 1193)** — **이 백과사전이 만난 낱말 중 가장 크다**(`rest` 3372, `CI/CD` 2795 를 넘는다). ⚠️⚠️ **그런데 `useEffect` 는 4건(모집중 0)** 이다. **3713 대 4.**\n\n**공고가 요구하는 것은 대개 이 셋이다.**\n\n> `**컴포넌트 설계, 상태 관리, 렌더링 최적화** 등 React 생태계에 대한 깊은 이해` — DSRV\n> `React 기반의 **렌더링 최적화** 실무 경험` — 레브잇\n\n`상태 관리` **990건**, `렌더링 최적화|리렌더|memo` **397건**. ⭐ **회사들이 \"빠르게 만들 줄 아는 사람\"을 찾는다.**\n\n💡 ⭐⭐⭐ **그런데 React 문서가 말하는 가장 큰 최적화는 `memo` 를 붙이는 것이 아니라 무언가를 지우는 것이다.**\n\n> ⭐⭐⭐ **\"Effects are an escape hatch from the React paradigm.\"**\n> ⭐⭐⭐ \"If there is **no external system involved** ... **you shouldn't need an Effect**.\"\n> ⭐⭐ 불필요한 Effect 를 지우면 코드가 \"**easier to follow, faster to run, and less error-prone**\".\n\n⚠️ **왜 느려지는지도 적혀 있다** — Effect 안에서 state 를 바꾸면 \"this **restarts the whole process from scratch**\", 그래서 **\"unnecessary render passes\"** 가 생긴다.\n\n📌 **`렌더링 최적화` 397건 대 `useEffect` 4건.** 최적화를 요구하면서 **가장 흔한 낭비의 이름은 아무도 안 부른다.**",
+  "market": {
+    "tech": "React",
+    "layer": "프론트엔드",
+    "postings": 1252,
+    "pct_jobs": 17.4,
+    "with": [
+      {
+        "name": "TypeScript",
+        "pct": 54.5,
+        "why": "⭐ 둘 중 하나 이상 (→ `typescript`)"
+      },
+      {
+        "name": "AWS",
+        "pct": 35.2,
+        "why": "배포처"
+      },
+      {
+        "name": "JavaScript",
+        "pct": 31.3,
+        "why": "⭐ **셋 중 하나만** — 나머지는 TS 만 적는다 (→ `javascript`)"
+      },
+      {
+        "name": "Python",
+        "pct": 29.5,
+        "why": "백엔드가 파이썬인 팀"
+      },
+      {
+        "name": "Next.js",
+        "pct": 29.4,
+        "why": "⭐⭐ 셈으로는 **1400건** — ⚠️ **별도 낱말이다**(SSR·서버 컴포넌트는 축이 다르다)"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 3713 대 4 — 최적화를 요구하면서 그 원인의 이름은 안 부른다",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| ⭐⭐⭐ `React\\|리액트` | **3713** | (모집중 1193) — **이 백과사전 최대** |\n| `Next.js` | **1400** | (모집중 448) — ⚠️ 별도 낱말 |\n| `상태 관리\\|Redux\\|Zustand\\|Recoil` | **990** | (모집중 313) |\n| ⭐ `렌더링 최적화\\|리렌더\\|memo` | **397** | (모집중 223) |\n| `훅\\|Hooks\\|useState` | 187 | (모집중 78) |\n| `서버 컴포넌트\\|RSC` | 71 | (모집중 45) |\n| ⚠️⚠️ **`useEffect`** | **4** | (모집중 **0**) |\n\n⭐⭐⭐ **3713 대 4.** 이 백과사전이 **열한 번째로 만나는 형태**이고(`rest` 3372 vs `HATEOAS` 0 이래), **역대 최대 격차**다.\n\n**공고가 쓰는 말은 셋으로 모인다.**\n\n> ⭐⭐ `**컴포넌트 설계, 상태 관리, 렌더링 최적화** 등 React 생태계에 대한 깊은 이해` — DSRV\n> `React 기반의 **렌더링 최적화** 실무 경험이 있는 분이 필요합니다.` — 레브잇\n> `React 컴포넌트 / **커스텀 훅** 개발 및 **상태-뷰 연결 최적화**` — 엔닷라이트\n> `Zustand를 활용한 글로벌 상태 관리 및 ... 훅(React Hooks) 기반의 **비동기/렌더링 최적화**` — 비에스일렉트릭\n\n⭐ **\"렌더링 최적화\"가 397건이다.** 회사들은 **빠르게 만들 줄 아는 사람**을 원한다.\n\n💡 ⭐⭐⭐ **그런데 React 문서가 권하는 첫 번째 최적화는 무언가를 붙이는 것이 아니라 지우는 것이다** — 불필요한 Effect. 그리고 **그 이름은 4건**이다.\n\n📌 **`Hooks` 는 이름이 불린다**(187건). 다만 대개 이런 모양이다.\n\n> `React **Hooks** 개발 경험이 있으신 분` — 데일리페이 · 데일리펀딩\n> `React.js 및 관련 생태계 (**Hooks, Redux** 등)에 대한 깊은 이해` — 씨큐비스타\n> `React **함수형 컴포넌트 및 Hooks**에 대한 이해` — 블루라이언스\n\n⚠️ **\"훅을 쓸 줄 아나\"** 까지다. **\"언제 안 써야 하나\"** 는 없다 — 그리고 그것이 공식 문서 한 페이지의 주제다.\n\n📌 **이 문서는 `design-system` 과 겹치지 않는다.** 그 문서를 세어 봤다 — `React` **0회**, `useEffect`·`훅`·`Hooks` **0회**, `렌더` **0회**. ⭐ 저쪽은 **컴포넌트의 이름·동작·조직 계약**이고, 여기는 **렌더링 모델**이다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ \"escape hatch\" — 무엇에서 탈출하나",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ],
+      "body": "문서의 첫 문장이 이것이다.\n\n> ⭐⭐⭐ **\"Effects are an escape hatch from the React paradigm.\"**\n\n💡 **\"패러다임으로부터의 탈출구\"** — 자기 API 를 그렇게 부른다. 그러면 **무엇이 그 패러다임이고, 왜 거기서 나가야 하나.**\n\n⭐ **React 의 패러다임은 한 줄이다 — \"지금 상태로 화면이 어떻게 생겨야 하는지\"만 쓴다.** 어떻게 바꿀지가 아니라 **어떤 모습이어야 하는지**를 쓰고, 실제 변경은 React 가 한다. ⭐ 그래서 **계산은 렌더링 중에** 일어난다.\n\n**Effect 는 그 바깥으로 나가는 문이다.** 그리고 문서가 **언제 나가야 하는지**를 못 박는다.\n\n> ⭐⭐⭐ \"If there is **no external system involved** (for example, if you want to update a component's state when some props or state change), **you shouldn't need an Effect**.\"\n> ⭐ \"You **do** need Effects to **synchronize with external systems**.\"\n\n**기준은 하나 — 밖에 무언가가 있나.** 없으면 나갈 이유가 없다.\n\n📌 **지우면 무엇이 좋아지는지도 세 가지로 적는다.**\n\n> ⭐⭐ \"Removing unnecessary Effects will make your code **easier to follow**, **faster to run**, and **less error-prone**.\"\n\n⭐⭐⭐ **가운데가 이 문서의 핵심이다 — \"faster to run\".** 공고 **397건**이 요구하는 그 최적화가, **문서에서는 무언가를 지우는 일**로 나온다.\n\n**왜 느려지는지가 다음 문장에 있다.**\n\n> ⭐⭐⭐ \"When you update the state, React will first call your component functions to calculate what should be on the screen. Then React will commit these changes to the DOM ... Then React will run your Effects. **If your Effect also immediately updates the state, this restarts the whole process from scratch!**\"\n> ⭐⭐ \"To avoid the **unnecessary render passes**, **transform all the data at the top level of your components**.\"\n\n💡 **한 번 그릴 것을 두 번 그린다.** 화면 → Effect → 상태 변경 → **다시 화면**. ⚠️ **그리고 이건 `memo` 를 아무리 붙여도 안 없어진다** — 원인이 다른 데 있기 때문이다.\n\n📌 ⭐⭐ **이 백과사전의 계보에 또 한 칸이 생겼다.**\n\n| 문서 | 원문 | 형태 |\n|---|---|---|\n| `kotlin` | \"impractical\" | 현실적이지 않다 |\n| `redis` | \"we discourage it\" | 권하지 않는다 |\n| `github-actions` | \"almost never\" | 거의 하지 마라 |\n| `typescript` | **Non-goals** | 이건 목표가 아니다 |\n| `javascript` | \"would be removed\" | 잘못인데 못 고친다 |\n| ⭐⭐⭐ **`react`** | **\"escape hatch\" · \"You Might Not Need\"** | **자기 API 를 쓰지 말라고 설득한다** |"
+    },
+    {
+      "id": "unneed",
+      "kind": "how",
+      "heading": "⭐⭐ 문서가 드는 두 가지 — 대부분이 여기 들어간다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ],
+      "body": "**① 화면에 그릴 데이터를 만드는 것.**\n\n문서가 짧은 예로 못 박는다.\n\n```js\n// 🔴 Avoid: redundant state and unnecessary Effect\nconst [fullName, setFullName] = useState('');\nuseEffect(() => {\n  setFullName(firstName + ' ' + lastName);\n}, [firstName, lastName]);\n\n// ✅ Good: calculated during rendering\nconst fullName = firstName + ' ' + lastName;\n```\n\n⭐ **아래가 짧기만 한 게 아니다.** 위는 **한 번 더 그린다**(앞 절의 \"restarts the whole process from scratch\"). 그리고 ⚠️ **`fullName` 이 잠깐 옛값인 순간이 생긴다** — 상태가 둘이니까.\n\n> ⭐⭐ \"**If you can calculate something during render, you don't need an Effect.**\"\n> \"transform all the data **at the top level of your components**. That code will **automatically re-run whenever your props or state change**.\"\n\n💡 **계산이 정말 무거우면** 문서가 `useMemo` 를 준다 — ⭐ **Effect 가 아니다.** `useMemo` 는 **렌더링 안에 있고**, Effect 는 **렌더링 밖으로 나간다.**\n\n**② 사용자가 한 일에 반응하는 것.**\n\n> ⭐⭐⭐ \"You **don't need Effects to handle user events** ... In the Buy button click event handler, **you know exactly what happened**. **By the time an Effect runs, you don't know what the user did.**\"\n\n⭐⭐ **마지막 문장이 판단 기준 전부다.** 이벤트 핸들러는 **무슨 일이 있었는지 안다**(버튼을 눌렀다). Effect 는 **결과만 본다**(상태가 바뀌었다) — **왜 바뀌었는지는 모른다.**\n\n⚠️ 그래서 \"구매 요청 보내기\"를 Effect 에 넣으면, **그 상태가 다른 이유로 바뀌었을 때도 요청이 나간다.**\n\n**문서가 질문 하나로 정리한다.**\n\n> ⭐⭐⭐ \"ask yourself **why** this code needs to run. **Use Effects only for code that should run because the component was displayed to the user.**\"\n\n📌 **그리고 흔한 함정 하나를 따로 든다 — props 가 바뀔 때 상태를 초기화하는 것.**\n\n```js\n// 🔴 Avoid: Resetting state on prop change in an Effect\nuseEffect(() => { setComment(''); }, [userId]);\n\n// ✅ Best: Use key to reset entire component\n<Profile userId={userId} key={userId} />\n```\n\n⭐ **`key` 를 바꾸면 React 가 그것을 다른 컴포넌트로 본다** — 상태가 통째로 새로 시작한다. **한 줄이고, 빠뜨릴 상태가 없다.**"
+    },
+    {
+      "id": "need",
+      "kind": "how",
+      "heading": "⭐ 그러면 언제 필요한가 — 밖에 무언가 있을 때",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ],
+      "body": "문서가 필요한 경우도 분명히 적는다.\n\n> ⭐ \"You **do** need Effects to **synchronize with external systems**. For example, you can write an Effect that keeps a **jQuery widget** synchronized with the React state. You can also **fetch data** with Effects.\"\n\n**\"외부 시스템\"** 이 기준이고, 문서가 드는 예가 흥미롭다 — **jQuery 위젯.** ⭐ **React 가 모르는 것, React 가 관리하지 않는 것**이면 무엇이든 여기 들어간다.\n\n📌 **실무에서 그 목록은 대개 이렇다.**\n\n| 무엇 | 왜 외부인가 |\n|---|---|\n| **네트워크 요청** | 서버는 React 가 모른다 (→ `rest`·`graphql`) |\n| **브라우저 API** | 스크롤·리사이즈·`localStorage`·타이머 |\n| ⭐ **React 밖의 라이브러리** | 지도·차트·에디터 — 문서의 jQuery 위젯이 이것 |\n| **구독** | 웹소켓·이벤트 스트림 |\n\n💡 ⭐⭐ **패턴이 보인다 — 전부 `typescript` 문서가 \"타입이 안 지켜 주는 자리\"라고 부른 그 경계다.** 바깥에서 들어오는 것, 바깥으로 나가는 것. **경계에서는 검증이 필요하고**(→ `typescript`), **경계에서는 Effect 가 필요하다.** ⭐ **같은 선이다.**\n\n📌 ⚠️ **다만 데이터 가져오기는 오늘날 대개 직접 쓰지 않는다.** 문서가 \"You can also fetch data with Effects\" 라고 하지만, 공고를 보면 **다들 라이브러리를 쓴다.**\n\n> `상태 관리(**React Query**, Zustand 등) 활용 경험` — 실리콘투\n> `React/Next.js 생태계(**Hooks, 상태 관리** 등)에 대한 깊은 이해` — 프레쉬아워\n\n⭐ **`상태 관리` 990건 안에 그것들이 있다.** 캐시·중복 요청 제거·재시도·경쟁 상태 처리를 **직접 Effect 로 쓰면 대부분 틀린다** — ⚠️ **이 문서는 그 이유를 1차 자료로 확인하지 못했다**(`open_questions`).\n\n📌 **정리하면 판단은 두 질문이다.**\n\n1. ⭐ **밖에 무언가 있나?** 없으면 **렌더링 중에 계산한다.**\n2. ⭐⭐ **이 코드가 도는 이유가 \"컴포넌트가 화면에 나타났기 때문\"인가?** 아니면(사용자가 눌렀기 때문이면) **이벤트 핸들러다.**"
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ React 를 다루지 않았다.** JSX·컴포넌트·props·상태·리스트·조건부 렌더링 — **3713건짜리 낱말인데 입문 내용은 한 줄도 안 썼다.** ⭐ **의도한 것이다**: 그것까지 넣으면 이 백과사전 최대의 요약본이 된다. 이 문서는 **한 페이지짜리 주제 하나**만 다뤘다.\n\n**2. ⚠️ 다른 훅을 다루지 않았다.** `useState`·`useMemo`·`useCallback`·`useRef`·`useContext`·`useReducer` — ⭐ 특히 **`useMemo`/`useCallback` 은 `렌더링 최적화` 397건과 정면으로 이어지는데** 해당 문서를 열지 않았다.\n\n**3. ⚠️⚠️ 상태 관리를 다루지 않았다**(`상태 관리|Redux|Zustand` **990건**). ⭐ **이 낱말 안에서 두 번째로 큰데**, Redux·Zustand·React Query 의 **공식 문서를 하나도 열지 않았다.** `need` 절이 \"데이터 가져오기는 라이브러리를 쓴다\"고 말하면서 **그 근거는 공고 문장뿐**이다.\n\n**4. ⚠️ `Next.js`(1400건)와 서버 컴포넌트(71건)를 다루지 않았다.** ⭐ **별도 낱말로 두는 것이 맞다** — SSR·라우팅·서버 컴포넌트는 축이 완전히 다르다. 다만 **1400건짜리 낱말이 비어 있다는 것은 큐가 기억해야 한다.**\n\n**5. ⚠️ 렌더링 원리를 다루지 않았다.** 재조정(reconciliation)·가상 DOM·`key` 의 동작 — ⭐ `unneed` 절이 **`key` 로 상태를 초기화하는 처방**을 쓰면서 **왜 그렇게 되는지는 설명하지 않았다**(해당 문서를 열지 않았다).\n\n**6. ⚠️ 성능 숫자를 하나도 쓰지 않았다.** \"몇 ms 빨라진다\" 류는 **컴포넌트·데이터 크기에 따라 달라져** 옮기면 거짓이 된다. ⭐ 문서도 숫자 대신 **\"unnecessary render passes\"** 라는 구조적 설명을 쓴다.\n\n**7. 이 문서가 다루지 않는 것.** 컴포넌트의 이름·동작·조직 계약은 `design-system`, 타입은 `typescript`, 언어는 `javascript`, 서버 쪽은 `nodejs`, 경계에서 들어오는 데이터는 `rest`·`graphql` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 문서가 자기 API 에 대해 쓰는 말",
+      "note": "전부 **React 공식 문서의 원문**이다. ⭐ 이 표의 요점은 조언이 아니라 **말투** — 제품 문서가 **제목에서부터** 자기 기능을 쓰지 말라고 한다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 정체",
+          "**\"Effects are an escape hatch from the React paradigm.\"**"
+        ],
+        [
+          "⭐⭐⭐ 언제 필요 없나",
+          "\"If there is **no external system involved** (for example, if you want to update a component's state when some props or state change), **you shouldn't need an Effect**.\""
+        ],
+        [
+          "⭐⭐ 지우면",
+          "\"Removing unnecessary Effects will make your code **easier to follow**, **faster to run**, and **less error-prone**.\""
+        ],
+        [
+          "⭐⭐⭐ 왜 느려지나",
+          "\"**If your Effect also immediately updates the state, this restarts the whole process from scratch!**\" → \"To avoid the **unnecessary render passes**, transform all the data **at the top level** of your components.\""
+        ],
+        [
+          "⭐⭐ 계산은",
+          "\"**If you can calculate something during render, you don't need an Effect.**\""
+        ],
+        [
+          "⭐⭐⭐ 이벤트와의 차이",
+          "\"In the Buy button click event handler, **you know exactly what happened**. **By the time an Effect runs, you don't know what the user did.**\""
+        ],
+        [
+          "⭐⭐⭐ 판단 기준",
+          "\"ask yourself **why** this code needs to run. **Use Effects only for code that should run because the component was displayed to the user.**\""
+        ],
+        [
+          "⭐ 언제 필요한가",
+          "\"You **do** need Effects to **synchronize with external systems**. For example ... keeps a **jQuery widget** synchronized with the React state.\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "id": "decide",
+      "kind": "compare",
+      "caption": "⭐⭐ 어디에 쓰나 — 세 자리",
+      "note": "왼쪽 두 열의 근거는 위 `quotes` 표의 원문이고, 표의 구성은 이 문서의 정리다. ⭐ **질문은 둘뿐** — \"밖에 무언가 있나\", \"왜 이 코드가 도나\".",
+      "columns": [
+        "무엇을 하려는가",
+        "어디에",
+        "근거"
+      ],
+      "rows": [
+        [
+          "props·state 로 값을 만든다",
+          "⭐ **렌더링 중에 그냥 계산**",
+          "\"If you can **calculate something during render**, you don't need an Effect\""
+        ],
+        [
+          "그 계산이 정말 무겁다",
+          "`useMemo`",
+          "⭐ **여전히 렌더링 안이다** — Effect 가 아니다"
+        ],
+        [
+          "사용자가 누른 것에 반응한다",
+          "⭐ **이벤트 핸들러**",
+          "\"By the time an Effect runs, **you don't know what the user did**\""
+        ],
+        [
+          "props 가 바뀌면 상태를 비운다",
+          "⭐ **`key` prop**",
+          "\"✅ Best: **Use key to reset entire component**\""
+        ],
+        [
+          "⭐ 밖의 것과 맞춘다",
+          "**Effect**",
+          "\"You **do** need Effects to **synchronize with external systems**\" (네트워크·브라우저 API·React 밖 라이브러리·구독)"
+        ],
+        [
+          "데이터를 가져온다",
+          "⚠️ **대개 라이브러리**",
+          "문서는 \"can also fetch data with Effects\" 라고 하지만 — 실리콘투 `상태 관리(**React Query**, Zustand 등)`. ⚠️ **이 문서는 그 이유를 1차 자료로 확인 못 했다**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "id": "kind",
+      "kind": "compare",
+      "caption": "⭐⭐ \"제품이 스스로 그은 선\" — 여섯 번째 형태",
+      "note": "이 백과사전이 모아 온 인용들이다(각 문서의 1차 자료 원문). ⭐ **여기는 형태가 또 다르다 — 문서 하나가 통째로 \"이 기능을 쓰지 마라\"에 바쳐져 있고, 제목에 그 말이 있다.**",
+      "columns": [
+        "문서",
+        "원문",
+        "무엇을 하나"
+      ],
+      "rows": [
+        [
+          "`kotlin`",
+          "\"**impractical**\"",
+          "현실적이지 않다고 인정"
+        ],
+        [
+          "`redis`",
+          "\"**we discourage it**\"",
+          "권하지 않는다"
+        ],
+        [
+          "`github-actions`",
+          "\"should **almost never** be used\"",
+          "거의 하지 마라"
+        ],
+        [
+          "`typescript`",
+          "**Non-goals** 목록",
+          "이건 목표가 아니다"
+        ],
+        [
+          "`javascript`",
+          "\"**would be removed** from this specification\"",
+          "잘못인데 못 고친다"
+        ],
+        [
+          "⭐⭐⭐ **`react`**",
+          "**\"You Might Not Need an Effect\"** · \"**escape hatch**\"",
+          "**문서 한 편으로 설득한다**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ **3713 대 4 — 역대 최대 격차**다. 그리고 이번엔 대비가 한 겹 더 있다: **`렌더링 최적화` 397건**을 요구하면서 **문서가 첫 번째로 드는 최적화의 이름은 4건**이다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**3713건 (모집중 1193)** — 태그 기준으로는 1252건(17.4%). **이 백과사전 최대 낱말**"
+        ],
+        [
+          "`Next.js`",
+          "**1400 (모집중 448)** — ⚠️ **별도 낱말로 둔다**(축이 다르다)"
+        ],
+        [
+          "`상태 관리\\|Redux\\|Zustand\\|Recoil`",
+          "**990 (모집중 313)** — ⚠️ 이 문서가 다루지 않았다"
+        ],
+        [
+          "⭐ `렌더링 최적화\\|리렌더\\|memo`",
+          "**397 (모집중 223)**"
+        ],
+        [
+          "`훅\\|Hooks\\|useState`",
+          "187 (모집중 78) — ⭐ **\"쓸 줄 아나\"까지다**"
+        ],
+        [
+          "`서버 컴포넌트\\|RSC`",
+          "71 (모집중 45)"
+        ],
+        [
+          "⚠️⚠️ **`useEffect`**",
+          "**4 (모집중 0)**"
+        ],
+        [
+          "⚠️ 섞이는 것",
+          "`React` 로만 세면 **React Native**(모바일)가 섞인다 — `android`·`ios` 에서 본 그 442건. ⭐ 이 문서의 셈에는 그대로 뒀고, **웹/모바일을 가르지 않았다**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ escape hatch",
+      "en": "—",
+      "what": "**탈출구.** \"Effects are an **escape hatch from the React paradigm**\" — 자기 API 를 그렇게 부른다"
+    },
+    {
+      "term": "⭐⭐ 외부 시스템",
+      "en": "external system",
+      "what": "React 가 모르고 관리하지 않는 것 — 네트워크·브라우저 API·React 밖 라이브러리·구독. ⭐ **Effect 가 필요한 유일한 기준**"
+    },
+    {
+      "term": "⭐⭐ unnecessary render pass",
+      "en": "—",
+      "what": "Effect 안에서 상태를 바꿔 **한 번 그릴 것을 두 번 그리는 것.** \"restarts the whole process from scratch\""
+    },
+    {
+      "term": "⭐ 렌더링 중 계산",
+      "en": "calculate during render",
+      "what": "컴포넌트 최상단에서 값을 만드는 것. \"That code will **automatically re-run whenever your props or state change**\""
+    },
+    {
+      "term": "`useMemo`",
+      "en": "—",
+      "what": "무거운 계산을 위한 것. ⭐ **렌더링 안에 있다** — Effect 와 자리가 다르다"
+    },
+    {
+      "term": "⭐ `key` 로 초기화",
+      "en": "—",
+      "what": "`key` 를 바꾸면 React 가 **다른 컴포넌트로 본다** — 상태가 통째로 새로 시작한다. 문서의 \"✅ Best\""
+    },
+    {
+      "term": "⚠️ React Native",
+      "en": "—",
+      "what": "⚠️ **셈에 섞인다** — `React` 3713건 안에 모바일 문맥이 있다(→ `android`·`ios`)"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "props·state 로부터 화면에 그릴 값을 만든다",
+      "pick": "⭐ **컴포넌트 최상단에서 그냥 계산한다**",
+      "over": "`useState` + `useEffect` 로 만들어 두기",
+      "why": "⭐⭐⭐ \"**If you can calculate something during render, you don't need an Effect.**\" 그리고 Effect 로 하면 \"**restarts the whole process from scratch**\" — **한 번 그릴 것을 두 번 그린다.** ⚠️ 게다가 **상태가 둘이 되어 잠깐 옛값인 순간**이 생긴다",
+      "tradeoff": "계산이 정말 무거우면 매 렌더마다 도는 것이 부담이다 — ⭐ **그때가 `useMemo` 자리**다. 문서도 그렇게 안내하고, **여전히 렌더링 안**이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "situation": "사용자가 버튼을 눌렀을 때 요청을 보낸다",
+      "pick": "⭐⭐ **이벤트 핸들러에 쓴다**",
+      "over": "상태를 바꾸고 그 상태를 보는 Effect 에 쓰기",
+      "why": "⭐⭐⭐ \"In the Buy button click event handler, **you know exactly what happened**. **By the time an Effect runs, you don't know what the user did.**\" ⚠️ Effect 는 **결과만 본다** — 그 상태가 **다른 이유로 바뀌어도 요청이 나간다**",
+      "tradeoff": "여러 곳에서 같은 일을 하면 핸들러가 중복된다. ⭐ 그때는 **함수로 빼서 각 핸들러가 부르게** 한다 — Effect 로 모으는 것이 답처럼 보이지만, **모으는 순간 \"왜 도는지\"를 잃는다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "situation": "props 가 바뀌면 안쪽 상태를 초기화해야 한다",
+      "pick": "⭐ **`key` prop 을 준다**",
+      "over": "`useEffect` 에서 `setState('')` 하기",
+      "why": "⭐⭐ 문서가 그것을 **\"✅ Best\"** 로 든다 — `<Profile userId={userId} key={userId} />`. **`key` 가 바뀌면 React 가 다른 컴포넌트로 보고 상태를 통째로 새로 시작한다.** ⚠️ Effect 방식은 **초기화할 상태를 하나씩 적어야 하고, 새 상태가 늘면 빠뜨린다**",
+      "tradeoff": "컴포넌트가 통째로 다시 만들어져서 **안에 있던 것이 전부 사라진다**(스크롤 위치 등). ⭐ 그것이 곤란하면 **정말 유지해야 할 것만 위로 올린다** — 그 경계를 정하는 일이 원래 필요한 설계다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "situation": "지도·차트·에디터 같은 React 밖 라이브러리를 붙인다",
+      "pick": "⭐ **Effect 를 쓴다 — 여기가 그 자리다**",
+      "over": "어떻게든 렌더링 중에 처리하기",
+      "why": "⭐⭐ \"You **do** need Effects to **synchronize with external systems**\" 이고, 문서가 드는 예가 정확히 **jQuery 위젯**이다. ⭐ **React 가 모르는 것을 React 상태와 맞추는 일** — 이것이 \"탈출구\"를 쓰라고 만든 이유다",
+      "tradeoff": "정리(cleanup)를 빠뜨리면 누수가 생기고, 의존성 배열을 잘못 쓰면 계속 다시 붙는다. ⭐ 그래도 **여기서는 Effect 가 회피가 아니라 정답**이다 — **문제는 여기가 아닌 데서 쓰는 것**이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "situation": "서버에서 데이터를 가져온다",
+      "pick": "**데이터 라이브러리를 쓴다**(React Query 등)",
+      "over": "`useEffect` 로 직접 `fetch` 하기",
+      "why": "⭐ 문서도 \"can also fetch data with Effects\" 라고 하지만, 직접 쓰면 **캐시·중복 요청·재시도·경쟁 상태**를 전부 손으로 다뤄야 한다. 공고도 그쪽이다 — 실리콘투 `상태 관리(**React Query**, Zustand 등)`",
+      "tradeoff": "⚠️ 의존성이 늘고 배울 것이 생긴다. **그리고 이 문서는 그 판단의 근거를 1차 자료로 확인하지 못했다**(`open_questions`) — **공고 문장과 일반적으로 알려진 사실에 기대 썼다**",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐ 상태에서 파생되는 값을 또 하나의 상태로 둔다",
+      "why": "⭐⭐⭐ **가장 흔하고, `렌더링 최적화` 397건이 찾는 원인이 대개 이것이다.** Effect 가 상태를 바꾸면 \"**restarts the whole process from scratch**\" — **한 번 그릴 것을 두 번 그린다.** ⚠️ 그리고 **`memo` 를 아무리 붙여도 안 없어진다**(원인이 다른 데 있으니까)",
+      "fix": "⭐ **컴포넌트 최상단에서 계산한다.** \"transform all the data **at the top level**\". 무거우면 `useMemo` — **여전히 렌더링 안**이다. 📌 **점검법**: `useEffect` 안에 `setState` 만 있으면 **거의 확실히 지울 수 있다**",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "trap": "이벤트에서 할 일을 Effect 로 옮긴다",
+      "why": "⭐ 여러 곳에서 같은 일을 해야 할 때 \"상태 하나 보고 처리하면 되겠다\"고 생각하기 때문이다. ⚠️ 그런데 \"**By the time an Effect runs, you don't know what the user did.**\" — **그 상태가 다른 이유로 바뀌어도 실행된다.** 결제·전송처럼 **되돌릴 수 없는 일**이면 사고가 된다",
+      "fix": "⭐⭐ **문서의 질문을 그대로 쓴다** — \"**why** this code needs to run\". **컴포넌트가 화면에 나타났기 때문**이면 Effect, **사용자가 무언가 했기 때문**이면 핸들러. 중복은 **함수로 빼서** 푼다",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "trap": "props 가 바뀔 때 상태를 Effect 로 초기화한다",
+      "why": "⭐ 자연스러워 보이는데 **초기화할 상태를 하나씩 적어야 한다.** ⚠️ 나중에 상태가 늘면 **빠뜨리고**, 그러면 **다른 사용자의 화면에 앞 사용자의 입력이 남는** 종류의 버그가 된다",
+      "fix": "⭐ **`key` 를 준다** — 문서의 \"✅ Best\". `<Profile userId={userId} key={userId} />` 한 줄이고, **빠뜨릴 상태가 없다**",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "trap": "\"렌더링 최적화\"를 `memo` 붙이기로 시작한다",
+      "why": "⭐⭐ 이름이 그렇게 생겼고, 공고도 `memo` 를 이름으로 댄다(`렌더링 최적화|리렌더|memo` **397건**). ⚠️ 그런데 **문서가 첫 번째로 드는 최적화는 붙이는 게 아니라 지우는 것**이다 — \"Removing unnecessary Effects will make your code ... **faster to run**\"",
+      "fix": "⭐ **먼저 `useEffect` 안에 `setState` 만 있는 것을 찾는다.** 그것부터 지우고 나서 `memo` 를 본다. 📌 **순서가 중요하다** — 두 번 그리는 원인을 두고 감싸면, **두 번 그리는 것을 두 번 다 빠르게** 할 뿐이다",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "trap": "Effect 를 아예 나쁜 것으로 여긴다",
+      "why": "⚠️ 이 문서를 읽고 반대편으로 가는 경우다. **문서는 없애라고 하지 않았다** — \"You **do** need Effects to **synchronize with external systems**\" 라고 분명히 적고, jQuery 위젯을 예로 든다",
+      "fix": "⭐ **기준을 기억한다 — \"밖에 무언가 있나\".** 지도·차트·에디터·웹소켓·브라우저 API 는 **Effect 가 정답**이다. ⭐⭐ 그리고 그 자리는 `typescript` 가 **\"타입이 안 지켜 주는 경계\"** 라고 부른 곳과 **같은 선**이다",
+      "sources": [
+        {
+          "title": "You Might Not Need an Effect — React",
+          "url": "https://react.dev/learn/you-might-not-need-an-effect",
+          "publisher": "React (Meta)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+        }
+      ]
+    },
+    {
+      "trap": "`React` 로 세고 전부 웹이라고 여긴다",
+      "why": "⚠️ **3713건 안에 React Native 문맥이 섞인다** — `android`·`ios` 문서가 센 크로스플랫폼 442건이 여기 들어 있다. `load-balancer` 의 `Nginx`, `android` 의 `생명주기` 와 같은 형태",
+      "fix": "⭐ **웹인지 모바일인지 가르려면 `React Native`·`Expo` 를 함께 세어 뺀다.** ⚠️ **이 문서는 가르지 않았고, 그 사실을 `counting` 표에 적었다** — **못 가른 것을 밝히는 것도 데이터다**"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **자기 프로젝트에서 `useEffect` 를 전부 찾고, 그 안에 `setState` 계열 호출만 있는 것이 몇 개인지 센다.** 그리고 그중 **하나를 골라 렌더링 중 계산으로 바꿔** 본다.",
+      "done_when": "두 숫자(전체 Effect 수 / `setState` 만 있는 Effect 수)가 나오고, ⭐ 하나를 바꿔 **코드가 짧아졌고 동작이 같다는 것**을 확인했다. **바꾼 뒤 상태 변수가 하나 줄었는지**도 본다.",
+      "why": "⭐⭐⭐ **`useEffect` 안에 `setState` 만 있으면 거의 확실히 지울 수 있다** — 문서가 \"restarts the whole process from scratch\" 라고 부른 그 자리다. 그리고 이 숫자가 **`렌더링 최적화` 397건이 찾는 것의 대부분**이다.",
+      "no_hardware": "프로젝트가 없으면 **아무 오픈소스 React 저장소**에서 같은 것을 센다 — ⭐ 유명한 프로젝트에도 있다는 것을 보면 오히려 안심이 된다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐ **`You Might Not Need an Effect` 를 열고 🔴/✅ 로 짝지어진 예제를 전부 세어**, 각 짝이 **어떤 규칙의 예인지** 한 줄씩 적는다.",
+      "done_when": "짝의 개수와 규칙 목록이 나오고, ⭐ **그중 자기 코드에 있는 패턴**을 하나 이상 찾았다.",
+      "why": "⭐⭐ 이 문서는 **부정어가 제목에 있는 드문 자료**이고, 본문이 **\"하지 마라 / 대신 이렇게\"의 짝**으로만 구성돼 있다. 💡 **그 형식 자체가 배울 점**이다 — 규칙을 외우는 것보다 **짝을 눈에 익히는 편이** 실제 코드에서 알아보기 쉽다.",
+      "no_hardware": "웹 페이지 하나면 된다 — 코드도 프로젝트도 필요 없다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **Effect 안에서 상태를 바꾸는 컴포넌트를 하나 만들고, 렌더 함수 맨 위에 로그를 찍어** 한 번의 상호작용에 몇 번 그려지는지 센다. 그다음 **렌더링 중 계산으로 바꿔** 다시 센다.",
+      "done_when": "⭐ **두 번 그리던 것이 한 번이 된다는 것**을 숫자로 봤다. 그리고 **그 사이에 잠깐 옛값이 보이는 순간이 있었는지**도 확인했다.",
+      "why": "⭐⭐⭐ \"unnecessary render passes\" 를 **글로 읽는 것과 로그로 보는 것**은 다르다. 💡 그리고 **`memo` 를 붙여도 이 숫자가 안 줄어든다**는 것을 함께 확인하면, **최적화의 순서**가 몸에 남는다.",
+      "no_hardware": "React 환경이 없으면 **`quotes` 표의 렌더 → 커밋 → Effect → 상태 변경 순서를 종이에 그려** 어디서 되돌아가는지 표시해 본다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "React 문서는 Effect 를 무엇이라고 부르는가? 무엇으로부터의 탈출인가?",
+    "Effect 가 필요 없는 두 가지 경우는? 각각 대신 무엇을 쓰는가?",
+    "Effect 안에서 상태를 바꾸면 왜 느려지는가? 문서의 표현으로 답하라",
+    "이벤트 핸들러와 Effect 를 가르는 질문 한 가지는?",
+    "Effect 가 정말 필요한 기준은? 문서가 드는 예는?",
+    "props 가 바뀔 때 상태를 초기화하는 가장 좋은 방법은? 왜 그런가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 컴포넌트 설계, 상태 관리, 렌더링 최적화 등 React 생태계에 대한 깊은 이해",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/358346",
+      "where": "디에스알브이랩스(DSRV)",
+      "what_it_shows": "⭐⭐⭐ **공고가 요구하는 셋이 한 줄에 있다** — 그리고 셋째(`렌더링 최적화`)의 가장 흔한 원인이 이 문서의 주제인데, **그 이름(`useEffect`)은 전체 데이터에서 4건**이다"
+    },
+    {
+      "quote": "• React 기반의 렌더링 최적화 실무 경험이 있는 분이 필요합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/366548",
+      "where": "레브잇",
+      "what_it_shows": "⭐ **`렌더링 최적화` 397건**이 이 모양이다. ⚠️ **무엇을 최적화하는지는 안 적는다** — 문서가 첫 번째로 드는 것은 **불필요한 Effect 를 지우는 것**이다"
+    },
+    {
+      "quote": "• React 컴포넌트 / 커스텀 훅 개발 및 상태-뷰 연결 최적화",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/293990",
+      "where": "엔닷라이트",
+      "what_it_shows": "⭐⭐ **`상태-뷰 연결 최적화`** — 이 문서가 다루는 것을 회사가 자기 말로 적었다. **상태와 화면을 잇는 방식**이 곧 성능이다"
+    },
+    {
+      "quote": "• Zustand를 활용한 글로벌 상태 관리 및 Next.js 훅(React Hooks) 기반의 비동기/렌더링 최적화",
+      "from": "posting",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54911259&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=8e8b7030-3e48-4d9b-949d-81539390c47b",
+      "where": "비에스일렉트릭",
+      "what_it_shows": "⭐ **상태 관리 · 훅 · 렌더링 최적화가 한 줄에 묶인다** — `상태 관리` **990건**과 `렌더링 최적화` **397건**이 실제로는 같은 문제라는 것"
+    },
+    {
+      "quote": "• React Hooks 개발 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/262790",
+      "where": "데일리페이",
+      "what_it_shows": "⚠️ **`Hooks` 187건의 전형**이다 — **\"쓸 줄 아나\"까지**. **\"언제 안 써야 하나\"는 없고**, 그것이 공식 문서 한 페이지의 주제다"
+    },
+    {
+      "quote": "⊙ React.js 및 관련 생태계 (Hooks, Redux 등)에 대한 깊은 이해와 실무 경험",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49885752?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=40&sc=630",
+      "where": "㈜씨큐비스타",
+      "what_it_shows": "⭐ **`Hooks, Redux` 가 \"생태계\"로 묶인다** — 훅과 상태 관리를 한 덩어리로 본다"
+    },
+    {
+      "quote": "- Next.js(App Router, SSR/SSG, 서버 컴포넌트) 및 상태 관리(React Query, Zustand 등) 활용 경험",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49364191?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=89&sc=630",
+      "where": "㈜실리콘투",
+      "what_it_shows": "⭐⭐ **`React Query`** — 데이터 가져오기를 **Effect 로 직접 안 한다**는 증거. 그리고 ⚠️ `Next.js`·`서버 컴포넌트` 는 **별도 낱말**이다(1400건 · 71건)"
+    },
+    {
+      "quote": "* React 함수형 컴포넌트 및 Hooks에 대한 이해",
+      "from": "posting",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54919921&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=1d9f14ce-a67b-4950-b6db-e352e144f8bc",
+      "where": "(주)블루라이언스",
+      "what_it_shows": "**`함수형 컴포넌트 및 Hooks`** — ⭐ 이제 이것이 기본이라 **굳이 적는다는 것 자체가** 클래스 컴포넌트 시절 코드가 아직 있다는 뜻일 수 있다(`javascript` 의 \"옛것이 안 사라진다\"와 같은 형태)"
+    }
+  ],
+  "related": [
+    {
+      "slug": "design-system",
+      "how": "⭐ **이웃이지만 축이 다르다** — 저쪽은 컴포넌트의 **이름·동작·조직 계약**(`React`·`훅`·`렌더` 가 0회), 여기는 **렌더링 모델**"
+    },
+    {
+      "slug": "typescript",
+      "how": "⭐⭐ **같은 선을 긋는다** — 저쪽의 \"타입이 안 지켜 주는 경계\"와 여기의 \"Effect 가 필요한 외부 시스템\"이 **같은 자리**다. 동반 54.5%"
+    },
+    {
+      "slug": "javascript",
+      "how": "⭐ 이 위에서 도는 언어. 블루라이언스 공고의 `함수형 컴포넌트 및 Hooks` 가 굳이 적히는 이유도 저 문서의 형태다"
+    },
+    {
+      "slug": "nodejs",
+      "how": "서버 쪽 — ⭐ **같은 언어인데 무거운 계산의 대가가 다르다**(화면 하나 vs 모든 사용자)"
+    },
+    {
+      "slug": "rest",
+      "how": "Effect 가 정말 필요한 자리 중 하나 — 데이터를 가져오는 경계"
+    },
+    {
+      "slug": "android",
+      "how": "⚠️ **셈이 섞이는 자리** — `React` 3713건 안에 React Native 문맥이 있다"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `React`(1252건 · 17.4% · 층 \"프론트엔드\")를 그대로 옮겼다. ⚠️ 본문 직접 셈은 **3713건**이다 — 두 숫자를 다 적었다.",
+    "⚠️⚠️ **상태 관리를 다루지 않았다**(`상태 관리|Redux|Zustand` **990건**, 이 낱말 안 2위). Redux·Zustand·React Query 의 **공식 문서를 하나도 열지 않았고**, `need` 절의 \"데이터 가져오기는 라이브러리를 쓴다\"는 **공고 문장과 일반적으로 알려진 사실에 기대 썼다.** ⭐ **가장 큰 빈자리다.**",
+    "⚠️ **다른 훅을 다루지 않았다.** 특히 **`useMemo`/`useCallback` 은 `렌더링 최적화` 397건과 정면으로 이어지는데** 해당 문서를 열지 않았다 — 본문에서는 **인용한 문장 안에 나온 만큼만** 썼다.",
+    "⚠️ **`Next.js`(1400건)와 서버 컴포넌트(71건)를 다루지 않았다.** ⭐ **별도 낱말로 두는 것이 맞지만**(SSR·라우팅은 축이 다르다), **1400건짜리 낱말이 비어 있다.**",
+    "⚠️ **`key` 가 왜 상태를 초기화하는지 설명하지 않았다.** 문서의 \"✅ Best\" 를 처방으로 옮겼지만, **재조정(reconciliation) 문서를 열지 않아** 그 원리는 못 썼다.",
+    "⚠️⚠️ **셈에서 React Native 를 가르지 않았다.** `React` 3713건 안에 모바일 문맥이 섞여 있고(`android`·`ios` 가 센 크로스플랫폼 442건), **문장을 읽어 가르지 않았다** — `counting` 표와 `pitfalls` 에 밝혔다.",
+    "⭐ **`decide` 표의 마지막 줄(데이터 라이브러리)만 `inferred` 다.** 나머지 줄은 전부 인용에 근거하지만, **\"라이브러리를 쓴다\"는 판단은 공고 문장에서 왔다** — 1차 자료로 확인하지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "You Might Not Need an Effect — React",
+      "url": "https://react.dev/learn/you-might-not-need-an-effect",
+      "publisher": "React (Meta)",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **부정어가 제목에 있는 문서** — 제품이 자기 API 를 쓰지 말라고 설득한다. 그리고 그것을 **\"escape hatch\"** 라고 부른다"
+    }
+  ]
+}

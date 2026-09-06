@@ -2061,6 +2061,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "react",
+      "title": "React — 탈출구라고 불리는 훅",
+      "category": "framework",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **공식 문서가 `useEffect` 를 \"escape hatch\"(탈출구)라고 부르고, 제목에서부터 쓰지 말라고 한다** — 그리고 불필요한 Effect 를 지우는 것이 **가장 큰 렌더링 최적화**다. 공고는 `렌더링 최적화` 397건을 요구하면서 그 이름은 4건만 부른다.",
+      "aliases": [
+        "React",
+        "리액트",
+        "훅",
+        "Hooks",
+        "useEffect",
+        "상태 관리"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

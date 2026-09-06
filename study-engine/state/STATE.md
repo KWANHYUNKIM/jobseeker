@@ -4,28 +4,47 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **Node.js**(`nodejs`)를 완성했다 — **113번째 문서**.
+**없음.** 직전 사이클에서 **React**(`react`)를 완성했다 — **114번째 문서**.
 
-### 직전 사이클 (Node.js)
+### 직전 사이클 (React)
 
-⭐⭐⭐ **축: "순서를 정하는 것은 언어가 아니라 호스트다."** `javascript` 가 인용한 **"non-web hosts may not"** 의 그 호스트가 여기였다.
+⚠️ **먼저 `design-system` 과 겹치는지 셌다** — `React`·`useEffect`·`훅`·`Hooks`·`렌더` 가 **전부 0회**였다(`컴포넌트` 74회는 디자인 시스템 문맥). 축이 안 겹친다.
 
-**1차 자료가 자기가 보장 못 하는 것부터 적는다.**
-- ⭐⭐⭐ **"libuv (the C library that implements the Node.js event loop ...)"** — **루프는 자바스크립트로 쓰이지 않았다**
-- ⭐⭐ **"slight discrepancy between the Windows and the Unix/Linux implementation"** · **"hard maximum (system dependent)"**
-- ⭐⭐⭐ `setTimeout(0)` vs `setImmediate` — **"bound by the performance of the process (which can be impacted by other applications running on the machine)"**, 그런데 **I/O 콜백 안에서는 "immediate ... always executed first"**
-- ⭐⭐⭐ **"process.nextTick() is not technically part of the event loop"** · **"allows you to \"starve\" your I/O"**
-- ⭐⭐ `poll` 단계에 **"node will block here when appropriate"** — **"논블로킹" 런타임의 문서가 "여기서 막힌다"고 적는다**
+⭐⭐⭐ **축: "공식 문서가 자기 API 를 '탈출구'라고 부르고, 제목에서부터 쓰지 말라고 한다."**
 
-**셈**: 1642건인데 ⚠️ `마이크로태스크|태스크 큐` **2건**. 공고는 **"비동기에 깊은 이해"** 라고만 하고 그 깊이의 이름은 안 부른다.
+> ⭐⭐⭐ **"Effects are an escape hatch from the React paradigm."**
+> **"If there is no external system involved ... you shouldn't need an Effect."**
+> ⭐⭐ 지우면 **"easier to follow, faster to run, and less error-prone"**
+> ⭐⭐⭐ **"If your Effect also immediately updates the state, this restarts the whole process from scratch!"** → **"unnecessary render passes"**
+> ⭐⭐⭐ **"By the time an Effect runs, you don't know what the user did."**
+
+⭐⭐ **셈이 새로운 겹을 보여 줬다** — `React` **3713건(이 백과사전 최대)** vs `useEffect` **4건**. 게다가 `렌더링 최적화` **397건**을 요구하면서 **문서가 첫 번째로 드는 최적화(불필요한 Effect 지우기)의 이름은 4건**이다.
 
 ### 다음
 
-**React**(`react`) — QUEUE 맨 위. ⭐ 또 층을 바꿨다(백엔드 → 프론트엔드, **`design-system` 하나뿐이었다**).
+**Next.js**(`nextjs`) — QUEUE 맨 위. ⭐ `react` 가 **"별도 낱말"이라고 명시하며 비워 둔 자리**다.
 
-⭐⭐⭐ **3713건(모집중 1193) — 이 백과사전 최대 낱말**인데 ⚠️⚠️ **`useEffect` 는 4건(모집중 0)**. 축을 못 박아 뒀다: **"가장 많이 쓰이는 훅을 공식 문서가 '탈출구'라고 부른다."** 1차 자료는 react.dev 의 **`You Might Not Need an Effect`**(⭐ **부정어가 제목에 있는 문서**).
+⭐⭐⭐ **1400건(모집중 448)** 인데 ⚠️ `하이드레이션` **4건**. 축을 못 박아 뒀다: **"코드가 어디서 도는지 이제 우리가 정하는데, 그 경계가 눈에 안 보인다."** ⚠️ `seo` 와는 확인 완료(축 다름), **`caching` 과 겹치는지는 다음 사이클이 센다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **제품 문서의 제목에 부정어가 있으면 그게 곧 축이다.** react.dev 의
+  **`You Might Not Need an Effect`** — 본문 어딘가에 숨은 경고가 아니라 **문서 한 편이 통째로
+  "이 기능을 쓰지 마라"에 바쳐져 있다.** 💡 "제품이 스스로 그은 선" 계보의 여섯째이자
+  **가장 적극적인 형태**다: 앞의 다섯(`kotlin`·`redis`·`github-actions`·`typescript`·`javascript`)은
+  **문장**이었는데 여기는 **문서**다. 📌 **새 낱말의 1차 자료를 찾을 때 제목에 `Not`·`Don't`·
+  `Avoid`·`Might Not` 이 들어간 페이지가 있는지 먼저 본다** — 있으면 그것부터 연다.
+
+- ⭐⭐ **셈의 대비에 새로운 겹이 생겼다 — "증상은 이름이 있고 원인은 없다".** 지금까지 열한 번은
+  **"큰 낱말은 흔한데 그 안의 개념은 안 불린다"**(`rest` 3372 vs `HATEOAS` 0)였다. 그런데 React
+  에서는 **`렌더링 최적화` 397건**(증상)이 이름을 갖는데 **`useEffect` 4건**(원인)은 없다.
+  💡 **회사들이 문제는 아는데 원인은 모른다**는 뜻이고, ⭐ 그러면 문서의 일은 **"그 증상의 가장
+  흔한 원인이 이것"이라고 1차 자료로 이어 주는 것**이 된다.
+
+- ⭐ **처방에는 순서가 있고, 순서를 틀리면 처방이 무의미해진다.** "렌더링 최적화"를 `memo`
+  붙이기로 시작하면, **두 번 그리는 원인을 그대로 둔 채 두 번 다 빠르게** 할 뿐이다. 📌
+  **`pitfalls` 를 쓸 때 "틀린 방법"만이 아니라 "맞는데 순서가 틀린 것"도 함정으로 적는다** —
+  후자가 더 흔하고 더 오래 안 잡힌다.
 
 - ⭐⭐⭐ **이름이 보장처럼 들리는 낱말은 문서에서 반대말을 찾는다.** Node 는 "논블로킹"으로
   불리는데, 공식 문서가 `poll` 단계에 **"node will block here when appropriate"** 이라고 적는다.
