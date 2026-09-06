@@ -1376,7 +1376,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "테스트 스위트를 물려받을 수 없어서 데이터베이스를 통째로 다시 썼다 — 그리고 이번엔 재현을 설계에 넣었다",
       "updated_at": "2026-09-06",
       "domain": "turso.tech"
