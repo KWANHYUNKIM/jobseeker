@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Tigris Data** | US · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 메타데이터를 한 트랜잭션으로 묶는다(FDB, `fdb-krea-talk` 2026-08-18 읽었다) · 어디에 두고 어디서 읽을지 정한다(같은 글) · 남의 API 를 그대로 받아 옮겨 오게 만든다(제품 페이지). 다음은 기능 하나 — FDB 트랜잭션 묶기가 가장 두껍다. ⚠️ 심층 글이 아직 하나뿐이라 두 번째 기능 전에 자료를 더 찾아야 한다. 수치·요율·빠진 S3 API 는 비공개다. |
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Tigris Data** | US · SaaS | 글로벌 객체 저장소를 FoundationDB 위에 짓는다. `tigrisdata.com/blog` 최신 심층 글 2026-08-18 `Building a global object store on FoundationDB` — ACID 메타데이터·전역 배치·캐싱·복제·백그라운드 작업을 다중 리전 객체 저장소로 엮는 이야기다. 이 엔진의 `객체 저장소를 진실 원천으로` 축(WarpStream·Neon·Cursor)의 반대편이 된다 — 저쪽은 객체 저장소를 **쓰는** 쪽이고 여기는 그것을 **만드는** 쪽이다. FoundationDB 를 바탕으로 쓴다는 점에서 안티테시스·TigerBeetle 의 결정론 계보와도 닿는다. ⚠️ 목록에서 확인한 심층 글이 아직 하나라 팔 때 자료가 얇을 수 있다. |
 | **Chroma** | US · SaaS | 벡터 데이터베이스 축이 이 엔진에 아직 없다. `trychroma.com/engineering` 에 심층 글 여섯 — `wal3: Chroma의 WAL` · `Designing a query execution engine` · `Retrieval powered by object storage` · `Distributed Chroma: BYOC` · `Agent Swarms are a Distributed Systems Problem` · `Building a usage-based billing system`. 개별 글(`/engineering/wal3`)을 열어 확정했다 — 객체 저장소 위에 로그를 짓기로 한 결정, S3 조건부 쓰기(2024-11) 위에서 30년 된 락 프리 큐 알고리즘을 돌린 것, 실제 로그와 체크섬(setsum)을 나란히 유지하는 이중 검증, 그리고 **이름을 대며 물린 대안 셋**(카프카는 디스크 함대를 운영해야 해서, WarpStream 은 오픈소스가 아니라서, CDC 는 처음부터 지어야 해서). 카프카의 기능 대부분을 지원하지 않는 대신 단순함을 얻었다고 한계도 적는다. ⚠️ 수치가 없고(지연·처리량·비용 없음) 목록에 날짜가 없다 — 파기 전에 개별 글에서 날짜를 확인한다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
