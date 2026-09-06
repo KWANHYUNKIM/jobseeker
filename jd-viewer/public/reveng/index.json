@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "deliveroo",
+      "name": "Deliveroo",
+      "name_en": "Deliveroo",
+      "country": "EU",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "영국에서 시작한 음식·식료품 배달 3면 마켓플레이스 — 규정 준수를 사람의 회의가 아니라 배포 파이프라인에 심는다",
+      "updated_at": "2026-09-06",
+      "domain": "deliveroo.co.uk"
+    },
+    {
       "slug": "toss",
       "name": "토스",
       "name_en": "Toss",
@@ -1336,7 +1348,10 @@
     "관계형 저장소를 통째로 갈아 끼우되 2년을 넘기지 않는다",
     "남의 은행 1만 2,000곳에 대신 닿는다",
     "남이 정한 지원 종료 일정에 맞춰 결제 데이터베이스를 올린다",
-    "아프리카에서 사업체가 돈을 받게 한다"
+    "아프리카에서 사업체가 돈을 받게 한다",
+    "AI 를 회사 규모로 굴리면서 규정을 지킨다",
+    "무엇이 실제로 나아졌는지 판별한다",
+    "결제를 승인하면서 사기를 막는다"
   ],
   "countries": {
     "KR": "한국",
