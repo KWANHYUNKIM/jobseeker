@@ -4,47 +4,73 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **스크럼**(`scrum`)을 완성했다 — **132번째 문서**.
+**없음.** 직전 사이클에서 **AI 코딩 도구**(`ai-coding`)를 완성했다 — **133번째 문서**.
 
-### 직전 사이클 (스크럼)
+### 직전 사이클 (AI 코딩 도구)
 
-⭐⭐⭐ **축: "불완전한데 전체로만 존재한다."**
+⭐⭐⭐ **축: "19% 느렸는데 20% 빨랐다고 믿었다."**
 
-> ⭐⭐⭐ **"The Scrum framework is purposefully incomplete, only defining the parts
->   required to implement Scrum theory."**
-> ⭐⭐⭐ **"Implementing only parts of Scrum is possible, but the result is not Scrum.
->   Scrum exists only in its entirety."**
-> ⭐⭐ **"Rather than provide people with detailed instructions, the rules of Scrum
->   guide their relationships and interactions."**
-> ⭐⭐ (Scrum Master) "accountable for **establishing Scrum as defined in the Scrum
->   Guide**" · "the Scrum Team's **effectiveness**"
-> ⭐⭐⭐ (다섯 가치) "Successful use of Scrum **depends on people becoming more
->   proficient in living five values**"
+> ⭐⭐⭐ (제품) "may generate code that **appears to be valid but may not actually be
+>   semantically or syntactically correct**" · "**Hallucination risk**: ... **sound
+>   plausible but are factually inaccurate**"
+> ⭐⭐⭐ **"Users assume all risks associated with generated code including security
+>   vulnerabilities, bugs, and IP infringement."**
+> ⭐⭐⭐ "You should **always review** ... before accepting them, and **further validate
+>   it after**"
+> ⭐⭐⭐ (RCT) **"they take 19% longer to complete issues—a significant slowdown"** ·
+>   **"developers expected AI to speed them up by 24%, and even after experiencing the
+>   slowdown, they still believed AI had sped them up by 20%"**
+> ⭐⭐⭐ (저자들이 스스로) "We do **not** provide evidence that: AI systems do not
+>   currently speed up many or most software developers" · **"These results are out of date"**
 
-💡 **두 문장이 모순이 아니다** — **밖(방법·추정·도구)은 안 정하고 안(역할·이벤트·산출물)은
-다 요구한다.**
+⭐⭐⭐ **`aws` 와 정반대였다** — 그쪽은 **부정어가 없어** 안 읽으면 경고가 없었고,
+여기는 **부정어와 위험 배정이 명시적**이다.
 
-⭐⭐⭐ **셈: `스크럼` 178 대 `스크럼 마스터` 2**(모집중 **0**). ⚠️ 그런데 **`프로덕트 오너|PO`
-는 351건** — **스크럼의 두 배**이고 인용한 공고들은 **스크럼을 언급하지 않는다.**
-💡 **세 역할 중 하나는 독립 직무가 됐고 하나는 사실상 없다.**
+⭐⭐⭐ **셈: 도구 이름 1802 · `AI ~ 검증` 1052 · `환각` 104 · `맹신하지 마라` 27.**
+💡 **다섯 사이클 연속이던 "도구는 부르고 방법은 안 부른다"가 여기서 깨졌다** —
+⚠️ **왜 여기서만 다른지는 확인하지 못했다.**
 
-⭐⭐ **두 1차 자료가 부딪혔다** — `agile` 은 "이름 붙은 방법론에서 생각을 떼라", 여기는
-"전체로만 존재한다". **어느 쪽이 옳은지 판정하지 않고 그대로 적었다.**
-
-⚠️ **오염 둘을 안 썼다** — `투명성` 491 @ **66%**, `번다운|벨로시티` 216 @ **88%**.
-⭐ **다섯 번째 alias 이전**: `agile` → `scrum`.
+⭐⭐⭐ **실패 사례가 두 번째로 1차급이었고, 이번엔 규칙을 끝까지 지켰다** —
+`scrum` 에서 후보를 찾고도 안 열었던 것을 **여기서는 그 자리에서 열었다.**
 
 ### 다음
 
-**AI 코딩 도구**(`ai-coding`) — QUEUE 맨 위.
+**온보딩**(`onboarding`) — QUEUE 맨 위.
 
-⭐⭐⭐ **층을 완전히 바꾼다**(프로세스 셋 → 도구/AI) **그리고 132개 중 통째로 빈 층이다** —
-`rag`·`embedding`·`vector-db` 는 **AI 를 만드는 쪽**이고 **AI 로 개발하는 쪽**은 없다.
-⭐ 이미 확인된 셈: **`AI 도구와 함께 리팩터링` 145건**.
-축은 **"제품이 스스로 적은 한계"** — ⚠️ **부정어가 없으면 그 사실 자체를 축으로 쓴다**(`aws` 방법).
-⚠️⚠️ **1차 자료를 못 찾으면 미루고 `온보딩`(749건)으로 바꾼다.**
+⭐⭐⭐ **큐의 대안으로 세 번 밀린 자리**이고 `documentation` 이 **"칸으로 갈라 세지 못했다"**
+고 남겼다. 셈 **749건(모집중 52%)** — ⚠️ **비율이 높아 오염 여부를 먼저 확인한다.**
+1차 자료는 **diataxis.fr/tutorials/**(저자가 따로 낸 페이지를 연다는 규칙).
+⚠️ **1차 자료가 온보딩을 직접 안 다루면 축을 바꾼다** — 대안: `코드 품질`(651) · `프롬프트`(1018).
 
 ## 배운 것
+
+- ⭐⭐⭐ **"제품이 스스로 그은 선" 계보에 양 끝이 생겼다.** `aws` 는 **부정어를 하나도 안 써서
+  안 읽으면 경고가 없었고**, AI 코딩 도구의 제품 문서는 **부정어로 가득하고
+  "Users assume all risks" 로 위험을 통째로 배정**한다.
+  ⭐⭐ **그리고 셈이 그 차이를 반영했다** — `aws` 는 `공유 책임` **0건**이었는데,
+  여기는 `AI ~ 검증|검토` 가 **1052건**이다(도구 이름 1802의 절반 넘게).
+  💡 📌 **제품 문서가 부정어를 쓰면 시장도 그 낱말을 부른다** — ⚠️ 인과는 확인 못 했지만
+  **다섯 사이클 연속이던 "도구는 부르고 방법은 안 부른다"가 깨진 유일한 자리**다.
+
+- ⭐⭐⭐ **연구를 인용할 때는 결과가 아니라 방법을 가져온다.**
+  RCT 의 "19% 느려졌다"는 **16명·246 이슈·특정 시점 도구**의 결과이고, 저자들이
+  **일반화를 명시적으로 막고 "These results are out of date" 딱지까지 붙였다.**
+  ⚠️ 그대로 인용하면 **저자들이 직접 부정한 주장**을 하게 된다.
+  ⭐⭐ **가져올 수 있는 것은 인식 차이다** — **예측 +24%, 실제 −19%, 사후 추정 +20%.**
+  💡 그건 설정에 덜 의존하고, 📌 **"자기 상황에서 재 봐라"로 이어진다**(`performance` 와 같은 결론).
+
+- ⭐⭐ **새 낱말이라고 새 규칙을 만들지 않는다.** AI 로 리팩터링하든 사람이 하든
+  `refactoring` 의 1차 자료가 세운 세 조건(**작게 · 몇 분 이상 안 깨지게 · 동작이 정의돼
+  있을 것**)은 **누가 하느냐와 무관**하다. ⭐ 그래서 `ai-coding` 의 `how` 절은
+  **이미 있던 조건을 옮겨 적었을 뿐**이다.
+  📌 **새 도구를 만나면 먼저 "기존 조건 중 무엇이 그대로 걸리나"를 본다** —
+  ⚠️ 대부분 그대로 걸리고, **그러면 문서가 훨씬 짧고 단단해진다.**
+
+- ⭐ **"찾는 것"과 "여는 것"을 갈라 놓은 규칙이 바로 효과를 봤다.**
+  `scrum` 에서 **후보를 찾고도 안 열어** 2차 요약만 읽었는데, `ai-coding` 에서는
+  **검색으로 찾은 RCT 를 그 자리에서 열었다** — 그 결과 **원문의 일반화 금지 문장과
+  "out of date" 딱지**를 직접 확인했고, ⚠️ **2차 요약만 봤다면 그 두 가지를 놓쳤을 것**이다.
+  📌 **2차 요약은 결과를 전하고 1차는 한계를 전한다.**
 
 - ⭐⭐⭐ **두 1차 자료가 서로 다른 답을 줄 때는 판정하지 않고 그대로 적는다.**
   `agile` 의 작성자는 **"named 'Agile' method 에서 생각을 떼라"** 하고, 스크럼 가이드는

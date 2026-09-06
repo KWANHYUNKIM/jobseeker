@@ -2413,6 +2413,26 @@
       "sections": 4,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "ai-coding",
+      "title": "AI 코딩 도구 — 19% 느렸는데 20% 빨랐다고 믿었다",
+      "category": "ai",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **제품 문서가 부정어로 가득하다** — \"그럴듯해 보이지만 의미상·문법상 맞지 않을 수 있다\", \"**사용자가 모든 위험을 진다**\". 그리고 무작위 대조 시험에서 **경험 많은 개발자가 19% 느려졌는데, 그들은 20% 빨라졌다고 믿었다.** ⚠️ 공고는 도구 이름을 **1802번** 부른다.",
+      "aliases": [
+        "AI 코딩 도구",
+        "AI coding",
+        "Copilot",
+        "Cursor",
+        "Claude Code",
+        "바이브 코딩",
+        "vibe coding"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

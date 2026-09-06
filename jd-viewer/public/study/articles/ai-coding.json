@@ -1,0 +1,649 @@
+{
+  "slug": "ai-coding",
+  "title": "AI 코딩 도구 — 19% 느렸는데 20% 빨랐다고 믿었다",
+  "title_en": "AI Coding Tools: 19% Slower, Believed 20% Faster",
+  "aliases": [
+    "AI 코딩 도구",
+    "AI coding",
+    "Copilot",
+    "Cursor",
+    "Claude Code",
+    "바이브 코딩",
+    "vibe coding"
+  ],
+  "category": "ai",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **제품 문서가 부정어로 가득하다** — \"그럴듯해 보이지만 의미상·문법상 맞지 않을 수 있다\", \"**사용자가 모든 위험을 진다**\". 그리고 무작위 대조 시험에서 **경험 많은 개발자가 19% 느려졌는데, 그들은 20% 빨라졌다고 믿었다.** ⚠️ 공고는 도구 이름을 **1802번** 부른다.",
+  "summary": "⭐ 이 백과사전에는 **AI 를 만드는 쪽**이 먼저 쌓였다 — `rag`·`embedding`·`vector-db`. ⚠️ **AI 로 개발하는 쪽은 132개 문서 중 하나도 없었다.**\n\n**제품 문서부터 본다. 이 백과사전이 열 번 넘게 해 온 일이다.**\n\n> ⭐⭐⭐ \"Copilot may generate code that **appears to be valid but may not actually be semantically or syntactically correct** or may not accurately reflect the intent of the developer.\"\n> ⭐⭐⭐ \"**Hallucination risk**: Copilot generates statements that **sound plausible but are factually inaccurate**.\"\n> ⭐⭐⭐ **\"Users assume all risks associated with generated code including security vulnerabilities, bugs, and IP infringement.\"**\n> ⭐⭐⭐ \"You should **always review** Copilot's suggestions before accepting them, and **further validate it after**\"\n\n💡 ⭐⭐⭐ **`aws` 와 정반대다.** 그쪽은 **부정어를 쓰지 않고 각자의 몫을 긍정형으로 배정**해서 **안 읽으면 아무 경고도 없었다.** ⚠️ **여기는 부정어가 가득하고 위험 배정이 명시적**이다.\n\n📌 **그리고 무작위 대조 시험이 하나 있다.**\n\n> ⭐⭐⭐ **\"When developers are allowed to use AI tools, they take 19% longer to complete issues—a significant slowdown\"**\n> ⭐⭐⭐ **\"developers expected AI to speed them up by 24%, and even after experiencing the slowdown, they still believed AI had sped them up by 20%\"**\n> ⭐⭐⭐ \"This gap between perception and reality is **striking**\"\n\n⚠️⚠️ **다만 저자들이 스스로 일반화를 막는다** — \"We do **not** provide evidence that: AI systems do not currently speed up many or most software developers\", 그리고 페이지 상단에 **\"These results are out of date\"**.\n\n📌 ⭐⭐ **셈에서 뜻밖의 것이 나왔다** — `AI 결과 검증|검토` 가 **1052건**이다. 💡 **`documentation`·`performance`·`profiling`·`scrum` 에서 다섯 사이클 연속 보던 \"도구는 부르고 방법은 안 부른다\"가 여기서 깨진다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 1802 · 1052 — 그리고 104",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `LLM\\|대규모 언어 모델` | **3159** | (모집중 1274) |\n| `AI 활용\\|AI 도구\\|생성형 AI` | **3149** | (모집중 1108) |\n| `AI 에이전트\\|AI Agent\\|에이전틱` | **2552** | (모집중 1225) |\n| ⭐ `Copilot\\|Cursor\\|Claude Code\\|Codex\\|Windsurf` | **1802** | (모집중 782) |\n| ⭐⭐ `AI ~ 검증\\|검토\\|확인` | **1052** | (모집중 363) |\n| `프롬프트` | 1018 | (모집중 371) |\n| `개발 생산성\\|productivity` | 940 | (모집중 481) |\n| `바이브 코딩\\|vibe coding` | 299 | (모집중 86) |\n| `AI 코드 리뷰\\|리뷰 자동화` | 91 | (모집중 41) |\n| ⚠️ `환각\\|hallucination` | **104** | (모집중 53) |\n| ⚠️⚠️ `AI에 의존\\|맹신\\|그대로 사용` | **27** | (모집중 9) |\n\n⭐⭐⭐ **다섯째 줄이 이 사이클의 뜻밖이다 — `AI ~ 검증|검토` 1052건.**\n\n💡 ⚠️ **`documentation`(위키 1133 : README 20) · `performance`(APM 4091 : p99 23) · `profiling`(APM 566 : 플레임 그래프 2) · `agile`(이름 690 : 가치 106) · `scrum`(178 : 스크럼 마스터 2)** — **다섯 사이클 연속 \"도구는 부르고 방법은 안 부른다\"였는데**, ⭐ **여기서는 검증이 도구의 절반 넘게 불린다.**\n\n📌 ⭐⭐ **공고가 검증을 인프라로 만들기까지 한다.**\n\n> ⭐⭐⭐ `AI Agent **생성물 검증을 위한 테스트·실행·평가 하네스 구축**` — 베이글코드\n> ⭐⭐⭐ `AI 코딩 에이전트(Claude Code, Cursor, Codex 등)를 통한 **설계·구현·검증** 및 **AI 활용 가이드 개선**` — 베이글코드\n> ⭐⭐ `AI 에이전트를 업무에 능동적으로 활용하며, **적절한 컨텍스트 제공을 통해 결과물의 품질을 끌어낼 수 있는 분**` — 큐엠아이티\n\n⚠️⚠️ **그런데 아래 두 줄은 여전히 작다** — `환각` **104건**, `맹신하지 마라` 류 **27건**. 💡 ⭐ **\"검증하라\"는 부르는데 \"무엇이 틀리는지\"는 거의 안 부른다.**\n\n📌 ⭐⭐ **그리고 채용 절차 자체가 바뀐 자리도 있다.**\n\n> ⭐⭐⭐ `1차 직무적합성 인터뷰에서는 **생성형 AI를 활용한 코딩테스트**가 함께 진행됩니다.` — 컬리\n\n⭐ **도구를 쓰는 것을 전제로 평가한다** — 📌 **`바이브 코딩` 이 299건**이라는 것도 같은 방향이다.\n\n⚠️ **셈 주의**: 위 세 줄(`LLM`·`AI 활용`·`AI 에이전트`)은 **AI 를 만드는 일과 AI 로 개발하는 일이 섞여 있다** — ⭐ 그래서 **이 문서는 넷째 줄(도구 이름 1802건)을 기준으로 삼았다.** 📌 `rag`·`embedding`·`vector-db` 가 **만드는 쪽**을 다룬다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 제품이 부정어로 선을 긋는다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        }
+      ],
+      "body": "⭐ **이 백과사전은 \"제품이 스스로 그은 선\"을 열 개 넘게 모아 왔다.** ⚠️ 그중 `aws` 는 **부정어를 하나도 쓰지 않아** 눈에 띄었다 — **\"AWS 는 이것을 책임지지 않는다\"고 쓰지 않고 각자의 몫을 긍정형으로 배정**했고, 그래서 **안 읽으면 아무 경고도 없었다.**\n\n⭐⭐⭐ **여기는 정반대다.**\n\n> ⭐⭐⭐ \"Copilot may generate code that **appears to be valid but may not actually be semantically or syntactically correct** or may not accurately reflect the intent of the developer.\"\n\n💡 ⭐⭐ **\"타당해 보이지만\"** 이 앞에 있다 — ⚠️ **틀린 코드가 틀려 보이지 않는다는 것**이 핵심이고, 그래서 **눈으로 훑는 것으로는 안 걸린다.**\n\n> ⭐⭐⭐ \"**Hallucination risk**: Copilot generates statements that **sound plausible but are factually inaccurate**.\"\n> ⭐⭐ \"Inline suggestions ... still have a **limited scope** and **may not be able to handle more complex code structures** or obscure programming languages.\"\n> ⭐⭐ \"The **quality of suggestions depends on the volume and diversity of training data** available for each language.\"\n\n⭐ **마지막 줄이 실용적이다** — 📌 **언어와 프레임워크에 따라 품질이 다르다**는 것을 제품이 직접 적는다.\n\n💡 ⭐⭐⭐ **그리고 위험 배정이 명시적이다.**\n\n> ⭐⭐⭐ **\"Users assume all risks associated with generated code including security vulnerabilities, bugs, and IP infringement.\"**\n> ⭐⭐⭐ \"**Users are responsible for reviewing and validating suggestions before accepting them** to ensure they are accurate and appropriate.\"\n> ⭐⭐⭐ \"You should **always review** Copilot's suggestions before accepting them, and **further validate it after** to ensure that it meets your requirements and is free of errors or security concerns.\"\n\n⚠️ **\"받아들이기 전에 검토하고, 받아들인 뒤에 다시 검증하라\"** — ⭐ **두 번을 요구한다.**\n\n📌 ⭐⭐ **선을 긋는 방식을 계보에 놓으면 이렇게 된다.**\n\n| 문서 | 어떻게 긋나 | 안 읽으면 |\n|---|---|---|\n| `redis` | \"we discourage it\" | 읽으면 걸린다 |\n| `github-actions` | \"almost never\" | 읽으면 걸린다 |\n| ⚠️ `aws` | **긍정형 배정, 부정어 없음** | **아무 경고도 없다** |\n| ⭐⭐⭐ **`ai-coding`** | **부정어 + 위험 전부를 사용자에게 배정** | ⭐ **읽으면 아주 분명하다** |\n\n💡 ⭐⭐ **그런데 셈이 그 다음 질문을 만든다** — **읽으면 분명한데, 읽나?** ⚠️ `환각|hallucination` 은 **104건**이고 `맹신하지 마라` 류는 **27건**이다."
+    },
+    {
+      "id": "gap",
+      "kind": "extra",
+      "heading": "⭐⭐⭐ 19% 느렸는데 20% 빨랐다고 믿었다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+          "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+          "publisher": "METR",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **무작위 대조 시험.** \"they take **19% longer**\" 인데 개발자들은 **20% 빨라졌다고 믿었다.** ⚠️ 저자들이 **일반화를 스스로 막고** 상단에 **\"These results are out of date\"** 를 붙였다"
+        }
+      ],
+      "body": "⭐⭐⭐ **무작위 대조 시험이 하나 있다** — 이 백과사전이 여섯 사이클 동안 찾던 **1차급 실패 기록**이 여기서 나왔다.\n\n**설계부터 본다.**\n\n> ⭐⭐ \"we recruited **16 experienced developers from large open-source repositories** (averaging **22k+ stars and 1M+ lines of code**) that they've contributed to **for multiple years** ... Developers provide lists of real issues (**246 total**)\"\n\n⭐ **자기 저장소에 여러 해 기여한 사람들**이고 **실제 이슈**다 — 📌 **인위적인 과제가 아니다.**\n\n**결과.**\n\n> ⭐⭐⭐ **\"When developers are allowed to use AI tools, they take 19% longer to complete issues—a significant slowdown\"**\n\n💡 ⭐⭐⭐ **그런데 진짜 발견은 그다음이다.**\n\n> ⭐⭐⭐ **\"developers expected AI to speed them up by 24%, and even after experiencing the slowdown, they still believed AI had sped them up by 20%\"**\n> ⭐⭐⭐ \"This gap between perception and reality is **striking**\"\n\n⚠️⚠️ **겪고 나서도 몰랐다.** ⭐ **예측 +24%, 실제 −19%, 사후 추정 +20%** — 📌 **실제와 사후 추정 사이가 39%포인트**다.\n\n💡 ⭐⭐⭐ **`performance` 사이클과 정확히 같은 형태다** — 그쪽 1차 자료는 **\"가진 지표에서 거꾸로 오르지 말고 질문을 먼저 던지라\"** 고 했고, 셈은 **\"고쳐라 2976건, 재라 180건\"** 이었다. ⭐ **여기서는 재지 않으면 자기 체감이 틀린다는 것이 실험으로 나왔다.**\n\n📌 ⭐⭐⭐ **그리고 저자들이 스스로 일반화를 막는다.**\n\n> ⭐⭐⭐ **\"We do not provide evidence that: AI systems do not currently speed up many or most software developers\"**\n> ⭐⭐⭐ \"We **do not claim** that our developers or repositories **represent a majority or plurality of software development work**\"\n> ⭐⭐⭐ 페이지 상단 — **\"These results are out of date\"**\n\n⚠️ **이중 부정이 헷갈리지만 뜻은 분명하다** — **\"AI 가 대다수 개발자를 빠르게 하지 못한다\"는 증거를 제공하지 않는다.** ⭐⭐ **즉 이 결과는 \"AI 는 느리게 한다\"가 아니다.**\n\n💡 ⭐⭐⭐ **이 정직함이 이 백과사전에서 눈에 띈다.** 📌 `hexagonal-architecture` 는 **대가를 아예 안 적었고**, `aws` 는 **부정어를 안 썼는데** — ⭐ **여기는 제품도 연구도 자기 한계를 세게 적는다.** ⚠️ **연구는 자기 결과에 \"낡았다\"는 딱지까지 붙였다.**\n\n📌 ⭐ **왜 느려졌는지는 이 문서가 확인하지 못했다** — \"We investigate **20 potential factors** ... finding evidence that **5 likely contribute**\" 라고만 확인했고, **그 다섯이 무엇인지는 열지 않았다**(`open_questions`)."
+    },
+    {
+      "id": "how",
+      "kind": "how",
+      "heading": "⭐⭐ 이미 있던 조건을 그대로 쓴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        }
+      ],
+      "body": "⭐ **새 규칙을 만들 필요가 없다.** 📌 `refactoring` 사이클의 1차 자료가 세운 조건이 **누가 하느냐와 무관**하기 때문이다.\n\n| `refactoring` 의 조건 | AI 에게 맡길 때 |\n|---|---|\n| ⭐⭐ \"**small** behavior-preserving transformations\" | ⚠️ **한 번에 큰 덩어리를 바꾸기 쉽다** |\n| ⭐⭐⭐ \"should **not be broken for more than a few minutes**\" | ⚠️ 되돌릴 단위가 크면 그만큼 오래 깨져 있다 |\n| ⭐⭐⭐ \"doesn't have a **well defined behavior**\" 면 못 한다 | ⚠️ **동작을 무엇으로 확인하나** |\n\n💡 ⭐⭐ **그리고 제품 문서가 요구하는 것이 그 셋째 칸과 같은 자리다.**\n\n> ⭐⭐⭐ \"You should **carefully review and test** the generated code, particularly when dealing with **critical or sensitive applications**.\"\n\n📌 ⭐⭐⭐ **공고들이 실제로 그 방향으로 간다.**\n\n> ⭐⭐⭐ `AI Agent **생성물 검증을 위한 테스트·실행·평가 하네스 구축**` — 베이글코드\n> ⭐⭐ `Claude Code, Codex를 활용해 보일러플레이트, 리팩토링, **테스트 작성까지** 일상적으로 위임합니다.` — 헤렌(`refactoring` 사이클에서 인용)\n\n⭐ **둘 다 \"생성\"과 \"검증\"을 함께 놓는다** — 💡 📌 **`AI ~ 검증|검토` 가 1052건인 것과 같은 방향**이다.\n\n⚠️⚠️ **그런데 검증에도 같은 함정이 있다.** ⭐ 제품 문서가 **\"appears to be valid but may not actually be ... correct\"** 라고 적으므로 — 💡 **사람이 눈으로 훑는 검증은 가장 약한 검증**이다. 📌 **돌려 보는 것**(테스트·실행)이 필요하고, ⭐ 그래서 베이글코드 공고가 **\"테스트·실행·평가 하네스\"** 라고 적은 것으로 보인다.\n\n📌 ⭐⭐ **한 가지 더 — 언어와 영역에 따라 다르다고 제품이 직접 적는다.**\n\n> ⭐⭐ \"The **quality of suggestions depends on the volume and diversity of training data** available for each language.\"\n> ⭐ \"may not be able to handle **more complex code structures or obscure programming languages**\"\n\n⚠️ **이 백과사전이 다룬 `atmega128`·`rs485`·`modbus`·`rtos` 같은 자리는 그 \"obscure\" 쪽에 가깝다** — 💡 ⭐ **그리고 거기는 틀린 코드가 실제 장비에 꽂힌다.**\n\n📌 ⭐ **채용 쪽도 바뀌었다.**\n\n> ⭐⭐⭐ `1차 직무적합성 인터뷰에서는 **생성형 AI를 활용한 코딩테스트**가 함께 진행됩니다.` — 컬리\n\n⭐ **도구를 쓰는 것을 전제로 평가한다** — 📌 그러면 **평가되는 것이 \"코드를 쓰는 능력\"에서 \"결과를 판정하는 능력\"으로 옮겨 간다**(⚠️ 이 해석은 추론이다)."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 한 제품의 문서만 읽었다.** ⭐ 공고에 나오는 도구는 여럿인데(`Copilot|Cursor|Claude Code|Codex|Windsurf` **1802건**) **한 곳의 책임 있는 사용 문서만** 열었다. ⚠️ **다른 제품이 같은 수준으로 한계를 적는지 확인하지 않았다** — 📌 **`aws` 처럼 부정어를 안 쓰는 곳이 있을 수 있다.**\n\n**2. ⚠️ 왜 느려졌는지의 다섯 요인을 확인하지 못했다.** ⭐ 연구가 \"20 potential factors ... **5 likely contribute**\" 라고 적는데 **그 다섯을 열지 않았다.** 📌 **이 문서 다음의 가장 큰 빈자리다.**\n\n**3. ⚠️⚠️ 그 연구는 스스로 낡았다고 표시한 상태다.** ⭐ 페이지 상단에 **\"These results are out of date\"** 가 붙어 있고, 저자들이 **일반화를 명시적으로 막는다.** 📌 **이 문서는 그 사실을 본문에 그대로 적었다** — ⚠️ **결과를 \"AI 는 느리게 한다\"로 읽으면 저자들이 직접 부정한 주장을 하는 것이 된다.**\n\n**4. ⚠️ 후속 연구를 찾지 않았다.** ⭐ 같은 기관이 **실험 설계를 바꾸고 있다**는 것이 검색에 보였으나 **열지 않았다.**\n\n**5. ⚠️ `LLM` 3159건·`AI 에이전트` 2552건을 갈라 세지 못했다** — ⭐ **AI 를 만드는 일**(→ `rag`·`embedding`·`vector-db`)과 **AI 로 개발하는 일**이 섞여 있다. 📌 **그래서 도구 이름 1802건을 기준으로 삼았다.**\n\n**6. ⚠️ `바이브 코딩` 299건을 다루지 않았다** — ⭐ 1차 자료를 찾지 못했다.\n\n**7. ⚠️ 라이선스·저작권 문제를 깊이 다루지 않았다.** ⭐ 제품 문서가 **\"IP infringement\"** 과 **\"public code matching\"** 을 적는데 **한 줄로만** 옮겼다.\n\n**8. ⭐⭐⭐ 실패 사례가 두 번째로 1차급이었고, 이번엔 규칙을 끝까지 지켰다.** ⚠️ 직전 사이클(`scrum`)에서 **후보를 찾고도 안 열어** 한 걸음 덜 갔는데 — 📌 **여기서는 검색으로 찾은 연구를 그 자리에서 열었다.**\n\n**9. ⭐ `market` 이 없다** — `tech_relations.json` 에 `LLM`·`Copilot`·`Cursor` 이름이 **없다**(`OpenAI` 258건, `LangChain` 206건이 있을 뿐이고 둘 다 **만드는 쪽**이다).\n\n**10. ⭐ 겹침을 확인했다** — `rag` 가 `프롬프트` 를 33회 다루지만 **AI 를 만드는 쪽**이고, `refactoring` 에 AI 절이 있으나 **그 문서의 조건을 여기서 이어받아 넓혔다.**"
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 원문",
+      "note": "⭐ 위 여섯은 **제품 문서**, 아래 다섯은 **무작위 대조 시험**이다. 📌 **양쪽 다 자기 한계를 세게 적는다** — `aws`(부정어 없음)·`hexagonal-architecture`(대가 없음)와 정반대다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 틀린 게 안 보인다",
+          "\"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\""
+        ],
+        [
+          "⭐⭐⭐ 환각",
+          "\"**Hallucination risk**: Copilot generates statements that **sound plausible but are factually inaccurate**.\""
+        ],
+        [
+          "⭐⭐ 범위의 한계",
+          "\"still have a **limited scope** and **may not be able to handle more complex code structures or obscure programming languages**\""
+        ],
+        [
+          "⭐⭐ 언어마다 다르다",
+          "\"The **quality of suggestions depends on the volume and diversity of training data** available for each language.\""
+        ],
+        [
+          "⭐⭐⭐ 위험 배정",
+          "**\"Users assume all risks associated with generated code including security vulnerabilities, bugs, and IP infringement.\"**"
+        ],
+        [
+          "⭐⭐⭐ 두 번 검증",
+          "\"You should **always review** ... before accepting them, and **further validate it after**\" · \"carefully review and **test** the generated code\""
+        ],
+        [
+          "⭐⭐⭐ 결과",
+          "**\"When developers are allowed to use AI tools, they take 19% longer to complete issues—a significant slowdown\"**"
+        ],
+        [
+          "⭐⭐⭐ 인식 차이",
+          "**\"developers expected AI to speed them up by 24%, and even after experiencing the slowdown, they still believed AI had sped them up by 20%\"** · \"This gap between perception and reality is **striking**\""
+        ],
+        [
+          "⭐⭐ 설계",
+          "\"**16 experienced developers** from large open-source repositories (**22k+ stars and 1M+ lines of code**) ... **246** total issues\""
+        ],
+        [
+          "⭐⭐⭐ 일반화 금지",
+          "**\"We do not provide evidence that: AI systems do not currently speed up many or most software developers\"** · \"We **do not claim** that our developers or repositories represent a majority\""
+        ],
+        [
+          "⭐⭐⭐ 스스로 붙인 딱지",
+          "**\"These results are out of date\"** (페이지 상단)"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        },
+        {
+          "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+          "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+          "publisher": "METR",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **무작위 대조 시험.** \"they take **19% longer**\" 인데 개발자들은 **20% 빨라졌다고 믿었다.** ⚠️ 저자들이 **일반화를 스스로 막고** 상단에 **\"These results are out of date\"** 를 붙였다"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️ 이 낱말을 셀 때",
+      "note": "⭐⭐⭐ **다섯 사이클 연속이던 형태가 여기서 깨진다** — `AI ~ 검증|검토` 가 **1052건**으로 도구 이름(1802)의 절반을 넘는다. ⚠️ 다만 **`환각` 104건, `맹신하지 마라` 27건**은 여전히 작다.",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "⚠️ `LLM\\|대규모 언어 모델`",
+          "3159 (모집중 1274) — ⚠️ **만드는 쪽과 섞여 있다**"
+        ],
+        [
+          "⚠️ `AI 활용\\|AI 도구\\|생성형 AI`",
+          "3149 (모집중 1108) — ⚠️ 같은 이유로 기준으로 안 썼다"
+        ],
+        [
+          "⚠️ `AI 에이전트\\|AI Agent`",
+          "2552 (모집중 1225) — ⚠️ 같은 이유"
+        ],
+        [
+          "⭐ `Copilot\\|Cursor\\|Claude Code\\|Codex`",
+          "**1802 (모집중 782)** — ⭐ **이 문서의 기준**"
+        ],
+        [
+          "⭐⭐ `AI ~ 검증\\|검토\\|확인`",
+          "**1052 (모집중 363)**"
+        ],
+        [
+          "`프롬프트`",
+          "1018 (모집중 371) — → `rag` 가 33회 다룬다"
+        ],
+        [
+          "`개발 생산성\\|productivity`",
+          "940 (모집중 481)"
+        ],
+        [
+          "`바이브 코딩\\|vibe coding`",
+          "299 (모집중 86) — ⚠️ 1차 자료를 못 찾았다"
+        ],
+        [
+          "⚠️ `환각\\|hallucination`",
+          "**104 (모집중 53)** — ⭐ 제품이 이름 붙인 위험"
+        ],
+        [
+          "`AI 코드 리뷰\\|리뷰 자동화`",
+          "91 (모집중 41)"
+        ],
+        [
+          "⚠️⚠️ `AI에 의존\\|맹신\\|그대로 사용`",
+          "**27 (모집중 9)**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "line",
+      "kind": "compare",
+      "caption": "⭐⭐ 제품이 선을 긋는 방식 — 계보에서",
+      "note": "각 인용은 해당 문서의 1차 자료다. ⭐ **줄 세운 것은 이 백과사전의 관점**(`confidence: inferred`). 📌 **`aws` 와 여기가 양 끝이다.**",
+      "columns": [
+        "문서",
+        "어떻게 긋나",
+        "안 읽으면"
+      ],
+      "rows": [
+        [
+          "`redis`",
+          "\"**we discourage it**\"",
+          "읽으면 걸린다"
+        ],
+        [
+          "`github-actions`",
+          "\"should **almost never** be used\"",
+          "읽으면 걸린다"
+        ],
+        [
+          "`git`",
+          "\"is **a bad idea**\"",
+          "읽으면 걸린다"
+        ],
+        [
+          "⚠️⚠️ `aws`",
+          "**긍정형 배정 — 부정어가 없다**",
+          "⚠️ **아무 경고도 없다**"
+        ],
+        [
+          "⚠️ `hexagonal-architecture`",
+          "**대가를 아예 안 적는다**",
+          "⚠️ 제동 장치를 직접 만들어야 한다"
+        ],
+        [
+          "⭐⭐⭐ **`ai-coding`**",
+          "**부정어 + \"Users assume all risks\"**",
+          "⭐ **읽으면 아주 분명하다** — ⚠️ 다만 `환각` 은 공고에 **104건**"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "cond",
+      "kind": "compare",
+      "caption": "⭐⭐ 이미 있던 조건을 그대로 쓴다",
+      "note": "⭐ 왼쪽은 `refactoring` 의 1차 자료(`confirmed`), 오른쪽은 이 문서의 적용(`inferred`). 📌 **새 규칙이 아니다** — 조건이 **누가 하느냐와 무관**하기 때문이다.",
+      "columns": [
+        "조건",
+        "AI 에게 맡길 때",
+        "무엇으로 확인하나"
+      ],
+      "rows": [
+        [
+          "\"**small** behavior-preserving transformations\"",
+          "⚠️ 한 번에 큰 덩어리를 바꾸기 쉽다",
+          "**되돌릴 단위가 몇 분인가**"
+        ],
+        [
+          "\"not be broken for more than **a few minutes**\"",
+          "⚠️ 단위가 크면 오래 깨져 있다",
+          "**각 단계마다 돌려 본다**"
+        ],
+        [
+          "\"**well defined behavior**\" 가 없으면 못 한다",
+          "⚠️ 동작을 무엇으로 확인하나",
+          "⭐ **테스트** — 베이글코드 `테스트·실행·평가 하네스`"
+        ],
+        [
+          "⭐ 제품 문서가 더하는 것",
+          "\"carefully review and **test** ... **critical or sensitive** applications\"",
+          "⚠️ **눈으로 훑는 검증이 가장 약하다**"
+        ],
+        [
+          "⭐ 영역에 따라 다르다",
+          "\"obscure programming languages\" · 언어별 학습 데이터",
+          "⚠️ **펌웨어·산업 프로토콜 쪽이 그 자리**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ appears to be valid",
+      "en": "—",
+      "what": "**타당해 보이지만 실제로는 맞지 않을 수 있다.** ⚠️ **틀린 코드가 틀려 보이지 않는다**는 것이 핵심 — 그래서 **눈으로 훑는 것으로는 안 걸린다**"
+    },
+    {
+      "term": "⭐⭐⭐ 환각",
+      "en": "hallucination",
+      "what": "제품이 직접 이름 붙인 위험 — \"generates statements that **sound plausible but are factually inaccurate**\". ⚠️ 공고에는 **104건**"
+    },
+    {
+      "term": "⭐⭐⭐ Users assume all risks",
+      "en": "—",
+      "what": "**생성된 코드의 모든 위험을 사용자가 진다** — 보안 취약점·버그·지식재산권 침해까지. ⭐ `aws` 의 긍정형 배정과 정반대로 **명시적**이다"
+    },
+    {
+      "term": "⭐⭐⭐ 인식 차이",
+      "en": "perception gap",
+      "what": "**예측 +24%, 실제 −19%, 사후 추정 +20%.** ⚠️ **겪고 나서도 몰랐다** — \"This gap between perception and reality is **striking**\""
+    },
+    {
+      "term": "⭐⭐ 두 번 검증",
+      "en": "—",
+      "what": "\"**always review** ... before accepting them, and **further validate it after**\" — ⭐ **받기 전과 받은 뒤 두 번**을 요구한다"
+    },
+    {
+      "term": "⭐ 언어별 편차",
+      "en": "—",
+      "what": "\"quality of suggestions **depends on the volume and diversity of training data** available for each language\" — ⚠️ **덜 흔한 언어·영역일수록 나빠진다**"
+    },
+    {
+      "term": "⚠️ These results are out of date",
+      "en": "—",
+      "what": "⭐ **연구자들이 자기 결과에 붙인 딱지.** 📌 그리고 **\"AI 가 대다수를 느리게 한다\"는 증거를 제공하지 않는다**고 스스로 적는다"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "AI 도구로 코드를 생성했다",
+      "pick": "⭐⭐⭐ **돌려 보고 판정한다**",
+      "over": "읽어 보고 괜찮으면 받아들이기",
+      "why": "⭐⭐⭐ 제품 문서가 **\"appears to be valid but may not actually be semantically or syntactically correct\"** 라고 적는다 — ⚠️⚠️ **틀린 것이 틀려 보이지 않으므로 눈으로 훑는 검증은 가장 약하다.** 💡 그리고 **\"always review ... and further validate it after\"** — **두 번**을 요구한다",
+      "tradeoff": "⚠️ **돌려 볼 수 있게 만드는 데 시간이 든다** — 테스트가 없으면 더 그렇다. ⭐ 그래도 **`refactoring` 의 조건이 그대로 걸린다**: 동작이 정의돼 있지 않으면 **맞았는지 확인할 방법이 없다.** 📌 공고들이 그쪽으로 간다 — 베이글코드 `테스트·실행·평가 하네스 구축`",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        }
+      ]
+    },
+    {
+      "situation": "AI 도구가 생산성을 얼마나 올렸는지 판단한다",
+      "pick": "⭐⭐ **체감 대신 재 본다**",
+      "over": "팀에 물어보거나 자기 느낌으로 판단하기",
+      "why": "⭐⭐⭐ **무작위 대조 시험에서 19% 느려졌는데 참가자들은 20% 빨라졌다고 믿었다** — \"This gap between perception and reality is **striking**\". ⚠️ **겪고 나서도 몰랐다.** 💡 ⭐ **`performance` 사이클과 같은 형태**다 — **재지 않으면 자기 체감이 틀린다**",
+      "tradeoff": "⚠️⚠️ **그 연구는 특정 설정이고 저자들이 일반화를 막는다** — 16명, 성숙한 저장소, 그리고 **\"These results are out of date\"**. ⭐ 그래서 **결과를 옮겨 쓰는 게 아니라 방법을 옮겨 쓴다**: **자기 팀에서 재 본다.** 📌 ⚠️ 재는 방법은 이 문서가 다루지 않았다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+          "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+          "publisher": "METR",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **무작위 대조 시험.** \"they take **19% longer**\" 인데 개발자들은 **20% 빨라졌다고 믿었다.** ⚠️ 저자들이 **일반화를 스스로 막고** 상단에 **\"These results are out of date\"** 를 붙였다"
+        }
+      ]
+    },
+    {
+      "situation": "보안이 중요한 코드에 쓴다",
+      "pick": "⭐ **더 강한 검증을 붙인다**",
+      "over": "평소와 같게 다루기",
+      "why": "⭐⭐ 제품 문서가 그 경우를 따로 든다 — \"carefully review and test the generated code, **particularly when dealing with critical or sensitive applications**\". ⚠️ 그리고 **\"Users assume all risks ... including security vulnerabilities\"** 로 책임이 명시된다",
+      "tradeoff": "⚠️ **느려진다** — 그게 도구를 쓰는 이유와 부딪힌다. ⭐ 그래도 **위험 배정이 이미 정해져 있다.** 📌 그리고 **공개 코드와 일치하는 제안**(라이선스)도 같은 자리다 — ⚠️ **이 문서는 그쪽을 한 줄로만 다뤘다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        }
+      ]
+    },
+    {
+      "situation": "덜 흔한 언어나 영역에서 쓴다",
+      "pick": "⭐ **품질이 다를 것을 전제하고 검증을 더 붙인다**",
+      "over": "평소와 같은 신뢰로 쓰기",
+      "why": "⭐⭐ 제품이 직접 적는다 — \"quality of suggestions **depends on the volume and diversity of training data** available for each language\", \"may not be able to handle more complex code structures or **obscure programming languages**\". 💡 ⚠️ **이 백과사전의 `atmega128`·`rs485`·`modbus`·`rtos` 같은 자리가 그쪽**이고, **거기는 틀린 코드가 실제 장비에 꽂힌다**",
+      "tradeoff": "⚠️ **덜 흔한 영역일수록 검증 인프라도 없다** — 실제 장비가 필요할 수 있다. ⭐ 그래도 **제품이 스스로 편차를 인정한 이상 같은 신뢰로 쓸 근거가 없다.** 📌 이 백과사전이 **핀맵에 패키지를 밝히라**고 하는 이유와 같다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        }
+      ]
+    },
+    {
+      "situation": "\"AI 도구 활용 경험\"을 이력서에 적는다",
+      "pick": "⭐ **무엇을 어떻게 검증했는지 적는다**",
+      "over": "AI 도구를 활용해 생산성을 높였다고 적기",
+      "why": "⭐⭐ 도구 이름은 **1802건이 적는다** — ⚠️ **흔하다.** 그런데 `환각` 은 **104건**, `맹신하지 마라` 류는 **27건**이다. ⭐ **무엇이 틀리는지 아는 사람이 드물고**, 💡 **연구는 체감이 39%포인트나 어긋날 수 있음을 보여 준다**",
+      "tradeoff": "길어진다. ⭐ 그래도 **\"생산성을 높였다\"는 체감일 수 있고**(연구가 정확히 그 지점을 짚는다), **\"생성물 검증 하네스를 만들었다\"는 실제로 한 일**이다. 📌 베이글코드 공고가 그 문장을 요구한다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐⭐ 읽어 보고 괜찮아 보이면 받아들인다",
+      "why": "⭐⭐⭐ **제품 문서의 첫 경고가 정확히 그것이다** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\". ⚠️⚠️ **틀린 것이 틀려 보이지 않는다.** 💡 그리고 환각은 \"**sound plausible but are factually inaccurate**\" 로 정의된다 — **그럴듯함이 곧 위험**이다",
+      "fix": "⭐ **돌려 본다** — 테스트든 실행이든. 📌 제품 문서가 **\"always review ... and further validate it after\"** 로 **두 번**을 요구하고, ⚠️ 뒤쪽이 **돌려 보는 쪽**이다. ⭐ 베이글코드 공고의 `테스트·실행·평가 하네스` 가 그것을 인프라로 만든 형태다",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐⭐ 체감으로 생산성을 판단한다",
+      "why": "⭐⭐⭐ **무작위 대조 시험에서 19% 느려졌는데 참가자들은 20% 빨라졌다고 믿었다.** ⚠️⚠️ **겪고 나서도 몰랐다** — 예측 +24%, 실제 −19%, 사후 추정 +20%. 💡 ⭐ 그리고 **경험 많은 개발자들이었다**(여러 해 기여한 자기 저장소)",
+      "fix": "⭐ **재 본다** — 📌 그 연구의 결과가 아니라 **방법**을 가져온다. ⚠️⚠️ **그 결과를 그대로 인용하면 안 된다** — 저자들이 **\"We do not provide evidence that AI systems do not currently speed up many or most software developers\"** 라고 명시하고 페이지 상단에 **\"These results are out of date\"** 를 붙였다",
+      "sources": [
+        {
+          "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+          "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+          "publisher": "METR",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **무작위 대조 시험.** \"they take **19% longer**\" 인데 개발자들은 **20% 빨라졌다고 믿었다.** ⚠️ 저자들이 **일반화를 스스로 막고** 상단에 **\"These results are out of date\"** 를 붙였다"
+        }
+      ]
+    },
+    {
+      "trap": "⚠️ 그 연구를 \"AI 는 느리다\"의 근거로 쓴다",
+      "why": "⭐⭐⭐ **저자들이 직접 막는다** — \"We **do not claim** that our developers or repositories **represent a majority or plurality of software development work**\", 그리고 결과 자체에 **\"out of date\"** 딱지가 붙어 있다. ⚠️ **16명, 246 이슈, 성숙한 저장소, 특정 시점의 도구**다",
+      "fix": "⭐ **결과가 아니라 인식 차이를 가져온다** — 📌 **\"체감과 실제가 크게 어긋날 수 있다\"** 는 것은 설정에 덜 의존한다. ⚠️ 그리고 **자기 상황에서 재는 것이 유일한 답**이다",
+      "sources": [
+        {
+          "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+          "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+          "publisher": "METR",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **무작위 대조 시험.** \"they take **19% longer**\" 인데 개발자들은 **20% 빨라졌다고 믿었다.** ⚠️ 저자들이 **일반화를 스스로 막고** 상단에 **\"These results are out of date\"** 를 붙였다"
+        }
+      ]
+    },
+    {
+      "trap": "큰 덩어리를 한 번에 맡긴다",
+      "why": "⭐⭐ **`refactoring` 의 1차 자료가 세운 조건이 누가 하느냐와 무관하다** — \"**small** behavior-preserving transformations\", \"should **not be broken for more than a few minutes**\". ⚠️ **도구는 큰 덩어리를 한 번에 바꾸기 쉽고**, 그러면 **되돌릴 단위가 커진다**",
+      "fix": "⭐ **되돌릴 단위를 몇 분짜리로 자르고 각 단계마다 돌려 본다.** 📌 ⚠️ 그리고 **동작이 정의돼 있지 않으면 애초에 확인할 방법이 없다** — 그 경우 **테스트를 먼저 만드는 것이 순서**다(→ `refactoring`·`testing`)"
+    },
+    {
+      "trap": "⭐ 덜 흔한 언어·영역에서 같은 신뢰로 쓴다",
+      "why": "⭐⭐ 제품이 직접 인정한다 — \"quality of suggestions **depends on the volume and diversity of training data** available for each language\", \"obscure programming languages\". ⚠️ **이 백과사전의 `atmega128`·`rs485`·`modbus`·`rtos` 같은 자리가 그쪽**이고, 💡 **거기서는 틀린 코드가 실제 장비에 꽂힌다**",
+      "fix": "⭐ **그 영역에서는 생성물을 \"초안\"으로만 다룬다** — 📌 데이터시트·규격서로 **숫자를 대조한다.** ⚠️ 이 백과사전이 **핀 번호에 패키지를 밝히라**고 요구하는 이유와 같다",
+      "sources": [
+        {
+          "title": "Responsible use of GitHub Copilot code completion",
+          "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+          "publisher": "GitHub",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+        }
+      ]
+    },
+    {
+      "trap": "이 문서를 읽고 도구의 한계를 다 안다고 여긴다",
+      "why": "⚠️⚠️ **한 제품의 문서만 읽었다.** ⭐ 공고에 나오는 도구는 여럿인데(**1802건**) **다른 제품이 같은 수준으로 한계를 적는지 확인하지 않았다** — 📌 **`aws` 처럼 부정어를 안 쓰는 곳이 있을 수 있다**",
+      "fix": "⭐ **자기가 쓰는 도구의 문서에서 부정어를 직접 찾아본다** — `cannot`·`may not`·`limitations`·`verify`. 📌 **없으면 그 사실 자체가 정보**다(`aws` 사이클에서 배운 것)"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐⭐ **자기가 쓰는 AI 코딩 도구의 공식 문서에서 한계·주의 페이지를 찾아 부정어를 세어 본다** — `cannot`·`may not`·`limitations`·`assume all risks`·`verify`.",
+      "done_when": "⭐ **몇 개 나오는지 확인했고**, ⚠️ **위험을 누구에게 배정하는지** 한 줄로 말할 수 있다.",
+      "why": "⭐⭐⭐ **이 백과사전이 열 번 넘게 해 온 일이다.** 💡 `aws` 는 **부정어가 하나도 없었고**(그래서 안 읽으면 경고가 없었다), 여기 제품 문서는 **가득했다.** ⭐ 📌 **\"없다\"도 결과**다.",
+      "no_hardware": "웹 페이지 한두 장이면 된다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **최근에 AI 도구로 만든 코드 하나를 골라, \"읽어서 판정한 것\"과 \"돌려 봐서 판정한 것\"을 갈라 적어 본다.**",
+      "done_when": "⭐ 두 목록이 갈렸고, ⚠️ **읽어서만 판정한 것이 몇 개인지** 안다.",
+      "why": "⭐⭐⭐ 제품 문서가 **\"appears to be valid but may not actually be ... correct\"** 라고 적는다 — 💡 ⚠️ **읽어서 판정한 것이 가장 약한 검증**이고, ⭐ 대개 그쪽이 더 많다. 📌 **그 목록이 곧 다음에 테스트를 붙일 자리**다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **같은 종류의 작업 두 개를 골라 하나는 도구를 쓰고 하나는 안 쓰고 해 본 뒤, 시간을 재고 체감도 함께 적는다.**",
+      "done_when": "⭐ **잰 시간과 체감이 둘 다 기록됐고**, ⚠️ 둘이 얼마나 다른지 안다.",
+      "why": "⭐⭐⭐ **연구의 결과가 아니라 방법을 가져오는 실습이다.** 💡 그 시험에서 **예측 +24%, 실제 −19%, 사후 추정 +20%** 였고 — ⭐ **겪고 나서도 몰랐다.** ⚠️⚠️ **다만 그 결과를 자기 상황에 그대로 옮기면 안 된다** — 저자들이 일반화를 막고 **\"out of date\"** 딱지를 붙였다. 📌 **그래서 자기가 재 보는 것이 유일한 답**이다.",
+      "no_hardware": "작업 두 개와 시계면 된다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "제품 문서가 적는 가장 중요한 한계는? 원문으로 답하라",
+    "위험은 누구에게 배정되는가? 원문으로 답하라",
+    "무작위 대조 시험의 결과와 참가자들의 믿음은 각각 어떠했나?",
+    "그 연구를 \"AI 는 느리다\"의 근거로 쓰면 안 되는 이유는?",
+    "`refactoring` 의 세 조건이 AI 에게도 그대로 걸리는 이유는?",
+    "공고에서 도구 이름 1802건인데 `환각` 104건인 것은 무엇을 뜻하는가?"
+  ],
+  "evidence": [
+    {
+      "quote": ": AI Agent 생성물 검증을 위한 테스트·실행·평가 하네스 구축",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/259710",
+      "where": "베이글코드(Bagelcode)",
+      "what_it_shows": "⭐⭐⭐ **검증을 인프라로 만든 드문 공고** — 제품 문서가 요구하는 **\"further validate it after\"** 를 사람이 아니라 **돌려 보는 장치**로 답한다"
+    },
+    {
+      "quote": ": AI 코딩 에이전트(Claude Code, Cursor, Codex 등)를 통한 설계·구현·검증 및 AI 활용 가이드 개선",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/259710",
+      "where": "베이글코드(Bagelcode)",
+      "what_it_shows": "⭐⭐ **생성과 검증을 한 줄에 놓는다** — ⭐ `AI ~ 검증|검토` **1052건**의 전형이자, **가이드를 개선한다**는 표현이 드물다"
+    },
+    {
+      "quote": "• Cursor, Claude Code 등 AI 코딩 도구를 적극적으로 활용하여 개발 생산성을 극대화할 수 있는 분을 찾습니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/364042",
+      "where": "코나체인",
+      "what_it_shows": "⚠️⚠️ **1802건의 전형** — **생산성 극대화**를 요구하는데 ⭐ **연구는 그 체감이 39%포인트 어긋날 수 있음을 보여 준다**"
+    },
+    {
+      "quote": "* 1차 직무적합성 인터뷰에서는 생성형 AI를 활용한 코딩테스트가 함께 진행됩니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359782",
+      "where": "컬리",
+      "what_it_shows": "⭐⭐⭐ **채용 절차 자체가 바뀐 자리** — 도구를 쓰는 것을 전제로 평가한다. ⚠️ 그러면 평가 대상이 **\"코드를 쓰는 능력\"에서 \"결과를 판정하는 능력\"으로** 옮겨 갈 수 있다(⚠️ 이 해석은 추론)"
+    },
+    {
+      "quote": "- Claude Code, Codex, Cursor, 등 AI 코딩 도구를 활용해 개발 생산성을 높인 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/343884",
+      "where": "디스펙터",
+      "what_it_shows": "⭐ **도구 이름을 나열한다** — ⚠️ **무엇을 검증했는지는 없다**"
+    },
+    {
+      "quote": "- 기획, 설계, 구현, 디버깅, 리팩토링 과정에서 AI 도구를 실무 워크플로우에 효과적으로 적용한 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/343884",
+      "where": "디스펙터",
+      "what_it_shows": "⭐⭐ **전 과정에 붙인다** — ⚠️ `refactoring` 사이클에서 센 **AI 와 함께 145건**이 이 자리이고, 그 문서의 **세 조건이 그대로 걸린다**"
+    },
+    {
+      "quote": "• AI 에이전트를 업무에 능동적으로 활용하며, 적절한 컨텍스트 제공을 통해 결과물의 품질을 끌어낼 수 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "where": "큐엠아이티",
+      "what_it_shows": "⭐⭐ **입력 쪽(컨텍스트)을 요구한다** — ⚠️ 제품 문서는 **출력 쪽(검증)** 을 요구한다. **둘 다 필요하다**"
+    },
+    {
+      "quote": "• Claude Code, Cursor, Figma 등 최신 AI 툴을 활용하여 코딩, 문서작업, UI/UX 디자인 등을 수행해본 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/366200",
+      "where": "위시",
+      "what_it_shows": "⭐ **개발 밖으로도 넓어진다** — ⚠️ `documentation` 사이클에서도 같은 형태를 봤다"
+    },
+    {
+      "quote": "• 최신 AI 개발 툴 지원 (Cursor, Gemini, Claude 등)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365927",
+      "where": "동선컴퍼니",
+      "what_it_shows": "⭐ **복지·지원 항목으로 적힌다** — ⚠️ `프로파일링` 사이클의 `APM 제품 566건`처럼 **도구는 갖추는 것으로 다뤄진다**"
+    }
+  ],
+  "related": [
+    {
+      "slug": "refactoring",
+      "how": "⭐⭐⭐ **조건을 그대로 물려받는다** — \"small\", \"a few minutes\", \"well defined behavior\". ⭐ 그 문서에 AI 절이 이미 있고 여기서 넓혔다"
+    },
+    {
+      "slug": "testing",
+      "how": "⭐⭐⭐ **\"돌려 봐서 판정한다\"가 사는 곳** — 제품 문서가 \"carefully review and **test**\" 를 요구한다"
+    },
+    {
+      "slug": "code-review",
+      "how": "⭐⭐ 생성물이 리뷰로 오면 무엇이 달라지나 — ⚠️ `AI 코드 리뷰|리뷰 자동화` 는 **91건**"
+    },
+    {
+      "slug": "performance",
+      "how": "⭐⭐⭐ **같은 형태** — 재지 않으면 체감이 틀린다. 그쪽은 \"고쳐라 2976 : 재라 180\", 여기는 **−19% 인데 +20% 로 느꼈다**"
+    },
+    {
+      "slug": "aws",
+      "how": "⭐⭐⭐ **정반대의 선 긋기** — 그쪽은 **부정어가 없어** 안 읽으면 경고가 없고, 여기는 **부정어와 위험 배정이 명시적**이다"
+    },
+    {
+      "slug": "rag",
+      "how": "⭐ **AI 를 만드는 쪽**(그 문서가 `프롬프트` 33회). 여기는 **AI 로 개발하는 쪽**이다"
+    },
+    {
+      "slug": "embedding",
+      "how": "만드는 쪽 — 벡터와 검색"
+    },
+    {
+      "slug": "atmega128",
+      "how": "⚠️ **\"obscure\" 쪽의 예** — 제품이 언어별 품질 편차를 인정하고, **거기서는 틀린 코드가 실제 장비에 꽂힌다**"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **한 제품의 문서만 읽었다.** ⭐ 공고에 나오는 도구는 여럿인데(**1802건**) **한 곳의 책임 있는 사용 문서만** 열었다 — **다른 제품이 같은 수준으로 한계를 적는지 확인하지 않았다.** 📌 **`aws` 처럼 부정어를 안 쓰는 곳이 있을 수 있다.**",
+    "⚠️⚠️ **왜 느려졌는지의 다섯 요인을 확인하지 못했다.** ⭐ 연구가 \"**20 potential factors** ... finding evidence that **5 likely contribute**\" 라고 적는데 **그 다섯을 열지 않았다.** 📌 **이 문서 다음의 가장 큰 빈자리다.**",
+    "⚠️⚠️ **그 연구는 스스로 낡았다고 표시한 상태다** — 페이지 상단에 **\"These results are out of date\"**, 그리고 저자들이 **일반화를 명시적으로 막는다.** ⭐ **본문에 그대로 적었고**, ⚠️ **결과를 \"AI 는 느리게 한다\"로 읽으면 저자들이 직접 부정한 주장이 된다.**",
+    "⚠️ **후속 연구를 찾지 않았다** — 같은 기관이 **실험 설계를 바꾸고 있다**는 것이 검색에 보였으나 **열지 않았다.**",
+    "⚠️ **`LLM` 3159건·`AI 에이전트` 2552건을 갈라 세지 못했다** — **AI 를 만드는 일**(→ `rag`·`embedding`·`vector-db`)과 **AI 로 개발하는 일**이 섞여 있어 **도구 이름 1802건을 기준**으로 삼았다.",
+    "⚠️ **`바이브 코딩` 299건을 다루지 않았다** — **1차 자료를 찾지 못했다.**",
+    "⚠️ **라이선스·저작권 문제를 깊이 다루지 않았다** — 제품 문서가 **\"IP infringement\"** 과 **\"public code matching\"** 을 적는데 **한 줄로만** 옮겼다.",
+    "⭐⭐⭐ **실패 사례가 두 번째로 1차급이었고, 이번엔 규칙을 끝까지 지켰다.** ⚠️ 직전 사이클(`scrum`)에서 **후보를 찾고도 안 열어** 한 걸음 덜 갔는데 — 📌 **여기서는 검색으로 찾은 연구를 그 자리에서 열었다.**",
+    "⭐ **`market` 이 없다** — `tech_relations.json` 에 `LLM`·`Copilot`·`Cursor` 이름이 **없다**(`OpenAI` 258건 · `LangChain` 206건이 있을 뿐이고 둘 다 **만드는 쪽**이다).",
+    "⭐ **다섯 사이클 연속이던 형태가 여기서 깨졌다** — `AI ~ 검증|검토` 가 **1052건**으로 도구 이름의 절반을 넘는다. ⚠️ **왜 여기서만 다른지는 확인하지 못했다** — 제품 문서가 부정어로 가득하기 때문일 수 있으나 **세지 않았다.**"
+  ],
+  "sources": [
+    {
+      "title": "Responsible use of GitHub Copilot code completion",
+      "url": "https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-code-completion",
+      "publisher": "GitHub",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **제품이 부정어로 선을 긋는 드문 문서** — \"may generate code that **appears to be valid but may not actually be semantically or syntactically correct**\" · \"**Users assume all risks**\""
+    },
+    {
+      "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+      "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+      "publisher": "METR",
+      "kind": "article",
+      "summary": "⭐⭐⭐ **무작위 대조 시험.** \"they take **19% longer**\" 인데 개발자들은 **20% 빨라졌다고 믿었다.** ⚠️ 저자들이 **일반화를 스스로 막고** 상단에 **\"These results are out of date\"** 를 붙였다"
+    }
+  ]
+}
