@@ -152,9 +152,79 @@
     },
     {
       "name": "출시일의 트래픽 급증을 무중단으로 넘긴다",
-      "why": "⚠️ **게임의 출시일은 트래픽이 예측 불가능하게 몰리는 날이다.** **초당 50만 질의로 시작해 피크 65만**까지 갔는데 **서비스 중단도 점검 시간도 없이** 넘겼고, **40만 QPS 가 도는 중에 TiKV 노드를 롤링 업데이트**했다. **전통적인 게임 데이터베이스 샤딩의 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에** 얻으려고 TiDB 를 골랐다. ✅ **본문 확인함**(2025-10-03). ⚠️ **다만 컨퍼런스 후속 요약이라 얕다.**",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **게임의 출시일은 트래픽이 예측 불가능하게 몰리는 날이고, 그 하루가 나머지 몇 년의 자원 계획을 정한다.** 이 회사는 **게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고**, 그래서 **평시 20만 QPS 인데도 피크 대비로 늘 자원을 예약해 둬야 했다.** **초당 50만 질의로 시작해 피크 65만**까지 갔는데 **서비스 중단도 점검 시간도 없이** 넘겼고, **40만 QPS 가 도는 중에 TiKV 를 롤링 업데이트**했다. ✅ **본문 확인함**(2025-10-03) + 벤더 사례 연구.",
+      "tech": [
+        {
+          "tech": "TiDB Cloud",
+          "solves": "**`「성능의 스케일」과 「트랜잭션 기능」을 더 높은 수준에서 양립할 수 있다고 생각해 선택했습니다`** — 게임 업계 표준인 샤딩이 만드는 **다중 샤드 트랜잭션의 복잡도**를 피한다.",
+          "limits": "⚠️ **분산 SQL 데이터베이스의 운영을 새로 익혀야 한다** — **통계 이력을 끄는 것 같은 조정이 그 학습의 흔적이다**(재구성). **게임에서 이 회사의 첫 프로덕션 적용이다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3695/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-10-03",
+              "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+            },
+            {
+              "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+              "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+              "publisher": "PingCAP (벤더 사례 연구)",
+              "date": "2025",
+              "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+            }
+          ]
+        },
+        {
+          "tech": "TiKV 롤링 업데이트",
+          "solves": "⚠️ **트래픽이 도는 중에 자원을 늘린다** — **`업데이트하던 시간대에는 40만 QPS 정도 있었지만 에러 없이 스케일 업할 수 있었습니다`**(약 2배 사양).",
+          "limits": "⚠️ **출시 당일에 조작을 한다는 위험을 감수한다** — 되돌릴 여유가 없다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3695/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-10-03",
+              "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+            }
+          ]
+        },
+        {
+          "tech": "TiDB 를 아는 테이블 설계",
+          "solves": "**부하가 데이터베이스 노드에 고르게 퍼지도록** 의도적으로 맞췄다.",
+          "limits": "⚠️ **샤딩은 피했지만 애플리케이션이 데이터베이스의 성질에 무지할 수는 없다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3695/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-10-03",
+              "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 통계 정보 이력 (끈 것)",
+          "solves": "**메모리 압박을 없애 출시일의 안정성을 확보했다.**",
+          "limits": "⚠️ **나중에 질의 계획 변화를 되짚을 재료를 잃는다**(재구성). **다시 켰는지도 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3695/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-10-03",
+              "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "stop-reserving-for-the-peak"
+      ]
     },
     {
       "name": "게임 만드는 일에 LLM 을 넣는다",
@@ -664,6 +734,541 @@
           "summary": "사이버에이전트의 스마트폰 게임·엔터테인먼트 부문(SGE)이 Cygames 와 여섯 자회사를 포함해 5,000명이 넘는 규모다. 2021년 출시한 우마무스메가 주된 성장 동력이고 해외 매출이 크게 늘었다."
         }
       ]
+    },
+    {
+      "key": "stop-reserving-for-the-peak",
+      "name": "피크에 맞춰 늘 사 두는 대신 그때 늘린다",
+      "domain": "출시일의 트래픽 급증을 무중단으로 넘긴다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **게임의 출시일은 트래픽이 예측 불가능하게 몰리는 날이고, 그 하루가 나머지 몇 년의 자원 계획을 정한다.** 이 회사는 **게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했다.** ⚠️ **그래서 평시가 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 했고 낭비가 컸다**(이 대목은 데이터베이스 벤더가 낸 사례 연구에서 왔다). 게다가 **게임 업계의 표준 관행인 여러 노드 샤딩은 다중 샤드 트랜잭션을 복잡하게 만든다.** **`Shadowverse: Worlds Beyond`(2025년 6월 17일 출시)는 이 회사가 게임에서 TiDB 를 프로덕션에 쓴 첫 사례**다.",
+        "metrics": [
+          {
+            "label": "⚠️ 예전의 낭비",
+            "value": "**평시 20만 QPS 인데 MySQL 로는 피크에 대비해 늘 자원을 예약해 둬야 했다** — 그리고 **스케일 인·아웃에 몇 달의 준비**가 필요했다 ⚠️ **(벤더 사례 연구 출처)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              }
+            ]
+          },
+          {
+            "label": "출시일",
+            "value": "**초당 50만 질의** — 이후 최대 **60만~65만 QPS**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 돌아가는 중에 키웠다",
+            "value": "**`업데이트하던 시간대에는 40만 QPS 정도 있었지만 에러 없이 스케일 업할 수 있었습니다`** — TiKV 를 **약 2배 사양**으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "label": "무중단",
+            "value": "**서비스 중단도 점검 시간도 없이** 넘겼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              },
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 끈 기능",
+            "value": "**`TiDB 의 통계 정보 「이력」을 갖고 있었는데 이것이 메모리를 압박해서 「이력」 저장은 껐습니다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "label": "이 트래픽의 정체",
+            "value": "출시 **2주 만에 전 세계 100만 다운로드**, **2025년 10월까지 300만** ⚠️ **(벤더 사례 연구 출처)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "자원을 얼마나 사 둘지 정할 때",
+          "thought": "⚠️ **탄력이 없는 데이터베이스에서는 피크가 곧 상시 비용이 된다** — **평시 20만 QPS 인데 피크에 대비해 늘 예약해 두면 대부분의 시간에 그 자원이 논다.** **그런데 줄이는 것도 몇 달이 걸리니 결국 줄이지 않게 된다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "샤딩을 할지 고민할 때",
+          "thought": "⚠️ **게임 업계의 표준 관행이 샤딩인데 그 대가가 트랜잭션이다** — 여러 노드에 나누면 **다중 샤드 트랜잭션이 복잡해진다.** 회사가 고른 근거가 그것이다 — **`「성능의 스케일」과 「트랜잭션 기능」을 더 높은 수준에서 양립할 수 있다고 생각해 선택했습니다.`** **둘 중 하나를 고르는 문제로 두지 않았다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 끌지 정할 때",
+          "thought": "⚠️ **출시일에는 나중에 유용할 것보다 지금 안 죽는 것이 먼저다.** **통계 정보의 이력은 나중에 성능을 분석할 재료인데 메모리를 압박했다.** 그래서 껐다 — **관측을 내주고 안정성을 샀다**(뒤쪽 정리는 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "출시일 트래픽",
+            "what": "⚠️ **예측 불가능하게 몰린다** — 초당 50만 질의로 시작해 **60만~65만**까지 갔다"
+          },
+          {
+            "name": "TiDB Cloud",
+            "what": "**이 회사가 게임에서 TiDB 를 프로덕션에 쓴 첫 사례.** 고른 근거는 **성능 확장과 트랜잭션의 양립**이다"
+          },
+          {
+            "name": "TiKV 노드",
+            "what": "⚠️ **40만 QPS 가 도는 중에 약 2배 사양으로 롤링 업데이트했다** — 에러 없이"
+          },
+          {
+            "name": "통계 정보 이력",
+            "what": "⚠️ **껐다** — 메모리를 압박해서. **관측을 내주고 안정성을 샀다**(재구성)"
+          },
+          {
+            "name": "TiDB 를 아는 테이블 설계",
+            "what": "**부하가 데이터베이스 노드에 고르게 퍼지도록 의도적으로 설계했다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **점검 시간을 두지 않는다** — 출시일에 서비스를 세우지 않는다",
+          "⚠️ **트래픽이 도는 중에도 자원을 키울 수 있어야 한다**",
+          "**샤딩의 복잡도를 애플리케이션이 떠안지 않는다** — 트랜잭션을 포기하지 않기 위해",
+          "⚠️ **메모리를 압박하는 것은 그것이 무엇이든 끈다** — 출시일에는 안정성이 먼저다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**출시 전에 검증과 조사를 반복한다** — **`여러 검증·조사를 거듭해 만전의 체제로 릴리스를 맞을 수 있었습니다`**",
+            "why": "⚠️ **다만 그 준비의 구체적인 내용은 글에 없다**(재구성)"
+          },
+          {
+            "step": "**부하가 노드에 고르게 퍼지도록 테이블을 설계한다**",
+            "why": "**의도적인 설계로 분산을 만든다**"
+          },
+          {
+            "step": "**출시 — 초당 50만 질의**",
+            "why": "2주 만에 100만 다운로드가 되는 규모다"
+          },
+          {
+            "step": "⚠️ **트래픽이 40만 QPS 로 도는 중에 TiKV 를 약 2배 사양으로 롤링 업데이트한다**",
+            "why": "⚠️ **`에러 없이 스케일 업할 수 있었습니다`** — 점검 시간을 두지 않기 위해"
+          },
+          {
+            "step": "⚠️ **통계 정보 이력 저장을 끈다**",
+            "why": "⚠️ **메모리를 압박했다** — 출시일에는 안정성이 먼저다"
+          },
+          {
+            "step": "**피크 60만~65만 QPS 를 무중단으로 넘긴다**",
+            "why": "**서비스 중단도 점검 시간도 없었다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "MySQL 을 계속 쓸 것인가",
+            "chosen": "⚠️ **아니다 — TiDB 로 옮긴다**(게임에서 이 회사의 첫 프로덕션 적용)",
+            "alternatives": [
+              "MySQL 을 유지하고 여러 노드로 샤딩",
+              "MySQL 을 유지하고 자원을 크게 예약"
+            ],
+            "tradeoff": "⚠️ **MySQL 로는 스케일 인·아웃에 몇 달의 준비가 필요했다.** 그래서 **평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 했고 낭비가 컸다.** **줄이는 데도 몇 달이 걸리니 결국 줄이지 않게 된다**(뒤쪽은 재구성이다). ⚠️ **대가는 검증된 스택을 신작에서 처음 바꾼다는 것**이고, 그래서 **출시 전에 검증과 조사를 거듭했다.** ⚠️ **이 대목의 근거는 데이터베이스 벤더가 낸 사례 연구다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              },
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "question": "샤딩으로 확장할 것인가",
+            "chosen": "⚠️ **아니다 — 성능 확장과 트랜잭션을 함께 얻는 쪽으로**",
+            "alternatives": [
+              "게임 업계 표준대로 여러 노드에 샤딩",
+              "기능별로 데이터베이스를 나누기"
+            ],
+            "tradeoff": "회사의 문장 — **`「성능의 스케일」과 「트랜잭션 기능」을 더 높은 수준에서 양립할 수 있다고 생각해 선택했습니다.`** **샤딩은 업계 표준이지만 다중 샤드 트랜잭션을 복잡하게 만든다.** ⚠️ **대가는 분산 SQL 데이터베이스의 운영을 새로 익혀야 한다는 것**이고, **통계 이력을 끄는 것 같은 조정이 그 학습의 흔적이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              },
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              }
+            ]
+          },
+          {
+            "question": "직접 운영할 것인가 관리형을 쓸 것인가",
+            "chosen": "**TiDB Cloud**",
+            "alternatives": [
+              "자체 클러스터 운영"
+            ],
+            "tradeoff": "⚠️ **첫 프로덕션 적용에서 운영까지 직접 지면 위험이 겹친다**(재구성). **대가는 벤더에 묶인다는 것**이고, **그럼에도 노드 사양 변경 같은 조작은 직접 했다**(40만 QPS 중 롤링 업데이트).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              },
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "question": "피크를 어떻게 감당할 것인가",
+            "chosen": "⚠️ **미리 사 두지 않고 그때 늘린다** — 트래픽이 도는 중에",
+            "alternatives": [
+              "출시 전에 최대 사양으로 올려 두기",
+              "트래픽 제한(대기열)을 걸기"
+            ],
+            "tradeoff": "**40만 QPS 가 도는 시간대에 TiKV 를 약 2배 사양으로 올렸고 `에러 없이 스케일 업할 수 있었습니다`.** ⚠️ **미리 최대로 올려 두면 예전 MySQL 시절의 낭비가 그대로 돌아온다**(재구성). **대가는 출시 당일에 조작을 한다는 위험**이고, **그것을 감당할 수 있다는 확인이 사전 검증의 목적이었을 것이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "question": "부하를 어떻게 고르게 만들 것인가",
+            "chosen": "**TiDB 를 아는 테이블 설계로** — 의도적으로",
+            "alternatives": [
+              "기본 설계로 두고 자동 분산에 맡기기"
+            ],
+            "tradeoff": "⚠️ **분산 데이터베이스라도 데이터가 한쪽으로 쏠리면 노드 하나가 병목이 된다**(재구성). 그래서 **부하가 노드에 고르게 퍼지도록 설계를 맞췄다.** **대가는 애플리케이션이 데이터베이스의 성질을 알아야 한다는 것** — **샤딩을 피했지만 무지할 수는 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "question": "메모리를 압박하는 기능을 어떻게 할 것인가",
+            "chosen": "⚠️ **끈다** — 통계 정보 이력 저장을",
+            "alternatives": [
+              "메모리를 더 주고 유지",
+              "이력 보존 기간만 줄이기"
+            ],
+            "tradeoff": "회사의 문장 — **`TiDB 의 통계 정보 「이력」을 갖고 있었는데 이것이 메모리를 압박해서 「이력」 저장은 껐습니다.`** ⚠️ **통계 이력은 나중에 성능을 분석할 재료인데 지금의 안정성과 맞바꿨다** — **관측을 내주고 안정성을 샀다**(재구성). **대가는 그 기간의 질의 계획 변화를 나중에 되짚기 어려워진다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "question": "신작에서 새 데이터베이스를 처음 쓸 것인가",
+            "chosen": "⚠️ **그렇게 했다** — 게임에서 이 회사의 첫 TiDB 프로덕션",
+            "alternatives": [
+              "기존 운영 중인 게임에서 먼저 검증",
+              "신작은 검증된 MySQL 로"
+            ],
+            "tradeoff": "⚠️ **트래픽이 가장 예측 불가능한 날에 가장 낯선 스택을 쓰는 셈이다**(재구성). 그럼에도 그렇게 한 것은 **신작이라 옮길 데이터가 없고 설계를 처음부터 맞출 수 있기 때문으로 보인다**(**이 추정은 이 사이트의 재구성이고 글에 근거가 없다**). **대가를 줄이려고 `여러 검증·조사를 거듭했다`** 고 적는다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              },
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "question": "점검 시간을 둘 것인가",
+            "chosen": "⚠️ **두지 않는다** — 무중단·무점검",
+            "alternatives": [
+              "출시 직후 정기 점검 창을 예약",
+              "단계적 지역 출시"
+            ],
+            "tradeoff": "⚠️ **출시 직후의 점검은 그 게임에 대한 첫인상을 정한다**(재구성). 무중단을 지키려면 **자원 확대도 트래픽이 도는 중에 해야 하고**, 실제로 그렇게 했다. **대가는 되돌릴 여유가 없다는 것**이다(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              },
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "TiDB Cloud",
+            "role": "**성능 확장과 트랜잭션을 함께** 얻는다 — MySQL 호환·확장성·탄력성",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              },
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              }
+            ]
+          },
+          {
+            "tech": "TiKV 롤링 업데이트",
+            "role": "⚠️ **40만 QPS 가 도는 중에 약 2배 사양으로** 올렸다 — 에러 없이",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "tech": "TiDB 를 아는 테이블 설계",
+            "role": "**부하가 노드에 고르게 퍼지도록** 의도적으로 맞췄다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 통계 정보 이력 (끈 것)",
+            "role": "**메모리를 압박해 저장을 껐다** — 관측을 내주고 안정성을 샀다(재구성)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "move-the-verdict-keep-the-feel",
+          "via": "⚠️ 서버로 옮긴 판정이 만드는 질의",
+          "contract": "⚠️ **카드 로직을 서버로 옮겼기 때문에 출시일의 질의가 그만큼 늘어난다** — **한쪽 결정이 다른 쪽의 문제를 만든다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "TiDB / PingCAP (벤더)",
+          "via": "관리형 데이터베이스",
+          "contract": "⚠️ **첫 프로덕션 적용이라 운영을 관리형에 맡기되 노드 사양 변경 같은 조작은 직접 했다** — **이 사례의 자료 일부가 그 벤더가 낸 사례 연구다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "출시 마케팅 · 다운로드",
+          "via": "예측 불가능한 트래픽",
+          "contract": "**2주 만에 100만, 넉 달 만에 300만 다운로드** — **성공이 곧 부하다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "운영 조직",
+          "via": "⚠️ 끈 관측",
+          "contract": "⚠️ **통계 이력을 껐으므로 그 기간의 질의 계획 변화를 나중에 되짚기 어렵다**(재구성)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 탄력이 없으면 피크가 상시 비용이 된다",
+            "why_hard": "⚠️ **스케일 인·아웃에 몇 달의 준비가 필요한 데이터베이스에서는 피크에 맞춰 늘 자원을 잡아 둘 수밖에 없다** — **평시 20만 QPS 인데도 그렇다.** **줄이는 것도 몇 달이 걸리니 결국 줄이지 않게 되고, 그 낭비가 상시화된다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**트래픽이 도는 중에 늘릴 수 있는 구조로 옮기는 것** — **40만 QPS 중 TiKV 를 약 2배로 올렸고 에러가 없었다.** ⚠️ **대가는 검증된 스택을 신작에서 처음 바꾸는 위험**이고, **`여러 검증·조사를 거듭했다`** 는 문장이 그 대응이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+                "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+                "publisher": "PingCAP (벤더 사례 연구)",
+                "date": "2025",
+                "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+              },
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "problem": "출시일에는 나중에 필요할 것을 지금 끄게 된다",
+            "why_hard": "⚠️ **통계 정보의 이력은 나중에 질의 계획을 되짚을 재료인데 메모리를 압박했다.** **지금 안 죽는 것과 나중에 알 수 있는 것 사이에서 앞을 골랐고**, 그래서 **그 기간의 변화를 되짚기 어려워졌다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**압박하는 것을 끄고 안정성을 사는 것.** ⚠️ **글은 그 대가를 논하지 않고, 나중에 다시 켰는지도 밝히지 않는다**(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "미리 사 두는 대신 그때 늘린다",
+          "question": "출시일의 트래픽을 어떻게 받아 내나",
+          "kind": "flow",
+          "code": "flowchart TD\n  B[\"⚠️ <b>예전: MySQL</b><br/>• 스케일 인 · 아웃에 몇 달<br/>• 평시 20만 QPS 인데<br/>  피크 대비로 늘 예약\"]:::gone --> T[\"<b>TiDB Cloud</b><br/>• 성능 확장 + 트랜잭션<br/>• 게임에서 첫 프로덕션\"]:::accent\n  T --> D[\"<b>TiDB 를 아는 테이블 설계</b><br/>• 부하를 고르게 퍼뜨린다\"]:::list\n  D --> L[\"<b>출시 — 50만 QPS</b><br/>• 2주 만에 100만 다운로드\"]:::list\n  L --> U[\"⚠️ <b>40만 QPS 가 도는 중에</b><br/>• TiKV 를 약 2배 사양으로<br/>• 에러 없이 스케일 업\"]:::accent\n  U --> P[\"<b>피크 60만~65만 QPS</b><br/>• 무중단 · 무점검\"]:::list\n  X[\"⚠️ <b>끈 것: 통계 정보 이력</b><br/>• 메모리를 압박했다<br/>• 관측을 내주고 안정성을 샀다 (재구성)\"]:::gone\n  T -.-> X\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "이 이야기에서 비어 있는 곳",
+          "question": "자료가 말하지 않는 것은 무엇인가",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>사전 준비의 내용이 없다</b><br/>• `여러 검증 · 조사를 거듭했다`<br/>  라고만 적는다\"]:::gone\n  B[\"⚠️ <b>겪은 문제가 없다</b><br/>• 무엇이 어긋났는지<br/>• 무엇을 다르게 하겠는지\"]:::gone\n  C[\"⚠️ <b>끈 기능을 다시 켰는지 모른다</b><br/>• 그 기간의 질의 계획 변화를<br/>  되짚기 어려워졌다 (재구성)\"]:::gone\n  D[\"⚠️ <b>자료의 성격</b><br/>• 컨퍼런스 후속 요약<br/>• 일부는 벤더 사례 연구\"]:::gone\n  A --> E[\"<b>그래서 적은 것</b><br/>• 결정과 수치는 확인된 만큼<br/>• 없는 것은 없다고\"]:::accent\n  B --> E\n  C --> E\n  D --> E\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+          "url": "https://tech.cygames.co.jp/archives/3695/",
+          "publisher": "Cygames Engineers' Blog",
+          "date": "2025-10-03",
+          "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+        },
+        {
+          "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+          "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+          "publisher": "PingCAP (벤더 사례 연구)",
+          "date": "2025",
+          "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
+        },
+        {
+          "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+          "url": "https://tech.cygames.co.jp/archives/3706/",
+          "publisher": "Cygames Engineers' Blog",
+          "date": "2025-12",
+          "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -672,7 +1277,9 @@
     "⚠️ **도메인 셋 중 하나가 미독이다** — LLM 도구 셋.",
     "⚠️ **우마무스메의 기술 자료를 못 찾았다** — 이 회사 성장의 축인데 **블로그의 시스템 글이 Shadowverse 쪽에 몰려 있다.**",
     "⚠️ **Shadowverse 원작이 2026년 6월 30일 서비스를 종료했다** — **후속작(Worlds Beyond)의 아키텍처를 다룬 자료를 읽었는데, 원작에서 무엇을 배웠는지를 다룬 회고는 못 찾았다.**",
-    "⚠️ **연표(eras)를 못 세웠다** — 2011년 창업과 대표작 출시 연도는 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+    "⚠️ **연표(eras)를 못 세웠다** — 2011년 창업과 대표작 출시 연도는 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다.",
+    "⚠️ **이 사례의 자료 일부가 데이터베이스 벤더(PingCAP)의 사례 연구다** — **평시 20만 QPS·스케일에 몇 달·다운로드 수치**가 거기서 왔다. **회사 자신의 발표 요약과 겹치는 부분은 확인했지만, 벤더 자료는 성공을 말하도록 만들어진 글이라는 점을 함께 적어 둔다.**",
+    "⚠️ **이 글에는 겪은 문제와 `다르게 하겠다` 가 없다** — **사전 준비도 `여러 검증·조사를 거듭했다` 로만 적힌다.** **컨퍼런스 후속 요약의 한계다.** ⏳ 발표 슬라이드(Speaker Deck)에 더 있을 수 있다."
   ],
   "sources": [
     {
@@ -709,6 +1316,13 @@
       "publisher": "Cygames Engineers' Blog",
       "date": "2026",
       "summary": "게임 시나리오 작가를 위한 AI 도구. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 연도만 확인했다."
+    },
+    {
+      "title": "デジタルカードゲーム「Shadowverse: Worlds Beyond」が、TiDB でリリース時のアクセス急増をいかにしてノーメンテで乗り越えたか",
+      "url": "https://pingcap.co.jp/case-study/cygames-shadowverse/",
+      "publisher": "PingCAP (벤더 사례 연구)",
+      "date": "2025",
+      "summary": "Cygames 는 게임 데이터베이스에 오랫동안 MySQL 을 썼는데 스케일 인·아웃에 몇 달의 준비가 필요했고, 평시 20만 QPS 인데도 피크에 대비해 늘 자원을 예약해 둬야 해 낭비가 컸다. Shadowverse: Worlds Beyond(2025-06-17 출시)는 TiDB Cloud 를 썼고 게임에서 이 회사의 첫 프로덕션 적용이다. ⚠️ 데이터베이스 벤더가 낸 사례 연구다."
     }
   ]
 }

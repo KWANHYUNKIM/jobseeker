@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Cygames** | JP · 게임 | 도메인 3(카드 게임의 판정을 클라이언트에서 서버로 옮긴다[tech 5] / 출시일의 트래픽 급증을 무중단으로 넘긴다[tech 0 · ✅ 자료 읽음] / 게임 만드는 일에 LLM 을 넣는다[tech 0 · ⏳ 미독]) · **기능 1**(move-the-verdict-keep-the-feel) · ⚠️ **WebFetch 는 헤더만 온다 — `r.jina.ai` 를 앞에 둔다** |
+| **Cygames** | JP · 게임 | 도메인 3(카드 게임의 판정을 클라이언트에서 서버로 옮긴다[tech 5] / 출시일의 트래픽 급증을 무중단으로 넘긴다[tech 4] / **게임 만드는 일에 LLM 을 넣는다[tech 0 · ⏳ 미독]**) · **기능 2**(move-the-verdict-keep-the-feel · stop-reserving-for-the-peak) · ⚠️ **WebFetch 는 헤더만 온다 — `r.jina.ai` 를 앞에 둔다** |
 
 ## 대기
 
