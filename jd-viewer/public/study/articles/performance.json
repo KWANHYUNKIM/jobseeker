@@ -27,7 +27,7 @@
     {
       "id": "why",
       "kind": "why",
-      "heading": "⭐⭐⭐ 질문을 먼저 던진다 — 지표에서 거꾸로 오르지 말고",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 지표부터 보는 습관에서",
       "confidence": "confirmed",
       "sources": [
         {
@@ -38,7 +38,7 @@
           "summary": "⭐⭐⭐ **어디부터 보나에 대한 절차** — \"For every resource, check **utilization, saturation, and errors**\". ⭐ 핵심은 순서다: \"begins by **posing questions**, and then seeks answers, **instead of beginning with given metrics** ... and trying to work backwards\""
         }
       ],
-      "body": "⭐ **1차 자료가 시작을 아주 구체적인 상황으로 연다.**\n\n> ⭐⭐ \"A serious performance issue arises, and you suspect it's caused by the server. **What do you check first?**\"\n\n💡 **\"무엇부터 보나\"** — ⚠️ 이 질문에 팀마다 답이 다르고, 대개 **각자 익숙한 화면을 먼저 연다.**\n\n📌 ⭐⭐⭐ **그리고 그 습관을 정면으로 뒤집는다.**\n\n> ⭐⭐⭐ **\"It begins by posing questions, and then seeks answers, instead of beginning with given metrics (partial answers) and trying to work backwards.\"**\n\n⚠️⚠️ **가진 지표는 \"부분적인 답\"이다** — ⭐ 누군가 예전에 **중요하다고 판단해서 꽂아 둔 것**이고, **지금 문제와 상관없을 수 있다.** 💡 **거기서 거꾸로 올라가면 대시보드에 있는 원인만 찾게 된다.**\n\n📌 ⭐⭐ **셈이 그 위험을 보여 준다** — `모니터링|APM` **4091건**. ⭐ **재는 도구는 거의 다 갖추고 있다.** ⚠️ 그런데 `프로파일링` 은 **180건**이고 `p99` 는 **23건**이다 — **무엇을 볼지는 안 정해져 있다.**\n\n💡 ⭐⭐⭐ **그래서 이 방법은 도구가 아니라 질문 목록이다.**\n\n> ⭐⭐⭐ **\"For every resource, check utilization, saturation, and errors.\"**\n\n⭐ **\"모든 자원에 대해\"** 가 앞에 있다 — 📌 **자원 목록을 먼저 적고**(CPU·메모리·디스크·네트워크·그리고 그 위의 것들), **각각에 같은 세 질문을 던진다.** 💡 **그러면 대시보드에 없는 자원이 드러난다** — **그것이 이 방법이 주는 것**이다.\n\n📌 ⚠️ **그리고 가장 유명한 인용이 이 자리에서 잘려 돌아다닌다.**\n\n> \"We should forget about small efficiencies, say about 97% of the time: **premature optimization is the root of all evil.** ⭐⭐⭐ **Yet we should not pass up our opportunities in that critical 3%.**\"\n\n⚠️⚠️ **이 인용은 1차 자료로 확인하지 못했다**(원 논문을 열지 못했다 — `open_questions`). ⭐ 다만 **여러 2차 자료가 전문을 일치되게 인용하고**, 공통적으로 **앞부분만 잘려 쓰인다**고 지적한다.\n\n💡 ⭐⭐ **잘린 결과가 이 문서의 주제와 맞물린다** — **앞부분만 남으면 \"최적화하지 마라\"가 되고, 뒷부분이 붙으면 \"어느 3%인지 알아내라\"가 된다.** ⚠️ **그리고 그걸 알아내는 일이 곧 측정**이다. 📌 **이 백과사전의 세 번째 오용 형태다** — `refactoring`(낱말이 잘못 붙음), `documentation`(한 낱말이 네 일을 덮음), 그리고 **인용의 앞부분만 남음.**"
+      "body": "⭐⭐⭐ **이 방법은 새 도구가 아니라 순서를 뒤집은 것이고, 원문이 뒤집은 대상을 이름으로 적는다.**\n\n> ⭐⭐⭐ **\"It begins by posing questions, and then seeks answers, instead of beginning with given metrics (partial answers) and trying to work backwards.\"**\n\n💡 ⭐⭐ **앞선 방식은 \"가진 지표부터 보는 것\"** 이다 — 문제가 터지면 **각자 익숙한 대시보드를 먼저 연다.** ⚠️ **그것이 아팠던 이유**: 지금 있는 지표는 **누군가 예전에 중요하다고 판단해 꽂아 둔 부분적인 답**이고, **거기서 거꾸로 오르면 대시보드에 있는 원인만 찾게 된다.** 📌 **대시보드에 없는 자원은 영영 안 보인다.**\n\n⭐ **시작을 아주 구체적인 상황으로 연다.**\n\n> ⭐⭐ \"A serious performance issue arises, and you suspect it's caused by the server. **What do you check first?**\"\n\n⚠️ **이 질문에 팀마다 답이 다르다는 것 자체가 문제였다.**\n\n📌 ⭐⭐⭐ **그래서 도구가 아니라 질문 목록을 준다.**\n\n> ⭐⭐⭐ **\"For every resource, check utilization, saturation, and errors.\"**\n\n⭐ **\"모든 자원에 대해\"** 가 앞에 있다 — 📌 **자원 목록을 먼저 적고**(CPU·메모리·디스크·네트워크·그 위의 것들) **각각에 같은 세 질문을 던진다.** 💡 **그러면 대시보드에 없는 자원이 드러난다** — ⭐ **그것이 이 방법이 주는 것**이다.\n\n📌 ⚠️ **그리고 가장 유명한 인용이 이 자리에서 잘려 돌아다닌다.**\n\n> \"We should forget about small efficiencies, say about 97% of the time: **premature optimization is the root of all evil.** ⭐⭐⭐ **Yet we should not pass up our opportunities in that critical 3%.**\"\n\n⚠️⚠️ **이 인용은 1차 자료로 확인하지 못했다**(원 논문을 열지 못했다 — `open_questions`). ⭐ 다만 **여러 2차 자료가 전문을 일치되게 인용하고**, 공통적으로 **앞부분만 잘려 쓰인다**고 지적한다. 💡 **앞부분만 남으면 \"최적화하지 마라\"가 되고, 뒤가 붙으면 \"어느 3%인지 알아내라\"가 된다** — 📌 **그리고 알아내는 일이 곧 측정**이다."
     },
     {
       "id": "use",
@@ -57,9 +57,32 @@
       "body": "⭐ **세 질문의 정의가 짧다.**\n\n| | 원문 | 무엇을 묻나 |\n|---|---|---|\n| **Utilization** | \"the **average time that the resource was busy** servicing work\" | 얼마나 바빴나 |\n| ⭐⭐⭐ **Saturation** | \"the degree to which the resource has **extra work which it can't service, often queued**\" | **처리 못 해 쌓인 것이 있나** |\n| **Errors** | \"the **count of error events**\" | 실패한 것이 몇 건인가 |\n\n💡 ⭐⭐⭐ **가운데가 이 방법의 값이다.** 그리고 판정 기준이 아주 세게 적혀 있다.\n\n> ⭐⭐⭐ **\"any degree of saturation can be a problem (non-zero)\"**\n\n⚠️⚠️ **포화는 조금이라도 있으면 문제다.** ⭐ 사용률과 다르다 — **CPU 사용률 60%는 대개 괜찮지만, 큐에 뭔가 쌓이고 있다면 그건 이미 못 처리하고 있다는 뜻**이다. 💡 **그리고 사용률만 보는 대시보드에서는 그게 안 보인다.**\n\n📌 ⭐⭐ **`backpressure` 문서가 다루는 것이 바로 이 포화의 결과**이고, `load-test` 는 **포화를 일부러 만들어 보는 쪽**이다.\n\n💡 ⭐ **절차는 단순하다** — **자원 목록을 적고, 각 줄에 세 칸을 채운다.** ⚠️ **채울 수 없는 칸이 나오면 그것이 지금 안 보고 있는 것**이고, 📌 **그 칸이 바로 `모니터링|APM` 4091건이 아직 안 채운 자리**다.\n\n📌 ⚠️ **그리고 1차 자료가 자기 한계를 적는다** — 이것이 이 백과사전에서 눈에 띄는 점이다(`hexagonal-architecture` 는 대가를 안 적었다).\n\n> ⭐⭐ \"There are **many problem types it doesn't solve**, which will require **other methods and longer time spans**.\"\n> ⭐ 대략 **서버 문제의 80% 를 5% 의 노력으로** 푼다 — ⚠️ 지연 시간 기반 방법론은 **100% 에 가까워질 수 있다**고 함께 적는다\n\n💡 ⭐⭐ **\"80/5\" 라는 값이 이 방법의 자리다** — **정확한 진단법이 아니라 싸고 빠른 첫 훑기**다. ⚠️ **그 뒤는 다른 방법이 필요하다.**\n\n📌 ⭐ **공고 하나가 그 다음 단계를 이름으로 부른다.**\n\n> ⭐⭐⭐ `성능 **병목을 프로파일링**하고 **근본 원인**을 해결한 경험` — 슈퍼센트\n> ⭐⭐ `하루 **3억 건**의 입찰 요청이 지나는 핵심 처리 경로를 설계하고, **레이턴시와 처리량**을 지속적으로 개선` — 슈퍼센트\n\n⚠️ **`프로파일링` 은 180건**이다 — ⭐ **자원 단위로 훑은 뒤 코드 단위로 내려가는 그 단계를 이름으로 부르는 곳이 드물다.**"
     },
     {
-      "id": "limits",
+      "id": "nextgen",
       "kind": "limits",
-      "heading": "경계 — 이 문서가 하지 않는 것",
+      "heading": "⭐⭐ 이 방법의 한계 — 그리고 그 한계에서 나온 것들",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The USE Method",
+          "url": "https://www.brendangregg.com/usemethod.html",
+          "publisher": "Brendan Gregg",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **어디부터 보나에 대한 절차** — \"For every resource, check **utilization, saturation, and errors**\". ⭐ 핵심은 순서다: \"begins by **posing questions**, and then seeks answers, **instead of beginning with given metrics** ... and trying to work backwards\""
+        }
+      ],
+      "body": "⭐⭐⭐ **1차 자료가 자기 한계를 먼저 적는다** — 이 백과사전에서 드문 일이다(`hexagonal-architecture` 는 안 적었다).\n\n> ⭐⭐ \"There are **many problem types it doesn't solve**, which will require **other methods and longer time spans**.\"\n> ⭐ 서버 문제의 **80% 를 5% 의 노력**으로 — ⚠️ 지연 시간 기반 방법론은 **100% 에 가까워질 수 있다**\n\n💡 ⭐⭐ **즉 이것은 정확한 진단법이 아니라 싸고 빠른 첫 훑기**이고, ⭐ **그 사실이 다음 칸이 어디인지도 알려 준다.**\n\n| 한계 | 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **자원 단위까지만 본다** | 어느 코드가 그 자원을 쓰는지는 안 나온다 | ⭐ **코드 단위 측정** → `profiling`(공고 180건) |\n| ⭐⭐ **기다리는 시간을 못 본다** | 사용률·포화는 자원 쪽 지표다 | ⭐ **지연 시간 기반 방법론** · `observability`(분산 추적) |\n| ⭐⭐ **어디까지 고치면 되는지 안 알려 준다** | 진단법이지 목표가 아니다 | ⭐ `slo` · `capacity` |\n| ⭐⭐ **포화 지표가 대개 없다** | 큐 길이·대기 시간을 안 재고 있다 | ⭐ **계측** → `observability` · **쌓인 뒤의 대응** → `backpressure` · `rate-limit` |\n| ⭐ **실제로 부하를 걸어 봐야 알 때가 있다** | 평상시엔 포화가 안 난다 | ⭐ `load-test` |\n| ⭐ **고칠 방법은 따로다** | 진단과 처방은 다른 일 | ⭐ `caching` · `db-index` · `gc` · `sharding` · `cdn` |\n\n⭐⭐⭐ **오른쪽 열이 이 낱말의 생태계다** — 💡 **이 백과사전이 수단부터 쌓았던 이유**가 여기 있다: **처방은 이름이 많고 진단은 이름이 적다**(`성능 최적화` 2976 : `프로파일링` 180 : `p99` 23).\n\n⚠️⚠️ **아직 안 메워진 자리**: **응답 시간이 \"observable behavior\" 에 드는가**(→ `refactoring` 이 남긴 물음)에 **이 문서도 답하지 못했다** — 1차 자료가 그 물음을 다루지 않는다."
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 그리고 어느 층에서 불리나",
+      "confidence": "inferred",
+      "body": "⚠️ **`market` 이 없다** — 기술 태그가 아니라 실천이라 `tech_relations.json` 에 이름이 없다. ⭐ **셈과 공고가 대신 답한다.**\n\n| 어디 | 무엇을 하나 | 공고 |\n|---|---|---|\n| ⭐⭐ **데이터베이스** | 쿼리·인덱스·실행 계획(`쿼리 튜닝\\|슬로우 쿼리` **254건**) | 바딧 `**쿼리 튜닝** 등 데이터베이스 성능 개선` · 인터엑스 `**SQL 성능 최적화**` |\n| ⭐⭐ **대용량 트래픽** | 규모를 견디는 일(`대용량\\|대규모 트래픽` **2311건**) | 슈퍼센트 `하루 **3억 건**의 입찰 요청이 지나는 핵심 처리 경로` · 드랩 `**일 10만 건 이상**` |\n| ⭐ **앱·클라이언트** | 렌더링·메모리·초기 로딩 | 헤렌 `메모리·성능 최적화를 **정량 지표로 입증**(예: ANR Z% 감소)` |\n| ⭐ **시스템·임베디드** | OS·IO·스케줄링 | 메디인테크 `**Linux 기반 시스템의 성능 최적화**` · 보스반도체 `메모리/IO, 스케줄링, 프로파일링` |\n| ⭐ **인프라·클라우드** | 자원과 비용이 맞물린다 | 바로팜 `**AWS 기반 클라우드 인프라 운영 및 서비스 성능 최적화**` |\n\n💡 ⭐⭐⭐ **다섯 층 다 같은 세 질문이 걸린다** — **사용률·포화·오류.** ⭐ 그것이 이 방법이 **자원 단위**로 서 있는 이유다: **층이 달라도 자원은 있다.**\n\n📌 ⭐⭐ **주변에 함께 오는 것들**(셈): `모니터링\\|APM` **4091** · `측정\\|계측` 949 · `캐시` 694 · `병목` 475 · `부하 테스트` 66. 💡 ⚠️ **재는 도구는 거의 다 갖췄는데 무엇을 볼지가 안 정해져 있다.**\n\n⭐ **이 백과사전 안에서의 자리**: **다음 칸은 `profiling`**(코드 단위), **목표는 `slo`**, **처방은 `caching`·`db-index`·`gc`·`sharding`**, **쌓인 뒤는 `backpressure`**."
+    },
+    {
+      "id": "limits",
+      "kind": "extra",
+      "heading": "이 문서의 경계 — 다루지 않은 것",
       "confidence": "inferred",
       "body": "**1. ⚠️⚠️ Knuth 인용을 1차 자료로 확인하지 못했다.** ⭐ 원 논문(1974년 ACM Computing Surveys)을 **열지 못했고**, 전문은 **여러 2차 자료가 일치되게 인용하는 것**을 옮겼다. 📌 **`javascript`·`documentation` 사이클의 규칙대로 본문에도 밝혔다.** ⚠️ 그리고 2차 자료들은 **바로 앞 문단에서 저자가 작은 최적화를 옹호한다**고도 말하는데 — **그 부분은 확인할 수 없어 쓰지 않았다.**\n\n**2. ⚠️⚠️ 프로파일링을 다루지 않았다**(**180건**). ⭐ **자원 단위로 훑은 뒤 코드 단위로 내려가는 단계**인데, **1차 자료를 따로 열지 않았다.** 📌 **이 문서 다음의 가장 큰 빈자리다.**\n\n**3. ⚠️ 지연 시간 기반 방법론을 다루지 않았다.** ⭐ 1차 자료가 스스로 \"이 방법이 못 푸는 문제가 많다\"며 가리키는 쪽인데 **열지 않았다.** ⚠️ `p99|퍼센타일` 이 **23건**뿐이라는 셈이 그 자리이기도 하다.\n\n**4. ⚠️ 오염 의심 셈 둘을 근거로 쓰지 않았다.** `응답 시간|레이턴시` **532건 @ 모집중 69%**, `TPS|처리량` **268건 @ 71%** — ⭐ 정상(30~40%)에서 크게 벗어나는데 **원인을 확인하지 않았다.**\n\n**5. ⚠️⚠️ 실패 사례를 찾았고 이번엔 구체적인 것이 나왔지만, 전부 2차 자료였다.** ⭐⭐ **네 사이클 연속 규칙은 지켰다.** ⚠️ 나온 것들 — **6개월간 언어를 바꿔 다시 썼는데 진짜 지연은 리전 간 네트워크였다는 기록**, **이틀 걸려 최적화한 함수가 런타임의 0.001% 였다는 기록.** 📌 **개인 블로그·Medium 이라 근거로 쓰지 않았다.** ⭐ 다만 **앞의 것은 공고 `Rust를 활용한 성능 최적화 경험`(슈퍼센트)과 겹치는 자리**라 남긴다.\n\n**6. ⚠️ 개별 수단을 다루지 않았다** — **의도한 것이다.** `caching`·`db-index`·`gc`·`backpressure`·`rate-limit`·`load-test`·`sharding`·`capacity` 가 각각 다룬다. ⭐ 이 문서는 **\"무엇부터 보나\"** 하나만 준다.\n\n**7. ⭐ 겹침을 확인했다.** `load-test` 가 `병목` 20회·`p99` 8회, `gc` 가 `p99` 8회를 다룬다 — ⚠️ 그런데 **`프로파일링` 과 `USE` 는 128개 문서 어디에도 0회**였다. ⭐ **겹치지 않는다.**\n\n**8. ⭐ `market` 이 없다** — 기술 태그가 아니라 실천이라 `tech_relations.json` 에 이름이 없다. 비우는 것이 정상이고 `evidence` 로 대신했다.\n\n**9. ⭐ `refactoring` 이 남긴 물음에 답하지 못했다** — **응답 시간이 \"observable behavior\" 에 드는가.** ⚠️ 이번 1차 자료도 그 물음을 다루지 않는다."
     }
@@ -523,6 +546,7 @@
     }
   ],
   "open_questions": [
+    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `why` 에 **무엇에서 갈라져 나왔나**(가진 지표부터 보는 습관), `limits` 를 **한계와 그 한계에서 나온 것들**로, **어디에 쓰이나** 절을 새로 넣었다.",
     "⚠️⚠️ **Knuth 인용을 1차 자료로 확인하지 못했다.** ⭐ 원 논문(1974년 ACM Computing Surveys)을 **열지 못했고**, 전문은 **여러 2차 자료가 일치되게 인용하는 것**을 옮겼다. 📌 **본문에도 밝혔다.** ⚠️ 2차 자료들은 **바로 앞 문단에서 저자가 작은 최적화를 옹호한다**고도 말하는데 **확인할 수 없어 쓰지 않았다.**",
     "⚠️⚠️ **프로파일링을 다루지 않았다**(**180건**). ⭐ **자원 단위 뒤에 오는 코드 단위 측정**인데 1차 자료를 따로 열지 않았다. 📌 **이 문서 다음의 가장 큰 빈자리다.**",
     "⚠️ **지연 시간 기반 방법론을 다루지 않았다.** ⭐ 1차 자료가 스스로 \"이 방법이 못 푸는 문제가 많다\"며 가리키는 쪽인데 **열지 않았다.** ⚠️ `p99|퍼센타일` 이 **23건**뿐이라는 셈이 그 자리이기도 하다.",

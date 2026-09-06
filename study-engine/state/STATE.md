@@ -4,43 +4,63 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클은 **보수 1회차**였다 — `microservices`·`bounded-context`·
-`hexagonal-architecture` 셋을 **계보 뼈대로** 고쳤다. **새 문서는 안 썼다**(136개 그대로).
+**없음.** 직전 사이클은 **보수 2회차**였다 — `performance`·`profiling`·`refactoring`
+셋을 **계보 뼈대로** 고쳤다. **새 문서는 안 썼다**(136개 그대로, 절 794개).
 
-### 직전 사이클 (보수 1회차)
+### 직전 사이클 (보수 2회차)
 
-⭐⭐⭐ **셋이 한 사슬이라 함께 고쳤고, 그 결과 서로를 가리키게 됐다.**
+⭐⭐⭐ **세운 계보들.**
 
-**모놀리스가 커졌다 → 쪼갰다(`microservices`) → 경계가 문제다 → 말로 자른다
-(`bounded-context`) → 그런데 시장은 층 나누기로 갈음한다(`hexagonal-architecture`)**
+- **`performance`** — 앞선 물건은 **"가진 지표부터 보는 습관"**. 원문이 뒤집은 대상을
+  직접 적는다: "**instead of beginning with given metrics (partial answers) and trying
+  to work backwards**". ⚠️ 아팠던 것은 **대시보드에 없는 자원은 영영 안 보인다**는 것.
+  ⭐ 한계("many problem types it **doesn't solve**") → **`profiling`**(코드 단위) ·
+  지연 시간 방법론 · `slo` · `backpressure` · `load-test`.
+- **`profiling`** — ⭐⭐ **두 번 갈라져 나왔다**: ①**텍스트 더미 → 그림**("walls of text")
+  ②**전수 추적 → 타이머 표본**(추적은 오버헤드가 "too high" 하고 대상을 "**perturb**" 했다).
+  💡 **두 번째 갈라짐의 대가가 곧 한계**다 — "**sampling has gaps**".
+- **`refactoring`** — ⭐⭐⭐ **restructuring 에서 잘라 낸 부분집합**이다.
+  "There may be **other good techniques for restructuring, but they are different**."
+  ⚠️ **자른 이유**: 구조 변경 일반은 **중간에 멈추면 아무것도 안 남는다**(→ `migration` 의
+  "go down in flames"). ⭐ 그래서 조건이 둘 붙었다 — **작게**, **몇 분 이상 안 깨지게**.
 
-⭐ **각 문서가 7개 절이 됐다**: what → **why(무엇에서 갈라져 나왔나)** → how →
-**limits(한계 → 그 한계에서 나온 것들)** → **extra(어디에 쓰이나)** → extra(문서 경계).
-
-⭐⭐ **새로 세운 계보들.**
-- `microservices` — 앞선 물건은 **모놀리스**, 아팠던 것은 코드가 아니라 **단위**
-  (배포·확장·팀). 한계마다 나온 것: 경계→`bounded-context`·`migration`, 가로지르는
-  트랜잭션→`saga`·`outbox`, 번지는 실패→`circuit-breaker`·`dlq`, 흩어진 창구→
-  `api-gateway`·`service-mesh`, 안 보이는 지연→`observability`, 전제조건→`kubernetes`·`docker`.
-  ⭐ **오른쪽 열이 거의 전부 "쪼개서 생긴 문제를 메우는 것"** 이다.
-- `bounded-context` — 앞선 물건은 **전사 통일 모델**("not feasible or cost-effective").
-  대가는 **번역**이고 그래서 `data-contract`·`openapi`·`contract-testing` 이 나왔다.
-- `hexagonal-architecture` — 앞선 물건은 **계층형 그림**("to **get away from the
-  one-dimensional layered picture**"). 여기서 **어니언·클린**이 갈라졌고 Uncle Bob 이
-  "**They all have the same objective**" 라고 묶는다.
-
-⭐⭐⭐ **"어디에 쓰이나" 절이 새 발견을 낳았다** — `hexagonal-architecture` 는 서버 이야기로
-알려져 있는데 **공고에서는 모바일·프론트엔드에 가장 많이 붙는다**(헤렌·크로스이엔에프·
-폴라리스쓰리디). 💡 **화면·기기·OS 가 자주 바뀌는 층이라 "바깥을 갈아 끼운다"의 값이
-크게 보이는 것**으로 읽힌다.
+⭐⭐⭐ **계보를 세우다가 두 문서가 같은 물음에 막혀 있다는 것을 알았다** —
+**"응답 시간이 observable behavior 에 드는가"**(`refactoring` 이 묻고 `performance` 도 못 답했다).
+💡 **각각 읽을 때는 안 보이던 것**이다.
 
 ### 다음
 
-**(보수) 계보 뼈대 — 2회차** — QUEUE 맨 위. **`performance` · `profiling` · `refactoring`**.
-⭐ 앞의 둘이 사슬(자원 단위 → 코드 단위)이고, `refactoring` 은 `technical-debt`·`testing`·
-`code-review` 사슬의 실행부다. ⚠️ **새 낱말보다 보수가 먼저다.**
+**(보수) 계보 뼈대 — 3회차** — QUEUE 맨 위.
+**`documentation` · `onboarding` · `agile` · `scrum`** — ⭐ 앞의 둘이 사슬(네 칸 → 튜토리얼
+칸의 실제 적용), 뒤의 둘도 사슬(선언문 → 그것을 구현한 프레임워크).
+⚠️ **새 낱말보다 보수가 먼저다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **"무엇에서 갈라져 나왔나"를 물으면 그 물건의 정의가 바뀐다.**
+  `refactoring` 을 그냥 읽으면 **"코드를 안전하게 고치는 기법"** 인데, **무엇에서 갈라졌는지**
+  물으니 **"구조 변경 일반(restructuring)에서 잘라 낸 부분집합"** 이 됐다.
+  ⭐⭐ **그리고 자른 이유가 드러났다** — 구조 변경 일반은 **중간에 멈추면 아무것도 안 남는다.**
+  💡 **"작게, 몇 분 이상 안 깨지게"라는 두 조건이 그 이유에서 곧바로 나온다.**
+  📌 **정의를 옮겨 적는 것과 계보를 세우는 것은 다른 일이고, 뒤가 더 짧고 단단하다.**
+
+- ⭐⭐ **한 물건이 두 번 갈라져 나오기도 한다.**
+  플레임 그래프는 **①표현에서**(텍스트 더미 → 그림) **②측정 방식에서**(전수 추적 → 표본)
+  두 번 갈라졌다. ⭐⭐⭐ **그리고 두 번째 갈라짐의 대가가 곧 그 물건의 한계가 됐다** —
+  "too high" 오버헤드를 피하려고 표본을 골랐고, 그래서 "**sampling has gaps**" 다.
+  📌 **"왜 다른 길을 안 갔나"를 찾으면 한계를 따로 물을 필요가 없다** — 같은 문장에서 나온다.
+
+- ⭐⭐⭐ **계보를 세우면 문서들이 같은 미결을 공유한다는 것이 보인다.**
+  `refactoring` 이 남긴 **"응답 시간이 observable behavior 에 드는가"** 를 `performance` 도
+  못 답했다. ⚠️ **각각 읽을 때는 각자의 `open_questions` 한 줄이었는데**, ⭐ **계보로 이으니
+  두 문서가 같은 벽 앞에 서 있는 것**이 됐다.
+  📌 **여러 문서가 같은 물음에 막혀 있으면 그건 낱말 하나짜리 빈자리다** — 큐 후보다.
+
+- ⭐ **"어디에 쓰이나"가 2회차에서도 새 사실을 냈다.**
+  `profiling` 에서 **도구 이름을 댄 9건이 전부 시스템·임베디드 쪽**이라는 것이 드러났다 —
+  ⚠️ 서버·웹 쪽은 **APM 제품 이름(566건)이 그 자리를 차지했다.**
+  📌 **같은 실천이 층마다 다른 이름으로 불린다** — 그 차이가 곧 그 층의 성숙도이거나
+  도구 시장의 모양이다(⚠️ 인과는 확인 못 했다).
 
 - ⭐⭐⭐ **한 사슬인 문서들은 함께 고쳐야 계보가 선다.**
   `microservices`·`bounded-context`·`hexagonal-architecture` 를 한 사이클에 함께 고치니
