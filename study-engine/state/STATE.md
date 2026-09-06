@@ -4,42 +4,67 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **온보딩**(`onboarding`)을 완성했다 — **134번째 문서**.
+**없음.** 직전 사이클에서 **프롬프트**(`prompting`)를 완성했다 — **135번째 문서**.
 
-### 직전 사이클 (온보딩)
+### 직전 사이클 (프롬프트)
 
-⭐⭐⭐ **축: "749번 부르고 첫 커밋은 1건."**
+⭐⭐⭐ **축: "고치기 전에 무엇으로 판정할지부터."**
 
-> ⭐⭐⭐ **"The first rule of teaching is simply: don't try to teach."**
-> ⭐⭐⭐ **"A tutorial is not the place for explanation."**
-> ⭐⭐⭐ "**Explanation is one of the hardest temptations for a teacher to resist**" ·
->   "Once we have grasped something, we rely on the **power of abstraction** to frame it
->   to ourselves—and **that's how we want to frame it to others**."
-> ⭐⭐⭐ **"Your tutorial ought to be so well constructed that things can't go wrong,
->   that your tutorial works for every user, every time."**
-> ⭐⭐⭐ **"You are required to be present, but condemned to be absent."**
+> ⭐⭐⭐ "This guide **assumes** that you have: 1. **A clear definition of the success
+>   criteria** ... 2. **Some ways to empirically test** against those criteria ..."
+>   그리고 **"If not, spend time establishing that first."**
+> ⭐⭐⭐ **"Not every success criteria or failing eval is best solved by prompt
+>   engineering."** — "you can sometimes improve latency and cost more easily by
+>   **selecting a different model**"
+> ⭐ 기법은 별도의 **"living reference"** 로 빠져 있다 — 개요에는 **바뀌지 않는 것만** 남는다
 
-⭐⭐⭐ **모집중 52%의 정체는 오염이 아니라 세 가지 뜻이었다** —
-**신규 입사자 적응 / 수습 기간의 다른 이름 / 제품의 첫 사용자 경험**(+복지 항목).
-⭐ `documentation`(한 낱말이 네 칸을 덮음)과 같은 형태인데 **아예 다른 분야가 섞였다.**
+⭐⭐⭐ **셈: `프롬프트` 1254 · `프롬프트 엔지니어링` 649 대 `성공 기준` 154 · `eval` 113 ·
+`시스템 프롬프트` 16.** 💡 **`performance`(2976 : 180)·`ai-coding`(체감 +20% : 실제 −19%)에
+이어 세 번째로 같은 형태** — **고치는 말은 크고 판정하는 말은 작다.**
 
-⭐⭐⭐ **셈: `멘토|버디` 965 대 `온보딩 문서` 13 — 74배.** 그리고 **`첫 커밋|첫 배포` 1건.**
-💡 **사람은 붙여 주는데 문서는 안 만들고, 무엇을 해내면 되는지는 거의 안 적는다.**
+⭐⭐ **공고 하나가 그 위험에 이름을 붙였다** — 매니패스트 `평균 점수의 함정(ceiling
+effect, failure tail hiding)`. ⭐ `performance` 의 `p99` 23건과 같은 형태다.
 
-⚠️ **실패/연구 자료는 전부 2차였다**(컨설팅·채용 회사 블로그) — **근거로 쓰지 않고
-"찾았는데 1차급이 없었다"를 기록했다.**
+⚠️⚠️ **프롬프트 민감성 연구를 열려 했으나 arxiv PDF 라 본문을 못 읽었다** — **숫자도
+문장도 옮기지 않고 방향만 적고 그 사실을 밝혔다.**
+⭐ **`rag` 겹침은 확인했다** — 그쪽은 "프롬프트에 무엇을 넣을지 고르는 것"이라 층이 다르다.
 
 ### 다음
 
-**프롬프트**(`prompting`) — QUEUE 맨 위.
+**AI 에이전트**(`ai-agents`) — QUEUE 맨 위.
 
-⭐⭐⭐ **`ai-coding` 이 남긴 자리** — 그 문서는 **출력 쪽(검증 1052건)** 을 다뤘고
-**입력 쪽은 안 다뤘다.** 셈 **1018건(모집중 36%, 정상)**.
-축은 **공식 가이드가 긋는 선**(부정어를 먼저 찾는다) + **입력 쪽 평가를 세어 대비 만들기**.
-⚠️⚠️ **`rag` 가 `프롬프트` 를 33회 다룬다 — 반드시 열어 보고, 크게 겹치면 축을 바꾼다**
-(대안: `코드 품질` 651건 또는 **`ai-coding` 보강** — "왜 19% 느려졌는지의 다섯 요인").
+⭐⭐⭐ **`ai-coding` 이 갈라 세지 못한 가장 큰 셈** — **2552건(모집중 1225)**.
+⚠️⚠️ **AI 층이 세 사이클 연속**이 되지만, **셈이 크고 층이 이제 막 채워지기 시작했다.**
+축은 **"만든 쪽이 가장 단순한 것부터 하라고 적는가"** — 1차 자료는 **`Building effective agents`**.
+⚠️ **못 열면 `가드레일`(245건)이나 `코드 품질`(651건, 층이 다르다)로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **"고치는 말은 크고 판정하는 말은 작다"가 세 번째다.**
+  `performance`(`성능 최적화` **2976** : `프로파일링` 180 : `p99` **23**) →
+  `ai-coding`(도구 **1802** : 검증 1052, 그런데 **체감이 39%포인트 어긋남**) →
+  **`prompting`(`프롬프트` 1254 : `eval` **113** : `성공 기준` 154)**.
+  ⭐⭐ **그리고 세 번 다 1차 자료가 순서를 명시한다** — "질문을 먼저 던지라",
+  "받기 전과 뒤 두 번 검증하라", **"없으면 그것부터 세우는 데 시간을 쓰라"**.
+  📌 **이제 이건 우연이 아니다** — ⚠️ **시장은 판정보다 수정을 먼저 부른다.**
+
+- ⭐⭐ **개요 문서에 기법이 없으면 그 자체가 정보다.**
+  프롬프트 가이드의 개요에는 **전제와 범위 둘뿐**이고, 기법은 **"living reference"** 로
+  따로 빠져 있다. ⭐ **바뀌는 것과 안 바뀌는 것을 저자가 갈라 둔 것**이고,
+  💡 📌 **이 백과사전이 쓸 것은 안 바뀌는 쪽**이다 — 기법 목록을 옮겨 적었다면
+  **공식 문서 요약본**이 됐을 것이다(스킬이 경고하는 바로 그것).
+
+- ⚠️ **PDF 는 열어도 못 읽는다 — 형식이 규칙을 막았다.**
+  `ai-coding` 에서는 같은 규칙("후보가 나오면 그 자리에서 연다")으로 RCT 원문을 얻었는데,
+  `prompting` 에서는 **arxiv PDF 라 본문 추출에 실패**했다.
+  📌 **다음부터 논문 후보가 PDF 로 나오면 HTML 판(arxiv.org/abs 또는 /html)을 먼저 시도한다.**
+  ⭐ 그리고 **못 읽었으면 숫자도 문장도 옮기지 않는다** — 이번엔 방향만 적고 밝혔다.
+
+- ⭐ **오염 처리가 이제 두 줄짜리 절차로 굳었다.**
+  `평가|eval` 을 넓게 세면 **860 @ 63%**(인사·성과 평가), 좁혀도 **113 @ 66%** 였다.
+  ⭐ **두 값을 나란히 적고, 넓은 쪽은 근거로 쓰지 않고, 그 사실을 표와 `open_questions` 에
+  남긴다.** 📌 **정체를 끝까지 밝히지 않아도 된다** — ⚠️ **밝히려다 사이클이 늘어지는 것이
+  더 나쁘다**(`onboarding` 에서는 정체가 축이 됐지만, 그건 예외였다).
 
 - ⭐⭐⭐ **모집중 비율이 튄다고 다 오염은 아니다 — 여러 뜻일 수도 있다.**
   `온보딩` 749건은 **모집중 52%** 로 튀었는데, 세어 보니 오염이 아니라 **한 낱말이 세 가지
