@@ -1057,9 +1057,9 @@
         "힙",
         "JVM 메모리"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-05"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "load-test",
@@ -1383,7 +1383,7 @@
         "policy-as-code",
         "Cedar"
       ],
-      "sections": 7,
+      "sections": 8,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1662,7 +1662,7 @@
         "HIPAA",
         "컴플라이언스"
       ],
-      "sections": 5,
+      "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -2224,7 +2224,7 @@
         "스트랭글러",
         "레거시 전환"
       ],
-      "sections": 5,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
