@@ -2267,6 +2267,26 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "bounded-context",
+      "title": "바운디드 컨텍스트 — 같은 낱말이 다른 뜻일 때",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **큰 시스템 하나를 한 모델로 덮으려는 시도는 \"실현 가능하지도 수지가 맞지도 않는다.\"** 경계는 조직도도 DB 테이블도 아니라 **말이 일관되는 범위**에서 갈린다 — ⚠️ 그래서 **`고객`·`주문` 같은 낱말이 팀마다 다른 뜻일 때가 경계의 신호**다. 공고는 `도메인 지식`을 **633번** 요구하는데 그 말을 맞추는 실천은 **0건**.",
+      "aliases": [
+        "바운디드 컨텍스트",
+        "bounded context",
+        "DDD",
+        "도메인 주도 설계",
+        "domain-driven design",
+        "유비쿼터스 언어",
+        "ubiquitous language"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

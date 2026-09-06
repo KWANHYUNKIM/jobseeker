@@ -4,39 +4,62 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **마이크로서비스**(`microservices`)를 완성했다 — **124번째 문서**.
+**없음.** 직전 사이클에서 **바운디드 컨텍스트**(`bounded-context`)를 완성했다 — **125번째 문서**.
 
-### 직전 사이클 (마이크로서비스)
+### 직전 사이클 (바운디드 컨텍스트)
 
-⭐⭐⭐ **축: "퍼뜨린 사람이 먼저 그은 선."**
+⭐⭐⭐ **축: "같은 낱말이 다른 뜻일 때."** `microservices` 가 "경계가 전부인데 처음엔
+틀린다"에서 멈춘 자리를 이어받아 **무엇으로 긋는지**를 채웠다.
 
-> ⭐⭐⭐ **"you shouldn't start a new project with microservices, even if you're sure your
->   application will be big enough to make it worthwhile."**
-> ⭐⭐⭐ "**Almost all the successful** microservice stories **have started with a monolith**"
-> ⭐⭐⭐ "**Almost all the cases** ... **built as a microservice system from scratch**, it has
->   **ended up in serious trouble**."
-> ⭐⭐⭐ "they **only work well if you come up with good, stable boundaries**" ·
->   "**even experienced architects working in familiar domains** have great difficulty
->   getting boundaries right at the beginning"
-> ⭐⭐ 전제 셋 — Rapid provisioning · Basic Monitoring · Rapid application deployment.
->   없으면 "**you shouldn't consider using the microservice style**"
+> ⭐⭐⭐ **"total unification of the domain model for a large system will not be
+>   feasible or cost-effective"** — ⭐ **가능성과 비용을 나눠서 부정한다**
+> ⭐⭐⭐ "DDD **divides up a large system into Bounded Contexts, each of which can
+>   have a unified model**" — ⭐ 통일을 포기하는 게 아니라 **성립하는 크기로 쪼갠다**
+> ⭐⭐⭐ "the word **'meter' meant subtly different things to different parts of the
+>   organization**" · "**Time and time again I see this confusion recur with polysemes
+>   like 'Customer' and 'Product'**"
+> ⭐⭐⭐ "you need a **different model when the language changes**" — **경계는 말에 있다**
+> ⭐⭐⭐ **"software doesn't cope well with ambiguity"**
 
-⭐⭐⭐ **셈: 1060 대 12**(`바운디드 컨텍스트`) **대 79**(`모놀리스`). ⚠️ 그런데 앞의 큰 대비들과
-성격이 다르다 — `HATEOAS`·`공유 책임` 은 **몰라도 굴러가는 이름**이었지만 **경계는 이 방식이
-굴러가는 조건 자체**다("only work well if...").
-
-⚠️⚠️ **여섯 번째 오염 형태**: `SOLID` 342 @ 82% → **소문자 `solid`("solid experience") 121건
-@ 89%**. **대문자만 15건**, `단일 책임` **1건**.
+⭐⭐⭐ **셈: `도메인 지식` 633 · `도메인 전문가/기획자` 889 인데 `유비쿼터스 언어` 0 ·
+`애그리거트` 0 · `바운디드 컨텍스트` 12 · `용어집` 34.** ⚠️ 그리고 커넥트웨이브 공고가
+**`통합 커머스 API` + `도메인 모델 표준화`** — 1차 자료가 "not feasible" 이라고 적은
+바로 그 시도의 이름이다.
 
 ### 다음
 
-**바운디드 컨텍스트 / 도메인 주도 설계**(`bounded-context`) — QUEUE 맨 위.
+**헥사고날 / 클린 아키텍처**(`hexagonal-architecture`) — QUEUE 맨 위.
 
-⭐⭐⭐ **`microservices` 가 스스로 "가장 큰 빈자리"라고 적은 자리**(사다리 2순위).
-그쪽은 **"왜 경계가 어려운가"에서 멈췄고**, **"그럼 어디서 자르나"** 가 여기다.
-1차 자료는 Fowler 의 **`BoundedContext`** bliki. ⚠️ **못 열면 `리팩터링`(753건)으로 바꾼다.**
+⭐⭐⭐ **`bounded-context` 가 스스로 "다음의 가장 큰 빈자리"라고 적었다**(두 사이클 연속
+사다리 2순위). **174건으로 `DDD` 88건보다 많다.** 1차 자료는 **원저자 Alistair Cockburn**.
+⚠️ **못 열면 `리팩터링`(753건)으로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **"완전한 0"이 한 낱말에서 두 개 나오면, 0 자체가 아니라 그 위층을 봐야 한다.**
+  `유비쿼터스 언어` 0 · `애그리거트` 0 은 그 자체로는 "아무도 안 부른다"일 뿐인데,
+  **그 위에 `도메인 전문가/기획자` 889건 · `도메인 지식` 633건이 있다.**
+  ⭐⭐ **협업 상대와 요구 조건은 이름으로 부르면서, 그 둘 사이의 실천만 이름이 없다** —
+  그게 발견이다. 📌 **다음부터 0을 만나면 "그 0이 전제하는 것이 몇 건인지" 함께 센다.**
+
+- ⭐⭐⭐ **1차 자료가 경고한 시도의 이름이 공고에 그대로 있으면 그건 evidence 최고급이다.**
+  커넥트웨이브의 `통합 커머스 API` + `도메인 모델 표준화` 는 Fowler 가 "not feasible or
+  cost-effective" 라고 적은 **total unification 그 자체**다. ⚠️ **다만 단정하지 않았다** —
+  범위가 충분히 작으면 옳을 수 있다. 📌 **"자리가 겹친다"까지만 적고 판정은 안 한다.**
+
+- ⭐⭐ **이미 쓴 문서가 어떤 낱말을 "범위 한정"으로만 쓰고 있으면, 그 낱말이 다음 대상이다.**
+  `cqrs` 는 "시스템 전체가 아니라 **특정 바운디드 컨텍스트에만**"이라는 경고를 성실히
+  옮겼는데, **그 바운디드 컨텍스트가 무엇인지는 가리키지 못했다.**
+  ⭐ **경고를 받아 적었지만 그 경고를 실행할 수 없는 상태** — 📌 **겹침 검사를 할 때
+  "이 낱말이 몇 번 나오나"만 보지 말고 "어떻게 쓰였나"를 본다.** 21회 나왔지만 겹치지
+  않았고, 오히려 이쪽을 가리키고 있었다.
+
+- ⭐⭐ **문서가 스스로 다음 빈자리를 지목하는 일이 두 사이클 연속 일어났다.**
+  `microservices` → "DDD/경계가 가장 큰 빈자리" → `bounded-context` →
+  "`클린 아키텍처` 174건이 다음의 가장 큰 빈자리". 💡 ⭐ **끊긴 `related` 링크가 아니라
+  `open_questions` 가 큐를 먹이기 시작했다** — 사다리 2순위의 새 형태다.
+  📌 **`open_questions` 를 쓸 때 "무엇을 안 했나"만이 아니라 셈을 함께 적어 두면
+  다음 사이클이 바로 이어받는다.**
 
 - ⭐⭐⭐ **여섯 번째 오염 형태 — 대소문자를 무시했다.** `SOLID` 를 대소문자 무시로 세면
   **342건에 모집중 82%** 인데, **소문자 `solid`("solid experience", "solid understanding")가
