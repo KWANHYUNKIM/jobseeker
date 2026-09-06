@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Deliveroo** | UK · 커머스(음식 배달) | 프로파일 완료 · 도메인 3(AI 를 회사 규모로 굴리면서 규정을 지킨다[tech 0] / 무엇이 실제로 나아졌는지 판별한다[tech 0 · ⏳ 본문 미독] / 결제를 승인하면서 사기를 막는다[tech 0 · ⏳ 본문 미독]) · **기능 0** · ⚠️ **`deliveroo.engineering` 은 Cloudflare 1009 로 한국(KR) 국가 차단 — `r.jina.ai` 프록시를 앞에 둬야 본문이 온다** |
+| **Deliveroo** | UK · 커머스(음식 배달) | 프로파일 완료 · 도메인 3(AI 를 회사 규모로 굴리면서 규정을 지킨다[tech 4] / 무엇이 실제로 나아졌는지 판별한다[tech 0 · ⏳ 본문 미독] / 결제를 승인하면서 사기를 막는다[tech 0 · ⏳ 본문 미독]) · **기능 1**(governance-in-the-pipeline-not-the-meeting) · ⚠️ **`deliveroo.engineering` 은 Cloudflare 1009 로 한국(KR) 국가 차단 — `r.jina.ai` 프록시를 앞에 둬야 본문이 온다** |
 
 ## 대기
 
