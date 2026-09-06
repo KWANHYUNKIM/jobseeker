@@ -4,7 +4,7 @@
   "name_en": "Deliveroo",
   "country": "EU",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "deliveroo.co.uk",
   "one_liner": "영국에서 시작한 음식·식료품 배달 3면 마켓플레이스 — 규정 준수를 사람의 회의가 아니라 배포 파이프라인에 심는다",
@@ -215,9 +215,79 @@
     },
     {
       "name": "결제를 승인하면서 사기를 막는다",
-      "why": "**유럽에서 결제하려면 3-D Secure 인증을 언제 걸지 정해야 한다** — 걸면 사기는 줄지만 정상 주문도 떨어져 나간다. 회사가 **`3DS 규칙 실험과 최적화`** 를 글로 냈다. ⏳ **본문은 아직 읽지 않았다.**",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **막는 쪽과 여는 쪽이 같은 손잡이에 달려 있다.** 도난 카드를 막는 주된 수단이 **3-D Secure** 인데, 인증은 곧 **마찰**이라 **필연적으로 일정 비율의 거래를 잃는다.** 회사가 밈 한 장으로 적는다 — **`우리는 모든 사기를 없앴다 … 모든 주문을 없애서.`** ⚠️ **게다가 3DS 비율이 극단적으로 높으면 발급사가 그 가맹점을 위험하다고 평가해 승인률이 되레 떨어진다.**",
+      "tech": [
+        {
+          "tech": "Ravelin (ML 모델 + 규칙 플랫폼)",
+          "solves": "어떤 거래를 3DS 로 보낼지 모델이 판단하고, 운영팀의 커스텀 규칙이 그 위에 얹히며, **A/B 까지 이 플랫폼에서 돌린다**(피처 플래그·로깅 같은 엔지니어링 작업 없이).",
+          "limits": "⚠️ **사내 실험 플랫폼이 아니라 벤더 위에서 돈다** — **공통 도구로 팀 간 비교를 쉽게 한다는 이 회사의 실험 원칙과 어긋나는 자리다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "3DS rule experimentation and optimization",
+              "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+              "publisher": "deliveroo.engineering",
+              "date": "2023-05-17",
+              "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+            },
+            {
+              "title": "Deliveroo experimentation principles",
+              "url": "https://deliveroo.engineering/2025/02/06/experimentation-principles.html",
+              "publisher": "deliveroo.engineering",
+              "date": "2025-02-06",
+              "summary": "실험 문화를 떠받치는 다섯 원칙 — 가설과 성공 기준을 시작 전에 정한다 · 데이터 사이언티스트가 아니어도 실험한다 · 불확실성을 일관된 형식으로 전한다 · 가치가 비용을 넘을 때만 한다 · 실험은 결정을 안내하지 지배하지 않는다. 매년 수백 건을 돌리고 A/B 외에 interleaving·multi-armed bandit·switchback 을 쓴다."
+            }
+          ]
+        },
+        {
+          "tech": "커스텀 3DS 규칙",
+          "solves": "**모델을 고칠 시간이 없을 때 새 사기 벡터에 급히 대응**하고, **모델과 분리해 두고 싶은 정책 결정**을 담는다.",
+          "limits": "⚠️ **오래 살수록 무용해진다** — 사기꾼이 다른 벡터로 옮겨 가기 때문에 상시 감시가 필요하다. **그리고 수동 규칙은 모델보다 오탐률이 높다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "3DS rule experimentation and optimization",
+              "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+              "publisher": "deliveroo.engineering",
+              "date": "2023-05-17",
+              "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+            }
+          ]
+        },
+        {
+          "tech": "A/B 실험 (규칙 면제)",
+          "solves": "⚠️ **그 규칙이 없었다면 어땠을지를 실제로 재는 유일한 방법** — 대조군은 기존대로, 실험군은 그 규칙에서 면제한다.",
+          "limits": "⚠️ **실험군을 실제 사기 위험에 노출시킨다.** **거래량 큰 규칙부터 하므로 꼬리의 규칙은 오래 안 재진 채 남는다**(재구성). **겹치는 규칙과 무작위화 단위 문제는 글이 범위 밖이라 밝힌다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "3DS rule experimentation and optimization",
+              "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+              "publisher": "deliveroo.engineering",
+              "date": "2023-05-17",
+              "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+            }
+          ]
+        },
+        {
+          "tech": "비용-편익 식",
+          "solves": "**막은 사기가 아니라 사업 전체의 손익으로 판정한다** — 추가 영업이익 + 절약된 3DS 수수료 − 추가 차지백 − 추가 보상.",
+          "limits": "⚠️ **식에 안 들어간 것(고객 신뢰·장기 이탈)은 판정에서 빠진다**(재구성). **그리고 카드사 임계 때문에 순수한 최적점보다 보수적인 자리에 머문다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "3DS rule experimentation and optimization",
+              "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+              "publisher": "deliveroo.engineering",
+              "date": "2023-05-17",
+              "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "every-check-costs-an-order"
+      ]
     }
   ],
   "features": [
@@ -1207,6 +1277,512 @@
           "summary": "인도 허브의 교차기능 팀이 플랫폼 전반의 제품을 맡는다 — 흑자를 내는 광고 사업 출시와 기업 주문 도구가 예로 나온다."
         }
       ]
+    },
+    {
+      "key": "every-check-costs-an-order",
+      "name": "사기를 다 없애는 방법은 주문을 다 없애는 것이다",
+      "domain": "결제를 승인하면서 사기를 막는다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **온라인 결제를 받는 모든 가맹점은 도난 카드에 노출돼 있고, 막는 주된 수단은 3-D Secure 다** — 카드 소유자에게 일회용 비밀번호 같은 것을 물어 신원을 한 겹 더 확인한다. **막지 않으면 차지백 비용이 들고, 사기율이 높으면 VISA·Mastercard 가 엄한 벌금을 매긴다.** ⚠️ **그런데 이 글의 요점은 반대쪽이다** — **과도하고 비효율적인 사기 방지 조치는 그만큼 나쁘다.** 인증은 곧 **구매 여정의 마찰**이고 **필연적으로 일정 비율의 거래를 잃는다.** 회사가 밈 한 장으로 요약한다 — **`우리는 모든 사기를 없앴다 … 모든 주문을 없애서.`**",
+        "metrics": [
+          {
+            "label": "⚠️ 결과",
+            "value": "**3DS 비율을 40% 가까이 낮췄다** — 회사·고객·파트너를 **추가 사기 위험에 노출시키지 않고서**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "label": "실험 규모",
+            "value": "**2022년 4분기에 대규모 A/B** — 거래량이 가장 큰 규칙부터 (속도와 실용성 때문)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 발견",
+            "value": "**과도하게 제한적이어서 사업 전체로는 순손실이던 규칙이 다수 있었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "label": "판정에 쓴 식",
+            "value": "**추가 영업이익 + 절약된 3DS 수수료 − 추가 차지백 비용(수수료 포함) − 추가 보상 비용**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 반직관적인 대목",
+            "value": "**극단적으로 높은 3DS 비율은 오히려 승인률을 떨어뜨린다** — 발급사가 그 가맹점을 더 위험하다고 평가하기 때문이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "label": "이 결정이 걸린 무대",
+            "value": "파트너 **약 17만 6천 곳** · 라이더 **13만 명 이상** · 2024년 월간 활성 소비자 **약 700만 명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DoorDash Completes Acquisition of Deliveroo",
+                "url": "https://ir.doordash.com/news/news-details/2025/DoorDash-Completes-Acquisition-of-Deliveroo/default.aspx",
+                "publisher": "DoorDash Investor Relations",
+                "date": "2025-10-02",
+                "summary": "도어대시가 딜리버루 인수를 2025년 10월 2일 마무리했다. 딜리버루는 2013년 런던에서 시작해 9개국에서 음식점·식료품·소매 파트너 약 17만 6천 곳, 라이더 13만 명 이상, 2024년 월간 활성 소비자 약 700만 명 규모다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "모두에게 3DS 를 걸까 생각할 때",
+          "thought": "⚠️ **`전부 검사한다` 는 안전해 보이지만 두 번 손해다.** 첫째는 **마찰로 잃는 주문**이고, 둘째가 뜻밖이다 — **3DS 비율이 극단적으로 높으면 발급사가 그 가맹점을 위험하다고 보고 승인률을 낮춘다.** **안전하려는 행동이 안전하지 않아 보이게 만든다**(뒤쪽 정리는 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "규칙과 모델 중 어디에 기댈지 정할 때",
+          "thought": "⚠️ **손으로 만든 규칙은 빠르지만 둔하다.** 회사가 **`보호의 대부분은 모델에 맡긴다 — 모델이 수동 규칙보다 오탐률이 낮다`** 고 적고, 규칙은 **모델을 고칠 시간이 없을 때의 급한 방어**와 **모델과 분리해 두고 싶은 정책 결정**에만 쓴다. **역할을 나누되 우선순위를 명시한다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "성공을 무엇으로 잴지 정할 때",
+          "thought": "⚠️ **`사기를 얼마나 막았나` 로 재면 규칙은 언제나 옳아 보인다** — 잃은 주문은 그 지표에 안 잡히기 때문이다. 그래서 **막은 사기가 아니라 사업 전체의 손익으로 판정하는 식을 세웠다.** 회사의 문장 — **`물론 사기를 최대한 줄이고 싶지만, 그렇게 하는 것이 딜리버루 전체에 옳은 결정이 아닐 수 있다.`**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "3DS (3-D Secure)",
+            "what": "카드 소유자에게 일회용 비밀번호 등을 물어 신원을 확인하는 인증 규약. ⚠️ **한 번 걸 때마다 마찰이 생기고 일정 비율의 거래를 잃는다**"
+          },
+          {
+            "name": "ML 모델 (Ravelin)",
+            "what": "어떤 거래를 3DS 로 보낼지 판단하는 주된 장치. ⚠️ **보호의 대부분을 여기에 맡긴다 — 수동 규칙보다 오탐률이 낮기 때문**"
+          },
+          {
+            "name": "커스텀 3DS 규칙",
+            "what": "운영팀이 손으로 만든 규칙. ⚠️ **`스파이크 방어` 용이다** — 새로 나타난 사기 벡터에 모델을 고칠 시간 없이 급히 대응하거나, **모델과 분리해 두고 싶은 정책 결정**을 담는다"
+          },
+          {
+            "name": "비용-편익 식",
+            "what": "**추가 영업이익 + 절약된 3DS 수수료 − 추가 차지백 비용 − 추가 보상 비용.** ⚠️ **막은 사기가 아니라 사업 전체의 손익이 판정 기준이다**"
+          },
+          {
+            "name": "카드사 사기율 임계",
+            "what": "VISA·Mastercard 가 정한 선. **넘으면 엄한 벌금**이라 **늘 충분히 여유를 두고 낮게** 유지한다"
+          },
+          {
+            "name": "⚠️ 3DS 를 거는 다른 주체들",
+            "what": "**PSP 와 카드 발급사도 자기 사기 엔진·규칙으로 3DS 를 건다** — 고객이 겪는 3DS 경험 전체가 이 회사만의 것이 아니다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **검사 한 번은 주문 일부를 잃는 값을 치른다** — 공짜인 인증은 없다",
+          "⚠️ **판정 기준은 막은 사기가 아니라 사업 전체의 손익이다**",
+          "**보호의 대부분은 모델이 진다** — 수동 규칙은 급한 방어와 정책용이다",
+          "⚠️ **오래 산 규칙은 점점 무용해진다** — 사기꾼이 다른 벡터로 옮겨 가기 때문이다",
+          "**사기율은 카드사 임계에서 충분히 여유를 두고 낮게 유지한다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**모델이 먼저 판단한다** — 어떤 거래를 3DS 로 보낼지",
+            "why": "⚠️ **모델이 수동 규칙보다 오탐률이 낮다**"
+          },
+          {
+            "step": "**커스텀 규칙이 그 위에 얹힌다** — 운영팀이 Ravelin 에서 만든다",
+            "why": "**새로 나타난 사기 흐름에 급히 대응하거나 모델과 분리하고 싶은 정책을 담기 위해**"
+          },
+          {
+            "step": "⚠️ **PSP 와 발급사도 자기 판단으로 3DS 를 건다**",
+            "why": "**고객이 겪는 3DS 경험은 이 회사만의 결정이 아니다**"
+          },
+          {
+            "step": "**규칙마다 A/B 를 건다** — 대조군은 기존 규칙대로, **실험군은 그 규칙에서 3DS 를 면제**한다",
+            "why": "⚠️ **규칙이 득보다 실이 큰지 알려면 그 규칙을 실제로 꺼 봐야 한다**"
+          },
+          {
+            "step": "**거래량이 가장 큰 규칙부터 한다**",
+            "why": "**속도와 실용성** 때문이다"
+          },
+          {
+            "step": "**Ravelin 위에서 돌린다** — 태그로 모집단을 나누고 규칙 계층으로 면제한다",
+            "why": "⚠️ **피처 플래그와 데이터 로깅 같은 엔지니어링 작업 없이** 실험할 수 있다"
+          },
+          {
+            "step": "⚠️ **비용-편익 식으로 판정한다** — 추가 영업이익 + 절약된 3DS 수수료 − 추가 차지백 − 추가 보상",
+            "why": "**막은 사기만 보면 규칙은 언제나 옳아 보인다**"
+          },
+          {
+            "step": "**사기율이 카드사 임계에서 충분히 멀리 있는지 확인하고 규칙을 끈다**",
+            "why": "**임계를 넘으면 엄한 벌금이 따른다**"
+          },
+          {
+            "step": "**계속 다시 잰다**",
+            "why": "⚠️ **오래 산 규칙은 사기꾼이 다른 벡터로 옮겨 가면서 점점 무용해진다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "모든 거래에 3DS 를 걸 것인가",
+            "chosen": "⚠️ **아니다** — 거의 모든 사기를 없앨 수 있는데도",
+            "alternatives": [
+              "전 거래 3DS",
+              "고액 거래만 3DS",
+              "3DS 를 아예 안 쓰기"
+            ],
+            "tradeoff": "회사가 잃는 것을 나열한다 — **주문량·이익·고객 유지와 경험이 눈에 띄게 떨어지고, 그 피해는 대부분 정상 고객에게 간다.** ⚠️ **그리고 뜻밖의 대가가 하나 더 있다** — **3DS 비율이 극단적으로 높으면 발급사가 그 가맹점을 위험하다고 평가해 승인률이 오히려 낮아진다.** **안전하려는 행동이 안전하지 않아 보이게 만든다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "question": "보호를 모델과 수동 규칙 중 어디에 실을 것인가",
+            "chosen": "⚠️ **대부분을 모델에** — 규칙은 `스파이크 방어` 로",
+            "alternatives": [
+              "운영팀 규칙 중심",
+              "모델만 쓰고 규칙은 없애기"
+            ],
+            "tradeoff": "회사의 근거는 오탐률이다 — **모델이 수동 규칙보다 사기를 더 효율적으로 식별한다(오탐이 적다).** 그래도 규칙을 없애지 않는 이유는 둘이다 — **모델을 고칠 시간이 없을 때 새 사기 벡터에 급히 대응**하고, **모델과 분리해 두고 싶은 정책 결정**을 담는다. ⚠️ **대가는 규칙이 남아 있는 한 그 규칙을 계속 감시해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "question": "규칙을 얼마나 오래 둘 것인가",
+            "chosen": "⚠️ **계속 다시 잰다** — 켜 둘지 끌지를 그때그때 판정한다",
+            "alternatives": [
+              "한 번 검증한 규칙은 유지",
+              "사고가 날 때만 손보기"
+            ],
+            "tradeoff": "회사가 이유를 적는다 — **오래 산 규칙은 사기꾼이 다른 벡터로 옮겨 가면서 시간이 갈수록 점점 무용해진다.** ⚠️ **막는 쪽의 자산은 낡는데 공격하는 쪽은 옮겨 다닌다** — 그래서 이 도메인에서는 **검증이 한 번의 일이 아니라 상시 업무가 된다**(뒤쪽은 재구성이다). **대가는 상시 감시 비용이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "question": "규칙이 좋은지 어떻게 알 것인가",
+            "chosen": "⚠️ **A/B 로 실제로 꺼 본다** — 실험군을 그 규칙에서 면제한다",
+            "alternatives": [
+              "과거 데이터로 시뮬레이션",
+              "전문가 검토로 판정"
+            ],
+            "tradeoff": "**그 규칙이 없었다면 무슨 일이 일어났을지는 꺼 보지 않으면 모른다.** ⚠️ **대가가 무겁다 — 실험군을 실제 사기 위험에 노출시킨다.** 회사는 그 위험을 **사기율을 카드사 임계에서 충분히 멀리 유지하는 것**으로 감싼다(뒤쪽 해석은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "question": "어느 규칙부터 실험할 것인가",
+            "chosen": "**거래량이 가장 큰 규칙부터**",
+            "alternatives": [
+              "가장 오래된 규칙부터",
+              "가장 의심스러운 규칙부터"
+            ],
+            "tradeoff": "이유는 **속도와 실용성**이다 — 표본이 빨리 쌓여 결론이 빨리 난다. ⚠️ **대가는 꼬리에 있는 규칙들이 오래 안 재진 채 남는다는 것**이고, **바로 그것들이 `오래 살아 무용해진 규칙` 이 되기 쉽다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "question": "실험을 어디서 돌릴 것인가",
+            "chosen": "⚠️ **사내 실험 플랫폼이 아니라 벤더(Ravelin) 위에서**",
+            "alternatives": [
+              "사내 실험 플랫폼으로 통일",
+              "직접 피처 플래그를 심어 실험"
+            ],
+            "tradeoff": "Ravelin 의 규칙 플랫폼과 UI 로 **피처 플래그 추가와 데이터 로깅 같은 엔지니어링 작업 없이** A/B 를 돌렸다 — **태그로 모집단을 나누고 규칙 계층으로 면제**했다. ⚠️ **대가는 이 회사가 다른 글에서 세운 원칙(공통 도구와 표준 절차로 팀 간 비교를 쉽게 한다)과 이 실험이 다른 도구 위에 선다는 것**이다 — **이 결과를 다른 팀의 실험과 나란히 놓기 어렵다**(이 대비는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              },
+              {
+                "title": "Deliveroo experimentation principles",
+                "url": "https://deliveroo.engineering/2025/02/06/experimentation-principles.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2025-02-06",
+                "summary": "실험 문화를 떠받치는 다섯 원칙 — 가설과 성공 기준을 시작 전에 정한다 · 데이터 사이언티스트가 아니어도 실험한다 · 불확실성을 일관된 형식으로 전한다 · 가치가 비용을 넘을 때만 한다 · 실험은 결정을 안내하지 지배하지 않는다. 매년 수백 건을 돌리고 A/B 외에 interleaving·multi-armed bandit·switchback 을 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "성공을 무엇으로 잴 것인가",
+            "chosen": "⚠️ **막은 사기가 아니라 사업 전체의 손익으로**",
+            "alternatives": [
+              "사기 금액 감소만 보기",
+              "차지백 건수만 보기"
+            ],
+            "tradeoff": "식이 명시적이다 — **추가 영업이익 + 절약된 3DS 수수료 − 추가 차지백 비용(수수료 포함) − 추가 보상 비용.** 회사가 덧붙인다 — **`물론 사기를 최대한 줄이고 싶지만 그렇게 하는 것이 회사 전체에 옳은 결정이 아닐 수 있다.`** ⚠️ **대가는 이 식에 안 들어간 것(고객 신뢰·장기 이탈)이 판정에서 빠진다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "question": "사기율을 어디까지 감수할 것인가",
+            "chosen": "**카드사 임계에서 충분히 여유를 두고 낮게**",
+            "alternatives": [
+              "임계 직전까지 최적화",
+              "가능한 한 0 에 가깝게"
+            ],
+            "tradeoff": "**VISA·Mastercard 는 일정 사기 수준을 넘으면 엄한 벌금을 매긴다.** ⚠️ **대가는 순수한 손익 최적점보다 보수적인 자리에 머문다는 것**인데, **임계를 넘는 순간의 비용이 계단식이라 평균값으로 다룰 수 없기 때문이다**(이 해석은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Ravelin (사기 탐지 ML + 규칙 플랫폼)",
+            "role": "어떤 거래를 3DS 로 보낼지 판단하고, 운영팀이 규칙을 만들고, **A/B 까지 여기서 돌린다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "tech": "Ravelin 태그 · 규칙 계층",
+            "role": "모집단을 실험군·대조군으로 나누고 **맞는 주문만 3DS 에서 면제**한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "tech": "3-D Secure",
+            "role": "카드 소유자에게 일회용 비밀번호 등을 물어 신원을 확인한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "tech": "비용-편익 식",
+            "role": "⚠️ **도구가 아니라 판정 기준이다** — 규칙을 켜 둘지 끌지를 사업 손익으로 정한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "deciding-not-to-experiment",
+          "via": "같은 규율의 실사용 사례",
+          "contract": "⚠️ **실험 원칙 4(가치가 비용을 넘을 때만)의 결제판이다** — 여기서는 그 저울이 **비용-편익 식**으로 명시된다. **다만 이 실험은 사내 실험 플랫폼이 아니라 Ravelin 위에서 돌았다** — **공통 도구로 팀 간 비교를 쉽게 한다는 원칙과 어긋나는 자리다**(이 대비는 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "카드 네트워크 (VISA · Mastercard)",
+          "via": "사기율 임계",
+          "contract": "⚠️ **임계를 넘으면 엄한 벌금이다** — 남이 그은 선이 이 회사의 최적화 범위를 정한다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "PSP · 카드 발급사",
+          "via": "3DS 를 거는 다른 손",
+          "contract": "⚠️ **이들도 자기 사기 엔진으로 3DS 를 건다** — **고객이 겪는 마찰 전체를 이 회사가 통제하지 못한다.** 게다가 **3DS 비율이 높으면 발급사가 승인률을 낮춘다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "3면 마켓플레이스 (소비자·파트너·라이더)",
+          "via": "마찰을 줄여 늘어난 주문",
+          "contract": "**마찰이 줄자 전환이 오르고 파트너와 라이더의 주문이 늘었다** — 회사가 `win-win-win-win` 이라 적는다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 규칙이 겹치고 무작위화 단위가 애매하다",
+            "why_hard": "⚠️ **회사가 이 어려움의 존재를 밝히면서 다루지는 않는다** — `3DS 실험에는 무작위화 단위나 겹치는 규칙의 어려움 같은 흥미로운 특이점이 많은데 이 글의 범위 밖이다`. **한 주문이 여러 규칙에 동시에 걸리면 어느 규칙의 효과인지 가르기 어렵고**, 결제는 **사용자 단위인지 주문 단위인지에 따라 결과가 달라진다**(뒤쪽 해석은 이 사이트의 재구성이다).",
+            "current_best": "**거래량이 큰 규칙부터 순서대로 재는 것** — 겹침의 영향을 없애지는 못하지만 결론이 빨리 난다. ⚠️ **글이 답을 내놓지 않은 채 남겨 둔 자리다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          },
+          {
+            "problem": "마찰로 잃은 주문은 아무 데도 기록되지 않는다",
+            "why_hard": "⚠️ **차지백은 청구서로 오지만 인증 화면에서 떠난 손님은 어느 장부에도 안 남는다.** 그래서 **`사기를 얼마나 막았나` 로 재면 규칙은 언제나 옳아 보인다** — 비용 쪽 항이 관측되지 않기 때문이다(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **A/B 로 그 항을 관측 가능하게 만드는 것** — 규칙을 끈 집단과 비교하면 잃던 주문이 숫자로 나타난다. **이 회사가 40% 를 낮출 수 있었던 것은 그 항을 볼 수 있게 만들었기 때문이다**(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "3DS rule experimentation and optimization",
+                "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+                "publisher": "deliveroo.engineering",
+                "date": "2023-05-17",
+                "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 번의 인증이 어디서 값을 치르는가",
+          "question": "주문 하나가 3DS 를 만나면 무슨 일이 일어나나",
+          "kind": "flow",
+          "code": "flowchart TD\n  O[\"<b>주문</b>\"]:::list --> M[\"<b>ML 모델 (Ravelin)</b><br/>• 보호의 대부분을 진다<br/>• 오탐률이 낮다\"]:::accent\n  O --> R[\"<b>커스텀 규칙</b><br/>• 스파이크 방어<br/>• 모델과 분리할 정책\"]:::list\n  O -.->|\"우리 결정이 아니다\"| X[\"<b>PSP · 카드 발급사</b><br/>• 자기 사기 엔진으로<br/>  3DS 를 건다\"]:::quiet\n  M --> D{\"<b>3DS 로 보낼까</b>\"}\n  R --> D\n  X --> D\n  D -->|\"아니오\"| P[\"<b>바로 결제</b>\"]:::list\n  D -->|\"예\"| A[\"<b>인증 (일회용 비밀번호 등)</b>\"]:::list\n  A --> L[\"⚠️ <b>일정 비율은 여기서 떠난다</b><br/>• 어느 장부에도 안 남는다 (재구성)\"]:::gone\n  A --> P\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "전부 검사하면 두 번 손해다",
+          "question": "3DS 를 올릴수록 무엇이 나빠지나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>3DS 를 더 많이 건다</b>\"]:::accent --> B[\"<b>사기는 줄어든다</b>\"]:::list\n  A --> C[\"⚠️ <b>첫째 손해: 마찰</b><br/>• 주문량 · 이익 감소<br/>• 고객 유지 · 경험 악화\"]:::gone\n  A --> D[\"⚠️ <b>둘째 손해: 평판</b><br/>• 발급사가 위험 가맹점으로 본다<br/>• <b>승인률이 오히려 떨어진다</b>\"]:::gone\n  E[\"⚠️ <b>막은 사기로만 재면</b><br/>• 규칙은 언제나 옳아 보인다<br/>• 비용 항이 관측되지 않는다 (재구성)\"]:::gone --> F[\"<b>답: 비용-편익 식</b><br/>• 영업이익 + 3DS 수수료 절약<br/>• − 차지백 − 보상\"]:::accent\n  C --> F\n  D --> F\n  F --> G[\"<b>3DS 비율 40% 가까이 감소</b><br/>• 사기 위험은 늘지 않았다\"]:::list\n  H[\"⚠️ <b>남은 벽</b><br/>• 겹치는 규칙 · 무작위화 단위<br/>• 글이 범위 밖이라 밝힌다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "3DS rule experimentation and optimization",
+          "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
+          "publisher": "deliveroo.engineering",
+          "date": "2023-05-17",
+          "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
+        },
+        {
+          "title": "Deliveroo experimentation principles",
+          "url": "https://deliveroo.engineering/2025/02/06/experimentation-principles.html",
+          "publisher": "deliveroo.engineering",
+          "date": "2025-02-06",
+          "summary": "실험 문화를 떠받치는 다섯 원칙 — 가설과 성공 기준을 시작 전에 정한다 · 데이터 사이언티스트가 아니어도 실험한다 · 불확실성을 일관된 형식으로 전한다 · 가치가 비용을 넘을 때만 한다 · 실험은 결정을 안내하지 지배하지 않는다. 매년 수백 건을 돌리고 A/B 외에 interleaving·multi-armed bandit·switchback 을 쓴다."
+        },
+        {
+          "title": "DoorDash Completes Acquisition of Deliveroo",
+          "url": "https://ir.doordash.com/news/news-details/2025/DoorDash-Completes-Acquisition-of-Deliveroo/default.aspx",
+          "publisher": "DoorDash Investor Relations",
+          "date": "2025-10-02",
+          "summary": "도어대시가 딜리버루 인수를 2025년 10월 2일 마무리했다. 딜리버루는 2013년 런던에서 시작해 9개국에서 음식점·식료품·소매 파트너 약 17만 6천 곳, 라이더 13만 명 이상, 2024년 월간 활성 소비자 약 700만 명 규모다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1219,7 +1795,9 @@
     "⚠️ **인수 이후의 기술 통합을 모른다.** 2025년 10월 도어대시가 인수했는데 **두 회사의 플랫폼이 합쳐지는지 따로 가는지**를 다룬 글이 양쪽 어디에도 없다. ⚠️ **도어대시 쪽 파일에도 같은 물음이 열려 있다.**",
     "⚠️ **연표(eras)를 못 세웠다.** 2013년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다. 목록에 2022~2023년 글이 있어 다음 사이클의 재료가 될 수 있다.",
     "⚠️ **에이전트 평가와 제품 실험이 만나는 곳이 비어 있다** — **ML 플랫폼 팀과 실험 플랫폼 팀이 같은 매니저 아래 있는데도**(거버넌스 글의 저자 소개) 두 글은 서로를 부르지 않는다. **정책 데이터셋으로 재는 것과 실험으로 재는 것이 같은 자인지 다른 자인지 알 수 없다.**",
-    "⚠️ **Etsy 와 견주면 빈 자리가 보인다** — Etsy 는 **분기마다 약 8% 를 홀드아웃으로 빼 `부분의 합이 전체가 아니다` 를 실제로 재고** 자기 실험 도구가 **효과를 체계적으로 과대평가한다**(승자의 저주)고 공개한다. **딜리버루의 다섯 원칙은 개별 실험의 규율에 집중하고 누적·상호작용 효과를 어떻게 다루는지는 말하지 않는다.**"
+    "⚠️ **Etsy 와 견주면 빈 자리가 보인다** — Etsy 는 **분기마다 약 8% 를 홀드아웃으로 빼 `부분의 합이 전체가 아니다` 를 실제로 재고** 자기 실험 도구가 **효과를 체계적으로 과대평가한다**(승자의 저주)고 공개한다. **딜리버루의 다섯 원칙은 개별 실험의 규율에 집중하고 누적·상호작용 효과를 어떻게 다루는지는 말하지 않는다.**",
+    "⚠️ **결제 자료가 2023년이다** — 3DS 최적화 글은 **2023-05** 이고 실험은 **2022년 4분기**다. **그 뒤에 규칙이 어떻게 관리되고 있는지, 40% 감소가 유지됐는지 알 수 없다.** 회사 스스로 **`오래 산 규칙은 무용해진다`** 고 적었으므로 **이 수치도 시간이 지나면 낡는다.**",
+    "⚠️ **`무작위화 단위와 겹치는 규칙` 을 회사가 범위 밖이라며 남겨 뒀다** — **한 주문이 여러 규칙에 걸리면 어느 규칙의 효과인지 가르기 어렵고**, 결제 실험은 **사용자 단위인지 주문 단위인지에 따라 결과가 달라진다.** **이 도메인에서 가장 어려운 부분이 공개되지 않은 셈이다.**"
   ],
   "sources": [
     {
@@ -1262,7 +1840,7 @@
       "url": "https://deliveroo.engineering/2023/05/17/3ds-optimisation.html",
       "publisher": "deliveroo.engineering",
       "date": "2023-05-17",
-      "summary": "3-D Secure 규칙의 실험과 최적화. ⏳ 본문은 아직 읽지 않았다."
+      "summary": "Trust 팀이 3-D Secure 규칙을 A/B 로 재고 비용-편익 등식으로 판정했다. 과도하게 제한적이라 순손실이던 규칙이 다수 있었고, 최적화로 3DS 비율을 40% 가까이 낮추면서도 사기 위험은 늘리지 않았다. 극단적으로 높은 3DS 비율은 발급사가 가맹점을 위험하게 평가해 오히려 승인률을 떨어뜨린다."
     },
     {
       "title": "Model Context Protocol — Introduction",
