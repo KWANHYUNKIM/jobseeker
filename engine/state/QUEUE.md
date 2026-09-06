@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Ubicloud** | US · SaaS | 프로파일만 씀(2026-09-07). 도메인 넷 다 비어 있다 — 손님 디스크를 1초 안에 만든다(SPDK·bdev_ubi, 자료 확보) · 남의 코드를 남의 기계 위에 가둔다(클라우드 하이퍼바이저·netns·nftables, 자료 확보) · 한 코어를 여럿에게 판다(cgroups v2 버스터블, 자료 확보) · 베어메탈 값과 클라우드 값의 차이를 판다(요금표). 안 읽은 것 — OOM 킬러·GPU 가상화(2026)·프리미엄 러너·요금 조정 글. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Ubicloud** | US · SaaS | 베어메탈 위에 오픈소스로 클라우드를 짓는다 — 하이퍼바이저·블록 저장소·네트워크를 직접 다루는 축이라 이 엔진에 없다. `ubicloud.com/blog` 에 심층 글이 여럿 — `building-block-storage-for-cloud-with-spdk-non-replicated`(2024-01-05, 개별 글로 날짜 확인) · `cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals` · `building-burstables-cpu-slicing-with-cgroups` · `postgresql-and-the-oom-killer-why-we-use-strict-memory-overcommit` · `virtualizing-nvidia-hgx-b200-gpus-with-open-source`(2026). SPDK 글이 대가를 적는다 — btrfs 로 바꿔 프로비저닝을 4~5분에서 1초 미만으로 줄였지만 **암호화를 잃고 디스크 처리량이 ext4 의 3분의 1로 떨어졌다**. ⚠️ 목록에 날짜가 안 보이므로 팔 때 개별 글에서 확인한다. |
 | **Polar Signals** | EU · SaaS | 지속 프로파일링(eBPF) 축이 이 엔진에 없다. `polarsignals.com/blog` 에 내부 연작이 있다 — `Call Stacks and Unwinding 101`(2026-02-19) · `Profiling Internals: Hardware Timers and eBPF`(2026-03-25) · `Profiling Internals: JavaScript on V8`(2026-06-18) · `Python Zebra Stacks`(2026-05-20, PyTorch 스택을 eBPF 로 푼다) · `Open-Source Low-Overhead NVIDIA CUDA PC Sampling`(2026-06-10) · `Continuous NVIDIA CUDA Profiling In Production`(2025-10-22). 이 엔진의 관측 축(무엇을 얼마나 남길 것인가)에 **프로파일을 상시로 남긴다**는 답이 붙는다. ⚠️ 2026-08-17 에 Dash0 에 합류한다고 발표했다 — 블로그가 마를 수 있으니 판다면 지금 있는 연작으로 판다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
