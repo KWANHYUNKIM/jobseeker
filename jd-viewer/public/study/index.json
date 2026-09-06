@@ -482,7 +482,7 @@
         "복합 인덱스",
         "database index"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -784,9 +784,9 @@
         "cache",
         "caching"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "sharding",
@@ -1003,9 +1003,9 @@
         "ClickHouse",
         "데이터 웨어하우스"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-05"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "iac",
@@ -1443,7 +1443,7 @@
         "DB 마이그레이션",
         "스키마 변경"
       ],
-      "sections": 7,
+      "sections": 8,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
