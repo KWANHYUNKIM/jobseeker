@@ -1388,7 +1388,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "SQL 뷰를 늘 최신으로 유지하는 데이터베이스 — 값을 다시 계산하지 않는 대신 그 상태를 메모리에 들고 있어야 한다",
       "updated_at": "2026-09-07",
       "domain": "materialize.com"
