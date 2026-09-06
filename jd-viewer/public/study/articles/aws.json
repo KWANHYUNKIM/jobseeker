@@ -1,0 +1,596 @@
+{
+  "slug": "aws",
+  "title": "AWS — 그어 놓은 선, 아무도 안 부르는 이름",
+  "title_en": "AWS: The Line They Drew That Nobody Names",
+  "aliases": [
+    "AWS",
+    "아마존 웹 서비스",
+    "공유 책임",
+    "shared responsibility",
+    "클라우드",
+    "온프레미스"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **AWS 는 어디까지가 자기 몫인지 그림으로 그려 공개한다** — \"security **of** the cloud\" 대 \"security **in** the cloud\". ⚠️ 그런데 **부정어를 쓰지 않아서**, 안 읽으면 **나머지가 내 몫이라는 걸 모른다.** 공고 4787건 중 그 이름은 **0건**.",
+  "summary": "⭐ **`AWS` 는 4787건(모집중 1927)** — **이 백과사전이 만난 가장 큰 낱말**이다(`React` 3713 을 넘는다). 태그 기준으로도 **1966건 · 27.3%** 로 1위.\n\n⚠️⚠️ **그런데 `공유 책임|shared responsibility` 는 0건이다.** `rest` 의 `HATEOAS` 이래 **두 번째 완전한 0**이고, **4787 대 0** 은 이 백과사전 최대 격차다.\n\n**AWS 자신은 그 선을 문서로 그려 놨다.**\n\n> ⭐⭐⭐ **\"Security and Compliance is a shared responsibility between AWS and the customer.\"**\n> ⭐⭐ AWS 쪽 — \"AWS is responsible for **protecting the infrastructure that runs all of the services** offered in the AWS Cloud.\"\n> ⭐⭐⭐ 고객 쪽 — \"Customer responsibility will be **determined by the AWS Cloud services that a customer selects**.\"\n\n💡 ⭐⭐⭐ **그런데 이 문서에는 부정어가 거의 없다.** \"AWS 는 이것을 책임지지 않는다\" 라고 쓰지 않고, **각자의 몫을 긍정형으로 배정**한다.\n\n⚠️ **이 백과사전이 모아 온 계보와 다른 점이 거기 있다** — `redis` 의 \"we discourage it\", `github-actions` 의 \"almost never\", `git` 의 \"a bad idea\" 는 **읽으면 걸린다.** 그런데 **긍정형 배정은 안 읽으면 아무 경고도 안 준다.**\n\n📌 **그리고 공고가 그것을 보여 준다** — `공유 책임` **0건**인데 `AWS 비용 최적화` 류는 **401건**이다. ⭐ **AWS 가 그은 선은 둘인데(책임과 비용), 시장은 비용만 본다.**",
+  "market": {
+    "tech": "AWS",
+    "layer": "인프라/클라우드",
+    "postings": 1966,
+    "pct_jobs": 27.3,
+    "with": [
+      {
+        "name": "Python",
+        "pct": 46.8,
+        "why": "⭐ 동반 1위가 언어다 — **층이 없다는 뜻**"
+      },
+      {
+        "name": "Kubernetes",
+        "pct": 38.9,
+        "why": "⭐⭐ **책임의 선을 다시 옮기는 층**(→ `kubernetes`)"
+      },
+      {
+        "name": "GCP",
+        "pct": 34.4,
+        "why": "⭐ **셋 중 하나가 다른 클라우드도 요구**한다 — 모두싸인 `AWS·공공기관(NCP)·온프레미스 3개 환경`"
+      },
+      {
+        "name": "Docker",
+        "pct": 33.1,
+        "why": "실행 단위"
+      },
+      {
+        "name": "Java",
+        "pct": 30.7,
+        "why": "또 다른 언어"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 4787 대 0 — 그리고 시장이 보는 선은 비용이다",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| ⭐ `AWS\\|아마존 웹` | **4787** | (모집중 1927) — **이 백과사전 최대** |\n| `온프레미스\\|자체 구축` | **913** | (모집중 363) |\n| `EC2\\|S3` | 686 | (모집중 262) |\n| ⭐ `클라우드 비용\\|비용 최적화\\|FinOps` | **401** | (모집중 160) |\n| `IAM\\|최소 권한` | 320 | (모집중 150) |\n| `멀티 클라우드\\|하이브리드` | 248 | (모집중 127) |\n| `보안 그룹\\|VPC` | 208 | (모집중 88) |\n| `관리형\\|매니지드` | 102 | (모집중 49) |\n| ⚠️ `책임 범위\\|책임 경계` | **19** | (모집중 4) |\n| ⚠️⚠️ **`공유 책임\\|shared responsibility`** | **0** | (모집중 **0**) |\n\n⭐⭐⭐ **4787 대 0.** `rest`(3372 vs `HATEOAS` 0) 이래 **두 번째 완전한 0**이고, **격차는 이쪽이 더 크다.**\n\n💡 ⭐⭐ **그런데 이 셈에서 더 흥미로운 것은 401 이다.**\n\n> ⭐ `**AWS 비용 최적화** 및 성능 개선 경험이 있는 분` — 러쉬에잇\n> ⭐⭐ `**AWS 비용 최적화 프로젝트를 주도**하여 실질적인 **비용 절감 성과**를 만들어본 분` — 피트인\n> `AWS **Cost Explorer, AWS Budgets, CUR** 등을 활용해 비용을 분석하고 관리한 경험이 있는 분` — 피트인\n\n⭐⭐⭐ **AWS 가 그은 선은 둘이다 — 책임의 선과 비용의 선.** 그리고 **시장은 비용만 본다**(401 대 0). ⚠️ **둘 다 \"쓴 만큼 우리 몫\"이라는 같은 구조인데**, 청구서는 매달 오고 **책임은 사고가 나야 온다.**\n\n📌 ⭐ **그리고 `온프레미스` 913건이 그 선의 이동을 보여 준다.**\n\n> ⭐⭐ `Core + Adapter 패턴을 기반으로 **AWS·공공기관(NCP)·온프레미스 3개 환경**을 하나의 코드베이스로 지원하는 아키텍처를 설계하고 운영합니다.` — 모두싸인\n> `AWS 기반 클라우드 인프라와 **온프레미스 환경**을 구축하고 운영합니다.` — 메딜리티\n\n⚠️ **클라우드로 갔다고 온프레미스가 사라진 게 아니다** — **913건이 둘을 함께 요구**하고, **그러면 책임의 선이 환경마다 다르게 그어진다.**\n\n📌 ⚠️ **셈에서 가른 것도 적어 둔다.** `EC2|S3|Lambda|RDS|ECS|EKS` 로 세면 **2727건에 모집중 63%** 로 튄다 — ⭐ **`Lambda` 가 람다식(함수형 문법)으로도 쓰이기 때문**이다(`Lambda` 300건 중 `AWS Lambda|서버리스` 문맥은 99건). **안전한 값은 `EC2|S3` 686건(38%)** 이라 그것만 썼다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 선을 그렸는데, 부정어로 긋지 않았다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shared Responsibility Model — AWS",
+          "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+        }
+      ],
+      "body": "AWS 는 책임의 선을 **문서와 그림으로 공개한다.** ⭐ 이 백과사전이 모아 온 **\"제품이 스스로 그은 선\"** 중에서도 **가장 명시적인 형태**다 — 문장 속에 숨은 경고가 아니라 **그림 한 장**이다.\n\n> ⭐⭐⭐ **\"Security and Compliance is a shared responsibility between AWS and the customer.\"**\n\n**그리고 그 선을 두 낱말로 나눈다.**\n\n| | 누가 | 원문 |\n|---|---|---|\n| ⭐ **security OF the cloud** | AWS | \"AWS is responsible for **protecting the infrastructure that runs all of the services** offered in the AWS Cloud.\" |\n| ⭐⭐⭐ **security IN the cloud** | 고객 | \"Customer responsibility will be **determined by the AWS Cloud services that a customer selects**.\" |\n\n💡 **전치사 하나가 선이다** — **클라우드 \"의\" 보안**은 AWS, **클라우드 \"안의\" 보안**은 우리.\n\n📌 ⭐⭐⭐ **그런데 이 문서를 다 읽고 나면 한 가지가 빠져 있다는 걸 알게 된다 — 부정어가 없다.**\n\n**\"AWS 는 이것을 책임지지 않는다\"** 라고 쓰지 않는다. 대신 **각자의 몫을 긍정형으로 배정**한다. ⚠️ **그리고 그 차이가 크다.**\n\n| 문서 | 어떻게 선을 긋나 | 안 읽으면 |\n|---|---|---|\n| `redis` | \"**we discourage it**\" | 읽으면 걸린다 |\n| `github-actions` | \"should **almost never** be used\" | 읽으면 걸린다 |\n| `git` | \"is **a bad idea**\" | 읽으면 걸린다 |\n| `typescript` | **Non-goals** 목록 | 읽으면 걸린다 |\n| ⭐⭐⭐ **`aws`** | **각자의 몫을 긍정형으로 배정** | ⚠️⚠️ **아무 경고도 없다** |\n\n⚠️⚠️ **부정어는 읽는 사람을 멈춰 세우는데, 긍정형 배정은 그러지 않는다.** \"AWS 가 인프라를 보호한다\" 를 읽고 **안심하고 덮으면**, **나머지가 내 몫이라는 사실은 전달되지 않는다.**\n\n💡 ⭐⭐ **그리고 셈이 그 결과를 보여 준다 — `공유 책임` 0건.** 이 낱말을 이름으로 대는 공고가 **하나도 없다.** ⭐ 4787건이 AWS 를 요구하면서 **책임의 경계를 이름으로 부르지 않는다.**\n\n📌 **문서가 고객 몫으로 명시하는 것 몇 가지.**\n\n> ⭐ \"the configuration of the **AWS-provided security group firewall**\" · 데이터 암호화 · 접근 제어\n\n⚠️ **보안 그룹은 AWS 가 주는 도구지만 설정은 우리 몫이다** — ⭐ 그리고 그것이 잘못 열려 있어도 **AWS 는 아무 말도 하지 않는다.** 공고에 `보안 그룹|VPC` 가 **208건** 나오는 것이 그 일이 실재한다는 증거다."
+    },
+    {
+      "id": "varies",
+      "kind": "how",
+      "heading": "⭐⭐ 선의 위치가 서비스마다 다르다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shared Responsibility Model — AWS",
+          "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+        }
+      ],
+      "body": "⭐⭐⭐ **이 모델의 가장 어려운 점은 선이 한 군데 있지 않다는 것**이다.\n\n> ⭐⭐⭐ \"Customer responsibility **varies based on many factors**, including the **AWS services and Regions they choose**, the **integration of those services into their IT environment**, and the **laws and regulations applicable**.\"\n\n💡 **\"고르는 서비스에 따라 달라진다\"** — 그러니 **한 번 배워 두고 끝나는 지식이 아니다.**\n\n📌 **문서가 드는 대비가 그 축이다.**\n\n| | 우리 몫 | AWS 몫 |\n|---|---|---|\n| ⭐ **EC2 같은 IaaS** | ⚠️ **게스트 OS 업데이트**·패치·설정·방화벽·앱 | 하드웨어·하이퍼바이저·물리 보안 |\n| ⭐ **추상화된 서비스** | 데이터·접근 제어·설정 | **인프라 부담이 AWS 로 더 넘어간다** |\n\n⭐⭐ **원문의 표현으로는 AWS 가 \"relieve the customer's operational burden\"** 한다 — **부담을 덜어 준다.** ⚠️ **다만 얼마나 덜어 주는지는 고른 서비스가 정한다.**\n\n💡 ⭐⭐⭐ **그래서 서비스를 고르는 일이 곧 책임을 고르는 일이다.** 관리형을 쓰면 편한 만큼 **선이 우리 쪽에서 멀어지고**, 직접 띄우면 통제가 느는 만큼 **선이 가까워진다.** ⚠️ **그런데 공고에서 `관리형|매니지드` 는 102건**뿐이다 — **이 선택을 이름으로 부르는 곳이 드물다.**\n\n📌 **그리고 환경이 섞이면 선이 여러 개가 된다.**\n\n> ⭐⭐ `Core + Adapter 패턴을 기반으로 **AWS·공공기관(NCP)·온프레미스 3개 환경**을 하나의 코드베이스로 지원하는 아키텍처를 설계하고 운영합니다.` — 모두싸인\n> `클라우드(AWS/GCP) 및 **온프레미스** 배포 환경 운영, CI/CD 및 모니터링 체계 수립` — 알엑스\n\n⚠️⚠️ **온프레미스는 선이 통째로 우리 쪽에 있다.** ⭐ `온프레미스` 가 **913건**이고 `멀티 클라우드|하이브리드` 가 **248건**이라는 것은, **한 팀이 여러 개의 선을 동시에 관리한다**는 뜻이다.\n\n💡 ⭐ **`market` 의 GCP 34.4% 도 같은 이야기다** — **셋 중 하나가 다른 클라우드도 요구**한다. ⚠️ 그런데 **클라우드마다 선의 모양이 조금씩 다르고**, 그 차이를 이 문서는 확인하지 않았다(`open_questions`)."
+    },
+    {
+      "id": "cost",
+      "kind": "extra",
+      "heading": "⭐ 시장이 실제로 보는 선 — 비용",
+      "confidence": "inferred",
+      "body": "⚠️ **이 절은 셈과 공고에서 추론했다** — **비용 쪽 1차 자료를 열지 않았다**(`open_questions`).\n\n⭐⭐ **`공유 책임` 이 0건인데 `AWS 비용 최적화` 류는 401건이다.** 그리고 그 공고들은 매우 구체적이다.\n\n> ⭐⭐ `**AWS 비용 최적화 프로젝트를 주도**하여 실질적인 **비용 절감 성과**를 만들어본 분` — 피트인\n> ⭐ `AWS **Cost Explorer, AWS Budgets, CUR** 등을 활용해 비용을 분석하고 관리한 경험이 있는 분` — 피트인\n> `AWS 리소스 사용 현황과 비용 구조 분석을 통한 **컴퓨팅·데이터베이스·네트워크·스토리지 비용 최적화**(불필요·과도 할당 리소스 식별 포함)` — 피트인\n> `AWS 서비스 구성과 사용 비용을 분석하고 **비용 대비 효율이 높은 인프라로 개선**` — 피트인\n\n💡 ⭐⭐⭐ **두 선이 같은 구조다.**\n\n| | 책임의 선 | 비용의 선 |\n|---|---|---|\n| 규칙 | \"고른 서비스가 정한다\" | 고른 서비스가 정한다 |\n| 우리 몫 | 선 안쪽 전부 | 쓴 만큼 전부 |\n| ⚠️ 언제 아나 | **사고가 나야** | ⭐ **매달 청구서로** |\n| 공고 | **0건** | **401건** |\n\n⭐⭐ **차이는 하나 — 피드백이 오는 속도다.** 비용은 **매달 숫자로 오고**, 책임은 **사고가 날 때까지 안 온다.** 💡 그래서 **비용은 관리 항목이 되고 책임은 안 된다.**\n\n📌 ⚠️ **이건 이 백과사전이 계속 만난 형태다 — 실패가 조용하다.**\n\n`github-actions` 의 초록색 빌드, `redis` 의 사라진 데이터, `seo` 의 갈라진 도메인, `android` 의 조용히 마르는 앱. ⭐ **여기서는 \"잘못 설정된 보안 그룹\"** 이고, `보안 그룹|VPC` 가 **208건**인 것은 그 일이 실무에 있다는 증거다.\n\n📌 ⭐ **그리고 공고 하나가 두 선을 한 줄에 적는다.**\n\n> ⭐⭐ `AWS 환경(Lambda, SQS, CloudWatch, **IAM**, S3 등)에서 Serverless 기반의 안정적인 서비스 **운영, 모니터링, 장애 대응**을 수행합니다.` — 스펙터\n\n⚠️ **`IAM` 이 서비스 목록의 한 항목**으로 들어가 있다 — ⭐ **권한 설계가 아니라 쓰는 도구 중 하나로 적힌다.** 💡 `IAM|최소 권한` 이 **320건**이지만, **그중 얼마가 \"설계\"로 다뤄지는지는 이 문서가 세지 않았다.**"
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ AWS 서비스를 다루지 않았다.** EC2·S3·Lambda·RDS·VPC — **4787건짜리 낱말인데 서비스 설명은 한 줄도 안 썼다.** ⭐ **의도한 것이다**: 그것까지 넣으면 **서비스 카탈로그**가 되고, 공식 문서가 훨씬 낫다. 이 문서는 **책임의 선 하나**만 다뤘다.\n\n**2. ⚠️⚠️ IAM 을 깊이 다루지 않았다**(**320건**). ⭐ 최소 권한은 `authz` 가 이미 다뤘고(그 문서에 `최소 권한` 24회), **AWS 의 IAM 문서를 따로 열지 않았다.** ⚠️ 그런데 `github-actions` 가 **\"CI 가 AWS 자격증명을 들고 있다\"(동반 70.1%)** 고 적은 그 자리라 **비어 있는 것이 크다.**\n\n**3. ⚠️ 비용 쪽 1차 자료를 안 봤다**(`비용 최적화` **401건**). ⭐ `cost` 절 전체가 **셈과 공고에서 추론**한 것이다 — AWS 의 비용 관련 공식 문서(Well-Architected 의 비용 최적화 기둥 등)를 **열지 않았다.**\n\n**4. ⚠️ 다른 클라우드와 비교하지 않았다.** `market` 의 GCP **34.4%**, 공고의 `멀티 클라우드` **248건** — ⭐ **클라우드마다 선의 모양이 다를 텐데** 확인하지 않았다.\n\n**5. ⚠️ 서비스별 책임 경계의 구체적 예를 확인하지 못했다.** 원문이 \"varies based on many factors\" 라고만 하고 ⭐ **이 문서가 든 EC2 대 추상화 서비스 대비도 원문의 예시 수준**이다 — **서비스별 표는 별도 문서에 있을 텐데** 안 봤다.\n\n**6. ⚠️ 실제 사고 사례를 읽지 않았다.** 잘못 열린 S3 버킷 같은 사고는 공개 기록이 많은데 **하나도 안 봤다.** ⭐⭐ **이 지적이 세 번째다**(`github-actions`·`migration` 에 이어) — **반복되는 결함이므로 여기 남긴다.**\n\n**7. ⭐ `market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `AWS`(1966건 · 27.3%). ⚠️ 본문 직접 셈은 **4787건**이다.\n\n**8. 이 문서가 다루지 않는 것.** CI 가 자격증명을 들고 있는 문제는 `github-actions`, 권한 설계는 `authz`, 비밀 보관은 `secrets`, 컨테이너 위의 층은 `kubernetes`·`docker`, 인프라를 코드로 다루는 것은 `iac` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ AWS 가 선을 적는 방식",
+      "note": "전부 **`Shared Responsibility Model` 원문**이다. ⚠️ **요점은 인용된 문장만이 아니라 없는 문장이다** — \"AWS 는 이것을 책임지지 않는다\" 같은 **부정어가 거의 없다.**",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 전제",
+          "**\"Security and Compliance is a shared responsibility between AWS and the customer.\"**"
+        ],
+        [
+          "⭐ AWS 몫 (**of** the cloud)",
+          "\"AWS is responsible for **protecting the infrastructure that runs all of the services** offered in the AWS Cloud.\""
+        ],
+        [
+          "⭐⭐⭐ 고객 몫 (**in** the cloud)",
+          "\"Customer responsibility will be **determined by the AWS Cloud services that a customer selects**.\""
+        ],
+        [
+          "⭐⭐⭐ 선이 움직인다",
+          "\"Customer responsibility **varies based on many factors**, including the **AWS services and Regions they choose**, the integration of those services into their IT environment, and the **laws and regulations applicable**.\""
+        ],
+        [
+          "⭐ 덜어 주는 것",
+          "AWS 가 \"**relieve the customer's operational burden**\" 한다 — ⚠️ **얼마나는 고른 서비스가 정한다**"
+        ],
+        [
+          "고객이 반드시 하는 것",
+          "\"the configuration of the **AWS-provided security group firewall**\" · 데이터 암호화 · 접근 제어"
+        ],
+        [
+          "⚠️⚠️ 없는 것",
+          "**부정어.** \"AWS is not responsible for...\" 같은 문장 없이 **각자의 몫을 긍정형으로 배정**한다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shared Responsibility Model — AWS",
+          "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+        }
+      ]
+    },
+    {
+      "id": "line",
+      "kind": "compare",
+      "caption": "⭐⭐ 선 긋는 방식 — 이 백과사전의 계보에서",
+      "note": "각 문서의 1차 자료 원문이고, 한 줄로 세운 것은 이 문서의 관점이다(`confidence: inferred`). ⭐ **마지막 열이 요점** — 부정어는 읽는 사람을 멈춰 세우는데, 긍정형 배정은 그러지 않는다.",
+      "columns": [
+        "문서",
+        "어떻게 긋나",
+        "⚠️ 안 읽으면"
+      ],
+      "rows": [
+        [
+          "`kotlin`",
+          "\"**impractical**\"",
+          "읽으면 걸린다"
+        ],
+        [
+          "`redis`",
+          "\"**we discourage it**\"",
+          "읽으면 걸린다"
+        ],
+        [
+          "`github-actions`",
+          "\"should **almost never** be used\"",
+          "읽으면 걸린다"
+        ],
+        [
+          "`typescript`",
+          "**Non-goals** 목록",
+          "읽으면 걸린다"
+        ],
+        [
+          "`git`",
+          "\"is **a bad idea**\"",
+          "읽으면 걸린다"
+        ],
+        [
+          "`react`",
+          "**문서 한 편**으로 설득",
+          "읽으면 걸린다"
+        ],
+        [
+          "⭐⭐⭐ **`aws`**",
+          "**그림 + 긍정형 배정**",
+          "⚠️⚠️ **아무 경고도 없다** — 나머지가 내 몫인 줄 모른다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "two",
+      "kind": "compare",
+      "caption": "⭐⭐ AWS 가 그은 두 선 — 그리고 시장이 보는 하나",
+      "note": "⚠️ 오른쪽 열은 **1차 자료로 확인하지 않았다**(`cost` 절 전체가 셈과 공고에서 추론). ⭐ 요점은 **두 선이 같은 구조인데 피드백 속도만 다르다**는 것.",
+      "columns": [
+        "",
+        "책임의 선",
+        "비용의 선"
+      ],
+      "rows": [
+        [
+          "규칙",
+          "\"**determined by the AWS Cloud services that a customer selects**\"",
+          "고른 서비스가 정한다"
+        ],
+        [
+          "우리 몫",
+          "선 안쪽 전부",
+          "쓴 만큼 전부"
+        ],
+        [
+          "⭐⭐ 언제 아나",
+          "⚠️ **사고가 나야**",
+          "**매달 청구서로**"
+        ],
+        [
+          "⚠️ 공고",
+          "**0건**",
+          "⭐ **401건**"
+        ],
+        [
+          "도구가 불리나",
+          "`책임 범위\\|책임 경계` **19건**",
+          "`Cost Explorer\\|Budgets\\|CUR`(피트인) 등 이름으로"
+        ],
+        [
+          "⭐ 그래서",
+          "**관리 항목이 안 된다**",
+          "관리 항목이 된다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "⚠️ 이 낱말을 셀 때",
+      "note": "⭐⭐⭐ **4787 대 0** — `rest`(3372 vs `HATEOAS` 0) 이래 **두 번째 완전한 0**이고 **격차는 이쪽이 크다.** ⚠️ 그리고 **`Lambda` 오염**을 또 만났다(다섯째 형태: **같은 이름의 다른 기술**).",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**4787 (모집중 1927)** — 태그 기준으로는 1966건(27.3%, **1위**)"
+        ],
+        [
+          "`온프레미스\\|자체 구축`",
+          "**913 (모집중 363)** — ⭐ **클라우드로 갔다고 사라지지 않았다**"
+        ],
+        [
+          "`EC2\\|S3`",
+          "686 (모집중 262) — ⭐ **안전한 값**(38%)"
+        ],
+        [
+          "⚠️⚠️ `EC2\\|S3\\|Lambda\\|RDS\\|ECS\\|EKS`",
+          "2727인데 **모집중 63%** — ⭐ **`Lambda` 가 람다식으로도 쓰인다**(`Lambda` 300 중 `AWS Lambda\\|서버리스` 문맥은 99). **쓰지 않았다**"
+        ],
+        [
+          "⭐ `비용 최적화\\|FinOps`",
+          "**401 (모집중 160)**"
+        ],
+        [
+          "`IAM\\|최소 권한`",
+          "320 (모집중 150) — ⚠️ 이 문서가 깊이 안 다뤘다"
+        ],
+        [
+          "`멀티 클라우드\\|하이브리드`",
+          "248 (모집중 127)"
+        ],
+        [
+          "`보안 그룹\\|VPC`",
+          "208 (모집중 88) — ⭐ **고객 몫으로 원문이 명시하는 그것**"
+        ],
+        [
+          "⚠️ `책임 범위\\|책임 경계`",
+          "19 (모집중 4)"
+        ],
+        [
+          "⚠️⚠️ **`공유 책임\\|shared responsibility`**",
+          "**0 (모집중 0)**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ security of the cloud",
+      "en": "—",
+      "what": "**AWS 의 몫** — \"protecting the **infrastructure that runs all of the services**\""
+    },
+    {
+      "term": "⭐⭐⭐ security in the cloud",
+      "en": "—",
+      "what": "**우리 몫** — \"determined by the **AWS Cloud services that a customer selects**\". ⭐ **전치사 하나가 선이다**"
+    },
+    {
+      "term": "⭐⭐ varies",
+      "en": "—",
+      "what": "\"Customer responsibility **varies based on many factors**\" — ⚠️ **한 번 배워 두고 끝나는 지식이 아니다**"
+    },
+    {
+      "term": "⭐ relieve the burden",
+      "en": "—",
+      "what": "AWS 가 운영 부담을 덜어 준다. ⚠️ **얼마나는 고른 서비스가 정한다**"
+    },
+    {
+      "term": "⭐⭐ 보안 그룹",
+      "en": "security group",
+      "what": "AWS 가 주는 방화벽인데 **설정은 우리 몫**이다(원문이 명시). ⚠️ **잘못 열려 있어도 아무 말이 없다**"
+    },
+    {
+      "term": "⚠️⚠️ 긍정형 배정",
+      "en": "—",
+      "what": "⭐ 이 문서가 선을 긋는 방식. **\"AWS 는 이것을 책임지지 않는다\"고 쓰지 않는다** — 그래서 **안 읽으면 아무 경고도 없다**"
+    },
+    {
+      "term": "⚠️ Lambda 오염",
+      "en": "—",
+      "what": "⭐ `Lambda` 로 세면 **람다식**이 걸린다(300건 중 AWS 문맥은 99건). **다섯째 오염 형태: 같은 이름의 다른 기술**"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "AWS 서비스를 새로 고른다",
+      "pick": "⭐⭐ **\"이걸 쓰면 내 몫이 어디까지인가\"를 함께 정한다**",
+      "over": "기능과 가격만 비교하기",
+      "why": "⭐⭐⭐ **\"Customer responsibility will be determined by the AWS Cloud services that a customer selects.\"** — **서비스를 고르는 일이 곧 책임을 고르는 일**이다. ⚠️ EC2 를 고르면 **게스트 OS 패치가 우리 몫**이 되고, 관리형을 고르면 그 부담이 AWS 로 넘어간다",
+      "tradeoff": "⚠️ 관리형은 대개 비싸고 통제가 준다. ⭐ 그래도 **선이 어디 있는지 모른 채 고르는 것**보다는 낫다 — 그리고 그 판단은 **팀에 그 일을 할 사람이 있나**로 이어진다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shared Responsibility Model — AWS",
+          "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+        }
+      ]
+    },
+    {
+      "situation": "보안 점검 항목을 만든다",
+      "pick": "⭐ **\"선 안쪽\"만 목록으로 만든다**",
+      "over": "클라우드 보안 전반을 훑기",
+      "why": "⭐⭐ 원문이 우리 몫을 이름으로 든다 — \"the configuration of the **AWS-provided security group firewall**\", 데이터 암호화, 접근 제어. ⚠️ **AWS 가 하는 것(물리 보안·하이퍼바이저)은 우리가 점검할 수도 없다**",
+      "tradeoff": "목록이 짧아 보여 불안하다. ⭐ 그래도 **짧고 실제로 우리가 할 수 있는 목록**이 길고 못 하는 목록보다 낫다. 📌 `보안 그룹|VPC` 가 공고에 **208건** 나오는 것이 그 항목의 실재를 보여 준다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shared Responsibility Model — AWS",
+          "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+        }
+      ]
+    },
+    {
+      "situation": "온프레미스와 클라우드를 함께 쓴다",
+      "pick": "⭐⭐ **환경마다 선을 따로 그린다**",
+      "over": "하나의 보안 정책으로 통일하기",
+      "why": "⚠️ **온프레미스는 선이 통째로 우리 쪽에 있다** — AWS 가 덜어 주던 것(물리 보안·하드웨어·하이퍼바이저)을 우리가 진다. ⭐ 그리고 `온프레미스` 가 **913건**, `멀티 클라우드|하이브리드` 가 **248건**이라 **한 팀이 여러 선을 동시에 관리**한다",
+      "tradeoff": "⚠️ 정책이 갈라져 관리가 는다. ⭐ 그래도 **모두싸인 공고처럼 어댑터로 코드를 통일하되 책임 목록은 나누는 편**이 현실적이다 — `AWS·공공기관(NCP)·온프레미스 3개 환경을 하나의 코드베이스로`",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "클라우드 비용이 문제가 됐다",
+      "pick": "⭐ **비용을 책임의 선과 같은 구조로 본다**",
+      "over": "싼 서비스로 바꾸기부터 하기",
+      "why": "⭐⭐ **두 선이 같은 규칙이다 — \"고른 서비스가 정한다\".** ⚠️ 그래서 **싼 것으로 바꾸면 그만큼 우리 몫이 늘어난다**(관리형 → 직접 운영). 💡 비용 절감이 **운영 부담의 이동**이라는 것을 계산에 넣어야 한다",
+      "tradeoff": "⚠️ 그 부담은 청구서에 안 찍혀서 **절감액이 실제보다 커 보인다.** ⭐ 그래도 공고들이 그 일을 구체적으로 요구한다 — 피트인 `Cost Explorer, Budgets, CUR 등을 활용해 비용을 분석`. ⚠️ **이 문서는 비용 쪽 1차 자료를 안 봤다**(`open_questions`)",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "\"AWS 경험\"을 이력서에 적는다",
+      "pick": "⭐ **어느 선까지 책임졌는지 적는다**",
+      "over": "쓴 서비스 목록 나열하기",
+      "why": "⭐⭐ 서비스 이름은 **4787건이 다 적는다.** ⚠️ 그런데 **`공유 책임` 은 0건**이고 `책임 범위|책임 경계` 는 19건이다 — **경계를 말할 줄 아는 사람이 드물다.** ⭐ 그리고 그 경계가 곧 **무엇을 실제로 해 봤나**의 답이다",
+      "tradeoff": "길어지고, 설명이 필요하다. ⭐ 그래도 **\"EC2 를 썼다\"와 \"게스트 OS 패치 정책을 만들고 돌렸다\"** 는 완전히 다른 문장이고, **뒤쪽이 이 문서가 말하는 선 안쪽**이다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐ \"클라우드니까 보안은 AWS 가 한다\"고 여긴다",
+      "why": "⭐⭐⭐ **문서를 읽어도 그렇게 느끼기 쉽다.** \"AWS is responsible for **protecting the infrastructure**\" 를 읽고 안심하기 때문이고, ⚠️ **이 문서에는 \"AWS 는 이것을 책임지지 않는다\" 같은 부정어가 거의 없다** — **각자의 몫을 긍정형으로 배정**할 뿐이다. 💡 **부정어는 사람을 멈춰 세우는데 긍정형 배정은 그러지 않는다**",
+      "fix": "⭐ **전치사로 기억한다 — of vs in.** \"클라우드**의** 보안\"은 AWS, \"클라우드 **안의** 보안\"은 우리. 📌 그리고 **우리 몫을 목록으로 적어 둔다** — 원문이 이름으로 드는 것부터: **보안 그룹 설정** · 데이터 암호화 · 접근 제어",
+      "sources": [
+        {
+          "title": "Shared Responsibility Model — AWS",
+          "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+        }
+      ]
+    },
+    {
+      "trap": "책임 경계를 한 번 배우고 끝났다고 여긴다",
+      "why": "⚠️ **선이 서비스마다 다르다** — \"Customer responsibility **varies based on many factors**, including the **AWS services and Regions they choose**\". ⭐ 새 서비스를 쓸 때마다 **선이 다시 그어지는데**, 대개 기능만 보고 고른다",
+      "fix": "⭐⭐ **새 서비스를 도입할 때 \"이건 누가 무엇을 하나\"를 한 줄 적는다.** 📌 특히 **IaaS 에서 관리형으로, 또는 그 반대로** 옮길 때가 선이 크게 움직이는 순간이다",
+      "sources": [
+        {
+          "title": "Shared Responsibility Model — AWS",
+          "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+        }
+      ]
+    },
+    {
+      "trap": "비용만 관리 항목으로 만든다",
+      "why": "⭐⭐ **두 선이 같은 구조인데 피드백 속도가 다르다.** 비용은 **매달 청구서로 오고**(`비용 최적화` **401건**), 책임은 **사고가 나야 온다**(`공유 책임` **0건**). ⚠️ **그래서 비용만 회의 안건이 된다**",
+      "fix": "⭐ **책임 쪽에도 정기 점검을 붙인다** — 비용 리뷰를 하는 자리에서 **\"선 안쪽 목록\"도 함께 본다.** 📌 그리고 `github-actions` 가 지적한 자리부터 본다: **CI 가 들고 있는 AWS 자격증명**(그 문서의 동반 70.1%)",
+      "sources": [
+        {
+          "title": "Shared Responsibility Model — AWS",
+          "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+          "publisher": "Amazon Web Services",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+        }
+      ]
+    },
+    {
+      "trap": "싼 서비스로 바꿔 비용을 줄인다",
+      "why": "⚠️ **관리형에서 직접 운영으로 내려가면 청구서는 줄고 우리 몫은 는다.** ⭐ 그런데 **그 늘어난 몫은 청구서에 안 찍혀서** 절감액이 실제보다 커 보인다 — 패치·모니터링·장애 대응이 사람 시간으로 나간다",
+      "fix": "⭐ **비용 비교에 \"누가 운영하나\"를 함께 적는다.** 📌 그리고 **그 일을 할 사람이 팀에 있는지** 먼저 본다 — 없으면 절감이 아니라 **미뤄 둔 사고**다"
+    },
+    {
+      "trap": "⚠️ `Lambda` 로 AWS 수요를 센다",
+      "why": "⭐⭐ **이 사이클이 걸렸다.** `EC2|S3|Lambda|RDS|ECS|EKS` 로 세면 **2727건에 모집중 63%** 로 튄다 — **`Lambda` 가 람다식(함수형 문법)으로도 쓰이기 때문**이다(`Lambda` 300건 중 `AWS Lambda|서버리스` 문맥은 99건)",
+      "fix": "⭐ **서비스 이름 중 일반 낱말과 겹치는 것을 뺀다** — `EC2|S3` 만 세면 **686건에 38%** 로 정상이다. 📌 **다섯 번째 오염 형태: 같은 이름의 다른 기술**(앞의 넷: 경계 밖 잡음·부분 문자열·영문 다른 뜻·약자의 다른 뜻)"
+    },
+    {
+      "trap": "이 문서를 읽고 AWS 를 안다고 여긴다",
+      "why": "⚠️ **이 문서는 AWS 서비스를 한 줄도 다루지 않았다** — EC2·S3·Lambda·RDS·VPC 어느 것도. ⭐ 그리고 **IAM 도 깊이 안 다뤘다**(320건인데). **4787건짜리 낱말에서 책임의 선 하나만** 다뤘다",
+      "fix": "⭐ **이 문서는 \"내 몫이 어디까지인가\" 하나를 준다.** 📌 서비스는 공식 문서가 훨씬 낫고, **권한 설계는 `authz`**, **CI 자격증명은 `github-actions`**, **비밀 보관은 `secrets`** 에 있다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **자기(또는 아는) AWS 환경에서 \"AWS 가 하는 일\"과 \"우리가 하는 일\"을 각각 다섯 개씩 적어 본다.** 그리고 **`Shared Responsibility Model` 문서와 대조**한다.",
+      "done_when": "두 목록이 나오고, ⭐ **우리 쪽으로 적었는데 사실 AWS 몫인 것**이나 **그 반대**가 있는지 확인했다. 특히 **아무 목록에도 안 적힌 것**이 있으면 그것이 위험한 자리다.",
+      "why": "⭐⭐⭐ 문서에 **부정어가 없어서** \"이건 내 몫이 아니다\"가 명시되지 않는다 — 💡 **직접 두 열을 채워 보면 빈칸이 드러난다.** ⚠️ 그리고 대개 **빈칸이 있다.**",
+      "no_hardware": "AWS 계정이 없어도 된다 — **문서를 읽고 가상의 EC2 웹서버 하나를 가정**해 두 열을 채우면 같다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ **지금 쓰는 AWS 서비스 중 하나를 골라, 그것을 관리형(또는 그 반대)으로 바꾸면 \"우리 몫\"이 어떻게 달라지는지** 적는다.",
+      "done_when": "⭐ **늘어나거나 줄어드는 일이 목록으로** 나오고, **그 일을 할 사람이 팀에 있는지** 답할 수 있다.",
+      "why": "⭐⭐⭐ **\"Customer responsibility varies based on ... the AWS services they choose\"** 를 자기 환경으로 확인하는 실습이다. 💡 그리고 **비용 절감 논의가 올라올 때** 이 목록이 그대로 근거가 된다 — **청구서에 안 찍히는 쪽**이다.",
+      "no_hardware": "환경이 없으면 **EC2 위의 데이터베이스 vs RDS** 를 가정해 같은 비교를 한다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **`Shared Responsibility Model` 문서를 열고 \"not\"·\"does not\"·\"is not responsible\" 을 검색**해 몇 번 나오는지 센다. 그리고 **그 결과가 뜻하는 바**를 한 줄 적는다.",
+      "done_when": "⭐ **부정어가 거의 없다는 것**을 직접 확인했고, **그것이 왜 위험한지** 자기 말로 설명할 수 있다.",
+      "why": "⭐⭐⭐ 이 백과사전이 계속 하는 일 — **부정어를 먼저 찾는다.** 💡 그런데 **이번엔 없는 것이 발견**이었다: 다른 문서들(`redis` \"we discourage it\", `git` \"a bad idea\")은 **읽으면 걸리는데**, 이 문서는 **안 읽으면 아무 경고도 없다.** ⭐ **\"부정어가 없다\"도 정보다.**",
+      "no_hardware": "웹 페이지 하나면 된다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "\"security of the cloud\" 와 \"security in the cloud\" 는 각각 누구 몫인가?",
+    "고객의 책임이 무엇에 따라 달라지는가? 원문으로 답하라",
+    "이 문서가 선을 긋는 방식이 다른 기술 문서들과 무엇이 다른가? 왜 그것이 위험한가?",
+    "원문이 고객 몫으로 이름을 드는 것 세 가지는?",
+    "AWS 가 그은 두 선은? 왜 하나만 관리 항목이 되는가?",
+    "`Lambda` 로 세면 왜 안 되는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• AWS 환경(Lambda, SQS, CloudWatch, IAM, S3 등)에서 Serverless 기반의 안정적인 서비스 운영, 모니터링, 장애 대응을 수행합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/364566",
+      "where": "스펙터",
+      "what_it_shows": "⭐⭐ **`IAM` 이 서비스 목록의 한 항목**으로 들어가 있다 — **권한 설계가 아니라 쓰는 도구 중 하나**로 적힌다. ⚠️ `IAM|최소 권한` 320건 중 얼마가 '설계'인지는 세지 않았다"
+    },
+    {
+      "quote": "• Core + Adapter 패턴을 기반으로 AWS·공공기관(NCP)·온프레미스 3개 환경을 하나의 코드베이스로 지원하는 아키텍처를 설계하고 운영합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/383523",
+      "where": "모두싸인",
+      "what_it_shows": "⭐⭐⭐ **선이 세 개다.** 코드는 하나로 통일하되 **책임 경계는 환경마다 다르게** 그어진다 — `온프레미스` 913건 · `멀티 클라우드` 248건의 실제 모양"
+    },
+    {
+      "quote": "• AWS 비용 최적화 프로젝트를 주도하여 실질적인 비용 절감 성과를 만들어본 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375612",
+      "where": "피트인",
+      "what_it_shows": "⭐⭐ **`비용 최적화` 401건의 전형** — ⚠️ **`공유 책임` 은 0건인데 이건 401건**이다. **두 선 중 하나만 관리 항목이 된다**"
+    },
+    {
+      "quote": "• AWS Cost Explorer, AWS Budgets, CUR 등을 활용해 비용을 분석하고 관리한 경험이 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375612",
+      "where": "피트인",
+      "what_it_shows": "⭐ **비용 쪽은 도구 이름까지 부른다** — ⚠️ 책임 쪽은 `책임 범위|책임 경계` 가 **19건**이고 도구 이름은 없다"
+    },
+    {
+      "quote": "• AWS 기반 클라우드 인프라와 온프레미스 환경을 구축하고 운영합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/361321",
+      "where": "메딜리티",
+      "what_it_shows": "⭐ **클라우드로 갔다고 온프레미스가 사라지지 않았다** — 913건이 둘을 함께 요구하고, ⚠️ **온프레미스는 선이 통째로 우리 쪽**이다"
+    },
+    {
+      "quote": "• 클라우드(AWS/GCP) 및 온프레미스 배포 환경 운영, CI/CD 및 모니터링 체계 수립",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378172",
+      "where": "알엑스",
+      "what_it_shows": "⭐ **한 줄에 세 환경** — `market` 의 GCP 34.4% 가 이 모양이다. ⚠️ **클라우드마다 선의 모양이 다를 텐데 이 문서는 확인하지 않았다**"
+    },
+    {
+      "quote": "•AWS 리소스 사용 현황과 비용 구조 분석을 통한 컴퓨팅·데이터베이스·네트워크·스토리지 비용 최적화(불필요·과도 할당 리소스 식별 포함)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375612",
+      "where": "피트인",
+      "what_it_shows": "⭐ **비용은 층별로 쪼개서 본다** — 컴퓨팅·DB·네트워크·스토리지. ⚠️ **책임도 서비스마다 다른데**(\"varies based on many factors\") 그렇게 쪼개 보는 공고는 없다"
+    },
+    {
+      "quote": "• AWS 비용 최적화 및 성능 개선 경험이 있는 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375357",
+      "where": "러쉬에잇(RushEight)",
+      "what_it_shows": "⭐ 가장 짧은 형태 — **`비용 최적화` 가 그 자체로 자격 요건**이 된다. 401건이 이 모양이다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "github-actions",
+      "how": "⭐⭐⭐ **가장 큰 실무 접점.** 저 문서가 **\"CI 가 클라우드 자격증명을 들고 있다\"(AWS 동반 70.1%)** 고 적었다 — **선 안쪽에서 가장 위험한 자리**다"
+    },
+    {
+      "slug": "authz",
+      "how": "⭐ **최소 권한은 그쪽 것이다**(그 문서에 `최소 권한` 24회). ⚠️ 이 문서는 IAM 을 깊이 안 다뤘다"
+    },
+    {
+      "slug": "secrets",
+      "how": "⭐ 자격증명을 어디 두고 어떻게 바꾸나 — 선 안쪽의 핵심 항목"
+    },
+    {
+      "slug": "kubernetes",
+      "how": "⭐⭐ 동반 **38.9%** — **책임의 선을 한 겹 더 옮기는 층**이다"
+    },
+    {
+      "slug": "iac",
+      "how": "⭐ 선 안쪽 설정을 코드로 다루는 자리 — `github-actions` 의 Terraform 38.9% 와 이어진다"
+    },
+    {
+      "slug": "docker",
+      "how": "동반 33.1% — 실행 단위"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **AWS 서비스를 한 줄도 다루지 않았다.** EC2·S3·Lambda·RDS·VPC — **4787건짜리 낱말인데 책임의 선 하나만** 다뤘다. ⭐ **의도한 것이지만**(서비스 카탈로그가 되지 않으려고) **비어 있는 양이 크다.**",
+    "⚠️⚠️ **IAM 을 깊이 다루지 않았다**(**320건**). ⭐ 최소 권한은 `authz` 가 다뤘지만 **AWS 의 IAM 문서를 따로 안 열었고**, `github-actions` 가 지적한 자리(CI 가 자격증명을 들고 있다)와 정면으로 이어지는데 **비었다.**",
+    "⚠️ **비용 쪽 1차 자료를 안 봤다**(`비용 최적화` **401건**). ⭐ **`cost` 절과 `two` 표의 오른쪽 열 전체가 셈과 공고에서 추론**한 것이다 — Well-Architected 의 비용 최적화 기둥 같은 문서를 **열지 않았다.**",
+    "⚠️ **다른 클라우드와 비교하지 않았다.** `market` 의 GCP **34.4%**, 공고의 `멀티 클라우드` **248건** — **클라우드마다 선의 모양이 다를 텐데** 확인하지 않았다.",
+    "⚠️ **서비스별 책임 경계 표를 못 봤다.** 원문이 \"varies based on many factors\" 라고만 하고, ⭐ 이 문서가 든 **EC2 대 추상화 서비스 대비도 원문의 예시 수준**이다.",
+    "⚠️⚠️ **실제 사고 사례를 읽지 않았다** — 잘못 열린 S3 버킷 같은 공개 기록이 많은데 하나도 안 봤다. ⭐⭐ **이 지적이 세 번째다**(`github-actions`·`migration` 에 이어). **반복되는 결함이므로 남긴다.**",
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `AWS`(1966건 · 27.3% · 층 \"인프라/클라우드\"). ⚠️ 본문 직접 셈은 **4787건**이다.",
+    "⭐ **`line` 표(선 긋는 방식의 계보)는 이 문서의 관점이다.** 각 인용은 해당 문서의 1차 자료지만, **\"부정어가 있느냐 없느냐\"로 줄 세운 것은 이 백과사전이 쌓아 온 관찰**이다."
+  ],
+  "sources": [
+    {
+      "title": "Shared Responsibility Model — AWS",
+      "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+      "publisher": "Amazon Web Services",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **책임의 선을 그림으로 그려 공개한 자리** — 그런데 **부정어를 쓰지 않는다.** \"AWS 는 이건 책임 안 진다\"가 아니라 **각자의 몫을 긍정형으로 배정**한다"
+    }
+  ]
+}

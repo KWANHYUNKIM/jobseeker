@@ -2229,6 +2229,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "aws",
+      "title": "AWS — 그어 놓은 선, 아무도 안 부르는 이름",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **AWS 는 어디까지가 자기 몫인지 그림으로 그려 공개한다** — \"security **of** the cloud\" 대 \"security **in** the cloud\". ⚠️ 그런데 **부정어를 쓰지 않아서**, 안 읽으면 **나머지가 내 몫이라는 걸 모른다.** 공고 4787건 중 그 이름은 **0건**.",
+      "aliases": [
+        "AWS",
+        "아마존 웹 서비스",
+        "공유 책임",
+        "shared responsibility",
+        "클라우드",
+        "온프레미스"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

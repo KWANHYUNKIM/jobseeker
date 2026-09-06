@@ -4,29 +4,57 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **마이그레이션**(`migration`)을 완성했다 — **122번째 문서**.
+**없음.** 직전 사이클에서 **AWS**(`aws`)를 완성했다 — **123번째 문서**.
 
-### 직전 사이클 (마이그레이션)
+### 직전 사이클 (AWS)
 
-⭐⭐⭐ **축: "한 번에 갈아엎으면 대개 불탄다."**
+⭐⭐⭐ **축: "선을 그렸는데, 부정어로 긋지 않았다."**
 
-> ⭐⭐⭐ **"we've seen this simple-sounding plan go down in flames most of the time"**
-> ⭐⭐⭐ "Replacements **seem easy to specify**, but often it's **hard to figure out the details of existing behavior**."
-> ⭐⭐ "Replacing a serious IT system **takes a long time**, and the users **can't wait for new features**."
-> ⭐⭐ (무화과) "begins with **small additions**... we **move bits of behavior from the legacy system into the new code base**"
-> ⭐⭐ "components are **small, there isn't so much risk involved**" · "**earlier return on the investment**"
+> ⭐⭐⭐ **"Security and Compliance is a shared responsibility between AWS and the customer."**
+> ⭐⭐ AWS 몫 — "AWS is responsible for **protecting the infrastructure that runs all of the services**"
+> ⭐⭐⭐ 고객 몫 — "Customer responsibility will be **determined by the AWS Cloud services that a customer selects**"
+> ⭐⭐⭐ "Customer responsibility **varies based on many factors**"
 
-⭐⭐⭐ **다섯 번째 대비 형태를 만났다** — `스트랭글러` **1건** vs `점진적` **397건**. **패턴 이름은 안 부르는데 그 방식은 이미 표준이다.** 헤렌 공고의 **`혼용 환경`** 이 그 상태의 이름이었다.
+⭐⭐⭐ **발견은 없는 것이었다** — 이 문서에는 **"AWS is not responsible" 같은 부정어가 거의 없다.**
+각자의 몫을 **긍정형으로 배정**할 뿐이다. 💡 앞의 여덟(`redis` "we discourage it",
+`git` "a bad idea" …)은 **읽으면 걸리는데**, 이건 **안 읽으면 아무 경고도 없다.**
 
-⚠️ `마이그레이션` 760건에 **DB·스키마(124건, Flyway·Alembic)와 시스템 전환이 섞여** 있어 **도구 이름으로 갈랐다.**
+⭐⭐⭐ **셈이 그 결과다 — 4787 대 0.** `공유 책임|shared responsibility` **0건**
+(`HATEOAS` 이래 두 번째 완전한 0, 격차는 최대). ⚠️ 그런데 **`비용 최적화` 는 401건**이다.
 
 ### 다음
 
-**AWS**(`aws`) — QUEUE 맨 위. ⭐ 또 층을 바꿨다(협업/운영 다섯 연속 → 인프라/클라우드).
+**마이크로서비스**(`microservices`) — QUEUE 맨 위.
 
-⭐⭐⭐ **4787건(모집중 1927) — 이 백과사전 최대 낱말**인데 ⚠️⚠️ **`공유 책임|shared responsibility` 는 0건**이다(`HATEOAS` 이래 **두 번째 완전한 0**). 축: **"AWS 가 책임의 선을 그림으로 그려 놨는데 아무도 그 이름을 안 부른다"** — 1차 자료는 **`Shared Responsibility Model`**. ⚠️ **못 열면 축을 바꾼다**(대안: `비용 최적화` 401건).
+⭐⭐⭐ **사다리 2순위에 가장 가깝다** — `saga`·`cqrs`·`outbox`·`service-mesh`·`bff`·
+`api-gateway`·`circuit-breaker` 가 **전부 이걸 전제하는데 본체 문서가 없다.**
+⭐⭐⭐ **1060 대 12**(`바운디드 컨텍스트`). 축: **주창자가 자기 방식에 그은 선** —
+Fowler 의 **`MonolithFirst`**: **"you shouldn't start a new project with microservices"**.
 
 ## 배운 것
+
+- ⭐⭐⭐ **"부정어가 없다"도 발견이다.** 이 백과사전은 늘 **부정어를 먼저 찾는다** —
+  그런데 AWS 의 `Shared Responsibility Model` 에는 **"AWS 는 이것을 책임지지 않는다"가 없다.**
+  각자의 몫을 **긍정형으로 배정**할 뿐이다. 💡 ⭐⭐ **그리고 그 차이가 크다** — 부정어는
+  읽는 사람을 **멈춰 세우는데**, 긍정형 배정은 그러지 않는다. "AWS 가 인프라를 보호한다"를
+  읽고 **안심하고 덮으면 나머지가 내 몫이라는 사실은 전달되지 않는다.**
+  📌 **다음부터 부정어를 찾을 때 "없다"는 결과도 기록한다** — 없는 것이 그 문서의 성격이다.
+
+- ⭐⭐ **한 제품이 선을 두 개 긋고 있으면, 시장이 보는 쪽이 어느 쪽인지 센다.**
+  AWS 는 **책임의 선**과 **비용의 선**을 같은 규칙으로 긋는다("고른 서비스가 정한다").
+  그런데 공고는 **비용 401건 · 책임 0건**이다. ⭐ **차이는 피드백 속도** — 비용은 매달
+  청구서로 오고 책임은 사고가 나야 온다. 💡 **그래서 하나만 관리 항목이 된다.**
+  📌 `github-actions` 의 초록색 빌드, `redis` 의 사라진 데이터와 같은 형태 — **조용한 실패**.
+
+- ⭐⭐ **다섯 번째 오염 형태 — 같은 이름의 다른 기술.** `Lambda` 로 세면 **람다식**이 걸린다
+  (`Lambda` 300건 중 `AWS Lambda|서버리스` 문맥은 99건). ⚠️ `EC2|S3|Lambda|RDS|ECS|EKS` 는
+  **2727건에 모집중 63%** 로 튀었고, **`EC2|S3` 만 세니 686건에 38%** 로 정상이 됐다.
+  📌 **앞의 넷**: ①경계 밖 잡음(`Go`) ②부분 문자열(`rebase`←Firebase) ③영문 낱말의 다른
+  뜻(`coverage`) ④같은 약자의 다른 뜻(`E2E`). ⭐ **다섯 다 "모집중 비율"이 먼저 알려 줬다.**
+
+- ⚠️⚠️ **실패 사례를 안 읽은 지적이 세 번째다**(`github-actions`·`migration`·`aws`).
+  ⭐ **이제 우연이 아니다.** 잘못 열린 S3 버킷 같은 공개 기록이 많은데 하나도 안 봤다.
+  📌 **다음 사이클부터, 1차 자료가 "이렇게 실패한다"고 말하면 그 자리에서 사례를 하나 찾는다.**
 
 - ⭐⭐⭐ **다섯 번째 대비 형태 — "이름은 1건, 방식은 397건".** `스트랭글러` 1건인데 `점진적` 397건이고,
   공고들이 **패턴 그대로 일하고 있다**(아이알큐더스 `점진적으로 마이그레이션`, 헤렌 `혼용 환경`).
