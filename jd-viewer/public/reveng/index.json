@@ -1340,7 +1340,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "모델이 나빠졌다는 신고를 재현하지 못한 회사 — 그래서 모델이 아니라 재는 자와 그것이 서는 무대를 먼저 의심하기 시작했다",
       "updated_at": "2026-09-06",
       "domain": "anthropic.com"
