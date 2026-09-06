@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "flipkart",
+      "name": "Flipkart",
+      "name_en": "Flipkart",
+      "country": "IN",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "인도 최대 이커머스 — 5억 명을 상대로 계획하는 쪽과 초당 100만 이벤트를 세는 쪽이 같은 회사 안에 있다",
+      "updated_at": "2026-09-06",
+      "domain": "flipkart.com"
+    },
+    {
       "slug": "razorpay",
       "name": "Razorpay",
       "name_en": "Razorpay",
@@ -1441,7 +1453,10 @@
     "로그 수집·저장",
     "관측을 싸게 유지한다",
     "빌드 파이프라인을 싼 자원 위에 올린다",
-    "사람의 조사 시간을 AI 로 줄인다"
+    "사람의 조사 시간을 AI 로 줄인다",
+    "광고 예산을 초당 100만 이벤트에서 지킨다",
+    "검색이 무엇을 관련 있다고 할지 정한다",
+    "5억 고객의 공급망을 계획한다"
   ],
   "countries": {
     "KR": "한국",

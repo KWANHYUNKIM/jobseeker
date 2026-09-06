@@ -1,0 +1,134 @@
+{
+  "slug": "flipkart",
+  "name": "Flipkart",
+  "name_en": "Flipkart",
+  "country": "IN",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "flipkart.com",
+  "one_liner": "인도 최대 이커머스 — 5억 명을 상대로 계획하는 쪽과 초당 100만 이벤트를 세는 쪽이 같은 회사 안에 있다",
+  "business_model": "**3P 마켓플레이스로 물건을 팔고 그 위에 광고와 물류를 얹는다.** **월간 활성 사용자 2억 2,000만~2억 4,000만 명**, **판매자 약 45만 곳**, **상품 1억 5,000만 개 이상**을 **80개가 넘는 범주**에 걸쳐 다룬다. **인도 이커머스 총거래액의 약 50~60%** 를 차지하고 **2025년 매출은 약 86억 달러**(₹82,787 crore)다. **월마트가 약 85% 를 보유한다.**\n\n⚠️ **이 회사의 기술 이야기는 두 극단 사이에 걸쳐 있다** — 한쪽에는 **`5억 고객을 위한 공급망 계획`** 처럼 몇 달 단위의 예측이 있고, 다른 쪽에는 **`초당 100만 이벤트에서 광고 예산 정확도 보장`** 처럼 밀리초 단위의 정확성이 있다. **같은 회사가 두 시간 축을 동시에 다룬다**(이 정리는 이 사이트의 재구성이다).",
+  "products": [
+    "Flipkart (마켓플레이스)",
+    "광고 (판매자·브랜드 대상)",
+    "공급망·물류",
+    "Rate Card 엔진 (요율 계산)"
+  ],
+  "domain_map": {
+    "title": "몇 달을 내다보는 쪽과 밀리초를 세는 쪽이 한 회사에 있다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  U[\"<b>월간 사용자 2억 2천만 이상</b><br/>• 판매자 약 45만 곳\"]:::list --> S[\"<b>검색이 무엇을 보여 줄지 정한다</b><br/>• LLM 관련성 라벨링 (⏳ 미독)\"]:::quiet\n  S --> A[\"⚠️ <b>광고 예산을 지킨다</b><br/>• 초당 100만 이벤트 (⏳ 미독)\"]:::accent\n  U --> O[\"<b>주문</b>\"]:::list\n  O --> C[\"<b>공급망을 계획한다</b><br/>• 5억 고객 기준 (⏳ 미독)\"]:::quiet\n  A --> R[\"<b>버는 곳</b><br/>• 마켓플레이스 · 광고 · 물류\"]:::list\n  C --> R"
+  },
+  "revenue_streams": [
+    {
+      "name": "마켓플레이스 (3P)",
+      "how": "**판매자 약 45만 곳 · 상품 1억 5,000만 개 이상 · 80개 넘는 범주.** 인도 이커머스 총거래액의 **약 50~60%**, 2025년 매출 **약 86억 달러**.",
+      "domains": [
+        "검색이 무엇을 관련 있다고 할지 정한다",
+        "5억 고객의 공급망을 계획한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Flipkart — Company Overview",
+          "url": "https://en.wikipedia.org/wiki/Flipkart",
+          "publisher": "Wikipedia",
+          "date": "2026",
+          "summary": "월마트가 약 85% 를 보유한 인도 최대 이커머스. 2025년 매출 약 86억 달러(₹82,787 crore), 월간 활성 사용자 2억 2,000만~2억 4,000만 명, 판매자 약 45만 곳, 상품 1억 5,000만 개 이상 80개 넘는 범주."
+        }
+      ]
+    },
+    {
+      "name": "광고",
+      "how": "⚠️ **초당 100만 이벤트 규모로 예산을 집행한다** — 회사가 그 정확도 보장을 글로 냈다(2026-01-22). **검색 결과가 그 지면이다**(재구성).",
+      "domains": [
+        "광고 예산을 초당 100만 이벤트에서 지킨다",
+        "검색이 무엇을 관련 있다고 할지 정한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "High-Risk, High-Scale: Guaranteeing Ad Budget Precision at 1 Million Events/Second",
+          "url": "https://blog.flipkart.tech/high-risk-high-scale-guaranteeing-ad-budget-precision-at-1-million-events-second-cc23977796d7",
+          "publisher": "Flipkart Tech Blog",
+          "date": "2026-01-22",
+          "summary": "초당 100만 이벤트에서 광고 예산의 정확도를 보장한다. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목·날짜·URL 만 확인했다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "광고 예산을 초당 100만 이벤트에서 지킨다",
+      "why": "⚠️ **광고는 `조금 틀려도 되는` 숫자가 아니다** — 예산을 넘겨 쓰면 광고주에게 돌려줘야 하고 모자라게 쓰면 팔 기회를 잃는다(재구성). 회사가 제목에 **`고위험 고규모`** 를 달고 **`초당 100만 이벤트에서 광고 예산 정확도를 보장한다`** 를 냈다(2026-01-22). ⏳ **본문은 아직 안 읽었다.** ⭐ **Zepto 의 `하루 10억 이벤트 광고 분석` 과 나란히 놓을 자리다.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "검색이 무엇을 관련 있다고 할지 정한다",
+      "why": "**상품 1억 5,000만 개를 80개 넘는 범주에서 다루는데 무엇이 `관련 있다` 인지를 사람이 다 매길 수 없다.** 회사가 **`검색의 상품 관련성 라벨링을 LLM 으로 자동화`**(2026-07-31)를 냈다. ⏳ **본문은 아직 안 읽었다.** ⭐ **Etsy 의 3단 증류(사람이 기준을 만들고 LLM 이 넓힌다)와 견줄 자리다.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "5억 고객의 공급망을 계획한다",
+      "why": "**인도 전역에 며칠 안에 물건을 보내려면 창고와 차량을 미리 배치해야 한다.** 회사가 이 주제로 글 둘을 냈다 — **`인도 공급망의 맥박: 5억 고객을 위해 어떻게 계획하는가`**(2026-05-05)와 **`시계와의 경주: 더 빠른 배송을 위한 공급망 용량 최적화`**(2026-04-15). ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **도메인 셋이 전부 본문 미독이다** — **제목·날짜·URL 만 목록에서 확인했다.** ⚠️ **Meesho 때는 각 도메인마다 글이 둘 이상 확인된 것을 근거로 삼았는데, 여기서는 공급망만 둘이고 나머지는 하나씩이다.**",
+    "⚠️ **요율표(Rate Card) 엔진 재설계 글이 남아 있다**(2026-02-24) — **어느 도메인에 속하는지 본문을 봐야 안다.** 물류 요금이면 공급망, 판매자 수수료면 마켓플레이스다.",
+    "⚠️ **검색·랭킹의 본체를 모른다** — 관련성 라벨링은 재료를 만드는 일이고 **그 재료로 무엇을 어떻게 정렬하는지**가 비어 있다.",
+    "⚠️ **Big Billion Days 같은 대형 세일의 기술 이야기를 못 찾았다** — 인도 이커머스에서 가장 큰 트래픽 사건인데 최근 글에 없다.",
+    "⚠️ **연표(eras)를 못 세웠다** — 2007년 창업과 2018년 월마트 인수는 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "High-Risk, High-Scale: Guaranteeing Ad Budget Precision at 1 Million Events/Second",
+      "url": "https://blog.flipkart.tech/high-risk-high-scale-guaranteeing-ad-budget-precision-at-1-million-events-second-cc23977796d7",
+      "publisher": "Flipkart Tech Blog",
+      "date": "2026-01-22",
+      "summary": "초당 100만 이벤트에서 광고 예산의 정확도를 보장한다. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목·날짜·URL 만 확인했다."
+    },
+    {
+      "title": "LLMs for Relevance: Automating High-Quality Product Relevance Labeling in Flipkart Search",
+      "url": "https://blog.flipkart.tech/llms-for-relevance-automating-high-quality-product-relevance-labeling-in-flipkart-search-ddd5ca50b584",
+      "publisher": "Flipkart Tech Blog",
+      "date": "2026-07-31",
+      "summary": "검색의 상품 관련성 라벨링을 LLM 으로 자동화한다. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+      "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+      "publisher": "Flipkart Tech Blog",
+      "date": "2026-05-05",
+      "summary": "5억 고객을 상대하는 공급망 계획. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+      "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+      "publisher": "Flipkart Tech Blog",
+      "date": "2026-04-15",
+      "summary": "더 빠른 배송을 위한 공급망 용량 최적화. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "Re-architecting Flipkart's Rate Card Engine",
+      "url": "https://blog.flipkart.tech/re-architecting-flipkarts-rate-card-engine-the-journey-to-building-a-high-scale-generic-rate-a27ba57d4087",
+      "publisher": "Flipkart Tech Blog",
+      "date": "2026-02-24",
+      "summary": "요율표 엔진을 고규모 범용 구조로 다시 지었다. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "Flipkart — Company Overview",
+      "url": "https://en.wikipedia.org/wiki/Flipkart",
+      "publisher": "Wikipedia",
+      "date": "2026",
+      "summary": "월마트가 약 85% 를 보유한 인도 최대 이커머스. 2025년 매출 약 86억 달러(₹82,787 crore), 월간 활성 사용자 2억 2,000만~2억 4,000만 명, 판매자 약 45만 곳, 상품 1억 5,000만 개 이상 80개 넘는 범주."
+    }
+  ]
+}
