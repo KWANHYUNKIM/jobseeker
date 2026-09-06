@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "cursor",
+      "name": "Cursor",
+      "name_en": "Cursor",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "AI 가 코드를 쓰는 편집기 — 그러자 깃과 컴퓨트가 사람 속도가 아니라 에이전트 속도를 감당해야 했다",
+      "updated_at": "2026-09-06",
+      "domain": "cursor.com"
+    },
+    {
       "slug": "vercel",
       "name": "Vercel",
       "name_en": "Vercel",
@@ -1618,7 +1630,10 @@
     "쓰지 않을 때 0 으로 내린다",
     "자기 인프라를 옮긴다",
     "에이전트를 안전하게 실행한다",
-    "컴퓨트를 어떤 모양으로든"
+    "컴퓨트를 어떤 모양으로든",
+    "깃을 어떤 규모에서든 다룬다",
+    "에이전트를 클라우드에서 돌린다",
+    "모델을 고르고 돌린다"
   ],
   "countries": {
     "KR": "한국",

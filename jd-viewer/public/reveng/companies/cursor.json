@@ -1,0 +1,132 @@
+{
+  "slug": "cursor",
+  "name": "Cursor",
+  "name_en": "Cursor",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "cursor.com",
+  "one_liner": "AI 가 코드를 쓰는 편집기 — 그러자 깃과 컴퓨트가 사람 속도가 아니라 에이전트 속도를 감당해야 했다",
+  "business_model": "**AI 우선 코드 편집기를 구독으로 판다**(VS Code 위에 세웠다). ⭐ **성장 곡선이 경이롭다** — **2025년 1월 ARR 1억 달러 → 6월 5억 → 11월 10억 → 2026년 2월 20억 → 6월 초 40억 달러.** **6개월 연속 3개월마다 두 배**로 자랐다.\n\n⚠️ **고객의 무게 중심이 옮겨 갔다** — **매출의 60%가 기업 고객**에서 나온다(초기 성장을 밀었던 개인 개발자 구독에서 크게 이동).\n\n⭐ **소유가 바뀌었다** — **2026년 6월 16일 SpaceX 가 600억 달러 전액 주식으로 인수를 합의**했고(**기록상 최대 스타트업 인수**, ARR 의 약 15배) **8월 14일 완료**해 **SpaceXAI 사업부**로 편입됐다. **2022년 MIT 학생 넷이 창업한 회사다.**",
+  "products": [
+    "Cursor (AI 코드 편집기)",
+    "클라우드 에이전트",
+    "Cursor Router"
+  ],
+  "domain_map": {
+    "title": "사람 속도로 만든 것을 에이전트 속도로 다시 만든다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  A[\"⭐ <b>AI 가 코드를 쓴다</b><br/>• ARR 1억 → 40억 달러<br/>• 3개월마다 두 배 (6개월)\"]:::accent --> G[\"⚠️ <b>깃을 어떤 규모에서든</b><br/>• 합의를 버리고 S3 로<br/>• ✅ 본문 확인\"]:::accent\n  A --> C[\"<b>에이전트를 클라우드에서 돌린다</b><br/>• 자체 관리 머신 · 3배 빠른 시작<br/>• ⏳ 미독\"]:::quiet\n  A --> M[\"<b>모델을 고르고 돌린다</b><br/>• 라우터 · MoE 메가커널<br/>• ⏳ 미독\"]:::quiet\n  G --> R[\"<b>매출의 60%가 기업 고객</b>\"]:::list\n  C --> R\n  M --> R\n  R --> S[\"<b>SpaceX (2026-08-14, 600억 달러)</b><br/>• SpaceXAI 사업부\"]:::list"
+  },
+  "revenue_streams": [
+    {
+      "name": "기업 구독",
+      "how": "⭐ **매출의 60%가 기업 고객**에서 나온다 — **개인 개발자 구독에서 크게 옮겨 갔다.** ARR **40억 달러**(2026년 6월 초).",
+      "domains": [
+        "에이전트를 클라우드에서 돌린다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "SpaceX Buys Cursor for $60B: What the Deal Means in 2026",
+          "url": "https://www.digitalapplied.com/blog/spacex-acquires-cursor-anysphere-60b-ai-coding-2026",
+          "publisher": "Digital Applied",
+          "date": "2026",
+          "summary": "2022년 MIT 학생 넷이 창업한 Anysphere 의 Cursor 가 2025년 1월 ARR 1억 달러에서 2026년 6월 40억 달러로 자랐다 — 6개월 연속 3개월마다 두 배. 2026년 6월 16일 SpaceX 가 600억 달러 전액 주식으로 인수를 합의해 8월 14일 완료했고 SpaceXAI 사업부로 편입됐다. 매출의 60%가 기업 고객에서 나온다."
+        }
+      ]
+    },
+    {
+      "name": "개인 구독",
+      "how": "**초기 성장을 밀었던 축**이고 지금은 매출의 40% 안팎이다(재구성).",
+      "domains": [
+        "깃을 어떤 규모에서든 다룬다",
+        "모델을 고르고 돌린다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "SpaceX Buys Cursor for $60B: What the Deal Means in 2026",
+          "url": "https://www.digitalapplied.com/blog/spacex-acquires-cursor-anysphere-60b-ai-coding-2026",
+          "publisher": "Digital Applied",
+          "date": "2026",
+          "summary": "2022년 MIT 학생 넷이 창업한 Anysphere 의 Cursor 가 2025년 1월 ARR 1억 달러에서 2026년 6월 40억 달러로 자랐다 — 6개월 연속 3개월마다 두 배. 2026년 6월 16일 SpaceX 가 600억 달러 전액 주식으로 인수를 합의해 8월 14일 완료했고 SpaceXAI 사업부로 편입됐다. 매출의 60%가 기업 고객에서 나온다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "깃을 어떤 규모에서든 다룬다",
+      "why": "⭐ **합의의 값을 정면으로 적는다** — Spokes 의 3단계 커밋에 **`근본적인 한계가 있었다 — 모든 단계의 지연이 클러스터 안 모든 서버 중 가장 느린 것에 묶인다.`** ⚠️ **AI 가 코드를 쓰기 시작하면 푸시가 사람 속도가 아니라 에이전트 속도로 온다**(재구성). ✅ **본문 확인함**(2026-08-18).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "에이전트를 클라우드에서 돌린다",
+      "why": "**`직접 관리하는 머신에서 클라우드 에이전트를 돌린다`**(2026-09-02) · **`클라우드 에이전트가 빌드로 3배 빨리 시작한다`**(2026-08-13) · **에이전트 보안·신뢰성 인증(AIUC-1)**(2026-08-13). ⚠️ **기업 고객이 매출의 60%라 `우리 머신에서 돌게 해 달라` 가 따라온다**(재구성). ⏳ **셋 다 본문 미독.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "모델을 고르고 돌린다",
+      "why": "**`Cursor 라우터는 어떻게 작업에 맞는 모델을 고르나`** 와 **`Mixture-of-Kittens: NVL72 를 위한 오픈소스 MoE 메가커널`**. ⭐ **모델을 고르는 일과 모델을 빠르게 돌리는 일이 한 축이다**(재구성). ⏳ **둘 다 본문 미독이고 개별 주소를 못 받았다.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **일부 글의 개별 주소를 목록에서 못 받았다** — 라우터 글과 MoE 메가커널 글. ⚠️ **슬러그를 추측하지 않는다** — **매 사이클 검색으로 받는다**(Trendyol·Atlassian 에서 다섯 번 연속 통했다).",
+    "⭐ **SpaceX 인수(2026-08-14) 이후의 기술 변화를 다룬 자료가 없다** — **SpaceXAI 사업부로 편입됐는데** 그것이 제품이나 인프라에 무엇을 바꾸는지 말한 글이 없다. **㉗축의 가장 최근 사례이자 가장 뜻밖의 조합이다**(재구성).",
+    "⚠️ **편집기 본체의 기술 자료를 못 봤다** — **VS Code 위에 세운 AI 편집기인데** 자동 완성·코드베이스 채팅·인라인 편집이 어떻게 도는지가 블로그에 안 보인다(재구성).",
+    "⚠️ **ARR 수치가 전부 3자 보도다** — 회사가 직접 밝힌 숫자가 아니다.",
+    "⭐ **성장 속도 자체가 기술 문제를 만든 회사다** — **3개월마다 두 배**면 인프라가 그 속도를 따라가야 한다(재구성). ⏳ **그 이야기를 정면으로 다룬 글이 있는지 아직 모른다.**"
+  ],
+  "sources": [
+    {
+      "title": "Git at any scale",
+      "url": "https://cursor.com/blog/git-at-any-scale",
+      "publisher": "Cursor",
+      "date": "2026-08-18",
+      "summary": "Spokes 의 3단계 커밋 합의는 모든 단계의 지연이 클러스터 안 가장 느린 서버에 묶인다는 근본적 한계가 있었다. 합의 기반 복제 대신 S3 를 진실 원천으로 삼는 WAL 시스템(Continuity)으로 바꿔, 복제본 정족수 대신 단일 로컬 저장소와 참조 트랜잭션을 동기화한다. 표준 S3 에서 초당 최대 120 푸시, S3 Express One Zone 에서 300 푸시 이상, 읽기는 복제본 100개까지 선형 확장하고 조건부 GET 일관성 확인이 평균 10ms 미만이다. 라우팅 테이블이 없어졌다."
+    },
+    {
+      "title": "Run cloud agents on machines you manage",
+      "url": "https://cursor.com/blog/self-hosted-machines",
+      "publisher": "Cursor",
+      "date": "2026-09-02",
+      "summary": "고객이 직접 관리하는 머신에서 클라우드 에이전트를 돌리는 이야기. ⏳ 본문 미독."
+    },
+    {
+      "title": "Cloud agents start 3x faster with builds",
+      "url": "https://cursor.com/blog/builds",
+      "publisher": "Cursor",
+      "date": "2026-08-13",
+      "summary": "빌드로 클라우드 에이전트의 시작을 3배 빠르게 한 이야기. ⏳ 본문 미독."
+    },
+    {
+      "title": "How Cursor Router chooses the right model for the task",
+      "url": "https://cursor.com/blog",
+      "publisher": "Cursor",
+      "date": "",
+      "summary": "작업에 맞는 모델을 고르는 라우터. ⏳ 본문 미독이고 개별 주소를 못 받았다 — 검색으로 받아야 한다."
+    },
+    {
+      "title": "Mixture-of-Kittens: our open-source MoE megakernel for NVL72s",
+      "url": "https://cursor.com/blog",
+      "publisher": "Cursor",
+      "date": "",
+      "summary": "NVL72 를 위한 오픈소스 MoE 메가커널. ⏳ 본문 미독이고 개별 주소를 못 받았다."
+    },
+    {
+      "title": "SpaceX Buys Cursor for $60B: What the Deal Means in 2026",
+      "url": "https://www.digitalapplied.com/blog/spacex-acquires-cursor-anysphere-60b-ai-coding-2026",
+      "publisher": "Digital Applied",
+      "date": "2026",
+      "summary": "2022년 MIT 학생 넷이 창업한 Anysphere 의 Cursor 가 2025년 1월 ARR 1억 달러에서 2026년 6월 40억 달러로 자랐다 — 6개월 연속 3개월마다 두 배. 2026년 6월 16일 SpaceX 가 600억 달러 전액 주식으로 인수를 합의해 8월 14일 완료했고 SpaceXAI 사업부로 편입됐다. 매출의 60%가 기업 고객에서 나온다."
+    }
+  ]
+}
