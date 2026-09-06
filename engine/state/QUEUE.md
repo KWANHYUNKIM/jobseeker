@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Depot** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 마이크로VM 을 초 단위로 띄운다(`in-process-volume-allocator`). 빈 도메인 둘 — 이미지를 다 받지 않고 시작한다(`why-soci-belongs-in-the-build` 읽어 뒀다) · 시간을 팔면서 시간을 줄인다(요금 페이지 + `the-fibonacci-benchmark` 2026-08-26 미독). 안 읽은 것 — 벤치마크 글 · `github-is-the-wrong-shape` · 빌드 캐시 구조. |
+| **Depot** | US · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 마이크로VM 을 초 단위로 띄운다(`in-process-volume-allocator`) · 이미지를 다 받지 않고 시작한다(`soci-in-build`). 빈 도메인 하나 — 시간을 팔면서 시간을 줄인다(요금 페이지는 읽었고 `the-fibonacci-benchmark` 2026-08-26 미독). 안 읽은 것 — 벤치마크 글 · `github-is-the-wrong-shape` · 빌드 캐시 구조. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
