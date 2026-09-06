@@ -63,8 +63,86 @@
     {
       "name": "검색 색인을 살아 있는 채로 바꾼다",
       "why": "⚠️ **300개 넘는 클러스터에서 1.7PB 를 관리하며 무중단으로 색인의 모양을 바꿔야 했다.** ⭐ **그 과정에서 설계 목표가 뒤집힌다** — **`설계 목표가 빠르게에서 의도적으로 느리게, 꾸준하게, 조절 가능하게로 뒤집혔다.`** ✅ **본문 확인함**(2026-07-24).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "OpenSearch 플러그인 (AOSC)",
+          "solves": "⭐ **`한 번의 API 호출이어야 할 일이 몇 주짜리 프로젝트가 되고 사고를 낼 실제 가능성을 갖는`** 것을 없앤다 — 애플리케이션 이중 쓰기가 **`이전 로직을 인덱서의 코드로 새어 들게`** 하던 것을 걷어냈다.",
+          "limits": "⚠️ **플러그인을 직접 만들어 유지해야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+              "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+              "publisher": "Atlassian",
+              "date": "2026-07-24",
+              "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+            }
+          ]
+        },
+        {
+          "tech": "두 조율 역할 (샤드 / 색인)",
+          "solves": "**데이터 노드의 `AoscShardService` 가 소스 프라이머리 샤드마다 워커를 띄우고**, 클러스터 매니저의 **`AoscCoordinatorService` 가 전역 진행과 수렴 판단**을 맡는다. **프리미티브가 `그 샤드를 들고 있는 노드에서만` 쓸 수 있어서 클러스터 안에서 돈다.**",
+          "limits": "⚠️ **`그 모든 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬웠을 것`** 이라 선택지가 없었고, **대가로 단순한 외부 클라이언트가 아니라 두 역할을 만들어야 했다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+              "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+              "publisher": "Atlassian",
+              "date": "2026-07-24",
+              "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+            }
+          ]
+        },
+        {
+          "tech": "⭐ 속도 조절 (노드당 동시 1개)",
+          "solves": "⭐ **`설계 목표가 빠르게에서 의도적으로 느리게, 꾸준하게, 그리고 당신이 가진 여유에 맞춰 조절 가능하게로 뒤집혔다`** — **`느리고 꾸준하며 CPU 부담이 아주 낮게`**.",
+          "limits": "⚠️ **큰 이전이 오래 걸리고, 실패하면 그 긴 시간을 다시 쓴다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+              "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+              "publisher": "Atlassian",
+              "date": "2026-07-24",
+              "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+            }
+          ]
+        },
+        {
+          "tech": "짧은 쓰기 차단 컷오버",
+          "solves": "**`쓰기를 멈추고, 따라잡고, 검증하고, 조심스러운 전환을 한 번 하는 짧은 창`** — **2~5초, 50TB·12억 문서 색인에서도 최대 30초**.",
+          "limits": "⚠️ **`애플리케이션이 잠깐 (재시도 가능한) 쓰기 오류를 본다`** — 애플리케이션에 재시도 로직이 있다는 전제다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+              "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+              "publisher": "Atlassian",
+              "date": "2026-07-24",
+              "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+            }
+          ]
+        },
+        {
+          "tech": "별칭 교체 + 사전 거절",
+          "solves": "⭐ **`별칭 교체 전까지 소스 색인이 여전히 유일한 진실 원천이므로 … 되돌릴 것이 없다`** — **롤백을 잘 만드는 대신 롤백이 필요 없는 구조를 만들었다**(재구성).",
+          "limits": "⚠️ **`소스와 타깃이 같은 number_of_routing_shards 를 공유하지 않으면 이전을 앞에서 거절한다`** — 2의 거듭제곱 분할만 되고, **그 밖의 경우는 여전히 옛 방식으로 몇 주를 써야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+              "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+              "publisher": "Atlassian",
+              "date": "2026-07-24",
+              "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "deliberately-slow"
+      ]
     },
     {
       "name": "이벤트를 옮기고 전달한다",
@@ -79,14 +157,501 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "deliberately-slow",
+      "name": "설계 목표가 빠르게에서 의도적으로 느리게로 뒤집혔다",
+      "domain": "검색 색인을 살아 있는 채로 바꾼다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **일상적인 요구가 몇 주짜리 프로젝트가 되고 있었다** — **`색인을 N 개 샤드로 만들었는데 이제 샤드가 커졌다. 2N 으로 늘리고 싶다`** 같은 일이 **`매일같이`** 일어났다. 그런데 애플리케이션 이중 쓰기로 풀면 **`이전 로직이 인덱서의 코드로 새어 들고`** **롤아웃 안무·이중 쓰기 동작·재시도 처리·조정·정리**가 따라붙는다. ⭐ **그 값을 한 문장이 요약한다** — **`한 번의 API 호출이어야 할 일이 몇 주짜리 프로젝트가 되고, 사고를 낼 실제 가능성을 갖는다.`** 팀이 원한 것은 **`최소 비용, 최소 중단, 최소 추가 코드, 그리고 우리 클러스터에 부담을 주지 않는 것`** 이었다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**클러스터 300개 이상 · 데이터 노드 2,500개 이상 · 1.7PB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 옛 방식의 값",
+            "value": "**`한 번의 API 호출이어야 할 일이 몇 주짜리 프로젝트가 되고, 사고를 낼 실제 가능성을 갖는다.`** — **`이전 로직이 인덱서의 코드로 새어 든다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 뒤집힌 목표",
+            "value": "**`설계 목표가 빠르게에서 의도적으로 느리게, 꾸준하게, 그리고 당신이 가진 여유에 맞춰 조절 가능하게로 뒤집혔다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "label": "얼마나 느리게",
+            "value": "운영에서 **노드당 동시 소스 샤드 `1`개** — **`이전을 느리고 꾸준하며 CPU 부담이 아주 낮게 유지한다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "label": "컷오버",
+            "value": "**`대부분의 이전에서 쓰기 차단이 2~5초, 50TB·12억 문서 색인의 큰 이전에서도 최대 30초`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 실패해도 되돌릴 것이 없다",
+            "value": "**`별칭 교체 전까지 소스 색인이 여전히 유일한 진실 원천이므로, 실패하거나 취소된 이전은 소스를 건드리지 않은 채로 두고, 복구는 다시 돌리는 것이며 되돌릴 것이 없다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "label": "이 검색이 붙는 곳",
+            "value": "**FY2026 3분기 매출 17억 8,700만 달러(+32%)** — Jira·Confluence 의 검색",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Atlassian Announces Third Quarter Fiscal Year 2026 Results",
+                "url": "https://www.businesswire.com/news/home/20260430534706/en/Atlassian-Announces-Third-Quarter-Fiscal-Year-2026-Results",
+                "publisher": "Atlassian (BusinessWire)",
+                "date": "2026-04-30",
+                "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "왜 이게 어려운지 볼 때",
+          "thought": "⚠️ **문제가 기술이 아니라 번짐이었다** — 샤드 수를 바꾸는 것 자체는 알려진 일인데, 애플리케이션 이중 쓰기로 하면 **`이전 로직이 인덱서의 코드로 새어 들고`** 롤아웃 안무·재시도·조정·정리가 딸려 온다. ⭐ **`한 번의 API 호출이어야 할 일이 몇 주짜리 프로젝트가 된다`** — **일의 크기가 문제의 크기와 안 맞는다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디서 돌릴지 정할 때",
+          "thought": "⚠️ **선택지가 없었다** — 필요한 프리미티브(`Engine.Searcher`·변경 스냅숏·보존 리스)가 **`그 샤드를 들고 있는 노드에서만 쓸 수 있다`** 이고 **`그 모든 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬웠을 것이다`**. ⭐ **데이터가 있는 곳으로 계산을 보낸다는 오래된 원칙이지만, 그 대가로 클러스터 안에 두 역할을 만들어야 했다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "속도를 얼마로 할지 정할 때",
+          "thought": "⭐ **이 기능의 이름이 여기서 나온다** — **`설계 목표가 빠르게에서 의도적으로 느리게, 꾸준하게, 그리고 당신이 가진 여유에 맞춰 조절 가능하게로 뒤집혔다.`** ⚠️ **살아 있는 클러스터 위에서 도는 일이라, 빨리 끝내려는 힘이 곧 서비스를 위협하는 힘이다**(재구성). 운영에서 **노드당 동시 소스 샤드 1개**로 돌린다 — **거의 아무것도 안 하는 것처럼 보일 만큼 조심스럽다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "⚠️ 애플리케이션 이중 쓰기 (버린 것)",
+            "what": "⚠️ **`이전 로직이 인덱서의 코드로 새어 든다`** — 롤아웃 안무·이중 쓰기 동작·재시도 처리·조정·정리가 따라온다"
+          },
+          {
+            "name": "AoscShardService (데이터 노드)",
+            "what": "**`활성 이전을 지켜보다가, 자기가 들고 있는 각 소스 프라이머리 샤드마다 ShardMigrationWorker 를 띄운다`** — 샤드 로컬 작업"
+          },
+          {
+            "name": "AoscCoordinatorService (클러스터 매니저)",
+            "what": "**`이전마다 MigrationCoordinator 를 돌린다`** — **색인 수준 오케스트레이션: 전역 진행 추적, 모든 샤드가 수렴했는지 판단**"
+          },
+          {
+            "name": "⭐ 속도 조절",
+            "what": "⭐ **`빠르게에서 의도적으로 느리게, 꾸준하게, 조절 가능하게`** — 운영에서 **노드당 동시 소스 샤드 1개**"
+          },
+          {
+            "name": "컷오버 창",
+            "what": "**`쓰기를 멈추고, 따라잡고, 검증하고, 조심스러운 전환을 한 번 하는 짧은 창`** — **2~5초, 최대 30초**"
+          },
+          {
+            "name": "⭐ 별칭 교체",
+            "what": "⭐ **그 전까지 소스가 유일한 진실 원천이다** — **되돌릴 것이 없다**"
+          }
+        ],
+        "invariants": [
+          "⭐ **별칭 교체 전까지 소스는 손대지 않는다** — 실패해도 되돌릴 것이 없다",
+          "⭐ **빠른 것보다 클러스터가 멀쩡한 것이 먼저다**",
+          "⚠️ **계산을 데이터가 있는 곳으로 보낸다** — 프리미티브가 거기에만 있다",
+          "⚠️ **안전하게 못 하는 것은 앞에서 거절한다** — 조용히 시도하지 않는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "⚠️ **소스와 타깃이 같은 `number_of_routing_shards` 를 공유하지 않으면 이전을 앞에서 거절한다**",
+            "why": "⚠️ **OpenSearch 가 지금 노출하지 않는 라우팅 키 정보 없이는 2의 거듭제곱이 아닌 변경을 안전하게 다룰 수 없다**"
+          },
+          {
+            "step": "**데이터 노드의 `AoscShardService` 가 활성 이전을 지켜보다 자기 소스 프라이머리 샤드마다 워커를 띄운다**",
+            "why": "**샤드 로컬 작업** — `Engine.Searcher`·변경 스냅숏·보존 리스가 **`그 샤드를 들고 있는 노드에서만`** 쓸 수 있다"
+          },
+          {
+            "step": "**클러스터 매니저의 `AoscCoordinatorService` 가 이전마다 `MigrationCoordinator` 를 돌린다**",
+            "why": "**전역 진행을 추적하고 모든 샤드가 수렴했는지 판단한다**"
+          },
+          {
+            "step": "⭐ **의도적으로 느리게 돌린다 — 운영에서 노드당 동시 소스 샤드 1개**",
+            "why": "⭐ **`이전을 느리고 꾸준하며 CPU 부담이 아주 낮게 유지한다`**"
+          },
+          {
+            "step": "**짧은 컷오버 창에서 쓰기를 멈추고 따라잡고 검증하고 한 번 전환한다**",
+            "why": "**`애플리케이션이 잠깐 (재시도 가능한) 쓰기 오류를 본다`** — 2~5초, 최대 30초"
+          },
+          {
+            "step": "**별칭을 교체한다**",
+            "why": "⭐ **그 전까지는 소스가 유일한 진실 원천이다**"
+          },
+          {
+            "step": "**실패하거나 취소되면 소스를 건드리지 않은 채로 두고 다시 돌린다**",
+            "why": "⭐ **`되돌릴 것이 없다`**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "애플리케이션 이중 쓰기로 할 것인가",
+            "chosen": "⚠️ **아니다 — 클러스터 안의 플러그인으로**",
+            "alternatives": [
+              "애플리케이션 이중 쓰기",
+              "점검 창 잡고 재색인"
+            ],
+            "tradeoff": "이중 쓰기는 **`이전 로직이 인덱서의 코드로 새어 들게`** 하고 **롤아웃 안무·이중 쓰기 동작·재시도 처리·조정·정리**를 요구한다. ⭐ **값을 한 문장이 요약한다** — **`한 번의 API 호출이어야 할 일이 몇 주짜리 프로젝트가 되고, 사고를 낼 실제 가능성을 갖는다.`** ⚠️ **일의 크기가 문제의 크기와 안 맞는 것이 진짜 문제였다**(재구성). **대가는 OpenSearch 플러그인을 직접 만들어 유지해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "question": "어디서 돌릴 것인가",
+            "chosen": "⚠️ **클러스터 안에서 — 밖이 아니라**",
+            "alternatives": [
+              "외부 이전 서비스",
+              "클라이언트에서 읽고 쓰기"
+            ],
+            "tradeoff": "선택지가 사실상 없었다 — 필요한 프리미티브(**`Engine.Searcher`, 변경 스냅숏, 보존 리스**)가 **`그 샤드를 들고 있는 노드에서만 쓸 수 있고`** **`그 모든 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬웠을 것이다`**. ⚠️ **대가는 클러스터 안에 두 개의 조율 역할을 만들어야 했다는 것**이다 — 단순한 외부 클라이언트로는 안 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "question": "조율을 어디에 둘 것인가",
+            "chosen": "**두 역할로 나눈다 — 샤드와 색인**",
+            "alternatives": [
+              "코디네이터 하나가 전부",
+              "각 샤드가 독립적으로"
+            ],
+            "tradeoff": "**데이터 노드의 `AoscShardService` 가 `활성 이전을 지켜보다가 자기가 들고 있는 각 소스 프라이머리 샤드마다 ShardMigrationWorker 를 띄우고`**, 클러스터 매니저의 **`AoscCoordinatorService` 가 이전마다 `MigrationCoordinator` 를 돌려 색인 수준 오케스트레이션 — 전역 진행 추적, 모든 샤드가 수렴했는지 판단** — 을 맡는다. ⚠️ **`언제 다 됐는가` 는 한 샤드가 알 수 없는 물음이라 위층이 필요하다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "question": "얼마나 빨리 옮길 것인가",
+            "chosen": "⭐ **의도적으로 느리게 — 목표를 뒤집었다**",
+            "alternatives": [
+              "최대한 빠르게",
+              "가용 자원을 다 쓰기"
+            ],
+            "tradeoff": "⭐ **이 기능의 이름이다.** **`설계 목표가 빠르게에서 의도적으로 느리게, 꾸준하게, 그리고 당신이 가진 여유에 맞춰 조절 가능하게로 뒤집혔다.`** 운영에서 **노드당 동시 소스 샤드 1개**로 돌려 **`이전을 느리고 꾸준하며 CPU 부담이 아주 낮게 유지한다`**. ⚠️ **살아 있는 클러스터 위에서 도는 일이라, 빨리 끝내려는 힘이 곧 서비스를 위협하는 힘이다**(재구성). **대가는 큰 이전이 오래 걸린다는 것**이고, **팀이 원한 것 넷 중 `우리 클러스터에 부담을 주지 않는 것` 이 그 값을 정당화한다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "question": "컷오버에 쓰기를 막을 것인가",
+            "chosen": "**막는다 — 짧게**",
+            "alternatives": [
+              "별칭에서 쓰기를 붙들기",
+              "쓰기를 계속 받으며 전환"
+            ],
+            "tradeoff": "**`쓰기를 멈추고, 따라잡고, 검증하고, 조심스러운 전환을 한 번 하는 짧은 창`** 이고 **`애플리케이션이 잠깐 (재시도 가능한) 쓰기 오류를 본다`**. 대안(별칭에서 붙들기)은 지연 급등을 부른다. ⚠️ **오류를 보이는 쪽을 골랐다 — 애플리케이션에 이미 재시도 로직이 있으므로**(재구성). 결과가 **`대부분의 이전에서 2~5초, 50TB·12억 문서 색인의 큰 이전에서도 최대 30초`**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "question": "실패하면 어떻게 되돌릴 것인가",
+            "chosen": "⭐ **되돌릴 것을 만들지 않는다**",
+            "alternatives": [
+              "롤백 절차 구현",
+              "체크포인트에서 재개"
+            ],
+            "tradeoff": "⭐ **`별칭 교체 전까지 소스 색인이 여전히 유일한 진실 원천이므로, 실패하거나 취소된 이전은 소스를 건드리지 않은 채로 두고, 복구는 다시 돌리는 것이며 되돌릴 것이 없다.`** ⚠️ **롤백을 잘 만드는 대신 롤백이 필요 없는 구조를 만들었다**(재구성) — **롤백 코드는 가장 적게 실행되면서 가장 위험한 코드다**(재구성). **대가는 실패하면 처음부터 다시라는 것**이고, **`의도적으로 느리게` 와 합치면 그 재시도가 길다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "question": "안전하게 못 하는 경우를 어떻게 할 것인가",
+            "chosen": "⚠️ **앞에서 거절한다**",
+            "alternatives": [
+              "최선을 다해 시도",
+              "경고하고 진행"
+            ],
+            "tradeoff": "**`소스와 타깃이 같은 number_of_routing_shards 를 공유하지 않으면 이전을 앞에서 거절한다`** — 2의 거듭제곱 분할만 받는다. 이유는 **OpenSearch 가 지금 노출하지 않는 라우팅 키 정보 없이는 2의 거듭제곱이 아닌 변경을 안전하게 다룰 수 없기 때문**이다. ⚠️ **못 하는 것을 못 한다고 미리 말하는 편이, 반쯤 하다 실패하는 것보다 낫다**(재구성). **대가는 그런 경우 여전히 옛 방식으로 몇 주를 써야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OpenSearch 플러그인 (AOSC)",
+            "role": "**클러스터 안에서 돈다** — `Engine.Searcher`·변경 스냅숏·보존 리스가 **`그 샤드를 들고 있는 노드에서만`** 쓸 수 있어서",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "tech": "AoscShardService + ShardMigrationWorker",
+            "role": "**데이터 노드에서 샤드 로컬 작업** — 소스 프라이머리 샤드마다 워커",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "tech": "AoscCoordinatorService + MigrationCoordinator",
+            "role": "**클러스터 매니저에서 색인 수준 오케스트레이션** — 전역 진행, 모든 샤드의 수렴 판단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "tech": "⭐ 속도 조절 (노드당 동시 1개)",
+            "role": "⭐ **`느리고 꾸준하며 CPU 부담이 아주 낮게`** — 목표를 빠르게에서 뒤집었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "tech": "별칭 교체",
+            "role": "⭐ **그 전까지 소스가 유일한 진실 원천** — **되돌릴 것이 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "이벤트를 옮기고 전달한다",
+          "via": "같은 규모의 인프라",
+          "contract": "**같은 검색 플랫폼 팀이 300+ 클러스터·2,500+ 데이터 노드·1.7PB 를 굴린다** — ⏳ **이벤트 쪽 자료는 아직 안 읽었다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "⚠️ 애플리케이션 이중 쓰기 (버린 것)",
+          "via": "번짐",
+          "contract": "⚠️ **`이전 로직이 인덱서의 코드로 새어 든다`** — **`한 번의 API 호출이어야 할 일이 몇 주짜리 프로젝트가 되고, 사고를 낼 실제 가능성을 갖는다`**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Jira · Confluence 검색",
+          "via": "살아 있는 색인",
+          "contract": "**FY2026 3분기 매출 17억 8,700만 달러의 제품들이 쓰는 검색이다** — **그래서 무중단이 조건이었다**(뒤쪽은 재구성)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⭐ 빨리 끝내려는 힘이 곧 서비스를 위협하는 힘이다",
+            "why_hard": "⚠️ **이전은 살아 있는 클러스터 위에서 돈다** — 300개 넘는 클러스터와 1.7PB 가 그동안 계속 검색을 받아야 한다(재구성). **자원을 많이 쓸수록 빨리 끝나지만, 그 자원은 지금 서비스가 쓰는 자원이다**(재구성). 팀이 원한 것에 그것이 들어 있다 — **`최소 비용, 최소 중단, 최소 추가 코드, 그리고 우리 클러스터에 부담을 주지 않는 것`**.",
+            "current_best": "⭐ **목표를 뒤집는 것** — **`설계 목표가 빠르게에서 의도적으로 느리게, 꾸준하게, 그리고 당신이 가진 여유에 맞춰 조절 가능하게로 뒤집혔다.`** 운영에서 **노드당 동시 소스 샤드 1개**로 **`느리고 꾸준하며 CPU 부담이 아주 낮게`** 돌린다. **오래 걸리는 것을 결함이 아니라 설계로 받아들인 것이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          },
+          {
+            "problem": "⚠️ 옮기다 실패하면 무엇이 남는가",
+            "why_hard": "⚠️ **이전은 길고, 길수록 중간에 깨질 확률이 는다**(재구성). **그때 반쯤 옮겨진 상태가 남으면 되돌리는 일 자체가 새로운 위험이 된다** — **롤백 코드는 가장 적게 실행되면서 가장 위험한 코드다**(재구성).",
+            "current_best": "⭐ **되돌릴 것을 만들지 않는 것** — **`별칭 교체 전까지 소스 색인이 여전히 유일한 진실 원천이므로, 실패하거나 취소된 이전은 소스를 건드리지 않은 채로 두고, 복구는 다시 돌리는 것이며 되돌릴 것이 없다.`** 그리고 **안전하게 못 하는 경우는 앞에서 거절한다** — **`소스와 타깃이 같은 number_of_routing_shards 를 공유하지 않으면`**. ⚠️ **대가는 실패하면 처음부터 다시라는 것**이고, **`의도적으로 느리게` 와 합치면 그 재시도가 길다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+                "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+                "publisher": "Atlassian",
+                "date": "2026-07-24",
+                "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "데이터가 있는 곳에서, 아주 느리게",
+          "question": "살아 있는 색인을 어떻게 바꾸나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>이전 요청</b><br/>• 샤드 N → 2N · 매핑 변경\"]:::list --> G{\"⚠️ <b>같은 number_of_routing_shards 인가</b>\"}:::accent\n  G -->|아니다| X[\"⚠️ <b>앞에서 거절한다</b><br/>• 라우팅 키 정보 없이는<br/>  안전하게 못 한다\"]:::gone\n  G -->|맞다| S[\"<b>데이터 노드</b><br/>• AoscShardService<br/>• 소스 프라이머리 샤드마다<br/>  ShardMigrationWorker\"]:::accent\n  S --> C[\"<b>클러스터 매니저</b><br/>• AoscCoordinatorService<br/>• 전역 진행 · 수렴 판단\"]:::accent\n  C --> R[\"⭐ <b>의도적으로 느리게</b><br/>• 노드당 동시 소스 샤드 1개<br/>• CPU 부담 아주 낮게\"]:::accent\n  R --> W[\"<b>짧은 컷오버 창</b><br/>• 쓰기 멈춤 · 따라잡기<br/>• 검증 · 한 번의 전환<br/>• 2~5초 (최대 30초)\"]:::list\n  W --> AL[\"⭐ <b>별칭 교체</b><br/>• 그 전까지 소스가<br/>  유일한 진실 원천\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "한 번의 API 호출이어야 할 일",
+          "question": "무엇을 왜 버렸나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>애플리케이션 이중 쓰기</b>\"]:::gone --> B[\"⚠️ <b>이전 로직이 인덱서 코드로<br/>  새어 든다</b>\"]:::gone\n  B --> C[\"⚠️ <b>롤아웃 안무 · 이중 쓰기 동작<br/>  재시도 · 조정 · 정리</b>\"]:::gone\n  C --> D[\"⭐ <b>한 번의 API 호출이어야 할 일이<br/>  몇 주짜리 프로젝트가 되고<br/>  사고를 낼 실제 가능성을 갖는다</b>\"]:::gone\n  D --> E[\"<b>답: 클러스터 안의 플러그인</b><br/>• 프리미티브가 거기에만 있다\"]:::accent\n  F[\"⚠️ <b>그런데 빨리 돌리면</b><br/>• 지금 서비스가 쓰는 자원을<br/>  뺏는다 (재구성)\"]:::gone --> G[\"⭐ <b>답: 목표를 뒤집는다</b><br/>• 의도적으로 느리게\"]:::accent\n  H[\"⚠️ <b>중간에 실패하면</b><br/>• 롤백 코드가 가장 적게 실행되고<br/>  가장 위험하다 (재구성)\"]:::gone --> I[\"⭐ <b>답: 되돌릴 것을 안 만든다</b><br/>• 별칭 교체 전까지<br/>  소스는 손대지 않는다\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+          "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+          "publisher": "Atlassian",
+          "date": "2026-07-24",
+          "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+        },
+        {
+          "title": "Atlassian Announces Third Quarter Fiscal Year 2026 Results",
+          "url": "https://www.businesswire.com/news/home/20260430534706/en/Atlassian-Announces-Third-Quarter-Fiscal-Year-2026-Results",
+          "publisher": "Atlassian (BusinessWire)",
+          "date": "2026-04-30",
+          "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **개별 글의 주소를 목록에서 못 받았다** — `how-we-build` 아카이브가 제목만 준다. ⚠️ **슬러그를 추측하지 않는다** — **매 사이클 검색으로 받는다**(Trendyol 에서 세 번 연속 통한 방법).",
     "⚠️ **글마다 발행일이 없다** — 아카이브에 타임스탬프가 없어서, 확인한 AOSC 글(2026-07-24) 말고는 날짜를 모른다.",
     "⚠️ **블로그의 대부분이 사업·AI 채택 글이다** — 엔지니어링 글은 `how-we-build` 아래에 따로 모여 있고, **첫 화면으로 판정하면 이 회사를 놓친다**(후보 조사에서 실제로 그럴 뻔했다).",
     "⚠️ **Jira·Confluence 본체의 기술 자료를 아직 못 봤다** — 검색·이벤트·AI 는 있는데 **문서 편집이나 이슈 추적 자체**의 이야기가 안 보인다.",
-    "⏳ **도메인으로 안 세운 글이 셋 있다** — 실시간 PWA · AI 시대의 번역 · 유료 마케팅 예산 배분 ML. **흩어져 있어 축을 이루지 못한다**(재구성)."
+    "⏳ **도메인으로 안 세운 글이 셋 있다** — 실시간 PWA · AI 시대의 번역 · 유료 마케팅 예산 배분 ML. **흩어져 있어 축을 이루지 못한다**(재구성).",
+    "⚠️ **이전이 실제로 얼마나 걸리는지 없다** — **`의도적으로 느리게`** 가 이 기능의 핵심인데 **50TB 색인을 옮기는 데 며칠이 걸리는지 몇 주가 걸리는지 안 적는다.** ⭐ **쓰기 차단 시간(2~5초)만 대는데, 그건 사용자가 보는 값이고 운영자가 보는 값은 따로다**(재구성)."
   ],
   "sources": [
     {
