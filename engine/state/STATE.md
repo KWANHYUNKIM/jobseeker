@@ -8,26 +8,27 @@
 
 ## 지금 파는 중
 
-**Trendyol** (기타=튀르키예 · 커머스) — 도메인 4개 · **기능 2개**. 남은 둘(인프라 셀프서비스 · AI 장애 진단)은 미독이다. 회사 103개 · 큐 0/3.
+**Trendyol** (기타=튀르키예 · 커머스) — 도메인 4개 · **기능 3개**. 남은 하나는 **`장애를 AI 로 진단한다`**(미독)다. 회사 103개 · 큐 0/3.
 
-### 이번 사이클 — `바뀌었다는 말과 내가 신경 쓰는 게 바뀌었다는 말은 다르다`
+### 이번 사이클 — `전면 자동화는 기능이 아니라 위험이다`
 
-⭐ **검색으로 주소를 받은 것이 값을 했다** — 목록에서 개별 글 주소를 못 받아 **슬러그를 추측하지 않고 검색으로 받았고**, 세 글의 정확한 주소가 한 번에 나왔다.
+⭐ **회사의 결론이 그대로 기능의 이름이다.** 엔지니어 2,000명 규모에서 **`복잡한 이전은 DBA 의 끊임없는 주의를 며칠, 때로는 꼬박 일주일까지 요구할 수 있었는데`**, 그 답이 **전부 자동화하기가 아니었다.**
 
-건진 것 넷:
+건진 것 다섯:
 
-- ⭐ **알림이 알려 주는 것과 알아야 하는 것이 어긋나 있었다** — **`문서가 바뀌었다고 알려 줄 뿐 어떤 필드가 구체적으로 바뀌었는지는 알려 주지 않는다`**(Couchbase DCP) 이고, 동시에 **`소스 데이터 레코드의 모든 필드가 우리가 실제로 색인하거나 검색에 쓰는 필드에 대응하는 것은 아니다`**. ⚠️ **둘의 곱이 헛일이었고 그게 `이전 무효화 신호의 70% 이상` 이다.**
-- ⚠️ **상류를 못 고치니 받는 쪽이 감당한다** — **남의 시스템이 주는 신호의 모양은 바꿀 수 없다**(재구성). 그래서 **색인에 매핑된 필드만 뽑아 정규 JSON + XXHash 로 Redis(문서 ID 키, 1억 5,500만 개, 수십 GB)에 기억해 두고 대조한다.** 결과가 **CPU 절반 이상 감소 · 세그먼트 병합과 수 감소 · 검색 지연 감소.**
-- ⭐ **넘어지는 방향을 명확히 정했다** — **Redis 가 없으면 `항상 색인`.** 불필요한 재색인이 잠시 돌아오지만 갱신 누락은 막는다. ⭐ **낭비는 되돌릴 수 있고 누락은 되돌릴 수 없다**(재구성).
-- ⚠️ **그 선택이 다음 선택을 가능하게 한다** — 잃어도 되는 데이터라서 **메모리 급증을 보고 BGSAVE 와 repl-diskless-sync 를 꺼** 순수 인메모리로 돌린다.
+- ⚠️ **쉬운 답이 규모에서 다 깨진다** — **`그냥 덤프하고 복원하죠`** 는 업무 중단을 내고, 논리 복제는 **`시퀀스와 복제 슬롯, 그리고 컷오버의 혼돈스러운 현실을 무시한다`**. ⭐ **`혼돈스러운 현실` 이라는 말이 이 문제의 성격이다** — 깔끔한 이론 바깥에 실제로 일어나는 일들이 있다(재구성).
+- ⭐ **문제를 다시 정의한 것이 답이었다** — **`이전은 일시적 실패를 만날 수밖에 없는 포괄적인 일련의 단계들로 이뤄진 장기 실행 트랜잭션이다.`** 그러면 필요한 것은 더 나은 스크립트가 아니라 상태·재시도·보상을 들고 있는 오케스트레이터다(Temporal). 문장이 요약한다 — **`네트워크 딸꾹질 하나가 5시간짜리 덤프를 다시 시작하게 해서는 안 된다.`**
+- ⚠️ **가장 나쁜 결과가 타깃 실패가 아니라 원본 파괴다** — **`복제 지연이 치솟으면 소스의 WAL 이 디스크 전체를 먹어 치울 때까지 자랄 수 있다`** 이고 **`소스 디스크의 건강이 타깃의 소비 속도에 직결된다`**. **받는 쪽이 느리면 주는 쪽이 죽는다**(재구성). 그래서 **WAL 증가가 `멈추고 고쳐야 하는` 일차 지표**다.
+- ⭐ **사람을 세 곳에 남겼다** — **무결성 검증**(DBA + 팀 리드가 소스-타깃 매핑과 사전 건강 지표를) · **읽기 전용 확정**(연결을 끊기 전 의도적 멈춤) · **최종 컷오버**(**`돌아올 수 없는 지점`**). ⚠️ **자동화의 목적이 사람을 빼는 것이 아니라 사람이 판단할 것만 남기는 것이다**(재구성). 회사의 요약 — **`그 균형이, 어떤 단일 기술 결정보다도, 이것을 확장 가능하게 만든 것이다.`**
+- ⚠️ **정확히 맞추는 대신 일부러 앞질러 둔다** — 시퀀스는 **`의도적인 오프셋 버퍼`** 를 적용해 옮긴다. **충돌보다 번호 구멍이 낫다는 판단이다**(재구성).
 
-⚠️ **첫 색인 때는 전체 색인이 일어난다** — 회사가 그 성격을 밝힌다: **`진짜 이득은 색인이 살아 있게 된 뒤로 계속해서 관찰된다.`** **일회성 비용과 지속적 이득을 구분해 말한 것이다**(재구성).
+⭐ **이 회사의 두 셀프서비스가 반대 방향으로 간다** — 광고는 **규칙을 코드에서 데이터로 열어 사업이 직접 공개·철회**하게 했는데, DB 이전은 **DDL 을 코드로 잠그고 되돌릴 수 없는 지점마다 사람을 세운다.** ⚠️ **`되돌릴 수 있느냐` 가 자유의 크기를 가르는 것으로 보이는데, 회사가 이 둘을 이어 말한 자료는 없다**(재구성).
 
 ### 다음 사이클 — 확장(2순위)
 
-`--gaps` 가 **`인프라를 셀프서비스로 내준다`** 또는 **`장애를 AI 로 진단한다`** 를 부를 것이다. ⚠️ **둘 다 미독** — **검색으로 주소를 받는다**(이번에 통했다).
+`--gaps` 가 **`장애를 AI 로 진단한다`** 를 부를 것이다. ⏳ **미독** — Helyx 4편 · **`Trendyol 의 SRE AI 에이전트`**(26분) · **`AI 가 다중 리전 쿠버네티스 장애의 근본 원인을 찾도록 어떻게 도왔나`** · **`운영 경보를 몇 분 안에 진단하는 AI 온콜 시스템`**. **검색으로 주소를 받는다**(두 번 연속 통했다). **이걸 쓰면 Trendyol 완주다.** ⭐ **`증강 자동화` 와 `전략적 거부권` 이 그 도메인에서도 나올지가 관전 포인트다**(재구성).
 
-⏳ **검색 도메인에도 미독이 넷 남았다** — 벡터 검색 v9(주소 확보) · `Vector Search at Trendyol Search Core`(주소 확보) · 검색 랭킹 모델 배포 2편 · 백만 규모 카탈로그 건강.
+⏳ **검색 도메인에도 미독이 넷 남았다** — 벡터 검색 v9 · `Vector Search at Trendyol Search Core` · 검색 랭킹 모델 배포 2편 · 백만 규모 카탈로그 건강. **완주 기준은 도메인마다 기능 하나이므로 이건 나중 보강거리다.**
 
 ⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
 
@@ -41,11 +42,11 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다.** `COUNTRIES = {KR, US, CN, JP, EU, CA, AU, SG, IN, AE, NG, 기타}`.
 
-**⚠️ 커밋할 때 `git add -A` 를 쓰지 않는다** — 이 레포에는 다른 엔진(study 등)이 함께 돌아 남의 변경이 섞여 있다. **파일을 지정한다.**
+**⚠️ 커밋할 때 `git add -A` 를 쓰지 않는다** — 이 레포에는 다른 엔진(study 등)이 함께 돌아 남의 변경이 섞여 있다.
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① `AI 에이전트를 어디까지 믿나` 10곳 + ⏳ Trendyol(글 셋)** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz.
+**① ⭐ `AI 에이전트를 어디까지 믿나` 11곳** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / **Trendyol**(⭐ **`전면 자동화는 기능이 아니라 위험이다` · `증강 자동화` · `전략적 거부권` — AI 가 아니라 자동화 일반에 대한 답인데 그래서 더 넓다**). ⏳ Trendyol 의 AI 글 셋이 더 남았다.
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
@@ -55,21 +56,21 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑤ `한 코어에 하나씩인가, 여러 코어가 나눠 쓰나`** — ScyllaDB / ClickHouse / Grafana Labs / VictoriaMetrics.
 
-**⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream.
+**⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream / **Trendyol**(⚠️ **논리 복제의 한계를 조목조목 적는다 — 시퀀스도 복제 슬롯도 컷오버도 안 다뤄 준다**).
 
 **⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / Trendyol.
 
 **⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics.
 
-**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 8곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol.
+**⑨ ⭐ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 8곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / **Trendyol**(⭐ **이전 자체를 제품으로 만들었다 — 남이 아니라 자기 팀들이 쓰는 이전 플랫폼**).
 
 **⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics / ⏳ Trendyol(직접 만드는 쪽 — Helyx).
 
-**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / **Trendyol**(⚠️ **Redis 에 최적화 판단을 걸되 죽으면 최적화 이전으로 돌아가게 해 뒀다**).
+**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / Trendyol.
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
-**⑬ ⭐ `애매할 때 어느 쪽으로 넘어지나` 10곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / **Trendyol**(⭐ **`항상 색인` 쪽으로 — 낭비는 되돌릴 수 있고 누락은 되돌릴 수 없다**).
+**⑬ `애매할 때 어느 쪽으로 넘어지나` 10곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol.
 
 **⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest / ⏳ Trendyol.
 
@@ -77,7 +78,7 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz.
 
-**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics / **Trendyol**(⚠️ **직전에 색인한 것을 해시로 기억해 두는 데 수십 GB 를 쓴다 — 기억이 곧 절약이다**).
+**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics / Trendyol.
 
 **⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest(참여 → 유지) / ⏳ Duolingo · DoorDash.
 
@@ -87,9 +88,9 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
-**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / **Trendyol**(폴백이 최적화 이전 상태다).
+**㉒ ⭐ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream(MIGRATING 까지 자동 롤백, COMPLETE 는 일방통행) / Plaid / Airbnb / Twilio / **Trendyol**(⭐ **`돌아올 수 없는 지점` 을 이름 붙여 그 앞에 사람을 세운다**).
 
-**㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / Trendyol / ⏳ Pinterest.
+**㉓ ⭐⭐ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / **Trendyol**(⚠️ **같은 회사가 양쪽을 한다** — 광고는 규칙을 데이터로 열고, DB 이전은 DDL 을 코드로 잠근다. **`되돌릴 수 있느냐` 가 가른다**, 재구성) / ⏳ Pinterest.
 
 **㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / ⏳ Grafana Labs · ClickHouse · Snyk.
 
@@ -103,9 +104,9 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **㉙ `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — Wiz / Flipkart / ⏳ Pinterest 2부 · Snyk · Deliveroo.
 
-**㉚ `셀프서비스로 내주면 무엇이 달라지나`** — Trendyol / Twilio / Airbnb / ⏳ Etsy · Monzo.
+**㉚ ⭐ `셀프서비스로 내주면 무엇이 달라지나`** — **Trendyol**(⭐ **두 도메인에서 양쪽을 다 한다 — 사업에는 열고 인프라에는 게이트를 세운다**) / Twilio(자율이 격차를 만든다) / Airbnb / ⏳ Etsy · Monzo.
 
-⏳ **㉛ 새로 보인다 — `남이 주는 신호를 어떻게 다루나`** — **Trendyol**(⭐ **DCP 가 필드 정보를 안 주니 받는 쪽에서 직접 판단한다**) / **Plaid**(⏳ 은행 쪽 신호) / **Paystack** / **Razorpay**. ⚠️ **⑪축이 `의존을 어떻게 다루나` 라면 이 축은 `그 의존이 주는 정보가 모자랄 때` 다**(재구성).
+**㉛ `남이 주는 신호를 어떻게 다루나`** — Trendyol(DCP) / ⏳ Plaid · Paystack · Razorpay.
 
 ## 지금의 진짜 상태
 
