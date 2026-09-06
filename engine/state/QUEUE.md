@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Antithesis** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 결정론을 밑바닥에서 만든다(`deterministic-hypervisor`). 빈 도메인 둘 — 이상한 상황을 스스로 찾아다닌다 · 찾은 것을 다시 돌려 원인까지 데려간다. 안 읽은 것 — `Breaking the WAL`(2026-08-12) · `Replication Before Raft`(2026-09-02) · `Debugging in the Multiverse`(2024-09-10) · `Testing the Ethereum merge`(2024-02-13). 가격·성능 수치·탐색 신호는 비공개다. |
+| **Antithesis** | US · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 결정론을 밑바닥에서 만든다(`deterministic-hypervisor`) · 이상한 상황을 스스로 찾아다닌다(`ordinary-workload-rare-race`). 빈 도메인 하나 — 찾은 것을 다시 돌려 원인까지 데려간다(`Debugging in the Multiverse` 를 읽었다). 안 읽은 것 — `Testing the Ethereum merge`(2024-02-13) · MongoDB 팟캐스트(2026-09-02). 가격·성능 수치·탐색 신호는 비공개다. |
 
 ## 대기
 
