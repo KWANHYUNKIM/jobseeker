@@ -20,8 +20,22 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **CedarDB** | EU · SaaS | 시스템 내부만 파는 블로그다. `cedardb.com/blog` 최신 2026-08-04 `Encoding or Compression: Why not both?` 이고 목록의 70% 가량이 질의 컴파일·버퍼 관리·저장 배치·동시성 글이다 — `Fast Compilation or Fast Execution` · `Why Trees Without Branches Grow Faster` · `Simple, Efficient, and Robust Hash Tables`. 학술 배경 각도(Materialize·DuckDB 에서 통한 것)의 세 번째 후보로 보이는데 계보는 아직 확인하지 않았다. HTAP 을 표방하므로 분석과 트랜잭션 사이의 경계 결정이 나올 가능성이 크다. |
+| **QuestDB** | EU · SaaS | 시계열 데이터베이스인데 밑바닥 글을 쓴다. `questdb.com/blog` 심층 글 최신 2026-08-17 `QWP: QuestDB 자체 이진 와이어 프로토콜`. **이 엔진의 프로토콜 축에 세 번째 답이 된다** — DuckDB 는 자체 프로토콜(Quack), Dolt 는 남의 프로토콜 흉내, 여기는 수집과 질의를 위한 자기 프로토콜이다. JVM 밑바닥 글도 있다 — `The Most Expensive Instruction Might Be… cmov`(2026-07-15) · `HotSpot JIT 이 비트를 추론하는 법`(2026-07-02) · `WINDOW JOIN 을 병렬·벡터화한 방법`(2026-05-12) · `코드 리뷰가 3배 속도 향상을 8.9배로 만들었다`(2026-04-21, off-heap HdrHistogram). 자바로 저지연을 만드는 축은 이 엔진에 없다. |
+| **Feldera** | US · SaaS | 증분 뷰 유지가 제품이라 **Materialize 와 정면으로 대비된다**. `feldera.com/blog` — 개별 글을 열어 날짜를 확인했다(`Can your incremental compute engine do this?` 2026-02-04). 그 글의 벤치가 구체적이다 — 입력 61테이블·출력 33뷰, 조인 217개(다수가 left join)·집계 27개·선형 연산자 287개짜리 실제 SQL 프로그램을 16코어 한 대에서 돌려 델타 레이크에서 200GB(2.5억 행)를 넣고 입력이 바뀌면 약 200ms 만에 모든 출력을 갱신하며 피크 30GB·정상 15GB 메모리를 쓴다. 다른 글도 대가를 적는다 — `Nobody ever got fired for using a struct`(넓은 테이블의 저장 최적화, 저장 비용 두 배) · `Turns out we didn't need that second index` · `samply 프로파일`(백필 20시간 → 4시간). ⚠️ 목록 페이지에 날짜가 없어 최신 글 시점을 못 봤고, 위 벤치 글은 한계를 적지 않는다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-07 서른다섯 번째 후보 조사 — 목표 3곳을 채웠다. 지난 조사의 기준(회사 도메인 + 엔지니어가 직접 쓰는 블로그)을 그대로 다시 썼다.**
+  - **CedarDB**(EU) — 목록의 70%가 시스템 내부 글이다(근거는 대기 표에).
+  - **QuestDB**(EU) — 자체 이진 와이어 프로토콜 QWP. 프로토콜 축의 세 번째 답이고 자바 저지연 축은 이 엔진에 없다.
+  - **Feldera**(US) — 증분 뷰 유지. Materialize 와 정면 대비이고 벤치가 구체적이다.
+  - **접은 곳 둘.** **Bluesky Protocol Services** — `bsky.network/blog` 가 2026-08-30 에 열렸고 글이 둘뿐이며 스스로를 서비스 변경·중단·운영 공지를 적는 곳이라고 소개한다. 기술 심층 글이 아직 없다. **Convex** — `stack.convex.dev` 가 튜토리얼과 제품 안내 위주다. 인프라 글이 몇 편 있으나 드물고 최근 목록은 AI 도구 비교와 데모다.
+  - **교훈 — 기준이 두 조사 연속 통했다.** 이번 셋도 전부 회사 소유 도메인에 엔지니어가 직접 쓰고 최신 글이 2026년이다. 다만 **목록 페이지에 날짜가 없는 블로그가 있다**(Feldera) — 그럴 때는 개별 글을 열어 날짜를 확인하고 넘어간다.
+  - **이번 조사에서 축이 하나 자랐다** — 프로토콜을 어떻게 할 것인가. DuckDB(자체 형식) · Dolt(남의 형식 흉내) 에 QuestDB(수집·질의용 자체 이진 프로토콜)가 붙으면 셋이 된다.
+  - **절차가 아홉 번째로 값을 했다** — `name_en` 120개를 먼저 출력해 다섯 이름이 다 없다는 것을 확인하고 던졌다.
+
+
 
 - **2026-09-07 서른네 번째 후보 조사 — 목표 3곳을 채웠다. 새 각도는 `자기 도메인에 자기 손으로 쓰는 인프라 회사`다.**
   - **DuckDB**(EU) — 학술 배경 각도의 두 번째 성공. 개별 글에 수치와 거절한 대안이 다 있었다(근거는 대기 표에).
