@@ -60,8 +60,86 @@
     {
       "name": "홈피드에 무엇을 꺼내 올지 조건에 따라 정한다",
       "why": "⚠️ **하나의 검색기로는 안 된다** — 관심사에서 출발할 때와 보드에서 출발할 때 꺼내야 할 것이 다르다. 그래서 **조건별 학습 검색(CLR)** 이 있었는데, **조건마다 모델을 따로 두자 `학습 파이프라인·피처 업그레이드·실험·서빙 설정·인덱싱에 걸쳐 일이 중복`** 됐다. ⚠️ **그리고 핀 ID 를 기억시키는 비용이 컸다** — **`충분한 암기와 견딜 만한 충돌을 위해 20GB 크기의 id 임베딩 테이블을 사전학습하게 됐다.`** ✅ **본문 확인함**(2026-08-26).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "투타워 + 조건화 (CLR)",
+          "solves": "⚠️ **`사용자들은 한 번에 여러 의도를 갖고 있어 하나의 검색 임베딩으로는 그 다양성을 담기 어렵다`** — 사용자 타워를 검색 맥락으로 조건화한다.",
+          "limits": "⚠️ **조건 수만큼 계산이 늘어난다** — 나머지 최적화 대부분이 그 값을 갚는 일이다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+              "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-08-26",
+              "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+            }
+          ]
+        },
+        {
+          "tech": "시맨틱 ID (5계층 × 2048)",
+          "solves": "⚠️ **`충분한 암기와 견딜 만한 충돌을 위해 20GB 크기의 id 임베딩 테이블을 사전학습하게 됐다`** 를 대신한다 — **계층마다 작은 임베딩 테이블 다섯 개로 충분했다.**",
+          "limits": "⚠️ **양자화 VAE 를 학습·유지해야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+              "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-08-26",
+              "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+            }
+          ]
+        },
+        {
+          "tech": "요청 수준 중복 제거 + M-Falcon",
+          "solves": "조건화가 만든 중복을 **계산 전에 두 겹으로 지운다** — 사용자 타워 앞과 트랜스포머 앞. **학습 처리량 2배, 정확도 손실 없이.**",
+          "limits": "⚠️ **중복 제거와 복원의 부기가 는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+              "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-08-26",
+              "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+            }
+          ]
+        },
+        {
+          "tech": "통합 CLR",
+          "solves": "조건마다 따로 두던 모델을 하나로 — **`학습 파이프라인·피처 업그레이드·실험·서빙 설정·인덱싱에 걸친 중복`** 을 없애고 **여러 조건 유형과 여러 표면의 토대**가 된다.",
+          "limits": "⚠️ **조건별 최적화를 일부 내주고, 공유 아키텍처가 모든 표면의 요구를 받는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+              "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-08-26",
+              "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+            }
+          ]
+        },
+        {
+          "tech": "GPU 서빙 (TorchScript 내부 배치)",
+          "solves": "조건마다 별도 요청을 보내던 것을 모델 내부 배치로 — **`7자리 비용 절감과 p90 모델 지연 85% 감소(80ms → 12ms)`**.",
+          "limits": "⚠️ **`병목을 네트워크에서 CPU 로 옮기면서 지연은 중립으로 유지했다`** — **없앤 것이 아니라 옮긴 것이라고 스스로 적는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+              "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+              "publisher": "Pinterest Engineering",
+              "date": "2026-08-26",
+              "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "one-user-many-intents"
+      ]
     },
     {
       "name": "사용자를 어떤 쓰임새로 이해할지 정한다",
@@ -76,14 +154,511 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "one-user-many-intents",
+      "name": "사람은 한 번에 여러 의도를 갖는다",
+      "domain": "홈피드에 무엇을 꺼내 올지 조건에 따라 정한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **문제의 뿌리가 사람 쪽에 있다** — 회사의 문장: **`사용자들은 한 번에 여러 의도를 갖고 있어서 하나의 검색 임베딩으로는 그 다양성을 담기 어렵다.`** 그래서 **`조건부 학습 검색(CLR)은 사용자 타워를 명시적인 검색 맥락으로 조건화해 투타워 구성을 확장한다`** — 관심사에서 출발할 때와 보드에서 출발할 때 다른 것을 꺼내 온다. ⚠️ **그런데 조건을 늘리자 값이 세 군데서 늘었다** — **조건마다 모델을 따로 두니 `학습 파이프라인·피처 업그레이드·실험·서빙 설정·인덱싱에 걸쳐 일이 중복`** 됐고, **같은 사용자가 조건 수만큼 배치에 나타났으며**, **서빙에서 조건마다 별도 요청**이 갔다(뒤쪽 정리는 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "⚠️ 암기의 비용",
+            "value": "**`id 공간이 거대해서(수십억 규모) 충분한 암기와 견딜 만한 충돌을 위해 20GB 크기의 id 임베딩 테이블을 사전학습하게 됐다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "label": "바꾼 것",
+            "value": "**`우리 시맨틱 ID 는 다섯 계층을 갖고 각 계층은 2048개의 가능한 코드를 갖는다. 또 하나의 큰 id 임베딩 테이블을 쓰는 대신 이 코드들에 계층마다 작은 임베딩 테이블 다섯 개를 쓰는 것으로 충분함을 발견했다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 서빙",
+            "value": "**`7자리 비용 절감과 p90 모델 지연 85% 감소(80ms → 12ms)`** — **병목이 네트워크에서 CPU 로 옮겨 가면서 지연은 중립으로 유지**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "label": "학습 효율",
+            "value": "**처리량 2배** — 요청 수준 중복 제거와 M-Falcon 을 합쳐서. **정확도 손실 없이**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "label": "통합의 이유",
+            "value": "**`별도 모델을 유지하는 것이 학습 파이프라인·피처 업그레이드·실험·서빙 설정·인덱싱에 걸쳐 중복된 일을 만들었다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "label": "이 피드가 닿는 곳",
+            "value": "월간 활성 사용자 **6억 4,000만 명(+11%)** · 2026년 2분기 매출 **11억 8,000만 달러(+18%)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Pinterest (PINS) Q2 2026 earnings report",
+                "url": "https://www.cnbc.com/2026/08/04/pinterest-pins-q2-earnings-report-2026.html",
+                "publisher": "CNBC",
+                "date": "2026-08",
+                "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "하나의 임베딩으로 될지 물을 때",
+          "thought": "⚠️ **이 기능의 이름이 여기서 나온다 — `사용자들은 한 번에 여러 의도를 갖고 있다`.** 한 사람을 벡터 하나로 요약하면 **그가 지금 무엇을 하러 왔는지가 뭉개진다**(재구성). 그래서 **검색 맥락을 명시적인 조건으로 모델에 넣었다** — 사람을 고정된 존재가 아니라 **맥락과 함께 오는 존재로 다룬다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "조건을 늘린 값을 셀 때",
+          "thought": "⚠️ **조건을 늘리면 같은 사용자가 여러 번 나타난다** — 학습 배치에도, 서빙 요청에도. **그래서 중복 제거가 두 겹으로 들어간다** — `user-id + 조건 식별자` 로 사용자 타워 앞에서 한 번, **한 사용자의 모든 조건을 하나의 시퀀스로 이어 붙여** 트랜스포머 앞에서 또 한 번(M-Falcon). **조건화의 값을 조건화가 만든 중복을 지워서 갚는다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "ID 를 어떻게 기억시킬지 정할 때",
+          "thought": "⚠️ **`충분한 암기와 견딜 만한 충돌`** 이라는 표현이 이 문제의 성격을 말한다 — **수십억 개를 다 외우려면 20GB 가 들고, 줄이면 충돌이 는다.** 답은 **더 큰 테이블이 아니라 다른 표현**이었다 — **다섯 계층 × 2048 코드의 시맨틱 ID.** **외울 것을 줄인 게 아니라 외우는 방식을 바꿨다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "투타워 + 조건",
+            "what": "⚠️ **`CLR 은 사용자 타워를 명시적인 검색 맥락으로 조건화해 투타워 구성을 확장한다`** — 관심사·보드 같은 것이 조건이 된다"
+          },
+          {
+            "name": "⚠️ 20GB id 임베딩 테이블 (버린 것)",
+            "what": "⚠️ **`수십억 규모의 id 공간에서 충분한 암기와 견딜 만한 충돌을 위해`** 사전학습해야 했던 것"
+          },
+          {
+            "name": "시맨틱 ID",
+            "what": "**다섯 계층 × 계층마다 2048개 코드.** ⚠️ **또 하나의 큰 테이블 대신 계층마다 작은 임베딩 테이블 다섯 개로 충분했다**"
+          },
+          {
+            "name": "요청 수준 중복 제거",
+            "what": "**`user-id 와 조건 식별자의 고유 조합`** 으로 같은 사용자 피처를 지운다 — **사용자 타워를 지나는 유효 배치 크기를 크게 줄인다**"
+          },
+          {
+            "name": "M-Falcon",
+            "what": "⚠️ **`한 사용자의 모든 조건을 하나의 사용자 시퀀스에 덧붙인다`** — 트랜스포머 계층을 지나는 유효 배치 크기를 크게 줄인다"
+          },
+          {
+            "name": "통합 CLR",
+            "what": "조건마다 따로 두던 모델을 하나로 — **`관심사 CLR 은 사용자 타워에 관심사 ID 를, 보드 CLR 은 보드 임베딩을 썼다`**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **사용자는 하나의 벡터로 요약되지 않는다** — 조건과 함께 표현된다",
+          "⚠️ **같은 사용자의 반복은 계산 전에 지운다** — 두 겹으로",
+          "**조건 유형이 늘어도 모델은 하나다** — 공유 아키텍처가 받는다",
+          "⚠️ **지연은 중립으로 유지한다** — 비용을 줄이되 느려지지 않게"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**사용자 타워를 명시적인 검색 맥락으로 조건화한다**",
+            "why": "⚠️ **`사용자들은 한 번에 여러 의도를 갖고 있어 하나의 검색 임베딩으로는 그 다양성을 담기 어렵다`**"
+          },
+          {
+            "step": "⚠️ **핀을 시맨틱 ID 로 표현한다** — 다섯 계층 × 2048 코드, 계층마다 작은 임베딩 테이블",
+            "why": "⚠️ **20GB 짜리 id 임베딩 테이블을 사전학습하던 것을 대신한다**"
+          },
+          {
+            "step": "**MLP 융합 계층으로 다섯 계층의 코드를 합친다**",
+            "why": "작은 테이블 다섯을 하나의 표현으로 만든다"
+          },
+          {
+            "step": "⚠️ **학습 전에 `user-id + 조건 식별자` 로 같은 사용자 피처를 지운다**",
+            "why": "⚠️ **`사용자 타워를 지나는 유효 배치 크기를 크게 줄인다`**"
+          },
+          {
+            "step": "⚠️ **한 사용자의 모든 조건을 하나의 시퀀스로 이어 붙인다**(M-Falcon)",
+            "why": "**인과적 어텐션의 성질을 이용해 조건 토큰을 평탄화하고 GPU 메모리를 아낀다** — **트랜스포머 계층을 지나는 유효 배치 크기를 크게 줄인다**"
+          },
+          {
+            "step": "⚠️ **서빙에서 조건마다 별도 요청을 보내지 않는다** — TorchScript 를 고쳐 모델 내부에서 배치한다",
+            "why": "⚠️ **`병목을 네트워크에서 CPU 로 옮기면서 지연은 중립으로 유지했다`**"
+          },
+          {
+            "step": "**하나의 통합 모델이 여러 조건 유형을 받는다**",
+            "why": "**조건마다 모델을 두면 파이프라인·실험·서빙 설정·인덱싱이 곱해진다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "사용자를 하나의 임베딩으로 표현할 것인가",
+            "chosen": "⚠️ **아니다 — 검색 맥락으로 조건화한다**",
+            "alternatives": [
+              "단일 사용자 임베딩",
+              "여러 임베딩을 평균"
+            ],
+            "tradeoff": "근거가 사람 쪽에 있다 — **`사용자들은 한 번에 여러 의도를 갖고 있어서 하나의 검색 임베딩으로는 그 다양성을 담기 어렵다.`** ⚠️ **한 사람을 벡터 하나로 요약하면 그가 지금 무엇을 하러 왔는지가 뭉개진다**(재구성). **대가는 조건 수만큼 계산이 늘어난다는 것**이고, **나머지 결정 대부분이 그 값을 갚는 일이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "question": "조건마다 모델을 둘 것인가",
+            "chosen": "⚠️ **아니다 — 하나로 합친다**(통합 CLR)",
+            "alternatives": [
+              "조건별 전용 모델 유지",
+              "조건별 모델을 앙상블"
+            ],
+            "tradeoff": "**`관심사 CLR 은 사용자 타워에 관심사 ID 를, 보드 CLR 은 보드 임베딩을 썼다`** — 따로 두니 **`학습 파이프라인·피처 업그레이드·실험·서빙 설정·인덱싱에 걸쳐 일이 중복`** 됐다. ⚠️ **대가는 조건별 최적화를 일부 내주는 것**이고, **운영 단순성을 그 값으로 샀다**(재구성). ⭐ **`언제 쪼개고 언제 합치나` 축의 사례다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "question": "핀 ID 를 어떻게 기억시킬 것인가",
+            "chosen": "⚠️ **시맨틱 ID** — 20GB 임베딩 테이블을 버렸다",
+            "alternatives": [
+              "더 큰 id 임베딩 테이블",
+              "해싱으로 충돌 감수",
+              "이미지 시그니처 유지"
+            ],
+            "tradeoff": "**`id 공간이 거대해서(수십억 규모) 충분한 암기와 견딜 만한 충돌을 위해 20GB 크기의 id 임베딩 테이블을 사전학습하게 됐다.`** ⚠️ **다 외우려면 크고 줄이면 충돌이 는다** — 답은 **더 큰 테이블이 아니라 다른 표현**이었다: **다섯 계층 × 2048 코드에 계층마다 작은 테이블 다섯 개.** **외울 것을 줄인 게 아니라 외우는 방식을 바꿨다**(재구성). **대가는 양자화 VAE 를 학습·유지해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "question": "학습 배치의 중복을 어떻게 할 것인가",
+            "chosen": "**`user-id + 조건 식별자` 로 중복 제거**",
+            "alternatives": [
+              "중복을 그대로 두고 GPU 를 늘리기",
+              "조건 수를 제한"
+            ],
+            "tradeoff": "⚠️ **조건화를 하는 순간 같은 사용자가 조건 수만큼 배치에 나타난다** — 그 피처는 동일하다(재구성). 지우면 **`사용자 타워를 지나는 유효 배치 크기를 크게 줄인다`.** **대가는 중복 제거와 복원의 부기(簿記)가 는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "question": "트랜스포머 쪽 비용을 어떻게 줄일 것인가",
+            "chosen": "⚠️ **M-Falcon** — 한 사용자의 모든 조건을 하나의 시퀀스로",
+            "alternatives": [
+              "조건마다 별도 전방 계산",
+              "시퀀스 길이를 줄이기"
+            ],
+            "tradeoff": "**`한 사용자의 모든 조건을 하나의 사용자 시퀀스에 덧붙인다 … 이것이 트랜스포머 계층을 지나는 유효 배치 크기를 크게 줄인다.`** **인과적 어텐션의 성질을 이용해 조건 토큰을 평탄화**해 GPU 메모리를 아낀다. ⚠️ **중복 제거가 두 겹인 이유가 여기 있다** — 사용자 타워 앞에서 한 번, 트랜스포머 앞에서 또 한 번(재구성). **둘을 합쳐 학습 처리량 2배, 정확도 손실 없이.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "question": "서빙에서 조건마다 요청을 보낼 것인가",
+            "chosen": "⚠️ **아니다 — 모델 내부에서 배치한다**",
+            "alternatives": [
+              "조건마다 별도 요청 유지",
+              "요청 병합을 게이트웨이에서"
+            ],
+            "tradeoff": "**`모델의 TorchScript 를 고쳐 이 피처들을 내부에서 배치하게 했다 … 병목을 네트워크에서 CPU 로 옮기면서 지연은 중립으로 유지했다.`** 결과가 **`7자리 비용 절감과 p90 모델 지연 85% 감소(80ms → 12ms)`** 다. ⚠️ **병목을 없앤 것이 아니라 옮긴 것이라고 스스로 적는다** — **네트워크는 늘리기 어렵고 CPU 는 늘리기 쉽다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "question": "지연을 얼마나 양보할 것인가",
+            "chosen": "⚠️ **양보하지 않는다** — `지연 중립` 을 조건으로 걸었다",
+            "alternatives": [
+              "비용을 위해 지연을 조금 내주기"
+            ],
+            "tradeoff": "⚠️ **홈피드는 사람이 기다리는 화면이라 지연을 내주면 그것이 바로 제품의 질이 된다**(재구성). 그래서 **서빙 재설계에서 `지연은 중립으로 유지` 를 명시하고** 결과적으로 **p90 은 오히려 85% 줄었다.** **대가는 CPU 를 더 쓴다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "question": "이 구조로 무엇을 더 할 것인가",
+            "chosen": "**여러 조건 유형과 여러 표면으로 넓힌다**",
+            "alternatives": [
+              "홈피드 전용으로 유지"
+            ],
+            "tradeoff": "**`CLR 은 공유 모델 아키텍처를 통해 여러 조건 유형을 지원하도록 설계됐다. 여러 표면에 걸친 검색의 토대가 될 수도 있다.`** ⚠️ **합치는 결정이 나중을 위한 투자였다는 뜻이다** — 조건별 모델이었다면 표면마다 다시 만들어야 했다(재구성). **대가는 공유 아키텍처가 모든 표면의 요구를 받는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "투타워 + 조건화 (CLR)",
+            "role": "⚠️ **사용자 타워를 명시적인 검색 맥락으로 조건화한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "tech": "시맨틱 ID (양자화 VAE · 5계층 × 2048)",
+            "role": "⚠️ **20GB id 임베딩 테이블을 대신한다** — 계층마다 작은 테이블 다섯 개 + MLP 융합",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "tech": "요청 수준 중복 제거",
+            "role": "**`user-id + 조건 식별자`** 로 사용자 타워 앞의 배치를 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "tech": "M-Falcon",
+            "role": "⚠️ **한 사용자의 모든 조건을 하나의 시퀀스로** — 트랜스포머 앞의 배치를 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "tech": "GPU 서빙 (TorchScript 내부 배치)",
+            "role": "**7자리 비용 절감 · p90 80ms → 12ms** — **병목을 네트워크에서 CPU 로 옮기고 지연은 중립**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "사용자를 어떤 쓰임새로 이해할지 정한다",
+          "via": "조건의 출처",
+          "contract": "⚠️ **조건이 무엇이 될지는 사용자를 어떻게 표현하느냐에서 나온다** — ⏳ **그 도메인의 자료는 아직 안 읽었다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "홈피드 랭킹",
+          "via": "후보 집합",
+          "contract": "**조건별로 꺼내 온 것이 랭킹으로 간다** — ⏳ **랭킹 쪽 자료는 이 글이 다루지 않는다**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "GPU 서빙 인프라",
+          "via": "⚠️ 옮겨 간 병목",
+          "contract": "⚠️ **`병목을 네트워크에서 CPU 로 옮기면서 지연은 중립으로 유지했다`** — **병목을 없앤 것이 아니라 옮긴 것이라고 스스로 적는다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "광고 (매출)",
+          "via": "홈피드 지면",
+          "contract": "**월간 사용자 6억 4,000만 명이 보는 피드가 광고 지면이다** — 2026년 2분기 매출 **11억 8,000만 달러(+18%)**(이 연결은 재구성이다)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 조건화의 값을 조건화가 만든 중복으로 치른다",
+            "why_hard": "⚠️ **사용자를 조건과 함께 표현하는 순간 같은 사용자가 조건 수만큼 나타난다** — 학습 배치에도, 서빙 요청에도, 모델 안의 시퀀스에도. **다양성을 담으려고 늘린 것이 그대로 계산 비용이 된다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **중복을 계산 전에 두 겹으로 지우는 것** — **`user-id + 조건 식별자`** 로 사용자 타워 앞에서, **한 사용자의 모든 조건을 하나의 시퀀스로 이어 붙여**(M-Falcon) 트랜스포머 앞에서. **둘을 합쳐 학습 처리량 2배, 정확도 손실 없이.** 서빙에서는 **모델 내부 배치**로 같은 일을 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          },
+          {
+            "problem": "충분히 외우려면 크고 줄이면 충돌한다",
+            "why_hard": "⚠️ **`id 공간이 거대해서(수십억 규모) 충분한 암기와 견딜 만한 충돌을 위해 20GB 크기의 id 임베딩 테이블을 사전학습하게 됐다`** — **암기와 충돌이 정면으로 맞바뀌고, 테이블을 키우는 것 말고는 답이 없어 보인다**(재구성).",
+            "current_best": "⚠️ **표현을 바꾸는 것** — **다섯 계층 × 2048 코드의 시맨틱 ID** 와 **계층마다 작은 임베딩 테이블 다섯 개.** **외울 것을 줄인 게 아니라 외우는 방식을 바꿨다**(재구성). ⚠️ **대가는 양자화 VAE 를 학습·유지해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+                "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+                "publisher": "Pinterest Engineering",
+                "date": "2026-08-26",
+                "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "조건을 넣고, 조건이 만든 중복을 지운다",
+          "question": "한 사용자의 여러 의도가 어떻게 처리되나",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>사용자</b><br/>• ⚠️ 한 번에 여러 의도\"]:::accent --> C[\"<b>조건 (검색 맥락)</b><br/>• 관심사 · 보드 등\"]:::list\n  C --> D1[\"⚠️ <b>요청 수준 중복 제거</b><br/>• user-id + 조건 식별자<br/>• 사용자 타워 앞 배치를 줄인다\"]:::accent\n  D1 --> T[\"<b>사용자 타워 (조건화)</b>\"]:::list\n  C --> D2[\"⚠️ <b>M-Falcon</b><br/>• 한 사용자의 모든 조건을<br/>  하나의 시퀀스로<br/>• 트랜스포머 앞 배치를 줄인다\"]:::accent\n  D2 --> T\n  P[\"<b>핀</b>\"]:::list --> S[\"⚠️ <b>시맨틱 ID</b><br/>• 5계층 × 2048 코드<br/>• 작은 테이블 다섯 + MLP 융합<br/>• 20GB 테이블을 대신한다\"]:::accent\n  S --> I[\"<b>아이템 타워</b>\"]:::list\n  T --> R[\"<b>후보 검색</b>\"]:::list\n  I --> R\n  R --> G[\"<b>GPU 서빙</b><br/>• TorchScript 내부 배치<br/>• p90 80ms → 12ms\"]:::list"
+        },
+        {
+          "title": "늘린 것이 곧 비용이 된다",
+          "question": "조건을 넣은 값을 어디서 갚았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>조건을 넣는다</b><br/>• 한 임베딩으로는 다양성을 못 담는다\"]:::accent --> B[\"⚠️ <b>같은 사용자가 여러 번 나타난다</b>\"]:::gone\n  B --> B1[\"⚠️ <b>학습 배치에서</b>\"]:::gone\n  B --> B2[\"⚠️ <b>트랜스포머 시퀀스에서</b>\"]:::gone\n  B --> B3[\"⚠️ <b>서빙 요청에서</b>\"]:::gone\n  B1 --> C[\"<b>답: 계산 전에 지운다</b><br/>• 두 겹으로 · 학습 2배\"]:::accent\n  B2 --> C\n  B3 --> D[\"<b>답: 모델 내부 배치</b><br/>• 병목을 네트워크에서 CPU 로<br/>• 없앤 게 아니라 옮겼다\"]:::accent\n  E[\"⚠️ <b>조건마다 모델을 두면</b><br/>• 파이프라인 · 피처 업그레이드<br/>• 실험 · 서빙 설정 · 인덱싱이<br/>  전부 중복된다\"]:::gone --> F[\"<b>답: 하나로 합친다</b><br/>• 조건별 최적화를 일부 내주고\"]:::accent\n  G[\"⚠️ <b>20GB 임베딩 테이블</b><br/>• 충분한 암기와<br/>  견딜 만한 충돌 사이\"]:::gone --> H[\"<b>답: 표현을 바꾼다</b><br/>• 시맨틱 ID 다섯 계층\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+          "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+          "publisher": "Pinterest Engineering",
+          "date": "2026-08-26",
+          "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+        },
+        {
+          "title": "Pinterest (PINS) Q2 2026 earnings report",
+          "url": "https://www.cnbc.com/2026/08/04/pinterest-pins-q2-earnings-report-2026.html",
+          "publisher": "CNBC",
+          "date": "2026-08",
+          "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **도메인 셋 중 둘이 본문 미독이다** — 사용자 표현과 인프라 프로비저닝. **제목·날짜·URL 만 목록에서 확인했다.**",
     "⚠️ **광고 시스템 자체의 기술 자료를 못 찾았다** — **매출의 전부가 광고인데** 2026년 글 목록에 광고 인프라 이야기가 안 보인다.",
     "⚠️ **`AI 팀이 된다`(2026-09)는 조직 이야기라 도메인으로 세우지 않았다** — ⏳ 다만 **`AI 를 어디까지 믿나` 축의 재료가 될 수 있어 나중에 읽는다.**",
     "⚠️ **시각 검색(이미지로 찾기)의 자료를 못 봤다** — 이 회사의 상징적인 기능인데 최근 글에 없다.",
-    "⚠️ **연표(eras)를 못 세웠다** — 2010년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+    "⚠️ **연표(eras)를 못 세웠다** — 2010년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다.",
+    "⚠️ **조건이 무엇인지의 목록을 모른다** — **관심사와 보드가 예로 나오지만 전체 조건 유형과 그것을 어떻게 고르는지**가 이 글에 없다. ⏳ **`사용자를 어떤 쓰임새로 이해할지` 도메인의 자료가 그 답일 수 있다.**"
   ],
   "sources": [
     {
