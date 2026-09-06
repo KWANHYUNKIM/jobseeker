@@ -1561,7 +1561,7 @@
         "API 스펙",
         "API 문서화"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1602,7 +1602,7 @@
         "폐기",
         "Sunset 헤더"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1796,7 +1796,7 @@
         "HATEOAS",
         "하이퍼미디어"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1813,7 +1813,7 @@
         "DataLoader",
         "N+1"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
