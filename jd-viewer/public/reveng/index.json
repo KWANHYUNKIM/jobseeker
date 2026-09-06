@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "pinterest",
+      "name": "Pinterest",
+      "name_en": "Pinterest",
+      "country": "US",
+      "category": "소셜",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "이미지로 무언가를 찾는 사람들의 발견 플랫폼 — 무엇을 보여 줄지를 조건에 따라 다르게 정한다",
+      "updated_at": "2026-09-06",
+      "domain": "pinterest.com"
+    },
+    {
       "slug": "airbnb",
       "name": "Airbnb",
       "name_en": "Airbnb",
@@ -1485,7 +1497,10 @@
     "쪼개진 콘솔을 다시 하나로 합친다",
     "이 규모를 관측하는 비용을 감당한다",
     "여러 제품을 하나의 데이터 구조로 담는다",
-    "신원 그래프를 벤더에서 자기 것으로 옮긴다"
+    "신원 그래프를 벤더에서 자기 것으로 옮긴다",
+    "홈피드에 무엇을 꺼내 올지 조건에 따라 정한다",
+    "사용자를 어떤 쓰임새로 이해할지 정한다",
+    "인프라 자원을 안전하게 내준다"
   ],
   "countries": {
     "KR": "한국",

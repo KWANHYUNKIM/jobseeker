@@ -1,0 +1,118 @@
+{
+  "slug": "pinterest",
+  "name": "Pinterest",
+  "name_en": "Pinterest",
+  "country": "US",
+  "category": "소셜",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "pinterest.com",
+  "one_liner": "이미지로 무언가를 찾는 사람들의 발견 플랫폼 — 무엇을 보여 줄지를 조건에 따라 다르게 정한다",
+  "business_model": "**광고로 번다.** 사람들이 관심사를 저장하고 찾는 자리에 상품과 광고를 놓는다. **2026년 2분기 매출 11억 8,000만 달러(+18%)**, **월간 활성 사용자 6억 4,000만 명(+11%)** 으로 최고치다(미국·캐나다 1억 600만 · 유럽 1억 5,700만 · 그 외 3억 7,700만). **하위 퍼널 광고 매출의 약 30%** 가 Performance+ 캠페인을 지나고, **광고 전달 모델 개선이 중소 광고주 시험에서 ROAS 를 28% 올렸다.**\n\n⚠️ **이 회사의 기술 이야기는 `무엇을 보여 줄지` 로 모인다** — 홈피드에 무엇을 꺼내 올지(조건부 학습 검색), 사용자를 어떤 쓰임새로 이해할지(Pinner Progression), 그리고 그것을 굴리는 인프라를 어떻게 안전하게 둘지(자원 프로비저닝 파이프라인)다(이 정리는 이 사이트의 재구성이다).",
+  "products": [
+    "Pinterest (발견 · 저장)",
+    "광고 (Performance+ 등)",
+    "쇼핑"
+  ],
+  "domain_map": {
+    "title": "무엇을 보여 줄지가 이 회사의 문제다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  U[\"<b>월간 사용자 6억 4천만 명</b>\"]:::list --> P[\"<b>사용자를 쓰임새로 이해한다</b><br/>• Pinner Progression (⏳ 미독)\"]:::quiet\n  U --> R[\"⚠️ <b>조건에 따라 꺼내 온다</b><br/>• 관심사 · 보드 등<br/>• p90 80ms → 12ms\"]:::accent\n  P --> R\n  R --> F[\"<b>홈피드</b>\"]:::list\n  F --> A[\"<b>광고</b><br/>• 매출 11.8억 달러 (+18%)\"]:::list\n  I[\"<b>이것을 굴리는 인프라</b><br/>• 자원 프로비저닝 (⏳ 미독)\"]:::quiet --> R"
+  },
+  "revenue_streams": [
+    {
+      "name": "광고",
+      "how": "**2026년 2분기 매출 11억 8,000만 달러(+18%)** · **월간 활성 사용자 6억 4,000만 명(+11%)**. **하위 퍼널 매출의 약 30%** 가 Performance+ 를 지나고 **전달 모델 개선이 ROAS 를 28%** 올렸다.",
+      "domains": [
+        "홈피드에 무엇을 꺼내 올지 조건에 따라 정한다",
+        "사용자를 어떤 쓰임새로 이해할지 정한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pinterest (PINS) Q2 2026 earnings report",
+          "url": "https://www.cnbc.com/2026/08/04/pinterest-pins-q2-earnings-report-2026.html",
+          "publisher": "CNBC",
+          "date": "2026-08",
+          "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
+        }
+      ]
+    },
+    {
+      "name": "쇼핑 · 커머스 연결",
+      "how": "**AI 도구로 쇼핑 여정 전반을 `실행 가능하게` 만드는 방향**을 밝힌다. ⚠️ **발견이 구매로 이어지는 자리가 이 회사의 성장 축이다**(재구성).",
+      "domains": [
+        "홈피드에 무엇을 꺼내 올지 조건에 따라 정한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Pinterest (PINS) Q2 2026 earnings report",
+          "url": "https://www.cnbc.com/2026/08/04/pinterest-pins-q2-earnings-report-2026.html",
+          "publisher": "CNBC",
+          "date": "2026-08",
+          "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "홈피드에 무엇을 꺼내 올지 조건에 따라 정한다",
+      "why": "⚠️ **하나의 검색기로는 안 된다** — 관심사에서 출발할 때와 보드에서 출발할 때 꺼내야 할 것이 다르다. 그래서 **조건별 학습 검색(CLR)** 이 있었는데, **조건마다 모델을 따로 두자 `학습 파이프라인·피처 업그레이드·실험·서빙 설정·인덱싱에 걸쳐 일이 중복`** 됐다. ⚠️ **그리고 핀 ID 를 기억시키는 비용이 컸다** — **`충분한 암기와 견딜 만한 충돌을 위해 20GB 크기의 id 임베딩 테이블을 사전학습하게 됐다.`** ✅ **본문 확인함**(2026-08-26).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "사용자를 어떤 쓰임새로 이해할지 정한다",
+      "why": "**`Pinner Progression: 더 나은 쓰임새 표현이 주간 활성 사용자 성장을 이끈다`**(2026-07-27, 2부작 중 1부). ⚠️ **사람을 `누구인가` 가 아니라 `무엇을 하러 왔는가` 로 표현하려는 시도로 보인다**(재구성). ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "인프라 자원을 안전하게 내준다",
+      "why": "**`규모에서 인프라를 지키기: Pinterest 의 자원 프로비저닝 파이프라인(RPP) 소개`**(2026-07-22). ⚠️ **자원을 쉽게 내주는 것과 안전하게 내주는 것이 부딪히는 자리로 보인다**(재구성). ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **도메인 셋 중 둘이 본문 미독이다** — 사용자 표현과 인프라 프로비저닝. **제목·날짜·URL 만 목록에서 확인했다.**",
+    "⚠️ **광고 시스템 자체의 기술 자료를 못 찾았다** — **매출의 전부가 광고인데** 2026년 글 목록에 광고 인프라 이야기가 안 보인다.",
+    "⚠️ **`AI 팀이 된다`(2026-09)는 조직 이야기라 도메인으로 세우지 않았다** — ⏳ 다만 **`AI 를 어디까지 믿나` 축의 재료가 될 수 있어 나중에 읽는다.**",
+    "⚠️ **시각 검색(이미지로 찾기)의 자료를 못 봤다** — 이 회사의 상징적인 기능인데 최근 글에 없다.",
+    "⚠️ **연표(eras)를 못 세웠다** — 2010년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "Scaling Conditional Learned Retrieval for Pinterest Home Feed",
+      "url": "https://medium.com/pinterest-engineering/scaling-conditional-learned-retrieval-for-pinterest-home-feed-ecfba7e5a426",
+      "publisher": "Pinterest Engineering",
+      "date": "2026-08-26",
+      "summary": "핀 ID 임베딩이 충분한 암기와 견딜 만한 충돌을 위해 20GB 테이블을 요구하자 양자화 VAE 로 만든 시맨틱 ID 와 계층별 작은 테이블 다섯 개로 바꿨다. 관심사·보드처럼 조건마다 따로 있던 모델을 하나로 합쳐 파이프라인·실험·서빙 설정의 중복을 없앴고, 서빙을 GPU 로 옮겨 7자리 비용 절감과 p90 지연 85% 감소를 얻었다."
+    },
+    {
+      "title": "Securing Infrastructure at Scale: Introducing Pinterest's Resource Provisioner Pipeline (RPP)",
+      "url": "https://medium.com/pinterest-engineering/securing-infrastructure-at-scale-introducing-pinterests-resource-provisioner-pipeline-rpp-8283bb12cbe5",
+      "publisher": "Pinterest Engineering",
+      "date": "2026-07-22",
+      "summary": "인프라 자원 프로비저닝을 안전하게 만드는 파이프라인. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목·날짜·URL 만 확인했다."
+    },
+    {
+      "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+      "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+      "publisher": "Pinterest Engineering",
+      "date": "2026-07-27",
+      "summary": "사용자를 쓰임새로 표현해 주간 활성 사용자 성장을 이끈 이야기(2부작 중 1부). ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "Pinterest (PINS) Q2 2026 earnings report",
+      "url": "https://www.cnbc.com/2026/08/04/pinterest-pins-q2-earnings-report-2026.html",
+      "publisher": "CNBC",
+      "date": "2026-08",
+      "summary": "2026년 2분기 매출 11억 8,000만 달러(+18%), 월간 활성 사용자 6억 4,000만 명(+11%)으로 최고치. 미국·캐나다 1억 600만, 유럽 1억 5,700만, 그 외 3억 7,700만 명."
+    }
+  ]
+}
