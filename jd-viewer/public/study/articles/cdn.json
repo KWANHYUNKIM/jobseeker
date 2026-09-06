@@ -1,0 +1,309 @@
+{
+  "slug": "cdn",
+  "title": "CDN",
+  "title_en": "Content Delivery Network",
+  "aliases": [
+    "CDN",
+    "Content Delivery Network",
+    "콘텐츠 전송 네트워크"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "캐시를 원본 옆이 아니라 사용자 옆에 두는 것 — 거리가 곧 지연이기 때문이다.",
+  "summary": "`caching` 이 \"같은 걸 또 안 만들기\"라면 CDN 은 \"같은 걸 멀리서 안 가져오기\"다. RFC 9111 의 말로 하면 CDN 은 **공유 캐시(shared cache)** 이고, 그 한 낱말에서 이 문서의 거의 전부가 나온다 — 여럿이 나눠 쓰니 빠르고, 여럿이 나눠 쓰니 남의 것이 새면 사고이며, ⚠️ **규격에는 이미 저장된 것을 지우는 방법이 아예 없다.** 그래서 무효화(퍼지)는 표준이 아니라 업체마다 다른 기능이고, 그 사실이 이 문서의 한계 표를 채운다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "confidence": "confirmed",
+      "heading": "⭐⭐ 무엇인가 — 규격의 말로는 \"공유 캐시\"다",
+      "body": "⭐⭐⭐ **RFC 9111 은 캐시를 둘로 가른다.**\n\n> **공유 캐시**: *\"a cache that stores responses for reuse by more than one user; shared caches are usually (but not always) deployed as a part of an intermediary.\"*\n> **개인 캐시**: *\"dedicated to a single user; often, they are deployed as a component of a user agent.\"*\n\n⭐ **CDN 은 앞쪽이다** — **여러 사람이 같은 사본을 나눠 쓴다.** 💡 📌 **이 한 낱말이 이 문서의 거의 전부를 설명한다.**\n\n| 공유 캐시라서 | ⭐ 얻는 것 | ⚠️ 내는 것 |\n|---|---|---|\n| 한 번 받아 여럿에게 준다 | **원본 부하가 크게 준다** | 사본이 여러 곳에 흩어진다 |\n| 사용자 가까이 둔다 | **왕복 시간이 준다** — 거리가 곧 지연 | 어디에 무엇이 있는지 우리가 모른다 |\n| 남의 응답도 내가 받는다 | 적중률이 높다 | ⚠️⚠️ **개인화된 응답이 새면 사고다** |\n\n⭐⭐⭐ **그래서 규격에 `private` 지시어가 있다.**\n\n> *\"a shared cache MUST NOT store the response (i.e., the response is intended for a single user)\"*\n\n⚠️⚠️ **그런데 규격이 곧바로 못을 박는다.**\n\n> *\"This usage of the word 'private' only controls where the response can be stored; it cannot ensure the privacy of the message content.\"*\n\n💡 ⭐ **`private` 는 \\\"비밀\\\"이 아니라 \\\"공유 캐시에 두지 마라\\\"일 뿐이다** — 📌 **비밀은 `encryption` 과 권한이 맡는다.**\n\n⭐⭐ **그리고 공유 캐시에만 듣는 시간 지시어가 따로 있다 — `s-maxage`.**\n\n> *\"indicates that, for a shared cache, the maximum age specified by this directive overrides the maximum age specified by either the max-age directive or the Expires header field\"*\n\n💡 ⭐ **브라우저에는 짧게, CDN 에는 길게** 를 이 한 쌍으로 만든다 — **`max-age` 는 모두에게, `s-maxage` 는 CDN 에만.**",
+      "sources": [
+        {
+          "title": "RFC 9111 — HTTP Caching",
+          "url": "https://httpwg.org/specs/rfc9111.html",
+          "publisher": "IETF HTTP Working Group",
+          "date": "2022-06",
+          "kind": "standard",
+          "summary": "공유 캐시(shared cache)와 개인 캐시(private cache)의 정의, `private` 지시어가 저장 위치만 통제할 뿐 내용의 비밀성을 보장하지 않는다는 경고, 공유 캐시에만 적용되는 `s-maxage`, `Vary` 로 캐시 키를 나누는 규칙, 그리고 ⚠️ **이미 저장된 것을 능동적으로 지우는 메커니즘은 규격에 없다**는 사실(무효화는 PUT·POST·DELETE 같은 불안전 메서드로만 촉발된다)."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "confidence": "inferred",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 캐시에서, 그런데 두는 곳이 다르다",
+      "body": "⭐⭐⭐ **`caching` 과 CDN 은 같은 발상의 다른 위치다.**\n\n| | 어디에 두나 | ⭐ 무엇을 줄이나 |\n|---|---|---|\n| **`caching`**(Redis 등) | **원본 옆** | **계산과 조회** — 같은 걸 또 안 만든다 |\n| ⭐⭐ **CDN** | **사용자 옆** | **거리** — 같은 걸 멀리서 안 가져온다 |\n\n💡 ⭐ **두 번째 줄이 이 문서가 따로 있는 이유다.** **서버가 아무리 빨라도 물리적 거리는 못 줄인다** — 📌 **서울에서 상파울루까지는 빛의 속도로도 왕복 수십 밀리초**이고, **HTTPS 연결을 새로 맺으면 그 왕복을 여러 번 한다.**\n\n⭐⭐ **그래서 CDN 이 하는 일은 캐시 하나가 아니다.**\n\n| 하는 일 | ⚠️ 없으면 |\n|---|---|\n| **가까운 곳에서 응답** | 먼 원본까지 매번 다녀온다 |\n| **연결을 미리 맺어 둔다**(엣지↔오리진) | 요청마다 TLS 협상을 새로 |\n| **트래픽을 흡수한다** | 몰리면 원본이 죽는다 → `rate-limit`·`load-balancer` |\n| **큰 파일을 대신 내보낸다** | 전송 비용과 대역폭이 원본에 몰린다 |\n\n⚠️ **셋째 줄 때문에 CDN 은 보안 제품과 함께 팔린다** — **`WAF` 250건 · `DDoS` 76건**이 공고에서 CDN 과 나란히 나온다(*\\\"CDN, WAF, DNS, DDoS, Bot Management 등 핵심 기능\\\"* — 메가존클라우드). 📌 ⭐ **앞에 서는 층이 하나 더 늘어난 셈**이고, **`load-balancer`·`api-gateway`·`service-mesh` 와 같은 계열의 가장 바깥**이다.",
+      "sources": []
+    },
+    {
+      "id": "invalidate",
+      "kind": "how",
+      "confidence": "confirmed",
+      "heading": "⭐⭐⭐ 규격에는 \"지우는 법\"이 없다 — 이 문서에서 가장 중요한 사실",
+      "body": "⭐⭐⭐ **RFC 9111 을 다 읽어도 \\\"이미 저장된 것을 지금 지워라\\\"는 방법이 나오지 않는다.** 규격이 정하는 무효화는 **불안전 메서드가 지나갈 때 자동으로 일어나는 것**뿐이다.\n\n> *\"a cache MUST invalidate the target URI when it receives a non-error status code in response to an unsafe request method\"*\n\n💡 ⭐⭐ **즉 PUT·POST·DELETE 가 그 CDN 을 통과해야 무효화가 된다.** ⚠️ **그런데 쓰기 요청은 대개 CDN 을 안 지나간다** — **정적 자원만 CDN 에 태우고 API 는 따로 보내기 때문**이다. 📌 **그래서 실무의 무효화는 규격 밖에 있다.**\n\n⭐⭐ **규격 밖에서 쓰는 방법은 셋이다.**\n\n| 방법 | 어떻게 | ⚠️ 대가 |\n|---|---|---|\n| ⭐⭐⭐ **파일 이름을 바꾼다** | `app.a1b2c3.js` 처럼 내용 해시를 붙인다 | ⭐ **무효화가 아예 필요 없다** — 새 주소는 캐시에 없다 |\n| ⭐⭐ **퍼지 API 를 부른다** | 업체가 주는 기능(표준 아님) | ⚠️ **업체마다 다르고, 즉시가 아니며, 횟수 제한이 있다** |\n| ⭐ **짧게 잡는다** | `s-maxage` 를 작게 | ⚠️ **적중률이 떨어져 CDN 을 쓰는 뜻이 옅어진다** |\n\n⭐⭐⭐ **첫째 줄이 정답에 가장 가깝다** — 💡 **바꿀 것을 지우려 하지 말고 바뀐 것에 새 이름을 준다.** ⭐ **`api-versioning` 이 \\\"고치지 말고 새 버전을 낸다\\\"고 한 것과 같은 발상**이고, 📌 **`git` 이 \\\"커밋은 고쳐지지 않는다, 새로 만들고 가리키는 것을 옮긴다\\\"고 한 것과도 같다.**\n\n⚠️ **다만 HTML 자체는 이 수를 못 쓴다** — **주소가 곧 사용자가 치는 그 주소**이기 때문이다. ⭐ **그래서 보통 HTML 은 짧게, 그 안이 가리키는 자원은 해시 이름으로 길게** 잡는다.\n\n---\n\n⚠️⚠️ **캐시 키도 우리가 다 정하지 못한다.** 규격은 `Vary` 로 키를 나눈다고 적는다.\n\n> *\"Caches differentiate these responses by incorporating some of the original request's header fields into the cache key as well, using information in the Vary response header field.\"*\n\n💡 ⭐ **`Vary` 를 잘못 걸면 적중률이 0 에 가까워진다** — **`Vary: User-Agent` 를 걸면 기기·브라우저 조합마다 다른 사본이 생긴다.** 📌 ⚠️ **`observability` 의 카디널리티 문제와 같은 모양**이다.",
+      "sources": [
+        {
+          "title": "RFC 9111 — HTTP Caching",
+          "url": "https://httpwg.org/specs/rfc9111.html",
+          "publisher": "IETF HTTP Working Group",
+          "date": "2022-06",
+          "kind": "standard",
+          "summary": "공유 캐시(shared cache)와 개인 캐시(private cache)의 정의, `private` 지시어가 저장 위치만 통제할 뿐 내용의 비밀성을 보장하지 않는다는 경고, 공유 캐시에만 적용되는 `s-maxage`, `Vary` 로 캐시 키를 나누는 규칙, 그리고 ⚠️ **이미 저장된 것을 능동적으로 지우는 메커니즘은 규격에 없다**는 사실(무효화는 PUT·POST·DELETE 같은 불안전 메서드로만 촉발된다)."
+        }
+      ]
+    },
+    {
+      "id": "nextgen",
+      "kind": "limits",
+      "confidence": "inferred",
+      "heading": "⭐⭐ 이 방식의 한계 — 그리고 그 한계에서 나온 것들",
+      "body": "⭐⭐⭐ **CDN 의 한계는 전부 \\\"사본이 남의 손에 여러 벌 있다\\\"에서 나온다.**\n\n| 한계 | ⚠️ 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **지우는 법이 규격에 없다** | RFC 9111 이 안 정한다 | ⭐⭐ **해시 파일명**(무효화가 필요 없게) · 업체별 퍼지 API — ⚠️ **`캐시 무효화` 5건** |\n| ⭐⭐⭐ **개인화된 응답이 새면 사고다** | 공유 캐시다 | ⭐ **`private`·`Vary`·경로 분리** — ⚠️ **`private` 는 비밀 보장이 아니다** |\n| ⭐⭐⭐ **동적인 것은 못 캐시한다** | 사람마다 다르다 | ⭐⭐ **엣지 컴퓨팅**(엣지에서 만들어 준다) · **`nextjs` 의 ISR** |\n| ⭐⭐ **적중 못 하면 오히려 느리다** | 홉이 하나 늘었다 | ⭐ **적중률을 잰다** → `observability` |\n| ⭐⭐⭐ **`Vary` 를 잘못 걸면 적중률이 죽는다** | 키가 쪼개진다 | ⭐ **거는 헤더를 최소로** — 📌 `observability` 의 카디널리티와 같은 병 |\n| ⭐⭐ **어디에 무엇이 있는지 모른다** | 전 세계 엣지 | ⚠️ **지역별 규제와 부딪힌다** → `personal-data-law`·`data-governance` |\n| ⭐⭐ **비용이 트래픽에 비례한다** | 전송량 과금 | ⭐ **압축·이미지 최적화(56건)·전송량 감시** → `capacity` |\n| ⭐⭐⭐ **여기가 막히면 전부 막힌다** | 가장 바깥 층 | ⭐ **다중 CDN·DNS 전환** → `dns`·`slo` |\n\n⭐⭐⭐ **셋째 줄이 이 기술의 다음 세대를 낳았다** — 💡 **\\\"정적인 것만 가까이 둘 수 있다\\\"는 제약을 \\\"그럼 가까운 곳에서 만들자\\\"로 뒤집은 것이 엣지 컴퓨팅**이다. 📌 ⭐ **`nextjs` 의 렌더 위치 선택(SSR·ISR)이 그 위에서 돈다.**\n\n⚠️ **여섯째 줄은 최근에 커진 한계다** — **데이터를 어디에 두느냐가 법의 문제**가 되면서 **\\\"어느 나라 엣지에 사본이 남는가\\\"를 답해야 한다.** ⭐ **CDN 은 원래 그것을 감춰 주는 물건이라 답하기 어렵다**(⚠️ 이 해석은 이 문서의 추론이다).",
+      "sources": []
+    },
+    {
+      "id": "in-market",
+      "kind": "extra",
+      "confidence": "inferred",
+      "heading": "⭐⭐ 시장에서 — 63건, 그런데 제품 이름은 253건",
+      "body": "⚠️ **`market` 이 없다** — 기술 태그 목록에 없는 낱말이다.\n\n⭐ **셈**(2026-09-06). ⚠️ **약어는 `(?<![A-Za-z])WORD(?![A-Za-z])` 로 셌다.**\n\n| 낱말 | 건수 | 모집중 | |\n|---|---|---|---|\n| ⭐⭐⭐ `캐시\\|Cache` | **513** | 224 | ⭐ 갈라져 나온 곳 |\n| ⭐⭐ `CloudFront\\|Cloudflare\\|Akamai\\|Fastly` | **253** | 116 | ⭐⭐ **제품 이름** |\n| ⭐⭐ `WAF` | **250** | 73 | ⭐ 함께 팔리는 것 |\n| ⭐ `LCP\\|Core Web Vitals\\|웹 성능` | **247** | 76 | 이것을 쓰는 이유 |\n| ⭐⭐ **`CDN`** | **63** | 28 | 이 문서 |\n| ⭐ `DDoS` | 76 | 23 | 함께 |\n| ⚠️ `이미지 최적화\\|썸네일` | 56 | 11 | 비용 줄이기 |\n| ⚠️ `트래픽 비용\\|전송량\\|대역폭` | 16 | 5 | |\n| ⚠️⚠️ `캐시 무효화\\|퍼지\\|Invalidate` | **5** | 4 | ⭐⭐⭐ **가장 어려운 일** |\n| ⚠️⚠️ `오리진\\|Origin Server` | **1** | 0 | ⭐ 기본 용어 |\n| ⚠️⚠️ `정적 파일\\|정적 자원` | **1** | 0 | ⭐ 주된 대상 |\n\n💡 ⭐⭐⭐ **`CloudFront\\|Cloudflare\\|Akamai\\|Fastly` 253 : `CDN` 63 — 4배다.** 📌 ⭐ **제품이 개념보다 크다** — **`Figma` 656 > `디자인 시스템` 544 · `Nginx` 312 > `로드 밸런서` 129 · `Istio` 154 > `서비스 메시` 111 과 같은 무늬**인데, ⚠️ **여기서는 4배로 격차가 크다.** 💡 **\\\"CDN 을 안다\\\"보다 \\\"CloudFront 를 써 봤다\\\"를 묻는다**는 뜻으로 읽힌다.\n\n⚠️⚠️ **`오리진` 1건 · `정적 자원` 1건 · `캐시 무효화` 5건.** 💡 ⭐ **이 기술을 이루는 세 낱말이 전부 한 자릿수**다. 📌 **`서비스 메시` 111 : `사이드카` 2(56배) · `Elasticsearch` 485 : `Lucene` 5(97배)와 같은 \\\"도구는 부르고 그 속은 안 부른다\\\"**이고, ⭐ **특히 `캐시 무효화` 는 이 문서가 가장 어렵다고 적은 일인데 5건**이다.\n\n⭐⭐ **`WAF` 250 ≈ `CloudFront 류` 253 이다** — 💡 **거의 같은 크기로 함께 불린다.** 📌 ⭐ **CDN 이 보안 층과 한 제품으로 팔리는 시장 구조가 셈에 그대로 보인다**(*\\\"클라우드 운영 고도화 (네트워크·보안·WAF/CDN·비용(FinOps) 등)\\\"* — 샘표식품).\n\n⚠️ **`엣지` 는 1962건이지만 쓰지 않았다** — **엣지 컴퓨팅·엣지 디바이스·일반 표현이 섞인다.**\n\n📌 ⭐ **어디에 얹혀 있나**: **프런트엔드 배포**(→ `nextjs`·`react`) · **이미지·영상 전송** · **클라우드 인프라 운영**(→ `aws`·`iac`) · **트래픽 방어**(→ `rate-limit`) · **초기 로딩 속도**(→ `seo`·`performance`).\n\n⭐ **이 백과사전 안에서의 자리**: **갈라져 나온 곳은 `caching`**, **가장 바깥 층으로 `load-balancer`·`api-gateway` 앞에 선다**, **다음 세대는 엣지 컴퓨팅**(→ `nextjs` 의 렌더 위치), **적중률은 `observability`**, **비용은 `capacity`**, **규제는 `personal-data-law`**.",
+      "sources": []
+    }
+  ],
+  "tables": [],
+  "when_to_use": [
+    {
+      "situation": "JS·CSS·이미지 같은 정적 자원을 전 세계 사용자에게 내보낼 때",
+      "pick": "CDN + 내용 해시를 붙인 파일명 + 긴 `s-maxage`",
+      "over": "원본 서버에서 직접 내보내고 짧은 캐시를 걸기",
+      "why": "해시 파일명을 쓰면 무효화 자체가 필요 없다. 내용이 바뀌면 주소가 바뀌고, 새 주소는 어느 캐시에도 없다.",
+      "tradeoff": "빌드 파이프라인이 해시를 붙이고 HTML 이 그 주소를 가리키게 만들어야 한다. HTML 자체는 이 수를 못 쓴다.",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "사용자마다 다른 내용을 빠르게 보여 줘야 할 때",
+      "pick": "엣지 컴퓨팅 또는 원본 렌더 + 개인화 부분만 클라이언트에서 채우기",
+      "over": "개인화된 HTML 을 CDN 에 캐시하기",
+      "why": "공유 캐시에 개인화 응답을 두면 남의 것이 새는 사고가 난다. RFC 9111 의 `private` 는 저장 위치만 통제할 뿐 내용의 비밀을 보장하지 않는다.",
+      "tradeoff": "엣지 컴퓨팅은 실행 환경 제약이 있고, 클라이언트에서 채우면 첫 화면에 빈 자리가 잠깐 보인다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "RFC 9111 — HTTP Caching",
+          "url": "https://httpwg.org/specs/rfc9111.html",
+          "publisher": "IETF HTTP Working Group",
+          "date": "2022-06",
+          "kind": "standard",
+          "summary": "공유 캐시(shared cache)와 개인 캐시(private cache)의 정의, `private` 지시어가 저장 위치만 통제할 뿐 내용의 비밀성을 보장하지 않는다는 경고, 공유 캐시에만 적용되는 `s-maxage`, `Vary` 로 캐시 키를 나누는 규칙, 그리고 ⚠️ **이미 저장된 것을 능동적으로 지우는 메커니즘은 규격에 없다**는 사실(무효화는 PUT·POST·DELETE 같은 불안전 메서드로만 촉발된다)."
+        }
+      ]
+    },
+    {
+      "situation": "트래픽이 갑자기 몰리는 이벤트(오픈런·티켓팅)를 앞두고 있을 때",
+      "pick": "CDN 으로 정적 자원과 대기열 페이지를 흡수 + `rate-limit`",
+      "over": "오리진 서버만 늘리기",
+      "why": "서버를 늘려도 대역폭과 연결 수가 먼저 막힌다. 정적인 것을 앞에서 흡수하면 원본은 진짜 처리해야 할 요청만 받는다.",
+      "tradeoff": "동적 요청은 여전히 원본으로 간다. CDN 이 앞에 섰다고 뒤가 안전해지지는 않는다.",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "개인화된 응답에 `private` 를 걸어 두고 안전하다고 여긴다.",
+      "why": "RFC 9111 이 직접 못을 박는다 — `private` 는 응답을 어디에 저장할 수 있는지만 통제하고, 메시지 내용의 비밀을 보장하지 못한다. 중간 경로에서 볼 수 있다는 뜻이다.",
+      "fix": "비밀은 전송 구간 암호화와 권한으로 지킨다(→ `encryption`·`authz`). 그리고 개인화된 경로는 CDN 에 아예 태우지 않도록 경로를 분리한다."
+    },
+    {
+      "trap": "배포할 때마다 CDN 퍼지 API 를 부른다.",
+      "why": "퍼지는 표준이 아니라 업체 기능이고, 즉시가 아니며, 호출 횟수 제한이 있다. 전 세계 엣지가 다 지워질 때까지 옛 파일을 받는 사용자가 남는다.",
+      "fix": "파일명에 내용 해시를 붙여 무효화가 필요 없게 만든다. 퍼지는 HTML 처럼 주소를 바꿀 수 없는 것에만 최소로 쓴다."
+    },
+    {
+      "trap": "`Vary` 에 `User-Agent` 를 건다.",
+      "why": "캐시 키가 브라우저·기기 조합만큼 쪼개진다. 적중률이 0 에 가까워지고 CDN 은 홉만 하나 늘린 셈이 된다.",
+      "fix": "`Vary` 에 거는 헤더를 최소로 유지한다(대개 `Accept-Encoding` 정도). 기기별로 다른 것이 필요하면 주소를 나누거나 클라이언트에서 처리한다."
+    },
+    {
+      "trap": "CDN 을 붙여 놓고 적중률을 안 본다.",
+      "why": "적중하지 않으면 CDN 은 원본까지 가는 길에 홉을 하나 더한 것뿐이다. 느려졌는데 원인을 CDN 에서 찾지 않는다.",
+      "fix": "적중률과 오리진 요청 수를 지표로 남기고(→ `observability`), 낮으면 캐시 키·`Vary`·`s-maxage` 를 의심한다."
+    },
+    {
+      "trap": "쓰기 요청이 CDN 을 안 지나가는데 규격의 자동 무효화를 기대한다.",
+      "why": "RFC 9111 의 무효화는 불안전 메서드(PUT·POST·DELETE)가 그 캐시를 통과할 때만 일어난다. API 를 다른 경로로 보내면 CDN 은 그 변경을 영영 모른다.",
+      "fix": "변경 경로와 캐시 경로가 갈린다는 것을 전제로 설계한다 — 해시 파일명이나 짧은 `s-maxage` 중 하나를 반드시 고른다."
+    }
+  ],
+  "terms": [
+    {
+      "term": "공유 캐시",
+      "en": "shared cache",
+      "what": "둘 이상의 사용자가 재사용하도록 응답을 저장하는 캐시. RFC 9111 의 정의이고, CDN 이 여기에 해당한다."
+    },
+    {
+      "term": "오리진",
+      "en": "origin",
+      "what": "CDN 뒤에 있는 진짜 서버. 엣지에 없는 것만 여기까지 온다. 공고에서는 1건뿐이었다."
+    },
+    {
+      "term": "엣지",
+      "en": "edge",
+      "what": "사용자와 가까운 곳에 놓인 CDN 의 서버. 여기서 응답하면 원본까지의 왕복이 사라진다."
+    },
+    {
+      "term": "s-maxage",
+      "en": "s-maxage",
+      "what": "공유 캐시에만 적용되는 최대 수명. `max-age` 나 `Expires` 를 덮어쓴다 — 브라우저에는 짧게, CDN 에는 길게를 이걸로 만든다."
+    },
+    {
+      "term": "퍼지",
+      "en": "purge",
+      "what": "이미 저장된 사본을 지우라고 CDN 에 요청하는 것. ⚠️ RFC 9111 에는 이 메커니즘이 없고 업체마다 다른 기능이다."
+    },
+    {
+      "term": "캐시 키",
+      "en": "cache key",
+      "what": "어떤 요청을 같은 것으로 볼지 정하는 기준. 주소에 `Vary` 가 지정한 헤더들이 더해진다."
+    },
+    {
+      "term": "내용 해시 파일명",
+      "en": "content-hashed filename",
+      "what": "파일 내용의 해시를 이름에 넣는 방식(`app.a1b2c3.js`). 내용이 바뀌면 주소가 바뀌므로 무효화가 필요 없어진다."
+    }
+  ],
+  "drills": [
+    {
+      "task": "같은 파일을 두 가지로 배포해 무효화 문제를 직접 만든다 — ①고정 이름(`app.js`)에 긴 캐시 ②해시 이름(`app.<hash>.js`). 각각 내용을 바꿔 배포한 뒤 브라우저에서 무엇이 보이는지 확인한다.",
+      "done_when": "①에서는 옛 파일이 계속 보이고 ②에서는 즉시 새 파일이 보이는 것을 확인했고, 왜 그런지 캐시 키의 관점에서 한 문장으로 설명할 수 있다.",
+      "why": "이 문서의 핵심 주장(바꿀 것을 지우려 하지 말고 새 이름을 준다)을 몸으로 겪는다.",
+      "needs": "CDN 이 붙은 정적 호스팅(무료 티어로 충분하다)",
+      "no_hardware": "CDN 이 없으면 로컬에서 nginx 를 띄워 `Cache-Control: max-age=31536000` 을 주고 브라우저 캐시로 같은 실험을 한다. 개발자 도구의 disable cache 를 끄고 해야 한다.",
+      "hours": 2
+    },
+    {
+      "task": "`Vary` 가 적중률을 어떻게 무너뜨리는지 잰다. 같은 자원을 `Vary: Accept-Encoding` 과 `Vary: User-Agent` 두 가지로 내보내고, 서로 다른 브라우저·기기로 여러 번 요청해 캐시 적중 여부를 헤더로 확인한다.",
+      "done_when": "두 설정의 적중률 차이를 숫자로 적을 수 있고, `Vary` 에 넣어도 되는 헤더의 기준을 한 줄로 정리했다.",
+      "why": "적중하지 않는 CDN 은 홉을 하나 더한 것뿐이다. 그 원인의 상당수가 캐시 키에 있다.",
+      "no_hardware": "실제 CDN 없이도 nginx 의 proxy_cache 로 같은 실험을 할 수 있다. `X-Cache-Status` 헤더를 켜 두면 적중 여부가 보인다.",
+      "hours": 2
+    },
+    {
+      "task": "개인화된 응답이 공유 캐시에 들어가면 어떻게 되는지 안전한 환경에서 재현한다. 로그인 사용자 이름이 들어간 페이지를 `Cache-Control: public, max-age=60` 으로 내보내고, 다른 브라우저(다른 계정)로 같은 주소를 연다.",
+      "done_when": "남의 이름이 보이는 것을 확인했고, 그것을 막는 방법 세 가지(`private`, 경로 분리, 캐시 금지)를 각각 무엇을 대가로 내는지와 함께 적었다. ⚠️ 반드시 테스트 환경에서만 한다.",
+      "why": "공유 캐시의 가장 큰 사고를 통제된 곳에서 한 번 보면, 운영에서 같은 설정을 하지 않게 된다.",
+      "no_hardware": "nginx proxy_cache 와 두 브라우저 프로필만 있으면 노트북에서 전부 된다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "정적 자원에 내용 해시 파일명을 쓰고 있나. 안 쓴다면 배포할 때마다 퍼지에 기대고 있지 않나.",
+    "개인화된 응답이 CDN 을 지나는 경로에 섞여 있지 않나. `private` 만 믿고 있지 않나.",
+    "`Vary` 에 무엇을 걸었나. `User-Agent` 가 들어 있다면 적중률을 재 봤나.",
+    "적중률과 오리진 요청 수를 보고 있나. CDN 을 붙인 뒤 실제로 빨라졌다는 근거가 있나.",
+    "브라우저와 CDN 의 수명을 따로 정했나(`max-age` 와 `s-maxage`).",
+    "CDN 이 죽으면 어떻게 되나. 전환 경로가 있나.",
+    "어느 나라 엣지에 사본이 남는지 답할 수 있나. 규제가 걸리는 데이터가 그 경로에 있지 않나."
+  ],
+  "evidence": [
+    {
+      "quote": "ㆍCDN, WAF, DNS, DDoS, Bot Management 등 핵심 기능에 대한 개념과 사용 경험",
+      "from": "posting",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54109286&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=854d80e0-750f-4e0d-8487-253b3f7c1416",
+      "where": "메가존클라우드 (모집중)",
+      "what_it_shows": "CDN 이 보안 기능들과 한 묶음으로 요구된다 — 이 문서가 \"CDN 은 보안 제품과 함께 팔린다\"고 적은 것의 근거이고, 셈에서도 `WAF` 250 ≈ CloudFront 류 253 으로 나타난다."
+    },
+    {
+      "quote": "• 클라우드·인프라 운영: 프런트측(CDN/엣지·SSR/ISR·빌드/배포 파이프라인) + 백엔드측(ECS Fargate·Lambda·API Gateway) 구성·운영",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/377278",
+      "where": "큐피스트(글램) (모집중)",
+      "what_it_shows": "CDN·엣지가 SSR/ISR 과 한 줄에 놓인다 — 이 문서가 \"동적인 것은 못 캐시한다 → 엣지 컴퓨팅\"이라고 적은 계보가 공고 문장에 그대로 있다(→ `nextjs`)."
+    },
+    {
+      "quote": "•클라우드 운영 고도화 경험이 있는 분 (네트워크·보안·WAF/CDN·비용(FinOps) 등)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/311709",
+      "where": "샘표식품 (모집중)",
+      "what_it_shows": "WAF 와 CDN 이 슬래시 하나로 묶여 나오고 비용이 같은 괄호에 들어간다 — 전송량 과금이 이 층의 실제 관심사라는 증거다."
+    },
+    {
+      "quote": "Solid understanding of networking fundamentals, DNS, load balancing, and CDN configuration",
+      "from": "posting",
+      "url": "https://himalayas.app/companies/rebuild-manufacturing/jobs/senior-secdevops-engineer",
+      "where": "ReBuild Manufacturing (모집중)",
+      "what_it_shows": "DNS·로드 밸런싱과 나란히 놓인다 — 이 백과사전이 `dns`·`load-balancer`·`api-gateway` 로 이어 온 \"앞에 서는 층들\"의 가장 바깥이 CDN 이라는 배치와 맞는다."
+    }
+  ],
+  "related": [
+    {
+      "slug": "caching",
+      "how": "갈라져 나온 곳 — 캐시는 원본 옆, CDN 은 사용자 옆"
+    },
+    {
+      "slug": "load-balancer",
+      "how": "앞에 서는 층들 중 하나, CDN 은 그보다 더 바깥이다"
+    },
+    {
+      "slug": "api-gateway",
+      "how": "같은 계열의 층 — 남북 트래픽을 받는 자리"
+    },
+    {
+      "slug": "nextjs",
+      "how": "동적인 것을 가까이서 만드는 쪽 — SSR·ISR 과 엣지 렌더"
+    },
+    {
+      "slug": "observability",
+      "how": "적중률을 재지 않으면 CDN 이 도움이 됐는지 알 수 없다"
+    },
+    {
+      "slug": "rate-limit",
+      "how": "트래픽이 몰릴 때 앞에서 흡수하는 짝"
+    },
+    {
+      "slug": "seo",
+      "how": "초기 로딩 속도가 검색 노출에 영향을 준다 — 이 층을 두는 흔한 이유"
+    },
+    {
+      "slug": "encryption",
+      "how": "`private` 는 비밀을 보장하지 않는다 — 비밀은 이쪽이 맡는다"
+    },
+    {
+      "slug": "personal-data-law",
+      "how": "어느 나라 엣지에 사본이 남는가 — 규제와 부딪히는 자리"
+    },
+    {
+      "slug": "capacity",
+      "how": "전송량 과금 — 비용이 트래픽에 비례한다"
+    },
+    {
+      "slug": "api-versioning",
+      "how": "같은 발상 — 고치지 말고 새 이름(버전)을 준다"
+    },
+    {
+      "slug": "dns",
+      "how": "CDN 으로 보내고 장애 때 돌리는 길"
+    }
+  ],
+  "open_questions": [
+    "⭐⭐ **새로 썼다**(2026-09-06) — 큐 자격 (b): `caching` 의 `limits` 마지막 줄이 \"가까이 두기 → `cdn`\" 으로 끝나는데 갈 곳이 없었다.",
+    "⭐⭐⭐ **1차 자료를 `caching` 과 겹치지 않게 골랐다.** 저 문서가 RFC 9111 의 신선도·검증 쪽을 썼으므로, 이 문서는 **같은 규격의 공유 캐시(shared cache)·`private`·`s-maxage`·`Vary`·무효화** 쪽만 인용했다.",
+    "⚠️⚠️ **RFC 9111 에는 능동적 퍼지 메커니즘이 없다는 것이 이 문서의 중심이 됐다.** 규격이 정하는 무효화는 불안전 메서드가 캐시를 통과할 때뿐인데, 실무에서는 쓰기 요청이 CDN 을 안 지나간다. ⭐ 그래서 해시 파일명이 사실상의 표준 해법이 됐다.",
+    "⚠️ **업체별 퍼지 API 의 실제 지연 시간과 횟수 제한을 1차 자료로 확인하지 않았다.** CloudFront·Cloudflare 문서를 읽어야 정확한 수치를 적을 수 있다.",
+    "⚠️ **엣지 컴퓨팅을 이름만 적고 넘어갔다** — 다음 세대에 해당하는데 별도 문서가 없다. 다만 `엣지` 1962건은 오염이 심해(엣지 컴퓨팅·엣지 디바이스·일반 표현) 셈으로 크기를 잡기 어렵다.",
+    "⭐ **`CDN` 63건은 큐에 적힌 76건과 다르다** — **30회차에 고친 전후방탐색 기준으로 다시 셌기 때문**이다."
+  ],
+  "sources": [
+    {
+      "title": "RFC 9111 — HTTP Caching",
+      "url": "https://httpwg.org/specs/rfc9111.html",
+      "publisher": "IETF HTTP Working Group",
+      "date": "2022-06",
+      "kind": "standard",
+      "summary": "공유 캐시(shared cache)와 개인 캐시(private cache)의 정의, `private` 지시어가 저장 위치만 통제할 뿐 내용의 비밀성을 보장하지 않는다는 경고, 공유 캐시에만 적용되는 `s-maxage`, `Vary` 로 캐시 키를 나누는 규칙, 그리고 ⚠️ **이미 저장된 것을 능동적으로 지우는 메커니즘은 규격에 없다**는 사실(무효화는 PUT·POST·DELETE 같은 불안전 메서드로만 촉발된다)."
+    }
+  ]
+}

@@ -2526,6 +2526,22 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "cdn",
+      "title": "CDN",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "캐시를 원본 옆이 아니라 사용자 옆에 두는 것 — 거리가 곧 지연이기 때문이다.",
+      "aliases": [
+        "CDN",
+        "Content Delivery Network",
+        "콘텐츠 전송 네트워크"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
