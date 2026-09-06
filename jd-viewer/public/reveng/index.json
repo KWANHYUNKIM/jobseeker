@@ -1472,7 +1472,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "어떤 SQL 이든 증분으로 바꿔 주는 엔진 — 이론을 먼저 세우고 그 위에 제품을 얹은 쪽이다",
       "updated_at": "2026-09-07",
       "domain": "feldera.com"
