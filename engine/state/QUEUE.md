@@ -21,8 +21,21 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Depot** | US · SaaS | CI·빌드 인프라 축이 이 엔진에 없다. `depot.dev/blog` 최신 2026-08-26. 개별 글을 열어 확정했다 — `why-i-reimplemented-lvm`(2026-08-13)에 결정과 거절한 대안과 버린 보장이 다 있다: 마이크로VM 을 1초 안에 띄우고 초당 200건까지 병렬로 만들어야 하는데 LVM 은 볼륨 그룹 전체 잠금 때문에 연산당 약 100ms 로 직렬화됐다. ZFS·Btrfs(성능 목표와 안 맞음)·Stratis(블록 장치를 못 줌)·루프 장치를 이름 대며 물린다. **버린 보장을 명시한다** — 볼륨 연산의 크래시 안전성, 실수로 지웠을 때의 복구, 장애를 넘는 메타데이터 보존. 근거가 분명하다: 하이퍼바이저가 죽으면 어차피 휘발성 마이크로VM 이 사라지므로 크래시 안전 메타데이터가 실익이 없다. 커널 device-mapper 데이터면은 그대로 두고 제어면만 인프로세스 할당자로 바꿔 **약 100배**를 얻었다. |
+| **Ubicloud** | US · SaaS | 베어메탈 위에 오픈소스로 클라우드를 짓는다 — 하이퍼바이저·블록 저장소·네트워크를 직접 다루는 축이라 이 엔진에 없다. `ubicloud.com/blog` 에 심층 글이 여럿 — `building-block-storage-for-cloud-with-spdk-non-replicated`(2024-01-05, 개별 글로 날짜 확인) · `cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals` · `building-burstables-cpu-slicing-with-cgroups` · `postgresql-and-the-oom-killer-why-we-use-strict-memory-overcommit` · `virtualizing-nvidia-hgx-b200-gpus-with-open-source`(2026). SPDK 글이 대가를 적는다 — btrfs 로 바꿔 프로비저닝을 4~5분에서 1초 미만으로 줄였지만 **암호화를 잃고 디스크 처리량이 ext4 의 3분의 1로 떨어졌다**. ⚠️ 목록에 날짜가 안 보이므로 팔 때 개별 글에서 확인한다. |
+| **Polar Signals** | EU · SaaS | 지속 프로파일링(eBPF) 축이 이 엔진에 없다. `polarsignals.com/blog` 에 내부 연작이 있다 — `Call Stacks and Unwinding 101`(2026-02-19) · `Profiling Internals: Hardware Timers and eBPF`(2026-03-25) · `Profiling Internals: JavaScript on V8`(2026-06-18) · `Python Zebra Stacks`(2026-05-20, PyTorch 스택을 eBPF 로 푼다) · `Open-Source Low-Overhead NVIDIA CUDA PC Sampling`(2026-06-10) · `Continuous NVIDIA CUDA Profiling In Production`(2025-10-22). 이 엔진의 관측 축(무엇을 얼마나 남길 것인가)에 **프로파일을 상시로 남긴다**는 답이 붙는다. ⚠️ 2026-08-17 에 Dash0 에 합류한다고 발표했다 — 블로그가 마를 수 있으니 판다면 지금 있는 연작으로 판다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-07 서른여덟 번째 후보 조사 — 목표 3곳을 채웠다. 또 축을 벌렸다 — CI·빌드 · 베어메탈 클라우드 · 지속 프로파일링.**
+  - **Depot**(US) — 마이크로VM 을 위해 LVM 을 다시 구현했다. 거절한 대안과 **버린 보장**을 이름 대며 적고 약 100배를 얻었다(근거는 대기 표에).
+  - **Ubicloud**(US) — 오픈소스로 베어메탈 클라우드를 짓는다. SPDK 블록 저장소 글이 얻은 것과 잃은 것(암호화·처리량 3분의 1)을 함께 적는다.
+  - **Polar Signals**(EU) — eBPF 지속 프로파일링. 스택 언와인딩·하드웨어 타이머·V8·CUDA 연작이 있다. 다만 2026-08-17 에 Dash0 합류를 발표했다.
+  - **교훈 — 네 조사 연속 같은 기준이 통했다.** 회사 소유 도메인 + 엔지니어가 직접 쓰는 글 + 개별 글로 확정. 이번에도 셋 다 목록만으로는 판정할 수 없었다.
+  - **인수·합류가 판정 기준이 아니다.** Polar Signals 가 Dash0 에 합류하지만 이미 쓴 연작이 팔 수 있는 자료다 — Bun(앤트로픽)·Cursor(스페이스X) 때와 같게 다룬다. 다만 블로그가 마를 수 있다는 것을 큐에 적어 둔다.
+  - **절차가 열두 번째로 값을 했다** — `name_en` 129개를 먼저 출력해 다섯 이름이 다 없다는 것을 확인하고 던졌다.
+
+
 
 - **2026-09-07 서른일곱 번째 후보 조사 — 목표 3곳을 채웠다. 이번에도 축을 벌렸다 — 하드웨어 · 브라우저 엔진 · 지속 실행.**
   - **Cerebras**(US) — 웨이퍼 한 장을 칩 하나로 쓴다. GPU 를 더 붙이는 답을 물리고 수치를 댄다(SRAM 44GB, 코어 90만, 21 PB/s, 초당 750토큰).
