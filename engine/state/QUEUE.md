@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Razorpay** | IN · 핀테크(결제 게이트웨이) | 도메인 3(관측을 싸게 유지한다[tech 4] / 빌드 파이프라인을 싼 자원 위에 올린다[tech 0 · ⏳ 미독] / 사람의 조사 시간을 AI 로 줄인다[tech 0 · ⏳ 미독]) · **기능 1**(check-nobody-uses-it-then-cut) · ⚠️ **WebFetch 403 — `r.jina.ai` 를 앞에 둔다** |
+| **Razorpay** | IN · 핀테크(결제 게이트웨이) | 도메인 3(관측을 싸게 유지한다[tech 4] / 빌드 파이프라인을 싼 자원 위에 올린다[tech 5] / **사람의 조사 시간을 AI 로 줄인다[tech 0 · ⏳ 미독]**) · **기능 2**(check-nobody-uses-it-then-cut · brittle-but-bounded) · ⚠️ **WebFetch 403 — `r.jina.ai` 를 앞에 둔다** |
 
 ## 대기
 
