@@ -119,9 +119,9 @@
         "TWI",
         "아이스퀘어드씨"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-03"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "idempotency",
@@ -308,9 +308,9 @@
         "EIA-485",
         "차동 전송"
       ],
-      "sections": 5,
+      "sections": 6,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "rtos",
@@ -343,9 +343,9 @@
         "CPOL",
         "CPHA"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "spring",
@@ -413,9 +413,9 @@
         "USART",
         "RS-232"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "jwt",
