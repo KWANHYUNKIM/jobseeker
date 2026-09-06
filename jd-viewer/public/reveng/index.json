@@ -1320,6 +1320,18 @@
       "one_liner": "5초 안에 가야 하는 알림과 20분을 기다려도 되는 집계가 같은 파이프를 탄다 — 그래서 줄 세우는 일이 본업이 됐다",
       "updated_at": "2026-09-06",
       "domain": "klaviyo.com"
+    },
+    {
+      "slug": "perplexity",
+      "name": "퍼플렉시티",
+      "name_en": "Perplexity",
+      "country": "US",
+      "category": "검색",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "AI 검색을 팔면서 그것을 돌리는 추론 스택을 직접 만든다 — 그리고 어디를 파이썬으로 두고 어디를 러스트로 옮길지가 그 스택의 뼈대다",
+      "updated_at": "2026-09-06",
+      "domain": "perplexity.ai"
     }
   ],
   "domains": [
@@ -1664,7 +1676,10 @@
     "노는 컴퓨트를 모은다",
     "누가 어디까지 볼 수 있나",
     "마감 시각이 다른 일을 한 줄에서 처리한다",
-    "잃지 않고 넘긴다"
+    "잃지 않고 넘긴다",
+    "요청을 GPU 앞까지 나른다",
+    "모델을 GPU 위에서 돌린다",
+    "GPU 끼리 직접 말하게 한다"
   ],
   "countries": {
     "KR": "한국",
