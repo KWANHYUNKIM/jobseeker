@@ -60,8 +60,71 @@
     {
       "name": "관측을 싸게 유지한다",
       "why": "⚠️ **결제 규모가 커지면 그것을 지켜보는 비용도 함께 커진다.** **하루 샘플이 약 4,500억 개**였고 메트릭 청구서가 문제가 됐다. ⚠️ **이 회사의 답이 특이하다 — 줄이기 전에 `아무도 안 쓰더라` 를 확인했다.** **경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 봤고 하나도 없었다.** ✅ **본문 확인함**(2026-08-24).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "사용처 감사 (경보·대시보드·질의)",
+          "solves": "⚠️ **도구가 아니라 절차다** — 줄이기 전에 **`분 미만 해상도에 의존하는 것이 있는지 확인했다. 하나도 없었다`**, 그리고 **90일간 상위 500개 중 167개가 어디에도 안 쓰임**을 확인했다.",
+          "limits": "⚠️ **90일에 안 걸린 지표가 영영 안 쓰인다는 보장은 없다** — 분기 말이나 사고 때만 보는 것이 있을 수 있다(재구성). **되살리는 절차가 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+              "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-08-24",
+              "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "vmagent (도구는 그대로)",
+          "solves": "**수집과 relabel 을 이 계층에서 해결**해 **모니터링 이전이 큰 조율 프로젝트가 되는 것**을 피했다.",
+          "limits": "⚠️ **도구를 바꿨다면 얻었을 절감을 포기한 것**이다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+              "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-08-24",
+              "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "리더 선출 사이드카 (active-standby)",
+          "solves": "고가용성의 **중복 수집을 없앤다** — 하루 수천억 개의 중복 샘플. 페일오버 **7~22초**, 리스 **15초**.",
+          "limits": "⚠️ **스플릿 브레인이 위험한 실패 모드**라 **`중복을 감수하기보다 수집을 멈추는 쪽으로 치우쳐 있다`** — **짧은 관측 공백이 생길 수 있고 그 영향은 글에 없다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+              "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-08-24",
+              "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "relabel 규칙 (중앙 삭제)",
+          "solves": "**각 팀의 코드 릴리스를 기다리지 않고** 안 쓰는 메트릭을 버린다 — **하루 약 500억 샘플.**",
+          "limits": "⚠️ **중앙 통제점 대 분산된 소유권** — **팀이 자기 메트릭이 사라진 것을 모를 수 있다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+              "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-08-24",
+              "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "check-nobody-uses-it-then-cut"
+      ]
     },
     {
       "name": "빌드 파이프라인을 싼 자원 위에 올린다",
@@ -76,7 +139,490 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "check-nobody-uses-it-then-cut",
+      "name": "쓰는 사람이 없다는 것을 확인하고 나서 줄인다",
+      "domain": "관측을 싸게 유지한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **결제 규모가 커지면 그것을 지켜보는 비용도 함께 커진다.** 회사의 문장 — **`하루 약 4,000억 샘플에서 추정치는 월 수십만 달러에 달했다.`** ⚠️ **그런데 이 이야기에서 가장 흔한 반론이 `그러다 못 보게 된다` 이고, 이 회사는 그 반론을 제목에 먼저 박았다** — **`대시보드를 하나도 잃지 않고`**(이 지적은 이 사이트의 재구성이다). **줄이는 결정마다 `쓰는 사람이 있는가` 를 먼저 확인한 것이 이 기능의 전부다.**",
+        "metrics": [
+          {
+            "label": "시작점",
+            "value": "**`하루 약 4,000억 샘플에서 추정치는 월 수십만 달러에 달했다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 결과",
+            "value": "**메트릭 청구서 62% 절감** — **대시보드를 하나도 잃지 않고.** 하루 샘플은 **약 1,700억**까지 내려갔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "감사로 확인한 것",
+            "value": "**`경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했다. 하나도 없었다.`** 그러고 나서 **스크레이프 간격 30초 → 60초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 안 쓰이던 것",
+            "value": "**`어디에도 쓰이지 않는 메트릭 167개를 찾았다 — 경보에도, 대시보드에도, 관측된 질의에도.`** 상위 500개 고카디널리티 중, 90일 관찰. **하루 약 500억 샘플이 사라졌다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "페일오버",
+            "value": "**장애 유형에 따라 7~22초** — 리스 만료 **15초**, 갱신 **2회 실패**가 임계",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "이 관측이 지켜보는 것",
+            "value": "연환산 총결제액 **약 1,500억 달러** · 가맹점 **1,200만 곳 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Razorpay Surpasses $150 Billion TPV Milestone",
+                "url": "https://razorpay.com/newsroom/razorpay-surpasses-150-billion-tpv-milestone-unveils-payment-gateway-3-0-forays-into-marketing-stack-with-engage-and-introduces-the-fintech-world-to-ai-assistant-ray/",
+                "publisher": "Razorpay Newsroom",
+                "date": "2026",
+                "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇부터 줄일지 정할 때",
+          "thought": "⚠️ **관측 비용을 줄이자는 제안은 언제나 `그러다 못 보게 된다` 는 반론을 만난다.** 그래서 **줄이기 전에 감사부터 했다** — **경보 규칙과 대시보드가 분 미만 해상도에 의존하는지 보고 하나도 없다는 것을 확인했다.** **`아마 안 쓸 것이다` 와 `확인했더니 안 썼다` 는 다른 근거다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "도구를 바꿀지 생각할 때",
+          "thought": "⚠️ **더 싼 도구로 갈아타는 길이 가장 크게 줄이는 방법인데 그것을 거절했다.** 이유가 기술이 아니다 — **`서비스 디스커버리, relabel 파이프라인, 스크레이프 설정을 팀 전체에 걸쳐 바꿔야 했을 것이다. 그것은 모니터링 이전을 큰 조율 프로젝트로 만들었을 것이다.`** **한 팀이 끝낼 수 있는 일과 온 조직이 움직여야 하는 일은 값이 다르다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이중화의 실패를 볼 때",
+          "thought": "⚠️ **이 기능에서 가장 값진 한 줄이 여기 있다** — **`위험한 실패 모드는 스플릿 브레인이다: 두 파드가 모두 자기가 리더라고 믿고 같은 타깃을 수집하는 것.`** 그래서 **`시스템은 중복을 감수하기보다 수집을 멈추는 쪽으로 치우쳐 있다`.** ⚠️ **비용을 줄이려고 만든 장치가 실패할 때 비용이 아니라 공백 쪽으로 넘어지게 설계했다**(뒤쪽 정리는 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "샘플",
+            "what": "⚠️ **하루 약 4,000억 개.** 이 수가 곧 청구서다 — **월 수십만 달러**"
+          },
+          {
+            "name": "스크레이프 간격",
+            "what": "**인프라 메트릭 30초 → 60초.** ⚠️ **감사로 `분 미만 해상도에 의존하는 것이 없다` 를 확인하고 나서 바꿨다**"
+          },
+          {
+            "name": "active-standby vmagent 쌍",
+            "what": "**리더 선출 사이드카**로 **한 번에 하나만 수집**한다 — 리스 만료 15초, 갱신 2회 실패가 임계"
+          },
+          {
+            "name": "⚠️ 스플릿 브레인",
+            "what": "⚠️ **두 파드가 모두 자기가 리더라고 믿고 같은 타깃을 수집하는 것** — **위험한 실패 모드**로 이름 붙여져 있다"
+          },
+          {
+            "name": "안 쓰이는 메트릭",
+            "what": "⚠️ **경보에도, 대시보드에도, 관측된 질의에도 없는 것.** 상위 500개 고카디널리티 중 **167개**가 그랬다"
+          },
+          {
+            "name": "relabel 규칙",
+            "what": "**vmagent 계층에서 버린다** — **각 팀의 코드 릴리스를 기다리지 않고**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **줄이기 전에 쓰는 사람이 있는지 확인한다** — 감사가 근거다",
+          "⚠️ **실패하면 중복이 아니라 멈춤 쪽으로 넘어진다** — 스플릿 브레인이 더 위험하다",
+          "**한 팀이 끝낼 수 있는 범위 안에서 고친다** — 조율 프로젝트로 키우지 않는다",
+          "⚠️ **대시보드를 하나도 잃지 않는다** — 그것이 성공의 정의다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "⚠️ **경보 규칙과 대시보드를 감사한다** — 분 미만 해상도에 의존하는 것이 있는지",
+            "why": "⚠️ **`아마 안 쓸 것이다` 와 `확인했더니 안 썼다` 는 다른 근거다**(재구성)"
+          },
+          {
+            "step": "**인프라 메트릭의 스크레이프 간격을 30초에서 60초로 바꾼다**",
+            "why": "**의존하는 것이 하나도 없었다** — 이 한 번의 변경이 **인프라 메트릭 수집을 절반으로** 줄였다"
+          },
+          {
+            "step": "**리더 선출 사이드카로 active-standby vmagent 쌍을 만든다**",
+            "why": "**고가용성을 위해 두 벌 수집하던 것을 하나로** — 하루 수천억 개의 중복 샘플이 사라진다"
+          },
+          {
+            "step": "⚠️ **리스가 만료되면(15초, 갱신 2회 실패) 수집을 넘긴다** — 그리고 애매하면 멈춘다",
+            "why": "⚠️ **`시스템은 중복을 감수하기보다 수집을 멈추는 쪽으로 치우쳐 있다`**"
+          },
+          {
+            "step": "**90일간 상위 500개 고카디널리티 메트릭이 어디에 쓰이는지 본다** — 경보·대시보드·관측된 질의",
+            "why": "**세 곳 다 없어야 `안 쓰인다` 고 말할 수 있다**"
+          },
+          {
+            "step": "⚠️ **vmagent 의 relabel 규칙으로 그것들을 버린다** — 코드 릴리스를 기다리지 않고",
+            "why": "**각 팀에 제거를 요청하면 릴리스 주기만큼 늦어진다**(재구성)"
+          },
+          {
+            "step": "**vmagent 와 고가용성 구조 자체는 그대로 둔다**",
+            "why": "⚠️ **도구를 바꾸면 조율 프로젝트가 된다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수집 도구를 더 싼 것으로 바꿀 것인가",
+            "chosen": "⚠️ **아니다** — vmagent 와 고가용성 구조를 지킨다",
+            "alternatives": [
+              "수집 스택을 통째로 교체",
+              "관리형 서비스로 이전"
+            ],
+            "tradeoff": "이유가 기술이 아니라 조직이다 — **`서비스 디스커버리, relabel 파이프라인, 스크레이프 설정을 팀 전체에 걸쳐 바꿔야 했을 것이다. 그것은 모니터링 이전을 큰 조율 프로젝트로 만들었을 것이다.`** ⚠️ **한 팀이 끝낼 수 있는 일과 온 조직이 움직여야 하는 일은 값이 다르다**(재구성). **대가는 도구를 바꿨다면 얻었을 절감을 포기한 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "스크레이프 간격을 줄일 것인가",
+            "chosen": "⚠️ **감사하고 나서 줄인다** — 30초 → 60초",
+            "alternatives": [
+              "메트릭 종류마다 다른 간격 유지",
+              "필요 없는 곳에도 분 미만 해상도 유지"
+            ],
+            "tradeoff": "**`경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했다. 하나도 없었다.`** 이 한 번의 변경으로 **인프라 메트릭 수집이 절반**이 됐다. ⚠️ **대가는 앞으로 분 미만 해상도가 필요한 경보를 만들 수 없다는 것**이고, **그 필요가 생기면 예외를 다시 만들어야 한다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "고가용성을 위한 중복 수집을 어떻게 할 것인가",
+            "chosen": "**active-standby** — 리더 선출 사이드카로 한 번에 하나만",
+            "alternatives": [
+              "두 벌 수집하고 중복 비용 감수",
+              "중복 제거를 저장 계층에 맡기기"
+            ],
+            "tradeoff": "**하루 수천억 개의 중복 샘플이 사라진다.** ⚠️ **대가는 페일오버 로직과 스플릿브레인 방지라는 운영 복잡도**다 — **장애 유형에 따라 페일오버 7~22초**, 리스 만료 **15초**에 갱신 **2회 실패**가 임계다(재구성 없이 회사가 밝힌 값).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "리더가 애매할 때 어느 쪽으로 넘어질 것인가",
+            "chosen": "⚠️ **멈추는 쪽** — 중복보다 공백을 고른다",
+            "alternatives": [
+              "둘 다 수집하게 두고 중복을 감수",
+              "임의로 한쪽을 리더로 고정"
+            ],
+            "tradeoff": "회사가 위험을 이름 붙여 적는다 — **`위험한 실패 모드는 스플릿 브레인이다: 두 파드가 모두 자기가 리더라고 믿고 같은 타깃을 수집하는 것.`** 그래서 **`시스템은 중복을 감수하기보다 수집을 멈추는 쪽으로 치우쳐 있다`.** ⚠️ **비용을 줄이려고 만든 장치가 실패할 때 비용이 아니라 공백 쪽으로 넘어지게 설계했다** — **대가는 짧은 관측 공백이 생길 수 있다는 것**이다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "안 쓰는 메트릭을 누가 지울 것인가",
+            "chosen": "⚠️ **중앙에서** — vmagent relabel 규칙으로",
+            "alternatives": [
+              "각 애플리케이션 팀에 제거 요청",
+              "코드 릴리스를 기다려 소스에서 제거"
+            ],
+            "tradeoff": "**코드 릴리스를 기다리지 않고 지운다.** ⚠️ **각 팀에 요청하면 릴리스 주기만큼 늦어지고 우선순위에서 밀린다**(재구성). **대가는 중앙 통제점 대 분산된 소유권** — **팀이 자기 메트릭이 사라진 것을 모를 수 있다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "`안 쓰인다` 를 무엇으로 판정할 것인가",
+            "chosen": "**세 곳을 다 본다** — 경보 · 대시보드 · 관측된 질의",
+            "alternatives": [
+              "대시보드만 확인",
+              "팀에 물어보기"
+            ],
+            "tradeoff": "회사의 문장 — **`어디에도 쓰이지 않는 메트릭 167개를 찾았다: 경보에도, 대시보드에도, 관측된 질의에도.`** 상위 500개 고카디널리티 중 **90일** 관찰이다. ⚠️ **대가는 90일 안에 한 번도 안 물어본 것이 영영 안 쓰인다는 보장은 없다는 것** — **분기 말에만 보는 지표가 있으면 걸릴 수 있다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "어디를 손대고 어디를 그대로 둘 것인가",
+            "chosen": "**수집 계층만 손댄다** — 저장·질의 계층과 HA 구조는 유지",
+            "alternatives": [
+              "저장 계층의 보존 기간 축소",
+              "질의 계층 최적화"
+            ],
+            "tradeoff": "⚠️ **보존 기간을 줄이는 것이 더 쉬운 절감인데 그러면 과거를 잃는다**(재구성). **수집에서 줄이면 애초에 들어오지 않으므로 저장·질의가 함께 싸진다.** **대가는 한 번 안 받은 데이터는 되살릴 수 없다는 것**이다(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "성공을 무엇으로 정의할 것인가",
+            "chosen": "⚠️ **`대시보드를 하나도 잃지 않고`** — 절감액이 아니라",
+            "alternatives": [
+              "절감률만 목표로",
+              "비용 상한을 정하고 맞추기"
+            ],
+            "tradeoff": "⚠️ **관측 비용을 줄이는 이야기의 가장 흔한 반론이 `그러다 못 보게 된다` 인데, 그것을 제목에 먼저 박았다**(재구성). **감사·세 곳 확인·멈추는 쪽으로 치우친 설계가 전부 그 정의에서 나온다.** **대가는 더 크게 줄일 수 있었을 여지를 남긴다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "vmagent (VictoriaMetrics 수집기)",
+            "role": "**수집과 relabel 의 자리.** 도구를 바꾸지 않고 이 계층에서 해결했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "리더 선출 사이드카",
+            "role": "⚠️ **active-standby 쌍에서 한 번에 하나만 수집하게 한다** — 리스 15초, 갱신 2회 실패가 임계",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "relabel 규칙",
+            "role": "**안 쓰는 고카디널리티 메트릭을 중앙에서 버린다** — 코드 릴리스를 기다리지 않고",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "사용처 감사 (경보·대시보드·질의)",
+            "role": "⚠️ **도구가 아니라 절차다** — 줄이기 전에 쓰는 사람이 있는지 확인한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "각 애플리케이션 팀",
+          "via": "⚠️ 중앙에서 지운 메트릭",
+          "contract": "⚠️ **코드 릴리스를 기다리지 않고 중앙에서 버린다** — **팀이 자기 메트릭이 사라진 것을 모를 수 있다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "경보·대시보드·질의",
+          "via": "사용처 감사",
+          "contract": "**세 곳 다 없어야 `안 쓰인다` 고 판정한다** — 90일 관찰",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "결제 시스템",
+          "via": "지켜보는 대상",
+          "contract": "⚠️ **연환산 1,500억 달러가 도는 시스템을 지켜보는 비용이 월 수십만 달러였다** — **규모가 커지면 관측도 규모의 문제가 된다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "관측 벤더",
+          "via": "⚠️ 사는 쪽의 자리",
+          "contract": "⚠️ **이 사이트에는 파는 쪽(Grafana Labs·Honeycomb)의 기록도 있다** — **파는 쪽은 TCO 를 줄여 마진을 얻고, 사는 쪽은 안 쓰는 것을 찾아 청구서를 줄인다. 같은 문제의 반대편이다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 중복을 피하려면 공백을 감수해야 한다",
+            "why_hard": "⚠️ **고가용성으로 두 벌 수집하면 중복 비용이 들고, 하나만 수집하게 하면 리더가 애매한 순간에 아무도 수집하지 않을 수 있다.** 회사가 위험을 이름 붙인다 — **`위험한 실패 모드는 스플릿 브레인이다: 두 파드가 모두 자기가 리더라고 믿고 같은 타깃을 수집하는 것.`** **둘 다 피할 방법은 없고 어느 쪽으로 넘어질지만 고를 수 있다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **멈추는 쪽으로 치우치게 하는 것** — **`시스템은 중복을 감수하기보다 수집을 멈추는 쪽으로 치우쳐 있다`.** 페일오버는 **장애 유형에 따라 7~22초**다. ⚠️ **그 사이의 관측 공백이 어떤 영향을 주는지는 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          },
+          {
+            "problem": "`안 쓰인다` 를 증명하기는 어렵다",
+            "why_hard": "⚠️ **쓰이는 것은 보이지만 안 쓰이는 것은 `아직 안 물어봤을 뿐` 일 수 있다.** 이 회사는 **경보·대시보드·관측된 질의 세 곳을 90일간 봤는데**, **분기 말에만 보는 지표나 사고 때만 쓰는 지표는 그 창에 안 걸릴 수 있다**(이 지적은 이 사이트의 재구성이다).",
+            "current_best": "**세 곳을 다 보고 90일을 관찰하는 것**, 그리고 **상위 500개 고카디널리티로 범위를 좁히는 것.** ⚠️ **되살리는 절차가 있는지는 글에 없다**(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+                "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-08-24",
+                "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "줄이기 전에 쓰는 사람을 찾는다",
+          "question": "메트릭 청구서를 62% 줄이기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"<b>하루 약 4,000억 샘플</b><br/>• 월 수십만 달러\"]:::gone --> A[\"⚠️ <b>감사</b><br/>• 경보 규칙 · 대시보드가<br/>  분 미만 해상도에 의존하나<br/>• 하나도 없었다\"]:::accent\n  A --> I[\"<b>스크레이프 간격 30초 → 60초</b><br/>• 인프라 메트릭 수집 절반\"]:::list\n  S --> H[\"<b>고가용성 중복 수집</b>\"]:::gone --> L[\"<b>리더 선출 사이드카</b><br/>• active-standby<br/>• 리스 15초 · 갱신 2회 실패\"]:::accent\n  L --> B{\"⚠️ <b>리더가 애매하면</b>\"}\n  B -->|\"멈춘다\"| G[\"<b>중복보다 공백을 고른다</b>\"]:::accent\n  S --> U[\"<b>90일 · 상위 500개 고카디널리티</b><br/>• 경보 · 대시보드 · 관측된 질의\"]:::list\n  U --> D[\"⚠️ <b>167개가 어디에도 없었다</b><br/>• relabel 로 버린다<br/>• 코드 릴리스를 기다리지 않고\"]:::accent\n  I --> R[\"<b>하루 약 1,700억 샘플</b><br/>• 청구서 62% 절감<br/>• 대시보드는 하나도 안 잃었다\"]:::list\n  G --> R\n  D --> R\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "손대지 않기로 한 것",
+          "question": "더 크게 줄일 수 있었는데 왜 안 했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>수집 도구를 통째로 교체</b><br/>• 가장 크게 줄었을 방법\"]:::gone --> B[\"<b>거절한 이유 — 조직</b><br/>• 서비스 디스커버리 · relabel<br/>  파이프라인 · 스크레이프 설정을<br/>  팀 전체에 걸쳐 바꿔야 한다\"]:::gone\n  B --> C[\"<b>모니터링 이전이<br/>  큰 조율 프로젝트가 된다</b>\"]:::gone\n  C --> D[\"<b>고른 길: 한 팀이 끝낼 수 있는 범위</b><br/>• vmagent 와 HA 구조는 그대로\"]:::accent\n  E[\"⚠️ <b>남는 위험</b><br/>• 90일에 안 걸린 지표<br/>• 분기 말 · 사고 때만 쓰는 것 (재구성)\"]:::gone\n  F[\"⚠️ <b>남는 위험</b><br/>• 페일오버 7~22초의 관측 공백<br/>• 영향은 글에 없다 (재구성)\"]:::gone\n  G[\"⚠️ <b>남는 위험</b><br/>• 팀이 자기 메트릭이<br/>  사라진 것을 모를 수 있다 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How Razorpay Cut Its Metrics Bill by 62% Without Losing a Dashboard",
+          "url": "https://engineering.razorpay.com/how-razorpay-cut-its-metrics-bill-by-62-without-losing-a-dashboard-2a7d5467df37",
+          "publisher": "Razorpay Engineering",
+          "date": "2026-08-24",
+          "summary": "인프라 메트릭의 스크레이프 간격을 30초에서 60초로 늘리기 전에 경보 규칙과 대시보드를 감사해 분 미만 해상도에 의존하는 것이 있는지 확인했고 하나도 없었다. active-standby vmagent 로 중복 수집을 없애고, 90일간 상위 500개 고카디널리티 메트릭 중 어디에도 안 쓰이는 167개를 relabel 로 버렸다. 하루 샘플 약 4,500억에서 1,700억으로 줄었다."
+        },
+        {
+          "title": "Razorpay Surpasses $150 Billion TPV Milestone",
+          "url": "https://razorpay.com/newsroom/razorpay-surpasses-150-billion-tpv-milestone-unveils-payment-gateway-3-0-forays-into-marketing-stack-with-engage-and-introduces-the-fintech-world-to-ai-assistant-ray/",
+          "publisher": "Razorpay Newsroom",
+          "date": "2026",
+          "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **결제 시스템 자체의 기술 자료를 아직 못 찾았다** — **인도 온라인 결제의 절반을 처리하는데** 2026년 블로그의 시스템 글은 **관측·CI·데이터·AI** 쪽이다. **결제 규모가 커질수록 결제를 받치는 것들의 비용이 이야깃거리가 된다는 뜻일 수 있다**(재구성). ⏳ **Payment Gateway 3.0 과 UPI 처리 구조를 다룬 글을 찾아본다.**",
