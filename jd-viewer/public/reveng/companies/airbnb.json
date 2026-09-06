@@ -67,8 +67,71 @@
     {
       "name": "이 규모를 관측하는 비용을 감당한다",
       "why": "⚠️ **StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿았다** — **StatsD 의 UDP 전송은 패킷 손실 위험을 만들고 Veneur 의 설계는 현대적인 Prometheus 데이터 모델과 잘 맞지 않았다.** **초당 1억 샘플 이상**을 처리해야 하는 규모다. ✅ **본문 확인함**(2026-04).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "OTLP + OpenTelemetry Collector",
+          "solves": "⚠️ **`StatsD 는 UDP 에 의존해 높은 처리량에서 패킷 손실에 더 취약하다`** — 표준 프로토콜로 신뢰성을 얻는다.",
+          "limits": "⚠️ **Collector 는 `제안은 있었지만 메트릭 집계 지원이 없다`** — 그래서 부품이 하나 더 필요했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+              "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-04",
+              "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "vmagent (약 1만 줄)",
+          "solves": "**스트리밍 집계와 샤딩**으로 **TSDB 에 원시 데이터를 넣기 전에** 줄인다 — 그래야 비용 목표가 성립한다. ⚠️ **`작은 코드베이스라 필요하면 이해하고 고치기 쉽다`** 가 선택 근거에 들어 있다.",
+          "limits": "⚠️ **필요하면 실제로 고쳐야 한다는 뜻이기도 하다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+              "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-04",
+              "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "델타 시간성",
+          "solves": "**메모리 사용을 줄이고 안정성을 얻는다.**",
+          "limits": "⚠️ **`예기치 못한 실패가 데이터에 눈에 보이는 공백을 남긴다`** — 받아들인 절충이다. **누적이면 이상한 스파이크로, 델타면 빈칸으로 나타난다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+              "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-04",
+              "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+            }
+          ]
+        },
+        {
+          "tech": "수백 개의 집계기 (샤딩)",
+          "solves": "**단일 프로덕션 클러스터가 초당 1억 샘플 이상**을 받는다.",
+          "limits": "⚠️ **확장 능력이 없는 도구는 후보에서 빠졌다**(Vector) — 이 요구가 선택지를 좁혔다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+              "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-04",
+              "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "small-enough-to-fix"
+      ]
     },
     {
       "name": "여러 제품을 하나의 데이터 구조로 담는다",
@@ -83,14 +146,499 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "small-enough-to-fix",
+      "name": "고칠 수 있는 크기인지를 먼저 본다",
+      "domain": "이 규모를 관측하는 비용을 감당한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **전송 계층부터 신뢰할 수 없었다** — **`OTLP 는 StatsD 보다 더 큰 신뢰성을 준다. StatsD 는 UDP 에 의존해 높은 처리량에서 패킷 손실에 더 취약하다.`** 그리고 자체 집계 파이프라인도 막다른 길이었다 — **`Veneur 를 계속 쓰려면 Prometheus 의 프로토콜과 데이터 모델을 지원하기 위한 상당한 재작성이 필요했고, 그 포크는 지속적인 유지 부담이었다.`** ⚠️ **남의 것을 포크해 놓으면 그 뒤로 계속 값을 치른다** — **떠난 이유의 절반이 기술이 아니라 유지의 무게였다**(뒤쪽은 이 사이트의 재구성이다). **단일 프로덕션 클러스터가 초당 1억 샘플 이상**을 받는 규모다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**`단일 프로덕션 클러스터가 수백 개의 집계기로 확장돼 초당 1억 샘플 이상을 수집한다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 고른 도구의 크기",
+            "value": "**`작은 코드베이스(약 1만 줄)라 필요하면 이해하고 고치기 쉽다`** — 선택 근거에 코드 크기가 들어 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "**이전 벤더 기반 아키텍처 대비 비용이 대략 한 자릿수 규모로 줄었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "CPU",
+            "value": "JVM 서비스에서 메트릭이 쓰던 CPU 가 **10% 에서 1% 미만**으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 받아들인 대가",
+            "value": "**`델타 메트릭에서는 예기치 못한 실패가 데이터에 눈에 보이는 공백을 남긴다 — 메모리 사용 감소와 안정성 향상의 대가로 받아들인 절충이다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "label": "이 관측이 지켜보는 것",
+            "value": "활성 등록 **800만 개 이상** · 2026년 2분기 총예약액 **272억 달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Airbnb (ABNB) Q2 2026 Earnings",
+                "url": "https://news.airbnb.com/airbnb-q1-2026-financial-results/",
+                "publisher": "Airbnb Newsroom / 실적 발표",
+                "date": "2026",
+                "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "포크를 계속 들고 갈지 정할 때",
+          "thought": "⚠️ **포크는 처음에 싸고 나중에 비싸다** — **`Veneur 를 계속 쓰려면 상당한 재작성이 필요했고, 그 포크는 지속적인 유지 부담이었다.`** **떠난 이유의 절반이 기술이 아니라 유지의 무게였다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "목표를 무엇으로 둘지 정할 때",
+          "thought": "⚠️ **목표가 비용이면 흔한 답이 답이 아니게 된다** — recording rules 를 거절한 이유가 그것이다: **`질의 성능 개선에는 훌륭하지만, 원시 데이터를 먼저 TSDB 에 저장해야 하므로 우리의 비용 절감 목표를 무너뜨린다.`** **성능을 목표로 삼았다면 골랐을 것을 비용을 목표로 삼아서 버렸다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "도구를 고를 때",
+          "thought": "⚠️ **이 기능의 이름이 여기서 나온다 — 거절 이유가 기술만이 아니다.** m3aggregator 는 **`다른 회사들에서 검증됐지만 아키텍처가 우리가 원하는 것보다 복잡해 보였다`**, Vector 는 **`내장 확장 능력이 없고 Rust 로 쓰였는데 Airbnb 에서 널리 쓰이지 않는다`**, vmagent 는 **`작은 코드베이스(약 1만 줄)라 필요하면 이해하고 고치기 쉽다`**. **`우리가 고칠 수 있는가` 가 판정 기준으로 들어와 있다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "OTLP",
+            "what": "**OpenTelemetry 프로토콜.** ⚠️ **`StatsD 보다 더 큰 신뢰성`** — StatsD 는 UDP 라 높은 처리량에서 패킷 손실에 취약하다"
+          },
+          {
+            "name": "Veneur 포크 (버린 것)",
+            "what": "⚠️ **`Prometheus 의 프로토콜과 데이터 모델을 지원하려면 상당한 재작성이 필요했고 포크는 지속적인 유지 부담이었다`**"
+          },
+          {
+            "name": "vmagent",
+            "what": "**스트리밍 집계 · 샤딩으로 수평 확장 · 친절한 문서**, 그리고 ⚠️ **`작은 코드베이스(약 1만 줄)`**"
+          },
+          {
+            "name": "집계기",
+            "what": "**단일 프로덕션 클러스터가 수백 개로 확장**돼 초당 1억 샘플 이상을 받는다"
+          },
+          {
+            "name": "⚠️ 델타 시간성",
+            "what": "⚠️ **메모리와 안정성을 얻는 대신 `예기치 못한 실패가 데이터에 눈에 보이는 공백을 남긴다`**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **원시 데이터를 저장하고 나서 줄이지 않는다** — 그러면 비용 목표가 무너진다",
+          "⚠️ **필요하면 고칠 수 있어야 한다** — 코드 크기가 선택 기준이다",
+          "**수평으로 확장할 수 있어야 한다** — 샤딩이 없는 도구는 후보에서 빠졌다",
+          "⚠️ **장애 때는 이상한 값 대신 공백이 남는다** — 받아들인 절충이다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**애플리케이션이 OTLP 로 내보낸다** — StatsD 를 버리고",
+            "why": "⚠️ **`StatsD 는 UDP 에 의존해 높은 처리량에서 패킷 손실에 더 취약하다`**"
+          },
+          {
+            "step": "**OpenTelemetry Collector 가 받는다**",
+            "why": "표준 프로토콜의 입구를 둔다"
+          },
+          {
+            "step": "⚠️ **vmagent 가 스트리밍으로 집계한다** — TSDB 에 원시 데이터를 넣기 전에",
+            "why": "⚠️ **먼저 저장하고 나중에 줄이면 `비용 절감 목표를 무너뜨린다`**"
+          },
+          {
+            "step": "**샤딩으로 수평 확장한다** — 수백 개의 집계기로",
+            "why": "**초당 1억 샘플 이상**을 받아야 한다"
+          },
+          {
+            "step": "⚠️ **고카디널리티 서비스는 델타 시간성으로 바꾼다**",
+            "why": "⚠️ **메모리 사용을 줄이고 안정성을 얻는 대신 장애 때 데이터에 공백이 남는다**"
+          },
+          {
+            "step": "**먼저 모든 메트릭이 새 시스템으로 흐르게 한다**",
+            "why": "**그다음에 대시보드·경보·사용자 도구를 다룬다** — 기능을 점진적으로 옮기는 순서가 아니다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "StatsD 를 계속 쓸 것인가",
+            "chosen": "⚠️ **OTLP 로 옮긴다**",
+            "alternatives": [
+              "StatsD 유지",
+              "StatsD 위에 신뢰성 계층 추가"
+            ],
+            "tradeoff": "**`OTLP 는 StatsD 보다 더 큰 신뢰성을 준다. StatsD 는 UDP 에 의존해 높은 처리량에서 패킷 손실에 더 취약하다.`** ⚠️ **초당 1억 샘플 규모에서 패킷 손실은 `가끔 하나 빠진다` 가 아니라 상시적인 왜곡이 된다**(재구성). **대가는 계측 라이브러리와 수집 경로를 전부 바꿔야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "자체 포크(Veneur)를 계속 들고 갈 것인가",
+            "chosen": "⚠️ **버린다**",
+            "alternatives": [
+              "Veneur 를 Prometheus 모델에 맞게 재작성",
+              "포크를 상류에 병합"
+            ],
+            "tradeoff": "**`Veneur 를 계속 쓰려면 Prometheus 의 프로토콜과 데이터 모델을 지원하기 위한 상당한 재작성이 필요했고, 그 포크는 지속적인 유지 부담이었다.`** ⚠️ **포크는 처음에 싸고 나중에 비싸다** — **떠난 이유의 절반이 기술이 아니라 유지의 무게였다**(재구성). **대가는 자체 구현이 주던 맞춤 능력을 잃는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "recording rules 로 풀 것인가",
+            "chosen": "⚠️ **아니다** — 목표가 비용이기 때문에",
+            "alternatives": [
+              "recording rules 로 질의 성능 개선"
+            ],
+            "tradeoff": "**`recording rules 는 질의 성능을 개선하는 데는 훌륭하지만, 원시 데이터를 먼저 TSDB 에 저장해야 하므로 우리의 비용 절감 목표를 무너뜨린다.`** ⚠️ **성능을 목표로 삼았다면 골랐을 답을 비용을 목표로 삼아서 버렸다** — **같은 도구가 목표에 따라 답이 되기도 하고 아니기도 한다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "OpenTelemetry Collector 의 자체 집계를 쓸 것인가",
+            "chosen": "**아니다** — 집계 지원이 없다",
+            "alternatives": [
+              "Collector 에 집계 기능이 들어오길 기다리기"
+            ],
+            "tradeoff": "**`제안은 있었지만 메트릭 집계 지원이 없다.`** ⚠️ **이미 쓰는 부품으로 해결하면 가장 단순한데, 그 부품이 아직 그 일을 못 한다**(재구성). **대가는 파이프라인에 부품이 하나 더 는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "검증된 m3aggregator 를 쓸 것인가",
+            "chosen": "⚠️ **아니다** — 복잡하다는 이유로",
+            "alternatives": [
+              "m3aggregator 도입"
+            ],
+            "tradeoff": "**`다른 회사들에서 검증됐지만, 아키텍처가 우리가 원하는 것보다 복잡해 보였다.`** ⚠️ **`남들이 쓴다` 는 것이 근거가 되지 못한 자리다** — **우리가 감당할 복잡도인가가 먼저다**(재구성). **대가는 검증된 길을 두고 다른 길을 간다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "Vector 를 쓸 것인가",
+            "chosen": "⚠️ **아니다** — 확장 능력과 **사내 언어** 때문에",
+            "alternatives": [
+              "Vector 도입 후 확장 계층 자체 구현"
+            ],
+            "tradeoff": "**`내장 확장 능력이 없다. Rust 로 쓰였는데 Airbnb 에서 널리 쓰이지 않는다.`** ⚠️ **도구의 언어가 선택 기준이 된 자리다** — **고쳐야 할 때 고칠 사람이 있느냐를 본 것이다**(재구성). **대가는 좋은 도구를 언어 때문에 놓칠 수 있다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "vmagent 를 고른 근거는 무엇인가",
+            "chosen": "⚠️ **스트리밍 집계 · 샤딩 · 그리고 `고칠 수 있는 크기`**",
+            "alternatives": [
+              "앞의 네 대안"
+            ],
+            "tradeoff": "**`Prometheus 메트릭의 스트리밍 집계를 지원한다`** · **`샤딩으로 수평 확장할 방법을 준다`** · 문서가 **`대단히 친절하고 설정이 쉽다`** · 그리고 ⚠️ **`작은 코드베이스(약 1만 줄)라 필요하면 이해하고 고치기 쉽다.`** ⚠️ **이 마지막 항목이 이 기능의 이름이다** — **`우리가 고칠 수 있는가` 가 도구 선택의 기준으로 명시돼 있다**(재구성). **대가는 필요하면 실제로 고쳐야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "question": "고카디널리티 서비스를 어떻게 다룰 것인가",
+            "chosen": "⚠️ **델타 시간성으로 바꾼다** — 데이터 공백을 받아들이고",
+            "alternatives": [
+              "누적 시간성 유지",
+              "고카디널리티 메트릭을 버리기"
+            ],
+            "tradeoff": "**`델타 메트릭에서는 예기치 못한 실패가 데이터에 눈에 보이는 공백을 남긴다 — 메모리 사용 감소와 안정성 향상의 대가로 받아들인 절충이다.`** ⚠️ **누적이면 장애가 이상한 스파이크로 나타나고 델타면 빈칸으로 나타난다** — **어느 쪽도 진실은 아니지만 빈칸이 덜 속인다**(이 해석은 이 사이트의 재구성이다). ⭐ **`애매할 때 어느 쪽으로 넘어지나` 축의 또 한 사례다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OTLP (OpenTelemetry 프로토콜)",
+            "role": "⚠️ **StatsD 의 UDP 패킷 손실을 벗어난다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "OpenTelemetry Collector",
+            "role": "표준 입구. ⚠️ **다만 집계는 못 해서 다른 부품이 필요했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "vmagent (약 1만 줄)",
+            "role": "⚠️ **스트리밍 집계와 샤딩** — 그리고 **필요하면 고칠 수 있는 크기**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "수백 개의 집계기",
+            "role": "**초당 1억 샘플 이상**을 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "tech": "델타 시간성",
+            "role": "⚠️ **메모리와 안정성을 사고 장애 때의 데이터 공백을 받아들인다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Razorpay (같은 vmagent 를 쓰는 회사)",
+          "via": "⚠️ 같은 도구, 다른 문제",
+          "contract": "⚠️ **두 회사가 같은 vmagent 를 쓰는데 출발점이 다르다** — **Razorpay 는 `안 쓰는 메트릭을 찾아 지우는` 문제였고, Airbnb 는 `StatsD 와 자체 포크가 확장 한계에 닿은` 문제였다.** **도구가 같아도 문제가 다르면 쓰는 법이 다르다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "애플리케이션 (JVM 서비스)",
+          "via": "계측",
+          "contract": "**메트릭이 쓰던 CPU 가 10% 에서 1% 미만으로** — **관측의 비용이 애플리케이션 안에도 있었다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "대시보드 · 경보 · 사용자 도구",
+          "via": "⚠️ 나중에 다룬 것",
+          "contract": "⚠️ **`먼저 모든 메트릭이 새 시스템으로 흐르게 하고 그다음에 대시보드·경보·사용자 도구를 다룬다`** — 기능별 점진 이전이 아니라 **파이프라인 먼저**다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "이전 벤더",
+          "via": "떠난 자리",
+          "contract": "**`이전 벤더 기반 아키텍처 대비 비용이 대략 한 자릿수 규모로 줄었다`**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 목표가 무엇이냐에 따라 같은 도구가 답이 되기도 하고 아니기도 한다",
+            "why_hard": "⚠️ **recording rules 는 관측 성능 개선의 표준적인 답인데 이 회사는 거절했다** — **`질의 성능 개선에는 훌륭하지만, 원시 데이터를 먼저 TSDB 에 저장해야 하므로 우리의 비용 절감 목표를 무너뜨린다.`** **목표를 성능으로 잡았다면 골랐을 것이다**(재구성). **도구의 좋고 나쁨이 아니라 무엇을 줄이려는지가 답을 정한다.**",
+            "current_best": "**목표를 먼저 못 박고 그 기준으로 대안을 거르는 것** — 이 회사는 **비용 절감**을 기준으로 다섯을 걸렀다. ⚠️ **대가는 성능 쪽 최적화를 나중으로 미룬다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          },
+          {
+            "problem": "장애를 어떻게 보이게 할 것인가",
+            "why_hard": "⚠️ **누적 시간성이면 장애가 이상한 스파이크로 나타나고 델타면 빈칸으로 나타난다.** **어느 쪽도 `무슨 일이 있었는지` 를 정확히 말해 주지 않는다**(재구성). 회사는 **`예기치 못한 실패가 데이터에 눈에 보이는 공백을 남긴다`** 는 쪽을 골랐다.",
+            "current_best": "⚠️ **빈칸을 고른 것** — **메모리 사용 감소와 안정성 향상의 대가로 받아들인 절충**이다. **빈칸이 덜 속인다**(이 해석은 이 사이트의 재구성이다). ⭐ **Flipkart 가 `덜 쓰는 쪽`, Razorpay 가 `수집을 멈추는 쪽` 을 고른 것과 같은 결이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+                "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-04",
+                "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "저장하기 전에 줄인다",
+          "question": "메트릭이 어디서 줄어드나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>애플리케이션 (JVM 등)</b><br/>• 메트릭 CPU 10% → 1% 미만\"]:::list --> O[\"<b>OTLP</b><br/>• StatsD 의 UDP 패킷 손실을 벗어난다\"]:::accent\n  O --> C[\"<b>OpenTelemetry Collector</b><br/>• ⚠️ 집계는 못 한다\"]:::list\n  C --> V[\"⚠️ <b>vmagent (약 1만 줄)</b><br/>• 스트리밍 집계<br/>• 샤딩으로 수평 확장<br/>• 필요하면 고칠 수 있는 크기\"]:::accent\n  V --> S[\"<b>수백 개의 집계기</b><br/>• 초당 1억 샘플 이상\"]:::list\n  S --> T[\"<b>TSDB</b><br/>• ⚠️ 여기 넣기 전에 줄인다\"]:::list\n  D[\"⚠️ <b>고카디널리티는 델타로</b><br/>• 메모리 · 안정성을 사고<br/>• 장애 때 공백을 받아들인다\"]:::accent --> V\n  T --> R[\"<b>비용 한 자릿수 규모 감소</b>\"]:::list"
+        },
+        {
+          "title": "다섯을 거절한 이유",
+          "question": "무엇을 기준으로 골랐나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>Veneur 포크 유지</b><br/>• 상당한 재작성 필요<br/>• 포크는 지속적인 유지 부담\"]:::gone\n  B[\"⚠️ <b>recording rules</b><br/>• 원시 데이터를 먼저 TSDB 에<br/>• 비용 절감 목표를 무너뜨린다\"]:::gone\n  C[\"⚠️ <b>OTel Collector 자체 집계</b><br/>• 제안은 있었지만 지원이 없다\"]:::gone\n  D[\"⚠️ <b>m3aggregator</b><br/>• 다른 회사에서 검증됐지만<br/>  우리가 원하는 것보다 복잡\"]:::gone\n  E[\"⚠️ <b>Vector</b><br/>• 내장 확장 능력 없음<br/>• Rust 가 사내에 널리 안 쓰인다\"]:::gone\n  F[\"<b>vmagent</b><br/>• 스트리밍 집계 · 샤딩<br/>• ⚠️ 약 1만 줄이라 고치기 쉽다\"]:::accent\n  A --> F\n  B --> F\n  C --> F\n  D --> F\n  E --> F\n  G[\"⚠️ <b>기준이 기술만이 아니다</b><br/>• 우리가 감당할 복잡도인가<br/>• 고칠 사람이 있는 언어인가<br/>• 고칠 수 있는 크기인가 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+          "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+          "publisher": "The Airbnb Tech Blog",
+          "date": "2026-04",
+          "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+        },
+        {
+          "title": "Airbnb (ABNB) Q2 2026 Earnings",
+          "url": "https://news.airbnb.com/airbnb-q1-2026-financial-results/",
+          "publisher": "Airbnb Newsroom / 실적 발표",
+          "date": "2026",
+          "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **도메인 셋 중 둘이 본문 미독이다** — 데이터 아키텍처와 신원 그래프. **제목과 3자 요약으로 세웠다.**",
     "⚠️ **검색·랭킹의 본체를 아직 못 봤다** — **등록 800만 개에서 무엇을 어떻게 보여 주는지**가 이 마켓플레이스의 핵심인데 2026년 글 목록에 안 보인다.",
     "⚠️ **`AI 에이전트가 코드의 60%를 쓴다` 는 3자 기사가 있다**(2026-07) — **회사 자신의 글로 확인하지 못했다.** ⏳ 확인되면 `AI 를 어디까지 믿나` 축의 재료가 된다.",
     "⚠️ **목록 페이지가 헤더만 온다** — `medium.com/airbnb-engineering` 를 `r.jina.ai` 로 열어도 글 목록이 안 나와 **주소를 검색으로 받아야 한다.**",
-    "⚠️ **연표(eras)를 못 세웠다** — 2008년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+    "⚠️ **연표(eras)를 못 세웠다** — 2008년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다.",
+    "⚠️ **이전 기간과 이전 중의 사고를 모른다** — **`먼저 모든 메트릭이 새 시스템으로 흐르게 하고 그다음에 대시보드·경보를 다룬다`** 는 순서는 밝히지만, **그 사이에 무엇이 어긋났는지는 적지 않는다.**"
   ],
   "sources": [
     {
