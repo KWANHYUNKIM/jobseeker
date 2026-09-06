@@ -61,8 +61,56 @@
     {
       "name": "자기 인프라를 옮긴다",
       "why": "⚠️ **내구성을 얻으려다 지연을 잃었다** — **`getWarmPoolTokenCount 의 P95 에서 그 확인이 Redis 에서는 1.29ms, DynamoDB 에서는 5.13ms 였다.`** ⭐ **작은 지연이 어디까지 번지는지도 적는다** — **`P90 에서 1ms 가 15ms 로 나빠지는 것만으로도 우리 웜풀 관리 로직이 무너질 수 있었다.`** ✅ **본문 확인함**(2026-08-11).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "웜풀 + DynamoDB",
+          "solves": "⭐ **`그 상태가 부채가 됐다`** 를 끝낸다 — **`매핑을 잃으면 그 빌드는 영영 청구되지 않는다`** 였으므로 캐시에 둘 수 없었다.",
+          "limits": "⚠️ **내구성의 값이 지연으로 온다** — **`P95 에서 Redis 1.29ms, DynamoDB 5.13ms`**, **P90 에서는 약 17배**.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we migrated the database behind every Vercel build",
+              "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+              "publisher": "Vercel",
+              "date": "2026-08-11",
+              "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+            }
+          ]
+        },
+        {
+          "tech": "⭐ 동시 공급 호출",
+          "solves": "⭐ 배치 방식을 버리고(**`부하에 따라 흔들릴 지연 비율을 하드코딩했고, 그것은 저장소 속도에 대한 또 하나의 적히지 않은 의존을 뜻했다`**) **`각 웜풀이 더 이상 앞의 것 뒤에서 기다리지 않게`** 했다 — **상수를 튜닝하는 대신 상수가 필요 없는 구조를 골랐다**(재구성).",
+          "limits": "⚠️ **`최악의 경우는 풀의 낡은 그림에서 컨테이너 몇 개가 더 만들어지는 것`** — **동시에 보면 각자가 조금씩 옛날 상태를 본다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we migrated the database behind every Vercel build",
+              "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+              "publisher": "Vercel",
+              "date": "2026-08-11",
+              "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+            }
+          ]
+        },
+        {
+          "tech": "다섯 단계 피처 플래그 롤아웃",
+          "solves": "**Redis 전용 → 이중 쓰기 → 섀도 읽기 → DynamoDB 주 → DynamoDB 전용**, **대시보드로 일치율과 지연을 내내 감시.** ⭐ **섀도 읽기가 핵심이다** — 실제로 쓰지 않으면서 새 저장소가 같은 답을 내는지 본다(재구성). **2026년 4월 완료.**",
+          "limits": "⚠️ **그동안 두 저장소를 함께 유지해야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we migrated the database behind every Vercel build",
+              "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+              "publisher": "Vercel",
+              "date": "2026-08-11",
+              "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "cache-holding-what-cannot-be-lost"
+      ]
     },
     {
       "name": "에이전트를 안전하게 실행한다",
@@ -77,14 +125,497 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "cache-holding-what-cannot-be-lost",
+      "name": "캐시에 잃으면 안 되는 것을 두고 있었다",
+      "domain": "자기 인프라를 옮긴다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **웜풀은 캐시가 아닌 것을 캐시에 들고 있었다** — 웜풀은 **`새 컴퓨트를 기다리지 않고 빌드가 시작될 수 있게 하는 대기 컨테이너 집합`** 인데, 그 상태에 **컨테이너 인증 토큰·상태·배포 청구 매핑**이 들어 있었다. ⭐ **회사의 표현이 정확하다** — **`그 상태가 부채가 됐다.`** 두 가지가 걸렸다 — **`Redis 가 사용 불가가 되거나 데이터를 잃으면, 풀은 더 이상 컨테이너를 믿을 만하게 인증할 수 없다`** 이고, 더 뾰족하게는 **`매핑을 잃으면 그 빌드는 영영 청구되지 않는다`**. ⭐ **기술 실패가 곧 매출 손실인 자리다**(재구성).",
+        "metrics": [
+          {
+            "label": "⭐ 문제의 정체",
+            "value": "**`그 상태가 부채가 됐다`** — 웜풀은 **`새 컴퓨트를 기다리지 않고 빌드가 시작될 수 있게 하는 대기 컨테이너 집합`** 인데 인증 토큰과 청구 매핑을 들고 있었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 가장 아픈 한 줄",
+            "value": "**`매핑을 잃으면 그 빌드는 영영 청구되지 않는다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 내구성의 값",
+            "value": "**`getWarmPoolTokenCount 의 P95 에서 그 확인이 Redis 에서는 1.29ms, DynamoDB 에서는 5.13ms 였다`** — **P90 에서는 격차가 약 17배로 벌어졌다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 배치를 버린 이유",
+            "value": "**`그 상수가 바로 우리가 그것을 버린 이유이기도 했다. 부하에 따라 흔들릴 지연 비율을 하드코딩했고, 그것은 저장소 속도에 대한 또 하나의 적히지 않은 의존을 뜻했다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "label": "감수한 것",
+            "value": "**`최악의 경우는 풀의 낡은 그림에서 컨테이너 몇 개가 더 만들어지는 것`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 작은 지연이 번지는 범위",
+            "value": "**`P90 에서 1ms 가 15ms 로 나빠지는 것만으로도 우리 웜풀 관리 로직이 무너질 수 있었다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "label": "옮긴 방법",
+            "value": "**다섯 단계 피처 플래그** — **Redis 전용 → 이중 쓰기 → 섀도 읽기 → DynamoDB 주 → DynamoDB 전용**, 대시보드로 **일치율과 지연**을 감시. **2026년 4월 완료**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇이 문제인지 이름 붙일 때",
+          "thought": "⭐ **`부채` 라는 말이 정확하다** — 웜풀 상태는 성능을 위해 캐시에 둔 것인데, 그 안에 **잃으면 안 되는 것**(인증 토큰, 청구 매핑)이 섞여 들었다(재구성). ⚠️ **캐시의 계약은 `잃어도 된다` 인데 내용물의 계약은 `잃으면 안 된다` 였다**(재구성) — **두 계약이 어긋난 채로 돌고 있었던 것이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "내구성의 값을 볼 때",
+          "thought": "⚠️ **얻은 만큼 잃었다** — **P95 에서 1.29ms 가 5.13ms 가 되고 P90 에서는 약 17배**. ⭐ **그리고 그 작은 값이 어디까지 번지는지를 적는다** — **`P90 에서 1ms 가 15ms 로 나빠지는 것만으로도 우리 웜풀 관리 로직이 무너질 수 있었다.`** **밀리초짜리 확인이 루프 안에서 반복되면 전체가 무너진다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "완화 방법을 고를 때",
+          "thought": "⭐ **버린 이유가 이 기능에서 가장 배울 대목이다** — 배치가 **`부하에 따라 흔들릴 지연 비율을 하드코딩했고, 그것은 저장소 속도에 대한 또 하나의 적히지 않은 의존을 뜻했다`**. ⚠️ **`적히지 않은 의존` — 지금은 맞지만 왜 맞는지 아무 데도 안 적혀 있고, 부하가 바뀌면 조용히 틀려지는 상수다**(재구성). ⭐ **그래서 상수를 없애는 쪽(동시 호출)을 골랐다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "웜풀",
+            "what": "**`새 컴퓨트를 기다리지 않고 빌드가 시작될 수 있게 하는 대기 컨테이너 집합`** — 컨테이너 인증 토큰·상태·배포 청구 매핑을 관리한다"
+          },
+          {
+            "name": "⚠️ Redis (떠난 것)",
+            "what": "⚠️ **`그 상태가 부채가 됐다`** — **`사용 불가가 되거나 데이터를 잃으면 풀이 더 이상 컨테이너를 믿을 만하게 인증할 수 없다`**"
+          },
+          {
+            "name": "⭐ 청구 매핑",
+            "what": "⭐ **`매핑을 잃으면 그 빌드는 영영 청구되지 않는다`** — 기술 실패가 곧 매출 손실(재구성)"
+          },
+          {
+            "name": "DynamoDB",
+            "what": "**Redis 가 준 적 없는 내구성 보장** — 대신 **P95 1.29ms → 5.13ms**"
+          },
+          {
+            "name": "⚠️ 버린 배치",
+            "what": "⚠️ **`부하에 따라 흔들릴 지연 비율을 하드코딩했고, 그것은 저장소 속도에 대한 또 하나의 적히지 않은 의존을 뜻했다`**"
+          },
+          {
+            "name": "동시 공급 호출",
+            "what": "**`각 웜풀이 더 이상 앞의 것 뒤에서 기다리지 않게`** — 대가는 **낡은 그림에서 오는 컨테이너 몇 개**"
+          },
+          {
+            "name": "다섯 단계 롤아웃",
+            "what": "**Redis 전용 → 이중 쓰기 → 섀도 읽기 → DynamoDB 주 → DynamoDB 전용** — 피처 플래그와 대시보드(일치율·지연)"
+          }
+        ],
+        "invariants": [
+          "⭐ **잃으면 안 되는 것은 캐시에 두지 않는다**",
+          "⚠️ **적히지 않은 의존을 만들지 않는다** — 부하에 따라 흔들릴 상수를 하드코딩하지 않는다",
+          "**낡은 그림은 감수하되 청구 매핑은 잃지 않는다**",
+          "⚠️ **단계마다 되돌릴 수 있게 옮긴다** — 피처 플래그 다섯 단계"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "⚠️ **웜풀 상태를 Redis 에서 걷어낸다**",
+            "why": "⭐ **`그 상태가 부채가 됐다`** — **`매핑을 잃으면 그 빌드는 영영 청구되지 않는다`**"
+          },
+          {
+            "step": "**DynamoDB 로 옮겨 내구성을 얻는다**",
+            "why": "**Redis 가 준 적 없는 보장이다**"
+          },
+          {
+            "step": "⚠️ **그런데 지연이 나빠진다 — P95 1.29ms → 5.13ms, P90 은 약 17배**",
+            "why": "⚠️ **`P90 에서 1ms 가 15ms 로 나빠지는 것만으로도 우리 웜풀 관리 로직이 무너질 수 있었다`**"
+          },
+          {
+            "step": "⭐ **배치로 완화하려던 안을 버린다**",
+            "why": "⭐ **`부하에 따라 흔들릴 지연 비율을 하드코딩했고, 그것은 저장소 속도에 대한 또 하나의 적히지 않은 의존을 뜻했다`**"
+          },
+          {
+            "step": "**대신 공급 호출을 동시에 돌린다**",
+            "why": "**`각 웜풀이 더 이상 앞의 것 뒤에서 기다리지 않게`**"
+          },
+          {
+            "step": "**낡은 그림에서 오는 여분 컨테이너를 감수한다**",
+            "why": "**`최악의 경우는 풀의 낡은 그림에서 컨테이너 몇 개가 더 만들어지는 것`**"
+          },
+          {
+            "step": "**다섯 단계로 옮긴다 — Redis 전용 → 이중 쓰기 → 섀도 읽기 → DynamoDB 주 → DynamoDB 전용**",
+            "why": "**대시보드로 일치율과 지연을 내내 감시한다** — **2026년 4월 완료**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "웜풀 상태를 Redis 에 계속 둘 것인가",
+            "chosen": "⚠️ **아니다 — 그 상태가 부채가 됐다**",
+            "alternatives": [
+              "Redis 지속화 옵션 켜기",
+              "Redis 이중화 강화"
+            ],
+            "tradeoff": "⭐ **캐시의 계약은 `잃어도 된다` 인데 내용물의 계약은 `잃으면 안 된다` 였다**(재구성). **`Redis 가 사용 불가가 되거나 데이터를 잃으면, 풀은 더 이상 컨테이너를 믿을 만하게 인증할 수 없다`** 이고, 더 아픈 쪽은 **`매핑을 잃으면 그 빌드는 영영 청구되지 않는다`** 다. ⭐ **기술 실패가 곧 매출 손실인 자리라 캐시로 둘 수 없었다**(재구성). **대가는 다음 결정이 그대로 드러낸다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "question": "내구성의 값을 얼마나 치를 것인가",
+            "chosen": "⚠️ **P95 1.29ms → 5.13ms, P90 약 17배를 받아들였다**",
+            "alternatives": [
+              "더 빠른 내구성 저장소 탐색",
+              "일부만 옮기기"
+            ],
+            "tradeoff": "수치를 그대로 적는다 — **`getWarmPoolTokenCount 의 P95 에서 Redis 1.29ms, DynamoDB 5.13ms`** 이고 **P90 에서는 격차가 약 17배**다. ⚠️ **그리고 그 값이 어디까지 번지는지도 적는다** — **`P90 에서 1ms 가 15ms 로 나빠지는 것만으로도 우리 웜풀 관리 로직이 무너질 수 있었다.`** ⭐ **밀리초짜리 확인이 루프 안에서 반복되면 전체가 무너진다**(재구성) — **그래서 저장소를 바꾸는 것이 곧 로직을 바꾸는 일이 됐다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "question": "지연을 배치로 완화할 것인가",
+            "chosen": "⭐ **아니다 — `적히지 않은 의존` 을 만들기 때문**",
+            "alternatives": [
+              "요청을 배치로 묶기",
+              "캐시 계층 추가"
+            ],
+            "tradeoff": "⭐ **이 기능에서 가장 배울 대목이다.** **`그 상수가 바로 우리가 그것을 버린 이유이기도 했다. 부하에 따라 흔들릴 지연 비율을 하드코딩했고, 그것은 저장소 속도에 대한 또 하나의 적히지 않은 의존을 뜻했다.`** ⚠️ **지금은 맞지만 왜 맞는지 아무 데도 안 적혀 있고, 부하가 바뀌면 조용히 틀려지는 상수다**(재구성). ⭐ **동작하는 해법을 그 상수 하나 때문에 버렸다** — **잘 도는 것과 왜 도는지 아는 것은 다르다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "question": "그러면 무엇으로 완화할 것인가",
+            "chosen": "**동시 호출 — 순서를 없앤다**",
+            "alternatives": [
+              "순차 유지하고 최적화",
+              "캐시 재도입"
+            ],
+            "tradeoff": "**`대신 나온 것은 루프의 공급 호출들이 동시에 돌게 해서, 각 웜풀이 더 이상 앞의 것 뒤에서 기다리지 않게 한 것이다.`** ⚠️ **지연을 줄이는 대신 지연이 겹치게 만들었다**(재구성) — 저장소가 느린 것은 그대로 두고 그 느림이 직렬로 쌓이지 않게 했다(재구성). **대가는 다음 결정이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "question": "동시에 돌리면 무엇을 잃는가",
+            "chosen": "**낡은 그림에서 오는 여분 컨테이너 — 감수한다**",
+            "alternatives": [
+              "직렬 읽기로 일관성 유지",
+              "잠금으로 조율"
+            ],
+            "tradeoff": "**`최악의 경우는 풀의 낡은 그림에서 컨테이너 몇 개가 더 만들어지는 것이다.`** ⚠️ **동시에 보면 각자가 조금씩 옛날 상태를 본다**(재구성) — 그 결과가 여분의 컨테이너다. ⭐ **낭비 쪽으로 넘어졌다** — **컨테이너 몇 개는 되돌릴 수 있고 청구 매핑 상실은 되돌릴 수 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "question": "어떻게 옮길 것인가",
+            "chosen": "**다섯 단계 — 피처 플래그로**",
+            "alternatives": [
+              "한 번에 전환",
+              "점검 창 잡고 이전"
+            ],
+            "tradeoff": "**Redis 전용 → 이중 쓰기 → 섀도 읽기 → DynamoDB 주 → DynamoDB 전용**, 그리고 **대시보드로 일치율과 지연을 내내 감시**했다. ⚠️ **섀도 읽기 단계가 핵심이다** — 실제로 쓰지 않으면서 새 저장소가 같은 답을 내는지 본다(재구성). **2026년 4월 완료.** **대가는 그동안 두 저장소를 함께 유지한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "question": "성능이 나빠진 것을 어떻게 말할 것인가",
+            "chosen": "⭐ **수치로 그대로 적는다**",
+            "alternatives": [
+              "개선점만 강조",
+              "비교를 생략"
+            ],
+            "tradeoff": "⭐ **`Redis 1.29ms 대 DynamoDB 5.13ms`** 와 **`P90 에서 약 17배`** 를 그대로 적고, **버린 해법과 그 이유**까지 적는다. ⚠️ **이전 이야기에서 `느려졌다` 를 숫자로 적는 글은 드물다**(재구성) — 대개는 얻은 것만 말한다(재구성). ⭐ **③축에서 정직한 쪽이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "웜풀",
+            "role": "**`새 컴퓨트를 기다리지 않고 빌드가 시작될 수 있게 하는 대기 컨테이너 집합`** — 인증 토큰·상태·청구 매핑을 관리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "tech": "DynamoDB",
+            "role": "**Redis 가 준 적 없는 내구성** — 대가는 **P95 1.29ms → 5.13ms, P90 약 17배**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "tech": "⭐ 동시 공급 호출",
+            "role": "⭐ **배치의 하드코딩된 상수 대신** — **`각 웜풀이 더 이상 앞의 것 뒤에서 기다리지 않게`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "tech": "다섯 단계 피처 플래그 롤아웃",
+            "role": "**Redis 전용 → 이중 쓰기 → 섀도 읽기 → DynamoDB 주 → DynamoDB 전용** — 일치율과 지연을 대시보드로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "에이전트를 안전하게 실행한다",
+          "via": "같은 컨테이너 기반",
+          "contract": "**웜풀이 빌드용 컨테이너를 대기시키듯, 에이전트 실행도 격리된 컴퓨트를 필요로 한다** — ⏳ **그 도메인의 글 넷은 아직 안 읽었다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "⭐ 청구 (매출)",
+          "via": "매핑을 잃으면 못 받는다",
+          "contract": "⭐ **`매핑을 잃으면 그 빌드는 영영 청구되지 않는다`** — **사용량 기반 과금이라 기술 상태가 곧 매출 기록이다**(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "⚠️ Redis (떠난 것)",
+          "via": "어긋난 계약",
+          "contract": "⚠️ **캐시의 계약은 `잃어도 된다` 인데 내용물의 계약은 `잃으면 안 된다` 였다** — **`그 상태가 부채가 됐다`**(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⭐ 캐시의 계약과 내용물의 계약이 어긋나 있었다",
+            "why_hard": "⭐ **웜풀 상태는 성능을 위해 캐시에 뒀는데 그 안에 잃으면 안 되는 것이 섞여 들었다**(재구성) — **`Redis 가 사용 불가가 되거나 데이터를 잃으면, 풀은 더 이상 컨테이너를 믿을 만하게 인증할 수 없다`** 이고 **`매핑을 잃으면 그 빌드는 영영 청구되지 않는다`**. ⚠️ **캐시는 잃어도 되는 것을 두는 곳인데 잃으면 매출이 사라지는 것을 두고 있었다**(재구성).",
+            "current_best": "**내구성 있는 저장소로 옮기되 그 값을 다른 데서 갚는 것** — DynamoDB 로 옮겨 **`그 상태가 부채가 됐다`** 를 끝내고, 지연이 나빠진 만큼(**P95 1.29ms → 5.13ms**) **공급 호출을 동시에 돌려** 직렬 누적을 없앤다. **감수한 것은 `풀의 낡은 그림에서 컨테이너 몇 개가 더 만들어지는 것`** — ⭐ **컨테이너 몇 개는 되돌릴 수 있고 청구 매핑 상실은 되돌릴 수 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          },
+          {
+            "problem": "⭐ 잘 도는 것과 왜 도는지 아는 것은 다르다",
+            "why_hard": "⭐ **배치 방식은 실제로 동작했다** — 그런데 **`부하에 따라 흔들릴 지연 비율을 하드코딩했고, 그것은 저장소 속도에 대한 또 하나의 적히지 않은 의존을 뜻했다`**. ⚠️ **지금은 맞지만 왜 맞는지 아무 데도 안 적혀 있고, 부하가 바뀌면 조용히 틀려지는 상수다**(재구성) — **틀려지는 순간을 알아챌 방법도 없다**(재구성).",
+            "current_best": "⭐ **동작하는 해법을 그 상수 하나 때문에 버리는 것** — 대신 **`루프의 공급 호출들이 동시에 돌게 해서 각 웜풀이 앞의 것 뒤에서 기다리지 않게`** 했다. ⚠️ **저장소가 느린 것은 그대로 두고 그 느림이 직렬로 쌓이지 않게 한 것이다**(재구성) — **상수를 튜닝하는 대신 상수가 필요 없는 구조를 골랐다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "내구성을 얻고 지연을 잃은 뒤",
+          "question": "그 값을 어디서 갚았나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"⚠️ <b>Redis 에 웜풀 상태</b><br/>• 인증 토큰 · 상태<br/>• 배포 청구 매핑\"]:::gone --> B[\"⭐ <b>그 상태가 부채가 됐다</b><br/>• 잃으면 인증이 무너지고<br/>• 매핑을 잃으면 그 빌드는<br/>  영영 청구되지 않는다\"]:::gone\n  B --> C[\"<b>DynamoDB 로</b><br/>• Redis 가 준 적 없는 내구성\"]:::accent\n  C --> D[\"⚠️ <b>그런데 느려졌다</b><br/>• P95 1.29ms → 5.13ms<br/>• P90 은 약 17배<br/>• 1ms→15ms 만으로도<br/>  웜풀 로직이 무너질 수 있다\"]:::gone\n  D --> E[\"⚠️ <b>배치로 완화?</b><br/>• 부하에 따라 흔들릴<br/>  지연 비율을 하드코딩<br/>• 적히지 않은 의존\"]:::gone\n  E --> F[\"⭐ <b>답: 동시 호출</b><br/>• 각 웜풀이 앞의 것을<br/>  기다리지 않는다<br/>• 상수가 필요 없는 구조\"]:::accent\n  F --> G[\"<b>감수한 것</b><br/>• 풀의 낡은 그림에서<br/>  컨테이너 몇 개가 더\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "잃으면 안 되는 것을 캐시에 두면",
+          "question": "무엇이 어긋나 있었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>캐시의 계약</b><br/>• 잃어도 된다\"]:::list --> X{\"⚠️ <b>어긋남</b>\"}:::gone\n  B[\"⭐ <b>내용물의 계약</b><br/>• 인증 토큰 — 잃으면 안 된다<br/>• 청구 매핑 — 잃으면 안 된다\"]:::accent --> X\n  X --> C[\"⚠️ <b>Redis 가 데이터를 잃으면</b><br/>• 풀이 컨테이너를 믿을 만하게<br/>  인증할 수 없다\"]:::gone\n  X --> D[\"⭐ <b>매핑을 잃으면<br/>  그 빌드는 영영 청구되지 않는다</b>\"]:::gone\n  C --> E[\"<b>답: 내구성 있는 저장소로</b>\"]:::accent\n  D --> E\n  E --> F[\"⚠️ <b>그 값이 지연으로 온다</b><br/>• P90 에서 약 17배\"]:::gone\n  F --> G[\"⚠️ <b>배치로 막으려 했으나</b><br/>• 적히지 않은 의존을<br/>  하나 더 만든다\"]:::gone\n  G --> H[\"⭐ <b>답: 상수가 필요 없는 구조</b><br/>• 동시 호출<br/>• 컨테이너 몇 개는 되돌릴 수 있고<br/>  청구 매핑 상실은 아니다 (재구성)\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "다섯 단계로 옮긴다",
+          "question": "되돌릴 수 있게 어떻게 넘겼나",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[\"<b>Redis 전용</b>\"]:::list --> B[\"<b>이중 쓰기</b>\"]:::accent\n  B --> C[\"⭐ <b>섀도 읽기</b><br/>• 쓰지 않으면서<br/>  같은 답을 내는지 본다\"]:::accent\n  C --> D[\"<b>DynamoDB 주</b>\"]:::accent\n  D --> E[\"<b>DynamoDB 전용</b><br/>• 2026년 4월 완료\"]:::list\n  F[\"<b>대시보드</b><br/>• 일치율 · 지연\"]:::list -.내내.-> C"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "How we migrated the database behind every Vercel build",
+          "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+          "publisher": "Vercel",
+          "date": "2026-08-11",
+          "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+        },
+        {
+          "title": "Vercel revenue, valuation & funding",
+          "url": "https://sacra.com/c/vercel/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2026년 2월 ARR 3억 4,000만 달러(2025년 말 3억 500만에서), 전년 대비 86% 성장. 2025년 9월 30일 시리즈 F 3억 달러를 기업가치 93억 달러에 조달했고 총 조달액은 8억 6,300만 달러. Next.js 주간 다운로드 2억 회, AI SDK 주간 300만 회, v0 이 ARR 약 4,200만 달러로 전체의 21% 안팎."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **에이전트 도메인의 글 넷이 다 미독이다** — 이 회사에서 자료가 가장 두꺼운 축인데 아직 하나도 안 읽었다. **주소는 넷 다 확보돼 있다.**",
     "⚠️ **확인한 이전 글에 날짜 서술이 특이하다** — 본문이 `3~4월` 의 일을 적는데 글은 **2026-08-11** 이다. **회고라서 그렇다**(재구성) — **연표를 쓸 때 발행일을 사건 연도로 옮기지 않는다.**",
     "⚠️ **Next.js 자체의 기술 자료를 이 블로그에서 못 봤다** — **주간 2억 다운로드짜리 프레임워크인데** 엔지니어링 카테고리에는 플랫폼 이야기가 대부분이다.",
     "⭐ **오픈소스가 유통이라는 구조를 회사가 어떻게 보는지 못 읽었다** — VictoriaMetrics 는 **`오픈소스는 좋은 마케팅이다`** 라고 직접 썼는데, Vercel 은 같은 구조를 갖고도 그것을 말한 글을 못 찾았다(재구성).",
-    "⚠️ **v0 이 ARR 의 21% 안팎이라는 수치가 3자 추정이다** — 회사가 직접 밝힌 숫자가 아니다."
+    "⚠️ **v0 이 ARR 의 21% 안팎이라는 수치가 3자 추정이다** — 회사가 직접 밝힌 숫자가 아니다.",
+    "⭐ **`느려졌다` 를 숫자로 적는 드문 이전 글이다** — **`Redis 1.29ms 대 DynamoDB 5.13ms`**, **P90 약 17배**, 그리고 **버린 해법과 그 이유**까지. ⚠️ **대개의 이전 글은 얻은 것만 말한다**(재구성). ③축에서 정직한 쪽이다."
   ],
   "sources": [
     {
@@ -92,7 +623,7 @@
       "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
       "publisher": "Vercel",
       "date": "2026-08-11",
-      "summary": "내구성을 얻으려 Redis 에서 DynamoDB 로 옮겼더니 P95 확인 시간이 1.29ms 에서 5.13ms 가 됐다. 지연 비율을 하드코딩한 초기 배치 방식은 부하에 따라 흔들릴 것이라 버리고, 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 최악의 경우는 풀의 낡은 그림에서 컨테이너 몇 개가 더 만들어지는 것이다."
+      "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
     },
     {
       "title": "A sandbox without a network boundary is only half a sandbox",
