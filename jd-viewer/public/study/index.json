@@ -501,9 +501,9 @@
         "OIDC",
         "OpenID Connect"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "backpressure",
@@ -709,9 +709,9 @@
         "폐쇄망",
         "network separation"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "grpc",
@@ -1642,7 +1642,7 @@
         "pnpm workspace",
         "Changesets"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -2186,7 +2186,7 @@
         "레거시",
         "legacy"
       ],
-      "sections": 4,
+      "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
