@@ -69,8 +69,85 @@
     {
       "name": "취약점을 찾는 것이 아니라 고치는 것을 판다",
       "why": "⚠️ **버린 방식이 명시적이다** — 예전에는 **새 언어나 새 보안 규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝 과정**이 필요했다. 지금은 **추론 시점에 그 CWE 가 예전에 어떻게 고쳐졌는지를 넣어 주는 동적 few-shot** 으로 바꿔 **Snyk Code 가 지원하는 모든 언어를 덮는다**(자바·파이썬부터 Apex·Go 까지). ✅ **본문 확인함**(2026-04-27).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "동적 few-shot 프롬프팅",
+          "solves": "⚠️ **학습을 다시 하지 않고 추론 시점에 그 CWE 의 실제 해결 사례를 넣어** 일반 모델을 그 도메인의 전문가처럼 쓰게 한다. **Snyk Code 가 지원하는 모든 언어를 동시에 덮는다.**",
+          "limits": "⚠️ **`가장 관련 있는 사례` 를 무엇으로 고르는지 공개돼 있지 않다** — **데이터가 해자인 만큼 검색도 해자여야 한다**(재구성). **매 호출의 비용과 지연도 밝혀져 있지 않다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "New Agentic Architecture for Snyk Agent Fix",
+              "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+              "publisher": "Snyk Blog",
+              "date": "2026-04-27",
+              "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+            }
+          ]
+        },
+        {
+          "tech": "수정 데이터베이스 (3.5만 건 이상)",
+          "solves": "**오픈소스의 실제 취약점과 보안 전문가가 쓴 수정** — 모델이 흉내 낼 대상이 진짜다.",
+          "limits": "⚠️ **확장이 사람의 손에 묶인다** — 누가 언제 어떻게 쓰고 검수하는지가 글에 없다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "New Agentic Architecture for Snyk Agent Fix",
+              "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+              "publisher": "Snyk Blog",
+              "date": "2026-04-27",
+              "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+            }
+          ]
+        },
+        {
+          "tech": "프론티어 LLM (교체 가능)",
+          "solves": "수정을 생성한다. **자체 StarCoder 기반 모델에서 옮겨 왔다.**",
+          "limits": "⚠️ **모델이 부품이 되면 성능 향상이 남의 일정에 달린다**(재구성). **모델만으로는 72~75% 로 서로 붙어 있어 차이를 못 만든다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+              "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+              "publisher": "Snyk Blog",
+              "date": "2026",
+              "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+            },
+            {
+              "title": "New Agentic Architecture for Snyk Agent Fix",
+              "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+              "publisher": "Snyk Blog",
+              "date": "2026-04-27",
+              "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+            }
+          ]
+        },
+        {
+          "tech": "재스캔 + 안전 필터 + 에이전틱 재시도",
+          "solves": "만든 수정을 자기 스캐너로 다시 검사하고, **안전하지 않으면 고객에게 보내지 않으며**, **실패 이유를 되먹여 다시 만들게 한다**(예전에는 거기서 끝나 아무 수정도 안 남았다).",
+          "limits": "⚠️ **스캔은 `안전한가` 만 말하고 `여전히 동작하는가` 는 말하지 않는다** — 기능 관문은 벤치마크에만 등장한다(재구성). **몇 번까지 재시도하는지도 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "New Agentic Architecture for Snyk Agent Fix",
+              "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+              "publisher": "Snyk Blog",
+              "date": "2026-04-27",
+              "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+            },
+            {
+              "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+              "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+              "publisher": "Snyk Blog",
+              "date": "2026",
+              "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "intelligence-at-inference-not-training"
+      ]
     },
     {
       "name": "기계가 고친 것을 믿어도 되는지 잰다",
@@ -79,7 +156,537 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "intelligence-at-inference-not-training",
+      "name": "모델을 고치지 않고 그 순간에 아는 것을 바꾼다",
+      "domain": "취약점을 찾는 것이 아니라 고치는 것을 판다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **확장이 학습 비용에 묶여 있었다.** 예전 구조에서는 **새 언어나 새 보안 규칙을 하나 더하려면 수천 개의 수동 학습 표본과 긴 파인튜닝 과정**이 필요했다. **그러면 지원 범위가 모델을 다시 학습시킬 수 있는 속도만큼만 늘어난다**(뒤쪽은 이 사이트의 재구성이다). 회사가 방향 전환을 이렇게 적는다 — **`LLM 기술이 발전하면서 새로운 기회를 발견했다. 정적 파인튜닝에서 에이전틱 아키텍처로 옮기는 것이다.`** ⚠️ **바꾼 것은 모델이 아니라 모델이 그 순간에 아는 것이다** — **추론 시점에 그 CWE 가 예전에 어떻게 해결됐는지를 가장 관련 있는 실제 사례로 넣어 준다.**",
+        "metrics": [
+          {
+            "label": "⚠️ 근거가 되는 데이터",
+            "value": "**오픈소스 프로젝트의 실제 취약점과 Snyk 보안 전문가가 쓴 수정 3만 5천 건 이상**의 데이터베이스",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 같은 모델에 이 데이터를 붙였을 때",
+            "value": "**Claude Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%** (10.8점, **14.48% 더 많은 표본을 고쳤다**) · Sonnet 4.6 은 **72.4% → 82.5%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "label": "가장 약한 곳에서 가장 크게 올랐다",
+            "value": "**파이썬은 Opus 기준 64.0% → 88.0%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 모델만으로는 서로 비슷했다",
+            "value": "**StarCoder 72.4% · Gemini 3.1 Pro 74.2% · Sonnet 4.6 72.4% · Opus 4.6 74.6%** — **차이를 만든 것은 모델이 아니라 데이터였다**(뒤쪽은 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "label": "덮는 범위",
+            "value": "**Snyk Code 가 지원하는 모든 언어에 대해 규칙과 언어 커버리지 전체** — 자바·파이썬부터 Apex·Go 까지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "label": "이 기능이 붙는 사업",
+            "value": "ARR **약 3억 2,600만 달러** · 고객 **약 5,000곳** · 개발자 **250만 명 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Snyk revenue, valuation & funding",
+                "url": "https://sacra.com/c/snyk/",
+                "publisher": "Sacra",
+                "date": "2026",
+                "summary": "2026년 2월 기준 ARR 약 3억 2,600만 달러, 고객 약 5,000곳, 개발자 250만 명 이상. Snyk Code(SAST)만 ARR 1억 달러를 넘었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "새 언어를 지원하려 할 때",
+          "thought": "⚠️ **파인튜닝 방식에서는 지원 범위가 학습 비용에 묶인다** — 언어 하나, 규칙 하나마다 **수천 개의 수동 표본과 긴 학습**이 필요하다. **그러면 제품의 넓이가 데이터 라벨링 속도의 함수가 된다**(재구성). 추론 시점에 넣는 방식으로 옮기면 **같은 데이터베이스가 모든 언어를 동시에 덮는다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 파는지 다시 볼 때",
+          "thought": "⚠️ **프론티어 모델은 누구나 부를 수 있다.** 벤치마크가 그것을 보여 준다 — **모델만 놓고 보면 72~75% 로 서로 붙어 있다.** **차이는 그 순간에 무엇을 알려 주느냐에서 났다**(74.6% → 85.4%). **파는 것이 모델이 아니라 데이터라는 것을 자기 벤치마크로 증명한 셈이다**(뒤쪽은 재구성이다).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "안전하지 않은 답이 나왔을 때",
+          "thought": "⚠️ **거르는 것과 고치는 것은 다르다.** 안전하지 않은 답은 **언제나 걸러내 고객에게 절대 보여 주지 않는데**, 예전에는 **거기서 끝나 개발자에게 아무 수정도 남지 않았다.** 지금은 **왜 실패했는지를 뽑아 되먹이고 다시 생각하게 한다** — **버리는 대신 다시 시키는 쪽으로 옮겼다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "수정 데이터베이스",
+            "what": "⚠️ **오픈소스 프로젝트의 실제 취약점과 Snyk 보안 전문가가 쓴 수정 3만 5천 건 이상.** 이 회사가 파는 것의 본체다(재구성)"
+          },
+          {
+            "name": "동적 few-shot 주입",
+            "what": "**그 CWE 가 예전에 어떻게 해결됐는지를 가장 관련 있는 실제 사례로** 프롬프트에 넣는다 — **생성 바로 그 순간에**"
+          },
+          {
+            "name": "안전 필터",
+            "what": "⚠️ **안전하지 않은 답은 언제나 걸러지고 고객에게 절대 보이지 않는다** — 이 규칙은 그대로 남아 있다"
+          },
+          {
+            "name": "에이전틱 재시도",
+            "what": "**실패 이유를 뽑아내고 → 오류 맥락을 에이전트에게 되먹이고 → 에이전트가 문제를 다시 생각해 고친 판을 만든다**"
+          },
+          {
+            "name": "CWE",
+            "what": "취약점의 종류. **예시를 고르는 기준이자 수정의 단위다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **안전하지 않은 수정은 고객에게 가지 않는다** — 걸러진다",
+          "⚠️ **모델은 그대로 두고 그 순간에 주는 것을 바꾼다** — 학습이 아니라 추론 시점이다",
+          "**지원 범위는 스캔 엔진이 아는 만큼이다** — Snyk Code 가 지원하는 모든 언어",
+          "⚠️ **실패한 수정은 버려지는 대신 다시 시도된다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**스캔이 취약점을 찾는다** — CWE 로 분류된다",
+            "why": "고칠 대상을 특정한다"
+          },
+          {
+            "step": "⚠️ **그 CWE 가 예전에 어떻게 해결됐는지 가장 관련 있는 실제 사례를 프롬프트에 넣는다**",
+            "why": "⚠️ **일반 모델을 그 도메인의 전문가로 바꾸는 것이 목적이다** — 사람이 쓴 수천 개의 데이터가 **생성 바로 그 순간에** 안내한다"
+          },
+          {
+            "step": "**프론티어 LLM 이 수정을 만든다**",
+            "why": "**모델은 갈아 끼울 수 있고 데이터는 이 회사 것이다**(재구성)"
+          },
+          {
+            "step": "**만들어진 수정을 Snyk Code 로 다시 스캔한다**",
+            "why": "**고쳤다고 주장하는 것과 실제로 고친 것은 다르다**(재구성)"
+          },
+          {
+            "step": "⚠️ **스캔을 통과하지 못하면 실패 이유를 뽑아 되먹인다** — 에이전트가 다시 생각해 고친 판을 만든다",
+            "why": "⚠️ **버리면 개발자에게 아무것도 안 남는다**"
+          },
+          {
+            "step": "**안전하지 않은 답은 언제나 걸러진다** — 고객에게 보이지 않는다",
+            "why": "**이 규칙은 예전 구조에서도 지금도 같다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "새 언어·새 규칙을 어떻게 지원할 것인가",
+            "chosen": "⚠️ **추론 시점에 사례를 넣는다** — 정적 파인튜닝을 버렸다",
+            "alternatives": [
+              "언어·규칙마다 파인튜닝(기존 방식)",
+              "언어별 전용 모델 유지"
+            ],
+            "tradeoff": "기존 방식은 **새 언어나 규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝**을 요구했다 — **지원 범위가 학습 비용에 묶인다**(재구성). 바꾼 뒤에는 **Snyk Code 가 지원하는 모든 언어에 대해 규칙과 언어 커버리지 전체**를 제공한다. ⚠️ **대가는 매 호출마다 사례를 찾아 프롬프트에 싣는 비용과 지연**이고, **그 비용이 어느 글에도 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 사례를 넣을 것인가",
+            "chosen": "**그 CWE 가 예전에 실제로 어떻게 해결됐는지** — 가장 관련 있는 것으로",
+            "alternatives": [
+              "일반적인 보안 지침을 프롬프트에 넣기",
+              "취약점 설명만 제공"
+            ],
+            "tradeoff": "⚠️ **`이렇게 하면 안 된다` 는 규칙보다 `이 경우 이렇게 고쳤다` 는 실제 코드가 모델에게 더 나은 안내가 된다**(재구성). 회사의 표현대로 **일반가를 그 도메인의 전문가로 바꾸는 것**이 목적이다. ⚠️ **대가는 관련성 판정이 곧 품질이 된다는 것**인데, **무엇으로 `가장 관련 있는` 사례를 고르는지는 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "question": "모델을 자체 학습할 것인가 프론티어를 쓸 것인가",
+            "chosen": "⚠️ **프론티어 모델 + 자기 데이터** — 자체 모델(StarCoder 기반)에서 옮겼다",
+            "alternatives": [
+              "자체 모델 계속 학습",
+              "프론티어 모델만 그대로 쓰기"
+            ],
+            "tradeoff": "자기 벤치마크가 근거다 — **모델만 놓고 보면 StarCoder 72.4% · Gemini 3.1 Pro 74.2% · Sonnet 4.6 72.4% · Opus 4.6 74.6% 로 서로 붙어 있다.** ⚠️ **차이는 데이터를 붙였을 때 났다 — Opus 74.6% → 85.4%.** **파는 것이 모델이 아니라 데이터라는 것을 스스로 증명한 셈이다**(재구성). **대가는 모델 제공자에 의존하게 된다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              },
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "question": "안전하지 않은 답을 어떻게 할 것인가",
+            "chosen": "**언제나 걸러낸다** — 고객에게 절대 보여 주지 않는다",
+            "alternatives": [
+              "경고와 함께 보여 주기",
+              "신뢰도 점수를 붙여 노출"
+            ],
+            "tradeoff": "⚠️ **보안 제품에서 잘못된 수정은 아무 수정도 없는 것보다 나쁘다** — **깨끗해 보이는데 취약점이 남아 있으면 개발자가 안심하기 때문**이다(재구성, 벤치마크 글의 같은 취지). **대가는 걸러진 만큼 개발자가 빈손이 된다는 것**이고, **그 대가를 다음 결정이 메운다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              },
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "question": "걸러진 수정을 버릴 것인가",
+            "chosen": "⚠️ **다시 시킨다** — 실패 이유를 뽑아 되먹인다(agentic retries)",
+            "alternatives": [
+              "실패하면 수정 없음으로 종료(기존 방식)",
+              "다른 모델로 재시도"
+            ],
+            "tradeoff": "절차가 명시적이다 — **왜 첫 제안이 실패했는지 정확히 짚어내고 · 그 오류 맥락을 에이전트에게 되먹이고 · 에이전트가 문제를 다시 생각해 고친 판을 만든다.** ⚠️ **예전에는 거기서 끝나 개발자에게 아무 수정도 남지 않았다.** **대가는 호출이 늘어난다는 것**이고, **몇 번까지 시도하는지와 그 비용은 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "question": "수정이 맞는지 무엇으로 확인할 것인가",
+            "chosen": "**자기 스캐너로 다시 스캔한다**",
+            "alternatives": [
+              "모델의 자기 평가에 맡기기",
+              "사람 리뷰 필수화"
+            ],
+            "tradeoff": "⚠️ **찾는 제품이 고치는 제품의 채점자가 된다** — 스캔이 이미 있으니 검증이 공짜에 가깝다(재구성). ⚠️ **다만 대가가 분명하다 — 스캐너가 못 보는 취약점은 이 고리에서도 안 보이고**, **기능이 깨졌는지는 스캔이 말해 주지 않는다.** **기능 관문은 벤치마크에서만 등장한다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              },
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "question": "데이터를 어디서 모을 것인가",
+            "chosen": "**오픈소스의 실제 취약점 + 자사 보안 전문가가 쓴 수정**",
+            "alternatives": [
+              "합성 데이터 생성",
+              "공개 취약점 DB 만 사용"
+            ],
+            "tradeoff": "**실제로 일어난 취약점과 사람이 쓴 수정**이라 **모델이 흉내 낼 대상이 진짜다.** ⚠️ **대가는 확장이 사람의 손에 묶인다는 것**이고, **누가 언제 어떻게 쓰고 검수하는지는 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "question": "지원 범위를 어디까지 넓힐 것인가",
+            "chosen": "**Snyk Code 가 지원하는 모든 언어의 규칙과 언어 전체**",
+            "alternatives": [
+              "수요가 큰 언어부터 단계적 확장"
+            ],
+            "tradeoff": "⚠️ **파인튜닝을 버린 순간 이것이 가능해졌다** — 같은 데이터베이스가 모든 언어를 동시에 덮기 때문이다(재구성). **대가는 언어마다 품질이 고르지 않을 수 있다는 것**이고, 실제로 **벤치마크에서 파이썬이 64.0% 로 가장 약했다**(그리고 데이터를 붙이자 88.0% 로 가장 많이 올랐다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              },
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "동적 few-shot 프롬프팅",
+            "role": "⚠️ **그 CWE 의 실제 해결 사례를 생성 시점에 주입한다** — 학습이 아니라 추론에서",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "tech": "수정 데이터베이스 (3.5만 건 이상)",
+            "role": "오픈소스의 실제 취약점 + 보안 전문가가 쓴 수정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "tech": "프론티어 LLM (Opus 4.6 · Sonnet 4.6 등)",
+            "role": "수정 생성. **모델은 갈아 끼울 수 있는 부품이 됐다**(재구성)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "tech": "Snyk Code 재스캔 + 안전 필터",
+            "role": "만들어진 수정을 다시 검사하고 **안전하지 않으면 고객에게 보내지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "tech": "에이전틱 재시도 고리",
+            "role": "**실패 이유 추출 → 되먹임 → 다시 생성**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "기계가 고친 것을 믿어도 되는지 잰다",
+          "via": "같은 데이터가 만든 차이를 재는 자",
+          "contract": "⚠️ **이 기능의 값을 그 도메인의 벤치마크가 증명한다** — **같은 모델에 이 데이터를 붙였을 때 74.6% → 85.4%.** **파는 것이 모델이 아니라 데이터임을 자기 자로 보인 셈이다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Snyk Code (스캔 엔진)",
+          "via": "⚠️ 찾는 제품이 고치는 제품의 채점자",
+          "contract": "⚠️ **스캐너가 취약점을 정의하고, 수정이 맞는지도 스캐너가 판정한다** — **스캐너가 못 보는 것은 이 고리에서도 안 보인다**(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "모델 제공자",
+          "via": "교체 가능한 부품",
+          "contract": "**Opus·Sonnet·Gemini 를 나란히 재고 그중을 쓴다** — ⚠️ **모델이 부품이 되면 성능 향상은 남의 일정에 달리고 데이터만 자기 것이 된다**(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "보안 전문가 조직",
+          "via": "수정 데이터베이스",
+          "contract": "⚠️ **사람이 쓴 수정이 계속 쌓여야 이 구조가 유지된다** — **확장이 사람의 손에 묶인 자리**다(재구성)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 안전한 수정과 동작하는 수정은 다른 관문이다",
+            "why_hard": "⚠️ **이 고리의 검증은 자기 스캐너다** — 만들어진 수정을 다시 스캔해 통과하지 못하면 되먹인다. **그런데 스캔은 `안전한가` 만 말하고 `여전히 동작하는가` 는 말하지 않는다.** 회사가 벤치마크 글에서 그 위험을 명확히 적는다 — **SQL 주입을 없앴는데 질의 결과가 달라졌다면 진짜 해결이 아니다.** **기능 관문이 벤치마크에는 있는데 이 수정 고리의 설명에는 없다**(이 지적은 이 사이트의 재구성이다).",
+            "current_best": "**보안 테스트와 기능 테스트를 짝지은 벤치마크로 사후에 재는 것**(그 도메인의 일이다). ⚠️ **개별 수정 하나하나에 기능 검증이 어떻게 붙는지는 공개돼 있지 않다**(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              },
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "problem": "관련성 판정이 곧 품질이 된다",
+            "why_hard": "⚠️ **`가장 관련 있는 실제 사례` 를 넣는다는 것이 이 구조의 전부인데, 무엇으로 관련성을 재는지가 밝혀져 있지 않다.** **3만 5천 건 중 잘못된 사례를 고르면 모델은 그것을 흉내 낸다** — **데이터가 해자인 만큼 검색도 해자여야 한다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**CWE 를 축으로 삼는 것** — 취약점의 종류가 예시를 고르는 기준이다. ⚠️ **그 이상은 공개돼 있지 않아 open_questions 에 남겼다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "학습을 바꾸는 대신 그 순간에 아는 것을 바꾼다",
+          "question": "취약점 하나가 수정으로 바뀌기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"<b>Snyk Code 스캔</b>\"]:::list --> V[\"<b>취약점 (CWE)</b>\"]:::list\n  DB[\"⚠️ <b>수정 데이터베이스</b><br/>• 오픈소스 실제 취약점<br/>• 전문가가 쓴 수정 3.5만 건 이상\"]:::accent --> I[\"⚠️ <b>동적 few-shot 주입</b><br/>• 그 CWE 가 예전에<br/>  어떻게 해결됐는지\"]:::accent\n  V --> I\n  I --> M[\"<b>프론티어 LLM</b><br/>• 모델은 갈아 끼울 수 있다 (재구성)\"]:::list\n  M --> R[\"<b>만들어진 수정을 재스캔</b>\"]:::list\n  R -->|\"⚠️ 통과 못 하면\"| L[\"<b>실패 이유 추출 → 되먹임</b><br/>• 에이전트가 다시 생각한다\"]:::accent\n  L --> M\n  R -->|\"안전하지 않으면\"| F[\"<b>걸러낸다</b><br/>• 고객에게 절대 보이지 않는다\"]:::list\n  R -->|\"통과\"| O[\"<b>개발자에게 제안</b>\"]:::list"
+        },
+        {
+          "title": "모델은 붙어 있고 데이터가 갈랐다",
+          "question": "무엇이 실제로 차이를 만들었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>예전: 정적 파인튜닝</b><br/>• 언어 · 규칙마다<br/>  수천 개 수동 표본<br/>• 긴 학습 과정\"]:::gone --> B[\"⚠️ <b>지원 범위가<br/>  학습 비용에 묶인다</b> (재구성)\"]:::gone\n  B --> C[\"<b>답: 추론 시점 주입</b><br/>• 모든 언어를 동시에 덮는다\"]:::accent\n  D[\"<b>모델만 놓고 보면</b><br/>• StarCoder 72.4%<br/>• Gemini 3.1 Pro 74.2%<br/>• Opus 4.6 74.6%\"]:::list --> E[\"⚠️ <b>서로 붙어 있다</b>\"]:::gone\n  E --> G[\"<b>데이터를 붙이면</b><br/>• Opus 85.4% (+10.8점)<br/>• 파이썬 64.0% → 88.0%\"]:::accent\n  H[\"⚠️ <b>남은 벽</b><br/>• 스캔은 안전한가만 말하고<br/>  동작하는가는 말하지 않는다 (재구성)\"]:::gone\n  I[\"⚠️ <b>남은 벽</b><br/>• 무엇으로 가장 관련 있는<br/>  사례를 고르는지 공개되지 않았다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "New Agentic Architecture for Snyk Agent Fix",
+          "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+          "publisher": "Snyk Blog",
+          "date": "2026-04-27",
+          "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+        },
+        {
+          "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+          "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+          "publisher": "Snyk Blog",
+          "date": "2026",
+          "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+        },
+        {
+          "title": "Snyk revenue, valuation & funding",
+          "url": "https://sacra.com/c/snyk/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2026년 2월 기준 ARR 약 3억 2,600만 달러, 고객 약 5,000곳, 개발자 250만 명 이상. Snyk Code(SAST)만 ARR 1억 달러를 넘었다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **스캔 엔진(Snyk Code) 자체의 구조를 아직 못 봤다** — **ARR 1억 달러를 넘는 제품인데** 어떻게 분석하는지를 다룬 기술 글을 아직 찾지 못했다.",

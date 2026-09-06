@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Snyk** | UK/IL · SaaS(개발자 보안) | 프로파일 완료 · 도메인 2(취약점을 찾는 것이 아니라 고치는 것을 판다[tech 0 · ✅ 본문 확인] / 기계가 고친 것을 믿어도 되는지 잰다[tech 0 · ✅ 본문 확인]) · **기능 0** · ✅ `snyk.io/blog` 는 WebFetch 로 열린다 |
+| **Snyk** | UK/IL · SaaS(개발자 보안) | 도메인 2(취약점을 찾는 것이 아니라 고치는 것을 판다[tech 4] / **기계가 고친 것을 믿어도 되는지 잰다[tech 0 · ✅ 본문 확인]**) · **기능 1**(intelligence-at-inference-not-training) · ✅ `snyk.io/blog` 는 WebFetch 로 열린다 |
 
 ## 대기
 
