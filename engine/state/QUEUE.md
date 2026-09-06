@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Bun (Oven)** | US · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 스크립트 언어의 도구를 시스템 프로그래밍으로 다시 푼다(`bun install` 2025-09-10, 읽었다) · 메모리 안전을 규율이 아니라 언어로 강제한다(`bun-in-rust` 2026-07-08, 읽었다) · 남의 API 를 흉내 내 생태계를 그대로 받는다(제품 페이지만). 다음은 기능 하나 — 러스트 이전 글이 이 엔진에 없던 축이다. 안 읽은 것 — V8 API 글 두 편(2024-09-30·2024-10-05) · 번들러 · 셸 · `postMessage 500배`(2025-08-20). 앤트로픽 합류의 시점·조건과 Node 호환의 구멍은 못 봤다. |
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Bun (Oven)** | US · SaaS | 이 엔진에 없는 축이 둘이다 — 자바스크립트 런타임 자체, 그리고 **AI 가 코드베이스를 다시 쓴 기록**. `bun.com/blog` 최신 2026-09-05(대부분 릴리스 노트라 심층 글을 골라야 한다). 개별 글을 열어 확정했다 — `Rewriting Bun in Rust`(2026-07-08, `/blog/bun-in-rust`)에 결정과 거절한 대안과 대가가 다 있다: Zig 에서 되풀이되던 use-after-free·double-free·해제 누락을 컴파일 오류로 만들려고 러스트로 옮겼고, Zig + 스타일 가이드(TigerStyle 류)·C++·자체 스마트 포인터를 이름 대며 물린다. 수치가 특이하다 — 엔지니어 한 명과 병렬 Claude 인스턴스 64개로 **11일**, API 가격 기준 약 **16만 5천 달러**, 알려진 회귀 19건(모두 수정), 바이너리 20% 감소, 예시 워크로드 메모리 6,745MB → 609MB, 성능 +2~4.8%, unsafe 블록이 코드의 약 4%. 사람만으로 하면 풀 컨텍스트 엔지니어 셋이 약 1년이고 그동안 기능이 얼어붙는다는 것을 거절 이유로 적는다. 다른 심층 글 — `Behind The Scenes of Bun Install`(2025-09-10) · `postMessage(string) 500배`(2025-08-20) · `V8 없이 V8 API 지원`(2024). |
 | **Tigris Data** | US · SaaS | 글로벌 객체 저장소를 FoundationDB 위에 짓는다. `tigrisdata.com/blog` 최신 심층 글 2026-08-18 `Building a global object store on FoundationDB` — ACID 메타데이터·전역 배치·캐싱·복제·백그라운드 작업을 다중 리전 객체 저장소로 엮는 이야기다. 이 엔진의 `객체 저장소를 진실 원천으로` 축(WarpStream·Neon·Cursor)의 반대편이 된다 — 저쪽은 객체 저장소를 **쓰는** 쪽이고 여기는 그것을 **만드는** 쪽이다. FoundationDB 를 바탕으로 쓴다는 점에서 안티테시스·TigerBeetle 의 결정론 계보와도 닿는다. ⚠️ 목록에서 확인한 심층 글이 아직 하나라 팔 때 자료가 얇을 수 있다. |
 | **Chroma** | US · SaaS | 벡터 데이터베이스 축이 이 엔진에 아직 없다. `trychroma.com/engineering` 에 심층 글 여섯 — `wal3: Chroma의 WAL` · `Designing a query execution engine` · `Retrieval powered by object storage` · `Distributed Chroma: BYOC` · `Agent Swarms are a Distributed Systems Problem` · `Building a usage-based billing system`. 개별 글(`/engineering/wal3`)을 열어 확정했다 — 객체 저장소 위에 로그를 짓기로 한 결정, S3 조건부 쓰기(2024-11) 위에서 30년 된 락 프리 큐 알고리즘을 돌린 것, 실제 로그와 체크섬(setsum)을 나란히 유지하는 이중 검증, 그리고 **이름을 대며 물린 대안 셋**(카프카는 디스크 함대를 운영해야 해서, WarpStream 은 오픈소스가 아니라서, CDC 는 처음부터 지어야 해서). 카프카의 기능 대부분을 지원하지 않는 대신 단순함을 얻었다고 한계도 적는다. ⚠️ 수치가 없고(지연·처리량·비용 없음) 목록에 날짜가 없다 — 파기 전에 개별 글에서 날짜를 확인한다. |
 
