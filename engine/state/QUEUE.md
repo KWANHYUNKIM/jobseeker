@@ -21,8 +21,20 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Railway** | US · SaaS | 남의 클라우드를 떠나 **자기 데이터센터와 자기 오케스트레이터**를 짓는 축이 이 엔진에 없다(Ubicloud 는 남의 베어메탈을 빌린다). `blog.railway.com/engineering` 에 2026년 심층 글이 줄줄이 — `How to build a 30M RPS CDN in 30 days with Rust and WASM`(2026-06-04) · `Claude please rack me a datacenter, make no mistakes`(2026-06-03) · `Counting to 3 with a new builder processing 50M+ monthly builds`(2026-05-14, docker-buildx 를 BuildKit 마이크로VM 으로 갈아치운 기록) · `Zero-Touch Bare Metal at Scale` · `So You Want to Build Your Own Data Center` · `Networking is a black box, we used eBPF to open it` · `Railway Metal Gen 2`. 쿠버네티스를 안 쓰고 자체 오케스트레이션을 돌린다고 못 박는다. ⚠️ 블로그가 `railway.com/blog` 가 아니라 `blog.railway.com` 이다(앞쪽은 404). |
+| **Jane Street** | US · 금융 | 저지연 트레이딩과 **언어 자체를 고쳐 쓰는** 축이 없다. `blog.janestreet.com` 에 2026년 글이 이어진다 — `Can you reverse engineer an ASIC?`(2026-08-05) · `Using OxCaml to implement type-safe reference counting between OCaml and Python`(2026-06-15) · `Formal methods and the future of programming`(2026-06-07, 야론 민스키) · `strace-ui, Bonsai_term, and the TUI renaissance`(2026-05-26). OCaml 확장(OxCaml)·FPGA/ASIC·형식 검증이 한 회사 안에 있다. ⚠️ 사업 쪽(무엇을 얼마에 파는가)이 공개되지 않는 회사다 — 수익원 서술을 얇게 잡고 기술 도메인 위주로 판다. |
+| **Zig Software Foundation** | US · 비영리 | 프로그래밍 언어와 표준 라이브러리 자체를 만드는 축이 없다(Bun 은 런타임, Ladybird 는 브라우저 엔진). 0.16.0 릴리스 노트(2026-04-14)가 사실상 설계 문서다 — 모든 블로킹 연산에 `Io` 를 넘기게 바꾸고 구현을 넷(스레드·그린 스레드·io_uring·kqueue)으로 갈랐으며, 아레나 할당자를 잠금 없이 다시 써 `ThreadSafeAllocator` 를 통째로 없앴다(스레드 7개까지 약간 빨라짐). 자체 deflate 는 zlib 대비 9.7% 빠르고 압축률은 1% 나쁘다. 거절한 것도 이름 대어 적는다(`@Float`·`@Array`·`@ErrorSet` 을 안 만든 이유). ⚠️ 뉴스 페이지는 조직 소식과 모금이 많다 — 팔 재료는 릴리스 노트와 옛 심층 글(2022·2024)이다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-07 마흔 번째 후보 조사 — 목표 3곳을 채웠다. 또 축을 벌렸다 — 자체 데이터센터 · 저지연 트레이딩 · 언어 자체.**
+  - **Railway**(US) — 쿠버네티스를 버리고 자기 금속과 자기 오케스트레이터를 짓는다. 2026년 심층 글이 여섯 편 넘는다.
+  - **Jane Street**(US) — OCaml 을 고쳐 쓰고(OxCaml) ASIC 을 뜯는다. 사업이 안 보이는 대신 기술 글이 두껍다.
+  - **Zig Software Foundation**(US) — 릴리스 노트가 설계 문서다. 거절한 기능을 이름 대어 적고 수치를 붙인다.
+  - **접은 곳 넷.** **Fastmail** — 기술 글이 사실상 하나뿐이고 나머지는 제품·문화 글이다. **Baseten** — 제목은 기술인데 열어 보니 개념 정리이고 수치가 없다(`the-efficient-frontier-of-llm-inference`, 2026-09-01). **Hugging Face** — 블로그가 커뮤니티 글과 모델 소개 위주라 자기 인프라 글을 못 찾았다. **Felt** — 제품·마케팅 위주다.
+  - **교훈 — 제목만 보면 또 낚인다.** Baseten 은 목록에서 가장 기술적으로 보이는 글을 열었는데 수치가 하나도 없었다. 지난 조사의 교훈(최신성만 보면 낚인다)에 하나를 더한다: **제목의 기술성도 판정 근거가 아니다.**
+  - **주소를 또 틀렸다.** `railway.com/blog` 가 404 였다 — 검색으로 `blog.railway.com` 을 얻어 들어갔다. 규칙대로 추측하지 않고 목록에서 확인했다.
+  - **절차가 열네 번째로 값을 했다** — `name_en` 135개를 먼저 출력해 세 이름이 다 없다는 것을 확인하고 던졌다.
 
 - **2026-09-07 서른아홉 번째 후보 조사 — 목표 3곳을 채웠다. 축을 크게 벌렸다 — 암호 프로토콜 · 저장 하드웨어 신뢰성 · 로보틱스 데이터.**
   - **Signal**(US) — 자기 프로토콜 설계를 글로 낸다. 자동 키 검증(2026-08-11)·희소 후양자 래칫(2025-10-02)·암호화 백업(2025-09-08).
