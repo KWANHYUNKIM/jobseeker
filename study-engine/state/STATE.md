@@ -4,27 +4,44 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **JavaScript**(`javascript`)를 완성했다 — **112번째 문서**.
+**없음.** 직전 사이클에서 **Node.js**(`nodejs`)를 완성했다 — **113번째 문서**.
 
-### 직전 사이클 (JavaScript)
+### 직전 사이클 (Node.js)
 
-⭐⭐⭐ **축: "고칠 수 없는 언어."** 명세가 자기 일부를 이렇게 적는다.
+⭐⭐⭐ **축: "순서를 정하는 것은 언어가 아니라 호스트다."** `javascript` 가 인용한 **"non-web hosts may not"** 의 그 호스트가 여기였다.
 
-> **"All of the language features and behaviors specified in this annex have one or more undesirable characteristics and in the absence of legacy usage would be removed from this specification."**
-> **"removing them will cause backward compatibility issues and break legacy websites. (JavaScript has the design goal of \"don't break the web\".)"**
-> ⭐⭐ **"normative optional — web browser hosts must implement these features, while non-web hosts may not."**
+**1차 자료가 자기가 보장 못 하는 것부터 적는다.**
+- ⭐⭐⭐ **"libuv (the C library that implements the Node.js event loop ...)"** — **루프는 자바스크립트로 쓰이지 않았다**
+- ⭐⭐ **"slight discrepancy between the Windows and the Unix/Linux implementation"** · **"hard maximum (system dependent)"**
+- ⭐⭐⭐ `setTimeout(0)` vs `setImmediate` — **"bound by the performance of the process (which can be impacted by other applications running on the machine)"**, 그런데 **I/O 콜백 안에서는 "immediate ... always executed first"**
+- ⭐⭐⭐ **"process.nextTick() is not technically part of the event loop"** · **"allows you to \"starve\" your I/O"**
+- ⭐⭐ `poll` 단계에 **"node will block here when appropriate"** — **"논블로킹" 런타임의 문서가 "여기서 막힌다"고 적는다**
 
-⭐⭐ **셈이 축을 줬다**: `ES6+` **258건** — **"최신"이라고 말하려면 버전을 붙여야 하는 언어.** ES6 는 11년 전 표준인데 아직 '모던'의 기준선이다. 그리고 톤28 공고가 `Javascript(ES6), **jQuery**` 를 한 줄에 적는다.
-
-⚠️⚠️ **명세 본문을 직접 못 열었다** — tc39.es 와 262.ecma-international.org 양쪽에서 **목차만** 왔다. **MDN 이 인용부호로 옮긴 것을 통해 확인**했고, 그 사실을 문서 곳곳에 밝혔다.
+**셈**: 1642건인데 ⚠️ `마이크로태스크|태스크 큐` **2건**. 공고는 **"비동기에 깊은 이해"** 라고만 하고 그 깊이의 이름은 안 부른다.
 
 ### 다음
 
-**Node.js**(`nodejs`) — QUEUE 맨 위. ⭐ `javascript` 가 스스로 "가장 큰 빈자리"라고 적은 자리다(`비동기` 1124건).
+**React**(`react`) — QUEUE 맨 위. ⭐ 또 층을 바꿨다(백엔드 → 프론트엔드, **`design-system` 하나뿐이었다**).
 
-⭐⭐⭐ **1642건(모집중 592)** 인데 문서가 없다. 축을 못 박아 뒀다: **"이벤트 루프는 언어가 아니라 호스트가 정한다."** ⚠️ **`이벤트 루프`·`async/await` alias 는 `asyncio` 것이니 가져오지 않고, 축이 겹치는지 먼저 센다.**
+⭐⭐⭐ **3713건(모집중 1193) — 이 백과사전 최대 낱말**인데 ⚠️⚠️ **`useEffect` 는 4건(모집중 0)**. 축을 못 박아 뒀다: **"가장 많이 쓰이는 훅을 공식 문서가 '탈출구'라고 부른다."** 1차 자료는 react.dev 의 **`You Might Not Need an Effect`**(⭐ **부정어가 제목에 있는 문서**).
 
 ## 배운 것
+
+- ⭐⭐⭐ **이름이 보장처럼 들리는 낱말은 문서에서 반대말을 찾는다.** Node 는 "논블로킹"으로
+  불리는데, 공식 문서가 `poll` 단계에 **"node will block here when appropriate"** 이라고 적는다.
+  💡 모순이 아니라 **이름이 곧 보장이 아닌 것**이다 — 논블로킹은 "절대 안 멈춘다"가 아니라
+  "기다리느라 다른 일을 못 하지는 않는다"는 뜻이다. 📌 **마케팅에 쓰이는 이름일수록 문서에서
+  그 이름의 예외를 먼저 찾는다** (`redis` 의 "영속성", `typescript` 의 "타입 안전"도 같은 형태).
+
+- ⭐⭐ **런타임이 자기 실행 순서를 "모른다"고 적는 일은 드물고, 그게 곧 축의 증거다.**
+  **"non-deterministic"**, **"system dependent"**, **"impacted by other applications running
+  on the machine"** — ⭐ 이 세 문장이 "호스트가 정한다"는 축을 혼자 세웠다. 📌 **`when_to_use`
+  와 `pitfalls` 는 그런 문장이 있는 자리에서 저절로 나온다** — 보장 안 하는 곳이 곧 물리는 곳이다.
+
+- ⭐⭐ **"같은 코드인데 자리가 답을 바꾼다"는 문장은 그대로 옮긴다.** `setTimeout(0)` vs
+  `setImmediate` 가 **메인 모듈에서는 불확정이고 I/O 콜백 안에서는 항상 정해진다** — ⭐ 이런
+  문장은 요약하면 죽는다. **원문 그대로 두고, 왜 그런지는 다른 표(단계 목록)가 설명하게 한다.**
+  💡 **문서 안에서 표 하나가 다른 표의 답이 되게 놓으면 실습이 저절로 생긴다.**
 
 - ⭐⭐⭐ **"제품이 스스로 그은 선"에 가장 센 칸이 생겼다.** 지금까지 모은 것이
   `kotlin` **"impractical"** → `redis` **"we discourage it"** → `github-actions`

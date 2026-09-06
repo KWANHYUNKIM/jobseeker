@@ -2042,6 +2042,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "nodejs",
+      "title": "Node.js — 순서를 정하는 것은 언어가 아니다",
+      "category": "runtime",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **자바스크립트의 실행 순서를 정하는 것은 자바스크립트가 아니다** — Node 의 이벤트 루프는 **libuv 라는 C 라이브러리**가 구현하고, 문서는 그 한계를 **\"system dependent\"** · **\"non-deterministic\"** 이라고 적는다.",
+      "aliases": [
+        "Node.js",
+        "노드",
+        "libuv",
+        "이벤트 루프 단계",
+        "process.nextTick",
+        "논블로킹"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

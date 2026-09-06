@@ -1,0 +1,645 @@
+{
+  "slug": "nodejs",
+  "title": "Node.js — 순서를 정하는 것은 언어가 아니다",
+  "title_en": "Node.js: The Host Decides the Order",
+  "aliases": [
+    "Node.js",
+    "노드",
+    "libuv",
+    "이벤트 루프 단계",
+    "process.nextTick",
+    "논블로킹"
+  ],
+  "category": "runtime",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **자바스크립트의 실행 순서를 정하는 것은 자바스크립트가 아니다** — Node 의 이벤트 루프는 **libuv 라는 C 라이브러리**가 구현하고, 문서는 그 한계를 **\"system dependent\"** · **\"non-deterministic\"** 이라고 적는다.",
+  "summary": "⭐ **`Node.js` 는 1642건(모집중 592)** 이다. 그리고 공고가 요구하는 것은 대개 **\"비동기에 대한 깊은 이해\"** 다.\n\n> `TypeScript·Node.js **비동기**·분산 시스템 설계에 대한 **깊은 이해**` — 필라넷\n> `Python, Node.js 기반의 **비동기 프로그래밍**에 깊은 이해` — 지엔터프라이즈\n\n⚠️⚠️ **그런데 `마이크로태스크|태스크 큐` 는 2건이다.** \"깊은 이해\"를 요구하면서 **그 깊이의 이름은 아무도 안 부른다.**\n\n**Node 자신은 그 깊이를 문서에 적어 놨다 — 그리고 놀랍게도 자기가 보장 못 하는 것부터 적는다.**\n\n> ⭐⭐⭐ `setTimeout` 과 `setImmediate` 를 메인 모듈에서 부르면 — \"timing will be **bound by the performance of the process** (which can be **impacted by other applications running on the machine**)\"\n> ⭐⭐ \"`process.nextTick()` is **not technically part of the event loop**\" · \"it allows you to **\\\"starve\\\" your I/O**\"\n> ⭐⭐ libuv 는 \"also has a **hard maximum (system dependent)** before it stops polling\"\n\n💡 ⭐⭐⭐ **한 줄로 줄이면 이렇다 — 순서를 정하는 것은 언어가 아니라 호스트다.** `javascript` 문서가 인용한 **\"web browser hosts must implement these features, while **non-web hosts may not**\"** 의 그 호스트가 여기다.",
+  "market": {
+    "tech": "Node.js",
+    "layer": "백엔드",
+    "postings": 571,
+    "pct_jobs": 7.9,
+    "with": [
+      {
+        "name": "AWS",
+        "pct": 56.0,
+        "why": "배포처"
+      },
+      {
+        "name": "TypeScript",
+        "pct": 55.3,
+        "why": "⭐⭐ **둘 중 하나 이상.** 벳칭 `TypeScript와 Node.js의 **비동기 처리/타입 시스템**을 깊이 이해하고` — 둘을 한 덩어리로 요구한다"
+      },
+      {
+        "name": "React",
+        "pct": 53.2,
+        "why": "⭐ **앞뒤를 한 언어로** — 이 런타임을 고르는 큰 이유 중 하나"
+      },
+      {
+        "name": "Python",
+        "pct": 39.1,
+        "why": "⭐ **경쟁 선택지로 나란히 적힌다** — 지엔터프라이즈 `Python, Node.js 기반의 비동기 프로그래밍` (→ `asyncio`)"
+      },
+      {
+        "name": "Docker",
+        "pct": 32.2,
+        "why": "컨테이너로 띄운다"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ \"비동기에 깊은 이해\"를 요구하면서 그 깊이의 이름은 안 부른다",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `Node.js\\|노드` | **1642** | (모집중 592) |\n| `NestJS` | 556 | (모집중 201) |\n| `동시성\\|병렬 처리` | 315 | (모집중 161) |\n| `Express` | 230 | (모집중 96) |\n| `CPU 집약\\|블로킹` | 57 | (모집중 39) |\n| `Promise\\|프로미스` | 40 | (모집중 34) |\n| ⚠️ `워커 스레드\\|클러스터 모듈\\|PM2` | **32** | (모집중 15) |\n| `async/await` | 31 | (모집중 7) |\n| ⚠️ `논블로킹\\|싱글 스레드` | 23 | (모집중 10) |\n| ⚠️⚠️ `마이크로태스크\\|태스크 큐` | **2** | (모집중 0) |\n\n⭐ 공고가 요구하는 말은 늘 같다 — **\"깊은 이해\"**.\n\n> `TypeScript·Node.js **비동기**·분산 시스템 설계에 대한 **깊은 이해**` — 필라넷\n> `Python, Node.js 기반의 **비동기 프로그래밍**에 **깊은 이해**가 있고, 상황에 맞는 **최적의 언어와 도구를 선택**하실 수 있는 분` — 지엔터프라이즈\n> `TypeScript와 Node.js의 **비동기 처리**/타입 시스템을 **깊이 이해**하고` — 벳칭\n\n⚠️⚠️ **그런데 그 깊이를 이루는 낱말들(`마이크로태스크` 2건, `논블로킹` 23건, `워커 스레드` 32건)은 거의 안 불린다.** \"깊은 이해\"가 **무엇을 아는 것인지 공고가 말해 주지 않는다** — 이 문서는 그 자리를 채운다.\n\n💡 **그리고 이 낱말은 혼자 오지 않는다.**\n\n> ⭐ `Backend / Engine: **Python (FastAPI, Asyncio** 등 비동기 처리 능숙자 우대), **Node.js**, 또는 **Java** 중 **1개 이상**` — 코어시큐리티\n> `**Java/kotlin(Spring), Node.js(Nest.js) 및 Python(FastAPI)**을 활용한 고성능·비동기 웹 서버 구축` — 드림에이스\n\n⭐⭐ **회사들이 Node 를 \"비동기 서버를 만드는 여러 선택지 중 하나\"로 본다** — `asyncio`(파이썬)와 **같은 줄에 적힌다.** ⚠️ **그런데 세 선택지의 이벤트 루프는 서로 다르게 생겼다.** 이 문서가 다루는 것이 정확히 그 차이의 뿌리다.\n\n📌 **이 문서는 `asyncio` 와 겹치지 않게 썼다.** 저 문서가 이미 다룬 것 — **한 스레드·하나의 루프라는 모델**, 코루틴과 태스크, **함수 색** 문제 — 은 **여기서 반복하지 않는다.** ⭐ 여기는 **\"그 루프를 누가 만들고 무엇을 보장 안 하나\"** 만 다룬다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 루프는 언어에 없다 — libuv 가 만들고 OS 가 흔든다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ],
+      "body": "`javascript` 문서가 명세의 이 문장을 인용했다.\n\n> ⭐⭐ \"**normative optional** — **web browser hosts must implement these features, while non-web hosts may not**.\"\n\n**\"호스트\"** 라는 말이 거기 나온다. 자바스크립트는 **혼자 못 돈다** — 누군가 그것을 실어 주는 환경이 있어야 하고, 브라우저와 Node 는 **서로 다른 호스트**다.\n\n💡 ⭐⭐⭐ **그리고 실행 순서를 정하는 것이 바로 그 호스트다.** Node 문서가 자기 루프의 정체를 직접 밝힌다.\n\n> ⭐⭐⭐ \"**libuv** (**the C library that implements the Node.js event loop and all of the asynchronous behaviors of the platform**)\"\n\n**자바스크립트로 쓰인 것이 아니다.** ⭐ **C 라이브러리가 루프를 돌리고, 자바스크립트 콜백은 그 위에 얹혀 있다.**\n\n**그래서 결과가 운영체제를 탄다.**\n\n> ⭐⭐ \"There is a **slight discrepancy between the Windows and the Unix/Linux implementation**\"\n> ⭐⭐⭐ libuv 는 \"also has a **hard maximum (system dependent)** before it stops polling for more events\"\n\n⚠️⚠️ **\"system dependent\"** — **한계값이 시스템마다 다르다고 문서가 적는다.** 우리가 고를 수 있는 것도, 자바스크립트 표준이 정한 것도 아니다.\n\n📌 **여기가 이 문서의 축이다.**\n\n| | 누가 정하나 |\n|---|---|\n| 문법 · 값의 규칙 | **ECMAScript 표준** |\n| ⭐⭐⭐ **콜백이 언제 도나** | **호스트** — Node 는 libuv, 브라우저는 브라우저 |\n| ⚠️ 그 세부 | **운영체제** (\"system dependent\") |\n\n⭐⭐ **그래서 `javascript` 문서의 경고가 여기서 구체적인 모양을 갖는다** — 저 문서는 \"브라우저에서 되던 게 다른 런타임에서 안 될 수 있다\"고 했는데, **안 되는 것만이 아니라 순서도 다르다.**\n\n📌 ⚠️ **한 가지 밝혀 둔다.** \"ECMAScript 명세에는 이벤트 루프가 없고 job queue 만 있다\"는 말이 흔히 쓰이는데, ⭐ **이 문서는 그것을 명세에서 직접 확인하지 않았다**(`open_questions`). **확인한 것은 Node 쪽 문장뿐**이다 — **libuv 가 구현하고, OS 마다 다르고, system dependent 하다.** 그것만으로도 축은 선다."
+    },
+    {
+      "id": "phase",
+      "kind": "how",
+      "heading": "여섯 단계 — 그리고 한 단계는 일부러 멈춰 선다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ],
+      "body": "Node 문서가 루프의 단계를 목록으로 적는다. **순서대로 돈다.**\n\n| 단계 | 문서의 설명 |\n|---|---|\n| **timers** | \"Executes callbacks scheduled by `setTimeout()` and `setInterval()`\" |\n| **pending callbacks** | \"Executes I/O callbacks **deferred to the next loop iteration**\" |\n| idle, prepare | \"**Only used internally**\" |\n| ⭐⭐ **poll** | \"Retrieves new I/O events; executes I/O related callbacks ... **node will block here when appropriate**\" |\n| **check** | \"`setImmediate()` callbacks are invoked here\" |\n| **close callbacks** | \"Some close callbacks, e.g. `socket.on('close', ...)`\" |\n\n⭐⭐⭐ **`poll` 의 설명에 있는 \"node will block here\" 가 중요하다.**\n\n**\"논블로킹\"이라고 불리는 런타임인데 문서가 \"여기서 막힌다\"고 적는다.** ⚠️ 모순이 아니다 — ⭐ **할 일이 없을 때 다음 I/O 를 기다리며 서 있는 것**이고, 그게 바쁘게 도는 것보다 낫다. 💡 **\"논블로킹\"은 \"절대 안 멈춘다\"가 아니라 \"일이 있는데 딴 데서 기다리느라 못 하는 일이 없다\"** 는 뜻이다.\n\n**그리고 그 기다림에도 한계가 있다.**\n\n> \"To prevent the **poll** phase from **starving the event loop**, libuv ... also has a **hard maximum (system dependent)** before it stops polling for more events.\"\n\n⭐ **`poll` 이 너무 오래 붙잡지 않도록 상한이 있고, 그 상한은 시스템이 정한다.**\n\n📌 **`timers` 단계도 오해가 있다.** `setTimeout(fn, 100)` 은 **\"100ms 뒤에 실행\"이 아니라 \"100ms 뒤부터 실행 후보\"** 다 — ⚠️ 루프가 `timers` 단계에 **도착해야** 돈다. 앞 단계에서 오래 걸리는 일을 하고 있으면 **더 늦게 돈다.**\n\n💡 ⭐⭐ **그래서 타이머는 지연의 하한이지 약속이 아니다.** `asyncio` 문서가 다룬 \"한 스레드, 하나의 루프\"라는 모델의 **구체적인 대가**가 여기 있다."
+    },
+    {
+      "id": "order",
+      "kind": "limits",
+      "heading": "⭐⭐⭐ 문서가 \"보장 안 한다\"고 적는 두 자리",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ],
+      "body": "**① `setTimeout(fn, 0)` 과 `setImmediate(fn)` 중 무엇이 먼저 도나.**\n\n**답이 \"때에 따라 다르다\"** 이고, 문서가 그 이유까지 적는다.\n\n> ⭐⭐⭐ 메인 모듈에서 부르면 — \"timing will be **bound by the performance of the process** (which can be **impacted by other applications running on the machine**)\"\n\n⚠️⚠️ **같은 머신에서 도는 다른 프로그램이 순서를 바꿀 수 있다.** 우리 코드가 아니라 **그날 그 기계의 상태**가 정한다.\n\n**그런데 같은 두 줄을 다른 자리에 두면 답이 정해진다.**\n\n> ⭐⭐ \"if you move the two calls **within an I/O cycle**, the **immediate callback is always executed first**\"\n\n💡 ⭐⭐⭐ **같은 코드가 어디 있느냐에 따라 순서가 달라진다** — 메인 모듈에서는 불확정, I/O 콜백 안에서는 항상 `setImmediate` 가 먼저. **`phase` 표를 보면 이유가 보인다**: I/O 콜백은 `poll` 단계에서 돌고, 그 **바로 다음이 `check`(=`setImmediate`)** 다. 반면 `timers` 는 **한 바퀴를 더 돌아야** 온다.\n\n📌 ⭐ **그래서 실무 규칙 하나** — **두 개의 순서에 기대는 코드를 쓰지 않는다.** 순서가 필요하면 **명시적으로 잇는다**(콜백·`await`).\n\n**② `process.nextTick()` 은 루프 밖에 있다.**\n\n> ⭐⭐⭐ \"`process.nextTick()` was not displayed in the diagram ... because **`process.nextTick()` is not technically part of the event loop**.\"\n\n**단계 목록에 없다.** 어느 단계가 끝나든 **그 사이에 끼어들어 먼저 돈다.** 그리고 문서가 그 대가를 경고한다.\n\n> ⭐⭐⭐ \"This can create some bad situations because it **allows you to \\\"starve\\\" your I/O by making recursive `process.nextTick()` calls**, which **prevents the event loop from reaching the poll phase**.\"\n\n⚠️⚠️ **재귀적으로 부르면 루프가 `poll` 단계에 영영 도달하지 못한다** — 즉 **들어온 요청을 아무것도 처리 못 한다.** 그런데 **CPU 는 100%로 돌고 있고, 프로세스는 살아 있고, 헬스체크도 통과할 수 있다.**\n\n💡 ⭐⭐ **이 백과사전이 계속 만나는 그 형태다 — 실패가 조용하다.** `github-actions` 의 초록색 빌드, `redis` 의 사라진 데이터, `seo` 의 갈라진 도메인과 같은 종류이고, ⭐ 여기서는 **\"살아 있는데 아무 일도 안 하는 서버\"** 로 나타난다."
+    },
+    {
+      "id": "block",
+      "kind": "extra",
+      "heading": "⭐ 한 스레드가 막히면 전부 막힌다 — 공고 32건이 그 대책이다",
+      "confidence": "inferred",
+      "body": "앞 절의 `nextTick` 굶기기는 극단적인 예다. ⚠️ **훨씬 흔한 것은 그냥 오래 걸리는 계산**이다 — 큰 JSON 파싱, 이미지 처리, 암호 연산, 거대한 배열 정렬.\n\n⭐ **자바스크립트 코드가 도는 동안 루프는 다음 단계로 못 간다.** 그 사이 들어온 요청은 전부 기다린다 — **한 요청이 다른 모든 요청을 세운다.**\n\n**공고에 그 대책이 있다.**\n\n> ⭐⭐ `Node.js 기반 **병렬 워커 파이프라인** 설계 및 **동시성 제어**` — 미리디\n\n`워커 스레드|클러스터 모듈|PM2` 가 **32건**, `CPU 집약|블로킹` 이 **57건**이다. ⚠️ **적지만 있고**, 그리고 **이것을 이름으로 대는 회사는 이미 물려 본 회사**일 가능성이 높다.\n\n📌 **길은 셋이다.**\n\n| | 무엇 | 언제 |\n|---|---|---|\n| ⭐ **프로세스를 여럿** | 클러스터·PM2·컨테이너 여러 개 | **가장 흔한 답** — 코어 수만큼 띄운다 |\n| **워커 스레드** | 무거운 계산만 딴 스레드로 | 계산이 무겁고 **자주** 있을 때 |\n| ⭐⭐ **아예 밖으로** | 큐에 넣고 별도 워커가 처리 | **작업이 오래 걸릴 때** (→ `redis`·`kafka`) |\n\n💡 ⭐ **셋째가 미리디 공고의 \"병렬 워커 파이프라인\"** 이고, `redis` 문서가 다룬 그 큐다. ⚠️ **다만 거기 적어 뒀듯 큐에 들어간 작업은 원본이 없다** — 잃으면 사용자 요청이 사라진다.\n\n📌 **그리고 이 선택이 `market` 을 설명한다.** 동반 1위가 **AWS 56.0%**, 그리고 **Docker 32.2%** 다 — ⭐ **\"한 프로세스가 한 코어를 쓴다\"는 제약이 곧 \"여러 개를 띄운다\"는 배포 방식**이 된다.\n\n⚠️ **마지막으로 짚어 둘 것** — `market` 의 **React 53.2%** 는 이 런타임을 고르는 큰 이유를 보여 준다: **앞뒤를 한 언어로 쓴다.** 그런데 ⭐ **프론트엔드에서 오래 걸리는 계산은 화면 하나를 멈추지만, 서버에서는 모든 사용자를 멈춘다.** **같은 언어라고 같은 감각으로 쓰면 안 되는 자리**가 여기다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 마이크로태스크를 다루지 않았다.** `Promise` 의 `.then` 이 **언제** 도는지(마이크로태스크 큐), `queueMicrotask` 와 `process.nextTick` 의 차이 — ⭐ **읽은 문서가 `nextTick` 을 \"루프 밖\"이라고만 하고 마이크로태스크 큐와의 관계는 다루지 않았다.** 셈으로도 `마이크로태스크` 2건이라 근거가 없었다. **가장 큰 빈자리다.**\n\n**2. ⚠️ \"ECMAScript 명세에 이벤트 루프가 없다\"를 확인하지 않았다.** `why` 절이 그 취지로 쓰였지만, ⭐ **확인한 것은 Node 쪽 문장(libuv·system dependent)뿐**이다. 명세가 job queue 를 어떻게 정의하는지는 **직접 읽지 않았다**(⚠️ `javascript` 사이클에서 명세 본문을 못 연 일과 같은 제약).\n\n**3. ⚠️ 브라우저의 이벤트 루프와 비교하지 않았다.** 축이 \"호스트마다 다르다\"인데 **다른 쪽(브라우저·HTML 명세)을 열지 않았다** — 그래서 **\"어떻게 다른지\"는 못 썼고 \"다르다\"까지만** 썼다.\n\n**4. ⚠️ Node 생태계를 다루지 않았다.** `NestJS` **556건**·`Express` 230건인데 프레임워크는 한 줄도 안 썼다. ⭐ 특히 NestJS 는 Express 의 두 배가 넘는데 **이 백과사전에 없다.**\n\n**5. ⚠️ 스트림·백프레셔를 다루지 않았다.** `poll` 단계와 직결되고 대용량 처리의 핵심인데 확인하지 않았다.\n\n**6. ⚠️ 성능 숫자를 하나도 쓰지 않았다.** \"몇 rps\" 류는 **하드웨어·작업 종류에 따라 달라져** 옮기면 거짓이 된다 — 그리고 이 문서가 인용한 문장 자체가 그 이유를 말한다(\"**system dependent**\", \"**impacted by other applications running on the machine**\").\n\n**7. 이 문서가 다루지 않는 것.** 한 스레드·하나의 루프라는 **모델 일반론과 함수 색 문제**는 `asyncio`(파이썬), 언어 자체는 `javascript`, 타입은 `typescript`, 작업을 밖으로 빼는 큐는 `redis`·`kafka` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "phases",
+      "kind": "spec",
+      "caption": "⭐⭐ 이벤트 루프의 여섯 단계",
+      "note": "전부 **Node.js 공식 문서의 원문**이다. ⭐ 표에서 가장 중요한 칸은 `poll` 의 **\"node will block here when appropriate\"** — **\"논블로킹\" 런타임의 문서가 \"여기서 막힌다\"고 적는다.**",
+      "columns": [
+        "단계",
+        "원문 설명"
+      ],
+      "rows": [
+        [
+          "**timers**",
+          "\"Executes callbacks scheduled by `setTimeout()` and `setInterval()`\""
+        ],
+        [
+          "**pending callbacks**",
+          "\"Executes I/O callbacks **deferred to the next loop iteration**\""
+        ],
+        [
+          "idle, prepare",
+          "\"**Only used internally**\""
+        ],
+        [
+          "⭐⭐ **poll**",
+          "\"Retrieves new I/O events; executes I/O related callbacks (almost all with the exception of close callbacks, the ones scheduled by timers, and `setImmediate()`); **node will block here when appropriate**\""
+        ],
+        [
+          "**check**",
+          "\"`setImmediate()` callbacks are invoked here\""
+        ],
+        [
+          "**close callbacks**",
+          "\"Some close callbacks, e.g. `socket.on('close', ...)`\""
+        ],
+        [
+          "⚠️ 밖에 있는 것",
+          "\"`process.nextTick()` is **not technically part of the event loop**\""
+        ],
+        [
+          "⭐ 상한",
+          "\"To prevent the poll phase from **starving the event loop**, libuv ... has a **hard maximum (system dependent)**\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "id": "nondet",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 문서가 \"보장 안 한다\"고 적는 자리",
+      "note": "⭐ 이 표가 이 문서의 심장이다. **런타임이 자기 실행 순서에 대해 \"모른다\"고 적는 일**은 드물고, 그것이 곧 **\"호스트가 정한다\"는 축의 증거**다.",
+      "columns": [
+        "무엇",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ `setTimeout(0)` vs `setImmediate` (메인 모듈)",
+          "\"timing will be **bound by the performance of the process** (which can be **impacted by other applications running on the machine**)\" — ⚠️ **같은 기계의 다른 프로그램이 순서를 바꾼다**"
+        ],
+        [
+          "⭐⭐ 같은 둘 (I/O 콜백 안)",
+          "\"if you move the two calls **within an I/O cycle**, the **immediate callback is always executed first**\" — ⭐ **같은 코드인데 자리가 답을 바꾼다**"
+        ],
+        [
+          "⭐⭐⭐ `process.nextTick` 남용",
+          "\"it allows you to **\\\"starve\\\" your I/O** by making **recursive** `process.nextTick()` calls, which **prevents the event loop from reaching the poll phase**\""
+        ],
+        [
+          "⭐⭐ 루프의 구현체",
+          "\"**libuv** (**the C library that implements the Node.js event loop** and all of the asynchronous behaviors of the platform)\""
+        ],
+        [
+          "⭐⭐ OS 차이",
+          "\"There is a **slight discrepancy between the Windows and the Unix/Linux implementation**\""
+        ],
+        [
+          "⭐⭐⭐ 상한",
+          "\"has a **hard maximum (system dependent)** before it stops polling for more events\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "id": "block",
+      "kind": "compare",
+      "caption": "한 스레드가 막힐 때 — 세 가지 길",
+      "note": "이 표는 이 문서가 정리한 것이다(`confidence: inferred`). 근거는 공고(미리디 `병렬 워커 파이프라인`)와 셈(`워커 스레드|클러스터|PM2` **32건** · `CPU 집약|블로킹` **57건**).",
+      "columns": [
+        "",
+        "무엇",
+        "언제",
+        "대가"
+      ],
+      "rows": [
+        [
+          "⭐ **프로세스를 여럿**",
+          "클러스터·PM2·컨테이너 여러 개",
+          "**가장 흔한 답** — 코어 수만큼",
+          "메모리를 그만큼 쓴다. 상태 공유가 어렵다"
+        ],
+        [
+          "**워커 스레드**",
+          "무거운 계산만 딴 스레드로",
+          "계산이 무겁고 **자주** 있을 때",
+          "주고받는 비용, 코드가 갈라진다"
+        ],
+        [
+          "⭐⭐ **아예 밖으로**",
+          "큐에 넣고 별도 워커가 처리",
+          "**작업이 오래 걸릴 때**",
+          "⚠️ **큐에 들어간 작업은 원본이 없다** (→ `redis`)"
+        ],
+        [
+          "⭐ 그래서 배포가",
+          "—",
+          "—",
+          "`market` **AWS 56.0% · Docker 32.2%** — **여러 개를 띄우는 방식**이 기본이 된다"
+        ],
+        [
+          "⚠️ 착각하기 쉬운 자리",
+          "—",
+          "—",
+          "**프론트에서 무거운 계산은 화면 하나를 멈추고, 서버에서는 모든 사용자를 멈춘다** (`market` React **53.2%**)"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ 형태가 `github-actions` 와 같다 — **공고 문장이 \"깊은 이해\"라고만 하고 구체적 낱말을 안 준다.** 그래서 셈보다 **1차 자료와 `market` 이 더 많이 말해 준다.**",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**1642건 (모집중 592)** — 태그 기준으로는 571건(7.9%), 층은 \"백엔드\""
+        ],
+        [
+          "`NestJS`",
+          "**556 (모집중 201)** — ⚠️ **Express(230)의 두 배가 넘는데 문서가 없다**"
+        ],
+        [
+          "`동시성\\|병렬 처리`",
+          "315 (모집중 161)"
+        ],
+        [
+          "`CPU 집약\\|블로킹`",
+          "57 (모집중 39)"
+        ],
+        [
+          "⚠️ `워커 스레드\\|클러스터\\|PM2`",
+          "**32 (모집중 15)** — ⭐ **이걸 이름으로 대는 회사는 이미 물려 본 회사**일 수 있다"
+        ],
+        [
+          "⚠️ `논블로킹\\|싱글 스레드`",
+          "23 (모집중 10)"
+        ],
+        [
+          "⚠️⚠️ `마이크로태스크\\|태스크 큐`",
+          "**2 (모집중 0)**"
+        ],
+        [
+          "⭐ 공고가 쓰는 말",
+          "**\"비동기에 대한 깊은 이해\"** — 필라넷·지엔터프라이즈·벳칭. ⚠️ **무엇을 아는 것인지는 안 적는다**"
+        ],
+        [
+          "⭐⭐ 함께 적히는 것",
+          "**Python(asyncio)·Java** 와 **나란한 선택지**로 나온다(코어시큐리티 `중 1개 이상`, 드림에이스). ⚠️ 셋의 이벤트 루프는 서로 다르다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ libuv",
+      "en": "—",
+      "what": "\"**the C library that implements the Node.js event loop** and all of the asynchronous behaviors of the platform\" — **루프는 자바스크립트로 쓰이지 않았다**"
+    },
+    {
+      "term": "⭐⭐ poll 단계",
+      "en": "—",
+      "what": "I/O 이벤트를 가져오는 단계. \"**node will block here when appropriate**\" — **\"논블로킹\"인데 여기서 선다**"
+    },
+    {
+      "term": "⭐⭐ `process.nextTick`",
+      "en": "—",
+      "what": "\"**not technically part of the event loop**\" — 단계 목록에 없고, 어느 단계 사이에든 끼어든다"
+    },
+    {
+      "term": "⭐⭐⭐ I/O 굶기기",
+      "en": "starve your I/O",
+      "what": "재귀적 `nextTick` 등으로 **루프가 `poll` 에 도달하지 못하는 것.** ⚠️ 프로세스는 살아 있는데 아무 요청도 처리 못 한다"
+    },
+    {
+      "term": "⭐ system dependent",
+      "en": "—",
+      "what": "libuv 의 폴링 상한에 붙은 말. **우리도 표준도 아닌 운영체제가 정한다**"
+    },
+    {
+      "term": "`setImmediate` vs `setTimeout(0)`",
+      "en": "—",
+      "what": "⚠️ **메인 모듈에서는 순서가 불확정**, **I/O 콜백 안에서는 `setImmediate` 가 항상 먼저**"
+    },
+    {
+      "term": "워커 스레드 / 클러스터",
+      "en": "worker threads / cluster",
+      "what": "막히는 계산을 딴 데로 보내는 두 방법(공고 32건). ⭐ 셋째 길은 **아예 큐로 빼는 것**"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "두 콜백의 실행 순서가 중요하다",
+      "pick": "⭐ **순서를 코드로 명시한다**(콜백 안에서 다음 것을 부르거나 `await` 로 잇는다)",
+      "over": "`setTimeout(0)` 과 `setImmediate` 의 순서에 기대기",
+      "why": "⭐⭐⭐ 문서가 직접 적는다 — 메인 모듈에서는 \"timing will be **bound by the performance of the process** (which can be **impacted by other applications running on the machine**)\". ⚠️ **같은 기계의 다른 프로그램이 순서를 바꾼다.** 그리고 **같은 코드를 I/O 콜백 안으로 옮기면 답이 달라진다**",
+      "tradeoff": "명시적으로 이으면 코드가 한 겹 늘고 병렬성이 조금 준다. ⭐ 그래도 **개발 기계에서는 늘 맞고 서버에서만 가끔 틀리는 버그**보다 낫다 — 그런 버그는 재현이 안 된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "situation": "오래 걸리는 계산을 서버에서 해야 한다",
+      "pick": "⭐⭐ **큐에 넣고 별도 워커가 처리하게 한다**",
+      "over": "요청 핸들러 안에서 계산하기",
+      "why": "⭐⭐⭐ **자바스크립트가 도는 동안 루프는 다음 단계로 못 간다** — 그 사이 들어온 **모든** 요청이 기다린다. ⚠️ 그리고 `market` 의 **React 53.2%** 가 함정이다: **프론트에서 무거운 계산은 화면 하나를 멈추지만 서버에서는 전부를 멈춘다.** 미리디 공고의 `병렬 워커 파이프라인`이 그 답이다",
+      "tradeoff": "⚠️ 구조가 늘고, **큐에 들어간 작업은 원본이 없다**(→ `redis` 의 `use` 절 — 원본을 DB 에도 남긴다). ⭐ 계산이 짧고 드물면 **워커 스레드**가, 그냥 처리량이 문제면 **프로세스를 여럿 띄우는 것**이 더 간단하다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "`process.nextTick` 을 쓰려 한다",
+      "pick": "⭐ **웬만하면 `setImmediate` 나 `queueMicrotask` 를 쓴다**",
+      "over": "\"가장 빨리 도니까\" `nextTick` 쓰기",
+      "why": "⭐⭐⭐ 문서가 위험을 명시한다 — \"it allows you to **\\\"starve\\\" your I/O** by making **recursive** `process.nextTick()` calls, which **prevents the event loop from reaching the poll phase**\". ⚠️ 그리고 그것은 **루프의 일부가 아니다**(\"not technically part of the event loop\") — 단계 사이에 끼어든다",
+      "tradeoff": "⚠️ **`nextTick` 이 맞는 자리도 있다**(생성자에서 이벤트를 붙일 틈을 주는 것 등). ⭐ 그래서 규칙은 \"쓰지 마라\"가 아니라 **\"재귀로 부르지 마라, 그리고 왜 이게 필요한지 답할 수 있어야 한다\"** 다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "situation": "타이머로 지연을 준다",
+      "pick": "⭐ **\"최소 이만큼 뒤\"로 이해하고, 정확한 시각이 필요하면 다른 수단을 쓴다**",
+      "over": "`setTimeout(fn, 100)` 이 100ms 뒤에 돈다고 여기기",
+      "why": "⭐⭐ `timers` 는 **단계 중 하나**다 — 루프가 그 단계에 **도착해야** 돈다. 앞 단계에서 오래 걸리는 일이 있으면 더 늦는다. ⚠️ **타이머는 지연의 하한이지 약속이 아니다**",
+      "tradeoff": "대부분의 UI·재시도 로직에는 하한이면 충분하다. ⭐ **정확한 시각이 필요한 일**(정산·스케줄)은 애초에 이 런타임의 타이머로 하지 않고 **작업 스케줄러**에 맡긴다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "situation": "브라우저에서 돌던 코드를 Node 로 옮긴다",
+      "pick": "⭐ **실행 순서에 기대는 부분을 먼저 찾는다**",
+      "over": "같은 언어니까 그대로 돌 거라고 여기기",
+      "why": "⭐⭐⭐ **순서를 정하는 것은 언어가 아니라 호스트다.** Node 의 루프는 **libuv 가 구현**하고, 문서는 \"**slight discrepancy between the Windows and the Unix/Linux implementation**\" 과 \"**system dependent**\" 상한까지 적는다. ⚠️ `javascript` 문서의 **\"non-web hosts may not\"** 이 가리키는 호스트가 여기다",
+      "tradeoff": "⚠️ 찾는 데 시간이 든다. 그래도 **옮긴 뒤 간헐적으로만 틀리는 버그**로 만나는 것보다 낫다 — 그리고 그런 버그는 **개발 기계에서 재현이 안 된다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐ 요청 핸들러 안에서 무거운 계산을 한다",
+      "why": "⭐⭐⭐ **가장 흔하고 가장 늦게 발견된다.** 개발 중에는 요청이 하나뿐이라 멀쩡하고, **트래픽이 몰려야 드러난다.** 그때 증상은 \"특정 API 가 느리다\"가 아니라 **\"전부 느리다\"** 라서 원인을 엉뚱한 데서 찾는다",
+      "fix": "⭐ **핸들러에서 도는 자바스크립트의 시간을 재 본다**(큰 JSON 파싱·이미지 처리·정렬·암호 연산이 후보다). 길면 **워커 스레드나 큐로 뺀다.** ⚠️ 공고에 `CPU 집약|블로킹` 이 **57건**, `워커 스레드|클러스터` 가 **32건** 나오는 것은 **이미 겪은 회사들**이다",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐⭐ `setTimeout(0)` 과 `setImmediate` 의 순서에 기댄다",
+      "why": "⭐ **개발 기계에서는 늘 같은 순서로 돌아서 규칙처럼 보인다.** ⚠️ 그런데 문서가 \"**bound by the performance of the process** ... **impacted by other applications running on the machine**\" 이라고 적는다 — **서버에서 부하가 걸리면 뒤집힐 수 있다.** 게다가 **같은 코드를 I/O 콜백 안으로 옮기면 답이 정해진다**(\"immediate ... **always** executed first\")",
+      "fix": "⭐ **순서가 필요하면 명시적으로 잇는다.** 그리고 **어느 쪽이든 도는 코드**로 쓴다 — \"둘 중 뭐가 먼저인지\"에 답이 필요해진 시점이 이미 설계가 잘못된 신호일 때가 많다",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "trap": "`process.nextTick` 을 재귀로 부른다",
+      "why": "⭐⭐⭐ 문서가 이 한 가지를 콕 집어 경고한다 — \"**starve** your I/O ... **prevents the event loop from reaching the poll phase**\". ⚠️ **증상이 조용하다**: 프로세스는 살아 있고, CPU 는 100%이고, **헬스체크가 같은 프로세스 안에 있으면 그것도 통과 못 하는데 컨테이너는 죽지 않을 수 있다**",
+      "fix": "⭐ **재귀가 필요하면 `setImmediate` 로 바꾼다** — 그러면 루프가 한 바퀴 돌 틈이 생겨 **`poll` 에 도달한다.** 그리고 **이벤트 루프 지연을 지표로 내보낸다**(→ `observability`) — 이 사고는 **그 지표 없이는 안 보인다**",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "trap": "\"논블로킹이니까 안 멈춘다\"고 여긴다",
+      "why": "⚠️ **문서 자신이 `poll` 단계에 \"node will block here when appropriate\" 이라고 적는다.** ⭐ 논블로킹은 **\"절대 안 멈춘다\"가 아니라 \"기다리느라 다른 일을 못 하지는 않는다\"** 는 뜻인데, 앞의 뜻으로 알면 **막히는 코드를 써 놓고도 문제를 못 본다**",
+      "fix": "⭐ **기준을 바꾼다 — \"멈추나\"가 아니라 \"멈춘 동안 다른 일을 할 수 있나\"**. I/O 를 기다리는 멈춤은 괜찮고, **자바스크립트가 도느라 생긴 멈춤은 아니다**",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "trap": "`setTimeout(fn, 100)` 이 100ms 뒤에 돈다고 여긴다",
+      "why": "⭐ `timers` 는 **여섯 단계 중 하나**라 **루프가 거기 도착해야** 돈다. 앞 단계가 오래 걸리면 더 늦고, ⚠️ **부하가 걸릴수록 더 늦어진다** — 즉 **가장 필요할 때 가장 부정확하다**",
+      "fix": "**타이머는 지연의 하한으로 쓴다.** ⭐ 재시도 간격·디바운스에는 충분하고, **정확한 시각이 필요한 일은 작업 스케줄러에 맡긴다.** 그리고 **타이머 지연 자체를 재 보면** 이벤트 루프가 얼마나 밀려 있는지가 보인다",
+      "sources": [
+        {
+          "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+          "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+          "publisher": "Node.js",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+        }
+      ]
+    },
+    {
+      "trap": "Node 와 브라우저에서 같은 순서로 돌 거라고 여긴다",
+      "why": "⭐⭐⭐ **순서를 정하는 것은 호스트다.** Node 는 **libuv** 가 구현하고 브라우저는 브라우저가 구현한다. ⚠️ 게다가 Node 안에서도 \"**slight discrepancy between the Windows and the Unix/Linux implementation**\" 이 있다고 문서가 적는다",
+      "fix": "⭐ **호스트에 따라 달라지는 것에 기대지 않는 코드를 쓴다** — 순서가 중요하면 명시적으로 잇는다. ⚠️ 그리고 **`javascript` 문서의 `Annex B` 기능도 함께 확인한다**(\"non-web hosts **may not**\" 구현한다)"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **`setTimeout(fn, 0)` 과 `setImmediate(fn)` 을 메인 모듈에서 열 번 실행해 순서를 기록**한다. 그다음 **같은 두 줄을 파일 읽기 콜백 안으로 옮겨** 다시 열 번 실행한다.",
+      "done_when": "메인 모듈에서는 순서가 **왔다 갔다 하고**, I/O 콜백 안에서는 **항상 `setImmediate` 가 먼저**라는 것을 눈으로 봤다. ⭐ 그리고 **`phases` 표를 보고 왜 그런지** 설명할 수 있다.",
+      "why": "⭐⭐⭐ **\"같은 코드가 어디 있느냐에 따라 순서가 달라진다\"** 를 글로 읽으면 안 믿기고, **직접 보면 잊지 않는다.** 그리고 이 실습을 한 사람은 **순서에 기대는 코드를 다시는 안 쓴다.**",
+      "no_hardware": "Node 가 깔려 있으면 파일 하나면 된다. ⭐ 없으면 **`phases` 표만 보고 \"왜 I/O 콜백 안에서는 `setImmediate` 가 먼저인지\"** 를 추론해 적어 본다(답은 `check` 가 `poll` 바로 다음이라서).",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **요청을 받으면 무거운 계산(큰 배열 정렬 등)을 하는 서버를 만들고**, 그 계산이 도는 동안 **다른 엔드포인트(예: 헬스체크)를 호출**해 본다. 응답이 얼마나 늦는지 잰다.",
+      "done_when": "⭐ **아무 관계 없는 요청이 함께 늦는다는 것**을 숫자로 봤고, 계산 시간과 지연이 비슷하다는 것을 확인했다. 그다음 **워커 스레드나 별도 프로세스로 옮겨** 같은 것을 재 비교한다.",
+      "why": "⭐⭐⭐ **\"한 요청이 모든 요청을 세운다\"** 가 이 런타임의 가장 큰 함정이고, **트래픽이 몰려야 드러나기 때문에 대개 운영에서 처음 만난다.** 미리 한 번 겪어 두는 값이 크다.",
+      "no_hardware": "서버를 안 만들어도 된다 — **`while` 로 2초짜리 계산을 돌리고 그 사이 `setTimeout(fn, 0)` 이 언제 도는지** 재 보면 같은 것이 보인다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐ **Node 문서의 `The Node.js Event Loop` 페이지에서 `non-deterministic`·`system dependent`·`starve`·`block` 을 검색**해 각각 무엇에 붙어 있는지 적는다.",
+      "done_when": "네 낱말이 붙은 자리가 정리되고, ⭐ **\"이 런타임이 스스로 보장하지 않는다고 말하는 것들\"** 의 목록이 만들어진다.",
+      "why": "⭐⭐ 이 백과사전이 계속 하는 일 — **부정어를 먼저 찾는다.** 그리고 이 문서는 그것이 특히 잘 드러난 경우다: **런타임이 자기 실행 순서에 대해 \"모른다\"고 적는 일**은 드물고, 그 문장들이 **실무에서 가장 자주 물리는 자리**를 정확히 가리킨다.",
+      "no_hardware": "웹 페이지 하나면 된다 — Node 를 깔 필요도 없다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "Node 의 이벤트 루프를 실제로 구현하는 것은 무엇인가? 그것이 왜 중요한가?",
+    "여섯 단계 중 \"여기서 막힌다\"고 문서가 적는 단계는? 왜 그것이 모순이 아닌가?",
+    "`setTimeout(0)` 과 `setImmediate` 의 순서는? 답이 두 가지인 이유는?",
+    "`process.nextTick` 이 단계 목록에 없는 이유와, 남용하면 생기는 일은?",
+    "`setTimeout(fn, 100)` 이 정확히 100ms 뒤에 돌지 않는 이유는?",
+    "요청 핸들러에서 무거운 계산을 하면 왜 '전부' 느려지는가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Node.js 기반 병렬 워커 파이프라인 설계 및 동시성 제어",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359674",
+      "where": "미리디",
+      "what_it_shows": "⭐⭐⭐ **`block` 절의 셋째 길이 공고에 그대로 있다** — 한 스레드가 막히는 문제를 **작업을 밖으로 빼서** 푼다. `워커 스레드|클러스터` 32건 중 하나"
+    },
+    {
+      "quote": "• TypeScript·Node.js 비동기·분산 시스템 설계에 대한 깊은 이해",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/360949",
+      "where": "필라넷",
+      "what_it_shows": "⚠️ **\"비동기에 깊은 이해\"** — 1642건이 이 모양이다. ⭐ 그런데 **무엇을 아는 것인지는 안 적는다**(`마이크로태스크` 2건)"
+    },
+    {
+      "quote": "• Python, Node.js 기반의 비동기 프로그래밍에 깊은 이해가 있고, 상황에 맞는 최적의 언어와 도구를 선택하실 수 있는 분을 찾고 있어요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356537",
+      "where": "지엔터프라이즈",
+      "what_it_shows": "⭐⭐ **`상황에 맞는 최적의 언어와 도구를 선택`** — 회사가 **고르는 능력**을 요구한다. ⚠️ 그러려면 **두 런타임의 루프가 어떻게 다른지**를 알아야 하고, 그것이 이 문서의 축이다"
+    },
+    {
+      "quote": "- Backend / Engine: Python (FastAPI, Asyncio 등 비동기 처리 능숙자 우대), Node.js, 또는 Java 중 1개 이상 심도 있는 활용 경험 (백단 엔진 구현 역량 필수)",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49809764?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=87&sc=630",
+      "where": "㈜코어시큐리티",
+      "what_it_shows": "⭐⭐ **`Asyncio` 와 `Node.js` 가 한 줄에, `중 1개 이상`으로 적힌다** — 회사는 대체 가능한 것으로 보는데 ⚠️ **셋의 이벤트 루프는 서로 다르게 생겼다**(→ `asyncio`)"
+    },
+    {
+      "quote": "ㆍJava/kotlin(Spring), Node.js(Nest.js) 및 Python(FastAPI)을 활용한 고성능·비동기 웹 서버 구축 및 효율적인 RESTful API 설계",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373149",
+      "where": "드림에이스",
+      "what_it_shows": "⭐ **`고성능·비동기`** 가 한 덩어리로 쓰인다. 그리고 `Nest.js` — **556건인데 이 백과사전에 없다**"
+    },
+    {
+      "quote": "TypeScript와 Node.js의 비동기 처리/타입 시스템을 깊이 이해하고, 구조적인 코드를 설계해 온 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/367279",
+      "where": "벳칭",
+      "what_it_shows": "⭐ **비동기와 타입을 한 덩어리로** 요구한다 — `market` 의 TypeScript 동반 **55.3%** 가 이 모양(→ `typescript`)"
+    },
+    {
+      "quote": "비동기 처리, 모듈화, 에러 핸들링 등 Node.js 생태계 전반에 대한 이해",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49725532?Oem_Code=C1&logpath=1&stext=%EB%85%B8%EB%93%9C&listno=4&sc=630",
+      "where": "㈜유씨웨어",
+      "what_it_shows": "⭐ **`에러 핸들링`** 이 비동기와 나란히 온다 — ⚠️ 루프 위에서는 **예외가 어디로 가는지**가 동기 코드와 다르다(`asyncio` 의 '조용히 사라지는 것들'과 같은 문제)"
+    },
+    {
+      "quote": "- Node.js (Fastify, Express 등) 또는 Python (FastAPI, Django 등) 기반 API 개발 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/343884",
+      "where": "디스펙터",
+      "what_it_shows": "**또 나란한 선택지** — ⭐ 이 데이터에서 Node 는 거의 언제나 **Python 과 함께 또는 대신** 적힌다(`market` Python 동반 39.1%)"
+    }
+  ],
+  "related": [
+    {
+      "slug": "javascript",
+      "how": "⭐⭐⭐ **정면의 짝.** 저 문서가 인용한 **\"non-web hosts may not\"** 의 그 호스트가 여기다 — **언어는 문법을 정하고 호스트는 순서를 정한다**"
+    },
+    {
+      "slug": "asyncio",
+      "how": "⭐⭐ **모델 일반론은 그쪽에 있다**(한 스레드·하나의 루프, 함수 색). ⚠️ 공고에서 **나란한 선택지로 적힌다**(코어시큐리티 `중 1개 이상`) — 여기는 **호스트 차이와 단계**만 다뤘다"
+    },
+    {
+      "slug": "typescript",
+      "how": "⭐ 동반 **55.3%** — 벳칭 `비동기 처리/타입 시스템을 깊이 이해하고`. 둘을 한 덩어리로 요구한다"
+    },
+    {
+      "slug": "redis",
+      "how": "⭐⭐ `block` 절의 셋째 길 — 작업을 큐로 뺀다. ⚠️ **큐에 들어간 작업은 원본이 없다**는 경고도 그쪽에 있다"
+    },
+    {
+      "slug": "observability",
+      "how": "⭐⭐ **I/O 굶기기는 지표 없이는 안 보인다** — 프로세스는 살아 있고 CPU 는 100%다. **이벤트 루프 지연**을 내보내야 잡힌다"
+    },
+    {
+      "slug": "kafka",
+      "how": "오래 걸리는 작업을 밖으로 뺄 때의 다른 선택지"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `Node.js`(571건 · 7.9% · 층 \"백엔드\")를 그대로 옮겼다. ⚠️ 본문 직접 셈은 **1642건**이다 — 두 숫자를 다 적었다.",
+    "⚠️⚠️ **마이크로태스크를 다루지 않았다.** `Promise` 의 `.then` 이 **어느 시점에** 도는지, `queueMicrotask` 와 `process.nextTick` 의 관계 — ⭐ **읽은 문서가 `nextTick` 을 \"루프 밖\"이라고만 하고 마이크로태스크 큐를 다루지 않았고**, 셈으로도 2건이라 근거가 없었다. **가장 큰 빈자리다.**",
+    "⚠️⚠️ **\"ECMAScript 명세에 이벤트 루프가 없다\"를 확인하지 않았다.** `why` 절이 그 취지로 쓰였지만 **확인한 것은 Node 쪽 문장(libuv·system dependent·OS 차이)뿐**이다. 명세가 job queue 를 어떻게 정의하는지는 **직접 읽지 않았다** — `javascript` 사이클에서 명세 본문을 못 연 것과 같은 제약이다.",
+    "⚠️ **브라우저의 이벤트 루프와 비교하지 않았다.** 축이 \"호스트마다 다르다\"인데 **다른 쪽을 열지 않아** \"어떻게 다른지\"는 못 쓰고 **\"다르다\"까지만** 썼다.",
+    "⚠️ **NestJS(556건)와 Express(230건)를 다루지 않았다.** ⭐ 특히 NestJS 는 Express 의 두 배가 넘는데 이 백과사전에 없다.",
+    "⚠️ **스트림·백프레셔를 다루지 않았다.** `poll` 단계와 직결되고 대용량 처리의 핵심인데 확인하지 않았다.",
+    "⭐ **`block` 표의 세 가지 길은 이 문서의 정리다.** 공식 문서가 그렇게 묶어 말한 것이 아니라, **인용한 문장들과 공고(미리디 `병렬 워커 파이프라인`)·셈에서 추론**했다. `confidence` 는 인용 부분만 `confirmed` 다."
+  ],
+  "sources": [
+    {
+      "title": "The Node.js Event Loop, Timers, and process.nextTick()",
+      "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick",
+      "publisher": "Node.js",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **런타임이 자기 실행 순서를 단계로 적고, 그중 보장 안 되는 자리를 직접 밝히는 문서** — \"non-deterministic\", \"system dependent\", 그리고 **\"starve your I/O\"**"
+    }
+  ]
+}
