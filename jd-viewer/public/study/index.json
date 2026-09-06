@@ -1286,7 +1286,6 @@
       "aliases": [
         "일관성 모델",
         "최종 일관성",
-        "eventual consistency",
         "강한 일관성",
         "선형화"
       ],
@@ -2484,6 +2483,22 @@
         "agentic",
         "멀티 에이전트",
         "MCP"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "eventual-consistency",
+      "title": "결과적 일관성",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "새 갱신이 없으면 언젠가는 모두가 같은 값을 본다 — 그 \"언젠가\"까지의 틈이 이 문서의 전부다.",
+      "aliases": [
+        "Eventual Consistency",
+        "결과적 일관성",
+        "최종적 일관성"
       ],
       "sections": 6,
       "drills": 3,
