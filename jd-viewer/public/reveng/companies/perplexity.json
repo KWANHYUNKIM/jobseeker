@@ -4,7 +4,7 @@
   "name_en": "Perplexity",
   "country": "US",
   "category": "검색",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "perplexity.ai",
   "one_liner": "AI 검색을 팔면서 그것을 돌리는 추론 스택을 직접 만든다 — 그리고 어디를 파이썬으로 두고 어디를 러스트로 옮길지가 그 스택의 뼈대다",
@@ -18,7 +18,7 @@
   "revenue_streams": [
     {
       "name": "구독 (개인)",
-      "how": "AI 검색 구독. ⭐ **`AI 에이전트와 사용량 기반 과금으로 옮겨 간` 뒤 매출이 뛰었다.**",
+      "how": "AI 검색 구독. ⭐ **`AI 에이전트와 사용량 기반 과금으로 옮겨 간` 뒤 매출이 뛰었다.** ⭐ **이 매출이 그대로 추론 부하가 되고, 그 부하를 `요청을 GPU 앞까지 나른다`·`모델을 GPU 위에서 돌린다`·`GPU 끼리 직접 말하게 한다` 셋이 받는다**(재구성).",
       "amount": "2026년 ARR 5억 달러 (2025년 1억 달러)",
       "confidence": "confirmed",
       "sources": [
@@ -33,7 +33,7 @@
     },
     {
       "name": "기업 좌석 · 광고 · 맥락 커머스",
-      "how": "구독 위에 얹는 것들. **직장 지식 검색·금융 정보·개발자 API·자율 작업 실행으로 층을 넓히는 중이다.**",
+      "how": "구독 위에 얹는 것들. **직장 지식 검색·금융 정보·개발자 API·자율 작업 실행으로 층을 넓히는 중이다.** ⭐ **이 매출이 그대로 추론 부하가 되고, 그 부하를 `요청을 GPU 앞까지 나른다`·`모델을 GPU 위에서 돌린다`·`GPU 끼리 직접 말하게 한다` 셋이 받는다**(재구성).",
       "confidence": "confirmed",
       "sources": [
         {
@@ -47,7 +47,7 @@
     },
     {
       "name": "개발자 API (임베딩·검색)",
-      "how": "⭐ **자기 추론 스택을 그대로 판다** — `pplx-embed` 를 Embeddings API 로 연다. **배치 임베딩(색인용)과 온라인 임베딩(질의 시점)을 같은 스택이 처리한다.**",
+      "how": "⭐ **자기 추론 스택을 그대로 판다** — `pplx-embed` 를 Embeddings API 로 연다. **배치 임베딩(색인용)과 온라인 임베딩(질의 시점)을 같은 스택이 처리한다.** ⭐ **이 매출이 그대로 추론 부하가 되고, 그 부하를 `요청을 GPU 앞까지 나른다`·`모델을 GPU 위에서 돌린다`·`GPU 끼리 직접 말하게 한다` 셋이 받는다**(재구성).",
       "confidence": "confirmed",
       "sources": [
         {
@@ -215,7 +215,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "fabric-lib"
+      ]
     }
   ],
   "features": [
@@ -1040,6 +1042,460 @@
           "summary": "임베딩 API 를 떠받치는 세 서비스를 나눠 설명한다. Ivy 는 러스트 HTTP 게이트웨이로 JSON 파싱·토큰화·입력 템플릿·배치 쪼개기 같은 CPU 쪽 일을 맡고 요청을 자체 gRPC 프로토콜로 옮기며 복제본 사이 부하를 분산한다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 스케줄링과 배치를 관리해 엔진으로 넘긴다. ROSE 는 모델 추론을 구현하며 주로 파이썬이고 커널·레이어·모델 정의를 제공하고 CUDA 그래프를 관리한다. 별도의 임베딩 엔진을 만들지 않고 LLM 스택의 프리필과 디코드 커널을 다시 썼다 — 배치 임베딩은 계산 병목인 프리필을 닮았고 질의 시점의 온라인 임베딩은 메모리 병목인 디코드를 닮았기 때문이다. 스케줄러는 선착순으로 돌린다. 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하기 때문이고, 10억 파라미터 미만 모델에서는 512 토큰쯤이면 GPU 가 포화된다. 모든 임베딩 모델에 대해 모델 전체 CUDA 그래프를 만들되 지연 캡처로 몇 분치 즉시 작업을 몇 시간에 걸쳐 흩어 시작 시간이 감당 못 할 만큼 길어지는 것을 피한다. LazyTensor 로 스텝 함수가 텐서를 돌려주게 해서, 러스트 비동기 태스크가 N 번째 배치를 기다리는 동안 CPU 가 N+1 번째를 큐에 넣게 겹친다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 묶음으로 비교했다."
         }
       ]
+    },
+    {
+      "key": "fabric-lib",
+      "name": "NIC 에 안 묶이는 점대점 통신 (fabric-lib)",
+      "domain": "GPU 끼리 직접 말하게 한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⭐ **새 LLM 패턴들이 집합 통신으로는 안 된다** — **`분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정`**. ⚠️ **집합 통신은 `고정된 멤버십이 동적 확장을 막고, 동기화된 초기화가 부담을 더하며, 균일한 버퍼 크기가 성긴 패턴에도 조밀한 통신을 강요한다.`** ⭐ **그런데 대안들은 하드웨어에 묶여 있다** — 이 회사는 **AWS 에서 돌리므로 EFA 에서 안 되면 아무 소용이 없다**(재구성).",
+        "metrics": [
+          {
+            "label": "⭐ 조 단위 파라미터 RL 가중치 갱신",
+            "value": "1.3초 — 기존 RL 프레임워크보다 100배 이상 빠르다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "label": "MoE 디코드 처리량 (DeepSeek-V3, EP=DP=64, H200 EFA)",
+            "value": "배치 2에서 66.8 tok/s (pplx-kernels 21.0) · 배치 32에서 32.0 (4.9) — 3~6배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "label": "점대점 대역폭 (64KiB 페이지 Write)",
+            "value": "ConnectX-7 370Gbps · EFA 364Gbps",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 단일 Write 대역폭 (256KiB)",
+            "value": "ConnectX-7 116Gbps · EFA 54Gbps",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ UVM watcher 콜백 지연",
+            "value": "러스트 6.3±1.3µs (p99 12.6) · 파이썬 9.8±9.0µs (p99 20.4)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기존 라이브러리를 살펴보던 때",
+          "thought": "⭐ **하나씩 다 막혔다** — **`DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다.`** ⚠️ **클라우드에서 돌리는 쪽에는 선택지가 없었다는 뜻이다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "GPU 개시 RDMA 를 쓸지 정하던 때",
+          "thought": "⭐ **더 빠른 길을 알면서 안 갔다** — **`GPU 개시 RDMA(GDA)는 호스트 CPU 를 우회해 지연을 줄인다. 그러나 GDA 는 아직 대부분의 클라우드 인스턴스에서 쓸 수 없다.`** ⚠️ **그래서 호스트 프록시 설계가 `현세대 하드웨어를 감당하면서 이식성을 지킨다`.** ⭐ **최고 성능이 아니라 지금 돌아가는 하드웨어를 골랐다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "완료를 어떻게 알지 정하던 때",
+          "thought": "⭐ **순서 보장을 전제로 깔면 하드웨어가 좁아진다** — **`ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다.`** ⚠️ **그러면 `마지막 메시지가 도착했으니 다 왔다`는 방식을 못 쓴다**(재구성). 그래서 세는 쪽으로 갔다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "TransferEngine",
+            "what": "⭐ **인스턴스마다 식별용 주소 하나를 노출한다.** 뒤에 NIC 이 몇 장이든 바깥에는 하나로 보인다."
+          },
+          {
+            "name": "`WriteImm`",
+            "what": "**단방향 쓰기 연산.** 상대 CPU 의 개입 없이 상대 메모리에 쓴다."
+          },
+          {
+            "name": "`ImmCounter`",
+            "what": "⭐ **순서에 기대지 않는 완료 통지 원시 연산.** **도착 순서가 아니라 도착 횟수를 센다**(재구성)."
+          },
+          {
+            "name": "NIC 집합",
+            "what": "⚠️ **EFA 에서는 100Gbps 넷을 모아야 400Gbps 다.** **모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다.**"
+          },
+          {
+            "name": "UVM 카운터",
+            "what": "⭐ **GPU 가 레이어 어텐션을 마칠 때마다 올리는 값.** CPU 쪽 콜백이 그것을 보고 움직인다."
+          },
+          {
+            "name": "호스트 프록시",
+            "what": "⚠️ **GPU 대신 CPU 가 RDMA 를 제출하는 구조.** GDA 가 없는 클라우드를 위한 선택이다."
+          }
+        ],
+        "invariants": [
+          "⭐ **메시지 순서를 전제하지 않는다** — 두 NIC 계열 모두 신뢰성은 있으나 무순서이기 때문이다.",
+          "⭐ **CPU 가 목표 카운트를 본 뒤에는 페이로드가 GPU 에 보인다** — PCIe 스위치의 정렬이 그것을 보장한다.",
+          "⚠️ **모든 피어가 GPU 당 같은 수의 NIC 를 쓴다** — 그래야 전송이 출발지·목적지 사이 NIC 구성을 전부 알고 쪼개거나 나눌 수 있다.",
+          "**집합 통신을 대체하지 않는다** — 보완한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**`TransferEngine` 인스턴스가 식별용 주소 하나를 노출한다.** 뒤로는 **GPU 하나에 붙은 여러 NIC 를 투명하게 관리한다** — **EFA 에서는 100Gbps 넷을 모아야 400Gbps 이기 때문이다**",
+            "why": "⭐ **하드웨어 구성이 위로 새지 않게 한다**(재구성)."
+          },
+          {
+            "step": "⚠️ **제약이 하나 붙는다** — **`모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다.`** 그러면 **`어떤 전송이든 출발지와 목적지 도메인 사이의 NIC 구성을 전부 알게 되어 요청을 쪼개거나 나눌 수 있다.`**",
+            "why": "**균형 배분을 하려면 양쪽 구성을 알아야 한다**(재구성)."
+          },
+          {
+            "step": "**단방향 `WriteImm`** 으로 상대 메모리에 직접 쓴다",
+            "why": "상대 CPU 를 깨우지 않는다(재구성)."
+          },
+          {
+            "step": "⭐ **완료는 `ImmCounter` 로 안다 — 순서에 기대지 않는다.** **`ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다.`**",
+            "why": "⭐ **순서를 전제하면 그 전제를 지키는 하드웨어에만 묶인다**(재구성)."
+          },
+          {
+            "step": "⭐ **`CPU 가 목표 ImmCount 를 관측한 뒤에는, 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다.`**",
+            "why": "⭐ **순서 보장을 네트워크가 아니라 PCIe 에서 얻는다**(재구성) — 층을 바꿔 같은 성질을 구했다."
+          },
+          {
+            "step": "**분리 추론의 KV 전송은 계산과 겹친다** — **`각 레이어의 어텐션 뒤에 GPU 가 UVM 카운터를 올리면 CPU 쪽 콜백이 발화해 그 레이어의 WriteImm 을 제출하고, 그동안 다음 레이어가 계산된다.`**",
+            "why": "⭐ **전송을 기다리는 시간을 계산 뒤에 숨긴다.** Qwen3-235B · H200 · TP4 · 2×200Gbps EFA 에서 **32K 시퀀스 길이일 때 TTFT 부담이 미미하다.**"
+          },
+          {
+            "step": "**RL 가중치 갱신은 파이프라인으로 겹친다** — 호스트-장치 memcpy · 파라미터 준비 · RDMA 전송 · 전역 배리어",
+            "why": "⭐ **결과가 조 단위 파라미터 모델에서 1.3초, 기존 RL 프레임워크보다 100배 이상 빠르다.** Kimi-K2-1T 기준 **언샤딩 518ms · 랭크 간 동기화 357ms · RDMA 제출 26ms** 이고 **파이프라인 겹침 밖으로 나온 전송 시간이 42ms 뿐이다.**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "집합 통신(NCCL 등)으로 안 되나",
+            "chosen": "⚠️ **안 된다 — 점대점을 따로 만든다.** 다만 **`집합 통신을 대체하지 않고 보완한다.`**",
+            "alternatives": [
+              "NCCL·torch.distributed 의 집합 연산만 쓰기"
+            ],
+            "tradeoff": "⭐ **집합 통신이 못 하는 것을 정확히 적는다** — **`고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다.`** ⚠️ **대신 정적 패턴(텐서 병렬·데이터 병렬)에서는 집합 통신이 여전히 낫다** — 그래서 대체가 아니라 보완이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "question": "기존 점대점 라이브러리를 쓸 것인가",
+            "chosen": "⚠️ **못 쓴다 — 전부 하드웨어에 묶여 있다.** **`DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 은 EFA 를 지원하지 않거나 아직 초기 단계다.`**",
+            "alternatives": [
+              "DeepEP",
+              "NVSHMEM",
+              "Mooncake · NIXL"
+            ],
+            "tradeoff": "⚠️ **직접 만들고 계속 유지해야 한다**(재구성). ⭐ **얻는 것은 클라우드에서 돌릴 수 있다는 것 자체다** — **`EFA 에서 실시간 추론을 처음으로 현실화했다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "question": "⭐ 완료를 순서로 알 것인가 횟수로 알 것인가",
+            "chosen": "⭐ **횟수로.** **`순서에 기대지 않는 완료 통지를 위한 새로운 ImmCounter 원시 연산과 함께 단방향 WriteImm.`**",
+            "alternatives": [
+              "메시지 순서를 전제하고 마지막 도착으로 완료 판단"
+            ],
+            "tradeoff": "⭐ **순서를 전제하면 그것을 지키는 하드웨어에만 묶인다** — **`ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다.`** ⚠️ **대신 `다 왔다`를 아는 방식이 복잡해진다** — 그래서 **PCIe 스위치의 정렬**을 근거로 삼아야 했다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "question": "⭐ GPU 개시 RDMA 를 쓸 것인가",
+            "chosen": "⚠️ **안 쓴다 — 호스트 프록시로 간다.** **`GDA 는 호스트 CPU 를 우회해 지연을 줄이지만 아직 대부분의 클라우드 인스턴스(AWS p5/p5e, eRDMA)에서 쓸 수 없다. 우리의 호스트 프록시 설계는 현세대 하드웨어를 감당하면서 이식성을 지킨다.`**",
+            "alternatives": [
+              "GPU 개시 RDMA(IBGDA/GDA)로 CPU 를 우회"
+            ],
+            "tradeoff": "⭐ **더 빠른 길을 알면서 안 갔다** — 대가가 수치로 남아 있다: **호스트 프록시 오버헤드가 ConnectX-7 EP64 에서 p50 8.5µs, EFA EP64 에서 27.9µs.** ⚠️ **그리고 EFA 디코드 지연이 DeepEP 보다 약 30% 뒤진다.** ⭐ **얻는 것은 지금 있는 하드웨어에서 돈다는 것이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "question": "GPU 하나에 NIC 이 여럿인 것을 누가 다루나",
+            "chosen": "**라이브러리가 투명하게 다룬다.** `TransferEngine` 인스턴스는 **식별용 주소 하나**만 노출한다.",
+            "alternatives": [
+              "호출하는 쪽이 NIC 를 골라 쓰게 하기"
+            ],
+            "tradeoff": "⚠️ **제약이 붙는다** — **`모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다.`** ⭐ **얻는 것은 전송이 양쪽 NIC 구성을 다 알아 쪼개거나 균형 잡을 수 있다는 것이다.** **EFA 에서 100Gbps 넷을 모아 400Gbps 를 내는 데 필수다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "question": "KV 전송을 언제 보내나",
+            "chosen": "⭐ **레이어마다, 계산 뒤에 숨겨서.** **`각 레이어의 어텐션 뒤에 GPU 가 UVM 카운터를 올리면 CPU 쪽 콜백이 발화해 그 레이어의 WriteImm 을 제출하고, 그동안 다음 레이어가 계산된다.`**",
+            "alternatives": [
+              "모든 레이어를 끝내고 한 번에 전송",
+              "고정 간격으로 나눠 전송"
+            ],
+            "tradeoff": "⭐ **32K 시퀀스 길이에서 TTFT 부담이 미미해진다**(Qwen3-235B · H200 · TP4 · 2×200Gbps EFA). ⚠️ **대신 콜백 지연이 경로에 들어온다** — **러스트 콜백 6.3±1.3µs(p99 12.6), 파이썬 9.8±9.0µs(p99 20.4).** ⭐ **이 회사의 언어 경계가 여기서 마이크로초로 나타난다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "question": "프리필까지 이 커널로 감당할 것인가",
+            "chosen": "⚠️ **아직 아니다 — 한계를 적어 둔다.** **`전송에 청킹이 없어, 디코드에 최적화된 우리 커널의 메모리 부담이 배포 가능한 모델의 집합을 제한한다.`**",
+            "alternatives": [
+              "같은 커널로 프리필까지 밀어붙이기"
+            ],
+            "tradeoff": "⭐ **못 하는 것을 못 한다고 적었다**(재구성) — 실제로 **프리필 지연에서 랭크 수가 적으면 DeepEP 가 낫고, EP64 에서야 겨우 견줄 만해진다.** ⚠️ **디코드에 맞춘 최적화가 프리필에서는 짐이 된다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "fabric-lib / TransferEngine (러스트 + 파이썬 바인딩)",
+            "role": "흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. **pplx-garden 으로 오픈소스.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "tech": "`WriteImm` + `ImmCounter`",
+            "role": "⭐ **단방향 쓰기와 순서에 기대지 않는 완료 통지.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "tech": "PCIe 스위치의 트랜잭션 정렬",
+            "role": "⭐ **네트워크에서 못 얻는 순서를 여기서 얻는다** — CPU 가 목표 카운트를 본 뒤의 CPU-GPU 트랜잭션이 앞선 NIC-GPU 쓰기 뒤로 정렬된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "tech": "UVM watcher (호스트 콜백)",
+            "role": "레이어별 KV 전송을 계산과 겹친다. **러스트 콜백 6.3µs · 파이썬 9.8µs.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          },
+          {
+            "tech": "NVIDIA ConnectX-7 · AWS EFA",
+            "role": "검증한 두 NIC 계열. **RC 호환 NIC(eRDMA · Broadcom · AMD)로 넓히는 것은 재설계가 아니라 하드웨어별 튜닝의 문제라고 적는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "모델을 GPU 위에서 돌린다",
+          "via": "MoE 디스패치·컴바인과 KV 전송",
+          "contract": "⭐ **ROSE 가 조 단위 파라미터 모델까지 서비스하려면 전문가 혼합 라우팅의 점대점 전송이 필요하다.** **DeepSeek-V3 EP=DP=64 에서 H200 EFA 디코드가 배치 2에 66.8 tok/s.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "학습 클러스터 (RL)",
+          "via": "가중치 갱신 전송",
+          "contract": "⭐ **학습 GPU 에서 추론 GPU 로 가중치를 민다** — Kimi-K2-1T 기준 **256 학습 GPU(BF16) → 128 추론 GPU(FP8)**, **1.3초.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "pplx-garden (오픈소스)",
+          "via": "공개 저장소",
+          "contract": "⭐ **이 라이브러리를 그대로 공개했다** — 회사 블로그가 막혀 있어도 **코드와 논문은 직접 열린다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "전송을 계산 뒤에 숨기는 길",
+          "question": "KV 를 옮기는 시간을 어떻게 안 보이게 하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  L1[\"<b>레이어 N 어텐션</b>\"]:::list --> U[\"⭐ <b>GPU 가 UVM 카운터를 올린다</b>\"]:::accent\n  U --> CB[\"⭐ <b>CPU 콜백 발화</b><br/>• 러스트 6.3±1.3µs (p99 12.6)<br/>• 파이썬 9.8±9.0µs (p99 20.4)\"]:::accent\n  CB --> W[\"<b>그 레이어의 WriteImm 제출</b><br/>• 단방향 · 상대 CPU 개입 없음\"]:::list\n  U --> L2[\"<b>레이어 N+1 계산</b><br/>• ⭐ 전송과 동시에\"]:::accent\n  W --> IC[\"<b>ImmCounter 가 도착 횟수를 센다</b><br/>• ⚠️ 순서에 기대지 않는다\"]:::accent\n  IC --> Q{\"목표 카운트에 닿았나\"}\n  Q -->|\"⭐ 닿았다\"| P[\"⭐ <b>PCIe 스위치가 정렬을 보장한다</b><br/>• 이후 CPU-GPU 트랜잭션이<br/>  앞선 NIC-GPU 쓰기 뒤로<br/>• 페이로드가 GPU 에 보인다\"]:::accent\n  L2 --> L1\n  P --> D[\"<b>32K 시퀀스에서 TTFT 부담 미미</b><br/>• Qwen3-235B · H200 · TP4 · 2×200G EFA\"]:::list"
+        },
+        {
+          "title": "막힌 길들과 일부러 안 간 길",
+          "question": "왜 직접 만들었고 무엇을 포기했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  N[\"<b>필요한 것</b><br/>• 분리 추론 · MoE 라우팅<br/>• 비동기 강화 미세조정\"]:::list --> A{\"집합 통신으로 되나\"}\n  A -->|\"⚠️ 안 된다\"| A1[\"⚠️ <b>고정 멤버십 · 동기화 초기화<br/>· 균일 버퍼 강요</b>\"]:::warn\n  A1 --> B{\"기존 점대점 라이브러리는\"}\n  B -->|\"⚠️ DeepEP\"| B1[\"⚠️ <b>ConnectX 전용 GDA 요구</b>\"]:::warn\n  B -->|\"⚠️ NVSHMEM\"| B2[\"⚠️ <b>EFA 에서 성능 급락</b>\"]:::warn\n  B -->|\"⚠️ Mooncake · NIXL\"| B3[\"⚠️ <b>EFA 미지원 또는 초기 단계</b>\"]:::warn\n  B1 --> C[\"⭐ <b>직접 만든다 — fabric-lib</b>\"]:::accent\n  B2 --> C\n  B3 --> C\n  C --> D{\"⭐ GPU 개시 RDMA 를 쓸까\"}\n  D -->|\"더 빠르다\"| D1[\"⚠️ <b>대부분의 클라우드에 없다</b><br/>• AWS p5/p5e · eRDMA\"]:::warn\n  D1 --> E[\"⭐ <b>호스트 프록시를 고른다</b><br/>• 현세대 하드웨어를 감당하며<br/>  이식성을 지킨다\"]:::accent\n  E --> F[\"⚠️ <b>치르는 값</b><br/>• 프록시 오버헤드 p50 8.5µs (CX-7)<br/>  · 27.9µs (EFA)<br/>• EFA 디코드가 DeepEP 보다 약 30% 뒤진다<br/>• 청킹이 없어 프리필 배포 모델이 제한된다\"]:::warn"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "RDMA Point-to-Point Communication for LLM Systems",
+            "authors": "Nandor Licker, Kevin Hu, Vladimir Zaytsev, Lequn Chen",
+            "year": "2025",
+            "venue": "MLSys 2026 (arXiv:2510.27656)",
+            "url": "https://arxiv.org/abs/2510.27656",
+            "takeaway": "⭐ **이 기능 자체가 이 논문이다** — 회사가 자기 인프라를 논문으로 내고 코드를 공개했다. **기여는 성능이 아니라 이식성이다**(재구성): 특정 NIC 에 묶이지 않는 점대점 인터페이스와, **순서 보장에 기대지 않는 완료 통지**(`ImmCounter`). ⚠️ **한계도 논문에 적혀 있다** — GDA 미사용의 프록시 오버헤드, EFA 디코드의 약 30% 열세, 청킹 부재로 인한 프리필 제약.",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "**GPU 간 통신을 특정 하드웨어에 묶지 않고 빠르게 하는 것**",
+            "why_hard": "⭐ **빠른 길일수록 하드웨어에 붙어 있다** — 가장 빠른 **GPU 개시 RDMA 는 ConnectX 계열에만 있고**, 그것을 쓰는 DeepEP 도 함께 묶인다. ⚠️ **반대로 이식성을 택하면 호스트 CPU 를 거쳐야 해 지연이 붙는다**(프록시 오버헤드 p50 8.5~27.9µs). ⚠️ **그리고 순서 보장 같은 편의를 전제하는 순간 또 좁아진다** — **`ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다.`**",
+            "current_best": "⭐ **Perplexity 의 답은 `전제를 낮추고 순서를 다른 층에서 얻는 것`이다** — 완료를 **횟수(`ImmCounter`)** 로 세고, 가시성은 **PCIe 스위치의 트랜잭션 정렬**로 보장한다. ⚠️ **감수하는 것 셋** — 프록시 오버헤드, **EFA 디코드가 DeepEP 보다 약 30% 뒤짐**, **청킹 부재로 프리필 배포 가능 모델이 제한됨.** ⭐ **얻는 것은 `EFA 에서 실시간 추론을 처음으로 현실화했다`는 것이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "RDMA Point-to-Point Communication for LLM Systems",
+                "url": "https://arxiv.org/abs/2510.27656",
+                "publisher": "arXiv (MLSys 2026)",
+                "date": "2025-11",
+                "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "RDMA Point-to-Point Communication for LLM Systems",
+          "url": "https://arxiv.org/abs/2510.27656",
+          "publisher": "arXiv (MLSys 2026)",
+          "date": "2025-11",
+          "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
+        },
+        {
+          "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+          "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+          "publisher": "AlphaSignal",
+          "date": "2026-09",
+          "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+        },
+        {
+          "title": "Perplexity Revenue 2026: $500M ARR, $20B Valuation",
+          "url": "https://getlatka.com/companies/pplx.ai",
+          "publisher": "Latka",
+          "date": "2026",
+          "summary": "2026년 연간반복매출이 5억 달러로 2025년의 1억 달러에서 올랐다. 2026년 3월 기준으로는 4.5억 달러를 넘었고 AI 에이전트와 사용량 기반 과금으로 옮겨 간 뒤의 수치다. 가장 최근 기업가치는 2026년 1월 9일 시리즈 E-6 에서 230억 달러이며 2023년 4월의 1.21억 달러에서 약 175배다. 총 12억 달러를 5개 라운드에 걸쳐 모았다. 구독이 사업의 중심이고 기업 좌석·광고·맥락 커머스가 더해진다. 고객 1500만 명, 직원 약 1400명(2024년 300명)."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1049,7 +1505,8 @@
     "**ROSE 의 러스트 이관이 어디까지 갔는지 모른다** — 서빙 로직과 배치 스케줄링을 러스트로 옮기는 중이라는 3자 요약이 있는데, **회사 자신의 글에서 확인하지 못했다.**",
     "**검색 자체의 기술 자료를 못 봤다** — 색인·랭킹·인용 검증이 이 회사의 본업인데 공개된 기술 글이 추론 인프라 쪽에 몰려 있다.",
     "**vLLM v0.22.0 대비 벤치마크의 구체적 수치를 못 받았다** — 네 묶음으로 비교했다는 것만 확인했다.",
-    "**pplx-kernels(GPU 커널 오픈소스)와 CuTeDSL 통합을 아직 안 읽었다** — 회사가 **`CuTeDSL 을 추론 엔진에 통합해 특화 GPU 커널을 더 빨리 만든다`**고 밝힌 것으로 보이는데 본문 근거를 못 잡았다. **GitHub 은 직접 열리므로 다음 사이클에서 본다.**"
+    "**pplx-kernels(GPU 커널 오픈소스)와 CuTeDSL 통합을 아직 안 읽었다** — 회사가 **`CuTeDSL 을 추론 엔진에 통합해 특화 GPU 커널을 더 빨리 만든다`**고 밝힌 것으로 보이는데 본문 근거를 못 잡았다. **GitHub 은 직접 열리므로 다음 사이클에서 본다.**",
+    "**RC 호환 NIC(eRDMA · Broadcom · AMD)로의 확장이 실제로 되었는지 모른다** — 논문은 **`내부 구현이 ConnectX 경로와 닮을 것이고, 추가 NIC 이식은 재설계가 아니라 하드웨어별 튜닝의 문제`**라고만 적는다."
   ],
   "sources": [
     {
@@ -1078,7 +1535,7 @@
       "url": "https://arxiv.org/abs/2510.27656",
       "publisher": "arXiv (MLSys 2026)",
       "date": "2025-11",
-      "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다."
+      "summary": "분리 추론, 전문가 혼합 라우팅, 비동기 강화 미세조정 같은 새 LLM 시스템 패턴은 유연한 점대점 통신을 요구한다. 기존 구현들은 특정 네트워크 인터페이스 컨트롤러에 묶여 있어 추론 엔진에 넣기 어렵고 하드웨어 공급자를 옮기기 어렵다. fabric-lib 은 흔히 쓰는 NIC 들에 균일한 인터페이스를 준다. 순서 가정을 요구하지 않는 완료 통지를 위해 ImmCounter 원시 연산과 함께 단방향 WriteImm 연산을 노출한다. GPU 하나에 붙은 여러 NIC 를 투명하게 관리하고, 집합 통신을 대체하지 않고 보완하며, 이식 가능한 점대점 통신으로 공급자 종속을 피한다. NVIDIA ConnectX-7 과 AWS Elastic Fabric Adapter 양쪽에서 최대 400Gbps 를 낸다. 조 단위 파라미터 모델의 강화학습 가중치 갱신이 1.3초다. MoE 구현은 ConnectX-7 에서 DeepEP 의 디코드 지연을 넘어서고, EFA 에서는 처음으로 쓸 만한 지연을 낸다. 코드는 pplx-garden 으로 공개돼 있다. 집합 통신은 텐서 병렬이나 데이터 병렬 같은 정적 패턴에는 뛰어나지만 새 워크로드에는 맞지 않는 제약을 건다 — 고정된 멤버십은 동적 확장을 막고, 동기화된 초기화는 부담을 더하며, 균일한 버퍼 크기는 성긴 패턴에도 조밀한 통신을 강요한다. 기존 대안들은 하드웨어에 묶여 있다 — DeepEP 는 ConnectX 만 제공하는 GPU 개시 RDMA 를 요구하고, NVSHMEM 은 EFA 에서 성능이 크게 떨어지며, Mooncake 와 NIXL 같은 최근 라이브러리는 EFA 를 지원하지 않거나 아직 초기 단계다. ConnectX 와 EFA 둘 다 신뢰성은 있으나 순서를 보장하지 않는 전달을 지원한다 — ConnectX RC 는 순서를 무시할 수 있고 EFA SRD 는 본래 무순서다. CPU 가 목표 ImmCount 를 관측한 뒤에는 이어지는 CPU-GPU 트랜잭션이 앞선 NIC-GPU 데이터 쓰기 뒤로 PCIe 스위치에 의해 정렬되므로 페이로드가 GPU 에 보인다. EFA 에서는 100Gbps NIC 넷을 모아야 400Gbps 에 닿으므로 GPU 하나에 붙은 여러 NIC 를 투명하게 다뤄야 하며, 모든 피어가 GPU 당 같은 수의 NIC 를 써야 한다는 제약이 있다."
     },
     {
       "title": "Perplexity Revenue 2026: $500M ARR, $20B Valuation",

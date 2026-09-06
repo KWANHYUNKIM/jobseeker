@@ -1327,8 +1327,8 @@
       "name_en": "Perplexity",
       "country": "US",
       "category": "검색",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "AI 검색을 팔면서 그것을 돌리는 추론 스택을 직접 만든다 — 그리고 어디를 파이썬으로 두고 어디를 러스트로 옮길지가 그 스택의 뼈대다",
       "updated_at": "2026-09-06",
       "domain": "perplexity.ai"
