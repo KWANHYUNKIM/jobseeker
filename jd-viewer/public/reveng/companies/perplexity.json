@@ -116,11 +116,18 @@
           "confidence": "confirmed",
           "sources": [
             {
-              "title": "Fast Embeddings on GPUs",
-              "url": "https://www.perplexity.ai/hub/blog/fast-embeddings-on-gpus",
-              "publisher": "Perplexity",
+              "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+              "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+              "publisher": "AlphaSignal",
               "date": "2026-09",
-              "summary": "임베딩 API 를 떠받치는 세 서비스를 나눠 설명한다. Ivy 는 러스트 HTTP 게이트웨이로 JSON 파싱·토큰화·입력 템플릿·배치 쪼개기 같은 CPU 쪽 일을 맡고 요청을 자체 gRPC 프로토콜로 옮기며 복제본 사이 부하를 분산한다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 스케줄링과 배치를 관리해 엔진으로 넘긴다. ROSE 는 모델 추론을 구현하며 주로 파이썬이고 커널·레이어·모델 정의를 제공하고 CUDA 그래프를 관리한다. 별도의 임베딩 엔진을 만들지 않고 LLM 스택의 프리필과 디코드 커널을 다시 썼다 — 배치 임베딩은 계산 병목인 프리필을 닮았고 질의 시점의 온라인 임베딩은 메모리 병목인 디코드를 닮았기 때문이다. 스케줄러는 선착순으로 돌린다. 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하기 때문이고, 10억 파라미터 미만 모델에서는 512 토큰쯤이면 GPU 가 포화된다. 모든 임베딩 모델에 대해 모델 전체 CUDA 그래프를 만들되 지연 캡처로 몇 분치 즉시 작업을 몇 시간에 걸쳐 흩어 시작 시간이 감당 못 할 만큼 길어지는 것을 피한다. LazyTensor 로 스텝 함수가 텐서를 돌려주게 해서, 러스트 비동기 태스크가 N 번째 배치를 기다리는 동안 CPU 가 N+1 번째를 큐에 넣게 겹친다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 묶음으로 비교했다."
+              "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+            },
+            {
+              "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+              "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+              "publisher": "MarkTechPost",
+              "date": "2026-09-05",
+              "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
             }
           ]
         },
@@ -131,11 +138,18 @@
           "confidence": "confirmed",
           "sources": [
             {
-              "title": "Fast Embeddings on GPUs",
-              "url": "https://www.perplexity.ai/hub/blog/fast-embeddings-on-gpus",
-              "publisher": "Perplexity",
+              "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+              "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+              "publisher": "AlphaSignal",
               "date": "2026-09",
-              "summary": "임베딩 API 를 떠받치는 세 서비스를 나눠 설명한다. Ivy 는 러스트 HTTP 게이트웨이로 JSON 파싱·토큰화·입력 템플릿·배치 쪼개기 같은 CPU 쪽 일을 맡고 요청을 자체 gRPC 프로토콜로 옮기며 복제본 사이 부하를 분산한다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 스케줄링과 배치를 관리해 엔진으로 넘긴다. ROSE 는 모델 추론을 구현하며 주로 파이썬이고 커널·레이어·모델 정의를 제공하고 CUDA 그래프를 관리한다. 별도의 임베딩 엔진을 만들지 않고 LLM 스택의 프리필과 디코드 커널을 다시 썼다 — 배치 임베딩은 계산 병목인 프리필을 닮았고 질의 시점의 온라인 임베딩은 메모리 병목인 디코드를 닮았기 때문이다. 스케줄러는 선착순으로 돌린다. 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하기 때문이고, 10억 파라미터 미만 모델에서는 512 토큰쯤이면 GPU 가 포화된다. 모든 임베딩 모델에 대해 모델 전체 CUDA 그래프를 만들되 지연 캡처로 몇 분치 즉시 작업을 몇 시간에 걸쳐 흩어 시작 시간이 감당 못 할 만큼 길어지는 것을 피한다. LazyTensor 로 스텝 함수가 텐서를 돌려주게 해서, 러스트 비동기 태스크가 N 번째 배치를 기다리는 동안 CPU 가 N+1 번째를 큐에 넣게 겹친다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 묶음으로 비교했다."
+              "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+            },
+            {
+              "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+              "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+              "publisher": "MarkTechPost",
+              "date": "2026-09-05",
+              "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
             }
           ]
         },
@@ -146,16 +160,25 @@
           "confidence": "confirmed",
           "sources": [
             {
-              "title": "Fast Embeddings on GPUs",
-              "url": "https://www.perplexity.ai/hub/blog/fast-embeddings-on-gpus",
-              "publisher": "Perplexity",
+              "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+              "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+              "publisher": "AlphaSignal",
               "date": "2026-09",
-              "summary": "임베딩 API 를 떠받치는 세 서비스를 나눠 설명한다. Ivy 는 러스트 HTTP 게이트웨이로 JSON 파싱·토큰화·입력 템플릿·배치 쪼개기 같은 CPU 쪽 일을 맡고 요청을 자체 gRPC 프로토콜로 옮기며 복제본 사이 부하를 분산한다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 스케줄링과 배치를 관리해 엔진으로 넘긴다. ROSE 는 모델 추론을 구현하며 주로 파이썬이고 커널·레이어·모델 정의를 제공하고 CUDA 그래프를 관리한다. 별도의 임베딩 엔진을 만들지 않고 LLM 스택의 프리필과 디코드 커널을 다시 썼다 — 배치 임베딩은 계산 병목인 프리필을 닮았고 질의 시점의 온라인 임베딩은 메모리 병목인 디코드를 닮았기 때문이다. 스케줄러는 선착순으로 돌린다. 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하기 때문이고, 10억 파라미터 미만 모델에서는 512 토큰쯤이면 GPU 가 포화된다. 모든 임베딩 모델에 대해 모델 전체 CUDA 그래프를 만들되 지연 캡처로 몇 분치 즉시 작업을 몇 시간에 걸쳐 흩어 시작 시간이 감당 못 할 만큼 길어지는 것을 피한다. LazyTensor 로 스텝 함수가 텐서를 돌려주게 해서, 러스트 비동기 태스크가 N 번째 배치를 기다리는 동안 CPU 가 N+1 번째를 큐에 넣게 겹친다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 묶음으로 비교했다."
+              "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+            },
+            {
+              "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+              "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+              "publisher": "MarkTechPost",
+              "date": "2026-09-05",
+              "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "rose-cuda-graphs"
+      ]
     },
     {
       "name": "GPU 끼리 직접 말하게 한다",
@@ -575,6 +598,448 @@
           "summary": "2026년 연간반복매출이 5억 달러로 2025년의 1억 달러에서 올랐다. 2026년 3월 기준으로는 4.5억 달러를 넘었고 AI 에이전트와 사용량 기반 과금으로 옮겨 간 뒤의 수치다. 가장 최근 기업가치는 2026년 1월 9일 시리즈 E-6 에서 230억 달러이며 2023년 4월의 1.21억 달러에서 약 175배다. 총 12억 달러를 5개 라운드에 걸쳐 모았다. 구독이 사업의 중심이고 기업 좌석·광고·맥락 커머스가 더해진다. 고객 1500만 명, 직원 약 1400명(2024년 300명)."
         }
       ]
+    },
+    {
+      "key": "rose-cuda-graphs",
+      "name": "수천 개의 그래프를 미리 만들지 않는다 (ROSE)",
+      "domain": "모델을 GPU 위에서 돌린다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⭐ **모델을 한 번 돌리는 데 드는 파이썬 오버헤드가 반복되면 그게 원가다**(재구성) — **`CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다.`** ⚠️ **그런데 그래프를 미리 다 만들면 서버가 안 뜬다** — **`수천 개의 그래프가 나오고 캡처에 몇 분이 걸린다.`** ⭐ **이 기능은 그 둘 사이를 지나는 길이다**(재구성).",
+        "metrics": [
+          {
+            "label": "미리 만들면 나오는 그래프 수",
+            "value": "수천 개 (캡처에 몇 분)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          },
+          {
+            "label": "토큰 수 버킷",
+            "value": "64 또는 256 단위로 패딩",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+                "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+                "publisher": "MarkTechPost",
+                "date": "2026-09-05",
+                "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
+              }
+            ]
+          },
+          {
+            "label": "벤치마크 결과",
+            "value": "BGE-M3 와 pplx-embed-1-0.6b 에서 p50·p99 모두 기준선(vLLM v0.22.0)을 이긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          },
+          {
+            "label": "엔진이 서비스하는 범위",
+            "value": "임베딩부터 조 단위 파라미터 LLM 까지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "CUDA 그래프를 켜려던 때",
+          "thought": "⭐ **켜는 것은 쉬운데 그 대가가 시작 시간에 나타난다** — 그래프를 **시퀀스 수 × 토큰 수 조합마다** 잡아야 하고 임베딩은 그 조합이 많다. ⚠️ **미리 다 잡으면 몇 분씩 걸려 배포가 안 된다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "임베딩용 엔진을 새로 만들지 고민하던 때",
+          "thought": "⭐ **안 만들기로 하고 그 이유가 워크로드의 모양에 있다** — **배치 임베딩은 계산 병목인 프리필을 닮았고, 질의 시점의 온라인 임베딩은 메모리 병목인 디코드를 닮았다.** ⚠️ **다만 그대로 쓸 수는 없다** — **임베딩에는 KV 캐시가 필요 없다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "CPU 와 GPU 를 겹치려던 때",
+          "thought": "⚠️ **동기화 한 번이 파이프라인을 세운다** — 앞 배치의 결과를 기다리며 막히면 그동안 CPU 가 다음 배치를 준비할 수 있었을 시간이 사라진다(재구성). ⭐ **그래서 결과를 값이 아니라 약속으로 돌려준다**(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "CUDA 그래프",
+            "what": "⭐ **순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 메타데이터.** **반복되는 파이썬·파이토치 오버헤드를 없앤다.**"
+          },
+          {
+            "name": "그래프 키 (시퀀스 수 × 토큰 수)",
+            "what": "⚠️ **그래프가 이 조합마다 따로 필요하다** — 그래서 수가 폭발한다."
+          },
+          {
+            "name": "토큰 수 버킷",
+            "what": "**64 또는 256 단위로 패딩**해 조합 수를 줄인다."
+          },
+          {
+            "name": "LazyTensor",
+            "what": "⭐ **페이지 잠금 메모리의 호스트 버퍼를 `cudaMemcpyAsync` 이벤트와 함께 추적하는 것.** 결과를 값이 아니라 **기다릴 수 있는 것**으로 돌려준다."
+          },
+          {
+            "name": "프리필·디코드 커널",
+            "what": "LLM 스택에서 그대로 가져온 것. ⚠️ **임베딩용으로는 KV 캐시를 건너뛴다.**"
+          },
+          {
+            "name": "ragged 입력 어텐션 커널",
+            "what": "길이가 들쭉날쭉한 입력을 그대로 받는다. **패딩 오버헤드를 피한다.**"
+          },
+          {
+            "name": "`step()`",
+            "what": "Tulip 에게 노출되는 함수. ⭐ **여기서 러스트와 파이썬이 만난다.**"
+          }
+        ],
+        "invariants": [
+          "⭐ **그래프는 쓰이기 전에 만들어지지 않는다** — 실제 트래픽이 와야 잡힌다.",
+          "**임베딩 경로에는 KV 캐시가 없다** — 다음 토큰을 만들지 않기 때문이다(재구성).",
+          "⚠️ **길이가 다른 입력에 패딩을 채우지 않는다** — ragged 커널이 그대로 받는다.",
+          "**CPU 는 GPU 를 기다리며 놀지 않는다** — 앞 배치를 기다리는 동안 다음 배치를 준비한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Tulip 이 배치를 넘기며 **`step()`** 을 부른다 — **여기서 러스트가 파이썬을 만난다**",
+            "why": "⭐ **경계가 함수 하나다**(재구성) — 앞단은 러스트, 엔진은 파이썬."
+          },
+          {
+            "step": "**LLM 스택의 프리필·디코드 커널을 그대로 쓴다** — 다만 **KV 캐시를 건너뛰고**, **들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다**",
+            "why": "⭐ **워크로드 모양이 닮았기 때문이다** — 배치 임베딩은 프리필을, 온라인 임베딩은 디코드를 닮았다. ⚠️ **다만 임베딩은 다음 토큰을 만들지 않으므로 KV 캐시가 군더더기다**(재구성)."
+          },
+          {
+            "step": "**시퀀스 수와 토큰 수 조합마다 모델 전체 CUDA 그래프**를 쓴다. **토큰 수는 64 또는 256 버킷으로 패딩**한다",
+            "why": "⚠️ **조합마다 그래프가 따로 필요해 수가 폭발하므로 버킷으로 묶어 줄인다.**"
+          },
+          {
+            "step": "⚠️ **그래도 수천 개가 되고 캡처에 몇 분이 걸린다** — 그래서 **미리 만들지 않고 실제 트래픽이 올 때 지연 캡처한다**",
+            "why": "⭐ **`몇 분치 즉시 작업을 몇 시간에 걸쳐 흩는다`** — 시작 시간을 운영 시간으로 옮긴 것이다(재구성)."
+          },
+          {
+            "step": "**LazyTensor** 가 **페이지 잠금 메모리의 호스트 버퍼를 `cudaMemcpyAsync` 이벤트와 함께 추적**한다",
+            "why": "결과를 값이 아니라 **기다릴 수 있는 것**으로 돌려주기 위해서다(재구성)."
+          },
+          {
+            "step": "⭐ **그래서 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비한다**",
+            "why": "⭐ **동기화 지점을 없애 CPU 와 GPU 를 겹친다.**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "임베딩용 엔진을 따로 만들 것인가",
+            "chosen": "⭐ **안 만든다 — LLM 스택의 프리필·디코드 커널을 다시 쓴다.** 이유가 워크로드 모양에 있다: **배치 임베딩은 계산 병목인 프리필을, 온라인 임베딩은 메모리 병목인 디코드를 닮았다.**",
+            "alternatives": [
+              "임베딩 전용 엔진을 새로 만들기",
+              "기성 임베딩 서버를 쓰기"
+            ],
+            "tradeoff": "⚠️ **LLM 스택의 제약을 그대로 물려받는다**(재구성) — 그래서 **KV 캐시를 건너뛰고 ragged 어텐션으로 디스패치하는 개조가 필요했다.** ⭐ **얻는 것은 커널 최적화를 한 벌만 유지하면 된다는 것이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              },
+              {
+                "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+                "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+                "publisher": "MarkTechPost",
+                "date": "2026-09-05",
+                "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
+              }
+            ]
+          },
+          {
+            "question": "길이가 다른 입력을 어떻게 다루나",
+            "chosen": "⭐ **패딩하지 않는다** — **`들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다.`**",
+            "alternatives": [
+              "가장 긴 것에 맞춰 패딩하기"
+            ],
+            "tradeoff": "⚠️ **커널이 그런 입력을 받을 수 있어야 한다** — 아무 커널이나 되는 게 아니다(재구성). ⭐ **얻는 것은 짧은 입력이 긴 입력의 값을 치르지 않는 것이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          },
+          {
+            "question": "CUDA 그래프를 쓸 것인가",
+            "chosen": "⭐ **모델 전체를 그래프로 잡는다** — **`순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다.`**",
+            "alternatives": [
+              "매 순전파마다 커널을 하나씩 띄우기",
+              "일부 구간만 그래프로 잡기"
+            ],
+            "tradeoff": "⭐ **파이썬으로 엔진을 쓰면서 파이썬 오버헤드를 지운다** — **엔진이 파이썬인 것과 이 결정이 짝이다**(재구성). ⚠️ **대가가 시작 시간에 나타난다** — 조합마다 그래프가 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          },
+          {
+            "question": "⭐ 조합 폭발을 어떻게 줄이나",
+            "chosen": "**토큰 수를 64 또는 256 버킷으로 패딩**해 그래프 키의 가짓수를 줄인다.",
+            "alternatives": [
+              "토큰 수마다 그래프를 따로 잡기",
+              "그래프를 아예 안 쓰기"
+            ],
+            "tradeoff": "⚠️ **버킷 경계까지 패딩하므로 낭비 계산이 생긴다**(재구성) — **ragged 커널로 패딩을 피해 놓고 그래프 키에서는 패딩을 받아들인다.** ⭐ **두 곳의 패딩이 성격이 다르다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+                "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+                "publisher": "MarkTechPost",
+                "date": "2026-09-05",
+                "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
+              }
+            ]
+          },
+          {
+            "question": "⭐ 그래프를 언제 만드나",
+            "chosen": "⭐ **미리 만들지 않는다 — 실제 트래픽이 올 때 지연 캡처한다.** Tulip 이 라이브 트래픽을 보며 잡는다.",
+            "alternatives": [
+              "기동 시 모든 조합을 미리 캡처",
+              "자주 쓰는 조합만 미리 캡처"
+            ],
+            "tradeoff": "⚠️ **아직 안 잡힌 조합의 첫 요청은 캡처 비용을 문다**(재구성) — 최적화가 시간이 지나며 채워진다. ⭐ **얻는 것은 배포가 몇 분씩 걸리지 않는 것이다** — **`몇 분치 작업을 몇 시간에 걸쳐 흩는다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              },
+              {
+                "title": "Fast Embeddings on GPUs",
+                "url": "https://www.perplexity.ai/hub/blog/fast-embeddings-on-gpus",
+                "publisher": "Perplexity",
+                "date": "2026-09",
+                "summary": "임베딩 API 를 떠받치는 세 서비스를 나눠 설명한다. Ivy 는 러스트 HTTP 게이트웨이로 JSON 파싱·토큰화·입력 템플릿·배치 쪼개기 같은 CPU 쪽 일을 맡고 요청을 자체 gRPC 프로토콜로 옮기며 복제본 사이 부하를 분산한다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 스케줄링과 배치를 관리해 엔진으로 넘긴다. ROSE 는 모델 추론을 구현하며 주로 파이썬이고 커널·레이어·모델 정의를 제공하고 CUDA 그래프를 관리한다. 별도의 임베딩 엔진을 만들지 않고 LLM 스택의 프리필과 디코드 커널을 다시 썼다 — 배치 임베딩은 계산 병목인 프리필을 닮았고 질의 시점의 온라인 임베딩은 메모리 병목인 디코드를 닮았기 때문이다. 스케줄러는 선착순으로 돌린다. 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하기 때문이고, 10억 파라미터 미만 모델에서는 512 토큰쯤이면 GPU 가 포화된다. 모든 임베딩 모델에 대해 모델 전체 CUDA 그래프를 만들되 지연 캡처로 몇 분치 즉시 작업을 몇 시간에 걸쳐 흩어 시작 시간이 감당 못 할 만큼 길어지는 것을 피한다. LazyTensor 로 스텝 함수가 텐서를 돌려주게 해서, 러스트 비동기 태스크가 N 번째 배치를 기다리는 동안 CPU 가 N+1 번째를 큐에 넣게 겹친다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 묶음으로 비교했다."
+              }
+            ]
+          },
+          {
+            "question": "CPU 와 GPU 를 어떻게 겹치나",
+            "chosen": "⭐ **LazyTensor** — **`페이지 잠금 메모리의 호스트 버퍼를 `cudaMemcpyAsync` 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다.`**",
+            "alternatives": [
+              "결과를 동기적으로 기다렸다 다음 배치를 준비",
+              "별도 스레드에서 미리 준비"
+            ],
+            "tradeoff": "⚠️ **파이썬과 러스트 경계를 넘는 비동기라 실패 지점이 늘고 디버깅이 어렵다**(재구성). ⭐ **얻는 것은 동기화로 잃던 시간 전부다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ROSE (파이썬 엔진)",
+            "role": "**모델 순전파를 돌리고 CUDA 그래프를 관리한다.** 커널·레이어·모델 정의를 제공하고 **Tulip 에게 `step()` 을 노출한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              },
+              {
+                "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+                "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+                "publisher": "MarkTechPost",
+                "date": "2026-09-05",
+                "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
+              }
+            ]
+          },
+          {
+            "tech": "모델 전체 CUDA 그래프",
+            "role": "드라이버 호출 한 번으로 순전파 커널 전부를 띄운다. **시퀀스 수 × 토큰 수 조합마다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              },
+              {
+                "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+                "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+                "publisher": "MarkTechPost",
+                "date": "2026-09-05",
+                "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
+              }
+            ]
+          },
+          {
+            "tech": "지연 캡처",
+            "role": "⭐ **라이브 트래픽이 올 때 그래프를 잡는다.** 수천 개 × 몇 분을 시작 시간에서 덜어낸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          },
+          {
+            "tech": "LazyTensor (페이지 잠금 메모리 + `cudaMemcpyAsync`)",
+            "role": "CPU 배치 준비와 진행 중인 GPU 작업을 겹친다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          },
+          {
+            "tech": "ragged 입력 어텐션 커널",
+            "role": "길이가 다른 입력을 패딩 없이 받는다. **KV 캐시는 건너뛴다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "GPU 앞의 일을 러스트로 옮긴다 (Ivy · Tulip)",
+          "via": "`step()` 호출과 LazyTensor",
+          "contract": "⭐ **Tulip 이 포화 지점까지 채운 배치를 넘기고 `step()` 이 LazyTensor 를 돌려준다.** **러스트 태스크가 그것을 기다리는 동안 CPU 가 다음 배치를 준비한다.** ⚠️ **그래프 지연 캡처도 Tulip 이 라이브 트래픽을 보며 한다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "GPU 끼리 직접 말하게 한다 (fabric-lib)",
+          "via": "MoE 디스패치",
+          "contract": "⭐ **조 단위 파라미터 모델까지 이 엔진이 서비스한다** — 그 규모에서는 전문가 혼합 라우팅의 점대점 전송이 필요하다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Embeddings API (pplx-embed)",
+          "via": "모델 서빙",
+          "contract": "바깥에 파는 것. **Ivy·Tulip·ROSE 는 내부이고 `pplx-embed` 가 API 로 노출된다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "그래프가 있으면 재생하고 없으면 그때 잡는다",
+          "question": "미리 만들면 못 뜨는 것을 어떻게 쓰나",
+          "kind": "flow",
+          "code": "flowchart TD\n  T[\"<b>Tulip 이 배치를 넘긴다</b><br/>• step() 호출 — 러스트에서 파이썬으로\"]:::list --> K[\"<b>그래프 키를 만든다</b><br/>• 시퀀스 수 × 토큰 수<br/>• 토큰 수는 64 또는 256 버킷\"]:::list\n  K --> Q{\"이 조합의 그래프가 있나\"}\n  Q -->|\"있다\"| P[\"⭐ <b>드라이버 호출 한 번으로 재생</b><br/>• 파이썬·파이토치 오버헤드 없음\"]:::accent\n  Q -->|\"⚠️ 없다\"| C[\"⭐ <b>지금 캡처한다 (지연 캡처)</b><br/>• 미리 만들면 수천 개 × 몇 분<br/>• 몇 분치를 몇 시간에 흩는다\"]:::accent\n  C --> P\n  P --> L[\"⭐ <b>LazyTensor 로 돌려준다</b><br/>• 페이지 잠금 호스트 버퍼<br/>• cudaMemcpyAsync 이벤트\"]:::accent\n  L --> O[\"<b>러스트 태스크는 앞 배치를 기다리고<br/>CPU 는 다음 배치를 준비한다</b>\"]:::list\n  P -.->|\"임베딩 경로\"| R[\"<b>KV 캐시를 건너뛴다</b><br/>• ragged 어텐션 커널로 디스패치<br/>• 패딩 오버헤드 없음\"]:::list"
+        },
+        {
+          "title": "미리 만들었다면 어떻게 됐나",
+          "question": "이 설계가 피한 것과 대신 치르는 값은",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>모델 전체 CUDA 그래프를 쓴다</b>\"]:::list --> B[\"⚠️ <b>조합마다 그래프가 필요하다</b><br/>• 시퀀스 수 × 토큰 수\"]:::warn\n  B --> C[\"<b>버킷으로 줄인다</b><br/>• 토큰 수 64 / 256\"]:::list\n  C --> D[\"⚠️ <b>그래도 수천 개</b><br/>• 캡처에 몇 분\"]:::warn\n  D --> E1[\"⚠️ <b>미리 다 만들었다면</b><br/>• 배포가 몇 분씩 멈춘다<br/>• 현실적이지 않다\"]:::warn\n  D --> E2[\"⭐ <b>지연 캡처를 골랐다</b>\"]:::accent\n  E2 --> F[\"⚠️ <b>치르는 값</b><br/>• 아직 안 잡힌 조합의 첫 요청이<br/>  캡처 비용을 문다\"]:::warn\n  F --> G[\"<b>시간이 지나며 채워진다</b>\"]:::list\n  C --> H[\"⚠️ <b>패딩이 두 곳에 있다</b><br/>• ragged 커널로 입력 패딩은 피하고<br/>• 그래프 키에서는 버킷 패딩을 받는다\"]:::warn"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "**정적 그래프로 얻는 속도와 동적인 요청 모양을 함께 갖는 것**",
+            "why_hard": "⭐ **CUDA 그래프는 형태가 고정돼야 재생할 수 있다** — 그런데 실제 요청은 시퀀스 수도 토큰 수도 제각각이라 **조합마다 그래프가 필요하고 그 수가 수천 개가 된다.** ⚠️ **미리 다 만들면 캡처에만 몇 분이 걸려 배포가 안 되고**, 안 쓰면 **`반복되는 파이썬과 파이토치 오버헤드`** 를 그대로 문다.",
+            "current_best": "⭐ **Perplexity 의 답은 둘을 겹쳐 쓴다** — **버킷으로 가짓수를 줄이고**(토큰 수 64/256), **남은 것은 실제 트래픽이 올 때 잡는다**(지연 캡처). ⚠️ **감수하는 것 둘** — **아직 안 잡힌 조합의 첫 요청이 캡처 비용을 물고**, **버킷 경계까지의 패딩 계산이 낭비된다**(재구성). ⭐ **그 결과가 `BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다` 이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+                "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+                "publisher": "AlphaSignal",
+                "date": "2026-09",
+                "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+              }
+            ]
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+          "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+          "publisher": "AlphaSignal",
+          "date": "2026-09",
+          "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+        },
+        {
+          "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
+          "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
+          "publisher": "MarkTechPost",
+          "date": "2026-09-05",
+          "summary": "퍼플렉시티의 임베딩 스택을 원문에서 인용해 정리한 기사다. Ivy 는 러스트 HTTP 게이트웨이로 GPU 로 보내기 전의 모든 사전 처리를 맡는다 — JSON 파싱, 토큰화, 입력 템플릿, 배치 쪼개기 — 그리고 요청을 자체 gRPC 형식으로 옮긴다. 큰 배치 요청을 청크로 쪼개 복제본들에 부하를 분산하는데, 이는 프로덕션 페이로드의 크기가 제각각일 때 생기는 부하 불균형을 바로잡기 위해서다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 요청이 쌓이는 동안 선착순으로 스케줄링한 뒤 엔진으로 넘긴다. 그 단순함에는 성능상의 근거가 있다 — 퍼플렉시티가 서비스하는 시퀀스 길이에서 작은 임베딩 모델은 조밀 레이어의 선형 비용이 어텐션의 이차 비용을 압도한다. 그래서 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하고, 배치가 GPU 를 포화시킨 뒤에는(10억 파라미터 미만 모델에서 약 512 토큰) 시퀀스를 더 채워 넣어도 효율이 나아지지 않는다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 시나리오로 비교했다."
+        },
+        {
+          "title": "Fast Embeddings on GPUs",
+          "url": "https://www.perplexity.ai/hub/blog/fast-embeddings-on-gpus",
+          "publisher": "Perplexity",
+          "date": "2026-09",
+          "summary": "임베딩 API 를 떠받치는 세 서비스를 나눠 설명한다. Ivy 는 러스트 HTTP 게이트웨이로 JSON 파싱·토큰화·입력 템플릿·배치 쪼개기 같은 CPU 쪽 일을 맡고 요청을 자체 gRPC 프로토콜로 옮기며 복제본 사이 부하를 분산한다. Tulip 은 추론 서버 인터페이스로 러스트와 tokio·tonic 으로 만든 gRPC 서버이며 스케줄링과 배치를 관리해 엔진으로 넘긴다. ROSE 는 모델 추론을 구현하며 주로 파이썬이고 커널·레이어·모델 정의를 제공하고 CUDA 그래프를 관리한다. 별도의 임베딩 엔진을 만들지 않고 LLM 스택의 프리필과 디코드 커널을 다시 썼다 — 배치 임베딩은 계산 병목인 프리필을 닮았고 질의 시점의 온라인 임베딩은 메모리 병목인 디코드를 닮았기 때문이다. 스케줄러는 선착순으로 돌린다. 지연이 시퀀스 수가 아니라 토큰 수에 대략 비례하기 때문이고, 10억 파라미터 미만 모델에서는 512 토큰쯤이면 GPU 가 포화된다. 모든 임베딩 모델에 대해 모델 전체 CUDA 그래프를 만들되 지연 캡처로 몇 분치 즉시 작업을 몇 시간에 걸쳐 흩어 시작 시간이 감당 못 할 만큼 길어지는 것을 피한다. LazyTensor 로 스텝 함수가 텐서를 돌려주게 해서, 러스트 비동기 태스크가 N 번째 배치를 기다리는 동안 CPU 가 N+1 번째를 큐에 넣게 겹친다. vLLM v0.22.0 을 상대로 저지연 임베딩·저지연 스코어링·고처리량 임베딩·고동시성 임베딩 네 묶음으로 비교했다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -583,9 +1048,17 @@
     "**`Lily`(애플 실리콘 로컬 추론 엔진)와 하이브리드 로컬·클라우드 구조를 아직 못 읽었다** — `Perplexity Computer` 의 절반이라는데 본문을 못 봤다.",
     "**ROSE 의 러스트 이관이 어디까지 갔는지 모른다** — 서빙 로직과 배치 스케줄링을 러스트로 옮기는 중이라는 3자 요약이 있는데, **회사 자신의 글에서 확인하지 못했다.**",
     "**검색 자체의 기술 자료를 못 봤다** — 색인·랭킹·인용 검증이 이 회사의 본업인데 공개된 기술 글이 추론 인프라 쪽에 몰려 있다.",
-    "**vLLM v0.22.0 대비 벤치마크의 구체적 수치를 못 받았다** — 네 묶음으로 비교했다는 것만 확인했다."
+    "**vLLM v0.22.0 대비 벤치마크의 구체적 수치를 못 받았다** — 네 묶음으로 비교했다는 것만 확인했다.",
+    "**pplx-kernels(GPU 커널 오픈소스)와 CuTeDSL 통합을 아직 안 읽었다** — 회사가 **`CuTeDSL 을 추론 엔진에 통합해 특화 GPU 커널을 더 빨리 만든다`**고 밝힌 것으로 보이는데 본문 근거를 못 잡았다. **GitHub 은 직접 열리므로 다음 사이클에서 본다.**"
   ],
   "sources": [
+    {
+      "title": "Perplexity's ROSE Serving Stack Beats vLLM on Speed and Latency",
+      "url": "https://alphasignal.ai/news/perplexity-s-rose-serving-stack-beats-vllm-on-speed-and-latency",
+      "publisher": "AlphaSignal",
+      "date": "2026-09",
+      "summary": "ROSE 는 모델 순전파를 파이썬에서 돌리고 CUDA 그래프를 관리한다. CUDA 그래프는 순전파의 모든 커널을 드라이버 호출 한 번으로 띄우는 데 필요한 메타데이터를 담아, 반복되는 파이썬과 파이토치 오버헤드를 없앤다. 임베딩의 형태 조합 전부에 대해 미리 만들기에는 수천 개의 그래프가 나오고 캡처에 몇 분이 걸려 현실적이지 않으므로, 실제 트래픽이 올 때 지연 캡처한다. LazyTensor 는 페이지 잠금 메모리의 호스트 버퍼를 cudaMemcpyAsync 이벤트와 함께 추적해, 러스트 비동기 태스크가 앞 배치의 결과를 기다리는 동안 CPU 가 다음 배치를 준비하게 한다. 임베딩을 위해 별도 엔진을 돌리지 않고 LLM 스택의 최적화된 프리필·디코드 커널을 다시 쓰는데, KV 캐시를 건너뛰고 들쭉날쭉한 입력을 지원하는 어텐션 커널로 디스패치해 패딩 오버헤드를 피한다. BGE-M3 와 pplx-embed-1-0.6b 에서 p50 과 p99 모두 기준선을 이긴다."
+    },
     {
       "title": "Perplexity Details Its GPU Embedding Stack: How Ivy, Tulip and ROSE Serve pplx-embed",
       "url": "https://www.marktechpost.com/2026/09/05/perplexity-details-its-gpu-embedding-stack-how-ivy-tulip-and-rose-serve-pplx-embed/",
