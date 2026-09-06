@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "scylladb",
+      "name": "ScyllaDB",
+      "name_en": "ScyllaDB",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "코어마다 자기 몫만 갖고 아무것도 공유하지 않는 데이터베이스 — 남의 API 를 흉내 내면서 그 아래를 다시 짓는다",
+      "updated_at": "2026-09-06",
+      "domain": "scylladb.com"
+    },
+    {
       "slug": "grafana",
       "name": "Grafana Labs",
       "name_en": "Grafana Labs",
@@ -1410,7 +1422,9 @@
     "취약점을 찾는 것이 아니라 고치는 것을 판다",
     "기계가 고친 것을 믿어도 되는지 잰다",
     "메트릭을 오래, 그리고 싸게 저장한다",
-    "로그를 색인 없이 다룬다"
+    "로그를 색인 없이 다룬다",
+    "아무것도 공유하지 않고 코어마다 하나씩 둔다",
+    "남의 API 를 그대로 받아 주면서 그 아래를 다시 짓는다"
   ],
   "countries": {
     "KR": "한국",
