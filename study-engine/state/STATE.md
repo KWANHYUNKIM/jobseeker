@@ -4,29 +4,50 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **React**(`react`)를 완성했다 — **114번째 문서**.
+**없음.** 직전 사이클에서 **Next.js**(`nextjs`)를 완성했다 — **115번째 문서**.
 
-### 직전 사이클 (React)
+### 직전 사이클 (Next.js)
 
-⚠️ **먼저 `design-system` 과 겹치는지 셌다** — `React`·`useEffect`·`훅`·`Hooks`·`렌더` 가 **전부 0회**였다(`컴포넌트` 74회는 디자인 시스템 문맥). 축이 안 겹친다.
+⚠️ **`seo`·`caching` 과 겹치는지 셌다** — `seo` 에 `SSR` 이 18회 있지만 `서버 컴포넌트`·`하이드레이션`·`use client`·`App Router` 는 **0회**, `caching` 에는 `Next.js`·`ISR` 이 **0회**. 축이 안 겹친다.
 
-⭐⭐⭐ **축: "공식 문서가 자기 API 를 '탈출구'라고 부르고, 제목에서부터 쓰지 말라고 한다."**
+⭐⭐⭐ **축: "코드가 어디서 도는지 우리가 정하는데, 그 경계가 눈에 안 보인다."**
 
-> ⭐⭐⭐ **"Effects are an escape hatch from the React paradigm."**
-> **"If there is no external system involved ... you shouldn't need an Effect."**
-> ⭐⭐ 지우면 **"easier to follow, faster to run, and less error-prone"**
-> ⭐⭐⭐ **"If your Effect also immediately updates the state, this restarts the whole process from scratch!"** → **"unnecessary render passes"**
-> ⭐⭐⭐ **"By the time an Effect runs, you don't know what the user did."**
+> ⭐⭐⭐ **"Server Components are not sent to the browser, so they cannot use interactive APIs like `useState`."**
+> ⭐⭐ **"the bundle does not include the expensive libraries needed to render the static content"** — 문서 예제로 **약 75K(gzip)**
+> ⭐⭐ **"Server Components can run once at build time ... or ... for each request"**
 
-⭐⭐ **셈이 새로운 겹을 보여 줬다** — `React` **3713건(이 백과사전 최대)** vs `useEffect` **4건**. 게다가 `렌더링 최적화` **397건**을 요구하면서 **문서가 첫 번째로 드는 최적화(불필요한 Effect 지우기)의 이름은 4건**이다.
+⭐ **이 낱말은 공고가 구체적이었다** — `App Router` **116건** · `RSC` **71건**(모집중 비율 63%). ⚠️ 그런데 **경계가 실제로 일어나는 자리인 `하이드레이션` 은 4건**이다.
+
+⭐ 그리고 **같은 데이터에 두 시대가 있었다** — `SPA/SSR`(큐빅·인터웍스미디어)과 `App Router, RSC`(밀리의서재·랭디).
+
+⚠️⚠️ **가장 큰 약점**: **Next.js 문서를 한 페이지도 안 열었다.** 1차 자료가 React 쪽 Server Components 문서 하나뿐이다.
 
 ### 다음
 
-**Next.js**(`nextjs`) — QUEUE 맨 위. ⭐ `react` 가 **"별도 낱말"이라고 명시하며 비워 둔 자리**다.
+**Go**(`go`) — QUEUE 맨 위. ⭐ 또 층을 바꿨다(프론트엔드 두 번 연속 → 언어).
 
-⭐⭐⭐ **1400건(모집중 448)** 인데 ⚠️ `하이드레이션` **4건**. 축을 못 박아 뒀다: **"코드가 어디서 도는지 이제 우리가 정하는데, 그 경계가 눈에 안 보인다."** ⚠️ `seo` 와는 확인 완료(축 다름), **`caching` 과 겹치는지는 다음 사이클이 센다.**
+⭐⭐⭐ **`고루틴|goroutine` 이 1건(모집중 0)** — 계보의 가장 극단이다. 축: **"뺀 것으로 만든 언어"**, 1차 자료는 **Go FAQ 의 `Why does Go not have X?` 절들**. ⚠️⚠️ **`채널` 889건은 오염이 극심해 쓰지 말 것**(채널톡·유통 채널).
+
+**둘째 줄**에 **상태 관리**(`state-management`)를 올려 뒀다 — `react` 가 "가장 큰 빈자리"라고 적은 자리. ⚠️ **alias 를 `react` 가 갖고 있어 옮겨 오는 절차가 필요하다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **한 사실에서 능력과 제약이 동시에 나오는 문장을 찾는다.** React 문서의
+  **"Server Components are not sent to the browser, **so** they cannot use interactive APIs
+  like `useState`."** — ⭐ **`so` 앞뒤를 나눠 읽으면 그게 곧 문서의 뼈대**다. 앞(브라우저에 안
+  간다)에서 **번들 75K 감소**가 나오고, 뒤에서 **상태를 못 쓴다**가 나온다. 💡 **좋은 기술 문서는
+  장점과 제약을 따로 적지 않고 한 문장에 묶어 둔다** — 그 문장을 찾으면 절 두 개가 저절로 선다.
+
+- ⭐⭐ **공고가 기술 이름을 구체적으로 대는 낱말도 있고, 그러면 문서의 일이 달라진다.** `React`
+  3713건에서 `useEffect` 는 4건이었는데, `Next.js` 1400건에서는 **`App Router` 116건 · `RSC`
+  71건**으로 **이름이 실제로 불린다.** ⭐ 그럴 때 문서가 할 일은 **"이런 게 있다"가 아니라
+  "그 이름들 사이의 경계"** 를 알려 주는 것이다 — 여기서는 `'use client'` 가 어디까지 번지나.
+  📌 **셈을 하고 나서 "이 낱말은 무엇을 모르나"를 먼저 정한 뒤 축을 잡는다.**
+
+- ⭐⭐ **같은 데이터에 두 시대의 표현이 함께 있으면 그 자체가 축이다.** `SPA/SSR`(둘 중 하나를
+  고르던 시절)과 `App Router, RSC`(컴포넌트마다 고르는 시절)가 **같은 채용 데이터 안에** 있다.
+  💡 `javascript` 의 `ES6+` 와 jQuery, `ios` 의 `Objective-C` 95 vs `SwiftUI` 77 과 같은 형태다 —
+  ⭐ **이제 이건 우연이 아니라 이 데이터에서 반복되는 구조로 본다: 시장은 늘 두 시대를 동시에 산다.**
 
 - ⭐⭐⭐ **제품 문서의 제목에 부정어가 있으면 그게 곧 축이다.** react.dev 의
   **`You Might Not Need an Effect`** — 본문 어딘가에 숨은 경고가 아니라 **문서 한 편이 통째로

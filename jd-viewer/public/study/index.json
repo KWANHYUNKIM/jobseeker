@@ -2080,6 +2080,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "nextjs",
+      "title": "Next.js — 경계가 눈에 안 보인다",
+      "category": "framework",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **코드가 어디서 도는지 이제 우리가 정한다** — 서버 컴포넌트는 **\"not sent to the browser\"** 라 번들에서 통째로 빠지고(문서 예시 **75K**), 대신 **`useState` 를 못 쓴다.** ⚠️ 그 경계를 긋는 것은 **`'use client'` 한 줄**이다.",
+      "aliases": [
+        "Next.js",
+        "App Router",
+        "SSR",
+        "서버 컴포넌트",
+        "use client",
+        "하이드레이션"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
