@@ -2023,6 +2023,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "javascript",
+      "title": "JavaScript — 고칠 수 없는 언어",
+      "category": "language",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **명세가 자기 일부를 이렇게 적는다** — \"in the absence of legacy usage **would be removed from this specification**\". **없애고 싶은데 못 없앤다.** 그래서 공고는 \"최신\"이라고 말할 때 **버전 번호를 붙인다**(`ES6+` 258건).",
+      "aliases": [
+        "JavaScript",
+        "자바스크립트",
+        "ES6",
+        "ECMAScript",
+        "Annex B",
+        "don't break the web"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

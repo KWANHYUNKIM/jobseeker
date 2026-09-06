@@ -4,27 +4,47 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **TypeScript**(`typescript`)를 완성했다 — **111번째 문서**.
+**없음.** 직전 사이클에서 **JavaScript**(`javascript`)를 완성했다 — **112번째 문서**.
 
-### 직전 사이클 (TypeScript)
+### 직전 사이클 (JavaScript)
 
-⚠️ **먼저 `kotlin` 과 겹치는지 셌다** — `타입 소거`·`erased`·`soundness`·`건전`·`zod` 가 **전부 0회**였다. 축이 안 겹친다.
+⭐⭐⭐ **축: "고칠 수 없는 언어."** 명세가 자기 일부를 이렇게 적는다.
 
-⭐⭐⭐ **축: "타입이 맞다는 건 증명됐다는 뜻이 아니다."** 1차 자료가 **비목표 목록**으로 직접 준다.
+> **"All of the language features and behaviors specified in this annex have one or more undesirable characteristics and in the absence of legacy usage would be removed from this specification."**
+> **"removing them will cause backward compatibility issues and break legacy websites. (JavaScript has the design goal of \"don't break the web\".)"**
+> ⭐⭐ **"normative optional — web browser hosts must implement these features, while non-web hosts may not."**
 
-> **Non-goals 3.** **"Apply a sound or 'provably correct' type system.** Instead, strike a balance between correctness and productivity."
-> **Non-goals 5.** **"Add or rely on run-time type information** in programs..."
-> **Goals 9.** "Use a consistent, **fully erasable**, structural type system."
+⭐⭐ **셈이 축을 줬다**: `ES6+` **258건** — **"최신"이라고 말하려면 버전을 붙여야 하는 언어.** ES6 는 11년 전 표준인데 아직 '모던'의 기준선이다. 그리고 톤28 공고가 `Javascript(ES6), **jQuery**` 를 한 줄에 적는다.
 
-⭐⭐ **셈에서 처음 보는 것이 나왔다 — 순서가 뒤집혔다.** `zod|런타임 검증` **53건**이 `타입 안전` **26건**의 **두 배**다. **개념보다 그 한계를 메우는 도구가 더 자주 불린다.** 아이알큐더스 공고가 결론을 한 줄로 적어 놨다: `타입 안전성 확보 (**스키마 기반 타입 자동 생성·런타임 검증** 포함)`.
+⚠️⚠️ **명세 본문을 직접 못 열었다** — tc39.es 와 262.ecma-international.org 양쪽에서 **목차만** 왔다. **MDN 이 인용부호로 옮긴 것을 통해 확인**했고, 그 사실을 문서 곳곳에 밝혔다.
 
 ### 다음
 
-**JavaScript**(`javascript`) — QUEUE 맨 위. ⭐⭐ **네 사이클 만에 사슬이 다시 이어졌다**(`typescript` 가 끊긴 링크를 남겼다).
+**Node.js**(`nodejs`) — QUEUE 맨 위. ⭐ `javascript` 가 스스로 "가장 큰 빈자리"라고 적은 자리다(`비동기` 1124건).
 
-⭐⭐⭐ **2397건(모집중 743)** 인데 문서가 없다. 축을 못 박아 뒀다: **"고칠 수 없는 언어."** 1차 자료는 **ECMAScript 명세의 `Annex B`**(명세가 자기 일부를 legacy 로 떼어 적은 자리). ⚠️ **`이벤트 루프` alias 는 `asyncio` 것이니 가져오지 않는다.**
+⭐⭐⭐ **1642건(모집중 592)** 인데 문서가 없다. 축을 못 박아 뒀다: **"이벤트 루프는 언어가 아니라 호스트가 정한다."** ⚠️ **`이벤트 루프`·`async/await` alias 는 `asyncio` 것이니 가져오지 않고, 축이 겹치는지 먼저 센다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **"제품이 스스로 그은 선"에 가장 센 칸이 생겼다.** 지금까지 모은 것이
+  `kotlin` **"impractical"** → `redis` **"we discourage it"** → `github-actions`
+  **"almost never"** → `typescript` **Non-goals** 였는데, 여기는 한 칸 더 간다:
+  ⭐⭐⭐ **"in the absence of legacy usage would be removed from this specification"**
+  — **잘못이라고 인정하면서 못 고친다고 표준이 직접 쓴다.** 💡 **인정의 강도로 줄을 세우면
+  그 기술의 성격이 보인다** — 앞의 넷은 "안 하기로 했다"이고, 이건 **"하고 싶은데 못 한다"** 다.
+
+- ⭐⭐ **1차 자료 본문을 못 열었을 때 미루지 않고 경로를 밝히고 쓴다.** ECMAScript 명세의
+  `Annex B` 를 **두 호스트에서 시도했는데 둘 다 목차만** 왔다(단일 페이지가 너무 크다).
+  ⚠️ 그냥 `docs(study): 보류` 로 미룰 수도 있었는데, **MDN 이 명세를 인용부호로 옮겨 둔 것**을
+  찾아 그것으로 확인했다. ⭐ **대신 문서 세 곳(요약·표 note·`open_questions`)에 "명세 본문을
+  직접 열지 못했고 MDN 을 통해 확인했다"고 적었다.** 📌 **근거의 강도를 낮춰서라도 쓰되,
+  낮췄다는 사실을 숨기지 않는다** — 이게 "안 쓴다"와 "지어낸다" 사이의 세 번째 길이다.
+
+- ⭐⭐⭐ **한 문서가 답하지 못한 "왜"를 다음 문서가 답한다.** `typescript` 는 **"건전한 타입
+  시스템이 왜 Non-goal 인가"** 를 인용까지만 하고 넘어갔는데, `javascript` 의 **"don't break
+  the web"** 이 그 답이었다. 💡 **두 문서가 붙어야 하나의 설명이 된다** — `android`↔`ios` 가
+  그랬고 여기서 또 그랬다. 📌 **그래서 끊긴 링크로 이어지는 낱말은 "이웃"이 아니라 "나머지 반쪽"
+  일 때가 있다** — 그럴 때는 앞 문서의 `open_questions` 를 먼저 읽고 시작한다.
 
 - ⭐⭐⭐ **비목표 목록(Non-goals)은 1차 자료의 최상급이다.** TypeScript 는 **"건전한 타입 시스템"과
   "런타임 타입 정보"를 둘 다 비목표로 적어 뒀다** — 본문 어딘가에 부정어를 숨겨 둔 게 아니라
