@@ -86,8 +86,71 @@
     {
       "name": "판매자에게 언제 얼마를 왜 주는지 설명한다",
       "why": "⚠️ **매일 14만 명 넘는 판매자에게 돈이 나가는데 그들이 그 숫자를 이해하지 못했다.** 공제가 **물류·세금·광고·인플루언서 마케팅·대출 상환**처럼 서로 다른 시스템에서 오는데 화면에는 **`총 미결제 잔액` 한 줄**만 있었다. ⚠️ **게다가 모든 판매자 결제가 게이트웨이 하나만 지나갔다 — 대체 경로가 없었다.** ✅ **본문 확인함**(2026-05-26).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "결제 게이트웨이 이중화",
+          "solves": "**하나가 죽으면 우회한다** — 예전에는 `죽으면 결제가 그냥 멈췄다`. 실패율 **3% → 0.9~1.2%**.",
+          "limits": "⚠️ **두 파트너의 규칙 차이(계좌 화이트리스팅·재시도 로직)를 계속 흡수해야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+              "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+              "publisher": "Meesho Blog",
+              "date": "2026-05-26",
+              "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+            }
+          ]
+        },
+        {
+          "tech": "프로그램 자동화 플랫폼 (셀프서브)",
+          "solves": "내부 팀이 **자기 서비스를 붙이고 회수 로직을 정의하고 금융 이벤트를 보낸다** — 예정 회수율 **사실상 0 → 98% 이상**.",
+          "limits": "⚠️ **정확성의 책임이 여러 팀으로 흩어진다** — 회사가 남은 과제로 **`규칙을 전반에 걸쳐 일관되고 표준화하는 일`** 을 꼽는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+              "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+              "publisher": "Meesho Blog",
+              "date": "2026-05-26",
+              "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+            }
+          ]
+        },
+        {
+          "tech": "FTRP (처음에 맞게 준 정산)",
+          "solves": "⚠️ **성공의 정의를 속도에서 정확성으로 옮긴 지표** — 정정·환수·보상 없이 첫 거래에서 맞았는가. **95% 이상.**",
+          "limits": "⚠️ **사후 지표라 어느 팀의 규칙이 틀렸는지는 따로 찾아야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+              "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+              "publisher": "Meesho Blog",
+              "date": "2026-05-26",
+              "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+            }
+          ]
+        },
+        {
+          "tech": "미예정/예정 분리 + D+8",
+          "solves": "어떤 돈이 어느 단계에 있는지 보여 주고, **7일 반품 창이 닫힌 다음 날** 지급한다.",
+          "limits": "⚠️ **화면이 복잡해진다** — 단순함 대신 이해 가능성을 골랐다(재구성). **그리고 판매자의 현금 흐름은 고객의 반품 권리에 묶인 채로 남는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+              "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+              "publisher": "Meesho Blog",
+              "date": "2026-05-26",
+              "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "fast-but-wrong-is-still-wrong"
+      ]
     },
     {
       "name": "주소를 못 쓰는 나라에서 배달지를 찾는다",
@@ -108,7 +171,510 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "fast-but-wrong-is-still-wrong",
+      "name": "빠른데 틀린 정산은 여전히 나쁜 정산이다",
+      "domain": "판매자에게 언제 얼마를 왜 주는지 설명한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **커미션을 안 받기로 하면 정산이 설명해야 할 것이 늘어난다.** 판매자에게서 떼는 몫이 없는데도 **물류·세금·광고·인플루언서 마케팅·대출 상환**이 각각 다른 시스템에서 공제로 들어온다. 그런데 판매자가 보던 화면은 **`총 미결제 잔액` 한 줄**이었다 — **서로 다른 단계의 주문이 뒤섞인 하나의 숫자**. **매일 14만 명이 넘는 판매자에게 돈이 나가는 규모에서 그 한 줄이 신뢰의 병목이었다.** ⚠️ **게다가 구조 자체가 약했다** — 회사의 문장 그대로 **`판매자 결제가 모두 지나가는 유일한 경로가 게이트웨이 하나였다. 그것이 죽으면 결제는 우회하지 않았다. 그냥 멈췄다.`**",
+        "metrics": [
+          {
+            "label": "정산 규모",
+            "value": "**하루 14만 명 이상의 판매자**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "label": "결제 실패율",
+            "value": "**3% → 0.9~1.2%** (게이트웨이 이중화 뒤)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 처음에 맞게 준 비율 (FTRP)",
+            "value": "**95% 이상** — 나중의 정정·환수·보상 조정 없이 첫 거래에서 정확한 금액을 줬는가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "label": "프로그램 회수 정시율",
+            "value": "**사실상 0 → 98% 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "label": "처리 시간 (P90)",
+            "value": "**35~40시간 → 약 25시간**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "label": "지급일",
+            "value": "**D+8** — 배송 완료 8일째. **7일 반품 창**이 닫히고 하루 뒤",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "label": "이 정산이 닿는 판매자 모수",
+            "value": "**연간 거래 판매자 70만 6,471명**(2025년 9월까지 12개월)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Meesho Built Its IPO Muscle In 2025",
+                "url": "https://inc42.com/features/how-meesho-built-its-ipo-muscle-in-2025/",
+                "publisher": "Inc42",
+                "date": "2025",
+                "summary": "판매자에게 커미션을 받지 않은 최초의 인도 커머스로, 자체 물류(Valmo)를 세우고 리셀러 네트워크를 만들어 인도 최초의 수평 이커머스 상장사가 됐다. 2025년 9월까지 12개월간 연간 거래 판매자 70만 6,471명·연간 거래 사용자 2억 3,420만 명."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 고칠지 정할 때",
+          "thought": "⚠️ **처리 속도를 올리는 것이 가장 눈에 띄는 개선인데 그것을 첫째로 두지 않았다.** 회사의 문장 — **`속도만으로는 충분하지 않다. 빠른데 틀린 정산은 여전히 나쁜 정산이다.`** **틀린 금액은 나중에 정정·환수·보상으로 돌아오고, 그 왕복이 판매자의 신뢰를 갉는다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "공제를 언제 반영할지 정할 때",
+          "thought": "⚠️ **공제를 정산 뒤에 정산하는 방식은 회계로는 맞지만 사람에게는 틀리다** — 받은 돈이 나중에 줄어드는 경험이 되기 때문이다. 그래서 **모든 회수를 배송 완료 정산이 처리되기 전에** 끝내도록 순서를 바꿨다. **같은 총액인데 순서만 바꿔도 다른 제품이 된다**(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "공제를 보내는 팀이 늘어날 때",
+          "thought": "⚠️ **공제의 출처가 물류·세금·광고·인플루언서·대출로 늘어나는 동안 정산 팀이 매번 붙여 주는 방식은 버티지 못한다.** 그래서 **팀이 스스로 붙이는 셀프서브 플랫폼**으로 바꿨다. ⚠️ **다만 그러면 정확성의 책임도 함께 흩어진다** — 회사가 남은 과제로 **`규칙을 전반에 걸쳐 일관되고 표준화하는 일`** 을 꼽는 것이 그 자리다(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "미예정 결제 (Unscheduled)",
+            "what": "**발송된 주문**의 금액. 아직 지급일이 정해지지 않았다"
+          },
+          {
+            "name": "예정 결제 (Scheduled)",
+            "what": "**배송 완료된 주문**의 금액. **7일 반품 창이 닫히기를 기다린다**"
+          },
+          {
+            "name": "D+8",
+            "what": "⚠️ **배송 8일째 지급.** 이유가 명시적이다 — **고객에게 배송일로부터 7일 반품 창을 주기 때문**이다"
+          },
+          {
+            "name": "공제 (회수)",
+            "what": "**물류 · 세금 · 광고 · 인플루언서 마케팅 · 대출 상환.** ⚠️ **각각 다른 시스템에서 온다**"
+          },
+          {
+            "name": "FTRP (처음에 맞게 준 정산)",
+            "what": "⚠️ **나중의 정정·환수·보상 조정 없이 첫 거래에서 정확한 금액을 줬는가.** 이 회사가 고른 성공 지표다"
+          },
+          {
+            "name": "프로그램 자동화 플랫폼",
+            "what": "**어느 내부 팀이든 자기 서비스를 붙이고, 자기 회수 로직을 정의하고, 금융 이벤트를 정산 시스템으로 보내는** 셀프서브 플랫폼"
+          }
+        ],
+        "invariants": [
+          "⚠️ **모든 회수는 배송 완료 정산이 처리되기 전에 끝난다** — 준 뒤에 걷지 않는다",
+          "⚠️ **반품 창이 닫히기 전에는 확정 지급하지 않는다** — D+8 의 근거다",
+          "**판매자 결제에는 대체 경로가 있어야 한다** — 하나가 죽으면 우회한다",
+          "⚠️ **공제는 판매자가 동의한 것만 발생한다** — 전화가 아니라 판매자 패널의 명시적 가입으로"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**주문이 발송된다** → 금액이 **미예정 결제**로 잡힌다",
+            "why": "**아직 배송이 끝나지 않아 지급일을 정할 수 없다**"
+          },
+          {
+            "step": "**배송이 완료된다** → **예정 결제**로 옮겨지고 **7일 반품 창**이 돈다",
+            "why": "**고객이 배송일로부터 7일 안에 반품할 수 있다**"
+          },
+          {
+            "step": "⚠️ **공제를 먼저 모은다** — 물류·세금·광고·인플루언서·대출 상환",
+            "why": "⚠️ **모든 회수는 정산이 처리되기 전에 끝나야 한다**(FTRP)"
+          },
+          {
+            "step": "**내부 팀들이 자기 금융 이벤트를 보낸다** — 프로그램 자동화 플랫폼으로",
+            "why": "**정산 팀이 매번 붙여 주는 방식은 프로그램 수가 늘면 버티지 못한다**(재구성)"
+          },
+          {
+            "step": "**D+8 에 지급한다**",
+            "why": "**반품 창이 닫히고 하루 뒤다**"
+          },
+          {
+            "step": "**게이트웨이 둘 중 하나로 보낸다** — 실패하면 우회한다",
+            "why": "⚠️ **예전에는 `죽으면 결제가 우회하지 않고 그냥 멈췄다`**"
+          },
+          {
+            "step": "**판매자 화면이 내역을 나눠 보여 준다** — 미예정/예정, 프로그램별 항목, 대출 상환, 내려받는 보고서",
+            "why": "**판매자가 자기 노력을 금액으로 되짚을 수 있게** 하려고"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "속도와 정확성 중 무엇을 앞에 둘 것인가",
+            "chosen": "⚠️ **정확성** — 처음에 맞게 주는 것(FTRP)을 지표로 삼았다",
+            "alternatives": [
+              "처리 시간 단축을 최우선",
+              "일단 주고 나중에 정산"
+            ],
+            "tradeoff": "회사의 문장이 이 결정의 전부다 — **`속도만으로는 충분하지 않다. 빠른데 틀린 정산은 여전히 나쁜 정산이다.`** 그래서 **나중의 정정·환수·보상 조정 없이 첫 거래에서 맞았는가**를 재고 **95% 이상**으로 올렸다. ⚠️ **대가는 지급이 늦어질 수 있다는 것**인데, **속도도 함께 좋아졌다**(P90 35~40시간 → 약 25시간) — **정확성을 앞에 두는 것이 반드시 느려지는 것은 아니었다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "공제를 정산 전에 반영할 것인가 후에 걷을 것인가",
+            "chosen": "⚠️ **전부 정산 전에** — 배송 완료 정산이 처리되기 전에 모든 회수를 끝낸다",
+            "alternatives": [
+              "지급 후 다음 회차에서 차감",
+              "월 단위 정산으로 몰아 처리"
+            ],
+            "tradeoff": "⚠️ **회계로는 어느 쪽이든 총액이 같지만 사람에게는 다르다** — **받은 돈이 나중에 줄어드는 경험**은 신뢰를 갉는다(재구성). **대가는 공제를 보내는 모든 시스템이 정산 시각 전에 이벤트를 보내야 한다는 것**이고, 그래서 **프로그램 자동화 플랫폼이 필요해졌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "공제를 보내는 팀을 어떻게 붙일 것인가",
+            "chosen": "⚠️ **셀프서브 플랫폼** — 팀이 스스로 서비스를 붙이고 회수 로직을 정의한다",
+            "alternatives": [
+              "정산 팀이 프로그램마다 통합 작업",
+              "프로그램별 배치 파일 연동"
+            ],
+            "tradeoff": "회사가 **구조적으로 풀기 위해** 만들었다고 적는다 — **어느 내부 팀이든 자기 서비스를 온보딩하고, 회수 로직을 정의하고, 금융 이벤트를 정산 시스템으로 보낸다.** 결과는 **예정대로 회수되는 비율이 사실상 0 에서 98% 이상**. ⚠️ **대가는 정확성의 책임이 여러 팀으로 흩어진다는 것**이고, 회사가 남은 과제로 **`규칙을 전반에 걸쳐 일관되고 표준화하는 일`** 을 꼽는 것이 정확히 그 자리다(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "잔액을 어떻게 보여 줄 것인가",
+            "chosen": "⚠️ **미예정 결제와 예정 결제로 나눈다** — 한 줄짜리 잔액을 버렸다",
+            "alternatives": [
+              "총 미결제 잔액 한 줄 유지",
+              "거래 내역만 나열"
+            ],
+            "tradeoff": "예전 화면은 **서로 다른 단계의 주문이 뒤섞인 혼란스러운 하나의 뷰**였다. 나눈 뒤에는 **판매자가 자기 노력을 금액으로 되짚을 수 있다.** ⚠️ **대가는 화면이 복잡해진다는 것**이고, 회사는 **내려받는 보고서·대출 상환 표시·프로그램별 항목화**를 더해 그쪽으로 갔다 — **단순함보다 이해 가능성을 골랐다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "언제 지급할 것인가",
+            "chosen": "**D+8** — 배송 8일째",
+            "alternatives": [
+              "배송 즉시 지급",
+              "월 2회 고정 지급"
+            ],
+            "tradeoff": "근거가 고객 쪽에 있다 — **배송일로부터 7일 반품 창**을 주기 때문에 그것이 닫히고 하루 뒤다. ⚠️ **판매자의 현금 흐름과 고객의 반품 권리가 정면으로 맞부딪히는 자리이고, 회사는 고객 쪽 창을 먼저 세운 뒤 판매자에게 그 이유를 설명하는 길을 골랐다**(이 해석은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "결제 경로를 몇 개 둘 것인가",
+            "chosen": "⚠️ **둘** — 두 번째 결제 파트너를 붙였다",
+            "alternatives": [
+              "단일 게이트웨이 유지하고 안정성 개선",
+              "자체 정산 인프라 구축"
+            ],
+            "tradeoff": "예전 구조를 회사가 그대로 적는다 — **`그것이 죽으면 결제는 우회하지 않았다. 그냥 멈췄다.`** 붙이는 과정에서 **판매자 은행 계좌 화이트리스팅과 재시도 로직 실패** 같은 통합 문제를 풀어야 했다. 결과는 **실패율 3% → 0.9~1.2%.** ⚠️ **대가는 두 파트너의 규칙 차이를 계속 흡수해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "프로그램 가입을 어떻게 받을 것인가",
+            "chosen": "⚠️ **판매자 패널의 명시적 가입(opt-in)** — 전화 등록을 버렸다",
+            "alternatives": [
+              "영업 전화로 등록",
+              "기본 가입 후 해지 방식"
+            ],
+            "tradeoff": "회사의 문장 — **`등록이 판매자가 종종 잊어버리는 전화 통화에서 판매자 패널의 명확한 가입 흐름으로 옮겨 갔다. 더 이상 놀랄 일도, `나는 이런 데 가입한 적 없다` 도 없다.`** ⚠️ **대가는 가입률이 떨어질 수 있다는 것**인데, 회사는 그 대신 **판매자가 재고를 더 들일 자신감**을 얻었다고 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "정산을 파이프라인으로 볼 것인가 제품으로 볼 것인가",
+            "chosen": "⚠️ **제품으로** — 회사가 **`판매자를 위한 금융 운영체제`** 라 부른다",
+            "alternatives": [
+              "돈을 옮기는 백엔드로만 유지"
+            ],
+            "tradeoff": "⚠️ **커미션을 받지 않는 회사에서는 정산 화면이 판매자와의 주된 접점이 된다** — 떼는 몫이 없으니 설명해야 할 것은 오히려 늘어난다(이 정리는 이 사이트의 재구성이다). **대가는 정산 팀이 회계 정확성만이 아니라 화면·보고서·동의 흐름까지 떠안는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              },
+              {
+                "title": "How Meesho Built Its IPO Muscle In 2025",
+                "url": "https://inc42.com/features/how-meesho-built-its-ipo-muscle-in-2025/",
+                "publisher": "Inc42",
+                "date": "2025",
+                "summary": "판매자에게 커미션을 받지 않은 최초의 인도 커머스로, 자체 물류(Valmo)를 세우고 리셀러 네트워크를 만들어 인도 최초의 수평 이커머스 상장사가 됐다. 2025년 9월까지 12개월간 연간 거래 판매자 70만 6,471명·연간 거래 사용자 2억 3,420만 명."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "결제 게이트웨이 이중화",
+            "role": "두 파트너로 갈라 **하나가 죽어도 우회**한다. 계좌 화이트리스팅·재시도 로직을 맞췄다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "프로그램 자동화 플랫폼 (셀프서브)",
+            "role": "내부 팀이 **자기 서비스를 붙이고 회수 로직을 정의하고 금융 이벤트를 보낸다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "FTRP 지표",
+            "role": "⚠️ **도구가 아니라 성공의 정의다** — 정정·환수·보상 없이 첫 거래에서 맞았는가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "미예정/예정 분리 + 프로그램별 항목화",
+            "role": "판매자 화면에서 **어떤 돈이 어느 단계에 있고 무엇이 왜 빠졌는지**를 보여 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "물류 (Valmo) · 세금 · 광고 · 인플루언서 · 대출 프로그램",
+          "via": "금융 이벤트",
+          "contract": "⚠️ **각자 다른 시스템이 정산 시각 전에 회수 이벤트를 보내야 한다** — 셀프서브 플랫폼이 그 계약의 창구다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "결제 게이트웨이 두 곳",
+          "via": "지급 경로",
+          "contract": "**하나가 실패하면 다른 쪽으로 우회한다** — 실패율 3% → 0.9~1.2%",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "고객의 반품 권리",
+          "via": "7일 반품 창",
+          "contract": "⚠️ **판매자의 지급일이 고객의 반품 창에 묶여 있다** — D+8 의 근거이고, 두 쪽의 이해가 정면으로 맞부딪히는 자리다(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "판매자 패널",
+          "via": "명시적 가입과 내역 화면",
+          "contract": "**동의한 프로그램만 공제되고, 공제 내역을 항목으로 볼 수 있다**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 규칙이 팀마다 다르다 — 회사가 다음 관문으로 꼽은 것",
+            "why_hard": "회사의 문장 — **`다음 관문은 결제 정확성이다 … 이 규칙들을 전반에 걸쳐 일관되고 표준화되게 만드는 것이 현재 진행 중인 작업이다.`** ⚠️ **셀프서브로 팀들이 자기 회수 로직을 정의하게 한 순간, 정확성의 책임도 함께 흩어졌다** — 붙이는 속도를 얻고 규칙의 일관성을 잃은 자리다(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**FTRP 라는 하나의 지표로 결과를 재는 것** — 규칙이 흩어져 있어도 **틀린 정산은 이 숫자에 잡힌다.** ⚠️ **다만 사후 지표라 어느 팀의 규칙이 틀렸는지는 따로 찾아야 한다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "problem": "판매자의 현금 흐름과 고객의 반품 권리는 같은 시간을 두고 다툰다",
+            "why_hard": "⚠️ **D+8 은 기술적 제약이 아니라 두 이해관계자 사이의 선이다.** 빨리 주면 반품된 주문의 돈을 도로 걷어야 하고(환수는 FTRP 를 깎는다), 늦게 주면 판매자가 다음 재고를 못 들인다. **어느 쪽도 시스템으로 없앨 수 없는 종류의 문제다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**반품 창이 닫힌 다음 날로 못 박고 그 이유를 판매자에게 설명하는 것.** ⚠️ **회사가 고른 것은 최적화가 아니라 규칙과 설명이다**(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+                "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+                "publisher": "Meesho Blog",
+                "date": "2026-05-26",
+                "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "돈은 배송이 아니라 반품 창이 닫힌 뒤에 움직인다",
+          "question": "주문 하나의 대금이 판매자에게 닿기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  O[\"<b>주문 발송</b>\"]:::list --> U[\"<b>미예정 결제</b><br/>• 지급일 미정\"]:::list\n  U --> D[\"<b>배송 완료</b>\"]:::list --> S[\"<b>예정 결제</b><br/>• 7일 반품 창이 돈다\"]:::list\n  P[\"<b>프로그램 자동화 플랫폼</b><br/>• 팀이 회수 로직을 정의<br/>• 금융 이벤트를 보낸다\"]:::accent --> R[\"⚠️ <b>공제를 정산 전에 모은다</b><br/>• 물류 · 세금 · 광고<br/>• 인플루언서 · 대출 상환\"]:::accent\n  R --> S\n  S --> E[\"<b>D+8 지급</b><br/>• 반품 창 + 하루\"]:::accent\n  E --> G{\"<b>게이트웨이</b>\"}\n  G -->|\"실패하면\"| G2[\"<b>두 번째 파트너로 우회</b><br/>• 실패율 3% → 0.9~1.2%\"]:::list\n  G --> V[\"<b>판매자 계좌</b>\"]:::list\n  G2 --> V\n  E --> F[\"<b>FTRP 로 잰다</b><br/>• 첫 거래에서 맞았나<br/>• 95% 이상\"]:::list"
+        },
+        {
+          "title": "예전 구조가 깨지던 곳과 아직 안 풀린 곳",
+          "question": "무엇이 신뢰를 갉았고 무엇이 남았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>총 미결제 잔액 한 줄</b><br/>• 다른 단계의 주문이 뒤섞임\"]:::gone --> B[\"<b>고침: 미예정 / 예정 분리</b><br/>• 프로그램별 항목화\"]:::accent\n  C[\"⚠️ <b>게이트웨이 하나</b><br/>• 죽으면 우회하지 않고 멈췄다\"]:::gone --> D[\"<b>고침: 파트너 둘</b>\"]:::accent\n  E[\"⚠️ <b>전화로 받은 등록</b><br/>• 판매자가 잊어버린다<br/>• 놀라는 공제\"]:::gone --> F[\"<b>고침: 패널에서 명시적 가입</b>\"]:::accent\n  G[\"⚠️ <b>정산 뒤에 걷는 공제</b><br/>• 받은 돈이 나중에 줄어든다 (재구성)\"]:::gone --> H[\"<b>고침: 회수를 정산 전에</b><br/>• FTRP 95% 이상\"]:::accent\n  I[\"⚠️ <b>남은 것: 규칙이 팀마다 다르다</b><br/>• 셀프서브로 붙이는 속도를 얻고<br/>  규칙의 일관성을 잃었다 (재구성)<br/>• 회사가 진행 중인 작업이라 적는다\"]:::gone\n  J[\"⚠️ <b>남은 것: 반품 창과 현금 흐름</b><br/>• 어느 쪽도 시스템으로 없앨 수 없다 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+          "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+          "publisher": "Meesho Blog",
+          "date": "2026-05-26",
+          "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+        },
+        {
+          "title": "How Meesho Built Its IPO Muscle In 2025",
+          "url": "https://inc42.com/features/how-meesho-built-its-ipo-muscle-in-2025/",
+          "publisher": "Inc42",
+          "date": "2025",
+          "summary": "판매자에게 커미션을 받지 않은 최초의 인도 커머스로, 자체 물류(Valmo)를 세우고 리셀러 네트워크를 만들어 인도 최초의 수평 이커머스 상장사가 됐다. 2025년 9월까지 12개월간 연간 거래 판매자 70만 6,471명·연간 거래 사용자 2억 3,420만 명."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **커미션을 안 받는 구조가 기술 결정에 어디까지 영향을 주는지 아직 모른다.** **정산이 `왜 이만큼인가` 를 설명하는 제품이 된 것**은 확인했지만, **광고·물류 쪽 시스템이 그 구조 때문에 어떻게 달라졌는지**는 자료를 못 봤다.",
