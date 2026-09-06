@@ -8,40 +8,43 @@
 
 ## 지금 파는 중
 
-**없다 — VictoriaMetrics 를 완주했다.** 도메인 2개 · 기능 2개. 회사 **101개.** ⚠️ **큐 0/3 — 다음 사이클은 후보 조사다.**
+**없다 — 후보 조사 사이클이었다.** 큐 **2/3**. 회사 101개.
 
-### 이번 사이클 — `추적하지 않고 기다린다`
+### ⚠️⚠️ 이번 사이클에서 내가 한 실수 — 이미 판 회사를 후보로 던졌다
 
-⭐ **앞 사이클이 남긴 물음에 이 글이 답했다.** **`이 회사는 자기 시스템 글보다 Go 런타임 해설을 더 많이 쓴다`** 고 적어 뒀는데, 이유가 **`거의 전적으로 인바운드 유기적 성장에 의존한다`** 였다. **콘텐츠가 곧 판로다.**
+**Datadog 과 TigerBeetle 을 언급 각도로 골라 블로그를 열었는데 둘 다 index 에 이미 있다.** ⚠️ **`후보 대조는 slug 가 아니라 name_en 으로` 를 STATE 에 적어 놓고 이번엔 대조 자체를 건너뛰었다.**
 
-건진 것 넷:
+⭐ **패턴이 보인다 — 이 세션에서 같은 종류의 실수를 세 번 했다**: 슬러그 추측(두 번) · schema 허용값 미확인(`category`·`country` 두 번) · 후보 중복 대조 생략(이번). **셋 다 규칙이 STATE 에 적혀 있었다.** ⚠️ **적어 두는 것과 실행 순서에 넣는 것이 다르다.**
 
-- ⭐ **찾지 않는 것이 전략이다** — **`우리는 누가 소프트웨어를 내려받고 쓰는지 추적하지 않는다.`** ⚠️ **보통 회사에게 이건 순손해다** — 누가 쓰는지 알아야 영업이 붙는데, **그 정보를 포기하는 대신 연락이 오는 순간 그 사람이 이미 제품을 검증한 사람이라는 것을 얻는다**(재구성). **`유료 사용자 대다수가 우리에게 연락하기 전에 이미 오픈소스 버전을 돌리고 있었다.`**
-- ⚠️ **거부의 근거가 신뢰다** — **`유료 광고는 우리를 믿을 만하게 만들어 주지 않는다.`** 빌보드·광고와 **`영업 담당자의 연락으로 이어지는 게이트 콘텐츠`** 를 명시적으로 뺀다. **믿음은 사서 얻을 수 없고 벌어야 한다는 판단이다**(재구성).
-- ⚠️ **`오직 그때만` 이라는 말이 결정의 강도를 보여 준다** — **`엔터프라이즈 기능이나 호스팅이나 지원이 필요할 때, 오직 그때만 사용자가 우리에게 연락해 오기를 기다린다.`** **막히게 해서 넘어오게 하는 대신 규모가 커져 운영이 부담될 때 자연히 넘어오게 한 구조다**(재구성).
-- ⭐ **대가를 두 문장으로 적는다** — **`퍼널은 단순해 보이지만 실제로 실행하기는 어렵다`** 와 **`제품이 좋지 않으면 숨길 데가 없다`**. **광고를 안 사면 제품 말고 기댈 데가 없고, 그래서 이 전략은 제품이 좋을 때만 성립한다**(재구성).
+⭐ **그래서 절차로 바꾼다** — **후보 조사 사이클은 반드시 이 명령으로 시작한다:**
 
-### 완주하며 본 것 — 두 도메인이 서로를 설명한다
+```
+python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(' | '.join(sorted((c.get('name_en') or c['name']) for c in i['companies'])))"
+```
 
-⭐ **기술 도메인과 사업 도메인이 한 고리를 이룬다** — **압축을 파는 회사**(카디널리티·10% 임계·컬럼 배치)가 **그 기술 글 자체를 판로로 쓴다.** ⚠️ **`The Life of a Metric` 이 왜 그렇게 자세한지, Go 런타임 해설까지 왜 쓰는지가 두 번째 도메인에서 설명된다**(재구성). **이 회사를 두 도메인으로만 세운 것이 결과적으로 옳았다.**
+**그리고 새 회사 프로파일을 쓸 때는 `country`·`category` 를 schema 허용값과 먼저 대조한다**(`country: KR|US|CN|JP|EU|기타` + ISO 2글자 / `category: 핀테크|커머스|소셜|메시징|스트리밍|검색|광고|모빌리티|게임|SaaS|기타`).
 
-⚠️ **다만 이 회사는 이 엔진에서 가장 얇은 축에 속한다** — 도메인 2개 · 기능 2개이고, **각 도메인의 자료가 사실상 글 하나씩**이다. **후보 조사 때 적어 둔 위험이 두 번 다 맞았다**(거절한 대안이 약하다 · 두 번째 기능에서 자료가 마른다). ⭐ **후보 조사에서 위험을 적어 두는 습관은 계속 값을 한다.**
+### 이번 사이클 — 후보 조사(3순위). ⭐ 지역 축이 통했다
 
-### 다음 사이클 — ⚠️ 후보 조사 (3순위)
+**올린 두 곳** — **Wiz**(이스라엘 · 클라우드 보안) · **Trendyol**(튀르키예 · 커머스).
 
-**큐가 0/3 이다. 목표 3곳.** ⭐ **언급 각도를 먼저 쓴다** — 지난 조사에서 **넷 중 둘**이 걸렸다(WarpStream · VictoriaMetrics). ⚠️ **만능은 아니다** — **쓰는 쪽이 아니라 파는 쪽이면 글의 성격이 다르다**(PingCAP). ⚠️ **후보 대조는 slug 가 아니라 `name_en` 으로.** ⚠️ **새 회사 프로파일을 쓸 때는 `country`·`category` 를 schema 허용값과 먼저 대조한다**(이번 세션에 두 번 걸렸다).
+⭐ **Wiz 가 `AI 를 어디까지 믿나` 축에 새로운 답을 준다 — 넣었다가 다시 뺀다.** **`결정론적 로직을 AI 계층에서 완전히 빼내고, 맥락 이해가 진짜로 필요한 작업에만 AI 를 남겼다.`** 초기 대가도 그대로 적는다 — **`느리고 비쌌다. 하지만 기존 스캐너가 완전히 놓치던 민감 데이터를 찾아냈다.`**
 
-⏳ **남은 언급 후보** — ⏳ Confluent · IBM(WarpStream 소유) · ⏳ **Datadog 의 Husky**(회사는 있지만 그 글은 안 봤다).
+⚠️ **언급 각도가 마르고 있다** — 101개 회사가 언급하는 이름들이 대부분 **이미 판 회사이거나**(Datadog·TigerBeetle·Stripe·Uber) **파는 쪽이라 글이 마케팅이다**(PingCAP·**Confluent** — 두 번째 확인). ⭐ **대신 `지역 축` 이 통했다.** ⚠️ **다만 동남아·브라질은 블로그가 묵어서 실패했다**(Tokopedia 2023-08 · Traveloka 2023-07 · iFood 2025-09 · Rappi 404 · Shopee 블로그 없음). **`지역 축` 은 그 지역 회사의 블로그가 아직 살아 있을 때만 통한다.**
+
+### 다음 사이클 — 신규(6순위)
+
+`--gaps` 가 **대기 맨 위(Wiz)를 `in_progress` 로 만들고 3단계부터** 를 부를 것이다. ⚠️ **`Wix`(이미 있음)와 다른 회사다.**
 
 ⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① `AI 에이전트를 어디까지 믿나` 9곳 + ⏳ Pinterest 2부 · WarpStream MCP** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay.
+**① ⭐ `AI 에이전트를 어디까지 믿나` 9곳 + ⏳ Wiz · Pinterest 2부 · WarpStream MCP** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay. ⏳ **Wiz 가 `넣었다가 다시 뺐다` 는 드문 답을 준다.**
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ `자기 성과를 어디까지 주장하나` 9곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / **VictoriaMetrics**(**`제품이 좋지 않으면 숨길 데가 없다`** — 성과를 대면서 그것이 재현 가능한 공식이 아니라고 적는다).
+**③ `자기 성과를 어디까지 주장하나` 9곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics.
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
@@ -53,9 +56,9 @@
 
 **⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics.
 
-**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 7곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream.
+**⑨ ⭐ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 7곳 + ⏳ Trendyol** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream. ⏳ **Trendyol 이 NoSQL 문서에서 정규화된 PostgreSQL 로 갔다.**
 
-**⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb(둘 다 vmagent) · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics.
+**⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics.
 
 **⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream.
 
@@ -69,25 +72,25 @@
 
 **⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream.
 
-**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / **VictoriaMetrics**(가장 구체적 — 10% 임계 · 배치가 알고리즘보다 먼저 · 다운샘플링은 계산 없이 버린다).
+**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics.
 
 **⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest(참여 → 유지) / ⏳ Duolingo · DoorDash.
 
 **⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / ⏳ Plaid · Snyk.
 
-**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크도 관측 인프라도) / ⏳ TigerBeetle · Oxide Computer.
+**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream / ⏳ TigerBeetle · Oxide Computer.
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
 **㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio.
 
-**㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream(데이터 경계 하드코딩) / Airbnb(하이브리드 금지) / ⏳ Pinterest.
+**㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / ⏳ Pinterest.
 
-**㉔ ⭐ `무엇을 무료로 두고 무엇을 파나`** — **VictoriaMetrics**(⚠️ **핵심 전부를 무료로 두고 추적조차 하지 않는다** — 막히게 하는 대신 운영이 부담될 때 넘어오게) / ⏳ Grafana Labs · ClickHouse · Snyk. ⚠️ **오픈소스 인프라 회사가 넷인데 이 선을 실제로 읽은 것은 이번이 처음이다.**
+**㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / ⏳ Grafana Labs · ClickHouse · Snyk.
 
-**㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics(만료를 LSM 병합에) / WarpStream(관측을 저장 엔진에 · 감시를 복제 경로에) / ⏳ Etsy · Plaid.
+**㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / ⏳ Etsy · Plaid.
 
-⏳ **㉖ 새로 보인다 — `기술 글을 왜 쓰나`** — **VictoriaMetrics**(⭐ **판로라고 직접 말한다** — `거의 전적으로 인바운드 유기적 성장`) / **ScyllaDB**(벤치마크로 우위를 주장) / **Grafana Labs · Honeycomb**(파는 쪽) / **Airbnb · Pinterest**(채용 브랜딩?). ⚠️ **이 엔진이 읽는 자료 전부가 누군가의 의도로 쓰였다는 점을 처음으로 정면에서 다룰 수 있는 축이다**(재구성).
+**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics(판로라고 직접 말한다) / ScyllaDB / Grafana Labs · Honeycomb / ⏳ Airbnb · Pinterest.
 
 ## 지금의 진짜 상태
 
