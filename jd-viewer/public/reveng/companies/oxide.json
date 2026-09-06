@@ -8,8 +8,8 @@
   "updated_at": "2026-09-05",
   "domain": "oxide.computer",
   "one_liner": "벤더에 티켓을 열고 기다리지 않으려고 랙의 모든 층을 자기가 만든 회사 — 펌웨어부터 컨트롤 플레인까지 한 벌로 판다",
-  "business_model": "**랙 한 대를 통째로 판다.** 컴퓨트·스토리지·네트워킹·소프트웨어를 하나로 묶은 `Oxide Cloud Computer` 를 물리 장비로 넘기고, **구독이나 라이선스 비용을 받지 않는다** — `Zero subscription licensing`, `One-time purchase with no licensing fees`. 회사가 내세우는 비교는 두 방향이다: 전통적 온프렘은 `8+ vendors across compute, networking, storage, orchestration` 를 엮어야 하는데 여기는 `One integrated platform` 이고, 공용 클라우드는 `No ownership only rental, forever` 인데 여기는 소유한다. 값은 `Half the price of public cloud and traditional on-prem. No subscriptions, surprise bills, or egress fees` 라고 적는다. ⚠️ **구체적인 가격·매출·출하 대수는 공개돼 있지 않다.**",
-  "revenue_total": "⚠️ 확인하지 못했다 — 비상장이고 매출을 공개하지 않는다",
+  "business_model": "랙 한 대를 통째로 판다. 컴퓨트·스토리지·네트워킹·소프트웨어를 하나로 묶은 Oxide Cloud Computer 를 물리 장비로 넘기고 **구독이나 라이선스 비용을 받지 않는다.**\n\n회사가 내세우는 비교는 두 방향이다. 전통적 온프렘은 컴퓨트·네트워킹·스토리지·오케스트레이션에 걸쳐 여덟 곳 넘는 벤더를 엮어야 하는데 여기는 하나로 통합된 플랫폼이고, 공용 클라우드는 소유 없이 영원히 빌리는 것인데 여기는 소유한다. 값은 공용 클라우드와 전통적 온프렘의 절반이라 적는다. 구체적인 가격·매출·출하 대수는 공개돼 있지 않다.\n\n**이 회사에서 사업 모델과 기술 구조가 같은 문장이다** — 벤더에 티켓을 열고 기다리지 않으려고 층을 다 갖는다(재구성). 그래서 도메인 둘을 제품(하드웨어·소프트웨어)으로 자르지 않고 **층을 다 가져서 할 수 있게 된 일**로 잘랐다. 하나는 남의 것이면 안 되는 맨 아래 층을 다시 만든 이야기이고, 다른 하나는 층마다 박혀 있던 기본값을 전부 찾아내 바꾼 이야기다.",
+  "revenue_total": "확인하지 못했다 — 비상장이고 매출을 공개하지 않는다",
   "products": [
     "Oxide Cloud Computer (랙 단위로 파는 통합 시스템 — 컴퓨트 슬레드·NVMe 스토리지·프로그래머블 네트워킹)",
     "랙에 얹혀 나가는 자체 소프트웨어 층 (하이퍼바이저 · 컨트롤 플레인 · 오픈소스 펌웨어)"
@@ -17,8 +17,8 @@
   "revenue_streams": [
     {
       "name": "랙 판매 (일회 구매)",
-      "how": "컴퓨트·스토리지·네트워킹·소프트웨어를 묶은 랙을 물리로 넘기고 값을 받는다. **구독·라이선스·이그레스 요금이 없다**는 것이 판매 논리의 핵심이다 — **랙 안의 성능 자체가 판매 논리의 일부다**: 게스트 사이 처리량을 회사가 수치로 공개한다",
-      "weight": "⚠️ 비중을 확인할 자료가 없다",
+      "how": "컴퓨트·스토리지·네트워킹·소프트웨어를 묶은 랙을 물리로 넘기고 값을 받는다. 구독·라이선스·이그레스 요금이 없다는 것이 판매 논리의 핵심이다 — 랙 안의 성능 자체가 판매 논리의 일부다: 게스트 사이 처리량을 회사가 수치로 공개한다",
+      "weight": "비중을 확인할 자료가 없다",
       "domains": [
         "티켓을 열고 기다리지 않으려고 층을 다 갖는다",
         "랙의 모국어를 IPv6 로 정한다"
@@ -42,12 +42,12 @@
   "domains": [
     {
       "name": "티켓을 열고 기다리지 않으려고 층을 다 갖는다",
-      "why": "전통적 온프렘의 문제를 회사는 벤더 수로 말한다 — `8+ vendors across compute, networking, storage, orchestration`. 층이 갈리면 **문제가 층 사이에 떨어졌을 때 아무도 책임지지 않는다.** 이 회사가 층을 다 갖는 이유가 성능 글에 한 문장으로 나온다: 점보 프레임을 시험하다 가상 NIC 의 인터럽트 처리 문제를 만났는데 **`because the driver is ours, we tracked it down and fixed it before the feature shipped, rather than opening a ticket with a vendor and waiting`** 였다. **소유의 값어치가 기능이 아니라 고칠 수 있음에 있다**는 것이 이 도메인의 성격이다.",
+      "why": "전통적 온프렘의 문제를 회사는 벤더 수로 말한다 — 컴퓨트·네트워킹·스토리지·오케스트레이션에 걸친 여덟 곳 넘는 벤더. 층이 갈리면 문제가 층 사이에 떨어졌을 때 아무도 책임지지 않는다. 이 회사가 층을 다 갖는 이유가 성능 글에 한 문장으로 나온다: 점보 프레임을 시험하다 가상 NIC 의 인터럽트 처리 문제를 만났는데 드라이버가 우리 것이라 벤더에 티켓을 열고 기다리는 대신 기능이 나가기 전에 원인을 찾아 고쳤다 였다. 소유의 값어치가 기능이 아니라 고칠 수 있음에 있다는 것이 이 도메인의 성격이다. 이 도메인을 하드웨어가 아니라 티켓을 열고 기다리지 않으려고로 이름 붙인 이유가 거기 있다 — 회사가 파는 것은 부품이 아니라 그 사슬을 자기가 쥐고 있다는 사실이다.",
       "tech": [
         {
           "tech": "가상 NIC 과 데이터 경로를 직접 만든다 — Propolis · OPTE · xde 드라이버",
-          "solves": "게스트 프레임이 지나는 길을 자기 코드로 들고 있다. 그래서 오버사이즈 프레임이 들어올 때 생긴 **인터럽트 처리 문제를 출시 전에 직접 잡았다**. 벤더 드라이버였다면 티켓을 열고 기다리는 일이 됐을 자리다.",
-          "limits": "⚠️ **직접 만든 만큼 직접 짊어진다.** 성능 천장도 자기 몫이다 — 단일 연결은 **약 60Gbps** 에서 막히고, 그 위는 병렬로만 넘는다. 슬레드 하나의 합산은 **약 90Gbps** 다.",
+          "solves": "게스트 프레임이 지나는 길을 자기 코드로 들고 있다. 그래서 오버사이즈 프레임이 들어올 때 생긴 인터럽트 처리 문제를 출시 전에 직접 잡았다. 벤더 드라이버였다면 티켓을 열고 기다리는 일이 됐을 자리다.",
+          "limits": "직접 만든 만큼 직접 짊어진다. 성능 천장도 자기 몫이다 — 단일 연결은 약 60Gbps 에서 막히고, 그 위는 병렬로만 넘는다. 슬레드 하나의 합산은 약 90Gbps 다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -61,8 +61,8 @@
         },
         {
           "tech": "컨트롤 플레인(Nexus)과 오픈소스 펌웨어·하드웨어 신뢰 근원",
-          "solves": "프로비저닝을 공용 클라우드처럼 API 로 하면서도 **`Fully auditable security chain, with a hardware root of trust, open-source firmware`** 를 내세운다. 설치는 `2-hour setup` 이라고 적는다.",
-          "limits": "⚠️ **이 층들의 세부는 아직 확인하지 못했다.** 읽은 글이 네트워크 성능 한 편이라 컨트롤 플레인·펌웨어의 구조는 이 사이트가 아직 못 판 자리다.",
+          "solves": "프로비저닝을 공용 클라우드처럼 API 로 하면서도 하드웨어 신뢰 근원과 오픈소스 펌웨어를 갖춘, 완전히 감사 가능한 보안 사슬을 내세운다. 설치는 2-hour setup 이라고 적는다.",
+          "limits": "이 층들의 세부는 아직 확인하지 못했다. 읽은 글이 네트워크 성능 한 편이라 컨트롤 플레인·펌웨어의 구조는 이 사이트가 아직 못 판 자리다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -80,12 +80,12 @@
     },
     {
       "name": "랙의 모국어를 IPv6 로 정한다",
-      "why": "**`The rack's underlay is IPv6: every sled-to-sled hop, every Geneve-encapsulated guest frame, rides IPv6 by default.`** IPv4 를 기본으로 두고 IPv6 를 덧붙이는 흔한 방식과 반대다. 그리고 그 선택이 성능에서 손해가 아니라는 것을 숫자로 보인다 — **IPv4 34.5Gbps 대 IPv6 34.9Gbps**. 캡슐화(Geneve)를 전제로 랙 안의 주소 체계와 프레임 크기를 처음부터 다시 정한 것이 이 도메인이다.",
+      "why": "랙의 언더레이는 IPv6 다 — 슬레드에서 슬레드로 가는 모든 홉과 Geneve 로 캡슐화된 모든 게스트 프레임이 기본으로 IPv6 를 탄다. IPv4 를 기본으로 두고 IPv6 를 덧붙이는 흔한 방식과 반대다. 그리고 그 선택이 성능에서 손해가 아니라는 것을 숫자로 보인다 — IPv4 34.5Gbps 대 IPv6 34.9Gbps. 캡슐화(Geneve)를 전제로 랙 안의 주소 체계와 프레임 크기를 처음부터 다시 정한 것이 이 도메인이다. 앞 도메인이 무엇을 직접 만드느냐라면 여기는 그렇게 만든 층들 사이에 무엇이 박혀 있었느냐라 경계를 갈랐다.",
       "tech": [
         {
           "tech": "MTU 를 9000 이 아니라 8500 으로 — 500바이트를 일부러 남긴다",
-          "solves": "캡슐화 오버헤드의 **하한이 70~78바이트**인데 **`We reserve 500`** 한다. 앞으로 들어올 Geneve 기능을 위한 여유다. 이유를 회사가 한 줄로 적는다 — **`it is easy to grow later and very hard to shrink once customers build expectations around it.`**",
-          "limits": "⚠️ **점보 프레임이 만능이 아니라고 회사가 먼저 못 박는다** — `jumbo frames are not a network go-fast button`. 그리고 경로 MTU 탐색이 막히면 **`the application stalls and transfers nothing`** 이다. 크게 만든 대가가 조용한 정지로 나타난다.",
+          "solves": "캡슐화 오버헤드의 하한이 70~78바이트인데 We reserve 500 한다. 앞으로 들어올 Geneve 기능을 위한 여유다. 이유를 회사가 한 줄로 적는다 — it is 나중에 키우기는 쉽고 고객이 그 위에 기대를 쌓고 나면 줄이기는 매우 어렵다.",
+          "limits": "점보 프레임이 만능이 아니라고 회사가 먼저 못 박는다 — 점보 프레임이 켜져 있지 않으면 a network go-fast button. 그리고 경로 MTU 탐색이 막히면 애플리케이션이 멈춰 아무것도 못 보낸다 이다. 크게 만든 대가가 조용한 정지로 나타난다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -99,8 +99,8 @@
         },
         {
           "tech": "포트별 MTU 손잡이를 버리고 인스턴스에 붙인다",
-          "solves": "원칙을 한 문장으로 적는다 — **`MTU is a property of a path, not of a port.`** 스위치 포트 하나가 **여러 상류 경로의 관문**이 될 수 있으므로 포트에 값을 박으면 틀린다. 그래서 판단을 인스턴스로 옮기고 **운영자가 쥐는 함대 단위 스위치**로 잠갔다.",
-          "limits": "⚠️ 손잡이를 옮겼을 뿐 **경로마다 다른 MTU 라는 문제 자체는 남는다** — 그래서 위의 경로 MTU 탐색 실패가 여전히 조용한 정지로 이어진다(이 인과는 이 사이트의 재구성이다).",
+          "solves": "원칙을 한 문장으로 적는다 — MTU is a property of a path, not of a port. 스위치 포트 하나가 여러 상류 경로의 관문이 될 수 있으므로 포트에 값을 박으면 틀린다. 그래서 판단을 인스턴스로 옮기고 운영자가 쥐는 함대 단위 스위치로 잠갔다.",
+          "limits": "손잡이를 옮겼을 뿐 경로마다 다른 MTU 라는 문제 자체는 남는다 — 그래서 위의 경로 MTU 탐색 실패가 여전히 조용한 정지로 이어진다(이 인과는 이 사이트의 재구성이다).",
           "confidence": "confirmed",
           "sources": [
             {
@@ -120,11 +120,11 @@
   ],
   "eras": [],
   "open_questions": [
-    "**매출·출하 대수·가격이 공개돼 있지 않다.** `Half the price of public cloud and traditional on-prem` 같은 비교 문구만 있고 근거 수치가 없다.",
-    "**랙 판매 말고 다른 수익원(지원 계약·확장 랙 등)이 있는지 확인하지 못했다.** 회사가 파는 것은 랙 하나로 보이는데, 지원·유지보수를 어떻게 받는지가 공개 자료에 없다. ⚠️ 앞서 이 문장을 `revenue_streams` 에 빈 수익원으로 넣어 뒀었는데, **모르는 것은 수익원 자리가 아니라 여기 적는다.**",
+    "매출·출하 대수·가격이 공개돼 있지 않다. 공용 클라우드와 전통적 온프렘의 절반 값-prem 같은 비교 문구만 있고 근거 수치가 없다.",
+    "랙 판매 말고 다른 수익원(지원 계약·확장 랙 등)이 있는지 확인하지 못했다. 회사가 파는 것은 랙 하나로 보이는데, 지원·유지보수를 어떻게 받는지가 공개 자료에 없다. 앞서 이 문장을 revenue_streams 에 빈 수익원으로 넣어 뒀었는데, 모르는 것은 수익원 자리가 아니라 여기 적는다.",
     "컨트롤 플레인(Nexus)·하이퍼바이저·스토리지 층의 구조를 아직 안 팠다 — 읽은 글이 네트워크 성능 한 편이다.",
-    "**연표(eras)를 쓸 자료를 아직 못 찾았다.** 회사가 언제 무엇을 갈아엎었는지 연도가 붙은 회고를 확인하지 못했다 — 확장 사이클에서 다시 본다.",
-    "`2-hour setup` 이 무엇부터 무엇까지를 재는 시간인지 확인하지 못했다."
+    "연표(eras)를 쓸 자료를 아직 못 찾았다. 회사가 언제 무엇을 갈아엎었는지 연도가 붙은 회고를 확인하지 못했다 — 확장 사이클에서 다시 본다.",
+    "2-hour setup 이 무엇부터 무엇까지를 재는 시간인지 확인하지 못했다."
   ],
   "features": [
     {
@@ -133,7 +133,7 @@
       "domain": "티켓을 열고 기다리지 않으려고 층을 다 갖는다",
       "updated_at": "2026-09-05",
       "business": {
-        "why": "랙을 파는 회사는 **슬레드를 원격으로 켜고 끄고 상태를 보는 층**이 반드시 필요하다. 업계에서 그 자리는 벤더가 만든 **BMC** 인데, Oxide 는 그것을 **다시 생각하기로** 했다 — 회사가 내세우는 `Fully auditable security chain, with a hardware root of trust, open-source firmware` 를 팔려면 **이 층이 남의 것이면 안 되기** 때문이다. 감사 가능한 사슬은 맨 아래 한 칸이 블랙박스이면 거기서 끊긴다. 그래서 운영체제(Hubris)부터 직접 썼다.",
+        "why": "랙을 파는 회사는 슬레드를 원격으로 켜고 끄고 상태를 보는 층이 반드시 필요하다. 업계에서 그 자리는 벤더가 만든 BMC 인데, Oxide 는 그것을 다시 생각하기로 했다 — 회사가 내세우는 하드웨어 신뢰 근원과 오픈소스 펌웨어를 갖춘, 완전히 감사 가능한 보안 사슬을 팔려면 이 층이 남의 것이면 안 되기 때문이다. 감사 가능한 사슬은 맨 아래 한 칸이 블랙박스이면 거기서 끊긴다. 그래서 운영체제(Hubris)부터 직접 썼다.\n\n**남이 만든 표준 답을 안 쓰기로 한 회사가 이 엔진에 여럿인데 여기가 가장 아래층이다.** 사이보우즈는 상태 있는 워크로드의 표준(StatefulSet)을 멈춤 때문에 버렸고, 터소는 물려받을 수 없는 테스트 스위트 때문에 데이터베이스를 통째로 다시 썼다. Oxide 는 **BMC 를 다시 만든다** — 완전히 감사 가능한 보안 사슬을 팔려면 맨 아래 한 칸이 블랙박스이면 안 되기 때문이다(재구성).\n\n그리고 운영체제까지 직접 만든 이유를 적는다 — 기존 운영체제에서 원한 것이 그것들이 주는 것도, 주려던 것도 아니었다. **러스트 같은 메모리 안전 언어에서도 메모리 보호는 필수라며** 태스크와 드라이버를 서로 분리된 보호 영역에 둔다. 언어가 막아 주는 것과 구조가 막아 주는 것을 가른 자리다(재구성).",
         "metrics": [
           {
             "label": "사고 재현 주기(개선 전 → 후)",
@@ -153,22 +153,22 @@
       "thinking": [
         {
           "at": "기존 RTOS 를 검토할 때",
-          "thought": "맞는 게 없었다기보다 **원하는 것이 그들이 주려는 것과 달랐다** — `what we wanted out of the existing operating systems wasn't necessarily what they offered (or even wanted to offer)`. 보안과 견고함을 이 정도로 밀면 기존 시스템은 **설계 중심 밖으로 끌려 나온다**고 봤다.",
+          "thought": "맞는 게 없었다기보다 원하는 것이 그들이 주려는 것과 달랐다 — 기존 운영체제에서 원한 것이't 그것들이 주는 것과 반드시 같지는 않았다 (or 주려던 것도 아니었다). 보안과 견고함을 이 정도로 밀면 기존 시스템은 설계 중심 밖으로 끌려 나온다고 봤다.",
           "confidence": "confirmed"
         },
         {
           "at": "태스크 모델을 정할 때",
-          "thought": "동적 생성을 아예 없애면 **자원 고갈과 fork 폭탄 같은 부류가 사라진다.** 대신 실행 중에 구성을 바꿀 수 없게 되는데, 서비스 프로세서에서는 그 교환이 남는 장사라고 봤다(뒤 문장은 이 사이트의 재구성이다).",
+          "thought": "동적 생성을 아예 없애면 자원 고갈과 fork 폭탄 같은 부류가 사라진다. 대신 실행 중에 구성을 바꿀 수 없게 되는데, 서비스 프로세서에서는 그 교환이 남는 장사라고 봤다(뒤 문장은 이 사이트의 재구성이다).",
           "confidence": "inferred"
         },
         {
           "at": "디버거를 앞에 둘 때",
-          "thought": "운영체제를 만들면서 **디버거를 함께** 만들었다 — `I set to work writing the debugger that I felt that we would need — and that Hubris deserved`. 둘이 같이 가야 품질이 올라간다는 판단이다.",
+          "thought": "운영체제를 만들면서 디버거를 함께 만들었다 — I 필요하겠다고 느낀 디버거를 쓰기 시작했다 I 필요하겠다고 느꼈다 — and that Hubris deserved. 둘이 같이 가야 품질이 올라간다는 판단이다.",
           "confidence": "confirmed"
         },
         {
           "at": "실제로 사고가 났을 때",
-          "thought": "⚠️ **그 디버거로도 못 본 것이 있었다.** 네트워크가 끊기면 `we have limited insight into the state of the SP itself` 이고, 프로브가 **CPU 를 멈추지 못했다.** 도구를 다 가졌는데도 눈이 감기는 자리가 남는다.",
+          "thought": "그 디버거로도 못 본 것이 있었다. 네트워크가 끊기면 we 상태를 들여다볼 방법이 제한된다 SP itself 이고, 프로브가 CPU 를 멈추지 못했다. 도구를 다 가졌는데도 눈이 감기는 자리가 남는다.",
           "confidence": "confirmed"
         }
       ],
@@ -180,7 +180,7 @@
           },
           {
             "name": "하드웨어 신뢰 근원(RoT)",
-            "what": "부팅 때 **SP 플래시의 해시**를 뜨는 자리. 그 값이 상위 소프트웨어로 올라가 사슬이 된다"
+            "what": "부팅 때 SP 플래시의 해시를 뜨는 자리. 그 값이 상위 소프트웨어로 올라가 사슬이 된다"
           },
           {
             "name": "Hubris 태스크",
@@ -188,24 +188,24 @@
           },
           {
             "name": "빌드 타임 이미지",
-            "what": "커널과 고른 태스크를 묶어 만든 **단일 이미지**. 실행 중에 늘지 않으므로 증명 가능하다"
+            "what": "커널과 고른 태스크를 묶어 만든 단일 이미지. 실행 중에 늘지 않으므로 증명 가능하다"
           }
         ],
         "invariants": [
-          "**태스크는 빌드 타임에 전부 정해진다** — `fully specify the tasks for a particular application at build time, with the build system then combining the kernel with the selected tasks to yield a single (attestable!) image`. 실행 중에 새로 만들지 않는다",
-          "**커널·태스크·드라이버가 서로 다른 보호 영역에 있다** — `memory-protected system, with tasks, the kernel, and drivers all in disjoint protection domains. (And yes, even in memory safe languages like Rust, memory protection is essential!)`",
-          "**태스크 하나가 죽어도 나머지는 돈다** — 죽은 것만 재시작한다",
-          "**부팅의 첫 걸음은 RoT 가 SP 플래시를 재는 것이다** — 이 순서가 깨지면 감사 사슬이 성립하지 않는다"
+          "태스크는 빌드 타임에 전부 정해진다 — 특정 애플리케이션의 태스크를 빌드 시점에 전부 명시하고, 빌드 시스템이 커널과 고른 태스크를 합친다 to yield a single (attestable!) image. 실행 중에 새로 만들지 않는다",
+          "커널·태스크·드라이버가 서로 다른 보호 영역에 있다 — memory-protected system, with tasks, the kernel, 드라이버까지 전부 서로 분리된 보호 영역에 둔다. (And yes, 러스트 같은 메모리 안전 언어에서도 메모리 보호는 필수다!)",
+          "태스크 하나가 죽어도 나머지는 돈다 — 죽은 것만 재시작한다",
+          "부팅의 첫 걸음은 RoT 가 SP 플래시를 재는 것이다 — 이 순서가 깨지면 감사 사슬이 성립하지 않는다"
         ]
       },
       "implementation": {
         "flow": [
           {
-            "step": "전원이 들어오면 **RoT 가 SP 플래시의 해시를 뜬다**",
+            "step": "전원이 들어오면 RoT 가 SP 플래시의 해시를 뜬다",
             "why": "신뢰 사슬의 첫 마디다. 여기서 잰 값이 상위 소프트웨어까지 올라간다"
           },
           {
-            "step": "SP 에서 Hubris 가 부팅하고 **빌드 타임에 고정된 태스크들**이 뜬다",
+            "step": "SP 에서 Hubris 가 부팅하고 빌드 타임에 고정된 태스크들이 뜬다",
             "why": "실행 중 생성이 없으므로 무엇이 도는지가 이미지로 증명된다"
           },
           {
@@ -213,7 +213,7 @@
             "why": "드라이버를 커널 밖 별도 보호 영역에 두어 하나가 죽어도 커널이 살아 있게 한다"
           },
           {
-            "step": "태스크끼리는 **메시지로** 주고받는다",
+            "step": "태스크끼리는 메시지로 주고받는다",
             "why": "시스템콜 대부분을 없애고 경계를 메시지로 통일했다"
           },
           {
@@ -221,23 +221,23 @@
             "why": "랙 전체를 API 로 다루려면 각 슬레드에 이 통로가 있어야 한다"
           },
           {
-            "step": "태스크가 죽으면 **그 태스크만 재시작**한다",
+            "step": "태스크가 죽으면 그 태스크만 재시작한다",
             "why": "드라이버 하나의 실패가 시스템 전체를 내리지 않게"
           },
           {
-            "step": "⚠️ 문제가 생기면 Humility 로 들여다본다 — 링버퍼·덤프",
+            "step": "문제가 생기면 Humility 로 들여다본다 — 링버퍼·덤프",
             "why": "운영체제와 함께 만든 디버거가 이 자리에서 유일한 눈이 된다"
           }
         ],
         "decisions": [
           {
             "question": "서비스 프로세서의 운영체제를 기성품에서 고를 것인가, 직접 만들 것인가",
-            "chosen": "**직접 만든다(Hubris).** 마이크로커널 기반, 전부 러스트",
+            "chosen": "직접 만든다(Hubris). 마이크로커널 기반, 전부 러스트",
             "alternatives": [
               "기존 RTOS",
               "전통적인 벤더 BMC 펌웨어"
             ],
-            "tradeoff": "⚠️ **운영체제만 짊어지는 게 아니다** — 디버거까지 직접 만들어야 했다(Humility). 기성품이었다면 딸려 왔을 도구·문서·커뮤니티를 전부 자기 몫으로 가져온다(이 문장은 이 사이트의 재구성이다)",
+            "tradeoff": "운영체제만 짊어지는 게 아니다 — 디버거까지 직접 만들어야 했다(Humility). 기성품이었다면 딸려 왔을 도구·문서·커뮤니티를 전부 자기 몫으로 가져온다(이 문장은 이 사이트의 재구성이다)",
             "confidence": "inferred",
             "sources": [
               {
@@ -250,11 +250,11 @@
           },
           {
             "question": "태스크를 실행 중에 만들 수 있게 할 것인가, 빌드 타임에 고정할 것인가",
-            "chosen": "**빌드 타임에 완전히 고정**한다 — 커널과 태스크를 묶어 단일 이미지로",
+            "chosen": "빌드 타임에 완전히 고정한다 — 커널과 태스크를 묶어 단일 이미지로",
             "alternatives": [
               "실행 중 동적 태스크 생성"
             ],
-            "tradeoff": "**실행 중에 구성을 바꿀 수 없다.** 태스크 하나를 더하거나 빼려면 **이미지 전체를 다시 빌드해 올려야** 한다 — 증명 가능성(`attestable`)을 얻는 대신 유연성을 내줬다(대가 서술은 이 사이트의 재구성이다)",
+            "tradeoff": "실행 중에 구성을 바꿀 수 없다. 태스크 하나를 더하거나 빼려면 이미지 전체를 다시 빌드해 올려야 한다 — 증명 가능성(attestable)을 얻는 대신 유연성을 내줬다(대가 서술은 이 사이트의 재구성이다)",
             "confidence": "inferred",
             "sources": [
               {
@@ -267,11 +267,11 @@
           },
           {
             "question": "태스크 모델을 비동기로 갈 것인가, 엄격한 동기로 갈 것인가",
-            "chosen": "**엄격한 동기 모델** — `strictly synchronous task model, allowing for it be easily developed and comprehended`",
+            "chosen": "엄격한 동기 모델 — 엄격하게 동기적인 태스크 모델, 그래서 만들기도 이해하기도 쉽다",
             "alternatives": [
               "비동기·이벤트 루프 기반 모델"
             ],
-            "tradeoff": "**긴 작업이 태스크를 붙잡고 있으면 그 태스크가 막힌다.** 이해하기 쉬운 대신 동시성을 태스크 분할로 풀어야 한다(이 대가는 이 사이트의 재구성이다)",
+            "tradeoff": "긴 작업이 태스크를 붙잡고 있으면 그 태스크가 막힌다. 이해하기 쉬운 대신 동시성을 태스크 분할로 풀어야 한다(이 대가는 이 사이트의 재구성이다)",
             "confidence": "inferred",
             "sources": [
               {
@@ -284,11 +284,11 @@
           },
           {
             "question": "메모리 안전한 언어를 쓰면 메모리 보호를 생략해도 되는가",
-            "chosen": "**생략하지 않는다.** 커널·태스크·드라이버를 전부 다른 보호 영역에 둔다",
+            "chosen": "생략하지 않는다. 커널·태스크·드라이버를 전부 다른 보호 영역에 둔다",
             "alternatives": [
               "러스트를 믿고 단일 주소 공간으로 두기"
             ],
-            "tradeoff": "경계를 넘을 때마다 **메시지 전달 비용**이 들고, 마이크로컨트롤러의 보호 장치(MPU) 영역 수에 설계가 묶인다(이 대가는 이 사이트의 재구성이다). 회사는 이유만 적는다 — `even in memory safe languages like Rust, memory protection is essential!`",
+            "tradeoff": "경계를 넘을 때마다 메시지 전달 비용이 들고, 마이크로컨트롤러의 보호 장치(MPU) 영역 수에 설계가 묶인다(이 대가는 이 사이트의 재구성이다). 회사는 이유만 적는다 — 러스트 같은 메모리 안전 언어에서도 메모리 보호는 필수다!",
             "confidence": "inferred",
             "sources": [
               {
@@ -301,11 +301,11 @@
           },
           {
             "question": "러스트 하나로 갈 것인가, 다른 런타임도 받을 것인가",
-            "chosen": "**전부 러스트** — `all-Rust system that was not distracting itself by accommodating other runtimes`",
+            "chosen": "전부 러스트 — all-다른 것을 받아들이느라 흐트러지지 않는 러스트 시스템 other runtimes",
             "alternatives": [
               "C 드라이버·기존 SDK 를 함께 받는 구조"
             ],
-            "tradeoff": "**벤더가 주는 C 드라이버와 SDK 를 그대로 못 가져온다.** 칩마다 붙는 코드를 직접 쓰게 된다(이 대가는 이 사이트의 재구성이다)",
+            "tradeoff": "벤더가 주는 C 드라이버와 SDK 를 그대로 못 가져온다. 칩마다 붙는 코드를 직접 쓰게 된다(이 대가는 이 사이트의 재구성이다)",
             "confidence": "inferred",
             "sources": [
               {
@@ -318,11 +318,11 @@
           },
           {
             "question": "메모리 속성(캐시)을 커널과 태스크에서 어떻게 맞출 것인가",
-            "chosen": "⚠️ **처음에는 맞추지 못했다** — 커널은 ARM 기본 매핑(캐시되는 Normal memory), 태스크는 Device Memory(캐시 없음)를 썼다",
+            "chosen": "처음에는 맞추지 못했다 — 커널은 ARM 기본 매핑(캐시되는 Normal memory), 태스크는 Device Memory(캐시 없음)를 썼다",
             "alternatives": [
               "FMC 의 베이스 주소를 옮겨 문제 구간을 피하기(칩이 지원한다)"
             ],
-            "tradeoff": "⚠️ **이 불일치가 실제 사고를 만들었다.** 캐시 라이트백이 FMC 버스에 **잘못된 접근 크기**로 나가 FPGA 의 32비트 요구를 어겼다. 회사는 칩이 그 회피 수단을 지원한다는 것을 뒤늦게 적는다 — `likely to avoid the specific problem we were facing`",
+            "tradeoff": "이 불일치가 실제 사고를 만들었다. 캐시 라이트백이 FMC 버스에 잘못된 접근 크기로 나가 FPGA 의 32비트 요구를 어겼다. 회사는 칩이 그 회피 수단을 지원한다는 것을 뒤늦게 적는다 — 우리가 마주한 그 문제를 피할 가능성이 크다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -335,11 +335,11 @@
           },
           {
             "question": "디버깅 도구를 어디까지 만들 것인가",
-            "chosen": "**전용 디버거(Humility)를 만든다.** 링버퍼와 전체 RAM 덤프, ARM 의 vector catch reset 을 쓴다",
+            "chosen": "전용 디버거(Humility)를 만든다. 링버퍼와 전체 RAM 덤프, ARM 의 벡터 캐치 리셋을 쓴다",
             "alternatives": [
               "범용 디버그 프로브와 기성 도구만으로 버티기"
             ],
-            "tradeoff": "⚠️ **만들어도 못 보는 자리가 남는다.** 네트워크가 끊기면 `without network access we have limited insight into the state of the SP itself` 이고, 프로브가 **CPU 를 halt 하지 못했으며**, 덤프는 캐시 때문에 `inconsistent` 했다. 캐시를 끄면 덤프는 일관됐지만 **그러면 문제가 재현되지 않았다**",
+            "tradeoff": "만들어도 못 보는 자리가 남는다. 네트워크가 끊기면 네트워크 접근이 없으면 상태를 들여다볼 방법이 제한된다 SP itself 이고, 프로브가 CPU 를 halt 하지 못했으며, 덤프는 캐시 때문에 inconsistent 했다. 캐시를 끄면 덤프는 일관됐지만 그러면 문제가 재현되지 않았다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -398,7 +398,7 @@
             ]
           },
           {
-            "tech": "SWD 디버그 헤더 · ARM vector catch reset",
+            "tech": "SWD 디버그 헤더 · ARM 벡터 캐치 리셋",
             "role": "네트워크가 끊긴 SP 에서 상태를 꺼내는 마지막 수단",
             "confidence": "confirmed",
             "sources": [
@@ -429,25 +429,25 @@
         {
           "to": "하드웨어 신뢰 근원(RoT)",
           "via": "부팅 시 해시 측정",
-          "contract": "RoT 가 SP 플래시를 재고 그 값을 상위 소프트웨어가 쓴다 — **이 한 마디가 `fully auditable security chain` 의 시작점**이다",
+          "contract": "RoT 가 SP 플래시를 재고 그 값을 상위 소프트웨어가 쓴다 — 이 한 마디가 완전히 감사 가능한 보안 사슬 의 시작점이다",
           "confidence": "confirmed"
         },
         {
           "to": "FPGA",
           "via": "FMC 버스",
-          "contract": "SP 가 FPGA 와 주고받는다. **접근 크기가 32비트여야** 하고, 캐시 속성이 어긋나면 라이트백이 그 규칙을 깬다",
+          "contract": "SP 가 FPGA 와 주고받는다. 접근 크기가 32비트여야 하고, 캐시 속성이 어긋나면 라이트백이 그 규칙을 깬다",
           "confidence": "confirmed"
         },
         {
           "to": "컨트롤 플레인(Nexus)",
           "via": "네트워크",
-          "contract": "SP 가 슬레드 상태를 알리고 제어 명령을 받는다. **SP 가 네트워크에서 사라지면 그 슬레드는 보이지 않는다** — 사고의 증상이 정확히 그것이었다",
+          "contract": "SP 가 슬레드 상태를 알리고 제어 명령을 받는다. SP 가 네트워크에서 사라지면 그 슬레드는 보이지 않는다 — 사고의 증상이 정확히 그것이었다",
           "confidence": "confirmed"
         },
         {
           "to": "가상 NIC·데이터 경로(Propolis·OPTE)",
           "via": "같은 회사가 만든 층",
-          "contract": "직접 관계보다 **같은 원칙을 공유한다** — 드라이버가 자기 것이라 `we tracked it down and fixed it before the feature shipped, rather than opening a ticket with a vendor and waiting`",
+          "contract": "직접 관계보다 같은 원칙을 공유한다 — 드라이버가 자기 것이라 we 기능이 나가기 전에 원인을 찾아 고쳤다, 여는 대신 a ticket with a 벤더에 티켓을 열고 기다리는 것",
           "confidence": "confirmed"
         }
       ],
@@ -456,8 +456,8 @@
         "hard_problems": [
           {
             "problem": "디버거를 붙일 수 없는 자리에서 무엇이 잘못됐는지 알아내는 것",
-            "why_hard": "서비스 프로세서가 네트워크에서 사라지면 **밖에서 볼 통로가 없다.** 게다가 이 사고는 `This was not reproducible on a sled outside a rack` 라 **관찰하기 좋은 환경에서는 일어나지 않았다.** 관찰하려고 캐시를 끄면 문제도 함께 사라진다",
-            "current_best": "물리적으로 케이블을 붙이고(SWD), 리셋 순간을 잡아채고(vector catch), RAM 을 통째로 뜨는 것. 그래도 `The debug probe was unable to actually halt the CPU` 같은 벽이 남는다",
+            "why_hard": "서비스 프로세서가 네트워크에서 사라지면 밖에서 볼 통로가 없다. 게다가 이 사고는 에서는 재현되지 않았다 a sled outside a rack 라 관찰하기 좋은 환경에서는 일어나지 않았다. 관찰하려고 캐시를 끄면 문제도 함께 사라진다",
+            "current_best": "물리적으로 케이블을 붙이고(SWD), 리셋 순간을 잡아채고(vector catch), RAM 을 통째로 뜨는 것. 그래도 디버그 프로브가 실제로 멈추지 못했다 CPU 같은 벽이 남는다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -471,7 +471,7 @@
           {
             "problem": "작은 시스템에서 스택이 모자라는 것을 전부 잡아내는 것",
             "why_hard": "마이크로컨트롤러에는 여유 메모리가 거의 없고, 넘치는 순간이 조용히 지나간다",
-            "current_best": "탐지를 개선하되 완전하지 않다고 회사가 직접 적는다 — `Our ability to detect undersized stacks has improved...but we can still hit some edge cases.`",
+            "current_best": "탐지를 개선하되 완전하지 않다고 회사가 직접 적는다 — 너무 작은 스택을 잡아내는 능력은 좋아졌다...다만 여전히 걸리는 경계 사례가 있다.",
             "confidence": "confirmed",
             "sources": [
               {
@@ -526,7 +526,7 @@
       "domain": "랙의 모국어를 IPv6 로 정한다",
       "updated_at": "2026-09-05",
       "business": {
-        "why": "랙 하나 안에서 게스트끼리 주고받는 속도가 곧 제품의 성능이다. 그런데 **프레임 크기를 키우는 일은 한 곳의 설정을 바꾸는 일이 아니었다** — 게스트에게 값을 알리는 경로, 데이터 링크를 만드는 드라이버, 캡슐화하는 데이터 경로, 그리고 운영자가 켜는 스위치까지 **층마다 1500이 박혀 있었다.** 그것을 전부 파라미터로 바꿔야 비로소 숫자가 움직였다 — 외부 경로에서 **7.70 → 32.67Gbps** 다.",
+        "why": "랙 하나 안에서 게스트끼리 주고받는 속도가 곧 제품의 성능이다. 그런데 프레임 크기를 키우는 일은 한 곳의 설정을 바꾸는 일이 아니었다 — 게스트에게 값을 알리는 경로, 데이터 링크를 만드는 드라이버, 캡슐화하는 데이터 경로, 그리고 운영자가 켜는 스위치까지 층마다 1500이 박혀 있었다. 그것을 전부 파라미터로 바꿔야 비로소 숫자가 움직였다 — 외부 경로에서 7.70 → 32.67Gbps 다.\n\n**층마다 박힌 기본값을 전부 찾아내는 일이 이 엔진의 다른 이야기와 닿는다.** 산산은 저장소를 옮기며 붙어 있던 CI/CD 설정이 더 힘들었다고 적었고, DoorDash 는 코드가 아니라 기능을 옮기는 것이 어려웠다고 적었다. Oxide 의 1500 도 같은 모양이다 — 게스트에게 값을 알리는 경로, 데이터 링크 드라이버, 캡슐화 데이터 경로, 운영자가 켜는 스위치까지 **네 층에 같은 숫자가 따로 박혀 있었다**(재구성).\n\n그리고 이 기능에는 켜는 것보다 무서운 실패가 있다. 점보 프레임이 끝에서 끝까지 켜져 있지 않으면 **TCP 악수는 끝나고 그다음 애플리케이션이 멈춰 아무것도 못 보낸다.** 되는 것도 안 되는 것도 아닌 상태라 고르는 값이 크다(재구성).",
         "metrics": [
           {
             "label": "외부 경로 A→B (MTU 1500 → 8500)",
@@ -603,17 +603,17 @@
       "thinking": [
         {
           "at": "얼마로 키울지 정할 때",
-          "thought": "9000이 흔한 값인데 8500을 골랐다. 캡슐화 오버헤드의 **하한이 70~78바이트**인데 **`We reserve 500`** 한다 — 앞으로 들어올 Geneve 기능을 위한 여유다. 이유를 회사가 한 줄로 적는다: **`it is easy to grow later and very hard to shrink once customers build expectations around it.`**",
+          "thought": "9000이 흔한 값인데 8500을 골랐다. 캡슐화 오버헤드의 하한이 70~78바이트인데 We reserve 500 한다 — 앞으로 들어올 Geneve 기능을 위한 여유다. 이유를 회사가 한 줄로 적는다: it is 나중에 키우기는 쉽고 고객이 그 위에 기대를 쌓고 나면 줄이기는 매우 어렵다.",
           "confidence": "confirmed"
         },
         {
           "at": "어디에 손잡이를 둘지 정할 때",
-          "thought": "업계 관행은 스위치 포트마다 MTU 를 잡는 것인데 그것을 버렸다. **`MTU is a property of a path, not of a port.`** 포트 하나가 **여러 상류 경로의 관문**일 수 있으므로 포트에 값을 박으면 애초에 틀린 모델이다.",
+          "thought": "업계 관행은 스위치 포트마다 MTU 를 잡는 것인데 그것을 버렸다. MTU is a property of a path, not of a port. 포트 하나가 여러 상류 경로의 관문일 수 있으므로 포트에 값을 박으면 애초에 틀린 모델이다.",
           "confidence": "confirmed"
         },
         {
           "at": "기대치를 관리할 때",
-          "thought": "⚠️ 회사가 먼저 못 박는다 — **`jumbo frames are not a network go-fast button`**. 실제로 내부 VPC 는 **+6%** 뿐이고 외부가 **+324%** 다. 이미 잘 도는 경로에서는 프레임을 키워도 별로 안 빨라진다.",
+          "thought": "회사가 먼저 못 박는다 — 점보 프레임이 켜져 있지 않으면 a network go-fast button. 실제로 내부 VPC 는 +6% 뿐이고 외부가 +324% 다. 이미 잘 도는 경로에서는 프레임을 키워도 별로 안 빨라진다.",
           "confidence": "confirmed"
         }
       ],
@@ -641,56 +641,56 @@
           }
         ],
         "invariants": [
-          "**MTU 는 경로의 성질이지 포트의 성질이 아니다** — `MTU is a property of a path, not of a port.` 이 규칙이 손잡이의 위치를 정했다",
-          "**게스트가 아는 MTU 는 두 경로로 전달되며 둘이 같아야 한다** — virtio(`VIRTIO_NET_F_MTU`)와 OPTE 가 만드는 IPv6 라우터 광고. 한쪽만 고치면 게스트가 서로 다른 값을 본다",
-          "**운영자와 사용자가 둘 다 켜야 켜진다** — `both required`. 사용자가 혼자 켤 수 없고, 운영자가 켜 뒀다고 자동으로 켜지지도 않는다",
-          "**캡슐화 오버헤드는 반드시 남겨 둔다** — 하한 70~78바이트에 500을 예비로"
+          "MTU 는 경로의 성질이지 포트의 성질이 아니다 — MTU is a property of a path, not of a port. 이 규칙이 손잡이의 위치를 정했다",
+          "게스트가 아는 MTU 는 두 경로로 전달되며 둘이 같아야 한다 — virtio(VIRTIO_NET_F_MTU)와 OPTE 가 만드는 IPv6 라우터 광고. 한쪽만 고치면 게스트가 서로 다른 값을 본다",
+          "운영자와 사용자가 둘 다 켜야 켜진다 — both required. 사용자가 혼자 켤 수 없고, 운영자가 켜 뒀다고 자동으로 켜지지도 않는다",
+          "캡슐화 오버헤드는 반드시 남겨 둔다 — 하한 70~78바이트에 500을 예비로"
         ]
       },
       "implementation": {
         "flow": [
           {
             "step": "게스트가 virtio 로 버퍼를 넘긴다",
-            "why": "게스트는 자기가 아는 MTU 까지만 쓴다 — 그 값이 `VIRTIO_NET_F_MTU` 로 전달된다"
+            "why": "게스트는 자기가 아는 MTU 까지만 쓴다 — 그 값이 VIRTIO_NET_F_MTU 로 전달된다"
           },
           {
             "step": "Propolis 가 viona 가 붙은 데이터 링크에서 MTU 를 끌어온다",
-            "why": "`Propolis derives from the data link viona attaches to` — 가상 NIC 이 값을 지어내지 않고 아래 링크를 따른다"
+            "why": "Propolis 가 viona 가 붙는 데이터 링크에서 값을 끌어온다 — 가상 NIC 이 값을 지어내지 않고 아래 링크를 따른다"
           },
           {
-            "step": "xde 드라이버가 **설정된 MTU 로** 데이터 링크를 만든다",
-            "why": "⚠️ 여기가 **이전에 1500이 하드코딩돼 있던 자리**다. `create-xde` ioctl 을 통과하는 파라미터로 바꿨다"
+            "step": "xde 드라이버가 설정된 MTU 로 데이터 링크를 만든다",
+            "why": "여기가 이전에 1500이 하드코딩돼 있던 자리다. create-xde ioctl 을 통과하는 파라미터로 바꿨다"
           },
           {
-            "step": "OPTE 가 게스트 프레임을 **Ethernet + IPv6 + UDP + Geneve** 로 감싼다",
-            "why": "랙의 언더레이가 IPv6 라 캡슐화도 IPv6 위에서 이뤄진다 — `every Geneve-encapsulated guest frame, rides IPv6 by default`"
+            "step": "OPTE 가 게스트 프레임을 Ethernet + IPv6 + UDP + Geneve 로 감싼다",
+            "why": "랙의 언더레이가 IPv6 라 캡슐화도 IPv6 위에서 이뤄진다 — every Geneve-캡슐화된 게스트 프레임, rides IPv6 by default"
           },
           {
-            "step": "OPTE 가 **라우터 광고**로 게스트에게 IPv6 MTU 를 알린다",
-            "why": "⚠️ 이 생성기에도 **1500이 하드코딩돼 있었다** — virtio 쪽만 고치면 게스트가 두 값을 보게 된다"
+            "step": "OPTE 가 라우터 광고로 게스트에게 IPv6 MTU 를 알린다",
+            "why": "이 생성기에도 1500이 하드코딩돼 있었다 — virtio 쪽만 고치면 게스트가 두 값을 보게 된다"
           },
           {
             "step": "물리 패브릭(40G·100G)을 타고 목적지 슬레드로 간다",
             "why": "슬레드 사이 홉도 IPv6 다"
           },
           {
-            "step": "목적지 물리 NIC 이 **큰 버퍼를 회선 크기 패킷으로 다시 자른다**",
-            "why": "`slices the big buffer back into wire-sized packets` — 큰 프레임의 이득은 소프트웨어 층의 처리 횟수를 줄이는 데서 나온다"
+            "step": "목적지 물리 NIC 이 큰 버퍼를 회선 크기 패킷으로 다시 자른다",
+            "why": "큰 버퍼를 다시 전선 크기로 자른다-sized packets — 큰 프레임의 이득은 소프트웨어 층의 처리 횟수를 줄이는 데서 나온다"
           },
           {
-            "step": "Nexus 의 **두 플래그가 모두 켜져야** 이 경로가 열린다",
+            "step": "Nexus 의 두 플래그가 모두 켜져야 이 경로가 열린다",
             "why": "주변 네트워크가 감당할 수 있는지 운영자가 확인한 뒤에만 사용자에게 능력이 생긴다"
           }
         ],
         "decisions": [
           {
             "question": "MTU 를 얼마로 올릴 것인가 — 흔한 9000인가, 여유를 남긴 값인가",
-            "chosen": "**8500.** 캡슐화 오버헤드 하한(70~78바이트) 위에 **500바이트를 일부러 남긴다**",
+            "chosen": "8500. 캡슐화 오버헤드 하한(70~78바이트) 위에 500바이트를 일부러 남긴다",
             "alternatives": [
               "9000 (업계에서 흔히 쓰는 점보 프레임 값)",
               "오버헤드만 딱 뺀 값"
             ],
-            "tradeoff": "**지금 당장 쓸 수 있는 크기를 줄였다.** 그 대신 나중을 샀다 — `it is easy to grow later and very hard to shrink once customers build expectations around it.` 고객이 기대를 갖고 나면 줄이는 쪽이 훨씬 어렵다는 판단이다",
+            "tradeoff": "지금 당장 쓸 수 있는 크기를 줄였다. 그 대신 나중을 샀다 — it is 나중에 키우기는 쉽고 고객이 그 위에 기대를 쌓고 나면 줄이기는 매우 어렵다. 고객이 기대를 갖고 나면 줄이는 쪽이 훨씬 어렵다는 판단이다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -704,11 +704,11 @@
           },
           {
             "question": "MTU 손잡이를 어디에 둘 것인가 — 스위치 포트인가, 인스턴스인가",
-            "chosen": "**인스턴스에 붙이고, 운영자가 쥐는 함대 단위 스위치로 잠근다**",
+            "chosen": "인스턴스에 붙이고, 운영자가 쥐는 함대 단위 스위치로 잠근다",
             "alternatives": [
               "스위치 포트별 MTU 설정(업계 관행)"
             ],
-            "tradeoff": "⚠️ **손잡이를 옮겼을 뿐 경로마다 MTU 가 다르다는 문제 자체는 남는다.** 그래서 아래의 블랙홀이 여전히 가능하다(이 인과는 이 사이트의 재구성이다). 회사가 적은 근거는 모델 쪽이다 — 포트 하나가 여러 상류 경로의 관문일 수 있다",
+            "tradeoff": "손잡이를 옮겼을 뿐 경로마다 MTU 가 다르다는 문제 자체는 남는다. 그래서 아래의 블랙홀이 여전히 가능하다(이 인과는 이 사이트의 재구성이다). 회사가 적은 근거는 모델 쪽이다 — 포트 하나가 여러 상류 경로의 관문일 수 있다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -722,12 +722,12 @@
           },
           {
             "question": "켜는 권한을 누구에게 줄 것인가",
-            "chosen": "**운영자 플래그와 사용자 플래그를 둘 다 요구한다** — `both required`",
+            "chosen": "운영자 플래그와 사용자 플래그를 둘 다 요구한다 — both required",
             "alternatives": [
               "사용자가 스스로 켜기",
               "운영자가 전역으로 켜면 모두 적용"
             ],
-            "tradeoff": "**마찰이 생긴다** — 사용자가 원해도 운영자가 확인하기 전에는 못 켠다. 그 대신 `the capability exists for end users only once an operator has confirmed the surrounding network can take it` 이 보장된다",
+            "tradeoff": "마찰이 생긴다 — 사용자가 원해도 운영자가 확인하기 전에는 못 켠다. 그 대신 운영자가 켜야 비로소 최종 사용자에게 그 기능이 생긴다s 주변 네트워크가 그것을 감당할 수 있다고 확인했다 이 보장된다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -741,11 +741,11 @@
           },
           {
             "question": "게스트에게 MTU 를 어떻게 알릴 것인가",
-            "chosen": "**두 경로 모두** — virtio(`VIRTIO_NET_F_MTU`)와 OPTE 가 만드는 IPv6 라우터 광고",
+            "chosen": "두 경로 모두 — virtio(VIRTIO_NET_F_MTU)와 OPTE 가 만드는 IPv6 라우터 광고",
             "alternatives": [
               "virtio 한 경로만 쓰기"
             ],
-            "tradeoff": "⚠️ **두 곳을 다 고쳐야 한다.** 실제로 라우터 광고 생성기에도 1500이 박혀 있었다 — `that generator hardcoded 1500 too`. 한쪽만 고치면 게스트가 서로 다른 값을 보게 된다",
+            "tradeoff": "두 곳을 다 고쳐야 한다. 실제로 라우터 광고 생성기에도 1500이 박혀 있었다 — 그 생성기가 하드코딩하고 있었다 1500 too. 한쪽만 고치면 게스트가 서로 다른 값을 보게 된다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -759,12 +759,12 @@
           },
           {
             "question": "층마다 박힌 1500을 어떻게 걷어낼 것인가",
-            "chosen": "**하드코딩을 파라미터로 바꿔 인터페이스를 관통시킨다** — `That became a parameter threaded through the create-xde ioctl`",
+            "chosen": "하드코딩을 파라미터로 바꿔 인터페이스를 관통시킨다 — That became a 생성 경로로 꿰어 넘기는 파라미터-xde ioctl",
             "alternatives": [
               "각 층에서 상수만 바꿔 다시 빌드",
               "링크 생성 후 사후 변경"
             ],
-            "tradeoff": "**인터페이스가 늘어난다.** 값 하나를 위해 ioctl 시그니처와 그 위의 호출 경로가 전부 바뀐다 — 층을 다 가진 회사라 가능했던 방식이기도 하다(이 해석은 이 사이트의 재구성이다)",
+            "tradeoff": "인터페이스가 늘어난다. 값 하나를 위해 ioctl 시그니처와 그 위의 호출 경로가 전부 바뀐다 — 층을 다 가진 회사라 가능했던 방식이기도 하다(재구성)",
             "confidence": "confirmed",
             "sources": [
               {
@@ -778,11 +778,11 @@
           },
           {
             "question": "큰 프레임을 어디에 기대할 것인가",
-            "chosen": "**외부 경로**에 기대한다. 내부 VPC 는 이미 최적화돼 있어 여지가 적다",
+            "chosen": "외부 경로에 기대한다. 내부 VPC 는 이미 최적화돼 있어 여지가 적다",
             "alternatives": [
               "모든 경로에서 고르게 개선될 것으로 보고 켜기"
             ],
-            "tradeoff": "⚠️ **기대와 결과가 크게 갈린다** — 내부 VPC 는 `52.44 → 55.73Gbps`(+6%)인데 외부는 `7.70 → 32.67Gbps`(+324%)다. 그래서 회사가 먼저 못 박는다: `jumbo frames are not a network go-fast button`",
+            "tradeoff": "기대와 결과가 크게 갈린다 — 내부 VPC 는 52.44 → 55.73Gbps(+6%)인데 외부는 7.70 → 32.67Gbps(+324%)다. 그래서 회사가 먼저 못 박는다: 점보 프레임이 켜져 있지 않으면 a network go-fast button",
             "confidence": "confirmed",
             "sources": [
               {
@@ -796,11 +796,11 @@
           },
           {
             "question": "단일 연결의 천장을 어떻게 넘을 것인가",
-            "chosen": "**넘지 않는다.** 여러 개의 독립 연결로 나눠야 한다고 밝힌다",
+            "chosen": "넘지 않는다. 여러 개의 독립 연결로 나눠야 한다고 밝힌다",
             "alternatives": [
               "한 연결 안에서 스트림을 늘려 처리량을 올리기"
             ],
-            "tradeoff": "⚠️ **연결 하나로는 약 60Gbps 에서 막힌다** — `Many of our tests on the 100G fabric reached that limit at around 60 Gbps, one way, per VM-pair, and it held steady whether we pushed 32, 64, or 128 streams through one connection.` **한 연결 안의 병렬화로는 안 넘는다**는 것이 이 문장의 뜻이다",
+            "tradeoff": "연결 하나로는 약 60Gbps 에서 막힌다 — 우리 시험 상당수가 100G 패브릭에서 그 한계에 닿은 것이 대략 60 Gbps, one way, per VM-pair, 밀어 넣는 방식이 무엇이든 값이 흔들리지 않았다 32, 64, or 128 한 연결로 여러 스트림을 흘려도. 한 연결 안의 병렬화로는 안 넘는다는 것이 이 문장의 뜻이다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -904,13 +904,13 @@
         {
           "to": "service-processor",
           "via": "같은 회사가 만든 층",
-          "contract": "직접 호출 관계가 아니라 **같은 원칙을 공유한다** — 드라이버가 자기 것이라 점보 경로 시제품에서 발견된 **가상 NIC 의 인터럽트 처리 문제**를 출시 전에 직접 고쳤다. 벤더 드라이버였다면 티켓을 여는 일이 됐을 자리다",
+          "contract": "직접 호출 관계가 아니라 같은 원칙을 공유한다 — 드라이버가 자기 것이라 점보 경로 시제품에서 발견된 가상 NIC 의 인터럽트 처리 문제를 출시 전에 직접 고쳤다. 벤더 드라이버였다면 티켓을 여는 일이 됐을 자리다",
           "confidence": "confirmed"
         },
         {
           "to": "Nexus (컨트롤 플레인)",
           "via": "함대·인스턴스 플래그",
-          "contract": "운영자가 함대 플래그를 켜야 사용자에게 능력이 생기고, 사용자가 인스턴스 플래그를 켜야 실제로 적용된다. **둘 다 필요하다**",
+          "contract": "운영자가 함대 플래그를 켜야 사용자에게 능력이 생기고, 사용자가 인스턴스 플래그를 켜야 실제로 적용된다. 둘 다 필요하다",
           "confidence": "confirmed"
         },
         {
@@ -922,7 +922,7 @@
         {
           "to": "고객 네트워크(랙 밖)",
           "via": "물리 업링크",
-          "contract": "⚠️ 랙 밖 경로에 더 작은 링크가 있으면 ICMP `fragmentation needed` 가 돌아와야 한다. **그것이 막히면 연결은 되고 데이터만 안 간다**",
+          "contract": "랙 밖 경로에 더 작은 링크가 있으면 ICMP 조각화 필요 메시지가 돌아와야 한다. 그것이 막히면 연결은 되고 데이터만 안 간다",
           "confidence": "confirmed"
         }
       ],
@@ -934,15 +934,15 @@
             "year": "2020",
             "venue": "RFC 8926",
             "url": "https://www.rfc-editor.org/rfc/rfc8926.html",
-            "takeaway": "랙 안의 게스트 프레임을 감싸는 캡슐화가 이것이다. **오버헤드 하한 70~78바이트**와 `We reserve 500` 이라는 판단이 전부 이 헤더 구조에서 나온다 — ⚠️ **회사가 RFC 번호를 직접 언급하지는 않았다**",
+            "takeaway": "랙 안의 게스트 프레임을 감싸는 캡슐화가 이것이다. 오버헤드 하한 70~78바이트와 We reserve 500 이라는 판단이 전부 이 헤더 구조에서 나온다 — 회사가 RFC 번호를 직접 언급하지는 않았다",
             "confidence": "inferred"
           }
         ],
         "hard_problems": [
           {
-            "problem": "경로 MTU 탐색이 막혔을 때의 **조용한 정지**",
-            "why_hard": "큰 패킷을 받은 중간 링크는 버리고 ICMP `fragmentation needed` 를 돌려보내야 하는데, **그 ICMP 가 막히면 보내는 쪽은 물러설 줄을 모른다.** 연결 자체는 성공하므로 증상이 '느림'이 아니라 '아무것도 안 감'이다",
-            "current_best": "회사의 서술이 곧 현재 수준이다 — `You get the classic black hole: the TCP handshake completes, and then the application stalls and transfers nothing.` 그래서 운영자 확인을 앞에 두는 이중 플래그로 **켜기 전에 주변 네트워크를 확인**하게 했다",
+            "problem": "경로 MTU 탐색이 막혔을 때의 조용한 정지",
+            "why_hard": "큰 패킷을 받은 중간 링크는 버리고 ICMP 조각화 필요 메시지를 돌려보내야 하는데, 그 ICMP 가 막히면 보내는 쪽은 물러설 줄을 모른다. 연결 자체는 성공하므로 증상이 '느림'이 아니라 '아무것도 안 감'이다",
+            "current_best": "회사의 서술이 곧 현재 수준이다 — 전형적인 블랙홀이 생긴다: the TCP 악수는 끝나고, and then 애플리케이션이 멈춰 아무것도 못 보낸다. 그래서 운영자 확인을 앞에 두는 이중 플래그로 켜기 전에 주변 네트워크를 확인하게 했다",
             "confidence": "confirmed",
             "sources": [
               {
@@ -956,7 +956,7 @@
           },
           {
             "problem": "단일 연결의 처리량 천장",
-            "why_hard": "100G 패브릭에서도 **VM 쌍 하나·한 방향은 약 60Gbps 에서 멈춘다.** 그리고 한 연결 안에서 스트림을 32·64·128로 늘려도 값이 움직이지 않는다 — 병렬화의 자리가 연결 안이 아니라는 뜻이다",
+            "why_hard": "100G 패브릭에서도 VM 쌍 하나·한 방향은 약 60Gbps 에서 멈춘다. 그리고 한 연결 안에서 스트림을 32·64·128로 늘려도 값이 움직이지 않는다 — 병렬화의 자리가 연결 안이 아니라는 뜻이다",
             "current_best": "독립된 연결을 여럿 여는 것. 회사도 그 이상을 제시하지 않는다",
             "confidence": "confirmed",
             "sources": [
