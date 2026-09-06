@@ -8,24 +8,26 @@
 
 ## 지금 파는 중
 
-**Trendyol** (기타=튀르키예 · 커머스) — 도메인 4개 · **기능 1개**(`one-field-many-readings`). 남은 셋은 미독이다. 회사 103개 · 큐 0/3.
+**Trendyol** (기타=튀르키예 · 커머스) — 도메인 4개 · **기능 2개**. 남은 둘(인프라 셀프서비스 · AI 장애 진단)은 미독이다. 회사 103개 · 큐 0/3.
 
-### 이번 사이클 — `같은 필드를 서비스마다 다르게 읽고 있었다`
+### 이번 사이클 — `바뀌었다는 말과 내가 신경 쓰는 게 바뀌었다는 말은 다르다`
 
-⭐ **문제를 한 문장이 다 담는다** — **`모든 것이 NoSQL 안에 광고 문서로 살았다. 애플리케이션 로직이 각 문서 안의 하나의 type 필드로 분기했고, 광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다.`** ⚠️ **공유 스키마처럼 보였지만 실제로는 공유된 착각이었다**(재구성).
+⭐ **검색으로 주소를 받은 것이 값을 했다** — 목록에서 개별 글 주소를 못 받아 **슬러그를 추측하지 않고 검색으로 받았고**, 세 글의 정확한 주소가 한 번에 나왔다.
 
 건진 것 넷:
 
-- ⚠️ **범인이 저장소 종류가 아니라 해석의 분산이었다** — **한곳에 적힌 값을 여러 곳이 각자 읽으면 그건 공유가 아니라 흩어진 규칙이고, 새 값을 하나 더하면 그 해석들을 전부 찾아 고쳐야 하는데 어디까지가 전부인지 아무도 모른다**(재구성).
-- ⭐ **성공의 기준을 `데이터만으로 확장 가능한가` 로 잡았다** — 문제 진술이 **`데이터만으로 시스템을 확장할 방법이 없었다`** 였으니 기준도 거기다. ⚠️ **속도나 비용이 아니라 `누가 언제 바꿀 수 있나` 를 기준으로 삼은 것이다** — **병목이 기술이 아니라 조직 사이의 경계였기 때문이다**(재구성).
-- ⚠️ **`type` 하나가 하던 일을 일곱으로 나눴다** — 무엇인가(자산 유형) · 실제로 무엇이 나가는가(유닛) · 얼마나 큰가(패키지) · 그 조합의 속성(상세) · 규칙 · 가격과 쿼터. ⭐ **한 필드에 뭉쳐 있던 여러 물음을 각각의 자리로 보냈다**(재구성).
-- ⭐ **`공개와 철회` 까지 사업에 넘겼다** — 비즈니스 팀이 백오피스에서 직접 정의·설정·가격 조정·공개·철회를 하고 **`엔지니어링이 반복적인 운영 업무에서 해방됐다`**. **배포 없이 상품이 켜지고 꺼진다**(재구성).
+- ⭐ **알림이 알려 주는 것과 알아야 하는 것이 어긋나 있었다** — **`문서가 바뀌었다고 알려 줄 뿐 어떤 필드가 구체적으로 바뀌었는지는 알려 주지 않는다`**(Couchbase DCP) 이고, 동시에 **`소스 데이터 레코드의 모든 필드가 우리가 실제로 색인하거나 검색에 쓰는 필드에 대응하는 것은 아니다`**. ⚠️ **둘의 곱이 헛일이었고 그게 `이전 무효화 신호의 70% 이상` 이다.**
+- ⚠️ **상류를 못 고치니 받는 쪽이 감당한다** — **남의 시스템이 주는 신호의 모양은 바꿀 수 없다**(재구성). 그래서 **색인에 매핑된 필드만 뽑아 정규 JSON + XXHash 로 Redis(문서 ID 키, 1억 5,500만 개, 수십 GB)에 기억해 두고 대조한다.** 결과가 **CPU 절반 이상 감소 · 세그먼트 병합과 수 감소 · 검색 지연 감소.**
+- ⭐ **넘어지는 방향을 명확히 정했다** — **Redis 가 없으면 `항상 색인`.** 불필요한 재색인이 잠시 돌아오지만 갱신 누락은 막는다. ⭐ **낭비는 되돌릴 수 있고 누락은 되돌릴 수 없다**(재구성).
+- ⚠️ **그 선택이 다음 선택을 가능하게 한다** — 잃어도 되는 데이터라서 **메모리 급증을 보고 BGSAVE 와 repl-diskless-sync 를 꺼** 순수 인메모리로 돌린다.
 
-⚠️ **후보 조사 때 적어 둔 약점이 그대로였다** — **`얻은 것만 말하는 글`** 이다. **NoSQL 에서 무엇을 내줬는지, 이전이 얼마나 걸렸는지, 조합으로 안 되는 형태가 나오면 어떻게 하는지가 없고**, 성과도 **차트만 있고 본문에 수치가 없다.** **그래서 이 기능의 tradeoff 상당수가 재구성이고 그 사실을 적었다.** ⭐ **후보 조사에서 약점을 적어 두는 습관이 세 번째로 값을 했다**(VictoriaMetrics 두 번, 여기 한 번).
+⚠️ **첫 색인 때는 전체 색인이 일어난다** — 회사가 그 성격을 밝힌다: **`진짜 이득은 색인이 살아 있게 된 뒤로 계속해서 관찰된다.`** **일회성 비용과 지속적 이득을 구분해 말한 것이다**(재구성).
 
 ### 다음 사이클 — 확장(2순위)
 
-`--gaps` 가 **`찾게 한다`** · **`인프라를 셀프서비스로 내준다`** · **`장애를 AI 로 진단한다`** 중 하나를 부를 것이다. ⚠️ **셋 다 미독이고 개별 글 주소를 아직 못 받았다** — **슬러그를 추측하지 말고 검색으로 받는다.** 확인된 형식: `medium.com/trendyol-tech/<제목-슬러그>-<해시>`.
+`--gaps` 가 **`인프라를 셀프서비스로 내준다`** 또는 **`장애를 AI 로 진단한다`** 를 부를 것이다. ⚠️ **둘 다 미독** — **검색으로 주소를 받는다**(이번에 통했다).
+
+⏳ **검색 도메인에도 미독이 넷 남았다** — 벡터 검색 v9(주소 확보) · `Vector Search at Trendyol Search Core`(주소 확보) · 검색 랭킹 모델 배포 2편 · 백만 규모 카탈로그 건강.
 
 ⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
 
@@ -37,7 +39,9 @@
 python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(' | '.join(sorted((c.get('name_en') or c['name']) for c in i['companies'])))"
 ```
 
-**새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(schema.json 주석보다 이쪽이 정본이다). `COUNTRIES = {KR, US, CN, JP, EU, CA, AU, SG, IN, AE, NG, 기타}`.
+**새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다.** `COUNTRIES = {KR, US, CN, JP, EU, CA, AU, SG, IN, AE, NG, 기타}`.
+
+**⚠️ 커밋할 때 `git add -A` 를 쓰지 않는다** — 이 레포에는 다른 엔진(study 등)이 함께 돌아 남의 변경이 섞여 있다. **파일을 지정한다.**
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
@@ -45,7 +49,7 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ ⭐ `자기 성과를 어디까지 주장하나` 11곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / **Trendyol**(⚠️ **차트만 싣고 본문에 수치가 없다 · 한계를 다룬 대목이 아예 없다**).
+**③ `자기 성과를 어디까지 주장하나` 11곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol.
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
@@ -53,19 +57,19 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream.
 
-**⑦ ⭐ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / **Trendyol**(⭐ **`type` 필드 하나가 공유 스키마인 척했다 — 실제로는 서비스마다 다른 해석이 코드에 박혀 있었다**).
+**⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / Trendyol.
 
 **⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics.
 
-**⑨ ⭐ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 8곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / **Trendyol**(NoSQL 문서 → 정규화된 PostgreSQL. ⚠️ **이전 방식과 기간을 안 적는다**).
+**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 8곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol.
 
 **⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics / ⏳ Trendyol(직접 만드는 쪽 — Helyx).
 
-**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream.
+**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / **Trendyol**(⚠️ **Redis 에 최적화 판단을 걸되 죽으면 최적화 이전으로 돌아가게 해 뒀다**).
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
-**⑬ `애매할 때 어느 쪽으로 넘어지나` 9곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz.
+**⑬ ⭐ `애매할 때 어느 쪽으로 넘어지나` 10곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / **Trendyol**(⭐ **`항상 색인` 쪽으로 — 낭비는 되돌릴 수 있고 누락은 되돌릴 수 없다**).
 
 **⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest / ⏳ Trendyol.
 
@@ -73,7 +77,7 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz.
 
-**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics.
+**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics / **Trendyol**(⚠️ **직전에 색인한 것을 해시로 기억해 두는 데 수십 GB 를 쓴다 — 기억이 곧 절약이다**).
 
 **⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest(참여 → 유지) / ⏳ Duolingo · DoorDash.
 
@@ -83,15 +87,15 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
-**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio.
+**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / **Trendyol**(폴백이 최적화 이전 상태다).
 
-**㉓ ⭐ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream(데이터 경계 하드코딩) / Airbnb(하이브리드 금지) / Wiz / **Trendyol**(⚠️ **정반대다 — 규칙을 코드에서 데이터로 옮기고 공개·철회까지 넘겼다. 잘못된 규칙이 배포 없이 운영에 나간다**) / ⏳ Pinterest.
+**㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / Trendyol / ⏳ Pinterest.
 
 **㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / ⏳ Grafana Labs · ClickHouse · Snyk.
 
 **㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / Wiz / ⏳ Etsy · Plaid.
 
-**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / Trendyol(심층 글 30개 이상) / ⏳ Airbnb · Pinterest.
+**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / Trendyol / ⏳ Airbnb · Pinterest.
 
 **㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream(Confluent → IBM) / Twilio / ⏳ Trendyol(2018 알리바바) / ⏳ PlanetScale · Snyk.
 
@@ -99,7 +103,9 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **㉙ `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — Wiz / Flipkart / ⏳ Pinterest 2부 · Snyk · Deliveroo.
 
-**㉚ ⭐ `셀프서비스로 내주면 무엇이 달라지나`** — **Trendyol**(⭐ **광고를 비즈니스 팀에 넘겼고, 인프라도 개발 팀에 넘긴다 — 같은 손버릇이 두 도메인에**) / Twilio(자율이 격차를 만든다) / Airbnb / ⏳ Etsy · Monzo.
+**㉚ `셀프서비스로 내주면 무엇이 달라지나`** — Trendyol / Twilio / Airbnb / ⏳ Etsy · Monzo.
+
+⏳ **㉛ 새로 보인다 — `남이 주는 신호를 어떻게 다루나`** — **Trendyol**(⭐ **DCP 가 필드 정보를 안 주니 받는 쪽에서 직접 판단한다**) / **Plaid**(⏳ 은행 쪽 신호) / **Paystack** / **Razorpay**. ⚠️ **⑪축이 `의존을 어떻게 다루나` 라면 이 축은 `그 의존이 주는 정보가 모자랄 때` 다**(재구성).
 
 ## 지금의 진짜 상태
 
