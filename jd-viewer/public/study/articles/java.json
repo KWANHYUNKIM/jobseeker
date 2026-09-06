@@ -1,851 +1,859 @@
 {
- "slug": "java",
- "title": "Java",
- "title_en": "Java / JVM",
- "aliases": [
-  "Java",
-  "자바",
-  "JVM"
- ],
- "category": "language",
- "level": "core",
- "status": "done",
- "updated_at": "2026-09-04",
- "one_liner": "소스를 **바이트코드로 컴파일해 JVM 위에서 돌리는** 언어다. 이 한 겹이 이식성·안전성·극단적인 하위 호환성을 주고, 그 대가로 **기동 시간과 워밍업**을 가져갔다.",
- "summary": "Java 는 이 데이터셋에서 두 번째로 많이 요구되는 기술이고(공고 1,558건 · 21.6%), 동반 1위가 **Spring(44.4%)** 이다. 언어의 성질은 대부분 **JVM 이라는 한 겹**에서 나온다 — 소스는 기계어가 아니라 **바이트코드**로 컴파일되고, JVM 이 그것을 해석하다가 자주 도는 부분만 **JIT 로 기계어로 바꾼다**. 그래서 처음엔 느리고 예열 뒤 빨라진다. 메모리는 GC 가 관리하고 포인터가 없어 C/C++ 의 메모리 버그 계급이 통째로 사라졌다. 그리고 **하위 호환성을 극단적으로 지킨다** — 십수 년 전 바이너리가 새 JVM 에서 그대로 도는 경우가 흔하고, 그것이 기업 환경에서 Java 가 안 밀려나는 기술 쪽 이유다(제도·발주 쪽 이유는 → `java-in-finance`). **21의 가상 스레드**(JEP 444)가 최근 가장 큰 변화다 — 스레드가 싸졌고, `asyncio` 처럼 코드를 `async` 로 물들이지 않고도 동시 연결을 수만 개 다룰 수 있게 됐다. `gil` 문서의 비교표에서 \"GIL 없는 런타임은 이 문제를 어떻게 푸나\"의 답이 이것이다.",
- "market": {
-  "tech": "Java",
-  "layer": "언어",
-  "postings": 1558,
-  "pct_jobs": 21.6,
-  "with": [
-   {
-    "name": "Spring",
-    "pct": 44.4,
-    "why": "Java 공고의 절반이 Spring 을 함께 요구한다 — 이 생태계에서 언어와 프레임워크가 사실상 한 묶음이라는 뜻이다"
-   },
-   {
-    "name": "AWS",
-    "pct": 38.8,
-    "why": "온프레미스 이미지가 강하지만 실제로는 클라우드 위에서 돌고 있다. 힙·컨테이너 메모리 설정이 실무 주제가 되는 이유"
-   },
-   {
-    "name": "Python",
-    "pct": 35.8,
-    "why": "한 팀이 둘 다 쓰거나(핵심 서비스는 Java·데이터는 Python), 공고가 '둘 중 하나'로 열려 있다"
-   },
-   {
-    "name": "Spring Boot",
-    "pct": 24.5,
-    "why": "Spring 을 쓴다는 것의 현실적 의미. 설정보다 관례로 띄우는 방식이 기본값이 됐다"
-   },
-   {
-    "name": "JavaScript",
-    "pct": 23.9,
-    "why": "백엔드 Java + 프런트 JS 조합. 풀스택을 요구하는 공고에서 함께 잡힌다"
-   },
-   {
-    "name": "Docker",
-    "pct": 23.6,
-    "why": "JVM 을 컨테이너에 올리면 힙 설정이 곧 OOM kill 여부를 정한다 — 이 문서의 GC·메모리 절이 실무가 되는 자리"
-   }
+  "slug": "java",
+  "title": "Java",
+  "title_en": "Java / JVM",
+  "aliases": [
+    "Java",
+    "자바",
+    "JVM"
   ],
-  "as_of": "2026-09-04"
- },
- "sections": [
-  {
-   "id": "what",
-   "kind": "what",
-   "heading": "무엇인가 — 언어가 아니라 두 겹",
-   "body": "Java 를 이해하려면 **두 겹을 갈라 봐야** 한다.\n\n```\n.java  ──javac──▶  .class (바이트코드)  ──JVM──▶  실행\n         컴파일러         플랫폼 중립          해석 + JIT 컴파일\n```\n\n- **언어(Java)** — 문법과 타입 규칙.\n- **런타임(JVM)** — 바이트코드를 실제로 실행하는 가상 기계. GC·JIT·클래스 로딩이 여기 있다.\n\n이 구분이 중요한 이유는 **JVM 위의 언어가 Java 하나가 아니기 때문**이다. Kotlin·Scala·Groovy 가 같은 바이트코드로 컴파일돼 같은 런타임에서 돌고, 같은 라이브러리를 쓴다. 공고에 `JVM 생태계(Java, Kotlin, Spring, JPA)` 처럼 적히는 것이 그 뜻이다 — **묻는 것은 언어 문법보다 런타임과 생태계**다.\n\n\"한 번 작성하면 어디서나 실행된다\"는 구호의 실체도 여기다. 컴파일 결과가 x86 기계어가 아니라 **바이트코드**라, 각 OS·CPU 용 JVM 만 있으면 같은 `.jar` 가 돈다.\n\n```java\nrecord Order(String id, long amountKrw) {}          // 16+\nvar orders = List.of(new Order(\"A-1\", 12_000));      // 10+\n\nString label = switch (orders.size()) {              // 21+ (패턴 매칭)\n    case 0 -> \"없음\";\n    case int n when n > 100 -> \"대량\";\n    default -> \"보통\";\n};\n```\n\n**문법은 20년 전과 많이 다르다.** \"Java 는 장황하다\"는 인상은 대개 Java 8 이전의 코드에서 온 것이고, 아래 버전 표가 그 간격을 보여 준다.",
-   "confidence": "confirmed",
-   "sources": [
+  "category": "language",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "소스를 **바이트코드로 컴파일해 JVM 위에서 돌리는** 언어다. 이 한 겹이 이식성·안전성·극단적인 하위 호환성을 주고, 그 대가로 **기동 시간과 워밍업**을 가져갔다.",
+  "summary": "Java 는 이 데이터셋에서 두 번째로 많이 요구되는 기술이고(공고 1,558건 · 21.6%), 동반 1위가 **Spring(44.4%)** 이다. 언어의 성질은 대부분 **JVM 이라는 한 겹**에서 나온다 — 소스는 기계어가 아니라 **바이트코드**로 컴파일되고, JVM 이 그것을 해석하다가 자주 도는 부분만 **JIT 로 기계어로 바꾼다**. 그래서 처음엔 느리고 예열 뒤 빨라진다. 메모리는 GC 가 관리하고 포인터가 없어 C/C++ 의 메모리 버그 계급이 통째로 사라졌다. 그리고 **하위 호환성을 극단적으로 지킨다** — 십수 년 전 바이너리가 새 JVM 에서 그대로 도는 경우가 흔하고, 그것이 기업 환경에서 Java 가 안 밀려나는 기술 쪽 이유다(제도·발주 쪽 이유는 → `java-in-finance`). **21의 가상 스레드**(JEP 444)가 최근 가장 큰 변화다 — 스레드가 싸졌고, `asyncio` 처럼 코드를 `async` 로 물들이지 않고도 동시 연결을 수만 개 다룰 수 있게 됐다. `gil` 문서의 비교표에서 \"GIL 없는 런타임은 이 문제를 어떻게 푸나\"의 답이 이것이다.",
+  "market": {
+    "tech": "Java",
+    "layer": "언어",
+    "postings": 1558,
+    "pct_jobs": 21.6,
+    "with": [
+      {
+        "name": "Spring",
+        "pct": 44.4,
+        "why": "Java 공고의 절반이 Spring 을 함께 요구한다 — 이 생태계에서 언어와 프레임워크가 사실상 한 묶음이라는 뜻이다"
+      },
+      {
+        "name": "AWS",
+        "pct": 38.8,
+        "why": "온프레미스 이미지가 강하지만 실제로는 클라우드 위에서 돌고 있다. 힙·컨테이너 메모리 설정이 실무 주제가 되는 이유"
+      },
+      {
+        "name": "Python",
+        "pct": 35.8,
+        "why": "한 팀이 둘 다 쓰거나(핵심 서비스는 Java·데이터는 Python), 공고가 '둘 중 하나'로 열려 있다"
+      },
+      {
+        "name": "Spring Boot",
+        "pct": 24.5,
+        "why": "Spring 을 쓴다는 것의 현실적 의미. 설정보다 관례로 띄우는 방식이 기본값이 됐다"
+      },
+      {
+        "name": "JavaScript",
+        "pct": 23.9,
+        "why": "백엔드 Java + 프런트 JS 조합. 풀스택을 요구하는 공고에서 함께 잡힌다"
+      },
+      {
+        "name": "Docker",
+        "pct": 23.6,
+        "why": "JVM 을 컨테이너에 올리면 힙 설정이 곧 OOM kill 여부를 정한다 — 이 문서의 GC·메모리 절이 실무가 되는 자리"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
     {
-     "title": "JEP 286: Local-Variable Type Inference",
-     "url": "https://openjdk.org/jeps/286",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "`var` 가 Java 10 에 들어온 근거"
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 언어가 아니라 두 겹",
+      "body": "Java 를 이해하려면 **두 겹을 갈라 봐야** 한다.\n\n```\n.java  ──javac──▶  .class (바이트코드)  ──JVM──▶  실행\n         컴파일러         플랫폼 중립          해석 + JIT 컴파일\n```\n\n- **언어(Java)** — 문법과 타입 규칙.\n- **런타임(JVM)** — 바이트코드를 실제로 실행하는 가상 기계. GC·JIT·클래스 로딩이 여기 있다.\n\n이 구분이 중요한 이유는 **JVM 위의 언어가 Java 하나가 아니기 때문**이다. Kotlin·Scala·Groovy 가 같은 바이트코드로 컴파일돼 같은 런타임에서 돌고, 같은 라이브러리를 쓴다. 공고에 `JVM 생태계(Java, Kotlin, Spring, JPA)` 처럼 적히는 것이 그 뜻이다 — **묻는 것은 언어 문법보다 런타임과 생태계**다.\n\n\"한 번 작성하면 어디서나 실행된다\"는 구호의 실체도 여기다. 컴파일 결과가 x86 기계어가 아니라 **바이트코드**라, 각 OS·CPU 용 JVM 만 있으면 같은 `.jar` 가 돈다.\n\n```java\nrecord Order(String id, long amountKrw) {}          // 16+\nvar orders = List.of(new Order(\"A-1\", 12_000));      // 10+\n\nString label = switch (orders.size()) {              // 21+ (패턴 매칭)\n    case 0 -> \"없음\";\n    case int n when n > 100 -> \"대량\";\n    default -> \"보통\";\n};\n```\n\n**문법은 20년 전과 많이 다르다.** \"Java 는 장황하다\"는 인상은 대개 Java 8 이전의 코드에서 온 것이고, 아래 버전 표가 그 간격을 보여 준다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JEP 286: Local-Variable Type Inference",
+          "url": "https://openjdk.org/jeps/286",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "`var` 가 Java 10 에 들어온 근거"
+        },
+        {
+          "title": "JEP 395: Records",
+          "url": "https://openjdk.org/jeps/395",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "레코드가 Java 16 에서 정식화된 근거"
+        },
+        {
+          "title": "JEP 441: Pattern Matching for switch",
+          "url": "https://openjdk.org/jeps/441",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "switch 패턴 매칭이 Java 21 에서 정식화된 근거"
+        }
+      ]
     },
     {
-     "title": "JEP 395: Records",
-     "url": "https://openjdk.org/jeps/395",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "레코드가 Java 16 에서 정식화된 근거"
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 이렇게 생겼나 — 이식성·안전성·호환성을 사고 기동 시간을 팔았다",
+      "body": "1990년대 중반 Java 가 풀려던 문제는 셋이었다.\n\n**① 이식성.** C/C++ 은 플랫폼마다 다시 컴파일해야 했고 미묘한 동작 차이가 있었다. 바이트코드 + VM 이라는 한 겹을 넣어 **컴파일 결과물을 그대로 옮길 수 있게** 만들었다.\n\n**② 안전성.** 포인터 산술을 없애고 배열 경계를 검사하고 메모리 해제를 GC 에 넘겼다. **버퍼 오버런·이중 해제·해제 후 사용 같은 버그 계급이 통째로 사라졌다.** 여기에 클래스 로딩 시점의 바이트코드 검증기까지 붙어, 잘못된 바이너리가 JVM 을 망가뜨리지 못한다. 대규모 팀·장기 유지보수 환경에서 이 선택의 값이 컸다.\n\n**③ 호환성.** Java 는 **하위 호환성을 극단적으로 지킨다.** 십수 년 전 컴파일된 라이브러리가 새 JVM 에서 그대로 도는 경우가 흔하고, 표준 라이브러리는 한번 공개한 메서드를 좀처럼 없애지 않는다. 이 성질이 **\"바꿀 이유가 없다\"는 결론**을 만든다 — 이미 도는 시스템을 그대로 두고 JVM 만 올리면 성능과 보안 패치를 받는다.\n\n**대가는 실행 초반에 몰려 있다.**\n\n- **기동이 느리다.** JVM 을 띄우고 클래스를 로드하고 검증하는 시간이 든다.\n- **워밍업이 필요하다.** JIT 이 자주 도는 코드를 찾아 최적화하기까지 성능이 낮다.\n- **메모리를 많이 쓴다.** 힙 외에 메타스페이스·스레드 스택·JIT 코드 캐시가 별도로 든다.\n\n이 맞바꿈이 Java 의 자리를 정했다 — **오래 떠 있는 서버**에서는 대가가 한 번뿐이고 이득은 계속이다. 반대로 **짧게 뜨고 죽는 실행**(서버리스, CLI)에서는 대가만 남는다. \"기업 시스템은 Java, 스크립트는 Python\" 이라는 분업이 여기서 나왔다.\n\n> 이 문서는 기술 쪽 이유만 다룬다. 한국 금융·공공에서 Java 가 유독 두꺼운 것에는 **제도(망분리)·자산·발주 구조**라는 다른 축이 있고, 그건 `java-in-finance` 에 있다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Oracle Java SE Support Roadmap",
+          "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+        },
+        {
+          "title": "JEP 395: Records",
+          "url": "https://openjdk.org/jeps/395",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "레코드가 Java 16 에서 정식화된 근거"
+        }
+      ]
     },
     {
-     "title": "JEP 441: Pattern Matching for switch",
-     "url": "https://openjdk.org/jeps/441",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "switch 패턴 매칭이 Java 21 에서 정식화된 근거"
+      "id": "jit",
+      "kind": "how",
+      "heading": "JIT 와 워밍업 — 벤치마크가 거짓말하는 이유",
+      "body": "JVM 은 바이트코드를 두 방식으로 실행한다.\n\n1. **인터프리터** — 처음엔 한 줄씩 해석한다. 시작이 빠르고 실행은 느리다.\n2. **JIT 컴파일러** — 실행 통계를 모아 **자주 도는 부분만** 기계어로 컴파일한다. HotSpot 에는 빨리 컴파일하는 **C1** 과 오래 걸리지만 잘 최적화하는 **C2** 가 있고, 단계적으로 승격시킨다(계층 컴파일).\n\n**핵심은 JIT 이 실행 중에 얻은 정보를 쓴다는 것이다.** \"이 인터페이스 호출은 사실 항상 같은 구현체\", \"이 분기는 99% 참\" 같은 사실을 관측해 인라이닝·분기 예측·죽은 코드 제거를 한다. **미리 컴파일하는 언어가 알 수 없는 정보**이고, 그래서 오래 떠 있는 JVM 서비스가 C 에 가까운 성능을 내는 경우가 생긴다.\n\n대가는 **초반이 느리다는 것**이고, 실무에서 두 가지로 나타난다.\n\n**① 벤치마크가 거짓말한다.** 루프를 한 번 돌려 시간을 재면 그 값은 인터프리터·C1 시절의 값이다. 게다가 JIT 은 **결과를 쓰지 않는 계산을 아예 지워 버린다**(죽은 코드 제거). 그래서 JVM 벤치마크는 **JMH** 처럼 워밍업 반복과 결과 소비(blackhole)를 규격으로 갖춘 도구로 재야 한다. **\"루프 돌려 나노초 찍기\"로 낸 숫자는 대개 틀렸다.**\n\n**② 배포 직후가 느리다.** 새 인스턴스를 띄우면 예열 전까지 지연이 높다. 트래픽을 천천히 넣는 방식(웜업 요청·점진 배포)이 그래서 관례가 됐다. 기동·예열을 줄이는 다른 길(클래스 데이터 공유, 체크포인트 복원, 네이티브 이미지)도 있지만 **각각 다른 것을 내준다** — 네이티브 이미지는 JIT 의 실행 정보 최적화를 포기하는 것이다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Oracle Java SE Support Roadmap",
+          "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+        }
+      ]
+    },
+    {
+      "id": "gc",
+      "kind": "how",
+      "heading": "GC 와 메모리 — 컨테이너에서 OOM 이 나는 이유",
+      "body": "GC 는 \"쓰지 않는 객체를 찾아 회수하는 것\"이지만, 실무에서 중요한 건 **그 일을 언제 얼마나 멈춰서 하는가**다.\n\n**세대(generational) 가설이 바닥에 있다** — 대부분의 객체는 만들어지고 곧 죽는다. 그래서 힙을 **젊은 영역**과 **늙은 영역**으로 나눠, 젊은 쪽을 자주·짧게 수집하고 늙은 쪽은 드물게 수집한다.\n\n컬렉터 선택은 **처리량 vs 지연**의 맞바꿈이다. **JDK 9 부터 기본은 G1** 이고, 지연이 중요한 서비스는 **ZGC**(15 에서 제품 기능, 21 에서 세대별로 개선)를 고른다.\n\n**\"GC 가 있는데 왜 메모리 누수가 나나\"** — GC 는 **참조가 끊긴** 객체만 회수한다. 캐시에 넣고 안 지우거나 리스너를 해제하지 않으면 그건 누수가 아니라 **\"아직 쓸 수도 있는 객체\"** 다. 진단은 추측이 아니라 **힙 덤프**를 떠 무엇이 무엇을 붙잡고 있는지 보는 것이다.\n\n**그리고 컨테이너에서 가장 자주 나는 사고가 이것이다.**\n\n```\n컨테이너 메모리 한도  512MB\n  ├─ 힙 (-Xmx)        400MB   ← 여기만 보고 설정한다\n  ├─ 메타스페이스        ?\n  ├─ 스레드 스택 × N     ?\n  ├─ JIT 코드 캐시       ?\n  └─ 직접 버퍼(NIO)     ?      ← 합이 한도를 넘으면 OOM kill\n```\n\n**힙은 JVM 이 쓰는 메모리의 일부일 뿐이다.** 나머지를 빼먹고 `-Xmx` 를 한도에 가깝게 잡으면, JVM 은 자기 힙이 남았다고 생각하는데 **커널이 프로세스를 죽인다**(`OOMKilled`). 그래서 컨테이너에서는 절대값(`-Xmx`)보다 **비율 지정**(`-XX:MaxRAMPercentage`)을 쓰고, JVM 이 cgroup 한도를 인식하는 버전인지 확인하는 것이 순서다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JEP 248: Make G1 the Default Garbage Collector",
+          "url": "https://openjdk.org/jeps/248",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "JDK 9 부터 G1 이 기본 GC 가 된 근거"
+        },
+        {
+          "title": "JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)",
+          "url": "https://openjdk.org/jeps/377",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "ZGC 가 JDK 15 에서 실험 딱지를 떼고 제품 기능이 된 근거"
+        },
+        {
+          "title": "JEP 439: Generational ZGC",
+          "url": "https://openjdk.org/jeps/439",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "JDK 21 의 세대별 ZGC. 젊은 객체를 따로 다뤄 처리량을 회복했다"
+        }
+      ]
+    },
+    {
+      "id": "vthread",
+      "kind": "how",
+      "heading": "가상 스레드 (21) — 함수 색 없이 동시성을 얻었다",
+      "body": "**JEP 444** 가 JDK 21 에서 가상 스레드를 정식화했다(19·20 프리뷰를 거쳤다). 이것이 최근 Java 의 가장 큰 변화이고, **`asyncio`·`gil` 문서와 나란히 읽어야 뜻이 보인다.**\n\n기존 Java 스레드는 **OS 스레드 하나**에 대응한다. 그래서 비싸다 — 스택 메모리가 크고 전환에 커널이 개입한다. 수만 개를 만들 수 없으니 **스레드 풀**로 아껴 쓰고, 그 안에서 블로킹 호출을 하면 풀이 마른다. 이 제약을 피하려고 리액티브 프로그래밍(콜백·연산자 사슬)이 등장했지만, 코드가 뒤집히고 스택 트레이스가 의미를 잃는 대가가 있었다.\n\n**가상 스레드는 JVM 이 관리하는 가벼운 스레드다.** 수십만 개를 만들 수 있고, **블로킹 호출을 만나면 캐리어(실제 OS) 스레드에서 떨어져 나온다**(언마운트). 그동안 그 캐리어는 다른 가상 스레드를 실행한다.\n\n```java\n// 평범한 블로킹 코드. 그런데 10,000개가 동시에 돈다\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    for (var url : urls) executor.submit(() -> fetchBlocking(url));\n}\n```\n\n**여기가 `asyncio` 와 결정적으로 다른 지점이다.** 파이썬에서 동시성을 얻으려면 함수를 `async` 로 바꾸고 그것을 부르는 함수도 전부 바꿔야 한다(함수 색). Java 의 가상 스레드는 **평범한 블로킹 코드를 그대로 두고** 런타임이 양보를 처리한다. 기존 라이브러리·프레임워크가 대부분 그대로 이득을 본다.\n\n**함정은 둘이다.**\n\n- **핀닝(pinning)** — 초기 구현에서는 `synchronized` 블록 안이나 네이티브 호출 중에는 언마운트가 안 돼 캐리어에 **고정**됐다. 그 상태로 블로킹하면 캐리어가 낭비된다. 권장은 `ReentrantLock` 이었고, **JDK 24 의 JEP 491** 이 `synchronized` 의 이 제약을 없앴다.\n- **풀에 담지 않는다** — 가상 스레드는 싸므로 **작업마다 새로 만드는 것**이 정석이다. 풀로 개수를 제한하면 가상 스레드의 이점을 스스로 지운다. 동시성을 제한하려면 `Semaphore` 를 쓴다.\n\n> **`gil` 문서의 표에서 \"JVM 은 개발자가 스레드 안전을 진다\"고 적은 대가는 그대로 남아 있다.** 가상 스레드는 스레드를 싸게 만들었을 뿐, 공유 상태 경쟁을 없애 주지 않는다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JEP 444: Virtual Threads",
+          "url": "https://openjdk.org/jeps/444",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+        },
+        {
+          "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+          "url": "https://openjdk.org/jeps/491",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
+        },
+        {
+          "title": "Java Platform, Standard Edition Core Libraries — Virtual Threads (21)",
+          "url": "https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "가상 스레드의 마운트/언마운트와 캐리어 스레드 개념을 설명한 공식 가이드"
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "⭐⭐ 이 언어로 하면 아픈 것 — 그리고 그 아픔에서 나온 것들",
+      "body": "**짧게 뜨고 죽는 실행에 불리하다.** 기동 + 예열 비용이 실행 시간 전체를 잡아먹는다. 서버리스·CLI·배치 스크립트에서 Java 를 고르지 않는 이유이고, 네이티브 이미지가 그 틈을 메우려 하지만 **JIT 의 실행 정보 최적화와 일부 동적 기능(리플렉션 등)을 내준다.**\n\n**메모리 발자국이 크다.** 힙 외에도 고정 비용이 여럿이라, 마이크로서비스를 수십 개 띄우는 환경에서 인스턴스 단가로 돌아온다.\n\n**세부 튜닝의 난이도가 높다.** GC·JIT 옵션이 수백 개이고, 잘못 만지면 조용히 나빠진다. **기본값이 대개 최선**이고, 옵션은 측정(GC 로그·프로파일러) 뒤에 하나씩 바꾸는 것이 원칙이다.\n\n**버전과 배포판이 갈린다.** 현장에는 8·11·17·21 이 섞여 있고(→ 아래 LTS 표), 같은 버전에도 Oracle JDK·Temurin·Corretto·Zulu 같은 여러 빌드가 있다. **라이선스와 지원 기간이 빌드마다 다르므로** 무엇을 쓰는지 팀이 알고 있어야 한다.\n\n**언어 선택지가 하나가 아니다.** 같은 JVM 에서 Kotlin 이 널 안전·간결한 문법·코루틴을 주고, Android 쪽에서는 이미 기본값이다. **JVM 을 고른 것과 Java 를 고른 것은 다른 결정**이고, 공고가 `Java, Kotlin` 을 함께 적는 이유가 그것이다.\n\n---\n\n⭐⭐⭐ **그리고 그 아픔마다 답이 하나씩 붙어 있다** — 💡 **이 표의 오른쪽이 이 언어의 최근 역사다.**\n\n| 아픈 것 | ⭐ 그래서 나온 것 |\n|---|---|\n| ⭐⭐⭐ **기동 + 예열이 느리다** | ⭐ **네이티브 이미지**(미리 컴파일) — ⚠️ 대가는 **JIT 의 실행 정보 최적화와 리플렉션 같은 동적 기능** |\n| ⭐⭐ **메모리 발자국이 크다** | ⭐ **컨테이너 인식 JVM 설정**(→ `docker`·`kubernetes`) · **모듈 시스템으로 런타임 줄이기** |\n| ⭐⭐⭐ **스레드가 비싸다** | ⭐ **가상 스레드**(21) — 💡 이 문서의 `how` 절이 다루는 그것: **함수 색 없이 동시성**. ⚠️ 다른 길은 `asyncio`·`nodejs`(이벤트 루프) |\n| ⭐⭐ **GC·JIT 튜닝이 어렵다** | ⭐ **세대별·저지연 수집기들** → `gc` · **관측 도구** → `profiling`·`observability` |\n| ⭐ **말이 장황하다** | ⭐ **같은 런타임 위의 다른 언어** → `kotlin`(공고 동반 Spring 41.4%) · record·switch 식 같은 언어 자체의 변화 |\n| ⭐ **프레임워크 없이는 무겁다** | ⭐ **Spring 생태계** → `spring`(사실상 한 쌍으로 요구된다) |\n\n⚠️ **표의 오른쪽 대부분은 이 백과사전에 문서가 있다** — 📌 **즉 이 언어의 계보는 이미 이 안에 흩어져 있었다.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Oracle Java SE Support Roadmap",
+          "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+        }
+      ]
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 21.6%가 어디에 몰려 있나",
+      "confidence": "inferred",
+      "body": "⭐ **`market`**: **Java 21.6%**(`tech_relations.json`, 2026-09-04) — **이 백과사전의 언어 중 큰 축**이다.\n\n| 어디 | 왜 거기인가 | 이 백과사전 |\n|---|---|---|\n| ⭐⭐⭐ **금융·대기업** | 호환성과 오래 도는 것이 값이다 | → `java-in-finance` |\n| ⭐⭐⭐ **서버 프레임워크** | 사실상 한 쌍으로 요구된다 | → `spring` |\n| ⭐⭐ **마이크로서비스** | `microservices` 의 동반 **Java 57.1% · Spring 52.9%** | → `microservices` |\n| ⭐ **안드로이드(과거·현재 혼재)** | 코틀린으로 옮겨 가는 중 | → `kotlin` · `android` |\n| ⭐ **대용량 처리·배치** | JIT 가 오래 도는 프로세스에서 값을 낸다 | → `performance`(예열) |\n\n💡 ⭐⭐⭐ **첫 두 줄이 이 언어의 자리를 설명한다** — **오래 돌고, 안 깨지고, 사람이 많다.** ⚠️ 그리고 그 값은 **기동이 느린 대신 얻는 것**이다(→ `why` 절: \"이식성·안전성·호환성을 사고 기동 시간을 팔았다\").\n\n📌 ⭐⭐ **그래서 이 언어가 안 쓰이는 자리도 그 반대로 정해진다** — **짧게 뜨고 죽는 실행**(서버리스·CLI·배치 스크립트). ⭐ 거기서는 `go`·`python`·`nodejs` 가 그 자리를 가져갔다.\n\n⭐ **이 백과사전 안에서의 자리**: **도메인은 `java-in-finance`**, **프레임워크는 `spring`**, **같은 런타임의 다른 언어는 `kotlin`**, **메모리는 `gc`**, **다른 동시성 모델은 `asyncio`·`nodejs`**."
     }
-   ]
-  },
-  {
-   "id": "why",
-   "kind": "why",
-   "heading": "왜 이렇게 생겼나 — 이식성·안전성·호환성을 사고 기동 시간을 팔았다",
-   "body": "1990년대 중반 Java 가 풀려던 문제는 셋이었다.\n\n**① 이식성.** C/C++ 은 플랫폼마다 다시 컴파일해야 했고 미묘한 동작 차이가 있었다. 바이트코드 + VM 이라는 한 겹을 넣어 **컴파일 결과물을 그대로 옮길 수 있게** 만들었다.\n\n**② 안전성.** 포인터 산술을 없애고 배열 경계를 검사하고 메모리 해제를 GC 에 넘겼다. **버퍼 오버런·이중 해제·해제 후 사용 같은 버그 계급이 통째로 사라졌다.** 여기에 클래스 로딩 시점의 바이트코드 검증기까지 붙어, 잘못된 바이너리가 JVM 을 망가뜨리지 못한다. 대규모 팀·장기 유지보수 환경에서 이 선택의 값이 컸다.\n\n**③ 호환성.** Java 는 **하위 호환성을 극단적으로 지킨다.** 십수 년 전 컴파일된 라이브러리가 새 JVM 에서 그대로 도는 경우가 흔하고, 표준 라이브러리는 한번 공개한 메서드를 좀처럼 없애지 않는다. 이 성질이 **\"바꿀 이유가 없다\"는 결론**을 만든다 — 이미 도는 시스템을 그대로 두고 JVM 만 올리면 성능과 보안 패치를 받는다.\n\n**대가는 실행 초반에 몰려 있다.**\n\n- **기동이 느리다.** JVM 을 띄우고 클래스를 로드하고 검증하는 시간이 든다.\n- **워밍업이 필요하다.** JIT 이 자주 도는 코드를 찾아 최적화하기까지 성능이 낮다.\n- **메모리를 많이 쓴다.** 힙 외에 메타스페이스·스레드 스택·JIT 코드 캐시가 별도로 든다.\n\n이 맞바꿈이 Java 의 자리를 정했다 — **오래 떠 있는 서버**에서는 대가가 한 번뿐이고 이득은 계속이다. 반대로 **짧게 뜨고 죽는 실행**(서버리스, CLI)에서는 대가만 남는다. \"기업 시스템은 Java, 스크립트는 Python\" 이라는 분업이 여기서 나왔다.\n\n> 이 문서는 기술 쪽 이유만 다룬다. 한국 금융·공공에서 Java 가 유독 두꺼운 것에는 **제도(망분리)·자산·발주 구조**라는 다른 축이 있고, 그건 `java-in-finance` 에 있다.",
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "tables": [
     {
-     "title": "Oracle Java SE Support Roadmap",
-     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
-     "publisher": "Oracle",
-     "kind": "docs",
-     "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+      "id": "lts",
+      "kind": "spec",
+      "caption": "LTS 버전 — 현장에 섞여 있는 것들",
+      "note": "LTS(장기 지원) 버전과 그 사이의 중간 버전은 성격이 다르다 — 운영은 대개 LTS 에 머문다. **지원 기간과 조건은 배포판(Oracle JDK·Temurin·Corretto 등)마다 다르므로** 쓰는 빌드의 정책을 확인해야 한다. 아래 흐름은 Oracle 의 지원 로드맵 기준이다",
+      "columns": [
+        "버전",
+        "성격",
+        "실무에서"
+      ],
+      "rows": [
+        [
+          "**8**",
+          "LTS · 2014",
+          "여전히 현장에 남아 있다. 람다·스트림이 여기서 들어왔고, 그 이후 문법은 못 쓴다"
+        ],
+        [
+          "**11**",
+          "LTS",
+          "모듈 시스템 이후의 첫 LTS. 8 에서 올라오는 첫 관문이었다"
+        ],
+        [
+          "**17**",
+          "LTS",
+          "레코드·sealed·switch 표현식이 모인 지점. 한동안 '새 프로젝트의 기본값'이었다"
+        ],
+        [
+          "**21**",
+          "LTS",
+          "**가상 스레드(JEP 444)·패턴 매칭·세대별 ZGC.** 지금 새로 시작하면 여기 이상"
+        ],
+        [
+          "**25**",
+          "LTS · 2025-09 GA",
+          "가장 새 LTS"
+        ],
+        [
+          "그 사이 버전",
+          "6개월 주기 (12·13 … 24 …)",
+          "새 기능이 먼저 들어오지만 지원 기간이 짧다. 운영보다 검증용"
+        ],
+        [
+          "다음 LTS",
+          "**2년 주기** — 다음은 Java 29 (2027년 9월 예정)",
+          "장기 계획을 세울 때의 기준"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Oracle Java SE Support Roadmap",
+          "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+        },
+        {
+          "title": "JEP 444: Virtual Threads",
+          "url": "https://openjdk.org/jeps/444",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+        }
+      ]
     },
     {
-     "title": "JEP 395: Records",
-     "url": "https://openjdk.org/jeps/395",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "레코드가 Java 16 에서 정식화된 근거"
+      "id": "features",
+      "kind": "spec",
+      "caption": "버전별 언어 기능 — \"Java 는 장황하다\"가 언제 이야기인가",
+      "note": "각 항목은 그 기능을 정식화한 JEP 기준이다(프리뷰는 그 이전 버전에 들어온 경우가 있다). **배포 대상 버전보다 새 문법을 쓰면 컴파일도 실행도 안 된다** — 아래 지뢰 항목 참고",
+      "columns": [
+        "버전",
+        "기능",
+        "무엇이 달라지나"
+      ],
+      "rows": [
+        [
+          "8",
+          "람다 · 스트림 · `Optional`",
+          "함수형 스타일이 표준 라이브러리에 들어왔다"
+        ],
+        [
+          "10",
+          "`var` (지역 변수 타입 추론, JEP 286)",
+          "`Map<String, List<Order>> m = new HashMap<>();` 의 반복이 줄었다"
+        ],
+        [
+          "16",
+          "레코드 (JEP 395)",
+          "불변 데이터 클래스가 한 줄 — DTO 보일러플레이트가 사라진다"
+        ],
+        [
+          "17",
+          "sealed 클래스 (JEP 409)",
+          "상속 가능한 하위 타입을 제한 → switch 로 **전부 다뤘는지** 검사받을 수 있다"
+        ],
+        [
+          "21",
+          "switch 패턴 매칭 (JEP 441)",
+          "타입 분기 + 조건(`when`)을 한 식으로. sealed 와 함께 쓰면 강력하다"
+        ],
+        [
+          "21",
+          "**가상 스레드 (JEP 444)**",
+          "동시성 모델이 바뀐다 — 위 절 참고"
+        ],
+        [
+          "24",
+          "가상 스레드 핀닝 제거 (JEP 491)",
+          "`synchronized` 안에서도 언마운트된다 → 기존 코드의 제약이 풀렸다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JEP 286: Local-Variable Type Inference",
+          "url": "https://openjdk.org/jeps/286",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "`var` 가 Java 10 에 들어온 근거"
+        },
+        {
+          "title": "JEP 395: Records",
+          "url": "https://openjdk.org/jeps/395",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "레코드가 Java 16 에서 정식화된 근거"
+        },
+        {
+          "title": "JEP 409: Sealed Classes",
+          "url": "https://openjdk.org/jeps/409",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "sealed 가 Java 17 에 들어온 근거"
+        },
+        {
+          "title": "JEP 441: Pattern Matching for switch",
+          "url": "https://openjdk.org/jeps/441",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "switch 패턴 매칭이 Java 21 에서 정식화된 근거"
+        },
+        {
+          "title": "JEP 444: Virtual Threads",
+          "url": "https://openjdk.org/jeps/444",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+        },
+        {
+          "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+          "url": "https://openjdk.org/jeps/491",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
+        }
+      ]
+    },
+    {
+      "id": "gc-table",
+      "kind": "compare",
+      "caption": "GC 컬렉터 — 처리량과 지연 사이에서 고른다",
+      "note": "**기본값(G1)이 대개 최선이다.** 바꾸기 전에 GC 로그로 실제 멈춤 시간과 빈도를 측정한다. 세대별 ZGC 는 21 에서 들어왔다",
+      "columns": [
+        "",
+        "언제 고르나",
+        "성격",
+        "근거"
+      ],
+      "rows": [
+        [
+          "Parallel",
+          "처리량만 중요하고 멈춤을 감당할 수 있는 배치",
+          "짧은 시간에 많이 회수 — 대신 멈춤이 길다",
+          "JDK 8 의 기본"
+        ],
+        [
+          "**G1**",
+          "**대부분의 서버 (기본값)**",
+          "멈춤 목표를 정해 균형을 맞춘다",
+          "JDK 9 부터 기본 (JEP 248)"
+        ],
+        [
+          "ZGC",
+          "**지연이 중요한 서비스** (응답 시간 꼬리)",
+          "매우 짧은 멈춤. 21 의 세대별 개선으로 처리량 손실이 줄었다",
+          "JDK 15 제품화(JEP 377), 21 세대별(JEP 439)"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JEP 248: Make G1 the Default Garbage Collector",
+          "url": "https://openjdk.org/jeps/248",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "JDK 9 부터 G1 이 기본 GC 가 된 근거"
+        },
+        {
+          "title": "JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)",
+          "url": "https://openjdk.org/jeps/377",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "ZGC 가 JDK 15 에서 실험 딱지를 떼고 제품 기능이 된 근거"
+        },
+        {
+          "title": "JEP 439: Generational ZGC",
+          "url": "https://openjdk.org/jeps/439",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "JDK 21 의 세대별 ZGC. 젊은 객체를 따로 다뤄 처리량을 회복했다"
+        }
+      ]
+    },
+    {
+      "id": "concurrency",
+      "kind": "compare",
+      "caption": "같은 문제, 세 런타임 — `gil`·`asyncio` 문서와 이어 읽는 표",
+      "note": "가르는 질문은 둘이다 — **동시성을 얻으려고 코드를 바꿔야 하나**, 그리고 **스레드 안전은 누가 책임지나**",
+      "columns": [
+        "",
+        "Java 21+ (가상 스레드)",
+        "Python asyncio",
+        "Python 스레드"
+      ],
+      "rows": [
+        [
+          "코드 변경",
+          "**거의 없다** — 블로킹 코드 그대로",
+          "**호출 사슬 전체가 `async`** (함수 색)",
+          "없다"
+        ],
+        [
+          "동시 처리 규모",
+          "수십만",
+          "수만",
+          "수백 (메모리·전환 비용)"
+        ],
+        [
+          "CPU 병렬",
+          "**된다** (여러 코어)",
+          "안 된다",
+          "**안 된다** (GIL)"
+        ],
+        [
+          "스레드 안전 책임",
+          "**개발자** (락·원자적 연산)",
+          "대개 불필요 (`await` 에서만 전환)",
+          "개발자"
+        ],
+        [
+          "대표 함정",
+          "핀닝(24에서 해소) · 풀에 담기",
+          "블로킹 한 줄이 루프를 세운다",
+          "CPU 작업에서 안 빨라진다"
+        ]
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "JEP 444: Virtual Threads",
+          "url": "https://openjdk.org/jeps/444",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+        },
+        {
+          "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+          "url": "https://openjdk.org/jeps/491",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
+        }
+      ]
     }
-   ]
-  },
-  {
-   "id": "jit",
-   "kind": "how",
-   "heading": "JIT 와 워밍업 — 벤치마크가 거짓말하는 이유",
-   "body": "JVM 은 바이트코드를 두 방식으로 실행한다.\n\n1. **인터프리터** — 처음엔 한 줄씩 해석한다. 시작이 빠르고 실행은 느리다.\n2. **JIT 컴파일러** — 실행 통계를 모아 **자주 도는 부분만** 기계어로 컴파일한다. HotSpot 에는 빨리 컴파일하는 **C1** 과 오래 걸리지만 잘 최적화하는 **C2** 가 있고, 단계적으로 승격시킨다(계층 컴파일).\n\n**핵심은 JIT 이 실행 중에 얻은 정보를 쓴다는 것이다.** \"이 인터페이스 호출은 사실 항상 같은 구현체\", \"이 분기는 99% 참\" 같은 사실을 관측해 인라이닝·분기 예측·죽은 코드 제거를 한다. **미리 컴파일하는 언어가 알 수 없는 정보**이고, 그래서 오래 떠 있는 JVM 서비스가 C 에 가까운 성능을 내는 경우가 생긴다.\n\n대가는 **초반이 느리다는 것**이고, 실무에서 두 가지로 나타난다.\n\n**① 벤치마크가 거짓말한다.** 루프를 한 번 돌려 시간을 재면 그 값은 인터프리터·C1 시절의 값이다. 게다가 JIT 은 **결과를 쓰지 않는 계산을 아예 지워 버린다**(죽은 코드 제거). 그래서 JVM 벤치마크는 **JMH** 처럼 워밍업 반복과 결과 소비(blackhole)를 규격으로 갖춘 도구로 재야 한다. **\"루프 돌려 나노초 찍기\"로 낸 숫자는 대개 틀렸다.**\n\n**② 배포 직후가 느리다.** 새 인스턴스를 띄우면 예열 전까지 지연이 높다. 트래픽을 천천히 넣는 방식(웜업 요청·점진 배포)이 그래서 관례가 됐다. 기동·예열을 줄이는 다른 길(클래스 데이터 공유, 체크포인트 복원, 네이티브 이미지)도 있지만 **각각 다른 것을 내준다** — 네이티브 이미지는 JIT 의 실행 정보 최적화를 포기하는 것이다.",
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "when_to_use": [
     {
-     "title": "Oracle Java SE Support Roadmap",
-     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
-     "publisher": "Oracle",
-     "kind": "docs",
-     "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+      "situation": "동시 연결·외부 호출이 많은 서버를 만든다 (Java 21 이상)",
+      "pick": "가상 스레드 + 평범한 블로킹 코드",
+      "over": "스레드 풀 크기 튜닝이나 리액티브(콜백·연산자 사슬) 전환",
+      "why": "가상 스레드는 블로킹 호출에서 캐리어를 놓아 준다. 코드를 뒤집지 않고 동시성을 얻으므로 **스택 트레이스와 디버깅이 그대로 유지된다** — 리액티브가 내주던 것이 그것이다",
+      "tradeoff": "21 이상이 필요하고, 초기 버전에서는 `synchronized`·네이티브 호출에서 핀닝이 있었다(24 에서 해소). 그리고 CPU 바운드 작업은 여전히 코어 수만큼만 병렬이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JEP 444: Virtual Threads",
+          "url": "https://openjdk.org/jeps/444",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+        },
+        {
+          "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+          "url": "https://openjdk.org/jeps/491",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
+        }
+      ]
+    },
+    {
+      "situation": "람다 한 번 돌리고 죽는 서버리스 함수나 짧은 CLI",
+      "pick": "네이티브 이미지, 또는 아예 다른 언어",
+      "over": "일반 JVM 실행",
+      "why": "기동과 예열 비용이 실행 시간을 잡아먹는다. JIT 의 장점은 **오래 떠 있어야** 나오는 것이라, 수백 ms 만 사는 프로세스에서는 대가만 치른다",
+      "tradeoff": "네이티브 이미지는 빌드가 복잡하고 리플렉션 같은 동적 기능에 설정이 필요하며, 실행 정보 기반 최적화를 포기한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Oracle Java SE Support Roadmap",
+          "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+        }
+      ]
+    },
+    {
+      "situation": "응답 시간의 꼬리(p99)가 중요한 서비스다",
+      "pick": "ZGC (21 이상이면 세대별 ZGC)",
+      "over": "기본 G1",
+      "why": "ZGC 는 멈춤 시간을 힙 크기와 무관하게 매우 짧게 유지하도록 설계됐다. 21 의 세대별 개선으로 예전의 처리량 손실도 줄었다",
+      "tradeoff": "CPU·메모리 오버헤드가 있고, 처리량 중심 배치에서는 G1·Parallel 이 유리하다. **바꾸기 전에 GC 로그로 실제 멈춤을 측정한다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)",
+          "url": "https://openjdk.org/jeps/377",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "ZGC 가 JDK 15 에서 실험 딱지를 떼고 제품 기능이 된 근거"
+        },
+        {
+          "title": "JEP 439: Generational ZGC",
+          "url": "https://openjdk.org/jeps/439",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "JDK 21 의 세대별 ZGC. 젊은 객체를 따로 다뤄 처리량을 회복했다"
+        },
+        {
+          "title": "JEP 248: Make G1 the Default Garbage Collector",
+          "url": "https://openjdk.org/jeps/248",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "JDK 9 부터 G1 이 기본 GC 가 된 근거"
+        }
+      ]
+    },
+    {
+      "situation": "두 구현의 성능을 비교해야 한다",
+      "pick": "JMH (워밍업·반복·결과 소비를 규격으로 갖춘 벤치마크 도구)",
+      "over": "`System.nanoTime()` 으로 루프를 감싸 재기",
+      "why": "JIT 은 예열 전까지 느리고, 결과를 쓰지 않는 계산은 아예 지워 버린다. 손으로 만든 벤치마크는 **예열 전 성능이나 지워진 코드의 시간**을 재게 된다",
+      "tradeoff": "설정이 늘고 측정에 시간이 더 걸린다. 대략의 감을 잡는 데는 과하지만, **숫자를 근거로 결정할 거면 필수다**"
+    },
+    {
+      "situation": "JVM 위에서 새 프로젝트의 언어를 고른다",
+      "pick": "Kotlin (특히 Android·신규 서비스)",
+      "over": "Java",
+      "why": "널 안전이 타입에 들어 있고 문법이 짧다. 같은 바이트코드로 컴파일되므로 **기존 Java 라이브러리와 코드를 그대로 섞어 쓴다** — 런타임을 바꾸는 결정이 아니다",
+      "tradeoff": "인력 풀이 Java 보다 좁고(공고에서도 Java 쪽이 두껍다), 빌드 시간과 도구 성숙도에서 차이를 느낄 수 있다. 팀에 Java 자산이 많으면 혼용이 현실적이다",
+      "confidence": "inferred"
     }
-   ]
-  },
-  {
-   "id": "gc",
-   "kind": "how",
-   "heading": "GC 와 메모리 — 컨테이너에서 OOM 이 나는 이유",
-   "body": "GC 는 \"쓰지 않는 객체를 찾아 회수하는 것\"이지만, 실무에서 중요한 건 **그 일을 언제 얼마나 멈춰서 하는가**다.\n\n**세대(generational) 가설이 바닥에 있다** — 대부분의 객체는 만들어지고 곧 죽는다. 그래서 힙을 **젊은 영역**과 **늙은 영역**으로 나눠, 젊은 쪽을 자주·짧게 수집하고 늙은 쪽은 드물게 수집한다.\n\n컬렉터 선택은 **처리량 vs 지연**의 맞바꿈이다. **JDK 9 부터 기본은 G1** 이고, 지연이 중요한 서비스는 **ZGC**(15 에서 제품 기능, 21 에서 세대별로 개선)를 고른다.\n\n**\"GC 가 있는데 왜 메모리 누수가 나나\"** — GC 는 **참조가 끊긴** 객체만 회수한다. 캐시에 넣고 안 지우거나 리스너를 해제하지 않으면 그건 누수가 아니라 **\"아직 쓸 수도 있는 객체\"** 다. 진단은 추측이 아니라 **힙 덤프**를 떠 무엇이 무엇을 붙잡고 있는지 보는 것이다.\n\n**그리고 컨테이너에서 가장 자주 나는 사고가 이것이다.**\n\n```\n컨테이너 메모리 한도  512MB\n  ├─ 힙 (-Xmx)        400MB   ← 여기만 보고 설정한다\n  ├─ 메타스페이스        ?\n  ├─ 스레드 스택 × N     ?\n  ├─ JIT 코드 캐시       ?\n  └─ 직접 버퍼(NIO)     ?      ← 합이 한도를 넘으면 OOM kill\n```\n\n**힙은 JVM 이 쓰는 메모리의 일부일 뿐이다.** 나머지를 빼먹고 `-Xmx` 를 한도에 가깝게 잡으면, JVM 은 자기 힙이 남았다고 생각하는데 **커널이 프로세스를 죽인다**(`OOMKilled`). 그래서 컨테이너에서는 절대값(`-Xmx`)보다 **비율 지정**(`-XX:MaxRAMPercentage`)을 쓰고, JVM 이 cgroup 한도를 인식하는 버전인지 확인하는 것이 순서다.",
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "pitfalls": [
     {
-     "title": "JEP 248: Make G1 the Default Garbage Collector",
-     "url": "https://openjdk.org/jeps/248",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "JDK 9 부터 G1 이 기본 GC 가 된 근거"
+      "trap": "직접 만든 벤치마크로 \"A 가 B 보다 10배 빠르다\"는 결론을 냈다",
+      "why": "**JIT 워밍업과 죽은 코드 제거**를 고려하지 않았다. 첫 실행은 인터프리터·C1 성능이고, 결과를 안 쓰는 계산은 컴파일러가 지운다",
+      "fix": "JMH 로 다시 측정한다(워밍업 반복 + 결과를 blackhole 로 소비). 최소한 여러 라운드를 돌려 시간이 **수렴하는지** 확인한다"
     },
     {
-     "title": "JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)",
-     "url": "https://openjdk.org/jeps/377",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "ZGC 가 JDK 15 에서 실험 딱지를 떼고 제품 기능이 된 근거"
+      "trap": "컨테이너에서 힙은 남는데 `OOMKilled` 로 죽는다",
+      "why": "**힙은 JVM 메모리의 일부다.** 메타스페이스·스레드 스택·JIT 코드 캐시·직접 버퍼가 별도로 들고, 그 합이 컨테이너 한도를 넘으면 커널이 프로세스를 죽인다",
+      "fix": "`-Xmx` 절대값 대신 `-XX:MaxRAMPercentage` 로 비율을 주고, 힙 밖 사용량(`NativeMemoryTracking`)을 확인한다. JVM 이 cgroup 한도를 인식하는 버전인지도 본다"
     },
     {
-     "title": "JEP 439: Generational ZGC",
-     "url": "https://openjdk.org/jeps/439",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "JDK 21 의 세대별 ZGC. 젊은 객체를 따로 다뤄 처리량을 회복했다"
+      "trap": "GC 가 있는데 메모리 사용량이 계속 늘어난다",
+      "why": "GC 는 **참조가 끊긴** 객체만 회수한다. 캐시·리스너·스레드 로컬에 넣고 지우지 않으면 그건 '살아 있는 객체'다",
+      "fix": "힙 덤프를 떠서 **무엇이 무엇을 붙잡고 있는지** 본다(지배자 트리). 캐시에는 크기 제한과 만료를 넣고, 리스너는 해제 경로를 만든다"
+    },
+    {
+      "trap": "가상 스레드로 바꿨는데 성능이 기대만큼 안 오른다",
+      "why": "**핀닝**이거나 **풀에 담았기** 때문이다. 초기 버전에서는 `synchronized` 안·네이티브 호출 중에는 캐리어에 고정돼 언마운트되지 않았고, 가상 스레드를 고정 크기 풀에 넣으면 개수 제한이 그대로 병목이 된다",
+      "fix": "`synchronized` 를 `ReentrantLock` 으로 바꾸거나 JDK 24 이상으로 올린다(JEP 491). 그리고 **작업마다 새 가상 스레드를 만들고**, 동시성 제한이 필요하면 `Semaphore` 를 쓴다",
+      "sources": [
+        {
+          "title": "JEP 444: Virtual Threads",
+          "url": "https://openjdk.org/jeps/444",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+        },
+        {
+          "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+          "url": "https://openjdk.org/jeps/491",
+          "publisher": "OpenJDK",
+          "kind": "standard",
+          "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
+        }
+      ]
+    },
+    {
+      "trap": "새 문법으로 짠 코드가 운영 서버에서 `UnsupportedClassVersionError` 로 죽는다",
+      "why": "**컴파일한 JDK 가 운영 JDK 보다 새 것이다.** 클래스 파일에는 버전이 박히고, 낮은 JVM 은 높은 버전을 읽지 못한다. 하위 호환성은 '옛 바이너리가 새 JVM 에서 돈다'는 뜻이고 **그 반대는 아니다**",
+      "fix": "`javac --release <운영버전>` 으로 빌드해 문법과 API 사용을 함께 검사받는다. `-source/-target` 만 주면 **새 API 사용이 잡히지 않아** 실행 시점에 터진다"
+    },
+    {
+      "trap": "JDK 를 올렸더니 라이선스 문제가 생겼다는 연락을 받았다",
+      "why": "같은 버전에도 **배포판이 여럿**이고(Oracle JDK·Temurin·Corretto·Zulu …) 라이선스·지원 기간이 다르다. '자바를 올린다'는 것이 곧 '같은 조건을 유지한다'는 뜻은 아니다",
+      "fix": "쓰는 배포판과 그 지원 정책을 문서에 적어 둔다. 지원 종료 시점은 배포판별 로드맵으로 확인한다",
+      "sources": [
+        {
+          "title": "Oracle Java SE Support Roadmap",
+          "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+          "publisher": "Oracle",
+          "kind": "docs",
+          "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+        }
+      ]
     }
-   ]
-  },
-  {
-   "id": "vthread",
-   "kind": "how",
-   "heading": "가상 스레드 (21) — 함수 색 없이 동시성을 얻었다",
-   "body": "**JEP 444** 가 JDK 21 에서 가상 스레드를 정식화했다(19·20 프리뷰를 거쳤다). 이것이 최근 Java 의 가장 큰 변화이고, **`asyncio`·`gil` 문서와 나란히 읽어야 뜻이 보인다.**\n\n기존 Java 스레드는 **OS 스레드 하나**에 대응한다. 그래서 비싸다 — 스택 메모리가 크고 전환에 커널이 개입한다. 수만 개를 만들 수 없으니 **스레드 풀**로 아껴 쓰고, 그 안에서 블로킹 호출을 하면 풀이 마른다. 이 제약을 피하려고 리액티브 프로그래밍(콜백·연산자 사슬)이 등장했지만, 코드가 뒤집히고 스택 트레이스가 의미를 잃는 대가가 있었다.\n\n**가상 스레드는 JVM 이 관리하는 가벼운 스레드다.** 수십만 개를 만들 수 있고, **블로킹 호출을 만나면 캐리어(실제 OS) 스레드에서 떨어져 나온다**(언마운트). 그동안 그 캐리어는 다른 가상 스레드를 실행한다.\n\n```java\n// 평범한 블로킹 코드. 그런데 10,000개가 동시에 돈다\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    for (var url : urls) executor.submit(() -> fetchBlocking(url));\n}\n```\n\n**여기가 `asyncio` 와 결정적으로 다른 지점이다.** 파이썬에서 동시성을 얻으려면 함수를 `async` 로 바꾸고 그것을 부르는 함수도 전부 바꿔야 한다(함수 색). Java 의 가상 스레드는 **평범한 블로킹 코드를 그대로 두고** 런타임이 양보를 처리한다. 기존 라이브러리·프레임워크가 대부분 그대로 이득을 본다.\n\n**함정은 둘이다.**\n\n- **핀닝(pinning)** — 초기 구현에서는 `synchronized` 블록 안이나 네이티브 호출 중에는 언마운트가 안 돼 캐리어에 **고정**됐다. 그 상태로 블로킹하면 캐리어가 낭비된다. 권장은 `ReentrantLock` 이었고, **JDK 24 의 JEP 491** 이 `synchronized` 의 이 제약을 없앴다.\n- **풀에 담지 않는다** — 가상 스레드는 싸므로 **작업마다 새로 만드는 것**이 정석이다. 풀로 개수를 제한하면 가상 스레드의 이점을 스스로 지운다. 동시성을 제한하려면 `Semaphore` 를 쓴다.\n\n> **`gil` 문서의 표에서 \"JVM 은 개발자가 스레드 안전을 진다\"고 적은 대가는 그대로 남아 있다.** 가상 스레드는 스레드를 싸게 만들었을 뿐, 공유 상태 경쟁을 없애 주지 않는다.",
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "terms": [
     {
-     "title": "JEP 444: Virtual Threads",
-     "url": "https://openjdk.org/jeps/444",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+      "term": "JVM",
+      "en": "Java Virtual Machine",
+      "what": "바이트코드를 실행하는 가상 기계. GC·JIT·클래스 로딩이 여기 있고, Kotlin·Scala 도 이 위에서 돈다"
     },
     {
-     "title": "JEP 491: Synchronize Virtual Threads without Pinning",
-     "url": "https://openjdk.org/jeps/491",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
+      "term": "바이트코드",
+      "en": "bytecode",
+      "what": "`javac` 가 만드는 플랫폼 중립 명령. `.class` 파일에 담기고 버전 번호가 박힌다"
     },
     {
-     "title": "Java Platform, Standard Edition Core Libraries — Virtual Threads (21)",
-     "url": "https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html",
-     "publisher": "Oracle",
-     "kind": "docs",
-     "summary": "가상 스레드의 마운트/언마운트와 캐리어 스레드 개념을 설명한 공식 가이드"
+      "term": "JIT",
+      "en": "Just-In-Time compilation",
+      "what": "실행 중에 자주 도는 코드를 기계어로 컴파일하는 것. 실행 통계를 쓰기 때문에 예열이 필요하다"
+    },
+    {
+      "term": "C1 / C2",
+      "en": "—",
+      "what": "HotSpot 의 두 JIT 컴파일러. C1 은 빨리 컴파일하고 C2 는 깊게 최적화한다"
+    },
+    {
+      "term": "STW",
+      "en": "stop-the-world",
+      "what": "GC 가 애플리케이션 스레드를 모두 멈추는 구간. 이 시간이 응답 지연의 꼬리를 만든다"
+    },
+    {
+      "term": "메타스페이스",
+      "en": "metaspace",
+      "what": "클래스 메타데이터가 사는 영역. **힙 밖**이라 `-Xmx` 에 포함되지 않는다"
+    },
+    {
+      "term": "가상 스레드",
+      "en": "virtual thread",
+      "what": "JVM 이 관리하는 가벼운 스레드(21+). 블로킹 시 캐리어 스레드에서 언마운트된다"
+    },
+    {
+      "term": "캐리어 스레드",
+      "en": "carrier thread",
+      "what": "가상 스레드를 실제로 실행하는 OS 스레드. 여기에 마운트/언마운트된다"
+    },
+    {
+      "term": "핀닝",
+      "en": "pinning",
+      "what": "가상 스레드가 캐리어에서 떨어지지 못하고 고정되는 상태. 초기 버전의 `synchronized` 가 대표 원인이었다"
+    },
+    {
+      "term": "LTS",
+      "en": "Long-Term Support",
+      "what": "장기 지원 버전. 8·11·17·21·25 이고 이후 2년 주기. 운영은 대개 여기에 머문다"
     }
-   ]
-  },
-  {
-   "id": "limits",
-   "kind": "limits",
-   "heading": "경계 — Java 로 하면 아픈 것",
-   "body": "**짧게 뜨고 죽는 실행에 불리하다.** 기동 + 예열 비용이 실행 시간 전체를 잡아먹는다. 서버리스·CLI·배치 스크립트에서 Java 를 고르지 않는 이유이고, 네이티브 이미지가 그 틈을 메우려 하지만 **JIT 의 실행 정보 최적화와 일부 동적 기능(리플렉션 등)을 내준다.**\n\n**메모리 발자국이 크다.** 힙 외에도 고정 비용이 여럿이라, 마이크로서비스를 수십 개 띄우는 환경에서 인스턴스 단가로 돌아온다.\n\n**세부 튜닝의 난이도가 높다.** GC·JIT 옵션이 수백 개이고, 잘못 만지면 조용히 나빠진다. **기본값이 대개 최선**이고, 옵션은 측정(GC 로그·프로파일러) 뒤에 하나씩 바꾸는 것이 원칙이다.\n\n**버전과 배포판이 갈린다.** 현장에는 8·11·17·21 이 섞여 있고(→ 아래 LTS 표), 같은 버전에도 Oracle JDK·Temurin·Corretto·Zulu 같은 여러 빌드가 있다. **라이선스와 지원 기간이 빌드마다 다르므로** 무엇을 쓰는지 팀이 알고 있어야 한다.\n\n**언어 선택지가 하나가 아니다.** 같은 JVM 에서 Kotlin 이 널 안전·간결한 문법·코루틴을 주고, Android 쪽에서는 이미 기본값이다. **JVM 을 고른 것과 Java 를 고른 것은 다른 결정**이고, 공고가 `Java, Kotlin` 을 함께 적는 이유가 그것이다.",
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "drills": [
     {
-     "title": "Oracle Java SE Support Roadmap",
-     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
-     "publisher": "Oracle",
-     "kind": "docs",
-     "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+      "task": "**워밍업을 눈으로 본다.** 같은 계산(예: 배열 정렬이나 문자열 해싱)을 10,000회씩 20라운드 돌리고 라운드별 소요 시간을 출력한다. 그다음 `-XX:+PrintCompilation` 을 켜서 어느 시점에 컴파일이 일어나는지 로그와 시간 변화를 맞춰 본다",
+      "done_when": "시간이 몇 라운드째에 수렴하는지 답할 수 있고, 그 지점이 컴파일 로그와 대응하는 것을 보여 줄 수 있다",
+      "why": "\"JVM 벤치마크는 워밍업 후에 재라\"는 말이 자기 숫자로 손에 남는다. 이걸 본 사람은 손수 만든 벤치마크를 다시 믿지 않는다",
+      "no_hardware": "JDK 만 있으면 된다 — 다른 장비가 필요 없다",
+      "hours": 1
+    },
+    {
+      "task": "**가상 스레드와 플랫폼 스레드를 같은 작업으로 비교한다.** 1초 블로킹(`Thread.sleep`) 작업 10,000개를 ① 고정 크기 스레드 풀(200) ② `newVirtualThreadPerTaskExecutor` 로 각각 실행해 총 시간과 메모리를 잰다. 그다음 작업 안에 `synchronized` 블록을 넣어 다시 재 본다",
+      "done_when": "두 방식의 총 시간 차이를 숫자로 보여 줄 수 있고, `synchronized` 를 넣었을 때 결과가 어떻게 바뀌는지(그리고 왜)를 설명할 수 있다",
+      "why": "핀닝을 글로 아는 것과 시간으로 보는 것은 다르다. 21 이상에서 이 실험은 20줄이면 된다",
+      "needs": "JDK 21 이상",
+      "no_hardware": "21 미만이면 계산으로 대체한다 — 10,000개 작업 × 1초를 200 스레드로 처리하면 몇 초가 걸리는지, 가상 스레드면 왜 1초대인지 산술로 적는다",
+      "hours": 2
+    },
+    {
+      "task": "**클래스 파일 버전 실험.** 같은 소스를 `javac --release 8` 과 `--release 21` 로 각각 빌드하고 `javap -v` 로 major version 을 확인한다. 그다음 21 로 빌드한 클래스를 낮은 JDK 로 실행해 `UnsupportedClassVersionError` 를 직접 재현하고, `--release` 없이 `-target` 만 줬을 때 새 API 사용이 어떻게 통과되는지 확인한다",
+      "done_when": "`--release` 와 `-source/-target` 의 차이를 실패 사례로 설명할 수 있다",
+      "why": "'운영 JDK 버전 확인'이라는 규칙이 어떤 오류로 나타나는지 한 번 보면 빌드 설정을 다시 본다",
+      "needs": "JDK 두 개 (예: 8·21)",
+      "no_hardware": "JDK 하나만 있으면 `--release` 두 번으로 major version 차이까지는 확인할 수 있고, 실행 실패는 오류 메시지의 의미를 적는 것으로 대체한다",
+      "hours": 1
     }
-   ]
-  }
- ],
- "tables": [
-  {
-   "id": "lts",
-   "kind": "spec",
-   "caption": "LTS 버전 — 현장에 섞여 있는 것들",
-   "note": "LTS(장기 지원) 버전과 그 사이의 중간 버전은 성격이 다르다 — 운영은 대개 LTS 에 머문다. **지원 기간과 조건은 배포판(Oracle JDK·Temurin·Corretto 등)마다 다르므로** 쓰는 빌드의 정책을 확인해야 한다. 아래 흐름은 Oracle 의 지원 로드맵 기준이다",
-   "columns": [
-    "버전",
-    "성격",
-    "실무에서"
-   ],
-   "rows": [
-    [
-     "**8**",
-     "LTS · 2014",
-     "여전히 현장에 남아 있다. 람다·스트림이 여기서 들어왔고, 그 이후 문법은 못 쓴다"
-    ],
-    [
-     "**11**",
-     "LTS",
-     "모듈 시스템 이후의 첫 LTS. 8 에서 올라오는 첫 관문이었다"
-    ],
-    [
-     "**17**",
-     "LTS",
-     "레코드·sealed·switch 표현식이 모인 지점. 한동안 '새 프로젝트의 기본값'이었다"
-    ],
-    [
-     "**21**",
-     "LTS",
-     "**가상 스레드(JEP 444)·패턴 매칭·세대별 ZGC.** 지금 새로 시작하면 여기 이상"
-    ],
-    [
-     "**25**",
-     "LTS · 2025-09 GA",
-     "가장 새 LTS"
-    ],
-    [
-     "그 사이 버전",
-     "6개월 주기 (12·13 … 24 …)",
-     "새 기능이 먼저 들어오지만 지원 기간이 짧다. 운영보다 검증용"
-    ],
-    [
-     "다음 LTS",
-     "**2년 주기** — 다음은 Java 29 (2027년 9월 예정)",
-     "장기 계획을 세울 때의 기준"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "checks": [
+    "Java 와 JVM 을 구분해서 설명할 수 있나? 공고의 `JVM 생태계` 라는 말이 무엇을 묻는 건가?",
+    "왜 JVM 서비스는 예열 후에 빨라지나? 그 성질이 벤치마크를 어떻게 망치나?",
+    "`-Xmx` 를 컨테이너 한도에 맞춰 잡으면 왜 OOM 이 날 수 있나?",
+    "GC 가 있는데 메모리 누수가 생기는 이유는? 진단은 무엇으로 하나?",
+    "가상 스레드가 asyncio 와 결정적으로 다른 점은? (코드 변경 관점에서)",
+    "하위 호환성이 좋다는 말은 어느 방향인가? 그 반대로 하면 어떤 오류가 나나?"
+  ],
+  "evidence": [
     {
-     "title": "Oracle Java SE Support Roadmap",
-     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
-     "publisher": "Oracle",
-     "kind": "docs",
-     "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+      "quote": "• JVM 생태계(Java, Kotlin, Spring, JPA)에 대한 경험 및 이해가 있으신 분",
+      "from": "posting",
+      "where": "큐엠아이티 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/356935",
+      "what_it_shows": "**공고가 언어가 아니라 `JVM 생태계` 를 묻는다.** Java 와 Kotlin 을 한 묶음으로 적는 것이 이 문서의 첫 절(두 겹)이 필요한 이유다"
     },
     {
-     "title": "JEP 444: Virtual Threads",
-     "url": "https://openjdk.org/jeps/444",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+      "quote": "· Java 21+ 및 JVM 아키텍처에 대한 높은 이해와 Virtual Thread 기반 동시성 처리 경험이 있으신 분",
+      "from": "posting",
+      "where": "인피니티익스체인지코리아 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/380508",
+      "what_it_shows": "**가상 스레드가 이미 자격요건이다.** 버전을 `21+` 로 못 박은 것도 이 기능이 21 에서 정식화됐기 때문이다"
+    },
+    {
+      "quote": "• Java + Spring Boot 기반의 서비스 개발 및 운영 경험 (Spring Boot 3.x 우대)",
+      "from": "posting",
+      "where": "에이치투오호스피탈리티 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/371696",
+      "what_it_shows": "동반 1위가 Spring(44.4%)인 이유가 문장으로 보인다. 그리고 **프레임워크 버전까지 우대 조건**이 된다 — 버전 감각이 필요한 생태계다"
+    },
+    {
+      "quote": "• TypeScript, JavaScript, Java, Kotlin, Go 등 하나 이상의 서버 개발 언어에 능숙하신 분",
+      "from": "posting",
+      "where": "베이글코드 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/259710",
+      "what_it_shows": "서버 언어를 **택일**로 여는 공고도 많다 — Java 를 아는 것이 진입 경로 중 하나라는 뜻이고, 런타임 이해가 옮겨 타는 밑천이 된다"
+    },
+    {
+      "quote": "• Backend: Java(Spring Boot) 또는 Python(FastAPI, Django 등) 프레임워크를 활용하여 확장성 있고 안정적인 RESTful API 서버 설계 및 구현이 가능하신 분",
+      "from": "posting",
+      "where": "아이알큐더스 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/369107",
+      "what_it_shows": "`market` 의 Python 동반 35.8% 가 실제로는 이런 모습 — 한 자리를 두 스택이 나눠 갖는다. 두 문서를 나란히 읽을 이유"
     }
-   ]
-  },
-  {
-   "id": "features",
-   "kind": "spec",
-   "caption": "버전별 언어 기능 — \"Java 는 장황하다\"가 언제 이야기인가",
-   "note": "각 항목은 그 기능을 정식화한 JEP 기준이다(프리뷰는 그 이전 버전에 들어온 경우가 있다). **배포 대상 버전보다 새 문법을 쓰면 컴파일도 실행도 안 된다** — 아래 지뢰 항목 참고",
-   "columns": [
-    "버전",
-    "기능",
-    "무엇이 달라지나"
-   ],
-   "rows": [
-    [
-     "8",
-     "람다 · 스트림 · `Optional`",
-     "함수형 스타일이 표준 라이브러리에 들어왔다"
-    ],
-    [
-     "10",
-     "`var` (지역 변수 타입 추론, JEP 286)",
-     "`Map<String, List<Order>> m = new HashMap<>();` 의 반복이 줄었다"
-    ],
-    [
-     "16",
-     "레코드 (JEP 395)",
-     "불변 데이터 클래스가 한 줄 — DTO 보일러플레이트가 사라진다"
-    ],
-    [
-     "17",
-     "sealed 클래스 (JEP 409)",
-     "상속 가능한 하위 타입을 제한 → switch 로 **전부 다뤘는지** 검사받을 수 있다"
-    ],
-    [
-     "21",
-     "switch 패턴 매칭 (JEP 441)",
-     "타입 분기 + 조건(`when`)을 한 식으로. sealed 와 함께 쓰면 강력하다"
-    ],
-    [
-     "21",
-     "**가상 스레드 (JEP 444)**",
-     "동시성 모델이 바뀐다 — 위 절 참고"
-    ],
-    [
-     "24",
-     "가상 스레드 핀닝 제거 (JEP 491)",
-     "`synchronized` 안에서도 언마운트된다 → 기존 코드의 제약이 풀렸다"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "related": [
     {
-     "title": "JEP 286: Local-Variable Type Inference",
-     "url": "https://openjdk.org/jeps/286",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "`var` 가 Java 10 에 들어온 근거"
+      "slug": "java-in-finance",
+      "how": "같은 언어의 다른 축 — 왜 한국 금융·공공에서 유독 두꺼운가. 제도·자산·발주 구조가 거기 있다"
     },
     {
-     "title": "JEP 395: Records",
-     "url": "https://openjdk.org/jeps/395",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "레코드가 Java 16 에서 정식화된 근거"
+      "slug": "gil",
+      "how": "가상 스레드가 무엇에 대한 답인지 보이는 자리. GIL 없는 런타임의 대가(개발자가 스레드 안전을 진다)도 거기 정리돼 있다"
     },
     {
-     "title": "JEP 409: Sealed Classes",
-     "url": "https://openjdk.org/jeps/409",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "sealed 가 Java 17 에 들어온 근거"
+      "slug": "asyncio",
+      "how": "함수 색 문제의 본체. 같은 목표를 코드 변경 없이 이루는 것과 문법으로 이루는 것의 차이"
     },
     {
-     "title": "JEP 441: Pattern Matching for switch",
-     "url": "https://openjdk.org/jeps/441",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "switch 패턴 매칭이 Java 21 에서 정식화된 근거"
-    },
-    {
-     "title": "JEP 444: Virtual Threads",
-     "url": "https://openjdk.org/jeps/444",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
-    },
-    {
-     "title": "JEP 491: Synchronize Virtual Threads without Pinning",
-     "url": "https://openjdk.org/jeps/491",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
+      "slug": "spring",
+      "how": "동반 44.4% — Java 공고의 절반이 함께 요구한다. DI·트랜잭션·JPA 가 거기 본체다"
     }
-   ]
-  },
-  {
-   "id": "gc-table",
-   "kind": "compare",
-   "caption": "GC 컬렉터 — 처리량과 지연 사이에서 고른다",
-   "note": "**기본값(G1)이 대개 최선이다.** 바꾸기 전에 GC 로그로 실제 멈춤 시간과 빈도를 측정한다. 세대별 ZGC 는 21 에서 들어왔다",
-   "columns": [
-    "",
-    "언제 고르나",
-    "성격",
-    "근거"
-   ],
-   "rows": [
-    [
-     "Parallel",
-     "처리량만 중요하고 멈춤을 감당할 수 있는 배치",
-     "짧은 시간에 많이 회수 — 대신 멈춤이 길다",
-     "JDK 8 의 기본"
-    ],
-    [
-     "**G1**",
-     "**대부분의 서버 (기본값)**",
-     "멈춤 목표를 정해 균형을 맞춘다",
-     "JDK 9 부터 기본 (JEP 248)"
-    ],
-    [
-     "ZGC",
-     "**지연이 중요한 서비스** (응답 시간 꼬리)",
-     "매우 짧은 멈춤. 21 의 세대별 개선으로 처리량 손실이 줄었다",
-     "JDK 15 제품화(JEP 377), 21 세대별(JEP 439)"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "open_questions": [
+    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — ⭐ **`limits` 는 이미 진짜 한계였으므로**(\"Java 로 하면 아픈 것\") **그대로 두고 \"그래서 나온 것\" 표를 덧붙였고**, **어디에 쓰이나** 절을 새로 만들었다. 💡 **표의 오른쪽 대부분이 이 백과사전에 이미 문서로 있다** — 계보가 흩어져 있었을 뿐이다.",
+    "`market` 숫자는 `tech_relations.json` 의 **2026-09-04 00:41 생성분**을 옮긴 것이다(공고 1,558건 · 21.6%). **이 값은 크롤 사이클마다 바뀌므로** 재방문 사이클에서 다시 맞춰야 한다 — 지금도 `python` 문서가 같은 이유로 경고 상태다",
+    "LTS 별 지원 종료 시점은 **배포판마다 다르다**(Oracle JDK·Temurin·Corretto·Zulu). 이 문서는 Oracle 로드맵을 근거로 LTS 목록과 2년 주기까지만 적고 개별 종료 날짜는 표에 넣지 않았다 — 날짜가 필요하면 쓰는 배포판의 정책을 확인해야 한다",
+    "JIT 의 계층 컴파일 세부(어느 호출 횟수에서 C1→C2 로 승격되는지)는 구현 세부이고 버전·옵션에 따라 달라져 숫자를 쓰지 않았다. 실습에서는 `-XX:+PrintCompilation` 으로 **관측하는 방법**만 남겼다",
+    "GraalVM 네이티브 이미지의 기동 시간·메모리 개선 폭은 애플리케이션 의존이라 수치를 적지 않았다. 별도 문서가 필요한 주제이고, 아직 큐에 올리지 않았다",
+    "Kotlin 을 `when_to_use` 에서 권했지만 `inferred` 로 두었다 — 인력 풀·빌드 성숙도 비교는 공개 통계로 받치기 어렵고, 이 데이터셋의 공고 수(Java 1,558건)만으로는 '어느 쪽이 낫다'를 말할 수 없다"
+  ],
+  "sources": [
     {
-     "title": "JEP 248: Make G1 the Default Garbage Collector",
-     "url": "https://openjdk.org/jeps/248",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "JDK 9 부터 G1 이 기본 GC 가 된 근거"
+      "title": "Oracle Java SE Support Roadmap",
+      "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
+      "publisher": "Oracle",
+      "kind": "docs",
+      "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
     },
     {
-     "title": "JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)",
-     "url": "https://openjdk.org/jeps/377",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "ZGC 가 JDK 15 에서 실험 딱지를 떼고 제품 기능이 된 근거"
+      "title": "JEP 444: Virtual Threads",
+      "url": "https://openjdk.org/jeps/444",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
     },
     {
-     "title": "JEP 439: Generational ZGC",
-     "url": "https://openjdk.org/jeps/439",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "JDK 21 의 세대별 ZGC. 젊은 객체를 따로 다뤄 처리량을 회복했다"
-    }
-   ]
-  },
-  {
-   "id": "concurrency",
-   "kind": "compare",
-   "caption": "같은 문제, 세 런타임 — `gil`·`asyncio` 문서와 이어 읽는 표",
-   "note": "가르는 질문은 둘이다 — **동시성을 얻으려고 코드를 바꿔야 하나**, 그리고 **스레드 안전은 누가 책임지나**",
-   "columns": [
-    "",
-    "Java 21+ (가상 스레드)",
-    "Python asyncio",
-    "Python 스레드"
-   ],
-   "rows": [
-    [
-     "코드 변경",
-     "**거의 없다** — 블로킹 코드 그대로",
-     "**호출 사슬 전체가 `async`** (함수 색)",
-     "없다"
-    ],
-    [
-     "동시 처리 규모",
-     "수십만",
-     "수만",
-     "수백 (메모리·전환 비용)"
-    ],
-    [
-     "CPU 병렬",
-     "**된다** (여러 코어)",
-     "안 된다",
-     "**안 된다** (GIL)"
-    ],
-    [
-     "스레드 안전 책임",
-     "**개발자** (락·원자적 연산)",
-     "대개 불필요 (`await` 에서만 전환)",
-     "개발자"
-    ],
-    [
-     "대표 함정",
-     "핀닝(24에서 해소) · 풀에 담기",
-     "블로킹 한 줄이 루프를 세운다",
-     "CPU 작업에서 안 빨라진다"
-    ]
-   ],
-   "confidence": "inferred",
-   "sources": [
-    {
-     "title": "JEP 444: Virtual Threads",
-     "url": "https://openjdk.org/jeps/444",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+      "title": "JEP 491: Synchronize Virtual Threads without Pinning",
+      "url": "https://openjdk.org/jeps/491",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
     },
     {
-     "title": "JEP 491: Synchronize Virtual Threads without Pinning",
-     "url": "https://openjdk.org/jeps/491",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
-    }
-   ]
-  }
- ],
- "when_to_use": [
-  {
-   "situation": "동시 연결·외부 호출이 많은 서버를 만든다 (Java 21 이상)",
-   "pick": "가상 스레드 + 평범한 블로킹 코드",
-   "over": "스레드 풀 크기 튜닝이나 리액티브(콜백·연산자 사슬) 전환",
-   "why": "가상 스레드는 블로킹 호출에서 캐리어를 놓아 준다. 코드를 뒤집지 않고 동시성을 얻으므로 **스택 트레이스와 디버깅이 그대로 유지된다** — 리액티브가 내주던 것이 그것이다",
-   "tradeoff": "21 이상이 필요하고, 초기 버전에서는 `synchronized`·네이티브 호출에서 핀닝이 있었다(24 에서 해소). 그리고 CPU 바운드 작업은 여전히 코어 수만큼만 병렬이다",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "JEP 444: Virtual Threads",
-     "url": "https://openjdk.org/jeps/444",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+      "title": "Java Platform, Standard Edition Core Libraries — Virtual Threads (21)",
+      "url": "https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html",
+      "publisher": "Oracle",
+      "kind": "docs",
+      "summary": "가상 스레드의 마운트/언마운트와 캐리어 스레드 개념을 설명한 공식 가이드"
     },
     {
-     "title": "JEP 491: Synchronize Virtual Threads without Pinning",
-     "url": "https://openjdk.org/jeps/491",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
-    }
-   ]
-  },
-  {
-   "situation": "람다 한 번 돌리고 죽는 서버리스 함수나 짧은 CLI",
-   "pick": "네이티브 이미지, 또는 아예 다른 언어",
-   "over": "일반 JVM 실행",
-   "why": "기동과 예열 비용이 실행 시간을 잡아먹는다. JIT 의 장점은 **오래 떠 있어야** 나오는 것이라, 수백 ms 만 사는 프로세스에서는 대가만 치른다",
-   "tradeoff": "네이티브 이미지는 빌드가 복잡하고 리플렉션 같은 동적 기능에 설정이 필요하며, 실행 정보 기반 최적화를 포기한다",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "Oracle Java SE Support Roadmap",
-     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
-     "publisher": "Oracle",
-     "kind": "docs",
-     "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
-    }
-   ]
-  },
-  {
-   "situation": "응답 시간의 꼬리(p99)가 중요한 서비스다",
-   "pick": "ZGC (21 이상이면 세대별 ZGC)",
-   "over": "기본 G1",
-   "why": "ZGC 는 멈춤 시간을 힙 크기와 무관하게 매우 짧게 유지하도록 설계됐다. 21 의 세대별 개선으로 예전의 처리량 손실도 줄었다",
-   "tradeoff": "CPU·메모리 오버헤드가 있고, 처리량 중심 배치에서는 G1·Parallel 이 유리하다. **바꾸기 전에 GC 로그로 실제 멈춤을 측정한다**",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)",
-     "url": "https://openjdk.org/jeps/377",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "ZGC 가 JDK 15 에서 실험 딱지를 떼고 제품 기능이 된 근거"
+      "title": "JEP 286: Local-Variable Type Inference",
+      "url": "https://openjdk.org/jeps/286",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "`var` 가 Java 10 에 들어온 근거"
     },
     {
-     "title": "JEP 439: Generational ZGC",
-     "url": "https://openjdk.org/jeps/439",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "JDK 21 의 세대별 ZGC. 젊은 객체를 따로 다뤄 처리량을 회복했다"
+      "title": "JEP 395: Records",
+      "url": "https://openjdk.org/jeps/395",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "레코드가 Java 16 에서 정식화된 근거"
     },
     {
-     "title": "JEP 248: Make G1 the Default Garbage Collector",
-     "url": "https://openjdk.org/jeps/248",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "JDK 9 부터 G1 이 기본 GC 가 된 근거"
-    }
-   ]
-  },
-  {
-   "situation": "두 구현의 성능을 비교해야 한다",
-   "pick": "JMH (워밍업·반복·결과 소비를 규격으로 갖춘 벤치마크 도구)",
-   "over": "`System.nanoTime()` 으로 루프를 감싸 재기",
-   "why": "JIT 은 예열 전까지 느리고, 결과를 쓰지 않는 계산은 아예 지워 버린다. 손으로 만든 벤치마크는 **예열 전 성능이나 지워진 코드의 시간**을 재게 된다",
-   "tradeoff": "설정이 늘고 측정에 시간이 더 걸린다. 대략의 감을 잡는 데는 과하지만, **숫자를 근거로 결정할 거면 필수다**"
-  },
-  {
-   "situation": "JVM 위에서 새 프로젝트의 언어를 고른다",
-   "pick": "Kotlin (특히 Android·신규 서비스)",
-   "over": "Java",
-   "why": "널 안전이 타입에 들어 있고 문법이 짧다. 같은 바이트코드로 컴파일되므로 **기존 Java 라이브러리와 코드를 그대로 섞어 쓴다** — 런타임을 바꾸는 결정이 아니다",
-   "tradeoff": "인력 풀이 Java 보다 좁고(공고에서도 Java 쪽이 두껍다), 빌드 시간과 도구 성숙도에서 차이를 느낄 수 있다. 팀에 Java 자산이 많으면 혼용이 현실적이다",
-   "confidence": "inferred"
-  }
- ],
- "pitfalls": [
-  {
-   "trap": "직접 만든 벤치마크로 \"A 가 B 보다 10배 빠르다\"는 결론을 냈다",
-   "why": "**JIT 워밍업과 죽은 코드 제거**를 고려하지 않았다. 첫 실행은 인터프리터·C1 성능이고, 결과를 안 쓰는 계산은 컴파일러가 지운다",
-   "fix": "JMH 로 다시 측정한다(워밍업 반복 + 결과를 blackhole 로 소비). 최소한 여러 라운드를 돌려 시간이 **수렴하는지** 확인한다"
-  },
-  {
-   "trap": "컨테이너에서 힙은 남는데 `OOMKilled` 로 죽는다",
-   "why": "**힙은 JVM 메모리의 일부다.** 메타스페이스·스레드 스택·JIT 코드 캐시·직접 버퍼가 별도로 들고, 그 합이 컨테이너 한도를 넘으면 커널이 프로세스를 죽인다",
-   "fix": "`-Xmx` 절대값 대신 `-XX:MaxRAMPercentage` 로 비율을 주고, 힙 밖 사용량(`NativeMemoryTracking`)을 확인한다. JVM 이 cgroup 한도를 인식하는 버전인지도 본다"
-  },
-  {
-   "trap": "GC 가 있는데 메모리 사용량이 계속 늘어난다",
-   "why": "GC 는 **참조가 끊긴** 객체만 회수한다. 캐시·리스너·스레드 로컬에 넣고 지우지 않으면 그건 '살아 있는 객체'다",
-   "fix": "힙 덤프를 떠서 **무엇이 무엇을 붙잡고 있는지** 본다(지배자 트리). 캐시에는 크기 제한과 만료를 넣고, 리스너는 해제 경로를 만든다"
-  },
-  {
-   "trap": "가상 스레드로 바꿨는데 성능이 기대만큼 안 오른다",
-   "why": "**핀닝**이거나 **풀에 담았기** 때문이다. 초기 버전에서는 `synchronized` 안·네이티브 호출 중에는 캐리어에 고정돼 언마운트되지 않았고, 가상 스레드를 고정 크기 풀에 넣으면 개수 제한이 그대로 병목이 된다",
-   "fix": "`synchronized` 를 `ReentrantLock` 으로 바꾸거나 JDK 24 이상으로 올린다(JEP 491). 그리고 **작업마다 새 가상 스레드를 만들고**, 동시성 제한이 필요하면 `Semaphore` 를 쓴다",
-   "sources": [
-    {
-     "title": "JEP 444: Virtual Threads",
-     "url": "https://openjdk.org/jeps/444",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
+      "title": "JEP 409: Sealed Classes",
+      "url": "https://openjdk.org/jeps/409",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "sealed 가 Java 17 에 들어온 근거"
     },
     {
-     "title": "JEP 491: Synchronize Virtual Threads without Pinning",
-     "url": "https://openjdk.org/jeps/491",
-     "publisher": "OpenJDK",
-     "kind": "standard",
-     "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
-    }
-   ]
-  },
-  {
-   "trap": "새 문법으로 짠 코드가 운영 서버에서 `UnsupportedClassVersionError` 로 죽는다",
-   "why": "**컴파일한 JDK 가 운영 JDK 보다 새 것이다.** 클래스 파일에는 버전이 박히고, 낮은 JVM 은 높은 버전을 읽지 못한다. 하위 호환성은 '옛 바이너리가 새 JVM 에서 돈다'는 뜻이고 **그 반대는 아니다**",
-   "fix": "`javac --release <운영버전>` 으로 빌드해 문법과 API 사용을 함께 검사받는다. `-source/-target` 만 주면 **새 API 사용이 잡히지 않아** 실행 시점에 터진다"
-  },
-  {
-   "trap": "JDK 를 올렸더니 라이선스 문제가 생겼다는 연락을 받았다",
-   "why": "같은 버전에도 **배포판이 여럿**이고(Oracle JDK·Temurin·Corretto·Zulu …) 라이선스·지원 기간이 다르다. '자바를 올린다'는 것이 곧 '같은 조건을 유지한다'는 뜻은 아니다",
-   "fix": "쓰는 배포판과 그 지원 정책을 문서에 적어 둔다. 지원 종료 시점은 배포판별 로드맵으로 확인한다",
-   "sources": [
+      "title": "JEP 441: Pattern Matching for switch",
+      "url": "https://openjdk.org/jeps/441",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "switch 패턴 매칭이 Java 21 에서 정식화된 근거"
+    },
     {
-     "title": "Oracle Java SE Support Roadmap",
-     "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
-     "publisher": "Oracle",
-     "kind": "docs",
-     "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
+      "title": "JEP 248: Make G1 the Default Garbage Collector",
+      "url": "https://openjdk.org/jeps/248",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "JDK 9 부터 G1 이 기본 GC 가 된 근거"
+    },
+    {
+      "title": "JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)",
+      "url": "https://openjdk.org/jeps/377",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "ZGC 가 JDK 15 에서 실험 딱지를 떼고 제품 기능이 된 근거"
+    },
+    {
+      "title": "JEP 439: Generational ZGC",
+      "url": "https://openjdk.org/jeps/439",
+      "publisher": "OpenJDK",
+      "kind": "standard",
+      "summary": "JDK 21 의 세대별 ZGC. 젊은 객체를 따로 다뤄 처리량을 회복했다"
     }
-   ]
-  }
- ],
- "terms": [
-  {
-   "term": "JVM",
-   "en": "Java Virtual Machine",
-   "what": "바이트코드를 실행하는 가상 기계. GC·JIT·클래스 로딩이 여기 있고, Kotlin·Scala 도 이 위에서 돈다"
-  },
-  {
-   "term": "바이트코드",
-   "en": "bytecode",
-   "what": "`javac` 가 만드는 플랫폼 중립 명령. `.class` 파일에 담기고 버전 번호가 박힌다"
-  },
-  {
-   "term": "JIT",
-   "en": "Just-In-Time compilation",
-   "what": "실행 중에 자주 도는 코드를 기계어로 컴파일하는 것. 실행 통계를 쓰기 때문에 예열이 필요하다"
-  },
-  {
-   "term": "C1 / C2",
-   "en": "—",
-   "what": "HotSpot 의 두 JIT 컴파일러. C1 은 빨리 컴파일하고 C2 는 깊게 최적화한다"
-  },
-  {
-   "term": "STW",
-   "en": "stop-the-world",
-   "what": "GC 가 애플리케이션 스레드를 모두 멈추는 구간. 이 시간이 응답 지연의 꼬리를 만든다"
-  },
-  {
-   "term": "메타스페이스",
-   "en": "metaspace",
-   "what": "클래스 메타데이터가 사는 영역. **힙 밖**이라 `-Xmx` 에 포함되지 않는다"
-  },
-  {
-   "term": "가상 스레드",
-   "en": "virtual thread",
-   "what": "JVM 이 관리하는 가벼운 스레드(21+). 블로킹 시 캐리어 스레드에서 언마운트된다"
-  },
-  {
-   "term": "캐리어 스레드",
-   "en": "carrier thread",
-   "what": "가상 스레드를 실제로 실행하는 OS 스레드. 여기에 마운트/언마운트된다"
-  },
-  {
-   "term": "핀닝",
-   "en": "pinning",
-   "what": "가상 스레드가 캐리어에서 떨어지지 못하고 고정되는 상태. 초기 버전의 `synchronized` 가 대표 원인이었다"
-  },
-  {
-   "term": "LTS",
-   "en": "Long-Term Support",
-   "what": "장기 지원 버전. 8·11·17·21·25 이고 이후 2년 주기. 운영은 대개 여기에 머문다"
-  }
- ],
- "drills": [
-  {
-   "task": "**워밍업을 눈으로 본다.** 같은 계산(예: 배열 정렬이나 문자열 해싱)을 10,000회씩 20라운드 돌리고 라운드별 소요 시간을 출력한다. 그다음 `-XX:+PrintCompilation` 을 켜서 어느 시점에 컴파일이 일어나는지 로그와 시간 변화를 맞춰 본다",
-   "done_when": "시간이 몇 라운드째에 수렴하는지 답할 수 있고, 그 지점이 컴파일 로그와 대응하는 것을 보여 줄 수 있다",
-   "why": "\"JVM 벤치마크는 워밍업 후에 재라\"는 말이 자기 숫자로 손에 남는다. 이걸 본 사람은 손수 만든 벤치마크를 다시 믿지 않는다",
-   "no_hardware": "JDK 만 있으면 된다 — 다른 장비가 필요 없다",
-   "hours": 1
-  },
-  {
-   "task": "**가상 스레드와 플랫폼 스레드를 같은 작업으로 비교한다.** 1초 블로킹(`Thread.sleep`) 작업 10,000개를 ① 고정 크기 스레드 풀(200) ② `newVirtualThreadPerTaskExecutor` 로 각각 실행해 총 시간과 메모리를 잰다. 그다음 작업 안에 `synchronized` 블록을 넣어 다시 재 본다",
-   "done_when": "두 방식의 총 시간 차이를 숫자로 보여 줄 수 있고, `synchronized` 를 넣었을 때 결과가 어떻게 바뀌는지(그리고 왜)를 설명할 수 있다",
-   "why": "핀닝을 글로 아는 것과 시간으로 보는 것은 다르다. 21 이상에서 이 실험은 20줄이면 된다",
-   "needs": "JDK 21 이상",
-   "no_hardware": "21 미만이면 계산으로 대체한다 — 10,000개 작업 × 1초를 200 스레드로 처리하면 몇 초가 걸리는지, 가상 스레드면 왜 1초대인지 산술로 적는다",
-   "hours": 2
-  },
-  {
-   "task": "**클래스 파일 버전 실험.** 같은 소스를 `javac --release 8` 과 `--release 21` 로 각각 빌드하고 `javap -v` 로 major version 을 확인한다. 그다음 21 로 빌드한 클래스를 낮은 JDK 로 실행해 `UnsupportedClassVersionError` 를 직접 재현하고, `--release` 없이 `-target` 만 줬을 때 새 API 사용이 어떻게 통과되는지 확인한다",
-   "done_when": "`--release` 와 `-source/-target` 의 차이를 실패 사례로 설명할 수 있다",
-   "why": "'운영 JDK 버전 확인'이라는 규칙이 어떤 오류로 나타나는지 한 번 보면 빌드 설정을 다시 본다",
-   "needs": "JDK 두 개 (예: 8·21)",
-   "no_hardware": "JDK 하나만 있으면 `--release` 두 번으로 major version 차이까지는 확인할 수 있고, 실행 실패는 오류 메시지의 의미를 적는 것으로 대체한다",
-   "hours": 1
-  }
- ],
- "checks": [
-  "Java 와 JVM 을 구분해서 설명할 수 있나? 공고의 `JVM 생태계` 라는 말이 무엇을 묻는 건가?",
-  "왜 JVM 서비스는 예열 후에 빨라지나? 그 성질이 벤치마크를 어떻게 망치나?",
-  "`-Xmx` 를 컨테이너 한도에 맞춰 잡으면 왜 OOM 이 날 수 있나?",
-  "GC 가 있는데 메모리 누수가 생기는 이유는? 진단은 무엇으로 하나?",
-  "가상 스레드가 asyncio 와 결정적으로 다른 점은? (코드 변경 관점에서)",
-  "하위 호환성이 좋다는 말은 어느 방향인가? 그 반대로 하면 어떤 오류가 나나?"
- ],
- "evidence": [
-  {
-   "quote": "• JVM 생태계(Java, Kotlin, Spring, JPA)에 대한 경험 및 이해가 있으신 분",
-   "from": "posting",
-   "where": "큐엠아이티 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/356935",
-   "what_it_shows": "**공고가 언어가 아니라 `JVM 생태계` 를 묻는다.** Java 와 Kotlin 을 한 묶음으로 적는 것이 이 문서의 첫 절(두 겹)이 필요한 이유다"
-  },
-  {
-   "quote": "· Java 21+ 및 JVM 아키텍처에 대한 높은 이해와 Virtual Thread 기반 동시성 처리 경험이 있으신 분",
-   "from": "posting",
-   "where": "인피니티익스체인지코리아 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/380508",
-   "what_it_shows": "**가상 스레드가 이미 자격요건이다.** 버전을 `21+` 로 못 박은 것도 이 기능이 21 에서 정식화됐기 때문이다"
-  },
-  {
-   "quote": "• Java + Spring Boot 기반의 서비스 개발 및 운영 경험 (Spring Boot 3.x 우대)",
-   "from": "posting",
-   "where": "에이치투오호스피탈리티 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/371696",
-   "what_it_shows": "동반 1위가 Spring(44.4%)인 이유가 문장으로 보인다. 그리고 **프레임워크 버전까지 우대 조건**이 된다 — 버전 감각이 필요한 생태계다"
-  },
-  {
-   "quote": "• TypeScript, JavaScript, Java, Kotlin, Go 등 하나 이상의 서버 개발 언어에 능숙하신 분",
-   "from": "posting",
-   "where": "베이글코드 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/259710",
-   "what_it_shows": "서버 언어를 **택일**로 여는 공고도 많다 — Java 를 아는 것이 진입 경로 중 하나라는 뜻이고, 런타임 이해가 옮겨 타는 밑천이 된다"
-  },
-  {
-   "quote": "• Backend: Java(Spring Boot) 또는 Python(FastAPI, Django 등) 프레임워크를 활용하여 확장성 있고 안정적인 RESTful API 서버 설계 및 구현이 가능하신 분",
-   "from": "posting",
-   "where": "아이알큐더스 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/369107",
-   "what_it_shows": "`market` 의 Python 동반 35.8% 가 실제로는 이런 모습 — 한 자리를 두 스택이 나눠 갖는다. 두 문서를 나란히 읽을 이유"
-  }
- ],
- "related": [
-  {
-   "slug": "java-in-finance",
-   "how": "같은 언어의 다른 축 — 왜 한국 금융·공공에서 유독 두꺼운가. 제도·자산·발주 구조가 거기 있다"
-  },
-  {
-   "slug": "gil",
-   "how": "가상 스레드가 무엇에 대한 답인지 보이는 자리. GIL 없는 런타임의 대가(개발자가 스레드 안전을 진다)도 거기 정리돼 있다"
-  },
-  {
-   "slug": "asyncio",
-   "how": "함수 색 문제의 본체. 같은 목표를 코드 변경 없이 이루는 것과 문법으로 이루는 것의 차이"
-  },
-  {
-   "slug": "spring",
-   "how": "동반 44.4% — Java 공고의 절반이 함께 요구한다. DI·트랜잭션·JPA 가 거기 본체다"
-  }
- ],
- "open_questions": [
-  "`market` 숫자는 `tech_relations.json` 의 **2026-09-04 00:41 생성분**을 옮긴 것이다(공고 1,558건 · 21.6%). **이 값은 크롤 사이클마다 바뀌므로** 재방문 사이클에서 다시 맞춰야 한다 — 지금도 `python` 문서가 같은 이유로 경고 상태다",
-  "LTS 별 지원 종료 시점은 **배포판마다 다르다**(Oracle JDK·Temurin·Corretto·Zulu). 이 문서는 Oracle 로드맵을 근거로 LTS 목록과 2년 주기까지만 적고 개별 종료 날짜는 표에 넣지 않았다 — 날짜가 필요하면 쓰는 배포판의 정책을 확인해야 한다",
-  "JIT 의 계층 컴파일 세부(어느 호출 횟수에서 C1→C2 로 승격되는지)는 구현 세부이고 버전·옵션에 따라 달라져 숫자를 쓰지 않았다. 실습에서는 `-XX:+PrintCompilation` 으로 **관측하는 방법**만 남겼다",
-  "GraalVM 네이티브 이미지의 기동 시간·메모리 개선 폭은 애플리케이션 의존이라 수치를 적지 않았다. 별도 문서가 필요한 주제이고, 아직 큐에 올리지 않았다",
-  "Kotlin 을 `when_to_use` 에서 권했지만 `inferred` 로 두었다 — 인력 풀·빌드 성숙도 비교는 공개 통계로 받치기 어렵고, 이 데이터셋의 공고 수(Java 1,558건)만으로는 '어느 쪽이 낫다'를 말할 수 없다"
- ],
- "sources": [
-  {
-   "title": "Oracle Java SE Support Roadmap",
-   "url": "https://www.oracle.com/java/technologies/java-se-support-roadmap.html",
-   "publisher": "Oracle",
-   "kind": "docs",
-   "summary": "어느 버전이 LTS 이고 지원이 언제 끝나는지의 1차 자료. 8·11·17·21·25 가 LTS 이고 이후 2년 주기라는 서술이 여기 있다"
-  },
-  {
-   "title": "JEP 444: Virtual Threads",
-   "url": "https://openjdk.org/jeps/444",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "가상 스레드를 JDK 21 에서 정식화한 문서. JEP 425(19)·436(20)의 프리뷰를 거쳤다는 이력과 설계 근거가 있다"
-  },
-  {
-   "title": "JEP 491: Synchronize Virtual Threads without Pinning",
-   "url": "https://openjdk.org/jeps/491",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "`synchronized` 안에서 가상 스레드가 캐리어에 고정되던(pinning) 문제를 없앤 변경. JDK 24"
-  },
-  {
-   "title": "Java Platform, Standard Edition Core Libraries — Virtual Threads (21)",
-   "url": "https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html",
-   "publisher": "Oracle",
-   "kind": "docs",
-   "summary": "가상 스레드의 마운트/언마운트와 캐리어 스레드 개념을 설명한 공식 가이드"
-  },
-  {
-   "title": "JEP 286: Local-Variable Type Inference",
-   "url": "https://openjdk.org/jeps/286",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "`var` 가 Java 10 에 들어온 근거"
-  },
-  {
-   "title": "JEP 395: Records",
-   "url": "https://openjdk.org/jeps/395",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "레코드가 Java 16 에서 정식화된 근거"
-  },
-  {
-   "title": "JEP 409: Sealed Classes",
-   "url": "https://openjdk.org/jeps/409",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "sealed 가 Java 17 에 들어온 근거"
-  },
-  {
-   "title": "JEP 441: Pattern Matching for switch",
-   "url": "https://openjdk.org/jeps/441",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "switch 패턴 매칭이 Java 21 에서 정식화된 근거"
-  },
-  {
-   "title": "JEP 248: Make G1 the Default Garbage Collector",
-   "url": "https://openjdk.org/jeps/248",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "JDK 9 부터 G1 이 기본 GC 가 된 근거"
-  },
-  {
-   "title": "JEP 377: ZGC: A Scalable Low-Latency Garbage Collector (Production)",
-   "url": "https://openjdk.org/jeps/377",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "ZGC 가 JDK 15 에서 실험 딱지를 떼고 제품 기능이 된 근거"
-  },
-  {
-   "title": "JEP 439: Generational ZGC",
-   "url": "https://openjdk.org/jeps/439",
-   "publisher": "OpenJDK",
-   "kind": "standard",
-   "summary": "JDK 21 의 세대별 ZGC. 젊은 객체를 따로 다뤄 처리량을 회복했다"
-  }
- ]
+  ]
 }
