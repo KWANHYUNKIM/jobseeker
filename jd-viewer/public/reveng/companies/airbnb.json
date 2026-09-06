@@ -1,0 +1,125 @@
+{
+  "slug": "airbnb",
+  "name": "Airbnb",
+  "name_en": "Airbnb",
+  "country": "US",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "airbnb.com",
+  "one_liner": "숙박 마켓플레이스 — 2026년에 공개한 기술 이야기가 전부 남의 것에서 자기 것으로 옮기는 이야기다",
+  "business_model": "**호스트와 게스트를 잇고 예약마다 수수료를 받는다.** **220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상**, **호스트 500만 명 이상**. **2026년 2분기 매출 36억 달러(+17%)**, **총예약액 272억 달러(+16%)**, **예약된 숙박·좌석 1억 4,830만 건(+10%)**. 숙소를 넘어 **호텔**로도 넓히는 중이다.\n\n⚠️ **이 회사가 2026년에 공개한 기술 이야기 셋이 모두 `옮기는 이야기` 다** — **관측을 벤더 기반에서 오픈소스 스택으로**(2026-04) · **데이터 아키텍처를 한 제품에서 여러 제품 구조로**(2026-06) · **신원 그래프를 벤더 PaaS 에서 자체 인프라로**(2026-05). **규모가 커진 회사가 빌려 쓰던 것을 하나씩 자기 것으로 바꾸는 국면으로 보인다**(이 정리는 이 사이트의 재구성이다).",
+  "products": [
+    "숙소 예약 (마켓플레이스)",
+    "호텔",
+    "체험 · 서비스"
+  ],
+  "domain_map": {
+    "title": "빌려 쓰던 것을 하나씩 자기 것으로 바꾼다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  G[\"<b>게스트 · 호스트 500만 명 이상</b><br/>• 등록 800만 개 이상\"]:::list --> B[\"<b>예약</b><br/>• 총예약액 272억 달러\"]:::list\n  B --> M[\"⚠️ <b>이 모든 것을 관측한다</b><br/>• 초당 1억 샘플 이상\"]:::accent\n  B --> D[\"<b>데이터를 진실의 원천으로</b><br/>• 다제품 구조 (⏳ 미독)\"]:::quiet\n  B --> I[\"<b>신원 그래프</b><br/>• 벤더 PaaS → 자체 (⏳ 미독)\"]:::quiet\n  M --> C[\"<b>얻은 것</b><br/>• 비용 한 자릿수 규모 감소<br/>• JVM 메트릭 CPU 10% → 1% 미만\"]:::list"
+  },
+  "revenue_streams": [
+    {
+      "name": "예약 수수료",
+      "how": "**총예약액 272억 달러(+16%)** · **예약된 숙박·좌석 1억 4,830만 건(+10%)** · 2026년 2분기 매출 **36억 달러(+17%)**.",
+      "domains": [
+        "이 규모를 관측하는 비용을 감당한다",
+        "여러 제품을 하나의 데이터 구조로 담는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Airbnb (ABNB) Q2 2026 Earnings",
+          "url": "https://news.airbnb.com/airbnb-q1-2026-financial-results/",
+          "publisher": "Airbnb Newsroom / 실적 발표",
+          "date": "2026",
+          "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
+        }
+      ]
+    },
+    {
+      "name": "제품 확장 (호텔 · 체험)",
+      "how": "**숙소를 넘어 호텔로 넓히는 중**이고 **호텔 숙박이 숙소보다 약 세 배 빠르게** 자란다. ⚠️ **그 확장이 데이터 구조를 `한 제품에서 여러 제품으로` 바꾸게 만든 배경으로 보인다**(재구성).",
+      "domains": [
+        "여러 제품을 하나의 데이터 구조로 담는다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Airbnb (ABNB) Q2 2026 Earnings",
+          "url": "https://news.airbnb.com/airbnb-q1-2026-financial-results/",
+          "publisher": "Airbnb Newsroom / 실적 발표",
+          "date": "2026",
+          "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
+        },
+        {
+          "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+          "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+          "publisher": "The Airbnb Tech Blog",
+          "date": "2026-06",
+          "summary": "원시 프로덕션 데이터를 표준화된 신뢰할 수 있는 진실의 원천으로 바꿨다. 이전에 이중 파이프라인 실행으로 검증하고 고통스럽도록 느린 폐기 주기를 거쳤다. ⏳ 본문은 아직 읽지 않았다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "이 규모를 관측하는 비용을 감당한다",
+      "why": "⚠️ **StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿았다** — **StatsD 의 UDP 전송은 패킷 손실 위험을 만들고 Veneur 의 설계는 현대적인 Prometheus 데이터 모델과 잘 맞지 않았다.** **초당 1억 샘플 이상**을 처리해야 하는 규모다. ✅ **본문 확인함**(2026-04).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "여러 제품을 하나의 데이터 구조로 담는다",
+      "why": "**숙소만 있던 회사가 호텔과 체험으로 넓히면 데이터 구조도 따라가야 한다.** 회사가 **`하나를 넘어 확장하기: 다제품 세계를 위한 데이터 아키텍처 진화`**(2026-06)를 냈고, **원시 프로덕션 데이터를 표준화된 신뢰할 수 있는 진실의 원천으로** 바꿨다. ⚠️ **이전에 `이중 파이프라인 실행으로 검증하고 고통스럽도록 느린 폐기 주기`** 를 거쳤다. ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "신원 그래프를 벤더에서 자기 것으로 옮긴다",
+      "why": "**한 사람이 여러 계정·기기·결제수단으로 나타나는 것을 잇는 그래프**를 **벤더 PaaS 에서 자체 지식 그래프 인프라로** 옮겼다(2026-05). ⚠️ **이전 중에 `같은 질의가 자체 인프라와 3자 벤더에서 성능이 크게 달라` JanusGraph 쪽과 클라이언트 쪽 양쪽을 최적화해야 했다.** ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **도메인 셋 중 둘이 본문 미독이다** — 데이터 아키텍처와 신원 그래프. **제목과 3자 요약으로 세웠다.**",
+    "⚠️ **검색·랭킹의 본체를 아직 못 봤다** — **등록 800만 개에서 무엇을 어떻게 보여 주는지**가 이 마켓플레이스의 핵심인데 2026년 글 목록에 안 보인다.",
+    "⚠️ **`AI 에이전트가 코드의 60%를 쓴다` 는 3자 기사가 있다**(2026-07) — **회사 자신의 글로 확인하지 못했다.** ⏳ 확인되면 `AI 를 어디까지 믿나` 축의 재료가 된다.",
+    "⚠️ **목록 페이지가 헤더만 온다** — `medium.com/airbnb-engineering` 를 `r.jina.ai` 로 열어도 글 목록이 안 나와 **주소를 검색으로 받아야 한다.**",
+    "⚠️ **연표(eras)를 못 세웠다** — 2008년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+      "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+      "publisher": "The Airbnb Tech Blog",
+      "date": "2026-04",
+      "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+    },
+    {
+      "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+      "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+      "publisher": "The Airbnb Tech Blog",
+      "date": "2026-06",
+      "summary": "원시 프로덕션 데이터를 표준화된 신뢰할 수 있는 진실의 원천으로 바꿨다. 이전에 이중 파이프라인 실행으로 검증하고 고통스럽도록 느린 폐기 주기를 거쳤다. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+      "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+      "publisher": "The Airbnb Tech Blog",
+      "date": "2026-05",
+      "summary": "신원 그래프를 벤더 PaaS 에서 자체 지식 그래프 인프라로 옮겼다. 이전 중에 같은 질의가 자체 인프라와 3자 벤더에서 성능이 크게 달라 JanusGraph 쪽과 클라이언트 쪽 양쪽을 최적화해야 했다. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "Airbnb (ABNB) Q2 2026 Earnings",
+      "url": "https://news.airbnb.com/airbnb-q1-2026-financial-results/",
+      "publisher": "Airbnb Newsroom / 실적 발표",
+      "date": "2026",
+      "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
+    }
+  ]
+}
