@@ -1,0 +1,190 @@
+{
+  "slug": "paystack",
+  "name": "Paystack",
+  "name_en": "Paystack",
+  "country": "기타",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "paystack.com",
+  "one_liner": "아프리카에서 온라인 결제를 받아 주는 회사 — 남이 정한 지원 종료 일정이 이 회사의 공사 일정이 된다",
+  "business_model": "**사업체가 온라인·오프라인으로 돈을 받게 해 주고 거래마다 몫을 받는다.** 라고스에서 시작해 **나이지리아와 가나에서 6만 개 넘는 사업체**가 쓰고, 인수 시점에 이미 **나이지리아 온라인 거래의 절반 이상**을 처리했다. **2020년 10월 스트라이프가 2억 달러 이상에 인수**했고, **인수 이후 결제량이 12배 이상 늘었다.** 2026년에는 **그룹 흑자를 달성한 뒤 지주회사 The Stack Group** 으로 재편해 **핵심 가맹점 결제 · 소비자 앱 Zap · Paystack 마이크로파이낸스 은행 · 벤처 스튜디오 TSG Labs** 넷을 그 아래 두었다. 남아공 파일럿도 시작했다.\n\n⚠️ **이 회사의 기술 이야기에서 눈에 띄는 것은 시작점이 자기 안이 아니라는 것이다** — **아마존이 2024년 10월 Aurora MySQL v2 지원 중단을 발표하자** 아프리카 전역의 가맹점 결제를 받치는 데이터베이스 계층을 올려야 했다. **남이 정한 일정이 이 회사의 공사 일정이 된다**(이 정리는 이 사이트의 재구성이다).\n\n⚠️ **그리고 같은 마감을 다른 회사도 맞았는데 답이 갈렸다** — **Plaid 는 그 기회에 플랫폼을 통째로 갈아탔고**(TiDB), **Paystack 은 제자리에서 올렸다**(MySQL 8.0). **가진 자원과 감당할 위험이 다르면 같은 마감에도 다른 답이 나온다**(이 대비는 이 사이트의 재구성이다).",
+  "products": [
+    "온라인·오프라인 결제 수납",
+    "Zap (소비자 결제 앱)",
+    "Paystack 마이크로파이낸스 은행",
+    "TSG Labs (벤처 스튜디오)"
+  ],
+  "domain_map": {
+    "title": "Paystack 도메인 지도",
+    "question": "아프리카에서 결제를 받는 회사가, 남이 정한 지원 종료 앞에서 무엇을 어떻게 올리는가?",
+    "code": "flowchart TD\n  M[\"<b>가맹점 6만 곳 이상</b><br/>• 나이지리아 · 가나 · (남아공 파일럿)\"]:::accent --> P[\"<b>결제 수납</b><br/>• 나이지리아 온라인 거래의<br/>  절반 이상\"]:::accent\n  P --> DB[\"<b>Aurora MySQL 클러스터 11개</b><br/>• 각각 중요 서비스를 받친다\"]:::accent\n  A[\"⚠️ <b>2024-10 아마존 발표</b><br/>• Aurora MySQL v2(5.7) 지원 중단\"]:::gone --> U[\"<b>MySQL 8.0 으로 업그레이드</b><br/>• 블루-그린 · 사후 사고 0\"]:::accent\n  DB --> U\n  U --> R[\"<b>연장 지원 수수료를 피해</b><br/>• 첫 2년 17만 달러 이상 절감\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+  },
+  "revenue_streams": [
+    {
+      "name": "가맹점 결제 수수료",
+      "how": "온라인·오프라인 수납마다 받는다. **가맹점 6만 곳 이상**, **나이지리아 온라인 거래의 절반 이상**. 인수 이후 **결제량 12배 이상**.",
+      "domains": [
+        "아프리카에서 사업체가 돈을 받게 한다",
+        "남이 정한 지원 종료 일정에 맞춰 결제 데이터베이스를 올린다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Stripe will acquire Paystack to accelerate online commerce across Africa",
+          "url": "https://stripe.com/newsroom/news/paystack-joining-stripe",
+          "publisher": "Stripe",
+          "date": "2020-10-15",
+          "summary": "스트라이프가 라고스의 Paystack 을 인수한다. 나이지리아와 가나에서 6만 개 넘는 사업체가 쓰고 나이지리아 온라인 거래의 절반 이상을 처리한다."
+        },
+        {
+          "title": "Stripe-Owned Paystack Launches New Parent Company After Reaching Group Profitability",
+          "url": "https://peopleofcolorintech.com/articles/stripe-owned-paystack-launches-new-parent-company-after-reaching-group-profitability/",
+          "publisher": "People of Color in Tech",
+          "date": "2026",
+          "summary": "그룹 흑자 달성 뒤 지주회사 The Stack Group(TSG)로 재편. 핵심 가맹점 결제, 소비자 앱 Zap, Paystack 마이크로파이낸스 은행, 벤처 스튜디오 TSG Labs 넷이 그 아래 들어간다. 인수 이후 결제량이 12배 이상 늘었다."
+        }
+      ]
+    },
+    {
+      "name": "소비자 앱·은행·벤처 스튜디오 (TSG)",
+      "how": "지주회사 아래 **Zap(소비자 결제 앱)** · **마이크로파이낸스 은행** · **TSG Labs**. ⚠️ **각각의 비중은 확인하지 못했다.**",
+      "domains": [
+        "아프리카에서 사업체가 돈을 받게 한다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Stripe-Owned Paystack Launches New Parent Company After Reaching Group Profitability",
+          "url": "https://peopleofcolorintech.com/articles/stripe-owned-paystack-launches-new-parent-company-after-reaching-group-profitability/",
+          "publisher": "People of Color in Tech",
+          "date": "2026",
+          "summary": "그룹 흑자 달성 뒤 지주회사 The Stack Group(TSG)로 재편. 핵심 가맹점 결제, 소비자 앱 Zap, Paystack 마이크로파이낸스 은행, 벤처 스튜디오 TSG Labs 넷이 그 아래 들어간다. 인수 이후 결제량이 12배 이상 늘었다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "남이 정한 지원 종료 일정에 맞춰 결제 데이터베이스를 올린다",
+      "why": "⚠️ **시작점이 자기 안이 아니다** — **2024년 10월 아마존이 Aurora MySQL v2(5.7 기반) 지원 중단을 발표**했고, 그러자 **아프리카 전역의 가맹점 결제를 처리하는 데이터베이스 계층**을 올려야 했다. **프로덕션 Aurora 클러스터 11개**가 각각 중요한 서비스를 받치고, **Node.js 8.x 를 쓰는 레거시 앱부터 20.x 의 현대 서비스까지** 섞여 있으며, **클러스터마다 자기 의존성·백그라운드 작업·운영 엣지 케이스**가 있었다. ⚠️ **그리고 이 회사가 가장 먼저 한 일은 계획을 쓰는 것이 아니라 `성공` 을 다시 정의하는 것이었다.**",
+      "tech": [
+        {
+          "tech": "⚠️ 성공의 재정의",
+          "solves": "⚠️ **`정비 시간 안에 끝내는 것은 성공이 아니다`** — 이전 업그레이드에서 **직후에는 멀쩡해 보이다가 나중에 문제가 드러났고**, **어떤 질의는 잘못된 결과를 돌려주기 시작했다.** 그래서 **속도가 아니라 정확성과 안정성**을 성공으로 삼았다.",
+          "limits": "⚠️ **정확성을 재려면 시간이 든다** — 감사에만 **4~6주**를 썼다(이 지적은 이 사이트의 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we pulled off a zero incident migration across 11 production databases",
+              "url": "https://paystack.com/blog/engineering-design/how-we-pulled-off-a-zero-incident-migration-across-11-production-databases",
+              "publisher": "Paystack Blog",
+              "date": "2026-02-28",
+              "summary": "아마존이 2024년 10월 Aurora MySQL v2(5.7 기반) 지원 중단을 발표해 결제를 처리하는 프로덕션 클러스터 11개를 MySQL 8.0 으로 올렸다. 성공을 속도가 아니라 정확성으로 재정의하고, 4~6주 감사와 이중 계층 호환성 테스트, 블루-그린 전환으로 사후 사고 없이 끝냈다."
+            }
+          ]
+        },
+        {
+          "tech": "이중 계층 호환성 테스트",
+          "solves": "**DB 쪽**은 MySQL 업그레이드 체커로 스키마를 훑고(**5.7 에서 되던 이름이 8.0 에서 예약어가 되는 문제**를 여기서 잡았다), **앱 쪽**은 8.0 스테이징에서 **ORM 호환·커넥션 풀 동작·질의 실행 계획·백그라운드 작업 안정성**을 검증한다. **스테이징을 통과 못 하면 운영으로 가지 않는다.**",
+          "limits": "⚠️ **하위 호환을 가정하지 말고 검증하라** — 회사가 그 규칙을 이 단계에서 배웠다고 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we pulled off a zero incident migration across 11 production databases",
+              "url": "https://paystack.com/blog/engineering-design/how-we-pulled-off-a-zero-incident-migration-across-11-production-databases",
+              "publisher": "Paystack Blog",
+              "date": "2026-02-28",
+              "summary": "아마존이 2024년 10월 Aurora MySQL v2(5.7 기반) 지원 중단을 발표해 결제를 처리하는 프로덕션 클러스터 11개를 MySQL 8.0 으로 올렸다. 성공을 속도가 아니라 정확성으로 재정의하고, 4~6주 감사와 이중 계층 호환성 테스트, 블루-그린 전환으로 사후 사고 없이 끝냈다."
+            }
+          ]
+        },
+        {
+          "tech": "블루-그린 + CNAME 전환",
+          "solves": "1주 전에 **DDL 프리즈**와 DMS 복제를 걸고 **모든 앱이 CNAME 으로 붙는지 재확인**한다(전환의 핵심). 당일에는 **블루를 읽기 전용으로 두고 엣지에서 트래픽을 완전히 차단**한 뒤 **바이너리 로그 위치를 검증**하고 **CNAME 을 그린으로** 돌린다.",
+          "limits": "⚠️ **Aurora 는 클러스터 안에서 인스턴스별 롤링 업그레이드를 허용하지 않는다** — 클러스터 전체를 함께 올려야 해서 **롤링으로 다운타임을 줄일 수 없었고 정비 창이 필요했다**(3시간 계획, 2시간 미만 완료).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we pulled off a zero incident migration across 11 production databases",
+              "url": "https://paystack.com/blog/engineering-design/how-we-pulled-off-a-zero-incident-migration-across-11-production-databases",
+              "publisher": "Paystack Blog",
+              "date": "2026-02-28",
+              "summary": "아마존이 2024년 10월 Aurora MySQL v2(5.7 기반) 지원 중단을 발표해 결제를 처리하는 프로덕션 클러스터 11개를 MySQL 8.0 으로 올렸다. 성공을 속도가 아니라 정확성으로 재정의하고, 4~6주 감사와 이중 계층 호환성 테스트, 블루-그린 전환으로 사후 사고 없이 끝냈다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 자동화 대신 수동 통제",
+          "solves": "AWS 의 자동 이전 대신 **손으로** 했다 — 트래픽을 의도적으로 끄고, DB 를 완전히 격리하고, 복제 무결성을 확인하고, **재시작 순서를 통제하고**, **명확한 롤백 경로**를 둔다.",
+          "limits": "⚠️ **롤백은 결국 쓰지 않았다** — 그런데 회사가 `있다는 것을 아는 것이 자신 있게 나아가게 했다` 고 적는다. **쓰지 않은 안전장치의 값을 적는 드문 경우다**(이 평가는 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we pulled off a zero incident migration across 11 production databases",
+              "url": "https://paystack.com/blog/engineering-design/how-we-pulled-off-a-zero-incident-migration-across-11-production-databases",
+              "publisher": "Paystack Blog",
+              "date": "2026-02-28",
+              "summary": "아마존이 2024년 10월 Aurora MySQL v2(5.7 기반) 지원 중단을 발표해 결제를 처리하는 프로덕션 클러스터 11개를 MySQL 8.0 으로 올렸다. 성공을 속도가 아니라 정확성으로 재정의하고, 4~6주 감사와 이중 계층 호환성 테스트, 블루-그린 전환으로 사후 사고 없이 끝냈다."
+            }
+          ]
+        },
+        {
+          "tech": "외부 파트너 (MyDBOPS)",
+          "solves": "내부 계획이 이미 있었는데도 데려왔다 — **수십 번 해 본 사람만 보는 엣지 케이스와 위험**을 짚어 준다.",
+          "limits": "⚠️ **무엇을 짚어 줬는지 구체적으로는 안 적는다**(이 지적은 재구성이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we pulled off a zero incident migration across 11 production databases",
+              "url": "https://paystack.com/blog/engineering-design/how-we-pulled-off-a-zero-incident-migration-across-11-production-databases",
+              "publisher": "Paystack Blog",
+              "date": "2026-02-28",
+              "summary": "아마존이 2024년 10월 Aurora MySQL v2(5.7 기반) 지원 중단을 발표해 결제를 처리하는 프로덕션 클러스터 11개를 MySQL 8.0 으로 올렸다. 성공을 속도가 아니라 정확성으로 재정의하고, 4~6주 감사와 이중 계층 호환성 테스트, 블루-그린 전환으로 사후 사고 없이 끝냈다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "아프리카에서 사업체가 돈을 받게 한다",
+      "why": "⚠️ **이 회사의 본체인데 아직 자료를 못 읽었다.** **나이지리아 온라인 거래의 절반 이상**을 처리하고 가맹점이 **6만 곳 이상**이며, 인수 이후 **결제량이 12배 이상** 늘었다. **아프리카의 결제는 카드·은행 이체·USSD·모바일 머니가 섞여 있고 나라마다 다른데**(추정), **그 다양성을 어떻게 하나로 받는지**가 이 도메인의 질문이다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **핵심 제품(결제 수납)의 기술 자료를 못 찾았다** — **이 회사의 본체**인데 블로그의 시스템 글이 **DB 이전**과 **SAST 취약점 관리** 둘뿐이다. **아프리카의 여러 결제 수단(카드·은행 이체·USSD·모바일 머니)을 어떻게 하나로 받는지**가 비어 있다.",
+    "⚠️ **글이 드문드문하다** — 2023-09 · 2024-09 · 2024-11 · 2025-05 · 2025-07 · 2026-02 이고 **여러 편이 커뮤니티·통합 라이브러리·디자인** 글이다. **도메인을 크게 잡지 않은 이유다.**",
+    "**절감액이 자료마다 다르다** — **회사 글은 첫 2년 17만 달러 이상**(연장 지원 수수료 회피)이라 적는데, 3자 케이스 스터디는 **54만 달러**를 말한다. **회사 값을 썼다.**",
+    "**사업 수치가 인수 시점(2020) 것이다** — 가맹점 6만 곳, 나이지리아 온라인 거래 절반 이상. **지금 값을 못 찾았다.**",
+    "**TSG 4개 사업의 비중을 모른다** — 핵심 결제·Zap·마이크로파이낸스 은행·TSG Labs.",
+    "⚠️ **스트라이프와의 기술 관계를 모른다** — 인수된 지 6년인데 **인프라를 공유하는지 따로 가는지**가 자료에 없다. 이번 이전을 **자기 팀과 외부 파트너로** 했다는 것만 보인다."
+  ],
+  "sources": [
+    {
+      "title": "How we pulled off a zero incident migration across 11 production databases",
+      "url": "https://paystack.com/blog/engineering-design/how-we-pulled-off-a-zero-incident-migration-across-11-production-databases",
+      "publisher": "Paystack Blog",
+      "date": "2026-02-28",
+      "summary": "아마존이 2024년 10월 Aurora MySQL v2(5.7 기반) 지원 중단을 발표해 결제를 처리하는 프로덕션 클러스터 11개를 MySQL 8.0 으로 올렸다. 성공을 속도가 아니라 정확성으로 재정의하고, 4~6주 감사와 이중 계층 호환성 테스트, 블루-그린 전환으로 사후 사고 없이 끝냈다."
+    },
+    {
+      "title": "Stripe will acquire Paystack to accelerate online commerce across Africa",
+      "url": "https://stripe.com/newsroom/news/paystack-joining-stripe",
+      "publisher": "Stripe",
+      "date": "2020-10-15",
+      "summary": "스트라이프가 라고스의 Paystack 을 인수한다. 나이지리아와 가나에서 6만 개 넘는 사업체가 쓰고 나이지리아 온라인 거래의 절반 이상을 처리한다."
+    },
+    {
+      "title": "Stripe-Owned Paystack Launches New Parent Company After Reaching Group Profitability",
+      "url": "https://peopleofcolorintech.com/articles/stripe-owned-paystack-launches-new-parent-company-after-reaching-group-profitability/",
+      "publisher": "People of Color in Tech",
+      "date": "2026",
+      "summary": "그룹 흑자 달성 뒤 지주회사 The Stack Group(TSG)로 재편. 핵심 가맹점 결제, 소비자 앱 Zap, Paystack 마이크로파이낸스 은행, 벤처 스튜디오 TSG Labs 넷이 그 아래 들어간다. 인수 이후 결제량이 12배 이상 늘었다."
+    }
+  ]
+}
