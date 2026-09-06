@@ -1290,7 +1290,7 @@
         "강한 일관성",
         "선형화"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1326,7 +1326,7 @@
         "session consistency",
         "자기 쓰기 읽기"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1718,7 +1718,7 @@
         "a11y",
         "WAI-ARIA"
       ],
-      "sections": 6,
+      "sections": 8,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1982,7 +1982,7 @@
         "RDB",
         "persistence"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
