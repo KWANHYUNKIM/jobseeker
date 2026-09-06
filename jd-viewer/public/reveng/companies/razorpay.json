@@ -4,7 +4,7 @@
   "name_en": "Razorpay",
   "country": "IN",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "razorpay.com",
   "one_liner": "인도 온라인 결제의 절반을 처리하는 게이트웨이 — 규모가 커지자 결제보다 자기 관측과 빌드의 비용이 이야깃거리가 됐다",
@@ -212,9 +212,87 @@
     },
     {
       "name": "사람의 조사 시간을 AI 로 줄인다",
-      "why": "**보안 트리아지 `750시간에서 2시간으로`**, **조사 `30분에서 90초로`**, 그리고 **망에서 격리된 사내 AI `Hermes`**(2026-07-22). ⏳ **본문은 아직 안 읽었다.** ⚠️ **`AI 를 어디까지 믿나` 축에서 금융 규제 아래의 회사가 어떻게 격리하는지가 새 자리다**(재구성).",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **금융 회사에서 직원마다 AI 에이전트를 주려면 계속 돌면서 안전해야 한다.** 노트북 방식은 **사람이 있을 때만 돌고, 관측이 없고, 맥락이 안 쌓인다.** 서버로 올리자 **주인이 자는 동안에도 도는데**(기록된 한 사용자의 실행 중 약 90%가 무감독) **그 순간 `무엇을 할 수 있는가` 를 누가 막느냐가 문제가 된다.** ✅ **본문 확인함**(2026-07-12). ⏳ 보안 트리아지 750시간 → 2시간 글은 아직 미독.",
+      "tech": [
+        {
+          "tech": "쿠버네티스 (직원당 네임스페이스)",
+          "solves": "**220명에게 각자 파드·스토리지·클라우드 신원·암호화 볼륨**을 준다 — 배포 **2분 미만**. 노트북 방식의 세 한계(근무 시간·관측 없음·맥락 없음)를 없앤다.",
+          "limits": "⚠️ **220개를 따로 굴려야 하고**, **하루 실제 사용은 약 84개**다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+              "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-07-12",
+              "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+            }
+          ]
+        },
+        {
+          "tech": "커널 네트워크 정책",
+          "solves": "⚠️ **`격리는 인프라의 속성이지 애플리케이션의 속성이 아니다`** — **감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부해** 에이전트가 영리해져도 못 뚫게 한다.",
+          "limits": "⚠️ **인프라 복잡도가 크게 는다** — **문서화되지 않은 `골든 핵` 넷**이 있어야 잠긴 환경에서 이미지가 돌았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+              "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-07-12",
+              "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+            }
+          ]
+        },
+        {
+          "tech": "CrabTrap (LLM 기반 이그레스 프록시)",
+          "solves": "**월 1,500만 건을 훑어 21만 9천 건을 막고** 모든 호출을 **실명에 귀속**시킨다 — 규칙 목록으로는 다 못 잡는 트래픽을 본다(재구성).",
+          "limits": "⚠️ **검사기 자체가 LLM 이라 비용과 오탐이 따르는데 그 수치는 글에 없다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+              "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-07-12",
+              "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+            }
+          ]
+        },
+        {
+          "tech": "스킬 (컨테이너 안에 사적으로)",
+          "solves": "에이전트가 **반복을 알아채 재사용 절차를 스스로 만든다** — 한 사용자에게 **25개 범주 98개**.",
+          "limits": "⚠️ **공유하지 않으므로 같은 스킬을 여러 사람이 각자 다시 만든다**(재구성). 대신 **테넌트 간 유출이 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+              "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-07-12",
+              "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+            }
+          ]
+        },
+        {
+          "tech": "내부 LLM 게이트웨이 · SHA256 고정",
+          "solves": "작업마다 모델을 고르고, **이미지를 다이제스트로 고정해 공급망 공격을 막는다.**",
+          "limits": "⚠️ **게이트웨이가 단일 장애점이 되고**, 다이제스트 고정은 갱신마다 손이 간다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+              "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+              "publisher": "Razorpay Engineering",
+              "date": "2026-07-12",
+              "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "isolation-belongs-to-the-kernel"
+      ]
     }
   ],
   "features": [
@@ -1208,6 +1286,524 @@
           "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
         }
       ]
+    },
+    {
+      "key": "isolation-belongs-to-the-kernel",
+      "name": "격리는 애플리케이션이 아니라 인프라의 속성이다",
+      "domain": "사람의 조사 시간을 AI 로 줄인다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **금융 회사에서 직원마다 AI 에이전트를 주려면 두 가지를 동시에 풀어야 한다** — **계속 돌아야 하고, 안전해야 한다.** 노트북에서 돌리는 방식은 셋 다 안 됐다 — **사람이 있을 때만 돌고, 관측이 없고, 지속적인 맥락이 쌓이지 않는다.** ⚠️ **그래서 쿠버네티스 위에 올렸는데, 그 순간 `에이전트가 무엇을 할 수 있는가` 를 누가 막느냐가 문제가 된다.** 이 회사의 답이 한 문장이다 — **`격리는 인프라의 속성이지 애플리케이션의 속성이 아니다.`** ⚠️ **리눅스 커널에서 강제하기 때문에 에이전트가 영리해져도 우회할 수 없다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**직원 220명에게 각자 격리된 에이전트** — **하루 약 84개가 실제로 쓰인다.** 새 에이전트 배포는 **2분 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 얼마나 무감독으로 도나",
+            "value": "기록된 한 사용자의 에이전트가 **8주에 15,039 세션** — 그중 **13,570 건이 주인이 자거나 회의 중일 때의 자율 실행**(약 90%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 나가는 것을 다 검사한다",
+            "value": "**월 1,500만 건의 이그레스 호출**을 LLM 기반 프록시(CrabTrap)로 훑어 **21만 9천 건을 막는다.** **모든 호출이 실명에 귀속된다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "label": "자가 개선의 실체",
+            "value": "반복되는 작업을 스스로 알아채 **`스킬`** 로 만든다 — 기록된 사용자는 **25개 범주에 98개 스킬**을 갖게 됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 인프라의 값",
+            "value": "**문서화되지 않은 `골든 핵` 넷**이 있어야 잠긴 환경에서 이미지가 돌았다 — 자격증명 권한 · WebSocket 로컬호스트 릴레이 · 워크스페이스 복구 · 다중 라이브러리 CA 신뢰",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "label": "이 도구를 쓰는 회사",
+            "value": "연환산 총결제액 **약 1,500억 달러** · 가맹점 **1,200만 곳 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Razorpay Surpasses $150 Billion TPV Milestone",
+                "url": "https://razorpay.com/newsroom/razorpay-surpasses-150-billion-tpv-milestone-unveils-payment-gateway-3-0-forays-into-marketing-stack-with-engage-and-introduces-the-fintech-world-to-ai-assistant-ray/",
+                "publisher": "Razorpay Newsroom",
+                "date": "2026",
+                "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "어디서 돌릴지 정할 때",
+          "thought": "⚠️ **노트북에서 돌리면 에이전트가 사람의 근무 시간에 갇힌다** — 게다가 **관측이 없고 맥락이 쌓이지 않는다.** 서버로 올리면 **주인이 자는 동안에도 돈다**(실제로 한 사용자의 자율 실행이 90%였다). **그런데 그 순간 `무엇을 할 수 있는가` 를 누가 막느냐가 새 문제가 된다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "에이전트를 무엇으로 막을지 정할 때",
+          "thought": "⚠️ **이 기능의 이름이 여기서 나온다 — `격리는 인프라의 속성이지 애플리케이션의 속성이 아니다.`** 애플리케이션 코드로 막으면 **에이전트가 영리해질수록 우회 가능성이 생긴다.** **커널에서 강제하면 그 영리함이 소용없다** — **행동을 제한하는 대신 환경을 제한한다**(뒤쪽 정리는 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇이 새어 나갈 수 있는지 볼 때",
+          "thought": "⚠️ **막아야 할 것이 셋이다** — **테넌트 사이의 횡적 이동**, **바깥으로의 유출**, **허가되지 않은 데이터 접근.** 그래서 **나가는 길을 감사 프록시와 DNS 로만 열고 나머지는 기본 거부**했다. **`나가는 길이 하나뿐이면 그 길만 보면 된다`**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "직원별 에이전트",
+            "what": "**220명에게 각자 하나** — 자기 네임스페이스 · 컴퓨트 · 스토리지 · 클라우드 신원 · 암호화 볼륨"
+          },
+          {
+            "name": "⚠️ 커널 수준 네트워크 정책",
+            "what": "⚠️ **`감사 프록시와 DNS 로만 나가게 허용하고 테넌트 사이의 트래픽은 기본 거부한다.`** 애플리케이션 코드가 아니라 리눅스 커널이 강제한다"
+          },
+          {
+            "name": "CrabTrap (이그레스 프록시)",
+            "what": "**LLM 기반**으로 나가는 것을 훑는다 — **월 1,500만 건 중 21만 9천 건을 막는다.** 모든 호출이 실명에 귀속된다"
+          },
+          {
+            "name": "스킬",
+            "what": "⚠️ **반복되는 작업을 에이전트가 스스로 알아채 만든 재사용 절차.** 한 사용자에게 **25개 범주 98개** — **컨테이너 안에 사적으로 남고 테넌트 간에 새지 않는다**"
+          },
+          {
+            "name": "내부 LLM 게이트웨이",
+            "what": "**작업마다 모델을 고른다** — Claude · GPT · Qwen 등"
+          },
+          {
+            "name": "⚠️ 골든 핵 넷",
+            "what": "⚠️ **문서화되지 않은 우회 넷**이 있어야 잠긴 환경에서 강화 이미지가 돌았다 — 인프라 복잡도의 값이다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **나가는 길은 감사 프록시와 DNS 뿐이다** — 나머지는 기본 거부",
+          "⚠️ **테넌트끼리는 서로에게 닿지 못한다** — 커널이 막는다",
+          "**모든 호출은 실명에 귀속된다**",
+          "⚠️ **스킬은 컨테이너 밖으로 나가지 않는다** — 사적으로 남는다",
+          "**이미지는 SHA256 다이제스트로 고정된다** — 공급망 공격을 막으려고"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**직원이 Google OIDC 로 들어온다** — 게이트웨이가 자기 에이전트인지 검증한다",
+            "why": "**남의 에이전트에 닿지 못하게**"
+          },
+          {
+            "step": "**자기 네임스페이스에 파드가 뜬다** — 전용 컴퓨트·스토리지·클라우드 신원·암호화 볼륨. **2분 미만**",
+            "why": "⚠️ **격리를 애플리케이션이 아니라 인프라에 둔다**"
+          },
+          {
+            "step": "⚠️ **커널 네트워크 정책이 나가는 길을 감사 프록시와 DNS 로만 연다** — 테넌트 간 트래픽은 기본 거부",
+            "why": "⚠️ **에이전트가 영리해져도 커널을 못 뚫는다**"
+          },
+          {
+            "step": "**작업마다 내부 LLM 게이트웨이가 모델을 고른다** — Claude · GPT · Qwen 등",
+            "why": "**작업 성격에 맞는 모델을 쓴다**"
+          },
+          {
+            "step": "**나가는 호출을 CrabTrap 이 훑는다** — 월 1,500만 건 중 21만 9천 건 차단",
+            "why": "⚠️ **나가는 길이 하나뿐이니 그 길만 보면 된다**(재구성)"
+          },
+          {
+            "step": "⚠️ **에이전트가 반복되는 작업을 알아채 `스킬` 로 만든다**",
+            "why": "**주간 보고를 여러 번 손으로 안내하자 그 패턴을 알아채 자동화된 스킬을 만들었다**"
+          },
+          {
+            "step": "**주인이 자거나 회의 중일 때도 돈다**",
+            "why": "⚠️ **기록된 한 사용자의 실행 중 약 90% 가 무감독이었다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "에이전트를 어디서 돌릴 것인가",
+            "chosen": "⚠️ **쿠버네티스 위에** — 노트북을 버렸다",
+            "alternatives": [
+              "직원 노트북에서 실행",
+              "호스팅 에이전트 서비스 이용"
+            ],
+            "tradeoff": "노트북 방식이 실패한 이유 셋 — **사람이 있을 때만 돌고, 관측이 없고, 지속적인 맥락이 쌓이지 않는다.** 서버로 올리자 **주인이 자는 동안에도 돌게** 됐다(자율 실행 약 90%). ⚠️ **대가는 `무엇을 할 수 있는가` 를 누가 막느냐가 새 문제로 올라온다는 것**이고, 나머지 결정이 전부 그 답이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "question": "에이전트를 무엇으로 막을 것인가",
+            "chosen": "⚠️ **커널** — 애플리케이션 코드가 아니라",
+            "alternatives": [
+              "애플리케이션 계층의 권한 검사",
+              "프롬프트로 금지 사항 지시"
+            ],
+            "tradeoff": "회사의 원칙이 한 문장이다 — **`격리는 인프라의 속성이지 애플리케이션의 속성이 아니다.`** ⚠️ **애플리케이션에서 막으면 에이전트가 영리해질수록 우회 가능성이 생기는데, 커널에서 강제하면 그 영리함이 소용없다.** **행동을 제한하는 대신 환경을 제한한다**(재구성). ⚠️ **대가는 인프라 복잡도가 크게 는다는 것**이고, 그 값이 **골든 핵 넷**으로 드러난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "question": "나가는 길을 몇 개 열 것인가",
+            "chosen": "**둘** — 감사 프록시와 DNS 뿐",
+            "alternatives": [
+              "필요한 외부 서비스마다 허용",
+              "전체 이그레스 허용 후 로깅"
+            ],
+            "tradeoff": "막아야 할 것이 셋이다 — **테넌트 간 횡적 이동 · 바깥으로의 유출 · 허가되지 않은 데이터 접근.** ⚠️ **나가는 길이 하나뿐이면 그 길만 보면 된다**(재구성). **대가는 새 외부 의존이 생길 때마다 프록시를 거쳐야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "question": "나가는 것을 무엇으로 검사할 것인가",
+            "chosen": "⚠️ **LLM 기반 프록시(CrabTrap)** — 규칙만이 아니라",
+            "alternatives": [
+              "정규식·차단 목록",
+              "검사 없이 로깅만"
+            ],
+            "tradeoff": "**월 1,500만 건을 훑어 21만 9천 건을 막는다**(약 1.5%). ⚠️ **에이전트가 만드는 트래픽은 형태가 정해져 있지 않아 목록으로는 다 못 잡는다**(재구성). **대가는 검사기 자체가 LLM 이라 비용과 오탐이 따른다는 것**이고, **그 수치는 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "question": "누가 어느 에이전트에 닿게 할 것인가",
+            "chosen": "**Google OIDC + 게이트웨이 검증** — 자기 것만",
+            "alternatives": [
+              "공유 에이전트 풀",
+              "팀 단위 에이전트"
+            ],
+            "tradeoff": "**모든 호출이 실명에 귀속된다.** ⚠️ **금융 회사에서 `누가 그 요청을 했는가` 를 못 대면 감사가 성립하지 않는다**(재구성). **대가는 220개의 파드·네임스페이스·볼륨을 따로 굴려야 한다는 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "question": "스킬을 공유할 것인가",
+            "chosen": "⚠️ **아니다** — 컨테이너 안에 사적으로 남는다",
+            "alternatives": [
+              "사내 스킬 저장소로 공유",
+              "팀 단위 공유"
+            ],
+            "tradeoff": "⚠️ **공유하면 한 사람의 스킬이 다른 사람의 맥락과 권한으로 실행될 수 있다**(재구성). 그래서 **테넌트 간 유출이 없다.** **대가는 같은 스킬을 여러 사람이 각자 다시 만들게 된다는 것**이고, **한 사용자가 98개를 갖게 된 것이 그 결과다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "question": "모델을 하나로 고정할 것인가",
+            "chosen": "**작업마다 고른다** — 내부 LLM 게이트웨이로",
+            "alternatives": [
+              "단일 모델 계약",
+              "사용자가 직접 선택"
+            ],
+            "tradeoff": "Claude · GPT · Qwen 등을 **작업 성격에 따라** 쓴다. ⚠️ **게이트웨이가 있으면 모델을 바꿔 끼울 수 있고 비용·성능을 한곳에서 조절한다**(재구성). **대가는 게이트웨이가 단일 장애점이 된다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "question": "공급망을 어떻게 막을 것인가",
+            "chosen": "**모든 이미지를 SHA256 다이제스트로 고정**",
+            "alternatives": [
+              "태그로 참조",
+              "최신 태그 자동 갱신"
+            ],
+            "tradeoff": "⚠️ **태그는 같은 이름으로 다른 내용을 가리킬 수 있다** — 공급망 공격의 통로다(재구성). **대가는 갱신할 때마다 다이제스트를 바꿔야 한다는 것**이고, **잠긴 환경에서 이미지를 돌리는 데 `골든 핵` 넷이 필요했던 것도 같은 엄격함의 값이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "쿠버네티스 (직원당 네임스페이스)",
+            "role": "**220명에게 각자 파드·스토리지·클라우드 신원·암호화 볼륨** — 배포 2분 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 커널 네트워크 정책",
+            "role": "⚠️ **감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다** — 애플리케이션이 아니라 커널이 강제",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "tech": "CrabTrap (LLM 기반 이그레스 프록시)",
+            "role": "**월 1,500만 건을 훑어 21만 9천 건 차단**, 모든 호출을 실명에 귀속",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "tech": "Google OIDC + 게이트웨이",
+            "role": "**자기 에이전트에만 닿게** 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "tech": "내부 LLM 게이트웨이",
+            "role": "작업마다 **Claude·GPT·Qwen 등**으로 라우팅",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "tech": "SHA256 다이제스트 고정",
+            "role": "**공급망 공격을 막는다** — 태그가 아니라 내용으로 참조",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "brittle-but-bounded",
+          "via": "⚠️ 같은 방식의 두 판본",
+          "contract": "⚠️ **둘 다 `막을 수 없으면 크기를 묶는다` 로 간다** — CI 는 **한 번에 20% 상한**으로, 여기서는 **커널이 나가는 길을 둘로 좁혀** 폭발 반경을 한정한다(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "직원 220명",
+          "via": "각자의 에이전트",
+          "contract": "**하루 약 84개가 실제로 쓰이고**, 기록된 한 사용자는 **8주에 15,039 세션**(약 90%가 무감독)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "모델 제공자들",
+          "via": "내부 LLM 게이트웨이",
+          "contract": "**작업마다 Claude·GPT·Qwen 등으로 라우팅한다** — ⚠️ **게이트웨이가 단일 장애점이 된다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "감사·규제",
+          "via": "실명 귀속",
+          "contract": "⚠️ **모든 호출이 named individual 에 귀속된다** — **금융 회사에서 `누가 그 요청을 했는가` 를 못 대면 감사가 성립하지 않는다**(재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 90% 가 무감독으로 도는 에이전트를 무엇으로 믿나",
+            "why_hard": "⚠️ **기록된 한 사용자의 에이전트가 8주에 15,039 세션을 돌렸고 그중 13,570 건이 주인이 자거나 회의 중일 때였다.** **사람이 매번 보고 승인하는 방식은 이 규모에서 성립하지 않는다**(뒤쪽은 이 사이트의 재구성이다). ⚠️ **그리고 에이전트는 스스로 새 스킬을 만들기 때문에 `무엇을 할지` 를 미리 다 적을 수도 없다.**",
+            "current_best": "⚠️ **행동을 제한하는 대신 환경을 제한하는 것** — **`격리는 인프라의 속성이지 애플리케이션의 속성이 아니다.`** **커널이 나가는 길을 둘로 좁히고, 나가는 것은 전부 검사하며, 모든 호출을 실명에 귀속시킨다.** ⭐ **ClickHouse 가 `세 겹 중 한 겹만 기계가 강제한다` 고 적은 것과 정확히 대비되는 자리다** — **여기서는 기계가 강제하는 겹이 커널이다**(이 대비는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          },
+          {
+            "problem": "인프라의 단순함은 어딘가에서 값을 치른다",
+            "why_hard": "⚠️ **애플리케이션을 단순하게 두려고 인프라로 옮기면 복잡도가 사라지는 것이 아니라 이동한다.** 그 값이 **문서화되지 않은 `골든 핵` 넷**으로 드러난다 — **자격증명 권한 · WebSocket 로컬호스트 릴레이 · 워크스페이스 복구 · 다중 라이브러리 CA 신뢰.** **잠긴 환경에서 강화 이미지를 돌리려면 아무도 문서에 안 적은 것들을 알아내야 했다**(뒤쪽은 재구성이다).",
+            "current_best": "**그 넷을 글로 적어 남기는 것.** ⚠️ **회사가 그것을 `골든 핵` 이라 부르며 공개한 것 자체가 이 자료의 값이다**(재구성). **다만 남은 실패 모드나 보안 연구 과제는 글이 다루지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+                "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+                "publisher": "Razorpay Engineering",
+                "date": "2026-07-12",
+                "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "나가는 길을 커널이 둘로 좁힌다",
+          "question": "에이전트가 무엇을 할 수 있고 무엇을 못 하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>직원 (Google OIDC)</b><br/>• 게이트웨이가 자기 것인지 검증\"]:::list --> A[\"<b>자기 네임스페이스의 에이전트</b><br/>• 전용 컴퓨트 · 스토리지<br/>• 클라우드 신원 · 암호화 볼륨\"]:::accent\n  A --> S[\"<b>스킬</b><br/>• 반복을 알아채 스스로 만든다<br/>• ⚠️ 컨테이너 밖으로 안 나간다\"]:::list\n  A --> K{\"⚠️ <b>커널 네트워크 정책</b>\"}\n  K -->|\"허용\"| P[\"<b>감사 프록시 (CrabTrap)</b><br/>• 월 1,500만 건 검사<br/>• 21만 9천 건 차단\"]:::accent\n  K -->|\"허용\"| D[\"<b>DNS</b>\"]:::list\n  K -->|\"⚠️ 기본 거부\"| X[\"<b>다른 테넌트</b><br/>• 횡적 이동 차단\"]:::gone\n  P --> L[\"<b>내부 LLM 게이트웨이</b><br/>• Claude · GPT · Qwen\"]:::list\n  P --> E[\"<b>바깥</b>\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "행동을 제한하는 대신 환경을 제한한다",
+          "question": "에이전트가 영리해지면 어떻게 되나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>애플리케이션에서 막기</b><br/>• 권한 검사 · 프롬프트 금지\"]:::gone --> B[\"⚠️ <b>에이전트가 영리해질수록<br/>  우회 가능성이 생긴다</b>\"]:::gone\n  B --> C[\"<b>답: 커널에서 강제</b><br/>• 격리는 인프라의 속성이지<br/>  애플리케이션의 속성이 아니다\"]:::accent\n  D[\"⚠️ <b>무감독 실행 약 90%</b><br/>• 8주에 15,039 세션<br/>• 사람이 매번 볼 수 없다 (재구성)\"]:::gone --> C\n  E[\"⚠️ <b>스스로 새 스킬을 만든다</b><br/>• 무엇을 할지 미리 다 못 적는다 (재구성)\"]:::gone --> C\n  C --> F[\"⚠️ <b>대가: 인프라 복잡도</b><br/>• 문서화되지 않은 골든 핵 넷<br/>• 자격증명 · WebSocket 릴레이<br/>• 워크스페이스 복구 · CA 신뢰\"]:::gone\n  G[\"⭐ <b>ClickHouse 와 대비된다</b><br/>• 거기서는 세 겹 중 한 겹만<br/>  기계가 강제한다<br/>• 여기서는 그 겹이 커널이다 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
+          "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+          "publisher": "Razorpay Engineering",
+          "date": "2026-07-12",
+          "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
+        },
+        {
+          "title": "CI Doesn't Need On-Demand: Moving Our Build Pipelines to Spot Instances",
+          "url": "https://engineering.razorpay.com/ci-doesnt-need-on-demand-moving-our-build-pipelines-to-spot-instances-6fff1cd92ba8",
+          "publisher": "Razorpay Engineering",
+          "date": "2026-08-05",
+          "summary": "온디맨드는 믿을 만하지만 4~5배 비싸고 스팟은 70~90% 싸지만 2분 경고 뒤 회수된다. 스팟 종료를 로그 문자열 하나로 판별하는 취약한 탐지기를 일부러 골라 두 달의 작업을 미뤘고, 그 형식이 실제로 바뀌어 정리 작업이 활성 파드를 전부 지웠다. 20% 삭제 상한으로 막았고 CI 컴퓨트 지출 60% 절감·작업 성공률 99.2% 에 이르렀다."
+        },
+        {
+          "title": "Razorpay Surpasses $150 Billion TPV Milestone",
+          "url": "https://razorpay.com/newsroom/razorpay-surpasses-150-billion-tpv-milestone-unveils-payment-gateway-3-0-forays-into-marketing-stack-with-engage-and-introduces-the-fintech-world-to-ai-assistant-ray/",
+          "publisher": "Razorpay Newsroom",
+          "date": "2026",
+          "summary": "연환산 총결제액 1,500억 달러를 넘었고 Payment Gateway 3.0 과 AI 어시스턴트 RAY 를 냈다. 가맹점 1,200만 곳 이상, 인도 온라인 결제 게이트웨이 시장의 약 55%."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1217,7 +1813,9 @@
     "⚠️ **RazorpayX·Capital 의 기술을 모른다** — **대출은 결제와 다른 위험 판단이 필요한데**(재구성) 그 자료를 못 찾았다.",
     "⚠️ **연표(eras)를 못 세웠다** — 2014년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다.",
     "⚠️ **사업 수치의 출처가 회사 뉴스룸과 3자 자료다** — IPO 를 준비 중이라 **DRHP 에 더 정확한 수치가 있을 것이다.**",
-    "⚠️ **회사가 남은 일 셋을 스스로 적는다** — **일시적 실패와 영구적 실패를 갈라 헛된 재시도를 줄이는 것** · **팀별 비용 귀속** · **CI 발자국이 커질 때의 멀티 클러스터 지원.** **완성된 이야기로 마무리하지 않는다.**"
+    "⚠️ **회사가 남은 일 셋을 스스로 적는다** — **일시적 실패와 영구적 실패를 갈라 헛된 재시도를 줄이는 것** · **팀별 비용 귀속** · **CI 발자국이 커질 때의 멀티 클러스터 지원.** **완성된 이야기로 마무리하지 않는다.**",
+    "⚠️ **보안 트리아지 글을 아직 안 읽었다** — **`750시간에서 2시간으로`** 와 **`30분 조사에서 90초 분석으로`** 라는 수치가 목록에 있는데 본문을 못 봤다.",
+    "⚠️ **Hermes 글이 남은 실패 모드를 다루지 않는다** — **`골든 핵` 넷은 공개하면서도** 보안 연구 과제나 이 구조가 못 막는 것은 적지 않는다. **차단된 21만 9천 건이 무엇이었는지, 오탐이 얼마인지도 없다.**"
   ],
   "sources": [
     {
@@ -1245,8 +1843,8 @@
       "title": "Running Hermes at Razorpay: A Network-Isolated, Self-Improving Second Brain for Every Employee",
       "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
       "publisher": "Razorpay Engineering",
-      "date": "2026-07-22",
-      "summary": "망에서 격리된 사내 AI 도구 Hermes. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+      "date": "2026-07-12",
+      "summary": "직원 220명에게 각자 격리된 AI 에이전트를 준다. 노트북 방식은 사람이 있을 때만 돌고 관측이 없고 맥락이 안 쌓인다는 이유로 버렸다. 격리를 애플리케이션이 아니라 커널 수준 네트워크 정책에 두어 감사 프록시와 DNS 로만 나가게 하고 테넌트 간 트래픽을 기본 거부한다. 월 1,500만 건의 이그레스를 LLM 기반 프록시로 검사해 21만 9천 건을 막는다."
     },
     {
       "title": "How We Refresh Razorpay's Data Warehouse 10x Faster with Graphs and Indexes",
