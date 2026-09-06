@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Jane Street** | US · 금융 | 프로파일만 씀(2026-09-07). 도메인 셋 다 비어 있다 — 언어를 고쳐 성능을 만든다(`introducing-oxcaml` 2025-06-14 확보) · 커널의 기본값을 의심한다(`a-higgs-bugson-in-the-linux-kernel` 2025-07-02 확보) · 하드웨어까지 내려간다(자료 미독, tech 두 칸 `unknown`). 사업은 공개되지 않아 revenue_streams 가 `unknown` 이다. 안 읽은 것 — ASIC 역설계(2026-08-05) · Hardcaml 대수적 효과(2026-01-06) · 형식 기법 묶음(2026-06-07, 도메인 하나가 더 설 자리). |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Jane Street** | US · 금융 | 저지연 트레이딩과 **언어 자체를 고쳐 쓰는** 축이 없다. `blog.janestreet.com` 에 2026년 글이 이어진다 — `Can you reverse engineer an ASIC?`(2026-08-05) · `Using OxCaml to implement type-safe reference counting between OCaml and Python`(2026-06-15) · `Formal methods and the future of programming`(2026-06-07, 야론 민스키) · `strace-ui, Bonsai_term, and the TUI renaissance`(2026-05-26). OCaml 확장(OxCaml)·FPGA/ASIC·형식 검증이 한 회사 안에 있다. ⚠️ 사업 쪽(무엇을 얼마에 파는가)이 공개되지 않는 회사다 — 수익원 서술을 얇게 잡고 기술 도메인 위주로 판다. |
 | **Zig Software Foundation** | US · 비영리 | 프로그래밍 언어와 표준 라이브러리 자체를 만드는 축이 없다(Bun 은 런타임, Ladybird 는 브라우저 엔진). 0.16.0 릴리스 노트(2026-04-14)가 사실상 설계 문서다 — 모든 블로킹 연산에 `Io` 를 넘기게 바꾸고 구현을 넷(스레드·그린 스레드·io_uring·kqueue)으로 갈랐으며, 아레나 할당자를 잠금 없이 다시 써 `ThreadSafeAllocator` 를 통째로 없앴다(스레드 7개까지 약간 빨라짐). 자체 deflate 는 zlib 대비 9.7% 빠르고 압축률은 1% 나쁘다. 거절한 것도 이름 대어 적는다(`@Float`·`@Array`·`@ErrorSet` 을 안 만든 이유). ⚠️ 뉴스 페이지는 조직 소식과 모금이 많다 — 팔 재료는 릴리스 노트와 옛 심층 글(2022·2024)이다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
