@@ -146,9 +146,87 @@
     },
     {
       "name": "이벤트를 옮기고 전달한다",
-      "why": "**`StreamHub 확장: 하루 1,450억 이벤트를 위해 Kinesis 에서 Kafka 로`** 와 **`Events Rail: Atlassian 의 웹훅 전달 플랫폼 속으로`**. ⚠️ **하루 1,450억 이벤트라는 숫자가 이 축의 크기를 말한다.** ⏳ **둘 다 본문 미독.**",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **성장이 그대로 청구서가 되고 있었다** — **`Kinesis 는 샤드로 확장하는데 각 샤드가 인그레스 1MB/초, 이그레스 2MB/초 한계를 갖는다 … 월 클라우드 청구가 트래픽에 선형으로 자랐다.`** **하루 220억에서 1,500억 이벤트로 가는 회사에는 치명적이다**(재구성). ✅ **본문 확인함**(2026-07-28). ⏳ **Events Rail(웹훅 전달 플랫폼)은 아직 안 읽었다.**",
+      "tech": [
+        {
+          "tech": "Kafka (AWS MSK)",
+          "solves": "필요했던 것이 **`비용 효율적인 다일 보존, 컨슈머 그룹 추가에 큰 비용이 없는 확장, 멀티클라우드 지원`** 이었고 **`Apache Kafka 가 명백한 선택이었다`**. MSK 로 **`운영 부담을 줄여`** 작은 팀이 **`스트림 아키텍처·클라이언트 라이브러리·신뢰성에 집중`** 한다.",
+          "limits": "⚠️ **관리형이라 손댈 수 없는 곳이 생긴다** — 겪은 장애에 **`저장 확장 쿨다운`** 과 **`AZ 장애로 제어 평면 가시성 저하`** 가 들어 있다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+              "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+              "publisher": "Atlassian",
+              "date": "2026-07-28",
+              "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "⭐ Tiered Storage + 강한 로컬 브로커 용량",
+          "solves": "⭐ **`Tiered Storage 는 저장 비용을 극적으로 줄였지만 강한 로컬 브로커 용량의 필요를 없애지는 않았다 … 원격 저장소는 정상 상태 비용을 줄여야 하고, 로컬 저장소는 운영상의 충격 흡수를 제공해야 한다.`** **`최악의 경우 보존을 위해 비싼 EBS 볼륨을 과잉 프로비저닝하는 것을 멈췄다.`**",
+          "limits": "⚠️ **비용을 옮긴 자리에 위험도 옮겨 갔다** — **`S3 오프로드가 무거운 인제스트에서 뒤처지고`**, **보존 변경(7→21→7일) 중 S3 요청 속도 제한**에 걸렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+              "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+              "publisher": "Atlassian",
+              "date": "2026-07-28",
+              "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "브로커별 용량 계획",
+          "solves": "**클러스터 평균이 아니라 브로커 하나하나로 잰다** — **평균은 포화된 브로커 하나를 숨긴다**(재구성).",
+          "limits": "⚠️ **계획이 훨씬 보수적이 되어 자원을 더 쓴다**(재구성). 그럼에도 **`트래픽 급증 때 브로커 네트워크 포화`** 를 겪었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+              "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+              "publisher": "Atlassian",
+              "date": "2026-07-28",
+              "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "상류 속도 제한 · 트래픽 격리 · 클라이언트 쿼터",
+          "solves": "**나쁜 트래픽을 Kafka 에 닿기 전에 막고 `시끄러운 이웃` 으로부터 보호한다** — **브로커까지 오면 이미 남의 처리량을 먹고 있다**(재구성).",
+          "limits": "⚠️ **상류에 또 하나의 계층이 는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+              "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+              "publisher": "Atlassian",
+              "date": "2026-07-28",
+              "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "샤드된 클러스터 + 4단계 페일오버 런북 + 동반 리전",
+          "solves": "**폭발 반경을 줄이고 `시험된 복구 경로` 를 두며 데이터 소재 규정을 지킨다.**",
+          "limits": "⚠️ **겪은 장애에 `확장 작업이 사고 대응에 쓰기엔 너무 느림` 이 있다** — **고치는 수단이 사고 중에는 못 쓰는 수단이었다**(재구성). ⭐ **그래서 `시험된` 이라는 말이 붙는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+              "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+              "publisher": "Atlassian",
+              "date": "2026-07-28",
+              "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "remote-for-cost-local-for-shock"
+      ]
     },
     {
       "name": "AI 를 제품에 넣는다",
@@ -642,6 +720,525 @@
           "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
         }
       ]
+    },
+    {
+      "key": "remote-for-cost-local-for-shock",
+      "name": "원격은 비용을 줄이고 로컬은 충격을 흡수한다",
+      "domain": "이벤트를 옮기고 전달한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **성장이 그대로 청구서가 되고 있었다** — Kinesis 는 **`샤드로 확장하는데 각 샤드가 인그레스 1MB/초, 이그레스 2MB/초 처리량 한계를 갖고`**, 그 결과 **`월 클라우드 청구가 트래픽에 선형으로 자랐다`**. ⚠️ **병목이 셋이었고 셋 다 성장을 벌하는 구조였다**(재구성) — **API 신뢰성**(**`StreamHub API 가 99.99% 신뢰성을 겨우 떠받쳤고, 급증 때 Kinesis 스로틀링이 프로듀서에 영향을 줬다`**) · **분할 비용** · **보존 페널티**(**`Kinesis 에서 24시간을 넘겨 데이터를 보관하려면 비싼 연장 보존 부가 옵션이 필요했다`** — 7일이 필요했는데).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**하루 220억 → 1,500억 이벤트 수집·처리**, **2,250억 전달** — 평균 **초당 168만**, 최대 **초당 320만 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 성장이 벌이 되는 구조",
+            "value": "**`Kinesis 는 샤드로 확장하는데 각 샤드가 인그레스 1MB/초, 이그레스 2MB/초 처리량 한계를 갖는다 … 월 클라우드 청구가 트래픽에 선형으로 자랐다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "보존의 값",
+            "value": "**`Kinesis 에서 24시간을 넘겨 데이터를 보관하려면 비싼 연장 보존 부가 옵션이 필요했다`** — **7일 보존이 필요했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 역할 분담",
+            "value": "**`Tiered Storage 는 저장 비용을 극적으로 줄였지만 강한 로컬 브로커 용량의 필요를 없애지는 않았다 … 원격 저장소는 정상 상태 비용을 줄여야 하고, 로컬 저장소는 운영상의 충격 흡수를 제공해야 한다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 겪은 장애를 여섯 개 다 적는다",
+            "value": "브로커 네트워크 포화 · S3 오프로드 지연 · **보존 변경(7→21→7일) 중 S3 요청 속도 제한** · 저장 확장 쿨다운 · AZ 장애로 제어 평면 가시성 저하 · **확장 작업이 사고 대응에 너무 느림**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 결론의 문장",
+            "value": "**`이 규모에서의 신뢰성은 하나의 기능이나 하나의 서비스가 아니다. 보수적인 용량 계획, 명시적인 폭발 반경 통제, 시험된 복구 경로, 그리고 모든 실패에서 배우려는 의지의 조합이다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "label": "이 이벤트가 떠받치는 곳",
+            "value": "**FY2026 3분기 매출 17억 8,700만 달러(+32%)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Atlassian Announces Third Quarter Fiscal Year 2026 Results",
+                "url": "https://www.businesswire.com/news/home/20260430534706/en/Atlassian-Announces-Third-Quarter-Fiscal-Year-2026-Results",
+                "publisher": "Atlassian (BusinessWire)",
+                "date": "2026-04-30",
+                "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "왜 못 버티는지 볼 때",
+          "thought": "⚠️ **세 병목이 다른 문제처럼 보이지만 하나였다** — **성장이 그대로 비용이 되는 구조**다(재구성). 샤드마다 한계가 있어 **`월 청구가 트래픽에 선형으로 자라고`**, **컨슈머 그룹을 하나 더 붙이는 데도 비용이 들고**, **보존을 늘리는 것도 비싼 옵션**이다. ⭐ **셋 다 `더 쓰면 더 낸다` 가 아니라 `자라면 벌받는다` 였다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Tiered Storage 를 켤 때",
+          "thought": "⭐ **비용이 줄었다고 로컬을 없애지 않았다** — **`Tiered Storage 는 저장 비용을 극적으로 줄였지만 강한 로컬 브로커 용량의 필요를 없애지는 않았다.`** 그리고 역할을 한 문장으로 못 박는다 — **`원격 저장소는 정상 상태 비용을 줄여야 하고, 로컬 저장소는 운영상의 충격 흡수를 제공해야 한다.`** ⚠️ **정상 상태로 용량을 재면 비정상 상태에서 죽는다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "장애를 겪고 나서",
+          "thought": "⚠️ **여섯 개를 다 적는다** — 그중 둘이 특히 아프다: **보존을 7→21→7일로 바꾸는 동안 S3 요청 속도 제한에 걸렸고**(설정 변경이 새 부하를 만든 것이다, 재구성), **확장 작업이 사고 대응에 쓰기엔 너무 느렸다**(고치는 수단이 사고 중에는 못 쓰는 수단이었다, 재구성). ⭐ **결론이 `조합` 이라는 단어로 끝난다** — **하나의 장치로 되는 일이 아니라는 것을 여섯 번 배운 셈이다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "⚠️ Kinesis (떠난 것)",
+            "what": "⚠️ **`샤드로 확장하는데 각 샤드가 인그레스 1MB/초, 이그레스 2MB/초 한계`** — **`월 클라우드 청구가 트래픽에 선형으로 자랐다`**"
+          },
+          {
+            "name": "MSK (관리형 Kafka)",
+            "what": "**`운영 부담을 줄여`** 작은 플랫폼 팀이 **`스트림 아키텍처·클라이언트 라이브러리·신뢰성에 집중`** 하게 한다"
+          },
+          {
+            "name": "⭐ Tiered Storage",
+            "what": "⭐ **`최악의 경우 보존을 위해 비싼 EBS 볼륨을 과잉 프로비저닝하는 것을 멈췄다`** — 다만 **로컬 브로커 용량의 필요를 없애지는 않았다**"
+          },
+          {
+            "name": "브로커별 용량 계획",
+            "what": "⚠️ **클러스터 평균이 아니라 브로커 하나하나로** 잰다"
+          },
+          {
+            "name": "폭발 반경 통제",
+            "what": "**샤드된 클러스터** · **클라이언트 쿼터**(시끄러운 이웃 방어) · **Kafka 상류에서의 속도 제한과 트래픽 격리**"
+          },
+          {
+            "name": "페일오버 런북",
+            "what": "**4단계 복구 절차** — **`시험된 복구 경로`**"
+          },
+          {
+            "name": "동반 리전",
+            "what": "**데이터 소재 규정을 지키면서** 리전을 짝지운다"
+          }
+        ],
+        "invariants": [
+          "⭐ **정상 상태 비용은 원격이, 비정상 상태 충격은 로컬이 맡는다**",
+          "⚠️ **용량은 클러스터 평균이 아니라 브로커 하나로 잰다**",
+          "**나쁜 트래픽은 Kafka 에 닿기 전에 막는다** — 속도 제한과 격리를 상류에",
+          "⚠️ **복구 경로는 시험해 둔다** — 사고 때 처음 써 보지 않는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**Kinesis 를 떠난다 — 세 병목이 다 비용 구조였다**",
+            "why": "⚠️ **`월 클라우드 청구가 트래픽에 선형으로 자랐다`** · 컨슈머 그룹 추가에도 비용 · **24시간 넘는 보존은 비싼 부가 옵션**"
+          },
+          {
+            "step": "**Kafka 로 가되 MSK 로 — 직접 운영하지 않는다**",
+            "why": "**`운영 부담을 줄여`** 작은 플랫폼 팀이 **`스트림 아키텍처·클라이언트 라이브러리·신뢰성에 집중`** 하게"
+          },
+          {
+            "step": "⭐ **Tiered Storage 로 정상 상태 비용을 내린다**",
+            "why": "⭐ **`최악의 경우 보존을 위해 비싼 EBS 볼륨을 과잉 프로비저닝하는 것을 멈췄다`**"
+          },
+          {
+            "step": "⭐ **그래도 강한 로컬 브로커 용량을 유지한다**",
+            "why": "⭐ **`원격 저장소는 정상 상태 비용을 줄여야 하고, 로컬 저장소는 운영상의 충격 흡수를 제공해야 한다`**"
+          },
+          {
+            "step": "⚠️ **용량을 브로커 하나하나로 계획한다 — 클러스터 평균이 아니라**",
+            "why": "⚠️ **평균은 포화된 브로커 하나를 숨긴다**(재구성) — 실제로 **브로커 네트워크 포화**를 겪었다"
+          },
+          {
+            "step": "**Kafka 상류에서 속도를 제한하고 트래픽을 격리한다. 클라이언트 쿼터로 시끄러운 이웃을 막는다**",
+            "why": "**나쁜 트래픽이 브로커에 닿기 전에 멈춘다**(재구성)"
+          },
+          {
+            "step": "**클러스터를 샤드해 폭발 반경을 줄인다**",
+            "why": "**하나가 무너져도 전부가 아니게**(재구성)"
+          },
+          {
+            "step": "**4단계 페일오버 런북을 시험해 둔다. 데이터 소재를 지키는 동반 리전을 짝지운다**",
+            "why": "⚠️ **`시험된 복구 경로`** — 사고 때 처음 써 보지 않는다(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Kinesis 를 계속 쓸 것인가",
+            "chosen": "⚠️ **아니다 — 세 병목이 다 비용 구조였다**",
+            "alternatives": [
+              "Kinesis 유지하고 샤드 증설",
+              "자체 스트리밍 구축"
+            ],
+            "tradeoff": "세 가지가 걸렸다 — **`StreamHub API 가 99.99% 신뢰성을 겨우 떠받쳤고, 급증 때 Kinesis 스로틀링이 프로듀서에 영향을 줬다`** · **`샤드마다 인그레스 1MB/초, 이그레스 2MB/초 한계 … 월 클라우드 청구가 트래픽에 선형으로 자랐다`** · **`24시간을 넘겨 보관하려면 비싼 연장 보존 부가 옵션이 필요했다`**(7일이 필요했다). ⭐ **셋 다 `더 쓰면 더 낸다` 가 아니라 `자라면 벌받는다` 였다**(재구성). **필요한 것은 `비용 효율적인 다일 보존, 컨슈머 그룹 추가에 큰 비용이 없는 확장, 그리고 멀티클라우드 지원` 이었고 `Apache Kafka 가 명백한 선택이었다`.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "Kafka 를 직접 운영할 것인가",
+            "chosen": "**아니다 — MSK 로 간다**",
+            "alternatives": [
+              "자체 Kafka 클러스터 운영",
+              "다른 관리형 서비스"
+            ],
+            "tradeoff": "**`운영 부담을 줄이려고`** MSK 로 옮겨 **작은 플랫폼 팀이 `스트림 아키텍처, 클라이언트 라이브러리, 신뢰성에 집중`** 하게 했다. ⚠️ **대가는 관리형이라 손댈 수 없는 곳이 생긴다는 것**이고, **실제로 겪은 장애 목록에 `저장 확장 쿨다운` 과 `AZ 장애 때 제어 평면 가시성 저하` 가 들어 있다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "저장 비용을 어떻게 내릴 것인가",
+            "chosen": "**Tiered Storage** — EBS 과잉 프로비저닝을 멈춘다",
+            "alternatives": [
+              "EBS 볼륨을 최악에 맞춰 유지",
+              "보존 기간을 줄이기"
+            ],
+            "tradeoff": "**`Tiered Storage 로 옮겨 인프라 비용을 크게 줄였다. 최악의 경우 보존을 위해 비싼 EBS 볼륨을 과잉 프로비저닝하는 것을 멈췄다.`** ⚠️ **최악에 맞춰 사는 것이 평상시에 낭비였다**(재구성). **대가는 원격 저장소가 새로운 실패 지점이 된다는 것**이고, **실제로 `S3 오프로드가 무거운 인제스트에서 뒤처지는` 장애와 `보존 변경 중 S3 요청 속도 제한` 을 겪었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "그러면 로컬 저장소를 줄일 것인가",
+            "chosen": "⭐ **아니다 — 역할을 나눈다**",
+            "alternatives": [
+              "원격으로 최대한 밀기",
+              "로컬 용량을 비용에 맞춰 축소"
+            ],
+            "tradeoff": "⭐ **이 기능의 이름이다.** **`Tiered Storage 는 저장 비용을 극적으로 줄였지만 강한 로컬 브로커 용량의 필요를 없애지는 않았다 … 원격 저장소는 정상 상태 비용을 줄여야 하고, 로컬 저장소는 운영상의 충격 흡수를 제공해야 한다.`** ⚠️ **정상 상태로 용량을 재면 비정상 상태에서 죽는다**(재구성) — **비용 최적화가 곧 여유의 제거이기 때문이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "용량을 무엇 단위로 계획할 것인가",
+            "chosen": "⚠️ **브로커 하나하나로 — 클러스터 평균이 아니라**",
+            "alternatives": [
+              "클러스터 총량으로",
+              "평균 사용률 기준"
+            ],
+            "tradeoff": "**브로커별 용량 계획을 원칙으로 세웠다.** ⚠️ **평균은 포화된 브로커 하나를 숨긴다**(재구성) — 실제로 **`트래픽 급증 때 브로커 네트워크 포화`** 를 겪었다. **대가는 계획이 훨씬 보수적이 되어 자원을 더 쓴다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "나쁜 트래픽을 어디서 막을 것인가",
+            "chosen": "**Kafka 상류에서 — 닿기 전에**",
+            "alternatives": [
+              "브로커에서 처리",
+              "사후 조치"
+            ],
+            "tradeoff": "**Kafka 상류에서 속도를 제한하고 트래픽을 격리하며, 클라이언트 쿼터로 `시끄러운 이웃` 을 막는다.** ⚠️ **브로커까지 오면 이미 남의 처리량을 먹고 있다**(재구성). 여기에 **샤드된 클러스터로 폭발 반경을 줄이는 것**을 더한다. **대가는 상류에 또 하나의 계층이 는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "복구를 어떻게 준비할 것인가",
+            "chosen": "⚠️ **시험해 둔다 — 4단계 런북**",
+            "alternatives": [
+              "장애 때 대응",
+              "자동 페일오버만 믿기"
+            ],
+            "tradeoff": "**페일오버 클러스터 런북(4단계 복구 절차)** 을 두고 **데이터 소재 규정을 지키는 동반 리전**을 짝지운다. ⚠️ **겪은 장애에 `확장 작업이 사고 대응에 쓰기엔 너무 느림` 이 들어 있다** — **고치는 수단이 사고 중에는 못 쓰는 수단이었던 것이다**(재구성). ⭐ **그래서 `시험된` 이라는 말이 붙는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "신뢰성을 무엇이라 부를 것인가",
+            "chosen": "⭐ **조합이라고 부른다 — 하나의 기능이 아니라**",
+            "alternatives": [
+              "핵심 기능 하나로 요약",
+              "SLA 숫자로"
+            ],
+            "tradeoff": "⭐ **`이 규모에서의 신뢰성은 하나의 기능이나 하나의 서비스가 아니다. 보수적인 용량 계획, 명시적인 폭발 반경 통제, 시험된 복구 경로, 그리고 모든 실패에서 배우려는 의지의 조합이다.`** ⚠️ **여섯 번의 장애를 다 적고 나서 내린 결론이라 무게가 다르다**(재구성) — **하나의 장치로 되는 일이 아니라는 것을 여섯 번 배운 셈이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kafka (AWS MSK)",
+            "role": "**`비용 효율적인 다일 보존, 컨슈머 그룹 추가에 큰 비용이 없는 확장, 멀티클라우드 지원`** — **`Apache Kafka 가 명백한 선택이었다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "⭐ Tiered Storage",
+            "role": "⭐ **정상 상태 비용을 줄인다** — **`최악의 경우 보존을 위해 비싼 EBS 볼륨을 과잉 프로비저닝하는 것을 멈췄다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "강한 로컬 브로커 용량",
+            "role": "⭐ **운영상의 충격을 흡수한다** — 원격이 대신할 수 없는 몫",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "브로커별 용량 계획 + 클라이언트 쿼터 + 상류 속도 제한",
+            "role": "⚠️ **평균이 숨기는 것을 보고, 나쁜 트래픽을 브로커 앞에서 막는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "샤드된 클러스터 + 4단계 페일오버 런북 + 동반 리전",
+            "role": "**폭발 반경을 줄이고 복구 경로를 시험해 두며 데이터 소재를 지킨다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "deliberately-slow",
+          "via": "⭐ 같은 결론, 다른 자리",
+          "contract": "⭐ **색인 이전은 `의도적으로 느리게` 로, 이벤트 파이프라인은 `보수적인 용량 계획` 으로 — 둘 다 여유를 남기는 쪽을 골랐다** — **같은 검색 플랫폼 팀이 300+ 클러스터·2,500+ 데이터 노드·1.7PB 를 굴린다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "⚠️ Kinesis (떠난 것)",
+          "via": "성장이 벌이 되는 구조",
+          "contract": "⚠️ **`월 클라우드 청구가 트래픽에 선형으로 자랐다`** — 샤드 한계·컨슈머 그룹 비용·보존 부가 옵션이 다 같은 문제였다(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "S3 (Tiered Storage)",
+          "via": "⚠️ 새로 생긴 실패 지점",
+          "contract": "⚠️ **`S3 오프로드가 무거운 인제스트에서 뒤처지는`** 장애와 **보존 변경(7→21→7일) 중 S3 요청 속도 제한**을 겪었다 — **비용을 옮긴 자리에 위험도 옮겨 갔다**(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⭐ 성장이 그대로 청구서가 되는 구조",
+            "why_hard": "⚠️ **세 병목이 다른 문제처럼 보이지만 하나였다**(재구성) — **`샤드마다 인그레스 1MB/초, 이그레스 2MB/초 한계`** 라서 **`월 클라우드 청구가 트래픽에 선형으로 자라고`**, **컨슈머 그룹을 하나 더 붙이는 데도 비용이 들며**, **`24시간을 넘겨 보관하려면 비싼 연장 보존 부가 옵션이 필요했다`**(7일이 필요했다). ⭐ **`더 쓰면 더 낸다` 가 아니라 `자라면 벌받는다` 였다**(재구성) — 하루 220억에서 1,500억으로 가는 회사에는 치명적이다.",
+            "current_best": "**Kafka(MSK)로 옮기고 Tiered Storage 로 정상 상태 비용을 내리는 것** — **`최악의 경우 보존을 위해 비싼 EBS 볼륨을 과잉 프로비저닝하는 것을 멈췄다`**. 필요했던 것이 **`비용 효율적인 다일 보존, 컨슈머 그룹 추가에 큰 비용이 없는 확장, 멀티클라우드 지원`** 이었고 **`Apache Kafka 가 명백한 선택이었다`**. ⚠️ **다만 비용을 옮긴 자리에 위험도 옮겨 갔다** — S3 오프로드 지연과 요청 속도 제한을 겪었다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "⭐ 비용 최적화가 곧 여유의 제거다",
+            "why_hard": "⚠️ **정상 상태에 맞춰 최적화하면 비정상 상태에서 버틸 것이 없어진다**(재구성). Tiered Storage 로 로컬을 줄이는 것은 비용상 당연해 보이는데, **급증·장애·복구는 전부 비정상 상태에서 일어난다**(재구성).",
+            "current_best": "⭐ **역할을 나눠 못 박는 것** — **`Tiered Storage 는 저장 비용을 극적으로 줄였지만 강한 로컬 브로커 용량의 필요를 없애지는 않았다 … 원격 저장소는 정상 상태 비용을 줄여야 하고, 로컬 저장소는 운영상의 충격 흡수를 제공해야 한다.`** 여기에 **브로커별 용량 계획**(평균이 아니라), **상류 속도 제한과 클라이언트 쿼터**, **샤드된 클러스터**, **시험된 4단계 페일오버 런북**을 더한다. ⭐ **결론이 `조합` 으로 끝난다** — **`이 규모에서의 신뢰성은 하나의 기능이나 하나의 서비스가 아니다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+                "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+                "publisher": "Atlassian",
+                "date": "2026-07-28",
+                "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "정상 상태는 원격에, 비정상 상태는 로컬에",
+          "question": "저장을 어떻게 나눴나",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>프로듀서</b><br/>• 하루 1,500억 이벤트 수집<br/>• 2,250억 전달<br/>• 평균 초당 168만 · 최대 320만\"]:::list --> U[\"<b>상류 방어</b><br/>• 속도 제한 · 트래픽 격리<br/>• 클라이언트 쿼터<br/>  (시끄러운 이웃)\"]:::accent\n  U --> K[\"<b>Kafka (MSK)</b><br/>• 샤드된 클러스터<br/>  (폭발 반경 축소)<br/>• 브로커별 용량 계획\"]:::accent\n  K --> L[\"⭐ <b>로컬 브로커 저장</b><br/>• 운영상의 충격 흡수\"]:::accent\n  K --> R[\"⭐ <b>Tiered Storage (원격)</b><br/>• 정상 상태 비용 절감<br/>• EBS 과잉 프로비저닝 중단\"]:::accent\n  L --> C[\"<b>컨슈머</b>\"]:::list\n  R --> C\n  F[\"<b>4단계 페일오버 런북</b><br/>• 시험된 복구 경로<br/>• 데이터 소재를 지키는 동반 리전\"]:::list -.-> K"
+        },
+        {
+          "title": "자라면 벌받는 구조, 그리고 옮겨 간 위험",
+          "question": "왜 떠났고 무엇이 따라왔나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>Kinesis 의 세 병목</b>\"]:::gone --> B[\"⚠️ <b>API 신뢰성</b><br/>• 99.99% 를 겨우 떠받쳤다<br/>• 급증 때 스로틀링이<br/>  프로듀서에 영향\"]:::gone\n  A --> C[\"⚠️ <b>분할 비용</b><br/>• 샤드당 1MB/s · 2MB/s<br/>• 월 청구가 트래픽에<br/>  선형으로 자랐다\"]:::gone\n  A --> D[\"⚠️ <b>보존 페널티</b><br/>• 24시간 넘으면 비싼 부가 옵션<br/>• 7일이 필요했다\"]:::gone\n  B --> E[\"<b>답: Kafka (MSK)</b><br/>• 명백한 선택이었다\"]:::accent\n  C --> E\n  D --> E\n  E --> F[\"⚠️ <b>겪은 장애 여섯</b><br/>• 브로커 네트워크 포화<br/>• S3 오프로드 지연<br/>• 보존 변경 중 S3 속도 제한<br/>• 저장 확장 쿨다운<br/>• AZ 장애로 제어 평면 가시성<br/>• 확장이 사고 대응에 너무 느림\"]:::gone\n  F --> G[\"⭐ <b>결론: 신뢰성은 조합이다</b><br/>• 보수적 용량 계획<br/>• 명시적 폭발 반경 통제<br/>• 시험된 복구 경로<br/>• 모든 실패에서 배우려는 의지\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+          "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
+          "publisher": "Atlassian",
+          "date": "2026-07-28",
+          "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
+        },
+        {
+          "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+          "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+          "publisher": "Atlassian",
+          "date": "2026-07-24",
+          "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+        },
+        {
+          "title": "Atlassian Announces Third Quarter Fiscal Year 2026 Results",
+          "url": "https://www.businesswire.com/news/home/20260430534706/en/Atlassian-Announces-Third-Quarter-Fiscal-Year-2026-Results",
+          "publisher": "Atlassian (BusinessWire)",
+          "date": "2026-04-30",
+          "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -651,7 +1248,8 @@
     "⚠️ **블로그의 대부분이 사업·AI 채택 글이다** — 엔지니어링 글은 `how-we-build` 아래에 따로 모여 있고, **첫 화면으로 판정하면 이 회사를 놓친다**(후보 조사에서 실제로 그럴 뻔했다).",
     "⚠️ **Jira·Confluence 본체의 기술 자료를 아직 못 봤다** — 검색·이벤트·AI 는 있는데 **문서 편집이나 이슈 추적 자체**의 이야기가 안 보인다.",
     "⏳ **도메인으로 안 세운 글이 셋 있다** — 실시간 PWA · AI 시대의 번역 · 유료 마케팅 예산 배분 ML. **흩어져 있어 축을 이루지 못한다**(재구성).",
-    "⚠️ **이전이 실제로 얼마나 걸리는지 없다** — **`의도적으로 느리게`** 가 이 기능의 핵심인데 **50TB 색인을 옮기는 데 며칠이 걸리는지 몇 주가 걸리는지 안 적는다.** ⭐ **쓰기 차단 시간(2~5초)만 대는데, 그건 사용자가 보는 값이고 운영자가 보는 값은 따로다**(재구성)."
+    "⚠️ **이전이 실제로 얼마나 걸리는지 없다** — **`의도적으로 느리게`** 가 이 기능의 핵심인데 **50TB 색인을 옮기는 데 며칠이 걸리는지 몇 주가 걸리는지 안 적는다.** ⭐ **쓰기 차단 시간(2~5초)만 대는데, 그건 사용자가 보는 값이고 운영자가 보는 값은 따로다**(재구성).",
+    "⭐ **이 글은 겪은 장애 여섯 개를 다 적는다** — 브로커 네트워크 포화 · S3 오프로드 지연 · 보존 변경 중 S3 요청 속도 제한 · 저장 확장 쿨다운 · AZ 장애 시 제어 평면 가시성 · 확장이 사고 대응에 너무 느림. ⚠️ **다만 각 장애의 영향 범위와 지속 시간은 없다** — 몇 분이었는지, 얼마나 많은 이벤트가 지연됐는지(재구성)."
   ],
   "sources": [
     {
@@ -663,10 +1261,10 @@
     },
     {
       "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
-      "url": "https://www.atlassian.com/blog/how-we-build",
+      "url": "https://www.atlassian.com/blog/how-we-build/scaling-streamhub-transitioning-from-kinesis-to-kafka-for-145-billion-daily-events",
       "publisher": "Atlassian",
-      "date": "",
-      "summary": "하루 1,450억 이벤트를 감당하기 위해 Kinesis 에서 Kafka 로 옮긴 이야기. ⏳ 본문 미독이고 개별 주소를 못 받았다 — 검색으로 받아야 한다."
+      "date": "2026-07-28",
+      "summary": "하루 220억에서 1,500억 이벤트로 자라는 동안 Kinesis 의 세 병목(API 신뢰성·샤드 비용이 트래픽에 선형·24시간 넘는 보존의 추가 비용)에 막혀 Kafka(MSK)로 옮겼다. Tiered Storage 로 최악의 보존을 위한 EBS 과잉 프로비저닝을 멈췄지만 로컬 저장소를 없애지는 않았다 — 원격은 정상 상태 비용을 줄이고 로컬은 운영상의 충격을 흡수한다. 겪은 장애 여섯 개를 그대로 적는다."
     },
     {
       "title": "The Events Rail: Inside Atlassian's Webhook Delivery Platform",
