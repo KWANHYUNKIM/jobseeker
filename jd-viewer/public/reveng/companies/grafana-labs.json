@@ -5,7 +5,7 @@
   "country": "US",
   "category": "SaaS",
   "status": "done",
-  "updated_at": "2026-09-04",
+  "updated_at": "2026-09-06",
   "domain": "grafana.com",
   "one_liner": "자기가 지은 구조를 공개적으로 버리는 회사 — 코드가 열려 있어 그 과정도 숨길 수 없다",
   "business_model": "**오픈소스를 만들어 놓고, 그것을 대신 굴려 주는 것으로 번다.** Grafana·Mimir·Loki·Tempo 는 누구나 받아서 자기 서버에 올릴 수 있고, 회사는 **관리형 Grafana Cloud** 와 엔터프라이즈 계약으로 회수한다.\n\n**비상장이라 감사받은 공시가 없다.** 회사 발표 기준으로 **2025년 ARR 4억 달러 초과 · 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳)이고, 기업가치는 보도 기준 60억 달러에서 90억 달러 라운드 논의로 이어졌다 — 이 사이트는 그것을 **추정으로만** 적는다.\n\n**그런데 이 회사를 Datadog 같은 관측 회사와 갈라놓는 것은 사업 모델이 아니라 그 결과다.** 코드가 열려 있으면 **아키텍처를 바꾸는 과정도 숨길 수 없다.** 그래서 이 회사의 글에는 다른 곳에서 보기 힘든 종류의 문장이 있다 — **\"복제 계수 3은 비싸다\"** 처럼, 자기가 골랐던 설계를 이름 붙여 부정하는 문장이다. 초기 Mimir 는 카산드라에서 영감을 받았고, 지금은 그 구조를 걷어내는 중이다(이 관찰은 이 사이트의 해석이다).\n\n**두 번째 성격은 남의 규모까지 감당해야 한다는 것이다.** Grafana Cloud 의 활성 시리즈가 수십억인데, **오픈소스 사용까지 합치면 전 세계에서 수백억**이다. 즉 이 회사가 만든 것은 자기 클라우드만이 아니라 **모르는 사람들의 온프렘 클러스터에서도 돌아야** 한다 — 그래서 '우리 환경에서만 되는 최적화'를 고르기 어렵다(마지막 문장은 이 사이트의 추정).\n\n**두 기능이 같은 습관을 보인다.** 첫째, **자기가 고른 것을 이름 붙여 부정한다** — **복제 계수 3은 비싸다**, 인제스터가 **사실상 분산된 단일 장애점** 이었다는 문장은 남이 한 지적이 아니라 자기 글이다. 둘째, **좋아지지 않은 것을 좋아졌다고 하지 않는다** — 차세대 구조 글은 **확장성이 나아진 게 아니라고 명시**하고(옛 구조도 새 구조도 \"매우 확장 가능하다\"), 질의 샤딩 문서는 **고객 질의의 60%만 샤딩된다**고 적으며 **병렬화가 아래 계층의 부하를 늘린다**고 경고한다. 셋째, **켜져 있다는 이유만으로 값을 내던 것을 찾아낸다** — 분산 환경에서 쓰지 않는 TSDB 격리를 끄자 인제스터 p99 지연이 90% 줄었다.\n\n**그리고 이 정직함은 성격이 아니라 구조에서 나올 수 있다**(추정) — 코드가 열려 있고 남의 온프렘 클러스터에서도 돌아야 하면, 되는 것과 안 되는 것을 정확히 적어야 남이 쓸 수 있기 때문이다. 실제로 이 회사의 문서에는 **설정 플래그 이름과 기본값, 그리고 지켜지지 않을 수 있는 조건**까지 적혀 있다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
@@ -194,6 +194,89 @@
       ],
       "features": [
         "query-sharding"
+      ]
+    },
+    {
+      "name": "로그 수집·저장",
+      "why": "⚠️ **본문을 색인하지 않는 대신 싸게 넣는 설계이고, 그 대가가 읽을 때 나타난다** — **청크의 최대 97% 가 로그 본문이고 질의에 쓸 수 있는 구조화 메타데이터와 타임스탬프는 3% 뿐이다.** ⚠️ **그 위에 병목이 셋 더 있었다** — 인제스터가 읽기·쓰기 양쪽에 앉아 **무거운 질의가 쓰기를 막고**, **복제 3이 어긋나면 객체 스토리지에 중복이 남았으며**, **해시 ID 분산이 부하를 몰리게 했다.** ✅ **본문 확인함**(GrafanaCON 2026 세션 전사).",
+      "tech": [
+        {
+          "tech": "Kafka (내구성 스트림 계층)",
+          "solves": "⚠️ **인메모리 복제 3을 대신한다** — 디스트리뷰터가 여기 쓰고 **파티션마다 인제스터 하나**가 소비해 **중복이 생길 여지 자체를 없앤다.**",
+          "limits": "⚠️ **경로에 부품과 운영이 더해진다**(재구성). ⭐ **Mimir 에서 이미 내린 판단의 반복이다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+              "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+              "publisher": "GrafanaCON 2026 (Grafana Labs)",
+              "date": "2026",
+              "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+            },
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2026-01-02",
+              "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+            }
+          ]
+        },
+        {
+          "tech": "볼륨 기준 파티셔닝",
+          "solves": "**해시 ID 로 나누면 처리량이 큰 덩어리 스트림이 같은 인제스터에 몰린다** — 볼륨으로 나눠 그 불균형을 없앤다.",
+          "limits": "⚠️ **볼륨을 알아야 나눌 수 있어 배치가 동적이 된다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+              "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+              "publisher": "GrafanaCON 2026 (Grafana Labs)",
+              "date": "2026",
+              "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+            }
+          ]
+        },
+        {
+          "tech": "새 데이터 포맷 · 질의 엔진 · 스케줄러",
+          "solves": "⚠️ **색인을 더하는 대신 읽어야 할 양을 줄인다** — **스캔 20배 감소 · 실행 10배 가속 · 큰 클러스터 비용 최대 30% 감소.**",
+          "limits": "⚠️ **포맷이 바뀌면 옛 데이터와의 호환을 관리해야 하는데 그 이야기가 자료에 없다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+              "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+              "publisher": "GrafanaCON 2026 (Grafana Labs)",
+              "date": "2026",
+              "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+            }
+          ]
+        },
+        {
+          "tech": "질의 시점 중복 제거 (제거된 것)",
+          "solves": "옛 구조의 짐이었다 — **파일 이름이 같으면 접힌다는 전제**에 기댔다.",
+          "limits": "⚠️ **인제스터 간 시간 동기 편차로 전제가 깨졌고, 3자 보도에 따르면 실제 저장 오버헤드는 명목 3배가 아니라 2.3배였다**(회사 전사에서는 확인하지 못해 등급을 내렸다).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Grafana Rearchitects Loki with Kafka and Ships a CLI to Bring Observability into Coding Agents",
+              "url": "https://www.infoq.com/news/2026/04/grafana-loki-ai-agents/",
+              "publisher": "InfoQ",
+              "date": "2026-04",
+              "summary": "Grafana 13 에서 Loki 의 수집 계층을 Kafka 기반으로 재설계했다. 기존 Loki 는 들어오는 로그 줄마다 인제스터 셋에 보내 고가용성을 얻고 파일 이름으로 중복을 제거했다. ⏳ 본문은 아직 읽지 않았다."
+            },
+            {
+              "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+              "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+              "publisher": "GrafanaCON 2026 (Grafana Labs)",
+              "date": "2026",
+              "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "no-index-means-you-read-everything"
       ]
     }
   ],
@@ -1187,6 +1270,531 @@
           "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
         }
       ]
+    },
+    {
+      "key": "no-index-means-you-read-everything",
+      "name": "색인하지 않은 대가는 읽을 때 치른다",
+      "domain": "로그 수집·저장",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **Loki 는 로그 본문을 색인하지 않는 대신 싸게 넣는 쪽을 골랐고, 그 대가가 읽을 때 나타난다.** 회사가 세션에서 그 크기를 숫자로 말한다 — **청크의 최대 97% 가 로그 본문이고, 질의에 쓸 수 있는 구조화 메타데이터와 타임스탬프는 3% 뿐이다.** ⚠️ **그리고 그 위에 세 개의 구조적 병목이 더 있었다** — **인제스터가 읽기와 쓰기 양쪽에 앉아 있어 `무거운 질의가 들어오면 쓰기가 느려지고 최종 사용자에게 500 이 돌아갔다`** · **복제 3이 동기에서 벗어나면 `객체 스토리지에 중복이 생기고 그 중복을 질의 시점에 제거해야 했다`** · **디스트리뷰터가 해시 ID 로 스트림을 나눠 `처리량이 큰 덩어리 스트림들이 같은 인제스터에 몰리는 불균형`이 생겼다.**",
+        "metrics": [
+          {
+            "label": "⚠️ 색인하지 않은 대가",
+            "value": "**청크의 최대 97% 가 로그 본문** — 질의 가능한 구조화 메타데이터와 타임스탬프는 **3%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "label": "질의 개선",
+            "value": "**스캔하는 데이터 20배 감소 · 질의 실행 10배 빨라짐**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "**가장 큰 클러스터에서 최대 30% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "label": "내구성의 이동",
+            "value": "**인메모리 복제 3 대신 Kafka** — 디스트리뷰터가 **내구성 있는 스트림 계층에 쓰고 각 파티션을 인제스터 하나가 소비한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 옛 복제의 실제 비용",
+            "value": "**파일 이름으로 중복을 제거하려 했으나 인제스터 간 시간 동기 편차로 실무에서 깨졌고, 실제 저장 오버헤드는 3배가 아니라 2.3배였다** — ⚠️ **이 수치는 3자 매체(InfoQ) 보도에서 온 것이고 회사 발표 전사에서는 확인하지 못했다**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Grafana Rearchitects Loki with Kafka and Ships a CLI to Bring Observability into Coding Agents",
+                "url": "https://www.infoq.com/news/2026/04/grafana-loki-ai-agents/",
+                "publisher": "InfoQ",
+                "date": "2026-04",
+                "summary": "Grafana 13 에서 Loki 의 수집 계층을 Kafka 기반으로 재설계했다. 기존 Loki 는 들어오는 로그 줄마다 인제스터 셋에 보내 고가용성을 얻고 파일 이름으로 중복을 제거했다. ⏳ 본문은 아직 읽지 않았다."
+              }
+            ]
+          },
+          {
+            "label": "새 구조가 노리는 규모",
+            "value": "**페타바이트 규모의 로깅**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "색인하지 않기로 한 대가를 셀 때",
+          "thought": "⚠️ **넣을 때 싸게 하면 읽을 때 비싸진다.** 라벨만 색인하고 본문은 그대로 넣는 설계라 **청크의 97% 가 질의에 직접 쓸 수 없는 본문**이 된다. **질의는 그 97% 를 지나가야 3% 에 닿는다**(뒤쪽은 이 사이트의 재구성이다). **그래서 이 구조에서 개선은 색인을 더하는 것이 아니라 읽어야 할 양을 줄이는 쪽으로 간다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "복제가 왜 문제인지 볼 때",
+          "thought": "⚠️ **복제 자체보다 복제가 어긋날 때가 문제였다** — **인제스터들이 동기에서 벗어나면 객체 스토리지에 중복이 남고, 그 중복을 질의 시점에 제거해야 한다.** **쓰기에서 아낀 일을 읽기가 갚는 구조가 여기서도 반복된다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "부하가 왜 몰리는지 볼 때",
+          "thought": "⚠️ **해시로 나누면 고르게 퍼질 것 같지만 크기를 모른다.** 회사의 지적 — **디스트리뷰터가 해시 ID 로 스트림을 분산하니 처리량이 큰 덩어리 스트림들이 같은 인제스터에 몰리는 불균형이 생긴다.** **개수를 고르게 나누는 것과 부하를 고르게 나누는 것은 다르다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "청크",
+            "what": "⚠️ **최대 97% 가 로그 본문**이고 질의 가능한 구조화 메타데이터·타임스탬프는 **3%** 다"
+          },
+          {
+            "name": "인제스터 (옛 역할)",
+            "what": "⚠️ **읽기와 쓰기 양쪽에 앉아 있었다** — 무거운 질의가 쓰기를 느리게 만들고 사용자에게 500 을 돌려줬다"
+          },
+          {
+            "name": "Kafka (내구성 스트림 계층)",
+            "what": "디스트리뷰터가 여기에 쓰고 **각 파티션을 인제스터 하나가 소비한다** — 인메모리 복제를 대신한다"
+          },
+          {
+            "name": "질의 시점 중복 제거",
+            "what": "⚠️ **옛 구조의 짐** — 인제스터가 동기에서 벗어나면 객체 스토리지에 중복이 남아 읽을 때 지워야 했다"
+          },
+          {
+            "name": "볼륨 기준 파티셔닝",
+            "what": "**해시 ID 대신** — 처리량이 큰 스트림이 한곳에 몰리는 것을 막는다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **본문은 색인되지 않는다** — 그래서 읽을 때 지나가야 할 양이 곧 비용이다",
+          "⚠️ **무거운 질의가 쓰기를 막아서는 안 된다** — 옛 구조가 그것을 못 지켰다",
+          "**내구성은 인메모리 사본이 아니라 스트림 계층이 진다**",
+          "⚠️ **개수를 고르게 나누는 것과 부하를 고르게 나누는 것은 다르다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**디스트리뷰터가 로그를 받는다**",
+            "why": "페타바이트 규모의 수집 경로다"
+          },
+          {
+            "step": "⚠️ **인메모리 복제 대신 Kafka 에 쓴다** — 내구성 있는 스트림 계층으로",
+            "why": "⚠️ **복제 3이 동기에서 벗어나면 객체 스토리지에 중복이 남았다**"
+          },
+          {
+            "step": "**각 파티션을 인제스터 하나가 소비한다**",
+            "why": "**사본이 여럿이 아니라 로그가 하나의 진실을 갖는다**(재구성)"
+          },
+          {
+            "step": "⚠️ **해시 ID 가 아니라 볼륨으로 파티션을 나눈다**",
+            "why": "⚠️ **해시로 나누면 처리량이 큰 덩어리 스트림이 같은 인제스터에 몰린다**"
+          },
+          {
+            "step": "**질의 시점 중복 제거가 사라진다**",
+            "why": "**중복이 애초에 생기지 않기 때문이다**"
+          },
+          {
+            "step": "**새 데이터 포맷과 새 질의 엔진·스케줄러로 읽는다**",
+            "why": "⚠️ **청크의 97% 가 본문이라 읽어야 할 양을 줄이는 것이 개선의 방향이다**"
+          },
+          {
+            "step": "**결과 — 스캔 데이터 20배 감소, 질의 10배 빨라짐, 큰 클러스터에서 비용 최대 30% 감소**",
+            "why": "읽는 쪽에서 치르던 대가를 줄였다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "고가용성을 무엇으로 얻을 것인가",
+            "chosen": "⚠️ **Kafka 내구성** — 인메모리 복제 3을 대신한다",
+            "alternatives": [
+              "복제 계수 3 유지",
+              "복제 계수만 낮추기"
+            ],
+            "tradeoff": "회사의 설명 — **`디스트리뷰터가 이제 내구성 있는 스트림 계층인 Kafka 에 쓰고, 각 파티션을 인제스터 하나가 소비한다.`** ⚠️ **복제가 어긋나면 중복이 남는다는 문제가 근본에서 사라진다.** **대가는 경로에 Kafka 라는 부품과 그 운영이 더해진다는 것**이고, ⭐ **같은 회사가 Mimir 에서 이미 내린 판단을 로그 제품에도 반복한 것이다**(이 대비는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              },
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "인제스터에게 읽기와 쓰기를 함께 맡길 것인가",
+            "chosen": "⚠️ **아니다** — 양쪽에 앉아 있던 것이 병목이었다",
+            "alternatives": [
+              "인제스터를 키워 견디기",
+              "질의에 상한을 걸기"
+            ],
+            "tradeoff": "회사가 증상을 그대로 적는다 — **`무거운 질의가 들어오면 쓰기가 느려지고 최종 사용자에게 500 이 돌아간다.`** ⚠️ **읽기의 사고가 쓰기의 장애가 되는 구조**이고, 상한만으로는 그 고리가 남는다(재구성). ⭐ **Mimir 에서 `인제스터는 읽기 경로와 쓰기 경로 사이의 약한 고리` 라고 적은 것과 같은 진단이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              },
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "중복 제거를 언제 할 것인가",
+            "chosen": "⚠️ **애초에 만들지 않는다** — 질의 시점 제거를 없앴다",
+            "alternatives": [
+              "질의 시점 중복 제거 유지",
+              "백그라운드 압축으로 정리"
+            ],
+            "tradeoff": "옛 구조는 **파일 이름이 같으면 중복이 접힌다는 전제**에 기댔는데, **인제스터가 동기에서 벗어나면 그 전제가 깨져 객체 스토리지에 중복이 남았다.** ⚠️ **쓰기에서 아낀 일을 읽기가 갚는 구조**였다(재구성). **대가는 파티션당 소비자가 하나라는 제약을 받아들이는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "question": "스트림을 무엇으로 나눌 것인가",
+            "chosen": "⚠️ **볼륨** — 해시 ID 를 버렸다",
+            "alternatives": [
+              "해시 ID 기반 분산 유지",
+              "테넌트 단위 고정 배치"
+            ],
+            "tradeoff": "회사의 지적 — **`디스트리뷰터가 해시 ID 로 스트림을 분산하니 처리량이 큰 덩어리 스트림들이 같은 인제스터에 몰리는 불균형이 생긴다.`** ⚠️ **개수를 고르게 나누는 것과 부하를 고르게 나누는 것은 다르다**(재구성). **대가는 볼륨을 알아야 나눌 수 있다는 것**이고, 그만큼 배치가 동적이 된다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "question": "본문을 색인할 것인가",
+            "chosen": "**하지 않는다** — 이 시스템의 전제다",
+            "alternatives": [
+              "본문 전체 색인",
+              "부분 색인"
+            ],
+            "tradeoff": "⚠️ **넣을 때 싸게 하면 읽을 때 비싸진다** — 그 대가가 **청크의 최대 97% 가 본문**이라는 숫자로 나타난다. **질의는 그 97% 를 지나가야 3% 에 닿는다**(재구성). ⚠️ **그래서 이 구조에서 개선은 색인을 더하는 쪽이 아니라 읽어야 할 양을 줄이는 쪽으로 간다** — 새 데이터 포맷과 새 질의 엔진이 그 답이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "question": "읽는 쪽을 어떻게 고칠 것인가",
+            "chosen": "**새 데이터 포맷 · 새 질의 엔진 · 새 스케줄러**",
+            "alternatives": [
+              "질의 캐시 확대",
+              "더 많은 쿼리어 투입"
+            ],
+            "tradeoff": "결과가 그 방향을 말해 준다 — **스캔하는 데이터 20배 감소, 질의 실행 10배 빨라짐.** ⚠️ **자원을 더 넣는 대신 읽어야 할 양 자체를 줄였다**(재구성). **대가는 저장 포맷이 바뀌면 옛 데이터와의 호환을 관리해야 한다는 것**인데 **그 이야기는 이 자료에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 성과로 말할 것인가",
+            "chosen": "**비용과 질의 속도** — 가장 큰 클러스터에서 최대 30% 감소",
+            "alternatives": [
+              "처리량 한계를 전면에"
+            ],
+            "tradeoff": "⚠️ **남의 로그를 대신 저장하는 사업이라 여기서도 절감이 곧 마진이다**(재구성). ⭐ **Mimir 의 TCO 25% 감소와 같은 자리다** — **한 회사의 두 제품이 같은 언어로 성과를 말한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              },
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "옛 복제가 실제로 얼마나 비쌌는가",
+            "chosen": "⚠️ **명목 3배가 아니었다** — 3자 보도에 따르면 실제 저장 오버헤드는 **2.3배**였다",
+            "alternatives": [
+              "명목값(3배)으로 계산"
+            ],
+            "tradeoff": "**파일 이름이 같으면 중복이 접힌다는 전제 덕에 일부는 실제로 접혔고**, **인제스터 간 시간 동기 편차 때문에 나머지는 접히지 않았다.** ⚠️ **이 수치는 회사 발표 전사가 아니라 3자 매체(InfoQ) 보도에서 온 것이라 등급을 내렸다.** **명목과 실제가 다르다는 것 자체가 이 설계의 성격을 보여 준다**(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Grafana Rearchitects Loki with Kafka and Ships a CLI to Bring Observability into Coding Agents",
+                "url": "https://www.infoq.com/news/2026/04/grafana-loki-ai-agents/",
+                "publisher": "InfoQ",
+                "date": "2026-04",
+                "summary": "Grafana 13 에서 Loki 의 수집 계층을 Kafka 기반으로 재설계했다. 기존 Loki 는 들어오는 로그 줄마다 인제스터 셋에 보내 고가용성을 얻고 파일 이름으로 중복을 제거했다. ⏳ 본문은 아직 읽지 않았다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kafka (내구성 스트림 계층)",
+            "role": "⚠️ **인메모리 복제를 대신한다** — 디스트리뷰터가 여기 쓰고 파티션마다 인제스터 하나가 소비",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "tech": "볼륨 기준 파티셔닝",
+            "role": "**해시 ID 분산이 만들던 불균형**을 없앤다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "tech": "새 데이터 포맷",
+            "role": "⚠️ **청크의 97% 가 본문이라는 문제**에 대한 답 — 읽어야 할 양을 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "tech": "새 질의 엔진 · 스케줄러",
+            "role": "**스캔 20배 감소 · 실행 10배 가속**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "tech": "객체 스토리지",
+            "role": "청크가 최종적으로 사는 곳. **옛 구조에서는 여기에 중복이 남았다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "mimir-next-gen",
+          "via": "⚠️ 같은 판단의 반복",
+          "contract": "⚠️ **한 회사가 메트릭과 로그 두 제품에서 같은 결론에 도달했다** — **인제스터가 읽기·쓰기 사이의 약한 고리라는 진단**도, **내구성을 사본에서 Kafka 로 옮긴 답**도 같다. **다른 데이터, 같은 병목**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "객체 스토리지",
+          "via": "청크와 중복",
+          "contract": "⚠️ **옛 구조에서는 인제스터가 어긋나면 여기에 중복이 남았고 질의가 그것을 지워야 했다** — 새 구조는 그 짐을 없앤다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Grafana Cloud (수익)",
+          "via": "비용",
+          "contract": "**가장 큰 클러스터에서 최대 30% 감소** — ⭐ **Mimir 의 TCO 25% 감소와 같은 언어로 성과를 말한다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "사용자의 질의",
+          "via": "⚠️ 예전에는 끊기지 않은 고리",
+          "contract": "⚠️ **무거운 질의가 쓰기를 느리게 만들어 최종 사용자에게 500 이 돌아갔다** — 그 고리를 끊는 것이 재설계의 이유 중 하나였다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 색인하지 않으면 읽을 때 다 지나가야 한다",
+            "why_hard": "⚠️ **넣는 쪽을 싸게 만든 설계의 값이 읽는 쪽에 쌓인다** — **청크의 최대 97% 가 로그 본문이고 질의에 쓸 수 있는 것은 3% 다.** **색인을 더하면 이 시스템이 그 시스템이 아니게 되므로**, 개선의 방향이 **읽어야 할 양을 줄이는 쪽으로만 열려 있다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**새 데이터 포맷과 새 질의 엔진으로 스캔량을 줄이는 것** — **스캔 20배 감소 · 실행 10배 가속.** ⚠️ **포맷 전환의 호환 이야기는 이 자료에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          },
+          {
+            "problem": "명목 복제와 실제 복제가 다르다",
+            "why_hard": "⚠️ **파일 이름이 같으면 중복이 접힌다는 전제에 기댄 설계였는데, 인제스터 간 시간 동기 편차 때문에 실무에서 그 전제가 부분적으로만 성립했다** — 그래서 **저장 오버헤드가 명목 3배가 아니라 2.3배**였다고 3자 매체가 전한다. **전제에 기댄 절약은 전제가 흔들리는 만큼만 실현된다**(뒤쪽은 재구성이다).",
+            "current_best": "**중복이 생길 여지 자체를 없애는 것** — 파티션마다 소비자 하나. ⚠️ **다만 이 수치는 회사 발표 전사에서 확인하지 못해 등급을 내렸다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Grafana Rearchitects Loki with Kafka and Ships a CLI to Bring Observability into Coding Agents",
+                "url": "https://www.infoq.com/news/2026/04/grafana-loki-ai-agents/",
+                "publisher": "InfoQ",
+                "date": "2026-04",
+                "summary": "Grafana 13 에서 Loki 의 수집 계층을 Kafka 기반으로 재설계했다. 기존 Loki 는 들어오는 로그 줄마다 인제스터 셋에 보내 고가용성을 얻고 파일 이름으로 중복을 제거했다. ⏳ 본문은 아직 읽지 않았다."
+              },
+              {
+                "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+                "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+                "publisher": "GrafanaCON 2026 (Grafana Labs)",
+                "date": "2026",
+                "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쓰기에서 아낀 일을 읽기가 갚는다",
+          "question": "색인 없는 설계에서 비용이 어디로 가나",
+          "kind": "flow",
+          "code": "flowchart TD\n  L[\"<b>로그</b>\"]:::list --> D[\"<b>디스트리뷰터</b><br/>• ⚠️ 볼륨으로 나눈다<br/>  (해시 ID 가 아니라)\"]:::accent\n  D --> K[\"⚠️ <b>Kafka (내구성 계층)</b><br/>• 인메모리 복제를 대신한다\"]:::accent\n  K --> I[\"<b>인제스터</b><br/>• 파티션 하나에 하나\"]:::list\n  I --> O[\"<b>객체 스토리지 (청크)</b><br/>• ⚠️ 최대 97% 가 본문<br/>• 질의 가능한 것은 3%\"]:::gone\n  O --> Q[\"<b>질의</b><br/>• 새 포맷 · 새 엔진 · 새 스케줄러\"]:::accent\n  Q --> R[\"<b>스캔 20배 감소</b><br/>• 실행 10배 가속<br/>• 큰 클러스터 비용 최대 30% 감소\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "옛 구조의 병목 넷",
+          "question": "무엇이 동시에 잘못되고 있었나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>인제스터가 양쪽에 앉아 있다</b><br/>• 무거운 질의가 쓰기를 느리게<br/>• 사용자에게 500 이 돌아간다\"]:::gone --> Z[\"<b>답: Kafka 로 경로를 끊는다</b>\"]:::accent\n  B[\"⚠️ <b>복제 3이 어긋난다</b><br/>• 객체 스토리지에 중복<br/>• 질의 시점에 지워야 했다\"]:::gone --> Z\n  C[\"⚠️ <b>해시 ID 로 나눈다</b><br/>• 처리량 큰 스트림이 한곳에\"]:::gone --> Y[\"<b>답: 볼륨으로 나눈다</b>\"]:::accent\n  E[\"⚠️ <b>청크의 97% 가 본문</b><br/>• 질의 가능한 것은 3%\"]:::gone --> X[\"<b>답: 새 포맷 · 새 엔진</b>\"]:::accent\n  F[\"⚠️ <b>명목 3배가 아니라 2.3배</b><br/>• 파일 이름 중복 제거가<br/>  시간 동기 편차로 부분만 통했다<br/>• (3자 보도, 등급 내림)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+          "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+          "publisher": "GrafanaCON 2026 (Grafana Labs)",
+          "date": "2026",
+          "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
+        },
+        {
+          "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+          "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+          "publisher": "Grafana Labs Blog",
+          "date": "2026-01-02",
+          "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+        },
+        {
+          "title": "Grafana Rearchitects Loki with Kafka and Ships a CLI to Bring Observability into Coding Agents",
+          "url": "https://www.infoq.com/news/2026/04/grafana-loki-ai-agents/",
+          "publisher": "InfoQ",
+          "date": "2026-04",
+          "summary": "Grafana 13 에서 Loki 의 수집 계층을 Kafka 기반으로 재설계했다. 기존 Loki 는 들어오는 로그 줄마다 인제스터 셋에 보내 고가용성을 얻고 파일 이름으로 중복을 제거했다. ⏳ 본문은 아직 읽지 않았다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1199,7 +1807,8 @@
     "질의 샤딩 문서는 **어떤 질의 유형을 앞으로 지원할지** 밝히지 않는다 — '작업 중'이라고만 적혀 있다.",
     "**샤딩된 질의가 아래 계층에 얼마나 부하를 더 주는지** 수치가 없다 — '늘어난다'는 경고만 있다.",
     "**Cortex 에서 Mimir 로 온 경위와 시점을 확인하지 못했다.** 2022년 글이 Mimir 을 '우리의 새 Prometheus TSDB' 로 소개하면서 그 앞에 무엇이 있었는지는 적지 않는다. 그래서 첫 시기를 Mimir 의 출발이 아니라 **대규모 부하 시험이 이뤄진 2021년**에서 열었다.",
-    "**질의 샤딩(query sharding)의 도입 시점이 없다.** 아키텍처 참조 문서라 날짜가 붙어 있지 않아 '질의 실행' 축의 세대를 따로 세우지 못했다."
+    "**질의 샤딩(query sharding)의 도입 시점이 없다.** 아키텍처 참조 문서라 날짜가 붙어 있지 않아 '질의 실행' 축의 세대를 따로 세우지 못했다.",
+    "⚠️ **이 회사가 한때 `grafana` 라는 다른 slug 로 중복 등록됐다**(2026-09-06). **같은 Mimir 차세대 아키텍처 자료로 기능을 두 번 쓴 셈이라** 겹치지 않는 로그(Loki) 쪽만 이 파일로 옮기고 중복 파일은 지웠다. ⏳ **그때 새로 확인한 인용이 `mimir-next-gen` 에 없을 수 있다** — **끊김 없는 소비(gapless consumption) · 복제 3→2·쿼럼 2→1 · WarpStream 과 교차 AZ 전송 GB당 0.02달러 · `더 확장성이 좋다고는 말하지 않겠다`** — **다음 보강 사이클에서 대조한다.**"
   ],
   "sources": [
     {
@@ -1229,6 +1838,20 @@
       "publisher": "Grafana Labs Docs",
       "date": "—",
       "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+    },
+    {
+      "title": "Grafana Rearchitects Loki with Kafka and Ships a CLI to Bring Observability into Coding Agents",
+      "url": "https://www.infoq.com/news/2026/04/grafana-loki-ai-agents/",
+      "publisher": "InfoQ",
+      "date": "2026-04",
+      "summary": "Grafana 13 에서 Loki 의 수집 계층을 Kafka 기반으로 재설계했다. 기존 Loki 는 들어오는 로그 줄마다 인제스터 셋에 보내 고가용성을 얻고 파일 이름으로 중복을 제거했다. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "Inside Loki's new architecture for faster logging at petabyte scale",
+      "url": "https://grafana.com/events/grafanacon/agenda/loki-petabyte-scale-logging-architecture/",
+      "publisher": "GrafanaCON 2026 (Grafana Labs)",
+      "date": "2026",
+      "summary": "Loki 엔지니어링 팀이 옛 구조의 병목 넷을 짚는다 — 인제스터가 읽기·쓰기 양쪽에 앉아 있어 무거운 질의가 쓰기를 막고, 복제 3이 동기에서 벗어나면 객체 스토리지에 중복을 남기며, 해시 ID 분산이 부하를 불균형하게 만들고, 청크의 최대 97%가 로그 본문이라 질의가 다 읽어야 했다. 새 구조는 Kafka 를 내구성 계층으로 두고 파티션마다 인제스터 하나가 소비한다."
     }
   ],
   "eras": [

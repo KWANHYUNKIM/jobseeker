@@ -26,18 +26,6 @@
       "domain": "scylladb.com"
     },
     {
-      "slug": "grafana",
-      "name": "Grafana Labs",
-      "name_en": "Grafana Labs",
-      "country": "US",
-      "category": "SaaS",
-      "status": "done",
-      "features_done": 2,
-      "one_liner": "오픈소스 관측 도구를 만들고 그 운영을 파는 회사 — 남이 만든 데이터베이스 수를 늘릴수록 자기 저장 비용이 문제가 된다",
-      "updated_at": "2026-09-06",
-      "domain": "grafana.com"
-    },
-    {
       "slug": "snyk",
       "name": "Snyk",
       "name_en": "Snyk",
@@ -404,9 +392,9 @@
       "country": "US",
       "category": "SaaS",
       "status": "done",
-      "updated_at": "2026-09-04",
+      "updated_at": "2026-09-06",
       "one_liner": "자기가 지은 구조를 공개적으로 버리는 회사 — 코드가 열려 있어 그 과정도 숨길 수 없다",
-      "features_done": 2,
+      "features_done": 3,
       "domain": "grafana.com"
     },
     {
@@ -1433,13 +1421,12 @@
     "광고를 팔려면 하루 10억 이벤트를 세야 한다",
     "취약점을 찾는 것이 아니라 고치는 것을 판다",
     "기계가 고친 것을 믿어도 되는지 잰다",
-    "메트릭을 오래, 그리고 싸게 저장한다",
-    "로그를 색인 없이 다룬다",
     "아무것도 공유하지 않고 코어마다 하나씩 둔다",
     "남의 API 를 그대로 받아 주면서 그 아래를 다시 짓는다",
     "카드 게임의 판정을 클라이언트에서 서버로 옮긴다",
     "출시일의 트래픽 급증을 무중단으로 넘긴다",
-    "게임 만드는 일에 LLM 을 넣는다"
+    "게임 만드는 일에 LLM 을 넣는다",
+    "로그 수집·저장"
   ],
   "countries": {
     "KR": "한국",
