@@ -69,8 +69,71 @@
     {
       "name": "메트릭을 오래, 그리고 싸게 저장한다",
       "why": "⚠️ **옛 구조가 카산드라에서 온 것이었다** — **복제 계수 3 + 쿼럼 읽기·쓰기.** 회사가 그 대가를 적는다: **`복제 계수 3은 비싸다. 수집 경로에서 각 데이터의 사본 셋을 들고 있어야 한다.`** 그리고 더 아픈 것이 **결합**이었다 — **`인제스터가 과부하되면 수집 경로, 즉 쓰기 경로도 영향을 받는다.`** ✅ **본문 확인함**(2026-01-02).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Kafka (경로 사이의 로그)",
+          "solves": "⚠️ **읽기와 쓰기를 끊고 내구성을 대신 진다** — 끊김 없는 소비를 보장해 **인제스터가 5분 죽어도 멈춘 자리에서 이어 받게** 한다.",
+          "limits": "⚠️ **내구성의 책임이 옮겨 간 만큼 로그가 새 단일 의존이 된다**(재구성). **그 보장이 깨졌을 때의 이야기는 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2026-01-02",
+              "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+            }
+          ]
+        },
+        {
+          "tech": "WarpStream + 객체 스토리지",
+          "solves": "**노드 간 네트워크 복제 대신 객체 스토리지에 먼저 써** 교차 AZ 전송(GB당 0.02달러)을 우회한다 — 스토리지가 알아서 영역을 넘어 복제한다.",
+          "limits": "⚠️ **회사가 대가를 명시한다 — `지연 페널티를 받아들이는 대신`.** 싼 길이 느린 길이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2026-01-02",
+              "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+            }
+          ]
+        },
+        {
+          "tech": "복제 2 · 쿼럼 1",
+          "solves": "사본을 **가용성 몫만 남겼다** — 남은 복제 2는 **`인제스터 하나가 비정상이 될 경우를 대비해`** 둔 것이다.",
+          "limits": "⚠️ **로그가 실제로 내구성을 져야 성립한다** — 전제가 무너지면 사본 2로는 부족하다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2026-01-02",
+              "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+            }
+          ]
+        },
+        {
+          "tech": "인제스터 (읽기 전용으로 축소)",
+          "solves": "**최근 데이터를 서빙하는 순수 읽기 경로 부품**이 됐다 — **고객의 무거운 질의가 수집을 멈추던 고리**가 끊겼다.",
+          "limits": "⚠️ **최근 데이터의 가용성이 이제 로그의 건강에 달린다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+              "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+              "publisher": "Grafana Labs Blog",
+              "date": "2026-01-02",
+              "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "let-the-log-remember-not-the-replicas"
+      ]
     },
     {
       "name": "로그를 색인 없이 다룬다",
@@ -79,7 +142,499 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "let-the-log-remember-not-the-replicas",
+      "name": "사본을 세 벌 두는 대신 로그가 기억하게 한다",
+      "domain": "메트릭을 오래, 그리고 싸게 저장한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **옛 구조는 데이터베이스에서 빌려 온 것이었다.** 회사의 말 그대로 — **`Mimir 의 원래 아키텍처는 카산드라에서 크게 영향을 받았다. 복제 계수 3에 쿼럼 읽기·쓰기를 했다.`** 그 대가가 둘이다. ⚠️ **첫째는 값이다** — **`복제 계수 3은 비싸다. 수집 경로에서 각 데이터의 사본 셋을 들고 있어야 한다.`** ⚠️ **둘째가 더 아프다** — **`인제스터는 읽기 경로와 쓰기 경로 사이의 약한 고리이기도 하다. 흔히 겪는 문제는 고객이 던진 무거운 질의가 인제스터를 과부하시키는 것이다.`** **남이 던진 질의 하나가 수집을 멈출 수 있는 구조였다**(뒤쪽은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "⚠️ 줄어든 것",
+            "value": "**복제 계수 3 → 2**, **쿼럼 2 → 1**(읽기 경로). 남은 복제 2는 **`인제스터 하나가 비정상이 될 경우를 대비해`** 둔 것이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "결과",
+            "value": "**Grafana Cloud 에서 Mimir 총소유비용 25% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "비용의 정체",
+            "value": "⚠️ **교차 AZ 데이터 전송이 GB당 0.02달러** — 객체 스토리지에 먼저 쓰면 **그 비용을 우회한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "규모",
+            "value": "Grafana Cloud 전체에서 **활성 시계열 수십억**, 오픈소스 사용까지 합치면 **수백억**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 회사가 주장하지 않은 것",
+            "value": "**`새 아키텍처가 옛것보다 더 확장성이 좋다고는 말하지 않겠다`** — 다만 **`이제는 우리를 겁먹게 할 만한 크기가 거의 없는 지점에 도달했다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "label": "이 절감이 걸린 사업",
+            "value": "고객 **1만 곳 이상** · **ARR 6억 달러 이상**(2026년 8월)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Grafana Labs Crosses 10,000-Customer Milestone as AI Adoption Accelerates Growth Across the Platform",
+                "url": "https://grafana.com/press/2026/08/26/grafana-labs-crosses-10000-customer-milestone-as-ai-adoption-accelerates-growth-across-the-platform/",
+                "publisher": "Grafana Labs",
+                "date": "2026-08-26",
+                "summary": "고객 1만 곳을 넘고 ARR 6억 달러를 넘어섰다. Grafana Cloud 확장과 AI 기능(Grafana Assistant, Adaptive Telemetry)이 성장을 이끌었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇이 진짜 문제인지 볼 때",
+          "thought": "⚠️ **비용은 눈에 띄는 문제였고 결합은 더 깊은 문제였다.** 복제 3은 청구서로 보이지만, **고객이 던진 무거운 질의가 인제스터를 과부하시켜 수집까지 멈추는 것**은 신뢰의 문제다. 그래서 **새 구조의 첫 목표가 비용이 아니라 `읽기와 쓰기 경로의 분리` 였다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "복제를 줄일 수 있을지 물을 때",
+          "thought": "⚠️ **사본을 줄이려면 누군가는 기억해야 한다.** Kafka 를 사이에 놓고 **소비가 끊김 없이(gapless) 이어지게** 만들자 **인제스터가 데이터의 유일한 보관자가 아니게 됐고**, 그래서 **복제 3을 2로, 쿼럼 2를 1로** 낮출 수 있었다. **내구성의 책임을 옮긴 것이지 없앤 것이 아니다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "비용의 정체를 짚을 때",
+          "thought": "⚠️ **비싼 것은 저장이 아니라 전송이었다** — **교차 AZ 데이터 전송이 GB당 0.02달러**다. 그래서 **노드끼리 네트워크로 직접 복제하는 대신 객체 스토리지에 먼저 쓴다** — 스토리지가 알아서 영역을 넘어 복제해 주기 때문이다. ⚠️ **그리고 그 대가를 회사가 명시한다 — `지연 페널티를 받아들이는 대신`.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "인제스터 (옛 역할)",
+            "what": "⚠️ **수집과 조회를 함께 맡던 부품.** 복제 계수 3으로 데이터를 들고 있었고 **읽기와 쓰기 사이의 약한 고리**였다"
+          },
+          {
+            "name": "인제스터 (새 역할)",
+            "what": "⚠️ **`새 아키텍처에서 인제스터는 그냥 읽기 경로 부품이다. 가장 최근 데이터를 서빙하는 데 쓰이는 순수 읽기 경로 부품이다.`**"
+          },
+          {
+            "name": "Kafka (사이에 놓인 로그)",
+            "what": "쓰기 경로와 읽기 경로 사이. ⚠️ **끊김 없는 소비(gapless consumption)** 를 보장한다"
+          },
+          {
+            "name": "WarpStream",
+            "what": "⚠️ **노드끼리 네트워크로 직접 복제하는 대신 데이터를 객체 스토리지에 먼저 쓴다** — 교차 AZ 전송 비용을 우회한다"
+          },
+          {
+            "name": "객체 스토리지",
+            "what": "**영역을 넘어 알아서 복제해 준다** — 그 복제에는 교차 AZ 비용이 붙지 않는다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **읽기에서 일어난 일이 쓰기에 영향을 주지 않는다** — 그 반대도 마찬가지",
+          "⚠️ **소비는 끊기지 않는다** — 인제스터가 5분 죽어도 재시작하면 멈춘 자리에서 이어 받는다",
+          "**내구성은 사본 수가 아니라 로그가 진다**",
+          "⚠️ **남은 복제 2는 성능이 아니라 인제스터 하나가 비정상이 될 경우를 위한 것이다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**메트릭이 쓰기 경로로 들어온다**",
+            "why": "활성 시계열이 클라우드에서만 수십억이다"
+          },
+          {
+            "step": "⚠️ **Kafka 에 먼저 쓴다** — 쓰기 경로와 읽기 경로 사이에",
+            "why": "⚠️ **`읽기 경로에서 무슨 일이 일어나든 쓰기 경로에 영향을 주지 않아야 하고 그 반대도 마찬가지`**"
+          },
+          {
+            "step": "**WarpStream 이 그것을 객체 스토리지에 쓴다** — 노드 간 직접 복제 대신",
+            "why": "⚠️ **교차 AZ 전송이 GB당 0.02달러**인데 **객체 스토리지의 영역 간 복제에는 그 비용이 없다**"
+          },
+          {
+            "step": "**인제스터가 파티션에서 소비한다** — 끊김 없이",
+            "why": "⚠️ **`인제스터를 재시작해 프로세스가 5분 동안 내려가 있어도, 시작할 때 멈췄던 자리에서 소비를 이어 받는다`**"
+          },
+          {
+            "step": "⚠️ **인제스터는 최근 데이터를 서빙하는 순수 읽기 경로 부품이 된다**",
+            "why": "**더 이상 데이터의 유일한 보관자가 아니다**"
+          },
+          {
+            "step": "**복제 2, 쿼럼 1로 읽는다**",
+            "why": "⚠️ **남은 복제 2는 인제스터 하나가 비정상이 될 경우를 대비한 것이다**"
+          },
+          {
+            "step": "**오래된 데이터는 객체 스토리지에서 읽는다**",
+            "why": "**아래에는 객체 스토리지가 깔려 있다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "데이터베이스에서 빌려 온 구조를 계속 쓸 것인가",
+            "chosen": "⚠️ **버린다** — 카산드라식 복제 3 + 쿼럼을 벗어난다",
+            "alternatives": [
+              "복제 계수만 낮추기",
+              "인제스터를 더 키워 과부하를 견디기"
+            ],
+            "tradeoff": "대가가 둘이었다 — **`복제 계수 3은 비싸다`**, 그리고 **`인제스터는 읽기 경로와 쓰기 경로 사이의 약한 고리이기도 하다`**. ⚠️ **복제 계수만 낮추면 내구성이 그만큼 준다** — 누군가 그 책임을 대신 져야 구조를 바꿀 수 있다(재구성). **대가는 10년 가까이 굴린 구조를 갈아엎는 일 자체다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "읽기와 쓰기를 어떻게 끊을 것인가",
+            "chosen": "⚠️ **사이에 Kafka 를 놓는다**",
+            "alternatives": [
+              "읽기 전용 복제본 추가",
+              "질의에 자원 상한을 걸기"
+            ],
+            "tradeoff": "목표를 회사가 첫째로 적는다 — **`읽기 경로에서 무슨 일이 일어나든 쓰기 경로에 영향을 주지 않아야 하고 그 반대도 마찬가지`**. 자원 상한만으로는 **무거운 질의가 인제스터를 과부하시키는 근본 구조가 남는다**(재구성). ⚠️ **대가는 경로에 부품이 하나 더 늘고 그 부품이 새로운 의존이 된다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "복제를 몇 벌로 할 것인가",
+            "chosen": "⚠️ **3 → 2, 쿼럼은 2 → 1**",
+            "alternatives": [
+              "복제 3 유지",
+              "복제 1까지 낮추기"
+            ],
+            "tradeoff": "회사의 말 — **`더 이상 복제 계수 3과 쿼럼 2가 아니다. 읽기 경로에서는 쿼럼 1이고, 복제 계수는 2다. 인제스터 하나가 비정상이 될 경우를 대비해서.`** ⚠️ **로그가 내구성을 지므로 사본은 가용성 몫만 남는다** — **역할이 바뀌자 수도 바뀌었다**(재구성). **대가는 로그가 그 책임을 실제로 져야 한다는 것**이고, 그래서 다음 결정이 따라온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "소비가 끊기면 어떻게 할 것인가",
+            "chosen": "**끊김 없는 소비(gapless consumption)를 보장한다**",
+            "alternatives": [
+              "재시작 시 최신 지점부터 소비",
+              "별도 복구 절차 운영"
+            ],
+            "tradeoff": "회사가 예를 들어 설명한다 — **`인제스터를 재시작해 프로세스가 5분 동안 내려가 있어도, 시작할 때 멈췄던 자리에서 소비를 이어 받는다.`** ⚠️ **이 보장이 없으면 복제를 줄일 수 없다** — 사본이 아니라 로그가 기억한다는 전제가 여기서 성립한다(재구성). **대가는 밀린 만큼 따라잡는 시간이 생긴다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "교차 AZ 비용을 어떻게 할 것인가",
+            "chosen": "⚠️ **객체 스토리지에 먼저 쓴다**(WarpStream) — 노드 간 직접 복제 대신",
+            "alternatives": [
+              "노드 간 네트워크 복제 유지",
+              "단일 AZ 운영"
+            ],
+            "tradeoff": "회사가 맞바꿈을 명시한다 — **`노드끼리 네트워크로 직접 복제하는 대신 WarpStream 은 데이터를 객체 스토리지에 먼저 쓴다 … 지연 페널티를 받아들이는 대가로 교차 AZ 데이터 전송 비용을 우회할 수 있다.`** **교차 AZ 전송은 GB당 0.02달러**다. ⚠️ **비싼 것이 저장이 아니라 전송이라는 진단이 이 결정의 전부다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "인제스터에게 무엇을 남길 것인가",
+            "chosen": "⚠️ **읽기만** — **`순수 읽기 경로 부품`** 으로 축소했다",
+            "alternatives": [
+              "수집과 조회를 계속 겸하기",
+              "조회 전용 노드를 따로 추가"
+            ],
+            "tradeoff": "**가장 최근 데이터를 서빙하는 일만 남았다.** ⚠️ **부품에서 역할을 덜어 내는 것이 부품을 늘리는 것보다 나은 경우다** — 겸하던 시절에는 **한쪽의 부하가 다른 쪽을 무너뜨렸다**(재구성). **대가는 최근 데이터의 가용성이 이제 로그의 건강에 달린다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "노드 장애 복구를 어떻게 만들 것인가",
+            "chosen": "**예측 가능한 파티셔닝** — 결정론적으로 복구되도록",
+            "alternatives": [
+              "해시 링 기반 재배치 유지"
+            ],
+            "tradeoff": "새 구조의 두 번째 목표가 **`노드 장애에 대한 더 나은 복원력`** 이다. ⚠️ **어느 노드가 무엇을 맡는지 예측할 수 있으면 복구가 절차가 된다**(재구성). **대가는 파티션 배치의 유연성이 준다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "question": "이 재설계를 무엇으로 자랑할 것인가",
+            "chosen": "⚠️ **확장성이 아니라 비용과 결합 제거로** — 확장성 주장을 스스로 접는다",
+            "alternatives": [
+              "더 큰 규모를 처리한다고 발표",
+              "성능 수치를 전면에"
+            ],
+            "tradeoff": "회사의 문장 — **`새 아키텍처가 옛것보다 더 확장성이 좋다고는 말하지 않겠다`**, 다만 **`이제는 우리를 겁먹게 할 만한 크기가 거의 없는 지점에 도달했다`**. ⚠️ **팔기 좋은 주장 대신 실제로 얻은 것(TCO 25% 감소와 경로 분리)만 말한다**(이 평가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kafka (쓰기와 읽기 사이)",
+            "role": "⚠️ **경로를 끊고 내구성을 진다** — 끊김 없는 소비를 보장한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "tech": "WarpStream",
+            "role": "**노드 간 복제 대신 객체 스토리지에 먼저 쓴다** — 교차 AZ 비용 우회",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "tech": "객체 스토리지",
+            "role": "**영역을 넘어 알아서 복제한다** — 그 복제에는 교차 AZ 요금이 붙지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "tech": "인제스터 (축소된 역할)",
+            "role": "**최근 데이터를 서빙하는 순수 읽기 경로 부품**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "tech": "복제 2 · 쿼럼 1",
+            "role": "**가용성 몫만 남긴 사본** — 내구성은 로그가 진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "Grafana Cloud (수익)",
+          "via": "총소유비용",
+          "contract": "⚠️ **남의 텔레메트리를 대신 저장하는 사업이라 인프라 원가가 그대로 마진이다** — **줄인 25% 가 곧 번 것이다**(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "객체 스토리지 제공자",
+          "via": "영역 간 복제",
+          "contract": "⚠️ **스토리지가 대신 복제해 주고 교차 AZ 요금을 물리지 않는다는 사실 위에 구조가 서 있다** — **클라우드 요금표가 아키텍처를 정한 자리다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "로그를 색인 없이 다룬다",
+          "via": "⚠️ 같은 판단의 반복",
+          "contract": "⚠️ **Loki 도 수집 계층을 Kafka 기반으로 재설계했다** — **한 회사가 메트릭과 로그 두 제품에서 같은 판단(복제에서 로그로)을 반복한다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "고객의 질의",
+          "via": "⚠️ 이제 끊긴 고리",
+          "contract": "⚠️ **예전에는 고객이 던진 무거운 질의가 인제스터를 과부하시켜 수집까지 멈출 수 있었다** — 그 고리를 끊는 것이 새 구조의 첫 목표였다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 싼 길은 느린 길이다",
+            "why_hard": "⚠️ **회사가 맞바꿈을 그대로 적는다 — `지연 페널티를 받아들이는 대가로 교차 AZ 데이터 전송 비용을 우회할 수 있다.`** **노드끼리 직접 복제하면 빠르지만 GB당 0.02달러가 붙고, 객체 스토리지를 거치면 싸지만 한 번 더 돌아간다.** **어느 쪽도 공짜가 아니고, 무엇을 고를지는 그 시스템이 무엇을 파느냐가 정한다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**메트릭 수집처럼 지연보다 비용이 중요한 경로에서 후자를 고르는 것.** ⚠️ **그 판단이 모든 워크로드에 옮겨 가지는 않는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          },
+          {
+            "problem": "내구성의 책임을 옮기면 옮긴 곳이 새 단일 의존이 된다",
+            "why_hard": "⚠️ **사본 셋이 지던 것을 이제 로그가 진다** — 그래서 **끊김 없는 소비 보장이 성립하지 않는 순간 복제 2로는 부족해진다**(재구성). **남은 복제 2도 내구성이 아니라 `인제스터 하나가 비정상이 될 경우` 를 위한 것이라고 회사가 명시한다.**",
+            "current_best": "**gapless consumption 을 보장으로 못 박고 그 위에서 사본 수를 정하는 것.** ⚠️ **그 보장이 깨졌을 때 무슨 일이 일어나는지는 글에 없다**(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+                "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2026-01-02",
+                "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "사본이 지던 짐을 로그가 진다",
+          "question": "메트릭 하나가 저장되고 조회되기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  W[\"<b>쓰기 경로</b><br/>• 활성 시계열 수십억\"]:::list --> K[\"⚠️ <b>Kafka</b><br/>• 끊김 없는 소비 보장<br/>• 5분 죽어도 그 자리에서\"]:::accent\n  K --> WS[\"<b>WarpStream</b><br/>• 노드 간 복제 대신<br/>  객체 스토리지에 먼저 쓴다\"]:::accent\n  WS --> OS[\"<b>객체 스토리지</b><br/>• 영역을 넘어 알아서 복제<br/>• 교차 AZ 요금 없음\"]:::list\n  K --> I[\"<b>인제스터</b><br/>• 순수 읽기 경로 부품<br/>• 최근 데이터만 서빙\"]:::list\n  I --> Q[\"<b>질의</b><br/>• 복제 2 · 쿼럼 1\"]:::list\n  OS --> Q\n  Q -.->|\"⚠️ 이제 끊긴 고리\"| W"
+        },
+        {
+          "title": "옛 구조에서 무엇이 아팠나",
+          "question": "카산드라식 설계가 여기서 왜 안 맞았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>복제 계수 3 + 쿼럼</b><br/>• 카산드라에서 빌려 온 구조\"]:::gone --> B[\"⚠️ <b>비싸다</b><br/>• 사본 셋을 들고 있어야 한다\"]:::gone\n  A --> C[\"⚠️ <b>더 아픈 것: 결합</b><br/>• 인제스터가 읽기와 쓰기의<br/>  약한 고리<br/>• 무거운 질의가 수집을 멈춘다\"]:::gone\n  B --> D[\"<b>답: 로그가 내구성을 진다</b><br/>• 복제 3 → 2 · 쿼럼 2 → 1\"]:::accent\n  C --> E[\"<b>답: 인제스터에서 쓰기를 덜어 낸다</b>\"]:::accent\n  F[\"⚠️ <b>비싼 것은 저장이 아니라 전송</b><br/>• 교차 AZ GB당 0.02달러\"]:::gone --> G[\"<b>답: 객체 스토리지 경유</b><br/>• ⚠️ 지연 페널티를 받아들이는 대가로\"]:::accent\n  H[\"⚠️ <b>주장하지 않은 것</b><br/>• 더 확장성이 좋다고는<br/>  말하지 않겠다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Mimir's next-gen architecture — Kafka in the middle, object storage underneath, and a whole lot less coupling",
+          "url": "https://grafana.com/blog/mimir-s-next-gen-architecturekafka-in-the-middle-object-storage-underneath-and-a-whole-lot-less-coupling/",
+          "publisher": "Grafana Labs Blog",
+          "date": "2026-01-02",
+          "summary": "카산드라에서 온 복제 계수 3 + 쿼럼 구조가 비싸고 읽기와 쓰기 경로를 묶어 놓았다. 쓰기와 읽기 사이에 Kafka 를 놓아 복제를 3에서 2로, 쿼럼을 2에서 1로 낮췄고, WarpStream 으로 교차 AZ 전송 비용을 객체 스토리지로 옮겨 Grafana Cloud 의 Mimir TCO 를 25% 줄였다."
+        },
+        {
+          "title": "Grafana Labs Crosses 10,000-Customer Milestone as AI Adoption Accelerates Growth Across the Platform",
+          "url": "https://grafana.com/press/2026/08/26/grafana-labs-crosses-10000-customer-milestone-as-ai-adoption-accelerates-growth-across-the-platform/",
+          "publisher": "Grafana Labs",
+          "date": "2026-08-26",
+          "summary": "고객 1만 곳을 넘고 ARR 6억 달러를 넘어섰다. Grafana Cloud 확장과 AI 기능(Grafana Assistant, Adaptive Telemetry)이 성장을 이끌었다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **`10년의 아키텍처 진화` 라는 말이 나오는데 연도가 없다** — Mimir 글이 그 표현을 쓰지만 **어느 구조가 언제부터였는지**를 밝히지 않아 **연표(eras)를 못 세웠다.** ⚠️ **이번 세션에서 네 번째다**(GeoIndia · Flink→ClickHouse · Snyk 에 이어).",

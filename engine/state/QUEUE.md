@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Grafana Labs** | US/SE · SaaS(관측) | 프로파일 완료 · 도메인 2(메트릭을 오래, 그리고 싸게 저장한다[tech 0 · ✅ 본문 확인] / 로그를 색인 없이 다룬다[tech 0 · ⏳ 미독]) · **기능 0** · ✅ WebFetch 로 본문이 온다. ⚠️ **`/blog/tags/engineering/` 는 404 — 심층 글은 검색으로 주소를 받는다** |
+| **Grafana Labs** | US/SE · SaaS(관측) | 도메인 2(메트릭을 오래, 그리고 싸게 저장한다[tech 4] / **로그를 색인 없이 다룬다[tech 0 · ⏳ 미독]**) · **기능 1**(let-the-log-remember-not-the-replicas) · ✅ WebFetch 로 본문이 온다. ⚠️ **`/blog/tags/engineering/` 는 404 — 심층 글은 검색으로 주소를 받는다** |
 
 ## 대기
 

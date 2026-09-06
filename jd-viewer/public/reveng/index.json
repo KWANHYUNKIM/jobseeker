@@ -8,7 +8,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "오픈소스 관측 도구를 만들고 그 운영을 파는 회사 — 남이 만든 데이터베이스 수를 늘릴수록 자기 저장 비용이 문제가 된다",
       "updated_at": "2026-09-06",
       "domain": "grafana.com"
