@@ -104,9 +104,9 @@
       "why": "이 엔진에서 드문 축이다. 보통 저지연 데이터베이스는 C·C++·러스트로 가는데 이 회사는 JVM 위에서 그 일을 한다. 그래서 글의 소재가 남다르다 — 조건부 이동 명령이 분기보다 비쌀 수 있다는 이야기, HotSpot JIT 이 비트를 추론하게 되면서 마스크 연산이 사라진 이야기, 히스토그램을 힙 밖으로 옮긴 이야기.\n\n앞 도메인이 바깥과의 경계라면 여기는 언어와 하드웨어 사이의 경계다. 런타임이 대신 해 주는 것과 직접 해야 하는 것을 가르는 일이 이 도메인의 내용이다(재구성).",
       "tech": [
         {
-          "tech": "JIT 의 성질을 알고 코드를 쓴다",
-          "solves": "분기를 없애는 것이 언제나 이득은 아니라는 것(조건부 이동이 더 비쌀 수 있다), 그리고 JIT 이 비트 범위를 추론하면 마스크 연산이 아예 사라진다는 것을 확인하고 그에 맞춰 짠다.",
-          "limits": "이 글들을 아직 열어 보지 않았다 — 제목과 날짜만 확인했다. 수치와 조건은 다음 사이클에서 채운다.",
+          "tech": "JIT 의 판단 기준을 알고 코드를 쓴다",
+          "solves": "분기 제거가 언제 손해인지를 재서 안다. HotSpot 은 두 갈래의 실행 비율(치우침)을 보고 고르는데 하드웨어가 값을 매기는 것은 예측 가능성이라, 결과가 다음 반복으로 이어지는 루프에서 2.9배·1.9배로 어긋난다.",
+          "limits": "JIT 의 휴리스틱을 바꾸지는 못한다. 자기 코드의 모양으로 피해 갈 뿐이고, 자리마다 성능 카운터로 재야 한다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -114,21 +114,14 @@
               "url": "https://questdb.com/blog/cmov-vs-branch-perf/",
               "publisher": "QuestDB",
               "date": "2026-07-15",
-              "summary": "분기를 없애는 조건부 이동 명령이 오히려 더 비쌀 수 있다는 것을 다룬 글."
-            },
-            {
-              "title": "The mask that compiles to nothing: how HotSpot's JIT learned to reason about bits",
-              "url": "https://questdb.com/blog/jvm-jit-known-bits/",
-              "publisher": "QuestDB",
-              "date": "2026-07-02",
-              "summary": "HotSpot JIT 이 비트 값을 추론하게 되면서 마스크 연산이 아예 사라지는 이야기를 다룬 글."
+              "summary": "조건부 이동(cmov)이 분기보다 비쌀 수 있다는 것을 파고든 글. 통념은 cmov 가 분기 예측 실패를 피한다는 것이다 — 분기는 추측이라 잘 맞으면 거의 공짜지만 빗나가면 추측한 일을 버리고 다시 시작해야 해 비싸고, cmov 는 기다림이라 빗나갈 일이 없다. 문제는 HotSpot 의 C2 가 무엇을 보고 고르느냐다. 두 갈래가 각각 얼마나 자주 실행됐는지의 비율, 즉 치우침만 본다. 그런데 하드웨어가 값을 매기는 것은 예측 가능성이다. 보통 데이터에서는 둘이 일치하지만 짓궂은 데이터에서는 갈린다. 선택된 값이 다음 반복으로 이어지면 cmov 의 지연이 임계 경로가 되어 각 반복이 앞 반복을 기다리게 되고 비순차 실행으로도 감출 수 없다. 반대로 무작위 데이터에서는 치우침이 90/10 이어도 예측기가 못 맞힌다. Ryzen 9950X 에서 성능 카운터를 켜고 두 루프 모양을 쟀다 — 결과가 다음 반복으로 이어지는 루프에서는 예측 가능한 50/50 데이터에서 2.9배 느려졌고(분기가 나은 자리에 cmov 가 갔다) 무작위 90/10 데이터에서 1.9배 느려졌다(cmov 가 나은 자리에 분기가 갔다). 결과를 쓰되 임계 경로에 두지 않은 루프에서는 그 차이가 거의 사라졌다. QuestDB 코드를 고친 것은 아니고 HotSpot 의 기존 휴리스틱과 그 한계를 기록한 글이다."
             }
           ]
         },
         {
-          "tech": "힙 밖 자료구조",
-          "solves": "히스토그램을 힙 밖으로 옮겨 3배를 얻었고 코드 리뷰를 거쳐 8.9배가 됐다.",
-          "limits": "본문을 아직 안 읽었다. 무엇을 포기했는지는 확인하지 못했다.",
+          "tech": "힙 밖 자료구조와 포인터를 갈아 끼우는 핸들",
+          "solves": "집계 상태를 네이티브 메모리에 두어 병렬 그룹바이에 들어가게 한다. 행마다 할당하지 않는다. 워커 8개에서 8.34배, 최고 8.90배.",
+          "limits": "GC 압력이 사라진 자리에 다른 최적화 문제가 남는다 — 상태를 읽어 오는 값, 힙 밖 헤더와 자바 필드의 동기화. 옮기기만 했을 때는 단일 스레드가 0.82배로 오히려 느렸다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -136,12 +129,14 @@
               "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
               "publisher": "QuestDB",
               "date": "2026-04-21",
-              "summary": "히스토그램 구현을 힙 밖으로 옮겨 3배를 얻었다가 코드 리뷰를 거쳐 8.9배가 된 기록."
+              "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
             }
           ]
         }
       ],
-      "features": []
+      "features": [
+        "offheap-histogram"
+      ]
     },
     {
       "name": "시계열의 모양을 표현과 연산에 넣는다",
@@ -705,6 +700,466 @@
           "summary": "시간 창으로 두 시계열을 잇는 WINDOW JOIN 을 병렬화하고 벡터화한 기록."
         }
       ]
+    },
+    {
+      "key": "offheap-histogram",
+      "name": "힙 밖으로 옮기고 나서 진짜 문제를 만난다",
+      "domain": "자바 위에서 사이클을 센다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "이 데이터베이스가 파는 것은 시계열 위의 집계인데, 백분위수처럼 자주 쓰는 집계가 워커 하나에 묶여 있으면 코어를 아무리 늘려도 소용이 없다. 그리고 그 한계가 알고리즘이 아니라 **메모리가 어디에 있느냐**에서 왔다 — 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램은 그 구조에 들어갈 수 없었다.\n\n자바로 데이터베이스를 짜는 회사가 치르는 값이 여기서 드러난다. 런타임이 대신해 주던 것(할당과 회수)을 직접 하기로 하는 순간, 그 결정이 병렬성을 여는 열쇠가 된다(재구성).",
+        "metrics": [
+          {
+            "label": "리뷰 전",
+            "value": "단일 스레드 0.82배(오히려 느려졌다) · 워커 8개 2.99배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "label": "리뷰 후",
+            "value": "단일 스레드 2.78배 · 워커 8개 8.34배 · 파티션 32개와 워커 8개에서 최고 8.90배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "label": "뜨거운 경로",
+            "value": "Unsafe 읽기 5회 + 여러 번의 Math 호출 → Unsafe 읽기 3회, 수학 연산 0회",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "label": "덜어낸 계산",
+            "value": "키가 바뀔 때마다 하던 Math.log 2회 · Math.pow 1회 · Math.ceil 1회",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "GroupByHistogram",
+            "what": "네이티브 메모리의 버퍼를 가리키는 작은 자바 객체. 행마다 다른 버퍼로 포인터를 갈아 끼운다"
+          },
+          {
+            "name": "힙 밖 버퍼",
+            "what": "히스토그램의 실제 상태가 사는 곳. 병렬 그룹바이 자료구조가 이것을 전제한다"
+          },
+          {
+            "name": "버킷 기하",
+            "what": "가장 작게 구분할 값과 유효 자릿수로 정해지는 구조. 생성 뒤에는 바뀌지 않는다"
+          },
+          {
+            "name": "헤더와 자바 필드",
+            "what": "같은 상태를 두 곳에 두는 자리. 어긋나면 쓸데없는 재확장이 일어난다"
+          }
+        ],
+        "invariants": [
+          "히스토그램 상태는 힙 밖에 있다 — 병렬 그룹바이에 들어가려면 그래야 한다",
+          "행마다 객체를 새로 만들지 않는다. 포인터만 갈아 끼운다",
+          "생성 뒤에 바뀌지 않는 값은 뜨거운 경로에서 다시 계산하지 않는다",
+          "힙 밖 헤더와 자바 필드는 같은 값을 가리켜야 한다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "힙 위에서 힙 밖으로",
+          "question": "메모리 위치가 왜 병렬성을 정하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  OLD[\"<b>힙 위 히스토그램</b><br/>• 자바 객체로 산다<br/>• 행마다 할당과 GC 압력\"]:::list --> BLOCK[\"<b>병렬 그룹바이에 못 들어간다</b><br/>• 그 자료구조가 힙 밖을 전제\"]:::list\n  BLOCK --> ONE[\"<b>사실상 단일 스레드</b><br/>• 코어를 늘려도 안 는다\"]:::list\n  NEW[\"<b>힙 밖 버퍼 + 작은 핸들</b><br/>• 행마다 포인터만 갈아 끼운다\"]:::list --> PAR[\"<b>워커를 늘릴 수 있다</b><br/>• 8개에서 8.34배\"]:::list\n  NEW -.->|\"새로 생긴 값\"| LOAD[\"<b>of(ptr) 마다 상태를 읽는다</b><br/>• 힙 밖에서\"]:::list"
+        },
+        {
+          "title": "뜨거운 경로에서 덜어낸 것",
+          "question": "3배가 8.9배가 된 지점은 어디인가",
+          "kind": "flow",
+          "code": "flowchart LR\n  K[\"<b>키가 바뀐다</b>\"]:::list --> B4[\"<b>고치기 전</b><br/>• Unsafe 읽기 5회<br/>• Math.log 2 · pow 1 · ceil 1\"]:::list\n  B4 --> R[\"<b>리뷰가 묻는다</b><br/>• 이 값들이 바뀌긴 하나\"]:::list\n  R --> AF[\"<b>고친 뒤</b><br/>• Unsafe 읽기 3회<br/>• 수학 연산 0회\"]:::list\n  AF --> N[\"<b>단일 0.82배 → 2.78배</b><br/>• 8워커 2.99배 → 8.34배\"]:::list"
+        },
+        {
+          "title": "자바에서 사이클을 셀 때 헛짚는 자리",
+          "question": "분기를 없애면 늘 빨라지나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>분기가 있다</b>\"]:::list --> J{\"C2 가 무엇을 보나\"}\n  J -->|\"두 갈래의 실행 비율\"| BIAS[\"<b>치우침</b>\"]:::list\n  H[\"<b>하드웨어가 값을 매기는 것</b>\"]:::list --> PRED[\"<b>예측 가능성</b>\"]:::list\n  BIAS -.->|\"보통 데이터에선 일치\"| PRED\n  BIAS -->|\"짓궂은 데이터에선 갈린다\"| BAD[\"<b>잘못 고른다</b><br/>• 50/50 예측 가능 데이터에 cmov: 2.9배 느림<br/>• 무작위 90/10 에 분기: 1.9배 느림\"]:::list\n  BAD --> DEP[\"<b>값이 다음 반복으로 이어질 때만</b><br/>• 임계 경로가 된다<br/>• 이어지지 않으면 차이가 거의 사라진다\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "히스토그램 상태를 네이티브 메모리에 두고 자바 쪽에는 포인터를 든 작은 핸들만 남긴다",
+            "why": "병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하므로 그 안에 들어가려면 상태가 거기 있어야 한다"
+          },
+          {
+            "step": "행을 처리할 때마다 핸들의 포인터를 다른 버퍼로 갈아 끼운다",
+            "why": "행마다 객체를 만들면 할당과 GC 압력이 그대로 돌아온다"
+          },
+          {
+            "step": "생성자에서 버킷 기하를 한 번 계산해 둔다",
+            "why": "가장 작게 구분할 값과 유효 자릿수는 한 번의 호출이 만드는 모든 히스토그램에서 같고 만든 뒤 바뀌지 않는다"
+          },
+          {
+            "step": "키가 바뀔 때는 힙 밖에서 상태만 읽는다",
+            "why": "고치기 전에는 이 자리에서 버킷 기하를 매번 다시 계산하고 있었다 — 같은 답이 나오는 계산이었다"
+          },
+          {
+            "step": "힙 밖 헤더와 자바 필드를 맞춰 둔다",
+            "why": "어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어난다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "백분위수 집계를 병렬로 만들려면 무엇을 바꿔야 하는가",
+            "chosen": "알고리즘이 아니라 메모리 위치를 바꾼다. 히스토그램을 힙 밖으로 옮긴다",
+            "alternatives": [
+              "힙 위 구현을 유지하고 병렬 그룹바이 쪽을 고치기",
+              "스레드마다 따로 모아 마지막에 합치기"
+            ],
+            "tradeoff": "GC 압력과 행마다의 할당이 사라진 대신 다른 최적화 문제가 남는다고 회사가 그대로 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 일이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "question": "객체를 행마다 만들 것인가",
+            "chosen": "작은 핸들 하나를 두고 포인터만 갈아 끼운다. 이 회사가 쓰는 기존 방식을 그대로 따랐다",
+            "alternatives": [
+              "행마다 새 객체",
+              "객체 풀을 따로 관리"
+            ],
+            "tradeoff": "핸들을 다시 가리킬 때마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 그 값이 바로 다음 결정의 대상이 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "question": "뜨거운 경로에 남은 계산을 어떻게 할 것인가",
+            "chosen": "생성자로 끌어올린다. 키가 바뀔 때마다 하던 Math.log 2회·pow 1회·ceil 1회를 없앴다",
+            "alternatives": [
+              "그대로 두고 다른 데서 벌기"
+            ],
+            "tradeoff": "거의 없다 — 같은 답이 나오는 계산을 밖으로 뺀 것이라 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 뜨거운 경로가 Unsafe 읽기 5회와 여러 수학 연산에서 읽기 3회와 수학 0회가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "question": "성능을 어떤 축으로 보고할 것인가",
+            "chosen": "단일 스레드와 워커 8개를 나란히 낸다. 리뷰 전 단일 0.82배(느려짐)·8워커 2.99배, 리뷰 후 단일 2.78배·8워커 8.34배·최고 8.90배",
+            "alternatives": [
+              "가장 좋은 수치만 내기"
+            ],
+            "tradeoff": "처음에 단일 스레드가 느려졌다는 사실이 그대로 남는다. 병렬성을 얻으려고 단일 성능을 잠시 내줬던 셈인데, 그것을 감추지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "question": "같은 상태를 두 곳에 두는 것을 감수할 것인가",
+            "chosen": "감수하되 맞춰 둔다. 힙 밖 헤더와 자바 필드가 어긋나지 않게 관리한다",
+            "alternatives": [
+              "언제나 힙 밖에서만 읽기"
+            ],
+            "tradeoff": "읽기를 아끼는 대신 동기화할 자리가 하나 생긴다. 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어난다고 위험을 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "question": "분기를 없애는 것을 최적화의 기본으로 삼을 것인가",
+            "chosen": "삼지 않는다. 조건부 이동이 분기보다 비쌀 수 있다는 것을 따로 파고들어 기록한다",
+            "alternatives": [
+              "분기 제거를 일반 규칙으로 적용"
+            ],
+            "tradeoff": "규칙 하나로 정리할 수 없어 자리마다 재야 한다. JIT 은 두 갈래의 실행 비율(치우침)을 보고 고르는데 하드웨어가 값을 매기는 것은 예측 가능성이라, 보통 데이터에서는 일치하고 짓궂은 데이터에서는 갈린다 — 결과가 다음 반복으로 이어지는 루프에서 2.9배와 1.9배로 어긋났다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Most Expensive Instruction Might Be… cmov",
+                "url": "https://questdb.com/blog/cmov-vs-branch-perf/",
+                "publisher": "QuestDB",
+                "date": "2026-07-15",
+                "summary": "조건부 이동(cmov)이 분기보다 비쌀 수 있다는 것을 파고든 글. 통념은 cmov 가 분기 예측 실패를 피한다는 것이다 — 분기는 추측이라 잘 맞으면 거의 공짜지만 빗나가면 추측한 일을 버리고 다시 시작해야 해 비싸고, cmov 는 기다림이라 빗나갈 일이 없다. 문제는 HotSpot 의 C2 가 무엇을 보고 고르느냐다. 두 갈래가 각각 얼마나 자주 실행됐는지의 비율, 즉 치우침만 본다. 그런데 하드웨어가 값을 매기는 것은 예측 가능성이다. 보통 데이터에서는 둘이 일치하지만 짓궂은 데이터에서는 갈린다. 선택된 값이 다음 반복으로 이어지면 cmov 의 지연이 임계 경로가 되어 각 반복이 앞 반복을 기다리게 되고 비순차 실행으로도 감출 수 없다. 반대로 무작위 데이터에서는 치우침이 90/10 이어도 예측기가 못 맞힌다. Ryzen 9950X 에서 성능 카운터를 켜고 두 루프 모양을 쟀다 — 결과가 다음 반복으로 이어지는 루프에서는 예측 가능한 50/50 데이터에서 2.9배 느려졌고(분기가 나은 자리에 cmov 가 갔다) 무작위 90/10 데이터에서 1.9배 느려졌다(cmov 가 나은 자리에 분기가 갔다). 결과를 쓰되 임계 경로에 두지 않은 루프에서는 그 차이가 거의 사라졌다. QuestDB 코드를 고친 것은 아니고 HotSpot 의 기존 휴리스틱과 그 한계를 기록한 글이다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "힙 밖(native) 버퍼 + Unsafe 읽기",
+            "role": "히스토그램 상태를 병렬 그룹바이가 아는 자리에 둔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "tech": "포인터를 갈아 끼우는 작은 핸들",
+            "role": "행마다 할당하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "tech": "HdrHistogram",
+            "role": "approx_percentile() 을 떠받친다. 값 범위 전체에서 상대 오차가 묶인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "tech": "성능 카운터 측정(Ryzen 9950X)",
+            "role": "분기와 조건부 이동의 차이를 루프 모양별로 잰다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Most Expensive Instruction Might Be… cmov",
+                "url": "https://questdb.com/blog/cmov-vs-branch-perf/",
+                "publisher": "QuestDB",
+                "date": "2026-07-15",
+                "summary": "조건부 이동(cmov)이 분기보다 비쌀 수 있다는 것을 파고든 글. 통념은 cmov 가 분기 예측 실패를 피한다는 것이다 — 분기는 추측이라 잘 맞으면 거의 공짜지만 빗나가면 추측한 일을 버리고 다시 시작해야 해 비싸고, cmov 는 기다림이라 빗나갈 일이 없다. 문제는 HotSpot 의 C2 가 무엇을 보고 고르느냐다. 두 갈래가 각각 얼마나 자주 실행됐는지의 비율, 즉 치우침만 본다. 그런데 하드웨어가 값을 매기는 것은 예측 가능성이다. 보통 데이터에서는 둘이 일치하지만 짓궂은 데이터에서는 갈린다. 선택된 값이 다음 반복으로 이어지면 cmov 의 지연이 임계 경로가 되어 각 반복이 앞 반복을 기다리게 되고 비순차 실행으로도 감출 수 없다. 반대로 무작위 데이터에서는 치우침이 90/10 이어도 예측기가 못 맞힌다. Ryzen 9950X 에서 성능 카운터를 켜고 두 루프 모양을 쟀다 — 결과가 다음 반복으로 이어지는 루프에서는 예측 가능한 50/50 데이터에서 2.9배 느려졌고(분기가 나은 자리에 cmov 가 갔다) 무작위 90/10 데이터에서 1.9배 느려졌다(cmov 가 나은 자리에 분기가 갔다). 결과를 쓰되 임계 경로에 두지 않은 루프에서는 그 차이가 거의 사라졌다. QuestDB 코드를 고친 것은 아니고 HotSpot 의 기존 휴리스틱과 그 한계를 기록한 글이다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "qwp",
+          "via": "복사하지 않는 경로의 같은 전제",
+          "contract": "결과를 행으로 실체화하지 않고 프레임을 가리키는 버퍼로 넘기는 일도, 집계 상태를 힙 밖에 두는 일도 같은 자리에서 나온다 — 자바 위에서 메모리를 직접 다루기로 한 결정이다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "병렬 그룹바이 자료구조",
+          "via": "들어가기 위한 조건",
+          "contract": "그 자료구조가 힙 밖 메모리를 전제하므로 새 집계는 전부 그 규칙을 따라야 한다. 이 기능이 알고리즘이 아니라 메모리 위치를 바꾼 이유다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "HotSpot C2 컴파일러",
+          "via": "우리가 못 고치는 층",
+          "contract": "분기와 조건부 이동을 고르는 것은 JIT 이고 그 기준은 치우침이다. 회사는 그것을 바꾸지 못하고 자기 코드의 모양으로 피해 간다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "HdrHistogram: A High Dynamic Range Histogram",
+            "authors": "Gil Tene",
+            "year": "2012",
+            "venue": "오픈소스 프로젝트·발표",
+            "url": "https://hdrhistogram.github.io/HdrHistogram/",
+            "takeaway": "값 범위 전체에서 상대 오차를 묶어 두는 히스토그램이다. approx_percentile() 이 이것 위에 서 있고, 버킷 기하가 생성 인자로 정해진다는 성질이 이번 최적화의 열쇠였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "title": "Space-Efficient Online Computation of Quantile Summaries",
+            "authors": "Michael Greenwald, Sanjeev Khanna",
+            "year": "2001",
+            "venue": "SIGMOD 2001",
+            "url": "https://dl.acm.org/doi/10.1145/375663.375670",
+            "takeaway": "분위수를 정확히 구하지 않고 오차를 묶어 근사하는 계열의 뿌리다. 이 회사가 근사 함수를 쓰는 이유가 정확한 분위수는 전부 들고 있어야 하기 때문이라는 데 있다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Java Language Specification / sun.misc.Unsafe 의 자리",
+            "authors": "Oracle",
+            "year": "2024",
+            "venue": "JDK 문서",
+            "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/foreign/package-summary.html",
+            "takeaway": "자바에서 힙 밖 메모리를 직접 다루는 길이다. 런타임이 대신해 주던 할당과 회수를 스스로 지는 대신 자료구조의 배치를 통제하게 되는데, 이 회사의 병렬성이 그 통제 위에 서 있다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "힙 밖으로 옮기면 문제가 사라지는 것이 아니라 바뀐다",
+            "why_hard": "GC 압력과 할당은 없어지지만 상태를 읽어 오는 값, 헤더와 필드의 동기화, 수명 관리가 새로 생긴다. 회사가 그것을 한 종류의 값을 다른 종류와 바꾸는 일이라고 적는다.",
+            "current_best": "바뀐 문제를 다시 재는 것. 실제로 처음에는 단일 스레드가 0.82배로 느려졌고, 그 자리를 찾아 고치고 나서야 2.78배가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          },
+          {
+            "problem": "JIT 의 판단 기준과 하드웨어의 값이 다르다",
+            "why_hard": "컴파일러는 두 갈래의 실행 비율을 보고 분기를 없앨지 정하는데, CPU 가 값을 매기는 것은 예측 가능성이다. 보통 데이터에서는 둘이 일치해 문제가 안 보이다가 짓궂은 데이터에서 갈린다.",
+            "current_best": "자리마다 재는 것. 결과가 다음 반복으로 이어지는 루프에서만 차이가 크고(2.9배·1.9배) 이어지지 않으면 거의 사라진다는 것을 성능 카운터로 확인했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Most Expensive Instruction Might Be… cmov",
+                "url": "https://questdb.com/blog/cmov-vs-branch-perf/",
+                "publisher": "QuestDB",
+                "date": "2026-07-15",
+                "summary": "조건부 이동(cmov)이 분기보다 비쌀 수 있다는 것을 파고든 글. 통념은 cmov 가 분기 예측 실패를 피한다는 것이다 — 분기는 추측이라 잘 맞으면 거의 공짜지만 빗나가면 추측한 일을 버리고 다시 시작해야 해 비싸고, cmov 는 기다림이라 빗나갈 일이 없다. 문제는 HotSpot 의 C2 가 무엇을 보고 고르느냐다. 두 갈래가 각각 얼마나 자주 실행됐는지의 비율, 즉 치우침만 본다. 그런데 하드웨어가 값을 매기는 것은 예측 가능성이다. 보통 데이터에서는 둘이 일치하지만 짓궂은 데이터에서는 갈린다. 선택된 값이 다음 반복으로 이어지면 cmov 의 지연이 임계 경로가 되어 각 반복이 앞 반복을 기다리게 되고 비순차 실행으로도 감출 수 없다. 반대로 무작위 데이터에서는 치우침이 90/10 이어도 예측기가 못 맞힌다. Ryzen 9950X 에서 성능 카운터를 켜고 두 루프 모양을 쟀다 — 결과가 다음 반복으로 이어지는 루프에서는 예측 가능한 50/50 데이터에서 2.9배 느려졌고(분기가 나은 자리에 cmov 가 갔다) 무작위 90/10 데이터에서 1.9배 느려졌다(cmov 가 나은 자리에 분기가 갔다). 결과를 쓰되 임계 경로에 두지 않은 루프에서는 그 차이가 거의 사라졌다. QuestDB 코드를 고친 것은 아니고 HotSpot 의 기존 휴리스틱과 그 한계를 기록한 글이다."
+              }
+            ]
+          },
+          {
+            "problem": "같은 값을 두 곳에 두면 언젠가 어긋난다",
+            "why_hard": "힙 밖 헤더와 자바 필드가 같은 상태를 가리키는데, 한쪽만 바뀌면 낡은 값으로 판단하게 된다.",
+            "current_best": "둘을 맞춰 두는 규칙을 지키는 것. 어긋났을 때의 증상(쓸데없는 재확장)을 미리 적어 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+                "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+                "publisher": "QuestDB",
+                "date": "2026-04-21",
+                "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "병렬로 안 도는 이유를 찾을 때",
+          "thought": "알고리즘이 느린 것이 아니었다. 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하니 힙 위에 사는 히스토그램은 애초에 그 안에 들어갈 수 없었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "힙 밖으로 옮기고 재 보니",
+          "thought": "단일 스레드가 0.82배로 더 느려졌다. 옮긴 것만으로는 이득이 아니고 새로 생긴 읽기 값을 갚아야 한다는 뜻이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "코드 리뷰에서",
+          "thought": "이 생성자 인자들이 바뀌기는 하나. 안 바뀐다면 키가 바뀔 때마다 같은 답을 다시 계산하고 있는 것이다 — 교과서에 나오는 루프 불변식 끌어올리기였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "분기를 없앨지 정할 때",
+          "thought": "cmov 는 빗나갈 일이 없으니 늘 안전해 보인다. 그런데 선택한 값이 다음 반복으로 이어지면 그 지연이 임계 경로가 되고, 비순차 실행으로도 못 감춘다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Code review turned a 3x speedup into 8.9x (off-heap HdrHistogram in QuestDB)",
+          "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
+          "publisher": "QuestDB",
+          "date": "2026-04-21",
+          "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
+        },
+        {
+          "title": "The Most Expensive Instruction Might Be… cmov",
+          "url": "https://questdb.com/blog/cmov-vs-branch-perf/",
+          "publisher": "QuestDB",
+          "date": "2026-07-15",
+          "summary": "조건부 이동(cmov)이 분기보다 비쌀 수 있다는 것을 파고든 글. 통념은 cmov 가 분기 예측 실패를 피한다는 것이다 — 분기는 추측이라 잘 맞으면 거의 공짜지만 빗나가면 추측한 일을 버리고 다시 시작해야 해 비싸고, cmov 는 기다림이라 빗나갈 일이 없다. 문제는 HotSpot 의 C2 가 무엇을 보고 고르느냐다. 두 갈래가 각각 얼마나 자주 실행됐는지의 비율, 즉 치우침만 본다. 그런데 하드웨어가 값을 매기는 것은 예측 가능성이다. 보통 데이터에서는 둘이 일치하지만 짓궂은 데이터에서는 갈린다. 선택된 값이 다음 반복으로 이어지면 cmov 의 지연이 임계 경로가 되어 각 반복이 앞 반복을 기다리게 되고 비순차 실행으로도 감출 수 없다. 반대로 무작위 데이터에서는 치우침이 90/10 이어도 예측기가 못 맞힌다. Ryzen 9950X 에서 성능 카운터를 켜고 두 루프 모양을 쟀다 — 결과가 다음 반복으로 이어지는 루프에서는 예측 가능한 50/50 데이터에서 2.9배 느려졌고(분기가 나은 자리에 cmov 가 갔다) 무작위 90/10 데이터에서 1.9배 느려졌다(cmov 가 나은 자리에 분기가 갔다). 결과를 쓰되 임계 경로에 두지 않은 루프에서는 그 차이가 거의 사라졌다. QuestDB 코드를 고친 것은 아니고 HotSpot 의 기존 휴리스틱과 그 한계를 기록한 글이다."
+        },
+        {
+          "title": "The mask that compiles to nothing: how HotSpot's JIT learned to reason about bits",
+          "url": "https://questdb.com/blog/jvm-jit-known-bits/",
+          "publisher": "QuestDB",
+          "date": "2026-07-02",
+          "summary": "HotSpot JIT 이 비트 값을 추론하게 되면서 마스크 연산이 아예 사라지는 이야기를 다룬 글."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -733,7 +1188,7 @@
       "url": "https://questdb.com/blog/cmov-vs-branch-perf/",
       "publisher": "QuestDB",
       "date": "2026-07-15",
-      "summary": "분기를 없애는 조건부 이동 명령이 오히려 더 비쌀 수 있다는 것을 다룬 글."
+      "summary": "조건부 이동(cmov)이 분기보다 비쌀 수 있다는 것을 파고든 글. 통념은 cmov 가 분기 예측 실패를 피한다는 것이다 — 분기는 추측이라 잘 맞으면 거의 공짜지만 빗나가면 추측한 일을 버리고 다시 시작해야 해 비싸고, cmov 는 기다림이라 빗나갈 일이 없다. 문제는 HotSpot 의 C2 가 무엇을 보고 고르느냐다. 두 갈래가 각각 얼마나 자주 실행됐는지의 비율, 즉 치우침만 본다. 그런데 하드웨어가 값을 매기는 것은 예측 가능성이다. 보통 데이터에서는 둘이 일치하지만 짓궂은 데이터에서는 갈린다. 선택된 값이 다음 반복으로 이어지면 cmov 의 지연이 임계 경로가 되어 각 반복이 앞 반복을 기다리게 되고 비순차 실행으로도 감출 수 없다. 반대로 무작위 데이터에서는 치우침이 90/10 이어도 예측기가 못 맞힌다. Ryzen 9950X 에서 성능 카운터를 켜고 두 루프 모양을 쟀다 — 결과가 다음 반복으로 이어지는 루프에서는 예측 가능한 50/50 데이터에서 2.9배 느려졌고(분기가 나은 자리에 cmov 가 갔다) 무작위 90/10 데이터에서 1.9배 느려졌다(cmov 가 나은 자리에 분기가 갔다). 결과를 쓰되 임계 경로에 두지 않은 루프에서는 그 차이가 거의 사라졌다. QuestDB 코드를 고친 것은 아니고 HotSpot 의 기존 휴리스틱과 그 한계를 기록한 글이다."
     },
     {
       "title": "The mask that compiles to nothing: how HotSpot's JIT learned to reason about bits",
@@ -754,7 +1209,7 @@
       "url": "https://questdb.com/blog/code-review-tripled-histogram-speedup/",
       "publisher": "QuestDB",
       "date": "2026-04-21",
-      "summary": "히스토그램 구현을 힙 밖으로 옮겨 3배를 얻었다가 코드 리뷰를 거쳐 8.9배가 된 기록."
+      "summary": "approx_percentile() 를 떠받치는 HdrHistogram 을 힙 밖으로 옮긴 기록. 원래 구현은 사실상 단일 스레드였다 — QuestDB 의 병렬 그룹바이 자료구조가 힙 밖 메모리를 전제하기 때문에 힙 위의 히스토그램으로는 워커 스레드를 못 늘렸다. 새 GroupByHistogram 은 이 회사가 쓰는 방식을 그대로 따른다: 네이티브 메모리의 버퍼를 가리키는 작은 자바 객체를 두고, 행마다 그 포인터를 다른 버퍼로 갈아 끼운다. 행마다 할당이 없고 GC 압력도 없어지지만 대신 of(ptr) 호출마다 힙 밖에서 상태를 읽어 오는 값이 생긴다. 코드 리뷰가 잡은 것은 뜨거운 경로의 되풀이 계산이었다 — lowestDiscernibleValue 와 numberOfSignificantValueDigits 는 생성자 인자라 한 번의 approx_percentile() 호출이 만드는 모든 히스토그램에서 같고 만든 뒤에는 바뀌지 않는데, of() 가 키가 바뀔 때마다 버킷 기하를 다시 계산하고 있었다(Math.log 두 번, Math.pow 한 번, Math.ceil 한 번). 그 일을 생성자로 끌어올리자 뜨거운 경로가 Unsafe 읽기 5회와 여러 번의 Math 호출에서 Unsafe 읽기 3회와 수학 연산 0회가 됐다. 교과서적인 루프 불변식 끌어올리기라고 스스로 부른다. 수치 — 리뷰 전에는 단일 스레드에서 0.82배로 오히려 느려졌고 워커 8개에서 2.99배였다. 리뷰 뒤에는 단일 스레드 2.78배, 워커 8개 8.34배, 파티션 32개에 워커 8개에서 최고 8.90배가 됐다. 대가도 적는다 — 힙 밖은 한 종류의 값을 다른 종류의 값과 바꾸는 것이라 GC 압력이 사라진 자리에 다른 최적화 문제가 남고, 힙 밖 헤더와 자바 필드가 어긋나면 낡은 값 때문에 쓸데없는 재확장이 일어날 수 있어 그 둘을 맞춰 둬야 한다."
     }
   ]
 }

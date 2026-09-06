@@ -1460,7 +1460,7 @@
       "country": "EU",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "시계열을 초당 수천만 행으로 넣고 꺼내는 데이터베이스 — 자바로 짜면서 사이클을 세는 쪽을 골랐다",
       "updated_at": "2026-09-07",
       "domain": "questdb.com"

@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **QuestDB** | EU · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 넣는 길과 꺼내는 길을 하나로 만든다(`qwp`). 빈 도메인 둘 — 자바 위에서 사이클을 센다(`cmov-vs-branch-perf` 2026-07-15 · `jvm-jit-known-bits` 2026-07-02 · `code-review-tripled-histogram-speedup` 2026-04-21) · 시계열의 모양을 표현과 연산에 넣는다(`window-join-parallel-vectorized` 2026-05-12). 오픈소스 라이선스와 금액은 못 봤고 저장 엔진 자료는 아직 안 열었다. |
+| **QuestDB** | EU · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 넣는 길과 꺼내는 길을 하나로 만든다(`qwp`) · 자바 위에서 사이클을 센다(`offheap-histogram`). 빈 도메인 하나 — 시계열의 모양을 표현과 연산에 넣는다(`window-join-parallel-vectorized` 2026-05-12). 안 읽은 것 — `jvm-jit-known-bits`(2026-07-02, 도메인 근거로만 씀) · 저장 엔진 자료. 오픈소스 라이선스와 금액은 못 봤다. |
 
 ## 대기
 
