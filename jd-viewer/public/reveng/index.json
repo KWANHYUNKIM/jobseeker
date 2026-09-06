@@ -7,8 +7,8 @@
       "name_en": "Wiz",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "워크로드마다 에이전트를 심지 않고 클라우드 API 와 스냅숏만으로 위험을 그려 내는 보안 플랫폼",
       "updated_at": "2026-09-06",
       "domain": "wiz.io"

@@ -8,46 +8,46 @@
 
 ## 지금 파는 중
 
-**Wiz** (US 뉴욕 · SaaS) — 도메인 3개 · **기능 2개**. 남은 하나는 **`코드를 훑는다`**(미독)이다. 회사 102개 · 큐 1/3.
+**없다 — Wiz 를 완주했다.** 도메인 3개 · 기능 3개. 회사 **102개.** 큐 0/3 → **다음 사이클은 후보 조사다.**
 
-### 이번 사이클 — `에이전트를 안 쓰던 회사가 에이전트를 낼 때`
+### 이번 사이클 — `위험이 정당화하는 만큼만 깊이 판다`
 
-⚠️ **회사 글 하나로는 못 썼다** — 확보해 둔 `agentless-approach` 글(2023-07-31)이 **스냅숏 내부·권한·못 보는 것을 다 빼놓은 마케팅 성격**이라 결정이 안 나왔다. ⭐ **그래서 두 번째 자료를 찾았고**(`CTO Point of View: Why Wiz is launching a Runtime Sensor`, 2023-06-05) **훨씬 뾰족한 이야기가 나왔다.** **이 방법이 이 세션에서 여덟 번째로 통했다.**
+⭐ **설계 원칙이 한 문장에 다 있다** — **`계층 시스템의 요점은 각 스캔에 그 위험이 정당화하는 만큼의 깊이를 주는 것이지, 그 이상은 아니다.`** ⚠️ **`그 이상은 아니다` 가 핵심이다 — 더 깊이 볼 수 있는데도 안 보는 것이 설계다**(재구성).
 
 건진 것 넷:
 
-- ⚠️ **에이전트를 거부한 진짜 이유가 배포 부담이 아니었다** — **`에이전트 기반 해법은 취약점 주변의 맥락도 없어서 사업 영향에 따라 우선순위를 매기지 못하고, 그래서 경보 피로로 이어진다.`** ⭐ **워크로드 하나하나에 심으면 그 워크로드만 보게 되어, 하나하나로는 낮은 위험들이 이어져 길이 되는 것을 못 본다**(재구성) — 그래서 **`공격 경로로 이어질 수 있는 위험의 조합`** 을 본다.
-- ⭐ **자기 방식의 한계를 자기 언어로 적는다** — **`무엇이 잘못될 수 있는지 아는 것은 옳은 출발점이지만, 지금 이 순간 이미 돌고 있는 컨테이너 안에서 무엇이 잘못되고 있는지는 말해 주지 않는다.`** 그리고 **`클라우드에서 공격은 몇 분 만에 일어난다.`** ⚠️ **API 와 스냅숏은 상태를 보지 사건을 못 본다**(재구성).
-- ⭐ **에이전트를 내면서도 에이전트 회사가 되지 않는 방법** — **`취약점·호스트 설정을 비롯한 대부분의 신호는 여전히 우리의 에이전트 없는 API 기반 스캔에서 수집된다. 우리는 진짜 런타임 신호, 즉 런타임 네트워크 사용·프로세스·메모리 사용을 모으는 데에만 런타임 센서를 쓴다.`** 그 결과가 **`그래서 런타임 센서가 가벼운 eBPF 에이전트로 남을 수 있다`**. ⚠️ **경계를 `에이전트 없이는 알 수 없는 것` 에 정확히 그었다.**
-- ⚠️ **새 신호를 새 제품이 아니라 이미 있는 그래프의 한 층으로 넣었다** — **따로 뒀다면 그것도 `맥락 없는 경보` 가 됐을 것이고, 그건 애초에 에이전트를 거부한 이유였다**(재구성).
+- ⚠️ **코딩 에이전트가 검사 주기의 전제를 깼다** — **`개발자와 코딩 에이전트가 계속해서 변경을 만들어 낼 때, 분기마다 한 번 하는 깊은 스캔은 매시간 바뀌는 코드베이스를 지킬 수 없다.`** ⭐ **AI 가 문제의 원인이면서 해법인 자리다**(재구성).
+- **세 계층으로 값을 나눈다** — 1계층 결정론적(**`빠르고 신뢰할 수 있고 비용 효율적인 커버리지`**) · 2계층 모든 PR 에 AI 추론 · 3계층 **`가치가 높은 애플리케이션, 핵심 코드`** 에만 프런티어 모델.
+- ⭐ **모델이 계속 바뀐다는 사실을 아키텍처에 넣었다** — **`어떤 단일 엔진도 모든 종류의 조사에서 최고일 수는 없고, 선두는 프런티어 릴리스마다 바뀐다.`** 그래서 **`시스템은 모든 계층에서 열려 있어 조직이 하나의 스캐너에 갇히는 일이 없다`** 이고, 자체 Atlas 와 **Google CodeMender** 같은 3자 엔진을 함께 굴린다. ⭐ **이 엔진에서 드문 종류의 관찰이다.**
+- ⚠️ **대가를 회사가 직접 적는다** — **`하네스를 만드는 것은 계속되는 투자다`** 이고 **`끊임없는 오케스트레이션, 튜닝, 벤치마킹, 그리고 개발·보안 워크플로에의 통합`** 을 요구한다.
 
-⭐ **이 회사의 두 기능이 같은 손버릇을 보인다** — 데이터 발견에서는 **`결정론적 로직을 AI 계층에서 완전히 빼냈고`**, 여기서는 **에이전트를 내되 `대부분의 신호는 여전히 API 스캔에서` 로 선을 그었다.** **둘 다 `넣었다가 경계를 다시 긋는` 이야기다**(재구성).
+### 완주하며 본 것 — 세 기능이 하나의 문장으로 모인다
 
-⚠️ **끝내 못 읽은 것** — **스냅숏이 기술적으로 어떻게 도는지**(권한·주기·생성과 삭제). **`에이전트 없이` 의 구현 자체는 여전히 열려 있다.** ⚠️ **그리고 이 도메인의 자료가 2023년 것 둘뿐이라, `대부분은 여전히 API 로` 라는 선이 그 뒤로 지켜졌는지 모른다** — **이 이야기의 가장 궁금한 뒷부분이다**(재구성).
+⭐ **`무거운 수단을 쓰되 쓰는 자리를 좁힌다`** — 데이터 발견에서는 **`결정론적 로직을 AI 계층에서 완전히 빼냈고`**, 인프라에서는 **에이전트를 내되 `대부분의 신호는 여전히 API 스캔에서` 로 선을 그었으며**, 코드에서는 **`위험이 정당화하는 만큼의 깊이를 주는 것이지 그 이상은 아니다`**. ⚠️ **셋 다 `넣었다가 경계를 다시 긋는` 이야기다**(재구성).
 
-### 다음 사이클 — 확장(2순위)
+⭐ **그리고 셋이 전부 같은 보안 그래프로 모인다** — 그래프가 코드 쪽에서는 **깊이를 정하는 라우터**로, 런타임 쪽에서는 **계층을 넘나드는 이동을 드러내는 수집기**로 쓰인다. **새 신호를 새 제품으로 만들지 않는다**(재구성).
 
-`--gaps` 가 **`코드를 훑는다`**(`Rethinking Scanning for the AI Era`, 2026-07-30)를 부를 것이다. ⏳ **본문 미독 · 주소 확보.** **이걸 쓰면 Wiz 완주다.** ⭐ **`속도·깊이·비용의 균형` 이라고 예고돼 있어 앞 기능(제약 없이 만들고 AI 를 걷어낸다)과 이어질 것으로 보인다**(재구성).
+⚠️ **못 읽은 것** — **스냅숏의 구현**(권한·주기) · **오탐을 코드 쪽에서 어떻게 막는지**(데이터 쪽은 `거의 0` 을 기준으로 삼았는데) · **AI SAST 의 실제 비용과 지연**(비공개 프리뷰) · **구글 인수(2026-03-11) 이후의 변화.**
 
-⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
+### 다음 사이클 — ⚠️ 후보 조사 (3순위)
 
-### ⚠️ 절차 (이 세션에 실수로 배운 것)
-
-**후보 조사 사이클은 이 명령으로 시작한다:**
+**큐 0/3. 목표 3곳.** ⚠️ **먼저 이 명령을 돌린다:**
 
 ```
 python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(' | '.join(sorted((c.get('name_en') or c['name']) for c in i['companies'])))"
 ```
 
-**새 회사 프로파일 전에는 schema 허용값 대조** — `country: KR|US|CN|JP|EU|기타` + ISO 2글자 / `category: 핀테크|커머스|소셜|메시징|스트리밍|검색|광고|모빌리티|게임|SaaS|기타`.
+⭐ **각도 타율** — **지역 축**이 지난번 둘을 냈다(튀르키예·이스라엘). ⚠️ **다만 그 지역 블로그가 살아 있을 때만 통한다**(동남아·브라질은 묵어서 실패). ⚠️ **언급 각도는 말라 간다** — 이미 판 회사이거나 파는 쪽이라 마케팅이다. ⏳ **아직 안 연 지역** — 폴란드 밖 동유럽 · 북유럽(Klarna ⛔ 말고) · 남미(Mercado Libre·Nubank 말고) · 아프리카(Paystack·Moniepoint 말고) · 중동(Careem 말고).
+
+⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① ⭐⭐ `AI 에이전트를 어디까지 믿나` 10곳** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / **Wiz**(유일하게 `넣었다가 다시 뺐다`).
+**① ⭐⭐ `AI 에이전트를 어디까지 믿나` 10곳** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / **Wiz**(⭐ **세 기능 모두 이 축에 걸린다** — 넣었다가 뺐다 · 깊이를 위험에 맞췄다 · 엔진을 갈아 끼울 수 있게 열어 뒀다).
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ `자기 성과를 어디까지 주장하나` 10곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz.
+**③ `자기 성과를 어디까지 주장하나` 10곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / **Wiz**(⚠️ **`CyberGym 90.8%` 를 대면서 그것이 운영 지표가 아니라고 스스로 밝힌다**).
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
@@ -55,7 +55,7 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream.
 
-**⑦ ⭐ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / **Wiz**(⚠️ **API 와 스냅숏은 상태를 보지 사건을 못 본다 — 그걸 회사가 직접 적는다**).
+**⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz.
 
 **⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics.
 
@@ -71,9 +71,9 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest.
 
-**⑮ ⭐ `언제 쪼개고 언제 합치나`** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / **Wiz**(⚠️ **에이전트 없는 스캔과 런타임 센서로 책임을 갈랐다 — 그런데 신호는 한 그래프로 합친다**).
+**⑮ `언제 쪼개고 언제 합치나`** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / **Wiz**(⚠️ **세 계층·여러 엔진으로 쪼개되 결과는 한 그래프로 합친다**).
 
-**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream.
+**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / **Wiz**(⚠️ **반대다 — 자체 Atlas 를 만들고도 3자 엔진을 계속 함께 쓴다**).
 
 **⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics.
 
@@ -81,23 +81,25 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / ⏳ Plaid · Snyk.
 
-**⑳ ⭐⭐ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크) / **Wiz**(⭐ **에이전트를 없앴다가 다시 좁게 들여왔다 — 이 축에서 유일하게 되돌아온 사례다**) / ⏳ TigerBeetle · Oxide Computer.
+**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크) / Wiz(에이전트를 없앴다가 좁게 되들였다) / ⏳ TigerBeetle · Oxide Computer.
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
 **㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio.
 
-**㉓ ⭐ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream(데이터 경계 하드코딩) / Airbnb(하이브리드 금지) / **Wiz**(**`대부분의 신호는 여전히` 라는 선언으로 센서 확장 압력을 막는다** — ⚠️ **다만 이건 코드가 아니라 말이라 지켜졌는지 확인할 자료가 없다**, 재구성) / ⏳ Pinterest.
+**㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / ⏳ Pinterest.
 
 **㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / ⏳ Grafana Labs · ClickHouse · Snyk.
 
-**㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / **Wiz**(런타임 신호를 새 제품이 아니라 기존 그래프의 한 층으로) / ⏳ Etsy · Plaid.
+**㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / **Wiz**(⭐ **세 도메인이 전부 같은 보안 그래프로 모인다**) / ⏳ Etsy · Plaid.
 
 **㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / ⏳ Airbnb · Pinterest.
 
-**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(2026-03-11 구글) / WarpStream(2024-09 Confluent → 2026-03-17 IBM) / Twilio(Segment 2020) / ⏳ PlanetScale · Snyk.
+**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(2026-03-11 구글) / WarpStream(Confluent → IBM) / Twilio / ⏳ PlanetScale · Snyk.
 
-**㉘ `맞았는지 어떻게 아나`** — Wiz(미리보기 모드로 실측 대조) / Flipkart(22주 · NDCG 차이 1% 미만) / Snyk / ⏳ Duolingo.
+**㉘ `맞았는지 어떻게 아나`** — Wiz(미리보기 모드 실측 대조) / Flipkart / Snyk / ⏳ Duolingo.
+
+⏳ **㉙ 새로 보인다 — `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — **Wiz**(⭐ **`선두는 프런티어 릴리스마다 바뀐다` 며 모든 계층을 갈아 끼울 수 있게 열어 뒀다**) / **Flipkart**(약 80억 추론 코치 + 320억 교사로 등급을 나눴다) / **Pinterest**(⏳ 2부의 LLM 기반 추론) / ⏳ Snyk · Deliveroo. ⚠️ **①축이 `믿을 것인가` 라면 이 축은 `무엇에 걸 것인가` 다**(재구성).
 
 ## 지금의 진짜 상태
 
