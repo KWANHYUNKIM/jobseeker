@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "neon",
+      "name": "Neon",
+      "name_en": "Neon",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "쓰지 않으면 0 이 되는 Postgres — 데이터베이스를 사람이 아니라 에이전트가 만드는 시대를 겨냥한다",
+      "updated_at": "2026-09-06",
+      "domain": "neon.com"
+    },
+    {
       "slug": "atlassian",
       "name": "Atlassian",
       "name_en": "Atlassian",
@@ -1589,7 +1601,9 @@
     "AI 에이전트를 기업 규모로 쓴다",
     "검색 색인을 살아 있는 채로 바꾼다",
     "이벤트를 옮기고 전달한다",
-    "AI 를 제품에 넣는다"
+    "AI 를 제품에 넣는다",
+    "저장을 계산과 떼어 놓는다",
+    "쓰지 않을 때 0 으로 내린다"
   ],
   "countries": {
     "KR": "한국",

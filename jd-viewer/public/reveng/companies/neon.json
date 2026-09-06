@@ -1,0 +1,118 @@
+{
+  "slug": "neon",
+  "name": "Neon",
+  "name_en": "Neon",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "neon.com",
+  "one_liner": "쓰지 않으면 0 이 되는 Postgres — 데이터베이스를 사람이 아니라 에이전트가 만드는 시대를 겨냥한다",
+  "business_model": "**서버리스 Postgres 를 사용량으로 판다.** **컴퓨트는 CU-시간**(1 CU = 1 vCPU + 4GB RAM), **저장은 별도**다. ⭐ **정의적인 기능이 `0 으로 내려가는 것`이다** — **기본 5분 유휴 뒤 컴퓨트가 정지하고 저장만 과금된다.**\n\n⭐ **이 회사를 설명하는 사실이 하나 있다** — **`Neon 의 내부 텔레메트리가, 그 플랫폼에 프로비저닝된 데이터베이스의 80% 이상이 사람이 아니라 AI 에이전트에 의해 자동으로 만들어졌다는 것을 발견했다.`** ⚠️ **데이터베이스를 만드는 주체가 바뀌면 요구도 바뀐다**(재구성) — **켜 두는 값이 싸야 하고, 만드는 일이 즉각적이어야 한다.**\n\n⚠️ **소유가 바뀌었다** — **2025년 5월 Databricks 가 약 10억 달러에 인수**했고, 지금은 **Lakebase** 라는 이름으로 그 플랫폼에 들어가 있다. **인수 뒤 가격이 내렸다** — 컴퓨트 **15~25%↓**, 저장 **GB-월 1.75달러 → 0.35달러**, 무료 플랜 컴퓨트 **월 50 → 100 CU-시간**.",
+  "products": [
+    "Neon (서버리스 Postgres)",
+    "Lakebase (Databricks 통합)",
+    "브랜칭"
+  ],
+  "domain_map": {
+    "title": "데이터베이스를 에이전트가 만드는 시대의 저장소",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  A[\"⭐ <b>프로비저닝의 80% 이상을<br/>  AI 에이전트가 한다</b>\"]:::accent --> N[\"<b>서버리스 Postgres</b>\"]:::list\n  N --> S[\"⚠️ <b>저장을 계산과 떼어 놓는다</b><br/>• WAL + S3<br/>• 수천만 레이어에서 찾기<br/>• ✅ 본문 확인\"]:::accent\n  N --> C[\"<b>쓰지 않을 때 0 으로 내린다</b><br/>• 기본 5분 유휴 뒤 정지<br/>• 저장만 과금<br/>• ⏳ 미독\"]:::quiet\n  S --> B[\"<b>사용량 과금</b><br/>• CU-시간 + 저장\"]:::list\n  C --> B\n  B --> D[\"<b>Databricks (2025-05, 약 10억 달러)</b><br/>• Lakebase 라는 이름으로\"]:::list"
+  },
+  "revenue_streams": [
+    {
+      "name": "컴퓨트 (CU-시간)",
+      "how": "**1 CU = 1 vCPU + 4GB RAM.** ⭐ **쓰지 않으면 0 이 된다** — 기본 5분 유휴 뒤 정지. **인수 뒤 단가를 15~25% 내렸다.**",
+      "domains": [
+        "쓰지 않을 때 0 으로 내린다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Neon's New Pricing, Explained: Usage-Based, No Minimum",
+          "url": "https://neon.com/blog/new-usage-based-pricing",
+          "publisher": "Neon",
+          "date": "2026",
+          "summary": "사용량 기반 과금 — 컴퓨트는 CU-시간(1 CU = 1 vCPU + 4GB RAM), 저장은 별도. 인수 뒤 컴퓨트 단가를 15~25% 내리고 저장을 GB-월 1.75달러에서 0.35달러로 낮췄으며 무료 플랜의 컴퓨트를 월 50 CU-시간에서 100 으로 늘렸다. 기본 5분 유휴 뒤 컴퓨트가 0 으로 내려가고 저장만 과금된다."
+        }
+      ]
+    },
+    {
+      "name": "저장",
+      "how": "**컴퓨트가 0 이어도 저장은 계속 과금된다.** **인수 뒤 GB-월 1.75달러에서 0.35달러로 크게 내렸다.**",
+      "domains": [
+        "저장을 계산과 떼어 놓는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Neon's New Pricing, Explained: Usage-Based, No Minimum",
+          "url": "https://neon.com/blog/new-usage-based-pricing",
+          "publisher": "Neon",
+          "date": "2026",
+          "summary": "사용량 기반 과금 — 컴퓨트는 CU-시간(1 CU = 1 vCPU + 4GB RAM), 저장은 별도. 인수 뒤 컴퓨트 단가를 15~25% 내리고 저장을 GB-월 1.75달러에서 0.35달러로 낮췄으며 무료 플랜의 컴퓨트를 월 50 CU-시간에서 100 으로 늘렸다. 기본 5분 유휴 뒤 컴퓨트가 0 으로 내려가고 저장만 과금된다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "저장을 계산과 떼어 놓는다",
+      "why": "⭐ **떼어 놓으면 새 문제가 생긴다** — **`읽기는 키와 LSN 을 대고, 저장 시스템은 그 LSN 이거나 그 이전에 그 키를 덮는 가장 가까운 레이어를 찾아야 한다. 그건 기하 문제이고, 수천만 개 레이어에 걸쳐 어떻게 푸는지가 자명하지 않다.`** ✅ **본문 확인함**(2026-08-24).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "쓰지 않을 때 0 으로 내린다",
+      "why": "⭐ **이 회사의 정의적인 기능이다** — **기본 5분 유휴 뒤 컴퓨트가 정지하고 저장만 과금된다.** ⚠️ **프로비저닝의 80% 이상을 에이전트가 하는 세계에서는, 켜 둔 채 안 쓰는 데이터베이스가 대부분일 수밖에 없다**(재구성). ⏳ **`Autoscaling Lakebase Postgres`(2026-08-31)와 `Building patterns unlocked by scale to zero`(2026-09-01) 둘 다 미독.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **엔지니어링 글이 얇다** — 블로그에 제품 발표가 많고 시스템 내부를 다루는 글은 둘뿐이다(WAL+S3 · 오토스케일링). **VictoriaMetrics·Coinbase 와 같은 축이라 도메인을 둘밖에 못 세웠다.**",
+    "⚠️ **브랜칭의 기술 자료를 못 봤다** — **데이터베이스를 깃 브랜치처럼 따는 것**이 이 회사의 대표 기능인데 그 구현을 다룬 글이 안 보인다.",
+    "⚠️ **`0 으로 내려가는 것` 의 대가를 아직 못 읽었다** — **콜드 스타트가 얼마인지**, 그 사이 오는 질의가 어떻게 되는지가 비어 있다. ⏳ **오토스케일링 글이 그 답일 수 있다.**",
+    "⭐ **Databricks 인수(2025-05) 뒤 `Lakebase` 로 이름이 바뀌었다** — ⚠️ **제품이 어떻게 재편됐는지, Neon 이라는 이름이 어디까지 남는지**를 다룬 기술 글이 없다. **㉗축의 재료.**",
+    "⚠️ **`80% 이상이 에이전트` 라는 수치의 출처가 인수 보도자료다** — **회사의 기술 글이 그 숫자를 다시 설명하지 않는다**(재구성)."
+  ],
+  "sources": [
+    {
+      "title": "WAL + S3: Lakebase storage for the era of agents",
+      "url": "https://neon.com/blog/wal-s3-lakebase-storage-for-the-era-of-agents",
+      "publisher": "Neon",
+      "date": "2026-08-24",
+      "summary": "읽기가 키와 LSN 을 대면 저장 시스템이 그 시점에 그 키를 덮는 가장 가까운 레이어를 찾아야 하는데, 수천만 개 레이어에서 그건 기하 문제다. 선형 스캔은 너무 느리고 R-트리는 포함 질의에 답하며 세그먼트 트리는 좌표 공간 크기에 따라 확장해 맞지 않았다. 각 LSN 의 과거 루트를 유지하는 영속 이진 탐색 트리를 써서 현재 읽기와 과거 읽기가 같은 비용을 갖게 했다."
+    },
+    {
+      "title": "Autoscaling Lakebase Postgres",
+      "url": "https://neon.com/blog/autoscaling-lakebase-postgres",
+      "publisher": "Neon",
+      "date": "2026-08-31",
+      "summary": "인스턴스 크기를 정하는 일 자체가 필요 없어지게 만드는 오토스케일링. ⏳ 본문 미독."
+    },
+    {
+      "title": "Building patterns unlocked by scale to zero",
+      "url": "https://neon.com/blog/building-patterns-unlocked-by-scale-to-zero",
+      "publisher": "Neon",
+      "date": "2026-09-01",
+      "summary": "컴퓨트가 0 으로 내려갈 수 있을 때 비로소 가능해지는 개발 패턴들. ⏳ 본문 미독."
+    },
+    {
+      "title": "Databricks Agrees to Acquire Neon to Deliver Serverless Postgres for Developers + AI Agents",
+      "url": "https://www.prnewswire.com/news-releases/databricks-agrees-to-acquire-neon-to-deliver-serverless-postgres-for-developers--ai-agents-302454992.html",
+      "publisher": "Databricks (PR Newswire)",
+      "date": "2025-05",
+      "summary": "Databricks 가 약 10억 달러에 Neon 인수를 합의했다. Neon 의 내부 텔레메트리에서 그 플랫폼에 프로비저닝된 데이터베이스의 80% 이상이 사람이 아니라 AI 에이전트에 의해 자동으로 만들어졌다는 것이 확인됐다."
+    },
+    {
+      "title": "Neon's New Pricing, Explained: Usage-Based, No Minimum",
+      "url": "https://neon.com/blog/new-usage-based-pricing",
+      "publisher": "Neon",
+      "date": "2026",
+      "summary": "사용량 기반 과금 — 컴퓨트는 CU-시간(1 CU = 1 vCPU + 4GB RAM), 저장은 별도. 인수 뒤 컴퓨트 단가를 15~25% 내리고 저장을 GB-월 1.75달러에서 0.35달러로 낮췄으며 무료 플랜의 컴퓨트를 월 50 CU-시간에서 100 으로 늘렸다. 기본 5분 유휴 뒤 컴퓨트가 0 으로 내려가고 저장만 과금된다."
+    }
+  ]
+}
