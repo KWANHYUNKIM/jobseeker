@@ -67,8 +67,86 @@
     {
       "name": "알림을 보내는 시스템을 책임별로 쪼갠다",
       "why": "⚠️ **하나의 모놀리식 알림 서비스가 세 가지 다른 일을 함께 하고 있었다** — **API 운영**(사용자 설정과 알림 구성) · **이벤트 처리**(Kafka 에서 실시간으로) · **작업 스케줄링**(시간 기반 발송). **성격이 다른 셋이 묶여 있으면 하나의 부하가 나머지를 흔든다**(재구성). ⚠️ **그런데 한 번에 다시 쓰지 않았다** — **Strangler Fig** 로 점진 교체하며 **레거시와 새 시스템에 이중 쓰기**를 유지했다. ✅ **본문 확인함**(2025-09-22).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Strangler Fig + 피처 플래그",
+          "solves": "**하루 수백만 건이 도는 시스템**을 **`위험한 「빅뱅」 재작성`** 없이 옮긴다 — **읽기와 쓰기를 따로** 넘겨 **실시간 모니터링과 즉시 롤백**을 얻는다.",
+          "limits": "⚠️ **전환 기간 내내 두 시스템이 함께 살고 플래그 조합만큼 상태가 는다**(재구성). **그 기간이 얼마나 걸렸는지 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+              "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+              "publisher": "Twilio Blog",
+              "date": "2025-09-22",
+              "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+            }
+          ]
+        },
+        {
+          "tech": "세 책임 분리 (API · 이벤트 · 스케줄링)",
+          "solves": "⚠️ **`이벤트 처리의 문제가 즉시 모든 사용자의 API 가용성에 영향을 줬다`** 를 끊는다 — 부하의 모양도 허용 지연도 다른 셋이었다(재구성).",
+          "limits": "⚠️ **셋 사이의 계약을 명시해야 하고 경계를 넘는 호출마다 실패 처리를 새로 생각해야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+              "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+              "publisher": "Twilio Blog",
+              "date": "2025-09-22",
+              "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+            }
+          ]
+        },
+        {
+          "tech": "제어 평면 / 데이터 평면",
+          "solves": "⚠️ **`제어 평면이 「무엇」을, 데이터 평면이 「어떻게」를 소유한다`** — **제어 평면이 흔들려도 데이터 평면은 계속 처리하고 각 평면이 독립적으로 확장한다.**",
+          "limits": "⚠️ **설정 변경이 실행에 반영되는 지연을 글이 다루지 않는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+              "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+              "publisher": "Twilio Blog",
+              "date": "2025-09-22",
+              "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+            }
+          ]
+        },
+        {
+          "tech": "워크플로 오케스트레이션 (Orkes)",
+          "solves": "**`수십 개의 독립 서비스를 관리하는 대신 복잡도를 시각적이고 관리 가능한 워크플로로 표현`** 한다 — **쪼개는 것과 흩뜨리는 것은 다르다**(재구성).",
+          "limits": "⚠️ **오케스트레이션 플랫폼 자체에 묶인다** — **`통합 플랫폼의 운영 단순성` 을 `순수 마이크로서비스의 모듈성` 보다 앞에 둔 선택이다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+              "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+              "publisher": "Twilio Blog",
+              "date": "2025-09-22",
+              "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+            }
+          ]
+        },
+        {
+          "tech": "이중 쓰기",
+          "solves": "**전환 기간에 레거시와 새 서비스의 데이터를 맞춰** 읽기 일관성과 독립 검증을 얻는다.",
+          "limits": "⚠️ **쓰기가 두 배가 되고 둘이 어긋날 때의 처리를 따로 짜야 한다**(재구성). **어긋남이 얼마나 있었는지 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+              "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+              "publisher": "Twilio Blog",
+              "date": "2025-09-22",
+              "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "intent-and-execution-apart"
+      ]
     },
     {
       "name": "쪼개진 콘솔을 다시 하나로 합친다",
@@ -77,7 +155,530 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "intent-and-execution-apart",
+      "name": "의도와 실행 사이에 선을 긋는다",
+      "domain": "알림을 보내는 시스템을 책임별로 쪼갠다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **단순한 경보 시스템이 자라서 문제가 됐다.** 회사의 문장 — **`모놀리식 아키텍처가 단순한 경보 시스템에서 하루 수백만 건의 알림을 책임지는 복잡하고 강하게 결합된 애플리케이션으로 진화했다.`** ⚠️ **그리고 그 결합의 대가가 명확하다** — **`어떤 컴포넌트의 실패든 시스템 전체의 장애로 번질 수 있었고 여러 제품 기능이 동시에 영향을 받았다.`** 구체적으로는 **`이벤트 처리의 문제가 즉시 모든 사용자의 API 가용성에 영향을 줬다`** — **성격이 완전히 다른 셋이 한 프로세스에 묶여 있었기 때문이다**(뒤쪽은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**하루 수백만 건의 알림**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 묶여 있던 세 책임",
+            "value": "**API 운영**(사용자 설정과 알림 구성) · **이벤트 처리**(Kafka 에서 실시간) · **작업 스케줄링**(시간 기반 발송과 반복 경보 관리)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "label": "결합의 증상",
+            "value": "**`이벤트 처리의 문제가 즉시 모든 사용자의 API 가용성에 영향을 줬다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 그은 선",
+            "value": "**`제어 평면이 「무엇」을 소유한다 — 경보 규칙·임계값·설정을 정의하는 일. 데이터 평면이 「어떻게」를 소유한다 — 워크플로를 실행하고 대규모로 알림을 보내는 일.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 이 글에는 수치가 없다",
+            "value": "**결정과 대가는 명확한데 처리량·지연·이전 기간·실패율이 하나도 없다** — `하루 수백만 건` 이 유일한 규모 표현이다(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "label": "이 시스템이 속한 회사",
+            "value": "2026년 1분기 매출 **14억 달러(+20%)** · 2025년 상호작용 **2조 5,000억 건 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Twilio Q1 2026 Earnings Results",
+                "url": "https://investors.twilio.com/static-files/3b37c9fd-2d31-408b-975e-2736a99239a5",
+                "publisher": "Twilio Investor Relations",
+                "date": "2026-04-30",
+                "summary": "2026년 1분기 매출 14억 달러로 전년 대비 20% 성장. 2025년에 40만 2,000곳이 넘는 활성 고객 계정을 통해 2조 5,000억 건이 넘는 고객 상호작용을 처리했다. 2026년 1분기부터 활성 고객 계정 공시를 중단했다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 기준으로 쪼갤지 정할 때",
+          "thought": "⚠️ **셋의 성격이 근본적으로 다르다** — **API 운영은 사람의 요청을 기다리고, 이벤트 처리는 Kafka 에서 끊임없이 흐르며, 스케줄링은 시계를 본다.** **부하의 모양도, 실패했을 때 허용되는 지연도 다른데 한 프로세스에 묶여 있었다**(재구성). **그래서 이벤트 처리가 막히면 API 가 함께 죽었다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "다시 쓸지 옮길지 정할 때",
+          "thought": "⚠️ **하루 수백만 건이 도는 시스템을 한 번에 갈아엎을 수는 없다.** 회사가 그것을 **`위험한 「빅뱅」 재작성`** 이라 부르며 거절하고 **Strangler Fig** 를 골랐다 — **기존 서비스 옆에 새 기능을 지어 가며 점진적으로 대체하는 방식**이다. **얻는 것은 `운영 안정성을 유지하면서 시스템 신뢰성을 점진적으로 개선할 수 있는 능력` 이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "쪼갠 뒤의 조율을 볼 때",
+          "thought": "⚠️ **쪼개면 조각들을 이어 붙이는 일이 새로 생긴다.** 회사가 그 함정을 피하려 한 것이 보인다 — **`수십 개의 독립 서비스를 관리하는 대신, 오케스트레이션 플랫폼은 복잡도를 시각적이고 관리 가능한 워크플로로 표현하게 해 준다.`** **쪼개는 것과 흩뜨리는 것은 다르다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "제어 평면",
+            "what": "⚠️ **`무엇` 을 소유한다** — 경보 규칙·임계값·설정을 정의한다"
+          },
+          {
+            "name": "데이터 평면",
+            "what": "⚠️ **`어떻게` 를 소유한다** — 워크플로를 실행하고 대규모로 알림을 보낸다. **제어 평면이 흔들려도 계속 처리한다**"
+          },
+          {
+            "name": "세 책임",
+            "what": "**API 운영 · 이벤트 처리(Kafka) · 작업 스케줄링.** ⚠️ **묶여 있을 때는 하나가 다른 둘을 죽였다**"
+          },
+          {
+            "name": "이중 쓰기",
+            "what": "⚠️ **전환 기간에 레거시와 새 서비스가 데이터를 동기화한 상태로 유지한다** — **읽기 일관성을 지키면서 새 시스템을 독립적으로 검증할 수 있게**"
+          },
+          {
+            "name": "피처 플래그 라우팅",
+            "what": "⚠️ **읽기와 쓰기를 따로 옮긴다** — 즉시 컷오버하지 않고"
+          },
+          {
+            "name": "워크플로 오케스트레이션",
+            "what": "**수십 개 독립 서비스 대신** 복잡도를 **시각적이고 관리 가능한 워크플로**로 표현한다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **의도와 실행은 다른 평면에 산다** — 한쪽이 흔들려도 다른 쪽이 돈다",
+          "⚠️ **전환 중에는 두 시스템이 같은 데이터를 본다** — 이중 쓰기로",
+          "**읽기와 쓰기는 따로 옮긴다** — 되돌릴 수 있어야 하므로",
+          "⚠️ **각 평면은 독립적으로 확장한다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**새 알림 서비스를 기존 서비스 옆에 짓는다**(Strangler Fig)",
+            "why": "⚠️ **하루 수백만 건이 도는 시스템에 `위험한 「빅뱅」 재작성` 을 할 수 없다**"
+          },
+          {
+            "step": "⚠️ **세 책임을 갈라낸다** — API 운영 · 이벤트 처리 · 작업 스케줄링",
+            "why": "⚠️ **`이벤트 처리의 문제가 즉시 모든 사용자의 API 가용성에 영향을 줬다`**"
+          },
+          {
+            "step": "⚠️ **제어 평면과 데이터 평면 사이에 선을 긋는다** — `무엇` 과 `어떻게`",
+            "why": "**`의도와 실행 사이에 날카로운 경계를 그으면 팀이 한쪽을 다른 쪽을 방해하지 않고 진화시킬 수 있다`**"
+          },
+          {
+            "step": "**복잡도를 워크플로로 표현한다** — 수십 개 독립 서비스 대신",
+            "why": "⚠️ **쪼개는 것과 흩뜨리는 것은 다르다**(재구성)"
+          },
+          {
+            "step": "⚠️ **전환 기간에 레거시와 새 서비스에 이중으로 쓴다**",
+            "why": "**읽기 일관성을 지키면서 새 시스템을 독립적으로 검증하려고**"
+          },
+          {
+            "step": "⚠️ **피처 플래그로 읽기와 쓰기를 따로 옮긴다**",
+            "why": "**실시간 모니터링과 즉시 롤백이 가능해진다**"
+          },
+          {
+            "step": "**각 평면이 독립적으로 확장한다**",
+            "why": "**부하의 모양이 다르기 때문이다**(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "한 번에 다시 쓸 것인가 옮길 것인가",
+            "chosen": "⚠️ **Strangler Fig** — **`위험한 「빅뱅」 재작성`** 을 거절했다",
+            "alternatives": [
+              "전면 재작성 후 컷오버",
+              "레거시를 그대로 두고 기능만 추가"
+            ],
+            "tradeoff": "**`기존 서비스 옆에 새 기능을 지어 가며 레거시 시스템을 점진적으로 대체하는 이전 전략`** 을 골랐고, 얻은 것은 **`운영 안정성을 유지하면서 시스템 신뢰성을 점진적으로 개선할 수 있는 능력`** 이다. ⚠️ **대가는 전환 기간 내내 두 시스템이 함께 산다는 것**이고, 그래서 **이중 쓰기와 피처 플래그가 따라온다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 기준으로 쪼갤 것인가",
+            "chosen": "⚠️ **세 책임** — API 운영 · 이벤트 처리 · 작업 스케줄링",
+            "alternatives": [
+              "기능별로 쪼개기",
+              "팀 조직에 맞춰 쪼개기"
+            ],
+            "tradeoff": "묶여 있을 때의 증상이 근거다 — **`이벤트 처리의 문제가 즉시 모든 사용자의 API 가용성에 영향을 줬다.`** ⚠️ **셋은 부하의 모양도 허용되는 지연도 다르다** — 사람의 요청을 기다리는 것, 끊임없이 흐르는 것, 시계를 보는 것(재구성). **대가는 셋 사이의 계약을 명시해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "question": "쪼갠 뒤 무엇으로 이을 것인가",
+            "chosen": "⚠️ **워크플로 오케스트레이션** — 수십 개 독립 서비스를 만들지 않았다",
+            "alternatives": [
+              "마이크로서비스로 잘게 나누기",
+              "서비스 메시로 연결"
+            ],
+            "tradeoff": "회사의 문장 — **`수십 개의 독립 서비스를 관리하는 대신, 오케스트레이션 플랫폼은 복잡도를 시각적이고 관리 가능한 워크플로로 표현하게 해 준다.`** **`작업 단위의 조합과 통합된 서비스 관리`** 가 **`실패를 격리하고, 개발을 가속하고, 운영을 단순하게 만드는 일을 동시에`** 하게 해 준다고 적는다. ⚠️ **대가는 오케스트레이션 플랫폼 자체에 묶인다는 것**이고, **`통합 플랫폼의 운영 단순성` 을 `순수 마이크로서비스의 모듈성` 보다 앞에 둔 선택이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "question": "의도와 실행을 어떻게 나눌 것인가",
+            "chosen": "⚠️ **제어 평면과 데이터 평면** — `무엇` 과 `어떻게`",
+            "alternatives": [
+              "설정과 실행을 한 서비스에서",
+              "실행 쪽에 설정을 복제"
+            ],
+            "tradeoff": "**`제어 평면이 「무엇」을 소유한다 — 경보 규칙·임계값·설정을 정의하는 일. 데이터 평면이 「어떻게」를 소유한다 — 워크플로를 실행하고 대규모로 알림을 보내는 일.`** 얻는 것 셋을 적는다 — **`제어 평면에 문제가 생겨도 데이터 평면은 이벤트를 계속 처리한다`** · **`각 평면이 독립적으로 확장한다`** · **`의도와 실행 사이에 날카로운 경계를 그으면 팀이 한쪽을 다른 쪽을 방해하지 않고 진화시킬 수 있다.`** ⚠️ **대가는 설정 변경이 실행에 반영되는 데 시간이 걸린다는 것**인데 **글은 그 지연을 다루지 않는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "question": "전환 중 데이터를 어떻게 맞출 것인가",
+            "chosen": "⚠️ **이중 쓰기** — 레거시와 새 서비스를 동기화한 상태로",
+            "alternatives": [
+              "한 번에 데이터를 옮기고 전환",
+              "읽기만 새 시스템으로"
+            ],
+            "tradeoff": "**`전환 기간 동안 레거시 알림 서비스와 새 경보 서비스가 세심하게 조율된 이중 쓰기로 동기화된 데이터를 유지했다`** — 목적은 **`읽기 일관성을 보장하면서 새 시스템을 독립적으로 검증할 수 있게 하는 것`** 이다. ⚠️ **대가는 쓰기가 두 배가 되고 둘이 어긋날 때의 처리를 따로 짜야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "question": "언제 넘길 것인가",
+            "chosen": "⚠️ **피처 플래그로 읽기와 쓰기를 따로** — 즉시 컷오버하지 않는다",
+            "alternatives": [
+              "일괄 컷오버",
+              "시간대별 전환"
+            ],
+            "tradeoff": "**`즉시 컷오버 대신 피처 플래그 기반 라우팅으로 읽기와 쓰기를 따로 옮겼다`** — 얻는 것은 **`실시간 모니터링과 즉시 롤백이 가능한 점진적 이전`** 이다. ⚠️ **읽기를 먼저 옮기면 새 시스템이 틀려도 데이터는 안 망가지고, 쓰기를 먼저 옮기면 되돌리기 어렵다**(재구성). **대가는 플래그 조합만큼 상태가 늘어난다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "question": "실패를 어디까지 번지게 둘 것인가",
+            "chosen": "**평면과 책임 경계에서 끊는다**",
+            "alternatives": [
+              "재시도와 서킷 브레이커로만 대응"
+            ],
+            "tradeoff": "⚠️ **예전에는 `어떤 컴포넌트의 실패든 시스템 전체의 장애로 번질 수 있었고 여러 제품 기능이 동시에 영향을 받았다`.** 경계를 그으면 **한 조각의 실패가 그 조각에 머문다.** **대가는 경계를 넘는 호출마다 실패 처리를 새로 생각해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "question": "이 이전을 무엇으로 자랑할 것인가",
+            "chosen": "⚠️ **구조와 능력으로** — 수치가 아니라",
+            "alternatives": [
+              "처리량·지연 개선 수치를 제시"
+            ],
+            "tradeoff": "⚠️ **이 글에는 처리량·지연·이전 기간·실패율이 하나도 없다** — **`하루 수백만 건`** 이 유일한 규모 표현이다(재구성). **얻은 것을 `운영 안정성을 유지하면서 점진적으로 개선할 수 있는 능력` 처럼 능력으로 말한다.** ⚠️ **읽는 쪽에서는 그 능력이 얼마나 값을 했는지 확인할 방법이 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Strangler Fig 패턴",
+            "role": "**기존 서비스 옆에 새 기능을 지어 가며 점진적으로 대체한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "tech": "제어 평면 / 데이터 평면 분리",
+            "role": "⚠️ **`무엇` 과 `어떻게` 를 갈라 한쪽이 흔들려도 다른 쪽이 돌게 한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "tech": "워크플로 오케스트레이션 (Orkes)",
+            "role": "**수십 개 독립 서비스 대신 복잡도를 시각적 워크플로로** 표현한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "tech": "이중 쓰기",
+            "role": "⚠️ **전환 기간에 두 시스템의 데이터를 맞춘다** — 읽기 일관성과 독립 검증",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "tech": "피처 플래그 라우팅",
+            "role": "**읽기와 쓰기를 따로 옮긴다** — 실시간 모니터링과 즉시 롤백",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka",
+            "role": "이벤트 처리의 입구 — **실시간 플랫폼 이벤트**를 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "쪼개진 콘솔을 다시 하나로 합친다",
+          "via": "⚠️ 반대 방향, 같은 방법",
+          "contract": "⚠️ **한쪽은 모놀리스를 쪼개고 한쪽은 마이크로 프론트엔드를 합쳤는데, 둘 다 `한 번에 갈아엎지 않는다`** — 여기서는 **피처 플래그로 읽기·쓰기를 따로**, 저기서는 **페이지 라우트 하나씩**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Kafka (플랫폼 이벤트)",
+          "via": "이벤트 처리",
+          "contract": "**실시간 플랫폼 이벤트가 여기로 들어온다** — ⚠️ **예전에는 이 처리가 막히면 API 가용성까지 죽었다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "오케스트레이션 플랫폼 (Orkes)",
+          "via": "⚠️ 복잡도를 맡긴 곳",
+          "contract": "⚠️ **수십 개 서비스를 만들지 않는 대신 이 플랫폼에 묶인다** — **`통합 플랫폼의 운영 단순성` 을 `순수 마이크로서비스의 모듈성` 보다 앞에 뒀다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "제품 기능들",
+          "via": "⚠️ 예전에 번지던 장애",
+          "contract": "⚠️ **`어떤 컴포넌트의 실패든 시스템 전체의 장애로 번질 수 있었고 여러 제품 기능이 동시에 영향을 받았다`** — 그 고리를 끊는 것이 이 이전의 이유였다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 전환 기간에는 두 시스템이 함께 산다",
+            "why_hard": "⚠️ **점진 이전을 고르면 `옮기는 동안` 이라는 상태가 생기고, 그 동안 두 시스템이 같은 데이터를 봐야 한다.** 그래서 **`세심하게 조율된 이중 쓰기`** 가 필요하고, **쓰기가 두 배가 되며 둘이 어긋날 때의 처리를 따로 짜야 한다**(뒤쪽은 이 사이트의 재구성이다). **빅뱅 재작성이 피하는 비용이 정확히 이것이다.**",
+            "current_best": "**이중 쓰기로 데이터를 맞추고 피처 플래그로 읽기와 쓰기를 따로 옮기는 것** — **실시간 모니터링과 즉시 롤백**을 얻는다. ⚠️ **이 기간이 얼마나 걸렸는지, 어긋남이 얼마나 있었는지는 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              }
+            ]
+          },
+          {
+            "problem": "쪼개는 것과 흩뜨리는 것은 다르다",
+            "why_hard": "⚠️ **결합을 풀려고 쪼개면 조각을 잇는 일이 새로 생긴다** — 수십 개 서비스가 되면 **실패 격리는 얻지만 운영이 무거워진다**(재구성). ⭐ **같은 회사가 콘솔에서 정확히 그 대가를 치렀다** — **팀 간 결합을 풀려고 넣은 마이크로 프론트엔드와 프록시가 성능 문제와 파편화를 낳아 결국 다시 합쳤다**(이 대비는 재구성이다).",
+            "current_best": "**복잡도를 서비스가 아니라 워크플로로 표현하는 것** — **`작업 단위의 조합과 통합된 서비스 관리`** 로 **실패 격리·개발 속도·운영 단순성을 동시에** 노린다. ⚠️ **대가는 오케스트레이션 플랫폼 자체에 묶인다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+                "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+                "publisher": "Twilio Blog",
+                "date": "2025-09-22",
+                "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+              },
+              {
+                "title": "Bridging Legacy and Future Platforms",
+                "url": "https://twilio.com/en-us/blog/bridging-legacy-and-future-platforms",
+                "publisher": "Twilio Blog",
+                "date": "2021-04-07",
+                "summary": "마이크로 프론트엔드와 프록시 기반 서버 렌더링으로 굴리던 콘솔을 모놀리식 Jamstack 으로 옮겼다. 팀 간 결합을 풀려고 도입한 프록시가 성능 문제와 파편화를 낳았고, 최악의 경우 첫 바이트까지 1초가 걸렸다. 전면 재작성 대신 페이지 라우트 하나씩 옮기게 했다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "무엇과 어떻게를 다른 평면에 둔다",
+          "question": "쪼갠 뒤 무엇이 어디에 사나",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>사용자 · 제품 기능</b>\"]:::list --> CP[\"⚠️ <b>제어 평면 — 「무엇」</b><br/>• 경보 규칙 · 임계값 · 설정\"]:::accent\n  K[\"<b>Kafka 플랫폼 이벤트</b>\"]:::list --> DP[\"⚠️ <b>데이터 평면 — 「어떻게」</b><br/>• 워크플로 실행<br/>• 대규모 발송\"]:::accent\n  CP -.->|\"의도를 넘긴다\"| DP\n  CP --> A[\"<b>API 운영</b><br/>• 설정과 구성\"]:::list\n  DP --> B[\"<b>이벤트 처리</b>\"]:::list\n  DP --> C[\"<b>작업 스케줄링</b><br/>• 시간 기반 · 반복 경보\"]:::list\n  DP --> O[\"<b>워크플로 오케스트레이션</b><br/>• 수십 개 서비스 대신\"]:::list\n  X[\"<b>제어 평면에 문제가 생겨도</b><br/>• 데이터 평면은 계속 처리한다\"]:::list\n  DP --> X"
+        },
+        {
+          "title": "옮기는 동안이라는 상태",
+          "question": "한 번에 안 바꾸면 무엇을 치르나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>빅뱅 재작성</b><br/>• 하루 수백만 건이 도는데<br/>• `위험한` 이라고 적는다\"]:::gone --> B[\"<b>고른 길: Strangler Fig</b><br/>• 옆에 지어 가며 대체\"]:::accent\n  B --> C[\"⚠️ <b>대가: 두 시스템이 함께 산다</b>\"]:::gone\n  C --> D[\"<b>이중 쓰기</b><br/>• 읽기 일관성<br/>• 독립 검증\"]:::accent\n  C --> E[\"⚠️ <b>쓰기가 두 배</b><br/>• 어긋날 때 처리를 따로 (재구성)\"]:::gone\n  B --> F[\"<b>피처 플래그</b><br/>• 읽기와 쓰기를 따로<br/>• 즉시 롤백\"]:::accent\n  G[\"⚠️ <b>쪼개면 흩어진다</b><br/>• 같은 회사가 콘솔에서<br/>  그 대가를 치렀다 (재구성)\"]:::gone --> H[\"<b>답: 서비스가 아니라 워크플로로</b>\"]:::accent\n  I[\"⚠️ <b>이 글에 수치가 없다</b><br/>• 처리량 · 지연 · 이전 기간<br/>• 얻은 것을 능력으로만 말한다 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Transforming Segment's Notification Architecture with Strangler Fig",
+          "url": "https://www.twilio.com/en-us/blog/developers/transform-segment-notification-architecture-orchestration",
+          "publisher": "Twilio Blog",
+          "date": "2025-09-22",
+          "summary": "모놀리식 알림 서비스를 한 번에 다시 쓰는 대신 Strangler Fig 패턴으로 점진 교체했다. API 운영·이벤트 처리(Kafka)·시간 기반 스케줄링 세 책임으로 갈랐고, 전환 기간에는 레거시와 새 시스템에 이중 쓰기를 유지해 일관성과 롤백을 얻었다. 수십 개 독립 서비스 대신 워크플로 오케스트레이션을 골라 통합 플랫폼의 운영 단순성을 우선했다."
+        },
+        {
+          "title": "Bridging Legacy and Future Platforms",
+          "url": "https://twilio.com/en-us/blog/bridging-legacy-and-future-platforms",
+          "publisher": "Twilio Blog",
+          "date": "2021-04-07",
+          "summary": "마이크로 프론트엔드와 프록시 기반 서버 렌더링으로 굴리던 콘솔을 모놀리식 Jamstack 으로 옮겼다. 팀 간 결합을 풀려고 도입한 프록시가 성능 문제와 파편화를 낳았고, 최악의 경우 첫 바이트까지 1초가 걸렸다. 전면 재작성 대신 페이지 라우트 하나씩 옮기게 했다."
+        },
+        {
+          "title": "Twilio Q1 2026 Earnings Results",
+          "url": "https://investors.twilio.com/static-files/3b37c9fd-2d31-408b-975e-2736a99239a5",
+          "publisher": "Twilio Investor Relations",
+          "date": "2026-04-30",
+          "summary": "2026년 1분기 매출 14억 달러로 전년 대비 20% 성장. 2025년에 40만 2,000곳이 넘는 활성 고객 계정을 통해 2조 5,000억 건이 넘는 고객 상호작용을 처리했다. 2026년 1분기부터 활성 고객 계정 공시를 중단했다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **통신 API 본체의 기술 자료를 아직 못 찾았다** — **2조 5,000억 건의 상호작용을 어떻게 처리하는지**가 비어 있다. ⚠️ **회사 블로그의 대부분이 고객용 아키텍처 가이드라 자기 시스템 글을 검색으로 골라내야 한다.**",
