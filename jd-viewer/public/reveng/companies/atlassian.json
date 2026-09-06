@@ -1,0 +1,128 @@
+{
+  "slug": "atlassian",
+  "name": "Atlassian",
+  "name_en": "Atlassian",
+  "country": "AU",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "atlassian.com",
+  "one_liner": "팀이 일하는 자리를 파는 회사 — Jira·Confluence 를 묶어 팔고 쓰던 고객이 더 쓰게 만든다",
+  "business_model": "**협업 도구를 구독으로 판다.** **FY2026 3분기 매출 17억 8,700만 달러(+32%)** 이고 **클라우드가 11억 달러(+29%)** 다. ⭐ **묶어 파는 것이 전략이다** — **Teamwork Collection**(Jira·Confluence·Loom·Rovo)이 최대 제품 위치이고 **Service Collection 이 ARR 10억 달러를 넘겨 30% 넘게 자란다.**\n\n⭐ **그런데 성장의 모양이 특이하다** — **순매출유지율(NRR)이 4분기 연속 120%를 웃돈다.** ⚠️ **새 고객보다 쓰던 고객이 더 쓰는 데서 자란다는 뜻이다**(재구성). **클라우드 ARR 1만 달러를 넘는 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상**을 차지한다 — **수가 아니라 크기로 자란다**(재구성).",
+  "products": [
+    "Jira",
+    "Confluence",
+    "Jira Service Management",
+    "Loom",
+    "Rovo (AI)",
+    "Bitbucket"
+  ],
+  "domain_map": {
+    "title": "쓰던 고객이 더 쓰게 만드는 회사의 인프라",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  C[\"<b>고객 55,913곳</b><br/>• 클라우드 ARR 1만 달러 이상<br/>• NRR 120%+ 4분기 연속\"]:::list --> P[\"<b>Jira · Confluence · Loom · Rovo</b>\"]:::list\n  P --> S[\"⚠️ <b>검색 색인을 살아 있는 채로 바꾼다</b><br/>• 300+ 클러스터 · 1.7PB<br/>• ✅ 본문 확인\"]:::accent\n  P --> E[\"<b>이벤트를 옮기고 전달한다</b><br/>• StreamHub 하루 1,450억<br/>• Events Rail (웹훅)<br/>• ⏳ 미독\"]:::quiet\n  P --> A[\"<b>AI 를 제품에 넣는다</b><br/>• Rovo 에이전트 하네스<br/>• ⏳ 미독\"]:::quiet\n  E --> R[\"<b>매출 17.9억 달러 (+32%)</b>\"]:::list\n  S --> R\n  A --> R"
+  },
+  "revenue_streams": [
+    {
+      "name": "클라우드 구독",
+      "how": "**FY2026 3분기 클라우드 매출 11억 달러(+29%)** — **Jira·Confluence 의 좌석 확장**과 **Service Collection·Teamwork Collection 교차 판매**가 밀었다.",
+      "domains": [
+        "검색 색인을 살아 있는 채로 바꾼다",
+        "이벤트를 옮기고 전달한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Atlassian Announces Third Quarter Fiscal Year 2026 Results",
+          "url": "https://www.businesswire.com/news/home/20260430534706/en/Atlassian-Announces-Third-Quarter-Fiscal-Year-2026-Results",
+          "publisher": "Atlassian (BusinessWire)",
+          "date": "2026-04-30",
+          "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
+        }
+      ]
+    },
+    {
+      "name": "묶음 판매 · 확장",
+      "how": "⭐ **`Service Collection 이 ARR 10억 달러를 넘겼고 30% 넘게 자란다.`** **NRR 4분기 연속 120% 초과** — **쓰던 고객이 1년 전보다 평균 20% 더 쓴다.**",
+      "domains": [
+        "AI 를 제품에 넣는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Atlassian Announces Third Quarter Fiscal Year 2026 Results",
+          "url": "https://www.businesswire.com/news/home/20260430534706/en/Atlassian-Announces-Third-Quarter-Fiscal-Year-2026-Results",
+          "publisher": "Atlassian (BusinessWire)",
+          "date": "2026-04-30",
+          "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "검색 색인을 살아 있는 채로 바꾼다",
+      "why": "⚠️ **300개 넘는 클러스터에서 1.7PB 를 관리하며 무중단으로 색인의 모양을 바꿔야 했다.** ⭐ **그 과정에서 설계 목표가 뒤집힌다** — **`설계 목표가 빠르게에서 의도적으로 느리게, 꾸준하게, 조절 가능하게로 뒤집혔다.`** ✅ **본문 확인함**(2026-07-24).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "이벤트를 옮기고 전달한다",
+      "why": "**`StreamHub 확장: 하루 1,450억 이벤트를 위해 Kinesis 에서 Kafka 로`** 와 **`Events Rail: Atlassian 의 웹훅 전달 플랫폼 속으로`**. ⚠️ **하루 1,450억 이벤트라는 숫자가 이 축의 크기를 말한다.** ⏳ **둘 다 본문 미독.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "AI 를 제품에 넣는다",
+      "why": "**`Rovo 의 에이전트 하네스 뒤의 아키텍처`**. ⭐ **Rovo 가 Teamwork Collection 묶음에 들어가 있어 사업과 바로 이어진다**(재구성). ⏳ **본문 미독.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **개별 글의 주소를 목록에서 못 받았다** — `how-we-build` 아카이브가 제목만 준다. ⚠️ **슬러그를 추측하지 않는다** — **매 사이클 검색으로 받는다**(Trendyol 에서 세 번 연속 통한 방법).",
+    "⚠️ **글마다 발행일이 없다** — 아카이브에 타임스탬프가 없어서, 확인한 AOSC 글(2026-07-24) 말고는 날짜를 모른다.",
+    "⚠️ **블로그의 대부분이 사업·AI 채택 글이다** — 엔지니어링 글은 `how-we-build` 아래에 따로 모여 있고, **첫 화면으로 판정하면 이 회사를 놓친다**(후보 조사에서 실제로 그럴 뻔했다).",
+    "⚠️ **Jira·Confluence 본체의 기술 자료를 아직 못 봤다** — 검색·이벤트·AI 는 있는데 **문서 편집이나 이슈 추적 자체**의 이야기가 안 보인다.",
+    "⏳ **도메인으로 안 세운 글이 셋 있다** — 실시간 PWA · AI 시대의 번역 · 유료 마케팅 예산 배분 ML. **흩어져 있어 축을 이루지 못한다**(재구성)."
+  ],
+  "sources": [
+    {
+      "title": "Online index migration and shard-scaling in OpenSearch with AOSC",
+      "url": "https://www.atlassian.com/blog/how-we-build/opensearch-aosc-plugin",
+      "publisher": "Atlassian",
+      "date": "2026-07-24",
+      "summary": "300개 넘는 클러스터에서 1.7PB 를 관리하며 살아 있는 OpenSearch 색인의 모양을 무중단으로 바꿔야 했다. 데이터를 외부 프로세스로 흘려보내는 것은 느리고 부서지기 쉬워 클러스터 안에서 돌리기로 하고, 샤드 서비스와 클러스터 매니저 서비스라는 두 역할을 만들었다. 설계 목표를 빠르게에서 의도적으로 느리게·꾸준하게·조절 가능하게로 뒤집었고, 컷오버에는 짧은 쓰기 차단을 받아들였다."
+    },
+    {
+      "title": "Scaling StreamHub: Transitioning from Kinesis to Kafka for 145 Billion Daily Events",
+      "url": "https://www.atlassian.com/blog/how-we-build",
+      "publisher": "Atlassian",
+      "date": "",
+      "summary": "하루 1,450억 이벤트를 감당하기 위해 Kinesis 에서 Kafka 로 옮긴 이야기. ⏳ 본문 미독이고 개별 주소를 못 받았다 — 검색으로 받아야 한다."
+    },
+    {
+      "title": "The Events Rail: Inside Atlassian's Webhook Delivery Platform",
+      "url": "https://www.atlassian.com/blog/how-we-build",
+      "publisher": "Atlassian",
+      "date": "",
+      "summary": "웹훅 전달 플랫폼 이야기. ⏳ 본문 미독이고 개별 주소를 못 받았다."
+    },
+    {
+      "title": "The architecture behind Rovo's agent harness",
+      "url": "https://www.atlassian.com/blog/how-we-build",
+      "publisher": "Atlassian",
+      "date": "",
+      "summary": "Rovo 의 에이전트 하네스 아키텍처. ⏳ 본문 미독이고 개별 주소를 못 받았다."
+    },
+    {
+      "title": "Atlassian Announces Third Quarter Fiscal Year 2026 Results",
+      "url": "https://www.businesswire.com/news/home/20260430534706/en/Atlassian-Announces-Third-Quarter-Fiscal-Year-2026-Results",
+      "publisher": "Atlassian (BusinessWire)",
+      "date": "2026-04-30",
+      "summary": "FY2026 3분기 매출 17억 8,700만 달러(+32%), 클라우드 매출 11억 달러(+29%). 클라우드 ARR 1만 달러 초과 고객 55,913곳(+10%)이 클라우드 ARR 의 85% 이상을 차지한다. Service Collection 이 ARR 10억 달러를 넘겼고 순매출유지율(NRR)이 4분기 연속 120%를 웃돈다."
+    }
+  ]
+}
