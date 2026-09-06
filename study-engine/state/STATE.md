@@ -4,29 +4,43 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **GitHub Actions**(`github-actions`)를 완성했다 — **110번째 문서**.
+**없음.** 직전 사이클에서 **TypeScript**(`typescript`)를 완성했다 — **111번째 문서**.
 
-### 직전 사이클 (GitHub Actions)
+### 직전 사이클 (TypeScript)
 
-⚠️ **먼저 `secrets` 와 겹치는지 셌다** — `GitHub Actions`·`pull_request_target`·`서드파티`·`SHA`·`공급망` 이 **전부 0회**였다. 축이 안 겹친다(저쪽은 **비밀을 어디 두나**, 여기는 **그 비밀이 어디서 도나**).
+⚠️ **먼저 `kotlin` 과 겹치는지 셌다** — `타입 소거`·`erased`·`soundness`·`건전`·`zod` 가 **전부 0회**였다. 축이 안 겹친다.
 
-⭐⭐⭐ **축: "CI 한 곳에 셋이 모여 있다"** — 배포 자격증명 + 저장소 쓰기 권한 + **바깥에서 온 코드.** 셋 중 둘까지는 흔한데 **셋이 모인 곳은 CI 뿐이다.**
+⭐⭐⭐ **축: "타입이 맞다는 건 증명됐다는 뜻이 아니다."** 1차 자료가 **비목표 목록**으로 직접 준다.
 
-**1차 자료가 자기 기능을 아주 센 말로 경고한다.**
-- ⭐⭐⭐ **"Self-hosted runners should almost never be used for public repositories ... any user can open pull requests against the repository and compromise the environment."**
-- ⭐⭐ **"do not have guarantees around running in ephemeral clean virtual machines, and can be persistently compromised"**
-- ⭐⭐⭐ **"there is risk to this approach even if you trust the author, because a tag can be moved or deleted"**
-- ⭐⭐ **"automatic redaction is not guaranteed"** → **"delete the log and rotate the secret"**
+> **Non-goals 3.** **"Apply a sound or 'provably correct' type system.** Instead, strike a balance between correctness and productivity."
+> **Non-goals 5.** **"Add or rely on run-time type information** in programs..."
+> **Goals 9.** "Use a consistent, **fully erasable**, structural type system."
 
-**셈**: `CI/CD` **2795건(모집중 1168)** · `GitHub Actions` 727 · `Jenkins` 669 · ⚠️ `self-hosted` 38.
+⭐⭐ **셈에서 처음 보는 것이 나왔다 — 순서가 뒤집혔다.** `zod|런타임 검증` **53건**이 `타입 안전` **26건**의 **두 배**다. **개념보다 그 한계를 메우는 도구가 더 자주 불린다.** 아이알큐더스 공고가 결론을 한 줄로 적어 놨다: `타입 안전성 확보 (**스키마 기반 타입 자동 생성·런타임 검증** 포함)`.
 
 ### 다음
 
-**TypeScript**(`typescript`) — QUEUE 맨 위. ⭐ `github-actions` 도 끊긴 링크를 안 남겨 **세 번째로 층을 바꿨다**(CI → 언어).
+**JavaScript**(`javascript`) — QUEUE 맨 위. ⭐⭐ **네 사이클 만에 사슬이 다시 이어졌다**(`typescript` 가 끊긴 링크를 남겼다).
 
-⭐⭐⭐ **2678건(모집중 1034)인데 `타입 안전` 26건 · `strict` 3건** — 열째 형태. 축을 못 박아 뒀다: **"타입이 맞다는 건 증명됐다는 뜻이 아니다."** TypeScript **Design Goals 의 Non-goals** 가 그것을 직접 적는다. ⚠️ **`kotlin` 과 축이 겹치지 않게 조심한다.**
+⭐⭐⭐ **2397건(모집중 743)** 인데 문서가 없다. 축을 못 박아 뒀다: **"고칠 수 없는 언어."** 1차 자료는 **ECMAScript 명세의 `Annex B`**(명세가 자기 일부를 legacy 로 떼어 적은 자리). ⚠️ **`이벤트 루프` alias 는 `asyncio` 것이니 가져오지 않는다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **비목표 목록(Non-goals)은 1차 자료의 최상급이다.** TypeScript 는 **"건전한 타입 시스템"과
+  "런타임 타입 정보"를 둘 다 비목표로 적어 뒀다** — 본문 어딘가에 부정어를 숨겨 둔 게 아니라
+  **번호 매긴 목록**으로. 💡 이 백과사전이 모아 온 "제품이 스스로 그은 선" 중 **가장 순수한 형태**다.
+  📌 **그래서 새 낱말의 1차 자료를 찾을 때 `Design Goals`·`Non-goals`·`Philosophy`·`Principles`
+  문서가 있는지 먼저 본다** — 있으면 본문 전체를 뒤지는 것보다 빠르고 정확하다.
+
+- ⭐⭐ **셈의 순서가 뒤집힌 경우를 처음 만났다.** 지금까지 아홉 번은 전부 **"큰 낱말은 흔한데 그
+  안의 개념은 안 불린다"**(`rest` 3372 vs `HATEOAS` 0)였는데, 여기는 **개념(`타입 안전` 26건)보다
+  그 개념의 한계를 메우는 도구(`zod` 53건)가 두 배** 많이 불린다. 💡 **이건 시장이 이미 답을
+  알고 있다는 신호**이고, 그러면 문서의 일은 **"왜 그 도구가 필요해졌나"를 1차 자료로 설명하는
+  것**이 된다 — ⭐ 처방을 발명할 필요가 없다, **이미 하고 있는 일의 근거를 대 주면 된다.**
+
+- ⭐ **한 문서의 `open_questions` 가 다음 문서의 큐가 된다.** `typescript` 가 스스로 "가장 큰
+  빈자리"라고 적은 것이 **JavaScript 2397건**이었고, 그게 그대로 다음 낱말이 됐다. 💡 **경계를
+  정직하게 적는 일이 백과사전을 자라게 하는 장치이기도 하다** — 안 적었으면 못 찾았다.
 
 - ⭐⭐⭐ **말의 강도가 위험의 크기를 알려 준다.** GitHub 문서가 같은 문단에서 강도를 나눠 쓴다 —
   `pull_request_target` 트리거는 **"Avoid using ... if it's not necessary"**(권고)인데, 그것으로

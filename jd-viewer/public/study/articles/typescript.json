@@ -1,0 +1,569 @@
+{
+  "slug": "typescript",
+  "title": "TypeScript — 타입이 맞다는 것의 뜻",
+  "title_en": "TypeScript: What \"Type-Checked\" Actually Means",
+  "aliases": [
+    "TypeScript",
+    "타입스크립트",
+    "타입 안전",
+    "정적 타입",
+    "타입 소거",
+    "any"
+  ],
+  "category": "language",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **\"타입이 맞다\"는 \"증명됐다\"가 아니다** — 설계 문서가 **건전한 타입 시스템을 비목표로** 적어 뒀고, 타입은 **\"fully erasable\"** 이라 컴파일이 끝나면 **아무것도 안 남는다.**",
+  "summary": "⭐⭐⭐ **`TypeScript` 는 2678건(모집중 1034)** 이다. 그런데 ⚠️ `타입 안전|타입 안정성` **26건**, `strict|any 타입` **3건**, `제네릭` **19건**이다.\n\n**그리고 이번엔 역전이 하나 있다.**\n\n> ⭐⭐ **`zod|런타임 검증|스키마 검증` 이 53건** — **\"타입 안전\"(26건)보다 두 배 많다.**\n\n💡 **시장이 이미 답을 알고 있다는 뜻이다** — **타입만으로는 경계를 못 막는다는 것을.** 한 공고가 그것을 통째로 적어 놨다.\n\n> ⭐⭐⭐ `TypeScript : 안정적인 코드 베이스 구축 및 **타입 안전성 확보 (스키마 기반 타입 자동 생성·런타임 검증 포함)**` — 아이알큐더스\n\n**그리고 TypeScript 자신이 왜 그런지를 설계 문서에 적어 놨다.**\n\n> ⭐⭐⭐ **Non-goals 3.** \"**Apply a sound or 'provably correct' type system.** Instead, **strike a balance between correctness and productivity**.\"\n> ⭐⭐⭐ **Non-goals 5.** \"**Add or rely on run-time type information** in programs, or emit different code based on the type system results.\"\n> ⭐⭐⭐ **Goals 9.** \"Use a consistent, **fully erasable**, structural type system.\"\n\n⚠️ **\"건전하게 만들지 않겠다\"와 \"런타임에 아무것도 남기지 않겠다\"가 둘 다 적혀 있다.** 이건 결함이 아니라 **선언된 설계**다.",
+  "market": {
+    "tech": "TypeScript",
+    "layer": "언어",
+    "postings": 1006,
+    "pct_jobs": 14.0,
+    "with": [
+      {
+        "name": "React",
+        "pct": 67.8,
+        "why": "⭐⭐ **셋 중 둘.** 이 낱말은 사실상 프론트엔드의 기본값이다"
+      },
+      {
+        "name": "AWS",
+        "pct": 43.2,
+        "why": "서버 쪽에서도 쓴다(Node.js 31.4%와 함께)"
+      },
+      {
+        "name": "Python",
+        "pct": 34.6,
+        "why": "같은 팀의 다른 층"
+      },
+      {
+        "name": "JavaScript",
+        "pct": 33.6,
+        "why": "⭐ **셋 중 하나만 함께 적힌다** — 나머지는 TS 만 대는데, ⚠️ **컴파일 결과는 언제나 JS 다**"
+      },
+      {
+        "name": "Node.js",
+        "pct": 31.4,
+        "why": "서버 런타임 — ⭐ **여기가 외부 입력이 들어오는 경계**"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 셈의 역전 — \"런타임 검증\"이 \"타입 안전\"보다 두 배 많다",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `TypeScript\\|타입스크립트` | **2678** | (모집중 1034) |\n| `JavaScript\\|자바스크립트` | 2397 | (모집중 743) |\n| ⭐ `zod\\|런타임 검증\\|스키마 검증` | **53** | (모집중 26) |\n| ⚠️ `타입 안전\\|타입 안정성` | **26** | (모집중 12) |\n| ⚠️ `제네릭` | 19 | (모집중 10) |\n| ⚠️⚠️ `strict\\|any 타입\\|noImplicitAny` | **3** | (모집중 1) |\n\n⭐ **2678 대 26.** 이 백과사전이 **열 번째로 만나는 형태**다(`rest` 3372 vs `HATEOAS` 0 이래).\n\n💡 **그런데 이번엔 지금까지와 다른 것이 하나 있다 — 순서가 뒤집혀 있다.**\n\n**`zod|런타임 검증` 53건이 `타입 안전` 26건보다 두 배 많다.** 앞선 문서들에서는 \"큰 낱말은 흔한데 그 안의 개념은 안 불린다\"였는데, 여기는 ⭐⭐ **개념(타입 안전)보다 그 개념의 한계를 메우는 도구(Zod)가 더 자주 불린다.**\n\n> ⭐⭐⭐ `TypeScript : 안정적인 코드 베이스 구축 및 **타입 안전성 확보 (스키마 기반 타입 자동 생성·런타임 검증 포함)**` — 아이알큐더스\n> `Next.js · React · TypeScript · TanStack Query · Zustand · React Hook Form · **Zod** · Tailwind CSS` — 알챗\n> `TypeScript, React/Next.js/Zustand, Vue/Nuxt.js/Pinia, Tailwind/Styled-components, **Zod**` — 빌드잇\n\n**Zod 가 기술 스택 목록에 React·Tailwind 와 나란히 박혀 있다.** ⭐ **경계에서 다시 검증하는 것이 선택이 아니라 기본 구성이 됐다는 뜻**이고, 이 문서는 **왜 그렇게 됐는지**를 다룬다.\n\n📌 **그리고 `strict` 를 이름으로 대는 곳이 있다 — 적지만 분명하다.**\n\n> `TypeScript 실무 경험 (**엄격한 타입 환경**)` — 스텝에이아이\n> `- Language: **TypeScript (strict mode)**` — 에임인텔리전스\n> `React / Next.js + **TypeScript(strict)** 기반 프론트엔드 개발 경험` — 글렉\n\n⚠️ **`strict` 를 굳이 적는다는 것은, 적지 않은 곳은 다르다는 뜻**이다.\n\n📌 **이 문서는 `kotlin` 과 겹치지 않는다.** 그 문서를 세어 봤다 — `타입 소거` **0회**, `erased` **0회**, `soundness`·`건전` **0회**, `zod` **0회**. ⭐ 저쪽은 **\"다른 언어(자바)와 만나는 자리에서 보장이 내려간다\"** 이고, 여기는 **\"컴파일이 끝나면 타입이 아예 없어진다\"** 다."
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 건전성은 목표가 아니다 — 설계 문서가 비목표에 적어 뒀다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TypeScript Design Goals",
+          "url": "https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals",
+          "publisher": "Microsoft / TypeScript",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **언어가 자기 비목표를 목록으로 적어 둔 자리** — \"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 **둘 다 Non-goals 에 있다**"
+        }
+      ],
+      "body": "타입 검사가 통과하면 마음이 놓인다. ⚠️ **그런데 그 안심의 근거가 무엇인지 물어본 적이 있나.**\n\n**TypeScript 의 설계 문서에는 `Goals` 옆에 `Non-goals` 목록이 있다.** 그리고 그 세 번째가 이것이다.\n\n> ⭐⭐⭐ **Non-goals 3.** \"**Apply a sound or 'provably correct' type system.** Instead, **strike a balance between correctness and productivity**.\"\n\n💡 **\"건전한, 또는 증명 가능하게 옳은 타입 시스템을 적용한다\" — 그것이 목표가 아니라고 적혀 있다.**\n\n⭐ **건전(sound)하다는 것**은 타입 검사기의 용어로 **\"타입이 맞다고 했으면 실행 중에 그 타입 오류는 절대 안 난다\"** 는 뜻이다. TypeScript 는 **그것을 하지 않겠다고 선언한다.** 대신 **\"정확성과 생산성 사이의 균형\"** 을 잡겠다고 한다.\n\n📌 ⭐⭐ **이건 결함이 아니라 선택이다.** 그리고 이 백과사전이 모아 온 **\"제품이 스스로 그은 선\"** 중에서도 **가장 순수한 형태**다 — 다른 제품들은 \"이건 못 한다\"(`kotlin` 의 \"impractical\")나 \"권하지 않는다\"(`redis` 의 \"we discourage it\")를 **본문 어딘가에** 적는데, ⭐ **TypeScript 는 비목표를 아예 번호 매긴 목록으로 만들어 뒀다.**\n\n**왜 그런 선택을 했나.** 답은 이 언어가 어디서 시작했는지에 있다 — **이미 세상에 있는 자바스크립트 위에 얹는 것**이다. `market` 이 그 관계를 보여 준다: `JavaScript` 동반 **33.6%**, 그리고 셈으로 **JS 자체가 2397건**이다.\n\n⚠️ **기존 자바스크립트 코드와 그 생태계(수십만 개의 패키지)를 전부 건전하게 검사하려면, 대부분의 코드가 통과하지 못한다.** 그러면 아무도 안 쓴다. ⭐ **\"쓸 수 있게 만드는 것\"과 \"증명하는 것\" 중에 앞을 골랐고, 그것을 문서에 적었다.**\n\n📌 **그래서 실무의 태도가 정해진다.**\n\n- ⭐ **타입 검사 통과는 \"가능성이 크게 줄었다\"이지 \"불가능하다\"가 아니다.**\n- ⚠️ **어디가 뚫리는지는 우연이 아니라 정해져 있다** — 다음 두 절이 그 자리다.\n- ⭐⭐ **그러니 \"타입이 있으니까 괜찮다\"로 끝나는 판단은 문서가 보증하지 않는다.**"
+    },
+    {
+      "id": "erase",
+      "kind": "how",
+      "heading": "⭐⭐⭐ 타입은 지워진다 — \"fully erasable\" 이라고 적혀 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TypeScript Design Goals",
+          "url": "https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals",
+          "publisher": "Microsoft / TypeScript",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **언어가 자기 비목표를 목록으로 적어 둔 자리** — \"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 **둘 다 Non-goals 에 있다**"
+        }
+      ],
+      "body": "앞 절이 **\"완벽하지 않다\"** 였다면, 이 절은 더 세다 — ⭐⭐⭐ **실행 중에는 타입이 존재하지 않는다.**\n\n**같은 설계 문서에 세 항목이 나란히 있다.**\n\n> ⭐⭐⭐ **Goals 9.** \"Use a consistent, **fully erasable**, structural type system.\"\n> ⭐⭐⭐ **Non-goals 5.** \"**Add or rely on run-time type information** in programs, or emit different code based on the type system results.\"\n> **Goals 3.** \"**Impose no runtime overhead** on emitted programs.\"\n> **Goals 4.** \"Emit **clean, idiomatic, recognizable JavaScript** code.\"\n\n💡 **네 항목이 한 가지를 말한다 — 타입은 컴파일러에게만 있고, 나온 코드에는 없다.**\n\n**\"fully erasable\"(완전히 지울 수 있는)** 이 목표이고, **\"런타임 타입 정보를 추가하거나 그것에 의존하는 것\"** 은 비목표다. 그리고 **타입 검사 결과에 따라 다른 코드를 내보내지도 않는다.**\n\n⭐ **결과물은 그냥 자바스크립트다.** `market` 의 `JavaScript` 33.6% 가 아니라, **100% 가 자바스크립트로 돈다.**\n\n📌 **그래서 무슨 일이 생기나.** 타입이 지켜 주는 범위가 **어디서 끝나는지**가 정확해진다.\n\n| 어디 | 타입이 지켜 주나 |\n|---|---|\n| 우리 코드 안에서 함수를 부를 때 | ⭐ **그렇다** — 컴파일 시점에 잡는다 |\n| 우리 코드끼리 객체를 주고받을 때 | 그렇다 |\n| ⚠️ **서버 응답을 받을 때** | ⚠️⚠️ **아니다** — `as User` 는 **아무것도 검사하지 않는다** |\n| ⚠️ **`JSON.parse` 결과** | ⚠️ **아니다** — 그냥 `any` 다 |\n| ⚠️ **폼 입력·URL 파라미터·localStorage** | ⚠️ **아니다** |\n| ⚠️ **타입 정의만 있는 남의 라이브러리** | ⚠️ **아니다** — 정의가 실제와 다를 수 있다 |\n\n⭐⭐⭐ **패턴이 보인다 — 바깥에서 들어오는 모든 것.** 우리가 쓴 타입은 **\"이렇게 생겼을 것이다\"라는 약속**이지 **검사**가 아니다. 그리고 **약속을 어긴 데이터가 들어와도 아무 일도 안 일어난다** — 그 값을 실제로 쓰는 **한참 뒤에** 엉뚱한 곳에서 터진다.\n\n⚠️ **이것이 `kotlin` 과 다른 점이다.** 코틀린의 플랫폼 타입은 **자바와 만나는 자리**에서만 보장이 내려가는데(그리고 코틀린 컴파일러는 널 검사 코드를 **실제로 넣는다**), ⭐ **TypeScript 는 어디에도 아무 검사 코드를 안 넣는다.** 그것이 설계 목표다."
+    },
+    {
+      "id": "boundary",
+      "kind": "how",
+      "heading": "⭐⭐ 그래서 경계에서 검증한다 — Zod 가 스택에 박힌 이유",
+      "confidence": "inferred",
+      "body": "앞 절의 표를 뒤집으면 처방이 나온다 — ⭐ **바깥에서 들어오는 자리에서 한 번 진짜로 검사한다.**\n\n**시장이 이미 그렇게 하고 있다.** `zod|런타임 검증|스키마 검증` **53건**이고, 기술 스택 목록에 이렇게 박힌다.\n\n> `Next.js · React · TypeScript · TanStack Query · Zustand · React Hook Form · **Zod** · Tailwind CSS · Turborepo` — 알챗\n> `Frontend: React, Next.js, TypeScript, Tailwind CSS, TanStack Query, Redux Toolkit, **Zod**` — 엔투에이아이\n> `TypeScript, Python, React, tailwindcss, i18next, vite, **zod**, nanostores` — 핑바\n\n⭐⭐ **React·Tailwind 와 같은 급으로 적힌다.** \"쓰면 좋은 것\"이 아니라 **구성의 일부**다.\n\n💡 **하는 일은 단순하다 — 스키마를 한 번 적고, 그것으로 (1)실제 검사와 (2)타입을 둘 다 만든다.** 그러면 **타입과 검사가 어긋날 수 없다.** 아이알큐더스 공고가 그 방식을 그대로 적는다.\n\n> ⭐⭐⭐ `타입 안전성 확보 (**스키마 기반 타입 자동 생성 · 런타임 검증** 포함)`\n\n📌 **어디에 두나 — `erase` 절의 표에서 ⚠️ 가 붙은 자리 전부다.**\n\n1. ⭐ **서버 응답을 받는 곳** (→ `rest`·`graphql`). 우리가 만든 API 라도 마찬가지다 — **배포 시점이 다르면 계약이 어긋나는 순간이 있다**(→ `api-versioning`).\n2. **사용자 입력** — 폼·URL 파라미터·업로드.\n3. **저장소에서 읽어 올 때** — `localStorage`·쿠키·설정 파일. ⚠️ **예전 버전이 쓴 값이 그대로 남아 있다.**\n4. **환경변수** — 문자열이고, 없을 수도 있다.\n\n⚠️ **모든 함수 경계에 넣지는 않는다.** 그러면 느려지고 코드가 검증으로 뒤덮인다. ⭐ **선은 \"우리가 쓴 코드가 만든 값인가, 밖에서 온 값인가\"** 다.\n\n📌 **그리고 안쪽에서는 `strict` 를 켠다.** 공고 셋이 그것을 이름으로 댄다(`엄격한 타입 환경`·`strict mode`·`TypeScript(strict)`). ⭐ **`strict` 는 앞 절의 \"건전하지 않음\"을 없애 주지는 않지만**, 가장 흔한 구멍(암묵적 `any`, `null`/`undefined` 무시)을 막는다.\n\n⚠️ **그리고 스스로 뚫는 구멍을 센다** — `as` 단언과 `any`. **이 둘은 \"검사하지 말라\"는 명령**이다. `strict` 를 켜 놓고 `as` 를 남발하면 **켠 의미가 없다.** ⭐ 그래서 실무에서는 **`as` 가 나온 자리마다 \"왜 여기서 컴파일러보다 내가 더 잘 아나\"** 를 묻는다 — **답할 수 있으면 남기고, 못 하면 그게 버그다.**"
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 문법과 타입 기능을 다루지 않았다.** 제네릭·조건부 타입·매핑 타입·`infer`·유틸리티 타입 — **핸드북이 훨씬 잘** 한다. 공고에도 나오지만(이지식스 `Generic, Type Narrowing, Utility Types`) ⭐ **이 문서는 \"타입이 무엇을 보증하나\"만 다뤘다.**\n\n**2. ⚠️ 건전하지 않은 구체적 지점들을 나열하지 않았다.** 배열의 공변성, 함수 매개변수의 이변성(bivariance), `strictFunctionTypes` 가 무엇을 바꾸는지 — ⭐ **\"건전하지 않다\"는 선언은 1차 자료로 확인했지만, 어디가 어떻게 뚫리는지는 예제 수준으로 확인하지 못했다.** 이 문서는 **선언까지만** 썼다.\n\n**3. ⚠️ `tsconfig` 옵션을 다루지 않았다.** `strict` 아래에 여러 옵션이 있고 각각 다른 것을 막는데, **어느 것이 무엇을 막는지 확인하지 않았다.** `strict` 를 이름으로 대는 공고가 3건뿐이라 셈으로는 근거가 약했다.\n\n**4. ⚠️ Zod 문서를 읽지 않았다.** `boundary` 절이 그것을 권하면서 **공식 문서를 열지 않았다** — 성능 비용, 스키마와 타입이 어긋나는 경우, 다른 선택지(io-ts·Valibot·`typia`)와의 차이를 **모른다.** ⭐ **53건이 이름을 대는 도구인데 이 문서의 근거는 공고 문장뿐이다.**\n\n**5. ⚠️ JavaScript 를 다루지 않았다**(**2397건**, 문서 없음). ⭐ TypeScript 의 결과물이 언제나 자바스크립트인데, **그 언어 자체는 이 백과사전에 없다.**\n\n**6. ⚠️ 빌드 도구와 타입 검사의 분리를 다루지 않았다.** 요즘 번들러는 **타입을 검사하지 않고 지우기만** 한다(그게 빠르니까) — ⭐ 그러면 **CI 에서 따로 `tsc --noEmit` 을 돌리지 않으면 타입 오류가 있어도 빌드가 성공한다.** `github-actions` 와 이어지는 자리인데 확인하지 않았다.\n\n**7. 이 문서가 다루지 않는 것.** 다른 언어의 같은 문제는 `kotlin`(축이 다르다), 응답이 들어오는 경계는 `rest`·`graphql`, 계약이 어긋나는 문제는 `api-versioning`, 입력 검증의 보안 측면은 `authz` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "goals",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 설계 문서가 목표와 비목표로 적어 둔 것",
+      "note": "전부 **원문**이다. ⭐ 이 표의 요점은 **네 항목이 한 가지를 말한다**는 것 — **타입은 컴파일러에게만 있고 나온 코드에는 없으며, 그것이 의도된 설계다.**",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ **Non-goals 3**",
+          "\"**Apply a sound or 'provably correct' type system.** Instead, **strike a balance between correctness and productivity**.\""
+        ],
+        [
+          "⭐⭐⭐ **Non-goals 5**",
+          "\"**Add or rely on run-time type information** in programs, or **emit different code based on the type system results**.\""
+        ],
+        [
+          "⭐⭐⭐ **Goals 9**",
+          "\"Use a consistent, **fully erasable**, structural type system.\""
+        ],
+        [
+          "**Goals 3**",
+          "\"**Impose no runtime overhead** on emitted programs.\""
+        ],
+        [
+          "**Goals 4**",
+          "\"Emit **clean, idiomatic, recognizable JavaScript** code.\""
+        ],
+        [
+          "⭐ 그래서",
+          "**타입 검사 통과 = \"가능성이 크게 줄었다\"** 이지 **\"불가능하다\"가 아니다.** 그리고 **실행 중에는 타입이 존재하지 않는다**"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TypeScript Design Goals",
+          "url": "https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals",
+          "publisher": "Microsoft / TypeScript",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **언어가 자기 비목표를 목록으로 적어 둔 자리** — \"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 **둘 다 Non-goals 에 있다**"
+        }
+      ]
+    },
+    {
+      "id": "where",
+      "kind": "compare",
+      "caption": "⭐⭐ 타입이 지켜 주는 자리와 안 지켜 주는 자리",
+      "note": "왼쪽의 근거는 위 `goals` 표의 원문(\"fully erasable\", \"no run-time type information\")이고, 표의 구성은 이 문서의 정리다(`confidence: inferred`). ⭐ **패턴은 하나 — 바깥에서 들어오는 모든 것.**",
+      "columns": [
+        "어디",
+        "지켜 주나",
+        "왜"
+      ],
+      "rows": [
+        [
+          "우리 코드 안의 함수 호출",
+          "⭐ **그렇다**",
+          "컴파일 시점에 둘 다 보인다"
+        ],
+        [
+          "우리 코드끼리 객체 전달",
+          "그렇다",
+          "같은 이유"
+        ],
+        [
+          "⚠️ **서버 응답**",
+          "⚠️⚠️ **아니다**",
+          "`as User` 는 **아무것도 검사하지 않는다** — 이름표일 뿐"
+        ],
+        [
+          "⚠️ **`JSON.parse` 결과**",
+          "⚠️ **아니다**",
+          "반환값이 사실상 `any` 다"
+        ],
+        [
+          "⚠️ **폼·URL·localStorage**",
+          "⚠️ **아니다**",
+          "⭐ **예전 버전이 쓴 값이 남아 있다**"
+        ],
+        [
+          "⚠️ **남의 라이브러리 타입 정의**",
+          "⚠️ **아니다**",
+          "정의가 **실제 구현과 다를 수 있다**"
+        ],
+        [
+          "⚠️ `as` · `any`",
+          "⚠️⚠️ **아니다**",
+          "**\"검사하지 말라\"는 명령**이다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "vs",
+      "kind": "compare",
+      "caption": "⭐ `kotlin` 과 무엇이 다른가",
+      "note": "두 문서가 같은 영역처럼 보여 명시해 둔다. ⭐ **양쪽 다 \"컴파일러가 봐 주는데 어디선가 내려간다\"이지만, 내려가는 이유와 자리가 다르다.** 각 문서의 1차 자료 인용을 그대로 옮겼다.",
+      "columns": [
+        "",
+        "Kotlin",
+        "TypeScript"
+      ],
+      "rows": [
+        [
+          "보장이 약해지는 곳",
+          "**자바와 만나는 자리**",
+          "⭐ **바깥에서 값이 들어오는 모든 자리**"
+        ],
+        [
+          "왜",
+          "\"Any reference in Java may be `null`, which makes Kotlin's requirements of strict null-safety **impractical**\"",
+          "⭐⭐ \"Apply a sound or 'provably correct' type system\" 이 **Non-goal** 이다"
+        ],
+        [
+          "⭐⭐ 런타임에",
+          "**검사 코드가 들어간다** (그래서 NPE 로 잡힌다)",
+          "⚠️ **아무것도 안 들어간다** — \"**fully erasable**\""
+        ],
+        [
+          "증상",
+          "**터진다** (NPE)",
+          "⚠️ **안 터지고 흘러간다** — 한참 뒤 엉뚱한 곳에서"
+        ],
+        [
+          "처방",
+          "플랫폼 타입이 오는 자리를 좁힌다",
+          "⭐ **경계에서 진짜로 검사한다** (`zod` 53건)"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TypeScript Design Goals",
+          "url": "https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals",
+          "publisher": "Microsoft / TypeScript",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **언어가 자기 비목표를 목록으로 적어 둔 자리** — \"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 **둘 다 Non-goals 에 있다**"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐⭐ **이번엔 순서가 뒤집혔다** — 앞선 아홉 번은 \"큰 낱말은 흔한데 그 안의 개념은 안 불린다\"였는데, 여기는 **개념(26건)보다 그 한계를 메우는 도구(53건)가 더 자주 불린다.**",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**2678건 (모집중 1034)** — 태그 기준으로는 1006건(14.0%)"
+        ],
+        [
+          "⭐ `zod\\|런타임 검증\\|스키마 검증`",
+          "**53 (모집중 26)** — **기술 스택 목록에 React·Tailwind 와 나란히** 박힌다"
+        ],
+        [
+          "⚠️ `타입 안전\\|타입 안정성`",
+          "**26 (모집중 12)** — ⭐ **Zod 의 절반**"
+        ],
+        [
+          "⚠️ `제네릭`",
+          "19 (모집중 10)"
+        ],
+        [
+          "⚠️⚠️ `strict\\|any 타입\\|noImplicitAny`",
+          "**3 (모집중 1)** — ⭐ **굳이 적는 곳은 다르다는 뜻**"
+        ],
+        [
+          "`JavaScript`",
+          "**2397 (모집중 743)** — ⚠️ **문서가 없다.** 그런데 TS 의 결과물은 언제나 이것"
+        ],
+        [
+          "⚠️ 섞이는 것",
+          "`타입` 만으로 세면 **데이터 타입·파일 타입·타입스크립트**가 다 걸린다 — `타입 안전\\|타입 안정성` 으로 좁혔다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ 건전성",
+      "en": "soundness",
+      "what": "**\"타입이 맞다고 했으면 실행 중에 그 타입 오류는 안 난다\"** 는 성질. ⚠️ TypeScript 의 **Non-goal** 이다"
+    },
+    {
+      "term": "⭐⭐⭐ 타입 소거",
+      "en": "type erasure / fully erasable",
+      "what": "컴파일하면 **타입이 통째로 사라지는 것.** \"Use a consistent, **fully erasable**, structural type system\" — **Goal 9**"
+    },
+    {
+      "term": "구조적 타입",
+      "en": "structural typing",
+      "what": "이름이 아니라 **모양이 같으면 같은 타입**으로 본다(같은 Goal 9 에 적혀 있다)"
+    },
+    {
+      "term": "⚠️ 타입 단언",
+      "en": "type assertion (`as`)",
+      "what": "**\"검사하지 말고 이걸로 쳐 달라\"** 는 명령. 검사가 아니라 **검사의 포기**다"
+    },
+    {
+      "term": "⚠️ `any`",
+      "en": "—",
+      "what": "타입 검사에서 빠지는 값. ⭐ `strict` 는 **암묵적** `any` 를 막을 뿐, 적어 넣은 `any` 는 못 막는다"
+    },
+    {
+      "term": "⭐ 런타임 검증",
+      "en": "runtime validation",
+      "what": "실행 중에 **진짜로 모양을 확인**하는 것. Zod 같은 도구가 하고, **공고 53건**이 이름을 댄다"
+    },
+    {
+      "term": "`tsc --noEmit`",
+      "en": "—",
+      "what": "⚠️ **타입만 검사하는 명령.** 번들러는 타입을 지우기만 하므로, **CI 에서 이걸 따로 안 돌리면 타입 오류가 있어도 빌드가 성공한다**"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "서버 응답을 받아 화면에 쓴다",
+      "pick": "⭐⭐ **받는 자리에서 스키마로 한 번 검증한다**(Zod 등)",
+      "over": "`as ApiResponse` 로 타입만 붙이기",
+      "why": "⭐⭐⭐ **`as` 는 아무것도 검사하지 않는다** — 설계상 그렇다(\"**fully erasable**\", \"**no run-time type information**\"). ⚠️ 그래서 서버가 다른 모양을 보내도 **그 순간에는 아무 일도 안 일어나고**, 그 값을 실제로 쓰는 한참 뒤 엉뚱한 곳에서 터진다",
+      "tradeoff": "검증 비용과 스키마를 적는 수고가 든다. ⭐ 그래도 **스키마 하나로 검사와 타입을 둘 다 만들면** 코드가 늘지 않는다 — 아이알큐더스 공고의 `**스키마 기반 타입 자동 생성 · 런타임 검증**` 이 그 방식이다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "TypeScript Design Goals",
+          "url": "https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals",
+          "publisher": "Microsoft / TypeScript",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **언어가 자기 비목표를 목록으로 적어 둔 자리** — \"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 **둘 다 Non-goals 에 있다**"
+        }
+      ]
+    },
+    {
+      "situation": "새 프로젝트의 `tsconfig` 를 정한다",
+      "pick": "⭐ **`strict` 를 켜고 시작한다**",
+      "over": "나중에 켜기",
+      "why": "⭐⭐ **나중에 켜면 오류가 수백 개 쏟아지고, 그러면 안 켠다.** 그리고 공고가 `strict` 를 **굳이 이름으로 대는 곳이 있다는 것**(스텝에이아이 `엄격한 타입 환경`, 에임인텔리전스 `strict mode`, 글렉 `TypeScript(strict)`)은 **적지 않은 곳은 다르다는 뜻**이다",
+      "tradeoff": "⚠️ 초반에 더 많이 적어야 하고, 기존 JS 를 옮기는 중이면 진도가 안 나간다. ⭐ **그리고 `strict` 가 건전성을 주지는 않는다** — 가장 흔한 구멍(암묵적 `any`, null 무시)을 막을 뿐이다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "`as` 를 쓰고 싶어졌다",
+      "pick": "⭐ **\"왜 여기서 컴파일러보다 내가 더 잘 아나\"에 답해 보고, 답할 수 있을 때만 쓴다**",
+      "over": "오류를 없애려고 붙이기",
+      "why": "⭐⭐ **`as` 는 검사가 아니라 검사의 포기**다. 답할 수 있는 경우는 실제로 있다(외부에서 보장된 값, 검증을 이미 끝낸 값). ⚠️ **답할 수 없는데 붙였다면 그게 곧 버그**이고, 타입 검사는 통과하니 **아무도 못 본다**",
+      "tradeoff": "오류를 즉시 못 없애서 답답하다. ⭐ 대안은 **타입 가드**(실제로 확인하는 함수)이고 — 그건 `as` 와 달리 **런타임에 진짜 코드가 남는다**",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "CI 파이프라인을 만든다",
+      "pick": "⭐ **`tsc --noEmit` 을 따로 돌린다**",
+      "over": "빌드가 성공하면 타입도 맞다고 여기기",
+      "why": "⚠️⚠️ **요즘 번들러는 타입을 검사하지 않고 지우기만 한다**(그게 빠르니까). 그래서 **타입 오류가 있어도 빌드가 성공**할 수 있다 — `github-actions` 의 \"빌드가 초록색이면 아무 일도 없었다고 여긴다\"와 같은 함정",
+      "tradeoff": "CI 시간이 늘어난다. ⭐ 그래도 **타입 검사를 아무도 안 돌리는 프로젝트**가 되는 것보다 낫다. ⚠️ 이 문서는 **번들러별 동작을 확인하지 못했다**(`open_questions`) — 각자 확인한다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "\"TypeScript 경험\"을 이력서에 적는다",
+      "pick": "⭐ **경계를 어떻게 다뤘는지 함께 적는다**",
+      "over": "\"TypeScript 사용 경험\" 한 줄",
+      "why": "⭐⭐ 셈이 말한다 — **`zod|런타임 검증` 53건이 `타입 안전` 26건의 두 배**다. 회사들이 이미 **타입만으로는 안 된다는 것을 알고 스택에 검증 도구를 박아 뒀다.** 아이알큐더스 공고가 그것을 한 줄에 다 적는다",
+      "tradeoff": "길어진다. 그래도 ⭐ **\"타입 검사가 무엇을 보증하고 무엇을 안 보증하나\"에 답할 수 있는 사람**은 2678건 중 **좁은 문**과 만난다 — 그리고 그 답은 **설계 문서 한 페이지**에 있다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "타입 검사가 통과하면 그 타입이 맞다고 여긴다",
+      "why": "⭐⭐⭐ **설계 문서가 그것을 비목표로 적어 뒀다** — \"**Apply a sound or 'provably correct' type system**\" 이 Non-goal 이고, 대신 \"**strike a balance between correctness and productivity**\" 다. ⚠️ **결함이 아니라 선언된 선택**이라, 버전이 올라가도 안 바뀐다",
+      "fix": "⭐ **\"타입 검사 통과 = 가능성이 크게 줄었다\"로 읽는다.** 그리고 **어디가 안 지켜지는지는 정해져 있다** — 바깥에서 들어오는 모든 것. 그 자리에는 **진짜 검사**를 둔다",
+      "sources": [
+        {
+          "title": "TypeScript Design Goals",
+          "url": "https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals",
+          "publisher": "Microsoft / TypeScript",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **언어가 자기 비목표를 목록으로 적어 둔 자리** — \"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 **둘 다 Non-goals 에 있다**"
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐ `as`로 서버 응답에 타입을 붙인다",
+      "why": "⭐⭐⭐ **가장 흔하고 가장 안 보이는 구멍이다.** `as User` 는 **한 글자도 검사하지 않는다** — 설계상 런타임에 타입 정보가 없다(\"**fully erasable**\"). ⚠️ 그런데 **에디터에서는 완벽하게 자동완성이 되고**, 그래서 검사된 것처럼 느껴진다",
+      "fix": "**받는 자리에서 스키마로 검증한다.** ⭐ 그리고 **스키마에서 타입을 뽑으면 타입과 검사가 어긋날 수 없다** — 아이알큐더스 `스키마 기반 타입 자동 생성·런타임 검증`. ⚠️ 검증을 못 넣는다면 최소한 **`as` 가 있는 자리를 목록으로 알고 있어야** 한다",
+      "sources": [
+        {
+          "title": "TypeScript Design Goals",
+          "url": "https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals",
+          "publisher": "Microsoft / TypeScript",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **언어가 자기 비목표를 목록으로 적어 둔 자리** — \"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 **둘 다 Non-goals 에 있다**"
+        }
+      ]
+    },
+    {
+      "trap": "`strict` 를 켜 놓고 `as` 와 `any` 를 남발한다",
+      "why": "⭐ `strict` 는 **암묵적** `any` 를 막지, **적어 넣은** `any` 와 `as` 는 못 막는다. **오류가 나면 그것들로 지우게 되고**, 그러면 켠 의미가 사라진다 — ⚠️ **설정은 엄격한데 코드는 아니다**",
+      "fix": "⭐ **`as` 와 `any` 의 개수를 세어 추이를 본다**(린트 규칙으로 셀 수 있다). 늘고 있으면 신호다. 그리고 **하나하나에 \"왜 여기서 컴파일러보다 내가 더 잘 아나\"** 를 묻는다 — 답이 있으면 주석으로 남기고, 없으면 고친다"
+    },
+    {
+      "trap": "타입 정의만 보고 남의 라이브러리를 믿는다",
+      "why": "⚠️ 타입 정의는 **별도로 쓰인 파일**일 수 있고(특히 원래 JS 로 만들어진 라이브러리), **실제 구현과 어긋나도 아무도 안 알려 준다.** 컴파일러는 정의만 보고, ⭐ **런타임에는 검사가 없다**",
+      "fix": "**중요한 곳에서는 반환값을 한 번 확인한다** — 특히 `null`/`undefined` 가능성. ⭐ 그리고 라이브러리를 고를 때 **타입 정의가 본체와 함께 관리되는지**(같은 저장소에서 나오는지) 본다"
+    },
+    {
+      "trap": "빌드가 성공했으니 타입 오류가 없다고 여긴다",
+      "why": "⚠️⚠️ **요즘 번들러는 타입을 지우기만 하고 검사하지 않는다** — 그게 빠르기 때문이다. 그래서 **타입 오류가 있는 채로 배포될 수 있다.** `github-actions` 의 \"빌드가 초록색이면 아무 일도 없었다\"와 같은 종류의 함정",
+      "fix": "⭐ **CI 에 `tsc --noEmit` 을 따로 넣는다.** ⚠️ 그리고 **자기 프로젝트의 번들러가 실제로 타입을 검사하는지 확인한다** — 이 문서는 번들러별 동작을 확인하지 못했다"
+    },
+    {
+      "trap": "`localStorage` 나 설정 파일에서 읽은 값에 타입을 붙인다",
+      "why": "⭐ 다른 경계보다 더 위험한 이유가 있다 — **그 값을 쓴 것은 우리 코드의 예전 버전**이다. 배포가 여러 번 지나면 **지금 코드가 모르는 모양의 값이 사용자 브라우저에 남아 있다**(→ `android`·`ios` 의 \"옛 버전이 안 사라진다\"와 같은 형태)",
+      "fix": "**읽는 자리에서 검증하고, 어긋나면 조용히 버리고 기본값을 쓴다.** ⭐ 던지지 말고 **버리는 것**이 맞다 — 예전 값 때문에 화면이 안 뜨는 것이 최악이다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **TypeScript Design Goals 문서를 열고 `Non-goals` 목록을 전부 읽는다.** 그리고 **그중 자기가 몰랐던 항목**을 하나 골라, **그것 때문에 실제로 겪을 수 있는 일**을 한 줄로 적는다.",
+      "done_when": "Non-goals 항목들이 정리되고, ⭐ **\"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 둘 다 거기 있다는 것**을 직접 확인했다. 그리고 고른 항목의 실제 영향이 한 줄로 적힌다.",
+      "why": "⭐⭐⭐ **이 문서 전체가 그 한 페이지에서 나왔다.** 그리고 **비목표를 번호 매긴 목록으로 적어 둔 언어는 흔치 않다** — 읽는 데 5분이면 되는데, 읽은 사람과 안 읽은 사람의 판단이 완전히 달라진다.",
+      "no_hardware": "코드도 에디터도 필요 없다 — 웹에서 읽을 수 있는 위키 문서 한 페이지다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐ **자기 프로젝트에서 `as ` 와 `: any` 를 전부 세고**, 그중 **바깥에서 들어온 값(서버 응답·`JSON.parse`·`localStorage`·환경변수)에 붙은 것**이 몇 개인지 가른다.",
+      "done_when": "두 숫자가 나오고, ⭐ **바깥 값에 붙은 것 중 실제 검증이 있는 것이 몇 개인지** 답할 수 있다. 검증이 없는 것이 **이 프로젝트의 열린 구멍**이다.",
+      "why": "⭐⭐ `erase` 절의 표를 **자기 코드로 그려 보는 일**이다. 대부분의 팀이 \"타입을 쓰고 있다\"고는 말하지만 **이 숫자는 모른다** — 그리고 사고는 정확히 그 숫자 안에서 난다.",
+      "no_hardware": "프로젝트가 없으면 **아무 오픈소스 TypeScript 저장소**에서 같은 것을 센다 — ⭐ 유명한 프로젝트가 경계를 어떻게 다루는지 보는 편이 오히려 배울 게 많다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐⭐ **서버 응답을 `as` 로 받는 자리 하나를 골라, 서버가 다른 모양을 보내도록 흉내 낸다**(응답을 가로채 필드 하나를 지우거나 타입을 바꾼다). 그리고 **어디서 무슨 오류가 나는지** 적는다.",
+      "done_when": "⭐ **오류가 나는 지점이 데이터를 받은 곳이 아니라 한참 뒤라는 것**을 눈으로 봤고, 그 거리(파일·함수 개수)를 적을 수 있다. 그리고 같은 자리에 스키마 검증을 넣었을 때 **어디서 잡히는지**를 비교했다.",
+      "why": "⭐⭐⭐ **\"안 터지고 흘러간다\"가 이 문서의 핵심**인데, 글로 읽으면 실감이 안 난다. **한 번 겪으면 `as` 를 볼 때마다 이 장면이 떠오른다** — 그게 이 실습의 전부다.",
+      "no_hardware": "실제 서버가 없어도 된다 — **함수 하나가 잘못된 객체를 반환하게** 고쳐도 같은 것을 볼 수 있다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "TypeScript 의 Non-goals 에 적힌 것 두 가지는? 그것이 왜 결함이 아닌가?",
+    "\"fully erasable\" 이 실무에서 뜻하는 것은?",
+    "타입이 지켜 주지 않는 자리들의 공통점은?",
+    "`as` 는 무엇을 하는가? 무엇을 하지 않는가?",
+    "`kotlin` 의 플랫폼 타입과 TypeScript 의 타입 소거는 증상이 어떻게 다른가?",
+    "빌드가 성공했는데 타입 오류가 있을 수 있는 이유는?"
+  ],
+  "evidence": [
+    {
+      "quote": "• TypeScript : 안정적인 코드 베이스 구축 및 타입 안전성 확보 (스키마 기반 타입 자동 생성·런타임 검증 포함)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378890",
+      "where": "아이알큐더스",
+      "what_it_shows": "⭐⭐⭐ **이 문서의 결론을 회사가 한 줄로 적어 놨다** — `타입 안전성 확보` 옆에 **`런타임 검증`** 이 괄호로 붙는다. **타입만으로는 안 된다는 것을 알고 쓴 문장**이다"
+    },
+    {
+      "quote": "Next.js · React · TypeScript · TanStack Query · Zustand · React Hook Form · Zod · Tailwind CSS · Turborepo · pnpm · Expo · React Native",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/383285",
+      "where": "알챗",
+      "what_it_shows": "⭐⭐ **Zod 가 React·Tailwind 와 같은 급으로 스택에 박힌다** — \"쓰면 좋은 것\"이 아니라 **구성의 일부**. 이런 목록이 53건 중 다수다"
+    },
+    {
+      "quote": "- Language: TypeScript (strict mode)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/353649",
+      "where": "에임인텔리전스",
+      "what_it_shows": "⭐ **`strict` 를 언어 이름 옆에 굳이 적는다** — 3건뿐이지만, **적지 않는 곳은 다르다는 뜻**이다"
+    },
+    {
+      "quote": "• TypeScript 실무 경험 (엄격한 타입 환경)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/381607",
+      "where": "스텝에이아이",
+      "what_it_shows": "같은 것을 한국어로 적었다 — `**엄격한 타입 환경**`. ⭐ **회사마다 TypeScript 의 엄격함이 다르다**는 것을 전제한 표현"
+    },
+    {
+      "quote": "ㆍTypeScript Generic, Type Narrowing, Utility Types 등 타입 안전한 코드 작성",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/350485",
+      "where": "이지식스(MVL)",
+      "what_it_shows": "⭐ **타입 기능을 이름으로 대는 드문 공고**(`제네릭` 19건). ⚠️ 그런데 여기 나온 것은 전부 **컴파일 시점의 도구**다 — 경계 이야기는 없다"
+    },
+    {
+      "quote": "TypeScript 기반 코드 품질 관리 (ESLint, Strict Mode)",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49008472?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=39&sc=630",
+      "where": "(잡코리아 공고)",
+      "what_it_shows": "⭐ `Strict Mode` 가 **린트와 나란히 '코드 품질' 항목**으로 적힌다 — **설정으로 관리하는 것**이라는 인식"
+    },
+    {
+      "quote": "· TypeScript 사용 경험 또는 빠른 전환 및 적응 가능",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/338289",
+      "where": "아크스퀘어",
+      "what_it_shows": "⚠️ **`전환`** — JS 에서 옮겨 오는 중인 회사가 있다는 뜻. ⭐ 그리고 옮기는 중에는 `any` 와 `as` 가 가장 많이 생긴다"
+    },
+    {
+      "quote": "Frontend: React, Next.js, TypeScript, Tailwind CSS, TanStack Query, Redux Toolkit, Zod",
+      "from": "posting",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49769453?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=95&sc=630",
+      "where": "엔투에이아이㈜",
+      "what_it_shows": "⭐ **또 같은 조합** — TypeScript 와 Zod 가 한 목록에. `market` 의 React 67.8% 와 함께 **이 스택의 표준 구성**이 보인다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "kotlin",
+      "how": "⭐⭐ **가장 가까운 이웃, 축은 다르다.** 저쪽은 **자바와 만나는 자리**에서 내려가고 **런타임에 검사 코드가 남는다**(그래서 터진다). 여기는 **어디에도 안 남는다**(그래서 안 터지고 흘러간다)"
+    },
+    {
+      "slug": "rest",
+      "how": "⭐ 응답이 들어오는 경계 — `as` 가 가장 많이 붙는 자리"
+    },
+    {
+      "slug": "graphql",
+      "how": "같은 자리. ⭐ 스키마가 있다는 점이 다르지만 **그 스키마도 런타임에 강제되는 것은 아니다**"
+    },
+    {
+      "slug": "api-versioning",
+      "how": "⭐⭐ **계약이 어긋나는 순간**이 바로 이 문서가 말하는 사고다 — 배포 시점이 다르면 타입과 실제가 갈린다"
+    },
+    {
+      "slug": "authz",
+      "how": "⭐ 입력 검증의 보안 측면 — **거르는 게 아니라 경로를 끊는다**는 같은 해법"
+    },
+    {
+      "slug": "github-actions",
+      "how": "⚠️ **빌드가 초록색인데 타입 오류가 있을 수 있다** — 번들러는 타입을 지우기만 한다. 저 문서의 \"조용함\"과 같은 형태"
+    },
+    {
+      "slug": "javascript",
+      "how": "⚠️ **아직 문서가 없다**(**2397건**). ⭐ TypeScript 의 결과물은 **언제나** 이것인데, 이 백과사전에 없다"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `TypeScript`(1006건 · 14.0% · 층 \"언어\")를 그대로 옮겼다. ⚠️ 본문 직접 셈은 **2678건**이다 — 두 숫자를 다 적었다.",
+    "⚠️⚠️ **건전하지 않은 구체적 지점을 확인하지 못했다.** 배열의 공변성, 함수 매개변수의 이변성, `strictFunctionTypes` 가 무엇을 바꾸는지 — ⭐ **\"건전하지 않다\"는 선언은 1차 자료로 확인했지만, 어디가 어떻게 뚫리는지는 예제 수준으로 확인하지 않았다.** 이 문서는 **선언까지만** 썼다.",
+    "⚠️ **Zod 공식 문서를 읽지 않았다.** `boundary` 절이 그것을 권하면서 **근거가 공고 문장뿐**이다 — 성능 비용, 다른 선택지(io-ts·Valibot·`typia`)와의 차이를 모른다. **53건이 이름을 대는 도구인데 1차 자료를 안 열었다.**",
+    "⚠️ **번들러가 타입을 검사하는지 확인하지 못했다.** `pitfalls` 와 `when_to_use` 가 \"`tsc --noEmit` 을 따로 돌려라\"라고 말하는데, **어느 번들러가 실제로 어떻게 하는지는 확인하지 않았다** — 일반적으로 알려진 사실에 기대 썼다. ⭐ **각자 확인해야 한다.**",
+    "⚠️ **`tsconfig` 의 개별 옵션을 다루지 않았다.** `strict` 아래 여러 옵션이 각각 다른 것을 막는데 확인하지 않았다. 공고 근거도 3건뿐이라 약했다.",
+    "⚠️ **JavaScript(2397건)에 문서가 없다.** TypeScript 의 결과물이 언제나 자바스크립트인데 그 언어가 이 백과사전에 없다 — ⭐ **가장 큰 빈자리**로 남긴다.",
+    "⭐ **`where` 표와 `boundary` 절의 처방은 이 문서의 정리다.** 설계 문서가 \"경계에서 검증하라\"고 말한 것이 아니라, **인용한 Non-goals 에서 추론**하고 **공고의 Zod 53건**으로 뒷받침했다. `confidence` 는 인용 부분만 `confirmed` 다."
+  ],
+  "sources": [
+    {
+      "title": "TypeScript Design Goals",
+      "url": "https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals",
+      "publisher": "Microsoft / TypeScript",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **언어가 자기 비목표를 목록으로 적어 둔 자리** — \"건전한 타입 시스템\"과 \"런타임 타입 정보\"가 **둘 다 Non-goals 에 있다**"
+    }
+  ]
+}

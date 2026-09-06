@@ -2004,6 +2004,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "typescript",
+      "title": "TypeScript — 타입이 맞다는 것의 뜻",
+      "category": "language",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **\"타입이 맞다\"는 \"증명됐다\"가 아니다** — 설계 문서가 **건전한 타입 시스템을 비목표로** 적어 뒀고, 타입은 **\"fully erasable\"** 이라 컴파일이 끝나면 **아무것도 안 남는다.**",
+      "aliases": [
+        "TypeScript",
+        "타입스크립트",
+        "타입 안전",
+        "정적 타입",
+        "타입 소거",
+        "any"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
