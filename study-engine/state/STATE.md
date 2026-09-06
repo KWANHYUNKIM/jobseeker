@@ -4,28 +4,53 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **iOS**(`ios`)를 완성했다 — **108번째 문서**. `android` 와 짝을 이루는 문서다.
+**없음.** 직전 사이클에서 **Redis**(`redis`)를 완성했다 — **109번째 문서**.
 
-### 직전 사이클 (iOS)
+### 직전 사이클 (Redis)
 
-⭐⭐⭐ **축: "`android` 와 같은 문제인데 푸는 방식이 정반대다."** 큐가 "축이 안 서면 미룬다"고 적어 뒀는데 **축이 섰다** — 1차 자료 둘을 나란히 놓으니 성격이 정면으로 갈렸다.
+⭐⭐⭐ **축: "Redis 는 메모리에 있다 — 그런데 다들 잃지 않는 것처럼 쓴다."** 큐가 확인해 둔 대로 `caching`·`distributed-lock` 과 겹치지 않았다(그쪽엔 `AOF`·`RDB` 가 0회).
 
-> **구글** — "Starting **August 31 2026** ... **must target Android 16 (API level 36) or higher** to be submitted"
-> **애플** — ⭐⭐⭐ "any content or behavior that **we believe is over the line** ... **'I'll know it when I see it'**"
+**1차 자료 둘 다 손실을 숫자로 적는다.**
+- RDB: **"you should be prepared to lose the latest minutes of data"**
+- AOF `everysec`(기본): **"you may lose 1 second of data if there is a disaster"**
+- 복제: ⭐⭐ **"acknowledged writes can still be lost during a failover"** — `WAIT` 를 써도 그렇다
+- ⭐⭐⭐ **"use both persistence methods if you want a degree of data safety comparable to what PostgreSQL can provide you"**
+- ⭐⭐⭐ **"In general bound data loss is better than unbound one."**
 
-**한쪽은 숫자, 한쪽은 판단.** 그리고 애플은 심사가 사람이라고 직접 적는다("every app is **reviewed by experts**"), 게다가 **"This is a living document; new apps presenting new questions may result in new rules at any time."**
+**최악의 사고를 문서가 번호까지 매겨 적는다** — 영속성 끈 마스터가 자동 재시작하면 빈 채로 돌아오고 **"Nodes B and C ... they'll effectively destroy their copy of the data"**. ⚠️ 그리고 `market` 이 그 조건을 갖춘다(Docker 50.6% · K8s 42.2%).
 
-⭐⭐ **낡은 앱의 결과도 정반대였다** — 구글은 "unavailable to **new users**"(조용히 말라 간다), 애플은 "you're no longer actively supporting it, **it will be removed**"(없어진다).
-
-**셈의 뜻밖**: ⚠️ **`Objective-C` 95건 > `SwiftUI` 77건.** `kotlin` 의 Java 62.5% 와 같은 형태 — **새 것이 왔는데 옛 것이 안 갔다.** 그리고 **동반 1위 Android 72.5%**(넷 중 셋) — **iOS 만 요구하는 자리는 드물다.**
+**셈**: `Redis` **1247건** vs `영속성|AOF|RDB` **30건**(아홉째 형태). ⭐ 그리고 공고가 Redis 를 **큐·세션 스토어·저장소·데이터베이스**로 부른다 — **전부 잃으면 곤란한 것.**
 
 ### 다음
 
-**Redis**(`redis`) — QUEUE 맨 위. ⭐ **`ios` 가 끊긴 링크를 안 남겨 사슬이 끊겼고, 그래서 층을 바꿨다**(모바일 → 데이터).
+**GitHub Actions**(`github-actions`) — QUEUE 맨 위. ⭐ `redis` 도 끊긴 링크를 안 남겨 **또 층을 바꿨다**(데이터 → CI/배포).
 
-⚠️⚠️ **alias 를 확인했더니 `caching` 과 `distributed-lock` 이 이미 있었다.** 그런데 **두 문서의 본문에 `AOF`·`RDB`·`영속성`·`fsync` 가 0회**다 — **축이 안 겹친다.** 축을 큐에 못 박아 뒀다: **"Redis 는 메모리에 있다 — 그런데 다들 잃지 않는 것처럼 쓴다."**
+⭐⭐⭐ **`CI/CD` 는 2795건(모집중 1168)** 인데 문서가 없다. ⚠️ 그대로 쓰면 요약본이므로 축을 못 박아 뒀다: **"우리 비밀을 들고 남의 코드를 실행하는 자리."** ⚠️ **`secrets` 문서와 축이 겹치는지 먼저 세고, 겹치면 미룬다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **제품이 자기 안전 수준을 다른 제품에 견주면, 그 문장이 문서의 축이다.** Redis 문서가
+  **"a degree of data safety comparable to what PostgreSQL can provide you"** 라고 쓴다 —
+  ⭐ **"이것만 하면 저것만큼 된다"는 말은 뒤집으면 "기본값은 저것만 못하다"** 다. 이 백과사전이
+  모아 온 **"제품이 스스로 그은 선"** 중에서도 드문 형태다: 보통은 "이건 못 한다"까지인데
+  **여기는 남과 견주어 조건을 붙인다.** 📌 **1차 자료에서 경쟁 제품 이름이 나오면 그 문장을 놓치지 않는다.**
+
+- ⭐⭐ **손실을 "없앤다"가 아니라 "정한다"고 말하는 제품이 있다.** Redis 문서의
+  **"In general bound data loss is better than unbound one."** — ⭐ 설정 셋(`appendfsync`·
+  `WAIT`·`min-replicas-to-write`)이 전부 **얼마나 잃을지를 정하는 손잡이**이지 안 잃는 스위치가
+  아니다. 💡 **문서를 읽을 때 "이 설정을 켜면 안전한가"가 아니라 "이 설정을 켜면 얼마나 잃나"를
+  묻는다** — 앞의 질문에는 대개 답이 없고, 뒤의 질문에는 숫자가 적혀 있다.
+
+- ⚠️⚠️ **끊긴 링크라고 적기 전에 세어 본다.** `related` 에 `kafka` 를 **"아직 문서가 없다"**
+  고 써 놨다가 커밋 전에 확인하니 **이미 있었다.** ⭐ 문서가 109개가 되면서 **기억으로는 모른다**
+  — 그리고 `validate.py` 는 이걸 안 잡아 준다(본문의 사실이라서). 📌 **`related` 에 "없다"고
+  쓰는 순간이 곧 `index.json` 을 열어야 하는 순간이다.** (`index`/`db-index` 중복 사고와 같은
+  뿌리다 — **기억이 아니라 데이터에 묻는다.**)
+
+- ⭐ **사슬이 두 번 연달아 끊겼다**(`ios`·`redis` 둘 다 끊긴 `related` 를 안 남겼다). 💡
+  **백과사전이 성숙하면 정상이다** — 109개가 되면 새 문서가 가리키는 곳이 대개 이미 있다.
+  ⭐ 그러면 **큐는 끊긴 링크가 아니라 "층이 통째로 빈 곳"에서 나온다**(사다리 6순위). 이번엔
+  `CI/CD` **2795건**짜리 층이 통째로 비어 있었다 — **`--gaps` 가 아니라 셈이 찾아 줬다.**
 
 - ⭐⭐⭐ **두 제품의 1차 자료를 나란히 놓으면, 각자 혼자서는 안 보이던 것이 보인다.** 애플의
   "I'll know it when I see it" 은 그 문서만 읽으면 **그냥 재치 있는 문장**이다. 구글의

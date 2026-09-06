@@ -1,0 +1,658 @@
+{
+  "slug": "redis",
+  "title": "Redis — 메모리에 있다는 것",
+  "title_en": "Redis: What It Means to Live in Memory",
+  "aliases": [
+    "Redis",
+    "레디스",
+    "영속성",
+    "AOF",
+    "RDB",
+    "persistence"
+  ],
+  "category": "data",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **Redis 는 자기가 무엇을 잃을 수 있는지 문서에 숫자로 적어 둔다** — RDB 는 몇 분, AOF 는 1초, 복제는 \"acknowledged writes **can still be lost**\". ⚠️ **그런데 공고는 Redis 를 큐·세션·저장소라고 부른다.**",
+  "summary": "⚠️ **이 문서는 캐시 이야기가 아니다.** 캐시 전략은 `caching` 이, 분산 락은 `distributed-lock` 이 이미 썼다. ⭐ 두 문서를 세어 보니 **Redis 가 39회·113회 나오는데 `AOF`·`RDB`·`영속성`·`fsync` 는 양쪽 다 0회**였다 — **Redis 를 도구로 쓸 뿐, \"이게 무엇을 잃을 수 있나\"는 아무도 안 다뤘다.**\n\n**이 문서는 그것만 다룬다.** 그리고 놀랍게도 **Redis 공식 문서가 그 답을 다 적어 놨다.**\n\n> ⭐⭐⭐ \"The general indication you should use both persistence methods **if you want a degree of data safety comparable to what PostgreSQL can provide you**.\"\n\n**\"PostgreSQL 만큼의 안전을 원한다면\"** — 제품이 **자기를 다른 제품에 견주어 조건을 붙인다.** 뒤집으면 **기본값은 그 수준이 아니다.**\n\n**셈이 문제를 보여 준다.** `Redis` **1247건(모집중 449)** 인데 ⚠️ `영속성|persistence|AOF|RDB` 는 **30건**, `TTL|만료|eviction` 은 **6건**이다. 그러면서 공고는 Redis 를 이렇게 부른다.\n\n> `Celery, **Redis 등 비동기 작업 큐**` · `**BullMQ + Redis 기반 비동기 큐**` · `Redis 등 **캐시·세션 스토어**` · `다양한 **저장소**(MySQL, MongoDB, Redis 등)` · `**RDBMS, Redis 등 데이터베이스**`\n\n⭐⭐ **큐·세션·저장소·데이터베이스** — **전부 잃으면 곤란한 것들이다.**",
+  "market": {
+    "tech": "Redis",
+    "layer": "데이터베이스",
+    "postings": 474,
+    "pct_jobs": 6.6,
+    "with": [
+      {
+        "name": "AWS",
+        "pct": 66.9,
+        "why": "관리형으로 띄운다 — ⚠️ **관리형이면 영속성 설정을 안 본다**"
+      },
+      {
+        "name": "Docker",
+        "pct": 50.6,
+        "why": "⚠️ 컨테이너로 띄운다 — **볼륨을 안 붙이면 재시작이 곧 초기화**"
+      },
+      {
+        "name": "PostgreSQL",
+        "pct": 47.3,
+        "why": "⭐⭐ **절반이 함께 쓴다.** 그리고 Redis 문서가 **자기 안전을 견주는 기준으로 든 바로 그 제품**이다"
+      },
+      {
+        "name": "Kafka",
+        "pct": 45.8,
+        "why": "⭐ 큐가 함께 나온다 — `caching` 이 아니라 이 문서의 영역"
+      },
+      {
+        "name": "Kubernetes",
+        "pct": 42.2,
+        "why": "⚠️ 파드가 옮겨 다닌다 — 재시작이 더 잦다"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 공고는 Redis 를 캐시라고만 부르지 않는다",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `Redis` | **1247** | (모집중 449) |\n| `캐시\\|캐싱\\|cache` | 694 | (모집중 276) |\n| `세션 저장\\|세션 관리` | 42 | (모집중 11) |\n| ⚠️ `영속성\\|persistence\\|AOF\\|RDB` | **30** | (모집중 19) |\n| `분산 락\\|Redlock` | 23 | (모집중 10) |\n| `Memcached` | 16 | (모집중 10) |\n| ⚠️⚠️ `TTL\\|만료 정책\\|eviction` | **6** | (모집중 2) |\n\n⭐⭐⭐ **1247건 대 30건.** `rest` 3372 vs `HATEOAS` 0 이래 이 백과사전이 **아홉 번째로 만나는 형태**다 — **도구는 흔한데 그 도구의 조건은 이름이 안 불린다.**\n\n💡 **그런데 이번엔 한 겹이 더 있다. 공고가 Redis 를 무엇이라고 부르는지 보라.**\n\n> `Celery, **Redis 등 비동기 작업 큐** 설계 및 운영 경험` — 드랩\n> ⭐ `**BullMQ + Redis 기반 비동기 큐** 아키텍처 설계 및 운영 (**이미지/영상 생성 작업**)` — 지로\n> `Redis 등 **캐시·세션 스토어** 운영 경험` — 에어스메디컬\n> `데이터 모델링 및 다양한 **저장소**(MySQL, MongoDB, **Redis** 등)에 대한 깊은 이해` — 크로스이엔에프\n> ⭐ `**RDBMS, Redis 등 데이터베이스** 및 캐시 시스템 활용 경험` — 빗썸\n\n⭐⭐ **큐 · 세션 스토어 · 저장소 · 데이터베이스.** 그리고 `market` 의 층 이름도 **\"데이터베이스\"** 다.\n\n⚠️ **캐시는 잃어도 된다 — 원본이 있으니까**(`caching` 이 다루는 세계다). **그런데 큐에 들어간 작업은 원본이 없다.** 지로 공고의 \"이미지/영상 생성 작업\"이 사라지면 **사용자가 요청한 것이 그냥 없어진다.** 세션이 사라지면 **다 로그아웃된다.**\n\n📌 **그래서 이 문서의 질문은 하나다 — \"Redis 에 넣은 것은 언제, 얼마나 사라지나?\"** ⭐⭐⭐ **그리고 Redis 문서가 그 답을 이미 적어 놨다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 메모리에 있다 — 디스크로 내리는 두 방식과 각자 잃는 양",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Redis persistence",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 자기 내구성 한계를 숫자로 적는 자리** — 그리고 \"PostgreSQL 수준의 안전을 원하면\"이라며 **스스로를 다른 제품에 견준다**"
+        }
+      ],
+      "body": "Redis 는 데이터를 **메모리에** 둔다. 그래서 빠르다. ⚠️ **그리고 메모리는 전원이 나가면 없다.**\n\n**그래서 디스크로 내리는 방식이 둘 있고, 문서가 각각 얼마나 잃는지 적는다.**\n\n**① RDB — 주기적 스냅샷**\n\n> ⭐⭐⭐ \"RDB is **NOT good** if you need to minimize the chance of data loss in case Redis stops working (for example after a power outage) ... you'll usually create an RDB snapshot every five minutes or more, so in case of Redis stopping working without a correct shutdown for any reason **you should be prepared to lose the latest minutes of data**.\"\n\n**\"몇 분치를 잃을 각오를 하라\"** 고 제품이 직접 쓴다.\n\n⚠️ 그리고 **부작용이 하나 더 있다.**\n\n> \"RDB needs to `fork()` often ... **may result in Redis stopping serving clients for some milliseconds or even for one second** if the dataset is very big and the CPU performance is not great.\"\n\n⭐ **영속성을 켠 것 때문에 Redis 가 잠깐 멈출 수 있다** — 빠르려고 쓰는 물건인데.\n\n**② AOF — 쓰기 명령을 이어 붙인다**\n\n문서가 스냅샷을 이렇게 평가하며 AOF 를 소개한다.\n\n> ⭐⭐ \"**Snapshotting is not very durable.** If your computer running Redis stops, your power line fails, or you accidentally `kill -9` your instance, **the latest data written to Redis will be lost**.\"\n\nAOF 는 **얼마나 자주 디스크에 확정(fsync)하느냐**를 고를 수 있고, **고른 만큼 잃는다.**\n\n| `appendfsync` | 원문 | 잃는 양 |\n|---|---|---|\n| `always` | \"**Very very slow, very safe.**\" | 거의 없다 |\n| ⭐ `everysec` (기본) | \"**you may lose 1 second of data if there is a disaster**\" | **1초** |\n| `no` | \"just put your data **in the hands of the Operating System**. The faster and **less safe** method. Normally Linux will flush data **every 30 seconds**\" | **30초쯤** |\n\n💡 **여기가 이 문서의 심장이다 — 그래서 무엇을 써야 하나?** 문서가 직접 답한다.\n\n> ⭐⭐⭐ \"The general indication you should use **both** persistence methods **if you want a degree of data safety comparable to what PostgreSQL can provide you**.\"\n> \"If you care a lot about your data, but **still can live with a few minutes of data loss** in case of disasters, you can simply use RDB alone.\"\n> ⭐ \"There are many users using AOF alone, but **we discourage it**\"\n\n⭐⭐ **제품이 자기 안전 수준을 다른 제품(PostgreSQL)에 견주어 설명한다.** 이 백과사전이 모아 온 **\"제품이 스스로 그은 선\"** 중에서도 드문 형태다 — 보통은 \"이건 못 한다\"까지인데, **여기는 \"저것만큼 하려면 이렇게 하라\"** 까지 간다.\n\n⚠️ 뒤집으면 이렇다 — **아무 설정도 안 하면 그 수준이 아니다.** 그리고 **`market` 의 동반 3위가 PostgreSQL 47.3%** 다. **절반이 두 제품을 함께 쓰면서, 문서가 견준 그 차이는 안 본다.**"
+    },
+    {
+      "id": "repl",
+      "kind": "how",
+      "heading": "⭐⭐ 복제도 구해 주지 않는다 — 문서가 직접 그렇게 적는다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Redis replication",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+        }
+      ],
+      "body": "\"복제본을 두면 되지 않나\" 가 다음 생각이다. ⚠️ **Replication 문서가 그것을 먼저 막는다.**\n\n> ⭐⭐⭐ \"[`WAIT`] is only able to ensure there are the specified number of acknowledged copies in the other Redis instances, **it does not turn a set of Redis instances into a CP system with strong consistency: acknowledged writes can still be lost during a failover**, depending on the exact configuration of the Redis persistence.\"\n\n**\"확인된 쓰기도 페일오버 중에 사라질 수 있다\"** 이고, ⭐ **`WAIT` 명령을 써도 그렇다.** 문서는 `WAIT` 가 \"**dramatically reduces the probability**\" 라고만 말한다 — **없앤다고 하지 않는다.**\n\n**최소 복제본 수를 강제하는 설정도 마찬가지다.**\n\n> ⭐⭐ \"because Redis uses asynchronous replication **it is not possible to ensure the replica actually received a given write, so there is always a window for data loss**.\"\n> \"You may think of it as a **best effort** data safety mechanism, where **consistency is not ensured** for a given write, but at least the time window for data loss is restricted to a given number of seconds. ⭐ **In general bound data loss is better than unbound one.**\"\n\n💡 ⭐⭐⭐ **마지막 문장이 이 제품의 태도 전부다 — \"제한된 손실이 무제한 손실보다 낫다.\"** 손실을 **없애는** 게 아니라 **얼마나 잃을지 정하는** 물건이라고, 제품이 스스로 말한다.\n\n📌 **그래서 설정이 하는 일은 이렇게 정리된다.**\n\n| 설정 | 하는 일 | ⚠️ 하지 않는 일 |\n|---|---|---|\n| `appendfsync everysec` | 잃는 양을 **1초로** 묶는다 | 0 으로 만들지 않는다 |\n| `WAIT` | 확률을 **크게 낮춘다** | \"acknowledged writes **can still be lost**\" |\n| `min-replicas-to-write` | 창을 **몇 초로** 묶는다 | \"consistency is **not ensured**\" |\n\n⭐⭐ **셋 다 \"얼마나 잃을지\"를 정하는 손잡이지, \"안 잃는다\"는 스위치가 아니다.** ⚠️ **잃으면 안 되는 것은 애초에 다른 곳에 둬야 한다**(→ `postgres-mysql`)."
+    },
+    {
+      "id": "wipe",
+      "kind": "limits",
+      "heading": "⭐⭐⭐ 최악의 사고 — 복제본까지 함께 지워진다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Redis replication",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+        }
+      ],
+      "body": "Replication 문서에 **\"Safety of replication when master has persistence turned off\"** 라는 절이 따로 있다. ⭐ **제목 자체가 경고다.**\n\n**사고 시나리오를 문서가 번호까지 매겨 적는다.**\n\n> 1. \"We have a setup with node A acting as master, **with persistence turned down**, and nodes B and C replicating from node A.\"\n> 2. \"Node A crashes, however it has some **auto-restart** system, that restarts the process. However since persistence is turned off, **the node restarts with an empty data set**.\"\n> 3. ⭐⭐⭐ \"Nodes B and C will replicate from node A, which is empty, so **they'll effectively destroy their copy of the data**.\"\n\n⚠️⚠️ **마스터가 비어 있는 채로 살아 돌아오면, 복제본들이 그 빈 것을 충실히 따라 하며 자기 사본을 지운다.** 백업이 아니라 **복제**이기 때문이다 — **복제본은 옳고 그름을 모른다.**\n\n**그리고 더 나쁜 것을 문서가 덧붙인다.**\n\n> ⚠️ \"the master **can restart fast enough for Sentinel to not detect a failure**\"\n\n**너무 빨리 돌아와서 감시 장치가 장애를 못 알아챈다.** 아무도 아무 알림을 못 받는다.\n\n📌 **문서의 처방은 단순하다.**\n\n> \"it is **strongly advised to have persistence turned on** in the master and in the replicas. When this is not possible ... instances should be configured to **avoid restarting automatically** after a reboot.\"\n> \"Every time data safety is important, and replication is used with master configured without persistence, **auto restart of instances should be disabled**.\"\n\n💡 ⭐⭐ **\"영속성을 끌 거면 자동 재시작을 꺼라.\"** 둘 중 하나는 켜져 있어야 한다 — **둘 다 끈 조합이 데이터를 지운다.**\n\n⚠️⚠️ **그리고 `market` 이 이 사고의 조건을 그대로 갖춰 준다.**\n\n- **Docker 50.6%** — ⭐ 컨테이너는 **볼륨을 안 붙이면 재시작이 곧 초기화**이고, 재시작 정책이 대개 `always` 다.\n- **Kubernetes 42.2%** — ⭐ **파드는 옮겨 다니는 것이 정상**이다. 재시작이 사고가 아니라 일상이다.\n- **AWS 66.9%** — ⚠️ 관리형이면 안전하다고 **생각하고 설정을 안 본다.**\n\n⭐ **\"자동 재시작\"이 예외가 아니라 기본값인 환경에서, \"영속성 꺼짐\"이 기본값인 이미지를 띄우면** 문서가 적어 둔 그 시나리오가 그대로 완성된다."
+    },
+    {
+      "id": "use",
+      "kind": "how",
+      "heading": "그래서 무엇을 두고 무엇을 안 두나",
+      "confidence": "inferred",
+      "body": "⭐ **앞의 세 절이 다 \"얼마나 잃나\"였다.** 그러면 판단은 **\"이건 그만큼 잃어도 되나\"** 하나로 정리된다.\n\n| 무엇 | Redis 에 둬도 되나 | 왜 |\n|---|---|---|\n| **캐시** | ⭐ **된다** | 원본이 딴 데 있다. 잃으면 다시 만든다 (→ `caching`) |\n| **랭킹·집계 중간값** | 된다 | 다시 계산할 수 있다 |\n| **세션** | ⚠️ **조건부** | 잃으면 **전원 로그아웃**된다. 서비스는 사나 사용자는 화난다 |\n| **분산 락** | ⚠️ **조건부** | 안전성이 별개 문제다 (→ `distributed-lock`) |\n| ⭐ **작업 큐** | ⚠️⚠️ **위험** | 지로 공고의 `이미지/영상 생성 작업` — **사라지면 원본이 없다** |\n| **주문·결제·잔액** | ⚠️⚠️ **안 된다** | 1초도 못 잃는다 → `postgres-mysql` |\n\n💡 **경계에 있는 것이 큐다.** 공고에 `BullMQ + Redis`(지로·아르고스), `Celery, Redis`(드랩), `Redis, 메시지 큐 또는 분산 워커`(디플라이어)가 반복해 나오는데, ⭐ **큐에 들어간 작업은 캐시와 달리 원본이 없다.**\n\n📌 **그래서 큐로 쓸 거면 최소한 이 셋은 정한다.**\n\n1. ⭐ **영속성을 켠다.** 앞 절의 기본값(`everysec`)이면 **1초치**를 잃는다 — 그 1초에 들어온 작업은 없어진다.\n2. ⭐⭐ **작업의 원본을 다른 곳에도 남긴다.** \"요청을 받았다\"는 사실을 DB 에 적고 Redis 에는 **처리 대기 표시만** 둔다. 그러면 Redis 가 비어도 **되살릴 수 있다.**\n3. **되살리는 절차를 만들어 둔다.** ⚠️ 사고가 난 뒤에 만드는 것은 늦다.\n\n⭐ **그리고 `market` 의 Kafka 45.8% 가 힌트다** — 절반 가까이가 **진짜 메시지 브로커를 함께 쓴다.** 잃으면 안 되는 흐름은 그쪽에 있고, Redis 큐는 **가벼운 것**을 맡는 배치인 경우가 많다.\n\n📌 **마지막으로, 백업은 별개다.** Persistence 문서가 굵은 글씨로 적는다.\n\n> ⭐⭐ \"**Make Sure to Backup Your Database**. Disks break, instances in the cloud disappear, and so forth: **no backups means huge risk of data disappearing into /dev/null**.\"\n\n**영속성은 재시작을 견디는 것이고, 백업은 디스크와 인스턴스가 사라지는 것을 견디는 것이다** — 다른 문제다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ 캐시 전략을 다루지 않았다.** 무엇을 언제 버리나, 읽기·쓰기 패턴, LRU 의 부정확함은 **`caching` 이 이미 썼다.** ⭐ 이 문서는 그 문서가 안 쓴 것(`AOF`·`RDB`·`영속성` 0회)만 다뤘다.\n\n**2. ⚠️ 분산 락의 안전성을 다루지 않았다.** Redlock 논쟁·펜싱 토큰은 **`distributed-lock` 이 이미 썼다**(Redis 113회 언급). 겹치지 않았다.\n\n**3. ⚠️ 자료구조와 명령을 다루지 않았다.** String·Hash·List·Set·Sorted Set·Stream, 그리고 각각의 시간 복잡도 — **공식 문서가 훨씬 잘** 한다. ⭐ 특히 **Stream** 은 이 문서의 `use` 절이 다룬 큐와 직결되는데 **읽지 않았다.**\n\n**4. ⚠️ 클러스터와 Sentinel 을 다루지 않았다.** `wipe` 절이 Sentinel 을 한 줄 인용했을 뿐, **샤딩·슬롯·페일오버 절차는 열지 않았다.** 그런데 `market` 의 Kubernetes 42.2% 를 보면 **실무에서 가장 자주 만나는 형태**일 수 있다.\n\n**5. ⚠️ 메모리가 가득 찰 때(eviction)를 얕게만 다뤘다.** `caching` 이 `Key eviction` 문서를 이미 썼기 때문인데, ⭐ **\"캐시가 아닌 저장소로 쓸 때 쫓겨나면 어떻게 되나\"** 는 어느 쪽도 안 다뤘다 — **다음 사이클의 자리다.**\n\n**6. ⚠️ 관리형 서비스의 기본 설정을 확인하지 않았다.** `market` 동반 1위가 **AWS 66.9%** 인데, 관리형에서 영속성·복제·자동 재시작이 **어떻게 기본 설정되어 있는지 확인하지 않았다.** ⭐ `wipe` 절의 위험이 관리형에서도 그대로인지 **이 문서는 모른다.**\n\n**7. 성능 숫자를 하나도 쓰지 않았다.** \"몇 만 QPS\" 같은 값은 **하드웨어·자료구조·명령에 따라 달라져** 옮기면 거짓이 된다(`service-mesh` 에서 배운 것 — \"Different hardware will give different values\")."
+    }
+  ],
+  "tables": [
+    {
+      "id": "lose",
+      "kind": "spec",
+      "caption": "⭐⭐⭐ 얼마나 잃나 — 제품이 적어 둔 숫자",
+      "note": "⚠️ 전부 **Redis 공식 문서의 원문**이다. ⭐ 이 표의 요점은 개별 숫자가 아니라 **어느 칸에도 '0' 이 없다**는 것이다 — 설정은 **얼마나 잃을지를 정하는 손잡이**이지 안 잃는 스위치가 아니다.",
+      "columns": [
+        "",
+        "원문",
+        "잃는 양"
+      ],
+      "rows": [
+        [
+          "**RDB (스냅샷)**",
+          "\"**RDB is NOT good if you need to minimize the chance of data loss** ... you should be prepared to **lose the latest minutes of data**\"",
+          "⚠️ **몇 분**"
+        ],
+        [
+          "**AOF `always`**",
+          "\"`fsync` every time new commands are appended ... **Very very slow, very safe.**\"",
+          "거의 없음"
+        ],
+        [
+          "⭐ **AOF `everysec` (기본)**",
+          "\"`fsync` every second ... **you may lose 1 second of data if there is a disaster**\"",
+          "**1초**"
+        ],
+        [
+          "**AOF `no`**",
+          "\"just put your data **in the hands of the Operating System**. The faster and **less safe** method. Normally Linux will flush data **every 30 seconds**\"",
+          "**30초쯤**"
+        ],
+        [
+          "⭐⭐ **복제 (기본)**",
+          "\"Redis uses **asynchronous** replication ... **it is not possible to ensure the replica actually received a given write, so there is always a window for data loss**\"",
+          "⚠️ **정해지지 않음**"
+        ],
+        [
+          "**`WAIT` 명령**",
+          "\"**it does not turn a set of Redis instances into a CP system with strong consistency: acknowledged writes can still be lost during a failover**\" · \"dramatically **reduces the probability**\"",
+          "⚠️ **줄지만 0 은 아니다**"
+        ],
+        [
+          "**`min-replicas-to-write`**",
+          "\"a **best effort** data safety mechanism, where **consistency is not ensured** ... ⭐ **In general bound data loss is better than unbound one.**\"",
+          "**몇 초로 묶인다**"
+        ],
+        [
+          "⭐⭐⭐ **그래서 권고**",
+          "\"use **both** persistence methods **if you want a degree of data safety comparable to what PostgreSQL can provide you**\" · AOF 단독은 \"**we discourage it**\"",
+          "—"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Redis persistence",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 자기 내구성 한계를 숫자로 적는 자리** — 그리고 \"PostgreSQL 수준의 안전을 원하면\"이라며 **스스로를 다른 제품에 견준다**"
+        },
+        {
+          "title": "Redis replication",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+        }
+      ]
+    },
+    {
+      "id": "wipe",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 복제본까지 지워지는 시나리오 (문서가 직접 적는다)",
+      "note": "Replication 문서의 **\"Safety of replication when master has persistence turned off\"** 절 — ⭐ **제목 자체가 경고**다. 번호는 원문의 것이다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "1",
+          "\"We have a setup with node A acting as master, **with persistence turned down**, and nodes B and C replicating from node A.\""
+        ],
+        [
+          "2",
+          "\"Node A crashes, however it has some **auto-restart** system ... since persistence is turned off, **the node restarts with an empty data set**.\""
+        ],
+        [
+          "⭐⭐⭐ 3",
+          "\"Nodes B and C will replicate from node A, which is empty, so **they'll effectively destroy their copy of the data**.\""
+        ],
+        [
+          "⚠️ 더 나쁜 것",
+          "\"the master **can restart fast enough for Sentinel to not detect a failure**\" — **감시 장치도 모른다**"
+        ],
+        [
+          "처방 ①",
+          "\"it is **strongly advised to have persistence turned on** in the master and in the replicas\""
+        ],
+        [
+          "⭐ 처방 ②",
+          "\"When this is not possible ... instances should be configured to **avoid restarting automatically** after a reboot\" — **둘 다 끈 조합이 지운다**"
+        ],
+        [
+          "⚠️ 이 환경이 흔하다",
+          "`market` 동반: **Docker 50.6%**(볼륨 없으면 재시작=초기화) · **Kubernetes 42.2%**(파드는 옮겨 다닌다) · **AWS 66.9%**(관리형이라 설정을 안 본다)"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Redis replication",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+        }
+      ]
+    },
+    {
+      "id": "put",
+      "kind": "compare",
+      "caption": "무엇을 두고 무엇을 안 두나",
+      "note": "이 표는 이 문서가 앞 절들에서 정리한 것이다(`confidence: inferred`). ⭐ 판단 기준은 하나 — **\"이건 몇 초치를 잃어도 되나\"**.",
+      "columns": [
+        "무엇",
+        "둬도 되나",
+        "왜"
+      ],
+      "rows": [
+        [
+          "**캐시**",
+          "⭐ **된다**",
+          "원본이 딴 데 있다 (→ `caching`)"
+        ],
+        [
+          "**랭킹·집계 중간값**",
+          "된다",
+          "다시 계산할 수 있다"
+        ],
+        [
+          "**세션**",
+          "⚠️ **조건부**",
+          "잃으면 **전원 로그아웃**. 서비스는 살지만 사용자가 나간다"
+        ],
+        [
+          "**분산 락**",
+          "⚠️ **조건부**",
+          "안전성은 별개 문제 (→ `distributed-lock`)"
+        ],
+        [
+          "⭐ **작업 큐**",
+          "⚠️⚠️ **위험**",
+          "지로 `이미지/영상 생성 작업` — **사라지면 원본이 없다**"
+        ],
+        [
+          "**주문·결제·잔액**",
+          "⚠️⚠️ **안 된다**",
+          "1초도 못 잃는다 → `postgres-mysql`"
+        ],
+        [
+          "⭐ 큐로 쓸 거면",
+          "—",
+          "①영속성 켜기 ②**작업 원본을 DB 에도 남기기** ③되살리는 절차 미리 만들기"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ **1247건 대 30건** — `rest`(3372 vs 0) 이래 **아홉째 형태**다. ⚠️ 그리고 이번엔 한 겹 더 있다: **공고가 Redis 를 캐시가 아닌 이름으로 부른다.**",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**1247건 (모집중 449)** — 태그 기준으로는 474건(6.6%), 층은 **\"데이터베이스\"**"
+        ],
+        [
+          "`캐시\\|캐싱\\|cache`",
+          "694 (모집중 276) — ⚠️ 이건 `caching` 의 영역"
+        ],
+        [
+          "⚠️⚠️ `영속성\\|persistence\\|AOF\\|RDB`",
+          "**30 (모집중 19)**"
+        ],
+        [
+          "⚠️⚠️ `TTL\\|만료 정책\\|eviction`",
+          "**6 (모집중 2)**"
+        ],
+        [
+          "`세션 저장\\|세션 관리`",
+          "42 (모집중 11)"
+        ],
+        [
+          "`분산 락\\|Redlock`",
+          "23 (모집중 10) — `distributed-lock` 의 영역"
+        ],
+        [
+          "`Memcached`",
+          "16 (모집중 10) — ⭐ **Redis 의 78분의 1**. 비교 대상으로 삼기엔 너무 적다"
+        ],
+        [
+          "⭐ 공고가 부르는 이름",
+          "**작업 큐**(드랩·지로·아르고스·디플라이어) · **세션 스토어**(에어스메디컬) · **저장소**(크로스이엔에프) · **데이터베이스**(빗썸) — **전부 잃으면 곤란한 것**"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐ RDB",
+      "en": "Redis Database (snapshot)",
+      "what": "주기적 스냅샷. \"**be prepared to lose the latest minutes of data**\""
+    },
+    {
+      "term": "⭐ AOF",
+      "en": "Append Only File",
+      "what": "쓰기 명령을 이어 붙인 로그. **얼마나 자주 확정하느냐**를 고른다"
+    },
+    {
+      "term": "⭐⭐ `appendfsync everysec`",
+      "en": "—",
+      "what": "기본값. \"**you may lose 1 second of data**\" — **1초는 0 이 아니다**"
+    },
+    {
+      "term": "fsync",
+      "en": "—",
+      "what": "OS 버퍼에 있는 것을 **디스크에 확정**시키는 시스템 콜. 여기서 안전과 속도가 갈린다"
+    },
+    {
+      "term": "⭐⭐ 비동기 복제",
+      "en": "asynchronous replication",
+      "what": "마스터가 복제본의 응답을 안 기다린다. 그래서 \"**always a window for data loss**\""
+    },
+    {
+      "term": "⭐ `WAIT`",
+      "en": "—",
+      "what": "N개 복제본이 받을 때까지 기다리는 명령. ⚠️ 그래도 \"acknowledged writes **can still be lost**\""
+    },
+    {
+      "term": "⭐⭐⭐ bound data loss",
+      "en": "—",
+      "what": "\"**In general bound data loss is better than unbound one.**\" — 손실을 없애는 게 아니라 **얼마나 잃을지 정한다**는 이 제품의 태도"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "Redis 를 작업 큐로 쓴다 (BullMQ·Celery 등)",
+      "pick": "⭐⭐ **작업의 원본을 DB 에도 남기고, Redis 에는 처리 대기 표시만 둔다**",
+      "over": "Redis 큐만 믿고 작업을 넣기",
+      "why": "⭐⭐⭐ **캐시와 달리 큐에 들어간 작업은 원본이 없다.** 기본 설정(`appendfsync everysec`)에서도 \"**you may lose 1 second of data**\" 이고, 복제는 \"**always a window for data loss**\" 다 — 지로 공고의 `이미지/영상 생성 작업` 이 그 1초에 들어오면 **사용자 요청이 그냥 사라진다**",
+      "tradeoff": "⚠️ DB 쓰기가 한 번 더 들어가 느려지고, 두 곳의 상태를 맞추는 코드가 생긴다. 그래도 **되살릴 수 있는 것과 없는 것의 차이**다 — `market` 의 **Kafka 45.8%** 가 힌트다: 잃으면 안 되는 흐름은 진짜 브로커에 두는 팀이 절반 가까이 된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Redis persistence",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 자기 내구성 한계를 숫자로 적는 자리** — 그리고 \"PostgreSQL 수준의 안전을 원하면\"이라며 **스스로를 다른 제품에 견준다**"
+        },
+        {
+          "title": "Redis replication",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+        }
+      ]
+    },
+    {
+      "situation": "영속성 설정을 정한다",
+      "pick": "⭐ **무엇을 담는지부터 정하고 거기서 역산한다**",
+      "over": "기본값 그대로 두기",
+      "why": "⭐⭐⭐ Redis 문서가 기준을 직접 준다 — \"use **both** persistence methods if you want a degree of data safety **comparable to what PostgreSQL can provide you**\", \"can live with **a few minutes of data loss** → RDB alone\", AOF 단독은 \"**we discourage it**\". **잃어도 되는 양이 곧 설정**이다",
+      "tradeoff": "⚠️ 둘 다 켜면 디스크 I/O 와 재시작 시간이 늘고, RDB 의 `fork()` 는 \"**Redis stopping serving clients for some milliseconds or even for one second**\" 를 만들 수 있다 — **영속성을 켠 값을 지연으로 낸다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Redis persistence",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 자기 내구성 한계를 숫자로 적는 자리** — 그리고 \"PostgreSQL 수준의 안전을 원하면\"이라며 **스스로를 다른 제품에 견준다**"
+        }
+      ]
+    },
+    {
+      "situation": "컨테이너·쿠버네티스에 Redis 를 띄운다",
+      "pick": "⭐⭐ **영속성을 켜거나, 아니면 자동 재시작을 끈다**",
+      "over": "기본 이미지에 재시작 정책만 붙이기",
+      "why": "⭐⭐⭐ 문서가 시나리오를 번호까지 매겨 적는다 — 영속성 꺼진 마스터가 자동 재시작하면 \"**restarts with an empty data set**\" 이고 \"Nodes B and C ... **they'll effectively destroy their copy of the data**\". ⚠️ **`market` 이 그 조건을 갖춘다**: Docker 50.6% · Kubernetes 42.2%",
+      "tradeoff": "자동 재시작을 끄면 사람이 개입해야 해서 복구가 늦다. 그래도 **늦게 복구하는 것과 전부 지우는 것**의 차이다 — 문서의 표현으로 \"**Every time data safety is important ... auto restart of instances should be disabled**\"",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Redis replication",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+        }
+      ]
+    },
+    {
+      "situation": "세션을 Redis 에 둘지 정한다",
+      "pick": "**둔다 — 대신 잃었을 때 무슨 일이 생기는지 먼저 적어 본다**",
+      "over": "DB 에 두거나, 아무 생각 없이 Redis 에 두기",
+      "why": "⭐ 세션은 **잃어도 서비스가 죽지는 않는다**(다시 로그인하면 된다) — 그래서 Redis 가 맞는 자리다. ⚠️ **다만 전원이 동시에 로그아웃된다.** 그 순간의 문의량과 이탈을 감당할 수 있는지가 실제 판단 기준이고, 감당 못 하면 **영속성을 켜는 값**을 치를 만하다",
+      "tradeoff": "영속성을 켜면 느려지고, 안 켜면 재시작 때마다 전원 로그아웃이다. ⭐ **중간이 있다** — 세션을 짧게 두고 **재발급 토큰은 DB 에** 두면 Redis 가 비어도 조용히 복구된다",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "\"Redis 경험\" 을 이력서에 적는다",
+      "pick": "⭐ **무엇으로 썼는지와 어떤 설정이었는지를 함께 적는다**",
+      "over": "\"Redis 사용 경험\" 한 줄",
+      "why": "⭐⭐ 공고가 Redis 를 **캐시·큐·세션 스토어·저장소·데이터베이스**로 제각각 부른다 — 빗썸 `RDBMS, Redis 등 데이터베이스`, 크로스이엔에프 `다양한 저장소(MySQL, MongoDB, Redis 등)`. **어느 쪽으로 썼느냐에 따라 아는 것이 완전히 다르다**",
+      "tradeoff": "길어진다. 그래도 ⭐ **\"영속성을 어떻게 뒀고 왜 그렇게 정했나\"** 에 답할 수 있는 사람은 `영속성|AOF|RDB` 를 이름으로 대는 **30건**과 정확히 만난다 — **1247건 안의 좁은 문**이다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "\"Redis 는 인메모리니까 잃는다\"까지만 알고 얼마나 잃는지는 모른다",
+      "why": "⭐ 이 말은 맞지만 **아무 결정에도 도움이 안 된다.** 실제로 필요한 것은 **숫자**다 — 기본 설정이면 1초인지, RDB 단독이면 몇 분인지, 복제를 붙이면 달라지는지",
+      "fix": "⭐⭐ **Persistence 문서의 세 fsync 정책을 읽고 지금 우리 설정이 어느 것인지 확인한다.** 그리고 그 숫자를 팀이 공유하는 문서에 적는다 — \"우리는 최대 N초를 잃는다\"가 적혀 있으면 **무엇을 여기 둘지가 저절로 정해진다**",
+      "sources": [
+        {
+          "title": "Redis persistence",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 자기 내구성 한계를 숫자로 적는 자리** — 그리고 \"PostgreSQL 수준의 안전을 원하면\"이라며 **스스로를 다른 제품에 견준다**"
+        }
+      ]
+    },
+    {
+      "trap": "복제본을 붙였으니 안전하다고 여긴다",
+      "why": "⚠️ 복제는 **가용성**을 위한 것이지 내구성 보장이 아니다. 문서가 직접 적는다 — \"**acknowledged writes can still be lost during a failover**\", 그리고 `WAIT` 조차 \"dramatically **reduces the probability**\" 일 뿐이다",
+      "fix": "**복제는 \"한 대가 죽어도 서비스가 산다\"까지만 기대한다.** ⭐ 잃으면 안 되는 것은 **영속성 설정으로 창을 좁히고**, 그래도 안 되면 **애초에 Redis 에 두지 않는다**(→ `postgres-mysql`)",
+      "sources": [
+        {
+          "title": "Redis replication",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+        }
+      ]
+    },
+    {
+      "trap": "⭐⭐ 영속성을 끈 Redis 에 자동 재시작을 붙인다",
+      "why": "⭐⭐⭐ **이 문서에서 가장 위험한 조합이다.** 문서의 시나리오 그대로 — 마스터가 빈 채로 돌아오면 \"Nodes B and C ... **they'll effectively destroy their copy of the data**\". ⚠️ 게다가 \"the master can restart **fast enough for Sentinel to not detect a failure**\" 라 **아무도 못 알아챈다**. 그리고 컨테이너·쿠버네티스에서는 **자동 재시작이 기본값**이다",
+      "fix": "⭐ **둘 중 하나는 켠다** — 영속성을 켜거나, `restart` 정책을 끈다. 문서의 표현으로 \"Every time data safety is important ... **auto restart of instances should be disabled**\". 그리고 **컨테이너면 볼륨이 실제로 붙어 있는지** 확인한다(붙었다고 믿는 것과 붙은 것은 다르다)",
+      "sources": [
+        {
+          "title": "Redis replication",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+        }
+      ]
+    },
+    {
+      "trap": "관리형(ElastiCache 등)이니 알아서 해 준다고 여긴다",
+      "why": "⭐ `market` 동반 1위가 **AWS 66.9%** 다. 관리형은 운영을 대신해 주지만 **영속성·복제·재시작 정책은 여전히 설정**이고, ⚠️ **기본값이 우리 용도에 맞는다는 보장은 없다**",
+      "fix": "**지금 쓰는 관리형의 영속성 설정이 무엇인지 콘솔에서 확인한다.** ⚠️ 그리고 **이 문서는 그 기본값을 확인하지 않았다**(`open_questions`) — **각자 확인해야 하고, 문서에서 본 남의 값을 우리 값으로 삼지 않는다**"
+    },
+    {
+      "trap": "큐를 Redis 에만 둔다",
+      "why": "⭐⭐ 캐시의 감각으로 큐를 다루기 때문이다. **캐시는 잃어도 다시 만들지만 큐의 작업은 원본이 없다** — 지로 공고의 `이미지/영상 생성 작업` 이 사라지면 **사용자가 요청한 것이 그냥 없어지고**, 사용자는 자기 요청이 사라진 줄도 모른다",
+      "fix": "⭐ **\"요청을 받았다\"는 사실을 DB 에 먼저 적고**, Redis 에는 처리 대기 표시만 둔다. 그러면 Redis 가 비어도 **DB 를 훑어 되살릴 수 있다** — 그 되살리는 절차를 **사고 전에** 만들어 둔다"
+    },
+    {
+      "trap": "영속성만 켜 놓고 백업은 안 한다",
+      "why": "⭐ 둘이 같은 것이라고 생각하기 쉽다. **영속성은 재시작을 견디는 것**이고, **백업은 디스크와 인스턴스가 사라지는 것을 견디는 것**이다 — 문서가 굵은 글씨로 경고한다: \"**Make Sure to Backup Your Database**. Disks break, instances in the cloud disappear\"",
+      "fix": "**RDB 파일을 주기적으로 다른 곳에 옮긴다.** 문서의 권고는 구체적이다 — 시간별·일별 스냅샷을 각각 두고, \"**At least one time every day** make sure to transfer an RDB snapshot **outside your data center**\". ⭐ 그리고 **옮겨진 파일이 실제로 온전한지 확인하는 알림**까지 만든다(문서도 그것을 따로 당부한다)",
+      "sources": [
+        {
+          "title": "Redis persistence",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/",
+          "publisher": "Redis",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **제품이 자기 내구성 한계를 숫자로 적는 자리** — 그리고 \"PostgreSQL 수준의 안전을 원하면\"이라며 **스스로를 다른 제품에 견준다**"
+        }
+      ]
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **Redis 를 하나 띄우고, 값을 넣은 직후 `kill -9` 로 죽인 뒤 다시 띄워** 무엇이 남았는지 본다. 그리고 **`appendonly yes` 로 바꿔 같은 것을 반복**한다.",
+      "done_when": "두 경우의 결과가 다르다는 것을 **직접 봤고**, ⭐ 각각 **무엇이 사라졌는지** 적을 수 있다. 그리고 `INFO persistence` 의 출력에서 지금 어떤 방식이 켜져 있는지 읽을 수 있다.",
+      "why": "⭐⭐⭐ Persistence 문서의 \"If your computer running Redis stops ... or you **accidentally `kill -9`** your instance, **the latest data written to Redis will be lost**\" 를 **글로 읽는 것과 눈으로 보는 것**은 다르다. 이 실습을 한 사람은 다시는 큐를 Redis 에만 두지 않는다.",
+      "no_hardware": "도커 한 줄이면 된다 — 별도 서버가 필요 없다. ⭐ **볼륨을 안 붙이면 컨테이너를 지웠을 때 영속성을 켜도 사라진다**는 것까지 함께 확인하면 `wipe` 절의 위험이 몸에 남는다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐ **지금 회사(또는 개인 프로젝트)의 Redis 설정을 열어** `appendfsync`·`save`·자동 재시작 정책을 확인하고, **\"우리는 최대 몇 초/몇 분을 잃는다\"** 를 한 문장으로 적는다.",
+      "done_when": "세 값이 확인되고, **잃는 양이 숫자로** 나온다. ⭐ 그리고 **거기 담긴 것 중 그만큼 잃으면 안 되는 것이 있는지** 목록으로 답할 수 있다.",
+      "why": "⭐⭐ 이 문서의 `put` 표는 **\"이건 몇 초치를 잃어도 되나\"** 하나로 판단한다. **잃는 양을 모르면 그 판단을 아예 시작할 수 없고**, 대부분의 팀이 이 숫자를 모른 채 큐와 세션을 넣는다.",
+      "no_hardware": "운영 중인 Redis 가 없으면 **기본 `redis.conf` 를 받아** 기본값이 무엇인지 확인한다 — 기본값이 곧 대부분의 회사의 값이다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **Replication 문서의 \"Safety of replication when master has persistence turned off\" 절을 읽고**, 지금 우리 환경이 그 3단계 시나리오의 조건을 몇 개나 갖췄는지 센다(영속성 꺼짐 / 자동 재시작 켜짐 / 복제본 있음).",
+      "done_when": "세 조건 각각에 **예·아니오**로 답이 나오고, ⭐ **셋 다 예면 무엇부터 바꿀지** 정해진다.",
+      "why": "⭐⭐⭐ 이건 **일어날 수 있는 사고가 아니라 문서가 번호를 매겨 적어 둔 사고**다. 그리고 `market` 의 Docker 50.6% · Kubernetes 42.2% 는 **그 조건이 기본값인 환경**이 흔하다는 뜻이다.",
+      "no_hardware": "복제본이 없어도 된다 — **앞의 두 조건만 확인**해도 절반은 답이 나온다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "RDB 와 AOF 는 각각 얼마나 잃는가? 문서의 표현으로 답하라",
+    "`appendfsync` 세 정책의 차이는? 기본값은 무엇이고 얼마를 잃는가?",
+    "복제본을 붙이면 데이터 손실이 없어지는가? 문서는 뭐라고 적는가?",
+    "영속성을 끈 마스터에 자동 재시작을 붙이면 무슨 일이 생기는가? 왜 감시 장치도 못 알아채는가?",
+    "Redis 에 둬도 되는 것과 안 되는 것의 판단 기준 한 가지는?",
+    "영속성과 백업은 무엇이 다른가?"
+  ],
+  "evidence": [
+    {
+      "quote": "• BullMQ + Redis 기반 비동기 큐 아키텍처 설계 및 운영 (이미지/영상 생성 작업)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/371583",
+      "where": "지로",
+      "what_it_shows": "⭐⭐⭐ **이 문서 전체의 이유.** 큐에 들어간 `이미지/영상 생성 작업` 은 **캐시와 달리 원본이 없다** — 기본 설정에서 1초치가 사라지면 사용자 요청이 그냥 없어진다"
+    },
+    {
+      "quote": "• Celery, Redis 등 비동기 작업 큐 설계 및 운영 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/370975",
+      "where": "드랩",
+      "what_it_shows": "⭐ **Redis 를 \"작업 큐\"로 이름 붙인다** — 캐시가 아니다. 이런 공고가 반복해 나온다(아르고스 `BullMQ 등 작업 큐, Redis 운영`, 디플라이어 `Redis, 메시지 큐 또는 분산 워커`)"
+    },
+    {
+      "quote": "• RDBMS, Redis 등 데이터베이스 및 캐시 시스템 활용 경험을 보유하신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/373382",
+      "where": "빗썸",
+      "what_it_shows": "⭐⭐ **`RDBMS, Redis 등 데이터베이스`** — 회사가 Redis 를 **데이터베이스 쪽에 놓는다.** `tech_relations.json` 의 층 이름도 \"데이터베이스\"다"
+    },
+    {
+      "quote": "• 데이터 모델링 및 다양한 저장소(MySQL, MongoDB, Redis 등)에 대한 깊은 이해",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/356348",
+      "where": "크로스이엔에프",
+      "what_it_shows": "⭐ **\"저장소\"** 목록에 MySQL 과 나란히 놓인다 — ⚠️ 그런데 셋의 **내구성 보장 수준은 전혀 다르다.** 나란히 적히면 그 차이가 안 보인다"
+    },
+    {
+      "quote": "• Redis 등 캐시·세션 스토어 운영 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/364584",
+      "where": "에어스메디컬",
+      "what_it_shows": "**세션 스토어** — 잃으면 **전원 로그아웃**이다. 서비스는 살지만 사용자가 나가는 종류의 손실"
+    },
+    {
+      "quote": "• Redis 등을 활용한 동시성 제어(분산 락) 및 캐싱 전략 최적화 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/380884",
+      "where": "네이버페이",
+      "what_it_shows": "⭐ 한 줄에 **분산 락과 캐싱이 함께** 나온다 — 이 백과사전이 `distributed-lock`·`caching`·`redis` 세 문서로 나눠 쓴 이유"
+    },
+    {
+      "quote": "메시징 큐(Kafka, RabbitMQ 등), 캐시 시스템(Redis 등) 활용 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/365596",
+      "where": "CJ올리브영",
+      "what_it_shows": "⭐⭐ **여기서는 Redis 가 캐시 쪽에 있고 큐는 Kafka·RabbitMQ 다** — `market` 의 Kafka 45.8% 가 그 배치다. **잃으면 안 되는 흐름을 어디에 두는지**가 회사마다 갈린다"
+    },
+    {
+      "quote": "- Backend: NestJS(또는 Spring), RDBS, NoSQL, Redis, Message Queue(RabbitMQ, Kafka, Mosquitto)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/341010",
+      "where": "타이드풀(TIDEPOOL)",
+      "what_it_shows": "⚠️ **Redis 가 `NoSQL` 과 `Message Queue` 사이에 따로 적힌다** — 어느 쪽도 아닌 채로 목록에 있다. **\"Redis 경험\"이라는 말이 자리마다 다른 것을 뜻하는 이유**"
+    }
+  ],
+  "related": [
+    {
+      "slug": "caching",
+      "how": "⭐⭐ **정면 이웃 — 축이 다르다.** 저쪽은 **무엇을 언제 버리나**(캐시 전략), 여기는 **무엇이 언제 사라지나**(내구성). 저 문서에 `AOF`·`RDB` 는 0회다"
+    },
+    {
+      "slug": "distributed-lock",
+      "how": "⭐⭐ **정면 이웃 — 축이 다르다.** 저쪽은 **락이 안전한가**(Redlock 논쟁·펜싱 토큰), 여기는 **데이터가 남는가**"
+    },
+    {
+      "slug": "postgres-mysql",
+      "how": "⭐⭐⭐ **Redis 문서가 자기 안전을 견주는 기준으로 든 제품** — \"comparable to what **PostgreSQL** can provide\". 잃으면 안 되는 것은 저기에 둔다. 동반 47.3%"
+    },
+    {
+      "slug": "observability",
+      "how": "⚠️ `wipe` 절의 사고는 **감시 장치도 못 알아챈다**(\"fast enough for Sentinel to not detect a failure\") — 무엇을 봐야 알아채나"
+    },
+    {
+      "slug": "kafka",
+      "how": "⭐⭐ **동반 45.8%** — CJ올리브영 공고처럼 **잃으면 안 되는 큐를 따로 두는 자리**다. 이 문서의 `use` 절이 \"진짜 브로커\"라고 부른 것이 그쪽이고, **이미 문서가 있다**"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `Redis`(474건 · 6.6% · 층 \"데이터베이스\")를 그대로 옮겼다. ⚠️ 본문 직접 셈은 **1247건**으로 두 배 이상 차이가 난다 — 두 숫자를 다 적었다.",
+    "⚠️⚠️ **관리형 서비스의 기본 설정을 확인하지 않았다.** `market` 동반 1위가 **AWS 66.9%** 인데, ElastiCache 등에서 영속성·복제·자동 재시작이 어떻게 기본 설정되는지 **열어 보지 않았다.** ⭐ `wipe` 절의 위험이 관리형에서도 그대로인지 **이 문서는 모른다** — `pitfalls` 에 \"각자 확인하라\"고만 적었다.",
+    "⚠️ **Redis Stream 을 읽지 않았다.** `use` 절이 큐를 다루면서 **Redis 가 큐를 위해 따로 만든 자료구조**(소비자 그룹·ACK·pending 목록)를 확인하지 않았다. ⭐ 그것이 이 문서의 결론(\"큐로 쓰려면 원본을 DB 에\")을 **바꿀 수도 있다.**",
+    "⚠️ **클러스터와 Sentinel 을 다루지 않았다.** `wipe` 절이 Sentinel 을 한 줄 인용했을 뿐 페일오버 절차·샤딩은 열지 않았다. `market` 의 Kubernetes 42.2% 를 보면 실무에서 가장 흔한 형태일 수 있다.",
+    "⭐ **eviction 을 얕게만 다뤘다.** `caching` 이 `Key eviction` 문서를 이미 썼기 때문인데, ⚠️ **\"캐시가 아닌 저장소로 쓸 때 키가 쫓겨나면 어떻게 되나\"** 는 어느 문서도 안 다뤘다 — 빈자리로 남긴다.",
+    "**성능 숫자를 하나도 쓰지 않았다.** \"몇 만 QPS\" 류는 하드웨어·자료구조·명령에 따라 달라져 옮기면 거짓이 된다(`service-mesh` 의 \"Different hardware will give different values\").",
+    "⭐ **`put` 표와 `use` 절의 권고는 이 문서의 정리다.** 공식 문서가 \"큐를 이렇게 쓰라\"고 말한 것이 아니라, **인용한 손실 숫자에서 추론**했다. `confidence` 는 인용 부분만 `confirmed` 다.",
+    "⚠️ **하마터면 틀릴 뻔한 것을 기록해 둔다** — `related` 에 `kafka` 를 \"아직 문서가 없다\"고 적었다가 **커밋 전에 확인해 보니 이미 있었다.** ⭐ **끊긴 링크라고 적기 전에 세어 본다** — 이 백과사전이 109개나 되어 이제 기억으로는 모른다."
+  ],
+  "sources": [
+    {
+      "title": "Redis persistence",
+      "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/",
+      "publisher": "Redis",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **제품이 자기 내구성 한계를 숫자로 적는 자리** — 그리고 \"PostgreSQL 수준의 안전을 원하면\"이라며 **스스로를 다른 제품에 견준다**"
+    },
+    {
+      "title": "Redis replication",
+      "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/replication/",
+      "publisher": "Redis",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **복제도 구해 주지 않는다고 직접 적는 문서** — \"acknowledged writes can still be lost during a failover\", 그리고 안전장치조차 \"best effort\""
+    }
+  ]
+}

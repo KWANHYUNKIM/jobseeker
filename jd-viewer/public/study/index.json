@@ -1966,6 +1966,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "redis",
+      "title": "Redis — 메모리에 있다는 것",
+      "category": "data",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **Redis 는 자기가 무엇을 잃을 수 있는지 문서에 숫자로 적어 둔다** — RDB 는 몇 분, AOF 는 1초, 복제는 \"acknowledged writes **can still be lost**\". ⚠️ **그런데 공고는 Redis 를 큐·세션·저장소라고 부른다.**",
+      "aliases": [
+        "Redis",
+        "레디스",
+        "영속성",
+        "AOF",
+        "RDB",
+        "persistence"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
