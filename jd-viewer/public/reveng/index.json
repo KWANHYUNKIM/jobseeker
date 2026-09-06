@@ -8,7 +8,7 @@
       "country": "기타",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "메트릭을 더 싸게 오래 두는 시계열 DB — 비용을 짓누르는 것이 샘플 양이 아니라 카디널리티라고 말한다",
       "updated_at": "2026-09-06",
       "domain": "victoriametrics.com"
