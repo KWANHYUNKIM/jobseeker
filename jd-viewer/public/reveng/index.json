@@ -1591,8 +1591,8 @@
       "name_en": "Signal",
       "country": "US",
       "category": "메시징",
-      "status": "in_progress",
-      "features_done": 3,
+      "status": "done",
+      "features_done": 4,
       "one_liner": "메타데이터까지 안 갖겠다고 정해 놓고 그 제약 안에서 기능을 만드는 비영리 메신저 — 못 가진 것이 설계를 정한다",
       "updated_at": "2026-09-07",
       "domain": "signal.org"
