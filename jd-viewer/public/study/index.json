@@ -1947,6 +1947,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "ios",
+      "title": "iOS — 사람이 심사하는 스토어",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **`android` 와 같은 문제인데 푸는 방식이 정반대다** — 구글은 **날짜와 숫자**로 막고, 애플은 **판단**으로 거른다. \"**I'll know it when I see it**\". 그래서 **달력에 넣을 수가 없다.**",
+      "aliases": [
+        "iOS",
+        "아이폰",
+        "앱스토어",
+        "App Store",
+        "앱 심사",
+        "Swift"
+      ],
+      "sections": 6,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {

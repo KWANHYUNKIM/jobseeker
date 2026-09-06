@@ -1,0 +1,680 @@
+{
+  "slug": "ios",
+  "title": "iOS — 사람이 심사하는 스토어",
+  "title_en": "iOS: A Human-Reviewed Store",
+  "aliases": [
+    "iOS",
+    "아이폰",
+    "앱스토어",
+    "App Store",
+    "앱 심사",
+    "Swift"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **`android` 와 같은 문제인데 푸는 방식이 정반대다** — 구글은 **날짜와 숫자**로 막고, 애플은 **판단**으로 거른다. \"**I'll know it when I see it**\". 그래서 **달력에 넣을 수가 없다.**",
+  "summary": "이 문서는 **`android` 를 iOS 로 바꿔 쓴 것이 아니다.** 그러면 같은 문서를 두 번 쓰는 것이고, 실제로 쓰기 전에 **축이 서지 않으면 미룬다**고 큐에 적어 뒀다.\n\n**축이 섰다 — 1차 자료 두 개를 나란히 놓으면 성격이 정반대다.**\n\n> **구글** — \"Starting **August 31 2026**: New apps and app updates **must target Android 16 (API level 36) or higher** to be submitted\"\n> **애플** — ⭐⭐⭐ \"We will reject apps for any content or behavior that **we believe is over the line**. What line, you ask? Well, as a Supreme Court Justice once said, **'I'll know it when I see it'**.\"\n\n**한쪽은 숫자고 한쪽은 판단이다.** 그리고 애플은 심사가 **사람**이라고 직접 적는다 — \"every app is **reviewed by experts**\".\n\n⭐⭐ **그래서 팀이 지는 위험의 종류가 다르다.** 구글 쪽은 **달력 관리**다(마감을 놓치면 큰일이지만 마감은 알 수 있다). 애플 쪽은 **일정의 분산**이다 — ⚠️ **언제 통과할지, 통과할지조차 미리 계산할 수 없다.** 게다가 문서가 스스로 이렇게 적는다.\n\n> **\"This is a living document; new apps presenting new questions may result in new rules at any time.\"**",
+  "market": {
+    "tech": "iOS",
+    "layer": "모바일",
+    "postings": 364,
+    "pct_jobs": 5.0,
+    "with": [
+      {
+        "name": "Android",
+        "pct": 72.5,
+        "why": "⭐⭐⭐ **넷 중 셋** — `android` 쪽의 iOS 동반(61.4%)보다 **더 비대칭**이다. **iOS만 요구하는 자리는 드물다**"
+      },
+      {
+        "name": "React",
+        "pct": 34.3,
+        "why": "React Native 문맥"
+      },
+      {
+        "name": "Swift",
+        "pct": 29.9,
+        "why": "⚠️ **iOS 를 요구하면서 언어는 안 대는 곳이 70%** — 크로스플랫폼이 섞여 있다"
+      },
+      {
+        "name": "Java",
+        "pct": 23.6,
+        "why": "안드로이드 쪽이 함께 걸린 것"
+      },
+      {
+        "name": "Kotlin",
+        "pct": 21.4,
+        "why": "같은 이유 (→ `kotlin`)"
+      }
+    ],
+    "as_of": "2026-09-04"
+  },
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐ 왜 `android` 와 따로 쓰나",
+      "confidence": "inferred",
+      "body": "`android` 문서가 **\"웹과 다른 것은 언어가 아니라 배포다\"** 를 이미 썼다. 심사가 있고, 되돌릴 수 없고, 옛 버전이 안 사라진다 — **그건 iOS 도 똑같다.** ⚠️ **그래서 그 축을 다시 쓰면 두 번째 요약본이 된다.**\n\n⭐⭐⭐ **이 문서의 축은 하나다: 같은 문제를 두 스토어가 다르게 푼다.**\n\n셈은 이렇다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `iOS\\|아이폰` | **954** | (모집중 333) |\n| `Swift\\|SwiftUI` | 390 | (모집중 150) |\n| `앱스토어\\|App Store` | 282 | (모집중 96) |\n| ⚠️ `Objective-C` | **95** | (모집중 31) |\n| `인앱 결제\\|IAP` | 85 | (모집중 28) |\n| `SwiftUI` | 77 | (모집중 30) |\n| ⭐ `앱 심사\\|리젝\\|reject` | **55** | (모집중 28) |\n| `TestFlight` | 8 | (모집중 4) |\n\n💡 **그리고 `market` 의 동반 1위가 결정적이다 — Android 72.5%.** `android` 쪽에서 iOS 가 61.4% 였으니 **비대칭**이다. **iOS 를 요구하면 넷 중 셋이 안드로이드도 요구한다.** 공고의 모양도 그렇다.\n\n> `**Android/iOS 크로스 코드 리뷰**를 통해 **플랫폼 간 설계 차이**를 비교하며 모바일 전반의 시야를 넓힐 수 있습니다.` — 백패커\n> ⭐ `**플랫폼별로 갈라지기 쉬운 모바일 지식**을 ... 공통 아키텍처 언어·컨벤션·리뷰 파이프라인을 **양 플랫폼이 함께 쓰도록** 만들어` — 헤렌\n\n⭐ **\"플랫폼 간 설계 차이\"·\"플랫폼별로 갈라지기 쉬운\"** — 회사들이 **양쪽의 차이를 관리하는 일 자체를 채용 항목으로 적는다.** 이 문서가 하려는 것이 정확히 그것이다.\n\n📌 그리고 순서에 관한 문장도 하나 있다.\n\n> `**안드로이드 서비스는 이미 출시를 완료했으며**, 예상보다 빠른 시장의 반응에 따라 **아이폰(iOS)도 추가로 출시를 계획**하고 있습니다.` — 매도왕\n\n**안드로이드가 먼저 나가고 iOS 가 따라간다.** 뒤에서 보겠지만 **심사의 성격 차이가 이 순서와 무관하지 않다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 규칙이 숫자가 아니라 판단으로 되어 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        },
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "비교 대상 — `android` 문서가 쓴 1차 자료. **날짜와 API 레벨 숫자**로 강제한다"
+        }
+      ],
+      "body": "두 문서를 나란히 놓는다.\n\n**구글의 요구는 이렇게 생겼다.**\n\n> \"Starting **August 31 2026**: New apps and app updates **must target Android 16 (API level 36) or higher** to be submitted to Google Play\"\n\n**날짜가 있고 숫자가 있다.** 맞는지 틀린지는 **기계가 판정**할 수 있고, 우리도 **미리 계산할 수 있다.**\n\n**애플의 요구는 이렇게 생겼다.**\n\n> ⭐⭐⭐ \"We will reject apps for any content or behavior that **we believe is over the line**. What line, you ask? Well, as a Supreme Court Justice once said, **'I'll know it when I see it'**. And we think that you will also know it when you cross it.\"\n\n**선이 어디인지 적지 않는다.** 그리고 **적지 않는다는 사실을 문서가 스스로 인정한다.**\n\n⭐⭐ **누가 판정하는지도 직접 적혀 있다.**\n\n> \"We do this by offering a highly curated App Store where **every app is reviewed by experts**\"\n\n**사람이 본다.** 그리고 사람이 보기 때문에 **규칙이 자란다.**\n\n> ⭐⭐ **\"This is a living document; new apps presenting new questions may result in new rules at any time.\"**\n\n💡 **여기가 이 문서의 전부다 — 두 스토어의 위험은 종류가 다르다.**\n\n| | 구글 | 애플 |\n|---|---|---|\n| 규칙의 모양 | **날짜 + 숫자** | ⭐ **판단** |\n| 판정 | **기계** | ⭐ **사람** (\"reviewed by experts\") |\n| 미리 알 수 있나 | **예 — 달력에 넣는다** | ⚠️ **아니오 — \"new rules at any time\"** |\n| 팀이 지는 위험 | **마감을 놓치는 것** | ⭐⭐ **일정의 분산** — 언제 통과할지 모른다 |\n\n⚠️⚠️ **그리고 벌의 무게도 다르다.**\n\n> \"If you attempt to cheat the system (for example, by trying to trick the review process, steal user data, copy another developer's work, manipulate ratings or App Store discovery) **your apps will be removed from the store and you will be expelled from the Apple Developer Program.**\"\n\n⭐ **앱이 아니라 개발자 계정이 날아간다.** 구글의 벌은 \"새 사용자에게 안 보인다\"는 **조용한 감쇠**였는데(→ `android`), **여기는 즉시적이고 회복 불가능**하다.\n\n📌 **오해하면 안 되는 것** — 이건 \"애플이 더 나쁘다\"는 얘기가 아니다. **큐레이션을 하겠다는 선택이고, 문서 첫 줄이 그것을 밝힌다**(\"highly curated App Store\"). ⭐ **다만 그 선택의 값을 개발 팀이 일정으로 치른다.**"
+    },
+    {
+      "id": "plan",
+      "kind": "how",
+      "heading": "⭐⭐ 그래서 일정을 다르게 세운다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        }
+      ],
+      "body": "규칙이 판단이면 **통과 여부와 통과 시점을 미리 계산할 수 없다.** ⚠️ 그런데 마케팅·제휴·언론 일정은 **날짜를 요구한다.** 이 어긋남이 iOS 를 가진 팀이 매번 겪는 일이다.\n\n⭐ **그래서 실무는 세 가지로 대응한다.**\n\n**① 심사를 일정의 마지막이 아니라 중간에 둔다.** 기능이 다 끝난 뒤 제출하지 않고, **먼저 통과시켜 놓고 서버에서 켠다**(→ `feature-flag`). 앱은 이미 스토어에 있고 **켜는 것은 우리 손**이므로, 출시 날짜를 **우리가** 정할 수 있다.\n\n**② 심사에 걸리는 시간을 일정에 '분산'으로 넣는다.** \"3일\"이 아니라 **\"보통 며칠, 나쁘면 몇 배\"** 로 잡는다. ⚠️ **가이드라인 문서에는 심사 기간·재심사·항소 절차가 적혀 있지 않다** — 이 문서가 확인한 범위에서는 없었다(→ `open_questions`). **약속할 근거가 없는 것을 약속하지 않는다.**\n\n**③ 거절될 만한 것을 미리 줄인다.** 판단은 예측할 수 없지만 **가이드라인이 이름을 대는 항목**은 예측할 수 있다 — 사용자 생성 콘텐츠, 결제, 카테고리 표기 같은 것들이다. ⭐ 특히 **사용자 생성 콘텐츠**에 대해 문서가 책임 소재를 명시한다.\n\n> \"**It is your responsibility to remove content that violates this guideline** ... If we find such content, we will ask you to remove it, and provide a plan to improve your compliance ... your app **may be removed from the App Store** until you can demonstrate improvements\"\n\n**\"우리가 찾으면 지우라고 하겠다\"** 이고, 그동안 **앱이 내려갈 수 있다.** ⭐ 신고·차단·검수 기능이 **기능이 아니라 통과 조건**이라는 뜻이다.\n\n💡 **그리고 앞 절의 매도왕 공고가 다시 읽힌다** — `안드로이드 서비스는 이미 출시를 완료했으며 ... 아이폰(iOS)도 추가로 출시를 계획`. ⚠️ **어느 쪽을 먼저 내느냐는 기술 문제만이 아니다.** 안드로이드는 **날짜를 우리가 정할 수 있고**, iOS 는 **남이 정한다.**"
+    },
+    {
+      "id": "old",
+      "kind": "how",
+      "heading": "⭐⭐ 낡은 앱 — 한쪽은 말라 가고 한쪽은 내려간다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        },
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "비교 대상 — `android` 문서가 쓴 1차 자료. **날짜와 API 레벨 숫자**로 강제한다"
+        }
+      ],
+      "body": "`android` 문서가 다룬 문제를 그대로 가져와 옆에 놓는다. **결론이 다르다.**\n\n**구글** — 요구를 못 맞춘 앱을 **내리지 않는다.**\n\n> \"**Out-of-date apps are unavailable to new users** of devices that run newer versions of Android.\"\n\n**애플** — **내린다.**\n\n> ⭐⭐⭐ \"If your app no longer functions as intended or **you're no longer actively supporting it, it will be removed from the App Store.**\"\n> \"Apps that stop working or offer a degraded experience **may be removed** from the App Store at any time.\"\n\n💡 **같은 상황에 정반대의 결과다.**\n\n| | 구글 | 애플 |\n|---|---|---|\n| 낡은 앱 | ⭐ **새 사용자에게만 안 보인다** | ⭐ **제거된다** |\n| 알아채기 | ⚠️ **어렵다** — 지표가 서서히만 나빠진다 | **쉽다** — 없어진다 |\n| 기준 | **날짜와 API 레벨** | \"no longer **actively supporting**\" — ⚠️ **판단** |\n\n⭐⭐ **아이러니가 있다.** 애플 쪽이 벌은 무거운데 **알아채기는 쉽다.** 구글 쪽은 벌이 가벼워 보이지만 **조용해서 몇 달을 모를 수 있다**(`android` 의 `pitfalls` 가 그 함정을 적는다). ⭐ **\"무거운 벌\"과 \"위험한 벌\"은 다르다.**\n\n**그리고 버전 요구의 모양도 다르다.**\n\n> ⭐ \"Apps may only use public APIs and **must run on the currently shipping OS**. Keep your apps up-to-date and make sure you **phase out any deprecated features, frameworks or technologies that will no longer be supported in future versions of an OS.**\" (2.5.1)\n\n**날짜가 없다.** \"현재 출시된 OS 에서 돌아야 한다\"는 **상시 조건**이고, deprecated 된 것을 걷어내라는 것도 **기한이 없다.**\n\n⚠️⚠️ **그런데 기한이 없다는 것이 더 편한 게 아니다.** 구글의 마감은 **달력에 넣을 수 있어서** 팀이 준비한다. 애플의 상시 조건은 **아무 날짜도 없어서 미루기 쉽고**, 대신 **OS 가 올라간 어느 날 갑자기 문제가 된다.**\n\n📌 **그래서 실무 규칙 하나** — ⭐ **매년 OS 메이저 버전이 나올 때를 팀의 고정 일정으로 잡는다.** 구글은 마감이 알려 주지만 **애플 쪽은 우리가 스스로 만들어야 하는 마감**이다."
+    },
+    {
+      "id": "lang",
+      "kind": "extra",
+      "heading": "⭐ 셈의 뜻밖 — Objective-C 가 SwiftUI 보다 많다",
+      "confidence": "inferred",
+      "body": "이 낱말을 세다 예상 못 한 것이 나왔다.\n\n| | 건수 |\n|---|---|\n| `Swift\\|SwiftUI` | 390 (모집중 150) |\n| ⚠️ **`Objective-C`** | **95** (모집중 31) |\n| `SwiftUI` | 77 (모집중 30) |\n\n⭐⭐ **`Objective-C` 95건이 `SwiftUI` 77건보다 많다.** 하나는 **Swift 이전의 언어**이고 하나는 **Swift 시대의 현재 UI 방식**인데, 시장이 옛 것을 더 많이 부른다.\n\n💡 **이 백과사전이 이미 만난 형태다.** `kotlin` 문서에서 **동반 1위가 Java 62.5%** 였다 — **새 언어가 표준이 된 뒤에도 옛 코드가 그대로 있다.** 여기도 같다: **새 것이 왔는데 옛 것이 안 갔다.**\n\n⭐ **그리고 이건 지원자에게 실질적인 정보다.**\n\n- **SwiftUI 만 배우고 가면** 회사에 있는 코드의 상당 부분을 못 읽을 수 있다.\n- ⭐ **반대로 옛 코드를 읽을 수 있는 것이 차별점**이 된다 — 95건이 그것을 이름으로 대고 있다.\n\n📌 그리고 `market` 이 한 가지를 더 말한다 — ⚠️ **`iOS` 를 요구하면서 `Swift` 를 함께 대는 곳이 29.9% 뿐**이다. **나머지 70%는 언어를 안 댄다** — 크로스플랫폼(Flutter·React Native)이거나, 언어를 굳이 적지 않은 것이다.\n\n> `Cross-platform(Flutter, React Native 등) **또는** Native(Swift/Kotlin) 기반 앱 개발 및 출시` — 아르템코퍼레이션\n> `Flutter와 Dart 기반 **iOS·Android 앱 신규 개발과 출시**` — 캐폴랩스\n\n⭐ **\"iOS 개발자\"라는 말이 네이티브를 뜻하지 않는 경우가 절반 가까이 된다** — `android` 에서 크로스플랫폼 동반 33% 를 본 것과 같은 자리다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ \"iOS 개발\"을 다루지 않았다.** Swift 문법·SwiftUI·UIKit·생명주기·의존성 관리는 **공식 문서와 교재가 훨씬 잘** 한다. ⭐ 이 문서는 **`android` 와 나란히 놓았을 때만 보이는 것**만 썼다 — 그것이 이 백과사전이 더할 수 있는 유일한 값이다.\n\n**2. ⚠️ 심사 기간·재심사·항소 절차를 확인하지 못했다.** App Store Review Guidelines 를 읽었으나 **그 문서에는 기간도 항소 절차도 없었다.** \"보통 며칠\" 같은 숫자를 **지어내지 않았다** — `plan` 절이 \"분산으로 잡으라\"고만 말하는 이유다. App Store Connect Help 쪽 문서는 열지 않았다.\n\n**3. ⚠️ 인앱 결제를 다루지 않았다.** `인앱 결제|IAP` 85건이고 **거절 사유로 가장 자주 오르내리는 영역**인데, 관련 가이드라인(3.1.x)을 따로 읽지 않았다. 수수료·외부 결제 링크는 **각국 규제로 계속 바뀌는 영역**이라 더더욱 원문 확인이 필요하다.\n\n**4. `TestFlight` 를 다루지 않았다.** 8건뿐이지만 **심사 전 배포**라는 이 문서의 주제와 직결된다 — `plan` 절이 \"먼저 통과시켜 놓고 켠다\"고 말할 때 그 앞 단계에 있는 것이다.\n\n**5. 벌의 실제 빈도를 모른다.** \"expelled from the Apple Developer Program\" 은 **문서에 적힌 최대치**이고, **실제로 얼마나 자주 그러는지는 이 문서가 모른다.** ⭐ **규칙의 문장과 집행의 실제는 다를 수 있다** — 이 백과사전은 문장만 확인했다.\n\n**6. 이 문서가 다루지 않는 것.** 안드로이드 쪽 전부는 `android`, 옛 클라이언트를 서버가 떠안는 문제는 `api-versioning`, 심사를 우회해 기능을 켜고 끄는 것은 `feature-flag`, 언어는 `kotlin`(안드로이드 쪽)에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "two",
+      "kind": "compare",
+      "caption": "⭐⭐⭐ 같은 문제, 다른 해법 — 두 스토어",
+      "note": "양쪽 다 **1차 자료의 원문**이다(구글: target API level 요구사항, 애플: App Store Review Guidelines). ⭐ 이 표가 이 문서의 전부이고, `android` 를 따로 읽어야 반쪽이 채워진다. ⚠️ 인용한 날짜·레벨은 인용 시점의 값이다.",
+      "columns": [
+        "",
+        "구글 Play",
+        "애플 App Store"
+      ],
+      "rows": [
+        [
+          "규칙의 모양",
+          "**날짜 + 숫자** — \"Starting **August 31 2026** ... **API level 36** or higher\"",
+          "⭐⭐⭐ **판단** — \"any content or behavior that **we believe is over the line** ... **'I'll know it when I see it'**\""
+        ],
+        [
+          "누가 판정",
+          "**기계** (제출 시점)",
+          "⭐ **사람** — \"every app is **reviewed by experts**\""
+        ],
+        [
+          "규칙이 바뀌나",
+          "마감이 예고된다",
+          "⚠️ \"**This is a living document; new apps presenting new questions may result in new rules at any time.**\""
+        ],
+        [
+          "⭐⭐ 낡은 앱",
+          "\"**Out-of-date apps are unavailable to new users**\" — 조용히 말라 간다",
+          "\"you're no longer actively supporting it, **it will be removed from the App Store**\" — **없어진다**"
+        ],
+        [
+          "버전 요구",
+          "**연도별 마감**이 있다",
+          "\"must run on the **currently shipping OS**\" ... \"**phase out any deprecated features**\" — ⚠️ **날짜가 없다**"
+        ],
+        [
+          "⚠️ 최대 벌",
+          "앱이 안 보인다",
+          "\"**expelled from the Apple Developer Program**\" — **계정이 날아간다**"
+        ],
+        [
+          "⭐⭐ 팀이 지는 위험",
+          "**마감 관리** — 달력에 넣을 수 있다",
+          "**일정의 분산** — 언제 통과할지 계산할 수 없다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        },
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "비교 대상 — `android` 문서가 쓴 1차 자료. **날짜와 API 레벨 숫자**로 강제한다"
+        }
+      ]
+    },
+    {
+      "id": "guideline",
+      "kind": "glossary",
+      "caption": "App Store Review Guidelines 가 스스로 적는 것",
+      "note": "⭐ `kotlin` 에서 배운 **\"명세가 스스로 나열하는 목록\"** 을 찾으러 갔는데, 여기서는 **목록이 아니라 재량이** 나왔다 — 그것 자체가 발견이다. ⚠️ 원문은 훨씬 길고, 이 표는 이 문서의 축(심사의 성격)에 닿는 것만 옮겼다.",
+      "columns": [
+        "무엇에 대해",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐ 큐레이션이라는 선택",
+          "\"offering a **highly curated App Store** where every app is **reviewed by experts**\""
+        ],
+        [
+          "⭐⭐⭐ 선의 위치",
+          "\"We will reject apps for any content or behavior that **we believe is over the line**. What line, you ask? ... **'I'll know it when I see it'**.\""
+        ],
+        [
+          "⭐⭐ 규칙의 가변성",
+          "\"**This is a living document; new apps presenting new questions may result in new rules at any time.**\""
+        ],
+        [
+          "⚠️ 최대 벌",
+          "\"your apps will be removed from the store and **you will be expelled from the Apple Developer Program**\""
+        ],
+        [
+          "⭐ 유지보수 의무",
+          "\"If your app no longer functions as intended or **you're no longer actively supporting it, it will be removed**\""
+        ],
+        [
+          "OS 추종",
+          "\"must run on the **currently shipping OS** ... **phase out any deprecated features**, frameworks or technologies\" (2.5.1)"
+        ],
+        [
+          "⭐ 콘텐츠 책임",
+          "\"**It is your responsibility to remove content that violates this guideline** ... your app **may be removed** ... until you can demonstrate improvements\" (1.2)"
+        ],
+        [
+          "⚠️ 이 문서에 **없던** 것",
+          "**심사 기간 · 재심사 · 항소 절차** — 확인한 범위에서는 나오지 않았다"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐ `market` 의 동반 1위가 **Android 72.5%** 다 — `android` 쪽(iOS 61.4%)보다 **비대칭**. **iOS 만 요구하는 자리는 드물다.**",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "전체",
+          "**954건 (모집중 333)** — 태그 기준으로는 364건(5.0%)"
+        ],
+        [
+          "`Swift\\|SwiftUI`",
+          "390 (모집중 150) · 그중 `SwiftUI` 만은 **77**"
+        ],
+        [
+          "⚠️⚠️ `Objective-C`",
+          "**95 (모집중 31)** — **`SwiftUI` 77 보다 많다**"
+        ],
+        [
+          "`앱스토어\\|App Store`",
+          "282 (모집중 96)"
+        ],
+        [
+          "`인앱 결제\\|IAP`",
+          "85 (모집중 28) — ⚠️ 이 문서가 다루지 않은 영역"
+        ],
+        [
+          "⭐ `앱 심사\\|리젝\\|reject`",
+          "**55 (모집중 28)**"
+        ],
+        [
+          "`TestFlight`",
+          "8 (모집중 4)"
+        ],
+        [
+          "⚠️ 섞이는 것",
+          "**`iOS` 를 대면서 언어를 안 대는 곳이 70%** — Flutter·React Native 이거나 그냥 안 적은 것. \"iOS 개발자\"가 네이티브를 뜻하지 않는 경우가 많다"
+        ],
+        [
+          "⚠️ 셈이 흔들린 것",
+          "`android` 사이클에서 `앱 심사\\|리젝` 을 **33건**으로 셌는데 이번에 `reject` 를 넣어 **55건**이 됐다 — **패턴이 다르면 숫자가 다르다.** 두 숫자를 다 남긴다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "lang",
+      "kind": "compare",
+      "caption": "⭐ 새 것이 왔는데 옛 것이 안 갔다",
+      "note": "이 표는 이 문서가 셈에서 정리한 것이다(`confidence: inferred`). ⭐ `kotlin` 문서의 **Java 62.5%** 와 같은 형태다.",
+      "columns": [
+        "",
+        "건수",
+        "무엇"
+      ],
+      "rows": [
+        [
+          "`Swift\\|SwiftUI` 전체",
+          "**390**",
+          "현재의 언어"
+        ],
+        [
+          "⚠️ `Objective-C`",
+          "**95**",
+          "Swift 이전의 언어 — **아직 이름이 불린다**"
+        ],
+        [
+          "`SwiftUI` 만",
+          "77",
+          "Swift 시대의 UI 방식"
+        ],
+        [
+          "⭐ 그래서",
+          "—",
+          "**옛 언어(95) > 새 UI 방식(77)** — 회사의 코드는 문서보다 오래됐다"
+        ],
+        [
+          "⭐ 지원자에게",
+          "—",
+          "**옛 코드를 읽을 수 있는 것이 차별점**이 된다"
+        ],
+        [
+          "비교",
+          "—",
+          "`kotlin` 의 동반 1위가 **Java 62.5%** — 같은 형태가 두 플랫폼에 다 있다"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "iOS 앱의 출시 날짜를 약속해야 한다",
+      "pick": "⭐⭐ **먼저 심사를 통과시켜 놓고, 켜는 것은 서버에서 한다**(→ `feature-flag`)",
+      "over": "기능 완성 → 제출 → 통과하면 출시",
+      "why": "⭐⭐⭐ **애플의 규칙은 판단이라 통과 시점을 계산할 수 없다** — \"we believe is over the line\", 그리고 \"new rules at any time\". 기능을 끈 채로 통과시켜 두면 **출시 날짜를 우리가 정한다**",
+      "tradeoff": "⚠️ 꺼진 기능이 들어간 앱을 심사에 올리는 것 자체가 가이드라인 판단의 대상이 될 수 있다 — **숨긴 기능**으로 보이면 곤란해진다. 그래서 **끄는 것은 출시 시점 조절 수준**으로 쓰고, 심사에서 문제될 기능을 숨기는 데 쓰지 않는다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        }
+      ]
+    },
+    {
+      "situation": "양 플랫폼을 만드는데 어느 쪽을 먼저 낼지 정한다",
+      "pick": "⭐ **날짜가 중요하면 안드로이드를 먼저 낸다**",
+      "over": "사용자 수가 많은 쪽부터",
+      "why": "⭐⭐ **안드로이드는 출시 날짜를 우리가 정할 수 있고 iOS 는 남이 정한다.** 매도왕 공고가 그 순서다 — `안드로이드 서비스는 이미 출시를 완료했으며 ... 아이폰(iOS)도 추가로 출시를 계획`",
+      "tradeoff": "⚠️ 사용자 층이 iOS 에 쏠린 서비스라면 이 순서가 손해다. 그리고 **한쪽만 먼저 나가면 두 벌의 운영**이 시작된다 — 서버 API 가 양쪽 버전을 동시에 떠안는다(→ `api-versioning`)",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "사용자가 글·사진을 올리는 기능을 넣는다",
+      "pick": "⭐ **신고·차단·검수 기능을 같은 릴리스에 함께 넣는다**",
+      "over": "기능 먼저 내고 운영 도구는 나중에",
+      "why": "⭐⭐ 가이드라인 1.2 가 책임 소재를 명시한다 — \"**It is your responsibility to remove content that violates this guideline**\" 이고, 문제가 생기면 \"your app **may be removed from the App Store** until you can demonstrate improvements\". **운영 도구가 기능이 아니라 통과 조건**이다",
+      "tradeoff": "첫 릴리스가 무거워지고 일정이 늘어난다. 그래도 **나중에 넣으려면 그 사이에 앱이 내려갈 수 있고**, 내려간 뒤에 넣으면 **다시 심사를 받아야** 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        }
+      ]
+    },
+    {
+      "situation": "OS 메이저 버전 대응 일정을 잡는다",
+      "pick": "⭐ **애플 쪽은 우리가 마감을 만들어 붙인다**",
+      "over": "문제가 생기면 그때 대응",
+      "why": "⭐⭐⭐ **구글은 마감을 알려 주는데**(\"Starting August 31 2026\") **애플은 안 알려 준다** — \"must run on the **currently shipping OS**\" 는 **날짜 없는 상시 조건**이다. ⚠️ **기한이 없어서 더 편한 게 아니라, 미루기 쉬워서 더 위험하다**",
+      "tradeoff": "쓰지 않아도 될 시간을 매년 예약하게 된다. 그래도 **OS 가 올라간 어느 날 갑자기 깨지는 것**보다는 낫고, 애플 쪽 벌은 \"제거\"까지 간다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        },
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "비교 대상 — `android` 문서가 쓴 1차 자료. **날짜와 API 레벨 숫자**로 강제한다"
+        }
+      ]
+    },
+    {
+      "situation": "iOS 를 배워 지원하려 한다",
+      "pick": "⭐ **`iOS` 를 요구하는 공고가 무엇을 함께 요구하는지부터 본다**",
+      "over": "SwiftUI 부터 배우기",
+      "why": "⭐⭐ 이 데이터에서 **동반 1위가 Android 72.5%**(넷 중 셋)이고, **`Swift` 를 함께 대는 곳은 29.9% 뿐**이다 — 나머지는 크로스플랫폼이거나 언어를 안 적었다. ⚠️ 그리고 **`Objective-C` 95건이 `SwiftUI` 77건보다 많다**",
+      "tradeoff": "배울 것이 흩어져 보인다. 그래도 **\"iOS 개발자\"라는 말이 자리마다 다른 것을 뜻한다**는 사실을 먼저 아는 편이, 배운 것과 요구가 어긋나는 것보다 낫다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "심사 기간을 \"보통 며칠\"로 잡고 일정을 약속한다",
+      "why": "경험상 대개 빠르게 통과하니 그 값이 기본값이 된다. ⚠️ 그런데 **규칙이 판단이라 분산이 크고**, 게다가 문서가 \"**new apps presenting new questions may result in new rules at any time**\" 이라고 적는다 — **처음 보는 형태의 기능일수록 오래 걸린다**",
+      "fix": "⭐ **일정에 단일 값이 아니라 범위를 넣는다.** 그리고 **날짜 약속이 있는 릴리스는 `feature-flag` 로 분리**한다 — 먼저 통과시키고 켜는 것은 우리가 한다. ⚠️ 그리고 **이 문서는 실제 심사 기간 숫자를 확인하지 못했다** — 어디선가 본 숫자를 근거로 삼지 말고 **자기 팀의 지난 제출 기록**에서 뽑는다",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        }
+      ]
+    },
+    {
+      "trap": "`android` 의 감각으로 iOS 의 낡은 앱을 방치한다",
+      "why": "⭐⭐ 안드로이드에서는 낡은 앱이 **새 사용자에게만 안 보인다** — 앱은 그대로 있다. 같은 줄 알고 두면, 애플 쪽은 다르다: \"you're no longer actively supporting it, **it will be removed from the App Store**\"",
+      "fix": "**두 스토어의 정책을 각각 확인한다.** ⭐ 그리고 \"actively supporting\" 은 **판단**이므로 안전한 쪽으로 — **정기적인 유지보수 릴리스**를 일정에 넣는다",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        },
+        {
+          "title": "Meet Google Play's target API level requirement",
+          "url": "https://developer.android.com/google/play/requirements/target-sdk",
+          "publisher": "Google",
+          "kind": "docs",
+          "summary": "비교 대상 — `android` 문서가 쓴 1차 자료. **날짜와 API 레벨 숫자**로 강제한다"
+        }
+      ]
+    },
+    {
+      "trap": "기한이 없으니 OS 대응을 미룬다",
+      "why": "⭐⭐⭐ **구글에는 마감이 있고 애플에는 없다.** 그래서 역설적으로 **애플 쪽이 더 밀린다** — \"must run on the currently shipping OS\" 는 언제까지라는 말이 없고, deprecated 를 걷어내라는 것도 기한이 없다. **아무 날짜도 없는 일은 아무 때도 안 한다**",
+      "fix": "⭐ **매년 OS 메이저 버전 시점을 팀의 고정 일정으로 만든다.** 구글 쪽은 정책이 마감을 주지만 **애플 쪽 마감은 우리가 만들어야 한다**",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        }
+      ]
+    },
+    {
+      "trap": "사용자 생성 콘텐츠 기능을 운영 도구 없이 먼저 낸다",
+      "why": "신고·차단·검수는 눈에 안 보이는 기능이라 뒤로 밀린다. ⚠️ 그런데 가이드라인이 **책임을 앱 쪽에 못 박고**(\"It is your responsibility to remove content\"), 문제가 생기면 **개선을 보여 줄 때까지 앱이 내려갈 수 있다**",
+      "fix": "**콘텐츠 기능과 운영 도구를 같은 릴리스로 묶는다.** ⭐ 그리고 그 도구는 **앱 배포 없이 쓸 수 있어야** 한다 — 서버 쪽 관리 화면이어야 하는 이유다(앱을 다시 내면 또 심사다)",
+      "sources": [
+        {
+          "title": "App Store Review Guidelines",
+          "url": "https://developer.apple.com/app-store/review/guidelines/",
+          "publisher": "Apple",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+        }
+      ]
+    },
+    {
+      "trap": "\"iOS 개발자\" 공고를 다 같은 것으로 본다",
+      "why": "⭐ `market` 에서 **`Swift` 를 함께 대는 곳이 29.9% 뿐**이다. 나머지는 Flutter·React Native 이거나 언어를 안 적었다 — 아르템코퍼레이션 `Cross-platform(Flutter, React Native 등) **또는** Native(Swift/Kotlin)`, 캐폴랩스 `Flutter와 Dart 기반 iOS·Android`",
+      "fix": "공고에서 **①네이티브인가 크로스플랫폼인가 ②안드로이드도 하는가**(72.5%가 그렇다) **③옛 코드가 있는가**(`Objective-C` 95건) 를 가른다. ⭐ 이력서에도 그렇게 적는다"
+    },
+    {
+      "trap": "두 스토어의 셈을 같은 패턴으로 비교한다",
+      "why": "⚠️ 이 사이클이 실제로 겪었다 — `android` 문서는 `앱 심사|리젝` 을 **33건**으로 썼는데 이번에 `reject` 를 넣으니 **55건**이 됐다. **패턴이 다르면 숫자가 다르고**, 두 문서를 나란히 놓으면 **없던 차이가 있는 것처럼 보인다**",
+      "fix": "⭐ **비교하는 두 숫자는 같은 패턴으로 같은 날 센다.** 그리고 **바뀐 숫자는 감추지 말고 둘 다 남긴다** — 이 문서의 `counting` 표가 그렇게 했다"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐ \"I'll know it when I see it\"",
+      "en": "—",
+      "what": "가이드라인 서문의 문장. **선이 어디인지 적지 않겠다는 선언**이고, 이 문서의 축이다"
+    },
+    {
+      "term": "⭐ 큐레이션",
+      "en": "curation",
+      "what": "\"highly curated App Store\" — **거르는 것이 목적**이라는 선언. 심사의 성격이 여기서 나온다"
+    },
+    {
+      "term": "living document",
+      "en": "—",
+      "what": "\"new apps presenting new questions may result in **new rules at any time**\" — 규칙이 자란다"
+    },
+    {
+      "term": "currently shipping OS",
+      "en": "—",
+      "what": "⚠️ **날짜 없는 상시 조건.** 구글의 연도별 마감과 대비된다"
+    },
+    {
+      "term": "⭐ 개발자 프로그램 추방",
+      "en": "expelled from the Apple Developer Program",
+      "what": "문서에 적힌 최대 벌. **앱이 아니라 계정**이다"
+    },
+    {
+      "term": "Objective-C",
+      "en": "—",
+      "what": "Swift 이전의 iOS 언어. ⚠️ **공고 95건 — `SwiftUI` 77건보다 많다**"
+    },
+    {
+      "term": "TestFlight",
+      "en": "—",
+      "what": "심사 전 배포 경로(공고 8건). ⚠️ 이 문서가 다루지 않았다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **App Store Review Guidelines 를 열고 \"reject\"·\"remove\"·\"may\"·\"we believe\" 를 검색**한다. 그리고 **그중 \"숫자나 날짜로 판정할 수 있는 조항\"과 \"판단이 필요한 조항\"을 각각 다섯 개씩** 뽑는다.",
+      "done_when": "두 목록이 만들어지고, ⭐ **어느 쪽이 더 많은지**에 답할 수 있다. 그리고 판단 조항 중 **자기 서비스에 걸릴 만한 것 하나**를 고를 수 있다.",
+      "why": "⭐⭐⭐ 이 문서의 축(\"규칙이 판단으로 되어 있다\")을 **직접 확인하는 것**이 이 실습의 목적이다. 남이 정리한 표를 믿는 것과 **원문에서 세어 보는 것**은 다르고, ⭐ 이 백과사전이 계속 하는 일이 그것이다.",
+      "no_hardware": "맥도 아이폰도 개발자 계정도 필요 없다 — **웹에서 읽을 수 있는 문서 하나**면 된다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐ 자기 팀(또는 아는 팀)의 **지난 제출 기록에서 심사에 걸린 시간을 전부 뽑아** 가장 짧은 것·가장 긴 것·중간값을 적는다. 그리고 **가장 오래 걸린 건이 무엇이 달랐는지** 한 줄로 적는다.",
+      "done_when": "세 숫자가 나오고, ⭐ **가장 긴 것과 짧은 것의 비율**이 나온다. 그 비율이 일정에 넣을 여유의 근거가 된다.",
+      "why": "⭐⭐ **이 문서는 심사 기간 숫자를 확인하지 못했고, 가이드라인에도 없었다.** 그러니 근거로 쓸 수 있는 숫자는 **자기 팀의 기록뿐**이다 — 인터넷에서 본 \"보통 하루\" 는 우리 앱의 값이 아니다.",
+      "no_hardware": "제출 기록이 없으면 **공개된 앱 하나를 골라 버전 히스토리의 출시 간격**을 대신 본다 — 정확하진 않지만 **일정이 얼마나 들쭉날쭉한지**는 보인다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **`android` 문서를 열고 이 문서와 나란히 놓은 뒤**, 두 스토어가 **같은 상황에서 어떻게 다르게 하는지**를 자기 말로 다섯 줄 적는다. 그리고 **자기 서비스라면 어느 쪽 위험이 더 큰지** 고른다.",
+      "done_when": "다섯 줄이 나오고, ⭐ **\"우리 팀은 어느 쪽 위험이 크다\"** 에 이유와 함께 답할 수 있다.",
+      "why": "⭐⭐⭐ 이 문서와 `android` 는 **따로 읽으면 각각 반쪽**이다. 두 스토어의 차이는 **비교할 때만 보이고**, 그 비교가 실제로 팀의 일정·순서·운영 방식을 바꾼다.",
+      "no_hardware": "둘 다 이 백과사전 안에 있다.",
+      "hours": 1
+    }
+  ],
+  "checks": [
+    "구글과 애플의 규칙은 모양이 어떻게 다른가? 각각 누가 판정하는가?",
+    "\"I'll know it when I see it\" 이 팀의 일정에 뜻하는 것은?",
+    "낡은 앱에 대해 두 스토어의 결과가 어떻게 다른가? 어느 쪽이 알아채기 어려운가?",
+    "애플에는 target API level 같은 날짜 마감이 없다. 그것이 왜 더 편한 게 아닌가?",
+    "출시 날짜를 약속해야 하는 iOS 릴리스를 어떻게 다루는가?",
+    "이 데이터에서 `Objective-C` 와 `SwiftUI` 의 건수는? 그것이 뜻하는 것은?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Android/iOS 크로스 코드 리뷰를 통해 플랫폼 간 설계 차이를 비교하며 모바일 전반의 시야를 넓힐 수 있습니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/350003",
+      "where": "백패커",
+      "what_it_shows": "⭐⭐ **\"플랫폼 간 설계 차이\"** 를 회사가 직접 이름 붙인다 — 이 문서가 하려는 일이 정확히 그것이고, **양쪽을 아는 것이 채용 항목**이 된다"
+    },
+    {
+      "quote": "플랫폼별로 갈라지기 쉬운 모바일 지식을, AI 에이전트·스킬·MCP를 활용해 iOS 플랫폼과 실시간으로 이어나갑니다. 공통 아키텍처 언어·컨벤션·리뷰 파이프라인을 양 플랫폼이 함께 쓰도록 만들어, 한쪽에서 검증된 패턴이 다른 쪽으로 빠르게 전파되도록 하는 것도 이 역할의 핵심입니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/383220",
+      "where": "헤렌",
+      "what_it_shows": "⭐⭐ **\"플랫폼별로 갈라지기 쉬운\"** — 두 스토어의 차이가 코드와 팀을 갈라 놓는다는 것을 회사가 문제로 적고, **그것을 잇는 일에 사람을 뽑는다**"
+    },
+    {
+      "quote": "안드로이드 서비스는 이미 출시를 완료했으며, 예상보다 빠른 시장의 반응에 따라 아이폰(iOS)도 추가로 출시를 계획하고 있습니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/374014",
+      "where": "매도왕",
+      "what_it_shows": "⭐ **순서가 안드로이드 먼저다.** `when_to_use` 가 말하는 그 선택 — **날짜를 우리가 정할 수 있는 쪽을 먼저 낸다**"
+    },
+    {
+      "quote": "• Cross-platform(Flutter, React Native 등) 또는 Native(Swift/Kotlin) 기반 앱 개발 및 출시, 운영 경력 3년 이상 또는 그에 준하는 실력",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372136",
+      "where": "아르템코퍼레이션",
+      "what_it_shows": "⭐ **`또는`** — 회사가 둘을 대체 가능한 것으로 본다. `market` 에서 **`Swift` 동반이 29.9% 뿐**인 이유"
+    },
+    {
+      "quote": "• Flutter와 Dart 기반 iOS·Android 앱 신규 개발과 출시",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/382392",
+      "where": "캐폴랩스",
+      "what_it_shows": "**\"iOS 앱 개발\"이 Swift 를 뜻하지 않는 경우** — `android` 에서 본 크로스플랫폼 33% 와 같은 자리"
+    },
+    {
+      "quote": "• 모바일(iOS/Android) 인앱 WebView 환경을 고려해 호환성·성능·UX 이슈를 해결합니다. 문제를 재현 가능한 형태로 정리하고, 근거 기반의 대응 전략을 수립·적용합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/358718",
+      "where": "네이버페이",
+      "what_it_shows": "⭐ **웹뷰가 양쪽에서 다르다** — `android` 의 `escape` 표(웹뷰 308건)가 말한 값이 iOS 쪽에서도 그대로 치러진다"
+    },
+    {
+      "quote": "1. Android 또는 iOS 네이티브 앱 개발 및 배포 유경험자 (Swift, Kotlin 등)",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/361810",
+      "where": "이지케어텍",
+      "what_it_shows": "⭐ **`및 배포`** — 만드는 것과 **내보내는 것**을 함께 요구한다. `android`·`ios` 두 문서가 배포로 축을 잡은 이유"
+    },
+    {
+      "quote": "• iOS · Android 중 1개 이상 앱 출시 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375597",
+      "where": "이든크루",
+      "what_it_shows": "**`출시 경험`이 자격 요건 그 자체**다 — 만들어 본 것과 **내보내 본 것**을 회사가 구분한다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "android",
+      "how": "⭐⭐⭐ **정면의 짝.** 이 문서는 `android` 와 나란히 놓았을 때만 뜻이 있다 — 따로 읽으면 각각 반쪽이다"
+    },
+    {
+      "slug": "api-versioning",
+      "how": "⭐ 한쪽 플랫폼이 먼저 나가면 **서버가 두 벌의 클라이언트를 동시에** 떠안는다"
+    },
+    {
+      "slug": "feature-flag",
+      "how": "⭐⭐ **심사와 출시 날짜를 떼어 놓는 유일한 길** — 먼저 통과시키고 켜는 것은 우리가 한다"
+    },
+    {
+      "slug": "kotlin",
+      "how": "⭐ **같은 형태가 두 플랫폼에 다 있다** — 저쪽은 Java 62.5%, 여기는 `Objective-C` 95건. **새 것이 왔는데 옛 것이 안 갔다**"
+    },
+    {
+      "slug": "observability",
+      "how": "심사를 통과한 뒤 사용자 기기에서 일어난 일을 알아내는 문제"
+    },
+    {
+      "slug": "design-system",
+      "how": "⭐ 헤렌 공고의 `공통 아키텍처 언어·컨벤션 ... 양 플랫폼이 함께 쓰도록` — 두 플랫폼의 공통분모를 만드는 자리"
+    }
+  ],
+  "open_questions": [
+    "⭐ **`market` 을 채웠다** — `tech_relations.json`(2026-09-04)의 `iOS`(364건 · 5.0%)를 그대로 옮겼다. ⚠️ 본문 직접 셈은 **954건**으로 두 배 이상 차이가 난다(`android` 430 vs 1345 와 같은 형태) — 두 숫자를 다 적었다.",
+    "⚠️⚠️ **심사 기간·재심사·항소 절차를 확인하지 못했다.** App Store Review Guidelines 를 읽었으나 **그 문서에는 없었다** — App Store Connect Help 쪽은 열지 않았다. **그래서 이 문서는 \"보통 며칠\" 같은 숫자를 하나도 쓰지 않았고**, 실습 2번을 \"자기 팀 기록에서 뽑으라\"로 뒀다.",
+    "⚠️ **인앱 결제(3.1.x)를 다루지 않았다.** `인앱 결제|IAP` 85건이고 거절 사유로 가장 자주 오르내리는 영역인데 해당 조항을 읽지 않았다. ⭐ 게다가 **각국 규제로 계속 바뀌는 영역**이라 지금 적으면 금방 틀린다.",
+    "⚠️ **벌의 실제 빈도를 모른다.** \"expelled from the Apple Developer Program\" 은 **문서에 적힌 최대치**이고, 실제 집행 빈도는 확인하지 않았다 — ⭐ **규칙의 문장과 집행의 실제는 다를 수 있다.**",
+    "⚠️ **셈이 흔들린 것을 남긴다.** `android` 사이클에서 `앱 심사|리젝` 을 **33건**으로 썼는데 이번에 `reject` 를 넣어 **55건**이 됐다. **두 문서의 숫자가 다른 이유는 시장이 아니라 패턴**이다 — `pitfalls` 에 규칙으로 적었다.",
+    "⭐ **`plan` 절의 세 가지 대응은 이 문서의 정리다.** 가이드라인 원문이 \"이렇게 하라\"고 말한 것이 아니라, **규칙의 성격(판단·가변)에서 추론**했다. `confidence` 는 인용 부분만 `confirmed` 다.",
+    "**TestFlight 를 다루지 않았다**(8건). 심사 전 배포라는 이 문서의 주제와 직결되는데 관련 문서를 열지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "App Store Review Guidelines",
+      "url": "https://developer.apple.com/app-store/review/guidelines/",
+      "publisher": "Apple",
+      "kind": "docs",
+      "summary": "⭐⭐⭐ **애플이 무엇을 거절하는지 스스로 나열하는 자리** — 그런데 목록의 성격이 구글과 정반대다. 날짜와 숫자가 아니라 **판단**으로 되어 있다"
+    },
+    {
+      "title": "Meet Google Play's target API level requirement",
+      "url": "https://developer.android.com/google/play/requirements/target-sdk",
+      "publisher": "Google",
+      "kind": "docs",
+      "summary": "비교 대상 — `android` 문서가 쓴 1차 자료. **날짜와 API 레벨 숫자**로 강제한다"
+    }
+  ]
+}

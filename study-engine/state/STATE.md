@@ -4,26 +4,52 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **Android**(`android`)를 완성했다 — **107번째 문서**, 모바일 층의 **첫 문서**다.
+**없음.** 직전 사이클에서 **iOS**(`ios`)를 완성했다 — **108번째 문서**. `android` 와 짝을 이루는 문서다.
 
-### 직전 사이클 (Android)
+### 직전 사이클 (iOS)
 
-⭐⭐⭐ **축: "웹과 다른 것은 언어가 아니라 배포다."** 큐가 축까지 좁혀 놓은 덕에 1345건짜리 넓은 낱말이 요약본이 되지 않았다.
+⭐⭐⭐ **축: "`android` 와 같은 문제인데 푸는 방식이 정반대다."** 큐가 "축이 안 서면 미룬다"고 적어 뒀는데 **축이 섰다** — 1차 자료 둘을 나란히 놓으니 성격이 정면으로 갈렸다.
 
-**1차 자료 하나로 `why`·`old` 를 받쳤다** — Google Play `Meet Google Play's target API level requirement`.
-- **"Starting August 31 2026: New apps and app updates must target Android 16 (API level 36) or higher to be submitted"** — 마감·레벨·강제가 한 문장에 있다.
-- ⭐⭐⭐ **"Out-of-date apps are unavailable to new users of devices that run newer versions of Android."** — **벌이 삭제가 아니다.** 기존 사용자는 그대로, **새 사용자만 못 받는다.**
-- ⭐⭐ **"Some of these changes only apply to apps that explicitly declare support through their `targetSdkVersion`"** — **선언하지 않으면 OS 가 바뀌어도 옛 동작이 유지된다.** 이 한 문장이 `old` 절 전체의 근거다.
+> **구글** — "Starting **August 31 2026** ... **must target Android 16 (API level 36) or higher** to be submitted"
+> **애플** — ⭐⭐⭐ "any content or behavior that **we believe is over the line** ... **'I'll know it when I see it'**"
 
-**셈이 축을 확인했다**: `앱 출시|배포|런칭` **643건(모집중 208)** vs ⚠️ `타겟 SDK|API 레벨` **6건**. 그리고 **크로스플랫폼 동반 442건(33%)** — "안드로이드 개발"이 곧 네이티브가 아니다.
+**한쪽은 숫자, 한쪽은 판단.** 그리고 애플은 심사가 사람이라고 직접 적는다("every app is **reviewed by experts**"), 게다가 **"This is a living document; new apps presenting new questions may result in new rules at any time."**
 
-**예상 못 한 것**: 뷰노 `의료기기·측정장비 등 **Android 기반 장비 SW**`, 유피소프트 `**Windows 및 Android OS 환경**` — **스토어와 무관한 안드로이드**가 있다. `device` 절을 따로 뒀다.
+⭐⭐ **낡은 앱의 결과도 정반대였다** — 구글은 "unavailable to **new users**"(조용히 말라 간다), 애플은 "you're no longer actively supporting it, **it will be removed**"(없어진다).
+
+**셈의 뜻밖**: ⚠️ **`Objective-C` 95건 > `SwiftUI` 77건.** `kotlin` 의 Java 62.5% 와 같은 형태 — **새 것이 왔는데 옛 것이 안 갔다.** 그리고 **동반 1위 Android 72.5%**(넷 중 셋) — **iOS 만 요구하는 자리는 드물다.**
 
 ### 다음
 
-**iOS**(`ios`) — QUEUE 맨 위. ⚠️⚠️ **`android` 의 축을 베끼면 두 번째 요약본이 된다.** 큐에 새 축을 적어 뒀다: **"두 스토어가 같은 문제를 다르게 푼다"** — 구글은 **날짜로 제출을 막고**, 애플은 **가이드라인으로 심사에서 거른다**(기계 판정 vs 사람 판정).
+**Redis**(`redis`) — QUEUE 맨 위. ⭐ **`ios` 가 끊긴 링크를 안 남겨 사슬이 끊겼고, 그래서 층을 바꿨다**(모바일 → 데이터).
+
+⚠️⚠️ **alias 를 확인했더니 `caching` 과 `distributed-lock` 이 이미 있었다.** 그런데 **두 문서의 본문에 `AOF`·`RDB`·`영속성`·`fsync` 가 0회**다 — **축이 안 겹친다.** 축을 큐에 못 박아 뒀다: **"Redis 는 메모리에 있다 — 그런데 다들 잃지 않는 것처럼 쓴다."**
 
 ## 배운 것
+
+- ⭐⭐⭐ **두 제품의 1차 자료를 나란히 놓으면, 각자 혼자서는 안 보이던 것이 보인다.** 애플의
+  "I'll know it when I see it" 은 그 문서만 읽으면 **그냥 재치 있는 문장**이다. 구글의
+  "Starting August 31 2026 ... API level 36" **옆에 놓아야** 비로소 뜻이 선다 — **한쪽은
+  숫자로 막고 한쪽은 판단으로 거른다.** ⭐ 그리고 그 차이가 **팀이 지는 위험의 종류**를 바꾼다
+  (마감 관리 vs 일정의 분산). 📌 **경쟁 제품이 둘 있는 낱말은 각각 쓰지 말고 "같은 문제를
+  어떻게 다르게 푸나"로 묶는다** — `postgres-mysql` 에서 한 것을 여기서 다시 했다.
+
+- ⭐⭐ **"무거운 벌"과 "위험한 벌"은 다르다.** 애플은 앱을 **제거**하고 계정까지 날린다
+  ("expelled from the Apple Developer Program") — 무겁다. 구글은 **새 사용자에게만 안 보이게**
+  한다 — 가볍다. ⚠️ **그런데 실무에서 더 위험한 것은 구글 쪽이다** — 조용해서 몇 달을 모른다.
+  ⭐ **규칙을 읽을 때 벌의 크기가 아니라 "알아챌 수 있나"를 본다.**
+
+- ⭐⭐⭐ **alias 가 겹치면 포기가 아니라 "그 문서가 무엇을 안 다뤘나"를 센다.** Redis 를 큐에
+  올리려다 `caching`(`캐시`·`cache`)과 `distributed-lock`(`Redlock`·`락`)이 이미 있는 걸 봤다.
+  ⭐ 예전 같으면 여기서 접었을 텐데, **두 문서의 본문에서 낱말을 세어 봤다** — `AOF`·`RDB`·
+  `persistence`·`영속성`·`fsync` 가 **양쪽 다 0회**(Redis 자체는 39·113회 나오는데도).
+  💡 **이웃 문서가 그 도구를 많이 쓴다는 것과, 그 도구 자체를 다뤘다는 것은 다르다.**
+  (`index`/`db-index` 중복 사고 이후 세운 "alias 로 확인" 규칙의 다음 칸이다.)
+
+- ⭐⭐ **비교하는 두 숫자는 같은 패턴으로 같은 날 센다.** `android` 사이클에서 `앱 심사|리젝` 을
+  **33건**으로 썼는데 이번에 `reject` 를 넣으니 **55건**이 됐다. ⚠️ 두 문서를 나란히 놓으면
+  **없던 차이가 있는 것처럼 보인다.** ⭐ **바뀐 숫자는 감추지 말고 둘 다 남기고**, 왜 달라졌는지
+  (시장이 아니라 패턴) 적는다.
 
 - ⭐⭐⭐ **정책 문서에서 가장 중요한 문장은 "벌의 모양"이다.** Google Play 는 요구를 못 맞춘 앱을
   **내리지 않는다** — "Out-of-date apps are **unavailable to new users**". 기존 사용자는 그대로라
