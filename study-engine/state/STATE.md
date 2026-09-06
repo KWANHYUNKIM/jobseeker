@@ -4,40 +4,63 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **리팩터링**(`refactoring`)을 완성했다 — **127번째 문서**.
+**없음.** 직전 사이클에서 **문서화**(`documentation`)를 완성했다 — **128번째 문서**.
 
-### 직전 사이클 (리팩터링)
+### 직전 사이클 (문서화)
 
-⭐⭐⭐ **축: "753번 부르고 정의는 0번."**
+⭐⭐⭐ **축: "2174번 요구하고 어느 문서인지는 안 말한다."**
 
-> ⭐⭐⭐ **"If somebody talks about a system being broken for a couple of days while
->   they are refactoring, you can be pretty sure they are not refactoring."**
-> ⭐⭐⭐ "your system **should not be broken for more than a few minutes at a time**" ·
->   "I don't see how you do it on something that **doesn't have a well defined behavior**"
-> ⭐⭐⭐ **"There may be other good techniques for restructuring, but they are different.
->   I'd like us to be clear about what we mean when we use this word."**
-> ⭐⭐⭐ "without changing its **observable behavior**" ·
->   **"Refactoring isn't another word for cleaning up code"**
+> ⭐⭐⭐ **"A tutorial serves the needs of the user who is at study. A how-to guide
+>   serves the needs of the user who is at work."**
+> ⭐⭐⭐ **"the single most common conflation made in software product documentation
+>   is that between the tutorial and the how-to guide."**
+> ⭐⭐⭐ (튜토리얼) "**It doesn't offer choices or alternatives.**" · "**eliminates the unexpected**"
+> ⭐⭐⭐ (하우투) **"A how-to guide cannot promise safety."**
+> ⭐⭐⭐ 섞이면 — "**will not bring them to success**"
 
-⭐⭐⭐ **셈: 753 대 0**(`동작을 바꾸지|외부 동작|기능 변경 없이`). **다섯 번째 완전한 0**인데
-⚠️ **성격이 다르다** — 앞의 넷은 **개념의 이름**이 안 불린 것이고 여기는 **정의 자체**다.
+⭐⭐⭐ **셈: 2174 대 20**(`README`). ⭐⭐ 그리고 **`위키|Notion|Confluence` 1133건** —
+**둘 곳은 정하고 무엇을 쓸지는 안 정한다.**
 
-⭐⭐ 그 밖: `유지보수` **4146** · `레거시` 766 · `구조 개선` 387 · **AI 도구와 함께 145** ·
-⚠️ `재작성|전면 개편` **26건뿐** — **거의 다 "리팩터링"으로 불린다.**
+⭐⭐⭐ **뜻밖의 발견**: 이 백과사전 자신이 **네 칸 중 둘을 이미 채우고 있었다** —
+`openapi`(레퍼런스, 문서화 17회) · `oncall`(하우투, 런북 18회). ⚠️ **그런데 "문서화"
+자체를 다루는 문서는 127개 중 하나도 없었다** — 공고 2174건과 정확히 같은 모양이다.
 
-⭐ **alias 이전 세 번째**: `technical-debt` → `refactoring`(`리팩터링`·`리팩토링`).
-⚠️ `레거시` 는 충돌이 나서 **`technical-debt` 에 그대로 뒀다**(그쪽이 `레거시` 766 대
-`부채` 227 대비를 이미 다뤘다).
+⚠️⚠️ **첫 페이지(diataxis.fr)를 제대로 못 열었다** — 네 종류의 **이름**까지만 확인했고
+정의와 두 축은 못 얻었다. **`javascript`·`aws` 규칙대로 본문에도 밝혔다.**
 
 ### 다음
 
-**문서화**(`documentation`) — QUEUE 맨 위.
+**성능 최적화**(`performance`) — QUEUE 맨 위.
 
-⭐⭐⭐ **층이 통째로 비어 있다**(127개 중 문서화를 다루는 것이 없다) **그리고 2037건**이다.
-축은 **Diátaxis** — 문서를 넷으로 가르고 **섞으면 넷 다 실패한다**고 말한다.
-⚠️ **못 열면 `성능 최적화`(2725건)로 바꾼다.**
+⭐⭐⭐ **층이 통째로 비어 있다** — `caching`·`db-index`·`load-test`·`gc` 가 **수단**은
+다루는데 **"언제·무엇을 고치나"라는 본체가 없다.** 셈 **2725건**(`문서화`보다 크다).
+⚠️ **관련 셈이 전부 미확인이다 — 세고 나서 축을 정한다.**
+축 후보는 **Knuth 인용의 잘린 뒷문장**("Yet we should not pass up our opportunities in
+that critical 3%") 또는 **Gregg 의 USE Method**. ⚠️ **못 열면 `온보딩`(749건)으로 바꾼다.**
 
 ## 배운 것
+
+- ⭐⭐⭐ **이 백과사전 자신이 공고와 같은 실수를 하고 있었다.** `openapi` 는 레퍼런스 칸을,
+  `oncall` 은 하우투 칸을 이미 채우고 있었는데 — **"문서화"가 네 칸으로 나뉜다는 사실을
+  적은 문서는 127개 중 하나도 없었다.** ⚠️ 공고 2174건이 하는 일과 **정확히 같은 모양**이다.
+  📌 ⭐⭐ **다음부터 "이 낱말이 덮고 있는 것들"을 셀 때, 이미 쓴 문서들이 그중 무엇을
+  채우고 있는지도 함께 센다** — 백과사전이 자기 빈자리를 그렇게 찾을 수 있다.
+
+- ⭐⭐ **"한 낱말이 여러 일을 덮는다"는 `refactoring` 의 반대 방향이다.**
+  `refactoring` 은 **한 낱말이 여러 일에 잘못 붙는 것**(며칠 깨지는 재작성도 "리팩터링")
+  이었고, `documentation` 은 **한 낱말이 여러 일을 정당하게 덮고 있어 어느 것인지
+  아무도 안 밝히는 것**이다. ⭐ **전자는 판정 기준이 필요하고, 후자는 분류가 필요하다.**
+  📌 큰 낱말을 만나면 **둘 중 어느 쪽인지 먼저 가른다.**
+
+- ⭐⭐ **"둘 곳"과 "쓸 것"을 갈라 세면 조직이 어디서 멈췄는지 보인다.**
+  `위키|Notion|Confluence` **1133건** 대 `README` **20건** — ⭐ **도구는 정했고 종류는
+  안 정했다.** 📌 **다음부터 실천 낱말을 셀 때 "그 일을 담는 그릇의 이름"도 함께 센다** —
+  그릇만 크면 그 실천은 대개 이름 없이 굴러가고 있다.
+
+- ⭐ **1차 자료의 하위 페이지가 첫 페이지보다 나을 때가 있다.** `diataxis.fr` 첫 페이지는
+  목차만 왔는데 `/tutorials-how-to/` 는 **축을 통째로 줬다** — ⚠️ 그 페이지가 따로 있는
+  이유가 곧 **"가장 흔한 혼동"이기 때문**이었다. 📌 **첫 페이지가 안 열리면 포기하지 말고,
+  그 자료가 따로 페이지를 낸 주제를 먼저 연다** — 저자가 중요하다고 판단한 자리다.
 
 - ⭐⭐⭐ **완전한 0에도 두 종류가 있다 — 개념의 이름이 없는 것과 정의가 없는 것.**
   `HATEOAS`·`공유 책임`·`유비쿼터스 언어`·`애그리거트` 는 **개념의 이름**이 안 불린 것이라

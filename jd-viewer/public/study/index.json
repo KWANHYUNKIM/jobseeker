@@ -2322,6 +2322,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "documentation",
+      "title": "문서화 — 2174번 요구하고 어느 문서인지는 안 말한다",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **\"문서화\"는 한 낱말이 네 가지 다른 일을 덮고 있다.** 배우려는 사람과 일하려는 사람은 다른 것이 필요한데 — ⭐ **그 둘을 섞는 것이 소프트웨어 문서에서 가장 흔한 혼동**이다. ⚠️ 공고는 이 낱말을 **2174번** 부르는데 `README` 는 **20건**이다.",
+      "aliases": [
+        "문서화",
+        "documentation",
+        "기술 문서",
+        "README",
+        "ADR",
+        "Diátaxis"
+      ],
+      "sections": 4,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
