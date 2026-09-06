@@ -8,64 +8,63 @@
 
 ## 지금 파는 중
 
-**WarpStream** (US · SaaS — Kafka 호환 스트리밍) — **프로파일까지 썼다**(PROMPT 3단계). 도메인 3개 · 기능 0. ⭐ **회사 100개가 됐다.** 큐 **1/3**.
+**WarpStream** (US · SaaS) — 도메인 3개 · **기능 1개**(`order-only-before-reading`). 남은 둘은 본문 미독이다(Orbit 이전 · 관측). 회사 100개 · 큐 1/3.
 
-### 이번 사이클 — 신규(6순위)
+### 이번 사이클 — `순서는 읽히기 전에만 정해지면 된다`
 
-⚠️ **이 회사는 줄이는 대상이 특이하다** — **저장 비용이 아니라 가용영역 사이의 네트워크 비용이다**(재구성). **`zero disk 아키텍처`** 로 **로컬 디스크·캐시·EBS 없이 객체 저장소에서만 돌고**, **S3 를 저장 계층이 아니라 네트워킹 계층으로 쓴다.**
+⭐ **`언제 필요한가` 를 물어 답을 얻은 사례다.** 회사의 문장이 전부다 — **`시퀀싱은 로그에서 레코드를 소비하기 전에 반드시 완료돼야 하지만, 성공 응답을 반환하기 전에 시퀀싱이 끝나기를 기다릴 필요는 없다.`**
 
-**사업** — **BYOC**(고객 클라우드 안에서 돌고 데이터는 고객 쪽에 남는다) · **Kafka 비용 80% 이상 절감 주장** · **에이전트·노드·vCPU 당 과금 없음** · **복제에 추가 요금 없음**(**옮길 로컬 데이터가 없어서**). ⚠️ **소유가 두 겹으로 바뀌었다** — **2024년 9월 Confluent 인수**, **2026년 3월 17일 IBM 이 Confluent 인수 완료.**
+건진 것 다섯:
 
-### ⚠️ 이 사이클에서 걸린 것 — category 값
+- ⚠️ **기다림의 정체를 갈랐다** — **`데이터가 이미 객체 저장소에서 내구성을 얻었는데도 커밋이 끝나기 전까지 그 파일은 WarpStream 안에서 「존재하지」 않는다.`** **한 걸음이 두 가지 일(안전과 순서)을 하고 있었고 그중 하나만 급했다**(재구성).
+- ⚠️ **디스크를 없앤 대가가 숫자로 나온다** — **`전통적인 객체 저장소에서 PUT 의 최소 지연은 수백 밀리초 수준인데 최신 SSD 는 1밀리초 안에 I/O 를 끝낸다.`** **S3 Express One Zone 으로 중앙값 105ms · p99 170ms 까지 오고, 지연 시퀀싱으로 중앙값 33ms · p99 50ms(70% 감소, 비용 증가 없음).**
+- ⚠️ **내준 것을 셋으로 세어 적는다** — **오프셋을 전부 0 으로 돌려주고** · **멱등 프로듀서 거절** · **트랜잭션 클라이언트 거절**, 그리고 **외부 일관성 상실**(먼저 ack 받은 것의 오프셋이 나중 것보다 작다는 보장이 깨진다). **그래서 기본값이 아니라 별도 토픽 종류로 뒀다.**
+- ⭐ **양보할 수 있는 것과 안 되는 것을 갈랐다** — 일관성은 내줬지만 **`느린 경로는 데이터 손실 제로를 보장한다. 빠른 경로가 파일을 제대로 커밋하지 못해도 느린 경로가 저널된 데이터의 100% 가 결국 시퀀싱되어 소비자에게 보이도록 보장한다.`**
+- ⚠️ **지연을 위해 만든 구조가 장애 대응 수단이 됐다** — Ripcord 모드가 **모든 토픽을 Lightning 처럼 다뤄** 제어 평면 없이도 쓰기를 잇는다. **다만 반쪽이다** — **`데이터 소비와 모든 읽기 연산`** 이 막히고 **`제어 평면이 없으면 새 에이전트가 시작할 수 없다`**. ⭐ **일관된다 — 순서는 읽기 전에 필요하다고 했으니 읽으려면 순서를 정할 사람이 있어야 한다**(재구성).
 
-**`인프라` 로 썼다가 검증이 오류로 잡았다.** 허용값은 **`핀테크|커머스|소셜|메시징|스트리밍|검색|광고|모빌리티|게임|SaaS|기타`** 다. **같은 축의 회사들**(ClickHouse·Grafana Labs·ScyllaDB·PlanetScale·TigerBeetle·Honeycomb)**이 전부 `SaaS` 라 그걸 따랐다.** ⚠️ **새 회사를 세울 때는 schema 의 허용값을 먼저 보거나 같은 축의 이웃을 본다.**
+⭐ **이 엔진에서 드문 일 — `research.papers` 를 실제로 채웠다.** **LazyLog**(SOSP 2024 최우수, UIUC)가 뿌리다. ⚠️ **논문 객체는 `authors`·`year`·`venue`·`confidence` 가 필요하고, `sources` 목록에는 넣으면 안 된다**(거기는 `summary` 를 요구한다). **검증이 둘 다 잡아 줬다.**
 
-### 읽어 둔 것 — 확인한 글 하나에서 (다음 사이클의 재료)
-
-- ⚠️ **비싼 데 먼저 앉히고 몇 분 뒤 싼 데로 옮긴다** — **`Rapid Bucket 의 실효 저장 비용이 일반 지역 GCS 버킷보다 10배 이상 높다`** 라서 **`새로 수집한 데이터를 GCP Rapid Bucket 정족수에 안착시켜 지연을 최소화하고, 몇 분 뒤에 그 파일들을 지역 GCS 버킷으로 비동기 압축한다`**.
-- ⚠️ **거절한 대안이 명시적이다** — **`장수명 파일을 쓰고 거기에 append 하는 모드로 WarpStream 을 재설계할 수도 있었지만, 그것은 크고 침습적인 변경이었을 것이다`**.
-- ⭐ **제목과 결과가 다른 것을 스스로 적는다** — 제목은 `40배 빠르게` 인데 실제는 **`P99 3배 감소`** 이고, 이유까지 밝힌다: **`쓰는 데이터 양이 늘면 Rapid 와 일반 GCS 버킷의 격차가 줄고, 이 측정에는 압축 같은 버킷 외 작업도 포함되기 때문`**.
-- **한계도 적는다** — **Rapid Bucket 은 WarpStream 의 Lightning Topics 기능과 호환되지 않는다.**
+⚠️ **조합의 구멍이 앞 사이클과 이어졌다** — 프로파일 때 적어 둔 **`Rapid Bucket 은 Lightning Topics 와 호환되지 않는다`** 의 정체가 이번에 밝혀졌다. **지연을 줄이는 두 방법이 서로 겹쳐 쓰이지 못한다.**
 
 ### 다음 사이클 — 확장(2순위)
 
-`--gaps` 가 **`디스크 없이 스트리밍한다`** 를 부를 것이다. ⚠️ **확인한 글은 곁가지(GCP Rapid Bucket)라 본체가 비어 있다** — **객체 저장소만으로 Kafka 의 순서·내구성을 어떻게 지키는지.** ⏳ **`The Art of Being Lazy(log)`(2026-02-04, 지연 시퀀싱)가 그 답에 가장 가까워 보이니 그걸 먼저 연다.**
+`--gaps` 가 **`다른 Kafka 에서 옮겨 온다`**(Orbit, 2026-08-18) 또는 **`클러스터 안에서 무슨 일이 있었는지 본다`** 를 부를 것이다. ⏳ **둘 다 본문 미독 · URL 확보돼 있다.**
 
-⏳ **연표 재료가 보인다** — **`WarpStream is Dead, Long Live WarpStream`** 이라는 글이 있다. **인수 뒤 방향 전환 이야기일 수 있다.**
+⏳ **연표 재료** — **`WarpStream is Dead, Long Live WarpStream`**(인수 뒤 방향 전환 이야기일 수 있다).
 
-⏳ **보강 거리 넷** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부(예측 UIC).
+⏳ **보강 거리 넷** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부.
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① `AI 에이전트를 어디까지 믿나` 9곳 + ⏳ Pinterest 2부 · ⏳ WarpStream MCP 서버** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay.
+**① `AI 에이전트를 어디까지 믿나` 9곳 + ⏳ Pinterest 2부 · WarpStream MCP** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay.
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ ⭐ `자기 성과를 어디까지 주장하나` 8곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / **WarpStream**(⚠️ **제목은 40배인데 본문이 P99 3배라고 정정한다 — 이 축에서 가장 드문 종류다**).
+**③ ⭐ `자기 성과를 어디까지 주장하나` 8곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / **WarpStream**(제목은 40배인데 본문이 P99 3배라고 정정한다 · 내준 것을 셋으로 세어 적는다).
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
 **⑤ `한 코어에 하나씩인가, 여러 코어가 나눠 쓰나`** — ScyllaDB / ClickHouse / Grafana Labs.
 
-**⑥ ⭐ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / **WarpStream**(⚠️ **복제를 없애는 쪽으로 갔다 — `옮길 로컬 데이터가 없어 복제에 요금을 받지 않는다`**).
+**⑥ ⭐ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / **WarpStream**(복제를 아예 없앴다 — 옮길 로컬 데이터가 없다).
 
 **⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack.
 
-**⑧ ⭐ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / **WarpStream**(비싼 버킷에 먼저 앉히고 몇 분 뒤 싼 데로).
+**⑧ ⭐ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / **WarpStream**(디스크를 되돌릴 수 없으니 두 겹으로 갚는다 — 더 빠른 저장소, 그다음 기다림 자체를 줄이는 구조).
 
-**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가`** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / ⏳ **WarpStream**(Orbit — 남의 Kafka 를 옮겨 오는 쪽이다).
+**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가`** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / ⏳ WarpStream(Orbit).
 
 **⑩ `관측 비용을 어디까지 줄이나`** — Razorpay · Airbnb(사는 쪽) / Grafana Labs · Honeycomb · ⏳ VictoriaMetrics(파는 쪽).
 
-**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / ⏳ **WarpStream**(객체 저장소 하나에 전부를 건다).
+**⑪ ⭐ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / **WarpStream**(객체 저장소 하나에 전부를 걸고, 제어 평면이 죽는 경우를 Ripcord 로 따로 준비한다).
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
-**⑬ `애매할 때 어느 쪽으로 넘어지나` 6곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest.
+**⑬ ⭐ `애매할 때 어느 쪽으로 넘어지나` 7곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / **WarpStream**(⚠️ **일관성 쪽으로 넘어진다 — 캐시를 `일관성보다 가용성을 선호하도록` 조정하면서도 데이터 손실은 제로로 못 박는다**).
 
 **⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest.
 
-**⑮ `언제 쪼개고 언제 합치나`** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest.
+**⑮ ⭐ `언제 쪼개고 언제 합치나`** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / **WarpStream**(⚠️ **한 걸음이 하던 두 일을 갈랐다 — 내구성과 순서**).
 
 **⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest.
 
@@ -75,7 +74,9 @@
 
 **⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / ⏳ Plaid · Snyk.
 
-⏳ **⑳ 새로 보인다 — `없앨 수 있는 것을 없앤다`** — **WarpStream**(디스크를 아예 뺐다) / **TigerBeetle**(⏳ 확인 필요) / **Oxide Computer**(⏳ 확인 필요). ⚠️ **줄이는 게 아니라 없애는 결정은 성격이 다르다** — 되돌리기가 어렵고 그 대신 얻는 것이 크다(재구성).
+**⑳ `없앨 수 있는 것을 없앤다`** — **WarpStream**(디스크를 아예 뺐다 — **되돌릴 수 없어서 나머지 설계가 전부 그 대가를 갚는 일이 된다**) / ⏳ TigerBeetle · Oxide Computer.
+
+⏳ **㉑ 새로 보인다 — `논문을 어디까지 그대로 쓰나`** — **WarpStream**(LazyLog 를 자기 제어 평면에 옮겨 실으면서 **논문이 다루지 않은 Kafka 프로토콜 호환의 값을 스스로 치렀다** — 오프셋 0 과 멱등·트랜잭션 거절) / ⏳ ScyllaDB · TigerBeetle · ClickHouse(확인 필요).
 
 ## 지금의 진짜 상태
 

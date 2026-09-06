@@ -74,8 +74,93 @@
     {
       "name": "디스크 없이 스트리밍한다",
       "why": "⚠️ **이 회사의 전부가 여기서 나온다** — **`zero disk 아키텍처`** 로 **로컬 디스크·캐시·EBS 없이 객체 저장소에서만 돈다.** ⚠️ **줄이는 대상이 저장 비용이 아니라 가용영역 사이의 네트워크 비용이다**(재구성). ✅ **본문 확인함** — `One Weird Trick`(2026-07-20)이 **객체 저장소의 지연을 어떻게 다루는지**를 말한다. ⏳ **`The Art of Being Lazy(log)`(2026-02-04, 지연 시퀀싱)는 미독**이다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "객체 저장소 (S3 · S3 Express One Zone)",
+          "solves": "⚠️ **디스크가 없어 여기가 유일한 내구성 자리이고, S3 를 네트워킹 계층으로 써서 가용영역 간 비용을 없앤다.**",
+          "limits": "⚠️ **`전통적인 객체 저장소에서 PUT 의 최소 지연은 수백 밀리초 수준인데 최신 SSD 는 1밀리초 안에 끝낸다`** — S3EOZ 로도 중앙값 105ms · p99 170ms 였다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+              "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+              "publisher": "WarpStream",
+              "date": "2026-02-04",
+              "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+            }
+          ]
+        },
+        {
+          "tech": "중앙 제어 평면",
+          "solves": "**`어떤 에이전트든 어떤 파티션의 Produce 요청이든 처리할 수 있어서`** 결정론적 오프셋을 중앙이 정한다.",
+          "limits": "⚠️ **`데이터가 이미 객체 저장소에서 내구성을 얻었는데도 커밋이 끝나기 전까지 그 파일은 존재하지 않는다`** — 순서가 응답의 발목을 잡는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+              "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+              "publisher": "WarpStream",
+              "date": "2026-02-04",
+              "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+            }
+          ]
+        },
+        {
+          "tech": "Lightning Topics (지연 시퀀싱)",
+          "solves": "⚠️ **`시퀀싱은 소비하기 전에 반드시 끝나야 하지만 성공 응답 전에 끝나야 하는 것은 아니다`** — **중앙값 33ms · p99 50ms · 70% 감소 · 비용 증가 없음.**",
+          "limits": "⚠️ **오프셋을 0 으로 돌려주고 · 멱등 프로듀서와 트랜잭션 클라이언트를 거절하며 · 외부 일관성을 잃는다.** **`Rapid Bucket 과도 호환되지 않는다.`**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+              "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+              "publisher": "WarpStream",
+              "date": "2026-02-04",
+              "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+            },
+            {
+              "title": "One Weird Trick to Make Rapid Storage 40x Faster",
+              "url": "https://www.warpstream.com/blog/one-weird-trick-to-make-rapid-storage-40x-faster",
+              "publisher": "WarpStream",
+              "date": "2026-07-20",
+              "summary": "GCP Rapid Bucket 으로 지연을 줄이려 했으나 저장 비용이 일반 지역 GCS 의 10배 이상이라, 새 데이터를 Rapid Bucket 정족수에 먼저 안착시키고 몇 분 뒤 지역 GCS 로 비동기 압축하는 구조를 골랐다. 장수명 파일에 append 하는 재설계는 크고 침습적이라 접었다. 제목의 40배와 달리 실제 결과는 P99 3배 감소였다고 스스로 적는다."
+            }
+          ]
+        },
+        {
+          "tech": "느린 경로 (배경 스캔)",
+          "solves": "⚠️ **`느린 경로는 데이터 손실 제로를 보장한다`** — 커밋 안 된 파일을 찾아 **`저널된 데이터의 100% 가 결국 시퀀싱되어 소비자에게 보이도록`** 한다.",
+          "limits": "⚠️ **배경 스캔이라는 상시 작업이 는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+              "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+              "publisher": "WarpStream",
+              "date": "2026-02-04",
+              "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+            }
+          ]
+        },
+        {
+          "tech": "Ripcord 모드",
+          "solves": "제어 평면이 죽어도 **객체 저장소를 서비스 디스커버리로 폴백**하고 **캐시를 일관성보다 가용성 쪽으로 조정**해 쓰기를 잇는다.",
+          "limits": "⚠️ **`데이터 소비와 모든 읽기 연산` 이 막히고, 토픽 관리·컨슈머 그룹도 막히며, `제어 평면이 없으면 새 에이전트가 시작할 수 없다`.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+              "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+              "publisher": "WarpStream",
+              "date": "2026-02-04",
+              "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "order-only-before-reading"
+      ]
     },
     {
       "name": "다른 Kafka 에서 옮겨 온다",
@@ -90,9 +175,542 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "order-only-before-reading",
+      "name": "순서는 읽히기 전에만 정해지면 된다",
+      "domain": "디스크 없이 스트리밍한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **디스크를 없앤 대가가 지연으로 돌아온다** — **`전통적인 객체 저장소에서 PUT 연산의 최소 지연은 수백 밀리초 수준인데, 최신 SSD 는 1밀리초 안에 I/O 를 끝낸다.`** ⚠️ **그런데 이 회사에는 지연의 원인이 하나 더 있다** — **에이전트가 상태 없고 리더도 없어서**(**`어떤 에이전트든 어떤 파티션의 Produce 요청이든 처리할 수 있다`**) **순서를 중앙 제어 평면이 정한다.** 그래서 쓰기가 **버퍼 → 객체 저장소에 파일 쓰기 → 제어 평면에 메타데이터 커밋(여기서 오프셋이 붙는다) → 응답** 네 걸음이었고, **`데이터가 이미 객체 저장소에서 내구성을 얻었는데도 이 단계가 끝나기 전까지 그 파일은 WarpStream 안에서 「존재하지」 않는다`**. **내구성은 이미 확보됐는데 순서 때문에 기다린다**(재구성).",
+        "metrics": [
+          {
+            "label": "⚠️ 디스크를 없앤 값",
+            "value": "**`전통적인 객체 저장소에서 PUT 의 최소 지연은 수백 밀리초 수준인데 최신 SSD 는 1밀리초 안에 끝낸다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "label": "먼저 한 것",
+            "value": "**S3 Express One Zone 으로 중앙값 105ms · p99 170ms** — **그다음은 구조를 바꿔야 했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 결과",
+            "value": "**`중앙값 produce 지연 33ms, p99 50ms — 이전 S3EOZ 결과 대비 70% 감소. 무엇보다 Lightning Topics 는 이 지연 감소를 비용 증가 없이 제공한다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 내주는 것 셋",
+            "value": "**오프셋을 전부 0 으로 돌려준다** · **`멱등 프로듀서` 를 켠 클라이언트의 쓰기를 거절한다** · **트랜잭션 클라이언트의 쓰기를 거절한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "label": "손실은 없다",
+            "value": "**`느린 경로는 데이터 손실 제로를 보장한다. 빠른 경로가 파일을 제대로 커밋하지 못해도 느린 경로가 저널된 데이터의 100% 가 결국 시퀀싱되어 소비자에게 보이도록 보장한다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "label": "이 구조가 파는 것",
+            "value": "**BYOC · Kafka 비용 80% 이상 절감 주장** — **가용영역 간 네트워크 비용을 없애는 것이 본체다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "With WarpStream, Confluent Got a New Type of Kafka Platform",
+                "url": "https://thenewstack.io/with-warpstream-confluent-got-a-new-type-of-kafka-platform/",
+                "publisher": "The New Stack",
+                "date": "2024",
+                "summary": "WarpStream 의 zero disk 아키텍처 — 로컬 디스크도 캐시도 EBS 볼륨도 쓰지 않고 오롯이 객체 저장소에서 돈다. S3 를 저장 계층만이 아니라 네트워킹 계층으로 써서 가용영역 간 네트워크 비용을 없앤다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 기다리고 있는지 볼 때",
+          "thought": "⚠️ **기다림의 정체를 갈랐다** — **내구성은 객체 저장소에 쓰는 순간 이미 확보됐다.** 남은 것은 **순서**뿐인데, 그것 때문에 응답이 늦는다. **한 걸음이 두 가지 일을 하고 있었고, 그중 하나만 급했다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "순서가 언제 필요한지 물을 때",
+          "thought": "⚠️ **이 기능의 전부가 한 문장이다** — **`시퀀싱은 로그에서 레코드를 소비하기 전에 반드시 완료돼야 하지만, 성공 응답을 반환하기 전에 시퀀싱이 끝나기를 기다릴 필요는 없다.`** ⭐ **`필요하다` 를 `언제 필요한가` 로 바꿔 물은 것이 답이었다**(재구성). **논문(LazyLog, SOSP 2024 최우수)의 관찰도 같다 — 읽는 쪽은 쓰는 쪽과 시간적으로 자연히 분리돼 있다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 잃는지 셀 때",
+          "thought": "⚠️ **잃는 것을 흐리지 않고 셋으로 세어 적는다** — **오프셋을 0 으로 돌려주고**, **멱등 프로듀서를 거절하고**, **트랜잭션 클라이언트를 거절한다.** 그리고 가장 무거운 것: **`클라이언트가 레코드 하나를 produce 해 성공 응답을 받고, 그다음 또 하나를 produce 해 두 번째 성공 응답을 받으면, 두 번째 메시지의 오프셋이 첫 번째보다 반드시 크다`** 는 보장이 **여기서는 성립하지 않는다.** ⚠️ **그래서 이것을 기본값이 아니라 별도 토픽 종류(Lightning Topics)로 뒀다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "제어 평면(Control Plane)",
+            "what": "⚠️ **순서를 정하는 중앙** — **`어떤 에이전트든 어떤 파티션의 Produce 요청이든 처리할 수 있어서`** 결정론적 오프셋을 여기서 준다"
+          },
+          {
+            "name": "Classic Topic (네 걸음)",
+            "what": "버퍼 → 객체 저장소 → **제어 평면 커밋(오프셋 배정)** → 응답. ⚠️ **`데이터가 이미 내구성을 얻었는데도 이 단계가 끝나기 전까지 파일은 존재하지 않는다`**"
+          },
+          {
+            "name": "Lightning Topic (세 걸음)",
+            "what": "⚠️ **버퍼 → 객체 저장소 → 즉시 응답**, **커밋은 배경에서 비동기로**"
+          },
+          {
+            "name": "빠른 경로 · 느린 경로",
+            "what": "⚠️ **느린 경로는 제어 평면이 스캔 작업을 배정해 커밋 안 된 파일을 찾아낸다** — **`데이터 손실 제로를 보장한다`**"
+          },
+          {
+            "name": "Ripcord 모드",
+            "what": "⚠️ **모든 토픽을 Lightning 처럼 다뤄 제어 평면이 없어도 버틴다** — 에이전트가 **`제어 평면 대신 객체 저장소를 서비스 디스커버리 수단으로 자동 폴백`** 한다"
+          },
+          {
+            "name": "외부 일관성",
+            "what": "⚠️ **잃는 것의 이름** — **먼저 ack 받은 것의 오프셋이 나중 것보다 작다는 보장**이 Lightning 에서는 없다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **읽히기 전까지는 순서가 없어도 된다** — 소비 시점에만 있으면 된다",
+          "**내구성은 언제나 즉시 확보된다** — 객체 저장소에 쓰는 순간",
+          "⚠️ **데이터는 절대 잃지 않는다** — 빠른 경로가 실패해도 느린 경로가 100% 시퀀싱한다",
+          "⚠️ **일관성을 내주는 것은 기본값이 아니다** — 별도 토픽 종류로 고른다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**레코드를 메모리에 버퍼링한다**",
+            "why": "디스크가 없으니 모으는 자리가 메모리다"
+          },
+          {
+            "step": "**객체 저장소에 파일을 쓴다**",
+            "why": "⚠️ **여기서 내구성이 확보된다** — 그다음의 기다림은 순서 때문이지 안전 때문이 아니다(재구성)"
+          },
+          {
+            "step": "⚠️ **바로 응답한다 — 시퀀싱을 기다리지 않는다**",
+            "why": "⚠️ **`시퀀싱은 소비하기 전에 반드시 끝나야 하지만, 성공 응답을 반환하기 전에 끝나야 하는 것은 아니다`**"
+          },
+          {
+            "step": "**배경에서 제어 평면에 커밋한다**(빠른 경로)",
+            "why": "**순서는 뒤에서 붙는다** — 소비자가 읽기 전까지만 붙으면 된다"
+          },
+          {
+            "step": "⚠️ **제어 평면이 주기적으로 스캔 작업을 에이전트에 배정한다**(느린 경로)",
+            "why": "⚠️ **빠른 경로가 실패했을 때를 위해** — 커밋 안 된 파일을 객체 저장소에서 찾아낸다"
+          },
+          {
+            "step": "**에이전트가 파일의 메타데이터 부분만 내려받아 커밋에 필요한 것을 뽑고 비동기로 제어 평면을 부른다**",
+            "why": "⚠️ **`저널된 데이터의 100% 가 결국 시퀀싱되어 소비자에게 보이도록`** — **데이터 손실 제로**"
+          },
+          {
+            "step": "**Ripcord 모드에서는 모든 토픽을 Lightning 처럼 다룬다**",
+            "why": "⚠️ **제어 평면이 죽어도 쓰기는 계속되게** — 에이전트가 **객체 저장소를 서비스 디스커버리로 폴백**하고 **내부 캐시를 일관성보다 가용성 쪽으로 조정**한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "객체 저장소의 지연을 어떻게 줄일 것인가",
+            "chosen": "⚠️ **먼저 더 빠른 저장소로, 그다음 구조로**",
+            "alternatives": [
+              "로컬 디스크를 다시 도입",
+              "캐시 계층 추가"
+            ],
+            "tradeoff": "**`전통적인 객체 저장소에서 PUT 의 최소 지연은 수백 밀리초 수준인데 최신 SSD 는 1밀리초 안에 끝낸다`** — 격차가 크다. **S3 Express One Zone 으로 중앙값 105ms · p99 170ms 까지 왔고 `그 이상은 구조 혁신이 필요했다`.** ⚠️ **디스크를 없앤 것이 이 회사의 정체성이라 되돌리는 선택지는 없다** — **제약을 없앨 수 없으니 다른 데서 갚아야 했다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "question": "응답 전에 무엇을 기다려야 하는가",
+            "chosen": "⚠️ **내구성만 기다린다 — 순서는 기다리지 않는다**",
+            "alternatives": [
+              "네 걸음 유지(커밋 후 응답)",
+              "오프셋을 미리 예약"
+            ],
+            "tradeoff": "⚠️ **이 기능의 전부다** — **`시퀀싱은 로그에서 레코드를 소비하기 전에 반드시 완료돼야 하지만, 성공 응답을 반환하기 전에 시퀀싱이 끝나기를 기다릴 필요는 없다.`** **한 걸음이 두 가지 일(안전과 순서)을 하고 있었고 그중 하나만 급했다**(재구성). ⭐ **`필요한가` 가 아니라 `언제 필요한가` 를 물은 것이 답이었다**(재구성). **결과는 중앙값 33ms · p99 50ms — 70% 감소, 비용 증가 없이.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 내줄 것인가",
+            "chosen": "⚠️ **외부 일관성** — 그리고 그것을 셋으로 세어 적는다",
+            "alternatives": [
+              "일관성을 지키면서 지연 줄이기"
+            ],
+            "tradeoff": "**`에이전트가 삽입된 모든 레코드의 오프셋으로 0 을 돌려준다`** · **`「멱등 프로듀서」 기능을 켠 클라이언트의 쓰기를 거절한다`** · **`트랜잭션 클라이언트의 쓰기를 거절한다`**. 그리고 가장 무거운 것 — Classic 에서는 **`클라이언트가 레코드 하나를 produce 해 성공 응답을 받고 그다음 또 하나를 produce 해 두 번째 응답을 받으면, 두 번째 메시지의 오프셋이 첫 번째보다 반드시 크다`** 를 보장하는데 **여기서는 성립하지 않는다.** ⚠️ **오프셋이 0 으로 온다는 것은 `모른다` 를 숨기지 않고 그대로 돌려준다는 뜻이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "question": "이것을 기본값으로 할 것인가",
+            "chosen": "⚠️ **아니다 — 별도 토픽 종류로 둔다**(Lightning Topics)",
+            "alternatives": [
+              "전체 기본 동작을 바꾸기",
+              "설정 플래그로 켜기"
+            ],
+            "tradeoff": "⚠️ **잃는 것이 워크로드에 따라 치명적일 수 있어서 고르게 만들었다**(재구성) — 멱등·트랜잭션을 쓰는 쪽은 아예 못 쓴다. **대가는 두 종류의 토픽을 함께 유지해야 한다는 것**이고, 실제로 **앞서 본 GCP Rapid Bucket 은 `Lightning Topics 와 호환되지 않는다`** — **종류가 늘면 조합의 구멍이 생긴다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              },
+              {
+                "title": "One Weird Trick to Make Rapid Storage 40x Faster",
+                "url": "https://www.warpstream.com/blog/one-weird-trick-to-make-rapid-storage-40x-faster",
+                "publisher": "WarpStream",
+                "date": "2026-07-20",
+                "summary": "GCP Rapid Bucket 으로 지연을 줄이려 했으나 저장 비용이 일반 지역 GCS 의 10배 이상이라, 새 데이터를 Rapid Bucket 정족수에 먼저 안착시키고 몇 분 뒤 지역 GCS 로 비동기 압축하는 구조를 골랐다. 장수명 파일에 append 하는 재설계는 크고 침습적이라 접었다. 제목의 40배와 달리 실제 결과는 P99 3배 감소였다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "question": "빠른 경로가 실패하면 어떻게 할 것인가",
+            "chosen": "⚠️ **느린 경로를 따로 둔다 — 데이터 손실 제로**",
+            "alternatives": [
+              "클라이언트 재시도에 맡기기",
+              "실패 시 동기 커밋으로 폴백"
+            ],
+            "tradeoff": "**제어 평면이 주기적으로 스캔 작업을 에이전트에 배정해 객체 저장소에서 커밋 안 된 파일을 찾고, 에이전트가 `파일의 메타데이터 부분만 내려받아 커밋에 필요한 것을 뽑는다`.** **`느린 경로는 데이터 손실 제로를 보장한다. 빠른 경로가 파일을 제대로 커밋하지 못해도 느린 경로가 저널된 데이터의 100% 가 결국 시퀀싱되어 소비자에게 보이도록 보장한다.`** ⚠️ **일관성은 내줬지만 내구성은 한 톨도 내주지 않았다** — **무엇을 양보할 수 있고 무엇은 안 되는지를 가른 것이다**(재구성). **대가는 배경 스캔이라는 상시 작업이 는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "question": "제어 평면이 죽으면 어떻게 할 것인가",
+            "chosen": "**Ripcord 모드 — 모든 토픽을 Lightning 처럼 다룬다**",
+            "alternatives": [
+              "제어 평면 없이는 정지",
+              "제어 평면을 다중화만 하기"
+            ],
+            "tradeoff": "에이전트가 **`제어 평면 대신 객체 저장소를 서비스 디스커버리 수단으로 자동 폴백`** 하고 **`내부 캐시의 동작을 일관성보다 가용성을 선호하도록 조정한다`**. ⚠️ **지연을 위해 만든 구조가 장애 대응 수단이 됐다** — **순서를 미룰 수 있다는 성질이 순서를 정할 사람이 없어도 버티게 해 준다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "question": "Ripcord 로 어디까지 버틸 것인가",
+            "chosen": "⚠️ **쓰기만 — 읽기는 막힌다**",
+            "alternatives": [
+              "읽기도 계속 되게 만들기"
+            ],
+            "tradeoff": "⚠️ **회사가 한계를 명시한다** — **`데이터 소비와 모든 읽기 연산`** 이 제어 평면 장애 동안 막히고, **토픽 관리와 컨슈머 그룹 연산**도 막히며, **`제어 평면이 없으면 새 에이전트가 시작할 수 없다`**(메타데이터 캐시를 데울 수 없어서). ⚠️ **일관되다** — **순서는 읽기 전에 필요하다고 했으니, 읽으려면 순서를 정할 사람이 있어야 한다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "question": "이 발상을 어디서 가져왔는가",
+            "chosen": "**LazyLog 논문**(SOSP 2024 최우수)",
+            "alternatives": [
+              "자체 설계"
+            ],
+            "tradeoff": "논문의 관찰이 그대로 뿌리다 — **선형화 가능한 순서가 필요하긴 하지만 수집할 때 즉시 필요한 것이 아니라 소비할 때 필요하고, 읽는 쪽은 쓰는 쪽과 시간적으로 자연히 분리돼 있다.** ⚠️ **논문은 전역 위치 배정을 읽히기 직전까지 미루는데, 이 회사는 그것을 자기 제어 평면 구조에 옮겨 실었다**(재구성). **대가는 논문이 다루지 않은 자기 사정 — Kafka 프로토콜 호환 — 을 스스로 감당해야 한다는 것**이고, **오프셋 0 과 멱등·트랜잭션 거절이 바로 그 값이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "객체 저장소 (S3 · S3 Express One Zone)",
+            "role": "⚠️ **저장 계층이자 네트워킹 계층** — **디스크가 없어 여기가 유일한 내구성 자리다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              },
+              {
+                "title": "With WarpStream, Confluent Got a New Type of Kafka Platform",
+                "url": "https://thenewstack.io/with-warpstream-confluent-got-a-new-type-of-kafka-platform/",
+                "publisher": "The New Stack",
+                "date": "2024",
+                "summary": "WarpStream 의 zero disk 아키텍처 — 로컬 디스크도 캐시도 EBS 볼륨도 쓰지 않고 오롯이 객체 저장소에서 돈다. S3 를 저장 계층만이 아니라 네트워킹 계층으로 써서 가용영역 간 네트워크 비용을 없앤다."
+              }
+            ]
+          },
+          {
+            "tech": "중앙 제어 평면",
+            "role": "⚠️ **순서를 정한다** — **`어떤 에이전트든 어떤 파티션이든 처리할 수 있어서`** 결정론적 오프셋이 필요하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "tech": "Lightning Topics (지연 시퀀싱)",
+            "role": "**네 걸음을 세 걸음으로** — **중앙값 33ms · p99 50ms · 70% 감소 · 비용 증가 없음**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "tech": "느린 경로 (스캔 작업)",
+            "role": "⚠️ **`데이터 손실 제로를 보장한다`** — 커밋 안 된 파일을 찾아 결국 100% 시퀀싱한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          },
+          {
+            "tech": "Ripcord 모드",
+            "role": "**제어 평면이 없어도 쓰기는 계속** — 객체 저장소를 서비스 디스커버리로 폴백",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "클러스터 안에서 무슨 일이 있었는지 본다",
+          "via": "⚠️ 순서가 늦게 붙는다",
+          "contract": "⚠️ **오프셋이 0 으로 오고 순서가 배경에서 붙으므로, 지금 어디까지 처리됐는지를 다른 데서 알아야 한다** — ⏳ **그 도메인의 자료는 아직 안 읽었다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "GCP Rapid Bucket",
+          "via": "⚠️ 조합의 구멍",
+          "contract": "⚠️ **`Rapid Bucket 은 WarpStream 의 Lightning Topics 기능과 호환되지 않는다`** — **지연을 줄이는 두 방법이 서로 겹쳐 쓰이지 못한다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "BYOC 스트리밍 (매출)",
+          "via": "비용 구조",
+          "contract": "**지연을 70% 줄이면서 `비용 증가가 없다`** — **싸다는 것이 이 회사의 판매 근거이므로 지연 개선이 비용을 올리면 안 됐다**(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "제어 평면",
+          "via": "장애 시 폴백",
+          "contract": "⚠️ **Ripcord 모드에서 쓰기는 계속되지만 `데이터 소비와 모든 읽기 연산` 은 막히고 `새 에이전트가 시작할 수 없다`**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "LazyLog: A New Shared Log Abstraction for Low-Latency Applications",
+            "url": "https://dl.acm.org/doi/10.1145/3694715.3695983",
+            "year": "2024",
+            "takeaway": "⚠️ **SOSP 2024 최우수 논문이고 이 기능의 뿌리다.** **선형화 가능한 순서가 필요하긴 하지만 수집할 때 즉시 필요한 것이 아니라 소비할 때 필요하다** — **읽는 쪽은 쓰는 쪽과 시간적으로 자연히 분리돼 있다**는 관찰에서 출발해, **전역 위치 배정을 읽히기 직전까지 미룬다.** WarpStream 은 이것을 자기 제어 평면 구조에 옮겨 실었다.",
+            "authors": "Xuhao Luo, Shreesha G. Bhat, Jiyu Hu, Ramnatthan Alagappan, Aishwarya Ganesan (UIUC)",
+            "venue": "SOSP 2024 (최우수 논문)",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 디스크를 없애면 지연이 수백 배가 된다",
+            "why_hard": "**`전통적인 객체 저장소에서 PUT 연산의 최소 지연은 수백 밀리초 수준인데, 최신 SSD 는 1밀리초 안에 I/O 를 끝낸다.`** ⚠️ **그리고 이 회사는 디스크를 되돌릴 수 없다** — 디스크가 없다는 것이 가용영역 간 네트워크 비용을 없애는 근거이자 제품의 정체성이다(재구성).",
+            "current_best": "⚠️ **두 겹으로 갚는다** — 먼저 **더 빠른 객체 저장소**(S3 Express One Zone, 중앙값 105ms · p99 170ms), 그다음 **기다림 자체를 줄이는 구조**(지연 시퀀싱, **중앙값 33ms · p99 50ms · 70% 감소 · 비용 증가 없음**). ⚠️ **다만 두 방법이 늘 겹쳐 쓰이지는 않는다** — **`Rapid Bucket 은 Lightning Topics 와 호환되지 않는다`.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              },
+              {
+                "title": "One Weird Trick to Make Rapid Storage 40x Faster",
+                "url": "https://www.warpstream.com/blog/one-weird-trick-to-make-rapid-storage-40x-faster",
+                "publisher": "WarpStream",
+                "date": "2026-07-20",
+                "summary": "GCP Rapid Bucket 으로 지연을 줄이려 했으나 저장 비용이 일반 지역 GCS 의 10배 이상이라, 새 데이터를 Rapid Bucket 정족수에 먼저 안착시키고 몇 분 뒤 지역 GCS 로 비동기 압축하는 구조를 골랐다. 장수명 파일에 append 하는 재설계는 크고 침습적이라 접었다. 제목의 40배와 달리 실제 결과는 P99 3배 감소였다고 스스로 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "순서를 미루면 무엇이 깨지는지",
+            "why_hard": "⚠️ **Kafka 클라이언트는 오프셋이 곧바로 온다고 가정하고 만들어져 있다** — 멱등 프로듀서도 트랜잭션도 그 위에 서 있다. **응답에 순서를 담지 않으면 그 계약이 통째로 무너진다**(뒤쪽은 이 사이트의 재구성이다). ⚠️ **가장 미묘한 것은 외부 일관성이다** — **먼저 ack 받은 것의 오프셋이 나중 것보다 작다**는 상식적인 기대가 깨진다.",
+            "current_best": "⚠️ **숨기지 않고 거절하거나 0 을 돌려준다** — **`모든 레코드의 오프셋으로 0 을 돌려주고`**, **멱등 프로듀서와 트랜잭션 클라이언트의 쓰기는 아예 거절한다.** 그리고 **이것을 기본값이 아니라 별도 토픽 종류로 두어 고르게 한다.** ⚠️ **일관성은 내줬지만 내구성은 한 톨도 내주지 않았다** — **`느린 경로는 데이터 손실 제로를 보장한다.`** **무엇을 양보할 수 있고 무엇은 안 되는지를 가른 것이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+                "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+                "publisher": "WarpStream",
+                "date": "2026-02-04",
+                "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 걸음이 두 가지 일을 하고 있었다",
+          "question": "응답 전에 무엇을 기다리는가",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph C[\"<b>Classic Topic — 네 걸음</b>\"]\n    C1[\"버퍼\"]:::list --> C2[\"객체 저장소에 쓴다<br/>• ⚠️ 여기서 내구성 확보\"]:::accent\n    C2 --> C3[\"⚠️ <b>제어 평면 커밋</b><br/>• 오프셋 배정<br/>• 커밋 전엔 파일이<br/>  「존재하지」 않는다\"]:::gone\n    C3 --> C4[\"응답\"]:::list\n  end\n  subgraph L[\"<b>Lightning Topic — 세 걸음</b>\"]\n    L1[\"버퍼\"]:::list --> L2[\"객체 저장소에 쓴다\"]:::accent\n    L2 --> L3[\"⚠️ <b>바로 응답</b><br/>• 시퀀싱을 안 기다린다\"]:::accent\n    L3 -.배경.-> L4[\"제어 평면 커밋<br/>• 빠른 경로\"]:::list\n    L4 -.실패하면.-> L5[\"<b>느린 경로 (스캔)</b><br/>• 데이터 손실 제로\"]:::accent\n  end\n  R[\"<b>결과</b><br/>• 중앙값 33ms · p99 50ms<br/>• 70% 감소 · 비용 증가 없음\"]:::accent\n  L3 --> R\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "내준 것을 셋으로 세어 적는다",
+          "question": "순서를 미루면 무엇이 깨지나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>순서를 응답 뒤로 미룬다</b>\"]:::accent --> B[\"⚠️ <b>오프셋을 돌려줄 수 없다</b><br/>• 전부 0 을 돌려준다\"]:::gone\n  A --> C[\"⚠️ <b>멱등 프로듀서 거절</b>\"]:::gone\n  A --> D[\"⚠️ <b>트랜잭션 클라이언트 거절</b>\"]:::gone\n  A --> E[\"⚠️ <b>외부 일관성 상실</b><br/>• 먼저 ack 받은 것의 오프셋이<br/>  나중 것보다 작다는 보장이<br/>  깨진다\"]:::gone\n  B --> F[\"<b>답: 기본값으로 두지 않는다</b><br/>• 별도 토픽 종류로 고르게\"]:::accent\n  E --> F\n  G[\"<b>내구성은 내주지 않는다</b><br/>• 느린 경로가 100% 시퀀싱\"]:::accent\n  H[\"⚠️ <b>Ripcord 도 반쪽이다</b><br/>• 쓰기는 되지만<br/>  읽기 · 컨슈머 그룹 ·<br/>  새 에이전트 시작은 막힌다\"]:::gone\n  I[\"⚠️ <b>조합의 구멍</b><br/>• Rapid Bucket 과<br/>  Lightning Topics 는 비호환\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "The Art of Being Lazy(log): Lower Latency and Higher Availability With Delayed Sequencing",
+          "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
+          "publisher": "WarpStream",
+          "date": "2026-02-04",
+          "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
+        },
+        {
+          "title": "One Weird Trick to Make Rapid Storage 40x Faster",
+          "url": "https://www.warpstream.com/blog/one-weird-trick-to-make-rapid-storage-40x-faster",
+          "publisher": "WarpStream",
+          "date": "2026-07-20",
+          "summary": "GCP Rapid Bucket 으로 지연을 줄이려 했으나 저장 비용이 일반 지역 GCS 의 10배 이상이라, 새 데이터를 Rapid Bucket 정족수에 먼저 안착시키고 몇 분 뒤 지역 GCS 로 비동기 압축하는 구조를 골랐다. 장수명 파일에 append 하는 재설계는 크고 침습적이라 접었다. 제목의 40배와 달리 실제 결과는 P99 3배 감소였다고 스스로 적는다."
+        },
+        {
+          "title": "With WarpStream, Confluent Got a New Type of Kafka Platform",
+          "url": "https://thenewstack.io/with-warpstream-confluent-got-a-new-type-of-kafka-platform/",
+          "publisher": "The New Stack",
+          "date": "2024",
+          "summary": "WarpStream 의 zero disk 아키텍처 — 로컬 디스크도 캐시도 EBS 볼륨도 쓰지 않고 오롯이 객체 저장소에서 돈다. S3 를 저장 계층만이 아니라 네트워킹 계층으로 써서 가용영역 간 네트워크 비용을 없앤다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
+    "⚠️ **`zero disk` 의 비용 쪽 본체는 여전히 못 읽었다** — 이 글은 **지연**을 다루지, **가용영역 간 네트워크 비용을 어떻게 0 으로 만드는지**는 다루지 않는다. **그 설명은 3자 매체 요약으로만 갖고 있다.**",
     "⚠️ **도메인 셋 중 둘이 본문 미독이다** — 이전(Orbit)과 관측(Events·감사 로그·MCP). **제목·날짜·URL·저자만 목록에서 확인했다.**",
     "⚠️ **`zero disk` 의 본체 설명을 아직 못 읽었다** — 확인한 글은 **GCP Rapid Bucket 이라는 곁가지**다. **객체 저장소만으로 Kafka 의 순서·내구성을 어떻게 지키는지**가 비어 있다. ⏳ **`The Art of Being Lazy(log)`(지연 시퀀싱)가 그 답에 가장 가까워 보인다.**",
     "⚠️ **`WarpStream is Dead, Long Live WarpStream` 이라는 글이 있는데 안 읽었다** — **인수 뒤 제품의 방향이 바뀐 이야기일 수 있다.** ⭐ **연표(eras)의 재료가 될 수 있다.**",
@@ -112,7 +730,7 @@
       "url": "https://www.warpstream.com/blog/the-art-of-being-lazy-log-lower-latency-and-higher-availability-with-delayed-sequencing",
       "publisher": "WarpStream",
       "date": "2026-02-04",
-      "summary": "지연 시퀀싱으로 지연을 낮추고 가용성을 높인 이야기. ⏳ 본문 미독 — 목록에서 제목·날짜·URL·저자만 확인했다."
+      "summary": "객체 저장소만으로 도는 탓에 생기는 지연을 없애려고, 순서 배정(시퀀싱)을 응답 이후로 미룬다. 내구성은 객체 저장소가 즉시 책임지고 순서는 배경에서 붙는다. S3 Express One Zone 과 합쳐 중앙값 33ms·p99 50ms(70% 감소, 비용 증가 없음)를 얻었지만 오프셋을 0으로 돌려주고 멱등·트랜잭션 클라이언트를 거절하며 외부 일관성을 잃는다."
     },
     {
       "title": "Move Fast And Don't Break Things: Automatic Apache Kafka Migrations With Orbit",

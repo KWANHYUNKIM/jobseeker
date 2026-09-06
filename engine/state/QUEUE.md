@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **WarpStream** | US · SaaS(Kafka 호환 스트리밍) | 프로파일 완료 · 도메인 3(디스크 없이 스트리밍한다[tech 0 · ✅ 본문 확인] / 다른 Kafka 에서 옮겨 온다[tech 0 · ⏳ 미독] / 클러스터 안에서 무슨 일이 있었는지 본다[tech 0 · ⏳ 미독]) · **기능 0** · ✅ **`r.jina.ai` 로 목록·본문이 온다** |
+| **WarpStream** | US · SaaS(Kafka 호환 스트리밍) | 도메인 3(디스크 없이 스트리밍한다[tech 5] / 다른 Kafka 에서 옮겨 온다[tech 0 · ⏳ 미독] / 클러스터 안에서 무슨 일이 있었는지 본다[tech 0 · ⏳ 미독]) · **기능 1**(order-only-before-reading) · ⭐ **`research.papers` 를 채운 드문 사례**(LazyLog, SOSP 2024 최우수) · ✅ **`r.jina.ai` 로 목록·본문이 온다** |
 
 ## 대기
 
