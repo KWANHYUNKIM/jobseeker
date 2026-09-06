@@ -8,7 +8,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "쓰지 않으면 0 이 되는 Postgres — 데이터베이스를 사람이 아니라 에이전트가 만드는 시대를 겨냥한다",
       "updated_at": "2026-09-06",
       "domain": "neon.com"
