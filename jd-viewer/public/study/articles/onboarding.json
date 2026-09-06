@@ -27,7 +27,7 @@
     {
       "id": "why",
       "kind": "why",
-      "heading": "⭐⭐⭐ 첫 규칙은 \"가르치려 하지 마라\"",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 사람이 붙어서 가르치던 방식에서",
       "confidence": "confirmed",
       "sources": [
         {
@@ -38,7 +38,7 @@
           "summary": "⭐⭐⭐ **가르치는 사람이 지켜야 할 선을 부정어로 적는다** — \"The first rule of teaching is simply: **don't try to teach**.\" · \"**A tutorial is not the place for explanation.**\" · \"You are required to be present, but **condemned to be absent**.\""
         }
       ],
-      "body": "⭐ **`documentation` 이 세운 네 칸 중 온보딩은 튜토리얼 칸이다** — **읽는 사람이 배우는 중**(at study)이기 때문이다. 그리고 그 칸의 1차 자료는 **부정어로 시작한다.**\n\n> ⭐⭐⭐ **\"The first rule of teaching is simply: don't try to teach.\"**\n> ⭐⭐⭐ **\"A tutorial is not the place for explanation.\"**\n\n💡 ⚠️ **왜 이것이 규칙이 되어야 했는지도 적혀 있다.**\n\n> ⭐⭐⭐ \"**Explanation is one of the hardest temptations for a teacher to resist**; even experienced teachers find it difficult to accept that **their students' learning does not depend on explanation**.\"\n> ⭐⭐⭐ \"Once we have grasped something, we rely on the **power of abstraction** to frame it to ourselves—and **that's how we want to frame it to others**.\"\n\n⭐⭐⭐ **아는 사람은 자기가 이해한 방식(추상)으로 설명하고 싶어진다** — ⚠️ **그런데 그 추상은 이해하고 난 뒤에 생긴 것**이라, **아직 이해하지 못한 사람에게는 안 통한다.** 📌 **온보딩에서 \"우리 시스템 전체 구조부터 설명해 줄게\"가 잘 안 되는 이유가 여기 있다.**\n\n💡 ⭐⭐ **대신 할 일은 짧다.**\n\n> ⭐⭐ \"Give your learner things to **do**, through which they can learn.\"\n> ⭐⭐ \"**Ignore options and alternatives.** Your guidance needs to remain **focused on what's required to reach the conclusion**, and everything else can be left for another time.\"\n\n⚠️ **선택지를 무시하라** — ⭐ **친절하려고 \"이렇게 해도 되고 저렇게 해도 됩니다\"를 넣으면 배우는 사람은 고르는 일부터 하게 된다.** 📌 **`documentation` 사이클에서 확인한 그 규칙**이다.\n\n📌 ⭐⭐⭐ **그리고 신뢰성 요구가 이 문서에서 가장 세다.**\n\n> ⭐⭐⭐ **\"Your tutorial ought to be so well constructed that things can't go wrong, that your tutorial works for every user, every time.\"**\n> ⭐⭐⭐ \"**Aspire to perfect reliability.**\"\n> ⭐⭐⭐ \"A learner who follows your directions and **doesn't get the expected results will quickly lose confidence**.\"\n\n💡 ⭐⭐ **\"모든 사용자에게, 매번\"** — ⚠️ **한 번이라도 안 되면 배우는 사람은 자신을 의심한다**(문서를 의심하지 않는다). 📌 **온보딩 문서가 낡아서 첫날 환경 세팅이 안 되는 것이 바로 그 상황**이고, ⭐ **`개발 환경 세팅` 은 공고에 74건**이다.\n\n📌 ⭐ **목적도 명시돼 있다.**\n\n> ⭐⭐ \"A good lesson **gives the learner confidence**, by showing them that **they can be successful** in a certain skill or with a certain product.\"\n\n⭐⭐ **자신감을 준다** — 💡 **그래서 첫 과제가 작아야 하고**, ⚠️ **`첫 커밋|첫 배포` 가 1건이라는 것은 그 목표를 이름으로 정한 곳이 거의 없다는 뜻**이다.\n\n⭐⭐⭐ **공고 하나가 그 원칙과 같은 모양이었다.**\n\n> ⭐⭐⭐ `\"모든 영역을 동시에 담당하지 않습니다. **온보딩 과정에서 강점 영역부터 시작하여 점진적으로 범위를 넓혀갑니다**.\"` — 미켈로로보틱스\n\n💡 **\"한 번에 다 주지 않는다\"** — ⭐ **\"Ignore options and alternatives\" 와 같은 방향**이다."
+      "body": "⭐⭐⭐ **온보딩의 앞선 물건은 문서가 아니라 사람이다** — **옆에 앉혀 놓고 알려 주는 방식.** ⭐ 1차 자료가 그 방식을 **이상적인 것**으로 먼저 인정한다.\n\n> ⭐⭐ \"In an ideal lesson, **the teacher is present** and interacts with and responds to the student, **correcting their mistakes and checking their learning**.\"\n\n⚠️ **그것이 아팠던 이유는 나빠서가 아니라 안 늘어나서**다 — **사람은 한 번에 한 사람만 가르치고, 매번 다르게 말하고, 매번 시간을 쓴다.**\n\n📌 ⭐⭐⭐ **그래서 문서로 옮기려 하면 조건이 하나 사라진다.**\n\n> ⭐⭐ \"**In documentation, none of this is possible.**\"\n> ⭐⭐⭐ **\"You are required to be present, but condemned to be absent.\"**\n\n💡 ⭐⭐ **가르치는 사람이 거기 있어야 하는데 있을 수 없다** — ⚠️ **그래서 모든 갈림길과 실패 가능성을 미리 없애 두어야 한다.**\n\n> ⭐⭐⭐ **\"Your tutorial ought to be so well constructed that things can't go wrong, that your tutorial works for every user, every time.\"**\n> ⭐⭐⭐ \"A learner who follows your directions and **doesn't get the expected results will quickly lose confidence**.\"\n\n⚠️⚠️ **안 되면 배우는 사람은 문서가 아니라 자신을 의심한다.**\n\n📌 ⭐⭐⭐ **그리고 가르치는 방식 자체도 뒤집힌다 — 설명하지 말라고 한다.**\n\n> ⭐⭐⭐ **\"The first rule of teaching is simply: don't try to teach.\"**\n> ⭐⭐⭐ **\"A tutorial is not the place for explanation.\"**\n> ⭐⭐⭐ \"Once we have grasped something, we rely on the **power of abstraction** to frame it to ourselves—and **that's how we want to frame it to others**.\"\n\n💡 ⭐⭐ **아는 사람의 추상은 이해한 뒤에 생긴 것**이라 **아직 모르는 사람에게 안 통한다** — 📌 **온보딩에서 \"우리 시스템 구조부터 설명해 줄게\"가 잘 안 되는 이유가 여기 있다.**\n\n⭐ **대신 할 일은 짧다** — \"Give your learner things to **do**, through which they can learn.\" 그리고 \"**Ignore options and alternatives.**\"\n\n⚠️⚠️ **다만 온보딩은 문서와 조건이 다르다** — ⭐ **사람이 실제로 있을 수 있어서 \"condemned to be absent\" 가 성립하지 않는다.** 📌 **그 차이가 다음 절의 주제다.**"
     },
     {
       "id": "absent",
@@ -57,9 +57,32 @@
       "body": "⭐⭐⭐ **1차 자료에 이 문서에서 가장 인상적인 문장이 있다.**\n\n> ⭐⭐ \"In an ideal lesson, **the teacher is present** and interacts with and responds to the student, **correcting their mistakes and checking their learning**. **In documentation, none of this is possible.**\"\n> ⭐⭐⭐ **\"You are required to be present, but condemned to be absent.\"**\n\n💡 ⭐⭐ **문서를 쓰는 사람은 거기 있어야 하는데 있을 수 없다** — ⚠️ 그래서 **모든 갈림길과 실패 가능성을 미리 없애 두어야 한다**(\"things **can't** go wrong\").\n\n📌 ⭐⭐⭐ **그런데 온보딩은 그 조건이 다르다 — 사람이 실제로 있을 수 있다.**\n\n| | 건수 |\n|---|---|\n| ⭐⭐ `멘토\\|버디\\|사수\\|1:1` | **965** |\n| ⚠️⚠️ `온보딩 문서\\|가이드\\|자료` | **13** |\n\n⭐⭐⭐ **74배 차이다.** 💡 **시장은 \"사람을 붙인다\"로 답하고 있다.**\n\n> ⭐⭐ `빠른 적응을 위한 **온보딩 프로그램 & 버디 프로그램**` — 헤렌\n> ⭐⭐ `신규 입사자 온보딩을 위한 **버디 프로그램** 운영` — 엘리스\n> ⭐ `주니어 개발자 **멘토링 또는 온보딩** 경험이 있으신 분` — 액션파워\n\n💡 ⭐⭐ **그리고 그것이 1차 자료의 조건을 실제로 완화한다** — **사람이 있으면 실수를 고쳐 주고 배움을 확인할 수 있다.** ⚠️ **문서에는 불가능하다고 적힌 바로 그 일이다.**\n\n📌 ⚠️⚠️ **다만 대가가 있다.** ⭐ **사람은 매번 다르게 말하고, 매번 시간을 쓴다.** 💡 **문서는 한 번 잘 쓰면 \"every user, every time\" 인데**, ⚠️ **사람은 그렇지 않다.** 📌 **`온보딩 문서` 13건은 그 재사용 가능한 쪽이 거의 비어 있다는 뜻**이다(⚠️ 이 해석은 추론이다).\n\n⭐⭐ **문서 쪽을 이름으로 부른 드문 공고가 있었다.**\n\n> ⭐⭐⭐ `사내 개발 문서는 ChatGPT 등 LLM 기반 검색/요약이 가능한 구조로 작성되며, **누구나 빠르게 온보딩하고** 기술 공유가 가능합니다.` — 씨이랩\n\n⭐ **문서와 온보딩을 이은 자리**다 — 📌 `documentation` 사이클의 `위키|Notion|Confluence` **1133건**과 이어진다.\n\n💡 ⭐⭐⭐ **그리고 온보딩을 설계 대상으로 적은 곳도 있었다.**\n\n> ⭐⭐⭐ `백엔드 채용을 주도해 파트의 인재 밀도를 지키고, **온보딩을 설계해** 새 구성원이 **빠르게 임팩트를 내도록** 도와요.` — 페이타랩(패스오더)\n> ⭐⭐ `**채용·온보딩 등 팀 빌딩 프로세스**에 참여해본 경험` — 헤렌\n> ⭐ `**코드 리뷰 문화 구축 및 주니어 개발자 온보딩** 경험자` — 디피플래닝\n\n⭐ **셋 다 \"온보딩을 만드는 쪽\"의 일**이다 — 📌 ⚠️ **그런데 무엇을 만드는지(문서? 과제? 사람?)는 적혀 있지 않다.**"
     },
     {
-      "id": "limits",
+      "id": "nextgen",
       "kind": "limits",
-      "heading": "경계 — 이 문서가 하지 않는 것",
+      "heading": "⭐⭐ 사람과 문서의 한계 — 그리고 그 한계에서 나온 것들",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Tutorials — Diátaxis",
+          "url": "https://diataxis.fr/tutorials/",
+          "publisher": "Diátaxis (Daniele Procida)",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **가르치는 사람이 지켜야 할 선을 부정어로 적는다** — \"The first rule of teaching is simply: **don't try to teach**.\" · \"**A tutorial is not the place for explanation.**\" · \"You are required to be present, but **condemned to be absent**.\""
+        }
+      ],
+      "body": "⭐⭐⭐ **온보딩에는 두 방식이 있고 각자의 한계가 정반대다.**\n\n| | 사람(멘토·버디) | 문서 |\n|---|---|---|\n| ⭐ 할 수 있는 것 | \"correcting their mistakes and **checking their learning**\" | \"works for **every user, every time**\" |\n| ⚠️ 못 하는 것 | **매번 다르게 말하고 매번 시간을 쓴다** | **\"condemned to be absent\"** — 갈림길을 미리 다 없애야 한다 |\n| 공고 | **965건** | **13건** |\n\n💡 ⭐⭐⭐ **74배 차이는 시장이 사람 쪽을 골랐다는 뜻**이고, ⚠️ **그 대가가 재사용 불가**다.\n\n| 한계 | 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **첫날 환경 세팅이 안 된다** | 문서가 낡거나 기기가 다르다 | ⭐ **환경을 코드로** → `docker`·컨테이너 개발환경 · `iac`(공고 `개발 환경 세팅` **74건**) |\n| ⭐⭐ **사람이 매번 같은 말을 한다** | 문서가 없다 | ⭐ **네 칸으로 나눠 쓰기** → `documentation`(튜토리얼 칸) |\n| ⭐⭐ **무엇을 해내면 끝인지 모른다** | 기간만 정한다 | ⭐ **첫 과제** — ⚠️ `첫 커밋\\|첫 배포` 는 **1건**뿐이다 |\n| ⭐⭐ **첫 리뷰가 무섭다** | 새 사람의 코드가 공개된다 | ⭐ `code-review`(그 문서가 온보딩을 8회 언급) |\n| ⭐ **팀의 방식을 언제 맡기나** | 자율은 언제부터인가 | ⭐ `agile`(원칙 5 \"trust them to get the job done\") · `scrum`(수습 기간과 겹친다) |\n| ⭐ **문서를 사람이 안 읽는다** | 찾기 어렵다 | ⭐ **검색·요약** → `ai-coding`(씨이랩 `LLM 기반 검색/요약이 가능한 구조`) |\n\n⭐⭐⭐ **마지막 줄이 최근에 생긴 자리다** — 💡 **읽는 쪽이 사람이 아닐 수도 있게 되면서** **\"문서를 사람이 안 읽는다\"는 한계가 다른 답을 얻기 시작했다**(⚠️ 이 해석은 추론이다).\n\n⚠️⚠️ **아직 안 메워진 자리**: **첫 성과까지의 시간**에 대한 **1차급 자료를 찾지 못했다** — 검색에서 나온 숫자들은 전부 컨설팅·채용 회사 블로그였고 방법이 안 적혀 있었다."
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 한 낱말이 세 분야에 걸쳐 있다",
+      "confidence": "inferred",
+      "body": "⚠️ **`market` 이 없다** — 실천이라 `tech_relations.json` 에 이름이 없다.\n\n⭐⭐⭐ **`온보딩` 749건은 서로 다른 세 분야에 걸쳐 있다** — 📌 **그래서 모집중 52%로 튄다.**\n\n| 분야 | 무엇을 뜻하나 | 공고 |\n|---|---|---|\n| ⭐ **인사·조직**(이 문서의 주제) | 신규 입사자 적응 | 헤렌 `빠른 적응을 위한 **온보딩 프로그램 & 버디 프로그램**` · 화이트큐브 `**5일 간의 온보딩**` |\n| ⚠️ **고용 형태** | **수습 기간의 다른 이름** | 인터엑스 `정규직(**수습기간(온보딩)** 3개월)` · 메이아이 `**3개월의 온보딩 기간(시용기간)**` |\n| ⚠️ **제품 기능** | **첫 사용자 경험**(`고객\\|사용자 온보딩` **23건**) | 일레븐 `**온보딩**, 회원가입, 랜딩 페이지 등 **유입·활성화** 핵심 플로우` |\n| ⚠️ **복지** | 휴가·지원 항목 | 리아드 `법정 연차 외 **온보딩 휴가**` |\n\n💡 ⭐⭐ **어디에 적혀 있는지로 갈린다** — **처우·복지란이면 수습 기간이나 복지**, **직무 설명이면 적응이거나 제품 기능**이다.\n\n📌 ⭐⭐ **그리고 이 일을 직무로 적는 곳도 있다.**\n\n> ⭐⭐⭐ `백엔드 채용을 주도해 ... **온보딩을 설계해** 새 구성원이 **빠르게 임팩트를 내도록** 도와요.` — 페이타랩\n> ⭐⭐ `**채용·온보딩 등 팀 빌딩 프로세스**에 참여해본 경험` — 헤렌\n> ⭐ `**코드 리뷰 문화 구축 및 주니어 개발자 온보딩** 경험자` — 디피플래닝\n\n⭐ **셋 다 \"온보딩을 만드는 쪽\"** 이다 — ⚠️ **무엇을 만드는지**(문서? 과제? 사람?)는 대개 안 적힌다.\n\n⭐ **이 백과사전 안에서의 자리**: **위는 `documentation`**(네 칸 중 튜토리얼), **옆은 `code-review`**(첫 리뷰), **아래는 `docker`·`iac`(환경 세팅)**, **언제 자율을 주나는 `agile`·`scrum`**."
+    },
+    {
+      "id": "limits",
+      "kind": "extra",
+      "heading": "이 문서의 경계 — 다루지 않은 것",
       "confidence": "inferred",
       "body": "**1. ⚠️⚠️ 1차 자료가 온보딩을 직접 다루지 않는다.** ⭐ **문서의 튜토리얼 칸**에 관한 자료이고, **사람이 옆에 있는 온보딩**은 그 조건이 다르다(\"condemned to be absent\" 가 성립하지 않는다). 📌 **이 문서는 그 차이를 `absent` 절에서 명시했지만**, ⚠️ **\"사람이 있을 때의 원칙\"에 대한 1차 자료는 못 찾았다.**\n\n**2. ⚠️⚠️ 첫 성과까지의 시간에 대한 1차급 자료를 못 찾았다.** ⭐⭐ **규칙대로 검색은 했다**(`ai-coding` 에서 끝까지 지킨 그 규칙). ⚠️ 나온 것은 **컨설팅·채용 회사 블로그**뿐이었고 — \"첫 커밋까지 상위 팀 3~5일, 중앙값 2~3주\", \"구조화된 온보딩이면 8~12주\" 같은 숫자가 있었으나 **출처가 2차이고 방법이 안 적혀 있어 쓰지 않았다.** 📌 ⭐ **`ai-coding` 의 RCT 같은 자료가 이 주제에는 없어 보인다.**\n\n**3. ⚠️ `온보딩` 749건을 세 뜻으로 갈라 세지 못했다.** ⭐ **세 가지가 섞여 있다는 것은 공고 문장으로 확인했지만**(수습 기간·제품 기능·복지), **각각 몇 건인지는 세지 않았다.** ⚠️ `온보딩 프로그램` 123건과 `고객 온보딩` 23건만 따로 세었다.\n\n**4. ⚠️ 모집중 52%의 인과를 확인하지 못했다.** ⭐ **처우·복지란에 나오기 때문**으로 보이지만 **세지 않았다.**\n\n**5. ⚠️ `멘토|버디` 965건을 갈라 세지 못했다** — ⭐ `1:1`·`원온원` 이 포함돼 있어 **온보딩과 무관한 정기 면담**이 섞였을 수 있다.\n\n**6. ⚠️ 개발 환경 세팅을 다루지 않았다**(**74건**). ⭐ 1차 자료의 **\"works for every user, every time\"** 이 가장 자주 깨지는 자리인데 **따로 다루지 않았다.**\n\n**7. ⭐ 겹침을 확인했다** — `documentation` 이 **튜토리얼을 37회, 온보딩을 8회** 언급하지만 **네 칸의 이름과 셈까지**였고, ⭐ **튜토리얼 칸의 원문은 여기서 처음 열었다.** `code-review` 도 온보딩을 8회 언급한다.\n\n**8. ⭐ `market` 이 없다** — 기술 태그가 아니라 실천이라 `tech_relations.json` 에 이름이 없다."
     }
@@ -555,6 +578,7 @@
     }
   ],
   "open_questions": [
+    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `why` 에 **무엇에서 갈라져 나왔나**(사람이 붙어 가르치던 방식 → 문서로 옮기면 \"condemned to be absent\"), `limits` 를 **사람과 문서의 한계와 그 한계에서 나온 것들**로, **어디에 쓰이나** 절을 새로 넣었다.",
     "⚠️⚠️ **1차 자료가 온보딩을 직접 다루지 않는다.** ⭐ **문서의 튜토리얼 칸**에 관한 자료이고, **사람이 옆에 있는 온보딩**은 조건이 다르다(\"condemned to be absent\" 가 성립하지 않는다). 📌 **`absent` 절에서 그 차이를 명시했지만**, ⚠️ **\"사람이 있을 때의 원칙\"에 대한 1차 자료는 못 찾았다.**",
     "⚠️⚠️ **첫 성과까지의 시간에 대한 1차급 자료를 못 찾았다.** ⭐⭐ **규칙대로 검색은 했다.** ⚠️ 나온 것은 **컨설팅·채용 회사 블로그**뿐이었고 — \"첫 커밋까지 상위 팀 3~5일, 중앙값 2~3주\" 같은 숫자가 있었으나 **출처가 2차이고 방법이 안 적혀 있어 쓰지 않았다.** 📌 **`ai-coding` 의 RCT 같은 자료가 이 주제에는 없어 보인다.**",
     "⚠️ **`온보딩` 749건을 세 뜻으로 갈라 세지 못했다.** ⭐ **섞여 있다는 것은 공고 문장으로 확인했지만**(수습 기간·제품 기능·복지) **각각 몇 건인지는 세지 않았다.**",

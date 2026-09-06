@@ -26,7 +26,7 @@
     {
       "id": "why",
       "kind": "why",
-      "heading": "⭐⭐⭐ 잘리는 것은 마지막 한 줄이다",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 위에서 내려온 게 아니라 아래에서 모였다",
       "confidence": "confirmed",
       "sources": [
         {
@@ -37,7 +37,7 @@
           "summary": "⭐⭐⭐ **네 줄과 단서 조항 하나.** ⚠️ 그 단서가 잘려 돌아다닌다 — **\"while there is value in the items on the right, we value the items on the left more\"**"
         }
       ],
-      "body": "⭐ **선언문은 도입 한 줄로 시작한다.**\n\n> ⭐⭐ \"We are **uncovering better ways of developing software by doing it and helping others do it**.\"\n\n💡 **\"발견하는 중\"**(uncovering)이라고 적는다 — ⭐ **완성된 방법을 발표하는 어조가 아니다.**\n\n**그리고 네 줄이 온다.**\n\n| 왼쪽 (더 중히 여긴다) | | 오른쪽 |\n|---|---|---|\n| **Individuals and interactions** | over | processes and tools |\n| **Working software** | over | comprehensive documentation |\n| **Customer collaboration** | over | contract negotiation |\n| **Responding to change** | over | following a plan |\n\n📌 ⭐⭐⭐ **그 밑에 한 줄이 더 있다.**\n\n> ⭐⭐⭐ **\"That is, while there is value in the items on the right, we value the items on the left more.\"**\n\n⚠️⚠️ **\"오른쪽에도 가치가 있다\"고 명시한다.** 💡 ⭐ **이 줄이 없으면 네 줄은 \"프로세스를 쓰지 마라, 문서를 쓰지 마라, 계약을 하지 마라, 계획을 세우지 마라\"가 된다.**\n\n📌 ⭐⭐⭐ **`performance` 의 Knuth 인용과 정확히 같은 형태다** — **뒷부분이 잘리면 뜻이 뒤집힌다.** ⭐ 이 백과사전의 오용 계보에서 **다섯 번째**다: 낱말이 잘못 붙음(`refactoring`) → 한 낱말이 네 일을 덮음(`documentation`) → 인용이 잘림(`performance`) → 그림을 잘못 읽음(`profiling`) → **선언의 단서 조항이 잘림.**\n\n💡 ⚠️ **그리고 이 형태가 특히 위험한 이유가 있다** — **네 줄은 외우기 쉽고 다섯 번째 줄은 안 외워진다.** ⭐ 📌 **그래서 `documentation` 문서와 이 문서가 부딪히는 것처럼 보이는데, 실은 안 부딪힌다**: 선언문은 **문서보다 작동하는 소프트웨어를 더 중히 여긴다**고 했지 **문서를 쓰지 말라고 하지 않았다.**\n\n📌 ⭐ **12원칙에도 오해되기 쉬운 줄이 있다.**\n\n> ⭐⭐⭐ 10번 — \"Simplicity--the art of **maximizing the amount of work not done**--is essential.\"\n\n⭐⭐ **\"하지 않은 일의 양을 최대화하는 기술\"** — 💡 **일을 적게 하라는 게 아니라 안 해도 되는 일을 알아내라는 것**이고, ⚠️ **그것을 알아내는 데는 오히려 일이 든다.**\n\n> ⭐⭐⭐ 7번 — **\"Working software is the primary measure of progress.\"**\n> ⭐⭐ 8번 — \"sustainable development ... **maintain a constant pace indefinitely**\"\n\n⚠️ **8번이 \"빨리\"의 반대말이라는 것도 눈에 띈다** — ⭐ **지속 가능한 속도**이지 최고 속도가 아니다."
+      "body": "⭐⭐⭐ **선언문은 새 방법론이 아니라, 이미 각자 다른 방법을 만들고 있던 사람들이 모여 공통점을 적은 문서**다. ⭐ **서명자가 17명**이고, ⚠️ **그중 여럿이 이 백과사전에 이미 이름이 나온다.**\n\n| 서명자 | 이 백과사전에서 |\n|---|---|\n| ⭐ Ken Schwaber · Jeff Sutherland | **스크럼** → `scrum` |\n| ⭐ Alistair Cockburn | **헥사고날 아키텍처** → `hexagonal-architecture` |\n| ⭐ Ward Cunningham | **기술 부채 비유**·위키 → `technical-debt` |\n| ⭐ Martin Fowler | **리팩터링**·**마이크로서비스**·바운디드 컨텍스트 요약 → `refactoring`·`microservices`·`bounded-context` |\n| ⭐ Robert C. Martin | **클린 아키텍처** → `hexagonal-architecture` |\n| Kent Beck 외 | XP 등 |\n\n💡 ⭐⭐⭐ **그러니 순서가 흔히 알려진 것과 반대다** — **선언문이 스크럼이나 XP 를 낳은 것이 아니라, 그것들을 만들던 사람들이 모여 선언문을 썼다.** 📌 **도입 문장이 그 성격을 그대로 적는다.**\n\n> ⭐⭐ \"We are **uncovering better ways of developing software by doing it and helping others do it**.\"\n\n⭐ **\"by doing it\"** — 💡 **하면서 발견하는 중**이라는 어조이고, **완성된 방법론을 발표하는 문서가 아니다.**\n\n📌 ⭐⭐ **그럼 무엇이 아팠나 — 네 줄의 오른쪽이 그 답이다.**\n\n| 왼쪽 (더 중히 여긴다) | | 오른쪽 (그전까지 중심이던 것) |\n|---|---|---|\n| **Individuals and interactions** | over | processes and tools |\n| **Working software** | over | comprehensive documentation |\n| **Customer collaboration** | over | contract negotiation |\n| **Responding to change** | over | following a plan |\n\n⚠️ **오른쪽 넷이 앞선 방식의 이름**이다 — **정해진 프로세스, 두꺼운 문서, 계약, 계획.** ⭐ **그것들이 아팠던 이유는 나빠서가 아니라 \"바뀌면 못 따라간다\"** 는 것이었다.\n\n📌 ⭐⭐⭐ **그리고 바로 밑에 단서가 붙어 있다.**\n\n> ⭐⭐⭐ **\"That is, while there is value in the items on the right, we value the items on the left more.\"**\n\n⚠️⚠️ **오른쪽도 가치 있다고 명시한다** — 💡 **그 줄이 잘리면 네 줄은 \"프로세스를 쓰지 마라, 문서를 쓰지 마라\"가 된다.** 📌 **`performance` 의 Knuth 인용과 같은 형태**이고, ⭐ **네 줄은 외워지는데 다섯째 줄은 안 외워진다.**"
     },
     {
       "id": "abandon",
@@ -72,9 +72,46 @@
       "body": "⚠️ **이 절은 원문(원칙)과 셈을 맞대 본 것이라 관찰이 섞였다.**\n\n| 원칙 | 공고가 부르는 이름 | 건수 |\n|---|---|---|\n| ⭐⭐ 5번 \"**trust them to get the job done**\" · 11번 \"**self-organizing teams**\" | `자율적\\|자율성\\|수평적` | **2213** |\n| 1번 \"early and continuous delivery\" · 3번 \"deliver working software **frequently**\" | `빠른 실행\\|린\\|MVP\\|가설 검증` | 638 |\n| ⭐ 12번 \"the team **reflects on how to become more effective**\" | `회고` | **154** |\n| 6번 \"**face-to-face conversation**\" | `짝\\|페어 프로그래밍` | 61 |\n| 4번 \"business people and developers **work together daily**\" | `고객과의 협력` | 61 |\n| 2번 \"**Welcome changing requirements, even late**\" | `변화에 대응\\|요구사항 변경` | 32 |\n| ⭐ 7번 \"**Working software is the primary measure of progress**\" | `작동하는 소프트웨어` | **13** |\n| ⚠️ 8번 \"**constant pace indefinitely**\" · 9번 \"technical excellence\" · 10번 \"**work not done**\" | ⚠️ **대응되는 이름을 못 찾았다** | — |\n\n⭐⭐⭐ **맨 윗줄과 맨 아랫줄이 요점이다.** 💡 **자율은 2213번 부르는데**, **지속 가능한 속도(8번)와 안 해도 되는 일(10번)에는 부르는 이름이 없다.**\n\n⚠️⚠️ **그리고 그 둘이 정확히 Ron Jeffries 가 지적한 자리다** — \"**less time** to do the work, **higher pressure**, and demands to '**go faster**'\".\n\n📌 ⭐⭐⭐ **공고 하나가 원칙 4번과 11번의 실제 모습을 보여 준다.**\n\n> ⭐⭐⭐ `파머스핸즈의 사용자는 축산 농가입니다. 저희는 **직접 농장에 갑니다**. 사장님이 장갑 낀 손으로 폰을 못 써서 화이트보드에 적는다는 걸 보고 오면, **그게 다음 스프린트의 과제**가 됩니다. 여기서 프론트엔드는 **명세를 받아 구현하는 자리가 아니라 무엇을 만들지 정하는 자리**에 가깝습니다.` — 바딧\n\n⭐⭐ **\"직접 농장에 간다\"** 와 **\"무엇을 만들지 정하는 자리\"** — 💡 **원칙 4번(개발자와 업무 담당자가 매일 함께)과 11번(자기 조직화 팀에서 요구사항이 나온다)이 이름 없이 그대로 있다.**\n\n📌 ⭐ **그리고 회고(12번)는 이름을 얻은 드문 실천이다** — **154건**.\n\n> ⭐⭐ `Sprint 회고를 통해 문제점을 개선합니다.` — 체크멀\n> ⚠️ `**연 2회**, 지난 시간을 함께 회고하고 재충전의 시간을 가집니다.` — 핀다\n\n⚠️ **원문은 \"At regular intervals\"** 라고만 한다 — ⭐ 주기를 정하지 않으므로 **연 2회도 원문에 어긋나지 않는다.** 📌 다만 **12번의 목적이 \"더 효과적으로 되는 법\"** 이라 **행동을 조정할 만큼 자주인가**가 판단 기준이 된다.\n\n💡 ⭐ **회고는 이 백과사전에 이미 다른 이름으로 있다** — `oncall` 이 **장애 회고(포스트모템)를 57회** 다룬다. ⚠️ **같은 낱말이지만 대상이 다르다**: 저쪽은 **사고 하나**, 여기는 **일하는 방식**."
     },
     {
-      "id": "limits",
+      "id": "nextgen",
       "kind": "limits",
-      "heading": "경계 — 이 문서가 하지 않는 것",
+      "heading": "⭐⭐ 이 선언의 한계 — 그리고 그 한계에서 나온 것들",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Manifesto for Agile Software Development",
+          "url": "https://agilemanifesto.org/",
+          "publisher": "17 signatories (2001)",
+          "kind": "standard",
+          "summary": "⭐⭐⭐ **네 줄과 단서 조항 하나.** ⚠️ 그 단서가 잘려 돌아다닌다 — **\"while there is value in the items on the right, we value the items on the left more\"**"
+        },
+        {
+          "title": "Principles behind the Agile Manifesto",
+          "url": "https://agilemanifesto.org/principles.html",
+          "publisher": "17 signatories (2001)",
+          "kind": "standard",
+          "summary": "⭐⭐ **12원칙 전문.** ⭐ 놀라운 것들 — \"Simplicity--the art of **maximizing the amount of work not done**\", \"**Working software is the primary measure of progress**\", \"**self-organizing teams**\""
+        },
+        {
+          "title": "Developers Should Abandon Agile",
+          "url": "https://ronjeffries.com/articles/018-01ff/abandon-1/",
+          "publisher": "Ron Jeffries",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **선언문 작성자 중 한 사람이 그 이름을 버리라고 쓴 글** — \"Developers should **detach their thinking from any particular named 'Agile' method**\" 그러면서 **가치와 원칙은 여전히 옳다**고 한다"
+        }
+      ],
+      "body": "⭐⭐⭐ **선언문의 한계는 그 성격에서 곧바로 나온다** — **가치와 원칙만 적었고 방법은 안 적었다.** 💡 **그 빈칸을 채우려고 여러 것이 들어왔고, 들어온 것들이 문제가 됐다.**\n\n| 한계 | 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **방법이 없다** | 가치와 원칙뿐이다 | ⭐ **구현체들** → `scrum`(공고 178건) · XP · 칸반(40건) |\n| ⭐⭐⭐ **가치는 측정이 안 된다** | \"individuals and interactions\" 를 어떻게 재나 | ⚠️ **절차가 대신 들어왔다** — 공고 셈이 그 결과다(이름 **690** : 가치 **106**) |\n| ⭐⭐ **여러 팀에는 안 맞는다** | 한 팀을 전제한다 | ⭐ **규모 확장 프레임워크** — ⚠️ **1차 자료를 안 봤다** |\n| ⭐⭐⭐ **이름이 팔린다** | 가치는 안 팔리고 이름은 팔린다 | ⚠️ **\"Faux Agile\"·\"Dark Agile\"** — 작성자 본인이 붙인 이름 |\n| ⭐⭐ **단서 조항이 잘린다** | 네 줄은 외워지고 다섯째는 안 외워진다 | ⚠️ **\"문서를 쓰지 마라\"라는 오해** → `documentation`(네 칸으로 답한다) |\n| ⭐⭐⭐ **잘못 적용되면 정반대가 된다** | 절차만 남고 자율은 없다 | ⭐ **작성자의 처방** — \"**detach their thinking from any particular named 'Agile' method**\" 하되 **가치와 원칙은 지킨다** |\n\n⭐⭐⭐ **넷째·여섯째 줄이 이 낱말의 역사다.**\n\n> ⭐⭐⭐ **\"When 'Agile' ideas are applied poorly, they often lead to more interference with developers, less time to do the work, higher pressure, and demands to 'go faster'.\"**\n> ⭐⭐⭐ \"they are **far too commonly the enemy of good software development rather than its friend**\"\n\n⚠️⚠️ **네 증상이 전부 원칙 5·8번의 정면 반대다** — \"**trust them to get the job done**\", \"maintain a **constant pace indefinitely**\".\n\n📌 ⭐⭐ **그리고 작성자가 남긴 처방에는 방법론 이름이 하나도 없다.**\n\n> ⭐⭐⭐ **\"Produce running, tested, working, integrated software every two weeks, every week.\"** → `testing`·`github-actions`\n> ⭐⭐⭐ **\"Keep the design of that software clean.\"** → `refactoring`·`hexagonal-architecture`·`technical-debt`\n\n💡 ⭐ **두 줄이 가리키는 곳이 전부 이 백과사전에 있다** — ⚠️ 그리고 **`스크럼`·`스프린트`·`백로그`·`스탠드업` 은 거기 없다.**"
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 이름은 690, 가치는 106, 내용은 2213",
+      "confidence": "inferred",
+      "body": "⚠️ **`market` 이 없다** — 실천이라 `tech_relations.json` 에 이름이 없다.\n\n⭐⭐⭐ **셈이 세 층으로 갈린다** — 이 백과사전에서 처음 만난 형태다.\n\n| 층 | 낱말 | 건수 |\n|---|---|---|\n| ⭐ **절차 이름** | `애자일\\|스크럼\\|스프린트` | **690** |\n| ⚠️ **가치 이름** | 선언문 왼쪽 네 항목 합 | **106**(`개인과 상호작용` **0**) |\n| ⭐⭐ **가치의 내용** | `자율적\\|자율성\\|수평적` | **2213** |\n\n💡 ⭐⭐⭐ **가운데만 비어 있다** — **일은 하고 절차도 부르는데 그 사이를 잇는 말이 없다.** ⚠️ 맨 아랫줄이 **원칙 5·11번**(\"trust them to get the job done\", \"**self-organizing teams**\")과 이어진다고 본 것은 **이 문서의 해석**이다.\n\n📌 ⭐⭐ **원칙별로 공고가 부르는 이름.**\n\n| 원칙 | 공고의 이름 | 건수 |\n|---|---|---|\n| 1·3(자주 내놓기) | `빠른 실행\\|린\\|MVP` | 638 |\n| ⭐ 12(회고) | `회고` | **154** |\n| 6(대면) | `짝\\|페어 프로그래밍` | 61 |\n| 4(함께 일하기) | `고객과의 협력` | 61 |\n| 2(변화 환영) | `변화에 대응\\|요구사항 변경` | 32 |\n| ⚠️ 7(작동하는 소프트웨어) | `작동하는 소프트웨어` | **13** |\n| ⚠️⚠️ 8(지속 가능한 속도)·10(안 한 일) | **대응되는 이름을 못 찾았다** | — |\n\n⚠️⚠️ **맨 아랫줄이 정확히 작성자가 지적한 자리다** — \"**less time** to do the work, **higher pressure**, demands to '**go faster**'\". 💡 ⭐ **이름이 없으면 어기고 있어도 말할 방법이 없다.**\n\n📌 ⭐⭐⭐ **그리고 이름 없이 그 내용을 하는 공고가 있었다.**\n\n> ⭐⭐⭐ `저희는 **직접 농장에 갑니다**. 사장님이 장갑 낀 손으로 폰을 못 써서 화이트보드에 적는다는 걸 보고 오면, **그게 다음 스프린트의 과제**가 됩니다. 여기서 프론트엔드는 **명세를 받아 구현하는 자리가 아니라 무엇을 만들지 정하는 자리**에 가깝습니다.` — 바딧\n\n⭐ **원칙 4번과 11번이 선언문 용어 없이 그대로 있다.**\n\n⭐ **이 백과사전 안에서의 자리**: **구현체는 `scrum`**, **남는 두 줄은 `testing`·`github-actions`·`refactoring`·`hexagonal-architecture`·`technical-debt`**, **회고의 다른 대상은 `oncall`**(장애 회고 57회), **문서 오해는 `documentation`**."
+    },
+    {
+      "id": "limits",
+      "kind": "extra",
+      "heading": "이 문서의 경계 — 다루지 않은 것",
       "confidence": "inferred",
       "body": "**1. ⚠️⚠️ 스크럼을 다루지 않았다**(`스크럼` **178건**). ⭐ 스크럼은 별도의 공식 문서(스크럼 가이드)가 있는데 **열지 않았다.** 📌 이 문서는 **선언문과 그 오해**만 다뤘고, ⚠️ 1차 자료가 **\"any particular named 'Agile' method\"에서 생각을 떼라**고 하므로 **그 방향이 맞다고 보았다** — 다만 **178건이 그 이름을 부른다.**\n\n**2. ⚠️ 칸반·XP 를 다루지 않았다**(`칸반` **40건**). ⭐ 각각 1차 자료가 다르다.\n\n**3. ⚠️ 다른 서명자들의 비판을 읽지 않았다.** ⭐ 검색에서 **또 다른 작성자가 \"애자일은 죽었다\"는 강연을 했고 \"애자일 산업 복합체\"라는 표현을 썼다**는 것이 보였으나 — ⚠️ **그 원문을 열지 않았다.** 📌 이 문서는 **한 사람의 글만 1차 자료로 썼다.**\n\n**4. ⚠️ `자율적|수평적` 2213건을 갈라 세지 못했다.** ⭐ **원칙 5·11번과 이어진다고 본 것은 이 문서의 관찰**이고, ⚠️ 그 2213건이 실제로 무엇을 뜻하는지(복지? 조직 문화 광고? 실제 권한?) **세지 않았다.** 📌 **이 문서에서 가장 근거가 약한 자리다.**\n\n**5. ⚠️ `이터레이션` 218건을 근거로 쓰지 않았다** — **모집중 80%** 로 오염 신호가 떴는데 **원인을 확인하지 않았다.**\n\n**6. ⭐⭐⭐ 실패 사례가 다섯 사이클 만에 1차급으로 나왔다.** ⚠️ 앞의 다섯(`github-actions`·`migration`·`aws`·`microservices`·`bounded-context` 이후 `hexagonal`·`refactoring`·`documentation`·`performance`·`profiling`)은 **전부 2차 자료뿐**이었다. ⭐ 📌 **여기서는 선언문 작성자 본인의 글이 그 자리를 채웠다** — **비판이 1차 자료인 드문 경우**다.\n\n**7. ⚠️ 조직·경영 쪽 논의를 다루지 않았다** — `OKR|KPI|목표 관리` **365건**. ⭐ 선언문은 개발 방식에 관한 것이고, **그것이 조직 운영으로 확대될 때의 문제**는 이 문서의 범위 밖이다.\n\n**8. ⭐ `market` 이 없다** — 기술 태그가 아니라 실천이라 `tech_relations.json` 에 이름이 없다.\n\n**9. ⭐ 겹침을 확인했다** — `oncall` 이 **`회고` 를 57회** 다루지만 **장애 회고(포스트모템)** 이고, ⚠️ 여기는 **일하는 방식의 회고(원칙 12번)** 다. `documentation` 은 회고를 **설명 칸의 문서**로 5회 언급한다."
     }
@@ -668,6 +705,7 @@
     }
   ],
   "open_questions": [
+    "⭐⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `why` 에 **무엇에서 갈라져 나왔나**를 세우다가 **순서가 흔히 알려진 것과 반대**임을 확인했다: **선언문이 스크럼·XP 를 낳은 것이 아니라, 그것들을 만들던 사람들이 모여 선언문을 썼다.** ⭐ **서명자 17명 중 여럿이 이 백과사전에 이미 이름이 나온다**(Cockburn=`hexagonal-architecture`, Cunningham=`technical-debt`, Fowler=`refactoring`·`microservices`, Schwaber·Sutherland=`scrum`, Martin=클린 아키텍처). ⚠️ **각 방법론의 성립 연도는 확인하지 않았다** — 서명자 명단만 원문에서 확인했다.",
     "⚠️⚠️ **스크럼을 다루지 않았다**(**178건**). ⭐ 별도의 공식 문서가 있는데 **열지 않았다** — 📌 1차 자료가 \"any particular **named** 'Agile' method\"에서 생각을 떼라고 해서 **선언문과 그 오해만** 다뤘다. ⚠️ 다만 **178건이 그 이름을 부른다.**",
     "⚠️ **칸반·XP 를 다루지 않았다**(`칸반` **40건**). 각각 1차 자료가 다르다.",
     "⚠️ **다른 서명자들의 비판을 읽지 않았다.** ⭐ 검색에서 **또 다른 작성자의 \"애자일은 죽었다\" 강연과 \"애자일 산업 복합체\"라는 표현**이 보였으나 **원문을 열지 않았다.** 📌 이 문서는 **한 사람의 글만** 1차 자료로 썼다.",
