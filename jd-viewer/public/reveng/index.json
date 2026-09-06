@@ -1436,7 +1436,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "포크·브랜치·머지가 되는 SQL 데이터베이스 — 버전 관리를 애플리케이션이 아니라 저장 자료구조에서 만든다",
       "updated_at": "2026-09-07",
       "domain": "dolthub.com"
