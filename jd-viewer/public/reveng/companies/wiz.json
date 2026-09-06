@@ -157,9 +157,94 @@
     },
     {
       "name": "에이전트 없이 클라우드를 들여다본다",
-      "why": "⚠️ **이 회사의 정체성이자 성장의 이유다** — 워크로드마다 소프트웨어를 심지 않고 **클라우드 API 로 발견하고 임시 읽기 전용 스냅숏으로 훑는다**. **연결만 하면 몇 시간 안에 위험 그래프가 나온다**는 것이 채택을 밀었다. ⏳ **회사 글(`Wiz's agentless approach to cloud-native vulnerability management`)을 아직 못 읽었고 발행일도 확인 못 했다** — 지금 근거는 3자 정리다.",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **`에이전트 없이` 는 이 회사의 기술 선택이자 이름이었다** — 에이전트 기반은 설정·유지보수를 요구하고 **`취약점 주변의 맥락이 없어서 사업 영향에 따라 우선순위를 매기지 못하고, 그래서 경보 피로로 이어진다`**. ⭐ **그런데 그 회사가 2023년에 런타임 센서를 냈다** — **자기 정체성과 부딪히는 것을 내면서 그 정체성을 어떻게 지켰는지가 이 도메인의 이야기다**(재구성). ✅ **본문 확인함**(2023-06-05 · 2023-07-31).",
+      "tech": [
+        {
+          "tech": "API 기반 발견 + 스냅숏",
+          "solves": "**가상 머신·서버리스 함수·컨테이너를 모든 클라우드 환경에 걸쳐** 훑는다 — **워크로드마다 배포할 것이 없어 도입 장벽이 사라진다**(재구성).",
+          "limits": "⭐ **회사가 직접 적는다** — **`무엇이 잘못될 수 있는지 아는 것은 옳은 출발점이지만, 지금 이 순간 이미 돌고 있는 컨테이너 안에서 무엇이 잘못되고 있는지는 말해 주지 않는다.`** ⚠️ **두 글 다 스냅숏이 기술적으로 어떻게 도는지·어떤 권한이 필요한지는 밝히지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wiz's agentless approach to cloud-native vulnerability management",
+              "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+              "publisher": "Wiz",
+              "date": "2023-07-31",
+              "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+            },
+            {
+              "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+              "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+              "publisher": "Wiz",
+              "date": "2023-06-05",
+              "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+            }
+          ]
+        },
+        {
+          "tech": "여섯 축 위험 분석 + 공격 경로",
+          "solves": "**잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원**을 함께 보고 **`공격 경로로 이어질 수 있는 위험의 조합`** 을 찾는다 — **에이전트 기반이 `맥락이 없어 경보 피로를 낳는` 자리를 정면으로 겨냥한다.**",
+          "limits": "⚠️ **하나하나로는 낮은 위험이 이어져 길이 되는 것을 보려면 전체를 봐야 한다** — 그래서 이 능력은 `에이전트 없이` 를 전제로 한다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Wiz's agentless approach to cloud-native vulnerability management",
+              "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+              "publisher": "Wiz",
+              "date": "2023-07-31",
+              "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+            }
+          ]
+        },
+        {
+          "tech": "⭐ 런타임 센서 (eBPF)",
+          "solves": "⭐ **`클라우드에서 공격은 몇 분 만에 일어난다`** 는 시간 문제를 푼다 — **`진짜 런타임 신호, 즉 런타임 네트워크 사용·프로세스·메모리 사용`** 만 모아 컨테이너·쿠버네티스·VM·서버리스·윈도우에서 실제로 실행되는 것을 본다.",
+          "limits": "⚠️ **회사의 이름과 부딪힌다** — 그래서 경계를 좁게 긋고 **`가벼운 eBPF 에이전트로 남을 수 있다`** 를 목표로 삼는다. ⚠️ **커널 버전 의존이나 오버헤드 같은 대가는 적지 않는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+              "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+              "publisher": "Wiz",
+              "date": "2023-06-05",
+              "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+            }
+          ]
+        },
+        {
+          "tech": "⭐ 경계 (`대부분은 여전히 API 로`)",
+          "solves": "⭐ **`취약점·호스트 설정을 비롯한 대부분의 신호는 여전히 우리의 에이전트 없는 API 기반 스캔에서 수집된다`** — **에이전트를 내면서도 에이전트 회사가 되지 않는 방법이었다**(재구성).",
+          "limits": "⚠️ **한번 심고 나면 거기에 기능을 얹고 싶은 압력이 계속 생긴다**(재구성) — **센서로 하면 쉬울 일도 API 쪽에서 풀어야 한다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+              "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+              "publisher": "Wiz",
+              "date": "2023-06-05",
+              "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+            }
+          ]
+        },
+        {
+          "tech": "보안 그래프",
+          "solves": "**센서 신호를 주변 클라우드·쿠버네티스 활동과 엮어** 계층을 넘나드는 공격자 이동을 드러낸다 — **새 신호를 새 제품이 아니라 이미 있는 그래프의 한 층으로 넣었다**(재구성).",
+          "limits": "⚠️ **런타임 신호를 따로 뒀다면 그것도 `맥락 없는 경보` 가 됐을 것이다** — 애초에 에이전트를 거부한 이유가 그것이었다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+              "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+              "publisher": "Wiz",
+              "date": "2023-06-05",
+              "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "the-agentless-company-ships-an-agent"
+      ]
     },
     {
       "name": "코드를 훑는다",
@@ -649,16 +734,511 @@
           "summary": "ARR 1억 달러까지 18개월, 2023년 말 3억 5,000만, 2024년 중반 5억, 인수 완료 시점에 10억 달러를 넘겼다. 320억 달러라는 값은 2025년 예상 ARR 의 약 32배였다."
         }
       ]
+    },
+    {
+      "key": "the-agentless-company-ships-an-agent",
+      "name": "에이전트를 안 쓰던 회사가 에이전트를 낼 때",
+      "domain": "에이전트 없이 클라우드를 들여다본다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **`에이전트 없이` 는 이 회사의 기술 선택이자 이름이었다** — 에이전트 기반 해법은 **설정과 지속적인 유지보수를 요구**하고, 더 나쁘게는 **`취약점 주변의 맥락이 없어서 사업 영향에 따라 우선순위를 매기지 못하고, 그래서 경보 피로로 이어진다`**. **배포할 것이 없다는 점이 도입 장벽을 없애 ARR 을 밀었다**(재구성). ⭐ **그런데 그 회사가 2023년에 런타임 센서를 냈다** — **`무엇이 잘못될 수 있는지 아는 것은 옳은 출발점이지만, 지금 이 순간 이미 돌고 있는 컨테이너 안에서 무엇이 잘못되고 있는지는 말해 주지 않는다`** 이고 **`클라우드에서 공격은 몇 분 만에 일어난다`**. ⚠️ **자기 정체성과 부딪히는 것을 내면서 그 정체성을 어떻게 지켰는지가 이 기능의 전부다**(재구성).",
+        "metrics": [
+          {
+            "label": "⚠️ 에이전트의 진짜 문제",
+            "value": "**`에이전트 기반 해법은 취약점 주변의 맥락도 없어서 사업 영향에 따라 우선순위를 매기지 못하고, 그래서 경보 피로로 이어진다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 그런데 왜 센서를 냈나",
+            "value": "**`무엇이 잘못될 수 있는지 아는 것은 옳은 출발점이지만, 지금 이 순간 이미 돌고 있는 컨테이너 안에서 무엇이 잘못되고 있는지는 말해 주지 않는다.`** **`클라우드에서 공격은 몇 분 만에 일어난다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 정체성을 지킨 방법",
+            "value": "**`취약점·호스트 설정을 비롯한 대부분의 신호는 여전히 우리의 에이전트 없는 API 기반 스캔에서 수집된다.`** — 센서는 **`진짜 런타임 신호, 즉 런타임 네트워크 사용·프로세스·메모리 사용`** 만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          },
+          {
+            "label": "그 결과",
+            "value": "**`그래서 런타임 센서가 가벼운 eBPF 에이전트로 남을 수 있다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          },
+          {
+            "label": "보는 범위",
+            "value": "**가상 머신·서버리스 함수·컨테이너를 모든 클라우드 환경에 걸쳐** — **잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 개별 위험이 아니라 조합",
+            "value": "**`공격 경로로 이어질 수 있는 위험의 조합`** 을 찾는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              }
+            ]
+          },
+          {
+            "label": "이 방식이 만든 회사",
+            "value": "ARR **1억 달러까지 18개월 · 인수 시점 10억 달러 돌파 · 포천 100 의 50%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz revenue, valuation & funding",
+                "url": "https://sacra.com/c/wiz/",
+                "publisher": "Sacra",
+                "date": "2026",
+                "summary": "ARR 1억 달러까지 18개월, 2023년 말 3억 5,000만, 2024년 중반 5억, 인수 완료 시점에 10억 달러를 넘겼다. 320억 달러라는 값은 2025년 예상 ARR 의 약 32배였다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "에이전트를 왜 싫어했는지 볼 때",
+          "thought": "⚠️ **거부의 이유가 배포 부담만이 아니다** — **`취약점 주변의 맥락이 없어서 사업 영향에 따라 우선순위를 매기지 못하고, 그래서 경보 피로로 이어진다.`** ⭐ **워크로드 하나하나에 심는 방식은 그 워크로드만 보게 되고, 클라우드 전체를 봐야 알 수 있는 것을 못 본다**(재구성) — **`공격 경로로 이어질 수 있는 위험의 조합`** 같은 것.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그런데 런타임이 필요해질 때",
+          "thought": "⭐ **자기 방식의 한계를 자기 언어로 적는다** — **`무엇이 잘못될 수 있는지 아는 것은 옳은 출발점이지만, 지금 이 순간 이미 돌고 있는 컨테이너 안에서 무엇이 잘못되고 있는지는 말해 주지 않는다.`** ⚠️ **API 와 스냅숏은 `있는 것` 을 보지 `벌어지는 것` 을 못 본다**(재구성). 그리고 시간이 문제다 — **`클라우드에서 공격은 몇 분 만에 일어난다.`**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "센서에 무엇을 맡길지 정할 때",
+          "thought": "⭐ **이 기능의 핵심이 여기다** — **`취약점·호스트 설정을 비롯한 대부분의 신호는 여전히 에이전트 없는 API 기반 스캔에서 수집된다`** 이고 센서는 **`진짜 런타임 신호`** 만 모은다. ⚠️ **경계를 `에이전트 없이 알 수 없는 것` 에 정확히 그었고, 그 결과가 `가벼운 eBPF 에이전트로 남을 수 있다` 는 것이다**(재구성). ⭐ **에이전트를 내면서도 에이전트 회사가 되지 않는 방법이었다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "API 기반 발견",
+            "what": "**가상 머신·서버리스 함수·컨테이너를 모든 클라우드 환경에 걸쳐** 훑는다 — 워크로드에 심는 것 없이"
+          },
+          {
+            "name": "여섯 축의 위험",
+            "what": "**잘못된 설정 · 네트워크 노출 · 비밀 · 취약점 · 멀웨어 · 신원**"
+          },
+          {
+            "name": "⚠️ 공격 경로",
+            "what": "⚠️ **개별 위험이 아니라 `공격 경로로 이어질 수 있는 위험의 조합`** — 워크로드 하나만 봐서는 안 보이는 것(재구성)"
+          },
+          {
+            "name": "⭐ 런타임 센서 (eBPF)",
+            "what": "⭐ **에이전트 없는 회사가 낸 에이전트** — **`진짜 런타임 신호, 즉 런타임 네트워크 사용·프로세스·메모리 사용`** 만 모은다"
+          },
+          {
+            "name": "경계",
+            "what": "⚠️ **`취약점·호스트 설정을 비롯한 대부분의 신호는 여전히 에이전트 없는 API 기반 스캔에서`** — 그래서 센서가 가볍게 남는다"
+          },
+          {
+            "name": "보안 그래프",
+            "what": "**워크로드 신호를 주변 클라우드·쿠버네티스 활동과 엮어** 계층을 넘나드는 공격자 이동을 드러낸다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **워크로드에 심는 것은 최소로 한다** — 심어야만 알 수 있는 것만",
+          "**대부분의 신호는 여전히 API 로 모은다** — 센서가 커지지 않게",
+          "⚠️ **개별 위험이 아니라 조합을 본다** — 공격 경로",
+          "**모든 신호는 한 그래프로 모인다** — 계층을 넘나드는 이동을 보려고"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**클라우드 API 로 자원을 발견한다 — 가상 머신·서버리스·컨테이너를 모든 환경에 걸쳐**",
+            "why": "⚠️ **워크로드마다 배포할 것이 없다** — 도입 장벽이 사라진다(재구성)"
+          },
+          {
+            "step": "**여섯 축을 함께 본다 — 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원**",
+            "why": "**깊은 클라우드 위험 분석**"
+          },
+          {
+            "step": "⚠️ **개별 위험이 아니라 `공격 경로로 이어질 수 있는 위험의 조합` 을 찾는다**",
+            "why": "⚠️ **에이전트 기반이 `맥락이 없어 사업 영향으로 우선순위를 못 매기고 경보 피로를 낳는` 자리를 정면으로 겨냥한다**"
+          },
+          {
+            "step": "⭐ **그런데 여기까지는 `있는 것` 만 안다** — 런타임 센서를 더한다",
+            "why": "⭐ **`무엇이 잘못될 수 있는지 아는 것은 옳은 출발점이지만, 지금 이 순간 이미 돌고 있는 컨테이너 안에서 무엇이 잘못되고 있는지는 말해 주지 않는다`**"
+          },
+          {
+            "step": "⭐ **센서는 오직 런타임 신호만 모은다 — 네트워크 사용·프로세스·메모리**",
+            "why": "⭐ **`취약점·호스트 설정을 비롯한 대부분의 신호는 여전히 에이전트 없는 API 기반 스캔에서 수집된다`** → **`그래서 런타임 센서가 가벼운 eBPF 에이전트로 남을 수 있다`**"
+          },
+          {
+            "step": "**센서 신호를 주변 클라우드·쿠버네티스 활동과 보안 그래프 맥락에 엮는다**",
+            "why": "**계층을 넘나드는 공격자 이동을 드러내려고**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "워크로드마다 에이전트를 심을 것인가",
+            "chosen": "⚠️ **아니다 — API 와 스냅숏으로 본다**",
+            "alternatives": [
+              "에이전트 기반 취약점 관리",
+              "호스트마다 스캐너 배포"
+            ],
+            "tradeoff": "거부 이유가 배포 부담만이 아니다 — **`에이전트 기반 해법은 취약점 주변의 맥락도 없어서 사업 영향에 따라 우선순위를 매기지 못하고, 그래서 경보 피로로 이어진다.`** ⭐ **워크로드 하나하나에 심는 방식은 그 워크로드만 보게 되어, 클라우드 전체를 봐야 알 수 있는 것을 못 본다**(재구성). **대가는 다음 결정이 정면으로 드러낸다 — `있는 것` 은 알아도 `벌어지는 것` 은 모른다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              }
+            ]
+          },
+          {
+            "question": "위험을 어떻게 우선순위 매길 것인가",
+            "chosen": "⚠️ **개별 위험이 아니라 조합으로** — 공격 경로",
+            "alternatives": [
+              "심각도 점수순 정렬",
+              "자산 중요도 태깅"
+            ],
+            "tradeoff": "**`공격 경로로 이어질 수 있는 위험의 조합`** 을 찾고, 그러기 위해 **잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 본다.** ⚠️ **하나하나로는 낮은 위험들이 이어지면 길이 된다**(재구성). ⭐ **전체를 보는 방식이 아니면 애초에 할 수 없는 일이고, 그래서 `에이전트 없이` 가 곧 이 능력의 전제다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              }
+            ]
+          },
+          {
+            "question": "런타임을 볼 것인가",
+            "chosen": "⭐ **본다 — 센서를 낸다**(2023)",
+            "alternatives": [
+              "에이전트 없는 방식만 고수",
+              "스캔 주기를 촘촘히"
+            ],
+            "tradeoff": "⭐ **자기 방식의 한계를 자기 언어로 적는다** — **`무엇이 잘못될 수 있는지 아는 것은 옳은 출발점이지만, 지금 이 순간 이미 돌고 있는 컨테이너 안에서 무엇이 잘못되고 있는지는 말해 주지 않는다.`** 시간도 문제다 — **`클라우드에서 공격은 몇 분 만에 일어난다.`** ⚠️ **스캔 주기를 아무리 줄여도 `이미 안에 있는 공격자` 는 못 본다**(재구성). **대가가 크다 — 회사의 이름이 `에이전트 없이` 였다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          },
+          {
+            "question": "그러면 센서에 무엇을 맡길 것인가",
+            "chosen": "⭐ **오직 런타임 신호만** — 네트워크·프로세스·메모리",
+            "alternatives": [
+              "센서로 취약점 스캔까지",
+              "기존 에이전트 제품처럼 전부"
+            ],
+            "tradeoff": "⭐ **이 기능의 핵심이다.** **`취약점·호스트 설정을 비롯한 대부분의 신호는 여전히 우리의 에이전트 없는 API 기반 스캔에서 수집된다. 우리는 진짜 런타임 신호, 즉 런타임 네트워크 사용·프로세스·메모리 사용을 모으는 데에만 런타임 센서를 쓴다.`** 그 결과가 **`그래서 런타임 센서가 가벼운 eBPF 에이전트로 남을 수 있다`**. ⚠️ **경계를 `에이전트 없이는 알 수 없는 것` 에 정확히 그었다** — **에이전트를 내면서도 에이전트 회사가 되지 않는 방법이었다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          },
+          {
+            "question": "센서를 무엇으로 만들 것인가",
+            "chosen": "**eBPF**",
+            "alternatives": [
+              "커널 모듈",
+              "사용자 공간 에이전트"
+            ],
+            "tradeoff": "**가벼움이 조건이었으므로**(재구성) **eBPF** 로 간다 — 컨테이너·쿠버네티스·VM·서버리스·윈도우에 걸쳐 **실제로 실행되고 있는 것을 관찰한다.** ⚠️ **회사가 이 선택의 대가를 적지는 않는다** — 커널 버전 의존이나 오버헤드 같은 것(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          },
+          {
+            "question": "센서 신호를 어디에 붙일 것인가",
+            "chosen": "**보안 그래프 — 기존 맥락 위에**",
+            "alternatives": [
+              "별도 런타임 콘솔",
+              "독립 경보 스트림"
+            ],
+            "tradeoff": "**센서가 만드는 워크로드 신호를 주변 클라우드·쿠버네티스 활동과 보안 그래프 맥락에 엮어 계층을 넘나드는 공격자 이동을 드러낸다.** ⚠️ **런타임 신호를 따로 두면 그것도 결국 `맥락 없는 경보` 가 되고, 그건 애초에 에이전트를 거부한 이유였다**(재구성). ⭐ **새 신호를 새 제품이 아니라 이미 있는 그래프의 한 층으로 넣은 것이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          },
+          {
+            "question": "두 방식의 비중을 어떻게 유지할 것인가",
+            "chosen": "⚠️ **`대부분` 은 계속 에이전트 없이**",
+            "alternatives": [
+              "점차 센서 비중 확대",
+              "고객이 고르게 하기"
+            ],
+            "tradeoff": "**`대부분의 신호는 여전히`** 라는 말이 그 선을 지킨다는 선언이다(재구성). ⚠️ **한번 에이전트를 심고 나면 거기에 기능을 얹고 싶은 압력이 계속 생긴다** — 심는 비용은 이미 치렀으니(재구성). ⭐ **그 압력을 `가벼운 eBPF 에이전트로 남을 수 있다` 는 목표로 막는다**(재구성). **대가는 센서로 하면 쉬울 일도 API 쪽에서 풀어야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "API 기반 발견 + 스냅숏",
+            "role": "**가상 머신·서버리스·컨테이너를 모든 클라우드 환경에 걸쳐** — 워크로드에 심는 것 없이",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              }
+            ]
+          },
+          {
+            "tech": "여섯 축 위험 분석 + 공격 경로",
+            "role": "⚠️ **`공격 경로로 이어질 수 있는 위험의 조합`** — 설정·노출·비밀·취약점·멀웨어·신원을 함께 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              }
+            ]
+          },
+          {
+            "tech": "⭐ 런타임 센서 (eBPF)",
+            "role": "⭐ **`진짜 런타임 신호, 즉 런타임 네트워크 사용·프로세스·메모리 사용`** 만 — 컨테이너·쿠버네티스·VM·서버리스·윈도우",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          },
+          {
+            "tech": "보안 그래프",
+            "role": "**워크로드 신호를 주변 클라우드·쿠버네티스 활동과 엮어** 계층을 넘나드는 공격자 이동을 드러낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "build-free-then-strip-ai",
+          "via": "⭐ 같은 손버릇",
+          "contract": "⭐ **둘 다 `넣었다가 경계를 다시 긋는` 이야기다** — 데이터 발견에서는 **`결정론적 로직을 AI 계층에서 완전히 빼냈고`**, 여기서는 **에이전트를 내되 `대부분의 신호는 여전히 에이전트 없는 API 스캔에서` 로 선을 그었다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "보안 그래프",
+          "via": "새 층으로 들어간다",
+          "contract": "**센서 신호를 별도 제품이 아니라 이미 있는 그래프의 한 층으로 넣는다** — **따로 두면 그것도 `맥락 없는 경보` 가 되고 그건 애초에 에이전트를 거부한 이유였다**(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "클라우드 보안 플랫폼 (매출)",
+          "via": "⚠️ 도입 장벽",
+          "contract": "⚠️ **배포할 것이 없다는 점이 ARR 1억 달러까지 18개월을 만들었다**(재구성) — **그래서 에이전트를 낼 때 그 장점을 지키는 것이 결정의 제약이 됐다**(재구성)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⭐ 있는 것은 알아도 벌어지는 것은 모른다",
+            "why_hard": "⭐ **회사가 자기 방식의 한계를 자기 언어로 적는다** — **`무엇이 잘못될 수 있는지 아는 것은 옳은 출발점이지만, 지금 이 순간 이미 돌고 있는 컨테이너 안에서 무엇이 잘못되고 있는지는 말해 주지 않는다.`** ⚠️ **API 와 스냅숏은 상태를 보지 사건을 못 보고, 스캔 주기를 아무리 줄여도 `이미 안에 있는 공격자` 는 못 본다**(재구성). 시간이 특히 문제다 — **`클라우드에서 공격은 몇 분 만에 일어난다.`**",
+            "current_best": "⭐ **에이전트를 내되 경계를 좁히는 것** — **`취약점·호스트 설정을 비롯한 대부분의 신호는 여전히 에이전트 없는 API 기반 스캔에서 수집되고`**, 센서는 **`진짜 런타임 신호, 즉 런타임 네트워크 사용·프로세스·메모리 사용`** 만 모은다. 그래서 **`가벼운 eBPF 에이전트로 남을 수 있다`**. ⚠️ **경계를 `에이전트 없이는 알 수 없는 것` 에 정확히 그어, 에이전트를 내면서도 에이전트 회사가 되지 않았다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              },
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              }
+            ]
+          },
+          {
+            "problem": "⚠️ 경보가 많으면 아무도 안 본다",
+            "why_hard": "⚠️ **에이전트 기반을 거부한 진짜 이유가 배포 부담이 아니라 이것이다** — **`에이전트 기반 해법은 취약점 주변의 맥락도 없어서 사업 영향에 따라 우선순위를 매기지 못하고, 그래서 경보 피로로 이어진다.`** **워크로드 하나에 심으면 그 워크로드만 보게 되고, 하나하나로는 낮은 위험들이 이어져 길이 되는 것을 못 본다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **개별 위험이 아니라 조합을 보는 것** — **`공격 경로로 이어질 수 있는 위험의 조합`** 을 찾고, 그러기 위해 **잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 한 그래프에서 함께 본다.** ⭐ **런타임 센서 신호도 별도 스트림이 아니라 그 그래프에 엮는다** — 따로 두면 그것도 맥락 없는 경보가 되기 때문이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Wiz's agentless approach to cloud-native vulnerability management",
+                "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+                "publisher": "Wiz",
+                "date": "2023-07-31",
+                "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+              },
+              {
+                "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+                "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+                "publisher": "Wiz",
+                "date": "2023-06-05",
+                "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "에이전트를 내면서도 에이전트 회사가 되지 않는 법",
+          "question": "경계를 어디에 그었나",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"<b>고객 클라우드</b>\"]:::list --> A[\"⚠️ <b>API 기반 스캔 (대부분)</b><br/>• 취약점 · 호스트 설정<br/>• 네트워크 노출 · 비밀<br/>• 멀웨어 · 신원<br/>• 워크로드에 심는 것 없음\"]:::accent\n  C --> S[\"⭐ <b>런타임 센서 (오직 이것만)</b><br/>• 런타임 네트워크 사용<br/>• 프로세스 · 메모리 사용<br/>• eBPF · 가볍게 남는다\"]:::accent\n  A --> G[\"<b>보안 그래프</b><br/>• 공격 경로로 이어질 수 있는<br/>  위험의 조합\"]:::accent\n  S --> G\n  G --> R[\"<b>계층을 넘나드는<br/>  공격자 이동이 보인다</b>\"]:::list"
+        },
+        {
+          "title": "자기 정체성과 부딪히는 것을 낼 때",
+          "question": "왜 냈고 무엇으로 막았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>에이전트 없이 — 회사의 이름</b><br/>• 배포할 것이 없어<br/>  도입 장벽이 사라졌다\"]:::accent --> B[\"⚠️ <b>있는 것은 알아도<br/>  벌어지는 것은 모른다</b><br/>• 상태는 보고 사건은 못 본다<br/>  (재구성)\"]:::gone\n  B --> C[\"⚠️ <b>클라우드에서 공격은<br/>  몇 분 만에 일어난다</b>\"]:::gone\n  C --> D[\"⚠️ <b>스캔 주기를 줄여도<br/>  이미 안에 있는 공격자는 못 본다</b><br/>  (재구성)\"]:::gone\n  D --> E[\"⭐ <b>답: 센서를 낸다</b><br/>• 자기 이름과 부딪히면서\"]:::accent\n  E --> F[\"⚠️ <b>그러면 에이전트 회사가 되나</b>\"]:::gone\n  F --> G[\"⭐ <b>답: 경계를 좁게 긋는다</b><br/>• 대부분의 신호는 여전히<br/>  에이전트 없는 API 스캔에서<br/>• 센서는 진짜 런타임 신호만<br/>• 그래서 가볍게 남을 수 있다\"]:::accent\n  H[\"⚠️ <b>남는 압력</b><br/>• 한번 심고 나면 거기에<br/>  기능을 얹고 싶어진다 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Wiz's agentless approach to cloud-native vulnerability management",
+          "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
+          "publisher": "Wiz",
+          "date": "2023-07-31",
+          "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
+        },
+        {
+          "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+          "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+          "publisher": "Wiz",
+          "date": "2023-06-05",
+          "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
+        },
+        {
+          "title": "From Concept to Context Engine: How Wiz Built AI-Powered Data Discovery",
+          "url": "https://www.wiz.io/blog/bucket-scanner-to-context-engine",
+          "publisher": "Wiz",
+          "date": "2026-08-27",
+          "summary": "버킷 스캐너를 맥락 엔진으로 바꾼 이야기. 분석 파이프라인의 단계마다 다른 전문 하위 에이전트를 두고 각 단계에 맞는 모델 등급을 짝지었다. 초기 시제품은 느리고 비쌌지만 기존 스캐너가 놓치던 것을 찾아냈고, 운영에 올리면서 결정론적 로직을 AI 계층에서 완전히 빼내 맥락 이해가 진짜 필요한 곳에만 AI 를 남겼다."
+        },
+        {
+          "title": "Wiz revenue, valuation & funding",
+          "url": "https://sacra.com/c/wiz/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "ARR 1억 달러까지 18개월, 2023년 말 3억 5,000만, 2024년 중반 5억, 인수 완료 시점에 10억 달러를 넘겼다. 320억 달러라는 값은 2025년 예상 ARR 의 약 32배였다."
+        }
+      ]
     }
   ],
   "eras": [],
   "open_questions": [
-    "⚠️ **도메인 셋 중 둘이 본문 미독이다** — 에이전트 없는 스캐닝(회사 글의 발행일조차 확인 못 했다)과 코드 보안. ⚠️ **특히 앞의 것이 이 회사의 정체성인데 지금 근거가 3자 정리뿐이다.**",
+    "⚠️ **스냅숏이 기술적으로 어떻게 도는지 끝내 못 읽었다** — 두 글 다 **어떤 권한이 필요한지, 스캔 주기가 얼마인지, 스냅숏이 언제 만들어지고 지워지는지**를 말하지 않는다. **`에이전트 없이` 의 구현 자체는 여전히 열려 있다.**",
     "⚠️ **이 블로그는 대부분이 제품 발표와 위협 연구다** — 자기 시스템을 말하는 글은 2026년에 셋뿐이다(맥락 엔진 · 에이전틱 코드 보안 · 클로즈드 루프 교정). **후보 조사에서 첫 화면으로 판정하지 않고 글 하나를 열어 확정한 것이 옳았다.**",
     "⚠️ **구글 인수(2026-03-11) 이후의 변화를 모른다** — **구글 클라우드와 어떻게 합쳐지는지, 다른 클라우드 지원이 어떻게 되는지**를 말하는 기술 자료를 못 찾았다. ⭐ **`멀티 클라우드를 보는 회사가 한 클라우드에 속하면` 이라는 물음이 남는다**(재구성).",
-    "⚠️ **에이전트 없는 방식의 한계를 회사 밖 시각으로 확인하지 못했다** — 스냅숏 기반이면 **실행 중인 것을 실시간으로 보지 못한다**는 지적이 있을 법한데(재구성), 그 논의를 담은 자료를 못 찾았다.",
     "⚠️ **성능 수치가 정성적이다** — **`오탐률 거의 0`** 과 **`재현율은 높게 유지`** 라고만 하고 **실제 퍼센트가 없다.** ⭐ **규모 시험 숫자(2,700건·2,000파일)는 탐지량이지 정확도가 아니다.** ③축(`자기 성과를 어디까지 주장하나`)의 사례가 된다.",
-    "⚠️ **비용이 얼마나 줄었는지 안 밝힌다** — 시제품이 **`느리고 비쌌다`** 고 적으면서 **운영화 뒤 얼마나 싸졌는지는 말하지 않는다.** **이 이야기의 핵심이 비용인데 그 숫자만 빠져 있다**(재구성)."
+    "⚠️ **비용이 얼마나 줄었는지 안 밝힌다** — 시제품이 **`느리고 비쌌다`** 고 적으면서 **운영화 뒤 얼마나 싸졌는지는 말하지 않는다.** **이 이야기의 핵심이 비용인데 그 숫자만 빠져 있다**(재구성).",
+    "⚠️ **이 도메인의 자료가 2023년 것 둘이다** — **구글 인수(2026-03-11) 이후는 물론이고 2024~2025년의 변화도 모른다.** ⭐ **런타임 센서를 낸 뒤 `대부분은 여전히 API 로` 라는 선이 지켜졌는지가 이 이야기의 가장 궁금한 뒷부분인데 확인할 자료가 없다**(재구성)."
   ],
   "sources": [
     {
@@ -679,8 +1259,8 @@
       "title": "Wiz's agentless approach to cloud-native vulnerability management",
       "url": "https://www.wiz.io/blog/wiz-agentless-approach-to-cloud-native-vulnerability-management",
       "publisher": "Wiz",
-      "date": "",
-      "summary": "에이전트 없는 취약점 관리 방식에 대한 회사 글. ⏳ 본문 미독이고 발행일도 확인하지 못했다."
+      "date": "2023-07-31",
+      "summary": "에이전트 기반 취약점 관리의 한계를 짚고 에이전트 없는 방식을 설명한다. 에이전트는 설정과 지속적 유지보수를 요구하고, 취약점 주변 맥락이 없어 사업 영향으로 우선순위를 못 매겨 경보 피로를 낳는다. 대신 VM·서버리스·컨테이너를 API 로 훑고 잘못된 설정·네트워크 노출·비밀·취약점·멀웨어·신원을 함께 봐서 공격 경로를 모델링한다."
     },
     {
       "title": "Google completes $32B acquisition of Wiz",
@@ -695,6 +1275,13 @@
       "publisher": "Sacra",
       "date": "2026",
       "summary": "ARR 1억 달러까지 18개월, 2023년 말 3억 5,000만, 2024년 중반 5억, 인수 완료 시점에 10억 달러를 넘겼다. 320억 달러라는 값은 2025년 예상 ARR 의 약 32배였다."
+    },
+    {
+      "title": "CTO Point of View: Why Wiz is launching a Runtime Sensor",
+      "url": "https://www.wiz.io/blog/cto-point-of-view-why-wiz-is-launching-a-runtime-sensor",
+      "publisher": "Wiz",
+      "date": "2023-06-05",
+      "summary": "에이전트 없는 방식을 정체성으로 삼던 회사가 런타임 센서를 내는 이유를 CTO 관점에서 밝힌다. 취약점·호스트 설정 같은 대부분의 신호는 여전히 에이전트 없는 API 스캔이 모으고, 센서는 오직 진짜 런타임 신호(네트워크·프로세스·메모리)만 모은다 — 그래서 가벼운 eBPF 에이전트로 남는다."
     }
   ]
 }
