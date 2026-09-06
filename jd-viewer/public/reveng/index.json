@@ -1352,7 +1352,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "고객의 데이터를 다루는 회사가 자기 데이터에 먼저 깔린다 — 트랜잭션은 로그만 넘기게 하고, 모니터링은 카디널리티에서 지켜 냈다",
       "updated_at": "2026-09-06",
       "domain": "databricks.com"
