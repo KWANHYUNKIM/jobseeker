@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **DuckDB** | EU · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 호스트 프로세스 안에 산다(`Why DuckDB`) · 네트워크 너머를 로컬 파일처럼 읽는다(`Asynchronous I/O`) · 문법을 계속 고칠 수 있게 만든다(`PEG parser`). 다음은 기능 하나. 안 읽은 것 — `Redesigning Sort, Again`(2025-09-24) · `Data-at-Rest Encryption`(2025-11-19) · `Quack` 프로토콜(2026-05-12) · `Recursive CTEs`(2026-08-25). DuckDB Labs 사이트는 403 이다. |
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **DuckDB** | EU · SaaS | 학술 배경 각도(Materialize 에서 통한 것)의 다음 자리다 — CWI 에서 나온 임베디드 분석 데이터베이스. `duckdb.org/news` 최신 2026-09-02 이고 20분대 심층 글이 줄줄이 있다: `Asynchronous I/O in DuckDB`(2026-07-31) · `How DuckDB Runs Recursive CTEs Faster`(2026-08-25) · `Your Database Deserves a Better Parser`(2026-08-20) · `Redesigning DuckDB Sort, Again`(2025-09-24) · `Data-at-Rest Encryption`(2025-11-19). 개별 글을 열어 확정했다 — 비동기 I/O 글에 스레드 풀을 둘로 가른 이유(원격 I/O 스레드는 CPU 를 거의 안 쓴다), 온디맨드 대신 미리 읽는 선택, 그리고 그 대가로 생기는 메모리 누적을 `read_ahead_depth` 로 다스리는 이야기가 수치와 함께 있다(S3 파케이 22GB 8.230초 → 2.844초, CSV 80.89GB 877.563초 → 45.264초, 동시 질의 네 개 35.8초 → 15.6초, 네트워크 10.7 → 24.9 Gbit/s). 이 엔진에 임베디드·분석 엔진 축이 없다. |
 | **Antithesis** | US · SaaS | 결정론적 시뮬레이션 테스트를 파는 회사다 — Turso·TigerBeetle 이 자기 시스템을 그렇게 시험한다면 여기는 그 시험 자체가 제품이다. `antithesis.com/blog` 최신 2026-09-02. 심층 글 — `Finding bugs in Raft implementations`(2026-07-27) · `Breaking the WAL`(2026-08-12) · `Replication Before Raft: 15 Years of Correctness at MongoDB`(2026-09-02) · `So you think you want to write a deterministic hypervisor?`(2024-03-20) · `Debugging in the Multiverse`(2024-09-10). 개별 글을 열어 확정했다 — 라프트 글에 무엇을 주입했고(네트워크 분할과 교란만으로 상태 분기 재현, 노드 강제 종료 없이) 한 시간에 버그 셋을 어떻게 갈랐는지(합의 깨짐 · 리더 이양 후 교착 · 스냅샷 설치 라이브락)가 있고, 형식 검증이 모델의 정확성을 증명할 뿐 구현의 충실성은 아니라는 한계까지 적는다. |
 | **Dolt (DoltHub)** | US · SaaS | 버전 관리되는 SQL 데이터베이스 — 깃처럼 브랜치·머지가 되는 데이터베이스라 이 엔진에 없는 축이다. `dolthub.com/blog` 최신 2026-08-28 이고 엔지니어들이 거의 매일 쓴다. 심층 글 — `Prolly Trees`(2024-03-03) · `Investigating A Research Paper About Prolly Trees`(2026-08-24) · `Doltgres is as Fast as MySQL is Slow`(2026-08-13) · `Postgres implicit transactions`(2026-08-26). 개별 글을 열어 확정했다 — 청크 경계를 롤링 해시 대신 누적분포로 골라 4KB 근처 정규분포를 만든 이유(큰 청크일수록 이진 탐색이 느리다), 값이 아니라 키만 보고 경계를 정해 값 갱신이 경계를 밀지 않게 한 결정, B-트리로는 차이를 구하는 값이 트리 크기에 비례한다는 대비, 그리고 sysbench 에서 MySQL 보다 약 2배 느리다는 것을 언어 탓이라 밝히며 그대로 적는다. ⚠️ 개별 글 주소를 추측했다가 404 를 받았다 — 목록에 적힌 주소만 쓴다. |
 
