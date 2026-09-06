@@ -8,12 +8,13 @@
   "updated_at": "2026-09-06",
   "domain": "block.xyz",
   "one_liner": "가맹점 결제와 개인 금융과 비트코인 하드웨어를 한 회사가 만든다 — 그래서 고치는 방법도 셋으로 갈린다",
-  "business_model": "**돈은 결제 흐름에서 나온다.** 2026년 2분기 매출 **66.2억 달러**(9.3% 증가), 총이익 **32억 달러**(25% 증가). ⭐ **매출로 보면 비트코인이 크고 총이익으로 보면 Cash App 이 크다** — 비트코인 생태계 매출이 **18.9억 달러**인데, 이건 비트코인을 사고파는 금액이 그대로 매출에 잡히기 때문이고 남는 몫은 얇다(재구성). 총이익은 **Cash App 20억 달러**(31% 증가, Borrow 와 Card 가 견인)와 **Square 12억 달러**(13% 증가)로 갈린다. 2026년 총이익 전망 **125.1억 달러**(21% 성장).\n\n⭐ **한 회사 안에 성격이 아주 다른 셋이 있다** — 가맹점에 파는 것(Square), 개인에게 파는 것(Cash App), **기계를 파는 것**(비트코인 하드웨어). ⚠️ **그리고 이 회사는 그 셋을 떠받치는 사내 도구까지 직접 만들어 공개한다**(Buzz).",
+  "business_model": "**돈은 결제 흐름에서 나온다.** 2026년 2분기 매출 **66.2억 달러**(9.3% 증가), 총이익 **32억 달러**(25% 증가). ⭐ **매출로 보면 비트코인이 크고 총이익으로 보면 Cash App 이 크다** — 비트코인 생태계 매출이 **18.9억 달러**인데, 이건 비트코인을 사고파는 금액이 그대로 매출에 잡히기 때문이고 남는 몫은 얇다(재구성). 총이익은 **Cash App 20억 달러**(31% 증가, Borrow 와 Card 가 견인)와 **Square 12억 달러**(13% 증가)로 갈린다. 2026년 총이익 전망 **125.1억 달러**(21% 성장).\n\n⭐ **한 회사 안에 성격이 아주 다른 셋이 있다** — 가맹점에 파는 것(Square), 개인에게 파는 것(Cash App), **기계를 파는 것**(Bitkey 지갑 · Proto 채굴 장비). ⚠️ **그리고 이 회사는 그 셋을 떠받치는 사내 도구까지 직접 만들어 공개한다**(Buzz). ⭐ **거기에 하나 더 있다 — 자기 것이 아닌 기계의 결함을 파헤쳐 공개한다**(COLDCARD 자문).",
   "products": [
     "Square",
     "Cash App",
     "Moneybot",
-    "COLDCARD",
+    "Bitkey",
+    "Proto",
     "Buzz",
     "MeshLLM"
   ],
@@ -65,15 +66,15 @@
     },
     {
       "name": "비트코인 하드웨어",
-      "how": "⭐ **소프트웨어 회사가 기계를 판다** — COLDCARD 하드웨어 지갑. **여기서는 버그가 배포로 안 끝나고 이미 팔린 기계 안에 남는다**(재구성). ⚠️ **공개 실적에서 이 몫만 따로 떼어낸 숫자를 못 찾았다.**",
+      "how": "⭐ **소프트웨어 회사가 기계를 판다** — **Bitkey**(자기 보관 지갑: 앱 + 하드웨어 + 복구 도구, 2026년 세대는 기기에서 승인하는 보안 터치스크린)와 **Proto**(모듈형 채굴 장비 `Proto Rig` + 오픈소스 플릿 관리 `Proto Fleet`). **여기서는 버그가 배포로 안 끝나고 이미 팔린 기계 안에 남는다**(재구성). ⚠️ **공개 실적에서 이 몫만 따로 떼어낸 숫자를 못 찾았다.**",
       "confidence": "inferred",
       "sources": [
         {
-          "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
-          "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
-          "publisher": "Block Engineering",
-          "date": "2026-07-30",
-          "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+          "title": "Self-Custody Bitcoin Wallet Bitkey, Built by Block, Inc., Launches Globally",
+          "url": "https://block.xyz/inside/press-release-bitkey-launch",
+          "publisher": "Block",
+          "date": "",
+          "summary": "Bitkey 는 Block 이 만든 자기 보관 비트코인 지갑으로 모바일 앱·하드웨어 기기·복구 도구 묶음으로 이뤄진다. 휴대폰이나 하드웨어를 잃어버렸을 때, 또는 둘 다 잃었을 때를 위한 복구 도구가 함께 온다. 2026년 세대는 기기에서 거래를 승인하는 보안 터치스크린을 넣었다. Block 의 비트코인 묶음은 Cash App(벌고 모으고 쓰기)·Square(가맹점 비트코인 결제)·Bitkey(자기 보관 하드웨어와 소프트웨어)·Proto(채굴 하드웨어와 오픈소스 플릿 관리 소프트웨어)·Spiral(오픈소스 프로토콜 개발 지원)로 나뉜다."
         }
       ]
     }
@@ -81,7 +82,7 @@
   "domain_map": {
     "title": "결제와 기계와 사내 도구가 한 회사 안에 있다",
     "question": "이 회사의 도메인들이 어떻게 맞물리나",
-    "code": "flowchart TD\n  B[\"⭐ <b>Block</b><br/>• 2026 Q2 매출 66.2억 달러<br/>• 총이익 32억 달러 (+25%)\"]:::accent --> S[\"<b>Square</b><br/>• 가맹점 결제<br/>• 총이익 12억 달러\"]:::list\n  B --> C[\"<b>Cash App</b><br/>• 개인 금융<br/>• 총이익 20억 달러 (+31%)\"]:::list\n  B --> K[\"<b>비트코인</b><br/>• 매출 18.9억 달러 (-12.8%)<br/>• COLDCARD 하드웨어\"]:::list\n  C --> M[\"⚠️ <b>확률적으로 틀리는 것을 고친다</b><br/>• Moneybot 자가치유 루프<br/>• ✅ 본문 확인\"]:::accent\n  K --> R[\"⚠️ <b>키를 만드는 난수</b><br/>• 폴백이 결정론적이었다<br/>• ✅ 본문 확인\"]:::accent\n  S --> A[\"<b>에이전트가 팀으로 일한다</b><br/>• Buzz 릴레이 · 벌 계층<br/>• ✅ 본문 확인\"]:::accent\n  C --> A\n  A --> P[\"<b>노는 컴퓨트를 모은다</b><br/>• MeshLLM · QUIC NAT 통과<br/>• ✅ 본문 확인\"]:::accent"
+    "code": "flowchart TD\n  B[\"⭐ <b>Block</b><br/>• 2026 Q2 매출 66.2억 달러<br/>• 총이익 32억 달러 (+25%)\"]:::accent --> S[\"<b>Square</b><br/>• 가맹점 결제<br/>• 총이익 12억 달러\"]:::list\n  B --> C[\"<b>Cash App</b><br/>• 개인 금융<br/>• 총이익 20억 달러 (+31%)\"]:::list\n  B --> K[\"<b>비트코인</b><br/>• 매출 18.9억 달러 (-12.8%)<br/>• Bitkey 지갑 · Proto 채굴\"]:::list\n  C --> M[\"⚠️ <b>확률적으로 틀리는 것을 고친다</b><br/>• Moneybot 자가치유 루프<br/>• ✅ 본문 확인\"]:::accent\n  K --> R[\"⚠️ <b>키를 만드는 난수</b><br/>• ⭐ 남의 기계(COLDCARD)를 판다<br/>• 폴백이 결정론적이었다<br/>• ✅ 본문 확인\"]:::accent\n  S --> A[\"<b>에이전트가 팀으로 일한다</b><br/>• Buzz 릴레이 · 벌 계층<br/>• ✅ 본문 확인\"]:::accent\n  C --> A\n  A --> P[\"<b>노는 컴퓨트를 모은다</b><br/>• MeshLLM · QUIC NAT 통과<br/>• ✅ 본문 확인\"]:::accent"
   },
   "domains": [
     {
@@ -125,7 +126,7 @@
     },
     {
       "name": "키를 만드는 난수",
-      "why": "⭐ **이 회사의 도메인 중 유일하게 배포로 끝나지 않는다** — **이미 팔린 기계 안의 펌웨어**다. ⚠️ **틀리면 지갑 시드가 예측 가능해진다** — 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 **같은 난수 스트림을 쓴다.** ✅ **본문 확인함**(2026-07-30).",
+      "why": "⭐ **이 도메인만 대상이 회사 밖에 있다.** Block 은 **Bitkey**(자기 보관 지갑)와 **Proto**(채굴 장비)로 비트코인 하드웨어를 만드는데, 이 자료에서 파헤친 것은 **자기 기계가 아니라 Coinkite 의 COLDCARD** 다 — 회사가 못을 박는다: **`이 보고서는 Block 제품에 해당하지 않으며, Block 제품이나 고객은 이 취약점의 영향을 받지 않는다.`** ⚠️ **그런데도 파는 이유가 있다** — **키를 만드는 난수는 하드웨어 지갑을 만드는 모두의 문제이고, 틀리면 배포로 못 고친다**(재구성). **새 지갑 시드·종이지갑 키·Seed XOR 마스크·복제와 USB 와 Key Teleport 와 Web2FA 의 ECDH 키·Secure Notes 비밀번호·HSM 로컬 코드가 같은 난수 스트림을 쓴다.** ✅ **본문 확인함**(2026-07-30).",
       "tech": [
         {
           "tech": "⚠️ STM32 하드웨어 RNG (타야 했던 경로)",
@@ -173,7 +174,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "coldcard-rng"
+      ]
     },
     {
       "name": "에이전트가 팀으로 일한다",
@@ -690,14 +693,508 @@
           "summary": "2026년 2분기 매출 66.2억 달러(9.3% 증가), 총이익 32억 달러(25% 증가). 부문별로 커머스 인에이블먼트 33.4억 달러(15.3% 증가), 금융 솔루션 13.8억 달러(40.3% 증가), 비트코인 생태계 18.9억 달러(12.8% 감소). 총이익은 Cash App 20억 달러(31% 증가, Borrow 와 Card 가 견인), Square 12억 달러(13% 증가, 결제·소프트웨어·대출이 견인). 2026년 총이익 전망은 125.1억 달러로 21% 성장."
         }
       ]
+    },
+    {
+      "key": "coldcard-rng",
+      "name": "남의 기계 안 난수를 파헤친다 (COLDCARD)",
+      "domain": "키를 만드는 난수",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⭐ **이 회사의 기능 중 유일하게 대상이 회사 밖에 있다.** Block 의 비트코인 엔지니어링·보안 팀이 **Coinkite 의 COLDCARD 펌웨어**에서 **지갑 시드를 만드는 난수가 결정론적 폴백을 타고 있었다**는 것을 밝혀 공개했다. ⚠️ **이게 없으면 회사가 못 하는 일은 매출이 아니라 신뢰다**(재구성) — **Bitkey 와 Proto 로 같은 종류의 기계를 파는 회사가, 이 바닥의 결함을 읽어 낼 수 있다는 것을 보이는 자리다.** ⭐ **그리고 회사는 그 자리에서 자기 제품을 팔지 않는다** — **`이 보고서는 Block 제품에 해당하지 않으며, Block 제품이나 고객은 이 취약점의 영향을 받지 않는다.`**",
+        "metrics": [
+          {
+            "label": "폴백 씨앗의 SysTick 후보 상태 수",
+            "value": "기종에 따라 8만~12만 가지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "보안 요소가 준 엔트로피 중 재시드에 닿는 양",
+            "value": "40바이트 중 4바이트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "남는 탐색 공간 (폴백 상태와 호출 이력을 알 때)",
+            "value": "최대 2^32, 평균 약 2^31 후보 시도",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "취약 경로가 코드에 존재한 기간",
+            "value": "2021-01-28 ~ 2026-07-30 (자문 공개)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "이중으로 안전하게 만들었다고 믿던 자리",
+          "thought": "⭐ **하드웨어 TRNG 가 없으면 빌드가 실패하도록 가드를 넣어 뒀다.** ⚠️ **그런데 그 가드가 `매크로가 켜졌는가`가 아니라 `매크로가 있는가`를 물었다** — 양산 설정이 그 값을 0 으로 두고 별도 래퍼를 쓰게 했으므로 **가드는 조용히 통과했다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "난수가 이상한지 검사하던 자리",
+          "thought": "⚠️ **건강성 검사도 통과했다.** 검사가 **인접한 반복 출력을 거부**하는데, **`결정론적 PRNG 는 보통 인접한 값이 서로 다르므로 통과한다.`** ⭐ **틀린 난수를 잡으려면 출력만 봐서는 안 된다는 것이 여기서 드러난다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "공개 시점을 정하던 자리",
+          "thought": "⭐ **다 확인하고 낼 것인가, 지금 낼 것인가.** 회사가 고른 쪽이 분명하다 — **`악용 가능성을 확인할 완전한 경험적 시험은 하지 않았다. 우리는 이 자문을 이르게 공개한다, 악용이 진행 중이기 때문이다.`** ⚠️ **불완전한 채로 내는 대신 그것이 불완전하다는 것을 문장으로 적었다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "매크로 가드",
+            "what": "하드웨어 TRNG 없이 빌드되는 것을 막으려던 컴파일 시점 검사. ⚠️ **`정의되었는가`만 물었고 `0 인가`는 묻지 않았다.**"
+          },
+          {
+            "name": "폴백 PRNG (Yasmarang)",
+            "what": "하드웨어 RNG 대신 실제로 돌던 결정론적 생성기."
+          },
+          {
+            "name": "폴백 씨앗",
+            "what": "**MCU UID 하위 32비트 · SysTick 카운터 값 · RTC 시각과 하위초 레지스터.** ⚠️ **셋 다 암호학적 엔트로피가 아니다.**"
+          },
+          {
+            "name": "보안 요소 엔트로피",
+            "what": "SE1 에서 32바이트, SE2 에서 8바이트 — **합쳐 40바이트.** 품질은 좋다."
+          },
+          {
+            "name": "재시드 워드",
+            "what": "⚠️ **그 40바이트를 이중 SHA-256 으로 줄인 뒤 앞의 4바이트만 꺼내 만든 32비트 한 워드.** 상태 워드 하나를 교체한다."
+          },
+          {
+            "name": "난수 스트림",
+            "what": "**새 지갑 시드·임시 시드·종이지갑과 secp256k1 개인키·Seed XOR 마스크·복제와 USB 와 Key Teleport 와 Web2FA 의 일부 ECDH 키·Secure Notes 비밀번호·HSM 로컬 코드**가 여기서 나온다."
+          },
+          {
+            "name": "기기·펌웨어 조합",
+            "what": "⚠️ **노출 여부는 기기 제조일이 아니라 `비밀이 만들어질 때 쓰던 펌웨어`가 정한다.**"
+          }
+        ],
+        "invariants": [
+          "⭐ **지갑 시드는 만들어진 뒤에 고칠 수 없다** — 펌웨어는 갱신되지만 그 펌웨어로 이미 만든 키는 그대로 남는다.",
+          "**폴백은 안전한 쪽으로 떨어져야 한다** — 하드웨어 엔트로피가 없으면 멈춰야지 결정론적 생성기로 조용히 내려가면 안 된다.",
+          "⚠️ **난수의 품질은 출력을 봐서 알 수 없다** — 결정론적 생성기도 인접값 검사를 통과한다.",
+          "**엔트로피는 파이프라인에서 가장 좁은 자리만큼만 남는다** — 40바이트를 넣어도 4바이트로 줄면 4바이트다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "펌웨어가 **하드웨어 TRNG 가 있어야 한다**는 컴파일 시점 가드를 둔다",
+            "why": "⭐ **이중 안전장치를 의도한 자리다** — 없으면 빌드가 실패하게."
+          },
+          {
+            "step": "⚠️ **그런데 가드가 매크로의 `정의 여부`만 검사한다** — **`값이 0 인 매크로를 거부하지 않는다.`** 양산 보드는 그 값을 0 으로 두고 **별도의 보드 지역 구현**을 쓰게 되어 있어 가드가 통과한다",
+            "why": "양산 설정과 검사 방식의 가정이 어긋난 지점이다."
+          },
+          {
+            "step": "⚠️ **보드 지역 구현이 내보내는 이름이 라이브러리가 찾는 이름과 다르다** — 보드는 `random32()`·`random_buffer()` 를 내보내는데 libngu 는 전역 `rng_get()` 을 참조한다. **그래서 그 참조가 MicroPython 구현으로 풀린다**",
+            "why": "⭐ **결함의 인과가 여기서 이름 하나로 좁혀진다.**"
+          },
+          {
+            "step": "MicroPython 이 폴백 생성기를 **MCU UID 하위 32비트와 SysTick 값을 섞은 값, RTC 시각 레지스터, RTC 하위초 레지스터**로 초기화한다",
+            "why": "부팅 시점에 쉽게 얻을 수 있는 값들이다."
+          },
+          {
+            "step": "⚠️ **초기화 이후로는 새 엔트로피를 모으지 않는다** — **`이후의 모든 출력이 결정론적 상태 전이다.`**",
+            "why": "⭐ **씨앗을 알면 그 뒤 전부를 안다는 뜻이다.**"
+          },
+          {
+            "step": "⚠️ **건강성 검사가 통과한다** — 검사는 **인접한 반복 출력**을 거부하는데 **`결정론적 PRNG 는 보통 인접값이 서로 다르므로 통과한다`**",
+            "why": "⭐ **잡으라고 둔 그물이 이 결함을 통과시킨다.**"
+          },
+          {
+            "step": "Mk4/Q/Mk5 는 v5.0.0부터 **보안 요소에서 40바이트**(SE1 32 + SE2 8)를 받아 **이중 SHA-256 으로 줄이고 앞 4바이트만 꺼내 재시드**한다",
+            "why": "뒤늦게 넣은 보완이다."
+          },
+          {
+            "step": "⚠️ **`원래 입력의 품질과 무관하게 다이제스트 4바이트만 재시드에 닿는다`** — 상태 워드 하나만 바꾸므로 **남는 탐색 공간이 최대 2^32, 평균 약 2^31 후보 시도**",
+            "why": "⭐ **보완을 넣고도 자릿수가 모자라면 안 넣은 것과 크게 다르지 않다**(재구성)."
+          },
+          {
+            "step": "**같은 스트림을 쓰는 기능 전부가 함께 영향받는다** — 지갑 시드·종이지갑 키·Seed XOR 마스크·Key Teleport 와 Web2FA 의 ECDH 키·Secure Notes 비밀번호·HSM 로컬 코드",
+            "why": "⚠️ **`ckcc.rng_bytes` 를 쓰는 호출자만 별도의 STM32 하드웨어 RNG 구현에 닿는다** — **같은 코드베이스 안에 안전한 경로와 아닌 경로가 함께 있었다.**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "(Coinkite) 하드웨어 TRNG 를 어떻게 강제하나",
+            "chosen": "⚠️ **매크로의 정의 여부를 검사하는 컴파일 시점 가드.** 없으면 빌드가 실패한다.",
+            "alternatives": [
+              "매크로의 값이 0 이 아닌지까지 검사",
+              "런타임에 실제 엔트로피 원천을 확인"
+            ],
+            "tradeoff": "⭐ **양산 설정이 그 값을 0 으로 두는 순간 가드가 반대로 작동한다** — **`정의되었다는 것만 확인하고, 값이 0 인 매크로를 거부하지 않는다.`** ⚠️ **이중 안전장치가 통합 지점의 가정 하나 때문에 무력해진 사례다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "(Coinkite) 보드 지역 RNG 구현을 어떤 이름으로 내보내나",
+            "chosen": "⚠️ **`random32()` 와 `random_buffer()` 로 내보낸다** — 라이브러리가 참조하는 전역 `rng_get()` 이 아니다.",
+            "alternatives": [
+              "라이브러리가 기대하는 이름을 그대로 내보내기"
+            ],
+            "tradeoff": "⭐ **이름이 안 맞아 참조가 MicroPython 구현으로 조용히 풀린다** — 링크 오류가 아니라 **다른 구현이 있었기 때문에 조용했다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "(MicroPython) 하드웨어 RNG 가 없을 때 무엇으로 대신하나",
+            "chosen": "⚠️ **Yasmarang 결정론적 생성기로 폴백한다.** 씨앗은 **MCU UID 하위 32비트 · SysTick 값 · RTC 시각과 하위초.**",
+            "alternatives": [
+              "엔트로피 원천이 없으면 실패시키기",
+              "여러 원천을 계속 모아 상태를 갱신"
+            ],
+            "tradeoff": "⭐ **`어느 것도 암호학적 엔트로피 원천이 아니고` 관측하거나 재구성할 수 있다** — MCU UID 는 고정된 제조 식별자이고 SysTick 은 **8만~12만 가지**뿐이다. ⚠️ **그리고 초기화 뒤 새 엔트로피를 안 모아 이후가 전부 결정론적 상태 전이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "(Coinkite) 난수가 고장 났는지 어떻게 잡나",
+            "chosen": "⚠️ **인접한 반복 출력을 거부하는 건강성 검사.**",
+            "alternatives": [
+              "엔트로피 원천 자체를 확인",
+              "통계적 무작위성 검정"
+            ],
+            "tradeoff": "⭐ **이 결함을 정확히 통과시킨다** — **`결정론적 PRNG 는 보통 인접한 값이 서로 다르므로 통과한다.`** ⚠️ **출력만 보는 검사는 `막힌 원천`은 잡아도 `예측 가능한 원천`은 못 잡는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "(Coinkite) 뒤늦게 넣은 재시드에 엔트로피를 얼마나 넣나",
+            "chosen": "⚠️ **보안 요소의 40바이트를 이중 SHA-256 으로 줄여 앞 4바이트만 넘긴다** — 상태 워드 하나를 교체하는 **32비트 재시드**.",
+            "alternatives": [
+              "전체 다이제스트를 넘기기",
+              "암호학적 DRBG 를 초기화하기"
+            ],
+            "tradeoff": "⭐ **`원래 입력의 품질과 무관하게 네 다이제스트 바이트만 재시드에 닿는다`** — 남는 탐색 공간이 **최대 2^32, 평균 약 2^31 후보 시도**다. ⚠️ **좋은 엔트로피 40바이트를 갖고도 파이프라인의 가장 좁은 자리가 4바이트면 4바이트다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "(Block) 확인이 끝나기 전에 공개할 것인가",
+            "chosen": "⭐ **이르게 공개한다** — **`악용 가능성을 확인할 완전한 경험적 시험은 하지 않았다. 우리는 이 자문을 이르게 공개한다, 악용이 진행 중이기 때문이다.`**",
+            "alternatives": [
+              "완전한 재현·시험을 마친 뒤 공개",
+              "제조사의 확정 보고서를 기다렸다 함께 공개"
+            ],
+            "tradeoff": "⚠️ **미확인 상태로 나가는 위험을 안는다** — 그래서 **한계를 문장으로 적고**, **`이것은 Block 의 견해이며 내부 연구에 근거한다. Coinkite 의 확정 보고서가 나오면 그것을 보라`**고 덧붙인다. ⭐ **불완전함을 감추는 대신 표시했다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "(Block) 남의 제품 자문에서 자기 제품을 어떻게 다루나",
+            "chosen": "⭐ **선을 긋는다** — **`이 보고서는 Block 제품에 해당하지 않으며, Block 제품이나 고객은 이 취약점의 영향을 받지 않는다.`**",
+            "alternatives": [
+              "자사 하드웨어(Bitkey)의 대응 방식을 함께 설명하기"
+            ],
+            "tradeoff": "⚠️ **덕분에 광고로 읽히지 않지만, `그럼 너희는 어떻게 하나`가 이 문서에 없다** — **Bitkey 도 같은 문제를 안는 기계인데 그 설계가 안 나온다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "(Coinkite) 노출 범위를 무엇으로 가르나",
+            "chosen": "⚠️ **제조일이 아니라 펌웨어다** — **`노출은 기기의 제조 날짜가 아니라 비밀이 만들어질 때 쓰던 펌웨어에 달려 있다.`**",
+            "alternatives": [
+              "기기 모델이나 출고 시기로 가르기"
+            ],
+            "tradeoff": "⭐ **사용자가 자기 노출 여부를 알려면 언제 어느 펌웨어로 시드를 만들었는지 기억해야 한다**(재구성) — **기기를 보고 판단할 수 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "STM32 하드웨어 TRNG",
+            "role": "**타야 했던 경로.** `ckcc.rng_bytes` 를 쓰는 호출자만 여기에 닿았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "libngu (암호 라이브러리)",
+            "role": "지갑 생성이 2021-03-01 부터 여기로 이관됐다. **하드웨어 TRNG 를 요구하는 가드를 갖고 있다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "MicroPython 의 Yasmarang 폴백",
+            "role": "⚠️ **실제로 돌던 것.** 결정론적 상태 전이.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "보안 요소 SE1 · SE2",
+            "role": "재시드용 엔트로피 40바이트(32 + 8)를 준다. **품질은 좋았고 파이프라인이 좁았다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "이중 SHA-256",
+            "role": "40바이트를 줄이는 데 쓰인다. ⚠️ **그 결과에서 4바이트만 쓴다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "history": [
+        {
+          "version": "libngu 이관 이후 (재시드 없음)",
+          "from": "2021-03",
+          "to": "2022-03",
+          "what": "⚠️ **2021-01-28 에 이미 취약한 가드 코드가 libngu 에 있었고, 2021-03-01 에 COLDCARD 의 지갑 생성이 libngu 로 옮겨졌으며, 2021-03-17 의 펌웨어 v4.0.0 이 그 경로를 담고 나갔다.** Mk2/Mk3 의 v4.0.0~v4.1.9 는 **취약 경로가 확인되었고 안전한 재시드가 아예 없다.**",
+          "why_changed": "⚠️ **폴백 상태를 나중에라도 되돌릴 수단이 없었다** — 씨앗 셋이 전부 관측 가능한데 그것을 덮어쓸 방법이 없다(재구성).",
+          "tradeoff": "**하드웨어 TRNG 가 있다고 믿고 만들어진 구조라, 그 믿음이 틀렸을 때 남는 방어가 없다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+              "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+              "publisher": "Block Engineering",
+              "date": "2026-07-30",
+              "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+            }
+          ]
+        },
+        {
+          "version": "32비트 재시드",
+          "from": "2022-03",
+          "to": "",
+          "what": "**2022-03-14 의 첫 양산 Mk4 v5.0.0 부터** 보안 요소의 40바이트를 이중 SHA-256 으로 줄여 **4바이트로 재시드**한다. Q 와 Mk5 의 모든 양산품이 같은 구조다.",
+          "why_changed": "",
+          "tradeoff": "⚠️ **폴백 자체는 그대로 남고 재시드는 32비트에 그친다** — **`전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않는다.`** 남는 것이 최대 **2^32** 스트림, 평균 **2^31** 후보 시도다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+              "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+              "publisher": "Block Engineering",
+              "date": "2026-07-30",
+              "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+            }
+          ]
+        }
+      ],
+      "connections": [
+        {
+          "to": "Coinkite (COLDCARD 제조사)",
+          "via": "보안 자문 공개",
+          "contract": "⭐ **Block 은 분석과 영향 범위를 내고, 확정 보고서는 제조사 쪽에 넘긴다** — **`Coinkite 의 확정 보고서가 나오면 그것을 보라.`** ⚠️ **수정 자체는 이 문서에 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "libngu · MicroPython (상류 코드)",
+          "via": "컴파일 시점 매크로와 심볼 해석",
+          "contract": "라이브러리는 하드웨어 TRNG 가 있다고 **가드로 요구**하고, 보드는 그것을 **다른 이름으로 제공**한다. ⚠️ **양쪽 다 자기 몫은 지켰는데 경계에서 어긋났다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Bitkey · Proto (Block 자신의 비트코인 하드웨어)",
+          "via": "같은 문제 영역",
+          "contract": "⚠️ **이 문서는 선을 긋는다** — **`Block 제품이나 고객은 영향받지 않는다.`** ⭐ **다만 Bitkey 가 이 문제를 어떻게 푸는지는 여기 없다** — `open_questions` 로 남겼다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "세 겹의 방어가 차례로 통과한 길",
+          "question": "하드웨어 난수를 쓰라고 만들어 둔 장치들이 왜 아무것도 막지 못했나",
+          "kind": "failure",
+          "code": "flowchart TD\n  B[\"<b>양산 보드 설정</b><br/>• 하드웨어 RNG 매크로를 0 으로<br/>• 별도 래퍼를 쓰려는 의도\"]:::list --> G{\"⚠️ <b>1겹 — 컴파일 가드</b><br/>매크로가 정의되었나\"}\n  G -->|\"⚠️ 값이 0 이어도 정의는 됐다\"| L{\"⚠️ <b>2겹 — 심볼 해석</b><br/>보드가 그 이름을 내보내나\"}\n  G -.->|\"막았어야 할 길\"| STOP[\"<b>빌드 실패</b>\"]:::quiet\n  L -->|\"⚠️ 보드는 다른 이름으로 내보낸다\"| Y[\"⚠️ <b>MicroPython 폴백으로 풀린다</b><br/>• Yasmarang 결정론적 생성기\"]:::warn\n  L -.->|\"막았어야 할 길\"| HW[\"<b>STM32 하드웨어 TRNG</b>\"]:::quiet\n  Y --> S[\"<b>씨앗 셋</b><br/>• MCU UID 하위 32비트 (고정)<br/>• SysTick (8만~12만 가지)<br/>• RTC 시각·하위초\"]:::warn\n  S --> H{\"⚠️ <b>3겹 — 건강성 검사</b><br/>인접 출력이 같은가\"}\n  H -->|\"⭐ 결정론적 PRNG 도 인접값은 다르다\"| K[\"⚠️ <b>지갑 시드가 나온다</b><br/>• 종이지갑 키 · Seed XOR<br/>• Key Teleport · Web2FA ECDH<br/>• Secure Notes · HSM 로컬 코드\"]:::warn"
+        },
+        {
+          "title": "40바이트가 4바이트가 되는 자리",
+          "question": "뒤늦게 넣은 재시드는 왜 부족한가",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[\"<b>SE1</b><br/>• 32바이트\"]:::list --> M[\"<b>합쳐서 40바이트</b><br/>• 품질은 좋다\"]:::list\n  B[\"<b>SE2</b><br/>• 8바이트\"]:::list --> M\n  M --> S[\"<b>이중 SHA-256</b>\"]:::list\n  S --> C[\"⚠️ <b>앞 4바이트만 꺼낸다</b><br/>• ⭐ 원래 입력 품질과 무관하게<br/>• 상태 워드 하나만 교체\"]:::warn\n  C --> R[\"⚠️ <b>32비트 재시드</b><br/>• 전체 다이제스트를 안 받는다<br/>• 암호학적 DRBG 를 안 세운다\"]:::warn\n  R --> E[\"⚠️ <b>남는 탐색 공간</b><br/>• 최대 2^32 스트림<br/>• 평균 약 2^31 후보 시도\"]:::warn"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "**난수가 예측 가능한지를 출력만 보고 알 수 없다**",
+            "why_hard": "⭐ **좋은 PRNG 와 나쁜 PRNG 의 출력은 겉으로 같아 보인다** — 이 사건에서 건강성 검사가 정확히 그것을 보여 준다: 검사는 **인접한 반복 출력**을 거부하는데 **`결정론적 PRNG 는 보통 인접한 값이 서로 다르므로 통과한다.`** ⚠️ **막힌 원천(늘 같은 값)은 잡히지만 예측 가능한 원천은 안 잡힌다**(재구성). **씨앗을 알면 전부를 아는데 씨앗은 출력에 안 보인다.**",
+            "current_best": "⭐ **업계의 차선책은 원천 자체를 검사하고 여러 원천을 계속 섞는 것이다**(재구성) — 이 사건이 보여 준 것은 그 반대다: **엔트로피를 한 번만 모으고**(초기화 이후 새 엔트로피 없음), **좋은 원천을 갖고도 파이프라인을 4바이트로 좁히면**(40바이트 → 4바이트) 뒤의 검사로는 못 잡는다. ⚠️ **그리고 하드웨어 지갑에서는 검사가 늦게 성공해도 소용이 없다** — **이미 만들어진 시드는 펌웨어 갱신으로 못 고친다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+                "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+                "publisher": "Block Engineering",
+                "date": "2026-07-30",
+                "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
+          "url": "https://engineering.block.xyz/blog/predictable-rng-fallback-and-32-bit-reseed-in-coldcard-firmware",
+          "publisher": "Block Engineering",
+          "date": "2026-07-30",
+          "summary": "양산 보드 설정이 MICROPY_HW_ENABLE_RNG 를 0 으로 두고 별도의 하드웨어 RNG 래퍼를 쓰게 했는데, libngu 가 그 매크로가 켜졌는지가 아니라 정의되었는지를 검사한다. 그래서 지갑 생성이 STM32 하드웨어 RNG 대신 MicroPython 의 결정론적 Yasmarang 폴백을 탔다. 그 폴백의 씨앗은 MCU UID 하위 32비트·SysTick 카운터(기종에 따라 8만~12만 가지)·RTC 레지스터인데 어느 것도 암호학적 엔트로피가 아니고 관측하거나 재구성할 수 있다. 초기화 이후로는 새 엔트로피를 모으지 않아 이후 출력이 전부 결정론적 상태 전이다. Mk4/Q/Mk5 는 v5.0.0부터 재시드를 넣었으나 보안 요소가 준 40바이트를 4바이트로 줄여 넘기고 전체 다이제스트를 받지도, 암호학적 DRBG 를 초기화하지도 않아 구별되는 출력 스트림이 최대 2^32 가지뿐이다. 새 지갑 시드·종이지갑 키·복제 암호화·Key Teleport 가 같은 스트림을 쓴다."
+        },
+        {
+          "title": "Self-Custody Bitcoin Wallet Bitkey, Built by Block, Inc., Launches Globally",
+          "url": "https://block.xyz/inside/press-release-bitkey-launch",
+          "publisher": "Block",
+          "date": "",
+          "summary": "Bitkey 는 Block 이 만든 자기 보관 비트코인 지갑으로 모바일 앱·하드웨어 기기·복구 도구 묶음으로 이뤄진다. 휴대폰이나 하드웨어를 잃어버렸을 때, 또는 둘 다 잃었을 때를 위한 복구 도구가 함께 온다. 2026년 세대는 기기에서 거래를 승인하는 보안 터치스크린을 넣었다. Block 의 비트코인 묶음은 Cash App(벌고 모으고 쓰기)·Square(가맹점 비트코인 결제)·Bitkey(자기 보관 하드웨어와 소프트웨어)·Proto(채굴 하드웨어와 오픈소스 플릿 관리 소프트웨어)·Spiral(오픈소스 프로토콜 개발 지원)로 나뉜다."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "⚠️ **COLDCARD RNG 결함의 수정이 무엇인지 이 문서에 없다** — 회사가 **`악용이 진행 중`**이라고 적고 영향 범위까지 밝혔으나, **`완전한 경험적 시험으로 악용 가능성을 확인하지는 않았다`**고 하며 Coinkite 쪽 해결책은 이 문서에 실리지 않았다. **후속 자료를 찾아야 한다.**",
+    "⚠️ **COLDCARD RNG 결함의 수정이 무엇인지 이 문서에 없다** — Block 은 **`악용이 진행 중이라 자문을 이르게 공개한다`**고 밝히면서도 **`악용 가능성을 확인할 완전한 경험적 시험은 하지 않았다`**고 적고, **`Coinkite 의 확정 보고서가 나오면 그것을 보라`**고 권한다. **후속 자료를 찾아야 한다.**",
     "**Square(가맹점 결제) 자체의 기술 자료를 아직 안 읽었다** — 총이익 12억 달러를 내는 본업인데 이번에 읽은 다섯 편이 전부 AI·에이전트·펌웨어였다. **결제 처리·정산·대출 심사 쪽 글이 있는지 확인한다.**",
     "**비트코인 하드웨어의 매출 몫을 따로 못 찾았다** — 공개 실적은 `비트코인 생태계`(Cash App 거래)로 묶여 있다.",
     "**Buzz 가 사내에서 실제로 무엇을 만드는지 규모를 못 봤다** — 벤치마크 수치는 있으나 사내 채택률·처리량은 안 나온다.",
-    "**Moneybot 의 여섯 에이전트가 어떤 모델을 쓰는지, 스테이징 비용이 얼마인지 안 나온다** — 회사가 **`값싼 스테이징`**을 밑바닥 조건으로 꼽았는데 그 값이 얼마인지가 없다."
+    "**Moneybot 의 여섯 에이전트가 어떤 모델을 쓰는지, 스테이징 비용이 얼마인지 안 나온다** — 회사가 **`값싼 스테이징`**을 밑바닥 조건으로 꼽았는데 그 값이 얼마인지가 없다.",
+    "**Block 자신의 Bitkey 는 난수를 어떻게 만드는지 이 자료에 없다** — 같은 문제를 안는 하드웨어를 만들면서 남의 기계를 파헤친 것이라, **자기 쪽 설계를 적은 글이 있는지 확인한다.**"
   ],
   "sources": [
     {
@@ -706,6 +1203,13 @@
       "publisher": "Block Engineering",
       "date": "2026-08-28",
       "summary": "Moneybot 은 Cash App 의 AI 금융 어시스턴트다. 같은 행동을 해도 어떤 고객에게는 문제가 나타나고 어떤 고객에게는 안 나타나 통상적인 회귀 테스트가 통하지 않는다. 여섯 개의 하위 에이전트를 순서대로 돌린다 — 재현자가 스테이징에서 10~20회 돌려 기준 실패율을 세우고, 진단자가 세션 증거와 시스템 프롬프트로 원인을 찾고, 수정자가 코드나 프롬프트를 고치고, 검증자가 기준과 같은 표본 수로 다시 재고, 발행자가 평가 결과를 붙여 PR 을 열고, 리뷰 대응자가 자동 피드백을 반영한다. 수정은 개선의 여지가 얼마나 있었는지까지 감안해 확신 여부를 판정하고 재현 평가를 영구 회귀 테스트로 함께 붙인다. 검증된 수정 40건 이상, 보고된 실패 100건 이상이 더는 재현되지 않는다. 루프 자체보다 재현 가능한 평가·값싼 스테이징·운영 추적성·프로그래밍 가능한 티켓 시스템이 더 일반화된다."
+    },
+    {
+      "title": "Self-Custody Bitcoin Wallet Bitkey, Built by Block, Inc., Launches Globally",
+      "url": "https://block.xyz/inside/press-release-bitkey-launch",
+      "publisher": "Block",
+      "date": "",
+      "summary": "Bitkey 는 Block 이 만든 자기 보관 비트코인 지갑으로 모바일 앱·하드웨어 기기·복구 도구 묶음으로 이뤄진다. 휴대폰이나 하드웨어를 잃어버렸을 때, 또는 둘 다 잃었을 때를 위한 복구 도구가 함께 온다. 2026년 세대는 기기에서 거래를 승인하는 보안 터치스크린을 넣었다. Block 의 비트코인 묶음은 Cash App(벌고 모으고 쓰기)·Square(가맹점 비트코인 결제)·Bitkey(자기 보관 하드웨어와 소프트웨어)·Proto(채굴 하드웨어와 오픈소스 플릿 관리 소프트웨어)·Spiral(오픈소스 프로토콜 개발 지원)로 나뉜다."
     },
     {
       "title": "Predictable RNG Fallback and 32-Bit Reseed in COLDCARD Firmware",
