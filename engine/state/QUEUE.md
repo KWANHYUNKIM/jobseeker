@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Meesho** | IN · 커머스(소셜 커머스) | 도메인 4(판매자 정산[tech 4] / 주소를 못 쓰는 나라에서 배달지를 찾는다[tech 5] / 사기 네트워크를 실시간으로 끊는다[tech 0 · ⏳ 미독] / 10억 대 기기의 인터넷에 물건을 보여 준다[tech 0 · ⏳ 미독]) · **기능 2**(fast-but-wrong-is-still-wrong · address-text-is-not-enough) · ⚠️ **`www.meesho.io/blog` 는 WebFetch 403 — `r.jina.ai` 를 앞에 둔다** |
+| **Meesho** | IN · 커머스(소셜 커머스) | 도메인 4(판매자 정산[tech 4] / 인도 주소 지오코딩[tech 5] / 사기 네트워크[tech 5] / **10억 대 기기의 인터넷에 물건을 보여 준다[tech 0 · ⏳ 미독]**) · **기능 3**(fast-but-wrong-is-still-wrong · address-text-is-not-enough · clean-history-is-not-innocence) · ⚠️ **`www.meesho.io/blog` 는 WebFetch 403 — `r.jina.ai` 를 앞에 둔다** |
 
 ## 대기
 
