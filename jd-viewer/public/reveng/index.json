@@ -1616,7 +1616,7 @@
       "country": "EU",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "로봇이 쏟아 내는 여러 속도의 센서 흐름을 한 시간축 위에 겹쳐 보여 주는 도구 — 오픈소스 뷰어를 먼저 깔고 그 위에 데이터베이스를 판다",
       "updated_at": "2026-09-07",
       "domain": "rerun.io"
