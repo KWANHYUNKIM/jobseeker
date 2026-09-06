@@ -571,9 +571,9 @@
         "롤 기반 권한",
         "role-based access control"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "kafka",
@@ -838,9 +838,9 @@
         "zero trust",
         "mTLS"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "sse",
@@ -966,7 +966,7 @@
         "secrets management",
         "Vault"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1777,7 +1777,7 @@
         "최소 권한",
         "least privilege"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
