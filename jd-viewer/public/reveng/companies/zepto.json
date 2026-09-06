@@ -4,7 +4,7 @@
   "name_en": "Zepto",
   "country": "IN",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "zeptonow.com",
   "one_liner": "인도에서 10분 안에 배달하는 퀵커머스 — 재고가 계속 바뀐다는 것을 전제로 시스템을 짠다",
@@ -236,9 +236,87 @@
     },
     {
       "name": "광고를 팔려면 하루 10억 이벤트를 세야 한다",
-      "why": "⚠️ **광고가 가장 빨리 크는 매출원(+151%)인데 광고는 센 숫자만큼만 팔린다**(재구성). 회사가 **`하루 10억 이벤트: 실제로 작동하는 광고 분석을 만들었다`(2026-07-27)** 를 냈다. ⏳ **본문은 아직 안 읽었다.**",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **광고는 센 숫자만큼만 팔린다**(재구성). 이 엔진이 **광고주에게 수십 개 차원의 지출 통계**를 보여 주고 **과금과 실시간 예산 집행**까지 굴린다 — **가장 빨리 크는 매출원(+151%)이 여기에 달려 있다.** ⚠️ **그런데 처음 만든 것이 정확히 반대 방향이었다** — **5분 윈도로 미리 집계하는 순간 중복 제거도, `첫 클릭에만 과금` 도, 디버깅도 불가능해졌다.**",
+      "tech": [
+        {
+          "tech": "ClickHouse (3 레플리카 + ZooKeeper)",
+          "solves": "하루 **10억 이벤트**의 원본을 열 지향으로 저장하고 그 위에서 집계한다. **ZooKeeper 연결이 끊긴 노드는 복제 테이블을 READONLY 로 돌린다.**",
+          "limits": "⚠️ **원본을 다 들고 있어야 하므로 저장 비용이 든다** — 수 주 지난 파티션을 S3 로 내려 상쇄한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+              "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-07-27",
+              "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+            }
+          ]
+        },
+        {
+          "tech": "질의 시점 중복 제거 (`argMax`)",
+          "solves": "⚠️ **`ReplacingMergeTree` 의 병합 시점이 이 수집 속도에서 보장되지 않아** 질의할 때 최신 판을 고른다. 사업 규칙(첫 클릭만 과금)을 직접 짤 수 있다.",
+          "limits": "⚠️ **모든 질의가 중복 제거 비용을 치른다.** 회사는 **`ReplacingMergeTree` 를 쓰더라도 읽기는 늘 중복 제거 뷰를 얹으라**고 적는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+              "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-07-27",
+              "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+            }
+          ]
+        },
+        {
+          "tech": "일 단위 파티션 + 카디널리티 오름차순 정렬 키",
+          "solves": "⚠️ **어떤 질의 최적화보다 영향이 컸다** — 월 단위 덩어리 대신 **많아야 두 파티션**만 읽고 압축이 최대가 된다.",
+          "limits": "⚠️ **한 번 정하면 바꾸기 어렵다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+              "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-07-27",
+              "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+            }
+          ]
+        },
+        {
+          "tech": "광고주별 비동기 집계 (Kafka + 워커 풀)",
+          "solves": "**질의 비용이 행 수에 선형이 아니라** 잘게 자른 조각이 확실히 싸다. 메모리 압박이 총량에 비례해 커지는 것을 막는다.",
+          "limits": "⚠️ **작업 수만큼 오케스트레이션이 는다** — 회사의 교훈은 **`집계 작업의 범위를 좁게 잡아라`** 다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+              "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-07-27",
+              "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+            }
+          ]
+        },
+        {
+          "tech": "3분 지출 계산 (분석과 분리)",
+          "solves": "⚠️ **시간당 집계만으로는 캠페인이 최대 60분간 예산을 넘겨 썼다.** 과금 관련 이벤트만 읽어 약 1분에 끝낸다.",
+          "limits": "⚠️ **같은 자료 위에 두 개의 시계가 돌아 대시보드와 예산 집행의 숫자가 순간적으로 다를 수 있다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+              "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-07-27",
+              "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "never-aggregate-away-raw-data"
+      ]
     }
   ],
   "features": [
@@ -1315,6 +1393,521 @@
           "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
         }
       ]
+    },
+    {
+      "key": "never-aggregate-away-raw-data",
+      "name": "집계해 버린 원본은 되돌릴 수 없다",
+      "domain": "광고를 팔려면 하루 10억 이벤트를 세야 한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **광고는 센 숫자만큼만 팔린다.** 이 분석 엔진이 **광고주에게 수십 개 차원의 지출 통계를 보여 주고**, 동시에 **과금 엔진과 실시간 예산 집행을 굴린다** — 캠페인·검색어·카테고리·지면·기기별로. **광고는 이 회사에서 가장 빨리 크는 매출원(2026년 6월 기준 1억 7,100만 달러, +151%)이다.** ⚠️ **그런데 처음 만든 것이 정확히 반대 방향이었다** — **5분 텀블링 윈도로 미리 집계해 Postgres 에 넣는 Flink 파이프라인**이었고, **미리 집계하는 순간 중복 제거가 불가능해졌다.** **실패로 이벤트가 재생되면 중복으로 세어지고**, **사용자는 한 광고의 첫 클릭에만 과금돼야 하는데** 집계된 자료로는 그 판단을 할 수 없다. **게다가 5분 버킷으로 압축되면서 클릭 하나하나가 사라져 디버깅이 불가능해졌다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**하루 10억 이벤트**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 두 시계",
+            "value": "**대시보드용 분석 집계는 시간당**, **예산 집행용 지출 계산은 3분마다**(약 1분에 끝난다) — **지출 자료가 몇 분 이상 낡지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "label": "고친 문제",
+            "value": "⚠️ **시간당 집계만 있을 때는 캠페인이 최대 60분 동안 예산을 초과 지출할 수 있었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "label": "늦게 오는 이벤트",
+            "value": "**4시간 룩백 윈도** — 망 문제나 재생으로 늦은 이벤트도 **원래 이벤트 시각 기준으로 맞는 윈도에 들어간다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "label": "클러스터",
+            "value": "**3 레플리카** — 처음 노드당 4 CPU / 16GB / 1TB 에서 **32 CPU / 90GB / 3TB** 로 키웠다. ZooKeeper 가 복제를 조정한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "label": "이 광고가 붙는 곳",
+            "value": "다크스토어 **1,139개 · 66개 도시** · 하루 평균 **233만 건**의 주문",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+                "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+                "publisher": "MoneyFlow India",
+                "date": "2026",
+                "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "처음 설계를 되짚을 때",
+          "thought": "⚠️ **이 기능의 이름이 회사가 적은 교훈의 첫 줄이다** — **`원본 자료를 집계해 없애지 마라.`** 5분 버킷은 저장과 질의를 싸게 만들지만 **돌이킬 수 없다.** **중복인지 아닌지, 이 클릭이 그 사용자의 첫 클릭인지를 나중에 물을 수 있으려면 개별 이벤트가 남아 있어야 한다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "중복 제거 방식을 고를 때",
+          "thought": "⚠️ **도구가 주는 기능을 이유를 대고 거절했다** — `ReplacingMergeTree` 는 **중복 제거가 파트 병합 시점에 일어나는데**, 이 정도 수집 속도에서는 **병합이 언제 일어날지 보장되지 않는다.** 그래서 **질의 시점에 `argMax(_timestamp)` 로 각 이벤트의 최신 판을 고른다.** **자동으로 되는 것처럼 보이는 기능이 언제 되는지 보장하지 않으면 그것은 안 되는 것이다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "성능을 손볼 때",
+          "thought": "⚠️ **회사가 교훈으로 못 박은 것** — **파티션 키와 정렬 키가 그 뒤에 한 어떤 질의 최적화보다 영향이 컸다.** **일 단위 파티션이면 ClickHouse 가 월 단위 큰 덩어리를 훑는 대신 많아야 두 파티션만 읽는다.** **구조가 먼저이고 튜닝은 그다음이다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "원본 이벤트",
+            "what": "⚠️ **집계하지 않고 남긴다.** 중복 판정과 `첫 클릭` 판정, 그리고 디버깅이 전부 여기에 달려 있다"
+          },
+          {
+            "name": "질의 시점 중복 제거",
+            "what": "**`argMax(_timestamp)` 로 각 이벤트의 최신 판**을 고른다 — 병합 시점에 기대지 않는다"
+          },
+          {
+            "name": "파티션 키 / 정렬 키",
+            "what": "**`toDate(created_at)` 로 일 단위 파티션**, 정렬 키는 **카디널리티가 낮은 것부터**(`advertiserId`, `campaignId`, `bidType`, …) — 압축을 최대로"
+          },
+          {
+            "name": "시간당 집계 워커",
+            "what": "**4시간 룩백**으로 돈다. ⚠️ **머티리얼라이즈드 뷰를 버리고 여기로 왔다**"
+          },
+          {
+            "name": "3분 지출 계산",
+            "what": "⚠️ **과금에 관련된 이벤트만 읽는다** — CPC 는 클릭, CPM 은 노출. 약 1분에 끝난다"
+          },
+          {
+            "name": "낮은 카디널리티 일 단위 테이블",
+            "what": "**실제 질의 패턴에 맞춰 따로 만든 것.** 기기·키워드·도시·카테고리가 다 들어간 5분 테이블은 **내부 플랫폼 분석용으로 물러났다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **원본 이벤트는 지우지 않는다** — 집계는 그 위에서 다시 계산한다",
+          "⚠️ **사용자는 한 광고의 첫 클릭에만 과금된다** — 그 판정에 원본이 필요하다",
+          "**늦게 온 이벤트는 원래 이벤트 시각의 윈도로 들어간다** — 도착 시각이 아니라",
+          "⚠️ **대시보드의 시계와 예산 집행의 시계는 다르다** — 하나는 시간당, 하나는 3분"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**이벤트가 원본 그대로 ClickHouse 에 들어간다** — 하루 10억 건",
+            "why": "⚠️ **미리 집계하면 중복 제거도 `첫 클릭` 판정도 디버깅도 불가능해진다**"
+          },
+          {
+            "step": "**일 단위로 파티션되고 카디널리티 오름차순으로 정렬된다**",
+            "why": "⚠️ **많아야 두 파티션만 읽는다.** 정렬 키가 압축을 좌우한다"
+          },
+          {
+            "step": "**질의할 때 `argMax(_timestamp)` 로 중복을 제거한다**",
+            "why": "⚠️ **`ReplacingMergeTree` 의 병합 시점은 이 수집 속도에서 보장되지 않는다**"
+          },
+          {
+            "step": "**시간당 워커가 4시간 룩백으로 집계한다** — 광고주마다 별도 작업을 Kafka 로 넣고 독립 워커 풀이 처리한다",
+            "why": "⚠️ **한 질의로 전 광고주를 처리하면 메모리 압박이 총량에 비례해 커진다.** 질의 비용이 행 수에 선형이 아니라 **잘게 자른 쪽이 확실히 싸다**"
+          },
+          {
+            "step": "**질의 패턴에 맞춘 낮은 카디널리티 일 단위 테이블에 쌓는다**",
+            "why": "**기기·키워드·도시·카테고리가 다 든 5분 테이블은 광고주 질의마다 수백만 행을 훑게 했다**"
+          },
+          {
+            "step": "⚠️ **따로 도는 3분 작업이 과금 관련 이벤트만 읽어 지출을 계산한다** — CPC 는 클릭, CPM 은 노출",
+            "why": "⚠️ **시간당 집계만으로는 캠페인이 최대 60분 동안 예산을 넘겨 쓸 수 있었다**"
+          },
+          {
+            "step": "**워크로드별로 ClickHouse 사용자를 나누고 CPU·메모리 상한을 건다**",
+            "why": "**폭주하는 질의가 집계 파이프라인을 굶기지 않게**"
+          },
+          {
+            "step": "**수 주 지난 파티션은 S3 로 내린다**",
+            "why": "**로컬 NVMe 를 가볍게 유지하면서 접근은 열어 둔다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "이벤트를 미리 집계할 것인가 원본을 남길 것인가",
+            "chosen": "⚠️ **원본을 남긴다** — 회사가 교훈 첫 줄로 적는다: **`원본 자료를 집계해 없애지 마라.`**",
+            "alternatives": [
+              "5분 텀블링 윈도로 사전 집계(처음 방식)",
+              "샘플링해서 저장"
+            ],
+            "tradeoff": "사전 집계는 저장과 질의를 싸게 만들지만 두 가지를 못 하게 한다 — **재생으로 생긴 중복을 제거할 수 없고**, **`한 광고의 첫 클릭에만 과금한다` 는 규칙을 적용할 수 없다.** 게다가 **5분 버킷으로 압축되면 클릭 하나하나가 사라져 디버깅이 불가능해진다.** ⚠️ **대가는 하루 10억 건의 원본을 저장하고 그 위에서 매번 다시 집계하는 비용**이고, **계층 저장(수 주 뒤 S3)이 그 값을 낮춘다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "question": "중복을 언제 제거할 것인가",
+            "chosen": "⚠️ **질의 시점에** — `argMax(_timestamp)` 로 최신 판을 고른다",
+            "alternatives": [
+              "`ReplacingMergeTree` 로 저장 시점 중복 제거",
+              "수집 파이프라인에서 중복 제거"
+            ],
+            "tradeoff": "`ReplacingMergeTree` 를 **이유를 대고 거절했다** — **중복 제거가 파트 병합 중에 일어나는데 이 수집 속도에서는 병합 빈도가 보장되지 않는다.** 질의 시점 방식은 **원본을 그대로 두면서 사업 규칙에 맞는 중복 제거를 직접 짤 수 있게** 한다. ⚠️ **대가는 모든 질의가 중복 제거 비용을 치른다는 것**이고, 회사는 **`ReplacingMergeTree` 를 쓰더라도 읽기는 늘 그 위에 중복 제거 뷰를 얹으라**고 교훈에 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "question": "파티션과 정렬 키를 어떻게 잡을 것인가",
+            "chosen": "**일 단위 파티션 + 카디널리티 오름차순 정렬 키**(`advertiserId`, `campaignId`, `bidType`, …)",
+            "alternatives": [
+              "월 단위 파티션",
+              "시간 단위 파티션",
+              "질의 최적화로 해결"
+            ],
+            "tradeoff": "⚠️ **회사가 교훈으로 못 박는다 — 파티션 키와 정렬 키가 그 뒤에 한 어떤 질의 최적화보다 영향이 컸다.** 일 단위면 **월 단위 큰 덩어리를 훑는 대신 많아야 두 파티션만 읽고**, 카디널리티 오름차순 정렬은 **압축을 최대로** 만든다. ⚠️ **대가는 한 번 정하면 바꾸기 어렵다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "question": "집계를 머티리얼라이즈드 뷰로 할 것인가",
+            "chosen": "⚠️ **아니다 — 시간당 스케줄 워커 + 4시간 룩백**",
+            "alternatives": [
+              "머티리얼라이즈드 뷰(처음 시도)",
+              "스트리밍 집계 유지"
+            ],
+            "tradeoff": "머티리얼라이즈드 뷰가 실패한 이유가 둘이다 — **집계 전에 중복 제거 로직을 걸 수 없었고**, **늦게 도착한 이벤트가 잘못된 윈도에 담겼다.** 스케줄 워커는 **4시간 룩백**으로 돌아 **망 문제나 재생으로 늦은 이벤트도 원래 이벤트 시각 기준의 윈도로 들어간다.** ⚠️ **대가는 지연이 생긴다는 것**이고, **그 대가를 못 받아들이는 예산 집행은 별도 작업으로 뗐다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "question": "모든 광고주를 한 질의로 처리할 것인가",
+            "chosen": "⚠️ **광고주마다 비동기 작업으로 쪼갠다** — Kafka 로 넣고 독립 워커 풀이 처리",
+            "alternatives": [
+              "단일 대형 집계 질의",
+              "광고주 그룹 단위 배치"
+            ],
+            "tradeoff": "단일 질의는 **메모리 압박이 전체 물량에 비례해 커진다.** ⚠️ **질의 비용이 행 수에 선형이 아니므로 잘게 자른 조각이 확실히 싸다** — 이것이 이 결정의 근거다. **대가는 작업 수만큼의 오케스트레이션**이고, 회사는 교훈으로 **`집계 작업의 범위를 좁게 잡아라`** 를 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "question": "차원이 많은 테이블을 그대로 쓸 것인가",
+            "chosen": "⚠️ **질의 패턴에 맞춘 낮은 카디널리티 일 단위 테이블을 따로 만든다**",
+            "alternatives": [
+              "5분 테이블 하나로 모든 질의 처리",
+              "인덱스 추가로 해결"
+            ],
+            "tradeoff": "**기기·키워드·도시·카테고리가 다 든 5분 테이블은 광고주 질의마다 수백만 행을 훑게 했다.** 실제 질의 패턴에 맞춘 테이블을 따로 두고 **상세 5분 테이블은 내부 플랫폼 분석용으로 물러났다.** ⚠️ **대가는 같은 사실을 여러 테이블에 두는 것**이고, **원본이 남아 있어서 그 사본들을 언제든 다시 만들 수 있다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "question": "예산 집행을 분석과 같은 주기로 돌릴 것인가",
+            "chosen": "⚠️ **아니다 — 두 작업으로 가른다**. 무거운 시간당 분석과 가벼운 3분 지출 계산",
+            "alternatives": [
+              "모두 시간당",
+              "모두 3분마다"
+            ],
+            "tradeoff": "시간당만 돌리면 **캠페인이 최대 60분 동안 예산을 넘겨 쓴다.** 3분 작업은 **과금에 관련된 이벤트만 읽어**(CPC 는 클릭, CPM 은 노출) **약 1분에 끝나고 지출 자료가 몇 분 이상 낡지 않는다.** ⚠️ **대가는 같은 자료 위에서 두 개의 시계를 유지해야 한다는 것**이고, **대시보드의 숫자와 예산 집행의 숫자가 순간적으로 다를 수 있다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "question": "질의가 서로를 굶기는 것을 어떻게 막을 것인가",
+            "chosen": "**워크로드별 사용자 분리 + 명시적 상한**, 디스크 스필, 계층 저장",
+            "alternatives": [
+              "단일 사용자로 운영",
+              "클러스터를 워크로드별로 분리"
+            ],
+            "tradeoff": "워크로드마다 ClickHouse 사용자를 나누고 **CPU·메모리 상한**을 걸어 **폭주 질의가 집계 파이프라인을 굶기지 않게** 했다. `max_bytes_before_external_group_by`·`max_bytes_before_external_sort` 로 **부하가 걸리면 디스크로 흘려 우아하게 느려지게** 하고, **수 주 지난 파티션은 S3 로 내린다.** ⚠️ **대가는 상한에 걸린 질의가 실패하거나 느려진다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ClickHouse (3 레플리카 + ZooKeeper)",
+            "role": "열 지향 저장과 시계열 집계. **ZooKeeper 연결이 끊긴 노드는 복제 테이블을 READONLY 로 전환한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "tech": "질의 시점 중복 제거 (`argMax`)",
+            "role": "⚠️ **병합 시점에 기대지 않고** 각 이벤트의 최신 판을 고른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "tech": "일 단위 파티션 + 카디널리티 오름차순 정렬 키",
+            "role": "⚠️ **어떤 질의 최적화보다 영향이 컸다** — 많아야 두 파티션만 읽는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka + 광고주별 워커 풀",
+            "role": "집계를 광고주 단위로 쪼갠다 — **질의 비용이 행 수에 선형이 아니다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "tech": "3분 지출 계산 작업",
+            "role": "⚠️ **과금 관련 이벤트만 읽어** 예산 초과 지출 창을 60분에서 몇 분으로 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "tech": "워크로드별 사용자 · 디스크 스필 · S3 계층 저장",
+            "role": "자원 격리와 우아한 성능 저하, 오래된 파티션의 이전",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "과금 엔진 · 실시간 예산 집행",
+          "via": "3분 지출 계산",
+          "contract": "⚠️ **분석 대시보드와 과금이 같은 원본을 다른 주기로 읽는다** — 하나는 시간당, 하나는 3분. **예산 집행이 늦으면 그만큼 초과 지출이 그대로 손실이 된다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "inventory-changes-so-nothing-caches",
+          "via": "광고가 붙는 지면",
+          "contract": "**검색 결과가 광고 지면이고, 그 노출·클릭이 여기로 흘러든다** — **가장 빨리 크는 매출원(+151%)이 이 두 도메인 사이에서 만들어진다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "ClickHouse (도구를 만든 회사)",
+          "via": "⚠️ 같은 도구의 양쪽",
+          "contract": "⚠️ **이 사이트에는 ClickHouse 를 만드는 쪽의 기록도 있다** — **만드는 쪽은 엔진의 한계를 말하고, 쓰는 쪽은 `ReplacingMergeTree 의 병합 시점을 믿을 수 없다` 는 운영의 현실을 말한다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "광고주",
+          "via": "수십 개 차원의 지출 통계",
+          "contract": "**캠페인·검색어·카테고리·지면·기기별로 보여 준다** — **광고는 센 숫자만큼만 팔린다**(재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 늦게 오는 이벤트에는 끝이 없다",
+            "why_hard": "⚠️ **집계는 어느 시점엔가 창을 닫아야 하는데 이벤트는 그 뒤에도 온다.** 처음 만든 머티리얼라이즈드 뷰가 바로 여기서 실패했다 — **늦게 도착한 이벤트가 잘못된 윈도에 담겼다.** **4시간 룩백은 그 문제를 없앤 것이 아니라 선을 그은 것이다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**도착 시각이 아니라 원래 이벤트 시각으로 버킷을 정하고, 4시간을 되돌아보며 다시 계산하는 것.** ⚠️ **그 너머로 늦은 이벤트가 어떻게 되는지는 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          },
+          {
+            "problem": "정확한 숫자와 지금의 숫자는 같은 작업에서 나오지 않는다",
+            "why_hard": "⚠️ **대시보드는 정확해야 하고 예산 집행은 빨라야 한다.** 하나로 묶으면 **시간당 집계 때문에 최대 60분간 초과 지출이 생기거나**, 반대로 **3분마다 전 차원을 집계하느라 비용이 폭발한다**(뒤쪽은 재구성이다).",
+            "current_best": "**두 작업으로 가르고 각각 다른 것을 읽는 것** — 예산 쪽은 **과금에 관련된 이벤트만**(CPC 는 클릭, CPM 은 노출) 본다. ⚠️ **대가는 두 숫자가 순간적으로 다를 수 있다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+                "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-07-27",
+                "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "원본을 남기고 그 위에서 두 개의 시계를 돌린다",
+          "question": "이벤트 하나가 광고주의 숫자가 되기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  E[\"<b>하루 10억 이벤트</b><br/>• 노출 · 클릭\"]:::list --> R[\"⚠️ <b>원본 그대로 저장</b><br/>• ClickHouse 3 레플리카<br/>• 일 단위 파티션<br/>• 카디널리티 오름차순 정렬\"]:::accent\n  R --> D[\"<b>질의 시점 중복 제거</b><br/>• argMax(_timestamp)<br/>• 병합 시점에 기대지 않는다\"]:::list\n  D --> H[\"<b>시간당 집계 워커</b><br/>• 4시간 룩백<br/>• 광고주별 작업 (Kafka)\"]:::list\n  D --> S[\"⚠️ <b>3분 지출 계산</b><br/>• 과금 관련 이벤트만<br/>• CPC 는 클릭 · CPM 은 노출<br/>• 약 1분에 끝난다\"]:::accent\n  H --> T[\"<b>낮은 카디널리티 일 단위 테이블</b><br/>• 실제 질의 패턴에 맞춰\"]:::list\n  T --> A[\"<b>광고주 대시보드</b>\"]:::list\n  S --> B[\"<b>과금 · 실시간 예산 집행</b>\"]:::list\n  R -.->|\"수 주 뒤\"| O[\"<b>S3 계층 저장</b>\"]:::quiet"
+        },
+        {
+          "title": "처음 설계가 무엇을 지웠나",
+          "question": "미리 집계하면 무엇을 못 하게 되나",
+          "kind": "failure",
+          "code": "flowchart TD\n  F[\"⚠️ <b>Flink · 5분 텀블링 윈도</b><br/>• Postgres 에 집계만 저장\"]:::gone --> L1[\"⚠️ <b>중복을 못 지운다</b><br/>• 재생되면 두 번 세어진다\"]:::gone\n  F --> L2[\"⚠️ <b>첫 클릭만 과금할 수 없다</b><br/>• 집계된 자료로는 판단 불가\"]:::gone\n  F --> L3[\"⚠️ <b>디버깅이 불가능하다</b><br/>• 클릭 하나하나가 사라졌다\"]:::gone\n  L1 --> C[\"<b>답: 원본을 남긴다</b><br/>• 집계는 그 위에서 다시\"]:::accent\n  L2 --> C\n  L3 --> C\n  M[\"⚠️ <b>머티리얼라이즈드 뷰도 실패</b><br/>• 집계 전에 중복 제거를 못 건다<br/>• 늦은 이벤트가 잘못된 윈도로\"]:::gone --> W[\"<b>답: 시간당 워커 + 4시간 룩백</b><br/>• 원래 이벤트 시각 기준\"]:::accent\n  P[\"⚠️ <b>ReplacingMergeTree</b><br/>• 병합 시점이 보장되지 않는다\"]:::gone --> Q[\"<b>답: 질의 시점 argMax</b>\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
+          "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
+          "publisher": "Zepto TechXPress",
+          "date": "2026-07-27",
+          "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
+        },
+        {
+          "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+          "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+          "publisher": "MoneyFlow India",
+          "date": "2026",
+          "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1324,7 +1917,9 @@
     "⚠️ **적자 규모가 크다**(FY26 손실 ₹5,905 Cr) — **기술 선택이 원가에 어떻게 걸리는지**를 다룬 자료를 아직 못 찾았다.",
     "⚠️ **10분이라는 약속의 실제 달성률을 모른다** — 공개 자료에서 배달 시간 분포를 못 찾았다.",
     "⚠️ **연표(eras)를 못 세웠다.** 2021년 창업과 2022년 품목 확장은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다. ⏳ `성능 엔지니어링 2부`(2025-12-15)가 단서일 수 있다.",
-    "⚠️ **이 파이프라인의 정확도 수치가 없다** — **원시 GPS 가 30~40% 어긋난다는 문제 크기는 적는데, 복원 뒤에 얼마나 맞는지는 적지 않는다.** **그리고 신뢰도 Low 로 떨어진 배달의 비율과 그 거리 차이가 라이더 보상에 어떻게 나타나는지도 없다**(재구성)."
+    "⚠️ **이 파이프라인의 정확도 수치가 없다** — **원시 GPS 가 30~40% 어긋난다는 문제 크기는 적는데, 복원 뒤에 얼마나 맞는지는 적지 않는다.** **그리고 신뢰도 Low 로 떨어진 배달의 비율과 그 거리 차이가 라이더 보상에 어떻게 나타나는지도 없다**(재구성).",
+    "⚠️ **Flink 에서 ClickHouse 로 넘어온 시점을 모른다** — 글이 **`처음에는 Flink 였다`** 고만 적고 연도를 밝히지 않는다. **연도를 모르면 쓰지 않는다는 규칙대로 `history` 를 비웠다**(STYLE 8번). **세대 교체 자체는 분명한데 시간축을 못 세운 두 번째 사례다**(GeoIndia 에 이어).",
+    "⚠️ **광고 지면이 검색 결과와 어떻게 만나는지가 비어 있다** — 광고 분석 글은 이벤트가 들어온 뒤부터 다루고, 검색 글은 광고를 언급하지 않는다. **노출·클릭이 어디서 어떻게 찍히는지**가 두 글 사이에 빠져 있다."
   ],
   "sources": [
     {
@@ -1357,10 +1952,10 @@
     },
     {
       "title": "A Billion Events a Day: How We Built Ads Analytics That Actually Works",
-      "url": "https://blog.zepto.com/",
+      "url": "https://blog.zepto.com/a-billion-events-a-day-how-we-built-ads-analytics-that-actually-works-c28904bbf8de",
       "publisher": "Zepto TechXPress",
       "date": "2026-07-27",
-      "summary": "하루 10억 이벤트 규모의 광고 분석. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+      "summary": "5분 텀블링 윈도로 미리 집계해 Postgres 에 넣던 Flink 파이프라인이 두 이유로 무너졌다 — 미리 집계하면 중복 제거를 할 수 없고, 원본이 사라져 디버깅이 불가능했다. ClickHouse 로 옮겨 원본을 남기고 질의 시점에 중복을 제거하며, 대시보드용 시간당 집계와 예산 집행용 3분 지출 계산을 갈랐다."
     },
     {
       "title": "How We Built High-Precision, Low-Latency Semantic Search in Production",
