@@ -136,8 +136,71 @@
     {
       "name": "여러 제품을 하나의 데이터 구조로 담는다",
       "why": "**숙소만 있던 회사가 호텔과 체험으로 넓히면 데이터 구조도 따라가야 한다.** 회사가 **`하나를 넘어 확장하기: 다제품 세계를 위한 데이터 아키텍처 진화`**(2026-06)를 냈고, **원시 프로덕션 데이터를 표준화된 신뢰할 수 있는 진실의 원천으로** 바꿨다. ⚠️ **이전에 `이중 파이프라인 실행으로 검증하고 고통스럽도록 느린 폐기 주기`** 를 거쳤다. ⏳ **본문은 아직 안 읽었다.**",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "분리 모델 / 통합 모델 (도메인별 선택)",
+          "solves": "⚠️ **전부 분리하면 로직이 중복되고 전부 통합하면 다루기 어려워진다** — 그래서 **개념이 제품마다 다르면 분리하고 흐름이 제품을 넘나들면 통합한다.**",
+          "limits": "⚠️ **도메인마다 구조가 달라 새로 오는 사람이 매번 확인해야 한다**(재구성) — 그래서 이름과 네임스페이스 규칙이 따라온다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+              "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-06-09",
+              "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+            }
+          ]
+        },
+        {
+          "tech": "하이브리드 금지 (첫 번째 원칙)",
+          "solves": "⚠️ **선택의 자유를 주면 반드시 `조금씩 섞은` 구조가 나오고 그것이 가장 설명하기 어렵다**(재구성) — 각 도메인은 **완전히 분리되거나 완전히 통합**돼야 한다.",
+          "limits": "⚠️ **애매한 도메인에서 한쪽을 억지로 골라야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+              "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-06-09",
+              "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+            }
+          ]
+        },
+        {
+          "tech": "식별자 이름 · 네임스페이스 규칙",
+          "solves": "**구조가 이름과 위치에 드러난다** — 분리는 `id_experience`, 통합은 `id_product_listing` + 제품 타입 컬럼. 제품별 테이블은 전용, 교차 테이블은 전역 네임스페이스.",
+          "limits": "⚠️ **규칙을 지키게 하는 일이 계속 든다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+              "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-06-09",
+              "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+            }
+          ]
+        },
+        {
+          "tech": "번역 계층",
+          "solves": "**레거시 자산과 새 구조를 이어** 하류 의존을 깨뜨리지 않고 옮긴다.",
+          "limits": "⚠️ **끝나지 않았다** — **`출시하고 몇 달이 지난 지금도 번역 계층을 계속 다듬고 레거시 자산을 조심스럽게 이전하고 있다.`** 그동안 두 구조가 함께 산다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+              "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-06-09",
+              "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "choose-per-domain-never-mix-within"
+      ]
     },
     {
       "name": "신원 그래프를 벤더에서 자기 것으로 옮긴다",
@@ -629,6 +692,487 @@
           "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
         }
       ]
+    },
+    {
+      "key": "choose-per-domain-never-mix-within",
+      "name": "도메인마다 고르게 하되 한 도메인 안에서는 섞지 않는다",
+      "domain": "여러 제품을 하나의 데이터 구조로 담는다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **10년 동안 숙소 하나를 위해 지은 데이터 구조에 제품이 둘 더 들어왔다** — **체험(재출시)과 서비스(신규)**. 회사가 문제를 질문으로 적는다 — **`핵심 분석 서비스에 무질서를 들이지 않으면서 어떻게 오프라인 데이터 아키텍처를 새 제품군에 맞게 진화시킬 것인가?`** ⚠️ **각자 알아서 하게 두면 대가가 분명하다** — **`데이터 사일로, 일관되지 않은 분석, 그리고 뒤엉킨 기술 부채의 그물.`** **제품이 늘어나는 것은 사업의 성공인데 데이터 구조에는 압력이다**(뒤쪽은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "늘어난 제품",
+            "value": "**숙소**(10년) + **체험**(재출시) + **서비스**(신규)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 첫 번째 규칙",
+            "value": "**하이브리드 금지** — **각 도메인은 완전히 분리되거나 완전히 통합돼야 하고, 한 도메인 안에서 두 방식을 섞지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "label": "분리한 도메인",
+            "value": "**리스팅 · 가용성 · 위치 · 게스트** — 개념이 제품마다 다르거나 데이터 양 때문에",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "label": "통합한 도메인",
+            "value": "**메시징 · 결제 · 고객지원** — 흐름이 제품을 넘나들기 때문에",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 이 글에도 수치가 없다",
+            "value": "**규모·데이터 양·성능 개선 수치가 하나도 없다** — 구조와 규칙만 말한다(이 지적은 이 사이트의 재구성이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 아직 끝나지 않았다",
+            "value": "**`처음 출시하고 몇 달이 지난 지금도 우리는 번역 계층을 계속 다듬고 레거시 자산을 조심스럽게 이전하고 있다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "두 극단을 볼 때",
+          "thought": "⚠️ **둘 다 안 된다는 것이 출발점이다.** **전부 분리하면 도메인마다 같은 로직이 중복되고**, **전부 하나로 두면 다루기 어려워지고 제품 고유의 속성에 잘 맞지 않는다.** **그래서 `어느 쪽이냐` 를 회사 차원에서 정하지 않고 도메인마다 정하게 했다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자유를 어디까지 줄지 정할 때",
+          "thought": "⚠️ **이 기능의 이름이 여기서 나온다 — 도메인마다 고르게 하되 한 도메인 안에서는 섞지 않는다.** **선택의 자유를 주면 반드시 `조금씩 섞은` 구조가 나오고, 그것이 가장 설명하기 어려운 상태가 된다**(재구성). **그래서 첫 번째 원칙이 하이브리드 금지다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 분리하고 무엇을 합칠지 정할 때",
+          "thought": "⚠️ **판단 기준이 두 개로 갈린다** — **개념이 제품마다 다르면 분리하고**(서비스의 `제공 항목` 은 다대일이고, 가용성이 캘린더 날짜가 아니라 영업시간이며, 위치가 점이 아니라 반경이다), **흐름이 제품을 넘나들면 합친다**(메시지 스레드가 여러 제품에 걸치는데 나누면 대화가 조각난다). **데이터의 모양이 아니라 사람의 행동이 경계를 정한다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "분리 모델",
+            "what": "**제품마다 따로 두는 구조.** 식별자가 **제품별**이다 — `id_experience` 같은"
+          },
+          {
+            "name": "통합 모델",
+            "what": "**여러 제품을 한 테이블에 담는 구조.** 식별자가 **일반 서술자**이고(`id_product_listing`) **제품 타입 컬럼**이 따라온다"
+          },
+          {
+            "name": "⚠️ 하이브리드 (금지된 것)",
+            "what": "⚠️ **한 도메인 안에서 두 방식을 섞은 것.** **첫 번째 원칙이 이것을 막는다**"
+          },
+          {
+            "name": "네임스페이스",
+            "what": "**핵심·제품별 테이블은 전용 네임스페이스에, 여러 제품에 걸치는 테이블은 전역 네임스페이스에**"
+          },
+          {
+            "name": "번역 계층",
+            "what": "⚠️ **레거시 자산과 새 구조 사이를 잇는 것.** **출시 몇 달 뒤에도 계속 다듬고 있다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **한 도메인 안에서는 섞지 않는다** — 완전히 분리하거나 완전히 통합한다",
+          "⚠️ **식별자 이름이 구조를 드러낸다** — 분리면 제품별 ID, 통합이면 일반 서술자 + 타입 컬럼",
+          "**제품별 테이블과 교차 테이블은 다른 네임스페이스에 산다**",
+          "⚠️ **레거시는 조심스럽게 폐기한다** — 하류 의존을 깨뜨리지 않으려고"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**도메인마다 분리와 통합 중 하나를 고른다** — 사업의 필요에 따라",
+            "why": "⚠️ **전부 분리하면 로직이 중복되고 전부 통합하면 다루기 어려워진다**"
+          },
+          {
+            "step": "⚠️ **고른 뒤에는 그 도메인 안에서 섞지 않는다**",
+            "why": "⚠️ **`조금씩 섞은` 구조가 가장 설명하기 어렵다**(재구성)"
+          },
+          {
+            "step": "**식별자 이름을 규칙대로 짓는다** — 분리는 `id_experience` 처럼 제품별, 통합은 `id_product_listing` 처럼 일반 서술자 + 제품 타입 컬럼",
+            "why": "⚠️ **이름만 보고 그 테이블이 어느 쪽인지 알 수 있게**(재구성)"
+          },
+          {
+            "step": "**핵심·제품별 테이블은 전용 네임스페이스, 교차 테이블은 전역 네임스페이스에 둔다**",
+            "why": "**어디를 봐야 하는지가 위치로 드러난다**(재구성)"
+          },
+          {
+            "step": "**개념이 제품마다 다른 도메인은 분리한다** — 리스팅·가용성·위치·게스트",
+            "why": "⚠️ **서비스의 `제공 항목` 은 다대일이고, 가용성이 영업시간이며, 위치가 반경이다** — 하나의 모양으로 못 담는다"
+          },
+          {
+            "step": "**흐름이 제품을 넘나드는 도메인은 통합한다** — 메시징·결제·고객지원",
+            "why": "⚠️ **메시지 스레드가 여러 제품에 걸치는데 나누면 대화가 조각난다**"
+          },
+          {
+            "step": "⚠️ **레거시 자산을 번역 계층으로 이으며 조심스럽게 옮긴다**",
+            "why": "**하류 의존을 깨뜨리지 않으려고** — **출시 몇 달 뒤에도 계속 다듬는 중이다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "전부 분리할 것인가",
+            "chosen": "⚠️ **아니다** — 명시적으로 거절했다",
+            "alternatives": [
+              "제품마다 완전히 독립된 데이터 모델"
+            ],
+            "tradeoff": "**완전히 분리된 모델은 도메인마다 같은 로직을 중복시킨다.** ⚠️ **제품이 늘어날수록 그 중복이 배로 는다**(재구성). **대가는 제품 고유의 속성을 담기 쉽다는 장점을 일부 포기하는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "question": "전부 하나로 둘 것인가",
+            "chosen": "⚠️ **아니다** — 이것도 명시적으로 거절했다",
+            "alternatives": [
+              "모든 제품을 하나의 통합 모델에"
+            ],
+            "tradeoff": "**완전히 통합된 모델은 다루기 어려워지고 제품 고유의 속성에 잘 맞지 않는다.** ⚠️ **`숙소의 캘린더 가용성` 과 `서비스의 영업시간` 을 한 컬럼에 담으려 하면 둘 다 어색해진다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "question": "그럼 누가 정하는가",
+            "chosen": "⚠️ **도메인 팀이 정한다** — 사업의 필요에 따라",
+            "alternatives": [
+              "회사 차원에서 하나의 방식으로 통일",
+              "제품 팀마다 자유롭게"
+            ],
+            "tradeoff": "⚠️ **중앙집중적 원칙과 분산된 유연성을 합친 틀이다** — **원칙은 회사가 정하고 선택은 도메인이 한다**(재구성). **대가는 도메인마다 구조가 달라 새로 오는 사람이 매번 확인해야 한다는 것**이고, **그래서 식별자 이름과 네임스페이스 규칙이 따라온다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "question": "한 도메인 안에서 섞어도 되는가",
+            "chosen": "⚠️ **안 된다** — 첫 번째 원칙이 하이브리드 금지다",
+            "alternatives": [
+              "필요한 부분만 통합하고 나머지는 분리"
+            ],
+            "tradeoff": "**각 도메인은 완전히 분리되거나 완전히 통합돼야 한다.** ⚠️ **선택의 자유를 주면 반드시 `조금씩 섞은` 구조가 나오고, 그것이 가장 설명하기 어려운 상태가 된다**(재구성). **대가는 애매한 도메인에서 한쪽을 억지로 골라야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "question": "식별자 이름을 어떻게 지을 것인가",
+            "chosen": "**구조가 이름에 드러나게** — 분리는 `id_experience`, 통합은 `id_product_listing` + 제품 타입 컬럼",
+            "alternatives": [
+              "도메인마다 자유롭게",
+              "전부 일반 이름으로 통일"
+            ],
+            "tradeoff": "⚠️ **이름만 보고 그 테이블이 어느 쪽 구조인지 알 수 있게 한다**(재구성). **통합 모델에 제품 타입 컬럼이 따라오는 것도 같은 이유다** — 한 테이블에 여러 제품이 있다는 사실을 스키마가 말한다(재구성). **대가는 이름 규칙을 지키게 하는 일이 계속 든다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 분리할 것인가",
+            "chosen": "⚠️ **개념이 제품마다 다른 것** — 리스팅 · 가용성 · 위치 · 게스트",
+            "alternatives": [
+              "데이터 양만 기준으로",
+              "팀 조직을 기준으로"
+            ],
+            "tradeoff": "근거가 하나씩 다르다 — **리스팅**은 서비스가 **`제공 항목`이라는 다대일 개념**을 들여왔고, **가용성**은 서비스가 **캘린더 날짜가 아니라 영업시간 로직**을 요구했으며, **위치**는 서비스가 **반경 기반 서비스 구역**을 더했고, **게스트**는 **상호작용 퍼널이 달라 데이터 양이 커서 분리해야 성능이 났다.** ⚠️ **앞의 셋은 개념 때문이고 마지막 하나는 성능 때문이다** — **같은 결정에 다른 종류의 이유가 섞여 있다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 통합할 것인가",
+            "chosen": "⚠️ **흐름이 제품을 넘나드는 것** — 메시징 · 결제 · 고객지원",
+            "alternatives": [
+              "제품마다 별도 메시징·결제"
+            ],
+            "tradeoff": "**메시지 스레드가 여러 제품에 걸치는데 나누면 대화가 조각난다.** 결제는 **제품과 무관한 거래**이고, 고객지원 **요청도 여러 제품에 걸친다.** ⚠️ **데이터의 모양이 아니라 사람의 행동이 경계를 정한 자리다**(재구성). **대가는 통합 테이블이 모든 제품의 변화를 받아 낸다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "question": "레거시를 어떻게 걷을 것인가",
+            "chosen": "⚠️ **번역 계층으로 이으며 조심스럽게** — 아직 진행 중이다",
+            "alternatives": [
+              "일괄 폐기",
+              "레거시를 그대로 두기"
+            ],
+            "tradeoff": "**옛 체험 제품의 레거시 테이블은 하류 의존을 깨뜨리지 않으려면 조심스러운 폐기가 필요했다.** ⚠️ **회사가 끝나지 않았다고 적는다** — **`처음 출시하고 몇 달이 지난 지금도 우리는 번역 계층을 계속 다듬고 레거시 자산을 조심스럽게 이전하고 있다.`** **대가는 그동안 두 구조가 함께 산다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "분리 모델 / 통합 모델",
+            "role": "⚠️ **도메인마다 하나를 고르되 섞지 않는다** — 개념이 다르면 분리, 흐름이 넘나들면 통합",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "tech": "식별자 이름 규칙",
+            "role": "**구조가 이름에 드러난다** — `id_experience` 대 `id_product_listing` + 제품 타입 컬럼",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "tech": "네임스페이스 구분",
+            "role": "**제품별 테이블은 전용, 교차 테이블은 전역**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "tech": "번역 계층",
+            "role": "⚠️ **레거시와 새 구조를 잇는다** — 출시 몇 달 뒤에도 다듬는 중",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "small-enough-to-fix",
+          "via": "같은 시기의 다른 이전",
+          "contract": "⚠️ **2026년에 이 회사가 공개한 이야기가 둘 다 옮기는 이야기다** — 하나는 **관측을 벤더에서 오픈소스로**, 하나는 **데이터 구조를 한 제품에서 여러 제품으로**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "제품 확장 (체험 · 서비스)",
+          "via": "⚠️ 구조에 가해진 압력",
+          "contract": "⚠️ **제품이 늘어나는 것은 사업의 성공인데 데이터 구조에는 압력이다** — **`데이터 사일로, 일관되지 않은 분석, 뒤엉킨 기술 부채의 그물`** 이 그냥 두면 오는 결과다(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "도메인 팀들",
+          "via": "원칙과 선택",
+          "contract": "⚠️ **원칙은 회사가 정하고 선택은 도메인이 한다** — 다만 **한 도메인 안에서 섞는 것만은 금지된다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "하류 분석 소비자",
+          "via": "레거시 폐기",
+          "contract": "⚠️ **옛 테이블을 함부로 지우면 하류가 깨진다** — 그래서 **번역 계층을 두고 조심스럽게 옮기며 몇 달째 진행 중이다**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 두 극단이 다 틀렸을 때 중간을 어떻게 규정하나",
+            "why_hard": "⚠️ **전부 분리하면 로직이 중복되고 전부 통합하면 다루기 어려워진다** — 회사가 둘을 명시적으로 거절했다. **그런데 `상황에 따라` 라고만 하면 결국 아무 규칙이 없는 것과 같아진다**(재구성). **자유를 주면서도 무질서를 막는 선을 어디에 그을지가 이 문제의 본체다.**",
+            "current_best": "⚠️ **선택은 도메인에 맡기되 `한 도메인 안에서 섞지 않는다` 를 첫 번째 원칙으로 두는 것**, 그리고 **식별자 이름과 네임스페이스로 어느 쪽인지가 드러나게 하는 것.** **자유를 주되 그 선택이 보이게 만든다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          },
+          {
+            "problem": "레거시는 지우기가 만들기보다 어렵다",
+            "why_hard": "⚠️ **옛 체험 제품의 테이블에 하류 의존이 붙어 있어 함부로 지울 수 없다.** 회사가 **`처음 출시하고 몇 달이 지난 지금도 번역 계층을 계속 다듬고 레거시 자산을 조심스럽게 이전하고 있다`** 고 적는다 — **새 구조를 세우는 일보다 옛것을 걷는 일이 오래 남는다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**번역 계층으로 둘을 이어 두고 천천히 옮기는 것.** ⚠️ **끝나지 않았다고 밝히는 것이 이 글의 정직한 대목이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+                "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-06-09",
+                "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "개념이 다르면 나누고 흐름이 넘나들면 합친다",
+          "question": "어느 도메인이 어느 쪽으로 갔나",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>제품이 셋이 됐다</b><br/>• 숙소(10년) · 체험(재출시)<br/>• 서비스(신규)\"]:::list --> Q{\"<b>도메인마다 고른다</b>\"}\n  Q -->|\"⚠️ 개념이 제품마다 다르다\"| S[\"<b>분리 모델</b><br/>• 리스팅 (제공 항목은 다대일)<br/>• 가용성 (영업시간 대 캘린더)<br/>• 위치 (반경 기반 구역)<br/>• 게스트 (데이터 양 · 성능)\"]:::accent\n  Q -->|\"⚠️ 흐름이 제품을 넘나든다\"| M[\"<b>통합 모델</b><br/>• 메시징 (스레드가 걸친다)<br/>• 결제 (제품 불문)<br/>• 고객지원 (요청이 걸친다)\"]:::accent\n  S --> N1[\"<b>id_experience</b><br/>• 제품별 식별자\"]:::list\n  M --> N2[\"<b>id_product_listing</b><br/>• 일반 서술자 + 제품 타입 컬럼\"]:::list\n  X[\"⚠️ <b>금지: 한 도메인 안에서 섞기</b><br/>• 첫 번째 원칙\"]:::gone\n  Q -.-> X\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "두 극단이 다 틀렸다",
+          "question": "왜 하나의 답을 정하지 않았나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>전부 분리</b><br/>• 도메인마다 같은 로직이 중복\"]:::gone --> C[\"<b>답: 도메인마다 고르게 한다</b><br/>• 원칙은 회사가<br/>• 선택은 도메인이\"]:::accent\n  B[\"⚠️ <b>전부 통합</b><br/>• 다루기 어려워지고<br/>• 제품 고유 속성에 안 맞는다\"]:::gone --> C\n  C --> D[\"⚠️ <b>새 위험: 조금씩 섞은 구조</b><br/>• 가장 설명하기 어렵다 (재구성)\"]:::gone\n  D --> E[\"<b>답: 하이브리드 금지</b><br/>• 그리고 이름 · 네임스페이스로<br/>  어느 쪽인지 드러나게\"]:::accent\n  F[\"⚠️ <b>남은 일</b><br/>• 출시 몇 달 뒤에도<br/>  번역 계층을 다듬고<br/>  레거시를 조심스럽게 옮기는 중\"]:::gone\n  G[\"⚠️ <b>이 글에도 수치가 없다</b><br/>• 규모 · 데이터 양 · 성능 개선<br/>• 구조와 규칙만 말한다 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+          "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+          "publisher": "The Airbnb Tech Blog",
+          "date": "2026-06-09",
+          "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+        },
+        {
+          "title": "Building a High-Volume Metrics Pipeline with OpenTelemetry and vmagent",
+          "url": "https://medium.com/airbnb-engineering/building-a-high-volume-metrics-pipeline-with-opentelemetry-and-vmagent-c714d6910b45",
+          "publisher": "The Airbnb Tech Blog",
+          "date": "2026-04",
+          "summary": "StatsD 와 자체 Veneur 기반 집계 파이프라인이 확장 한계에 닿아 OpenTelemetry 프로토콜과 vmagent 로 옮겼다. Veneur·recording rules·OTel Collector 자체 집계·Vector·m3aggregator 를 평가하고 거절한 뒤 vmagent 를 골랐다. 초당 1억 샘플 이상을 처리하고 JVM 서비스의 메트릭 CPU 소비가 10%에서 1% 미만으로 줄었다."
+        },
+        {
+          "title": "Airbnb (ABNB) Q2 2026 Earnings",
+          "url": "https://news.airbnb.com/airbnb-q1-2026-financial-results/",
+          "publisher": "Airbnb Newsroom / 실적 발표",
+          "date": "2026",
+          "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -652,8 +1196,8 @@
       "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
       "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
       "publisher": "The Airbnb Tech Blog",
-      "date": "2026-06",
-      "summary": "원시 프로덕션 데이터를 표준화된 신뢰할 수 있는 진실의 원천으로 바꿨다. 이전에 이중 파이프라인 실행으로 검증하고 고통스럽도록 느린 폐기 주기를 거쳤다. ⏳ 본문은 아직 읽지 않았다."
+      "date": "2026-06-09",
+      "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
     },
     {
       "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
