@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Depot** | US · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 마이크로VM 을 초 단위로 띄운다(`why-i-reimplemented-lvm` 2026-08-13, 읽었다) · 이미지를 다 받지 않고 시작한다(`why-soci-belongs-in-the-build` 2026-08-04, 읽었다) · 시간을 팔면서 시간을 줄인다(요금 페이지). 다음은 기능 하나 — LVM 재구현이 거절한 대안과 버린 보장을 이름 대며 적어 가장 두껍다. 안 읽은 것 — `the-fibonacci-benchmark`(2026-08-26) · `github-is-the-wrong-shape-for-this-new-world` · 빌드 캐시 구조. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Depot** | US · SaaS | CI·빌드 인프라 축이 이 엔진에 없다. `depot.dev/blog` 최신 2026-08-26. 개별 글을 열어 확정했다 — `why-i-reimplemented-lvm`(2026-08-13)에 결정과 거절한 대안과 버린 보장이 다 있다: 마이크로VM 을 1초 안에 띄우고 초당 200건까지 병렬로 만들어야 하는데 LVM 은 볼륨 그룹 전체 잠금 때문에 연산당 약 100ms 로 직렬화됐다. ZFS·Btrfs(성능 목표와 안 맞음)·Stratis(블록 장치를 못 줌)·루프 장치를 이름 대며 물린다. **버린 보장을 명시한다** — 볼륨 연산의 크래시 안전성, 실수로 지웠을 때의 복구, 장애를 넘는 메타데이터 보존. 근거가 분명하다: 하이퍼바이저가 죽으면 어차피 휘발성 마이크로VM 이 사라지므로 크래시 안전 메타데이터가 실익이 없다. 커널 device-mapper 데이터면은 그대로 두고 제어면만 인프로세스 할당자로 바꿔 **약 100배**를 얻었다. |
 | **Ubicloud** | US · SaaS | 베어메탈 위에 오픈소스로 클라우드를 짓는다 — 하이퍼바이저·블록 저장소·네트워크를 직접 다루는 축이라 이 엔진에 없다. `ubicloud.com/blog` 에 심층 글이 여럿 — `building-block-storage-for-cloud-with-spdk-non-replicated`(2024-01-05, 개별 글로 날짜 확인) · `cloud-virtualization-red-hat-aws-firecracker-and-ubicloud-internals` · `building-burstables-cpu-slicing-with-cgroups` · `postgresql-and-the-oom-killer-why-we-use-strict-memory-overcommit` · `virtualizing-nvidia-hgx-b200-gpus-with-open-source`(2026). SPDK 글이 대가를 적는다 — btrfs 로 바꿔 프로비저닝을 4~5분에서 1초 미만으로 줄였지만 **암호화를 잃고 디스크 처리량이 ext4 의 3분의 1로 떨어졌다**. ⚠️ 목록에 날짜가 안 보이므로 팔 때 개별 글에서 확인한다. |
 | **Polar Signals** | EU · SaaS | 지속 프로파일링(eBPF) 축이 이 엔진에 없다. `polarsignals.com/blog` 에 내부 연작이 있다 — `Call Stacks and Unwinding 101`(2026-02-19) · `Profiling Internals: Hardware Timers and eBPF`(2026-03-25) · `Profiling Internals: JavaScript on V8`(2026-06-18) · `Python Zebra Stacks`(2026-05-20, PyTorch 스택을 eBPF 로 푼다) · `Open-Source Low-Overhead NVIDIA CUDA PC Sampling`(2026-06-10) · `Continuous NVIDIA CUDA Profiling In Production`(2025-10-22). 이 엔진의 관측 축(무엇을 얼마나 남길 것인가)에 **프로파일을 상시로 남긴다**는 답이 붙는다. ⚠️ 2026-08-17 에 Dash0 에 합류한다고 발표했다 — 블로그가 마를 수 있으니 판다면 지금 있는 연작으로 판다. |
 
