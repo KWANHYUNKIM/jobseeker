@@ -8,7 +8,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "코어마다 자기 몫만 갖고 아무것도 공유하지 않는 데이터베이스 — 남의 API 를 흉내 내면서 그 아래를 다시 짓는다",
       "updated_at": "2026-09-06",
       "domain": "scylladb.com"

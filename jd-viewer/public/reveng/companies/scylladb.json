@@ -68,8 +68,86 @@
     {
       "name": "아무것도 공유하지 않고 코어마다 하나씩 둔다",
       "why": "⚠️ **이 회사의 설계 원칙이자 대안을 거르는 자다.** I/O 를 전용 코어로 옮기는 문제에서 **세 가지 방법을 나란히 놓고 둘을 거절하는데**, 그중 하나는 성능이 아니라 원칙 때문이다 — **공유 io_uring 인스턴스는 `liburing 이 스레드 안전하지 않아 동기화가 필요하고, 뮤텍스를 넣으면 경합이 심해져 Seastar 의 shared-nothing 철학을 위반한다`**(락프리 방식은 **기술적으로 불가능**하다고 판단했다). ✅ **본문 확인함**(2026-07-22).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Seastar (샤드별 리액터)",
+          "solves": "⚠️ **각 샤드가 자기 스케줄러를 돌리고 자기 메모리·자료구조를 소유해 비싼 샤드 간 잠금과 원자적 연산을 없앤다.**",
+          "limits": "⚠️ **자원을 나눠 써야 하는 기능은 이 원칙과 정면으로 부딪힌다** — 공유 인스턴스가 **성능이 아니라 철학 위반으로 거절됐다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+              "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+              "publisher": "ScyllaDB Blog",
+              "date": "2026-07-22",
+              "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+            }
+          ]
+        },
+        {
+          "tech": "io_uring + SQ 폴링",
+          "solves": "**애플리케이션 샤드가 동기 시스템 호출 없이** 제출 큐에 요청을 올리고, **네트워킹 코어에 고정된 커널 스레드가 그룹 전체를 폴링**한다.",
+          "limits": "⚠️ **폴링 스레드가 코어를 계속 돌고, 그 코어가 곧 병목이 된다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+              "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+              "publisher": "ScyllaDB Blog",
+              "date": "2026-07-22",
+              "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+            }
+          ]
+        },
+        {
+          "tech": "IORING_SETUP_ATTACH_WQ + iowq_aff",
+          "solves": "⚠️ **공유의 자리를 유저 공간에서 커널로 내린다** — 인스턴스는 샤드마다, **커널 워커 풀만 공유**하고 그 워커를 네트워킹 코어에 묶는다.",
+          "limits": "⚠️ **맡긴 곳이 값을 부른다** — **바로 그 커널이 하는 버퍼 복사가 병목이 된다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+              "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+              "publisher": "ScyllaDB Blog",
+              "date": "2026-07-22",
+              "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+            }
+          ]
+        },
+        {
+          "tech": "빠른 길 추측 경로 제거",
+          "solves": "**모든 I/O 가 네트워킹 코어에서 돈다는 보장**을 산다 — 남겨 두면 **오프로딩의 목적 자체가 무너진다.**",
+          "limits": "⚠️ **성능 최적화 하나를 내줬다** — 부분적으로만 지켜지는 원칙은 원칙이 아니다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+              "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+              "publisher": "ScyllaDB Blog",
+              "date": "2026-07-22",
+              "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+            }
+          ]
+        },
+        {
+          "tech": "⚠️ 버퍼 링 (미도입)",
+          "solves": "메모리 복사 병목의 후보 해법이다.",
+          "limits": "⚠️ **Seastar 의 버퍼 관리에 더 큰 아키텍처 변경이 필요해 미뤘다** — **`해법의 성능과 정확성을 종합적으로 시험하는 것이 더 중요했다.`**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+              "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+              "publisher": "ScyllaDB Blog",
+              "date": "2026-07-22",
+              "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "move-the-sharing-into-the-kernel"
+      ]
     },
     {
       "name": "남의 API 를 그대로 받아 주면서 그 아래를 다시 짓는다",
@@ -78,14 +156,505 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "move-the-sharing-into-the-kernel",
+      "name": "공유를 없애지 못하면 한 층 아래로 내린다",
+      "domain": "아무것도 공유하지 않고 코어마다 하나씩 둔다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **문제가 한 문장이다** — **`저수준 I/O 처리에 쓰는 CPU 시간은 애플리케이션 수준의 일에 필요한 CPU 시간과 직접 경쟁한다.`** 그래서 **I/O 를 전용 네트워킹 코어로 넘겨** 애플리케이션 코어를 비우고 싶었다. ⚠️ **그런데 이 회사의 토대가 그것을 어렵게 만든다** — Seastar 는 **`각 샤드가 자기 협력형 스케줄러(리액터)를 돌려 가벼운 태스크와 파이버를 관리하고, 자기 메모리와 자료구조를 소유한다. 이것이 비싼 샤드 간 잠금과 원자적 연산의 필요를 없앤다.`** **아무것도 공유하지 않는 구조에서 무언가를 나눠 쓰려면 그 원칙을 어디선가 굽혀야 한다**(뒤쪽은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "⚠️ 순수 I/O 워크로드 (4 샤드)",
+            "value": "**새 `asymmetric_io_uring` 백엔드가 `linux-aio` 만큼의 처리량을 내지 못한다** — 회사가 그대로 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "label": "원인",
+            "value": "**단일 네트워킹 코어가 주기의 40~50% 를 메모리 복사에 쓴다** — 리눅스 커널이 I/O 를 다루며 하는 **필요한 버퍼 복사** 때문이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 계산이 섞이면 뒤집힌다",
+            "value": "**요청당 2마이크로초의 계산을 넣으면**(4 샤드) **비대칭 백엔드가 처리량과 지연 모두에서 앞선다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "label": "디스크 I/O",
+            "value": "**`linux-aio 와 asymmetric_io_uring 백엔드가 정말 비슷하게 동작한다`** — **한계는 Seastar 가 아니라 디스크로 보인다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 미룬 것",
+            "value": "**버퍼 링은 앞으로의 가능한 개선으로 남겼다** — 통합하려면 **Seastar 의 버퍼 관리에 더 큰 아키텍처 변경**이 필요하기 때문이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "label": "이 프레임워크가 받치는 것",
+            "value": "고객 **300곳 이상** · 총 조달 **1억 700만 달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "ScyllaDB — Company Profile",
+                "url": "https://www.crunchbase.com/organization/scylladb",
+                "publisher": "Crunchbase",
+                "date": "2026",
+                "summary": "카산드라와 DynamoDB API 호환 NoSQL 데이터베이스. 총 1억 700만 달러를 조달했고 300곳이 넘는 고객이 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "자원을 나눠 쓰려 할 때",
+          "thought": "⚠️ **shared-nothing 은 성능 최적화가 아니라 제약이다.** 샤드가 **자기 메모리와 자료구조를 소유**하기에 **비싼 샤드 간 잠금과 원자적 연산이 없다.** **그러니 무언가를 나눠 쓰자는 제안은 그 값을 도로 내놓자는 말이 된다**(뒤쪽은 재구성이다). 그래서 **대안이 성능이 아니라 원칙으로 걸러진다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그래도 나눠 써야 할 때",
+          "thought": "⚠️ **이 기능의 답이 여기서 나온다 — 공유를 없애지 못하면 그 자리를 한 층 아래로 내린다.** 유저 공간에서 공유하면 뮤텍스가 필요하지만, **커널 워커 스레드 풀을 공유하면 유저 공간에는 동기화가 없다.** **원칙을 지키면서 자원을 나누는 자리를 옮긴 것이다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "결과를 발표할 때",
+          "thought": "⚠️ **자기 방식이 진 벤치마크를 그대로 싣는다** — **순수 I/O 워크로드에서는 새 백엔드가 기존 `linux-aio` 를 이기지 못한다.** 그리고 **왜 졌는지까지 적는다** — **네트워킹 코어가 주기의 40~50% 를 메모리 복사에 쓴다.** **`시스템 호출을 피해 얻은 이득이 메모리 전송 비용에 부분적으로 상쇄된다`** 고 스스로 정리한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "샤드 (Seastar)",
+            "what": "⚠️ **자기 협력형 스케줄러(리액터)를 돌리고 자기 메모리와 자료구조를 소유한다** — 그래서 **샤드 간 잠금과 원자적 연산이 없다**"
+          },
+          {
+            "name": "애플리케이션 코어",
+            "what": "계산을 하는 곳. **저수준 I/O 처리에 CPU 를 쓰면 그만큼 계산이 밀린다**"
+          },
+          {
+            "name": "네트워킹 코어",
+            "what": "⚠️ **I/O 를 대신 지는 전용 코어.** 커널 워커와 폴링 스레드가 여기 고정된다"
+          },
+          {
+            "name": "SQ 폴링",
+            "what": "**네트워킹 코어에 고정된 커널 스레드 하나가 그룹 전체의 제출을 폴링한다** — 애플리케이션 샤드는 **동기 시스템 호출 없이** 자기 제출 큐에 요청을 올린다"
+          },
+          {
+            "name": "IORING_SETUP_ATTACH_WQ",
+            "what": "⚠️ **공유의 자리를 커널로 옮기는 장치** — 샤드마다 자기 io_uring 인스턴스를 두되 **커널 워커 스레드 풀만 공유**한다"
+          },
+          {
+            "name": "빠른 길 추측 경로 (제거된 것)",
+            "what": "⚠️ **동기 I/O 시스템 호출을 바로 실행하던 최적화.** 남겨 두면 **I/O 를 네트워킹 코어로 넘기는 목적 자체가 무너진다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **유저 공간에는 공유가 없다** — 나눠 쓰는 자리는 커널이다",
+          "⚠️ **모든 I/O 는 네트워킹 코어에서 돈다** — 예외를 두면 오프로딩이 성립하지 않는다",
+          "**샤드는 자기 메모리와 자료구조를 소유한다** — 그래서 잠금이 없다",
+          "⚠️ **진 결과도 발표한다** — 어떤 워크로드에서 지는지를 밝힌다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**애플리케이션 샤드가 자기 제출 큐에 요청을 올린다** — 동기 시스템 호출 없이",
+            "why": "⚠️ **저수준 I/O 에 쓰는 CPU 시간이 애플리케이션의 계산과 직접 경쟁하기 때문**이다"
+          },
+          {
+            "step": "⚠️ **네트워킹 코어에 고정된 커널 스레드 하나가 그룹 전체의 제출을 폴링한다**(SQ 폴링)",
+            "why": "**제출 자체를 애플리케이션 코어에서 떼어 낸다**"
+          },
+          {
+            "step": "**커널 워커의 CPU 친화도를 네트워킹 코어로 묶는다** — `io_uring_register_iowq_aff` 로",
+            "why": "**I/O 를 처리하는 커널 쪽 일까지 그 코어에 머물게** 하려고"
+          },
+          {
+            "step": "⚠️ **샤드마다 자기 io_uring 인스턴스를 두되 커널 워커 풀만 공유한다**(`IORING_SETUP_ATTACH_WQ`)",
+            "why": "⚠️ **유저 공간 동기화를 피하면서 자원을 나눠 쓴다** — 공유의 자리를 커널로 내렸다"
+          },
+          {
+            "step": "⚠️ **빠른 길 추측 경로를 제거한다**",
+            "why": "⚠️ **`애플리케이션 샤드가 동기 I/O 시스템 호출을 계속 직접 실행하면, I/O 를 네트워킹 코어로 넘기는 목적 자체가 무너진다`**"
+          },
+          {
+            "step": "**완료를 받아 애플리케이션 샤드가 이어서 처리한다**",
+            "why": "계산은 계산 코어에서 이어진다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "I/O 를 전용 코어로 어떻게 넘길 것인가 (대안 셋)",
+            "chosen": "⚠️ **샤드마다 자기 io_uring 인스턴스 + 커널 수준 공유**",
+            "alternatives": [
+              "마스터/프록시 샤드에 I/O 를 몰아주기",
+              "하나의 io_uring 인스턴스를 여러 샤드가 공유"
+            ],
+            "tradeoff": "⚠️ **둘을 거절한 이유가 다르다.** 마스터/프록시는 성능이다 — **`smp::submit_to 의 성능 비용은 받아들일 수 없다. 폴링에 의존해 완료까지 수 밀리초가 걸릴 수 있다.`** 공유 인스턴스는 원칙이다 — **`liburing 이 스레드 안전하지 않아 공유 인스턴스 접근에는 동기화가 필요하다. 뮤텍스나 다른 잠금을 넣으면 높은 경합을 낳고, 그것은 결국 Seastar 의 shared-nothing 철학을 위반한다.`** 락프리 방식은 **기술적으로 불가능**하다고 판단했다. ⚠️ **고른 답은 공유를 없앤 것이 아니라 그 자리를 커널로 내린 것이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "question": "제출을 누가 할 것인가",
+            "chosen": "**SQ 폴링** — 네트워킹 코어에 고정된 커널 스레드 하나가 그룹 전체를 폴링한다",
+            "alternatives": [
+              "샤드마다 시스템 호출로 제출",
+              "제출 전용 유저 스레드"
+            ],
+            "tradeoff": "이렇게 하면 **애플리케이션 샤드는 동기 시스템 호출 없이 자기 제출 큐에 요청을 올리기만 한다.** ⚠️ **대가는 폴링 스레드가 코어를 계속 돌고 있다는 것**이고, **그 코어가 곧 병목이 된다**(뒤에서 실제로 그렇게 됐다, 재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "question": "커널 워커를 어디에 묶을 것인가",
+            "chosen": "**네트워킹 코어로 친화도를 고정한다** — `io_uring_register_iowq_aff`",
+            "alternatives": [
+              "커널 기본 스케줄링에 맡기기"
+            ],
+            "tradeoff": "**I/O 를 처리하는 커널 쪽 일까지 그 코어에 머물게** 해야 오프로딩이 완성된다. ⚠️ **대가는 그 코어에 일이 몰린다는 것**이고, **애플리케이션 코어를 비운 만큼 네트워킹 코어가 채워진다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "question": "기존 최적화를 남길 것인가",
+            "chosen": "⚠️ **버린다** — 빠른 길 추측 경로를 제거했다",
+            "alternatives": [
+              "조건부로 유지",
+              "작은 I/O 에만 허용"
+            ],
+            "tradeoff": "회사의 이유 — **`애플리케이션 샤드가 동기 I/O 시스템 호출을 계속 직접 실행하면, I/O 를 네트워킹 코어로 넘기는 목적 자체가 무너진다.`** ⚠️ **성능 최적화 하나를 내주고 `모든 I/O 가 네트워킹 코어에서 돈다` 는 보장을 샀다.** **부분적으로만 지켜지는 원칙은 원칙이 아니다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "question": "진 벤치마크를 발표할 것인가",
+            "chosen": "⚠️ **싣는다** — 어떤 워크로드에서 지는지와 왜 지는지까지",
+            "alternatives": [
+              "이기는 시나리오만 제시",
+              "벤치마크를 생략"
+            ],
+            "tradeoff": "**`순수 I/O 위주 벤치마크에서는 비대칭 백엔드가 전통적인 linux-aio 백엔드를 이기지 못한다.`** 원인도 밝힌다 — **네트워킹 코어가 주기의 40~50% 를 메모리 복사에 쓴다.** ⚠️ **그리고 스스로 정리한다 — `제로 카피 수신 파이프라인이 없으면, 시스템 호출을 피해 얻은 이득이 메모리 전송 비용에 부분적으로 상쇄된다.`** **팔기 좋은 절반만 보여 주지 않는다**(이 평가는 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "question": "메모리 복사 병목을 지금 풀 것인가",
+            "chosen": "⚠️ **미룬다** — 버퍼 링은 앞으로의 가능한 개선으로 남겼다",
+            "alternatives": [
+              "버퍼 링을 이번에 함께 도입",
+              "제로 카피 수신 경로를 먼저 만들기"
+            ],
+            "tradeoff": "이유가 범위다 — **통합하려면 Seastar 가 버퍼를 관리하는 방식에 더 큰 아키텍처 변경이 필요하다.** 그래서 **`해법의 성능과 정확성을 종합적으로 시험하는 것이 더 중요했다`.** ⚠️ **대가는 지금 구조가 병목을 안은 채 나간다는 것**이고, **회사는 그것을 감추는 대신 병목의 크기를 숫자로 적었다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 워크로드를 위한 것인가",
+            "chosen": "⚠️ **계산이 섞인 워크로드** — 순수 I/O 가 아니라",
+            "alternatives": [
+              "모든 워크로드에 기본값으로 적용"
+            ],
+            "tradeoff": "**요청당 2마이크로초의 계산만 넣어도 비대칭 백엔드가 처리량과 지연 모두에서 앞선다.** ⚠️ **애플리케이션 코어를 비우는 것이 값을 하려면 그 코어가 할 일이 있어야 한다** — **비울 일이 없으면 옮기는 비용만 남는다**(뒤쪽은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "question": "디스크 I/O 도 이 방식으로 바꿀 것인가",
+            "chosen": "**차이가 없다는 것을 확인하고 그대로 둔다**",
+            "alternatives": [
+              "디스크 경로도 같은 구조로 전환"
+            ],
+            "tradeoff": "**`linux-aio 와 asymmetric_io_uring 백엔드가 정말 비슷하게 동작한다`** — **한계가 Seastar 자체가 아니라 디스크로 보인다.** ⚠️ **바꿔도 나아지지 않는 곳을 바꾸지 않는 것도 결정이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Seastar (샤드별 리액터)",
+            "role": "⚠️ **각 샤드가 자기 스케줄러를 돌리고 자기 메모리·자료구조를 소유한다** — 샤드 간 잠금과 원자적 연산을 없앤다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "tech": "io_uring + SQ 폴링",
+            "role": "**네트워킹 코어에 고정된 커널 스레드가 그룹 전체의 제출을 폴링한다** — 애플리케이션 샤드는 동기 시스템 호출을 하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "tech": "IORING_SETUP_ATTACH_WQ",
+            "role": "⚠️ **공유의 자리를 커널로 내린다** — 인스턴스는 샤드마다, 커널 워커 풀은 공유",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "tech": "io_uring_register_iowq_aff",
+            "role": "**커널 워커의 CPU 친화도를 네트워킹 코어로 묶는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 버퍼 링 (미도입)",
+            "role": "**메모리 복사 병목의 후보 해법이지만 Seastar 의 버퍼 관리에 큰 변경이 필요해 미뤘다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "리눅스 커널",
+          "via": "⚠️ 공유를 대신 맡아 주는 곳",
+          "contract": "⚠️ **유저 공간에서 못 하는 공유를 커널이 대신 한다**(`IORING_SETUP_ATTACH_WQ`) — **그리고 바로 그 커널이 하는 버퍼 복사가 병목이 된다.** **맡긴 곳이 값을 부른다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Seastar (오픈소스 프레임워크)",
+          "via": "백엔드",
+          "contract": "**이 구조는 ScyllaDB 만이 아니라 Seastar 를 쓰는 모두에게 간다** — ⚠️ **그래서 버퍼 관리를 바꾸는 일이 더 무거워진다**(재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "남의 API 를 그대로 받아 주면서 그 아래를 다시 짓는다",
+          "via": "같은 토대",
+          "contract": "**호환은 위에서 지키고 이 원칙은 아래에서 지킨다** — ⏳ **그 도메인의 자료는 아직 안 읽었다**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "애플리케이션 워크로드",
+          "via": "⚠️ 이 최적화가 값을 하는 조건",
+          "contract": "⚠️ **애플리케이션 코어를 비우는 값은 그 코어가 할 일이 있을 때만 난다** — **요청당 2마이크로초의 계산이면 뒤집힌다**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 시스템 호출을 피해도 복사는 남는다",
+            "why_hard": "회사가 스스로 정리한다 — **`제로 카피 수신 파이프라인이 없으면, 시스템 호출을 피해 얻은 이득이 메모리 전송 비용에 부분적으로 상쇄된다.`** **커널이 I/O 를 다루며 하는 버퍼 복사는 필요한 일이라 없애려면 파이프라인 자체를 바꿔야 한다.** ⚠️ **그래서 단일 네트워킹 코어가 주기의 40~50% 를 복사에 쓰고, 그 코어가 병목이 된다.**",
+            "current_best": "**계산이 섞인 워크로드에 쓰는 것** — 그런 곳에서는 이긴다. ⚠️ **버퍼 링이 후보이지만 Seastar 의 버퍼 관리에 더 큰 아키텍처 변경이 필요해 미뤘다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          },
+          {
+            "problem": "아무것도 공유하지 않는 구조에서 무언가를 나눠 쓰기",
+            "why_hard": "⚠️ **shared-nothing 은 성능 기법이 아니라 제약이다** — 샤드가 자기 것을 소유하기에 잠금이 없는데, **나눠 쓰자는 제안은 그 값을 도로 내놓자는 말이 된다.** 실제로 **공유 io_uring 인스턴스는 성능이 아니라 `철학을 위반한다` 는 이유로 거절됐고**, 락프리 대안은 **기술적으로 불가능**하다고 판단됐다(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **공유의 자리를 유저 공간에서 커널로 내리는 것** — 인스턴스는 샤드마다 두고 **커널 워커 풀만 공유**한다. **원칙은 지키고 자원은 나눈다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+                "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+                "publisher": "ScyllaDB Blog",
+                "date": "2026-07-22",
+                "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "인스턴스는 각자, 커널 워커는 함께",
+          "question": "공유하지 않는 구조에서 어떻게 자원을 나누나",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph AC[\"애플리케이션 코어\"]\n    S1[\"<b>샤드 1</b><br/>• 자기 리액터<br/>• 자기 메모리\"]:::list\n    S2[\"<b>샤드 2</b><br/>• 자기 io_uring 인스턴스\"]:::list\n  end\n  S1 --> Q[\"<b>제출 큐에 올린다</b><br/>• 동기 시스템 호출 없이\"]:::list\n  S2 --> Q\n  Q --> P[\"⚠️ <b>SQ 폴링</b><br/>• 네트워킹 코어에 고정된<br/>  커널 스레드 하나가<br/>  그룹 전체를 폴링\"]:::accent\n  P --> W[\"⚠️ <b>커널 워커 풀 (공유)</b><br/>• IORING_SETUP_ATTACH_WQ<br/>• iowq_aff 로 코어에 고정\"]:::accent\n  W --> C[\"<b>완료 → 샤드가 이어서 처리</b>\"]:::list\n  X[\"⚠️ <b>제거한 것</b><br/>• 빠른 길 추측 경로<br/>• 남기면 오프로딩이 무너진다\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "거절한 둘과 진 벤치마크",
+          "question": "무엇을 왜 버렸고 어디서 졌나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>마스터 / 프록시 샤드</b><br/>• smp::submit_to 비용<br/>• 폴링 의존 · 수 밀리초\"]:::gone --> Z[\"<b>고른 답</b><br/>• 샤드마다 인스턴스<br/>• 커널 워커만 공유\"]:::accent\n  B[\"⚠️ <b>공유 io_uring 인스턴스</b><br/>• liburing 이 스레드 안전 X<br/>• 뮤텍스는 경합 → 철학 위반<br/>• 락프리는 기술적으로 불가능\"]:::gone --> Z\n  Z --> R1[\"⚠️ <b>순수 I/O 에서는 진다</b><br/>• linux-aio 만큼 못 낸다<br/>• 네트워킹 코어가 주기의<br/>  40~50% 를 메모리 복사에\"]:::gone\n  Z --> R2[\"<b>계산이 섞이면 이긴다</b><br/>• 요청당 2마이크로초면<br/>  처리량 · 지연 모두 앞선다\"]:::list\n  Z --> R3[\"<b>디스크는 차이가 없다</b><br/>• 한계는 디스크이지<br/>  Seastar 가 아니다\"]:::list\n  R1 --> D[\"⚠️ <b>미룬 것: 버퍼 링</b><br/>• Seastar 버퍼 관리에<br/>  더 큰 변경이 필요\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Offloading I/O to Dedicated Cores: An Asymmetric io_uring Backend for Seastar and ScyllaDB",
+          "url": "https://www.scylladb.com/2026/07/22/asymmetric-io_uring-backend-seastar/",
+          "publisher": "ScyllaDB Blog",
+          "date": "2026-07-22",
+          "summary": "I/O 를 애플리케이션 코어에서 전용 네트워킹 코어로 옮기는 세 가지 방법을 비교하고 둘을 거절한다. 마스터/프록시 샤드는 smp::submit_to 의 폴링 비용이 받아들일 수 없고, 공유 io_uring 인스턴스는 liburing 이 스레드 안전하지 않아 동기화가 필요한데 그것이 shared-nothing 철학을 위반한다. 고른 것은 샤드마다 자기 인스턴스를 두고 커널 워커 풀을 공유하는 방식이다."
+        },
+        {
+          "title": "ScyllaDB — Company Profile",
+          "url": "https://www.crunchbase.com/organization/scylladb",
+          "publisher": "Crunchbase",
+          "date": "2026",
+          "summary": "카산드라와 DynamoDB API 호환 NoSQL 데이터베이스. 총 1억 700만 달러를 조달했고 300곳이 넘는 고객이 있다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **저장 엔진 자체를 아직 안 봤다** — 이 회사의 본체인데 **LSM 트리·컴팩션·캐시 구조**를 다룬 글을 아직 못 읽었다. ⏳ 접근 지도에 `Database Internals` 연재가 있다는 단서가 있다.",
     "⚠️ **호환의 한계를 모른다** — **API 를 흉내 낸다는 것은 어디까지 같고 어디서 다른지가 반드시 있다는 뜻인데**(재구성) 그 목록을 아직 못 찾았다.",
     "⚠️ **shared-nothing 이 언제부터 원칙이었는지 모른다** — Seastar 를 2015년에 발표한 것은 알지만 **어떤 판단이 언제 굳었는지**를 말하는 회고를 아직 못 찾아 **연표(eras)를 못 세웠다.**",
     "⚠️ **사업 수치가 3자 자료뿐이다** — 고객 300곳·조달 1억 700만 달러는 기업 정보 사이트에서 왔다. **회사가 직접 밝힌 최근 수치를 못 찾았다.**",
-    "⚠️ **ClickHouse 와 나란히 놓을 자리인데 아직 안 했다** — **둘 다 이 사이트에 있고 저장 엔진을 다르게 푼다.** 비교 문서 ⑤축의 재료다."
+    "⚠️ **ClickHouse 와 나란히 놓을 자리인데 아직 안 했다** — **둘 다 이 사이트에 있고 저장 엔진을 다르게 푼다.** 비교 문서 ⑤축의 재료다.",
+    "⚠️ **이 백엔드가 프로덕션 기본값이 됐는지 모른다** — 벤치마크와 설계는 읽었지만 **ScyllaDB 제품에서 언제 어떤 조건으로 켜지는지**가 글에 없다."
   ],
   "sources": [
     {
