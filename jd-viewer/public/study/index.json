@@ -1164,9 +1164,9 @@
         "dbt test",
         "데이터 신선도"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-05"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "saga",
@@ -1308,7 +1308,7 @@
         "데이터 정책",
         "오너십"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1483,7 +1483,7 @@
         "schema evolution",
         "스키마 진화"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1522,7 +1522,7 @@
         "consumer-driven contract",
         "Spring Cloud Contract"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
