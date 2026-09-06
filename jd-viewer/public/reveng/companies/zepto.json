@@ -152,9 +152,87 @@
     },
     {
       "name": "10분을 지키려고 사람과 경로를 배치한다",
-      "why": "**10분은 약속이자 제약이다.** 회사가 글 둘을 냈다 — **`Route IQ: 잡음 섞인 GPS 에서 배달 경로를 복원한다`(2026-08-24)** 와 **`알맞은 사람을 알맞은 교대에 알맞은 시간에`(2026-09)**. ⏳ **본문은 아직 안 읽었다.**",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **10분을 지키려면 먼저 거리를 알아야 하는데 그 자료가 망가져 있다.** 회사가 적는다 — **좁은 골목·고가·밀집 테크파크에서 GPS 가 나빠지고 저사양 단말과 절전 모드가 겹쳐**, 핑이 **몇 분씩 사라지거나 라이더를 세 블록 떨어진 호수로 순간이동시킨다.** ⚠️ **원시 좌표의 하버사인 거리가 실제와 30~40% 어긋나는데 라이더 보상·ETA·최적화가 전부 그 위에 서 있다.** ⏳ 인력 배치 글(2026-09)이 하나 더 있다.",
+      "tech": [
+        {
+          "tech": "반복 탐욕 이상치 제거",
+          "solves": "여섯 특징(속도가 지배)의 가중 점수로 **한 번에 하나씩** 뺀다 — **핑을 빼면 이웃의 판정이 달라지기 때문**이다.",
+          "limits": "⚠️ **가중치와 60km/h 기준을 손으로 정하고 지리·계절에 맞춰 바꾸지 않는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+              "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-08-24",
+              "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+            }
+          ]
+        },
+        {
+          "tech": "정지 감지 + 칼만 평활",
+          "solves": "**30m 안에 240초** 머문 구간을 중심점으로 접고 4차원 칼만 필터로 궤적을 매끄럽게 한다.",
+          "limits": "⚠️ **고정 파라미터라 정체가 심한 구간에서는 과하게 평활할 수 있다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+              "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-08-24",
+              "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+            }
+          ]
+        },
+        {
+          "tech": "OSRM + 자체 최종 신뢰 점수",
+          "solves": "도로망에 붙이되 **도구의 신뢰도를 그대로 믿지 않고** DTW 편차·타임스탬프 공백·시작/끝 지연을 더해 다시 잰다. **Low 는 맵매칭을 버리고 하버사인으로 폴백.**",
+          "limits": "⚠️ **OSRM 호출이 주된 병목**이고, **네 임계값이 전부 고정**이다. **신뢰도 낮은 배달의 거리가 체계적으로 다르게 계산되는데 그 영향은 글에 없다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+              "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-08-24",
+              "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+            }
+          ]
+        },
+        {
+          "tech": "H3 + HMM + Viterbi",
+          "solves": "⚠️ **집단이 다닌 길로 개별 궤적을 교정한다** — 숨은 상태는 H3 셀, 전이 확률은 그 구간의 모든 과거 배달에서 배운다. **출발 해상도 10(약 76m) · 도착 해상도 9(약 201m).**",
+          "limits": "⚠️ **진짜로 특이했던 경로가 다수로 다듬어진다.** 관측 확률 σ 약 15m 는 조건이 나쁜 지역에서 과평활할 수 있고, **도착지 201m 격자가 밀집 동네 안의 차이를 뭉갠다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+              "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-08-24",
+              "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+            }
+          ]
+        },
+        {
+          "tech": "군집화 + 탐욕 순회 (다익스트라 폴백)",
+          "solves": "셀 겹침 50% 이상으로 묶고 **그룹의 25% 이상** 군집만 남겨 **OD 쌍당 최대 2개** 경로를 뽑는다.",
+          "limits": "⚠️ **변동이 큰 구간에서 정당한 소수 경로가 사라진다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+              "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+              "publisher": "Zepto TechXPress",
+              "date": "2026-08-24",
+              "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "consensus-over-a-single-trace"
+      ]
     },
     {
       "name": "광고를 팔려면 하루 10억 이벤트를 세야 한다",
@@ -675,6 +753,568 @@
           "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
         }
       ]
+    },
+    {
+      "key": "consensus-over-a-single-trace",
+      "name": "한 사람의 GPS 는 못 믿어도 여러 사람이 다닌 길은 믿는다",
+      "domain": "10분을 지키려고 사람과 경로를 배치한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **마지막 구간의 GPS 는 근본적으로 못 믿을 자료다.** 회사가 무너지는 곳을 그대로 적는다 — **좁은 골목·고가도로·밀집한 테크파크에서 신호가 나빠지고**, 거기에 **저사양 단말과 공격적인 절전 모드**가 겹친다. 그 결과 **핑이 늦게 오거나 몇 분씩 사라지거나 유리 외벽에 튕기거나, 라이더를 세 블록 떨어진 호수 한가운데로 순간이동시킨다.** ⚠️ **그리고 그 오차가 그대로 돈이 된다** — **원시 좌표로 하버사인 거리를 계산하면 실제 이동 거리에서 30~40% 어긋나는 일이 잦은데**, **라이더 보상·ETA 모델·최적화가 전부 그 거리 위에 서 있다.**",
+        "metrics": [
+          {
+            "label": "⚠️ 문제의 크기",
+            "value": "원시 좌표의 하버사인 거리가 실제와 **30~40% 어긋난다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "label": "처리 규모",
+            "value": "**파이프라인 한 번에 수백만 건의 배달** — Spark 분산 실행",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 병목",
+            "value": "**OSRM 호출이 주된 병목**이다 — 스마트 다운샘플링과 분산 레이트 리밋으로 견딘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "label": "정제의 기준선",
+            "value": "**어느 구간도 시속 60km 를 넘지 않을 때까지** 핑을 하나씩 뺀다 · 정지는 **30m 안에 240초** 머무는 것으로 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "label": "합의 경로의 문턱",
+            "value": "**H3 셀 겹침 50% 이상**으로 묶고 **그룹의 25% 이상**을 차지하는 군집만 남긴다 — **출발지-도착지 쌍당 최대 2개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "label": "이 거리 위에 선 것",
+            "value": "**하루 평균 233만 건**(2026년 3월 분기)의 배달 — 라이더 보상과 ETA 가 여기서 계산된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+                "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+                "publisher": "MoneyFlow India",
+                "date": "2026",
+                "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+              },
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "이상치를 어떻게 뺄지 정할 때",
+          "thought": "⚠️ **한 번에 다 빼면 안 된다는 것을 이유와 함께 적는다** — **핑 하나를 빼면 이웃의 특징이 바뀌어, 정상이던 핑이 이상해지거나 수상하던 핑이 정상이 될 수 있다.** 그래서 **한 번에 하나씩 빼고 다시 계산한다.** **판단의 근거가 판단에 의해 바뀌는 자료를 다루는 법이다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "개별 궤적의 한계에 닿았을 때",
+          "thought": "⚠️ **이 기능의 전환점이다** — 아무리 정제해도 **한 사람의 흔적 하나로는 진짜 길을 알 수 없다.** 그래서 **같은 출발지-도착지를 오간 모든 과거 궤적에서 전이 확률을 배우고, 개별 궤적을 그 집단의 경로에 맞춰 `맞춤법 검사`** 한다. **개인의 관측을 집단의 사전(辭典)으로 교정한다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "신뢰도를 어디까지 믿을지 정할 때",
+          "thought": "⚠️ **도구가 주는 신뢰도를 그대로 쓰지 않았다** — OSRM 의 confidence 위에 **DTW 편차·타임스탬프 공백·시작/끝 지연**을 더해 자체 점수를 만들었다. **그리고 신뢰도가 낮으면 맵매칭 결과를 버리고 정제된 핑의 하버사인으로 돌아간다** — **틀린 정답보다 거친 근사가 낫다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "원시 핑",
+            "what": "⚠️ **늦게 오거나 사라지거나 튕기거나 순간이동한다.** 좁은 골목·고가·테크파크에서 특히"
+          },
+          {
+            "name": "이상 점수",
+            "what": "**속도·가속도·방위·보간 편차·공간 이상치·엣지 보정** 여섯 특징의 가중 점수. ⚠️ **속도가 지배한다 — 신호대잡음비가 가장 높기 때문**"
+          },
+          {
+            "name": "정지 군집",
+            "what": "**30m 안에 240초** 머문 구간. **중심점 하나로 접는다**"
+          },
+          {
+            "name": "최종 신뢰 점수",
+            "what": "⚠️ **OSRM 의 신뢰도를 그대로 쓰지 않는다** — OSRM 값(0.05 미만 폐기) + **DTW 편차 10% 초과** + **타임스탬프 공백 180초 초과** + 시작/끝 지연"
+          },
+          {
+            "name": "H3 두 해상도",
+            "what": "**출발(매장)은 해상도 10(평균 변 길이 약 76m), 도착(고객)은 해상도 9(약 201m).** ⚠️ **도착 쪽을 일부러 거칠게 잡아 가까운 고객들을 한 묶음으로 만든다**"
+          },
+          {
+            "name": "합의 경로",
+            "what": "⚠️ **여러 라이더의 궤적에서 배운 그 구간의 `보통 가는 길`.** HMM 의 숨은 상태가 H3 셀이고 관측이 잡음 섞인 셀 열이다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **핑 하나를 빼면 이웃의 판정이 달라진다** — 그래서 한 번에 하나씩 뺀다",
+          "⚠️ **신뢰도가 낮으면 맵매칭을 버리고 거친 근사로 돌아간다** — 틀린 정답보다 낫다",
+          "**진짜 길(숨은 상태)과 관측된 GPS 는 다른 층이다** — HMM 이 그 둘을 갈라 놓는다",
+          "⚠️ **출발지-도착지 쌍마다 최대 두 개의 경로만 남긴다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "⚠️ **매장 좌표에 합성 첫 핑을 넣는다** — 배차 시각을 달아서",
+            "why": "⚠️ **출발점 근처의 정확도를 조금 내주고 믿을 만한 시작점을 얻는다**"
+          },
+          {
+            "step": "**여섯 특징으로 이상 점수를 매긴다** — 속도·가속도·방위·보간 편차·공간 이상치·엣지 보정",
+            "why": "⚠️ **속도가 지배한다 — 신호대잡음비가 가장 높다**"
+          },
+          {
+            "step": "⚠️ **한 번에 하나씩 뺀다** — 어느 구간도 시속 60km 를 넘지 않을 때까지",
+            "why": "⚠️ **핑을 빼면 이웃의 특징이 바뀌기 때문**이다"
+          },
+          {
+            "step": "**정지를 찾아 접는다** — 30m 안에 240초 머문 구간을 중심점 하나로",
+            "why": "**GPS 가 떨려도 라이더는 서 있었다**"
+          },
+          {
+            "step": "**4초 넘는 공백을 선형 보간하고 4차원 칼만 필터를 통과시킨다** — 등속 입자 + 가우시안 프로세스 잡음",
+            "why": "궤적을 매끄럽게 만든다"
+          },
+          {
+            "step": "**OSRM 으로 도로에 붙인다** — 스마트 다운샘플링(처음·끝은 유지)과 Spark 분산 레이트 리밋으로",
+            "why": "⚠️ **OSRM 호출이 주된 병목이다**"
+          },
+          {
+            "step": "⚠️ **최적 매치를 OSRM 신뢰도가 아니라 `정제된 핑의 하버사인 거리에 가장 가까운 것`으로 고른다**",
+            "why": "**부분적·파편적 매치를 피하려고**"
+          },
+          {
+            "step": "**최종 신뢰 점수로 High/Medium/Low 를 매긴다**",
+            "why": "⚠️ **Low 는 맵매칭을 버리고 정제된 핑의 하버사인으로 돌아간다**"
+          },
+          {
+            "step": "⚠️ **H3 격자 위에서 HMM 을 세우고 Viterbi 로 푼다** — 전이 확률은 그 구간의 모든 과거 배달에서 배운다",
+            "why": "⚠️ **개별 궤적을 집단의 경로에 맞춰 `맞춤법 검사` 한다**"
+          },
+          {
+            "step": "**군집으로 묶고 합의 경로를 뽑는다** — 셀 겹침 50% 이상, 그룹의 25% 이상, 탐욕 순회(실패하면 다익스트라 폴백)",
+            "why": "**출발지-도착지 쌍당 최대 두 개만 남긴다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "이상치를 이진으로 판정할 것인가",
+            "chosen": "⚠️ **여섯 특징의 가중 점수로 매긴다** — 참/거짓이 아니라",
+            "alternatives": [
+              "단일 속도 임계값",
+              "통계적 이상치 탐지(z-score)"
+            ],
+            "tradeoff": "속도·가속도·방위·보간 편차·공간 이상치·엣지 보정을 함께 본다. **속도가 지배하는데 신호대잡음비가 가장 높기 때문**이다. ⚠️ **대가는 여섯 가중치를 손으로 정해야 한다는 것**이고, **그 값들이 지리나 계절에 맞춰 바뀌지는 않는다**(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "question": "이상 핑을 한꺼번에 뺄 것인가",
+            "chosen": "⚠️ **한 번에 하나씩 빼고 다시 계산한다**(반복 탐욕 제거)",
+            "alternatives": [
+              "임계값 넘는 것을 일괄 제거",
+              "한 번의 통과로 필터링"
+            ],
+            "tradeoff": "이유가 명확하다 — **핑 하나를 빼면 이웃의 특징이 바뀌어 정상이던 핑이 이상해지거나 수상하던 핑이 정상이 될 수 있다.** ⚠️ **대가는 계산량**이고, **어느 구간도 시속 60km 를 넘지 않을 때까지**(또는 점이 2개 미만이 될 때까지) 돈다. ⚠️ **60km/h 라는 값은 고속 구간이 없다는 가정을 품는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "question": "출발점을 어떻게 정할 것인가",
+            "chosen": "⚠️ **매장 좌표에 합성 첫 핑을 만들어 넣는다** — 배차 시각을 달아서",
+            "alternatives": [
+              "첫 실제 핑을 그대로 사용",
+              "첫 몇 개 핑의 평균"
+            ],
+            "tradeoff": "⚠️ **실제 첫 핑은 매장 안이나 근처에서 가장 흔들리는 값이다**(재구성). 합성 앵커를 넣으면 **출발점 근처의 정확도를 조금 내주고 믿을 만한 시작점**을 얻는다. **거리 계산의 기준점이 흔들리는 것보다 낫다는 판단**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "question": "OSRM 의 신뢰도를 믿을 것인가",
+            "chosen": "⚠️ **아니다 — 자체 최종 신뢰 점수를 만든다**",
+            "alternatives": [
+              "OSRM confidence 를 그대로 사용",
+              "맵매칭 결과를 무조건 채택"
+            ],
+            "tradeoff": "네 신호를 독립적으로 합친다 — **OSRM 값(0.05 미만 폐기) · DTW 편차(경로 길이의 10% 초과면 표시) · 타임스탬프 공백(180초 초과) · 배차·도착 시각 대비 시작/끝 지연.** ⚠️ **대가는 임계값이 넷 다 고정이라 지리·계절에 적응하지 않는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "question": "신뢰도가 낮은 배달을 어떻게 할 것인가",
+            "chosen": "⚠️ **맵매칭을 버리고 정제된 핑의 하버사인으로 돌아간다**",
+            "alternatives": [
+              "낮은 신뢰도라도 맵매칭 결과 사용",
+              "해당 배달을 통째로 제외"
+            ],
+            "tradeoff": "⚠️ **훼손된 맵매칭보다 거친 근사가 낫다** — 도로에 잘못 붙은 경로는 **그럴듯하게 틀리기 때문**이다(재구성). **대가는 신뢰도가 낮은 배달의 거리가 체계적으로 다르게 계산된다는 것**이고, **그 편차가 라이더 보상에 어떻게 나타나는지는 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "question": "여러 맵매칭 후보 중 무엇을 고를 것인가",
+            "chosen": "⚠️ **정제된 핑의 하버사인 거리에 가장 가까운 것** — 최고 신뢰도가 아니라",
+            "alternatives": [
+              "OSRM 신뢰도가 가장 높은 것",
+              "가장 짧은 경로"
+            ],
+            "tradeoff": "⚠️ **신뢰도가 높은 매치가 실제로는 부분적·파편적일 수 있다** — 짧은 조각에 잘 맞으면 점수가 높게 나온다(재구성). **총 거리를 기준으로 고르면 그런 파편을 걸러 낸다.** **대가는 우회로가 진짜였던 경우를 놓칠 수 있다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "question": "개별 궤적을 최종 답으로 쓸 것인가",
+            "chosen": "⚠️ **아니다 — 집단이 다닌 길로 교정한다**(HMM + Viterbi)",
+            "alternatives": [
+              "정제된 개별 궤적을 그대로 사용",
+              "지도 제공자의 경로 API 결과 사용"
+            ],
+            "tradeoff": "**숨은 상태를 H3 셀로, 관측을 잡음 섞인 셀 열로 두고 전이 확률을 그 구간의 모든 과거 배달에서 배운다.** 회사의 표현대로 **HMM 이 두 층(진짜 경로와 잡음 관측)을 깔끔하게 분리**하고, Viterbi 가 **최대우도 경로**를 복원한다 — **이상한 우회가 있던 배달은 다수 경로 쪽으로 다듬어진다.** ⚠️ **대가는 진짜로 특이했던 경로가 평균으로 지워진다는 것**이고, **관측 확률을 σ 약 15m 의 등방 가우시안으로 둔 것도 조건이 나쁜 지역에서는 과하게 평활할 수 있다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "question": "H3 해상도를 출발과 도착에 같게 둘 것인가",
+            "chosen": "⚠️ **다르게** — 출발은 해상도 10(약 76m), 도착은 해상도 9(약 201m)",
+            "alternatives": [
+              "양쪽 모두 같은 해상도",
+              "도착지도 세밀하게"
+            ],
+            "tradeoff": "⚠️ **도착 쪽을 일부러 거칠게 잡아 가까운 고객들을 한 묶음으로 만든다** — 도착지가 제각각이어도 합의 경로를 찾을 수 있게 하려고. **대가는 밀집한 동네 안에서 진짜로 다른 경로 패턴이 뭉개질 수 있다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "question": "경로를 몇 개까지 남길 것인가",
+            "chosen": "**출발지-도착지 쌍당 최대 2개** — 그룹의 25% 이상인 군집만",
+            "alternatives": [
+              "모든 군집 유지",
+              "단 하나의 대표 경로"
+            ],
+            "tradeoff": "**셀 겹침 50% 이상(양방향)으로 묶고**, 소수 경로는 버린다. 다루기 쉬운 크기를 유지하려는 선택이다. ⚠️ **대가는 변동이 큰 구간에서 정당한 소수 경로가 사라진다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "반복 탐욕 이상치 제거 (여섯 특징)",
+            "role": "속도가 지배하는 가중 점수로 **한 번에 하나씩** 뺀다 — 60km/h 기준선까지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "tech": "정지 감지 + 4차원 칼만 필터",
+            "role": "30m·240초 정지를 접고 **등속 입자 + 가우시안 잡음** 모형으로 평활한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "tech": "OSRM 맵매칭",
+            "role": "정제된 궤적을 실제 도로망에 붙인다. ⚠️ **주된 병목**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "tech": "DTW 기반 최종 신뢰 점수",
+            "role": "⚠️ **도구의 신뢰도를 그대로 믿지 않는다** — 네 신호를 합쳐 High/Medium/Low",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "tech": "H3 (해상도 10 / 9) + HMM + Viterbi",
+            "role": "⚠️ **집단의 경로로 개별 궤적을 교정한다** — 전이 확률은 과거 배달에서 배운다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "tech": "군집화 + 탐욕 순회 (다익스트라 폴백)",
+            "role": "합의 경로를 뽑는다 — OD 쌍당 최대 2개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "tech": "Spark 분산 실행",
+            "role": "**한 번에 수백만 건**을 처리하고 OSRM 레이트 리밋을 분산한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "라이더 보상 · ETA 모델 · 최적화",
+          "via": "복원된 거리",
+          "contract": "⚠️ **회사가 직접 적는다** — 라이더 보상·ETA·최적화가 모두 이 거리 위에 서 있고, **원시 GPS 로는 30~40% 어긋난다.** **거리 계산이 틀리면 사람에게 지급되는 돈이 틀린다**(뒤쪽은 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "inventory-changes-so-nothing-caches",
+          "via": "같은 H3 격자, 다른 쓰임",
+          "contract": "⚠️ **검색은 H3 로 초지역 재고를 거르고, 여기서는 H3 를 HMM 의 숨은 상태로 쓴다** — **같은 격자 체계가 두 도메인에서 다른 일을 한다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "OSRM (외부 라우팅 엔진)",
+          "via": "맵매칭 호출",
+          "contract": "⚠️ **주된 병목이자 신뢰도를 그대로 믿지 않는 상대다** — 다운샘플링과 분산 레이트 리밋으로 다루고, 결과는 자체 점수로 다시 잰다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "라이더 단말 (저사양 · 절전 모드)",
+          "via": "원시 핑",
+          "contract": "⚠️ **자료의 품질을 이 회사가 통제하지 못한다** — 단말과 절전 모드가 핑을 지운다",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 신호가 가장 필요한 곳에서 신호가 가장 나쁘다",
+            "why_hard": "회사가 무너지는 지점을 그대로 적는다 — **좁은 골목·고가도로·밀집한 테크파크.** ⚠️ **그런 곳은 배달이 어려워 정확한 경로가 가장 필요한 곳인데 바로 거기서 GPS 가 튕기고 사라진다.** 게다가 **저사양 단말과 공격적인 절전 모드**가 겹쳐 **자료의 품질 자체를 이 회사가 통제하지 못한다**(뒤쪽은 재구성이다).",
+            "current_best": "⚠️ **개별 관측을 포기하고 집단으로 가는 것** — 같은 구간을 오간 모든 과거 배달에서 전이 확률을 배워 **개별 궤적을 그 사전으로 교정한다.** **한 사람의 흔적이 망가져도 여러 사람의 흔적은 남는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          },
+          {
+            "problem": "교정이 특이한 것을 지운다",
+            "why_hard": "⚠️ **합의로 고치는 방법은 다수와 다른 것을 잡음으로 본다.** **이상한 우회가 있던 배달이 다수 경로 쪽으로 다듬어지고**, **그룹의 25% 미만인 군집은 버려지며**, **도착지를 약 201m 격자로 뭉치면 밀집한 동네 안의 진짜 차이가 가려질 수 있다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "**OD 쌍당 최대 두 경로를 남겨 완전한 단일화는 피하는 것**, 그리고 **신뢰도가 낮으면 교정 대신 거친 근사로 폴백하는 것.** ⚠️ **다만 임계값(60km/h · 30m·240초 · σ 15m · 10% · 180초 · 25%)이 전부 고정이라 지리·시간에 적응하지 않는다**(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+                "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+                "publisher": "Zepto TechXPress",
+                "date": "2026-08-24",
+                "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "핑 하나씩 지우고, 도로에 붙이고, 집단의 길로 고친다",
+          "question": "망가진 GPS 가 믿을 만한 경로가 되기까지",
+          "kind": "flow",
+          "code": "flowchart TD\n  R[\"<b>원시 핑</b><br/>• 늦고 · 사라지고 · 튕기고<br/>• 호수 한가운데로 순간이동\"]:::gone --> A[\"<b>매장 좌표에 합성 첫 핑</b><br/>• 배차 시각을 달아서\"]:::accent\n  A --> S[\"<b>이상 점수 (여섯 특징)</b><br/>• 속도가 지배한다\"]:::list\n  S --> I[\"⚠️ <b>한 번에 하나씩 제거</b><br/>• 이웃의 특징이 바뀌므로<br/>• 60km/h 넘는 구간이 없을 때까지\"]:::accent\n  I --> K[\"<b>정지 접기 + 칼만 평활</b><br/>• 30m 안에 240초\"]:::list\n  K --> O[\"<b>OSRM 맵매칭</b><br/>• 주된 병목<br/>• 다운샘플링 + 분산 레이트 리밋\"]:::list\n  O --> C{\"<b>최종 신뢰 점수</b><br/>OSRM + DTW + 공백 + 지연\"}\n  C -->|\"Low\"| F[\"⚠️ <b>맵매칭을 버린다</b><br/>• 정제된 핑의 하버사인으로\"]:::gone\n  C -->|\"High / Medium\"| H[\"⚠️ <b>H3 위의 HMM + Viterbi</b><br/>• 전이 확률은 과거 배달에서<br/>• 집단의 길로 맞춤법 검사\"]:::accent\n  H --> G[\"<b>군집 → 합의 경로</b><br/>• 겹침 50% · 그룹의 25% 이상<br/>• OD 쌍당 최대 2개\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "고치는 방법이 무엇을 지우는가",
+          "question": "집단으로 교정할 때 잃는 것",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>신호가 가장 나쁜 곳</b><br/>• 좁은 골목 · 고가 · 테크파크<br/>• 저사양 단말 · 절전 모드\"]:::gone --> B[\"<b>답: 개별 대신 집단</b><br/>• 한 사람의 흔적이 망가져도<br/>  여러 사람의 흔적은 남는다\"]:::accent\n  B --> C[\"⚠️ <b>대가: 특이한 것이 지워진다</b>\"]:::gone\n  C --> C1[\"<b>이상한 우회가 다수 경로로<br/>  다듬어진다</b>\"]:::gone\n  C --> C2[\"<b>25% 미만 군집은 버려진다</b>\"]:::gone\n  C --> C3[\"<b>도착지 201m 격자가<br/>  동네 안 차이를 뭉갠다</b> (재구성)\"]:::gone\n  D[\"⚠️ <b>임계값이 전부 고정이다</b><br/>• 60km/h · 30m/240초 · σ 15m<br/>• DTW 10% · 공백 180초 · 25%<br/>• 지리 · 계절에 적응하지 않는다 (재구성)\"]:::gone\n  E[\"<b>완화: OD 쌍당 두 경로</b><br/>• 완전한 단일화는 피한다\"]:::accent\n  C1 --> E\n  C2 --> E\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
+          "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
+          "publisher": "Zepto TechXPress",
+          "date": "2026-08-24",
+          "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
+        },
+        {
+          "title": "Zepto: Inside India's Fastest-Growing Quick Commerce Engine",
+          "url": "https://moneyflowindia.substack.com/p/moneyflow-india-deep-dive-3-zepto",
+          "publisher": "MoneyFlow India",
+          "date": "2026",
+          "summary": "다크스토어 1,139개·66개 도시·연간 거래 사용자 4,797만 명. 2026년 3월 분기 하루 평균 주문 233만 건. FY26 매출 ₹22,624 Cr(+103.6%), 광고 매출 1억 7,100만 달러(+151%), 손실 ₹5,905 Cr."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -683,7 +1323,8 @@
     "⚠️ **다크스토어 안의 재고 시스템을 아직 못 봤다** — 검색 글은 **재고가 계속 바뀐다는 사실**을 전제로 쓰지만, **그 재고를 무엇이 어떻게 관리하는지**는 다루지 않는다.",
     "⚠️ **적자 규모가 크다**(FY26 손실 ₹5,905 Cr) — **기술 선택이 원가에 어떻게 걸리는지**를 다룬 자료를 아직 못 찾았다.",
     "⚠️ **10분이라는 약속의 실제 달성률을 모른다** — 공개 자료에서 배달 시간 분포를 못 찾았다.",
-    "⚠️ **연표(eras)를 못 세웠다.** 2021년 창업과 2022년 품목 확장은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다. ⏳ `성능 엔지니어링 2부`(2025-12-15)가 단서일 수 있다."
+    "⚠️ **연표(eras)를 못 세웠다.** 2021년 창업과 2022년 품목 확장은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다. ⏳ `성능 엔지니어링 2부`(2025-12-15)가 단서일 수 있다.",
+    "⚠️ **이 파이프라인의 정확도 수치가 없다** — **원시 GPS 가 30~40% 어긋난다는 문제 크기는 적는데, 복원 뒤에 얼마나 맞는지는 적지 않는다.** **그리고 신뢰도 Low 로 떨어진 배달의 비율과 그 거리 차이가 라이더 보상에 어떻게 나타나는지도 없다**(재구성)."
   ],
   "sources": [
     {
@@ -702,10 +1343,10 @@
     },
     {
       "title": "Route IQ: How We Reconstruct Delivery Paths from Noisy GPS at Scale",
-      "url": "https://blog.zepto.com/",
+      "url": "https://blog.zepto.com/route-iq-how-we-reconstruct-delivery-paths-from-noisy-gps-at-scale-6898d3260ed2",
       "publisher": "Zepto TechXPress",
       "date": "2026-08-24",
-      "summary": "잡음 섞인 GPS 에서 실제 배달 경로를 복원한다. ⏳ 본문은 아직 읽지 않았다 — 목록에서 제목과 날짜만 확인했다."
+      "summary": "원시 GPS 로 하버사인 거리를 계산하면 실제 이동 거리와 30~40% 어긋난다. 이상치 점수화와 반복 제거, 정지 감지와 칼만 평활, OSRM 맵매칭과 자체 신뢰 점수를 거친 뒤, H3 격자 위의 HMM 과 Viterbi 로 여러 라이더의 궤적에서 합의 경로를 배운다."
     },
     {
       "title": "Right People, Right Shift, Right Time: Optimizing Workforce Planning at Zepto",

@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Zepto** | IN · 커머스(퀵커머스) | 도메인 3(재고가 계속 바뀌는 시장에서 검색한다[tech 5] / 10분을 지키려고 사람과 경로를 배치한다[tech 0 · ⏳ 미독] / 광고를 팔려면 하루 10억 이벤트를 세야 한다[tech 0 · ⏳ 미독]) · **기능 1**(inventory-changes-so-nothing-caches) · ⚠️ **`blog.zepto.com` 은 `r.jina.ai` 를 앞에 둔다** |
+| **Zepto** | IN · 커머스(퀵커머스) | 도메인 3(재고가 계속 바뀌는 시장에서 검색한다[tech 5] / 10분을 지키려고 사람과 경로를 배치한다[tech 5] / **광고를 팔려면 하루 10억 이벤트를 세야 한다[tech 0 · ⏳ 미독]**) · **기능 2**(inventory-changes-so-nothing-caches · consensus-over-a-single-trace) · ⚠️ **`blog.zepto.com` 은 `r.jina.ai` 를 앞에 둔다** |
 
 ## 대기
 
