@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "warpstream",
+      "name": "WarpStream",
+      "name_en": "WarpStream",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "디스크를 아예 없애고 객체 저장소만으로 도는 Kafka — 저장 계층이 아니라 네트워킹 계층으로 쓴다",
+      "updated_at": "2026-09-06",
+      "domain": "warpstream.com"
+    },
+    {
       "slug": "pinterest",
       "name": "Pinterest",
       "name_en": "Pinterest",
@@ -1500,7 +1512,10 @@
     "신원 그래프를 벤더에서 자기 것으로 옮긴다",
     "홈피드에 무엇을 꺼내 올지 조건에 따라 정한다",
     "사용자를 어떤 쓰임새로 이해할지 정한다",
-    "인프라 자원을 안전하게 내준다"
+    "인프라 자원을 안전하게 내준다",
+    "디스크 없이 스트리밍한다",
+    "다른 Kafka 에서 옮겨 온다",
+    "클러스터 안에서 무슨 일이 있었는지 본다"
   ],
   "countries": {
     "KR": "한국",

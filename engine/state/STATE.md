@@ -8,51 +8,56 @@
 
 ## 지금 파는 중
 
-**없다 — 후보 조사 사이클이었다.** 큐 **2/3**. 회사 99개.
+**WarpStream** (US · SaaS — Kafka 호환 스트리밍) — **프로파일까지 썼다**(PROMPT 3단계). 도메인 3개 · 기능 0. ⭐ **회사 100개가 됐다.** 큐 **1/3**.
 
-### 이번 사이클 — 후보 조사(3순위). ⭐ 각도를 바꾼 것이 통했다
+### 이번 사이클 — 신규(6순위)
 
-**올린 두 곳** — **WarpStream**(Kafka 호환 스트리밍) · **VictoriaMetrics**(시계열 DB·관측).
+⚠️ **이 회사는 줄이는 대상이 특이하다** — **저장 비용이 아니라 가용영역 사이의 네트워크 비용이다**(재구성). **`zero disk 아키텍처`** 로 **로컬 디스크·캐시·EBS 없이 객체 저장소에서만 돌고**, **S3 를 저장 계층이 아니라 네트워킹 계층으로 쓴다.**
 
-⭐ **둘 다 `이미 판 회사의 글이 언급하는 회사` 각도로 걸렸다** — **Grafana Labs 가 교차 AZ 비용 비교로 WarpStream 을 들었고**, **Airbnb 와 Razorpay 가 둘 다 `vmagent` 를 골랐다.** 지난 사이클에 "다음엔 다른 각도를 쓴다"고 적어 둔 그대로 했고, 그게 이번 수확의 전부다.
+**사업** — **BYOC**(고객 클라우드 안에서 돌고 데이터는 고객 쪽에 남는다) · **Kafka 비용 80% 이상 절감 주장** · **에이전트·노드·vCPU 당 과금 없음** · **복제에 추가 요금 없음**(**옮길 로컬 데이터가 없어서**). ⚠️ **소유가 두 겹으로 바뀌었다** — **2024년 9월 Confluent 인수**, **2026년 3월 17일 IBM 이 Confluent 인수 완료.**
 
-⚠️ **각도마다 타율이 확연히 다르다** — **언급 각도는 던진 넷 중 둘**(WarpStream ✅ · VictoriaMetrics ✅ · PingCAP ❌ · Character.AI ❌), **`없는 축을 검색으로 찾기` 는 세 번째로 전멸**(산업/제조: Rivian·Zipline·Anduril·John Deere → Rivian 만 걸렸고 그것도 자체 채널이 아니다), **컨퍼런스 각도는 목록조차 못 받았다**(SREcon26). **다음 조사는 언급 각도를 먼저 쓴다** — **99개 회사의 글에 남의 이름이 계속 나온다.**
+### ⚠️ 이 사이클에서 걸린 것 — category 값
 
-⚠️ **언급 각도가 늘 통하는 것은 아니다** — **PingCAP 은 Cygames 가 TiDB 를 쓰는데도 블로그가 제품 마케팅이다.** **쓰는 쪽이 아니라 파는 쪽이면 글의 성격이 다르다.** Character.AI 도 WarpStream 고객 사례로 따라갔는데 제품 발표뿐이었다.
+**`인프라` 로 썼다가 검증이 오류로 잡았다.** 허용값은 **`핀테크|커머스|소셜|메시징|스트리밍|검색|광고|모빌리티|게임|SaaS|기타`** 다. **같은 축의 회사들**(ClickHouse·Grafana Labs·ScyllaDB·PlanetScale·TigerBeetle·Honeycomb)**이 전부 `SaaS` 라 그걸 따랐다.** ⚠️ **새 회사를 세울 때는 schema 의 허용값을 먼저 보거나 같은 축의 이웃을 본다.**
 
-⚠️ **VictoriaMetrics 는 위험을 안고 올렸다** — `The Life of a Metric` 은 확실하지만(TSID 정렬 근거 · **`zstd 가 최소 약 10% 를 줄이지 못하면 델타 인코딩 평문을 그대로 둔다`** · **`원시 샘플 양이 아니라 카디널리티가 시계열 DB 를 짓누른다`**) **블로그의 나머지가 제품 발표 위주다.** 두 번째 기능에서 마르면 Go 내부 글로 내려간다.
+### 읽어 둔 것 — 확인한 글 하나에서 (다음 사이클의 재료)
 
-⛔ **Gojek 되짚기 실패** — `r.jina.ai` 로도 **429**(Vercel 보안 체크포인트). **도구 한계라 `blocked` 다.**
+- ⚠️ **비싼 데 먼저 앉히고 몇 분 뒤 싼 데로 옮긴다** — **`Rapid Bucket 의 실효 저장 비용이 일반 지역 GCS 버킷보다 10배 이상 높다`** 라서 **`새로 수집한 데이터를 GCP Rapid Bucket 정족수에 안착시켜 지연을 최소화하고, 몇 분 뒤에 그 파일들을 지역 GCS 버킷으로 비동기 압축한다`**.
+- ⚠️ **거절한 대안이 명시적이다** — **`장수명 파일을 쓰고 거기에 append 하는 모드로 WarpStream 을 재설계할 수도 있었지만, 그것은 크고 침습적인 변경이었을 것이다`**.
+- ⭐ **제목과 결과가 다른 것을 스스로 적는다** — 제목은 `40배 빠르게` 인데 실제는 **`P99 3배 감소`** 이고, 이유까지 밝힌다: **`쓰는 데이터 양이 늘면 Rapid 와 일반 GCS 버킷의 격차가 줄고, 이 측정에는 압축 같은 버킷 외 작업도 포함되기 때문`**.
+- **한계도 적는다** — **Rapid Bucket 은 WarpStream 의 Lightning Topics 기능과 호환되지 않는다.**
 
-### 다음 사이클 — 신규(6순위)
+### 다음 사이클 — 확장(2순위)
 
-**큐가 2/3 이라 목표에 못 미치지만, 사다리는 `큐가 비었다` 일 때만 후보 조사를 부른다.** `--gaps` 가 **대기 맨 위(WarpStream)를 `in_progress` 로 만들고 3단계부터** 를 부를 것이다.
+`--gaps` 가 **`디스크 없이 스트리밍한다`** 를 부를 것이다. ⚠️ **확인한 글은 곁가지(GCP Rapid Bucket)라 본체가 비어 있다** — **객체 저장소만으로 Kafka 의 순서·내구성을 어떻게 지키는지.** ⏳ **`The Art of Being Lazy(log)`(2026-02-04, 지연 시퀀싱)가 그 답에 가장 가까워 보이니 그걸 먼저 연다.**
+
+⏳ **연표 재료가 보인다** — **`WarpStream is Dead, Long Live WarpStream`** 이라는 글이 있다. **인수 뒤 방향 전환 이야기일 수 있다.**
 
 ⏳ **보강 거리 넷** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부(예측 UIC).
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① `AI 에이전트를 어디까지 믿나` 9곳 + ⏳ Pinterest 2부** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay.
+**① `AI 에이전트를 어디까지 믿나` 9곳 + ⏳ Pinterest 2부 · ⏳ WarpStream MCP 서버** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay.
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ `자기 성과를 어디까지 주장하나` 7곳 + ⏳ WarpStream** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest(한 회사 세 글이 갈린다). ⏳ **WarpStream 이 `40배를 기대했는데 P99 3배` 라고 적는다 — 제목과 결과가 다른 것을 스스로 밝히는 드문 사례다.**
+**③ ⭐ `자기 성과를 어디까지 주장하나` 8곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / **WarpStream**(⚠️ **제목은 40배인데 본문이 P99 3배라고 정정한다 — 이 축에서 가장 드문 종류다**).
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
 **⑤ `한 코어에 하나씩인가, 여러 코어가 나눠 쓰나`** — ScyllaDB / ClickHouse / Grafana Labs.
 
-**⑥ ⭐ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / ⏳ **WarpStream**(같은 교차 AZ 비용 문제의 반대편 당사자다).
+**⑥ ⭐ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / **WarpStream**(⚠️ **복제를 없애는 쪽으로 갔다 — `옮길 로컬 데이터가 없어 복제에 요금을 받지 않는다`**).
 
 **⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack.
 
-**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / ⏳ **WarpStream**(비싼 버킷에 먼저 앉히고 몇 분 뒤 싼 데로 옮긴다).
+**⑧ ⭐ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / **WarpStream**(비싼 버킷에 먼저 앉히고 몇 분 뒤 싼 데로).
 
-**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가`** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest.
+**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가`** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / ⏳ **WarpStream**(Orbit — 남의 Kafka 를 옮겨 오는 쪽이다).
 
-**⑩ ⭐ `관측 비용을 어디까지 줄이나`** — Razorpay · Airbnb(사는 쪽) / Grafana Labs · Honeycomb · ⏳ **VictoriaMetrics**(파는 쪽). ⚠️ **Airbnb 와 Razorpay 가 고른 도구를 만든 회사가 이제 큐에 있다 — 양쪽을 다 볼 수 있게 됐다.**
+**⑩ `관측 비용을 어디까지 줄이나`** — Razorpay · Airbnb(사는 쪽) / Grafana Labs · Honeycomb · ⏳ VictoriaMetrics(파는 쪽).
 
-**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest.
+**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / ⏳ **WarpStream**(객체 저장소 하나에 전부를 건다).
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
@@ -64,11 +69,13 @@
 
 **⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest.
 
-**⑰ ⭐ `기억시킬 것인가 압축할 것인가`** — Pinterest(20GB 테이블 → 시맨틱 ID) / Zepto / Grafana Labs / ⏳ **VictoriaMetrics**(**`zstd 가 최소 약 10% 를 못 줄이면 압축하지 않는다`** — **압축을 언제 포기할지의 임계값을 숫자로 박았다**).
+**⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / ⏳ VictoriaMetrics.
 
-**⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest(참여 → 유지) / ⏳ Duolingo · DoorDash(확인 필요).
+**⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest(참여 → 유지) / ⏳ Duolingo · DoorDash.
 
-**⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest(GitHub OIDC, 클라우드 계층에서 강제) / ⏳ Plaid · Snyk(확인 필요).
+**⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / ⏳ Plaid · Snyk.
+
+⏳ **⑳ 새로 보인다 — `없앨 수 있는 것을 없앤다`** — **WarpStream**(디스크를 아예 뺐다) / **TigerBeetle**(⏳ 확인 필요) / **Oxide Computer**(⏳ 확인 필요). ⚠️ **줄이는 게 아니라 없애는 결정은 성격이 다르다** — 되돌리기가 어렵고 그 대신 얻는 것이 크다(재구성).
 
 ## 지금의 진짜 상태
 
