@@ -1,762 +1,770 @@
 {
- "slug": "fastapi",
- "title": "FastAPI",
- "title_en": "FastAPI (Python ASGI framework)",
- "aliases": [
-  "FastAPI",
-  "pydantic",
-  "Uvicorn"
- ],
- "category": "framework",
- "level": "core",
- "status": "done",
- "updated_at": "2026-09-04",
- "one_liner": "**타입 힌트를 런타임 검증·자동 문서로 바꾸는** 파이썬 웹 프레임워크다. 그리고 `def` 와 `async def` 를 **다른 곳에서 실행한다** — 이 두 문장이 이 프레임워크의 거의 전부다.",
- "summary": "FastAPI 는 `python`·`asyncio` 두 문서가 함께 가리킨 자리다. `python` 문서에서 \"**타입 힌트는 런타임 검사를 하지 않는다**\"고 썼는데, FastAPI 는 정확히 그 빈칸을 메운다 — 함수 시그니처에 적은 타입이 곧 **요청 검증기이자 응답 필터이자 API 문서**가 된다. 새로 발명한 것은 적다. **Starlette**(ASGI 웹 층)와 **pydantic**(검증)을 타입 힌트로 묶은 조립품에 가깝고, 그래서 각 부품의 문서를 따로 읽을 줄 알아야 한다. 실무에서 갈리는 지점은 둘이다. **① 검증의 경계** — 어디까지 pydantic 이 막아 주고 어디부터 내 책임인가. **② 실행 위치** — `async def` 는 이벤트 루프에서, **`def` 는 스레드풀에서** 실행된다(공식 문서의 규정이다). 이걸 모르면 두 방향으로 사고가 난다: `async def` 안에서 동기 라이브러리를 불러 **서버 전체를 세우거나**, 반대로 모든 엔드포인트를 `def` 로 만들어 **스레드풀 크기가 동시성 상한이 되거나.**",
- "market": null,
- "sections": [
-  {
-   "id": "what",
-   "kind": "what",
-   "heading": "무엇인가 — 시그니처가 곧 명세다",
-   "body": "```python\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass Order(BaseModel):          # 요청 본문의 모양\n    item_id: int\n    qty: int = 1\n\nclass OrderOut(BaseModel):       # 응답의 모양\n    id: str\n    total: int\n\n@app.post(\"/orders\", response_model=OrderOut)\nasync def create(order: Order):  # ← 이 한 줄이 검증·파싱·문서를 만든다\n    return {\"id\": \"A-1\", \"total\": order.qty * 1000, \"secret\": \"...\"}\n```\n\n이 열 몇 줄로 따라오는 것이 넷이다.\n\n1. **요청 검증** — `qty` 에 `\"three\"` 가 오면 **핸들러가 실행되기 전에** 422 로 거절된다.\n2. **타입 변환** — `\"3\"` 은 `3` 으로 바뀌어 들어온다.\n3. **응답 필터링** — `response_model` 에 없는 `secret` 은 **응답에서 빠진다.**\n4. **자동 문서** — OpenAPI 명세와 `/docs` 화면이 코드에서 생성된다.\n\n**`python` 문서에서 \"타입 힌트는 런타임 검사가 아니다\"라고 쓴 그 빈칸을 프레임워크가 메운 것**이고, FastAPI 를 쓰는 첫 번째 이유가 이것이다. 문서를 따로 쓰지 않아도 되는 것은 그 부산물이다.\n\n구성은 조립에 가깝다.\n\n```\nUvicorn (ASGI 서버)  ──▶  Starlette (라우팅·미들웨어)  ──▶  FastAPI (타입 기반 계층)\n                                                            └─ pydantic (검증)\n```\n\n그래서 문제가 생기면 **어느 층의 문제인지** 먼저 가려야 한다 — 요청이 안 들어오면 Uvicorn/ASGI, 라우팅·미들웨어면 Starlette, 422 면 pydantic 이다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    },
-    {
-     "title": "Pydantic 공식 문서",
-     "url": "https://docs.pydantic.dev/latest/",
-     "publisher": "Pydantic",
-     "kind": "docs",
-     "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
-    },
-    {
-     "title": "ASGI (Asynchronous Server Gateway Interface) 사양",
-     "url": "https://asgi.readthedocs.io/en/latest/",
-     "publisher": "Django Software Foundation / ASGI",
-     "kind": "standard",
-     "summary": "비동기 파이썬 웹 서버와 애플리케이션 사이의 규약. Uvicorn(서버)과 Starlette·FastAPI(앱)가 이 규약으로 만난다"
-    }
-   ]
-  },
-  {
-   "id": "why",
-   "kind": "why",
-   "heading": "왜 생겼나 — 재료 두 개가 준비된 시점",
-   "body": "FastAPI 는 2018년에 나왔다. **그 시점에 파이썬 쪽에 재료 두 개가 갓 준비돼 있었다.**\n\n**① 타입 힌트(3.5+)와 그것을 실행에 쓰는 pydantic.** 그전까지 힌트는 편집기와 사람만 보는 주석이었다. pydantic 이 그 힌트를 읽어 **런타임에 검증·변환**을 하기 시작하면서, \"시그니처에 적으면 그대로 동작한다\"가 가능해졌다.\n\n**② ASGI.** 파이썬 웹의 오래된 규약(WSGI)은 **동기 전제**라 비동기 프레임워크를 표준적으로 얹을 수 없었다. ASGI 는 그 자리를 비동기용으로 다시 정의한 규약이고, Starlette·Uvicorn 이 그 위에 만들어졌다.\n\n**그전의 선택지는 이랬다.**\n\n- **Flask** — 가볍지만 검증·직렬화·문서를 **전부 직접** 붙여야 했다(marshmallow, apispec …). 그리고 WSGI 라 비동기가 어색했다.\n- **Django** — 관리자·ORM·인증까지 전부 들어 있지만 무겁고, 당시에는 비동기 지원이 초기 단계였다.\n\nFastAPI 가 한 일은 **새 웹 서버를 만드는 것이 아니라 그 재료를 묶는 것**이었다. 그래서 코드가 얇고, 대신 **부품의 문서를 따로 읽어야 한다** — 라우팅·미들웨어는 Starlette, 검증 규칙은 pydantic 문서에 있다.\n\n> 공고가 `Python 기반 프레임워크(Django, Flask, FastAPI)를 이용한 웹 애플리케이션 개발 및 API 개발 경험` 처럼 **셋을 나열하는 이유**가 여기 있다. 세 프레임워크는 같은 일을 다른 무게로 하고, **고르는 기준이 뚜렷하다**(아래 비교표).",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    },
-    {
-     "title": "Pydantic 공식 문서",
-     "url": "https://docs.pydantic.dev/latest/",
-     "publisher": "Pydantic",
-     "kind": "docs",
-     "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
-    },
-    {
-     "title": "ASGI (Asynchronous Server Gateway Interface) 사양",
-     "url": "https://asgi.readthedocs.io/en/latest/",
-     "publisher": "Django Software Foundation / ASGI",
-     "kind": "standard",
-     "summary": "비동기 파이썬 웹 서버와 애플리케이션 사이의 규약. Uvicorn(서버)과 Starlette·FastAPI(앱)가 이 규약으로 만난다"
-    }
-   ]
-  },
-  {
-   "id": "exec",
-   "kind": "how",
-   "heading": "def 와 async def — 실행되는 곳이 다르다",
-   "body": "**이 절이 이 문서에서 가장 실무적인 부분이다.** FastAPI 공식 문서가 규정하는 규칙은 하나다.\n\n```\nasync def 로 선언  →  이벤트 루프에서 직접 실행       (한 스레드)\ndef 로 선언        →  외부 스레드풀에서 실행 후 await  (여러 스레드)\n```\n\n**왜 이렇게 만들었나.** 동기 함수를 이벤트 루프에서 그대로 부르면 그 시간 동안 **서버 전체가 멈춘다**(→ `asyncio`). 그래서 프레임워크가 **알아서 스레드로 옮겨** 준다. 덕분에 동기 DB 드라이버를 쓰는 코드도 그대로 얹힌다.\n\n**여기서 두 방향의 사고가 갈린다.**\n\n**사고 ①: `async def` 안에서 블로킹.** 프레임워크는 `async def` 를 \"비동기로 잘 짜인 코드\"로 믿고 루프에서 직접 돌린다. 그 안에서 `time.sleep`·`requests.get`·동기 DB 호출을 하면 **그 순간 모든 요청이 멈춘다.** 증상은 서버가 죽는 것이 아니라 **그냥 느려지는 것**이라 원인을 늦게 찾는다.\n\n**사고 ②: 전부 `def` 로 선언.** 안전해 보이지만 **동시 처리 수가 스레드풀 크기로 제한된다.** 외부 API 를 5초씩 기다리는 엔드포인트를 `def` 로 두면, 스레드가 다 차는 순간 나머지 요청은 줄을 선다. 비동기 라이브러리를 쓸 수 있는데도 `def` 로 두는 것은 이 상한을 스스로 만드는 셈이다.\n\n**그래서 판단은 라이브러리가 정한다.**\n\n```python\n@app.get(\"/a\")\nasync def a():                 # 쓰는 라이브러리가 전부 비동기일 때\n    return await httpx_client.get(...)\n\n@app.get(\"/b\")\ndef b():                       # 동기 라이브러리만 있을 때 — 이게 맞다\n    return requests.get(...)   # 프레임워크가 스레드풀로 옮겨 준다\n```\n\n**의존성(`Depends`)에도 같은 규칙이 적용된다.** `def` 로 쓴 의존성은 스레드풀에서, `async def` 의존성은 루프에서 실행된다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서 — Concurrency and async / await",
-     "url": "https://fastapi.tiangolo.com/async/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
-    }
-   ]
-  },
-  {
-   "id": "validation",
-   "kind": "how",
-   "heading": "검증의 경계 — 어디까지 막아 주나",
-   "body": "**pydantic 이 막아 주는 것은 '모양'이다.** 타입·필수 여부·범위·형식까지는 선언으로 끝난다.\n\n```python\nclass Order(BaseModel):\n    item_id: int\n    qty: int = Field(gt=0, le=100)      # 1~100\n    email: EmailStr | None = None\n```\n\n조건에 안 맞으면 **핸들러가 실행되기 전에** 422 응답이 나가고, 본문에 **어느 필드가 왜 틀렸는지**가 담긴다. 그래서 `422` 는 \"클라이언트가 잘못 보냈다\"는 뜻이고, **응답 본문을 읽으면 원인이 바로 나온다** — 그걸 안 읽고 헤매는 것이 흔한 시간 낭비다.\n\n**막아 주지 않는 것은 '의미'다.** 이 상품이 존재하는지, 재고가 있는지, 이 사용자가 그럴 권한이 있는지는 **비즈니스 규칙**이고 전부 내 코드의 몫이다. 그건 대개 404·409·403 이지 422 가 아니다.\n\n**응답 쪽도 잊기 쉽다.** `response_model` 을 지정하면 **거기 없는 필드는 응답에서 빠진다.** 이것이 실수로 비밀번호 해시·내부 ID 를 흘리는 것을 막는 마지막 방어선이다. 지정하지 않으면 **핸들러가 반환한 것이 그대로 나간다.**\n\n**파라미터가 어디서 오는지의 규칙**도 알아 둬야 한다. FastAPI 는 시그니처를 보고 **경로·쿼리·본문·헤더** 중 어디서 값을 찾을지 스스로 정한다(아래 표). 모호하면 `Query(...)`·`Body(...)` 로 명시한다.\n\n> **버전 주의: pydantic v1 과 v2 는 API 가 다르다.** `orm_mode` 가 `from_attributes` 로, `.dict()` 가 `.model_dump()` 로 바뀌는 식이다. 인터넷 예제를 붙일 때 **어느 버전 것인지 확인**해야 하고, 이 문서의 코드는 v2 표기를 전제로 읽는다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    },
-    {
-     "title": "Pydantic 공식 문서",
-     "url": "https://docs.pydantic.dev/latest/",
-     "publisher": "Pydantic",
-     "kind": "docs",
-     "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
-    }
-   ]
-  },
-  {
-   "id": "depends",
-   "kind": "how",
-   "heading": "Depends — 공통 로직을 함수로 빼고, 테스트에서 갈아 끼운다",
-   "body": "인증·DB 세션·페이징처럼 **여러 엔드포인트가 함께 쓰는 것**을 함수로 만들어 주입한다.\n\n```python\ndef get_db():\n    db = SessionLocal()\n    try:\n        yield db          # 여기서 핸들러가 실행된다\n    finally:\n        db.close()        # 끝나면 반드시 정리된다\n\n@app.get(\"/orders\")\ndef list_orders(db = Depends(get_db), user = Depends(current_user)):\n    ...\n```\n\n세 가지가 따라온다.\n\n- **`yield` 의존성은 정리 코드를 보장한다.** 핸들러가 예외를 던져도 `finally` 가 돈다 — DB 세션·파일·락을 여기서 닫는다.\n- **같은 요청 안에서는 재사용된다.** 한 요청이 `current_user` 를 세 군데서 의존해도 기본적으로 한 번만 계산된다.\n- **테스트에서 갈아 끼울 수 있다.** `app.dependency_overrides` 로 실제 DB 의존성을 가짜로 바꾸면, **테스트가 인프라 없이 돈다.** 의존성 주입을 쓰는 실질적 이유가 대개 이것이다.\n\n**그리고 앞 절의 규칙이 여기에도 적용된다** — `def` 의존성은 스레드풀에서, `async def` 의존성은 이벤트 루프에서 실행된다. 동기 DB 세션을 `async def` 의존성 안에서 만들면 그 자체가 블로킹이 된다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    },
-    {
-     "title": "FastAPI 공식 문서 — Concurrency and async / await",
-     "url": "https://fastapi.tiangolo.com/async/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
-    }
-   ]
-  },
-  {
-   "id": "limits",
-   "kind": "limits",
-   "heading": "경계 — FastAPI 가 주지 않는 것",
-   "body": "**프레임워크가 얇다.** 관리자 화면·ORM·마이그레이션·인증 체계가 **없다.** SQLAlchemy·Alembic·인증 라이브러리를 직접 고르고 붙여야 하고, 그 조합의 책임도 내가 진다. Django 를 고르는 이유가 정확히 그 반대편이다.\n\n**CPU 바운드는 여전히 못 푼다.** 이벤트 루프든 스레드풀이든 파이썬 바이트코드는 GIL 아래에 있다(→ `gil`). 무거운 계산은 **프로세스 워커**로 빼야 하고, 실무에서는 Celery + Redis 같은 작업 큐가 그 자리다 — 공고의 `Celery + Redis를 활용한 비동기 작업 큐 설계 및 운영` 이 그것이다.\n\n**`BackgroundTasks` 는 작업 큐가 아니다.** 응답을 보낸 뒤 같은 프로세스에서 함수를 하나 더 돌릴 뿐이라, **프로세스가 죽으면 그 작업도 사라진다.** 재시도·영속성·분산이 필요하면 진짜 큐로 간다.\n\n**배포는 별개 지식이다.** Uvicorn 워커를 몇 개 띄울지, 프로세스 관리자를 무엇으로 둘지, 헬스체크·타임아웃·프록시 설정을 어떻게 할지는 프레임워크 밖이다. **워커를 늘리는 것이 GIL 을 우회하는 방법**이라는 점에서 `gil` 문서와 이어진다.\n\n**성숙도의 차이도 있다.** Django 는 20년 치 관례와 서드파티 생태계가 있고, FastAPI 는 그보다 얇다. **팀이 이미 Django 를 잘 쓰고 있다면 바꿀 이유가 약하다.**",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    },
-    {
-     "title": "FastAPI 공식 문서 — Concurrency and async / await",
-     "url": "https://fastapi.tiangolo.com/async/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
-    }
-   ]
-  }
- ],
- "tables": [
-  {
-   "id": "exec-table",
-   "kind": "spec",
-   "caption": "경로 함수와 의존성이 실행되는 곳",
-   "note": "FastAPI 공식 문서의 규정이다. **선언 방식이 곧 실행 위치**이므로, 쓰는 라이브러리가 비동기를 지원하는지에 따라 고른다",
-   "columns": [
-    "선언",
-    "어디서 실행",
-    "블로킹 호출을 하면",
-    "언제 고르나"
-   ],
-   "rows": [
-    [
-     "`async def`",
-     "**이벤트 루프** (한 스레드)",
-     "**서버 전체가 멈춘다**",
-     "쓰는 라이브러리가 전부 비동기일 때"
-    ],
-    [
-     "`def`",
-     "**스레드풀** (프레임워크가 옮긴다)",
-     "그 스레드만 막힌다",
-     "동기 라이브러리만 있을 때"
-    ],
-    [
-     "`async def` 의존성",
-     "이벤트 루프",
-     "같음 — 서버가 멈춘다",
-     "비동기 자원(비동기 DB 세션)"
-    ],
-    [
-     "`def` 의존성",
-     "스레드풀",
-     "그 스레드만",
-     "동기 DB 세션 등"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서 — Concurrency and async / await",
-     "url": "https://fastapi.tiangolo.com/async/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
-    }
-   ]
-  },
-  {
-   "id": "frameworks",
-   "kind": "compare",
-   "caption": "FastAPI · Django · Flask — 공고가 셋 중 하나를 고르라 한다",
-   "note": "무게와 포함 범위가 다르다. **어느 쪽이 낫다기보다 '무엇이 이미 필요한가'** 로 갈린다 — 관리자·ORM·인증이 필요하면 Django 가 이미 갖고 있고, API 서버만이면 그게 전부 짐이 된다",
-   "columns": [
-    "",
+  "slug": "fastapi",
+  "title": "FastAPI",
+  "title_en": "FastAPI (Python ASGI framework)",
+  "aliases": [
     "FastAPI",
-    "Django",
-    "Flask"
-   ],
-   "rows": [
-    [
-     "기본 포함",
-     "검증·직렬화·자동 문서",
-     "**ORM·관리자·인증·마이그레이션까지**",
-     "라우팅·템플릿 (나머지는 직접)"
-    ],
-    [
-     "비동기",
-     "**전제** (ASGI)",
-     "지원하지만 생태계가 섞여 있다",
-     "제한적 (WSGI 전제)"
-    ],
-    [
-     "검증",
-     "**타입 힌트 + pydantic (내장)**",
-     "폼·시리얼라이저(DRF)",
-     "직접 붙인다"
-    ],
-    [
-     "API 문서",
-     "**자동 생성 (OpenAPI)**",
-     "DRF 등으로 별도",
-     "직접 붙인다"
-    ],
-    [
-     "어울리는 자리",
-     "API 서버·외부 호출 많은 서비스·ML 서빙",
-     "관리자 화면이 필요한 제품, 큰 도메인",
-     "작은 서비스·프로토타입"
-    ],
-    [
-     "짐이 되는 때",
-     "관리자·ORM 을 직접 골라야 한다",
-     "API 만 필요할 때 무겁다",
-     "규모가 커지면 직접 붙인 것이 늘어난다"
-    ]
-   ],
-   "confidence": "inferred",
-   "sources": [
+    "pydantic",
+    "Uvicorn"
+  ],
+  "category": "framework",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "**타입 힌트를 런타임 검증·자동 문서로 바꾸는** 파이썬 웹 프레임워크다. 그리고 `def` 와 `async def` 를 **다른 곳에서 실행한다** — 이 두 문장이 이 프레임워크의 거의 전부다.",
+  "summary": "FastAPI 는 `python`·`asyncio` 두 문서가 함께 가리킨 자리다. `python` 문서에서 \"**타입 힌트는 런타임 검사를 하지 않는다**\"고 썼는데, FastAPI 는 정확히 그 빈칸을 메운다 — 함수 시그니처에 적은 타입이 곧 **요청 검증기이자 응답 필터이자 API 문서**가 된다. 새로 발명한 것은 적다. **Starlette**(ASGI 웹 층)와 **pydantic**(검증)을 타입 힌트로 묶은 조립품에 가깝고, 그래서 각 부품의 문서를 따로 읽을 줄 알아야 한다. 실무에서 갈리는 지점은 둘이다. **① 검증의 경계** — 어디까지 pydantic 이 막아 주고 어디부터 내 책임인가. **② 실행 위치** — `async def` 는 이벤트 루프에서, **`def` 는 스레드풀에서** 실행된다(공식 문서의 규정이다). 이걸 모르면 두 방향으로 사고가 난다: `async def` 안에서 동기 라이브러리를 불러 **서버 전체를 세우거나**, 반대로 모든 엔드포인트를 `def` 로 만들어 **스레드풀 크기가 동시성 상한이 되거나.**",
+  "market": null,
+  "sections": [
     {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    }
-   ]
-  },
-  {
-   "id": "params",
-   "kind": "spec",
-   "caption": "파라미터가 어디서 오는지 — 시그니처로 결정된다",
-   "note": "모호하면 `Query(...)`·`Path(...)`·`Body(...)`·`Header(...)` 로 명시한다. **명시하면 그 규칙이 문서에도 그대로 반영**된다",
-   "columns": [
-    "선언",
-    "어디서 읽나",
-    "예"
-   ],
-   "rows": [
-    [
-     "경로에 같은 이름이 있다",
-     "**경로 파라미터**",
-     "`@app.get(\"/items/{id}\")` + `def f(id: int)`"
-    ],
-    [
-     "단순 타입(int·str·bool)이고 경로에 없다",
-     "**쿼리 파라미터**",
-     "`/items?limit=10` + `def f(limit: int = 10)`"
-    ],
-    [
-     "pydantic 모델이다",
-     "**요청 본문(JSON)**",
-     "`def f(order: Order)`"
-    ],
-    [
-     "`Header()`·`Cookie()` 로 선언",
-     "헤더·쿠키",
-     "`def f(x_token: str = Header())`"
-    ],
-    [
-     "기본값이 없다",
-     "**필수** — 없으면 422",
-     "`def f(q: str)`"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    }
-   ]
-  },
-  {
-   "id": "symptoms",
-   "kind": "glossary",
-   "caption": "증상 → 먼저 의심할 것",
-   "note": "FastAPI 의 실패는 대개 조용하다 — 서버가 죽지 않고 느려지거나, 검증이 막아 준 것을 버그로 오해한다",
-   "columns": [
-    "증상",
-    "먼저 의심할 것",
-    "확인·조치"
-   ],
-   "rows": [
-    [
-     "요청 하나가 처리되는 동안 전체가 멈춘다",
-     "**`async def` 안의 블로킹 호출**",
-     "그 엔드포인트를 `def` 로 바꾸거나 비동기 라이브러리로 교체 (→ `asyncio`)"
-    ],
-    [
-     "동시 요청이 어느 선을 넘으면 줄을 선다",
-     "**전부 `def` 라 스레드풀이 상한**",
-     "비동기 라이브러리가 있는 곳부터 `async def` 로 옮긴다"
-    ],
-    [
-     "계속 422 가 나온다",
-     "요청 형식 불일치 — **검증이 정상 동작한 것**",
-     "응답 본문의 `loc`·`msg` 를 읽는다. 어느 필드가 왜 틀렸는지 적혀 있다"
-    ],
-    [
-     "응답에 내부 필드가 노출됐다",
-     "**`response_model` 미지정**",
-     "응답 모델을 선언한다 — 거기 없는 필드는 빠진다"
-    ],
-    [
-     "예제 코드가 동작하지 않는다",
-     "**pydantic v1/v2 차이**",
-     "`orm_mode`↔`from_attributes`, `.dict()`↔`.model_dump()` 등 버전 확인"
-    ],
-    [
-     "DB 커넥션이 계속 늘어난다",
-     "의존성에서 세션을 안 닫았다",
-     "`yield` 의존성의 `finally` 에서 닫는다"
-    ]
-   ]
-  },
-  {
-   "id": "layers",
-   "kind": "compare",
-   "caption": "층 구분 — 문제가 어디서 났나",
-   "note": "FastAPI 는 조립품이라 **문제의 층을 먼저 가려야** 검색어가 정해진다. '왜 안 되지'를 검색하기 전에 이 표에서 층부터 고른다",
-   "columns": [
-    "층",
-    "무엇",
-    "이 층의 증상"
-   ],
-   "rows": [
-    [
-     "Uvicorn / ASGI",
-     "서버·프로토콜 (→ ASGI 사양)",
-     "연결 자체가 안 된다, 워커·타임아웃·프록시 설정"
-    ],
-    [
-     "Starlette",
-     "라우팅·미들웨어·요청/응답 객체",
-     "미들웨어 순서, CORS, 스트리밍 응답"
-    ],
-    [
-     "FastAPI",
-     "타입 기반 계층 — 파라미터 해석·의존성·문서",
-     "파라미터가 엉뚱한 곳에서 읽힌다, `Depends` 동작"
-    ],
-    [
-     "pydantic",
-     "검증·직렬화",
-     "**422**, 타입 변환, v1/v2 차이"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 시그니처가 곧 명세다",
+      "body": "```python\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass Order(BaseModel):          # 요청 본문의 모양\n    item_id: int\n    qty: int = 1\n\nclass OrderOut(BaseModel):       # 응답의 모양\n    id: str\n    total: int\n\n@app.post(\"/orders\", response_model=OrderOut)\nasync def create(order: Order):  # ← 이 한 줄이 검증·파싱·문서를 만든다\n    return {\"id\": \"A-1\", \"total\": order.qty * 1000, \"secret\": \"...\"}\n```\n\n이 열 몇 줄로 따라오는 것이 넷이다.\n\n1. **요청 검증** — `qty` 에 `\"three\"` 가 오면 **핸들러가 실행되기 전에** 422 로 거절된다.\n2. **타입 변환** — `\"3\"` 은 `3` 으로 바뀌어 들어온다.\n3. **응답 필터링** — `response_model` 에 없는 `secret` 은 **응답에서 빠진다.**\n4. **자동 문서** — OpenAPI 명세와 `/docs` 화면이 코드에서 생성된다.\n\n**`python` 문서에서 \"타입 힌트는 런타임 검사가 아니다\"라고 쓴 그 빈칸을 프레임워크가 메운 것**이고, FastAPI 를 쓰는 첫 번째 이유가 이것이다. 문서를 따로 쓰지 않아도 되는 것은 그 부산물이다.\n\n구성은 조립에 가깝다.\n\n```\nUvicorn (ASGI 서버)  ──▶  Starlette (라우팅·미들웨어)  ──▶  FastAPI (타입 기반 계층)\n                                                            └─ pydantic (검증)\n```\n\n그래서 문제가 생기면 **어느 층의 문제인지** 먼저 가려야 한다 — 요청이 안 들어오면 Uvicorn/ASGI, 라우팅·미들웨어면 Starlette, 422 면 pydantic 이다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        },
+        {
+          "title": "Pydantic 공식 문서",
+          "url": "https://docs.pydantic.dev/latest/",
+          "publisher": "Pydantic",
+          "kind": "docs",
+          "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+        },
+        {
+          "title": "ASGI (Asynchronous Server Gateway Interface) 사양",
+          "url": "https://asgi.readthedocs.io/en/latest/",
+          "publisher": "Django Software Foundation / ASGI",
+          "kind": "standard",
+          "summary": "비동기 파이썬 웹 서버와 애플리케이션 사이의 규약. Uvicorn(서버)과 Starlette·FastAPI(앱)가 이 규약으로 만난다"
+        }
+      ]
     },
     {
-     "title": "ASGI (Asynchronous Server Gateway Interface) 사양",
-     "url": "https://asgi.readthedocs.io/en/latest/",
-     "publisher": "Django Software Foundation / ASGI",
-     "kind": "standard",
-     "summary": "비동기 파이썬 웹 서버와 애플리케이션 사이의 규약. Uvicorn(서버)과 Starlette·FastAPI(앱)가 이 규약으로 만난다"
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 생겼나 — 재료 두 개가 준비된 시점",
+      "body": "FastAPI 는 2018년에 나왔다. **그 시점에 파이썬 쪽에 재료 두 개가 갓 준비돼 있었다.**\n\n**① 타입 힌트(3.5+)와 그것을 실행에 쓰는 pydantic.** 그전까지 힌트는 편집기와 사람만 보는 주석이었다. pydantic 이 그 힌트를 읽어 **런타임에 검증·변환**을 하기 시작하면서, \"시그니처에 적으면 그대로 동작한다\"가 가능해졌다.\n\n**② ASGI.** 파이썬 웹의 오래된 규약(WSGI)은 **동기 전제**라 비동기 프레임워크를 표준적으로 얹을 수 없었다. ASGI 는 그 자리를 비동기용으로 다시 정의한 규약이고, Starlette·Uvicorn 이 그 위에 만들어졌다.\n\n**그전의 선택지는 이랬다.**\n\n- **Flask** — 가볍지만 검증·직렬화·문서를 **전부 직접** 붙여야 했다(marshmallow, apispec …). 그리고 WSGI 라 비동기가 어색했다.\n- **Django** — 관리자·ORM·인증까지 전부 들어 있지만 무겁고, 당시에는 비동기 지원이 초기 단계였다.\n\nFastAPI 가 한 일은 **새 웹 서버를 만드는 것이 아니라 그 재료를 묶는 것**이었다. 그래서 코드가 얇고, 대신 **부품의 문서를 따로 읽어야 한다** — 라우팅·미들웨어는 Starlette, 검증 규칙은 pydantic 문서에 있다.\n\n> 공고가 `Python 기반 프레임워크(Django, Flask, FastAPI)를 이용한 웹 애플리케이션 개발 및 API 개발 경험` 처럼 **셋을 나열하는 이유**가 여기 있다. 세 프레임워크는 같은 일을 다른 무게로 하고, **고르는 기준이 뚜렷하다**(아래 비교표).",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        },
+        {
+          "title": "Pydantic 공식 문서",
+          "url": "https://docs.pydantic.dev/latest/",
+          "publisher": "Pydantic",
+          "kind": "docs",
+          "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+        },
+        {
+          "title": "ASGI (Asynchronous Server Gateway Interface) 사양",
+          "url": "https://asgi.readthedocs.io/en/latest/",
+          "publisher": "Django Software Foundation / ASGI",
+          "kind": "standard",
+          "summary": "비동기 파이썬 웹 서버와 애플리케이션 사이의 규약. Uvicorn(서버)과 Starlette·FastAPI(앱)가 이 규약으로 만난다"
+        }
+      ]
     },
     {
-     "title": "Pydantic 공식 문서",
-     "url": "https://docs.pydantic.dev/latest/",
-     "publisher": "Pydantic",
-     "kind": "docs",
-     "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
-    }
-   ]
-  }
- ],
- "when_to_use": [
-  {
-   "situation": "외부 API·DB 호출이 많은 API 서버를 새로 만든다",
-   "pick": "FastAPI",
-   "over": "Flask",
-   "why": "검증·직렬화·자동 문서가 타입 힌트만으로 따라오고, ASGI 라 비동기가 전제다. Flask 로 같은 것을 만들면 검증·문서화 라이브러리를 직접 골라 붙이고 그 조합을 유지해야 한다",
-   "tradeoff": "관리자·ORM·인증이 없어 직접 고른다. 생태계 두께는 Django 쪽이 앞선다",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    }
-   ]
-  },
-  {
-   "situation": "관리자 화면·ORM·인증이 처음부터 필요하다 (사내 시스템, 커머스 백오피스)",
-   "pick": "Django",
-   "over": "FastAPI",
-   "why": "이미 들어 있는 것을 다시 만들 이유가 없다. 관리자만으로도 초기 운영 도구가 해결되는 제품이 많다",
-   "tradeoff": "API 만 필요하면 무겁고, 비동기 생태계가 섞여 있어 고성능 비동기 서비스에는 손이 더 간다"
-  },
-  {
-   "situation": "쓰려는 라이브러리가 동기(블로킹)뿐이다 (동기 DB 드라이버, `requests`)",
-   "pick": "그 엔드포인트를 **`def` 로 선언**",
-   "over": "`async def` 안에서 그냥 호출하기",
-   "why": "`def` 로 선언하면 프레임워크가 **스레드풀로 옮겨** 실행한다. `async def` 안에서 블로킹하면 이벤트 루프가 멈춰 서버 전체가 선다",
-   "tradeoff": "동시 처리 수가 스레드풀 크기에 묶인다. 비동기 라이브러리로 옮길 수 있으면 그쪽이 낫다",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서 — Concurrency and async / await",
-     "url": "https://fastapi.tiangolo.com/async/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
-    }
-   ]
-  },
-  {
-   "situation": "응답을 보낸 뒤 무거운 작업을 돌려야 한다 (이미지 변환, 리포트 생성)",
-   "pick": "Celery·RQ 같은 **작업 큐 + 별도 워커 프로세스**",
-   "over": "`BackgroundTasks`",
-   "why": "`BackgroundTasks` 는 같은 프로세스에서 함수를 하나 더 도는 것이라 **프로세스가 죽으면 작업도 사라지고**, CPU 작업이면 GIL 때문에 서버 응답까지 느려진다(→ `gil`)",
-   "tradeoff": "브로커(Redis 등)와 워커 운영이 늘어난다. 메일 발송처럼 가볍고 유실돼도 되는 일에는 `BackgroundTasks` 로 충분하다"
-  },
-  {
-   "situation": "외부에서 들어오는 데이터의 형태를 보장해야 한다",
-   "pick": "pydantic 모델로 선언 + `response_model` 지정",
-   "over": "핸들러 안에서 `dict` 를 직접 검사하기",
-   "why": "검증이 **경계에서 한 번에** 끝나고, 실패 응답 형식이 일관되며, 같은 선언이 문서까지 만든다. 응답 모델은 내부 필드가 새는 것을 막는 마지막 방어선이다",
-   "tradeoff": "모델 클래스가 늘고, 내부 함수끼리 주고받는 값까지 전부 감쌀 필요는 없다(→ `python` 의 dataclass 절)",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "Pydantic 공식 문서",
-     "url": "https://docs.pydantic.dev/latest/",
-     "publisher": "Pydantic",
-     "kind": "docs",
-     "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+      "id": "exec",
+      "kind": "how",
+      "heading": "def 와 async def — 실행되는 곳이 다르다",
+      "body": "**이 절이 이 문서에서 가장 실무적인 부분이다.** FastAPI 공식 문서가 규정하는 규칙은 하나다.\n\n```\nasync def 로 선언  →  이벤트 루프에서 직접 실행       (한 스레드)\ndef 로 선언        →  외부 스레드풀에서 실행 후 await  (여러 스레드)\n```\n\n**왜 이렇게 만들었나.** 동기 함수를 이벤트 루프에서 그대로 부르면 그 시간 동안 **서버 전체가 멈춘다**(→ `asyncio`). 그래서 프레임워크가 **알아서 스레드로 옮겨** 준다. 덕분에 동기 DB 드라이버를 쓰는 코드도 그대로 얹힌다.\n\n**여기서 두 방향의 사고가 갈린다.**\n\n**사고 ①: `async def` 안에서 블로킹.** 프레임워크는 `async def` 를 \"비동기로 잘 짜인 코드\"로 믿고 루프에서 직접 돌린다. 그 안에서 `time.sleep`·`requests.get`·동기 DB 호출을 하면 **그 순간 모든 요청이 멈춘다.** 증상은 서버가 죽는 것이 아니라 **그냥 느려지는 것**이라 원인을 늦게 찾는다.\n\n**사고 ②: 전부 `def` 로 선언.** 안전해 보이지만 **동시 처리 수가 스레드풀 크기로 제한된다.** 외부 API 를 5초씩 기다리는 엔드포인트를 `def` 로 두면, 스레드가 다 차는 순간 나머지 요청은 줄을 선다. 비동기 라이브러리를 쓸 수 있는데도 `def` 로 두는 것은 이 상한을 스스로 만드는 셈이다.\n\n**그래서 판단은 라이브러리가 정한다.**\n\n```python\n@app.get(\"/a\")\nasync def a():                 # 쓰는 라이브러리가 전부 비동기일 때\n    return await httpx_client.get(...)\n\n@app.get(\"/b\")\ndef b():                       # 동기 라이브러리만 있을 때 — 이게 맞다\n    return requests.get(...)   # 프레임워크가 스레드풀로 옮겨 준다\n```\n\n**의존성(`Depends`)에도 같은 규칙이 적용된다.** `def` 로 쓴 의존성은 스레드풀에서, `async def` 의존성은 루프에서 실행된다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서 — Concurrency and async / await",
+          "url": "https://fastapi.tiangolo.com/async/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
+        }
+      ]
     },
     {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    }
-   ]
-  }
- ],
- "pitfalls": [
-  {
-   "trap": "요청 하나가 처리되는 동안 다른 요청이 전부 멈춘다",
-   "why": "**`async def` 안에서 블로킹 호출**을 했다. 프레임워크는 `async def` 를 이벤트 루프에서 직접 실행하므로, `time.sleep`·`requests`·동기 DB 호출 한 줄이 서버 전체를 세운다",
-   "fix": "그 엔드포인트를 **`def` 로 바꾸면** 프레임워크가 스레드풀로 옮겨 준다. 또는 비동기 라이브러리(`httpx`·비동기 드라이버)로 교체한다",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서 — Concurrency and async / await",
-     "url": "https://fastapi.tiangolo.com/async/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
-    }
-   ]
-  },
-  {
-   "trap": "동시 요청이 일정 수를 넘으면 응답이 밀리기 시작한다",
-   "why": "**모든 엔드포인트를 `def` 로 선언**해 동시 처리 수가 스레드풀 크기에 묶였다. 안전해 보이는 선택이 상한을 만든 것이다",
-   "fix": "비동기 라이브러리를 쓸 수 있는 엔드포인트부터 `async def` 로 옮긴다. 남는 동기 작업은 워커 프로세스로 빼는 것도 방법이다",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서 — Concurrency and async / await",
-     "url": "https://fastapi.tiangolo.com/async/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
-    }
-   ]
-  },
-  {
-   "trap": "응답에 비밀번호 해시나 내부 필드가 그대로 나갔다",
-   "why": "**`response_model` 을 지정하지 않았다.** 지정하지 않으면 핸들러가 반환한 객체가 그대로 직렬화된다",
-   "fix": "출력 전용 모델을 만들어 `response_model` 에 건다. 거기 없는 필드는 응답에서 빠진다 — 이게 마지막 방어선이다",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-    }
-   ]
-  },
-  {
-   "trap": "422 가 계속 나는데 원인을 모르겠다",
-   "why": "**응답 본문을 안 읽었다.** 422 본문에는 어느 위치(`loc`)의 어떤 값이 왜(`msg`) 틀렸는지가 구조화돼 들어 있다",
-   "fix": "응답 JSON 을 그대로 로그에 찍어 본다. 그리고 422 는 **검증이 정상 동작한 것**이지 서버 버그가 아니다 — 비즈니스 규칙 위반이라면 404·409 로 내가 따로 응답해야 한다",
-   "sources": [
-    {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+      "id": "validation",
+      "kind": "how",
+      "heading": "검증의 경계 — 어디까지 막아 주나",
+      "body": "**pydantic 이 막아 주는 것은 '모양'이다.** 타입·필수 여부·범위·형식까지는 선언으로 끝난다.\n\n```python\nclass Order(BaseModel):\n    item_id: int\n    qty: int = Field(gt=0, le=100)      # 1~100\n    email: EmailStr | None = None\n```\n\n조건에 안 맞으면 **핸들러가 실행되기 전에** 422 응답이 나가고, 본문에 **어느 필드가 왜 틀렸는지**가 담긴다. 그래서 `422` 는 \"클라이언트가 잘못 보냈다\"는 뜻이고, **응답 본문을 읽으면 원인이 바로 나온다** — 그걸 안 읽고 헤매는 것이 흔한 시간 낭비다.\n\n**막아 주지 않는 것은 '의미'다.** 이 상품이 존재하는지, 재고가 있는지, 이 사용자가 그럴 권한이 있는지는 **비즈니스 규칙**이고 전부 내 코드의 몫이다. 그건 대개 404·409·403 이지 422 가 아니다.\n\n**응답 쪽도 잊기 쉽다.** `response_model` 을 지정하면 **거기 없는 필드는 응답에서 빠진다.** 이것이 실수로 비밀번호 해시·내부 ID 를 흘리는 것을 막는 마지막 방어선이다. 지정하지 않으면 **핸들러가 반환한 것이 그대로 나간다.**\n\n**파라미터가 어디서 오는지의 규칙**도 알아 둬야 한다. FastAPI 는 시그니처를 보고 **경로·쿼리·본문·헤더** 중 어디서 값을 찾을지 스스로 정한다(아래 표). 모호하면 `Query(...)`·`Body(...)` 로 명시한다.\n\n> **버전 주의: pydantic v1 과 v2 는 API 가 다르다.** `orm_mode` 가 `from_attributes` 로, `.dict()` 가 `.model_dump()` 로 바뀌는 식이다. 인터넷 예제를 붙일 때 **어느 버전 것인지 확인**해야 하고, 이 문서의 코드는 v2 표기를 전제로 읽는다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        },
+        {
+          "title": "Pydantic 공식 문서",
+          "url": "https://docs.pydantic.dev/latest/",
+          "publisher": "Pydantic",
+          "kind": "docs",
+          "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+        }
+      ]
     },
     {
-     "title": "Pydantic 공식 문서",
-     "url": "https://docs.pydantic.dev/latest/",
-     "publisher": "Pydantic",
-     "kind": "docs",
-     "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
-    }
-   ]
-  },
-  {
-   "trap": "인터넷 예제를 붙였는데 `orm_mode` 나 `.dict()` 가 없다고 한다",
-   "why": "**pydantic v1 과 v2 의 API 차이다.** v2 에서 `orm_mode` → `from_attributes`, `.dict()` → `.model_dump()` 등으로 바뀌었다",
-   "fix": "쓰는 pydantic 버전을 확인하고 예제의 버전을 맞춘다. 마이그레이션 안내가 pydantic 문서에 있다",
-   "sources": [
+      "id": "depends",
+      "kind": "how",
+      "heading": "Depends — 공통 로직을 함수로 빼고, 테스트에서 갈아 끼운다",
+      "body": "인증·DB 세션·페이징처럼 **여러 엔드포인트가 함께 쓰는 것**을 함수로 만들어 주입한다.\n\n```python\ndef get_db():\n    db = SessionLocal()\n    try:\n        yield db          # 여기서 핸들러가 실행된다\n    finally:\n        db.close()        # 끝나면 반드시 정리된다\n\n@app.get(\"/orders\")\ndef list_orders(db = Depends(get_db), user = Depends(current_user)):\n    ...\n```\n\n세 가지가 따라온다.\n\n- **`yield` 의존성은 정리 코드를 보장한다.** 핸들러가 예외를 던져도 `finally` 가 돈다 — DB 세션·파일·락을 여기서 닫는다.\n- **같은 요청 안에서는 재사용된다.** 한 요청이 `current_user` 를 세 군데서 의존해도 기본적으로 한 번만 계산된다.\n- **테스트에서 갈아 끼울 수 있다.** `app.dependency_overrides` 로 실제 DB 의존성을 가짜로 바꾸면, **테스트가 인프라 없이 돈다.** 의존성 주입을 쓰는 실질적 이유가 대개 이것이다.\n\n**그리고 앞 절의 규칙이 여기에도 적용된다** — `def` 의존성은 스레드풀에서, `async def` 의존성은 이벤트 루프에서 실행된다. 동기 DB 세션을 `async def` 의존성 안에서 만들면 그 자체가 블로킹이 된다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        },
+        {
+          "title": "FastAPI 공식 문서 — Concurrency and async / await",
+          "url": "https://fastapi.tiangolo.com/async/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
+        }
+      ]
+    },
     {
-     "title": "Pydantic 공식 문서",
-     "url": "https://docs.pydantic.dev/latest/",
-     "publisher": "Pydantic",
-     "kind": "docs",
-     "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
-    }
-   ]
-  },
-  {
-   "trap": "부하가 조금만 늘어도 DB 커넥션이 고갈된다",
-   "why": "의존성에서 만든 **세션을 닫지 않았다.** 예외가 나면 정리 코드를 건너뛰는 구조였을 수도 있다",
-   "fix": "`yield` 의존성으로 만들고 `finally` 에서 닫는다 — 핸들러가 예외를 던져도 정리가 보장된다. 커넥션 풀 크기와 워커 수의 곱이 DB 상한을 넘지 않는지도 함께 본다",
-   "sources": [
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — FastAPI 가 주지 않는 것",
+      "body": "**프레임워크가 얇다.** 관리자 화면·ORM·마이그레이션·인증 체계가 **없다.** SQLAlchemy·Alembic·인증 라이브러리를 직접 고르고 붙여야 하고, 그 조합의 책임도 내가 진다. Django 를 고르는 이유가 정확히 그 반대편이다.\n\n**CPU 바운드는 여전히 못 푼다.** 이벤트 루프든 스레드풀이든 파이썬 바이트코드는 GIL 아래에 있다(→ `gil`). 무거운 계산은 **프로세스 워커**로 빼야 하고, 실무에서는 Celery + Redis 같은 작업 큐가 그 자리다 — 공고의 `Celery + Redis를 활용한 비동기 작업 큐 설계 및 운영` 이 그것이다.\n\n**`BackgroundTasks` 는 작업 큐가 아니다.** 응답을 보낸 뒤 같은 프로세스에서 함수를 하나 더 돌릴 뿐이라, **프로세스가 죽으면 그 작업도 사라진다.** 재시도·영속성·분산이 필요하면 진짜 큐로 간다.\n\n**배포는 별개 지식이다.** Uvicorn 워커를 몇 개 띄울지, 프로세스 관리자를 무엇으로 둘지, 헬스체크·타임아웃·프록시 설정을 어떻게 할지는 프레임워크 밖이다. **워커를 늘리는 것이 GIL 을 우회하는 방법**이라는 점에서 `gil` 문서와 이어진다.\n\n**성숙도의 차이도 있다.** Django 는 20년 치 관례와 서드파티 생태계가 있고, FastAPI 는 그보다 얇다. **팀이 이미 Django 를 잘 쓰고 있다면 바꿀 이유가 약하다.**\n\n---\n\n⭐⭐⭐ **이 프레임워크는 \\\"타입 힌트로 명세를 만든다\\\" 하나에 걸었다** — 💡 **그 대가로 안 주는 것이 많고, 안 주는 자리마다 다른 것을 가져다 붙인다.**\n\n| 한계 | ⚠️ 왜 생기나 | ⭐ 그래서 필요한 것 |\n|---|---|---|\n| ⭐⭐⭐ **ORM·관리자·인증이 없다** | 마이크로 프레임워크다 | ⭐⭐ **SQLAlchemy·`jpa` 같은 층을 직접 고른다** — ⚠️ **`Django`(440건)는 다 준다** |\n| ⭐⭐⭐ **`def` 를 잘못 쓰면 이벤트 루프가 막힌다** | 스레드풀로 도는 것과 아닌 것 | ⭐ **`asyncio`·`gil` 을 알아야 한다**(`exec` 절) — 📌 **가장 흔한 사고** |\n| ⭐⭐⭐ **검증은 입구까지만** | Pydantic 은 모양만 본다 | ⭐ **업무 규칙은 직접** → `data-quality`·`data-contract` |\n| ⭐⭐ **파이썬이라 계산이 느리다** | 언어의 몫 | ⭐ **무거운 것은 프로세스·C 확장·다른 언어** → `gil`·`go` |\n| ⭐⭐ **비동기 라이브러리를 골라야 한다** | 동기 하나가 전체를 막는다 | ⭐ **`run_in_executor`·비동기 드라이버** → `asyncio` |\n| ⭐⭐ **명세는 만들어 주지만 계약은 아니다** | OpenAPI 문서일 뿐 | ⭐ **`openapi`·`contract-testing`** — ⚠️ **깨짐은 테스트가 잡는다** |\n| ⭐⭐⭐ **큰 조직의 규약이 없다** | 자유롭다 | ⚠️ **팀마다 구조가 달라진다** — ⭐ **`hexagonal-architecture`·`bounded-context`** |\n\n⭐⭐⭐ **첫 줄이 이 문서의 계보를 정한다** — 💡 **`Django`(다 준다) ↔ `FastAPI`(고르게 한다)는 맞바꿈이지 세대교체가 아니다**… ⚠️ **라고 쓰려 했으나 셈이 다른 말을 한다.** **`FastAPI` 1007 : `Django` 440 — 2.3배**다. 📌 ⭐ **새 것이 옛 것을 넘었으므로 \\\"이미 갈아탔다\\\" 쪽에 가깝다**(→ 아래 절).\n\n⚠️ **둘째 줄이 이 문서에서 가장 실무적인 한계다** — 💡 **`async def` 안에서 동기 함수를 부르면 서버 전체가 멎는다.** ⭐ **`asyncio` 의 셋째 한계(동기 라이브러리 하나가 전체를 막는다)와 같은 말**이고, 📌 **`gil`·`asyncio`·`fastapi` 셋을 함께 읽어야 이해된다.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        },
+        {
+          "title": "FastAPI 공식 문서 — Concurrency and async / await",
+          "url": "https://fastapi.tiangolo.com/async/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
+        }
+      ]
+    },
     {
-     "title": "FastAPI 공식 문서",
-     "url": "https://fastapi.tiangolo.com/",
-     "publisher": "FastAPI",
-     "kind": "docs",
-     "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+      "id": "in-market",
+      "kind": "extra",
+      "heading": "⭐⭐ 시장에서 — 1007건, Django 의 2.3배",
+      "confidence": "inferred",
+      "body": "⚠️ **`market` 이 없다** — 기술 태그 목록에 없다.\n\n⭐ **셈**(2026-09-06).\n\n| 낱말 | 건수 | 모집중 | |\n|---|---|---|---|\n| ⭐⭐⭐ **`FastAPI`** | **1007** | 302 | 이 문서 |\n| ⭐⭐ `Express\\|NestJS` | 475 | 168 | 다른 언어의 같은 자리 |\n| ⭐⭐ `Django` | **440** | 129 | ⚠️ **다 주는 쪽** |\n| ⭐ `Flask` | **233** | 66 | 앞 세대 |\n| ⚠️ `Pydantic` | **51** | 15 | ⭐ **이것을 떠받치는 것** |\n\n💡 ⭐⭐⭐ **`FastAPI` 1007 : `Django` 440 : `Flask` 233 — 2.3배 · 1.9배의 계단이다.** 📌 ⭐ **파이썬 웹 프레임워크의 세대가 셈으로 보인다** — **`Kotlin`/`Android` 81%(이미 갈아탔다)·`Swift`:`SwiftUI` 4.8배(갈아타는 중)의 자로 재면 여기는 \\\"이미 갈아탔다\\\"**이다.\n\n⚠️⚠️ **`FastAPI` 1007 : `Pydantic` 51 — 20배다.** 💡 **이 프레임워크의 핵심 재료(타입으로 검증하는 라이브러리)를 20분의 1만 부른다.** ⭐ **`Elasticsearch` 485 : `Lucene` 5(97배)·`OPA` 24 : `Rego` 5(4.8배)와 같은 무늬** — **도구는 부르고 그 속은 안 부른다.**\n\n⭐⭐ **`Express\\|NestJS` 475건이 `Django` 440건과 비슷하다** — 💡 **\\\"파이썬 API 서버\\\"와 \\\"노드 API 서버\\\"가 비슷한 크기로 요구된다**는 뜻으로 읽힌다(⚠️ 이 비교는 프레임워크 이름만 센 것이라 정확한 언어별 비교는 아니다).\n\n⚠️ **`FastAPI` 모집중 비율 30%** — **`Django` 29% · `Flask` 28% 와 거의 같다.** 📌 ⭐ **크기는 갈렸는데 최근 흐름은 셋이 같다** — 💡 **세대교체가 이미 끝나 안정된 상태**로 읽힌다.\n\n📌 ⭐ **어디에 얹혀 있나**: **ML·LLM 서빙**(→ `rag`·`sse`) · **데이터 팀의 내부 API** · **크롤러·수집기의 제어면**(→ `scraping`) · **마이크로서비스의 파이썬 조각**(→ `microservices`).\n\n⭐ **이 백과사전 안에서의 자리**: **언어는 `python`**, **실행 모델은 `asyncio`·`gil`**, **명세는 `openapi`·`contract-testing`**, **다 주는 쪽은 Django(문서 없음)**, **자바 쪽 대응은 `spring`**."
     }
-   ]
-  }
- ],
- "terms": [
-  {
-   "term": "ASGI",
-   "en": "Asynchronous Server Gateway Interface",
-   "what": "비동기 파이썬 웹 서버와 앱 사이의 규약. WSGI 의 비동기 판이고 Uvicorn·Starlette 이 이 위에 있다"
-  },
-  {
-   "term": "Starlette",
-   "en": "Starlette",
-   "what": "FastAPI 가 얹혀 있는 ASGI 웹 프레임워크. 라우팅·미들웨어·요청/응답 객체를 담당한다"
-  },
-  {
-   "term": "Uvicorn",
-   "en": "Uvicorn",
-   "what": "ASGI 서버. 실제로 소켓을 열고 요청을 받아 앱에 넘긴다"
-  },
-  {
-   "term": "pydantic",
-   "en": "pydantic",
-   "what": "타입 힌트를 런타임 검증·직렬화로 바꾸는 라이브러리. v1 과 v2 의 API 가 다르다"
-  },
-  {
-   "term": "경로 함수",
-   "en": "path operation function",
-   "what": "`@app.get(...)` 등이 붙은 핸들러 함수. `def`/`async def` 에 따라 실행 위치가 갈린다"
-  },
-  {
-   "term": "response_model",
-   "en": "response model",
-   "what": "응답의 모양을 선언하는 것. 여기 없는 필드는 응답에서 빠진다"
-  },
-  {
-   "term": "Depends",
-   "en": "dependency injection",
-   "what": "공통 로직을 함수로 빼 주입하는 장치. 테스트에서 override 로 갈아 끼운다"
-  },
-  {
-   "term": "422",
-   "en": "Unprocessable Entity",
-   "what": "검증 실패 응답. 본문에 어느 필드가 왜 틀렸는지가 들어 있다"
-  },
-  {
-   "term": "OpenAPI",
-   "en": "OpenAPI",
-   "what": "API 명세 형식. FastAPI 가 코드에서 자동 생성하고 `/docs` 화면이 그것을 그린다"
-  }
- ],
- "drills": [
-  {
-   "task": "**실행 위치를 측정으로 확인한다.** 엔드포인트 셋을 만든다 — ① `async def` + `await asyncio.sleep(1)` ② `def` + `time.sleep(1)` ③ `async def` + `time.sleep(1)`. 각각에 동시 요청 10개를 보내 총 시간을 재고, ③에서 무슨 일이 일어나는지 관찰한다",
-   "done_when": "①과 ②는 약 1초대, ③은 약 10초가 나오는 것을 확인하고 **왜 ③만 다른지** 이벤트 루프와 스레드풀로 설명할 수 있다",
-   "why": "이 문서에서 가장 비싼 사고를 20줄로 재현한다. 한 번 보면 `async def` 안에 동기 호출을 넣기 전에 손이 멈춘다",
-   "no_hardware": "장비가 필요 없다 — `uvicorn` 과 `curl`/`httpx` 로 로컬에서 끝난다",
-   "hours": 2
-  },
-  {
-   "task": "**검증의 경계를 표로 만든다.** 주문 API 하나를 정하고 ① pydantic 이 막아 주는 것(타입·필수·범위·형식) ② 내 코드가 막아야 하는 것(존재 여부·재고·권한·중복)을 나눠 적고, 각각에 어떤 상태 코드로 응답할지 정한다. 그다음 실제로 잘못된 요청 다섯 가지를 보내 응답을 확인한다",
-   "done_when": "422 로 걸러지는 것과 404·409·403 으로 내가 응답해야 하는 것을 구분해 표로 설명할 수 있다",
-   "why": "'검증했으니 안전하다'는 착각이 여기서 깨진다. API 설계 리뷰에서 그대로 쓰는 표다",
-   "no_hardware": "장비가 필요 없다 — 로컬 서버와 `curl` 이면 된다",
-   "hours": 2
-  },
-  {
-   "task": "**의존성을 테스트에서 갈아 끼운다.** DB 세션 의존성을 `yield` 로 만들고, 테스트에서 `app.dependency_overrides` 로 가짜 구현으로 바꿔 **DB 없이 엔드포인트 테스트가 통과**하게 만든다. 그다음 핸들러에서 일부러 예외를 던져 `finally` 의 정리 코드가 실행되는지 확인한다",
-   "done_when": "인프라 없이 도는 테스트가 하나 생겼고, 예외가 나도 세션이 닫히는 것을 로그로 보여 줄 수 있다",
-   "why": "의존성 주입을 쓰는 실질적 이유가 이 두 가지(테스트 대체·정리 보장)다. 코드가 아니라 구조의 이득이라 직접 해 봐야 체감된다",
-   "no_hardware": "장비가 필요 없다 — `pytest` 와 `TestClient` 면 된다",
-   "hours": 2
-  }
- ],
- "checks": [
-  "`def` 와 `async def` 로 선언한 경로 함수는 각각 어디서 실행되나?",
-  "`async def` 안에서 `requests.get()` 을 부르면 무슨 일이 생기나? 가장 간단한 해결책은?",
-  "모든 엔드포인트를 `def` 로 선언하면 어떤 상한이 생기나?",
-  "422 응답은 무엇을 뜻하나? 재고 부족은 422 인가 아닌가?",
-  "`response_model` 을 지정하지 않으면 무엇이 위험한가?",
-  "`Depends` 를 쓰면 테스트에서 무엇이 달라지나?"
- ],
- "evidence": [
-  {
-   "quote": "• Python 기반 프레임워크(Django, Flask, FastAPI)를 이용한 웹 애플리케이션 개발 및 API 개발 경험을 보유하신 분",
-   "from": "posting",
-   "where": "샐러드랩 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/365779",
-   "what_it_shows": "**셋을 나란히 적는다** — 이 문서가 비교표를 본체로 두는 이유다. 고를 줄 아는가를 묻는 문장이다"
-  },
-  {
-   "quote": "• FastAPI / Uvicorn 기반 비동기 웹 서버 개발 경험",
-   "from": "posting",
-   "where": "미켈로로보틱스 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/343902",
-   "what_it_shows": "**프레임워크와 서버를 함께 적는다.** 층 구분(Uvicorn/Starlette/FastAPI/pydantic)을 아는지가 실무에서 갈리는 지점이라는 증거"
-  },
-  {
-   "quote": "• Python 기반의 AI 연동 로직, 데이터 처리 또는 API 개발 경험이 있으신 분 (FastAPI 등 비동기 웹 프레임워크 경험 우대)",
-   "from": "posting",
-   "where": "누리미디어(DBpia) (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/376543",
-   "what_it_shows": "외부 모델 API 를 호출하는 일이 많아지면서 **대기를 겹치는 능력이 곧 처리량**이 됐다 — 비동기 프레임워크가 우대 조건이 되는 맥락"
-  },
-  {
-   "quote": "• Celery + Redis를 활용한 비동기 작업 큐 설계 및 운영",
-   "from": "posting",
-   "where": "드랩 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/370975",
-   "what_it_shows": "같은 회사가 `FastAPI 기반 API 서버 설계` 도 요구한다 — **FastAPI 로 받고 무거운 일은 워커로 뺀다**는 구성이 그대로 자격요건이다"
-  },
-  {
-   "quote": "• Backend: Java(Spring Boot) 또는 Python(FastAPI, Django 등) 프레임워크를 활용하여 확장성 있고 안정적인 RESTful API 서버 설계 및 구현이 가능하신 분",
-   "from": "posting",
-   "where": "아이알큐더스 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/369107",
-   "what_it_shows": "**한 자리를 Java 와 Python 이 나눠 갖는다** — `java` 문서의 동반 기술 숫자(Python 35.8%)가 문장으로 나타난 모습"
-  }
- ],
- "related": [
-  {
-   "slug": "python",
-   "how": "\"타입 힌트는 런타임 검사가 아니다\"라고 쓴 자리. 그 빈칸을 이 프레임워크가 메운다"
-  },
-  {
-   "slug": "asyncio",
-   "how": "이벤트 루프·블로킹 지뢰의 본체. `async def` 가 어디서 도는지가 거기 설명돼 있다"
-  },
-  {
-   "slug": "gil",
-   "how": "CPU 바운드를 워커 프로세스로 빼야 하는 이유. `BackgroundTasks` 로는 안 되는 근거"
-  },
-  {
-   "slug": "spring",
-   "how": "같은 자리를 두고 경쟁하는 반대편 스택. 공고가 `Java(Spring Boot) 또는 Python(FastAPI)` 로 묶는다"
-  },
-  {
-   "slug": "idempotency",
-   "how": "재시도가 있는 API 라면 검증 다음에 오는 문제. 같은 요청이 두 번 와도 안전한가"
-  }
- ],
- "open_questions": [
-  "스레드풀의 **기본 크기와 조정 방법**은 프레임워크·라이브러리 버전에 따라 달라 숫자를 적지 않았다. 이 문서는 '동시 처리 수가 스레드풀에 묶인다'는 사실과 그 결과만 썼다 — 실제 값이 필요하면 쓰는 버전의 문서와 설정을 확인해야 한다",
-  "pydantic v1 과 v2 의 차이는 대표적인 것 두 개(`orm_mode`→`from_attributes`, `.dict()`→`.model_dump()`)만 적었다. 전체 마이그레이션 목록은 pydantic 문서에 있고, **이 문서의 코드는 v2 표기를 전제로 읽는다**",
-  "Django 의 비동기 지원은 버전에 따라 계속 확장돼 왔다. 비교표에서는 '지원하지만 생태계가 섞여 있다'까지만 쓰고 **버전별 상태를 단정하지 않았다** — 정확한 비교는 그 시점의 Django 릴리스 노트를 봐야 한다",
-  "`market` 은 비어 있다. `tech_relations.json` 은 FastAPI 를 추적 기술로 세지 않는다 — 수요 숫자는 `python` 문서에 있고, 여기서는 모집중 공고 5건을 `evidence` 로 받쳤다"
- ],
- "sources": [
-  {
-   "title": "FastAPI 공식 문서",
-   "url": "https://fastapi.tiangolo.com/",
-   "publisher": "FastAPI",
-   "kind": "docs",
-   "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
-  },
-  {
-   "title": "FastAPI 공식 문서 — Concurrency and async / await",
-   "url": "https://fastapi.tiangolo.com/async/",
-   "publisher": "FastAPI",
-   "kind": "docs",
-   "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
-  },
-  {
-   "title": "Pydantic 공식 문서",
-   "url": "https://docs.pydantic.dev/latest/",
-   "publisher": "Pydantic",
-   "kind": "docs",
-   "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
-  },
-  {
-   "title": "ASGI (Asynchronous Server Gateway Interface) 사양",
-   "url": "https://asgi.readthedocs.io/en/latest/",
-   "publisher": "Django Software Foundation / ASGI",
-   "kind": "standard",
-   "summary": "비동기 파이썬 웹 서버와 애플리케이션 사이의 규약. Uvicorn(서버)과 Starlette·FastAPI(앱)가 이 규약으로 만난다"
-  }
- ]
+  ],
+  "tables": [
+    {
+      "id": "exec-table",
+      "kind": "spec",
+      "caption": "경로 함수와 의존성이 실행되는 곳",
+      "note": "FastAPI 공식 문서의 규정이다. **선언 방식이 곧 실행 위치**이므로, 쓰는 라이브러리가 비동기를 지원하는지에 따라 고른다",
+      "columns": [
+        "선언",
+        "어디서 실행",
+        "블로킹 호출을 하면",
+        "언제 고르나"
+      ],
+      "rows": [
+        [
+          "`async def`",
+          "**이벤트 루프** (한 스레드)",
+          "**서버 전체가 멈춘다**",
+          "쓰는 라이브러리가 전부 비동기일 때"
+        ],
+        [
+          "`def`",
+          "**스레드풀** (프레임워크가 옮긴다)",
+          "그 스레드만 막힌다",
+          "동기 라이브러리만 있을 때"
+        ],
+        [
+          "`async def` 의존성",
+          "이벤트 루프",
+          "같음 — 서버가 멈춘다",
+          "비동기 자원(비동기 DB 세션)"
+        ],
+        [
+          "`def` 의존성",
+          "스레드풀",
+          "그 스레드만",
+          "동기 DB 세션 등"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서 — Concurrency and async / await",
+          "url": "https://fastapi.tiangolo.com/async/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
+        }
+      ]
+    },
+    {
+      "id": "frameworks",
+      "kind": "compare",
+      "caption": "FastAPI · Django · Flask — 공고가 셋 중 하나를 고르라 한다",
+      "note": "무게와 포함 범위가 다르다. **어느 쪽이 낫다기보다 '무엇이 이미 필요한가'** 로 갈린다 — 관리자·ORM·인증이 필요하면 Django 가 이미 갖고 있고, API 서버만이면 그게 전부 짐이 된다",
+      "columns": [
+        "",
+        "FastAPI",
+        "Django",
+        "Flask"
+      ],
+      "rows": [
+        [
+          "기본 포함",
+          "검증·직렬화·자동 문서",
+          "**ORM·관리자·인증·마이그레이션까지**",
+          "라우팅·템플릿 (나머지는 직접)"
+        ],
+        [
+          "비동기",
+          "**전제** (ASGI)",
+          "지원하지만 생태계가 섞여 있다",
+          "제한적 (WSGI 전제)"
+        ],
+        [
+          "검증",
+          "**타입 힌트 + pydantic (내장)**",
+          "폼·시리얼라이저(DRF)",
+          "직접 붙인다"
+        ],
+        [
+          "API 문서",
+          "**자동 생성 (OpenAPI)**",
+          "DRF 등으로 별도",
+          "직접 붙인다"
+        ],
+        [
+          "어울리는 자리",
+          "API 서버·외부 호출 많은 서비스·ML 서빙",
+          "관리자 화면이 필요한 제품, 큰 도메인",
+          "작은 서비스·프로토타입"
+        ],
+        [
+          "짐이 되는 때",
+          "관리자·ORM 을 직접 골라야 한다",
+          "API 만 필요할 때 무겁다",
+          "규모가 커지면 직접 붙인 것이 늘어난다"
+        ]
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        }
+      ]
+    },
+    {
+      "id": "params",
+      "kind": "spec",
+      "caption": "파라미터가 어디서 오는지 — 시그니처로 결정된다",
+      "note": "모호하면 `Query(...)`·`Path(...)`·`Body(...)`·`Header(...)` 로 명시한다. **명시하면 그 규칙이 문서에도 그대로 반영**된다",
+      "columns": [
+        "선언",
+        "어디서 읽나",
+        "예"
+      ],
+      "rows": [
+        [
+          "경로에 같은 이름이 있다",
+          "**경로 파라미터**",
+          "`@app.get(\"/items/{id}\")` + `def f(id: int)`"
+        ],
+        [
+          "단순 타입(int·str·bool)이고 경로에 없다",
+          "**쿼리 파라미터**",
+          "`/items?limit=10` + `def f(limit: int = 10)`"
+        ],
+        [
+          "pydantic 모델이다",
+          "**요청 본문(JSON)**",
+          "`def f(order: Order)`"
+        ],
+        [
+          "`Header()`·`Cookie()` 로 선언",
+          "헤더·쿠키",
+          "`def f(x_token: str = Header())`"
+        ],
+        [
+          "기본값이 없다",
+          "**필수** — 없으면 422",
+          "`def f(q: str)`"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        }
+      ]
+    },
+    {
+      "id": "symptoms",
+      "kind": "glossary",
+      "caption": "증상 → 먼저 의심할 것",
+      "note": "FastAPI 의 실패는 대개 조용하다 — 서버가 죽지 않고 느려지거나, 검증이 막아 준 것을 버그로 오해한다",
+      "columns": [
+        "증상",
+        "먼저 의심할 것",
+        "확인·조치"
+      ],
+      "rows": [
+        [
+          "요청 하나가 처리되는 동안 전체가 멈춘다",
+          "**`async def` 안의 블로킹 호출**",
+          "그 엔드포인트를 `def` 로 바꾸거나 비동기 라이브러리로 교체 (→ `asyncio`)"
+        ],
+        [
+          "동시 요청이 어느 선을 넘으면 줄을 선다",
+          "**전부 `def` 라 스레드풀이 상한**",
+          "비동기 라이브러리가 있는 곳부터 `async def` 로 옮긴다"
+        ],
+        [
+          "계속 422 가 나온다",
+          "요청 형식 불일치 — **검증이 정상 동작한 것**",
+          "응답 본문의 `loc`·`msg` 를 읽는다. 어느 필드가 왜 틀렸는지 적혀 있다"
+        ],
+        [
+          "응답에 내부 필드가 노출됐다",
+          "**`response_model` 미지정**",
+          "응답 모델을 선언한다 — 거기 없는 필드는 빠진다"
+        ],
+        [
+          "예제 코드가 동작하지 않는다",
+          "**pydantic v1/v2 차이**",
+          "`orm_mode`↔`from_attributes`, `.dict()`↔`.model_dump()` 등 버전 확인"
+        ],
+        [
+          "DB 커넥션이 계속 늘어난다",
+          "의존성에서 세션을 안 닫았다",
+          "`yield` 의존성의 `finally` 에서 닫는다"
+        ]
+      ]
+    },
+    {
+      "id": "layers",
+      "kind": "compare",
+      "caption": "층 구분 — 문제가 어디서 났나",
+      "note": "FastAPI 는 조립품이라 **문제의 층을 먼저 가려야** 검색어가 정해진다. '왜 안 되지'를 검색하기 전에 이 표에서 층부터 고른다",
+      "columns": [
+        "층",
+        "무엇",
+        "이 층의 증상"
+      ],
+      "rows": [
+        [
+          "Uvicorn / ASGI",
+          "서버·프로토콜 (→ ASGI 사양)",
+          "연결 자체가 안 된다, 워커·타임아웃·프록시 설정"
+        ],
+        [
+          "Starlette",
+          "라우팅·미들웨어·요청/응답 객체",
+          "미들웨어 순서, CORS, 스트리밍 응답"
+        ],
+        [
+          "FastAPI",
+          "타입 기반 계층 — 파라미터 해석·의존성·문서",
+          "파라미터가 엉뚱한 곳에서 읽힌다, `Depends` 동작"
+        ],
+        [
+          "pydantic",
+          "검증·직렬화",
+          "**422**, 타입 변환, v1/v2 차이"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        },
+        {
+          "title": "ASGI (Asynchronous Server Gateway Interface) 사양",
+          "url": "https://asgi.readthedocs.io/en/latest/",
+          "publisher": "Django Software Foundation / ASGI",
+          "kind": "standard",
+          "summary": "비동기 파이썬 웹 서버와 애플리케이션 사이의 규약. Uvicorn(서버)과 Starlette·FastAPI(앱)가 이 규약으로 만난다"
+        },
+        {
+          "title": "Pydantic 공식 문서",
+          "url": "https://docs.pydantic.dev/latest/",
+          "publisher": "Pydantic",
+          "kind": "docs",
+          "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+        }
+      ]
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "외부 API·DB 호출이 많은 API 서버를 새로 만든다",
+      "pick": "FastAPI",
+      "over": "Flask",
+      "why": "검증·직렬화·자동 문서가 타입 힌트만으로 따라오고, ASGI 라 비동기가 전제다. Flask 로 같은 것을 만들면 검증·문서화 라이브러리를 직접 골라 붙이고 그 조합을 유지해야 한다",
+      "tradeoff": "관리자·ORM·인증이 없어 직접 고른다. 생태계 두께는 Django 쪽이 앞선다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        }
+      ]
+    },
+    {
+      "situation": "관리자 화면·ORM·인증이 처음부터 필요하다 (사내 시스템, 커머스 백오피스)",
+      "pick": "Django",
+      "over": "FastAPI",
+      "why": "이미 들어 있는 것을 다시 만들 이유가 없다. 관리자만으로도 초기 운영 도구가 해결되는 제품이 많다",
+      "tradeoff": "API 만 필요하면 무겁고, 비동기 생태계가 섞여 있어 고성능 비동기 서비스에는 손이 더 간다"
+    },
+    {
+      "situation": "쓰려는 라이브러리가 동기(블로킹)뿐이다 (동기 DB 드라이버, `requests`)",
+      "pick": "그 엔드포인트를 **`def` 로 선언**",
+      "over": "`async def` 안에서 그냥 호출하기",
+      "why": "`def` 로 선언하면 프레임워크가 **스레드풀로 옮겨** 실행한다. `async def` 안에서 블로킹하면 이벤트 루프가 멈춰 서버 전체가 선다",
+      "tradeoff": "동시 처리 수가 스레드풀 크기에 묶인다. 비동기 라이브러리로 옮길 수 있으면 그쪽이 낫다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서 — Concurrency and async / await",
+          "url": "https://fastapi.tiangolo.com/async/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
+        }
+      ]
+    },
+    {
+      "situation": "응답을 보낸 뒤 무거운 작업을 돌려야 한다 (이미지 변환, 리포트 생성)",
+      "pick": "Celery·RQ 같은 **작업 큐 + 별도 워커 프로세스**",
+      "over": "`BackgroundTasks`",
+      "why": "`BackgroundTasks` 는 같은 프로세스에서 함수를 하나 더 도는 것이라 **프로세스가 죽으면 작업도 사라지고**, CPU 작업이면 GIL 때문에 서버 응답까지 느려진다(→ `gil`)",
+      "tradeoff": "브로커(Redis 등)와 워커 운영이 늘어난다. 메일 발송처럼 가볍고 유실돼도 되는 일에는 `BackgroundTasks` 로 충분하다"
+    },
+    {
+      "situation": "외부에서 들어오는 데이터의 형태를 보장해야 한다",
+      "pick": "pydantic 모델로 선언 + `response_model` 지정",
+      "over": "핸들러 안에서 `dict` 를 직접 검사하기",
+      "why": "검증이 **경계에서 한 번에** 끝나고, 실패 응답 형식이 일관되며, 같은 선언이 문서까지 만든다. 응답 모델은 내부 필드가 새는 것을 막는 마지막 방어선이다",
+      "tradeoff": "모델 클래스가 늘고, 내부 함수끼리 주고받는 값까지 전부 감쌀 필요는 없다(→ `python` 의 dataclass 절)",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Pydantic 공식 문서",
+          "url": "https://docs.pydantic.dev/latest/",
+          "publisher": "Pydantic",
+          "kind": "docs",
+          "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+        },
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        }
+      ]
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "요청 하나가 처리되는 동안 다른 요청이 전부 멈춘다",
+      "why": "**`async def` 안에서 블로킹 호출**을 했다. 프레임워크는 `async def` 를 이벤트 루프에서 직접 실행하므로, `time.sleep`·`requests`·동기 DB 호출 한 줄이 서버 전체를 세운다",
+      "fix": "그 엔드포인트를 **`def` 로 바꾸면** 프레임워크가 스레드풀로 옮겨 준다. 또는 비동기 라이브러리(`httpx`·비동기 드라이버)로 교체한다",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서 — Concurrency and async / await",
+          "url": "https://fastapi.tiangolo.com/async/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
+        }
+      ]
+    },
+    {
+      "trap": "동시 요청이 일정 수를 넘으면 응답이 밀리기 시작한다",
+      "why": "**모든 엔드포인트를 `def` 로 선언**해 동시 처리 수가 스레드풀 크기에 묶였다. 안전해 보이는 선택이 상한을 만든 것이다",
+      "fix": "비동기 라이브러리를 쓸 수 있는 엔드포인트부터 `async def` 로 옮긴다. 남는 동기 작업은 워커 프로세스로 빼는 것도 방법이다",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서 — Concurrency and async / await",
+          "url": "https://fastapi.tiangolo.com/async/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
+        }
+      ]
+    },
+    {
+      "trap": "응답에 비밀번호 해시나 내부 필드가 그대로 나갔다",
+      "why": "**`response_model` 을 지정하지 않았다.** 지정하지 않으면 핸들러가 반환한 객체가 그대로 직렬화된다",
+      "fix": "출력 전용 모델을 만들어 `response_model` 에 건다. 거기 없는 필드는 응답에서 빠진다 — 이게 마지막 방어선이다",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        }
+      ]
+    },
+    {
+      "trap": "422 가 계속 나는데 원인을 모르겠다",
+      "why": "**응답 본문을 안 읽었다.** 422 본문에는 어느 위치(`loc`)의 어떤 값이 왜(`msg`) 틀렸는지가 구조화돼 들어 있다",
+      "fix": "응답 JSON 을 그대로 로그에 찍어 본다. 그리고 422 는 **검증이 정상 동작한 것**이지 서버 버그가 아니다 — 비즈니스 규칙 위반이라면 404·409 로 내가 따로 응답해야 한다",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        },
+        {
+          "title": "Pydantic 공식 문서",
+          "url": "https://docs.pydantic.dev/latest/",
+          "publisher": "Pydantic",
+          "kind": "docs",
+          "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+        }
+      ]
+    },
+    {
+      "trap": "인터넷 예제를 붙였는데 `orm_mode` 나 `.dict()` 가 없다고 한다",
+      "why": "**pydantic v1 과 v2 의 API 차이다.** v2 에서 `orm_mode` → `from_attributes`, `.dict()` → `.model_dump()` 등으로 바뀌었다",
+      "fix": "쓰는 pydantic 버전을 확인하고 예제의 버전을 맞춘다. 마이그레이션 안내가 pydantic 문서에 있다",
+      "sources": [
+        {
+          "title": "Pydantic 공식 문서",
+          "url": "https://docs.pydantic.dev/latest/",
+          "publisher": "Pydantic",
+          "kind": "docs",
+          "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+        }
+      ]
+    },
+    {
+      "trap": "부하가 조금만 늘어도 DB 커넥션이 고갈된다",
+      "why": "의존성에서 만든 **세션을 닫지 않았다.** 예외가 나면 정리 코드를 건너뛰는 구조였을 수도 있다",
+      "fix": "`yield` 의존성으로 만들고 `finally` 에서 닫는다 — 핸들러가 예외를 던져도 정리가 보장된다. 커넥션 풀 크기와 워커 수의 곱이 DB 상한을 넘지 않는지도 함께 본다",
+      "sources": [
+        {
+          "title": "FastAPI 공식 문서",
+          "url": "https://fastapi.tiangolo.com/",
+          "publisher": "FastAPI",
+          "kind": "docs",
+          "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "ASGI",
+      "en": "Asynchronous Server Gateway Interface",
+      "what": "비동기 파이썬 웹 서버와 앱 사이의 규약. WSGI 의 비동기 판이고 Uvicorn·Starlette 이 이 위에 있다"
+    },
+    {
+      "term": "Starlette",
+      "en": "Starlette",
+      "what": "FastAPI 가 얹혀 있는 ASGI 웹 프레임워크. 라우팅·미들웨어·요청/응답 객체를 담당한다"
+    },
+    {
+      "term": "Uvicorn",
+      "en": "Uvicorn",
+      "what": "ASGI 서버. 실제로 소켓을 열고 요청을 받아 앱에 넘긴다"
+    },
+    {
+      "term": "pydantic",
+      "en": "pydantic",
+      "what": "타입 힌트를 런타임 검증·직렬화로 바꾸는 라이브러리. v1 과 v2 의 API 가 다르다"
+    },
+    {
+      "term": "경로 함수",
+      "en": "path operation function",
+      "what": "`@app.get(...)` 등이 붙은 핸들러 함수. `def`/`async def` 에 따라 실행 위치가 갈린다"
+    },
+    {
+      "term": "response_model",
+      "en": "response model",
+      "what": "응답의 모양을 선언하는 것. 여기 없는 필드는 응답에서 빠진다"
+    },
+    {
+      "term": "Depends",
+      "en": "dependency injection",
+      "what": "공통 로직을 함수로 빼 주입하는 장치. 테스트에서 override 로 갈아 끼운다"
+    },
+    {
+      "term": "422",
+      "en": "Unprocessable Entity",
+      "what": "검증 실패 응답. 본문에 어느 필드가 왜 틀렸는지가 들어 있다"
+    },
+    {
+      "term": "OpenAPI",
+      "en": "OpenAPI",
+      "what": "API 명세 형식. FastAPI 가 코드에서 자동 생성하고 `/docs` 화면이 그것을 그린다"
+    }
+  ],
+  "drills": [
+    {
+      "task": "**실행 위치를 측정으로 확인한다.** 엔드포인트 셋을 만든다 — ① `async def` + `await asyncio.sleep(1)` ② `def` + `time.sleep(1)` ③ `async def` + `time.sleep(1)`. 각각에 동시 요청 10개를 보내 총 시간을 재고, ③에서 무슨 일이 일어나는지 관찰한다",
+      "done_when": "①과 ②는 약 1초대, ③은 약 10초가 나오는 것을 확인하고 **왜 ③만 다른지** 이벤트 루프와 스레드풀로 설명할 수 있다",
+      "why": "이 문서에서 가장 비싼 사고를 20줄로 재현한다. 한 번 보면 `async def` 안에 동기 호출을 넣기 전에 손이 멈춘다",
+      "no_hardware": "장비가 필요 없다 — `uvicorn` 과 `curl`/`httpx` 로 로컬에서 끝난다",
+      "hours": 2
+    },
+    {
+      "task": "**검증의 경계를 표로 만든다.** 주문 API 하나를 정하고 ① pydantic 이 막아 주는 것(타입·필수·범위·형식) ② 내 코드가 막아야 하는 것(존재 여부·재고·권한·중복)을 나눠 적고, 각각에 어떤 상태 코드로 응답할지 정한다. 그다음 실제로 잘못된 요청 다섯 가지를 보내 응답을 확인한다",
+      "done_when": "422 로 걸러지는 것과 404·409·403 으로 내가 응답해야 하는 것을 구분해 표로 설명할 수 있다",
+      "why": "'검증했으니 안전하다'는 착각이 여기서 깨진다. API 설계 리뷰에서 그대로 쓰는 표다",
+      "no_hardware": "장비가 필요 없다 — 로컬 서버와 `curl` 이면 된다",
+      "hours": 2
+    },
+    {
+      "task": "**의존성을 테스트에서 갈아 끼운다.** DB 세션 의존성을 `yield` 로 만들고, 테스트에서 `app.dependency_overrides` 로 가짜 구현으로 바꿔 **DB 없이 엔드포인트 테스트가 통과**하게 만든다. 그다음 핸들러에서 일부러 예외를 던져 `finally` 의 정리 코드가 실행되는지 확인한다",
+      "done_when": "인프라 없이 도는 테스트가 하나 생겼고, 예외가 나도 세션이 닫히는 것을 로그로 보여 줄 수 있다",
+      "why": "의존성 주입을 쓰는 실질적 이유가 이 두 가지(테스트 대체·정리 보장)다. 코드가 아니라 구조의 이득이라 직접 해 봐야 체감된다",
+      "no_hardware": "장비가 필요 없다 — `pytest` 와 `TestClient` 면 된다",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "`def` 와 `async def` 로 선언한 경로 함수는 각각 어디서 실행되나?",
+    "`async def` 안에서 `requests.get()` 을 부르면 무슨 일이 생기나? 가장 간단한 해결책은?",
+    "모든 엔드포인트를 `def` 로 선언하면 어떤 상한이 생기나?",
+    "422 응답은 무엇을 뜻하나? 재고 부족은 422 인가 아닌가?",
+    "`response_model` 을 지정하지 않으면 무엇이 위험한가?",
+    "`Depends` 를 쓰면 테스트에서 무엇이 달라지나?"
+  ],
+  "evidence": [
+    {
+      "quote": "• Python 기반 프레임워크(Django, Flask, FastAPI)를 이용한 웹 애플리케이션 개발 및 API 개발 경험을 보유하신 분",
+      "from": "posting",
+      "where": "샐러드랩 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/365779",
+      "what_it_shows": "**셋을 나란히 적는다** — 이 문서가 비교표를 본체로 두는 이유다. 고를 줄 아는가를 묻는 문장이다"
+    },
+    {
+      "quote": "• FastAPI / Uvicorn 기반 비동기 웹 서버 개발 경험",
+      "from": "posting",
+      "where": "미켈로로보틱스 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/343902",
+      "what_it_shows": "**프레임워크와 서버를 함께 적는다.** 층 구분(Uvicorn/Starlette/FastAPI/pydantic)을 아는지가 실무에서 갈리는 지점이라는 증거"
+    },
+    {
+      "quote": "• Python 기반의 AI 연동 로직, 데이터 처리 또는 API 개발 경험이 있으신 분 (FastAPI 등 비동기 웹 프레임워크 경험 우대)",
+      "from": "posting",
+      "where": "누리미디어(DBpia) (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/376543",
+      "what_it_shows": "외부 모델 API 를 호출하는 일이 많아지면서 **대기를 겹치는 능력이 곧 처리량**이 됐다 — 비동기 프레임워크가 우대 조건이 되는 맥락"
+    },
+    {
+      "quote": "• Celery + Redis를 활용한 비동기 작업 큐 설계 및 운영",
+      "from": "posting",
+      "where": "드랩 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/370975",
+      "what_it_shows": "같은 회사가 `FastAPI 기반 API 서버 설계` 도 요구한다 — **FastAPI 로 받고 무거운 일은 워커로 뺀다**는 구성이 그대로 자격요건이다"
+    },
+    {
+      "quote": "• Backend: Java(Spring Boot) 또는 Python(FastAPI, Django 등) 프레임워크를 활용하여 확장성 있고 안정적인 RESTful API 서버 설계 및 구현이 가능하신 분",
+      "from": "posting",
+      "where": "아이알큐더스 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/369107",
+      "what_it_shows": "**한 자리를 Java 와 Python 이 나눠 갖는다** — `java` 문서의 동반 기술 숫자(Python 35.8%)가 문장으로 나타난 모습"
+    }
+  ],
+  "related": [
+    {
+      "slug": "python",
+      "how": "\"타입 힌트는 런타임 검사가 아니다\"라고 쓴 자리. 그 빈칸을 이 프레임워크가 메운다"
+    },
+    {
+      "slug": "asyncio",
+      "how": "이벤트 루프·블로킹 지뢰의 본체. `async def` 가 어디서 도는지가 거기 설명돼 있다"
+    },
+    {
+      "slug": "gil",
+      "how": "CPU 바운드를 워커 프로세스로 빼야 하는 이유. `BackgroundTasks` 로는 안 되는 근거"
+    },
+    {
+      "slug": "spring",
+      "how": "같은 자리를 두고 경쟁하는 반대편 스택. 공고가 `Java(Spring Boot) 또는 Python(FastAPI)` 로 묶는다"
+    },
+    {
+      "slug": "idempotency",
+      "how": "재시도가 있는 API 라면 검증 다음에 오는 문제. 같은 요청이 두 번 와도 안전한가"
+    }
+  ],
+  "open_questions": [
+    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `limits` 에 표를 덧붙이고 **시장에서** 절(`in-market`)을 새로 만들었다. ⭐⭐⭐ **`FastAPI` 1007 : `Django` 440 : `Flask` 233 — 2.3배·1.9배의 계단**이다. **새 것이 옛 것을 넘었으므로 \\\"이미 갈아탔다\\\"** 쪽이고, ⭐ **모집중 비율은 셋 다 28~30% 로 같아 세대교체가 이미 끝나 안정된 상태**로 읽힌다. ⚠️⚠️ **`FastAPI` 1007 : `Pydantic` 51(20배)** — **이 프레임워크의 핵심 재료를 20분의 1만 부른다.** ⭐ **`gil`·`asyncio`·`fastapi` 셋은 함께 읽어야 한다** — `async def` 안의 동기 호출이 서버 전체를 멎게 하는 것이 가장 흔한 사고다.",
+    "스레드풀의 **기본 크기와 조정 방법**은 프레임워크·라이브러리 버전에 따라 달라 숫자를 적지 않았다. 이 문서는 '동시 처리 수가 스레드풀에 묶인다'는 사실과 그 결과만 썼다 — 실제 값이 필요하면 쓰는 버전의 문서와 설정을 확인해야 한다",
+    "pydantic v1 과 v2 의 차이는 대표적인 것 두 개(`orm_mode`→`from_attributes`, `.dict()`→`.model_dump()`)만 적었다. 전체 마이그레이션 목록은 pydantic 문서에 있고, **이 문서의 코드는 v2 표기를 전제로 읽는다**",
+    "Django 의 비동기 지원은 버전에 따라 계속 확장돼 왔다. 비교표에서는 '지원하지만 생태계가 섞여 있다'까지만 쓰고 **버전별 상태를 단정하지 않았다** — 정확한 비교는 그 시점의 Django 릴리스 노트를 봐야 한다",
+    "`market` 은 비어 있다. `tech_relations.json` 은 FastAPI 를 추적 기술로 세지 않는다 — 수요 숫자는 `python` 문서에 있고, 여기서는 모집중 공고 5건을 `evidence` 로 받쳤다"
+  ],
+  "sources": [
+    {
+      "title": "FastAPI 공식 문서",
+      "url": "https://fastapi.tiangolo.com/",
+      "publisher": "FastAPI",
+      "kind": "docs",
+      "summary": "타입 힌트로 검증·직렬화·자동 문서를 얻는다는 프레임워크의 전제와 튜토리얼"
+    },
+    {
+      "title": "FastAPI 공식 문서 — Concurrency and async / await",
+      "url": "https://fastapi.tiangolo.com/async/",
+      "publisher": "FastAPI",
+      "kind": "docs",
+      "summary": "`def` 로 선언한 경로 함수는 **외부 스레드풀에서 실행**되고 `async def` 는 이벤트 루프에서 직접 실행된다는 규정이 여기 있다. 이 문서의 4절이 전부 이 페이지에서 나왔다"
+    },
+    {
+      "title": "Pydantic 공식 문서",
+      "url": "https://docs.pydantic.dev/latest/",
+      "publisher": "Pydantic",
+      "kind": "docs",
+      "summary": "타입 힌트를 런타임 검증으로 바꾸는 라이브러리. v1 과 v2 의 API 차이도 여기서 확인한다"
+    },
+    {
+      "title": "ASGI (Asynchronous Server Gateway Interface) 사양",
+      "url": "https://asgi.readthedocs.io/en/latest/",
+      "publisher": "Django Software Foundation / ASGI",
+      "kind": "standard",
+      "summary": "비동기 파이썬 웹 서버와 애플리케이션 사이의 규약. Uvicorn(서버)과 Starlette·FastAPI(앱)가 이 규약으로 만난다"
+    }
+  ]
 }
