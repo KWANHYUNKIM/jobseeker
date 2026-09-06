@@ -1344,7 +1344,7 @@
         "행 필터",
         "열 마스크"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1402,7 +1402,7 @@
         "AWS DMS",
         "DMS"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1423,7 +1423,7 @@
         "FGA",
         "Fine-Grained Authorization"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
@@ -1623,7 +1623,7 @@
         "Common Criteria",
         "FIPS 140"
       ],
-      "sections": 5,
+      "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
     },
