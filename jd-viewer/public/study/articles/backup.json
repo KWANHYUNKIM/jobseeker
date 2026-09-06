@@ -1,0 +1,336 @@
+{
+  "slug": "backup",
+  "title": "백업과 복구",
+  "title_en": "Backup and Restore",
+  "aliases": [
+    "백업",
+    "Backup",
+    "복구",
+    "Restore",
+    "재해 복구",
+    "Disaster Recovery"
+  ],
+  "category": "infra",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "백업은 파일이 아니라 복구할 수 있는 상태다 — 복구해 보지 않은 백업은 아직 백업이 아니다.",
+  "summary": "복제는 하드웨어가 죽는 것을 막지만 사람이 지운 것은 못 막는다 — 지움도 함께 복제되기 때문이다. 그 자리를 메우려고 백업이 따로 있다. PostgreSQL 문서는 백업에 근본적으로 다른 세 가지 접근이 있다고 적고, 그중 연속 아카이빙은 기반 백업에 WAL 재생을 얹어 **임의 시점으로 되돌리는 것(PITR)** 을 가능하게 한다. 이 문서는 세 방식이 각각 무엇을 사고, 왜 \"백업했다\"와 \"복구된다\"가 다른 말인지, 그리고 그 차이를 메우는 것이 기술이 아니라 **연습과 목표 숫자(RTO·RPO)** 라는 것을 다룬다.",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "confidence": "confirmed",
+      "heading": "⭐⭐ 무엇인가 — 세 가지 방식, 그리고 각자 무엇을 산다",
+      "body": "⭐⭐⭐ **PostgreSQL 문서는 백업에 \\\"근본적으로 다른\\\" 세 가지 접근이 있다고 적는다.**\n\n> *\"There are three fundamentally different approaches to backing up PostgreSQL data: SQL dump / File system level backup / Continuous archiving\"*\n\n⭐ **셋은 좋고 나쁨이 아니라 무엇을 사느냐가 다르다.**\n\n| 방식 | 무엇을 만드나 | ⭐ 사는 것 | ⚠️ 내는 것 |\n|---|---|---|---|\n| **SQL 덤프** | 다시 실행하면 같은 DB 가 되는 SQL 문 | **어디로든 옮길 수 있다**(버전·기종을 넘는다) | 큰 DB 에서 느리고, **뜬 순간의 스냅샷**이라 그 뒤는 없다 |\n| **파일 시스템 백업** | 데이터 디렉터리 통째 복사 | **빠르다** | ⚠️ **DB 를 멈추거나 정합성 있는 스냅샷이 필요**하고, **되살릴 곳이 같은 버전이어야 한다** |\n| ⭐⭐ **연속 아카이빙** | 기반 백업 + 그 뒤의 WAL 전부 | ⭐⭐⭐ **임의 시점으로 되돌리기(PITR)** | ⚠️ **저장 공간과 운영 부담이 가장 크다** |\n\n⭐⭐⭐ **셋째가 이 문서에서 가장 중요한 이유는 시간 축을 얻기 때문이다.** 문서의 말 그대로:\n\n> *\"It is not necessary to replay the WAL entries all the way to the end. We could stop the replay at any point and have a consistent snapshot of the database as it was at that time. Thus, this technique supports point-in-time recovery: it is possible to restore the database to its state at any time since your base backup was taken.\"*\n\n💡 ⭐ **앞의 두 방식은 \\\"어제 밤 12시\\\"로만 돌아갈 수 있지만, 이 방식은 \\\"오늘 오후 2시 47분, 그 DELETE 를 날리기 직전\\\"으로 돌아갈 수 있다.** 📌 **사고는 정각에 나지 않는다** — **그래서 이 차이가 실제로 중요하다.**\n\n⚠️ **그리고 같은 재료로 웜 스탠바이도 만들어진다** — > *\"If we continuously feed the series of WAL files to another machine that has been loaded with the same base backup file, we have a warm standby system\"*\n\n⭐ **여기서 백업과 `replication` 이 만난다** — 📌 **재료는 같고 목적이 다르다**(→ 다음 절).",
+      "sources": [
+        {
+          "title": "PostgreSQL 문서 — Chapter 25. Backup and Restore",
+          "url": "https://www.postgresql.org/docs/current/backup.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "백업의 세 가지 근본적으로 다른 접근(\"There are three fundamentally different approaches to backing up PostgreSQL data: SQL dump / File system level backup / Continuous archiving\")과 각각 장단이 있다는 서술. ⚠️ 이 장 도입부에는 \"복구를 연습하라\"는 경고가 없다."
+        },
+        {
+          "title": "PostgreSQL 문서 — 25.3. Continuous Archiving and Point-in-Time Recovery (PITR)",
+          "url": "https://www.postgresql.org/docs/current/continuous-archiving.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "기반 백업 + WAL 재생으로 임의 시점까지 되돌릴 수 있다는 정의, 웜 스탠바이, 그리고 운영 부담 — archive_command 실패 시 pg_wal/ 이 계속 차고 그 파일 시스템이 가득 차면 PANIC 종료된다는 경고, 아카이빙이 밀리면 유실량이 늘어난다는 경고, 백업 시작 시점까지 이어지는 연속된 WAL 이 필요하다는 요구."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "confidence": "inferred",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 복제가 못 막는 것에서",
+      "body": "⭐⭐⭐ **복제(`replication`)와 백업은 재료가 비슷한데 막는 것이 완전히 다르다.**\n\n| | ⭐ 무엇을 막나 | ⚠️ 못 막는 것 |\n|---|---|---|\n| **복제** | **하드웨어·노드·데이터센터가 죽는 것** | ⚠️⚠️ **사람이 지운 것 · 잘못된 데이터** |\n| **백업** | **사람의 실수 · 논리적 손상 · 악의** | 즉시성(복구에는 시간이 걸린다) |\n\n⭐⭐⭐ **이유는 한 줄이다 — 복제는 지움도 복제한다.**\n💡 **`DELETE` 를 조건 없이 날리면 그 `DELETE` 가 복제본에도 그대로 흘러간다.** 📌 ⚠️ **`replication` 문서가 \\\"복제는 백업이 아니다\\\"라고 적은 자리가 정확히 여기**이고, ⭐ **`redis` 문서의 `wipe` 절(최악의 사고 — 복제본까지 함께 지워진다)도 같은 이야기**다.\n\n---\n\n⭐⭐ **그래서 백업이 막아야 하는 것은 세 가지로 갈린다.**\n\n| 무엇이 잘못되나 | 예 | ⭐ 필요한 성질 |\n|---|---|---|\n| ⭐⭐⭐ **사람의 실수** | 조건 없는 DELETE·잘못된 배포·스크립트 오작동 | ⭐ **시점 복구** — 사고 직전으로 |\n| ⭐⭐ **논리적 손상** | 버그가 데이터를 조금씩 망가뜨린다 | ⚠️ **언제부터인지 모른다** → 여러 시점의 백업 |\n| ⭐⭐⭐ **악의** | 랜섬웨어(**32건**)·내부자 | ⭐ **오프사이트·불변(immutable) 저장** — 백업까지 지워지면 끝이다 |\n\n⚠️⚠️ **셋째 줄이 최근에 성격을 바꿔 놓았다** — 💡 **랜섬웨어는 백업을 먼저 찾아 지운다.** ⭐ **그래서 \\\"백업이 있다\\\"만으로는 부족하고 \\\"백업을 지울 수 없다\\\"가 요구된다** — 📌 **`audit-log` 의 무결성 요구(고칠 수 있으면 증거가 아니다)와 같은 형태**다.",
+      "sources": []
+    },
+    {
+      "id": "restore",
+      "kind": "how",
+      "confidence": "inferred",
+      "heading": "⭐⭐⭐ \"백업했다\"와 \"복구된다\"는 다른 말이다",
+      "body": "⭐⭐⭐ **이 문서에서 가장 하고 싶은 말이 이것이다.**\n\n💡 **백업 작업이 성공했다는 로그는 \\\"파일이 만들어졌다\\\"만 말한다.** ⚠️ **그 파일로 실제로 서비스를 되살릴 수 있는지는 전혀 다른 질문**이고, 📌 ⭐ **해 보기 전에는 아무도 모른다.**\n\n⭐⭐ **복구가 실패하는 이유는 대개 백업 파일 자체가 아니다.**\n\n| 어디서 막히나 | ⚠️ 왜 |\n|---|---|\n| **복구할 서버가 없다** | 원본과 같은 사양·버전을 그 자리에서 못 만든다 |\n| **연속된 WAL 이 끊겼다** | 문서가 요구한다 — *\"you need a continuous sequence of archived WAL files that extends back at least as far as the start time of your backup\"* |\n| **아무도 절차를 모른다** | 문서가 없거나 낡았다 → `documentation`·`oncall` |\n| **시간이 예상의 몇 배** | 수백 GB 를 내려받고 재생하는 시간을 안 재 봤다 |\n| **부분 복구를 못 한다** | 표 하나만 되살리고 싶은데 방식이 전체 복구뿐 |\n| **권한·키가 없다** | 백업이 암호화돼 있는데 키 담당자가 없다 → `encryption`·`secrets` |\n\n⭐⭐⭐ **그래서 목표를 숫자로 적는다 — RTO 와 RPO.**\n\n| 낱말 | 무엇을 정하나 | ⭐ 무엇으로 줄이나 |\n|---|---|---|\n| **RTO**(Recovery Time Objective) | **얼마나 빨리** 되살릴 것인가 | 대기 서버·자동화·부분 복구 |\n| **RPO**(Recovery Point Objective) | **얼마나 잃어도** 되는가 | 백업 주기·WAL 아카이빙 간격 |\n\n💡 ⭐ **이 둘은 `slo` 와 같은 형태다** — **지킬 숫자를 먼저 정하고 그것으로 방식을 고른다.** ⚠️⚠️ **그런데 공고에서 `RTO`·`RPO` 는 각각 6건뿐**이다(→ `in-market` 절).\n\n⭐⭐ **그리고 이 문서가 요구하는 것은 하나다 — 복구를 정기적으로 해 본다.** **`복구 훈련\\|복구 테스트` 는 57건**으로, ⭐ **`백업` 315건의 5분의 1**이다. 📌 ⚠️ **PostgreSQL 문서의 백업 장 도입부에는 \\\"복구를 연습하라\\\"는 문장이 없다** — **이 절의 주장은 이 문서의 정리이지 원문 인용이 아니다.**",
+      "sources": [
+        {
+          "title": "PostgreSQL 문서 — 25.3. Continuous Archiving and Point-in-Time Recovery (PITR)",
+          "url": "https://www.postgresql.org/docs/current/continuous-archiving.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "기반 백업 + WAL 재생으로 임의 시점까지 되돌릴 수 있다는 정의, 웜 스탠바이, 그리고 운영 부담 — archive_command 실패 시 pg_wal/ 이 계속 차고 그 파일 시스템이 가득 차면 PANIC 종료된다는 경고, 아카이빙이 밀리면 유실량이 늘어난다는 경고, 백업 시작 시점까지 이어지는 연속된 WAL 이 필요하다는 요구."
+        }
+      ]
+    },
+    {
+      "id": "nextgen",
+      "kind": "limits",
+      "confidence": "confirmed",
+      "heading": "⭐⭐ 이 방식의 한계 — 그리고 그 한계에서 나온 것들",
+      "body": "⭐⭐⭐ **백업의 한계는 전부 \\\"따로 보관한다\\\"에서 나온다** — 💡 **따로 두니까 안전하고, 따로 두니까 늦고 비싸고 잊힌다.**\n\n| 한계 | ⚠️ 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **복구에 시간이 걸린다** | 옮기고 재생해야 한다 | ⭐ **웜 스탠바이**(문서의 그 구성) · **`replication`** — 💡 **재료가 같다** |\n| ⭐⭐⭐ **마지막 백업 이후는 잃는다** | 주기가 있다 | ⭐⭐ **연속 아카이빙 + PITR**(**시점 복구** 20건) |\n| ⭐⭐⭐ **아카이빙이 밀리면 유실이 는다** | 문서가 직접 경고한다 | ⭐ **아카이빙을 감시한다** → `observability` |\n| ⭐⭐⭐ **아카이빙이 막히면 원본이 멈춘다** | ⚠️⚠️ **`pg_wal/` 이 차면 PANIC 종료** | ⭐ **디스크 여유·알림** — 📌 **백업이 서비스를 죽이는 자리** |\n| ⭐⭐⭐ **저장 비용이 크다** | 기반 백업 + 계속 쌓이는 WAL | ⭐ **증분·차등(53건)·보존 기간(127건)·아카이빙(41건)** |\n| ⭐⭐⭐ **백업까지 지워질 수 있다** | 같은 계정·같은 망 | ⭐ **오프사이트·불변 저장·별도 권한** → `rbac`·`encryption` |\n| ⭐⭐⭐ **해 보지 않으면 있는지 모른다** | 성공 로그는 파일만 말한다 | ⭐ **복구 훈련(57건)·RTO/RPO** → `slo`·`oncall` |\n| ⭐⭐ **개인정보가 백업에도 남는다** | 지워도 사본에 있다 | ⚠️ **파기 요구의 사각지대** → `personal-data-law`·`encryption`(키 폐기) |\n\n⚠️⚠️ ⭐⭐⭐ **넷째 줄은 1차 자료에서 직접 가져온 것이라 특히 무겁다.** PostgreSQL 문서는 이렇게 적는다 —\n> *\"The pg_wal/ directory will continue to fill with WAL segment files until the situation is resolved. (If the file system containing pg_wal/ fills up, PostgreSQL will do a PANIC shutdown. No committed transactions will be lost, but the database will remain offline until you free some space.)\"*\n\n💡 ⭐ **백업을 켜 놓고 감시를 안 하면, 백업 때문에 DB 가 멈춘다.** 📌 **이 백과사전의 \\\"조용히 잘못되는 것\\\" 계열과 다르다** — ⚠️ **이건 시끄럽게 잘못된다.**\n\n⚠️ **일곱째 줄이 이 문서를 `dlq`·`lineage`·`audit-log` 옆에 놓는다** — **만들어만 두고 아무도 안 여는 것**이다. ⭐ **다만 저것들은 \\\"안 보면 몰라서\\\" 문제이고, 백업은 \\\"안 해 보면 없는 것과 같아서\\\" 문제**다.",
+      "sources": [
+        {
+          "title": "PostgreSQL 문서 — 25.3. Continuous Archiving and Point-in-Time Recovery (PITR)",
+          "url": "https://www.postgresql.org/docs/current/continuous-archiving.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "기반 백업 + WAL 재생으로 임의 시점까지 되돌릴 수 있다는 정의, 웜 스탠바이, 그리고 운영 부담 — archive_command 실패 시 pg_wal/ 이 계속 차고 그 파일 시스템이 가득 차면 PANIC 종료된다는 경고, 아카이빙이 밀리면 유실량이 늘어난다는 경고, 백업 시작 시점까지 이어지는 연속된 WAL 이 필요하다는 요구."
+        }
+      ]
+    },
+    {
+      "id": "in-market",
+      "kind": "extra",
+      "confidence": "inferred",
+      "heading": "⭐⭐ 시장에서 — 복구가 백업보다 크다",
+      "body": "⚠️ **`market` 이 없다** — 기술 태그 목록에 없는 낱말이다.\n\n⭐ **셈**(2026-09-06). ⚠️ **약어는 `(?<![A-Za-z])WORD(?![A-Za-z])` 로 셌다.**\n\n| 낱말 | 건수 | 모집중 | |\n|---|---|---|---|\n| ⭐⭐⭐ **`복구\\|Restore\\|Recovery`** | **512** | 249 | ⭐ **더 큰 쪽** |\n| ⭐⭐⭐ **`백업\\|Backup`** | **315** | 117 | 이 문서 |\n| ⭐⭐ `이중화\\|고가용성` | **304** | 132 | 다른 축 |\n| ⭐ `보존 기간\\|Retention` | **127** | 100 | ⚠️ 모집중 79% |\n| ⭐ `DR` | **105** | 51 | ⭐ 샘플 확인: **전부 재해 복구** |\n| ⭐ `복제\\|Replication` | 85 | 47 | 헷갈리는 이웃 |\n| ⚠️ `복구 훈련\\|복구 테스트` | **57** | 25 | ⭐⭐ **해 보는 일** |\n| ⚠️ `증분\\|차등 백업` | 53 | 46 | 방식 |\n| ⚠️ `재해 복구` | 43 | 16 | |\n| ⚠️ `아카이빙` | 41 | 13 | |\n| ⚠️ `스냅샷` | 33 | 25 | |\n| ⚠️ `랜섬웨어` | **32** | 14 | ⭐ 성격을 바꾼 것 |\n| ⚠️ `시점 복구\\|Point-in-Time` | **20** | 18 | ⭐ 가장 좋은 방식 |\n| ⚠️⚠️ `RTO` · `RPO` | **6** · **6** | 5 · 5 | ⭐⭐⭐ **목표 숫자** |\n| ⚠️⚠️ `BCP\\|업무 연속성` | 6 | 4 | |\n| ⚠️⚠️⚠️ **`PITR`**(약어) | **0** | 0 | ⭐ 한글로는 20건 |\n\n💡 ⭐⭐⭐ **`복구` 512 > `백업` 315 — 1.6배다.** ⚠️ **이 백과사전에서 드문 방향**이다 — **보통은 만드는 쪽의 이름이 크고 되살리는 쪽이 작다**(⭐ `정합성` 524 : `데이터 이관` 257 과 같은 \\\"어려움의 이름이 더 크다\\\" 무늬). 📌 ⚠️ **다만 `복구` 는 장애 복구·계정 복구 등 다른 뜻이 섞이므로 512 를 전부 이 문서의 것으로 쓰지 않는다.**\n\n⚠️⚠️ **`RTO` 6건 · `RPO` 6건이 이 문서에서 가장 뜻이 크다.** 💡 **\\\"얼마나 빨리\\\"와 \\\"얼마나 잃어도 되나\\\"를 숫자로 정하는 두 낱말이 각각 여섯 곳**이다. ⭐ **`slo` 와 같은 형태인데 `slo` 는 문서가 따로 있을 만큼 크고 이쪽은 6건**이다 — 📌 **서비스 지연에는 목표를 정하면서 복구에는 안 정한다**는 뜻으로 읽힌다(⚠️ 추론이다).\n\n⚠️ **`복구 훈련\\|복구 테스트` 57건은 `백업` 315건의 18%다.** 💡 **다섯 곳 중 한 곳만 \\\"해 본다\\\"고 적는다** — ⭐ **이 문서의 `restore` 절이 겨냥한 자리**다.\n\n⭐ **`보존 기간` 127건 중 모집중 100건(79%)** — 💡 **비율이 높다.** ⚠️ **다만 이 낱말은 `personal-data-law`(파기 기한)와 겹치므로 백업만의 수는 아니다.**\n\n⚠️ **`PITR` 약어는 0건인데 `시점 복구` 는 20건**이다 — 📌 ⭐ **`GC`:`가비지 컬렉션`(15배, 약어 쪽이 큼)과 정반대**로, **여기서는 우리말이 이긴다.**\n\n📌 ⭐ **어디에 얹혀 있나**: **DB 운영**(→ `postgres-mysql`·`redis`) · **클라우드 인프라**(→ `aws`·`iac`) · **금융·공공의 규제 요건**(→ `java-in-finance`·`security-certification`) · **보안 사고 대응**(→ `siem`·`oncall`).\n\n⭐ **이 백과사전 안에서의 자리**: **헷갈리는 이웃은 `replication`**(막는 것이 다르다), **목표 숫자는 `slo`**, **해 보는 일은 `oncall`**, **지워지지 않게는 `encryption`·`rbac`**, **감시는 `observability`**, **개인정보 사각지대는 `personal-data-law`**.",
+      "sources": []
+    }
+  ],
+  "tables": [],
+  "when_to_use": [
+    {
+      "situation": "사람이 실수로 데이터를 지우거나 잘못된 배포로 데이터가 망가질 수 있는 서비스",
+      "pick": "연속 아카이빙 + PITR(기반 백업 + WAL 보관)",
+      "over": "주기적인 SQL 덤프만 두기",
+      "why": "사고는 정각에 나지 않는다. 덤프만 있으면 마지막 덤프 시점까지만 돌아가지만, PITR 은 사고 직전으로 되돌릴 수 있다.",
+      "tradeoff": "저장 비용과 운영 부담이 가장 크고, 아카이빙이 막히면 원본 DB 가 PANIC 종료될 수 있어 감시가 필수다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "PostgreSQL 문서 — 25.3. Continuous Archiving and Point-in-Time Recovery (PITR)",
+          "url": "https://www.postgresql.org/docs/current/continuous-archiving.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "기반 백업 + WAL 재생으로 임의 시점까지 되돌릴 수 있다는 정의, 웜 스탠바이, 그리고 운영 부담 — archive_command 실패 시 pg_wal/ 이 계속 차고 그 파일 시스템이 가득 차면 PANIC 종료된다는 경고, 아카이빙이 밀리면 유실량이 늘어난다는 경고, 백업 시작 시점까지 이어지는 연속된 WAL 이 필요하다는 요구."
+        }
+      ]
+    },
+    {
+      "situation": "DB 를 다른 버전이나 다른 기종으로 옮겨야 할 때",
+      "pick": "SQL 덤프",
+      "over": "파일 시스템 백업",
+      "why": "파일 시스템 백업은 되살릴 곳이 같은 버전이어야 한다. 덤프는 SQL 이라 버전과 기종을 넘어간다.",
+      "tradeoff": "큰 DB 에서 느리고, 뜬 순간의 스냅샷이라 그 뒤의 변경은 없다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "PostgreSQL 문서 — Chapter 25. Backup and Restore",
+          "url": "https://www.postgresql.org/docs/current/backup.html",
+          "publisher": "PostgreSQL Global Development Group",
+          "kind": "docs",
+          "summary": "백업의 세 가지 근본적으로 다른 접근(\"There are three fundamentally different approaches to backing up PostgreSQL data: SQL dump / File system level backup / Continuous archiving\")과 각각 장단이 있다는 서술. ⚠️ 이 장 도입부에는 \"복구를 연습하라\"는 경고가 없다."
+        }
+      ]
+    },
+    {
+      "situation": "랜섬웨어나 내부자가 백업까지 지울 수 있는 환경",
+      "pick": "오프사이트 + 불변(immutable) 저장, 별도 계정·권한",
+      "over": "운영 계정 안의 스냅샷만 두기",
+      "why": "같은 권한으로 지울 수 있는 백업은 공격자에게도 지울 수 있는 백업이다. 백업이 지워지면 남는 것이 없다.",
+      "tradeoff": "비용과 절차가 는다. 복구할 때 권한을 받는 단계가 하나 더 생겨 RTO 가 길어진다.",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "백업 작업이 성공했다는 로그만 보고 백업이 된다고 믿는다.",
+      "why": "그 로그는 \"파일이 만들어졌다\"만 말한다. 그 파일로 서비스를 되살릴 수 있는지는 전혀 다른 질문이고, 해 보기 전에는 아무도 모른다.",
+      "fix": "정기적으로 실제 복구를 해 본다 — 빈 서버에 백업만으로 서비스를 띄우고 걸린 시간을 잰다. 그 시간이 곧 RTO 이고, 재 보지 않은 RTO 는 목표가 아니라 희망이다."
+    },
+    {
+      "trap": "복제본이 있으니 백업이 있다고 생각한다.",
+      "why": "복제는 지움도 복제한다. 조건 없는 DELETE 를 날리면 복제본에서도 그대로 사라진다. 복제는 하드웨어 장애를 막는 것이지 사람의 실수를 막는 것이 아니다.",
+      "fix": "복제와 백업을 따로 센다. \"노드가 죽으면?\"과 \"어제 오후 2시로 돌아가야 하면?\"에 각각 답할 수 있는지 확인한다."
+    },
+    {
+      "trap": "연속 아카이빙을 켜 두고 아카이빙 상태를 감시하지 않는다.",
+      "why": "PostgreSQL 문서가 직접 경고한다 — archive_command 가 계속 실패하면 pg_wal/ 이 차고, 그 파일 시스템이 가득 차면 PostgreSQL 이 PANIC 종료된다. 백업 장치가 서비스를 멈추는 것이다.",
+      "fix": "아카이빙 지연과 pg_wal/ 사용량을 지표로 남기고 임계값에 알림을 건다. 밀리기 시작하면 유실 가능량도 함께 늘어난다는 것을 대시보드에 함께 보여 준다."
+    },
+    {
+      "trap": "백업을 운영 계정 안, 같은 망에 둔다.",
+      "why": "랜섬웨어와 내부자는 백업을 먼저 찾는다. 운영 권한으로 지울 수 있는 백업은 공격자도 지울 수 있다.",
+      "fix": "별도 계정·별도 권한의 오프사이트 저장소에 두고, 가능하면 보존 기간 동안 삭제 자체가 불가능한 불변 저장을 쓴다. 그 삭제 시도가 로그에 남는지도 확인한다(→ `audit-log`)."
+    },
+    {
+      "trap": "개인정보 파기 요청을 원본 DB 에서만 처리한다.",
+      "why": "백업과 아카이브에도 같은 데이터가 남아 있다. 원본만 지우면 지워진 것이 아니다.",
+      "fix": "보존 기간이 지나면 백업이 자동으로 만료되게 하고, 만료 전에 복구가 필요하면 그때 어떻게 처리할지 정책을 미리 정한다. 암호화 키를 데이터 주체별로 나눠 두고 키를 폐기하는 방법도 검토한다(→ `encryption`)."
+    }
+  ],
+  "terms": [
+    {
+      "term": "기반 백업",
+      "en": "base backup",
+      "what": "연속 아카이빙의 출발점이 되는 파일 시스템 수준 복사본. 이것 하나로는 그 시점까지만 되살릴 수 있고, 그 뒤는 WAL 재생으로 채운다."
+    },
+    {
+      "term": "WAL",
+      "en": "write-ahead log",
+      "what": "변경을 실제 데이터 파일에 쓰기 전에 먼저 기록하는 로그. 이걸 보관해 두면 기반 백업 이후의 변경을 순서대로 다시 적용할 수 있다."
+    },
+    {
+      "term": "시점 복구",
+      "en": "point-in-time recovery (PITR)",
+      "what": "기반 백업을 되살린 뒤 WAL 을 원하는 시각까지만 재생해 그 순간의 상태로 돌아가는 것. 공고에서 한글 표기는 20건, 약어 PITR 은 0건이다."
+    },
+    {
+      "term": "RTO",
+      "en": "recovery time objective",
+      "what": "사고가 나고 서비스가 다시 살아나기까지 걸려도 되는 시간의 목표. 재 보지 않은 RTO 는 목표가 아니라 희망이다."
+    },
+    {
+      "term": "RPO",
+      "en": "recovery point objective",
+      "what": "사고 시 잃어도 되는 데이터의 양을 시간으로 표현한 목표. 백업 주기와 아카이빙 간격이 이 값을 정한다."
+    },
+    {
+      "term": "웜 스탠바이",
+      "en": "warm standby",
+      "what": "같은 기반 백업에 WAL 을 계속 흘려보내 거의 최신 상태를 유지하는 대기 서버. 백업과 재료가 같지만 목적은 빨리 살아나는 것이다."
+    },
+    {
+      "term": "불변 저장",
+      "en": "immutable storage",
+      "what": "정해진 기간 동안 삭제·변경이 불가능한 저장 방식. 백업까지 지우는 공격에 대한 대응이고, `audit-log` 의 무결성 요구와 같은 발상이다."
+    }
+  ],
+  "drills": [
+    {
+      "task": "빈 서버에 백업만으로 서비스를 되살려 본다. 운영 DB 를 건드리지 말고, 백업 파일과 문서만 가지고 새 인스턴스에 데이터를 올린 뒤 애플리케이션을 붙여 첫 화면이 뜨는 데까지 걸린 시간을 잰다.",
+      "done_when": "걸린 시간을 분 단위로 적을 수 있고, 중간에 막힌 지점(권한·버전·문서 부재 등)을 목록으로 남겼다. 그 시간이 팀이 생각하던 RTO 와 얼마나 다른지 한 문장으로 말할 수 있다.",
+      "why": "백업이 있는지 없는지는 이 실습으로만 알 수 있다. 대개 백업 파일이 아니라 그 주변(권한·버전·절차)에서 막힌다.",
+      "needs": "복구 대상 DB 와 별도의 빈 서버 또는 컨테이너",
+      "no_hardware": "도커로 같은 버전의 DB 컨테이너를 새로 띄우고 덤프를 넣어 본다. 클라우드 계정이 있으면 스냅샷에서 인스턴스를 하나 만들어 보고 바로 지운다.",
+      "hours": 3
+    },
+    {
+      "task": "시점 복구를 실제로 해 본다. 테스트 DB 에 데이터를 넣고 시각을 기록한 뒤, 조건 없는 DELETE 를 일부러 날리고, 그 DELETE 직전 시각으로 되돌린다.",
+      "done_when": "지운 데이터가 되살아난 것을 확인했고, 되돌린 시각을 1초 단위로 지정할 수 있다는 것을 보였다. WAL 이 하나라도 없으면 어디까지만 복구되는지도 확인했다.",
+      "why": "사고는 정각에 나지 않는다. 시점 복구가 되는 구성인지 아닌지가 사고의 크기를 정한다.",
+      "needs": "연속 아카이빙을 켤 수 있는 PostgreSQL(또는 동등한 기능의 DB)",
+      "no_hardware": "도커로 PostgreSQL 하나를 띄우고 archive_command 를 로컬 디렉터리 복사로 설정하면 노트북에서도 전 과정을 할 수 있다.",
+      "hours": 3
+    },
+    {
+      "task": "아카이빙을 일부러 막아 본다. 테스트 인스턴스에서 archive_command 가 실패하도록 만들고 WAL 을 계속 생성하면서 pg_wal/ 사용량이 어떻게 늘어나는지 지켜본다.",
+      "done_when": "사용량이 단조 증가하는 것을 그래프나 수치로 보여 주고, 어느 지표에 어떤 임계값으로 알림을 걸어야 하는지 두 줄로 적었다. (⚠️ 실제로 디스크를 가득 채우지는 않는다.)",
+      "why": "PostgreSQL 문서가 직접 경고하는 사고다 — 파일 시스템이 차면 DB 가 PANIC 종료된다. 백업 장치가 서비스를 멈추는 흔치 않은 구조다.",
+      "needs": "테스트 전용 PostgreSQL 인스턴스",
+      "no_hardware": "도커 컨테이너에 작은 볼륨을 붙이고 같은 실험을 한다. 볼륨 크기를 작게 잡으면 안전하게 관찰할 수 있다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "복제와 백업을 따로 갖고 있나. \"노드가 죽으면\"과 \"어제 오후 2시로 돌아가야 하면\"에 각각 답할 수 있나.",
+    "마지막으로 실제 복구를 해 본 것이 언제인가. 그때 걸린 시간을 적어 뒀나.",
+    "RTO 와 RPO 를 숫자로 정했나. 그 숫자가 재 본 값인가 희망인가.",
+    "어느 시점으로 돌아갈 수 있나 — 마지막 백업 시점뿐인가, 임의 시각인가.",
+    "백업을 운영 권한으로 지울 수 있나. 지울 수 있다면 공격자도 지울 수 있다.",
+    "아카이빙이 밀리거나 막히면 누가 언제 아나. 알림이 걸려 있나.",
+    "개인정보 파기 요청이 왔을 때 백업 안의 사본은 어떻게 되나."
+  ],
+  "evidence": [
+    {
+      "quote": "백업/복구 전략을 최적화하고 정기적인 복구 테스트를 수행해요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/286371",
+      "where": "카카오페이증권 (모집중)",
+      "what_it_shows": "이 문서의 논지(\"백업했다\"와 \"복구된다\"는 다르다)를 공고가 그대로 적은 드문 사례다. 백업 전략과 복구 테스트를 따로 나열한다."
+    },
+    {
+      "quote": "금융권 컴플라이언스: 망분리, 재해복구(DR), 접근통제, ISMS-P 등 강력한 규제 요건에 맞는 온프레미스 및 클라우드 인프라 아키텍처 설계 및 검사 대응.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/376201",
+      "where": "코빗 (모집중)",
+      "what_it_shows": "재해 복구가 기술 선택이 아니라 규제 요건으로 들어온다 — `java-in-finance`·`security-certification` 과 한 줄에 놓인다."
+    },
+    {
+      "quote": "DR(Disaster Recovery) 체계 개선 및 비즈니스 연속성 확보",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378508",
+      "where": "오렌지스퀘어 (모집중)",
+      "what_it_shows": "DR 이 \"체계\"로 불린다 — 백업 파일이 아니라 절차와 훈련까지 포함한 말로 쓰인다는 증거다."
+    },
+    {
+      "quote": "RDS 운영·백업·복구부터 슬로우 쿼리 튜닝, 스키마 변경 관리까지 DB 전반을 담당하고, BigQuery·Cloud Composer 기반 데이터 파이프라인을 운영해요.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375209",
+      "where": "모요 (모집중)",
+      "what_it_shows": "백업·복구가 DB 운영의 기본 항목으로 `db-index`·`schema-migration` 과 나란히 요구된다."
+    }
+  ],
+  "related": [
+    {
+      "slug": "replication",
+      "how": "헷갈리는 이웃 — 재료는 비슷한데 막는 것이 다르다(하드웨어 장애 vs 사람의 실수)"
+    },
+    {
+      "slug": "postgres-mysql",
+      "how": "이 문서의 1차 자료가 나온 곳, 세 가지 백업 방식과 PITR"
+    },
+    {
+      "slug": "slo",
+      "how": "RTO·RPO 는 복구판 SLO 다 — 지킬 숫자를 먼저 정한다"
+    },
+    {
+      "slug": "oncall",
+      "how": "복구는 사람이 한다 — 훈련과 절차가 없으면 백업은 없는 것과 같다"
+    },
+    {
+      "slug": "observability",
+      "how": "아카이빙이 밀리는 것을 못 보면 유실량이 조용히 는다"
+    },
+    {
+      "slug": "encryption",
+      "how": "백업을 암호화하면 키가 곧 복구 가능성이고, 키 폐기는 파기 수단이 된다"
+    },
+    {
+      "slug": "personal-data-law",
+      "how": "파기 요구의 사각지대 — 원본을 지워도 백업에 남는다"
+    },
+    {
+      "slug": "audit-log",
+      "how": "불변 저장이라는 같은 발상 — 고칠 수 있으면 증거가 아니다"
+    },
+    {
+      "slug": "redis",
+      "how": "메모리 저장소의 영속화와 최악의 사고(복제본까지 함께 지워진다)"
+    },
+    {
+      "slug": "data-migration",
+      "how": "되돌리기 계획이 필요한 또 하나의 자리 — 무중단 전환·롤백 계획은 10건뿐이다"
+    },
+    {
+      "slug": "security-certification",
+      "how": "재해 복구가 규제 요건으로 들어오는 경로"
+    }
+  ],
+  "open_questions": [
+    "⭐⭐ **새로 썼다**(2026-09-06) — 큐 자격 (a)(수요 614건인데 문서 없음)와 (b)(`replication` 이 \"복제는 백업이 아니다\"라고 적으면서 가리킬 곳이 없었다)에 둘 다 해당했다.",
+    "⚠️⚠️ **\"복구를 연습하라\"는 경고는 1차 자료에서 찾지 못했다.** PostgreSQL 백업 장 도입부에는 그 문장이 없다 — `restore` 절의 주장은 이 문서의 정리이고, 그 사실을 절 안에 밝혔다. ⭐ **`api-gateway` 에서 \"원문에 그 경고가 없다\"고 적은 것과 같은 처리**다.",
+    "⚠️ **PostgreSQL 만으로 썼다.** MySQL·MongoDB·클라우드 관리형 서비스의 백업 방식은 다르고, 이 문서는 그것을 1차 자료로 확인하지 않았다. 특히 **관리형 서비스에서 PITR 이 기본 제공되는 범위**는 확인이 필요하다.",
+    "⚠️ **`복구` 512건을 이 문서의 크기로 쓰지 않았다** — 장애 복구·계정 복구 등 다른 뜻이 섞인다. 갈래를 나누지 못했다.",
+    "⭐ **`RTO`·`RPO` 각 6건**을 \"복구에는 목표를 안 정한다\"로 읽었으나 확인하지 못했다. 실제로 안 정하는 것인지, 정하되 공고에 안 적는 것인지 갈리지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "PostgreSQL 문서 — Chapter 25. Backup and Restore",
+      "url": "https://www.postgresql.org/docs/current/backup.html",
+      "publisher": "PostgreSQL Global Development Group",
+      "kind": "docs",
+      "summary": "백업의 세 가지 근본적으로 다른 접근(\"There are three fundamentally different approaches to backing up PostgreSQL data: SQL dump / File system level backup / Continuous archiving\")과 각각 장단이 있다는 서술. ⚠️ 이 장 도입부에는 \"복구를 연습하라\"는 경고가 없다."
+    },
+    {
+      "title": "PostgreSQL 문서 — 25.3. Continuous Archiving and Point-in-Time Recovery (PITR)",
+      "url": "https://www.postgresql.org/docs/current/continuous-archiving.html",
+      "publisher": "PostgreSQL Global Development Group",
+      "kind": "docs",
+      "summary": "기반 백업 + WAL 재생으로 임의 시점까지 되돌릴 수 있다는 정의, 웜 스탠바이, 그리고 운영 부담 — archive_command 실패 시 pg_wal/ 이 계속 차고 그 파일 시스템이 가득 차면 PANIC 종료된다는 경고, 아카이빙이 밀리면 유실량이 늘어난다는 경고, 백업 시작 시점까지 이어지는 연속된 WAL 이 필요하다는 요구."
+    }
+  ]
+}

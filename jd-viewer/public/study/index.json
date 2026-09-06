@@ -2503,6 +2503,25 @@
       "sections": 6,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "backup",
+      "title": "백업과 복구",
+      "category": "infra",
+      "level": "core",
+      "status": "done",
+      "one_liner": "백업은 파일이 아니라 복구할 수 있는 상태다 — 복구해 보지 않은 백업은 아직 백업이 아니다.",
+      "aliases": [
+        "백업",
+        "Backup",
+        "복구",
+        "Restore",
+        "재해 복구",
+        "Disaster Recovery"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
