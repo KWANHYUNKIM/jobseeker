@@ -1,0 +1,136 @@
+{
+  "slug": "trendyol",
+  "name": "Trendyol",
+  "name_en": "Trendyol",
+  "country": "기타",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "trendyol.com",
+  "one_liner": "튀르키예 시장의 3분의 1을 쥔 마켓플레이스 — 물류·퀵커머스·결제까지 직접 굴린다",
+  "business_model": "**마켓플레이스이자 생태계다.** **활성 고객 3,000만 명 이상**과 **3자 판매자 23만 명 이상**을 잇고, **자체 물류(Trendyol Express)·퀵커머스(Trendyol Go)·결제 플랫폼**까지 직접 굴린다.\n\n**규모** — **2024년 GMV 125억 달러**, **2025년 trendyol.com 매출 140억 900만 달러.** ⚠️ **튀르키예 시장 점유가 34~40%** 로 압도적이고 **2025년 매출의 62%가 튀르키예**다. **국제 매출이 전체의 거의 20%** 로 커지는 중이고 **걸프 지역 GMV 가 10억 달러를 넘겼다**(독일·아제르바이잔 현지화, UAE·사우디 진출).\n\n⚠️ **2010년 창업, 2018년 알리바바 그룹이 인수했다.**",
+  "products": [
+    "Trendyol (마켓플레이스)",
+    "Trendyol Express (물류)",
+    "Trendyol Go (퀵커머스)",
+    "결제 플랫폼",
+    "광고"
+  ],
+  "domain_map": {
+    "title": "마켓플레이스 하나가 아니라 생태계다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  U[\"<b>활성 고객 3,000만 명 이상</b>\"]:::list --> S[\"<b>찾게 한다</b><br/>• 검색 랭킹 · 벡터 검색<br/>• 백만 규모 카탈로그<br/>• ⏳ 미독\"]:::quiet\n  S --> M[\"<b>마켓플레이스</b><br/>• 판매자 23만 명 이상\"]:::list\n  M --> A[\"⚠️ <b>광고를 판다</b><br/>• 하드코딩을 동적 구조로<br/>• ✅ 본문 확인\"]:::accent\n  P[\"<b>인프라를 셀프서비스로</b><br/>• K8s 스토리지 · DB 이전<br/>• ⏳ 미독\"]:::quiet --> M\n  O[\"<b>장애를 AI 로 진단한다</b><br/>• Helyx · SRE 에이전트<br/>• ⏳ 미독\"]:::quiet --> P\n  M --> R[\"<b>GMV 125억 달러</b><br/>• 튀르키예 점유 34~40%\"]:::list"
+  },
+  "revenue_streams": [
+    {
+      "name": "마켓플레이스 수수료",
+      "how": "**판매자 23만 명 이상**과 **고객 3,000만 명 이상**을 잇는다. **2024년 GMV 125억 달러 · 2025년 매출 140억 900만 달러.**",
+      "domains": [
+        "찾게 한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Trendyol retailer data",
+          "url": "https://ecdb.com/resources/sample-data/retailer/trendyol",
+          "publisher": "ECDB",
+          "date": "2026",
+          "summary": "2024년 GMV 125억 달러, 2025년 trendyol.com 매출 140억 900만 달러. 튀르키예 시장 점유 34~40%, 2025년 매출의 62%가 튀르키예. 활성 고객 3,000만 명 이상, 3자 판매자 23만 명 이상. 국제 매출이 전체의 거의 20%, 걸프 지역 GMV 10억 달러 돌파."
+        }
+      ]
+    },
+    {
+      "name": "광고",
+      "how": "**판매자에게 노출을 판다.** ⚠️ **광고 상품을 코드가 아니라 데이터로 확장할 수 있게 만드는 것이 이 도메인의 문제였다**(재구성).",
+      "domains": [
+        "광고를 판다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+          "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+          "publisher": "Trendyol Tech",
+          "date": "2026-03-24",
+          "summary": "모든 광고가 NoSQL 문서로 살고 애플리케이션 로직이 문서 안의 type 필드 하나로 분기하던 구조를 버렸다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 정규화된 관계형 모델의 PostgreSQL 로 옮겨 조합 가능한 엔터티로 만들었다."
+        }
+      ]
+    },
+    {
+      "name": "물류 · 퀵커머스 · 결제",
+      "how": "**Trendyol Express · Trendyol Go · 결제 플랫폼**을 직접 굴린다 — **단순 마켓플레이스가 아니라 생태계다.** ⏳ **이 축의 기술 자료는 아직 안 봤다.**",
+      "domains": [
+        "인프라를 셀프서비스로 내준다"
+      ],
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Trendyol retailer data",
+          "url": "https://ecdb.com/resources/sample-data/retailer/trendyol",
+          "publisher": "ECDB",
+          "date": "2026",
+          "summary": "2024년 GMV 125억 달러, 2025년 trendyol.com 매출 140억 900만 달러. 튀르키예 시장 점유 34~40%, 2025년 매출의 62%가 튀르키예. 활성 고객 3,000만 명 이상, 3자 판매자 23만 명 이상. 국제 매출이 전체의 거의 20%, 걸프 지역 GMV 10억 달러 돌파."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "광고를 판다",
+      "why": "⚠️ **데이터로 확장할 수 없는 구조가 발목을 잡았다** — **`모든 것이 NoSQL 안에 광고 문서로 살았다. 애플리케이션 로직이 각 문서 안의 하나의 type 필드로 분기했다.`** 그래서 **`새 광고 솔루션을 추가하려면 여러 서비스에 걸쳐 코드를 바꿔야 했다. 데이터만으로 시스템을 확장할 방법이 없었다.`** ✅ **본문 확인함**(2026-03-24).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "찾게 한다",
+      "why": "**상품 백만 규모의 카탈로그에서 검색이 매출의 입구다**(재구성). 글이 여럿 있다 — **`Elasticsearch v9 업그레이드로 벡터 검색 4배 성능 향상`** · **`불필요한 재색인을 어떻게 없앴나`** · **`검색 랭킹 모델을 더 빨리 배포하기`**(2편) · **`백만 규모 카탈로그를 건강하게 유지하는 법`**. ⏳ **전부 본문 미독.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "인프라를 셀프서비스로 내준다",
+      "why": "⚠️ **플랫폼 엔지니어링 글이 유난히 많다** — **`셀프서비스 쿠버네티스 스토리지 플랫폼`** · **`내부 PostgreSQL 이전 플랫폼`** · **`자동화된 운영급 샤딩 MongoDB 인프라`** · **`Couchbase 백업 자동화를 Jenkins 잡에서 쿠버네티스 컨트롤러로`** · **`Redis 를 Sentinel 에서 네이티브 클러스터로`** · **`데이터센터를 다중 사이트 EVPN 으로 옮긴 이유`**. ⏳ **전부 본문 미독.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "장애를 AI 로 진단한다",
+      "why": "⚠️ **자체 데이터 관측 플랫폼 Helyx 에 글이 넷이나 붙어 있고**, **`Trendyol 의 SRE AI 에이전트`**(26분 분량) · **`AI 가 다중 리전 쿠버네티스 장애의 근본 원인을 찾도록 어떻게 도왔나`** · **`운영 경보를 몇 분 안에 진단하는 AI 온콜 시스템`** 이 이어진다. ⏳ **전부 본문 미독.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **개별 글의 정확한 주소를 목록에서 못 받았다** — 요약이 저자 프로필 링크를 줬다. ⚠️ **슬러그를 추측하지 않는다**(이 세션에서 두 번 어긴 규칙) — **다음 사이클마다 검색으로 주소를 받는다.** 확인된 형식은 `medium.com/trendyol-tech/<제목-슬러그>-<해시>` 다.",
+    "⚠️ **확인한 광고 글이 포기한 것을 안 적는다** — NoSQL 을 떠나며 **유연성이나 수평 확장에서 무엇을 내줬는지**가 없고, 개선 차트는 있는데 **본문에 수치가 없다.** ⭐ **`얻은 것만 말하는 글` 이라 tradeoff 를 재구성으로 채워야 한다.**",
+    "⚠️ **물류·퀵커머스·결제의 기술 자료를 아직 못 찾았다** — **Trendyol Express 와 Trendyol Go 를 직접 굴리는데** 그 이야기가 목록에 안 보인다.",
+    "⚠️ **알리바바 인수(2018) 이후의 기술 통합을 말하는 자료가 없다** — **알리바바의 기술을 얼마나 가져다 쓰는지, 자체로 만든 것이 무엇인지** 모른다.",
+    "⚠️ **국제 확장(걸프·독일·아제르바이잔)의 기술 이야기가 없다** — **다중 사이트 EVPN 글이 그 언저리일 수 있으나 미독이다.**",
+    "⚠️ **`country` 를 `기타` 로 뒀다** — 튀르키예 회사인데 검증기의 허용 목록(`KR·US·CN·JP·EU·CA·AU·SG·IN·AE·NG·기타`)에 `TR` 이 없다. **회사 정보가 부족해서가 아니라 스키마의 한계다.**"
+  ],
+  "sources": [
+    {
+      "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+      "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+      "publisher": "Trendyol Tech",
+      "date": "2026-03-24",
+      "summary": "모든 광고가 NoSQL 문서로 살고 애플리케이션 로직이 문서 안의 type 필드 하나로 분기하던 구조를 버렸다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 정규화된 관계형 모델의 PostgreSQL 로 옮겨 조합 가능한 엔터티로 만들었다."
+    },
+    {
+      "title": "Trendyol retailer data",
+      "url": "https://ecdb.com/resources/sample-data/retailer/trendyol",
+      "publisher": "ECDB",
+      "date": "2026",
+      "summary": "2024년 GMV 125억 달러, 2025년 trendyol.com 매출 140억 900만 달러. 튀르키예 시장 점유 34~40%, 2025년 매출의 62%가 튀르키예. 활성 고객 3,000만 명 이상, 3자 판매자 23만 명 이상. 국제 매출이 전체의 거의 20%, 걸프 지역 GMV 10억 달러 돌파."
+    },
+    {
+      "title": "Trendyol Tech (엔지니어링 블로그 목록)",
+      "url": "https://medium.com/trendyol-tech",
+      "publisher": "Trendyol Tech",
+      "date": "2026",
+      "summary": "백엔드·플랫폼·데이터·보안에 걸쳐 심층 글이 계속 올라온다. Helyx(자체 데이터 관측 플랫폼) 4편, SRE AI 에이전트, Redis Sentinel→Cluster 전환, 데이터센터 다중 사이트 EVPN 이전, Elasticsearch v9 벡터 검색, 검색 랭킹 모델 배포 2편, 셀프서비스 K8s 스토리지·PostgreSQL 이전 플랫폼 등."
+    }
+  ]
+}

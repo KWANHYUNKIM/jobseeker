@@ -8,46 +8,49 @@
 
 ## 지금 파는 중
 
-**없다 — Wiz 를 완주했다.** 도메인 3개 · 기능 3개. 회사 **102개.** 큐 0/3 → **다음 사이클은 후보 조사다.**
+**Trendyol** (기타=튀르키예 · 커머스) — **프로파일까지 썼다**. ⭐ **도메인 4개** — 이 엔진에서 드물게 많다. 기능 0. 회사 **103개** · 큐 0/3.
 
-### 이번 사이클 — `위험이 정당화하는 만큼만 깊이 판다`
+### ⭐ 이 회사는 자료가 아주 두껍다
 
-⭐ **설계 원칙이 한 문장에 다 있다** — **`계층 시스템의 요점은 각 스캔에 그 위험이 정당화하는 만큼의 깊이를 주는 것이지, 그 이상은 아니다.`** ⚠️ **`그 이상은 아니다` 가 핵심이다 — 더 깊이 볼 수 있는데도 안 보는 것이 설계다**(재구성).
+⚠️ **지금까지 판 몇 회사와 정반대다** — VictoriaMetrics 는 글 하나씩으로 도메인 둘을 겨우 세웠는데, **여기는 심층 글이 30개 넘는다.** 백엔드·플랫폼·데이터·보안·검색에 걸쳐 있고 **자체 데이터 관측 플랫폼 Helyx 에만 글이 넷**이다. **그래서 도메인을 넷으로 세웠고 억지가 아니다.**
 
-건진 것 넷:
+**규모** — **2024년 GMV 125억 달러** · **2025년 trendyol.com 매출 140억 900만 달러** · **활성 고객 3,000만 명 이상** · **판매자 23만 명 이상** · **튀르키예 시장 점유 34~40%**(매출의 62%가 튀르키예) · **국제 매출이 거의 20%** 이고 **걸프 GMV 10억 달러 돌파.** **2010년 창업, 2018년 알리바바 인수.** **물류(Express)·퀵커머스(Go)·결제를 직접 굴린다.**
 
-- ⚠️ **코딩 에이전트가 검사 주기의 전제를 깼다** — **`개발자와 코딩 에이전트가 계속해서 변경을 만들어 낼 때, 분기마다 한 번 하는 깊은 스캔은 매시간 바뀌는 코드베이스를 지킬 수 없다.`** ⭐ **AI 가 문제의 원인이면서 해법인 자리다**(재구성).
-- **세 계층으로 값을 나눈다** — 1계층 결정론적(**`빠르고 신뢰할 수 있고 비용 효율적인 커버리지`**) · 2계층 모든 PR 에 AI 추론 · 3계층 **`가치가 높은 애플리케이션, 핵심 코드`** 에만 프런티어 모델.
-- ⭐ **모델이 계속 바뀐다는 사실을 아키텍처에 넣었다** — **`어떤 단일 엔진도 모든 종류의 조사에서 최고일 수는 없고, 선두는 프런티어 릴리스마다 바뀐다.`** 그래서 **`시스템은 모든 계층에서 열려 있어 조직이 하나의 스캐너에 갇히는 일이 없다`** 이고, 자체 Atlas 와 **Google CodeMender** 같은 3자 엔진을 함께 굴린다. ⭐ **이 엔진에서 드문 종류의 관찰이다.**
-- ⚠️ **대가를 회사가 직접 적는다** — **`하네스를 만드는 것은 계속되는 투자다`** 이고 **`끊임없는 오케스트레이션, 튜닝, 벤치마킹, 그리고 개발·보안 워크플로에의 통합`** 을 요구한다.
+### ⚠️ 이 사이클에서 걸린 것 — `country` 허용 목록
 
-### 완주하며 본 것 — 세 기능이 하나의 문장으로 모인다
+**`TR` 로 썼다가 검증이 오류로 잡았다.** ⭐ **이번에는 곧바로 `engine/validate.py` 를 열어 실제 목록을 확인했다:**
 
-⭐ **`무거운 수단을 쓰되 쓰는 자리를 좁힌다`** — 데이터 발견에서는 **`결정론적 로직을 AI 계층에서 완전히 빼냈고`**, 인프라에서는 **에이전트를 내되 `대부분의 신호는 여전히 API 스캔에서` 로 선을 그었으며**, 코드에서는 **`위험이 정당화하는 만큼의 깊이를 주는 것이지 그 이상은 아니다`**. ⚠️ **셋 다 `넣었다가 경계를 다시 긋는` 이야기다**(재구성).
+```
+COUNTRIES = {"KR", "US", "CN", "JP", "EU", "CA", "AU", "SG", "IN", "AE", "NG", "기타"}
+```
 
-⭐ **그리고 셋이 전부 같은 보안 그래프로 모인다** — 그래프가 코드 쪽에서는 **깊이를 정하는 라우터**로, 런타임 쪽에서는 **계층을 넘나드는 이동을 드러내는 수집기**로 쓰인다. **새 신호를 새 제품으로 만들지 않는다**(재구성).
+⚠️ **schema.json 의 주석(`KR|US|CN|JP|EU|기타`)보다 넓지만 임의의 ISO 코드를 받지는 않는다.** **튀르키예는 `기타` 로 갈 수밖에 없고, 이건 회사 정보 부족이 아니라 스키마의 한계라 그렇게 적었다.** ⭐ **앞 두 번은 값을 추측해 두 번 걸렸는데, 이번엔 한 번 걸리고 코드를 봐서 확정했다.**
 
-⚠️ **못 읽은 것** — **스냅숏의 구현**(권한·주기) · **오탐을 코드 쪽에서 어떻게 막는지**(데이터 쪽은 `거의 0` 을 기준으로 삼았는데) · **AI SAST 의 실제 비용과 지연**(비공개 프리뷰) · **구글 인수(2026-03-11) 이후의 변화.**
+### 다음 사이클 — 확장(2순위)
 
-### 다음 사이클 — ⚠️ 후보 조사 (3순위)
+`--gaps` 가 **`광고를 판다`** 를 부를 것이다. **자료를 이미 읽었다.** ⚠️ **다만 그 글은 `얻은 것만 말하는 글` 이다** — **NoSQL 을 떠나며 무엇을 내줬는지가 없고 개선 차트는 있는데 본문에 수치가 없다.** **tradeoff 를 재구성으로 채워야 하고, 그 사실을 적는다.**
 
-**큐 0/3. 목표 3곳.** ⚠️ **먼저 이 명령을 돌린다:**
+⚠️ **개별 글의 정확한 주소를 목록에서 못 받았다**(요약이 저자 프로필 링크를 줬다). ⚠️ **슬러그를 추측하지 않는다** — **매 사이클 검색으로 주소를 받는다.** 확인된 형식: `medium.com/trendyol-tech/<제목-슬러그>-<해시>`.
+
+⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
+
+### ⚠️ 절차 (이 세션에 실수로 배운 것)
+
+**후보 조사 사이클은 이 명령으로 시작한다:**
 
 ```
 python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(' | '.join(sorted((c.get('name_en') or c['name']) for c in i['companies'])))"
 ```
 
-⭐ **각도 타율** — **지역 축**이 지난번 둘을 냈다(튀르키예·이스라엘). ⚠️ **다만 그 지역 블로그가 살아 있을 때만 통한다**(동남아·브라질은 묵어서 실패). ⚠️ **언급 각도는 말라 간다** — 이미 판 회사이거나 파는 쪽이라 마케팅이다. ⏳ **아직 안 연 지역** — 폴란드 밖 동유럽 · 북유럽(Klarna ⛔ 말고) · 남미(Mercado Libre·Nubank 말고) · 아프리카(Paystack·Moniepoint 말고) · 중동(Careem 말고).
-
-⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
+**새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(schema.json 주석보다 이쪽이 정본이다).
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① ⭐⭐ `AI 에이전트를 어디까지 믿나` 10곳** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / **Wiz**(⭐ **세 기능 모두 이 축에 걸린다** — 넣었다가 뺐다 · 깊이를 위험에 맞췄다 · 엔진을 갈아 끼울 수 있게 열어 뒀다).
+**① `AI 에이전트를 어디까지 믿나` 10곳 + ⏳ Trendyol** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz. ⏳ **Trendyol 이 `SRE AI 에이전트`·`AI 온콜`·`AI 가 다중 리전 장애 근본 원인을 찾도록` 세 글을 갖고 있다 — 이 축이 더 두꺼워진다.**
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ `자기 성과를 어디까지 주장하나` 10곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / **Wiz**(⚠️ **`CyberGym 90.8%` 를 대면서 그것이 운영 지표가 아니라고 스스로 밝힌다**).
+**③ `자기 성과를 어디까지 주장하나` 10곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz.
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
@@ -59,9 +62,9 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics.
 
-**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 7곳 + ⏳ Trendyol** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream.
+**⑨ ⭐ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 7곳 + ⏳ Trendyol** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream. ⏳ **Trendyol 이 NoSQL 문서에서 정규화된 PostgreSQL 로 갔다 — 다음 사이클에 들어온다.**
 
-**⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics.
+**⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics / ⏳ **Trendyol**(자체 관측 플랫폼 Helyx 를 만들었다 — **사는 쪽도 파는 쪽도 아닌 `직접 만드는 쪽`**).
 
 **⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream.
 
@@ -69,11 +72,11 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑬ `애매할 때 어느 쪽으로 넘어지나` 9곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz.
 
-**⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest.
+**⑭ ⭐ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest / ⏳ **Trendyol**(`검색 랭킹 모델을 더 빨리 배포하기` 2편 — **자동 생성 테스트에서 운영 품질 게이트까지**).
 
-**⑮ `언제 쪼개고 언제 합치나`** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / **Wiz**(⚠️ **세 계층·여러 엔진으로 쪼개되 결과는 한 그래프로 합친다**).
+**⑮ `언제 쪼개고 언제 합치나`** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / Wiz.
 
-**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / **Wiz**(⚠️ **반대다 — 자체 Atlas 를 만들고도 3자 엔진을 계속 함께 쓴다**).
+**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz.
 
 **⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics.
 
@@ -81,7 +84,7 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / ⏳ Plaid · Snyk.
 
-**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크) / Wiz(에이전트를 없앴다가 좁게 되들였다) / ⏳ TigerBeetle · Oxide Computer.
+**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream / Wiz / ⏳ TigerBeetle · Oxide Computer.
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
@@ -91,15 +94,17 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / ⏳ Grafana Labs · ClickHouse · Snyk.
 
-**㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / **Wiz**(⭐ **세 도메인이 전부 같은 보안 그래프로 모인다**) / ⏳ Etsy · Plaid.
+**㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / Wiz / ⏳ Etsy · Plaid.
 
-**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / ⏳ Airbnb · Pinterest.
+**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / ⏳ Airbnb · Pinterest / ⏳ **Trendyol**(⚠️ **심층 글 30개 이상 — 이 정도 분량은 채용 브랜딩이 아니고서는 설명이 어렵다**, 재구성).
 
-**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(2026-03-11 구글) / WarpStream(Confluent → IBM) / Twilio / ⏳ PlanetScale · Snyk.
+**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream(Confluent → IBM) / Twilio / ⏳ **Trendyol**(2018 알리바바) / ⏳ PlanetScale · Snyk.
 
-**㉘ `맞았는지 어떻게 아나`** — Wiz(미리보기 모드 실측 대조) / Flipkart / Snyk / ⏳ Duolingo.
+**㉘ `맞았는지 어떻게 아나`** — Wiz / Flipkart / Snyk / ⏳ Duolingo / ⏳ **Trendyol**(검색 랭킹의 `자동 생성 테스트에서 운영 품질 게이트까지`).
 
-⏳ **㉙ 새로 보인다 — `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — **Wiz**(⭐ **`선두는 프런티어 릴리스마다 바뀐다` 며 모든 계층을 갈아 끼울 수 있게 열어 뒀다**) / **Flipkart**(약 80억 추론 코치 + 320억 교사로 등급을 나눴다) / **Pinterest**(⏳ 2부의 LLM 기반 추론) / ⏳ Snyk · Deliveroo. ⚠️ **①축이 `믿을 것인가` 라면 이 축은 `무엇에 걸 것인가` 다**(재구성).
+**㉙ `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — Wiz / Flipkart / ⏳ Pinterest 2부 · Snyk · Deliveroo.
+
+⏳ **㉚ 새로 보인다 — `셀프서비스로 내주면 무엇이 달라지나`** — **Trendyol**(⭐ **K8s 스토리지 · PostgreSQL 이전 · MongoDB 샤딩을 전부 셀프서비스 플랫폼으로 만들었다**) / **Twilio**(자율이 격차를 만든다) / **Airbnb**(도메인마다 고르게 하되 하이브리드 금지) / ⏳ Etsy · Monzo. ⚠️ **플랫폼 팀이 무엇을 대신해 주고 무엇을 넘기는지가 이 축이다**(재구성).
 
 ## 지금의 진짜 상태
 
