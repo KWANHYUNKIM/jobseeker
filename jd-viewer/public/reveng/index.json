@@ -1308,6 +1308,18 @@
       "one_liner": "가맹점 결제와 개인 금융과 비트코인 하드웨어를 한 회사가 만든다 — 그래서 고치는 방법도 셋으로 갈린다",
       "updated_at": "2026-09-06",
       "domain": "block.xyz"
+    },
+    {
+      "slug": "klaviyo",
+      "name": "클라비요",
+      "name_en": "Klaviyo",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "5초 안에 가야 하는 알림과 20분을 기다려도 되는 집계가 같은 파이프를 탄다 — 그래서 줄 세우는 일이 본업이 됐다",
+      "updated_at": "2026-09-06",
+      "domain": "klaviyo.com"
     }
   ],
   "domains": [
@@ -1650,7 +1662,9 @@
     "키를 만드는 난수",
     "에이전트가 팀으로 일한다",
     "노는 컴퓨트를 모은다",
-    "누가 어디까지 볼 수 있나"
+    "누가 어디까지 볼 수 있나",
+    "마감 시각이 다른 일을 한 줄에서 처리한다",
+    "잃지 않고 넘긴다"
   ],
   "countries": {
     "KR": "한국",
