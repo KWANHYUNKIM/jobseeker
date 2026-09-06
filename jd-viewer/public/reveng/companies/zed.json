@@ -4,7 +4,7 @@
   "name_en": "Zed Industries",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-07",
   "domain": "zed.dev",
   "one_liner": "러스트로 밑바닥부터 다시 쓴 코드 편집기 — 편집기 자체는 공짜로 주고 그 안에서 에이전트가 하는 일을 판다",
@@ -241,9 +241,41 @@
               "summary": "편집기가 텍스트를 문자열 하나로 들고 있으면 2만 줄짜리 파일 한가운데에 한 단어를 넣는 데 뒤의 전부를 밀어야 하고, 523번째 줄이 어디인지 알려면 처음부터 줄바꿈을 세야 한다. Zed 는 로프를 쓰고 그 로프를 SumTree 로 만든다 — 잎에 텍스트 덩어리 여럿과 각 항목의 요약을 담고, 내부 노드는 아래 요약들을 다시 합친 B+ 트리다. 요약에는 UTF-8 길이, UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이 따위가 들어 있어 오프셋과 줄·칸을 오가는 일이 O(log n) 이 된다. 덩어리는 릴리스 빌드에서 128자를 넘지 않고, 스냅샷은 텍스트를 복사하지 않고 참조 수만 올린다. 로프는 무엇 하나에 뛰어나지는 않지만 늘 무난히 좋다고 적는다."
             }
           ]
+        },
+        {
+          "tech": "덩어리마다 u128 비트맵 넷 — chars·chars_utf16·newlines·tabs",
+          "solves": "128바이트를 한 글자씩 도는 루프를 없앤다. 마스크 후 count_ones 로 앞쪽 줄바꿈 수를, leading_zeros 로 가장 가까운 줄바꿈을 구하며 둘 다 CPU 명령 하나다. point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다.",
+          "limits": "덩어리마다 48바이트가 더 붙는다. 탭은 표시 폭이 설정과 커서 위치에 달려 색인만 넣고 활용은 미뤘다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Zed Decoded: Rope Optimizations, Part 1",
+              "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+              "publisher": "Zed Industries",
+              "date": "2024-11-18",
+              "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+            }
+          ]
+        },
+        {
+          "tech": "좌표계 다섯과 앵커",
+          "solves": "소비자마다 싼 좌표를 쓰게 한다 — 줄 이동은 Point, 여러 줄 선택은 Offset, 언어 서버는 UTF-16, 커서 그리기는 DisplayPoint, 오래 사는 위치는 앵커.",
+          "limits": "변환 코드가 늘고 어느 좌표계인지 헷갈리는 종류의 버그가 생긴다. 앵커는 CRDT 를 들고 있어야 하는 값을 낸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Zed Decoded: Text Coordinate Systems",
+              "url": "https://zed.dev/blog/zed-decoded-text-coordinate-systems",
+              "publisher": "Zed Industries",
+              "date": "2024-06-27",
+              "summary": "편집기가 위치를 세는 방식을 다섯으로 나눠 쓴다. Point(줄·칸)는 줄을 오르내리기에 좋고, Offset(문서 처음부터의 바이트 수)은 여러 줄에 걸친 선택에 좋다. PointUtf16·OffsetUtf16 은 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문에 따로 두는 것이고, SumTree 가 UTF-16 좌표를 이미 색인해 두어 변환이 빠르다(코드에는 Offset 보다 OffsetUtf16 이 훨씬 많다). DisplayPoint 는 소프트 랩·접기·인레이 힌트·탭·진단 블록까지 반영한 화면상의 자리라 파일의 23행 23열이 화면에서는 29행 36열이 되기도 한다. Anchor 는 좌표계라기보다 논리적 위치로, 어떤 글자의 왼쪽인지 오른쪽인지를 가리키며 램포트 타임스탬프로 된 삽입 식별자와 그 삽입 안에서의 바이트 오프셋으로 이뤄진다. CRDT 덕분에 편집이 지나가도 유효해서 협업과 백그라운드 작업이 위치를 잃지 않는다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "rope-sumtree"
+      ]
     }
   ],
   "features": [
@@ -1228,6 +1260,531 @@
           "summary": "학습 파이프라인 회고. 사용자가 실제로 쓴 코드를 정답으로 쓰지 않는다 — 커서 위치와 최근 편집 같은 시작 상태만 받아 선생 모델(Claude Sonnet 4.6)에게 던지고 그 예측을 학습 신호로 삼는다. 데이터는 동의한 오픈소스 저장소에서만 모으고 주당 약 25만~30만 요청이 들어온다(처음에는 깃허브 커밋에서 만든 약 10만 개로 시작했다). 바탕 모델을 Qwen2.5-Coder-7B 에서 Seed-Coder-8B 로 바꿨고 선생과의 일치도를 재는 자체 지표 deltaChrF 가 78.36에서 80.61로 올랐다. 정답이 하나가 아니라 예제마다 선생 완성본 셋과 견준다. 반전 문제를 겪었다 — 사용자가 몇 글자 치면 모델이 그것을 실수로 보고 지우려 든다. 선생이 사용자가 무엇을 하는 중인지 추론해 다음 것을 하는 대신 지저분한 코드를 정리하려 들어서였고, 선생 프롬프트를 다시 훈련시키고 편집 이력의 해상도를 올려 고쳤다."
         }
       ]
+    },
+    {
+      "key": "rope-sumtree",
+      "name": "글자를 나무에 담고 요약으로 찾는다",
+      "domain": "글자를 무엇에 담을 것인가",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "편집기에서 사용자가 하는 모든 일이 이 층 위에 선다. 커서를 옮길 때마다 오프셋을 줄·칸으로 바꾸는 일이 초당 수백에서 수천 번 일어나고, 언어 서버와 말을 섞을 때마다 UTF-16 좌표가 필요하며, 협업과 백그라운드 작업은 편집이 지나간 뒤에도 같은 자리를 가리킬 수 있어야 한다.\n\n이 층이 느리면 어떤 기능이 느린 것이 아니라 편집기가 느리다. 이 회사가 편집기를 러스트로 밑바닥부터 다시 쓴 이유가 여기 있고, 앞의 두 도메인(에이전트·편집 예측)이 전부 이 위에 얹힌다(재구성).",
+        "metrics": [
+          {
+            "label": "오프셋↔줄칸 변환 호출",
+            "value": "파일을 돌아다니고 편집하는 동안 초당 수백~수천 번",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope Optimizations, Part 1",
+                "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+                "publisher": "Zed Industries",
+                "date": "2024-11-18",
+                "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+              }
+            ]
+          },
+          {
+            "label": "point_to_offset",
+            "value": "최대 70% 빨라졌고 처리량은 250% 늘었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope Optimizations, Part 1",
+                "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+                "publisher": "Zed Industries",
+                "date": "2024-11-18",
+                "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+              }
+            ]
+          },
+          {
+            "label": "마이크로 벤치마크",
+            "value": "루프 57ns 대 비트마스크 1.0478ns",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope Optimizations, Part 1",
+                "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+                "publisher": "Zed Industries",
+                "date": "2024-11-18",
+                "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+              }
+            ]
+          },
+          {
+            "label": "덩어리 크기",
+            "value": "릴리스 빌드에서 128자를 넘지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope & SumTree",
+                "url": "https://zed.dev/blog/zed-decoded-rope-sumtree",
+                "publisher": "Zed Industries",
+                "date": "2024-04-23",
+                "summary": "편집기가 텍스트를 문자열 하나로 들고 있으면 2만 줄짜리 파일 한가운데에 한 단어를 넣는 데 뒤의 전부를 밀어야 하고, 523번째 줄이 어디인지 알려면 처음부터 줄바꿈을 세야 한다. Zed 는 로프를 쓰고 그 로프를 SumTree 로 만든다 — 잎에 텍스트 덩어리 여럿과 각 항목의 요약을 담고, 내부 노드는 아래 요약들을 다시 합친 B+ 트리다. 요약에는 UTF-8 길이, UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이 따위가 들어 있어 오프셋과 줄·칸을 오가는 일이 O(log n) 이 된다. 덩어리는 릴리스 빌드에서 128자를 넘지 않고, 스냅샷은 텍스트를 복사하지 않고 참조 수만 올린다. 로프는 무엇 하나에 뛰어나지는 않지만 늘 무난히 좋다고 적는다."
+              }
+            ]
+          },
+          {
+            "label": "비트맵이 더 쓰는 메모리",
+            "value": "덩어리마다 u128 셋, 48바이트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope Optimizations, Part 1",
+                "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+                "publisher": "Zed Industries",
+                "date": "2024-11-18",
+                "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Rope",
+            "what": "텍스트 전체. 연속된 메모리 한 덩어리가 아니라 잎에 불변 조각을 매단 나무다"
+          },
+          {
+            "name": "Chunk",
+            "what": "잎에 담기는 텍스트 조각. 128바이트 문자열과 함께 chars·chars_utf16·newlines·tabs 비트맵을 들고 있다"
+          },
+          {
+            "name": "SumTree",
+            "what": "잎에 항목 여럿과 각 항목의 요약을 담고 내부 노드가 그 아래 요약을 다시 합치는 B+ 트리"
+          },
+          {
+            "name": "TextSummary",
+            "what": "UTF-8 길이, UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이 따위. 찾을 수 있는 차원이 여기서 정해진다"
+          },
+          {
+            "name": "좌표 다섯",
+            "what": "Point(줄·칸)·Offset(바이트)·PointUtf16·OffsetUtf16·DisplayPoint(화면상의 자리)"
+          },
+          {
+            "name": "Anchor",
+            "what": "좌표가 아니라 논리적 위치. 어떤 글자의 어느 쪽인지를 램포트 타임스탬프로 된 삽입 식별자와 그 안의 오프셋으로 가리킨다"
+          }
+        ],
+        "invariants": [
+          "잎은 불변이다 — 스냅샷은 텍스트를 복사하지 않고 참조 수만 올린다",
+          "내부 노드는 언제나 그 아래 요약의 합과 같다. 편집은 잎에서 뿌리까지의 요약을 함께 고친다",
+          "덩어리는 128바이트를 넘지 않고, 그래서 u128 비트맵 한 개의 비트가 바이트마다 하나씩 대응한다",
+          "앵커는 편집이 지나가도 같은 글자를 가리킨다 — 그래야 협업과 백그라운드 작업이 자리를 잃지 않는다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "오프셋 하나를 줄·칸으로 바꾸는 길",
+          "question": "초당 수천 번 불리는 변환이 어떻게 훑기가 아니라 탐색이 되나",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"<b>오프셋 12345</b><br/>• 커서가 움직였다\"]:::list --> T[\"<b>SumTree 를 내려간다</b><br/>• 내부 노드의 요약을 보고<br/>• 갈 가지를 고른다<br/>• O(log n)\"]:::list\n  T --> C[\"<b>덩어리 하나에 닿는다</b><br/>• 128바이트 조각\"]:::list\n  C --> B[\"<b>비트맵으로 센다</b><br/>• 마스크 후 count_ones<br/>• leading_zeros 로 앞 줄바꿈<br/>• 분기 없는 CPU 명령\"]:::list\n  B --> R[\"<b>줄·칸</b><br/>• 루프 57ns → 1.0478ns<br/>• 실제 코드에서 최대 70% 단축\"]:::list"
+        },
+        {
+          "title": "같은 자리를 부르는 다섯 이름",
+          "question": "왜 좌표계를 하나로 통일하지 않았나",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Offset: 파일 안 바이트 수\n  Offset --> Point: 줄·칸으로\n  Point --> Offset: 다시 바이트로\n  Offset --> OffsetUtf16: 언어 서버가 UTF-16 으로 센다\n  Point --> PointUtf16: 같은 이유\n  Point --> DisplayPoint: 소프트 랩·접기·인레이 힌트 반영\n  DisplayPoint --> Point: 화면에서 파일로\n  Offset --> Anchor: 편집이 지나가도 살아남게\n  Anchor --> Offset: 지금 시점의 자리로"
+        },
+        {
+          "title": "요약에 없는 질문이 들어오면",
+          "question": "이 구조가 못 하는 것은 무엇인가",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>질문이 들어온다</b><br/>• 몇 번째 줄인가<br/>• UTF-16 으로 몇 칸인가\"]:::list --> S{\"요약에 있는 차원인가\"}\n  S -->|\"있다\"| FAST[\"<b>O(log n) 탐색</b><br/>• 내부 노드 요약만 보고 내려간다\"]:::list\n  S -->|\"없다\"| SLOW[\"<b>훑을 수밖에 없다</b><br/>• 잎을 차례로 다 본다\"]:::list\n  SLOW --> ADD[\"<b>요약에 차원을 더한다</b><br/>• 모든 편집이 갱신할 값이 하나 는다\"]:::list\n  ADD --> TAB[\"<b>탭이 걸린 자리</b><br/>• 표시 폭이 설정과 커서에 달렸다<br/>• 색인만 넣고 활용은 미뤘다\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "텍스트를 128바이트를 넘지 않는 불변 덩어리로 쪼개 나무의 잎에 매단다",
+            "why": "한가운데를 고칠 때 뒤의 전부를 옮기는 대신 포인터 몇 개만 고치기 위해서다"
+          },
+          {
+            "step": "잎마다 요약을 달고 내부 노드는 그 아래 요약을 합쳐 든다",
+            "why": "요약에 든 차원은 훑지 않고 내려가며 찾을 수 있다 — 오프셋과 줄·칸을 오가는 일이 O(log n) 이 되는 이유다"
+          },
+          {
+            "step": "덩어리 안에서는 비트맵으로 센다 — 마스크 후 count_ones 로 앞쪽 줄바꿈 수를, leading_zeros 로 가장 가까운 줄바꿈 위치를 구한다",
+            "why": "둘 다 CPU 명령 하나로 컴파일돼 128바이트를 한 글자씩 도는 루프와 분기가 통째로 사라진다"
+          },
+          {
+            "step": "언어 서버와 말을 섞을 때는 UTF-16 좌표를 쓴다",
+            "why": "프로토콜이 위치를 UTF-16 으로 세기 때문이다. 요약이 UTF-16 길이를 이미 들고 있어 변환이 싸다"
+          },
+          {
+            "step": "화면상의 자리는 따로 계산한다 — 소프트 랩·접기·인레이 힌트·탭·진단 블록을 반영한다",
+            "why": "파일의 23행 23열이 화면에서는 29행 36열일 수 있다. 파일의 좌표로는 커서를 그릴 수 없다"
+          },
+          {
+            "step": "오래 살아야 하는 위치는 앵커로 든다 — 램포트 타임스탬프로 된 삽입 식별자와 그 안의 오프셋",
+            "why": "편집이 지나가면 숫자 좌표는 틀린 곳을 가리키게 된다. 협업과 백그라운드 작업이 자리를 잃지 않으려면 논리적 위치가 필요하다"
+          },
+          {
+            "step": "스냅샷이 필요하면 참조 수만 올린다",
+            "why": "잎이 불변이라 여러 벌을 동시에 들고 있어도 텍스트를 복사하지 않는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "텍스트를 무엇으로 들 것인가",
+            "chosen": "로프. 잎에 불변 조각을 매단 나무로 든다",
+            "alternatives": [
+              "연속된 메모리 한 덩어리(문자열)",
+              "줄 단위 배열"
+            ],
+            "tradeoff": "무엇 하나에 뛰어난 자료구조는 아니라고 회사가 스스로 적는다 — 늘 무난히 좋은 쪽이다. 작은 편집에는 기록 시 복사 비용이 붙는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope & SumTree",
+                "url": "https://zed.dev/blog/zed-decoded-rope-sumtree",
+                "publisher": "Zed Industries",
+                "date": "2024-04-23",
+                "summary": "편집기가 텍스트를 문자열 하나로 들고 있으면 2만 줄짜리 파일 한가운데에 한 단어를 넣는 데 뒤의 전부를 밀어야 하고, 523번째 줄이 어디인지 알려면 처음부터 줄바꿈을 세야 한다. Zed 는 로프를 쓰고 그 로프를 SumTree 로 만든다 — 잎에 텍스트 덩어리 여럿과 각 항목의 요약을 담고, 내부 노드는 아래 요약들을 다시 합친 B+ 트리다. 요약에는 UTF-8 길이, UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이 따위가 들어 있어 오프셋과 줄·칸을 오가는 일이 O(log n) 이 된다. 덩어리는 릴리스 빌드에서 128자를 넘지 않고, 스냅샷은 텍스트를 복사하지 않고 참조 수만 올린다. 로프는 무엇 하나에 뛰어나지는 않지만 늘 무난히 좋다고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "로프를 어떤 나무로 만들 것인가",
+            "chosen": "요약을 든 B+ 트리(SumTree). 잎에 항목 여럿과 각 항목의 요약을 담고 내부 노드가 아래 요약을 합친다",
+            "alternatives": [
+              "텍스트 전용 이진 트리",
+              "길이만 들고 있는 로프"
+            ],
+            "tradeoff": "요약에 넣은 차원만 싸게 찾을 수 있다. 새 질문이 생기면 요약을 늘려야 하고, 그만큼 모든 편집이 갱신해야 할 값이 늘어난다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope & SumTree",
+                "url": "https://zed.dev/blog/zed-decoded-rope-sumtree",
+                "publisher": "Zed Industries",
+                "date": "2024-04-23",
+                "summary": "편집기가 텍스트를 문자열 하나로 들고 있으면 2만 줄짜리 파일 한가운데에 한 단어를 넣는 데 뒤의 전부를 밀어야 하고, 523번째 줄이 어디인지 알려면 처음부터 줄바꿈을 세야 한다. Zed 는 로프를 쓰고 그 로프를 SumTree 로 만든다 — 잎에 텍스트 덩어리 여럿과 각 항목의 요약을 담고, 내부 노드는 아래 요약들을 다시 합친 B+ 트리다. 요약에는 UTF-8 길이, UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이 따위가 들어 있어 오프셋과 줄·칸을 오가는 일이 O(log n) 이 된다. 덩어리는 릴리스 빌드에서 128자를 넘지 않고, 스냅샷은 텍스트를 복사하지 않고 참조 수만 올린다. 로프는 무엇 하나에 뛰어나지는 않지만 늘 무난히 좋다고 적는다."
+              }
+            ]
+          },
+          {
+            "question": "요약에 무엇을 넣을 것인가",
+            "chosen": "UTF-8 길이와 함께 UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이를 넣는다",
+            "alternatives": [
+              "바이트 길이만 넣고 나머지는 필요할 때 세기"
+            ],
+            "tradeoff": "UTF-16 은 편집기가 쓰는 인코딩이 아닌데도 늘 유지한다. 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문이고, 코드에 Offset 보다 OffsetUtf16 이 훨씬 많다는 것이 그 대가를 보여 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Text Coordinate Systems",
+                "url": "https://zed.dev/blog/zed-decoded-text-coordinate-systems",
+                "publisher": "Zed Industries",
+                "date": "2024-06-27",
+                "summary": "편집기가 위치를 세는 방식을 다섯으로 나눠 쓴다. Point(줄·칸)는 줄을 오르내리기에 좋고, Offset(문서 처음부터의 바이트 수)은 여러 줄에 걸친 선택에 좋다. PointUtf16·OffsetUtf16 은 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문에 따로 두는 것이고, SumTree 가 UTF-16 좌표를 이미 색인해 두어 변환이 빠르다(코드에는 Offset 보다 OffsetUtf16 이 훨씬 많다). DisplayPoint 는 소프트 랩·접기·인레이 힌트·탭·진단 블록까지 반영한 화면상의 자리라 파일의 23행 23열이 화면에서는 29행 36열이 되기도 한다. Anchor 는 좌표계라기보다 논리적 위치로, 어떤 글자의 왼쪽인지 오른쪽인지를 가리키며 램포트 타임스탬프로 된 삽입 식별자와 그 삽입 안에서의 바이트 오프셋으로 이뤄진다. CRDT 덕분에 편집이 지나가도 유효해서 협업과 백그라운드 작업이 위치를 잃지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "좌표계를 하나로 통일할 것인가",
+            "chosen": "다섯을 나란히 든다 — Point·Offset·PointUtf16·OffsetUtf16·DisplayPoint. 여기에 좌표가 아닌 Anchor 를 더한다",
+            "alternatives": [
+              "바이트 오프셋 하나로 통일하고 그때그때 변환"
+            ],
+            "tradeoff": "변환 코드가 늘고 어느 좌표계인지 헷갈리는 종류의 버그가 생긴다. 대신 소비자마다 자기에게 싼 좌표를 쓴다 — 줄을 오르내리는 데는 Point 가, 여러 줄 선택에는 Offset 이, 언어 서버에는 UTF-16 이, 커서를 그리는 데는 DisplayPoint 가 싸다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Text Coordinate Systems",
+                "url": "https://zed.dev/blog/zed-decoded-text-coordinate-systems",
+                "publisher": "Zed Industries",
+                "date": "2024-06-27",
+                "summary": "편집기가 위치를 세는 방식을 다섯으로 나눠 쓴다. Point(줄·칸)는 줄을 오르내리기에 좋고, Offset(문서 처음부터의 바이트 수)은 여러 줄에 걸친 선택에 좋다. PointUtf16·OffsetUtf16 은 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문에 따로 두는 것이고, SumTree 가 UTF-16 좌표를 이미 색인해 두어 변환이 빠르다(코드에는 Offset 보다 OffsetUtf16 이 훨씬 많다). DisplayPoint 는 소프트 랩·접기·인레이 힌트·탭·진단 블록까지 반영한 화면상의 자리라 파일의 23행 23열이 화면에서는 29행 36열이 되기도 한다. Anchor 는 좌표계라기보다 논리적 위치로, 어떤 글자의 왼쪽인지 오른쪽인지를 가리키며 램포트 타임스탬프로 된 삽입 식별자와 그 삽입 안에서의 바이트 오프셋으로 이뤄진다. CRDT 덕분에 편집이 지나가도 유효해서 협업과 백그라운드 작업이 위치를 잃지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "편집이 지나가도 살아남는 위치를 어떻게 만들 것인가",
+            "chosen": "앵커. 어떤 글자의 왼쪽인지 오른쪽인지를 램포트 타임스탬프로 된 삽입 식별자와 그 안의 오프셋으로 가리킨다",
+            "alternatives": [
+              "숫자 좌표를 들고 편집마다 옮기기"
+            ],
+            "tradeoff": "CRDT 를 들고 있어야 하는 값을 낸다. 대신 협업과 백그라운드 작업이 편집 도중에도 자리를 잃지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Text Coordinate Systems",
+                "url": "https://zed.dev/blog/zed-decoded-text-coordinate-systems",
+                "publisher": "Zed Industries",
+                "date": "2024-06-27",
+                "summary": "편집기가 위치를 세는 방식을 다섯으로 나눠 쓴다. Point(줄·칸)는 줄을 오르내리기에 좋고, Offset(문서 처음부터의 바이트 수)은 여러 줄에 걸친 선택에 좋다. PointUtf16·OffsetUtf16 은 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문에 따로 두는 것이고, SumTree 가 UTF-16 좌표를 이미 색인해 두어 변환이 빠르다(코드에는 Offset 보다 OffsetUtf16 이 훨씬 많다). DisplayPoint 는 소프트 랩·접기·인레이 힌트·탭·진단 블록까지 반영한 화면상의 자리라 파일의 23행 23열이 화면에서는 29행 36열이 되기도 한다. Anchor 는 좌표계라기보다 논리적 위치로, 어떤 글자의 왼쪽인지 오른쪽인지를 가리키며 램포트 타임스탬프로 된 삽입 식별자와 그 삽입 안에서의 바이트 오프셋으로 이뤄진다. CRDT 덕분에 편집이 지나가도 유효해서 협업과 백그라운드 작업이 위치를 잃지 않는다."
+              }
+            ]
+          },
+          {
+            "question": "덩어리 안에서 줄바꿈을 어떻게 셀 것인가",
+            "chosen": "덩어리마다 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹고 count_ones 와 leading_zeros 로 구한다",
+            "alternatives": [
+              "128바이트를 한 글자씩 도는 루프 유지"
+            ],
+            "tradeoff": "덩어리마다 48바이트가 더 붙는다. 텍스트 자체보다 색인이 차지하는 몫이 늘어나는 것을 속도와 바꾼 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope Optimizations, Part 1",
+                "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+                "publisher": "Zed Industries",
+                "date": "2024-11-18",
+                "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+              }
+            ]
+          },
+          {
+            "question": "탭을 어디까지 다룰 것인가",
+            "chosen": "비트맵에 색인은 넣되 그것을 쓰는 코드는 뒤로 미뤘다",
+            "alternatives": [
+              "탭 처리까지 이번에 바꾸기"
+            ],
+            "tradeoff": "자리는 잡아 두고 이득은 아직 못 가져간다. 탭의 표시 폭이 설정과 커서 위치에 달려 있어 다른 세 비트맵처럼 단순히 세는 것으로 끝나지 않기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope Optimizations, Part 1",
+                "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+                "publisher": "Zed Industries",
+                "date": "2024-11-18",
+                "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Rope",
+            "role": "텍스트 전체를 잎에 불변 조각을 매단 나무로 든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope & SumTree",
+                "url": "https://zed.dev/blog/zed-decoded-rope-sumtree",
+                "publisher": "Zed Industries",
+                "date": "2024-04-23",
+                "summary": "편집기가 텍스트를 문자열 하나로 들고 있으면 2만 줄짜리 파일 한가운데에 한 단어를 넣는 데 뒤의 전부를 밀어야 하고, 523번째 줄이 어디인지 알려면 처음부터 줄바꿈을 세야 한다. Zed 는 로프를 쓰고 그 로프를 SumTree 로 만든다 — 잎에 텍스트 덩어리 여럿과 각 항목의 요약을 담고, 내부 노드는 아래 요약들을 다시 합친 B+ 트리다. 요약에는 UTF-8 길이, UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이 따위가 들어 있어 오프셋과 줄·칸을 오가는 일이 O(log n) 이 된다. 덩어리는 릴리스 빌드에서 128자를 넘지 않고, 스냅샷은 텍스트를 복사하지 않고 참조 수만 올린다. 로프는 무엇 하나에 뛰어나지는 않지만 늘 무난히 좋다고 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "SumTree (B+ 트리 + 요약)",
+            "role": "요약 차원을 따라 O(log n) 으로 내려가게 하고 스냅샷을 참조 수로 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope & SumTree",
+                "url": "https://zed.dev/blog/zed-decoded-rope-sumtree",
+                "publisher": "Zed Industries",
+                "date": "2024-04-23",
+                "summary": "편집기가 텍스트를 문자열 하나로 들고 있으면 2만 줄짜리 파일 한가운데에 한 단어를 넣는 데 뒤의 전부를 밀어야 하고, 523번째 줄이 어디인지 알려면 처음부터 줄바꿈을 세야 한다. Zed 는 로프를 쓰고 그 로프를 SumTree 로 만든다 — 잎에 텍스트 덩어리 여럿과 각 항목의 요약을 담고, 내부 노드는 아래 요약들을 다시 합친 B+ 트리다. 요약에는 UTF-8 길이, UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이 따위가 들어 있어 오프셋과 줄·칸을 오가는 일이 O(log n) 이 된다. 덩어리는 릴리스 빌드에서 128자를 넘지 않고, 스냅샷은 텍스트를 복사하지 않고 참조 수만 올린다. 로프는 무엇 하나에 뛰어나지는 않지만 늘 무난히 좋다고 적는다."
+              }
+            ]
+          },
+          {
+            "tech": "ArrayString<128> + u128 비트맵 넷",
+            "role": "덩어리 하나의 표현. 바이트 위치마다 비트 하나가 대응한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope Optimizations, Part 1",
+                "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+                "publisher": "Zed Industries",
+                "date": "2024-11-18",
+                "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+              }
+            ]
+          },
+          {
+            "tech": "CRDT + 램포트 타임스탬프",
+            "role": "앵커의 삽입 식별자. 편집이 지나가도 위치가 유효하게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Text Coordinate Systems",
+                "url": "https://zed.dev/blog/zed-decoded-text-coordinate-systems",
+                "publisher": "Zed Industries",
+                "date": "2024-06-27",
+                "summary": "편집기가 위치를 세는 방식을 다섯으로 나눠 쓴다. Point(줄·칸)는 줄을 오르내리기에 좋고, Offset(문서 처음부터의 바이트 수)은 여러 줄에 걸친 선택에 좋다. PointUtf16·OffsetUtf16 은 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문에 따로 두는 것이고, SumTree 가 UTF-16 좌표를 이미 색인해 두어 변환이 빠르다(코드에는 Offset 보다 OffsetUtf16 이 훨씬 많다). DisplayPoint 는 소프트 랩·접기·인레이 힌트·탭·진단 블록까지 반영한 화면상의 자리라 파일의 23행 23열이 화면에서는 29행 36열이 되기도 한다. Anchor 는 좌표계라기보다 논리적 위치로, 어떤 글자의 왼쪽인지 오른쪽인지를 가리키며 램포트 타임스탬프로 된 삽입 식별자와 그 삽입 안에서의 바이트 오프셋으로 이뤄진다. CRDT 덕분에 편집이 지나가도 유효해서 협업과 백그라운드 작업이 위치를 잃지 않는다."
+              }
+            ]
+          }
+        ]
+      },
+      "history": [
+        {
+          "version": "비트마스크 색인",
+          "from": "2024-11",
+          "to": "",
+          "what": "덩어리 구조에 u128 비트맵 넷을 얹어 줄바꿈 수와 위치를 CPU 명령 하나로 구한다. 그전까지는 같은 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 셌다.",
+          "why_changed": "",
+          "tradeoff": "덩어리마다 48바이트가 더 붙고 비트 조작 코드가 늘었다. 탭은 표시 폭이 설정과 커서 위치에 달려 색인만 넣고 활용은 미뤘다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Zed Decoded: Rope Optimizations, Part 1",
+              "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+              "publisher": "Zed Industries",
+              "date": "2024-11-18",
+              "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+            }
+          ]
+        }
+      ],
+      "connections": [
+        {
+          "to": "zeta-distillation",
+          "via": "같은 좌표계 위에 선다",
+          "contract": "편집 예측이 모델에 넣는 맥락은 커서 위치와 최근 편집 이력인데, 그 위치를 세는 방식이 이 층에서 온다. 언어 서버에서 타입과 정의를 끌어올 때 쓰는 좌표가 UTF-16 인 것도 여기서 정해진 일이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "언어 서버 (LSP)",
+          "via": "UTF-16 좌표",
+          "contract": "프로토콜이 위치를 UTF-16 으로 세므로 편집기가 그 좌표를 늘 들고 있어야 한다. 요약이 UTF-16 길이를 색인해 두어 변환이 싸다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "협업 (CRDT)",
+          "via": "앵커",
+          "contract": "앵커의 삽입 식별자가 램포트 타임스탬프라, 여러 사람의 편집이 섞여도 각자의 커서와 선택이 같은 글자를 가리킨다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "화면 렌더링 (DisplayMap)",
+          "via": "DisplayPoint",
+          "contract": "소프트 랩·접기·인레이 힌트·탭·진단 블록을 반영해 파일 좌표를 화면 좌표로 옮긴다. 파일의 23행 23열이 화면의 29행 36열이 되는 자리다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Ropes: an Alternative to Strings",
+            "authors": "Hans-J. Boehm, Russ Atkinson, Michael Plass",
+            "year": "1995",
+            "venue": "Software: Practice and Experience 25(12)",
+            "url": "https://citeseerx.ist.psu.edu/document?doi=10.1.1.14.9450",
+            "takeaway": "긴 문자열을 나무로 쪼개 들면 이어 붙이기와 자르기가 싸진다는 30년 된 결론이다. 이 회사가 새로 한 것은 로프 자체가 아니라 그 잎에 무엇을 요약으로 달지를 고른 일이다.",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Organization and Maintenance of Large Ordered Indices",
+            "authors": "Rudolf Bayer, Edward McCreight",
+            "year": "1972",
+            "venue": "Acta Informatica 1(3)",
+            "url": "https://doi.org/10.1007/BF00288683",
+            "takeaway": "잎에 항목 여럿을 담고 내부 노드는 색인만 드는 형태가 여기서 나왔다. SumTree 가 B+ 트리인 이유는 디스크가 아니라 캐시 때문이지만 구조의 계보는 같다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Time, Clocks, and the Ordering of Events in a Distributed System",
+            "authors": "Leslie Lamport",
+            "year": "1978",
+            "venue": "Communications of the ACM 21(7)",
+            "url": "https://dl.acm.org/doi/10.1145/359545.359563",
+            "takeaway": "앵커의 삽입 식별자가 램포트 타임스탬프다. 협업 편집에서 누가 먼저 쳤는지를 시계 없이 정하는 방법이 여기서 온다.",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Language Server Protocol Specification — Text Documents / Position",
+            "authors": "Microsoft",
+            "year": "2016",
+            "venue": "LSP 명세",
+            "url": "https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/",
+            "takeaway": "위치를 UTF-16 코드 단위로 센다는 이 한 줄이 편집기의 자료구조에 좌표계 둘을 더 만들었다. 남의 프로토콜이 자료구조를 정하는 사례다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "파일 안의 자리와 화면 위의 자리는 원리적으로 다르다",
+            "why_hard": "소프트 랩·접기·인레이 힌트·진단 블록이 끼면 같은 글자가 다른 줄에 놓인다. 파일의 23행 23열이 화면에서는 29행 36열이 되는데, 둘 사이의 변환은 그때그때의 표시 상태에 달려 있어 미리 계산해 둘 수도 없다.",
+            "current_best": "화면 좌표를 아예 다른 좌표계로 분리하고 표시 상태 스냅샷을 통해서만 오가는 것. 대가는 코드에 좌표계가 하나 더 늘어나는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Text Coordinate Systems",
+                "url": "https://zed.dev/blog/zed-decoded-text-coordinate-systems",
+                "publisher": "Zed Industries",
+                "date": "2024-06-27",
+                "summary": "편집기가 위치를 세는 방식을 다섯으로 나눠 쓴다. Point(줄·칸)는 줄을 오르내리기에 좋고, Offset(문서 처음부터의 바이트 수)은 여러 줄에 걸친 선택에 좋다. PointUtf16·OffsetUtf16 은 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문에 따로 두는 것이고, SumTree 가 UTF-16 좌표를 이미 색인해 두어 변환이 빠르다(코드에는 Offset 보다 OffsetUtf16 이 훨씬 많다). DisplayPoint 는 소프트 랩·접기·인레이 힌트·탭·진단 블록까지 반영한 화면상의 자리라 파일의 23행 23열이 화면에서는 29행 36열이 되기도 한다. Anchor 는 좌표계라기보다 논리적 위치로, 어떤 글자의 왼쪽인지 오른쪽인지를 가리키며 램포트 타임스탬프로 된 삽입 식별자와 그 삽입 안에서의 바이트 오프셋으로 이뤄진다. CRDT 덕분에 편집이 지나가도 유효해서 협업과 백그라운드 작업이 위치를 잃지 않는다."
+              }
+            ]
+          },
+          {
+            "problem": "탭의 너비는 텍스트만 봐서는 알 수 없다",
+            "why_hard": "표시 폭이 탭 크기 설정과 그 탭이 놓인 자리에 함께 달려 있다. 줄바꿈처럼 세면 끝나는 것이 아니다.",
+            "current_best": "색인만 미리 넣어 두고 그것을 쓰는 코드는 뒤로 미루는 것. 회사가 그렇게 하고 그렇게 적었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Zed Decoded: Rope Optimizations, Part 1",
+                "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+                "publisher": "Zed Industries",
+                "date": "2024-11-18",
+                "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+              }
+            ]
+          },
+          {
+            "problem": "요약에 없는 질문은 싸게 답할 수 없다",
+            "why_hard": "이 구조가 빠른 이유가 요약에 든 차원만 보고 내려가는 데 있으므로, 새로운 종류의 질문은 훑기로 떨어진다. 그렇다고 요약을 계속 늘리면 모든 편집이 갱신할 값이 함께 는다.",
+            "current_best": "질문의 종류를 미리 정해 요약에 박아 두는 것. 다섯 좌표계가 전부 그 결정의 흔적이다(재구성).",
+            "confidence": "inferred"
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "자료구조를 고를 때",
+          "thought": "뛰어난 것을 고르고 싶은데 편집기는 한 가지 동작만 하는 프로그램이 아니다. 삽입도 빠르고 줄 찾기도 빠르고 스냅샷도 싸야 하는데, 그런 자료구조는 없다. 무엇 하나에 뛰어나지는 않아도 늘 무난한 쪽을 골랐다고 회사가 적는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "UTF-16 을 요약에 넣을지 정할 때",
+          "thought": "편집기 안에서 아무도 안 쓰는 인코딩을 왜 늘 들고 있어야 하나. 언어 서버가 그렇게 세기 때문이라는 이유 하나뿐인데, 그 하나가 코드 전체에서 OffsetUtf16 을 Offset 보다 흔하게 만들었다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "프로파일러를 열었을 때",
+          "thought": "오프셋을 줄·칸으로 바꾸는 별것 아닌 함수가 병목이었다. 한 번은 싼데 초당 수천 번이면 얘기가 다르다 — 느린 것은 알고리즘이 아니라 128바이트를 도는 루프였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "비트맵을 얹기로 하고서",
+          "thought": "덩어리마다 48바이트가 더 붙는다. 메모리를 줄이려고 로프를 쓰는 마당에 색인으로 메모리를 더 쓰는 셈인데, 초당 수천 번 불리는 자리라 그쪽이 남는 장사다(재구성).",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Zed Decoded: Rope & SumTree",
+          "url": "https://zed.dev/blog/zed-decoded-rope-sumtree",
+          "publisher": "Zed Industries",
+          "date": "2024-04-23",
+          "summary": "편집기가 텍스트를 문자열 하나로 들고 있으면 2만 줄짜리 파일 한가운데에 한 단어를 넣는 데 뒤의 전부를 밀어야 하고, 523번째 줄이 어디인지 알려면 처음부터 줄바꿈을 세야 한다. Zed 는 로프를 쓰고 그 로프를 SumTree 로 만든다 — 잎에 텍스트 덩어리 여럿과 각 항목의 요약을 담고, 내부 노드는 아래 요약들을 다시 합친 B+ 트리다. 요약에는 UTF-8 길이, UTF-16 길이, 줄·칸 좌표, 가장 긴 줄 길이 따위가 들어 있어 오프셋과 줄·칸을 오가는 일이 O(log n) 이 된다. 덩어리는 릴리스 빌드에서 128자를 넘지 않고, 스냅샷은 텍스트를 복사하지 않고 참조 수만 올린다. 로프는 무엇 하나에 뛰어나지는 않지만 늘 무난히 좋다고 적는다."
+        },
+        {
+          "title": "Zed Decoded: Rope Optimizations, Part 1",
+          "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+          "publisher": "Zed Industries",
+          "date": "2024-11-18",
+          "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+        },
+        {
+          "title": "Zed Decoded: Text Coordinate Systems",
+          "url": "https://zed.dev/blog/zed-decoded-text-coordinate-systems",
+          "publisher": "Zed Industries",
+          "date": "2024-06-27",
+          "summary": "편집기가 위치를 세는 방식을 다섯으로 나눠 쓴다. Point(줄·칸)는 줄을 오르내리기에 좋고, Offset(문서 처음부터의 바이트 수)은 여러 줄에 걸친 선택에 좋다. PointUtf16·OffsetUtf16 은 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문에 따로 두는 것이고, SumTree 가 UTF-16 좌표를 이미 색인해 두어 변환이 빠르다(코드에는 Offset 보다 OffsetUtf16 이 훨씬 많다). DisplayPoint 는 소프트 랩·접기·인레이 힌트·탭·진단 블록까지 반영한 화면상의 자리라 파일의 23행 23열이 화면에서는 29행 36열이 되기도 한다. Anchor 는 좌표계라기보다 논리적 위치로, 어떤 글자의 왼쪽인지 오른쪽인지를 가리키며 램포트 타임스탬프로 된 삽입 식별자와 그 삽입 안에서의 바이트 오프셋으로 이뤄진다. CRDT 덕분에 편집이 지나가도 유효해서 협업과 백그라운드 작업이 위치를 잃지 않는다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1277,6 +1834,20 @@
       "url": "https://zed.dev/blog/how-we-developed-zeta2",
       "publisher": "Zed Industries",
       "summary": "학습 파이프라인 회고. 사용자가 실제로 쓴 코드를 정답으로 쓰지 않는다 — 커서 위치와 최근 편집 같은 시작 상태만 받아 선생 모델(Claude Sonnet 4.6)에게 던지고 그 예측을 학습 신호로 삼는다. 데이터는 동의한 오픈소스 저장소에서만 모으고 주당 약 25만~30만 요청이 들어온다(처음에는 깃허브 커밋에서 만든 약 10만 개로 시작했다). 바탕 모델을 Qwen2.5-Coder-7B 에서 Seed-Coder-8B 로 바꿨고 선생과의 일치도를 재는 자체 지표 deltaChrF 가 78.36에서 80.61로 올랐다. 정답이 하나가 아니라 예제마다 선생 완성본 셋과 견준다. 반전 문제를 겪었다 — 사용자가 몇 글자 치면 모델이 그것을 실수로 보고 지우려 든다. 선생이 사용자가 무엇을 하는 중인지 추론해 다음 것을 하는 대신 지저분한 코드를 정리하려 들어서였고, 선생 프롬프트를 다시 훈련시키고 편집 이력의 해상도를 올려 고쳤다."
+    },
+    {
+      "title": "Zed Decoded: Rope Optimizations, Part 1",
+      "url": "https://zed.dev/blog/zed-decoded-rope-optimizations-part-1",
+      "publisher": "Zed Industries",
+      "date": "2024-11-18",
+      "summary": "오프셋을 줄·칸으로 바꾸는 일이 병목이었다. 파일을 돌아다니거나 편집할 때 초당 수백에서 수천 번 불리는데, 128바이트 덩어리를 한 글자씩 돌며 줄바꿈을 세고 있었다. 덩어리 구조에 u128 비트맵 넷(chars, chars_utf16, newlines, tabs)을 얹어 바이트 위치마다 비트 하나가 대응하게 했고, 앞쪽 줄바꿈 수는 마스크 후 count_ones, 가장 가까운 줄바꿈 위치는 leading_zeros 로 구한다. 둘 다 CPU 명령 하나로 컴파일돼 분기가 사라진다. 마이크로 벤치마크에서 루프 57ns 대 비트마스크 1.0478ns, 실제 코드에서는 point_to_offset 이 최대 70% 빨라지고 처리량이 250% 늘었다. 대가는 덩어리마다 u128 셋(48바이트)이 더 붙는 것이고, 탭은 표시 폭이 설정과 커서 위치에 달려 까다로워 색인만 넣고 활용은 뒤로 미뤘다."
+    },
+    {
+      "title": "Zed Decoded: Text Coordinate Systems",
+      "url": "https://zed.dev/blog/zed-decoded-text-coordinate-systems",
+      "publisher": "Zed Industries",
+      "date": "2024-06-27",
+      "summary": "편집기가 위치를 세는 방식을 다섯으로 나눠 쓴다. Point(줄·칸)는 줄을 오르내리기에 좋고, Offset(문서 처음부터의 바이트 수)은 여러 줄에 걸친 선택에 좋다. PointUtf16·OffsetUtf16 은 언어 서버 프로토콜이 위치를 UTF-16 으로 세기 때문에 따로 두는 것이고, SumTree 가 UTF-16 좌표를 이미 색인해 두어 변환이 빠르다(코드에는 Offset 보다 OffsetUtf16 이 훨씬 많다). DisplayPoint 는 소프트 랩·접기·인레이 힌트·탭·진단 블록까지 반영한 화면상의 자리라 파일의 23행 23열이 화면에서는 29행 36열이 되기도 한다. Anchor 는 좌표계라기보다 논리적 위치로, 어떤 글자의 왼쪽인지 오른쪽인지를 가리키며 램포트 타임스탬프로 된 삽입 식별자와 그 삽입 안에서의 바이트 오프셋으로 이뤄진다. CRDT 덕분에 편집이 지나가도 유효해서 협업과 백그라운드 작업이 위치를 잃지 않는다."
     }
   ]
 }
