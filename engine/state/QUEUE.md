@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Jane Street** | US · 금융 | 프로파일만 씀(2026-09-07). 도메인 셋 다 비어 있다 — 언어를 고쳐 성능을 만든다(`introducing-oxcaml` 2025-06-14 확보) · 커널의 기본값을 의심한다(`a-higgs-bugson-in-the-linux-kernel` 2025-07-02 확보) · 하드웨어까지 내려간다(자료 미독, tech 두 칸 `unknown`). 사업은 공개되지 않아 revenue_streams 가 `unknown` 이다. 안 읽은 것 — ASIC 역설계(2026-08-05) · Hardcaml 대수적 효과(2026-01-06) · 형식 기법 묶음(2026-06-07, 도메인 하나가 더 설 자리). |
+| **Jane Street** | US · 금융 | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 언어를 고쳐 성능을 만든다(`modes-for-refcounting`). 빈 도메인 둘 — 커널의 기본값을 의심한다(`a-higgs-bugson-in-the-linux-kernel` 확보) · 하드웨어까지 내려간다(자료 미독, tech 두 칸 `unknown`). 사업은 공개되지 않아 revenue_streams 가 `unknown` 이다. 안 읽은 것 — ASIC 역설계(2026-08-05) · Hardcaml 대수적 효과(2026-01-06) · 형식 기법 묶음(2026-06-07). |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기

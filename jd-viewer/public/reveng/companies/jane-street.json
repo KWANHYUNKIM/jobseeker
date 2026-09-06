@@ -96,9 +96,26 @@
               "summary": "레오 화이트가 2025년 6월 14일에 쓴 글로, 이 회사의 실서비스 컴파일러이자 성능 지향 프로그래밍을 위한 OCaml 개선 실험실인 OxCaml 을 소개한다. 성능에 중요한 부분을 안전하고 편하고 예측 가능하게 통제하게 해서 OCaml 을 성능 공학에 좋은 언어로 만드는 것이 목적이라고 적는다. 확장은 넷으로 나뉜다 — 데이터 경쟁을 타입 시스템 수준에서 정적으로 막는 두려움 없는 동시성, 메모리에 데이터가 어떻게 놓이는지 프로그래머가 지정하고 SIMD 확장에 직접 닿게 하는 레이아웃, 할당을 통제해 GC 부담을 줄이고 캐시 효율과 동작을 예측 가능하게 만드는 할당 제어, 그리고 다형 매개변수·include 함자·이름 붙은 튜플·불변 배열 같은 편의 기능이다. 대가도 밝힌다: OxCaml 은 OCaml 과 하위 호환이지만 자기 확장에 대해서는 안정성이나 하위 호환을 약속하지 않으며, 이 회사의 일부 라이브러리는 OxCaml 에서만 쓸 수 있다. 왜 C++ 나 러스트 대신 이 길을 골랐는지는 이 글에 없다."
             }
           ]
+        },
+        {
+          "tech": "모드를 실제 API 에 쓰기(PyOCaml)",
+          "solves": "파이썬 상호 운용에서 인자는 `@ local` 로 빌리고 반환은 `@ unique` 로 내서 참조 수 조작을 컴파일러가 지운다. `borrow_` 로 유일함을 유지한 채 빌려준다.",
+          "limits": "모드를 안 쓰는 코드에서는 해제가 GC 를 기다리는 지연이 그대로 남는다. 손으로 다루는 newref·decref 는 코드를 지저분하게 만든다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+              "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+              "publisher": "Jane Street",
+              "date": "2026-06-15",
+              "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "modes-for-refcounting"
+      ]
     },
     {
       "name": "커널의 기본값을 의심한다",
@@ -182,13 +199,521 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "modes-for-refcounting",
+      "name": "빌린 것과 가진 것을 타입으로 가른다",
+      "domain": "언어를 고쳐 성능을 만든다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "OCaml 에서 파이썬을 부르면 두 언어의 메모리 관리가 부딪힌다. 파이썬 객체를 OCaml 값으로 감싸는 순간 참조 수를 올리기는 하는데, 내리는 일은 **그 OCaml 값이 GC 될 때**까지 안 일어난다.\n\n그러면 해제가 실질적으로 늦어지고 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다룰 때는 이것이 진짜 문제가 된다.",
+        "metrics": [
+          {
+            "label": "어긋나는 자리",
+            "value": "Py_INCREF 는 즉시, 짝이 되는 decref 는 OCaml GC 때 — 그 사이가 그대로 지연이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "label": "쓰는 모드 둘",
+            "value": "`@ local`(이 호출을 벗어나지 않는다) · `@ unique`(유일한 손잡이다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "label": "버는 것",
+            "value": "local 인자는 incref 를 건너뛰고, unique 반환은 포인터를 그대로 넘겨 incref 를 건너뛴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "label": "아픈 자리",
+            "value": "큰 데이터프레임과 GPU 메모리 같은 귀한 자원",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "label": "고른 철학",
+            "value": "러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "파이썬 객체",
+            "what": "참조 수로 수명이 정해지는 것. C 층에서는 PyObject 포인터다"
+          },
+          {
+            "name": "OCaml 래퍼",
+            "what": "그 객체를 담은 OCaml 값. GC 가 수명을 정한다"
+          },
+          {
+            "name": "`@ local` 모드",
+            "what": "이 값이 이 함수 호출을 벗어나지 않는다는 약속"
+          },
+          {
+            "name": "`@ unique` 모드",
+            "what": "이 값이 그 객체에 대한 유일한 손잡이라는 약속"
+          },
+          {
+            "name": "`borrow_`",
+            "what": "unique 값을 local 함수에 넘기고도 유일함을 잃지 않게 하는 문법"
+          }
+        ],
+        "invariants": [
+          "local 로 받은 인자는 호출을 넘겨 살아남지 못한다",
+          "unique 값은 그 객체의 유일한 손잡이다",
+          "빌리기만 하는 함수는 참조 수를 안 건드린다",
+          "손으로 다루는 길은 있되 기본이 아니다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "어디서 늦어지나",
+          "question": "참조 수와 GC 가 부딪히는 자리",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant O as OCaml 코드\n  participant W as OCaml 래퍼\n  participant P as 파이썬 객체\n  O->>P: Py_INCREF (즉시)\n  O->>W: 값으로 감싼다\n  Note over W: 여기서부터 수명이 GC 손에\n  O->>O: 다 쓰고 놓는다\n  Note over W,P: decref 는 아직\n  W->>P: Py_DECREF (GC 가 돌 때)\n  Note over O,P: 그 사이가 지연 — 큰 데이터프레임·GPU 메모리에서 문제"
+        },
+        {
+          "title": "두 모드가 각각 지우는 일",
+          "question": "타입이 무엇을 증명해 주나",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[\"<b>인자를 빌린다</b><br/>• @ local\"]:::list --> A2[\"<b>호출하는 쪽이 붙들고 있다</b><br/>• 컴파일러가 증명<br/>• incref 를 건너뛴다\"]:::list\n  B[\"<b>값을 돌려준다</b><br/>• @ unique\"]:::list --> B2[\"<b>유일한 손잡이다</b><br/>• 포인터를 그대로 넘긴다<br/>• incref 를 건너뛴다\"]:::list\n  C[\"<b>borrow_</b>\"]:::list --> C2[\"<b>unique 를 잃지 않고 빌려준다</b>\"]:::list"
+        },
+        {
+          "title": "이 방식이 못 하는 것",
+          "question": "타입으로 다 막을 수 있나",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[\"<b>모드를 안 붙이면</b>\"]:::list --> X1[\"<b>예전처럼 GC 에 맡긴다</b><br/>• 지연이 그대로 남는다\"]:::list\n  H[\"<b>급한 자리</b>\"]:::list --> X2[\"<b>손으로 newref · decref</b><br/>• 코드가 지저분해진다\"]:::list\n  X2 --> X3[\"<b>예외가 나면?</b><br/>• ppx_release 로 정리한다\"]:::list\n  R[\"<b>모두에게 소유권을 지우면</b>\"]:::list --> X4[\"<b>러스트가 된다</b><br/>• 일부러 안 고른 길\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "대부분의 함수가 인자를 `@ local` 로 받는다",
+            "why": "빌리기만 하는 자리에서는 참조 수를 건드릴 이유가 없다"
+          },
+          {
+            "step": "컴파일러가 그 값이 호출을 벗어나지 않음을 증명한다",
+            "why": "증명이 되면 incref 를 통째로 건너뛸 수 있다"
+          },
+          {
+            "step": "돌려주는 값은 `@ unique` 로 낸다",
+            "why": "유일한 손잡이면 C 접합부가 포인터를 그대로 훔쳐 넘길 수 있다"
+          },
+          {
+            "step": "unique 값을 local 함수에 넘길 때는 `borrow_` 로 넘긴다",
+            "why": "호출을 넘겨 살아남지 못하니 돌아온 뒤에도 여전히 유일하다"
+          },
+          {
+            "step": "급한 자리에는 newref 와 decref 를 손으로 쓴다",
+            "why": "타입으로 다 덮이지 않는 경로가 남는다"
+          },
+          {
+            "step": "그 정리를 ppx_release 로 감싼다",
+            "why": "예외가 나도 정리가 돼야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "두 언어의 메모리 관리를 어떻게 맞출 것인가",
+            "chosen": "타입 모드로 소유와 빌림을 구분해 컴파일러가 참조 수 처리를 지시하게 한다",
+            "alternatives": [
+              "예전처럼 감싸고 GC 에 맡기기",
+              "모든 곳에서 손으로 incref·decref 하기"
+            ],
+            "tradeoff": "모드를 붙이는 만큼 API 가 읽기 어려워진다(재구성). 대신 해제가 GC 를 기다리지 않아 큰 데이터프레임과 GPU 메모리에서 나던 지연이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "question": "인자를 어떻게 받을 것인가",
+            "chosen": "대부분 `@ local` 로 빌린다",
+            "alternatives": [
+              "소유권을 넘겨받기",
+              "항상 incref 하고 나중에 decref"
+            ],
+            "tradeoff": "local 로 받으면 그 값을 저장해 둘 수 없다 — 함수가 할 수 있는 일이 줄어든다. 대신 호출하는 쪽이 붙들고 있음이 증명되므로 incref 자체가 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "question": "반환값을 어떻게 낼 것인가",
+            "chosen": "`@ unique` 로 낸다 — 유일한 손잡이임을 타입에 적는다",
+            "alternatives": [
+              "보통 값으로 돌려주고 참조 수를 올리기"
+            ],
+            "tradeoff": "받는 쪽이 그 유일함을 지켜야 한다(재구성). 대신 C 접합부가 포인터를 그대로 훔쳐 넘겨 반환 때의 incref 도 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "question": "유일한 값을 빌려주면 유일함이 깨지나",
+            "chosen": "`borrow_` 로 넘긴다 — local 로 받는 함수는 인자를 살려 둘 수 없으므로 돌아오면 여전히 유일하다",
+            "alternatives": [
+              "빌려줄 때마다 유일함을 포기하기"
+            ],
+            "tradeoff": "문법이 하나 더 생긴다. 대신 유일함을 유지한 채로 기존 함수들에 값을 넘길 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "question": "소유권 추적의 짐을 누구에게 지울 것인가",
+            "chosen": "모두에게 지우지 않는다. 많은 코드는 예전처럼 GC 에 맡겨 쓰게 둔다",
+            "alternatives": [
+              "러스트처럼 모든 사용자가 소유권을 추적하게 하기"
+            ],
+            "tradeoff": "모드를 안 쓰는 코드에서는 지연 문제가 그대로 남는다. 대신 익숙한 방식으로도 쓸 수 있어 옮겨 오는 값이 낮다 — 이 회사가 러스트의 방식과 갈라선다고 명시한 자리다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "question": "손으로 다루는 길을 열어 둘 것인가",
+            "chosen": "연다. newref 와 decref 를 두되 대부분의 코드는 안 쓰게 한다",
+            "alternatives": [
+              "아예 막기"
+            ],
+            "tradeoff": "손으로 쓰면 코드가 지저분해지고 실수의 여지가 생긴다. 대신 타입으로 안 덮이는 급한 경로가 막히지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "question": "예외가 났을 때 정리를 어떻게 할 것인가",
+            "chosen": "ppx_release 확장으로 범위를 벗어날 때 정리되게 한다",
+            "alternatives": [
+              "손으로 감싸기"
+            ],
+            "tradeoff": "확장 문법에 기대게 된다(재구성). 대신 예외가 나도 참조가 새지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OxCaml 모드 시스템(local · unique)",
+            "role": "빌림과 소유를 타입에 적어 컴파일러가 참조 수 처리를 정하게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              },
+              {
+                "title": "Introducing OxCaml",
+                "url": "https://blog.janestreet.com/introducing-oxcaml/",
+                "publisher": "Jane Street",
+                "date": "2025-06-14",
+                "summary": "레오 화이트가 2025년 6월 14일에 쓴 글로, 이 회사의 실서비스 컴파일러이자 성능 지향 프로그래밍을 위한 OCaml 개선 실험실인 OxCaml 을 소개한다. 성능에 중요한 부분을 안전하고 편하고 예측 가능하게 통제하게 해서 OCaml 을 성능 공학에 좋은 언어로 만드는 것이 목적이라고 적는다. 확장은 넷으로 나뉜다 — 데이터 경쟁을 타입 시스템 수준에서 정적으로 막는 두려움 없는 동시성, 메모리에 데이터가 어떻게 놓이는지 프로그래머가 지정하고 SIMD 확장에 직접 닿게 하는 레이아웃, 할당을 통제해 GC 부담을 줄이고 캐시 효율과 동작을 예측 가능하게 만드는 할당 제어, 그리고 다형 매개변수·include 함자·이름 붙은 튜플·불변 배열 같은 편의 기능이다. 대가도 밝힌다: OxCaml 은 OCaml 과 하위 호환이지만 자기 확장에 대해서는 안정성이나 하위 호환을 약속하지 않으며, 이 회사의 일부 라이브러리는 OxCaml 에서만 쓸 수 있다. 왜 C++ 나 러스트 대신 이 길을 골랐는지는 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "tech": "borrow_ 문법",
+            "role": "유일함을 잃지 않고 빌려준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "tech": "ppx_release",
+            "role": "예외가 나도 정리되게 감싼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "tech": "C 접합부",
+            "role": "unique 값의 포인터를 그대로 파이썬 런타임에 넘긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "커널의 기본값을 의심한다",
+          "via": "남이 정한 것을 어디까지 받아들일지",
+          "contract": "거기서는 커널이 RFC 대로 안 한 것을 찾아 고쳤고, 여기서는 언어가 주는 기본 수명 관리를 안 쓴다. 층은 다르지만 같은 손버릇이다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "파이썬 생태계",
+          "via": "안 버리고 이어 쓴다",
+          "contract": "데이터 다루는 코드가 파이썬에 있으니 그것을 버리는 대신 두 언어를 잇는다. 그 이음매의 값을 타입으로 갚는 것이 이 기능이다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "OxCaml 자체",
+          "via": "확장이 실제로 쓰이는 자리",
+          "contract": "모드와 유일성이라는 확장이 없으면 이 API 가 성립하지 않는다. 컴파일러를 직접 만든 값이 여기서 돌아온다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Linear Types Can Change the World!",
+            "authors": "Philip Wadler",
+            "year": "1990",
+            "venue": "Programming Concepts and Methods",
+            "url": "https://homepages.inf.ed.ac.uk/wadler/papers/linear/linear.ps",
+            "takeaway": "값을 정확히 한 번만 쓰게 하는 타입이 자원 관리를 바꿀 수 있다는 고전이다. 유일함을 타입에 적어 참조 수 조작을 지우는 이 설계가 그 계보에 있다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Ownership and Borrowing in Rust",
+            "authors": "Rust 프로젝트",
+            "year": "2024",
+            "venue": "언어 문서",
+            "url": "https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html",
+            "takeaway": "소유와 빌림을 타입으로 강제해 메모리 안전을 얻는 방식이다. 이 회사는 같은 무기를 쓰되 짐을 모두에게 지우지 않는 쪽을 골랐다고 명시한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "title": "Oxidizing OCaml: Modes and Locality",
+            "authors": "Jane Street / OCaml 커뮤니티",
+            "year": "2023",
+            "venue": "OCaml 워크숍·설계 문서",
+            "url": "https://blog.janestreet.com/oxidizing-ocaml-locality/",
+            "takeaway": "값이 어디까지 살아남는지를 타입에 적는 지역성 모드의 설계다. 이번 기능의 `@ local` 이 그 위에 서 있고, 그래서 incref 를 건너뛸 근거가 생긴다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "두 수명 관리가 만나면 늦은 쪽이 이긴다",
+            "why_hard": "참조 계수는 즉시 해제하고 GC 는 나중에 해제하는데, 둘을 겹치면 해제 시점이 GC 쪽으로 밀린다. 정확성은 유지되지만 자원이 오래 붙잡힌다.",
+            "current_best": "빌림과 소유를 타입에 적어 참조 수 조작 자체를 없애는 것 — 늦게 도는 쪽을 안 거치게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "problem": "안전을 얻으려면 누군가 짐을 진다",
+            "why_hard": "소유권을 타입으로 강제하면 API 를 쓰는 모든 사람이 그 규칙을 배워야 한다. 그러면 옮겨 오는 값이 커진다.",
+            "current_best": "짐을 선택적으로 두는 것 — 모드를 안 쓰면 예전처럼 GC 에 맡겨 쓸 수 있게 하되, 그 코드에서는 지연이 그대로 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          },
+          {
+            "problem": "타입으로 다 덮이지 않는 경로가 남는다",
+            "why_hard": "복잡한 흐름에서는 컴파일러가 증명하지 못하는 자리가 생긴다. 그때 손으로 참조 수를 다루면 예외가 났을 때 새기 쉽다.",
+            "current_best": "newref·decref 를 열어 두되 ppx_release 로 범위를 벗어날 때 정리되게 감싸는 것.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+                "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+                "publisher": "Jane Street",
+                "date": "2026-06-15",
+                "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "지연을 재고 나서",
+          "thought": "정확성은 문제가 아니다. incref 는 제때 하는데 decref 가 GC 를 기다린다 — 큰 데이터프레임 하나가 그 사이 내내 메모리를 붙들고 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모드를 떠올릴 때",
+          "thought": "이 값이 호출을 벗어나지 않는다는 걸 컴파일러가 증명해 주면, 참조 수를 올릴 이유 자체가 없다 — 없앨 일을 찾은 것이지 빠르게 만든 게 아니다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "러스트와 견줄 때",
+          "thought": "소유권을 모두에게 지우면 안전하지만 우리 코드베이스 전체가 그 규칙을 배워야 한다. 필요한 곳에서만 지우는 쪽을 고른다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "손으로 다루는 길을 열며",
+          "thought": "decref 를 손으로 쓰는 코드는 지저분하다. 그런데 막아 두면 급한 자리에서 쓸 방법이 없어진다 — 열되 기본이 아니게 둔다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+          "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+          "publisher": "Jane Street",
+          "date": "2026-06-15",
+          "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
+        },
+        {
+          "title": "Introducing OxCaml",
+          "url": "https://blog.janestreet.com/introducing-oxcaml/",
+          "publisher": "Jane Street",
+          "date": "2025-06-14",
+          "summary": "레오 화이트가 2025년 6월 14일에 쓴 글로, 이 회사의 실서비스 컴파일러이자 성능 지향 프로그래밍을 위한 OCaml 개선 실험실인 OxCaml 을 소개한다. 성능에 중요한 부분을 안전하고 편하고 예측 가능하게 통제하게 해서 OCaml 을 성능 공학에 좋은 언어로 만드는 것이 목적이라고 적는다. 확장은 넷으로 나뉜다 — 데이터 경쟁을 타입 시스템 수준에서 정적으로 막는 두려움 없는 동시성, 메모리에 데이터가 어떻게 놓이는지 프로그래머가 지정하고 SIMD 확장에 직접 닿게 하는 레이아웃, 할당을 통제해 GC 부담을 줄이고 캐시 효율과 동작을 예측 가능하게 만드는 할당 제어, 그리고 다형 매개변수·include 함자·이름 붙은 튜플·불변 배열 같은 편의 기능이다. 대가도 밝힌다: OxCaml 은 OCaml 과 하위 호환이지만 자기 확장에 대해서는 안정성이나 하위 호환을 약속하지 않으며, 이 회사의 일부 라이브러리는 OxCaml 에서만 쓸 수 있다. 왜 C++ 나 러스트 대신 이 길을 골랐는지는 이 글에 없다."
+        },
+        {
+          "title": "A Higgs bugson in the Linux kernel",
+          "url": "https://blog.janestreet.com/a-higgs-bugson-in-the-linux-kernel/",
+          "publisher": "Jane Street",
+          "date": "2025-07-02",
+          "summary": "니킬 자가 2025년 7월 2일에 쓴 글로, 회사의 거래 활동 데이터를 저장하고 나르는 핵심 시스템 고드(Gord)에서 큰 파일 복사가 아주 드물게 권한 오류로 실패하던 문제를 파고든 기록이다. 권한은 멀쩡한데 -EACCES 가 났다. 원인은 커버로스를 쓰는 NFSv3 구현에 있었다 — 서버가 과부하로 응답이 늦으면 커널이 같은 XID 에 새 GSS 순번을 붙여 재전송하는데, 늦게 도착한 원래 응답의 체크섬을 새 순번으로 검사해 실패했다. RFC 는 순번 캐시를 두어 맞춰 보라고 정해 뒀지만 리눅스가 그것을 구현하지 않았다. 찾은 방법이 이 글의 본체다: 요청할 때마다 무작위 데이터를 만들어 주는 FUSE 파일시스템을 짜고 rsync 를 여러 개 동시에 돌렸으며, bpftrace 로 커널 함수를 계측해 스택을 떴고, 와이어샤크에 직접 만든 플러그인을 붙여 패킷의 체크섬을 확인했으며, NFQUEUE 로 패킷을 일부러 늦춰 버그를 확실히 재현했다 — 결정적인 돌파는 지연을 충분히 만들어 주는 아주 작은 시험용 NFS 서버였다. 조건이 까다로워 실서비스에서는 꽤 드물게 났다고 적는다. 고침은 리눅스 6.16 에 올린 커널 패치 둘이다: RFC2203 대로 GSS 순번 캐시를 구현하고, 체크섬이 안 맞을 때 재전송하지 않고 정상 타임아웃 논리에 맡기는 것. 처음 열두 대쯤으로 시험하다 더 늘렸다고만 적고 실서비스 규모나 데이터 양은 밝히지 않는다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "사업 쪽을 확인하지 못했다 — 자기 자본 거래 회사라 요금표가 없고 매출·비용 자료를 이 사이클에서 열지 않았다. revenue_streams 를 `unknown` 으로 두었다.",
     "하드웨어 도메인의 자료를 아직 안 읽었다 — `can-you-reverse-engineer-an-asic`(2026-08-05) · `fun-with-algebraic-effects-hardcaml`(2026-01-06) · FPGA 챌린지 글들. tech 두 칸이 `unknown` 이다.",
     "형식 기법 묶음 글(`formal-methods-at-jane-street-index`, 2026-06-07, 야론 민스키)을 안 읽었다 — 도메인 하나가 더 설 자리로 보인다.",
-    "OxCaml 을 왜 만들었는지의 앞부분(무엇이 얼마나 느렸는지, C++ 나 러스트를 왜 안 골랐는지)이 소개 글에 없다.",
-    "거래 시스템 자체(주문·체결 경로의 지연)를 다룬 글을 아직 못 찾았다. 커널 글에 나오는 고드(Gord)는 거래 활동 데이터를 저장·배포하는 쪽이다."
+    "거래 시스템 자체(주문·체결 경로의 지연)를 다룬 글을 아직 못 찾았다. 커널 글에 나오는 고드(Gord)는 거래 활동 데이터를 저장·배포하는 쪽이다.",
+    "OxCaml 을 왜 만들었는지의 앞부분(무엇이 얼마나 느렸는지, C++ 나 러스트를 왜 안 골랐는지)이 소개 글에 없다. 참조 계수 글에서 러스트와 갈라선 이유(짐을 모두에게 지우지 않는다)만 확인했다."
   ],
   "sources": [
     {
@@ -218,6 +743,13 @@
       "publisher": "Jane Street",
       "date": "2026-06-07",
       "summary": "야론 민스키가 2026년 6월 7일에 쓴 글로, 형식 기법과 프로그래밍의 앞날을 다루는 묶음 글의 색인이다. 이번 사이클에서 본문을 열지 않았고 제목·저자·날짜만 확인했다."
+    },
+    {
+      "title": "Using OxCaml to implement type-safe reference counting between OCaml and Python",
+      "url": "https://blog.janestreet.com/oxcaml-typesafe-reference-counting-python/",
+      "publisher": "Jane Street",
+      "date": "2026-06-15",
+      "summary": "니콜라 트랑헤가 2026년 6월 15일에 쓴 글로, OCaml 에서 파이썬을 부를 때 두 언어의 메모리 관리가 부딪히는 문제를 OxCaml 의 모드로 푼 기록이다. 파이썬은 참조 계수를 쓰는데 파이썬 객체를 OCaml 값으로 감싸면 Py_INCREF 는 바로 하지만 짝이 되는 decref 는 그 OCaml 값이 GC 될 때까지 안 일어난다 — 그래서 객체 해제가 실질적으로 늦어지고, 빌려 쓰는 의미가 순수 파이썬에서와 달라진다. 큰 데이터프레임이나 GPU 메모리처럼 귀한 자원을 다루는 프로그램에서는 진짜 문제가 된다고 적는다. 답은 두 가지 모드다. `@ local` 은 이 값이 이 함수 호출을 벗어나지 않는다는 뜻이라, 호출하는 쪽이 그동안 객체를 붙들고 있음을 컴파일러가 증명해 주므로 incref 를 아예 건너뛴다. `@ unique` 는 이 값에 대한 유일한 손잡이라는 뜻이라, 돌려줄 때의 incref 를 건너뛰고 C 접합부가 그 PyObject 포인터를 그대로 훔쳐 파이썬 런타임에 넘긴다. 그래서 API 의 결이 정해진다 — 대부분의 함수는 인자를 빌리기만 하므로 `@ local` 로 받고, 돌려주는 값은 `@ unique` 로 낸다(예: Py.Int.to_int 는 local 인자를 받고 Py.List.create 는 unique 를 돌려준다). 손으로 다뤄야 할 때를 위해 Py.newref 와 Py.decref 를 두고 예외가 나도 정리되게 ppx_release 확장을 준다. `borrow_` 키워드로 unique 값을 local 함수에 넘겨도 유일함이 유지된다 — local 로 받는 함수의 인자는 호출을 넘겨 살아남을 수 없기 때문이다. 설계 철학도 밝힌다: 러스트와 달리 소유권 추적의 짐을 API 를 쓰는 모두에게 지우지 않고, 많은 경우 예전처럼 GC 에 맡겨 쓸 수 있게 둔다 — decref 를 손으로 쓰는 코드는 대부분 필요 없고 코드만 지저분해진다고 적는다. 물린 대안은 이 글에 없다."
     }
   ]
 }
