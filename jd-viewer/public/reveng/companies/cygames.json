@@ -69,8 +69,86 @@
     {
       "name": "카드 게임의 판정을 클라이언트에서 서버로 옮긴다",
       "why": "⚠️ **전작의 성공 요인이던 `카드를 다루는 감촉` 을 지키면서 판정을 서버로 옮겨야 했다.** 근거는 **장기 운영 지속 가능성** — 클라이언트에 로직이 있으면 **유지 비용이 오래 쌓이고 기능 확장이 어렵다.** ⚠️ **대가는 즉시 나타난다** — **서버 검증이 통신 지연을 만들어 UX 우려가 있었다.** ✅ **본문 확인함**(U/Day Tokyo 2025).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "MagicOnion (gRPC, Cysharp)",
+          "solves": "⚠️ **전작의 Node.js 를 대신한다** — 양방향 스트리밍과 **클라이언트·서버 양쪽 C#, 코드 공유**가 **서버로 로직을 옮기는 일 자체를 쉽게 만든다.**",
+          "limits": "⚠️ **자회사의 프레임워크에 묶인다** — 같은 그룹이라 그 위험을 다르게 본 것으로 보인다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3706/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-12",
+              "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+            }
+          ]
+        },
+        {
+          "tech": "서버 측 카드 로직",
+          "solves": "**장기 유지 비용과 기능 확장**을 위해 판정을 서버가 한다.",
+          "limits": "⚠️ **`통신 대기의 발생으로 인한 UX 저하가 있었습니다`** — 대기는 성질상 남고 다른 층에서 갚아야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3706/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-12",
+              "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+            }
+          ]
+        },
+        {
+          "tech": "흐름·연출 조정",
+          "solves": "⚠️ **도구가 아니라 설계다** — 기다리는 동안 보여 줄 것을 바꿔 **전작보다 나은 감촉**에 도달했다.",
+          "limits": "⚠️ **대기 자체가 사라진 것은 아니다** — 연출로 가린 것이다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3706/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-12",
+              "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+            }
+          ]
+        },
+        {
+          "tech": "클라이언트 동시 렌더링 (파크 + 배틀)",
+          "solves": "⚠️ **영상 스트리밍이 원천적으로 막힌 자리를 메운다** — **양쪽 손패가 보이는 화면은 어느 플레이어의 화면도 아니기 때문**이다. 다운로드 우려도 피한다.",
+          "limits": "⚠️ **처리 부하와 메모리를 클라이언트가 떠안는다** — 그래서 미리 계산해 줄일 곳을 정해야 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3706/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-12",
+              "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+            }
+          ]
+        },
+        {
+          "tech": "정적화한 3D 배경 · Spine 데이터",
+          "solves": "부하를 **먼저 계산하고** 무엇을 정적으로 만들지 정해 **`받아들일 만한 시각 품질을 유지하면서 실현 가능하게`** 했다.",
+          "limits": "⚠️ **배경의 움직임을 잃는다.** 줄일 곳을 고른 기준이 **게임의 정체성에서 먼 것**이었던 셈이다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+              "url": "https://tech.cygames.co.jp/archives/3706/",
+              "publisher": "Cygames Engineers' Blog",
+              "date": "2025-12",
+              "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "move-the-verdict-keep-the-feel"
+      ]
     },
     {
       "name": "출시일의 트래픽 급증을 무중단으로 넘긴다",
@@ -85,7 +163,509 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "move-the-verdict-keep-the-feel",
+      "name": "손맛을 지키면서 판정을 서버로 옮긴다",
+      "domain": "카드 게임의 판정을 클라이언트에서 서버로 옮긴다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **전작의 성공 요인과 장기 운영의 요구가 정면으로 부딪히는 자리다.** 전작을 성공시킨 것은 **카드를 다루는 감촉**이었는데, **카드 로직이 클라이언트에 있으면 유지 비용이 오래 쌓이고 기능 확장이 어렵다.** 그래서 **판정을 서버로 옮겼고**, 그 순간 **통신 대기가 생겨 UX 가 나빠졌다** — 회사가 그것을 그대로 적는다: **`통신 대기의 발생으로 인한 UX 저하가 있었습니다.`** ⚠️ **버리지 않고 다른 층에서 갚았다** — 흐름 개선과 연출 조정으로 **결국 전작보다 나은 반응성**에 이르렀다.",
+        "metrics": [
+          {
+            "label": "⚠️ 옮긴 이유",
+            "value": "**장기 운영 지속 가능성** — 클라이언트에 로직이 있으면 **유지 비용이 쌓이고 기능 확장이 어렵다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "label": "즉시 나타난 대가",
+            "value": "**`통신 대기의 발생으로 인한 UX 저하가 있었습니다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "label": "갚은 방법과 결과",
+            "value": "**흐름 개선과 연출 조정** — 결국 **전작보다 나은 감촉**에 도달했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "label": "실시간 통신",
+            "value": "**`전작에서 사용하던 Node.js 가 아니라 MagicOnion 을 채용하는 방향이었다`** — 자회사 Cysharp 의 gRPC 기반. **양쪽이 C# 이라 코드를 공유한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "label": "이 판정이 도는 규모",
+            "value": "출시일 **초당 50만 질의**, 이후 피크 **65만** — 무중단·무점검",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          },
+          {
+            "label": "만드는 조직",
+            "value": "사이버에이전트 **SGE 부문이 Cygames 와 여섯 자회사를 합쳐 5,000명 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Game Business | CyberAgent Integrated Report",
+                "url": "https://report.cyberagent.co.jp/en/game/",
+                "publisher": "CyberAgent",
+                "date": "2026",
+                "summary": "사이버에이전트의 스마트폰 게임·엔터테인먼트 부문(SGE)이 Cygames 와 여섯 자회사를 포함해 5,000명이 넘는 규모다. 2021년 출시한 우마무스메가 주된 성장 동력이고 해외 매출이 크게 늘었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "로직을 어디에 둘지 정할 때",
+          "thought": "⚠️ **짧게 보면 클라이언트가 낫고 길게 보면 서버가 낫다.** 클라이언트에 두면 **통신 대기가 없어 손맛이 살지만**, **몇 년을 굴릴 게임에서는 유지 비용이 쌓이고 기능 확장이 어려워진다.** **한 번 내고 끝나는 제품이었다면 다른 답이 나왔을 결정이다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "UX 가 나빠진 것을 보고",
+          "thought": "⚠️ **대가를 되돌리지 않고 다른 층에서 갚았다** — 서버 판정을 포기하는 대신 **흐름과 연출을 손봤다.** **통신 대기 자체는 없앨 수 없으니 기다리는 동안 무엇을 보여 줄지를 바꾼 것이다**(재구성). 결과가 **전작보다 나은 감촉**이었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "관전 화면을 어떻게 만들지 볼 때",
+          "thought": "⚠️ **이 게임에서 방송 화면은 어느 플레이어의 화면도 아니다.** **`대전 중 플레이어의 화면에서는 서로 상대의 손패가 가려져 있고`**, 방송에는 **양쪽 손패가 다 보여야** 한다. **그러니 어느 한쪽의 화면을 영상으로 보내는 방법이 성립하지 않는다** — **정보 비대칭이 있는 게임에서 관전은 새로 그려야 하는 화면이다**(뒤쪽 정리는 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "카드 로직 (판정)",
+            "what": "⚠️ **전작에서는 클라이언트에, 이번에는 서버에.** 옮긴 근거는 **장기 유지 비용과 기능 확장**이다"
+          },
+          {
+            "name": "MagicOnion",
+            "what": "**자회사 Cysharp 의 gRPC 기반 실시간 통신 프레임워크.** 전작의 Node.js 를 대신한다 — **양쪽이 C# 이라 코드를 공유한다**"
+          },
+          {
+            "name": "손패의 비대칭",
+            "what": "⚠️ **대전 중 서로의 손패는 가려져 있다** — 그래서 **양쪽이 다 보이는 방송 화면은 어느 플레이어의 화면도 아니다**"
+          },
+          {
+            "name": "파크 + 배틀 동시 렌더링",
+            "what": "클라이언트가 둘을 함께 그린다. **영상 스트리밍을 버린 자리에 들어온 방법**이다"
+          },
+          {
+            "name": "정적으로 바꾼 것",
+            "what": "**3D 배경과 Spine 애니메이션 데이터** — 처리 부하와 메모리를 맞추려고. ⚠️ **구현 전에 영향을 측정했다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **판정은 서버가 한다** — 클라이언트는 결과를 보여 줄 뿐이다",
+          "⚠️ **손패의 비대칭은 게임의 규칙이다** — 방송 화면이 그것을 깨야 하므로 따로 그려야 한다",
+          "**감촉은 지켜야 한다** — 전작을 성공시킨 것이 그것이기 때문이다",
+          "⚠️ **부하는 재고 나서 바꾼다** — 무엇을 정적으로 만들지 정하기 전에 영향을 측정했다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**클라이언트가 조작을 보낸다** — MagicOnion(gRPC) 양방향 스트리밍으로",
+            "why": "⚠️ **전작의 Node.js 대신 고른 것이고, 양쪽이 C# 이라 코드를 공유한다**"
+          },
+          {
+            "step": "⚠️ **서버가 카드 로직으로 판정한다**",
+            "why": "⚠️ **클라이언트에 두면 장기 유지 비용이 쌓이고 기능 확장이 어렵다**"
+          },
+          {
+            "step": "**결과가 돌아오는 동안 화면이 기다린다**",
+            "why": "⚠️ **`통신 대기의 발생으로 인한 UX 저하가 있었습니다`**"
+          },
+          {
+            "step": "⚠️ **흐름과 연출을 조정해 그 기다림을 메운다**",
+            "why": "**대기 자체는 없앨 수 없으니 기다리는 동안 보여 줄 것을 바꿨다**(재구성) — 결과는 **전작보다 나은 감촉**"
+          },
+          {
+            "step": "**관전 화면은 클라이언트가 새로 그린다** — 파크와 배틀을 동시에",
+            "why": "⚠️ **양쪽 손패가 다 보이는 화면은 어느 플레이어의 화면도 아니라 영상으로 보낼 수 없다**"
+          },
+          {
+            "step": "**부하를 먼저 계산하고 3D 배경과 Spine 데이터를 정적 이미지로 바꾼다**",
+            "why": "**동시 렌더링이 가능한 범위 안으로 처리 부하와 메모리를 맞춘다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "카드 로직을 클라이언트에 둘 것인가 서버에 둘 것인가",
+            "chosen": "⚠️ **서버** — UX 우려에도 불구하고",
+            "alternatives": [
+              "전작처럼 클라이언트에 유지",
+              "일부만 서버로 옮기기"
+            ],
+            "tradeoff": "근거가 **장기 운영 지속 가능성**이다 — 클라이언트에 있으면 **유지 비용이 오래 쌓이고 기능 확장이 어렵다.** ⚠️ **대가가 즉시 나타났다** — **`통신 대기의 발생으로 인한 UX 저하가 있었습니다.`** **짧게 보면 클라이언트가 낫고 길게 보면 서버가 낫다** — **한 번 내고 끝나는 제품이었다면 다른 답이 나왔을 결정이다**(뒤쪽은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "question": "UX 저하를 어떻게 다룰 것인가",
+            "chosen": "⚠️ **되돌리지 않고 다른 층에서 갚는다** — 흐름 개선과 연출 조정",
+            "alternatives": [
+              "로직 일부를 클라이언트로 되돌리기",
+              "낙관적 UI 로 결과를 먼저 보여 주기"
+            ],
+            "tradeoff": "**통신 대기 자체는 서버 판정의 성질이라 없앨 수 없다.** 그래서 **기다리는 동안 무엇을 보여 줄지를 바꿨고**, 결과는 **전작보다 나은 감촉**이었다. ⚠️ **낙관적 UI 로 먼저 보여 주는 길도 있었을 텐데** — 카드 게임은 **서버 판정이 뒤집히면 되돌리는 장면이 치명적이라** 그쪽을 택하지 않은 것으로 보인다(**이 추정은 이 사이트의 재구성이고 글에 근거가 없다**).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "question": "실시간 통신을 무엇으로 할 것인가",
+            "chosen": "**MagicOnion** — 전작의 Node.js 를 버렸다",
+            "alternatives": [
+              "전작처럼 Node.js",
+              "WebSocket 직접 구현"
+            ],
+            "tradeoff": "회사의 문장 — **`전작에서 사용하던 Node.js 가 아니라 MagicOnion 을 채용하는 방향이었다.`** 얻는 것은 **양방향 스트리밍과 클라이언트·서버 양쪽 C#, 그리고 코드 공유**다 — **서버로 로직을 옮기는 일 자체를 쉽게 만든다.** ⚠️ **대가는 자회사(Cysharp)의 프레임워크에 묶인다는 것**이고, **같은 그룹이라 그 위험을 다르게 본 것으로 보인다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "question": "관전 화면을 영상으로 보낼 것인가",
+            "chosen": "⚠️ **아니다** — 클라이언트에서 새로 그린다",
+            "alternatives": [
+              "플레이어 화면을 영상 스트리밍",
+              "서버에서 렌더링해 전송"
+            ],
+            "tradeoff": "⚠️ **이 게임의 규칙이 그 방법을 막는다** — **`대전 중 플레이어의 화면에서는 서로 상대의 손패가 가려져 있고`**, 방송에는 **양쪽 손패가 다 보여야** 한다. **그러니 어느 플레이어의 화면도 방송 화면이 될 수 없다.** 게다가 영상 방식은 **다운로드 우려**가 따른다. ⚠️ **대가는 클라이언트가 파크와 배틀을 동시에 그려야 한다는 것**이고, 그래서 다음 결정이 따라온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "question": "동시 렌더링의 부하를 어떻게 맞출 것인가",
+            "chosen": "⚠️ **먼저 재고 나서 줄인다** — 기존 파크 지표에서 허용 오버헤드를 계산했다",
+            "alternatives": [
+              "일단 만들고 느리면 줄이기",
+              "해상도·프레임을 일괄 하향"
+            ],
+            "tradeoff": "**필요한 감축량을 계산해 놓고 무엇을 정적으로 만들지 정했다** — **3D 배경과 Spine 애니메이션 데이터.** ⚠️ **`받아들일 만한 시각 품질을 유지하면서 실현 가능하게` 만든 것이 판단의 기준**이었다. **대가는 배경의 움직임을 잃는다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 정적으로 바꿀 것인가",
+            "chosen": "**3D 배경과 Spine 애니메이션 데이터**",
+            "alternatives": [
+              "카드 연출을 줄이기",
+              "배틀 화면의 해상도를 낮추기"
+            ],
+            "tradeoff": "⚠️ **줄일 곳을 고르는 기준이 `게임의 정체성에서 먼 것` 이었던 셈이다** — **카드를 다루는 감촉이 이 게임의 본체이므로 그쪽은 건드리지 않았다**(이 해석은 이 사이트의 재구성이다). **대가는 배경이 정지 화면이 된다는 것**이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "question": "전작의 자산을 얼마나 이어받을 것인가",
+            "chosen": "⚠️ **감촉은 잇고 구조는 바꾼다**",
+            "alternatives": [
+              "전작 구조를 유지하고 콘텐츠만 갱신",
+              "전부 새로 만들기"
+            ],
+            "tradeoff": "**전작을 성공시킨 `카드를 다루는 감촉` 은 지키기로 하고**, **통신 프레임워크와 로직의 위치는 바꿨다.** ⚠️ **무엇이 그 게임을 그 게임이게 하는지를 먼저 정하고 나머지를 바꾼 순서다**(재구성). **대가는 새 구조 위에서 옛 감촉을 다시 만들어 내야 했다는 것**이고, 그 일이 **흐름·연출 조정**이었다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "question": "이 결정을 무엇으로 정당화할 것인가",
+            "chosen": "**장기 운영** — 출시 시점의 성능이 아니라",
+            "alternatives": [
+              "출시 반응 극대화를 기준으로"
+            ],
+            "tradeoff": "⚠️ **이 회사의 다른 결정도 같은 기준을 쓴다** — 데이터베이스를 고른 근거도 **게임 데이터베이스의 전통적인 샤딩 복잡도를 피하는 것**이었다. **몇 년을 굴릴 제품에서는 첫날의 손해가 나중의 이득으로 갚아진다는 계산이다**(재구성). ⚠️ **대가는 그 계산이 틀렸을 때 되돌리기 어렵다는 것**이다(재구성).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              },
+              {
+                "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3695/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-10-03",
+                "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "MagicOnion (gRPC 기반, Cysharp)",
+            "role": "⚠️ **전작의 Node.js 를 대신한다** — 양방향 스트리밍, 클라이언트·서버 양쪽 C#, 코드 공유",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "tech": "서버 측 카드 로직",
+            "role": "**판정을 서버가 한다** — 장기 유지 비용과 기능 확장을 위해",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "tech": "클라이언트 동시 렌더링 (파크 + 배틀)",
+            "role": "⚠️ **영상 스트리밍이 불가능한 자리를 메운다** — 관전자에게 양쪽 손패를 보여 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "tech": "정적화한 3D 배경 · Spine 데이터",
+            "role": "**처리 부하와 메모리를 동시 렌더링이 가능한 범위로** 맞춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "tech": "흐름·연출 조정",
+            "role": "⚠️ **도구가 아니라 설계다** — 통신 대기를 없애지 못하니 기다리는 동안 보여 줄 것을 바꿨다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "출시일의 트래픽 급증을 무중단으로 넘긴다",
+          "via": "서버로 옮긴 판정이 만드는 부하",
+          "contract": "⚠️ **판정을 서버로 옮겼기 때문에 출시일의 질의가 그만큼 늘어난다** — **초당 50만, 피크 65만.** **한쪽 결정이 다른 쪽 문제를 만든다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Cysharp (자회사)",
+          "via": "MagicOnion",
+          "contract": "⚠️ **도구를 만드는 자회사를 두고 그 도구를 쓴다** — **같은 그룹이라 프레임워크 의존의 위험을 다르게 본 것으로 보인다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "관전자 · 방송",
+          "via": "⚠️ 어느 플레이어의 화면도 아닌 화면",
+          "contract": "⚠️ **양쪽 손패가 보이는 화면은 대전 중 누구의 시야에도 없다** — 그래서 클라이언트가 새로 그린다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "전작 (Shadowverse)",
+          "via": "이어받은 것과 바꾼 것",
+          "contract": "**감촉은 잇고 통신 프레임워크와 로직의 위치는 바꿨다** — ⚠️ **원작은 2026년 6월 30일 서비스를 종료했다**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 서버 판정과 손맛은 같은 방향으로 가지 않는다",
+            "why_hard": "⚠️ **판정을 서버가 하는 한 통신 대기는 성질상 남는다** — 회사가 그것을 **`통신 대기의 발생으로 인한 UX 저하`** 라고 적는다. **카드 게임에서 그 지연은 곧 `카드를 다루는 감촉` 을 깎는데, 그 감촉이 전작을 성공시킨 것이었다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "**대기를 없애는 대신 기다리는 동안의 흐름과 연출을 바꾸는 것** — 결과는 **전작보다 나은 감촉**이었다. ⚠️ **낙관적 UI 로 결과를 먼저 보여 주는 길은 택하지 않은 것으로 보이는데, 그 이유는 글에 없다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          },
+          {
+            "problem": "정보 비대칭이 있는 게임에서 관전 화면은 새로 그려야 한다",
+            "why_hard": "⚠️ **대전 중에는 서로의 손패가 가려져 있는데 방송에는 양쪽이 다 보여야 한다** — **그러니 어느 플레이어의 화면도 방송 화면이 될 수 없고, 영상 스트리밍이라는 가장 싼 방법이 원천적으로 막힌다**(뒤쪽 정리는 재구성이다).",
+            "current_best": "**클라이언트가 파크와 배틀을 동시에 그리고, 부하를 미리 계산해 3D 배경과 Spine 데이터를 정적으로 바꾸는 것.** ⚠️ **`받아들일 만한 시각 품질을 유지하면서 실현 가능하게` 가 판단 기준이었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+                "url": "https://tech.cygames.co.jp/archives/3706/",
+                "publisher": "Cygames Engineers' Blog",
+                "date": "2025-12",
+                "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "판정은 서버가 하고 기다림은 연출이 메운다",
+          "question": "카드 한 장을 내면 무슨 일이 일어나나",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"<b>플레이어가 카드를 낸다</b>\"]:::list --> M[\"<b>MagicOnion (gRPC)</b><br/>• 양방향 스트리밍<br/>• 양쪽 C# · 코드 공유\"]:::list\n  M --> S[\"⚠️ <b>서버가 판정한다</b><br/>• 장기 유지비 · 기능 확장\"]:::accent\n  S --> W[\"⚠️ <b>통신 대기</b><br/>• UX 저하가 있었다\"]:::gone\n  W --> F[\"<b>흐름 · 연출 조정</b><br/>• 기다리는 동안 보여 줄 것을 바꿨다<br/>• 결과는 전작보다 나은 감촉\"]:::accent\n  F --> C[\"<b>클라이언트가 그린다</b><br/>• 파크 + 배틀 동시<br/>• 3D 배경 · Spine 은 정적\"]:::list\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "가장 싼 방법이 규칙 때문에 막힌다",
+          "question": "왜 관전 화면을 영상으로 못 보내나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>영상 스트리밍</b><br/>• 가장 싼 방법\"]:::gone --> B{\"<b>누구의 화면을 보내나</b>\"}\n  B -->|\"플레이어 A\"| C[\"⚠️ <b>상대 손패가 가려져 있다</b>\"]:::gone\n  B -->|\"플레이어 B\"| D[\"⚠️ <b>마찬가지로 가려져 있다</b>\"]:::gone\n  C --> E[\"⚠️ <b>방송에는 양쪽이 다 보여야 한다</b><br/>• 어느 화면도 방송 화면이 아니다\"]:::gone\n  D --> E\n  E --> F[\"<b>답: 클라이언트가 새로 그린다</b><br/>• 파크 + 배틀 동시 렌더링\"]:::accent\n  F --> G[\"⚠️ <b>대가: 부하와 메모리</b><br/>• 먼저 계산하고<br/>• 3D 배경 · Spine 을 정적으로\"]:::gone\n  H[\"<b>덤으로 피한 것</b><br/>• 영상 방식의 다운로드 우려\"]:::list\n  A -.-> H\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "スマートフォンゲーム『Shadowverse: Worlds Beyond』のアーキテクチャ (U/Day Tokyo 2025)",
+          "url": "https://tech.cygames.co.jp/archives/3706/",
+          "publisher": "Cygames Engineers' Blog",
+          "date": "2025-12",
+          "summary": "실시간 통신에 Node.js 대신 자회사 Cysharp 의 MagicOnion(gRPC 기반)을 골라 클라이언트와 서버 양쪽을 C# 으로 두고 코드를 공유한다. 배틀을 영상 스트리밍이 아니라 클라이언트에서 파크와 함께 동시 렌더링하고, 카드 로직을 클라이언트에서 서버로 옮겼다."
+        },
+        {
+          "title": "リリース時のTiDB — トラフィックスパイクへの対応 (TiDB User Day 2025)",
+          "url": "https://tech.cygames.co.jp/archives/3695/",
+          "publisher": "Cygames Engineers' Blog",
+          "date": "2025-10-03",
+          "summary": "게임 데이터베이스의 전통적인 샤딩 복잡도를 피하면서 성능 확장과 트랜잭션을 동시에 얻으려고 TiDB 를 골랐다. 출시일 초당 50만 질의, 이후 피크 65만을 무중단·무점검으로 넘겼고 40만 QPS 중에 TiKV 노드를 롤링 업데이트했다."
+        },
+        {
+          "title": "Game Business | CyberAgent Integrated Report",
+          "url": "https://report.cyberagent.co.jp/en/game/",
+          "publisher": "CyberAgent",
+          "date": "2026",
+          "summary": "사이버에이전트의 스마트폰 게임·엔터테인먼트 부문(SGE)이 Cygames 와 여섯 자회사를 포함해 5,000명이 넘는 규모다. 2021년 출시한 우마무스메가 주된 성장 동력이고 해외 매출이 크게 늘었다."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **자료가 전부 컨퍼런스 후속 요약이다** — U/Day Tokyo·TiDB User Day·CEDEC 발표를 정리한 글이라 **본격적인 기술 회고보다 얕다.** **수치는 있는데 구조의 세부가 적다.**",
