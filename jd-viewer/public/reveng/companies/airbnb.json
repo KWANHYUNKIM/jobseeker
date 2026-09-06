@@ -4,7 +4,7 @@
   "name_en": "Airbnb",
   "country": "US",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "airbnb.com",
   "one_liner": "숙박 마켓플레이스 — 2026년에 공개한 기술 이야기가 전부 남의 것에서 자기 것으로 옮기는 이야기다",
@@ -205,8 +205,71 @@
     {
       "name": "신원 그래프를 벤더에서 자기 것으로 옮긴다",
       "why": "**한 사람이 여러 계정·기기·결제수단으로 나타나는 것을 잇는 그래프**를 **벤더 PaaS 에서 자체 지식 그래프 인프라로** 옮겼다(2026-05). ⚠️ **이전 중에 `같은 질의가 자체 인프라와 3자 벤더에서 성능이 크게 달라` JanusGraph 쪽과 클라이언트 쪽 양쪽을 최적화해야 했다.** ⏳ **본문은 아직 안 읽었다.**",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "JanusGraph (플러그형 · Gremlin)",
+          "solves": "⚠️ **저장을 고를 수 있어 그래프 로직 계층을 완전히 쥘 수 있다** — 벤더의 최적화기를 못 고치던 문제를 벗어난다.",
+          "limits": "⚠️ **엔진의 상류 변경을 따라갈 때 손댄 부분을 다시 봐야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+              "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-05-19",
+              "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+            }
+          ]
+        },
+        {
+          "tech": "DynamoDB (저장 + 조건부 쓰기)",
+          "solves": "⚠️ **분산 저장을 다시 만들지 않고 AWS 의 확장성을 쓴다.** 그리고 **JanusGraph 의 무거운 기본 잠금을 조건부 쓰기로 갈아 끼워** 쓰기 P95 **353ms → 156ms**, 용량 **10배**.",
+          "limits": "⚠️ **저장 계층의 의미론에 로직이 묶인다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+              "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-05-19",
+              "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+            }
+          ]
+        },
+        {
+          "tech": "병렬 getMultiSlices + 클라이언트 질의 재작성",
+          "solves": "**고팬아웃 4~8홉 질의**를 받고, **`느리고 배치되지 않는 백엔드 질의로 폴백하는` Path 단계**를 걷어내 배치를 지킨다 — 읽기 **32~93%** 개선.",
+          "limits": "⚠️ **엔진을 아무리 고쳐도 클라이언트가 배치를 깨면 소용없어 이전이 서버 팀만의 일이 아니게 된다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+              "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-05-19",
+              "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+            }
+          ]
+        },
+        {
+          "tech": "멀티테넌트 관리 서비스",
+          "solves": "**흩어진 네 패턴**(SQL 기반 그래프 · 오프라인 스냅샷 · 자체 관리 · 3자 PaaS)을 하나로 모으고 **네임스페이스 격리와 스키마 강제**로 경계를 만든다.",
+          "limits": "⚠️ **플랫폼 팀이 모든 팀의 요구를 받고, 팀은 스키마를 자유롭게 못 바꾼다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+              "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+              "publisher": "The Airbnb Tech Blog",
+              "date": "2026-05-19",
+              "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "rent-the-storage-own-the-logic"
+      ]
     }
   ],
   "features": [
@@ -1173,6 +1236,526 @@
           "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
         }
       ]
+    },
+    {
+      "key": "rent-the-storage-own-the-logic",
+      "name": "저장은 남에게 맡기고 로직은 내가 쥔다",
+      "domain": "신원 그래프를 벤더에서 자기 것으로 옮긴다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **한 사람이 여러 계정·기기·결제수단으로 나타나는 것을 잇는 그래프가 `70억 노드와 110억 엣지` 로 자랐고 `하루 약 500만 개의 새 엣지` 가 붙는다.** **4~8홉 질의가 지연 요구를 못 맞추고**, **P95·P99 가 튀며**, **느린 질의 하나가 자원을 잡아먹어 안정성을 흔들었다.** ⚠️ **그리고 회사 전체로 보면 그래프가 넷으로 흩어져 있었다** — **비싼 조인을 쓰는 SQL 기반 `그래프`** · **일별 스냅샷에 갇힌 오프라인 웨어하우스 그래프** · **자체 관리 오픈소스** · **3자 PaaS.** ⚠️ **그중 PaaS 의 문제가 가장 이상하다** — **`최적 성능을 유지하려면 주기적인 수동 인스턴스 재부팅이 필요했다.`** **남에게 맡긴 것인데 사람이 주기적으로 껐다 켜야 했다**(뒤쪽은 이 사이트의 재구성이다).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**`70억 노드와 110억 엣지`** · **하루 약 500만 개의 새 엣지**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 벤더를 떠난 이유",
+            "value": "**벤더 종속과 성능 병목** · **`최적 성능을 유지하려면 주기적인 수동 인스턴스 재부팅이 필요했다`** · 롱테일 지연 · **벤더의 질의 최적화기가 내부에서 얻을 수 있는 것보다 못한 실행 계획을 냈다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "label": "읽기 지연",
+            "value": "Gremlin 읽기 질의가 홉 수에 따라 **32~93% 낮아졌고**, 종단 **P95 2.1초 → 1.0초(51%)** · **P99 5.0초 → 2.5초(49%)**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "label": "쓰기",
+            "value": "**P95 353ms → 156ms(56%)** · 쓰기 용량이 **이전 솔루션의 10배 QPS** 로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 사라진 운영 부담",
+            "value": "**수동 재부팅이 없어졌고**, 내부에서 관리하니 **`사고 조사가 더 빠르고 투명해졌다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "label": "이 그래프가 받치는 규모",
+            "value": "활성 등록 **800만 개 이상** · 호스트 **500만 명 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Airbnb (ABNB) Q2 2026 Earnings",
+                "url": "https://news.airbnb.com/airbnb-q1-2026-financial-results/",
+                "publisher": "Airbnb Newsroom / 실적 발표",
+                "date": "2026",
+                "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "벤더를 떠날지 정할 때",
+          "thought": "⚠️ **관리형을 쓰는 이유는 운영을 안 하기 위해서인데 그것이 지켜지지 않았다** — **`최적 성능을 유지하려면 주기적인 수동 인스턴스 재부팅이 필요했다.`** **남에게 맡긴 값을 치르면서 운영도 하고 있었던 셈이다**(재구성). **게다가 벤더의 질의 최적화기가 내는 실행 계획을 고칠 수도 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디까지 직접 만들지 정할 때",
+          "thought": "⚠️ **이 기능의 이름이 여기서 나온다.** 그래프 데이터베이스를 통째로 만들면 **분산 저장을 다시 짓는 일**이 따라온다. 그래서 **JanusGraph 의 플러그형 구조로 저장을 DynamoDB 에 맡기고** **`그래프 로직 계층에 대한 완전한 통제를 유지했다`** — **AWS 의 확장성을 쓰면서 분산 저장을 다시 만들지 않고 빠르게 반복할 수 있다.** **빌릴 곳과 쥘 곳을 계층으로 갈랐다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "기본 동작을 그대로 쓸지 볼 때",
+          "thought": "⚠️ **로직을 쥐기로 한 값이 여기서 나온다** — **JanusGraph 의 무거운 기본 잠금을 DynamoDB 의 조건부 쓰기로 갈아 끼웠다.** **저장을 고를 수 있으면 그 저장의 원시 기능으로 상위 계층의 무거운 부분을 대신할 수 있다**(재구성). **벤더 PaaS 였다면 손댈 수 없는 자리다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "신원 그래프",
+            "what": "**`70억 노드와 110억 엣지`**, **하루 약 500만 개의 새 엣지**"
+          },
+          {
+            "name": "JanusGraph",
+            "what": "**Apache TinkerPop 위의 분산 오픈소스 그래프 데이터베이스.** ⚠️ **플러그형 구조라 저장 백엔드를 고를 수 있다**"
+          },
+          {
+            "name": "DynamoDB (저장 백엔드)",
+            "what": "⚠️ **빌린 부분.** 분산 저장을 다시 만들지 않고 AWS 의 확장성을 쓴다"
+          },
+          {
+            "name": "그래프 로직 계층",
+            "what": "⚠️ **쥔 부분.** **`완전한 통제를 유지했다`** — 잠금 전략과 질의 실행을 직접 고친다"
+          },
+          {
+            "name": "⚠️ Path 단계 (제거한 것)",
+            "what": "⚠️ **`느리고 배치되지 않는 백엔드 질의로 폴백한다`** — 그래서 클라이언트 질의에서 걷어냈다"
+          },
+          {
+            "name": "테넌트 네임스페이스",
+            "what": "**격리된 멀티테넌트 구조.** 관리 서비스가 **스키마 강제·색인 관리·스키마화된 Thrift API** 를 맡는다"
+          }
+        ],
+        "invariants": [
+          "⚠️ **저장은 빌리고 로직은 쥔다** — 계층으로 갈랐다",
+          "⚠️ **배치되지 않는 질의 단계는 쓰지 않는다** — 느린 폴백을 부른다",
+          "**테넌트는 네임스페이스로 격리된다** — 관리 서비스가 스키마를 강제한다",
+          "⚠️ **사람이 주기적으로 재부팅하지 않는다** — 그것이 떠난 이유 중 하나다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**흩어진 네 패턴을 하나로 모은다** — SQL 기반 그래프 · 오프라인 웨어하우스 그래프 · 자체 관리 오픈소스 · 3자 PaaS",
+            "why": "⚠️ **각자 다른 한계를 갖고 있었다** — 비싼 조인 · 일별 스냅샷 · 운영 부담 · 벤더 종속"
+          },
+          {
+            "step": "**JanusGraph 를 그래프 엔진으로 둔다** — Apache TinkerPop 위에서 Gremlin 으로 질의",
+            "why": "⚠️ **플러그형 구조라 저장을 고를 수 있다**"
+          },
+          {
+            "step": "⚠️ **저장은 DynamoDB 에 맡긴다**",
+            "why": "⚠️ **분산 저장을 다시 만들지 않고 AWS 의 확장성을 쓰면서 빠르게 반복한다**"
+          },
+          {
+            "step": "**색인은 OpenSearch 가 맡는다**",
+            "why": "그래프 질의만으로 안 되는 탐색을 받친다"
+          },
+          {
+            "step": "⚠️ **JanusGraph 의 무거운 기본 잠금을 DynamoDB 조건부 쓰기로 대체한다**",
+            "why": "⚠️ **저장을 고를 수 있으면 그 저장의 원시 기능으로 상위 계층의 무거운 부분을 대신할 수 있다**(재구성)"
+          },
+          {
+            "step": "**고팬아웃 질의는 병렬 `getMultiSlices` 로 받는다**",
+            "why": "**4~8홉 질의가 지연 요구를 못 맞추던 자리다**"
+          },
+          {
+            "step": "⚠️ **클라이언트 질의에서 Path 단계를 걷어내고 부수효과 계산을 줄인다**",
+            "why": "⚠️ **`느리고 배치되지 않는 백엔드 질의로 폴백`** 하기 때문 — **배치가 유지돼야 빠르다**"
+          },
+          {
+            "step": "**관리 서비스가 스키마 강제·색인 관리·Thrift API 를 맡고 테넌트를 네임스페이스로 격리한다**",
+            "why": "**여러 팀이 한 플랫폼을 쓰게 하려고**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "3자 PaaS 를 계속 쓸 것인가",
+            "chosen": "⚠️ **아니다**",
+            "alternatives": [
+              "벤더와 성능 개선 협의",
+              "벤더의 상위 등급으로 이전"
+            ],
+            "tradeoff": "이유가 넷이다 — **벤더 종속과 성능 병목**, **`최적 성능을 유지하려면 주기적인 수동 인스턴스 재부팅이 필요했다`**, **롱테일 지연**, **벤더의 질의 최적화기가 내부에서 얻을 수 있는 것보다 못한 실행 계획을 냈다.** ⚠️ **관리형을 쓰는 이유는 운영을 안 하기 위해서인데 그것이 지켜지지 않았다** — **맡긴 값을 치르면서 운영도 하고 있었던 셈이다**(재구성). **대가는 이제 운영을 자기가 진다는 것**인데, **그 대신 `사고 조사가 더 빠르고 투명해졌다`.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "question": "저장까지 직접 만들 것인가",
+            "chosen": "⚠️ **아니다 — DynamoDB 에 맡긴다**",
+            "alternatives": [
+              "자체 분산 저장 구축",
+              "다른 오픈소스 저장 백엔드"
+            ],
+            "tradeoff": "**JanusGraph 의 플러그형 구조로 저장을 DynamoDB 에 두고 `그래프 로직 계층에 대한 완전한 통제를 유지했다`** — **AWS 의 확장성을 쓰면서 분산 저장을 다시 만들지 않고 빠르게 반복할 수 있다.** ⚠️ **떠나는 결정에서 어디까지 떠날지를 계층으로 갈랐다**(재구성). **대가는 저장 계층의 성질(예: 조건부 쓰기의 의미론)에 로직이 묶인다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "question": "엔진의 기본 잠금을 그대로 쓸 것인가",
+            "chosen": "⚠️ **아니다 — DynamoDB 조건부 쓰기로 대체한다**",
+            "alternatives": [
+              "JanusGraph 기본 잠금 유지",
+              "애플리케이션 수준 잠금"
+            ],
+            "tradeoff": "**JanusGraph 의 `무거운` 기본 잠금 대신 저장 계층의 조건부 쓰기를 쓴다.** ⚠️ **저장을 고를 수 있으면 그 저장의 원시 기능으로 상위 계층의 무거운 부분을 대신할 수 있다** — **벤더 PaaS 였다면 손댈 수 없는 자리다**(재구성). **결과가 쓰기 P95 353ms → 156ms 와 10배 QPS 다.** **대가는 엔진의 상류 변경을 따라갈 때 이 부분을 다시 봐야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "question": "고팬아웃 질의를 어떻게 받을 것인가",
+            "chosen": "**병렬 `getMultiSlices` 인터페이스**",
+            "alternatives": [
+              "순차 조회",
+              "캐시로 완화"
+            ],
+            "tradeoff": "⚠️ **4~8홉 질의는 한 홉마다 갈래가 늘어 순차로는 지연 요구를 못 맞춘다**(재구성). **대가는 병렬도가 저장 계층의 처리량을 잡아먹을 수 있다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "question": "클라이언트 질의를 손댈 것인가",
+            "chosen": "⚠️ **손댄다 — 이전의 필수 작업이었다**",
+            "alternatives": [
+              "서버에서만 최적화",
+              "클라이언트는 그대로 두기"
+            ],
+            "tradeoff": "**`느리고 배치되지 않는 백엔드 질의로 폴백하는` Path 단계를 걷어내고 부수효과 단계의 계산을 최소화해 배치 처리가 유지되게 했다.** ⚠️ **엔진을 아무리 고쳐도 클라이언트가 배치를 깨는 질의를 보내면 소용없다**(재구성). **대가는 이전이 서버 팀만의 일이 아니게 된다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "question": "흩어진 그래프들을 어떻게 할 것인가",
+            "chosen": "**하나의 멀티테넌트 플랫폼으로 모은다**",
+            "alternatives": [
+              "팀마다 알아서 쓰게 두기",
+              "용도별로 다른 스택 유지"
+            ],
+            "tradeoff": "모으기 전에는 넷이 흩어져 있었다 — **비싼 조인을 쓰는 SQL 기반 `그래프`** · **일별 스냅샷에 갇힌 오프라인 웨어하우스 그래프** · **자체 관리 오픈소스** · **3자 PaaS.** ⚠️ **각자 다른 한계를 갖고 있어 어느 것도 일반해가 못 됐다**(재구성). **대가는 플랫폼 팀이 모든 팀의 요구를 받는다는 것**이고, **관리 서비스가 스키마 강제·색인 관리·Thrift API 로 그 경계를 만든다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "question": "테넌트를 어떻게 나눌 것인가",
+            "chosen": "**격리된 네임스페이스 + 스키마 강제**",
+            "alternatives": [
+              "팀마다 별도 클러스터",
+              "공유 스키마"
+            ],
+            "tradeoff": "⚠️ **한 팀의 나쁜 질의가 다른 팀을 죽이던 것이 원래 문제 중 하나였다**(`느린 질의가 자원을 잡아먹었다`, 재구성). **네임스페이스로 나누고 스키마를 강제하면 그 경계가 생긴다.** **대가는 자유롭게 스키마를 바꾸지 못한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "question": "성과를 무엇으로 말할 것인가",
+            "chosen": "⚠️ **지연의 꼬리와 운영 부담으로** — 평균이 아니라",
+            "alternatives": [
+              "평균 지연 개선만 제시"
+            ],
+            "tradeoff": "**P95 2.1초 → 1.0초, P99 5.0초 → 2.5초** 를 앞세우고 **쓰기 용량 10배**, 그리고 **수동 재부팅이 사라지고 `사고 조사가 더 빠르고 투명해졌다`** 를 함께 적는다. ⚠️ **원래 문제가 `롱테일 지연` 과 `주기적 재부팅` 이었으니 성과도 같은 자리에서 말한다** — **평균으로 말했다면 문제를 말하지 않은 것이 된다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "JanusGraph (Apache TinkerPop · Gremlin)",
+            "role": "⚠️ **플러그형 구조라 저장을 고를 수 있다** — 그래프 로직 계층을 직접 쥔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "DynamoDB (저장 백엔드)",
+            "role": "⚠️ **빌린 부분** — 분산 저장을 다시 만들지 않고 AWS 의 확장성을 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "DynamoDB 조건부 쓰기 (잠금 대체)",
+            "role": "⚠️ **JanusGraph 의 무거운 기본 잠금을 갈아 끼웠다** — 쓰기 P95 353ms → 156ms",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "병렬 getMultiSlices",
+            "role": "**고팬아웃 4~8홉 질의**를 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "OpenSearch (색인)",
+            "role": "그래프 질의만으로 안 되는 탐색을 받친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "관리 서비스 (스키마·색인·Thrift API)",
+            "role": "**격리된 테넌트 네임스페이스**에서 스키마를 강제한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "choose-per-domain-never-mix-within",
+          "via": "같은 해의 다른 통합",
+          "contract": "⚠️ **둘 다 흩어진 것을 모으는 이야기다** — 데이터 구조는 **제품별로 흩어진 것**을, 여기서는 **네 가지 그래프 패턴**을 모았다. **다만 데이터 쪽은 `도메인마다 고르게` 였고 여기서는 하나의 플랫폼이다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "AWS (DynamoDB)",
+          "via": "⚠️ 빌린 계층",
+          "contract": "⚠️ **저장은 맡기고 로직은 쥔다** — 그 대신 **조건부 쓰기 같은 저장 계층의 원시 기능에 로직이 묶인다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "질의를 보내는 팀들",
+          "via": "클라이언트 질의 재작성",
+          "contract": "⚠️ **엔진을 아무리 고쳐도 클라이언트가 배치를 깨는 질의를 보내면 소용없다** — **Path 단계를 걷어내는 일이 이전의 필수 작업이었다**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "떠난 3자 PaaS",
+          "via": "⚠️ 관리형의 배신",
+          "contract": "⚠️ **`최적 성능을 유지하려면 주기적인 수동 인스턴스 재부팅이 필요했다`** — **맡긴 값을 치르면서 운영도 하고 있었다**(재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 관리형인데 운영이 남는다",
+            "why_hard": "⚠️ **남에게 맡기는 이유는 운영을 안 하기 위해서인데, 이 PaaS 는 `최적 성능을 유지하려면 주기적인 수동 인스턴스 재부팅이 필요했다`.** 게다가 **벤더의 질의 최적화기가 내는 실행 계획을 고칠 수 없다** — **문제를 알아도 손댈 수 없는 자리가 남는다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **어디까지 빌릴지를 계층으로 가르는 것** — **저장은 DynamoDB 에 맡기고 그래프 로직 계층은 완전히 쥔다.** 그러면 **엔진의 무거운 기본 잠금을 저장의 조건부 쓰기로 갈아 끼우는 일**이 가능해진다. ⚠️ **대가는 저장 계층의 의미론에 로직이 묶인다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          },
+          {
+            "problem": "홉이 늘면 꼬리가 길어진다",
+            "why_hard": "⚠️ **4~8홉 질의는 한 홉마다 갈래가 늘어 평균은 괜찮아도 P95·P99 가 튄다.** 그리고 **느린 질의 하나가 자원을 잡아먹어 다른 질의까지 흔든다** — **성능 문제가 안정성 문제가 되는 자리다**(재구성).",
+            "current_best": "**병렬 `getMultiSlices` 로 고팬아웃을 받고, 클라이언트에서 배치를 깨는 단계(Path)를 걷어내는 것.** 결과가 **P95 51%·P99 49% 개선**이다. ⚠️ **엔진과 클라이언트 양쪽을 고쳐야 했다는 것이 이 문제의 성격을 보여 준다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+                "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+                "publisher": "The Airbnb Tech Blog",
+                "date": "2026-05-19",
+                "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "빌릴 곳과 쥘 곳을 계층으로 가른다",
+          "question": "어디까지 남의 것이고 어디부터 내 것인가",
+          "kind": "flow",
+          "code": "flowchart TD\n  T[\"<b>여러 팀 (테넌트)</b><br/>• 격리된 네임스페이스<br/>• 스키마 강제 · Thrift API\"]:::list --> Q[\"<b>Gremlin 질의</b><br/>• ⚠️ Path 단계는 걷어냈다<br/>• 배치가 유지되게\"]:::accent\n  Q --> J[\"⚠️ <b>JanusGraph — 쥔 부분</b><br/>• 그래프 로직 계층을 완전히 통제<br/>• 기본 잠금을 갈아 끼웠다<br/>• 병렬 getMultiSlices\"]:::accent\n  J --> D[\"⚠️ <b>DynamoDB — 빌린 부분</b><br/>• 분산 저장을 다시 만들지 않는다<br/>• 조건부 쓰기로 잠금을 대신\"]:::accent\n  J --> O[\"<b>OpenSearch (색인)</b>\"]:::list\n  D --> R[\"<b>읽기 P95 2.1s → 1.0s</b><br/>• P99 5.0s → 2.5s<br/>• 쓰기 P95 353ms → 156ms<br/>• 쓰기 용량 10배\"]:::list"
+        },
+        {
+          "title": "관리형인데 운영이 남았다",
+          "question": "벤더를 왜 떠났나",
+          "kind": "failure",
+          "code": "flowchart TD\n  V[\"⚠️ <b>3자 PaaS</b>\"]:::gone --> A[\"⚠️ <b>최적 성능을 유지하려면<br/>  주기적인 수동 재부팅</b><br/>• 맡긴 값을 치르면서<br/>  운영도 하고 있었다 (재구성)\"]:::gone\n  V --> B[\"⚠️ <b>벤더의 질의 최적화기</b><br/>• 내부에서 얻을 수 있는 것보다<br/>  못한 실행 계획<br/>• 알아도 손댈 수 없다 (재구성)\"]:::gone\n  V --> C[\"⚠️ <b>롱테일 지연 · 벤더 종속</b>\"]:::gone\n  D[\"⚠️ <b>흩어진 네 패턴</b><br/>• SQL 기반 그래프 (비싼 조인)<br/>• 오프라인 웨어하우스 (일별 스냅샷)<br/>• 자체 관리 오픈소스<br/>• 3자 PaaS\"]:::gone\n  A --> E[\"<b>답: 계층으로 가른다</b><br/>• 저장은 DynamoDB 에<br/>• 로직은 완전히 쥔다\"]:::accent\n  B --> E\n  C --> E\n  D --> F[\"<b>답: 하나의 멀티테넌트 플랫폼</b>\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
+          "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
+          "publisher": "The Airbnb Tech Blog",
+          "date": "2026-05-19",
+          "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
+        },
+        {
+          "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+          "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+          "publisher": "The Airbnb Tech Blog",
+          "date": "2026-06-09",
+          "summary": "10년 동안 숙소 하나를 위해 지은 오프라인 데이터 구조가 체험과 서비스가 들어오면서 부족해졌다. 전부 분리하는 길과 전부 하나로 두는 길을 모두 거절하고 도메인마다 고르게 하되, 한 도메인 안에서는 섞지 않는다는 규칙과 식별자 이름·네임스페이스 규칙을 세웠다."
+        },
+        {
+          "title": "Airbnb (ABNB) Q2 2026 Earnings",
+          "url": "https://news.airbnb.com/airbnb-q1-2026-financial-results/",
+          "publisher": "Airbnb Newsroom / 실적 발표",
+          "date": "2026",
+          "summary": "2026년 2분기 매출 36억 달러(+17%), 총예약액 272억 달러(+16%), 예약된 숙박·좌석 1억 4,830만 건(+10%). 220개가 넘는 나라와 지역에서 활성 등록 800만 개 이상, 호스트 500만 명 이상."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1182,7 +1765,8 @@
     "⚠️ **`AI 에이전트가 코드의 60%를 쓴다` 는 3자 기사가 있다**(2026-07) — **회사 자신의 글로 확인하지 못했다.** ⏳ 확인되면 `AI 를 어디까지 믿나` 축의 재료가 된다.",
     "⚠️ **목록 페이지가 헤더만 온다** — `medium.com/airbnb-engineering` 를 `r.jina.ai` 로 열어도 글 목록이 안 나와 **주소를 검색으로 받아야 한다.**",
     "⚠️ **연표(eras)를 못 세웠다** — 2008년 창업은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다.",
-    "⚠️ **이전 기간과 이전 중의 사고를 모른다** — **`먼저 모든 메트릭이 새 시스템으로 흐르게 하고 그다음에 대시보드·경보를 다룬다`** 는 순서는 밝히지만, **그 사이에 무엇이 어긋났는지는 적지 않는다.**"
+    "⚠️ **이전 기간과 이전 중의 사고를 모른다** — **`먼저 모든 메트릭이 새 시스템으로 흐르게 하고 그다음에 대시보드·경보를 다룬다`** 는 순서는 밝히지만, **그 사이에 무엇이 어긋났는지는 적지 않는다.**",
+    "⚠️ **이전 자체의 이야기가 없다** — **70억 노드와 110억 엣지를 벤더 PaaS 에서 어떻게 옮겼는지**(무중단이었는지, 이중 쓰기를 했는지, 얼마나 걸렸는지)가 글에 없다. **결과와 구조만 있다.**"
   ],
   "sources": [
     {
@@ -1203,8 +1787,8 @@
       "title": "Scaling Airbnb's identity graph with a unified knowledge graph infrastructure",
       "url": "https://medium.com/airbnb-engineering/scaling-airbnbs-identity-graph-with-a-unified-knowledge-graph-infrastructure-ebac467b7836",
       "publisher": "The Airbnb Tech Blog",
-      "date": "2026-05",
-      "summary": "신원 그래프를 벤더 PaaS 에서 자체 지식 그래프 인프라로 옮겼다. 이전 중에 같은 질의가 자체 인프라와 3자 벤더에서 성능이 크게 달라 JanusGraph 쪽과 클라이언트 쪽 양쪽을 최적화해야 했다. ⏳ 본문은 아직 읽지 않았다."
+      "date": "2026-05-19",
+      "summary": "70억 노드와 110억 엣지, 하루 500만 새 엣지 규모의 신원 그래프가 3자 PaaS 에서 벤더 종속·성능 병목·주기적인 수동 재부팅·롱테일 지연에 시달렸다. JanusGraph 를 DynamoDB 위에 올려 저장은 AWS 에 맡기고 그래프 로직 계층은 직접 쥐었고, 기본 잠금을 DynamoDB 조건부 쓰기로 바꿨다. 종단 P95 2.1초에서 1.0초로, 쓰기 용량은 10배가 됐다."
     },
     {
       "title": "Airbnb (ABNB) Q2 2026 Earnings",
