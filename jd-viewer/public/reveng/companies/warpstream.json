@@ -4,7 +4,7 @@
   "name_en": "WarpStream",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "warpstream.com",
   "one_liner": "디스크를 아예 없애고 객체 저장소만으로 도는 Kafka — 저장 계층이 아니라 네트워킹 계층으로 쓴다",
@@ -263,9 +263,87 @@
     },
     {
       "name": "클러스터 안에서 무슨 일이 있었는지 본다",
-      "why": "**`Kafka 는 데이터베이스가 아니지만 그래도 질의 엔진을 붙였다`**(2026-03-20)와 **감사 로그**(2026-02-13) · **MCP 서버**(2026-04-16). ⚠️ **디스크를 없애면 예전에 디스크를 보고 알던 것을 다른 데서 알아야 한다**(재구성). ⏳ **셋 다 본문 미독.**",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **관측하는 값이 비싸서 눈을 감아야 했다** — **`우리 사용자 모두가 현대적인 관측 도구를 가진 것은 아니다 … 어떤 이들은 중앙화된 로그가 아예 없다`** 이고, 3자 플랫폼 쪽에서는 **고카디널리티 비용 때문에 내보내는 텔레메트리 자체를 제한해야 했다.** ⚠️ **싸게 만드는 것이 이 회사의 존재 이유인데 그 회사를 관측하는 값이 비쌌다**(재구성). ✅ **본문 확인함**(2026-03-20).",
+      "tech": [
+        {
+          "tech": "Events (Kafka 토픽 저장)",
+          "solves": "⚠️ **`사이드카 데이터베이스나 로그 집계 파이프라인을 더하면 운영 부담과 비용이 는다`** 며 새 인프라를 거절하고, **이미 있는 저장 엔진에 관측을 담았다.** **고객 환경 안에 데이터가 남는다.**",
+          "limits": "⚠️ **이벤트도 다른 Kafka 토픽과 같은 저장·API 비용이 든다** — **`특별히 싸게 튜닝해 적당한 크기 클러스터라면 월 몇 달러 미만`** 이지만 처리량이 크면 끄거나 보존(기본 6시간)을 줄여야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+              "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+              "publisher": "WarpStream",
+              "date": "2026-03-20",
+              "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+            }
+          ]
+        },
+        {
+          "tech": "자체 벡터화 질의 엔진",
+          "solves": "**AST → 논리 계획 → 물리 계획 → 파티션 단위 작업 → 단계별 벡터화 실행.** **`Datadog 에서 Husky 를 만든`** 경험 위에 세웠다.",
+          "limits": "⚠️ **`지금은 에이전트 하나가 질의 전체를 실행한다`** — 여러 에이전트로 분산하도록 설계돼 있지만 아직 아니다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+              "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+              "publisher": "WarpStream",
+              "date": "2026-03-20",
+              "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+            }
+          ]
+        },
+        {
+          "tech": "타임스탬프 워터마크 + 황금비 표집",
+          "solves": "⚠️ **`Kafka 는 오프셋으로 정리되지 시간으로 정리되지 않는다`** 는 어긋남을 **색인 없이 실행 순서로** 푼다 — 초기 작업을 오프셋 공간에 흩어 표집해 가지치기를 극대화한다.",
+          "limits": "⚠️ **시간 색인을 만들지 않았으므로 최악의 경우 가지치기가 듣지 않는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+              "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+              "publisher": "WarpStream",
+              "date": "2026-03-20",
+              "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+            }
+          ]
+        },
+        {
+          "tech": "net.Pipe 직결 + 압축 끄기",
+          "solves": "**`양쪽 끝에는 네트워크 연결처럼 보이지만 네트워크 스택은 전혀 타지 않는`** 메모리 내 양방향 파이프 — **`읽기 처리량을 두 배 이상`**.",
+          "limits": "⚠️ **Kafka 클라이언트 인터페이스를 흉내 내는 코드를 떠안는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+              "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+              "publisher": "WarpStream",
+              "date": "2026-03-20",
+              "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+            }
+          ]
+        },
+        {
+          "tech": "자기 제한 + 하드코딩된 데이터 경계",
+          "solves": "**메모리 상한 · 동시 질의 2개 · 스캔 제한 · 질의 전용 에이전트**로 본업을 지키고, **`운영 메타데이터만 담도록 하드코딩돼 있다 — 당신 토픽의 실제 메시지나 원본 데이터는 절대 담지 않는다`**.",
+          "limits": "⭐ **회사가 스스로 적는다** — **`저장 계층이 컬럼 지향이 아니라서 어떤 벤치마크 경쟁에서도 이기지 못할 것이다. 하지만 그래도 괜찮다.`** **`가끔 쓰는 디버깅 도구지 주된 관측 시스템이 아니다.`**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+              "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+              "publisher": "WarpStream",
+              "date": "2026-03-20",
+              "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "not-going-to-win-benchmarks"
+      ]
     }
   ],
   "features": [
@@ -1352,6 +1430,534 @@
           "summary": "WarpStream 의 zero disk 아키텍처 — 로컬 디스크도 캐시도 EBS 볼륨도 쓰지 않고 오롯이 객체 저장소에서 돈다. S3 를 저장 계층만이 아니라 네트워킹 계층으로 써서 가용영역 간 네트워크 비용을 없앤다."
         }
       ]
+    },
+    {
+      "key": "not-going-to-win-benchmarks",
+      "name": "벤치마크에서 이길 생각이 없다",
+      "domain": "클러스터 안에서 무슨 일이 있었는지 본다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **문제가 고객 쪽의 격차에서 시작한다** — **`우리 사용자 모두가 현대적인 관측 도구를 가진 것은 아니다. 어떤 이들은 검색과 분석이 되는 구조화 로깅을 당연하게 여기지만, 다른 이들은 중앙화된 로그가 아예 없다.`** ⚠️ **그리고 3자 관측 플랫폼을 쓰는 쪽에서는 고카디널리티 비용이 감당이 안 돼서, 이 회사가 내보내는 텔레메트리 자체를 제한해야 했고 그만큼 가시성이 줄었다.** **싸게 만드는 것이 이 회사의 존재 이유인데, 그 회사를 관측하는 값이 비싸서 눈을 감아야 했던 셈이다**(재구성).",
+        "metrics": [
+          {
+            "label": "⚠️ 동시에 만족해야 할 셋",
+            "value": "**`고카디널리티 구조화 데이터를 방출하고`** · **`그 데이터를 효율적으로 질의하고 결과를 쉽게 시각화하며`** · **`이 모든 것을 고객 환경 안에 데이터를 둔 채로`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 스스로 적은 한계",
+            "value": "**`우리는 행 지향 형식으로 데이터를 저장하는 분산 로그에 질의 엔진을 붙여 놨다. 저장 계층이 컬럼 지향이 아니라서 우리는 어떤 벤치마크 경쟁에서도 이기지 못할 것이다. 하지만 그래도 괜찮다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "대신 노리는 것",
+            "value": "**`충분히 빠르고, 충분히 싸고, 충분히 쓰기 쉬운`** 것",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "**`Events 를 특별히 싸게 튜닝했다. 적당한 크기의 클러스터라면 예상되는 영향은 월 몇 달러 미만이다.`** 기본 보존 **6시간**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 의도적으로 좁힌 자리",
+            "value": "**클러스터당 동시 질의 최대 2개**(의도적으로 보수적) · **`가끔 쓰는 디버깅 도구지 주된 관측 시스템이 아니다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "만든 사람들",
+            "value": "**`WarpStream 엔지니어 다수가 Datadog 에서 Husky 를 만드는 걸 도왔으니 우리는 질의 엔진 만드는 걸 좀 안다!`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "읽기 최적화",
+            "value": "**`Go 의 net.Pipe()`** 로 네트워크 스택을 타지 않는 메모리 내 파이프 + 압축 끄기 → **`벤치마크에서 질의 엔진의 데이터 읽기 처리량을 두 배 이상으로 만들었다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 새로 들일지 정할 때",
+          "thought": "⚠️ **아무것도 안 들이기로 했다** — 각 클러스터 옆에 오픈소스 관측 스택을 띄우는 안을 검토했지만 **`사이드카 데이터베이스나 로그 집계 파이프라인을 더하면 운영 부담과 비용이 는다`** 며 접었다. ⭐ **이 회사에서는 그것이 기술적 판단이 아니라 정체성 문제다** — **싸고 운영이 쉽다는 것이 파는 물건 자체이므로, 관측을 위해 그것을 깨면 제품을 깨는 것이 된다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디에 담을지 정할 때",
+          "thought": "⚠️ **이미 가진 것의 성질을 다시 썼다** — 관측 데이터를 **WarpStream 안에 Kafka 토픽으로** 넣는다. **튼튼한 저장 엔진을 이미 갖고 있고, 그것이 고객 환경 안에서 돈다** — 세 요구를 한꺼번에 만족시키는 자리가 거기뿐이었다(뒤쪽은 재구성). ⭐ **Orbit 에서 복제 경로가 감시 경로가 된 것과 같은 손버릇이다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이길 수 없다는 것을 알 때",
+          "thought": "⭐ **이 기능의 이름이 여기서 나온다** — **`우리는 행 지향 형식으로 저장하는 분산 로그에 질의 엔진을 붙여 놨다. 저장 계층이 컬럼 지향이 아니라서 어떤 벤치마크 경쟁에서도 이기지 못할 것이다. 하지만 그래도 괜찮다.`** ⚠️ **못 이길 것을 알고 고른 것이고, 대신 노리는 것을 따로 적는다** — **`충분히 빠르고, 충분히 싸고, 충분히 쓰기 쉬운`**. **그리고 쓰임새 자체를 좁혀서 그 선택을 지킨다** — **`가끔 쓰는 디버깅 도구지 주된 관측 시스템이 아니다.`**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Events (Kafka 토픽)",
+            "what": "⚠️ **관측 데이터를 자기 Kafka 토픽에 담는다** — 별도 저장소가 없다. 출시 시점의 세 흐름: **에이전트 로그 · ACL 이벤트(모든 인가 결정, 거부 포함) · 파이프라인 이벤트**"
+          },
+          {
+            "name": "벡터화 질의 엔진",
+            "what": "**질의를 AST 로 파싱 → 논리 계획(필터·투영·집계·정렬·제한) → 파티션 수와 오프셋 범위를 가져와 물리 계획 → 단일 파티션 단위 작업으로 쪼개 단계별 벡터화 실행**"
+          },
+          {
+            "name": "⚠️ 타임스탬프 워터마크",
+            "what": "⚠️ **Kafka 는 오프셋으로 정리되지 시간으로 정리되지 않는다** — 각 오프셋에서 실제로 본 타임스탬프 범위를 추적해 **질의의 시간 필터 밖인 작업을 건너뛴다**"
+          },
+          {
+            "name": "황금비 간격 전략",
+            "what": "⚠️ **초기 작업을 오프셋 공간 전체에 흩어 표집한다** — **좁은 시간 범위 질의에서 가지치기 효과를 최대로**"
+          },
+          {
+            "name": "net.Pipe 직결 클라이언트",
+            "what": "⚠️ **`양쪽 끝에는 네트워크 연결처럼 보이지만 네트워크 스택은 전혀 타지 않는`** 메모리 내 양방향 파이프 + 압축 끄기"
+          },
+          {
+            "name": "⚠️ 데이터 경계",
+            "what": "⚠️ **`운영 메타데이터만 담도록 하드코딩돼 있다 — 에이전트 로그·요청 종류·ACL 결정·에이전트 진단. 당신 토픽의 실제 메시지나 원본 데이터는 절대 담지 않는다.`**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **새 인프라를 들이지 않는다** — 사이드카 DB 도 집계 파이프라인도 없다",
+          "⚠️ **데이터는 고객 환경 안에 남는다** — 질의 결과만 렌더링을 위해 제어 평면을 잠시 지나고 저장되지 않는다",
+          "⚠️ **고객의 실제 메시지는 절대 담지 않는다** — 하드코딩된 경계다",
+          "⚠️ **주된 관측 시스템 자리를 노리지 않는다** — 동시 질의 2개로 스스로 묶는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**에이전트가 고카디널리티 구조화 이벤트를 Kafka 토픽으로 쓴다**",
+            "why": "⚠️ **이미 있는 저장 엔진을 그대로 쓴다** — 새 의존을 만들지 않으려고"
+          },
+          {
+            "step": "**질의를 AST 로 파싱하고 논리 계획으로 컴파일한다**",
+            "why": "필터·투영·집계·정렬·제한으로 나눈다"
+          },
+          {
+            "step": "**파티션 수와 오프셋 범위를 가져와 물리 계획을 세우고, 단일 파티션을 덮는 작업들로 쪼갠다**",
+            "why": "단계별로 벡터화 실행한다"
+          },
+          {
+            "step": "⚠️ **타임스탬프 워터마크로 시간 밖 작업을 쳐 낸다**",
+            "why": "⚠️ **Kafka 는 오프셋으로 정리되지 시간으로 정리되지 않는다** — 그 어긋남이 이 엔진의 근본 난제다"
+          },
+          {
+            "step": "⚠️ **황금비 기반 간격으로 초기 작업을 오프셋 공간에 흩어 표집한다**",
+            "why": "⚠️ **좁은 시간 범위 질의에서 가지치기 효과를 최대로**"
+          },
+          {
+            "step": "⚠️ **일반 Kafka fetch 사슬 대신 `net.Pipe()` 로 직결하고 압축을 끈다**",
+            "why": "⚠️ **`벤치마크에서 데이터 읽기 처리량을 두 배 이상으로 만들었다`**"
+          },
+          {
+            "step": "**메타데이터만 필요한 질의는 메타데이터만 보고, list·TopN 은 일찍 빠져나오며, fetch 크기를 질의 종류에 맞춰 바꾼다**",
+            "why": "**목록 질의는 작게, 집계는 크게** — 그리고 대화형 타임라인에는 점진적 결과를 준다"
+          },
+          {
+            "step": "⚠️ **메모리 상한 · 동시 질의 2개 · 스캔 제한 · 질의 전용 에이전트로 스스로를 묶는다**",
+            "why": "⚠️ **관측이 본업(스트리밍)의 성능을 갉으면 안 된다**(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "관측을 위해 무엇을 새로 들일 것인가",
+            "chosen": "⚠️ **아무것도 안 들인다**",
+            "alternatives": [
+              "클러스터마다 오픈소스 관측 스택 사이드카",
+              "3자 관측 플랫폼에 의존"
+            ],
+            "tradeoff": "**`사이드카 데이터베이스나 로그 집계 파이프라인을 더하면 운영 부담과 비용이 늘 것`** 이라 접었다. ⭐ **이 회사에서는 기술 판단이 아니라 정체성 문제다** — **싸고 운영이 쉽다는 것이 파는 물건 자체이므로, 관측을 위해 그것을 깨면 제품을 깨는 것이 된다**(재구성). **3자 플랫폼 쪽도 이미 답이 아니었다** — 고카디널리티 비용 때문에 **내보내는 텔레메트리를 제한해야 했다.** **대가는 질의 엔진을 직접 만들어야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "question": "그러면 어디에 담을 것인가",
+            "chosen": "⚠️ **자기 Kafka 토픽에** — WarpStream 안에",
+            "alternatives": [
+              "별도 컬럼 저장소",
+              "객체 저장소에 직접 파일로"
+            ],
+            "tradeoff": "세 요구를 한꺼번에 만족시키는 자리가 거기뿐이었다 — **고카디널리티 구조화 데이터 방출** · **효율적 질의와 쉬운 시각화** · **`이 모든 것을 고객 환경 안에 데이터를 둔 채로`**. **이미 튼튼한 저장 엔진이 있고 그것이 BYOC 로 고객 환경 안에서 돈다.** ⚠️ **대가가 곧 다음 결정을 결정한다** — **행 지향 저장 위에서 질의해야 한다**(재구성). ⭐ **Orbit 에서 복제 경로가 감시 경로가 된 것과 같은 손버릇이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              },
+              {
+                "title": "Move Fast And Don't Break Things: Automatic Apache Kafka Migrations With Orbit",
+                "url": "https://www.warpstream.com/blog/orbit-kafka-auto-migration",
+                "publisher": "WarpStream",
+                "date": "2026-08-18",
+                "summary": "다른 Kafka 에서 옮겨 올 때 데이터와 컨슈머는 이미 풀려 있었지만 프로듀서가 남아 있었다 — 네 걸음의 수동 절차와 점검 창, 모든 팀의 동시 조율. 에이전트마다 produce 요청만 전달하는 제한된 프록시를 두어 팀마다 자기 속도로 오게 하고, 프록시가 도착지의 느린 지연을 미리 흉내 내 프로듀서가 컷오버 전에 튜닝되게 한다."
+              }
+            ]
+          },
+          {
+            "question": "질의 성능을 어디까지 노릴 것인가",
+            "chosen": "⭐ **이길 생각을 접는다 — `충분히` 를 목표로 한다**",
+            "alternatives": [
+              "컬럼 지향 저장으로 다시 만들기",
+              "질의 기능을 줄이기"
+            ],
+            "tradeoff": "⚠️ **이 기능의 이름이다.** **`우리는 행 지향 형식으로 데이터를 저장하는 분산 로그에 질의 엔진을 붙여 놨다. 저장 계층이 컬럼 지향이 아니라서 우리는 어떤 벤치마크 경쟁에서도 이기지 못할 것이다. 하지만 그래도 괜찮다.`** 대신 노리는 것을 따로 적는다 — **`충분히 빠르고, 충분히 싸고, 충분히 쓰기 쉬운`**. ⚠️ **못 이길 것을 알고 골랐고, 그 대가로 추가 운영 부담이 0 이고 제품과 밀착된다**(재구성). ⭐ **자기 약점을 먼저 말해 버리면 그 약점이 더 이상 공격 지점이 아니게 된다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "question": "오프셋으로 정리된 데이터를 시간으로 어떻게 찾을 것인가",
+            "chosen": "⚠️ **타임스탬프 워터마크 + 황금비 표집**",
+            "alternatives": [
+              "시간 색인을 따로 만들기",
+              "전 구간 스캔"
+            ],
+            "tradeoff": "⚠️ **근본 난제가 여기 있다** — **Kafka 는 오프셋으로 정리되지 시간으로 정리되지 않는다.** 엔진은 **각 오프셋에서 실제로 관측된 타임스탬프 범위를 추적해** 질의의 시간 필터 밖 작업을 건너뛰고, 스케줄러는 **`황금비 기반 간격 전략`** 으로 초기 작업을 오프셋 공간에 흩어 표집해 **좁은 시간 범위 질의에서 가지치기 효과를 최대로** 만든다. ⚠️ **색인을 새로 만들지 않고 실행 순서로 푼다** — 색인을 만들면 다시 새 저장이 생기기 때문이다(재구성). **대가는 최악의 경우 가지치기가 안 된다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "question": "데이터를 어떻게 읽을 것인가",
+            "chosen": "⚠️ **일반 fetch 사슬을 건너뛰고 메모리 내 파이프로 직결한다**",
+            "alternatives": [
+              "일반 Kafka 컨슈머로 읽기",
+              "별도 읽기 경로 서버"
+            ],
+            "tradeoff": "**`Go 의 net.Pipe() 를 써서 양쪽 끝에는 네트워크 연결처럼 보이지만 네트워크 스택은 전혀 타지 않는 메모리 내 양방향 파이프를 만든다.`** 압축도 끄라고 알린다. 결과가 **`벤치마크에서 질의 엔진의 데이터 읽기 처리량을 두 배 이상`**. ⚠️ **같은 프로세스 안에서 읽는데 네트워크 프로토콜을 통과하고 있었던 셈이다**(재구성). **대가는 Kafka 클라이언트 인터페이스를 흉내 내는 코드를 떠안는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "question": "관측이 본업을 갉는 것을 어떻게 막을 것인가",
+            "chosen": "⚠️ **스스로를 묶는다 — 동시 질의 2개까지**",
+            "alternatives": [
+              "자원을 넉넉히 주고 자유롭게",
+              "별도 클러스터로 분리"
+            ],
+            "tradeoff": "**메모리 상한 · 클러스터당 동시 질의 최대 2개(의도적으로 보수적) · 질의당 스캔량 제한 · 일부 에이전트를 질의 전용으로 묶는 선택지.** 그리고 위치를 못 박는다 — **`가끔 쓰는 디버깅 도구지 주된 관측 시스템이 아니다`**. ⚠️ **성능을 못 내는 것을 감추는 대신 쓰임새를 좁혀 그 한계를 설계에 편입시켰다**(재구성). **대가는 큰 조사를 여기서 못 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "question": "고객 데이터를 어디까지 담을 것인가",
+            "chosen": "⚠️ **운영 메타데이터만 — 하드코딩으로**",
+            "alternatives": [
+              "설정으로 범위 조절",
+              "샘플 메시지도 포함"
+            ],
+            "tradeoff": "**`이벤트 토픽은 운영 메타데이터만 담도록 하드코딩돼 있다 — 에이전트 로그·요청 종류·ACL 결정·에이전트 진단. 당신 토픽의 실제 메시지나 원본 데이터는 절대 담지 않는다.`** 질의 결과도 **렌더링을 위해 제어 평면을 잠시 지나지만 저장되지 않는다.** ⚠️ **설정으로 열 수 있게 두면 언젠가 열린다 — 그래서 코드로 막았다**(재구성). **대가는 정말 필요한 경우에도 못 본다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "question": "비용이 걱정되면 어떻게 하는가",
+            "chosen": "**끄고 줄일 수 있게 한다 — 기본 보존 6시간**",
+            "alternatives": [
+              "일괄 고정 요금",
+              "항상 켜 두기"
+            ],
+            "tradeoff": "이벤트 데이터도 **객체 저장소에 남는 다른 Kafka 토픽과 같은 저장·API 비용**이 든다. 그래서 **`Events 를 특별히 싸게 튜닝했고 적당한 크기 클러스터라면 예상 영향은 월 몇 달러 미만`** 이며, 필요 없는 이벤트 종류를 끄거나 **기본 6시간 보존을 더 줄일 수 있다.** ⚠️ **처리량이 큰 클러스터에서는 사용자가 직접 저울질하라는 뜻이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Events (Kafka 토픽 저장)",
+            "role": "⚠️ **관측 데이터를 자기 저장 엔진에 담는다** — 사이드카 DB 도 집계 파이프라인도 없다. 출시 시 **에이전트 로그 · ACL 이벤트 · 파이프라인 이벤트**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "tech": "자체 벡터화 질의 엔진",
+            "role": "**AST → 논리 계획 → 물리 계획 → 파티션 단위 작업 → 단계별 벡터화 실행.** **`Datadog 에서 Husky 를 만든`** 경험 위에 세웠다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "tech": "타임스탬프 워터마크 + 황금비 표집",
+            "role": "⚠️ **Kafka 가 오프셋으로 정리된다는 어긋남을 실행 순서로 푼다** — 색인을 새로 만들지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "tech": "net.Pipe 직결 + 압축 끄기",
+            "role": "⚠️ **`네트워크 스택을 전혀 타지 않는`** 메모리 내 파이프 — **읽기 처리량 2배 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "tech": "자기 제한 (동시 2개 · 스캔 상한 · 질의 전용 에이전트)",
+            "role": "⚠️ **관측이 스트리밍을 갉지 않게 스스로를 묶는다** — **`가끔 쓰는 디버깅 도구지 주된 관측 시스템이 아니다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "order-only-before-reading",
+          "via": "같은 저장 엔진",
+          "contract": "⚠️ **관측을 자기 Kafka 토픽에 담는다는 것은, 앞 기능이 만든 저장·시퀀싱 구조 위에 관측이 올라탄다는 뜻이다** — **새 의존이 하나도 안 는다**(뒤쪽은 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "feel-the-destination-early",
+          "via": "⭐ 같은 손버릇",
+          "contract": "⚠️ **Orbit 에서 이미 있는 복제 경로가 감시 경로가 됐듯, 여기서도 이미 있는 저장 엔진이 관측 저장소가 된다** — **새로 들이지 않고 가진 것의 성질을 다시 쓴다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "BYOC 스트리밍 (매출)",
+          "via": "⚠️ 정체성이 곧 제약",
+          "contract": "⚠️ **싸고 운영이 쉽다는 것이 파는 물건이라, 관측을 위해 사이드카를 더하는 것은 제품을 깨는 일이 된다** — **`운영 부담과 비용을 더한다`** 는 한 문장이 대안을 죽였다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "3자 관측 플랫폼",
+          "via": "떠난 이유",
+          "contract": "⚠️ **고카디널리티 비용 때문에 내보내는 텔레메트리를 제한해야 했고 그만큼 가시성이 줄었다** — **관측하는 값이 비싸서 눈을 감아야 했다**(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 오프셋으로 정리된 로그에서 시간으로 찾아야 한다",
+            "why_hard": "⚠️ **Kafka 는 오프셋으로 데이터를 정리하지 시간으로 정리하지 않는다.** 관측 질의는 거의 언제나 시간 범위로 오는데, 저장은 그 축을 모른다(뒤쪽은 이 사이트의 재구성이다). ⚠️ **시간 색인을 새로 만들면 `새 저장을 안 들인다` 는 이 기능의 전제가 무너진다**(재구성).",
+            "current_best": "⚠️ **색인 대신 실행 순서로 푼다** — **각 오프셋에서 실제로 관측된 타임스탬프 범위를 워터마크로 추적**해 시간 필터 밖 작업을 건너뛰고, 스케줄러가 **`황금비 기반 간격 전략`** 으로 초기 작업을 오프셋 공간 전체에 흩어 표집해 **좁은 시간 범위 질의에서 가지치기 효과를 최대로** 만든다. **읽기 자체는 `net.Pipe()` 직결과 압축 끄기로 두 배 이상 끌어올렸다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          },
+          {
+            "problem": "⭐ 이길 수 없는 싸움을 어떻게 고르나",
+            "why_hard": "⚠️ **행 지향 저장 위에 질의 엔진을 얹는 것은 구조적으로 불리하다** — 관측 질의는 컬럼 지향이 압도적으로 유리한 영역이다(재구성). **그런데 컬럼 저장을 새로 들이면 `사이드카를 더하지 않는다` 는 전제가 깨진다** — **제품의 정체성과 질의 성능이 정면으로 맞선다**(재구성).",
+            "current_best": "⭐ **못 이길 것을 먼저 말하고 목표를 바꾸는 것** — **`저장 계층이 컬럼 지향이 아니라서 우리는 어떤 벤치마크 경쟁에서도 이기지 못할 것이다. 하지만 그래도 괜찮다.`** 대신 **`충분히 빠르고, 충분히 싸고, 충분히 쓰기 쉬운`** 을 노리고, **쓰임새 자체를 `가끔 쓰는 디버깅 도구지 주된 관측 시스템이 아니다` 로 좁혀** 그 선택을 지킨다. **동시 질의 2개라는 보수적인 상한이 그 선언을 코드로 옮긴 것이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+                "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+                "publisher": "WarpStream",
+                "date": "2026-03-20",
+                "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "새로 들이지 않고 가진 것을 다시 쓴다",
+          "question": "관측 데이터가 어디에 담기고 어떻게 질의되나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>에이전트</b><br/>• 로그 · ACL 결정 · 파이프라인\"]:::list --> B[\"⚠️ <b>자기 Kafka 토픽</b><br/>• 사이드카 DB 없음<br/>• 고객 환경 안에 남는다<br/>• 운영 메타데이터만 (하드코딩)\"]:::accent\n  B --> C[\"<b>벡터화 질의 엔진</b><br/>• AST → 논리 계획<br/>• 파티션 단위 작업으로\"]:::list\n  C --> D[\"⚠️ <b>타임스탬프 워터마크</b><br/>• Kafka 는 오프셋으로 정리된다<br/>• 시간 밖 작업을 쳐 낸다\"]:::accent\n  D --> E[\"⚠️ <b>황금비 간격 표집</b><br/>• 초기 작업을 오프셋 공간에 흩어<br/>• 좁은 시간 질의에서 최대 가지치기\"]:::accent\n  E --> F[\"⚠️ <b>net.Pipe 직결</b><br/>• 네트워크 스택을 안 탄다<br/>• 압축 끄기 · 읽기 2배 이상\"]:::accent\n  F --> G[\"<b>Events Explorer</b><br/>• 점진적 결과\"]:::list\n  H[\"<b>스스로를 묶는다</b><br/>• 동시 질의 2개<br/>• 메모리 · 스캔 상한<br/>• 질의 전용 에이전트\"]:::list -.-> C"
+        },
+        {
+          "title": "이길 수 없는 것을 먼저 말한다",
+          "question": "무엇을 포기하고 무엇을 지켰나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>관측이 필요하다</b><br/>• 어떤 고객은 중앙 로그가 아예 없다<br/>• 3자 플랫폼은 고카디널리티가 비싸<br/>  텔레메트리를 제한해야 했다\"]:::gone --> B[\"⚠️ <b>사이드카 DB 를 놓으면?</b><br/>• 운영 부담과 비용이 는다\"]:::gone\n  B --> C[\"⚠️ <b>그건 제품을 깨는 일이다</b><br/>• 싸고 운영이 쉬운 것이<br/>  파는 물건 자체다 (재구성)\"]:::gone\n  C --> D[\"<b>답: 자기 Kafka 토픽에 담는다</b>\"]:::accent\n  D --> E[\"⚠️ <b>그런데 행 지향이다</b><br/>• 컬럼 지향이 아니라<br/>  벤치마크에서 이길 수 없다\"]:::gone\n  E --> F[\"⭐ <b>답: 먼저 말해 버린다</b><br/>• 「하지만 그래도 괜찮다」<br/>• 충분히 빠르고 · 싸고 · 쉬운\"]:::accent\n  F --> G[\"<b>답: 쓰임새를 좁힌다</b><br/>• 가끔 쓰는 디버깅 도구지<br/>  주된 관측 시스템이 아니다<br/>• 동시 질의 2개로 못 박는다\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Kafka Isn't a Database, But We Gave It a Query Engine Anyway",
+          "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
+          "publisher": "WarpStream",
+          "date": "2026-03-20",
+          "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
+        },
+        {
+          "title": "Move Fast And Don't Break Things: Automatic Apache Kafka Migrations With Orbit",
+          "url": "https://www.warpstream.com/blog/orbit-kafka-auto-migration",
+          "publisher": "WarpStream",
+          "date": "2026-08-18",
+          "summary": "다른 Kafka 에서 옮겨 올 때 데이터와 컨슈머는 이미 풀려 있었지만 프로듀서가 남아 있었다 — 네 걸음의 수동 절차와 점검 창, 모든 팀의 동시 조율. 에이전트마다 produce 요청만 전달하는 제한된 프록시를 두어 팀마다 자기 속도로 오게 하고, 프록시가 도착지의 느린 지연을 미리 흉내 내 프로듀서가 컷오버 전에 튜닝되게 한다."
+        },
+        {
+          "title": "With WarpStream, Confluent Got a New Type of Kafka Platform",
+          "url": "https://thenewstack.io/with-warpstream-confluent-got-a-new-type-of-kafka-platform/",
+          "publisher": "The New Stack",
+          "date": "2024",
+          "summary": "WarpStream 의 zero disk 아키텍처 — 로컬 디스크도 캐시도 EBS 볼륨도 쓰지 않고 오롯이 객체 저장소에서 돈다. S3 를 저장 계층만이 아니라 네트워킹 계층으로 써서 가용영역 간 네트워크 비용을 없앤다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1362,7 +1968,9 @@
     "⚠️ **`WarpStream is Dead, Long Live WarpStream` 이라는 글이 있는데 안 읽었다** — **인수 뒤 제품의 방향이 바뀐 이야기일 수 있다.** ⭐ **연표(eras)의 재료가 될 수 있다.**",
     "⚠️ **비용 주장의 근거를 회사 밖에서 확인하지 못했다** — **80% 절감 · EBS 대비 저장 24배 감소**는 회사와 그 인수사의 말이다.",
     "⚠️ **`DevOps 팀 없이 30개 넘는 환경의 변경 관리를 확장했다`(2026-05-19)는 제품이 아니라 자기 운영 이야기다** — 도메인으로 세우지 않았지만 ⏳ **`작은 팀이 어디까지 자동화하나` 의 재료가 될 수 있다.**",
-    "⚠️ **이전 규모의 숫자가 없다** — **`창 전체는 보통 몇 초 수준`** 말고는 **몇 개 클러스터를 옮겼는지, 가장 큰 이전이 얼마였는지, 실패율이 얼마인지**가 없다. **자동 롤백이 실제로 얼마나 걸리는지도 안 나온다.**"
+    "⚠️ **이전 규모의 숫자가 없다** — **`창 전체는 보통 몇 초 수준`** 말고는 **몇 개 클러스터를 옮겼는지, 가장 큰 이전이 얼마였는지, 실패율이 얼마인지**가 없다. **자동 롤백이 실제로 얼마나 걸리는지도 안 나온다.**",
+    "⚠️ **관측 쪽 나머지 둘을 안 읽었다** — **감사 로그**(2026-02-13)와 **MCP 서버**(2026-04-16). **MCP 는 `AI 를 어디까지 믿나` 축의 재료가 될 수 있다.**",
+    "⚠️ **`DevOps 팀 없이 30개 넘는 환경의 변경 관리를 확장했다`(2026-05-19)도 안 읽었다** — 제품이 아니라 자기 운영 이야기라 도메인으로 세우지 않았지만, ⭐ **이 회사가 `새로 들이지 않는다` 를 자기 조직에도 적용하는지 볼 수 있는 자리다.**"
   ],
   "sources": [
     {
@@ -1391,7 +1999,7 @@
       "url": "https://www.warpstream.com/blog/warpstream-events-built-in-observability-powered-by-kafka",
       "publisher": "WarpStream",
       "date": "2026-03-20",
-      "summary": "클러스터 관측을 Kafka 자체로 떠받치는 내장 이벤트와 질의 엔진. ⏳ 본문 미독."
+      "summary": "관측 데이터를 별도 인프라에 두는 대신 자기 Kafka 토픽에 넣고 자체 벡터화 질의 엔진을 붙였다. 사이드카 DB 나 로그 집계 파이프라인은 운영 부담과 비용을 더해 회사의 존재 이유와 모순되기에 접었다. 행 지향 저장 위에 질의 엔진을 얹은 것이라 벤치마크에서 이길 수 없다고 스스로 적으면서, 대신 추가 인프라 없이 고객 환경 안에서 도는 것을 골랐다."
     },
     {
       "title": "With WarpStream, Confluent Got a New Type of Kafka Platform",
