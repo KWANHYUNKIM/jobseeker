@@ -1,0 +1,558 @@
+{
+  "slug": "migration",
+  "title": "마이그레이션 — 한 번에 갈아엎으면 대개 불탄다",
+  "title_en": "Migration: The Big Rewrite Usually Goes Down in Flames",
+  "aliases": [
+    "마이그레이션",
+    "migration",
+    "전환",
+    "현대화",
+    "스트랭글러",
+    "레거시 전환"
+  ],
+  "category": "practice",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "⭐⭐⭐ **\"we've seen this simple-sounding plan go down in flames most of the time\"** — 그리고 가장 어려운 것은 새 시스템이 아니다: **\"hard to figure out the details of existing behavior\"**. 공고는 `스트랭글러` 를 1건만 부르는데 **`점진적` 은 397건** 부른다.",
+  "summary": "⭐ **`마이그레이션|migration` 은 760건(모집중 332)** 이다. 그런데 ⚠️⚠️ **`스트랭글러|strangler` 는 1건(모집중 0)** 이다.\n\n💡 **그런데 이번 대비는 지금까지와 또 다르다** — **이름은 안 불리는데 그 방식은 이미 표준이다.**\n\n> ⭐⭐⭐ `기존 Vue 3/Nuxt.js 기반 레거시 서비스를 안정적으로 유지보수하고, **React·Next.js로 점진적으로 마이그레이션**합니다` — 아이알큐더스\n> ⭐⭐ `View 시스템 Jetpack Compose **혼용 환경에서의 점진 마이그레이션** 경험` — 헤렌\n> `운영 중인 레거시 서비스를 **점진적으로 개선**하거나 마이그레이션해 본 분` — 패스트파이브\n\n⭐ **`점진적|단계적` 이 397건**이다. **패턴의 이름은 안 부르면서 패턴대로 일하고 있다.**\n\n**왜 그렇게 하는지 1차 자료가 세 문장으로 답한다.**\n\n> ⭐⭐⭐ **\"we've seen this simple-sounding plan go down in flames most of the time\"**\n> ⭐⭐⭐ \"Replacements seem easy to specify, but often it's **hard to figure out the details of existing behavior**.\"\n> ⭐⭐ \"Replacing a serious IT system takes a long time, and the users **can't wait for new features**.\"\n\n💡 ⭐⭐ **가장 어려운 것은 새 시스템을 만드는 것이 아니라 옛 시스템이 무엇을 하고 있는지 알아내는 것**이다 — 그리고 그건 **문서에 없다.**",
+  "market": null,
+  "sections": [
+    {
+      "id": "what",
+      "kind": "what",
+      "heading": "⭐⭐ 이름은 1건, 방식은 397건",
+      "confidence": "inferred",
+      "body": "셈부터 본다(2026-09-06).\n\n| 낱말 | 건수 | |\n|---|---|---|\n| `마이그레이션\\|migration` | **760** | (모집중 332) |\n| ⭐ `점진적\\|단계적\\|incremental` | **397** | (모집중 157) |\n| `무중단\\|블루그린\\|카나리` | 181 | (모집중 80) |\n| `현대화\\|Modernization` | 155 | (모집중 62) |\n| ⚠️ `DB·스키마 마이그레이션\\|Flyway\\|Alembic` | **124** | (모집중 41) |\n| ⚠️ `시스템 전환\\|재작성\\|rewrite` | **54** | (모집중 25) |\n| ⚠️⚠️ `스트랭글러\\|strangler` | **1** | (모집중 **0**) |\n\n⭐⭐⭐ **760 대 1.** 그런데 **이번 대비는 지금까지와 종류가 또 다르다.**\n\n| 형태 | 예 |\n|---|---|\n| ① 큰 낱말 vs 안 불리는 개념 | `rest` 3372 vs `HATEOAS` 0 |\n| ② 증상은 있고 원인은 없다 | `react` — `렌더링 최적화` 397 vs `useEffect` 4 |\n| ③ 개념보다 도구가 많이 불린다 | `typescript` — `타입 안전` 26 vs `zod` 53 |\n| ④ 두 이름 중 하나만 쓴다 | `technical-debt` — `레거시` 766 vs `부채` 227 |\n| ⭐⭐⭐ **⑤ 여기** | **패턴 이름은 1건인데 그 방식(`점진적`)은 397건** |\n\n💡 ⭐⭐ **이름을 몰라도 그렇게 하고 있다는 뜻이고**, 그건 나쁜 상태가 아니다. ⚠️ **다만 이름이 없으면 \"왜 그렇게 하나\"를 설명하기 어렵고**, 그래서 **한 번에 갈아엎자는 제안이 올라올 때 막을 근거가 없다.**\n\n📌 **공고의 문장이 그 방식을 반복해 적는다.**\n\n> ⭐⭐⭐ `기존 Vue 3/Nuxt.js 기반 레거시 서비스를 안정적으로 유지보수하고, **React·Next.js로 점진적으로 마이그레이션**합니다` — 아이알큐더스\n> ⭐⭐ `View 시스템 Jetpack Compose **혼용 환경에서의 점진 마이그레이션** 경험` — 헤렌\n> `아키텍처 현대화: 커스텀 MVC 유지보수 및 Laravel 전환을 위한 **점진적 개선** 참여` — 티에이치케이컴퍼니\n> `기존 시스템의 구조를 개선하거나 **점진적으로 현대화**해본 경험` — 와이케이기획\n\n⭐⭐⭐ **헤렌 공고의 `혼용 환경` 이 이 문서의 핵심 낱말이다** — **옛것과 새것이 함께 도는 기간**이 있다는 것을 전제한 표현이고, 그것이 뒤에서 볼 무화과 비유 그대로다.\n\n📌 ⚠️ **셈에서 가른 것도 적어 둔다.** `마이그레이션` 760건 안에는 **두 가지가 섞여 있다** — **DB·스키마 마이그레이션**(124건, Flyway·Alembic 같은 도구가 함께 나온다)과 **시스템 전환**이다. ⭐ **이 문서는 뒤쪽만 다룬다.**"
+    },
+    {
+      "id": "why",
+      "kind": "why",
+      "heading": "⭐⭐⭐ 한 번에 다시 쓰면 대개 불탄다 — 세 가지 이유",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "StranglerFigApplication — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+        }
+      ],
+      "body": "\"이 시스템 너무 낡았으니 새로 짜자\" 는 **가장 자연스러운 제안**이다. 요구사항도 알고, 기술도 좋아졌고, 이번엔 잘 만들 수 있을 것 같다.\n\n**Fowler 의 문장이 짧다.**\n\n> ⭐⭐⭐ **\"we've seen this simple-sounding plan go down in flames most of the time\"**\n\n💡 **\"단순해 보이는 계획\"** 이라고 부르고, **\"대개 불타 사라지는 것을 봤다\"** 고 한다. ⚠️ **가끔이 아니라 대개다.**\n\n📌 **왜 그런지 세 가지가 적혀 있다.**\n\n**① 오래 걸리는데 그동안 세상이 안 멈춘다.**\n\n> ⭐⭐ \"Replacing a serious IT system **takes a long time**, and the users **can't wait for new features**.\"\n\n⚠️ **재작성이 끝날 때까지 새 기능이 안 나간다.** 그런데 사업은 기다려 주지 않으므로, **옛 시스템에도 계속 기능이 들어간다** — 그러면 **새 시스템이 따라잡아야 할 목표가 계속 움직인다.**\n\n**② ⭐⭐⭐ 옛 시스템이 무엇을 하는지 아무도 모른다.**\n\n> ⭐⭐⭐ \"Replacements **seem easy to specify**, but often it's **hard to figure out the details of existing behavior**.\"\n\n💡 **이것이 이 문서에서 가장 중요한 문장이다.** \"명세하기 쉬워 보인다\" — 화면과 기능은 눈에 보이니까. ⚠️ **그런데 진짜 명세는 코드 안에 있고**, 그중 상당수는 **아무도 의도하지 않은 동작**이다: 예외적인 입력을 어떻게 처리하는지, 어떤 순서로 저장하는지, 어떤 경우에 무시하는지.\n\n⚠️⚠️ **그리고 그것들이 이미 업무의 일부가 되어 있다** — 누군가는 그 동작에 기대어 일한다.\n\n**③ 옛 시스템은 잘 나뉘어 있지 않다.**\n\n> ⭐ \"Legacy systems **rarely exhibit this characteristic**\"\n\n⭐ 깔끔하게 나뉜 시스템이면 조각씩 옮기기 쉬운데, **레거시는 대개 그렇지 않다.** ⚠️ 그래서 **어디서 잘라야 할지가 첫 번째 난제**가 된다.\n\n📌 ⭐⭐ **이 백과사전이 계속 만난 것과 이어진다.**\n\n| 문서 | 이미 나간 것 |\n|---|---|\n| `git` | 남이 받아 간 커밋 |\n| `android`·`ios` | 사용자 기기에 깔린 앱 |\n| `javascript` | 이미 배포된 웹 |\n| `technical-debt` | 쌓인 cruft |\n| ⭐ **`migration`** | **돌고 있는 시스템 전체** |\n\n⭐⭐⭐ **여기가 가장 크다** — 그리고 ②가 그 이유다: **이미 나간 것의 내용을 우리가 다 모른다.**"
+    },
+    {
+      "id": "fig",
+      "kind": "how",
+      "heading": "⭐⭐ 무화과나무 — 감싸면서 자란다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "StranglerFigApplication — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+        }
+      ],
+      "body": "이름은 **교살 무화과나무**에서 왔다. 씨가 숙주 나무 위에서 싹터 뿌리를 아래로 내리고, **숙주를 감싸며 자라다가 결국 대체한다.**\n\n> ⭐⭐ \"Like the fig, it begins with **small additions**... As we do this we **move bits of behavior from the legacy system into the new code base**.\"\n> ⭐ \"often **new features**, that are **built on top of, yet separate to** the legacy code base\"\n\n💡 ⭐⭐ **두 문장이 방식의 전부다.**\n\n1. **작게 시작한다** — 대개 **새 기능**부터. 옛 코드 위에 얹되 **분리된 채로**.\n2. **행동을 조금씩 옮긴다** — 한 번에 다 옮기지 않고 **\"bits of behavior\"** 단위로.\n\n📌 **이 방식의 값이 무엇인지도 적혀 있다.**\n\n> ⭐⭐ \"Since these components are **small, there isn't so much risk involved**\"\n> ⭐⭐ \"the business can **reap the value from these new components**, allowing **earlier return on the investment**\"\n\n⭐ **두 가지가 동시에 좋아진다.**\n\n| | 한 번에 다시 쓰기 | ⭐ 감싸며 옮기기 |\n|---|---|---|\n| 위험 | ⚠️ **전부 아니면 전무** | \"components are **small** ... **not so much risk**\" |\n| 언제 값이 나오나 | ⚠️ **끝나야** 나온다 | ⭐ **조각이 나올 때마다** — \"**earlier return**\" |\n| 옛 시스템의 동작 | ⚠️ **미리 다 알아내야** 한다 | ⭐ **옮기는 조각만** 알면 된다 |\n| 중간에 멈추면 | ⚠️ **아무것도 안 남는다** | **옮긴 만큼은 남는다** |\n\n💡 ⭐⭐⭐ **세 번째 줄이 `why` 절 ②의 해답이다.** \"옛 시스템이 무엇을 하는지 모른다\"는 문제를 **한 번에 풀지 않고 조각마다 푼다** — 옮길 조각의 동작만 알아내면 된다.\n\n⚠️ **네 번째 줄도 실무에서 크다.** 재작성은 **조직이 바뀌거나 우선순위가 바뀌면 통째로 버려진다.** 감싸며 옮기면 **중단해도 옮긴 만큼은 이미 돌고 있다.**\n\n📌 ⭐ **그리고 공고가 그 방식에 이름을 붙여 요구한다.**\n\n> ⭐ `**대규모 마이그레이션**(프레임워크 버전 업, 라우터 전환, 레거시 정리 등)을 **주도**한 경험` — 헤렌\n\n**\"주도\"** — ⭐ 조각을 어떤 순서로 옮길지, 언제 멈출지를 정하는 일이고, **`technical-debt` 의 질문(\"앞으로 여기를 얼마나 고칠 건가\")과 같은 판단**이다."
+    },
+    {
+      "id": "during",
+      "kind": "extra",
+      "heading": "⭐⭐ 진짜 일은 \"혼용 기간\"에 있다",
+      "confidence": "inferred",
+      "body": "⚠️ **이 절은 인용에서 추론했다** — Fowler 의 글은 방식과 값을 적지만 **혼용 기간의 운영을 절차로 주지는 않는다**(`open_questions`).\n\n⭐⭐⭐ **감싸며 옮긴다는 것은 곧 옛것과 새것이 동시에 돈다는 뜻**이다. 그리고 헤렌 공고가 그 상태에 이름을 붙였다.\n\n> ⭐⭐⭐ `View 시스템 Jetpack Compose **혼용 환경**에서의 점진 마이그레이션 경험` — 헤렌\n\n💡 **\"혼용 환경\"** — 이 기간이 **며칠이 아니라 몇 달, 때로는 몇 년**이고, ⚠️ **마이그레이션의 어려움 대부분이 여기 있다.**\n\n📌 **혼용 기간에 새로 생기는 일들.**\n\n| 무엇 | 왜 |\n|---|---|\n| ⭐ **둘 다 안다** | 팀이 **두 스택을 동시에** 유지해야 한다 |\n| ⚠️ **데이터가 갈린다** | 옛 쪽과 새 쪽이 **같은 데이터를 다르게** 보면 사고가 난다 |\n| **어디로 보낼지 정한다** | 요청을 옛것과 새것 중 어디로 — ⭐ 그 결정을 **코드가 아니라 설정**으로 두면 되돌릴 수 있다(→ `feature-flag`) |\n| ⚠️ **끝이 안 온다** | **90% 옮기고 멈추는 것**이 가장 흔한 실패다 |\n\n⚠️⚠️ **마지막 줄이 실무에서 가장 흔하다.** 쉬운 조각부터 옮기면 **남는 것은 언제나 가장 어려운 조각**이고, 그때쯤 우선순위가 바뀌어 있다. ⭐ 그러면 **두 시스템을 영원히 유지하게 된다** — 원래 줄이려던 비용이 **두 배가 된다.**\n\n📌 ⭐⭐ **그래서 시작할 때 정해 둘 것 셋.**\n\n1. ⭐ **끝을 무엇으로 볼지** — \"옛 시스템을 끄는 날\"이 계획에 있어야 한다. 없으면 안 꺼진다.\n2. **어려운 조각을 언제 볼지** — 쉬운 것부터 하되, **가장 어려운 조각을 미리 들여다본다**(옮길 수 있는 것인지).\n3. ⭐⭐ **되돌리는 길** — 조각마다 **옛것으로 되돌릴 수 있어야** \"작아서 위험이 적다\"가 실제로 성립한다(→ `feature-flag`).\n\n💡 ⭐ **그리고 이 기간에 테스트의 값이 특히 커진다.** `testing` 의 기준(**\"rarely hesitant to change some code\"**)이 여기서는 **\"옮긴 조각이 옛것과 같게 동작하나\"** 로 나타난다 — ⚠️ **`why` 절 ②의 \"아무도 모르는 동작\"을 잡아내는 유일한 장치**이기도 하다."
+    },
+    {
+      "id": "limits",
+      "kind": "limits",
+      "heading": "경계 — 이 문서가 하지 않는 것",
+      "confidence": "inferred",
+      "body": "**1. ⚠️⚠️ DB·스키마 마이그레이션을 다루지 않았다**(**124건**, Flyway·Alembic 등). ⭐ `마이그레이션` 760건 안에 **두 가지가 섞여 있는데** 이 문서는 **시스템 전환만** 다뤘다. 스키마 변경을 무중단으로 하는 법(확장-축소 등)은 **별도 낱말이다.**\n\n**2. ⚠️ Fowler 의 다른 패턴을 안 봤다.** `ParallelChange`(확장-축소)·`BranchByAbstraction` — ⭐ **`during` 절이 다루는 혼용 기간의 실제 기법들**인데 **글을 열지 않았다.** 그래서 그 절 전체가 추론이다.\n\n**3. ⚠️ 어디서 자를지를 다루지 않았다.** `why` 절이 \"레거시는 잘 안 나뉘어 있다\"고 인용하면서 **경계를 찾는 방법은 안 썼다** — ⭐ 도메인 분석·이벤트 스토밍 같은 것이 그 자리인데 확인하지 않았다.\n\n**4. ⚠️ 무중단 배포를 다루지 않았다**(`무중단|블루그린|카나리` **181건**). ⭐ 혼용 기간의 전환 장치인데 **별도 낱말로 남긴다.**\n\n**5. ⚠️ 실패 사례를 읽지 않았다.** \"go down in flames **most of the time**\" 이라는데 ⭐ **어떤 모양으로 실패하는지**는 공개된 사후 기록이 여럿 있을 텐데 **하나도 안 봤다.** `github-actions` 사이클에서 같은 지적을 했고 여기서도 반복한다.\n\n**6. ⚠️ `during` 절이 전부 추론이다.** 혼용 기간에 생기는 일과 \"시작할 때 정할 셋\"은 **인용(작게·조금씩·위험이 적다)에서 끌어내고 공고(헤렌 `혼용 환경`)로 뒷받침**한 것이다.\n\n**7. ⭐ `market` 을 비웠다.** `마이그레이션` 은 `tech_relations.json` 의 기술 이름이 아니다 — **비우는 것이 정상**이다(`PROMPT.md`).\n\n**8. 이 문서가 다루지 않는 것.** 왜 부채가 쌓이나는 `technical-debt`, 옮긴 조각이 맞는지 보는 것은 `testing`, 전환 스위치는 `feature-flag`, 옛 클라이언트를 서버가 떠안는 문제는 `api-versioning` 에 있다."
+    }
+  ],
+  "tables": [
+    {
+      "id": "quotes",
+      "kind": "glossary",
+      "caption": "⭐⭐⭐ 원문이 적는 것",
+      "note": "전부 **Fowler 의 `StranglerFigApplication` 원문**이다. ⭐ 요점은 **\"대개 실패한다\"** 와 **\"기존 동작을 알아내기 어렵다\"** 두 문장이고, 나머지는 그 둘에서 따라온다.",
+      "columns": [
+        "",
+        "원문"
+      ],
+      "rows": [
+        [
+          "⭐⭐⭐ 한 번에 다시 쓰면",
+          "**\"we've seen this simple-sounding plan go down in flames most of the time\"**"
+        ],
+        [
+          "⭐⭐⭐ 가장 어려운 것",
+          "\"Replacements **seem easy to specify**, but often it's **hard to figure out the details of existing behavior**.\""
+        ],
+        [
+          "⭐⭐ 시간이 걸린다",
+          "\"Replacing a serious IT system **takes a long time**, and the users **can't wait for new features**.\""
+        ],
+        [
+          "⭐ 레거시의 성질",
+          "\"Legacy systems **rarely exhibit this characteristic**\" (잘 나뉘어 있지 않다)"
+        ],
+        [
+          "⭐⭐ 무화과 비유",
+          "\"Like the fig, it begins with **small additions**... we **move bits of behavior from the legacy system into the new code base**.\""
+        ],
+        [
+          "방식",
+          "\"often **new features**, that are **built on top of, yet separate to** the legacy code base\""
+        ],
+        [
+          "⭐⭐ 위험",
+          "\"Since these components are **small, there isn't so much risk involved**\""
+        ],
+        [
+          "⭐⭐ 값",
+          "\"the business can **reap the value from these new components**, allowing **earlier return on the investment**\""
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "StranglerFigApplication — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+        }
+      ]
+    },
+    {
+      "id": "two",
+      "kind": "compare",
+      "caption": "⭐⭐ 한 번에 vs 감싸며",
+      "note": "왼쪽 두 열의 근거는 `quotes` 표의 원문이고, 구성은 이 문서의 정리다(`confidence: inferred`). ⭐ **셋째 줄이 핵심** — \"기존 동작을 모른다\"는 문제를 한 번에 풀지 않고 조각마다 푼다.",
+      "columns": [
+        "",
+        "⚠️ 한 번에 다시 쓰기",
+        "⭐ 감싸며 옮기기"
+      ],
+      "rows": [
+        [
+          "위험",
+          "⚠️ **전부 아니면 전무**",
+          "\"components are **small** ... **not so much risk**\""
+        ],
+        [
+          "값이 나오는 때",
+          "⚠️ **끝나야** 나온다",
+          "⭐ 조각마다 — \"**earlier return on the investment**\""
+        ],
+        [
+          "⭐⭐⭐ 옛 동작",
+          "⚠️ **미리 다 알아내야** 한다 — \"hard to figure out\"",
+          "**옮길 조각만** 알면 된다"
+        ],
+        [
+          "중간에 멈추면",
+          "⚠️ **아무것도 안 남는다**",
+          "옮긴 만큼은 남는다"
+        ],
+        [
+          "그동안 새 기능",
+          "⚠️ **멈춘다** — \"users **can't wait**\"",
+          "계속 나간다(새것 위에)"
+        ],
+        [
+          "⚠️ 대가",
+          "—",
+          "**혼용 기간이 길다** — 두 스택을 동시에 유지한다"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "during",
+      "kind": "compare",
+      "caption": "⚠️ 혼용 기간에 새로 생기는 일",
+      "note": "⚠️ **이 표는 추론이다** — Fowler 의 글은 혼용 기간의 운영을 절차로 주지 않는다. ⭐ 근거는 인용(작게·조금씩)과 공고(헤렌 `혼용 환경`).",
+      "columns": [
+        "무엇",
+        "왜",
+        "⭐ 대비"
+      ],
+      "rows": [
+        [
+          "팀이 둘 다 안다",
+          "두 스택을 동시에 유지",
+          "교육·문서 비용이 는다"
+        ],
+        [
+          "⚠️ 데이터가 갈린다",
+          "옛 쪽과 새 쪽이 같은 데이터를 다르게 본다",
+          "**한쪽을 원본으로** 못 박는다"
+        ],
+        [
+          "어디로 보낼지",
+          "요청을 옛것/새것 중 어디로",
+          "⭐ **설정으로 둔다** — 되돌릴 수 있게 (→ `feature-flag`)"
+        ],
+        [
+          "⚠️⚠️ 끝이 안 온다",
+          "쉬운 것부터 옮기면 **남는 건 가장 어려운 조각**",
+          "⭐ **\"옛 시스템을 끄는 날\"을 계획에 넣는다**"
+        ],
+        [
+          "⭐ 90% 의 함정",
+          "우선순위가 바뀌면 거기서 멈춘다",
+          "**두 시스템을 영원히 유지** — 비용이 두 배"
+        ],
+        [
+          "⭐⭐ 테스트",
+          "옮긴 조각이 옛것과 같게 도나",
+          "**\"아무도 모르는 동작\"을 잡는 유일한 장치** (→ `testing`)"
+        ]
+      ],
+      "confidence": "inferred"
+    },
+    {
+      "id": "counting",
+      "kind": "glossary",
+      "caption": "이 낱말을 셀 때",
+      "note": "⭐⭐⭐ **다섯 번째 대비 형태다** — 앞의 넷과 다르게, **패턴 이름은 1건인데 그 방식은 397건**이다. **이름을 몰라도 그렇게 하고 있다.**",
+      "columns": [
+        "",
+        "건수 / 주의"
+      ],
+      "rows": [
+        [
+          "`마이그레이션\\|migration`",
+          "**760 (모집중 332)** — ⚠️ **두 가지가 섞여 있다**"
+        ],
+        [
+          "⭐ `점진적\\|단계적\\|incremental`",
+          "**397 (모집중 157)** — **패턴의 실행**"
+        ],
+        [
+          "`무중단\\|블루그린\\|카나리`",
+          "181 (모집중 80) — ⚠️ 이 문서가 다루지 않았다"
+        ],
+        [
+          "`현대화\\|Modernization`",
+          "155 (모집중 62)"
+        ],
+        [
+          "⚠️ `DB·스키마 마이그레이션\\|Flyway\\|Alembic`",
+          "**124 (모집중 41)** — ⭐ **이 문서가 다루지 않는 쪽**"
+        ],
+        [
+          "⚠️ `시스템 전환\\|재작성\\|rewrite`",
+          "54 (모집중 25)"
+        ],
+        [
+          "⚠️⚠️ `스트랭글러\\|strangler`",
+          "**1 (모집중 0)**"
+        ],
+        [
+          "⭐⭐⭐ 그래서",
+          "**760 대 1** — 그런데 `점진적` 397건이 **방식은 이미 표준**임을 보여 준다"
+        ],
+        [
+          "⭐ 결정적 낱말",
+          "헤렌 `**혼용 환경**에서의 점진 마이그레이션` — **옛것과 새것이 함께 도는 기간**을 전제한 표현"
+        ]
+      ],
+      "confidence": "inferred"
+    }
+  ],
+  "terms": [
+    {
+      "term": "⭐⭐⭐ go down in flames",
+      "en": "—",
+      "what": "\"we've seen this simple-sounding plan **go down in flames most of the time**\" — **가끔이 아니라 대개**"
+    },
+    {
+      "term": "⭐⭐⭐ 기존 동작",
+      "en": "details of existing behavior",
+      "what": "\"seem easy to specify, but often it's **hard to figure out**\" — ⭐ **진짜 명세는 코드 안에 있고, 상당수는 아무도 의도하지 않은 것**"
+    },
+    {
+      "term": "⭐⭐ 교살 무화과",
+      "en": "strangler fig",
+      "what": "숙주를 **감싸며 자라다 대체**하는 나무. \"begins with **small additions**\" · \"move **bits of behavior**\""
+    },
+    {
+      "term": "⭐ 혼용 환경",
+      "en": "—",
+      "what": "헤렌 공고의 낱말 — **옛것과 새것이 함께 도는 기간.** ⚠️ **마이그레이션의 어려움 대부분이 여기 있다**"
+    },
+    {
+      "term": "⭐⭐ 조기 회수",
+      "en": "earlier return on the investment",
+      "what": "조각이 나올 때마다 값이 난다 — **끝나야 값이 나오는 재작성과 반대**"
+    },
+    {
+      "term": "⚠️ 90% 의 함정",
+      "en": "—",
+      "what": "쉬운 것부터 옮기면 **남는 건 가장 어려운 조각**이고, 그때 멈추면 **두 시스템을 영원히 유지**한다"
+    },
+    {
+      "term": "⚠️ DB 마이그레이션",
+      "en": "schema migration",
+      "what": "⭐ **다른 뜻이다**(124건, Flyway·Alembic). 이 문서는 **시스템 전환**만 다뤘다"
+    }
+  ],
+  "when_to_use": [
+    {
+      "situation": "낡은 시스템을 새로 만들자는 제안이 올라왔다",
+      "pick": "⭐⭐ **감싸며 옮기는 쪽을 기본으로 두고, 재작성은 예외로 다룬다**",
+      "over": "기간을 잡고 한 번에 다시 쓰기",
+      "why": "⭐⭐⭐ **\"we've seen this simple-sounding plan go down in flames most of the time\"** — **대개** 실패한다. ⚠️ 그리고 이유가 의지의 문제가 아니다: **\"hard to figure out the details of existing behavior\"** 이고, 그동안 **\"users can't wait for new features\"** 다",
+      "tradeoff": "⚠️ **혼용 기간이 길어지고 두 스택을 동시에 유지**해야 한다. ⭐ 그래도 \"components are **small** ... **not so much risk**\" 이고, **중간에 멈춰도 옮긴 만큼은 남는다** — 재작성은 멈추면 전부 사라진다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "StranglerFigApplication — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+        }
+      ]
+    },
+    {
+      "situation": "어느 조각부터 옮길지 정한다",
+      "pick": "⭐ **새 기능을 새 시스템에 먼저 짓는다**",
+      "over": "기존 기능 중 하나를 골라 옮기기",
+      "why": "⭐⭐ 원문이 그 순서를 적는다 — \"often **new features**, that are **built on top of, yet separate to** the legacy code base\". ⭐ **새 기능은 옛 동작을 알아낼 필요가 없다** — `why` 절 ②의 가장 어려운 부분을 처음부터 피한다. 그리고 **값이 바로 난다**(\"earlier return\")",
+      "tradeoff": "⚠️ 새 기능이 없으면 이 길을 못 쓴다. ⭐ 그때는 **가장 자주 고치는 조각**부터 — `technical-debt` 의 기준(\"앞으로 여기를 얼마나 고칠 건가\")이 그대로 적용된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "StranglerFigApplication — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+        }
+      ]
+    },
+    {
+      "situation": "마이그레이션 계획을 세운다",
+      "pick": "⭐⭐ **\"옛 시스템을 끄는 날\"을 계획에 넣는다**",
+      "over": "옮길 조각 목록만 만들기",
+      "why": "⚠️⚠️ **90% 의 함정이 가장 흔한 실패다.** 쉬운 것부터 옮기면 **남는 건 가장 어려운 조각**이고, 그때쯤 우선순위가 바뀌어 있다. ⭐ 그러면 **두 시스템을 영원히 유지**하게 되고 **비용이 두 배**가 된다",
+      "tradeoff": "⚠️ 끄는 날을 정하면 **어려운 조각을 마주해야** 한다. ⭐ 그래서 **가장 어려운 조각을 처음에 들여다본다** — 옮길 수 있는 것인지 먼저 확인하고, 못 옮기겠으면 **계획을 다시 짠다**",
+      "confidence": "inferred"
+    },
+    {
+      "situation": "옮긴 조각이 옛것과 같게 도는지 확인해야 한다",
+      "pick": "⭐⭐ **옛 시스템의 실제 동작을 기록해 비교한다**",
+      "over": "명세를 보고 새로 구현한 뒤 리뷰로 확인하기",
+      "why": "⭐⭐⭐ **\"hard to figure out the details of existing behavior\"** 이 이 문제의 전부다. ⚠️ **명세에 없는 동작이 이미 업무의 일부**가 되어 있고, 그것은 **코드를 읽어도 다 안 나온다** — 실제 입력과 출력을 봐야 한다",
+      "tradeoff": "기록·비교 장치를 만드는 데 시간이 든다. ⭐ 그래도 `testing` 의 기준이 여기서 가장 값진 형태로 나타난다 — **\"아무도 모르는 동작\"을 잡는 유일한 장치**다. ⚠️ **이 문서는 그 기법(섀도 트래픽 등)을 1차 자료로 확인하지 않았다**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "StranglerFigApplication — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+        }
+      ]
+    },
+    {
+      "situation": "\"마이그레이션 경험\"을 이력서에 적는다",
+      "pick": "⭐ **혼용 기간을 어떻게 운영했는지 적는다**",
+      "over": "\"레거시 마이그레이션 경험\" 한 줄",
+      "why": "⭐⭐ **공고가 이미 그 낱말을 쓴다** — 헤렌 `**혼용 환경**에서의 점진 마이그레이션 경험`, 아이알큐더스 `**점진적으로 마이그레이션**합니다`. ⭐ `점진적` 이 **397건**이고, **그 기간을 어떻게 버텼는지가 진짜 경험**이다",
+      "tradeoff": "길어진다. ⭐ 그래도 **\"끝까지 껐는가\"** 한 줄만 있어도 다르다 — **90% 에서 멈춘 경험이 훨씬 흔하기** 때문이다",
+      "confidence": "inferred"
+    }
+  ],
+  "pitfalls": [
+    {
+      "trap": "⭐⭐ \"이번엔 제대로 만들자\"며 처음부터 다시 쓴다",
+      "why": "⭐⭐⭐ **가장 자연스러운 제안이고 대개 실패한다** — \"we've seen this simple-sounding plan **go down in flames most of the time**\". ⚠️ 이유가 셋이다: **오래 걸리는데 사용자는 못 기다리고**, **옛 동작을 알아내기 어렵고**(\"hard to figure out\"), **레거시는 잘 나뉘어 있지 않다**",
+      "fix": "⭐ **감싸며 옮기는 쪽을 기본으로 둔다.** 새 기능을 새 시스템에 짓고, **\"bits of behavior\"** 를 조금씩 옮긴다. 📌 재작성을 정말 해야 한다면 **왜 이 경우가 예외인지**를 적어 둔다 — 적을 수 없으면 대개 예외가 아니다",
+      "sources": [
+        {
+          "title": "StranglerFigApplication — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+        }
+      ]
+    },
+    {
+      "trap": "옛 시스템의 동작을 문서와 기억으로 파악한다",
+      "why": "⭐⭐⭐ **\"Replacements seem easy to specify\"** — 화면과 기능은 눈에 보이니까 쉬워 보인다. ⚠️ 그런데 **진짜 명세는 코드 안에 있고 상당수는 아무도 의도하지 않은 동작**이다. 그리고 **누군가는 이미 그 동작에 기대어 일한다**",
+      "fix": "⭐ **실제 입력과 출력을 기록해 비교한다.** 📌 그리고 **옮길 조각의 동작만** 알아내면 된다는 것이 감싸며 옮기기의 값이다 — 한 번에 다 알아내려 하지 않는다",
+      "sources": [
+        {
+          "title": "StranglerFigApplication — Martin Fowler",
+          "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+          "publisher": "Martin Fowler",
+          "kind": "blog",
+          "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+        }
+      ]
+    },
+    {
+      "trap": "⚠️⚠️ 90% 옮기고 멈춘다",
+      "why": "⭐⭐ **가장 흔한 실패다.** 쉬운 조각부터 옮기니 **남는 건 언제나 가장 어려운 것**이고, 그때쯤 **우선순위가 바뀌어 있다.** ⚠️ 그러면 **두 시스템을 영원히 유지**하게 되어 **원래 줄이려던 비용이 두 배**가 된다",
+      "fix": "⭐ **\"옛 시스템을 끄는 날\"을 처음부터 계획에 넣는다.** 없으면 안 꺼진다. 📌 그리고 **가장 어려운 조각을 처음에 들여다본다** — 옮길 수 있는지 먼저 보고, 못 옮기겠으면 **계획을 다시 짠다**(끝까지 가서 아는 것보다 낫다)"
+    },
+    {
+      "trap": "혼용 기간을 \"잠깐\"으로 잡는다",
+      "why": "⚠️ 계획서에는 3개월인데 **실제로는 몇 년**이 흔하다. ⭐ 그런데 잠깐이라고 가정하면 **두 스택을 유지할 준비를 안 한다** — 교육도, 문서도, 데이터 정합성 규칙도",
+      "fix": "⭐⭐ **혼용 기간을 일급 상태로 다룬다.** 헤렌 공고의 `**혼용 환경**` 이 그 인식이다. 📌 최소한 **어느 쪽이 데이터의 원본인지**를 못 박고, **요청을 어디로 보낼지를 설정으로** 둔다(→ `feature-flag`) — 그래야 조각마다 되돌릴 수 있고, \"작아서 위험이 적다\"가 실제로 성립한다"
+    },
+    {
+      "trap": "`마이그레이션` 으로 세고 다 같은 일이라고 여긴다",
+      "why": "⚠️ **760건 안에 두 가지가 섞여 있다** — **DB·스키마 마이그레이션**(124건, Flyway·Alembic 같은 도구가 함께 나온다)과 **시스템 전환**. ⭐ 둘은 **기법도 위험도 다르다**",
+      "fix": "⭐ **도구 이름으로 가른다** — `Flyway|Liquibase|Alembic` 이 함께 나오면 스키마 쪽이다. 📌 그리고 **이 문서는 시스템 전환만 다뤘다**는 것을 기억한다"
+    },
+    {
+      "trap": "패턴 이름을 몰라도 되니 신경 안 쓴다",
+      "why": "⭐ 셈이 그 상태를 보여 준다 — `스트랭글러` **1건** vs `점진적` **397건**. **이름 없이도 그렇게 하고 있다.** ⚠️ 그런데 **이름이 없으면 \"왜 그렇게 하나\"를 설명하기 어렵고**, 재작성 제안이 올라올 때 **막을 근거가 없다**",
+      "fix": "⭐ **이름과 함께 근거 한 줄을 갖고 있는다** — \"단순해 보이는 계획이 대개 불탄다\", \"기존 동작을 알아내는 게 가장 어렵다\". 📌 **인용은 제안을 막는 데 쓰는 게 아니라 대안을 제시하는 데 쓴다**"
+    }
+  ],
+  "drills": [
+    {
+      "task": "⭐⭐ **자기 팀(또는 아무) 시스템에서 \"이건 왜 이렇게 동작하지?\" 싶은 곳을 세 개 찾고**, 각각이 **어디에 문서화되어 있는지** 확인한다. 없으면 **어떻게 알아낼 수 있는지** 적는다.",
+      "done_when": "세 개가 나오고, ⭐ **문서에 있는 것이 몇 개인지** 답할 수 있다. 그리고 **없는 것들을 알아내는 방법**(코드 읽기·로그·실제 호출)을 적었다.",
+      "why": "⭐⭐⭐ **\"hard to figure out the details of existing behavior\"** 가 이 문서의 핵심인데, 💡 **자기 시스템에서 그 예를 세 개 찾아보면** 재작성 계획이 왜 무너지는지가 구체적이 된다. ⚠️ 그리고 그 셋이 **옮길 때 가장 먼저 깨질 것들**이다.",
+      "no_hardware": "시스템이 없으면 **아무 오픈소스의 이슈 트래커에서 \"이건 의도된 동작인가요?\" 류 질문**을 찾아본다 — ⭐ 그런 질문이 있다는 것 자체가 이 문제의 증거다.",
+      "hours": 2
+    },
+    {
+      "task": "⭐ **진행 중이거나 끝난 마이그레이션을 하나 골라, \"옛 시스템을 끄는 날\"이 계획에 있었는지** 확인한다. 없었으면 **지금 옛 시스템이 어떻게 됐는지** 적는다.",
+      "done_when": "⭐ **끄는 날이 있었는지 / 실제로 껐는지**에 답할 수 있다. 안 껐으면 **지금도 유지 비용을 내고 있는지** 확인했다.",
+      "why": "⭐⭐ **90% 의 함정**을 자기 경험으로 확인하는 실습이다. 💡 대부분의 팀에 **\"아직 안 끈 옛 시스템\"이 하나쯤 있고**, 그것이 이 문서가 경고하는 상태다.",
+      "no_hardware": "경험이 없으면 **주변에 물어본다** — \"옛날 시스템 아직 돌고 있나요?\" ⭐ 대개 그렇다는 답이 온다.",
+      "hours": 1
+    },
+    {
+      "task": "⭐⭐ **Fowler 의 `StranglerFigApplication` 을 읽고, 자기 시스템에서 \"가장 먼저 감쌀 조각\"을 하나 고른다.** 그리고 **그 조각을 옮기려면 무엇을 알아야 하는지** 목록으로 적는다.",
+      "done_when": "조각 하나가 정해지고, ⭐ **알아야 할 것 목록**이 나온다. 그 목록이 **길면 조각을 더 작게** 자를 수 있는지 본다.",
+      "why": "⭐⭐⭐ \"begins with **small additions**\" 와 \"move **bits of behavior**\" 가 실제로 얼마나 작아야 하는지는 **직접 잘라 봐야** 안다. 💡 그리고 **목록이 길다는 것이 곧 그 조각이 너무 크다는 신호**다 — 그게 이 실습의 배울 점이다.",
+      "no_hardware": "자기 시스템이 없으면 **아무 오픈소스에서 \"이 모듈만 다른 언어로 옮긴다면\"** 을 가정하고 같은 목록을 만든다.",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "한 번에 다시 쓰는 계획이 실패하는 세 가지 이유는?",
+    "가장 어려운 것은 무엇인가? 원문으로 답하라",
+    "무화과 비유가 말하는 방식 두 가지는?",
+    "감싸며 옮기기의 값 두 가지는? 중간에 멈추면 어떻게 다른가?",
+    "혼용 기간에 가장 흔한 실패는? 그것을 막는 계획 항목은?",
+    "`마이그레이션` 760건 안에 섞여 있는 두 가지는?"
+  ],
+  "evidence": [
+    {
+      "quote": "• 기존 Vue 3/Nuxt.js 기반 레거시 서비스를 안정적으로 유지보수하고, React·Next.js로 점진적으로 마이그레이션합니다.",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378890",
+      "where": "아이알큐더스",
+      "what_it_shows": "⭐⭐⭐ **패턴 그대로다** — `안정적으로 유지보수하고` + `점진적으로 마이그레이션`. **옛것을 돌리면서 새것으로 옮긴다.** ⚠️ 그런데 `스트랭글러` 는 데이터 전체에 **1건**이다"
+    },
+    {
+      "quote": "- View 시스템 Jetpack Compose 혼용 환경에서의 점진 마이그레이션 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/372622",
+      "where": "헤렌",
+      "what_it_shows": "⭐⭐⭐ **`혼용 환경`** — 이 문서의 핵심 낱말이다. **옛것과 새것이 함께 도는 기간**을 전제하고, **그 기간의 경험**을 요구한다"
+    },
+    {
+      "quote": "• 운영 중인 레거시 서비스를 점진적으로 개선하거나 마이그레이션해 본 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/361096",
+      "where": "패스트파이브",
+      "what_it_shows": "⭐ **`운영 중인`** — 멈추지 않고 옮긴다는 전제. \"users **can't wait for new features**\" 의 실무 형태"
+    },
+    {
+      "quote": "• 아키텍처 현대화: 커스텀 MVC 유지보수 및 Laravel 전환을 위한 점진적 개선 참여",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/375109",
+      "where": "티에이치케이컴퍼니",
+      "what_it_shows": "⭐ **`유지보수 및 ... 전환을 위한 점진적 개선`** — 두 일이 한 줄에. **혼용 기간의 실제 업무 모양**이다"
+    },
+    {
+      "quote": "• 대규모 마이그레이션(프레임워크 버전 업, 라우터 전환, 레거시 정리 등)을 주도한 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/361706",
+      "where": "헤렌",
+      "what_it_shows": "⭐⭐ **`주도`** — 조각을 어떤 순서로 옮길지, 언제 멈출지 정하는 일. `technical-debt` 의 판단과 같은 자리다"
+    },
+    {
+      "quote": "· 기존 시스템의 구조를 개선하거나 점진적으로 현대화해본 경험",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/382283",
+      "where": "와이케이기획",
+      "what_it_shows": "⭐ `현대화`(155건)가 `점진적`(397건)과 붙는다 — **한 번에 하는 현대화는 요구하지 않는다**"
+    },
+    {
+      "quote": "•레거시 시스템 마이그레이션 및 기술 부채 해소",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/359782",
+      "where": "컬리",
+      "what_it_shows": "⭐ **마이그레이션과 기술 부채가 한 줄에** — `technical-debt` 가 이 문서를 \"별도 낱말로 남긴다\"고 적은 그 연결"
+    },
+    {
+      "quote": "• 레거시 시스템 리팩터링 또는 데이터 마이그레이션 경험이 있으신 분",
+      "from": "posting",
+      "url": "https://www.wanted.co.kr/wd/378073",
+      "where": "워드바이스",
+      "what_it_shows": "⚠️ **`데이터 마이그레이션`** — 760건 안의 다른 쪽(124건)이다. ⭐ **이 문서가 다루지 않는 영역**이고, 기법도 위험도 다르다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "technical-debt",
+      "how": "⭐⭐⭐ **저 문서가 \"별도 낱말로 남긴다\"고 적은 자리.** 그리고 조각의 순서를 정하는 기준(\"앞으로 여기를 얼마나 고칠 건가\")이 같다"
+    },
+    {
+      "slug": "testing",
+      "how": "⭐⭐ **\"아무도 모르는 동작\"을 잡는 유일한 장치.** 저 문서의 기준(\"고치기를 주저하지 않는가\")이 여기서는 \"옮긴 조각이 옛것과 같게 도나\"로 나타난다"
+    },
+    {
+      "slug": "feature-flag",
+      "how": "⭐⭐ **요청을 어디로 보낼지를 설정으로 두는 자리** — 그래야 조각마다 되돌릴 수 있고 \"위험이 적다\"가 성립한다"
+    },
+    {
+      "slug": "api-versioning",
+      "how": "⭐ 옛 클라이언트를 서버가 떠안는 문제 — 혼용 기간의 다른 얼굴"
+    },
+    {
+      "slug": "android",
+      "how": "⭐ 헤렌 공고의 `View → Jetpack Compose 혼용` 이 그 층의 예다"
+    },
+    {
+      "slug": "git",
+      "how": "이미 나간 것 계보의 다른 규모"
+    }
+  ],
+  "open_questions": [
+    "⚠️⚠️ **DB·스키마 마이그레이션을 다루지 않았다**(**124건**, Flyway·Alembic 등). `마이그레이션` 760건 안에 **두 가지가 섞여 있는데** 이 문서는 **시스템 전환만** 다뤘다 — ⭐ **별도 낱말이다.**",
+    "⚠️ **Fowler 의 다른 패턴을 안 봤다.** `ParallelChange`·`BranchByAbstraction` — ⭐ **`during` 절이 다루는 혼용 기간의 실제 기법들**인데 글을 열지 않았다. **그래서 그 절 전체가 추론이다.**",
+    "⚠️ **어디서 자를지를 다루지 않았다.** \"Legacy systems rarely exhibit this characteristic\"(잘 안 나뉘어 있다)을 인용하면서 **경계를 찾는 방법은 안 썼다.**",
+    "⚠️ **옛 동작을 기록해 비교하는 기법을 확인하지 않았다.** `when_to_use` 가 그것을 권하면서 **섀도 트래픽 같은 구체적 방법은 1차 자료로 안 봤다.**",
+    "⚠️ **실패 사례를 읽지 않았다.** \"go down in flames **most of the time**\" 이라는데 **어떤 모양으로 실패하는지** 공개 기록을 하나도 안 봤다 — ⭐ `github-actions` 사이클에서 같은 지적을 했고 **여기서 반복된다.**",
+    "⚠️ **무중단 배포를 다루지 않았다**(`무중단|블루그린|카나리` **181건**) — 혼용 기간의 전환 장치인데 별도 낱말로 남긴다.",
+    "⭐ **`market` 을 비웠다** — `마이그레이션` 은 `tech_relations.json` 의 기술 이름이 아니라서 **비우는 것이 정상**이다(`PROMPT.md`).",
+    "⭐ **`counting` 표의 \"다섯 번째 대비 형태\" 정리는 이 문서의 관점이다** — 각 숫자는 해당 문서의 셈이지만, **다섯 형태로 묶은 것은 이 백과사전이 쌓아 온 관찰**이다."
+  ],
+  "sources": [
+    {
+      "title": "StranglerFigApplication — Martin Fowler",
+      "url": "https://martinfowler.com/bliki/StranglerFigApplication.html",
+      "publisher": "Martin Fowler",
+      "kind": "blog",
+      "summary": "⭐⭐⭐ **\"이 단순해 보이는 계획이 대개 불타 사라지는 것을 봤다\"고 적는 글** — 그리고 왜 옛 시스템의 동작을 알아내는 것이 가장 어려운지"
+    }
+  ]
+}

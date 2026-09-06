@@ -4,30 +4,48 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **테스트**(`testing`)를 완성했다 — **121번째 문서**.
+**없음.** 직전 사이클에서 **마이그레이션**(`migration`)을 완성했다 — **122번째 문서**.
 
-### 직전 사이클 (테스트)
+### 직전 사이클 (마이그레이션)
 
-⭐⭐⭐ **축: "커버리지는 좋은지를 말해 주지 않는다."**
+⭐⭐⭐ **축: "한 번에 갈아엎으면 대개 불탄다."**
 
-> ⭐⭐⭐ **"Test coverage is a useful tool for finding untested parts of a codebase. Test coverage is of little use as a numeric statement of how good your tests are."**
-> ⭐⭐⭐ **"If you make a certain level of coverage a target, people will try to attain it."** · (Marick) "**too easy to reach with low quality testing**"
-> ⭐ "I would be **suspicious of anything like 100%**" · "Coverage is of **little value to management**"
-> ⭐⭐⭐ **대안 둘** — "You **rarely get bugs that escape into production**" · "You are **rarely hesitant to change some code** for fear it will cause production bugs"
+> ⭐⭐⭐ **"we've seen this simple-sounding plan go down in flames most of the time"**
+> ⭐⭐⭐ "Replacements **seem easy to specify**, but often it's **hard to figure out the details of existing behavior**."
+> ⭐⭐ "Replacing a serious IT system **takes a long time**, and the users **can't wait for new features**."
+> ⭐⭐ (무화과) "begins with **small additions**... we **move bits of behavior from the legacy system into the new code base**"
+> ⭐⭐ "components are **small, there isn't so much risk involved**" · "**earlier return on the investment**"
 
-⭐⭐⭐ **둘째 대안이 세 문서를 한 줄로 이었다** — `testing`(주저하지 않는가) → `technical-debt`(안 고치면 이자가 는다) → `code-review`("never submit an improvement ... never improves"). **셋 다 "완벽"이 아니라 "움직일 수 있는가"를 본다.**
+⭐⭐⭐ **다섯 번째 대비 형태를 만났다** — `스트랭글러` **1건** vs `점진적` **397건**. **패턴 이름은 안 부르는데 그 방식은 이미 표준이다.** 헤렌 공고의 **`혼용 환경`** 이 그 상태의 이름이었다.
 
-⚠️⚠️ **셈 오염을 또 잡았다(세 번째 형태)** — `커버리지|coverage` **461건 모집중 83%**. 갈라 보니 **영문 `coverage` 만 414건에 87%** 였다(**영문 안내문의 다른 뜻** — 보장·적용 범위. `보장 범위|insurance` 류가 870건). ⭐ 쓸 수 있는 값은 `테스트 커버리지|코드 커버리지` **69건**.
-
-**셈**: `테스트 코드|단위 테스트` **570** vs ⚠️ `테스트 전략` **41** · `테스트 문화` **3**.
+⚠️ `마이그레이션` 760건에 **DB·스키마(124건, Flyway·Alembic)와 시스템 전환이 섞여** 있어 **도구 이름으로 갈랐다.**
 
 ### 다음
 
-**마이그레이션**(`migration`) — QUEUE 맨 위. ⭐ `technical-debt` 가 "별도 낱말로 남긴다"고 적은 자리(**760건**).
+**AWS**(`aws`) — QUEUE 맨 위. ⭐ 또 층을 바꿨다(협업/운영 다섯 연속 → 인프라/클라우드).
 
-⚠️⚠️ **`testing` 이 지목한 "테스트 피라미드"는 미룸으로 보냈다** — `테스트 피라미드` **2건**이고, `E2E` 로 세면 **1582건에 모집중 65%** 로 **또 오염**이었다("End-to-End로 설계" 같은 업무 범위 표현 — ⭐ **네 번째 오염 형태: 같은 약자의 다른 뜻**). **`testing` 의 보강 사이클로 처리한다.**
+⭐⭐⭐ **4787건(모집중 1927) — 이 백과사전 최대 낱말**인데 ⚠️⚠️ **`공유 책임|shared responsibility` 는 0건**이다(`HATEOAS` 이래 **두 번째 완전한 0**). 축: **"AWS 가 책임의 선을 그림으로 그려 놨는데 아무도 그 이름을 안 부른다"** — 1차 자료는 **`Shared Responsibility Model`**. ⚠️ **못 열면 축을 바꾼다**(대안: `비용 최적화` 401건).
 
 ## 배운 것
+
+- ⭐⭐⭐ **다섯 번째 대비 형태 — "이름은 1건, 방식은 397건".** `스트랭글러` 1건인데 `점진적` 397건이고,
+  공고들이 **패턴 그대로 일하고 있다**(아이알큐더스 `점진적으로 마이그레이션`, 헤렌 `혼용 환경`).
+  💡 앞의 넷(①개념이 안 불림 ②원인이 안 불림 ③도구가 더 불림 ④두 이름 중 하나만)과 달리,
+  여기는 **이름만 없고 실행은 표준**이다. ⭐ **그러면 문서의 일이 또 달라진다** — 알려 주는 게
+  아니라 **이미 하는 일에 이름과 근거를 붙여 주는 것**이고, 📌 그 값은 **"한 번에 갈아엎자"는
+  제안이 올라올 때 막을 근거가 생긴다**는 데 있다.
+
+- ⭐⭐ **한 낱말 안에 다른 일이 섞여 있으면 도구 이름으로 가른다.** `마이그레이션` 760건에는
+  **DB·스키마 마이그레이션**(Flyway·Alembic 이 함께 나온다)과 **시스템 전환**이 섞여 있었다.
+  ⭐ 두 뜻을 가르는 가장 싼 방법이 **함께 나오는 도구 이름**이었다 — 문장을 다 읽지 않고도
+  갈렸다. 📌 **`android` 의 `생명주기`, `load-balancer` 의 `Nginx` 처럼 문맥으로 갈라야 했던
+  것들과 달리, 도구가 함께 오는 낱말은 도구로 가른다.**
+
+- ⚠️ **같은 결함이 두 번 반복됐다 — 실패 사례를 안 읽는다.** `github-actions` 에서
+  "공급망 사고 보고서를 하나도 안 읽었다"고 적었는데, `migration` 에서도 **"go down in flames
+  most of the time" 이라는데 실패 기록을 하나도 안 봤다.** ⭐ **1차 자료가 "대개 실패한다"고
+  말하면, 그 실패의 모양은 사후 기록에만 있다.** 📌 **다음에 이런 문장을 만나면 그때 사례를
+  찾는다** — 반복되는 결함이므로 여기 적어 둔다.
 
 - ⭐⭐⭐ **문서 셋이 한 줄로 이어졌다 — 백과사전이 자란다는 것의 구체적 모습.**
   `testing` 의 대안 기준 둘째("**rarely hesitant to change some code**")가

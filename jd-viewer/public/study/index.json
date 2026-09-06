@@ -2210,6 +2210,25 @@
       "sections": 5,
       "drills": 3,
       "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "migration",
+      "title": "마이그레이션 — 한 번에 갈아엎으면 대개 불탄다",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **\"we've seen this simple-sounding plan go down in flames most of the time\"** — 그리고 가장 어려운 것은 새 시스템이 아니다: **\"hard to figure out the details of existing behavior\"**. 공고는 `스트랭글러` 를 1건만 부르는데 **`점진적` 은 397건** 부른다.",
+      "aliases": [
+        "마이그레이션",
+        "migration",
+        "전환",
+        "현대화",
+        "스트랭글러",
+        "레거시 전환"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
     }
   ],
   "categories": {
