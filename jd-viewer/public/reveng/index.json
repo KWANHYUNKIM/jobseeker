@@ -1303,8 +1303,8 @@
       "name_en": "Block",
       "country": "US",
       "category": "핀테크",
-      "status": "in_progress",
-      "features_done": 4,
+      "status": "done",
+      "features_done": 5,
       "one_liner": "가맹점 결제와 개인 금융과 비트코인 하드웨어를 한 회사가 만든다 — 그래서 고치는 방법도 셋으로 갈린다",
       "updated_at": "2026-09-06",
       "domain": "block.xyz"
@@ -1649,7 +1649,8 @@
     "확률적으로 틀리는 것을 고친다",
     "키를 만드는 난수",
     "에이전트가 팀으로 일한다",
-    "노는 컴퓨트를 모은다"
+    "노는 컴퓨트를 모은다",
+    "누가 어디까지 볼 수 있나"
   ],
   "countries": {
     "KR": "한국",
