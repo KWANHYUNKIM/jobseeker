@@ -1544,7 +1544,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "중단된 실행을 이어 붙여 주는 큐 — 함수 하나하나에 자기 큐를 주는 쪽에 건다",
       "updated_at": "2026-09-07",
       "domain": "inngest.com"
