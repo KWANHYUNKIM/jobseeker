@@ -8,64 +8,64 @@
 
 ## 지금 파는 중
 
-**없다 — Vercel 을 완주했다.** 도메인 3개 · 기능 3개. 회사 **107개.** ⚠️ **큐 0/3 — 다음 사이클은 후보 조사다.**
+**없다 — 후보 조사 사이클이었다.** 큐 **1/3**. 회사 107개.
 
-### 이번 사이클 — `0 이 아니라 1 로 내린다`
+### 이번 사이클 — 후보 조사(3순위). ⚠️ 다섯 번 던져 한 곳, 다만 그 하나가 두껍다
 
-⭐⭐ **이번 사이클의 가장 큰 발견은 회사 하나가 아니라 두 회사의 대비다** — **Neon 은 `일이 멈추면 컴퓨트가 정지한다` 를 정의적 기능으로 삼는데, Vercel 은 `0 으로 내리는 대신 1 로 내린다`.** ⚠️ **다루는 것이 다르기 때문이다** — Neon 은 **수천 개의 산발적으로 쓰이는 데이터베이스**(대부분이 놀고 있다), Vercel 은 **사용자가 지금 기다리는 웹 요청**(첫 인상이 콜드 스타트면 안 된다). ⭐ **같은 문제에 정반대 답이고 둘 다 맞다**(재구성).
+**올린 곳** — **Cursor**(US · AI 코딩 에이전트).
 
-건진 것 넷:
+⭐ **거절한 대안·대가·수치가 다 있다** — `Git at any scale`(2026-08-18) 본문 확인:
+- **문제**: Spokes 의 3단계 커밋 합의에 **`근본적인 한계가 있었다 — 모든 단계의 지연이 클러스터 안 모든 서버 중 가장 느린 것에 묶인다`**
+- **고른 것**: 합의 기반 복제 대신 **S3 를 쓰는 WAL 시스템**
+- ⭐ **내준 것**: **`복제본들의 정족수 대신 단일 로컬 저장소와 참조 트랜잭션을 동기화한다`**
+- **수치**: 표준 S3 **초당 최대 120 푸시**, S3EOZ **초당 300 푸시 이상**, 읽기는 **복제본 100개까지 선형 확장**, 일관성 확인 **평균 10ms 미만**
 
-- ⭐ **거스른 이유가 역설적이다** — **`앱이 트래픽을 아주 적게 받으면, 0 으로 내리는 것은 거의 모든 첫 상호작용이 콜드 스타트라는 뜻이 된다.`** ⚠️ **0 으로 내리는 것의 값을 가장 크게 치르는 쪽이 가장 작은 앱이다**(재구성).
-- ⭐ **그 값을 감당하는 방법이 앞뒤로 맞물린다** — **`많은 요청이 하나의 인스턴스에서 돌지, 각각이 자기 것을 띄우지 않는다`**(수십~**250개 이상**). **하나를 살려 두는 값이 그 하나가 많은 일을 하기에 감당된다**(재구성). 그리고 **`Active CPU 과금으로 기다리는 동안은 CPU 값을 받지 않으니`** 기다리는 요청이 자리를 덜 차지한다(재구성).
-- ⭐ **머신과 일의 관계를 뒤집는다** — **`몇 년 동안 머신은 고정된 것이었고, 당신이 자기 일을 거기에 맞췄다. Fluid 에서는 당신이 일을 기술하면 머신이 그것을 둘러싸고 형성된다.`** ⚠️ **Neon 이 `인스턴스 크기를 고르는 것은 낡은 패턴이다` 라고 한 것과 같은 방향인데 유휴 처리만 정반대다**(재구성).
-- ⚠️ **에이전트가 요구하는 속도가 사람이 요구하던 속도와 다르다** — **`에이전트에게는 클라우드조차 너무 느리다. 표준 VM 은 그들이 일하는 방식을 따라갈 만큼 빠르게 프로비저닝될 수 없다`** 라서 **`Hive 가 완전한 VM 을 밀리초 안에`** 만든다.
+⭐ **WarpStream·Neon 과 같은 축이다** — **객체 저장소를 진실 원천으로.** ⭐ **그리고 AI 에이전트 축도 두껍다** — 직접 관리하는 머신에서 클라우드 에이전트 돌리기 · 빌드로 3배 빠른 시작 · NVL72 용 오픈소스 MoE 메가커널 · 라우터의 모델 선택 · 에이전트 보안 인증. ⚠️ **2026년 8월 SpaceX 에 합류했다 — ㉗축 재료.**
 
-⚠️ **`언제나 하나` 에는 시간 창이 있다** — 운영은 **최근 14일 안에 호출됐으면**, 브랜치는 **엔터프라이즈에서 최대 3일**. **완전히 안 쓰는 것까지 떠안지는 않는다**(재구성).
+### 이번 조사에서 접거나 미룬 것
 
-### 완주하며 본 것 — 세 기능이 `지킬 것을 없애는` 쪽이다
+- **⏸️ Supabase 보류** — 최근 목록이 제품 발표 위주다. ⚠️ **다만 이 회사는 Postgres 내부를 파는 글도 쓴다** — **첫 화면으로 판정하지 않는다는 규칙대로 다음 조사에서 개별 글을 열어 결론을 낸다**(Snyk·ScyllaDB·Wiz·Atlassian 전례).
+- **⛔ Robinhood** — 403(도구 한계). **❌ Linear** — 404(주소를 추측하지 않는다).
 
-⭐ **웜풀에서는 `잃으면 안 되는 것을 캐시에 두지 않는다`, 샌드박스에서는 `보관할 자격증명을 만들지 않는다`, 컴퓨트에서는 `고를 인스턴스 크기를 만들지 않는다`**(재구성). ⚠️ **다만 `0 으로 내리지 않는다` 만은 반대 방향이다** — **없애지 않고 하나를 남긴다.** ⭐ **없애는 것이 늘 답은 아니라는 자기 반례를 같은 회사가 갖고 있다**(재구성).
+⭐ **`큰 이름인데 아직 없는 회사` 각도가 세 조사 연속 통했다** — Coinbase → Atlassian·Neon·Vercel → Cursor. ⏳ **남은 이름** — Block/Square · Klaviyo · Railway · Perplexity.
 
-⚠️ **글마다 정직함이 크게 갈린다** — **웜풀 글은 밀리초로 실패를 적는데**(P90 약 17배, 버린 해법과 이유까지) **샌드박스 글과 Fluid 글은 대가도 한계도 하나 없다**(재구성). ⭐ **③축에서 한 회사 안의 편차가 가장 큰 사례다.**
+⭐ **절차가 네 번째로 값을 했다** — `name_en` 목록을 먼저 출력해 넷 다 없다는 것을 확인하고 던졌다.
 
-### 다음 사이클 — ⚠️ 후보 조사 (3순위)
+### 다음 사이클 — 신규(6순위)
 
-**큐 0/3. 목표 3곳.** ⚠️ **먼저 `name_en` 목록 출력으로 시작한다.**
+`--gaps` 가 **대기 맨 위(Cursor)를 `in_progress` 로 만들고 3단계부터** 를 부를 것이다.
 
-⭐ **`큰 이름인데 아직 없는 회사` 각도가 두 조사 연속 통했다** — ⏳ **Supabase · Robinhood · Block/Square · Klaviyo · Railway · Cursor · Linear.**
-
-⏳ **Vercel 보강 거리** — Run SDK · v0 의 OAuth 인증 · Agent Plugins · 소프트웨어 팩토리.
+⏳ **Vercel 보강 거리** — Run SDK · v0 의 OAuth 인증 · Agent Plugins.
 
 ⏳ **보강 거리** — Neon(브랜칭 심화) · Atlassian(Events Rail 등) · Trendyol(Helyx 4편 등) · Grafana Labs 인용 대조 · Razorpay 보안 트리아지 · Flipkart Rate Card · Pinterest 2부 · WarpStream 미독 셋.
 
 ### ⚠️ 절차 (이 세션에 실수로 배운 것)
 
-**후보 조사는 `name_en` 목록 출력으로 시작한다.** **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(⭐ 다섯 번 연속 오류 0). **`git add -A` 를 쓰지 않는다.** **슬러그를 추측하지 않는다.** **첫 화면으로 회사를 판정하지 않는다.** **제목만 보고 `자료가 없다` 고 적지 않는다.** **그림은 최소 하나가 `failure` 여야 한다.** ⭐ **자료가 얇으면 두 번째 자료를 찾는다**(이번에도 통했다 — Fluid 글 하나로는 결정이 5개였는데 `scale to one` 글을 더해 8개가 됐다).
+**후보 조사는 `name_en` 목록 출력으로 시작한다**(⭐ 네 번 값을 했다). **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(⭐ 다섯 번 연속 오류 0). **`git add -A` 를 쓰지 않는다.** **슬러그를 추측하지 않는다.** **첫 화면으로 회사를 판정하지 않는다.** **제목만 보고 `자료가 없다` 고 적지 않는다.** **그림은 최소 하나가 `failure` 여야 한다.** **자료가 얇으면 두 번째 자료를 찾는다.**
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① `AI 에이전트를 어디까지 믿나` 14곳** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / Trendyol / Coinbase / Atlassian / Vercel.
+**① `AI 에이전트를 어디까지 믿나` 14곳 + ⏳ Cursor** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / Trendyol / Coinbase / Atlassian / Vercel.
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ ⭐⭐ `자기 성과를 어디까지 주장하나` 15곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / Neon / **Vercel**(⭐ **한 회사 안의 편차가 가장 크다 — 웜풀 글은 밀리초로 실패를 적고 샌드박스·Fluid 글은 대가가 하나도 없다**).
+**③ `자기 성과를 어디까지 주장하나` 15곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / Neon / Vercel.
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
-**⑤ `한 코어에 하나씩인가, 여러 코어가 나눠 쓰나`** — ScyllaDB / ClickHouse / Grafana Labs / VictoriaMetrics / **Vercel**(⭐ **함수 하나에 요청 250개 — 서버리스에서 이 축을 다시 연다**).
+**⑤ `한 코어에 하나씩인가, 여러 코어가 나눠 쓰나`** — ScyllaDB / ClickHouse / Grafana Labs / VictoriaMetrics / Vercel.
 
-**⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream / Trendyol / Atlassian / Neon.
+**⑥ ⭐⭐ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream / Trendyol / Atlassian / Neon / ⏳ **Cursor**(⭐ **합의 정족수를 버리고 S3 를 진실 원천으로 — 이 축이 가장 두꺼워진다**).
 
-**⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / Trendyol / Vercel(`격리` 가 나가는 쪽을 안 막는다는 것을 가린다).
+**⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / Trendyol / Vercel.
 
 **⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics / Atlassian / Neon / Vercel.
 
-**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 10곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol / Atlassian / Vercel(다섯 단계·섀도 읽기).
+**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 10곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol / Atlassian / Vercel.
 
 **⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics / ⏳ Trendyol.
 
-**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / Trendyol / Atlassian / Vercel.
+**⑪ ⭐ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / Trendyol / Atlassian / Vercel / ⏳ **Cursor**(⚠️ **`모든 단계의 지연이 가장 느린 서버에 묶인다` — 합의의 값을 정면으로 적는다**).
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
@@ -75,51 +75,51 @@
 
 **⑮ `언제 쪼개고 언제 합치나` 11곳** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / Wiz / Trendyol / Coinbase / Atlassian.
 
-**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz / Atlassian(반대).
+**⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz / Atlassian(반대) / ⏳ Cursor(Spokes 를 떠나 자체 Continuity 로).
 
 **⑰ `기억시킬 것인가 압축할 것인가`** — Pinterest / Zepto / Grafana Labs / VictoriaMetrics / Trendyol / Neon.
 
 **⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest / Trendyol / Atlassian / Neon / ⏳ Duolingo · DoorDash.
 
-**⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / Coinbase / Vercel(OIDC) / ⏳ Plaid · Snyk.
+**⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / Coinbase / Vercel / ⏳ Plaid · Snyk.
 
-**⑳ ⭐⭐ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크) / Wiz(에이전트) / Neon(컴퓨트·인스턴스 크기) / **Vercel**(⭐ **세 기능이 `지킬 것을 없애는` 쪽인데 `0 으로 내리지 않는다` 만은 반대다 — 같은 회사가 자기 반례를 갖고 있다**, 재구성) / ⏳ TigerBeetle · Oxide Computer.
+**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream / Wiz / Neon / Vercel(자기 반례 포함) / ⏳ **Cursor**(⭐ **라우팅 테이블을 없앴다**) / ⏳ TigerBeetle · Oxide Computer.
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / Neon / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
 **㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / Trendyol / Atlassian / Neon / Vercel.
 
-**㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / Trendyol / Coinbase / Vercel(`적히지 않은 의존`) / ⏳ Pinterest.
+**㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / Trendyol / Coinbase / Vercel / ⏳ Pinterest.
 
-**㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / Neon / ⏳ Vercel(Next.js 주간 2억) / ⏳ Grafana Labs · ClickHouse · Snyk.
+**㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / Neon / ⏳ Vercel · Cursor(오픈소스 MoE 메가커널) / ⏳ Grafana Labs · ClickHouse · Snyk.
 
 **㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / Wiz / Coinbase / Atlassian / ⏳ Etsy · Plaid.
 
-**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / Trendyol / Coinbase / Atlassian / ⏳ Vercel · Airbnb · Pinterest.
+**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / Trendyol / Coinbase / Atlassian / ⏳ Vercel · Cursor · Airbnb · Pinterest.
 
-**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream / Twilio / Neon(Databricks) / ⏳ Trendyol · PlanetScale · Snyk.
+**㉗ ⭐ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream(Confluent → IBM) / Twilio / Neon(Databricks) / ⏳ **Cursor**(⭐ **2026년 8월 SpaceX 합류 — 가장 최근이자 가장 뜻밖의 조합이다**) / ⏳ Trendyol · PlanetScale · Snyk.
 
-**㉘ `맞았는지 어떻게 아나`** — Wiz / Flipkart / Snyk / Trendyol(반대) / Coinbase / Vercel(섀도 읽기) / ⏳ Duolingo.
+**㉘ `맞았는지 어떻게 아나`** — Wiz / Flipkart / Snyk / Trendyol(반대) / Coinbase / Vercel / ⏳ Duolingo.
 
-**㉙ `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — Wiz / Flipkart / ⏳ Pinterest 2부 · Snyk · Deliveroo.
+**㉙ `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — Wiz / Flipkart / ⏳ **Cursor**(⭐ **`라우터는 어떻게 작업에 맞는 모델을 고르나`** — 이 축의 정면 사례다) / ⏳ Pinterest 2부 · Snyk · Deliveroo.
 
 **㉚ `셀프서비스로 내주면 무엇이 달라지나`** — Trendyol / Twilio / Airbnb / Coinbase / ⏳ Etsy · Monzo.
 
 **㉛ `남이 주는 신호를 어떻게 다루나`** — Trendyol(DCP) / ⏳ Plaid · Paystack · Razorpay.
 
-**㉜ ⭐ `흔들리는 매출과 안 흔들리는 매출`** — Coinbase / Twilio / VictoriaMetrics / Atlassian / Neon / **Vercel**(⭐ **Active CPU 로 기다리는 시간에는 안 받는다 — 과금 모델이 워크로드의 모양을 따라갔다**) / ⏳ Adyen · Stripe.
+**㉜ `흔들리는 매출과 안 흔들리는 매출`** — Coinbase / Twilio / VictoriaMetrics / Atlassian / Neon / Vercel / ⏳ Adyen · Stripe.
 
-**㉝ `무엇이라 부르느냐가 요구 사항을 정한다`** — Coinbase / Trendyol / Neon / Vercel(`부채`·`적히지 않은 의존`) / ⏳ Plaid · Etsy.
+**㉝ `무엇이라 부르느냐가 요구 사항을 정한다`** — Coinbase / Trendyol / Neon / Vercel / ⏳ Plaid · Etsy.
 
 **㉞ `비용을 옮기면 위험도 옮겨 간다`** — Atlassian / WarpStream / Razorpay·Airbnb / Vercel / ⏳ Zepto.
 
 **㉟ `무엇이 제품이고 무엇이 구현 세부인가`** — Atlassian / WarpStream / Coinbase / Neon / ⏳ Plaid.
 
-**㊱ ⭐⭐ `고객이 사람이 아닐 때`** — Neon(프로비저닝의 80% 이상) / **Vercel**(⭐ **에이전트가 남의 코드를 남의 자격증명으로 돌릴 때 · `에이전트에게는 클라우드조차 너무 느리다`**) / WarpStream / Coinbase·Atlassian / ⏳ Temporal.
+**㊱ `고객이 사람이 아닐 때`** — Neon / Vercel / WarpStream / Coinbase·Atlassian / ⏳ Cursor · Temporal.
 
-**㊲ `지킬 것을 없애는 쪽으로 푼다`** — Vercel(세 기능 중 둘) / Atlassian(되돌릴 것을 안 만든다) / Neon(아무것도 덮어쓰지 않는다) / ⏳ TigerBeetle.
+**㊲ `지킬 것을 없애는 쪽으로 푼다`** — Vercel(둘) / Atlassian / Neon / ⏳ Cursor(라우팅 테이블) · TigerBeetle.
 
-⏳ **㊳ 새로 보인다 — `0 으로 내릴 것인가 1 을 남길 것인가`** — ⭐ **Neon 과 Vercel 이 정반대 답을 내고 둘 다 맞다** — Neon 은 **수천 개가 대부분 놀고 있는 데이터베이스**, Vercel 은 **사용자가 지금 기다리는 웹 요청.** ⏳ Fly.io · Cloudflare · Temporal. ⚠️ **`무엇이 기다리고 있느냐` 가 답을 가른다**(재구성).
+**㊳ `0 으로 내릴 것인가 1 을 남길 것인가`** — Neon(0) / Vercel(1) / ⏳ Fly.io · Cloudflare · Temporal.
 
 ## 지금의 진짜 상태
 
