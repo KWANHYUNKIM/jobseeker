@@ -78,8 +78,71 @@
     {
       "name": "광고를 판다",
       "why": "⚠️ **데이터로 확장할 수 없는 구조가 발목을 잡았다** — **`모든 것이 NoSQL 안에 광고 문서로 살았다. 애플리케이션 로직이 각 문서 안의 하나의 type 필드로 분기했다.`** 그래서 **`새 광고 솔루션을 추가하려면 여러 서비스에 걸쳐 코드를 바꿔야 했다. 데이터만으로 시스템을 확장할 방법이 없었다.`** ✅ **본문 확인함**(2026-03-24).",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "PostgreSQL (정규화 모델)",
+          "solves": "⚠️ **`type` 필드 하나가 하던 일을 일곱 엔터티로 나눈다** — 자산·자산 유형·유닛·패키지·상세·비즈니스 규칙·가격과 쿼터.",
+          "limits": "⚠️ **단순한 조회도 여러 테이블을 거치고, 모델을 이해해야 손댈 수 있다**(재구성). **NoSQL 에서 무엇을 내줬는지 회사가 적지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+              "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+              "publisher": "Trendyol Tech",
+              "date": "2026-03-24",
+              "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+            }
+          ]
+        },
+        {
+          "tech": "상세(Details) 연결 테이블",
+          "solves": "**`자산 유형 + 유닛 + 패키지`** 를 속성과 함께 묶어 **조합만으로 새 상품을 만든다** — 코드 수정 없이.",
+          "limits": "⚠️ **조합 가능한 구조는 표현할 수 있는 것의 범위를 미리 정한다** — 조합으로 안 되는 새 형태가 나오면 다시 코드가 필요한데, 그 한계를 적지 않는다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+              "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+              "publisher": "Trendyol Tech",
+              "date": "2026-03-24",
+              "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+            }
+          ]
+        },
+        {
+          "tech": "데이터로 관리하는 비즈니스 규칙",
+          "solves": "⭐ **`코드 없이 자산 유형마다 관리되는 광고별 로직`** — **규칙이 서비스에 흩어져 있던 것이 원래 문제였으므로 정면 해법이다**(재구성).",
+          "limits": "⚠️ **규칙이 데이터가 되면 검증과 이력 관리를 따로 만들어야 하고, 잘못된 규칙이 배포 없이 바로 운영에 나간다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+              "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+              "publisher": "Trendyol Tech",
+              "date": "2026-03-24",
+              "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+            }
+          ]
+        },
+        {
+          "tech": "백오피스 (셀프서비스)",
+          "solves": "**비즈니스 팀이 자산 정의·유닛 설정·패키지 티어·규칙 관리·가격과 쿼터 조정·독립적인 공개와 철회를 직접 한다** — **엔지니어링이 반복 운영 업무에서 해방된다.**",
+          "limits": "⚠️ **`공개와 철회` 까지 넘겼으므로 실수의 반경이 넓어지고 사업 쪽이 모델을 이해해야 한다**(재구성). **성과는 차트로만 보이고 본문에 수치가 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+              "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+              "publisher": "Trendyol Tech",
+              "date": "2026-03-24",
+              "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "one-field-many-readings"
+      ]
     },
     {
       "name": "찾게 한다",
@@ -100,7 +163,491 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "one-field-many-readings",
+      "name": "같은 필드를 서비스마다 다르게 읽고 있었다",
+      "domain": "광고를 판다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⭐ **문제를 한 문장이 다 담는다** — **`모든 것이 NoSQL 안에 광고 문서로 살았다. 애플리케이션 로직이 각 문서 안의 하나의 type 필드로 분기했고, 광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다.`** ⚠️ **공유 스키마처럼 보였지만 실제로는 공유된 착각이었다**(재구성). 그 값이 확장으로 돌아온다 — **`새 광고 솔루션을 추가하려면 여러 서비스에 걸쳐 코드를 바꿔야 했다. 데이터만으로 시스템을 확장할 방법이 없었다.`** ⚠️ **광고 상품은 사업이 만드는 것인데 그때마다 엔지니어링이 붙어야 했다**(재구성).",
+        "metrics": [
+          {
+            "label": "⭐ 문제의 정체",
+            "value": "**`애플리케이션 로직이 각 문서 안의 하나의 type 필드로 분기했고, 광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 그 값",
+            "value": "**`새 광고 솔루션을 추가하려면 여러 서비스에 걸쳐 코드를 바꿔야 했다. 데이터만으로 시스템을 확장할 방법이 없었다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "label": "새 모델",
+            "value": "**자산(Assets) · 자산 유형(Asset Types) · 유닛(Units) · 패키지(Packages) · 상세(Details) · 비즈니스 규칙 · 가격과 쿼터** 일곱 엔터티로 정규화",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 규칙을 데이터로",
+            "value": "**비즈니스 규칙은 `코드 없이 자산 유형마다 관리되는 광고별 로직`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "label": "누가 운영하나",
+            "value": "**비즈니스 팀이 백오피스에서 직접** — 자산 정의 · 유닛 설정 · 패키지 티어 지정 · 규칙 관리 · 가격과 쿼터 조정 · **공개와 철회**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 성과의 형태",
+            "value": "**통합 리드타임과 파트너·패키지 온보딩 시간이 크게 줄었다는 차트** — ⚠️ **본문에 수치가 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "label": "이 광고가 붙는 곳",
+            "value": "**활성 고객 3,000만 명 이상 · 판매자 23만 명 이상 · 2024년 GMV 125억 달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Trendyol retailer data",
+                "url": "https://ecdb.com/resources/sample-data/retailer/trendyol",
+                "publisher": "ECDB",
+                "date": "2026",
+                "summary": "2024년 GMV 125억 달러, 2025년 trendyol.com 매출 140억 900만 달러. 튀르키예 시장 점유 34~40%, 2025년 매출의 62%가 튀르키예. 활성 고객 3,000만 명 이상, 3자 판매자 23만 명 이상. 국제 매출이 전체의 거의 20%, 걸프 지역 GMV 10억 달러 돌파."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "왜 못 늘리는지 볼 때",
+          "thought": "⭐ **범인이 `type` 필드 하나였다.** 문서 안에 종류를 적어 두고 서비스마다 그걸 보고 분기했는데, **`광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다`**. ⚠️ **한곳에 적힌 값을 여러 곳이 각자 읽으면, 그건 공유가 아니라 흩어진 규칙이다**(재구성) — **새 값을 하나 더하면 그 해석들을 전부 찾아 고쳐야 한다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 목표로 삼을지 정할 때",
+          "thought": "⭐ **목표를 `데이터만으로 확장 가능하게` 로 잡았다** — **`데이터만으로 시스템을 확장할 방법이 없었다`** 가 문제 진술이니 해법의 기준도 거기다. ⚠️ **광고 상품은 사업이 만드는 것인데 만들 때마다 엔지니어링이 붙어야 했다면, 병목은 기술이 아니라 조직 사이의 경계였다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "엔터티를 나눌 때",
+          "thought": "⚠️ **`type` 하나가 하던 일을 일곱으로 쪼갰다** — 무엇인가(자산 유형) · 실제로 무엇이 나가는가(유닛: 푸시·배너·팝업) · 얼마나 큰가(패키지 티어) · 그 조합의 속성(상세) · 규칙 · 가격과 쿼터. ⭐ **한 필드에 뭉쳐 있던 여러 물음을 각각의 자리로 보낸 것이다**(재구성) — **그래야 사업이 조합만으로 새 상품을 만들 수 있다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "⚠️ `type` 필드 (버린 것)",
+            "what": "⚠️ **NoSQL 광고 문서 안의 필드 하나** — **`광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다`**"
+          },
+          {
+            "name": "자산 (Assets)",
+            "what": "**최상위 광고 솔루션** — 여러 범주 분류를 갖는다"
+          },
+          {
+            "name": "자산 유형 (Asset Types)",
+            "what": "**`이건 어떤 종류의 광고 솔루션인가`** 에 답한다 — **가격과 규칙이 여기 붙는다**"
+          },
+          {
+            "name": "유닛 (Units)",
+            "what": "**실제로 나가는 것** — 푸시 알림 · 배너 · 팝업"
+          },
+          {
+            "name": "패키지 (Packages)",
+            "what": "**크기 티어**(SMALL · MEDIUM · LARGE) — 구매 규모를 정한다"
+          },
+          {
+            "name": "상세 (Details)",
+            "what": "⚠️ **연결 테이블** — **`자산 유형 + 유닛 + 패키지`** 를 속성과 함께 묶는다"
+          },
+          {
+            "name": "비즈니스 규칙",
+            "what": "⭐ **`코드 없이 자산 유형마다 관리되는 광고별 로직`**"
+          },
+          {
+            "name": "백오피스",
+            "what": "**비즈니스 팀이 자산을 정의하고 유닛을 설정하고 티어를 정하고 규칙을 관리하고 가격·쿼터를 조정하고 공개·철회까지 한다**"
+          }
+        ],
+        "invariants": [
+          "⭐ **새 광고 상품은 데이터로 만든다** — 코드를 고치지 않는다",
+          "⚠️ **한 필드가 여러 물음에 답하지 않는다** — 물음마다 자리가 있다",
+          "**규칙은 자산 유형에 붙는다** — 서비스에 흩어지지 않게",
+          "**사업이 직접 공개하고 철회한다** — 배포를 기다리지 않는다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "⚠️ **NoSQL 광고 문서와 `type` 필드 분기를 버린다**",
+            "why": "⭐ **`광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다`**"
+          },
+          {
+            "step": "**정규화된 관계형 모델의 PostgreSQL 로 옮긴다**",
+            "why": "⚠️ **`데이터만으로 시스템을 확장할 방법이 없었다`** 를 뒤집는 것이 목표다"
+          },
+          {
+            "step": "**자산과 자산 유형으로 `이건 무엇인가` 를 담는다** — 가격과 규칙이 자산 유형에 붙는다",
+            "why": "**종류마다 다른 것을 종류의 자리에 둔다**(재구성)"
+          },
+          {
+            "step": "**유닛으로 `실제로 무엇이 나가는가` 를 담는다** — 푸시 알림·배너·팝업",
+            "why": "**상품의 종류와 전달 수단은 다른 축이다**(재구성)"
+          },
+          {
+            "step": "**패키지로 `얼마나 큰가` 를 담는다** — SMALL·MEDIUM·LARGE",
+            "why": "**구매 규모를 티어로**"
+          },
+          {
+            "step": "⚠️ **상세(Details)가 `자산 유형 + 유닛 + 패키지` 를 속성과 함께 묶는다**",
+            "why": "⭐ **조합으로 새 상품이 만들어진다** — 코드 수정 없이"
+          },
+          {
+            "step": "⭐ **비즈니스 규칙을 자산 유형마다 코드 없이 관리한다**",
+            "why": "⚠️ **규칙이 서비스에 흩어져 있던 것이 원래 문제였다**(재구성)"
+          },
+          {
+            "step": "**백오피스를 열어 비즈니스 팀이 직접 정의·설정·가격 조정·공개·철회를 하게 한다**",
+            "why": "⚠️ **광고 상품은 사업이 만드는 것인데 그때마다 엔지니어링이 붙던 것을 끊는다**(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "NoSQL 문서와 `type` 분기를 유지할 것인가",
+            "chosen": "⚠️ **버린다 — 정규화된 관계형으로**",
+            "alternatives": [
+              "NoSQL 유지하고 스키마 문서화",
+              "type 필드를 열거형으로 강제"
+            ],
+            "tradeoff": "⭐ **문제가 저장소 종류가 아니라 해석의 분산이었다** — **`애플리케이션 로직이 각 문서 안의 하나의 type 필드로 분기했고, 광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다.`** ⚠️ **한곳에 적힌 값을 여러 곳이 각자 읽으면 그건 공유가 아니라 흩어진 규칙이다**(재구성). **대가는 회사가 적지 않는다** — **NoSQL 의 유연성과 수평 확장에서 무엇을 내줬는지, 이전 자체가 얼마나 걸렸는지가 없다**(재구성). ⚠️ **`얻은 것만 말하는 글` 이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 성공의 기준으로 삼을 것인가",
+            "chosen": "⭐ **`데이터만으로 확장 가능한가`**",
+            "alternatives": [
+              "성능 개선",
+              "코드 단순화"
+            ],
+            "tradeoff": "문제 진술이 그대로 기준이 된다 — **`새 광고 솔루션을 추가하려면 여러 서비스에 걸쳐 코드를 바꿔야 했다. 데이터만으로 시스템을 확장할 방법이 없었다.`** ⚠️ **속도나 비용이 아니라 `누가 언제 바꿀 수 있나` 를 기준으로 잡았다**(재구성) — **병목이 기술이 아니라 조직 사이의 경계였기 때문이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "question": "엔터티를 어떻게 나눌 것인가",
+            "chosen": "⚠️ **`type` 하나가 하던 일을 일곱으로**",
+            "alternatives": [
+              "광고 테이블 하나에 컬럼 추가",
+              "상품별 테이블 분리"
+            ],
+            "tradeoff": "**자산(최상위 솔루션) · 자산 유형(`이건 어떤 종류인가`, 가격과 규칙이 붙는다) · 유닛(푸시·배너·팝업) · 패키지(SMALL·MEDIUM·LARGE) · 상세(연결) · 비즈니스 규칙 · 가격과 쿼터.** ⭐ **한 필드에 뭉쳐 있던 여러 물음을 각각의 자리로 보낸 것이다**(재구성). **대가는 단순한 조회도 여러 테이블을 거친다는 것**이고, **모델을 이해해야 손댈 수 있다는 진입 장벽이 생긴다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "question": "새 상품을 어떻게 만들게 할 것인가",
+            "chosen": "⭐ **조합으로 — 코드 수정 없이**",
+            "alternatives": [
+              "상품마다 구현",
+              "템플릿 복사"
+            ],
+            "tradeoff": "**상세(Details)가 `자산 유형 + 유닛 + 패키지` 를 속성과 함께 묶고, 패키지는 자산 유형과 유닛에 걸친 서로 다른 상세 구성을 조합해 티어를 만든다.** ⚠️ **조합 가능한 구조는 표현할 수 있는 것의 범위를 미리 정한다** — 조합으로 안 되는 새 형태가 나오면 다시 코드가 필요하다(재구성). **그 한계를 회사가 적지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "question": "광고별 로직을 어디에 둘 것인가",
+            "chosen": "⭐ **자산 유형에 — `코드 없이`**",
+            "alternatives": [
+              "서비스마다 조건문",
+              "규칙 엔진 도입"
+            ],
+            "tradeoff": "**`코드 없이 자산 유형마다 관리되는 광고별 로직`.** ⚠️ **규칙이 서비스에 흩어져 있던 것이 원래 문제였으므로, 규칙을 데이터로 옮기는 것이 그 문제의 정면 해법이다**(재구성). **대가는 규칙이 데이터가 되면 검증과 이력 관리를 따로 만들어야 한다는 것**이고, **잘못된 규칙이 배포 없이 바로 운영에 나간다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "question": "누가 운영할 것인가",
+            "chosen": "⭐ **비즈니스 팀이 직접 — 공개와 철회까지**",
+            "alternatives": [
+              "엔지니어링이 요청 받아 처리",
+              "일부만 위임"
+            ],
+            "tradeoff": "**비즈니스 팀이 자산을 정의하고 유닛을 설정하고 패키지 티어를 정하고 규칙을 관리하고 가격·쿼터를 조정하고 독립적으로 공개·철회한다.** ⚠️ **`공개와 철회` 까지 넘긴 것이 이 결정의 강도다** — 배포 없이 상품이 켜지고 꺼진다(재구성). **얻은 것은 `엔지니어링이 반복적인 운영 업무에서 해방됐다` 는 것**이고, **대가는 사업 쪽이 모델을 이해해야 한다는 것과 실수의 반경이 넓어진다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "question": "성과를 어떻게 보일 것인가",
+            "chosen": "⚠️ **차트로 — 수치 없이**",
+            "alternatives": [
+              "구체적 시간 단축 수치",
+              "이전 전후 비교표"
+            ],
+            "tradeoff": "**통합 리드타임과 파트너·패키지 온보딩 시간이 크게 줄었다는 차트**를 싣는다. ⚠️ **그런데 본문에 수치가 없다** — 며칠이 몇 시간이 됐는지, 광고 상품을 몇 개나 새로 냈는지가 없다(재구성). ⭐ **`얻은 것만 말하고 내준 것은 말하지 않는 글` 의 전형이다**(재구성) — **한계를 다룬 대목이 아예 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "PostgreSQL (정규화 모델)",
+            "role": "**일곱 엔터티** — 자산·자산 유형·유닛·패키지·상세·비즈니스 규칙·가격과 쿼터",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "tech": "상세(Details) 연결 테이블",
+            "role": "⚠️ **`자산 유형 + 유닛 + 패키지`** 를 속성과 함께 묶어 **조합으로 새 상품을 만든다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "tech": "데이터로 관리하는 비즈니스 규칙",
+            "role": "⭐ **`코드 없이 자산 유형마다 관리되는 광고별 로직`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "tech": "백오피스",
+            "role": "**비즈니스 팀이 정의·설정·가격 조정·공개·철회를 직접** — **엔지니어링이 반복 운영 업무에서 해방된다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "인프라를 셀프서비스로 내준다",
+          "via": "⭐ 같은 손버릇",
+          "contract": "⭐ **여기서 비즈니스 팀에게 백오피스를 내주듯, 그 도메인에서는 개발 팀에게 셀프서비스 플랫폼을 내준다** — ⏳ **그 자료는 아직 안 읽었지만 제목들이 같은 결이다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "마켓플레이스 (매출)",
+          "via": "판매자에게 노출을 판다",
+          "contract": "**판매자 23만 명 이상에게 광고 상품을 판다** — **상품을 빨리 만들수록 팔 것이 는다**(뒤쪽은 재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "⚠️ 버린 NoSQL 구조",
+          "via": "해석의 분산",
+          "contract": "⚠️ **`광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다`** — **한곳에 적힌 값을 여러 곳이 각자 읽으면 그건 공유가 아니다**(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⭐ 한 필드가 여러 물음에 답하면 아무도 그 뜻을 모른다",
+            "why_hard": "⭐ **회사의 문장이 정확하다** — **`애플리케이션 로직이 각 문서 안의 하나의 type 필드로 분기했고, 광고를 만지는 모든 서비스가 그 필드가 무엇을 뜻하는지에 대해 저마다의 해석을 갖고 있었다.`** ⚠️ **공유 스키마처럼 보이지만 실제로는 각자의 해석이 각자의 코드에 박혀 있는 상태다**(재구성). **새 값을 하나 더하면 그 해석들을 전부 찾아 고쳐야 하고, 어디까지가 전부인지 아무도 모른다**(재구성).",
+            "current_best": "⚠️ **한 필드가 하던 일을 일곱 엔터티로 나누는 것** — **무엇인가**(자산 유형) · **실제로 무엇이 나가는가**(유닛) · **얼마나 큰가**(패키지) · **그 조합의 속성**(상세) · **규칙** · **가격과 쿼터**. ⭐ **그리고 규칙을 코드가 아니라 데이터로 옮겨** 해석이 흩어질 자리를 없앤다 — **`코드 없이 자산 유형마다 관리되는 광고별 로직`**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          },
+          {
+            "problem": "⚠️ 사업이 만드는 것을 엔지니어링이 배포해야 한다",
+            "why_hard": "⚠️ **광고 상품은 사업이 기획하고 값을 매기고 켜고 끄는 것인데, `새 광고 솔루션을 추가하려면 여러 서비스에 걸쳐 코드를 바꿔야 했다`**. **병목이 기술이 아니라 조직 사이의 경계에 있었다**(뒤쪽은 이 사이트의 재구성이다).",
+            "current_best": "⭐ **백오피스를 열어 `공개와 철회` 까지 넘기는 것** — 비즈니스 팀이 **자산 정의 · 유닛 설정 · 패키지 티어 · 규칙 관리 · 가격과 쿼터 조정 · 독립적인 공개와 철회**를 한다. 결과가 **통합 리드타임과 온보딩 시간의 큰 감소**이고 **엔지니어링이 반복 운영 업무에서 해방됐다**. ⚠️ **대가는 사업 쪽이 모델을 이해해야 한다는 것과, 잘못된 설정이 배포 없이 바로 운영에 나간다는 것**이다(재구성) — **회사가 이 대목을 적지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+                "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+                "publisher": "Trendyol Tech",
+                "date": "2026-03-24",
+                "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 필드가 하던 일을 일곱으로 나눈다",
+          "question": "무엇을 무엇으로 바꿨나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"⚠️ <b>NoSQL 광고 문서</b><br/>• type 필드 하나로 분기<br/>• 서비스마다 저마다의 해석\"]:::gone --> B[\"⚠️ <b>새 상품 = 여러 서비스 코드 수정</b><br/>• 데이터만으로 확장할 수 없다\"]:::gone\n  B --> C[\"<b>정규화된 PostgreSQL</b>\"]:::accent\n  C --> D[\"<b>자산 · 자산 유형</b><br/>• 이건 무엇인가<br/>• 가격 · 규칙이 붙는다\"]:::accent\n  C --> E[\"<b>유닛</b><br/>• 실제로 나가는 것<br/>• 푸시 · 배너 · 팝업\"]:::accent\n  C --> F[\"<b>패키지</b><br/>• SMALL · MEDIUM · LARGE\"]:::accent\n  D --> G[\"⚠️ <b>상세 (연결)</b><br/>• 자산 유형 + 유닛 + 패키지<br/>• 조합으로 새 상품이 된다\"]:::accent\n  E --> G\n  F --> G\n  G --> H[\"⭐ <b>백오피스</b><br/>• 비즈니스 팀이 직접<br/>• 정의 · 규칙 · 가격 · 쿼터<br/>• 공개와 철회까지\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "공유 스키마처럼 보였지만 공유가 아니었다",
+          "question": "무엇이 진짜 문제였나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>문서 안의 type 필드 하나</b>\"]:::list --> B[\"⚠️ <b>서비스 A 의 해석</b>\"]:::gone\n  A --> C[\"⚠️ <b>서비스 B 의 해석</b>\"]:::gone\n  A --> D[\"⚠️ <b>서비스 C 의 해석</b>\"]:::gone\n  B --> E[\"⚠️ <b>새 값을 더하면<br/>  해석을 전부 찾아 고쳐야 한다</b><br/>• 어디까지가 전부인지<br/>  아무도 모른다 (재구성)\"]:::gone\n  C --> E\n  D --> E\n  E --> F[\"<b>답: 물음마다 자리를 준다</b><br/>• 일곱 엔터티\"]:::accent\n  E --> G[\"<b>답: 규칙을 데이터로</b><br/>• 코드 없이 자산 유형마다\"]:::accent\n  H[\"⚠️ <b>회사가 안 적는 것</b><br/>• NoSQL 에서 무엇을 내줬나<br/>• 이전이 얼마나 걸렸나<br/>• 조합으로 안 되는 형태가<br/>  나오면 어떻게 하나 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Managing Ad Packages: How We Replaced Hardcoded Integrations with a Dynamic Architecture",
+          "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
+          "publisher": "Trendyol Tech",
+          "date": "2026-03-24",
+          "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
+        },
+        {
+          "title": "Trendyol retailer data",
+          "url": "https://ecdb.com/resources/sample-data/retailer/trendyol",
+          "publisher": "ECDB",
+          "date": "2026",
+          "summary": "2024년 GMV 125억 달러, 2025년 trendyol.com 매출 140억 900만 달러. 튀르키예 시장 점유 34~40%, 2025년 매출의 62%가 튀르키예. 활성 고객 3,000만 명 이상, 3자 판매자 23만 명 이상. 국제 매출이 전체의 거의 20%, 걸프 지역 GMV 10억 달러 돌파."
+        }
+      ]
+    }
+  ],
   "eras": [],
   "open_questions": [
     "⚠️ **개별 글의 정확한 주소를 목록에서 못 받았다** — 요약이 저자 프로필 링크를 줬다. ⚠️ **슬러그를 추측하지 않는다**(이 세션에서 두 번 어긴 규칙) — **다음 사이클마다 검색으로 주소를 받는다.** 확인된 형식은 `medium.com/trendyol-tech/<제목-슬러그>-<해시>` 다.",
@@ -116,7 +663,7 @@
       "url": "https://medium.com/trendyol-tech/managing-ad-packages-how-we-replaced-hardcoded-integrations-with-a-dynamic-architecture-and-a-back-d78782508654",
       "publisher": "Trendyol Tech",
       "date": "2026-03-24",
-      "summary": "모든 광고가 NoSQL 문서로 살고 애플리케이션 로직이 문서 안의 type 필드 하나로 분기하던 구조를 버렸다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 정규화된 관계형 모델의 PostgreSQL 로 옮겨 조합 가능한 엔터티로 만들었다."
+      "summary": "모든 광고가 NoSQL 문서로 살고 로직이 문서 안의 type 필드 하나로 분기했는데, 광고를 만지는 서비스마다 그 필드의 뜻을 저마다 해석하고 있었다. 새 광고 상품을 더하려면 여러 서비스의 코드를 고쳐야 했고 데이터만으로 확장할 방법이 없었다. 자산·자산유형·유닛·패키지·상세·비즈니스규칙·가격과쿼터로 정규화한 PostgreSQL 로 옮겨, 비즈니스 팀이 백오피스에서 직접 광고 상품을 만들고 공개할 수 있게 했다."
     },
     {
       "title": "Trendyol retailer data",
