@@ -4,7 +4,7 @@
   "name_en": "Flipkart",
   "country": "IN",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "flipkart.com",
   "one_liner": "인도 최대 이커머스 — 5억 명을 상대로 계획하는 쪽과 초당 100만 이벤트를 세는 쪽이 같은 회사 안에 있다",
@@ -214,9 +214,87 @@
     },
     {
       "name": "5억 고객의 공급망을 계획한다",
-      "why": "**인도 전역에 며칠 안에 물건을 보내려면 창고와 차량을 미리 배치해야 한다.** 회사가 이 주제로 글 둘을 냈다 — **`인도 공급망의 맥박: 5억 고객을 위해 어떻게 계획하는가`**(2026-05-05)와 **`시계와의 경주: 더 빠른 배송을 위한 공급망 용량 최적화`**(2026-04-15). ⏳ **본문은 아직 안 읽었다.**",
-      "tech": [],
-      "features": []
+      "why": "⚠️ **이 도메인의 시간은 연속적이지 않다** — 창고는 **마감과 용량 상한이 정해진 웨이브**로 돌고 트럭은 정해진 시각에 떠난다. **`주문이 오후 6시 5분에 들어오면 다음 날 아침까지 처리할 수 없다`** — **5분이 배송 하루를 잃게 만든다**(spillage). ⚠️ **그런데 늘릴 수 있는 것이 거의 없다** — **`운영 제약이 하루 6~8회 마감으로 우리를 제한하고`** 인력 추가는 **비용상 금지적**이다. **하루 400만 건을 1만 9,000개 넘는 핀코드로** 보내면서. ✅ **본문 확인함**(2026-05-05 · 2026-04-15 두 편).",
+      "tech": [
+        {
+          "tech": "예측 계층 (다중 입도 + 계층적 조정)",
+          "solves": "**전국·지역·핀코드를 동시에** 내다보고 **수학적 일관성**을 맞춘다 — 따로 예측하면 합이 안 맞는다(재구성).",
+          "limits": "⚠️ **조정 자체가 계산 부담이다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+              "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+              "publisher": "Flipkart Tech Blog",
+              "date": "2026-05-05",
+              "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+            }
+          ]
+        },
+        {
+          "tech": "Product DNA · Localized Saliency",
+          "solves": "⚠️ **전국 평균에 묻히는 지역 특성을 잡는다** — **두르가 푸자 때 콜카타의 계절 에스닉 웨어 급증** 같은.",
+          "limits": "⚠️ **이런 특성을 계속 발견하고 유지해야 한다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+              "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+              "publisher": "Flipkart Tech Blog",
+              "date": "2026-05-05",
+              "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+            }
+          ]
+        },
+        {
+          "tech": "최적화 계층 (OR)",
+          "solves": "**수백만 변수와 수십억 순열**에서 현실 제약을 지키는 망 전체 계획을 찾는다 — **계획 주기 10일 → 1일.**",
+          "limits": "⚠️ **중앙 플랫폼이 틀리면 모두가 함께 틀린다** — 글은 그 위험을 다루지 않는다(재구성). ⏳ **실시간 가시성과 시뮬레이션은 통합 중이라고 밝힌다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+              "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+              "publisher": "Flipkart Tech Blog",
+              "date": "2026-05-05",
+              "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+            }
+          ]
+        },
+        {
+          "tech": "웨이브-트럭 동기화",
+          "solves": "**처리의 리듬을 운송의 리듬에 맞춘다** — 처리가 끝나도 트럭이 떠난 뒤면 **24시간**을 잃는다.",
+          "limits": "⚠️ **트럭 시각이 바뀌면 처리 계획도 함께 흔들린다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+              "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+              "publisher": "Flipkart Tech Blog",
+              "date": "2026-04-15",
+              "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+            }
+          ]
+        },
+        {
+          "tech": "트럭 인지 배정 · 급증 우선순위",
+          "solves": "⚠️ **선착순을 버리고 임박한 연결이 있는 주문에 용량을 예약한다.** 세일 때 spillage 가 불가피해지면 **고가치 코호트를 보호한다.**",
+          "limits": "⚠️ **`공평한 FIFO 처리보다 시간에 민감한 경로를 우대한다`** — **먼저 주문한 사람이 늦게 받을 수 있고**, 보호받지 못하는 쪽이 생긴다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+              "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+              "publisher": "Flipkart Tech Blog",
+              "date": "2026-04-15",
+              "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "five-minutes-becomes-a-day"
+      ]
     }
   ],
   "features": [
@@ -1208,6 +1286,510 @@
           "summary": "월마트가 약 85% 를 보유한 인도 최대 이커머스. 2025년 매출 약 86억 달러(₹82,787 crore), 월간 활성 사용자 2억 2,000만~2억 4,000만 명, 판매자 약 45만 곳, 상품 1억 5,000만 개 이상 80개 넘는 범주."
         }
       ]
+    },
+    {
+      "key": "five-minutes-becomes-a-day",
+      "name": "5분이 하루가 되는 곳에서 누구를 먼저 태울지 정한다",
+      "domain": "5억 고객의 공급망을 계획한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **이 도메인의 시간은 연속적이지 않다.** 창고는 **마감 시각과 용량 상한이 정해진 `웨이브`** 로 돌고 트럭은 **정해진 시각에 떠난다.** 그래서 회사가 문제를 한 문장으로 적는다 — **`주문이 오후 6시 5분에 들어오면 다음 날 아침까지 처리할 수 없다.`** **5분 차이가 배송 하루를 통째로 잃게 만든다**(회사는 이것을 **`spillage`** 라 부른다). ⚠️ **그리고 늘릴 수 있는 것이 거의 없다** — **`운영 제약이 하루 6~8회 마감으로 우리를 제한하고`**, **인력을 더 뽑는 것은 비용상 금지적**이다. **하루 400만 건의 배송을 1만 9,000개 넘는 핀코드**로 보내면서.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**등록 사용자 5억 명 · 상품 1억 5,000만 개 · 하루 배송 400만 건 · 핀코드 1만 9,000개 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 5분이 하루가 된다",
+            "value": "**`주문이 오후 6시 5분에 들어오면 다음 날 아침까지 처리할 수 없다`** — 놓친 웨이브와 트럭 연결이 **24시간 지연**이 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 늘릴 수 없는 것들",
+            "value": "**`운영 제약이 하루 6~8회 마감으로 우리를 제한한다`** · 웨이브당 용량 상한(예: **2만 개**) · **인력 추가 채용은 비용상 금지적**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          },
+          {
+            "label": "계획 주기",
+            "value": "**`계획 주기 시간 90% 감소: 계획 창을 10일에서 1일로 줄였다`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "label": "배송 속도",
+            "value": "**1일 배송 50% 증가 · 2일 배송 43% 증가**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "label": "재고와 인력",
+            "value": "**불건전 재고 50% 감소 · 운전자본 효율 10% 증가 · 필요 인력 10% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "어디를 고칠지 볼 때",
+          "thought": "⚠️ **한 곳을 빠르게 하면 다른 곳이 넘친다** — 회사가 그것을 적는다: **`한 영역의 「승리」 가 종종 다른 영역에 병목을 만들었다.`** **창고 포장이 빨라져도 운송이 안 맞으면 출고 도크가 넘친다.** **부분 최적화가 전체를 나쁘게 만드는 자리라 계획을 한곳으로 모아야 했다**(뒤쪽은 이 사이트의 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "용량을 늘릴지 생각할 때",
+          "thought": "⚠️ **늘릴 수 있는 것이 거의 없다는 것이 이 문제의 성격이다** — **마감은 하루 6~8회가 운영 상한이고 인력 추가는 비용상 금지적**이다. **그러면 남은 방법은 같은 용량을 언제 누구에게 쓸지 정하는 것뿐이다**(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "먼저 처리할 순서를 정할 때",
+          "thought": "⚠️ **선착순이 가장 공평한데 그것을 버렸다** — **임박한 트럭 연결이 있는 주문에 용량을 예약한다.** **먼저 온 주문보다 지금 안 태우면 하루를 잃는 주문이 급하다**(재구성). ⚠️ **그리고 세일 때처럼 spillage 가 `불가피` 해지면 고가치 코호트를 보호한다** — **모두를 구할 수 없을 때 누구를 먼저 구할지 미리 정해 두는 일이다**(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "웨이브",
+            "what": "⚠️ **마감 시각과 용량 상한이 정해진 처리 단위**(예: 웨이브당 2만 개). **하루 6~8회가 운영 상한이다**"
+          },
+          {
+            "name": "⚠️ spillage",
+            "what": "⚠️ **처리 창이나 트럭 출발을 놓친 주문.** **배송 속도를 하루 통째로 잃는다**"
+          },
+          {
+            "name": "중앙 계획 플랫폼 (CPP)",
+            "what": "**예측 계층(`눈`)과 최적화 계층(`근육`)** — **수백 개의 사일로 스프레드시트**를 **하나의 자동화된 `진실의 원천`** 으로 바꿨다"
+          },
+          {
+            "name": "계층적 조정",
+            "what": "**전국·지역·핀코드 예측이 수학적으로 일관되게** 맞춘다 — 다중 입도를 동시에 내다보기 때문이다"
+          },
+          {
+            "name": "Product DNA · Localized Saliency",
+            "what": "**지역마다 다른 행동을 잡는다** — 회사가 든 예가 **두르가 푸자 때 콜카타의 계절 에스닉 웨어 급증**이다"
+          },
+          {
+            "name": "트럭 인지 배정",
+            "what": "⚠️ **순수 선착순 대신 임박한 연결이 있는 주문에 용량을 예약한다**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **시간은 이산적이다** — 웨이브와 트럭 출발을 놓치면 하루가 밀린다",
+          "⚠️ **용량은 거의 못 늘린다** — 마감은 하루 6~8회, 인력 추가는 비용상 금지적",
+          "**부분 최적화는 전체를 나쁘게 만들 수 있다** — 한 곳의 승리가 다른 곳의 병목이 된다",
+          "⚠️ **모두를 구할 수 없을 때 누구를 먼저 구할지 미리 정한다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**예측 계층이 전국·지역·핀코드를 동시에 내다본다**",
+            "why": "**하나의 입도만 보면 다른 입도에서 어긋난다** — 그래서 **계층적 조정**으로 일관성을 맞춘다"
+          },
+          {
+            "step": "**Product DNA 와 Localized Saliency 로 지역 특성을 넣는다**",
+            "why": "⚠️ **두르가 푸자 때 콜카타의 에스닉 웨어 급증** 같은 것은 전국 평균에 묻힌다"
+          },
+          {
+            "step": "**최적화 계층이 수백만 변수와 수십억 순열을 푼다**",
+            "why": "**현실의 제약을 지키면서 망 전체의 최적 계획을 찾는다**"
+          },
+          {
+            "step": "⚠️ **웨이브 마감을 트럭 출발 시각에 동기화한다**",
+            "why": "⚠️ **처리는 끝났는데 트럭이 떠난 뒤면 하루를 잃는다**"
+          },
+          {
+            "step": "⚠️ **선착순 대신 임박한 연결이 있는 주문에 용량을 예약한다**",
+            "why": "⚠️ **먼저 온 주문보다 지금 안 태우면 하루를 잃는 주문이 급하다**(재구성)"
+          },
+          {
+            "step": "**예측된 주문과 입고에 맞춰 자산별 용량을 배분한다**",
+            "why": "**무차별로 늘리는 대신 필요한 곳에 정밀하게 둔다**"
+          },
+          {
+            "step": "⚠️ **세일 때 spillage 가 불가피해지면 고가치 코호트를 보호한다**",
+            "why": "⚠️ **모두를 구할 수 없을 때의 순서를 미리 정해 둔다**"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "계획을 각 팀이 따로 할 것인가 한곳에서 할 것인가",
+            "chosen": "⚠️ **중앙 계획 플랫폼으로 모은다** — 수백 개의 사일로 스프레드시트를 버렸다",
+            "alternatives": [
+              "팀별 계획 유지하고 조율 회의",
+              "부분별 최적화 도구 도입"
+            ],
+            "tradeoff": "회사가 이유를 적는다 — **`한 영역의 「승리」 가 종종 다른 영역에 병목을 만들었다`**(창고 포장이 빨라지면 운송이 안 맞을 때 출고 도크가 넘친다). ⚠️ **부분 최적화가 전체를 나쁘게 만드는 구조라 조율 회의로는 못 푼다**(재구성). **얻은 것은 계획 주기 10일 → 1일**이고, **대가는 중앙 플랫폼이 틀리면 모두가 함께 틀린다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "question": "예측을 어느 입도로 할 것인가",
+            "chosen": "**전국·지역·핀코드를 동시에** — 계층적 조정으로 일관성을 맞춘다",
+            "alternatives": [
+              "전국 단위 예측 후 배분",
+              "핀코드 단위만 예측"
+            ],
+            "tradeoff": "⚠️ **입도를 따로 예측하면 합이 안 맞는다** — 그래서 **계층적 조정으로 수학적 일관성**을 강제한다. **전국만 보면 지역 특성이 묻히고 핀코드만 보면 잡음이 커진다**(재구성). **대가는 조정 자체가 계산 부담이라는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "question": "지역 특성을 어떻게 넣을 것인가",
+            "chosen": "**Product DNA 와 Localized Saliency**",
+            "alternatives": [
+              "전국 모델에 지역 변수 추가",
+              "지역마다 별도 모델"
+            ],
+            "tradeoff": "⚠️ **`두르가 푸자 때 콜카타의 계절 에스닉 웨어 급증`** 같은 것은 **전국 평균에 묻힌다.** 상품과 지역 양쪽의 성격을 따로 잡는다. **대가는 이런 특성을 계속 발견하고 유지해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "question": "용량을 늘려서 풀 것인가",
+            "chosen": "⚠️ **아니다 — 정밀 타기팅으로 푼다**",
+            "alternatives": [
+              "처리 용량 증설",
+              "인력 추가 채용",
+              "마감 횟수 늘리기"
+            ],
+            "tradeoff": "⚠️ **늘릴 수 있는 것이 거의 없다** — **`운영 제약이 하루 6~8회 마감으로 우리를 제한하고`** **인력 추가는 비용상 금지적**이다. 그래서 **무차별 용량 확대 대신 정밀 타기팅**을 골랐다. ⚠️ **대가는 커버리지** — 회사가 그 맞바꿈을 **`비용 절감 대 커버리지`** 로 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          },
+          {
+            "question": "웨이브 마감을 언제로 둘 것인가",
+            "chosen": "**트럭 출발 시각에 동기화한다** — 최적화 모델로",
+            "alternatives": [
+              "균등 간격 마감",
+              "수요가 몰리는 시각에 맞춤"
+            ],
+            "tradeoff": "⚠️ **처리가 끝나도 트럭이 떠난 뒤면 하루를 잃는다** — **놓친 연결은 24시간 지연**이다. 그래서 **처리의 리듬을 운송의 리듬에 맞췄다.** **대가는 트럭 시각이 바뀌면 처리 계획도 함께 흔들린다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          },
+          {
+            "question": "선착순을 지킬 것인가",
+            "chosen": "⚠️ **아니다 — 임박한 연결이 있는 주문에 용량을 예약한다**",
+            "alternatives": [
+              "순수 FIFO",
+              "주문 금액 순"
+            ],
+            "tradeoff": "⚠️ **먼저 온 주문보다 지금 안 태우면 하루를 잃는 주문이 급하다**(재구성). 회사가 맞바꿈을 그대로 적는다 — **`공평한 FIFO 처리보다 시간에 민감한 경로를 우대한다.`** ⚠️ **대가는 먼저 주문한 사람이 늦게 받을 수 있다는 것**이고, **그것이 이 결정이 감수한 불공평이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          },
+          {
+            "question": "넘칠 것이 확실할 때 무엇을 할 것인가",
+            "chosen": "⚠️ **고가치 코호트를 보호한다** — spillage 가 `불가피` 해지는 세일 기간에",
+            "alternatives": [
+              "전체를 균등하게 지연",
+              "선착순 유지"
+            ],
+            "tradeoff": "⚠️ **모두를 구할 수 없다는 것을 먼저 인정하고 나서 순서를 정한다**(재구성). **세일 때는 spillage 가 불가피하다고 회사가 적는다.** **대가는 보호받지 못하는 쪽이 생긴다는 것**이고, **그 선택을 사후가 아니라 사전에 해 둔다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          },
+          {
+            "question": "계획을 얼마나 자주 다시 세울 것인가",
+            "chosen": "**하루에 한 번** — 열흘에서 줄였다",
+            "alternatives": [
+              "주 단위 계획 유지",
+              "실시간 재계획"
+            ],
+            "tradeoff": "**`계획 창을 10일에서 1일로 줄였다`**(90% 감소). ⚠️ **`정적인 계획은 5억 고객의 변동성을 견딜 수 없다`** 고 회사가 적는다. **대가는 최적화를 매일 돌려야 한다는 것**이고 — **수백만 변수와 수십억 순열**이다. ⏳ **실시간 가시성과 시뮬레이션은 아직 통합 중이라고 밝힌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "예측 계층 (다중 입도 + 계층적 조정)",
+            "role": "**전국·지역·핀코드를 동시에** 내다보고 **수학적 일관성**을 맞춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "tech": "Product DNA · Localized Saliency",
+            "role": "⚠️ **전국 평균에 묻히는 지역 특성을 잡는다** — 두르가 푸자 때 콜카타의 에스닉 웨어 같은",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "tech": "최적화 계층 (OR)",
+            "role": "**수백만 변수와 수십억 순열**에서 현실 제약을 지키는 망 전체 계획을 찾는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          },
+          {
+            "tech": "웨이브-트럭 동기화",
+            "role": "⚠️ **처리의 리듬을 운송의 리듬에 맞춘다** — 놓친 연결은 24시간이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          },
+          {
+            "tech": "트럭 인지 배정 · 급증 우선순위",
+            "role": "⚠️ **선착순을 버리고 급한 것과 지킬 것을 먼저 태운다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "learn-the-majority-then-pass-it",
+          "via": "같은 회사의 다른 시간 축",
+          "contract": "⚠️ **한쪽은 몇 달을 내다보고 한쪽은 밀리초를 다툰다** — **검색 관련성은 배치로 만들어도 되지만 웨이브 마감은 5분이 하루가 된다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "트럭 운송 일정",
+          "via": "⚠️ 웨이브 마감을 정하는 것",
+          "contract": "⚠️ **처리 계획의 시각을 운송이 정한다** — 놓친 연결은 **24시간 지연**이다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "고객",
+          "via": "⚠️ 포기한 공평",
+          "contract": "⚠️ **`공평한 FIFO 처리보다 시간에 민감한 경로를 우대한다`** — **먼저 주문한 사람이 늦게 받을 수 있다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "세일 이벤트",
+          "via": "불가피한 spillage",
+          "contract": "⚠️ **넘칠 것이 확실한 기간에는 고가치 코호트를 보호한다** — **모두를 구할 수 없다는 것을 먼저 인정한다**(재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 시간이 이산적이라 5분이 하루가 된다",
+            "why_hard": "⚠️ **창고는 마감이 정해진 웨이브로 돌고 트럭은 정해진 시각에 떠난다.** 그래서 **`주문이 오후 6시 5분에 들어오면 다음 날 아침까지 처리할 수 없다`** — **연속적인 개선이 불연속적인 결과를 낳는다**(뒤쪽은 이 사이트의 재구성이다). **게다가 마감을 더 만들 수도 없다** — **하루 6~8회가 운영 상한**이고 **인력 추가는 비용상 금지적**이다.",
+            "current_best": "**웨이브 마감을 트럭 출발에 맞추고, 임박한 연결이 있는 주문에 용량을 예약하는 것.** ⚠️ **경계 자체를 없앨 수는 없으므로 경계 앞에서 누구를 태울지를 정한다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+                "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-04-15",
+                "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+              }
+            ]
+          },
+          {
+            "problem": "부분의 개선이 전체를 나쁘게 만든다",
+            "why_hard": "회사의 문장 — **`한 영역의 「승리」 가 종종 다른 영역에 병목을 만들었다.`** **창고 포장이 빨라져도 운송이 동기화되지 않으면 출고 도크가 넘친다.** ⚠️ **각 팀이 자기 지표를 최적화할수록 전체가 나빠질 수 있는 구조다**(재구성).",
+            "current_best": "**계획을 한곳으로 모으고 망 전체를 하나의 최적화로 푸는 것** — 수백만 변수, 수십억 순열. ⚠️ **대가는 중앙 플랫폼이 틀리면 모두가 함께 틀린다는 것**이고, **글은 그 위험을 다루지 않는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+                "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+                "publisher": "Flipkart Tech Blog",
+                "date": "2026-05-05",
+                "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "경계 앞에서 누구를 태울지 정한다",
+          "question": "주문 하나가 오늘 나가느냐 내일 나가느냐",
+          "kind": "flow",
+          "code": "flowchart TD\n  F[\"<b>예측 계층 (눈)</b><br/>• 전국 · 지역 · 핀코드 동시<br/>• 계층적 조정으로 일관성<br/>• Product DNA · Localized Saliency\"]:::accent --> O[\"<b>최적화 계층 (근육)</b><br/>• 수백만 변수 · 수십억 순열\"]:::accent\n  O --> C[\"<b>웨이브 용량 배분</b><br/>• 예측된 주문과 입고에 맞춰\"]:::list\n  ORD[\"<b>주문이 들어온다</b>\"]:::list --> W{\"⚠️ <b>웨이브 마감 전인가</b><br/>하루 6~8회가 상한\"}\n  W -->|\"⚠️ 6시 5분\"| N[\"⚠️ <b>다음 날 아침</b><br/>• spillage — 하루를 잃는다\"]:::gone\n  W -->|\"안에 들어옴\"| P[\"<b>처리</b>\"]:::list\n  C --> W\n  P --> T{\"<b>트럭 연결</b><br/>마감을 출발에 동기화\"}\n  T -->|\"⚠️ 임박한 연결\"| R[\"⚠️ <b>용량을 예약해 먼저 태운다</b><br/>• 선착순을 버렸다\"]:::accent\n  T -->|\"여유 있음\"| S[\"<b>다음 편\"]:::list\n  SU[\"⚠️ <b>세일 — spillage 가 불가피</b><br/>• 고가치 코호트를 보호한다\"]:::gone --> R\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "늘릴 수 없는 것들",
+          "question": "왜 용량을 키우는 대신 순서를 바꿨나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>마감 횟수를 늘린다</b>\"]:::gone --> A1[\"<b>운영 제약이 하루 6~8회로<br/>  우리를 제한한다</b>\"]:::gone\n  B[\"⚠️ <b>사람을 더 뽑는다</b>\"]:::gone --> B1[\"<b>비용상 금지적</b>\"]:::gone\n  C[\"⚠️ <b>용량을 무차별로 늘린다</b>\"]:::gone --> C1[\"<b>비용 절감 대 커버리지</b><br/>• 회사가 적은 맞바꿈\"]:::gone\n  A1 --> D[\"<b>남은 방법: 같은 용량을<br/>  언제 누구에게 쓸지 정한다</b>\"]:::accent\n  B1 --> D\n  C1 --> D\n  D --> E[\"⚠️ <b>포기한 것: 공평한 FIFO</b><br/>• 시간에 민감한 경로를 우대<br/>• 먼저 주문한 사람이<br/>  늦게 받을 수 있다 (재구성)\"]:::gone\n  F[\"⚠️ <b>부분 최적화의 함정</b><br/>• 한 영역의 승리가<br/>  다른 영역에 병목을 만든다\"]:::gone --> G[\"<b>답: 계획을 한곳으로</b><br/>• 10일 → 1일\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "The Pulse of India's Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
+          "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
+          "publisher": "Flipkart Tech Blog",
+          "date": "2026-05-05",
+          "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
+        },
+        {
+          "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
+          "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
+          "publisher": "Flipkart Tech Blog",
+          "date": "2026-04-15",
+          "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
+        },
+        {
+          "title": "Flipkart — Company Overview",
+          "url": "https://en.wikipedia.org/wiki/Flipkart",
+          "publisher": "Wikipedia",
+          "date": "2026",
+          "summary": "월마트가 약 85% 를 보유한 인도 최대 이커머스. 2025년 매출 약 86억 달러(₹82,787 crore), 월간 활성 사용자 2억 2,000만~2억 4,000만 명, 판매자 약 45만 곳, 상품 1억 5,000만 개 이상 80개 넘는 범주."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -1219,7 +1801,9 @@
     "⚠️ **연표(eras)를 못 세웠다** — 2007년 창업과 2018년 월마트 인수는 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다.",
     "⚠️ **배치 조정 계층의 복잡도를 다룬 후속 글을 회사가 예고했다** — 이 글은 **속도 계층 위주**이고 **`정확히 한 번의 과금` 을 실제로 만드는 쪽의 이야기가 아직 없다.**",
     "⚠️ **이 라벨로 무엇을 어떻게 정렬하는지는 여전히 비어 있다** — **관련성 라벨링은 재료를 만드는 일이고**, 하류의 검색·랭킹 모델이 그것을 어떻게 쓰는지는 이 글이 다루지 않는다.",
-    "⭐ **Etsy 와 정면으로 견줄 자리다** — **Etsy 는 `LLM 이 인간 판단을 대체하지 않고 정렬해 증폭한다` 고 적고 3단 증류로 갔는데**, **Flipkart 는 `인간 주석자보다 정확하다`(+2.3%/+2.9%)를 수치로 내놓고 사람을 가이드라인 정의로 옮겼다.** ⚠️ **같은 문제(검색 관련성)에 대한 두 답이고 사람의 자리가 다르다.**"
+    "⭐ **Etsy 와 정면으로 견줄 자리다** — **Etsy 는 `LLM 이 인간 판단을 대체하지 않고 정렬해 증폭한다` 고 적고 3단 증류로 갔는데**, **Flipkart 는 `인간 주석자보다 정확하다`(+2.3%/+2.9%)를 수치로 내놓고 사람을 가이드라인 정의로 옮겼다.** ⚠️ **같은 문제(검색 관련성)에 대한 두 답이고 사람의 자리가 다르다.**",
+    "⚠️ **두 글 모두 `Part 1` 이고 회사가 더 깊은 기술 글을 예고했다** — **예측과 최적화 아키텍처의 실제 구조**는 아직 공개되지 않았다.",
+    "⚠️ **중앙 계획 플랫폼이 틀렸을 때의 이야기가 없다** — **수백 개의 사일로를 하나의 `진실의 원천` 으로 바꿨다면 그 하나가 틀릴 때의 파급도 하나로 모인다**(재구성). 글은 그 위험을 다루지 않는다."
   ],
   "sources": [
     {
@@ -1241,14 +1825,14 @@
       "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
       "publisher": "Flipkart Tech Blog",
       "date": "2026-05-05",
-      "summary": "5억 고객을 상대하는 공급망 계획. ⏳ 본문은 아직 읽지 않았다."
+      "summary": "사일로에 흩어진 수동 계획을 중앙 계획 플랫폼(CPP)으로 모았다. 예측 계층이 전국·지역·핀코드를 동시에 내다보고 계층적 조정으로 일관성을 맞추며, 최적화 계층이 수백만 변수와 수십억 순열을 푼다. 계획 주기가 10일에서 1일로, 1일 배송이 50% 늘었다."
     },
     {
       "title": "The Race Against the Clock: Optimizing Supply Chain Capacity for Faster Deliveries — Part 1",
       "url": "https://blog.flipkart.tech/the-race-against-the-clock-optimizing-supply-chain-capacity-for-faster-deliveries-part-1-01b867c400de",
       "publisher": "Flipkart Tech Blog",
       "date": "2026-04-15",
-      "summary": "더 빠른 배송을 위한 공급망 용량 최적화. ⏳ 본문은 아직 읽지 않았다."
+      "summary": "처리 창과 트럭 출발을 놓친 주문(spillage)이 배송 하루를 통째로 잃게 만든다. 오후 6시 5분에 들어온 주문은 다음 날 아침까지 처리할 수 없다. 하루 6~8회 마감이 운영 상한이고 인력 추가는 비용상 금지적이라, 용량을 늘리는 대신 트럭 출발에 웨이브를 맞추고 임박한 연결이 있는 주문에 용량을 예약한다."
     },
     {
       "title": "Re-architecting Flipkart's Rate Card Engine",
