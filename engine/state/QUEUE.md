@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Zed** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 에이전트에게 무엇을 허락할 것인가(`os-sandbox`). 빈 도메인 둘 — 다음 편집을 미리 맞힌다(`Zeta2`) · 글자를 무엇에 담을 것인가(`Rope & SumTree`). 안 읽은 것 — `Introducing Delta`(에이전트 여럿) · GPUI·Metal(화면) · CRDT(협업). |
+| **Zed** | US · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 에이전트에게 무엇을 허락할 것인가(`os-sandbox`) · 다음 편집을 미리 맞힌다(`zeta-distillation`). 빈 도메인 하나 — 글자를 무엇에 담을 것인가(`Rope & SumTree`). 안 읽은 것 — `Introducing Delta`(에이전트 여럿) · GPUI·Metal(화면) · CRDT(협업). |
 
 ## 대기
 
