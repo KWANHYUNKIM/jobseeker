@@ -8,44 +8,44 @@
 
 ## 지금 파는 중
 
-**Vercel** (US · SaaS) — 도메인 3개 · **기능 1개**(`cache-holding-what-cannot-be-lost`). 남은 둘은 미독이다. 회사 107개 · 큐 0/3.
+**Vercel** (US · SaaS) — 도메인 3개 · **기능 2개**. 남은 하나는 **`컴퓨트를 어떤 모양으로든`**(미독)이다. 회사 107개 · 큐 0/3.
 
-### 이번 사이클 — `캐시에 잃으면 안 되는 것을 두고 있었다`
+### 이번 사이클 — `프로세스를 가두는 것과 그 결과를 가두는 것은 다르다`
 
-⭐ **회사의 표현이 정확하다** — **`그 상태가 부채가 됐다.`** 웜풀은 **`새 컴퓨트를 기다리지 않고 빌드가 시작될 수 있게 하는 대기 컨테이너 집합`** 인데, 그 상태에 **인증 토큰과 배포 청구 매핑**이 들어 있었다. ⚠️ **캐시의 계약은 `잃어도 된다` 인데 내용물의 계약은 `잃으면 안 된다` 였다**(재구성).
+⭐ **한 문장이 이 도메인의 전부다** — **`격리는 이그레스 통제 없이는 프로세스를 가둘 뿐, 그 결과는 가두지 못한다.`**
 
 건진 것 넷:
 
-- ⭐ **가장 아픈 한 줄** — **`매핑을 잃으면 그 빌드는 영영 청구되지 않는다.`** **기술 실패가 곧 매출 손실인 자리다**(재구성).
-- ⚠️ **내구성의 값을 숫자로 그대로 적는다** — **`P95 에서 Redis 1.29ms, DynamoDB 5.13ms`**, **P90 에서는 약 17배**. 그리고 **`P90 에서 1ms 가 15ms 로 나빠지는 것만으로도 우리 웜풀 관리 로직이 무너질 수 있었다`** — **밀리초짜리 확인이 루프 안에서 반복되면 전체가 무너진다**(재구성).
-- ⭐ **동작하는 해법을 상수 하나 때문에 버렸다** — 배치가 **`부하에 따라 흔들릴 지연 비율을 하드코딩했고, 그것은 저장소 속도에 대한 또 하나의 적히지 않은 의존을 뜻했다`**. ⚠️ **지금은 맞지만 왜 맞는지 아무 데도 안 적혀 있고, 부하가 바뀌면 조용히 틀려지며, 틀려지는 순간을 알아챌 방법도 없다**(재구성). ⭐ **상수를 튜닝하는 대신 상수가 필요 없는 구조(동시 호출)를 골랐다.**
-- ⭐ **낭비 쪽으로 넘어졌다** — **`최악의 경우는 풀의 낡은 그림에서 컨테이너 몇 개가 더 만들어지는 것`**. **컨테이너 몇 개는 되돌릴 수 있고 청구 매핑 상실은 되돌릴 수 없다**(재구성).
+- ⚠️ **microVM 이 하는 일과 못 하는 일이 정확히 갈린다** — **`호스트나 다른 워크로드에 접근하는 것을 막을 수 있지만`**, **`데이터를 빼내거나, 내부 서비스를 탐지하거나, 인터넷 다른 곳의 시스템을 공격하거나, 환경 안에 있는 자격증명을 쓰는 것`** 은 못 막는다. ⭐ **격리는 `안으로 못 들어온다` 를 보장하지 `밖으로 못 나간다` 를 보장하지 않는다**(재구성).
+- ⚠️ **끊을 수도 없다** — **`쓸모 있는 에이전트는 모두 당신의 코드베이스 밖으로 손을 뻗는다. Slack 에 올리고, 풀 리퀘스트를 열고, Snowflake 에 질의하고, 내부 API 를 부른다.`** **`무제한 접근` 과 `완전 단절` 사이의 것을 만들어야 했다**(재구성).
+- ⚠️ **허용 목록만으로는 안 된다** — 막으려는 것에 **`DNS 리졸버, 잘못 설정된 허용 목록, 호스트명 해석 차이`** 같은 **계산에 없던 통신 경로**가 들어 있다. **허용 목록이 있는데도 새는 자리가 대개 이름 풀이 쪽이다**(재구성).
+- ⭐ **자격증명 쪽이 같은 모양이다** — **`만료되지 않고, 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 않는다.`** ⚠️ **볼트는 토큰을 보관하지 토큰의 권한을 줄이지 않는다**(재구성). ⭐ **그래서 보관을 잘하는 대신 보관할 것을 없앴다** — **`런타임에 요청되고, 특정 작업에 범위가 한정되고, 자동으로 만료되는`** 토큰, 그리고 **OIDC 로 제공자 비밀조차 저장하지 않는다.**
 
-**옮긴 방법도 적는다** — **다섯 단계 피처 플래그**(Redis 전용 → 이중 쓰기 → **섀도 읽기** → DynamoDB 주 → DynamoDB 전용), 대시보드로 **일치율과 지연**을 내내 감시. **2026년 4월 완료.** ⭐ **섀도 읽기가 핵심이다** — 실제로 쓰지 않으면서 새 저장소가 같은 답을 내는지 본다(재구성).
+⭐ **이 회사의 두 기능이 같은 손버릇이다** — 웜풀에서는 **`잃으면 안 되는 것을 캐시에 두지 않는다`**, 여기서는 **`보관할 자격증명을 만들지 않는다`**. **둘 다 잘 지키는 대신 지킬 것을 없애는 쪽을 골랐다**(재구성).
 
-### ⚠️ 이 사이클에서 걸린 것 — 실패 경로 그림
-
-**검증이 `실패 경로 그림이 없다 — 정상 흐름만 그린 기능은 절반만 설명한 것이다` 라고 잡았다.** 그림 둘을 다 `flow` 로 그렸던 것이다. ⚠️ **STYLE 이 요구하는 것을 놓쳤고 검증이 잡아 줬다** — 두 번째 그림을 `failure` 로 다시 그리고 롤아웃 그림을 하나 더 붙였다. ⭐ **커밋 전에 통과만 보지 말고 경고까지 읽는다는 규칙이 또 값을 했다.**
+⚠️ **글마다 정직함의 정도가 다르다** — **웜풀 이전 글은 밀리초 단위로 실패를 적는데 샌드박스 글은 수치도 한계도 하나 없다**(재구성). ⭐ **③축에서 한 회사 안의 편차로 쓸 수 있다**(Atlassian 에 이어 두 번째).
 
 ### 다음 사이클 — 확장(2순위)
 
-`--gaps` 가 **`에이전트를 안전하게 실행한다`**(글 넷) 또는 **`컴퓨트를 어떤 모양으로든`** 을 부를 것이다. ⏳ **주소는 다 확보돼 있다.** ⭐ **에이전트 축이 이 회사에서 가장 두껍다** — 샌드박스의 네트워크 경계 · Run SDK · 자격증명 난립 · OAuth 토큰 노출 없이 인증.
+`--gaps` 가 **`컴퓨트를 어떤 모양으로든`**(Fluid compute, 2026-09-01)을 부를 것이다. ⏳ **미독 · 주소 확보.** **이걸 쓰면 Vercel 완주다.**
 
-⚠️ **큐가 0/3 이다.** 이 회사를 다 판 뒤 후보 조사가 걸린다. ⭐ **`큰 이름인데 아직 없는 회사` 각도** — ⏳ Supabase · Robinhood · Block/Square · Klaviyo · Railway.
+⚠️ **큐가 0/3 이다.** 완주 뒤 후보 조사가 걸린다. ⭐ **`큰 이름인데 아직 없는 회사` 각도** — ⏳ Supabase · Robinhood · Block/Square · Klaviyo · Railway.
 
-⏳ **보강 거리** — Neon(브랜칭 심화 등) · Atlassian(Events Rail 등) · Trendyol(Helyx 4편 등) · Grafana Labs 인용 대조 · Razorpay 보안 트리아지 · Flipkart Rate Card · Pinterest 2부 · WarpStream 미독 셋.
+⏳ **Vercel 보강 거리** — Run SDK · v0 의 OAuth 인증 · Agent Plugins · 소프트웨어 팩토리.
+
+⏳ **보강 거리** — Neon(브랜칭 심화) · Atlassian(Events Rail 등) · Trendyol(Helyx 4편 등) · Grafana Labs 인용 대조 · Razorpay 보안 트리아지 · Flipkart Rate Card · Pinterest 2부 · WarpStream 미독 셋.
 
 ### ⚠️ 절차 (이 세션에 실수로 배운 것)
 
-**후보 조사는 `name_en` 목록 출력으로 시작한다.** **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(⭐ 다섯 번 연속 오류 0). **`git add -A` 를 쓰지 않는다.** **슬러그를 추측하지 않는다.** **첫 화면으로 회사를 판정하지 않는다.** **제목만 보고 `자료가 없다` 고 적지 않는다.** ⚠️ **그림은 최소 하나가 `failure` 여야 한다**(이번에 걸렸다).
+**후보 조사는 `name_en` 목록 출력으로 시작한다.** **새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다**(⭐ 다섯 번 연속 오류 0). **`git add -A` 를 쓰지 않는다.** **슬러그를 추측하지 않는다.** **첫 화면으로 회사를 판정하지 않는다.** **제목만 보고 `자료가 없다` 고 적지 않는다.** ⚠️ **그림은 최소 하나가 `failure` 여야 한다.**
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① `AI 에이전트를 어디까지 믿나` 13곳 + ⏳ Vercel(글 넷)** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / Trendyol / Coinbase / Atlassian.
+**① ⭐⭐ `AI 에이전트를 어디까지 믿나` 14곳** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / Trendyol / Coinbase / Atlassian / **Vercel**(⭐ **각도가 또 다르다 — `에이전트를 믿을 것인가` 가 아니라 `에이전트가 돌리는 코드를 못 믿을 때 무엇을 막나` 다**, 재구성).
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
-**③ ⭐ `자기 성과를 어디까지 주장하나` 15곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / Neon / **Vercel**(⭐ **`느려졌다` 를 숫자로 적는 드문 이전 글이다 — P90 약 17배, 그리고 버린 해법과 그 이유까지**).
+**③ ⭐ `자기 성과를 어디까지 주장하나` 15곳** — Snyk / Grafana Labs / ScyllaDB / Razorpay / Flipkart / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / Neon / **Vercel**(⚠️ **한 회사 안에서 갈린다 — 웜풀 글은 밀리초로 실패를 적는데 샌드박스 글은 수치도 한계도 없다**).
 
 **④ `인도 규모에서 무엇이 달라지나` 4곳** — Meesho / Zepto / Razorpay / Flipkart.
 
@@ -53,19 +53,19 @@
 
 **⑥ `복제로 버틸 것인가 로그로 버틸 것인가`** — Grafana Labs / WarpStream / Trendyol / Atlassian / Neon.
 
-**⑦ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / Trendyol.
+**⑦ ⭐ `추상화가 무엇을 가리는가`** — Plaid / ScyllaDB / ⏳ Paystack / Wiz / Trendyol / **Vercel**(⭐ **`격리` 라는 말이 나가는 쪽을 안 막는다는 것을 가린다**, 재구성).
 
-**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics / Atlassian / Neon / **Vercel**(⚠️ **저장소가 느린 것은 그대로 두고 그 느림이 직렬로 쌓이지 않게 했다**).
+**⑧ `제약을 없애지 못할 때 어디서 갚는가`** — Cygames / Zepto / Grafana Labs / Pinterest / WarpStream / VictoriaMetrics / Atlassian / Neon / Vercel.
 
-**⑨ ⭐⭐ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 10곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol / Atlassian / **Vercel**(⭐ **다섯 단계 피처 플래그 — 특히 `섀도 읽기` 가 있다**).
+**⑨ `한 번에 갈아엎을 것인가 목 졸라 죽일 것인가` 10곳** — Twilio(두 방향) / Etsy / Plaid / Paystack / Airbnb / Pinterest / WarpStream / Trendyol / Atlassian / Vercel(다섯 단계·섀도 읽기).
 
 **⑩ `관측 비용을 어디까지 줄이나`** — 사는 쪽: Razorpay · Airbnb · WarpStream / 파는 쪽: Grafana Labs · Honeycomb · VictoriaMetrics / ⏳ Trendyol.
 
-**⑪ ⭐ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / Trendyol / Atlassian / **Vercel**(⚠️ **내구성을 얻으려 Redis 를 떠났는데 P90 이 약 17배가 됐다**).
+**⑪ `깨질 걸 알면서 고른 의존을 어떻게 다루나`** — Razorpay / Plaid / Paystack / ScyllaDB / Pinterest / WarpStream / Trendyol / Atlassian / Vercel.
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
-**⑬ `애매할 때 어느 쪽으로 넘어지나` 14곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / Neon / **Vercel**(낡은 그림에서 오는 여분 컨테이너를 감수한다).
+**⑬ `애매할 때 어느 쪽으로 넘어지나` 14곳** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol / Coinbase / Atlassian / Neon / Vercel.
 
 **⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest / ⏳ Trendyol.
 
@@ -77,15 +77,15 @@
 
 **⑱ `무엇을 최적화할지를 바꾼 순간`** — Pinterest / Trendyol / Atlassian / Neon / ⏳ Duolingo · DoorDash.
 
-**⑲ `신뢰의 뿌리를 어디에 두나`** — Pinterest / Coinbase / ⏳ Plaid · Snyk · Vercel.
+**⑲ ⭐ `신뢰의 뿌리를 어디에 두나`** — Pinterest / Coinbase / **Vercel**(⭐ **OIDC 로 옮겨 앱이 제공자 비밀조차 안 갖게 한다**) / ⏳ Plaid · Snyk.
 
-**⑳ `없앨 수 있는 것을 없앤다`** — WarpStream / Wiz / Neon / ⏳ TigerBeetle · Oxide Computer.
+**⑳ ⭐ `없앨 수 있는 것을 없앤다`** — WarpStream(디스크) / Wiz(에이전트) / Neon(컴퓨트·인스턴스 크기) / **Vercel**(⭐ **보관할 자격증명 자체를 없앤다**) / ⏳ TigerBeetle · Oxide Computer.
 
 **㉑ `논문을 어디까지 그대로 쓰나`** — WarpStream(LazyLog) / Neon / ⏳ ScyllaDB · TigerBeetle · ClickHouse.
 
-**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / Trendyol / Atlassian / Neon / **Vercel**(다섯 단계 전부 되돌릴 수 있게).
+**㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / Trendyol / Atlassian / Neon / Vercel.
 
-**㉓ ⭐ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / Trendyol / Coinbase / **Vercel**(⭐ **`적히지 않은 의존` 이라는 이름을 붙여 하드코딩된 상수를 거절한다**) / ⏳ Pinterest.
+**㉓ `설정으로 열 것인가 코드로 막을 것인가`** — WarpStream / Airbnb / Wiz / Trendyol / Coinbase / Vercel(`적히지 않은 의존`) / ⏳ Pinterest.
 
 **㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / Neon / ⏳ Vercel(Next.js 주간 2억) / ⏳ Grafana Labs · ClickHouse · Snyk.
 
@@ -95,7 +95,7 @@
 
 **㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream / Twilio / Neon(Databricks) / ⏳ Trendyol · PlanetScale · Snyk.
 
-**㉘ `맞았는지 어떻게 아나`** — Wiz / Flipkart / Snyk / Trendyol(반대) / Coinbase / **Vercel**(⭐ **섀도 읽기로 일치율을 본다**) / ⏳ Duolingo.
+**㉘ `맞았는지 어떻게 아나`** — Wiz / Flipkart / Snyk / Trendyol(반대) / Coinbase / Vercel(섀도 읽기) / ⏳ Duolingo.
 
 **㉙ `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — Wiz / Flipkart / ⏳ Pinterest 2부 · Snyk · Deliveroo.
 
@@ -105,13 +105,15 @@
 
 **㉜ `흔들리는 매출과 안 흔들리는 매출`** — Coinbase / Twilio / VictoriaMetrics / Atlassian / Neon / ⏳ Adyen · Stripe.
 
-**㉝ `무엇이라 부르느냐가 요구 사항을 정한다`** — Coinbase / Trendyol / Neon / **Vercel**(⭐ **`부채` 와 `적히지 않은 의존` 이라는 이름을 붙인다**) / ⏳ Plaid · Etsy.
+**㉝ `무엇이라 부르느냐가 요구 사항을 정한다`** — Coinbase / Trendyol / Neon / Vercel(`부채`·`적히지 않은 의존`) / ⏳ Plaid · Etsy.
 
-**㉞ `비용을 옮기면 위험도 옮겨 간다`** — Atlassian / WarpStream / Razorpay·Airbnb / **Vercel**(내구성을 얻고 지연을 잃었다) / ⏳ Zepto.
+**㉞ `비용을 옮기면 위험도 옮겨 간다`** — Atlassian / WarpStream / Razorpay·Airbnb / Vercel / ⏳ Zepto.
 
 **㉟ `무엇이 제품이고 무엇이 구현 세부인가`** — Atlassian / WarpStream / Coinbase / Neon / ⏳ Plaid.
 
-**㊱ `고객이 사람이 아닐 때`** — Neon / ⏳ Vercel(글 넷) / WarpStream / Coinbase·Atlassian / ⏳ Temporal.
+**㊱ ⭐⭐ `고객이 사람이 아닐 때`** — Neon(프로비저닝의 80% 이상) / **Vercel**(⭐ **에이전트가 남의 코드를 남의 자격증명으로 돌릴 때 무엇을 막나 — 글 넷 중 둘을 읽었다**) / WarpStream / Coinbase·Atlassian / ⏳ Temporal.
+
+⏳ **㊲ 새로 보인다 — `지킬 것을 없애는 쪽으로 푼다`** — **Vercel**(⭐ **두 기능이 같은 손버릇이다** — 잃으면 안 되는 것을 캐시에 두지 않고, 보관할 자격증명을 만들지 않는다) / **Atlassian**(되돌릴 것을 안 만든다) / **Neon**(아무것도 덮어쓰지 않는다) / ⏳ TigerBeetle. ⚠️ **`잘 지키는 법` 을 만드는 대신 `지킬 것` 을 없애는 해법들이다**(재구성).
 
 ## 지금의 진짜 상태
 

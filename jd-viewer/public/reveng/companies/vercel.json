@@ -114,9 +114,87 @@
     },
     {
       "name": "에이전트를 안전하게 실행한다",
-      "why": "⭐ **이 회사의 2026년 글이 여기로 쏠려 있다** — 넷이다: **`네트워크 경계 없는 샌드박스는 반쪽짜리 샌드박스다`**(2026-08-11) · **`Run SDK 소개: 에이전트를 위한 안전한 eval`**(2026-08-25) · **`에이전트를 위한 자격증명 난립의 끝`**(2026-08-25) · **`v0 은 사용자의 OAuth 토큰을 노출하지 않고 어떻게 Snowflake 에 인증하나`**(2026-08-20). ⚠️ **남의 코드를 남의 자격증명으로 돌리는 문제다**(재구성). ⏳ **넷 다 본문 미독.**",
-      "tech": [],
-      "features": []
+      "why": "⭐ **한 문장이 이 도메인의 전부다** — **`격리는 이그레스 통제 없이는 프로세스를 가둘 뿐, 그 결과는 가두지 못한다.`** ⚠️ **그리고 끊을 수도 없다** — **`쓸모 있는 에이전트는 모두 당신의 코드베이스 밖으로 손을 뻗는다. Slack 에 올리고, 풀 리퀘스트를 열고, Snowflake 에 질의하고, 내부 API 를 부른다.`** ✅ **본문 확인함**(샌드박스 · 자격증명 두 글). ⏳ **Run SDK 와 v0 의 OAuth 글은 아직 안 읽었다.**",
+      "tech": [
+        {
+          "tech": "microVM",
+          "solves": "**`코드가 호스트나 다른 워크로드에 접근하는 것을 막는다`**.",
+          "limits": "⭐ **`그것만으로는 코드가 데이터를 빼내거나, 내부 서비스를 탐지하거나, 인터넷 다른 곳의 시스템을 공격하거나, 환경 안에 있는 자격증명을 쓰는 것을 막을 수 없다.`**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A sandbox without a network boundary is only half a sandbox",
+              "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+              "publisher": "Vercel",
+              "date": "2026-08-11",
+              "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+            }
+          ]
+        },
+        {
+          "tech": "⭐ 호스트 기반 방화벽 (microVM 바깥)",
+          "solves": "⭐ **나가는 길을 통제한다** — 아웃바운드 TCP·DNS 를 **투명하게 리디렉션**하고 **정책을 워크로드 재시작 없이 갱신**한다. **안에 두면 안에서 도는 코드가 건드릴 수 있다**(재구성).",
+          "limits": "⚠️ **호스트 쪽에 상태와 정책을 유지해야 하고, 이 글이 성능 영향이나 운영 부담을 수치로 밝히지 않는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A sandbox without a network boundary is only half a sandbox",
+              "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+              "publisher": "Vercel",
+              "date": "2026-08-11",
+              "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+            }
+          ]
+        },
+        {
+          "tech": "SNI 검사 + CIDR + 선택적 TLS 종료",
+          "solves": "**TLS 핸드셰이크에서 도메인 정책을 강제**하고(암호화된 뒤에는 못 보니 시작할 때, 재구성) **CIDR 로 범위를 제한**하며, **자격증명 주입과 요청 검사가 필요할 때만** 종료한다.",
+          "limits": "⚠️ **`DNS 리졸버, 잘못 설정된 허용 목록, 호스트명 해석 차이` 같은 계산에 없던 경로**가 남는다 — 그래서 DNS 자체를 리디렉션한다. **전부 종료하면 상시 중간자가 되어 그 자체가 위험이다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A sandbox without a network boundary is only half a sandbox",
+              "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+              "publisher": "Vercel",
+              "date": "2026-08-11",
+              "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+            }
+          ]
+        },
+        {
+          "tech": "⭐ 런타임 토큰 (Vercel Connect)",
+          "solves": "⭐ **`만료되지 않고, 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 않는다`** 를 끝낸다 — **`런타임에 요청되고, 특정 작업에 범위가 한정되고, 자동으로 만료되는`** 토큰. **회전이 필요 없어진다.** **커넥터 100개 이상.**",
+          "limits": "⚠️ **발급 횟수가 곧 과금 단위가 된다**(토큰 요청 1,000회당 3달러) — **보안 모델이 과금 단위를 만든 셈이다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The end of credential sprawl for agents",
+              "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+              "publisher": "Vercel",
+              "date": "2026-08-25",
+              "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+            }
+          ]
+        },
+        {
+          "tech": "OIDC 신원 검증",
+          "solves": "**앱이 제공자 비밀을 저장하지 않아도 되게 한다** — **보관할 것이 없으면 샐 것도 없다**(재구성).",
+          "limits": "⚠️ **신원 제공자에 대한 의존이 생긴다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The end of credential sprawl for agents",
+              "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+              "publisher": "Vercel",
+              "date": "2026-08-25",
+              "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "contain-the-consequences-not-the-process"
+      ]
     },
     {
       "name": "컴퓨트를 어떤 모양으로든",
@@ -606,6 +684,545 @@
           "summary": "2026년 2월 ARR 3억 4,000만 달러(2025년 말 3억 500만에서), 전년 대비 86% 성장. 2025년 9월 30일 시리즈 F 3억 달러를 기업가치 93억 달러에 조달했고 총 조달액은 8억 6,300만 달러. Next.js 주간 다운로드 2억 회, AI SDK 주간 300만 회, v0 이 ARR 약 4,200만 달러로 전체의 21% 안팎."
         }
       ]
+    },
+    {
+      "key": "contain-the-consequences-not-the-process",
+      "name": "프로세스를 가두는 것과 그 결과를 가두는 것은 다르다",
+      "domain": "에이전트를 안전하게 실행한다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⭐ **한 문장이 이 도메인의 전부다** — **`격리는 이그레스 통제 없이는 프로세스를 가둘 뿐, 그 결과는 가두지 못한다.`** ⚠️ **microVM 이 하는 일과 못 하는 일이 정확히 갈린다** — **`microVM 은 그 코드가 호스트나 다른 워크로드에 접근하는 것을 막을 수 있다. 그것만으로는 코드가 데이터를 빼내거나, 내부 서비스를 탐지하거나, 인터넷 다른 곳의 시스템을 공격하거나, 환경 안에 있는 자격증명을 쓰는 것을 막을 수 없다.`** ⭐ **그리고 자격증명 쪽에 같은 문제가 있다** — **`쓸모 있는 에이전트는 모두 당신의 코드베이스 밖으로 손을 뻗는다. Slack 에 올리고, 풀 리퀘스트를 열고, Snowflake 에 질의하고, 내부 API 를 부른다.`**",
+        "metrics": [
+          {
+            "label": "⭐ 핵심 문장",
+            "value": "**`격리는 이그레스 통제 없이는 프로세스를 가둘 뿐, 그 결과는 가두지 못한다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ microVM 이 못 막는 것",
+            "value": "**`코드가 데이터를 빼내거나, 내부 서비스를 탐지하거나, 인터넷 다른 곳의 시스템을 공격하거나, 환경 안에 있는 자격증명을 쓰는 것`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "label": "⭐ 자격증명 쪽의 같은 문제",
+            "value": "**`그것을 부여한다는 것은 장수명 토큰을 프로비저닝하고 그것이 절대 새지 않기를 바라는 것을 뜻했다.`** — **`만료되지 않고, 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 않는다.`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          },
+          {
+            "label": "막으려는 공격",
+            "value": "**소스 코드나 의존성에 숨은 프롬프트 주입을 통한 데이터 유출** · **내부망 스캔과 자격증명 절도** · **VM 을 탈출하지 않고도 인증된 API 악용** · **계산에 없던 통신 경로**(DNS 리졸버·잘못 설정된 허용 목록·호스트명 해석 차이)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "label": "고른 것",
+            "value": "**microVM 바깥의 호스트 기반 방화벽** — 아웃바운드 TCP·DNS 를 **투명하게 리디렉션**, **TLS 핸드셰이크(SNI) 검사로 도메인 정책 강제**, CIDR 범위 제한, **자격증명 주입과 요청 검사를 위한 선택적 TLS 종료**, **워크로드 재시작 없는 동적 정책 갱신**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "label": "자격증명의 답",
+            "value": "**런타임에 요청되고, 특정 작업에 범위가 한정되고, 자동으로 만료되는 토큰.** **OIDC 신원 검증**으로 앱이 제공자 비밀을 저장하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          },
+          {
+            "label": "규모와 값",
+            "value": "**커넥터 100개 이상** · Hobby 는 월 **토큰 요청 500회·트리거 1,000회** 포함 · Pro 는 **토큰 요청 1,000회당 3달러**, **트리거 1,000회당 0.95달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "microVM 으로 충분한지 물을 때",
+          "thought": "⭐ **이 기능의 이름이 여기서 나온다** — **`격리는 이그레스 통제 없이는 프로세스를 가둘 뿐, 그 결과는 가두지 못한다.`** ⚠️ **격리는 `안으로 못 들어온다` 를 보장하지 `밖으로 못 나간다` 를 보장하지 않는다**(재구성). **에이전트가 돌리는 코드에서는 나가는 쪽이 더 위험하다** — 데이터도 자격증명도 나가는 길로 샌다(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그러면 끊을지 물을 때",
+          "thought": "⚠️ **끊을 수 없다** — **`쓸모 있는 에이전트는 모두 당신의 코드베이스 밖으로 손을 뻗는다. Slack 에 올리고, 풀 리퀘스트를 열고, Snowflake 에 질의하고, 내부 API 를 부른다.`** ⭐ **그래서 `무제한 접근` 과 `완전 단절` 사이의 것을 만들어야 했다**(재구성) — 선택적 연결성.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자격증명을 어떻게 줄지 정할 때",
+          "thought": "⭐ **네트워크 문제와 같은 모양이다** — 장수명 토큰을 주는 것은 **`그것이 절대 새지 않기를 바라는 것`** 이고, **`만료되지 않고, 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 않는다`**. ⚠️ **볼트는 토큰을 보관하지 토큰의 권한을 줄이지 않는다**(재구성). ⭐ **그래서 보관을 잘하는 대신 보관할 것을 없앴다** — 런타임에 요청되고 작업에 범위가 한정되고 자동으로 만료되는 토큰(재구성).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "microVM",
+            "what": "⚠️ **`코드가 호스트나 다른 워크로드에 접근하는 것을 막을 수 있다`** — 그러나 나가는 것은 못 막는다"
+          },
+          {
+            "name": "⭐ 호스트 기반 방화벽",
+            "what": "⭐ **microVM 바깥에서 돈다** — 안에서 도는 것은 안의 코드가 건드릴 수 있다(재구성)"
+          },
+          {
+            "name": "SNI 검사",
+            "what": "**TLS 핸드셰이크를 들여다봐 도메인 정책을 강제한다** — 암호화된 뒤가 아니라 시작할 때"
+          },
+          {
+            "name": "선택적 TLS 종료",
+            "what": "⚠️ **자격증명 주입과 요청 검사를 위해서만** 끊는다"
+          },
+          {
+            "name": "⚠️ 계산에 없던 경로",
+            "what": "⚠️ **DNS 리졸버 · 잘못 설정된 허용 목록 · 호스트명 해석 차이** — 허용 목록이 있어도 새는 자리"
+          },
+          {
+            "name": "⭐ 런타임 토큰 (Connect)",
+            "what": "⭐ **`런타임에 요청되고, 특정 작업에 범위가 한정되고, 자동으로 만료된다`** — **OIDC 신원 검증**으로 앱이 제공자 비밀을 저장하지 않는다"
+          },
+          {
+            "name": "⚠️ 장수명 토큰 (버린 것)",
+            "what": "⚠️ **`만료되지 않고, 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 않는다`**"
+          }
+        ],
+        "invariants": [
+          "⭐ **나가는 길을 통제하지 않으면 격리가 아니다**",
+          "⚠️ **통제는 microVM 바깥에 둔다** — 안에 두면 안의 코드가 건드린다(재구성)",
+          "⭐ **보관할 자격증명을 만들지 않는다** — 런타임에 받고 자동으로 만료한다",
+          "**정책은 워크로드를 멈추지 않고 바꾼다**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**에이전트 코드를 microVM 에 격리한다**",
+            "why": "**`호스트나 다른 워크로드에 접근하는 것을 막는다`**"
+          },
+          {
+            "step": "⭐ **그러나 거기서 멈추지 않는다 — 호스트 기반 방화벽을 microVM 바깥에 둔다**",
+            "why": "⭐ **`격리는 이그레스 통제 없이는 프로세스를 가둘 뿐, 그 결과는 가두지 못한다`**"
+          },
+          {
+            "step": "**아웃바운드 TCP 와 DNS 를 투명하게 리디렉션한다**",
+            "why": "⚠️ **DNS 리졸버가 `계산에 없던 통신 경로` 중 하나다** — 그것부터 잡는다"
+          },
+          {
+            "step": "**TLS 핸드셰이크의 SNI 를 검사해 도메인 정책을 강제하고, CIDR 로 주소 범위를 제한한다**",
+            "why": "**암호화된 뒤에는 못 보니 시작할 때 본다**(재구성)"
+          },
+          {
+            "step": "⚠️ **필요할 때만 TLS 를 종료한다 — 자격증명 주입과 요청 검사를 위해**",
+            "why": "⚠️ **전부 끊으면 그 자체가 위험이 된다**(재구성) — 그래서 선택적이다"
+          },
+          {
+            "step": "**고객이 통제하는 프록시로 요청을 전달할 수 있게 한다. 정책은 워크로드 재시작 없이 갱신한다**",
+            "why": "**막는 규칙이 바뀔 때 돌던 것을 멈추지 않게**(재구성)"
+          },
+          {
+            "step": "⭐ **자격증명은 미리 주지 않는다 — 런타임에 요청받아 작업 범위로 발급하고 자동 만료시킨다**",
+            "why": "⭐ **`만료되지 않고, 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 않는다`**"
+          },
+          {
+            "step": "**OIDC 로 신원을 검증해 앱이 제공자 비밀을 저장하지 않게 한다**",
+            "why": "**보관할 것이 없으면 샐 것도 없다**(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "microVM 격리로 충분한가",
+            "chosen": "⭐ **아니다 — 나가는 길을 통제해야 한다**",
+            "alternatives": [
+              "microVM 격리만",
+              "컨테이너 격리"
+            ],
+            "tradeoff": "⭐ **`격리는 이그레스 통제 없이는 프로세스를 가둘 뿐, 그 결과는 가두지 못한다.`** microVM 이 하는 일과 못 하는 일이 정확히 갈린다 — **`호스트나 다른 워크로드에 접근하는 것을 막을 수 있지만`**, **`데이터를 빼내거나, 내부 서비스를 탐지하거나, 인터넷 다른 곳의 시스템을 공격하거나, 환경 안에 있는 자격증명을 쓰는 것`** 은 못 막는다. ⚠️ **격리는 `안으로 못 들어온다` 를 보장하지 `밖으로 못 나간다` 를 보장하지 않는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "question": "그러면 네트워크를 끊을 것인가",
+            "chosen": "⚠️ **아니다 — 선택적 연결성**",
+            "alternatives": [
+              "완전 단절",
+              "무제한 인터넷 접근"
+            ],
+            "tradeoff": "끊을 수 없다 — **`쓸모 있는 에이전트는 모두 당신의 코드베이스 밖으로 손을 뻗는다. Slack 에 올리고, 풀 리퀘스트를 열고, Snowflake 에 질의하고, 내부 API 를 부른다.`** ⭐ **`무제한 접근` 과 `완전 단절` 사이의 것을 만들어야 했다**(재구성). **대가는 그 사이를 정의하고 유지하는 일 자체**다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              },
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          },
+          {
+            "question": "통제를 어디에 둘 것인가",
+            "chosen": "⭐ **microVM 바깥 — 호스트 기반으로**",
+            "alternatives": [
+              "게스트 안의 방화벽",
+              "애플리케이션 수준 통제"
+            ],
+            "tradeoff": "**호스트 기반 방화벽이 microVM 바깥에서 돈다.** ⚠️ **안에 두면 안에서 도는 코드가 그것을 건드릴 수 있다**(재구성) — 에이전트가 돌리는 코드는 신뢰할 수 없다는 것이 전제다(재구성). **대가는 호스트 쪽에 상태와 정책을 유지해야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "question": "암호화된 트래픽을 어떻게 볼 것인가",
+            "chosen": "**시작할 때 본다 — SNI 검사**",
+            "alternatives": [
+              "모든 TLS 를 종료해 검사",
+              "도메인 검사 포기"
+            ],
+            "tradeoff": "**TLS 핸드셰이크(SNI)를 검사해 도메인 정책을 강제**하고 **CIDR 로 주소 범위를 제한**한다. ⚠️ **암호화된 뒤에는 못 보니 시작할 때 본다**(재구성). 그리고 **선택적으로만 TLS 를 종료한다** — **자격증명 주입과 요청 검사가 필요할 때만**. ⚠️ **전부 끊으면 중간자가 상시로 존재하게 되어 그 자체가 위험이 된다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "question": "허용 목록만으로 될 것인가",
+            "chosen": "⚠️ **아니다 — 계산에 없던 경로가 있다**",
+            "alternatives": [
+              "도메인 허용 목록만 운영"
+            ],
+            "tradeoff": "막으려는 것에 **`계산에 없던 통신 경로 — DNS 리졸버, 잘못 설정된 허용 목록, 호스트명 해석 차이`** 가 들어 있다. ⚠️ **허용 목록은 있는데도 새는 자리가 있고, 그 자리가 대개 이름 풀이 쪽이다**(재구성). 그래서 **아웃바운드 DNS 자체를 투명하게 리디렉션**한다. **대가는 이름 풀이 경로를 직접 떠안는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "question": "자격증명을 어떻게 줄 것인가",
+            "chosen": "⭐ **미리 주지 않는다 — 런타임에, 범위 한정으로, 자동 만료로**",
+            "alternatives": [
+              "볼트에 장수명 토큰 보관",
+              "회전 스크립트",
+              "환경 간 비밀 복사"
+            ],
+            "tradeoff": "⭐ **네트워크 문제와 같은 모양이다** — 장수명 토큰을 주는 것은 **`그것이 절대 새지 않기를 바라는 것`** 이고 **`만료되지 않고, 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 않는다`**. ⚠️ **볼트는 토큰을 보관하지 토큰의 권한을 줄이지 않는다**(재구성). ⭐ **보관을 잘하는 대신 보관할 것을 없앴다** — **`런타임에 요청되고, 특정 작업에 범위가 한정되고, 자동으로 만료되는`** 토큰. **회전이 필요 없어진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          },
+          {
+            "question": "제공자 비밀을 앱이 들고 있을 것인가",
+            "chosen": "**아니다 — OIDC 신원 검증으로**",
+            "alternatives": [
+              "앱마다 클라이언트 비밀 보관"
+            ],
+            "tradeoff": "**OIDC 신원 검증을 써서 앱이 제공자 비밀을 저장하지 않아도 되게 한다.** ⭐ **보관할 것이 없으면 샐 것도 없다**(재구성) — 같은 원리를 한 겹 더 적용한 것이다(재구성). **대가는 신원 제공자에 대한 의존**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          },
+          {
+            "question": "이것을 어떻게 팔 것인가",
+            "chosen": "**사용량으로 — 토큰 요청과 트리거**",
+            "alternatives": [
+              "플랫폼 요금에 포함",
+              "고정 요금"
+            ],
+            "tradeoff": "**커넥터 100개 이상**을 두고, Hobby 는 월 **토큰 요청 500회·트리거 1,000회**를 포함하며 Pro 는 **토큰 요청 1,000회당 3달러**, **트리거 1,000회당 0.95달러**다. ⚠️ **런타임 발급으로 바꾸면 발급 횟수가 곧 사용량이 된다**(재구성) — **보안 모델이 과금 단위를 만든 셈이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "microVM",
+            "role": "**`호스트나 다른 워크로드에 접근하는 것을 막는다`** — 다만 그것뿐이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "tech": "⭐ 호스트 기반 방화벽",
+            "role": "⭐ **microVM 바깥에서** 아웃바운드 TCP·DNS 를 투명하게 리디렉션한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "tech": "SNI 검사 + CIDR 제한 + 선택적 TLS 종료",
+            "role": "**시작할 때 도메인을 보고**, 주소 범위를 제한하며, **자격증명 주입과 요청 검사가 필요할 때만** 끊는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "tech": "⭐ 런타임 토큰 (Vercel Connect)",
+            "role": "⭐ **`런타임에 요청되고, 특정 작업에 범위가 한정되고, 자동으로 만료된다`** — 커넥터 100개 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          },
+          {
+            "tech": "OIDC 신원 검증",
+            "role": "**앱이 제공자 비밀을 저장하지 않게 한다** — 보관할 것이 없으면 샐 것도 없다(재구성)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "cache-holding-what-cannot-be-lost",
+          "via": "⭐ 같은 손버릇",
+          "contract": "⭐ **웜풀에서는 `잃으면 안 되는 것을 캐시에 두지 않는다` 였고, 여기서는 `보관할 자격증명을 만들지 않는다` 다** — **둘 다 잘 지키는 대신 지킬 것을 없애는 쪽을 골랐다**(이 연결은 이 사이트의 재구성이다)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "컴퓨트를 어떤 모양으로든",
+          "via": "같은 실행 기반",
+          "contract": "**microVM 과 샌드박스가 이 회사의 컴퓨트 위에서 돈다** — ⏳ **그 도메인의 자료는 아직 안 읽었다**(뒤쪽은 재구성)",
+          "confidence": "inferred"
+        },
+        {
+          "to": "AI 제품 (매출)",
+          "via": "⚠️ 보안이 곧 과금 단위",
+          "contract": "⚠️ **런타임 발급으로 바꾸면 발급 횟수가 곧 사용량이 된다** — **토큰 요청 1,000회당 3달러, 트리거 1,000회당 0.95달러**(뒤쪽은 재구성)",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⭐ 격리는 나가는 쪽을 막지 않는다",
+            "why_hard": "⭐ **`격리는 이그레스 통제 없이는 프로세스를 가둘 뿐, 그 결과는 가두지 못한다.`** microVM 은 **`호스트나 다른 워크로드에 접근하는 것을 막을 수 있지만`** **`데이터를 빼내거나, 내부 서비스를 탐지하거나, 인터넷 다른 곳의 시스템을 공격하거나, 환경 안에 있는 자격증명을 쓰는 것`** 은 못 막는다. ⚠️ **에이전트가 돌리는 코드에서는 나가는 쪽이 더 위험한데** — **소스 코드나 의존성에 숨은 프롬프트 주입**으로 그 코드가 이미 적대적일 수 있다(재구성).",
+            "current_best": "⚠️ **microVM 바깥에 호스트 기반 방화벽을 두는 것** — **아웃바운드 TCP·DNS 를 투명하게 리디렉션**하고, **TLS 핸드셰이크(SNI)로 도메인 정책을 강제**하며, **CIDR 로 주소 범위를 제한**하고, **자격증명 주입과 요청 검사가 필요할 때만 TLS 를 종료**한다. **정책은 워크로드 재시작 없이 갱신한다.** ⚠️ **허용 목록만으로는 안 된다** — **`DNS 리졸버, 잘못 설정된 허용 목록, 호스트명 해석 차이`** 같은 **계산에 없던 경로**가 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A sandbox without a network boundary is only half a sandbox",
+                "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+              }
+            ]
+          },
+          {
+            "problem": "⭐ 볼트는 토큰을 보관하지 권한을 줄이지 않는다",
+            "why_hard": "⚠️ **`쓸모 있는 에이전트는 모두 당신의 코드베이스 밖으로 손을 뻗는다`** — Slack·PR·Snowflake·내부 API. 그런데 **`그것을 부여한다는 것은 장수명 토큰을 프로비저닝하고 그것이 절대 새지 않기를 바라는 것을 뜻했다`** 이고 **`만료되지 않고, 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 않는다`**. ⚠️ **볼트·회전 스크립트·환경 간 비밀 복사는 전부 `보관을 잘하는` 방법이지 `보관할 것을 줄이는` 방법이 아니다**(재구성).",
+            "current_best": "⭐ **보관할 것을 없애는 것** — **`런타임에 요청되고, 특정 작업에 범위가 한정되고, 자동으로 만료되는`** 토큰으로 바꾸고, **OIDC 신원 검증**으로 앱이 제공자 비밀조차 저장하지 않게 한다. **회전이 필요 없어진다.** ⭐ **웜풀에서 `잃으면 안 되는 것을 캐시에 두지 않는다` 고 한 것과 같은 손버릇이다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The end of credential sprawl for agents",
+                "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+                "publisher": "Vercel",
+                "date": "2026-08-25",
+                "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+              },
+              {
+                "title": "How we migrated the database behind every Vercel build",
+                "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+                "publisher": "Vercel",
+                "date": "2026-08-11",
+                "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "나가는 길을 통제하지 않으면 격리가 아니다",
+          "question": "무엇을 어디서 막나",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"<b>에이전트 코드</b><br/>• 신뢰할 수 없다\"]:::list --> M[\"<b>microVM</b><br/>• 호스트·다른 워크로드 접근 차단\"]:::accent\n  M --> F[\"⭐ <b>호스트 기반 방화벽</b><br/>• microVM 바깥에서 돈다\"]:::accent\n  F --> D[\"<b>아웃바운드 TCP · DNS</b><br/>• 투명하게 리디렉션\"]:::accent\n  D --> S[\"<b>TLS 핸드셰이크 SNI 검사</b><br/>• 도메인 정책 강제<br/>• CIDR 주소 범위 제한\"]:::accent\n  S --> T[\"⚠️ <b>선택적 TLS 종료</b><br/>• 자격증명 주입<br/>• 요청 검사가 필요할 때만\"]:::accent\n  T --> O[\"<b>바깥 (Slack · PR · Snowflake)</b>\"]:::list\n  C[\"⭐ <b>런타임 토큰</b><br/>• 작업 범위로 한정<br/>• 자동 만료<br/>• OIDC 로 제공자 비밀 없이\"]:::accent -.주입.-> T\n  P[\"<b>정책</b><br/>• 워크로드 재시작 없이 갱신\"]:::list -.-> F"
+        },
+        {
+          "title": "보관을 잘하는 대신 보관할 것을 없앤다",
+          "question": "무엇이 안 되고 왜 안 되나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>microVM 만 쓰면</b>\"]:::gone --> B[\"⚠️ <b>프로세스는 가두지만<br/>  그 결과는 못 가둔다</b><br/>• 데이터 유출 · 내부망 탐지<br/>• 환경 안의 자격증명 사용\"]:::gone\n  C[\"⚠️ <b>허용 목록만 쓰면</b>\"]:::gone --> D[\"⚠️ <b>계산에 없던 경로</b><br/>• DNS 리졸버<br/>• 잘못 설정된 허용 목록<br/>• 호스트명 해석 차이\"]:::gone\n  E[\"⚠️ <b>장수명 토큰을 볼트에 두면</b>\"]:::gone --> F[\"⚠️ <b>만료되지 않고, 어떤 볼트도<br/>  샌 자격증명이 무엇을 할 수<br/>  있는지 제한하지 않는다</b>\"]:::gone\n  B --> G[\"⭐ <b>답: 나가는 길을 바깥에서 통제</b>\"]:::accent\n  D --> G\n  F --> H[\"⭐ <b>답: 보관할 것을 없앤다</b><br/>• 런타임에 · 범위 한정 · 자동 만료<br/>• OIDC 로 제공자 비밀도 없이\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "A sandbox without a network boundary is only half a sandbox",
+          "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
+          "publisher": "Vercel",
+          "date": "2026-08-11",
+          "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
+        },
+        {
+          "title": "The end of credential sprawl for agents",
+          "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+          "publisher": "Vercel",
+          "date": "2026-08-25",
+          "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
+        },
+        {
+          "title": "How we migrated the database behind every Vercel build",
+          "url": "https://vercel.com/blog/how-we-migrated-the-database-behind-every-vercel-build",
+          "publisher": "Vercel",
+          "date": "2026-08-11",
+          "summary": "웜풀의 상태(컨테이너 인증 토큰·상태·배포 청구 매핑)를 Redis 에 두고 있었는데 그 상태가 부채가 됐다 — 잃으면 인증도 청구도 무너진다. DynamoDB 로 옮겨 내구성을 얻었지만 P95 확인 시간이 1.29ms 에서 5.13ms 로, P90 에서는 약 17배 나빠졌다. 지연 비율을 하드코딩하는 배치 방식은 저장소 속도에 대한 적히지 않은 의존을 하나 더 만들어 버렸고, 대신 공급 호출을 동시에 돌려 각 웜풀이 앞의 것을 기다리지 않게 했다. 다섯 단계 피처 플래그로 옮겼고 2026년 4월에 끝냈다."
+        },
+        {
+          "title": "Vercel revenue, valuation & funding",
+          "url": "https://sacra.com/c/vercel/",
+          "publisher": "Sacra",
+          "date": "2026",
+          "summary": "2026년 2월 ARR 3억 4,000만 달러(2025년 말 3억 500만에서), 전년 대비 86% 성장. 2025년 9월 30일 시리즈 F 3억 달러를 기업가치 93억 달러에 조달했고 총 조달액은 8억 6,300만 달러. Next.js 주간 다운로드 2억 회, AI SDK 주간 300만 회, v0 이 ARR 약 4,200만 달러로 전체의 21% 안팎."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -615,7 +1232,9 @@
     "⚠️ **Next.js 자체의 기술 자료를 이 블로그에서 못 봤다** — **주간 2억 다운로드짜리 프레임워크인데** 엔지니어링 카테고리에는 플랫폼 이야기가 대부분이다.",
     "⭐ **오픈소스가 유통이라는 구조를 회사가 어떻게 보는지 못 읽었다** — VictoriaMetrics 는 **`오픈소스는 좋은 마케팅이다`** 라고 직접 썼는데, Vercel 은 같은 구조를 갖고도 그것을 말한 글을 못 찾았다(재구성).",
     "⚠️ **v0 이 ARR 의 21% 안팎이라는 수치가 3자 추정이다** — 회사가 직접 밝힌 숫자가 아니다.",
-    "⭐ **`느려졌다` 를 숫자로 적는 드문 이전 글이다** — **`Redis 1.29ms 대 DynamoDB 5.13ms`**, **P90 약 17배**, 그리고 **버린 해법과 그 이유**까지. ⚠️ **대개의 이전 글은 얻은 것만 말한다**(재구성). ③축에서 정직한 쪽이다."
+    "⭐ **`느려졌다` 를 숫자로 적는 드문 이전 글이다** — **`Redis 1.29ms 대 DynamoDB 5.13ms`**, **P90 약 17배**, 그리고 **버린 해법과 그 이유**까지. ⚠️ **대개의 이전 글은 얻은 것만 말한다**(재구성). ③축에서 정직한 쪽이다.",
+    "⚠️ **샌드박스 글에 수치와 한계가 하나도 없다** — **성능 영향도 운영 부담도 밝히지 않는다.** ⭐ **같은 회사의 웜풀 이전 글이 밀리초 단위로 실패를 적은 것과 대비된다**(재구성) — **글마다 정직함의 정도가 다르다.**",
+    "⏳ **이 도메인의 나머지 둘이 미독이다** — `Run SDK: 에이전트를 위한 안전한 eval`(2026-08-25) · `v0 은 사용자의 OAuth 토큰을 노출하지 않고 어떻게 Snowflake 에 인증하나`(2026-08-20). **주소 확보돼 있다.**"
   ],
   "sources": [
     {
@@ -630,7 +1249,7 @@
       "url": "https://vercel.com/blog/a-sandbox-without-a-network-boundary-is-only-half-a-sandbox",
       "publisher": "Vercel",
       "date": "2026-08-11",
-      "summary": "에이전트 코드를 격리하는 샌드박스에서 네트워크 경계가 왜 절반의 나머지인지. ⏳ 본문 미독."
+      "summary": "microVM 은 코드가 호스트나 다른 워크로드에 닿는 것을 막지만, 데이터를 빼내거나 내부 서비스를 탐지하거나 환경 안의 자격증명을 쓰는 것은 막지 못한다. 격리는 이그레스 통제 없이는 프로세스를 가둘 뿐 그 결과는 가두지 못한다. microVM 바깥의 호스트 기반 방화벽이 아웃바운드 TCP·DNS 를 투명하게 리디렉션하고 TLS 핸드셰이크의 SNI 로 도메인 정책을 강제하며, 자격증명 주입과 요청 검사를 위해 TLS 를 선택적으로 종료한다."
     },
     {
       "title": "Introducing Run SDK: secure eval for your agents",
@@ -644,7 +1263,7 @@
       "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
       "publisher": "Vercel",
       "date": "2026-08-25",
-      "summary": "에이전트가 자격증명을 여기저기 들고 다니는 문제를 끝내는 이야기. ⏳ 본문 미독."
+      "summary": "쓸모 있는 에이전트는 코드베이스 밖으로 손을 뻗는다 — Slack 에 올리고 PR 을 열고 Snowflake 에 질의하고 내부 API 를 부른다. 그것을 허용한다는 건 장수명 토큰을 프로비저닝하고 새지 않기를 바라는 것이었고, 그 토큰은 만료되지 않으며 어떤 볼트도 샌 자격증명이 무엇을 할 수 있는지 제한하지 못한다. Vercel Connect 는 런타임에 요청되고 특정 작업에 범위가 한정되며 자동으로 만료되는 토큰으로 바꾸고, OIDC 신원 검증으로 앱이 제공자 비밀을 저장하지 않게 한다."
     },
     {
       "title": "Compute that takes any shape",
