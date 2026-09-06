@@ -8,49 +8,37 @@
 
 ## 지금 파는 중
 
-**없다 — 후보 조사 사이클이었다.** 큐 **1/3**. 회사 103개.
+**Coinbase** (US · 핀테크 — 암호자산 거래소) — **프로파일까지 썼다**. ⚠️ **도메인 2개뿐.** 기능 0. 회사 **104개** · 큐 0/3.
 
-### 이번 사이클 — 후보 조사(3순위). ⚠️ 열 번 던져 한 곳이다
+### 이번 사이클 — 신규(6순위)
 
-**올린 곳** — **Coinbase**(US · 핀테크). ⭐ **대가를 문장마다 명시하는 드문 글이다** — **`너무 조금 중앙화하면 다시 난립이고, 너무 많이 중앙화하면 플랫폼 팀이 다른 모든 팀이 기다리는 대상이 된다`** · **`모든 것을 한 서비스로 라우팅하면 지연이 늘고 위험이 집중된다. 다른 방법으로는 얻을 수 없는 일관성을 위해 그것을 받아들였다`** · 인가는 **`확신 있는 판단에 이르지 못하면 언제나 거부한다`**(대가: **`새로운 종류의 호출자가 추가될 때마다 fail-closed 경계를 다시 검증해야 한다`**).
+⭐ **사업 구조가 흥미롭다** — **2026년 2분기 순매출 11억 5,000만 달러 중 거래가 5억 9,900만, 구독과 서비스가 5억 5,500만으로 거의 같아졌다.** ⚠️ **거래 쪽은 시장에 그대로 흔들린다** — 월간 거래 사용자 **760만 명**(1년 전 870만), 플랫폼 자산 **2,459억 달러**(1년 전 4,250억), **2분기 순손실 3억 5,900만 달러**(투자 목적 보유 암호자산 손실). **구독·서비스를 키우는 이유가 여기 있는 것으로 보인다**(재구성). **유료 구독자 100만 명 이상**(MTU 의 약 12%).
 
-### ⭐ 절차가 값을 했다
+⚠️ **자료가 얇다** — 엔지니어링 글이 **셋뿐**이다(2025-12 · 2026-08-18 · 2026-08-28). **VictoriaMetrics 와 같은 축이라 도메인을 둘밖에 못 세웠다.** ⚠️ **거래소 본체**(매칭 엔진·수탁·블록체인 노드)**의 기술 자료가 없어 그 도메인은 세우지 않았다** — Twilio·Paystack 전례를 따랐다. ⚠️ **보안 이야기도 없다** — 블로그 분류가 `engineering-and-security` 인데도 그렇다.
 
-**후보 조사를 `name_en` 목록 출력으로 시작하는 규칙 덕에 `Bolt` 가 이미 있다는 걸 던지기 전에 알았다.** ⚠️ **앞 조사에서 Datadog·TigerBeetle 을 던져 낭비한 것과 정확히 대비된다.** **절차로 바꾼 것이 두 번째로 값을 했다**(앞은 `country`·`category` 허용값).
+⭐ **후보 조사에서 확인한 글이 좋았던 이유가 프로파일에도 남는다** — **`너무 조금 중앙화하면 다시 난립이고, 너무 많이 중앙화하면 플랫폼 팀이 다른 모든 팀이 기다리는 대상이 된다.`**
 
-### ⚠️ 이번 조사의 교훈 — 지역 축도 만능이 아니다
+### 다음 사이클 — 확장(2순위)
 
-**북유럽·동유럽·중국·남미를 던졌는데 전멸했다** — **블로그가 묵었거나**(Lunar 는 문화 글, Klarna 는 최신 2025-06) **언어 장벽이 있거나**(중국 회사들의 영어 엔지니어링 블로그가 검색에 안 걸린다 — **이 엔진의 중국 회사가 둘뿐인 이유로 보인다**, 재구성) **아예 없었다**(Revolut 은 2021년 원칙 글뿐). **Reddit 은 403 으로 막혔다**(도구 한계).
+`--gaps` 가 **`내부 운영을 통제된 플랫폼으로 모은다`** 를 부를 것이다. **자료를 이미 읽었으니 바로 기능을 쓴다** — 인용이 이미 다섯 갈래로 확보돼 있다(중앙화의 양날 · fail-closed 인가와 그 대가 · 라우팅의 받아들인 값 · 설정 기반의 양면 · 페이로드 수준 오류의 파급).
 
-⭐ **정작 걸린 것은 `큰 이름인데 아직 없는 회사` 였다** — Coinbase. ⚠️ **지역과 언급 각도만 보다가 놓친 자리다**(재구성). ⏳ **같은 각도로 남은 이름** — Atlassian · Vercel · Neon · Supabase · Robinhood · Block/Square · Klaviyo.
+⚠️ **큐가 0/3 이다.** 이 회사를 다 판 뒤 후보 조사가 걸린다. ⭐ **`큰 이름인데 아직 없는 회사` 각도가 이번에 통했다** — ⏳ Atlassian · Vercel · Neon · Supabase · Robinhood · Block/Square · Klaviyo.
 
-⛔ **Klarna 는 네 번째이자 마지막 확인이었다** — **`새 단서가 생기기 전에는 다시 꺼내지 않는다` 고 적어 놓고 또 꺼냈다.** 다만 이번엔 **`engineering.klarna.com` 이 열려 최신 날짜(2025-06-06)를 확인했으니 판정이 확정됐다.** **더는 꺼내지 않는다.**
-
-### 다음 사이클 — 신규(6순위)
-
-`--gaps` 가 **대기 맨 위(Coinbase)를 `in_progress` 로 만들고 3단계부터** 를 부를 것이다.
-
-⏳ **Trendyol 보강 거리가 두껍게 남았다** — Helyx 4편 · SRE AI 에이전트(26분) · 다중 리전 K8s 장애 · 벡터 검색 v9 · Vector Search at Search Core · 검색 랭킹 배포 2편 · 백만 규모 카탈로그 · Redis Sentinel→Cluster · MongoDB 샤딩 · 다중 사이트 EVPN.
+⏳ **Trendyol 보강 거리가 두껍게 남았다** — Helyx 4편 · SRE AI 에이전트 · 다중 리전 K8s 장애 · 벡터 검색 v9 · 검색 랭킹 배포 2편 등.
 
 ⏳ **보강 거리 다섯** — Grafana Labs 인용 대조 · Razorpay 보안 트리아지 글 · Flipkart Rate Card 엔진 글 · Pinterest 2부 · WarpStream 미독 셋.
 
 ### ⚠️ 절차 (이 세션에 실수로 배운 것)
 
-**후보 조사 사이클은 이 명령으로 시작한다** — ⭐ **두 번째로 값을 했다:**
+**후보 조사 사이클은 `name_en` 목록 출력으로 시작한다** — ⭐ 두 번째로 값을 했다(Bolt 중복을 던지기 전에 잡았다).
 
-```
-python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',encoding='utf-8'));print(' | '.join(sorted((c.get('name_en') or c['name']) for c in i['companies'])))"
-```
+**새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다** — ⭐ **두 번 연속 오류 0**(Wiz · Coinbase).
 
-**새 회사 프로파일 전에는 `engine/validate.py` 의 `COUNTRIES`·`CATEGORIES` 를 직접 본다.** `COUNTRIES = {KR, US, CN, JP, EU, CA, AU, SG, IN, AE, NG, 기타}`.
-
-**⚠️ `git add -A` 를 쓰지 않는다** — 다른 엔진(study 등)의 변경이 섞인다.
-
-**⚠️ 슬러그를 추측하지 않는다** — 목록에서 주소를 못 받으면 검색으로 받는다(세 번 연속 통했다).
+**⚠️ `git add -A` 를 쓰지 않는다.** **⚠️ 슬러그를 추측하지 않는다** — 못 받으면 검색으로.
 
 ### ⚠️ 비교 문서 재료 (초안 유지)
 
-**① `AI 에이전트를 어디까지 믿나` 11곳 + ⏳ Coinbase** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / Trendyol. ⏳ **Coinbase 에 `CEEcil: 사람 같은 기억을 가진 지원 팀원` 과 `기업용 AI 에이전트` 두 글이 있다.**
+**① `AI 에이전트를 어디까지 믿나` 11곳 + ⏳ Coinbase** — Sentry / ClickHouse / Duolingo / Ramp / DoorDash / Deliveroo / Snyk / Cygames / Razorpay / Wiz / Trendyol. ⏳ **Coinbase 의 두 글 제목이 이미 문제를 말한다 — `신뢰·확장·반복 가능성` 이 능력보다 앞에 온다**(재구성).
 
 **② `관리형 MySQL 의 한계` 3곳 + Cygames** — Etsy / Plaid / Paystack.
 
@@ -74,11 +62,11 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **⑫ `빠른 숫자와 정확한 숫자를 어떻게 가르나`** — Flipkart / Zepto / Deliveroo.
 
-**⑬ ⭐ `애매할 때 어느 쪽으로 넘어지나` 10곳 + ⏳ Coinbase** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol. ⏳ **Coinbase 가 가장 명확하다** — **`확신 있는 판단에 이르지 못하면 언제나 거부한다`**(fail-closed).
+**⑬ `애매할 때 어느 쪽으로 넘어지나` 10곳 + ⏳ Coinbase(fail-closed)** — Flipkart(둘) / Razorpay / Zepto / Paystack / Airbnb / Pinterest / WarpStream / VictoriaMetrics / Wiz / Trendyol.
 
 **⑭ `검색 관련성을 누가 정하나`** — Etsy / Flipkart / ⏳ Zepto / Pinterest / ⏳ Trendyol.
 
-**⑮ ⭐ `언제 쪼개고 언제 합치나` + ⏳ Coinbase** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / Wiz / Trendyol. ⏳ **Coinbase 가 그 긴장을 한 문장으로 적는다** — **`너무 조금 중앙화하면 다시 난립이고, 너무 많이 중앙화하면 플랫폼 팀이 다른 모든 팀이 기다리는 대상이 된다.`**
+**⑮ `언제 쪼개고 언제 합치나` + ⏳ Coinbase** — Twilio / DoorDash / Deliveroo / ScyllaDB / Airbnb / Pinterest / WarpStream / Wiz / Trendyol.
 
 **⑯ `빌려 쓰던 것을 언제 자기 것으로 만드나`** — Airbnb / ScyllaDB / Plaid / Cygames / Twilio / Pinterest / WarpStream / Wiz.
 
@@ -94,23 +82,25 @@ python3 -c "import json;i=json.load(open('jd-viewer/public/reveng/index.json',en
 
 **㉒ `되돌릴 수 있는 곳과 없는 곳을 어떻게 가르나`** — WarpStream / Plaid / Airbnb / Twilio / Trendyol.
 
-**㉓ ⭐ `설정으로 열 것인가 코드로 막을 것인가` + ⏳ Coinbase** — WarpStream / Airbnb / Wiz / Trendyol. ⏳ **Coinbase 가 양면을 적는다** — **`설정 주도 동작은 양날이다 … 설정을 코드만큼 조심스럽게 리뷰하고 버전 관리하고 지켜야 하는 것으로 만든다.`**
+**㉓ `설정으로 열 것인가 코드로 막을 것인가` + ⏳ Coinbase** — WarpStream / Airbnb / Wiz / Trendyol.
 
 **㉔ `무엇을 무료로 두고 무엇을 파나`** — VictoriaMetrics / ⏳ Grafana Labs · ClickHouse · Snyk.
 
 **㉕ `새 일을 만들 것인가 도는 일에 얹을 것인가`** — VictoriaMetrics / WarpStream / Wiz / ⏳ Etsy · Plaid.
 
-**㉖ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / Trendyol / ⏳ Airbnb · Pinterest.
+**㉖ ⭐ `기술 글을 왜 쓰나`** — VictoriaMetrics / ScyllaDB / Grafana Labs · Honeycomb / Wiz / Trendyol / ⏳ Airbnb · Pinterest / ⏳ **Coinbase**(⚠️ **거래소 본체와 보안은 안 쓰고 내부 플랫폼과 AI 만 쓴다 — 무엇을 안 쓰는지도 답이다**, 재구성).
 
-**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream / Twilio / ⏳ Trendyol(알리바바) · PlanetScale · Snyk.
+**㉗ `인수된 뒤에 무엇이 달라지나`** — Wiz(구글) / WarpStream / Twilio / ⏳ Trendyol · PlanetScale · Snyk.
 
 **㉘ `맞았는지 어떻게 아나`** — Wiz / Flipkart / Snyk / Trendyol(반대 사례) / ⏳ Duolingo.
 
 **㉙ `모델이 계속 바뀌는 세계에서 무엇을 고정하나`** — Wiz / Flipkart / ⏳ Pinterest 2부 · Snyk · Deliveroo.
 
-**㉚ `셀프서비스로 내주면 무엇이 달라지나`** — Trendyol(세 가지 답) / Twilio / Airbnb / ⏳ **Coinbase**(내부 운영을 통제된 플랫폼으로) / ⏳ Etsy · Monzo.
+**㉚ `셀프서비스로 내주면 무엇이 달라지나`** — Trendyol / Twilio / Airbnb / ⏳ Coinbase / ⏳ Etsy · Monzo.
 
 **㉛ `남이 주는 신호를 어떻게 다루나`** — Trendyol(DCP) / ⏳ Plaid · Paystack · Razorpay.
+
+⏳ **㉜ 새로 보인다 — `흔들리는 매출과 안 흔들리는 매출`** — **Coinbase**(⭐ **거래 5.99억 대 구독·서비스 5.55억 — 거의 같아졌다. 거래 사용자와 자산은 1년 새 크게 줄었는데**) / **Twilio**(사용량 기반) / **VictoriaMetrics**(오픈소스 무료 + 엔터프라이즈) / ⏳ Adyen · Stripe. ⚠️ **기술 결정이 매출 구조를 따라가는지 보는 축이다**(재구성).
 
 ## 지금의 진짜 상태
 

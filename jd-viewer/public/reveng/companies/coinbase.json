@@ -1,0 +1,112 @@
+{
+  "slug": "coinbase",
+  "name": "Coinbase",
+  "name_en": "Coinbase",
+  "country": "US",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "coinbase.com",
+  "one_liner": "암호자산 거래소이자 보관소 — 거래 수수료만큼을 구독·서비스에서 번다",
+  "business_model": "**거래로 벌지만 그것만은 아니다.** **2026년 2분기 순매출 11억 5,000만 달러** 가운데 **거래가 5억 9,900만**, **구독과 서비스가 5억 5,500만** 이다. ⭐ **둘이 거의 같아졌다** — 구독·서비스는 **블록체인 보상·수탁 수수료·이자 수익·구독 라이선스** 등이고, **유료 구독자가 100만 명을 넘어 월간 거래 사용자의 약 12%** 다.\n\n⚠️ **거래 쪽은 시장에 그대로 흔들린다** — **월간 거래 사용자 760만 명**(1년 전 870만)과 **플랫폼 자산 2,459억 달러**(1년 전 4,250억, 주로 가격 하락)가 모두 줄었고 **2분기에 순손실 3억 5,900만 달러**를 냈다(투자 목적으로 들고 있는 암호자산의 손실 때문). ⚠️ **구독·서비스를 키우는 이유가 여기 있는 것으로 보인다**(재구성).",
+  "products": [
+    "Coinbase (거래소 · 지갑)",
+    "수탁 · 스테이킹",
+    "구독 (Coinbase One 등)",
+    "카드"
+  ],
+  "domain_map": {
+    "title": "흩어진 것을 어디까지 모을 것인가",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  U[\"<b>월간 거래 사용자 760만 명</b><br/>• 플랫폼 자산 2,459억 달러\"]:::list --> T[\"<b>거래소 본체</b><br/>• ⚠️ 기술 자료를 못 찾았다\"]:::quiet\n  T --> R[\"<b>매출 11.5억 달러</b><br/>• 거래 5.99억<br/>• 구독·서비스 5.55억\"]:::list\n  O[\"⚠️ <b>내부 운영을 통제된 플랫폼으로</b><br/>• 중앙 인가 · 감사<br/>• ✅ 본문 확인\"]:::accent --> T\n  A[\"<b>AI 에이전트를 기업 규모로</b><br/>• CEEcil · 신뢰·확장·반복\"]:::quiet --> O"
+  },
+  "revenue_streams": [
+    {
+      "name": "거래 수수료",
+      "how": "**2026년 2분기 5억 9,900만 달러.** ⚠️ **월간 거래 사용자와 플랫폼 자산이 모두 1년 전보다 줄었다** — **시장에 그대로 흔들린다.**",
+      "domains": [
+        "내부 운영을 통제된 플랫폼으로 모은다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Coinbase Q2 2026 results",
+          "url": "https://www.stocktitan.net/sec-filings/COIN/10-q-coinbase-global-inc-quarterly-earnings-report-45843e165ccf.html",
+          "publisher": "StockTitan (10-Q)",
+          "date": "2026-08",
+          "summary": "2026년 2분기 순매출 11억 5,000만 달러(거래 5억 9,900만 · 구독과 서비스 5억 5,500만), 순손실 3억 5,900만 달러. 월간 거래 사용자 760만 명(1년 전 870만), 플랫폼 자산 2,459억 달러(1년 전 4,250억)."
+        }
+      ]
+    },
+    {
+      "name": "구독과 서비스",
+      "how": "**5억 5,500만 달러 — 거래 매출에 육박한다.** **블록체인 보상·수탁 수수료·이자 수익·구독 라이선스** 등이고 **유료 구독자 100만 명 이상**(월간 거래 사용자의 약 12%).",
+      "domains": [
+        "내부 운영을 통제된 플랫폼으로 모은다",
+        "AI 에이전트를 기업 규모로 쓴다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Coinbase Q2 2026 results",
+          "url": "https://www.stocktitan.net/sec-filings/COIN/10-q-coinbase-global-inc-quarterly-earnings-report-45843e165ccf.html",
+          "publisher": "StockTitan (10-Q)",
+          "date": "2026-08",
+          "summary": "2026년 2분기 순매출 11억 5,000만 달러(거래 5억 9,900만 · 구독과 서비스 5억 5,500만), 순손실 3억 5,900만 달러. 월간 거래 사용자 760만 명(1년 전 870만), 플랫폼 자산 2,459억 달러(1년 전 4,250억)."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "내부 운영을 통제된 플랫폼으로 모은다",
+      "why": "⚠️ **흩어진 관리 도구들이 각자 권한을 들고 있었다**(재구성). 그것을 **중앙 인가·감사 계층을 가진 우산 서비스**로 모으면서, ⭐ **모으는 일의 양날을 한 문장으로 적는다** — **`너무 조금 중앙화하면 다시 난립이고, 너무 많이 중앙화하면 플랫폼 팀이 다른 모든 팀이 기다리는 대상이 된다.`** ✅ **본문 확인함**(2026-08-18).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "AI 에이전트를 기업 규모로 쓴다",
+      "why": "**`CEEcil: 사람 같은 기억을 가진 지원 「팀원」 만들기`**(2026-08-28)와 **`Coinbase 의 기업용 AI 에이전트 만들기: 신뢰·확장·반복 가능성을 위한 엔지니어링`**(2025-12-22). ⚠️ **제목이 이미 문제를 말한다 — 규모에서 AI 에이전트에게 필요한 것이 능력이 아니라 신뢰와 반복 가능성이라는 것**(재구성). ⏳ **둘 다 본문 미독.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **거래소 본체의 기술 자료를 못 찾았다** — **매칭 엔진·수탁·블록체인 노드 운영**이 이 회사의 핵심인데 공개 엔지니어링 글이 없다. **그래서 그 도메인을 세우지 않았다**(Twilio·Paystack 전례).",
+    "⚠️ **엔지니어링 글이 셋뿐이다** — 2025-12 · 2026-08-18 · 2026-08-28. **VictoriaMetrics 처럼 얇은 축이라 도메인을 둘밖에 못 세웠다.**",
+    "⚠️ **보안 이야기가 없다** — 거래소에서 가장 중요한 축인데 공개 기술 글에 안 보인다. ⏳ **블로그 분류가 `engineering-and-security` 인데도 그렇다.**",
+    "⚠️ **규모 수치가 사업 지표뿐이다** — **초당 거래량·지연·가용성 같은 시스템 수치를 하나도 못 찾았다.**"
+  ],
+  "sources": [
+    {
+      "title": "How Coinbase built a governed platform for internal operations",
+      "url": "https://www.coinbase.com/blog/how-coinbase-built-a-governed-platform-for-internal-operations",
+      "publisher": "Coinbase",
+      "date": "2026-08-18",
+      "summary": "흩어진 내부 관리 도구들을 중앙 인가·감사 계층을 가진 우산 서비스로 모았다. 너무 조금 모으면 난립이 남고 너무 많이 모으면 플랫폼 팀이 병목이 된다는 긴장을 명시하고, 한 서비스로 라우팅하면 지연이 늘고 위험이 집중된다는 것도 받아들인 값으로 적는다. 인가는 확신에 이르지 못하면 언제나 거부한다."
+    },
+    {
+      "title": "CEEcil: engineering a support \"teammate\" with human memory",
+      "url": "https://www.coinbase.com/blog/ceecil-engineering-a-support-teammate-with-human-memory",
+      "publisher": "Coinbase",
+      "date": "2026-08-28",
+      "summary": "사람 같은 기억을 갖는 지원 「팀원」 AI 를 만든 이야기. @-멘션으로 부를 수 있는 에이전트다. ⏳ 본문 미독."
+    },
+    {
+      "title": "Building enterprise AI agents at Coinbase: engineering for trust, scale, and repeatability",
+      "url": "https://www.coinbase.com/blog/building-enterprise-ai-agents-at-coinbase",
+      "publisher": "Coinbase",
+      "date": "2025-12-22",
+      "summary": "기업 규모에서 AI 에이전트를 신뢰·확장·반복 가능성을 갖춰 만드는 이야기. ⏳ 본문 미독."
+    },
+    {
+      "title": "Coinbase Q2 2026 results",
+      "url": "https://www.stocktitan.net/sec-filings/COIN/10-q-coinbase-global-inc-quarterly-earnings-report-45843e165ccf.html",
+      "publisher": "StockTitan (10-Q)",
+      "date": "2026-08",
+      "summary": "2026년 2분기 순매출 11억 5,000만 달러(거래 5억 9,900만 · 구독과 서비스 5억 5,500만), 순손실 3억 5,900만 달러. 월간 거래 사용자 760만 명(1년 전 870만), 플랫폼 자산 2,459억 달러(1년 전 4,250억)."
+    }
+  ]
+}

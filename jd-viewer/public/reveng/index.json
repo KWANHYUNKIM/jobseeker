@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "coinbase",
+      "name": "Coinbase",
+      "name_en": "Coinbase",
+      "country": "US",
+      "category": "핀테크",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "암호자산 거래소이자 보관소 — 거래 수수료만큼을 구독·서비스에서 번다",
+      "updated_at": "2026-09-06",
+      "domain": "coinbase.com"
+    },
+    {
       "slug": "trendyol",
       "name": "Trendyol",
       "name_en": "Trendyol",
@@ -1560,7 +1572,9 @@
     "광고를 판다",
     "찾게 한다",
     "인프라를 셀프서비스로 내준다",
-    "장애를 AI 로 진단한다"
+    "장애를 AI 로 진단한다",
+    "내부 운영을 통제된 플랫폼으로 모은다",
+    "AI 에이전트를 기업 규모로 쓴다"
   ],
   "countries": {
     "KR": "한국",
