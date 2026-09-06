@@ -4,71 +4,83 @@
 
 ## 지금 쓰는 중
 
-**직전 사이클에서 `PostgreSQL vs MySQL`(`postgres-mysql`)을 끝냈다** — 절 6 · 표 5 · 실습 3 ·
-지뢰 6 · 근거 8. 전체: **문서 104개**(전부 done) · 절 620 · 실습 312 · **오류 0 · 경고 0.**
-⭐ **두 기술을 한 문서로 다룬 첫 사례**이고, **일부러 층을 바꾼 첫 사이클**이다(API → 데이터).
+**⚠️⚠️ 직전 사이클은 실패에서 보수로 전환했다.** 큐의 `인덱스 · 실행 계획`(`index`)을 다 써 놓고
+**검증에서 `db-index` 와 alias 가 충돌**했다 — **이미 있는 문서였다.** 큐를 채울 때 **`index`·`sql`·
+`transaction` 이라는 slug 로만 확인**해서 못 찾았는데, 실제 slug 는 **`db-index`**·`transaction-isolation`
+이었다. 새로 쓴 문서를 **지우고**(파일 + 색인), 확보한 1차 자료로 **`db-index` 를 보강**했다.
 
-**⭐⭐⭐ 축: "공고는 둘을 구분하지 않는다 — 갈리는 것은 DB 가 아니라 그 옆에 있는 것."**
-세 층으로 썼다.
-① **밑은 같다** — 양쪽 한계 문서가 **둘 다 "행이 페이지에 맞아야 한다"** 는 같은 물리적 사실에
-지배된다(PG "tuple size fitting on a single page" · MySQL InnoDB "slightly less than half a page").
-요구 능력도 같다(인덱스·튜닝·트랜잭션).
-② ⭐⭐⭐ **가운데는 어투가 다르다** — PostgreSQL 은 한계마다 **"can be increased by recompiling
-PostgreSQL"**, MySQL 은 **"hard limit"** · **"The limit is enforced regardless of storage engine"**.
-**기능 비교표가 아니라 이 문장들이 두 프로젝트의 구조를 말한다**(하나의 엔진 vs 여러 엔진 위의 공통 층).
-③ **위가 갈린다** — `pgvector` **78건** · `PostGIS` 32건, 그리고 ⭐⭐ **동반 기술이 갈린다:
-PostgreSQL 은 Python 47.3%, MySQL 은 Java 50.4% · Spring 40.5%.**
+**전체: 문서 104개**(전부 done) · 절 620 · 실습 312 · **오류 0 · 경고 0.**
 
-**⭐⭐ 셈이 축을 통째로 줬다** — PostgreSQL 2081 · MySQL 2030 · **둘 다 언급 863건**, 그리고 그
-863건이 `**MySQL 또는 PostgreSQL**`(액션파워·고래사) 로 묶어 쓴다.
-⚠️⚠️ **`JSONB` 는 1건**이다 — 교과서가 강조하는 대표 장점인데 채용 요건에는 사실상 없다.
+**⭐ 보강한 것 — `db-index` 의 `not-used` 절과 `explain` 표.** 그 문서에 없던 1차 자료
+(**PostgreSQL 11.12 Examining Index Usage**)에서 셋을 넣었다.
+- ⭐⭐⭐ **"Always run ANALYZE first ... Examining an application's index usage without having run
+  ANALYZE is therefore **a lost cause**."** — 기존 문서는 "통계가 낡았다"를 **목록의 마지막 ⑥**으로
+  뒀는데, **맨 앞의 전제**라는 것을 원문으로 못 박았다.
+- ⭐⭐ **"Use real data for experimentation ... It is **especially fatal** to use very small test data
+  sets."** — **개발 DB 의 "안 타네"는 정상일 수 있다**로 이었다.
+- ⭐⭐⭐ **"Either **the system is right** and using the index is indeed not appropriate, or the cost
+  estimates ... are not reflecting reality."** — 기존 문서가 자기 말로 쓴 "이건 버그가 아니라 올바른
+  판단"에 **원문 근거**를 붙이고, **강제는 진단용이지 처방이 아니다**를 더했다.
 
-**⚠️ 의도적으로 안 한 것 셋을 적었다** — 성능 벤치마크(조건 따라 뒤집힌다) · 기능 비교표(곧 낡는다) ·
-관리형 서비스의 차이(`Aurora` 113건인데 자료를 안 열었다). ⚠️ 그리고 **인용한 두 한계 문서의 판이
-다르다**(PG `docs/current` · MySQL **8.0** — 8.4 경로는 404). ⚠️ `market` 은 **의도적으로 비웠다**
-(두 기술인데 `market.tech` 는 하나만 넣을 수 있다 — 양쪽 수치를 본문·표에 다 적었다).
+**⚠️ 이번 실수의 정확한 원인과 규칙은 `배운 것` 맨 위에 적었다.**
 
-**다음 사이클 = QUEUE 맨 위 `인덱스 · 실행 계획`(`index`)** — 사다리 3순위. **대기 1개.**
+**다음 사이클 = QUEUE 맨 위 `로드밸런서`(`load-balancer`)** — 사다리 3순위. **대기 1개.**
 ⚠️ **`--gaps` 출력이 대상을 정한다** — 이 메모가 큐와 어긋나면 큐가 맞다.
 
-## 인덱스 사이클 메모
+## 로드밸런서 사이클 메모
 
-- **`postgres-mysql` 이 남긴 자리** — 그 문서가 "인덱스·트랜잭션 감각은 양쪽에 옮겨 다닌다"고
-  써 놓고 **그 감각을 설명할 곳이 없다**고 `open_questions` 에 적었다(`sql`·`index`·`transaction`
-  셋 다 없다). ⭐ **셋 중 `index`** — `sql` 은 너무 넓고 `transaction` 은 무거워진다.
-- ⭐⭐⭐ **셈이 또 그 형태다: `쿼리 튜닝|최적화|실행 계획|EXPLAIN` 939건(모집중 393) ·
-  `인덱스` 280건 — 그런데 `슬로우 쿼리` 19 · `데드락` 14 · `격리 수준` 6.**
-  **튜닝을 요구하는 곳은 939건인데 그 대상과 도구를 이름으로 부르는 곳은 손에 꼽는다.** 여섯째 사례.
-- ⭐⭐⭐ **축 초안: "인덱스는 만드는 것이 아니라 쓰이는지 확인하는 것."** 만들기는 한 줄이고,
-  **실행 계획을 읽어 정말 타는지 보는 것**이 일의 전부다.
-- ⭐ 근거: 헤렌 `RDBMS **쿼리 튜닝·실행 계획 분석·인덱스 설계** 경험`(셋이 한 줄) · 피트인
-  `**쿼리 실행 계획 분석과 인덱스 최적화**를 통한 ... **성능 병목 개선**` · 왓섭 `**JOIN, 인덱스 설계,
-  쿼리 튜닝** 등을 통해 성능 문제를 **직접 해결**해 본 분`.
-- ⚠️ **문법 차이를 옮기면 요약본이 된다** — `postgres-mysql` 에서 세운 대로 **원리와 판단만** 쓴다.
-  ⭐ 그리고 그 문서의 `indexes per table: **unlimited**` 가 **무제한이라 위험하다**는 뜻이기도 하다는
-  것을 축 ④로 이어 붙인다.
-- ⭐ **1차 자료**: PostgreSQL 의 "Examining Index Usage" · MySQL 의 "How MySQL Uses Indexes" ·
-  "Optimizing Queries with EXPLAIN". ⭐⭐ **양쪽 다 "인덱스가 도움이 안 되는 경우"를 적을
-  가능성이 높다** — **부정어(not used·cannot use·no benefit·overhead)를 먼저 검색한다.**
+- **`api-gateway` 가 끊긴 링크로 남겼다** — 그 문서가 `gateway routing` 을 설명하며 **"겹치는 자리:
+  로드밸런서·인그레스"** 라고 적어 놓고 가리킬 곳이 없다. 그리고 인용한 Azure 문서가
+  **"API Management **doesn't perform any load balancing**, so you should use it with a load balancer"**
+  라고 적는다 — **제품이 자기가 안 하는 일을 명시한 자리**이고 그 상대가 여기다.
+- ⚠️⚠️ **셈을 아직 안 했다.** 사이클 첫 작업으로 센다. ⚠️ **`Nginx` 오염이 클 것**이다(웹서버·리버스프록시·
+  인그레스) — `api-gateway` 에서 `API Gateway` 가 AWS 제품명이라 39건 섞인 것과 같은 형태.
+- ⭐ 축 후보: **"L4 와 L7 은 무엇을 보고 나누나"** — 패킷의 어느 층까지 열어 보느냐가 **할 수 있는 일과
+  비용을 동시에** 정한다. 그리고 헬스 체크 · 세션 고정 · 분배 알고리즘.
+- ⚠️⚠️ **이웃**: `api-gateway`(L7 의 일부를 한다) · `service-mesh`(동서) · `rate-limit` · `circuit-breaker`.
+  ⭐⭐ **쓰기 전에 반드시 `aliases` 로 검색**해서 이미 있는지 본다(이번 실수의 규칙).
+  경계 초안: **게이트웨이가 "무엇을 할까"라면 여기는 "어디로 보낼까"**.
+- ⭐ **1차 자료**: 클라우드 문서(AWS ELB 의 L4/L7) · HAProxy·Nginx 의 헬스 체크·알고리즘 절.
+  ⭐⭐ **부정어를 먼저 검색**하고, `api-gateway` 처럼 **"이 제품이 하지 않는 것"** 을 찾으면 그게 경계다.
 
 ## 후보 목록 (다음에 큐가 마르면 여기서)
 
-⚠️ **사슬이 끊기면 층을 바꾼다.** 지금 데이터 층으로 옮겨 왔으니, 다음에 끊기면 **언어·하드웨어** 쪽으로.
+⚠️⚠️ **후보를 큐에 올리기 전에 반드시 `aliases` 로 검색한다** — slug 이름은 추측하면 틀린다.
 
 | 후보 | 공고 | 이 엔진이 쓸 각도 | 층 |
 |---|---|---|---|
 | ~~REST~~ · ~~GraphQL~~ · ~~BFF~~ · ~~API 게이트웨이~~ · ~~서비스 메시~~ | — | ✅ 99~103 | API |
 | ~~PostgreSQL vs MySQL~~ | — | ✅ 104 | 데이터 |
-| **인덱스 · 실행 계획** | 939 / 280 | ⭐ **큐에 있다 — 다음 차례** | 데이터 |
-| `트랜잭션` | 392 | ⚠️ 격리 수준 6건 — 무겁지만 대비가 또렷하다 | 데이터 |
-| `Kotlin` | 464 | ⭐ "Java 가 있는데 왜" | 언어 |
+| ~~인덱스~~ | — | ⚠️ **이미 `db-index` 로 있었다** — 보강으로 처리 | 데이터 |
+| **로드밸런서** | (미측정) | ⭐ **큐에 있다 — 다음 차례** | 인프라 |
+| `Kotlin` | 464 | ⭐ "Java 가 있는데 왜" — ⚠️ `java` 문서 확인 필요 | 언어 |
 | `Redis` | 474 | ⚠️ `caching` 과 겹친다 — 다른 각도를 먼저 | 데이터 |
 | `HTTP` | (미측정) | ⭐ `rest` 가 전제하고 비워 둔 층 | API |
-| `로드밸런서` | (미측정) | ⚠️ `api-gateway` 가 남긴 끊긴 링크 | 인프라 |
-| `Oracle` | 941 | ⚠️ 국내 금융·공공 비중 — `postgres-mysql` 이 범위 밖으로 뒀다 | 데이터 |
+| `Oracle` | 941 | ⚠️ 국내 금융·공공 비중 | 데이터 |
+| `마이크로 프론트엔드` | 29 | ⚠️ 얇지만 `bff`·`design-system` 과 이웃 | 프론트 |
 
 
 ## 배운 것
+
+- ⚠️⚠️⚠️ **문서 하나를 통째로 쓰고 나서 중복인 것을 발견했다(`index` vs 이미 있던 `db-index`).**
+  원인이 분명하다 — **큐를 채울 때도, 쓰기 직전에도 `slug` 이름으로만 확인**했다
+  (`'index' in have`, `'sql' in have`, `'transaction' in have`). 그런데 실제 slug 는
+  **`db-index`**·`transaction-isolation` 이었다. ⭐⭐⭐ **규칙: 존재 확인은 slug 가 아니라
+  `aliases` 와 `title` 로 한다.**
+  ```python
+  hit=[a['slug'] for a in idx['articles'] if any('인덱스' in x for x in a['aliases']) or '인덱스' in a['title']]
+  ```
+  ⭐ `validate.py` 가 **alias 충돌로 잡아 줬다는 것이 다행**이다 — 그 검사가 없었으면 **중복 문서가
+  조용히 들어갔을 것**이다(`seo` 의 "조용한 불일치"와 같은 종류의 사고).
+- ⭐⭐ **중복을 발견했을 때 통째로 버리지 않고 보수로 전환했다.** 새로 연 1차 자료
+  (PostgreSQL 11.12 Examining Index Usage)가 **기존 문서에 없던 것 셋**을 갖고 있었다 —
+  "a lost cause" · "especially fatal" · "the system is right". ⭐ **헛수고를 보수 사이클로
+  바꾸는 방법은 "내가 새로 연 자료 중 그 문서에 없는 것이 있나"를 묻는 것**이다.
+  그리고 기존 문서가 **자기 말로 쓴 판단에 원문 근거를 붙이는 것**은 언제나 이득이다.
+- ⭐ **사다리 1순위(보수)를 처음 제대로 돌았다.** 지금까지 21 사이클이 전부 신규였는데, 백과사전이
+  104개가 되면 **이미 있는 것과 부딪히는 일이 늘어난다.** ⭐ 앞으로는 **후보를 고를 때 "이 낱말이
+  기존 문서의 어느 절과 겹치나"** 를 먼저 보고, 겹치면 **처음부터 보수로 계획**한다 —
+  그 편이 새 문서를 쓰다 버리는 것보다 훨씬 싸다.
 
 - ⭐⭐⭐ **같은 종류의 문서를 양쪽에서 열면 "어투의 차이"가 기능 비교표보다 많은 것을 말한다.**
   `postgres-mysql` 은 기능 비교를 안 하고 **양쪽 한계 문서만** 열었는데, PostgreSQL 의
