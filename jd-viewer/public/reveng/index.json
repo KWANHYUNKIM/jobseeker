@@ -1344,6 +1344,18 @@
       "one_liner": "모델이 나빠졌다는 신고를 재현하지 못한 회사 — 그래서 모델이 아니라 재는 자와 그것이 서는 무대를 먼저 의심하기 시작했다",
       "updated_at": "2026-09-06",
       "domain": "anthropic.com"
+    },
+    {
+      "slug": "databricks",
+      "name": "데이터브릭스",
+      "name_en": "Databricks",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "고객의 데이터를 다루는 회사가 자기 데이터에 먼저 깔린다 — 트랜잭션은 로그만 넘기게 하고, 모니터링은 카디널리티에서 지켜 냈다",
+      "updated_at": "2026-09-06",
+      "domain": "databricks.com"
     }
   ],
   "domains": [
@@ -1694,7 +1706,9 @@
     "GPU 끼리 직접 말하게 한다",
     "자 자체를 의심한다",
     "뇌와 손을 떼어 놓는다",
-    "틀린 것을 공개한다"
+    "틀린 것을 공개한다",
+    "로그만 넘기고 나머지는 뒤에서 만든다",
+    "카디널리티에서 시계열 DB 를 지킨다"
   ],
   "countries": {
     "KR": "한국",

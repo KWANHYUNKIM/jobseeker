@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Databricks** | US · SaaS | ⭐ **프로파일 완료(2026-09-06) — 도메인 2개.** `로그만 넘기고 나머지는 뒤에서 만든다`(Lakebase — safekeeper 팍소스 정족수·pageserver, WAL 58KB→4KB, 쓰기 4.5배) · `카디널리티에서 시계열 DB 를 지킨다`(Thanos 포크 Pantheon — 하루 10조 샘플, 활성 시계열 50억). ⏳ **기능 0/2 — 다음은 확장, Lakebase 부터.** ⭐ **`docs.databricks.com` 은 직접 열린다**(블로그는 트래커 픽셀). ⚠️⚠️ **Neon 과 구조가 같다 — 인수했다. 비교 문서에서 두 번 세지 않는다.** |
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Databricks** | US · SaaS | ⭐ **⑥축(`복제로 버틸 것인가 로그로 버틸 것인가`)의 정면 사례이고 수치가 있다.** `Object Storage + WAL: Lakebase Postgres for the agentic era`(2026-08-27) — **컴퓨트와 스토리지를 WAL 스트림 하나로만 잇고**, **safekeeper 무리가 Paxos 정족수로 WAL 을 복제**하며, **커밋은 객체 저장소가 아니라 정족수 확인으로 끝나고**, **pageserver 가 최신 이미지에 WAL 델타를 재생해 페이지를 복원한다.** **델타만 보내 WAL 트래픽 94% 감소, 쓰기 5배.** 그 밖에 **`10 trillion samples a day: Scaling beyond traditional monitoring infra`**(2026-05-05) · `Achieving Extreme Efficiency through Specialized GPU Kernel Generation`(2026-09-04). ⚠️ **`r.jina.ai` 가 개별 글 본문 대신 트래커 픽셀을 준다** — 3자 경로로 내용을 확인했다. ⚠️ **Neon 과 같은 구조라 겹침 주의**(Databricks 가 Neon 을 인수했다). |
 | **Modal** | US · SaaS | `modal.com/blog` 최신 **2026-09-02**. ⭐ **내부 구조 글이 분명하다** — **`Scaling to 1 million concurrent sandboxes in seconds`**(2026-07-16) · **`Bringing serverless functions closer to the speed of wire`**(2026-08-04). ⭐ **`유휴를 어떻게 다루나` 축(㊳)의 새 답이 될 가능성이 크다** — Neon 은 0 으로 내리고 Vercel 은 1 을 남기고 Cursor 는 재우는데, **여기는 서버리스 GPU 다.** ⚠️ **나머지 글은 사례 연구·모델 지원 발표라 자료가 얇을 수 있다.** |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
