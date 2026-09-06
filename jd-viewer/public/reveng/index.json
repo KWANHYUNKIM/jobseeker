@@ -1484,7 +1484,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "자바스크립트 도구 넷을 바이너리 하나에 담은 런타임 — 스크립트 언어의 도구를 시스템 프로그래밍 문제로 다시 푼다",
       "updated_at": "2026-09-07",
       "domain": "bun.com"
