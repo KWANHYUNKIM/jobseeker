@@ -29,7 +29,7 @@
     {
       "id": "why",
       "kind": "why",
-      "heading": "⭐⭐⭐ 무엇으로부터 격리하려는 것인가",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 계층 그림에서 벗어나려던 자리",
       "confidence": "confirmed",
       "sources": [
         {
@@ -40,7 +40,7 @@
           "summary": "⭐⭐⭐ **원저자의 글.** 의도가 한 문장이다 — \"be **driven by users, programs, automated test or batch scripts**\" 그리고 \"**developed and tested in isolation from its eventual run-time devices and databases**\""
         }
       ],
-      "body": "⭐ **원저자의 의도가 한 문장이고, 그 안에 답이 다 있다.**\n\n> ⭐⭐⭐ **\"Allow an application to equally be driven by users, programs, automated test or batch scripts, and to be developed and tested in isolation from its eventual run-time devices and databases.\"**\n\n💡 **두 부분으로 나뉜다.**\n\n| | 무엇을 말하나 |\n|---|---|\n| ⭐⭐⭐ 앞 | **누가 이 애플리케이션을 굴리든 상관없다** — 사람이든, 다른 프로그램이든, **자동화된 테스트든**, 배치 스크립트든 |\n| ⭐⭐⭐ 뒤 | **결국 붙게 될 장치와 DB 없이도 개발하고 테스트할 수 있다** |\n\n⭐⭐ **`automated test` 가 사용자와 나란히 있다는 것이 중요하다.** ⚠️ **테스트가 \"나중에 붙이는 것\"이 아니라 처음부터 동등한 구동자**다 — 📌 그래서 `testing` 문서가 말한 **\"움직일 수 있는가\"** 와 직접 이어진다.\n\n💡 ⭐⭐⭐ **그리고 문제를 아주 구체적으로 적는다.**\n\n> ⭐⭐⭐ \"**infiltration of business logic into the user interface code**\"\n> ⭐⭐⭐ \"the application logic gets tied to an external database or other service. **When the database server goes down ... the programmers can't work**\"\n\n⚠️⚠️ **\"DB 서버가 죽으면 개발자가 일을 못 한다\"** — ⭐ **이것이 추상적인 설계 취향이 아니라 그날의 실무 문제**로 적혀 있다.\n\n📌 ⭐⭐⭐ **근본 원인에도 이름이 있다.**\n\n> ⭐⭐⭐ \"the **entanglement** between the business logic and the interaction with external entities\"\n\n💡 **뒤엉킴(entanglement).** ⚠️ **바깥 것이 나쁘다는 게 아니라 섞이는 것이 문제**라는 말이고, 그래서 해법이 **분리가 아니라 방향**이 된다(다음 절).\n\n📌 ⭐ **그리고 그 결과를 이렇게 적는다** — 애플리케이션은 **\"blissfully ignorant of the nature of the input device\"** 이고 **\"work without either a UI or a database\"** 할 수 있다.\n\n⚠️ **공고에서 그 이유를 적은 곳은 드물다.**\n\n> ⭐⭐⭐ `**변경에 유연한 설계를 위해** Clean Architecture를 바탕으로 개발합니다.` — 데이터라이즈\n> ⭐⭐ `TDD, OOP, Clean Architecture 등 **유지보수가 용이한 코드**를 작성하기 위한 고민을 지속하시는 분` — 큐엠아이티"
+      "body": "⭐⭐⭐ **이 구조는 앞선 그림을 부정하면서 나왔고, 원저자가 그 대상을 이름으로 적는다.**\n\n> ⭐⭐⭐ \"The hexagon is intended to visually highlight (a) the **inside-outside asymmetry** and the similar nature of ports, **to get away from the one-dimensional layered picture**\"\n\n💡 ⭐⭐ **앞선 물건은 계층형 아키텍처**다 — 표현층 → 서비스층 → 데이터층으로 **위에서 아래로 흐르는 한 줄짜리 그림.** ⚠️ **그 그림이 아팠던 이유는 \"아래\"에 데이터베이스가 있었다는 것**이다: **가장 바꾸기 어려운 것이 바닥에 깔려 모두가 그 위에 얹힌다.**\n\n⭐ **공고에 그 그림이 아직 156건 있다** — `**계층형 아키텍처 (Controller / Service / Model)** 개발 경험`(에이치아이티).\n\n📌 ⭐⭐⭐ **그럼 무엇이 아팠나 — 원저자가 그날의 증상으로 적는다.**\n\n> ⭐⭐⭐ \"**infiltration of business logic into the user interface code**\"\n> ⭐⭐⭐ \"the application logic gets tied to an external database or other service. **When the database server goes down ... the programmers can't work**\"\n> ⭐⭐⭐ 근본 원인 — \"the **entanglement** between the business logic and the interaction with external entities\"\n\n⚠️⚠️ **DB 서버가 죽으면 개발자가 일을 못 한다** — ⭐ **추상적인 설계 취향이 아니라 그날의 실무 문제**로 적혀 있다. 💡 **문제는 바깥이 나쁜 것이 아니라 섞이는 것**이고, 그래서 **해법이 분리가 아니라 방향**이 된다.\n\n📌 ⭐⭐ **의도 문장에 목적이 다 들어 있다.**\n\n> ⭐⭐⭐ **\"Allow an application to equally be driven by users, programs, automated test or batch scripts, and to be developed and tested in isolation from its eventual run-time devices and databases.\"**\n\n⭐⭐ **`automated test` 가 사용자와 나란히 있다** — ⚠️ **테스트가 나중에 붙이는 것이 아니라 처음부터 동등한 구동자**다.\n\n💡 ⭐⭐⭐ **그리고 이 구조에서 다시 갈라져 나온 것들이 있다** — Uncle Bob 이 그것을 한 줄로 묶는다.\n\n> ⭐⭐⭐ (헥사고날·어니언 등을 열거하며) \"**They all have the same objective, which is the separation of concerns.**\"\n> ⭐⭐⭐ 그리고 규칙을 한 문장으로 압축한다 — **\"source code dependencies can only point inwards.\"**\n\n⭐ **즉 계보는 이렇다**: **계층형 그림** → **헥사고날(포트와 어댑터, 2005년경)** → **어니언 · 클린 아키텍처**. ⚠️ **셋은 같은 목적**이라고 원문이 적는데 — 📌 **공고에서는 `클린 아키텍처` 162건, `헥사고날` 22건으로 7배 넘게 갈린다.**"
     },
     {
       "id": "rule",
@@ -73,9 +73,39 @@
       "body": "⚠️ **이 절은 공고에서 추론했다.**\n\n⭐ `bounded-context` 가 **\"`Clean Architecture 또는 DDD` 로 묶인다\"** 는 관찰을 남겼는데, **더 강한 형태가 있었다.**\n\n> ⭐⭐⭐ `**MVVM, MVI, Clean Architecture 중 하나 이상**을 본인의 결정으로 적용·운영해본 경험` — 헤렌\n> ⭐⭐⭐ `**MVVM + Clean Architecture**, MVI` — 헤렌\n> ⭐⭐ `**Clean Architecture, MVVM/MVI 등 아키텍처 패턴**에 대한 깊은 이해와 실무 적용 경험` — 크로스이엔에프\n> ⭐⭐⭐ `Bloc, riverpod, GetX 등의 **상태 관리 패턴 또는 Clean Architecture**와 같은 설계 기법` — 폴라리스쓰리디\n\n💡 ⭐⭐⭐ **`MVVM, MVI, Clean Architecture 중 하나 이상`** — **셋을 같은 층의 선택지로 놓는다.**\n\n⚠️ **그런데 1차 자료에서 이것은 UI 패턴이 아니다.** ⭐ MVVM·MVI 는 **화면과 상태를 어떻게 잇나**의 답이고, 클린 아키텍처는 **소스 코드 의존성이 어느 쪽을 향하나**의 답이다. 📌 **층이 다르므로 \"중 하나\"로 고를 수 있는 것이 아니다** — 실제로 헤렌의 다른 줄은 **`MVVM + Clean Architecture`** 라고 **함께** 적는다.\n\n💡 ⭐⭐ **그러면 왜 이렇게 불릴까.** ⚠️ **이 문서는 원인을 확인하지 못했다.** 다만 셈 두 가지를 나란히 둔다.\n\n| | 건수 |\n|---|---|\n| ⭐ 구조 이름 (`클린 아키텍처`) | **162** |\n| `레이어드\\|계층형\\|MVC` | 156 |\n| ⚠️ 규칙 (`의존성 역전\\|DIP`) | **3** |\n| ⚠️ 지키려는 것 (`프레임워크 독립\\|종속`) | **5** |\n\n📌 ⭐⭐ **이 백과사전이 앞서 만난 형태와 같다** — `react` 의 `렌더링 최적화` 397 대 `useEffect` 4, `bounded-context` 의 `도메인 지식` 633 대 `유비쿼터스 언어` 0. 💡 **부를 수 있는 이름이 있는 쪽만 불린다.**\n\n⚠️ **그리고 이 낱말에서는 그 결과가 구체적이다** — **폴더 구조는 따라 할 수 있고 의존성 방향은 따라 할 수 없다.** ⭐ `domain/`·`application/`·`infrastructure/` 를 만드는 데는 몇 분이면 되지만, **`domain/` 안에서 `JpaRepository` 를 안 부르는 일은 매 커밋마다 지켜야 한다.**\n\n📌 ⭐ **그래서 확인 방법도 하나로 정해진다** — **안쪽 폴더에서 바깥 이름을 검색해 본다.** \"the **name** of something declared in an outer circle **must not be mentioned**\" 가 그대로 검사 항목이 된다.\n\n💡 ⭐ 그리고 이 관찰을 스스로 적은 공고가 하나 있었다.\n\n> ⭐⭐ `클린 아키텍처, 헥사고날 아키텍처에 관심이 있거나 **더 나은 아키텍처를 제안**할 수 있는 분` — 어크로스비"
     },
     {
-      "id": "limits",
+      "id": "nextgen",
       "kind": "limits",
-      "heading": "경계 — 이 문서가 하지 않는 것",
+      "heading": "⭐⭐ 이 구조의 한계 — 그리고 그 한계에서 나온 것들",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "The Clean Architecture",
+          "url": "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html",
+          "publisher": "Robert C. Martin",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **의존성 규칙 한 줄** — \"**source code dependencies can only point inwards**\". ⭐ 헥사고날·어니언 등을 열거하며 \"**They all have the same objective**\" 라고 적는다"
+        },
+        {
+          "title": "Hexagonal Architecture",
+          "url": "https://alistair.cockburn.us/hexagonal-architecture/",
+          "publisher": "Alistair Cockburn",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **원저자의 글.** 의도가 한 문장이다 — \"be **driven by users, programs, automated test or batch scripts**\" 그리고 \"**developed and tested in isolation from its eventual run-time devices and databases**\""
+        }
+      ],
+      "body": "⚠️⚠️ **먼저 이 계보에서 눈에 띄는 것 하나** — **1차 자료 두 편 다 자기 대가를 적지 않는다.** ⭐ Cockburn 의 글에는 어댑터가 는다는 언급은 있어도 **명시적 비용 문장이 없고**, Uncle Bob 의 글에도 없다. 📌 **`microservices`(\"shouldn't\"·Microservice Premium)·`cqrs`(\"위험한 복잡성\")와 정반대**다 — ⚠️ **그래서 제동 장치를 읽는 사람이 직접 만들어야 한다.**\n\n| 한계 | 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **규칙이 사람 손에 달려 있다** | \"the **name** ... must not be mentioned\" 는 **매 커밋마다** 지켜야 한다 | ⭐ **자동 검사** — CI 에서 안쪽 폴더의 바깥 이름 검색 · `code-review` · `github-actions` |\n| ⭐⭐ **어댑터와 인터페이스가 는다** | 바깥마다 하나씩 | ⚠️ **원문에 대가 문장이 없다** — 판단 기준을 직접 세워야 한다 |\n| ⭐⭐⭐ **어디에 선을 긋는지는 답하지 않는다** | 층은 정하지만 **범위**는 안 정한다 | ⭐ `bounded-context`(말이 갈리는 자리) · `microservices`(서비스 경계) |\n| ⭐⭐ **매핑 코드가 생긴다** | ORM 엔티티를 도메인에 안 들이면 | ⭐ `jpa` · `data-contract` · ⚠️ 그 값을 감수하는 판단이 필요하다 |\n| ⭐ **테스트가 없으면 이득이 안 보인다** | \"tested **without the UI, Database, Web Server**\" 가 목적인데 | ⭐ `testing` · `refactoring`(동작이 정의돼 있어야 한다) |\n| ⚠️ **UI 패턴과 층이 헷갈린다** | 이름이 나란히 불린다 | ⭐ **함께 쓰는 것으로 정리** — 헤렌 `**MVVM + Clean Architecture**` |\n\n⭐⭐⭐ **그리고 정반대 방향의 경고가 이 백과사전 안에 있다** — `ai-agents` 의 1차 자료는 프레임워크의 추상이 **\"밑에 깔린 프롬프트와 응답을 가려 디버깅을 어렵게 한다\"** 고 적는다. 💡 ⭐ **여기서는 추상이 바깥을 격리해서 좋고, 거기서는 안을 가려서 나쁘다** — 📌 **차이는 무엇을 보아야 하는가**다.\n\n⚠️ **아직 안 메워진 자리**: 이 문서는 **실패 사례의 1차급 기록을 찾지 못했다**(검색 결과가 전부 2차 자료였다)."
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 뜻밖에 모바일·프론트엔드가 크다",
+      "confidence": "inferred",
+      "body": "⚠️ **`market` 이 없다** — 기술 태그가 아니라 구조라 `tech_relations.json` 에 이름이 없다. ⭐ **공고가 대신 답한다.**\n\n⭐⭐⭐ **뜻밖의 결과**: 이 구조는 **서버 쪽 이야기로 알려져 있는데**, 공고에서 이름이 가장 자주 붙는 자리는 **모바일과 프론트엔드**다.\n\n| 어디 | 무엇과 함께 | 공고 |\n|---|---|---|\n| ⭐⭐⭐ **안드로이드** | **MVVM · MVI** | 헤렌 `MVVM, MVI, **Clean Architecture** 중 하나 이상` · `**MVVM + Clean Architecture**, MVI` |\n| ⭐⭐ **프론트엔드 일반** | 아키텍처 패턴 | 크로스이엔에프 `**Clean Architecture, MVVM/MVI** 등 아키텍처 패턴` |\n| ⭐ **플러터·크로스플랫폼** | 상태 관리와 나란히 | 폴라리스쓰리디 `Bloc, riverpod, GetX 등의 **상태 관리 패턴 또는 Clean Architecture**` |\n| ⭐ **백엔드·서버** | DDD 와 함께 | 패스트파이브 `**DDD 및 헥사고날 아키텍처** 기반의 서비스 구현` · 커넥트웨이브 `**Clean Architecture 또는 DDD**` |\n| ⭐ **모듈화** | 저장소 구조 | 크로스이엔에프 `**Clean Architecture 기반의 모듈화 구조 고도화**` |\n\n💡 ⭐⭐ **모바일 쪽이 많은 이유가 짐작된다** — **화면·기기·OS 가 자주 바뀌는 층**이라 **\"바깥을 갈아 끼운다\"는 이 구조의 값이 크게 보인다**(⚠️ 이 해석은 추론이다). ⚠️ 다만 그쪽에서는 **UI 패턴과 같은 층으로 취급되는 문제**가 함께 생겼다(`misread` 절).\n\n📌 ⭐ **셈으로 본 이름의 분포**: `클린 아키텍처` **162** · `헥사고날` **22** · `레이어드\\|계층형\\|MVC` **156**. 💡 ⚠️ **앞선 그림(계층형)이 아직 거의 같은 크기로 남아 있다.**\n\n⭐ **이 백과사전 안에서의 자리**: **위는 `bounded-context`**(어디에 선을 긋나), **옆은 `testing`**(이 구조의 목적이 거기 있다), **아래는 `spring`·`jpa`**(규칙이 실제로 깨지는 자리)."
+    },
+    {
+      "id": "limits",
+      "kind": "extra",
+      "heading": "이 문서의 경계 — 다루지 않은 것",
       "confidence": "inferred",
       "body": "**1. ⚠️⚠️ 1차 자료가 대가를 적지 않는다 — 그리고 그것이 이 계보에서 눈에 띈다.** ⭐ Cockburn 의 글에는 **어댑터가 늘어난다는 언급은 있어도 명시적인 비용 문장이 없고**, Uncle Bob 의 글에도 없다. 📌 ⭐⭐⭐ **`microservices` 의 \"shouldn't\", `cqrs` 의 \"위험한 복잡성\", `redis` 의 \"we discourage it\" 과 대비된다** — **이 둘은 자기 방식의 대가를 적지 않는다.** ⚠️ 그리고 **174건이 그것을 요구한다.**\n\n**2. ⚠️⚠️ 실패 사례를 찾았지만 1차급 기록을 못 찾았다.** ⭐⭐⭐ **여섯 사이클 만에 규칙을 지켜 검색은 했다**(`github-actions`·`migration`·`aws`·`microservices`·`bounded-context` 에서 못 지켰던 것). ⚠️ **결과는 2차 자료(블로그 글)의 일반론뿐**이었다 — \"작은 프로젝트엔 과하다\", \"인터페이스와 클래스 수가 는다\", \"설계에 시간을 너무 쓴다\". 📌 **이 문서는 그것을 근거로 쓰지 않았다.** ⭐ **\"찾았는데 없었다\"는 \"안 찾았다\"와 다르므로 여기 남긴다.**\n\n**3. ⚠️ 코드 예를 하나도 안 썼다.** 포트·어댑터가 실제 코드에서 어떻게 생겼는지 — ⭐ **원문 인용만으로 구성했다.** `spring`·`java` 문서와 이어 붙이면 채울 수 있다.\n\n**4. ⚠️ `클린 아키텍처` 162 대 `헥사고날` 22 의 원인을 확인하지 못했다.** ⭐ Uncle Bob 자신이 \"**They all have the same objective**\" 라고 적는데도 **한쪽 이름만 팔린다.** ⚠️ 책 판매나 안드로이드 생태계의 영향으로 보이지만 **세거나 확인하지 않았다.**\n\n**5. ⚠️ `bounded-context` 와의 관계를 부분적으로만 답했다.** ⭐ **층(의존성 방향)과 경계(모델의 범위)는 다른 축**이라는 것까지는 원문으로 말할 수 있다 — 그런데 **둘을 함께 쓸 때의 실제 모양**(한 컨텍스트 안에 육각형 하나?)은 **1차 자료에서 확인하지 못했다.**\n\n**6. ⭐ `market` 이 없다** — `tech_relations.json` 에 `클린 아키텍처`·`헥사고날` 어느 이름도 **없다.** 태그 목록에 안 들어가는 낱말이라 **비우는 것이 정상**이고 `evidence` 로 대신했다.\n\n**7. ⚠️ 어니언 아키텍처를 다루지 않았다** — Uncle Bob 이 함께 열거하는데 **1차 자료를 안 봤다.**"
     }
@@ -614,6 +644,7 @@
     }
   ],
   "open_questions": [
+    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `why` 에 **무엇에서 갈라져 나왔나**(계층형 그림 → 헥사고날 → 어니언·클린), `limits` 를 **한계와 그 한계에서 나온 것들**로, **어디에 쓰이나** 절을 새로 넣었다. ⭐ **그 절에서 뜻밖의 것이 나왔다** — 공고에서 이 구조는 **모바일·프론트엔드에 가장 많이 붙는다.**",
     "⚠️⚠️ **1차 자료가 대가를 적지 않는다.** ⭐ Cockburn 의 글에 **어댑터가 는다는 언급은 있어도 명시적 비용 문장이 없고**, Uncle Bob 의 글에도 없다. 📌 ⭐⭐⭐ **`microservices`(\"shouldn't\"·Microservice Premium)·`cqrs`(\"위험한 복잡성\")·`redis`(\"we discourage it\")와 정반대**다 — **174건이 요구하는 구조인데 제동 장치가 원문에 없다.**",
     "⚠️⚠️ **실패 사례를 찾았지만 1차급 기록을 못 찾았다.** ⭐⭐⭐ **여섯 사이클 만에 규칙을 지켜 검색은 했다.** ⚠️ 결과는 **2차 자료(블로그)의 일반론뿐** — \"작은 프로젝트엔 과하다\", \"인터페이스·클래스 수가 는다\", \"설계에 시간을 너무 쓴다\". 📌 **근거로 쓰지 않았다.** ⭐ **\"찾았는데 없었다\"는 \"안 찾았다\"와 다르므로 남긴다.**",
     "⚠️ **코드 예를 하나도 안 썼다.** 포트·어댑터가 실제로 어떻게 생겼는지 — **원문 인용만으로 구성**했다. `spring`·`java` 와 이어 붙이면 채울 수 있다.",

@@ -29,7 +29,7 @@
     {
       "id": "why",
       "kind": "why",
-      "heading": "⭐⭐⭐ 하나의 모델로 덮으려는 시도가 실패하는 이유",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 하나의 모델을 포기한 자리",
       "confidence": "confirmed",
       "sources": [
         {
@@ -40,7 +40,7 @@
           "summary": "⭐⭐⭐ **경계를 무엇으로 긋는지 답하는 자리** — \"**total unification of the domain model for a large system will not be feasible or cost-effective**\""
         }
       ],
-      "body": "⭐ **DDD 의 출발점은 \"좋은 모델을 만들자\"가 아니라 \"하나의 모델은 안 된다\"** 이다.\n\n> ⭐⭐⭐ **\"total unification of the domain model for a large system will not be feasible or cost-effective\"**\n> ⭐⭐ \"As you try to model a larger domain, it gets **progressively harder to build a single unified model**.\"\n\n💡 ⭐⭐ **\"feasible\"(가능하다)과 \"cost-effective\"(수지가 맞는다)를 나눠 적은 것이 중요하다** — ⚠️ **가능하더라도 값이 안 맞는다**는 말이 따로 붙어 있다.\n\n**그래서 방향을 뒤집는다.**\n\n> ⭐⭐⭐ \"DDD **divides up a large system into Bounded Contexts, each of which can have a unified model**\"\n\n📌 ⭐⭐⭐ **통일을 포기하는 게 아니라, 통일이 성립하는 범위로 쪼갠다.** 💡 **각 조각 안에서는 여전히 하나의 일관된 모델**이고, **조각 사이에서는 통일을 요구하지 않는다.**\n\n⚠️⚠️ **그리고 공고 하나가 정확히 그 반대를 적는다.**\n\n> ⚠️⚠️ `**통합 커머스 API 구축**: 스토어플랫폼의 통합 커머스 API 서버를 설계·개발하고, **도메인 모델 표준화**를 통해 일관된 서비스 체계를 구축해요.` — 커넥트웨이브\n\n⭐⭐⭐ **\"통합\" + \"도메인 모델 표준화\" — 1차 자료가 \"실현 가능하지도 수지가 맞지도 않는다\"고 적은 바로 그 시도의 이름이다.** ⚠️ **이 문서는 그 회사가 틀렸다고 말할 근거가 없다**(범위가 충분히 작을 수도 있다). 📌 다만 **1차 자료가 경고하는 자리에 정확히 그 낱말이 서 있다는 것**은 기록해 둔다.\n\n💡 ⭐⭐ **그럼 왜 통일이 안 되나 — 이유가 말에 있다.**\n\n> ⭐⭐⭐ \"models act as **Ubiquitous Language**, you need a **different model when the language changes**\"\n\n⭐ **말이 달라지는 곳이 모델이 달라져야 하는 곳**이고, **그 지점이 경계다.** 📌 ⭐⭐ **`microservices` 문서가 \"경계가 전부다\"에서 멈췄던 자리에 이 문장이 들어간다** — **경계는 조직도에도 DB 테이블에도 없고, 말에 있다.**"
+      "body": "⭐⭐⭐ **이 개념은 DDD 라는 큰 틀에서 잘라 낸 한 조각**이고, 1차 자료가 그 관계를 한 줄로 적는다.\n\n> ⭐⭐ \"**Bounded Context is a central pattern in Domain-Driven Design.**\"\n\n💡 ⭐ **앞선 물건은 전사 통일 모델이다** — **회사 전체를 하나의 일관된 모델로 그리려는 시도.** ⚠️ **그것이 아팠던 이유를 1차 자료가 부정문으로 적는다.**\n\n> ⭐⭐⭐ **\"total unification of the domain model for a large system will not be feasible or cost-effective\"**\n> ⭐⭐ \"As you try to model a larger domain, it gets **progressively harder to build a single unified model**.\"\n\n⭐⭐ **가능성(feasible)과 비용(cost-effective)을 나눠 적은 것이 중요하다** — ⚠️ **가능하더라도 값이 안 맞는다.**\n\n📌 ⭐⭐⭐ **그래서 방향을 뒤집는다.**\n\n> ⭐⭐⭐ \"DDD **divides up a large system into Bounded Contexts, each of which can have a unified model**\"\n\n💡 **통일을 포기하는 게 아니라 통일이 성립하는 범위로 쪼갠다** — ⭐ **조각 안에서는 여전히 하나의 일관된 모델**이고, **조각 사이에서는 통일을 요구하지 않는다.**\n\n⚠️⚠️ **그리고 공고 하나가 정확히 그 반대를 적는다.**\n\n> ⚠️⚠️ `**통합 커머스 API 구축** ... **도메인 모델 표준화**를 통해 일관된 서비스 체계를 구축해요.` — 커넥트웨이브\n\n⭐ **통합 + 표준화**는 1차 자료가 \"실현 가능하지도 수지가 맞지도 않는다\"고 적은 그 시도의 이름이다. ⚠️ **범위가 충분히 작으면 옳을 수 있어 단정하지 않는다** — 📌 **자리가 겹친다는 것만 적는다.**\n\n📌 ⭐⭐⭐ **그럼 무엇으로 쪼개나 — 말이다.**\n\n> ⭐⭐⭐ \"models act as **Ubiquitous Language**, you need a **different model when the language changes**\"\n\n⭐ **말이 달라지는 곳이 모델이 달라져야 하는 곳**이고, 💡 **그 지점이 경계다.** 📌 **`microservices` 가 경계가 전부다에서 멈춘 자리에 이 문장이 들어간다** — **경계는 조직도에도 DB 테이블에도 없고 말에 있다.**"
     },
     {
       "id": "polyseme",
@@ -75,9 +75,32 @@
       "body": "⭐ **같은 저자가 별도 글로 그 말을 다룬다.**\n\n> ⭐⭐⭐ \"Ubiquitous Language is the term Eric Evans uses in Domain Driven Design for the practice of **building up a common, rigorous language between developers and users**.\"\n\n💡 ⭐⭐ **\"rigorous\"(엄밀한)가 붙어 있다** — **그냥 같은 낱말을 쓰자는 게 아니라 뜻을 하나로 못 박자는 것**이고, 이유가 한 줄로 나온다.\n\n> ⭐⭐⭐ **\"software doesn't cope well with ambiguity\"**\n\n⚠️ **사람은 모호한 말로도 회의를 끝낼 수 있지만 코드는 못 한다** — 어딘가에서 **누군가 한쪽 뜻으로 정해 버린다.**\n\n📌 ⭐⭐⭐ **그리고 이것이 양방향 의무라고 적는다.**\n\n> ⭐⭐ \"**Domain experts should object to terms or structures that are awkward or inadequate** to convey domain understanding; **developers should watch for ambiguity or inconsistency** that will trip up design.\"\n\n💡 **도메인 전문가는 어색한 용어에 항의하고, 개발자는 모호함과 불일치를 감시한다.** ⭐ **어느 한쪽이 용어집을 만들어 넘기는 일이 아니다.**\n\n> ⭐⭐ \"the language (and model) **should evolve as the team's understanding of the domain grows**.\"\n\n⚠️ **한 번 정하고 끝나지 않는다** — 이해가 자라면 말도 바뀐다. 📌 그래서 `microservices` 가 말한 **\"경계는 처음엔 틀리는 게 정상\"** 과 정확히 이어진다.\n\n💡 ⭐⭐⭐ **셈으로 돌아오면 이 절이 왜 필요한지가 보인다.**\n\n| | 건수 |\n|---|---|\n| ⭐ `기획자\\|프로덕트 오너\\|PO\\|도메인 전문가` | **889** |\n| ⭐ `도메인 지식\\|도메인 이해` | **633** |\n| ⚠️ `용어 정의\\|용어집\\|glossary\\|네이밍` | **34** |\n| ⚠️⚠️ **`유비쿼터스 언어`** | **0** |\n\n⭐⭐⭐ **889건이 \"도메인 전문가와 함께 일한다\"고 적는데, 그 협업에서 말을 맞추는 실천은 이름을 얻지 못했다.**\n\n📌 ⚠️ **다만 이 문서는 그것이 \"안 하고 있다\"는 뜻인지 확인하지 못했다** — ⭐ 이름 없이 하고 있을 수 있다(`migration` 의 `스트랭글러` 1건 대 `점진적` 397건이 그랬다). 💡 **하지만 `용어 정의|용어집` 조차 34건, 모집중 6건이라는 것은 그쪽 해석을 약하게 만든다.**\n\n📌 ⭐ **그리고 공고 하나가 그것을 \"정리해야 할 것\" 목록에 넣었다.**\n\n> ⭐⭐ `코드 리뷰, 테스트 코드, 배포 자동화, 장애 회고, 기술 문서화, **도메인 지식 정리** 등 아직 더 잘 만들 수 있는 부분이 많습니다.` — 레드블루\n\n⭐ **\"도메인 지식 정리\"** — 유비쿼터스 언어에 가장 가까운 표현이 **\"아직 못 한 일\" 목록에 있다.**"
     },
     {
-      "id": "limits",
+      "id": "nextgen",
       "kind": "limits",
-      "heading": "경계 — 이 문서가 하지 않는 것",
+      "heading": "⭐⭐ 이 방식의 한계 — 그리고 그 한계에서 나온 것들",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "BoundedContext",
+          "url": "https://martinfowler.com/bliki/BoundedContext.html",
+          "publisher": "Martin Fowler",
+          "kind": "article",
+          "summary": "⭐⭐⭐ **경계를 무엇으로 긋는지 답하는 자리** — \"**total unification of the domain model for a large system will not be feasible or cost-effective**\""
+        }
+      ],
+      "body": "⭐⭐⭐ **통일을 포기한 대가는 번역이다.** 1차 자료가 그것을 숨기지 않는다.\n\n> ⭐⭐ \"Different contexts may have **completely different models of common concepts** with **mechanisms to map between these polysemic concepts** for integration.\"\n> ⭐ \"It's usually worthwhile to **depict these using a context map**.\"\n\n💡 ⚠️ **컨텍스트가 늘수록 번역 지점이 늘고**, 그 각각이 **깨질 수 있는 자리**가 된다.\n\n| 한계 | 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **경계마다 번역이 필요하다** | \"completely different models of common concepts\" | ⭐ 계약을 문서로 못 박기 → `data-contract` · `openapi` · `api-versioning` · `schema-migration` |\n| ⭐⭐ **번역 지점이 깨지면 조용히 틀린다** | 필드 뜻이 어긋난다 | ⭐ `contract-testing` · `data-quality` · `data-governance` |\n| ⭐⭐ **경계를 잘못 그으면 업무가 가로지른다** | 한 트랜잭션이 여러 컨텍스트를 넘는다 | ⭐ `saga` · `outbox` · `cqrs` |\n| ⭐⭐ **경계를 옮기기 어렵다** | 이미 서비스로 나뉘었으면 더 그렇다 | ⭐ `migration`(무화과) · `refactoring`(작은 단계) |\n| ⚠️ **말은 계속 바뀐다** | \"the language (and model) **should evolve** as the team's understanding grows\" | ⭐ 회고와 문서 → `agile`(원칙 12) · `documentation` |\n| ⚠️⚠️ **전술적 패턴은 이 개념 밖이다** | 경계 안을 어떻게 짜나 | ⭐ 애그리거트·엔티티·값 객체 — ⚠️ **이 백과사전에 아직 없다**(`애그리거트` 셈 **0건**) |\n\n⭐⭐⭐ **그리고 이 개념 자체가 갈음되기도 한다** — ⚠️ 공고에서 **`클린 아키텍처\\|헥사고날` 174건이 `DDD` 88건·`바운디드 컨텍스트` 12건보다 많다.** 💡 ⭐ **모델을 나누는 일(어렵다)이 층을 나누는 일(따라 하기 쉽다)로 갈음되는 것으로 보인다** — 📌 그쪽은 `hexagonal-architecture` 다(⚠️ 이 해석은 추론이다)."
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 그리고 어떤 이름으로 불리나",
+      "confidence": "inferred",
+      "body": "⚠️ **`market` 이 없다** — 기술 태그가 아니라 개념이라 `tech_relations.json` 에 이름이 없다. ⭐ **대신 공고가 어디에 얹혀 있는지 보여 준다.**\n\n| 어디 | 무엇을 하나 | 공고 |\n|---|---|---|\n| ⭐⭐ **서비스를 나눌 때** | 어디서 자를지 정한다 | 큐피스트 `코드 구조와 **서비스 경계**를 깊게 고민해보신 분` |\n| ⭐ **도메인 모델링** | 요구사항을 모델로 | 큐엠아이티 `신규 요구사항을 **도메인 관점에서 분석**하고, DDD 기반 도메인 모델링` |\n| ⭐ **복잡한 업무 영역** | 복잡함을 다루는 도구로 | 데이터라이즈 `**복잡함을 다루기 위해** 도메인 주도 설계를 사용하여 개발합니다` |\n| ⭐ **모듈 분리** | 한 저장소 안에서도 | 레드블루 `도메인 주도 설계, 클린 아키텍처, **모듈화** 등 구조적 설계 원칙` |\n\n📌 ⭐⭐⭐ **그런데 이 개념이 불리는 이름의 셈이 특이하다.**\n\n| 이름 | 건수 |\n|---|---|\n| `클린 아키텍처\\|헥사고날` | **174** ⭐ 가장 많이 불린다 |\n| `도메인 모델` | 131 |\n| `DDD`(대문자) | 88 |\n| `도메인 주도\\|domain-driven` | 50 |\n| ⚠️ `바운디드\\|bounded context` | **12** |\n| ⚠️⚠️ `유비쿼터스 언어` · `애그리거트` | **0** · **0** |\n\n💡 ⭐⭐ **위로 갈수록 구조이고 아래로 갈수록 모델과 말**이다 — ⚠️ **그리고 위가 훨씬 많이 불린다.** 📌 **구조는 폴더로 따라 할 수 있고 경계는 매번 도메인마다 다시 해야 하기 때문**으로 보인다(⚠️ 추론).\n\n⭐ **이 백과사전 안에서의 자리**: **위는 `microservices`**(경계가 왜 어려운가에서 멈췄다), **옆은 `hexagonal-architecture`**(층을 나누는 쪽), **아래는 `saga`·`outbox`·`cqrs`**(경계를 가로지를 때 쓰는 장치)."
+    },
+    {
+      "id": "limits",
+      "kind": "extra",
+      "heading": "이 문서의 경계 — 다루지 않은 것",
       "confidence": "inferred",
       "body": "**1. ⚠️⚠️ Eric Evans 의 원저를 읽지 않았다.** 이 문서의 1차 자료는 **Fowler 의 bliki 두 편**이고, 그 자신이 **Evans 의 책을 요약하는 위치**다. ⭐ 애그리거트·엔티티·값 객체·리포지터리 같은 **전술적 패턴은 한 줄도 안 다뤘다**(⚠️ `애그리거트` 셈은 **0건**이었다).\n\n**2. ⚠️⚠️ `클린 아키텍처|헥사고날` 을 다루지 않았다**(**174건** — `DDD` 88건보다 많다). ⭐ 공고들이 **DDD 와 나란히 요구**하는데(패스트파이브·커넥트웨이브·큐피스트) **1차 자료를 열지 않았다.** 📌 **이 문서 다음의 가장 큰 빈자리다.**\n\n**3. ⚠️ \"경계를 어떻게 찾나\"의 실천 기법을 안 다뤘다.** 이벤트 스토밍 같은 방법이 있는데 **1차 자료를 못 봤다.** ⭐ 이 문서는 **\"같은 낱말이 다른 뜻이면 경계\"** 라는 신호 하나만 준다.\n\n**4. ⚠️ `유비쿼터스 언어` 0건의 뜻을 확정하지 못했다.** ⭐ **이름 없이 하고 있을 수도 있다**(`migration` 의 스트랭글러가 그랬다). ⚠️ 다만 `용어 정의|용어집` 조차 34건(모집중 6)이라 그 해석은 약하다 — **더 세지 않았다.**\n\n**5. ⭐ `cqrs` 와의 관계를 확인했다.** 그쪽은 **\"CQRS 를 시스템 전체가 아니라 특정 바운디드 컨텍스트에만 적용하라\"** 는 경고를 옮기며 이 낱말을 **범위 한정으로만** 썼다 — **개념 자체는 안 다뤘다.** ⚠️ **그래서 겹치지 않고, 오히려 이 문서를 가리킨다.**\n\n**6. ⭐ `market` 이 없다.** `tech_relations.json` 에 `DDD`·`도메인 주도 설계`·`클린 아키텍처` 어느 이름도 **없다** — 태그가 잡는 기술 목록에 안 들어가는 낱말이라 **비우는 것이 정상**이고, 대신 `evidence` 를 공고에서 뽑았다.\n\n**7. ⚠️⚠️ 실패 사례를 이번에도 못 읽었다.** ⭐⭐ **다만 이번 1차 자료는 실패를 서술하지 않는다** — \"confusion recur\" 같은 관찰은 있어도 `microservices` 의 \"almost all ... serious trouble\" 같은 문장은 없다. 📌 **그래도 \"DDD 를 도입했다가 접은 기록\"은 공개된 것이 있을 텐데 찾지 않았다**(다섯 번째 지적)."
     }
@@ -566,6 +589,7 @@
     }
   ],
   "open_questions": [
+    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `why` 에 **무엇에서 갈라져 나왔나**(전사 통일 모델의 포기, DDD 안의 한 패턴), `limits` 를 **한계와 그 한계에서 나온 것들**(번역·계약·전술 패턴)로, **어디에 쓰이나** 절을 새로 넣었다.",
     "⚠️⚠️ **Eric Evans 의 원저를 읽지 않았다.** 1차 자료가 **Fowler 의 bliki 두 편**이고 그 자신이 **Evans 를 요약하는 위치**다. ⭐ 애그리거트·엔티티·값 객체·리포지터리 같은 **전술적 패턴을 한 줄도 안 다뤘다**(⚠️ `애그리거트` 셈은 **0건**).",
     "⚠️⚠️ **`클린 아키텍처|헥사고날` 을 다루지 않았다** — **174건으로 `DDD` 88건보다 많고** 공고들이 **DDD 와 나란히 요구**한다(패스트파이브·커넥트웨이브·큐피스트). ⭐ **이 문서 다음의 가장 큰 빈자리다.**",
     "⚠️ **\"경계를 어떻게 찾나\"의 실천 기법을 안 다뤘다** — 이벤트 스토밍 같은 방법의 **1차 자료를 못 봤다.** ⭐ 이 문서는 **\"같은 낱말이 다른 뜻이면 경계\"** 라는 신호 하나만 준다.",
