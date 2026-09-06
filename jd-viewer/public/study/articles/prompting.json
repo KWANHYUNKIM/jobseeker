@@ -27,7 +27,7 @@
     {
       "id": "why",
       "kind": "why",
-      "heading": "⭐⭐⭐ 기법 전에 전제를 적는다",
+      "heading": "⭐⭐⭐ 무엇에서 갈라져 나왔나 — 모델을 고치는 대신 입력을 고치는 쪽",
       "confidence": "confirmed",
       "sources": [
         {
@@ -38,7 +38,7 @@
           "summary": "⭐⭐⭐ **기법보다 전제를 먼저 적는 문서** — \"This guide **assumes** that you have: **a clear definition of the success criteria** ... **some ways to empirically test** ... **If not, spend time establishing that first.**\" 그리고 \"**Not every success criteria or failing eval is best solved by prompt engineering.**\""
         }
       ],
-      "body": "⭐ **이 문서의 1차 자료는 기법 목록으로 시작하지 않는다.** 첫 절의 제목이 **\"Before prompt engineering\"** 이다.\n\n> ⭐⭐⭐ \"This guide **assumes** that you have:\n> 1. **A clear definition of the success criteria** for your use case\n> 2. **Some ways to empirically test** against those criteria\n> 3. A first draft prompt you want to improve\"\n> ⭐⭐⭐ **\"If not, spend time establishing that first.\"**\n\n💡 ⭐⭐ **\"없으면 그것부터 하는 데 시간을 쓰라\"** — ⚠️ **기법을 배우지 말라는 게 아니라 순서가 있다는 것**이고, 📌 **이 순서는 이 백과사전이 이미 세 번 만난 것**이다.\n\n| 문서 | 고치는 말 | 판정하는 말 |\n|---|---|---|\n| `performance` | `성능 최적화` **2976** | `프로파일링` 180 · `p99` **23** |\n| `ai-coding` | 도구 이름 **1802** | ⭐ `AI ~ 검증` 1052 — ⚠️ 그런데 **체감이 39%포인트 어긋났다** |\n| ⭐ **`prompting`** | `프롬프트` **1254** | `eval` **113** · `성공 기준` **154** |\n\n⭐⭐⭐ **세 번 다 같은 자리다** — 💡 **무엇으로 판정할지 정하기 전에 고치기 시작한다.**\n\n📌 ⭐⭐⭐ **그리고 가이드가 두 번째 선을 긋는다.**\n\n> ⭐⭐⭐ **\"Not every success criteria or failing eval is best solved by prompt engineering.\"**\n> ⭐⭐ \"For example, you can sometimes **improve latency and cost more easily by selecting a different model**.\"\n\n⚠️ **제품 문서가 자기 기능의 범위를 좁힌다** — ⭐ 이 백과사전이 모아 온 **\"제품이 스스로 그은 선\"** 이고, 📌 **`ai-coding` 의 제품 문서(부정어로 가득)와 같은 쪽**이다(`aws` 는 반대였다).\n\n💡 ⭐⭐ **예로 든 것이 구체적이다 — 지연 시간과 비용은 모델을 바꾸는 편이 쉽다.** ⚠️ 그런데 **`토큰 수|비용 최적화` 는 공고에 22건**이다.\n\n📌 ⭐ **기법은 그다음에 온다.**\n\n> ⭐ \"All prompting techniques (from **clarity and examples to XML structuring, role prompting, thinking, and prompt chaining**) are covered in [Prompting best practices]. **That's the living reference; start there.**\"\n\n⭐ **\"living reference\"** — 💡 **기법은 계속 바뀌므로 따로 두고**, ⚠️ **이 문서(개요)는 바뀌지 않는 것만 담는다.** 📌 **그래서 여기 남은 것이 \"먼저 판정 기준을 세우라\"와 \"모든 게 프롬프트로 풀리진 않는다\" 둘뿐**이다.\n\n💡 ⭐⭐ **공고가 그 기법 이름들을 실제로 부른다.**\n\n> ⭐⭐⭐ `**Chain-of-Thought, ReAct, Self-Reflection** 등 고급 프롬프트 엔지니어링 기법에 대한 이해 및 적용 경험이 있으신 분` — 씨이랩\n> ⭐ `**프롬프트 및 컨텍스트 구성 방식 정리**` — 제논\n\n⚠️ **다만 `체이닝|chain-of-thought` 는 65건, `few-shot` 은 39건**이다 — ⭐ **기법 이름을 대는 곳도 많지 않다.**"
+      "body": "⭐⭐⭐ **이것은 복잡도 사다리의 아래 칸이다.** `ai-agents` 의 1차 자료가 그 사다리를 순서대로 적는다.\n\n| 칸 | 무엇을 바꾸나 |\n|---|---|\n| ⭐ ① **단일 호출** | 아무것도 안 바꾼다 |\n| ⭐⭐ ② **검색·예시를 붙인 단일 호출** | **입력**(→ `rag` · **여기**) |\n| ⭐⭐ ③ **워크플로** | **경로를 코드로** |\n| ⭐⭐ ④ **에이전트** | **경로를 모델이** |\n\n💡 ⭐⭐⭐ **그리고 원문이 ②로 충분한 경우가 많다고 적는다** — \"For many applications, **optimizing single LLM calls with retrieval and in-context examples is usually enough**.\"\n\n📌 ⭐⭐ **또 하나의 갈라짐이 있다 — 모델을 고치는 쪽과 입력을 고치는 쪽.** ⚠️ **앞선 방식은 학습**(파인튜닝, 공고 **607건**)이고, ⭐ **이쪽은 모델을 그대로 두고 입력만 바꾼다.** ⚠️ **이 문서는 그 둘의 비교를 1차 자료로 확인하지 못했다**(`open_questions`).\n\n⭐⭐⭐ **그런데 이 낱말의 공식 가이드는 기법으로 시작하지 않는다.** 첫 절의 제목이 **\"Before prompt engineering\"** 이다.\n\n> ⭐⭐⭐ \"This guide **assumes** that you have: 1. **A clear definition of the success criteria** for your use case 2. **Some ways to empirically test** against those criteria 3. A first draft prompt you want to improve\"\n> ⭐⭐⭐ **\"If not, spend time establishing that first.\"**\n\n💡 ⭐⭐ **기법 목록이 아니라 \"이게 없으면 이 문서를 읽어도 소용없다\"로 시작한다** — ⚠️ **입력을 고치는 일은 무엇이 나아졌는지 잴 수 없으면 아무 뜻이 없기 때문**이다.\n\n📌 ⭐⭐⭐ **그리고 자기 범위도 좁힌다.**\n\n> ⭐⭐⭐ **\"Not every success criteria or failing eval is best solved by prompt engineering.\"** — \"you can sometimes **improve latency and cost more easily by selecting a different model**\"\n\n⭐ **제품 문서가 자기 기능의 범위를 좁히는 드문 자리**다 — 📌 **`ai-coding` 의 제품 문서(부정어로 가득)와 같은 쪽**이고 **`aws`(부정어 없음)와 반대쪽**이다.\n\n⭐ **기법은 따로 뺐다** — \"All prompting techniques ... are covered in [Prompting best practices]. **That's the living reference**\". 💡 ⚠️ **바뀌는 것과 안 바뀌는 것을 저자가 갈라 둔 것**이고, 📌 **개요에 남은 것은 전제와 범위 둘뿐**이다."
     },
     {
       "id": "fragile",
@@ -48,9 +48,32 @@
       "body": "⚠️ **이 절은 근거가 갈린다** — ⭐ **가이드의 요구는 1차 자료**이고, **왜 그 요구가 필요한지에 대한 연구는 1차 자료로 확인하지 못했다**(`open_questions`).\n\n⭐ **가이드가 요구하는 것은 \"실증적으로 시험할 방법\"** 이다(\"some ways to **empirically test** against those criteria\"). 💡 ⚠️ **왜 눈으로 보고 판단하면 안 되나.**\n\n📌 ⭐⭐ **검색에서 그 답에 해당하는 연구들이 나왔다** — 프롬프트의 **사소한 변형**에 모델 출력이 크게 흔들린다는 것, **의미가 같은 프롬프트들 사이에서도 성능이 크게 갈린다**는 것, 그래서 **하나의 프롬프트로 평가하면 신뢰할 수 없다**는 것.\n\n⚠️⚠️ **그런데 원문(PDF)을 열지 못했다** — ⭐ **검색 결과의 요약만 보았으므로 숫자도 문장도 옮기지 않았다.** 📌 **`documentation`·`performance` 사이클에서 세운 규칙대로, 근거의 강도를 낮췄다는 사실을 여기 적어 둔다.**\n\n💡 ⭐⭐⭐ **다만 방향은 가이드의 요구와 맞물린다** — **출력이 흔들린다면 한 번 돌려 보고 판단할 수 없고**, ⚠️ **그래서 \"실증적으로 시험할 방법\"이 전제 조건이 된다.**\n\n📌 ⭐⭐⭐ **그리고 공고 하나가 그 위험을 이름으로 든다.**\n\n> ⭐⭐⭐ `LLM 출력 품질의 측정 — **평균 점수의 함정(ceiling effect, failure tail hiding)** 을 피해 모델·프롬프트 교체를 결정할 수 있는 **eval 설계**` — 매니패스트\n\n⭐⭐ **\"failure tail hiding\"** — 💡 **평균만 보면 드물게 크게 틀리는 경우가 가려진다.** ⚠️ **`performance` 사이클에서 `p99` 가 23건이었던 것과 같은 형태**다: **평균은 쉽고 꼬리는 어렵다.**\n\n📌 ⭐ **그 밖에 운영 쪽 이름들도 나온다.**\n\n> ⭐⭐ `**프롬프트 캐싱, 컨텍스트 윈도우 최적화**, 멀티 프로바이더 폴백 등 LLM 운영 최적화 경험` — 링크알파코리아\n> ⭐ `부서별 Budget 추적, PII 마스킹, **프롬프트 보안** 등 AI 거버넌스 레이어 개발` — 랩씨드\n> ⭐ `**프롬프트 최적화, 응답 품질 평가(Eval), 가드레일**` — 누리미디어\n\n⭐ **`가드레일` 은 245건**으로 `eval` 113건보다 많다 — 💡 ⚠️ **막는 쪽이 재는 쪽보다 이름을 더 얻었다**(⚠️ 이 해석은 추론이다).\n\n📌 ⭐⭐ **그리고 프롬프트가 채용 절차에 들어온 자리도 있다.**\n\n> ⭐⭐⭐ `※ 채용 과정 중, 간단한 **프롬프트 설계 테스트**가 진행될 수 있습니다. (30분 내외)` — 멋쟁이사자처럼\n\n⭐ **`ai-coding` 사이클의 컬리 공고**(`생성형 AI를 활용한 코딩테스트`)와 같은 방향이다."
     },
     {
-      "id": "limits",
+      "id": "nextgen",
       "kind": "limits",
-      "heading": "경계 — 이 문서가 하지 않는 것",
+      "heading": "⭐⭐ 이 방식의 한계 — 그리고 그 한계에서 나온 것들",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Prompt engineering overview",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+          "publisher": "Anthropic",
+          "kind": "docs",
+          "summary": "⭐⭐⭐ **기법보다 전제를 먼저 적는 문서** — \"This guide **assumes** that you have: **a clear definition of the success criteria** ... **some ways to empirically test** ... **If not, spend time establishing that first.**\" 그리고 \"**Not every success criteria or failing eval is best solved by prompt engineering.**\""
+        }
+      ],
+      "body": "⭐⭐⭐ **한계가 \"입력만 바꾼다\"는 성질에서 곧바로 나온다** — **모델도 자료도 그대로**이기 때문이다.\n\n| 한계 | 왜 생기나 | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **모델이 모르는 사실은 못 만든다** | 입력만 바꾼다 | ⭐ **자료를 넣어 준다** → `rag`(그 문서: \"모델은 여전히 프롬프트 안에 있는 것만 안다\") |\n| ⭐⭐ **말투·형식이 아니라 능력이 문제면 안 풀린다** | 같은 이유 | ⭐ **학습** → 파인튜닝(공고 **607건**) — ⚠️ 비교는 확인 못 했다 |\n| ⭐⭐⭐ **지연·비용은 이쪽 일이 아니다** | \"**Not every** ... is best solved by prompt engineering\" | ⭐ **모델 교체** · **캐싱**(링크알파 `프롬프트 캐싱, 컨텍스트 윈도우 최적화`) |\n| ⭐⭐⭐ **판정 기준이 없으면 고쳐도 모른다** | \"If not, **spend time establishing that first**\" | ⭐ **평가** → `eval`(공고 **113건**) · `testing` · 매니패스트 `**평균 점수의 함정** ... eval 설계` |\n| ⭐⭐ **표현만 달라도 결과가 갈린다** | 모델이 입력에 민감하다 | ⭐ **여러 프롬프트로 평가** — ⚠️ **관련 연구 원문(PDF)을 못 읽었다** |\n| ⭐⭐ **입력을 남이 넣을 수 있다** | 프롬프트가 데이터와 섞인다 | ⭐ **프롬프트 인젝션**(공고 **66건**) → `authz`·`secrets` · **가드레일**(**245건**) |\n| ⭐ **한 번에 하나만 한다** | 단일 호출이다 | ⭐ **다음 칸** → 워크플로 · `ai-agents` |\n\n⭐⭐⭐ **넷째 줄이 이 문서의 축이다** — 💡 **`프롬프트` 1254건 대 `eval` 113건 · `성공 기준` 154건.** 📌 **`performance`(2976:180)·`ai-coding`(체감 어긋남)에 이어 세 번째로 같은 형태**다.\n\n⚠️⚠️ **`가드레일` 245건이 `eval` 113건보다 많다** — ⭐ **막는 쪽이 재는 쪽보다 이름을 더 얻었다.**"
+    },
+    {
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 그리고 채용 절차에도 들어왔다",
+      "confidence": "inferred",
+      "body": "⚠️ **`market` 이 없다** — `tech_relations.json` 에 `프롬프트` 이름이 없다.\n\n⭐⭐ **공고에서 이 일이 얹혀 있는 자리들.**\n\n| 어디 | 무엇을 하나 | 공고 |\n|---|---|---|\n| ⭐⭐⭐ **LLM 서비스 품질** | 최적화·평가·가드레일을 한 묶음으로 | 누리미디어 `**프롬프트 최적화, 응답 품질 평가(Eval), 가드레일**, 스트리밍 응답` |\n| ⭐⭐⭐ **평가 설계** | 무엇으로 판정할지 | 매니패스트 `**평균 점수의 함정(ceiling effect, failure tail hiding)** 을 피해 ... **eval 설계**` |\n| ⭐⭐ **에이전트 안에서** | 도구 정의도 프롬프트다 | 코나체인 `에이전트 오케스트레이션, **프롬프트 엔지니어링, 도구 설계**` |\n| ⭐ **운영 최적화** | 캐싱·컨텍스트 윈도우 | 링크알파 `**프롬프트 캐싱, 컨텍스트 윈도우 최적화**, 멀티 프로바이더 폴백` |\n| ⭐ **거버넌스·보안** | 프롬프트도 보호 대상 | 랩씨드 `PII 마스킹, **프롬프트 보안** 등 AI 거버넌스 레이어` |\n| ⭐⭐⭐ **채용 절차** | 능력으로 평가한다 | 멋쟁이사자처럼 `**프롬프트 설계 테스트**가 진행될 수 있습니다. (30분 내외)` |\n\n💡 ⭐⭐ **마지막 줄은 `ai-coding` 의 컬리 공고**(`생성형 AI를 활용한 코딩테스트`)**와 같은 방향**이다 — ⭐ **도구를 쓰는 능력이 평가 대상이 됐다.**\n\n📌 ⭐ **셈으로 본 주변**: `RAG` **1573** · `프롬프트` **1254** · `프롬프트 엔지니어링` **649** · `파인튜닝` 607 · `가드레일` 245 · `컨텍스트` 216 · ⚠️ `성공 기준` **154** · ⚠️ `eval` **113** · ⚠️⚠️ `시스템 프롬프트` **16**.\n\n💡 ⭐ **`RAG` 가 프롬프트보다 많다** — ⚠️ 그쪽은 **넣을 것을 고르는 일**이라 층이 다르고, 📌 **몬드 공고처럼 둘을 \"또는\"으로 묶는 곳이 많다**(`프롬프트 엔지니어링 또는 RAG 구조를 직접 설계`).\n\n⭐ **이 백과사전 안에서의 자리**: **옆은 `rag`**(자료), **위는 `ai-agents`**(경로), **아래는 `ai-coding`**(도구로 쓰는 쪽), **판정은 `testing`**, **막는 것은 `authz`**."
+    },
+    {
+      "id": "limits",
+      "kind": "extra",
+      "heading": "이 문서의 경계 — 다루지 않은 것",
       "confidence": "inferred",
       "body": "**1. ⚠️⚠️ 기법을 다루지 않았다.** ⭐ 1차 자료가 기법을 **별도의 \"living reference\"** 로 빼 두었고 — 📌 **이 문서도 그 구분을 따랐다.** ⚠️ 다만 `체이닝|chain-of-thought` **65건**, `few-shot` **39건**이라 **셈으로는 작다.**\n\n**2. ⚠️⚠️ 프롬프트 민감성 연구의 원문을 못 읽었다.** ⭐⭐ **규칙대로 검색했고 논문 후보가 여럿 나왔다** — ⚠️ **그런데 PDF 라 본문을 추출하지 못했다.** 📌 **그래서 숫자도 문장도 옮기지 않고 방향만 적었다**(`fragile` 절 첫 줄에 밝혀 뒀다). ⭐ **`ai-coding` 에서는 같은 규칙으로 RCT 원문을 얻었는데 여기서는 형식에 막혔다.**\n\n**3. ⚠️ 프롬프트 인젝션을 다루지 않았다**(**66건**). ⭐ 보안 쪽이고 `authz`·`secrets` 와 겹칠 수 있는데 **1차 자료를 안 열었다.**\n\n**4. ⚠️ `가드레일` 245건을 다루지 않았다** — ⭐ `eval` 113건보다 많은데 **막는 쪽의 1차 자료를 안 봤다.**\n\n**5. ⚠️⚠️ `평가|eval` 셈이 불안정하다.** 넓게 세면 **860건에 모집중 63%**(인사·성과 평가가 섞인다), `eval` 로 좁혀도 **113건에 66%** 다. ⭐ **두 값을 나란히 적고 넓은 쪽은 근거로 쓰지 않았다.**\n\n**6. ⭐ `rag` 와의 겹침을 확인했다.** 그 문서는 `프롬프트` 를 **33회** 언급하지만 **\"프롬프트에 무엇을 넣을지 고르는 것\"**(검색)이고 — ⭐ 실제로 그 문서가 **\"모델은 여전히 프롬프트 안에 있는 것만 안다\"** 고 적는다. 📌 **겹치지 않고 오히려 이 문서를 가리킨다.**\n\n**7. ⚠️ 파인튜닝과의 비교를 다루지 않았다**(`파인튜닝` **607건**). ⭐ 가이드가 **\"모델을 바꾸는 편이 쉬울 때가 있다\"** 고만 적고, **언제 프롬프트가 아니라 학습인지는** 이 문서가 확인하지 못했다.\n\n**8. ⭐ `market` 이 없다** — `tech_relations.json` 에 `프롬프트` 이름이 **없다**(`OpenAI` 258건 · `LangChain` 206건이 있을 뿐이다).\n\n**9. ⚠️ 한 제공자의 문서만 읽었다** — ⭐ `ai-coding` 에서와 같은 한계다."
     }
@@ -489,6 +512,7 @@
     }
   ],
   "open_questions": [
+    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `why` 에 **무엇에서 갈라져 나왔나**(복잡도 사다리의 ②칸이자, 모델을 고치는 대신 입력을 고치는 쪽), `limits` 를 **한계와 그 한계에서 나온 것들**로, **어디에 쓰이나** 절을 새로 넣었다.",
     "⚠️⚠️ **기법을 다루지 않았다.** ⭐ 1차 자료가 기법을 **별도의 \"living reference\"** 로 빼 두었고 **이 문서도 그 구분을 따랐다.** ⚠️ 다만 `체이닝|chain-of-thought` **65건**, `few-shot` **39건**으로 **셈으로는 작다.**",
     "⚠️⚠️ **프롬프트 민감성 연구의 원문을 못 읽었다.** ⭐⭐ **규칙대로 검색했고 논문 후보가 여럿 나왔다** — ⚠️ **그런데 PDF 라 본문을 추출하지 못했다.** 📌 **숫자도 문장도 옮기지 않고 방향만 적었다**(`fragile` 절 첫 줄에 밝혔다). ⭐ **`ai-coding` 에서는 같은 규칙으로 RCT 원문을 얻었는데 여기서는 형식에 막혔다.**",
     "⚠️ **프롬프트 인젝션을 다루지 않았다**(**66건**) — 보안 쪽이고 `authz`·`secrets` 와 겹칠 수 있는데 **1차 자료를 안 열었다.**",
