@@ -2,6 +2,18 @@
   "updated_at": "2026-09-06",
   "companies": [
     {
+      "slug": "meesho",
+      "name": "Meesho",
+      "name_en": "Meesho",
+      "country": "IN",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "인도에서 판매 수수료를 받지 않는 커머스 — 대신 물류와 광고로 벌고, 주소도 신용도 갖춰지지 않은 시장을 시스템으로 메운다",
+      "updated_at": "2026-09-06",
+      "domain": "meesho.com"
+    },
+    {
       "slug": "deliveroo",
       "name": "Deliveroo",
       "name_en": "Deliveroo",
@@ -1351,7 +1363,11 @@
     "아프리카에서 사업체가 돈을 받게 한다",
     "AI 를 회사 규모로 굴리면서 규정을 지킨다",
     "무엇이 실제로 나아졌는지 판별한다",
-    "결제를 승인하면서 사기를 막는다"
+    "결제를 승인하면서 사기를 막는다",
+    "판매자에게 언제 얼마를 왜 주는지 설명한다",
+    "주소를 못 쓰는 나라에서 배달지를 찾는다",
+    "사기 네트워크를 실시간으로 끊는다",
+    "10억 대 기기의 인터넷에 물건을 보여 준다"
   ],
   "countries": {
     "KR": "한국",

@@ -1,0 +1,164 @@
+{
+  "slug": "meesho",
+  "name": "Meesho",
+  "name_en": "Meesho",
+  "country": "IN",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-09-06",
+  "domain": "meesho.com",
+  "one_liner": "인도에서 판매 수수료를 받지 않는 커머스 — 대신 물류와 광고로 벌고, 주소도 신용도 갖춰지지 않은 시장을 시스템으로 메운다",
+  "business_model": "⚠️ **판매자에게 커미션을 받지 않는다** — 인도 커머스 중 처음으로 그렇게 했고, 대신 **물류(이행 수수료)** 와 **광고**로 번다. **광고가 가장 빨리 크는 매출원**이다. **자체 물류 플랫폼 Valmo** 를 세우고 **리셀러 네트워크**를 만들어 **인도 최초의 수평 이커머스 상장사**가 됐다(2025년 12월).\n\n**2025년 9월까지 12개월 기준 연간 거래 판매자 70만 6,471명 · 연간 거래 사용자 2억 3,420만 명**이고, **FY25 인도 이커머스 배송 물량의 29~31%** 를 차지한다.\n\n⚠️ **커미션을 안 받는다는 결정이 기술 문제를 바꿔 놓는다** — **거래마다 떼는 몫이 없으니 정산은 `얼마를 뗐나` 가 아니라 `왜 이만큼인가` 를 설명해야 하고**, 물류를 직접 하니 **주소를 읽는 일까지 이 회사의 문제가 된다**(이 정리는 이 사이트의 재구성이다).",
+  "products": [
+    "Meesho (소비자 앱)",
+    "판매자 플랫폼 (수수료 0)",
+    "Valmo (자체 물류)",
+    "광고 (판매자 대상)"
+  ],
+  "domain_map": {
+    "title": "수수료를 안 받기로 하면 나머지가 전부 문제가 된다",
+    "question": "이 회사의 도메인들이 어떻게 맞물리나",
+    "code": "flowchart TD\n  S[\"<b>판매자 약 70만 명</b><br/>• 커미션 0\"]:::list --> O[\"<b>주문</b>\"]:::list\n  U[\"<b>사용자 2억 3천만 명</b>\"]:::list --> O\n  O --> A[\"<b>주소를 읽는다</b><br/>• GeoIndia · 지오코더\"]:::quiet\n  O --> F[\"<b>사기를 끊는다</b><br/>• TrustMesh (그래프+시퀀스)\"]:::quiet\n  O --> I[\"<b>이미지를 보낸다</b><br/>• 10억 기기의 다양성\"]:::quiet\n  A --> D[\"<b>Valmo 로 배달</b>\"]:::list\n  D --> P[\"⚠️ <b>판매자에게 정산한다</b><br/>• 얼마가 아니라 왜 이만큼인가\"]:::accent\n  F --> P\n  P --> R[\"<b>버는 곳</b><br/>• 물류 이행 수수료<br/>• 광고 (가장 빨리 큰다)\"]:::list"
+  },
+  "revenue_streams": [
+    {
+      "name": "물류 (이행 수수료)",
+      "how": "**자체 물류 플랫폼 Valmo** 로 직접 배달하고 그 수수료를 받는다. **FY25 인도 이커머스 배송 물량의 29~31%.**",
+      "domains": [
+        "주소를 못 쓰는 나라에서 배달지를 찾는다",
+        "판매자에게 언제 얼마를 왜 주는지 설명한다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How Meesho Built Its IPO Muscle In 2025",
+          "url": "https://inc42.com/features/how-meesho-built-its-ipo-muscle-in-2025/",
+          "publisher": "Inc42",
+          "date": "2025",
+          "summary": "판매자에게 커미션을 받지 않은 최초의 인도 커머스로, 자체 물류(Valmo)를 세우고 리셀러 네트워크를 만들어 인도 최초의 수평 이커머스 상장사가 됐다. 2025년 9월까지 12개월간 연간 거래 판매자 70만 6,471명·연간 거래 사용자 2억 3,420만 명."
+        }
+      ]
+    },
+    {
+      "name": "광고 (판매자 대상)",
+      "how": "**가장 빨리 크는 매출원**이다. 커미션이 없으므로 **판매자가 더 팔리게 하는 값을 따로 받는 구조**다(뒤쪽은 재구성이다).",
+      "domains": [
+        "10억 대 기기의 인터넷에 물건을 보여 준다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How Meesho Built Its IPO Muscle In 2025",
+          "url": "https://inc42.com/features/how-meesho-built-its-ipo-muscle-in-2025/",
+          "publisher": "Inc42",
+          "date": "2025",
+          "summary": "판매자에게 커미션을 받지 않은 최초의 인도 커머스로, 자체 물류(Valmo)를 세우고 리셀러 네트워크를 만들어 인도 최초의 수평 이커머스 상장사가 됐다. 2025년 9월까지 12개월간 연간 거래 판매자 70만 6,471명·연간 거래 사용자 2억 3,420만 명."
+        }
+      ]
+    },
+    {
+      "name": "⚠️ 커미션은 받지 않는다",
+      "how": "⚠️ **인도 커머스 중 처음으로 판매 수수료를 없앴다.** 그래서 **정산 화면이 `얼마를 뗐나` 가 아니라 `물류·세금·광고·대출 상환이 왜 이만큼인가` 를 설명해야 한다** — 정산이 제품이 된다(뒤쪽은 재구성이다).",
+      "domains": [
+        "판매자에게 언제 얼마를 왜 주는지 설명한다",
+        "사기 네트워크를 실시간으로 끊는다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "How Meesho Built Its IPO Muscle In 2025",
+          "url": "https://inc42.com/features/how-meesho-built-its-ipo-muscle-in-2025/",
+          "publisher": "Inc42",
+          "date": "2025",
+          "summary": "판매자에게 커미션을 받지 않은 최초의 인도 커머스로, 자체 물류(Valmo)를 세우고 리셀러 네트워크를 만들어 인도 최초의 수평 이커머스 상장사가 됐다. 2025년 9월까지 12개월간 연간 거래 판매자 70만 6,471명·연간 거래 사용자 2억 3,420만 명."
+        },
+        {
+          "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+          "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+          "publisher": "Meesho Blog",
+          "date": "2026-05-26",
+          "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "판매자에게 언제 얼마를 왜 주는지 설명한다",
+      "why": "⚠️ **매일 14만 명 넘는 판매자에게 돈이 나가는데 그들이 그 숫자를 이해하지 못했다.** 공제가 **물류·세금·광고·인플루언서 마케팅·대출 상환**처럼 서로 다른 시스템에서 오는데 화면에는 **`총 미결제 잔액` 한 줄**만 있었다. ⚠️ **게다가 모든 판매자 결제가 게이트웨이 하나만 지나갔다 — 대체 경로가 없었다.** ✅ **본문 확인함**(2026-05-26).",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "주소를 못 쓰는 나라에서 배달지를 찾는다",
+      "why": "⚠️ **인도의 주소는 규격화돼 있지 않다.** 회사가 이 문제로 글을 둘 냈다 — **`인도 주소를 읽는 기계를 만들었다`(GeoIndia, 2026-05-07)** 와 **`배송 기사가 이미 아는 것을 지오코더에 가르친다`(2026-05-25)**. ⏳ **본문은 아직 안 읽었다.** ⭐ **이 사이트에 없는 도메인이다.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "사기 네트워크를 실시간으로 끊는다",
+      "why": "**커미션이 없고 반품이 많은 시장에서 사기는 곧 원가다.** 회사가 글 셋을 냈다 — **`TrustMesh: 그래프와 시퀀스로 생각하는 실시간 사기 두뇌`(2026-07-15)** · **`복잡한 사기 네트워크를 풀어헤친다`(2025-07-31)** · **`모든 주문에는 위험이 따른다`(2026-06-05)**. ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "10억 대 기기의 인터넷에 물건을 보여 준다",
+      "why": "⚠️ **저사양 기기와 느린 망이 기본값인 시장이다.** 글 셋이 이 문제를 다룬다 — **`픽셀 격차: 10억 기기 인터넷을 위한 이미지 서비스`(2026-06-24)** · **`알맞은 픽셀: 규모에서 이미지 최적화`(2026-08-25)** · **`XML 레이아웃에 숨어 있던 350KB`(2026-08-17)**. ⏳ **본문은 아직 안 읽었다.**",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "eras": [],
+  "open_questions": [
+    "⚠️ **커미션을 안 받는 구조가 기술 결정에 어디까지 영향을 주는지 아직 모른다.** **정산이 `왜 이만큼인가` 를 설명하는 제품이 된 것**은 확인했지만, **광고·물류 쪽 시스템이 그 구조 때문에 어떻게 달라졌는지**는 자료를 못 봤다.",
+    "⚠️ **도메인 넷 중 셋이 아직 본문 미독이다** — 주소·사기·이미지. **제목과 목록으로만 도메인을 세웠다**(각각 글이 둘 이상 확인돼 근거는 있다).",
+    "⚠️ **수치가 약한 블로그다** — 후보 조사에서 확인한 대로 `building-reviews-at-scale` 에는 **지연·처리량 숫자가 없다.** 정산 글은 예외적으로 수치가 많다.",
+    "⚠️ **Valmo(자체 물류)의 기술 자료를 아직 못 찾았다** — 사업 자료에는 나오는데 엔지니어링 글이 목록에 없다.",
+    "⚠️ **연표(eras)를 못 세웠다.** 2015년 창업과 2025년 12월 상장은 알지만 **기술이 언제 무엇에서 무엇으로 바뀌었는지**를 말하는 회고를 아직 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "The System Behind Every Seller Payout: How Meesho Rebuilt Trust at Scale",
+      "url": "https://www.meesho.io/blog/the-system-behind-every-seller-payout-how-meesho-rebuilt-trust-at-scale",
+      "publisher": "Meesho Blog",
+      "date": "2026-05-26",
+      "summary": "판매자가 자기 정산액을 이해하지 못하던 문제를 다룬다. 결제 게이트웨이를 이중화해 실패율을 3%에서 1% 미만으로 낮췄고, 공제를 정산 전에 모두 반영하는 FTRP 를 95% 이상으로 올렸으며, 내부 팀이 스스로 회수 로직을 정의하는 자동화 플랫폼을 만들었다."
+    },
+    {
+      "title": "How Meesho Built Its IPO Muscle In 2025",
+      "url": "https://inc42.com/features/how-meesho-built-its-ipo-muscle-in-2025/",
+      "publisher": "Inc42",
+      "date": "2025",
+      "summary": "판매자에게 커미션을 받지 않은 최초의 인도 커머스로, 자체 물류(Valmo)를 세우고 리셀러 네트워크를 만들어 인도 최초의 수평 이커머스 상장사가 됐다. 2025년 9월까지 12개월간 연간 거래 판매자 70만 6,471명·연간 거래 사용자 2억 3,420만 명."
+    },
+    {
+      "title": "Building Reviews at Scale - From Synchronous Writes to Event-Driven Intelligence",
+      "url": "https://www.meesho.io/blog/building-reviews-at-scale",
+      "publisher": "Meesho Blog",
+      "date": "2026-03-31",
+      "summary": "리뷰 제출의 트랜잭션 경계를 데이터베이스 쓰기 하나로 좁히고 나머지를 Kafka 이벤트로 뺐다. 미디어는 제출 API 에서 떼어 객체 저장소로 직접 올린다."
+    },
+    {
+      "title": "TrustMesh: How We Built a Real-Time Fraud Brain That Thinks in Graphs and Sequences",
+      "url": "https://www.meesho.io/blog/trustmesh-how-we-built-a-real-time-fraud-brain-that-thinks-in-graphs-and-sequences",
+      "publisher": "Meesho Blog",
+      "date": "2026-07-15",
+      "summary": "그래프와 시퀀스로 판단하는 실시간 사기 탐지. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "Teaching a Machine to Read Indian Addresses: How We Built GeoIndia",
+      "url": "https://www.meesho.io/blog/teaching-a-machine-to-read-indian-addresses-how-we-built-geoindia-2",
+      "publisher": "Meesho Blog",
+      "date": "2026-05-07",
+      "summary": "인도 주소를 기계가 읽게 만든 이야기. ⏳ 본문은 아직 읽지 않았다."
+    },
+    {
+      "title": "The Pixel Gap: Building an Image Service for India's Billion-Device Internet",
+      "url": "https://www.meesho.io/blog/the-pixel-gap-building-an-image-service-for-indias-billion-device-internet",
+      "publisher": "Meesho Blog",
+      "date": "2026-06-24",
+      "summary": "10억 대 규모의 기기 다양성 위에서 이미지를 어떻게 보내는가. ⏳ 본문은 아직 읽지 않았다."
+    }
+  ]
+}
