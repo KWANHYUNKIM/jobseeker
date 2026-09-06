@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Chroma** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`, `serverless`+`execution-engine` 을 함께 읽었다). 빈 도메인 둘 — 쓰기 로그도 객체 저장소 위에 짓는다(`/engineering/wal3` 읽어 뒀다) · 색인 수백만 개를 테넌트별로 다룬다. 안 읽은 것 — `/engineering/distributed-chroma-byoc` · `/engineering/transactions` · `/engineering/billing`. ⚠️ 글에 발행일이 없다(저작권 표기 2026).|
+| **Chroma** | US · SaaS | 프로파일 + 기능 2개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`). 빈 도메인 하나 — 색인 수백만 개를 테넌트별로 다룬다(`/engineering/distributed-chroma-byoc` · `/engineering/transactions` 가 후보). 안 읽은 것 — BYOC · 에이전트 스웜 · 사용량 과금 글. ⚠️ 글에 발행일이 없다(저작권 표기 2026).|
 
 ## 대기
 
