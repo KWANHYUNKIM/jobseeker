@@ -4,31 +4,53 @@
 
 ## 지금 쓰는 중
 
-**없음.** 직전 사이클에서 **Go**(`go`)를 완성했다 — **116번째 문서**.
+**없음.** 직전 사이클에서 **상태 관리**(`state-management`)를 완성했다 — **117번째 문서**.
 
-### 직전 사이클 (Go)
+### 직전 사이클 (상태 관리)
 
-⭐⭐⭐ **축: "뺀 것으로 만든 언어."** 그리고 **뺀 이유가 하나도 성능이 아니었다.**
+⚠️ **먼저 겹침을 셌다** — `caching` 에 `서버 상태`·`Redux`·`Zustand`·`React Query` 가 **전부 0회**, `react` 에는 `Redux` 9·`Zustand` 12 가 있지만 **`서버 상태`·`전역` 은 0회**(이름만 나열). ⭐ **그래서 `상태 관리` alias 를 `react` 에서 가져왔다**(`kotlin`→`asyncio` 의 `코루틴` 이관과 같은 규칙의 역방향). `react` 의 `aliases`·`index.json`·`open_questions` 를 함께 고쳤다.
 
-> ⭐⭐⭐ **"Programming had become too difficult ... One had to choose either efficient compilation, efficient execution, or ease of programming; all three were not available in the same mainstream language."**
-> **예외** — "coupling exceptions to a control structure ... **results in convoluted code**" · "encourage programmers to **label too many ordinary errors, such as failing to open a file, as exceptional**"
-> ⭐⭐⭐ **어서션** — "programmers use them as **a crutch to avoid thinking about proper error handling**" · "**servers continue to operate instead of crashing after a non-fatal error**"
-> **제네릭** — "come at a **cost in complexity**" · "value **proportionate to the complexity**"
-> **상속** — "reducing the **bookkeeping**"
+⭐⭐⭐ **축: "한 낱말이 두 물건을 가리킨다."**
 
-⚠️⚠️ **직접 셈을 아예 못 쓴 첫 낱말이다.** `\bGo\b` 가 "Go to"·회사명에 걸려 1414건(**모집중 65%**)이 나왔고, `채널` 은 채널톡·유통 채널로 완전히 오염됐다. **`market` 의 848건에 기댔다.**
+> ⭐⭐⭐ **"server state is totally different"**
+> "Is persisted remotely in a location **you may not control or own**"
+> ⭐⭐⭐ "Implies **shared ownership** and can be **changed by other people without your knowledge**"
+> "Can potentially become **'out of date'**..."
+> ⭐⭐ "most traditional state management libraries are great for working with client state, they are **not so great at working with async or server state**"
 
-⭐⭐⭐ 대신 **`고루틴|goroutine` 1건(모집중 0)** — 이 백과사전 최대 대비. 그리고 공고가 Go 를 부르는 방식이 **"중 1개 이상"** 이다.
+⭐⭐ **공고 한 줄이 축을 그대로 적고 있었다** — 아치서울 `상태 관리(Zustand 등)와 **서버 상태**(TanStack Query 등)를 **구분해 다룰 수 있는 분**`.
 
-⚠️⚠️ **스스로 밝힌 두 구멍**: **동시성 모델을 한 줄도 못 썼고**(미룸에 보강 자리로 올렸다), **반론 자료를 하나도 안 읽었다**(`distributed-lock` 은 Redlock 논쟁 양쪽을 실었는데).
+**셈**: `상태 관리` **788** vs `서버 상태` **69** · `전역 상태` **20**. ⭐ 그리고 `React Query|TanStack` **393** ≈ `Zustand` **391** > `Redux` **243**.
+
+⚠️⚠️ **가장 약한 곳**: Redux·Zustand·Jotai 의 **공식 문서를 하나도 안 열었다.** 1차 자료가 TanStack Query Overview 하나뿐이다.
 
 ### 다음
 
-**상태 관리**(`state-management`) — QUEUE 맨 위(이미 올려 둔 둘째 줄이 올라왔다). `react` 가 "가장 큰 빈자리"라고 적은 자리, **990건(모집중 313)**.
+**Git**(`git`) — QUEUE 맨 위. ⭐ 또 층을 바꿨다(프론트엔드 → **협업/도구, 통째로 비어 있다**).
 
-⚠️⚠️ **alias 이관 절차가 필요하다** — `상태 관리` 를 **`react` 가 갖고 있는데 그 문서는 1차 자료로 다루지 않았다.** 새 문서가 가져오고 **`react` 의 `aliases` 와 `index.json` 을 함께 고친다.** ⚠️ **축이 안 서면 미룬다.**
+⭐⭐ **3086건(모집중 963)** · `코드 리뷰|PR` **1634** 인데 ⚠️ `커밋 컨벤션` **4건**. 축을 못 박아 뒀다: **"이미 나간 것은 못 고친다"** — `api-versioning`·`android`·`javascript` 가 다룬 주제의 **가장 일상적인 형태**다. 1차 자료는 `git rebase` 매뉴얼의 **`RECOVERING FROM UPSTREAM REBASE`** 절.
 
 ## 배운 것
+
+- ⭐⭐⭐ **한 낱말이 두 물건을 가리키고 있으면, 그 사실 자체가 문서의 축이다.** TanStack Query
+  문서의 첫 수는 정의가 아니라 **분리**였다 — **"server state is totally different"**. 그리고
+  무엇이 다른지를 넷으로 적는데 ⭐ **셋째("shared ownership ... changed by other people
+  without your knowledge")가 나머지를 낳는다.** 💡 **좋은 1차 자료는 "이건 무엇이다"보다
+  "이건 저것과 다르다"를 먼저 말한다** — 그 문장을 찾으면 문서의 뼈대가 선다.
+  📌 이 백과사전이 **셈으로 찾던 대비(큰 낱말 vs 안 불리는 개념)를 문서가 직접 해 준 경우**다.
+
+- ⭐⭐ **alias 이관을 처음 실제로 했다 — 규칙이 작동했다.** `상태 관리` 를 `react` 에서
+  `state-management` 로 옮겼다. 근거는 `redis` 사이클에서 세운 그것이다: **"alias 가 겹치면
+  포기가 아니라 그 문서가 무엇을 안 다뤘나를 센다"** — `react` 에 `Redux` 9회·`Zustand` 12회는
+  있지만 **`서버 상태`·`전역` 은 0회**였고, 그 문서 스스로 `open_questions` 에 "가장 큰
+  빈자리"라고 적어 뒀다. 📌 **옮길 때는 세 곳을 함께 고친다** — 원문서의 `aliases`,
+  `index.json` 의 그 항목, 그리고 **원문서의 `open_questions`**(왜 넘겼는지 남긴다).
+
+- ⭐ **공고 한 줄이 문서의 축을 이미 적고 있을 때가 있다.** 아치서울의 `상태 관리와 서버
+  상태를 **구분해 다룰 수 있는 분**` 은 이 문서가 하려던 말 그대로였다. 💡 그럴 때는 **그 한
+  줄을 `evidence` 의 첫 줄로 올리고**, 문서 전체가 그 한 줄을 설명하는 구조로 짠다 —
+  ⭐ **시장이 이미 아는 것을 1차 자료로 뒷받침하는 형태**이고, `typescript` 의 zod 53건에서
+  본 것과 같은 배치다.
 
 - ⭐⭐⭐ **제품이 그은 선의 근거가 기술이 아니라 사람일 때가 있다.** Go FAQ 가 기능을 뺀 이유는
   하나도 "느려서"가 아니었다 — 예외는 **"convoluted code"**, 어서션은 **"a crutch to avoid

@@ -2074,8 +2074,7 @@
         "리액트",
         "훅",
         "Hooks",
-        "useEffect",
-        "상태 관리"
+        "useEffect"
       ],
       "sections": 5,
       "drills": 3,
@@ -2113,6 +2112,25 @@
         "고랭",
         "고루틴",
         "goroutine"
+      ],
+      "sections": 5,
+      "drills": 3,
+      "updated_at": "2026-09-06"
+    },
+    {
+      "slug": "state-management",
+      "title": "상태 관리 — 한 낱말이 가리키는 두 물건",
+      "category": "practice",
+      "level": "core",
+      "status": "done",
+      "one_liner": "⭐⭐⭐ **\"server state is totally different\"** — 서버에서 온 데이터는 **남이 우리 모르게 바꿀 수 있고**, 그래서 화면의 상태(폼·모달)와 같은 물건이 아니다. 공고 788건이 둘을 한 낱말로 부른다.",
+      "aliases": [
+        "상태 관리",
+        "state management",
+        "서버 상태",
+        "전역 상태",
+        "Redux",
+        "Zustand"
       ],
       "sections": 5,
       "drills": 3,
