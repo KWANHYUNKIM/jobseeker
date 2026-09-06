@@ -221,9 +221,9 @@
         "Modbus RTU",
         "Modbus TCP"
       ],
-      "sections": 6,
+      "sections": 7,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "mqtt",
@@ -256,9 +256,9 @@
         "전류 제한 저항",
         "분압"
       ],
-      "sections": 5,
+      "sections": 6,
       "drills": 3,
-      "updated_at": "2026-09-04"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "pull-up-resistor",
@@ -275,9 +275,9 @@
         "pull-up resistor",
         "풀다운"
       ],
-      "sections": 5,
+      "sections": 6,
       "drills": 3,
-      "updated_at": "2026-09-03"
+      "updated_at": "2026-09-06"
     },
     {
       "slug": "python",

@@ -1,715 +1,723 @@
 {
- "slug": "modbus",
- "title": "Modbus",
- "title_en": "Modbus (RTU / ASCII / TCP)",
- "aliases": [
-  "Modbus",
-  "모드버스",
-  "Modbus RTU",
-  "Modbus TCP"
- ],
- "category": "domain",
- "level": "core",
- "status": "done",
- "updated_at": "2026-09-04",
- "one_liner": "설비에 \"몇 번지부터 몇 개 읽어 줘\"라고 묻고 답을 받는 **요청-응답 프로토콜**이다. 1979년 PLC 용으로 만들어진 단순함이 그대로 남아 지금도 산업 현장의 공용어다.",
- "summary": "Modbus 는 `rs485` 가 \"이 전선 위에서 실제로 도는 프로토콜\"이라며 넘긴 자리다. 구조가 아주 단순하다 — **마스터가 슬레이브 주소를 부르고, 기능 코드로 무엇을 할지 말하고, 시작 번지와 개수를 붙인다.** 슬레이브는 답만 하고 **절대 먼저 말하지 않는다.** 중재가 없는 RS-485 위에서 충돌 없이 성립하는 유일한 구조가 이것이다(→ `rs485`). 데이터 모델도 넷뿐이고(코일·이산 입력·입력 레지스터·보유 레지스터), 전부 **비트 아니면 16비트 워드**다. 그래서 실무의 어려움이 프로토콜 자체가 아니라 **번지 해석**에 몰린다 — 장비 매뉴얼의 `40001` 이 선로에서는 주소 `0` 이고, 32비트 값은 두 워드로 쪼개지는데 **그 순서가 벤더마다 다르다.** 전송 방식은 셋(RTU·ASCII·TCP)인데 **가운데 알맹이(기능 코드 + 데이터)는 같고 감싸는 껍데기만 다르다.** 이 구조를 알면 시리얼 장비를 다루던 코드가 TCP 로 그대로 옮겨진다.",
- "market": null,
- "sections": [
-  {
-   "id": "what",
-   "kind": "what",
-   "heading": "무엇인가 — 알맹이 하나, 껍데기 셋",
-   "body": "Modbus 메시지는 **두 겹**이다.\n\n```\n┌─────────────── ADU (전송 방식마다 다른 껍데기) ───────────────┐\n│ 주소/헤더 │        PDU (어디서나 같은 알맹이)        │ 오류검출 │\n│           │  [기능 코드 1바이트][데이터 …]           │          │\n└──────────────────────────────────────────────────────────────┘\n\nRTU   :  [슬레이브 주소][PDU][CRC 2바이트]                 ← RS-485/232\nASCII :  ':' [주소·PDU 를 ASCII 문자로][LRC][CR][LF]        ← 사람이 읽을 수 있다\nTCP   :  [MBAP 헤더 7바이트][PDU]                           ← 오류검출 없음(TCP 가 한다)\n```\n\n**가운데 PDU 는 셋이 똑같다.** 그래서 \"보유 레지스터 2개를 읽는다\"는 요청은 시리얼이든 이더넷이든 **같은 바이트열**이고, 코드에서도 프레이밍 층만 갈아 끼우면 된다.\n\n대화는 언제나 **한 방향으로 시작한다.**\n\n```\n마스터(클라이언트) ──── 요청 ────▶ 슬레이브(서버)\n                  ◀─── 응답 ─────\n```\n\n슬레이브는 **자기 주소로 불릴 때만** 답하고, 먼저 말을 걸 방법이 없다. 값이 바뀌었는지 알려면 **마스터가 주기적으로 물어봐야(폴링)** 한다. 이 단순함이 이 프로토콜의 성질 전부를 만든다.\n\n> 용어는 문서 세대에 따라 갈린다 — 예전 자료는 **마스터/슬레이브**, 최근 사양서는 **클라이언트/서버**를 쓴다. 같은 것을 가리킨다.",
-   "confidence": "confirmed",
-   "sources": [
+  "slug": "modbus",
+  "title": "Modbus",
+  "title_en": "Modbus (RTU / ASCII / TCP)",
+  "aliases": [
+    "Modbus",
+    "모드버스",
+    "Modbus RTU",
+    "Modbus TCP"
+  ],
+  "category": "domain",
+  "level": "core",
+  "status": "done",
+  "updated_at": "2026-09-06",
+  "one_liner": "설비에 \"몇 번지부터 몇 개 읽어 줘\"라고 묻고 답을 받는 **요청-응답 프로토콜**이다. 1979년 PLC 용으로 만들어진 단순함이 그대로 남아 지금도 산업 현장의 공용어다.",
+  "summary": "Modbus 는 `rs485` 가 \"이 전선 위에서 실제로 도는 프로토콜\"이라며 넘긴 자리다. 구조가 아주 단순하다 — **마스터가 슬레이브 주소를 부르고, 기능 코드로 무엇을 할지 말하고, 시작 번지와 개수를 붙인다.** 슬레이브는 답만 하고 **절대 먼저 말하지 않는다.** 중재가 없는 RS-485 위에서 충돌 없이 성립하는 유일한 구조가 이것이다(→ `rs485`). 데이터 모델도 넷뿐이고(코일·이산 입력·입력 레지스터·보유 레지스터), 전부 **비트 아니면 16비트 워드**다. 그래서 실무의 어려움이 프로토콜 자체가 아니라 **번지 해석**에 몰린다 — 장비 매뉴얼의 `40001` 이 선로에서는 주소 `0` 이고, 32비트 값은 두 워드로 쪼개지는데 **그 순서가 벤더마다 다르다.** 전송 방식은 셋(RTU·ASCII·TCP)인데 **가운데 알맹이(기능 코드 + 데이터)는 같고 감싸는 껍데기만 다르다.** 이 구조를 알면 시리얼 장비를 다루던 코드가 TCP 로 그대로 옮겨진다.",
+  "market": null,
+  "sections": [
     {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+      "id": "what",
+      "kind": "what",
+      "heading": "무엇인가 — 알맹이 하나, 껍데기 셋",
+      "body": "Modbus 메시지는 **두 겹**이다.\n\n```\n┌─────────────── ADU (전송 방식마다 다른 껍데기) ───────────────┐\n│ 주소/헤더 │        PDU (어디서나 같은 알맹이)        │ 오류검출 │\n│           │  [기능 코드 1바이트][데이터 …]           │          │\n└──────────────────────────────────────────────────────────────┘\n\nRTU   :  [슬레이브 주소][PDU][CRC 2바이트]                 ← RS-485/232\nASCII :  ':' [주소·PDU 를 ASCII 문자로][LRC][CR][LF]        ← 사람이 읽을 수 있다\nTCP   :  [MBAP 헤더 7바이트][PDU]                           ← 오류검출 없음(TCP 가 한다)\n```\n\n**가운데 PDU 는 셋이 똑같다.** 그래서 \"보유 레지스터 2개를 읽는다\"는 요청은 시리얼이든 이더넷이든 **같은 바이트열**이고, 코드에서도 프레이밍 층만 갈아 끼우면 된다.\n\n대화는 언제나 **한 방향으로 시작한다.**\n\n```\n마스터(클라이언트) ──── 요청 ────▶ 슬레이브(서버)\n                  ◀─── 응답 ─────\n```\n\n슬레이브는 **자기 주소로 불릴 때만** 답하고, 먼저 말을 걸 방법이 없다. 값이 바뀌었는지 알려면 **마스터가 주기적으로 물어봐야(폴링)** 한다. 이 단순함이 이 프로토콜의 성질 전부를 만든다.\n\n> 용어는 문서 세대에 따라 갈린다 — 예전 자료는 **마스터/슬레이브**, 최근 사양서는 **클라이언트/서버**를 쓴다. 같은 것을 가리킨다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        },
+        {
+          "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
+          "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+        },
+        {
+          "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
+          "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+        }
+      ]
     },
     {
-     "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
-     "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+      "id": "why",
+      "kind": "why",
+      "heading": "왜 이렇게 단순한가 — 1979년의 제약이 그대로 남았다",
+      "body": "Modbus 는 1979년 PLC(공장 제어기)를 잇기 위해 만들어졌다. 당시 장치에는 **메모리가 KB 단위**였고 CPU 는 8비트였다. 그 조건에서 프로토콜이 할 수 있는 일은 많지 않았고, **그 제약이 지금의 모양을 그대로 결정했다.**\n\n**① 데이터가 비트와 16비트 워드뿐이다.** 문자열도, 부동소수점도, 구조체도 없다. PLC 의 메모리가 그렇게 생겼기 때문이다. 지금도 32비트 값은 **워드 두 개로 쪼개 보내고**, 그 순서를 프로토콜이 정하지 않아 벤더마다 다르다(아래 지뢰).\n\n**② 마스터가 전부 주도한다.** `rs485` 문서에서 봤듯 그 전선에는 **중재가 없다** — 두 장치가 동시에 말하면 데이터가 깨지고 아무도 모른다. 그래서 \"한 번에 한 마스터만 말하고, 슬레이브는 불릴 때만 답한다\"는 규칙이 **충돌을 원천 차단하는 유일한 방법**이었다.\n\n**③ 오류 검출만 있고 복구는 없다.** RTU 는 CRC, ASCII 는 LRC 로 **깨진 프레임을 알아채기만** 한다. 재전송·순서 보장·세션 같은 것은 없다. \"응답이 안 오면 마스터가 다시 물어본다\"가 전부이고, 그래서 **같은 요청을 두 번 보내도 안전한가**가 설계 문제로 남는다(→ `idempotency`).\n\n**④ 보안이 없다.** 인증도 암호화도 규격에 없다. 1979년의 공장 네트워크는 물리적으로 닫힌 공간이었기 때문이다.\n\n**그런데 왜 아직도 쓰나.** 단순함이 곧 **호환성**이 됐다. 규격이 짧아 어떤 장비에나 넣을 수 있었고, 40년이 지나 **거의 모든 설비가 이 말을 할 줄 알게** 됐다. 새 프로토콜이 더 좋아도, **상대 장비가 Modbus 만 말한다면 선택지가 없다.** 공고에 `Modbus, MQTT, TCP/IP 소켓 통신 등 디바이스-서버 간 통신 프로토콜을 직접 설계하거나 구현해본 경험` 같은 문장이 나오는 이유가 이것이다 — **현장에서 Modbus 로 읽어 서버로는 다른 프로토콜로 올리는 게이트웨이**가 흔한 일감이다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
+          "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+        },
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        }
+      ]
     },
     {
-     "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
-     "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
-    }
-   ]
-  },
-  {
-   "id": "why",
-   "kind": "why",
-   "heading": "왜 이렇게 단순한가 — 1979년의 제약이 그대로 남았다",
-   "body": "Modbus 는 1979년 PLC(공장 제어기)를 잇기 위해 만들어졌다. 당시 장치에는 **메모리가 KB 단위**였고 CPU 는 8비트였다. 그 조건에서 프로토콜이 할 수 있는 일은 많지 않았고, **그 제약이 지금의 모양을 그대로 결정했다.**\n\n**① 데이터가 비트와 16비트 워드뿐이다.** 문자열도, 부동소수점도, 구조체도 없다. PLC 의 메모리가 그렇게 생겼기 때문이다. 지금도 32비트 값은 **워드 두 개로 쪼개 보내고**, 그 순서를 프로토콜이 정하지 않아 벤더마다 다르다(아래 지뢰).\n\n**② 마스터가 전부 주도한다.** `rs485` 문서에서 봤듯 그 전선에는 **중재가 없다** — 두 장치가 동시에 말하면 데이터가 깨지고 아무도 모른다. 그래서 \"한 번에 한 마스터만 말하고, 슬레이브는 불릴 때만 답한다\"는 규칙이 **충돌을 원천 차단하는 유일한 방법**이었다.\n\n**③ 오류 검출만 있고 복구는 없다.** RTU 는 CRC, ASCII 는 LRC 로 **깨진 프레임을 알아채기만** 한다. 재전송·순서 보장·세션 같은 것은 없다. \"응답이 안 오면 마스터가 다시 물어본다\"가 전부이고, 그래서 **같은 요청을 두 번 보내도 안전한가**가 설계 문제로 남는다(→ `idempotency`).\n\n**④ 보안이 없다.** 인증도 암호화도 규격에 없다. 1979년의 공장 네트워크는 물리적으로 닫힌 공간이었기 때문이다.\n\n**그런데 왜 아직도 쓰나.** 단순함이 곧 **호환성**이 됐다. 규격이 짧아 어떤 장비에나 넣을 수 있었고, 40년이 지나 **거의 모든 설비가 이 말을 할 줄 알게** 됐다. 새 프로토콜이 더 좋아도, **상대 장비가 Modbus 만 말한다면 선택지가 없다.** 공고에 `Modbus, MQTT, TCP/IP 소켓 통신 등 디바이스-서버 간 통신 프로토콜을 직접 설계하거나 구현해본 경험` 같은 문장이 나오는 이유가 이것이다 — **현장에서 Modbus 로 읽어 서버로는 다른 프로토콜로 올리는 게이트웨이**가 흔한 일감이다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
-     "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+      "id": "model",
+      "kind": "how",
+      "heading": "데이터 모델과 번지 — 실무 문제의 절반이 여기 있다",
+      "body": "Modbus 가 다루는 데이터는 **네 종류뿐**이다. 읽기 전용인지, 비트인지 워드인지로 갈린다.\n\n| | 크기 | 마스터가 | 흔한 예 |\n|---|---|---|---|\n| **코일** | 1비트 | 읽고 쓰기 | 릴레이 on/off |\n| **이산 입력** | 1비트 | 읽기만 | 스위치·센서 상태 |\n| **입력 레지스터** | 16비트 | 읽기만 | 측정값(온도·전류) |\n| **보유 레지스터** | 16비트 | 읽고 쓰기 | 설정값·명령 |\n\n**그리고 여기서 가장 유명한 함정이 나온다.**\n\n장비 매뉴얼에는 번지가 `40001`, `30012`, `10005` 처럼 적혀 있다. 이건 **사람이 읽는 관례 표기**이고, **선로에 실제로 나가는 주소가 아니다.**\n\n```\n매뉴얼 표기   4 0001   →  보유 레지스터의 첫 번째\n                │└─┴─ 1부터 세는 번호\n                └──── 종류 표시 (4 = 보유 레지스터)\n\n선로에 나가는 주소:  0x0000     ← 0부터 센다\n\n즉  40001 → 주소 0,   40002 → 주소 1,   40100 → 주소 99\n```\n\n**1 차이가 나는 이유는 관례 표기가 1부터 세고 프로토콜은 0부터 세기 때문**이다. 그래서 \"값이 한 칸씩 밀려 읽힌다\"는 증상이 이 바닥의 통과의례다.\n\n여기에 두 가지가 더 겹친다.\n\n- **어떤 장비 매뉴얼은 이미 0-based 주소를 적어 둔다.** 표기가 `40001` 인지 `0` 인지 **매뉴얼마다 다르므로**, 한 칸 시험해 보는 것이 가장 빠른 확인이다.\n- **32비트 값(온도 float, 적산 전력량)은 레지스터 두 개에 나눠 담긴다.** 프로토콜은 그 순서를 정하지 않는다 — 상위 워드가 먼저인지 나중인지가 벤더마다 다르고, 이걸 흔히 **워드 스왑**이라 부른다. 매뉴얼에 적혀 있지 않으면 **아는 값을 읽어 맞춰 보는 수밖에** 없다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        }
+      ]
     },
     {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-    }
-   ]
-  },
-  {
-   "id": "model",
-   "kind": "how",
-   "heading": "데이터 모델과 번지 — 실무 문제의 절반이 여기 있다",
-   "body": "Modbus 가 다루는 데이터는 **네 종류뿐**이다. 읽기 전용인지, 비트인지 워드인지로 갈린다.\n\n| | 크기 | 마스터가 | 흔한 예 |\n|---|---|---|---|\n| **코일** | 1비트 | 읽고 쓰기 | 릴레이 on/off |\n| **이산 입력** | 1비트 | 읽기만 | 스위치·센서 상태 |\n| **입력 레지스터** | 16비트 | 읽기만 | 측정값(온도·전류) |\n| **보유 레지스터** | 16비트 | 읽고 쓰기 | 설정값·명령 |\n\n**그리고 여기서 가장 유명한 함정이 나온다.**\n\n장비 매뉴얼에는 번지가 `40001`, `30012`, `10005` 처럼 적혀 있다. 이건 **사람이 읽는 관례 표기**이고, **선로에 실제로 나가는 주소가 아니다.**\n\n```\n매뉴얼 표기   4 0001   →  보유 레지스터의 첫 번째\n                │└─┴─ 1부터 세는 번호\n                └──── 종류 표시 (4 = 보유 레지스터)\n\n선로에 나가는 주소:  0x0000     ← 0부터 센다\n\n즉  40001 → 주소 0,   40002 → 주소 1,   40100 → 주소 99\n```\n\n**1 차이가 나는 이유는 관례 표기가 1부터 세고 프로토콜은 0부터 세기 때문**이다. 그래서 \"값이 한 칸씩 밀려 읽힌다\"는 증상이 이 바닥의 통과의례다.\n\n여기에 두 가지가 더 겹친다.\n\n- **어떤 장비 매뉴얼은 이미 0-based 주소를 적어 둔다.** 표기가 `40001` 인지 `0` 인지 **매뉴얼마다 다르므로**, 한 칸 시험해 보는 것이 가장 빠른 확인이다.\n- **32비트 값(온도 float, 적산 전력량)은 레지스터 두 개에 나눠 담긴다.** 프로토콜은 그 순서를 정하지 않는다 — 상위 워드가 먼저인지 나중인지가 벤더마다 다르고, 이걸 흔히 **워드 스왑**이라 부른다. 매뉴얼에 적혀 있지 않으면 **아는 값을 읽어 맞춰 보는 수밖에** 없다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-    }
-   ]
-  },
-  {
-   "id": "frame",
-   "kind": "how",
-   "heading": "요청 한 번을 바이트로 — 그리고 예외 응답",
-   "body": "`rs485` 문서의 세 번째 실습을 이어받는다. **보유 레지스터 2개 읽기**(기능 코드 `0x03`)를 RTU 로 보내면 이렇게 생겼다.\n\n```\n요청:  01  03  00 00  00 02  C4 0B\n       │   │   │      │      └ CRC (앞의 모든 바이트에 대해 계산)\n       │   │   │      └ 개수 2\n       │   │   └ 시작 주소 0  (매뉴얼의 40001)\n       │   └ 기능 코드 03 (보유 레지스터 읽기)\n       └ 슬레이브 주소 1\n\n응답:  01  03  04  00 7B  01 C8  ?? ??\n       │   │   │   └──────┴ 값 두 개 (0x007B=123, 0x01C8=456)\n       │   │   └ 바이트 수 4\n       │   └ 같은 기능 코드 (정상)\n       └ 같은 슬레이브 주소\n```\n\n**응답이 요청과 같은 기능 코드로 시작하면 정상**이다. 그런데 슬레이브가 요청을 처리할 수 없으면 **예외 응답**을 보낸다.\n\n```\n예외:  01  83  02  C0 F1\n           │   └ 예외 코드 02 (잘못된 데이터 주소)\n           └ 0x03 + 0x80 = 0x83   ← 최상위 비트가 선다\n```\n\n**규칙이 명확하다 — 예외 응답의 기능 코드는 원래 코드에 `0x80` 을 더한 값**이고, 뒤에 한 바이트짜리 예외 코드가 붙는다. 그래서 수신 코드는 언제나 이렇게 갈린다.\n\n```\n받은 기능 코드 & 0x80 != 0  →  예외 응답이다. 다음 바이트가 이유다.\n```\n\n**예외 코드 02(잘못된 데이터 주소)가 압도적으로 흔하다** — 위 절의 번지 1 차이나 존재하지 않는 영역을 읽으려 할 때 나온다. **응답이 아예 없는 것과 예외 응답이 오는 것은 완전히 다른 신호다**: 예외가 왔다면 배선·주소·CRC 는 다 맞았고 **번지만 틀린 것**이다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+      "id": "frame",
+      "kind": "how",
+      "heading": "요청 한 번을 바이트로 — 그리고 예외 응답",
+      "body": "`rs485` 문서의 세 번째 실습을 이어받는다. **보유 레지스터 2개 읽기**(기능 코드 `0x03`)를 RTU 로 보내면 이렇게 생겼다.\n\n```\n요청:  01  03  00 00  00 02  C4 0B\n       │   │   │      │      └ CRC (앞의 모든 바이트에 대해 계산)\n       │   │   │      └ 개수 2\n       │   │   └ 시작 주소 0  (매뉴얼의 40001)\n       │   └ 기능 코드 03 (보유 레지스터 읽기)\n       └ 슬레이브 주소 1\n\n응답:  01  03  04  00 7B  01 C8  ?? ??\n       │   │   │   └──────┴ 값 두 개 (0x007B=123, 0x01C8=456)\n       │   │   └ 바이트 수 4\n       │   └ 같은 기능 코드 (정상)\n       └ 같은 슬레이브 주소\n```\n\n**응답이 요청과 같은 기능 코드로 시작하면 정상**이다. 그런데 슬레이브가 요청을 처리할 수 없으면 **예외 응답**을 보낸다.\n\n```\n예외:  01  83  02  C0 F1\n           │   └ 예외 코드 02 (잘못된 데이터 주소)\n           └ 0x03 + 0x80 = 0x83   ← 최상위 비트가 선다\n```\n\n**규칙이 명확하다 — 예외 응답의 기능 코드는 원래 코드에 `0x80` 을 더한 값**이고, 뒤에 한 바이트짜리 예외 코드가 붙는다. 그래서 수신 코드는 언제나 이렇게 갈린다.\n\n```\n받은 기능 코드 & 0x80 != 0  →  예외 응답이다. 다음 바이트가 이유다.\n```\n\n**예외 코드 02(잘못된 데이터 주소)가 압도적으로 흔하다** — 위 절의 번지 1 차이나 존재하지 않는 영역을 읽으려 할 때 나온다. **응답이 아예 없는 것과 예외 응답이 오는 것은 완전히 다른 신호다**: 예외가 왔다면 배선·주소·CRC 는 다 맞았고 **번지만 틀린 것**이다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        },
+        {
+          "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
+          "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+        }
+      ]
     },
     {
-     "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
-     "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
-    }
-   ]
-  },
-  {
-   "id": "framing",
-   "kind": "how",
-   "heading": "프레임을 어디서 자르나 — 세 방식의 진짜 차이",
-   "body": "바이트가 계속 흐르는 선에서 **\"여기부터 여기까지가 한 메시지\"** 를 정하는 방법이 전송 방식마다 다르다.\n\n**RTU — 침묵으로 자른다.** 프레임 사이에 **문자 3.5개 시간만큼의 침묵**을 두고, 프레임 안에서는 문자 1.5개 이상 끊기면 안 된다. 시간이 곧 구분자라서 **타이밍이 프로토콜의 일부**다.\n\n```\n9600bps · 8N1(문자당 10비트) → 문자 하나 ≈ 1.04ms → 3.5문자 ≈ 3.6ms\n115200bps                    → 문자 하나 ≈ 87µs  → 3.5문자 ≈ 0.3ms\n```\n\n**속도가 빠를수록 이 여유가 짧아진다.** `rs485` 의 DE 방향 전환이 이 시간 안에 끝나야 하고, 리눅스처럼 스케줄링 지연이 있는 환경에서는 3.5문자 침묵을 지키기가 까다로워진다(그래서 고속에서는 최소 시간을 고정으로 두는 구현도 있다).\n\n**ASCII — 문자로 자른다.** 시작은 `:`, 끝은 `CR LF`. 바이트를 16진 문자 두 개로 바꿔 보내므로 **길이가 두 배**가 되지만, 터미널로 보면 사람이 읽을 수 있고 타이밍 제약이 느슨하다.\n\n**TCP — 길이 필드로 자른다.** 앞에 붙는 **MBAP 헤더**에 트랜잭션 ID·프로토콜 ID·**길이**·유닛 ID 가 들어 있어, 그 길이만큼 읽으면 된다. 그리고 **CRC 가 없다** — 무결성은 TCP 가 이미 보장하기 때문이다. 표준 포트는 **502** 다.\n\n> **세 방식의 차이는 여기까지다.** 기능 코드·데이터 모델·예외 응답은 셋이 완전히 같다. 그래서 시리얼 장비용으로 짠 파서에서 **프레이밍 층만 갈아 끼우면** TCP 로 옮겨진다 — 이 사실이 게이트웨이를 만들 때 값을 한다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
-     "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+      "id": "framing",
+      "kind": "how",
+      "heading": "프레임을 어디서 자르나 — 세 방식의 진짜 차이",
+      "body": "바이트가 계속 흐르는 선에서 **\"여기부터 여기까지가 한 메시지\"** 를 정하는 방법이 전송 방식마다 다르다.\n\n**RTU — 침묵으로 자른다.** 프레임 사이에 **문자 3.5개 시간만큼의 침묵**을 두고, 프레임 안에서는 문자 1.5개 이상 끊기면 안 된다. 시간이 곧 구분자라서 **타이밍이 프로토콜의 일부**다.\n\n```\n9600bps · 8N1(문자당 10비트) → 문자 하나 ≈ 1.04ms → 3.5문자 ≈ 3.6ms\n115200bps                    → 문자 하나 ≈ 87µs  → 3.5문자 ≈ 0.3ms\n```\n\n**속도가 빠를수록 이 여유가 짧아진다.** `rs485` 의 DE 방향 전환이 이 시간 안에 끝나야 하고, 리눅스처럼 스케줄링 지연이 있는 환경에서는 3.5문자 침묵을 지키기가 까다로워진다(그래서 고속에서는 최소 시간을 고정으로 두는 구현도 있다).\n\n**ASCII — 문자로 자른다.** 시작은 `:`, 끝은 `CR LF`. 바이트를 16진 문자 두 개로 바꿔 보내므로 **길이가 두 배**가 되지만, 터미널로 보면 사람이 읽을 수 있고 타이밍 제약이 느슨하다.\n\n**TCP — 길이 필드로 자른다.** 앞에 붙는 **MBAP 헤더**에 트랜잭션 ID·프로토콜 ID·**길이**·유닛 ID 가 들어 있어, 그 길이만큼 읽으면 된다. 그리고 **CRC 가 없다** — 무결성은 TCP 가 이미 보장하기 때문이다. 표준 포트는 **502** 다.\n\n> **세 방식의 차이는 여기까지다.** 기능 코드·데이터 모델·예외 응답은 셋이 완전히 같다. 그래서 시리얼 장비용으로 짠 파서에서 **프레이밍 층만 갈아 끼우면** TCP 로 옮겨진다 — 이 사실이 게이트웨이를 만들 때 값을 한다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
+          "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+        },
+        {
+          "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
+          "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+        }
+      ]
     },
     {
-     "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
-     "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
-    }
-   ]
-  },
-  {
-   "id": "limits",
-   "kind": "limits",
-   "heading": "경계 — Modbus 가 해 주지 않는 것",
-   "body": "**보안이 없다.** 인증도 암호화도 규격에 없다. 네트워크에 닿을 수 있으면 누구나 코일을 쓸 수 있다 — 실제 설비를 켜고 끌 수 있다는 뜻이다. 그래서 현장 구성은 **망을 분리하고 게이트웨이를 두는 것**이 기본이고(→ `java-in-finance` 의 망분리와 같은 발상), 최근에는 TLS 를 얹은 별도 사양도 나와 있다.\n\n**타입이 없다.** 16비트 워드만 있으므로 float·32비트 정수·문자열은 **여러 워드로 쪼개 쓰고 그 해석은 문서 밖의 약속**이다. 워드 순서·스케일(예: 0.1℃ 단위 정수)·부호까지 전부 장비 매뉴얼을 봐야 안다.\n\n**슬레이브가 먼저 말할 수 없다.** 값 변화를 즉시 알 방법이 없어 **폴링 주기가 곧 지연**이다. 장치가 수십 대면 한 바퀴 도는 시간이 초 단위가 되고, 그때는 폴링 순서·주기 설계가 성능 문제로 바뀐다.\n\n**한 번에 옮길 수 있는 양이 제한된다.** PDU 크기가 정해져 있어(직렬 기준 253바이트) **보유 레지스터는 한 요청에 최대 125개** 정도다. 그 이상은 여러 번 나눠 읽어야 하고, **나눠 읽는 사이에 값이 바뀌면 일관성이 깨진다**(원자적 읽기가 없다).\n\n**그래서 위에 얹는 것이 생겼다.** 설비에서 Modbus 로 읽어 **MQTT·HTTP 로 서버에 올리는 게이트웨이**가 표준 구성이 됐고, 공고가 `Modbus, MQTT, TCP/IP 소켓 통신` 을 한 문장에 적는 이유가 그것이다.",
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+      "id": "limits",
+      "kind": "limits",
+      "heading": "⭐⭐ 이 규약이 해 주지 않는 것 — 그리고 그 자리에서 나온 것들",
+      "body": "**보안이 없다.** 인증도 암호화도 규격에 없다. 네트워크에 닿을 수 있으면 누구나 코일을 쓸 수 있다 — 실제 설비를 켜고 끌 수 있다는 뜻이다. 그래서 현장 구성은 **망을 분리하고 게이트웨이를 두는 것**이 기본이고(→ `java-in-finance` 의 망분리와 같은 발상), 최근에는 TLS 를 얹은 별도 사양도 나와 있다.\n\n**타입이 없다.** 16비트 워드만 있으므로 float·32비트 정수·문자열은 **여러 워드로 쪼개 쓰고 그 해석은 문서 밖의 약속**이다. 워드 순서·스케일(예: 0.1℃ 단위 정수)·부호까지 전부 장비 매뉴얼을 봐야 안다.\n\n**슬레이브가 먼저 말할 수 없다.** 값 변화를 즉시 알 방법이 없어 **폴링 주기가 곧 지연**이다. 장치가 수십 대면 한 바퀴 도는 시간이 초 단위가 되고, 그때는 폴링 순서·주기 설계가 성능 문제로 바뀐다.\n\n**한 번에 옮길 수 있는 양이 제한된다.** PDU 크기가 정해져 있어(직렬 기준 253바이트) **보유 레지스터는 한 요청에 최대 125개** 정도다. 그 이상은 여러 번 나눠 읽어야 하고, **나눠 읽는 사이에 값이 바뀌면 일관성이 깨진다**(원자적 읽기가 없다).\n\n**그래서 위에 얹는 것이 생겼다.** 설비에서 Modbus 로 읽어 **MQTT·HTTP 로 서버에 올리는 게이트웨이**가 표준 구성이 됐고, 공고가 `Modbus, MQTT, TCP/IP 소켓 통신` 을 한 문장에 적는 이유가 그것이다.\n\n---\n\n⭐⭐⭐ **한계가 전부 1979년의 제약에서 그대로 온다** — 💡 **그리고 그 자리마다 위에 얹는 것이 자랐다.**\n\n| 한계 | 왜 (1979년의 제약) | ⭐ 그래서 나온 것 |\n|---|---|---|\n| ⭐⭐⭐ **보안이 없다** | 인증도 암호화도 규격에 없다 | ⭐ **망 분리 + 게이트웨이**(공고 `게이트웨이` **78건**) · **TLS 를 얹은 별도 사양** — 📌 `java-in-finance` 의 망분리와 같은 발상 |\n| ⭐⭐⭐ **타입이 없다** | **16비트 워드만** 있다 | ⚠️ **여러 워드로 쪼개고 해석은 문서 밖의 약속** — 워드 순서·스케일·부호를 **장비 매뉴얼**에서 본다 |\n| ⭐⭐⭐ **슬레이브가 먼저 말할 수 없다** | 마스터-슬레이브 폴링 | ⭐⭐ **발행-구독으로** → `mqtt`(공고 **193건** — ⚠️ **Modbus 138건보다 많다**) |\n| ⭐⭐ **한 번에 옮길 양이 제한** | PDU 253바이트 · 보유 레지스터 **125개** | ⚠️ **나눠 읽는 사이에 값이 바뀌면 일관성이 깨진다**(원자적 읽기 없음) → `idempotency` |\n| ⭐⭐ **폴링 주기가 곧 지연** | 장치 수십 대면 한 바퀴가 초 단위 | ⭐ **주기·순서 설계** · **산업용 이더넷**(공고 **69건**) |\n| ⭐⭐ **의미가 규격 밖에 있다** | 번지에 뜻이 없다 | ⭐ **의미를 규격에 넣은 것** → **OPC UA**(공고 **28건**) |\n\n⭐⭐⭐ **셋째 줄이 이 낱말의 현재를 말한다** — **`MQTT` 193건 > `Modbus` 138건.** 💡 ⚠️ **설비에서 Modbus 로 읽어 MQTT·HTTP 로 서버에 올리는 게이트웨이가 표준 구성이 됐고**, 📌 **공고가 `Modbus, MQTT, TCP/IP 소켓 통신` 을 한 문장에 적는 이유가 그것**이다.\n\n⭐⭐ **그리고 이 문서는 `rs485` 와 한 쌍이다** — 💡 **그쪽은 물리층만 정하고 프로토콜이 없어서 이것이 필요했고**, ⚠️ **이것은 의미가 없어서 위에 또 얹어야 한다.** 📌 ⭐ **층마다 \"안 정한 것\"이 다음 층을 부른 사슬**이다: **RS-485(전기) → Modbus(프레임·번지) → MQTT·OPC UA(의미·발행) → 서버.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        },
+        {
+          "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
+          "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+        }
+      ]
     },
     {
-     "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
-     "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+      "id": "where",
+      "kind": "extra",
+      "heading": "⭐⭐ 어디에 쓰이나 — 설비 1245건 위에 얹힌 138건",
+      "confidence": "inferred",
+      "body": "⚠️ **`market` 이 없다** — 기술 태그 목록에 없다.\n\n⭐ **셈**(2026-09-06): `Modbus` **138건**(모집중 38).\n\n| 층 | 낱말 | 건수 |\n|---|---|---|\n| ⭐ **배경(도메인)** | `설비\\|공장\\|스마트 팩토리` | **1245** |\n| ⭐ **사물인터넷** | `IoT\\|사물인터넷` | **558** |\n| ⭐ **제어기** | `PLC`(대문자) | **290** |\n| ⭐⭐ **위에 얹는 것** | `MQTT` | **193** |\n| ⭐ **이 문서** | `Modbus` | **138** |\n| 감시 화면 | `HMI`(대문자) | 110 |\n| 게이트웨이 | `게이트웨이` | 78 |\n| 감시 시스템 | `SCADA` | 73 |\n| 다음 세대 | `EtherCAT\\|PROFINET\\|EtherNet/IP` | 69 |\n| 밑의 물리층 | `RS-485` | 49 |\n| 의미까지 정한 것 | `OPC UA` | 28 |\n\n💡 ⭐⭐⭐ **사다리가 그대로 보인다** — **밑(RS-485 49) 가운데(Modbus 138) 위(MQTT 193)**. ⚠️ **7회차에서 본 것과 같은 형태**이고(물리층이 가장 적게 불린다), 📌 **여기서는 위쪽이 더 크다.**\n\n⭐⭐ **그리고 배경이 압도적이다** — **`설비\\|공장` 1245건.** 💡 **이 낱말은 IT 시장이 아니라 제조 시장에 얹혀 있고**, ⚠️ **그래서 IT 공고 통계에서는 작게 보인다**(⚠️ 이 해석은 추론이다).\n\n📌 ⭐ **어디에 얹혀 있나**: **PLC·인버터 읽기**(290건) · **전력·계량 설비** · **빌딩 자동화** · **센서 데이터 수집 후 서버로**(→ `mqtt`) · **레거시 설비 연동**(⭐ 새 설비가 아니라 **이미 깔린 것**과 말하는 일).\n\n⚠️ **셈에서 오염 하나를 잡았다** — `MES` 를 대소문자 무시로 세면 **OCR 로 깨진 텍스트의 `Mes`** 에 걸린다(\"블라인드 Mes\", \"면접전형 이후 Mes 서류\"). ⭐ **대문자만 530건**이지만 **그 값도 표본 확인을 못 해 이 문서에서는 쓰지 않았다.**\n\n⭐ **이 백과사전 안에서의 자리**: **밑은 `rs485`·`uart`**(전기와 프레임), **위는 `mqtt`**(발행-구독), **재시도 문제는 `idempotency`**, **제어 쪽은 `rtos`**(주기)."
     }
-   ]
-  }
- ],
- "tables": [
-  {
-   "id": "model-table",
-   "kind": "spec",
-   "caption": "데이터 모델 네 종류와 관례 번지",
-   "note": "왼쪽의 `1xxxx`·`4xxxx` 는 **사람이 읽는 관례 표기**이고 선로에 나가는 주소가 아니다. **관례 표기는 1부터, 프로토콜 주소는 0부터** 센다 — 이 1 차이가 이 프로토콜에서 가장 흔한 버그다. 장비 매뉴얼이 어느 쪽으로 적었는지 반드시 확인한다",
-   "columns": [
-    "종류",
-    "크기",
-    "권한",
-    "관례 표기",
-    "읽기 기능 코드",
-    "쓰기 기능 코드"
-   ],
-   "rows": [
-    [
-     "코일 (Coil)",
-     "1비트",
-     "읽기/쓰기",
-     "0xxxx",
-     "01",
-     "05 (한 개) · 15=0x0F (여러 개)"
-    ],
-    [
-     "이산 입력 (Discrete Input)",
-     "1비트",
-     "**읽기만**",
-     "1xxxx",
-     "02",
-     "—"
-    ],
-    [
-     "입력 레지스터 (Input Register)",
-     "16비트",
-     "**읽기만**",
-     "3xxxx",
-     "04",
-     "—"
-    ],
-    [
-     "보유 레지스터 (Holding Register)",
-     "16비트",
-     "읽기/쓰기",
-     "4xxxx",
-     "**03**",
-     "06 (한 개) · 16=0x10 (여러 개)"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "tables": [
     {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-    }
-   ]
-  },
-  {
-   "id": "exceptions",
-   "kind": "spec",
-   "caption": "예외 응답 — 기능 코드에 0x80 이 더해진다",
-   "note": "예외 응답의 기능 코드는 **원래 코드 + 0x80**(최상위 비트가 선다)이고 뒤에 한 바이트 예외 코드가 붙는다. 아래는 자주 만나는 것만 추린 것이고 전체 목록은 사양서에 있다. **예외가 왔다는 것은 배선·슬레이브 주소·CRC 가 다 맞았다는 뜻**이라, 응답 없음보다 훨씬 좋은 신호다",
-   "columns": [
-    "예외 코드",
-    "뜻",
-    "실무에서 흔한 원인"
-   ],
-   "rows": [
-    [
-     "01",
-     "잘못된 기능 코드",
-     "장비가 그 기능을 지원하지 않는다 (예: 읽기 전용 영역에 쓰기)"
-    ],
-    [
-     "**02**",
-     "**잘못된 데이터 주소**",
-     "**번지 1 차이**, 없는 영역, 개수가 범위를 넘음 — **가장 흔하다**"
-    ],
-    [
-     "03",
-     "잘못된 데이터 값",
-     "쓰려는 값이 허용 범위 밖, 개수가 0 이거나 상한 초과"
-    ],
-    [
-     "04",
-     "서버 장치 실패",
-     "슬레이브 내부 오류"
-    ],
-    [
-     "06",
-     "장치 사용 중",
-     "긴 명령을 처리 중 — 잠시 후 재시도하라는 뜻"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-    }
-   ]
-  },
-  {
-   "id": "transports",
-   "kind": "compare",
-   "caption": "RTU · ASCII · TCP — 껍데기만 다르다",
-   "note": "**가운데 PDU(기능 코드 + 데이터)는 셋이 완전히 같다.** 그래서 파서의 프레이밍 층만 갈아 끼우면 옮겨진다 — 게이트웨이를 만들 때 이 사실이 값을 한다",
-   "columns": [
-    "",
-    "RTU",
-    "ASCII",
-    "TCP"
-   ],
-   "rows": [
-    [
-     "물리 계층",
-     "RS-485/232 (→ `rs485`)",
-     "RS-485/232",
-     "이더넷 (포트 502)"
-    ],
-    [
-     "프레임 구분",
-     "**문자 3.5개 침묵** (시간)",
-     "`:` 로 시작, `CR LF` 로 끝",
-     "**MBAP 헤더의 길이 필드**"
-    ],
-    [
-     "오류 검출",
-     "CRC-16",
-     "LRC",
-     "**없음** — TCP 가 담당"
-    ],
-    [
-     "크기",
-     "가장 작다 (이진)",
-     "**약 2배** (16진 문자)",
-     "헤더 7바이트 추가"
-    ],
-    [
-     "타이밍 민감도",
-     "**높다** (침묵 시간을 지켜야)",
-     "낮다",
-     "낮다"
-    ],
-    [
-     "쓰는 자리",
-     "현장 설비 대부분",
-     "타이밍이 헐거운 환경·디버깅",
-     "PLC·게이트웨이·상위 시스템"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
-    {
-     "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
-     "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+      "id": "model-table",
+      "kind": "spec",
+      "caption": "데이터 모델 네 종류와 관례 번지",
+      "note": "왼쪽의 `1xxxx`·`4xxxx` 는 **사람이 읽는 관례 표기**이고 선로에 나가는 주소가 아니다. **관례 표기는 1부터, 프로토콜 주소는 0부터** 센다 — 이 1 차이가 이 프로토콜에서 가장 흔한 버그다. 장비 매뉴얼이 어느 쪽으로 적었는지 반드시 확인한다",
+      "columns": [
+        "종류",
+        "크기",
+        "권한",
+        "관례 표기",
+        "읽기 기능 코드",
+        "쓰기 기능 코드"
+      ],
+      "rows": [
+        [
+          "코일 (Coil)",
+          "1비트",
+          "읽기/쓰기",
+          "0xxxx",
+          "01",
+          "05 (한 개) · 15=0x0F (여러 개)"
+        ],
+        [
+          "이산 입력 (Discrete Input)",
+          "1비트",
+          "**읽기만**",
+          "1xxxx",
+          "02",
+          "—"
+        ],
+        [
+          "입력 레지스터 (Input Register)",
+          "16비트",
+          "**읽기만**",
+          "3xxxx",
+          "04",
+          "—"
+        ],
+        [
+          "보유 레지스터 (Holding Register)",
+          "16비트",
+          "읽기/쓰기",
+          "4xxxx",
+          "**03**",
+          "06 (한 개) · 16=0x10 (여러 개)"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        }
+      ]
     },
     {
-     "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
-     "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
-    }
-   ]
-  },
-  {
-   "id": "symptoms",
-   "kind": "glossary",
-   "caption": "증상 → 먼저 의심할 것",
-   "note": "**응답 없음과 예외 응답은 완전히 다른 신호다.** 예외가 왔다면 물리 계층과 주소는 이미 맞은 것이므로, 그때부터는 번지 문제로 좁혀 볼 수 있다",
-   "columns": [
-    "증상",
-    "먼저 의심할 것",
-    "확인·조치"
-   ],
-   "rows": [
-    [
-     "아무 응답이 없다",
-     "슬레이브 주소, 보율·패리티, **A/B 극성·종단**(→ `rs485`), DE 타이밍",
-     "다른 주소로도 시도. 로직 분석기나 스니퍼로 요청이 선로에 나가는지 확인"
-    ],
-    [
-     "**예외 02** 가 온다",
-     "**번지 1 차이** 또는 없는 영역",
-     "매뉴얼의 `40001` 을 주소 0 으로 바꿔 본다. 개수를 1로 줄여 한 칸씩 시험"
-    ],
-    [
-     "값이 한 칸씩 밀려 읽힌다",
-     "같은 1 차이 (반대 방향)",
-     "주소를 ±1 해 본다"
-    ],
-    [
-     "숫자가 말이 안 된다 (예: 온도 25.3 대신 6553)",
-     "**스케일**(0.1 단위 정수) 또는 **부호 해석**",
-     "매뉴얼의 단위·데이터 타입 확인. 16비트 부호 있는 값인지"
-    ],
-    [
-     "32비트 값이 이상하다",
-     "**워드 순서(스왑)**",
-     "두 워드의 순서를 바꿔 해석해 본다. 아는 값을 읽어 맞춘다"
-    ],
-    [
-     "가끔 타임아웃이 나고 재시도하면 된다",
-     "3.5문자 침묵 위반, 폴링 주기가 너무 촘촘, 노이즈",
-     "주기를 늘리고 타임아웃·재시도 정책을 정한다 (→ `idempotency`)"
-    ]
-   ]
-  },
-  {
-   "id": "sizes",
-   "kind": "spec",
-   "caption": "한 번에 옮길 수 있는 양",
-   "note": "직렬 PDU 크기 상한(253바이트)에서 나오는 값이다. 이 한계 때문에 큰 데이터는 여러 요청으로 나뉘고, **나누는 사이에 값이 바뀌면 일관성이 깨진다**(원자적 읽기가 없다)",
-   "columns": [
-    "동작",
-    "한 번에",
-    "넘으면"
-   ],
-   "rows": [
-    [
-     "보유·입력 레지스터 읽기",
-     "**최대 125개** (16비트 워드)",
-     "요청을 나눈다 — 사이에 값이 바뀔 수 있다"
-    ],
-    [
-     "코일 읽기",
-     "최대 2000개 (비트)",
-     "나눈다"
-    ],
-    [
-     "보유 레지스터 여러 개 쓰기 (0x10)",
-     "최대 123개",
-     "나눈다 — **쓰기가 나뉘면 중간 상태가 생긴다**"
-    ],
-    [
-     "PDU 크기 (직렬)",
-     "253바이트",
-     "—"
-    ]
-   ],
-   "confidence": "confirmed",
-   "sources": [
+      "id": "exceptions",
+      "kind": "spec",
+      "caption": "예외 응답 — 기능 코드에 0x80 이 더해진다",
+      "note": "예외 응답의 기능 코드는 **원래 코드 + 0x80**(최상위 비트가 선다)이고 뒤에 한 바이트 예외 코드가 붙는다. 아래는 자주 만나는 것만 추린 것이고 전체 목록은 사양서에 있다. **예외가 왔다는 것은 배선·슬레이브 주소·CRC 가 다 맞았다는 뜻**이라, 응답 없음보다 훨씬 좋은 신호다",
+      "columns": [
+        "예외 코드",
+        "뜻",
+        "실무에서 흔한 원인"
+      ],
+      "rows": [
+        [
+          "01",
+          "잘못된 기능 코드",
+          "장비가 그 기능을 지원하지 않는다 (예: 읽기 전용 영역에 쓰기)"
+        ],
+        [
+          "**02**",
+          "**잘못된 데이터 주소**",
+          "**번지 1 차이**, 없는 영역, 개수가 범위를 넘음 — **가장 흔하다**"
+        ],
+        [
+          "03",
+          "잘못된 데이터 값",
+          "쓰려는 값이 허용 범위 밖, 개수가 0 이거나 상한 초과"
+        ],
+        [
+          "04",
+          "서버 장치 실패",
+          "슬레이브 내부 오류"
+        ],
+        [
+          "06",
+          "장치 사용 중",
+          "긴 명령을 처리 중 — 잠시 후 재시도하라는 뜻"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        }
+      ]
+    },
     {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-    }
-   ]
-  }
- ],
- "when_to_use": [
-  {
-   "situation": "현장 설비(인버터·전력계·PLC)에서 값을 읽어야 한다",
-   "pick": "Modbus RTU (장비가 지원하는 방식 그대로)",
-   "over": "자체 프로토콜을 새로 설계하기",
-   "why": "선택의 여지가 거의 없다 — **상대 장비가 이 말만 할 줄 안다.** 게다가 매뉴얼에 레지스터 표가 이미 있어 개발이 '표를 코드로 옮기는 일'로 줄어든다",
-   "tradeoff": "타입도 보안도 없어 해석과 보호를 내가 책임진다. 폴링 주기가 곧 지연이 된다",
-   "confidence": "confirmed",
-   "sources": [
+      "id": "transports",
+      "kind": "compare",
+      "caption": "RTU · ASCII · TCP — 껍데기만 다르다",
+      "note": "**가운데 PDU(기능 코드 + 데이터)는 셋이 완전히 같다.** 그래서 파서의 프레이밍 층만 갈아 끼우면 옮겨진다 — 게이트웨이를 만들 때 이 사실이 값을 한다",
+      "columns": [
+        "",
+        "RTU",
+        "ASCII",
+        "TCP"
+      ],
+      "rows": [
+        [
+          "물리 계층",
+          "RS-485/232 (→ `rs485`)",
+          "RS-485/232",
+          "이더넷 (포트 502)"
+        ],
+        [
+          "프레임 구분",
+          "**문자 3.5개 침묵** (시간)",
+          "`:` 로 시작, `CR LF` 로 끝",
+          "**MBAP 헤더의 길이 필드**"
+        ],
+        [
+          "오류 검출",
+          "CRC-16",
+          "LRC",
+          "**없음** — TCP 가 담당"
+        ],
+        [
+          "크기",
+          "가장 작다 (이진)",
+          "**약 2배** (16진 문자)",
+          "헤더 7바이트 추가"
+        ],
+        [
+          "타이밍 민감도",
+          "**높다** (침묵 시간을 지켜야)",
+          "낮다",
+          "낮다"
+        ],
+        [
+          "쓰는 자리",
+          "현장 설비 대부분",
+          "타이밍이 헐거운 환경·디버깅",
+          "PLC·게이트웨이·상위 시스템"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
+          "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+        },
+        {
+          "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
+          "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+        }
+      ]
+    },
     {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-    }
-   ]
-  },
-  {
-   "situation": "같은 설비를 이더넷으로 붙일 수 있다",
-   "pick": "Modbus TCP",
-   "over": "Modbus RTU + 시리얼 변환기",
-   "why": "프레임을 길이 필드로 자르므로 **타이밍(3.5문자 침묵) 제약에서 벗어난다.** 리눅스·컨테이너처럼 스케줄링 지연이 있는 환경에서 특히 유리하고, PDU 는 같아 코드 대부분이 재사용된다",
-   "tradeoff": "네트워크가 닿으면 누구나 제어할 수 있다 — 망 분리가 필수가 된다. 그리고 현장 장비가 이더넷을 지원해야 한다",
-   "confidence": "confirmed",
-   "sources": [
+      "id": "symptoms",
+      "kind": "glossary",
+      "caption": "증상 → 먼저 의심할 것",
+      "note": "**응답 없음과 예외 응답은 완전히 다른 신호다.** 예외가 왔다면 물리 계층과 주소는 이미 맞은 것이므로, 그때부터는 번지 문제로 좁혀 볼 수 있다",
+      "columns": [
+        "증상",
+        "먼저 의심할 것",
+        "확인·조치"
+      ],
+      "rows": [
+        [
+          "아무 응답이 없다",
+          "슬레이브 주소, 보율·패리티, **A/B 극성·종단**(→ `rs485`), DE 타이밍",
+          "다른 주소로도 시도. 로직 분석기나 스니퍼로 요청이 선로에 나가는지 확인"
+        ],
+        [
+          "**예외 02** 가 온다",
+          "**번지 1 차이** 또는 없는 영역",
+          "매뉴얼의 `40001` 을 주소 0 으로 바꿔 본다. 개수를 1로 줄여 한 칸씩 시험"
+        ],
+        [
+          "값이 한 칸씩 밀려 읽힌다",
+          "같은 1 차이 (반대 방향)",
+          "주소를 ±1 해 본다"
+        ],
+        [
+          "숫자가 말이 안 된다 (예: 온도 25.3 대신 6553)",
+          "**스케일**(0.1 단위 정수) 또는 **부호 해석**",
+          "매뉴얼의 단위·데이터 타입 확인. 16비트 부호 있는 값인지"
+        ],
+        [
+          "32비트 값이 이상하다",
+          "**워드 순서(스왑)**",
+          "두 워드의 순서를 바꿔 해석해 본다. 아는 값을 읽어 맞춘다"
+        ],
+        [
+          "가끔 타임아웃이 나고 재시도하면 된다",
+          "3.5문자 침묵 위반, 폴링 주기가 너무 촘촘, 노이즈",
+          "주기를 늘리고 타임아웃·재시도 정책을 정한다 (→ `idempotency`)"
+        ]
+      ]
+    },
     {
-     "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
-     "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+      "id": "sizes",
+      "kind": "spec",
+      "caption": "한 번에 옮길 수 있는 양",
+      "note": "직렬 PDU 크기 상한(253바이트)에서 나오는 값이다. 이 한계 때문에 큰 데이터는 여러 요청으로 나뉘고, **나누는 사이에 값이 바뀌면 일관성이 깨진다**(원자적 읽기가 없다)",
+      "columns": [
+        "동작",
+        "한 번에",
+        "넘으면"
+      ],
+      "rows": [
+        [
+          "보유·입력 레지스터 읽기",
+          "**최대 125개** (16비트 워드)",
+          "요청을 나눈다 — 사이에 값이 바뀔 수 있다"
+        ],
+        [
+          "코일 읽기",
+          "최대 2000개 (비트)",
+          "나눈다"
+        ],
+        [
+          "보유 레지스터 여러 개 쓰기 (0x10)",
+          "최대 123개",
+          "나눈다 — **쓰기가 나뉘면 중간 상태가 생긴다**"
+        ],
+        [
+          "PDU 크기 (직렬)",
+          "253바이트",
+          "—"
+        ]
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        }
+      ]
     }
-   ]
-  },
-  {
-   "situation": "설비 데이터를 클라우드·서버로 올려야 한다",
-   "pick": "게이트웨이 구성 — 현장은 Modbus, 상위는 MQTT/HTTP",
-   "over": "서버가 직접 Modbus 로 설비를 폴링하기",
-   "why": "Modbus 는 폴링이라 장치가 늘수록 한 바퀴가 길어지고, 보안이 없어 외부에 노출할 수 없다. 게이트웨이가 현장 폴링을 맡고 상위로는 변화만 올리는 구성이 표준이 됐다",
-   "tradeoff": "게이트웨이라는 부품과 그 안의 상태 관리(캐시·재시도·버퍼)가 늘어난다"
-  },
-  {
-   "situation": "장비 여러 대의 값을 자주 읽어야 한다",
-   "pick": "연속 번지를 **한 요청으로 묶어** 읽기 (최대 125 레지스터)",
-   "over": "레지스터마다 한 번씩 요청하기",
-   "why": "요청 하나에 왕복 시간과 3.5문자 침묵이 붙는다. 열 번 물을 것을 한 번에 묶으면 폴링 한 바퀴가 자릿수 단위로 줄어든다",
-   "tradeoff": "필요 없는 번지까지 읽게 되고, 상한(125)을 넘으면 어차피 나뉜다. 나뉘는 순간 값의 일관성이 깨질 수 있다",
-   "confidence": "confirmed",
-   "sources": [
+  ],
+  "when_to_use": [
     {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-    }
-   ]
-  },
-  {
-   "situation": "쓰기 명령에 응답이 안 와서 재시도해야 한다",
-   "pick": "**같은 값을 다시 쓰는 형태**(절대값 쓰기)로 설계하고 재시도",
-   "over": "'현재값 + 1' 같은 상대 명령을 재시도하기",
-   "why": "Modbus 에는 재전송·중복 검출이 없다. 응답만 유실됐을 뿐 슬레이브는 이미 실행했을 수 있으므로, **두 번 실행돼도 결과가 같은 형태**여야 안전하다 (→ `idempotency`)",
-   "tradeoff": "카운터 증가 같은 동작은 마스터가 목표값을 계산해 절대값으로 써야 해서 상태 관리가 늘어난다"
-  }
- ],
- "pitfalls": [
-  {
-   "trap": "매뉴얼대로 40001 을 읽었는데 예외 02 가 온다",
-   "why": "**관례 표기와 프로토콜 주소가 1 차이다.** `40001` 은 보유 레지스터의 첫 번째이고 선로에는 주소 `0` 이 나간다",
-   "fix": "주소에서 1 을 빼고(또는 라이브러리가 이미 빼는지 확인하고) 다시 시도한다. 매뉴얼이 처음부터 0-based 로 적힌 경우도 있으니 **한 칸씩 시험해 확인**한다",
-   "sources": [
+      "situation": "현장 설비(인버터·전력계·PLC)에서 값을 읽어야 한다",
+      "pick": "Modbus RTU (장비가 지원하는 방식 그대로)",
+      "over": "자체 프로토콜을 새로 설계하기",
+      "why": "선택의 여지가 거의 없다 — **상대 장비가 이 말만 할 줄 안다.** 게다가 매뉴얼에 레지스터 표가 이미 있어 개발이 '표를 코드로 옮기는 일'로 줄어든다",
+      "tradeoff": "타입도 보안도 없어 해석과 보호를 내가 책임진다. 폴링 주기가 곧 지연이 된다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        }
+      ]
+    },
     {
-     "title": "MODBUS Application Protocol Specification V1.1b3",
-     "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-    }
-   ]
-  },
-  {
-   "trap": "32비트 값(적산 전력량·float 온도)이 터무니없다",
-   "why": "**워드 순서가 반대다.** 프로토콜이 순서를 정하지 않아 상위 워드가 먼저인 장비와 나중인 장비가 섞여 있다(워드 스왑)",
-   "fix": "두 워드를 바꿔 해석해 본다. 아는 값(예: 0 또는 알려진 상수)을 읽어 순서를 맞춘 뒤 코드에 설정으로 남긴다"
-  },
-  {
-   "trap": "값은 읽히는데 온도가 253 처럼 나온다",
-   "why": "**스케일**이다. 정수만 다룰 수 있으므로 25.3℃ 를 0.1 단위로 253 으로 보낸다. 부호 있는 값을 부호 없이 읽어 65000 대가 나오는 경우도 같은 계열이다",
-   "fix": "매뉴얼의 단위·배율·부호 여부를 확인해 변환을 코드에 명시한다. **읽은 원시값과 변환값을 함께 로그에 남기면** 나중 디버깅이 쉽다"
-  },
-  {
-   "trap": "속도를 115200 으로 올렸더니 응답이 깨지기 시작한다",
-   "why": "**3.5문자 침묵을 못 지킨다.** 115200 에서는 그 시간이 0.3ms 대로 줄어, `rs485` 의 DE 방향 전환이나 OS 스케줄링 지연이 그 안에 못 들어온다",
-   "fix": "속도를 낮추거나(9600·19200), 송신 완료(TXC) 인터럽트로 DE 를 정확히 내리거나(→ `rs485`), 타이밍 제약이 없는 Modbus TCP 로 옮긴다",
-   "sources": [
+      "situation": "같은 설비를 이더넷으로 붙일 수 있다",
+      "pick": "Modbus TCP",
+      "over": "Modbus RTU + 시리얼 변환기",
+      "why": "프레임을 길이 필드로 자르므로 **타이밍(3.5문자 침묵) 제약에서 벗어난다.** 리눅스·컨테이너처럼 스케줄링 지연이 있는 환경에서 특히 유리하고, PDU 는 같아 코드 대부분이 재사용된다",
+      "tradeoff": "네트워크가 닿으면 누구나 제어할 수 있다 — 망 분리가 필수가 된다. 그리고 현장 장비가 이더넷을 지원해야 한다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
+          "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+        }
+      ]
+    },
     {
-     "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
-     "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
-    }
-   ]
-  },
-  {
-   "trap": "장치를 늘렸더니 값이 갱신되는 주기가 눈에 띄게 느려졌다",
-   "why": "**폴링 구조**다. 슬레이브가 먼저 말할 수 없으므로 마스터가 한 대씩 돌아가며 물어야 하고, 한 바퀴 시간이 장치 수에 비례한다",
-   "fix": "연속 번지를 한 요청으로 묶고, 자주 바뀌는 값과 아닌 값의 **폴링 주기를 나눈다.** 그래도 부족하면 회선을 분리하거나 게이트웨이를 늘린다"
-  },
-  {
-   "trap": "테스트 중 엉뚱한 설비가 동작했다",
-   "why": "**Modbus 에는 인증이 없다.** 같은 회선·네트워크에 있으면 누구든 코일을 쓸 수 있고, 슬레이브 주소를 잘못 적으면 다른 장비에 명령이 간다",
-   "fix": "쓰기 기능은 접근을 제한하고(게이트웨이에서 화이트리스트), 시험은 분리된 회선에서 한다. 운영망은 물리적으로 분리하는 것이 기본이다",
-   "sources": [
+      "situation": "설비 데이터를 클라우드·서버로 올려야 한다",
+      "pick": "게이트웨이 구성 — 현장은 Modbus, 상위는 MQTT/HTTP",
+      "over": "서버가 직접 Modbus 로 설비를 폴링하기",
+      "why": "Modbus 는 폴링이라 장치가 늘수록 한 바퀴가 길어지고, 보안이 없어 외부에 노출할 수 없다. 게이트웨이가 현장 폴링을 맡고 상위로는 변화만 올리는 구성이 표준이 됐다",
+      "tradeoff": "게이트웨이라는 부품과 그 안의 상태 관리(캐시·재시도·버퍼)가 늘어난다"
+    },
     {
-     "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
-     "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
-     "publisher": "Modbus Organization",
-     "kind": "standard",
-     "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+      "situation": "장비 여러 대의 값을 자주 읽어야 한다",
+      "pick": "연속 번지를 **한 요청으로 묶어** 읽기 (최대 125 레지스터)",
+      "over": "레지스터마다 한 번씩 요청하기",
+      "why": "요청 하나에 왕복 시간과 3.5문자 침묵이 붙는다. 열 번 물을 것을 한 번에 묶으면 폴링 한 바퀴가 자릿수 단위로 줄어든다",
+      "tradeoff": "필요 없는 번지까지 읽게 되고, 상한(125)을 넘으면 어차피 나뉜다. 나뉘는 순간 값의 일관성이 깨질 수 있다",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        }
+      ]
+    },
+    {
+      "situation": "쓰기 명령에 응답이 안 와서 재시도해야 한다",
+      "pick": "**같은 값을 다시 쓰는 형태**(절대값 쓰기)로 설계하고 재시도",
+      "over": "'현재값 + 1' 같은 상대 명령을 재시도하기",
+      "why": "Modbus 에는 재전송·중복 검출이 없다. 응답만 유실됐을 뿐 슬레이브는 이미 실행했을 수 있으므로, **두 번 실행돼도 결과가 같은 형태**여야 안전하다 (→ `idempotency`)",
+      "tradeoff": "카운터 증가 같은 동작은 마스터가 목표값을 계산해 절대값으로 써야 해서 상태 관리가 늘어난다"
     }
-   ]
-  }
- ],
- "terms": [
-  {
-   "term": "PDU",
-   "en": "Protocol Data Unit",
-   "what": "기능 코드 + 데이터. 전송 방식이 달라도 이 부분은 같다"
-  },
-  {
-   "term": "ADU",
-   "en": "Application Data Unit",
-   "what": "PDU 에 주소·오류검출(또는 MBAP 헤더)을 씌운 전체 프레임"
-  },
-  {
-   "term": "코일 / 이산 입력",
-   "en": "coil / discrete input",
-   "what": "1비트 데이터. 코일은 읽고 쓸 수 있고 이산 입력은 읽기만 된다"
-  },
-  {
-   "term": "보유 / 입력 레지스터",
-   "en": "holding / input register",
-   "what": "16비트 데이터. 보유는 읽고 쓰기, 입력은 읽기만"
-  },
-  {
-   "term": "기능 코드",
-   "en": "function code",
-   "what": "무엇을 할지 정하는 한 바이트. 03=보유 레지스터 읽기, 06=한 개 쓰기 등"
-  },
-  {
-   "term": "예외 응답",
-   "en": "exception response",
-   "what": "요청을 처리할 수 없을 때의 답. 기능 코드에 0x80 이 더해지고 예외 코드가 붙는다"
-  },
-  {
-   "term": "MBAP 헤더",
-   "en": "MBAP header",
-   "what": "Modbus TCP 앞에 붙는 7바이트. 트랜잭션 ID·길이·유닛 ID 가 들어 있다"
-  },
-  {
-   "term": "워드 스왑",
-   "en": "word swap",
-   "what": "32비트 값을 두 레지스터에 담을 때의 순서 문제. 프로토콜이 정하지 않아 벤더마다 다르다"
-  },
-  {
-   "term": "폴링",
-   "en": "polling",
-   "what": "마스터가 주기적으로 물어보는 것. 슬레이브가 먼저 말할 수 없어 생기는 구조"
-  }
- ],
- "drills": [
-  {
-   "task": "**`rs485` 의 프레임 실습을 이어받아 응답까지 만든다.** ① 슬레이브 1의 보유 레지스터 40001~40002 를 읽는 요청을 바이트로 적고 CRC-16 을 계산한다 ② 값이 123·456 일 때의 정상 응답을 바이트로 적는다 ③ 같은 요청에 대한 **예외 02 응답**을 바이트로 적는다",
-   "done_when": "세 프레임을 모두 쓸 수 있고, 예외 응답의 기능 코드가 0x83 인 이유(0x03 + 0x80)를 설명할 수 있다",
-   "why": "요청·정상·예외 세 가지를 손으로 만들어 보면 라이브러리 없이도 디버깅이 된다. 실무에서 스니퍼 로그를 읽는 능력이 여기서 나온다",
-   "no_hardware": "장비가 필요 없다 — 계산과 파이썬 몇 줄이면 CRC 까지 확인된다",
-   "hours": 2
-  },
-  {
-   "task": "**번지 해석기를 만든다.** 매뉴얼 표기(`40001`·`30012`·`10005`·`00007`)를 입력하면 ① 데이터 종류 ② 프로토콜 주소(0-based) ③ 읽기에 쓸 기능 코드를 출력하는 함수를 작성하고, 표기가 이미 0-based 인 매뉴얼일 때의 옵션도 넣는다",
-   "done_when": "네 표기를 모두 올바른 주소·기능 코드로 바꿀 수 있고, 1 차이가 어디서 생기는지 주석으로 설명했다",
-   "why": "이 프로토콜 버그의 절반이 여기서 나온다. 함수 하나로 만들어 두면 장비가 바뀌어도 그대로 쓴다",
-   "no_hardware": "장비가 필요 없다 — 순수 계산이다",
-   "hours": 1
-  },
-  {
-   "task": "**폴링 예산을 계산한다.** 슬레이브 10대에서 각각 레지스터 20개를 읽는 시스템을 9600bps 와 115200bps 에서 각각 계산한다 — ① 요청·응답 프레임의 바이트 수 ② 전송 시간 ③ 3.5문자 침묵 ④ 한 바퀴 총 시간. 그다음 연속 번지를 한 요청으로 묶었을 때와 20번 나눠 물었을 때를 비교한다",
-   "done_when": "한 바퀴 시간을 두 속도·두 방식에 대해 숫자로 답할 수 있고, '장치를 늘리면 왜 느려지나'를 계산으로 설명할 수 있다",
-   "why": "현장에서 '데이터가 늦게 올라온다'는 문제의 원인이 대개 이 산수다. 설계 단계에서 미리 하면 회선 분리 여부가 결정된다",
-   "no_hardware": "장비가 필요 없다 — `uart` 문서의 비트 시간 계산을 그대로 쓴다",
-   "hours": 2
-  }
- ],
- "checks": [
-  "매뉴얼의 `40001` 을 읽으려면 선로에 어떤 주소를 보내야 하나? 왜 1 차이가 생기나?",
-  "응답이 아예 없는 것과 예외 응답이 오는 것은 각각 무엇을 뜻하나?",
-  "예외 응답의 기능 코드가 0x83 이면 원래 요청은 무엇이었나?",
-  "RTU·ASCII·TCP 에서 프레임을 자르는 방법이 각각 무엇이고, TCP 에만 CRC 가 없는 이유는?",
-  "32비트 값이 터무니없게 읽힐 때 가장 먼저 의심할 것은?",
-  "쓰기 명령에 응답이 없어 재시도할 때 왜 '절대값 쓰기' 형태가 안전한가?"
- ],
- "evidence": [
-  {
-   "quote": ": Modbus, CAN 등 산업 통신 프로토콜",
-   "from": "posting",
-   "where": "스탠다드에너지 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/373201",
-   "what_it_shows": "**`Modbus` 가 설명 없이 자격요건에 적힌다** — 이 바닥에서 전제로 통하는 낱말이라는 뜻이고, 이 엔진이 '설명 없는 말'을 다루는 이유다"
-  },
-  {
-   "quote": "• 산업용 프로토콜(OPC-UA, Modbus 등)을 다뤄 보신 분",
-   "from": "posting",
-   "where": "지신 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/378555",
-   "what_it_shows": "산업 도메인에서 Modbus 는 기본값이다. 상위 프로토콜(OPC-UA)과 나란히 적히는 것이 계층 구조를 보여 준다"
-  },
-  {
-   "quote": "• Modbus, MQTT, TCP/IP 소켓 통신 등 디바이스-서버 간 통신 프로토콜을 직접 설계하거나 구현해본 경험",
-   "from": "posting",
-   "where": "헤리트 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/383518",
-   "what_it_shows": "**게이트웨이 구성이 그대로 문장이 됐다** — 현장은 Modbus, 상위는 MQTT. 이 문서 마지막 절의 결론이 채용 요건으로 나타난 것"
-  },
-  {
-   "quote": "• 다양한 통신 프로토콜(Modbus, SSH/SFTP, ZeroMQ) 사용 경험",
-   "from": "posting",
-   "where": "미켈로로보틱스 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/343902",
-   "what_it_shows": "로봇 쪽에서도 설비와 붙는 통로는 Modbus 다. 같은 공고가 FastAPI·asyncio 도 요구한다 — **한 사람이 양쪽을 다 만진다**"
-  },
-  {
-   "quote": "CAN, UART, RS-232/RS-485, SPI, I2C 등 범용 인터페이스 기반 컨트롤러 개발",
-   "from": "posting",
-   "where": "크래블 — 컨트롤러 개발 (원티드, 모집중)",
-   "url": "https://www.wanted.co.kr/wd/372341",
-   "what_it_shows": "Modbus 가 도는 물리 계층(RS-485)이 같은 자리에서 요구된다 — 프로토콜과 전선을 함께 아는 사람을 찾는다는 뜻이다"
-  }
- ],
- "related": [
-  {
-   "slug": "rs485",
-   "how": "이 프로토콜이 도는 전선. 차동 전송·종단·DE 타이밍은 거기 있고, 3.5문자 침묵이 그 방향 전환과 맞물린다"
-  },
-  {
-   "slug": "uart",
-   "how": "RTU 의 바이트가 실제로 나가는 층. 문자 시간 계산(3.5문자 침묵)이 그 문서의 비트 시간에서 나온다"
-  },
-  {
-   "slug": "idempotency",
-   "how": "재전송이 없는 프로토콜에서 재시도를 안전하게 만드는 법. 쓰기 명령을 절대값 형태로 두는 이유"
-  },
-  {
-   "slug": "mqtt",
-   "how": "게이트웨이의 반대편 — 설비에서 읽은 값을 서버로 올릴 때 쓰는 프로토콜. 공고가 둘을 한 문장에 적는다"
-  }
- ],
- "open_questions": [
-  "modbus.org 의 사양서는 **다운로드에 동의 절차가 있을 수 있어** 이번 사이클에도 PDF 본문을 기계로 대조하지 못했다. 문서 신원과 URL, 그리고 검색으로 확인된 규정(예외 응답 = 기능 코드 + 0x80)까지만 근거로 썼다 — ESP32 TRM·UM10204 때와 같은 처리다",
-  "레지스터 개수 상한(읽기 125·쓰기 123·코일 2000)은 PDU 크기 제한에서 나오는 값으로 널리 통용되지만, **정확한 수치는 사양서의 해당 절에서 확인해야 한다.** 이 문서는 '한 번에 옮길 수 있는 양에 상한이 있다'는 사실과 그 결과(나눠 읽으면 일관성이 깨진다)를 축으로 썼다",
-  "**워드 순서(스왑)와 스케일은 규격 밖의 약속**이라 일반 규칙을 쓸 수 없다. 장비 매뉴얼이 유일한 근거이고, 문서에는 '아는 값으로 맞춘다'는 실무 절차만 남겼다",
-  "TLS 를 얹은 Modbus Security 사양이 따로 있으나 이번 사이클에서 다루지 않았다 — 보안 절에서 존재만 언급했다",
-  "`market` 은 비어 있다. `tech_relations.json` 은 Modbus 를 추적 기술로 세지 않는다 — 대신 모집중 공고 5건을 `evidence` 로 받쳤다"
- ],
- "sources": [
-  {
-   "title": "MODBUS Application Protocol Specification V1.1b3",
-   "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
-   "publisher": "Modbus Organization",
-   "kind": "standard",
-   "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
-  },
-  {
-   "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
-   "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
-   "publisher": "Modbus Organization",
-   "kind": "standard",
-   "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
-  },
-  {
-   "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
-   "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
-   "publisher": "Modbus Organization",
-   "kind": "standard",
-   "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
-  },
-  {
-   "title": "Modbus Specifications (문서 목록)",
-   "url": "https://www.modbus.org/modbus-specifications",
-   "publisher": "Modbus Organization",
-   "kind": "docs",
-   "summary": "사양서 전체 목록 페이지. 어느 문서를 봐야 하는지(응용 프로토콜·직렬·TCP)를 여기서 고른다"
-  }
- ]
+  ],
+  "pitfalls": [
+    {
+      "trap": "매뉴얼대로 40001 을 읽었는데 예외 02 가 온다",
+      "why": "**관례 표기와 프로토콜 주소가 1 차이다.** `40001` 은 보유 레지스터의 첫 번째이고 선로에는 주소 `0` 이 나간다",
+      "fix": "주소에서 1 을 빼고(또는 라이브러리가 이미 빼는지 확인하고) 다시 시도한다. 매뉴얼이 처음부터 0-based 로 적힌 경우도 있으니 **한 칸씩 시험해 확인**한다",
+      "sources": [
+        {
+          "title": "MODBUS Application Protocol Specification V1.1b3",
+          "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+        }
+      ]
+    },
+    {
+      "trap": "32비트 값(적산 전력량·float 온도)이 터무니없다",
+      "why": "**워드 순서가 반대다.** 프로토콜이 순서를 정하지 않아 상위 워드가 먼저인 장비와 나중인 장비가 섞여 있다(워드 스왑)",
+      "fix": "두 워드를 바꿔 해석해 본다. 아는 값(예: 0 또는 알려진 상수)을 읽어 순서를 맞춘 뒤 코드에 설정으로 남긴다"
+    },
+    {
+      "trap": "값은 읽히는데 온도가 253 처럼 나온다",
+      "why": "**스케일**이다. 정수만 다룰 수 있으므로 25.3℃ 를 0.1 단위로 253 으로 보낸다. 부호 있는 값을 부호 없이 읽어 65000 대가 나오는 경우도 같은 계열이다",
+      "fix": "매뉴얼의 단위·배율·부호 여부를 확인해 변환을 코드에 명시한다. **읽은 원시값과 변환값을 함께 로그에 남기면** 나중 디버깅이 쉽다"
+    },
+    {
+      "trap": "속도를 115200 으로 올렸더니 응답이 깨지기 시작한다",
+      "why": "**3.5문자 침묵을 못 지킨다.** 115200 에서는 그 시간이 0.3ms 대로 줄어, `rs485` 의 DE 방향 전환이나 OS 스케줄링 지연이 그 안에 못 들어온다",
+      "fix": "속도를 낮추거나(9600·19200), 송신 완료(TXC) 인터럽트로 DE 를 정확히 내리거나(→ `rs485`), 타이밍 제약이 없는 Modbus TCP 로 옮긴다",
+      "sources": [
+        {
+          "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
+          "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+        }
+      ]
+    },
+    {
+      "trap": "장치를 늘렸더니 값이 갱신되는 주기가 눈에 띄게 느려졌다",
+      "why": "**폴링 구조**다. 슬레이브가 먼저 말할 수 없으므로 마스터가 한 대씩 돌아가며 물어야 하고, 한 바퀴 시간이 장치 수에 비례한다",
+      "fix": "연속 번지를 한 요청으로 묶고, 자주 바뀌는 값과 아닌 값의 **폴링 주기를 나눈다.** 그래도 부족하면 회선을 분리하거나 게이트웨이를 늘린다"
+    },
+    {
+      "trap": "테스트 중 엉뚱한 설비가 동작했다",
+      "why": "**Modbus 에는 인증이 없다.** 같은 회선·네트워크에 있으면 누구든 코일을 쓸 수 있고, 슬레이브 주소를 잘못 적으면 다른 장비에 명령이 간다",
+      "fix": "쓰기 기능은 접근을 제한하고(게이트웨이에서 화이트리스트), 시험은 분리된 회선에서 한다. 운영망은 물리적으로 분리하는 것이 기본이다",
+      "sources": [
+        {
+          "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
+          "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
+          "publisher": "Modbus Organization",
+          "kind": "standard",
+          "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "PDU",
+      "en": "Protocol Data Unit",
+      "what": "기능 코드 + 데이터. 전송 방식이 달라도 이 부분은 같다"
+    },
+    {
+      "term": "ADU",
+      "en": "Application Data Unit",
+      "what": "PDU 에 주소·오류검출(또는 MBAP 헤더)을 씌운 전체 프레임"
+    },
+    {
+      "term": "코일 / 이산 입력",
+      "en": "coil / discrete input",
+      "what": "1비트 데이터. 코일은 읽고 쓸 수 있고 이산 입력은 읽기만 된다"
+    },
+    {
+      "term": "보유 / 입력 레지스터",
+      "en": "holding / input register",
+      "what": "16비트 데이터. 보유는 읽고 쓰기, 입력은 읽기만"
+    },
+    {
+      "term": "기능 코드",
+      "en": "function code",
+      "what": "무엇을 할지 정하는 한 바이트. 03=보유 레지스터 읽기, 06=한 개 쓰기 등"
+    },
+    {
+      "term": "예외 응답",
+      "en": "exception response",
+      "what": "요청을 처리할 수 없을 때의 답. 기능 코드에 0x80 이 더해지고 예외 코드가 붙는다"
+    },
+    {
+      "term": "MBAP 헤더",
+      "en": "MBAP header",
+      "what": "Modbus TCP 앞에 붙는 7바이트. 트랜잭션 ID·길이·유닛 ID 가 들어 있다"
+    },
+    {
+      "term": "워드 스왑",
+      "en": "word swap",
+      "what": "32비트 값을 두 레지스터에 담을 때의 순서 문제. 프로토콜이 정하지 않아 벤더마다 다르다"
+    },
+    {
+      "term": "폴링",
+      "en": "polling",
+      "what": "마스터가 주기적으로 물어보는 것. 슬레이브가 먼저 말할 수 없어 생기는 구조"
+    }
+  ],
+  "drills": [
+    {
+      "task": "**`rs485` 의 프레임 실습을 이어받아 응답까지 만든다.** ① 슬레이브 1의 보유 레지스터 40001~40002 를 읽는 요청을 바이트로 적고 CRC-16 을 계산한다 ② 값이 123·456 일 때의 정상 응답을 바이트로 적는다 ③ 같은 요청에 대한 **예외 02 응답**을 바이트로 적는다",
+      "done_when": "세 프레임을 모두 쓸 수 있고, 예외 응답의 기능 코드가 0x83 인 이유(0x03 + 0x80)를 설명할 수 있다",
+      "why": "요청·정상·예외 세 가지를 손으로 만들어 보면 라이브러리 없이도 디버깅이 된다. 실무에서 스니퍼 로그를 읽는 능력이 여기서 나온다",
+      "no_hardware": "장비가 필요 없다 — 계산과 파이썬 몇 줄이면 CRC 까지 확인된다",
+      "hours": 2
+    },
+    {
+      "task": "**번지 해석기를 만든다.** 매뉴얼 표기(`40001`·`30012`·`10005`·`00007`)를 입력하면 ① 데이터 종류 ② 프로토콜 주소(0-based) ③ 읽기에 쓸 기능 코드를 출력하는 함수를 작성하고, 표기가 이미 0-based 인 매뉴얼일 때의 옵션도 넣는다",
+      "done_when": "네 표기를 모두 올바른 주소·기능 코드로 바꿀 수 있고, 1 차이가 어디서 생기는지 주석으로 설명했다",
+      "why": "이 프로토콜 버그의 절반이 여기서 나온다. 함수 하나로 만들어 두면 장비가 바뀌어도 그대로 쓴다",
+      "no_hardware": "장비가 필요 없다 — 순수 계산이다",
+      "hours": 1
+    },
+    {
+      "task": "**폴링 예산을 계산한다.** 슬레이브 10대에서 각각 레지스터 20개를 읽는 시스템을 9600bps 와 115200bps 에서 각각 계산한다 — ① 요청·응답 프레임의 바이트 수 ② 전송 시간 ③ 3.5문자 침묵 ④ 한 바퀴 총 시간. 그다음 연속 번지를 한 요청으로 묶었을 때와 20번 나눠 물었을 때를 비교한다",
+      "done_when": "한 바퀴 시간을 두 속도·두 방식에 대해 숫자로 답할 수 있고, '장치를 늘리면 왜 느려지나'를 계산으로 설명할 수 있다",
+      "why": "현장에서 '데이터가 늦게 올라온다'는 문제의 원인이 대개 이 산수다. 설계 단계에서 미리 하면 회선 분리 여부가 결정된다",
+      "no_hardware": "장비가 필요 없다 — `uart` 문서의 비트 시간 계산을 그대로 쓴다",
+      "hours": 2
+    }
+  ],
+  "checks": [
+    "매뉴얼의 `40001` 을 읽으려면 선로에 어떤 주소를 보내야 하나? 왜 1 차이가 생기나?",
+    "응답이 아예 없는 것과 예외 응답이 오는 것은 각각 무엇을 뜻하나?",
+    "예외 응답의 기능 코드가 0x83 이면 원래 요청은 무엇이었나?",
+    "RTU·ASCII·TCP 에서 프레임을 자르는 방법이 각각 무엇이고, TCP 에만 CRC 가 없는 이유는?",
+    "32비트 값이 터무니없게 읽힐 때 가장 먼저 의심할 것은?",
+    "쓰기 명령에 응답이 없어 재시도할 때 왜 '절대값 쓰기' 형태가 안전한가?"
+  ],
+  "evidence": [
+    {
+      "quote": ": Modbus, CAN 등 산업 통신 프로토콜",
+      "from": "posting",
+      "where": "스탠다드에너지 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/373201",
+      "what_it_shows": "**`Modbus` 가 설명 없이 자격요건에 적힌다** — 이 바닥에서 전제로 통하는 낱말이라는 뜻이고, 이 엔진이 '설명 없는 말'을 다루는 이유다"
+    },
+    {
+      "quote": "• 산업용 프로토콜(OPC-UA, Modbus 등)을 다뤄 보신 분",
+      "from": "posting",
+      "where": "지신 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/378555",
+      "what_it_shows": "산업 도메인에서 Modbus 는 기본값이다. 상위 프로토콜(OPC-UA)과 나란히 적히는 것이 계층 구조를 보여 준다"
+    },
+    {
+      "quote": "• Modbus, MQTT, TCP/IP 소켓 통신 등 디바이스-서버 간 통신 프로토콜을 직접 설계하거나 구현해본 경험",
+      "from": "posting",
+      "where": "헤리트 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/383518",
+      "what_it_shows": "**게이트웨이 구성이 그대로 문장이 됐다** — 현장은 Modbus, 상위는 MQTT. 이 문서 마지막 절의 결론이 채용 요건으로 나타난 것"
+    },
+    {
+      "quote": "• 다양한 통신 프로토콜(Modbus, SSH/SFTP, ZeroMQ) 사용 경험",
+      "from": "posting",
+      "where": "미켈로로보틱스 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/343902",
+      "what_it_shows": "로봇 쪽에서도 설비와 붙는 통로는 Modbus 다. 같은 공고가 FastAPI·asyncio 도 요구한다 — **한 사람이 양쪽을 다 만진다**"
+    },
+    {
+      "quote": "CAN, UART, RS-232/RS-485, SPI, I2C 등 범용 인터페이스 기반 컨트롤러 개발",
+      "from": "posting",
+      "where": "크래블 — 컨트롤러 개발 (원티드, 모집중)",
+      "url": "https://www.wanted.co.kr/wd/372341",
+      "what_it_shows": "Modbus 가 도는 물리 계층(RS-485)이 같은 자리에서 요구된다 — 프로토콜과 전선을 함께 아는 사람을 찾는다는 뜻이다"
+    }
+  ],
+  "related": [
+    {
+      "slug": "rs485",
+      "how": "이 프로토콜이 도는 전선. 차동 전송·종단·DE 타이밍은 거기 있고, 3.5문자 침묵이 그 방향 전환과 맞물린다"
+    },
+    {
+      "slug": "uart",
+      "how": "RTU 의 바이트가 실제로 나가는 층. 문자 시간 계산(3.5문자 침묵)이 그 문서의 비트 시간에서 나온다"
+    },
+    {
+      "slug": "idempotency",
+      "how": "재전송이 없는 프로토콜에서 재시도를 안전하게 만드는 법. 쓰기 명령을 절대값 형태로 두는 이유"
+    },
+    {
+      "slug": "mqtt",
+      "how": "게이트웨이의 반대편 — 설비에서 읽은 값을 서버로 올릴 때 쓰는 프로토콜. 공고가 둘을 한 문장에 적는다"
+    }
+  ],
+  "open_questions": [
+    "⭐⭐ **계보 뼈대로 보수했다**(2026-09-06) — `limits` 를 **한계와 그 자리에서 나온 것들** 표로 세우고, **어디에 쓰이나** 절을 새로 만들었다. 💡 ⭐⭐⭐ **층마다 \"안 정한 것\"이 다음 층을 부른 사슬이 드러났다**: **RS-485(전기) → Modbus(프레임·번지) → MQTT·OPC UA(의미·발행) → 서버.** ⚠️ 그리고 **`MQTT` 193건 > `Modbus` 138건** — 위에 얹는 것이 더 많이 불린다.",
+    "modbus.org 의 사양서는 **다운로드에 동의 절차가 있을 수 있어** 이번 사이클에도 PDF 본문을 기계로 대조하지 못했다. 문서 신원과 URL, 그리고 검색으로 확인된 규정(예외 응답 = 기능 코드 + 0x80)까지만 근거로 썼다 — ESP32 TRM·UM10204 때와 같은 처리다",
+    "레지스터 개수 상한(읽기 125·쓰기 123·코일 2000)은 PDU 크기 제한에서 나오는 값으로 널리 통용되지만, **정확한 수치는 사양서의 해당 절에서 확인해야 한다.** 이 문서는 '한 번에 옮길 수 있는 양에 상한이 있다'는 사실과 그 결과(나눠 읽으면 일관성이 깨진다)를 축으로 썼다",
+    "**워드 순서(스왑)와 스케일은 규격 밖의 약속**이라 일반 규칙을 쓸 수 없다. 장비 매뉴얼이 유일한 근거이고, 문서에는 '아는 값으로 맞춘다'는 실무 절차만 남겼다",
+    "TLS 를 얹은 Modbus Security 사양이 따로 있으나 이번 사이클에서 다루지 않았다 — 보안 절에서 존재만 언급했다",
+    "`market` 은 비어 있다. `tech_relations.json` 은 Modbus 를 추적 기술로 세지 않는다 — 대신 모집중 공고 5건을 `evidence` 로 받쳤다"
+  ],
+  "sources": [
+    {
+      "title": "MODBUS Application Protocol Specification V1.1b3",
+      "url": "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf",
+      "publisher": "Modbus Organization",
+      "kind": "standard",
+      "summary": "데이터 모델·기능 코드·예외 응답의 1차 자료. 예외 응답은 기능 코드에 0x80 을 더한 값이라는 규정이 여기 있다. ⚠️ 다운로드에 동의 절차가 있을 수 있다"
+    },
+    {
+      "title": "MODBUS over Serial Line — Specification and Implementation Guide V1.02",
+      "url": "https://www.modbus.org/file/secure/modbusoverserial.pdf",
+      "publisher": "Modbus Organization",
+      "kind": "standard",
+      "summary": "RS-485 위에서 도는 RTU·ASCII 모드와 프레임 구분 규칙(문자 3.5개 침묵), 마스터/슬레이브 구조의 1차 자료"
+    },
+    {
+      "title": "MODBUS Messaging on TCP/IP Implementation Guide V1.0b",
+      "url": "https://www.modbus.org/file/secure/messagingimplementationguide.pdf",
+      "publisher": "Modbus Organization",
+      "kind": "standard",
+      "summary": "Modbus TCP 의 MBAP 헤더와 포트 502 사용 등 TCP 위에서의 규칙"
+    },
+    {
+      "title": "Modbus Specifications (문서 목록)",
+      "url": "https://www.modbus.org/modbus-specifications",
+      "publisher": "Modbus Organization",
+      "kind": "docs",
+      "summary": "사양서 전체 목록 페이지. 어느 문서를 봐야 하는지(응용 프로토콜·직렬·TCP)를 여기서 고른다"
+    }
+  ]
 }
