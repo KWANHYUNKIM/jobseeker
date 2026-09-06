@@ -20,8 +20,21 @@
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
+| **Anthropic** | US · SaaS | ⭐ **`anthropic.com/engineering` 이 열리고 목록이 실속 있다**(최신 **2026-04-23**). ⭐ **포스트모템을 쓴다** — `An update on recent Claude Code quality reports`(2026-04-23). 그 밖에 `Scaling Managed Agents: Decoupling the brain from the hands`(2026-04-08) · `How we built Claude Code auto mode: a safer way to skip permissions`(2026-03-25) · `Harness design for long-running application development` · **`Quantifying infrastructure noise in agentic coding evals`**(2026-02-05) · `How we contain Claude across products`. ⭐ **㉘축(맞았는지 어떻게 아나)과 ㊵축(모르는 것을 어떻게 적나)에 정면으로 붙는다** — 평가 자체의 잡음을 정량화하는 글이 있다. |
+| **Databricks** | US · SaaS | ⭐ **⑥축(`복제로 버틸 것인가 로그로 버틸 것인가`)의 정면 사례이고 수치가 있다.** `Object Storage + WAL: Lakebase Postgres for the agentic era`(2026-08-27) — **컴퓨트와 스토리지를 WAL 스트림 하나로만 잇고**, **safekeeper 무리가 Paxos 정족수로 WAL 을 복제**하며, **커밋은 객체 저장소가 아니라 정족수 확인으로 끝나고**, **pageserver 가 최신 이미지에 WAL 델타를 재생해 페이지를 복원한다.** **델타만 보내 WAL 트래픽 94% 감소, 쓰기 5배.** 그 밖에 **`10 trillion samples a day: Scaling beyond traditional monitoring infra`**(2026-05-05) · `Achieving Extreme Efficiency through Specialized GPU Kernel Generation`(2026-09-04). ⚠️ **`r.jina.ai` 가 개별 글 본문 대신 트래커 픽셀을 준다** — 3자 경로로 내용을 확인했다. ⚠️ **Neon 과 같은 구조라 겹침 주의**(Databricks 가 Neon 을 인수했다). |
+| **Modal** | US · SaaS | `modal.com/blog` 최신 **2026-09-02**. ⭐ **내부 구조 글이 분명하다** — **`Scaling to 1 million concurrent sandboxes in seconds`**(2026-07-16) · **`Bringing serverless functions closer to the speed of wire`**(2026-08-04). ⭐ **`유휴를 어떻게 다루나` 축(㊳)의 새 답이 될 가능성이 크다** — Neon 은 0 으로 내리고 Vercel 은 1 을 남기고 Cursor 는 재우는데, **여기는 서버리스 GPU 다.** ⚠️ **나머지 글은 사례 연구·모델 지원 발표라 자료가 얇을 수 있다.** |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
+
+- **2026-09-06 서른두 번째 후보 조사 — ⭐ 목표 3곳을 채웠다. `큰 이름인데 아직 없는 회사` 각도가 다섯 조사 연속 통했다.**
+  - **✅ Anthropic**(US) — ⭐ **포스트모템과 `평가의 잡음을 정량화하는 글`이 있다**(근거는 대기 표에). **㉘축·㊵축에 정면으로 붙는다.**
+  - **✅ Databricks**(US) — ⭐ **⑥축의 정면 사례에 수치까지 있다**(WAL 트래픽 94% 감소, 쓰기 5배). ⚠️ **Neon 과 같은 구조라 겹침 주의.**
+  - **✅ Modal**(US) — **`초 단위로 100만 동시 샌드박스`·`전선 속도에 가까운 서버리스`.** ⭐ **㊳축(유휴를 어떻게 다루나)의 새 답 후보.**
+  - **❌ Snowflake — 접는다.** ⭐ **Databricks 와 대비되는 큰 이름이라 노렸는데, 회사 자신이 쓰는 채널이 안 잡힌다.** `snowflake.com/engineering-blog` 은 **쿠키 배너만** 오고, 검색으로 나오는 것은 **Medium 의 `Snowflake Builders Blog`(커뮤니티 기고, 2025)와 3자 정리**다. ⚠️ **Trendyol·Rivian 에서 배운 것과 같다 — 회사가 스스로 쓰는 채널이 없으면 파다가 마른다.**
+  - **❌ Anduril** — `anduril.com/blog` 이 **404**. **주소를 추측하지 않는다는 규칙대로 접는다.** ⚠️ **산업/제조·방산 축은 이제 네 번째 실패다.**
+  - ⭐ **이번 조사의 교훈 — `본문이 안 열리면 3자 경로로 판정한다`가 두 번째로 값을 했다.** Perplexity 에서 처음 썼고 이번엔 Databricks 에서 썼다. ⚠️ **다만 그때는 판정용이었고 파는 것은 별개다** — **Databricks 를 팔 때 본문 대신 무엇을 읽을지 미리 정해야 한다**(문서 사이트 `docs.databricks.com` 이 열릴 수 있다).
+  - ⭐ **절차가 여섯 번째로 값을 했다** — `name_en` 목록을 먼저 출력해 다섯 이름이 다 없다는 것을 확인하고 던졌다.
+
 
 - **2026-09-06 서른한 번째 후보 조사 — ⭐ 목표 3곳을 채웠다. `큰 이름인데 아직 없는 회사` 각도가 네 조사 연속 통했다.**
   - **✅ Block (Square)**(US) — ⭐ **사내 에이전트 플랫폼 `Buzz` 를 다섯 편 연작으로 쓴다**(근거는 대기 표에). **결제·비트코인 하드웨어·사내 에이전트가 한 회사 안에 있다.**
