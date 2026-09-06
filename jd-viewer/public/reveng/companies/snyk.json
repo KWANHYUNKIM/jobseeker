@@ -4,7 +4,7 @@
   "name_en": "Snyk",
   "country": "EU",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-09-06",
   "domain": "snyk.io",
   "one_liner": "개발자가 쓰는 자리에서 보안 취약점을 찾아 고쳐 주는 회사 — 찾는 것보다 고치는 것이 어렵다",
@@ -152,8 +152,78 @@
     {
       "name": "기계가 고친 것을 믿어도 되는지 잰다",
       "why": "⚠️ **보안 수정에는 관문이 둘이다** — 회사의 문장: **`대부분의 코드 벤치마크는 코드가 도는지, 버그 리포트를 해결하는지를 본다. 보안 수정에는 둘 다 부족하다. 보안 기준과 기능 기준을 동시에 넘어야 하기 때문이다.`** **SQL 주입을 없앴는데 질의 결과가 달라졌다면 해결이 아니고, 깨끗해 보이는데 취약점이 남아 있다면 오히려 해롭다.** ✅ **본문 확인함**.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "짝지은 단위 테스트 (보안 + 기능)",
+          "solves": "⚠️ **한 표본 안에서 두 관문을 함께 잰다** — 기존 벤치마크는 **코드가 도는지나 버그가 해결됐는지**만 보는데 보안 수정은 둘 다 넘어야 한다.",
+          "limits": "⚠️ **표본마다 사람이 검증한 테스트 둘이 필요해 규모가 약 150개에 묶인다** — 회사가 첫 번째 한계로 밝힌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+              "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+              "publisher": "Snyk Blog",
+              "date": "2026",
+              "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+            }
+          ]
+        },
+        {
+          "tech": "테스트 은닉 + 첫 시도만 채점",
+          "solves": "**모델이 채점 기준을 보지 못하게 해** 답안지에 맞춘 출력을 막고, **그 취약점 유형을 정말 아는지**에 가깝게 잰다.",
+          "limits": "⚠️ **제품과 조건이 다르다** — 제품에는 **스캔 실패를 되먹이는 에이전틱 재시도**가 있는데 벤치마크는 그 고리를 끄고 잰다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+              "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+              "publisher": "Snyk Blog",
+              "date": "2026",
+              "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+            },
+            {
+              "title": "New Agentic Architecture for Snyk Agent Fix",
+              "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+              "publisher": "Snyk Blog",
+              "date": "2026-04-27",
+              "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+            }
+          ]
+        },
+        {
+          "tech": "여섯 구성 비교 설계",
+          "solves": "⚠️ **같은 모델을 데이터 있이/없이 재는 짝**을 넣어 **모델의 몫과 데이터의 몫을 가른다** — 72.4~74.6% 대 82.5~85.4%.",
+          "limits": "⚠️ **자기 제품을 재는 자를 자기가 만들었다는 사실은 남는다**(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+              "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+              "publisher": "Snyk Blog",
+              "date": "2026",
+              "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+            }
+          ]
+        },
+        {
+          "tech": "명시된 한계 넷",
+          "solves": "⚠️ **도구가 아니라 태도다** — 표본 크기·단일 파일 범위·세 언어·두 번 실행을 먼저 적고, **`10점 이상 격차는 잡음 밖이지만 언어별 작은 순위는 아니다`** 라고 스스로 선을 긋는다.",
+          "limits": "⚠️ **파일을 넘나드는 평가는 미해결로 남았다** — 실제 취약점은 여러 파일의 데이터 흐름에서 나오는 일이 많다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+              "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+              "publisher": "Snyk Blog",
+              "date": "2026",
+              "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "two-gates-one-try-tests-hidden"
+      ]
     }
   ],
   "features": [
@@ -685,6 +755,519 @@
           "summary": "2026년 2월 기준 ARR 약 3억 2,600만 달러, 고객 약 5,000곳, 개발자 250만 명 이상. Snyk Code(SAST)만 ARR 1억 달러를 넘었다."
         }
       ]
+    },
+    {
+      "key": "two-gates-one-try-tests-hidden",
+      "name": "두 관문을 한 번에, 답안지를 안 보여 주고 통과해야 한다",
+      "domain": "기계가 고친 것을 믿어도 되는지 잰다",
+      "updated_at": "2026-09-06",
+      "business": {
+        "why": "⚠️ **재고 싶은 것을 재는 자가 세상에 없었다.** 회사의 문장 — **`보안 팀이 실제로 신경 쓰는 과제, 즉 알려진 취약점이 있는 코드를 받아 그 취약점을 없애면서 코드가 계속 동작하게 하는 수정을 만들어 내는 일에 대해서는 널리 쓰이는 공개 벤치마크가 없다.`** ⚠️ **기존 벤치마크가 다른 것을 보기 때문이다** — **`대부분의 코드 벤치마크는 코드가 도는지, 버그 리포트를 해결하는지를 본다. 보안 수정에는 둘 다 부족하다. 보안 기준과 기능 기준을 동시에 넘어야 하기 때문이다.`** **SQL 주입을 없앴는데 질의 결과가 달라졌으면 진짜 해결이 아니고, 깨끗해 보이는데 취약점이 남아 있으면 오히려 해롭다.**",
+        "metrics": [
+          {
+            "label": "표본",
+            "value": "**약 150개** — 파이썬 **50** · 자바스크립트 **54** · 자바 **39.** 각 표본에 **취약점 하나**와 **사람이 검증한 단위 테스트 두 개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 통과 기준",
+            "value": "**두 테스트를 모두, 첫 시도에, 테스트를 한 번도 보지 않은 채 통과해야 한다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "label": "모델 단독",
+            "value": "StarCoder **72.4%** · Gemini 3.1 Pro **74.2%** · Claude Sonnet 4.6 **72.4%** · Claude Opus 4.6 **74.6%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "label": "인텔리전스 결합",
+            "value": "Sonnet 4.6 **82.5%** · Opus 4.6 **85.4%** — **10.8점, 14.48% 더 많은 표본을 고쳤다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "label": "가장 약한 곳에서 가장 크게",
+            "value": "**파이썬 64.0% → 88.0%**(Opus)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "label": "⚠️ 회사가 스스로 밝힌 한계 넷",
+            "value": "**표본이 작아 2점 미만 차이는 못 믿는다 · 단일 파일 조각이라 파일을 넘나드는 맥락을 못 잰다 · 세 언어뿐이다 · 두 번 실행이라 정식 오차 막대가 없다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기존 벤치마크를 쓸지 볼 때",
+          "thought": "⚠️ **재는 자가 없으면 좋아졌다는 말도 성립하지 않는다.** 기존 코드 벤치마크는 **코드가 도는가**나 **버그 리포트가 해결됐는가**를 보는데, **보안 수정은 두 기준을 동시에 넘어야 한다.** **그래서 자기 자를 만들었고, 그 자가 자기 제품의 값을 재는 자이기도 하다** — 그 긴장을 한계를 밝히는 것으로 다룬다(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "채점 방식을 정할 때",
+          "thought": "⚠️ **테스트를 보여 주면 모델은 그 테스트를 통과하는 코드를 쓴다.** 회사가 그것을 명시한다 — **`모델은 단위 테스트 자체를 절대 보지 못하므로, 통과는 알려진 테스트에 맞춰 낸 출력이 아니라 진짜로 안전하고 동작하는 수정을 뜻한다.`** **그리고 첫 시도만 인정한다** — 여러 번 시도해 맞히는 것은 다른 능력이다(재구성).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "결과를 발표할 때",
+          "thought": "⚠️ **자기 결과 중 어디까지 믿어도 되는지를 스스로 그었다** — **`Snyk 인텔리전스의 10점 이상 격차는 실행 간 잡음 밖에 있다. 언어별 작은 격차의 순서는 그렇지 않다.`** **자기에게 유리한 큰 숫자는 지키고 유리해 보일 수 있는 작은 숫자는 스스로 무효로 만든다**(뒤쪽은 재구성이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Golden Test 표본",
+            "what": "**실제 코드 조각 하나에 취약점 하나**, 그리고 **사람이 검증한 단위 테스트 둘**"
+          },
+          {
+            "name": "보안 테스트",
+            "what": "⚠️ **취약점이 있으면 실패한다** — 고쳐졌는지를 판정한다"
+          },
+          {
+            "name": "기능 테스트",
+            "what": "⚠️ **원래 기능이 보존되면 통과한다** — 고치다가 망가뜨렸는지를 판정한다"
+          },
+          {
+            "name": "통과 기준",
+            "what": "⚠️ **두 테스트를 모두 · 첫 시도에 · 테스트를 한 번도 보지 않은 채**"
+          },
+          {
+            "name": "비교 대상 여섯",
+            "what": "이전 StarCoder 기반 Agent Fix · Gemini 3.1 Pro · Sonnet 4.6 · Opus 4.6 · 그리고 **Sonnet·Opus 에 Snyk 인텔리전스를 붙인 둘**"
+          }
+        ],
+        "invariants": [
+          "⚠️ **안전한 것만으로는 통과가 아니다** — 기능도 살아 있어야 한다",
+          "⚠️ **모델은 채점 기준을 보지 못한다** — 답안지에 맞춰 쓰는 것을 막는다",
+          "**첫 시도만 센다** — 여러 번 만에 맞히는 것은 세지 않는다",
+          "⚠️ **취약점과 수정은 사람이 검증한다** — 그래서 늘릴 수 있는 속도에 한계가 있다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**실제 코드에서 취약점 하나가 든 표본을 고른다** — 사람이 확인한다",
+            "why": "**진짜 코드에서 나온 문제여야 의미가 있다**"
+          },
+          {
+            "step": "**테스트 두 개를 짝지어 붙인다** — 취약하면 실패하는 보안 테스트, 원래 기능이 살아 있으면 통과하는 기능 테스트",
+            "why": "⚠️ **보안 기준과 기능 기준을 동시에 재려고**"
+          },
+          {
+            "step": "⚠️ **모델에게 테스트를 보여 주지 않고 수정을 시킨다**",
+            "why": "⚠️ **보여 주면 그 테스트에 맞춘 출력이 나온다**"
+          },
+          {
+            "step": "**첫 시도의 결과로 채점한다** — 두 테스트가 다 통과해야 1점",
+            "why": "**여러 번 만에 맞히는 것은 다른 능력이다**(재구성)"
+          },
+          {
+            "step": "**여섯 구성을 같은 자로 잰다** — 이전 자체 모델 · 프론티어 셋 · 인텔리전스를 붙인 둘",
+            "why": "⚠️ **모델의 차이와 데이터의 차이를 갈라 보려고**(재구성)"
+          },
+          {
+            "step": "**언어별로 나눠 본다** — 파이썬 50 · 자바스크립트 54 · 자바 39",
+            "why": "**어디가 약한지가 어디를 고칠지를 정한다**(재구성)"
+          },
+          {
+            "step": "⚠️ **결과와 함께 이 자의 한계 넷을 적는다**",
+            "why": "⚠️ **자기 제품을 재는 자를 자기가 만들었기 때문이다**(재구성)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "기존 벤치마크를 쓸 것인가 만들 것인가",
+            "chosen": "⚠️ **만든다** — 재고 싶은 것을 재는 자가 없었다",
+            "alternatives": [
+              "기존 코드 생성 벤치마크 사용",
+              "버그 수정 벤치마크(SWE 계열) 사용"
+            ],
+            "tradeoff": "회사의 이유가 명확하다 — **`보안 팀이 실제로 신경 쓰는 과제에 대해서는 널리 쓰이는 공개 벤치마크가 없다`**, 그리고 **기존 벤치마크는 코드가 도는지나 버그가 해결됐는지만 본다.** ⚠️ **대가는 자기 제품을 재는 자를 자기가 만들었다는 것**이고, **그 긴장을 한계를 명시하는 것으로 다룬다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "question": "통과를 무엇으로 정의할 것인가",
+            "chosen": "⚠️ **보안 테스트와 기능 테스트를 모두 통과** — 하나로는 안 된다",
+            "alternatives": [
+              "보안 스캔 통과만 확인",
+              "코드가 컴파일·실행되는지만 확인"
+            ],
+            "tradeoff": "⚠️ **한쪽만 보면 둘 다 나쁜 결과를 좋게 읽는다** — **SQL 주입을 없앴는데 질의 결과가 달라졌으면 해결이 아니고, 깨끗해 보이는데 취약점이 남아 있으면 오히려 해롭다.** **대가는 표본마다 사람이 검증한 테스트 둘을 만들어야 한다는 것**이고, 그것이 **표본 수를 약 150개로 묶는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "question": "모델에게 테스트를 보여 줄 것인가",
+            "chosen": "⚠️ **보여 주지 않는다**",
+            "alternatives": [
+              "테스트를 함께 주고 고치게 하기",
+              "실패한 테스트만 알려 주기"
+            ],
+            "tradeoff": "회사의 문장 — **`모델은 단위 테스트 자체를 절대 보지 못하므로, 통과는 알려진 테스트에 맞춰 낸 출력이 아니라 진짜로 안전하고 동작하는 수정을 뜻한다.`** ⚠️ **대가는 실제 제품과 조건이 다르다는 것** — **제품에서는 스캔 실패를 되먹여 다시 시도하는데**, 벤치마크는 그 고리를 끄고 잰다(이 지적은 이 사이트의 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              },
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "question": "몇 번의 시도를 인정할 것인가",
+            "chosen": "**첫 시도만**",
+            "alternatives": [
+              "여러 번 시도 중 최고",
+              "재시도를 포함한 최종 결과"
+            ],
+            "tradeoff": "⚠️ **여러 번 만에 맞히는 것은 다른 능력이다**(재구성). 첫 시도만 세면 **모델이 그 취약점 유형을 정말 아는지**에 가까워진다. ⚠️ **대가는 제품의 실제 성능을 과소평가한다는 것** — **제품에는 에이전틱 재시도가 있다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              },
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "question": "무엇과 무엇을 비교할 것인가",
+            "chosen": "⚠️ **여섯 구성** — 이전 자체 모델 · 프론티어 셋 · 인텔리전스를 붙인 둘",
+            "alternatives": [
+              "자사 제품의 전후만 비교",
+              "경쟁 제품과 비교"
+            ],
+            "tradeoff": "⚠️ **같은 모델을 데이터 있이/없이 재는 짝을 넣은 것이 이 설계의 핵심이다** — 그래야 **모델의 몫과 데이터의 몫을 가를 수 있다.** 결과가 그 답을 준다: **모델만으로는 72.4~74.6% 로 붙어 있고, 데이터를 붙이면 85.4%.** **대가는 프론티어 모델 제공자들을 자기 글에서 나란히 세워야 한다는 것**이다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "question": "표본을 몇 개로 할 것인가",
+            "chosen": "**약 150개** — 사람이 검증한 것으로",
+            "alternatives": [
+              "자동 생성으로 수천 개",
+              "공개 CVE 를 대량 수집"
+            ],
+            "tradeoff": "**취약점 확인과 수정 큐레이션을 사람이 하므로 품질은 올라가지만 규모는 못 늘린다.** ⚠️ **회사가 그 대가를 첫 번째 한계로 적는다 — 표본이 작아 2점 미만 차이는 신뢰할 수 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "question": "어느 범위의 코드를 잴 것인가",
+            "chosen": "**단일 파일 조각** — 세 언어(파이썬·자바스크립트·자바)",
+            "alternatives": [
+              "저장소 전체 맥락",
+              "지원하는 모든 언어"
+            ],
+            "tradeoff": "⚠️ **회사가 한계로 밝힌다 — 파일을 넘나드는 애플리케이션 맥락은 재지 못하고 세 언어뿐이다.** ⚠️ **제품은 Snyk Code 가 지원하는 모든 언어를 덮는다고 하는데 자는 셋만 본다** — **그래서 나머지 언어의 성능은 이 숫자로 말할 수 없다**(이 지적은 재구성이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              },
+              {
+                "title": "New Agentic Architecture for Snyk Agent Fix",
+                "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+                "publisher": "Snyk Blog",
+                "date": "2026-04-27",
+                "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+              }
+            ]
+          },
+          {
+            "question": "자기 결과를 어디까지 주장할 것인가",
+            "chosen": "⚠️ **큰 격차만 주장하고 작은 격차는 스스로 무효로 만든다**",
+            "alternatives": [
+              "모든 수치를 동등하게 제시",
+              "유리한 순위만 강조"
+            ],
+            "tradeoff": "회사의 문장 — **`Snyk 인텔리전스의 10점 이상 격차는 실행 간 잡음 밖에 있다. 언어별 작은 격차의 순서는 그렇지 않다.`** ⚠️ **자기에게 유리한 큰 숫자는 지키고, 유리해 보일 수도 있는 작은 숫자는 먼저 버린다.** **대가는 언어별 순위를 마케팅에 쓸 수 없다는 것**이고, **얻는 것은 이 자를 남이 믿을 근거다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "짝지은 단위 테스트 (보안 + 기능)",
+            "role": "⚠️ **두 관문을 하나의 표본 안에서 잰다** — 취약하면 실패하는 테스트와 기능이 살아 있으면 통과하는 테스트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "tech": "테스트 은닉",
+            "role": "**모델이 채점 기준을 보지 못하게 해** 답안지에 맞춘 출력을 막는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "tech": "여섯 구성 비교 설계",
+            "role": "⚠️ **같은 모델을 데이터 있이/없이 재는 짝**을 넣어 **모델의 몫과 데이터의 몫을 가른다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "tech": "사람의 검증과 큐레이션",
+            "role": "취약점 확인과 수정 작성 — **품질을 올리고 규모를 묶는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "tech": "명시된 한계 넷",
+            "role": "⚠️ **도구가 아니라 태도다** — 표본 크기·단일 파일·세 언어·두 번 실행",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "intelligence-at-inference-not-training",
+          "via": "그 구조의 값을 재는 자",
+          "contract": "⚠️ **같은 모델에 데이터를 붙였을 때의 차이(74.6% → 85.4%)가 곧 그 도메인이 파는 것의 값이다** — **이 자가 없으면 `우리 데이터가 낫다` 는 주장이 성립하지 않는다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "프론티어 모델 제공자들",
+          "via": "나란히 놓인 비교표",
+          "contract": "**Gemini 3.1 Pro · Sonnet 4.6 · Opus 4.6 을 같은 자로 잰다** — ⚠️ **자기 제품의 근거를 남의 모델 위에 세운 회사가 그 모델들을 공개 비교한다**(재구성)",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "보안 전문가 조직",
+          "via": "사람이 검증한 표본",
+          "contract": "⚠️ **표본의 품질이 사람 손에 달려 있고, 그래서 약 150개에 묶인다** — 회사가 첫 번째 한계로 밝힌다",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Snyk Code (스캔 엔진)",
+          "via": "⚠️ 자에 안 들어간 것",
+          "contract": "⚠️ **제품의 수정 고리는 자기 스캐너로 검증하는데, 이 벤치마크는 스캐너 대신 짝지은 테스트로 잰다** — **두 검증 방식이 다르고, 기능 관문은 벤치마크에만 있다**(이 대비는 이 사이트의 재구성이다)",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "⚠️ 자기 제품을 재는 자를 자기가 만든다",
+            "why_hard": "⚠️ **재고 싶은 것을 재는 공개 벤치마크가 없어서 만들었는데, 그 자로 잰 결과가 자기 제품의 판매 근거가 된다.** **표본을 고르는 것도, 테스트를 쓰는 것도, 통과 기준을 정하는 것도 파는 쪽이다**(이 정리는 이 사이트의 재구성이다).",
+            "current_best": "⚠️ **한계를 먼저 적고, 자기에게 유리해 보일 수 있는 작은 격차를 스스로 무효로 만드는 것** — **`언어별 작은 격차의 순서는 실행 간 잡음 밖이 아니다.`** **그리고 프론티어 모델들을 같은 표에 나란히 놓는다.** ⚠️ **그래도 자를 만든 쪽이 파는 쪽이라는 사실은 남는다**(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          },
+          {
+            "problem": "조각으로 잰 것이 애플리케이션에서도 맞는지 알 수 없다",
+            "why_hard": "⚠️ **회사가 한계로 밝힌다 — 단일 파일 조각 수준이라 파일을 넘나드는 애플리케이션 맥락을 재지 못한다.** **실제 취약점은 여러 파일에 걸친 데이터 흐름에서 나오는 일이 많고**, **조각 안에서 안전한 수정이 호출하는 쪽을 깨뜨릴 수 있다**(뒤쪽은 재구성이다).",
+            "current_best": "**조각 수준에서라도 두 관문을 함께 재는 것** — 아무 자도 없는 것보다 낫다(재구성). ⚠️ **파일을 넘나드는 평가는 회사도 미해결로 남겼다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+                "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+                "publisher": "Snyk Blog",
+                "date": "2026",
+                "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 표본에 관문이 둘, 답안지는 가린다",
+          "question": "수정 하나가 어떻게 채점되나",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"<b>실제 코드 조각</b><br/>• 취약점 하나<br/>• 약 150개 (파이썬 50 · JS 54 · 자바 39)\"]:::list --> T[\"⚠️ <b>사람이 검증한 테스트 둘</b><br/>• 취약하면 실패하는 보안 테스트<br/>• 기능이 살아 있으면 통과하는 테스트\"]:::accent\n  S --> M[\"<b>모델이 수정을 만든다</b><br/>• ⚠️ 테스트를 보지 못한다<br/>• 첫 시도만 센다\"]:::accent\n  T -.->|\"가려져 있다\"| M\n  M --> G{\"<b>두 테스트 모두 통과했나</b>\"}\n  G -->|\"하나라도 실패\"| F[\"<b>0점</b>\"]:::gone\n  G -->|\"둘 다 통과\"| P[\"<b>1점</b>\"]:::list\n  P --> R[\"<b>여섯 구성을 같은 자로</b><br/>• 모델만: 72.4 ~ 74.6%<br/>• 데이터 결합: 82.5 ~ 85.4%\"]:::accent\n  classDef gone stroke-dasharray: 4 3"
+        },
+        {
+          "title": "이 자가 못 재는 것을 먼저 적는다",
+          "question": "회사가 스스로 그은 선은 어디인가",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"⚠️ <b>표본 약 150개</b><br/>• 2점 미만 차이는 못 믿는다\"]:::gone\n  B[\"⚠️ <b>단일 파일 조각</b><br/>• 파일을 넘나드는 맥락을 못 잰다\"]:::gone\n  C[\"⚠️ <b>세 언어뿐</b><br/>• 제품은 모든 언어를 덮는다고 한다 (재구성)\"]:::gone\n  D[\"⚠️ <b>두 번 실행</b><br/>• 정식 오차 막대가 없다\"]:::gone\n  A --> E[\"<b>그어 놓은 선</b><br/>• 10점 이상 격차는 잡음 밖<br/>• 언어별 작은 순위는 아니다\"]:::accent\n  B --> E\n  C --> E\n  D --> E\n  F[\"⚠️ <b>남는 사실</b><br/>• 자를 만든 쪽이 파는 쪽이다 (재구성)\"]:::gone\n  G[\"⚠️ <b>제품과 조건이 다르다</b><br/>• 제품에는 에이전틱 재시도가 있는데<br/>  벤치마크는 첫 시도만 센다 (재구성)\"]:::gone\n  classDef gone stroke-dasharray: 4 3"
+        }
+      ],
+      "history": [],
+      "sources": [
+        {
+          "title": "Benchmarking Secure-and-Functional Remediation and How Snyk Agent Fix Lifts Frontier-Model Fix Rates by over 14%",
+          "url": "https://snyk.io/blog/snyk-agent-fix-remediation-benchmark/",
+          "publisher": "Snyk Blog",
+          "date": "2026",
+          "summary": "약 150개 실제 코드 표본마다 취약점 하나와 보안 테스트·기능 테스트를 짝지어, 모델이 두 테스트를 한 번에 통과시키는지를 잰다. 테스트는 모델에게 보여 주지 않는다. Opus 4.6 단독 74.6% → Snyk 인텔리전스 결합 85.4%."
+        },
+        {
+          "title": "New Agentic Architecture for Snyk Agent Fix",
+          "url": "https://snyk.io/blog/snyk-agent-fix-agentic-architecture/",
+          "publisher": "Snyk Blog",
+          "date": "2026-04-27",
+          "summary": "언어·규칙마다 수천 개의 수동 학습 표본과 긴 파인튜닝이 필요하던 정적 미세조정을 버리고, 추론 시점에 관련 있는 실제 수정 사례를 넣어 주는 동적 few-shot 으로 옮겼다. 전문가가 쓴 수정 3만 5천 건 이상을 근거로 쓰고, 생성한 수정이 스캔을 통과하지 못하면 오류를 되먹여 다시 만든다."
+        }
+      ]
     }
   ],
   "eras": [],
@@ -693,7 +1276,8 @@
     "⚠️ **`3만 5천 건의 전문가 수정` 이 어떻게 만들어지고 유지되는지 모른다** — 이 회사의 해자인데 **누가 언제 어떻게 쓰고 검수하는지**가 글에 없다.",
     "⚠️ **동적 few-shot 의 검색 부분을 모른다** — **`그 CWE 에 가장 관련 있는 사례` 를 무엇으로 고르는지**(임베딩인지 규칙인지)가 밝혀져 있지 않다.",
     "⚠️ **비용 이야기가 없다** — 프론티어 모델을 추론에 쓰고 실패하면 재시도까지 하는데 **한 건의 수정에 드는 비용이나 지연**이 어느 글에도 없다.",
-    "⚠️ **연표(eras)를 못 세웠다.** **StarCoder 기반 → 프론티어 모델 + 인텔리전스** 라는 세대 교체는 벤치마크 표에서 분명한데 **연도가 없다.** ⚠️ **연도를 모르면 쓰지 않는다는 규칙대로 비웠다**(STYLE 8번) — Meesho·Zepto 에 이어 **세 번째 사례다.**"
+    "⚠️ **연표(eras)를 못 세웠다.** **StarCoder 기반 → 프론티어 모델 + 인텔리전스** 라는 세대 교체는 벤치마크 표에서 분명한데 **연도가 없다.** ⚠️ **연도를 모르면 쓰지 않는다는 규칙대로 비웠다**(STYLE 8번) — Meesho·Zepto 에 이어 **세 번째 사례다.**",
+    "⚠️ **제품과 벤치마크의 검증 방식이 다르다** — 수정 고리는 **자기 스캐너로 재스캔**해 통과 여부를 보는데, 벤치마크는 **짝지은 보안·기능 테스트**로 잰다. **기능 관문이 벤치마크에만 있고**, **개별 수정에 기능 검증이 어떻게 붙는지는 공개돼 있지 않다.**"
   ],
   "sources": [
     {
