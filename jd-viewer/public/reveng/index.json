@@ -1500,6 +1500,18 @@
       "one_liner": "이그레스 요금 없는 S3 호환 객체 저장소 — 남들이 진실 원천으로 쓰는 그 저장소를 직접 만드는 쪽이다",
       "updated_at": "2026-09-07",
       "domain": "tigrisdata.com"
+    },
+    {
+      "slug": "chroma",
+      "name": "크로마",
+      "name_en": "Chroma",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "AI 검색을 객체 저장소 위에 올린 데이터베이스 — 지연을 내주고 값을 산 쪽이다",
+      "updated_at": "2026-09-07",
+      "domain": "trychroma.com"
     }
   ],
   "domains": [
@@ -1885,7 +1897,10 @@
     "남의 API 를 흉내 내 생태계를 그대로 받는다",
     "메타데이터를 한 트랜잭션으로 묶는다",
     "어디에 두고 어디서 읽을지 정한다",
-    "남의 API 를 그대로 받아 옮겨 오게 만든다"
+    "남의 API 를 그대로 받아 옮겨 오게 만든다",
+    "색인을 객체 저장소 위에 올린다",
+    "쓰기 로그도 객체 저장소 위에 짓는다",
+    "색인 수백만 개를 테넌트별로 다룬다"
   ],
   "countries": {
     "KR": "한국",

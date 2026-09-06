@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Chroma** | US · SaaS | 회사 프로파일까지 썼다(2026-09-07). 도메인 셋 — 색인을 객체 저장소 위에 올린다(`/engineering/serverless` 읽었다) · 쓰기 로그도 객체 저장소 위에 짓는다(`/engineering/wal3` 읽었다) · 색인 수백만 개를 테넌트별로 다룬다(같은 글 + 제품 페이지). 다음은 기능 하나 — wal3 가 거절한 대안이 이름까지 있어 가장 두껍다. 안 읽은 것 — `/engineering/execution-engine` · `/engineering/distributed-chroma-byoc` · `/engineering/transactions` · `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **Chroma** | US · SaaS | 벡터 데이터베이스 축이 이 엔진에 아직 없다. `trychroma.com/engineering` 에 심층 글 여섯 — `wal3: Chroma의 WAL` · `Designing a query execution engine` · `Retrieval powered by object storage` · `Distributed Chroma: BYOC` · `Agent Swarms are a Distributed Systems Problem` · `Building a usage-based billing system`. 개별 글(`/engineering/wal3`)을 열어 확정했다 — 객체 저장소 위에 로그를 짓기로 한 결정, S3 조건부 쓰기(2024-11) 위에서 30년 된 락 프리 큐 알고리즘을 돌린 것, 실제 로그와 체크섬(setsum)을 나란히 유지하는 이중 검증, 그리고 **이름을 대며 물린 대안 셋**(카프카는 디스크 함대를 운영해야 해서, WarpStream 은 오픈소스가 아니라서, CDC 는 처음부터 지어야 해서). 카프카의 기능 대부분을 지원하지 않는 대신 단순함을 얻었다고 한계도 적는다. ⚠️ 수치가 없고(지연·처리량·비용 없음) 목록에 날짜가 없다 — 파기 전에 개별 글에서 날짜를 확인한다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
