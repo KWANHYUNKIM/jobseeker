@@ -1831,8 +1831,8 @@
       "name_en": "Mux",
       "country": "US",
       "category": "스트리밍",
-      "status": "in_progress",
-      "features_done": 0,
+      "status": "done",
+      "features_done": 1,
       "one_liner": "남의 앱에 영상을 넣어 주는 인프라 — 어떤 화질 층을 둘지를 감이 아니라 값·품질·캐시 로그로 정한다",
       "updated_at": "2026-09-07",
       "domain": "mux.com"
