@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "dena",
+      "name": "디엔에이",
+      "name_en": "DeNA",
+      "country": "JP",
+      "category": "게임",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "게임 이벤트 중 페일오버가 깨진 원인을 10년 전 MySQL 커밋까지 거슬러 찾는 회사 — 옮길 때는 요금을 양쪽 다 적는다",
+      "updated_at": "2026-09-07",
+      "domain": "dena.com"
+    },
+    {
       "slug": "cookpad",
       "name": "쿡패드",
       "name_en": "Cookpad",
@@ -2772,7 +2784,9 @@
     "모르는 상태를 1급으로 다룬다",
     "운영을 멈추지 않고 레거시를 바꿔치운다",
     "일본판을 접고 글로벌 시스템에 올라탄다",
-    "바꾼 뒤에 나빠지지 않았음을 증명한다"
+    "바꾼 뒤에 나빠지지 않았음을 증명한다",
+    "오래된 것을 값과 함께 옮긴다",
+    "깨진 자리를 소스와 바이너리까지 파고든다"
   ],
   "countries": {
     "KR": "한국",

@@ -15,13 +15,13 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **DeNA** | JP · 게임·헬스케어·모빌리티 | **비용을 달러로 적는다.** `migrate-iaas-to-cloudsql`(2026-08)이 IaaS 위의 MySQL 을 Cloud SQL 로 옮긴 기록인데, **월 요금을 양쪽 다 낸다** — IaaS 구성(n2d-highmem-4 + 각 1500 GiB 로컬 SSD, 4대)이 **약 $721/월**, Cloud SQL 구성(db-c4a-highmem-4 HA + Hyperdisk)이 **약 $1,017/월** 로 **약 1.4배**다. 그리고 그 증가를 **두려워하던 '数倍規模の増加'(몇 배 규모의 증가)와 견주어 받아들일 만하다**고 적는다. **물린 것도 이름 대어 적는다** — **'MySQL 5.7 はすでに EOL（End of Life）を迎えており'** 라 그대로 둘 수 없었고, 제자리 버전 업그레이드는 **주변 관리 도구가 새 버전을 따라가지 못해 '大きな工数がかかる'(큰 공수가 든다)** 며 접었다. **실측을 문서값과 나란히 놓는다** — 스펙 변경 시 **약 1초 다운타임**, 페일오버는 **문서에 60초인데 실측 약 40초**, 부하 시험으로 **기준의 3배**를 견디는지 확인, 스토리지는 로컬 SSD 제약 때문에 쓰던 **1500 GiB 를 Hyperdisk 로 1150 GiB** 까지 줄였다. **받아들인 제약도 적는다** — DMS 가 **'mysql.user などを含む mysql システムデータベースを移行対象としない'** 라 사용자와 권한을 **미리 만들어 둬야** 했다. **2010년부터 1,857개 URL** 이 사이트맵에 있다(2010년에 이미 `handlersocket-plugin-for-mysql`·`mysql-for-socialgame` 을 썼다 — **MySQL 축의 오래된 기록**이다). 후보 글이 더 있다 — `idp-migration-part3`(**IdP 이관 3부작**), `disaster-recovery-automation`, `mha-mysqlbinlog-troubleshoot`, `game-development-sre-first-year`, `solid-queue-monitoring`. **게임 축**(로블록스·사이게임즈·리브)에 붙고 **일본 축**에도 붙는다. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
 
 | 회사 | 국가·분류 | 근거 |
 |---|---|---|
-| **DeNA** | JP · 게임·헬스케어·모빌리티 | **비용을 달러로 적는다.** `migrate-iaas-to-cloudsql`(2026-08)이 IaaS 위의 MySQL 을 Cloud SQL 로 옮긴 기록인데, **월 요금을 양쪽 다 낸다** — IaaS 구성(n2d-highmem-4 + 각 1500 GiB 로컬 SSD, 4대)이 **약 $721/월**, Cloud SQL 구성(db-c4a-highmem-4 HA + Hyperdisk)이 **약 $1,017/월** 로 **약 1.4배**다. 그리고 그 증가를 **두려워하던 '数倍規模の増加'(몇 배 규모의 증가)와 견주어 받아들일 만하다**고 적는다. **물린 것도 이름 대어 적는다** — **'MySQL 5.7 はすでに EOL（End of Life）を迎えており'** 라 그대로 둘 수 없었고, 제자리 버전 업그레이드는 **주변 관리 도구가 새 버전을 따라가지 못해 '大きな工数がかかる'(큰 공수가 든다)** 며 접었다. **실측을 문서값과 나란히 놓는다** — 스펙 변경 시 **약 1초 다운타임**, 페일오버는 **문서에 60초인데 실측 약 40초**, 부하 시험으로 **기준의 3배**를 견디는지 확인, 스토리지는 로컬 SSD 제약 때문에 쓰던 **1500 GiB 를 Hyperdisk 로 1150 GiB** 까지 줄였다. **받아들인 제약도 적는다** — DMS 가 **'mysql.user などを含む mysql システムデータベースを移行対象としない'** 라 사용자와 권한을 **미리 만들어 둬야** 했다. **2010년부터 1,857개 URL** 이 사이트맵에 있다(2010년에 이미 `handlersocket-plugin-for-mysql`·`mysql-for-socialgame` 을 썼다 — **MySQL 축의 오래된 기록**이다). 후보 글이 더 있다 — `idp-migration-part3`(**IdP 이관 3부작**), `disaster-recovery-automation`, `mha-mysqlbinlog-troubleshoot`, `game-development-sre-first-year`, `solid-queue-monitoring`. **게임 축**(로블록스·사이게임즈·리브)에 붙고 **일본 축**에도 붙는다. |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
