@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "kakehashi",
+      "name": "카케하시",
+      "name_en": "KAKEHASHI",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "전국 약 6만 점 약국의 DX 를 파는 회사 — 과거를 다시 쓰지 않으려 층을 가르고, 공통 기반은 타입으로 상태를 못 박는다",
+      "updated_at": "2026-09-07",
+      "domain": "kakehashi.life"
+    },
+    {
       "slug": "classi",
       "name": "클래시",
       "name_en": "Classi",
@@ -2842,7 +2854,9 @@
     "기록과 청구를 한 시스템에 둔다",
     "맡아 둔 데이터는 맡긴 사람의 목적 안에 머문다",
     "학교라는 도메인이 코드로 안 풀린다",
-    "멈춰 있던 이유를 조직에서 찾는다"
+    "멈춰 있던 이유를 조직에서 찾는다",
+    "과거를 다시 쓰지 않으려 층을 가른다",
+    "여러 제품을 한 팀이 떠받친다"
   ],
   "countries": {
     "KR": "한국",
