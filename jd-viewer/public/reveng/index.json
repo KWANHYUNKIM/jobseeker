@@ -7,8 +7,8 @@
       "name_en": "Qdrant",
       "country": "EU",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "자기 방식이 무너지는 지점을 재현율과 밀리초로 먼저 내놓는 벡터 검색 엔진 — 감추지 않는 대신 고르는 일을 사용자에게 되돌려준다",
       "updated_at": "2026-09-07",
       "domain": "qdrant.tech"
