@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "classi",
+      "name": "클래시",
+      "name_en": "Classi",
+      "country": "JP",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "학년도가 코드로 안 풀린다는 것을 AI 에 맡겨 보고 안 학교 SaaS — 멈춘 프로젝트의 원인도 기술이 아니라 조직에서 찾는다",
+      "updated_at": "2026-09-07",
+      "domain": "classi.jp"
+    },
+    {
       "slug": "henry",
       "name": "헨리",
       "name_en": "Henry",
@@ -2828,7 +2840,9 @@
     "몇 년 뒤에 또 하지 않도록 지운다",
     "멈출 수 없는 것을 되돌릴 수 있게 옮긴다",
     "기록과 청구를 한 시스템에 둔다",
-    "맡아 둔 데이터는 맡긴 사람의 목적 안에 머문다"
+    "맡아 둔 데이터는 맡긴 사람의 목적 안에 머문다",
+    "학교라는 도메인이 코드로 안 풀린다",
+    "멈춰 있던 이유를 조직에서 찾는다"
   ],
   "countries": {
     "KR": "한국",
