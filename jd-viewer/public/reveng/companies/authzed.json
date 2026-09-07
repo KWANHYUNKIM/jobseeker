@@ -89,9 +89,25 @@
               "summary": "2026년 7월 2일 글로, 서비스 경계를 넘는 권한 질문을 어떻게 답할 것인가를 다룬다. 서비스마다 권한 판단을 따로 구현하면 구현이 둘이 되어 버그 기회가 두 배가 되고 서로 어긋날 여지가 생긴다. 게이트웨이에서 JWT 범위로 푸는 방법은 파일이 충분히 많은 사용자에게는 토큰이 감당 못 할 만큼 커져 규모에서 무너진다. 서비스마다 판단을 두면 사용자 서비스의 권한 논리가 파일 서비스의 API 에 묶이는 결합도 생긴다. 그래서 권한을 한곳에 모으라고 권하며, 관계 기반 접근 제어(ReBAC)를 뼈대로 두고 속성 기반(ABAC) 층을 얹는 조합이 유연성·안전·성능 사이에서 균형이 좋다고 적는다. 그러면 시스템 전체가 한 사용자의 권한 상태를 일관된 하나의 관점으로 보게 되고, 서비스는 중간 데이터를 스스로 모으는 대신 단순한 질문만 던지면 된다. 대가도 밝힌다 — 이중 쓰기 문제(Dual-Write Problem)를 풀어야 하고, 권한이 단일 장애 지점이 된다. 물린 대안은 셋이다: 서비스마다 각자 구현(중복과 어긋남), 하나의 데이터베이스 조인(분산 구조의 이점을 잃음), 게이트웨이·JWT 범위(세밀한 권한에서 감당 불가)."
             }
           ]
+        },
+        {
+          "tech": "네 가지 일관성 수준과 ZedToken",
+          "solves": "요청마다 신선도와 지연을 맞바꾸게 한다 — 기본은 읽기가 빠른 쪽, 쓰기는 최신이다.",
+          "limits": "가장 빠른 쪽은 새 적 문제의 창을 열고, 가장 정확한 쪽은 캐시를 우회해 지연이 크게 는다. 정확한 시점 요청은 쓰레기 수집 뒤 만료된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Consistency — SpiceDB Docs",
+              "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+              "publisher": "AuthZed",
+              "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "zedtoken-consistency"
+      ]
     },
     {
       "name": "권한 그래프를 빨리 훑는다",
@@ -161,14 +177,481 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "zedtoken-consistency",
+      "name": "신선도를 부르는 쪽이 고르게 한다",
+      "domain": "권한을 한곳에 모은다",
+      "updated_at": "2026-09-07",
+      "business": {
+        "why": "권한을 한곳에 모으면 그 한곳이 모든 요청 앞에 선다. 빠르려면 캐시를 써야 하는데, **캐시된 권한은 낡을 수 있다** — 방금 접근을 뺏은 사람이 아직 문서를 여는 일이 그것이다(잔지바 논문의 새 적 문제).\n\n그렇다고 늘 최신을 보면 캐시가 무용지물이 되어 권한이 제품 전체의 병목이 된다. 이 회사는 그 선택을 **부르는 쪽에게 넘긴다**(재구성).",
+        "metrics": [
+          {
+            "label": "고를 수 있는 수준",
+            "value": "넷 — minimize_latency · at_least_as_fresh · at_exact_snapshot · fully_consistent",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "label": "기본값",
+            "value": "쓰기는 fully_consistent, 나머지 API 는 minimize_latency",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "label": "가장 빠른 쪽의 값",
+            "value": "그것만 쓰면 새 적 문제가 생길 수 있는 시간 창이 열린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "label": "가장 정확한 쪽의 값",
+            "value": "캐시를 대놓고 우회해 지연에 크게 영향을 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "label": "토큰",
+            "value": "ZedToken — 저장소의 어느 시점을 가리키는 불투명한 토큰, 저장·전송이 쉽게 인코딩돼 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "ZedToken",
+            "what": "저장소의 한 시점을 가리키는 불투명한 토큰. 애플리케이션이 들고 다닌다"
+          },
+          {
+            "name": "일관성 수준",
+            "what": "이번 질문에 얼마나 최신인 데이터를 쓸지. 넷 중에 고른다"
+          },
+          {
+            "name": "캐시",
+            "what": "빠름의 근원이자 낡음의 근원"
+          },
+          {
+            "name": "새 적 문제",
+            "what": "권한이 바뀐 뒤 낡은 캐시로 답해 생기는 사고"
+          },
+          {
+            "name": "쓰레기 수집",
+            "what": "오래된 스냅숏을 치우는 일. 그래서 정확한 시점 요청이 만료될 수 있다"
+          }
+        ],
+        "invariants": [
+          "쓰기는 언제나 최신으로 처리한다",
+          "읽기는 기본이 빠른 쪽이다",
+          "필요한 신선도는 부르는 쪽이 지정한다",
+          "오래된 시점은 영원히 살아 있지 않다"
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "넷 중에 고르게 한다",
+          "question": "신선도와 지연을 누가 정하나",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"<b>권한을 묻는다</b>\"]:::list --> C{\"얼마나 최신이어야 하나\"}\n  C -->|\"빠르게\"| A[\"<b>minimize_latency</b><br/>• 캐시에 있을 법한 것<br/>• 새 적 문제의 창이 열린다\"]:::list\n  C -->|\"이 시점 이후\"| B[\"<b>at_least_as_fresh</b><br/>• ZedToken 이 가리키는 시점만큼은<br/>• 더 새것이 있으면 그것으로\"]:::list\n  C -->|\"바로 그 시점\"| D[\"<b>at_exact_snapshot</b><br/>• 스냅숏 만료로 실패할 수 있다\"]:::list\n  C -->|\"무조건 최신\"| E[\"<b>fully_consistent</b><br/>• 캐시를 우회 — 지연에 크게 영향\"]:::list"
+        },
+        {
+          "title": "새 적 문제가 나는 순간",
+          "question": "권한을 뺏었는데 왜 아직 보이나",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant O as 소유자\n  participant S as 권한 시스템\n  participant C as 캐시\n  participant U as 뺏긴 사람\n  O->>S: 이 사람 접근을 뺀다\n  S->>S: 새 시점이 생긴다 (ZedToken)\n  U->>S: 이 문서 열어도 되나\n  S->>C: 캐시에 있을 법한 것으로 답한다\n  C-->>U: 된다 (낡은 답)\n  Note over O,U: 여기가 새 적 문제의 창\n  Note over S: at_least_as_fresh 로 물으면 그 창이 닫힌다"
+        },
+        {
+          "title": "어느 쪽을 골라도 값이 있다",
+          "question": "네 수준이 각각 무엇을 무나",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"<b>minimize_latency</b>\"]:::list --> A1[\"<b>낡은 답이 나올 수 있다</b>\"]:::list\n  B[\"<b>at_least_as_fresh</b>\"]:::list --> B1[\"<b>토큰을 들고 다녀야 한다(재구성)</b>\"]:::list\n  C[\"<b>at_exact_snapshot</b>\"]:::list --> C1[\"<b>스냅숏 만료 오류</b><br/>• 쓰레기 수집이 지나간 뒤\"]:::list\n  D[\"<b>fully_consistent</b>\"]:::list --> D1[\"<b>캐시를 못 쓴다</b><br/>• 지연이 크게 는다\"]:::list\n  D1 --> E[\"<b>권한이 제품의 병목이 된다(재구성)</b>\"]:::list"
+        }
+      ],
+      "implementation": {
+        "flow": [
+          {
+            "step": "권한을 바꾸면 그 시점을 가리키는 ZedToken 을 돌려준다",
+            "why": "애플리케이션이 '그 변경 이후'를 말할 방법이 있어야 한다"
+          },
+          {
+            "step": "애플리케이션이 그 토큰을 자기 데이터 옆에 저장한다",
+            "why": "불투명하고 인코딩이 쉬워 함께 들고 다닐 수 있다"
+          },
+          {
+            "step": "권한을 물을 때 필요한 신선도를 지정한다",
+            "why": "모든 질문이 같은 신선도를 요구하지 않는다 — 목록 그리기와 삭제 버튼이 다르다(재구성)"
+          },
+          {
+            "step": "기본은 빠른 쪽으로 둔다",
+            "why": "대부분의 읽기는 캐시로 답해도 되고, 그래야 권한이 병목이 안 된다"
+          },
+          {
+            "step": "쓰기는 최신으로 처리한다",
+            "why": "권한을 바꾸는 일까지 낡은 것으로 하면 근거가 무너진다"
+          },
+          {
+            "step": "오래된 스냅숏은 치운다",
+            "why": "모든 시점을 영원히 들고 있을 수 없다 — 대신 그 시점을 요구한 요청은 실패한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "신선도를 누가 정할 것인가",
+            "chosen": "부르는 쪽이 요청마다 고른다 — 네 수준을 준다",
+            "alternatives": [
+              "시스템이 하나로 정하기(늘 최신 또는 늘 캐시)",
+              "서비스마다 설정으로 고정하기"
+            ],
+            "tradeoff": "쓰는 쪽이 이 선택을 이해해야 하고, 잘못 고르면 낡은 답이나 큰 지연이 온다. 대신 목록을 그리는 질문과 삭제를 승인하는 질문에 다른 답을 줄 수 있다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "question": "기본값을 어디에 둘 것인가",
+            "chosen": "읽기는 minimize_latency, 쓰기는 fully_consistent",
+            "alternatives": [
+              "전부 최신으로 두기",
+              "전부 캐시 우선으로 두기"
+            ],
+            "tradeoff": "읽기의 기본이 빠른 쪽이라 아무 생각 없이 쓰면 새 적 문제의 창이 열린다 — 문서가 그 위험을 명시한다. 대신 대부분의 요청이 캐시로 답해져 권한이 병목이 안 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "question": "'그 변경 이후'를 어떻게 표현할 것인가",
+            "chosen": "불투명한 시점 토큰(ZedToken)을 준다 — 저장과 전송이 쉽게 인코딩돼 있다",
+            "alternatives": [
+              "타임스탬프를 그대로 주기",
+              "버전 번호를 노출하기"
+            ],
+            "tradeoff": "애플리케이션이 그 토큰을 자기 데이터와 함께 들고 다녀야 한다(재구성). 대신 내부 구현(어떤 저장소의 어떤 시점인지)을 안 드러내고도 신선도를 말할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "question": "정확히 그 시점을 요구할 수 있게 할 것인가",
+            "chosen": "허용하되 만료를 인정한다 — at_exact_snapshot 은 스냅숏 만료 오류로 실패할 수 있다",
+            "alternatives": [
+              "오래된 스냅숏을 영원히 보관",
+              "이 수준을 아예 안 주기"
+            ],
+            "tradeoff": "쓰는 쪽이 만료를 다뤄야 한다. 대신 쓰레기 수집을 돌릴 수 있어 저장이 무한정 늘지 않는다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "question": "가장 정확한 수준의 값을 어떻게 말할 것인가",
+            "chosen": "캐시를 대놓고 우회해 지연에 크게 영향을 준다고 문서에 적는다",
+            "alternatives": [
+              "권장 수준만 안내하고 값은 안 적기"
+            ],
+            "tradeoff": "가장 안전해 보이는 선택지가 가장 비싸다는 것을 드러낸다. 대신 아무 데나 fully_consistent 를 쓰면 권한이 제품의 병목이 된다는 것을 미리 알린다(재구성).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "question": "이 문제를 왜 우리가 떠안는가",
+            "chosen": "권한을 한곳에 모으기로 했기 때문이다 — 그 대가로 이중 쓰기 문제와 단일 장애 지점을 진다",
+            "alternatives": [
+              "서비스마다 각자 판단하기",
+              "게이트웨이에서 JWT 범위로 풀기"
+            ],
+            "tradeoff": "서비스마다 두면 구현이 둘이 되어 어긋나고, JWT 범위는 파일이 많은 사용자에게 토큰이 감당 못 할 만큼 커진다. 모으면 일관성 문제가 우리 몫이 되는데, 그 대신 시스템 전체가 한 관점을 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Authorization in a Distributed System",
+                "url": "https://authzed.com/blog/authz-in-a-distributed-system",
+                "publisher": "AuthZed",
+                "date": "2026-07-02",
+                "summary": "2026년 7월 2일 글로, 서비스 경계를 넘는 권한 질문을 어떻게 답할 것인가를 다룬다. 서비스마다 권한 판단을 따로 구현하면 구현이 둘이 되어 버그 기회가 두 배가 되고 서로 어긋날 여지가 생긴다. 게이트웨이에서 JWT 범위로 푸는 방법은 파일이 충분히 많은 사용자에게는 토큰이 감당 못 할 만큼 커져 규모에서 무너진다. 서비스마다 판단을 두면 사용자 서비스의 권한 논리가 파일 서비스의 API 에 묶이는 결합도 생긴다. 그래서 권한을 한곳에 모으라고 권하며, 관계 기반 접근 제어(ReBAC)를 뼈대로 두고 속성 기반(ABAC) 층을 얹는 조합이 유연성·안전·성능 사이에서 균형이 좋다고 적는다. 그러면 시스템 전체가 한 사용자의 권한 상태를 일관된 하나의 관점으로 보게 되고, 서비스는 중간 데이터를 스스로 모으는 대신 단순한 질문만 던지면 된다. 대가도 밝힌다 — 이중 쓰기 문제(Dual-Write Problem)를 풀어야 하고, 권한이 단일 장애 지점이 된다. 물린 대안은 셋이다: 서비스마다 각자 구현(중복과 어긋남), 하나의 데이터베이스 조인(분산 구조의 이점을 잃음), 게이트웨이·JWT 범위(세밀한 권한에서 감당 불가)."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ZedToken",
+            "role": "저장소의 한 시점을 가리키는 불투명 토큰",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "tech": "네 가지 일관성 수준",
+            "role": "요청마다 신선도와 지연을 맞바꾼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "tech": "캐시",
+            "role": "기본 읽기 경로. 가장 정확한 수준은 이것을 우회한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "tech": "스냅숏 쓰레기 수집",
+            "role": "오래된 시점을 치운다 — 만료 오류의 원인이기도 하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "권한 그래프를 빨리 훑는다",
+          "via": "캐시가 두 도메인을 잇는다",
+          "contract": "질의 계획기가 하위 문제를 흩어 캐시해 얻는 이득이, 일관성 수준을 높이는 순간 사라진다. 빠르게 훑는 일과 최신을 보는 일이 같은 캐시를 놓고 다툰다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "손님의 애플리케이션",
+          "via": "토큰을 들고 다니는 쪽",
+          "contract": "ZedToken 을 자기 데이터 옆에 저장하고 물을 때 함께 보내야 한다. 일관성의 책임이 부르는 쪽으로 일부 넘어간다(재구성).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "구글 잔지바",
+          "via": "문제 이름과 해법의 출처",
+          "contract": "새 적 문제라는 이름과 시점 토큰이라는 해법이 그 논문에서 온다. 이 회사는 그것을 오픈소스 구현으로 옮긴 쪽이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Zanzibar: Google's Consistent, Global Authorization System",
+            "authors": "Ruoming Pang 외 (Google)",
+            "year": "2019",
+            "venue": "USENIX ATC 2019",
+            "url": "https://www.usenix.org/conference/atc19/presentation/pang",
+            "takeaway": "권한을 관계로 표현하고 시점 토큰(zookie)으로 새 적 문제를 막는 설계다. 이 회사의 네 일관성 수준과 ZedToken 이 그 논문의 실무 구현이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "title": "Spanner: Google's Globally-Distributed Database",
+            "authors": "James C. Corbett 외",
+            "year": "2012",
+            "venue": "OSDI 2012",
+            "url": "https://research.google/pubs/pub39966/",
+            "takeaway": "시간을 다루는 방식으로 전역 일관성을 얻은 데이터베이스다. 시점을 토큰으로 넘겨 '그 이후'를 말하게 하는 이 설계가 같은 계보 위에 있다(재구성).",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Consistency Models / Read-your-writes 일관성",
+            "authors": "분산 시스템 문헌 일반",
+            "year": "2013",
+            "venue": "교과서적 정리",
+            "url": "https://jepsen.io/consistency",
+            "takeaway": "단조 읽기와 자기 쓰기 읽기 같은 세션 보장이 무엇인지 정리한 자리다. at_least_as_fresh 가 사실상 그 보장을 권한 시스템에 붙인 것이다(재구성).",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "권한은 캐시해야 빠르고 캐시하면 낡는다",
+            "why_hard": "모든 요청 앞에 서는 층이라 캐시 없이는 병목이 되는데, 캐시된 권한은 방금 뺏은 접근을 아직 허용할 수 있다.",
+            "current_best": "수준을 넷으로 두고 요청마다 고르게 하는 것 — 기본은 빠른 쪽이되 필요하면 토큰으로 신선도를 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "problem": "안전해 보이는 기본값이 가장 비싸다",
+            "why_hard": "늘 최신으로 두면 사고는 없지만 캐시를 못 써서 권한이 제품 전체의 지연이 된다.",
+            "current_best": "기본을 빠른 쪽에 두고 그 위험(새 적 문제의 창)을 문서에 명시하는 것 — 고르는 값을 쓰는 쪽에 넘긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          },
+          {
+            "problem": "모든 시점을 영원히 들고 있을 수 없다",
+            "why_hard": "정확한 시점을 요구할 수 있게 하면 그 시점의 데이터를 남겨 둬야 하는데, 저장이 무한정 늘 수는 없다.",
+            "current_best": "쓰레기 수집을 돌리고 만료된 요청은 실패시키는 것 — 쓰는 쪽이 그 오류를 다뤄야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Consistency — SpiceDB Docs",
+                "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+                "publisher": "AuthZed",
+                "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "캐시를 켜고 나서",
+          "thought": "빨라졌는데 방금 접근을 뺏은 사람이 아직 문서를 연다. 이건 성능 문제가 아니라 권한이 틀린 것이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "늘 최신으로 둘지 볼 때",
+          "thought": "안전하지만 캐시를 못 쓴다. 그러면 우리가 모든 요청 앞에 서 있는 병목이 된다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "수준을 나눌 때",
+          "thought": "목록을 그리는 질문과 삭제를 승인하는 질문이 같은 신선도를 요구하지 않는다. 고르게 하고 기본은 빠른 쪽에 둔다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "토큰을 설계할 때",
+          "thought": "타임스탬프를 그대로 주면 우리 내부가 드러난다. 불투명하게 만들고 저장·전송이 쉽게만 해 둔다.",
+          "confidence": "inferred"
+        }
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Consistency — SpiceDB Docs",
+          "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+          "publisher": "AuthZed",
+          "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
+        },
+        {
+          "title": "Authorization in a Distributed System",
+          "url": "https://authzed.com/blog/authz-in-a-distributed-system",
+          "publisher": "AuthZed",
+          "date": "2026-07-02",
+          "summary": "2026년 7월 2일 글로, 서비스 경계를 넘는 권한 질문을 어떻게 답할 것인가를 다룬다. 서비스마다 권한 판단을 따로 구현하면 구현이 둘이 되어 버그 기회가 두 배가 되고 서로 어긋날 여지가 생긴다. 게이트웨이에서 JWT 범위로 푸는 방법은 파일이 충분히 많은 사용자에게는 토큰이 감당 못 할 만큼 커져 규모에서 무너진다. 서비스마다 판단을 두면 사용자 서비스의 권한 논리가 파일 서비스의 API 에 묶이는 결합도 생긴다. 그래서 권한을 한곳에 모으라고 권하며, 관계 기반 접근 제어(ReBAC)를 뼈대로 두고 속성 기반(ABAC) 층을 얹는 조합이 유연성·안전·성능 사이에서 균형이 좋다고 적는다. 그러면 시스템 전체가 한 사용자의 권한 상태를 일관된 하나의 관점으로 보게 되고, 서비스는 중간 데이터를 스스로 모으는 대신 단순한 질문만 던지면 된다. 대가도 밝힌다 — 이중 쓰기 문제(Dual-Write Problem)를 풀어야 하고, 권한이 단일 장애 지점이 된다. 물린 대안은 셋이다: 서비스마다 각자 구현(중복과 어긋남), 하나의 데이터베이스 조인(분산 구조의 이점을 잃음), 게이트웨이·JWT 범위(세밀한 권한에서 감당 불가)."
+        },
+        {
+          "title": "Query Planner Early Benchmarks",
+          "url": "https://authzed.com/blog/query-planner-early-benchmarks",
+          "publisher": "AuthZed",
+          "date": "2026-05-20",
+          "summary": "질의 계획기의 초기 벤치마크 글이다. 계획기는 권한 그래프를 훑는 효율적인 길을 찾는데, 힌트를 주는 조언자(advisor)를 둔다 — 데이터 모양을 일반적으로 가정하는 static 조언자와 지난 질의의 실제 통계를 쓰는 count 조언자다. 푸는 문제는 셋이다: 30단계로 중첩된 문서 계층을 시험하는 DeepArrow 같은 깊은 재귀, 왼쪽에서 오른쪽으로 순진하게 훑으면 필요 없는 중간 노드까지 확인하게 되는 WideArrow·DoubleWideArrow 같은 팬아웃, 그리고 하위 문제를 클러스터 노드로 흩어 따로 캐시하는 분산 캐싱이다. 최적화는 화살표 뒤집기(조인 방향 고르기), 가지 재정렬(단락 평가), 화살표 회전(중첩된 화살표 다시 쓰기), 도달 가능성 가지치기를 넣었다. 수치는 두 갈래로 낸다 — 입출력 없는 알고리즘만으로 DeepArrow 가 디스패치 772마이크로초 대 계획기 조언 70마이크로초로 11배, WideArrow 가 72 대 57마이크로초로 26% 빠르다. 포스트그레스 저장소를 쓰면 DeepArrow 가 19.55밀리초 대 10.41밀리초로 47%, WideArrow 가 1.33밀리초 대 0.50밀리초로 62% 빠르다. 대가도 적는다: 디스패치는 망 비용을 조금 내주고 큰 캐시 이득을 얻는 맞바꿈이며, 계획기의 디스패치 방식이 지금은 하위 문제를 과하게 흩어 보내고 있어 더 나아질 여지가 있다고 스스로 밝힌다."
+        }
+      ]
+    }
+  ],
   "open_questions": [
-    "일관성 이야기(잔지바의 zookie 에 해당하는 ZedToken, 일관성 수준 선택)를 다룬 글을 아직 못 찾았다 — 권한 시스템에서 가장 미묘한 자리인데 이번 자료에 없다.",
     "관계 하나당·검사 하나당 같은 구체적 단가가 값 페이지에 없다. 시간당 2달러라는 진입점만 있다.",
     "저장소 선택(포스트그레스·스패너·CockroachDB 등)과 그 대가를 다룬 `Cloud Datastore, Unlocked`(2026-03-03)를 안 읽었다.",
     "매출과 고객 수를 확인하지 못했다.",
     "시대 구분(eras)을 세우지 않았다. 잔지바 논문에서 SpiceDB 로 온 경로에 연도가 붙은 1차 자료를 아직 못 찾았다.",
-    "최근 블로그 목록에 AI 관련 마케팅 글이 섞여 있다 — 이 프로파일은 질의 계획기 글과 분산 권한 글, 값 페이지만 썼다."
+    "최근 블로그 목록에 AI 관련 마케팅 글이 섞여 있다 — 이 프로파일은 질의 계획기 글과 분산 권한 글, 값 페이지만 썼다.",
+    "일관성 수준의 실제 성능 차이를 수치로 본 자료를 못 찾았다 — 문서가 '지연에 크게 영향'이라고만 적고 얼마인지는 안 밝힌다."
   ],
   "sources": [
     {
@@ -190,6 +673,12 @@
       "url": "https://authzed.com/pricing",
       "publisher": "AuthZed",
       "summary": "제품 층이 넷이다. 오픈소스 SpiceDB 는 아파치 2.0 라이선스로 공짜이고 스스로 호스팅한다. 클라우드는 관리형 SpiceDB 로 관측과 API 가 붙고 자원 기반 종량제이며 시간당 2달러로 권한 시스템을 띄울 수 있다고 적는다. 자체 호스팅(엔터프라이즈)은 전문 지원이 붙는 구독으로 지역당·vCPU 당 연간 라이선스다. 전용 클라우드는 전용 인프라와 프리미엄 지원이 붙고 예약 vCPU 용량 기준의 맞춤 자원 과금이다. 관계 하나당·검사 하나당 같은 구체적 단가는 이 페이지에 없다. 지원은 스탠더드·프리미엄·엔터프라이즈 셋으로 SLA 가 다르다."
+    },
+    {
+      "title": "Consistency — SpiceDB Docs",
+      "url": "https://authzed.com/docs/spicedb/concepts/consistency",
+      "publisher": "AuthZed",
+      "summary": "일관성 수준을 넷으로 두고 각각의 대가를 적은 문서다. minimize_latency 는 캐시에 있을 법한 데이터를 골라 지연을 줄이는데, 이것만 쓰면 새 적 문제(New Enemy Problem)가 생길 수 있는 시간 창이 열린다. at_least_as_fresh 는 ZedToken 이 가리키는 시점만큼은 최신인 데이터로 답하되 더 새 정보가 있으면 그것을 쓴다. at_exact_snapshot 은 그 시점의 데이터로만 답하는데, SpiceDB 가 시간이 지나면 쓰레기를 수집하므로 스냅숏 만료 오류로 실패할 수 있다. fully_consistent 는 가장 최신 데이터로 답하지만 캐시를 대놓고 우회해 지연에 크게 영향을 준다. 기본값은 쓰기가 fully_consistent 이고 나머지 API 는 minimize_latency 다. ZedToken 은 SpiceDB 저장소의 어느 시점을 가리키는 불투명한 토큰으로 저장과 전송이 쉽게 인코딩돼 있다. 새 적 문제는 구글 잔지바 논문에서 온 것으로 권한이 바뀐 뒤 캐시된 데이터가 낡아 생기는데, 애플리케이션이 ZedToken 으로 필요한 신선도를 지정해 권한 판단이 최근 변경을 반영하게 함으로써 막는다."
     }
   ]
 }

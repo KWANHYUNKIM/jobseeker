@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **AuthZed (SpiceDB)** | US · SaaS | 프로파일만 씀(2026-09-07). 도메인 둘 다 비어 있다 — 권한을 한곳에 모은다(`authz-in-a-distributed-system` 2026-07-02 확보) · 권한 그래프를 빨리 훑는다(`query-planner-early-benchmarks` 2026-05-20 확보). 안 읽은 것 — `Cloud Datastore, Unlocked`(2026-03-03, 저장소 선택) · 질의 계획기 소개(2026-02-02) · 일관성(ZedToken) 글을 아직 못 찾았다. ⚠️ 글 주소가 제목과 다르다(`/blog/authz-in-a-distributed-system`). |
+| **AuthZed (SpiceDB)** | US · SaaS | 프로파일 + 기능 1개(2026-09-07). 채운 도메인 — 권한을 한곳에 모은다(`zedtoken-consistency`, 개념 문서로 보강). 빈 도메인 하나 — 권한 그래프를 빨리 훑는다(`query-planner-early-benchmarks` 확보). 안 읽은 것 — `Cloud Datastore, Unlocked`(2026-03-03) · 질의 계획기 소개(2026-02-02). ⚠️ 글 주소가 제목과 다르다. |
 | **Chroma** | US · SaaS | 프로파일 + 기능 3개(2026-09-07). 채운 도메인 — 색인을 객체 저장소 위에 올린다(`objstore-index-execution`) · 쓰기 로그도 객체 저장소 위에 짓는다(`wal3`) · 여럿이 동시에 고칠 때 되돌리지 않는다(`fission-never-rollback`). **`색인 수백만 개를 테넌트별로 다룬다` 는 자료가 관찰까지만이라 `hold_reason` 을 달고 보류했다** — 그래서 done 으로 닫지 않고 진행 중에 둔다. 새 자료(테넌트 공정성·작업 훔치기 글)가 나오면 지우고 다시 판다. 안 읽은 것 — `/engineering/billing`. ⚠️ 글에 발행일이 없다.|
 
 ## 대기
