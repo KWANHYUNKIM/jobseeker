@@ -1820,7 +1820,7 @@
       "country": "US",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "클라이언트마다 로컬 데이터베이스를 두는 이슈 트래커 — 그래서 '끊겼다 돌아온 사람을 따라잡히게 하는 일'이 이 회사의 핵심 문제다",
       "updated_at": "2026-09-07",
       "domain": "linear.app"
