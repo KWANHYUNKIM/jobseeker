@@ -1891,8 +1891,8 @@
       "name_en": "Electric (ElectricSQL)",
       "country": "기타",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "동기화를 부품으로 파는 회사 — 읽기를 CDN 으로 밀어내 데이터베이스 부하를 평평하게 두는 쪽에 걸었다",
       "updated_at": "2026-09-07",
       "domain": "electric.ax"
