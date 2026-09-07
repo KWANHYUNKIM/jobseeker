@@ -1932,6 +1932,18 @@
       "one_liner": "말이 끝나기 전에 소리를 내보내는 음성 API — 그러려고 문맥을 5~20배 적게 보는 값을 먼저 적는다",
       "updated_at": "2026-09-07",
       "domain": "deepgram.com"
+    },
+    {
+      "slug": "airbyte",
+      "name": "에어바이트",
+      "name_en": "Airbyte",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "소스와 목적지 사이를 잇는 오픈소스 커넥터 600개 — 그 사이에 서 있던 중간 층을 걷어내는 것이 성능의 전부였다",
+      "updated_at": "2026-09-07",
+      "domain": "airbyte.com"
     }
   ],
   "domains": [
@@ -2411,7 +2423,8 @@
     "터미널 코어를 떼어 남에게 준다",
     "몇 주씩 켜 두는 프로그램의 메모리를 지킨다",
     "납땜을 거절하고 그 값을 적는다",
-    "말이 끝나기 전에 소리를 내보낸다"
+    "말이 끝나기 전에 소리를 내보낸다",
+    "소스에서 목적지로 옮기는 길을 짧게 만든다"
   ],
   "countries": {
     "KR": "한국",
