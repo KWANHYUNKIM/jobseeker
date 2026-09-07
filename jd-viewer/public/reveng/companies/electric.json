@@ -1,0 +1,233 @@
+{
+  "slug": "electric",
+  "name": "일렉트릭",
+  "name_en": "Electric (ElectricSQL)",
+  "country": "기타",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-09-07",
+  "domain": "electric.ax",
+  "one_liner": "동기화를 부품으로 파는 회사 — 읽기를 CDN 으로 밀어내 데이터베이스 부하를 평평하게 두는 쪽에 걸었다",
+  "business_model": "동기화를 **조합할 수 있는 부품**으로 판다 — Sync Engine, Electric Agents, Electric Streams, Electric Circuits, 그리고 브라우저에서 도는 포스트그레스 PGlite.\n\n값은 **Electric Cloud** 의 사용량 기반이었다. **그런데 2026년 8월 11일 데이터브릭스 합류를 발표하며 클라우드를 접는다고 밝혔다** — 쓰던 사람은 스스로 호스팅하거나 다른 제공자로 옮겨야 한다. 오픈소스(Postgres Sync·PGlite·TanStack DB·Durable Streams)는 Apache 2.0 으로 그대로 남는다.\n\n기술 주장이 사업 모델과 붙어 있다 — **동시 독자 100만 이상, CDN 캐시 적중률 99%, 규모가 커져도 데이터베이스 부하는 평평하게.** 파는 것이 '읽기를 데이터베이스 밖으로 밀어내는 방법'이라는 뜻이다(재구성).",
+  "revenue_total": "매출과 가격이 공개돼 있지 않다. 사용량 기반이라고만 적었고, 그 Electric Cloud 자체가 데이터브릭스 합류와 함께 접힌다.",
+  "products": [
+    "Sync Engine(Postgres Sync)",
+    "Electric Streams(내구성 있는 실시간 스트림)",
+    "Electric Agents",
+    "Electric Circuits",
+    "PGlite(브라우저에서 도는 포스트그레스)"
+  ],
+  "revenue_streams": [
+    {
+      "name": "Electric Cloud(사용량 기반)",
+      "how": "전 세계에 퍼진 데이터 전달망을 관리형으로 내주고 쓴 만큼 받았다. **2026-08-11 데이터브릭스 합류와 함께 접는다** — 사용자는 자체 호스팅하거나 다른 제공자로 옮긴다.",
+      "weight": "금액 비공개 · 서비스 종료 예정",
+      "domains": [
+        "읽기를 데이터베이스 밖으로 밀어낸다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Electric — 무엇을 주나",
+          "url": "https://electric.ax/",
+          "publisher": "Electric",
+          "summary": "동기화를 부품으로 파는 회사다. 내세우는 것은 **조합할 수 있는 동기화 원시 요소**로, 여러 에이전트가 도는 시스템에서 끝에서 끝까지의 반응성과 협업을 받친다고 적는다. 제품 줄기가 여럿이다 — Sync Engine, 오래 사는 개체를 내구성 있고 동기화된 부품으로 배포하며 0까지 줄일 수 있는 Electric Agents, 에이전트 세션 데이터를 위한 만능 자료 원시 요소라고 소개하는 Electric Streams(지속되고 주소를 갖는 실시간 스트림), 아무 데이터베이스 질의나 살아 있게 만든다는 Electric Circuits, 그리고 주 1,000만 다운로드를 넘겼다는 PGlite. 값은 Electric Cloud 의 사용량 기반이라고만 적고 수치는 없다 — 전 세계에 퍼진 데이터 전달망이라고 소개한다. 기술 주장은 셋이다: **동시 독자 100만 이상**, **CDN 캐시 적중률 99%**, 규모가 커져도 **데이터베이스 부하는 평평하게** 유지된다. 회사 위치는 적혀 있지 않고 저작권 표기만 있다(© 2026 Electric DB Inc.)."
+        },
+        {
+          "title": "Electric is joining Databricks",
+          "url": "https://electric.ax/blog/2026/08/11/electric-joining-databricks",
+          "publisher": "Electric",
+          "date": "2026-08-11",
+          "summary": "데이터브릭스에 합류한다는 발표다(글쓴이 James Arthur · Valter Balegas). 자기 동기화 기술을 데이터브릭스의 서버리스 포스트그레스인 레이크베이스에 넣어, 실시간 갱신이 필요한 앱과 AI 에이전트를 위한 포스트그레스 묶음으로 만들겠다고 적는다. 오픈소스는 그대로다 — Postgres Sync·PGlite·TanStack DB·Durable Streams 가 모두 Apache 2.0 으로 남고 라이선스 변경은 없다. **다만 Electric Cloud 는 접는다** — 쓰던 사람은 스스로 호스팅하거나 다른 제공자로 옮겨야 하며 전환을 돕겠다고 적는다. 앞으로는 독립적인 클라우드 기반을 유지하는 대신 데이터브릭스 생태계 안의 네온과 붙는 쪽으로 개발을 모은다. 수치로는 PGlite 가 주 1,300만 다운로드에 이르러 가장 널리 쓰이는 프로젝트가 됐다는 것을 든다."
+        }
+      ]
+    },
+    {
+      "name": "오픈소스와 생태계",
+      "how": "Postgres Sync·PGlite·TanStack DB·Durable Streams 를 Apache 2.0 으로 낸다. PGlite 는 주 1,300만 다운로드로 가장 널리 쓰이는 프로젝트가 됐다.",
+      "weight": "직접 매출은 아니다(재구성)",
+      "domains": [
+        "내구성을 커널 속도로 만든다"
+      ],
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Electric is joining Databricks",
+          "url": "https://electric.ax/blog/2026/08/11/electric-joining-databricks",
+          "publisher": "Electric",
+          "date": "2026-08-11",
+          "summary": "데이터브릭스에 합류한다는 발표다(글쓴이 James Arthur · Valter Balegas). 자기 동기화 기술을 데이터브릭스의 서버리스 포스트그레스인 레이크베이스에 넣어, 실시간 갱신이 필요한 앱과 AI 에이전트를 위한 포스트그레스 묶음으로 만들겠다고 적는다. 오픈소스는 그대로다 — Postgres Sync·PGlite·TanStack DB·Durable Streams 가 모두 Apache 2.0 으로 남고 라이선스 변경은 없다. **다만 Electric Cloud 는 접는다** — 쓰던 사람은 스스로 호스팅하거나 다른 제공자로 옮겨야 하며 전환을 돕겠다고 적는다. 앞으로는 독립적인 클라우드 기반을 유지하는 대신 데이터브릭스 생태계 안의 네온과 붙는 쪽으로 개발을 모은다. 수치로는 PGlite 가 주 1,300만 다운로드에 이르러 가장 널리 쓰이는 프로젝트가 됐다는 것을 든다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "caption": "읽기는 CDN 으로 밀어내 데이터베이스를 평평하게 두고(왼쪽), 그 아래에서 스트림 자체는 커널에 붙여 빠르게 만든다(오른쪽).",
+    "code": "flowchart LR\n  D[\"포스트그레스\\n부하가 평평하게 유지된다\"] --> S[\"동기화 엔진\\n동시 독자 100만+\\nCDN 캐시 적중 99%\"]\n  S --> C[\"클라이언트\\n로컬 우선 · PGlite\"]\n  W[\"Durable Streams\\nfsync + 그룹 커밋 WAL\\nsendfile · splice\"] --> S\n  W --> N[\"4vCPU · 스트림 10만\\n초당 약 86만 append\"]"
+  },
+  "domains": [
+    {
+      "name": "읽기를 데이터베이스 밖으로 밀어낸다",
+      "why": "여럿이 같은 데이터를 실시간으로 보는 앱에서는 **읽기가 데이터베이스를 무너뜨린다.** 이 회사가 내세우는 세 숫자가 그 축이다 — **동시 독자 100만 이상, CDN 캐시 적중률 99%, 규모가 커져도 데이터베이스 부하는 평평하게.**\n\n경계를 여기서 끊은 이유는 이것이 제품의 약속 자체이기 때문이다(재구성) — 파는 것이 기능이 아니라 '읽기를 데이터베이스 밖으로 옮기는 방법'이다.",
+      "tech": [
+        {
+          "tech": "CDN 위의 동기화",
+          "solves": "전 세계에 퍼진 데이터 전달망으로 읽기를 흡수한다 — 캐시 적중률 99% 를 내세운다.",
+          "limits": "수치의 조건(어떤 부하에서 잰 것인지)이 홈에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Electric — 무엇을 주나",
+              "url": "https://electric.ax/",
+              "publisher": "Electric",
+              "summary": "동기화를 부품으로 파는 회사다. 내세우는 것은 **조합할 수 있는 동기화 원시 요소**로, 여러 에이전트가 도는 시스템에서 끝에서 끝까지의 반응성과 협업을 받친다고 적는다. 제품 줄기가 여럿이다 — Sync Engine, 오래 사는 개체를 내구성 있고 동기화된 부품으로 배포하며 0까지 줄일 수 있는 Electric Agents, 에이전트 세션 데이터를 위한 만능 자료 원시 요소라고 소개하는 Electric Streams(지속되고 주소를 갖는 실시간 스트림), 아무 데이터베이스 질의나 살아 있게 만든다는 Electric Circuits, 그리고 주 1,000만 다운로드를 넘겼다는 PGlite. 값은 Electric Cloud 의 사용량 기반이라고만 적고 수치는 없다 — 전 세계에 퍼진 데이터 전달망이라고 소개한다. 기술 주장은 셋이다: **동시 독자 100만 이상**, **CDN 캐시 적중률 99%**, 규모가 커져도 **데이터베이스 부하는 평평하게** 유지된다. 회사 위치는 적혀 있지 않고 저작권 표기만 있다(© 2026 Electric DB Inc.)."
+            }
+          ]
+        },
+        {
+          "tech": "조합할 수 있는 동기화 원시 요소",
+          "solves": "동기화를 통짜 제품이 아니라 부품으로 낸다 — 여러 에이전트가 도는 시스템의 반응성과 협업을 받친다고 적는다.",
+          "limits": "부품이 여럿이라 무엇을 어떻게 붙이는지는 각자 몫이다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Electric — 무엇을 주나",
+              "url": "https://electric.ax/",
+              "publisher": "Electric",
+              "summary": "동기화를 부품으로 파는 회사다. 내세우는 것은 **조합할 수 있는 동기화 원시 요소**로, 여러 에이전트가 도는 시스템에서 끝에서 끝까지의 반응성과 협업을 받친다고 적는다. 제품 줄기가 여럿이다 — Sync Engine, 오래 사는 개체를 내구성 있고 동기화된 부품으로 배포하며 0까지 줄일 수 있는 Electric Agents, 에이전트 세션 데이터를 위한 만능 자료 원시 요소라고 소개하는 Electric Streams(지속되고 주소를 갖는 실시간 스트림), 아무 데이터베이스 질의나 살아 있게 만든다는 Electric Circuits, 그리고 주 1,000만 다운로드를 넘겼다는 PGlite. 값은 Electric Cloud 의 사용량 기반이라고만 적고 수치는 없다 — 전 세계에 퍼진 데이터 전달망이라고 소개한다. 기술 주장은 셋이다: **동시 독자 100만 이상**, **CDN 캐시 적중률 99%**, 규모가 커져도 **데이터베이스 부하는 평평하게** 유지된다. 회사 위치는 적혀 있지 않고 저작권 표기만 있다(© 2026 Electric DB Inc.)."
+            }
+          ]
+        },
+        {
+          "tech": "클라이언트 쪽 포스트그레스(PGlite)",
+          "solves": "브라우저에서 도는 포스트그레스로 로컬 우선을 성립시킨다 — 주 1,300만 다운로드로 가장 널리 쓰이는 프로젝트가 됐다.",
+          "limits": "이 사이클에서 PGlite 의 기술 글을 읽지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Electric is joining Databricks",
+              "url": "https://electric.ax/blog/2026/08/11/electric-joining-databricks",
+              "publisher": "Electric",
+              "date": "2026-08-11",
+              "summary": "데이터브릭스에 합류한다는 발표다(글쓴이 James Arthur · Valter Balegas). 자기 동기화 기술을 데이터브릭스의 서버리스 포스트그레스인 레이크베이스에 넣어, 실시간 갱신이 필요한 앱과 AI 에이전트를 위한 포스트그레스 묶음으로 만들겠다고 적는다. 오픈소스는 그대로다 — Postgres Sync·PGlite·TanStack DB·Durable Streams 가 모두 Apache 2.0 으로 남고 라이선스 변경은 없다. **다만 Electric Cloud 는 접는다** — 쓰던 사람은 스스로 호스팅하거나 다른 제공자로 옮겨야 하며 전환을 돕겠다고 적는다. 앞으로는 독립적인 클라우드 기반을 유지하는 대신 데이터브릭스 생태계 안의 네온과 붙는 쪽으로 개발을 모은다. 수치로는 PGlite 가 주 1,300만 다운로드에 이르러 가장 널리 쓰이는 프로젝트가 됐다는 것을 든다."
+            }
+          ]
+        },
+        {
+          "tech": "관리형 클라우드(접는 중)",
+          "solves": "사용량 기반으로 관리형 전달망을 내줬다.",
+          "limits": "**2026-08-11 데이터브릭스 합류와 함께 접는다** — 사용자는 자체 호스팅하거나 다른 제공자로 옮겨야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Electric is joining Databricks",
+              "url": "https://electric.ax/blog/2026/08/11/electric-joining-databricks",
+              "publisher": "Electric",
+              "date": "2026-08-11",
+              "summary": "데이터브릭스에 합류한다는 발표다(글쓴이 James Arthur · Valter Balegas). 자기 동기화 기술을 데이터브릭스의 서버리스 포스트그레스인 레이크베이스에 넣어, 실시간 갱신이 필요한 앱과 AI 에이전트를 위한 포스트그레스 묶음으로 만들겠다고 적는다. 오픈소스는 그대로다 — Postgres Sync·PGlite·TanStack DB·Durable Streams 가 모두 Apache 2.0 으로 남고 라이선스 변경은 없다. **다만 Electric Cloud 는 접는다** — 쓰던 사람은 스스로 호스팅하거나 다른 제공자로 옮겨야 하며 전환을 돕겠다고 적는다. 앞으로는 독립적인 클라우드 기반을 유지하는 대신 데이터브릭스 생태계 안의 네온과 붙는 쪽으로 개발을 모은다. 수치로는 PGlite 가 주 1,300만 다운로드에 이르러 가장 널리 쓰이는 프로젝트가 됐다는 것을 든다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "내구성을 커널 속도로 만든다",
+      "why": "동기화의 밑바닥에는 **지속되고 주소를 갖는 스트림**이 있다. 그것이 느리면 위층의 약속이 다 무너진다(재구성).\n\n그런데 내구성과 속도는 정면으로 부딪힌다 — 디스크에 확실히 내리려면 기다려야 하고, 빠르려면 안 기다려야 한다. 이 회사는 **카프카식 비동기 복제를 물리고 단일 노드 fsync 를** 골랐다. 경계를 여기서 끊은 이유는 이 맞바꿈이 위층과 다른 문제이기 때문이다(재구성).",
+      "tech": [
+        {
+          "tech": "fsync + 그룹 커밋 WAL",
+          "solves": "단일 노드에서 fsync 로 내구성을 보장하되, 쓰기 앞선 로그에 여러 쓰기를 모아 한 번에 내려 그 값을 눅인다.",
+          "limits": "카프카식 비동기 복제가 주는 다중 노드 내구성은 포기한다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Durable Streams at kernel speed",
+              "url": "https://electric.ax/blog/2026/06/26/durable-streams-at-kernel-speed",
+              "publisher": "Electric",
+              "date": "2026-06-26",
+              "summary": "내구성 있는 스트림을 커널 속도로 만든 이야기다(글쓴이 Valter Balegas). 고른 것과 물린 것을 분명히 적는다. 내구성은 **카프카의 비동기 복제 방식 대신 단일 노드에서 fsync 로** 보장하고, 그 값은 **쓰기 앞선 로그(WAL)와 그룹 커밋**으로 여러 쓰기를 모아 한 번에 내려 눅인다. 데이터 이동도 줄인다 — 여러 번 복사하는 대신 **전선에 실리는 형식 그대로 바이트를 저장**하고 읽기는 `sendfile(2)`·`splice(2)` 같은 커널 호출로 내보내 데이터를 커널 공간에 둔다(사용자 공간 복사와 문맥 전환을 없앤다). 쓰는 것은 러스트다. 수치를 든다 — 4vCPU 에서 스트림 10만 개에 256바이트 레코드로 **초당 약 86만 append**, 같은 조건에서 메모리 중앙값 **약 515MB**(노드 구현은 스트림 1만 개에 800MB), 히스토리 재생은 합쳐 최고 **약 2.0GB/s**, 구독자 1,000명일 때 SSE 팬아웃 지연이 **약 4밀리초**까지 올랐다."
+            }
+          ]
+        },
+        {
+          "tech": "전선 형식 그대로 저장",
+          "solves": "여러 번 복사하지 않고 나갈 때의 형식 그대로 바이트를 담아 둔다.",
+          "limits": "저장 형식이 프로토콜에 묶인다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Durable Streams at kernel speed",
+              "url": "https://electric.ax/blog/2026/06/26/durable-streams-at-kernel-speed",
+              "publisher": "Electric",
+              "date": "2026-06-26",
+              "summary": "내구성 있는 스트림을 커널 속도로 만든 이야기다(글쓴이 Valter Balegas). 고른 것과 물린 것을 분명히 적는다. 내구성은 **카프카의 비동기 복제 방식 대신 단일 노드에서 fsync 로** 보장하고, 그 값은 **쓰기 앞선 로그(WAL)와 그룹 커밋**으로 여러 쓰기를 모아 한 번에 내려 눅인다. 데이터 이동도 줄인다 — 여러 번 복사하는 대신 **전선에 실리는 형식 그대로 바이트를 저장**하고 읽기는 `sendfile(2)`·`splice(2)` 같은 커널 호출로 내보내 데이터를 커널 공간에 둔다(사용자 공간 복사와 문맥 전환을 없앤다). 쓰는 것은 러스트다. 수치를 든다 — 4vCPU 에서 스트림 10만 개에 256바이트 레코드로 **초당 약 86만 append**, 같은 조건에서 메모리 중앙값 **약 515MB**(노드 구현은 스트림 1만 개에 800MB), 히스토리 재생은 합쳐 최고 **약 2.0GB/s**, 구독자 1,000명일 때 SSE 팬아웃 지연이 **약 4밀리초**까지 올랐다."
+            }
+          ]
+        },
+        {
+          "tech": "`sendfile(2)` · `splice(2)`",
+          "solves": "읽기를 커널 호출로 내보내 데이터를 커널 공간에 둔다 — 사용자 공간 복사와 문맥 전환이 사라진다.",
+          "limits": "리눅스 계열의 기능에 기댄다(재구성).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Durable Streams at kernel speed",
+              "url": "https://electric.ax/blog/2026/06/26/durable-streams-at-kernel-speed",
+              "publisher": "Electric",
+              "date": "2026-06-26",
+              "summary": "내구성 있는 스트림을 커널 속도로 만든 이야기다(글쓴이 Valter Balegas). 고른 것과 물린 것을 분명히 적는다. 내구성은 **카프카의 비동기 복제 방식 대신 단일 노드에서 fsync 로** 보장하고, 그 값은 **쓰기 앞선 로그(WAL)와 그룹 커밋**으로 여러 쓰기를 모아 한 번에 내려 눅인다. 데이터 이동도 줄인다 — 여러 번 복사하는 대신 **전선에 실리는 형식 그대로 바이트를 저장**하고 읽기는 `sendfile(2)`·`splice(2)` 같은 커널 호출로 내보내 데이터를 커널 공간에 둔다(사용자 공간 복사와 문맥 전환을 없앤다). 쓰는 것은 러스트다. 수치를 든다 — 4vCPU 에서 스트림 10만 개에 256바이트 레코드로 **초당 약 86만 append**, 같은 조건에서 메모리 중앙값 **약 515MB**(노드 구현은 스트림 1만 개에 800MB), 히스토리 재생은 합쳐 최고 **약 2.0GB/s**, 구독자 1,000명일 때 SSE 팬아웃 지연이 **약 4밀리초**까지 올랐다."
+            }
+          ]
+        },
+        {
+          "tech": "러스트 구현",
+          "solves": "4vCPU 에서 스트림 10만 개에 초당 약 86만 append(256바이트), 메모리 중앙값 약 515MB — 노드 구현은 스트림 1만 개에 800MB 였다.",
+          "limits": "히스토리 재생은 최고 약 2.0GB/s, 구독자 1,000명에서 SSE 팬아웃 지연이 약 4밀리초까지 오른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Durable Streams at kernel speed",
+              "url": "https://electric.ax/blog/2026/06/26/durable-streams-at-kernel-speed",
+              "publisher": "Electric",
+              "date": "2026-06-26",
+              "summary": "내구성 있는 스트림을 커널 속도로 만든 이야기다(글쓴이 Valter Balegas). 고른 것과 물린 것을 분명히 적는다. 내구성은 **카프카의 비동기 복제 방식 대신 단일 노드에서 fsync 로** 보장하고, 그 값은 **쓰기 앞선 로그(WAL)와 그룹 커밋**으로 여러 쓰기를 모아 한 번에 내려 눅인다. 데이터 이동도 줄인다 — 여러 번 복사하는 대신 **전선에 실리는 형식 그대로 바이트를 저장**하고 읽기는 `sendfile(2)`·`splice(2)` 같은 커널 호출로 내보내 데이터를 커널 공간에 둔다(사용자 공간 복사와 문맥 전환을 없앤다). 쓰는 것은 러스트다. 수치를 든다 — 4vCPU 에서 스트림 10만 개에 256바이트 레코드로 **초당 약 86만 append**, 같은 조건에서 메모리 중앙값 **약 515MB**(노드 구현은 스트림 1만 개에 800MB), 히스토리 재생은 합쳐 최고 **약 2.0GB/s**, 구독자 1,000명일 때 SSE 팬아웃 지연이 **약 4밀리초**까지 올랐다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "법인 소재지를 확인하지 못했다 — 홈에 `© 2026 Electric DB Inc.` 만 있고 위치가 없어 국가를 `기타` 로 뒀다.",
+    "가격과 매출이 공개돼 있지 않다 — 사용량 기반이라고만 적혔고 그 클라우드도 접는다.",
+    "동시 독자 100만·캐시 적중 99%·부하 평평이라는 주장을 어떤 조건에서 쟀는지 확인하지 못했다.",
+    "데이터브릭스 합류 뒤 오픈소스 개발 속도와 방향이 어떻게 되는지 확인하지 못했다 — 네온과 붙는 쪽으로 모은다고만 적는다.",
+    "PGlite·Electric Circuits·Electric Agents 의 내부를 다룬 글을 아직 읽지 않았다.",
+    "시대 구분(eras)을 세우지 않았다 — 저장 엔진을 바꾼 1.1 과 Durable Streams 는 알지만 그 앞 시기의 연도를 못 찾았다."
+  ],
+  "sources": [
+    {
+      "title": "Electric — 무엇을 주나",
+      "url": "https://electric.ax/",
+      "publisher": "Electric",
+      "summary": "동기화를 부품으로 파는 회사다. 내세우는 것은 **조합할 수 있는 동기화 원시 요소**로, 여러 에이전트가 도는 시스템에서 끝에서 끝까지의 반응성과 협업을 받친다고 적는다. 제품 줄기가 여럿이다 — Sync Engine, 오래 사는 개체를 내구성 있고 동기화된 부품으로 배포하며 0까지 줄일 수 있는 Electric Agents, 에이전트 세션 데이터를 위한 만능 자료 원시 요소라고 소개하는 Electric Streams(지속되고 주소를 갖는 실시간 스트림), 아무 데이터베이스 질의나 살아 있게 만든다는 Electric Circuits, 그리고 주 1,000만 다운로드를 넘겼다는 PGlite. 값은 Electric Cloud 의 사용량 기반이라고만 적고 수치는 없다 — 전 세계에 퍼진 데이터 전달망이라고 소개한다. 기술 주장은 셋이다: **동시 독자 100만 이상**, **CDN 캐시 적중률 99%**, 규모가 커져도 **데이터베이스 부하는 평평하게** 유지된다. 회사 위치는 적혀 있지 않고 저작권 표기만 있다(© 2026 Electric DB Inc.)."
+    },
+    {
+      "title": "Durable Streams at kernel speed",
+      "url": "https://electric.ax/blog/2026/06/26/durable-streams-at-kernel-speed",
+      "publisher": "Electric",
+      "date": "2026-06-26",
+      "summary": "내구성 있는 스트림을 커널 속도로 만든 이야기다(글쓴이 Valter Balegas). 고른 것과 물린 것을 분명히 적는다. 내구성은 **카프카의 비동기 복제 방식 대신 단일 노드에서 fsync 로** 보장하고, 그 값은 **쓰기 앞선 로그(WAL)와 그룹 커밋**으로 여러 쓰기를 모아 한 번에 내려 눅인다. 데이터 이동도 줄인다 — 여러 번 복사하는 대신 **전선에 실리는 형식 그대로 바이트를 저장**하고 읽기는 `sendfile(2)`·`splice(2)` 같은 커널 호출로 내보내 데이터를 커널 공간에 둔다(사용자 공간 복사와 문맥 전환을 없앤다). 쓰는 것은 러스트다. 수치를 든다 — 4vCPU 에서 스트림 10만 개에 256바이트 레코드로 **초당 약 86만 append**, 같은 조건에서 메모리 중앙값 **약 515MB**(노드 구현은 스트림 1만 개에 800MB), 히스토리 재생은 합쳐 최고 **약 2.0GB/s**, 구독자 1,000명일 때 SSE 팬아웃 지연이 **약 4밀리초**까지 올랐다."
+    },
+    {
+      "title": "Electric is joining Databricks",
+      "url": "https://electric.ax/blog/2026/08/11/electric-joining-databricks",
+      "publisher": "Electric",
+      "date": "2026-08-11",
+      "summary": "데이터브릭스에 합류한다는 발표다(글쓴이 James Arthur · Valter Balegas). 자기 동기화 기술을 데이터브릭스의 서버리스 포스트그레스인 레이크베이스에 넣어, 실시간 갱신이 필요한 앱과 AI 에이전트를 위한 포스트그레스 묶음으로 만들겠다고 적는다. 오픈소스는 그대로다 — Postgres Sync·PGlite·TanStack DB·Durable Streams 가 모두 Apache 2.0 으로 남고 라이선스 변경은 없다. **다만 Electric Cloud 는 접는다** — 쓰던 사람은 스스로 호스팅하거나 다른 제공자로 옮겨야 하며 전환을 돕겠다고 적는다. 앞으로는 독립적인 클라우드 기반을 유지하는 대신 데이터브릭스 생태계 안의 네온과 붙는 쪽으로 개발을 모은다. 수치로는 PGlite 가 주 1,300만 다운로드에 이르러 가장 널리 쓰이는 프로젝트가 됐다는 것을 든다."
+    }
+  ]
+}
