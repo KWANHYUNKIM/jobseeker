@@ -7,8 +7,8 @@
       "name_en": "Elastic",
       "country": "기타",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 1,
+      "status": "done",
+      "features_done": 2,
       "one_liner": "남의 데이터를 색인해 주는 회사 — 그래서 어느 샤드를 어디에 둘지와 어느 바이트를 어떻게 줄일지가 끝없이 다시 정해진다",
       "updated_at": "2026-09-07",
       "domain": "elastic.co"
