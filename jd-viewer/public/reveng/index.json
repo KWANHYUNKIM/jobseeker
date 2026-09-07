@@ -8,7 +8,7 @@
       "country": "US",
       "category": "기타",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "폐기를 잘 알리는 대신 폐기가 덜 필요하게 만든 인증 기관 — 그 대가로 모든 갱신이 자동이어야 한다",
       "updated_at": "2026-09-07",
       "domain": "letsencrypt.org"
