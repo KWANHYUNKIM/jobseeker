@@ -2,6 +2,18 @@
   "updated_at": "2026-09-07",
   "companies": [
     {
+      "slug": "supabase",
+      "name": "수파베이스",
+      "name_en": "Supabase",
+      "country": "기타",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "Postgres 를 고치지 않고 그 둘레를 짓는 회사 — 그래서 자기 제품이 무엇을 못 하는지도 같이 적는다",
+      "updated_at": "2026-09-07",
+      "domain": "supabase.com"
+    },
+    {
       "slug": "godot",
       "name": "고도 엔진",
       "name_en": "Godot Engine",
@@ -2535,7 +2547,9 @@
     "압축을 푸는 방식이 다르면 같은 파일이 다르게 설치된다",
     "중앙 릴레이로 모으되 프로토콜은 양쪽 다 되게 둔다",
     "모더레이션을 한 겹의 권한이 아니라 층으로 쌓는다",
-    "플랫폼이 주는 입력을 그대로 흘려보내지 않는다"
+    "플랫폼이 주는 입력을 그대로 흘려보내지 않는다",
+    "Postgres 를 고치지 않고 그 둘레를 짓는다",
+    "같은 데이터를 보내는 두 길을 갈라 놓는다"
   ],
   "countries": {
     "KR": "한국",
