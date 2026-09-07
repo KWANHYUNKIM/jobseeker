@@ -186,6 +186,17 @@ def run() -> int:
         rejects(cur, "INSERT INTO job_override (job_id, field, value) VALUES (%s,%s,%s)",
                 (job_a, "status", json.dumps("actve")), "status 오타 override 거부")
 
+        # 같은 공고가 다른 주소로 다시 온다 — jobkorea 는 검색 위치를 URL 에 싣는다.
+        # upsert 가 URL 만 보면 여기서 INSERT 로 밀다가 job_site_pid_uniq 에 걸리고,
+        # 그 예외 하나가 크롤 사이클의 이중 쓰기를 통째로 롤백시킨다(2026-09-08).
+        moved, inserted = upsert_job(cur, {**base, "url": "https://a.test/1?listno=7",
+                                           "title": "백엔드 개발자(수정)"})
+        check(moved == job_a and not inserted, "주소만 바뀐 같은 공고는 제자리 갱신")
+        cur.execute("SELECT url, title FROM job WHERE id = %s", (job_a,))
+        r = cur.fetchone()
+        check(r["url"] == "https://a.test/1?listno=7" and r["title"].endswith("(수정)"),
+              "  주소·본문이 최신 표기로 따라간다")
+
         # ── 4. status 는 계산값이다 ────────────────────────────────
         print("\n[4] job_state 우선순위 (저장이 아니라 계산)")
         past = {**base, "pid": "10", "url": "https://a.test/10",

@@ -284,7 +284,49 @@ def upsert_job(cur, row: dict) -> tuple[int, bool]:
 
     `xmax = 0` 은 이번 문장이 INSERT 였다는 뜻이다 — UPDATE 였다면 갱신된 튜플의
     xmax 가 채워진다. 이 값으로 job_event('appeared') 를 남길지 판단한다.
+
+    주소는 공고의 이름표일 뿐 정체성이 아니다. 같은 공고가 사이트에 따라 여러
+    주소로 나온다 — jobkorea 는 검색 위치를 URL 에 싣고(`?Oem_Code=…&listno=…`),
+    saramin 은 식별자를 쿼리에 둔다. 그래서 `ON CONFLICT (url)` 만 보면 "URL 은
+    처음 보는데 (site,pid) 는 이미 있는" 경우 INSERT 로 밀다가 job_site_pid_uniq
+    에 걸린다. 2026-09-08 에 실제로 그렇게 됐다: 다른 머신에서 모은 공고를 합친
+    뒤, 매 크롤 사이클의 이중 쓰기가 통째로 롤백돼 DB 가 24,417 에서 멈춘 채
+    JSON 만 늘어갔다. 예외 하나가 사이클 전체를 삼키므로 조용히 낡아간다.
+
+    그래서 pid 가 있으면 **(site,pid) 를 먼저 찾아본다** — 스키마가 유일 키로
+    선언한 그 짝이 이 도메인의 정체성이다.
     """
+    site, pid = row.get("site"), row.get("pid")
+    if pid:
+        cur.execute("SELECT id, url FROM job WHERE site = %s AND pid = %s", (site, pid))
+        hit = cur.fetchone()
+        if hit is not None and hit["url"] != row.get("url"):
+            # 주소 표기만 다른 같은 공고다. 최신 표기로 맞추되, 그 주소를 이미 다른
+            # 행이 들고 있으면(파싱이 어긋나 pid 가 갈린 경우) 주소는 그대로 둔다 —
+            # 여기서 url unique 를 건드리면 같은 방식으로 사이클이 죽는다.
+            cur.execute("SELECT id FROM job WHERE url = %s", (row.get("url"),))
+            other = cur.fetchone()
+            take_url = other is None or other["id"] == hit["id"]
+
+            sets = [f"{c} = %s" for c in _UPDATE_COLUMNS]
+            args = [row.get(c) for c in _UPDATE_COLUMNS]
+            if take_url:
+                sets.append("url = %s")
+                args.append(row.get("url"))
+            args.append(hit["id"])
+            cur.execute(
+                f"""
+                UPDATE job SET {", ".join(sets)},
+                    last_seen_at = now(),
+                    last_crawled_at = now(),
+                    gone_at = NULL
+                 WHERE id = %s
+                RETURNING id
+                """,
+                tuple(args),
+            )
+            return cur.fetchone()["id"], False
+
     cols = ", ".join(JOB_COLUMNS)
     holes = ", ".join(["%s"] * len(JOB_COLUMNS))
     sets = ", ".join(f"{c} = EXCLUDED.{c}" for c in _UPDATE_COLUMNS)
