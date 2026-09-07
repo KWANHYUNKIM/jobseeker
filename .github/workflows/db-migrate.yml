@@ -1,0 +1,189 @@
+name: DB migrate
+
+# 정본 DB(PostgreSQL) 이관을 운영 서버에서 단계별로 돌린다.
+#
+# 왜 워크플로인가. 이 저장소의 운영 서버(맥)는 SSH 를 밖에 열지 않는다 — 대신
+# self-hosted 러너가 GitHub 로 아웃바운드 접속만 한다(deploy.yml 의 주석 참고).
+# 그래서 서버에서 무언가를 돌리는 유일한 길이 workflow_dispatch 다.
+#
+# **단계를 나눈 이유.** 이관은 되돌리기 어려운 것과 쉬운 것이 섞여 있다. 순서대로
+# 하나씩 눌러 로그를 보고 다음으로 넘어간다. 앞 단계가 깨지면 뒤로 가지 않는다.
+#
+#   probe    아무것도 바꾸지 않는다. 환경만 본다(도커·파이썬·Ollama·크롤 상태).
+#   schema   Postgres 를 띄우고 스키마를 깔고 selftest 를 돌린다. JSON 은 안 건드린다.
+#   load     JSON → DB 적재(공고·블로그·엔진 색인). 여전히 JSON 이 정본이다.
+#   vectors  semantic.db 의 벡터를 옮기고, 모자란 것만 새로 임베딩한다.
+#   export   DB 산출물과 현재 JSON 을 **비교만** 한다.
+#
+# 뷰어가 읽는 all_jobs_enriched.json 을 실제로 덮어쓰는 것(이관 3단계)은
+# 이 워크플로가 하지 않는다. 비교 결과를 사람이 보고 결정할 일이다.
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "어디까지 할지 (앞 단계가 이미 끝났다는 전제)"
+        required: true
+        type: choice
+        default: probe
+        options: [probe, schema, load, vectors, export]
+      stop_crawl:
+        description: "vectors 단계에서 auto_crawl 을 멈춘다 (8GB 메모리)"
+        required: false
+        default: true
+        type: boolean
+      embed_limit:
+        description: "이번에 임베딩할 최대 건수 (0 = 제한 없음)"
+        required: false
+        default: "2000"
+        type: string
+
+# 이관 단계가 겹치면 같은 DB 를 두 쪽에서 만진다. 진행 중인 것은 끝까지 보낸다.
+concurrency:
+  group: db-migrate
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: 정본 DB 이관
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 120
+    env:
+      JOBSEEKER_DSN: postgresql://jobseeker:jobseeker@127.0.0.1:5433/jobseeker
+
+    steps:
+      - name: 준비 — 서버 클론 최신화
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO"
+          # 러너 워크스페이스가 아니라 ~/jobseeker 에서 돈다 — 크롤러·뷰어 볼륨이
+          # 거기를 보고, 이관도 그 데이터를 대상으로 해야 한다.
+          git fetch --prune origin
+          git merge --ff-only origin/main
+          echo "HEAD: $(git log --oneline -1)"
+
+      - name: probe — 환경 점검 (아무것도 바꾸지 않는다)
+        run: |
+          set -uo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO"
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+
+          echo "▶ python : $("$PY" -V 2>&1)"
+          echo "▶ docker : $(docker --version 2>&1 | head -1)"
+          echo "▶ psycopg: $("$PY" -c 'import psycopg;print(psycopg.__version__)' 2>&1 | tail -1)"
+          echo "▶ sqlite-vec: $("$PY" -c 'import sqlite_vec;print("있음")' 2>&1 | tail -1)"
+          echo "▶ semantic.db: $(ls -lh catch_capture/semantic.db 2>/dev/null | awk '{print $5}' || echo '없음')"
+          echo "▶ 원장 job_closures.json: $(ls -lh catch_capture/job_closures.json 2>/dev/null | awk '{print $5}' || echo '없음')"
+          echo "▶ Ollama : $(curl -s -m 5 http://127.0.0.1:11434/api/tags >/dev/null 2>&1 && echo '떠 있음' || echo '꺼짐')"
+          echo "▶ auto_crawl: $(pgrep -fl 'auto_crawl' | head -3 || echo '안 돌고 있음')"
+          echo "▶ 5433 포트: $(lsof -nP -iTCP:5433 -sTCP:LISTEN 2>/dev/null | tail -1 || echo '비어 있음')"
+          echo "▶ 공고 JSON: $(ls -lh jd-viewer/public/all_jobs_enriched.json | awk '{print $5}')"
+
+      - name: schema — Postgres 기동 · 스키마 · 자체 검사
+        if: inputs.stage != 'probe'
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO"
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+
+          # psycopg 는 이번 이관에서 새로 필요해진 의존성이다.
+          "$PY" -c 'import psycopg' 2>/dev/null || "$PY" -m pip install --quiet "psycopg[binary]"
+
+          docker compose -f db/docker-compose.db.yml up -d
+          echo "▶ Postgres 기동 대기"
+          for i in $(seq 1 60); do
+            docker exec jobseeker-db pg_isready -U jobseeker -d jobseeker >/dev/null 2>&1 && break
+            sleep 2
+          done
+          docker exec jobseeker-db pg_isready -U jobseeker -d jobseeker
+
+          # 컨테이너를 처음 만들 때만 스키마가 자동 적용된다. 볼륨이 이미 있으면
+          # 건너뛰므로 여기서 멱등하게 한 번 더 시도한다(이미 있으면 조용히 실패).
+          docker exec -i jobseeker-db psql -U jobseeker -d jobseeker -v ON_ERROR_STOP=1 \
+            -c "SELECT 1 FROM pg_tables WHERE tablename='job'" | grep -q "1 row" \
+            || docker exec -i jobseeker-db psql -U jobseeker -d jobseeker < db/schema.sql
+
+          echo "▶ 자체 검사 (별도 시험용 DB 에서 돈다 — 운영 데이터는 안 건드린다)"
+          cd catch_capture && "$PY" -m store.selftest
+
+      - name: load — JSON → DB 적재
+        if: inputs.stage == 'load' || inputs.stage == 'vectors' || inputs.stage == 'export'
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+          cd "$REPO/catch_capture"
+
+          "$PY" -m store.backfill
+          "$PY" -m store.ingest_posts
+          "$PY" -m store.ingest_engines
+
+      - name: vectors — semantic.db 이관 후 모자란 것만 임베딩
+        if: inputs.stage == 'vectors' || inputs.stage == 'export'
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+          cd "$REPO/catch_capture"
+
+          # Playwright 크롤과 Ollama 가 동시에 뜨면 8GB 에서 컨텍스트 할당에 실패한다.
+          if [ "${{ inputs.stop_crawl }}" = "true" ]; then
+            echo "▶ auto_crawl 정지"
+            "$PY" -m automation.auto_crawl stop || true
+          fi
+
+          # 이미 만들어 둔 벡터(공고 1만여 건 + 블로그)를 재임베딩 없이 옮긴다.
+          # 같은 모델·차원·입력 텍스트면 그대로 유효하다.
+          if [ -f semantic.db ]; then
+            "$PY" -m store.migrate_vectors
+          else
+            echo "▶ semantic.db 가 없다 — 이관 건너뛰고 전량 새로 임베딩한다"
+          fi
+
+          LIMIT="${{ inputs.embed_limit }}"
+          if [ "$LIMIT" != "0" ]; then
+            echo "▶ 이번 회차 임베딩 상한 ${LIMIT}건 (남으면 다시 눌러 이어서 한다)"
+            "$PY" -m store.embed --limit "$LIMIT" || echo "▶ 임베딩 실패 — 대기열은 그대로 남는다"
+          else
+            "$PY" -m store.embed || echo "▶ 임베딩 실패 — 대기열은 그대로 남는다"
+          fi
+
+          "$PY" -m store.similar --kind job
+
+      - name: export — DB 산출물과 현재 JSON 비교 (덮어쓰지 않는다)
+        if: inputs.stage == 'export'
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+          cd "$REPO/catch_capture"
+          "$PY" -m store.export --check
+
+      - name: 요약
+        if: always() && inputs.stage != 'probe'
+        run: |
+          set -uo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          docker exec jobseeker-db psql -U jobseeker -d jobseeker -c "
+            SELECT (SELECT count(*) FROM job)            AS 공고,
+                   (SELECT count(*) FROM company)        AS 회사,
+                   (SELECT count(*) FROM post)           AS 블로그,
+                   (SELECT count(*) FROM job_embedding)  AS 벡터,
+                   (SELECT count(*) FROM job_embed_pending) AS 임베딩대기,
+                   (SELECT count(*) FROM job_similar)    AS 추천쌍,
+                   (SELECT count(*) FROM job_state WHERE status='active') AS 모집중;
+          " 2>&1 || echo "요약 실패 (DB 가 아직 없을 수 있다)"
