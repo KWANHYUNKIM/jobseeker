@@ -61,9 +61,13 @@ def content_hash(job: dict) -> str:
 _YEARS = re.compile(r"(\d+)\s*년")
 _ENTRY = re.compile(r"신입|경력무관|무관")
 
+# 스키마의 employment_type ENUM 으로 옮기는 표. ENUM 에 없는 형태는 '기타' 로
+# 받는다 — 아르바이트를 정규직도 계약직도 아닌 칸에 넣을 수는 없고, 그렇다고
+# 버리면 "고용형태가 안 적힌 공고"와 구별이 안 된다.
 _EMPLOYMENT = {
     "정규직": "정규직", "계약직": "계약직", "인턴": "인턴",
     "프리랜서": "프리랜서", "파견": "파견", "파견직": "파견",
+    "아르바이트": "기타",
 }
 
 
@@ -106,7 +110,11 @@ def parse_employment(text: str) -> str | None:
     # 뒤에 붙을 수 있는 건 짧은 괄호 주석이나 다른 고용형태뿐이다.
     if rest and (len(rest) > 12 or _TITLEISH.search(rest)):
         return None
-    return _EMPLOYMENT[m.group(1)]
+    # get 이다. 위 정규식과 이 표가 어긋나면(실제로 '아르바이트'가 정규식에만
+    # 있었다) KeyError 가 이 함수 밖으로 튀어 크롤 사이클의 이중 쓰기를 통째로
+    # 롤백시킨다 — 값 하나 못 읽은 대가로 그 사이클의 공고 전부를 잃는 셈이다.
+    # 확실한 것만 받고 나머지는 빈 값으로 둔다는 이 함수의 규칙 그대로 둔다.
+    return _EMPLOYMENT.get(m.group(1))
 
 
 # ── 회사 ──────────────────────────────────────────────────────────────

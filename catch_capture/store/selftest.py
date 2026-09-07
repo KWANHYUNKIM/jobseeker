@@ -155,6 +155,12 @@ def run() -> int:
                   "프리랜서 Java 백엔드 개발자 모집",
                   "[국비최대무료/기숙사무료/취업연계]AI/빅데이터/풀스택/KDT단기심화")),
               "제목이 고용형태로 들어오면 버린다")
+        # 정규식은 받아들이는데 ENUM 표에는 없던 값. KeyError 가 함수 밖으로 튀어
+        # 2026-09-08 크롤 사이클의 이중 쓰기를 통째로 롤백시켰다.
+        check(parse_employment("아르바이트") == "기타",
+              "ENUM 에 없는 고용형태는 '기타' 로 받는다")
+        check(parse_employment("파견직(6개월)") == "파견",
+              "  표기가 갈려도 ENUM 값 하나로 모인다")
         check(parse_career("경력3년↑") == (3, False)
               and parse_career("신입·경력") == (0, True)
               and parse_career("") == (None, None),
