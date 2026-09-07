@@ -8,7 +8,7 @@
       "country": "기타",
       "category": "SaaS",
       "status": "in_progress",
-      "features_done": 0,
+      "features_done": 1,
       "one_liner": "사용자 코드를 데이터베이스 안에서 트랜잭션으로 돌려 반응성을 공짜로 얻은 회사 — 그 대가로 그 코드가 결정적이어야 하고, 싸 보이는 연산은 아예 주지 않는다",
       "updated_at": "2026-09-07",
       "domain": "convex.dev"
