@@ -1879,8 +1879,8 @@
       "name_en": "Zulip",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 0,
+      "status": "done",
+      "features_done": 1,
       "one_liner": "주제로 나눠 담는 오픈소스 팀 채팅 — 비영리 재단이 회사를 통째로 소유하는 구조로 옮겨 갔다",
       "updated_at": "2026-09-07",
       "domain": "zulip.com"
